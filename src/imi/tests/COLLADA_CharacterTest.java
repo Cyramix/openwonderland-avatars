@@ -82,16 +82,16 @@ public class COLLADA_CharacterTest extends DemoBase2
         
         Instruction pRootInstruction = new Instruction("loadCharacter");
         Instruction pLoadBindPoseInstruction = pRootInstruction.addInstruction("loadBindPose", fileProtocol + "assets/models/collada/Avatars/Male2/Male_Bind.dae");
-        Instruction pReplaceGeometryInstruction = pRootInstruction.addInstruction("replaceGeometry");
-        pReplaceGeometryInstruction.addInstruction("loadGeometry", fileProtocol + "assets/models/collada/Avatars/Male/MaleBind.dae");
-        pReplaceGeometryInstruction.addInstruction("deleteSkinnedMesh", "LHandShape");
-        pReplaceGeometryInstruction.addInstruction("addSkinnedMesh", "LHandShape");
-        pReplaceGeometryInstruction.addInstruction("deleteSkinnedMesh", "TorsoNudeShape");
-        pReplaceGeometryInstruction.addInstruction("addSkinnedMesh", "TorsoNudeShape");
-        pReplaceGeometryInstruction.addInstruction("deleteSkinnedMesh", "Torso_TorsoNudeShape");
-        pRootInstruction.addInstruction("loadAnimation", fileProtocol + "assets/models/collada/Avatars/Male2/Male_Walk.dae");
+//        Instruction pReplaceGeometryInstruction = pRootInstruction.addInstruction("replaceGeometry");
+//        pReplaceGeometryInstruction.addInstruction("loadGeometry", fileProtocol + "assets/models/collada/Avatars/Male/MaleBind.dae");
+//        pReplaceGeometryInstruction.addInstruction("deleteSkinnedMesh", "LHandShape");
+//        pReplaceGeometryInstruction.addInstruction("addSkinnedMesh", "LHandShape");
+//        pReplaceGeometryInstruction.addInstruction("deleteSkinnedMesh", "TorsoNudeShape");
+//        pReplaceGeometryInstruction.addInstruction("addSkinnedMesh", "TorsoNudeShape");
+//        pReplaceGeometryInstruction.addInstruction("deleteSkinnedMesh", "Torso_TorsoNudeShape");
         pRootInstruction.addInstruction("loadAnimation", fileProtocol + "assets/models/collada/Avatars/Male2/Male_Idle.dae");
-    
+        pRootInstruction.addInstruction("loadAnimation", fileProtocol + "assets/models/collada/Avatars/Male2/Male_Walk.dae");
+
         pProcessor.execute(pScene, pRootInstruction);
         
         return(pProcessor.getSkeleton());

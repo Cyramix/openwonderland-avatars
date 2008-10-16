@@ -44,6 +44,8 @@ public class CameraProcessor extends AWTEventProcessorComponent {
     /**
      * First, some common variables
      */
+    private int currentX = -1;
+    private int currentY = -1;
     private int lastMouseX = -1;
     private int lastMouseY = -1;
     
@@ -177,14 +179,24 @@ public class CameraProcessor extends AWTEventProcessorComponent {
         Object[] events = getEvents();
         boolean updateRotations = false;
 
-        for (int i=0; i<events.length; i++) {
-            if (events[i] instanceof MouseEvent) {
+        for (int i = 0; i < events.length; i++)
+        {
+            if (events[i] instanceof MouseEvent)
+            {
                 MouseEvent me = (MouseEvent) events[i];
+                if (me.getID() == MouseEvent.MOUSE_PRESSED)
+                {
+                    currentX = me.getX();
+                    currentY = me.getY();
+                    lastMouseX = currentX;
+                    lastMouseY = currentY;
+                }
                 if (me.getID() == MouseEvent.MOUSE_DRAGGED) {
                     processRotations(me);
                     updateRotations = true;
                 }
-            } else if (events[i] instanceof KeyEvent) {
+            } else if (events[i] instanceof KeyEvent)
+            {
                 KeyEvent ke = (KeyEvent) events[i];
                 processKeyEvent(ke);
             }

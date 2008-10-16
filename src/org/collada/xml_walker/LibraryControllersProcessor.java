@@ -30,27 +30,18 @@ import org.collada.colladaschema.LibraryControllers;
 import org.collada.colladaschema.Controller;
 import org.collada.colladaschema.Skin;
 import org.collada.colladaschema.Source;
-import org.collada.colladaschema.IDREFArray;
-import org.collada.colladaschema.Node;
-import org.collada.colladaschema.FloatArray;
 
 import imi.scene.polygonmodel.parts.polygon.PPolygon;
 import imi.scene.polygonmodel.parts.polygon.PPolygonVertexIndices;
 import imi.scene.polygonmodel.parts.skinned.PPolygonSkinnedVertexIndices;
 import imi.scene.polygonmodel.parts.skinned.PBoneIndices;
-import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
 
 import imi.loaders.collada.Collada;
 
 import imi.scene.polygonmodel.PPolygonMesh;
-import imi.scene.polygonmodel.PPolygonMeshInstance;
 import imi.scene.polygonmodel.skinned.PPolygonSkinnedMesh;
-import imi.scene.polygonmodel.skinned.SkinnedMeshJoint;
 
 import imi.scene.PMatrix;
-import imi.scene.PTransform;
-import imi.scene.PNode;
-import imi.scene.PJoint;
 import imi.scene.animation.AnimationGroup;
 import imi.scene.animation.COLLADA_JointChannel;
 
