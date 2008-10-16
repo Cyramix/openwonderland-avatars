@@ -64,7 +64,7 @@ public class AssetDescriptor
         
         try
         {
-            URL filePath = new URL(new String("file://" + currentDir + "/" + relativeFilePath));
+            URL filePath = new URL(new String("file:///" + currentDir + "/" + relativeFilePath));
             m_URLList.add(filePath);
         } 
         catch (MalformedURLException ex)
@@ -87,7 +87,7 @@ public class AssetDescriptor
         m_type = type;
         try
         {
-            m_URLList.add(fileLocation.toURL());
+            m_URLList.add(fileLocation.toURI().toURL());
         } catch (MalformedURLException ex)
         {
             Logger.getLogger(AssetDescriptor.class.getName()).log(Level.SEVERE,

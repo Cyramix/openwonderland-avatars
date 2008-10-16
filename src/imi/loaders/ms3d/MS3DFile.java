@@ -21,11 +21,11 @@ package imi.loaders.ms3d;
 import java.util.ArrayList;
 
 import com.jme.math.Vector3f;
-import org.lwjgl.util.vector.Vector4f;
 import com.jme.math.Matrix4f;
 import com.jme.math.Quaternion;
 import imi.utils.BinaryFile;
 import java.net.URL;
+import org.lwjgl.util.vector.Vector4f;
 
 
 /**

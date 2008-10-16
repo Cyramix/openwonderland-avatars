@@ -206,7 +206,7 @@ public class PMeshMaterialPanel extends javax.swing.JPanel
             String texName = new String("["+ index + "]  " + texFile.getName());
             try
             {
-                textures.add(texFile.toURL());
+                textures.add(texFile.toURI().toURL());
             } catch (MalformedURLException ex)
             {
                 Logger.getLogger(this.getClass().toString()).log(Level.SEVERE, ex.getMessage());

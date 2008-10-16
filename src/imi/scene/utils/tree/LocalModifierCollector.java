@@ -20,7 +20,6 @@ package imi.scene.utils.tree;
 import imi.loaders.scenebindings.sbFloatRow;
 import imi.loaders.scenebindings.sbLocalModifier;
 import imi.loaders.scenebindings.sbMatrix;
-import imi.scene.PJoint;
 import imi.scene.PMatrix;
 import imi.scene.PNode;
 import imi.scene.polygonmodel.skinned.SkinnedMeshJoint;

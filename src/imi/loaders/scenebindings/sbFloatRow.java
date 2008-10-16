@@ -18,11 +18,11 @@
 package imi.loaders.scenebindings;
 
 import com.jme.math.Vector3f;
-import org.lwjgl.util.vector.Vector4f;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
+import org.lwjgl.util.vector.Vector4f;
 
 /**
  * This class represents a row of floats. This row can be interpreted in many

@@ -122,7 +122,7 @@ public abstract class BaseShaderProgram implements RenderUpdater, AbstractShader
         try
         {
 
-            shaderState.load(m_shaderFiles[0].toURL(), m_shaderFiles[1].toURL());
+            shaderState.load(m_shaderFiles[0].toURI().toURL(), m_shaderFiles[1].toURI().toURL());
         } catch (MalformedURLException ex)
         {
             Logger.getLogger(SimpleTNLShader.class.getName()).log(Level.SEVERE, "Malformed URL from base shader class!", ex);

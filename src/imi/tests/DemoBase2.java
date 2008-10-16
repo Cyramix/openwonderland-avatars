@@ -613,7 +613,7 @@ public class DemoBase2 extends javax.swing.JFrame implements FrameRateListener, 
         Texture monkeyTexture = null;
         try
         {
-            monkeyTexture = TextureManager.loadTexture(new File(FileUtils.rootPath, filePath).toURL(), Texture.MinificationFilter.NearestNeighborNoMipMaps, Texture.MagnificationFilter.NearestNeighbor);
+            monkeyTexture = TextureManager.loadTexture(new File(FileUtils.rootPath, filePath).toURI().toURL(), Texture.MinificationFilter.NearestNeighborNoMipMaps, Texture.MagnificationFilter.NearestNeighbor);
         } catch (MalformedURLException ex)
         {
             Logger.getLogger(DemoBase.class.getName()).log(Level.SEVERE, null, ex);

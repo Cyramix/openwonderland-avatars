@@ -73,6 +73,7 @@ public class BinaryFile
         catch (Exception e)
         {
             System.out.println("File Error:  Unable to open file '" + location.toString() + "'!");
+            //System.out.println(e.getMessage());
             return(false);
         }
     }

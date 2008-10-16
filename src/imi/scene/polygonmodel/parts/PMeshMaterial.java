@@ -103,7 +103,7 @@ public class PMeshMaterial extends PNode
         {
             try
             {
-                m_Textures[0] = new File(texture0).toURL();
+                m_Textures[0] = new File(texture0).toURI().toURL();
             } catch (MalformedURLException ex)
             {
                 Logger.getLogger(PMeshMaterial.class.getName()).log(Level.SEVERE, null, ex);
@@ -382,7 +382,7 @@ public class PMeshMaterial extends PNode
                 {
                     try
                     {
-                        m_Textures[i] = new File(textures[i]).toURL();
+                        m_Textures[i] = new File(textures[i]).toURI().toURL();
                     } catch (MalformedURLException ex)
                     {
                         Logger.getLogger(PMeshMaterial.class.getName()).log(Level.SEVERE, null, ex);
@@ -410,7 +410,7 @@ public class PMeshMaterial extends PNode
         try
         {
 
-            m_Textures[index] = new File(fileName).toURL();
+            m_Textures[index] = new File(fileName).toURI().toURL();
         } catch (MalformedURLException ex)
         {
             Logger.getLogger(PMeshMaterial.class.getName()).log(Level.SEVERE, null, ex);
@@ -424,7 +424,7 @@ public class PMeshMaterial extends PNode
         try
         {
 
-            m_Textures[index] = fileName.toURL();
+            m_Textures[index] = fileName.toURI().toURL();
         } catch (MalformedURLException ex)
         {
             Logger.getLogger(PMeshMaterial.class.getName()).log(Level.SEVERE, null, ex);
