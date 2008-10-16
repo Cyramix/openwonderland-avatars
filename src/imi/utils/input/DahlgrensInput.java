@@ -1,0 +1,204 @@
+/**
+ * Project Wonderland
+ *
+ * Copyright (c) 2004-2008, Sun Microsystems, Inc., All Rights Reserved
+ *
+ * Redistributions in source code form must reproduce the above
+ * copyright and this condition.
+ *
+ * The contents of this file are subject to the GNU General Public
+ * License, Version 2 (the "License"); you may not use this file
+ * except in compliance with the License. A copy of the License is
+ * available at http://www.opensource.org/licenses/gpl-license.php.
+ *
+ * $Revision$
+ * $Date$
+ * $State$
+ */
+package imi.utils.input;
+
+import com.jme.math.Vector3f;
+import imi.gui.PNodePropertyPanel;
+import imi.scene.PNode;
+import imi.scene.polygonmodel.skinned.PPolygonSkinnedMeshInstance;
+import java.awt.Dimension;
+import java.awt.event.KeyEvent;
+import javax.swing.JFrame;
+
+/**
+ *
+ * @author Ronald E Dahlgren
+ */
+public class DahlgrensInput extends InputScheme
+{
+ 
+    private boolean m_bSkeletonMode = false;
+    
+    private PNode   m_target = null;
+    
+    public DahlgrensInput()
+    {
+        super();
+    }
+  
+    @Override
+    public void processEvents(Object[] events) 
+    {
+        for (int i=0; i<events.length; i++) 
+        {
+            if (events[i] instanceof KeyEvent) 
+            {
+                KeyEvent ke = (KeyEvent) events[i];
+                processKeyEvent(ke);
+            }
+        }
+    }
+       
+    private void processKeyEvent(KeyEvent ke) 
+    {
+        if (m_jscene == null)
+            return;
+        
+        if (ke.getID() == KeyEvent.KEY_PRESSED) 
+        {
+            // Note: input only affects this JScene
+            
+            // JMonkey Wireframe (on\off)
+            if (ke.getKeyCode() == KeyEvent.VK_T) 
+                m_jscene.toggleWireframe();
+            
+            // JMonkey Lights (on\off)
+            if (ke.getKeyCode() == KeyEvent.VK_L) 
+                m_jscene.toggleLights();
+            
+            // Rendering mode (JMonkey, JMonkey and PRenderer, PRenderer)
+            if (ke.getKeyCode() == KeyEvent.VK_R) 
+                m_jscene.renderToggle();
+            
+            // PRenderer Polygon normals (on\off)
+            if (ke.getKeyCode() == KeyEvent.VK_P) 
+                m_jscene.toggleRenderPolygonNormals();
+            
+            // PRenderer Vertex normals (on\off)
+            if (ke.getKeyCode() == KeyEvent.VK_V) 
+                m_jscene.toggleRenderVertexNormals();
+            
+            // PRenderer Polygon center points (on\off)
+            if (ke.getKeyCode() == KeyEvent.VK_C) 
+                m_jscene.toggleRenderPolygonCenters();
+            
+            // PRenderer Bounding volumes (off, box, sphere)
+            if (ke.getKeyCode() == KeyEvent.VK_B) 
+                m_jscene.toggleRenderBoundingVolume();
+            
+            // Flip normals
+            if (ke.getKeyCode() == KeyEvent.VK_F) 
+                m_jscene.flipNormals();
+            
+            // Smooth normals toggle
+            if (ke.getKeyCode() == KeyEvent.VK_N) 
+                m_jscene.toggleSmoothNormals();
+            
+            // Target manipulation
+            if (ke.getKeyCode() == KeyEvent.VK_O)
+            {
+                System.out.println("O Pressed");
+                if (m_target != null && m_target.getTransform() != null)
+                {
+                    Vector3f newTranslation = m_target.getTransform().getLocalMatrix(true).getTranslation();
+                    System.out.print(newTranslation.toString() + " -> ");
+                    newTranslation.addLocal(Vector3f.UNIT_XYZ.mult(2.0f));
+                    m_target.getTransform().getLocalMatrix(true).setTranslation(newTranslation);
+                    System.out.println(m_target.getTransform().getLocalMatrix(false).getTranslation().toString());
+                }
+                m_jscene.getPScene().getInstances().setDirty(true, true);
+            }
+            // Target manipulation
+            if (ke.getKeyCode() == KeyEvent.VK_I)
+            {
+                System.out.println("I Pressed");
+                if (m_target != null && m_target.getTransform() != null)
+                {
+                    Vector3f newTranslation = m_target.getTransform().getLocalMatrix(true).getTranslation();
+                    newTranslation.addLocal(Vector3f.UNIT_XYZ.mult(-2.0f));
+                    m_target.getTransform().getLocalMatrix(true).setTranslation(newTranslation);
+                }
+                m_jscene.getPScene().getInstances().setDirty(true, true);
+            }
+            
+            // Toggle PRenderer mesh display
+            if (ke.getKeyCode() == KeyEvent.VK_M)
+            {
+                m_jscene.toggleRenderPRendererMesh();
+                //m_jscene.loadShaders();
+            }
+            
+            if (ke.getKeyCode() == KeyEvent.VK_U)
+            {
+                if (m_bSkeletonMode == false)
+                {
+                    m_jscene.setRenderInternallyBool(false);
+                    // turn the prenderer on, turn off the mesh drawing, turn on jme wireframe
+                    // This will create the PRenderer if it does not exist
+                    m_jscene.setRenderPRendererMesh(false);
+                    m_jscene.setRenderBool(true);
+                    m_jscene.setRenderInternallyBool(true);
+                    m_jscene.setRenderBothBool(true);
+                    m_jscene.setWireframe(true);
+                }
+                else
+                {
+                    // reset to solid jme only
+                    m_jscene.setRenderPRendererMesh(true);
+                    m_jscene.setRenderBool(true);
+                    m_jscene.setRenderInternallyBool(false);
+                    m_jscene.setRenderBothBool(false);
+                    m_jscene.setWireframe(false);
+                    
+                }
+                // toggle
+                m_bSkeletonMode = !m_bSkeletonMode;
+
+            }
+            
+            // Animation test
+            if (ke.getKeyCode() == KeyEvent.VK_K)
+            {
+                PPolygonSkinnedMeshInstance ninja = ((PPolygonSkinnedMeshInstance)(m_jscene.getPScene().getInstances().getChild(0).getChild(0)));
+                // BROKEN --- The animation states are now kept at the skeleton node!
+//                if (ninja.getAnimationState().getCurrentCycle() == 0)
+//                    ninja.transitionTo(5);
+//                else
+//                    ninja.transitionTo(0);
+            }
+            
+            if (ke.getKeyCode() == KeyEvent.VK_3)
+            {
+                PPolygonSkinnedMeshInstance ninja = ((PPolygonSkinnedMeshInstance)(m_jscene.getPScene().getInstances().getChild(0).getChild(0)));
+                PNodePropertyPanel jointWidget = null;//new PNodePropertyPanel(ninja.getTransformHierarchy().getChild(0).findChild("Joint11"));
+                jointWidget.setVisible(true);
+                // make and show a new JFrame
+                JFrame frame = new JFrame();
+                
+                frame.add(jointWidget);
+                frame.setSize(new Dimension(350, 400));
+                
+                frame.setVisible(true);
+                
+            
+            }
+        }
+    }
+    
+    public PNode getTarget()
+    {
+        return m_target;
+    }
+    
+    public void setTarget(PNode target)
+    {
+        m_target = target;
+    }
+    
+
+}

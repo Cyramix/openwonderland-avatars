@@ -1,0 +1,34 @@
+/**
+ * Project Wonderland
+ *
+ * Copyright (c) 2004-2008, Sun Microsystems, Inc., All Rights Reserved
+ *
+ * Redistributions in source code form must reproduce the above
+ * copyright and this condition.
+ *
+ * The contents of this file are subject to the GNU General Public
+ * License, Version 2 (the "License"); you may not use this file
+ * except in compliance with the License. A copy of the License is
+ * available at http://www.opensource.org/licenses/gpl-license.php.
+ *
+ * $Revision$
+ * $Date$
+ * $State$
+ */
+package imi.loaders.repository;
+
+/**
+ * The receiveAsset method is used as a callback by the repository when
+ * it has finished loading an asset.
+ * @author Ronald E Dahlgren
+ * @author Lou Hayt
+ */
+public interface RepositoryUser 
+{
+    /**
+     * This method is provided as a callback for the repository to deliver
+     * assets as they are loaded.
+     * @param asset The asset to take.
+     */
+    public void receiveAsset(SharedAsset asset);
+}

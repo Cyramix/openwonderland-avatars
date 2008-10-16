@@ -1,0 +1,301 @@
+/**
+ * Project Wonderland
+ *
+ * Copyright (c) 2004-2008, Sun Microsystems, Inc., All Rights Reserved
+ *
+ * Redistributions in source code form must reproduce the above
+ * copyright and this condition.
+ *
+ * The contents of this file are subject to the GNU General Public
+ * License, Version 2 (the "License"); you may not use this file
+ * except in compliance with the License. A copy of the License is
+ * available at http://www.opensource.org/licenses/gpl-license.php.
+ *
+ * $Revision$
+ * $Date$
+ * $State$
+ */
+package imi.loaders.repository;
+
+import imi.annotations.Debug;
+import imi.loaders.IncorrectFormatException;
+import imi.loaders.ParsingErrorException;
+import imi.loaders.collada.Collada;
+import imi.loaders.repository.SharedAsset.SharedAssetType;
+import imi.scene.PMatrix;
+import imi.scene.PScene;
+import imi.scene.polygonmodel.PPolygonMesh;
+import imi.scene.polygonmodel.PPolygonModelInstance;
+import imi.scene.polygonmodel.skinned.PPolygonSkinnedMesh;
+import java.io.FileNotFoundException;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javolution.util.FastList;
+import org.jdesktop.mtgame.*;
+
+/**
+ * The Repository is used as a mechanism for sharing data across threads and
+ * specifically between PScene instances. Data is shared as much as possible.
+ * @author Ronald E Dahlgren
+ * @author Lou Hayt
+ */
+public class Repository extends Entity
+{   
+    private WorldManager m_worldManager = null;
+    
+    ProcessorCollectionComponent m_processorCollection = new ProcessorCollectionComponent();
+    
+    private long m_numberOfLoadRequests      = 0l;
+    private long m_maxConcurrentLoadRequests = 10l;
+    private static long m_maxQueryTime  = Long.MAX_VALUE; // 10000000000l
+    
+    private FastList<WorkOrder> m_workOrders = new FastList<WorkOrder>();
+    
+    // multiple collections per type (type declated in SharedAsset) :
+    
+    // geometry
+    private ConcurrentHashMap<AssetDescriptor, RepositoryAsset> m_Geometry = new ConcurrentHashMap<AssetDescriptor, RepositoryAsset>();
+    
+    // textures
+    private ConcurrentHashMap<AssetDescriptor, RepositoryAsset> m_Textures = new ConcurrentHashMap<AssetDescriptor, RepositoryAsset>();
+    
+    // shaders
+    private ConcurrentHashMap<AssetDescriptor, RepositoryAsset> m_Shaders = new ConcurrentHashMap<AssetDescriptor, RepositoryAsset>();
+    
+    // materials
+    
+    // procssors (AI, animations, etc)
+    
+    // code
+    
+    /**
+     * Construct a BRAND NEW REPOSITORY!
+     * @param wm
+     */
+    public Repository(WorldManager wm)
+    {
+        super("Asset Repository");
+        
+        m_worldManager = wm;
+        
+        wm.addEntity(this);
+        
+        addComponent(ProcessorCollectionComponent.class, m_processorCollection);
+    }
+    
+    public synchronized void loadSharedAsset(SharedAsset asset, RepositoryUser user)
+    {
+        RepositoryAsset repoAsset = null;
+        ConcurrentHashMap<AssetDescriptor, RepositoryAsset> collection = getCollection(asset.getDescriptor().getType());
+        // Do some robust error checking
+        if (collection == null) // Collection not found?!
+        {
+            Logger.getLogger(this.getClass().toString()).log(Level.SEVERE,
+                    "Unable to get correct collection for " + asset.getDescriptor().toString());
+        }
+        else if (asset == null)
+        {
+            Logger.getLogger(this.getClass().toString()).log(Level.SEVERE,
+                    "Asset requested was null!");
+        }
+        else if (asset.getDescriptor() == null)
+        {
+            Logger.getLogger(this.getClass().toString()).log(Level.SEVERE,
+                    "Asset descriptor was null!");
+        }
+        // If we already have it in the collection we will get it now
+        repoAsset = collection.get(asset.getDescriptor());
+        if (repoAsset == null)
+        {
+            if (m_numberOfLoadRequests < m_maxConcurrentLoadRequests)
+            {
+                // We did not exceed the maxium number of workers so we can process this request now
+                boolean shaderCase = asset.getDescriptor().getType() == SharedAssetType.ShaderPair;
+
+                // If we don't already have it in the collection we will add it now
+                repoAsset = new RepositoryAsset(asset.getDescriptor(), shaderCase, this);
+                
+                // The new repository asset will loaditself, inceremnt the counter
+                m_numberOfLoadRequests++;
+
+                // we are not sharing shaders yet...
+                if (!shaderCase)
+                    collection.put(asset.getDescriptor(), repoAsset);
+
+                // Add the repository asset as a processor so it will load itself
+                m_processorCollection.addProcessor(repoAsset); 
+                repoAsset.initialize(); // now safe  to initialize
+            }
+            else
+            {
+                // We exceeded the maximum number of workers, 
+                // we will delay this request and issue a pending work order.
+                // This work order will be picked up by one of the currently 
+                // bussy workers on its shutdown()
+                m_workOrders.add(new WorkOrder(asset, user, null, collection, m_maxQueryTime));
+                return;
+            }
+        }   
+        
+        if (repoAsset.loadData(asset)) // success?
+            user.receiveAsset(asset); // we call back the user after loading the data into the asset
+        else
+        {   
+            // create a worker that will setup the SharedAsset and notify the user when the repo asset finished loading itself
+            // Add a new processor (worker) to process this request
+            RepositoryWorker slave = new RepositoryWorker(this, asset, user, repoAsset, collection, m_maxQueryTime); // TODO maxQueryTime according to source location and type
+            m_processorCollection.addProcessor(slave);
+            slave.initialize();
+        }
+    }
+    
+    public void removeProcessor(ProcessorComponent pc)
+    {
+        // remove the processor from the entity process controller
+        m_processorCollection.removeProcessor(pc);
+    }
+
+    // one reference per thread\PScene
+    public void referenceSubtract(AssetDescriptor descriptor) 
+    {
+        ConcurrentHashMap<AssetDescriptor, RepositoryAsset> collection = getCollection(descriptor.getType());
+        
+        RepositoryAsset repoAsset = collection.get(descriptor);
+        
+        if (repoAsset != null)
+            repoAsset.decrementReferenceCount();
+    }
+    
+    public ConcurrentHashMap<AssetDescriptor, RepositoryAsset> getCollection(SharedAssetType collectionType)
+    {
+        switch (collectionType)
+        {
+            case MS3D:
+            case COLLADA:
+            case Mesh:
+            case SkinnedMesh:
+                return m_Geometry;
+            case ShaderPair:
+                return m_Shaders;
+            case Texture:
+                return m_Textures;
+        }
+        
+        return null;
+    }
+
+    public long getMaxConcurrentLoadRequests() {
+        return m_maxConcurrentLoadRequests;
+    }
+
+    public long getNumberOfLoadRequests() {
+        return m_numberOfLoadRequests;
+    }
+
+    public void adjustNumberOfLoadRequests(long workersModifierNumber) {
+        m_numberOfLoadRequests += workersModifierNumber;
+    }
+
+    // Used to throtel the repository
+    public void setMaxConcurrentLoadRequests(long maxConcurrentWorkers) {
+        m_maxConcurrentLoadRequests = maxConcurrentWorkers;
+    }
+    
+    public FastList<WorkOrder> getWorkOrders()
+    {
+        return m_workOrders;
+    }
+    
+    public WorkOrder popWorkOrder()
+    {
+        WorkOrder statementOfWork = null;
+        
+        synchronized (m_workOrders)
+        {
+            if (!m_workOrders.isEmpty())
+                statementOfWork = m_workOrders.removeFirst();
+        }
+        
+        return statementOfWork;
+    }
+    
+   
+
+    public void createRepositoryAsset(WorkOrder statementOfWork) 
+    {
+        // We did not exceed the maxium number of workers so we can process this request now
+        boolean shaderCase = statementOfWork.m_asset.getDescriptor().getType() == SharedAssetType.ShaderPair;
+
+        // If we don't already have it in the collection we will add it now
+        RepositoryAsset repoAsset = new RepositoryAsset(statementOfWork.m_asset.getDescriptor(), shaderCase, this);
+
+        // The new repository asset will loaditself, inceremnt the counter
+        m_numberOfLoadRequests++;
+
+        // we are not sharing shaders yet...
+        if (!shaderCase)
+            getCollection(statementOfWork.m_asset.getDescriptor().getType()).put(statementOfWork.m_asset.getDescriptor(), repoAsset);
+
+        // Add the repository asset as a processor so it will load itself
+        m_processorCollection.addProcessor(repoAsset);
+        repoAsset.initialize();
+        
+        // Update the work order
+        statementOfWork.m_repoAsset = repoAsset;
+    }
+    
+    protected class WorkOrder
+    {
+        private long    m_timeStamp    = System.nanoTime();
+        
+        SharedAsset     m_asset        = null;
+        RepositoryUser  m_user         = null;
+        RepositoryAsset m_repoAsset    = null;
+        ConcurrentHashMap<AssetDescriptor, RepositoryAsset> m_collection = null;
+        long            m_maxQueryTime = Repository.m_maxQueryTime;
+
+        public WorkOrder(SharedAsset asset, RepositoryUser user, RepositoryAsset repoAsset, ConcurrentHashMap<AssetDescriptor, RepositoryAsset> collection, long maxQueryTime) 
+        {
+            m_asset         = asset;
+            m_user          = user;
+            m_repoAsset     = repoAsset;
+            m_collection    = collection;
+            m_maxQueryTime  = maxQueryTime;
+        }
+        
+        public long getTimeStamp()
+        {
+            return m_timeStamp;
+        }
+    }
+    
+    @Debug
+    public ConcurrentHashMap<AssetDescriptor, RepositoryAsset> getGeometryCollection()
+    {
+        return m_Geometry;
+    }
+    
+    @Debug
+    public ConcurrentHashMap<AssetDescriptor, RepositoryAsset> getTexturesCollection()
+    {
+        return m_Textures;
+    }
+    
+    @Debug
+    public ConcurrentHashMap<AssetDescriptor, RepositoryAsset> getShadersCollection()
+    {
+        return m_Shaders;
+    }
+    
+    /**
+     * This method is only exposed for PScene construction. It is liable to change
+     * so DO NOT rely on this method!
+     * @return The world manager
+     */
+    @Deprecated
+    public WorldManager getWorldManager() 
+    {
+        return m_worldManager;
+    }
+}

@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<xs:schema version="1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+  <xs:element name="ModelFile" type="Model"/>
+
+  <xs:complexType name="BaseNode">
+    <xs:sequence>
+      <xs:element name="Name" type="xs:string"/>
+      <xs:element name="Transform" type="Matrix" minOccurs="0"/>
+      <xs:element name="Kids" type="BaseNode" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="ParentName" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="Matrix">
+    <xs:sequence>
+      <xs:element name="Row0" type="FloatRow"/>
+      <xs:element name="Row1" type="FloatRow"/>
+      <xs:element name="Row2" type="FloatRow"/>
+      <xs:element name="Row3" type="FloatRow"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="FloatRow">
+    <xs:sequence>
+      <xs:element name="X" type="xs:float"/>
+      <xs:element name="Y" type="xs:float"/>
+      <xs:element name="Z" type="xs:float"/>
+      <xs:element name="W" type="xs:float"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="ConfigurationData">
+    <xs:sequence>
+      <xs:element name="Scale" type="Scale" minOccurs="0"/>
+      <xs:element name="Material" type="Material" minOccurs="0"/>
+      <xs:element name="LocalModifiers" type="LocalModifier" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="Scale">
+    <xs:sequence>
+      <xs:element name="X" type="xs:float"/>
+      <xs:element name="Y" type="xs:float"/>
+      <xs:element name="Z" type="xs:float"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="Material">
+    <xs:sequence>
+      <xs:element name="TextureFiles" type="Texture" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="ShaderPair" type="ShaderPair" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="Texture">
+    <xs:sequence>
+      <xs:element name="Path" type="xs:string"/>
+      <xs:element name="TextureUnit" type="xs:int"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="ShaderPair">
+    <xs:sequence>
+      <xs:element name="VertexShaderPath" type="xs:string"/>
+      <xs:element name="FragmentShaderPath" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="LocalModifier">
+    <xs:sequence>
+      <xs:element name="TargetJointName" type="xs:string"/>
+      <xs:element name="Transform" type="Matrix"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="JointNode">
+    <xs:complexContent>
+      <xs:extension base="BaseNode">
+        <xs:sequence>
+          <xs:element name="Modifier" type="Matrix" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="MeshNode">
+    <xs:complexContent>
+      <xs:extension base="BaseNode">
+        <xs:sequence>
+          <xs:element name="GeometryFile" type="xs:string"/>
+          <xs:element name="GeometryMaterial" type="Material" minOccurs="0"/>
+          <xs:element name="Configuration" type="ConfigurationData" minOccurs="0"/>
+          <xs:element name="SkinningHooks" type="BaseNode" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="Model">
+    <xs:sequence>
+      <xs:element name="BaseNode" type="BaseNode"/>
+    </xs:sequence>
+  </xs:complexType>
+</xs:schema>
+

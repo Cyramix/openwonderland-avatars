@@ -1,0 +1,9 @@
+Walk StartTime=0.0 EndTime=0.55
+Stalk StartTime=0.63 EndTime=1.2
+Punch StartTime=1.3 EndTime=1.8
+Block StartTime=2.0 EndTime=2.45
+Slash StartTime=2.45 EndTime=2.8
+Kick StartTime=2.95 EndTime=3.35
+PickUp StartTime=3.35 EndTime=3.8
+Kick2 StartTime=3.8 EndTime=5.0
+Idle StartTime=8.3 EndTime=12.0
