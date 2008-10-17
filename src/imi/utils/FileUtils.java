@@ -63,7 +63,7 @@ public class FileUtils
        if (currentDirectory.startsWith("/") == false)
            currentDirectory = "/" + currentDirectory; // Add on the initial slash
        // now generate the url
-       String urlString = new String("file://localhost" + currentDirectory + relativePath);
+       String urlString = new String("file://localhost" + currentDirectory + "/" +  relativePath);
        URL result = null;
        try 
        {

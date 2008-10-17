@@ -47,8 +47,9 @@ public class Chair implements SpatialObject
     {
         PMatrix origin = new PMatrix();
         origin.lookAt(position, position.add(heading), Vector3f.UNIT_Y);
+        origin.invert();
         modelInst = new PPolygonModelInstance("Chair", origin);
-        forward = origin.getLocalXNormalized().mult(-1.0f); // wtf? why isn't it Z
+        forward = origin.getLocalZNormalized();//origin.getLocalXNormalized().mult(-1.0f); // wtf? why isn't it Z
         
         PMeshMaterial geometryMaterial = new PMeshMaterial();
         geometryMaterial.setColorMaterial(ColorMaterial.Diffuse); // Make the vert colors affect diffuse coloring
@@ -57,22 +58,22 @@ public class Chair implements SpatialObject
         PPolygonMesh sphereMesh;
         PPolygonTriMeshAssembler assembler = new PPolygonTriMeshAssembler();
         
-        sphereMesh = PMeshUtils.createSphere("Right Chair Obstacle Sphere", Vector3f.UNIT_X.mult(4.0f), 3.0f, 6, 6, ColorRGBA.red);
+        sphereMesh = PMeshUtils.createSphere("Right Chair Obstacle Sphere", Vector3f.ZERO, 3.0f, 6, 6, ColorRGBA.red);
         sphereMesh.setMaterial(geometryMaterial);
         sphereMesh.submit(assembler);
-        //sphereMesh.getTransform().getLocalMatrix(true).setTranslation(Vector3f.UNIT_X.mult(4.0f));
+        sphereMesh.getTransform().getLocalMatrix(true).setTranslation(Vector3f.UNIT_X.mult(4.0f));
         modelInst.addChild(sphereMesh);
         
-        sphereMesh = PMeshUtils.createSphere("Left Chair Obstacle Sphere", Vector3f.UNIT_X.mult(-4.0f), 3.0f, 6, 6, ColorRGBA.red);
+        sphereMesh = PMeshUtils.createSphere("Left Chair Obstacle Sphere", Vector3f.ZERO, 3.0f, 6, 6, ColorRGBA.red);
         sphereMesh.setMaterial(geometryMaterial);
         sphereMesh.submit(assembler);
-        //sphereMesh.getTransform().getLocalMatrix(true).setTranslation(Vector3f.UNIT_X.mult(-4.0f));
+        sphereMesh.getTransform().getLocalMatrix(true).setTranslation(Vector3f.UNIT_X.mult(-4.0f));
         modelInst.addChild(sphereMesh);
         
-        sphereMesh = PMeshUtils.createSphere("Sitting Point Chair Sphere", Vector3f.UNIT_Z.mult(sittingDistance), 1.0f, 6, 6, ColorRGBA.green);
+        sphereMesh = PMeshUtils.createSphere("Sitting Point Chair Sphere", Vector3f.ZERO, 1.0f, 6, 6, ColorRGBA.magenta);
         sphereMesh.setMaterial(geometryMaterial);
         sphereMesh.submit(assembler);
-        //sphereMesh.getTransform().getLocalMatrix(true).setTranslation(Vector3f.UNIT_Z.mult(sittingDistance));
+        sphereMesh.getTransform().getLocalMatrix(true).setTranslation(Vector3f.UNIT_Z.mult(sittingDistance));
         modelInst.addChild(sphereMesh);
     }
     
@@ -105,10 +106,11 @@ public class Chair implements SpatialObject
     
     public Vector3f getGoalForwardVector()
     {
+        return modelInst.getTransform().getWorldMatrix(false).getLocalZ();
 //        Vector3f goalPos = getGoalPosition();
 //        Vector3f pos = getPosition();
 //        return goalPos.subtract(pos).normalize();
-        return forward;
+        //return forward;
     }
     
     public Vector3f getNearestObstaclePosition(Vector3f myPosition)
