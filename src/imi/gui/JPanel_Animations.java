@@ -139,48 +139,50 @@ public class JPanel_Animations extends javax.swing.JPanel {
             if(node != null) {
                 imi.scene.polygonmodel.parts.skinned.SkeletonNode skeleton = ((imi.scene.polygonmodel.parts.skinned.SkeletonNode)node.getParent());
                 
-                jFormattedTextField_Time.setEnabled(true);
-                jFormattedTextField_CycleTime.setEnabled(true);
-                
-                // Determine the what are the animation indices
-                int curIndex = jComboBox_Animations.getSelectedIndex();
-                float cycleTimeMil, cycleTimeSec, cycleTimeMin, elapsedTimeMil, elapsedTimeSec, elapsedTimeMin;
-                elapsedTimeMil = elapsedTimeSec = elapsedTimeMin = 0.0f;
-                
-                // Get Time in the current animation cycle
-                cycleTimeMil = skeleton.getAnimationState().getCurrentCycleTime() * 1000F;
-                cycleTimeSec = skeleton.getAnimationState().getCurrentCycleTime();
-                cycleTimeMin = skeleton.getAnimationState().getCurrentCycleTime() / 60F;
-                if(!bStopped) {
-                    elapsedTimeMil = (skeleton.getAnimationState().getCurrentCycleTime() - skeleton.getAnimationGroup().getCycle(curIndex).getStartTime()) * 1000F;
-                    elapsedTimeSec = skeleton.getAnimationState().getCurrentCycleTime() - skeleton.getAnimationGroup().getCycle(curIndex).getStartTime();
-                    elapsedTimeMin = (skeleton.getAnimationState().getCurrentCycleTime() - skeleton.getAnimationGroup().getCycle(curIndex).getStartTime()) / 60F;
-                }                
-                Integer minutes = 0;    Integer seconds = 0;    Integer millisec = 0;
-                String time = null;
-                
-                // Update the fields for the time display based on if the animation is paused or stopped
-                if(bStopped) {
-                    minutes = 0;    seconds = 0;    millisec = 0;
+                if (skeleton.getAnimationGroup() != null) {
+                    jFormattedTextField_Time.setEnabled(true);
+                    jFormattedTextField_CycleTime.setEnabled(true);
+
+                    // Determine the what are the animation indices
+                    int curIndex = jComboBox_Animations.getSelectedIndex();
+                    float cycleTimeMil, cycleTimeSec, cycleTimeMin, elapsedTimeMil, elapsedTimeSec, elapsedTimeMin;
+                    elapsedTimeMil = elapsedTimeSec = elapsedTimeMin = 0.0f;
+
+                    // Get Time in the current animation cycle
+                    cycleTimeMil = skeleton.getAnimationState().getCurrentCycleTime() * 1000F;
+                    cycleTimeSec = skeleton.getAnimationState().getCurrentCycleTime();
+                    cycleTimeMin = skeleton.getAnimationState().getCurrentCycleTime() / 60F;
+                    if(!bStopped) {
+                        elapsedTimeMil = (skeleton.getAnimationState().getCurrentCycleTime() - skeleton.getAnimationGroup().getCycle(curIndex).getStartTime()) * 1000F;
+                        elapsedTimeSec = skeleton.getAnimationState().getCurrentCycleTime() - skeleton.getAnimationGroup().getCycle(curIndex).getStartTime();
+                        elapsedTimeMin = (skeleton.getAnimationState().getCurrentCycleTime() - skeleton.getAnimationGroup().getCycle(curIndex).getStartTime()) / 60F;
+                    }                
+                    Integer minutes = 0;    Integer seconds = 0;    Integer millisec = 0;
+                    String time = null;
+
+                    // Update the fields for the time display based on if the animation is paused or stopped
+                    if(bStopped) {
+                        minutes = 0;    seconds = 0;    millisec = 0;
+                        time = minutes.toString() + ":" + seconds.toString() + ":" + millisec.toString();
+                        jFormattedTextField_Time.setText(time);
+                        jFormattedTextField_CycleTime.setText(time);
+                        return;
+                    } else if (skeleton.getAnimationState().isPauseAnimation()) {
+                        return;
+                    }
+
+                    // Get rid of the floating points and update the displayed animation time
+                    minutes = (int)elapsedTimeMin;
+                    seconds = (int)elapsedTimeSec - ((int)elapsedTimeMin * 60);
+                    millisec = (int)elapsedTimeMil - ((int)elapsedTimeSec * 1000);
                     time = minutes.toString() + ":" + seconds.toString() + ":" + millisec.toString();
                     jFormattedTextField_Time.setText(time);
+                    minutes = (int)cycleTimeMin;
+                    seconds = (int)cycleTimeSec - ((int)cycleTimeMin * 60);
+                    millisec = (int)cycleTimeMil - ((int)cycleTimeSec * 1000);
+                    time = minutes.toString() + ":" + seconds.toString() + ":" + millisec.toString();
                     jFormattedTextField_CycleTime.setText(time);
-                    return;
-                } else if (skeleton.getAnimationState().isPauseAnimation()) {
-                    return;
                 }
-                
-                // Get rid of the floating points and update the displayed animation time
-                minutes = (int)elapsedTimeMin;
-                seconds = (int)elapsedTimeSec - ((int)elapsedTimeMin * 60);
-                millisec = (int)elapsedTimeMil - ((int)elapsedTimeSec * 1000);
-                time = minutes.toString() + ":" + seconds.toString() + ":" + millisec.toString();
-                jFormattedTextField_Time.setText(time);
-                minutes = (int)cycleTimeMin;
-                seconds = (int)cycleTimeSec - ((int)cycleTimeMin * 60);
-                millisec = (int)cycleTimeMil - ((int)cycleTimeSec * 1000);
-                time = minutes.toString() + ":" + seconds.toString() + ":" + millisec.toString();
-                jFormattedTextField_CycleTime.setText(time);
             }
         } else {
             jFormattedTextField_Time.setEnabled(false);
