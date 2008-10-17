@@ -18,8 +18,8 @@
 package imi.tests;
 
 import com.jme.math.Vector3f;
-import com.jme.renderer.ColorRGBA;
 import imi.character.ninja.Ninja;
+import imi.character.objects.Goal;
 import imi.character.objects.ObjectCollection;
 import imi.scene.PMatrix;
 import imi.scene.processors.JSceneAWTEventProcessor;
@@ -45,7 +45,7 @@ public class MusicalChairs extends DemoBase
     {
         // Create an object collection for the musical chairs game
         ObjectCollection objs = new ObjectCollection("Musical Chairs Game Objects", wm);
-        objs.generateChairs(Vector3f.ZERO, 50.0f, 3);
+        objs.generateChairs(Vector3f.ZERO, 100.0f, 20);
         
         // Create a character (name it "Shadow Blade") using the "Ninja" preset configuration
         Ninja shadowBlade = new Ninja("Shadow Blade", wm, "Ninja");
@@ -55,7 +55,21 @@ public class MusicalChairs extends DemoBase
         shadowBlade.setObjectCollection(objs);
         
         // Goal point
-        //wm.setGoalPoint(createSphereEntity(1.0f, ColorRGBA.blue, new PMatrix(new Vector3f(10.0f, 0.0f, 10.0f)), wm));
+        wm.addUserData(Goal.class, new Goal(wm));
+        
+        // Friends 
+        
+        Ninja ninja1 = new Ninja("Shadow Blade Slave1", new PMatrix().setTranslation(Vector3f.UNIT_X.mult(5.0f)), null, wm);
+        control.getNinjaTeam().add(ninja1);
+        ninja1.setObjectCollection(objs);
+        
+        Ninja ninja2 = new Ninja("Shadow Blade Slave2", new PMatrix().setTranslation(Vector3f.UNIT_X.mult(10.0f)), null, wm);
+        control.getNinjaTeam().add(ninja2);
+        ninja2.setObjectCollection(objs);
+        
+        Ninja ninja3 = new Ninja("Shadow Blade Slave3", new PMatrix().setTranslation(Vector3f.UNIT_X.mult(15.0f)), null, wm);
+        control.getNinjaTeam().add(ninja3);
+        ninja3.setObjectCollection(objs);
     }
     
 }

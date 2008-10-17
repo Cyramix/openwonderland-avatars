@@ -20,8 +20,8 @@ package imi.character.ninja;
 import com.jme.math.Vector3f;
 import imi.character.CharacterController;
 import imi.scene.PMatrix;
+import imi.scene.PTransform;
 import imi.scene.polygonmodel.PPolygonModelInstance;
-import imi.tests.DemoBase.SwingFrame;
 import javax.swing.JFrame;
 
 /**
@@ -281,6 +281,13 @@ public class NinjaController extends CharacterController
     {
         if (body != null)
             return body.getTransform().getLocalMatrix(false).getTranslation();
+        return null;
+    }
+    
+    public PTransform getTransform()
+    {
+        if (body != null)
+            return body.getTransform();
         return null;
     }
         

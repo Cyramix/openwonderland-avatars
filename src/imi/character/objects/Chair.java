@@ -70,7 +70,7 @@ public class Chair implements SpatialObject
         sphereMesh.getTransform().getLocalMatrix(true).setTranslation(Vector3f.UNIT_X.mult(-4.0f));
         modelInst.addChild(sphereMesh);
         
-        sphereMesh = PMeshUtils.createSphere("Sitting Point Chair Sphere", Vector3f.ZERO, 1.0f, 6, 6, ColorRGBA.magenta);
+        sphereMesh = PMeshUtils.createSphere("Sitting Point Chair Sphere", Vector3f.ZERO, 1.0f, 6, 6, ColorRGBA.green);
         sphereMesh.setMaterial(geometryMaterial);
         sphereMesh.submit(assembler);
         sphereMesh.getTransform().getLocalMatrix(true).setTranslation(Vector3f.UNIT_Z.mult(sittingDistance));

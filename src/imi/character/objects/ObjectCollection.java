@@ -102,34 +102,50 @@ public class ObjectCollection extends Entity
             float randomZ = (float) Math.random();
             if (Math.random() > 0.5)
                 randomZ *= -1.0f;
-            
             Vector3f randomDirection = new Vector3f(randomX, 0.0f, randomZ).normalize();
+            
+            randomX = (float) Math.random();
+            if (Math.random() > 0.5)
+                randomX *= -1.0f;
+            randomZ = (float) Math.random();
+            if (Math.random() > 0.5)
+                randomZ *= -1.0f;
+            Vector3f randomSittingDirection = new Vector3f(randomX, 0.0f, randomZ).normalize();
+            
             float randomDistance     = (float)Math.random() * maxRadius;
             Vector3f randomPosition  = center.add(randomDirection.mult(randomDistance));
             
-            Chair newChair = new Chair(randomPosition, randomDirection);
+            Chair newChair = new Chair(randomPosition, randomSittingDirection);
             newChair.setInScene(pscene);
             newChair.setObjectCollection(this);
             
-//            int attemptsCounter = 0;
-//            while(isColliding(newChair) && attemptsCounter < 100)
-//            {
-//                attemptsCounter++;
-//                
-//                randomX = (float) Math.random();
-//                if (Math.random() > 0.5)
-//                    randomX *= -1.0f;
-//                randomZ = (float) Math.random();
-//                if (Math.random() > 0.5)
-//                    randomZ *= -1.0f;
-//
-//                randomDirection = new Vector3f(randomX, 0.0f, randomZ).normalize();
-//                randomDistance  = (float)Math.random() * maxRadius;
-//                randomPosition  = center.add(randomDirection.mult(randomDistance));
-//                
-//                newChair.setPosition(randomPosition);
-//                newChair.getModelInst().buildFlattenedHierarchy();
-//            }
+            int attemptsCounter = 0;
+            while(isColliding(newChair) && attemptsCounter < 100)
+            {
+                attemptsCounter++;
+                
+                randomX = (float) Math.random();
+                if (Math.random() > 0.5)
+                    randomX *= -1.0f;
+                randomZ = (float) Math.random();
+                if (Math.random() > 0.5)
+                    randomZ *= -1.0f;
+                randomDirection = new Vector3f(randomX, 0.0f, randomZ).normalize();
+
+                randomX = (float) Math.random();
+                if (Math.random() > 0.5)
+                    randomX *= -1.0f;
+                randomZ = (float) Math.random();
+                if (Math.random() > 0.5)
+                    randomZ *= -1.0f;
+                randomSittingDirection = new Vector3f(randomX, 0.0f, randomZ).normalize();
+                
+                randomDistance  = (float)Math.random() * maxRadius;
+                randomPosition  = center.add(randomDirection.mult(randomDistance));
+                
+                newChair.setPosition(randomPosition);
+                newChair.getModelInst().buildFlattenedHierarchy();
+            }
             
             newChair.getBoundingSphere();
         }
@@ -140,7 +156,7 @@ public class ObjectCollection extends Entity
         pscene.submitTransformsAndGeometry();
         
         // Dispaly PRenderer
-        jscene.renderToggle();
+        //jscene.renderToggle();
     }
     
     /**

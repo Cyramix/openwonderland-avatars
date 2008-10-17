@@ -32,7 +32,7 @@ public class NinjaSteeringHelm extends CharacterSteeringHelm
     
     private Vector3f goalPosition = new Vector3f(10.0f, 0.0f, 10.0f);
     
-    private Vector3f sittingDirection = new Vector3f(1.0f, 0.0f, 0.0f);
+    private Vector3f sittingDirection = Vector3f.UNIT_Z;
     
     private float directionSensitivity = 0.05f;
     
@@ -142,8 +142,8 @@ public class NinjaSteeringHelm extends CharacterSteeringHelm
         else
         {
             // We have reached the goal, rotate to sitting direction
-            Vector3f forwardVec = ninjaContext.getController().getForwardVector();
-            float dot = sittingDirection.dot(forwardVec);
+            Vector3f rightVec = ninjaContext.getController().getRightVector();
+            float dot = sittingDirection.dot(rightVec);
             if (dot > directionSensitivity)
             {
                 ninjaContext.triggerPressed(TriggerNames.Move_Right.ordinal());

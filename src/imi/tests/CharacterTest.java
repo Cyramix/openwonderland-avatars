@@ -19,6 +19,7 @@ package imi.tests;
 
 import com.jme.math.Vector3f;
 import imi.character.ninja.Ninja;
+import imi.character.objects.Goal;
 import imi.scene.PMatrix;
 import imi.scene.processors.JSceneAWTEventProcessor;
 import imi.utils.input.NinjaControlScheme;
@@ -40,6 +41,7 @@ public class CharacterTest extends DemoBase
         // Goal point
         // TODO : Place this elsewhere
         //wm.setGoalPoint(createSphereEntity(1.0f, ColorRGBA.blue, new PMatrix(new Vector3f(10.0f, 0.0f, 10.0f)), wm));
+        wm.addUserData(Goal.class, new Goal(wm));
         
         // Shadow Blade
         Ninja shadowBlade = new Ninja("Shadow Blade", /*"assets/configurations/ninjaDude.xml",*/ wm);

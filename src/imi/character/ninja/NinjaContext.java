@@ -31,6 +31,7 @@ import imi.character.ninja.transitions.TurnToWalk;
 import imi.character.ninja.transitions.WalkToIdle;
 import imi.character.ninja.transitions.WalkToPunch;
 import imi.character.objects.Chair;
+import imi.character.objects.Goal;
 import imi.character.objects.SpatialObject;
 import imi.character.statemachine.GameContext;
 import imi.character.statemachine.GameState.Action;
@@ -134,16 +135,20 @@ public class NinjaContext extends GameContext
      
         else if (trigger == TriggerNames.PositionGoalPoint.ordinal() && pressed)
         {
-            Vector3f pos = controller.getPosition();
-            steering.setGoalPosition(pos);
-            // TODO : Shift this goal point to another entity.....
-//            if (ninja.getWorldManager().getGoalPoint() != null)
-//            {
-//                ninja.getWorldManager().getGoalPoint().getTransform().getLocalMatrix(true).setTranslation(pos);
-//                PScene GPScene = ((PScene)ninja.getWorldManager().getGoalPoint().getParent().getParent());
-//                GPScene.setDirty(true, true);
-//                GPScene.submitTransforms();
-//            }
+            // Inform steering
+            steering.setGoalPosition(controller.getPosition());
+            steering.setSittingDirection(controller.getTransform().getWorldMatrix(false).getLocalZ().mult(-1.0f));
+            
+            // Inform global goal point
+            Goal goalPoint = (Goal) ninja.getWorldManager().getUserData(Goal.class);
+            if (goalPoint != null)
+            {
+                goalPoint.getTransform().getLocalMatrix(true).set(controller.getTransform().getWorldMatrix(false));
+                goalPoint.getTransform().getLocalMatrix(true).setScale(1.0f);
+                PScene GPScene = goalPoint.getPScene();
+                GPScene.setDirty(true, true);
+                GPScene.submitTransforms();
+            }
         }
         
         else if (trigger == TriggerNames.SelectNearestGoalPoint.ordinal() && pressed)
@@ -156,17 +161,19 @@ public class NinjaContext extends GameContext
             Vector3f direction = ((Chair)obj).getGoalForwardVector();
             steering.setGoalPosition(pos);
             steering.setSittingDirection(direction);
-            // TODO : Move goal point to some other entity
-//            if (ninja.getWorldManager().getGoalPoint() != null)
-//            {
-//                PMatrix goal = new PMatrix(); 
-//                goal.lookAt(pos, pos.add(direction), Vector3f.UNIT_Y);
-//                ninja.getWorldManager().getGoalPoint().getTransform().setLocalMatrix(goal);
-//                ninja.getWorldManager().getGoalPoint().getTransform().getLocalMatrix(true).setTranslation(pos);
-//                PScene GPScene = ((PScene)ninja.getWorldManager().getGoalPoint().getParent().getParent());
-//                GPScene.setDirty(true, true);
-//                GPScene.submitTransforms();
-//            }
+            Goal goalPoint = (Goal) ninja.getWorldManager().getUserData(Goal.class);
+            if (goalPoint != null)
+            {
+                PMatrix goal = new PMatrix(); 
+                goal.lookAt(pos, pos.add(direction), Vector3f.UNIT_Y);
+                goal.invert();
+                goalPoint.getTransform().setLocalMatrix(goal);
+                goalPoint.getTransform().getLocalMatrix(true).setScale(1.0f);
+                //goalPoint.getTransform().getLocalMatrix(true).setTranslation(pos);
+                PScene GPScene = goalPoint.getPScene();;
+                GPScene.setDirty(true, true);
+                GPScene.submitTransforms();
+            }
             // Go and sit there
             steering.setEnable(true);
             steering.setReachedGoal(false);

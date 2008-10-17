@@ -19,6 +19,7 @@ package imi.character.ninja;
 
 import com.jme.math.Vector3f;
 import imi.character.ninja.NinjaContext.TriggerNames;
+import imi.character.objects.Goal;
 import imi.utils.input.InputScheme;
 import imi.scene.PMatrix;
 import imi.scene.processors.JSceneAWTEventProcessor;
@@ -99,12 +100,12 @@ public class Ninja extends imi.character.Character
         if (scheme instanceof NinjaControlScheme)
         {
             ((NinjaControlScheme)scheme).setNinja(this);
-            // TODO : Move the goal point to another entity
-//            if (m_wm.getGoalPoint() != null)
-//            {
-//                ((NinjaContext)m_context).getSteering().setGoalPosition(m_wm.getGoalPoint().getTransform().getLocalMatrix(false).getTranslation());
-//                ((NinjaContext)m_context).getSteering().setSittingDirection(m_wm.getGoalPoint().getTransform().getLocalMatrix(false).getLocalZ());
-//            }
+            Goal goalPoint = (Goal)m_wm.getUserData(Goal.class);
+            if (goalPoint != null)
+            {
+                ((NinjaContext)m_context).getSteering().setGoalPosition(goalPoint.getTransform().getLocalMatrix(false).getTranslation());
+                ((NinjaContext)m_context).getSteering().setSittingDirection(goalPoint.getTransform().getLocalMatrix(false).getLocalZ().mult(-1.0f));
+            }
         }
     }
 

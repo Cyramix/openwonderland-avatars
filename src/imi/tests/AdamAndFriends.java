@@ -18,12 +18,12 @@
 package imi.tests;
 
 import com.jme.math.Vector3f;
-import com.jme.renderer.ColorRGBA;
 import imi.character.ninja.Ninja;
 import imi.character.ninja.PunchState;
 import imi.character.ninja.SitState;
 import imi.character.ninja.TurnState;
 import imi.character.ninja.WalkState;
+import imi.character.objects.Goal;
 import imi.scene.PMatrix;
 import imi.scene.processors.JSceneAWTEventProcessor;
 import imi.utils.input.NinjaControlScheme;
@@ -55,6 +55,7 @@ public class AdamAndFriends extends DemoBase
         // Goal point 
         // TODO : Put the goal point somewhere else in the system
         //wm.setGoalPoint(createSphereEntity(1.0f, ColorRGBA.red, new PMatrix(new Vector3f(10.0f, 0.0f, 10.0f)), wm));
+        wm.addUserData(Goal.class, new Goal(wm));
         
         if (true)
         {
