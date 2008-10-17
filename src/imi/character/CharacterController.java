@@ -35,6 +35,14 @@ public class CharacterController
         return null;
     }
     
+    public Vector3f getRightVector() {
+        return null;
+    }
+    
+    public Vector3f getForwardVector() {
+        return null;
+    }
+    
     public boolean isReverseHeading() {
         return bReverseHeading;
     }

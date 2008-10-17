@@ -38,9 +38,7 @@ public class Chair implements SpatialObject
     protected PPolygonModelInstance modelInst   = null;
     
     protected ObjectCollection objectCollection = null;
-    
-    private Vector3f forward = null;
-    
+        
     private float sittingDistance = 10.0f;
     
     public Chair(Vector3f position, Vector3f heading)
@@ -49,7 +47,6 @@ public class Chair implements SpatialObject
         origin.lookAt(position, position.add(heading), Vector3f.UNIT_Y);
         origin.invert();
         modelInst = new PPolygonModelInstance("Chair", origin);
-        forward = origin.getLocalZNormalized();//origin.getLocalXNormalized().mult(-1.0f); // wtf? why isn't it Z
         
         PMeshMaterial geometryMaterial = new PMeshMaterial();
         geometryMaterial.setColorMaterial(ColorMaterial.Diffuse); // Make the vert colors affect diffuse coloring
@@ -110,7 +107,6 @@ public class Chair implements SpatialObject
 //        Vector3f goalPos = getGoalPosition();
 //        Vector3f pos = getPosition();
 //        return goalPos.subtract(pos).normalize();
-        //return forward;
     }
     
     public Vector3f getNearestObstaclePosition(Vector3f myPosition)

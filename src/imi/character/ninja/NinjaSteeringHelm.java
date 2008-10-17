@@ -75,16 +75,16 @@ public class NinjaSteeringHelm extends CharacterSteeringHelm
 //                    float dot = directionToObstacle.dot(rightVec);
 //                    if (dot > directionSensitivity)
 //                    {
-//                        //ninjaContext.triggerPressed(TriggerNames.Move_Left.ordinal());
-//                        //ninjaContext.triggerReleased(TriggerNames.Move_Right.ordinal());
+//                        ninjaContext.triggerPressed(TriggerNames.Move_Right.ordinal());
+//                        ninjaContext.triggerReleased(TriggerNames.Move_Left.ordinal());
 //                        ninjaContext.triggerReleased(TriggerNames.Move_Forward.ordinal());
 //                        ninjaContext.triggerPressed(TriggerNames.Move_Back.ordinal());
 //                        steerToGoal = false;
 //                    }
 //                    else if (dot < -directionSensitivity)
 //                    {
-//                        //ninjaContext.triggerPressed(TriggerNames.Move_Right.ordinal());
-//                        //ninjaContext.triggerReleased(TriggerNames.Move_Left.ordinal());
+//                        ninjaContext.triggerPressed(TriggerNames.Move_Left.ordinal());
+//                        ninjaContext.triggerReleased(TriggerNames.Move_Right.ordinal());
 //                        ninjaContext.triggerReleased(TriggerNames.Move_Forward.ordinal());
 //                        ninjaContext.triggerPressed(TriggerNames.Move_Back.ordinal());
 //                        steerToGoal = false;
@@ -98,7 +98,14 @@ public class NinjaSteeringHelm extends CharacterSteeringHelm
                     desiredVelocity.normalizeLocal();
                     float dot = desiredVelocity.dot(rightVec);
                     if (dot == 0.0f)
-                        dot++;
+                    {
+                        // Check if inside the front half of space
+                        Vector3f fwdVec = ninjaContext.getController().getForwardVector();
+                        float frontHalfDot = desiredVelocity.dot(fwdVec);
+                        if (frontHalfDot > 0.0f)
+                            dot++;
+                    
+                    }
                     if (dot > directionSensitivity)
                     {
                         ninjaContext.triggerPressed(TriggerNames.Move_Right.ordinal());

@@ -63,4 +63,10 @@ public interface SpatialObject
      * @return
      */
     public Vector3f getRightVector();
+    
+    /**
+     * Gets the forward vector of the modelInst
+     * @return
+     */
+    public Vector3f getForwardVector();
 }

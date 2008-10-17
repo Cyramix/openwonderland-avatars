@@ -253,6 +253,7 @@ public class NinjaController extends CharacterController
         return velocity;
     }
     
+    @Override
     public Vector3f getRightVector() {
         if (body != null)
         {
@@ -264,6 +265,7 @@ public class NinjaController extends CharacterController
         return null;
     }
     
+    @Override
     public Vector3f getForwardVector()
     {
         if (body != null)

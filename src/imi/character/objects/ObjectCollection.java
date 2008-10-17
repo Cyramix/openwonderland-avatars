@@ -195,7 +195,7 @@ public class ObjectCollection extends Entity
     public SpatialObject findNearest(SpatialObject obj, float consideredRange, float searchCone)
     {
         SpatialObject nearest = null;
-        float distance = 0.0f;
+        float nearestObjDistance = 0.0f;
         for (SpatialObject check : objects)
         {
             if (check != obj)
@@ -205,26 +205,41 @@ public class ObjectCollection extends Entity
                 if(range > consideredRange)
                     continue;
         
+                // First found element
+                if (nearest == null)
+                {
+                    nearest  = check;
+                    nearestObjDistance = range;
+                    continue;
+                }
+                
                 // Check if inside the search cone
                 if (searchCone < 1.0f)
                 {
                     Vector3f rightVec = obj.getRightVector();
+                    Vector3f forwardVec = obj.getForwardVector();
                     Vector3f directionToTarget = check.getPosition().subtract(obj.getPosition());
                     directionToTarget.normalizeLocal();
-                    float dot = directionToTarget.dot(rightVec);
+                    
+                    // Check if inside the front half of space
+                    float dot = directionToTarget.dot(forwardVec);
+                    if (dot > 0.0f)
+                        continue;
+                    
+                    dot = directionToTarget.dot(rightVec);
                     if (dot < searchCone && dot > -searchCone)
                     {
-                        if(nearest == null || range < distance)
+                        if(range < nearestObjDistance)
                         {
                             nearest  = check;
-                            distance = range;
+                            nearestObjDistance = range;
                         }
                     }
                 }
-                else if(nearest == null || range < distance)
+                else if(range < nearestObjDistance)
                 {
                     nearest  = check;
-                    distance = range;
+                    nearestObjDistance = range;
                 }
                  
             }
@@ -237,7 +252,7 @@ public class ObjectCollection extends Entity
     public SpatialObject findNearestChair(SpatialObject obj, float consideredRange, float searchCone)
     {
         SpatialObject nearest = null;
-        float distance = 0.0f;
+        float nearestObjDistance = 0.0f;
         for (SpatialObject check : objects)
         {
             if (check != obj && check instanceof Chair)
@@ -247,26 +262,41 @@ public class ObjectCollection extends Entity
                 if(range > consideredRange)
                     continue;
         
+                // First found element
+                if (nearest == null)
+                {
+                    nearest  = check;
+                    nearestObjDistance = range;
+                    continue;
+                }
+                
                 // Check if inside the search cone
                 if (searchCone < 1.0f)
                 {
                     Vector3f rightVec = obj.getRightVector();
-                    Vector3f directionToTarget = check.getPosition().subtract(obj.getPosition());
+                    Vector3f forwardVec = obj.getForwardVector();
+                    Vector3f directionToTarget = ((Chair)check).getGoalPosition().subtract(obj.getPosition());
                     directionToTarget.normalizeLocal();
-                    float dot = directionToTarget.dot(rightVec);
+                    
+                    // Check if inside the front half of space
+                    float dot = directionToTarget.dot(forwardVec);
+                    if (dot > 0.0f)
+                        continue;
+                    
+                    dot = directionToTarget.dot(rightVec);
                     if (dot < searchCone && dot > -searchCone)
                     {
-                        if(nearest == null || range < distance)
+                        if(range < nearestObjDistance)
                         {
                             nearest  = check;
-                            distance = range;
+                            nearestObjDistance = range;
                         }
                     }
                 }
-                else if(nearest == null || range < distance)
+                else if(range < nearestObjDistance)
                 {
                     nearest  = check;
-                    distance = range;
+                    nearestObjDistance = range;
                 }
                  
             }

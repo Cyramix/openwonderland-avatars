@@ -157,26 +157,29 @@ public class NinjaContext extends GameContext
                 return;
             
             SpatialObject obj = ninja.getObjectCollection().findNearestChair(ninja, 10000.0f, 1.0f);
-            Vector3f pos = ((Chair)obj).getGoalPosition();
-            Vector3f direction = ((Chair)obj).getGoalForwardVector();
-            steering.setGoalPosition(pos);
-            steering.setSittingDirection(direction);
-            Goal goalPoint = (Goal) ninja.getWorldManager().getUserData(Goal.class);
-            if (goalPoint != null)
+            if (obj != null)
             {
-                PMatrix goal = new PMatrix(); 
-                goal.lookAt(pos, pos.add(direction), Vector3f.UNIT_Y);
-                goal.invert();
-                goalPoint.getTransform().setLocalMatrix(goal);
-                goalPoint.getTransform().getLocalMatrix(true).setScale(1.0f);
-                //goalPoint.getTransform().getLocalMatrix(true).setTranslation(pos);
-                PScene GPScene = goalPoint.getPScene();;
-                GPScene.setDirty(true, true);
-                GPScene.submitTransforms();
+                Vector3f pos = ((Chair)obj).getGoalPosition();
+                Vector3f direction = ((Chair)obj).getGoalForwardVector();
+                steering.setGoalPosition(pos);
+                steering.setSittingDirection(direction);
+                Goal goalPoint = (Goal) ninja.getWorldManager().getUserData(Goal.class);
+                if (goalPoint != null)
+                {
+                    PMatrix goal = new PMatrix(); 
+                    goal.lookAt(pos, pos.add(direction), Vector3f.UNIT_Y);
+                    goal.invert();
+                    goalPoint.getTransform().setLocalMatrix(goal);
+                    goalPoint.getTransform().getLocalMatrix(true).setScale(1.0f);
+                    //goalPoint.getTransform().getLocalMatrix(true).setTranslation(pos);
+                    PScene GPScene = goalPoint.getPScene();;
+                    GPScene.setDirty(true, true);
+                    GPScene.submitTransforms();
+                }
+                // Go and sit there
+                steering.setEnable(true);
+                steering.setReachedGoal(false);
             }
-            // Go and sit there
-            steering.setEnable(true);
-            steering.setReachedGoal(false);
         }
         
         else if (trigger == TriggerNames.Sit.ordinal() && pressed)

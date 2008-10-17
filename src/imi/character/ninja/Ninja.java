@@ -109,15 +109,4 @@ public class Ninja extends imi.character.Character
         }
     }
 
-    public Vector3f getPosition() {
-        return m_context.getController().getPosition();
-    }
-
-    public Vector3f getRightVector() {
-        return ((NinjaController)m_context.getController()).getRightVector();
-    }
-    
-    
-    
-    
 }

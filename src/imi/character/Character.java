@@ -660,6 +660,18 @@ public abstract class Character extends Entity implements SpatialObject
         return m_keyBindings;
     }
     
+    public Vector3f getPosition() {
+        return m_context.getController().getPosition();
+    }
+
+    public Vector3f getRightVector() {
+        return m_context.getController().getRightVector();
+    }
+    
+    public Vector3f getForwardVector() {
+        return m_context.getController().getForwardVector();
+    }
+    
     public Vector3f getNearestObstaclePosition(Vector3f myPosition)
     {
         return null;
