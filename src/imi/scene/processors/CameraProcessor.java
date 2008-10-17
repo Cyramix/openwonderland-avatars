@@ -70,6 +70,9 @@ public class CameraProcessor extends AWTEventProcessorComponent {
     private static final int WALKING_BACK = 2;
     private static final int STRAFE_LEFT = 3;
     private static final int STRAFE_RIGHT = 4;
+    private static final int MOVE_UP = 5;
+    private static final int MOVE_DOWN = 6;
+    
     
     /**
      * Our current state
@@ -257,12 +260,20 @@ public class CameraProcessor extends AWTEventProcessorComponent {
             if (ke.getKeyCode() == KeyEvent.VK_D) {
                 state = STRAFE_RIGHT;
             }
+            if (ke.getKeyCode() == KeyEvent.VK_Q) {
+                state = MOVE_UP;
+            }
+            if (ke.getKeyCode() == KeyEvent.VK_Z) {
+                state = MOVE_DOWN;
+            }
         }
         if (ke.getID() == KeyEvent.KEY_RELEASED) {
             if (ke.getKeyCode() == KeyEvent.VK_W ||
                 ke.getKeyCode() == KeyEvent.VK_S ||
                 ke.getKeyCode() == KeyEvent.VK_A ||
-                ke.getKeyCode() == KeyEvent.VK_D) {
+                ke.getKeyCode() == KeyEvent.VK_D ||
+                ke.getKeyCode() == KeyEvent.VK_Q ||
+                ke.getKeyCode() == KeyEvent.VK_Z) {
                 state = STOPPED;
             }
         }
@@ -289,7 +300,13 @@ public class CameraProcessor extends AWTEventProcessorComponent {
                 position.x -= (walkInc * rotatedSideDirection.x);
                 position.y -= (walkInc * rotatedSideDirection.y);
                 position.z -= (walkInc * rotatedSideDirection.z);
-                break;  
+                break;
+            case MOVE_UP:
+                position.y += (walkInc);
+                break;
+            case MOVE_DOWN:
+                position.y -= (walkInc);
+                break;
         }
     }
     /**

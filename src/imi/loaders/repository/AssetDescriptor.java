@@ -18,6 +18,7 @@
 package imi.loaders.repository;
 
 import imi.loaders.repository.SharedAsset.SharedAssetType;
+import imi.utils.FileUtils;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -61,19 +62,11 @@ public class AssetDescriptor
     {
         m_type = type;
         String currentDir = System.getProperty("user.dir");
-        
-        try
-        {
-            String tempString = new String("file://localhost" + currentDir + "/" + relativeFilePath);
-            URL filePath = new URL(tempString);
-            m_URLList.add(filePath);
-        } 
-        catch (MalformedURLException ex)
-        {
-            Logger.getLogger(AssetDescriptor.class.getName()).log(Level.SEVERE,
-                    "Malformed URL: " + "file://" + currentDir + relativeFilePath, ex);
+        URL newURL = FileUtils.convertRelativePathToFileURL(relativeFilePath);
+        if (newURL != null)
+            m_URLList.add(newURL);
+        else
             m_URLList.clear();
-        }
     }
     
     /**

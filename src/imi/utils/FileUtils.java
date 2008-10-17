@@ -19,7 +19,11 @@ package imi.utils;
 
 
 import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 /**
@@ -52,6 +56,26 @@ public class FileUtils
         return(shortFilename);
     }
 
+    public static URL convertRelativePathToFileURL(String relativePath)
+    {
+       String currentDirectory = System.getProperty("user.dir");
+       // determine if we are on a non-windows system
+       if (currentDirectory.startsWith("/") == false)
+           currentDirectory = "/" + currentDirectory; // Add on the initial slash
+       // now generate the url
+       String urlString = new String("file://localhost" + currentDirectory + relativePath);
+       URL result = null;
+       try 
+       {
+           result = new URL(urlString);
+       }
+       catch (MalformedURLException ex)
+       {
+           Logger.getLogger(FileUtils.class.getName()).log(Level.SEVERE,
+                    "Malformed URL: " + urlString);
+       }
+       return result;
+    }
 
     //  Returns a string containing the directory path of the file.
     public static final String getDirectoryPath(String fullFilename)
