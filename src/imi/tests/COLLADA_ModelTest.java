@@ -129,7 +129,7 @@ public class COLLADA_ModelTest extends DemoBase
         URL modelLocation = null;
         try
         {
-            modelLocation = new URL("http://www.zeitgeistgames.com/assets/collada/Accessories/accessories.dae");
+            modelLocation = new URL("http://www.zeitgeistgames.com/assets/collada/Clothing/");
         } catch (MalformedURLException ex)
         {
             Logger.getLogger(COLLADA_ModelTest.class.getName()).log(Level.SEVERE, null, ex);

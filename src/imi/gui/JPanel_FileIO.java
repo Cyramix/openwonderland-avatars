@@ -146,7 +146,8 @@ public class JPanel_FileIO extends javax.swing.JPanel {
             java.io.File fileModel = jFileChooser_LoadModels.getSelectedFile();
             sceneData.setfileModel(fileModel);
 
-            rotPanel.resetPanel();
+            if (rotPanel != null)
+                rotPanel.resetPanel();
 
             if (fileModel.getName().endsWith(".ms3d")) {
                 sceneData.loadMS3DFile(0, true, this);

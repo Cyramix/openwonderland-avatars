@@ -64,7 +64,8 @@ public class AssetDescriptor
         
         try
         {
-            URL filePath = new URL(new String("file:///" + currentDir + "/" + relativeFilePath));
+            String tempString = new String("file://localhost" + currentDir + "/" + relativeFilePath);
+            URL filePath = new URL(tempString);
             m_URLList.add(filePath);
         } 
         catch (MalformedURLException ex)
