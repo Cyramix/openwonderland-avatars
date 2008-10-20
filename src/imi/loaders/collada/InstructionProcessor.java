@@ -70,7 +70,7 @@ public class InstructionProcessor extends PNode
 
     public void printInstruction(String spacing, Instruction pInstruction)
     {
-        System.out.println(spacing + pInstruction.getInstruction() + " '" + pInstruction.getData() + "'");
+        System.out.println(spacing + pInstruction.getInstruction() + " '" + pInstruction.getDataAsString() + "'");
 
         if (pInstruction.getChildrenCount() > 0)
         {
@@ -93,7 +93,7 @@ public class InstructionProcessor extends PNode
             URL bindPoseLocation = null;
             try
             {
-                bindPoseLocation = new URL(pInstruction.getData());
+                bindPoseLocation = new URL(pInstruction.getDataAsString());
             } catch (MalformedURLException ex)
             {
                 Logger.getLogger(InstructionProcessor.class.getName()).log(Level.SEVERE, null, ex);
@@ -106,7 +106,7 @@ public class InstructionProcessor extends PNode
             URL geometryLocation = null;
             try
             {
-                geometryLocation = new URL(pInstruction.getData());
+                geometryLocation = new URL(pInstruction.getDataAsString());
             } catch (MalformedURLException ex)
             {
                 Logger.getLogger(InstructionProcessor.class.getName()).log(Level.SEVERE, null, ex);
@@ -117,13 +117,13 @@ public class InstructionProcessor extends PNode
 
         else if (pInstruction.getInstruction().equals("deleteSkinnedMesh"))
         {
-            String skinnedMeshName = pInstruction.getData();
+            String skinnedMeshName = pInstruction.getDataAsString();
             
             m_pCharacterLoader.deleteSkinnedMesh(m_pSkeleton, skinnedMeshName);
         }
         else if (pInstruction.getInstruction().equals("addSkinnedMesh"))
         {
-            String skinnedMeshName = pInstruction.getData();
+            String skinnedMeshName = pInstruction.getDataAsString();
             
             m_pCharacterLoader.addSkinnedMesh(m_pSkeleton, skinnedMeshName);
         }
@@ -132,13 +132,20 @@ public class InstructionProcessor extends PNode
             URL animationLocation = null;
             try
             {
-                animationLocation = new URL(pInstruction.getData());
+                animationLocation = new URL(pInstruction.getDataAsString());
             } catch (MalformedURLException ex)
             {
                 Logger.getLogger(InstructionProcessor.class.getName()).log(Level.SEVERE, null, ex);
             }
             
             m_pCharacterLoader.loadAnimation(pScene, m_pSkeleton, animationLocation);
+        }
+        else if (pInstruction.getInstruction().equals("setSkeleton"))
+        {
+            if (pInstruction.getData() instanceof SkeletonNode)
+                m_pSkeleton = (SkeletonNode) pInstruction.getData();
+            else
+                m_pSkeleton = null;
         }
 
     

@@ -29,7 +29,7 @@ import imi.scene.PNode;
 public class Instruction extends PNode
 {
     String          m_Instruction;
-    String          m_Data;
+    Object          m_Data;
 
     
 
@@ -41,7 +41,7 @@ public class Instruction extends PNode
     {
         setInstruction(instruction);
     }
-    public Instruction(String instruction, String data)
+    public Instruction(String instruction, Object data)
     {
         setInstruction(instruction);
         setData(data);
@@ -56,7 +56,8 @@ public class Instruction extends PNode
     
         return(addInstruction(pNewInstruction));
     }
-    public Instruction addInstruction(String instruction, String data)
+    
+    public Instruction addInstruction(String instruction, Object data)
     {
         Instruction pNewInstruction = new Instruction(instruction, data);
         return(addInstruction(pNewInstruction));
@@ -81,11 +82,19 @@ public class Instruction extends PNode
 
 
 
-    public String getData()
+    public String getDataAsString()
     {
-        return(m_Data);
+        if (m_Data != null)
+            return(m_Data.toString());
+        return null;
     }
-    public void setData(String data)
+    
+    public Object getData()
+    {
+        return m_Data;
+    }
+    
+    public void setData(Object data)
     {
         m_Data = data;
     }

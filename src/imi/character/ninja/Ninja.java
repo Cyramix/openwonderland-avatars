@@ -38,8 +38,8 @@ public class Ninja extends imi.character.Character
     {
         public NinjaAttributes(String name) {
             super(name);
-            setModelFile("ninja.ms3d");
-            setTextureFile("checkerboard2.PNG");
+            setModelFile("assets/models/ms3d/ninja.ms3d");
+            setTextureFile("assets/textures/checkerboard2.PNG");
         }
     }
     
@@ -48,13 +48,7 @@ public class Ninja extends imi.character.Character
         super(name, wm);
         m_context = new NinjaContext(this);
     }
-    
-    public Ninja(String name, WorldManager wm, String configuration) 
-    {
-        super(name, wm, configuration);
-        m_context = new NinjaContext(this);
-    }
-        
+            
     // modelIMI can be null
     public Ninja(String name, PMatrix origin, String modelIMI, WorldManager wm)
     {

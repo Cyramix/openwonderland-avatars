@@ -68,7 +68,7 @@ public class Goal
         PMeshMaterial geometryMaterial = new PMeshMaterial();
         geometryMaterial.setColorMaterial(ColorMaterial.Diffuse); // Make the vert colors affect diffuse coloring
         geometryMaterial.setDiffuse(ColorRGBA.white);
-        PPolygonMesh sphereMesh = PMeshUtils.createSphere("Goal Sphere", Vector3f.ZERO, radius, 6, 6, color);
+        PPolygonMesh sphereMesh = PMeshUtils.createSphere("Goal Sphere", Vector3f.ZERO, radius, 5, 5, color);
         sphereMesh.setMaterial(geometryMaterial);
         sphereMesh.submit(new PPolygonTriMeshAssembler());
         modelAsset.setAssetData(sphereMesh);

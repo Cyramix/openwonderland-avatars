@@ -26,10 +26,13 @@ import com.jme.scene.state.MaterialState;
 import com.jme.scene.state.RenderState;
 import com.jme.scene.state.WireframeState;
 import com.jme.scene.state.ZBufferState;
+import imi.character.ninja.NinjaAvatar.NinjaAvatarAttributes;
 import imi.character.objects.ObjectCollection;
 import imi.character.objects.SpatialObject;
 import imi.character.statemachine.GameContext;
 import imi.character.statemachine.TransitionObject;
+import imi.loaders.collada.Instruction;
+import imi.loaders.collada.InstructionProcessor;
 import imi.scene.JScene;
 import imi.scene.PMatrix;
 import imi.scene.PScene;
@@ -55,10 +58,10 @@ import imi.loaders.repository.AssetDescriptor;
 import imi.loaders.repository.AssetInitializer;
 import imi.loaders.repository.SharedAsset;
 import imi.loaders.repository.SharedAsset.SharedAssetType;
+import imi.scene.PNode;
 import imi.scene.boundingvolumes.PSphere;
 import imi.scene.shader.programs.VertexDeformer;
 import imi.scene.polygonmodel.parts.PMeshMaterial;
-import imi.scene.processors.JSceneAWTEventProcessor;
 import imi.scene.processors.JSceneEventProcessor;
 import java.io.File;
 
@@ -151,35 +154,7 @@ public abstract class Character extends Entity implements SpatialObject
     {   
         this(name, null, null, wm);
     }
-    
-    public Character(String name, WorldManager wm, String configuration) 
-    {
-        this(name, null, null, wm);
-        if (configuration.equals("Ninja"))
-        {
-            // Defaults are set for the Ninja
-        }
-        else if (configuration.equals("Adam"))
-        {
-            // TODO
-            // load "adam.ms3d", "AdamDiffuse.png" and set scale to 0.06f
-            // TODO
-            
-//            this.getController().setReverseHeading(true);
-//            this.getContext().getStates().get(PunchState.class).setAnimationSpeed(3.0f);
-//            ((PunchState)this.getContext().getStates().get(PunchState.class)).setMinimumTimeBeforeTransition(1.25f);
-//            this.getContext().getStates().get(TurnState.class).setAnimationName("StrafeRight");
-//            this.getContext().getStates().get(TurnState.class).setAnimationSpeed(5.0f);
-//            ((WalkState)this.getContext().getStates().get(WalkState.class)).setWalkSpeedFactor(5.0f);
-//            ((WalkState)this.getContext().getStates().get(WalkState.class)).setWalkSpeedMax(5.0f);
-//            this.getContext().getStates().get(SitState.class).setAnimationName("CrouchWalk");
-//            ((SitState)this.getContext().getStates().get(SitState.class)).setIdleSittingAnimationName("Crawl");
-//            ((SitState)this.getContext().getStates().get(SitState.class)).setSittingAnimationTime(2.0f);
-//            ((SitState)this.getContext().getStates().get(SitState.class)).setGettingUpAnimationName("CrouchWalk");
-//            ((SitState)this.getContext().getStates().get(SitState.class)).setGettingUpAnimationTime(2.0f);
-        }
-    }
-    
+        
     /***
      * This constructor calls initScne(), setRenderStates() and adds this
      * Entity to the world manager.
@@ -311,36 +286,83 @@ public abstract class Character extends Entity implements SpatialObject
         
         if (modelIMI == null)
         {
-            SharedAsset character = new SharedAsset(m_pscene.getRepository(), new AssetDescriptor(SharedAssetType.MS3D, "assets/models/ms3d/" + m_attributes.getModelFile()));
-            AssetInitializer init = new AssetInitializer() {
-                public boolean initialize(Object asset) {
+            if (m_attributes.getModelFile().endsWith(".ms3d"))
+            {       
+                SharedAsset character = new SharedAsset(m_pscene.getRepository(), new AssetDescriptor(SharedAssetType.MS3D, m_attributes.getModelFile()));
+                AssetInitializer init = new AssetInitializer() {
+                    public boolean initialize(Object asset) {
 
-                    if (asset instanceof SkeletonNode)
-                    {
-                        // Grab the skinned mesh instance from the skelton node that was returned to us.
-                        PPolygonSkinnedMeshInstance skinned = (PPolygonSkinnedMeshInstance)((SkeletonNode)asset).findChild("MS3DSkinnedMesh");
-                        
-                        // Set position
-                        if (origin != null)
-                            m_modelInst.getTransform().setLocalMatrix(origin);
-                        
-                        // Visual scale affects the skinned mesh and not the model instance
-                        skinned.getTransform().getLocalMatrix(true).setScale(visualScale);
-                        
-                        PMeshMaterial material = new PMeshMaterial("Character Material");
-                        material.setTexture(new File("assets/textures/" + m_attributes.getTextureFile()), 0);
-                        material.setShader(new VertexDeformer(m_wm));
-                        skinned.getGeometry().setMaterial(material);
-                        skinned.setUseGeometryMaterial(true);
+                        if (asset instanceof SkeletonNode)
+                        {
+                            // Grab the skinned mesh instance from the skelton node that was returned to us.
+                            PPolygonSkinnedMeshInstance skinned = (PPolygonSkinnedMeshInstance)((SkeletonNode)asset).findChild("MS3DSkinnedMesh");
+
+                            // Set position
+                            if (origin != null)
+                                m_modelInst.getTransform().setLocalMatrix(origin);
+
+                            // Visual scale affects the skinned mesh and not the model instance
+                            skinned.getTransform().getLocalMatrix(true).setScale(visualScale);
+
+                            PMeshMaterial material = new PMeshMaterial("Character Material");
+                            material.setTexture(new File(m_attributes.getTextureFile()), 0);
+                            material.setShader(new VertexDeformer(m_wm));
+                            skinned.getGeometry().setMaterial(material);
+                            skinned.setUseGeometryMaterial(true);
+                        }
+                        return true;
+
                     }
-                    return true;
+                };
+                character.setInitializer(init);
+                m_attributes.setAsset(character);
+            }
+            else if (m_attributes.getModelFile().endsWith(".dae"))
+            {
+                SharedAsset character = new SharedAsset(m_pscene.getRepository(), new AssetDescriptor(SharedAssetType.COLLADA_Model, m_attributes.getModelFile()));
+                AssetInitializer init = new AssetInitializer() {
+                    public boolean initialize(Object asset) {
 
-                }
-            };
-            character.setInitializer(init);
-            m_attributes.setAsset(character);
+                        if (((PNode)asset).getChild(0) instanceof SkeletonNode)
+                        {
+                            SkeletonNode skeleton = (SkeletonNode)((PNode)asset).getChild(0);
+                            
+                            // Visual Scale
+                            ArrayList<PPolygonSkinnedMeshInstance> meshes = skeleton.getSkinnedMeshInstances();
+                            for (PPolygonSkinnedMeshInstance mesh : meshes)
+                                mesh.getTransform().getLocalMatrix(true).setScale(visualScale);
+                            
+                            // Set position
+                            if (origin != null)
+                                m_modelInst.getTransform().setLocalMatrix(origin);
+  
+                            // Set material
+                            skeleton.setShader(new VertexDeformer(m_wm));
+                            
+                            // Set animations
+                            if (m_attributes instanceof NinjaAvatarAttributes && ((NinjaAvatarAttributes)m_attributes).getAnimations() != null)
+                            {
+                                String [] anims = ((NinjaAvatarAttributes)m_attributes).getAnimations();
+                                
+                                String fileProtocol = new String("file://localhost/" + System.getProperty("user.dir") + "/");
+
+                                InstructionProcessor pProcessor = new InstructionProcessor();
+                                Instruction pRootInstruction = new Instruction("setCharacterStuff");
+                                pRootInstruction.addInstruction("setSkeleton", skeleton);
+                                pRootInstruction.addInstruction("loadAnimation", fileProtocol + "assets/models/collada/Avatars/Male2/Male_Idle.dae");
+                                pRootInstruction.addInstruction("loadAnimation", fileProtocol + "assets/models/collada/Avatars/Male2/Male_Walk.dae");
+                                pProcessor.execute(m_pscene, pRootInstruction);
+                            }
+                        }
+                        return true;
+
+                    }
+                };
+                character.setInitializer(init);
+                m_attributes.setAsset(character);
+            }
         }
-        else
+        else // IMI xml configuration file (out of date)
         {
             SharedAsset character = new SharedAsset(m_pscene.getRepository(), new AssetDescriptor(SharedAssetType.Model, modelIMI));
             
@@ -378,6 +400,9 @@ public abstract class Character extends Entity implements SpatialObject
      */
     protected void initScene(ArrayList<ProcessorComponent> processors)
     {
+        if (m_attributes.getModelFile().endsWith(".dae"))
+            m_pscene.setUseRepository(false);
+        
         m_modelInst = m_pscene.addModelInstance(m_attributes.getName(), m_attributes.getAsset(), new PMatrix());
         
         processors.add(new SkinnedAnimationProcessor(m_modelInst));

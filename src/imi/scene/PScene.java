@@ -813,6 +813,7 @@ public class PScene extends PNode implements RepositoryUser
                 {
                     // Load the collada file to the PScene
                     Collada colladaLoader = new Collada();
+                    colladaLoader.setLoadRig(true); // TEMP TEMP TEMP TEMP TEMP TEMP TEMP TEMP TEMP TEMP TEMP TEMP TEMP TEMP TEMP TEMP TEMP TEMP TEMP TEMP TEMP TEMP 
                     PScene colladaScene = new PScene("COLLADA : " + meshAsset.getDescriptor().getLocation().getFile(), m_WorldManager);
                     colladaScene.setUseRepository(false);
                     

@@ -79,7 +79,7 @@ public class COLLADA_CharacterTest extends DemoBase2
     {
         InstructionProcessor pProcessor = new InstructionProcessor();
         
-        String fileProtocol = new String("file://localhost" + System.getProperty("user.dir") + "/");
+        String fileProtocol = new String("file://localhost/" + System.getProperty("user.dir") + "/");
         
         Instruction pRootInstruction = new Instruction("loadCharacter");
         Instruction pLoadBindPoseInstruction = pRootInstruction.addInstruction("loadBindPose", fileProtocol + "assets/models/collada/Avatars/Male2/Male_Bind.dae");

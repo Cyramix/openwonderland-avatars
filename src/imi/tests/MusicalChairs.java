@@ -18,11 +18,12 @@
 package imi.tests;
 
 import com.jme.math.Vector3f;
+import imi.character.ninja.Adam;
 import imi.character.ninja.Ninja;
+import imi.character.ninja.NinjaAvatar;
 import imi.character.objects.Goal;
 import imi.character.objects.ObjectCollection;
 import imi.scene.PMatrix;
-import imi.scene.processors.JSceneAWTEventProcessor;
 import imi.scene.processors.JSceneEventProcessor;
 import imi.utils.input.NinjaControlScheme;
 import org.jdesktop.mtgame.WorldManager;
@@ -49,7 +50,7 @@ public class MusicalChairs extends DemoBase
         objs.generateChairs(Vector3f.ZERO, 100.0f, 20);
         
         // Create a character (name it "Shadow Blade") using the "Ninja" preset configuration
-        Ninja shadowBlade = new Ninja("Shadow Blade", wm, "Ninja");
+        Ninja shadowBlade = new Ninja("Shadow Blade", wm);
         NinjaControlScheme control = (NinjaControlScheme)((JSceneEventProcessor)wm.getUserData(JSceneEventProcessor.class)).setDefault(new NinjaControlScheme(shadowBlade));
         control.getNinjaTeam().add(shadowBlade);
         shadowBlade.selectForInput();
@@ -60,15 +61,25 @@ public class MusicalChairs extends DemoBase
         
         // Friends 
         
-        Ninja ninja1 = new Ninja("Shadow Blade Slave1", new PMatrix().setTranslation(Vector3f.UNIT_X.mult(5.0f)), null, wm);
+        Adam adam = new Adam("Adam", wm);
+        adam.getModelInst().getTransform().getLocalMatrix(true).setTranslation(Vector3f.UNIT_X.mult(-5.0f));
+        control.getNinjaTeam().add(adam);
+        adam.setObjectCollection(objs);
+        
+        NinjaAvatar avatar = new NinjaAvatar("Avatar", wm);
+        avatar.getModelInst().getTransform().getLocalMatrix(true).setTranslation(Vector3f.UNIT_X.mult(-10.0f));
+        control.getNinjaTeam().add(avatar);
+        avatar.setObjectCollection(objs);
+        
+        Ninja ninja1 = new Ninja("Ninja 1", new PMatrix().setTranslation(Vector3f.UNIT_X.mult(5.0f)), null, wm);
         control.getNinjaTeam().add(ninja1);
         ninja1.setObjectCollection(objs);
         
-        Ninja ninja2 = new Ninja("Shadow Blade Slave2", new PMatrix().setTranslation(Vector3f.UNIT_X.mult(10.0f)), null, wm);
+        Ninja ninja2 = new Ninja("Ninja 2", new PMatrix().setTranslation(Vector3f.UNIT_X.mult(10.0f)), null, wm);
         control.getNinjaTeam().add(ninja2);
         ninja2.setObjectCollection(objs);
         
-        Ninja ninja3 = new Ninja("Shadow Blade Slave3", new PMatrix().setTranslation(Vector3f.UNIT_X.mult(15.0f)), null, wm);
+        Ninja ninja3 = new Ninja("Ninja 3", new PMatrix().setTranslation(Vector3f.UNIT_X.mult(15.0f)), null, wm);
         control.getNinjaTeam().add(ninja3);
         ninja3.setObjectCollection(objs);
     }

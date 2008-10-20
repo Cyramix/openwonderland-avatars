@@ -40,8 +40,6 @@ public class CharacterTest extends DemoBase
     protected void createDemoEntities(WorldManager wm) 
     {
         // Goal point
-        // TODO : Place this elsewhere
-        //wm.setGoalPoint(createSphereEntity(1.0f, ColorRGBA.blue, new PMatrix(new Vector3f(10.0f, 0.0f, 10.0f)), wm));
         wm.addUserData(Goal.class, new Goal(wm));
         
         // Shadow Blade
