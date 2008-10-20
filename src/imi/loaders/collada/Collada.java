@@ -86,7 +86,7 @@ import javolution.util.FastMap;
  */
 public class Collada
 {
-    private Logger logger = Logger.getLogger("imi.loaders.collada");
+    private static Logger logger = Logger.getLogger("imi.loaders.collada");
 
     private String                              m_Name = "";
     private List                                m_Libraries = null; 
@@ -117,7 +117,6 @@ public class Collada
     
     
     private PScene                              m_pScene = null;
-    private boolean                             m_bLoadingSkinnedMesh = false;
 
     public PPolygonModel                        m_pCurrentPolygonModel = null;
 
@@ -161,6 +160,14 @@ public class Collada
     {
     }
 
+    /**
+     * Explicitly controlled construction
+     * @param params The parameters to use for the loader
+     */
+    public Collada(ColladaLoaderParams params)
+    {
+        applyConfiguration(params);
+    }
 
     //  Gets the name of the Collada file.
     public String getName()
@@ -287,7 +294,6 @@ public class Collada
 
     public boolean loadSkinnedMesh(PScene pScene, URL location)
     {
-        m_bLoadingSkinnedMesh = true;
 
         boolean bResult = load(pScene, location);
 
@@ -562,7 +568,7 @@ public class Collada
                 //pSkinnedMesh.setNumberOfTextures(0);
 
                 SharedAsset asset = new SharedAsset(m_pScene.getRepository(), new AssetDescriptor(SharedAsset.SharedAssetType.Unknown, pSkinnedMesh.getName()));
-                asset.setData(pSkinnedMesh);
+                asset.setAssetData(pSkinnedMesh);
                 PPolygonModelInstance pModelInstance = m_pScene.addModelInstance(asset, new PMatrix());
             }
         }
@@ -1299,21 +1305,21 @@ public class Collada
 
 
 
-    private int getRootJointCount()
-    {
-        int a;
-        PColladaNode pColladaNode;
-        int count = 0;
-
-        for (a=0; a<m_ColladaNodes.size(); a++)
-        {
-            pColladaNode = (PColladaNode)m_ColladaNodes.get(a);
-            if (pColladaNode.isJoint())
-                count++;
-        }
-
-        return(count);
-    }
+//    private int getRootJointCount()
+//    {
+//        int a;
+//        PColladaNode pColladaNode;
+//        int count = 0;
+//
+//        for (a=0; a<m_ColladaNodes.size(); a++)
+//        {
+//            pColladaNode = (PColladaNode)m_ColladaNodes.get(a);
+//            if (pColladaNode.isJoint())
+//                count++;
+//        }
+//
+//        return(count);
+//    }
 
     public PNode buildJointHierarchy()
     {
@@ -1424,30 +1430,30 @@ public class Collada
         return(pThisNode);
     }
 
-    public void postProcess()
-    {
-        if (m_pSkeletonNode != null)
-            processSkeleton();
-        else
-            processColladaNodes();
-    }
+//    public void postProcess()
+//    {
+//        if (m_pSkeletonNode != null)
+//            processSkeleton();
+//        else
+//            processColladaNodes();
+//    }
 
-    public void processSkeleton()
-    {
-        int a;
-        PColladaNode pColladaNode;
-
-        for (a=0; a<m_ColladaNodes.size(); a++)
-        {
-            pColladaNode = (PColladaNode)m_ColladaNodes.get(a);
-
-            processColladaNodeForSkeleton(pColladaNode, m_pSkeletonNode);
-        }
-
-//        m_pSkeletonNode.dump();
-
-        m_pScene.addInstanceNode(m_pSkeletonNode);
-    }
+//    public void processSkeleton()
+//    {
+//        int a;
+//        PColladaNode pColladaNode;
+//
+//        for (a=0; a<m_ColladaNodes.size(); a++)
+//        {
+//            pColladaNode = (PColladaNode)m_ColladaNodes.get(a);
+//
+//            processColladaNodeForSkeleton(pColladaNode, m_pSkeletonNode);
+//        }
+//
+////        m_pSkeletonNode.dump();
+//
+//        m_pScene.addInstanceNode(m_pSkeletonNode);
+//    }
 
     public void processColladaNodeForSkeleton(PColladaNode pColladaNode, SkeletonNode pSkeleton)
     {
@@ -1497,7 +1503,6 @@ public class Collada
                                 pSkinnedMeshInstance.buildAnimationJointMapping(pSkeleton);
                             }
 */
-                            int bbb = 0;
                         }
                     }
                 }
@@ -1662,7 +1667,7 @@ public class Collada
     private PPolygonSkinnedMeshInstance createPolygonSkinnedMeshInstance(PPolygonSkinnedMesh pSkinnedMesh, String skeletonName)
     {
         SharedAsset asset = new SharedAsset(m_pScene.getRepository(), new AssetDescriptor(SharedAsset.SharedAssetType.Unknown, pSkinnedMesh.getName()));
-        asset.setData(pSkinnedMesh);
+        asset.setAssetData(pSkinnedMesh);
 
 //        PPolygonModelInstance pModelInstance = m_pScene.addModelInstance(asset, pColladaNode.getMatrix());
 //        pParentNode.addChild(pModelInstance);
@@ -1679,7 +1684,7 @@ public class Collada
         PPolygonSkinnedMesh pSkinnedMesh = findPolygonSkinnedMesh(skinnedMeshName);
 
         SharedAsset asset = new SharedAsset(m_pScene.getRepository(), new AssetDescriptor(SharedAsset.SharedAssetType.Unknown, pSkinnedMesh.getName()));
-        asset.setData(pSkinnedMesh);
+        asset.setAssetData(pSkinnedMesh);
                 
 //        PPolygonModelInstance pModelInstance = m_pScene.addModelInstance(asset, pColladaNode.getMatrix());
 //        pParentNode.addChild(pModelInstance);
@@ -1814,7 +1819,7 @@ public class Collada
                 pSkinnedMesh = getPolygonSkinnedMesh(a);
                 
                 SharedAsset asset = new SharedAsset(m_pScene.getRepository(), new AssetDescriptor(SharedAsset.SharedAssetType.Unknown, pSkinnedMesh.getName()));
-                asset.setData(pSkinnedMesh);
+                asset.setAssetData(pSkinnedMesh);
                 
                 PPolygonModelInstance pModelInstance = m_pScene.addModelInstance(asset, pSkinnedMeshMatrix);
             }
@@ -1860,7 +1865,7 @@ public class Collada
 
         //  Create the MeshInstance.
         SharedAsset asset = new SharedAsset(m_pScene.getRepository(), new AssetDescriptor(SharedAsset.SharedAssetType.Unknown, pPolygonMesh.getName()));
-        asset.setData(pPolygonMesh);
+        asset.setAssetData(pPolygonMesh);
 
         if (pColladaNode != null)
         {
@@ -2149,6 +2154,24 @@ public class Collada
         return(null);
     }
 
+    /**
+     * Applies the following configuration
+     * @param params
+     */
+    public void applyConfiguration(ColladaLoaderParams params)
+    {
+        if (params == null) // use defaults
+            return;
+        setLoadRig(params.isLoadingSkeleton());
+        setLoadGeometry(params.isLoadingGeometry());
+        setLoadAnimations(params.isLoadingAnimations());
+        
+        setPrintStats(params.isShowingDebugInfo());
+        
+        m_MaxNumberOfWeights = params.getMaxInfluences();
+        
+        m_Name = params.getName();
+    }
 }
 
 

@@ -436,7 +436,7 @@ public class DemoBase
         PPolygonMesh sphereMesh = PMeshUtils.createSphere("Sphere", Vector3f.ZERO, radius, 6, 6, color);
         sphereMesh.setMaterial(geometryMaterial);
         sphereMesh.submit(new PPolygonTriMeshAssembler());
-        modelAsset.setData(sphereMesh);
+        modelAsset.setAssetData(sphereMesh);
         PPolygonModelInstance modelInst = pscene.addModelInstance(modelAsset, origin);
         
         // The glue between JME and pscene

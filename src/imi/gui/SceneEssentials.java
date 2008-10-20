@@ -304,9 +304,10 @@ public class SceneEssentials {
         String szModelPath = fileModel.getPath().substring(iIndex, fileModel.getPath().length());
         
         currentPScene.setUseRepository(false);
-                
-        SharedAsset colladaAsset = new SharedAsset(currentPScene.getRepository(), new AssetDescriptor(SharedAssetType.COLLADA, szModelPath));
-        modelInst = currentPScene.addModelInstance(modelName, colladaAsset, new PMatrix());
+          
+        // TODO : Convert!
+        //SharedAsset colladaAsset = new SharedAsset(currentPScene.getRepository(), new AssetDescriptor(SharedAssetType.COLLADA, szModelPath));
+        //modelInst = currentPScene.addModelInstance(modelName, colladaAsset, new PMatrix());
     }
     
     /**

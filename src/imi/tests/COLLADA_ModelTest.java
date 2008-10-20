@@ -37,6 +37,7 @@ import org.jdesktop.mtgame.WorldManager;
 import org.jdesktop.mtgame.ProcessorComponent;
 
 import imi.loaders.collada.Collada;
+import imi.loaders.collada.ColladaLoaderParams;
 import java.net.URL;
 
 
@@ -124,20 +125,17 @@ public class COLLADA_ModelTest extends DemoBase
     @Override
     protected void simpleSceneInit(PScene pscene, WorldManager wm, ArrayList<ProcessorComponent> processors) 
     {
-        String modelFilename;
-        modelFilename = "assets/models/collada/Female01/Female01.dae";
         URL modelLocation = null;
         try
         {
-            modelLocation = new URL("http://www.zeitgeistgames.com/assets/collada/Clothing/");
+            modelLocation = new URL("http://www.zeitgeistgames.com/assets/collada/Clothing/FlipFlopsFeet.dae");
         } catch (MalformedURLException ex)
         {
             Logger.getLogger(COLLADA_ModelTest.class.getName()).log(Level.SEVERE, null, ex);
         }
-        pscene.setUseRepository(false);
-        SharedAsset colladaAsset = new SharedAsset(pscene.getRepository(), new AssetDescriptor(SharedAssetType.COLLADA, modelLocation));
+        SharedAsset colladaAsset = new SharedAsset(pscene.getRepository(), new AssetDescriptor(SharedAssetType.COLLADA_Model, modelLocation));
+        colladaAsset.setUserData(new ColladaLoaderParams(true, true, false, false, 3, "FlipFlops", null));
         PPolygonModelInstance modelInst = pscene.addModelInstance("Collada Model", colladaAsset, new PMatrix());
-        pscene.setUseRepository(true);
 
         modelInst.dump();
 

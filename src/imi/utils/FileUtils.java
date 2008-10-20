@@ -58,23 +58,34 @@ public class FileUtils
 
     public static URL convertRelativePathToFileURL(String relativePath)
     {
-       String currentDirectory = System.getProperty("user.dir");
-       // determine if we are on a non-windows system
-       if (currentDirectory.startsWith("/") == false)
-           currentDirectory = "/" + currentDirectory; // Add on the initial slash
-       // now generate the url
-       String urlString = new String("file://localhost" + currentDirectory + "/" +  relativePath);
+       File newFile = new File(System.getProperty("user.dir"), relativePath);
        URL result = null;
        try 
        {
-           result = new URL(urlString);
+           result = newFile.toURI().toURL();
        }
        catch (MalformedURLException ex)
        {
-           Logger.getLogger(FileUtils.class.getName()).log(Level.SEVERE,
-                    "Malformed URL: " + urlString);
+           Logger.getLogger(FileUtils.class.toString()).log(Level.SEVERE, "Unable to convert to URL: " + ex.getMessage());
        }
        return result;
+//       String currentDirectory = System.getProperty("user.dir");
+//       // determine if we are on a non-windows system
+//       if (currentDirectory.startsWith("/") == false)
+//           currentDirectory = "/" + currentDirectory; // Add on the initial slash
+//       // now generate the url
+//       String urlString = new String("file://localhost" + currentDirectory + "/" +  relativePath);
+//       URL result = null;
+//       try 
+//       {
+//           result = new URL(urlString);
+//       }
+//       catch (MalformedURLException ex)
+//       {
+//           Logger.getLogger(FileUtils.class.getName()).log(Level.SEVERE,
+//                    "Malformed URL: " + urlString);
+//       }
+//       return result;
     }
 
     //  Returns a string containing the directory path of the file.

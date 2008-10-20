@@ -17,9 +17,6 @@
  */
 package imi.loaders.repository;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 /**
  * This class is used to represent an asset that is shared across threads via
  * the repository. It consists of a descriptor with details about its type and
@@ -36,7 +33,10 @@ public class SharedAsset
     private AssetDescriptor     m_descriptor = null;
     
     // data
-    private Object              m_data       = null;
+    private Object              m_assetData  = null;
+    
+    // user provided data
+    private Object              m_userData   = null;
     
     // Any initialization code
     private AssetInitializer    m_initializer = null;
@@ -45,23 +45,36 @@ public class SharedAsset
     {
         Unknown,                        
         MS3D,        // unknown if skinned or not, determind by the existance of a *.anm file
-        COLLADA,     // loads collada models
+        COLLADA_Model, // Loads a complete model including a skeleton and all geometry
+        COLLADA_Animation, // Loads an animation file, also requires a skeleton node to attach to
+        COLLADA_SkinnedMesh, // Loads a skinned mesh, requires a skeleton node to attach to.
+        COLLADA_Mesh, // Loads a non-skinned mesh. 
         Mesh,        // unknown if ms3d or collada
         SkinnedMesh, // unknown if ms3d or collada, in the case of ms3d will load the skeleton even without an *.anm file
         Model,       // complex model (composed of shared asset references in a graph) defined in an xml
-        ShaderPair, // <-- DEPRECATED until shader loading issues are resolved
         Texture,
         AudioFX, AudioTrack, 
         AnimationProcessor, SkinnedAnimation, 
         AIProcessor, Code
     };
 
+    /**
+     * Construct a new instance
+     * @param home The repository owning this shared asset
+     * @param description
+     */
     public SharedAsset(Repository home, AssetDescriptor description) 
     {
         m_repository = home;
         setDescriptor(description);
     }
 
+    /**
+     * Construct a new instance
+     * @param home The repository owning this asset
+     * @param description
+     * @param initializer An initializer class!
+     */
     public SharedAsset(Repository home, AssetDescriptor description, AssetInitializer initializer)
     {
         m_repository = home;
@@ -69,54 +82,115 @@ public class SharedAsset
         m_initializer = initializer;
     }
     
+    public SharedAsset(Repository home, AssetDescriptor description, AssetInitializer initializer, Object userData)
+    {
+        this(home, description, initializer);
+        setUserData(userData);
+    }
+    
+    /**
+     * Set the home repository for this asset
+     * @param home
+     */
     public void setHome(Repository home)
     {
         m_repository = home;
     }
     
+    /**
+     * This method should be called whenever a shared asset is no longer being
+     * used.
+     */
     public void returnHome()
     {
         m_repository.referenceSubtract(m_descriptor);
     }
 
-    public Object getData() 
+    /**
+     * Retrieve the data this asset was responsible for loading
+     * @return Th edata
+     */
+    public Object getAssetData() 
     {
-        return m_data;
+        return m_assetData;
     }
 
-    public void setData(Object data) 
+    /**
+     * Set the data this asset is responsible for loading
+     * @param data The data
+     */
+    public void setAssetData(Object data) 
     {
-        m_data = data;
+        m_assetData = data;
+    }
+    
+    /**
+     * Retrieve any user defined data associated with this shared asset
+     * @return
+     */
+    public Object getUserData()
+    {
+        return m_userData;
+    }
+    
+    /**
+     * Sets any user specified data for this shared asset
+     * @param data
+     */
+    public void setUserData(Object data)
+    {
+        m_userData = data;
     }
 
+    /**
+     * Retrieve the asset descriptor for this shared asset
+     * @return The descriptor
+     */
     public AssetDescriptor getDescriptor() 
     {
         return m_descriptor;
     }
 
+    /**
+     * Set the descriptor
+     * @param descriptor
+     */
     public void setDescriptor(AssetDescriptor descriptor) 
     {
-        if (descriptor.getType() == SharedAssetType.ShaderPair)
-            Logger.getLogger(this.getClass().toString()).log(Level.WARNING, 
-                    "ShaderPair types are currently unsupported.");
         m_descriptor = descriptor;
     }
 
+    /**
+     * Retrieve a reference to the home repository
+     * @return the repository
+     */
     public Repository getRepository() 
     {
         return m_repository;
     }
 
+    /**
+     * Set the home repository for this asset
+     * @param repository
+     */
     public void setRepository(Repository repository) 
     {
         m_repository = repository;
     }
 
+    /**
+     * Set an initializer to be used with this shared asset
+     * @return
+     */
     public AssetInitializer getInitializer()
     {
         return m_initializer;
     }
 
+    /**
+     * Set the initializer for this shared asset
+     * @param initializer
+     */
     public void setInitializer(AssetInitializer initializer)
     {
         m_initializer = initializer;

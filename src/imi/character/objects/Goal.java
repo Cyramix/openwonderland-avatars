@@ -71,7 +71,7 @@ public class Goal
         PPolygonMesh sphereMesh = PMeshUtils.createSphere("Goal Sphere", Vector3f.ZERO, radius, 6, 6, color);
         sphereMesh.setMaterial(geometryMaterial);
         sphereMesh.submit(new PPolygonTriMeshAssembler());
-        modelAsset.setData(sphereMesh);
+        modelAsset.setAssetData(sphereMesh);
         modelInst = pscene.addModelInstance(modelAsset, origin);
         
         // The glue between JME and pscene

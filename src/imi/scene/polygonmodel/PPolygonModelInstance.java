@@ -18,6 +18,7 @@
 package imi.scene.polygonmodel;
 
 import com.jme.math.Vector3f;
+import imi.loaders.collada.ColladaLoaderParams;
 import imi.loaders.repository.AssetDescriptor;
 import imi.loaders.repository.AssetInitializer;
 import imi.loaders.repository.SharedAsset;
@@ -358,8 +359,10 @@ public class PPolygonModelInstance extends PNode
         }
         else if (geometryFile.endsWith("dae")) // COLLADA
         {
+            ColladaLoaderParams params = new ColladaLoaderParams(true, true, true, false, 4, "Nonintrusive", null);
             meshAsset = new SharedAsset(m_owningScene.getRepository(), 
-                                                new AssetDescriptor(SharedAssetType.COLLADA, new File(geometryFile)));
+                                                new AssetDescriptor(SharedAssetType.COLLADA_Mesh, new File(geometryFile)),
+                                                null, params);
         }
         else // currently unsupported
             return;

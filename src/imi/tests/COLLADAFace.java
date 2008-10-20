@@ -18,6 +18,7 @@
 package imi.tests;
 
 import com.jme.math.Vector3f;
+import imi.loaders.collada.ColladaLoaderParams;
 import imi.loaders.repository.AssetDescriptor;
 import imi.loaders.repository.AssetInitializer;
 import imi.loaders.repository.SharedAsset;
@@ -59,8 +60,10 @@ public class COLLADAFace extends DemoBase
         String modelFilename = "assets/models/collada/Head/HeadRig1.dae";
         
         pscene.setUseRepository(false);
-                
-        SharedAsset headAsset = new SharedAsset(pscene.getRepository(), new AssetDescriptor(SharedAssetType.COLLADA, modelFilename));
+        
+        ColladaLoaderParams params = new ColladaLoaderParams(true, true, true, false, 4, "ColladaHead", null);
+        
+        SharedAsset headAsset = new SharedAsset(pscene.getRepository(), new AssetDescriptor(SharedAssetType.COLLADA_Model, modelFilename), null, params);
         AssetInitializer headInit = new AssetInitializer() {
             public boolean initialize(Object asset) {
                 

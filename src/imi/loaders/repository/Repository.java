@@ -18,16 +18,7 @@
 package imi.loaders.repository;
 
 import imi.annotations.Debug;
-import imi.loaders.IncorrectFormatException;
-import imi.loaders.ParsingErrorException;
-import imi.loaders.collada.Collada;
 import imi.loaders.repository.SharedAsset.SharedAssetType;
-import imi.scene.PMatrix;
-import imi.scene.PScene;
-import imi.scene.polygonmodel.PPolygonMesh;
-import imi.scene.polygonmodel.PPolygonModelInstance;
-import imi.scene.polygonmodel.skinned.PPolygonSkinnedMesh;
-import java.io.FileNotFoundException;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -42,17 +33,17 @@ import org.jdesktop.mtgame.*;
  */
 public class Repository extends Entity
 {   
+    // Needed for processor operations
     private WorldManager m_worldManager = null;
     
     ProcessorCollectionComponent m_processorCollection = new ProcessorCollectionComponent();
     
+    // The maximum number of load requests that can handled at a time
     private long m_numberOfLoadRequests      = 0l;
     private long m_maxConcurrentLoadRequests = 10l;
     private static long m_maxQueryTime  = Long.MAX_VALUE; // 10000000000l
     
     private FastList<WorkOrder> m_workOrders = new FastList<WorkOrder>();
-    
-    // multiple collections per type (type declated in SharedAsset) :
     
     // geometry
     private ConcurrentHashMap<AssetDescriptor, RepositoryAsset> m_Geometry = new ConcurrentHashMap<AssetDescriptor, RepositoryAsset>();
@@ -60,12 +51,10 @@ public class Repository extends Entity
     // textures
     private ConcurrentHashMap<AssetDescriptor, RepositoryAsset> m_Textures = new ConcurrentHashMap<AssetDescriptor, RepositoryAsset>();
     
-    // shaders
-    private ConcurrentHashMap<AssetDescriptor, RepositoryAsset> m_Shaders = new ConcurrentHashMap<AssetDescriptor, RepositoryAsset>();
+    // Animations
+    private ConcurrentHashMap<AssetDescriptor, RepositoryAsset> m_Animations = new ConcurrentHashMap<AssetDescriptor, RepositoryAsset>();
     
-    // materials
-    
-    // procssors (AI, animations, etc)
+    // processors (AI, animations, etc)
     
     // code
     
@@ -111,17 +100,13 @@ public class Repository extends Entity
             if (m_numberOfLoadRequests < m_maxConcurrentLoadRequests)
             {
                 // We did not exceed the maxium number of workers so we can process this request now
-                boolean shaderCase = asset.getDescriptor().getType() == SharedAssetType.ShaderPair;
-
                 // If we don't already have it in the collection we will add it now
-                repoAsset = new RepositoryAsset(asset.getDescriptor(), shaderCase, this);
+                repoAsset = new RepositoryAsset(asset.getDescriptor(), asset.getUserData(), this);
                 
                 // The new repository asset will loaditself, inceremnt the counter
                 m_numberOfLoadRequests++;
 
-                // we are not sharing shaders yet...
-                if (!shaderCase)
-                    collection.put(asset.getDescriptor(), repoAsset);
+                collection.put(asset.getDescriptor(), repoAsset);
 
                 // Add the repository asset as a processor so it will load itself
                 m_processorCollection.addProcessor(repoAsset); 
@@ -171,13 +156,15 @@ public class Repository extends Entity
     {
         switch (collectionType)
         {
-            case MS3D:
-            case COLLADA:
+            // Fall-throughs are intentional
             case Mesh:
             case SkinnedMesh:
+            case MS3D:
+            case COLLADA_Model:
+            case COLLADA_Mesh:
                 return m_Geometry;
-            case ShaderPair:
-                return m_Shaders;
+            case COLLADA_Animation:
+                return m_Animations;
             case Texture:
                 return m_Textures;
         }
@@ -225,17 +212,14 @@ public class Repository extends Entity
     public void createRepositoryAsset(WorkOrder statementOfWork) 
     {
         // We did not exceed the maxium number of workers so we can process this request now
-        boolean shaderCase = statementOfWork.m_asset.getDescriptor().getType() == SharedAssetType.ShaderPair;
-
         // If we don't already have it in the collection we will add it now
-        RepositoryAsset repoAsset = new RepositoryAsset(statementOfWork.m_asset.getDescriptor(), shaderCase, this);
+        RepositoryAsset repoAsset = new RepositoryAsset(statementOfWork.m_asset.getDescriptor(), statementOfWork.m_asset.getUserData(), this);
 
         // The new repository asset will loaditself, inceremnt the counter
         m_numberOfLoadRequests++;
 
         // we are not sharing shaders yet...
-        if (!shaderCase)
-            getCollection(statementOfWork.m_asset.getDescriptor().getType()).put(statementOfWork.m_asset.getDescriptor(), repoAsset);
+        getCollection(statementOfWork.m_asset.getDescriptor().getType()).put(statementOfWork.m_asset.getDescriptor(), repoAsset);
 
         // Add the repository asset as a processor so it will load itself
         m_processorCollection.addProcessor(repoAsset);
@@ -283,9 +267,9 @@ public class Repository extends Entity
     }
     
     @Debug
-    public ConcurrentHashMap<AssetDescriptor, RepositoryAsset> getShadersCollection()
+    public ConcurrentHashMap<AssetDescriptor, RepositoryAsset> getAnimationCollection()
     {
-        return m_Shaders;
+        return m_Animations;
     }
     
     /**

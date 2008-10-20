@@ -118,8 +118,8 @@ class RepositoryWorker extends ProcessorComponent
             if (m_repoAsset.loadData(m_asset)) // Success!
             {
                 // If this asset is a geometry we will set the shared asset for it so it can save to a configuration file later
-                if (m_asset.getData() instanceof PPolygonMesh)
-                    ((PPolygonMesh)m_asset.getData()).setSharedAsset(m_asset);
+                if (m_asset.getAssetData() instanceof PPolygonMesh)
+                    ((PPolygonMesh)m_asset.getAssetData()).setSharedAsset(m_asset);
                     
                 m_user.receiveAsset(m_asset);
                 ShutDown();
@@ -131,7 +131,7 @@ class RepositoryWorker extends ProcessorComponent
                 {
                     // remove this RepositoryAsset from the collection.
                     m_collection.remove(m_asset.getDescriptor());
-                    assert(m_asset.getData() == null);
+                    assert(m_asset.getAssetData() == null);
                     m_user.receiveAsset(m_asset); // the asset is returned with null datda
                     ShutDown();
                 }

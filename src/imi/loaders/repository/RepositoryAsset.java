@@ -22,6 +22,7 @@ import com.jme.scene.state.GLSLShaderObjectsState;
 import com.jme.scene.state.RenderState;
 import com.jme.util.TextureManager;
 import imi.loaders.collada.Collada;
+import imi.loaders.collada.ColladaLoaderParams;
 import imi.loaders.ms3d.SkinnedMesh_MS3D_Importer;
 import imi.scene.PScene;
 import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
@@ -42,125 +43,120 @@ import org.jdesktop.mtgame.NewFrameCondition;
  */
 public class RepositoryAsset extends ProcessorComponent
 {
-    // the maximum number of references per (deep) copy
+    /** the maximum number of references per (deep) copy **/
     static final int m_referenceThreshHold   = 100; //  TODO ? how many
-    
+    /** The current number of references **/
     private int      m_referenceCount        = 0;
     
-    // description
+    /** description **/
     private AssetDescriptor     m_descriptor = null;
    
-    // data (doesn't need to be sequential in memory when multiple threads access the members)
-    // in the future additional members will be added with (deep) copies of the original 
-    // if the threshhold has been reached, to relieve frequent hits on the same memory spot. 
-    // see : getDataReference() 
+   /** 
+    * Data (doesn't need to be sequential in memory when multiple threads access the members)
+    * in the future additional members will be added with (deep) copies of the original 
+    * if the threshhold has been reached, to relieve frequent hits on the same memory spot. 
+    * see : getDataReference() 
+    */
     private LinkedList<Object>   m_data       = null;
     
+    /** This object provides storage for storage of user data **/
+    private Object               m_userData   = null;
+    /** The home repository for this asset **/
     private Repository           m_home       = null;
 
-    public RepositoryAsset(AssetDescriptor description, boolean shaderCase, Repository home) 
+    /**
+     * Construct a new instance
+     * @param description 
+     * @param userData
+     * @param home
+     */
+    public RepositoryAsset(AssetDescriptor description, Object userData, Repository home) 
     {
-        m_home         = home;
-        m_descriptor   = description;
+        m_home          = home;
+        m_descriptor    = description;
+        m_userData      = userData;
     }
 
-    private void loadSelf() 
+    /**
+     * Load the described asset
+     */
+    private synchronized void loadSelf() 
     {
+        // First, has loading already occured?
         if (m_data != null)
             return;
+        // allocate data storage
         m_data = new LinkedList<Object>();
         switch (m_descriptor.getType())
         {
             case Mesh:
-            {
+                // TODO: Refactor when / if the nonskinned MS3D loader is implemented  
                 if (m_descriptor.getLocation().getPath().endsWith("ms3d"))
-                {
-                    // TODO: Refactor when the nonskinned MS3D loader is implemented              
-//                    SkinnedMesh_MS3D_Importer importer = new SkinnedMesh_MS3D_Importer();
-//                    importer.load(skeleton, m_descriptor.getFile().getPath());
-//                    
-//                    mesh.submit(new PPolygonTriMeshAssembler());
-//                    m_data.add(mesh);
-                }
+                    Logger.getLogger(this.getClass().toString()).log(Level.WARNING, "Non-skinned MS3D currently unsupported");
                 else if (m_descriptor.getLocation().getPath().endsWith("dae")) // collada
-                {
-                    // TODO: Get COLLADA working through the repository
-//                    PPolygonMesh mesh = null;
-//                    Collada pColladaLoader = new Collada();
-//                    boolean bResult = pColladaLoader.load(m_descriptor.getFile());
-//                    if (bResult)
-//                    {
-//                        mesh = pColladaLoader.getPolygonMesh(0);
-//                        mesh.submit(new PPolygonTriMeshAssembler());
-//                        m_data.add(mesh);
-//                    }
-                }
-            }
-            break;
+                    Logger.getLogger(this.getClass().toString()).log(Level.WARNING, "Collada asset requested as type Mesh, ignoring...");
+                break;
             case SkinnedMesh:
-            {
-                if (m_descriptor.getLocation().getPath().endsWith("ms3d"))
                 {
-                     SkeletonNode skeleton = new SkeletonNode(m_descriptor.getLocation().getFile() + " skeleton");
-                     SkinnedMesh_MS3D_Importer importer = new SkinnedMesh_MS3D_Importer();
+                    if (m_descriptor.getLocation().getPath().endsWith("ms3d"))
+                    {
+                         SkeletonNode skeleton = new SkeletonNode(m_descriptor.getLocation().getFile() + " skeleton");
+                         SkinnedMesh_MS3D_Importer importer = new SkinnedMesh_MS3D_Importer();
 
-                     importer.load(skeleton , m_descriptor.getLocation());
+                         importer.load(skeleton , m_descriptor.getLocation());
 
-                     m_data.add(skeleton);
+                         m_data.add(skeleton);
+                    }
+                    else if (m_descriptor.getLocation().getPath().endsWith("dae")) // collada
+                        Logger.getLogger(this.getClass().toString()).log(Level.WARNING, "Collada asset requested as type SkinnedMesh, ignoring...");
                 }
-                else if (m_descriptor.getLocation().getPath().endsWith("dae")) // collada
-                {
-                    // TODO: Get COLLADA working through the repository
-//                    PPolygonSkinnedMesh mesh = null;
-//                    Collada pColladaLoader = new Collada();
-//                    boolean bResult = pColladaLoader.load(m_descriptor.getFile());
-//                    if (bResult)
-//                    {
-//                        mesh = pColladaLoader.getPolygonSkinnedMesh(0);
-//                        mesh.submit(new PPolygonTriMeshAssembler());
-//                        m_data.add(mesh);
-//                    }
-                }
-            }
-            break;
+                break;
             case MS3D:  // Will assume to be skinned
-            {
-                SkinnedMesh_MS3D_Importer importer = new SkinnedMesh_MS3D_Importer();
-                
-                SkeletonNode skeleton = importer.loadMS3D(m_descriptor.getLocation());
-                
-                m_data.add(skeleton);
-            }
-            break;
-            case COLLADA:
-            {
-                // Create a PScene and set it to m_data
-                PScene scene = new PScene(m_descriptor.getType().toString() + " : " + m_descriptor.getLocation().getFile(), m_home.getWorldManager());
-                scene.setUseRepository(false);
-                // Load the collada file to the PScene
-                Collada colladaLoader = new Collada();
-                try {
-                    boolean bResult = colladaLoader.load(scene, m_descriptor.getLocation());
-                } catch (Exception ex) {
-                    m_data.clear();
-                    Logger.getLogger(RepositoryAsset.class.getName()).log(Level.SEVERE, null, ex);
-                } 
-                m_data.add(scene);
-            }
-            break;
+                {
+                    SkinnedMesh_MS3D_Importer importer = new SkinnedMesh_MS3D_Importer();
+
+                    SkeletonNode skeleton = importer.loadMS3D(m_descriptor.getLocation());
+
+                    m_data.add(skeleton);
+                }
+                break;
+                // Intentional collada fall-throughs
+                // These three cases require special set up to function.
+                // Separate enumerations are 
+            case COLLADA_SkinnedMesh:
+            case COLLADA_Model:
+            case COLLADA_Animation:
+                if (m_userData == null || !(m_userData instanceof ColladaLoaderParams))
+                    break;
+            case COLLADA_Mesh:
+                {
+                    Collada colladaLoader = null;
+                    if (m_userData != null && m_userData instanceof ColladaLoaderParams)
+                        colladaLoader = new Collada((ColladaLoaderParams)m_userData);
+                    else
+                        colladaLoader = new Collada();
+
+                    // Create a PScene and set it to m_data
+                    PScene scene = new PScene(m_descriptor.getType().toString() +
+                            " : " + m_descriptor.getLocation().getFile(),
+                            m_home.getWorldManager());
+
+                    scene.setUseRepository(false);
+
+                    try {
+                        colladaLoader.load(scene, m_descriptor.getLocation());
+                        m_data.add(scene);
+                    } catch (Exception ex) {
+                        m_data.clear();
+                        Logger.getLogger(RepositoryAsset.class.getName()).log(Level.SEVERE, null, ex);
+                    } 
+                }
+                break;
             case Model:
             {
                 // This will load models that are a composit of meshes and skinned meshes (potentially in a hierarchy of joints)
                 
                 // Load and parse a pscene
-            }
-            break;
-            case ShaderPair:
-            {
-                Logger.getLogger(this.getClass().toString()).log(Level.WARNING,
-                        "ShaderPair type assets are not currently supported for repository loading");
-                // This method of loading shaders is deprecated until a way is
-                // found to share shaders and the render thread iss is resolved.
             }
             break;
             case Texture:
@@ -184,6 +180,9 @@ public class RepositoryAsset extends ProcessorComponent
             }
             break;
         }
+        // first, if the size of data is still zero, there is a problem
+        if (m_data != null && m_data.size() <= 0)
+            m_data = null;
         // finished loading, remove ourselves from the update pool
         m_home.removeProcessor(this);
         // THIS IS THE ENTRY POINT INTO CORRECTIONS MODE!
@@ -201,7 +200,7 @@ public class RepositoryAsset extends ProcessorComponent
     {
         if (m_data != null && !m_data.isEmpty())
         {
-            asset.setData(getDataReference());
+            asset.setAssetData(getDataReference());
             return true;
         }
         
