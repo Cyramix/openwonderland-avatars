@@ -90,6 +90,7 @@ import imi.loaders.repository.AssetDescriptor;
 import imi.loaders.repository.Repository;
 import imi.loaders.repository.SharedAsset.SharedAssetType;
 import imi.scene.processors.CameraProcessor;
+import imi.scene.processors.JSceneEventProcessor;
 
 
 /**
@@ -160,7 +161,7 @@ public class DemoBase
         setDefaultRenderStates(jscene, wm);
         
         // Set this jscene to be the "selected" one for IMI input handling
-        ((JSceneAWTEventProcessor)wm.getUserData(JSceneAWTEventProcessor.class)).setJScene(jscene); 
+        ((JSceneEventProcessor)wm.getUserData(JSceneEventProcessor.class)).setJScene(jscene); 
        
         // Create entity
         Entity JSEntity = new Entity("Entity for a graph test");
@@ -629,7 +630,7 @@ public class DemoBase
         wm.addEntity(InputEntity);  
         // Add the this input manager to the world manager for future access
         // (to asign a jscenes to drive)
-        wm.addUserData(JSceneAWTEventProcessor.class, eventProcessor);
+        wm.addUserData(JSceneEventProcessor.class, eventProcessor);
     }
 
     private Texture loadSkyboxTexture(String filePath)

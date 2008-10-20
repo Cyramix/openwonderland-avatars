@@ -59,6 +59,7 @@ import imi.scene.boundingvolumes.PSphere;
 import imi.scene.shader.programs.VertexDeformer;
 import imi.scene.polygonmodel.parts.PMeshMaterial;
 import imi.scene.processors.JSceneAWTEventProcessor;
+import imi.scene.processors.JSceneEventProcessor;
 import java.io.File;
 
 /**
@@ -509,7 +510,7 @@ public abstract class Character extends Entity implements SpatialObject
     public void selectForInput()
     {
         // Set this jscene to be the "selected" one for IMI input handling
-        ((JSceneAWTEventProcessor)m_wm.getUserData(JSceneAWTEventProcessor.class)).setJScene(m_jscene); 
+        ((JSceneEventProcessor)m_wm.getUserData(JSceneEventProcessor.class)).setJScene(m_jscene); 
     }
     
     /**

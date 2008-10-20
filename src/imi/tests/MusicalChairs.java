@@ -23,6 +23,7 @@ import imi.character.objects.Goal;
 import imi.character.objects.ObjectCollection;
 import imi.scene.PMatrix;
 import imi.scene.processors.JSceneAWTEventProcessor;
+import imi.scene.processors.JSceneEventProcessor;
 import imi.utils.input.NinjaControlScheme;
 import org.jdesktop.mtgame.WorldManager;
 
@@ -49,7 +50,7 @@ public class MusicalChairs extends DemoBase
         
         // Create a character (name it "Shadow Blade") using the "Ninja" preset configuration
         Ninja shadowBlade = new Ninja("Shadow Blade", wm, "Ninja");
-        NinjaControlScheme control = (NinjaControlScheme)((JSceneAWTEventProcessor)wm.getUserData(JSceneAWTEventProcessor.class)).setDefault(new NinjaControlScheme(shadowBlade));
+        NinjaControlScheme control = (NinjaControlScheme)((JSceneEventProcessor)wm.getUserData(JSceneEventProcessor.class)).setDefault(new NinjaControlScheme(shadowBlade));
         control.getNinjaTeam().add(shadowBlade);
         shadowBlade.selectForInput();
         shadowBlade.setObjectCollection(objs);

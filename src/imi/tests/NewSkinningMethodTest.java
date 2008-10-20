@@ -28,6 +28,7 @@ import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
 import imi.scene.polygonmodel.skinned.PPolygonSkinnedMesh;
 import imi.scene.polygonmodel.skinned.SkinnedMeshJoint;
 import imi.scene.processors.JSceneAWTEventProcessor;
+import imi.scene.processors.JSceneEventProcessor;
 import imi.scene.processors.TestHierarchyAnimationProcessor;
 import imi.scene.shader.programs.VertexDeformer;
 import java.util.ArrayList;
@@ -106,7 +107,7 @@ public class NewSkinningMethodTest extends DemoBase
         // hook up some control
         DahlgrensInput input = new DahlgrensInput();
         input.setTarget(modelInst);
-        ((JSceneAWTEventProcessor)wm.getUserData(JSceneAWTEventProcessor.class)).addScheme(input);
+        ((JSceneEventProcessor)wm.getUserData(JSceneEventProcessor.class)).addScheme(input);
     }
     
     public SkeletonNode generateSkeleton()

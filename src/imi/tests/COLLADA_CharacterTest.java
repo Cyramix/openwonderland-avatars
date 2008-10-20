@@ -45,6 +45,7 @@ import imi.utils.FileUtils;
 import imi.loaders.collada.Instruction;
 import imi.loaders.collada.InstructionProcessor;
 import imi.scene.processors.JSceneAWTEventProcessor;
+import imi.scene.processors.JSceneEventProcessor;
 
 
 
@@ -250,7 +251,7 @@ public class COLLADA_CharacterTest extends DemoBase2
         setDefaultRenderStates(jscene, wm);
 
         // Set this jscene to be the "selected" one for IMI input handling
-        ((JSceneAWTEventProcessor)wm.getUserData(JSceneAWTEventProcessor.class)).setJScene(jscene);
+        ((JSceneEventProcessor)wm.getUserData(JSceneEventProcessor.class)).setJScene(jscene);
 
         // Create entity
         Entity JSEntity = new Entity("Entity for a graph test");

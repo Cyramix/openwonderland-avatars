@@ -55,6 +55,7 @@ import imi.scene.polygonmodel.skinned.PPolygonSkinnedMesh;
 import imi.scene.polygonmodel.skinned.SkinnedMeshJoint;
 import imi.scene.processors.CameraProcessor;
 import imi.scene.processors.JSceneAWTEventProcessor;
+import imi.scene.processors.JSceneEventProcessor;
 import imi.scene.utils.PMeshUtils;
 import imi.scene.utils.tree.KeyProcessor;
 import imi.scene.utils.tree.ScaleResetProcessor;
@@ -209,7 +210,7 @@ public class DemoBase2 extends javax.swing.JFrame implements FrameRateListener, 
         setDefaultRenderStates(jscene, wm);
         
         // Set this jscene to be the "selected" one for IMI input handling
-        ((JSceneAWTEventProcessor)wm.getUserData(JSceneAWTEventProcessor.class)).setJScene(jscene); 
+        ((JSceneEventProcessor)wm.getUserData(JSceneEventProcessor.class)).setJScene(jscene); 
        
         // Create entity
         Entity JSEntity = new Entity("Entity for a graph test");
@@ -606,7 +607,7 @@ public class DemoBase2 extends javax.swing.JFrame implements FrameRateListener, 
         wm.addEntity(InputEntity);  
         // Add the this input manager to the world manager for future access
         // (to asign a jscenes to drive)
-        wm.addUserData(JSceneAWTEventProcessor.class, eventProcessor);
+        wm.addUserData(JSceneEventProcessor.class, eventProcessor);
     }
 
     private Texture loadSkyboxTexture(String filePath) {

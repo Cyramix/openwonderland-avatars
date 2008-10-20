@@ -182,7 +182,7 @@ public class JPanel_ShaderLoader extends javax.swing.JPanel {
     public void setPanel(imi.scene.PScene pscene) {
         pScene = pscene;
         wm = pscene.getWorldManager();
-        setShaderList();
+//        setShaderList();
         reloadModelInstances();
         reloadMeshInstances();
     }

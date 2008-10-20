@@ -22,7 +22,7 @@ import imi.character.ninja.NinjaContext.TriggerNames;
 import imi.character.objects.Goal;
 import imi.utils.input.InputScheme;
 import imi.scene.PMatrix;
-import imi.scene.processors.JSceneAWTEventProcessor;
+import imi.scene.processors.JSceneEventProcessor;
 import imi.utils.input.NinjaControlScheme;
 import java.awt.event.KeyEvent;
 import org.jdesktop.mtgame.WorldManager;
@@ -96,7 +96,7 @@ public class Ninja extends imi.character.Character
     {
         super.selectForInput();
         
-        InputScheme scheme = ((JSceneAWTEventProcessor)m_wm.getUserData(JSceneAWTEventProcessor.class)).getInputScheme();
+        InputScheme scheme = ((JSceneEventProcessor)m_wm.getUserData(JSceneEventProcessor.class)).getInputScheme();
         if (scheme instanceof NinjaControlScheme)
         {
             ((NinjaControlScheme)scheme).setNinja(this);

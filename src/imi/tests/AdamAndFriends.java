@@ -26,6 +26,7 @@ import imi.character.ninja.WalkState;
 import imi.character.objects.Goal;
 import imi.scene.PMatrix;
 import imi.scene.processors.JSceneAWTEventProcessor;
+import imi.scene.processors.JSceneEventProcessor;
 import imi.utils.input.NinjaControlScheme;
 import org.jdesktop.mtgame.WorldManager;
 
@@ -48,7 +49,7 @@ public class AdamAndFriends extends DemoBase
     {
         // Shadow Blade
         Ninja shadowBlade = new Ninja("Shadow Blade", /*"assets/configurations/ninjaDude.xml",*/ wm);
-        NinjaControlScheme control = (NinjaControlScheme)((JSceneAWTEventProcessor)wm.getUserData(JSceneAWTEventProcessor.class)).setDefault(new NinjaControlScheme(shadowBlade));
+        NinjaControlScheme control = (NinjaControlScheme)((JSceneEventProcessor)wm.getUserData(JSceneEventProcessor.class)).setDefault(new NinjaControlScheme(shadowBlade));
         shadowBlade.selectForInput();
         control.getNinjaTeam().add(shadowBlade);
      

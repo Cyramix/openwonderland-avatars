@@ -29,6 +29,7 @@ import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
 import imi.scene.polygonmodel.skinned.PPolygonSkinnedMesh;
 import imi.scene.polygonmodel.skinned.SkinnedMeshJoint;
 import imi.scene.processors.JSceneAWTEventProcessor;
+import imi.scene.processors.JSceneEventProcessor;
 import imi.scene.processors.TestHierarchyAnimationProcessor;
 import imi.scene.shader.NoSuchPropertyException;
 import imi.scene.shader.ShaderProperty;
@@ -185,7 +186,7 @@ public class DynamicShaderOnMeshTest extends DemoBase
         // hook up some control
         DahlgrensInput input = new DahlgrensInput();
         input.setTarget(modelInst);
-        ((JSceneAWTEventProcessor)wm.getUserData(JSceneAWTEventProcessor.class)).addScheme(input);
+        ((JSceneEventProcessor)wm.getUserData(JSceneEventProcessor.class)).addScheme(input);
         
         // add a reference cube lit with the fixed function pipeline
         pscene.addModelInstance(PMeshUtils.createCubeBox("cube", 

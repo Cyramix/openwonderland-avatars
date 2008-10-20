@@ -33,7 +33,7 @@ import org.jdesktop.mtgame.AwtEventCondition;
  *
  * @author Lou Hayt
  */
-public final class JSceneAWTEventProcessor extends AWTEventProcessorComponent
+public final class JSceneAWTEventProcessor extends AWTEventProcessorComponent implements JSceneEventProcessor
 {
     private JScene      m_jscene = null;
     private InputScheme m_scheme = new DefaultScheme();

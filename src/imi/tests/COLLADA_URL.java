@@ -27,7 +27,7 @@ import imi.scene.polygonmodel.PPolygonModelInstance;
 import imi.scene.polygonmodel.parts.PMeshMaterial;
 import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
 import imi.scene.polygonmodel.skinned.PPolygonSkinnedMeshInstance;
-import imi.scene.processors.JSceneAWTEventProcessor;
+import imi.scene.processors.JSceneEventProcessor;
 import imi.scene.processors.SkinnedAnimationProcessor;
 import imi.scene.shader.programs.VertDeformerWithSpecAndNormalMap;
 import imi.scene.shader.programs.VertexDeformer;
@@ -185,7 +185,7 @@ public class COLLADA_URL extends DemoBase2
         setDefaultRenderStates(jscene, wm);
 
         // Set this jscene to be the "selected" one for IMI input handling
-        ((JSceneAWTEventProcessor)wm.getUserData(JSceneAWTEventProcessor.class)).setJScene(jscene);
+        ((JSceneEventProcessor)wm.getUserData(JSceneEventProcessor.class)).setJScene(jscene);
 
         // Create entity
         Entity JSEntity = new Entity("Entity for a graph test");
