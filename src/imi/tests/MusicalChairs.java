@@ -55,24 +55,24 @@ public class MusicalChairs extends DemoBase
         control.getNinjaTeam().add(shadowBlade);
         shadowBlade.selectForInput();
         shadowBlade.setObjectCollection(objs);
-        
-        Ninja ninja1 = new Ninja("Ninja 1", new PMatrix().setTranslation(Vector3f.UNIT_X.mult(5.0f)), null, wm);
-        control.getNinjaTeam().add(ninja1);
-        ninja1.setObjectCollection(objs);
-        
-        Ninja ninja2 = new Ninja("Ninja 2", new PMatrix().setTranslation(Vector3f.UNIT_X.mult(10.0f)), null, wm);
-        control.getNinjaTeam().add(ninja2);
-        ninja2.setObjectCollection(objs);
+//        
+//        Ninja ninja1 = new Ninja("Ninja 1", new PMatrix().setTranslation(Vector3f.UNIT_X.mult(5.0f)), null, wm);
+//        control.getNinjaTeam().add(ninja1);
+//        ninja1.setObjectCollection(objs);
+//        
+//        Ninja ninja2 = new Ninja("Ninja 2", new PMatrix().setTranslation(Vector3f.UNIT_X.mult(10.0f)), null, wm);
+//        control.getNinjaTeam().add(ninja2);
+//        ninja2.setObjectCollection(objs);
         
         // Goal point
         wm.addUserData(Goal.class, new Goal(wm));
         
         // Friends 
         
-        Adam adam = new Adam("Adam", wm);
-        adam.getModelInst().getTransform().getLocalMatrix(true).setTranslation(Vector3f.UNIT_X.mult(-5.0f));
-        control.getNinjaTeam().add(adam);
-        adam.setObjectCollection(objs);
+//        Adam adam = new Adam("Adam", wm);
+//        adam.getModelInst().getTransform().getLocalMatrix(true).setTranslation(Vector3f.UNIT_X.mult(-5.0f));
+//        control.getNinjaTeam().add(adam);
+//        adam.setObjectCollection(objs);
         
         NinjaAvatar avatar = new NinjaAvatar("Avatar", wm);
         avatar.getModelInst().getTransform().getLocalMatrix(true).setTranslation(Vector3f.UNIT_X.mult(-10.0f));

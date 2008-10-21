@@ -357,6 +357,7 @@ public class SkeletonNode extends PNode implements Animated
                 PPolygonSkinnedMeshInstance pSkinnedMeshInstance = (PPolygonSkinnedMeshInstance)kid;
                 
                 pSkinnedMeshInstance.getMaterialRef().getMaterial().setShader(shader);
+                pSkinnedMeshInstance.setUseGeometryMaterial(false);
             }
         }
      }
