@@ -936,6 +936,20 @@ public class PMatrix
         return result;
     }
     
+    /**
+     * Gets the rotation with code derived from JME methods
+     * @return
+     */
+    public Quaternion getRotationJME()
+    {
+        Quaternion quat = new Quaternion();
+        quat.fromRotationMatrix(mat[0], mat[1], mat[2],
+                                mat[4], mat[5], mat[6],
+                                mat[8], mat[9], mat[10]);
+
+        return(quat);
+    }
+    
     public Vector4f getRow(int nRowIndex)
     {
         assert(nRowIndex >= 0 && nRowIndex <= 3) : "Row index requested is out of bounds!"; // Bounds checking
@@ -3763,17 +3777,6 @@ public class PMatrix
             mat[i] = a.mat[i] * fFraction + b.mat[i] * fOneMinusFraction;
     }
 
-    
-    public Quaternion getRotation2()
-    {
-        Quaternion quat = new Quaternion();
-        quat.fromRotationMatrix(mat[0], mat[1], mat[2],
-                                mat[4], mat[5], mat[6],
-                                mat[8], mat[9], mat[10]);
-
-        return(quat);
-    }
-     
     /**
      * <code>fromAngleAxis</code> sets this matrix4f to the values specified
      * by an angle and an axis of rotation.  This method creates an object, so

@@ -17,6 +17,7 @@
  */
 package imi.character;
 
+import com.jme.math.Quaternion;
 import com.jme.math.Vector3f;
 import imi.scene.PMatrix;
 import java.util.HashSet;
@@ -47,6 +48,10 @@ public class CharacterController
     }
     
     public Vector3f getForwardVector() {
+        return null;
+    }
+    
+    public Quaternion getQuaternion() {
         return null;
     }
     

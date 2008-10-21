@@ -172,7 +172,7 @@ public class GameContext extends NamedUpdatableObject
     @Override
     public void initialize()
     {
-        // Ninja's skeleton might be null untill loaded
+        // Skeleton might be null untill loaded
         SkeletonNode skeleton = getSkeleton();
         if (skeleton != null)
         {
@@ -245,6 +245,14 @@ public class GameContext extends NamedUpdatableObject
     {
     }
     
+    /**
+     * Override to define a default action map for states under this context
+     * @param actionMap
+     */
+    public void initDefaultActionMap(Hashtable<Integer, Action> actionMap) 
+    {   
+    }
+    
     public void resetTriggersAndActions() 
     {
         for (int i = 0; i < actions.length; i++)
@@ -263,15 +271,7 @@ public class GameContext extends NamedUpdatableObject
     {
         return m_triggerState;
     }
-    
-    /**
-     * Override to define a default action map for states under this context
-     * @param actionMap
-     */
-    public void initDefaultActionMap(Hashtable<Integer, Action> actionMap) 
-    {   
-    }
-    
+        
     public PPolygonSkinnedMeshInstance getMesh()
     {
         return character.getMesh();

@@ -18,7 +18,6 @@
 package imi.tests;
 
 import com.jme.math.Vector3f;
-import imi.character.ninja.Adam;
 import imi.character.ninja.Ninja;
 import imi.character.ninja.NinjaAvatar;
 import imi.character.objects.Goal;
@@ -27,6 +26,7 @@ import imi.scene.PMatrix;
 import imi.scene.processors.JSceneEventProcessor;
 import imi.utils.input.NinjaControlScheme;
 import org.jdesktop.mtgame.WorldManager;
+import imi.character.ninja.Adam;
 
 /**
  *

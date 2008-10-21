@@ -17,6 +17,7 @@
  */
 package imi.character.ninja;
 
+import com.jme.math.Quaternion;
 import com.jme.math.Vector3f;
 import imi.character.CharacterController;
 import imi.scene.PMatrix;
@@ -130,6 +131,8 @@ public class NinjaController extends CharacterController
             
             bTurning = false;
         }
+        else
+            currentRot = body.getTransform().getLocalMatrix(true);
         
         // Accelerate
         Vector3f currentDirection = body.getTransform().getWorldMatrix(false).getLocalZ();
@@ -174,6 +177,7 @@ public class NinjaController extends CharacterController
         }
 
         notifyTransfromUpdate(position, currentRot);
+        
 //        if (getVelocityScalar() > 1.0f)
 //            window.setTitle("yes");
 //        else
@@ -286,8 +290,27 @@ public class NinjaController extends CharacterController
     public Vector3f getPosition()
     {
         if (body != null)
-            return body.getTransform().getLocalMatrix(false).getTranslation();
+            return body.getTransform().getWorldMatrix(false).getTranslation();
         return null;
+    }
+     
+    @Override
+    public Quaternion getQuaternion() 
+    {
+        if (body != null)
+        {
+            if (bReverseHeading)
+            {
+                Vector3f position = body.getTransform().getWorldMatrix(false).getTranslation();
+                PMatrix origin = new PMatrix();
+                origin.lookAt(position, position.add(getForwardVector()), Vector3f.UNIT_Y);
+                origin.invert();
+                return origin.getRotationJME();
+            }
+            else    
+                return body.getTransform().getWorldMatrix(false).getRotationJME();
+        }
+        return null; 
     }
     
     public PTransform getTransform()

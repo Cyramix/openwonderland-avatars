@@ -17,6 +17,7 @@
  */
 package imi.character.objects;
 
+import com.jme.math.Quaternion;
 import com.jme.math.Vector3f;
 import imi.scene.boundingvolumes.PSphere;
 import imi.scene.polygonmodel.PPolygonModelInstance;
@@ -53,19 +54,25 @@ public interface SpatialObject
     public void setObjectCollection(ObjectCollection objs);
     
     /**
-     * Gets the position of the modelInst
+     * Gets the position of the model instance
      * @return
      */
     public Vector3f getPosition();
     
     /**
-     * Gets the right vector of the modelInst
+     * Gets the quaternion of the model instance
+     * @return
+     */
+    public Quaternion getQuaternion();
+    
+    /**
+     * Gets the right vector of the model instance
      * @return
      */
     public Vector3f getRightVector();
     
     /**
-     * Gets the forward vector of the modelInst
+     * Gets the forward vector of the model instance
      * @return
      */
     public Vector3f getForwardVector();

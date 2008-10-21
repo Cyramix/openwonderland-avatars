@@ -18,6 +18,7 @@
 package imi.character.ninja;
 
 import imi.scene.PMatrix;
+import java.util.ArrayList;
 import org.jdesktop.mtgame.WorldManager;
 
 /**
@@ -29,15 +30,19 @@ public class NinjaAvatar extends Ninja
 
     public class NinjaAvatarAttributes extends Attributes
     {
-        String [] m_animations = null;
+        String [] m_animations = new String [0];
         
         public NinjaAvatarAttributes(String name) {
             super(name);
-            setModelFile("assets/models/collada/Avatars/Male2/Male_Bind.dae");
-            String [] anims = new String[2];
-            anims[0] = "assets/models/collada/Avatars/Male2/Male_Idle.dae";
-            anims[1] = "assets/models/collada/Avatars/Male2/Male_Walk.dae";
-            m_animations = anims;
+            setModelFile("assets/models/collada/Avatars/MaleZip/MaleBind.dae");
+            ArrayList<String> anims = new ArrayList<String>();
+            anims.add("assets/models/collada/Avatars/Male2/Male_Walk.dae");
+//            anims.add("assets/models/collada/Avatars/MaleZip/Male_Idle.dae");
+//            anims.add("assets/models/collada/Avatars/MaleZip/Male_Walk.dae");
+//            anims.add("assets/models/collada/Avatars/MaleZip/Male_Run.dae");
+//            anims.add("assets/models/collada/Avatars/MaleZip/Male_StandToSit.dae");
+//            anims.add("assets/models/collada/Avatars/MaleZip/Male_Sitting.dae");
+            m_animations = anims.toArray(m_animations);
         }
 
         public String[] getAnimations() {
@@ -61,11 +66,20 @@ public class NinjaAvatar extends Ninja
         m_context.getController().setReverseHeading(true);
         m_context.getStates().get(IdleState.class).setAnimationName("Male_Walk2");
         m_context.getStates().get(PunchState.class).setAnimationName("Male_Walk2");
-        m_context.getStates().get(SitState.class).setAnimationName("Male_Walk2");
         m_context.getStates().get(TurnState.class).setAnimationName("Male_Walk2");
         m_context.getStates().get(WalkState.class).setAnimationName("Male_Walk2");
+        m_context.getStates().get(SitState.class).setAnimationName("Male_Walk2");
         ((SitState)m_context.getStates().get(SitState.class)).setIdleSittingAnimationName("Male_Walk2");
-        ((SitState)m_context.getStates().get(SitState.class)).setGettingUpAnimationName("Male_Walk2");
+        ((SitState)m_context.getStates().get(SitState.class)).setGettingUpAnimationName("Male_Walk2");  
+        
+//        m_context.getController().setReverseHeading(true);
+//        m_context.getStates().get(IdleState.class).setAnimationName("Male_Idle");
+//        m_context.getStates().get(PunchState.class).setAnimationName("Male_Run");
+//        m_context.getStates().get(TurnState.class).setAnimationName("Male_Idle");
+//        m_context.getStates().get(WalkState.class).setAnimationName("Male_Walk");
+//        m_context.getStates().get(SitState.class).setAnimationName("Male_StandToSit");
+//        ((SitState)m_context.getStates().get(SitState.class)).setIdleSittingAnimationName("Male_Sitting");
+//        ((SitState)m_context.getStates().get(SitState.class)).setGettingUpAnimationName("Male_StandToSit");
     }
     
     @Override

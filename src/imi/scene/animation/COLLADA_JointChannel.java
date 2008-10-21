@@ -193,11 +193,11 @@ public class COLLADA_JointChannel implements PJointChannel
                 int ab = 0;
             }
 
-            Quaternion rotationComponent = currentFrame.getValue().getRotation2();
-//            Quaternion rotationComponent2 = currentFrame.getValue().getRotation2();
+            Quaternion rotationComponent = currentFrame.getValue().getRotationJME();
+//            Quaternion rotationComponent2 = currentFrame.getValue().getRotationJME();
 
 //            rotationComponent.slerp(nextFrame.getValue().getRotation(), s);
-            rotationComponent.slerp(rotationComponent, nextFrame.getValue().getRotation2(), s);
+            rotationComponent.slerp(rotationComponent, nextFrame.getValue().getRotationJME(), s);
 
 //            jMonkeyMatrix.setRotationQuaternion(rotationComponent);
 

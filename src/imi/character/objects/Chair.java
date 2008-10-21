@@ -17,6 +17,7 @@
  */
 package imi.character.objects;
 
+import com.jme.math.Quaternion;
 import com.jme.math.Vector3f;
 import com.jme.renderer.ColorRGBA;
 import com.jme.scene.state.MaterialState.ColorMaterial;
@@ -146,6 +147,10 @@ public class Chair implements SpatialObject
 
     public PPolygonModelInstance getModelInst() {
         return modelInst;
+    }
+
+    public Quaternion getQuaternion() {
+        return modelInst.getTransform().getWorldMatrix(false).getRotationJME();
     }
 
 }

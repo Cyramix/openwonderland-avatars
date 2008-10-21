@@ -18,6 +18,7 @@
 package imi.character;
 
 import com.jme.light.PointLight;
+import com.jme.math.Quaternion;
 import com.jme.math.Vector3f;
 import com.jme.renderer.ColorRGBA;
 import com.jme.scene.state.CullState;
@@ -349,8 +350,8 @@ public abstract class Character extends Entity implements SpatialObject
                                 InstructionProcessor pProcessor = new InstructionProcessor();
                                 Instruction pRootInstruction = new Instruction("setCharacterStuff");
                                 pRootInstruction.addInstruction("setSkeleton", skeleton);
-                                pRootInstruction.addInstruction("loadAnimation", fileProtocol + "assets/models/collada/Avatars/Male2/Male_Idle.dae");
-                                pRootInstruction.addInstruction("loadAnimation", fileProtocol + "assets/models/collada/Avatars/Male2/Male_Walk.dae");
+                                for (int i = 0; i < anims.length; i++)
+                                    pRootInstruction.addInstruction("loadAnimation", fileProtocol + anims[i]);
                                 pProcessor.execute(m_pscene, pRootInstruction);
                             }
                         }
@@ -689,6 +690,10 @@ public abstract class Character extends Entity implements SpatialObject
     public Vector3f getPosition() {
         return m_context.getController().getPosition();
     }
+    
+    public Quaternion getQuaternion() {
+        return m_context.getController().getQuaternion();
+    }
 
     public Vector3f getRightVector() {
         return m_context.getController().getRightVector();
@@ -702,5 +707,6 @@ public abstract class Character extends Entity implements SpatialObject
     {
         return null;
     }
+    
     
 }
