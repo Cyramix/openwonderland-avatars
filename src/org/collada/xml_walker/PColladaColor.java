@@ -30,11 +30,20 @@ public class PColladaColor
 
 
 
-    //  Constructor.
+    /**
+     * Default constructor.
+     */
     public PColladaColor()
     {
     }
 
+    /**
+     * Constructor.
+     * @param fRed
+     * @param fGreen
+     * @param fBlue
+     * @param fAlpha
+     */
     public PColladaColor(float fRed, float fGreen, float fBlue, float fAlpha)
     {
         Red = fRed;
@@ -45,6 +54,12 @@ public class PColladaColor
 
 
 
+    /**
+     * Sets the fields of the PColladaColor.  Alpha is set to 1.0f.
+     * @param fRed
+     * @param fGreen
+     * @param fBlue
+     */
     public void set(float fRed, float fGreen, float fBlue)
     {
         Red = fRed;
@@ -53,6 +68,13 @@ public class PColladaColor
         Alpha = 1.0f;
     }
 
+    /**
+     * Sets the fields of the PColladaColor.
+     * @param fRed
+     * @param fGreen
+     * @param fBlue
+     * @param fAlpha
+     */
     public void set(float fRed, float fGreen, float fBlue, float fAlpha)
     {
         Red = fRed;

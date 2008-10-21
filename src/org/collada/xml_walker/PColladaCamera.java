@@ -35,10 +35,21 @@ public class PColladaCamera
 
 
 
-    //  Constructor.
+    /**
+     * Default constructor.
+     */
     public PColladaCamera()
     {
     }
+
+    /**
+     * Constructor.
+     * 
+     * @param name - The name of the collada camera.
+     * @param pCameraParams - Parameters of the camera.
+     * @param pMatrix - Matrix of the camera representing it's position and
+     *                  orientation.
+     */
     public PColladaCamera(String name, PColladaCameraParams pCameraParams, PMatrix pMatrix)
     {
         initialize(name, pCameraParams, pMatrix);
@@ -46,7 +57,14 @@ public class PColladaCamera
 
 
 
-    //  Initializes the Camera.
+    /**
+     * Initializes the Camera.
+     * 
+     * @param name - The name of the collada camera.
+     * @param pCameraParams - Parameters of the camera.
+     * @param pMatrix - Matrix of the camera representing it's position and
+     *                  orientation.
+     */
     public void initialize(String name, PColladaCameraParams pCameraParams, PMatrix pMatrix)
     {
         m_Name = name;
@@ -56,13 +74,21 @@ public class PColladaCamera
 
 
 
-    //  Gets the name of the Camera.
+    /**
+     * Gets the name of the Camera.
+     * 
+     * @return String
+     */
     public String getName()
     {
         return(m_Name);
     }
 
-    //  Sets the name of the Camera.
+    /**
+     * Sets the name of the Camera.
+     * 
+     * @param name
+     */
     public void setName(String name)
     {
         m_Name = name;
@@ -70,7 +96,11 @@ public class PColladaCamera
 
 
 
-    //  Gets the CameraParams.
+    /**
+     * Gets the camera parameters.
+     * 
+     * @return PColladaCameraParams
+     */
     public PColladaCameraParams getCameraParams()
     {
         return(m_pCameraParams);
@@ -78,13 +108,21 @@ public class PColladaCamera
 
 
 
-    //  Gets the Camera's matrix.
+    /**
+     * Gets the camera's matrix representing it's position and orientation.
+     * 
+     * @return PMatrix
+     */
     public PMatrix getMatrix()
     {
         return(m_Matrix);
     }
 
-    //  Sets the Camera's matrix.
+    /**
+     * Sets the camera's matrix representing it's position and orientation.
+     * 
+     * @param pMatrix
+     */
     public void setMatrix(PMatrix pMatrix)
     {
         m_Matrix.set(pMatrix);

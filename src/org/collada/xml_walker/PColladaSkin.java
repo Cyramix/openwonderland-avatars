@@ -40,10 +40,18 @@ public class PColladaSkin
 
 
 
-    //  Constructor.
+    /**
+     * Default constructor.
+     */
     public PColladaSkin()
     {
     }
+
+    /**
+     * Constructor.
+     * 
+     * @param String name - The name of the Skin.
+     */
     public PColladaSkin(String name)
     {
         m_Name = name;
@@ -51,13 +59,21 @@ public class PColladaSkin
 
 
 
-    //  Gets the name of the ColladaSkin.
+    /**
+     * Gets the name of the PColladaSkin.
+     * 
+     * @return String
+     */
     public String getName()
     {
         return(m_Name);
     }
 
-    //  Sets the name of the ColladaSkin.
+    /**
+     * Sets the name of the PColladaSkin.
+     * 
+     * @param String name
+     */
     public void setName(String name)
     {
         m_Name = name;
@@ -65,13 +81,21 @@ public class PColladaSkin
 
 
 
-    //  Gets the MeshName.
+    /**
+     * Gets the MeshName of the Skin.
+     * 
+     * @return String
+     */
     public String getMeshName()
     {
         return(m_MeshName);
     }
 
-    //  Sets the MeshName.
+    /**
+     * Sets the MeshName of the Skin.
+     * 
+     * @param String meshName
+     */
     public void setMeshName(String meshName)
     {
         m_MeshName = meshName;
@@ -79,7 +103,11 @@ public class PColladaSkin
 
 
 
-    //  Sets the BindMatrix.
+    /**
+     * Sets the BindMatrix of the Skin.
+     * 
+     * @param PMatrix pBindMatrix
+     */
     public void setBindMatrix(PMatrix pBindMatrix)
     {
         m_BindMatrix.set(pBindMatrix);
@@ -87,13 +115,22 @@ public class PColladaSkin
 
 
 
-    //  Adds a BoneName.
+    /**
+     * Adds a bone name that the Skin references.
+     * 
+     * @param String boneName
+     */
     public void addBoneName(String boneName)
     {
         m_BoneNames.add(boneName);
     }
 
-    //  Checks to see if the Skin contains a Bone with the specified name. 
+    /**
+     * Checks to see if the Skin contains a Bone with the specified name. 
+     * 
+     * @param String boneName
+     * @return boolean
+     */
     public boolean containsBoneName(String boneName)
     {
         int a;
@@ -110,7 +147,10 @@ public class PColladaSkin
         return(false);
     }
 
-    //  Gets the root BoneName.
+    /**
+     * Gets the root BoneName.
+     * @return String
+     */
     public String getRootBoneName()
     {
         if (m_BoneNames.size() == 0)
@@ -121,25 +161,42 @@ public class PColladaSkin
 
 
 
-    //  Adds a JointName.
+    /**
+     * Adds a joint name.
+     *
+     * @param String jointName
+     */
     public void addJointName(String jointName)
     {
         m_JointNames.add(jointName);
     }
 
-    //  Gets the number of JointNames.
+    /**
+     * Gets the number of joint names.
+     * @return int
+     */
     public int getJointNameCount()
     {
         return(m_JointNames.size());
     }
 
-    //  Gets the JointName at the specified index.
+    /**
+     * Gets the joint name at the specified index.
+     * 
+     * @param int Index
+     * @return String
+     */
     public String getJointName(int Index)
     {
         return(m_JointNames.get(Index));
     }
 
-    //  Checks to see if the Skin contains a Joint with the specified name. 
+    /**
+     * Checks to see if the Skin contains a Joint with the specified name. 
+     * 
+     * @param String jointName
+     * @return boolean
+     */
     public boolean containsJointName(String jointName)
     {
         for (int a=0; a<m_JointNames.size(); a++)
@@ -153,19 +210,32 @@ public class PColladaSkin
 
 
 
-    //  Adds a BindMatrix.
+    /**
+     * Adds a bind matrix.
+     * 
+     * @param PMatrix pBindMatrix
+     */
     public void addBindMatrix(PMatrix pBindMatrix)
     {
         m_BindMatrices.add(pBindMatrix);
     }
     
-    //  Gets the number of BindMatrices.
+    /**
+     * Gets the number of bind matrices.
+     * 
+     * @return int
+     */
     public int getBindMatrixCount()
     {
         return(m_BindMatrices.size());
     }
 
-    //  Gets the BindMatrix at the specified index.
+    /**
+     * Gets the bind matrix at the specified index.
+     * 
+     * @param index
+     * @return PMatrix
+     */
     public PMatrix getBindMatrix(int index)
     {
         return(m_BindMatrices.get(index));
@@ -173,19 +243,32 @@ public class PColladaSkin
 
 
 
-    //  Adds a SkinWeight.
+    /**
+     * Adds a skin weight.
+     * 
+     * @param PColladaSkinWeight pSkinWeight
+     */
     public void addSkinWeight(PColladaSkinWeight pSkinWeight)
     {
         m_SkinWeights.add(pSkinWeight);
     }
 
-    //  Gets the number of SkinWeights.
+    /**
+     * Gets the number of skin weights.
+     * 
+     * @return int
+     */
     public int getSkinWeightCount()
     {
         return(m_SkinWeights.size());
     }
 
-    //  Gets the SkinWeight at the specified index.
+    /**
+     * Gets the skin weight at the specified index.
+     * 
+     * @param index
+     * @return PColladaSkinWeight
+     */
     public PColladaSkinWeight getSkinWeight(int index)
     {
         return(m_SkinWeights.get(index));

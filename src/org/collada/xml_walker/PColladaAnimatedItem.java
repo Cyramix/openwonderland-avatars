@@ -29,6 +29,8 @@ import imi.scene.PMatrix;
 
 
 /**
+ * The PColladaAnimatedItem class represents animation data in a collada file.
+ * This class is used to store the keyframe animation data for skinned meshes.
  *
  * @author Chris Nagle
  */
@@ -47,11 +49,18 @@ public class PColladaAnimatedItem
 
 
 
-    //  Constructor.
+    /**
+     * Default constructor.
+     */
     public PColladaAnimatedItem()
     {
     }
-    
+
+    /**
+     * Constructor.
+     * 
+     * @param pAnimation Collada animation PColladaAnimatedItem wrappers.
+     */
     public PColladaAnimatedItem(Animation pAnimation)
     {
         setAnimation(pAnimation);
@@ -59,7 +68,11 @@ public class PColladaAnimatedItem
 
 
 
-    //  Sets the Animation.
+    /**
+     * Sets the collada animation
+     * 
+     * @param pAnimation Collada animation PColladaAnimatedItem wrappers.
+     */
     public void setAnimation(Animation pAnimation)
     {
         m_pAnimation = pAnimation;
@@ -139,6 +152,14 @@ public class PColladaAnimatedItem
     }
 
 
+    /**
+     * Gets the collada source that is of the specified type. 
+     * 'input' source contains times of keyframes.
+     * 'output' source contains data for all keyframes.  (matrices)
+     *
+     * @param sourceType
+     * @return Source - Collada source.
+     */
     private Source getSource(String sourceType)
     {
         Source pSource;
@@ -153,6 +174,12 @@ public class PColladaAnimatedItem
         return(null);
     }
 
+    /**
+     * Gets the name of a collada source.
+     *
+     * @param pSource
+     * @return String The name of the collada source.
+     */
     private String getSourceParamName(Source pSource)
     {
         TechniqueCommon pTechniqueCommon = pSource.getTechniqueCommon();
@@ -161,6 +188,12 @@ public class PColladaAnimatedItem
         return(pParam.getName());
     }
 
+    /**
+     * Gets the type of a collada source.
+     *
+     * @param pSource
+     * @return String The type of the collada source.
+     */
     private String getSourceParamType(Source pSource)
     {
         TechniqueCommon pTechniqueCommon = pSource.getTechniqueCommon();
@@ -171,19 +204,31 @@ public class PColladaAnimatedItem
 
 
 
-    //  Gets the ID of the AnimatedItem.
+    /**
+     * Gets the ID of the AnimatedItem.
+     * 
+     * @return String The ID of the AnimatedItem.
+     */
     public String getAnimatedItemID()
     {
         return(m_AnimatedItemID);
     }
 
-    //  Gets the Name of the AnimatedItem.
+    /**
+     * Gets the name of the AnimatedItem.
+     * 
+     * @return String - The name of the AnimatedItem.
+     */
     public String getName()
     {
         return(m_AnimatedItemName);
     }
 
-    //  Gets the Type of the AnimatedItem.
+    /**
+     * Gets the type of the AnimatedItem.
+     *
+     * @return String - The type of the AnimatedItem.
+     */
     public String getType()
     {
         return(m_Type);
@@ -191,12 +236,22 @@ public class PColladaAnimatedItem
 
 
 
-    //  Gets the number of keyframes.
+    /**
+     * Gets the number of keyframes.
+     * 
+     * @return int
+     */
     public int getKeyframeCount()
     {
         return(m_KeyframeCount);
     }
 
+    /**
+     * Gets the time of the keyframe at the specified index.
+     * 
+     * @param Index - Index of the keyframe.
+     * @return float - The time of the requested keyframe.
+     */
     public float getKeyframeTime(int Index)
     {
         float fKeyframeTime = ((Double)m_pTransformInputSource.getFloatArray().getValues().get(Index)).floatValue();
@@ -204,6 +259,12 @@ public class PColladaAnimatedItem
         return(fKeyframeTime);
     }
 
+    /**
+     * Gets the matrix of the keyframe at the specified index.
+     * @param Index - Index of the keyframe.
+     * @param pMatrix - Gets filled in with the keyframe's matrix.
+     * @return boolean - true if Index is valid, false otherwise.
+     */
     public boolean getKeyframeMatrix(int Index, PMatrix pMatrix)
     {
         int FloatIndex = Index * 16;

@@ -28,7 +28,9 @@ import com.jme.math.Vector2f;
 
 
 /**
- *
+ * The VertexDataArray contains data for some vertex data.
+ * (Position, Normal, TexCoord1, TexCoord2, etc...)
+ * 
  * @author Chris Nagle
  */
 
@@ -38,7 +40,11 @@ class VertexDataArray
     public float            []m_Data;
 
 
-    //  Constructor.
+    /**
+     * Constructor.
+     * 
+     * @param pSource
+     */
     public VertexDataArray(Source pSource)
     {
         m_Name = pSource.getId();
@@ -51,7 +57,10 @@ class VertexDataArray
         }
     }
 
-    //  Gets the size of the array.
+    /**
+     * Gets the size of the array.
+     * @return int
+     */
     public int getSize()
     {
         if (m_Data == null)
@@ -60,7 +69,12 @@ class VertexDataArray
         return(m_Data.length);
     }
 
-    //  Gets a Vector3f value.
+    /**
+     * Gets the Vector3f value at the specified index.
+     * 
+     * @param index
+     * @return Vector3f
+     */
     public Vector3f getVector3f(int index)
     {
         int elementIndex = index * 3;
@@ -70,7 +84,12 @@ class VertexDataArray
         return(value);
     }
 
-    //  Gets a Vector2f value.
+    /**
+     * Gets the Vector2f value at the specified index.
+     * 
+     * @param index
+     * @return
+     */
     public Vector2f getVector2f(int index)
     {
         int elementIndex = index * 2;
@@ -82,7 +101,12 @@ class VertexDataArray
     
 }
 
-
+/**
+ * The VectorDataSemantic class represents a Vertex element.  It stores
+ * the name of the element and the offset within the data the element occurs.
+ * 
+ * @author Chris Nagle
+ */
 class VertexDataSemantic
 {
     public String           m_Name;
@@ -92,7 +116,14 @@ class VertexDataSemantic
     public VertexDataArray  m_DataArray;
 
 
-    //  Constructor.
+    /**
+     * Constructor.
+     * 
+     * @param name
+     * @param offset
+     * @param dataName
+     * @param pVertexDataArray
+     */
     public VertexDataSemantic(String name, int offset, String dataName, VertexDataArray pVertexDataArray)
     {
         m_Name = name;
@@ -101,7 +132,11 @@ class VertexDataSemantic
         m_DataArray = pVertexDataArray;
     }
 
-    //  Constructor.
+    /**
+     * Constructor.
+     * 
+     * @param pInputLocalOffset
+     */
     public VertexDataSemantic(InputLocalOffset pInputLocalOffset)
     {
         m_Name = pInputLocalOffset.getSemantic();
@@ -128,19 +163,31 @@ class VertexDataSemantic
     }
 
 
-    //  Gets the Name.
+    /**
+     * Gets the name of the VertexDataSemantic.
+     * 
+     * @return String
+     */
     public String getName()
     {
         return(m_Name);
     }
 
-    //  Gets the name of the Data.
+    /**
+     * Gets the data name of the VertexDataSemantic.
+     * 
+     * @return String
+     */
     public String getDataName()
     {
         return(m_DataName);
     }
 
-    //  Gets the size of the Data.
+    /**
+     * Gets the size of the data.
+     * 
+     * @return int
+     */
     public int getDataSize()
     {
         return(m_DataArray.getSize());
@@ -148,13 +195,22 @@ class VertexDataSemantic
 
 
 
-    //  Gets the number of Vector3fs.
+    /**
+     * Gets the number of Vector3fs.
+     * 
+     * @return int
+     */
     public int getVector3fCount()
     {
         return(m_DataArray.getSize() / 3);
     }
 
-    //  Checks to see if the specified index is a valid index.
+    /**
+     * checks to see if the specified index is a valid index.
+     * 
+     * @param index
+     * @return boolean
+     */
     public boolean isValidVector3fIndex(int index)
     {
         if (index * 3 < m_DataArray.getSize())
@@ -162,7 +218,12 @@ class VertexDataSemantic
         return(false);
     }
 
-    //  Gets a Vector3f value.
+    /**
+     * Gets a Vector3f value.
+     * 
+     * @param index
+     * @return Vector3f
+     */
     public Vector3f getVector3f(int index)
     {
         return(m_DataArray.getVector3f(index));
@@ -170,13 +231,22 @@ class VertexDataSemantic
 
 
 
-    //  Gets the number of Vector2fs.
+    /**
+     * Gets the number of Vector2fs.
+     * 
+     * @return int
+     */
     public int getVector2fCount()
     {
         return(m_DataArray.getSize() / 2);
     }
 
-    //  Checks to see if the specified index is a valid index.
+    /**
+     * Checks to see if the specified index is a valid index.
+     * 
+     * @param index
+     * @return boolean
+     */
     public boolean isValidVector2fIndex(int index)
     {
         if (index * 2 < m_DataArray.getSize())
@@ -184,7 +254,12 @@ class VertexDataSemantic
         return(false);
     }
 
-    //  Gets a Vector2f value.
+    /**
+     * Gets a Vector2f value.
+     * 
+     * @param index
+     * @return Vector2f
+     */
     public Vector2f getVector2f(int index)
     {
         return(m_DataArray.getVector2f(index));
@@ -193,36 +268,65 @@ class VertexDataSemantic
 }
 
 
+/**
+ * The VertexDataDescription class describes the format of a Vertex via
+ * multiple VertexDataSemantics.
+ * One Vertex might be of the format (Position, Normal, TexCoord1) and
+ * another vertex might of the format (Position, Normal, TexCoord1, TexCoord2).
+ * 
+ * @author Chris Nagle
+ */
 public class VertexDataDescription
 {
     ArrayList               m_Semantics = new ArrayList();
 
 
-    //  Constructor.
+
+    /**
+     * Default constructor.
+     */
     public VertexDataDescription()
     {
     }
 
 
-    //  Adds a Semantic.
+    /**
+     * Adds a Semantic.
+     * 
+     * @param pSemantic
+     */
     public void addSemantic(VertexDataSemantic pSemantic)
     {
         m_Semantics.add(pSemantic);
     }
 
-    //  Gets the number of Semantics.
+    /**
+     * Gets the number of Semantics.
+     * 
+     * @return int
+     */
     public int getSemanticCount()
     {
         return(m_Semantics.size());
     }
 
-    //  Gets the Semantic at the specified index.
+    /**
+     * Gets the Semantic at the specified index.
+     * 
+     * @param Index
+     * @return VertexDataSemantic.
+     */
     public VertexDataSemantic getSemantic(int Index)
     {
         return( (VertexDataSemantic)m_Semantics.get(Index));
     }
 
-    //  Gets the Semantic with the specified name.
+    /**
+     * Gets the Semantic with the specified name.
+     * 
+     * @param name
+     * @return VertexDataSemantic.
+     */
     public VertexDataSemantic findSemantic(String name)
     {
         int a;

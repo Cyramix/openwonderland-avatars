@@ -23,6 +23,8 @@ import imi.utils.FileUtils;
 
 
 /**
+ * The PColladaImage class represents an image referenced in a collada file.
+ * The PColladaMaterial class will reference this class.
  *
  * @author Chris Nagle
  */
@@ -34,11 +36,18 @@ public class PColladaImage
 
 
 
-    //  Constructor.
+    /**
+     * Default Constructor.
+     */
     public PColladaImage()
     {
     }
 
+    /**
+     * Constructs a new PColladaImage with the specified name and shortFilename.
+     * @param name The desired name.
+     * @param shortFilename The short filename of the image (no directory).
+     */
     public PColladaImage(String name, String shortFilename)
     {
         m_Name = name;
@@ -50,13 +59,19 @@ public class PColladaImage
 
 
 
-    //  Gets the Name of the Image.
+    /**
+     * Get the name of the Image
+     * @return m_Name (String)
+     */
     public String getName()
     {
         return(m_Name);
     }
 
-    //  Sets the Name of the Image.
+    /**
+     * Set the name for this Image
+     * @param name
+     */
     public void setName(String name)
     {
         m_Name = name;
@@ -64,13 +79,19 @@ public class PColladaImage
 
 
 
-    //  Gets the ShortFilename of the Image.
+    /**
+     * Get the short filename of the Image
+     * @return m_ShortFilename (String)
+     */
     public String getShortFilename()
     {
         return(m_ShortFilename);
     }
 
-    //  Sets the ShortFilename of the Image.
+    /**
+     * Set the short filename for this Image
+     * @param shortFilename
+     */
     public void setShortFilename(String shortFilename)
     {
         m_ShortFilename = shortFilename;
@@ -78,19 +99,29 @@ public class PColladaImage
 
 
 
-    //  Gets the Filename of the Image.
+    /**
+     * Get the filename of the Image
+     * @return m_Filename (String)
+     */
     public String getFilename()
     {
         return(m_Filename);
     }
 
-    //  Sets the Filename of the Image.
+    /**
+     * Set the filename for this Image
+     * @param filename
+     */
     public void setFilename(String filename)
     {
         m_Filename = filename;
     }
 
-    //  Calculates the Filename.
+    
+
+    /**
+     * Calculates the filename.
+     */
     public void calculateFilename()
     {
         m_Filename = FileUtils.findTextureFile(m_ShortFilename);

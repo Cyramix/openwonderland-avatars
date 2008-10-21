@@ -18,8 +18,10 @@
 package org.collada.xml_walker;
 
 
+
 /**
- *
+ * PColladaSkinWeight class represents up to 4 vertice joint weights.
+ * 
  * @author Chris Nagle
  */
 public class PColladaSkinWeight
@@ -29,7 +31,9 @@ public class PColladaSkinWeight
 
 
 
-    //  Constructor.
+    /**
+     * Default constructor.
+     */
     public PColladaSkinWeight()
     {
     }

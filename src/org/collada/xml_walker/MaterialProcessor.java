@@ -29,18 +29,22 @@ import imi.loaders.collada.Collada;
  *
  * @author paulby
  */
-public class MaterialProcessor extends Processor {
+public class MaterialProcessor extends Processor
+{
 
-    public MaterialProcessor(Collada collada, Material material, Processor parent)
+    /**
+     * Constructor.
+     * 
+     * @param pCollada
+     * @param pMaterial
+     * @param pParent
+     */
+    public MaterialProcessor(Collada pCollada, Material pMaterial, Processor pParent)
     {
-        super(collada, material, parent);
+        super(pCollada, pMaterial, pParent);
 
-        String id = material.getId();
-        if (id!=null) {
-            ElementCache.cache().put(id, this);
-        }
         
-        InstanceEffect instanceEffect = material.getInstanceEffect();
+        InstanceEffect instanceEffect = pMaterial.getInstanceEffect();
         String instanceURL = instanceEffect.getUrl();
         
         //System.out.println("Material "+instanceURL +"  "+ElementCache.cache().get(instanceURL));

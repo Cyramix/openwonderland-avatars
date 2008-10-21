@@ -34,14 +34,24 @@ public class PColladaCameraParams
 
 
 
-    //  Constructor.
+    /**
+     * Default constructor.
+     */
     public PColladaCameraParams()
     {
     }
 
 
 
-    //  Initializes the Camera with perspective parameters.
+    /**
+     * Initializes the Camera with perspective parameters.
+     * @param name - The name of the camera.
+     * @param xfov - x field of view.
+     * @param yfov - y field of view.
+     * @param znear - z distance of near clip plane.
+     * @param zfar - z distance of far clip plane.
+     * @param bPerspective - 'true' if perspective camera, 'false' if ortho camera.
+     */
     public void initialize(String name, float xfov, float yfov, float znear, float zfar, boolean bPerspective)
     {
         m_Name = name;
@@ -56,13 +66,19 @@ public class PColladaCameraParams
 
     
 
-    //  Gets the name of the CameraParams.
+    /**
+     * Gets the name of the CameraParams.
+     * @return String
+     */
     public String getName()
     {
         return(m_Name);
     }
     
-    //  Sets the name of the CameraParams.
+    /**
+     * Sets the name of the CameraParams.
+     * @param name
+     */
     public void setName(String name)
     {
         m_Name = name;
@@ -70,33 +86,51 @@ public class PColladaCameraParams
 
 
 
-    //  Gets boolean indicating whether the Camera is in perspective mode.
+    /**
+     * Gets boolean indicating whether the Camera is in perspective mode.
+     * @return boolean
+     */
     public boolean isPerspective()
     {
         return(m_bPerspective);
     }
 
+    /**
+     * Gets the x field of view.
+     * @return float
+     */
     public float getxfov()
     {
         return(m_xfov);
     }
 
+    /**
+     * Gets the y field of view.
+     * @return float
+     */
     public float getyfov()
     {
         return(m_yfov);
     }
 
+    /**
+     * Gets the z distance of the near clip plane.
+     * @return float
+     */
     public float getznear()
     {
         return(m_znear);
     }
-    
+
+    /**
+     * Gets the z distance of the far clip plane.
+     * @return float
+     */
     public float getzfar()
     {
         return(m_zfar);
     }
 
-    
 }
 
 

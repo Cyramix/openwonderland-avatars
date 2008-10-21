@@ -24,6 +24,8 @@ import imi.scene.PMatrix;
 import org.collada.colladaschema.Node;
 
 
+
+
 /**
  *
  * @author Chris Nagle
@@ -58,11 +60,18 @@ public class PColladaNode
 
 
 
-    //  Constructor.
+    /**
+     * Default constructor.
+     */
     public PColladaNode()
     {
     }
 
+    /**
+     * Constructor.
+     * 
+     * @param pNode - Pointer to collada Node.
+     */
     public PColladaNode(Node pNode)
     {
         setNode(pNode);
@@ -70,13 +79,21 @@ public class PColladaNode
 
 
 
-    //  Gets the name.
+    /**
+     * Gets the name of the PColladaNode.
+     * 
+     * @return
+     */
     public String getName()
     {
         return(m_Name);
     }
 
-    //  Sets the name.
+    /**
+     * Sets the name of the PColladaNode.
+     * 
+     * @param name
+     */
     public void setName(String name)
     {
         m_Name = name;
@@ -84,7 +101,11 @@ public class PColladaNode
 
 
 
-    //  Set pointer to the collada Node.
+    /**
+     * Set the pointer to the collada Node.
+     * 
+     * @param pNode
+     */
     public void setNode(Node pNode)
     {
         m_pNode = pNode;
@@ -92,13 +113,21 @@ public class PColladaNode
 
 
 
-    //  Gets the Matrix.
+    /**
+     * Gets the Matrix assigned to the PColladaNode.
+     * 
+     * @return
+     */
     public PMatrix getMatrix()
     {
         return(m_Matrix);
     }
 
-    //  Sets the Matrix.
+    /**
+     * Sets the Matrix of the PColladaNode.
+     * 
+     * @param pMatrixFloats
+     */
     public void setMatrix(float []pMatrixFloats)
     {
         m_Matrix.set(pMatrixFloats);
@@ -107,7 +136,11 @@ public class PColladaNode
             m_MatrixFloats[a] = pMatrixFloats[a];
     }
 
-    //  Gets the MatrixFloats.
+    /**
+     * Gets the float[] reference that contains the Matrix data.
+     * 
+     * @return float[]
+     */
     public float []getMatrixFloats()
     {
         return(m_MatrixFloats);
@@ -115,24 +148,39 @@ public class PColladaNode
 
 
 
-    //  Gets boolean indicating whether the Node is a Joint.
+    /**
+     * Gets boolean indicating whether the PColladaNode is a joint.
+     * 
+     * @return
+     */
     public boolean isJoint()
     {
         return(m_bIsJoint);
     }
 
-    //  Sets boolean indicating whether the Node is a Joint.
+    /**
+     * Sets boolean indicating whether the Node is a joint.
+     * 
+     * @param bIsJoint
+     */
     public void isJoint(boolean bIsJoint)
     {
         m_bIsJoint = bIsJoint;
     }
 
-    //  Finds the ColladaNode with the specified jointName.
+    /**
+     * Finds the ColladaNode with the specified jointName.
+     * Grandchildren will be searched over too.
+     * 
+     * @param jointName
+     * @return
+     */
     public PColladaNode findJoint(String jointName)
     {
         if (m_JointName != null && m_JointName.equals(jointName))
             return(this);
 
+        //  Iterate through the children.
         int a;
         PColladaNode pColladaNode;
         PColladaNode pFoundColladaNode;
@@ -149,13 +197,21 @@ public class PColladaNode
         return(null);
     }
 
-    //  Gets the mesh name.
+    /**
+     * Gets the mesh name.
+     * 
+     * @return String
+     */
     public String getMeshName()
     {
         return(m_MeshName);
     }
 
-    //  Sets the mesh name.
+    /**
+     * Sets the mesh name.
+     * 
+     * @param meshName
+     */
     public void setMeshName(String meshName)
     {
         m_MeshName = meshName;
@@ -163,13 +219,21 @@ public class PColladaNode
 
 
 
-    //  Gets the InstanceNodeName.
+    /**
+     * Gets name fo the InstanceNode.
+     * 
+     * @return String
+     */
     public String getInstanceNodeName()
     {
         return(m_InstanceNodeName);
     }
 
-    //  Sets the InstanceNodeName.
+    /**
+     * Set the name of the InstanceNode.
+     * 
+     * @param String instanceNodeName
+     */
     public void setInstanceNodeName(String instanceNodeName)
     {
         m_InstanceNodeName = instanceNodeName;
@@ -177,7 +241,11 @@ public class PColladaNode
 
 
 
-    //  Adds a child node.
+    /**
+     * Adds a child node.
+     * 
+     * @param PColladaNode pChildNode
+     */
     public void addChildNode(PColladaNode pChildNode)
     {
         if (pChildNode != null)
@@ -187,19 +255,33 @@ public class PColladaNode
         }
     }
 
-    //  Gets the number of child nodes.
+    /**
+     * Gets the number of child nodes.
+     * 
+     * @return int
+     */
     public int getChildNodeCount()
     {
         return(m_ChildNodes.size());
     }
 
-    //  Gets the child node at the specified index.
+    /**
+     * Gets the child node at the specified index.
+     * 
+     * @param index
+     * @return
+     */
     public PColladaNode getChildNode(int index)
     {
         return( (PColladaNode)m_ChildNodes.get(index));
     }
 
-    //  Finds the ColladaNode with the specified name.
+    /**
+     * Finds the PColladaNode with the specified name.
+     * 
+     * @param String nodeName
+     * @return PColladaNode
+     */
     public PColladaNode findNode(String nodeName)
     {
         if (m_Name.equals(nodeName))
@@ -221,7 +303,11 @@ public class PColladaNode
         return(null);
     }
 
-    //  Gets the parent ColladaNode.
+    /**
+     * Gets the parent PColladaNode.
+     * 
+     * @return PColladaNode
+     */
     public PColladaNode getParentColladaNode()
     {
         return(m_pParentNode);
@@ -229,32 +315,58 @@ public class PColladaNode
             
 
 
-    //  Gets the MaterialInstance.
+    /**
+     * Gets the MaterialInstance.
+     * 
+     * @return PColladaMaterialInstance
+     */
     public PColladaMaterialInstance getMaterialInstance()
     {
         return(m_pMaterialInstance);
     }
     
-    //  Set the MaterialInstance.
+    /**
+     * Sets the MaterialInstance.
+     * 
+     * @param PColladaMaterialInstance pMaterialInstance
+     */
     public void setMaterialInstance(PColladaMaterialInstance pMaterialInstance)
     {
         m_pMaterialInstance = pMaterialInstance;
     }
 
 
-    //  Gets the JointName.
+    /**
+     * Gets the joint name.
+     * 
+     * If the ColladaNode is a joint, it's jointName might be different that
+     * the PColladaNode's name itself.
+     * 
+     * @return String
+     */
     public String getJointName()
     {
         return(m_JointName);
     }
 
-    //  Sets the JointName.
+    /**
+     * Sets the joint name.
+     * 
+     * If the ColladaNode is a joint, it's jointName might be different that
+     * the PColladaNode's name itself.
+     * 
+     * @param String jointName
+     */
     public void setJointName(String jointName)
     {
         m_JointName = jointName;
     }
 
-    //  Checks to see if the ColladaNode contains a joint.
+    /**
+     * Checks to see if the PColladaNode contains a joint.
+     * 
+     * @return boolean
+     */
     public boolean containsJoint()
     {
         if (m_bIsJoint)
@@ -276,12 +388,21 @@ public class PColladaNode
     
     
     
-    
+    /**
+     * Gets the controller name.
+     * 
+     * @return String
+     */
     public String getControllerName()
     {
         return(m_ControllerName);
     }
     
+    /**
+     * Set the controller name.
+     * 
+     * @param String controllerName
+     */
     public void setControllerName(String controllerName)
     {
         m_ControllerName = controllerName;
@@ -289,26 +410,44 @@ public class PColladaNode
 
 
 
-    //  Adds a skeleton.
+    /**
+     * Adds a skeleton.
+     * A PColladaNode might contain multiple skeletons.
+     * 
+     * @param String skeleton
+     */
     public void addSkeleton(String skeleton)
     {
         m_Skeletons.add(new String(skeleton));
     }
 
-    //  Gets the number of skeletons.
+    /**
+     * Gets the number of skeletons.
+     *
+     * @return int
+     */
     public int getSkeletonCount()
     {
         return(m_Skeletons.size());
     }
 
-    //  Gets the skeleton at the specified index.
+    /**
+     * Gets the skeleton at the specified index.
+     * 
+     * @param index
+     * @return String
+     */
     public String getSkeleton(int index)
     {
         return( (String)m_Skeletons.get(index));
     }
 
     
-    //  Gets the root ColladaNode.
+    /**
+     * Gets the root PColladaNode.
+     * 
+     * @return PColladaNode.
+     */
     public PColladaNode getRootColladaNode()
     {
         PColladaNode pRootColladaNode = this;
@@ -321,11 +460,21 @@ public class PColladaNode
         return(pRootColladaNode);
     }
 
-    //  Dumps the Node and all it's children.
+
+
+    /**
+     * Dumps the node and all it's children.
+     */
     public void dump()
     {
         dump("");
     }
+
+    /**
+     * Dumps the node and all it's children.
+     * 
+     * @param String spacing
+     */
     public void dump(String spacing)
     {
         if (m_JointName == null)
@@ -346,6 +495,11 @@ public class PColladaNode
         }
     }
 
+    /**
+     * Gets the index of the Node.
+     * 
+     * @return int
+     */
     public int getNodeIndex()
     {
         int nodeIndex = 0;

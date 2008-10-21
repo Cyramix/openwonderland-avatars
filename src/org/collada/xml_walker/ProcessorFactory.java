@@ -30,14 +30,15 @@ import imi.loaders.collada.Collada;
  *
  * @author paulby
  */
-public class ProcessorFactory {
-    
+public class ProcessorFactory
+{
     private static Logger logger = Logger.getLogger("org.collada.xml_walker");
     
     private static final String walkerPackage = "org.collada.xml_walker.";
     
     /**
      * Create a procesor to handle this schemaObject
+     * 
      * @param collada
      * @param schemaObj
      * @param parentProcessor
@@ -54,7 +55,8 @@ public class ProcessorFactory {
         String schemaObjName = schemaClassName.substring(schemaClassName.lastIndexOf('.')+1);
         if (schemaObjName.indexOf('$')!=0)
             schemaObjName = schemaObjName.substring(schemaObjName.lastIndexOf('$')+1);
-        try {            
+        try
+        {            
 //            System.out.println("Looking for "+walkerPackage+schemaObjName+"Processor");
             Class walkerClass = Class.forName(walkerPackage+schemaObjName+"Processor");
 //            System.out.println("   Found class " + walkerClass);
@@ -64,16 +66,26 @@ public class ProcessorFactory {
 
             //  Create the Processor.
             return (Processor) con.newInstance(collada, schemaObj, parentProcessor);
-        } catch (ClassNotFoundException ex) {
+        }
+        catch (ClassNotFoundException ex)
+        {
             logger.warning("No Handler for "+schemaClass+"  looking for "+schemaObjName);
-        } catch (NoSuchMethodException ex) {
+        }
+        catch (NoSuchMethodException ex)
+        {
             logger.warning("No constructor "+schemaObjName+"("+schemaClassName+")");
             ex.printStackTrace();
-        } catch (InstantiationException ex) {
+        }
+        catch (InstantiationException ex)
+        {
             ex.printStackTrace();
-        } catch (IllegalAccessException ex) {
+        }
+        catch (IllegalAccessException ex)
+        {
             ex.printStackTrace();
-        } catch (InvocationTargetException ex) {
+        }
+        catch (InvocationTargetException ex)
+        {
             ex.getCause().printStackTrace();
             ex.printStackTrace();
         }

@@ -41,8 +41,6 @@ public class MeshProcessor extends Processor
     
     private ArrayList<VertexDataArray>  m_VertexDataArrays = new ArrayList<VertexDataArray>();
 
-    private ArrayList<Primitive>        m_PrimitiveProcessors = new ArrayList();
-
     private PPolygonMesh                m_pRootPolygonMesh = null;
 
 
@@ -104,9 +102,6 @@ public class MeshProcessor extends Processor
                     m_pRootPolygonMesh.addChild(pPolygonMesh);
                 }
             }
-
-            if (pProcessor instanceof Primitive)
-                m_PrimitiveProcessors.add((Primitive)pProcessor);
         }
     }
 

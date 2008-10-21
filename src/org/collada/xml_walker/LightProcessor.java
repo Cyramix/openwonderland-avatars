@@ -27,17 +27,21 @@ import imi.loaders.collada.Collada;
  *
  * @author paulby
  */
-public class LightProcessor extends Processor {
+public class LightProcessor extends Processor
+{
 
-    public LightProcessor(Collada collada, Light light, Processor parent)
+    /**
+     * Constructor.
+     * @param collada
+     * @param light
+     * @param parent
+     */
+    public LightProcessor(Collada pCollada, Light pLight, Processor pParent)
     {
-        super(collada, light, parent);
+        super(pCollada, pLight, pParent);
         
-        String id = light.getId();
-        if (id!=null) {
-            ElementCache.cache().putLight(id, this);
-        }
-        
+        //  Not processing lights right now.
+
         //logger.warning("LightProcessor not implemented");
     }
 

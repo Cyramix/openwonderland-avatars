@@ -25,7 +25,8 @@ import imi.loaders.collada.Collada;
 
 
 /**
- *
+ * Processor is the base class for all processors in the xml_walker package.
+ * 
  * @author paulby
  *         cnagle
  */
@@ -39,7 +40,13 @@ public abstract class Processor
 
 
 
-    //  Constructor.
+    /**
+     * Constructor.
+     * 
+     * @param Collada pCollada
+     * @param Object pColladaSchema
+     * @param Processor pParent
+     */
     public Processor(Collada pCollada, Object pColladaSchema, Processor pParent)
     {
         m_pCollada = pCollada;
