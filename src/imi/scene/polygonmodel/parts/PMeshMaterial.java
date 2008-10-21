@@ -19,8 +19,11 @@ package imi.scene.polygonmodel.parts;
 
 import com.jme.image.Texture;
 import com.jme.renderer.ColorRGBA;
+import com.jme.scene.state.CullState;
 import com.jme.scene.state.MaterialState.ColorMaterial;
 import com.jme.scene.state.MaterialState.MaterialFace;
+import com.jme.scene.state.WireframeState;
+import com.jme.scene.state.ZBufferState;
 import imi.scene.PNode;
 import imi.scene.shader.AbstractShaderProgram;
 import java.io.File;
@@ -29,27 +32,43 @@ import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-
+/**
+ * This class provides state for our materials system.
+ * @author Lou Hayt
+ * @author Ronald E Dahlgren
+ */
 public class PMeshMaterial extends PNode
 {
+    /** Diffuse material color **/
     private ColorRGBA  m_Diffuse   = null;
+    /** Ambient material color **/
     private ColorRGBA  m_Ambient   = null;
+    /** Emissive material color **/
     private ColorRGBA  m_Emissive  = null;
+    /** Specular material color **/
     private ColorRGBA  m_Specular  = null;
+    /** Shininess value **/
     private float      m_Shininess = 0.0f;   // 0 is none, around 5 is low, around 100 is high
-   
+    /** Texture map locations **/
     private URL[]  m_Textures      = new URL[8];  // multi texturing supported
-    
+    /** Desired combination mode for textures **/
     private Texture.ApplyMode []  m_TextureModes = new Texture.ApplyMode [8];  // texture combine mode for each texture  
-    
+    /** Shader collection **/
     private AbstractShaderProgram [] m_ShaderArray = new AbstractShaderProgram[1];
-    
-    //private int        m_VertexColorsMode  = 0; //  by default vertex colors are ignored               
+    /** Define the interaction between vertex colors and material properties **/
     private ColorMaterial   m_ColorMaterial = ColorMaterial.None;
-    //private int        m_ApplyMaterialMode = 0; //  by default the material is only applied on the front 
+    /** Cull mode for this piece of geometry **/
+    private CullState.Face  m_cullFace = CullState.Face.Back;
+    /** Wireframe mode? **/
+    private boolean         m_bWireframeEnabled = false;
+    /** Wireframe characteristics follow **/
+    private boolean         m_bWireframeAntiAliased = false;
+    private float           m_fWireframeLineWidth   = 1.0f; 
+    private WireframeState.Face m_wireFace = WireframeState.Face.Front;
+    /** Which sides are affected **/ 
     private MaterialFace    m_MaterialFace = MaterialFace.FrontAndBack;
-    
-    public static final PMeshMaterial DEFAULT_MATERIAL = new PMeshMaterial("default material");
+    /** The default**/
+    public static final PMeshMaterial DEFAULT_MATERIAL = new PMeshMaterial("Default Material");
     
     /**
      * This default constructor allocates memory for the member variables
@@ -65,6 +84,11 @@ public class PMeshMaterial extends PNode
             m_TextureModes[i] = Texture.ApplyMode.Modulate;
     }
 
+    /**
+     * Construct a new instance, setting the diffuse color to the one specified
+     * and all other data to default values.
+     * @param diffuseColor
+     */
     public PMeshMaterial(ColorRGBA diffuseColor) 
     {
         m_Diffuse  = new ColorRGBA(diffuseColor);
@@ -185,25 +209,18 @@ public class PMeshMaterial extends PNode
             if (other.getShader(i) != null)
                 m_ShaderArray[i] = other.getShader(i);
         }
-//        m_VertShader = new File[other.getVertShaders().length];
-//        for (int i = 0; i < m_VertShader.length; i++)
-//        {
-//            if (other.getVertShader(i) != null)
-//                m_VertShader[i] = new File(other.getVertShader(i).getPath());
-//        }
-//        
-//        m_FragShader = new File[other.getFragShaders().length];
-//        for (int i = 0; i < m_FragShader.length; i++)
-//        {
-//            if (other.getFragShader(i) != null)
-//               m_FragShader[i] = new File(other.getFragShader(i).getPath());
-//        }
         
         for (int i = 0; i < m_TextureModes.length; i++)
             m_TextureModes[i]    = other.getTextureMode(i);
         
         m_ColorMaterial = other.getColorMaterial();
         m_MaterialFace = other.getMaterialFace();
+        
+        m_cullFace = other.getCullFace();
+        m_bWireframeEnabled = other.isWireframeEnabled();
+        m_bWireframeAntiAliased = other.isWireframeAntiAliased();
+        m_fWireframeLineWidth = other.getWireframeLineWidth();
+        m_wireFace = other.getWireframeFace();
     }
     
     public PMeshMaterial(PMeshMaterial other)
@@ -283,8 +300,26 @@ public class PMeshMaterial extends PNode
                 modes    = true;
             else
                 modes    = false;
+        if (m_cullFace.equals(other.getCullFace()))
+            modes = true;
+        else
+            modes = false;
         
-        return material && textures && modes & shaders;
+        boolean wirestates = false;
+        
+        if (m_wireFace.equals(other.getWireframeFace()))
+            wirestates = true;
+        else
+            wirestates = false;
+        
+        if (m_fWireframeLineWidth == other.getWireframeLineWidth() && wirestates == true)
+            wirestates = true;
+        else
+            wirestates = false;
+        wirestates = wirestates && (m_bWireframeEnabled == other.isWireframeEnabled()) &&
+                     (m_bWireframeAntiAliased == other.isWireframeAntiAliased());
+        
+        return material && textures && modes && shaders && wirestates;
     }
 
     @Override
@@ -327,6 +362,11 @@ public class PMeshMaterial extends PNode
         setShaders(other.getShaders());
         setColorMaterial(other.getColorMaterial());
         setMaterialFace(other.getMaterialFace());
+        setCullFace(other.getCullFace());
+        setWireframeCharacteristics(other.isWireframeEnabled(),
+                                    other.isWireframeAntiAliased(), 
+                                    other.getWireframeLineWidth(), 
+                                    other.getWireframeFace());
     }
 
     public void setDiffuse(ColorRGBA diffuse) 
@@ -556,4 +596,48 @@ public class PMeshMaterial extends PNode
         m_ShaderArray[0] = shader;
     }
 
+    public CullState.Face getCullFace()
+    {
+        return m_cullFace;
+    }
+    
+    public void setCullFace(CullState.Face cullFace)
+    {
+        m_cullFace = cullFace;
+    }
+    
+    public boolean isWireframeEnabled()
+    {
+        return m_bWireframeEnabled;
+    }
+    
+    public void setWireframeEnabled(boolean bWireframe)
+    {
+        m_bWireframeEnabled = bWireframe;
+    }
+    
+    public void setWireframeCharacteristics(boolean enabled,
+            boolean antiAliased, float fWireWidth,
+            WireframeState.Face face)
+    {
+        m_bWireframeEnabled = enabled;
+        m_bWireframeAntiAliased = antiAliased;
+        m_fWireframeLineWidth = fWireWidth;
+        m_wireFace = face;
+    }
+    
+    public boolean isWireframeAntiAliased()
+    {
+        return m_bWireframeAntiAliased;
+    }
+    
+    public float getWireframeLineWidth()
+    {
+        return m_fWireframeLineWidth;
+    }
+    
+    public WireframeState.Face getWireframeFace()
+    {
+        return m_wireFace;
+    }
 }

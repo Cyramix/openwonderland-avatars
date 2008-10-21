@@ -101,7 +101,7 @@ public class PMeshMaterialCombo
             return;
         }
         
-        if (m_Material1 == null && m_Material2 != null)
+        else if (m_Material1 == null && m_Material2 != null)
         {
             m_MaterialCombo.set(m_Material2);
             return;

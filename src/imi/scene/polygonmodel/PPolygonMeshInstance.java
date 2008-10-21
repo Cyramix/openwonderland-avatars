@@ -37,6 +37,7 @@ import imi.scene.PScene;
 import imi.scene.PTransform;
 import imi.scene.polygonmodel.parts.PMeshMaterial;
 import imi.scene.polygonmodel.parts.PMeshMaterialCombo;
+import imi.scene.polygonmodel.parts.PMeshMaterialStates;
 import imi.scene.utils.PRenderer;
 import imi.scene.utils.TextureInstaller;
 import java.io.File;
@@ -71,13 +72,15 @@ public class PPolygonMeshInstance extends PNode
     protected TextureInstaller          m_textureInstaller  = null; // Needs to know how many texture units will be used
     protected TextureState              m_textureState      = null;
     
-    // JMonkey\LWJGL MaterialState
-    protected MaterialState             m_matState          = null;
+//    // JMonkey\LWJGL MaterialState
+//    protected MaterialState             m_matState          = null;
     
-    // MaterialCombo reference
-    protected PMeshMaterialCombo  m_material  = null;
-    protected boolean  m_bUseGeometryMaterial = true; // by default the instance will use the geometry's material
-    
+    /** Material **/
+    protected PMeshMaterialCombo  m_material        = null;
+    /** Use geometry material or not **/
+    protected boolean  m_bUseGeometryMaterial       = true; 
+    /** convenient state wrapper **/
+    protected PMeshMaterialStates m_pmaterialStates = null;
     /**
      * This constructor copies all the data of the other instance and inserts
      * this instance into the scene graph as a child of the provided parent.
@@ -198,7 +201,8 @@ public class PPolygonMeshInstance extends PNode
     private void initializeStates(PScene pscene)
     {
         m_textureState = (TextureState) pscene.getWorldManager().getRenderManager().createRendererState(RenderState.RS_TEXTURE);
-        m_matState = (MaterialState) pscene.getWorldManager().getRenderManager().createRendererState(RenderState.RS_MATERIAL);
+        m_pmaterialStates = new PMeshMaterialStates(pscene.getWorldManager().getRenderManager());
+        //m_matState = (MaterialState) pscene.getWorldManager().getRenderManager().createRendererState(RenderState.RS_MATERIAL);
     }
     
     public SharedMesh getSharedMesh()
@@ -352,16 +356,18 @@ public class PPolygonMeshInstance extends PNode
     protected void applyMaterial()
     {
         PMeshMaterial meshMat = m_material.getMaterial();
+        m_pmaterialStates.configureStates(meshMat);
+        m_pmaterialStates.applyToGeometry(m_instance);
         // Material
-        m_matState.setEnabled(true);
-        m_matState.setDiffuse(meshMat.getDiffuse());
-        m_matState.setAmbient(meshMat.getAmbient());
-        m_matState.setSpecular(meshMat.getSpecular());
-        m_matState.setEmissive(meshMat.getEmissive());
-        m_matState.setShininess(meshMat.getShininess());
-        m_matState.setColorMaterial(meshMat.getColorMaterial());
-        m_matState.setMaterialFace(meshMat.getMaterialFace());
-        m_instance.setRenderState(m_matState);
+//        m_matState.setEnabled(true);
+//        m_matState.setDiffuse(meshMat.getDiffuse());
+//        m_matState.setAmbient(meshMat.getAmbient());
+//        m_matState.setSpecular(meshMat.getSpecular());
+//        m_matState.setEmissive(meshMat.getEmissive());
+//        m_matState.setShininess(meshMat.getShininess());
+//        m_matState.setColorMaterial(meshMat.getColorMaterial());
+//        m_matState.setMaterialFace(meshMat.getMaterialFace());
+//        m_instance.setRenderState(m_matState);
         
         // Textures
         m_textureState.setEnabled(true);
