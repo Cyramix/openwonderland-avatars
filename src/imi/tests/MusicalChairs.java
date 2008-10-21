@@ -56,6 +56,14 @@ public class MusicalChairs extends DemoBase
         shadowBlade.selectForInput();
         shadowBlade.setObjectCollection(objs);
         
+        Ninja ninja1 = new Ninja("Ninja 1", new PMatrix().setTranslation(Vector3f.UNIT_X.mult(5.0f)), null, wm);
+        control.getNinjaTeam().add(ninja1);
+        ninja1.setObjectCollection(objs);
+        
+        Ninja ninja2 = new Ninja("Ninja 2", new PMatrix().setTranslation(Vector3f.UNIT_X.mult(10.0f)), null, wm);
+        control.getNinjaTeam().add(ninja2);
+        ninja2.setObjectCollection(objs);
+        
         // Goal point
         wm.addUserData(Goal.class, new Goal(wm));
         
@@ -71,17 +79,10 @@ public class MusicalChairs extends DemoBase
         control.getNinjaTeam().add(avatar);
         avatar.setObjectCollection(objs);
         
-        Ninja ninja1 = new Ninja("Ninja 1", new PMatrix().setTranslation(Vector3f.UNIT_X.mult(5.0f)), null, wm);
-        control.getNinjaTeam().add(ninja1);
-        ninja1.setObjectCollection(objs);
+//        Ninja ninja3 = new Ninja("Ninja 3", new PMatrix().setTranslation(Vector3f.UNIT_X.mult(15.0f)), null, wm);
+//        control.getNinjaTeam().add(ninja3);
+//        ninja3.setObjectCollection(objs);
         
-        Ninja ninja2 = new Ninja("Ninja 2", new PMatrix().setTranslation(Vector3f.UNIT_X.mult(10.0f)), null, wm);
-        control.getNinjaTeam().add(ninja2);
-        ninja2.setObjectCollection(objs);
-        
-        Ninja ninja3 = new Ninja("Ninja 3", new PMatrix().setTranslation(Vector3f.UNIT_X.mult(15.0f)), null, wm);
-        control.getNinjaTeam().add(ninja3);
-        ninja3.setObjectCollection(objs);
     }
     
 }
