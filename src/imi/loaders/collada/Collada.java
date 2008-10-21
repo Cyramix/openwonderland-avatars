@@ -227,6 +227,10 @@ public class Collada
         m_bLoadGeometry = bLoadGeometry;
     }
 
+    public PScene getPScene()
+    {
+        return m_pScene;
+    }
     
     //  Gets the boolean indicating whether the Animations should be loaded.
     public boolean getLoadAnimations()
@@ -908,6 +912,11 @@ public class Collada
         m_Materials.put(pColladaMaterial.getName(), pColladaMaterial);
 
         m_ColladaMaterials.add(pColladaMaterial);
+    }
+    
+    public PColladaMaterial getColladaMaterial(String materialName)
+    {
+        return m_Materials.get(materialName);
     }
 
     //  Gets the number of ColladaMaterials.

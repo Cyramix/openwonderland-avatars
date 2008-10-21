@@ -335,6 +335,7 @@ public class PPolygonMeshInstance extends PNode
             else
             {
                 setMaterial(m_geometry.getMaterialRef());
+                applyMaterial(); 
             }
         }
     }

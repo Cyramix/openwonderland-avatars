@@ -23,7 +23,6 @@ import com.jme.scene.state.CullState;
 import com.jme.scene.state.MaterialState.ColorMaterial;
 import com.jme.scene.state.MaterialState.MaterialFace;
 import com.jme.scene.state.WireframeState;
-import com.jme.scene.state.ZBufferState;
 import imi.scene.PNode;
 import imi.scene.shader.AbstractShaderProgram;
 import java.io.File;

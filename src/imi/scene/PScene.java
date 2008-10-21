@@ -987,7 +987,7 @@ public class PScene extends PNode implements RepositoryUser
                 // The first model in the collada scene is the model we loaded from the collada file
                 PNode newInstance = processNode(((PScene)loadedModel.getAssetData()).getInstances());
                 newInstance.setName(loadedModel.getDescriptor().getType() + " " + loadedModel.getDescriptor().getLocation().getFile());
-               
+                
                 result = newInstance;
             }
             else if (loadedModel.getAssetData() instanceof SkeletonNode)

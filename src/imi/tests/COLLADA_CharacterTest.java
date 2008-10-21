@@ -17,6 +17,7 @@
  */
 package imi.tests;
 
+import com.sun.org.apache.bcel.internal.verifier.exc.VerificationException;
 import java.util.ArrayList;
 
 import imi.scene.PMatrix;
@@ -75,7 +76,7 @@ public class COLLADA_CharacterTest extends DemoBase2
     }
 
     
-    private SkeletonNode loadCharacter(PScene pScene)
+    private SkeletonNode loadCharacter(PScene pscene)
     {
         InstructionProcessor pProcessor = new InstructionProcessor();
         
@@ -99,7 +100,7 @@ public class COLLADA_CharacterTest extends DemoBase2
         pRootInstruction.addInstruction("loadAnimation", fileProtocol + "assets/models/collada/Avatars/Male2/Male_Idle.dae");
         pRootInstruction.addInstruction("loadAnimation", fileProtocol + "assets/models/collada/Avatars/Male2/Male_Walk.dae");
 
-        pProcessor.execute(pScene, pRootInstruction);
+        pProcessor.execute(pscene, pRootInstruction);
         
         return(pProcessor.getSkeleton());
     }
@@ -110,71 +111,14 @@ public class COLLADA_CharacterTest extends DemoBase2
     {
         SkeletonNode pTheSkeletonNode = loadCharacter(pscene);
 
-/*
-        String modelFilename;
-        modelFilename = "assets/models/collada/Female01/Female01.dae";
-        modelFilename = "assets/models/collada/Female02/Female02.dae";
-        modelFilename = "assets/models/collada/grievous/grievous.dae";
-        modelFilename = "assets/models/collada/Seymour/Seymour.dae";
-        modelFilename = "assets/models/collada/Tifa/Tifa.dae";
-        modelFilename = "assets/models/collada/trooper/trooper.dae";
-        modelFilename = "assets/models/collada/Duck/Duck.dae";
-//        modelFilename = "assets/models/collada/Alien/alienAnim02.dae";
-//        modelFilename = "assets/models/collada/r2d2/r2d2.dae";
-//        modelFilename = "assets/models/collada/Accessories/accessories.dae";
-        modelFilename = "assets/models/collada/BodyMaleIdleTest.dae";
-//        modelFilename = "assets/models/collada/Head/HeadRig1.dae";
-//        modelFilename = "assets/models/collada/ArmTest.dae";
-        modelFilename = "assets/models/collada/Avatars/Male/MaleBind.dae";
-        modelFilename = "assets/models/collada/Avatars/Male/MaleAvatarPolo.dae";
-
-        String geometryFilename = "assets/models/collada/Avatars/Male/MaleAvatarPolo.dae";//Male_Sweater2.dae";
-
-        String animationFilename = "assets/models/collada/Avatars/Male/Male_Walk.dae";
-
-        
-        modelFilename = "assets/models/collada/Avatars/Male2/Male_Bind.dae";//Male_Sweater2.dae";
-
-        animationFilename = "assets/models/collada/Avatars/Male2/Male_Walk.dae";
-        String animation2Filename = "assets/models/collada/Avatars/Male2/Male_Idle.dae";
-
-//        pscene.setUseRepository(false);
-
-        CharacterLoader characterLoader = new CharacterLoader();
-
-        //  Load the rig.
-        SkeletonNode pTheSkeletonNode = characterLoader.loadSkeletonRig(pscene, modelFilename);
-        characterLoader.loadGeometry(pscene, pTheSkeletonNode, "assets/models/collada/Avatars/Male/MaleBind.dae");//geometryFilename);
-        characterLoader.loadAnimation(pscene, pTheSkeletonNode, animationFilename);
-//        characterLoader.loadAnimation(pscene, pTheSkeletonNode, animation2Filename);
-
-//        pscene.setUseRepository(true);
-*/
-
-
-        //  Assign the specified shader to all SkinnedMeshes.
-        pTheSkeletonNode.setShader(new VertexDeformer(wm));
 
         PPolygonModelInstance modelInst = pscene.addModelInstance(pTheSkeletonNode, new PMatrix());
 
         if (modelInst.getChild(0) instanceof SkeletonNode)
         {
             SkeletonNode pSkeletonNode = (SkeletonNode) modelInst.getChild(0);
-
-            ArrayList<PPolygonSkinnedMeshInstance> skinnedMeshInstances = pSkeletonNode.getSkinnedMeshInstances();
-            PPolygonSkinnedMeshInstance pSkinnedMeshInstance;
-
-
-            for (int i = 0; i < skinnedMeshInstances.size(); i++)
-            {
-                pSkinnedMeshInstance = skinnedMeshInstances.get(i);
-                assignMaterial(pSkinnedMeshInstance, wm);
-
-                //pSkinnedMeshInstance.buildAnimationJointMapping(pSkeletonNode); <-- no longer needed
-            }
-
             //  Assign the specified shader to all SkinnedMeshes.
-            pSkeletonNode.setShader(new VertexDeformer(wm));
+            pSkeletonNode.setShader(new VertDeformerWithSpecAndNormalMap(wm));
         }
 
         modelInst.getTransform().getLocalMatrix(true).setScale(10.0f);

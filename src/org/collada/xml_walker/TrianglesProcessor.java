@@ -563,7 +563,10 @@ public class TrianglesProcessor extends Processor
             //  Create the Material to be assigned to the PolygonMesh.
             PMeshMaterial pMaterial = m_pColladaMaterial.createMeshMaterial();
             if (pMaterial != null)
+            {
+                pPolygonMesh.setNumberOfTextures(3); // at least three....
                 pPolygonMesh.setMaterial(pMaterial);
+            }
         }
     }
 

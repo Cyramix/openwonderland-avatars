@@ -20,6 +20,7 @@ package org.collada.xml_walker;
 import java.util.List;
 import javax.xml.bind.JAXBElement;
 
+import org.collada.colladaschema.Extra;
 import org.collada.colladaschema.Effect;
 import org.collada.colladaschema.LibraryEffects;
 import org.collada.colladaschema.ProfileCOMMON;
@@ -71,7 +72,7 @@ public class LibraryEffectsProcessor extends Processor
             processProfileCOMMON(pProfileCOMMON, materialName);
         }
     }
-
+    
     private void processProfileCOMMON(ProfileCOMMON pProfileCommon, String materialName)
     {
         ProfileCOMMON.Technique pTechnique = pProfileCommon.getTechnique();
@@ -89,6 +90,23 @@ public class LibraryEffectsProcessor extends Processor
         //  Otherwise, process the Lambert type of Material if the Profile contains it.
         if (pTechnique.getLambert() != null)
             processLambert(pProfileCommon, pTechnique.getLambert(), materialName);
+        
+        for (Extra extra : pTechnique.getExtras())
+            processExtra(pProfileCommon, extra, materialName);
+    }
+
+    private void processExtra(ProfileCOMMON profile, Extra extra, String materialName)
+    {
+        PColladaMaterial colladaMaterial = m_pCollada.getColladaMaterial(materialName);
+        if (colladaMaterial != null)
+        {
+            colladaMaterial.applyBumpMappingData(extra);
+        }
+        else // new material, do nothing for now
+        {
+            
+        }
+       
     }
 
     
