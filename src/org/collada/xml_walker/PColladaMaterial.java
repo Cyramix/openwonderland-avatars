@@ -253,7 +253,6 @@ public class PColladaMaterial
         }
         else if (bNormalMapped)
         {
-            System.out.print("Normal mapped shader created for " + m_Name + "why the hell isn't this APPLIED ANYWHERE!?!");
             // WORLD MANAGER STRIKES AGAIN!
             if (m_pCollada != null && m_pCollada.getPScene() != null) // BEWARE THE HARDCODED NUMBER BELOW!
                 result.setShader(new NormalMapShader(m_pCollada.getPScene().getWorldManager(), 0.2f));
