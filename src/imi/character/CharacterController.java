@@ -18,6 +18,8 @@
 package imi.character;
 
 import com.jme.math.Vector3f;
+import imi.scene.PMatrix;
+import java.util.HashSet;
 import javax.swing.JFrame;
 
 /**
@@ -28,6 +30,11 @@ import javax.swing.JFrame;
 public class CharacterController 
 {
     protected boolean  bReverseHeading     = false;
+    private PMatrix previousOrientation = new PMatrix();
+    private Vector3f previousTranslation = new Vector3f();
+    
+
+    private HashSet<CharacterMotionListener> listeners = null;
     
     public void stop(){}
     
@@ -53,5 +60,53 @@ public class CharacterController
     
     public JFrame getWindow() {
         return null;
+    }
+
+    /**
+     * Add a CharacterMotionListener to this character.
+     * @param listener to be added
+     */
+    public void addCharacterMotionListener(CharacterMotionListener listener) {
+        if (listeners == null)
+            listeners = new HashSet();
+        synchronized(listeners) {
+            listeners.add(listener);
+        }
+    }
+
+    /**
+     * Remove the CharacterMotionListener from the set of listeners for this
+     * character. If the listener was not registered previously this method
+     * simply returns.
+     * @param listener to be removed
+     */
+    public void removeCharacterMotionListener(CharacterMotionListener listener) {
+        if (listener!=null) {
+            synchronized(listeners) {
+                listeners.remove(listener);
+            }
+        }
+    }
+
+    /**
+     * Notify any motion listeners that the transform has been updated
+     * @param location
+     * @param orientation
+     */
+    protected void notifyTransfromUpdate(Vector3f translation, PMatrix orientation) {
+        if (listeners==null)
+            return;
+
+        if (previousTranslation.equals(translation) &&
+                previousOrientation.equals(orientation))
+            return;
+
+        synchronized(listeners) {
+            for(CharacterMotionListener l : listeners)
+                l.transformUpdate(translation, orientation);
+        }
+        
+        previousOrientation.set(orientation);
+        previousTranslation.set(translation);
     }
 }

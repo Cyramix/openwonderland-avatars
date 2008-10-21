@@ -48,9 +48,11 @@ public class NinjaController extends CharacterController
     private float    velocityDamp        = 0.8f; // 1.0f - velocityDamp     = intuitive value
     private float    accelerationDamp    = 0.5f; // 1.0f - accelerationDamp = intuitive value
     private float    dampCounter         = 0.0f;
-    private float    dampTick            = 1.0f / 60.0f; 
-    
+    private float    dampTick            = 1.0f / 60.0f;
+
     private boolean  bSlide              = false; // if false velocity and heading will be alligned
+
+    private PMatrix currentRot = new PMatrix();
     
     private JFrame window = null; // use this to set title name for debugging info
     
@@ -123,7 +125,8 @@ public class NinjaController extends CharacterController
         {
             rotation.buildRotationY(rotationSensetivity * desiredDirection.x * deltaTime);
             
-            body.getTransform().getLocalMatrix(true).mul(rotation);
+            currentRot = body.getTransform().getLocalMatrix(true);
+            currentRot.mul(rotation);
             
             bTurning = false;
         }
@@ -169,7 +172,8 @@ public class NinjaController extends CharacterController
             if (acceleration < 1.0f)
                 velocity.multLocal(velocityDamp);
         }
-          
+
+        notifyTransfromUpdate(position, currentRot);
 //        if (getVelocityScalar() > 1.0f)
 //            window.setTitle("yes");
 //        else
