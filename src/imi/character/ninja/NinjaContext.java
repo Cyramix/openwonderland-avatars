@@ -37,6 +37,7 @@ import imi.character.statemachine.GameContext;
 import imi.character.statemachine.GameState.Action;
 import imi.scene.PMatrix;
 import imi.scene.PScene;
+import imi.scene.boundingvolumes.PSphere;
 import java.util.Hashtable;
 
 /**
@@ -160,6 +161,11 @@ public class NinjaContext extends GameContext
             if (obj != null)
             {
                 Vector3f pos = ((Chair)obj).getGoalPosition();
+                
+                
+//                    PSphere obst = obj.getNearestObstacleSphere(pos);
+//                    pos = obst.getCenter();
+                    
                 Vector3f direction = ((Chair)obj).getGoalForwardVector();
                 steering.setGoalPosition(pos);
                 steering.setSittingDirection(direction);
@@ -172,7 +178,7 @@ public class NinjaContext extends GameContext
                     goalPoint.getTransform().setLocalMatrix(goal);
                     goalPoint.getTransform().getLocalMatrix(true).setScale(1.0f);
                     //goalPoint.getTransform().getLocalMatrix(true).setTranslation(pos);
-                    PScene GPScene = goalPoint.getPScene();;
+                    PScene GPScene = goalPoint.getPScene();
                     GPScene.setDirty(true, true);
                     GPScene.submitTransforms();
                 }

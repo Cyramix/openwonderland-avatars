@@ -45,22 +45,29 @@ public class MusicalChairs extends DemoBase
     @Override
     protected void createDemoEntities(WorldManager wm) 
     {
+        // Create ninja input scheme
+        NinjaControlScheme control = (NinjaControlScheme)((JSceneEventProcessor)wm.getUserData(JSceneEventProcessor.class)).setDefault(new NinjaControlScheme(null));
+        
         // Create an object collection for the musical chairs game
         ObjectCollection objs = new ObjectCollection("Musical Chairs Game Objects", wm);
         objs.generateChairs(Vector3f.ZERO, 100.0f, 20);
         
-        
-        NinjaAvatar avatar = new NinjaAvatar("Avatar", wm);
-        avatar.getModelInst().getTransform().getLocalMatrix(true).setTranslation(Vector3f.UNIT_X.mult(-10.0f));
-        NinjaControlScheme control = (NinjaControlScheme)((JSceneEventProcessor)wm.getUserData(JSceneEventProcessor.class)).setDefault(new NinjaControlScheme(avatar));
-        control.getNinjaTeam().add(avatar);
-        avatar.selectForInput();
-        avatar.setObjectCollection(objs);
-//        
-        // Create a character (name it "Shadow Blade") using the "Ninja" preset configuration
-//        Ninja shadowBlade = new Ninja("Shadow Blade", wm);
-//        control.getNinjaTeam().add(shadowBlade);
-//        shadowBlade.setObjectCollection(objs);
+        if (true)
+        {
+            NinjaAvatar avatar = new NinjaAvatar("Avatar", wm);
+            avatar.getModelInst().getTransform().getLocalMatrix(true).setTranslation(Vector3f.UNIT_X.mult(-10.0f));
+            control.getNinjaTeam().add(avatar);
+            avatar.selectForInput();
+            avatar.setObjectCollection(objs);
+        }
+        else
+        {
+            // Create a character (name it "Shadow Blade") using the "Ninja" preset configuration
+            Ninja shadowBlade = new Ninja("Shadow Blade", wm);
+            shadowBlade.selectForInput();
+            control.getNinjaTeam().add(shadowBlade);
+            shadowBlade.setObjectCollection(objs);
+        }
         
 //        Ninja ninja1 = new Ninja("Ninja 1", new PMatrix().setTranslation(Vector3f.UNIT_X.mult(5.0f)), null, wm);
 //        control.getNinjaTeam().add(ninja1);

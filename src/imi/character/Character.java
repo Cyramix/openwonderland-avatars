@@ -703,7 +703,7 @@ public abstract class Character extends Entity implements SpatialObject
         return m_context.getController().getForwardVector();
     }
     
-    public Vector3f getNearestObstaclePosition(Vector3f myPosition)
+    public PSphere getNearestObstacleSphere(Vector3f myPosition)
     {
         return null;
     }

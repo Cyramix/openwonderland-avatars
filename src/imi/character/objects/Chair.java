@@ -26,6 +26,7 @@ import imi.scene.PMatrix;
 import imi.scene.PScene;
 import imi.scene.boundingvolumes.PSphere;
 import imi.scene.polygonmodel.PPolygonMesh;
+import imi.scene.polygonmodel.PPolygonMeshInstance;
 import imi.scene.polygonmodel.PPolygonModelInstance;
 import imi.scene.polygonmodel.parts.PMeshMaterial;
 import imi.scene.utils.PMeshUtils;
@@ -40,7 +41,7 @@ public class Chair implements SpatialObject
     
     protected ObjectCollection objectCollection = null;
         
-    private float sittingDistance = 10.0f;
+    private float sittingDistance = 5.0f;
     
     public Chair(Vector3f position, Vector3f heading)
     {
@@ -62,11 +63,11 @@ public class Chair implements SpatialObject
         sphereMesh.getTransform().getLocalMatrix(true).setTranslation(Vector3f.UNIT_X.mult(4.0f));
         modelInst.addChild(sphereMesh);
         
-        sphereMesh = PMeshUtils.createSphere("Left Chair Obstacle Sphere", Vector3f.ZERO, 3.0f, 6, 6, ColorRGBA.red);
-        sphereMesh.setMaterial(geometryMaterial);
-        sphereMesh.submit(assembler);
-        sphereMesh.getTransform().getLocalMatrix(true).setTranslation(Vector3f.UNIT_X.mult(-4.0f));
-        modelInst.addChild(sphereMesh);
+//        sphereMesh = PMeshUtils.createSphere("Left Chair Obstacle Sphere", Vector3f.ZERO, 3.0f, 6, 6, ColorRGBA.red);
+//        sphereMesh.setMaterial(geometryMaterial);
+//        sphereMesh.submit(assembler);
+//        sphereMesh.getTransform().getLocalMatrix(true).setTranslation(Vector3f.UNIT_X.mult(-4.0f));
+//        modelInst.addChild(sphereMesh);
         
         sphereMesh = PMeshUtils.createSphere("Sitting Point Chair Sphere", Vector3f.ZERO, 1.0f, 6, 6, ColorRGBA.green);
         sphereMesh.setMaterial(geometryMaterial);
@@ -88,7 +89,7 @@ public class Chair implements SpatialObject
     
     public Vector3f getGoalPosition()
     {
-        Vector3f goalOffset = modelInst.getChild(2).getTransform().getWorldMatrix(false).getLocalZ().mult(sittingDistance);
+        Vector3f goalOffset = modelInst.getChild(1).getTransform().getWorldMatrix(false).getLocalZ().mult(sittingDistance);
         return modelInst.getTransform().getWorldMatrix(false).getTranslation().add(goalOffset);
     }
     
@@ -110,13 +111,18 @@ public class Chair implements SpatialObject
 //        return goalPos.subtract(pos).normalize();
     }
     
-    public Vector3f getNearestObstaclePosition(Vector3f myPosition)
+    public PSphere getNearestObstacleSphere(Vector3f myPosition)
     {
-        Vector3f obs0 = modelInst.getChild(0).getTransform().getWorldMatrix(false).getTranslation();
-        Vector3f obs1 = modelInst.getChild(1).getTransform().getWorldMatrix(false).getTranslation();
-        if (obs0.distanceSquared(myPosition) > obs1.distanceSquared(myPosition))
-            return obs1;
-        return obs0;
+//        Vector3f obs0 = modelInst.getChild(0).getTransform().getWorldMatrix(false).getTranslation();
+//        Vector3f obs1 = modelInst.getChild(1).getTransform().getWorldMatrix(false).getTranslation();
+//        if (obs0.distanceSquared(myPosition) > obs1.distanceSquared(myPosition))
+//            return obs1;
+//        return obs0;
+        
+        PPolygonMeshInstance mesh = (PPolygonMeshInstance) modelInst.getChild(0);
+        PSphere bv = mesh.getGeometry().getBoundingSphere();
+        bv.set(bv.getCenter().add(modelInst.getTransform().getWorldMatrix(false).getTranslation()), bv.getRadius());
+        return bv;
     }
     
     /**

@@ -46,6 +46,9 @@ public class NinjaControlScheme extends InputScheme
     @Override
     public void processEvents(Object[] events) 
     {
+        if (m_jscene == null || ninja == null)
+            return;
+        
         for (int i=0; i<events.length; i++) 
         {
             if (events[i] instanceof KeyEvent) 
@@ -57,10 +60,7 @@ public class NinjaControlScheme extends InputScheme
     }
        
     private void processKeyEvent(KeyEvent ke) 
-    {
-        if (m_jscene == null)
-            return;
-                
+    {           
         if (ke.getID() == KeyEvent.KEY_RELEASED) 
         {
             // Alter the input state for random reference

@@ -34,7 +34,7 @@ public class NinjaAvatar extends Ninja
         
         public NinjaAvatarAttributes(String name) {
             super(name);
-            setModelFile("assets/models/collada/Avatars/Male2/Male_Bind.dae");
+            setModelFile("assets/models/collada/Avatars/MaleZip/MaleBind.dae");
             ArrayList<String> anims = new ArrayList<String>();
             anims.add("assets/models/collada/Avatars/MaleZip/Male_Idle.dae");
             anims.add("assets/models/collada/Avatars/MaleZip/Male_Walk.dae");

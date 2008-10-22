@@ -1083,6 +1083,8 @@ public class PScene extends PNode implements RepositoryUser
      */
     public Texture loadTexture(URL textureLocation)
     {
+        System.out.println("Loading a texture in PScene: " + textureLocation);
+        
         // Create a suitable asset
         SharedAsset texture = new SharedAsset(getRepository(), new AssetDescriptor(SharedAssetType.Texture, textureLocation));
         

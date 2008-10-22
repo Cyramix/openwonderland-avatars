@@ -44,7 +44,7 @@ public interface SpatialObject
      * Returns the nearest obstacle center position
      * @return
      */
-    public Vector3f getNearestObstaclePosition(Vector3f myPosition);
+    public PSphere getNearestObstacleSphere(Vector3f myPosition);
     
     /**
      * Adds this object to an object collection

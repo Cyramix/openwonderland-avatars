@@ -21,6 +21,7 @@ import com.jme.math.Vector3f;
 import imi.character.CharacterSteeringHelm;
 import imi.character.ninja.NinjaContext.TriggerNames;
 import imi.character.objects.SpatialObject;
+import imi.scene.boundingvolumes.PSphere;
 
 /**
  *
@@ -64,27 +65,28 @@ public class NinjaSteeringHelm extends CharacterSteeringHelm
                 
                 // Is there an imminent obstacle?
                 boolean steerToGoal = true;
-//                SpatialObject obj = ninjaContext.getNinja().getObjectCollection().findNearestChair(ninjaContext.getNinja(), 10.0f, 0.5f);
+//                SpatialObject obj = ninjaContext.getNinja().getObjectCollection().findNearestChair(ninjaContext.getNinja(), 10.0f, 0.4f);
 //                if (obj != null)
 //                {
 //                    // Steer away from the obstacle
 //                    Vector3f rightVec = ninjaContext.getController().getRightVector();
 //                    Vector3f myPos    = ninjaContext.getController().getPosition();
-//                    Vector3f directionToObstacle = obj.getNearestObstaclePosition(myPos).subtract(myPos);
-//                    directionToObstacle.normalizeLocal();
+//                    PSphere obst = obj.getNearestObstacleSphere(myPos);
+//                    Vector3f directionToObstacle = obst.getCenter().subtract(myPos);
+//                    directionToObstacle.normalizeLocal();                    
 //                    float dot = directionToObstacle.dot(rightVec);
 //                    if (dot > directionSensitivity)
 //                    {
-//                        ninjaContext.triggerPressed(TriggerNames.Move_Right.ordinal());
-//                        ninjaContext.triggerReleased(TriggerNames.Move_Left.ordinal());
+////                        ninjaContext.triggerPressed(TriggerNames.Move_Right.ordinal());
+////                        ninjaContext.triggerReleased(TriggerNames.Move_Left.ordinal());
 //                        ninjaContext.triggerReleased(TriggerNames.Move_Forward.ordinal());
 //                        ninjaContext.triggerPressed(TriggerNames.Move_Back.ordinal());
 //                        steerToGoal = false;
 //                    }
 //                    else if (dot < -directionSensitivity)
 //                    {
-//                        ninjaContext.triggerPressed(TriggerNames.Move_Left.ordinal());
-//                        ninjaContext.triggerReleased(TriggerNames.Move_Right.ordinal());
+////                        ninjaContext.triggerPressed(TriggerNames.Move_Left.ordinal());
+////                        ninjaContext.triggerReleased(TriggerNames.Move_Right.ordinal());
 //                        ninjaContext.triggerReleased(TriggerNames.Move_Forward.ordinal());
 //                        ninjaContext.triggerPressed(TriggerNames.Move_Back.ordinal());
 //                        steerToGoal = false;
