@@ -204,7 +204,7 @@ public abstract class Character extends Entity implements SpatialObject
         addComponent(ProcessorCollectionComponent.class, processorCollection);
         
         // Add the entity to the world manager
-        wm.addEntity(this);    
+        wm.addEntity(this);   
     }
     
     /***
@@ -273,7 +273,7 @@ public abstract class Character extends Entity implements SpatialObject
     {
         return new Attributes(name);
     }
-
+    
     /***
      * Override this method to initialize the character's attributes diffrently
      */

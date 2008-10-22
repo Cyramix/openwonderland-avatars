@@ -17,7 +17,6 @@
  */
 package imi.tests;
 
-import com.sun.org.apache.bcel.internal.verifier.exc.VerificationException;
 import java.util.ArrayList;
 
 import imi.scene.PMatrix;

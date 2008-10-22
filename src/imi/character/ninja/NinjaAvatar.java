@@ -61,19 +61,20 @@ public class NinjaAvatar extends Ninja
         PMatrix origin = new PMatrix();
         origin.buildRotationY(160.0f);
         m_modelInst.getTransform().setLocalMatrix(origin);
-                
+        
+        // Tweak animation names and speeds
         m_context.getController().setReverseHeading(true);
         m_context.getStates().get(IdleState.class).setAnimationName("Male_Idle");
         m_context.getStates().get(PunchState.class).setAnimationName("Male_Wave");
         m_context.getStates().get(TurnState.class).setAnimationName("Male_Idle");
         m_context.getStates().get(WalkState.class).setAnimationName("Male_Walk");
-        m_context.getStates().get(WalkState.class).setAnimationSpeed(4.0f);
+        m_context.getStates().get(WalkState.class).setAnimationSpeed(3.0f);
         m_context.getStates().get(SitState.class).setAnimationName("Male_StandToSit");
         m_context.getStates().get(SitState.class).setAnimationSpeed(2.0f);
         ((SitState)m_context.getStates().get(SitState.class)).setIdleSittingAnimationName("Male_Sitting");
-        ((SitState)m_context.getStates().get(SitState.class)).setGettingUpAnimationName("Male_StandToSit");
+        ((SitState)m_context.getStates().get(SitState.class)).setGettingUpAnimationName("Male_StandToSit"); 
     }
-    
+        
     @Override
     protected Attributes createAttributes(String name)
     {
