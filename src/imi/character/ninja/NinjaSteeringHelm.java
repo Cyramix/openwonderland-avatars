@@ -43,8 +43,10 @@ public class NinjaSteeringHelm extends CharacterSteeringHelm
     
     private int precisionCounter = 0;
     
+    private boolean bAvoidObstacles = false;
+    
     private float walkBack = -1.0f;
-    private float walkBackTime = 3.0f;
+    private float walkBackTime = 2.0f;
     private float turnBackTime = 0.4f;
         
     public NinjaSteeringHelm(String name, NinjaContext gameContext)
@@ -59,7 +61,7 @@ public class NinjaSteeringHelm extends CharacterSteeringHelm
         if (!enabledState)
             return;
         
-        // TODO - this section is about to be re-architected and cleaned up
+        // TODO : clean up and lay out combinations framework for steering behaviors
         
         if (!reachedGoal)
         {
@@ -67,25 +69,26 @@ public class NinjaSteeringHelm extends CharacterSteeringHelm
             float distanceFromGoal = goalPosition.distance(ninjaContext.getController().getPosition());
             if (distanceFromGoal > approvedDistanceFromGoal)
             {
+                boolean steerToGoal = true;
                 // Are we walking backwards to get away from an obstacle?
                 if (walkBack >= 0.0f)
                 {
                     ninjaContext.triggerReleased(TriggerNames.Move_Forward.ordinal());
                     ninjaContext.triggerPressed(TriggerNames.Move_Back.ordinal());
-                    
+
                     walkBack += deltaTime;
-                    
+
                     // stop truning while walking backwards
                     if (walkBack > turnBackTime)
                     {
                         ninjaContext.triggerReleased(TriggerNames.Move_Right.ordinal());
                         ninjaContext.triggerReleased(TriggerNames.Move_Left.ordinal());
                     }
-                    
+
                     // stop walking backwards
                     if (walkBack > walkBackTime)
                         walkBack = -1.0f;
-                    
+
                     return;
                 }
                 else
@@ -94,61 +97,67 @@ public class NinjaSteeringHelm extends CharacterSteeringHelm
                     ninjaContext.triggerPressed(TriggerNames.Move_Forward.ordinal());
                     ninjaContext.triggerReleased(TriggerNames.Move_Back.ordinal());
                 }
+
+                if (bAvoidObstacles)
+                {
+                    // Is there an imminent obstacle?
+                    SpatialObject obj = null;
+                    if (ninjaContext.getNinja().getObjectCollection() != null)
+                        obj = ninjaContext.getNinja().getObjectCollection().findNearestChair(ninjaContext.getNinja(), 3.0f, 0.4f);
+                    if (obj != null && distanceFromGoal > 2.0f)
+                    {
+                        PSphere obstacleBV = obj.getNearestObstacleSphere(ninjaContext.getController().getPosition());
+                        PSphere characterBV = ninjaContext.getNinja().getBoundingSphere();
+                        if (characterBV.isColliding(obstacleBV) && obstacleBV.getCenter().distance(characterBV.getCenter()) < 2.0f)
+                        {
+                            // Walk back if colliding
+                            walkBack    = 0.0f;
+                            steerToGoal = false;
+                            ninjaContext.resetTriggersAndActions();
+
+                            Vector3f rightVec = ninjaContext.getController().getRightVector();
+                            Vector3f directionToObstacle = obstacleBV.getCenter().subtract(ninjaContext.getController().getPosition());
+                            directionToObstacle.normalizeLocal();
+                            float dot = directionToObstacle.dot(rightVec);
+
+                            // Turn away
+                            if (dot > directionSensitivity)
+                            {
+                                ninjaContext.triggerPressed(TriggerNames.Move_Right.ordinal());
+                                ninjaContext.triggerReleased(TriggerNames.Move_Left.ordinal());
+                            }
+                            else if (dot < -directionSensitivity)
+                            {
+                                ninjaContext.triggerPressed(TriggerNames.Move_Left.ordinal());
+                                ninjaContext.triggerReleased(TriggerNames.Move_Right.ordinal());
+                            }
+                        }
+                        else
+                        {
+                            // Try to prevent a collision with an obstacle
+                            Vector3f rightVec = ninjaContext.getController().getRightVector();
+                            Vector3f directionToObstacle = obstacleBV.getCenter().subtract(ninjaContext.getController().getPosition());
+                            directionToObstacle.normalizeLocal();
+                            float dot = directionToObstacle.dot(rightVec);
+
+                            if (dot > directionSensitivity)
+                            {
+                                ninjaContext.triggerPressed(TriggerNames.Move_Left.ordinal());
+                                ninjaContext.triggerReleased(TriggerNames.Move_Right.ordinal());
+                            }
+                            else if (dot < -directionSensitivity)
+                            {
+                                ninjaContext.triggerPressed(TriggerNames.Move_Right.ordinal());
+                                ninjaContext.triggerReleased(TriggerNames.Move_Left.ordinal());
+                            }
+
+                            ninjaContext.triggerPressed(TriggerNames.Move_Forward.ordinal());
+                            ninjaContext.triggerReleased(TriggerNames.Move_Back.ordinal());
+                            steerToGoal = false;
+                        }
+                    }
+                }
                 
-                // Is there an imminent obstacle?
-                boolean steerToGoal = true;
-                //if (ninjaContext.getNinja().getObjectCollection() != null)
-                //SpatialObject obj = ninjaContext.getNinja().getObjectCollection().findNearestChair(ninjaContext.getNinja(), 10.0f, 0.4f);
-//                if (obj != null)
-//                {
-//                    PSphere obstacleBV = obj.getNearestObstacleSphere(ninjaContext.getController().getPosition());
-//                    PSphere characterBV = ninjaContext.getNinja().getBoundingSphere();
-//                    if (characterBV.isColliding(obstacleBV))
-//                    {
-//                        walkBack    = 0.0f;
-//                        steerToGoal = false;
-//                        ninjaContext.resetTriggersAndActions();
-//                        
-//                        Vector3f rightVec = ninjaContext.getController().getRightVector();
-//                        Vector3f directionToObstacle = obstacleBV.getCenter().subtract(ninjaContext.getController().getPosition());
-//                        directionToObstacle.normalizeLocal();
-//                        float dot = directionToObstacle.dot(rightVec);
-//                        
-//                        if (dot > directionSensitivity)
-//                        {
-//                            ninjaContext.triggerPressed(TriggerNames.Move_Right.ordinal());
-//                            ninjaContext.triggerReleased(TriggerNames.Move_Left.ordinal());
-//                        }
-//                        else if (dot < -directionSensitivity)
-//                        {
-//                            ninjaContext.triggerPressed(TriggerNames.Move_Left.ordinal());
-//                            ninjaContext.triggerReleased(TriggerNames.Move_Right.ordinal());
-//                        }
-//                        
-//                        //CheckPositiveDot()
-//                    }
-//                    else
-//                    {
-//                        Vector3f rightVec = ninjaContext.getController().getRightVector();
-//                        Vector3f directionToObstacle = obstacleBV.getCenter().subtract(ninjaContext.getController().getPosition());
-//                        directionToObstacle.normalizeLocal();
-//                        float dot = directionToObstacle.dot(rightVec);
-//                        
-//                        if (dot > directionSensitivity)
-//                        {
-//                            ninjaContext.triggerPressed(TriggerNames.Move_Left.ordinal());
-//                            ninjaContext.triggerReleased(TriggerNames.Move_Right.ordinal());
-//                        }
-//                        else if (dot < -directionSensitivity)
-//                        {
-//                            ninjaContext.triggerPressed(TriggerNames.Move_Right.ordinal());
-//                            ninjaContext.triggerReleased(TriggerNames.Move_Left.ordinal());
-//                        }
-//                        
-//                        ninjaContext.triggerPressed(TriggerNames.Move_Forward.ordinal());
-//                        ninjaContext.triggerReleased(TriggerNames.Move_Back.ordinal());
-//                    }
-//                }
                 if (steerToGoal)
                 {
                     // Steer towards the goal
