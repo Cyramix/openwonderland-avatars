@@ -49,19 +49,12 @@ public class Ninja extends imi.character.Character
         m_context = new NinjaContext(this);
     }
             
-    // modelIMI can be null
-    public Ninja(String name, PMatrix origin, String modelIMI, WorldManager wm)
+    public Ninja(String name, PMatrix origin, float visualScale, WorldManager wm)
     {
-        super(name, origin, modelIMI, wm);
+        super(name, origin, null, null, visualScale, wm);
         m_context = new NinjaContext(this);
     }
-    
-    public Ninja(String name, PMatrix origin, String modelFile, String textureFile, float visualScale, WorldManager wm)
-    {
-        super(name, origin, modelFile, textureFile, visualScale, wm);
-        m_context = new NinjaContext(this);
-    }
-    
+        
     @Override
     protected Attributes createAttributes(String name)
     {

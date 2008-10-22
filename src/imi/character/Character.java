@@ -591,7 +591,9 @@ public abstract class Character extends Entity implements SpatialObject
     {
         if (m_modelInst.getBoundingSphere() == null)
             m_modelInst.calculateBoundingSphere();
-        return m_modelInst.getBoundingSphere();
+        PSphere result = new PSphere(m_modelInst.getBoundingSphere());
+        result.setCenter(m_modelInst.getTransform().getWorldMatrix(false).getTranslation());
+        return result;
     }
     
     /**

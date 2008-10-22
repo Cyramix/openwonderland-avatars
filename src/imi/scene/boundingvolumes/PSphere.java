@@ -35,6 +35,12 @@ public class PSphere
         m_fRadius = radius;
     }
     
+    public PSphere(PSphere other)
+    {
+        m_Center.set(other.m_Center);
+        m_fRadius = other.m_fRadius;
+    }
+    
     public Vector3f getCenter()
     {
         return m_Center;
@@ -49,6 +55,14 @@ public class PSphere
     {
         m_Center.set(center);
         m_fRadius = radius;
+    }
+
+    public void setCenter(Vector3f Center) {
+        this.m_Center = Center;
+    }
+
+    public void setRadius(float Radius) {
+        this.m_fRadius = Radius;
     }
 
     //  Clears the Sphere.

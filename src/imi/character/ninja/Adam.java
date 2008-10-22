@@ -39,7 +39,8 @@ public class Adam extends Ninja
     
     public Adam(String name, WorldManager wm)
     {
-        super(name, null, null, null, 0.06f, wm);
+        //super(name, null, null, null, 0.06f, wm); // ninja scale
+        super(name, null, 0.0135f, wm); // avatar scale
         
         // Rotate around
         PMatrix origin = new PMatrix();

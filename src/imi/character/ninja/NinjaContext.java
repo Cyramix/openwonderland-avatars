@@ -161,18 +161,13 @@ public class NinjaContext extends GameContext
             if (obj != null)
             {
                 Vector3f pos = ((Chair)obj).getGoalPosition();
-                
-                
-//                    PSphere obst = obj.getNearestObstacleSphere(pos);
-//                    pos = obst.getCenter();
-                    
                 Vector3f direction = ((Chair)obj).getGoalForwardVector();
                 steering.setGoalPosition(pos);
                 steering.setSittingDirection(direction);
                 Goal goalPoint = (Goal) ninja.getWorldManager().getUserData(Goal.class);
                 if (goalPoint != null)
                 {
-                    PMatrix goal = new PMatrix(); 
+                    PMatrix goal = new PMatrix(pos); 
                     goal.lookAt(pos, pos.add(direction), Vector3f.UNIT_Y);
                     goal.invert();
                     goalPoint.getTransform().setLocalMatrix(goal);

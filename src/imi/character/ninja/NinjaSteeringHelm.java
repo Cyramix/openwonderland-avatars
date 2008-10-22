@@ -42,6 +42,10 @@ public class NinjaSteeringHelm extends CharacterSteeringHelm
     private boolean reachedGoal = false;
     
     private int precisionCounter = 0;
+    
+    private float walkBack = -1.0f;
+    private float walkBackTime = 3.0f;
+    private float turnBackTime = 0.4f;
         
     public NinjaSteeringHelm(String name, NinjaContext gameContext)
     {
@@ -61,35 +65,86 @@ public class NinjaSteeringHelm extends CharacterSteeringHelm
             float distanceFromGoal = goalPosition.distance(ninjaContext.getController().getPosition());
             if (distanceFromGoal > approvedDistanceFromGoal)
             {
-                ninjaContext.triggerPressed(TriggerNames.Move_Forward.ordinal());
+                // Are we walking backwards to get away from an obstacle?
+                if (walkBack >= 0.0f)
+                {
+                    ninjaContext.triggerReleased(TriggerNames.Move_Forward.ordinal());
+                    ninjaContext.triggerPressed(TriggerNames.Move_Back.ordinal());
+                    
+                    walkBack += deltaTime;
+                    
+                    // stop truning while walking backwards
+                    if (walkBack > turnBackTime)
+                    {
+                        ninjaContext.triggerReleased(TriggerNames.Move_Right.ordinal());
+                        ninjaContext.triggerReleased(TriggerNames.Move_Left.ordinal());
+                    }
+                    
+                    // stop walking backwards
+                    if (walkBack > walkBackTime)
+                        walkBack = -1.0f;
+                    
+                    return;
+                }
+                else
+                {
+                    // If not walk forwards
+                    ninjaContext.triggerPressed(TriggerNames.Move_Forward.ordinal());
+                    ninjaContext.triggerReleased(TriggerNames.Move_Back.ordinal());
+                }
                 
                 // Is there an imminent obstacle?
                 boolean steerToGoal = true;
-//                SpatialObject obj = ninjaContext.getNinja().getObjectCollection().findNearestChair(ninjaContext.getNinja(), 10.0f, 0.4f);
+                //if (ninjaContext.getNinja().getObjectCollection() != null)
+                //SpatialObject obj = ninjaContext.getNinja().getObjectCollection().findNearestChair(ninjaContext.getNinja(), 10.0f, 0.4f);
 //                if (obj != null)
 //                {
-//                    // Steer away from the obstacle
-//                    Vector3f rightVec = ninjaContext.getController().getRightVector();
-//                    Vector3f myPos    = ninjaContext.getController().getPosition();
-//                    PSphere obst = obj.getNearestObstacleSphere(myPos);
-//                    Vector3f directionToObstacle = obst.getCenter().subtract(myPos);
-//                    directionToObstacle.normalizeLocal();                    
-//                    float dot = directionToObstacle.dot(rightVec);
-//                    if (dot > directionSensitivity)
+//                    PSphere obstacleBV = obj.getNearestObstacleSphere(ninjaContext.getController().getPosition());
+//                    PSphere characterBV = ninjaContext.getNinja().getBoundingSphere();
+//                    if (characterBV.isColliding(obstacleBV))
 //                    {
-////                        ninjaContext.triggerPressed(TriggerNames.Move_Right.ordinal());
-////                        ninjaContext.triggerReleased(TriggerNames.Move_Left.ordinal());
-//                        ninjaContext.triggerReleased(TriggerNames.Move_Forward.ordinal());
-//                        ninjaContext.triggerPressed(TriggerNames.Move_Back.ordinal());
+//                        walkBack    = 0.0f;
 //                        steerToGoal = false;
+//                        ninjaContext.resetTriggersAndActions();
+//                        
+//                        Vector3f rightVec = ninjaContext.getController().getRightVector();
+//                        Vector3f directionToObstacle = obstacleBV.getCenter().subtract(ninjaContext.getController().getPosition());
+//                        directionToObstacle.normalizeLocal();
+//                        float dot = directionToObstacle.dot(rightVec);
+//                        
+//                        if (dot > directionSensitivity)
+//                        {
+//                            ninjaContext.triggerPressed(TriggerNames.Move_Right.ordinal());
+//                            ninjaContext.triggerReleased(TriggerNames.Move_Left.ordinal());
+//                        }
+//                        else if (dot < -directionSensitivity)
+//                        {
+//                            ninjaContext.triggerPressed(TriggerNames.Move_Left.ordinal());
+//                            ninjaContext.triggerReleased(TriggerNames.Move_Right.ordinal());
+//                        }
+//                        
+//                        //CheckPositiveDot()
 //                    }
-//                    else if (dot < -directionSensitivity)
+//                    else
 //                    {
-////                        ninjaContext.triggerPressed(TriggerNames.Move_Left.ordinal());
-////                        ninjaContext.triggerReleased(TriggerNames.Move_Right.ordinal());
-//                        ninjaContext.triggerReleased(TriggerNames.Move_Forward.ordinal());
-//                        ninjaContext.triggerPressed(TriggerNames.Move_Back.ordinal());
-//                        steerToGoal = false;
+//                        Vector3f rightVec = ninjaContext.getController().getRightVector();
+//                        Vector3f directionToObstacle = obstacleBV.getCenter().subtract(ninjaContext.getController().getPosition());
+//                        directionToObstacle.normalizeLocal();
+//                        float dot = directionToObstacle.dot(rightVec);
+//                        
+//                        if (dot > directionSensitivity)
+//                        {
+//                            ninjaContext.triggerPressed(TriggerNames.Move_Left.ordinal());
+//                            ninjaContext.triggerReleased(TriggerNames.Move_Right.ordinal());
+//                        }
+//                        else if (dot < -directionSensitivity)
+//                        {
+//                            ninjaContext.triggerPressed(TriggerNames.Move_Right.ordinal());
+//                            ninjaContext.triggerReleased(TriggerNames.Move_Left.ordinal());
+//                        }
+//                        
+//                        ninjaContext.triggerPressed(TriggerNames.Move_Forward.ordinal());
+//                        ninjaContext.triggerReleased(TriggerNames.Move_Back.ordinal());
 //                    }
 //                }
                 if (steerToGoal)

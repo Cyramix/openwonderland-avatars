@@ -55,7 +55,7 @@ public class NinjaAvatar extends Ninja
     
     public NinjaAvatar(String name, WorldManager wm) 
     {
-        super(name, null, null, null, 5.0f, wm);
+        super(name, wm);
         
         // Rotate around
         PMatrix origin = new PMatrix();

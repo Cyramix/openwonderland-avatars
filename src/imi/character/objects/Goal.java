@@ -53,7 +53,7 @@ public class Goal
         
     public Goal(WorldManager wm)
     {
-        float       radius  = 1.15f;
+        float       radius  = 0.45f;
         ColorRGBA   color   = ColorRGBA.blue;
         PMatrix     origin  = new PMatrix(new Vector3f(10.0f, 0.0f, 10.0f));
         

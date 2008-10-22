@@ -44,7 +44,7 @@ public class AdamAndFriends extends DemoBase
     protected void createDemoEntities(WorldManager wm) 
     {
         // Shadow Blade
-        Ninja shadowBlade = new Ninja("Shadow Blade", /*"assets/configurations/ninjaDude.xml",*/ wm);
+        Ninja shadowBlade = new Ninja("Shadow Blade", null, 0.22f, wm);
         NinjaControlScheme control = (NinjaControlScheme)((JSceneEventProcessor)wm.getUserData(JSceneEventProcessor.class)).setDefault(new NinjaControlScheme(shadowBlade));
         shadowBlade.selectForInput();
         control.getNinjaTeam().add(shadowBlade);

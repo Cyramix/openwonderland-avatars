@@ -168,14 +168,11 @@ public class ObjectCollection extends Entity
      */
     public boolean isColliding(SpatialObject obj) 
     {
-        PSphere objSphere = new PSphere(obj.getBoundingSphere().getCenter().add(obj.getPosition()), obj.getBoundingSphere().getRadius());
-        PSphere checkSphere = new PSphere();
         for (SpatialObject check : objects)
         {
             if (check != obj)
             {
-                checkSphere.set(check.getBoundingSphere().getCenter().add(check.getPosition()), check.getBoundingSphere().getRadius());
-                if (checkSphere.isColliding(objSphere))
+                if (check.getBoundingSphere().isColliding(obj.getBoundingSphere()))
                     return true;
             }
         }
