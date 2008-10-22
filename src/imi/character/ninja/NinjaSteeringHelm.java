@@ -37,7 +37,7 @@ public class NinjaSteeringHelm extends CharacterSteeringHelm
     
     private float directionSensitivity = 0.05f;
     
-    private float approvedDistanceFromGoal = 1.0f;
+    private float approvedDistanceFromGoal = 0.05f;
     
     private boolean reachedGoal = false;
     
@@ -58,7 +58,9 @@ public class NinjaSteeringHelm extends CharacterSteeringHelm
     {
         if (!enabledState)
             return;
-    
+        
+        // TODO - this section is about to be re-architected and cleaned up
+        
         if (!reachedGoal)
         {
             // Seek the goal
