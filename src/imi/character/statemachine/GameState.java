@@ -21,6 +21,8 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Stack;
 import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -39,6 +41,8 @@ public class GameState extends NamedUpdatableObject
     private float transitionDuration = 0.2f;
     
     private boolean bAnimationSet = false;
+    
+    protected Logger logger = Logger.getLogger(GameState.class.getName());
         
     public static class Action
     {
@@ -148,6 +152,8 @@ public class GameState extends NamedUpdatableObject
     protected void stateExit(GameContext owner)
     {
         //System.out.println(getName() + " exit");
+        if (logger.isLoggable(Level.FINE))
+            logger.fine(getName() + " Exit");
     }
 
     /**
@@ -156,7 +162,9 @@ public class GameState extends NamedUpdatableObject
      */
     protected void stateEnter(GameContext owner)
     {
-        System.out.println(getName() + " enter");
+//        System.out.println(getName() + " enter");
+        if (logger.isLoggable(Level.FINE))
+            logger.fine(getName() + " Enter");
         
         if (gameContext.getController().getWindow() != null)
             gameContext.getController().getWindow().setTitle(getName());

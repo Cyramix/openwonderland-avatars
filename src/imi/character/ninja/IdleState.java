@@ -81,6 +81,7 @@ public class IdleState extends GameState
     @Override
     protected void stateExit(GameContext owner)
     {
+        super.stateExit(owner);
     }
     
     @Override

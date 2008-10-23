@@ -125,6 +125,7 @@ public class WalkState extends GameState
     @Override
     protected void stateExit(GameContext owner)
     {
+        super.stateExit(owner);
         // Ninja's skeleton might be null untill loaded
         SkeletonNode skeleton = ninjaContext.getSkeleton();
         if (skeleton != null)   
