@@ -25,6 +25,7 @@ import com.jme.util.TextureManager;
 import imi.scene.PJoint;
 import imi.loaders.PPolygonTriMeshAssembler;
 import imi.loaders.collada.Collada;
+import imi.loaders.collada.ColladaLoaderParams;
 import imi.loaders.ms3d.SkinnedMesh_MS3D_Importer;
 import imi.loaders.repository.AssetDescriptor;
 import imi.loaders.repository.AssetInitializer;
@@ -606,6 +607,7 @@ public class PScene extends PNode implements RepositoryUser
      */
     private void installAsset(SharedAssetPlaceHolder placeHolder, SharedAsset asset) 
     {
+        m_SharedAssets.add(asset);
         // replace the placeholder and keep the kids from both
         PNode parent = placeHolder.getParent();
         if (parent == null) // The placeholder should have a target
@@ -624,17 +626,35 @@ public class PScene extends PNode implements RepositoryUser
         }
         else if (asset.getAssetData() instanceof PScene)
         {
-            PNode root = processNode((PNode)((PScene)asset.getAssetData()).getInstances());
-            //root.setName(asset.getDescriptor().getType() + " " + asset.getDescriptor().getFile().getName());
-            root.setName(placeHolder.getName());
-            
-            parent.removeChild(placeHolder);
-            while(root.getChildrenCount() > 0)
-                parent.addChild(root.getChild(0));
-                        
-            // Initialize this asset now that it is loaded
-            if (asset.getInitializer() != null)
-                asset.getInitializer().initialize(parent);  
+            processSharedAsset(asset, new BooleanPointer(true));
+//            PScene otherScene = ((PScene)asset.getAssetData());
+//            // The first model in the collada scene is the model we loaded from the collada file
+//            PNode newInstance = processNode(otherScene.getInstances());
+//            newInstance.setName(asset.getDescriptor().getType() + " " + asset.getDescriptor().getLocation().getFile());
+//            // copy over the shared assets from the other PScene
+//            for (SharedAsset sa : otherScene.getAssetList())
+//                m_SharedAssets.add(sa);
+//            // Initialize this asset now that it is loaded
+//            if (asset.getInitializer() != null)
+//                asset.getInitializer().initialize(newInstance); 
+//            m_Instances.addChild(newInstance);
+//            PScene otherScene = ((PScene)asset.getAssetData());
+//            PNode root = processNode(otherScene.getInstances());
+//            //root.setName(asset.getDescriptor().getType() + " " + asset.getDescriptor().getFile().getName());
+//            root.setName(placeHolder.getName());
+//            
+//            for (SharedAsset sa : otherScene.getAssetList())
+//            {
+//                m_SharedAssets.add(sa);
+//            }
+//            
+//            parent.removeChild(placeHolder);
+//            while(root.getChildrenCount() > 0)
+//                parent.addChild(root.getChild(0));
+//                        
+//            // Initialize this asset now that it is loaded
+//            if (asset.getInitializer() != null)
+//                asset.getInitializer().initialize(parent);  
         }
         else // A mesh or a skinned mesh
         {
@@ -798,25 +818,20 @@ public class PScene extends PNode implements RepositoryUser
                 else if(meshAsset.getDescriptor().getType() == SharedAssetType.Mesh)
                 {
                     if (meshAsset.getDescriptor().getLocation().getPath().endsWith("ms3d"))
-                    {
-                        // TODO: Convert to the new MS3D non skinned mesh loader when it is completed
-//                        PPolygonMesh mesh = new PPolygonMesh();
-//                        new SkinnedMesh_MS3D_Importer().load(mesh, meshAsset.getDescriptor().getFile().getPath());
-//                    
-//                        // Build the JME geometry
-//                        mesh.submit(m_TriMeshAssembler);
-//                        // Set the data for the shared asset    
-//                        meshAsset.setData(mesh);   
+                    { 
                     }
                 }
                 else if (isColladaType(meshAsset.getDescriptor().getType()))
                 {
                     // Load the collada file to the PScene
                     Collada colladaLoader = new Collada();
-                    colladaLoader.setLoadRig(true); // TEMP TEMP TEMP TEMP TEMP TEMP TEMP TEMP TEMP TEMP TEMP TEMP TEMP TEMP TEMP TEMP TEMP TEMP TEMP TEMP TEMP TEMP 
+                    if (meshAsset.getUserData() != null)
+                    {
+                        ColladaLoaderParams loaderParams = (ColladaLoaderParams)meshAsset.getUserData();
+                        colladaLoader.applyConfiguration(loaderParams);
+                    }
                     PScene colladaScene = new PScene("COLLADA : " + meshAsset.getDescriptor().getLocation().getFile(), m_WorldManager);
-                    colladaScene.setUseRepository(false);
-                    
+                    colladaScene.setUseRepository(true);
                     colladaLoader.load(colladaScene, meshAsset.getDescriptor().getLocation());
                         
                     meshAsset.setAssetData(colladaScene);
@@ -984,10 +999,15 @@ public class PScene extends PNode implements RepositoryUser
             // ColldaScene case
             else if (loadedModel.getAssetData() instanceof PScene)
             {
+                PScene otherScene = ((PScene)loadedModel.getAssetData());
                 // The first model in the collada scene is the model we loaded from the collada file
-                PNode newInstance = processNode(((PScene)loadedModel.getAssetData()).getInstances());
+                PNode newInstance = processNode(otherScene.getInstances());
                 newInstance.setName(loadedModel.getDescriptor().getType() + " " + loadedModel.getDescriptor().getLocation().getFile());
-                
+                // copy over the shared assets from the other PScene
+                for (SharedAsset sa : otherScene.getAssetList())
+                {
+                    m_SharedAssets.add(sa);
+                }
                 result = newInstance;
             }
             else if (loadedModel.getAssetData() instanceof SkeletonNode)
@@ -1083,7 +1103,7 @@ public class PScene extends PNode implements RepositoryUser
      */
     public Texture loadTexture(URL textureLocation)
     {
-        System.out.println("Loading a texture in PScene: " + textureLocation);
+        System.out.println("Thread: " + Thread.currentThread().getName() + " -Loading a texture in PScene: " + textureLocation);
         
         // Create a suitable asset
         SharedAsset texture = new SharedAsset(getRepository(), new AssetDescriptor(SharedAssetType.Texture, textureLocation));

@@ -219,18 +219,18 @@ public class CameraProcessor extends AWTEventProcessorComponent {
     private void processRotations(MouseEvent me) {
         int deltaX = 0;
         int deltaY = 0;
-        int currentX = 0;
-        int currentY = 0;
-        currentX = me.getX();
-        currentY = me.getY();
+        int localcurrentX = 0;
+        int localcurrentY = 0;
+        localcurrentX = me.getX();
+        localcurrentY = me.getY();
 
         if (lastMouseX == -1) {
             // First time through, just initialize
-            lastMouseX = currentX;
-            lastMouseY = currentY;
+            lastMouseX = localcurrentX;
+            lastMouseY = localcurrentY;
         } else {
-            deltaX = currentX - lastMouseX;
-            deltaY = currentY - lastMouseY;
+            deltaX = localcurrentX - lastMouseX;
+            deltaY = localcurrentY - lastMouseY;
             deltaX = -deltaX;
 
             rotY += (deltaX * scaleX);
@@ -240,8 +240,8 @@ public class CameraProcessor extends AWTEventProcessorComponent {
             } else if (rotX < -60.0f) {
                 rotX = -60.0f;
             }
-            lastMouseX = currentX;
-            lastMouseY = currentY;
+            lastMouseX = localcurrentX;
+            lastMouseY = localcurrentY;
         }
     }
     

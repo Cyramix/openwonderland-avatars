@@ -17,6 +17,8 @@
  */
 package imi.scene.camera.state;
 
+import com.jme.math.Vector3f;
+
 /**
  * This class provides all the state information needed by a 
  * @author Ronald E Dahlgren
@@ -26,16 +28,19 @@ public class AzimuthAngleState extends CameraState
     /** The current azimuth **/
     private Double m_azimuth    = null;
     /** The current elevation **/
-    private Double m_elevation      = null;
+    private Double m_elevation  = null;
     /** The current radius **/
     private Double m_radius     = null;
+    /** The target we are inspecting **/ 
+    private Vector3f m_target   = null;
     
     /**
      * Construct a new instance
      */
     public AzimuthAngleState()
     {
-        set(0.0, 0.0, 0.0);
+        setType(CameraStateType.AzimuthAngle);
+        set(0.0, 0.0, 0.0, new Vector3f());
     }
     
     /**
@@ -44,9 +49,10 @@ public class AzimuthAngleState extends CameraState
      * @param angle Radians
      * @param radius
      */
-    public AzimuthAngleState(double azimuth, double elevation, double radius)
+    public AzimuthAngleState(double azimuth, double elevation, double radius, Vector3f target)
     {
-        set(azimuth, elevation, radius);
+        setType(CameraStateType.AzimuthAngle);
+        set(azimuth, elevation, radius, target);
     }
     
     /**
@@ -55,7 +61,8 @@ public class AzimuthAngleState extends CameraState
      */
     public AzimuthAngleState(AzimuthAngleState that)
     {
-        set(that.getAzimuth(), that.getElevation(), that.getRadius());
+        setType(CameraStateType.AzimuthAngle);
+        set(that.getAzimuth(), that.getElevation(), that.getRadius(), that.getTarget());
     }
     
     
@@ -77,6 +84,11 @@ public class AzimuthAngleState extends CameraState
         return m_radius.doubleValue();
     }
     
+    public Vector3f getTarget()
+    {
+        return m_target;
+    }
+    
     public void setAzimuth(double angle)
     {
         m_azimuth = Double.valueOf(angle);
@@ -92,11 +104,17 @@ public class AzimuthAngleState extends CameraState
         m_radius = Double.valueOf(radius);
     }
     
-    private void set(double azimuth, double elevation, double radius)
+    public void setTarget(Vector3f target)
+    {
+        m_target = target;
+    }
+    
+    private void set(double azimuth, double elevation, double radius, Vector3f target)
     {
         m_azimuth = Double.valueOf(azimuth);
         m_elevation   = Double.valueOf(elevation);
         m_radius  = Double.valueOf(radius);
+        m_target = target;
     }
     
     private void clear()

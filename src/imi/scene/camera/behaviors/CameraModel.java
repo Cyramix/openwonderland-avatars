@@ -21,7 +21,7 @@ import imi.scene.PMatrix;
 import imi.scene.camera.state.CameraState;
 
 /**
- * Defines the way a camera model may be interacted with
+ * Defines the way a camera model may be interacted with.
  * @author Ronald E Dahlgren
  */
 public interface CameraModel 
@@ -37,4 +37,13 @@ public interface CameraModel
      * required for the implementing camera model
      */
     public void determineTransform(CameraState state, PMatrix transform) throws WrongStateTypeException;
+    
+    /**
+     * This method should be used to tunnel AWT events into the model. The model
+     * then operates on the state to reflect any changes caused by the input events.
+     * @param state The state to affect
+     * @param events AWT event array
+     * @throws imi.scene.camera.behaviors.WrongStateTypeException
+     */
+    public void handleInputEvents(CameraState state, Object[] events) throws WrongStateTypeException;
 }

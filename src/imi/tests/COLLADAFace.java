@@ -54,8 +54,8 @@ public class COLLADAFace extends DemoBase
     {
         // position and orient the camera
         
-        m_cameraProcessor.setPosition(new Vector3f(-10.0f, 0.0f, 10.0f));
-        m_cameraProcessor.setRotation(0.0f, 135.0f);
+        //m_cameraProcessor.setPosition(new Vector3f(-10.0f, 0.0f, 10.0f));
+        //m_cameraProcessor.setRotation(0.0f, 135.0f);
         
         String modelFilename = "assets/models/collada/Head/HeadRig1.dae";
         
