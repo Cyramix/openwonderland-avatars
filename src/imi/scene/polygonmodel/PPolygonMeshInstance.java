@@ -372,7 +372,14 @@ public class PPolygonMeshInstance extends PNode
         
         // Textures
         m_textureState.setEnabled(true);
-        m_textureInstaller = new TextureInstaller(m_geometry.getNumberOfTextures(), m_textureState);
+        // determine number of needed textures
+        int numNeeded = 0;
+        for (URL texture : meshMat.getTextures())
+        {
+            if (texture != null)
+                numNeeded++;
+        }
+        m_textureInstaller = new TextureInstaller(numNeeded, m_textureState);
         // TODO add functionality and data to this instance if we want 
         // to handle textures differently than the geometry
         boolean bNeedToUseTextureInstaller = false;
@@ -392,7 +399,7 @@ public class PPolygonMeshInstance extends PNode
                     m_textureState.setTexture(  m_PScene.loadTexture(meshMat.getTexture(i))  ,   i   );
             }
         }
-        if (!bNeedToUseTextureInstaller)
+        if (!bNeedToUseTextureInstaller || m_PScene.isUseRepository() == false)
             m_textureInstaller = null;
         m_instance.setRenderState(m_textureState);
         if (meshMat.getShader() != null)
@@ -502,6 +509,20 @@ public class PPolygonMeshInstance extends PNode
     
     }
     
-
+    public boolean isWaitingOnTextures()
+    {
+        if (m_textureInstaller != null)
+            return m_textureInstaller.isComplete();
+        return false;
+    }
+    
+    /**
+     * Set the target pscene used for loading textures, etc
+     * @param pscene
+     */
+    public void setPScene(PScene pscene)
+    {
+        m_PScene = pscene;
+    }
     
 }

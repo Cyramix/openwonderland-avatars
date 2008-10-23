@@ -18,16 +18,16 @@
 package imi.loaders.repository;
 
 import com.jme.image.Texture;
-import com.jme.scene.state.GLSLShaderObjectsState;
-import com.jme.scene.state.RenderState;
 import com.jme.util.TextureManager;
 import imi.loaders.collada.Collada;
 import imi.loaders.collada.ColladaLoaderParams;
 import imi.loaders.ms3d.SkinnedMesh_MS3D_Importer;
 import imi.scene.PScene;
 import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
-import java.net.MalformedURLException;
+import imi.scene.utils.tree.ColladaTransferProcessor;
+import imi.scene.utils.tree.TreeTraverser;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.jdesktop.mtgame.ProcessorArmingCollection;
@@ -146,13 +146,9 @@ public class RepositoryAsset extends ProcessorComponent
                                 m_home.getWorldManager());
                         scene.setUseRepository(true);
 
-                        try {
-                            colladaLoader.load(scene, m_descriptor.getLocation());
-                            m_data.add(scene);
-                        } catch (Exception ex) {
-                            m_data.clear();
-                            Logger.getLogger(RepositoryAsset.class.getName()).log(Level.SEVERE, null, ex);
-                        } 
+                        colladaLoader.load(scene, m_descriptor.getLocation());
+                       
+                        m_data.add(scene);
                     }
                     break;
                 case Model:

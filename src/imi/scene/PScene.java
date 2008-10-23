@@ -42,6 +42,7 @@ import imi.scene.polygonmodel.skinned.PPolygonSkinnedMesh;
 import imi.scene.polygonmodel.skinned.PPolygonSkinnedMeshInstance;
 import imi.scene.polygonmodel.skinned.SkinnedMeshJoint;
 import imi.scene.utils.PRenderer;
+import imi.scene.utils.tree.ColladaTransferProcessor;
 import imi.scene.utils.tree.PSceneSubmitHelper;
 import imi.scene.utils.tree.TreeTraverser;
 import imi.utils.BooleanPointer;
@@ -624,20 +625,29 @@ public class PScene extends PNode implements RepositoryUser
                 break;
             }
         }
-        else if (asset.getAssetData() instanceof PScene)
+        if (asset.getAssetData() instanceof PScene)
         {
-            processSharedAsset(asset, new BooleanPointer(true));
-//            PScene otherScene = ((PScene)asset.getAssetData());
-//            // The first model in the collada scene is the model we loaded from the collada file
-//            PNode newInstance = processNode(otherScene.getInstances());
-//            newInstance.setName(asset.getDescriptor().getType() + " " + asset.getDescriptor().getLocation().getFile());
-//            // copy over the shared assets from the other PScene
-//            for (SharedAsset sa : otherScene.getAssetList())
-//                m_SharedAssets.add(sa);
-//            // Initialize this asset now that it is loaded
-//            if (asset.getInitializer() != null)
-//                asset.getInitializer().initialize(newInstance); 
-//            m_Instances.addChild(newInstance);
+            PScene otherScene = ((PScene)asset.getAssetData());
+            // copy over the shared assets from the other PScene
+            for (SharedAsset sa : otherScene.getAssetList())
+                m_SharedAssets.add(sa);
+            
+            // The first model in the collada scene is the model we loaded from the collada file
+            PNode newInstance = processNode(otherScene.getInstances());
+            //setUseRepository(false);
+            ColladaTransferProcessor processor = new ColladaTransferProcessor(this);
+            TreeTraverser.breadthFirst(newInstance, processor);
+            //setUseRepository(true);
+            while (newInstance.getChildrenCount() > 0)
+            {
+                PNode kid = newInstance.getChild(0);
+                m_Instances.addChild(kid);
+                // Initialize this asset now that it is loaded
+                if (asset.getInitializer() != null)
+                    asset.getInitializer().initialize(kid); 
+            }
+            
+            
 //            PScene otherScene = ((PScene)asset.getAssetData());
 //            PNode root = processNode(otherScene.getInstances());
 //            //root.setName(asset.getDescriptor().getType() + " " + asset.getDescriptor().getFile().getName());
@@ -793,7 +803,7 @@ public class PScene extends PNode implements RepositoryUser
                 }
             }
             
-            // If we didn't found an asset to share
+            // If we didn't find an asset to share
             if (!foundSharedAsset)
             {
                 if (meshAsset.getDescriptor().getType() == SharedAssetType.SkinnedMesh)
@@ -830,7 +840,8 @@ public class PScene extends PNode implements RepositoryUser
                         ColladaLoaderParams loaderParams = (ColladaLoaderParams)meshAsset.getUserData();
                         colladaLoader.applyConfiguration(loaderParams);
                     }
-                    PScene colladaScene = new PScene("COLLADA : " + meshAsset.getDescriptor().getLocation().getFile(), m_WorldManager);
+                    PScene colladaScene = new PScene("COLLADA : " + 
+                            meshAsset.getDescriptor().getLocation().getFile(), m_WorldManager);
                     colladaScene.setUseRepository(true);
                     colladaLoader.load(colladaScene, meshAsset.getDescriptor().getLocation());
                         
