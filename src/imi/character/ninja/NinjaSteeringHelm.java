@@ -20,6 +20,7 @@ package imi.character.ninja;
 import com.jme.math.Vector3f;
 import imi.character.CharacterSteeringHelm;
 import imi.character.ninja.NinjaContext.TriggerNames;
+import imi.character.objects.Chair;
 import imi.character.objects.SpatialObject;
 import imi.scene.PMatrix;
 import imi.scene.boundingvolumes.PSphere;
@@ -50,9 +51,11 @@ public class NinjaSteeringHelm extends CharacterSteeringHelm
     private float walkBackTime = 2.0f;
     private float turnBackTime = 0.6f;
     
-//    private boolean bGoalGravity = true;
-//    private float   fGoalGravityRadius = 10.0f;
-//    private float   fGoalGravityForce  = 0.025f;
+    private SpatialObject goal = null;
+    
+    private boolean bGoalGravity = true;
+    private float   fGoalGravityRadius = 5.0f;
+    private float   fGoalGravityForce  = 0.0075f;
         
     public NinjaSteeringHelm(String name, NinjaContext gameContext)
     {
@@ -70,16 +73,25 @@ public class NinjaSteeringHelm extends CharacterSteeringHelm
         
         if (!reachedGoal)
         {   
+//            // If the chair is occupied then abort mission
+//            if (goal != null && ((Chair)goal).getOwner() != ninjaContext.getNinja())
+//            {
+//                ninjaContext.getController().getWindow().setTitle("Chair is Occupied!");
+//                enabledState = false;
+//                ninjaContext.resetTriggersAndActions();
+//                return;
+//            }
+            
             // Seek the goal
             float distanceFromGoal = goalPosition.distance(ninjaContext.getController().getPosition());
             if (distanceFromGoal > approvedDistanceFromGoal)
             {
-//                if (bGoalGravity && distanceFromGoal < fGoalGravityRadius)
-//                {
-//                    PMatrix local = ninjaContext.getController().getTransform().getLocalMatrix(true);
-//                    Vector3f pull = goalPosition.subtract(ninjaContext.getController().getPosition()).normalize().mult(fGoalGravityForce);
-//                    local.setTranslation(local.getTranslation().add(pull));
-//                }
+                if (bGoalGravity && distanceFromGoal < fGoalGravityRadius)
+                {
+                    PMatrix local = ninjaContext.getController().getTransform().getLocalMatrix(true);
+                    Vector3f pull = goalPosition.subtract(ninjaContext.getController().getPosition()).normalize().mult(fGoalGravityForce);
+                    local.setTranslation(local.getTranslation().add(pull));
+                }
                 
                 // Are we walking backwards to get away from an obstacle?
                 if (walkBack >= 0.0f)
@@ -117,8 +129,8 @@ public class NinjaSteeringHelm extends CharacterSteeringHelm
                     // Is there an imminent obstacle?
                     SpatialObject obj = null;
                     if (ninjaContext.getNinja().getObjectCollection() != null)
-                        obj = ninjaContext.getNinja().getObjectCollection().findNearestChair(ninjaContext.getNinja(), 4.0f, 0.4f);
-                    if (obj != null && distanceFromGoal > 2.0f)
+                        obj = ninjaContext.getNinja().getObjectCollection().findNearestChair(ninjaContext.getNinja(), 4.0f, 0.4f, false);
+                    if (obj != null && obj != goal && distanceFromGoal > 2.0f)
                     {
                         PSphere obstacleBV = obj.getNearestObstacleSphere(ninjaContext.getController().getPosition());
                         PSphere characterBV = ninjaContext.getNinja().getBoundingSphere();
@@ -298,6 +310,14 @@ public class NinjaSteeringHelm extends CharacterSteeringHelm
 
     public void setReachedGoal(boolean reachedGoal) {
         this.reachedGoal = reachedGoal;
+    }
+
+    public SpatialObject getGoal() {
+        return goal;
+    }
+
+    public void setGoal(SpatialObject goal) {
+        this.goal = goal;
     }
     
     

@@ -18,6 +18,7 @@
 package imi.character.ninja;
 
 import imi.character.ninja.NinjaContext.TriggerNames;
+import imi.character.objects.Chair;
 import imi.character.statemachine.GameState;
 import imi.character.statemachine.GameContext;
 import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
@@ -29,6 +30,8 @@ import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
 public class SitState extends GameState 
 {
     NinjaContext ninjaContext = null;
+    
+    Chair chair = null;
     
     private float counter = 0.0f;
     private float sittingAnimationTime = 0.4f;
@@ -57,12 +60,20 @@ public class SitState extends GameState
     }
     
     /**
-     * Entry point method, validates the transition
+     * Entry point method, validates the transition if the chair is not occupied
      * @param data - not used
      * @return true if the transition is validated
      */
     public boolean toSit(Object data)
     {
+        // is the chair occupied?
+        if (ninjaContext.getSteering().getGoal() instanceof Chair)
+        {
+            chair = (Chair)ninjaContext.getSteering().getGoal();
+            if (chair.getOwner() != ninjaContext.getNinja())
+                return false;
+        }
+        
         return true;
     }
     
@@ -70,6 +81,10 @@ public class SitState extends GameState
     protected void stateExit(GameContext owner)
     {
         super.stateExit(owner);
+        
+        // Set the chair to not occupied
+        if (chair != null)
+            chair.setOwner(null);
     }
     
     @Override
@@ -84,6 +99,13 @@ public class SitState extends GameState
         
         // Stop the character
         ninjaContext.getController().stop();
+        
+        // Set the chair to occupied
+        if (ninjaContext.getSteering().getGoal() instanceof Chair)
+        {
+            chair = (Chair)ninjaContext.getSteering().getGoal();
+            chair.setOwner(ninjaContext.getNinja());
+        }
     }
     
     @Override

@@ -49,11 +49,13 @@ import org.jdesktop.mtgame.WorldManager;
  */
 public class Goal 
 {
+    SpatialObject goal = null;
+    
     PPolygonModelInstance modelInst = null;
         
     public Goal(WorldManager wm)
     {
-        float       radius  = 0.45f;
+        float       radius  = 1.05f;
         ColorRGBA   color   = ColorRGBA.blue;
         PMatrix     origin  = new PMatrix(new Vector3f(10.0f, 0.0f, 10.0f));
         
@@ -68,7 +70,7 @@ public class Goal
         PMeshMaterial geometryMaterial = new PMeshMaterial();
         geometryMaterial.setColorMaterial(ColorMaterial.Diffuse); // Make the vert colors affect diffuse coloring
         geometryMaterial.setDiffuse(ColorRGBA.white);
-        PPolygonMesh sphereMesh = PMeshUtils.createSphere("Goal Sphere", Vector3f.ZERO, radius, 5, 5, color);
+        PPolygonMesh sphereMesh = PMeshUtils.createSphere("Goal Sphere", Vector3f.ZERO, radius, 2, 2, color);
         sphereMesh.setMaterial(geometryMaterial);
         sphereMesh.submit(new PPolygonTriMeshAssembler());
         modelAsset.setAssetData(sphereMesh);
@@ -102,6 +104,26 @@ public class Goal
         
     }
 
+    public SpatialObject getGoal() {
+        return goal;
+    }
+
+    public void setGoal(SpatialObject goal) {
+        this.goal = goal;
+        
+//        Vector3f pos       = goal.getPosition();
+//        Vector3f direction = goal.getForwardVector();
+//        PMatrix goalMatrix = new PMatrix(pos); 
+//        goalMatrix.lookAt(pos, pos.add(direction), Vector3f.UNIT_Y);
+//        goalMatrix.invert();
+//        modelInst.getTransform().setLocalMatrix(goalMatrix);
+//        modelInst.getTransform().getLocalMatrix(true).setScale(1.0f);
+//        //goalPoint.getTransform().getLocalMatrix(true).setTranslation(pos);
+//        PScene GPScene = getPScene();
+//        GPScene.setDirty(true, true);
+//        GPScene.submitTransforms();
+    }
+    
     public PScene getPScene() 
     {
         return (PScene) modelInst.getParent().getParent();

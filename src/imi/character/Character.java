@@ -32,6 +32,7 @@ import imi.character.objects.ObjectCollection;
 import imi.character.objects.SpatialObject;
 import imi.character.statemachine.GameContext;
 import imi.character.statemachine.TransitionObject;
+import imi.loaders.collada.ColladaLoaderParams;
 import imi.loaders.collada.Instruction;
 import imi.loaders.collada.InstructionProcessor;
 import imi.scene.JScene;
@@ -321,6 +322,7 @@ public abstract class Character extends Entity implements SpatialObject
             else if (m_attributes.getModelFile().endsWith(".dae"))
             {
                 SharedAsset character = new SharedAsset(m_pscene.getRepository(), new AssetDescriptor(SharedAssetType.COLLADA_Model, m_attributes.getModelFile()));
+                character.setUserData(new ColladaLoaderParams(true, true, false, false, 4, "name", null));
                 AssetInitializer init = new AssetInitializer() {
                     public boolean initialize(Object asset) {
 

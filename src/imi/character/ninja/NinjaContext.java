@@ -39,7 +39,6 @@ import imi.character.statemachine.GameContext;
 import imi.character.statemachine.GameState.Action;
 import imi.scene.PMatrix;
 import imi.scene.PScene;
-import imi.scene.boundingvolumes.PSphere;
 import java.util.Hashtable;
 
 /**
@@ -167,16 +166,21 @@ public class NinjaContext extends GameContext
             if (ninja.getObjectCollection() == null)
                 return;
             
-            SpatialObject obj = ninja.getObjectCollection().findNearestChair(ninja, 10000.0f, 1.0f);
-            if (obj != null)
+            SpatialObject obj = ninja.getObjectCollection().findNearestChair(ninja, 10000.0f, 1.0f, true);
+            if (obj != null && !((Chair)obj).isOccupied())
             {
+                if (((Chair)steering.getGoal())!= null)
+                    ((Chair)steering.getGoal()).setOwner(null);
+                ((Chair)obj).setOwner(ninja);
                 Vector3f pos = ((Chair)obj).getGoalPosition();
                 Vector3f direction = ((Chair)obj).getGoalForwardVector();
                 steering.setGoalPosition(pos);
                 steering.setSittingDirection(direction);
+                steering.setGoal(obj);
                 Goal goalPoint = (Goal) ninja.getWorldManager().getUserData(Goal.class);
                 if (goalPoint != null)
                 {
+                    goalPoint.setGoal(obj);
                     PMatrix goal = new PMatrix(pos); 
                     goal.lookAt(pos, pos.add(direction), Vector3f.UNIT_Y);
                     goal.invert();

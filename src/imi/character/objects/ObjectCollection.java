@@ -246,7 +246,7 @@ public class ObjectCollection extends Entity
     }
     
 
-    public SpatialObject findNearestChair(SpatialObject obj, float consideredRange, float searchCone)
+    public SpatialObject findNearestChair(SpatialObject obj, float consideredRange, float searchCone, boolean occupiedMatters)
     {
         SpatialObject nearest = null;
         float nearestObjDistance = 0.0f;
@@ -254,6 +254,10 @@ public class ObjectCollection extends Entity
         {
             if (check != obj && check instanceof Chair)
             {
+                // Check if occupided
+                if (((Chair)check).isOccupied(occupiedMatters))
+                    continue;
+                
                 // Check range
                 float range = obj.getPosition().distance(check.getPosition());
                 if(range > consideredRange)
@@ -301,7 +305,7 @@ public class ObjectCollection extends Entity
         
         return nearest;
     }
-
+    
     public JScene getJScene() {
         return jscene;
     }

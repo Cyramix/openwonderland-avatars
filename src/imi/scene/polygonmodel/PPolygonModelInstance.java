@@ -111,7 +111,7 @@ public class PPolygonModelInstance extends PNode
             PMatrix origin       = getTransform().getWorldMatrix(false);
             renderer.setOrigin(origin);
             renderer.drawSphere(m_boundingSphere, 6, 6, false);
-            //renderer.drawTriangle(Vector3f.UNIT_X.mult(8.0f), Vector3f.UNIT_X.mult(-8.0f), Vector3f.UNIT_Z.mult(8.0f));
+            renderer.drawTriangle(Vector3f.UNIT_X.mult(8.0f), Vector3f.UNIT_X.mult(-8.0f), Vector3f.UNIT_Z.mult(8.0f));
         
         }
         /////////////////////////////////////////
