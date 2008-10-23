@@ -18,6 +18,7 @@
 package imi.character.statemachine;
 
 import imi.character.CharacterController;
+import imi.character.statemachine.GameContextListener;
 import imi.character.statemachine.GameState.Action;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -28,6 +29,8 @@ import java.util.logging.Logger;
 import imi.utils.input.InputState;
 import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
 import imi.scene.polygonmodel.skinned.PPolygonSkinnedMeshInstance;
+import java.util.ArrayList;
+import java.util.HashSet;
 
 /**
  *
@@ -51,6 +54,8 @@ public class GameContext extends NamedUpdatableObject
      * Holds the current state of triggers for random reference
      */
     protected InputState      m_triggerState   = new InputState();
+
+    private HashSet<GameContextListener> listeners = new HashSet();
     
     
     /** Creates a new instance of GameContext */
@@ -190,8 +195,10 @@ public class GameContext extends NamedUpdatableObject
         Action action = currentState.getAction(trigger);
         if (action == null)
         {
-            if (!m_triggerState.isKeyPressed(trigger))
+            if (!m_triggerState.isKeyPressed(trigger)) {
                 triggerAlert(trigger, true);
+                notifyTrigger(true, trigger);
+            }
             m_triggerState.keyPressed(trigger);
             return;
         }
@@ -203,6 +210,7 @@ public class GameContext extends NamedUpdatableObject
                 actions[action.action] += action.modifier;
                 triggerAlert(trigger, true);
                 //System.out.println(action.action + " pressed: " + m_actions[action.action]);
+                notifyTrigger(true, trigger);
             }
             m_triggerState.keyPressed(trigger);
         }
@@ -216,8 +224,10 @@ public class GameContext extends NamedUpdatableObject
         Action action = currentState.getAction(trigger);
         if (action == null)
         {
-            if (m_triggerState.isKeyPressed(trigger))
+            if (m_triggerState.isKeyPressed(trigger)) {
                 triggerAlert(trigger, false);
+                notifyTrigger(false, trigger);
+            }
             m_triggerState.keyReleased(trigger);
             return;
         }
@@ -229,11 +239,48 @@ public class GameContext extends NamedUpdatableObject
                 actions[action.action] -= action.modifier;
                 triggerAlert(trigger, false);
                 //System.out.println(action.action + " released: " + m_actions[action.action]);
+                notifyTrigger(false, trigger);
             }
             m_triggerState.keyReleased(trigger);
         }
+
+    }
+
+    private void notifyTrigger(boolean pressed, int trigger) {
+        if (listeners==null)
+            return;
+        
+        CharacterController controller = getController();
+        
+        synchronized(listeners) {
+            for(GameContextListener l : listeners)
+                l.trigger(pressed, trigger, controller.getPosition(), controller.getQuaternion());
+        }
     }
     
+    /**
+     * Add a GameContextListener to this character.
+     * @param listener to be added
+     */
+    public void addGameContextListener(GameContextListener listener) {
+        synchronized(listeners) {
+            listeners.add(listener);
+        }
+    }
+    
+    /**
+     * Remove the GameContextListener from the set of listeners for this
+     * character. If the listener was not registered previously this method
+     * simply returns.
+     * @param listener to be removed
+     */
+    public void removeGameContextListener(GameContextListener listener) {
+        synchronized(listeners) {
+            listeners.remove(listener);
+        }
+        
+    }
+
     /**
      * Override this to hook up centext wide reactions to triggers
      * change in state.
