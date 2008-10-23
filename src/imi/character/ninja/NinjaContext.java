@@ -18,6 +18,8 @@
 package imi.character.ninja;
 
 import com.jme.math.Vector3f;
+import imi.character.ninja.transitions.FlyToIdle;
+import imi.character.ninja.transitions.IdleToFly;
 import imi.character.ninja.transitions.IdleToPunch;
 import imi.character.ninja.transitions.IdleToTurn;
 import imi.character.ninja.transitions.IdleToWalk;
@@ -62,12 +64,14 @@ public class NinjaContext extends GameContext
         GoSit,
         PositionGoalPoint,
         SelectNearestGoalPoint,
+        Move_Up,
+        Move_Down,
     }
     
     public static enum ActionNames
     {
         Movement_X,
-        //Movement_Y,
+        Movement_Y,
         Movement_Z,
         Punch,
     }
@@ -80,6 +84,8 @@ public class NinjaContext extends GameContext
         actionMap.put(TriggerNames.Move_Forward.ordinal(),  new Action(NinjaContext.ActionNames.Movement_Z.ordinal(), 0.4f));
         actionMap.put(TriggerNames.Move_Back.ordinal(),     new Action(NinjaContext.ActionNames.Movement_Z.ordinal(), -0.4f));
         actionMap.put(TriggerNames.Punch.ordinal(),         new Action(NinjaContext.ActionNames.Punch.ordinal(), 1.0f));
+        actionMap.put(TriggerNames.Move_Up.ordinal(),       new Action(NinjaContext.ActionNames.Movement_Y.ordinal(), 0.4f));
+        actionMap.put(TriggerNames.Move_Down.ordinal(),     new Action(NinjaContext.ActionNames.Movement_Y.ordinal(), -0.4f));
     }
          
     public NinjaContext(Ninja master)
@@ -95,6 +101,7 @@ public class NinjaContext extends GameContext
         gameStates.put(TurnState.class,  new TurnState(this));
         gameStates.put(PunchState.class, new PunchState(this));
         gameStates.put(SitState.class,   new SitState(this));
+        gameStates.put(FlyState.class,   new FlyState(this));
         
         // Set the state to start with
         setCurrentState(gameStates.get(IdleState.class));
@@ -104,6 +111,7 @@ public class NinjaContext extends GameContext
         RegisterStateEntryPoint(gameStates.get(WalkState.class),  "toWalk");
         RegisterStateEntryPoint(gameStates.get(TurnState.class),  "toTurn");
         RegisterStateEntryPoint(gameStates.get(PunchState.class), "toPunch");
+        RegisterStateEntryPoint(gameStates.get(FlyState.class),   "toFly");
                 
         // Add transitions (exit points)
         gameStates.get(IdleState.class).addTransition(new IdleToTurn());
@@ -118,6 +126,8 @@ public class NinjaContext extends GameContext
         gameStates.get(PunchState.class).addTransition(new PunchToTurn());
         gameStates.get(PunchState.class).addTransition(new PunchToIdle());
         gameStates.get(SitState.class).addTransition(new SitToIdle());
+        gameStates.get(IdleState.class).addTransition(new IdleToFly());
+        gameStates.get(FlyState.class).addTransition(new FlyToIdle());
     }
     
     @Override

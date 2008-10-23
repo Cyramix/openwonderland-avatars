@@ -62,6 +62,7 @@ public class IdleState extends GameState
     {
         float x = ninjaContext.getActions()[NinjaContext.ActionNames.Movement_X.ordinal()];
         //float y = ninjaContext.getNinja().getActions()[Ninja.ActionNames.Movement_Y.ordinal()];
+        float y = ninjaContext.getActions()[NinjaContext.ActionNames.Movement_Y.ordinal()];
         float z = ninjaContext.getActions()[NinjaContext.ActionNames.Movement_Z.ordinal()];
         
         // Turn
@@ -72,7 +73,7 @@ public class IdleState extends GameState
         
         // If the input is forwards or backwards we should 
         // count for a move
-        if (z != 0.0f)
+        if (z != 0.0f || y!=0f)
             bMoveInput = true;
         else
             moveCounter = 0.0f;

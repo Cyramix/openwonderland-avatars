@@ -26,7 +26,7 @@ import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
  *
  * @author Lou Hayt
  */
-public class WalkState extends GameState 
+public class FlyState extends GameState 
 {
     NinjaContext ninjaContext           = null;
         
@@ -38,13 +38,13 @@ public class WalkState extends GameState
     private float exitCounter           = 0.0f;
     private float minimumTimeBeforeTransition = 0.18f;
     
-    public WalkState(NinjaContext master)
+    public FlyState(NinjaContext master)
     {
         super(master);
         ninjaContext = master;
         
-        setName("Walk");
-        setAnimationName("Walk");
+        setName("Fly");
+        setAnimationName("Fly");
         setTransitionDuration(0.1f);
     }
     
@@ -53,30 +53,32 @@ public class WalkState extends GameState
      * @param data - not used
      * @return true if the transition is validated
      */
-    public boolean toWalk(Object data)
+    public boolean toFly(Object data)
     {   
         return true;
     }
      
     private void takeAction(float deltaTime) 
     {
-        float x = ninjaContext.getActions()[NinjaContext.ActionNames.Movement_X.ordinal()];
+//        float x = ninjaContext.getActions()[NinjaContext.ActionNames.Movement_X.ordinal()];
         //float y = actions[ActionNames.Movement_Y.ordinal()];
-        float z = ninjaContext.getActions()[NinjaContext.ActionNames.Movement_Z.ordinal()];
-        
+        float y = ninjaContext.getActions()[NinjaContext.ActionNames.Movement_Y.ordinal()];
+
+        System.err.println("TakeAction "+y);
+
         NinjaController controller = ninjaContext.getController();
         
         // Turn
-        if (x != 0.0f)
-        {
-            Vector3f direction = new Vector3f(x, 0.0f, z);
-            controller.turnTo(direction);
-        }
+//        if (x != 0.0f)
+//        {
+//            Vector3f direction = new Vector3f(x, 0.0f, z);
+//            controller.turnTo(direction);
+//        }
         
-        // Move Forward
-        if (z != 0.0f)
+        // Move Up
+        if (y != 0.0f)
         {
-            controller.accelerate(z * impulse);
+            controller.accelerate(y * impulse);
         }
     }
     
