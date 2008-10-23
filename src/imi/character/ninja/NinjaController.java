@@ -67,7 +67,7 @@ public class NinjaController extends CharacterController
         // used for displaying debugging info
         // TODO : This is no longer exposed (or even stored explicitely) by the wm
         //setWindow(ninja.getWorldManager().getSwingFrame());
-        setWindow((JFrame) ninja.getWorldManager().getUserData(SwingFrame.class));
+        setWindow((JFrame) ninja.getWorldManager().getUserData(JFrame.class));
     }
     
     private void initialize() 

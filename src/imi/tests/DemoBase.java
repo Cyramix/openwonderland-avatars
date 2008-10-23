@@ -753,6 +753,9 @@ public class DemoBase
         frame.canvas.requestFocusInWindow();
         
         frame.setVisible(true);
+        
+        // Add to the wm to set title string later during debugging
+        wm.addUserData(JFrame.class, frame);
     }
     
     public class SwingFrame extends JFrame implements FrameRateListener, ActionListener {
