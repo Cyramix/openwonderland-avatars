@@ -126,8 +126,8 @@ public class NinjaContext extends GameContext
         gameStates.get(PunchState.class).addTransition(new PunchToTurn());
         gameStates.get(PunchState.class).addTransition(new PunchToIdle());
         gameStates.get(SitState.class).addTransition(new SitToIdle());
-        gameStates.get(IdleState.class).addTransition(new IdleToFly());
         gameStates.get(FlyState.class).addTransition(new FlyToIdle());
+        gameStates.get(IdleState.class).addTransition(new IdleToFly());
     }
     
     @Override

@@ -21,6 +21,7 @@ import com.jme.math.Vector3f;
 import imi.character.CharacterSteeringHelm;
 import imi.character.ninja.NinjaContext.TriggerNames;
 import imi.character.objects.SpatialObject;
+import imi.scene.PMatrix;
 import imi.scene.boundingvolumes.PSphere;
 
 /**
@@ -43,11 +44,15 @@ public class NinjaSteeringHelm extends CharacterSteeringHelm
     
     private int precisionCounter = 0;
     
-    private boolean bAvoidObstacles = false;
+    private boolean bAvoidObstacles = true;
     
     private float walkBack = -1.0f;
     private float walkBackTime = 2.0f;
-    private float turnBackTime = 0.4f;
+    private float turnBackTime = 0.6f;
+    
+//    private boolean bGoalGravity = true;
+//    private float   fGoalGravityRadius = 10.0f;
+//    private float   fGoalGravityForce  = 0.025f;
         
     public NinjaSteeringHelm(String name, NinjaContext gameContext)
     {
@@ -64,12 +69,18 @@ public class NinjaSteeringHelm extends CharacterSteeringHelm
         // TODO : clean up and lay out combinations framework for steering behaviors
         
         if (!reachedGoal)
-        {
+        {   
             // Seek the goal
             float distanceFromGoal = goalPosition.distance(ninjaContext.getController().getPosition());
             if (distanceFromGoal > approvedDistanceFromGoal)
             {
-                boolean steerToGoal = true;
+//                if (bGoalGravity && distanceFromGoal < fGoalGravityRadius)
+//                {
+//                    PMatrix local = ninjaContext.getController().getTransform().getLocalMatrix(true);
+//                    Vector3f pull = goalPosition.subtract(ninjaContext.getController().getPosition()).normalize().mult(fGoalGravityForce);
+//                    local.setTranslation(local.getTranslation().add(pull));
+//                }
+                
                 // Are we walking backwards to get away from an obstacle?
                 if (walkBack >= 0.0f)
                 {
@@ -89,6 +100,7 @@ public class NinjaSteeringHelm extends CharacterSteeringHelm
                     if (walkBack > walkBackTime)
                         walkBack = -1.0f;
 
+                    ninjaContext.getController().getWindow().setTitle("Walking Back");
                     return;
                 }
                 else
@@ -97,20 +109,24 @@ public class NinjaSteeringHelm extends CharacterSteeringHelm
                     ninjaContext.triggerPressed(TriggerNames.Move_Forward.ordinal());
                     ninjaContext.triggerReleased(TriggerNames.Move_Back.ordinal());
                 }
+                
+                boolean steerToGoal = true;
 
                 if (bAvoidObstacles)
                 {
                     // Is there an imminent obstacle?
                     SpatialObject obj = null;
                     if (ninjaContext.getNinja().getObjectCollection() != null)
-                        obj = ninjaContext.getNinja().getObjectCollection().findNearestChair(ninjaContext.getNinja(), 3.0f, 0.4f);
+                        obj = ninjaContext.getNinja().getObjectCollection().findNearestChair(ninjaContext.getNinja(), 4.0f, 0.4f);
                     if (obj != null && distanceFromGoal > 2.0f)
                     {
                         PSphere obstacleBV = obj.getNearestObstacleSphere(ninjaContext.getController().getPosition());
                         PSphere characterBV = ninjaContext.getNinja().getBoundingSphere();
+                        ninjaContext.getNinja().getModelInst().setDebugSphere(obstacleBV, 0);
+                        ninjaContext.getNinja().getModelInst().setDebugSphere(characterBV, 1);
                         if (characterBV.isColliding(obstacleBV) && obstacleBV.getCenter().distance(characterBV.getCenter()) < 2.0f)
                         {
-                            // Walk back if colliding
+                            // Initiate walk back if colliding
                             walkBack    = 0.0f;
                             steerToGoal = false;
                             ninjaContext.resetTriggersAndActions();
@@ -121,12 +137,12 @@ public class NinjaSteeringHelm extends CharacterSteeringHelm
                             float dot = directionToObstacle.dot(rightVec);
 
                             // Turn away
-                            if (dot > directionSensitivity)
+                            if (dot > 0.0f)
                             {
                                 ninjaContext.triggerPressed(TriggerNames.Move_Right.ordinal());
                                 ninjaContext.triggerReleased(TriggerNames.Move_Left.ordinal());
                             }
-                            else if (dot < -directionSensitivity)
+                            else
                             {
                                 ninjaContext.triggerPressed(TriggerNames.Move_Left.ordinal());
                                 ninjaContext.triggerReleased(TriggerNames.Move_Right.ordinal());
@@ -140,12 +156,12 @@ public class NinjaSteeringHelm extends CharacterSteeringHelm
                             directionToObstacle.normalizeLocal();
                             float dot = directionToObstacle.dot(rightVec);
 
-                            if (dot > directionSensitivity)
+                            if (dot > 0.0f)
                             {
                                 ninjaContext.triggerPressed(TriggerNames.Move_Left.ordinal());
                                 ninjaContext.triggerReleased(TriggerNames.Move_Right.ordinal());
                             }
-                            else if (dot < -directionSensitivity)
+                            else
                             {
                                 ninjaContext.triggerPressed(TriggerNames.Move_Right.ordinal());
                                 ninjaContext.triggerReleased(TriggerNames.Move_Left.ordinal());
@@ -153,6 +169,8 @@ public class NinjaSteeringHelm extends CharacterSteeringHelm
 
                             ninjaContext.triggerPressed(TriggerNames.Move_Forward.ordinal());
                             ninjaContext.triggerReleased(TriggerNames.Move_Back.ordinal());
+                    
+                            ninjaContext.getController().getWindow().setTitle("Avoiding");
                             steerToGoal = false;
                         }
                     }
@@ -160,6 +178,7 @@ public class NinjaSteeringHelm extends CharacterSteeringHelm
                 
                 if (steerToGoal)
                 {
+                    ninjaContext.getController().getWindow().setTitle("Seeking Goal");
                     // Steer towards the goal
                     Vector3f rightVec = ninjaContext.getController().getRightVector();
                     Vector3f desiredVelocity = goalPosition.subtract(ninjaContext.getController().getPosition());
@@ -216,6 +235,7 @@ public class NinjaSteeringHelm extends CharacterSteeringHelm
         }
         else
         {
+            ninjaContext.getController().getWindow().setTitle("Turning to goal orientation");
             // We have reached the goal, rotate to sitting direction
             Vector3f rightVec = ninjaContext.getController().getRightVector();
             float dot = sittingDirection.dot(rightVec);
@@ -231,6 +251,8 @@ public class NinjaSteeringHelm extends CharacterSteeringHelm
             }
             else
             {
+                ninjaContext.getController().getWindow().setTitle("Done");
+                
                 // Positioned properlly!
                 enabledState = false;
                 ninjaContext.resetTriggersAndActions();

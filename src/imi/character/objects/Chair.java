@@ -154,7 +154,7 @@ public class Chair implements SpatialObject
         if (modelInst.getBoundingSphere() == null)
             modelInst.calculateBoundingSphere();
         PSphere result = new PSphere(modelInst.getBoundingSphere());
-        result.setCenter(modelInst.getTransform().getWorldMatrix(false).getTranslation());
+        result.setCenter(modelInst.getTransform().getWorldMatrix(false).getTranslation().add(result.getCenter()));
         return result;
     }
 

@@ -17,7 +17,7 @@
  */
 package imi.character.ninja.transitions;
 
-import imi.character.ninja.IdleState;
+import imi.character.ninja.NinjaContext.ActionNames;
 import imi.character.statemachine.GameState;
 import imi.character.statemachine.TransitionObject;
 
@@ -27,22 +27,33 @@ import imi.character.statemachine.TransitionObject;
  */
 public class IdleToFly extends TransitionObject
 {
-    private float moveDelay = 0.075f; //  how long do we need to press forward\backward to exit idle
+   // private float moveDelay = 0.075f; //  how long do we need to press forward\backward to exit idle
     
     @Override
     protected boolean testCondition(GameState state) 
     {
-        if (!(state instanceof IdleState))
-            return false;
         
-        IdleState idle = (IdleState)state;
+        stateMessageName = "toFly";
         
-        if (idle.getMoveCounter() > moveDelay)
-        {
-            stateMessageName = "toFly";
+        // If the fly action is active
+        float y = state.getContext().getActions()[ActionNames.Movement_Y.ordinal()];
+        if (y > 0.0f || y < 0.0f)
             return state.getContext().excecuteTransition(this);
-        }
         
         return false;
+        
+        
+//        if (!(state instanceof IdleState))
+//            return false;
+//        
+//        IdleState idle = (IdleState)state;
+//        
+//        if (idle.getMoveCounter() > moveDelay)
+//        {
+//            stateMessageName = "toFly";
+//            return state.getContext().excecuteTransition(this);
+//        }
+//        
+//        return false;
     }
 }

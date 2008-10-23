@@ -23,6 +23,7 @@ import imi.character.CharacterController;
 import imi.scene.PMatrix;
 import imi.scene.PTransform;
 import imi.scene.polygonmodel.PPolygonModelInstance;
+import imi.tests.DemoBase.SwingFrame;
 import javax.swing.JFrame;
 
 /**
@@ -41,9 +42,10 @@ public class NinjaController extends CharacterController
     private boolean  bTurning            = false;
     private Vector3f desiredDirection    = new Vector3f();
     private Vector3f velocity            = new Vector3f();
-    private float    acceleration        = 0.0f; // acceleration towards the current direction
+    private Vector3f acceleration        = new Vector3f();
+    private float    fwdAcceleration        = 0.0f; // fwdAcceleration towards the current direction
     private float    maxAcceleration     = 10.0f;
-    private float    maxVelocity         = 5.0f;
+    private float    maxVelocity         = 4.0f;
     private float    mass                = 1.0f;
     
     private float    velocityDamp        = 0.8f; // 1.0f - velocityDamp     = intuitive value
@@ -65,6 +67,7 @@ public class NinjaController extends CharacterController
         // used for displaying debugging info
         // TODO : This is no longer exposed (or even stored explicitely) by the wm
         //setWindow(ninja.getWorldManager().getSwingFrame());
+        setWindow((JFrame) ninja.getWorldManager().getUserData(SwingFrame.class));
     }
     
     private void initialize() 
@@ -81,15 +84,23 @@ public class NinjaController extends CharacterController
     @Override
     public void stop() 
     {
-        acceleration = 0.0f;
+        fwdAcceleration = 0.0f;
+        acceleration.zero();
         velocity.set(Vector3f.ZERO);
     }
     
     public void accelerate(float force) 
     {
-        acceleration += force / mass;
-        if (acceleration > maxAcceleration)
-            acceleration = maxAcceleration;
+        fwdAcceleration += force / mass;
+        if (fwdAcceleration > maxAcceleration)
+            fwdAcceleration = maxAcceleration;
+    }
+    
+    public void accelerate(Vector3f force) 
+    {
+        acceleration.addLocal(force.divide(mass));
+//        if (fwdAcceleration > maxAcceleration)
+//            fwdAcceleration = maxAcceleration;
     }
 
     public void setVelocity(float vel)
@@ -140,7 +151,8 @@ public class NinjaController extends CharacterController
         {
             velocity = currentDirection.normalize().mult(currentDirection.dot(velocity));
         }
-        velocity.addLocal(currentDirection.mult(acceleration * (-deltaTime)));
+        velocity.addLocal(currentDirection.mult(fwdAcceleration * (-deltaTime)));
+        velocity.addLocal(acceleration);
         if (velocity.x > maxVelocity)
             velocity.x = maxVelocity;
         if (velocity.y > maxVelocity)
@@ -168,11 +180,14 @@ public class NinjaController extends CharacterController
         {
             dampCounter = 0.0f;
             
-            acceleration *= accelerationDamp;
-            if (acceleration < 0.5f)
-                acceleration = 0.0f;
+            fwdAcceleration *= accelerationDamp;
+            if (fwdAcceleration < 0.5f)
+                fwdAcceleration = 0.0f;
+            
+            acceleration.multLocal(accelerationDamp);
+            // TODO clamp down?
 
-            if (acceleration < 1.0f)
+            if (fwdAcceleration < 1.0f && Math.max(Math.max(acceleration.x, acceleration.y), acceleration.z) < 1.0f)
                 velocity.multLocal(velocityDamp);
         }
 
@@ -183,7 +198,7 @@ public class NinjaController extends CharacterController
 //        else
 //            window.setTitle("no");
        
-        //window.setTitle("acc: " + (int)acceleration + " vel: " + (int)velocity.x + " " + (int)velocity.y + " " + (int)velocity.z);
+        //window.setTitle("acc: " + (int)fwdAcceleration + " vel: " + (int)velocity.x + " " + (int)velocity.y + " " + (int)velocity.z);
     }
     
     public boolean isMovingForward() {
@@ -204,8 +219,8 @@ public class NinjaController extends CharacterController
         this.window = window;
     }
 
-    public float getAcceleration() {
-        return acceleration;
+    public float getFowardAcceleration() {
+        return fwdAcceleration;
     }
 
     public float getAccelerationDamp() {

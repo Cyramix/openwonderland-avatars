@@ -78,7 +78,7 @@ public class FlyState extends GameState
         // Move Up
         if (y != 0.0f)
         {
-            controller.accelerate(y * impulse);
+            controller.accelerate(Vector3f.UNIT_Y.mult(y * impulse));
         }
     }
     
@@ -127,6 +127,8 @@ public class FlyState extends GameState
     @Override
     protected void stateExit(GameContext owner)
     {
+        super.stateExit(owner);
+        
         // Ninja's skeleton might be null untill loaded
         SkeletonNode skeleton = ninjaContext.getSkeleton();
         if (skeleton != null)   

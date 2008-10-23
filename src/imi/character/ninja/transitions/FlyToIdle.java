@@ -35,7 +35,7 @@ public class FlyToIdle extends TransitionObject
         if (controller == null)
             return false;
         
-        if (controller.getAcceleration() == 0.0f)
+        if (controller.getFowardAcceleration() == 0.0f)
         {    
             stateMessageName = "toIdle";
             return state.getContext().excecuteTransition(this);

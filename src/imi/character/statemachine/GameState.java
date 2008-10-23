@@ -156,7 +156,7 @@ public class GameState extends NamedUpdatableObject
      */
     protected void stateEnter(GameContext owner)
     {
-        //System.out.println(getName() + " enter");
+        System.out.println(getName() + " enter");
         
         if (gameContext.getController().getWindow() != null)
             gameContext.getController().getWindow().setTitle(getName());

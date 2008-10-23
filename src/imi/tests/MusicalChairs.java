@@ -55,17 +55,17 @@ public class MusicalChairs extends DemoBase
         ObjectCollection objs = new ObjectCollection("Musical Chairs Game Objects", wm);
         objs.generateChairs(Vector3f.ZERO, 100.0f, 20);
         
-        if (false)
+        if (true) // false to load fast only ninjas
         {
             NinjaAvatar avatar = new NinjaAvatar("Avatar", wm);
             control.getNinjaTeam().add(avatar);
             avatar.selectForInput();
             avatar.setObjectCollection(objs);
             
-            Adam adam = new Adam("Adam", wm);
-            adam.getModelInst().getTransform().getLocalMatrix(true).setTranslation(Vector3f.UNIT_X.mult(-5.0f));
-            control.getNinjaTeam().add(adam);
-            adam.setObjectCollection(objs);
+//            Adam adam = new Adam("Adam", wm);
+//            adam.getModelInst().getTransform().getLocalMatrix(true).setTranslation(Vector3f.UNIT_X.mult(-5.0f));
+//            control.getNinjaTeam().add(adam);
+//            adam.setObjectCollection(objs);
         }
         else
         {
@@ -75,9 +75,9 @@ public class MusicalChairs extends DemoBase
             shadowBlade.setObjectCollection(objs);
         }
         
-        Ninja ninja1 = new Ninja("Ninja 1", new PMatrix().setTranslation(Vector3f.UNIT_X.mult(5.0f)), 0.22f, wm);
-        control.getNinjaTeam().add(ninja1);
-        ninja1.setObjectCollection(objs);
+//        Ninja ninja1 = new Ninja("Ninja 1", new PMatrix().setTranslation(Vector3f.UNIT_X.mult(5.0f)), 0.22f, wm);
+//        control.getNinjaTeam().add(ninja1);
+//        ninja1.setObjectCollection(objs);
     }
     
 }

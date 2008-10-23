@@ -64,7 +64,9 @@ public class PPolygonModelInstance extends PNode
     PScene      m_owningScene = null; // The pscene that owns this instance, used for loading
     
     PSphere     m_boundingSphere = null; // The overall bounding sphere
-        
+    
+    PSphere [] debugSpheres = new PSphere[2];
+    
     public PPolygonModelInstance(String name, PTransform transform, ArrayList<PPolygonMeshInstance> meshes) 
     {
         super(name, null, null, transform);
@@ -98,6 +100,12 @@ public class PPolygonModelInstance extends PNode
         
         // Draw model bounding sphere test
         /////////////////////////////////////////
+        if (debugSpheres[0] != null)
+        {
+            renderer.setOrigin(PMatrix.IDENTITY);
+            renderer.drawSphere(debugSpheres[0], 10, 10, false);
+            renderer.drawSphere(debugSpheres[1], 10, 10, false);
+        }
         if (m_boundingSphere != null)
         {
             PMatrix origin       = getTransform().getWorldMatrix(false);
@@ -107,6 +115,11 @@ public class PPolygonModelInstance extends PNode
         
         }
         /////////////////////////////////////////
+    }
+    
+    public void setDebugSphere(PSphere bv, int index) 
+    {
+        debugSpheres[index] = bv;
     }
 
     /**

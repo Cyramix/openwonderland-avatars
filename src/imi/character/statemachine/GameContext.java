@@ -18,7 +18,6 @@
 package imi.character.statemachine;
 
 import imi.character.CharacterController;
-import imi.character.statemachine.GameContextListener;
 import imi.character.statemachine.GameState.Action;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -29,7 +28,6 @@ import java.util.logging.Logger;
 import imi.utils.input.InputState;
 import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
 import imi.scene.polygonmodel.skinned.PPolygonSkinnedMeshInstance;
-import java.util.ArrayList;
 import java.util.HashSet;
 
 /**

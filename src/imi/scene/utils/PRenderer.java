@@ -967,7 +967,7 @@ public class PRenderer
         
         // add X axis
         point1   = bone.getTranslation();
-        point2   = bone.getTranslation().add(bone.getLocalXNormalized());
+        point2   = bone.getTranslation().add(bone.getLocalXNormalized().mult(0.1f));
         
         position = new Vector3f(point1);
         //m_Origin.transformPoint(position);
@@ -978,7 +978,7 @@ public class PRenderer
         m_SkeletonX.add(position);
         
         // add Y axis
-        point2   = bone.getTranslation().add(bone.getLocalYNormalized());
+        point2   = bone.getTranslation().add(bone.getLocalYNormalized().mult(0.1f));
         
         position = new Vector3f(point1);
         //m_Origin.transformPoint(position);
@@ -989,7 +989,7 @@ public class PRenderer
         m_SkeletonY.add(position);
         
         // add Z axis
-        point2   = bone.getTranslation().add(bone.getLocalZNormalized());
+        point2   = bone.getTranslation().add(bone.getLocalZNormalized().mult(0.1f));
         
         position = new Vector3f(point1);
         //m_Origin.transformPoint(position);
