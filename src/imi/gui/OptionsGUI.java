@@ -1,19 +1,7 @@
-/**
- * Project Wonderland
- *
- * Copyright (c) 2004-2008, Sun Microsystems, Inc., All Rights Reserved
- *
- * Redistributions in source code form must reproduce the above
- * copyright and this condition.
- *
- * The contents of this file are subject to the GNU General Public
- * License, Version 2 (the "License"); you may not use this file
- * except in compliance with the License. A copy of the License is
- * available at http://www.opensource.org/licenses/gpl-license.php.
- *
- * $Revision$
- * $Date$
- * $State$
+/*
+ * OptionsGUI.java
+ * Copyright (c) 2008, Immediate Mode Interactive, LLC. All rights reserved.
+ * Created on August 22, 2008, 7:46 AM
  */
 package imi.gui;
 
@@ -86,11 +74,12 @@ public class OptionsGUI extends javax.swing.JFrame {
         if (currentPScene.getInstances().findChild("skeletonRoot") != null) {
             loadHeadGUIData();
             loadBodyGUIData();
+            getGroupings();
         } else {
             setDefaultHeadSliders();
             setDefaultBodySliders();
+            deactivateSliders();
         }
-        getGroupings();
     }
 
     /**
@@ -130,6 +119,11 @@ public class OptionsGUI extends javax.swing.JFrame {
             jSlider_HeadHeight.setValue((int) (vScaleHead.getY() * 10));
             jSlider_HeadWidth.setValue((int) (vScaleHead.getX() * 10));
             jSlider_HeadDepth.setValue((int) (vScaleHead.getZ() * 10));
+            
+            jSlider_HeadHeight.setEnabled(true);
+            jSlider_HeadWidth.setEnabled(true);
+            jSlider_HeadDepth.setEnabled(true);
+            
         } else {
             setDefaultHeadSliders();
         }
@@ -152,11 +146,15 @@ public class OptionsGUI extends javax.swing.JFrame {
 
         jSlider_Height.setValue((int) (vScaleBody.getY() * 10));
         jSlider_Width.setValue((int) (vScaleBody.getZ() * 10));
+        jSlider_Height.setEnabled(true);
+        jSlider_Width.setEnabled(true);
         
         if (upperArm != null) {
             upperArm.getLocalModifierMatrix().getScale(vScaleArmsU);
             jSlider_ArmLength.setValue((int) (vScaleArmsU.getY() * 10));
             jSlider_UpperArm.setValue((int) (vScaleArmsU.getZ() * 10));
+            jSlider_ArmLength.setEnabled(true);
+            jSlider_UpperArm.setEnabled(true);
         } else {
             jSlider_ArmLength.setValue(10);
             jSlider_UpperArm.setValue(10);
@@ -165,6 +163,7 @@ public class OptionsGUI extends javax.swing.JFrame {
         if (foreArm != null) {
             foreArm.getLocalModifierMatrix().getScale(vScaleArmsL);
             jSlider_Forearms.setValue((int) (vScaleArmsL.getZ() * 10));
+            jSlider_Forearms.setEnabled(true);
         } else {
             jSlider_Forearms.setValue(10);
         }
@@ -172,6 +171,7 @@ public class OptionsGUI extends javax.swing.JFrame {
         if (hands != null) {
             hands.getLocalModifierMatrix().getScale(vScaleHands);
             jSlider_HandSize.setValue((int) (vScaleHands.getX() * 10));
+            jSlider_HandSize.setEnabled(true);
         } else {
             jSlider_HandSize.setValue(10);
         }
@@ -180,6 +180,8 @@ public class OptionsGUI extends javax.swing.JFrame {
             thighs.getLocalModifierMatrix().getScale(vScaleLegsU);
             jSlider_LegLength.setValue((int) (vScaleLegsU.getY() * 10));
             jSlider_Thighs.setValue((int) (vScaleLegsU.getZ() * 10));
+            jSlider_LegLength.setEnabled(true);
+            jSlider_Thighs.setEnabled(true);
         } else {
             jSlider_LegLength.setValue(10);
             jSlider_Thighs.setValue(10);
@@ -188,6 +190,7 @@ public class OptionsGUI extends javax.swing.JFrame {
         if (calvs != null) {
             calvs.getLocalModifierMatrix().getScale(vScaleLegsL);
             jSlider_Calfs.setValue((int) (vScaleLegsL.getZ() * 10));
+            jSlider_Calfs.setEnabled(true);
         } else {
             jSlider_Calfs.setValue(10);
         }
@@ -195,9 +198,26 @@ public class OptionsGUI extends javax.swing.JFrame {
         if (feet != null) {
             feet.getLocalModifierMatrix().getScale(vScaleFeet);
             jSlider_FootSize.setValue((int) (vScaleFeet.getX() * 10));
-        } else {
+            jSlider_FootSize.setEnabled(true);
             jSlider_FootSize.setValue(10);
         }
+    }
+    
+    public void deactivateSliders() {
+        jSlider_UniformScale.setEnabled(false);
+        jSlider_HeadHeight.setEnabled(false);
+        jSlider_HeadWidth.setEnabled(false);
+        jSlider_HeadDepth.setEnabled(false);
+        jSlider_Height.setEnabled(false);
+        jSlider_Width.setEnabled(false);
+        jSlider_ArmLength.setEnabled(false);
+        jSlider_UpperArm.setEnabled(false);
+        jSlider_Forearms.setEnabled(false);
+        jSlider_HandSize.setEnabled(false);
+        jSlider_LegLength.setEnabled(false);
+        jSlider_Thighs.setEnabled(false);
+        jSlider_Calfs.setEnabled(false);
+        jSlider_FootSize.setEnabled(false);
     }
     
     public void getGroupings() {
@@ -283,6 +303,7 @@ public class OptionsGUI extends javax.swing.JFrame {
                 break;
             }
             case 2: {
+                jSlider_UniformScale.setEnabled(true);
                 scale = (jSlider_UniformScale.getValue() * 0.10f);
                 float diff = (scale - prevUniScale);
                 prevUniScale = scale;
@@ -502,7 +523,10 @@ public class OptionsGUI extends javax.swing.JFrame {
     }
     
     public void setSelectedInstance(PPolygonModelInstance instance) {
-        selectedInstance = instance;
+        if (instance == null)
+            selectedInstance = null;
+        else
+            selectedInstance = instance;
     }
     
     ////////////////////////////////////////////////////////////////////////////
@@ -536,6 +560,7 @@ public class OptionsGUI extends javax.swing.JFrame {
         jRadioButton_GenderM = new javax.swing.JRadioButton();
         jRadioButton_GenderF = new javax.swing.JRadioButton();
         jTabbedPane_Options = new javax.swing.JTabbedPane();
+        jScrollPanel_Colors = new javax.swing.JScrollPane();
         jPanel_Colors = new javax.swing.JPanel();
         jPanel_HairColor = new javax.swing.JPanel();
         jToolBar_HairR = new javax.swing.JToolBar();
@@ -576,38 +601,91 @@ public class OptionsGUI extends javax.swing.JFrame {
         jPanel_SkinColorB = new javax.swing.JPanel();
         jSlider_SkinColorB = new javax.swing.JSlider();
         jSpinner_SkinB = new javax.swing.JSpinner();
+        jScrollPane_Head = new javax.swing.JScrollPane();
         jPanel_Head = new javax.swing.JPanel();
-        jPanel_HeadSize = new javax.swing.JPanel();
+        jToolBar_HeadHeight = new javax.swing.JToolBar();
+        jLabel_HeadHeight = new javax.swing.JLabel();
         jSlider_HeadHeight = new javax.swing.JSlider();
+        jToolBar_HeadWidth = new javax.swing.JToolBar();
+        jLabel_HeadWidth = new javax.swing.JLabel();
         jSlider_HeadWidth = new javax.swing.JSlider();
+        jToolBar_HeadDepth = new javax.swing.JToolBar();
+        jLabel_HeadDepth = new javax.swing.JLabel();
         jSlider_HeadDepth = new javax.swing.JSlider();
+        jScrollPane_Body = new javax.swing.JScrollPane();
+        jSplitPane1 = new javax.swing.JSplitPane();
         jPanel_Body = new javax.swing.JPanel();
-        jPanel_BodyParts = new javax.swing.JPanel();
-        jSlider_ArmLength = new javax.swing.JSlider();
-        jSlider_UpperArm = new javax.swing.JSlider();
-        jSlider_Forearms = new javax.swing.JSlider();
-        jSlider_HandSize = new javax.swing.JSlider();
-        jSlider_LegLength = new javax.swing.JSlider();
-        jSlider_FootSize = new javax.swing.JSlider();
-        jSlider_Thighs = new javax.swing.JSlider();
-        jSlider_Calfs = new javax.swing.JSlider();
+        jToolBar_UniformScale = new javax.swing.JToolBar();
+        jLabel_UniformScale = new javax.swing.JLabel();
         jSlider_UniformScale = new javax.swing.JSlider();
+        jToolBar_HeightScale = new javax.swing.JToolBar();
+        jLabel_HeightScale = new javax.swing.JLabel();
         jSlider_Height = new javax.swing.JSlider();
+        jToolBar_WidthScale = new javax.swing.JToolBar();
+        jLabel_WidthScale = new javax.swing.JLabel();
         jSlider_Width = new javax.swing.JSlider();
-        jPanel_Details = new javax.swing.JPanel();
-        jPanel_HeadDetails = new javax.swing.JPanel();
-        jSpinner_HairStyle = new javax.swing.JSpinner();
-        jSpinner_EarPiercing = new javax.swing.JSpinner();
-        jSpinner_FacialHair = new javax.swing.JSpinner();
-        jSpinner_NosePiercing = new javax.swing.JSpinner();
-        jSpinner_Tattoos = new javax.swing.JSpinner();
-        jSpinner_LipPiercing = new javax.swing.JSpinner();
-        jSpinner_Scars = new javax.swing.JSpinner();
-        jSpinner_EyePiercings = new javax.swing.JSpinner();
+        jPanel_BodyParts = new javax.swing.JPanel();
+        jToolBar_ArmLength = new javax.swing.JToolBar();
+        jLabel_ArmLength = new javax.swing.JLabel();
+        jSlider_ArmLength = new javax.swing.JSlider();
+        jToolBar_UpperArm = new javax.swing.JToolBar();
+        jLabel_UpperArm = new javax.swing.JLabel();
+        jSlider_UpperArm = new javax.swing.JSlider();
+        jToolBar_Forearms = new javax.swing.JToolBar();
+        jLabel_Forearms = new javax.swing.JLabel();
+        jSlider_Forearms = new javax.swing.JSlider();
+        jToolBar_HandSize = new javax.swing.JToolBar();
+        jLabel_HandSize = new javax.swing.JLabel();
+        jSlider_HandSize = new javax.swing.JSlider();
+        jToolBar_LegLength = new javax.swing.JToolBar();
+        jLabel_LegLength = new javax.swing.JLabel();
+        jSlider_LegLength = new javax.swing.JSlider();
+        jToolBar_Thighs = new javax.swing.JToolBar();
+        jLabel_Thighs = new javax.swing.JLabel();
+        jSlider_Thighs = new javax.swing.JSlider();
+        jToolBar_Calfs = new javax.swing.JToolBar();
+        jLabel_Calfs = new javax.swing.JLabel();
+        jSlider_Calfs = new javax.swing.JSlider();
+        jToolBar_FootSize = new javax.swing.JToolBar();
+        jLabel_FootSize = new javax.swing.JLabel();
+        jSlider_FootSize = new javax.swing.JSlider();
+        jScrollPanel_Details = new javax.swing.JScrollPane();
+        jSplitPane2 = new javax.swing.JSplitPane();
         jPanel_BodyDetails = new javax.swing.JPanel();
+        jToolBar_BodyScars = new javax.swing.JToolBar();
+        jLabel_BodyScars = new javax.swing.JLabel();
         jSpinner_BodyScars = new javax.swing.JSpinner();
+        jToolBar_BodyTattoos = new javax.swing.JToolBar();
+        jLabel_BodyTattoos = new javax.swing.JLabel();
         jSpinner_BodyTattoos = new javax.swing.JSpinner();
+        jToolBar_BodyPiercings = new javax.swing.JToolBar();
+        jLabel_BodyPiercings = new javax.swing.JLabel();
         jSpinner_BodyPiercings = new javax.swing.JSpinner();
+        jPanel_HeadDetails = new javax.swing.JPanel();
+        jToolBar_HairStyle = new javax.swing.JToolBar();
+        jLabel_HairStyle = new javax.swing.JLabel();
+        jSpinner_HairStyle = new javax.swing.JSpinner();
+        jToolBar_FacialHair = new javax.swing.JToolBar();
+        jLabel_FacialHair = new javax.swing.JLabel();
+        jSpinner_FacialHair = new javax.swing.JSpinner();
+        jToolBar_Ears = new javax.swing.JToolBar();
+        jLabel_Ears = new javax.swing.JLabel();
+        jSpinner_EarPiercing = new javax.swing.JSpinner();
+        jToolBar_Nose = new javax.swing.JToolBar();
+        jLabel_Nose = new javax.swing.JLabel();
+        jSpinner_NosePiercing = new javax.swing.JSpinner();
+        jToolBar_Eyes = new javax.swing.JToolBar();
+        jLabel_Eyes = new javax.swing.JLabel();
+        jSpinner_EyePiercings = new javax.swing.JSpinner();
+        jToolBar_Lips = new javax.swing.JToolBar();
+        jLabel_Lips = new javax.swing.JLabel();
+        jSpinner_LipPiercing = new javax.swing.JSpinner();
+        jToolBar_Tattoos = new javax.swing.JToolBar();
+        jLabel_Tattoos = new javax.swing.JLabel();
+        jSpinner_Tattoos = new javax.swing.JSpinner();
+        jToolBar_Scars = new javax.swing.JToolBar();
+        jLabel_Scars = new javax.swing.JLabel();
+        jSpinner_Scars = new javax.swing.JSpinner();
         jPanel_Shirts = new javax.swing.JPanel();
         jPanel_Pants = new javax.swing.JPanel();
         jPanel_Dresses = new javax.swing.JPanel();
@@ -624,7 +702,7 @@ public class OptionsGUI extends javax.swing.JFrame {
             jPanel_NameLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(jPanel_NameLayout.createSequentialGroup()
                 .addContainerGap()
-                .add(jTextField_Name, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 223, Short.MAX_VALUE)
+                .add(jTextField_Name, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 203, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel_NameLayout.setVerticalGroup(
@@ -652,7 +730,7 @@ public class OptionsGUI extends javax.swing.JFrame {
                 .add(jRadioButton_GenderM)
                 .add(18, 18, 18)
                 .add(jRadioButton_GenderF)
-                .addContainerGap(107, Short.MAX_VALUE))
+                .addContainerGap(71, Short.MAX_VALUE))
         );
         jPanel_GenderLayout.setVerticalGroup(
             jPanel_GenderLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -660,6 +738,12 @@ public class OptionsGUI extends javax.swing.JFrame {
                 .add(jRadioButton_GenderM)
                 .add(jRadioButton_GenderF))
         );
+
+        jScrollPanel_Colors.setMaximumSize(new java.awt.Dimension(230, 575));
+        jScrollPanel_Colors.setMinimumSize(new java.awt.Dimension(230, 372));
+
+        jPanel_Colors.setMaximumSize(new java.awt.Dimension(253, 353));
+        jPanel_Colors.setPreferredSize(new java.awt.Dimension(230, 353));
 
         jPanel_HairColor.setBorder(javax.swing.BorderFactory.createTitledBorder("Hair Color"));
 
@@ -871,7 +955,7 @@ public class OptionsGUI extends javax.swing.JFrame {
                 .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        jPanel_SkinColor.setBorder(javax.swing.BorderFactory.createTitledBorder("Skin/Body Color"));
+        jPanel_SkinColor.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Skin/Body Color"));
 
         jToolBar_SkinR.setFloatable(false);
         jToolBar_SkinR.setRollover(true);
@@ -984,13 +1068,12 @@ public class OptionsGUI extends javax.swing.JFrame {
         jPanel_Colors.setLayout(jPanel_ColorsLayout);
         jPanel_ColorsLayout.setHorizontalGroup(
             jPanel_ColorsLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(org.jdesktop.layout.GroupLayout.TRAILING, jPanel_ColorsLayout.createSequentialGroup()
-                .addContainerGap()
-                .add(jPanel_ColorsLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.CENTER)
-                    .add(jPanel_SkinColor, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+            .add(jPanel_ColorsLayout.createSequentialGroup()
+                .add(jPanel_ColorsLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(jPanel_EyeColor, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                     .add(jPanel_HairColor, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(jPanel_EyeColor, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap())
+                    .add(jPanel_SkinColor, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel_ColorsLayout.setVerticalGroup(
             jPanel_ColorsLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -1000,96 +1083,189 @@ public class OptionsGUI extends javax.swing.JFrame {
                 .add(jPanel_HairColor, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 110, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(jPanel_EyeColor, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 110, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(372, Short.MAX_VALUE))
+                .addContainerGap(38, Short.MAX_VALUE))
         );
 
-        jTabbedPane_Options.addTab("Colors", jPanel_Colors);
+        jScrollPanel_Colors.setViewportView(jPanel_Colors);
 
-        jPanel_HeadSize.setBorder(javax.swing.BorderFactory.createTitledBorder("Head Size - Ninja Only"));
+        jTabbedPane_Options.addTab("Color", jScrollPanel_Colors);
+
+        jPanel_Head.setMaximumSize(new java.awt.Dimension(253, 575));
+        jPanel_Head.setPreferredSize(new java.awt.Dimension(230, 353));
+
+        jToolBar_HeadHeight.setFloatable(false);
+        jToolBar_HeadHeight.setRollover(true);
+
+        jLabel_HeadHeight.setText("Height");
+        jToolBar_HeadHeight.add(jLabel_HeadHeight);
 
         jSlider_HeadHeight.setMinimum(1);
         jSlider_HeadHeight.setValue(10);
-        jSlider_HeadHeight.setBorder(javax.swing.BorderFactory.createTitledBorder("Height"));
         jSlider_HeadHeight.addChangeListener(new ChangeListener() {
 
             public void stateChanged(ChangeEvent e) {
                 scaleHead(1);
             }
         });
+        jToolBar_HeadHeight.add(jSlider_HeadHeight);
+
+        jToolBar_HeadWidth.setFloatable(false);
+        jToolBar_HeadWidth.setRollover(true);
+
+        jLabel_HeadWidth.setText("Width");
+        jLabel_HeadWidth.setPreferredSize(new java.awt.Dimension(42, 16));
+        jToolBar_HeadWidth.add(jLabel_HeadWidth);
 
         jSlider_HeadWidth.setMinimum(1);
         jSlider_HeadWidth.setValue(10);
-        jSlider_HeadWidth.setBorder(javax.swing.BorderFactory.createTitledBorder("Width"));
         jSlider_HeadWidth.addChangeListener(new ChangeListener() {
 
             public void stateChanged(ChangeEvent e) {
                 scaleHead(0);
             }
         });
+        jToolBar_HeadWidth.add(jSlider_HeadWidth);
+
+        jToolBar_HeadDepth.setFloatable(false);
+        jToolBar_HeadDepth.setRollover(true);
+
+        jLabel_HeadDepth.setText("Depth");
+        jLabel_HeadDepth.setPreferredSize(new java.awt.Dimension(42, 16));
+        jToolBar_HeadDepth.add(jLabel_HeadDepth);
 
         jSlider_HeadDepth.setMinimum(1);
         jSlider_HeadDepth.setValue(10);
-        jSlider_HeadDepth.setBorder(javax.swing.BorderFactory.createTitledBorder("Depth"));
         jSlider_HeadDepth.addChangeListener(new ChangeListener() {
 
             public void stateChanged(ChangeEvent e) {
                 scaleHead(2);
             }
         });
-
-        org.jdesktop.layout.GroupLayout jPanel_HeadSizeLayout = new org.jdesktop.layout.GroupLayout(jPanel_HeadSize);
-        jPanel_HeadSize.setLayout(jPanel_HeadSizeLayout);
-        jPanel_HeadSizeLayout.setHorizontalGroup(
-            jPanel_HeadSizeLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(jPanel_HeadSizeLayout.createSequentialGroup()
-                .add(jPanel_HeadSizeLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(jPanel_HeadSizeLayout.createSequentialGroup()
-                        .addContainerGap()
-                        .add(jPanel_HeadSizeLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                            .add(jSlider_HeadHeight, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 180, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                            .add(jSlider_HeadWidth, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 180, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED))
-                    .add(org.jdesktop.layout.GroupLayout.TRAILING, jPanel_HeadSizeLayout.createSequentialGroup()
-                        .addContainerGap()
-                        .add(jSlider_HeadDepth, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 180, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)))
-                .addContainerGap(14, Short.MAX_VALUE))
-        );
-        jPanel_HeadSizeLayout.setVerticalGroup(
-            jPanel_HeadSizeLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(jPanel_HeadSizeLayout.createSequentialGroup()
-                .add(jSlider_HeadHeight, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jSlider_HeadWidth, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jSlider_HeadDepth, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
+        jToolBar_HeadDepth.add(jSlider_HeadDepth);
 
         org.jdesktop.layout.GroupLayout jPanel_HeadLayout = new org.jdesktop.layout.GroupLayout(jPanel_Head);
         jPanel_Head.setLayout(jPanel_HeadLayout);
         jPanel_HeadLayout.setHorizontalGroup(
             jPanel_HeadLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(jPanel_HeadLayout.createSequentialGroup()
-                .addContainerGap()
-                .add(jPanel_HeadSize, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .add(jToolBar_HeadHeight, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 229, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .add(0, 0, 0))
+            .add(org.jdesktop.layout.GroupLayout.TRAILING, jPanel_HeadLayout.createSequentialGroup()
+                .add(0, 0, 0)
+                .add(jToolBar_HeadWidth, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 229, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .add(0, 0, 0))
+            .add(jPanel_HeadLayout.createSequentialGroup()
+                .add(jToolBar_HeadDepth, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 229, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .add(0, 0, 0))
         );
         jPanel_HeadLayout.setVerticalGroup(
             jPanel_HeadLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(jPanel_HeadLayout.createSequentialGroup()
-                .add(jPanel_HeadSize, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(474, Short.MAX_VALUE))
+                .add(jToolBar_HeadHeight, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 25, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .add(0, 0, 0)
+                .add(jToolBar_HeadWidth, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 25, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .add(0, 0, 0)
+                .add(jToolBar_HeadDepth, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 25, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .add(450, 450, 450))
         );
 
-        jTabbedPane_Options.addTab("Scale - Head", jPanel_Head);
+        jScrollPane_Head.setViewportView(jPanel_Head);
 
-        jPanel_BodyParts.setBorder(javax.swing.BorderFactory.createTitledBorder("Body Parts - Ninja Only"));
+        jTabbedPane_Options.addTab("Scale - Head", jScrollPane_Head);
+
+        jSplitPane1.setDividerLocation(80);
+        jSplitPane1.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
+        jSplitPane1.setMaximumSize(new java.awt.Dimension(230, 353));
+        jSplitPane1.setPreferredSize(new java.awt.Dimension(230, 353));
+
+        jPanel_Body.setPreferredSize(new java.awt.Dimension(230, 353));
+
+        jToolBar_UniformScale.setFloatable(false);
+        jToolBar_UniformScale.setRollover(true);
+
+        jLabel_UniformScale.setText("Uniform");
+        jToolBar_UniformScale.add(jLabel_UniformScale);
+
+        jSlider_UniformScale.setMaximum(40);
+        jSlider_UniformScale.setMinimum(1);
+        jSlider_UniformScale.setSnapToTicks(true);
+        jSlider_UniformScale.setValue(10);
+        jSlider_UniformScale.addChangeListener(new ChangeListener() {
+
+            public void stateChanged(ChangeEvent e) {
+                scaleBody(2);
+            }
+        });
+        jToolBar_UniformScale.add(jSlider_UniformScale);
+
+        jToolBar_HeightScale.setFloatable(false);
+        jToolBar_HeightScale.setRollover(true);
+
+        jLabel_HeightScale.setText("Height");
+        jLabel_HeightScale.setPreferredSize(new java.awt.Dimension(51, 16));
+        jToolBar_HeightScale.add(jLabel_HeightScale);
+
+        jSlider_Height.setMaximum(40);
+        jSlider_Height.setMinimum(1);
+        jSlider_Height.setValue(10);
+        jSlider_Height.addChangeListener(new ChangeListener() {
+
+            public void stateChanged(ChangeEvent e) {
+                scaleBody(0);
+            }
+        });
+        jToolBar_HeightScale.add(jSlider_Height);
+
+        jToolBar_WidthScale.setFloatable(false);
+        jToolBar_WidthScale.setRollover(true);
+
+        jLabel_WidthScale.setText("Width");
+        jLabel_WidthScale.setPreferredSize(new java.awt.Dimension(51, 16));
+        jToolBar_WidthScale.add(jLabel_WidthScale);
+
+        jSlider_Width.setMaximum(40);
+        jSlider_Width.setMinimum(1);
+        jSlider_Width.setValue(10);
+        jSlider_Width.addChangeListener(new ChangeListener() {
+
+            public void stateChanged(ChangeEvent e) {
+                scaleBody(1);
+            }
+        });
+        jToolBar_WidthScale.add(jSlider_Width);
+
+        org.jdesktop.layout.GroupLayout jPanel_BodyLayout = new org.jdesktop.layout.GroupLayout(jPanel_Body);
+        jPanel_Body.setLayout(jPanel_BodyLayout);
+        jPanel_BodyLayout.setHorizontalGroup(
+            jPanel_BodyLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(jToolBar_UniformScale, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 229, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+            .add(jToolBar_HeightScale, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 229, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+            .add(jToolBar_WidthScale, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 229, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+        );
+        jPanel_BodyLayout.setVerticalGroup(
+            jPanel_BodyLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(jPanel_BodyLayout.createSequentialGroup()
+                .add(jToolBar_UniformScale, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 25, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(jToolBar_HeightScale, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 25, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(jToolBar_WidthScale, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 25, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        jSplitPane1.setLeftComponent(jPanel_Body);
+
+        jPanel_BodyParts.setPreferredSize(new java.awt.Dimension(230, 200));
+
+        jToolBar_ArmLength.setFloatable(false);
+        jToolBar_ArmLength.setRollover(true);
+
+        jLabel_ArmLength.setText("Arm Length");
+        jToolBar_ArmLength.add(jLabel_ArmLength);
 
         jSlider_ArmLength.setMaximum(40);
         jSlider_ArmLength.setMinimum(1);
         jSlider_ArmLength.setValue(10);
-        jSlider_ArmLength.setBorder(javax.swing.BorderFactory.createTitledBorder("Arm Length"));
         jSlider_ArmLength.setName("Arm Length"); // NOI18N
         jSlider_ArmLength.addChangeListener(new ChangeListener() {
 
@@ -1097,341 +1273,394 @@ public class OptionsGUI extends javax.swing.JFrame {
                 scaleArm(0);
             }
         });
+        jToolBar_ArmLength.add(jSlider_ArmLength);
+
+        jToolBar_UpperArm.setFloatable(false);
+        jToolBar_UpperArm.setRollover(true);
+
+        jLabel_UpperArm.setText("Upper Arm");
+        jLabel_UpperArm.setPreferredSize(new java.awt.Dimension(73, 16));
+        jToolBar_UpperArm.add(jLabel_UpperArm);
 
         jSlider_UpperArm.setMaximum(40);
         jSlider_UpperArm.setMinimum(1);
         jSlider_UpperArm.setValue(10);
-        jSlider_UpperArm.setBorder(javax.swing.BorderFactory.createTitledBorder("Upper Arm"));
         jSlider_UpperArm.addChangeListener(new ChangeListener() {
 
             public void stateChanged(ChangeEvent e) {
                 scaleArm(1);
             }
         });
+        jToolBar_UpperArm.add(jSlider_UpperArm);
+
+        jToolBar_Forearms.setFloatable(false);
+        jToolBar_Forearms.setRollover(true);
+
+        jLabel_Forearms.setText("Forearms");
+        jLabel_Forearms.setPreferredSize(new java.awt.Dimension(73, 16));
+        jToolBar_Forearms.add(jLabel_Forearms);
 
         jSlider_Forearms.setMaximum(40);
         jSlider_Forearms.setMinimum(1);
         jSlider_Forearms.setValue(10);
-        jSlider_Forearms.setBorder(javax.swing.BorderFactory.createTitledBorder("Forearms"));
         jSlider_Forearms.addChangeListener(new ChangeListener() {
 
             public void stateChanged(ChangeEvent e) {
                 scaleArm(2);
             }
         });
+        jToolBar_Forearms.add(jSlider_Forearms);
+
+        jToolBar_HandSize.setFloatable(false);
+        jToolBar_HandSize.setRollover(true);
+
+        jLabel_HandSize.setText("Hand Size");
+        jLabel_HandSize.setPreferredSize(new java.awt.Dimension(73, 16));
+        jToolBar_HandSize.add(jLabel_HandSize);
 
         jSlider_HandSize.setMaximum(40);
         jSlider_HandSize.setMinimum(1);
         jSlider_HandSize.setValue(10);
-        jSlider_HandSize.setBorder(javax.swing.BorderFactory.createTitledBorder("Hand Size"));
         jSlider_HandSize.addChangeListener(new ChangeListener() {
 
             public void stateChanged(ChangeEvent e) {
                 scaleHands();
             }
         });
+        jToolBar_HandSize.add(jSlider_HandSize);
+
+        jToolBar_LegLength.setFloatable(false);
+        jToolBar_LegLength.setRollover(true);
+
+        jLabel_LegLength.setText("Leg Length");
+        jLabel_LegLength.setPreferredSize(new java.awt.Dimension(73, 16));
+        jToolBar_LegLength.add(jLabel_LegLength);
 
         jSlider_LegLength.setMaximum(40);
         jSlider_LegLength.setMinimum(1);
         jSlider_LegLength.setValue(10);
-        jSlider_LegLength.setBorder(javax.swing.BorderFactory.createTitledBorder("Leg Length"));
         jSlider_LegLength.addChangeListener(new ChangeListener() {
 
             public void stateChanged(ChangeEvent e) {
                 scaleLeg(0);
             }
         });
+        jToolBar_LegLength.add(jSlider_LegLength);
 
-        jSlider_FootSize.setMaximum(40);
-        jSlider_FootSize.setMinimum(1);
-        jSlider_FootSize.setValue(10);
-        jSlider_FootSize.setBorder(javax.swing.BorderFactory.createTitledBorder("Foot Size"));
-        jSlider_FootSize.addChangeListener(new ChangeListener() {
+        jToolBar_Thighs.setFloatable(false);
+        jToolBar_Thighs.setRollover(true);
 
-            public void stateChanged(ChangeEvent e) {
-                scaleFeet();
-            }
-        });
+        jLabel_Thighs.setText("Thighs");
+        jLabel_Thighs.setPreferredSize(new java.awt.Dimension(80, 16));
+        jToolBar_Thighs.add(jLabel_Thighs);
 
         jSlider_Thighs.setMaximum(40);
         jSlider_Thighs.setMinimum(1);
         jSlider_Thighs.setValue(10);
-        jSlider_Thighs.setBorder(javax.swing.BorderFactory.createTitledBorder("Thighs"));
         jSlider_Thighs.addChangeListener(new ChangeListener() {
 
             public void stateChanged(ChangeEvent e) {
                 scaleLeg(1);
             }
         });
+        jToolBar_Thighs.add(jSlider_Thighs);
+
+        jToolBar_Calfs.setFloatable(false);
+        jToolBar_Calfs.setRollover(true);
+
+        jLabel_Calfs.setText("Calfs");
+        jLabel_Calfs.setPreferredSize(new java.awt.Dimension(80, 16));
+        jToolBar_Calfs.add(jLabel_Calfs);
 
         jSlider_Calfs.setMaximum(40);
         jSlider_Calfs.setMinimum(1);
         jSlider_Calfs.setValue(10);
-        jSlider_Calfs.setBorder(javax.swing.BorderFactory.createTitledBorder("Calfs"));
         jSlider_Calfs.addChangeListener(new ChangeListener() {
 
             public void stateChanged(ChangeEvent e) {
                 scaleLeg(2);
             }
         });
+        jToolBar_Calfs.add(jSlider_Calfs);
+
+        jToolBar_FootSize.setFloatable(false);
+        jToolBar_FootSize.setRollover(true);
+
+        jLabel_FootSize.setText("Foot Size");
+        jLabel_FootSize.setPreferredSize(new java.awt.Dimension(73, 16));
+        jToolBar_FootSize.add(jLabel_FootSize);
+
+        jSlider_FootSize.setMaximum(40);
+        jSlider_FootSize.setMinimum(1);
+        jSlider_FootSize.setValue(10);
+        jSlider_FootSize.addChangeListener(new ChangeListener() {
+
+            public void stateChanged(ChangeEvent e) {
+                scaleFeet();
+            }
+        });
+        jToolBar_FootSize.add(jSlider_FootSize);
 
         org.jdesktop.layout.GroupLayout jPanel_BodyPartsLayout = new org.jdesktop.layout.GroupLayout(jPanel_BodyParts);
         jPanel_BodyParts.setLayout(jPanel_BodyPartsLayout);
         jPanel_BodyPartsLayout.setHorizontalGroup(
             jPanel_BodyPartsLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(jPanel_BodyPartsLayout.createSequentialGroup()
-                .addContainerGap()
                 .add(jPanel_BodyPartsLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(jSlider_ArmLength, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 180, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(jSlider_UpperArm, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 180, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(jSlider_Forearms, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 180, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(jSlider_HandSize, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 180, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(jSlider_LegLength, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 180, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(jSlider_Thighs, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 180, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(jSlider_Calfs, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 180, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(jSlider_FootSize, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 180, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap())
+                    .add(jToolBar_Thighs, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 229, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                    .add(jToolBar_ArmLength, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 229, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                    .add(jToolBar_UpperArm, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 229, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                    .add(jToolBar_Forearms, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 229, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                    .add(jToolBar_HandSize, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 229, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                    .add(jToolBar_LegLength, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 229, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                    .add(jToolBar_Calfs, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 229, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                    .add(jToolBar_FootSize, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 229, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel_BodyPartsLayout.setVerticalGroup(
             jPanel_BodyPartsLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(jPanel_BodyPartsLayout.createSequentialGroup()
-                .add(jSlider_ArmLength, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .add(0, 0, 0)
-                .add(jSlider_UpperArm, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .add(jSlider_Forearms, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .add(0, 0, 0)
-                .add(jSlider_HandSize, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .add(0, 0, 0)
-                .add(jSlider_LegLength, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .add(0, 0, 0)
-                .add(jSlider_Thighs, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .add(0, 0, 0)
-                .add(jSlider_Calfs, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .add(jToolBar_ArmLength, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 25, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .add(2, 2, 2)
+                .add(jToolBar_UpperArm, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 25, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jSlider_FootSize, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .add(jToolBar_Forearms, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 25, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(jToolBar_HandSize, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 25, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(jToolBar_LegLength, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 25, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(jToolBar_Thighs, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 25, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(jToolBar_Calfs, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 25, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(jToolBar_FootSize, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 25, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .add(323, 323, 323))
         );
 
-        jSlider_UniformScale.setMaximum(40);
-        jSlider_UniformScale.setMinimum(1);
-        jSlider_UniformScale.setSnapToTicks(true);
-        jSlider_UniformScale.setValue(10);
-        jSlider_UniformScale.setBorder(javax.swing.BorderFactory.createTitledBorder("Uniform Scale"));
-        jSlider_UniformScale.addChangeListener(new ChangeListener() {
+        jSplitPane1.setRightComponent(jPanel_BodyParts);
 
-            public void stateChanged(ChangeEvent e) {
-                scaleBody(2);
-            }
-        });
+        jScrollPane_Body.setViewportView(jSplitPane1);
 
-        jSlider_Height.setMaximum(40);
-        jSlider_Height.setMinimum(1);
-        jSlider_Height.setValue(10);
-        jSlider_Height.setBorder(javax.swing.BorderFactory.createTitledBorder("Height"));
-        jSlider_Height.addChangeListener(new ChangeListener() {
+        jTabbedPane_Options.addTab("Scale - Body", jScrollPane_Body);
 
-            public void stateChanged(ChangeEvent e) {
-                scaleBody(0);
-            }
-        });
+        jScrollPanel_Details.setPreferredSize(new java.awt.Dimension(234, 353));
 
-        jSlider_Width.setMaximum(40);
-        jSlider_Width.setMinimum(1);
-        jSlider_Width.setValue(10);
-        jSlider_Width.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createEtchedBorder(), "Width"));
-        jSlider_Width.addChangeListener(new ChangeListener() {
+        jSplitPane2.setDividerLocation(240);
+        jSplitPane2.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
+        jSplitPane2.setPreferredSize(new java.awt.Dimension(210, 363));
 
-            public void stateChanged(ChangeEvent e) {
-                scaleBody(1);
-            }
-        });
-
-        org.jdesktop.layout.GroupLayout jPanel_BodyLayout = new org.jdesktop.layout.GroupLayout(jPanel_Body);
-        jPanel_Body.setLayout(jPanel_BodyLayout);
-        jPanel_BodyLayout.setHorizontalGroup(
-            jPanel_BodyLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(jPanel_BodyLayout.createSequentialGroup()
-                .addContainerGap()
-                .add(jPanel_BodyLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(jPanel_BodyLayout.createSequentialGroup()
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(jSlider_Width, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 220, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                    .add(jSlider_UniformScale, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 220, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(jSlider_Height, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 220, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(jPanel_BodyParts, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        jPanel_BodyLayout.setVerticalGroup(
-            jPanel_BodyLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(jPanel_BodyLayout.createSequentialGroup()
-                .add(jSlider_UniformScale, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jSlider_Height, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jSlider_Width, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jPanel_BodyParts, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-
-        jTabbedPane_Options.addTab("Scale - Body", jPanel_Body);
-
-        jPanel_HeadDetails.setBorder(javax.swing.BorderFactory.createTitledBorder("Head Details"));
-        jPanel_HeadDetails.setAlignmentX(0.0F);
-        jPanel_HeadDetails.setAlignmentY(0.0F);
-
-        jSpinner_HairStyle.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Hair Style", javax.swing.border.TitledBorder.LEFT, javax.swing.border.TitledBorder.BELOW_TOP));
-
-        jSpinner_EarPiercing.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Ears", javax.swing.border.TitledBorder.LEFT, javax.swing.border.TitledBorder.BELOW_TOP));
-
-        jSpinner_FacialHair.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Facial Hair", javax.swing.border.TitledBorder.LEFT, javax.swing.border.TitledBorder.BELOW_TOP));
-
-        jSpinner_NosePiercing.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Nose", javax.swing.border.TitledBorder.LEFT, javax.swing.border.TitledBorder.BELOW_TOP));
-
-        jSpinner_Tattoos.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Tattoos", javax.swing.border.TitledBorder.LEFT, javax.swing.border.TitledBorder.BELOW_TOP));
-
-        jSpinner_LipPiercing.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Lips", javax.swing.border.TitledBorder.LEFT, javax.swing.border.TitledBorder.BELOW_TOP));
-
-        jSpinner_Scars.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Scars", javax.swing.border.TitledBorder.LEFT, javax.swing.border.TitledBorder.BELOW_TOP));
-
-        jSpinner_EyePiercings.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Eyes", javax.swing.border.TitledBorder.LEFT, javax.swing.border.TitledBorder.BELOW_TOP));
-
-        org.jdesktop.layout.GroupLayout jPanel_HeadDetailsLayout = new org.jdesktop.layout.GroupLayout(jPanel_HeadDetails);
-        jPanel_HeadDetails.setLayout(jPanel_HeadDetailsLayout);
-        jPanel_HeadDetailsLayout.setHorizontalGroup(
-            jPanel_HeadDetailsLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(jPanel_HeadDetailsLayout.createSequentialGroup()
-                .addContainerGap()
-                .add(jPanel_HeadDetailsLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(jPanel_HeadDetailsLayout.createSequentialGroup()
-                        .add(jSpinner_HairStyle, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 90, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(jSpinner_EarPiercing, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 90, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                    .add(jPanel_HeadDetailsLayout.createSequentialGroup()
-                        .add(jSpinner_FacialHair, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 90, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(jSpinner_NosePiercing, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 90, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                    .add(jPanel_HeadDetailsLayout.createSequentialGroup()
-                        .add(jSpinner_Tattoos, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 90, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(jSpinner_LipPiercing, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 90, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                    .add(jPanel_HeadDetailsLayout.createSequentialGroup()
-                        .add(jSpinner_Scars, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 90, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(jSpinner_EyePiercings, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 90, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        jPanel_HeadDetailsLayout.setVerticalGroup(
-            jPanel_HeadDetailsLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(jPanel_HeadDetailsLayout.createSequentialGroup()
-                .add(jPanel_HeadDetailsLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                    .add(jSpinner_HairStyle, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(jSpinner_EarPiercing, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jPanel_HeadDetailsLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                    .add(jSpinner_FacialHair, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(jSpinner_NosePiercing, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jPanel_HeadDetailsLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                    .add(jSpinner_Tattoos, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(jSpinner_LipPiercing, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jPanel_HeadDetailsLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                    .add(jSpinner_Scars, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(jSpinner_EyePiercings, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(40, Short.MAX_VALUE))
-        );
-
-        jPanel_BodyDetails.setBorder(javax.swing.BorderFactory.createTitledBorder("Body Details"));
+        jPanel_BodyDetails.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Body Details", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.DEFAULT_POSITION));
         jPanel_BodyDetails.setAlignmentX(0.0F);
         jPanel_BodyDetails.setAlignmentY(0.0F);
+        jPanel_BodyDetails.setPreferredSize(new java.awt.Dimension(230, 353));
 
-        jSpinner_BodyScars.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Scars", javax.swing.border.TitledBorder.LEFT, javax.swing.border.TitledBorder.BELOW_TOP));
+        jToolBar_BodyScars.setFloatable(false);
+        jToolBar_BodyScars.setRollover(true);
 
-        jSpinner_BodyTattoos.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Tattoos", javax.swing.border.TitledBorder.LEFT, javax.swing.border.TitledBorder.BELOW_TOP));
+        jLabel_BodyScars.setText("Scars");
+        jLabel_BodyScars.setPreferredSize(new java.awt.Dimension(57, 16));
+        jToolBar_BodyScars.add(jLabel_BodyScars);
+        jToolBar_BodyScars.add(jSpinner_BodyScars);
 
-        jSpinner_BodyPiercings.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Piercings", javax.swing.border.TitledBorder.LEFT, javax.swing.border.TitledBorder.BELOW_TOP));
+        jToolBar_BodyTattoos.setFloatable(false);
+        jToolBar_BodyTattoos.setRollover(true);
+
+        jLabel_BodyTattoos.setText("Tattoos");
+        jLabel_BodyTattoos.setPreferredSize(new java.awt.Dimension(57, 16));
+        jToolBar_BodyTattoos.add(jLabel_BodyTattoos);
+        jToolBar_BodyTattoos.add(jSpinner_BodyTattoos);
+
+        jToolBar_BodyPiercings.setFloatable(false);
+        jToolBar_BodyPiercings.setRollover(true);
+
+        jLabel_BodyPiercings.setText("Piercings");
+        jToolBar_BodyPiercings.add(jLabel_BodyPiercings);
+        jToolBar_BodyPiercings.add(jSpinner_BodyPiercings);
 
         org.jdesktop.layout.GroupLayout jPanel_BodyDetailsLayout = new org.jdesktop.layout.GroupLayout(jPanel_BodyDetails);
         jPanel_BodyDetails.setLayout(jPanel_BodyDetailsLayout);
         jPanel_BodyDetailsLayout.setHorizontalGroup(
             jPanel_BodyDetailsLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(jPanel_BodyDetailsLayout.createSequentialGroup()
-                .addContainerGap()
                 .add(jPanel_BodyDetailsLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(org.jdesktop.layout.GroupLayout.TRAILING, jSpinner_BodyPiercings, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 170, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(org.jdesktop.layout.GroupLayout.TRAILING, jSpinner_BodyTattoos, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 170, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(org.jdesktop.layout.GroupLayout.TRAILING, jSpinner_BodyScars, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 170, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap())
+                    .add(jToolBar_BodyTattoos, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 200, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                    .add(jToolBar_BodyPiercings, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 200, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                .add(0, 0, 0))
+            .add(org.jdesktop.layout.GroupLayout.TRAILING, jPanel_BodyDetailsLayout.createSequentialGroup()
+                .add(0, 0, 0)
+                .add(jToolBar_BodyScars, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 200, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .add(0, 0, 0))
         );
         jPanel_BodyDetailsLayout.setVerticalGroup(
             jPanel_BodyDetailsLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(jPanel_BodyDetailsLayout.createSequentialGroup()
-                .add(jSpinner_BodyScars, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .add(jToolBar_BodyScars, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 25, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .add(0, 0, 0)
+                .add(jToolBar_BodyTattoos, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 25, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .add(0, 0, 0)
+                .add(jToolBar_BodyPiercings, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 25, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .add(365, 365, 365))
+        );
+
+        jSplitPane2.setRightComponent(jPanel_BodyDetails);
+
+        jPanel_HeadDetails.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Head Details", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.DEFAULT_POSITION));
+        jPanel_HeadDetails.setAlignmentX(0.0F);
+        jPanel_HeadDetails.setAlignmentY(0.0F);
+        jPanel_HeadDetails.setPreferredSize(new java.awt.Dimension(230, 353));
+
+        jToolBar_HairStyle.setFloatable(false);
+        jToolBar_HairStyle.setRollover(true);
+
+        jLabel_HairStyle.setText("Hair Style");
+        jLabel_HairStyle.setPreferredSize(new java.awt.Dimension(66, 16));
+        jToolBar_HairStyle.add(jLabel_HairStyle);
+        jToolBar_HairStyle.add(jSpinner_HairStyle);
+
+        jToolBar_FacialHair.setFloatable(false);
+        jToolBar_FacialHair.setRollover(true);
+
+        jLabel_FacialHair.setText("Facial Hair");
+        jToolBar_FacialHair.add(jLabel_FacialHair);
+        jToolBar_FacialHair.add(jSpinner_FacialHair);
+
+        jToolBar_Ears.setFloatable(false);
+        jToolBar_Ears.setRollover(true);
+
+        jLabel_Ears.setText("Ears");
+        jLabel_Ears.setPreferredSize(new java.awt.Dimension(66, 16));
+        jToolBar_Ears.add(jLabel_Ears);
+        jToolBar_Ears.add(jSpinner_EarPiercing);
+
+        jToolBar_Nose.setFloatable(false);
+        jToolBar_Nose.setRollover(true);
+
+        jLabel_Nose.setText("Nose");
+        jLabel_Nose.setPreferredSize(new java.awt.Dimension(66, 16));
+        jToolBar_Nose.add(jLabel_Nose);
+        jToolBar_Nose.add(jSpinner_NosePiercing);
+
+        jToolBar_Eyes.setFloatable(false);
+        jToolBar_Eyes.setRollover(true);
+
+        jLabel_Eyes.setText("Eyes");
+        jLabel_Eyes.setPreferredSize(new java.awt.Dimension(66, 16));
+        jToolBar_Eyes.add(jLabel_Eyes);
+        jToolBar_Eyes.add(jSpinner_EyePiercings);
+
+        jToolBar_Lips.setFloatable(false);
+        jToolBar_Lips.setRollover(true);
+
+        jLabel_Lips.setText("Lips");
+        jLabel_Lips.setPreferredSize(new java.awt.Dimension(66, 16));
+        jToolBar_Lips.add(jLabel_Lips);
+        jToolBar_Lips.add(jSpinner_LipPiercing);
+
+        jToolBar_Tattoos.setFloatable(false);
+        jToolBar_Tattoos.setRollover(true);
+
+        jLabel_Tattoos.setText("Tattoos");
+        jLabel_Tattoos.setPreferredSize(new java.awt.Dimension(66, 16));
+        jToolBar_Tattoos.add(jLabel_Tattoos);
+        jToolBar_Tattoos.add(jSpinner_Tattoos);
+
+        jToolBar_Scars.setFloatable(false);
+        jToolBar_Scars.setRollover(true);
+
+        jLabel_Scars.setText("Scars");
+        jLabel_Scars.setPreferredSize(new java.awt.Dimension(66, 16));
+        jToolBar_Scars.add(jLabel_Scars);
+        jToolBar_Scars.add(jSpinner_Scars);
+
+        org.jdesktop.layout.GroupLayout jPanel_HeadDetailsLayout = new org.jdesktop.layout.GroupLayout(jPanel_HeadDetails);
+        jPanel_HeadDetails.setLayout(jPanel_HeadDetailsLayout);
+        jPanel_HeadDetailsLayout.setHorizontalGroup(
+            jPanel_HeadDetailsLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(jPanel_HeadDetailsLayout.createSequentialGroup()
+                .add(jPanel_HeadDetailsLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(jPanel_HeadDetailsLayout.createSequentialGroup()
+                        .add(0, 0, 0)
+                        .add(jPanel_HeadDetailsLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                            .add(jPanel_HeadDetailsLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
+                                .add(jToolBar_Ears, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 200, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                                .add(jToolBar_FacialHair, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 200, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                            .add(jToolBar_Nose, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 200, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                            .add(jToolBar_Eyes, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 200, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                            .add(jToolBar_Lips, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 200, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                            .add(jToolBar_Tattoos, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 200, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                            .add(jToolBar_Scars, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 200, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
+                    .add(jToolBar_HairStyle, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 200, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jPanel_HeadDetailsLayout.setVerticalGroup(
+            jPanel_HeadDetailsLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(jPanel_HeadDetailsLayout.createSequentialGroup()
+                .add(jToolBar_HairStyle, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 25, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .add(0, 0, 0)
+                .add(jToolBar_FacialHair, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 25, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .add(0, 0, 0)
+                .add(jToolBar_Ears, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 25, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jSpinner_BodyTattoos, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .add(jToolBar_Nose, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 25, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jSpinner_BodyPiercings, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .add(jToolBar_Eyes, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 25, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(jToolBar_Lips, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 25, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(jToolBar_Tattoos, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 25, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(jToolBar_Scars, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 25, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        org.jdesktop.layout.GroupLayout jPanel_DetailsLayout = new org.jdesktop.layout.GroupLayout(jPanel_Details);
-        jPanel_Details.setLayout(jPanel_DetailsLayout);
-        jPanel_DetailsLayout.setHorizontalGroup(
-            jPanel_DetailsLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(org.jdesktop.layout.GroupLayout.TRAILING, jPanel_DetailsLayout.createSequentialGroup()
-                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .add(jPanel_DetailsLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(org.jdesktop.layout.GroupLayout.TRAILING, jPanel_BodyDetails, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 220, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(jPanel_HeadDetails, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 220, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap())
-        );
-        jPanel_DetailsLayout.setVerticalGroup(
-            jPanel_DetailsLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(jPanel_DetailsLayout.createSequentialGroup()
-                .add(jPanel_HeadDetails, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jPanel_BodyDetails, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(140, Short.MAX_VALUE))
-        );
+        jSplitPane2.setTopComponent(jPanel_HeadDetails);
 
-        jTabbedPane_Options.addTab("Details", jPanel_Details);
+        jScrollPanel_Details.setViewportView(jSplitPane2);
+
+        jTabbedPane_Options.addTab("Details", jScrollPanel_Details);
+
+        jPanel_Shirts.setPreferredSize(new java.awt.Dimension(234, 357));
 
         org.jdesktop.layout.GroupLayout jPanel_ShirtsLayout = new org.jdesktop.layout.GroupLayout(jPanel_Shirts);
         jPanel_Shirts.setLayout(jPanel_ShirtsLayout);
         jPanel_ShirtsLayout.setHorizontalGroup(
             jPanel_ShirtsLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 259, Short.MAX_VALUE)
+            .add(0, 234, Short.MAX_VALUE)
         );
         jPanel_ShirtsLayout.setVerticalGroup(
             jPanel_ShirtsLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 702, Short.MAX_VALUE)
+            .add(0, 372, Short.MAX_VALUE)
         );
 
         jTabbedPane_Options.addTab("Shirts", jPanel_Shirts);
+
+        jPanel_Pants.setPreferredSize(new java.awt.Dimension(234, 357));
 
         org.jdesktop.layout.GroupLayout jPanel_PantsLayout = new org.jdesktop.layout.GroupLayout(jPanel_Pants);
         jPanel_Pants.setLayout(jPanel_PantsLayout);
         jPanel_PantsLayout.setHorizontalGroup(
             jPanel_PantsLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 259, Short.MAX_VALUE)
+            .add(0, 234, Short.MAX_VALUE)
         );
         jPanel_PantsLayout.setVerticalGroup(
             jPanel_PantsLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 702, Short.MAX_VALUE)
+            .add(0, 372, Short.MAX_VALUE)
         );
 
         jTabbedPane_Options.addTab("Pants", jPanel_Pants);
+
+        jPanel_Dresses.setPreferredSize(new java.awt.Dimension(234, 357));
 
         org.jdesktop.layout.GroupLayout jPanel_DressesLayout = new org.jdesktop.layout.GroupLayout(jPanel_Dresses);
         jPanel_Dresses.setLayout(jPanel_DressesLayout);
         jPanel_DressesLayout.setHorizontalGroup(
             jPanel_DressesLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 259, Short.MAX_VALUE)
+            .add(0, 234, Short.MAX_VALUE)
         );
         jPanel_DressesLayout.setVerticalGroup(
             jPanel_DressesLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 702, Short.MAX_VALUE)
+            .add(0, 372, Short.MAX_VALUE)
         );
 
         jTabbedPane_Options.addTab("Dresses", jPanel_Dresses);
@@ -1440,9 +1669,9 @@ public class OptionsGUI extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(jPanel_Name, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-            .add(jPanel_Gender, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-            .add(jTabbedPane_Options, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 280, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+            .add(jPanel_Name, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .add(jPanel_Gender, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .add(jTabbedPane_Options, 0, 0, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -1451,7 +1680,7 @@ public class OptionsGUI extends javax.swing.JFrame {
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(jPanel_Gender, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jTabbedPane_Options, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 748, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                .add(jTabbedPane_Options, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 418, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
         );
 
         pack();
@@ -1470,11 +1699,35 @@ public class OptionsGUI extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup buttonGroup_Gender;
+    private javax.swing.JLabel jLabel_ArmLength;
+    private javax.swing.JLabel jLabel_BodyPiercings;
+    private javax.swing.JLabel jLabel_BodyScars;
+    private javax.swing.JLabel jLabel_BodyTattoos;
+    private javax.swing.JLabel jLabel_Calfs;
+    private javax.swing.JLabel jLabel_Ears;
+    private javax.swing.JLabel jLabel_Eyes;
+    private javax.swing.JLabel jLabel_FacialHair;
+    private javax.swing.JLabel jLabel_FootSize;
+    private javax.swing.JLabel jLabel_Forearms;
+    private javax.swing.JLabel jLabel_HairStyle;
+    private javax.swing.JLabel jLabel_HandSize;
+    private javax.swing.JLabel jLabel_HeadDepth;
+    private javax.swing.JLabel jLabel_HeadHeight;
+    private javax.swing.JLabel jLabel_HeadWidth;
+    private javax.swing.JLabel jLabel_HeightScale;
+    private javax.swing.JLabel jLabel_LegLength;
+    private javax.swing.JLabel jLabel_Lips;
+    private javax.swing.JLabel jLabel_Nose;
+    private javax.swing.JLabel jLabel_Scars;
+    private javax.swing.JLabel jLabel_Tattoos;
+    private javax.swing.JLabel jLabel_Thighs;
+    private javax.swing.JLabel jLabel_UniformScale;
+    private javax.swing.JLabel jLabel_UpperArm;
+    private javax.swing.JLabel jLabel_WidthScale;
     private javax.swing.JPanel jPanel_Body;
     private javax.swing.JPanel jPanel_BodyDetails;
     private javax.swing.JPanel jPanel_BodyParts;
     private javax.swing.JPanel jPanel_Colors;
-    private javax.swing.JPanel jPanel_Details;
     private javax.swing.JPanel jPanel_Dresses;
     private javax.swing.JPanel jPanel_EyeColor;
     private javax.swing.JPanel jPanel_EyeColorB;
@@ -1487,7 +1740,6 @@ public class OptionsGUI extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel_HairColorR;
     private javax.swing.JPanel jPanel_Head;
     private javax.swing.JPanel jPanel_HeadDetails;
-    private javax.swing.JPanel jPanel_HeadSize;
     private javax.swing.JPanel jPanel_Name;
     private javax.swing.JPanel jPanel_Pants;
     private javax.swing.JPanel jPanel_Shirts;
@@ -1497,6 +1749,10 @@ public class OptionsGUI extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel_SkinColorR;
     private javax.swing.JRadioButton jRadioButton_GenderF;
     private javax.swing.JRadioButton jRadioButton_GenderM;
+    private javax.swing.JScrollPane jScrollPane_Body;
+    private javax.swing.JScrollPane jScrollPane_Head;
+    private javax.swing.JScrollPane jScrollPanel_Colors;
+    private javax.swing.JScrollPane jScrollPanel_Details;
     private javax.swing.JSlider jSlider_ArmLength;
     private javax.swing.JSlider jSlider_Calfs;
     private javax.swing.JSlider jSlider_EyeColorB;
@@ -1540,17 +1796,44 @@ public class OptionsGUI extends javax.swing.JFrame {
     private javax.swing.JSpinner jSpinner_SkinG;
     private javax.swing.JSpinner jSpinner_SkinR;
     private javax.swing.JSpinner jSpinner_Tattoos;
+    private javax.swing.JSplitPane jSplitPane1;
+    private javax.swing.JSplitPane jSplitPane2;
     private javax.swing.JTabbedPane jTabbedPane_Options;
     private javax.swing.JTextField jTextField_Name;
+    private javax.swing.JToolBar jToolBar_ArmLength;
+    private javax.swing.JToolBar jToolBar_BodyPiercings;
+    private javax.swing.JToolBar jToolBar_BodyScars;
+    private javax.swing.JToolBar jToolBar_BodyTattoos;
+    private javax.swing.JToolBar jToolBar_Calfs;
+    private javax.swing.JToolBar jToolBar_Ears;
     private javax.swing.JToolBar jToolBar_EyeB;
     private javax.swing.JToolBar jToolBar_EyeG;
     private javax.swing.JToolBar jToolBar_EyeR;
+    private javax.swing.JToolBar jToolBar_Eyes;
+    private javax.swing.JToolBar jToolBar_FacialHair;
+    private javax.swing.JToolBar jToolBar_FootSize;
+    private javax.swing.JToolBar jToolBar_Forearms;
     private javax.swing.JToolBar jToolBar_HairB;
     private javax.swing.JToolBar jToolBar_HairG;
     private javax.swing.JToolBar jToolBar_HairR;
+    private javax.swing.JToolBar jToolBar_HairStyle;
+    private javax.swing.JToolBar jToolBar_HandSize;
+    private javax.swing.JToolBar jToolBar_HeadDepth;
+    private javax.swing.JToolBar jToolBar_HeadHeight;
+    private javax.swing.JToolBar jToolBar_HeadWidth;
+    private javax.swing.JToolBar jToolBar_HeightScale;
+    private javax.swing.JToolBar jToolBar_LegLength;
+    private javax.swing.JToolBar jToolBar_Lips;
+    private javax.swing.JToolBar jToolBar_Nose;
+    private javax.swing.JToolBar jToolBar_Scars;
     private javax.swing.JToolBar jToolBar_SkinB;
     private javax.swing.JToolBar jToolBar_SkinG;
     private javax.swing.JToolBar jToolBar_SkinR;
+    private javax.swing.JToolBar jToolBar_Tattoos;
+    private javax.swing.JToolBar jToolBar_Thighs;
+    private javax.swing.JToolBar jToolBar_UniformScale;
+    private javax.swing.JToolBar jToolBar_UpperArm;
+    private javax.swing.JToolBar jToolBar_WidthScale;
     // End of variables declaration//GEN-END:variables
 
 }

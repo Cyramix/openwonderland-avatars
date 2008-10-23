@@ -130,12 +130,12 @@ public class COLLADA_ModelTest extends DemoBase
         try
         {
             //modelLocation = new URL("http://www.zeitgeistgames.com/assets/collada/Clothing/FlipFlopsFeet.dae");
-            modelLocation = new File("C:/Avatars/assets/models/collada/Environments/Milan/DSI.dae").toURI().toURL();
+            modelLocation = new File("assets/models/collada/Environments/Milan/DSI.dae").toURI().toURL();
         } catch (MalformedURLException ex)
         {
             Logger.getLogger(COLLADA_ModelTest.class.getName()).log(Level.SEVERE, null, ex);
         }
-        SharedAsset colladaAsset = new SharedAsset(pscene.getRepository(), new AssetDescriptor(SharedAssetType.COLLADA_Model, modelLocation));
+        SharedAsset colladaAsset = new SharedAsset(pscene.getRepository(), new AssetDescriptor(SharedAssetType.COLLADA_Mesh, modelLocation));
         //colladaAsset.setUserData(new ColladaLoaderParams(true, true, false, false, 3, "FlipFlops", null));
         colladaAsset.setUserData(new ColladaLoaderParams(false, true, false, false, 3, "Milan", null));
         PPolygonModelInstance modelInst = pscene.addModelInstance("Collada Model", colladaAsset, new PMatrix());

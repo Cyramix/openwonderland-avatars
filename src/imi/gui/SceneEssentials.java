@@ -1,22 +1,13 @@
-/**
- * Project Wonderland
- *
- * Copyright (c) 2004-2008, Sun Microsystems, Inc., All Rights Reserved
- *
- * Redistributions in source code form must reproduce the above
- * copyright and this condition.
- *
- * The contents of this file are subject to the GNU General Public
- * License, Version 2 (the "License"); you may not use this file
- * except in compliance with the License. A copy of the License is
- * available at http://www.opensource.org/licenses/gpl-license.php.
- *
- * $Revision$
- * $Date$
- * $State$
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
  */
+
 package imi.gui;
 
+import imi.loaders.collada.ColladaLoaderParams;
+import imi.loaders.collada.Instruction;
+import imi.loaders.collada.InstructionProcessor;
 import imi.loaders.repository.AssetDescriptor;
 import imi.loaders.repository.AssetInitializer;
 import imi.loaders.repository.SharedAsset;
@@ -30,9 +21,11 @@ import imi.scene.polygonmodel.parts.PMeshMaterial;
 import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
 import imi.scene.polygonmodel.skinned.PPolygonSkinnedMeshInstance;
 import imi.scene.processors.SkinnedAnimationProcessor;
+import imi.scene.shader.programs.VertDeformerWithSpecAndNormalMap;
 import imi.scene.shader.programs.VertexDeformer;
 import java.awt.Component;
 import java.io.File;
+import java.io.FilenameFilter;
 import java.util.ArrayList;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileFilter;
@@ -154,7 +147,9 @@ public class SceneEssentials {
                 if(currentHiProcessors == null)
                     currentHiProcessors = new ArrayList<ProcessorComponent>();
                 else {
-                    currentEntity.removeComponent(ProcessorCollectionComponent.class);
+                    ProcessorCollectionComponent comp = (ProcessorCollectionComponent)currentEntity.getComponent(ProcessorCollectionComponent.class);
+                    for(int i = 0; i < currentHiProcessors.size(); i++)
+                        comp.removeProcessor(currentHiProcessors.get(i));
                     currentHiProcessors.clear();
                 }
                 // 5- Set up an initializer to excecute once the asset is loaded into the scene
@@ -184,19 +179,8 @@ public class SceneEssentials {
                             // We must disable the use of the geometry's material to see the texture we set for the instance
                             target.setUseGeometryMaterial(false);
 
-                            ProcessorCollectionComponent proc = (ProcessorCollectionComponent) currentEntity.getComponent(ProcessorCollectionComponent.class);
-                            SkinnedAnimationProcessor newProcessor = new SkinnedAnimationProcessor(modelInst);
-                            currentHiProcessors.add(newProcessor);
-                            proc.addProcessor(newProcessor);
-                            
-                            for (int i = 0; i < currentHiProcessors.size(); i++) {
-                                //currentHiProcessors.get(i).setEntityProcessController(worldManager.getProcessorManager());
-                                proc.addProcessor(currentHiProcessors.get(i));
-                                ProcessorArmingCollection collection = new ProcessorArmingCollection(currentHiProcessors.get(i));
-                                collection.addCondition(new NewFrameCondition(currentHiProcessors.get(i)));
-                                currentHiProcessors.get(i).setArmingCondition(collection);
-                            }
-                            currentEntity.addComponent(ProcessorCollectionComponent.class, proc);
+                            PPolygonModelInstance modInst = ((PPolygonModelInstance)skeleton.getParent());
+                            ((ProcessorCollectionComponent)currentEntity.getComponent(ProcessorCollectionComponent.class)).addProcessor(new SkinnedAnimationProcessor(modInst));
                         } else {
                             PPolygonMeshInstance target = (PPolygonMeshInstance) asset;
                             // Create a material to use
@@ -254,18 +238,8 @@ public class SceneEssentials {
                             // We must disable the use of the geometry's material to see the texture we set for the instance
                             target.setUseGeometryMaterial(false);
 
-                            ProcessorCollectionComponent proc = new ProcessorCollectionComponent();
-                            
-                            currentHiProcessors.add(new SkinnedAnimationProcessor(modelInst));
-                            
-                            for (int i = 0; i < currentHiProcessors.size(); i++) {
-                                //currentHiProcessors.get(i).setEntityProcessController(worldManager.getProcessorManager());
-                                proc.addProcessor(currentHiProcessors.get(i));
-                                ProcessorArmingCollection collection = new ProcessorArmingCollection(currentHiProcessors.get(i));
-                                collection.addCondition(new NewFrameCondition(currentHiProcessors.get(i)));
-                                currentHiProcessors.get(i).setArmingCondition(collection);
-                            }
-                            currentEntity.addComponent(ProcessorCollectionComponent.class, proc);
+                            PPolygonModelInstance modInst = ((PPolygonModelInstance)skeleton.getParent());
+                            ((ProcessorCollectionComponent)currentEntity.getComponent(ProcessorCollectionComponent.class)).addProcessor(new SkinnedAnimationProcessor(modInst));
                         } else {
                             PPolygonMeshInstance target = (PPolygonMeshInstance) asset;
                             // Create a material to use
@@ -293,6 +267,7 @@ public class SceneEssentials {
      * selected collada data
      */
     public void loadDAEFile(boolean clear, Component arg0) {
+        currentPScene.setUseRepository(false);
         if(clear)
             currentPScene.getInstances().removeAllChildren();
         if(currentHiProcessors == null)
@@ -301,13 +276,76 @@ public class SceneEssentials {
             currentHiProcessors.clear();
 
         int iIndex = fileModel.getPath().indexOf("assets");
-        String szModelPath = fileModel.getPath().substring(iIndex, fileModel.getPath().length());
+        String szModelPath = fileModel.getPath().substring(iIndex);
+        File modelLocation = new File(szModelPath);
         
-        currentPScene.setUseRepository(false);
-          
-        // TODO : Convert!
-        //SharedAsset colladaAsset = new SharedAsset(currentPScene.getRepository(), new AssetDescriptor(SharedAssetType.COLLADA, szModelPath));
-        //modelInst = currentPScene.addModelInstance(modelName, colladaAsset, new PMatrix());
+        SharedAsset colladaAsset = new SharedAsset(currentPScene.getRepository(), new AssetDescriptor(SharedAssetType.COLLADA_Mesh, modelLocation));
+        colladaAsset.setUserData(new ColladaLoaderParams(false, true, false, false, 3, fileModel.getName(), null));
+        modelInst = currentPScene.addModelInstance(fileModel.getName(), colladaAsset, new PMatrix());
+    }
+    
+    public void loadDAECharacter(boolean clear, Component arg0) {
+        if (clear)
+            currentPScene.getInstances().removeAllChildren();
+        
+        if (currentHiProcessors == null)
+            currentHiProcessors = new ArrayList<ProcessorComponent>();
+        else
+            currentHiProcessors.clear();
+        
+        setShadersNProcesses(loadDAEs());        
+    }
+    
+    public SkeletonNode loadDAEs() {
+        InstructionProcessor pProcessor = new InstructionProcessor();
+        
+        String fileProtocol = new String("file://" + System.getProperty("user.dir") + "/");
+        
+        int iIndex = fileModel.getPath().indexOf("assets");
+        String szModelPath = fileModel.getPath().substring(iIndex);
+        FilenameFilter filter = new FilenameFilter() {
+
+            public boolean accept(File arg0, String arg1) {
+                return (arg1.endsWith(".dae"));
+            }
+        };
+        
+        File absPath = new File(szModelPath);
+        String[] colladaList = absPath.list(filter);
+        String anim = null; String bind = null;
+        
+        for (int i = 0; i < colladaList.length; i++) {
+            if (colladaList[i].lastIndexOf("Bind") != -1)
+                bind = absPath + "/" + colladaList[i];
+        }
+        
+        Instruction pRootInstruction = new Instruction("loadCharacter");
+        Instruction pLoadBindPoseInstruction = pRootInstruction.addInstruction("loadBindPose", fileProtocol + bind);
+        
+        for (int i = 0; i < colladaList.length; i++) {
+            if (colladaList[i].lastIndexOf("Anim") != -1) {
+                anim = absPath + "/" + colladaList[i];
+                pRootInstruction.addInstruction("loadAnimation", fileProtocol + anim);
+            }
+        }
+    
+        pProcessor.execute(currentPScene, pRootInstruction);
+        return (pProcessor.getSkeleton());
+    }
+    
+    public void setShadersNProcesses(SkeletonNode sNode) {
+        PPolygonModelInstance modInst = currentPScene.addModelInstance(sNode, new PMatrix());
+
+        if (modInst.getChild(0) instanceof SkeletonNode)
+        {
+            SkeletonNode pSkeletonNode = (SkeletonNode) modInst.getChild(0);
+            //  Assign the specified shader to all SkinnedMeshes.
+            pSkeletonNode.setShader(new VertDeformerWithSpecAndNormalMap(worldManager));
+        }
+
+        modInst.getTransform().getLocalMatrix(true).setScale(10.0f);
+        ((ProcessorCollectionComponent)currentEntity.getComponent(ProcessorCollectionComponent.class)).addProcessor(new SkinnedAnimationProcessor(modInst));
+        currentPScene.setDirty(true, true);
     }
     
     /**

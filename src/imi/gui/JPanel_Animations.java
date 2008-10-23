@@ -1,20 +1,9 @@
-/**
- * Project Wonderland
+/*
+ * JPanel_Animations.java
  *
- * Copyright (c) 2004-2008, Sun Microsystems, Inc., All Rights Reserved
- *
- * Redistributions in source code form must reproduce the above
- * copyright and this condition.
- *
- * The contents of this file are subject to the GNU General Public
- * License, Version 2 (the "License"); you may not use this file
- * except in compliance with the License. A copy of the License is
- * available at http://www.opensource.org/licenses/gpl-license.php.
- *
- * $Revision$
- * $Date$
- * $State$
+ * Created on September 19, 2008, 1:50 PM
  */
+
 package imi.gui;
 
 /**
@@ -119,8 +108,12 @@ public class JPanel_Animations extends javax.swing.JPanel {
             imi.scene.PNode node = ((imi.scene.PNode)instance.findChild("skeletonRoot"));
             if(node != null) {
                 imi.scene.polygonmodel.parts.skinned.SkeletonNode skeleton = ((imi.scene.polygonmodel.parts.skinned.SkeletonNode)node.getParent());
-                jSlider_Animations.setValue(((int) skeleton.getAnimationState().getAnimationSpeed() * 10));
-                jSlider_Animations.setEnabled(true);
+                if (skeleton.getAnimationGroup() != null) {
+                    jSlider_Animations.setValue(((int) skeleton.getAnimationState().getAnimationSpeed() * 10));
+                    jSlider_Animations.setEnabled(true);
+                } else {
+                    jSlider_Animations.setEnabled(false);
+                }
             } else {
                 jSlider_Animations.setEnabled(false);
             }
@@ -138,7 +131,6 @@ public class JPanel_Animations extends javax.swing.JPanel {
             imi.scene.PNode node = ((imi.scene.PNode)instance.findChild("skeletonRoot"));
             if(node != null) {
                 imi.scene.polygonmodel.parts.skinned.SkeletonNode skeleton = ((imi.scene.polygonmodel.parts.skinned.SkeletonNode)node.getParent());
-                
                 if (skeleton.getAnimationGroup() != null) {
                     jFormattedTextField_Time.setEnabled(true);
                     jFormattedTextField_CycleTime.setEnabled(true);
@@ -182,6 +174,9 @@ public class JPanel_Animations extends javax.swing.JPanel {
                     millisec = (int)cycleTimeMil - ((int)cycleTimeSec * 1000);
                     time = minutes.toString() + ":" + seconds.toString() + ":" + millisec.toString();
                     jFormattedTextField_CycleTime.setText(time);
+                } else {
+                    jFormattedTextField_Time.setEnabled(false);
+                    jFormattedTextField_CycleTime.setEnabled(false);
                 }
             }
         } else {
@@ -237,7 +232,10 @@ public class JPanel_Animations extends javax.swing.JPanel {
     public javax.swing.Timer getAnimTimer() { return animTimer; }
     public imi.scene.PNode getSelectedModelInstanceNode() {return (imi.scene.PNode) jComboBox_ModelInstances.getSelectedItem(); }
     public imi.scene.polygonmodel.PPolygonModelInstance getSelectedModelInstance() {
-        return ((imi.scene.polygonmodel.PPolygonModelInstance)jComboBox_ModelInstances.getSelectedItem());
+        if (jComboBox_ModelInstances.getSelectedIndex() >= 0) {
+            return ((imi.scene.polygonmodel.PPolygonModelInstance)jComboBox_ModelInstances.getSelectedItem());
+        }
+        return null;
     }
 
 ////////////////////////////////////////////////////////////////////////////////

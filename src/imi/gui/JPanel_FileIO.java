@@ -1,20 +1,9 @@
-/**
- * Project Wonderland
+/*
+ * JPanel_FileIO.java
  *
- * Copyright (c) 2004-2008, Sun Microsystems, Inc., All Rights Reserved
- *
- * Redistributions in source code form must reproduce the above
- * copyright and this condition.
- *
- * The contents of this file are subject to the GNU General Public
- * License, Version 2 (the "License"); you may not use this file
- * except in compliance with the License. A copy of the License is
- * available at http://www.opensource.org/licenses/gpl-license.php.
- *
- * $Revision$
- * $Date$
- * $State$
+ * Created on September 22, 2008, 9:59 AM
  */
+
 package imi.gui;
 
 import imi.scene.polygonmodel.PPolygonMeshInstance;
@@ -72,9 +61,37 @@ public class JPanel_FileIO extends javax.swing.JPanel {
             while (sceneData.getPScene().getAssetWaitingList().size() > 0) {
                 //System.out.println("Waiting to get assets...");
             }
-            shaderPanel.setPanel(sceneData.getPScene());
-            animPanel.resetPanel();
-            rotPanel.setModelInst(animPanel.getSelectedModelInstanceNode());
+            
+
+        }
+
+        System.out.println("=================================================");
+        System.out.println("Loading of avatar configuration file is  complete");
+        System.out.println("=================================================");
+    }
+    
+    public void loadxml(JPanel_ModelRotation rotPanel, JPanel_Animations animPanel) {
+        System.out.println("=================================================");
+        System.out.println("User requested to load a saved configuration file");
+        System.out.println("=================================================");
+
+        int retValLoad = jFileChooser_LoadXML.showOpenDialog(this);
+        if (retValLoad == javax.swing.JFileChooser.APPROVE_OPTION) {
+            fileXML = jFileChooser_LoadXML.getSelectedFile();
+            sceneData.setfileXML(fileXML);
+            
+            rotPanel.resetPanel();
+
+            loadSavedData();
+
+            while (sceneData.getPScene().getAssetWaitingList().size() > 0) {
+                //System.out.println("Waiting to get assets...");
+            }
+            
+            if (animPanel != null)
+                animPanel.resetPanel();
+            if (rotPanel != null)
+                rotPanel.setModelInst(animPanel.getSelectedModelInstanceNode());
         }
 
         System.out.println("=================================================");
@@ -146,21 +163,61 @@ public class JPanel_FileIO extends javax.swing.JPanel {
             java.io.File fileModel = jFileChooser_LoadModels.getSelectedFile();
             sceneData.setfileModel(fileModel);
 
-            if (rotPanel != null)
-                rotPanel.resetPanel();
+            rotPanel.resetPanel();
 
             if (fileModel.getName().endsWith(".ms3d")) {
                 sceneData.loadMS3DFile(0, true, this);
-            } else {
+            } else if (fileModel.getName().endsWith(".dae")) {
                 sceneData.loadDAEFile(true, this);
+            } else {
+                sceneData.loadDAECharacter(true, this);
             }
 
             while (sceneData.getPScene().getAssetWaitingList().size() > 0) {
                 //System.out.println("Waiting to get assets...");
             }
-            shaderPanel.setPanel(sceneData.getPScene());
-            animPanel.resetPanel();
-            rotPanel.setModelInst(animPanel.getSelectedModelInstanceNode());
+            
+            if (shaderPanel != null)
+                shaderPanel.setPanel(sceneData.getPScene());
+            if (animPanel != null)
+                animPanel.setPanel(sceneData.getPScene());
+            if (rotPanel != null)
+                rotPanel.setModelInst(animPanel.getSelectedModelInstanceNode());
+        }
+
+        System.out.println("=================================================");
+        System.out.println("Loading of model file has been completed.........");
+        System.out.println("=================================================");
+    }
+    
+    public void loadModel(JPanel_ModelRotation rotPanel, JPanel_Animations animPanel) {
+        System.out.println("=================================================");
+        System.out.println("Loading a model file per the user's request.....");
+        System.out.println("=================================================");
+
+        int retValModel = jFileChooser_LoadModels.showOpenDialog(this);
+        if (retValModel == javax.swing.JFileChooser.APPROVE_OPTION) {
+            java.io.File fileModel = jFileChooser_LoadModels.getSelectedFile();
+            sceneData.setfileModel(fileModel);
+
+            rotPanel.resetPanel();
+
+            if (fileModel.getName().endsWith(".ms3d")) {
+                sceneData.loadMS3DFile(0, true, this);
+            } else if (fileModel.getName().endsWith(".dae")) {
+                sceneData.loadDAEFile(true, this);
+            } else {
+                sceneData.loadDAECharacter(true, this);
+            }
+
+            while (sceneData.getPScene().getAssetWaitingList().size() > 0) {
+                //System.out.println("Waiting to get assets...");
+            }
+
+            if (animPanel != null)
+                animPanel.resetPanel();
+            if (rotPanel != null)
+                rotPanel.setModelInst(animPanel.getSelectedModelInstanceNode());
         }
 
         System.out.println("=================================================");
@@ -186,23 +243,24 @@ public class JPanel_FileIO extends javax.swing.JPanel {
     }
     
     public void loadMeshes() {
-        PPolygonModelInstance modInst = animPanel.getSelectedModelInstance();
-        imi.scene.PNode node = ((imi.scene.PNode)modInst.findChild("skeletonRoot"));
-        if(node != null) {
-            imi.scene.polygonmodel.parts.skinned.SkeletonNode skeleton = ((imi.scene.polygonmodel.parts.skinned.SkeletonNode)node.getParent());
-            ArrayList<PPolygonSkinnedMeshInstance> aMeshInst = skeleton.getSkinnedMeshInstances();
-            Vector<PPolygonSkinnedMeshInstance> vMeshInst = new Vector<PPolygonSkinnedMeshInstance>();
-            for(int i = 0; i < aMeshInst.size(); i++) {
-                vMeshInst.add(aMeshInst.get(i));
+        if (animPanel.getSelectedModelInstance() != null) {
+            PPolygonModelInstance modInst = animPanel.getSelectedModelInstance();
+            imi.scene.PNode node = ((imi.scene.PNode)modInst.findChild("skeletonRoot"));
+            if(node != null) {
+                imi.scene.polygonmodel.parts.skinned.SkeletonNode skeleton = ((imi.scene.polygonmodel.parts.skinned.SkeletonNode)node.getParent());
+                ArrayList<PPolygonSkinnedMeshInstance> aMeshInst = skeleton.getSkinnedMeshInstances();
+                Vector<PPolygonSkinnedMeshInstance> vMeshInst = new Vector<PPolygonSkinnedMeshInstance>();
+                for(int i = 0; i < aMeshInst.size(); i++) {
+                    vMeshInst.add(aMeshInst.get(i));
+                }
+                jComboBox_Textures.setModel(new DefaultComboBoxModel(vMeshInst));
+            } else {
+                MeshInstanceSearchProcessor proc = new MeshInstanceSearchProcessor();
+                proc.setProcessor();
+                TreeTraverser.breadthFirst(modInst, proc);
+                jComboBox_Textures.setModel(new DefaultComboBoxModel(proc.getMeshInstances()));
             }
-            jComboBox_Textures.setModel(new DefaultComboBoxModel(vMeshInst));
-        } else {
-            MeshInstanceSearchProcessor proc = new MeshInstanceSearchProcessor();
-            proc.setProcessor();
-            TreeTraverser.breadthFirst(modInst, proc);
-            jComboBox_Textures.setModel(new DefaultComboBoxModel(proc.getMeshInstances()));
         }
-        
     }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -222,6 +280,15 @@ public class JPanel_FileIO extends javax.swing.JPanel {
         animPanel = animpanel;
         shaderPanel = shaderpanel;
         loadMeshes();
+    }
+    public void setPanel(SceneEssentials sceneEss, JPanel_ModelRotation rotpanel, JPanel_Animations animpanel) {
+        sceneData.setSceneData(sceneEss.getJScene(), sceneEss.getPScene(),
+                sceneEss.getEntity(), sceneEss.getWM(), sceneEss.getProcessors());
+        rotPanel = rotpanel;
+        animPanel = animpanel;
+        
+        if(animpanel.getSelectedModelInstance() != null)
+            loadMeshes();
     }
     
     /** This method is called from within the constructor to
@@ -329,6 +396,7 @@ public class JPanel_FileIO extends javax.swing.JPanel {
         java.io.File modelDirectory = new java.io.File("./assets/models/");
 
         jFileChooser_LoadModels.setCurrentDirectory(modelDirectory);
+        jFileChooser_LoadModels.setFileSelectionMode(javax.swing.JFileChooser.FILES_AND_DIRECTORIES);
         jFileChooser_LoadModels.setDoubleBuffered(true);
         jFileChooser_LoadModels.setDragEnabled(true);
         jFileChooser_LoadModels.addChoosableFileFilter(((javax.swing.filechooser.FileFilter)modelFilter));
@@ -353,7 +421,7 @@ public class JPanel_FileIO extends javax.swing.JPanel {
         setBorder(javax.swing.BorderFactory.createTitledBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED), "File I/O", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Lucida Grande", 0, 13), new java.awt.Color(0, 0, 255))); // NOI18N
         setMaximumSize(new java.awt.Dimension(230, 115));
         setMinimumSize(new java.awt.Dimension(230, 115));
-        setPreferredSize(new java.awt.Dimension(230, 115));
+        setPreferredSize(new java.awt.Dimension(230, 146));
 
         jToolBar_OpenSave.setFloatable(false);
         jToolBar_OpenSave.setRollover(true);
@@ -397,7 +465,7 @@ public class JPanel_FileIO extends javax.swing.JPanel {
         jToolBar_ModelText.setMaximumSize(new java.awt.Dimension(230, 25));
         jToolBar_ModelText.setPreferredSize(new java.awt.Dimension(230, 25));
 
-        jButton_Model.setFont(new java.awt.Font("Lucida Grande", 0, 10));
+        jButton_Model.setFont(new java.awt.Font("Lucida Grande", 0, 10)); // NOI18N
         jButton_Model.setText("MODEL");
         jButton_Model.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
         jButton_Model.setFocusable(false);
