@@ -212,7 +212,7 @@ public class DemoBase
         PointLight light = new PointLight();
         light.setDiffuse(new ColorRGBA(1.0f, 1.0f, 1.0f, 1.0f));
         light.setAmbient(new ColorRGBA(1.0f, 1.0f, 1.0f, 1.0f));
-        light.setLocation(new Vector3f(-1000, 0, 0)); // not affecting anything
+        light.setLocation(new Vector3f(-1000, 1000, 0)); // not affecting anything
         light.setEnabled(true);
         LightState ls = (LightState) wm.getRenderManager().createRendererState(RenderState.RS_LIGHT);
         ls.setEnabled(true);

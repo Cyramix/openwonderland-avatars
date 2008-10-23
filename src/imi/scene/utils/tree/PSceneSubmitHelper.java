@@ -96,7 +96,11 @@ public class PSceneSubmitHelper  implements NodeProcessor
             }
         }
         if (current instanceof PPolygonMeshInstance)
-            m_sharedMeshCollection.add(((PPolygonMeshInstance)current).updateSharedMesh());
+        {
+            // ensure we have indices
+            if (((PPolygonMeshInstance)current).getGeometry().getGeometry().getMaxIndex() >= 0) // If no indices, don't attach this mesh.
+                m_sharedMeshCollection.add(((PPolygonMeshInstance)current).updateSharedMesh());
+        }
         
         return true;
     }
