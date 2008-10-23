@@ -18,6 +18,7 @@
 package imi.character.ninja.transitions;
 
 import imi.character.ninja.IdleState;
+import imi.character.ninja.NinjaContext.ActionNames;
 import imi.character.statemachine.GameState;
 import imi.character.statemachine.TransitionObject;
 
@@ -40,7 +41,12 @@ public class IdleToWalk extends TransitionObject
         if (idle.getMoveCounter() > moveDelay)
         {
             stateMessageName = "toWalk";
-            return state.getContext().excecuteTransition(this);
+            
+            // If the walk action is active
+            float x = state.getContext().getActions()[ActionNames.Movement_X.ordinal()];
+            float z = state.getContext().getActions()[ActionNames.Movement_Z.ordinal()];
+            if (x > 0.0f || x < 0.0f || z > 0.0f || z < 0.0f)
+                return state.getContext().excecuteTransition(this);
         }
         
         return false;
