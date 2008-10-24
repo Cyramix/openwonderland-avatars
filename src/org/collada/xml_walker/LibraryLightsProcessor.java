@@ -30,21 +30,38 @@ import imi.loaders.collada.Collada;
  *
  * @author paulby
  */
-public class LibraryLightsProcessor extends Processor {
-    
-    private ArrayList<LightProcessor> lightProcessors = new ArrayList();
+public class LibraryLightsProcessor extends Processor
+{
 
-    
-    //  Constructor.
-    public LibraryLightsProcessor(Collada collada, LibraryLights libraryLights, Processor parent)
+    /**
+     * Constructor.
+     * 
+     * @param collada
+     * @param libraryLights
+     * @param parent
+     */
+    public LibraryLightsProcessor(Collada pCollada, LibraryLights pLibraryLights, Processor pParent)
     {
-        super(collada, libraryLights, parent);
+        super(pCollada, pLibraryLights, pParent);
         
-        List<Light> lights = libraryLights.getLights();
-        for(Light l : lights) {
-            lightProcessors.add((LightProcessor)ProcessorFactory.createProcessor(collada, l, this));
+        List<Light> lights = pLibraryLights.getLights();
+        for(Light pLight : lights)
+        {
+            processLight(pLight);
         }
     }
 
+    /**
+     * Process a collada Light.
+     * 
+     * @param pLight
+     */
+    private void processLight(Light pLight)
+    {
+        //  Should process the light and add it to the PScene.
+        //  Should probably only do this when level geometry is loaded.
+    }
 
 }
+
+

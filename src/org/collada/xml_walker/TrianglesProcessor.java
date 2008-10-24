@@ -81,6 +81,11 @@ public class TrianglesProcessor extends Processor
 
         getMaterial(pTriangles);
 
+//	    if (doesMaterialContainTexture())
+//        {
+//            int aaa = 0;
+//        }
+
         buildVertexDataSemanticArray(pTriangles);
         cacheVertexDataSemantics();
 
@@ -90,6 +95,36 @@ public class TrianglesProcessor extends Processor
         processTriangles(pTriangles.getP());
     }
 
+    
+    boolean doesMaterialContainTexture()
+    {
+        if (m_pColladaMaterial == null)
+            return(false);
+
+        if (m_pColladaMaterial.getEmissiveImageFilename().length() > 0)
+            return(true);
+
+        if (m_pColladaMaterial.getAmbientImageFilename().length() > 0)
+            return(true);
+
+        if (m_pColladaMaterial.getDiffuseImageFilename().length() > 0)
+            return(true);
+
+        if (m_pColladaMaterial.getSpecularImageFilename().length() > 0)
+            return(true);
+
+        if (m_pColladaMaterial.getReflectiveImageFilename().length() > 0)
+            return(true);
+
+        if (m_pColladaMaterial.getBumpMapImageFilename().length() > 0)
+            return(true);
+
+        if (m_pColladaMaterial.getNormalMapImageFilename().length() > 0)
+            return(true);
+
+        return(false);
+    }
+    
 
     /**
      * Gets the Material assigned to the Triangles.

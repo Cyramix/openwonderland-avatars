@@ -32,8 +32,11 @@ import imi.loaders.collada.Collada;
 
 
 /**
- *
+ * The MeshProcessor processes a Mesh.  A Mesh contains positions, normals,
+ * texcoords, (triangle lists or polygon lists).
+ * 
  * @author paulby
+ * @author Chris Nagle.
  */
 public class MeshProcessor extends Processor
 {
@@ -45,7 +48,13 @@ public class MeshProcessor extends Processor
 
 
 
-    //  Constructor.
+    /**
+     * Constructor.
+     * 
+     * @param pCollada
+     * @param pMesh
+     * @param pParent
+     */
     public MeshProcessor(Collada pCollada, Mesh pMesh, Processor pParent)
     {
         super(pCollada, pMesh, pParent);
@@ -73,6 +82,7 @@ public class MeshProcessor extends Processor
 
             PPolygonMesh pPolygonMesh = null;
 
+            //  Mesh contains Polygons?
             if (pProcessor instanceof PolylistProcessor)
             {
                 //  Create a PolygonMesh.
@@ -80,6 +90,8 @@ public class MeshProcessor extends Processor
 
                 ((PolylistProcessor)pProcessor).populatePolygonMesh(pPolygonMesh);
             }
+            
+            //  Mesh contains Triangles?
             else if (pProcessor instanceof TrianglesProcessor)
             {
                 pPolygonMesh = pCollada.createPolygonMesh();
@@ -107,7 +119,11 @@ public class MeshProcessor extends Processor
 
 
 
-    //  Process a Source element for the Mesh.
+    /**
+     * Processes a Source element for the Mesh.
+     * 
+     * @param pSource
+     */
     private void processSourceData(Source pSource)
     {
         VertexDataArray pVertexDataArray = new VertexDataArray(pSource);
@@ -118,7 +134,12 @@ public class MeshProcessor extends Processor
             System.out.println("   VertexDataArray:  " + pVertexDataArray.m_Name + ", " + pVertexDataArray.m_Data.length);
     }
 
-    //  Gets the VertexDataArray with the specified name.
+    /**
+     * Gets the VertexDataArray with the specified name.
+     * 
+     * @param name
+     * @return
+     */
     public VertexDataArray getVertexDataArray(String name)
     {
         int a;
@@ -135,7 +156,12 @@ public class MeshProcessor extends Processor
         return(null);
     }
 
-    //  Gets the Vertices with the specified name.
+    /**
+     * Gets the Vertices with the specified name.
+     * 
+     * @param name
+     * @return Vertices
+     */
     public Vertices getVertices(String name)
     {
         Mesh pMesh = (Mesh)m_pColladaSchema;
@@ -149,8 +175,11 @@ public class MeshProcessor extends Processor
         return(null);
     }
 
-
-    //  Gets the name of the Mesh.
+    /**
+     * Gets the name of the Mesh.
+     * 
+     * @return String
+     */
     public String getName()
     {
         return(m_Name);

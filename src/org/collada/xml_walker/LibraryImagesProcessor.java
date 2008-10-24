@@ -32,8 +32,13 @@ import imi.loaders.collada.Collada;
 public class LibraryImagesProcessor extends Processor
 {
     
-
-    //  Constructor.
+    /**
+     * Constructor.
+     * 
+     * @param pCollada
+     * @param pImages
+     * @param pParent
+     */
     public LibraryImagesProcessor(Collada pCollada, LibraryImages pImages, Processor pParent)
     {
         super(pCollada, pImages, pParent);
@@ -52,6 +57,11 @@ public class LibraryImagesProcessor extends Processor
         }
     }
 
+    /**
+     * Processes a collada image.
+     * 
+     * @param pImage
+     */
     private void processImage(Image pImage)
     {
         m_pCollada.addColladaImage(pImage.getId(), pImage.getInitFrom());

@@ -28,7 +28,8 @@ import imi.loaders.collada.Collada;
 
 
 /**
- *
+ * The GeometryProcessor class processes a piece of geometry in the collada file.
+ * 
  * @author Chris Nagle
  */
 public class GeometryProcessor extends Processor
@@ -40,18 +41,24 @@ public class GeometryProcessor extends Processor
 
 
 
-    /** Creates a new instance of GeometryProcessor */
-    public GeometryProcessor(Collada collada, Geometry geometry, Processor parent)
+    /**
+     * Constructor.
+     * 
+     * @param collada
+     * @param geometry
+     * @param parent
+     */
+    public GeometryProcessor(Collada pCollada, Geometry pGeometry, Processor pParent)
     {
-        super(collada, geometry, parent);
+        super(pCollada, pGeometry, pParent);
 
-        m_Name = geometry.getName();
+        m_Name = pGeometry.getName();
 
-        m_pMesh = geometry.getMesh();
+        m_pMesh = pGeometry.getMesh();
 
 
         //  Create the MeshProcessor.
-        ProcessorFactory.createProcessor(collada, m_pMesh, this);
+        ProcessorFactory.createProcessor(pCollada, m_pMesh, this);
     }
 
     //  Gets the name of the Geometry.

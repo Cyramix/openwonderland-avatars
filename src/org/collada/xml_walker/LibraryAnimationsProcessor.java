@@ -37,7 +37,9 @@ import org.collada.colladaschema.Param;
 
 
 /**
- *
+ * The LibraryAnimationsProcessor class processes all animation tracks defined
+ * in the collada file.
+ * 
  * @author Chris Nagle
  */
 public class LibraryAnimationsProcessor extends Processor
@@ -52,7 +54,14 @@ public class LibraryAnimationsProcessor extends Processor
 
     int                     m_KeyframeCount;
 
-    //  Constuctor.
+
+    /**
+     * Constructor.
+     * 
+     * @param pCollada
+     * @param pAnimations
+     * @param pParent
+     */
     public LibraryAnimationsProcessor(Collada pCollada, LibraryAnimations pAnimations, Processor pParent)
     {
         super(pCollada, pAnimations, pParent);
@@ -90,6 +99,13 @@ public class LibraryAnimationsProcessor extends Processor
         }
     }
 
+    /**
+     * Processes an Animation defined in the collada file.
+     * 
+     * @param pCollada
+     * @param pAnimation
+     * @param pAnimationLoop
+     */
     private void processAnimation(Collada pCollada, Animation pAnimation, AnimationGroup pAnimationLoop)
     {
         int a;
@@ -126,6 +142,7 @@ public class LibraryAnimationsProcessor extends Processor
         
         //System.out.println("AnimationChannel:  " + m_AnimatedItemName);
 
+        //  The 'input' source contains keyframe times.  1 float per keyframe.
         Source pInputSource = getSource(pAnimation, "input");
         if (pInputSource != null)
         {
@@ -138,6 +155,7 @@ public class LibraryAnimationsProcessor extends Processor
             }
         }
 
+        //  The 'output' source contains keyframe matrices.  16 floats per keyframe.
         Source pOutputSource = getSource(pAnimation, "output");
         if (pOutputSource != null)
         {
@@ -177,6 +195,13 @@ public class LibraryAnimationsProcessor extends Processor
         pAnimationLoop.getChannels().add(pAnimationChannel);
     }
 
+    /**
+     * Gets the Source of the specified type from the Animation.
+     * 
+     * @param pAnimation
+     * @param sourceType
+     * @return Source
+     */
     private Source getSource(Animation pAnimation, String sourceType)
     {
         Source pSource;
@@ -191,6 +216,12 @@ public class LibraryAnimationsProcessor extends Processor
         return(null);
     }
 
+    /**
+     * Gets the param name of a Source.
+     * 
+     * @param pSource
+     * @return String
+     */
     private String getSourceParamName(Source pSource)
     {
         TechniqueCommon pTechniqueCommon = pSource.getTechniqueCommon();
@@ -199,6 +230,12 @@ public class LibraryAnimationsProcessor extends Processor
         return(pParam.getName());
     }
 
+    /**
+     * Gets the param type of a Source.
+     * 
+     * @param pSource
+     * @return String
+     */
     private String getSourceParamType(Source pSource)
     {
         TechniqueCommon pTechniqueCommon = pSource.getTechniqueCommon();
@@ -207,6 +244,12 @@ public class LibraryAnimationsProcessor extends Processor
         return(pParam.getType());
     }
 
+    /**
+     * Gets the time of a keyframe.
+     * 
+     * @param Index
+     * @return float
+     */
     private float getKeyframeTime(int Index)
     {
         float fKeyframeTime = ((Double)m_pTransformInputSource.getFloatArray().getValues().get(Index)).floatValue();
@@ -214,6 +257,13 @@ public class LibraryAnimationsProcessor extends Processor
         return(fKeyframeTime);
     }
 
+    /**
+     * Gets the matrix of a keyframe.
+     * 
+     * @param Index
+     * @param pMatrix
+     * @return boolean
+     */
     private boolean getKeyframeMatrix(int Index, PMatrix pMatrix)
     {
         int FloatIndex = Index * 16;

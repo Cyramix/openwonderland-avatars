@@ -33,7 +33,12 @@ import imi.loaders.collada.Collada;
  */
 public class LibraryCamerasProcessor extends Processor
 {
-    //  Constructor.
+    /**
+     * Constructor.
+     * @param pCollada
+     * @param pCameras
+     * @param pParent
+     */
     public LibraryCamerasProcessor(Collada pCollada, LibraryCameras pCameras, Processor pParent)
     {
         super(pCollada, pCameras, pParent);
@@ -52,7 +57,10 @@ public class LibraryCamerasProcessor extends Processor
         }
     }
 
-    //  Processes a Camera node.
+    /**
+     * Processes a Camera node.
+     * @param pCamera
+     */
     private void processCamera(Camera pCamera)
     {
         String cameraName = pCamera.getName();
@@ -81,6 +89,7 @@ public class LibraryCamerasProcessor extends Processor
                         xfov  = (float)pPerspective.getXfov().getValue();
 
 
+                    //  Build the ColladaCameraParams.
                     PColladaCameraParams pCameraParams = new PColladaCameraParams();
 
                     pCameraParams.initialize(cameraName, xfov, yfov, znear, zfar, true);

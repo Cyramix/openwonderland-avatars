@@ -451,6 +451,55 @@ public class PColladaMaterial
 
         return(textureCount);
     }
+
+
+
+
+
+
+
+    //  Gets the image filename for the Emissive channel.
+    public String getEmissiveImageFilename()
+    {
+        return(m_EmissiveImageFilename);
+    }
+
+    //  Gets the image filename for the Ambient channel.
+    public String getAmbientImageFilename()
+    {
+        return(m_AmbientImageFilename);
+    }
+
+    //  Gets the image filename for the Diffuse channel.
+    public String getDiffuseImageFilename()
+    {
+        return(m_DiffuseImageFilename);
+    }
+   
+    //  Gets the image filename for the Specular channel.
+    public String getSpecularImageFilename()
+    {
+        return(m_SpecularImageFilename);
+    }
+
+    //  Gets the image filename for the Reflective channel.
+    public String getReflectiveImageFilename()
+    {
+        return(m_ReflectiveImageFilename);
+    }
+
+    //  Gets the image filename for the BumpMap channel.
+    public String getBumpMapImageFilename()
+    {
+        return(m_BumpMapImageFilename);
+    }
+
+    //  Gets the image filename for the NormalMap channel.
+    public String getNormalMapImageFilename()
+    {
+        return(m_NormalMapImageFilename);
+    }
+
 }
 
 

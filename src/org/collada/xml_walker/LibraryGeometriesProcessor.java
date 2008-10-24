@@ -28,8 +28,11 @@ import imi.loaders.collada.Collada;
 
 
 /**
- *
+ * The LibraryGeometriesProcessor class processes all geometries defined
+ * in the collada file.
+ * 
  * @author paulby
+ *         Chris Nagle.
  */
 public class LibraryGeometriesProcessor extends Processor
 {
@@ -38,47 +41,55 @@ public class LibraryGeometriesProcessor extends Processor
     String m_CurrentMeshName = "";
 
 
-    //  Constructor.
-    public LibraryGeometriesProcessor(Collada collada, LibraryGeometries jaxbNode, Processor parent)
+    
+    /**
+     * Constructor.
+     * 
+     * @param pCollada
+     * @param pGeometries
+     * @param pParent
+     */
+    public LibraryGeometriesProcessor(Collada pCollada, LibraryGeometries pGeometries, Processor pParent)
     {
-        super(collada, jaxbNode, parent);
-//        Asset asset = jaxbNode.getAsset();      // 0 or 1
-        List<Geometry> geoms = jaxbNode.getGeometries();
+        super(pCollada, pGeometries, pParent);
+
+        List<Geometry> geoms = pGeometries.getGeometries();
         children = new ArrayList();
         for(Geometry g : geoms)
         {
             m_CurrentMeshName = g.getId();
+
             //System.out.println("Processing Geometry "+g.getName());
             if (g.getConvexMesh()!=null)
             {
                 //System.out.println("   ConvexMesh");
-                children.add(ProcessorFactory.createProcessor(collada, g.getConvexMesh(), this));
+                children.add(ProcessorFactory.createProcessor(pCollada, g.getConvexMesh(), this));
             }
             if (g.getMesh()!=null)
             {
                 //System.out.println("   Mesh");
-                children.add(ProcessorFactory.createProcessor(collada, g.getMesh(), this));
+                children.add(ProcessorFactory.createProcessor(pCollada, g.getMesh(), this));
             }
             if (g.getSpline()!=null)
             {
               //  System.out.println("   Spline");
-                children.add(ProcessorFactory.createProcessor(collada, g.getSpline(), this));
+                children.add(ProcessorFactory.createProcessor(pCollada, g.getSpline(), this));
             }
         }
-//        List<Extra> extras = jaxbNode.getExtras();
     }
 
-    
+    /**
+     * Gets the name of the current Mesh.
+     * 
+     * @return String
+     */
     public String getMeshName()
     {
         return(m_CurrentMeshName);
     }
 
-/*
-    @Override
-    public void createSceneGraph(Object parent) {
-        for(Processor p : children)
-            p.createSceneGraph(parent);
-    }
-*/
 }
+
+
+
+
