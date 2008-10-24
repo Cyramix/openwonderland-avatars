@@ -42,6 +42,7 @@ public class Chair implements SpatialObject
     protected ObjectCollection objectCollection = null;
     
     private SpatialObject owner = null;
+    private boolean occupied = false;
     
     public Chair(Vector3f position, Vector3f heading)
     {
@@ -153,16 +154,19 @@ public class Chair implements SpatialObject
 
     public boolean isOccupied() 
     {
-        if (owner != null)
-            return true;
-        return false;
+        return occupied;
     }
     
     public boolean isOccupied(boolean occupiedMatters) 
     {
         if (occupiedMatters)
-            return isOccupied();
+            return occupied;
         return false;
+    }
+    
+    public void setOccupied(boolean yes)
+    {
+        occupied = yes;
     }
 
     public void setOwner(SpatialObject occupied) {

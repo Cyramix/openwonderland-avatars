@@ -70,7 +70,7 @@ public class SitState extends GameState
         if (ninjaContext.getSteering().getGoal() instanceof Chair)
         {
             chair = (Chair)ninjaContext.getSteering().getGoal();
-            if (chair.getOwner() != ninjaContext.getNinja())
+            if (chair.isOccupied())
                 return false;
         }
         
@@ -84,7 +84,10 @@ public class SitState extends GameState
         
         // Set the chair to not occupied
         if (chair != null)
+        {
             chair.setOwner(null);
+            chair.setOccupied(false);
+        }
     }
     
     @Override
@@ -105,6 +108,7 @@ public class SitState extends GameState
         {
             chair = (Chair)ninjaContext.getSteering().getGoal();
             chair.setOwner(ninjaContext.getNinja());
+            chair.setOccupied(true);
         }
     }
     

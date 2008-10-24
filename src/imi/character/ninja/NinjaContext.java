@@ -169,14 +169,16 @@ public class NinjaContext extends GameContext
             SpatialObject obj = ninja.getObjectCollection().findNearestChair(ninja, 10000.0f, 1.0f, true);
             if (obj != null && !((Chair)obj).isOccupied())
             {
-                if (((Chair)steering.getGoal())!= null)
-                    ((Chair)steering.getGoal()).setOwner(null);
-                ((Chair)obj).setOwner(ninja);
                 Vector3f pos = ((Chair)obj).getGoalPosition();
                 Vector3f direction = ((Chair)obj).getGoalForwardVector();
                 steering.setGoalPosition(pos);
                 steering.setSittingDirection(direction);
                 steering.setGoal(obj);
+                // Go and sit there
+                steering.setEnable(true);
+                steering.setReachedGoal(false);
+                
+                // Update global goal point
                 Goal goalPoint = (Goal) ninja.getWorldManager().getUserData(Goal.class);
                 if (goalPoint != null)
                 {
@@ -186,21 +188,21 @@ public class NinjaContext extends GameContext
                     goal.invert();
                     goalPoint.getTransform().setLocalMatrix(goal);
                     goalPoint.getTransform().getLocalMatrix(true).setScale(1.0f);
-                    //goalPoint.getTransform().getLocalMatrix(true).setTranslation(pos);
                     PScene GPScene = goalPoint.getPScene();
                     GPScene.setDirty(true, true);
                     GPScene.submitTransforms();
                 }
-                // Go and sit there
-                steering.setEnable(true);
-                steering.setReachedGoal(false);
             }
         }
         
         else if (trigger == TriggerNames.Sit.ordinal() && pressed)
         {
-            setCurrentState(gameStates.get(SitState.class));
-            triggerReleased(TriggerNames.Sit.ordinal()); 
+            SitState sit = (SitState) gameStates.get(SitState.class);
+            if (sit.toSit(null))
+            {
+                setCurrentState(sit);
+                triggerReleased(TriggerNames.Sit.ordinal()); 
+            }
         }
     }
     

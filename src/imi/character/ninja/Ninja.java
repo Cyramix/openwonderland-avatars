@@ -91,13 +91,13 @@ public class Ninja extends imi.character.Character
         if (scheme instanceof NinjaControlScheme)
         {
             ((NinjaControlScheme)scheme).setNinja(this);
-//            Goal goalPoint = (Goal)m_wm.getUserData(Goal.class);
-//            if (goalPoint != null)
-//            {
-//                ((NinjaContext)m_context).getSteering().setGoalPosition(goalPoint.getTransform().getLocalMatrix(false).getTranslation());
-//                ((NinjaContext)m_context).getSteering().setSittingDirection(goalPoint.getTransform().getLocalMatrix(false).getLocalZ().mult(-1.0f));
-//                ((NinjaContext)m_context).getSteering().setGoal(goalPoint.getGoal());
-//            }
+            Goal goalPoint = (Goal)m_wm.getUserData(Goal.class);
+            if (goalPoint != null)
+            {
+                ((NinjaContext)m_context).getSteering().setGoalPosition(goalPoint.getTransform().getLocalMatrix(false).getTranslation());
+                ((NinjaContext)m_context).getSteering().setSittingDirection(goalPoint.getTransform().getLocalMatrix(false).getLocalZ());
+                ((NinjaContext)m_context).getSteering().setGoal(goalPoint.getGoal());
+            }
         }
     }
 
