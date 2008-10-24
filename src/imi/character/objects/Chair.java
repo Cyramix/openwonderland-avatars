@@ -22,6 +22,11 @@ import com.jme.math.Vector3f;
 import com.jme.renderer.ColorRGBA;
 import com.jme.scene.state.MaterialState.ColorMaterial;
 import imi.loaders.PPolygonTriMeshAssembler;
+import imi.loaders.collada.ColladaLoaderParams;
+import imi.loaders.repository.AssetDescriptor;
+import imi.loaders.repository.AssetInitializer;
+import imi.loaders.repository.SharedAsset;
+import imi.loaders.repository.SharedAsset.SharedAssetType;
 import imi.scene.PMatrix;
 import imi.scene.PScene;
 import imi.scene.boundingvolumes.PSphere;
@@ -37,6 +42,8 @@ import imi.scene.utils.PMeshUtils;
  */
 public class Chair implements SpatialObject
 {
+    private SharedAsset asset = null;
+    
     protected PPolygonModelInstance modelInst   = null;
     
     protected ObjectCollection objectCollection = null;
@@ -44,25 +51,86 @@ public class Chair implements SpatialObject
     private SpatialObject owner = null;
     private boolean occupied = false;
     
-    public Chair(Vector3f position, Vector3f heading)
+    public Chair(Vector3f position, Vector3f heading, String modelFile)
     {
-        PMatrix origin = new PMatrix();
-        origin.lookAt(position, position.add(heading), Vector3f.UNIT_Y);
-        origin.invert();
-        modelInst = new PPolygonModelInstance("Chair", origin);
-        
-        PMeshMaterial geometryMaterial = new PMeshMaterial();
-        geometryMaterial.setColorMaterial(ColorMaterial.Diffuse); // Make the vert colors affect diffuse coloring
-        geometryMaterial.setDiffuse(ColorRGBA.white);
-        
-        PPolygonMesh sphereMesh;
-        PPolygonTriMeshAssembler assembler = new PPolygonTriMeshAssembler();
-        
-        sphereMesh = PMeshUtils.createSphere("Chair Mesh", Vector3f.ZERO, 1.0f, 6, 6, ColorRGBA.red);
-        sphereMesh.setMaterial(geometryMaterial);
-        sphereMesh.submit(assembler);
-        //sphereMesh.getTransform().getLocalMatrix(true).setTranslation(Vector3f.UNIT_X.mult(2.0f));
-        modelInst.addChild(sphereMesh);
+        if (modelFile != null && modelFile.endsWith(".dae"))
+        {
+            asset = new SharedAsset(null, new AssetDescriptor(SharedAssetType.COLLADA_Model, modelFile));
+            asset.setUserData(new ColladaLoaderParams(false, true, false, false, 4, "name", null));
+            AssetInitializer init = new AssetInitializer() {
+                public boolean initialize(Object asset) {
+
+                    //if (((PNode)asset).getChild(0) instanceof SkeletonNode)
+                    {
+//                        // Set position
+//                        if (position != null)
+//                            m_modelInst.getTransform().setLocalMatrix(origin);
+//
+//                        // Set material
+//                        skeleton.setShader(new VertexDeformer(m_wm));
+
+                    }
+                    return true;
+
+                }
+            };
+            asset.setInitializer(init);
+            
+            // Store the origin
+            PMatrix origin = new PMatrix();
+            origin.lookAt(position, position.add(heading), Vector3f.UNIT_Y);
+            origin.invert();
+            modelInst = new PPolygonModelInstance("Chair", origin);
+        }
+        else
+        {
+
+            PMatrix origin = new PMatrix();
+            origin.lookAt(position, position.add(heading), Vector3f.UNIT_Y);
+            origin.invert();
+            modelInst = new PPolygonModelInstance("Chair", origin);
+
+            PMeshMaterial geometryMaterial = new PMeshMaterial();
+            geometryMaterial.setColorMaterial(ColorMaterial.Diffuse); // Make the vert colors affect diffuse coloring
+            geometryMaterial.setDiffuse(ColorRGBA.white);
+
+            PPolygonMesh sphereMesh;
+            PPolygonTriMeshAssembler assembler = new PPolygonTriMeshAssembler();
+
+            sphereMesh = PMeshUtils.createSphere("Chair Mesh", Vector3f.ZERO, 1.0f, 6, 6, ColorRGBA.red);
+            sphereMesh.setMaterial(geometryMaterial);
+            sphereMesh.submit(assembler);
+            //sphereMesh.getTransform().getLocalMatrix(true).setTranslation(Vector3f.UNIT_X.mult(2.0f));
+            modelInst.addChild(sphereMesh);    
+        }        
+    }
+    
+    /**
+     * Adds this chiar to an object collection,
+     * the collection will use the chair's geometry for characters to avoid
+     * obstacles while sing steering behaviors and to be found to sit on.
+     * @param objs
+     */
+    public void setObjectCollection(ObjectCollection objs) 
+    {
+        objectCollection = objs;
+        objs.addObject(this);
+    }
+    
+    public void setInScene(PScene scene)
+    {
+        if (asset != null)
+        {
+            asset.setRepository(scene.getRepository());
+            modelInst = scene.addModelInstance("Chair", asset, modelInst.getTransform().getLocalMatrix(false));
+        }
+        else
+        {
+            if (modelInst.getParent()!= null)
+                modelInst.getParent().removeChild(modelInst);
+            scene.setUseRepository(false);
+            modelInst = scene.addModelInstance(modelInst);
+        }
     }
     
     public void setPosition(Vector3f position)
@@ -112,25 +180,6 @@ public class Chair implements SpatialObject
         return result;
     }
     
-    /**
-     * Adds this chiar to an object collection,
-     * the collection will use the chair's geometry for characters to avoid
-     * obstacles while sing steering behaviors and to be found to sit on.
-     * @param objs
-     */
-    public void setObjectCollection(ObjectCollection objs) 
-    {
-        objectCollection = objs;
-        objs.addObject(this);
-    }
-    
-    public void setInScene(PScene scene)
-    {
-        if (modelInst.getParent()!= null)
-            modelInst.getParent().removeChild(modelInst);
-        modelInst = scene.addModelInstance(modelInst);
-    }
-
     public PSphere getBoundingSphere() 
     {
 //        if (modelInst.getBoundingSphere() == null)

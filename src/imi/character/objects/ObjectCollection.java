@@ -26,10 +26,8 @@ import com.jme.scene.state.MaterialState;
 import com.jme.scene.state.RenderState;
 import com.jme.scene.state.WireframeState;
 import com.jme.scene.state.ZBufferState;
-import imi.character.ninja.Ninja;
 import imi.scene.JScene;
 import imi.scene.PScene;
-import imi.scene.boundingvolumes.PSphere;
 import java.util.ArrayList;
 import org.jdesktop.mtgame.Entity;
 import org.jdesktop.mtgame.ProcessorCollectionComponent;
@@ -115,7 +113,7 @@ public class ObjectCollection extends Entity
             float randomDistance     = (float)Math.random() * maxRadius;
             Vector3f randomPosition  = center.add(randomDirection.mult(randomDistance));
             
-            Chair newChair = new Chair(randomPosition, randomSittingDirection);
+            Chair newChair = new Chair(randomPosition, randomSittingDirection, null);//"assets/models/collada/Objects/Chairs/ConfChair1.dae");
             newChair.setInScene(pscene);
             newChair.setObjectCollection(this);
             
