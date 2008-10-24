@@ -31,8 +31,6 @@ import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileFilter;
 import org.jdesktop.mtgame.WorldManager;
 import org.jdesktop.mtgame.Entity;
-import org.jdesktop.mtgame.NewFrameCondition;
-import org.jdesktop.mtgame.ProcessorArmingCollection;
 import org.jdesktop.mtgame.ProcessorCollectionComponent;
 import org.jdesktop.mtgame.ProcessorComponent;
 
@@ -340,7 +338,7 @@ public class SceneEssentials {
         {
             SkeletonNode pSkeletonNode = (SkeletonNode) modInst.getChild(0);
             //  Assign the specified shader to all SkinnedMeshes.
-            pSkeletonNode.setShader(new VertDeformerWithSpecAndNormalMap(worldManager));
+            pSkeletonNode.setShader(new VertexDeformer(worldManager));
         }
 
         modInst.getTransform().getLocalMatrix(true).setScale(10.0f);

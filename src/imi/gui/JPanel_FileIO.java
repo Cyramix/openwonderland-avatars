@@ -61,13 +61,14 @@ public class JPanel_FileIO extends javax.swing.JPanel {
             while (sceneData.getPScene().getAssetWaitingList().size() > 0) {
                 //System.out.println("Waiting to get assets...");
             }
-            
-
+            System.out.println("=================================================");
+            System.out.println("Loading of avatar configuration file is  complete");
+            System.out.println("=================================================");
+        } else {
+            System.out.println("=================================================");
+            System.out.println("Loading of avatar configuration file cancelled...");
+            System.out.println("=================================================");
         }
-
-        System.out.println("=================================================");
-        System.out.println("Loading of avatar configuration file is  complete");
-        System.out.println("=================================================");
     }
     
     public void loadxml(JPanel_ModelRotation rotPanel, JPanel_Animations animPanel) {
@@ -92,11 +93,15 @@ public class JPanel_FileIO extends javax.swing.JPanel {
                 animPanel.resetPanel();
             if (rotPanel != null)
                 rotPanel.setModelInst(animPanel.getSelectedModelInstanceNode());
+            
+            System.out.println("=================================================");
+            System.out.println("Loading of avatar configuration file is  complete");
+            System.out.println("=================================================");
+        } else {
+            System.out.println("=================================================");
+            System.out.println("Loading of avatar configuration file cancelled...");
+            System.out.println("=================================================");
         }
-
-        System.out.println("=================================================");
-        System.out.println("Loading of avatar configuration file is  complete");
-        System.out.println("=================================================");
     }
     
     /**
@@ -115,9 +120,6 @@ public class JPanel_FileIO extends javax.swing.JPanel {
         } else {
             System.out.println("<<<< FAILURE...FAILURE...FAILURE...FAILURE >>>>");
         }
-
-    // add an animation processor to the skinned mesh child
-
     }
     
     /**
@@ -140,11 +142,15 @@ public class JPanel_FileIO extends javax.swing.JPanel {
             sceneData.setfileXML(fileXML);
             imi.scene.polygonmodel.PPolygonModelInstance modInst = ((imi.scene.polygonmodel.PPolygonModelInstance) sceneData.getPScene().getInstances().getChild(0));
             modInst.saveModel(fileXML);
+            
+            System.out.println("=================================================");
+            System.out.println("Saving of current avatar configuration is complete");
+            System.out.println("=================================================");
+        } else {
+            System.out.println("=================================================");
+            System.out.println("Saving of current avatar configuration cancelled.");
+            System.out.println("=================================================");
         }
-
-        System.out.println("=================================================");
-        System.out.println("Saving of current avatar configuration is complete");
-        System.out.println("=================================================");
     }
 
     /**
@@ -183,11 +189,15 @@ public class JPanel_FileIO extends javax.swing.JPanel {
                 animPanel.setPanel(sceneData.getPScene());
             if (rotPanel != null)
                 rotPanel.setModelInst(animPanel.getSelectedModelInstanceNode());
+            
+            System.out.println("=================================================");
+            System.out.println("Loading of model file has been completed.........");
+            System.out.println("=================================================");
+        } else {
+            System.out.println("=================================================");
+            System.out.println("Loading of model file has been cancelled.........");
+            System.out.println("=================================================");
         }
-
-        System.out.println("=================================================");
-        System.out.println("Loading of model file has been completed.........");
-        System.out.println("=================================================");
     }
     
     public void loadModel(JPanel_ModelRotation rotPanel, JPanel_Animations animPanel) {
@@ -218,11 +228,15 @@ public class JPanel_FileIO extends javax.swing.JPanel {
                 animPanel.resetPanel();
             if (rotPanel != null)
                 rotPanel.setModelInst(animPanel.getSelectedModelInstanceNode());
+            
+            System.out.println("=================================================");
+            System.out.println("Loading of model file has been completed.........");
+            System.out.println("=================================================");
+        } else {
+            System.out.println("=================================================");
+            System.out.println("Loading of model file has been cancelled.........");
+            System.out.println("=================================================");
         }
-
-        System.out.println("=================================================");
-        System.out.println("Loading of model file has been completed.........");
-        System.out.println("=================================================");
     }
     
     /**

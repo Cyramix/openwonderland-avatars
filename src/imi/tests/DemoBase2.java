@@ -231,7 +231,10 @@ public class DemoBase2 extends javax.swing.JFrame implements FrameRateListener, 
         JSEntity.addComponent(ProcessorCollectionComponent.class, processorCollection);
         
         // Add the entity to the world manager
-        wm.addEntity(JSEntity);    
+        wm.addEntity(JSEntity);
+        
+        // called to set up the GUI Stuff
+        setGUI(jscene, wm, processors, JSEntity);
     }
     
     public void setDefaultRenderStates(JScene jscene, WorldManager wm) {

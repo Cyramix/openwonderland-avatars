@@ -104,9 +104,6 @@ public class GUITest extends DemoBase2
                 
         // Add animation processor
         processors.add(new SkinnedAnimationProcessor(modelInst)); 
-     
-        setGUI(jscene, wm, processors, JSEntity);
-        setVisible(true);
     }
     
     @Override
@@ -147,6 +144,9 @@ public class GUITest extends DemoBase2
         JSEntity.addComponent(ProcessorCollectionComponent.class, processorCollection);
         
         // Add the entity to the world manager
-        wm.addEntity(JSEntity);  
+        wm.addEntity(JSEntity);
+        
+        setGUI(jscene, wm, processors, JSEntity);
+        setVisible(true);
     }
 }
