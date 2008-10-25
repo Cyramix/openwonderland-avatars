@@ -42,6 +42,8 @@ import imi.utils.FileUtils;
 import imi.loaders.collada.Collada;
 import imi.scene.shader.programs.NormalAndSpecularMapShader;
 import imi.scene.shader.programs.NormalMapShader;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.w3c.dom.Element;
@@ -209,56 +211,70 @@ public class PColladaMaterial
         
         // Textures
         int textureCount = 0;
-        
-        if (m_DiffuseImageFilename != null && m_DiffuseImageFilename.length() > 0)
+        URL fileLocation = null;
+        // lots of dereferencing, I know....
+        String currentFolder = m_pCollada.getFileLocation().toString().substring(0, m_pCollada.getFileLocation().toString().lastIndexOf('/') + 1);
+        try
         {
-            result.setTexture(FileUtils.findTextureFile(m_DiffuseImageFilename), 0);
-            textureCount++;
+            if (m_DiffuseImageFilename != null && m_DiffuseImageFilename.length() > 0)
+            {
+                fileLocation = new URL(currentFolder + m_DiffuseImageFilename);
+                result.setTexture(fileLocation, 0);
+                textureCount++;
+            }
+
+            boolean bNormalMapped = (m_NormalMapImageFilename != null && m_NormalMapImageFilename.length() > 0);
+            boolean bSpecularMapped = (m_SpecularImageFilename != null && m_SpecularImageFilename.length() > 0);
+
+            if (bNormalMapped)
+            {
+                fileLocation = new URL(currentFolder + m_NormalMapImageFilename);
+                result.setTexture(fileLocation, 1);
+                textureCount++;
+            }
+            if (bSpecularMapped)
+            {
+                fileLocation = new URL(currentFolder + m_SpecularImageFilename);
+                result.setTexture(fileLocation, 2);
+                textureCount++;
+            }
+
+            if (m_EmissiveImageFilename != null && m_EmissiveImageFilename.length() > 0)
+            {
+                fileLocation = new URL(currentFolder + m_EmissiveImageFilename);
+                result.setTexture(fileLocation, textureCount);
+                textureCount++;
+            }
+
+            if (m_AmbientImageFilename != null && m_AmbientImageFilename.length() > 0)
+            {
+                fileLocation = new URL(currentFolder + m_AmbientImageFilename);
+                result.setTexture(fileLocation, textureCount);
+                textureCount++;
+            }
+
+            // Shaders if necessary
+            if (bNormalMapped && bSpecularMapped)
+            {
+                // WORLD MANAGER STRIKES AGAIN!
+                if (m_pCollada != null && m_pCollada.getPScene() != null)
+                    result.setShader(new NormalAndSpecularMapShader(m_pCollada.getPScene().getWorldManager()));
+                else
+                    Logger.getLogger(this.getClass().toString()).log(Level.SEVERE, "Unable to retrieve worldmanager, shaders unset. PColladaMaterial.java : 217");
+            }
+            else if (bNormalMapped)
+            {
+                // WORLD MANAGER STRIKES AGAIN!
+                if (m_pCollada != null && m_pCollada.getPScene() != null) // BEWARE THE HARDCODED NUMBER BELOW!
+                    result.setShader(new NormalMapShader(m_pCollada.getPScene().getWorldManager(), 0.2f));
+                else
+                    Logger.getLogger(this.getClass().toString()).log(Level.SEVERE, "Unable to retrieve worldmanager, shaders unset. PColladaMaterial.java : 217");
+
+            }
         }
-        
-        boolean bNormalMapped = (m_NormalMapImageFilename != null && m_NormalMapImageFilename.length() > 0);
-        boolean bSpecularMapped = (m_SpecularImageFilename != null && m_SpecularImageFilename.length() > 0);
-        
-        if (bNormalMapped)
+        catch (MalformedURLException ex)
         {
-            result.setTexture(FileUtils.findTextureFile(m_NormalMapImageFilename), 1);
-            textureCount++;
-        }
-        if (bSpecularMapped)
-        {
-            result.setTexture(FileUtils.findTextureFile(m_SpecularImageFilename), 2);
-            textureCount++;
-        }
-        
-        if (m_EmissiveImageFilename != null && m_EmissiveImageFilename.length() > 0)
-        {
-            result.setTexture(FileUtils.findTextureFile(m_EmissiveImageFilename), textureCount);
-            textureCount++;
-        }
-        
-        if (m_AmbientImageFilename != null && m_AmbientImageFilename.length() > 0)
-        {
-            result.setTexture(FileUtils.findTextureFile(m_AmbientImageFilename), textureCount);
-            textureCount++;
-        }
-        
-        // Shaders if necessary
-        if (bNormalMapped && bSpecularMapped)
-        {
-            // WORLD MANAGER STRIKES AGAIN!
-            if (m_pCollada != null && m_pCollada.getPScene() != null)
-                result.setShader(new NormalAndSpecularMapShader(m_pCollada.getPScene().getWorldManager()));
-            else
-                Logger.getLogger(this.getClass().toString()).log(Level.SEVERE, "Unable to retrieve worldmanager, shaders unset. PColladaMaterial.java : 217");
-        }
-        else if (bNormalMapped)
-        {
-            // WORLD MANAGER STRIKES AGAIN!
-            if (m_pCollada != null && m_pCollada.getPScene() != null) // BEWARE THE HARDCODED NUMBER BELOW!
-                result.setShader(new NormalMapShader(m_pCollada.getPScene().getWorldManager(), 0.2f));
-            else
-                Logger.getLogger(this.getClass().toString()).log(Level.SEVERE, "Unable to retrieve worldmanager, shaders unset. PColladaMaterial.java : 217");
-        
+            Logger.getLogger(this.getClass().toString()).log(Level.SEVERE, "Malformed url! : " + ex.getMessage());
         }
         // We don't really support spec mapping without normal mapping
 
@@ -394,40 +410,55 @@ public class PColladaMaterial
         return(pColorRGBA);
     }
 
-    private String[] buildTextures()
+    private URL[] buildTextures()
     {
         int textureCount = calculateTextureCount();
         if (textureCount == 0)
             return(null);
         
-        String []textures = new String[textureCount];
+        URL []textures = new URL[textureCount];
         int textureIndex = 0;
+        URL fileLocation = null;
+        // lots of dereferencing, I know....
+        String currentFolder = m_pCollada.getFileLocation().toString().substring(0, m_pCollada.getFileLocation().toString().lastIndexOf('/') + 1);
         
-        if (m_DiffuseImageFilename.length() > 0)
+        try
         {
-            textures[textureIndex] = FileUtils.findTextureFile(m_DiffuseImageFilename);
-            textureIndex++;
-        }
-        if (m_SpecularImageFilename.length() > 0)
-        {
-            textures[textureIndex] = FileUtils.findTextureFile(m_SpecularImageFilename);
-            textureIndex++;
-        }
-        if (m_AmbientImageFilename.length() > 0)
-        {
-            textures[textureIndex] = FileUtils.findTextureFile(m_AmbientImageFilename);
-            textureIndex++;
-        }
-        if (m_EmissiveImageFilename.length() > 0)
-        {
-            textures[textureIndex] = FileUtils.findTextureFile(m_EmissiveImageFilename);
-            textureIndex++;
-        }
+            if (m_DiffuseImageFilename.length() > 0)
+            {
+                fileLocation = new URL(currentFolder + m_DiffuseImageFilename);
+                textures[textureIndex] = fileLocation;
+                textureIndex++;
+            }
+            if (m_SpecularImageFilename.length() > 0)
+            {
+                fileLocation = new URL(currentFolder + m_SpecularImageFilename);
+                textures[textureIndex] = fileLocation;
+                textureIndex++;
+            }
+            if (m_AmbientImageFilename.length() > 0)
+            {
+                fileLocation = new URL(currentFolder + m_AmbientImageFilename);
+                textures[textureIndex] = fileLocation;
+                textureIndex++;
+            }
+            if (m_EmissiveImageFilename.length() > 0)
+            {
+                fileLocation = new URL(currentFolder + m_EmissiveImageFilename);
+                textures[textureIndex] = fileLocation;
+                textureIndex++;
+            }
 
-        if (m_ReflectiveImageFilename.length() > 0)
+            if (m_ReflectiveImageFilename.length() > 0)
+            {
+                fileLocation = new URL(currentFolder + m_ReflectiveImageFilename);
+                textures[textureIndex] = fileLocation;
+                textureIndex++;
+            }
+        }
+        catch (MalformedURLException ex)
         {
-            textures[textureIndex] = FileUtils.findTextureFile(m_ReflectiveImageFilename);
-            textureIndex++;
+            Logger.getLogger(this.getClass().toString()).log(Level.SEVERE, "Malformed url! : " + ex.getMessage());
         }
        
         return(textures);

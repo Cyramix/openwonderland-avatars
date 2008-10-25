@@ -17,6 +17,7 @@
  */
 package org.collada.xml_walker;
 
+import imi.loaders.collada.Collada;
 import imi.utils.FileUtils;
 
 
@@ -33,14 +34,17 @@ public class PColladaImage
     String              m_Name;
     String              m_ShortFilename;
     String              m_Filename;
+    
+    private Collada m_loaderRef = null;
 
 
 
     /**
      * Default Constructor.
      */
-    public PColladaImage()
+    public PColladaImage(Collada loader)
     {
+        m_loaderRef = loader;
     }
 
     /**
@@ -48,8 +52,9 @@ public class PColladaImage
      * @param name The desired name.
      * @param shortFilename The short filename of the image (no directory).
      */
-    public PColladaImage(String name, String shortFilename)
+    public PColladaImage(String name, String shortFilename, Collada loader)
     {
+        this(loader);
         m_Name = name;
         m_ShortFilename = shortFilename;
 
@@ -124,9 +129,11 @@ public class PColladaImage
      */
     public void calculateFilename()
     {
-        m_Filename = FileUtils.findTextureFile(m_ShortFilename);
-        if (m_Filename.length() == 0)
-            m_Filename = FileUtils.findTextureFile("default.png");
+        String currentFolder = m_loaderRef.getFileLocation().toString().substring(0, m_loaderRef.getFileLocation().toString().lastIndexOf('/') + 1);
+        m_Filename = currentFolder + m_ShortFilename;
+//        m_Filename = FileUtils.findTextureFile(m_ShortFilename);
+//        if (m_Filename.length() == 0)
+//            m_Filename = FileUtils.findTextureFile("default.png");
     }
 
 }

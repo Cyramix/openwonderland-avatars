@@ -90,6 +90,8 @@ public class Collada
 
     private String                              m_Name = "";
     private List                                m_Libraries = null; 
+    
+    private URL                                 m_fileLocation = null;
 
     //  Pointers to the various Libraries found in the collada file.
     LibraryCameras                              m_pLibraryCameras;
@@ -259,6 +261,7 @@ public class Collada
 
     public boolean load(URL colladaFile)
     {
+        m_fileLocation = colladaFile;
         try
         {
             javax.xml.bind.JAXBContext jc = javax.xml.bind.JAXBContext.newInstance("org.collada.colladaschema");
@@ -276,6 +279,7 @@ public class Collada
     
     public boolean load(PScene pScene, URL colladaFile)
     {
+        m_fileLocation = colladaFile;
         try
         {
             m_pScene = pScene;
@@ -870,7 +874,7 @@ public class Collada
     {
         String shortFilename = FileUtils.getShortFilename(originalFilename);
 
-        PColladaImage pColladaImage = new PColladaImage(name, shortFilename);
+        PColladaImage pColladaImage = new PColladaImage(name, shortFilename, this);
 
         //  Put the ColladaImage into the Images HashMap.
         m_Images.put(name, pColladaImage);
@@ -2180,6 +2184,11 @@ public class Collada
         m_MaxNumberOfWeights = params.getMaxInfluences();
         
         m_Name = params.getName();
+    }
+    
+    public URL getFileLocation()
+    {
+        return m_fileLocation;
     }
 }
 
