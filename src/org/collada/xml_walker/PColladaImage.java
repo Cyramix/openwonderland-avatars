@@ -31,14 +31,18 @@ import imi.utils.FileUtils;
  */
 public class PColladaImage
 {
-    String              m_Name;
-    String              m_ShortFilename;
-    String              m_Filename;
+    String              m_Name = null;
+    String              m_ShortFilename = null;
+    String              m_Filename = null;
     
     private Collada m_loaderRef = null;
 
 
 
+    public PColladaImage()
+    {
+        
+    }
     /**
      * Default Constructor.
      */
@@ -54,7 +58,7 @@ public class PColladaImage
      */
     public PColladaImage(String name, String shortFilename, Collada loader)
     {
-        this(loader);
+        m_loaderRef = loader;
         m_Name = name;
         m_ShortFilename = shortFilename;
 
