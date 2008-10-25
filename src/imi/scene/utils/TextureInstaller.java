@@ -19,7 +19,7 @@ package imi.scene.utils;
 
 import com.jme.image.Texture;
 import com.jme.scene.state.TextureState;
-import javolution.util.FastList;
+import imi.scene.polygonmodel.parts.TextureMaterialProperties;
 
 /**
  * This class receives Textures and accumulates them until all have been loaded.
@@ -34,13 +34,26 @@ public class TextureInstaller
     
     private Texture []          m_Textures = null; // Our list of textures that have been received
     
+    private TextureMaterialProperties[] m_textureProperties = null;
+    
     private TextureState        m_TextureState = null; // The texture state to load up, provided by the constructor
     
-    public TextureInstaller(int nNumberOfTextures, TextureState textureState)
+    /**
+     * Construct a new texture installer. The provided array of properties will be
+     * used to configure the textures as they are loaded. The URL location of the
+     * images is not required (as the retrieval of the data is handled elsewhere)
+     * but the texture unit and other properties should be set correctly.
+     * @param textureProperties 
+     * @param textureState This is the state that will be configured on completion
+     */
+    public TextureInstaller(TextureMaterialProperties[] textureProperties, TextureState textureState)
     {
         m_TextureState = textureState;
-        m_Textures = new Texture[nNumberOfTextures]; // Sized perfectly
+        m_textureProperties = textureProperties;
+        if (m_textureProperties != null)
+            m_Textures = new Texture[m_textureProperties.length];
     }
+    
     
     /**
      * This method determines whether or not all requisite textures have been loaded
@@ -50,13 +63,18 @@ public class TextureInstaller
     {
         if (m_bComplete == true) // Already know we are done
             return true;
-        // Are there any null Textures left?
-        for (Texture tex : m_Textures)
-            if (tex == null)
+        if (m_Textures == null) // Not waiting on anything
+            return true;
+        
+        // Check for missing textures
+        for (int i = 0; i < m_Textures.length; ++i)
+        {
+            if (m_Textures[i] == null)
                 return false;
+        }
         // Now we are finished!
         m_bComplete = true;
-        return true;
+        return m_bComplete;
     }
     
     /**
@@ -67,8 +85,13 @@ public class TextureInstaller
      */
     public TextureState installTexture(Texture tex, int nTextureUnit)
     {
+        
         // Install it
         m_Textures[nTextureUnit] = tex;
+        // Find the corresponding properties objectand configure it
+        assert(m_textureProperties[nTextureUnit].getTextureUnit() == nTextureUnit) : "Incorrect texture unit provided";
+        m_textureProperties[nTextureUnit].apply(m_Textures[nTextureUnit]);
+        
         if (isComplete() == true)
         {
             // Load up the texture state and return it

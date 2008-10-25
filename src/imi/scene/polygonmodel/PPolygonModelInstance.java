@@ -179,28 +179,29 @@ public class PPolygonModelInstance extends PNode
             PMeshMaterial geoMat = ((PPolygonMeshInstance)current).getGeometry().getMaterialRef();
             if (geoMat != null)
             {
-                sbMaterial sbGeoMat = new sbMaterial();
-                
-                // Textures
-                List<sbTexture> textureList = new ArrayList<sbTexture>();
-                
-                URL[] textures = geoMat.getTextures();
-                for (int i = 0; i < 8; i++)
-                {
-                    if (textures[i] != null)
-                    {
-                        sbTexture texture = new sbTexture();
-                        texture.setTextureUnit(i);
-                        texture.setPath(textures[i].getPath());
-                        textureList.add(texture);
-                    }
-                    else
-                        break;
-                }
-                if (!textureList.isEmpty())
-                    sbGeoMat.setTextureFiles(textureList);
-                
-                meshNode.setGeometryMaterial(sbGeoMat);
+                // TODO :: Rework material serialization to match with the latest changes!
+//                sbMaterial sbGeoMat = new sbMaterial();
+//                
+//                // Textures
+//                List<sbTexture> textureList = new ArrayList<sbTexture>();
+//                
+//                URL[] textures = geoMat.getTextures();
+//                for (int i = 0; i < 8; i++)
+//                {
+//                    if (textures[i] != null)
+//                    {
+//                        sbTexture texture = new sbTexture();
+//                        texture.setTextureUnit(i);
+//                        texture.setPath(textures[i].getPath());
+//                        textureList.add(texture);
+//                    }
+//                    else
+//                        break;
+//                }
+//                if (!textureList.isEmpty())
+//                    sbGeoMat.setTextureFiles(textureList);
+//                
+//                meshNode.setGeometryMaterial(sbGeoMat);
             }
             
             // Save configuration

@@ -48,10 +48,10 @@ public class PMeshMaterial extends PNode
     private ColorRGBA  m_Specular  = null;
     /** Shininess value **/
     private float      m_Shininess = 0.0f;   // 0 is none, around 5 is low, around 100 is high
-    /** Texture map locations **/
-    private URL[]  m_Textures      = new URL[8];  // multi texturing supported
-    /** Desired combination mode for textures **/
-    private Texture.ApplyMode []  m_TextureModes = new Texture.ApplyMode [8];  // texture combine mode for each texture  
+    
+    /** Texture properties **/
+    private TextureMaterialProperties[] m_textures = new TextureMaterialProperties[8];
+    
     /** Shader collection **/
     private AbstractShaderProgram [] m_ShaderArray = new AbstractShaderProgram[1];
     /** Define the interaction between vertex colors and material properties **/
@@ -79,8 +79,6 @@ public class PMeshMaterial extends PNode
         m_Ambient  = new ColorRGBA(0.0f, 0.0f, 0.0f, 0.0f);
         m_Emissive = new ColorRGBA(0.0f, 0.0f, 0.0f, 0.0f);
         m_Specular = new ColorRGBA(0.0f, 0.0f, 0.0f, 0.0f);
-        for (int i = 0; i < 8; i++)
-            m_TextureModes[i] = Texture.ApplyMode.Modulate;
     }
 
     /**
@@ -94,8 +92,6 @@ public class PMeshMaterial extends PNode
         m_Ambient  = new ColorRGBA(0.0f, 0.0f, 0.0f, 0.0f);
         m_Emissive = new ColorRGBA(0.0f, 0.0f, 0.0f, 0.0f);
         m_Specular = new ColorRGBA(0.0f, 0.0f, 0.0f, 0.0f);
-        for (int i = 0; i < 8; i++)
-            m_TextureModes[i] = Texture.ApplyMode.Modulate;
     }
     
     /**
@@ -122,17 +118,21 @@ public class PMeshMaterial extends PNode
         this();
         setName(name);
         
+        URL textureLocation = null;
         if (texture0 != null)
         {
             try
             {
-                m_Textures[0] = new File(texture0).toURI().toURL();
+                textureLocation = new File(texture0).toURI().toURL();
             } catch (MalformedURLException ex)
             {
                 Logger.getLogger(PMeshMaterial.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        
+        if (textureLocation != null)
+        {
+            m_textures[0] = new TextureMaterialProperties(textureLocation);
+        }
         m_Diffuse = new ColorRGBA(ColorRGBA.white);
     }
     
@@ -147,7 +147,7 @@ public class PMeshMaterial extends PNode
         this();
         setName(name);
         if (texture0 != null)
-            m_Textures[0] = texture0;
+            m_textures[0] = new TextureMaterialProperties(texture0);
         m_Diffuse = new ColorRGBA(ColorRGBA.white);
     }
 
@@ -177,8 +177,12 @@ public class PMeshMaterial extends PNode
         
         setShininess(shininess);
         setTextures(textures);
+        
         for (int i = 0; i < 8; i++)
-            m_TextureModes[i] = textureMode;
+        {
+            if (m_textures[i] != null) // set the mode if relevant
+                m_textures[i].setApplyMode(textureMode);
+        }
     }
     
     public PMeshMaterial(PMeshMaterial other, boolean bUseOriginalMaterialNumberOfTextures)
@@ -193,13 +197,12 @@ public class PMeshMaterial extends PNode
         m_Ambient   = new ColorRGBA(other.getAmbient());
         m_Emissive  = new ColorRGBA(other.getEmissive());  
         m_Specular  = new ColorRGBA(other.getSpecular());
-        m_Shininess = other.getShininess(); 
+        m_Shininess = other.getShininess();
         
-        int numTextures = bUseOriginalMaterialNumberOfTextures ? m_Textures.length : other.m_Textures.length;
-        for (int i = 0; i < numTextures; i++)
+        for (int i = 0; i < 8; i++)
         {
             if (other.getTexture(i) != null)
-                m_Textures[i] = other.getTexture(i);
+                m_textures[i] = other.getTexture(i);
         }
         
         m_ShaderArray = new AbstractShaderProgram[other.getShaders().length];
@@ -208,9 +211,6 @@ public class PMeshMaterial extends PNode
             if (other.getShader(i) != null)
                 m_ShaderArray[i] = other.getShader(i);
         }
-        
-        for (int i = 0; i < m_TextureModes.length; i++)
-            m_TextureModes[i]    = other.getTextureMode(i);
         
         m_ColorMaterial = other.getColorMaterial();
         m_MaterialFace = other.getMaterialFace();
@@ -256,38 +256,30 @@ public class PMeshMaterial extends PNode
                 
                 );
         
-        boolean modes    = false;
-        boolean textures = false;
-        boolean shaders  = false;
+        boolean modes    = true;
+        boolean textures = true;
+        boolean shaders  = true;
+        
         for (int i = 0; i < 8; i++)
         {
-            if (m_Textures[i] != null)
+            if (m_textures[i] != null)
             {
-                if (m_Textures[i].equals(other.getTexture(i)))
-                    textures = true;
-                else
+                if (!m_textures[i].equals(other.getTexture(i)))
                     textures = false;
             }
-            else if (other.getTexture(i) == null)
-                textures = true;
-            
-            if (m_TextureModes[i] == other.getTextureMode(i))
-                modes    = true;
-            else
-                modes    = false;
+            else if (other.getTexture(i) != null)
+                textures = false;
         }
         
         for (int i = 0; i < m_ShaderArray.length; ++i)
         {
             if (m_ShaderArray[i] != null)
             {
-                if (m_ShaderArray[i].equals(other.getShader(i)))
-                    shaders = true;
-                else
+                if (!m_ShaderArray[i].equals(other.getShader(i)))
                     shaders = false;
             }
-            else if (other.getShader(i) == null)
-                shaders = true;
+            else if (other.getShader(i) != null)
+                shaders = false;
         }
         
         if (m_ColorMaterial == other.getColorMaterial())
@@ -331,18 +323,11 @@ public class PMeshMaterial extends PNode
         hash = 37 * hash + (this.m_Specular != null ? this.m_Specular.hashCode() : 0);
         hash = 37 * hash + Float.floatToIntBits(this.m_Shininess);
         
-        for (int i = 0; i < m_Textures.length; i++)
-            hash = 37 * hash + (this.m_Textures[i] != null ? this.m_Textures[i].hashCode() : 0);
-//        hash = 37 * hash + (this.m_Textures != null ? this.m_Textures.hashCode() : 0);
-  
-//        for (int i = 0; i < m_VertShader.length; i++)
-//            hash = 37 * hash + (this.m_VertShader[i] != null ? this.m_VertShader[i].hashCode() : 0);
+        for (int i = 0; i < m_textures.length; i++)
+            hash = 37 * hash + (this.m_textures[i] != null ? this.m_textures[i].hashCode() : 0);
+
         for (int i = 0; i < m_ShaderArray.length; i++)
             hash = 37 * hash + (this.m_ShaderArray[i] != null ? this.m_ShaderArray[i].hashCode() : 0);
-        
-        for (int i = 0; i < m_TextureModes.length; i++)
-            hash = 37 * hash + this.m_TextureModes[i].ordinal();
-        //hash = 37 * hash + (this.m_TextureModes != null ? this.m_TextureModes.hashCode() : 0);
         
         hash = 37 * hash + this.m_MaterialFace.ordinal();
         hash = 37 * hash + this.m_ColorMaterial.ordinal();
@@ -357,7 +342,6 @@ public class PMeshMaterial extends PNode
         setSpecular(other.getSpecular());
         setShininess(other.getShininess());
         setTextures(other.getTextures());
-        setTextureModes(other.getTextureModes());
         setShaders(other.getShaders());
         setColorMaterial(other.getColorMaterial());
         setMaterialFace(other.getMaterialFace());
@@ -392,7 +376,7 @@ public class PMeshMaterial extends PNode
             m_Specular.set(specular);
     }
 
-    public void setTextures(URL[] textures) 
+    public void setTextures(TextureMaterialProperties[] textures) 
     {
         int i = 0;
         if (textures != null)
@@ -400,40 +384,78 @@ public class PMeshMaterial extends PNode
             for (i = 0; i < textures.length; i++)
             {
                 if (textures[i] != null)
-                    m_Textures[i] = textures[i];
+                    m_textures[i] = textures[i];
             }
         }
-        // initialize the rest to null
+        // set the rest to null
         for ( ; i < 8; i++)
         {
-            m_Textures[i] = null;
+            m_textures[i] = null;
         }
     }
     
+    public void setTextures(URL[] textureLocations)
+    {
+        int i = 0;
+        if (textureLocations != null)
+        {
+            for (i = 0; i < textureLocations.length; i++)
+            {
+                if (textureLocations[i] != null)
+                    m_textures[i] = new TextureMaterialProperties(textureLocations[i]);
+            }
+        }
+        // set the rest to null
+        for ( ; i < 8; i++)
+        {
+            m_textures[i] = null;
+        }
+    }
+    
+    /**
+     * Intrinsicly turn the provided non-null strings into URLs, and barring 
+     * failure of that create a new TextureMaterialProperties object representing
+     * that texture.
+     * @param textures
+     */
     public void setTextures(String[] textures) 
     {
         int i = 0;
+        URL textureLocation = null;
+        
         if (textures != null)
         {
             for (i = 0; i < textures.length; i++)
             {
                 if (textures[i] != null)
                 {
+                    // out with the old
+                    textureLocation = null;
                     try
                     {
-                        m_Textures[i] = new File(textures[i]).toURI().toURL();
+                        textureLocation = new File(textures[i]).toURI().toURL();
                     } catch (MalformedURLException ex)
                     {
                         Logger.getLogger(PMeshMaterial.class.getName()).log(Level.SEVERE, null, ex);
                     }
+                    
+                    if (textureLocation != null)
+                        m_textures[i] = new TextureMaterialProperties(textureLocation);
                 }
             }
         }
         // initialize the rest to null
         for ( ; i < 8; i++)
         {
-            m_Textures[i] = null;
+            m_textures[i] = null;
         }
+    }
+    
+    public void setTexture(TextureMaterialProperties texture, int index)
+    {
+        if (index < 0 || index > 7)
+            return;
+        m_textures[index] = texture;
     }
     
     /**
@@ -446,35 +468,39 @@ public class PMeshMaterial extends PNode
     {
         if (index < 0 || index > 7 || fileName == null)
             return;
+        URL textureLocation = null;
         try
         {
-
-            m_Textures[index] = new File(fileName).toURI().toURL();
+            textureLocation = new File(fileName).toURI().toURL();
         } catch (MalformedURLException ex)
         {
             Logger.getLogger(PMeshMaterial.class.getName()).log(Level.SEVERE, null, ex);
         }
+        if (textureLocation != null)
+            m_textures[index] = new TextureMaterialProperties(textureLocation);
     }
     
     public void setTexture(File fileName, int index)
     {
         if (index < 0 || index > 7 || fileName == null)
             return;
+        URL imageLocation = null;
         try
         {
-
-            m_Textures[index] = fileName.toURI().toURL();
+            imageLocation = fileName.toURI().toURL();
         } catch (MalformedURLException ex)
         {
             Logger.getLogger(PMeshMaterial.class.getName()).log(Level.SEVERE, null, ex);
         }
+        if (imageLocation != null)
+            m_textures[index] = new TextureMaterialProperties(imageLocation);
     }
     
     public void setTexture(URL location, int index)
     {
         if (index < 0 || index > 7)
             return;
-        m_Textures[index] = location;
+        m_textures[index] = new TextureMaterialProperties(location);
     }
     
     public void setShininess(float shininess) 
@@ -508,14 +534,14 @@ public class PMeshMaterial extends PNode
         return m_Shininess;
     }
 
-    public URL[] getTextures() 
+    public TextureMaterialProperties[] getTextures() 
     {
-        return m_Textures;
+        return m_textures;
     }
     
-    public URL getTexture(int index)
+    public TextureMaterialProperties getTexture(int index)
     {
-        return m_Textures[index];
+        return m_textures[index];
     }
 
 
@@ -542,27 +568,6 @@ public class PMeshMaterial extends PNode
         m_ColorMaterial = colorMat;
     }
 
-    public Texture.ApplyMode[] getTextureModes() 
-    {
-        return m_TextureModes;
-    }
-    
-    public Texture.ApplyMode getTextureMode(int textureUnit) 
-    {
-        return m_TextureModes[textureUnit];
-    }
-
-    public void setTextureModes(Texture.ApplyMode[] TextureModes) 
-    {
-        for (int i = 0; i < TextureModes.length; i++)
-            m_TextureModes[i] = TextureModes[i];
-    }
-    
-    public void setTextureMode(int textureUnit, Texture.ApplyMode TextureMode) 
-    {
-        m_TextureModes[textureUnit] = TextureMode;
-    }
-    
     public AbstractShaderProgram[] getShaders()
     {
         return m_ShaderArray;
@@ -638,5 +643,19 @@ public class PMeshMaterial extends PNode
     public WireframeState.Face getWireframeFace()
     {
         return m_wireFace;
+    }
+    /**
+     * Determine how many texture units are needed. 
+     * @return Number used
+     */
+    public int getNumberOfRelevantTextures()
+    {
+        int result = 0;
+        for (TextureMaterialProperties tex : m_textures)
+        {
+            if (tex != null)
+                result++;
+        }
+        return result;
     }
 }

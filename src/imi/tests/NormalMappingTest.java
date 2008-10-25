@@ -87,8 +87,8 @@ public class NormalMappingTest extends DemoBase
                 //meshMat.setVertShader(new File("assets/shaders/NormalMapSpecMap_Rev2.vert"));
                 //meshMat.setFragShader(new File("assets/shaders/NormalMapSpecMap_Rev2.frag"));
                 
-                meshMat.setTextureMode(1, ApplyMode.Add);
-                meshMat.setTextureMode(2, ApplyMode.Modulate);
+                meshMat.getTexture(1).setApplyMode(ApplyMode.Add);
+                meshMat.getTexture(2).setApplyMode(ApplyMode.Modulate);
                 
                 // now assign it
                 meshInst.getGeometry().submit(new PPolygonTriMeshAssembler());

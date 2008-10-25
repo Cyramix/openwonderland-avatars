@@ -38,6 +38,7 @@ import imi.scene.PTransform;
 import imi.scene.polygonmodel.parts.PMeshMaterial;
 import imi.scene.polygonmodel.parts.PMeshMaterialCombo;
 import imi.scene.polygonmodel.parts.PMeshMaterialStates;
+import imi.scene.polygonmodel.parts.TextureMaterialProperties;
 import imi.scene.utils.PRenderer;
 import imi.scene.utils.TextureInstaller;
 import java.io.File;
@@ -152,10 +153,10 @@ public class PPolygonMeshInstance extends PNode
         
         if(!isUseGeometryMaterial())
         {
-            sbMaterial configMat = new sbMaterial();
-            
-            // Shaders
-            // TODO: Convert to the new system
+            // TODO : Rework material serializatin process to fit with the latest changes!
+//            sbMaterial configMat = new sbMaterial();
+//            
+//            // Shaders
 //            if (getMaterialRef().getMaterial().getFragShader() != null && getMaterialRef().getMaterial().getVertShader() != null)
 //            {
 //                bNeeded = true;
@@ -164,27 +165,27 @@ public class PPolygonMeshInstance extends PNode
 //                pair.setVertexShaderPath(getMaterialRef().getMaterial().getVertShader().getPath());
 //                configMat.setShaderPair(pair);
 //            }
-
-            // Textures
-            List<sbTexture> textureList = new ArrayList<sbTexture>();
-            URL[] textures = getMaterialRef().getMaterial().getTextures();
-            for (int i = 0; i < 8; i++)
-            {
-                if (textures[i] != null)
-                {
-                    bNeeded = true;
-                    sbTexture texture = new sbTexture();
-                    texture.setTextureUnit(i);
-                    texture.setPath(textures[i].getPath());
-                    textureList.add(texture);
-                }
-                else
-                    break;
-            }
-            if (!textureList.isEmpty())
-                configMat.setTextureFiles(textureList);
-            
-            result.setMaterial(configMat);
+//
+//            // Textures
+//            List<sbTexture> textureList = new ArrayList<sbTexture>();
+//            URL[] textures = getMaterialRef().getMaterial().getTextures();
+//            for (int i = 0; i < 8; i++)
+//            {
+//                if (textures[i] != null)
+//                {
+//                    bNeeded = true;
+//                    sbTexture texture = new sbTexture();
+//                    texture.setTextureUnit(i);
+//                    texture.setPath(textures[i].getPath());
+//                    textureList.add(texture);
+//                }
+//                else
+//                    break;
+//            }
+//            if (!textureList.isEmpty())
+//                configMat.setTextureFiles(textureList);
+//            
+//            result.setMaterial(configMat);
         }
         
         if (bNeeded)
@@ -293,8 +294,11 @@ public class PPolygonMeshInstance extends PNode
         {
             if (meshMat.getTexture(i) != null)
             {
-                if (meshMat.getTexture(i).equals(path))
+                if (meshMat.getTexture(i).getImageLocation().equals(path))
+                {
                     texUnit = i;
+                    break;
+                }
             }
         }
         // did we find the texture?
@@ -359,44 +363,33 @@ public class PPolygonMeshInstance extends PNode
         PMeshMaterial meshMat = m_material.getMaterial();
         m_pmaterialStates.configureStates(meshMat);
         m_pmaterialStates.applyToGeometry(m_instance);
-        // Material
-//        m_matState.setEnabled(true);
-//        m_matState.setDiffuse(meshMat.getDiffuse());
-//        m_matState.setAmbient(meshMat.getAmbient());
-//        m_matState.setSpecular(meshMat.getSpecular());
-//        m_matState.setEmissive(meshMat.getEmissive());
-//        m_matState.setShininess(meshMat.getShininess());
-//        m_matState.setColorMaterial(meshMat.getColorMaterial());
-//        m_matState.setMaterialFace(meshMat.getMaterialFace());
-//        m_instance.setRenderState(m_matState);
         
         // Textures
         m_textureState.setEnabled(true);
         // determine number of needed textures
-        int numNeeded = 0;
-        for (URL texture : meshMat.getTextures())
-        {
-            if (texture != null)
-                numNeeded++;
-        }
-        m_textureInstaller = new TextureInstaller(numNeeded, m_textureState);
+        int numNeeded = meshMat.getNumberOfRelevantTextures();
+        TextureMaterialProperties[] texProps = new TextureMaterialProperties[numNeeded];
+        for (int i = 0; i < numNeeded; ++i)
+            texProps[i] = meshMat.getTexture(i);
+        
+        m_textureInstaller = new TextureInstaller(texProps, m_textureState);
         // TODO add functionality and data to this instance if we want 
         // to handle textures differently than the geometry
         boolean bNeedToUseTextureInstaller = false;
         for (int i = 0; i < m_geometry.getNumberOfTextures(); i++)
         {
-            if (meshMat.getTexture(i) != null && meshMat.getTexture(i).getPath().length() > 0)
+            if (meshMat.getTexture(i) != null)// && meshMat.getTexture(i).getPath().length() > 0)
             {
                 bNeedToUseTextureInstaller = true;
                 if (m_PScene.isUseRepository())
                 {
                     // Send SharedAsset request to the PScene
                     SharedAsset texture = new SharedAsset(m_PScene.getRepository(),
-                            new AssetDescriptor(SharedAssetType.Texture, new File(meshMat.getTexture(i).getPath())));
+                            new AssetDescriptor(SharedAssetType.Texture, meshMat.getTexture(i).getImageLocation()));
                     m_PScene.loadTexture(texture, this);
                 }
                 else
-                    m_textureState.setTexture(  m_PScene.loadTexture(meshMat.getTexture(i))  ,   i   );
+                    m_textureState.setTexture(  m_PScene.loadTexture(meshMat.getTexture(i).getImageLocation()), i);
             }
         }
         if (!bNeedToUseTextureInstaller || m_PScene.isUseRepository() == false)

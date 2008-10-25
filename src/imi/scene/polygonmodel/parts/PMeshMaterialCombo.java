@@ -44,7 +44,6 @@ public class PMeshMaterialCombo
     public MaterialCombineMode  m_Material_Shininess = MaterialCombineMode.MCM_UseMat1;
    
     public boolean  m_bUseMat1_Textures                     = true; 
-    public boolean  m_bUseMat1_Material_TextureModes        = true;
     
     public boolean  m_bUseMat1_Material_VertexColorsMode    = true;
     public boolean  m_bUseMat1_Material_ApplyMaterialMode   = true;
@@ -67,7 +66,6 @@ public class PMeshMaterialCombo
         m_Material_Shininess = other.m_Material_Shininess;
         
         m_bUseMat1_Textures = other.m_bUseMat1_Textures;
-        m_bUseMat1_Material_TextureModes = other.m_bUseMat1_Material_TextureModes;
         
         m_bUseMat1_Material_VertexColorsMode  = other.m_bUseMat1_Material_VertexColorsMode;
         m_bUseMat1_Material_ApplyMaterialMode = other.m_bUseMat1_Material_ApplyMaterialMode;
@@ -224,11 +222,6 @@ public class PMeshMaterialCombo
         else
             m_MaterialCombo.setTextures(m_Material2.getTextures());
         
-        if (m_bUseMat1_Material_TextureModes)
-            m_MaterialCombo.setTextureModes(m_Material1.getTextureModes());
-        else
-            m_MaterialCombo.setTextureModes(m_Material2.getTextureModes());
-        
         if (m_bUseMat1_Material_VertexColorsMode)
             m_MaterialCombo.setColorMaterial(m_Material1.getColorMaterial());
         else
@@ -307,9 +300,6 @@ public class PMeshMaterialCombo
         if (this.m_bUseMat1_Textures != other.m_bUseMat1_Textures) {
             return false;
         }
-        if (this.m_bUseMat1_Material_TextureModes != other.m_bUseMat1_Material_TextureModes) {
-            return false;
-        }
         if (this.m_bUseMat1_Material_VertexColorsMode != other.m_bUseMat1_Material_VertexColorsMode) {
             return false;
         }
@@ -330,7 +320,6 @@ public class PMeshMaterialCombo
         hash = 71 * hash + (this.m_Material_Specular != null ? this.m_Material_Specular.hashCode() : 0);
         hash = 71 * hash + (this.m_Material_Shininess != null ? this.m_Material_Shininess.hashCode() : 0);
         hash = 71 * hash + (this.m_bUseMat1_Textures ? 1 : 0);
-        hash = 71 * hash + (this.m_bUseMat1_Material_TextureModes ? 1 : 0);
         hash = 71 * hash + (this.m_bUseMat1_Material_VertexColorsMode ? 1 : 0);
         hash = 71 * hash + (this.m_bUseMat1_Material_ApplyMaterialMode ? 1 : 0);
         return hash;

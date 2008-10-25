@@ -42,7 +42,7 @@ public class PMeshMaterialPanel extends javax.swing.JPanel
 // Data Members
 ////////////////////////////////////////////////////////////////////////////////
     /** Texture Data */
-    private ArrayList<URL> textures = new ArrayList<URL>();
+    private ArrayList<URL> textureLocations = new ArrayList<URL>();
     /** Scene Data */
     private WorldManager wm             = null;
     private PPolygonMeshInstance m_mesh = null; // The mesh that owns the material   
@@ -98,17 +98,17 @@ public class PMeshMaterialPanel extends javax.swing.JPanel
     {
         // out with the old
         ((DefaultListModel)jList_Textures.getModel()).removeAllElements();
-        if(!textures.isEmpty())
-            textures.clear();
+        if(!textureLocations.isEmpty())
+            textureLocations.clear();
         String texName;
         DefaultListModel newModel = new DefaultListModel();
         for (int i = 0; i < m_mesh.getGeometry().getNumberOfTextures(); ++i) 
         {
             if (m_mat.getTexture(i) != null)
-                texName = new String("["+ i + "] " + m_mat.getTexture(i).getFile());
+                texName = new String("["+ i + "] " + m_mat.getTexture(i).getImageLocation());
             else
                 texName = new String("[" + i + "] is unset");
-            textures.add(m_mat.getTexture(i));
+            textureLocations.add(m_mat.getTexture(i).getImageLocation());
             newModel.addElement(texName);
         }
         jList_Textures.setModel(newModel);
@@ -173,7 +173,7 @@ public class PMeshMaterialPanel extends javax.swing.JPanel
             Toolkit.getDefaultToolkit().beep();
         else
         {
-            textures.remove(jList_Textures.getSelectedIndex());
+            textureLocations.remove(jList_Textures.getSelectedIndex());
             ((DefaultListModel)jList_Textures.getModel()).remove(jList_Textures.getSelectedIndex());
             DefaultListModel curModel = ((DefaultListModel)jList_Textures.getModel());
             DefaultListModel newModel = new DefaultListModel();
@@ -188,8 +188,8 @@ public class PMeshMaterialPanel extends javax.swing.JPanel
     }
     
     private void removeAllTextures() {
-        for(int i = 0; i < textures.size(); i++) {
-            textures.remove(i);
+        for(int i = 0; i < textureLocations.size(); i++) {
+            textureLocations.remove(i);
             ((DefaultListModel)jList_Textures.getModel()).remove(i);
         }
     }
@@ -206,7 +206,7 @@ public class PMeshMaterialPanel extends javax.swing.JPanel
             String texName = new String("["+ index + "]  " + texFile.getName());
             try
             {
-                textures.add(texFile.toURI().toURL());
+                textureLocations.add(texFile.toURI().toURL());
             } catch (MalformedURLException ex)
             {
                 Logger.getLogger(this.getClass().toString()).log(Level.SEVERE, ex.getMessage());
@@ -221,11 +221,11 @@ public class PMeshMaterialPanel extends javax.swing.JPanel
      * Arraylist of textures) into the material
      */
     public void loadTextures() {
-        if(textures.size() > 0) {
+        if(textureLocations.size() > 0) {
             m_mat = m_mesh.getMaterialRef().getMaterial();
             int i = 0;
-            for(i = 0; i < textures.size(); i++) {
-                String relativepath = textures.get(i).getPath();
+            for(i = 0; i < textureLocations.size(); i++) {
+                String relativepath = textureLocations.get(i).getPath();
                 int index = relativepath.lastIndexOf("assets");
                 relativepath.substring(index);
                 m_mat.setTexture(new File(relativepath), i);
@@ -468,13 +468,13 @@ public class PMeshMaterialPanel extends javax.swing.JPanel
         Object aObject  = aString;
         Object bObject  = bString;
         
-        URL aFile      = textures.get(a);
-        URL bFile      = textures.get(b);
+        URL aFile      = textureLocations.get(a);
+        URL bFile      = textureLocations.get(b);
         
         listModel.set(a, bObject);
         listModel.set(b, aObject);
-        textures.set(a, bFile);
-        textures.set(b, aFile);
+        textureLocations.set(a, bFile);
+        textureLocations.set(b, aFile);
     }
     
     private void loadShaderPanel()
