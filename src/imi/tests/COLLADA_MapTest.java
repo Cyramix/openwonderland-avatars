@@ -37,7 +37,8 @@ public class COLLADA_MapTest extends DemoBase2
         URL modelLocation = null;
         try
         {
-            modelLocation = new File("assets/models/collada/environments/MPK20/MPK20.dae").toURI().toURL();
+            //modelLocation = new File("assets/models/collada/environments/MPK20/MPK20.dae").toURI().toURL();
+            modelLocation = new File("assets/models/collada/environments/MaldenLabs/MaldenLabs.dae").toURI().toURL();
         } catch (MalformedURLException ex)
         {
             Logger.getLogger(COLLADA_ModelTest.class.getName()).log(Level.SEVERE, null, ex);

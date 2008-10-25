@@ -1,10 +1,11 @@
 package imi.environments;
 
-import com.jme.light.DirectionalLight;
-import com.jme.math.Vector3f;
 import com.jme.renderer.ColorRGBA;
+import com.jme.scene.Geometry;
 import com.jme.scene.Node;
+import com.jme.scene.SharedMesh;
 import com.jme.scene.Spatial;
+import com.jme.scene.TriMesh;
 import com.jme.scene.state.CullState;
 import com.jme.scene.state.LightState;
 import com.jme.scene.state.MaterialState;
@@ -75,33 +76,29 @@ public class ColladaEnvironment extends Entity
         // Material State
         MaterialState matState  = null;
         matState = (MaterialState) m_wm.getRenderManager().createRendererState(RenderState.RS_MATERIAL);
+        matState.setAmbient(ColorRGBA.magenta);
         matState.setDiffuse(ColorRGBA.magenta);
-        matState.setEmissive(ColorRGBA.white);
-   
-        // SET lighting
-        DirectionalLight light = new DirectionalLight();
-        light.setDiffuse(new ColorRGBA(1.0f, 1.0f, 1.0f, 1.0f));
-        light.setAmbient(new ColorRGBA(1.0f, 1.0f, 1.0f, 1.0f));
-        light.setDirection(new Vector3f(0,-1,0));
-        light.setEnabled(false);
-        
+        matState.setEmissive(ColorRGBA.magenta);
+        matState.setSpecular(ColorRGBA.magenta);
+        matState.setMaterialFace(MaterialState.MaterialFace.FrontAndBack);
+        matState.setColorMaterial(MaterialState.ColorMaterial.None);
+         
         LightState ls = (LightState) m_wm.getRenderManager().createRendererState(RenderState.RS_LIGHT);
         ls.setTwoSidedLighting(true);
         ls.setEnabled(false);
-        ls.attach(light);
         
         // Cull State
         CullState cs = (CullState) m_wm.getRenderManager().createRendererState(RenderState.RS_CULL);      
         cs.setCullFace(CullState.Face.Back);
         cs.setEnabled(true);
-   
         
         // Push 'em down the pipe
         m_jmeRoot.setRenderState(matState);
         m_jmeRoot.setRenderState(buf);
         m_jmeRoot.setRenderState(cs);
-        //m_jmeRoot.setRenderState(ls);
-        forceRenderState(ls);
+        m_jmeRoot.setRenderState(ls);
+        nullifyColorBuffers();
+        m_jmeRoot.updateRenderState();
         
     }
     
@@ -119,6 +116,33 @@ public class ColladaEnvironment extends Entity
         {
             Spatial current = queue.removeFirst();
             current.setRenderState(rs);
+            
+            if (current instanceof Node)
+            {
+                // add all children
+                if (((Node)current).getChildren() == null)
+                    continue;
+                for (int i = 0; i < ((Node)current).getChildren().size(); ++i)
+                    queue.add(((Node)current).getChild(i));
+            }
+        }
+        
+    }
+    
+    private void nullifyColorBuffers()
+    {
+        FastList<Spatial> queue = new FastList<Spatial>();
+        queue.addAll(m_jmeRoot.getChildren());
+        
+        while (queue.isEmpty() == false)
+        {
+            Spatial current = queue.removeFirst();
+            
+            if (current instanceof SharedMesh)
+            {
+                TriMesh geometry = ((SharedMesh)current).getTarget();
+                geometry.setColorBuffer(null);
+            }
             
             if (current instanceof Node)
             {
