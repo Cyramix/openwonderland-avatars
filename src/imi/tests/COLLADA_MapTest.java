@@ -35,8 +35,9 @@ public class COLLADA_MapTest extends DemoBase2
         URL modelLocation = null;
         try
         {
+            //modelLocation = new File("assets/models/collada/environments/Milan/DSI.dae").toURI().toURL();
             //modelLocation = new File("assets/models/collada/environments/MPK20/MPK20.dae").toURI().toURL();
-            //modelLocation = new File("assets/models/collada/Objects/Chairs/LoungeChair.dae").toURI().toURL();
+            //modelLocation = new File("assets/models/collada/Objects/Chairs/Sofa.dae").toURI().toURL();
             modelLocation = new File("assets/models/collada/environments/MaldenLabs/MaldenLabs.dae").toURI().toURL();
         } catch (MalformedURLException ex)
         {
@@ -50,7 +51,7 @@ public class COLLADA_MapTest extends DemoBase2
         
         pscene.setUseRepository(true);
         
-        ColladaEnvironment ourEnv = new ColladaEnvironment(wm, colladaAsset, "MPK20 BIOTCH");
+        ColladaEnvironment ourEnv = new ColladaEnvironment(wm, colladaAsset, "MaldenLabs");
         
     }
     

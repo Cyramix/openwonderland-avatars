@@ -1,5 +1,6 @@
 package imi.scene.polygonmodel.parts;
 
+import com.jme.bounding.BoundingSphere;
 import com.jme.renderer.Renderer;
 import com.jme.scene.SharedMesh;
 import com.jme.scene.state.BlendState;
@@ -93,12 +94,6 @@ public class PMeshMaterialStates
                  * functions when the lighting is enabled AND some light is
                  * interacting with the geometry
                  */
-//                final PointLight light = new PointLight();
-//                light.setAmbient(ColorRGBA.white);
-//                light.setDiffuse(ColorRGBA.white);
-//                light.setSpecular(ColorRGBA.white);
-//                light.setLocation(new Vector3f(100.0f, 100.0f, 100.0f));
-//                light.setEnabled(true);
 
                 if (m_lightState != null)
                 {
@@ -112,8 +107,8 @@ public class PMeshMaterialStates
                             "Transparency Used but no light state available!");
                 
                 m_bufferState.setEnabled(true);
-                m_bufferState.setFunction(ZBufferState.TestFunction.LessThanOrEqualTo);
                 m_bufferState.setWritable(false);
+                m_bufferState.setFunction(ZBufferState.TestFunction.LessThanOrEqualTo);
                 jmeMesh.setRenderState(m_bufferState);
                 jmeMesh.setRenderQueueMode(Renderer.QUEUE_TRANSPARENT);
             }
@@ -127,7 +122,7 @@ public class PMeshMaterialStates
                 bs.setEnabled(false);
                 bs.setBlendEnabled(false);
                 bs.setTestEnabled(false);
-                jmeMesh.setRenderQueueMode(Renderer.QUEUE_INHERIT);
+                jmeMesh.setRenderQueueMode(Renderer.QUEUE_OPAQUE);
             }
         }
         jmeMesh.updateRenderState();
