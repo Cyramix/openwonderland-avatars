@@ -20,9 +20,6 @@ package org.collada.xml_walker;
 import imi.loaders.collada.Collada;
 import imi.utils.FileUtils;
 
-
-
-
 /**
  * The PColladaImage class represents an image referenced in a collada file.
  * The PColladaMaterial class will reference this class.

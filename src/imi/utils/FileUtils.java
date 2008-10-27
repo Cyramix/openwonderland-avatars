@@ -19,6 +19,7 @@ package imi.utils;
 
 
 import java.io.File;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -145,7 +146,6 @@ public class FileUtils
         return(childDirectories);
     }
     
-    
     //  Attempts to find a file in a directory and it's sub directories.
     public static final String findFile(String baseDirectory, String shortFilename)
     {
@@ -172,9 +172,6 @@ public class FileUtils
 
         return("");
     }
-
-    
-    
     
     //  Attempts to find the Texture file.
     public static final String findTextureFile(String shortTextureFilename)

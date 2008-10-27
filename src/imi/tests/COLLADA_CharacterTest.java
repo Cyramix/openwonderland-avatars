@@ -96,8 +96,8 @@ public class COLLADA_CharacterTest extends DemoBase2
 //        pReplaceGeometryInstruction.addInstruction("addSkinnedMesh", "RFootNudeShape");
 //        pReplaceGeometryInstruction.addInstruction("addSkinnedMesh", "LFlipFlopShape");
 //        pReplaceGeometryInstruction.addInstruction("addSkinnedMesh", "RFlipFlopShape");
-        pRootInstruction.addInstruction("loadAnimation", fileProtocol + "assets/models/collada/Avatars/Male2/Male_Idle.dae");
-        pRootInstruction.addInstruction("loadAnimation", fileProtocol + "assets/models/collada/Avatars/Male2/Male_Walk.dae");
+        pRootInstruction.addInstruction("loadAnimation", fileProtocol + "assets/models/collada/Avatars/Male2/Male_Anim_Idle.dae");
+        pRootInstruction.addInstruction("loadAnimation", fileProtocol + "assets/models/collada/Avatars/Male2/Male_Anim_Walk.dae");
 
         pProcessor.execute(pscene, pRootInstruction);
         
