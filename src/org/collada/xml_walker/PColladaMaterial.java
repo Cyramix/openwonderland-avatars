@@ -17,6 +17,8 @@
  */
 package org.collada.xml_walker;
 
+import com.jme.image.Texture.ApplyMode;
+import com.jme.image.Texture.CombinerFunctionAlpha;
 import org.collada.colladaschema.Technique;
 import java.util.List;
 import imi.scene.polygonmodel.parts.PMeshMaterial;
@@ -70,8 +72,10 @@ public class PColladaMaterial
     private float           m_fShininess                = 0.0f;
     private PColladaColor   m_ReflectiveColor           = new PColladaColor();
     private float           m_fReflectivity             = 0.0f;
+    /** Transparency information **/
     private PColladaColor   m_TransparentColor          = new PColladaColor();
     private float           m_fTransparency             = 0.0f;
+    private int             m_nTransparencyMode         = -1; // -1 no transparency, 0 represents RGB_ZERO, 1 represents A_ONE
     private float           m_fIndexOfRefraction        = 0.0f;
 
     /** Treated as tertiary diffuse map     **/
@@ -119,12 +123,13 @@ public class PColladaMaterial
         m_SpecularImageFilename = processColorOrTexture(pBlinn.getSpecular(), m_SpecularColor);
         
         //m_NormalMapImageFilename = processColorOrTexture(pBlinn., m_AmbientColor)
+        
                 
         m_fShininess = processFloatAttribute(pBlinn.getShininess());
 
         m_ReflectiveImageFilename = processColorOrTexture(pBlinn.getReflective(), m_ReflectiveColor);
         m_fReflectivity = processFloatAttribute(pBlinn.getReflectivity());
-        processTransparent(pBlinn.getTransparent(), m_TransparentColor);
+        processTransparent(pBlinn.getTransparent(), pBlinn.getTransparency());
         m_fTransparency = processFloatAttribute(pBlinn.getTransparency());
         m_fIndexOfRefraction = processFloatAttribute(pBlinn.getIndexOfRefraction());
     }
@@ -142,7 +147,7 @@ public class PColladaMaterial
 
         m_ReflectiveImageFilename = processColorOrTexture(pPhong.getReflective(), m_ReflectiveColor);
         m_fReflectivity = processFloatAttribute(pPhong.getReflectivity());
-        processTransparent(pPhong.getTransparent(), m_TransparentColor);
+        processTransparent(pPhong.getTransparent(), pPhong.getTransparency());
         m_fTransparency = processFloatAttribute(pPhong.getTransparency());
         m_fIndexOfRefraction = processFloatAttribute(pPhong.getIndexOfRefraction());
     }
@@ -158,7 +163,7 @@ public class PColladaMaterial
 
         m_ReflectiveImageFilename = processColorOrTexture(pLambert.getReflective(), m_ReflectiveColor);
         m_fReflectivity = processFloatAttribute(pLambert.getReflectivity());
-        processTransparent(pLambert.getTransparent(), m_TransparentColor);
+        processTransparent(pLambert.getTransparent(), pLambert.getTransparency());
         m_fTransparency = processFloatAttribute(pLambert.getTransparency());
         m_fIndexOfRefraction = processFloatAttribute(pLambert.getIndexOfRefraction());
     }
@@ -199,6 +204,8 @@ public class PColladaMaterial
      */
     public PMeshMaterial createMeshMaterial()
     {
+        //boolean bTransparency = (m_nTransparencyMode >= 0);
+        
         PMeshMaterial result = new PMeshMaterial(m_Name);
         // Colors!
         result.setEmissive(buildColorRGBA(m_EmissiveColor));
@@ -276,7 +283,22 @@ public class PColladaMaterial
         {
             Logger.getLogger(this.getClass().toString()).log(Level.SEVERE, "Malformed url! : " + ex.getMessage());
         }
-        // We don't really support spec mapping without normal mapping
+        
+        // transparency
+        switch (m_nTransparencyMode)
+        {
+            case 0:
+                result.setAlphaState(PMeshMaterial.AlphaTransparencyType.RGB_ZERO);
+                result.setTransparencyColor(m_TransparentColor.toColorRGBA());
+                break;
+            case 1:
+                result.setAlphaState(PMeshMaterial.AlphaTransparencyType.A_ONE);
+                result.setTransparencyColor(m_TransparentColor.toColorRGBA());
+                break;
+            default:
+                result.setAlphaState(PMeshMaterial.AlphaTransparencyType.NO_TRANSPARENCY);
+                break;
+        }
 
         return result;
     }
@@ -331,12 +353,41 @@ public class PColladaMaterial
         return(fValue);
     }
 
-    private void processTransparent(CommonTransparentType transparentType, PColladaColor pColor)
+    private void processTransparent(CommonTransparentType transparentType, CommonFloatOrParamType transparency)
     {
-        if (transparentType.getOpaque() == FxOpaqueEnum.A_ONE)
-            pColor.set(0.0f, 0.0f, 0.0f, 1.0f);
-        else if (transparentType.getOpaque() == FxOpaqueEnum.RGB_ZERO)
-            pColor.set(0.0f, 0.0f, 0.0f, 0.0f);
+        // calculate color / texture if any
+        m_TransparentColor = new PColladaColor();
+        String alphaMap = processColorOrTexture(transparentType, m_TransparentColor);
+        if (alphaMap != null) // this means we are not using the color.. currently not support
+        {
+            System.out.println("Transparency mapping is not currently supported by this loader.");
+            m_TransparentColor.set(1.0f, 1.0f, 1.0f, 1.0f);
+        }
+        // determine transparency information
+        if (transparentType != null && transparentType.getOpaque().equals(FxOpaqueEnum.A_ONE))
+            m_nTransparencyMode = 1;
+        else if (transparentType != null && transparentType.getOpaque().equals(FxOpaqueEnum.RGB_ZERO))
+            m_nTransparencyMode = 0;
+        else // could be no transparency or using default behavior
+        {
+            if (transparency != null)
+            {
+                m_nTransparencyMode = 1; // A_ONE
+            }
+            else // No transparency
+            {
+                m_nTransparencyMode = -1;
+            }
+        }
+        
+        if (m_nTransparencyMode >= 0) // some kind of transparency
+        {
+            m_fTransparency = (float) ((transparency != null) ? transparency.getFloat().getValue() : 1.0f);
+        }
+//        if (transparentType.getOpaque() == FxOpaqueEnum.A_ONE)
+//            pColor.set(0.0f, 0.0f, 0.0f, 1.0f);
+//        else if (transparentType.getOpaque() == FxOpaqueEnum.RGB_ZERO)
+//            pColor.set(0.0f, 0.0f, 0.0f, 0.0f);
     }
 
 

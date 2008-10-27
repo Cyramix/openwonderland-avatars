@@ -81,6 +81,7 @@ public class SceneGraphConvertor
     private Node processMeshInstance(PPolygonMeshInstance meshInst)
     {
         SharedMesh mesh  = meshInst.getSharedMesh();//new SharedMesh(meshInst.getName(), meshInst.getGeometry().getGeometry());
+        
         // apply transform to a transform node
         Node transformNode = new Node(meshInst.getName() + " transform");
         applyTransform(meshInst.getTransform().getLocalMatrix(false), transformNode);

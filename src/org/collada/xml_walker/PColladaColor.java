@@ -17,6 +17,8 @@
  */
 package org.collada.xml_walker;
 
+import com.jme.renderer.ColorRGBA;
+
 /**
  *
  * @author Chris Nagle
@@ -81,6 +83,11 @@ public class PColladaColor
         Green = fGreen;
         Blue = fBlue;
         Alpha = fAlpha;
+    }
+
+    ColorRGBA toColorRGBA()
+    {
+        return new ColorRGBA(Red, Green, Blue, Alpha);
     }
 }
 

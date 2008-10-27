@@ -38,6 +38,13 @@ import java.util.logging.Logger;
  */
 public class PMeshMaterial extends PNode
 {
+    /** Alpha transparency enumeration **/
+    public enum AlphaTransparencyType
+    {
+        NO_TRANSPARENCY,
+        RGB_ZERO,
+        A_ONE
+    }
     /** Diffuse material color **/
     private ColorRGBA  m_Diffuse   = null;
     /** Ambient material color **/
@@ -46,9 +53,12 @@ public class PMeshMaterial extends PNode
     private ColorRGBA  m_Emissive  = null;
     /** Specular material color **/
     private ColorRGBA  m_Specular  = null;
+    /** Transparency Color **/
+    private ColorRGBA  m_TransparencyColor = null;
     /** Shininess value **/
     private float      m_Shininess = 0.0f;   // 0 is none, around 5 is low, around 100 is high
-    
+    /** Alpha state **/
+    private AlphaTransparencyType m_alphaState = AlphaTransparencyType.NO_TRANSPARENCY;
     /** Texture properties **/
     private TextureMaterialProperties[] m_textures = new TextureMaterialProperties[8];
     
@@ -220,6 +230,9 @@ public class PMeshMaterial extends PNode
         m_bWireframeAntiAliased = other.isWireframeAntiAliased();
         m_fWireframeLineWidth = other.getWireframeLineWidth();
         m_wireFace = other.getWireframeFace();
+        
+        m_alphaState = other.getAlphaState();
+        m_TransparencyColor = other.getTransparencyColor();
     }
     
     public PMeshMaterial(PMeshMaterial other)
@@ -350,6 +363,8 @@ public class PMeshMaterial extends PNode
                                     other.isWireframeAntiAliased(), 
                                     other.getWireframeLineWidth(), 
                                     other.getWireframeFace());
+        setAlphaState(other.getAlphaState());
+        setTransparencyColor(other.getTransparencyColor());
     }
 
     public void setDiffuse(ColorRGBA diffuse) 
@@ -658,4 +673,26 @@ public class PMeshMaterial extends PNode
         }
         return result;
     }
+
+    public AlphaTransparencyType getAlphaState()
+    {
+        return m_alphaState;
+    }
+
+    public void setAlphaState(AlphaTransparencyType alphaState)
+    {
+        m_alphaState = alphaState;
+    }
+
+    public ColorRGBA getTransparencyColor()
+    {
+        return m_TransparencyColor;
+    }
+
+    public void setTransparencyColor(ColorRGBA transparencyColor)
+    {
+        m_TransparencyColor = transparencyColor;
+    }
+    
+    
 }

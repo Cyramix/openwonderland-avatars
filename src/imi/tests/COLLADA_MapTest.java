@@ -5,9 +5,7 @@ import imi.loaders.collada.ColladaLoaderParams;
 import imi.loaders.repository.AssetDescriptor;
 import imi.loaders.repository.SharedAsset;
 import imi.loaders.repository.SharedAsset.SharedAssetType;
-import imi.scene.PMatrix;
 import imi.scene.PScene;
-import imi.scene.polygonmodel.PPolygonModelInstance;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -38,6 +36,7 @@ public class COLLADA_MapTest extends DemoBase2
         try
         {
             //modelLocation = new File("assets/models/collada/environments/MPK20/MPK20.dae").toURI().toURL();
+            //modelLocation = new File("assets/models/collada/Objects/Chairs/LoungeChair.dae").toURI().toURL();
             modelLocation = new File("assets/models/collada/environments/MaldenLabs/MaldenLabs.dae").toURI().toURL();
         } catch (MalformedURLException ex)
         {

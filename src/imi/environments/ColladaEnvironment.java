@@ -1,16 +1,23 @@
 package imi.environments;
 
+import com.jme.image.Texture;
+import com.jme.light.PointLight;
+import com.jme.math.Vector3f;
 import com.jme.renderer.ColorRGBA;
-import com.jme.scene.Geometry;
+import com.jme.renderer.Renderer;
 import com.jme.scene.Node;
 import com.jme.scene.SharedMesh;
 import com.jme.scene.Spatial;
 import com.jme.scene.TriMesh;
+import com.jme.scene.shape.Sphere;
+import com.jme.scene.state.BlendState;
 import com.jme.scene.state.CullState;
 import com.jme.scene.state.LightState;
 import com.jme.scene.state.MaterialState;
 import com.jme.scene.state.RenderState;
+import com.jme.scene.state.TextureState;
 import com.jme.scene.state.ZBufferState;
+import com.jme.util.TextureManager;
 import imi.loaders.repository.SharedAsset;
 import imi.scene.PMatrix;
 import imi.scene.PScene;
@@ -50,6 +57,7 @@ public class ColladaEnvironment extends Entity
         
         SceneGraphConvertor convertor = new SceneGraphConvertor();
         m_jmeRoot = convertor.convert(scene);
+        //m_jmeRoot = new Node("DasRoot");
         // Now assign the rendering component
         RenderComponent rc = m_wm.getRenderManager().createRenderComponent(m_jmeRoot);
         this.addComponent(RenderComponent.class, rc);
@@ -58,7 +66,7 @@ public class ColladaEnvironment extends Entity
         // add ourselves to the world manager
         m_wm.addEntity(this);
  
-        
+        //sphereTestCode();
     }
     
     public Node getSceneRoot()
@@ -82,9 +90,10 @@ public class ColladaEnvironment extends Entity
         matState.setSpecular(ColorRGBA.magenta);
         matState.setMaterialFace(MaterialState.MaterialFace.FrontAndBack);
         matState.setColorMaterial(MaterialState.ColorMaterial.None);
-         
+        matState.setEnabled(true);
+  
         LightState ls = (LightState) m_wm.getRenderManager().createRendererState(RenderState.RS_LIGHT);
-        ls.setTwoSidedLighting(true);
+        ls.setTwoSidedLighting(false);
         ls.setEnabled(false);
         
         // Cull State
@@ -154,5 +163,73 @@ public class ColladaEnvironment extends Entity
             }
         }
         
+    }
+    
+    private void sphereTestCode()
+    {
+        // test code
+        // our sphere
+        final Sphere sphere = new Sphere("sphere", Vector3f.ZERO, 96, 96, 7f);
+
+        // the sphere material taht will be modified to make the sphere
+        // look opaque then transparent then opaque and so on
+        MaterialState materialState = (MaterialState) m_wm.getRenderManager().createRendererState(RenderState.RS_MATERIAL);
+        materialState.setAmbient(new ColorRGBA(0.0f, 0.0f, 0.0f, 1.0f));
+        materialState.setDiffuse(new ColorRGBA(0.1f, 0.5f, 0.8f, 1.0f));
+        materialState.setSpecular(new ColorRGBA(1.0f, 1.0f, 1.0f, 1.0f));
+        materialState.setShininess(64.0f);
+        materialState.setEmissive(new ColorRGBA(0.0f, 0.0f, 0.0f, 1.0f));
+        materialState.setEnabled(true);
+
+        TextureState textures = (TextureState)m_wm.getRenderManager().createRendererState(RenderState.RS_TEXTURE);
+        Texture diffuseMap = TextureManager.loadTexture("assets/models/collada/environments/MPK20/Fern.png", Texture.MinificationFilter.BilinearNearestMipMap, Texture.MagnificationFilter.Bilinear);
+        
+        textures.setTexture(diffuseMap);
+        
+        sphere.setRenderState(textures);
+        sphere.updateRenderState();
+        // IMPORTANT: this is used to handle the internal sphere faces when
+        // setting them to transparent, try commenting this line to see what
+        // happens
+        materialState.setMaterialFace(MaterialState.MaterialFace.FrontAndBack);
+
+        sphere.setRenderState(materialState);
+        sphere.updateRenderState();
+
+        m_jmeRoot.attachChild(sphere);
+
+        // to handle transparency: a BlendState
+        // an other tutorial will be made to deal with the possibilities of this
+        // RenderState
+        BlendState alphaState = (BlendState) m_wm.getRenderManager().createRendererState(RenderState.RS_BLEND);
+        alphaState.setEnabled(true);
+        alphaState.setBlendEnabled(true);
+        alphaState.setSourceFunction(BlendState.SourceFunction.SourceAlpha);
+        alphaState.setDestinationFunction(BlendState.DestinationFunction.OneMinusSourceAlpha);
+        alphaState.setTestEnabled(true);
+        alphaState.setTestFunction(BlendState.TestFunction.GreaterThan);
+        
+        
+                 
+        final PointLight light = new PointLight();
+        light.setAmbient(ColorRGBA.white);
+        light.setDiffuse(ColorRGBA.white);
+        light.setSpecular(ColorRGBA.white);
+        light.setLocation(new Vector3f(100.0f, 100.0f, 100.0f));
+        light.setEnabled(true);
+        
+        LightState ls = (LightState) m_wm.getRenderManager().createRendererState(RenderState.RS_LIGHT);
+        ls.setTwoSidedLighting(true);
+        ls.attach(light);
+        ls.setEnabled(true);
+        
+        sphere.setRenderState(alphaState);
+        sphere.setRenderState(ls);
+        sphere.updateRenderState();
+
+        m_jmeRoot.updateRenderState();
+        // IMPORTANT: since the sphere will be transparent, place it
+        // in the transparent render queue!
+        sphere.setRenderQueueMode(Renderer.QUEUE_TRANSPARENT);
     }
 }
