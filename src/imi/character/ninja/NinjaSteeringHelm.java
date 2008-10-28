@@ -47,6 +47,7 @@ public class NinjaSteeringHelm extends CharacterSteeringHelm
     
     private boolean bAvoidObstacles = true;
     
+    private boolean walkBackFlip = false;
     private float walkBack = -1.0f;
     private float walkBackTime = 2.0f;
     private float turnBackTime = 0.6f;
@@ -54,11 +55,11 @@ public class NinjaSteeringHelm extends CharacterSteeringHelm
     private SpatialObject goal = null;
     
     private boolean bDoneTurning = false;
-    private float   pullTime = 3.0f;
+    private float   pullTime = 5.0f;
     
     private float    sampleCounter     = 0.0f;
     private float    sampleTimeFrame   = 3.0f;
-    private int      samples           = 0;
+    private int      samples           = 1;
     private Vector3f sampleAvgPos      = new Vector3f();
     private Vector3f samplePrevAvgPos  = new Vector3f();
     
@@ -77,7 +78,7 @@ public class NinjaSteeringHelm extends CharacterSteeringHelm
         // Samples
         sampleAvgPos.set(characterPosition);
         samplePrevAvgPos.set(characterPosition);
-        samples       = 0;
+        samples       = 1;
         sampleCounter = 0.0f;
     }
     
@@ -94,29 +95,31 @@ public class NinjaSteeringHelm extends CharacterSteeringHelm
         sampleCounter += deltaTime;
         samples++;
         sampleAvgPos.addLocal(characterPosition);
-//        if (sampleCounter > sampleTimeFrame)
-//        {
-//            // Sample "tick"
-//            sampleAvgPos.divideLocal(samples);
-//            float currentAvgDistance  = sampleAvgPos.distance(goalPosition);
-//            float previousAvgDistance = samplePrevAvgPos.distance(goalPosition);
-//            
-//            // which is closer to the goal? the current sample average position or the previous one?
-//            if (currentAvgDistance > previousAvgDistance)
-//            {
-//                // we are not closer to the goal after sampleTimeFrame secounds... let's try to get out of this loop
-//                walkBack    = 0.0f;
-//                ninjaContext.resetTriggersAndActions();
-//                System.out.println("sample tick: get out of loop");
-//            }
-////            else
-////                System.out.println("sample tick");
-//            
-//            samplePrevAvgPos.set(sampleAvgPos);
-//            sampleAvgPos.set(characterPosition);
-//            samples       = 0;
-//            sampleCounter = 0.0f;
-//        }
+        if (sampleCounter > sampleTimeFrame)
+        {
+            // Sample "tick"
+            sampleAvgPos.divideLocal(samples);
+            float currentAvgDistance  = sampleAvgPos.distance(goalPosition);
+            float previousAvgDistance = samplePrevAvgPos.distance(goalPosition);
+            
+            // which is closer to the goal? the current sample average position or the previous one?
+            if (currentAvgDistance > previousAvgDistance)
+            {
+                // we are not closer to the goal after sampleTimeFrame secounds... let's try to get out of this loop
+                walkBackFlip = true;
+                walkBack     = 0.0f;
+                walkBackTime = 0.5f;
+                ninjaContext.resetTriggersAndActions();
+                System.out.println("sample tick: get out of loop");
+            }
+            else
+                System.out.println("sample tick");
+            
+            samplePrevAvgPos.set(sampleAvgPos);
+            sampleAvgPos.set(characterPosition);
+            samples       = 1;
+            sampleCounter = 0.0f;
+        }
         
         // TODO : clean up and lay out combinations framework for steering behaviors
         
@@ -137,8 +140,16 @@ public class NinjaSteeringHelm extends CharacterSteeringHelm
                 // Are we walking backwards to get away from an obstacle?
                 if (walkBack >= 0.0f)
                 {
-                    ninjaContext.triggerReleased(TriggerNames.Move_Forward.ordinal());
-                    ninjaContext.triggerPressed(TriggerNames.Move_Back.ordinal());
+                    if (walkBackFlip)
+                    {
+                        ninjaContext.triggerReleased(TriggerNames.Move_Back.ordinal());
+                        ninjaContext.triggerPressed(TriggerNames.Move_Forward.ordinal());      
+                    }
+                    else
+                    {
+                        ninjaContext.triggerReleased(TriggerNames.Move_Forward.ordinal());
+                        ninjaContext.triggerPressed(TriggerNames.Move_Back.ordinal());   
+                    }
 
                     walkBack += deltaTime;
 
@@ -183,8 +194,10 @@ public class NinjaSteeringHelm extends CharacterSteeringHelm
                         if (characterBV.isColliding(obstacleBV) && obstacleBV.getCenter().distance(characterBV.getCenter()) < 2.0f)
                         {
                             // Initiate walk back if colliding
-                            walkBack    = 0.0f;
-                            steerToGoal = false;
+                            walkBack     = 0.0f;
+                            walkBackTime = 2.0f;
+                            walkBackFlip = false;
+                            steerToGoal  = false;
                             ninjaContext.resetTriggersAndActions();
 
                             Vector3f rightVec = ninjaContext.getController().getRightVector();

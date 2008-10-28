@@ -82,20 +82,20 @@ public class COLLADA_CharacterTest extends DemoBase2
         String fileProtocol = new String("file://localhost/" + System.getProperty("user.dir") + "/");
         
         Instruction pRootInstruction = new Instruction("loadCharacter");
-        Instruction pLoadBindPoseInstruction = pRootInstruction.addInstruction("loadBindPose", fileProtocol + "assets/models/collada/Avatars/Male2/Male_Bind.dae");
-//        //Instruction loadGeometry = pRootInstruction.addInstruction( "loadGeometry", "file://localhost/work/avatars/assets/models/collada/Clothing/MaleDressPants1.dae");
-//        Instruction pReplaceGeometryInstruction = pRootInstruction.addInstruction("replaceGeometry");
-//        pReplaceGeometryInstruction.addInstruction("deleteSkinnedMesh", "Legs_LegsNudeShape");
-//        pReplaceGeometryInstruction.addInstruction("loadGeometry", "file://localhost/work/avatars/assets/models/collada/Clothing/MaleDressPants1.dae");
-//        pReplaceGeometryInstruction.addInstruction("addSkinnedMesh", "Legs_LegsNudeShape");
-//        pReplaceGeometryInstruction.addInstruction("deleteSkinnedMesh", "LFootNudeShape");
-//        pReplaceGeometryInstruction.addInstruction("deleteSkinnedMesh", "RFootNudeShape");
-//        pReplaceGeometryInstruction.addInstruction("loadGeometry", "file://localhost/work/avatars/assets/models/collada/Clothing/FlipFlopsFeet.dae");
-//        //pReplaceGeometryInstruction.addInstruction("addSkinnedMesh", "polySurfaceShape3");
-//        pReplaceGeometryInstruction.addInstruction("addSkinnedMesh", "LFootNudeShape");
-//        pReplaceGeometryInstruction.addInstruction("addSkinnedMesh", "RFootNudeShape");
-//        pReplaceGeometryInstruction.addInstruction("addSkinnedMesh", "LFlipFlopShape");
-//        pReplaceGeometryInstruction.addInstruction("addSkinnedMesh", "RFlipFlopShape");
+        Instruction pLoadBindPoseInstruction = pRootInstruction.addInstruction("loadBindPose", fileProtocol + "assets/models/collada/Avatars/MaleZip/MaleBind.dae");
+        //Instruction loadGeometry = pRootInstruction.addInstruction( "loadGeometry", "file://localhost/work/avatars/assets/models/collada/Clothing/MaleDressPants1.dae");
+        Instruction pReplaceGeometryInstruction = pRootInstruction.addInstruction("replaceGeometry");
+        pReplaceGeometryInstruction.addInstruction("deleteSkinnedMesh", "Legs_LegsNudeShape");
+        pReplaceGeometryInstruction.addInstruction("loadGeometry", fileProtocol + "assets/models/collada/Clothing/MaleDressPants1.dae");
+        pReplaceGeometryInstruction.addInstruction("addSkinnedMesh", "Legs_LegsNudeShape");
+        pReplaceGeometryInstruction.addInstruction("deleteSkinnedMesh", "LFootNudeShape");
+        pReplaceGeometryInstruction.addInstruction("deleteSkinnedMesh", "RFootNudeShape");
+        pReplaceGeometryInstruction.addInstruction("loadGeometry", fileProtocol + "assets/models/collada/Clothing/FlipFlopsFeet.dae");
+        //pReplaceGeometryInstruction.addInstruction("addSkinnedMesh", "polySurfaceShape3");
+        pReplaceGeometryInstruction.addInstruction("addSkinnedMesh", "LFootNudeShape");
+        pReplaceGeometryInstruction.addInstruction("addSkinnedMesh", "RFootNudeShape");
+        pReplaceGeometryInstruction.addInstruction("addSkinnedMesh", "LFlipFlopShape");
+        pReplaceGeometryInstruction.addInstruction("addSkinnedMesh", "RFlipFlopShape");
         pRootInstruction.addInstruction("loadAnimation", fileProtocol + "assets/models/collada/Avatars/Male2/Male_Anim_Idle.dae");
         pRootInstruction.addInstruction("loadAnimation", fileProtocol + "assets/models/collada/Avatars/Male2/Male_Anim_Walk.dae");
 

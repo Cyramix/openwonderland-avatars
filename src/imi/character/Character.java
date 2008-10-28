@@ -65,6 +65,7 @@ import imi.scene.boundingvolumes.PSphere;
 import imi.scene.shader.programs.VertexDeformer;
 import imi.scene.polygonmodel.parts.PMeshMaterial;
 import imi.scene.processors.JSceneEventProcessor;
+import imi.scene.shader.programs.VertDeformerWithSpecAndNormalMap;
 import java.io.File;
 
 /**
@@ -404,9 +405,47 @@ public abstract class Character extends Entity implements SpatialObject
     protected void initScene(ArrayList<ProcessorComponent> processors)
     {
         if (m_attributes.getModelFile().endsWith(".dae"))
+        {
             m_pscene.setUseRepository(false);
+            
+            // Hack code - instead of loading it the same way
+            // and using the initializer for run-time customizations
+            
+            InstructionProcessor pProcessor = new InstructionProcessor();
         
-        m_modelInst = m_pscene.addModelInstance(m_attributes.getName(), m_attributes.getAsset(), new PMatrix());
+            String fileProtocol = new String("file://localhost/" + System.getProperty("user.dir") + "/");
+        
+            Instruction pRootInstruction = new Instruction("loadCharacter");
+            pRootInstruction.addInstruction("loadBindPose", fileProtocol + m_attributes.getModelFile());
+            
+            //pRootInstruction.addInstruction("deleteSkinnedMesh", "Legs_LegsNudeShape");
+            pRootInstruction.addInstruction("deleteSkinnedMesh", "LFootNudeShape");
+            pRootInstruction.addInstruction("deleteSkinnedMesh", "RFootNudeShape");
+            //pRootInstruction.addInstruction("loadGeometry", fileProtocol + "assets/models/collada/Clothing/MaleDressPants1.dae");
+            pRootInstruction.addInstruction("loadGeometry", fileProtocol + "assets/models/collada/Clothing/FlipFlopsFeet.dae");
+            //pRootInstruction.addInstruction("addSkinnedMesh", "Legs_LegsNudeShape");
+            pRootInstruction.addInstruction("addSkinnedMesh", "LFootNudeShape");
+            pRootInstruction.addInstruction("addSkinnedMesh", "RFootNudeShape");
+            pRootInstruction.addInstruction("addSkinnedMesh", "LFlipFlopShape");
+            pRootInstruction.addInstruction("addSkinnedMesh", "RFlipFlopShape");
+            
+            String [] anims = ((NinjaAvatarAttributes)m_attributes).getAnimations();
+            for (int i = 0; i < anims.length; i++)
+                pRootInstruction.addInstruction("loadAnimation", fileProtocol + anims[i]);
+
+            pProcessor.execute(new PScene(m_wm), pRootInstruction);
+            SkeletonNode skeleton = pProcessor.getSkeleton();
+            m_modelInst = m_pscene.addModelInstance(skeleton, new PMatrix());
+
+            if (m_modelInst.getChild(0) instanceof SkeletonNode)
+            {
+                SkeletonNode pSkeletonNode = (SkeletonNode) m_modelInst.getChild(0);
+                //  Assign the specified shader to all SkinnedMeshes.
+                pSkeletonNode.setShader(new VertDeformerWithSpecAndNormalMap(m_wm));
+            }
+        }
+        else
+            m_modelInst = m_pscene.addModelInstance(m_attributes.getName(), m_attributes.getAsset(), new PMatrix());
         
         processors.add(new SkinnedAnimationProcessor(m_modelInst));
         processors.add(new CharacterProcessor(this));
@@ -552,6 +591,11 @@ public abstract class Character extends Entity implements SpatialObject
         
         if (m_context != null)
             m_context.update(deltaTime);
+        
+        
+                                m_pscene.setDirty(true, true);
+                                m_pscene.buildFlattenedHierarchy();
+                                m_pscene.submitTransformsAndGeometry();
     }
     
     /**

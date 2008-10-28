@@ -122,6 +122,12 @@ public class AnimationComponent
      */
     public int findCycle(String cycleName, int animationGroupIndex) 
     {
+        if (m_AnimationGroups.isEmpty())
+        {
+            System.out.println("can't find animation cycle: " + cycleName + ", m_AnimationGroups is empty!");
+            return -1;
+        }
+        
         AnimationGroup loop = m_AnimationGroups.get(animationGroupIndex);
         if (loop == null)
             return -1;

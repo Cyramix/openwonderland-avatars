@@ -38,32 +38,32 @@ public class COLLADA_OfficeTest extends DemoBase2
     protected void simpleSceneInit(PScene pscene, WorldManager wm, ArrayList<ProcessorComponent> processors)
     {
         
-        Logger.getLogger("com.jme.scene").setLevel(Level.OFF);
-        Logger.getLogger("org.collada").setLevel(Level.OFF);
-        Logger.getLogger("com.jme.renderer.jogl").setLevel(Level.OFF);
-        
-        URL modelLocation = null;
-        try
-        {
-            modelLocation = new File("assets/models/collada/environments/MPK20/MPK20.dae").toURI().toURL();
-            modelLocation = new File("assets/models/collada/environments/BusinessObjects/BusinessObjectsCenter.dae").toURI().toURL();
-            modelLocation = new File("assets/models/collada/environments/Milan/DSI.dae").toURI().toURL();
-            //modelLocation = new File("assets/models/collada/Objects/Chairs/Sofa.dae").toURI().toURL();
-            //modelLocation = new File("assets/models/collada/environments/MaldenLabs/MaldenLabs.dae").toURI().toURL();
-        } catch (MalformedURLException ex)
-        {
-            Logger.getLogger(COLLADA_ModelTest.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        
-        SharedAsset colladaAsset = new SharedAsset(pscene.getRepository(),
-                new AssetDescriptor(SharedAssetType.COLLADA_Mesh, modelLocation));
-        
-        colladaAsset.setUserData(new ColladaLoaderParams(false, true, false, false, 0, "MPK20", null));
-        
-        pscene.setUseRepository(true);
-        
-        ColladaEnvironment ourEnv = new ColladaEnvironment(wm, colladaAsset, "MaldenLabs");
-        
+//        Logger.getLogger("com.jme.scene").setLevel(Level.OFF);
+//        Logger.getLogger("org.collada").setLevel(Level.OFF);
+//        Logger.getLogger("com.jme.renderer.jogl").setLevel(Level.OFF);
+//        
+//        URL modelLocation = null;
+//        try
+//        {
+//            modelLocation = new File("assets/models/collada/environments/MPK20/MPK20.dae").toURI().toURL();
+//            modelLocation = new File("assets/models/collada/environments/BusinessObjects/BusinessObjectsCenter.dae").toURI().toURL();
+//            modelLocation = new File("assets/models/collada/environments/Milan/DSI.dae").toURI().toURL();
+//            //modelLocation = new File("assets/models/collada/Objects/Chairs/Sofa.dae").toURI().toURL();
+//            //modelLocation = new File("assets/models/collada/environments/MaldenLabs/MaldenLabs.dae").toURI().toURL();
+//        } catch (MalformedURLException ex)
+//        {
+//            Logger.getLogger(COLLADA_ModelTest.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+//        
+//        SharedAsset colladaAsset = new SharedAsset(pscene.getRepository(),
+//                new AssetDescriptor(SharedAssetType.COLLADA_Mesh, modelLocation));
+//        
+//        colladaAsset.setUserData(new ColladaLoaderParams(false, true, false, false, 0, "MPK20", null));
+//        
+//        pscene.setUseRepository(true);
+//        
+//        ColladaEnvironment ourEnv = new ColladaEnvironment(wm, colladaAsset, "MaldenLabs");
+//        
         
         ///////////
         
@@ -72,7 +72,7 @@ public class COLLADA_OfficeTest extends DemoBase2
         
         // Create an object collection for the musical chairs game
         ObjectCollection objs = new ObjectCollection("Musical Chairs Game Objects", wm);
-        objs.generateChairs(Vector3f.ZERO, 25.0f, 2);
+        objs.generateChairs(Vector3f.ZERO, 15.0f, 10);
         
         NinjaAvatar avatar = new NinjaAvatar("Avatar", wm);
         avatar.selectForInput();

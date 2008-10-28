@@ -17,7 +17,6 @@
  */
 package imi.character.ninja;
 
-import imi.scene.PMatrix;
 import java.util.ArrayList;
 import org.jdesktop.mtgame.WorldManager;
 
@@ -33,7 +32,7 @@ public class NinjaAvatar extends Ninja
         
         public NinjaAvatarAttributes(String name) {
             super(name);
-            setModelFile("assets/models/collada/Avatars/MaleZip/MaleBind.dae");
+            setModelFile("assets/models/collada/Avatars/Male2/Male_Bind.dae");
             ArrayList<String> anims = new ArrayList<String>();
             anims.add("assets/models/collada/Avatars/MaleZip/Male_Idle.dae");
             anims.add("assets/models/collada/Avatars/MaleZip/Male_Walk.dae");
@@ -56,23 +55,35 @@ public class NinjaAvatar extends Ninja
     {
         super(name, wm);
         
-        // Rotate around
-//        PMatrix origin = new PMatrix();
-//        origin.buildRotationY(160.0f);
-//        m_modelInst.getTransform().setLocalMatrix(origin);
-        
         // Tweak animation names and speeds
         m_context.getController().setReverseHeading(true);
         m_context.getStates().get(IdleState.class).setAnimationName("Male_Idle");
         m_context.getStates().get(PunchState.class).setAnimationName("Male_Wave");
         m_context.getStates().get(TurnState.class).setAnimationName("Male_Idle");
         m_context.getStates().get(WalkState.class).setAnimationName("Male_Walk");
-        m_context.getStates().get(WalkState.class).setAnimationSpeed(5.0f);
+        m_context.getStates().get(WalkState.class).setAnimationSpeed(0.000001f);
+        m_context.getStates().get(WalkState.class).setTransitionDuration(0.01f);
         m_context.getStates().get(SitState.class).setAnimationName("Male_StandToSit");
         m_context.getStates().get(FlyState.class).setAnimationName("Male_Sitting");
-        m_context.getStates().get(SitState.class).setAnimationSpeed(2.0f);
+        m_context.getStates().get(SitState.class).setAnimationSpeed(5.0f);
+        ((SitState)m_context.getStates().get(SitState.class)).setSittingAnimationTime(0.2f);
         ((SitState)m_context.getStates().get(SitState.class)).setIdleSittingAnimationName("Male_Sitting");
-        ((SitState)m_context.getStates().get(SitState.class)).setGettingUpAnimationName("Male_StandToSit");         
+        ((SitState)m_context.getStates().get(SitState.class)).setGettingUpAnimationName("Male_StandToSit");    
+        ((SitState)m_context.getStates().get(SitState.class)).setGettingUpAnimationSpeed(1.5f);
+        ((SitState)m_context.getStates().get(SitState.class)).setGettingUpAnimationTime(0.005f);
+        
+        // For testing
+        if (false)
+        {
+            m_context.getStates().get(IdleState.class).setAnimationName("Male_Idle");
+            m_context.getStates().get(PunchState.class).setAnimationName("Male_Idle");
+            m_context.getStates().get(TurnState.class).setAnimationName("Male_Idle");
+            m_context.getStates().get(WalkState.class).setAnimationName("Male_Idle");
+            m_context.getStates().get(SitState.class).setAnimationName("Male_Idle");
+            m_context.getStates().get(FlyState.class).setAnimationName("Male_Idle");
+            ((SitState)m_context.getStates().get(SitState.class)).setIdleSittingAnimationName("Male_Idle");
+            ((SitState)m_context.getStates().get(SitState.class)).setGettingUpAnimationName("Male_Idle"); 
+        }
     }
         
     @Override
