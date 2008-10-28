@@ -88,6 +88,13 @@ public class SceneGraphConvertor
         // attach shared mesh to that transform node and return it
         transformNode.attachChild(mesh);
         
+        // Process chillins
+        for (int i = 0; i < meshInst.getChildrenCount(); i++)
+        {
+            PNode kid = meshInst.getChild(i);
+            transformNode.attachChild(processNode(kid));
+        }
+        
         return transformNode;
     }
     

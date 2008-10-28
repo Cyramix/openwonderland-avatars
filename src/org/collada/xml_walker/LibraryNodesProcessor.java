@@ -63,7 +63,7 @@ public class LibraryNodesProcessor extends Processor
 
     private void processNode(String spacing, Node pParentNode, Node pNode, PColladaNode pColladaNode)
     {
-        System.out.println(spacing + "Node:  " + pNode.getId());
+        
 
         
         pColladaNode.setName(pNode.getId());

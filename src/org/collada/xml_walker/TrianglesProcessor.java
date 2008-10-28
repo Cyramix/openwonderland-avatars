@@ -283,17 +283,17 @@ public class TrianglesProcessor extends Processor
             index += m_VertexOffset;
 
 
-            if (m_pMeshProcessor.getName().equals("mesh7-geometry"))
-            {
-                System.out.print("Triangle[" + polygonIndex + "] = (" + vertex1PositionIndex + ", " + vertex1NormalIndex + ", " + vertex1TexCoord1Index + ") ");
-                System.out.print("(" + vertex2PositionIndex + ", " + vertex2NormalIndex + ", " + vertex2TexCoord1Index + ") ");
-                System.out.println("(" + vertex3PositionIndex + ", " + vertex3NormalIndex + ", " + vertex3TexCoord1Index + ")");
-
-                if (vertex3PositionIndex == 361)
-                {
-                    int a = 0;
-                }
-            }
+//            if (m_pMeshProcessor.getName().equals("mesh7-geometry"))
+//            {
+//                System.out.print("Triangle[" + polygonIndex + "] = (" + vertex1PositionIndex + ", " + vertex1NormalIndex + ", " + vertex1TexCoord1Index + ") ");
+//                System.out.print("(" + vertex2PositionIndex + ", " + vertex2NormalIndex + ", " + vertex2TexCoord1Index + ") ");
+//                System.out.println("(" + vertex3PositionIndex + ", " + vertex3NormalIndex + ", " + vertex3TexCoord1Index + ")");
+//
+//                if (vertex3PositionIndex == 361)
+//                {
+//                    int a = 0;
+//                }
+//            }
             
 /*
             try

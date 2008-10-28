@@ -159,7 +159,7 @@ class VertexDataSemantic
             m_DataName = m_DataName.substring(1);
 
 
-        System.out.println("   VertexDataSemantic:  Name=" + m_Name + ", Offset=" + m_Offset + ", DataName=" + m_DataName);
+        //System.out.println("   VertexDataSemantic:  Name=" + m_Name + ", Offset=" + m_Offset + ", DataName=" + m_DataName);
     }
 
 

@@ -66,11 +66,6 @@ public class LibraryAnimationsProcessor extends Processor
     {
         super(pCollada, pAnimations, pParent);
 
-//        System.out.println("*************************************");
-//        System.out.println("*************************************");
-//        System.out.println("AnimatedItems:  " + animations.getAnimations().size());
-//        System.out.println("*************************************");
-//        System.out.println("*************************************");
 
         if (pAnimations.getAnimations().size() > 0)
         {
@@ -79,7 +74,6 @@ public class LibraryAnimationsProcessor extends Processor
             int a;
             Animation pAnimation;
 
-//            System.out.println("   AnimationGroup:");
 
             for (a=0; a<pAnimations.getAnimations().size(); a++)
             {

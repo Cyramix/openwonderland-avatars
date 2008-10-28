@@ -148,7 +148,7 @@ public class PColladaAnimatedItem
         }
 */
 
-        System.out.println("Animation:  " + pAnimation.getId() + ", KeyframeCount=" + m_KeyframeCount);
+        //System.out.println("Animation:  " + pAnimation.getId() + ", KeyframeCount=" + m_KeyframeCount);
     }
 
 

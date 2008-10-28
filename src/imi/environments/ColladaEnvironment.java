@@ -8,6 +8,7 @@ import com.jme.renderer.Renderer;
 import com.jme.scene.Node;
 import com.jme.scene.SharedMesh;
 import com.jme.scene.Spatial;
+import com.jme.scene.TexCoords;
 import com.jme.scene.TriMesh;
 import com.jme.scene.shape.Sphere;
 import com.jme.scene.state.BlendState;
@@ -57,7 +58,7 @@ public class ColladaEnvironment extends Entity
         
         SceneGraphConvertor convertor = new SceneGraphConvertor();
         m_jmeRoot = convertor.convert(scene);
-        //m_jmeRoot = new Node("DasRoot");
+//        m_jmeRoot = new Node("DasRoot");
         // Now assign the rendering component
         RenderComponent rc = m_wm.getRenderManager().createRenderComponent(m_jmeRoot);
         this.addComponent(RenderComponent.class, rc);
@@ -107,6 +108,7 @@ public class ColladaEnvironment extends Entity
         m_jmeRoot.setRenderState(cs);
         m_jmeRoot.setRenderState(ls);
         nullifyColorBuffers();
+        //visitNodes();
         m_jmeRoot.updateRenderState();
         
     }
@@ -116,7 +118,7 @@ public class ColladaEnvironment extends Entity
      * 
      * @param rs
      */
-    private void forceRenderState(RenderState rs)
+    private void visitNodes()
     {
         FastList<Spatial> queue = new FastList<Spatial>();
         queue.addAll(m_jmeRoot.getChildren());
@@ -124,7 +126,19 @@ public class ColladaEnvironment extends Entity
         while (queue.isEmpty() == false)
         {
             Spatial current = queue.removeFirst();
-            current.setRenderState(rs);
+            //current.setRenderState(rs);
+            
+            if (current instanceof SharedMesh)
+            {
+                MaterialState matState = (MaterialState) (current).getRenderState(RenderState.RS_MATERIAL);
+                matState.setColorMaterial(MaterialState.ColorMaterial.Emissive);
+                
+                TextureState texState = (TextureState) current.getRenderState(RenderState.RS_TEXTURE);
+                if (texState == null) // weirdness
+                {
+                    System.out.println("Weirdness has occured on line 139, ColladaEnvironment.java - BUG FIX TEAM, ATTACK!");
+                }
+            }
             
             if (current instanceof Node)
             {
@@ -174,23 +188,48 @@ public class ColladaEnvironment extends Entity
         // the sphere material taht will be modified to make the sphere
         // look opaque then transparent then opaque and so on
         MaterialState materialState = (MaterialState) m_wm.getRenderManager().createRendererState(RenderState.RS_MATERIAL);
-        materialState.setAmbient(new ColorRGBA(0.0f, 0.0f, 0.0f, 1.0f));
-        materialState.setDiffuse(new ColorRGBA(0.1f, 0.5f, 0.8f, 1.0f));
-        materialState.setSpecular(new ColorRGBA(1.0f, 1.0f, 1.0f, 1.0f));
+        materialState.setAmbient(ColorRGBA.white);
+        materialState.setDiffuse(ColorRGBA.white);
+        materialState.setSpecular(ColorRGBA.white);
         materialState.setShininess(64.0f);
-        materialState.setEmissive(new ColorRGBA(0.0f, 0.0f, 0.0f, 1.0f));
         materialState.setEnabled(true);
 
         TextureState textures = (TextureState)m_wm.getRenderManager().createRendererState(RenderState.RS_TEXTURE);
-        Texture diffuseMap = TextureManager.loadTexture("assets/models/collada/environments/MPK20/Fern.png", Texture.MinificationFilter.BilinearNearestMipMap, Texture.MagnificationFilter.Bilinear);
         
-        textures.setTexture(diffuseMap);
+        Texture diffuseMap = TextureManager.loadTexture("assets/textures/checkerboard.png", Texture.MinificationFilter.BilinearNearestMipMap, Texture.MagnificationFilter.Bilinear);
+        Texture secondDiffuseMap = TextureManager.loadTexture("assets/textures/checkerboard.png", Texture.MinificationFilter.BilinearNearestMipMap, Texture.MagnificationFilter.Bilinear);
+        secondDiffuseMap.setApply(Texture.ApplyMode.Modulate);
+        secondDiffuseMap.setWrap(Texture.WrapMode.Repeat);
+        
+        textures.setTexture(diffuseMap, 0);
+        textures.setTexture(secondDiffuseMap, 1);
+        
+        sphere.copyTextureCoordinates(0, 1, 1.0f);
+        
+        TexCoords uv = sphere.getTextureCoords(0);
+        
+        float[] uvArray = new float[uv.coords.limit()];
+        
+        try
+        {
+            uv.coords.rewind();
+            uv.coords.get(uvArray);
+        }
+        catch (Exception e)
+        {
+            System.out.println(e.getMessage() + " and I don't care.");
+        }
+        
+        for (int i = 0; i < uvArray.length; ++i)
+            uvArray[i] = uvArray[i];// * 5.8f;
+        
+        TexCoords newUV = TexCoords.makeNew(uvArray);
+        sphere.setTextureCoords(newUV, 1);
+        textures.setEnabled(true);
         
         sphere.setRenderState(textures);
         sphere.updateRenderState();
-        // IMPORTANT: this is used to handle the internal sphere faces when
-        // setting them to transparent, try commenting this line to see what
-        // happens
+        
         materialState.setMaterialFace(MaterialState.MaterialFace.FrontAndBack);
 
         sphere.setRenderState(materialState);
@@ -201,13 +240,13 @@ public class ColladaEnvironment extends Entity
         // to handle transparency: a BlendState
         // an other tutorial will be made to deal with the possibilities of this
         // RenderState
-        BlendState alphaState = (BlendState) m_wm.getRenderManager().createRendererState(RenderState.RS_BLEND);
-        alphaState.setEnabled(true);
-        alphaState.setBlendEnabled(true);
-        alphaState.setSourceFunction(BlendState.SourceFunction.SourceAlpha);
-        alphaState.setDestinationFunction(BlendState.DestinationFunction.OneMinusSourceAlpha);
-        alphaState.setTestEnabled(true);
-        alphaState.setTestFunction(BlendState.TestFunction.GreaterThan);
+//        BlendState alphaState = (BlendState) m_wm.getRenderManager().createRendererState(RenderState.RS_BLEND);
+//        alphaState.setEnabled(true);
+//        alphaState.setBlendEnabled(true);
+//        alphaState.setSourceFunction(BlendState.SourceFunction.SourceAlpha);
+//        alphaState.setDestinationFunction(BlendState.DestinationFunction.OneMinusSourceAlpha);
+//        alphaState.setTestEnabled(true);
+//        alphaState.setTestFunction(BlendState.TestFunction.GreaterThan);
         
         
                  
@@ -219,11 +258,11 @@ public class ColladaEnvironment extends Entity
         light.setEnabled(true);
         
         LightState ls = (LightState) m_wm.getRenderManager().createRendererState(RenderState.RS_LIGHT);
-        ls.setTwoSidedLighting(true);
+        ls.setTwoSidedLighting(false);
         ls.attach(light);
         ls.setEnabled(true);
         
-        sphere.setRenderState(alphaState);
+        //sphere.setRenderState(alphaState);
         sphere.setRenderState(ls);
         sphere.updateRenderState();
 

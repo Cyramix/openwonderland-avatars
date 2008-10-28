@@ -82,7 +82,6 @@ public class LibraryVisualScenesProcessor extends Processor
             
                 pAnimationCycle.setName(name);
 
-                System.out.println("Animation:  " + pAnimationCycle.getName());
             }
         }
     }

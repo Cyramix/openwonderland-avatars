@@ -360,7 +360,7 @@ public class PColladaMaterial
         String alphaMap = processColorOrTexture(transparentType, m_TransparentColor);
         if (alphaMap != null) // this means we are not using the color.. currently not support
         {
-            System.out.println("Transparency mapping is not currently supported by this loader.");
+            Logger.getLogger(this.getClass().toString()).log(Level.WARNING, "Transparency mapping is not currently supported by this loader.");
             m_TransparentColor.set(1.0f, 1.0f, 1.0f, 1.0f);
         }
         // determine transparency information

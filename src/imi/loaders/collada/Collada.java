@@ -1474,7 +1474,7 @@ public class Collada
         if (pColladaNode.isJoint())
             return;
 
-        System.out.println("ColladaNode::: '" + pColladaNode.getName() + "'");
+        //System.out.println("ColladaNode::: '" + pColladaNode.getName() + "'");
 
         //  If the ColladaNode contains skeletons, we need to build a
         //  PolygonSkinnedMeshInstance tree.
@@ -1565,7 +1565,7 @@ public class Collada
         boolean bSkeletonsCreated = true;
 
 
-        System.out.println("ColladaNode::: '" + pColladaNode.getName() + "'");
+        //System.out.println("ColladaNode::: '" + pColladaNode.getName() + "'");
 
 
         //  If the ColladaNode contains skeletons, we need to build a
@@ -1587,7 +1587,7 @@ public class Collada
                     System.out.println("   Unable to find skeleton node '" + skeletonName + "'!");
                 }
                 
-                System.out.println("   Creating Skeleton '" + skeletonName + "'.");
+                //System.out.println("   Creating Skeleton '" + skeletonName + "'.");
 
                 pThisNode = buildPolygonSkinnedMeshInstance(pColladaNode, skeletonName, pParentNode);
                 if (pThisNode != null)
@@ -1608,7 +1608,7 @@ public class Collada
 
             if (pPolygonMesh != null)
             {
-                System.out.println("   Creating Mesh '" + meshName + "'.");
+                //System.out.println("   Creating Mesh '" + meshName + "'.");
 
                 PPolygonMeshInstance pPolygonMeshInstance;
 
@@ -1630,7 +1630,7 @@ public class Collada
             PColladaNode pInstancedColladaNode = findFactoryColladaNode(nodeInstanceName);
             if (pInstancedColladaNode != null)
             {
-                System.out.println("   Creating node instance '" + nodeInstanceName + "'.");
+                //System.out.println("   Creating node instance '" + nodeInstanceName + "'.");
 
                 //pThisNode = m_pScene.processJoint(null, pColladaNode.getMatrix());
                 pThisNode = new PNode(pColladaNode.getName());

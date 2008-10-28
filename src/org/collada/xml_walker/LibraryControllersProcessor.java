@@ -331,8 +331,6 @@ public class LibraryControllersProcessor extends Processor
             pAnimationLoop.createDefaultCycle();
 
             pAnimationLoop.getCycle(0).setName(m_pCollada.getName());
-
-            System.out.println("   Animation:  " + m_pCollada.getName());
         }
     }
 
