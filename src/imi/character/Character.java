@@ -353,8 +353,25 @@ public abstract class Character extends Entity implements SpatialObject
                                 InstructionProcessor pProcessor = new InstructionProcessor();
                                 Instruction pRootInstruction = new Instruction("setCharacterStuff");
                                 pRootInstruction.addInstruction("setSkeleton", skeleton);
+                                
+                                // I PROMISE I WILL NOT COMMIT THIS LOU.
+                                
                                 for (int i = 0; i < anims.length; i++)
                                     pRootInstruction.addInstruction("loadAnimation", fileProtocol + anims[i]);
+                                
+                                
+                                Instruction pReplaceGeometryInstruction = pRootInstruction.addInstruction("replaceGeometry");
+                                pReplaceGeometryInstruction.addInstruction("deleteSkinnedMesh", "Legs_LegsNudeShape");
+                                pReplaceGeometryInstruction.addInstruction("loadGeometry", "file://localhost/work/avatars/assets/models/collada/Clothing/MaleDressPants1.dae");
+                                pReplaceGeometryInstruction.addInstruction("addSkinnedMesh", "Legs_LegsNudeShape");
+                                pReplaceGeometryInstruction.addInstruction("deleteSkinnedMesh", "LFootNudeShape");
+                                pReplaceGeometryInstruction.addInstruction("deleteSkinnedMesh", "RFootNudeShape");
+                                pReplaceGeometryInstruction.addInstruction("loadGeometry", "file://localhost/work/avatars/assets/models/collada/Clothing/FlipFlopsFeet.dae");
+                                //pReplaceGeometryInstruction.addInstruction("addSkinnedMesh", "polySurfaceShape3");
+                                pReplaceGeometryInstruction.addInstruction("addSkinnedMesh", "LFootNudeShape");
+                                pReplaceGeometryInstruction.addInstruction("addSkinnedMesh", "RFootNudeShape");
+                                pReplaceGeometryInstruction.addInstruction("addSkinnedMesh", "LFlipFlopShape");
+                                pReplaceGeometryInstruction.addInstruction("addSkinnedMesh", "RFlipFlopShape");
                                 pProcessor.execute(m_pscene, pRootInstruction);
                             }
                         }

@@ -1,3 +1,20 @@
+/**
+ * Project Wonderland
+ *
+ * Copyright (c) 2004-2008, Sun Microsystems, Inc., All Rights Reserved
+ *
+ * Redistributions in source code form must reproduce the above
+ * copyright and this condition.
+ *
+ * The contents of this file are subject to the GNU General Public
+ * License, Version 2 (the "License"); you may not use this file
+ * except in compliance with the License. A copy of the License is
+ * available at http://www.opensource.org/licenses/gpl-license.php.
+ *
+ * $Revision$
+ * $Date$
+ * $State$
+ */
 package imi.tests;
 
 import imi.environments.ColladaEnvironment;
@@ -40,9 +57,10 @@ public class COLLADA_MapTest extends DemoBase2
         URL modelLocation = null;
         try
         {
-            //modelLocation = new File("assets/models/collada/environments/Milan/DSI.dae").toURI().toURL();
-            modelLocation = new File("assets/models/collada/environments/MPK20/MPK20.dae").toURI().toURL();
-            modelLocation = new File("assets/models/collada/environments/BusinessObjects/BusinessObjectsCenter.dae").toURI().toURL();
+            //modelLocation = new File("assets/models/collada/MultiTexture/PlaneTest_2Planes.dae").toURI().toURL();
+            modelLocation = new File("assets/models/collada/Environments/Milan/DSI.dae").toURI().toURL();
+            //modelLocation = new File("assets/models/collada/environments/MPK20/MPK20.dae").toURI().toURL();
+            //modelLocation = new File("assets/models/collada/environments/BusinessObjects/BusinessObjectsCenter.dae").toURI().toURL();
             //modelLocation = new File("assets/models/collada/Objects/Chairs/Sofa.dae").toURI().toURL();
             //modelLocation = new File("assets/models/collada/environments/MaldenLabs/MaldenLabs.dae").toURI().toURL();
         } catch (MalformedURLException ex)

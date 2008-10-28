@@ -18,6 +18,7 @@
 package org.collada.xml_walker;
 
 import imi.loaders.collada.Collada;
+import imi.scene.polygonmodel.parts.TextureMaterialProperties;
 import imi.utils.FileUtils;
 
 /**
@@ -28,9 +29,11 @@ import imi.utils.FileUtils;
  */
 public class PColladaImage
 {
-    String              m_Name = null;
-    String              m_ShortFilename = null;
-    String              m_Filename = null;
+    private String              m_Name = null;
+    private String              m_ShortFilename = null;
+    private String              m_Filename = null;
+    /** Any special loading requirements for this image **/
+    private TextureMaterialProperties m_imageProperties = null;
     
     private Collada m_loaderRef = null;
 
@@ -53,12 +56,12 @@ public class PColladaImage
      * @param name The desired name.
      * @param shortFilename The short filename of the image (no directory).
      */
-    public PColladaImage(String name, String shortFilename, Collada loader)
+    public PColladaImage(String name, String shortFilename, Collada loader, TextureMaterialProperties imageProps)
     {
         m_loaderRef = loader;
         m_Name = name;
         m_ShortFilename = shortFilename;
-
+        m_imageProperties = imageProps;
         //  Calculate the Filename.
         calculateFilename();
     }
@@ -123,7 +126,23 @@ public class PColladaImage
         m_Filename = filename;
     }
 
+    /**
+     * Set the properties for this image
+     * @param imageProps
+     */
+    public void setImageProperties(TextureMaterialProperties imageProps)
+    {
+        m_imageProperties = imageProps;
+    }
     
+    /**
+     * Retrieve the current properties for this image
+     * @return
+     */
+    public TextureMaterialProperties getImageProperties()
+    {
+        return m_imageProperties;
+    }
 
     /**
      * Calculates the filename.

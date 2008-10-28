@@ -53,7 +53,9 @@ public class TrianglesProcessor extends Processor
 
     private VertexDataSemantic m_pPositionSemantic = null;
     private VertexDataSemantic m_pNormalSemantic = null;
-    private VertexDataSemantic m_pTexCoordSemantic = null;
+    
+    /** Make space for multiple sets of texture coordinates **/
+    private VertexDataSemantic[] m_texCoordSemanticArray = new VertexDataSemantic[8];
 
     private int [] m_TriangleIndices = null;
 
@@ -107,7 +109,7 @@ public class TrianglesProcessor extends Processor
         if (m_pColladaMaterial.getAmbientImageFilename().length() > 0)
             return(true);
 
-        if (m_pColladaMaterial.getDiffuseImageFilename().length() > 0)
+        if (m_pColladaMaterial.getDiffuseImageFilename().size() > 0)
             return(true);
 
         if (m_pColladaMaterial.getSpecularImageFilename().length() > 0)
@@ -198,35 +200,28 @@ public class TrianglesProcessor extends Processor
 
         int index                       = 0;
         int polygonIndex                = 0;
-        int vertex1PositionIndex        = 0;
-        int vertex1NormalIndex          = 0;
-        int vertex1TexCoord1Index       = 0;
-        int vertex2PositionIndex        = 0;
-        int vertex2NormalIndex          = 0;
-        int vertex2TexCoord1Index       = 0;
-        int vertex3PositionIndex        = 0;
-        int vertex3NormalIndex          = 0;
-        int vertex3TexCoord1Index       = 0;
+        
+        int vertex1PositionIndex        = -1;
+        int vertex1NormalIndex          = -1;
+        int vertex1TexCoord1Index       = -1;
+        int vertex1TexCoord2Index       = -1;
+        int vertex1TexCoord3Index       = -1;
+        int vertex1TexCoord4Index       = -1;
+        
+        int vertex2PositionIndex        = -1;
+        int vertex2NormalIndex          = -1;
+        int vertex2TexCoord1Index       = -1;
+        int vertex2TexCoord2Index       = -1;
+        int vertex2TexCoord3Index       = -1;
+        int vertex2TexCoord4Index       = -1;
+        
+        int vertex3PositionIndex        = -1;
+        int vertex3NormalIndex          = -1;
+        int vertex3TexCoord1Index       = -1;
+        int vertex3TexCoord2Index       = -1;
+        int vertex3TexCoord3Index       = -1;
+        int vertex3TexCoord4Index       = -1;
 
-        Vector3f vertex1Position        = null;
-        Vector3f vertex1Normal          = null;
-        Vector2f vertex1TexCoord1       = null;
-        Vector3f vertex2Position        = null;
-        Vector3f vertex2Normal          = null;
-        Vector2f vertex2TexCoord1       = null;
-        Vector3f vertex3Position        = null;
-        Vector3f vertex3Normal          = null;
-        Vector2f vertex3TexCoord1       = null;
-
-        int meshVertex1PositionIndex    = -1;
-        int meshVertex1NormalIndex      = -1;
-        int meshVertex1TexCoord1Index   = -1;
-        int meshVertex2PositionIndex    = -1;
-        int meshVertex2NormalIndex      = -1;
-        int meshVertex2TexCoord1Index   = -1;
-        int meshVertex3PositionIndex    = -1;
-        int meshVertex3NormalIndex      = -1;
-        int meshVertex3TexCoord1Index   = -1;
 
         PPolygon pPolygon;
 
@@ -244,8 +239,7 @@ public class TrianglesProcessor extends Processor
             populatePolygonMeshWithNormals(pPolygonMesh);
 
         //  Add all the TexCoords to the PolygonMesh.
-        if (m_pTexCoordSemantic != null)
-            populatePolygonMeshWithTexCoords(pPolygonMesh);
+        populatePolygonMeshWithTexCoords(pPolygonMesh);
 
 
 
@@ -258,8 +252,14 @@ public class TrianglesProcessor extends Processor
                 vertex1PositionIndex = meshTriangles[index + m_pPositionSemantic.m_Offset];
             if (m_pNormalSemantic != null)
                 vertex1NormalIndex = meshTriangles[index + m_pNormalSemantic.m_Offset];
-            if (m_pTexCoordSemantic != null)
-                vertex1TexCoord1Index = meshTriangles[index + m_pTexCoordSemantic.m_Offset];
+            if (m_texCoordSemanticArray[0] != null)
+                vertex1TexCoord1Index = pPolygonMesh.getTexCoord( m_texCoordSemanticArray[0].getVector2f(meshTriangles[index + m_texCoordSemanticArray[0].m_Offset]) );
+            if (m_texCoordSemanticArray[1] != null)
+                vertex1TexCoord2Index = pPolygonMesh.getTexCoord( m_texCoordSemanticArray[1].getVector2f(meshTriangles[index + m_texCoordSemanticArray[1].m_Offset]) );
+            if (m_texCoordSemanticArray[2] != null)
+                vertex1TexCoord3Index = pPolygonMesh.getTexCoord( m_texCoordSemanticArray[2].getVector2f(meshTriangles[index + m_texCoordSemanticArray[2].m_Offset]) );
+            if (m_texCoordSemanticArray[3] != null)
+                vertex1TexCoord4Index = pPolygonMesh.getTexCoord( m_texCoordSemanticArray[3].getVector2f(meshTriangles[index + m_texCoordSemanticArray[3].m_Offset]) );
             index += m_VertexOffset;
 
 
@@ -268,8 +268,14 @@ public class TrianglesProcessor extends Processor
                 vertex2PositionIndex = meshTriangles[index + m_pPositionSemantic.m_Offset];
             if (m_pNormalSemantic != null)
                 vertex2NormalIndex = meshTriangles[index + m_pNormalSemantic.m_Offset];
-            if (m_pTexCoordSemantic != null)
-                vertex2TexCoord1Index = meshTriangles[index + m_pTexCoordSemantic.m_Offset];
+            if (m_texCoordSemanticArray[0] != null)
+                vertex2TexCoord1Index = pPolygonMesh.getTexCoord( m_texCoordSemanticArray[0].getVector2f(meshTriangles[index + m_texCoordSemanticArray[0].m_Offset]) );
+            if (m_texCoordSemanticArray[1] != null)
+                vertex2TexCoord2Index = pPolygonMesh.getTexCoord( m_texCoordSemanticArray[1].getVector2f(meshTriangles[index + m_texCoordSemanticArray[1].m_Offset]) );
+            if (m_texCoordSemanticArray[2] != null)
+                vertex2TexCoord3Index = pPolygonMesh.getTexCoord( m_texCoordSemanticArray[2].getVector2f(meshTriangles[index + m_texCoordSemanticArray[2].m_Offset]) );
+            if (m_texCoordSemanticArray[3] != null)
+                vertex2TexCoord4Index = pPolygonMesh.getTexCoord( m_texCoordSemanticArray[3].getVector2f(meshTriangles[index + m_texCoordSemanticArray[3].m_Offset]) );
             index += m_VertexOffset;
             
             
@@ -278,132 +284,44 @@ public class TrianglesProcessor extends Processor
                 vertex3PositionIndex = meshTriangles[index + m_pPositionSemantic.m_Offset];
             if (m_pNormalSemantic != null)
                 vertex3NormalIndex = meshTriangles[index + m_pNormalSemantic.m_Offset];
-            if (m_pTexCoordSemantic != null)
-                vertex3TexCoord1Index = meshTriangles[index + m_pTexCoordSemantic.m_Offset];
+            if (m_texCoordSemanticArray[0] != null)
+                vertex3TexCoord1Index = pPolygonMesh.getTexCoord( m_texCoordSemanticArray[0].getVector2f(meshTriangles[index + m_texCoordSemanticArray[0].m_Offset]) );
+            if (m_texCoordSemanticArray[1] != null)
+                vertex3TexCoord2Index = pPolygonMesh.getTexCoord( m_texCoordSemanticArray[1].getVector2f(meshTriangles[index + m_texCoordSemanticArray[1].m_Offset]) );
+            if (m_texCoordSemanticArray[2] != null)
+                vertex3TexCoord3Index = pPolygonMesh.getTexCoord( m_texCoordSemanticArray[2].getVector2f(meshTriangles[index + m_texCoordSemanticArray[2].m_Offset]) );
+            if (m_texCoordSemanticArray[3] != null)
+                vertex3TexCoord4Index = pPolygonMesh.getTexCoord( m_texCoordSemanticArray[3].getVector2f(meshTriangles[index + m_texCoordSemanticArray[3].m_Offset]) );
             index += m_VertexOffset;
-
-
-//            if (m_pMeshProcessor.getName().equals("mesh7-geometry"))
-//            {
-//                System.out.print("Triangle[" + polygonIndex + "] = (" + vertex1PositionIndex + ", " + vertex1NormalIndex + ", " + vertex1TexCoord1Index + ") ");
-//                System.out.print("(" + vertex2PositionIndex + ", " + vertex2NormalIndex + ", " + vertex2TexCoord1Index + ") ");
-//                System.out.println("(" + vertex3PositionIndex + ", " + vertex3NormalIndex + ", " + vertex3TexCoord1Index + ")");
-//
-//                if (vertex3PositionIndex == 361)
-//                {
-//                    int a = 0;
-//                }
-//            }
-            
-/*
-            try
-            {
-                //  Get 'Position' information for the 3 vertices.
-                if (m_pPositionSemantic != null)
-                {
-                    vertex1Position = m_pPositionSemantic.getVector3f(vertex1PositionIndex);
-                    vertex2Position = m_pPositionSemantic.getVector3f(vertex2PositionIndex);
-                    vertex3Position = m_pPositionSemantic.getVector3f(vertex3PositionIndex);
-                }
-
-                //  Get 'Normal' information for the 3 vertices.
-                if (m_pNormalSemantic != null && m_pNormalSemantic.getDataSize() > 0)
-                {
-                    vertex1Normal = m_pNormalSemantic.getVector3f(vertex1NormalIndex);
-                    vertex2Normal = m_pNormalSemantic.getVector3f(vertex2NormalIndex);
-                    vertex3Normal = m_pNormalSemantic.getVector3f(vertex3NormalIndex);
-                }
-
-                //  Get 'TexCoord' information for the 3 vertices.
-                if (m_pTexCoordSemantic != null)
-                {
-                    vertex1TexCoord1 = m_pTexCoordSemantic.getVector2f(vertex1TexCoord1Index);
-                    vertex2TexCoord1 = m_pTexCoordSemantic.getVector2f(vertex2TexCoord1Index);
-                    vertex3TexCoord1 = m_pTexCoordSemantic.getVector2f(vertex3TexCoord1Index);
-                }
-
-
-
-                //  Get indices of the vertex parameters from the PolygonMesh.
-                if (m_pPositionSemantic != null)
-                {
-                    meshVertex1PositionIndex = pPolygonMesh.addPosition(vertex1Position);
-                    meshVertex2PositionIndex = pPolygonMesh.addPosition(vertex2Position);
-                    meshVertex3PositionIndex = pPolygonMesh.addPosition(vertex3Position);
-                }
-                if (m_pNormalSemantic != null && m_pNormalSemantic.getDataSize() > 0)
-                {
-                    meshVertex1NormalIndex = pPolygonMesh.addNormal(vertex1Normal);
-                    meshVertex2NormalIndex = pPolygonMesh.addNormal(vertex2Normal);
-                    meshVertex3NormalIndex = pPolygonMesh.addNormal(vertex3Normal);
-                }
-                if (m_pTexCoordSemantic != null)
-                {
-                    meshVertex1TexCoord1Index = pPolygonMesh.addTexCoord(vertex1TexCoord1);
-                    meshVertex2TexCoord1Index = pPolygonMesh.addTexCoord(vertex2TexCoord1);
-                    meshVertex3TexCoord1Index = pPolygonMesh.addTexCoord(vertex3TexCoord1);
-                }
-            }
-            catch (Exception e)
-            {
-                System.out.println("Exception occured in TrianglesProcessor.populatePolygonMesh()!");
-                System.out.flush();
-                e.printStackTrace();
-            }
-*/
-
 
             //  Create a new Polygon.
             pPolygon = pPolygonMesh.createPolygon();
 
             pPolygon.beginBatch();
 
-            
-            meshVertex1PositionIndex    = vertex1PositionIndex;
-            meshVertex1NormalIndex      = vertex1NormalIndex;
-            meshVertex1TexCoord1Index   = vertex1TexCoord1Index;
-                               
-            meshVertex2PositionIndex    = vertex2PositionIndex;
-            meshVertex2NormalIndex      = vertex2NormalIndex;
-            meshVertex2TexCoord1Index   = vertex2TexCoord1Index;
-
-            meshVertex3PositionIndex    = vertex3PositionIndex;
-            meshVertex3NormalIndex      = vertex3NormalIndex;
-            meshVertex3TexCoord1Index   = vertex3TexCoord1Index;
-
-//            System.out.print("   Triangle[" + polygonIndex + "] = (" + meshVertex1PositionIndex + ", " + meshVertex1NormalIndex + ", " + meshVertex1TexCoord1Index + ") - ");
-//            System.out.print("(" + meshVertex2PositionIndex + ", " + meshVertex2NormalIndex + ", " + meshVertex2TexCoord1Index + ") - ");
-//            System.out.println("(" + meshVertex3PositionIndex + ", " + meshVertex3NormalIndex + ", " + meshVertex3TexCoord1Index + ")");
-
-
             //  Add the first Vertex to the Polygon.
-            pPolygon.addVertex(meshVertex1PositionIndex,    //  PositionIndex
-                               meshVertex1NormalIndex,      //  NormalIndex
-                               meshVertex1TexCoord1Index,   //  TexCoord1Index
-                               -1,                          //  TexCoord2Index
-                               -1,                          //  TexCoord3Index
-                               -1);                         //  TexCoord4Index
+            pPolygon.addVertex(vertex1PositionIndex,    //  PositionIndex
+                               vertex1NormalIndex,      //  NormalIndex
+                               vertex1TexCoord1Index,   //  TexCoord1Index
+                               vertex1TexCoord2Index,                          //  TexCoord2Index
+                               vertex1TexCoord3Index,                          //  TexCoord3Index
+                               vertex1TexCoord4Index);                         //  TexCoord4Index
 
             //  Add the second Vertex to the Polygon.
-            pPolygon.addVertex(meshVertex2PositionIndex,    //  PositionIndex
-                               meshVertex2NormalIndex,      //  NormalIndex
-                               meshVertex2TexCoord1Index,   //  TexCoord1Index
-                               -1,                          //  TexCoord2Index
-                               -1,                          //  TexCoord3Index
-                               -1);                         //  TexCoord4Index
+            pPolygon.addVertex(vertex2PositionIndex,    //  PositionIndex
+                               vertex2NormalIndex,      //  NormalIndex
+                               vertex2TexCoord1Index,   //  TexCoord1Index
+                               vertex2TexCoord2Index,                          //  TexCoord2Index
+                               vertex2TexCoord3Index,                          //  TexCoord3Index
+                               vertex2TexCoord4Index);                         //  TexCoord4Index
 
             //  Add the third Vertex to the Polygon.
-            pPolygon.addVertex(meshVertex3PositionIndex,    //  PositionIndex
-                               meshVertex3NormalIndex,      //  NormalIndex
-                               meshVertex3TexCoord1Index,   //  TexCoord1Index
-                               -1,                          //  TexCoord2Index
-                               -1,                          //  TexCoord3Index
-                               -1);                         //  TexCoord4Index
-
-//            if (meshVertex1PositionIndex == 396 || meshVertex2PositionIndex == 396 || meshVertex3PositionIndex == 396)
-//            {
-//                int aaa = 0;
-//            }
+            pPolygon.addVertex(vertex3PositionIndex,    //  PositionIndex
+                               vertex3NormalIndex,      //  NormalIndex
+                               vertex3TexCoord1Index,   //  TexCoord1Index
+                               vertex3TexCoord2Index,                          //  TexCoord2Index
+                               vertex3TexCoord3Index,                          //  TexCoord3Index
+                               vertex3TexCoord4Index);                         //  TexCoord4Index
 
             pPolygon.endBatch();
 
@@ -480,15 +398,20 @@ public class TrianglesProcessor extends Processor
      */
     void populatePolygonMeshWithTexCoords(PPolygonMesh pPolygonMesh)
     {
-        int a;
-        int TexCoordCount = m_pTexCoordSemantic.getVector2fCount();
-        Vector2f pTexCoord;
-
-        for (a=0; a<TexCoordCount; a++)
+        for (int i = 0; i < m_texCoordSemanticArray.length; ++i)
         {
-            pTexCoord = m_pTexCoordSemantic.getVector2f(a);
-            
-            pPolygonMesh.addTexCoord(pTexCoord);
+            if (m_texCoordSemanticArray[i] != null)
+            {
+                int TexCoordCount = m_texCoordSemanticArray[i].getVector2fCount();
+                Vector2f pTexCoord;
+
+                for (int j = 0; j < TexCoordCount; j++)
+                {
+                    pTexCoord = m_texCoordSemanticArray[i].getVector2f(j);
+
+                    pPolygonMesh.addTexCoord(pTexCoord);
+                }
+            }
         }
     }
     
@@ -617,7 +540,21 @@ public class TrianglesProcessor extends Processor
     {
         m_pPositionSemantic = findVertexDataSemantic("POSITION");
         m_pNormalSemantic = findVertexDataSemantic("NORMAL");
-        m_pTexCoordSemantic = findVertexDataSemantic("TEXCOORD");
+        
+        int textureSemanticCount = 0;
+        VertexDataSemantic semantic = null;
+        
+        for (int i = 0; i < m_VertexDataSemantics.size(); i++)
+        {
+            semantic = m_VertexDataSemantics.get(i);
+
+            if (semantic.m_Name.equals("TEXCOORD"))
+                m_texCoordSemanticArray[textureSemanticCount++] = semantic;
+        }
+        
+        boolean breakpoint = false;
+        breakpoint = !breakpoint;
+        
     }
 
 }

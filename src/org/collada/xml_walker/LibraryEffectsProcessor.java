@@ -113,7 +113,7 @@ public class LibraryEffectsProcessor extends Processor
     private void processBlinn(ProfileCOMMON pProfileCommon, Blinn pBlinn, String materialName)
     {
        // System.out.println("Material Blinn '" + materialName + "'");
-
+       
         //  Create a ColladaMaterial.
         PColladaMaterial pColladaMaterial = new PColladaMaterial(m_pCollada, pProfileCommon);
         

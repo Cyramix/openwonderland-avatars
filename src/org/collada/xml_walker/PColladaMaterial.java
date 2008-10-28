@@ -17,8 +17,6 @@
  */
 package org.collada.xml_walker;
 
-import com.jme.image.Texture.ApplyMode;
-import com.jme.image.Texture.CombinerFunctionAlpha;
 import org.collada.colladaschema.Technique;
 import java.util.List;
 import imi.scene.polygonmodel.parts.PMeshMaterial;
@@ -46,6 +44,7 @@ import imi.scene.shader.programs.NormalAndSpecularMapShader;
 import imi.scene.shader.programs.NormalMapShader;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.w3c.dom.Element;
@@ -78,12 +77,13 @@ public class PColladaMaterial
     private int             m_nTransparencyMode         = -1; // -1 no transparency, 0 represents RGB_ZERO, 1 represents A_ONE
     private float           m_fIndexOfRefraction        = 0.0f;
 
-    /** Treated as tertiary diffuse map     **/
+    /** Emissive map     **/
     private String          m_EmissiveImageFilename     = "";
-    /** Treated as secondary diffuse map    **/
+    /** Ambient map    **/
     private String          m_AmbientImageFilename      = "";
     /** Treated as the default diffuse map  **/
-    private String          m_DiffuseImageFilename      = "";   
+    //private String[]        m_DiffuseImageFilename      = new String[8];
+    private List<String>    m_DiffuseImageFilename      = new ArrayList<String>();
     /** Interpreted as a specular map       **/
     private String          m_SpecularImageFilename     = "";
     private String          m_ReflectiveImageFilename   = "";
@@ -119,7 +119,10 @@ public class PColladaMaterial
 
         m_EmissiveImageFilename = processColorOrTexture(pBlinn.getEmission(), m_EmissiveColor);
         m_AmbientImageFilename = processColorOrTexture(pBlinn.getAmbient(), m_AmbientColor);
-        m_DiffuseImageFilename = processColorOrTexture(pBlinn.getDiffuse(), m_DiffuseColor);
+        
+        
+        m_DiffuseImageFilename = processDiffuseColorsOrTextures(pBlinn.getDiffuse(), m_DiffuseColor);
+        
         m_SpecularImageFilename = processColorOrTexture(pBlinn.getSpecular(), m_SpecularColor);
         
         //m_NormalMapImageFilename = processColorOrTexture(pBlinn., m_AmbientColor)
@@ -141,7 +144,9 @@ public class PColladaMaterial
         
         m_EmissiveImageFilename = processColorOrTexture(pPhong.getEmission(), m_EmissiveColor);
         m_AmbientImageFilename = processColorOrTexture(pPhong.getAmbient(), m_AmbientColor);
-        m_DiffuseImageFilename = processColorOrTexture(pPhong.getDiffuse(), m_DiffuseColor);
+        
+        m_DiffuseImageFilename = processDiffuseColorsOrTextures(pPhong.getDiffuse(), m_DiffuseColor);
+        
         m_SpecularImageFilename = processColorOrTexture(pPhong.getSpecular(), m_SpecularColor);
         m_fShininess = processFloatAttribute(pPhong.getShininess());
 
@@ -159,8 +164,9 @@ public class PColladaMaterial
 
         m_EmissiveImageFilename = processColorOrTexture(pLambert.getEmission(), m_EmissiveColor);
         m_AmbientImageFilename = processColorOrTexture(pLambert.getAmbient(), m_AmbientColor);
-        m_DiffuseImageFilename = processColorOrTexture(pLambert.getDiffuse(), m_DiffuseColor);
-
+        
+        m_DiffuseImageFilename = processDiffuseColorsOrTextures(pLambert.getDiffuse(), m_DiffuseColor);
+        
         m_ReflectiveImageFilename = processColorOrTexture(pLambert.getReflective(), m_ReflectiveColor);
         m_fReflectivity = processFloatAttribute(pLambert.getReflectivity());
         processTransparent(pLambert.getTransparent(), pLambert.getTransparency());
@@ -223,11 +229,14 @@ public class PColladaMaterial
         String currentFolder = m_pCollada.getFileLocation().toString().substring(0, m_pCollada.getFileLocation().toString().lastIndexOf('/') + 1);
         try
         {
-            if (m_DiffuseImageFilename != null && m_DiffuseImageFilename.length() > 0)
+            if (m_DiffuseImageFilename != null && m_DiffuseImageFilename.size() > 0)
             {
-                fileLocation = new URL(currentFolder + m_DiffuseImageFilename);
-                result.setTexture(fileLocation, 0);
-                textureCount++;
+                for (int i = 0; i < m_DiffuseImageFilename.size(); ++i)
+                {
+                    fileLocation = new URL(currentFolder + m_DiffuseImageFilename.get(i));
+                    result.setTexture(fileLocation, textureCount);
+                    textureCount++;
+                }
             }
 
             boolean bNormalMapped = (m_NormalMapImageFilename != null && m_NormalMapImageFilename.length() > 0);
@@ -309,11 +318,10 @@ public class PColladaMaterial
     private String processColorOrTexture(CommonColorOrTextureType pAttribute, PColladaColor pColor)
     {
         if (pAttribute == null)
-            return("");
-
-        if (pAttribute.getTexture() != null)
+            return(""); 
+        if (pAttribute.getTexture() != null && pAttribute.getTexture().size() > 0)
         {
-            Texture pTexture = pAttribute.getTexture();
+            Texture pTexture = pAttribute.getTexture().get(0);
 
             String textureSamplerName = pTexture.getTexture();
             String textureTexCoord = pTexture.getTexcoord();
@@ -340,6 +348,45 @@ public class PColladaMaterial
         }
 
         return("");
+    }
+
+    private List<String> processDiffuseColorsOrTextures(CommonColorOrTextureType diffuse, PColladaColor color)
+    {
+        if (diffuse == null)
+            return null; 
+        
+        ArrayList<String> result = new ArrayList<String>();
+        
+        if (diffuse.getTexture() != null)
+        {
+            // for each texture
+            for (int i = 0; i < diffuse.getTexture().size(); ++i)
+            {
+                Texture pTexture = diffuse.getTexture().get(i);
+
+                String textureSamplerName = pTexture.getTexture();
+
+                String textureFilename = getTextureFilename(textureSamplerName);
+
+                String shortTextureFilename = FileUtils.getShortFilename(textureFilename);
+                
+                result.add(shortTextureFilename);
+            }
+            return result;
+        }
+        else if (diffuse.getColor() != null)
+        {
+            List<Double> c = diffuse.getColor().getValues();
+
+            color.Red   = c.get(0).floatValue();
+            color.Green = c.get(1).floatValue();
+            color.Blue  = c.get(2).floatValue();
+            color.Alpha = c.get(3).floatValue();
+
+            return null;
+        }
+
+        return null;
     }
 
     //  Processes a float attribute.
@@ -475,11 +522,14 @@ public class PColladaMaterial
         
         try
         {
-            if (m_DiffuseImageFilename.length() > 0)
+            if (m_DiffuseImageFilename != null && m_DiffuseImageFilename.size() > 0)
             {
-                fileLocation = new URL(currentFolder + m_DiffuseImageFilename);
-                textures[textureIndex] = fileLocation;
-                textureIndex++;
+                for (int i = 0; i < m_DiffuseImageFilename.size(); ++i)
+                {
+                    fileLocation = new URL(currentFolder + m_DiffuseImageFilename.get(i));
+                    textures[textureIndex] = fileLocation;
+                    textureIndex++;
+                }
             }
             if (m_SpecularImageFilename.length() > 0)
             {
@@ -523,8 +573,8 @@ public class PColladaMaterial
             textureCount++;
         if (m_AmbientImageFilename.length() > 0)
             textureCount++;
-        if (m_DiffuseImageFilename.length() > 0)
-            textureCount++;
+        if (m_DiffuseImageFilename != null)
+            textureCount += m_DiffuseImageFilename.size();
         if (m_SpecularImageFilename.length() > 0)
             textureCount++;
 
@@ -553,7 +603,7 @@ public class PColladaMaterial
     }
 
     //  Gets the image filename for the Diffuse channel.
-    public String getDiffuseImageFilename()
+    public List<String> getDiffuseImageFilename()
     {
         return(m_DiffuseImageFilename);
     }

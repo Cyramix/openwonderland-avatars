@@ -196,29 +196,27 @@ public class PPolygonTriMeshAssembler
         FloatBuffer normalBuffer   = BufferUtils.createFloatBuffer(normals);
         FloatBuffer tangentBuffer  = BufferUtils.createFloatBuffer(VertBuffer.GetTangentArray());
         FloatBuffer colorBuffer    = BufferUtils.createFloatBuffer(colors);
-        TexCoords texCoordBuffer = TexCoords.makeNew(VertBuffer.GetTextureCoordinateArray(0));
+        
+        ArrayList<TexCoords> textureCoordinates = new ArrayList<TexCoords>();
+        
+        for (int i = 0; i < Mesh.getNumberOfTextures(); ++i)
+            textureCoordinates.add(TexCoords.makeNew(VertBuffer.GetTextureCoordinateArray(i)));
 
         int[]       indices        = IndexBuffer.GetArray();
         IntBuffer   indexBuffer    = BufferUtils.createIntBuffer(indices);
         
         triMesh.setName(Mesh.getName());
         // Rebuild the triMesh with the new data
-        triMesh.reconstruct(positionBuffer, normalBuffer, colorBuffer, texCoordBuffer, indexBuffer);
+        triMesh.reconstruct(positionBuffer, normalBuffer, colorBuffer, textureCoordinates.get(0), indexBuffer);
         triMesh.setTangentBuffer(tangentBuffer);
         
         if(Mesh.isUniformTexCoords())
         {
             for (int i = 1; i < Mesh.getNumberOfTextures(); i++)
-                triMesh.setTextureCoords(texCoordBuffer, i);
+                triMesh.setTextureCoords(textureCoordinates.get(0), i);
         }
         else
-        {
-            for (int i = 1; i < Mesh.getNumberOfTextures(); i++)
-            {
-                texCoordBuffer = TexCoords.makeNew(VertBuffer.GetTextureCoordinateArray(i));
-                triMesh.setTextureCoords(texCoordBuffer, i);
-            }
-        }
+            triMesh.setTextureCoords(textureCoordinates);
     }
     
     /**

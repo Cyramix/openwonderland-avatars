@@ -43,17 +43,17 @@ public class LibraryImagesProcessor extends Processor
     {
         super(pCollada, pImages, pParent);
 
-        //System.out.println("LibraryImagesProcessor");
-
-        PColladaImage pColladaImage;
-        Image pImage;
+        PColladaImage pColladaImage = null;
+        Image pImage = null;
 
         //  Populate list of all the Images so we can look them up later.
         for (int a=0; a<pImages.getImages().size(); a++)
         {
             pImage = (Image)pImages.getImages().get(a);
             
-            processImage(pImage);
+            processImage(pImage, pColladaImage);
+            
+            
         }
     }
 
@@ -62,9 +62,10 @@ public class LibraryImagesProcessor extends Processor
      * 
      * @param pImage
      */
-    private void processImage(Image pImage)
+    private void processImage(Image pImage, PColladaImage colladaImage)
     {
-        m_pCollada.addColladaImage(pImage.getId(), pImage.getInitFrom());
+        PColladaImage newImage = new PColladaImage(pImage.getId(), pImage.getInitFrom(), m_pCollada, null);
+        // process image property tags
     }
             
 }

@@ -95,7 +95,8 @@ public class CommonColorOrTextureType {
 
     protected CommonColorOrTextureType.Param param;
     protected CommonColorOrTextureType.Color color;
-    protected CommonColorOrTextureType.Texture texture;
+    //protected CommonColorOrTextureType.Texture texture;
+    protected List<CommonColorOrTextureType.Texture> texture; 
 
     /**
      * Gets the value of the param property.
@@ -153,7 +154,7 @@ public class CommonColorOrTextureType {
      *     {@link CommonColorOrTextureType.Texture }
      *     
      */
-    public CommonColorOrTextureType.Texture getTexture() {
+    public List<CommonColorOrTextureType.Texture> getTexture() {
         return texture;
     }
 
@@ -165,7 +166,7 @@ public class CommonColorOrTextureType {
      *     {@link CommonColorOrTextureType.Texture }
      *     
      */
-    public void setTexture(CommonColorOrTextureType.Texture value) {
+    public void setTexture(List<CommonColorOrTextureType.Texture> value) {
         this.texture = value;
     }
 
