@@ -113,7 +113,8 @@ public class ObjectCollection extends Entity
             float randomDistance     = (float)Math.random() * maxRadius;
             Vector3f randomPosition  = center.add(randomDirection.mult(randomDistance));
             
-            Chair newChair = new Chair(randomPosition, randomSittingDirection, null);//"assets/models/collada/Objects/Chairs/ConfChair1.dae");
+            //Chair newChair = new Chair(randomPosition, randomSittingDirection, null);
+            Chair newChair = new Chair(randomPosition, randomSittingDirection, "assets/models/collada/Objects/Chairs/ConfChair1.dae");
             newChair.setInScene(pscene);
             newChair.setObjectCollection(this);
             
@@ -146,6 +147,7 @@ public class ObjectCollection extends Entity
             }
             
             newChair.getBoundingSphere();
+            newChair.setInOrigin();
         }
         
         // Make sure no funny stuff

@@ -20,6 +20,9 @@ package imi.character.objects;
 import com.jme.light.PointLight;
 import com.jme.math.Vector3f;
 import com.jme.renderer.ColorRGBA;
+import com.jme.renderer.Renderer;
+import com.jme.scene.shape.Sphere;
+import com.jme.scene.state.BlendState;
 import com.jme.scene.state.CullState;
 import com.jme.scene.state.LightState;
 import com.jme.scene.state.MaterialState;
@@ -53,11 +56,13 @@ public class Goal
     
     PPolygonModelInstance modelInst = null;
         
+    JScene jscene = null;
+    
     public Goal(WorldManager wm)
     {
         float       radius  = 1.05f;
         ColorRGBA   color   = ColorRGBA.blue;
-        PMatrix     origin  = new PMatrix(new Vector3f(10.0f, 0.0f, 10.0f));
+        PMatrix     origin  = new PMatrix(new Vector3f(0.0f, 0.0f, 0.0f));
         
         // The procedural scene graph
         PScene pscene = new PScene("Goal PScene", wm);
@@ -75,12 +80,13 @@ public class Goal
         sphereMesh.submit(new PPolygonTriMeshAssembler());
         modelAsset.setAssetData(sphereMesh);
         modelInst = pscene.addModelInstance(modelAsset, origin);
-        
+                
         // The glue between JME and pscene
-        JScene jscene = new JScene(pscene);
+        jscene = new JScene(pscene);
         
         // Use default render states
         setDefaultRenderStates(jscene, wm);
+        jscene.setWireframe(true);              // WTF?
                
         // Create entity
         Entity JSEntity = new Entity("Goal Entity");
@@ -142,9 +148,18 @@ public class Goal
         buf.setFunction(ZBufferState.TestFunction.LessThanOrEqualTo);
         
         // Material State
+        float opacityAmount = 0.5f;
         MaterialState matState  = null;
         matState = (MaterialState) wm.getRenderManager().createRendererState(RenderState.RS_MATERIAL);
-        matState.setDiffuse(ColorRGBA.white);
+        //matState.setDiffuse(ColorRGBA.white);
+        matState.setAmbient(new ColorRGBA(0.0f, 0.0f, 0.0f, opacityAmount));
+        matState.setDiffuse(new ColorRGBA(0.1f, 0.5f, 0.8f, opacityAmount));
+        matState.setSpecular(new ColorRGBA(1.0f, 1.0f, 1.0f, opacityAmount));
+        matState.setShininess(128.0f);
+        matState.setEmissive(new ColorRGBA(0.0f, 0.0f, 0.0f, opacityAmount));
+        matState.setEnabled(true);
+        
+        matState.setMaterialFace(MaterialState.MaterialFace.FrontAndBack);
         
         // Light state
 //        Vector3f lightDir = new Vector3f(0.0f, -1.0f, 0.0f);
@@ -161,9 +176,11 @@ public class Goal
         PointLight light = new PointLight();
         light.setDiffuse(new ColorRGBA(1.0f, 1.0f, 1.0f, 1.0f));
         light.setAmbient(new ColorRGBA(1.0f, 1.0f, 1.0f, 1.0f));
-        light.setLocation(new Vector3f(-1000, 0, 0)); // not affecting anything
+        light.setSpecular(ColorRGBA.white);
+        light.setLocation(new Vector3f(100, 100, 100)); // not affecting anything ?
         light.setEnabled(true);
         LightState ls = (LightState) wm.getRenderManager().createRendererState(RenderState.RS_LIGHT);
+        ls.detachAll();
         ls.setEnabled(true);
         ls.attach(light);
         
@@ -176,12 +193,24 @@ public class Goal
         WireframeState ws = (WireframeState) wm.getRenderManager().createRendererState(RenderState.RS_WIREFRAME);
         ws.setEnabled(false);
         
+        // Set transparancy
+        BlendState alphaState = (BlendState) wm.getRenderManager().createRendererState(RenderState.RS_BLEND);
+        alphaState.setEnabled(true);
+        alphaState.setBlendEnabled(true);
+        alphaState.setSourceFunction(BlendState.SourceFunction.SourceAlpha);
+        alphaState.setDestinationFunction(BlendState.DestinationFunction.OneMinusSourceAlpha);
+        alphaState.setTestEnabled(true);
+        alphaState.setTestFunction(BlendState.TestFunction.GreaterThan);
+                
         // Push 'em down the pipe
+        jscene.setRenderState(alphaState);
         jscene.setRenderState(matState);
         jscene.setRenderState(buf);
         jscene.setRenderState(cs);
         jscene.setRenderState(ws);
         jscene.setRenderState(ls);
+        jscene.setRenderQueueMode(Renderer.QUEUE_TRANSPARENT);
+        jscene.updateRenderState();
     }
 
 }

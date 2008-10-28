@@ -28,6 +28,7 @@ import imi.loaders.repository.AssetInitializer;
 import imi.loaders.repository.SharedAsset;
 import imi.loaders.repository.SharedAsset.SharedAssetType;
 import imi.scene.PMatrix;
+import imi.scene.PNode;
 import imi.scene.PScene;
 import imi.scene.boundingvolumes.PSphere;
 import imi.scene.polygonmodel.PPolygonMesh;
@@ -42,7 +43,7 @@ import imi.scene.utils.PMeshUtils;
  */
 public class Chair implements SpatialObject
 {
-    private SharedAsset asset = null;
+    private SharedAsset sharedAsset = null;
     
     protected PPolygonModelInstance modelInst   = null;
     
@@ -51,41 +52,51 @@ public class Chair implements SpatialObject
     private SpatialObject owner = null;
     private boolean occupied = false;
     
+    private PMatrix origin = null;
+    
+    private PMatrix goalOffset = new PMatrix();
+    private float   goalForwardOffset = 0.5f;
+    
     public Chair(Vector3f position, Vector3f heading, String modelFile)
     {
         if (modelFile != null && modelFile.endsWith(".dae"))
         {
-            asset = new SharedAsset(null, new AssetDescriptor(SharedAssetType.COLLADA_Model, modelFile));
-            asset.setUserData(new ColladaLoaderParams(false, true, false, false, 4, "name", null));
+            goalOffset.buildRotationY((float) Math.toRadians(90));
+            
+            // Store the origin
+            origin = new PMatrix();
+            origin.lookAt(position, position.add(heading), Vector3f.UNIT_Y);
+            origin.invert();
+            
+            sharedAsset = new SharedAsset(null, new AssetDescriptor(SharedAssetType.COLLADA_Model, modelFile));
+            sharedAsset.setUserData(new ColladaLoaderParams(false, true, false, false, 4, "name", null));
             AssetInitializer init = new AssetInitializer() {
                 public boolean initialize(Object asset) {
 
-                    //if (((PNode)asset).getChild(0) instanceof SkeletonNode)
+                    if (asset instanceof PNode)
                     {
+                        //System.out.println(origin2);
+//                        
 //                        // Set position
-//                        if (position != null)
-//                            m_modelInst.getTransform().setLocalMatrix(origin);
-//
-//                        // Set material
-//                        skeleton.setShader(new VertexDeformer(m_wm));
-
+//                        PNode mesh = (PNode)asset;
+//                        mesh.getTransform().setLocalMatrix(((ColladaLoaderParams)sharedAsset.getUserData()).getOrigin());
+                        
+//                        mesh.getParent().setDirty(true, true);
+//                        mesh.getParent().buildFlattenedHierarchy();
+//                        ((PScene)mesh.getParent().getParent()).submitTransformsAndGeometry();
                     }
+                    
                     return true;
 
                 }
             };
-            asset.setInitializer(init);
+            sharedAsset.setInitializer(init);
             
-            // Store the origin
-            PMatrix origin = new PMatrix();
-            origin.lookAt(position, position.add(heading), Vector3f.UNIT_Y);
-            origin.invert();
-            modelInst = new PPolygonModelInstance("Chair", origin);
         }
         else
         {
 
-            PMatrix origin = new PMatrix();
+            origin = new PMatrix();
             origin.lookAt(position, position.add(heading), Vector3f.UNIT_Y);
             origin.invert();
             modelInst = new PPolygonModelInstance("Chair", origin);
@@ -119,16 +130,16 @@ public class Chair implements SpatialObject
     
     public void setInScene(PScene scene)
     {
-        if (asset != null)
+        if (sharedAsset != null)
         {
-            asset.setRepository(scene.getRepository());
-            modelInst = scene.addModelInstance("Chair", asset, modelInst.getTransform().getLocalMatrix(false));
+            scene.setUseRepository(false);
+            sharedAsset.setRepository(scene.getRepository());
+            modelInst = scene.addModelInstance("Chair", sharedAsset, null);
         }
         else
         {
             if (modelInst.getParent()!= null)
                 modelInst.getParent().removeChild(modelInst);
-            scene.setUseRepository(false);
             modelInst = scene.addModelInstance(modelInst);
         }
     }
@@ -150,7 +161,10 @@ public class Chair implements SpatialObject
 //        return modelInst.getTransform().getWorldMatrix(false).getTranslation().add(goalOffset);
         
         PPolygonMeshInstance mesh = (PPolygonMeshInstance) modelInst.getChild(0);
-        return mesh.getTransform().getWorldMatrix(false).getTranslation();
+        Vector3f result = mesh.getTransform().getWorldMatrix(false).getTranslation();
+                
+        return result.add(getGoalForwardVector().mult(goalForwardOffset));
+        
     }
     
     public Vector3f getRightVector()
@@ -165,7 +179,13 @@ public class Chair implements SpatialObject
     
     public Vector3f getGoalForwardVector()
     {
-        return modelInst.getTransform().getWorldMatrix(false).getLocalZ();
+         Vector3f normal = modelInst.getTransform().getWorldMatrix(false).getLocalZ();
+        
+        goalOffset.transformNormal(normal);
+        
+        return normal;
+        
+        
 //        Vector3f goalPos = getGoalPosition();
 //        Vector3f pos = getPosition();
 //        return goalPos.subtract(pos).normalize();
@@ -224,6 +244,11 @@ public class Chair implements SpatialObject
     public SpatialObject getOwner()
     {
         return owner;
+    }
+
+    void setInOrigin() 
+    {
+        modelInst.getTransform().setLocalMatrix(origin);
     }
 
 }

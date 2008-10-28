@@ -33,13 +33,13 @@ public class NinjaSteeringHelm extends CharacterSteeringHelm
 {
     private NinjaContext ninjaContext = null;
     
-    private Vector3f goalPosition = new Vector3f(10.0f, 0.0f, 10.0f);
+    private Vector3f goalPosition = new Vector3f(0.0f, 0.0f, 0.0f);
     
     private Vector3f sittingDirection = Vector3f.UNIT_Z;
     
     private float directionSensitivity = 0.05f;
     
-    private float approvedDistanceFromGoal = 0.05f;
+    private float approvedDistanceFromGoal = 0.5f;
     
     private boolean reachedGoal = false;
     
@@ -53,14 +53,32 @@ public class NinjaSteeringHelm extends CharacterSteeringHelm
     
     private SpatialObject goal = null;
     
-//    private boolean bGoalGravity = true;
-//    private float   fGoalGravityRadius = 5.0f;
-//    private float   fGoalGravityForce  = 0.005f;
-        
+    private boolean bDoneTurning = false;
+    private float   pullTime = 3.0f;
+    
+    private float    sampleCounter     = 0.0f;
+    private float    sampleTimeFrame   = 3.0f;
+    private int      samples           = 0;
+    private Vector3f sampleAvgPos      = new Vector3f();
+    private Vector3f samplePrevAvgPos  = new Vector3f();
+    
     public NinjaSteeringHelm(String name, NinjaContext gameContext)
     {
         super(name, gameContext);
         ninjaContext = gameContext;
+    }
+    
+    private void initSteering()
+    {
+        reachedGoal     = false;
+        
+        Vector3f characterPosition = ninjaContext.getController().getPosition();
+        
+        // Samples
+        sampleAvgPos.set(characterPosition);
+        samplePrevAvgPos.set(characterPosition);
+        samples       = 0;
+        sampleCounter = 0.0f;
     }
     
     @Override
@@ -68,6 +86,37 @@ public class NinjaSteeringHelm extends CharacterSteeringHelm
     {
         if (!enabledState)
             return;
+        
+        Vector3f characterPosition = ninjaContext.getController().getPosition();
+        float distanceFromGoal     = goalPosition.distance(characterPosition);
+        
+        // Sample
+        sampleCounter += deltaTime;
+        samples++;
+        sampleAvgPos.addLocal(characterPosition);
+//        if (sampleCounter > sampleTimeFrame)
+//        {
+//            // Sample "tick"
+//            sampleAvgPos.divideLocal(samples);
+//            float currentAvgDistance  = sampleAvgPos.distance(goalPosition);
+//            float previousAvgDistance = samplePrevAvgPos.distance(goalPosition);
+//            
+//            // which is closer to the goal? the current sample average position or the previous one?
+//            if (currentAvgDistance > previousAvgDistance)
+//            {
+//                // we are not closer to the goal after sampleTimeFrame secounds... let's try to get out of this loop
+//                walkBack    = 0.0f;
+//                ninjaContext.resetTriggersAndActions();
+//                System.out.println("sample tick: get out of loop");
+//            }
+////            else
+////                System.out.println("sample tick");
+//            
+//            samplePrevAvgPos.set(sampleAvgPos);
+//            sampleAvgPos.set(characterPosition);
+//            samples       = 0;
+//            sampleCounter = 0.0f;
+//        }
         
         // TODO : clean up and lay out combinations framework for steering behaviors
         
@@ -83,16 +132,8 @@ public class NinjaSteeringHelm extends CharacterSteeringHelm
             }
             
             // Seek the goal
-            float distanceFromGoal = goalPosition.distance(ninjaContext.getController().getPosition());
             if (distanceFromGoal > approvedDistanceFromGoal)
-            {
-//                if (bGoalGravity && distanceFromGoal < fGoalGravityRadius)
-//                {
-//                    PMatrix local = ninjaContext.getController().getTransform().getLocalMatrix(true);
-//                    Vector3f pull = goalPosition.subtract(ninjaContext.getController().getPosition()).normalize().mult(fGoalGravityForce / distanceFromGoal);
-//                    local.setTranslation(local.getTranslation().add(pull));
-//                }
-                
+            {   
                 // Are we walking backwards to get away from an obstacle?
                 if (walkBack >= 0.0f)
                 {
@@ -110,7 +151,10 @@ public class NinjaSteeringHelm extends CharacterSteeringHelm
 
                     // stop walking backwards
                     if (walkBack > walkBackTime)
+                    {
                         walkBack = -1.0f;
+                        initSteering();
+                    }
 
                     ninjaContext.getController().getWindow().setTitle("Walking Back");
                     return;
@@ -132,7 +176,7 @@ public class NinjaSteeringHelm extends CharacterSteeringHelm
                         obj = ninjaContext.getNinja().getObjectCollection().findNearestChair(ninjaContext.getNinja(), 3.0f, 0.4f, false); // distance should be scaled by velocity... but at the moment the velocity is pretty constant...
                     if (obj != null && obj != goal && distanceFromGoal > 2.0f)
                     {
-                        PSphere obstacleBV = obj.getNearestObstacleSphere(ninjaContext.getController().getPosition());
+                        PSphere obstacleBV = obj.getNearestObstacleSphere(characterPosition);
                         PSphere characterBV = ninjaContext.getNinja().getBoundingSphere();
                         ninjaContext.getNinja().getModelInst().setDebugSphere(obstacleBV, 0);
                         ninjaContext.getNinja().getModelInst().setDebugSphere(characterBV, 1);
@@ -144,7 +188,7 @@ public class NinjaSteeringHelm extends CharacterSteeringHelm
                             ninjaContext.resetTriggersAndActions();
 
                             Vector3f rightVec = ninjaContext.getController().getRightVector();
-                            Vector3f directionToObstacle = obstacleBV.getCenter().subtract(ninjaContext.getController().getPosition());
+                            Vector3f directionToObstacle = obstacleBV.getCenter().subtract(characterPosition);
                             directionToObstacle.normalizeLocal();
                             float dot = directionToObstacle.dot(rightVec);
 
@@ -164,7 +208,7 @@ public class NinjaSteeringHelm extends CharacterSteeringHelm
                         {
                             // Try to prevent a collision with an obstacle
                             Vector3f rightVec = ninjaContext.getController().getRightVector();
-                            Vector3f directionToObstacle = obstacleBV.getCenter().subtract(ninjaContext.getController().getPosition());
+                            Vector3f directionToObstacle = obstacleBV.getCenter().subtract(characterPosition);
                             directionToObstacle.normalizeLocal();
                             float dot = directionToObstacle.dot(rightVec);
 
@@ -193,7 +237,7 @@ public class NinjaSteeringHelm extends CharacterSteeringHelm
                     ninjaContext.getController().getWindow().setTitle("Seeking Goal");
                     // Steer towards the goal
                     Vector3f rightVec = ninjaContext.getController().getRightVector();
-                    Vector3f desiredVelocity = goalPosition.subtract(ninjaContext.getController().getPosition());
+                    Vector3f desiredVelocity = goalPosition.subtract(characterPosition);
                     desiredVelocity.normalizeLocal();
                     float dot = desiredVelocity.dot(rightVec);
                     if (dot == 0.0f)
@@ -243,36 +287,62 @@ public class NinjaSteeringHelm extends CharacterSteeringHelm
                 // Goal reached!
                 reachedGoal = true;
                 ninjaContext.resetTriggersAndActions();
+                
+                bDoneTurning = false;
             }
         }
         else
         {
-            ninjaContext.getController().getWindow().setTitle("Turning to goal orientation");
-            // We have reached the goal, rotate to sitting direction
-            Vector3f rightVec = ninjaContext.getController().getRightVector();
-            float dot = sittingDirection.dot(rightVec);
-            if (dot > directionSensitivity)
+            // Pull towards the goal
+            PMatrix local = ninjaContext.getController().getTransform().getLocalMatrix(true);
+            Vector3f pull = goalPosition.subtract(characterPosition).normalize().mult(distanceFromGoal * deltaTime * pullTime);
+            local.setTranslation(local.getTranslation().add(pull)); 
+                        
+            if (!bDoneTurning)
             {
-                ninjaContext.triggerPressed(TriggerNames.Move_Right.ordinal());
-                ninjaContext.triggerReleased(TriggerNames.Move_Left.ordinal());
+                ninjaContext.getController().getWindow().setTitle("Turning to goal orientation");
+
+                // We have reached the goal, rotate to sitting direction
+                Vector3f rightVec = ninjaContext.getController().getRightVector();
+                float dot = sittingDirection.dot(rightVec);
+                if (dot > directionSensitivity)
+                {
+                    ninjaContext.triggerPressed(TriggerNames.Move_Right.ordinal());
+                    ninjaContext.triggerReleased(TriggerNames.Move_Left.ordinal());
+                }
+                else if (dot < -directionSensitivity)
+                {
+                    ninjaContext.triggerPressed(TriggerNames.Move_Left.ordinal());
+                    ninjaContext.triggerReleased(TriggerNames.Move_Right.ordinal()); 
+                }
+                else 
+                {                
+                    ninjaContext.getController().getWindow().setTitle("Pulling towards the goal point");
+                    ninjaContext.resetTriggersAndActions();
+                    bDoneTurning = true;
+                }
             }
-            else if (dot < -directionSensitivity)
+            else if (distanceFromGoal < 0.01f)
             {
-                ninjaContext.triggerPressed(TriggerNames.Move_Left.ordinal());
-                ninjaContext.triggerReleased(TriggerNames.Move_Right.ordinal()); 
-            }
-            else
-            {
-                ninjaContext.getController().getWindow().setTitle("Done");
-                
-                // Positioned properlly!
-                enabledState = false;
-                ninjaContext.resetTriggersAndActions();
-                
-                // Trigger sitting
-                ninjaContext.triggerPressed(TriggerNames.Sit.ordinal());
+                done();
             }
         }
+    }
+    
+    private void done()
+    {
+        ninjaContext.getController().getWindow().setTitle("Done");
+
+        // Set position
+        PMatrix local = ninjaContext.getController().getTransform().getLocalMatrix(true);
+        local.setTranslation(goalPosition); 
+        
+        // Positioned properlly!
+        enabledState = false;
+        ninjaContext.resetTriggersAndActions();
+
+        // Trigger sitting
+        ninjaContext.triggerPressed(TriggerNames.Sit.ordinal());
     }
     
     @Override
@@ -280,10 +350,10 @@ public class NinjaSteeringHelm extends CharacterSteeringHelm
     {
         enabledState = !enabledState;
         
-        if (!enabledState)
-            ninjaContext.resetTriggersAndActions();
+        if (enabledState)
+            initSteering();
         else
-            reachedGoal = false;
+            ninjaContext.resetTriggersAndActions();
         
         return enabledState;
     }
@@ -310,6 +380,10 @@ public class NinjaSteeringHelm extends CharacterSteeringHelm
 
     public void setReachedGoal(boolean reachedGoal) {
         this.reachedGoal = reachedGoal;
+        if (reachedGoal)
+            bDoneTurning = false;
+        else
+            initSteering();
     }
 
     public SpatialObject getGoal() {

@@ -27,7 +27,6 @@ import org.jdesktop.mtgame.WorldManager;
  */
 public class NinjaAvatar extends Ninja 
 {
-
     public class NinjaAvatarAttributes extends Attributes
     {
         String [] m_animations = new String [0];
@@ -38,7 +37,7 @@ public class NinjaAvatar extends Ninja
             ArrayList<String> anims = new ArrayList<String>();
             anims.add("assets/models/collada/Avatars/MaleZip/Male_Idle.dae");
             anims.add("assets/models/collada/Avatars/MaleZip/Male_Walk.dae");
-            anims.add("assets/models/collada/Avatars/Male/Male_Wave.dae");
+            anims.add("assets/models/collada/Avatars/MaleZip/Male_Wave.dae");
             anims.add("assets/models/collada/Avatars/MaleZip/Male_StandToSit.dae");
             anims.add("assets/models/collada/Avatars/MaleZip/Male_Sitting.dae");
             m_animations = anims.toArray(m_animations);
@@ -73,7 +72,7 @@ public class NinjaAvatar extends Ninja
         m_context.getStates().get(FlyState.class).setAnimationName("Male_Sitting");
         m_context.getStates().get(SitState.class).setAnimationSpeed(2.0f);
         ((SitState)m_context.getStates().get(SitState.class)).setIdleSittingAnimationName("Male_Sitting");
-        ((SitState)m_context.getStates().get(SitState.class)).setGettingUpAnimationName("Male_StandToSit"); 
+        ((SitState)m_context.getStates().get(SitState.class)).setGettingUpAnimationName("Male_StandToSit");         
     }
         
     @Override

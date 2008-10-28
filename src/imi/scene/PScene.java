@@ -20,7 +20,6 @@ package imi.scene;
 import com.jme.image.Texture;
 import com.jme.scene.Node;
 import com.jme.scene.Spatial;
-import com.jme.scene.state.GLSLShaderObjectsState;
 import com.jme.util.TextureManager;
 import imi.scene.PJoint;
 import imi.loaders.PPolygonTriMeshAssembler;
@@ -644,7 +643,9 @@ public class PScene extends PNode implements RepositoryUser
                 m_Instances.addChild(kid);
                 // Initialize this asset now that it is loaded
                 if (asset.getInitializer() != null)
+                {
                     asset.getInitializer().initialize(kid); 
+                }
             }
             
             

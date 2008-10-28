@@ -99,6 +99,8 @@ public class PTransform
      */
     public PTransform(PMatrix local) 
     {
+        if (local == null)
+            local = new PMatrix();
         m_local.set(local);
         m_world = new PMatrix(m_local);
     }

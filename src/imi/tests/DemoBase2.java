@@ -72,6 +72,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JFrame;
 import org.jdesktop.mtgame.FrameRateListener;
 import org.jdesktop.mtgame.WorldManager;
 import org.jdesktop.mtgame.CameraComponent;
@@ -730,6 +731,9 @@ public class DemoBase2 extends javax.swing.JFrame implements FrameRateListener, 
         canvas_SceneRenderWindow.requestFocusInWindow();
         // make it visible
         setVisible(true);
+        
+        // Add to the wm to set title string later during debugging
+        wm.addUserData(JFrame.class, this);
     }
     
     private void setFrame(WorldManager wm) {

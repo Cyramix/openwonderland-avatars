@@ -165,6 +165,9 @@ public class SitState extends GameState
             skeleton.getAnimationState().setTransitionDuration(idleSittingTransitionDuration);
             skeleton.getAnimationState().setAnimationSpeed(idleSittingAnimationSpeed);
             bIdleSittingAnimationSet = skeleton.transitionTo(idleSittingAnimationName);
+            
+            // Hack
+            skeleton.getAnimationGroup().getCycle(skeleton.getAnimationGroup().findAnimationCycle("Male_Sitting")).setEndTime(skeleton.getAnimationGroup().getCycle(skeleton.getAnimationGroup().findAnimationCycle("Male_Sitting")).getEndTime() - 1.75f);
         }
     }
     
