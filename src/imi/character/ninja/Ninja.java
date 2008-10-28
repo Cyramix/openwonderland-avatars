@@ -17,14 +17,15 @@
  */
 package imi.character.ninja;
 
-import com.jme.math.Vector3f;
 import imi.character.ninja.NinjaContext.TriggerNames;
 import imi.character.objects.Goal;
 import imi.utils.input.InputScheme;
 import imi.scene.PMatrix;
 import imi.scene.processors.JSceneEventProcessor;
+import imi.tests.DemoBase2;
 import imi.utils.input.NinjaControlScheme;
 import java.awt.event.KeyEvent;
+import javax.swing.JFrame;
 import org.jdesktop.mtgame.WorldManager;
 
 /*
@@ -98,6 +99,9 @@ public class Ninja extends imi.character.Character
                 ((NinjaContext)m_context).getSteering().setSittingDirection(goalPoint.getTransform().getLocalMatrix(false).getLocalZ());
                 ((NinjaContext)m_context).getSteering().setGoal(goalPoint.getGoal());
             }
+            
+            if (m_wm.getUserData(JFrame.class) != null)
+                ((DemoBase2)m_wm.getUserData(JFrame.class)).setGUI(m_jscene, m_wm, null, this);
         }
     }
 
