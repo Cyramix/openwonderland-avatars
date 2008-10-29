@@ -50,7 +50,7 @@ public class MusicalChairs extends DemoBase
         
         // Create an object collection for the musical chairs game
         ObjectCollection objs = new ObjectCollection("Musical Chairs Game Objects", wm);
-        objs.generateChairs(Vector3f.ZERO, 50.0f, 20);
+        objs.generateChairs(Vector3f.ZERO, 10.0f, 20);
         
         NinjaAvatar avatar = new NinjaAvatar("Avatar", wm);
         avatar.selectForInput();

@@ -113,10 +113,11 @@ public class ObjectCollection extends Entity
             float randomDistance     = (float)Math.random() * maxRadius;
             Vector3f randomPosition  = center.add(randomDirection.mult(randomDistance));
             
-            //Chair newChair = new Chair(randomPosition, randomSittingDirection, null);
+            //Chair newChair = new Chair(randomPosition, randomSittingDirection, null); // renders as a sphere
             Chair newChair = new Chair(randomPosition, randomSittingDirection, "assets/models/collada/Objects/Chairs/ConfChair1.dae");
             newChair.setInScene(pscene);
             newChair.setObjectCollection(this);
+            newChair.getModelInst().calculateBoundingSphere();
             
             int attemptsCounter = 0;
             while(isColliding(newChair) && attemptsCounter < 100)
@@ -144,10 +145,11 @@ public class ObjectCollection extends Entity
                 
                 newChair.setPosition(randomPosition);
                 newChair.getModelInst().buildFlattenedHierarchy();
+                newChair.getModelInst().calculateBoundingSphere();
+                
+                if (attemptsCounter == 100)
+                    System.out.println("ObjectCollection - generateChairs() - after 100 attempts was not able to find an empty space for this chair");
             }
-            
-            newChair.getBoundingSphere();
-            newChair.setInOrigin();
         }
         
         // Make sure no funny stuff

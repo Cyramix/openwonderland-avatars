@@ -52,7 +52,7 @@ public class Chair implements SpatialObject
     private SpatialObject owner = null;
     private boolean occupied = false;
     
-    private PMatrix origin = null;
+    private PMatrix initOrigin = null;
     
     private PMatrix goalOffset = new PMatrix();
     private float   goalForwardOffset = 0.5f;
@@ -63,10 +63,10 @@ public class Chair implements SpatialObject
         {
             goalOffset.buildRotationY((float) Math.toRadians(90));
             
-            // Store the origin
-            origin = new PMatrix();
-            origin.lookAt(position, position.add(heading), Vector3f.UNIT_Y);
-            origin.invert();
+            // Store the initOrigin
+            initOrigin = new PMatrix();
+            initOrigin.lookAt(position, position.add(heading), Vector3f.UNIT_Y);
+            initOrigin.invert();
             
             sharedAsset = new SharedAsset(null, new AssetDescriptor(SharedAssetType.COLLADA_Model, modelFile));
             sharedAsset.setUserData(new ColladaLoaderParams(false, true, false, false, 4, "name", null));
@@ -96,7 +96,7 @@ public class Chair implements SpatialObject
         else
         {
 
-            origin = new PMatrix();
+            PMatrix origin = new PMatrix();
             origin.lookAt(position, position.add(heading), Vector3f.UNIT_Y);
             origin.invert();
             modelInst = new PPolygonModelInstance("Chair", origin);
@@ -134,7 +134,7 @@ public class Chair implements SpatialObject
         {
             scene.setUseRepository(false);
             sharedAsset.setRepository(scene.getRepository());
-            modelInst = scene.addModelInstance("Chair", sharedAsset, null);
+            modelInst = scene.addModelInstance("Chair", sharedAsset, initOrigin);
         }
         else
         {
@@ -142,6 +142,7 @@ public class Chair implements SpatialObject
                 modelInst.getParent().removeChild(modelInst);
             modelInst = scene.addModelInstance(modelInst);
         }
+        initOrigin = null; // only used to carry constructor's matrix
     }
     
     public void setPosition(Vector3f position)
@@ -193,11 +194,13 @@ public class Chair implements SpatialObject
     
     public PSphere getNearestObstacleSphere(Vector3f myPosition)
     {
-        PPolygonMeshInstance mesh = (PPolygonMeshInstance) modelInst.getChild(0);
-        PSphere bv = mesh.getGeometry().getBoundingSphere();
-        PSphere result = new PSphere();
-        result.set(mesh.getTransform().getWorldMatrix(false).getTranslation(), bv.getRadius());
-        return result;
+//        PPolygonMeshInstance mesh = (PPolygonMeshInstance) modelInst.getChild(0);
+//        PSphere bv = mesh.getGeometry().getBoundingSphere();
+//        PSphere result = new PSphere();
+//        result.set(mesh.getTransform().getWorldMatrix(false).getTranslation(), bv.getRadius());
+//        return result;
+        
+        return getBoundingSphere();
     }
     
     public PSphere getBoundingSphere() 
@@ -245,10 +248,4 @@ public class Chair implements SpatialObject
     {
         return owner;
     }
-
-    void setInOrigin() 
-    {
-        modelInst.getTransform().setLocalMatrix(origin);
-    }
-
 }
