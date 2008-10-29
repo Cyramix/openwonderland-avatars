@@ -271,8 +271,8 @@ public class LibraryVisualScenesProcessor extends Processor
             if (controllerName.startsWith("#"))
                 controllerName = controllerName.substring(1);
 
-//            if (controllerName.endsWith("-skin"))
-//                controllerName = controllerName.substring(0, controllerName.length()-5);
+            if (controllerName.endsWith("-skin"))
+                controllerName = controllerName.substring(0, controllerName.length()-5);
 
             pColladaNode.setControllerName(controllerName);
 

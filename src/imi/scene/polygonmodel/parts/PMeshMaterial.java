@@ -417,7 +417,10 @@ public class PMeshMaterial extends PNode
             for (i = 0; i < textureLocations.length; i++)
             {
                 if (textureLocations[i] != null)
+                {
                     m_textures[i] = new TextureMaterialProperties(textureLocations[i]);
+                    m_textures[i].setTextureUnit(i);
+                }
             }
         }
         // set the rest to null
@@ -455,7 +458,10 @@ public class PMeshMaterial extends PNode
                     }
                     
                     if (textureLocation != null)
+                    {
                         m_textures[i] = new TextureMaterialProperties(textureLocation);
+                        m_textures[i].setTextureUnit(i);
+                    }
                 }
             }
         }
@@ -492,7 +498,10 @@ public class PMeshMaterial extends PNode
             Logger.getLogger(PMeshMaterial.class.getName()).log(Level.SEVERE, null, ex);
         }
         if (textureLocation != null)
+        {
             m_textures[index] = new TextureMaterialProperties(textureLocation);
+            m_textures[index].setTextureUnit(index);
+        }
     }
     
     public void setTexture(File fileName, int index)
@@ -508,7 +517,10 @@ public class PMeshMaterial extends PNode
             Logger.getLogger(PMeshMaterial.class.getName()).log(Level.SEVERE, null, ex);
         }
         if (imageLocation != null)
+        {
             m_textures[index] = new TextureMaterialProperties(imageLocation);
+            m_textures[index].setTextureUnit(index);
+        }
     }
     
     public void setTexture(URL location, int index)
@@ -516,6 +528,7 @@ public class PMeshMaterial extends PNode
         if (index < 0 || index > 7)
             return;
         m_textures[index] = new TextureMaterialProperties(location);
+        m_textures[index].setTextureUnit(index);
     }
     
     public void setShininess(float shininess) 

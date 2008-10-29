@@ -28,20 +28,30 @@ import imi.scene.PNode;
  */
 public class Instruction extends PNode
 {
-    String          m_Instruction;
-    Object          m_Data;
+    private InstructionNames    m_Instruction;
+    private Object              m_Data;
 
-    
-
+    public enum InstructionNames
+    {
+        instructions,
+        loadBindPose,
+        loadGeometry,
+        deleteSkinnedMesh,
+        addSkinnedMesh,
+        loadAnimation,
+        setSkeleton,
+    }
+     
     //  Constructor.
     public Instruction()
     {
+        setInstruction(InstructionNames.instructions);
     }
-    public Instruction(String instruction)
+    public Instruction(InstructionNames instruction)
     {
         setInstruction(instruction);
     }
-    public Instruction(String instruction, Object data)
+    public Instruction(InstructionNames instruction, Object data)
     {
         setInstruction(instruction);
         setData(data);
@@ -50,14 +60,14 @@ public class Instruction extends PNode
 
 
     //  Adds an Instruction.
-    public Instruction addInstruction(String instruction)
+    public Instruction addInstruction(InstructionNames instruction)
     {
         Instruction pNewInstruction = new Instruction(instruction);
     
         return(addInstruction(pNewInstruction));
     }
     
-    public Instruction addInstruction(String instruction, Object data)
+    public Instruction addInstruction(InstructionNames instruction, Object data)
     {
         Instruction pNewInstruction = new Instruction(instruction, data);
         return(addInstruction(pNewInstruction));
@@ -71,11 +81,11 @@ public class Instruction extends PNode
 
 
 
-    public String getInstruction()
+    public InstructionNames getInstruction()
     {
         return(m_Instruction);
     }
-    public void setInstruction(String instruction)
+    public void setInstruction(InstructionNames instruction)
     {
         m_Instruction = instruction;
     }

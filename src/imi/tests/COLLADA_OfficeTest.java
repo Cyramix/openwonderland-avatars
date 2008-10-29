@@ -82,7 +82,7 @@ public class COLLADA_OfficeTest extends DemoBase2
         
         pscene.setUseRepository(true);
         
-        //ColladaEnvironment ourEnv = new ColladaEnvironment(wm, colladaAsset, "MaldenLabs");
+        ColladaEnvironment ourEnv = new ColladaEnvironment(wm, colladaAsset, "MaldenLabs");
         
         
         ///////////
@@ -92,17 +92,16 @@ public class COLLADA_OfficeTest extends DemoBase2
         
         // Create an object collection for the musical chairs game
         ObjectCollection objs = new ObjectCollection("Musical Chairs Game Objects", wm);
-        objs.generateChairs(Vector3f.ZERO, 15.0f, 10);
+        objs.generateChairs(Vector3f.UNIT_Z.mult(15.0f), 15.0f, 5);
         
         NinjaAvatar ColladaOne = new NinjaAvatar("ColladaOne", wm);
         ColladaOne.setObjectCollection(objs);
         control.getNinjaTeam().add(ColladaOne);
         
-        NinjaAvatar ColladaTwo = new NinjaAvatar("ColladaTwo", wm);
-        ColladaTwo.setObjectCollection(objs);
-        control.getNinjaTeam().add(ColladaTwo);
-        ColladaTwo.selectForInput();
-        
+//        NinjaAvatar ColladaTwo = new NinjaAvatar("ColladaTwo", wm);
+//        ColladaTwo.setObjectCollection(objs);
+//        control.getNinjaTeam().add(ColladaTwo);
+//        
 //        NinjaAvatar ColladaThree = new NinjaAvatar("ColladaThree", wm);
 //        ColladaThree.setObjectCollection(objs);
 //        control.getNinjaTeam().add(ColladaThree);
@@ -128,10 +127,10 @@ public class COLLADA_OfficeTest extends DemoBase2
 //        ninjaThree.setObjectCollection(objs);
 //        control.getNinjaTeam().add(ninjaThree);
 //        ninjaThree.selectForInput();
-//        
-//        Adam adam = new Adam("Adam Corolla", wm);
-//        adam.selectForInput();
-//        adam.setObjectCollection(objs);
+        
+        Adam adam = new Adam("Adam Corolla", wm);
+        adam.selectForInput();
+        adam.setObjectCollection(objs);
         
     }
     

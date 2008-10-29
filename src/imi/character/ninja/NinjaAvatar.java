@@ -61,14 +61,15 @@ public class NinjaAvatar extends Ninja
         m_context.getStates().get(PunchState.class).setAnimationName("Male_Wave");
         m_context.getStates().get(TurnState.class).setAnimationName("Male_Idle");
         m_context.getStates().get(WalkState.class).setAnimationName("Male_Walk");
-        m_context.getStates().get(WalkState.class).setAnimationSpeed(0.000001f);
-        m_context.getStates().get(WalkState.class).setTransitionDuration(0.01f);
         m_context.getStates().get(SitState.class).setAnimationName("Male_StandToSit");
         m_context.getStates().get(FlyState.class).setAnimationName("Male_Sitting");
-        m_context.getStates().get(SitState.class).setAnimationSpeed(5.0f);
-        ((SitState)m_context.getStates().get(SitState.class)).setSittingAnimationTime(0.2f);
         ((SitState)m_context.getStates().get(SitState.class)).setIdleSittingAnimationName("Male_Sitting");
         ((SitState)m_context.getStates().get(SitState.class)).setGettingUpAnimationName("Male_StandToSit");    
+        // Hack speed values (known bug)
+        m_context.getStates().get(WalkState.class).setAnimationSpeed(0.000001f);
+        m_context.getStates().get(WalkState.class).setTransitionDuration(0.01f);
+        m_context.getStates().get(SitState.class).setAnimationSpeed(5.0f);
+        ((SitState)m_context.getStates().get(SitState.class)).setSittingAnimationTime(0.2f);
         ((SitState)m_context.getStates().get(SitState.class)).setGettingUpAnimationSpeed(1.5f);
         ((SitState)m_context.getStates().get(SitState.class)).setGettingUpAnimationTime(0.005f);
         

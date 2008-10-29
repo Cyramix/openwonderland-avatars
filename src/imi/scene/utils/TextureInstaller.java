@@ -85,7 +85,6 @@ public class TextureInstaller
      */
     public TextureState installTexture(Texture tex, int nTextureUnit)
     {
-        
         // Install it
         m_Textures[nTextureUnit] = tex;
         // Find the corresponding properties objectand configure it

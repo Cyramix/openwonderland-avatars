@@ -638,7 +638,7 @@ public class DemoBase2 extends javax.swing.JFrame implements FrameRateListener, 
         // Add the camera
         Entity camera = new Entity("DefaultCamera");
         CameraComponent cc = wm.getRenderManager().createCameraComponent(cameraSG, cameraNode, 
-                width, height, 45.0f, aspect, 1.0f, 1000.0f, true);
+                width, height, 45.0f, aspect, 0.1f, 1000.0f, true);
         camera.addComponent(CameraComponent.class, cc);
         
         //////////////////////////////////////////////////////////////////////
@@ -807,6 +807,7 @@ public class DemoBase2 extends javax.swing.JFrame implements FrameRateListener, 
 
         // Wait until the assets are available for use
         while (sceneData.getPScene().getAssetWaitingList().size() > 0) {
+            Thread.yield();
             //System.out.println("Waiting to get assets...");
         }
 
@@ -1009,7 +1010,7 @@ public class DemoBase2 extends javax.swing.JFrame implements FrameRateListener, 
                 .add(canvas_SceneRenderWindow, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 600, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
         );
 
-        jToolBar_AvatarTools.setBorder(javax.swing.BorderFactory.createTitledBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED), "Avatar Tools", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Lucida Grande", 0, 13), new java.awt.Color(0, 0, 255))); // NOI18N
+        jToolBar_AvatarTools.setBorder(javax.swing.BorderFactory.createTitledBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED), "Avatar Tools", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(0, 0, 255))); // NOI18N
         jToolBar_AvatarTools.setOrientation(1);
         jToolBar_AvatarTools.setRollover(true);
 
@@ -1093,7 +1094,7 @@ public class DemoBase2 extends javax.swing.JFrame implements FrameRateListener, 
         });
         jMenu_File.add(jMenuItem_LoadXML);
 
-        jMenuItem_SaveXML.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.CTRL_MASK));
+        jMenuItem_SaveXML.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_C, java.awt.event.InputEvent.CTRL_MASK));
         jMenuItem_SaveXML.setText("Save Configuration");
         jMenuItem_SaveXML.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {

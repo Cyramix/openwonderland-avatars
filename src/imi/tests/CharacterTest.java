@@ -26,7 +26,7 @@ import imi.scene.processors.JSceneEventProcessor;
 import imi.utils.input.NinjaControlScheme;
 import org.jdesktop.mtgame.WorldManager;
 
-public class CharacterTest extends DemoBase
+public class CharacterTest extends DemoBase2
 {
     public CharacterTest(String[] args){
         super(args);
@@ -44,7 +44,7 @@ public class CharacterTest extends DemoBase
         
         // Shadow Blade
         Ninja shadowBlade = new Ninja("Shadow Blade", null, 0.22f, wm);
-        NinjaControlScheme control = (NinjaControlScheme)((JSceneAWTEventProcessor)wm.getUserData(JSceneEventProcessor.class)).setDefault(new NinjaControlScheme(shadowBlade));
+        NinjaControlScheme control = (NinjaControlScheme)((JSceneAWTEventProcessor)wm.getUserData(JSceneEventProcessor.class)).setDefault(new NinjaControlScheme(shadowBlade));        
         shadowBlade.selectForInput();
         control.getNinjaTeam().add(shadowBlade);
         //shadowBlade.setObjectCollection(objs);

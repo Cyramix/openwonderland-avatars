@@ -18,16 +18,16 @@
 package imi.loaders.collada;
 
 
-import java.util.ArrayList;
 
 import imi.scene.PScene;
 import imi.scene.PNode;
-import imi.scene.polygonmodel.skinned.PPolygonSkinnedMesh;
+import imi.scene.polygonmodel.skinned.PPolygonSkinnedMeshInstance;
 import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
 
 import imi.scene.animation.AnimationComponent;
 import imi.scene.animation.AnimationGroup;
 import imi.loaders.collada.Collada;
+import imi.scene.polygonmodel.skinned.PPolygonSkinnedMesh;
 import java.net.URL;
 
 
@@ -40,32 +40,18 @@ import java.net.URL;
  */
 public class CharacterLoader
 {
-    private PScene          m_pScene = null;
     private Collada         m_pCollada = null;
-    private SkeletonNode    m_pSkeleton = null;
-    private ArrayList       m_SkinnedMeshes = null;
-
-
-
 
     //  Loads a rig.
     public SkeletonNode loadSkeletonRig(PScene pScene, URL rigLocation)
     {
-        boolean bResult = false;
-
-        m_pScene = pScene;
-
-//        pScene.setUseRepository(false);
-
         //  Load the collada file to the PScene
         m_pCollada = new Collada();
-        PScene colladaScene = new PScene("COLLADA Scene", pScene.getWorldManager());
-        colladaScene.setUseRepository(false);
         try
         {
             //  Load only the rig and geometry.
             m_pCollada.setLoadFlags(true, true, false);
-            bResult = m_pCollada.load(pScene, rigLocation);
+            m_pCollada.load(pScene, rigLocation);
         }
         catch (Exception ex)
         {
@@ -73,80 +59,45 @@ public class CharacterLoader
             ex.printStackTrace();
         }
 
-//        pScene.setUseRepository(true);
-
-        if (bResult)
-            setSkeleton(m_pCollada.getSkeletonNode());
-
-        return(m_pSkeleton);
+        return m_pCollada.getSkeletonNode();
     }
 
-
     //  Loads replacement geometry from a file.
-    public boolean loadGeometry(PScene pScene, SkeletonNode pSkeleton, URL geometryLocation)
+    public boolean loadGeometry(PScene loadingPScene, URL geometryLocation)
     {
-        boolean bResult = false;
-
-        m_pScene = pScene;
-        setSkeleton(pSkeleton);
-
-//        pScene.setUseRepository(false);
-
+        boolean result = false;
         //  Load the collada file to the PScene
         m_pCollada = new Collada();
-        PScene colladaScene = new PScene("COLLADA Scene", pScene.getWorldManager());
-        colladaScene.setUseRepository(false);
         try
         {
             //  Load only the geometry.
             m_pCollada.setLoadFlags(false, true, false);
             m_pCollada.setAddSkinnedMeshesToSkeleton(false);
-            m_pCollada.setSkeletonNode(pSkeleton);
-            bResult = m_pCollada.load(pScene, geometryLocation);
+            m_pCollada.load(loadingPScene, geometryLocation);
+            result = true;
         }
         catch (Exception ex)
         {
             System.out.println("Exception occured while loading skeleton.");
             ex.printStackTrace();
         }
-        
-        return(true);
+        return result;
     }
 
-
     //  Loads replacement animation from a file.
-    public boolean loadAnimation(PScene pScene, SkeletonNode pSkeleton, URL animationLocation)
+    public boolean loadAnimation(PScene loadingPScene, SkeletonNode pSkeleton, URL animationLocation)
     {
-        boolean bResult = false;
-
-        m_pScene = pScene;
-        setSkeleton(pSkeleton);
-
-//        pScene.setUseRepository(false);
-
         //  Load the collada file to the PScene
         m_pCollada = new Collada();
-        PScene colladaScene = new PScene("COLLADA Scene", pScene.getWorldManager());
-        colladaScene.setUseRepository(false);
         
         m_pCollada.setLoadFlags(false, false, true);
         m_pCollada.setSkeletonNode(pSkeleton);
-        bResult = m_pCollada.load(pScene, animationLocation);
+        boolean result = m_pCollada.load(loadingPScene, animationLocation);
 
         mergeMultipleAnimationGroupsIntoOne(pSkeleton);
 
-        return(true);
+        return result;
     }
-
-
-
-    //  Sets the Skeleton.
-    public void setSkeleton(SkeletonNode pSkeleton)
-    {
-        m_pSkeleton = pSkeleton;
-    }
-
-
 
     //  Deletes a SkinnedMesh from the Skeleton.
     public boolean deleteSkinnedMesh(SkeletonNode pSkeleton, String skinnedMeshName)
@@ -158,9 +109,9 @@ public class CharacterLoader
         {
             pChildNode = pSkeleton.getChild(a);
 
-            if (pChildNode instanceof PPolygonSkinnedMesh)
+            if (pChildNode instanceof PPolygonSkinnedMeshInstance)
             {
-                PPolygonSkinnedMesh pSkinnedMesh = (PPolygonSkinnedMesh)pChildNode;
+                PPolygonSkinnedMeshInstance pSkinnedMesh = (PPolygonSkinnedMeshInstance)pChildNode;
                 if (pSkinnedMesh.getName().equals(skinnedMeshName))
                 {
                     pSkeleton.removeChild(pChildNode);
@@ -171,23 +122,6 @@ public class CharacterLoader
     
         return(false);
     }
-
-    //  Adds a SkinnedMesh to the Skeleton.
-    public void addSkinnedMesh(SkeletonNode pSkeleton, String skinnedMeshName)
-    {
-        //  Find the SkinnedMesh that is the replacement.
-        PPolygonSkinnedMesh pSkinnedMesh = m_pCollada.findPolygonSkinnedMesh(skinnedMeshName);
-        if (pSkinnedMesh != null)
-        {
-            System.out.println("Added SkinnedMesh '" + skinnedMeshName + "' to skeleton.");
-
-            //  Link the SkinnedMesh to the Skeleton.
-            pSkinnedMesh.linkJointsToSkeletonNode(pSkeleton);
-
-            pSkeleton.addChild(pSkinnedMesh);
-        }
-    }
-
 
     void mergeMultipleAnimationGroupsIntoOne(SkeletonNode pSkeletonNode)
     {
@@ -222,9 +156,9 @@ public class CharacterLoader
             {
                 pChildNode = pSkeleton.getChild(a);
 
-                if (pChildNode instanceof PPolygonSkinnedMesh)
+                if (pChildNode instanceof PPolygonSkinnedMeshInstance)
                 {
-                    PPolygonSkinnedMesh pSkinnedMesh = (PPolygonSkinnedMesh)pChildNode;
+                    PPolygonSkinnedMeshInstance pSkinnedMesh = (PPolygonSkinnedMeshInstance)pChildNode;
                     if (!pSkinnedMesh.getName().equals(skinnedMeshName))
                     {
                         pSkeleton.removeChild(pChildNode);

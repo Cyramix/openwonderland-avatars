@@ -66,23 +66,24 @@ public class COLLADA_URL extends DemoBase2
     
     private SkeletonNode loadCharacter(PScene pScene)
     {
-        InstructionProcessor pProcessor = new InstructionProcessor();
-        String fileProtocol = new String("http://www.zeitgeistgames.com/assets/collada/Avatars/");
-        Instruction pRootInstruction = new Instruction("loadCharacter");
-        Instruction pLoadBindPoseInstruction = pRootInstruction.addInstruction("loadBindPose", fileProtocol + "Male2/Male_Bind.dae");
-        Instruction pReplaceGeometryInstruction = pRootInstruction.addInstruction("replaceGeometry");
-        pReplaceGeometryInstruction.addInstruction("loadGeometry", fileProtocol + "Male/MaleBind.dae");
-//        pReplaceGeometryInstruction.addInstruction("deleteSkinnedMesh", "LHandShape");
-//        pReplaceGeometryInstruction.addInstruction("addSkinnedMesh", "LHandShape");
-        pReplaceGeometryInstruction.addInstruction("deleteSkinnedMesh", "TorsoNudeShape");
-        pReplaceGeometryInstruction.addInstruction("addSkinnedMesh", "TorsoNudeShape");
-        pReplaceGeometryInstruction.addInstruction("deleteSkinnedMesh", "Torso_TorsoNudeShape");
-        pRootInstruction.addInstruction("loadAnimation", fileProtocol + "Male2/Male_Walk.dae");
-        pRootInstruction.addInstruction("loadAnimation", fileProtocol + "Male2/Male_Idle.dae");
-    
-        pProcessor.execute(pScene, pRootInstruction);
-        
-        return(pProcessor.getSkeleton());
+//        InstructionProcessor pProcessor = new InstructionProcessor();
+//        String fileProtocol = new String("http://www.zeitgeistgames.com/assets/collada/Avatars/");
+//        Instruction pRootInstruction = new Instruction("loadCharacter");
+//        Instruction pLoadBindPoseInstruction = pRootInstruction.addInstruction("loadBindPose", fileProtocol + "Male2/Male_Bind.dae");
+//        Instruction pReplaceGeometryInstruction = pRootInstruction.addInstruction("replaceGeometry");
+//        pReplaceGeometryInstruction.addInstruction("loadGeometry", fileProtocol + "Male/MaleBind.dae");
+////        pReplaceGeometryInstruction.addInstruction("deleteSkinnedMesh", "LHandShape");
+////        pReplaceGeometryInstruction.addInstruction("addSkinnedMesh", "LHandShape");
+//        pReplaceGeometryInstruction.addInstruction("deleteSkinnedMesh", "TorsoNudeShape");
+//        pReplaceGeometryInstruction.addInstruction("addSkinnedMesh", "TorsoNudeShape");
+//        pReplaceGeometryInstruction.addInstruction("deleteSkinnedMesh", "Torso_TorsoNudeShape");
+//        pRootInstruction.addInstruction("loadAnimation", fileProtocol + "Male2/Male_Walk.dae");
+//        pRootInstruction.addInstruction("loadAnimation", fileProtocol + "Male2/Male_Idle.dae");
+//    
+//        pProcessor.execute(pScene, pRootInstruction);
+//        
+//        return(pProcessor.getSkeleton());
+        return null;// BREAK!! HAHAHAHAHAHAHA
     }
     
     

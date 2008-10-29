@@ -100,8 +100,8 @@ public class Ninja extends imi.character.Character
                 ((NinjaContext)m_context).getSteering().setGoal(goalPoint.getGoal());
             }
             
-            if (m_wm.getUserData(JFrame.class) != null)
-                ((DemoBase2)m_wm.getUserData(JFrame.class)).setGUI(m_jscene, m_wm, null, this);
+//            if (m_wm.getUserData(JFrame.class) != null)
+//                ((DemoBase2)m_wm.getUserData(JFrame.class)).setGUI(m_jscene, m_wm, null, this);
         }
     }
 

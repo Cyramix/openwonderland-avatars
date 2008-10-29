@@ -18,13 +18,19 @@
 package imi.loaders.collada;
 
 
-import imi.scene.PNode;
+import imi.scene.PMatrix;
 import imi.scene.PScene;
+import imi.scene.polygonmodel.PPolygonMesh;
 import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
+import imi.scene.polygonmodel.skinned.PPolygonSkinnedMesh;
+import imi.scene.polygonmodel.skinned.PPolygonSkinnedMeshInstance;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Iterator;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.jdesktop.mtgame.WorldManager;
 
 
 
@@ -33,42 +39,43 @@ import java.util.logging.Logger;
  * TODO: Delegate execution logic
  * @author Chris Nagle
  */
-public class InstructionProcessor extends PNode
+public class InstructionProcessor
 {
-    CharacterLoader     m_pCharacterLoader = null;
-    SkeletonNode        m_pSkeleton = null;
-
-
-
-    //  Constructor.
-    public InstructionProcessor()
+    private WorldManager        m_wm = null;
+    private PScene              m_loadingPScene = null;
+    private CharacterLoader     m_characterLoader = null;
+    private SkeletonNode        m_skeleton = null;
+    
+    /**
+     * The world manager is used to create temporal pscenes for the loading process
+     * @param wm
+     */
+    public InstructionProcessor(WorldManager wm)
     {
+        m_wm = wm;
     }
-
-
-    //  Gets the Skeleton.
-    public SkeletonNode getSkeleton()
-    {
-        return(m_pSkeleton);
-    }
-
-
 
     //  Executes all instructions.
-    public void execute(PScene pScene, Instruction pRootInstruction)
+    public void execute(Instruction pRootInstruction)
     {
-        m_pCharacterLoader = new CharacterLoader();
+        m_characterLoader = new CharacterLoader();
         
         printInstruction("", pRootInstruction);
 
-
-        executeInstruction(pScene, pRootInstruction);
+        m_loadingPScene = new PScene(m_wm);
+        executeInstruction(m_loadingPScene, pRootInstruction);
         
-        
-        m_pCharacterLoader = null;
+        // garbage collection...
+        m_characterLoader = null;
+        m_loadingPScene   = null;
+        m_skeleton        = null;
     }
 
-    public void printInstruction(String spacing, Instruction pInstruction)
+    public SkeletonNode getSkeleton() {
+        return m_skeleton;
+    }
+
+    private void printInstruction(String spacing, Instruction pInstruction)
     {
         System.out.println(spacing + pInstruction.getInstruction() + " '" + pInstruction.getDataAsString() + "'");
 
@@ -86,69 +93,60 @@ public class InstructionProcessor extends PNode
         }
     }
 
-    public void executeInstruction(PScene pScene, Instruction pInstruction)
+    private void executeInstruction(PScene loadingPScene, Instruction pInstruction)
     {
-        if (pInstruction.getInstruction().equals("loadBindPose"))
+        try 
         {
-            URL bindPoseLocation = null;
-            try
+            switch(pInstruction.getInstruction())
             {
-                bindPoseLocation = new URL(pInstruction.getDataAsString());
-            } catch (MalformedURLException ex)
-            {
-                Logger.getLogger(InstructionProcessor.class.getName()).log(Level.SEVERE, null, ex);
+                case addSkinnedMesh:
+                {
+                    String skinnedMeshName = pInstruction.getDataAsString();
+                    if (!addSkinnedMesh(skinnedMeshName))
+                        System.out.println("COLLADA configuration ERROR: was not able to ADD a skinned mesh!");
+                }
+                break;
+                case deleteSkinnedMesh:
+                {
+                    String skinnedMeshName = pInstruction.getDataAsString();
+                    if (!m_characterLoader.deleteSkinnedMesh(m_skeleton, skinnedMeshName))
+                        System.out.println("COLLADA configuration ERROR: was not able to DELETE a skinned mesh!");
+                }
+                break;
+                case loadAnimation:
+                {
+                    URL animationLocation = new URL(pInstruction.getDataAsString());
+                    if (!m_characterLoader.loadAnimation(loadingPScene, m_skeleton, animationLocation))
+                        System.out.println("COLLADA configuration ERROR: was not able to LOAD ANIMATION!");
+                }
+                break;
+                case loadBindPose:
+                {
+                    URL bindPoseLocation = new URL(pInstruction.getDataAsString());
+                    m_skeleton = m_characterLoader.loadSkeletonRig(loadingPScene, bindPoseLocation);
+                    if (m_skeleton == null)
+                        System.out.println("COLLADA configuration ERROR: was not able to LOAD BIND POSE!");
+                }
+                break;
+                case loadGeometry:
+                {
+                    URL geometryLocation = new URL(pInstruction.getDataAsString());
+                    if (!m_characterLoader.loadGeometry(loadingPScene, geometryLocation))
+                        System.out.println("COLLADA configuration ERROR: was not able to LOAD GEOMETRY!");
+                }
+                break;
+                case setSkeleton:
+                {
+                    if (pInstruction.getData() instanceof SkeletonNode)
+                        m_skeleton = (SkeletonNode) pInstruction.getData();
+                    else
+                        m_skeleton = null;   
+                }
             }
-            
-            m_pSkeleton = m_pCharacterLoader.loadSkeletonRig(pScene, bindPoseLocation);
         }
-        else if (pInstruction.getInstruction().equals("loadGeometry"))
-        {
-            URL geometryLocation = null;
-            try
-            {
-                geometryLocation = new URL(pInstruction.getDataAsString());
-            } catch (MalformedURLException ex)
-            {
-                Logger.getLogger(InstructionProcessor.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            
-            m_pCharacterLoader.loadGeometry(pScene, m_pSkeleton, geometryLocation);
-        }
-
-        else if (pInstruction.getInstruction().equals("deleteSkinnedMesh"))
-        {
-            String skinnedMeshName = pInstruction.getDataAsString();
-            
-            m_pCharacterLoader.deleteSkinnedMesh(m_pSkeleton, skinnedMeshName);
-        }
-        else if (pInstruction.getInstruction().equals("addSkinnedMesh"))
-        {
-            String skinnedMeshName = pInstruction.getDataAsString();
-            
-            m_pCharacterLoader.addSkinnedMesh(m_pSkeleton, skinnedMeshName);
-        }
-        else if (pInstruction.getInstruction().equals("loadAnimation"))
-        {
-            URL animationLocation = null;
-            try
-            {
-                animationLocation = new URL(pInstruction.getDataAsString());
-            } catch (MalformedURLException ex)
-            {
-                Logger.getLogger(InstructionProcessor.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            
-            m_pCharacterLoader.loadAnimation(pScene, m_pSkeleton, animationLocation);
-        }
-        else if (pInstruction.getInstruction().equals("setSkeleton"))
-        {
-            if (pInstruction.getData() instanceof SkeletonNode)
-                m_pSkeleton = (SkeletonNode) pInstruction.getData();
-            else
-                m_pSkeleton = null;
-        }
-
-    
+        catch (MalformedURLException ex){
+            Logger.getLogger(InstructionProcessor.class.getName()).log(Level.SEVERE, null, ex); }
+        
         if (pInstruction.getChildrenCount() > 0)
         {
             int a;
@@ -158,9 +156,44 @@ public class InstructionProcessor extends PNode
             {
                 pChildInstruction = (Instruction)pInstruction.getChild(a);
 
-                executeInstruction(pScene, pChildInstruction);
+                executeInstruction(loadingPScene, pChildInstruction);
             }
         }
+    }
+    
+    private boolean addSkinnedMesh(String skinnedMeshName) 
+    {
+        //  Find the SkinnedMesh that is the replacement.
+        PPolygonSkinnedMesh pSkinnedMesh = null;
+        
+        List<PPolygonMesh> list = m_loadingPScene.getLocalGeometryList();
+        Iterator<PPolygonMesh> mesh = list.iterator();
+        while(mesh.hasNext())
+        {
+            PPolygonMesh it = mesh.next();
+            if (it.getName().equals(skinnedMeshName))
+            {
+                pSkinnedMesh = (PPolygonSkinnedMesh) it;
+                break;
+            }
+        }
+        
+        if (pSkinnedMesh != null)
+        {
+            // Make an instance
+            PPolygonSkinnedMeshInstance skinnedMeshInstance = (PPolygonSkinnedMeshInstance) m_loadingPScene.addMeshInstance(pSkinnedMesh, new PMatrix());
+            
+            System.out.println("Added SkinnedMesh '" + skinnedMeshName + "' to skeleton.");
+
+            //  Link the SkinnedMesh to the Skeleton.
+            skinnedMeshInstance.setSkeletonNode(m_skeleton);
+            skinnedMeshInstance.linkJointsToSkeletonNode(m_skeleton);
+            // Add it to the skeleton
+            m_skeleton.addChild(skinnedMeshInstance);
+            
+            return true;
+        }
+        return false;
     }
 
 }

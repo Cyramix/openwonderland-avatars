@@ -34,6 +34,7 @@ import imi.character.statemachine.GameContext;
 import imi.character.statemachine.TransitionObject;
 import imi.loaders.collada.ColladaLoaderParams;
 import imi.loaders.collada.Instruction;
+import imi.loaders.collada.Instruction.InstructionNames;
 import imi.loaders.collada.InstructionProcessor;
 import imi.scene.JScene;
 import imi.scene.PMatrix;
@@ -306,7 +307,8 @@ public abstract class Character extends Entity implements SpatialObject
                                 m_modelInst.getTransform().setLocalMatrix(origin);
 
                             // Visual scale affects the skinned mesh and not the model instance
-                            skinned.getTransform().getLocalMatrix(true).setScale(visualScale);
+                            if (visualScale != 1.0f)
+                                skinned.getTransform().getLocalMatrix(true).setScale(visualScale);
 
                             PMeshMaterial material = new PMeshMaterial("Character Material");
                             material.setTexture(new File(m_attributes.getTextureFile()), 0);
@@ -333,48 +335,54 @@ public abstract class Character extends Entity implements SpatialObject
                             SkeletonNode skeleton = (SkeletonNode)((PNode)asset).getChild(0);
                             
                             // Visual Scale
-                            ArrayList<PPolygonSkinnedMeshInstance> meshes = skeleton.getSkinnedMeshInstances();
-                            for (PPolygonSkinnedMeshInstance mesh : meshes)
-                                mesh.getTransform().getLocalMatrix(true).setScale(visualScale);
+                            if (visualScale != 1.0f)
+                            {
+                                ArrayList<PPolygonSkinnedMeshInstance> meshes = skeleton.getSkinnedMeshInstances();
+                                for (PPolygonSkinnedMeshInstance mesh : meshes)
+                                    mesh.getTransform().getLocalMatrix(true).setScale(visualScale);
+                            }
                             
                             // Set position
                             if (origin != null)
                                 m_modelInst.getTransform().setLocalMatrix(origin);
-  
-                            // Set material
-                            skeleton.setShader(new VertexDeformer(m_wm));
                             
                             // Set animations
                             if (m_attributes instanceof NinjaAvatarAttributes && ((NinjaAvatarAttributes)m_attributes).getAnimations() != null)
                             {
-                                String [] anims = ((NinjaAvatarAttributes)m_attributes).getAnimations();
-                                
                                 String fileProtocol = new String("file://localhost/" + System.getProperty("user.dir") + "/");
 
-                                InstructionProcessor pProcessor = new InstructionProcessor();
-                                Instruction pRootInstruction = new Instruction("setCharacterStuff");
-                                pRootInstruction.addInstruction("setSkeleton", skeleton);
+                                InstructionProcessor pProcessor = new InstructionProcessor(m_wm);
+                                Instruction pRootInstruction = new Instruction();
+
+                                pRootInstruction.addInstruction(InstructionNames.setSkeleton, skeleton);
                                 
+                                // TODO : like the anims
+                                pRootInstruction.addInstruction(InstructionNames.loadGeometry, fileProtocol + "assets/models/collada/Pants/Shorts_M/Shorts.dae");
+                                pRootInstruction.addInstruction(InstructionNames.loadGeometry, fileProtocol + "assets/models/collada/Clothing/FlipFlopsFeet.dae");
+
+                                // TODO : like the anims
+                                pRootInstruction.addInstruction(InstructionNames.deleteSkinnedMesh, "Legs_LegsNudeShape");
+                                pRootInstruction.addInstruction(InstructionNames.deleteSkinnedMesh, "LFootNudeShape");
+                                pRootInstruction.addInstruction(InstructionNames.deleteSkinnedMesh, "RFootNudeShape");
                                 
+                                // TODO : like the anims
+                                pRootInstruction.addInstruction(InstructionNames.addSkinnedMesh, "LegsNudeShape");
+                                pRootInstruction.addInstruction(InstructionNames.addSkinnedMesh, "MaleShortsShape");
+                                pRootInstruction.addInstruction(InstructionNames.addSkinnedMesh, "LFootNudeShape");
+                                pRootInstruction.addInstruction(InstructionNames.addSkinnedMesh, "RFootNudeShape");
+                                pRootInstruction.addInstruction(InstructionNames.addSkinnedMesh, "LFlipFlopShape");
+                                pRootInstruction.addInstruction(InstructionNames.addSkinnedMesh, "RFlipFlopShape");
+                                
+                                String [] anims = ((NinjaAvatarAttributes)m_attributes).getAnimations();
                                 for (int i = 0; i < anims.length; i++)
-                                    pRootInstruction.addInstruction("loadAnimation", fileProtocol + anims[i]);
+                                    pRootInstruction.addInstruction(InstructionNames.loadAnimation, fileProtocol + anims[i]);
                                 
-                                
-                                Instruction pReplaceGeometryInstruction = pRootInstruction.addInstruction("replaceGeometry");
-                                pReplaceGeometryInstruction.addInstruction("deleteSkinnedMesh", "Legs_LegsNudeShape");
-                                pReplaceGeometryInstruction.addInstruction("loadGeometry", "file://localhost/work/avatars/assets/models/collada/Clothing/MaleDressPants1.dae");
-                                pReplaceGeometryInstruction.addInstruction("addSkinnedMesh", "Legs_LegsNudeShape");
-                                pReplaceGeometryInstruction.addInstruction("deleteSkinnedMesh", "LFootNudeShape");
-                                pReplaceGeometryInstruction.addInstruction("deleteSkinnedMesh", "RFootNudeShape");
-                                pReplaceGeometryInstruction.addInstruction("loadGeometry", "file://localhost/work/avatars/assets/models/collada/Clothing/FlipFlopsFeet.dae");
-                                //pReplaceGeometryInstruction.addInstruction("addSkinnedMesh", "polySurfaceShape3");
-                                pReplaceGeometryInstruction.addInstruction("addSkinnedMesh", "LFootNudeShape");
-                                pReplaceGeometryInstruction.addInstruction("addSkinnedMesh", "RFootNudeShape");
-                                pReplaceGeometryInstruction.addInstruction("addSkinnedMesh", "LFlipFlopShape");
-                                pReplaceGeometryInstruction.addInstruction("addSkinnedMesh", "RFlipFlopShape");
-                                pProcessor.execute(m_pscene, pRootInstruction);
+                                pProcessor.execute(pRootInstruction);
                                     
                             }
+                            
+                            // Set material
+                            skeleton.setShader(new VertDeformerWithSpecAndNormalMap(m_wm));
                         }
                         return true;
 
@@ -422,126 +430,87 @@ public abstract class Character extends Entity implements SpatialObject
      */
     protected void initScene(ArrayList<ProcessorComponent> processors)
     {
+//            // customize!
+//            switch (hack)
+//            {
+//                case 0: // flip flops, blue polo shirt, shorts!
+//                {
+//                    Instruction pReplaceGeometryInstruction = pRootInstruction.addInstruction("replaceGeometry");
+//                    pReplaceGeometryInstruction.addInstruction("deleteSkinnedMesh", "Legs_LegsNudeShape");
+//                    pReplaceGeometryInstruction.addInstruction("loadGeometry", fileProtocol + "assets/models/collada/Pants/Shorts_M/Shorts.dae");
+//                    pReplaceGeometryInstruction.addInstruction("addSkinnedMesh", "LegsNudeShape");
+//                    pReplaceGeometryInstruction.addInstruction("addSkinnedMesh", "MaleShortsShape");
+//                    pReplaceGeometryInstruction.addInstruction("deleteSkinnedMesh", "LFootNudeShape");
+//                    pReplaceGeometryInstruction.addInstruction("deleteSkinnedMesh", "RFootNudeShape");
+//                    pReplaceGeometryInstruction.addInstruction("loadGeometry", fileProtocol + "assets/models/collada/Clothing/FlipFlopsFeet.dae");
+//                    //pReplaceGeometryInstruction.addInstruction("addSkinnedMesh", "polySurfaceShape3");
+//                    pReplaceGeometryInstruction.addInstruction("addSkinnedMesh", "LFootNudeShape");
+//                    pReplaceGeometryInstruction.addInstruction("addSkinnedMesh", "RFootNudeShape");
+//                    pReplaceGeometryInstruction.addInstruction("addSkinnedMesh", "LFlipFlopShape");
+//                    pReplaceGeometryInstruction.addInstruction("addSkinnedMesh", "RFlipFlopShape");
+//                    pProcessor.execute(loadingScene, pRootInstruction);
+//                }
+//                break;
+//                case 26426: // dress shoes, dress pants, sweater
+//                {
+//                    Instruction pReplaceGeometryInstruction = pRootInstruction.addInstruction("replaceGeometry");
+//                    pReplaceGeometryInstruction.addInstruction("deleteSkinnedMesh", "Legs_LegsNudeShape");
+//                    pReplaceGeometryInstruction.addInstruction("loadGeometry", fileProtocol + "assets/models/collada/Clothing/MaleDressPants1.dae");
+//                    pReplaceGeometryInstruction.addInstruction("addSkinnedMesh", "Legs_LegsNudeShape");
+//                    pReplaceGeometryInstruction.addInstruction("deleteSkinnedMesh", "LFootNudeShape");
+//                    pReplaceGeometryInstruction.addInstruction("deleteSkinnedMesh", "RFootNudeShape");
+//                    pReplaceGeometryInstruction.addInstruction("loadGeometry", fileProtocol + "assets/models/collada/Clothing/MaleDressShoes.dae");
+//                    pReplaceGeometryInstruction.addInstruction("addSkinnedMesh", "polySurfaceShape3");
+//                    pReplaceGeometryInstruction.addInstruction("deleteGeometry", "Torso_TorsoNudeShape");
+//                    pReplaceGeometryInstruction.addInstruction("deleteGeometry", "TorsoNudeShape");
+//                    pReplaceGeometryInstruction.addInstruction("loadGeometry", fileProtocol + "assets/models/collada/Accessories/MaleSweater.dae");
+//                    pReplaceGeometryInstruction.addInstruction("addSkinnedMesh", "SweaterMaleShape");
+////                                        pReplaceGeometryInstruction.addInstruction("addSkinnedMesh", "LFootNudeShape");
+////                                        pReplaceGeometryInstruction.addInstruction("addSkinnedMesh", "RFootNudeShape");
+////                                        pReplaceGeometryInstruction.addInstruction("addSkinnedMesh", "LFlipFlopShape");
+////                                        pReplaceGeometryInstruction.addInstruction("addSkinnedMesh", "RFlipFlopShape");
+//                    pProcessor.execute(loadingScene, pRootInstruction);
+//                }
+//                break;
+//                case 1: // hat sunglasses sneakers jeans (polySurface3Shape) etc
+//                {
+//                    Instruction pReplaceGeometryInstruction = pRootInstruction.addInstruction("replaceGeometry");
+//                    pReplaceGeometryInstruction.addInstruction("deleteSkinnedMesh", "Legs_LegsNudeShape");
+//                    pReplaceGeometryInstruction.addInstruction("loadGeometry", fileProtocol + "assets/models/collada/Pants/Jeans_M/Jeans.dae");
+//                    pReplaceGeometryInstruction.addInstruction("addSkinnedMesh", "polySurface3Shape");
+//                    pReplaceGeometryInstruction.addInstruction("deleteSkinnedMesh", "LFootNudeShape");
+//                    pReplaceGeometryInstruction.addInstruction("deleteSkinnedMesh", "RFootNudeShape");
+//                    pReplaceGeometryInstruction.addInstruction("loadGeometry", fileProtocol + "assets/models/collada/Shoes/TennisShoes_M/MaleTennisShoes.dae");
+//                    pReplaceGeometryInstruction.addInstruction("addSkinnedMesh", "TennisShoesShape");
+//                   
+//                    pProcessor.execute(loadingScene, pRootInstruction);
+//                }
+//                break;
+//                case 2:
+//                {
+//                    Instruction pReplaceGeometryInstruction = pRootInstruction.addInstruction("replaceGeometry");
+//                    pReplaceGeometryInstruction.addInstruction("deleteSkinnedMesh", "Legs_LegsNudeShape");
+//                    pReplaceGeometryInstruction.addInstruction("loadGeometry", fileProtocol + "assets/models/collada/Clothing/MaleDressPants1.dae");
+//                    pReplaceGeometryInstruction.addInstruction("addSkinnedMesh", "Legs_LegsNudeShape");
+//                    pReplaceGeometryInstruction.addInstruction("deleteSkinnedMesh", "LFootNudeShape");
+//                    pReplaceGeometryInstruction.addInstruction("deleteSkinnedMesh", "RFootNudeShape");
+//                    pReplaceGeometryInstruction.addInstruction("loadGeometry", fileProtocol + "assets/models/collada/Clothing/FlipFlopsFeet.dae");
+//                    //pReplaceGeometryInstruction.addInstruction("addSkinnedMesh", "polySurfaceShape3");
+//                    pReplaceGeometryInstruction.addInstruction("addSkinnedMesh", "LFootNudeShape");
+//                    pReplaceGeometryInstruction.addInstruction("addSkinnedMesh", "RFootNudeShape");
+//                    pReplaceGeometryInstruction.addInstruction("addSkinnedMesh", "LFlipFlopShape");
+//                    pReplaceGeometryInstruction.addInstruction("addSkinnedMesh", "RFlipFlopShape");
+//                    pProcessor.execute(loadingScene, pRootInstruction);
+//                }
+//                break;
+//                default:
+//                    break;
+//            }
+
         if (m_attributes.getModelFile().endsWith(".dae"))
-        {
             m_pscene.setUseRepository(false);
-            
-            // Hack code - instead of loading it the same way
-            // and using the initializer for run-time customizations
-            
-            InstructionProcessor pProcessor = new InstructionProcessor();
         
-            String fileProtocol = new String("file://localhost/" + System.getProperty("user.dir") + "/");
-        
-            Instruction pRootInstruction = new Instruction("loadCharacter");
-            pRootInstruction.addInstruction("loadBindPose", fileProtocol + m_attributes.getModelFile());
-            
-//            //pRootInstruction.addInstruction("deleteSkinnedMesh", "Legs_LegsNudeShape");
-//            pRootInstruction.addInstruction("deleteSkinnedMesh", "LFootNudeShape");
-//            pRootInstruction.addInstruction("deleteSkinnedMesh", "RFootNudeShape");
-//            //pRootInstruction.addInstruction("loadGeometry", fileProtocol + "assets/models/collada/Clothing/MaleDressPants1.dae");
-//            pRootInstruction.addInstruction("loadGeometry", fileProtocol + "assets/models/collada/Clothing/FlipFlopsFeet.dae");
-//            //pRootInstruction.addInstruction("addSkinnedMesh", "Legs_LegsNudeShape");
-//            pRootInstruction.addInstruction("addSkinnedMesh", "LFootNudeShape");
-//            pRootInstruction.addInstruction("addSkinnedMesh", "RFootNudeShape");
-//            pRootInstruction.addInstruction("addSkinnedMesh", "LFlipFlopShape");
-//            pRootInstruction.addInstruction("addSkinnedMesh", "RFlipFlopShape");
-            
-            // customize!
-            switch (hack)
-            {
-                case 0: // flip flops, blue polo shirt, shorts!
-                {
-                    Instruction pReplaceGeometryInstruction = pRootInstruction.addInstruction("replaceGeometry");
-                    pReplaceGeometryInstruction.addInstruction("deleteSkinnedMesh", "Legs_LegsNudeShape");
-                    pReplaceGeometryInstruction.addInstruction("loadGeometry", "file://localhost/work/avatars/assets/models/collada/Pants/Shorts_M/Shorts.dae");
-                    pReplaceGeometryInstruction.addInstruction("addSkinnedMesh", "LegsNudeShape");
-                    pReplaceGeometryInstruction.addInstruction("addSkinnedMesh", "MaleShortsShape");
-                    pReplaceGeometryInstruction.addInstruction("deleteSkinnedMesh", "LFootNudeShape");
-                    pReplaceGeometryInstruction.addInstruction("deleteSkinnedMesh", "RFootNudeShape");
-                    pReplaceGeometryInstruction.addInstruction("loadGeometry", "file://localhost/work/avatars/assets/models/collada/Clothing/FlipFlopsFeet.dae");
-                    //pReplaceGeometryInstruction.addInstruction("addSkinnedMesh", "polySurfaceShape3");
-                    pReplaceGeometryInstruction.addInstruction("addSkinnedMesh", "LFootNudeShape");
-                    pReplaceGeometryInstruction.addInstruction("addSkinnedMesh", "RFootNudeShape");
-                    pReplaceGeometryInstruction.addInstruction("addSkinnedMesh", "LFlipFlopShape");
-                    pReplaceGeometryInstruction.addInstruction("addSkinnedMesh", "RFlipFlopShape");
-                    pProcessor.execute(m_pscene, pRootInstruction);
-                }
-                break;
-                case 1: // dress shoes, dress pants, sweater
-                {
-                    Instruction pReplaceGeometryInstruction = pRootInstruction.addInstruction("replaceGeometry");
-                    pReplaceGeometryInstruction.addInstruction("deleteSkinnedMesh", "Legs_LegsNudeShape");
-                    pReplaceGeometryInstruction.addInstruction("loadGeometry", "file://localhost/work/avatars/assets/models/collada/Clothing/MaleDressPants1.dae");
-                    pReplaceGeometryInstruction.addInstruction("addSkinnedMesh", "Legs_LegsNudeShape");
-                    pReplaceGeometryInstruction.addInstruction("deleteSkinnedMesh", "LFootNudeShape");
-                    pReplaceGeometryInstruction.addInstruction("deleteSkinnedMesh", "RFootNudeShape");
-                    pReplaceGeometryInstruction.addInstruction("loadGeometry", "file://localhost/work/avatars/assets/models/collada/Clothing/MaleDressShoes.dae");
-                    pReplaceGeometryInstruction.addInstruction("addSkinnedMesh", "polySurfaceShape3");
-                    pReplaceGeometryInstruction.addInstruction("deleteGeometry", "Torso_TorsoNudeShape");
-                    pReplaceGeometryInstruction.addInstruction("deleteGeometry", "TorsoNudeShape");
-                    pReplaceGeometryInstruction.addInstruction("loadGeometry", "file://localhost/work/avatars/assets/models/collada/Accessories/MaleSweater.dae");
-                    pReplaceGeometryInstruction.addInstruction("addSkinnedMesh", "SweaterMaleShape");
-//                                        pReplaceGeometryInstruction.addInstruction("addSkinnedMesh", "LFootNudeShape");
-//                                        pReplaceGeometryInstruction.addInstruction("addSkinnedMesh", "RFootNudeShape");
-//                                        pReplaceGeometryInstruction.addInstruction("addSkinnedMesh", "LFlipFlopShape");
-//                                        pReplaceGeometryInstruction.addInstruction("addSkinnedMesh", "RFlipFlopShape");
-                    pProcessor.execute(m_pscene, pRootInstruction);
-                }
-                break;
-                case 287: // hat sunglasses sneakers jeans (polySurface3Shape) etc
-                {
-                    Instruction pReplaceGeometryInstruction = pRootInstruction.addInstruction("replaceGeometry");
-                    pReplaceGeometryInstruction.addInstruction("deleteSkinnedMesh", "Legs_LegsNudeShape");
-                    pReplaceGeometryInstruction.addInstruction("loadGeometry", "file://localhost/work/avatars/assets/models/collada/Pants/Jeans_M/Jeans.dae");
-                    pReplaceGeometryInstruction.addInstruction("addSkinnedMesh", "polySurface3Shape");
-                    pReplaceGeometryInstruction.addInstruction("deleteSkinnedMesh", "LFootNudeShape");
-                    pReplaceGeometryInstruction.addInstruction("deleteSkinnedMesh", "RFootNudeShape");
-                    pReplaceGeometryInstruction.addInstruction("loadGeometry", "file://localhost/work/avatars/assets/models/collada/Shoes/TennisShoes_M/MaleTennisShoes.dae");
-                    pReplaceGeometryInstruction.addInstruction("addSkinnedMesh", "TennisShoesShape");
-                   
-                    pProcessor.execute(m_pscene, pRootInstruction);
-                }
-                break;
-                case 2:
-                {
-                    Instruction pReplaceGeometryInstruction = pRootInstruction.addInstruction("replaceGeometry");
-                    pReplaceGeometryInstruction.addInstruction("deleteSkinnedMesh", "Legs_LegsNudeShape");
-                    pReplaceGeometryInstruction.addInstruction("loadGeometry", "file://localhost/work/avatars/assets/models/collada/Clothing/MaleDressPants1.dae");
-                    pReplaceGeometryInstruction.addInstruction("addSkinnedMesh", "Legs_LegsNudeShape");
-                    pReplaceGeometryInstruction.addInstruction("deleteSkinnedMesh", "LFootNudeShape");
-                    pReplaceGeometryInstruction.addInstruction("deleteSkinnedMesh", "RFootNudeShape");
-                    pReplaceGeometryInstruction.addInstruction("loadGeometry", "file://localhost/work/avatars/assets/models/collada/Clothing/FlipFlopsFeet.dae");
-                    //pReplaceGeometryInstruction.addInstruction("addSkinnedMesh", "polySurfaceShape3");
-                    pReplaceGeometryInstruction.addInstruction("addSkinnedMesh", "LFootNudeShape");
-                    pReplaceGeometryInstruction.addInstruction("addSkinnedMesh", "RFootNudeShape");
-                    pReplaceGeometryInstruction.addInstruction("addSkinnedMesh", "LFlipFlopShape");
-                    pReplaceGeometryInstruction.addInstruction("addSkinnedMesh", "RFlipFlopShape");
-                    pProcessor.execute(m_pscene, pRootInstruction);
-                }
-                break;
-                default:
-                    break;
-            }
-            hack++;
-            
-            String [] anims = ((NinjaAvatarAttributes)m_attributes).getAnimations();
-            for (int i = 0; i < anims.length; i++)
-                pRootInstruction.addInstruction("loadAnimation", fileProtocol + anims[i]);
-
-            pProcessor.execute(new PScene(m_wm), pRootInstruction);
-            SkeletonNode skeleton = pProcessor.getSkeleton();
-            m_modelInst = m_pscene.addModelInstance(skeleton, new PMatrix());
-
-            if (m_modelInst.getChild(0) instanceof SkeletonNode)
-            {
-                SkeletonNode pSkeletonNode = (SkeletonNode) m_modelInst.getChild(0);
-                //  Assign the specified shader to all SkinnedMeshes.
-                pSkeletonNode.setShader(new VertDeformerWithSpecAndNormalMap(m_wm));
-            }
-        }
-        else
-            m_modelInst = m_pscene.addModelInstance(m_attributes.getName(), m_attributes.getAsset(), new PMatrix());
+        m_modelInst = m_pscene.addModelInstance(m_attributes.getName(), m_attributes.getAsset(), new PMatrix());
         
         processors.add(new SkinnedAnimationProcessor(m_modelInst));
         processors.add(new CharacterProcessor(this));
@@ -687,11 +656,6 @@ public abstract class Character extends Entity implements SpatialObject
         
         if (m_context != null)
             m_context.update(deltaTime);
-        
-        
-                                m_pscene.setDirty(true, true);
-                                m_pscene.buildFlattenedHierarchy();
-                                m_pscene.submitTransformsAndGeometry();
     }
     
     /**

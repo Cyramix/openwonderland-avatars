@@ -57,7 +57,8 @@ public class PPolygonSkinnedMeshInstance extends PPolygonMeshInstance
     public PPolygonSkinnedMeshInstance(String name, PPolygonSkinnedMesh geometry, PMatrix origin, PScene pscene) 
     {
         super(name, geometry, origin, pscene);
-        setInfluenceIndices(geometry.getInfluenceIndices());
+        if (geometry.getInfluenceIndices() != null)
+            setInfluenceIndices(geometry.getInfluenceIndices());
         
     }
     
@@ -65,7 +66,8 @@ public class PPolygonSkinnedMeshInstance extends PPolygonMeshInstance
     public PPolygonSkinnedMeshInstance(PPolygonSkinnedMeshInstance meshInstance, PScene pscene)
     {
         super(meshInstance.getName(), meshInstance.getGeometry(), meshInstance.getTransform().getLocalMatrix(false), pscene);
-        setInfluenceIndices(meshInstance.getInfluenceIndices());
+        if (meshInstance.getInfluenceIndices() != null)
+            setInfluenceIndices(meshInstance.getInfluenceIndices());
     }
     
         
@@ -73,6 +75,11 @@ public class PPolygonSkinnedMeshInstance extends PPolygonMeshInstance
     public SkeletonNode getSkeletonNode()
     {
         return(m_pSkeletonNode);
+    }
+    
+    public void setSkeletonNode(SkeletonNode skeleton)
+    {
+        m_pSkeletonNode = skeleton;
     }
 
     @Override
@@ -113,6 +120,27 @@ public class PPolygonSkinnedMeshInstance extends PPolygonMeshInstance
         }
         
         return(false);
+    }
+
+    public void linkJointsToSkeletonNode(SkeletonNode skeleton) 
+    {
+        int a;
+        String jointName = "";
+        int jointIndex;
+        PPolygonSkinnedMesh skinnedGeometry = (PPolygonSkinnedMesh)m_geometry;
+        int []influenceIndices = new int[skinnedGeometry.getJointNameCount()];
+
+        for (a=0; a<skinnedGeometry.getJointNameCount(); a++)
+        {
+            jointName = skinnedGeometry.getJointName(a);
+
+            //  Get the index of the Joint.
+            jointIndex = m_pSkeletonNode.getSkinnedMeshJointIndex(jointName);
+
+            influenceIndices[a] = jointIndex;
+        }
+
+        setInfluenceIndices(influenceIndices);
     }
     
    

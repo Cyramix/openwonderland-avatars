@@ -7,6 +7,7 @@ package imi.gui;
 
 import imi.loaders.collada.ColladaLoaderParams;
 import imi.loaders.collada.Instruction;
+import imi.loaders.collada.Instruction.InstructionNames;
 import imi.loaders.collada.InstructionProcessor;
 import imi.loaders.repository.AssetDescriptor;
 import imi.loaders.repository.AssetInitializer;
@@ -21,7 +22,6 @@ import imi.scene.polygonmodel.parts.PMeshMaterial;
 import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
 import imi.scene.polygonmodel.skinned.PPolygonSkinnedMeshInstance;
 import imi.scene.processors.SkinnedAnimationProcessor;
-import imi.scene.shader.programs.VertDeformerWithSpecAndNormalMap;
 import imi.scene.shader.programs.VertexDeformer;
 import java.awt.Component;
 import java.io.File;
@@ -362,7 +362,7 @@ public class SceneEssentials {
     }    
     
     public SkeletonNode loadDAEs() {
-        InstructionProcessor pProcessor = new InstructionProcessor();
+        InstructionProcessor pProcessor = new InstructionProcessor(getWM());
         
         //String fileProtocol = new String("file://" + System.getProperty("user.dir") + "/");
         
@@ -395,33 +395,33 @@ public class SceneEssentials {
         
         String szURL = new String("file://" + bind);
         
-        Instruction pRootInstruction = new Instruction("loadCharacter");
-        Instruction pLoadBindPoseInstruction = pRootInstruction.addInstruction("loadBindPose", szURL);
+        Instruction pRootInstruction = new Instruction();
+        Instruction pLoadBindPoseInstruction = pRootInstruction.addInstruction(InstructionNames.loadBindPose, szURL);
         
         for (int i = 0; i < colladaList.length; i++) {
             if (colladaList[i].lastIndexOf("Anim") != -1) {
                 anim = absPath + "/" + colladaList[i];
                 String szAnim = new String("file://" + anim);
-                pRootInstruction.addInstruction("loadAnimation", szAnim);
+                pRootInstruction.addInstruction(InstructionNames.loadAnimation, szAnim);
             }
         }
     
-        pProcessor.execute(currentPScene, pRootInstruction);
+        pProcessor.execute(pRootInstruction);
         return (pProcessor.getSkeleton());
     }
     
     public SkeletonNode loadDAEURL(String[] data, String[] anim) {
-        InstructionProcessor pProcessor = new InstructionProcessor();
-        Instruction pRootInstruction = new Instruction("loadCharacter");
-        Instruction pLoadBindPoseInstruction = pRootInstruction.addInstruction("loadBindPose", data[5]);
+        InstructionProcessor pProcessor = new InstructionProcessor(getWM());
+        Instruction pRootInstruction = new Instruction();
+        Instruction pLoadBindPoseInstruction = pRootInstruction.addInstruction(InstructionNames.loadBindPose, data[5]);
         
         if (anim != null) {
             for (int i = 0; i < anim.length; i++) {
-                pRootInstruction.addInstruction("loadAnimation",anim[i]);
+                pRootInstruction.addInstruction(InstructionNames.loadAnimation,anim[i]);
             }
         }
     
-        pProcessor.execute(currentPScene, pRootInstruction);
+        pProcessor.execute(pRootInstruction);
         return (pProcessor.getSkeleton());
     }
     

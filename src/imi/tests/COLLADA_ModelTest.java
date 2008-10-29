@@ -77,7 +77,8 @@ public class COLLADA_ModelTest extends DemoBase
         {
             //  Load only the Skeleton (Geometry and Rig).
             colladaLoader.setLoadFlags(true, true, false);
-            bResult = colladaLoader.load(colladaScene, modelLocation);
+            colladaLoader.load(colladaScene, modelLocation);
+            bResult = true;
         }
         catch (Exception ex)
         {
@@ -110,7 +111,8 @@ public class COLLADA_ModelTest extends DemoBase
         {
             //  Load only the Skeleton (Geometry and Rig).
             colladaLoader.setLoadFlags(false, false, true);
-            bResult = colladaLoader.load(colladaScene, animationLocation);
+            colladaLoader.load(colladaScene, animationLocation);
+            bResult = true;
         }
         catch (Exception ex)
         {

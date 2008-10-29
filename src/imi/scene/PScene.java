@@ -62,8 +62,8 @@ import org.jdesktop.mtgame.WorldManager;
  */
 public class PScene extends PNode implements RepositoryUser
 {
-    // Procedural Geometry
-    private FastList<PPolygonMesh> m_ProceduralGeometry = new FastList<PPolygonMesh>();
+    // None Shared Geometry
+    private FastList<PPolygonMesh> m_LocalGeometry = new FastList<PPolygonMesh>();
     
     // Shared Assets
     private boolean m_bUseRepository                = true;
@@ -169,7 +169,7 @@ public class PScene extends PNode implements RepositoryUser
      */
     public void submitGeometry()
     {
-        for (PPolygonMesh geometry : m_ProceduralGeometry)
+        for (PPolygonMesh geometry : m_LocalGeometry)
         {
             geometry.submit(m_TriMeshAssembler);
         }
@@ -206,7 +206,7 @@ public class PScene extends PNode implements RepositoryUser
     public void flipNormals()
     {
         // flip the normals for all the geometry in this scene
-        for (PPolygonMesh geometry : m_ProceduralGeometry)
+        for (PPolygonMesh geometry : m_LocalGeometry)
             geometry.flipNormals();
         
         setDirty(true, false);
@@ -220,7 +220,7 @@ public class PScene extends PNode implements RepositoryUser
      */
     public void toggleSmoothNormals()
     {
-        for (PPolygonMesh geometry : m_ProceduralGeometry)
+        for (PPolygonMesh geometry : m_LocalGeometry)
             geometry.setSmoothNormals(!geometry.getSmoothNormals());
         
         setDirty(true, false);
@@ -234,18 +234,28 @@ public class PScene extends PNode implements RepositoryUser
     private int addMeshGeometry(PPolygonMesh mesh)
     {
         // Duplicate checking
-        int index = m_ProceduralGeometry.indexOf(mesh);
+        int index = m_LocalGeometry.indexOf(mesh);
         
         if (index == -1)
         {
             mesh.setDirty(true, true);
-            m_ProceduralGeometry.add(mesh);
-            index = m_ProceduralGeometry.size()-1;
+            m_LocalGeometry.add(mesh);
+            index = m_LocalGeometry.size()-1;
         }
         
         return index;
     }
 
+    /**
+     * Access the list of local (not shared) geometry
+     * Note: this is a low level method used by the COLLADA loader...
+     * @return
+     */
+    public List<PPolygonMesh> getLocalGeometryList()
+    {
+        return m_LocalGeometry;
+    }
+    
     /**
      * Add an instance node
      * @param node
@@ -427,7 +437,7 @@ public class PScene extends PNode implements RepositoryUser
 
         // Check the geometry for duplicates
         int index = addMeshGeometry(mesh);
-        PPolygonMesh geometry = m_ProceduralGeometry.get(index);
+        PPolygonMesh geometry = m_LocalGeometry.get(index);
         
         // Initialize the meshAsset instance
         PPolygonMeshInstance meshInst  = buildMeshInstance(geometry, mesh.getTransform().getLocalMatrix(false));
@@ -535,7 +545,7 @@ public class PScene extends PNode implements RepositoryUser
 
         // Check the geometry for duplicates
         int index = addMeshGeometry(mesh);
-        PPolygonSkinnedMesh geometry = (PPolygonSkinnedMesh)m_ProceduralGeometry.get(index);
+        PPolygonSkinnedMesh geometry = (PPolygonSkinnedMesh)m_LocalGeometry.get(index);
         
         // Initialize the meshAsset instance
         PPolygonSkinnedMeshInstance meshInst  = buildSkinnedMeshInstance(geometry, mesh.getTransform().getLocalMatrix(false));
@@ -1092,14 +1102,14 @@ public class PScene extends PNode implements RepositoryUser
     {
         ArrayList<PNode> deathRow = new ArrayList<PNode>();
         
-        for (PPolygonMesh geometry : m_ProceduralGeometry)
+        for (PPolygonMesh geometry : m_LocalGeometry)
         {
             if (geometry.getReferenceCount() == 0)
                    deathRow.add(geometry);
         } 
         
         for (int i = 0; i < deathRow.size(); i++)
-            m_ProceduralGeometry.remove(deathRow.get(i));
+            m_LocalGeometry.remove(deathRow.get(i));
     }
 
     /***
