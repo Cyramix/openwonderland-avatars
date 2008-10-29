@@ -319,10 +319,10 @@ public class SceneEssentials {
         else
             currentHiProcessors.clear();
         
-        if (data[2].equals("1")) {
+        if (data[4].equals("1")) {
             URL modelURL;
             try {
-                modelURL = new URL(data[5]);
+                modelURL = new URL(data[3]);
             } catch (MalformedURLException ex) {
                 Logger.getLogger(SceneEssentials.class.getName()).log(Level.SEVERE, null, ex);
                 return;
@@ -413,7 +413,7 @@ public class SceneEssentials {
     public SkeletonNode loadDAEURL(String[] data, String[] anim) {
         InstructionProcessor pProcessor = new InstructionProcessor(getWM());
         Instruction pRootInstruction = new Instruction();
-        Instruction pLoadBindPoseInstruction = pRootInstruction.addInstruction(InstructionNames.loadBindPose, data[5]);
+        Instruction pLoadBindPoseInstruction = pRootInstruction.addInstruction(InstructionNames.loadBindPose, data[3]);
         
         if (anim != null) {
             for (int i = 0; i < anim.length; i++) {
