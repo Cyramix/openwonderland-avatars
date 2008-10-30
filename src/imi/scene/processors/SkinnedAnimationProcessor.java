@@ -84,7 +84,7 @@ public class SkinnedAnimationProcessor extends ProcessorComponent
 
         // advance animation time
         if (!AnimationState.isPauseAnimation())
-            AnimationState.advanceAnimationTime(fAnimationTimeStep * AnimationState.getAnimationSpeed());
+            AnimationState.advanceAnimationTime(fAnimationTimeStep);
     }
 
     @Override

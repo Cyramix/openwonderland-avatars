@@ -50,7 +50,7 @@ public class NinjaSteeringHelm extends CharacterSteeringHelm
     private boolean walkBackFlip = false;
     private float walkBack = -1.0f;
     private float walkBackTime = 2.0f;
-    private float turnBackTime = 0.6f;
+    private float turnBackTime = 0.5f;
     
     private SpatialObject goal = null;
     
@@ -195,7 +195,7 @@ public class NinjaSteeringHelm extends CharacterSteeringHelm
                         {
                             // Initiate walk back if colliding
                             walkBack     = 0.0f;
-                            walkBackTime = 2.0f;
+                            walkBackTime = 1.0f;
                             walkBackFlip = false;
                             steerToGoal  = false;
                             ninjaContext.resetTriggersAndActions();

@@ -60,18 +60,20 @@ public class AnimationState
     }
     
     /**
-     * Advances time for this state,
-     * this affects currentCycleTime, TransitionCycleTime and TimeInTransition
+     * Advances time for this state, animation speed is taken into consideration here.
+     * Affects currentCycleTime, TransitionCycleTime and TimeInTransition.
      * @param fTimeStep
      */
     public void advanceAnimationTime(float fTimeStep) 
     {
-        m_TimeInTransition    += fTimeStep;
+        float advance = fTimeStep * m_AnimationSpeed;
+        
+        m_TimeInTransition    += advance;
         if (m_bReverseAnimation)
             fTimeStep *= -1.0f;
         
-        m_CurrentCycleTime    += fTimeStep;
-        m_TransitionCycleTime += fTimeStep;
+        m_CurrentCycleTime    += advance;
+        m_TransitionCycleTime += advance;
     }
     
     /**

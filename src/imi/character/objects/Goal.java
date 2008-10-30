@@ -203,13 +203,13 @@ public class Goal
         alphaState.setTestFunction(BlendState.TestFunction.GreaterThan);
                 
         // Push 'em down the pipe
-        jscene.setRenderState(alphaState);
+        //jscene.setRenderState(alphaState);
         jscene.setRenderState(matState);
         jscene.setRenderState(buf);
         jscene.setRenderState(cs);
         jscene.setRenderState(ws);
         jscene.setRenderState(ls);
-        jscene.setRenderQueueMode(Renderer.QUEUE_TRANSPARENT);
+        //jscene.setRenderQueueMode(Renderer.QUEUE_TRANSPARENT);
         jscene.updateRenderState();
     }
 

@@ -33,7 +33,7 @@ public class WalkState extends GameState
     private float impulse               = 15.0f;
     
     private float walkSpeedMax          = 4.5f;
-    private float walkSpeedFactor       = 1.0f;
+    private float walkSpeedFactor       = 4.0f; //  The walk state is using this value and OVERWRITES the super's animation speed...
     
     private float exitCounter           = 0.0f;
     private float minimumTimeBeforeTransition = 0.18f;

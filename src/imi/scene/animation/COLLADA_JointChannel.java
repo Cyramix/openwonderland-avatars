@@ -76,9 +76,6 @@ public class COLLADA_JointChannel implements PJointChannel
 
     public void calculateFrame(PJoint jointToAffect, float fTime)
     {
-//        if (m_TargetJointName.equals("leftUpLeg") || m_TargetJointName.equals("rightUpLeg"))
-//            return;
-
         // do we even have animation data?
         if (m_KeyFrames.size() == 0)
             return; // Do nothing
@@ -94,17 +91,8 @@ public class COLLADA_JointChannel implements PJointChannel
         PMatrixKeyframe lastFrame = m_KeyFrames.getLast();
         boolean bLooping = false;
 
-        float []currentFrameAngles = new float[3];
-        Vector3f currentFrameRotation = new Vector3f();
-        float []nextFrameAngles = new float[3];
-        Vector3f nextFrameRotation = new Vector3f();
-
-        Vector3f frameScale = new Vector3f(1.0f, 1.0f, 1.0f);
-
         PMatrix delta = new PMatrix();
-        PMatrix delta2 = new PMatrix();
 
-//        fTime = 0.04f;//66666f;
 //        System.out.print("COLLADA_JointChannel.m_fTime = " + fTime);
 
         //  Are we before the first keyframe.
@@ -167,87 +155,31 @@ public class COLLADA_JointChannel implements PJointChannel
 
             delta.setIdentity();
   
-/*
-            // grab out the rotation and slerp it
-            currentFrame.getValue().getRotation().toAngles(currentFrameAngles);
-            currentFrameRotation.set(currentFrameAngles[0], currentFrameAngles[1], currentFrameAngles[2]);
-
-            nextFrame.getValue().getRotation().toAngles(nextFrameAngles);
-            nextFrameRotation.set(nextFrameAngles[0], nextFrameAngles[1], nextFrameAngles[2]);
-
-            Vector3f rotationComponent = new Vector3f(currentFrameRotation);
-            rotationComponent.interpolate(nextFrameRotation, s);
-
-
-            // grab the translation and lerp it
-            Vector3f translationComponent = new Vector3f(currentFrame.getValue().getTranslation());
-            translationComponent.interpolate(nextFrame.getValue().getTranslation(), s);
-
-
-            // apply this to our delta matrix
-            delta.set(rotationComponent, translationComponent, frameScale);
-*/
-
             if (s < 0.0f || s > 1.0f)
             {
-                int ab = 0;
+                int breakPointLine = 0;
             }
 
+            // grab out the rotation and slerp it
             Quaternion rotationComponent = currentFrame.getValue().getRotationJME();
-//            Quaternion rotationComponent2 = currentFrame.getValue().getRotationJME();
-
-//            rotationComponent.slerp(nextFrame.getValue().getRotation(), s);
             rotationComponent.slerp(rotationComponent, nextFrame.getValue().getRotationJME(), s);
-
-//            jMonkeyMatrix.setRotationQuaternion(rotationComponent);
-
             rotationComponent.toAngles(rotationAngles);
-
 
             // grab the translation and lerp it
             Vector3f translationComponent = new Vector3f(currentFrame.getValue().getTranslation());
             translationComponent.interpolate(nextFrame.getValue().getTranslation(), s);
-/*
-            Matrix4f jMonkeyMatrix = new Matrix4f();
 
-            jMonkeyMatrix.setTranslation(translationComponent);
-            jMonkeyMatrix.multLocal(rotationComponent);
-
-            Matrix4fToPMatrix(jMonkeyMatrix, delta);
-*/
             // apply this to our delta matrix
             delta.set2(rotationComponent, translationComponent, 1.0f);
-
-//            delta.lerp(currentFrame.getValue(), nextFrame.getValue(), s);
         }
-
-
-
-//        // grab out the rotation and slerp it
-//        Quaternion rotationComponent = currentFrame.getValue().getRotation();
-//        rotationComponent.slerp(nextFrame.getValue().getRotation(), s);
-//        
-//        // grab the translation and lerp it
-//        Vector3f translationComponent = currentFrame.getValue().getTranslation();
-//        translationComponent.interpolate(nextFrame.getValue().getTranslation(), s);
-//        
-//        // apply this to our delta matrix
-//        delta.set(rotationComponent, translationComponent, 1.0f);
-        
-        // apply this to the PJoint transform matrix
 
         if (!jointToAffect.getTransform().getLocalMatrix(false).equals(delta))
         {
-            int bbb = 0;
+            int breakPointLine = 0;
         }
 
         // apply to the joint
-//        jointToAffect.getTransform().getLocalMatrix(true).set(m_TargetBindMatrix);
-//        jointToAffect.getTransform().getLocalMatrix(true).mul(delta);
-
         jointToAffect.getTransform().getLocalMatrix(true).set(delta);
-//        jointToAffect.getTransform().setDirtyWorldMat(true);
-
         jointToAffect.setDirty(true, true);
     }
     
@@ -425,12 +357,6 @@ public class COLLADA_JointChannel implements PJointChannel
         return(m_fDuration);
     }
     
-    public float getAverageFrameStep()
-    {
-        return(m_fAverageFrameStep);
-    }
-
-
     /**
      * Dumps the JointChannel.
      */

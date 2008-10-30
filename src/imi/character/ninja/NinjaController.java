@@ -37,13 +37,13 @@ public class NinjaController extends CharacterController
     private boolean  initalized          = false;
     private PPolygonModelInstance body   = null;
     
-    private float    rotationSensetivity = -7.5f;
+    private float    rotationSensetivity = -10.0f;
     private PMatrix  rotation            = new PMatrix();
     private boolean  bTurning            = false;
     private Vector3f desiredDirection    = new Vector3f();
     private Vector3f velocity            = new Vector3f();
     private Vector3f acceleration        = new Vector3f();
-    private float    fwdAcceleration        = 0.0f; // fwdAcceleration towards the current direction
+    private float    fwdAcceleration     = 0.0f; // fwdAcceleration towards the current direction
     private float    maxAcceleration     = 10.0f;
     private float    maxVelocity         = 4.0f;
     private float    mass                = 1.0f;
