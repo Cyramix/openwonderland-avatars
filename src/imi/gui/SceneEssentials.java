@@ -15,6 +15,7 @@ import imi.loaders.repository.SharedAsset;
 import imi.loaders.repository.SharedAsset.SharedAssetType;
 import imi.scene.JScene;
 import imi.scene.PMatrix;
+import imi.scene.PNode;
 import imi.scene.PScene;
 import imi.scene.polygonmodel.PPolygonMeshInstance;
 import imi.scene.polygonmodel.PPolygonModelInstance;
@@ -58,6 +59,10 @@ public class SceneEssentials {
         private File fileTexture = null;
     // Names
         private String modelName = null;
+    // OTHER
+        private float visualScale = 1.0f;
+        private PMatrix origin = new PMatrix();
+        
         
     public SceneEssentials() {
         initFileChooser();
@@ -287,16 +292,15 @@ public class SceneEssentials {
         else
             currentHiProcessors.clear();
 
-        int iIndex = fileModel.getPath().indexOf("assets");
-        int iIndex2 = fileModel.getParent().indexOf("./");
-        String szModelPath = fileModel.getPath().substring(iIndex);
-        String szSourcePath = null;
-        if (iIndex2 > 0)
-            szSourcePath = fileModel.getPath().substring(0, iIndex2);
-        else
-            szSourcePath = fileModel.getPath().substring(0, iIndex);
-        String fullPath = szSourcePath + szModelPath;
-        String szURL = new String("file://" + fullPath);
+        String full = null;
+        int index = fileModel.getParent().indexOf("./");
+        if (index > 0) {
+            full = fileModel.getPath().substring(0, index);
+            full += fileModel.getPath().substring(index+2);
+        } else
+            full = fileModel.getPath();        
+        
+        String szURL = new String("file://" + full);
         URL modelURL = null;
         
         try {
@@ -332,8 +336,11 @@ public class SceneEssentials {
             colladaAsset.setUserData(new ColladaLoaderParams(false, true, false, false, 3, data[0], null));
             modelInst = currentPScene.addModelInstance(data[0], colladaAsset, new PMatrix());
         } else {
+            String bindPose = data[3];
+            SharedAsset character = new SharedAsset(currentPScene.getRepository(), new AssetDescriptor(SharedAssetType.COLLADA_Model, bindPose));
+            character.setUserData(new ColladaLoaderParams(true, true, false, false, 4, data[0], null));
             String[] anim = null;
-            setShadersNProcesses(loadDAEURL(data, anim));
+            loadInitializer(data[0], character, anim);
         }
     }
     
@@ -346,7 +353,8 @@ public class SceneEssentials {
         else
             currentHiProcessors.clear();
         
-        setShadersNProcesses(loadDAEs());        
+        loadDAEChar();
+        //setShadersNProcesses(setStuff());
     }
     
     public void loadDAECharacterURL(boolean clear, Component arg0, String[] data, String[] anim) {
@@ -358,13 +366,119 @@ public class SceneEssentials {
         else
             currentHiProcessors.clear();
         
-        setShadersNProcesses(loadDAEURL(data, anim));
+        String bindPose = data[3];
+        SharedAsset character = new SharedAsset(currentPScene.getRepository(), new AssetDescriptor(SharedAssetType.COLLADA_Model, bindPose));
+        character.setUserData(new ColladaLoaderParams(true, true, false, false, 4, data[0], null));
+        loadInitializer(data[0], character, anim);
     }    
+    
+    public void loadDAEChar() {
+        URL bindPose = findBindPose(fileModel);
+        final ArrayList<URL> animations = findAnims(fileModel);
+        String[] anim = new String[animations.size()];
+        for (int i = 0; i < animations.size(); i++) {
+            anim[i] = animations.get(i).toString();
+        }
+        
+        SharedAsset character = new SharedAsset(currentPScene.getRepository(), new AssetDescriptor(SharedAssetType.COLLADA_Model, bindPose));
+        character.setUserData(new ColladaLoaderParams(true, true, false, false, 4, fileModel.getName(), null));
+        loadInitializer(fileModel.getName(), character, anim);
+    }
+    
+    public SkeletonNode setStuff() {
+        URL bindPose = findBindPose(fileModel);
+        ArrayList<URL> anim = findAnims(fileModel);
+        
+        InstructionProcessor pProcessor = new InstructionProcessor(worldManager);
+        Instruction pRootInstruction = new Instruction();
+        Instruction pLoadBindPoseInstruction = pRootInstruction.addInstruction(InstructionNames.loadBindPose, bindPose);
+
+        //SkeletonNode skeleton = ((SkeletonNode)(currentPScene.getInstances().getChild(0)));
+        //pRootInstruction.addInstruction(InstructionNames.setSkeleton, skeleton);
+        
+        for (int i = 0; i < anim.size(); i++) {
+            pRootInstruction.addInstruction(InstructionNames.loadAnimation, anim.get(i));
+        }
+
+        pProcessor.execute(pRootInstruction);
+        SkeletonNode skeleton = ((SkeletonNode)(currentPScene.getInstances().getChild(0).getChild(0)));
+        return(skeleton);
+    }
+    
+    public File getAbsPath(File file) {
+        String fullpath = null;
+        int index = file.getParent().indexOf("./");
+        if (index > 0) {
+            fullpath = file.getPath().substring(0, index);
+            fullpath += file.getPath().substring(index+2);
+        } else
+            fullpath = file.getPath();        
+        
+        File absPath = new File(fullpath);
+        return absPath;
+    }
+    
+    public String[] getFileList(File file) {
+        File abs = getAbsPath(file);
+        FilenameFilter filter = new FilenameFilter() {
+
+            public boolean accept(File arg0, String arg1) {
+                return (arg1.endsWith(".dae"));
+            }
+        };
+        
+        String[] colladaList = abs.list(filter);
+        return colladaList;
+    }
+    
+    public URL findBindPose(File file) {
+        File abs = getAbsPath(file);
+        String absPath = abs.getPath();
+        String[] colladaList = getFileList(file);
+        
+        String bind = null;
+        for (int i = 0; i < colladaList.length; i++) {
+            if (colladaList[i].lastIndexOf("Bind") != -1) {
+                bind = absPath + "/" + colladaList[i];
+                break;
+            }
+        }
+        
+        String szURL = new String("file://" + bind);
+        URL modelURL = null;
+        try {
+            modelURL = new URL(szURL);
+            return modelURL;
+        } catch (MalformedURLException ex) {
+            Logger.getLogger(SceneEssentials.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return modelURL;
+    }
+    
+    public ArrayList<URL> findAnims(File file) {
+        ArrayList<URL> animURLs = new ArrayList<URL>();
+        File abs = getAbsPath(file);
+        String absPath = abs.getPath();
+        String[] colladaList = getFileList(file);
+        
+        String anim = null;
+        for (int i = 0; i < colladaList.length; i++) {
+            if (colladaList[i].lastIndexOf("Anim") != -1) {
+                anim = absPath + "/" + colladaList[i];
+                String szAnim = new String("file://" + anim);
+                try {
+                    URL animURL = new URL(szAnim);
+                    animURLs.add(animURL);
+                } catch (MalformedURLException ex) {
+                    Logger.getLogger(SceneEssentials.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        }
+        return animURLs;
+    }
     
     public SkeletonNode loadDAEs() {
         InstructionProcessor pProcessor = new InstructionProcessor(getWM());
-        
-        //String fileProtocol = new String("file://" + System.getProperty("user.dir") + "/");
         
         int iIndex = fileModel.getPath().indexOf("assets");
         int iIndex2 = fileModel.getParent().indexOf("./");
@@ -410,19 +524,48 @@ public class SceneEssentials {
         return (pProcessor.getSkeleton());
     }
     
-    public SkeletonNode loadDAEURL(String[] data, String[] anim) {
-        InstructionProcessor pProcessor = new InstructionProcessor(getWM());
-        Instruction pRootInstruction = new Instruction();
-        Instruction pLoadBindPoseInstruction = pRootInstruction.addInstruction(InstructionNames.loadBindPose, data[3]);
-        
-        if (anim != null) {
-            for (int i = 0; i < anim.length; i++) {
-                pRootInstruction.addInstruction(InstructionNames.loadAnimation,anim[i]);
+    public void loadInitializer(String n, SharedAsset s, final String[] a) {
+        AssetInitializer init = new AssetInitializer() {
+
+            public boolean initialize(Object asset) {
+
+                if (((PNode) asset).getChild(0) instanceof SkeletonNode) {
+                    final SkeletonNode skeleton = (SkeletonNode) ((PNode) asset).getChild(0);
+                    
+                    // Visual Scale
+                    if (visualScale != 1.0f) {
+                        ArrayList<PPolygonSkinnedMeshInstance> meshes = skeleton.getSkinnedMeshInstances();
+                        for (PPolygonSkinnedMeshInstance mesh : meshes) {
+                            mesh.getTransform().getLocalMatrix(true).setScale(visualScale);
+                        }
+                    }
+                    
+                    // Set animations
+                    if (a != null) {
+                        InstructionProcessor pProcessor = new InstructionProcessor(worldManager);
+                        Instruction pRootInstruction = new Instruction();
+
+                        pRootInstruction.addInstruction(InstructionNames.setSkeleton, skeleton);
+                        for (int i = 0; i < a.length; i++) {
+                            pRootInstruction.addInstruction(InstructionNames.loadAnimation, a[i]);
+                        }
+                        pProcessor.execute(pRootInstruction);
+                    }
+                    
+                    skeleton.setShader(new VertexDeformer(worldManager));
+                    ((ProcessorCollectionComponent)currentEntity.getComponent(ProcessorCollectionComponent.class)).addProcessor(new SkinnedAnimationProcessor(skeleton));
+                    currentPScene.setDirty(true, true);
+                }
+                return true;
             }
+        };
+        s.setInitializer(init);
+        currentPScene.setUseRepository(false);
+        modelInst = currentPScene.addModelInstance(n, s, new PMatrix());
+        // Set position
+        if (origin != null) {
+            modelInst.getTransform().setLocalMatrix(origin);                    // Set animations
         }
-    
-        pProcessor.execute(pRootInstruction);
-        return (pProcessor.getSkeleton());
     }
     
     public void setShadersNProcesses(SkeletonNode sNode) {

@@ -648,16 +648,21 @@ public class PScene extends PNode implements RepositoryUser
             ColladaTransferProcessor processor = new ColladaTransferProcessor(this);
             TreeTraverser.breadthFirst(newInstance, processor);
             //setUseRepository(true);
-            while (newInstance.getChildrenCount() > 0)
-            {
-                PNode kid = newInstance.getChild(0);
-                m_Instances.addChild(kid);
-                // Initialize this asset now that it is loaded
-                if (asset.getInitializer() != null)
+             m_Instances.addChild(newInstance);
+             if (asset.getInitializer() != null)
                 {
-                    asset.getInitializer().initialize(kid); 
+                    asset.getInitializer().initialize(newInstance); 
                 }
-            }
+//            while (newInstance.getChildrenCount() > 0)
+//            {
+//                PNode kid = newInstance.getChild(0);
+//                m_Instances.addChild(kid);
+//                // Initialize this asset now that it is loaded
+//                if (asset.getInitializer() != null)
+//                {
+//                    asset.getInitializer().initialize(kid); 
+//                }
+//            }
             
             
 //            PScene otherScene = ((PScene)asset.getAssetData());

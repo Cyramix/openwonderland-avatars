@@ -25,6 +25,7 @@ import imi.scene.animation.Animated;
 import imi.scene.animation.AnimationComponent;
 import imi.scene.animation.AnimationGroup;
 import imi.scene.animation.AnimationState;
+import imi.scene.polygonmodel.parts.PMeshMaterial;
 import imi.scene.polygonmodel.skinned.PPolygonSkinnedMeshInstance;
 import imi.scene.polygonmodel.skinned.SkinnedMeshJoint;
 import imi.scene.polygonmodel.skinned.PPolygonSkinnedMesh;
@@ -356,7 +357,9 @@ public class SkeletonNode extends PNode implements Animated
             {
                 PPolygonSkinnedMeshInstance pSkinnedMeshInstance = (PPolygonSkinnedMeshInstance)kid;
                 
-                pSkinnedMeshInstance.getMaterialRef().getMaterial().setShader(shader);
+                PMeshMaterial mat = pSkinnedMeshInstance.getMaterialRef().getMaterial();
+                mat.setShader(shader);
+                pSkinnedMeshInstance.setMaterial(mat);
                 pSkinnedMeshInstance.setUseGeometryMaterial(false);
             }
         }

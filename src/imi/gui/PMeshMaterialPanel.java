@@ -104,11 +104,13 @@ public class PMeshMaterialPanel extends javax.swing.JPanel
         DefaultListModel newModel = new DefaultListModel();
         for (int i = 0; i < m_mesh.getGeometry().getNumberOfTextures(); ++i) 
         {
-            if (m_mat.getTexture(i) != null)
+            if (m_mat.getTexture(i) != null) {
                 texName = new String("["+ i + "] " + m_mat.getTexture(i).getImageLocation());
+                textureLocations.add(m_mat.getTexture(i).getImageLocation());
+            }
             else
                 texName = new String("[" + i + "] is unset");
-            textureLocations.add(m_mat.getTexture(i).getImageLocation());
+            
             newModel.addElement(texName);
         }
         jList_Textures.setModel(newModel);
