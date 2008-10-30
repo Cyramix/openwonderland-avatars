@@ -33,7 +33,7 @@
                 <Property name="text" type="java.lang.String" value="Load Model"/>
               </Properties>
               <AuxValues>
-                <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="jMenuItem_LoadModel.addActionListener(new java.awt.event.ActionListener() {&#xa;    public void actionPerformed(java.awt.event.ActionEvent evt) {&#xa;        jPanel_FileIO1.loadModel(jPanel_ModelRotation1, jPanel_Animations1, jPanel_ShaderLoader1);&#xa;    }&#xa;});"/>
+                <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="jMenuItem_LoadModel.addActionListener(new java.awt.event.ActionListener() {&#xa;    public void actionPerformed(java.awt.event.ActionEvent evt) {&#xa;        jPanel_FileIO1.loadModel(jPanel_ModelRotation1, jPanel_Animations1);&#xa;    }&#xa;});"/>
               </AuxValues>
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="jMenuItem_LoadTexture">
@@ -55,7 +55,7 @@
                 <Property name="text" type="java.lang.String" value="Load Configuration"/>
               </Properties>
               <AuxValues>
-                <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="jMenuItem_LoadXML.addActionListener(new java.awt.event.ActionListener() {&#xa;    public void actionPerformed(java.awt.event.ActionEvent evt) {&#xa;        jPanel_FileIO1.loadxml(jPanel_ModelRotation1, jPanel_Animations1, jPanel_ShaderLoader1);&#xa;    }&#xa;});"/>
+                <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="jMenuItem_LoadXML.addActionListener(new java.awt.event.ActionListener() {&#xa;    public void actionPerformed(java.awt.event.ActionEvent evt) {&#xa;        jPanel_FileIO1.loadxml(jPanel_ModelRotation1, jPanel_Animations1);&#xa;    }&#xa;});"/>
               </AuxValues>
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="jMenuItem_SaveXML">
@@ -113,26 +113,15 @@
   <Layout>
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Group type="102" alignment="0" attributes="0">
-              <EmptySpace min="-2" pref="8" max="-2" attributes="0"/>
+          <Group type="102" attributes="0">
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="102" alignment="0" attributes="1">
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Component id="jPanel_ShaderLoader1" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace type="separate" max="-2" attributes="0"/>
-                      <Component id="jLabel_LOGO" min="-2" max="-2" attributes="0"/>
-                  </Group>
-                  <Group type="102" attributes="0">
-                      <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="jPanel_Animations1" min="-2" max="-2" attributes="0"/>
-                          <Component id="jPanel_ModelRotation1" min="-2" pref="230" max="-2" attributes="0"/>
-                          <Component id="jToolBar_AvatarTools" min="-2" pref="230" max="-2" attributes="1"/>
-                          <Component id="jPanel_FileIO1" min="-2" pref="230" max="-2" attributes="0"/>
-                      </Group>
-                      <EmptySpace min="-2" pref="8" max="-2" attributes="0"/>
-                      <Component id="jPanel_DisplayWindow" min="-2" max="-2" attributes="0"/>
-                  </Group>
+                  <Component id="jPanel_FileIO1" min="-2" pref="230" max="-2" attributes="0"/>
+                  <Component id="jToolBar_AvatarTools" min="-2" pref="230" max="-2" attributes="1"/>
+                  <Component id="jPanel_ModelRotation1" min="-2" pref="230" max="-2" attributes="0"/>
+                  <Component id="jPanel_Animations1" min="-2" max="-2" attributes="0"/>
               </Group>
+              <EmptySpace min="-2" pref="0" max="-2" attributes="0"/>
+              <Component id="jPanel_DisplayWindow" min="-2" max="-2" attributes="0"/>
               <EmptySpace min="-2" max="-2" attributes="0"/>
           </Group>
       </Group>
@@ -140,25 +129,17 @@
     <DimensionLayout dim="1">
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" attributes="0">
-              <EmptySpace min="-2" pref="0" max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="1" attributes="0">
-                  <Group type="102" attributes="0">
-                      <Component id="jPanel_FileIO1" min="-2" pref="152" max="-2" attributes="0"/>
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Component id="jToolBar_AvatarTools" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Component id="jPanel_ModelRotation1" min="-2" pref="175" max="-2" attributes="0"/>
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Component id="jPanel_Animations1" min="-2" pref="223" max="-2" attributes="0"/>
-                  </Group>
-                  <Component id="jPanel_DisplayWindow" min="-2" max="-2" attributes="1"/>
-              </Group>
+              <Component id="jPanel_FileIO1" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="1" attributes="0">
-                  <Component id="jPanel_ShaderLoader1" min="-2" max="-2" attributes="1"/>
-                  <Component id="jLabel_LOGO" min="-2" pref="112" max="-2" attributes="1"/>
-              </Group>
-              <EmptySpace min="-2" pref="20" max="-2" attributes="0"/>
+              <Component id="jToolBar_AvatarTools" min="-2" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
+              <Component id="jPanel_ModelRotation1" min="-2" pref="175" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
+              <Component id="jPanel_Animations1" min="-2" pref="223" max="-2" attributes="0"/>
+          </Group>
+          <Group type="102" alignment="0" attributes="0">
+              <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
+              <Component id="jPanel_DisplayWindow" min="-2" max="-2" attributes="1"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -313,17 +294,6 @@
     <Component class="imi.gui.JPanel_ModelRotation" name="jPanel_ModelRotation1">
     </Component>
     <Component class="imi.gui.JPanel_Animations" name="jPanel_Animations1">
-    </Component>
-    <Component class="imi.gui.JPanel_ShaderLoader" name="jPanel_ShaderLoader1">
-    </Component>
-    <Component class="javax.swing.JLabel" name="jLabel_LOGO">
-      <Properties>
-        <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
-          <Border info="org.netbeans.modules.form.compat2.border.BevelBorderInfo">
-            <BevelBorder/>
-          </Border>
-        </Property>
-      </Properties>
     </Component>
   </SubComponents>
 </Form>

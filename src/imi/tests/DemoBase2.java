@@ -822,9 +822,9 @@ public class DemoBase2 extends javax.swing.JFrame implements FrameRateListener, 
         jPanel_Animations1.setPScene(sceneData.getPScene());
         resetDataMembers();
         resetGUI(0);
-        jPanel_ShaderLoader1.setPanel(sceneData.getPScene());
+        //jPanel_ShaderLoader1.setPanel(sceneData.getPScene());
         jPanel_ModelRotation1.setPanel(sceneData.getPScene(), jPanel_Animations1.getSelectedModelInstanceNode());
-        jPanel_FileIO1.setPanel(sceneData, jPanel_ModelRotation1, jPanel_Animations1, jPanel_ShaderLoader1);
+        jPanel_FileIO1.setPanel(sceneData, jPanel_ModelRotation1, jPanel_Animations1);
     }
 
     /**
@@ -967,8 +967,6 @@ public class DemoBase2 extends javax.swing.JFrame implements FrameRateListener, 
         jPanel_FileIO1 = new imi.gui.JPanel_FileIO();
         jPanel_ModelRotation1 = new imi.gui.JPanel_ModelRotation();
         jPanel_Animations1 = new imi.gui.JPanel_Animations();
-        jPanel_ShaderLoader1 = new imi.gui.JPanel_ShaderLoader();
-        jLabel_LOGO = new javax.swing.JLabel();
         jMenuBar_MainMenu = new javax.swing.JMenuBar();
         jMenu_File = new javax.swing.JMenu();
         jMenuItem_LoadModel = new javax.swing.JMenuItem();
@@ -1010,7 +1008,7 @@ public class DemoBase2 extends javax.swing.JFrame implements FrameRateListener, 
                 .add(canvas_SceneRenderWindow, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 600, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
         );
 
-        jToolBar_AvatarTools.setBorder(javax.swing.BorderFactory.createTitledBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED), "Avatar Tools", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(0, 0, 255))); // NOI18N
+        jToolBar_AvatarTools.setBorder(javax.swing.BorderFactory.createTitledBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED), "Avatar Tools", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Lucida Grande", 0, 13), new java.awt.Color(0, 0, 255))); // NOI18N
         jToolBar_AvatarTools.setOrientation(1);
         jToolBar_AvatarTools.setRollover(true);
 
@@ -1058,8 +1056,6 @@ public class DemoBase2 extends javax.swing.JFrame implements FrameRateListener, 
 
         jToolBar_AvatarTools.add(jToolBar11);
 
-        jLabel_LOGO.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
-
         jMenuBar_MainMenu.setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED));
         jMenuBar_MainMenu.setMaximumSize(new java.awt.Dimension(999999, 25));
         jMenuBar_MainMenu.setMinimumSize(new java.awt.Dimension(1024, 25));
@@ -1071,7 +1067,7 @@ public class DemoBase2 extends javax.swing.JFrame implements FrameRateListener, 
         jMenuItem_LoadModel.setText("Load Model");
         jMenuItem_LoadModel.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jPanel_FileIO1.loadModel(jPanel_ModelRotation1, jPanel_Animations1, jPanel_ShaderLoader1);
+                jPanel_FileIO1.loadModel(jPanel_ModelRotation1, jPanel_Animations1);
             }
         });
         jMenu_File.add(jMenuItem_LoadModel);
@@ -1089,7 +1085,7 @@ public class DemoBase2 extends javax.swing.JFrame implements FrameRateListener, 
         jMenuItem_LoadXML.setText("Load Configuration");
         jMenuItem_LoadXML.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jPanel_FileIO1.loadxml(jPanel_ModelRotation1, jPanel_Animations1, jPanel_ShaderLoader1);
+                jPanel_FileIO1.loadxml(jPanel_ModelRotation1, jPanel_Animations1);
             }
         });
         jMenu_File.add(jMenuItem_LoadXML);
@@ -1119,42 +1115,28 @@ public class DemoBase2 extends javax.swing.JFrame implements FrameRateListener, 
         layout.setHorizontalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
-                .add(8, 8, 8)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(layout.createSequentialGroup()
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(jPanel_ShaderLoader1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                        .add(18, 18, 18)
-                        .add(jLabel_LOGO))
-                    .add(layout.createSequentialGroup()
-                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                            .add(jPanel_Animations1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                            .add(jPanel_ModelRotation1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 230, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                            .add(jToolBar_AvatarTools, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 230, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                            .add(jPanel_FileIO1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 230, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                        .add(8, 8, 8)
-                        .add(jPanel_DisplayWindow, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
+                    .add(jPanel_FileIO1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 230, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                    .add(jToolBar_AvatarTools, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 230, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                    .add(jPanel_ModelRotation1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 230, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                    .add(jPanel_Animations1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                .add(0, 0, 0)
+                .add(jPanel_DisplayWindow, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
-                .add(0, 0, 0)
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
-                    .add(layout.createSequentialGroup()
-                        .add(jPanel_FileIO1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 152, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(jToolBar_AvatarTools, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(jPanel_ModelRotation1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 175, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(jPanel_Animations1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 223, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                    .add(jPanel_DisplayWindow, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                .add(jPanel_FileIO1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
-                    .add(jPanel_ShaderLoader1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(jLabel_LOGO, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 112, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                .add(20, 20, 20))
+                .add(jToolBar_AvatarTools, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(jPanel_ModelRotation1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 175, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(jPanel_Animations1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 223, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+            .add(layout.createSequentialGroup()
+                .add(10, 10, 10)
+                .add(jPanel_DisplayWindow, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
         );
 
         pack();
@@ -1189,7 +1171,6 @@ private void formKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_for
     private javax.swing.JButton jButton_AvatarOptions;
     private javax.swing.JButton jButton_ExplorerOptions;
     private javax.swing.JLabel jLabel_FPSCounter;
-    private javax.swing.JLabel jLabel_LOGO;
     private javax.swing.JMenuBar jMenuBar_MainMenu;
     private javax.swing.JMenuItem jMenuItem_About;
     private javax.swing.JMenuItem jMenuItem_LoadModel;
@@ -1202,7 +1183,6 @@ private void formKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_for
     private javax.swing.JPanel jPanel_DisplayWindow;
     private imi.gui.JPanel_FileIO jPanel_FileIO1;
     private imi.gui.JPanel_ModelRotation jPanel_ModelRotation1;
-    private imi.gui.JPanel_ShaderLoader jPanel_ShaderLoader1;
     private javax.swing.JToolBar jToolBar11;
     private javax.swing.JToolBar jToolBar_AvatarOptions;
     private javax.swing.JToolBar jToolBar_AvatarTools;

@@ -307,6 +307,28 @@ public class SceneEssentials {
         modelInst = currentPScene.addModelInstance(fileModel.getName(), colladaAsset, new PMatrix());
     }
     
+    public void loadDAESMeshFile(boolean clear, Component arg0) {
+        currentPScene.setUseRepository(false);
+        if(clear)
+            currentPScene.getInstances().removeAllChildren();
+        if(currentHiProcessors == null)
+            currentHiProcessors = new ArrayList<ProcessorComponent>();
+        else
+            currentHiProcessors.clear();
+        
+        File path = getAbsPath(fileModel);        
+        String szURL = new String("file://" + path.getPath());
+        try {
+            URL URLfile = new URL(szURL);
+            SharedAsset character = new SharedAsset(currentPScene.getRepository(), new AssetDescriptor(SharedAssetType.COLLADA_Model, URLfile));
+            character.setUserData(new ColladaLoaderParams(true, true, false, false, 4, fileModel.getName(), null));
+            String[] anim = null;
+            loadInitializer(fileModel.getName(), character, anim);
+        } catch (MalformedURLException ex) {
+            Logger.getLogger(SceneEssentials.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
     public void loadDAEURL(boolean clear, Component arg0, String[] data) {
         currentPScene.setUseRepository(false);
         if(clear)

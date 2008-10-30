@@ -200,6 +200,41 @@ public class JPanel_FileIO extends javax.swing.JPanel {
         }
     }
     
+    public void loadSkinnedMeshModel() {
+        System.out.println("=================================================");
+        System.out.println("Loading a model file per the user's request.....");
+        System.out.println("=================================================");
+
+        int retValModel = jFileChooser_LoadModels.showOpenDialog(this);
+        if (retValModel == javax.swing.JFileChooser.APPROVE_OPTION) {
+            java.io.File fileModel = jFileChooser_LoadModels.getSelectedFile();
+            sceneData.setfileModel(fileModel);
+
+            rotPanel.resetPanel();
+
+            sceneData.loadDAESMeshFile(true, this);
+
+            while (sceneData.getPScene().getAssetWaitingList().size() > 0) {
+                //System.out.println("Waiting to get assets...");
+            }
+            
+            if (shaderPanel != null)
+                shaderPanel.setPanel(sceneData.getPScene());
+            if (animPanel != null)
+                animPanel.setPanel(sceneData.getPScene());
+            if (rotPanel != null)
+                rotPanel.setModelInst(animPanel.getSelectedModelInstanceNode());
+            
+            System.out.println("=================================================");
+            System.out.println("Loading of model file has been completed.........");
+            System.out.println("=================================================");
+        } else {
+            System.out.println("=================================================");
+            System.out.println("Loading of model file has been cancelled.........");
+            System.out.println("=================================================");
+        }
+    }
+    
     public void loadModel(JPanel_ModelRotation rotPanel, JPanel_Animations animPanel) {
         System.out.println("=================================================");
         System.out.println("Loading a model file per the user's request.....");
@@ -395,15 +430,12 @@ public class JPanel_FileIO extends javax.swing.JPanel {
             }
         };
         jFileChooser_SaveXML = new javax.swing.JFileChooser();
-        jToolBar_OpenSave = new javax.swing.JToolBar();
-        jButton_Open = new javax.swing.JButton();
-        jButton_Save = new javax.swing.JButton();
-        jToolBar_ModelText = new javax.swing.JToolBar();
+        jButton_LoadSMesh = new javax.swing.JButton();
         jButton_Model = new javax.swing.JButton();
         jButton_New = new javax.swing.JButton();
-        jToolBar_SelectedTexture = new javax.swing.JToolBar();
+        jButton_Open = new javax.swing.JButton();
+        jButton_Save = new javax.swing.JButton();
         jComboBox_Textures = new javax.swing.JComboBox();
-        jToolBar_TextureLoad = new javax.swing.JToolBar();
         jButton_Texture = new javax.swing.JButton();
 
         jFileChooser_LoadModels.setDialogTitle("Load Model File");
@@ -433,113 +465,62 @@ public class JPanel_FileIO extends javax.swing.JPanel {
         jFileChooser_SaveXML.setSelectedFile(fileXML);
 
         setBorder(javax.swing.BorderFactory.createTitledBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED), "File I/O", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Lucida Grande", 0, 13), new java.awt.Color(0, 0, 255))); // NOI18N
-        setMaximumSize(new java.awt.Dimension(230, 115));
-        setMinimumSize(new java.awt.Dimension(230, 115));
-        setPreferredSize(new java.awt.Dimension(230, 146));
+        setMaximumSize(new java.awt.Dimension(230, 247));
+        setMinimumSize(new java.awt.Dimension(0, 0));
+        setPreferredSize(new java.awt.Dimension(230, 247));
 
-        jToolBar_OpenSave.setFloatable(false);
-        jToolBar_OpenSave.setRollover(true);
-        jToolBar_OpenSave.setMaximumSize(new java.awt.Dimension(230, 25));
-        jToolBar_OpenSave.setPreferredSize(new java.awt.Dimension(230, 25));
-
-        jButton_Open.setFont(new java.awt.Font("Lucida Grande", 0, 10));
-        jButton_Open.setText("OPEN");
-        jButton_Open.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
-        jButton_Open.setFocusable(false);
-        jButton_Open.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton_Open.setMaximumSize(new java.awt.Dimension(140, 25));
-        jButton_Open.setMinimumSize(new java.awt.Dimension(42, 25));
-        jButton_Open.setPreferredSize(new java.awt.Dimension(140, 25));
-        jButton_Open.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jButton_Open.addActionListener(new java.awt.event.ActionListener() {
+        jButton_LoadSMesh.setText("Load Skinned Mesh");
+        jButton_LoadSMesh.setPreferredSize(new java.awt.Dimension(214, 29));
+        jButton_LoadSMesh.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                loadxml(rotPanel, animPanel, shaderPanel);
+                loadSkinnedMeshModel();
             }
         });
-        jToolBar_OpenSave.add(jButton_Open);
 
-        jButton_Save.setFont(new java.awt.Font("Lucida Grande", 0, 10));
-        jButton_Save.setText("SAVE");
-        jButton_Save.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
-        jButton_Save.setFocusable(false);
-        jButton_Save.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton_Save.setMaximumSize(new java.awt.Dimension(140, 25));
-        jButton_Save.setMinimumSize(new java.awt.Dimension(42, 25));
-        jButton_Save.setPreferredSize(new java.awt.Dimension(140, 25));
-        jButton_Save.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jButton_Save.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                savexml();
-            }
-        });
-        jToolBar_OpenSave.add(jButton_Save);
-
-        jToolBar_ModelText.setFloatable(false);
-        jToolBar_ModelText.setRollover(true);
-        jToolBar_ModelText.setMaximumSize(new java.awt.Dimension(230, 25));
-        jToolBar_ModelText.setPreferredSize(new java.awt.Dimension(230, 25));
-
-        jButton_Model.setFont(new java.awt.Font("Lucida Grande", 0, 10)); // NOI18N
-        jButton_Model.setText("MODEL");
-        jButton_Model.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
-        jButton_Model.setFocusable(false);
-        jButton_Model.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton_Model.setMaximumSize(new java.awt.Dimension(140, 25));
-        jButton_Model.setMinimumSize(new java.awt.Dimension(42, 25));
-        jButton_Model.setPreferredSize(new java.awt.Dimension(140, 25));
-        jButton_Model.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jButton_Model.setText("Load Model");
+        jButton_Model.setPreferredSize(new java.awt.Dimension(214, 29));
         jButton_Model.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 loadModel(rotPanel, animPanel, shaderPanel);
             }
         });
-        jToolBar_ModelText.add(jButton_Model);
 
-        jButton_New.setFont(new java.awt.Font("Lucida Grande", 0, 10));
-        jButton_New.setText("NEW");
-        jButton_New.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
-        jButton_New.setFocusable(false);
-        jButton_New.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton_New.setMaximumSize(new java.awt.Dimension(140, 25));
-        jButton_New.setMinimumSize(new java.awt.Dimension(42, 25));
-        jButton_New.setPreferredSize(new java.awt.Dimension(140, 25));
-        jButton_New.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jButton_New.setText("Reset Scene");
+        jButton_New.setPreferredSize(new java.awt.Dimension(214, 29));
         jButton_New.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 //TODO: gotta reset all to default
             }
         });
-        jToolBar_ModelText.add(jButton_New);
 
-        jToolBar_SelectedTexture.setFloatable(false);
-        jToolBar_SelectedTexture.setRollover(true);
+        jButton_Open.setText("Load Config File");
+        jButton_Open.setPreferredSize(new java.awt.Dimension(214, 29));
+        jButton_Open.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                loadxml(rotPanel, animPanel, shaderPanel);
+            }
+        });
+
+        jButton_Save.setText("Save Config File");
+        jButton_Save.setPreferredSize(new java.awt.Dimension(214, 29));
+        jButton_Save.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                savexml();
+            }
+        });
 
         jComboBox_Textures.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-        jComboBox_Textures.setMaximumSize(new java.awt.Dimension(215, 27));
+        jComboBox_Textures.setMaximumSize(new java.awt.Dimension(214, 29));
         jComboBox_Textures.setMinimumSize(new java.awt.Dimension(85, 27));
-        jComboBox_Textures.setPreferredSize(new java.awt.Dimension(85, 27));
-        jToolBar_SelectedTexture.add(jComboBox_Textures);
+        jComboBox_Textures.setPreferredSize(new java.awt.Dimension(214, 29));
 
-        jToolBar_TextureLoad.setFloatable(false);
-        jToolBar_TextureLoad.setRollover(true);
-        jToolBar_TextureLoad.setMaximumSize(new java.awt.Dimension(103, 25));
-        jToolBar_TextureLoad.setPreferredSize(new java.awt.Dimension(103, 25));
-
-        jButton_Texture.setFont(new java.awt.Font("Lucida Grande", 0, 10));
-        jButton_Texture.setText("TEXTURE");
-        jButton_Texture.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
-        jButton_Texture.setFocusable(false);
-        jButton_Texture.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton_Texture.setMaximumSize(new java.awt.Dimension(215, 25));
-        jButton_Texture.setMinimumSize(new java.awt.Dimension(42, 25));
-        jButton_Texture.setPreferredSize(new java.awt.Dimension(215, 25));
-        jButton_Texture.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jButton_Texture.setText("Load Texture");
+        jButton_Texture.setPreferredSize(new java.awt.Dimension(214, 29));
         jButton_Texture.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 loadTexture(animPanel);
             }
         });
-        jToolBar_TextureLoad.add(jButton_Texture);
 
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
         this.setLayout(layout);
@@ -547,28 +528,37 @@ public class JPanel_FileIO extends javax.swing.JPanel {
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(jToolBar_OpenSave, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 215, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(jToolBar_ModelText, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 215, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(jToolBar_SelectedTexture, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 215, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(jToolBar_TextureLoad, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 215, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap())
+                    .add(jButton_Open, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 214, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                    .add(jButton_Save, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 214, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                    .add(jButton_Model, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 214, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                    .add(jButton_LoadSMesh, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 214, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                    .add(jButton_New, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 214, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                    .add(jComboBox_Textures, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 207, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                    .add(jButton_Texture, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 214, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(2, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
-                .add(jToolBar_OpenSave, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 25, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .add(jButton_Open, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 29, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .add(0, 0, 0)
+                .add(jButton_Save, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 29, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .add(0, 0, 0)
+                .add(jButton_Model, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 29, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .add(0, 0, 0)
+                .add(jButton_LoadSMesh, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 29, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .add(0, 0, 0)
+                .add(jButton_New, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 29, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jToolBar_ModelText, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 25, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .add(jComboBox_Textures, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 23, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jToolBar_SelectedTexture, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 27, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .add(jToolBar_TextureLoad, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 25, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .add(jButton_Texture, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 29, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jButton_LoadSMesh;
     private javax.swing.JButton jButton_Model;
     private javax.swing.JButton jButton_New;
     private javax.swing.JButton jButton_Open;
@@ -579,9 +569,5 @@ public class JPanel_FileIO extends javax.swing.JPanel {
     private javax.swing.JFileChooser jFileChooser_LoadModels;
     private javax.swing.JFileChooser jFileChooser_LoadXML;
     private javax.swing.JFileChooser jFileChooser_SaveXML;
-    private javax.swing.JToolBar jToolBar_ModelText;
-    private javax.swing.JToolBar jToolBar_OpenSave;
-    private javax.swing.JToolBar jToolBar_SelectedTexture;
-    private javax.swing.JToolBar jToolBar_TextureLoad;
     // End of variables declaration//GEN-END:variables
 }
