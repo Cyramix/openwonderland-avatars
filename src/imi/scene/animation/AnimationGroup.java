@@ -441,11 +441,13 @@ public class AnimationGroup
     //  Appends an AnimationGroup to the end of this AnimationGroup.
     public void appendAnimationGroup(AnimationGroup pAnimationGroup)
     {
+        System.out.println("Appending Animation Group with duration: " + pAnimationGroup.getDuration());
+        
         COLLADA_JointChannel pOriginalJointChannel;
         COLLADA_JointChannel pJointChannel;
         
         // find the time of the last keyframe in this animation group
-        float fEndOfInitialKeyframes = this.calculateLastFrameTime();
+        float fEndOfInitialKeyframes = this.calculateLastFrameTime() + m_fTimePadding;
         
         for (int i = 0; i < pAnimationGroup.getChannels().size(); i++) // For each new channel
         {
@@ -456,7 +458,7 @@ public class AnimationGroup
             
             if (pOriginalJointChannel != null)
             {
-                pOriginalJointChannel.append(pJointChannel);
+                pOriginalJointChannel.append(pJointChannel, m_fTimePadding);
             }
             else
             {
@@ -486,8 +488,8 @@ public class AnimationGroup
             // grab the next one
             AnimationCycle currentCycle = pAnimationGroup.getCycle(i);
             
-            currentCycle.setStartTime(currentCycle.getStartTime() + (fEndOfInitialKeyframes + m_fTimePadding));
-            currentCycle.setEndTime(currentCycle.getEndTime() + (fEndOfInitialKeyframes + m_fTimePadding));
+            currentCycle.setStartTime(currentCycle.getStartTime() + (fEndOfInitialKeyframes));
+            currentCycle.setEndTime(currentCycle.getEndTime() + (fEndOfInitialKeyframes));
             
             this.addCycle(currentCycle);
         }
@@ -498,6 +500,8 @@ public class AnimationGroup
         calculateDuration();
 
         updateDefaultCycle();
+        
+        pAnimationGroup.clear();
     }
 
     //  Clears the AnimationGroup.

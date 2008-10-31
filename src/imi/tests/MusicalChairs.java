@@ -56,6 +56,7 @@ public class MusicalChairs extends DemoBase
         NinjaAvatar avatar = new NinjaAvatar("Avatar", wm);
         avatar.selectForInput();
         avatar.setObjectCollection(objs);
+        control.getNinjaTeam().add(avatar);
 
 //        NinjaAvatar bigBaby = new NinjaAvatar("Big Baby", wm);
 //        bigBaby.getModelInst().getTransform().getLocalMatrix(true).setTranslation(Vector3f.UNIT_Z.mult(-5.0f));

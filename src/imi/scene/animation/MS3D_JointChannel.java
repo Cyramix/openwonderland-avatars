@@ -463,14 +463,14 @@ public class MS3D_JointChannel implements PJointChannel
      * Appends a JointChannel onto the end of this JointChannel.
      * @param pJointChannel The JointChannel to append onto this one.
      */
-    public void append(PJointChannel pJointChannel)
+    public void append(PJointChannel pJointChannel, float fTimePadding)
     {
         float fEndTime = getEndTime();
         int a;
         VectorKeyframe pKeyframe;
 
         //  Adjust all the KeyframeTimes.
-        pJointChannel.adjustKeyframeTimes(fEndTime);
+        pJointChannel.adjustKeyframeTimes(fEndTime + fTimePadding);
 
         for (a=0; a<getTranslationKeyframeCount(); a++)
         {

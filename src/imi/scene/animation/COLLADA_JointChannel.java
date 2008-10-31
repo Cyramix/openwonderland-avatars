@@ -75,7 +75,7 @@ public class COLLADA_JointChannel implements PJointChannel
 
     // may return null
     private PMatrixKeyframe [] calculateFrames(float fCurrentTime, float fStartTime, float fEndTime, boolean bReverse, BooleanPointer bEdgeOfLoop)
-    {
+    {   
         // determine what two keyframes to interpolate between
         bEdgeOfLoop.set(false);
         PMatrixKeyframe currentFrame            = null;
@@ -96,11 +96,12 @@ public class COLLADA_JointChannel implements PJointChannel
             {   
                 if (frame.getTime() > fCurrentTime)
                 {
+                    // Just the first time
                     if (currentFrame == null)
                         currentFrame = frame;
 
                     // Get the last frame
-                    if (frame.getTime() >= fEndTime)
+                    if (frame.getTime() >= fEndTime - Float.MIN_VALUE)
                     {
                         currentCycleLastFrame = frame;
                         break;
@@ -117,7 +118,7 @@ public class COLLADA_JointChannel implements PJointChannel
                     // In the case that we exhaust the collection of frames and
                     // never hit the else clause, this will ensure that the 
                     // nextFrame will be assigned to a meaningful value.
-                    nextFrame = currentCycleFirstFrame; 
+                    //nextFrame = currentCycleFirstFrame; 
                 }
                 else 
                 {
@@ -128,27 +129,47 @@ public class COLLADA_JointChannel implements PJointChannel
             }
         }
         
-        // These are not good cases
-        if (  currentFrame == null || !( currentFrame.getTime() < fEndTime && currentFrame.getTime() > fStartTime )  )
-                return null;
+        // No keyframe in this joint belong to this animation cycle?
+        if (!bReverse && nextFrame == null)
+        {
+            return null;
+        }
         
-        // It should only be null if we are reversed and hitting the edge
-        if (nextFrame == null)
-            nextFrame = currentCycleLastFrame;
+        // These are not good cases, there are no keyframes for this joint at this time in this animation cycle
+        if ( currentFrame == null  )
+        {
+            //System.out.println("current frame is null " + m_TargetJointName + " " + fCurrentTime);
+            return null;
+        }
+        if (  !( currentFrame.getTime() < fEndTime && currentFrame.getTime() > fStartTime )  )
+        {
+            //System.out.println("outside cycle bounds " + m_TargetJointName + " " + fCurrentTime);
+            return null;
+        }
+        
         
         // Last frame in cycle case
-        if (!bReverse && nextFrame.getTime() >= fEndTime)
+        if (!bReverse && nextFrame.getTime() > fEndTime)
         {
             nextFrame = currentCycleFirstFrame;
             bEdgeOfLoop.set(true);
         }
         
-        // First frame in cycle case during reverse animation
-        if (bReverse && nextFrame.getTime() <= fStartTime)
+        // It should only be null if we are reversed and hitting the edge
+        if (bReverse && nextFrame == null)
         {
             nextFrame = currentCycleLastFrame;
             bEdgeOfLoop.set(true);   
         }
+        
+        // First frame in cycle case during reverse animation
+        if (bReverse && nextFrame.getTime() <=  fStartTime)
+        {
+            nextFrame = currentCycleLastFrame;
+            bEdgeOfLoop.set(true);   
+        }
+        
+        System.out.println(fCurrentTime + " |vReverse " + bReverse + ": " + " start: " + fStartTime + " end: " + fEndTime + " edge loop " + bEdgeOfLoop);
         
         PMatrixKeyframe [] result = new PMatrixKeyframe[2];
         result[0] = currentFrame;
@@ -178,20 +199,18 @@ public class COLLADA_JointChannel implements PJointChannel
         
         PMatrixKeyframe currentFrame            = calculateFrames[0];
         PMatrixKeyframe nextFrame               = calculateFrames[1];
-        
-        
-        delta.set(currentFrame.getValue());
                     
         //  Are we right at a keyframe.
         if (currentFrame == nextFrame)
         {
+            System.out.println(fCurrentTime + " both frames are the same!");
             delta.set(currentFrame.getValue());
         }
         else if (currentFrame != null && nextFrame != null)
         {
             if (bEdgeOfLoop.get())
             {
-                //System.out.println("! - EDGE OF LOOP!");
+                //System.out.println(fCurrentTime + "! - EDGE OF LOOP!");
                 
                 if (state.isReverseAnimation())
                     s = (currentFrame.getTime() - fCurrentTime) / m_fLastFrameStep;
@@ -208,9 +227,6 @@ public class COLLADA_JointChannel implements PJointChannel
                 else
                     s = (fCurrentTime - currentFrame.getTime()) / (nextFrame.getTime() - currentFrame.getTime());
             }
-
-
-            delta.setIdentity();
   
             // Clamp
             if (s < 0.0f || s > 1.0f)
@@ -220,9 +236,11 @@ public class COLLADA_JointChannel implements PJointChannel
             }
 
             delta.set(blendFrames(currentFrame, nextFrame, s).getValue());
-
         }
 
+        if (nextFrame == null)
+            System.out.println("everything is null!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+        
         // apply to the joint
         jointToAffect.getTransform().getLocalMatrix(true).set(delta);
         jointToAffect.setDirty(true, true);
@@ -513,7 +531,7 @@ public class COLLADA_JointChannel implements PJointChannel
      * Appends a JointChannel onto the end of this JointChannel.
      * @param pJointChannel The JointChannel to append onto this one.
      */
-    public void append(PJointChannel pJointChannel)
+    public void append(PJointChannel pJointChannel, float fTimePadding)
     {
         COLLADA_JointChannel pColladaJointChannel = (COLLADA_JointChannel)pJointChannel;
         
@@ -525,7 +543,7 @@ public class COLLADA_JointChannel implements PJointChannel
 //        System.out.println("COLLADA_JointChannel.append(), fEndTime = " + fEndTime);
 
         //  Adjust all the KeyframeTimes.
-        pJointChannel.adjustKeyframeTimes(fEndTime);
+        pJointChannel.adjustKeyframeTimes(fEndTime + fTimePadding);
 
         for (int i = 0; i < KeyframeCount; i++)
         {

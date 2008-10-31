@@ -35,9 +35,9 @@ public class NinjaAvatar extends Ninja
             setModelFile("assets/models/collada/Avatars/Male2/Male_Bind.dae");
             ArrayList<String> anims = new ArrayList<String>();
             anims.add("assets/models/collada/Avatars/MaleZip/Male_Walk.dae");
-            anims.add("assets/models/collada/Avatars/MaleZip/Male_Idle.dae");
-            anims.add("assets/models/collada/Avatars/MaleZip/Male_Run.dae");
             anims.add("assets/models/collada/Avatars/MaleZip/Male_StandToSit.dae");
+            anims.add("assets/models/collada/Avatars/MaleZip/Male_Run.dae");
+            anims.add("assets/models/collada/Avatars/MaleZip/Male_Idle.dae");
             anims.add("assets/models/collada/Avatars/MaleZip/Male_Sitting.dae");
             m_animations = anims.toArray(m_animations);
         }
@@ -72,7 +72,21 @@ public class NinjaAvatar extends Ninja
         ((SitState)m_context.getStates().get(SitState.class)).setGettingUpAnimationSpeed(1.5f);
         ((SitState)m_context.getStates().get(SitState.class)).setGettingUpAnimationTime(0.005f);
         
+        // For testing, no transitions
+        if (true)
+        {
+            m_context.getStates().get(IdleState.class).setTransitionDuration(0.0f);
+            m_context.getStates().get(WalkState.class).setTransitionDuration(0.0f);
+            m_context.getStates().get(TurnState.class).setTransitionDuration(0.0f);
+            m_context.getStates().get(SitState.class).setTransitionDuration(0.0f);
+            m_context.getStates().get(PunchState.class).setTransitionDuration(0.0f);
+            m_context.getStates().get(FlyState.class).setTransitionDuration(0.0f);
+            ((SitState)m_context.getStates().get(SitState.class)).setGettingUpTransitionDuration(0.0f);
+            ((SitState)m_context.getStates().get(SitState.class)).setIdleSittingTransitionDuration(0.0f);
+        }
+        
         // For testing
+        m_context.getStates().get(PunchState.class).setAnimationSpeed(0.5f);
         if (false)
         {
             m_context.getStates().get(IdleState.class).setAnimationName("Male_Walk");
