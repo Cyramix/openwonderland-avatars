@@ -184,7 +184,7 @@ public class NinjaSteeringHelm extends CharacterSteeringHelm
                     // Is there an imminent obstacle?
                     SpatialObject obj = null;
                     if (ninjaContext.getNinja().getObjectCollection() != null)
-                        obj = ninjaContext.getNinja().getObjectCollection().findNearestChair(ninjaContext.getNinja(), 3.0f, 0.4f, false); // distance should be scaled by velocity... but at the moment the velocity is pretty constant...
+                        obj = ninjaContext.getNinja().getObjectCollection().findNearestChair(ninjaContext.getNinja(), 2.5f, 0.4f, false); // distance should be scaled by velocity... but at the moment the velocity is pretty constant...
                     if (obj != null && obj != goal && distanceFromGoal > 2.0f)
                     {
                         PSphere obstacleBV = obj.getNearestObstacleSphere(characterPosition);

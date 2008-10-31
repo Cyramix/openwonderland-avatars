@@ -298,7 +298,6 @@ public class LibraryControllersProcessor extends Processor
                 }
 
                 pAnimationChannel.calculateDuration();
-                pAnimationChannel.calculateAverageStepTime();
                 pAnimationChannel.setBindMatrix(pJointColladaNode.getMatrix());
 
 
@@ -306,7 +305,6 @@ public class LibraryControllersProcessor extends Processor
                 {
                     System.out.println("   COLLADA_JointChannel created.");
                     System.out.println("      Duration:  " + pAnimationChannel.getDuration());
-                    System.out.println("      AverageFrameStep:  " + pAnimationChannel.getAverageStepTime());
                 }
 
                 //  Add the JointAnimation to the AnimationLoop.

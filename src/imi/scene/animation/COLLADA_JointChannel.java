@@ -24,6 +24,7 @@ import imi.scene.PMatrix;
 import javolution.util.FastList;
 
 import com.jme.math.Matrix4f;
+import imi.utils.BooleanPointer;
 
 
 
@@ -43,10 +44,8 @@ public class COLLADA_JointChannel implements PJointChannel
     
     // Assorted data that is explicitely calculated
     private float                       m_fDuration = 0.0f;
-    private float                       m_fAverageFrameStep = 0.0f;
+    private float                       m_fLastFrameStep = 0.0f;
 
-    
-    
     //  Constructor land!
     public COLLADA_JointChannel()
     {
@@ -74,52 +73,47 @@ public class COLLADA_JointChannel implements PJointChannel
         m_TargetBindMatrix = pBindMatrix;
     }
 
-    public void calculateFrame(PJoint jointToAffect, float fTime)
+    // may return null
+    private PMatrixKeyframe [] calculateFrames(float fCurrentTime, float fStartTime, float fEndTime, boolean bReverse, BooleanPointer bEdgeOfLoop)
     {
-        // do we even have animation data?
-        if (m_KeyFrames.size() == 0)
-            return; // Do nothing
-
-        float []rotationAngles = new float[3];
-
         // determine what two keyframes to interpolate between
-        PMatrixKeyframe currentFrame = m_KeyFrames.getFirst();
-        PMatrixKeyframe nextFrame = null;//m_KeyFrames.getFirst();
-        float s = 0.0f; // this determines how far in we should interpolate
-
-        PMatrixKeyframe firstFrame = m_KeyFrames.getFirst();
-        PMatrixKeyframe lastFrame = m_KeyFrames.getLast();
-        boolean bLooping = false;
-
-        PMatrix delta = new PMatrix();
-
-//        System.out.print("COLLADA_JointChannel.m_fTime = " + fTime);
-
-        //  Are we before the first keyframe.
-        if (fTime <= firstFrame.getTime())
+        bEdgeOfLoop.set(false);
+        PMatrixKeyframe currentFrame            = null;
+        PMatrixKeyframe nextFrame               = null;
+        PMatrixKeyframe currentCycleFirstFrame  = null;
+        PMatrixKeyframe currentCycleLastFrame   = null;
+        
+        //  Determine the keyframe to the left and right. (current and next)
+        for (PMatrixKeyframe frame : m_KeyFrames)
         {
-            currentFrame = firstFrame;
-//            System.out.print(", Before first frame.");
-        }
-
-        //  Are we after the last keyframe.
-        else if (fTime >= lastFrame.getTime())
-        {
-            currentFrame = lastFrame;
-            nextFrame = firstFrame;
-            bLooping = true;
-
-//            System.out.print(", Looping animation.");
-        }
-
-        //  Otherwise, determine the keyframe to the left and right.
-        else
-        {
-            for (PMatrixKeyframe frame : m_KeyFrames)
+            // Chaching the first frame for later use
+            if (frame.getTime() <= fStartTime)
             {
-                if (frame.getTime() < fTime)
+                currentCycleFirstFrame = frame;
+            }
+            
+            if (bReverse)
+            {   
+                if (frame.getTime() > fCurrentTime)
+                {
+                    if (currentFrame == null)
+                        currentFrame = frame;
+
+                    // Get the last frame
+                    if (frame.getTime() >= fEndTime)
+                    {
+                        currentCycleLastFrame = frame;
+                        break;
+                    }
+                }
+                else 
+                    nextFrame = frame;
+            }
+            else
+            {
+                if (frame.getTime() <= fCurrentTime)
                     currentFrame = frame;
-                else
+                else 
                 {
                     nextFrame = frame;
                     break;
@@ -127,37 +121,94 @@ public class COLLADA_JointChannel implements PJointChannel
             }
         }
         
-//        System.out.println("");
+        // These are not good cases
+        if (  currentFrame == null || !( currentFrame.getTime() < fEndTime && currentFrame.getTime() > fStartTime )  )
+                return null;
+        
+        // It should only be null if in reverse and hitting the edge
+        if (nextFrame == null)
+            nextFrame = currentCycleLastFrame;
+        
+        // Last frame in cycle case
+        if (!bReverse && nextFrame.getTime() >= fEndTime)
+        {
+            nextFrame = currentCycleFirstFrame;
+            bEdgeOfLoop.set(true);
+        }
+        
+        // First frame in cycle case during reverse animation
+        if (bReverse && nextFrame.getTime() <= fStartTime)
+        {
+            nextFrame = currentCycleLastFrame;
+            bEdgeOfLoop.set(true);   
+        }
+        
+        PMatrixKeyframe [] result = new PMatrixKeyframe[2];
+        result[0] = currentFrame;
+        result[1] = nextFrame;
+        return result;
+    }
+    
+    public void calculateFrame(PJoint jointToAffect, AnimationState state)
+    {
+        // do we even have animation data?
+        if (m_KeyFrames.size() == 0)
+            return; // Do nothing
 
+        float []rotationAngles = new float[3];
+        PMatrix delta = new PMatrix();
+        float s = 0.0f; // this determines how far in we should interpolate
+
+        float fCurrentTime = state.getCurrentCycleTime();
+        float fStartTime   = state.getCurrentCycleStartTime();
+        float fEndTime     = state.getCurrentCycleEndTime();
+        boolean bReverse   = state.isReverseAnimation();
+        BooleanPointer bEdgeOfLoop = new BooleanPointer(false);
+        
+        PMatrixKeyframe [] calculateFrames = calculateFrames(fCurrentTime, fStartTime, fEndTime, bReverse, bEdgeOfLoop);
+        if (calculateFrames == null)
+            return;
+        
+        PMatrixKeyframe currentFrame            = calculateFrames[0];
+        PMatrixKeyframe nextFrame               = calculateFrames[1];
+        
         delta.set(currentFrame.getValue());
                     
         //  Are we right at a keyframe.
-        if (currentFrame != null && nextFrame == null)
-        {
-            delta.set(currentFrame.getValue());
-        }
-        else if (currentFrame == nextFrame)
+        if (currentFrame == nextFrame)
         {
             delta.set(currentFrame.getValue());
         }
         else if (currentFrame != null && nextFrame != null)
         {
-            if (bLooping)
+            if (bEdgeOfLoop.get())
             {
-                s = (fTime - currentFrame.getTime()) / (this.m_fDuration - lastFrame.getTime());
+                //System.out.println("! - EDGE OF LOOP!");
+                
+                if (state.isReverseAnimation())
+                    s = (currentFrame.getTime() - fCurrentTime) / m_fLastFrameStep;
+                else
+                    s = (fCurrentTime - currentFrame.getTime()) / m_fLastFrameStep;
             }
             else
             {
+                m_fLastFrameStep = Math.abs(currentFrame.getTime() - nextFrame.getTime());
+                
                 // determine s
-                s = (fTime - currentFrame.getTime()) / (nextFrame.getTime() - currentFrame.getTime());
+                if (state.isReverseAnimation())
+                    s = (currentFrame.getTime() - fCurrentTime) / currentFrame.getTime() - (nextFrame.getTime());
+                else
+                    s = (fCurrentTime - currentFrame.getTime()) / (nextFrame.getTime() - currentFrame.getTime());
             }
 
 
             delta.setIdentity();
   
+            // Clamp
             if (s < 0.0f || s > 1.0f)
             {
-                int breakPointLine = 0;
+                s = Math.min(s, 1.0f);
+                s = Math.max(s, 0.0f);
             }
 
             // grab out the rotation and slerp it
@@ -173,69 +224,44 @@ public class COLLADA_JointChannel implements PJointChannel
             delta.set2(rotationComponent, translationComponent, 1.0f);
         }
 
-        if (!jointToAffect.getTransform().getLocalMatrix(false).equals(delta))
-        {
-            int breakPointLine = 0;
-        }
-
         // apply to the joint
         jointToAffect.getTransform().getLocalMatrix(true).set(delta);
         jointToAffect.setDirty(true, true);
-    }
-    
-    public void Matrix4fToPMatrix(Matrix4f matrix4f, PMatrix pMatrix)
-    {
-        float []matrixFloats = pMatrix.getData();
         
-        matrixFloats[0] = matrix4f.m00;
-        matrixFloats[1] = matrix4f.m01;
-        matrixFloats[2] = matrix4f.m02;
-        matrixFloats[3] = matrix4f.m03;
-
-        matrixFloats[4] = matrix4f.m10;
-        matrixFloats[5] = matrix4f.m11;
-        matrixFloats[6] = matrix4f.m12;
-        matrixFloats[7] = matrix4f.m13;
-
-        matrixFloats[8] = matrix4f.m20;
-        matrixFloats[9] = matrix4f.m21;
-        matrixFloats[10] = matrix4f.m22;
-        matrixFloats[11] = matrix4f.m23;
-
-        matrixFloats[12] = matrix4f.m30;
-        matrixFloats[13] = matrix4f.m31;
-        matrixFloats[14] = matrix4f.m32;
-        matrixFloats[15] = matrix4f.m33;
+        // Debug
+        //System.out.println("Cycle " + state.getCurrentCycle() + " | " + state.getCurrentCycleTime() + " Start: " + state.getCurrentCycleStartTime() + " End: " + state.getCurrentCycleEndTime());
     }
-
     
-    
-    public void calculateBlendedFrame(PJoint jointToAffect, float fTime1, float fTime2, float s)
+    public void calculateBlendedFrame(PJoint jointToAffect, AnimationState state)
     {
         // do we even have animation data?
         if (m_KeyFrames.size() == 0)
             return; // Do nothing
         
         // determine what two keyframes to interpolate between for the first pose
-        PMatrixKeyframe currentFrame = m_KeyFrames.getFirst();
-        PMatrixKeyframe nextFrame = m_KeyFrames.getFirst();
-        float lerpValue = 0.0f; // this determines how far in we should interpolate
+        float fCurrentTime = state.getCurrentCycleTime();
+        float fStartTime   = state.getCurrentCycleStartTime();
+        float fEndTime     = state.getCurrentCycleEndTime();
+        boolean bReverse   = state.isReverseAnimation();
+        BooleanPointer bEdgeOfLoop = new BooleanPointer(false);
         
-        for (PMatrixKeyframe frame : m_KeyFrames)
-        {
-            if (frame.getTime() < fTime1)
-                currentFrame = frame;
-            else // passed the mark
-            {
-                nextFrame = frame;
-                break; // finished checking
-            }
-        }
-        lerpValue = (fTime1 - currentFrame.getTime()) / (nextFrame.getTime() - currentFrame.getTime());
+        float fTransitionCycleTime = state.getTransitionCycleTime();
+        float s = state.getTimeInTransition() / state.getTransitionDuration();
+        
+        PMatrixKeyframe [] calculateFrames = calculateFrames(fCurrentTime, fStartTime, fEndTime, bReverse, bEdgeOfLoop);
+        if (calculateFrames == null)
+            return;
+      
+        PMatrixKeyframe currentFrame            = calculateFrames[0];
+        PMatrixKeyframe nextFrame               = calculateFrames[1];
+
+        //float lerpValue = 0.0f; // this determines how far in we should interpolate
+        //lerpValue = (fTime1 - currentFrame.getTime()) / (nextFrame.getTime() - currentFrame.getTime());
+
         // grab out the rotation and slerp it
         Quaternion rotationComponent1 = currentFrame.getValue().getRotation();
         rotationComponent1.slerp(nextFrame.getValue().getRotation(), s);
-        
+
         // grab the translation and lerp it
         Vector3f translationComponent1 = currentFrame.getValue().getTranslation();
         translationComponent1.interpolate(nextFrame.getValue().getTranslation(), s);
@@ -243,22 +269,20 @@ public class COLLADA_JointChannel implements PJointChannel
         //////////////////////////////////////////////////////
         // determine the information for the second pose    //
         //////////////////////////////////////////////////////
-        currentFrame = m_KeyFrames.getFirst();
-        nextFrame = m_KeyFrames.getFirst();
         
-        lerpValue = 0.0f; // this determines how far in we should interpolate
+        fStartTime   = state.getTransitionCycleStartTime();
+        fEndTime     = state.getTransitionCycleEndTime();
+        bReverse     = state.isTransitionReverseAnimation();
+        bEdgeOfLoop.set(false);
+        calculateFrames = calculateFrames(fTransitionCycleTime, fStartTime, fEndTime, bReverse, bEdgeOfLoop);
+        if (calculateFrames == null)
+            return;
         
-        for (PMatrixKeyframe frame : m_KeyFrames)
-        {
-            if (frame.getTime() < fTime2)
-                currentFrame = frame;
-            else // passed the mark
-            {
-                nextFrame = frame;
-                break; // finished checking
-            }
-        }
-        lerpValue = (fTime2 - currentFrame.getTime()) / (nextFrame.getTime() - currentFrame.getTime());
+        currentFrame            = calculateFrames[0];
+        nextFrame               = calculateFrames[1];
+        
+        //lerpValue = 0.0f; // this determines how far in we should interpolate
+        //lerpValue = (fTime2 - currentFrame.getTime()) / (nextFrame.getTime() - currentFrame.getTime());
         // grab out the rotation and slerp it
         Quaternion rotationComponent2 = currentFrame.getValue().getRotation();
         rotationComponent2.slerp(nextFrame.getValue().getRotation(), s);
@@ -298,28 +322,30 @@ public class COLLADA_JointChannel implements PJointChannel
         // Return
         return m_fDuration;
     }
-
-    /**
-     * This method calculates and returns the average timestep,
-     * it also calls the calculateDuration method. So if you need both,
-     * just call this one =)
-     * @return m_fAverageFrameStep (float)
-     */
-    public float calculateAverageStepTime()
+    
+    public void Matrix4fToPMatrix(Matrix4f matrix4f, PMatrix pMatrix)
     {
-        // in case it wasn't done yet
-        calculateDuration();
-        m_fAverageFrameStep = m_fDuration / (float)m_KeyFrames.size();
-        return m_fAverageFrameStep;
-    }
+        float []matrixFloats = pMatrix.getData();
+        
+        matrixFloats[0] = matrix4f.m00;
+        matrixFloats[1] = matrix4f.m01;
+        matrixFloats[2] = matrix4f.m02;
+        matrixFloats[3] = matrix4f.m03;
 
-    /**
-     * Gets and returns the average step time.
-     * @return float
-     */
-    public float getAverageStepTime()
-    {
-        return m_fAverageFrameStep;
+        matrixFloats[4] = matrix4f.m10;
+        matrixFloats[5] = matrix4f.m11;
+        matrixFloats[6] = matrix4f.m12;
+        matrixFloats[7] = matrix4f.m13;
+
+        matrixFloats[8] = matrix4f.m20;
+        matrixFloats[9] = matrix4f.m21;
+        matrixFloats[10] = matrix4f.m22;
+        matrixFloats[11] = matrix4f.m23;
+
+        matrixFloats[12] = matrix4f.m30;
+        matrixFloats[13] = matrix4f.m31;
+        matrixFloats[14] = matrix4f.m32;
+        matrixFloats[15] = matrix4f.m33;
     }
 
     //  Adds a Keyframe.
@@ -387,7 +413,6 @@ public class COLLADA_JointChannel implements PJointChannel
         }
     
         calculateDuration();
-        calculateAverageStepTime();
     }
 
     public PJointChannel copy()
@@ -407,7 +432,6 @@ public class COLLADA_JointChannel implements PJointChannel
         m_KeyFrames.clear();
 
         m_fDuration = 0.0f;
-        m_fAverageFrameStep = 0.0f;
     }
     
     /**
@@ -482,7 +506,6 @@ public class COLLADA_JointChannel implements PJointChannel
         pJointChannel.clear();
 
         calculateDuration();
-        calculateAverageStepTime();
     }
 
 }

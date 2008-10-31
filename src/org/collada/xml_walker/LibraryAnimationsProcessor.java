@@ -177,13 +177,10 @@ public class LibraryAnimationsProcessor extends Processor
         }
 
         pAnimationChannel.calculateDuration();
-        pAnimationChannel.calculateAverageStepTime();
-
 
 //        System.out.println("      AnimationChannel:  " + m_AnimatedItemName + ", KeyframeCount=" + m_KeyframeCount);
 
         pAnimationChannel.setBindMatrix(pJoint.getTransform().getLocalMatrix(false));
-
 
         //  Add the JointAnimation to the AnimationLoop.
         pAnimationLoop.getChannels().add(pAnimationChannel);

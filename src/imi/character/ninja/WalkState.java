@@ -38,6 +38,9 @@ public class WalkState extends GameState
     private float exitCounter           = 0.0f;
     private float minimumTimeBeforeTransition = 0.18f;
     
+    boolean bHack = true;
+    float magic = 0.0f;
+    
     public WalkState(NinjaContext master)
     {
         super(master);
@@ -120,6 +123,21 @@ public class WalkState extends GameState
         super.stateEnter(owner);
         
         exitCounter   = 0.0f;
+        
+//        if (bHack)
+//        {
+//            // Debug
+//            if (ninjaContext != null && ninjaContext.getSkeleton() != null)
+//            {
+//                int cycleIndex = ninjaContext.getSkeleton().getAnimationGroup().findAnimationCycle(animationName);
+//                float startTime = ninjaContext.getSkeleton().getAnimationGroup().getCycle(cycleIndex).getStartTime();
+//                float endTime = ninjaContext.getSkeleton().getAnimationGroup().getCycle(cycleIndex).getEndTime();
+//                ninjaContext.getSkeleton().getAnimationGroup().getCycle(cycleIndex).setEndTime(endTime - magic);
+//                ninjaContext.getSkeleton().getAnimationGroup().getCycle(cycleIndex).setEndTime(startTime - magic);
+//                
+//                bHack = false;
+//            }
+//        }
     }
     
     @Override

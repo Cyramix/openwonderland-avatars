@@ -47,6 +47,9 @@ public class AnimationGroup
     /** The overall duration of the entire animation in this group */
     private float                   m_Duration      = 0.0f;
     
+    /** Used for seperatoin when appending groups */
+    private final float             m_fTimePadding  = 1.0f;
+    
     /**
      * Empty Constructor
      */
@@ -134,8 +137,9 @@ public class AnimationGroup
         AnimationCycle cycle = m_cycles[cycleIndex];
 
         float fTime = clampCycleTime(state.getCurrentCycleTime(), cycle, state.isReverseAnimation());
-        
         state.setCurrentCycleTime(fTime);
+        state.setCurrentCycleStartTime(cycle.getStartTime());
+        state.setCurrentCycleEndTime(cycle.getEndTime());
 
         boolean bTransitioning = false;
         if (state.getTransitionCycle() != -1)
@@ -145,8 +149,11 @@ public class AnimationGroup
             float fTransitionTime = clampCycleTime(state.getTransitionCycleTime(), m_cycles[state.getTransitionCycle()], state.isReverseAnimation());
             
             state.setTransitionCycleTime(fTransitionTime);
+            
+            AnimationCycle transitionCycle = m_cycles[state.getTransitionCycle()];
+            state.setTransitionCycleStartTime(transitionCycle.getStartTime());
+            state.setTransitionCycleEndTime(transitionCycle.getEndTime());
         }
-
 
         ArrayList<PJointChannel> jointChannels = new ArrayList<PJointChannel>();
         for (int iii=0; iii<m_JointChannels.size(); iii++)
@@ -173,11 +180,11 @@ public class AnimationGroup
                     return;
                 }
                 else
-                    jointChannel.calculateBlendedFrame(pJoint, fTime, state.getTransitionCycleTime(), state.getTimeInTransition() / state.getTransitionDuration());
+                    jointChannel.calculateBlendedFrame(pJoint, state);
             }
             else
             {
-                jointChannel.calculateFrame(pJoint, fTime);
+                jointChannel.calculateFrame(pJoint, state);
             }
         }
 
@@ -442,19 +449,6 @@ public class AnimationGroup
         return fEndTime;
     }
 
-
-    public float getAverageStepTime()
-    {
-        if (m_JointChannels.size() == 0)
-            return(0.0f);
-
-        PJointChannel pJointChannel = m_JointChannels.get(0);
-        
-        return pJointChannel.getAverageStepTime();
-    }
-        
-
-    
     //  Appends an AnimationGroup to the end of this AnimationGroup.
     public void appendAnimationGroup(AnimationGroup pAnimationGroup)
     {
@@ -462,7 +456,6 @@ public class AnimationGroup
         COLLADA_JointChannel pOriginalJointChannel;
         COLLADA_JointChannel pJointChannel;
         float fStartTime = getEndTime();
-        float fAverageStepTime = getAverageStepTime();
 
         for (a=0; a<pAnimationGroup.getChannels().size(); a++)
         {
@@ -503,7 +496,7 @@ public class AnimationGroup
 
         //  Create a new AnimationCycle.
         String newCycleName = pAnimationGroup.getCycle(0).getName();
-        AnimationCycle pNewAnimationCycle = new AnimationCycle(newCycleName, fStartTime+fAverageStepTime, fEndTime);
+        AnimationCycle pNewAnimationCycle = new AnimationCycle(newCycleName, fStartTime+m_fTimePadding, fEndTime);
         addCycle(pNewAnimationCycle);
 
         pFirstAnimationCycle.setEndTime(fEndTime);

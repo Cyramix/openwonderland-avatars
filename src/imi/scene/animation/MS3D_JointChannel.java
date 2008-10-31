@@ -71,13 +71,15 @@ public class MS3D_JointChannel implements PJointChannel
         m_fAverageFrameStep = jointAnimation.m_fAverageFrameStep;
     }
 
-    public void calculateFrame(PJoint jointToAffect, float fTime)
+    public void calculateFrame(PJoint jointToAffect, AnimationState state)
     {
         // test
         //fTime = 0.01f;
         // do we even have animation data?
         if (m_TranslationKeyframes.size() == 0 || m_RotationKeyframes.size() == 0)
             return; // Do nothing
+    
+        float fTime = state.getCurrentCycleTime();
         
         // determine what two keyframes to interpolate between for translation
         VectorKeyframe currentFrame = m_TranslationKeyframes.getFirst();
@@ -134,11 +136,15 @@ public class MS3D_JointChannel implements PJointChannel
         jointToAffect.getTransform().getLocalMatrix(true).mul(delta);
     }
 
-    public void calculateBlendedFrame(PJoint jointToAffect, float fTime1, float fTime2, float s)
+    public void calculateBlendedFrame(PJoint jointToAffect, AnimationState state)
     {
         // do we even have animation data?
         if (m_TranslationKeyframes.size() == 0 || m_RotationKeyframes.size() == 0)
             return; // Do nothing
+        
+        float fTime1 = state.getCurrentCycleTime();
+        float fTime2 = state.getTransitionCycleTime();
+        float s = state.getTimeInTransition() / state.getTransitionDuration();
         
         // determine the first pose
         // determine what two keyframes to interpolate between for translation

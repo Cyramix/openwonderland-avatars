@@ -18,9 +18,10 @@
 package imi.tests;
 
 import com.jme.math.Vector3f;
+import imi.character.ninja.Ninja;
 import imi.character.ninja.NinjaAvatar;
-import imi.character.objects.Goal;
 import imi.character.objects.ObjectCollection;
+import imi.scene.PMatrix;
 import imi.scene.processors.JSceneEventProcessor;
 import imi.utils.input.NinjaControlScheme;
 import org.jdesktop.mtgame.WorldManager;
@@ -50,7 +51,7 @@ public class MusicalChairs extends DemoBase
         
         // Create an object collection for the musical chairs game
         ObjectCollection objs = new ObjectCollection("Musical Chairs Game Objects", wm);
-        objs.generateChairs(Vector3f.ZERO, 10.0f, 20);
+        objs.generateChairs(Vector3f.ZERO, 10.0f, 10);
         
         NinjaAvatar avatar = new NinjaAvatar("Avatar", wm);
         avatar.selectForInput();
@@ -60,12 +61,12 @@ public class MusicalChairs extends DemoBase
 //        bigBaby.getModelInst().getTransform().getLocalMatrix(true).setTranslation(Vector3f.UNIT_Z.mult(-5.0f));
 //        control.getNinjaTeam().add(bigBaby);
 //        bigBaby.setObjectCollection(objs);
-        
+//        
 //        Ninja shadowBlade = new Ninja("Shadow Blade", new PMatrix().setTranslation(Vector3f.UNIT_X.mult(5.0f)), 0.22f, wm);
 //        shadowBlade.selectForInput();
 //        control.getNinjaTeam().add(shadowBlade);
 //        shadowBlade.setObjectCollection(objs);
-//
+
 //        Adam adam = new Adam("Adam", wm);
 //        adam.getModelInst().getTransform().getLocalMatrix(true).setTranslation(Vector3f.UNIT_X.mult(-5.0f));
 //        control.getNinjaTeam().add(adam);

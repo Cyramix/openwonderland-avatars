@@ -160,7 +160,7 @@ public class PScene extends PNode implements RepositoryUser
         m_Instances.setDirty(false, false);
         
         // Update the m_JScene
-        //m_JScene.updateRenderState();
+        m_JScene.updateRenderState();
     }
 
     /**
@@ -173,7 +173,6 @@ public class PScene extends PNode implements RepositoryUser
         {
             geometry.submit(m_TriMeshAssembler);
         }
-        m_JScene.updateRenderState(); // instead of submit transforms...
     }
     
     /**
