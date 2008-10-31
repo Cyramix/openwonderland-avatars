@@ -385,7 +385,7 @@ public class TrianglesProcessor extends Processor
 
         for (a=0; a<NormalCount; a++)
         {
-            pNormal = m_pNormalSemantic.getVector3f(a);
+            pNormal = m_pNormalSemantic.getVector3f(a).normalize();
             
             pPolygonMesh.addNormal(pNormal);
         }
