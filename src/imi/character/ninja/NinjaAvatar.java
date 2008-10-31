@@ -34,10 +34,10 @@ public class NinjaAvatar extends Ninja
             super(name);
             setModelFile("assets/models/collada/Avatars/Male2/Male_Bind.dae");
             ArrayList<String> anims = new ArrayList<String>();
-            anims.add("assets/models/collada/Avatars/MaleZip/Male_Walk.dae");
-            anims.add("assets/models/collada/Avatars/MaleZip/Male_StandToSit.dae");
-            anims.add("assets/models/collada/Avatars/MaleZip/Male_Run.dae");
             anims.add("assets/models/collada/Avatars/MaleZip/Male_Idle.dae");
+            anims.add("assets/models/collada/Avatars/MaleZip/Male_StandToSit.dae");
+            anims.add("assets/models/collada/Avatars/MaleZip/Male_Wave.dae");
+            anims.add("assets/models/collada/Avatars/MaleZip/Male_Walk.dae");
             anims.add("assets/models/collada/Avatars/MaleZip/Male_Sitting.dae");
             m_animations = anims.toArray(m_animations);
         }
@@ -58,7 +58,7 @@ public class NinjaAvatar extends Ninja
         // Tweak animation names and speeds
         m_context.getController().setReverseHeading(true);
         m_context.getStates().get(IdleState.class).setAnimationName("Male_Idle");
-        m_context.getStates().get(PunchState.class).setAnimationName("Male_Run");
+        m_context.getStates().get(PunchState.class).setAnimationName("Male_Wave");
         m_context.getStates().get(TurnState.class).setAnimationName("Male_Idle");
         m_context.getStates().get(WalkState.class).setAnimationName("Male_Walk");
         m_context.getStates().get(SitState.class).setAnimationName("Male_StandToSit");
@@ -73,7 +73,7 @@ public class NinjaAvatar extends Ninja
         ((SitState)m_context.getStates().get(SitState.class)).setGettingUpAnimationTime(0.005f);
         
         // For testing, no transitions
-        if (true)
+        if (false)
         {
             m_context.getStates().get(IdleState.class).setTransitionDuration(0.0f);
             m_context.getStates().get(WalkState.class).setTransitionDuration(0.0f);
@@ -86,7 +86,7 @@ public class NinjaAvatar extends Ninja
         }
         
         // For testing
-        m_context.getStates().get(PunchState.class).setAnimationSpeed(0.5f);
+        //m_context.getStates().get(PunchState.class).setAnimationSpeed(1.0f);
         if (false)
         {
             m_context.getStates().get(IdleState.class).setAnimationName("Male_Walk");

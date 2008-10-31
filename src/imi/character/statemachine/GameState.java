@@ -170,6 +170,11 @@ public class GameState extends NamedUpdatableObject
             gameContext.getController().getWindow().setTitle(getName());
         
         bAnimationSet = false;
+    
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // testing debugging
+//        if (owner.getSkeleton() != null)
+//            owner.getSkeleton().getAnimationState().setReverseAnimation(true);
         
         // Transition to the animation
         setAnimation();

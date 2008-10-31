@@ -142,7 +142,7 @@ public class CharacterLoader
             }
         }
         
-        System.out.println("Done! Duration: " + pAnimationComponent.getGroup().getDuration());
+        //System.out.println("Done! Duration: " + pAnimationComponent.getGroup().getDuration());
     }
 
     void removeAllSkinnedMeshesExcept(SkeletonNode pSkeleton, String skinnedMeshName)

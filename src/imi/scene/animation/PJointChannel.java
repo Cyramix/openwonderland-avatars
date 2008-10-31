@@ -39,7 +39,7 @@ public interface PJointChannel
      * @param jointToAffect The joint whose PTransform will be modified
      * @param fTime
      */
-    public void calculateFrame(PJoint jointToAffect, AnimationState state);
+    public void calculateFrame(PJoint jointToAffect, float fTime);
     
     /**
      * This method performs weighted blending on the two frames and
@@ -49,13 +49,25 @@ public interface PJointChannel
      * @param fTime2 The time of the second frame
      * @param s used in Frame1 * (1-s) + Frame2 * s; ranges from 0 to 1
      */
-    public void calculateBlendedFrame(PJoint jointToAffect, AnimationState state);
+    public void calculateBlendedFrame(PJoint jointToAffect, float fTime1, float fTime2, float s);
 
     /**
      * Calculates and returns the duration of the BoneAnimation.
      * @return float
      */
     public float calculateDuration();
+
+    /**
+     * Calculates and returns the average step time.
+     * @return float
+     */
+    public float calculateAverageStepTime();
+
+    /**
+     * Gets and returns the average step time.
+     * @return float
+     */
+    public float getAverageStepTime();
 
     /**
      * Returns the string representation of the joint this PJointChannel is intended for
@@ -98,10 +110,10 @@ public interface PJointChannel
     public void adjustKeyframeTimes(float fAmount);
 
     /**
-     * Appends the key frames of the JointChannel onto the end of this JointChannel.
+     * Appends a JointChannel onto the end of this JointChannel.
      * @param pJointChannel The JointChannel to append onto this one.
      */
-    public void append(PJointChannel pJointChannel, float fTimePadding);
+    public void append(PJointChannel pJointChannel);
 
 }
 

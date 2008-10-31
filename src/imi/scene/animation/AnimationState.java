@@ -27,12 +27,6 @@ public class AnimationState
 {
     private int         m_CurrentCycle              = 0;
     private float       m_CurrentCycleTime          = 0.0f;
-    private float       m_CurrentCycleStartTime     = 0.0f;
-    private float       m_CurrentCycleEndTime       = 0.0f;
-    
-    private float       m_TransitionCycleStartTime  = 0.0f;
-    private float       m_TransitionCycleEndTime    = 0.0f;
-    private boolean     m_bTransitionReverseAnimation = false;
     
     private int         m_TransitionCycle           = -1;
     private float       m_TransitionCycleTime       = 0.0f; // goes from start to end of the trainsition animation
@@ -66,8 +60,8 @@ public class AnimationState
     }
     
     /**
-     * Advances time for this state, animation speed is taken into consideration here.
-     * Affects currentCycleTime, TransitionCycleTime and TimeInTransition.
+     * Advances time for this state,
+     * this affects currentCycleTime, TransitionCycleTime and TimeInTransition
      * @param fTimeStep
      */
     public void advanceAnimationTime(float fTimeStep) 
@@ -236,46 +230,5 @@ public class AnimationState
             return false;
         return true;
     }
-
-    public float getCurrentCycleEndTime() {
-        return m_CurrentCycleEndTime;
-    }
-
-    public void setCurrentCycleEndTime(float CurrentCycleEndTime) {
-        this.m_CurrentCycleEndTime = CurrentCycleEndTime;
-    }
-
-    public float getCurrentCycleStartTime() {
-        return m_CurrentCycleStartTime;
-    }
-
-    public void setCurrentCycleStartTime(float CurrentCycleStartTime) {
-        this.m_CurrentCycleStartTime = CurrentCycleStartTime;
-    }
-
-    public float getTransitionCycleEndTime() {
-        return m_TransitionCycleEndTime;
-    }
-
-    public void setTransitionCycleEndTime(float TransitionCycleEndTime) {
-        this.m_TransitionCycleEndTime = TransitionCycleEndTime;
-    }
-
-    public float getTransitionCycleStartTime() {
-        return m_TransitionCycleStartTime;
-    }
-
-    public void setTransitionCycleStartTime(float TransitionCycleStartTime) {
-        this.m_TransitionCycleStartTime = TransitionCycleStartTime;
-    }
-
-    public boolean isTransitionReverseAnimation() {
-        return m_bTransitionReverseAnimation;
-    }
-
-    public void setTransitionReverseAnimation(boolean bTransitionReverseAnimation) {
-        this.m_bTransitionReverseAnimation = bTransitionReverseAnimation;
-    }
-
     
 }
