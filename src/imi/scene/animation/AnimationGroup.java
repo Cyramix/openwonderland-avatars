@@ -374,7 +374,7 @@ public class AnimationGroup
         calculateDuration();
 
 //        float fDuration = 10.0f;//this.getDuration();
-        AnimationCycle pAnimationCycle = new AnimationCycle("default", 0.033333f, m_Duration);
+        AnimationCycle pAnimationCycle = new AnimationCycle("default", getStartTime(), m_Duration);
      
         m_cycles = new AnimationCycle[1];
         m_cycles[0] = pAnimationCycle;
@@ -387,7 +387,7 @@ public class AnimationGroup
     {
         calculateDuration();
 
-        m_cycles[0].setStartTime(0.033333f);
+        m_cycles[0].setStartTime(getStartTime());
         m_cycles[0].setEndTime(m_Duration);
     }
     
@@ -411,34 +411,23 @@ public class AnimationGroup
     
     private float getStartTime()
     {
-        int a;
-        PJointChannel pJointChannel;
-        float fStartTime = 1000.0f;
-        float fLocalStartTime = 0.0f;
+        float fStartTime = Float.MAX_VALUE;
 
-        for (a=0; a<m_JointChannels.size(); a++)
-        {
-            pJointChannel = m_JointChannels.get(a);
-
-            fLocalStartTime = pJointChannel.getStartTime();
-
-            if (fLocalStartTime < fStartTime)
-                fStartTime = fLocalStartTime;
-        }
+        for (PJointChannel channel : m_JointChannels)
+            fStartTime = Math.min(fStartTime, channel.getStartTime());
 
         return fStartTime;
     }
 
-    private float getEndTime()
+    private float calculateLastFrameTime()
     {
-        int a;
         PJointChannel pJointChannel;
         float fEndTime = 0.0f;
         float fLocalEndTime = 0.0f;
 
-        for (a=0; a<m_JointChannels.size(); a++)
+        for (int i = 0; i < m_JointChannels.size(); i++)
         {
-            pJointChannel = m_JointChannels.get(a);
+            pJointChannel = m_JointChannels.get(i);
 
             fLocalEndTime = pJointChannel.getEndTime();
 
@@ -452,58 +441,61 @@ public class AnimationGroup
     //  Appends an AnimationGroup to the end of this AnimationGroup.
     public void appendAnimationGroup(AnimationGroup pAnimationGroup)
     {
-        int a;
         COLLADA_JointChannel pOriginalJointChannel;
         COLLADA_JointChannel pJointChannel;
-        float fStartTime = getEndTime();
-
-        for (a=0; a<pAnimationGroup.getChannels().size(); a++)
+        
+        // find the time of the last keyframe in this animation group
+        float fEndOfInitialKeyframes = this.calculateLastFrameTime();
+        
+        for (int i = 0; i < pAnimationGroup.getChannels().size(); i++) // For each new channel
         {
-            pJointChannel = (COLLADA_JointChannel)pAnimationGroup.getChannels().get(a);
-
+            // grab the next channel
+            pJointChannel = (COLLADA_JointChannel)pAnimationGroup.getChannels().get(i);
+            // Did this joint already have a channel in out group?
             pOriginalJointChannel = (COLLADA_JointChannel)findChannel(pJointChannel.getTargetJointName());
+            
             if (pOriginalJointChannel != null)
             {
-//                System.out.println("Appending JointChannel '" + pJointChannel.getTargetJointName() + "' onto existing JointChannel.");
                 pOriginalJointChannel.append(pJointChannel);
             }
             else
             {
-//                System.out.println("Adding JointChannel '" + pJointChannel.getTargetJointName() + "' to AnimationGroup.");
-                addJointChannel(pAnimationGroup, pJointChannel, fStartTime);
+                addJointChannel(pAnimationGroup, pJointChannel, fEndOfInitialKeyframes);
             }
         }
 
+        // grab the first animation cycle from this group
         AnimationCycle pFirstAnimationCycle = this.getCycle(0);
 
-        float fEndTime = getEndTime();
-
+        // recalculate time of last frame now that new channels have been added
+        float fLastFrameTime = calculateLastFrameTime();
+        
         //  Create duplicate of first Cycle if we only have one.
         if (this.getCycleCount() == 1)
         {
-            //  Create a new AnimationCycle.
-            AnimationCycle pNewAnimationCycle = new AnimationCycle(this.getCycle(0));
-            pNewAnimationCycle.setName(this.getCycle(0).getName());
-            pNewAnimationCycle.setEndTime(fStartTime);
+            //  Create a new AnimationCycle= copying the existing (only other) cycle
+            AnimationCycle pNewAnimationCycle = new AnimationCycle(pFirstAnimationCycle);
             addCycle(pNewAnimationCycle);
 
-            this.getCycle(0).setName("All Cycles");
+            pFirstAnimationCycle.setName("All Cycles");
         }
-
-        AnimationCycle pLastAnimationCycle = getLastCycle();
-//        if (pLastAnimationCycle != null)
-//            pLastAnimationCycle.setEndTime(fStartTime);
-
-        //  Create a new AnimationCycle.
-        String newCycleName = pAnimationGroup.getCycle(0).getName();
-        AnimationCycle pNewAnimationCycle = new AnimationCycle(newCycleName, fStartTime+m_fTimePadding, fEndTime);
-        addCycle(pNewAnimationCycle);
-
-        pFirstAnimationCycle.setEndTime(fEndTime);
-
-
-        //  Clear the AnimationGroup that was added to this AnimationGroup.
-        pAnimationGroup.clear();
+        
+        // Iterate through every cycle from the new group
+        for (int i = 0; i < pAnimationGroup.getCycleCount(); ++i)
+        {
+            // grab the next one
+            AnimationCycle currentCycle = pAnimationGroup.getCycle(i);
+            
+            currentCycle.setStartTime(currentCycle.getStartTime() + (fEndOfInitialKeyframes + m_fTimePadding));
+            currentCycle.setEndTime(currentCycle.getEndTime() + (fEndOfInitialKeyframes + m_fTimePadding));
+            
+            this.addCycle(currentCycle);
+        }
+        
+        // adjust the "All Cycles" end time
+        this.getCycle(0).setEndTime(fLastFrameTime);
+        
+        calculateDuration();
 
         updateDefaultCycle();
     }
@@ -526,6 +518,7 @@ public class AnimationGroup
     public void addJointChannel(AnimationGroup pAnimationGroup, PJointChannel pJointChannel, float fStartTime)
     {
         //  Adjust all the keyframes in 'pJointChannel' by 'fStartTime'.
+        // That is, shift all start times to the right such that they are added to the end of the group
         pJointChannel.adjustKeyframeTimes(fStartTime);
 
         //  Remove the JointChannel from the AnimationGroup we're moving it from.

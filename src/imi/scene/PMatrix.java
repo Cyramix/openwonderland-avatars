@@ -251,6 +251,8 @@ public class PMatrix
      * @param t1  the transform to be copied
      */
     public final void set(PMatrix t1){
+        if (t1 == null)
+            throw new NullPointerException("Null matrix provided to the set method!");
 	mat[0] = t1.mat[0];
 	mat[1] = t1.mat[1];
 	mat[2] = t1.mat[2];
