@@ -31,8 +31,6 @@ public class PunchState extends GameState
     private float exitCounter      = 0.0f;
     private float minimumTimeBeforeTransition = 0.5f;
     
-    private boolean bReverse = false;
-        
     public PunchState(NinjaContext master)
     {
         super(master);
@@ -72,15 +70,6 @@ public class PunchState extends GameState
                       
         // Stop the character
         ninjaContext.getController().stop();
-        
-        // Set reverse animation
-        if (ninjaContext.getSkeleton() != null)
-        {
-            if (bReverse)
-                ninjaContext.getSkeleton().getAnimationState().setReverseAnimation(true);
-            else
-                ninjaContext.getSkeleton().getAnimationState().setReverseAnimation(false);
-        }
     }
     
     @Override
@@ -102,13 +91,4 @@ public class PunchState extends GameState
     public void setMinimumTimeBeforeTransition(float minimumTimeBeforeTransition) {
         this.minimumTimeBeforeTransition = minimumTimeBeforeTransition;
     }
-
-    public boolean isReverse() {
-        return bReverse;
-    }
-
-    public void setReverse(boolean bReverse) {
-        this.bReverse = bReverse;
-    }
-    
 }

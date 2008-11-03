@@ -212,7 +212,7 @@ public class NinjaContext extends GameContext
         else if (trigger == TriggerNames.Reverse.ordinal() && pressed)
         {
             PunchState punch = (PunchState) gameStates.get(PunchState.class);
-            punch.setReverse(!punch.isReverse());
+            punch.setReverseAnimation(!punch.isReverseAnimation());
         }
         
         else if (trigger == TriggerNames.NextAction.ordinal() && pressed)

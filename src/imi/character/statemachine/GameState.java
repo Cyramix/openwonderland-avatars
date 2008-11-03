@@ -37,7 +37,7 @@ public class GameState extends NamedUpdatableObject
     
     protected String animationName = null;
     protected float animationSpeed = 1.0f;
-    
+    private boolean bReverseAnimation = false;
     private float transitionDuration = 0.2f;
     
     private boolean bAnimationSet = false;
@@ -142,6 +142,12 @@ public class GameState extends NamedUpdatableObject
             skeleton.getAnimationState().setTransitionDuration(transitionDuration);
             skeleton.getAnimationState().setAnimationSpeed(animationSpeed);
             bAnimationSet = skeleton.transitionTo(animationName);
+            
+            // Set reverse   
+            if (bReverseAnimation)
+                skeleton.getAnimationState().setReverseAnimation(true);
+            else
+                skeleton.getAnimationState().setReverseAnimation(false);
         }
     }
     
@@ -167,14 +173,9 @@ public class GameState extends NamedUpdatableObject
             logger.fine(getName() + " Enter");
         
         if (gameContext.getController().getWindow() != null)
-            gameContext.getController().getWindow().setTitle(getName() + " " + getAnimationName());
+            gameContext.getController().getWindow().setTitle(getName() + " Reverse: " + bReverseAnimation + " " + getAnimationName());
         
         bAnimationSet = false;
-    
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // testing debugging
-//        if (owner.getSkeleton() != null)
-//            owner.getSkeleton().getAnimationState().setReverseAnimation(true);
         
         // Transition to the animation
         setAnimation();
@@ -242,6 +243,16 @@ public class GameState extends NamedUpdatableObject
 
     public void setTransitionDuration(float transitionDuration) {
         this.transitionDuration = transitionDuration;
+    }
+
+    public boolean isReverseAnimation() {
+        return bReverseAnimation;
+    }
+
+    public void setReverseAnimation(boolean reverseAnimation) {
+        if(reverseAnimation != bReverseAnimation)
+            bAnimationSet = false;
+        bReverseAnimation = reverseAnimation;
     }
     
     
