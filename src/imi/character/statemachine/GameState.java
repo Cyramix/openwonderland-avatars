@@ -167,7 +167,7 @@ public class GameState extends NamedUpdatableObject
             logger.fine(getName() + " Enter");
         
         if (gameContext.getController().getWindow() != null)
-            gameContext.getController().getWindow().setTitle(getName());
+            gameContext.getController().getWindow().setTitle(getName() + " " + getAnimationName());
         
         bAnimationSet = false;
     

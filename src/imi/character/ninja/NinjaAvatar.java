@@ -39,6 +39,13 @@ public class NinjaAvatar extends Ninja
             anims.add("assets/models/collada/Avatars/MaleZip/Male_Wave.dae");
             anims.add("assets/models/collada/Avatars/MaleZip/Male_Walk.dae");
             anims.add("assets/models/collada/Avatars/MaleZip/Male_Sitting.dae");
+            anims.add("assets/models/collada/Avatars/MaleZip/Male_Run.dae");
+            anims.add("assets/models/collada/Avatars/Male/Male_Bow.dae");
+            anims.add("assets/models/collada/Avatars/Male/Male_Cheer.dae");
+            anims.add("assets/models/collada/Avatars/Male/Male_Clap.dae");
+            anims.add("assets/models/collada/Avatars/Male/Male_Follow.dae");
+            anims.add("assets/models/collada/Avatars/Male/Male_Jump.dae");
+            anims.add("assets/models/collada/Avatars/Male/Male_Laugh.dae");
             m_animations = anims.toArray(m_animations);
         }
 

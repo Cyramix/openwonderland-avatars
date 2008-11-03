@@ -65,19 +65,21 @@ public class Ninja extends imi.character.Character
     @Override
     protected void initKeyBindings() 
     {   
-        m_keyBindings.put(KeyEvent.VK_SHIFT,    TriggerNames.Movement_Modifier.ordinal());
-        m_keyBindings.put(KeyEvent.VK_LEFT,     TriggerNames.Move_Left.ordinal());
-        m_keyBindings.put(KeyEvent.VK_RIGHT,    TriggerNames.Move_Right.ordinal());
-        m_keyBindings.put(KeyEvent.VK_UP,       TriggerNames.Move_Forward.ordinal());
-        m_keyBindings.put(KeyEvent.VK_DOWN,     TriggerNames.Move_Back.ordinal());
+        m_keyBindings.put(KeyEvent.VK_SHIFT,        TriggerNames.Movement_Modifier.ordinal());
+        m_keyBindings.put(KeyEvent.VK_LEFT,         TriggerNames.Move_Left.ordinal());
+        m_keyBindings.put(KeyEvent.VK_RIGHT,        TriggerNames.Move_Right.ordinal());
+        m_keyBindings.put(KeyEvent.VK_UP,           TriggerNames.Move_Forward.ordinal());
+        m_keyBindings.put(KeyEvent.VK_DOWN,         TriggerNames.Move_Back.ordinal());
 //        m_keyBindings.put(KeyEvent.VK_W,        TriggerNames.Move_Forward.ordinal());
 //        m_keyBindings.put(KeyEvent.VK_S,        TriggerNames.Move_Back.ordinal());
-        m_keyBindings.put(KeyEvent.VK_CONTROL,  TriggerNames.Punch.ordinal());
-        m_keyBindings.put(KeyEvent.VK_ENTER,    TriggerNames.GoSit.ordinal());
-        m_keyBindings.put(KeyEvent.VK_BACK_SPACE, TriggerNames.PositionGoalPoint.ordinal());
-        m_keyBindings.put(KeyEvent.VK_HOME, TriggerNames.SelectNearestGoalPoint.ordinal());
-        m_keyBindings.put(KeyEvent.VK_ADD,        TriggerNames.Move_Down.ordinal());
-        m_keyBindings.put(KeyEvent.VK_SUBTRACT,        TriggerNames.Move_Up.ordinal());
+        m_keyBindings.put(KeyEvent.VK_CONTROL,      TriggerNames.Punch.ordinal());
+        m_keyBindings.put(KeyEvent.VK_ENTER,        TriggerNames.GoSit.ordinal());
+        m_keyBindings.put(KeyEvent.VK_BACK_SPACE,   TriggerNames.PositionGoalPoint.ordinal());
+        m_keyBindings.put(KeyEvent.VK_HOME,         TriggerNames.SelectNearestGoalPoint.ordinal());
+        m_keyBindings.put(KeyEvent.VK_ADD,          TriggerNames.Move_Down.ordinal());
+        m_keyBindings.put(KeyEvent.VK_SUBTRACT,     TriggerNames.Move_Up.ordinal());
+        m_keyBindings.put(KeyEvent.VK_COMMA,        TriggerNames.Reverse.ordinal());
+        m_keyBindings.put(KeyEvent.VK_PERIOD,       TriggerNames.NextAction.ordinal());
     }
             
     /**
