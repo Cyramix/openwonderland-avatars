@@ -72,7 +72,7 @@ public class NinjaAvatar extends Ninja
         m_context.getStates().get(FlyState.class).setAnimationName("Male_Sitting");
         ((SitState)m_context.getStates().get(SitState.class)).setIdleSittingAnimationName("Male_Sitting");
         ((SitState)m_context.getStates().get(SitState.class)).setGettingUpAnimationName("Male_StandToSit");    
-        m_context.getStates().get(WalkState.class).setTransitionDuration(0.15f);
+        m_context.getStates().get(WalkState.class).setTransitionDuration(0.3f);
         m_context.getStates().get(SitState.class).setAnimationSpeed(1.5f);
         //((SitState)m_context.getStates().get(SitState.class)).setIdleSittingTransitionDuration(0.5f);
         ((SitState)m_context.getStates().get(SitState.class)).setSittingAnimationTime(0.2f);

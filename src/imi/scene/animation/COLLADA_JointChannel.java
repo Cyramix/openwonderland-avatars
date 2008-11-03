@@ -76,6 +76,13 @@ public class COLLADA_JointChannel implements PJointChannel
 
     public void calculateFrame(PJoint jointToAffect, AnimationState state)
     {
+        if (true)
+        {
+            PMatrix result = calculateBlendedMatrix(state.getCurrentCycleTime(), state.getCurrentCycleStartTime(), state.getCurrentCycleEndTime(), state.isReverseAnimation());
+            if (result != null)
+                jointToAffect.getTransform().setLocalMatrix(result);
+            return;
+        }
         // extract relevant data from the animation state provided
         float fCurrentTime = state.getCurrentCycleTime();
         
@@ -86,98 +93,81 @@ public class COLLADA_JointChannel implements PJointChannel
         float []rotationAngles = new float[3];
 
         // determine what two keyframes to interpolate between
-        PMatrixKeyframe currentFrame = m_KeyFrames.getFirst();
-        PMatrixKeyframe nextFrame = null;//m_KeyFrames.getFirst();
-        float s = 0.0f; // this determines how far in we should interpolate
+        PMatrixKeyframe leftFrame = null;
+        PMatrixKeyframe rightFrame = null;
+        
+        float interpolationValue = 0.0f; // this determines how far in we should interpolate
 
         PMatrixKeyframe firstFrame = m_KeyFrames.getFirst();
         PMatrixKeyframe lastFrame = m_KeyFrames.getLast();
-        boolean bLooping = false;
 
         PMatrix delta = new PMatrix();
 
         // Single direction looping check
-        if (fCurrentTime <= firstFrame.getFrameTime()) // Before beginning
-            currentFrame = firstFrame;
-        else if (fCurrentTime >= lastFrame.getFrameTime()) // After ending
+        if (fCurrentTime < firstFrame.getFrameTime()) // Before beginning
         {
-            currentFrame = lastFrame;
-            nextFrame = firstFrame;
-            bLooping = true;
+            return;
+            //leftFrame = firstFrame;
+        }
+        else if (fCurrentTime > lastFrame.getFrameTime()) // After ending
+        {
+            return;
         }
         else // Determine left and right keyframes for blending
         {
             for (PMatrixKeyframe frame : m_KeyFrames)
             {
-                if (frame.getFrameTime() < fCurrentTime)
-                    currentFrame = frame;
+                if (frame.getFrameTime() <= fCurrentTime)
+                    leftFrame = frame;
                 else
                 {
-                    nextFrame = frame;
+                    rightFrame = frame;
                     break;
                 }
             }
         }
 
-        // At this point we now have the current and next frames, if the current 
-        // or the next frame is not within the cycle limits, then this channel has
+        // At this point we now have the left and right frames, if the left 
+        // or the right frame is not within the cycle limits, then this channel has
         // no animaton data for that cycle and no transformation should be done.
-        if (currentFrame != null)
-            if (currentFrame.getFrameTime() < state.getCurrentCycleStartTime() || currentFrame.getFrameTime() > state.getCurrentCycleEndTime())
+        if (leftFrame != null)
+            if (leftFrame.getFrameTime() < state.getCurrentCycleStartTime() || leftFrame.getFrameTime() > state.getCurrentCycleEndTime())
                 return; // No data, do not manipulate anything
-        if (nextFrame != null)
-            if (nextFrame.getFrameTime() < state.getCurrentCycleStartTime() || currentFrame.getFrameTime() > state.getCurrentCycleEndTime())
+        if (rightFrame != null)
+            if (rightFrame.getFrameTime() < state.getCurrentCycleStartTime())
                 return; // No data, do nothing
-                
-        delta.set(currentFrame.getValue());
+        if (leftFrame == null)
+            return;
                     
-        //  Are we right at a keyframe.
-        if (currentFrame != null && nextFrame == null)
+        //  Are we directly aligned with a keyframe?!!?
+        if (leftFrame != null && rightFrame == null)
         {
-            delta.set(currentFrame.getValue());
+            delta.set(leftFrame.getValue());
         }
-        else if (currentFrame == nextFrame)
+        else if (leftFrame == rightFrame) // Same relationship, different manifestation
         {
-            delta.set(currentFrame.getValue());
+            delta.set(leftFrame.getValue());
         }
-        else if (currentFrame != null && nextFrame != null)
+        else if (leftFrame != null && rightFrame != null) // Need to blend between two poses
         {
-            if (bLooping)
-            {
-                s = (fCurrentTime - currentFrame.getFrameTime()) / (this.m_fDuration - lastFrame.getFrameTime());
-            }
-            else
-            {
-                // determine s
-                s = (fCurrentTime - currentFrame.getFrameTime()) / (nextFrame.getFrameTime() - currentFrame.getFrameTime());
-            }
-
-
-            delta.setIdentity();
-            
-//            if (s < 0.0f || s > 1.0f)
-//            {
-//                int debuggingBreakPoint = 0;
-//            }
+            interpolationValue = (fCurrentTime - leftFrame.getFrameTime()) / (rightFrame.getFrameTime() - leftFrame.getFrameTime());
 
             if (state.isReverseAnimation())
-                s *= -1.0f; // Reverese interpolation weights
+                interpolationValue *= -1.0f; // Reverese interpolation weights
             
-            Quaternion rotationComponent = currentFrame.getValue().getRotationJME();
-            rotationComponent.slerp(rotationComponent, nextFrame.getValue().getRotationJME(), s);
+            Quaternion rotationComponent = leftFrame.getValue().getRotationJME();
+            rotationComponent.slerp(rotationComponent, rightFrame.getValue().getRotationJME(), interpolationValue);
 
             rotationComponent.toAngles(rotationAngles);
 
             // grab the translation and lerp it
-            Vector3f translationComponent = new Vector3f(currentFrame.getValue().getTranslation());
-            translationComponent.interpolate(nextFrame.getValue().getTranslation(), s);
+            Vector3f translationComponent = new Vector3f(leftFrame.getValue().getTranslation());
+            translationComponent.interpolate(rightFrame.getValue().getTranslation(), interpolationValue);
 
             delta.set2(rotationComponent, translationComponent, 1.0f);
         }
 
         jointToAffect.getTransform().getLocalMatrix(true).set(delta);
-
-        jointToAffect.setDirty(true, true);
     }
     
     public void Matrix4fToPMatrix(Matrix4f matrix4f, PMatrix pMatrix)
@@ -206,119 +196,54 @@ public class COLLADA_JointChannel implements PJointChannel
     }
 
     
-    
+    /**
+     * Calculate the pose given the specified transitioning animation state.
+     * The current cycle pose is determined and then blended via a weighting
+     * derived from the transition time / transition duration
+     * @param jointToAffect 
+     * @param state
+     */
     public void calculateBlendedFrame(PJoint jointToAffect, AnimationState state)
     {
         // do we even have animation data?
         if (m_KeyFrames.size() == 0)
             return; // Do nothing
-        
         // extract relevant data
         float fCurrentCycleTime = state.getCurrentCycleTime();
         float fTransitionCycleTime = state.getTransitionCycleTime();
         
         float interpolationCoefficient = state.getTimeInTransition() / state.getTransitionDuration();
         
-        // determine what two keyframes to interpolate between for the first pose
-        PMatrixKeyframe currentFrame = m_KeyFrames.getFirst();
-        PMatrixKeyframe nextFrame = m_KeyFrames.getFirst();
+        PMatrix firstTransform = calculateBlendedMatrix(fCurrentCycleTime, state.getCurrentCycleStartTime(), state.getCurrentCycleEndTime(), false);
+        PMatrix secondTransform = calculateBlendedMatrix(fTransitionCycleTime, state.getTransitionCycleStartTime(), state.getTransitionCycleEndTime(), false);
         
-        for (PMatrixKeyframe frame : m_KeyFrames)
+        PMatrix result = null;
+        
+        if (secondTransform == null)
+            result = firstTransform;
+        else if (firstTransform == null)
+            result = secondTransform;
+        
+        
+        if (firstTransform != null && firstTransform.equals(secondTransform)) // no blend
+            result = firstTransform;
+        else if (firstTransform != null && secondTransform != null) // interpolate!
         {
-            if (frame.getFrameTime() < fCurrentCycleTime)
-                currentFrame = frame;
-            else // passed the mark
-            {
-                nextFrame = frame;
-                break; // finished checking
-            }
+            // if we got here, then these two transforms need to be blended
+            Quaternion rotationComponent1 = firstTransform.getRotation();
+            Quaternion rotationComponent2 = secondTransform.getRotation();
+            rotationComponent1.slerp(rotationComponent2, interpolationCoefficient);
+
+            // grab the translation and lerp it
+            Vector3f translationComponent1 = firstTransform.getTranslation();
+            Vector3f translationComponent2 = secondTransform.getTranslation();
+            translationComponent1.interpolate(translationComponent2, interpolationCoefficient);
+            
+            result = new PMatrix();
+            result.set2(rotationComponent1, translationComponent1, 1.0f);
         }
-        
-        // Bounds checking within the specified cycle
-        boolean noDataForCurrentCycle = false;
-        if (currentFrame != null)
-            if (currentFrame.getFrameTime() < state.getCurrentCycleStartTime() || currentFrame.getFrameTime() > state.getCurrentCycleEndTime())
-                noDataForCurrentCycle = true; // No data, do not manipulate anything
-        if (nextFrame != null)
-            if (nextFrame.getFrameTime() < state.getCurrentCycleStartTime() || currentFrame.getFrameTime() > state.getCurrentCycleEndTime())
-                noDataForCurrentCycle = true; // No data, do nothing
-        
-        // grab out the rotation and slerp it
-        Quaternion rotationComponent1 = currentFrame.getValue().getRotation();
-        rotationComponent1.slerp(nextFrame.getValue().getRotation(), interpolationCoefficient);
-        
-        // grab the translation and lerp it
-        Vector3f translationComponent1 = currentFrame.getValue().getTranslation();
-        translationComponent1.interpolate(nextFrame.getValue().getTranslation(), interpolationCoefficient);
-        
-        //////////////////////////////////////////////////////
-        // determine the information for the second pose    //
-        //////////////////////////////////////////////////////
-        currentFrame = m_KeyFrames.getFirst();
-        nextFrame = m_KeyFrames.getFirst();
-        
-        
-        for (PMatrixKeyframe frame : m_KeyFrames)
-        {
-            if (frame.getFrameTime() < fTransitionCycleTime)
-                currentFrame = frame;
-            else // passed the mark
-            {
-                nextFrame = frame;
-                break; // finished checking
-            }
-        }
-        
-        // bounds checking
-        if (currentFrame != null)
-        {
-            if (currentFrame.getFrameTime() < state.getCurrentCycleStartTime() || currentFrame.getFrameTime() > state.getCurrentCycleEndTime())
-            {
-                if (noDataForCurrentCycle) // double failure, do nothing
-                    return;
-                else
-                {
-                    PMatrix delta = new PMatrix();
-                    delta.set(rotationComponent1, translationComponent1, 1.0f);
-                    // apply to the joint
-                    jointToAffect.getTransform().getLocalMatrix(true).set(delta);
-                    return;
-                }
-            }
-        }
-        if (nextFrame != null)
-        {
-            if (nextFrame.getFrameTime() < state.getCurrentCycleStartTime() || currentFrame.getFrameTime() > state.getCurrentCycleEndTime())
-            {
-                if (noDataForCurrentCycle) // double failure, do nothing
-                    return;
-                else
-                {
-                    PMatrix delta = new PMatrix();
-                    delta.set(rotationComponent1, translationComponent1, 1.0f);
-                    // apply to the joint
-                    jointToAffect.getTransform().getLocalMatrix(true).set(delta);
-                    return;
-                }
-            }
-        }
-        // grab out the rotation and slerp it
-        Quaternion rotationComponent2 = currentFrame.getValue().getRotation();
-        rotationComponent2.slerp(nextFrame.getValue().getRotation(), interpolationCoefficient);
-        
-        // grab the translation and lerp it
-        Vector3f translationComponent2 = currentFrame.getValue().getTranslation();
-        translationComponent2.interpolate(nextFrame.getValue().getTranslation(), interpolationCoefficient);
-        
-        // Interpolate the two poses
-        rotationComponent1.slerp(rotationComponent2, interpolationCoefficient);
-        translationComponent1.interpolate(translationComponent2, interpolationCoefficient);
-        
-        PMatrix delta = new PMatrix();
-        delta.set(rotationComponent1, translationComponent1, 1.0f);
-        
-        // apply to the joint
-        jointToAffect.getTransform().getLocalMatrix(true).set(delta);
+        if (result != null)
+            jointToAffect.getTransform().setLocalMatrix(result);
     }
 
     public float calculateDuration()
@@ -342,6 +267,57 @@ public class COLLADA_JointChannel implements PJointChannel
         return m_fDuration;
     }
 
+    private PMatrix calculateBlendedMatrix(float fTime, float fLeftBoundaryTime, float fRightBoundaryTime, boolean bReverse)
+    {
+        float interpolationCoefficient = 0.0f;
+        // determine what two keyframes to interpolate between for the first pose
+        PMatrixKeyframe leftFrame = null;
+        PMatrixKeyframe rightFrame = null;
+        
+        for (PMatrixKeyframe frame : m_KeyFrames)
+        {
+            if (frame.getFrameTime() <= fTime)
+                leftFrame = frame;
+            else // passed the mark
+            {
+                rightFrame = frame;
+                break; // finished checking
+            }
+        }
+        
+        // Bounds checking within the specified cycle
+        if (leftFrame != null)
+            if (leftFrame.getFrameTime() < fLeftBoundaryTime || leftFrame.getFrameTime() > fRightBoundaryTime)
+                leftFrame = null;
+        if (rightFrame != null)
+            if (rightFrame.getFrameTime() < fLeftBoundaryTime || rightFrame.getFrameTime() > fRightBoundaryTime)
+                rightFrame = null; // No data, do nothing
+        
+        PMatrix delta = null;
+        //  Are we directly aligned with a keyframe?!!?
+        if (leftFrame != null && rightFrame == null)
+            delta = new PMatrix(leftFrame.getValue());
+        else if (leftFrame != null && leftFrame == rightFrame) // Same relationship, different manifestation
+            delta = new PMatrix(leftFrame.getValue());
+        else if (leftFrame != null && rightFrame != null) // Need to blend between two poses
+        {
+            interpolationCoefficient = (fTime - leftFrame.getFrameTime()) / (rightFrame.getFrameTime() - leftFrame.getFrameTime());
+
+            if (bReverse)
+                interpolationCoefficient *= -1.0f; // Reverese interpolation weights
+            
+            Quaternion rotationComponent = leftFrame.getValue().getRotationJME();
+            rotationComponent.slerp(rotationComponent, rightFrame.getValue().getRotationJME(), interpolationCoefficient);
+
+            // grab the translation and lerp it
+            Vector3f translationComponent = new Vector3f(leftFrame.getValue().getTranslation());
+            translationComponent.interpolate(rightFrame.getValue().getTranslation(), interpolationCoefficient);
+            delta = new PMatrix();
+            delta.set2(rotationComponent, translationComponent, 1.0f);
+        }
+        
+        return delta;
+    }
     /**
      * This method calculates and returns the average timestep,
      * it also calls the calculateDuration method. So if you need both,
@@ -559,11 +535,14 @@ public class COLLADA_JointChannel implements PJointChannel
             
             if (startFrame == null && keyframe.getFrameTime() >= fCycleStartTime)
                 startFrame = keyframe;
-            if (keyframe.getFrameTime() <= fCycleEndTime)
+            if (keyframe.getFrameTime() < fCycleStartTime && keyframe.getFrameTime() <= fCycleEndTime)
                 endFrame = keyframe;
         }
         
-        assert((startFrame != null && endFrame != null)) : "Someone set up us the bomb";
+        if (endFrame == null) // Weirdness
+            endFrame = startFrame;
+        if (endFrame == null) // both are null, not relevant for this channel
+            return;
         // Are the transforms the same?
         if (startFrame.getValue().equals(endFrame.getValue()) == false)
         {

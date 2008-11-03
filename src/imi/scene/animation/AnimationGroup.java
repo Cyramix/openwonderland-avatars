@@ -373,8 +373,8 @@ public class AnimationGroup
     {
         calculateDuration();
 
-        m_cycles[0].setStartTime(getStartTime());
-        m_cycles[0].setEndTime(m_Duration);
+        m_cycles[0].setStartTime(0.0f);
+        m_cycles[0].setEndTime(calculateLastFrameTime());
     }
     
 
@@ -430,31 +430,8 @@ public class AnimationGroup
         COLLADA_JointChannel pOriginalJointChannel;
         COLLADA_JointChannel pJointChannel;
         
-        // find the time of the last keyframe in this animation group
-        float fEndOfInitialKeyframes = this.calculateLastFrameTime() + m_fTimePadding;
-        
-        for (int i = 0; i < pAnimationGroup.getChannels().size(); i++) // For each new channel
-        {
-            // grab the next channel
-            pJointChannel = (COLLADA_JointChannel)pAnimationGroup.getChannels().get(i);
-            // Did this joint already have a channel in out group?
-            pOriginalJointChannel = (COLLADA_JointChannel)findChannel(pJointChannel.getTargetJointName());
-            
-            if (pOriginalJointChannel != null)
-            {
-                pOriginalJointChannel.append(pJointChannel, fEndOfInitialKeyframes);
-            }
-            else
-            {
-                addJointChannel(pAnimationGroup, pJointChannel, fEndOfInitialKeyframes);
-            }
-        }
-
         // grab the first animation cycle from this group
         AnimationCycle pFirstAnimationCycle = this.getCycle(0);
-
-        // recalculate time of last frame now that new channels have been added
-        float fLastFrameTime = calculateLastFrameTime();
         
         //  Create duplicate of first Cycle if we only have one.
         if (this.getCycleCount() == 1)
@@ -465,6 +442,9 @@ public class AnimationGroup
 
             pFirstAnimationCycle.setName("All Cycles");
         }
+        
+        // find the time of the last keyframe in this animation group
+        float fEndOfInitialKeyframes = calculateLastFrameTime() + m_fTimePadding;
         
         // Iterate through every cycle from the new group
         for (int i = 0; i < pAnimationGroup.getCycleCount(); ++i)
@@ -478,8 +458,23 @@ public class AnimationGroup
             this.addCycle(currentCycle);
         }
         
-        // adjust the "All Cycles" end time
-        this.getCycle(0).setEndTime(fLastFrameTime);
+        
+        for (int i = 0; i < pAnimationGroup.getChannels().size(); i++) // For each new channel
+        {
+            // grab the next channel
+            pJointChannel = (COLLADA_JointChannel)pAnimationGroup.getChannels().get(i);
+            // Did this joint already have a channel in out group?
+            pOriginalJointChannel = (COLLADA_JointChannel)findChannel(pJointChannel.getTargetJointName());
+            
+            if (pOriginalJointChannel != null)
+            {
+                pOriginalJointChannel.append(pJointChannel, fEndOfInitialKeyframes);
+                for (AnimationCycle cycle : m_cycles)
+                    pOriginalJointChannel.closeCycle(cycle);
+            }
+            else
+                addJointChannel(pAnimationGroup, pJointChannel, fEndOfInitialKeyframes);
+        }
         
         calculateDuration();
 
@@ -506,6 +501,9 @@ public class AnimationGroup
         //  Remove the JointChannel from the AnimationGroup we're moving it from.
         pAnimationGroup.getChannels().remove(pJointChannel);
 
+        // Close all existing cycles
+        for (int i = 0; i < m_cycles.length; ++i)
+            pJointChannel.closeCycle(m_cycles[i]);
         //  Add the JointChannel to this AnimationGroup.
         m_JointChannels.add(pJointChannel);
     }

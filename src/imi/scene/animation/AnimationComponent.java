@@ -75,12 +75,15 @@ public class AnimationComponent
         if (cycleIndex == state.getCurrentCycle() || cycleIndex == state.getTransitionCycle())
             return false;
         
+        if(cycleIndex == -1)
+            return false;
+        
         state.setTransitionCycle(cycleIndex);
         state.setTimeInTransition(0.0f);
         state.setTransitionCycleTime(m_AnimationGroups.get(animationGroupIndex).getCycle(cycleIndex).getStartTime());
+        state.setTransitionCycleStartTime(m_AnimationGroups.get(animationGroupIndex).getCycle(cycleIndex).getStartTime());
+        state.setTransitionCycleEndTime(m_AnimationGroups.get(animationGroupIndex).getCycle(cycleIndex).getEndTime());
         
-        if(cycleIndex == -1)
-            return false;
         
         return true;
     }
