@@ -112,9 +112,17 @@ public interface PJointChannel
     /**
      * Appends a JointChannel onto the end of this JointChannel.
      * @param pJointChannel The JointChannel to append onto this one.
+     * @param fOffset The amount of time to shift existing keyframes by
      */
-    public void append(PJointChannel pJointChannel);
+    public void append(PJointChannel pJointChannel,  float fOffset);
 
+    /**
+     * Use the cycle specified to determine what keyframes are relevant.
+     * The first and last keyframe for the cycle should be the same to ease
+     * the looping process. If they are not the same it will be taken care of.
+     * @param cycle The animation cycle to consider
+     */
+    public void closeCycle(AnimationCycle cycle);
 }
 
 

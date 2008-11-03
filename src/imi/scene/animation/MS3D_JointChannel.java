@@ -87,7 +87,7 @@ public class MS3D_JointChannel implements PJointChannel
         
         for (VectorKeyframe frame : m_TranslationKeyframes)
         {
-            if (frame.getTime() < fTime)
+            if (frame.getFrameTime() < fTime)
                 currentFrame = frame;
             else // passed the mark
             {
@@ -96,7 +96,7 @@ public class MS3D_JointChannel implements PJointChannel
             }
         }
         // determine s
-        s = (fTime - currentFrame.getTime()) / (nextFrame.getTime() - currentFrame.getTime());
+        s = (fTime - currentFrame.getFrameTime()) / (nextFrame.getFrameTime() - currentFrame.getFrameTime());
         // lerp and determine final translation vector
         Vector3f translationVector = new Vector3f();
         
@@ -110,7 +110,7 @@ public class MS3D_JointChannel implements PJointChannel
         nextFrame    = m_RotationKeyframes.getFirst();
         for (VectorKeyframe frame : m_RotationKeyframes)
         {
-            if (frame.getTime() < fTime)
+            if (frame.getFrameTime() < fTime)
                 currentFrame = frame;
             else // passed the mark
             {
@@ -120,7 +120,7 @@ public class MS3D_JointChannel implements PJointChannel
         }
         
         // determine s
-        s = (fTime - currentFrame.getTime()) / (nextFrame.getTime() - currentFrame.getTime());
+        s = (fTime - currentFrame.getFrameTime()) / (nextFrame.getFrameTime() - currentFrame.getFrameTime());
         // lerp and determine final translation vector
         Vector3f rotationVector = new Vector3f();
         
@@ -153,7 +153,7 @@ public class MS3D_JointChannel implements PJointChannel
         
         for (VectorKeyframe frame : m_TranslationKeyframes)
         {
-            if (frame.getTime() < fCurrentCycleTime)
+            if (frame.getFrameTime() < fCurrentCycleTime)
                 currentFrame = frame;
             else // passed the mark
             {
@@ -162,7 +162,7 @@ public class MS3D_JointChannel implements PJointChannel
             }
         }
         // determine s
-        fLerpValue = (fCurrentCycleTime - currentFrame.getTime()) / (nextFrame.getTime() - currentFrame.getTime());
+        fLerpValue = (fCurrentCycleTime - currentFrame.getFrameTime()) / (nextFrame.getFrameTime() - currentFrame.getFrameTime());
         // lerp and determine final translation vector
         Vector3f translationVector = new Vector3f();
         if (currentFrame != nextFrame)
@@ -175,7 +175,7 @@ public class MS3D_JointChannel implements PJointChannel
         nextFrame = m_RotationKeyframes.getFirst();
         for (VectorKeyframe frame : m_RotationKeyframes)
         {
-            if (frame.getTime() < fCurrentCycleTime)
+            if (frame.getFrameTime() < fCurrentCycleTime)
                 currentFrame = frame;
             else // passed the mark
             {
@@ -184,7 +184,7 @@ public class MS3D_JointChannel implements PJointChannel
             }
         }
         // determine s
-        fLerpValue = (fCurrentCycleTime - currentFrame.getTime()) / (nextFrame.getTime() - currentFrame.getTime());
+        fLerpValue = (fCurrentCycleTime - currentFrame.getFrameTime()) / (nextFrame.getFrameTime() - currentFrame.getFrameTime());
         // lerp and determine final translation vector
         Vector3f rotationVector = new Vector3f();
         if (currentFrame != nextFrame)
@@ -204,7 +204,7 @@ public class MS3D_JointChannel implements PJointChannel
         
         for (VectorKeyframe frame : m_TranslationKeyframes)
         {
-            if (frame.getTime() < fTransitionCycleTime)
+            if (frame.getFrameTime() < fTransitionCycleTime)
                 currentFrame = frame;
             else // passed the mark
             {
@@ -213,7 +213,7 @@ public class MS3D_JointChannel implements PJointChannel
             }
         }
         // determine s
-        fLerpValue = (fTransitionCycleTime - currentFrame.getTime()) / (nextFrame.getTime() - currentFrame.getTime());
+        fLerpValue = (fTransitionCycleTime - currentFrame.getFrameTime()) / (nextFrame.getFrameTime() - currentFrame.getFrameTime());
         // lerp and determine final translation vector
         Vector3f translationVector2 = new Vector3f();
         if (currentFrame != nextFrame)
@@ -226,7 +226,7 @@ public class MS3D_JointChannel implements PJointChannel
         nextFrame = m_RotationKeyframes.getFirst();
         for (VectorKeyframe frame : m_RotationKeyframes)
         {
-            if (frame.getTime() < fTransitionCycleTime)
+            if (frame.getFrameTime() < fTransitionCycleTime)
                 currentFrame = frame;
             else // passed the mark
             {
@@ -235,7 +235,7 @@ public class MS3D_JointChannel implements PJointChannel
             }
         }
         // determine s
-        fLerpValue = (fTransitionCycleTime - currentFrame.getTime()) / (nextFrame.getTime() - currentFrame.getTime());
+        fLerpValue = (fTransitionCycleTime - currentFrame.getFrameTime()) / (nextFrame.getFrameTime() - currentFrame.getFrameTime());
         // lerp and determine final translation vector
         Vector3f rotationVector2 = new Vector3f();
         if (currentFrame != nextFrame)
@@ -259,8 +259,8 @@ public class MS3D_JointChannel implements PJointChannel
     public float calculateDuration()
     {
         // check out the start times and the end times
-        float fStartTime = Math.min(m_TranslationKeyframes.getFirst().getTime(), m_RotationKeyframes.getFirst().getTime());
-        float fEndTime = Math.max(m_TranslationKeyframes.getLast().getTime(), m_RotationKeyframes.getLast().getTime());
+        float fStartTime = Math.min(m_TranslationKeyframes.getFirst().getFrameTime(), m_RotationKeyframes.getFirst().getFrameTime());
+        float fEndTime = Math.max(m_TranslationKeyframes.getLast().getFrameTime(), m_RotationKeyframes.getLast().getFrameTime());
         // Calculate
         m_fDuration = fEndTime - fStartTime;
         // Return
@@ -303,7 +303,13 @@ public class MS3D_JointChannel implements PJointChannel
     //  Adds a TranslationKeyframe.
     public void addTranslationKeyframe(float fTime, Vector3f Value)
     {
-        m_TranslationKeyframes.add(new VectorKeyframe(fTime, Value));
+        // maintain chronological ordering
+        int index = 0;
+        for (; index < m_TranslationKeyframes.size(); ++index)
+            if (m_TranslationKeyframes.get(index).getFrameTime() > fTime)
+                break;
+        // now index points to the first frame after this time
+        m_TranslationKeyframes.add(index, new VectorKeyframe(fTime, Value));
     }
 
     //  Gets the number of TranslationKeyframes.
@@ -320,8 +326,13 @@ public class MS3D_JointChannel implements PJointChannel
 
     //  Adds a RotationKeyframe.
     public void addRotationKeyframe(float fTime, Vector3f Value)
-    {
-        m_RotationKeyframes.add(new VectorKeyframe(fTime, Value));
+    {                // maintain chronological ordering
+        int index = 0;
+        for (; index < m_RotationKeyframes.size(); ++index)
+            if (m_RotationKeyframes.get(index).getFrameTime() > fTime)
+                break;
+        // now index points to the first frame after this time
+        m_RotationKeyframes.add(index, new VectorKeyframe(fTime, Value));
     }
 
     //  Gets the number of RotationKeyframes.
@@ -351,7 +362,7 @@ public class MS3D_JointChannel implements PJointChannel
         for (a=0; a<getTranslationKeyframeCount(); a++)
         {
             pKeyframe = getTranslationKeyframe(a);
-            System.out.print(spacing + "      Keyframe Time=" + pKeyframe.getTime());
+            System.out.print(spacing + "      Keyframe Time=" + pKeyframe.getFrameTime());
             System.out.println(", Value=(" + pKeyframe.getValue().x + ", " + pKeyframe.getValue().y + ", " + pKeyframe.getValue().z + ")");
         }
 
@@ -359,7 +370,7 @@ public class MS3D_JointChannel implements PJointChannel
         for (a=0; a<getRotationKeyframeCount(); a++)
         {
             pKeyframe = getRotationKeyframe(a);
-            System.out.print(spacing + "      Keyframe Time=" + pKeyframe.getTime());
+            System.out.print(spacing + "      Keyframe Time=" + pKeyframe.getFrameTime());
             System.out.println(", Value=(" + pKeyframe.getValue().x + ", " + pKeyframe.getValue().y + ", " + pKeyframe.getValue().z + ")");
         }
     }
@@ -405,11 +416,11 @@ public class MS3D_JointChannel implements PJointChannel
         if (m_TranslationKeyframes.size() == 0 && m_RotationKeyframes.size() == 0)
             fStartTime = 0.0f;
         else if (m_TranslationKeyframes.size() > 0 && m_RotationKeyframes.size() == 0)
-            fStartTime = m_TranslationKeyframes.getFirst().getTime();
+            fStartTime = m_TranslationKeyframes.getFirst().getFrameTime();
         else if (m_TranslationKeyframes.size() == 0 && m_RotationKeyframes.size() > 0)
-            fStartTime = m_RotationKeyframes.getFirst().getTime();
+            fStartTime = m_RotationKeyframes.getFirst().getFrameTime();
         else
-            fStartTime = Math.max(m_TranslationKeyframes.getFirst().getTime(), m_RotationKeyframes.getFirst().getTime());
+            fStartTime = Math.max(m_TranslationKeyframes.getFirst().getFrameTime(), m_RotationKeyframes.getFirst().getFrameTime());
 
         return fStartTime;
     }
@@ -425,11 +436,11 @@ public class MS3D_JointChannel implements PJointChannel
         if (m_TranslationKeyframes.size() == 0 && m_RotationKeyframes.size() == 0)
             fEndTime = 0.0f;
         else if (m_TranslationKeyframes.size() > 0 && m_RotationKeyframes.size() == 0)
-            fEndTime = m_TranslationKeyframes.getLast().getTime();
+            fEndTime = m_TranslationKeyframes.getLast().getFrameTime();
         else if (m_TranslationKeyframes.size() == 0 && m_RotationKeyframes.size() > 0)
-            fEndTime = m_RotationKeyframes.getLast().getTime();
+            fEndTime = m_RotationKeyframes.getLast().getFrameTime();
         else
-            fEndTime = Math.max(m_TranslationKeyframes.getLast().getTime(), m_RotationKeyframes.getLast().getTime());
+            fEndTime = Math.max(m_TranslationKeyframes.getLast().getFrameTime(), m_RotationKeyframes.getLast().getFrameTime());
 
         return fEndTime;
     }
@@ -447,14 +458,14 @@ public class MS3D_JointChannel implements PJointChannel
         {
             pKeyframe = getTranslationKeyframe(a);
 
-            pKeyframe.setTime(pKeyframe.getTime() + fAmount);
+            pKeyframe.setFrameTime(pKeyframe.getFrameTime() + fAmount);
         }
 
         for (a=0; a<getRotationKeyframeCount(); a++)
         {
             pKeyframe = getRotationKeyframe(a);
 
-            pKeyframe.setTime(pKeyframe.getTime() + fAmount);
+            pKeyframe.setFrameTime(pKeyframe.getFrameTime() + fAmount);
         }
     }
 
@@ -462,30 +473,32 @@ public class MS3D_JointChannel implements PJointChannel
      * Appends a JointChannel onto the end of this JointChannel.
      * @param pJointChannel The JointChannel to append onto this one.
      */
-    public void append(PJointChannel pJointChannel)
+    public void append(PJointChannel pJointChannel, float fOffset)
     {
-        float fEndTime = getEndTime();
-        int a;
         VectorKeyframe pKeyframe;
 
         //  Adjust all the KeyframeTimes.
-        pJointChannel.adjustKeyframeTimes(fEndTime);
+        pJointChannel.adjustKeyframeTimes(fOffset);
 
-        for (a=0; a<getTranslationKeyframeCount(); a++)
+        for (int i = 0; i < getTranslationKeyframeCount(); i++)
         {
-            pKeyframe = getTranslationKeyframe(a);
+            pKeyframe = getTranslationKeyframe(i);
             m_TranslationKeyframes.add(pKeyframe);
         }
 
-        for (a=0; a<getRotationKeyframeCount(); a++)
+        for (int i = 0; i < getRotationKeyframeCount(); i++)
         {
-            pKeyframe = getRotationKeyframe(a);
+            pKeyframe = getRotationKeyframe(i);
             m_RotationKeyframes.add(pKeyframe);
         }
 
         pJointChannel.clear();
     }
 
+    public void closeCycle(AnimationCycle cycle)
+    {
+        throw new UnsupportedOperationException("TODO! hahahahahhahaha");
+    }
 }
 
 

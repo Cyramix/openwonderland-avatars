@@ -78,7 +78,7 @@ public class JPanel_Animations extends javax.swing.JPanel {
                 imi.scene.polygonmodel.parts.skinned.SkeletonNode skeleton = ((imi.scene.polygonmodel.parts.skinned.SkeletonNode)node.getParent());
                 if (skeleton.getAnimationGroup() != null) {
 
-                    int iNumAnimations = skeleton.getAnimationGroup().getCycles().length;
+                    int iNumAnimations = skeleton.getAnimationGroup().getCycleCount();
                     int iCurrentAnim = skeleton.getAnimationState().getCurrentCycle();
                     String[] szAnimations = new String[iNumAnimations];
 

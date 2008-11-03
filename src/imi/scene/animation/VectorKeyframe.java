@@ -26,7 +26,7 @@ import com.jme.math.Vector3f;
  *
  * @author Chris Nagle
  */
-public class VectorKeyframe
+public class VectorKeyframe implements KeyFrameInterface
 {
     float    m_fTime = 0.0f;
     Vector3f m_Value = new Vector3f();
@@ -45,13 +45,13 @@ public class VectorKeyframe
     }
 
     //  Gets the Time.
-    public float getTime()
+    public float getFrameTime()
     {
         return(m_fTime);
     }
 
     //  Sets the Time.
-    public void setTime(float fTime)
+    public void setFrameTime(float fTime)
     {
         m_fTime = fTime;
     }
@@ -66,6 +66,16 @@ public class VectorKeyframe
     public void setValue(Vector3f theValue)
     {
         m_Value.set(theValue);
+    }
+
+    public boolean equals(KeyFrameInterface other)
+    {
+        if (other instanceof VectorKeyframe)
+        {
+            return m_Value.equals(((VectorKeyframe)other).getValue());
+        }
+        else
+            return false;
     }
 
 }

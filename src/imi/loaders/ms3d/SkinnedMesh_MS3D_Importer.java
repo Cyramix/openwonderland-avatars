@@ -25,6 +25,7 @@ import com.jme.renderer.ColorRGBA;
 import imi.loaders.PPolygonTriMeshAssembler;
 import imi.scene.PMatrix;
 import imi.scene.PTransform;
+import imi.scene.animation.AnimationCycle;
 import imi.scene.polygonmodel.skinned.PPolygonSkinnedMesh;
 import imi.scene.animation.AnimationGroup;
 import imi.scene.animation.MS3D_JointChannel;
@@ -220,7 +221,13 @@ public class SkinnedMesh_MS3D_Importer
         m_skeleton.getAnimationComponent().getGroups().add(pAnimationGroup);
 //        // split the animation loop into cycles
         MS3DAnimationMetaData animationFile = new MS3DAnimationMetaData(m_animationMeta);
-        m_skeleton.getAnimationComponent().getGroup().setCycles(animationFile.getCycles());
+        
+        AnimationCycle[] cycleArray = animationFile.getCycles();
+        AnimationGroup group = m_skeleton.getAnimationComponent().getGroup();
+        
+        for (int i = 0; i < cycleArray.length; ++i)
+            group.addCycle(cycleArray[i]);
+        
         m_skeleton.getAnimationComponent().getGroup().calculateDuration();
         
         

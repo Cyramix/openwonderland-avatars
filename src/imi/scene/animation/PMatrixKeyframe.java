@@ -23,7 +23,7 @@ import imi.scene.PMatrix;
  * Represents a transformation at a certain time
  * @author Ronald E Dahlgren
  */
-public class PMatrixKeyframe 
+public class PMatrixKeyframe implements KeyFrameInterface
 {
     float       m_fTime = 0.0f;
     PMatrix     m_Value = new PMatrix();
@@ -42,13 +42,13 @@ public class PMatrixKeyframe
     }
 
     //  Gets the Time.
-    public float getTime()
+    public float getFrameTime()
     {
         return m_fTime;
     }
 
     //  Sets the Time.
-    public void setTime(float fTime)
+    public void setFrameTime(float fTime)
     {
         m_fTime = fTime;
     }
@@ -63,6 +63,16 @@ public class PMatrixKeyframe
     public void setValue(PMatrix theValue)
     {
         m_Value.set(theValue);
+    }
+
+    public boolean equals(KeyFrameInterface other)
+    {
+        if (other instanceof PMatrixKeyframe)
+        {
+            return m_Value.equals(((PMatrixKeyframe)other).m_Value);
+        }
+        else
+            return false;
     }
 
 }

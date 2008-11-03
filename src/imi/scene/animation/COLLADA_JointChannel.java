@@ -97,9 +97,9 @@ public class COLLADA_JointChannel implements PJointChannel
         PMatrix delta = new PMatrix();
 
         // Single direction looping check
-        if (fCurrentTime <= firstFrame.getTime()) // Before beginning
+        if (fCurrentTime <= firstFrame.getFrameTime()) // Before beginning
             currentFrame = firstFrame;
-        else if (fCurrentTime >= lastFrame.getTime()) // After ending
+        else if (fCurrentTime >= lastFrame.getFrameTime()) // After ending
         {
             currentFrame = lastFrame;
             nextFrame = firstFrame;
@@ -109,7 +109,7 @@ public class COLLADA_JointChannel implements PJointChannel
         {
             for (PMatrixKeyframe frame : m_KeyFrames)
             {
-                if (frame.getTime() < fCurrentTime)
+                if (frame.getFrameTime() < fCurrentTime)
                     currentFrame = frame;
                 else
                 {
@@ -123,10 +123,10 @@ public class COLLADA_JointChannel implements PJointChannel
         // or the next frame is not within the cycle limits, then this channel has
         // no animaton data for that cycle and no transformation should be done.
         if (currentFrame != null)
-            if (currentFrame.getTime() < state.getCurrentCycleStartTime() || currentFrame.getTime() > state.getCurrentCycleEndTime())
+            if (currentFrame.getFrameTime() < state.getCurrentCycleStartTime() || currentFrame.getFrameTime() > state.getCurrentCycleEndTime())
                 return; // No data, do not manipulate anything
         if (nextFrame != null)
-            if (nextFrame.getTime() < state.getCurrentCycleStartTime() || currentFrame.getTime() > state.getCurrentCycleEndTime())
+            if (nextFrame.getFrameTime() < state.getCurrentCycleStartTime() || currentFrame.getFrameTime() > state.getCurrentCycleEndTime())
                 return; // No data, do nothing
                 
         delta.set(currentFrame.getValue());
@@ -144,12 +144,12 @@ public class COLLADA_JointChannel implements PJointChannel
         {
             if (bLooping)
             {
-                s = (fCurrentTime - currentFrame.getTime()) / (this.m_fDuration - lastFrame.getTime());
+                s = (fCurrentTime - currentFrame.getFrameTime()) / (this.m_fDuration - lastFrame.getFrameTime());
             }
             else
             {
                 // determine s
-                s = (fCurrentTime - currentFrame.getTime()) / (nextFrame.getTime() - currentFrame.getTime());
+                s = (fCurrentTime - currentFrame.getFrameTime()) / (nextFrame.getFrameTime() - currentFrame.getFrameTime());
             }
 
 
@@ -160,6 +160,9 @@ public class COLLADA_JointChannel implements PJointChannel
 //                int debuggingBreakPoint = 0;
 //            }
 
+            if (state.isReverseAnimation())
+                s *= -1.0f; // Reverese interpolation weights
+            
             Quaternion rotationComponent = currentFrame.getValue().getRotationJME();
             rotationComponent.slerp(rotationComponent, nextFrame.getValue().getRotationJME(), s);
 
@@ -222,7 +225,7 @@ public class COLLADA_JointChannel implements PJointChannel
         
         for (PMatrixKeyframe frame : m_KeyFrames)
         {
-            if (frame.getTime() < fCurrentCycleTime)
+            if (frame.getFrameTime() < fCurrentCycleTime)
                 currentFrame = frame;
             else // passed the mark
             {
@@ -234,10 +237,10 @@ public class COLLADA_JointChannel implements PJointChannel
         // Bounds checking within the specified cycle
         boolean noDataForCurrentCycle = false;
         if (currentFrame != null)
-            if (currentFrame.getTime() < state.getCurrentCycleStartTime() || currentFrame.getTime() > state.getCurrentCycleEndTime())
+            if (currentFrame.getFrameTime() < state.getCurrentCycleStartTime() || currentFrame.getFrameTime() > state.getCurrentCycleEndTime())
                 noDataForCurrentCycle = true; // No data, do not manipulate anything
         if (nextFrame != null)
-            if (nextFrame.getTime() < state.getCurrentCycleStartTime() || currentFrame.getTime() > state.getCurrentCycleEndTime())
+            if (nextFrame.getFrameTime() < state.getCurrentCycleStartTime() || currentFrame.getFrameTime() > state.getCurrentCycleEndTime())
                 noDataForCurrentCycle = true; // No data, do nothing
         
         // grab out the rotation and slerp it
@@ -257,7 +260,7 @@ public class COLLADA_JointChannel implements PJointChannel
         
         for (PMatrixKeyframe frame : m_KeyFrames)
         {
-            if (frame.getTime() < fTransitionCycleTime)
+            if (frame.getFrameTime() < fTransitionCycleTime)
                 currentFrame = frame;
             else // passed the mark
             {
@@ -269,7 +272,7 @@ public class COLLADA_JointChannel implements PJointChannel
         // bounds checking
         if (currentFrame != null)
         {
-            if (currentFrame.getTime() < state.getCurrentCycleStartTime() || currentFrame.getTime() > state.getCurrentCycleEndTime())
+            if (currentFrame.getFrameTime() < state.getCurrentCycleStartTime() || currentFrame.getFrameTime() > state.getCurrentCycleEndTime())
             {
                 if (noDataForCurrentCycle) // double failure, do nothing
                     return;
@@ -285,7 +288,7 @@ public class COLLADA_JointChannel implements PJointChannel
         }
         if (nextFrame != null)
         {
-            if (nextFrame.getTime() < state.getCurrentCycleStartTime() || currentFrame.getTime() > state.getCurrentCycleEndTime())
+            if (nextFrame.getFrameTime() < state.getCurrentCycleStartTime() || currentFrame.getFrameTime() > state.getCurrentCycleEndTime())
             {
                 if (noDataForCurrentCycle) // double failure, do nothing
                     return;
@@ -320,8 +323,8 @@ public class COLLADA_JointChannel implements PJointChannel
 
     public float calculateDuration()
     {
-        float fEndTime = m_KeyFrames.getLast().getTime();
-        float fStartTime = m_KeyFrames.getFirst().getTime();
+        float fEndTime = m_KeyFrames.getLast().getFrameTime();
+        float fStartTime = m_KeyFrames.getFirst().getFrameTime();
         // Calculate
         m_fDuration = fEndTime - fStartTime;
 
@@ -331,7 +334,7 @@ public class COLLADA_JointChannel implements PJointChannel
         }
         else
         {
-            float fSecondKeyframeTime = m_KeyFrames.get(1).getTime();
+            float fSecondKeyframeTime = m_KeyFrames.get(1).getFrameTime();
             m_fDuration += fSecondKeyframeTime;
         }
         
@@ -362,10 +365,20 @@ public class COLLADA_JointChannel implements PJointChannel
         return m_fAverageFrameStep;
     }
 
+    public void addKeyframe(PMatrixKeyframe keyframe)
+    {
+        // maintain chronological ordering
+        int index = 0;
+        for (; index < m_KeyFrames.size(); ++index)
+            if (m_KeyFrames.get(index).getFrameTime() > keyframe.getFrameTime())
+                break;
+        // now index points to the first frame after this time
+        m_KeyFrames.add(index, keyframe);
+    }
     //  Adds a Keyframe.
     public void addKeyframe(float fTime, PMatrix Value)
     {
-        m_KeyFrames.add(new PMatrixKeyframe(fTime, Value));
+        addKeyframe(new PMatrixKeyframe(fTime, Value));
     }
 
     //  Gets the number of Keyframes.
@@ -417,19 +430,15 @@ public class COLLADA_JointChannel implements PJointChannel
      */
     public void trim(float fMaxTime)
     {
-        int a;
         PMatrixKeyframe pKeyframe;
         
         while (m_KeyFrames.size() > 0)
         {
             pKeyframe = m_KeyFrames.get(m_KeyFrames.size()-1);
-            if (pKeyframe.getTime() > fMaxTime)
+            if (pKeyframe.getFrameTime() > fMaxTime)
                 m_KeyFrames.remove(m_KeyFrames.size()-1);
             else
-            {
-//                System.out.println("   Last keyframe time = " + pKeyframe.getTime());
                 break;
-            }
         }
     
         calculateDuration();
@@ -465,7 +474,7 @@ public class COLLADA_JointChannel implements PJointChannel
         float fStartTime = 0.0f;
 
         if (m_KeyFrames.size() > 0)
-            fStartTime = m_KeyFrames.getFirst().getTime();
+            fStartTime = m_KeyFrames.getFirst().getFrameTime();
 
         return fStartTime;
     }
@@ -479,7 +488,7 @@ public class COLLADA_JointChannel implements PJointChannel
         float fEndTime = 0.0f;
 
         if (m_KeyFrames.size() > 0)
-            fEndTime = m_KeyFrames.getLast().getTime();
+            fEndTime = m_KeyFrames.getLast().getFrameTime();
 
         return fEndTime;
     }
@@ -497,7 +506,7 @@ public class COLLADA_JointChannel implements PJointChannel
         {
             pKeyframe = getKeyframe(a);
                 
-            pKeyframe.setTime(pKeyframe.getTime() + fAmount);
+            pKeyframe.setFrameTime(pKeyframe.getFrameTime() + fAmount);
         }
     }
 
@@ -505,22 +514,20 @@ public class COLLADA_JointChannel implements PJointChannel
      * Appends a JointChannel onto the end of this JointChannel.
      * @param pJointChannel The JointChannel to append onto this one.
      */
-    public void append(PJointChannel pJointChannel)
+    public void append(PJointChannel pJointChannel, float fOffset)
     {
         COLLADA_JointChannel pColladaJointChannel = (COLLADA_JointChannel)pJointChannel;
-        float fEndTime = getEndTime();
-        int a;
+        
         PMatrixKeyframe pKeyframe;
         int KeyframeCount = pColladaJointChannel.getKeyframeCount();
 
-//        System.out.println("COLLADA_JointChannel.append(), fEndTime = " + fEndTime);
-
+        
         //  Adjust all the KeyframeTimes.
-        pJointChannel.adjustKeyframeTimes(fEndTime);
+        pJointChannel.adjustKeyframeTimes(fOffset);
 
-        for (a=0; a<KeyframeCount; a++)
+        for (int i = 0; i < KeyframeCount; i++)
         {
-            pKeyframe = pColladaJointChannel.getKeyframe(a);
+            pKeyframe = pColladaJointChannel.getKeyframe(i);
 
             m_KeyFrames.add(pKeyframe);
         }
@@ -530,7 +537,47 @@ public class COLLADA_JointChannel implements PJointChannel
         calculateDuration();
         calculateAverageStepTime();
     }
-
+    
+    public void closeCycle(AnimationCycle cycle)
+    {
+        // 1 - Determine relevancy
+        if (getStartTime() > cycle.getEndTime() || getEndTime() < cycle.getStartTime())
+                return; // No relevant key frames
+        
+        float fCycleStartTime = cycle.getStartTime();
+        float fCycleEndTime = cycle.getEndTime();
+        // 2 - Check to see if the first and last frame of the cycle is the same
+        PMatrixKeyframe startFrame = null;
+        PMatrixKeyframe endFrame = null;
+        
+        for (PMatrixKeyframe keyframe : m_KeyFrames)
+        {
+            if (keyframe.getFrameTime() > fCycleEndTime)
+                break;
+            else if (keyframe.getFrameTime() < fCycleStartTime)
+                continue;
+            
+            if (startFrame == null && keyframe.getFrameTime() >= fCycleStartTime)
+                startFrame = keyframe;
+            if (keyframe.getFrameTime() <= fCycleEndTime)
+                endFrame = keyframe;
+        }
+        
+        assert((startFrame != null && endFrame != null)) : "Someone set up us the bomb";
+        // Are the transforms the same?
+        if (startFrame.getValue().equals(endFrame.getValue()) == false)
+        {
+            float fTimeStep = m_KeyFrames.get(m_KeyFrames.indexOf(startFrame) + 1).getFrameTime();
+            fTimeStep -= startFrame.getFrameTime();
+            
+            //      - if not, duplicate the first frame (time = endOfCycle + paddingAmount [less than using during group append])
+            //          and add it to the channel (it will sort)
+            PMatrixKeyframe newFrame = new PMatrixKeyframe(endFrame.getFrameTime() + fTimeStep, startFrame.getValue());
+            addKeyframe(newFrame);
+            // 3 - Adjust this cycle's end time to meet the new frame if it was created
+            cycle.setEndTime(newFrame.getFrameTime());
+        }
+    }
 }
 
 
