@@ -135,16 +135,22 @@ public class AnimationGroup
 
         float fTime = clampCycleTime(state.getCurrentCycleTime(), cycle, state.isReverseAnimation());
         
+        // Apply the time constraints
         state.setCurrentCycleTime(fTime);
+        state.setCurrentCycleStartTime(cycle.getStartTime());
+        state.setCurrentCycleEndTime(cycle.getEndTime());
 
         boolean bTransitioning = false;
         if (state.getTransitionCycle() != -1)
         {
             bTransitioning = true;
-
-            float fTransitionTime = clampCycleTime(state.getTransitionCycleTime(), m_cycles[state.getTransitionCycle()], state.isReverseAnimation());
+            AnimationCycle transitionCycle = m_cycles[state.getTransitionCycle()];
+            float fTransitionTime = clampCycleTime(state.getTransitionCycleTime(), transitionCycle, state.isReverseAnimation());
             
             state.setTransitionCycleTime(fTransitionTime);
+            state.setTransitionCycleStartTime(transitionCycle.getStartTime());
+            state.setTransitionCycleEndTime(transitionCycle.getEndTime());
+            
         }
 
 
@@ -168,16 +174,20 @@ public class AnimationGroup
                     // do the switcheroo
                     state.setCurrentCycle(state.getTransitionCycle());
                     state.setTransitionCycle(-1);
+                    
                     state.setCurrentCycleTime(state.getTransitionCycleTime());
+                    state.setCurrentCycleStartTime(state.getTransitionCycleStartTime());
+                    state.setCurrentCycleEndTime(state.getTransitionCycleEndTime());
+                    
                     state.setTimeInTransition(0.0f);
                     return;
                 }
                 else
-                    jointChannel.calculateBlendedFrame(pJoint, fTime, state.getTransitionCycleTime(), state.getTimeInTransition() / state.getTransitionDuration());
+                    jointChannel.calculateBlendedFrame(pJoint, state);
             }
             else
             {
-                jointChannel.calculateFrame(pJoint, fTime);
+                jointChannel.calculateFrame(pJoint, state);
             }
         }
 

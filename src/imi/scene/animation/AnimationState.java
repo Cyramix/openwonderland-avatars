@@ -25,20 +25,28 @@ package imi.scene.animation;
  */
 public class AnimationState 
 {
-    private int         m_CurrentCycle              = 0;
-    private float       m_CurrentCycleTime          = 0.0f;
+    // Current cycle information
+    private int     m_CurrentCycle              = 0;
+    private float   m_CurrentCycleTime          = 0.0f;
+    private float   m_CurrentCycleStartTime     = 0.0f;
+    private float   m_CurrentCycleEndTime       = 0.0f;
     
-    private int         m_TransitionCycle           = -1;
-    private float       m_TransitionCycleTime       = 0.0f; // goes from start to end of the trainsition animation
+    // Transition cycle information
+    private int     m_TransitionCycle           = -1;
+    private float   m_TransitionCycleTime       = 0.0f; // goes from start to end of the trainsition animation
+    private float   m_TransitionCycleStartTime  = 0.0f;
+    private float   m_TransitionCycleEndTime    = 0.0f;
+    private float   m_TransitionDuration        = 0.5f; // how long the transition will last
+    private float   m_TimeInTransition          = 0.0f; // goes 0.0f to trainsition duration
     
-    private float       m_TransitionDuration        = 0.5f; // how long the transition will last
-    private float       m_TimeInTransition          = 0.0f; // goes 0.0f to trainsition duration
+    private float   m_AnimationSpeed            = 1.0f; // 1.0f
     
-    private float       m_AnimationSpeed            = 1.0f; // 1.0f
-    private boolean     m_bReverseAnimation         = false;
-    private boolean     m_bPauseAnimation           = false;
-
+    // booleans
+    private boolean m_bReverseAnimation         = false;
+    private boolean m_bPauseAnimation           = false;
+    private boolean m_bTransitionReverseAnimation = false;
     /**
+     * 
      * Empty Constructor
      */
     public AnimationState()
@@ -48,15 +56,26 @@ public class AnimationState
 
     public AnimationState(AnimationState other)
     {
+        // Current cycle information
         m_CurrentCycle = other.m_CurrentCycle;
         m_CurrentCycleTime = other.m_CurrentCycleTime;
+        m_CurrentCycleStartTime = other.m_CurrentCycleStartTime;
+        m_CurrentCycleEndTime = other.m_CurrentCycleEndTime;
+        
+        // Transition cycle information 
         m_TransitionCycle = other.m_TransitionCycle;
         m_TransitionCycleTime = other.m_TransitionCycleTime;
+        m_TransitionCycleStartTime = other.m_TransitionCycleStartTime;
+        m_TransitionCycleEndTime = other.m_TransitionCycleEndTime;
         m_TransitionDuration = other.m_TransitionDuration;
         m_TimeInTransition = other.m_TimeInTransition;
+        
         m_AnimationSpeed = other.m_AnimationSpeed;
+        
+        // booleans
         m_bReverseAnimation = other.m_bReverseAnimation;
         m_bPauseAnimation = other.m_bPauseAnimation;
+        m_bTransitionReverseAnimation = other.m_bTransitionReverseAnimation;
     }
     
     /**
@@ -68,10 +87,11 @@ public class AnimationState
     {
         float advance = fTimeStep * m_AnimationSpeed;
         
-        m_TimeInTransition    += advance;
+        m_TimeInTransition    += fTimeStep;
+        
+        // Negate the time step if in reverse
         if (m_bReverseAnimation)
-            fTimeStep *= -1.0f;
-        advance = fTimeStep * m_AnimationSpeed;
+            advance *= -1.0f;
         
         m_CurrentCycleTime    += advance;
         m_TransitionCycleTime += advance;
@@ -231,4 +251,44 @@ public class AnimationState
         return true;
     }
     
+    public float getCurrentCycleEndTime() {
+        return m_CurrentCycleEndTime;
+    }
+
+    public void setCurrentCycleEndTime(float CurrentCycleEndTime) {
+        this.m_CurrentCycleEndTime = CurrentCycleEndTime;
+    }
+
+    public float getCurrentCycleStartTime() {
+        return m_CurrentCycleStartTime;
+    }
+
+    public void setCurrentCycleStartTime(float CurrentCycleStartTime) {
+        this.m_CurrentCycleStartTime = CurrentCycleStartTime;
+    }
+
+    public float getTransitionCycleEndTime() {
+        return m_TransitionCycleEndTime;
+    }
+
+    public void setTransitionCycleEndTime(float TransitionCycleEndTime) {
+        this.m_TransitionCycleEndTime = TransitionCycleEndTime;
+    }
+
+    public float getTransitionCycleStartTime() {
+        return m_TransitionCycleStartTime;
+    }
+
+    public void setTransitionCycleStartTime(float TransitionCycleStartTime) {
+        this.m_TransitionCycleStartTime = TransitionCycleStartTime;
+    }
+
+    public boolean isTransitionReverseAnimation() {
+        return m_bTransitionReverseAnimation;
+    }
+
+    public void setTransitionReverseAnimation(boolean bTransitionReverseAnimation) {
+        this.m_bTransitionReverseAnimation = bTransitionReverseAnimation;
+    }
+
 }

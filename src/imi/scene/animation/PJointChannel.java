@@ -39,7 +39,7 @@ public interface PJointChannel
      * @param jointToAffect The joint whose PTransform will be modified
      * @param fTime
      */
-    public void calculateFrame(PJoint jointToAffect, float fTime);
+    public void calculateFrame(PJoint jointToAffect, AnimationState state);
     
     /**
      * This method performs weighted blending on the two frames and
@@ -49,7 +49,7 @@ public interface PJointChannel
      * @param fTime2 The time of the second frame
      * @param s used in Frame1 * (1-s) + Frame2 * s; ranges from 0 to 1
      */
-    public void calculateBlendedFrame(PJoint jointToAffect, float fTime1, float fTime2, float s);
+    public void calculateBlendedFrame(PJoint jointToAffect, AnimationState state);
 
     /**
      * Calculates and returns the duration of the BoneAnimation.

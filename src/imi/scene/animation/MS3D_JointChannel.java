@@ -71,13 +71,14 @@ public class MS3D_JointChannel implements PJointChannel
         m_fAverageFrameStep = jointAnimation.m_fAverageFrameStep;
     }
 
-    public void calculateFrame(PJoint jointToAffect, float fTime)
+    public void calculateFrame(PJoint jointToAffect, AnimationState state)
     {
-        // test
-        //fTime = 0.01f;
         // do we even have animation data?
         if (m_TranslationKeyframes.size() == 0 || m_RotationKeyframes.size() == 0)
             return; // Do nothing
+        
+        // Extract relevant data
+        float fTime = state.getCurrentCycleTime();
         
         // determine what two keyframes to interpolate between for translation
         VectorKeyframe currentFrame = m_TranslationKeyframes.getFirst();
@@ -134,12 +135,16 @@ public class MS3D_JointChannel implements PJointChannel
         jointToAffect.getTransform().getLocalMatrix(true).mul(delta);
     }
 
-    public void calculateBlendedFrame(PJoint jointToAffect, float fTime1, float fTime2, float s)
+    public void calculateBlendedFrame(PJoint jointToAffect, AnimationState state)
     {
         // do we even have animation data?
         if (m_TranslationKeyframes.size() == 0 || m_RotationKeyframes.size() == 0)
             return; // Do nothing
         
+        // Extract relevant data
+        float fCurrentCycleTime = state.getCurrentCycleTime();
+        float fTransitionCycleTime = state.getTransitionCycleTime();
+        float interpolationCoefficient = state.getTimeInTransition() / state.getTransitionDuration();
         // determine the first pose
         // determine what two keyframes to interpolate between for translation
         VectorKeyframe currentFrame = m_TranslationKeyframes.getFirst();
@@ -148,7 +153,7 @@ public class MS3D_JointChannel implements PJointChannel
         
         for (VectorKeyframe frame : m_TranslationKeyframes)
         {
-            if (frame.getTime() < fTime1)
+            if (frame.getTime() < fCurrentCycleTime)
                 currentFrame = frame;
             else // passed the mark
             {
@@ -157,7 +162,7 @@ public class MS3D_JointChannel implements PJointChannel
             }
         }
         // determine s
-        fLerpValue = (fTime1 - currentFrame.getTime()) / (nextFrame.getTime() - currentFrame.getTime());
+        fLerpValue = (fCurrentCycleTime - currentFrame.getTime()) / (nextFrame.getTime() - currentFrame.getTime());
         // lerp and determine final translation vector
         Vector3f translationVector = new Vector3f();
         if (currentFrame != nextFrame)
@@ -170,7 +175,7 @@ public class MS3D_JointChannel implements PJointChannel
         nextFrame = m_RotationKeyframes.getFirst();
         for (VectorKeyframe frame : m_RotationKeyframes)
         {
-            if (frame.getTime() < fTime1)
+            if (frame.getTime() < fCurrentCycleTime)
                 currentFrame = frame;
             else // passed the mark
             {
@@ -179,7 +184,7 @@ public class MS3D_JointChannel implements PJointChannel
             }
         }
         // determine s
-        fLerpValue = (fTime1 - currentFrame.getTime()) / (nextFrame.getTime() - currentFrame.getTime());
+        fLerpValue = (fCurrentCycleTime - currentFrame.getTime()) / (nextFrame.getTime() - currentFrame.getTime());
         // lerp and determine final translation vector
         Vector3f rotationVector = new Vector3f();
         if (currentFrame != nextFrame)
@@ -199,7 +204,7 @@ public class MS3D_JointChannel implements PJointChannel
         
         for (VectorKeyframe frame : m_TranslationKeyframes)
         {
-            if (frame.getTime() < fTime2)
+            if (frame.getTime() < fTransitionCycleTime)
                 currentFrame = frame;
             else // passed the mark
             {
@@ -208,7 +213,7 @@ public class MS3D_JointChannel implements PJointChannel
             }
         }
         // determine s
-        fLerpValue = (fTime2 - currentFrame.getTime()) / (nextFrame.getTime() - currentFrame.getTime());
+        fLerpValue = (fTransitionCycleTime - currentFrame.getTime()) / (nextFrame.getTime() - currentFrame.getTime());
         // lerp and determine final translation vector
         Vector3f translationVector2 = new Vector3f();
         if (currentFrame != nextFrame)
@@ -221,7 +226,7 @@ public class MS3D_JointChannel implements PJointChannel
         nextFrame = m_RotationKeyframes.getFirst();
         for (VectorKeyframe frame : m_RotationKeyframes)
         {
-            if (frame.getTime() < fTime2)
+            if (frame.getTime() < fTransitionCycleTime)
                 currentFrame = frame;
             else // passed the mark
             {
@@ -230,7 +235,7 @@ public class MS3D_JointChannel implements PJointChannel
             }
         }
         // determine s
-        fLerpValue = (fTime2 - currentFrame.getTime()) / (nextFrame.getTime() - currentFrame.getTime());
+        fLerpValue = (fTransitionCycleTime - currentFrame.getTime()) / (nextFrame.getTime() - currentFrame.getTime());
         // lerp and determine final translation vector
         Vector3f rotationVector2 = new Vector3f();
         if (currentFrame != nextFrame)
@@ -241,8 +246,8 @@ public class MS3D_JointChannel implements PJointChannel
         //////////////////////////////
         // interpolate the results  //
         //////////////////////////////
-        translationVector.interpolate(translationVector2, s);
-        rotationVector.interpolate(rotationVector2, s);
+        translationVector.interpolate(translationVector2, interpolationCoefficient);
+        rotationVector.interpolate(rotationVector2, interpolationCoefficient);
         
         PMatrix delta = new PMatrix(rotationVector, Vector3f.UNIT_XYZ, translationVector);
         
