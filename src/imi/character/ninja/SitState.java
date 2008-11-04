@@ -122,11 +122,11 @@ public class SitState extends GameState
         if (!ninjaContext.isTransitioning()) 
             counter += deltaTime;
         
-        if (ninjaContext.getTriggerState().isKeyPressed(TriggerNames.Punch.ordinal()) ||
+        if (bIdleSittingAnimationSet && (ninjaContext.getTriggerState().isKeyPressed(TriggerNames.Punch.ordinal()) ||
             ninjaContext.getTriggerState().isKeyPressed(TriggerNames.Move_Forward.ordinal()) ||
             ninjaContext.getTriggerState().isKeyPressed(TriggerNames.Move_Back.ordinal()) ||
             ninjaContext.getTriggerState().isKeyPressed(TriggerNames.Move_Left.ordinal()) ||
-            ninjaContext.getTriggerState().isKeyPressed(TriggerNames.Move_Right.ordinal()) )
+            ninjaContext.getTriggerState().isKeyPressed(TriggerNames.Move_Right.ordinal()) ))
         {
             bGettingUp = true;
         }

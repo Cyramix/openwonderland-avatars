@@ -95,6 +95,22 @@ public class AnimationState
         
         m_CurrentCycleTime    += advance;
         m_TransitionCycleTime += advance;
+        
+//        float advance = fTimeStep * m_AnimationSpeed;
+//        
+//        m_TimeInTransition    += fTimeStep;
+//        
+//        // Negate the time step if in reverse
+//        if (m_bReverseAnimation)
+//            m_CurrentCycle -= advance;
+//        else
+//            m_CurrentCycle += advance;
+//        
+//        
+//        if (m_bTransitionReverseAnimation)
+//            m_TransitionCycleTime -= advance;
+//        else
+//            m_TransitionCycleTime += advance;
     }
     
     /**

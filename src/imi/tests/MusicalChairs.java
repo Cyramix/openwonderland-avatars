@@ -18,6 +18,7 @@
 package imi.tests;
 
 import com.jme.math.Vector3f;
+import imi.character.ninja.Adam;
 import imi.character.ninja.NinjaAvatar;
 import imi.character.objects.LocationNode;
 import imi.character.objects.ObjectCollection;
@@ -75,17 +76,17 @@ public class MusicalChairs extends DemoBase
 //        NinjaAvatar bigBaby = new NinjaAvatar("Big Baby", wm);
 //        bigBaby.getModelInst().getTransform().getLocalMatrix(true).setTranslation(Vector3f.UNIT_Z.mult(-5.0f));
 //        control.getNinjaTeam().add(bigBaby);
-//        bigBaby.setObjectCollection(objs);
-//        
+//        bigBaby.setObjectCollection(objects);
+        
 //        Ninja shadowBlade = new Ninja("Shadow Blade", new PMatrix().setTranslation(Vector3f.UNIT_X.mult(5.0f)), 0.22f, wm);
-//        shadowBlade.selectForInput();
+//        //shadowBlade.selectForInput();
 //        control.getNinjaTeam().add(shadowBlade);
-//        shadowBlade.setObjectCollection(objs);
+//        shadowBlade.setObjectCollection(objects);
 
 //        Adam adam = new Adam("Adam", wm);
 //        adam.getModelInst().getTransform().getLocalMatrix(true).setTranslation(Vector3f.UNIT_X.mult(-5.0f));
 //        control.getNinjaTeam().add(adam);
-//        adam.setObjectCollection(objs);
+//        adam.setObjectCollection(objects);
     }
     
 }

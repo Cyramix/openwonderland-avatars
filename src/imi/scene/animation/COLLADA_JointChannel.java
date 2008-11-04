@@ -303,8 +303,8 @@ public class COLLADA_JointChannel implements PJointChannel
         {
             interpolationCoefficient = (fTime - leftFrame.getFrameTime()) / (rightFrame.getFrameTime() - leftFrame.getFrameTime());
 
-            if (bReverse)
-                interpolationCoefficient = 1.0f - interpolationCoefficient; // Reverese interpolation weights
+//            if (bReverse)
+//                interpolationCoefficient = 1.0f - interpolationCoefficient; // Reverese interpolation weights
             
             Quaternion rotationComponent = leftFrame.getValue().getRotationJME();
             rotationComponent.slerp(rotationComponent, rightFrame.getValue().getRotationJME(), interpolationCoefficient);

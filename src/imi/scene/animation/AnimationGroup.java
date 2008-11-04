@@ -146,7 +146,7 @@ public class AnimationGroup
         {
             bTransitioning = true;
 
-            float fTransitionTime = clampCycleTime(state.getTransitionCycleTime(), m_cycles[state.getTransitionCycle()], state.isReverseAnimation());
+            float fTransitionTime = clampCycleTime(state.getTransitionCycleTime(), m_cycles[state.getTransitionCycle()], state.isTransitionReverseAnimation());
             
             state.setTransitionCycleTime(fTransitionTime);
             
@@ -154,11 +154,6 @@ public class AnimationGroup
             state.setTransitionCycleStartTime(transitionCycle.getStartTime());
             state.setTransitionCycleEndTime(transitionCycle.getEndTime());
         }
-
-        ArrayList<PJointChannel> jointChannels = new ArrayList<PJointChannel>();
-        for (int iii=0; iii<m_JointChannels.size(); iii++)
-            jointChannels.add(m_JointChannels.get(iii));
-
         
         //  Iterate through all the Joint channels and apply the state to the joint.
 //        for (int jointIndex = 0; jointIndex < numberOfJoints; jointIndex++)

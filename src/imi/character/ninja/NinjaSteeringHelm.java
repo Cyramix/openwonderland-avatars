@@ -335,7 +335,7 @@ public class NinjaSteeringHelm extends CharacterSteeringHelm
                     bDoneTurning = true;
                 }
             }
-            else if (distanceFromGoal < 0.01f)
+            else if (distanceFromGoal < 0.01f && !ninjaContext.isTransitioning())
             {
                 done();
             }
