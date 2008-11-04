@@ -39,13 +39,16 @@ public class NinjaAvatar extends Ninja
             anims.add("assets/models/collada/Avatars/MaleZip/Male_Wave.dae");
             anims.add("assets/models/collada/Avatars/MaleZip/Male_Walk.dae");
             anims.add("assets/models/collada/Avatars/MaleZip/Male_Sitting.dae");
-            anims.add("assets/models/collada/Avatars/MaleZip/Male_Run.dae");
-            anims.add("assets/models/collada/Avatars/Male/Male_Bow.dae");
-            anims.add("assets/models/collada/Avatars/Male/Male_Cheer.dae");
-            anims.add("assets/models/collada/Avatars/Male/Male_Clap.dae");
-            anims.add("assets/models/collada/Avatars/Male/Male_Follow.dae");
-            anims.add("assets/models/collada/Avatars/Male/Male_Jump.dae");
-            anims.add("assets/models/collada/Avatars/Male/Male_Laugh.dae");
+            if (false)
+            {
+                anims.add("assets/models/collada/Avatars/MaleZip/Male_Run.dae");
+                anims.add("assets/models/collada/Avatars/Male/Male_Bow.dae");
+                anims.add("assets/models/collada/Avatars/Male/Male_Cheer.dae");
+                anims.add("assets/models/collada/Avatars/Male/Male_Clap.dae");
+                anims.add("assets/models/collada/Avatars/Male/Male_Follow.dae");
+                anims.add("assets/models/collada/Avatars/Male/Male_Jump.dae");
+                anims.add("assets/models/collada/Avatars/Male/Male_Laugh.dae");
+            }
             m_animations = anims.toArray(m_animations);
         }
 
@@ -71,13 +74,21 @@ public class NinjaAvatar extends Ninja
         m_context.getStates().get(SitState.class).setAnimationName("Male_StandToSit");
         m_context.getStates().get(FlyState.class).setAnimationName("Male_Sitting");
         ((SitState)m_context.getStates().get(SitState.class)).setIdleSittingAnimationName("Male_Sitting");
-        ((SitState)m_context.getStates().get(SitState.class)).setGettingUpAnimationName("Male_StandToSit");    
-        m_context.getStates().get(WalkState.class).setTransitionDuration(0.3f);
-        m_context.getStates().get(SitState.class).setAnimationSpeed(1.5f);
-        //((SitState)m_context.getStates().get(SitState.class)).setIdleSittingTransitionDuration(0.5f);
-        ((SitState)m_context.getStates().get(SitState.class)).setSittingAnimationTime(0.2f);
-        ((SitState)m_context.getStates().get(SitState.class)).setGettingUpAnimationSpeed(1.5f);
-        ((SitState)m_context.getStates().get(SitState.class)).setGettingUpAnimationTime(0.005f);
+        //((SitState)m_context.getStates().get(SitState.class)).setGettingUpAnimationName("Male_StandToSit");    
+        ((SitState)m_context.getStates().get(SitState.class)).setGettingUpAnimationName("Male_Idle");    
+        m_context.getStates().get(IdleState.class).setTransitionDuration(0.2f);
+        m_context.getStates().get(WalkState.class).setTransitionDuration(0.15f);
+        
+        m_context.getStates().get(SitState.class).setAnimationSpeed(3.0f);
+        m_context.getStates().get(SitState.class).setTransitionDuration(0.05f);
+        ((SitState)m_context.getStates().get(SitState.class)).setSittingAnimationTime(0.6f);
+        
+        ((SitState)m_context.getStates().get(SitState.class)).setIdleSittingTransitionDuration(0.025f);
+        
+        ((SitState)m_context.getStates().get(SitState.class)).setGettingUpAnimationSpeed(2.0f);
+        ((SitState)m_context.getStates().get(SitState.class)).setGettingUpAnimationTime(0.6f);
+        //((SitState)m_context.getStates().get(SitState.class)).setGettingUpTransitionDuration(0.025f);
+        ((SitState)m_context.getStates().get(SitState.class)).setGettingUpTransitionDuration(0.25f);
         
         // For testing, no transitions
         if (false)

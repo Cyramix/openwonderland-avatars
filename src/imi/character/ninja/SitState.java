@@ -100,6 +100,8 @@ public class SitState extends GameState
         bIdleSittingAnimationSet = false;
         bGettingUpAnimationSet = false;
         
+        setReverseAnimation(false);
+        
         // Stop the character
         ninjaContext.getController().stop();
         
@@ -164,7 +166,9 @@ public class SitState extends GameState
         {
             skeleton.getAnimationState().setTransitionDuration(idleSittingTransitionDuration);
             skeleton.getAnimationState().setAnimationSpeed(idleSittingAnimationSpeed);
+            skeleton.getAnimationState().setReverseAnimation(false);
             bIdleSittingAnimationSet = skeleton.transitionTo(idleSittingAnimationName);
+            setAnimationSetBoolean(true);
         }
     }
     
@@ -180,6 +184,7 @@ public class SitState extends GameState
         {
             skeleton.getAnimationState().setTransitionDuration(gettingUpTransitionDuration);
             skeleton.getAnimationState().setAnimationSpeed(gettingUpAnimationSpeed);
+            skeleton.getAnimationState().setReverseAnimation(true);
             bGettingUpAnimationSet = skeleton.transitionTo(gettingUpAnimationName);
             // If sitting down and getting up is the same animation transitionTo will return false
             // when trying to get up immediatly after deciding to sit down... so
@@ -187,6 +192,7 @@ public class SitState extends GameState
             {
                 bGettingUpAnimationSet = true;
             }
+            setAnimationSetBoolean(true);
         }
     }
     
@@ -220,6 +226,16 @@ public class SitState extends GameState
 
     public void setSittingAnimationTime(float sittingAnimationTime) {
         this.sittingAnimationTime = sittingAnimationTime;
+    }
+    
+    public void setSittingAnimationTime() {
+        if (ninjaContext.getSkeleton() != null)
+        {
+            int index = ninjaContext.getSkeleton().getAnimationGroup().findAnimationCycle(getAnimationName());
+            float duration = ninjaContext.getSkeleton().getAnimationGroup().getCycle(index).getEndTime() - ninjaContext.getSkeleton().getAnimationGroup().getCycle(index).getStartTime();
+            this.sittingAnimationTime = duration / getAnimationSpeed();   
+            System.out.println("ddddddddddddddddddddddddddddddddddddddddddd       " +  this.sittingAnimationTime);
+        }
     }
 
     public String getGettingUpAnimationName() {

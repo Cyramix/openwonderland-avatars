@@ -69,6 +69,9 @@ public class NinjaContext extends GameContext
         Move_Down,
         NextAction,
         Reverse,
+        GoTo1,
+        GoTo2,
+        GoTo3,
     }
     
     public static enum ActionNames
@@ -144,16 +147,18 @@ public class NinjaContext extends GameContext
     @Override
     protected void triggerAlert(int trigger, boolean pressed)
     {
+        // Toggle steering behavior towards the current goal
         if (trigger == TriggerNames.GoSit.ordinal() && pressed)
             steering.toggleEnable();
      
+        // Position the goal point for yourself and other characters you will switch controls to
         else if (trigger == TriggerNames.PositionGoalPoint.ordinal() && pressed)
         {
             // Inform steering
             steering.setGoalPosition(controller.getPosition());
-            steering.setSittingDirection(controller.getTransform().getWorldMatrix(false).getLocalZ().mult(-1.0f));
+            steering.setSittingDirection(controller.getForwardVector());
             
-            // Inform global goal point
+            // Inform global goal point for visualization
             Goal goalPoint = (Goal) ninja.getWorldManager().getUserData(Goal.class);
             if (goalPoint != null)
             {
@@ -165,6 +170,7 @@ public class NinjaContext extends GameContext
             }
         }
         
+        // Find nearest chair and sit on it
         else if (trigger == TriggerNames.SelectNearestGoalPoint.ordinal() && pressed)
         {
             if (ninja.getObjectCollection() == null)
@@ -199,6 +205,7 @@ public class NinjaContext extends GameContext
             }
         }
         
+        // Set the current state to the sit state
         else if (trigger == TriggerNames.Sit.ordinal() && pressed)
         {
             SitState sit = (SitState) gameStates.get(SitState.class);
@@ -209,12 +216,27 @@ public class NinjaContext extends GameContext
             }
         }
         
+        // Reverse the animation for the punch state
         else if (trigger == TriggerNames.Reverse.ordinal() && pressed)
         {
             PunchState punch = (PunchState) gameStates.get(PunchState.class);
             punch.setReverseAnimation(!punch.isReverseAnimation());
         }
         
+        // Go to location - if path is available from the current location
+        else if (trigger == TriggerNames.GoTo1.ordinal() && pressed)
+        {
+        }
+        else if (trigger == TriggerNames.GoTo2.ordinal() && pressed)
+        {
+            
+        }
+        else if (trigger == TriggerNames.GoTo3.ordinal() && pressed)
+        {
+            
+        }
+        
+        // Select the next animation to play for the punch state
         else if (trigger == TriggerNames.NextAction.ordinal() && pressed)
         {
             PunchState punch = (PunchState) gameStates.get(PunchState.class);

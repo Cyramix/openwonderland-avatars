@@ -19,8 +19,11 @@ package imi.tests;
 
 import com.jme.math.Vector3f;
 import imi.character.ninja.NinjaAvatar;
+import imi.character.objects.LocationNode;
 import imi.character.objects.ObjectCollection;
 import imi.scene.processors.JSceneEventProcessor;
+import imi.utils.graph.Connection;
+import imi.utils.graph.Connection.ConnectionDirection;
 import imi.utils.input.NinjaControlScheme;
 import org.jdesktop.mtgame.WorldManager;
 
@@ -41,19 +44,29 @@ public class MusicalChairs extends DemoBase
     @Override
     protected void createDemoEntities(WorldManager wm) 
     {
+        // Create locations for the game
+        LocationNode chairGame1 = new LocationNode("Location 1", Vector3f.ZERO, 15.0f, wm);
+        chairGame1.generateChairs(3);
+        LocationNode chairGame2 = new LocationNode("Location 2", Vector3f.UNIT_X.mult(30.0f),  15.0f, wm);
+        chairGame2.generateChairs(3);
+        LocationNode chairGame3 = new LocationNode("Location 3", Vector3f.UNIT_Z.mult(30.0f),  15.0f, wm);
+        chairGame3.generateChairs(3);
+        
+        // Create paths
+        chairGame1.addConnection(new Connection("Location 3", chairGame1, chairGame2, ConnectionDirection.OneWay));
+        chairGame1.addConnection(new Connection("Location 2", chairGame1, chairGame2, ConnectionDirection.OneWay));
+        chairGame2.addConnection(new Connection("Location 3", chairGame2, chairGame3, ConnectionDirection.OneWay));
+        chairGame2.addConnection(new Connection("Location 1", chairGame2, chairGame1, ConnectionDirection.OneWay));
+        chairGame3.addConnection(new Connection("Location 1", chairGame3, chairGame2, ConnectionDirection.OneWay));
+        chairGame3.addConnection(new Connection("Location 2", chairGame3, chairGame2, ConnectionDirection.OneWay));
+     
         // Create ninja input scheme
         NinjaControlScheme control = (NinjaControlScheme)((JSceneEventProcessor)wm.getUserData(JSceneEventProcessor.class)).setDefault(new NinjaControlScheme(null));
         
-        // Goal point
-        //wm.addUserData(Goal.class, new Goal(wm));
-        
-        // Create an object collection for the musical chairs game
-        ObjectCollection objs = new ObjectCollection("Musical Chairs Game Objects", wm);
-        objs.generateChairs(Vector3f.ZERO, 10.0f, 10);
-        
+        // Create avatar
         NinjaAvatar avatar = new NinjaAvatar("Avatar", wm);
         avatar.selectForInput();
-        avatar.setObjectCollection(objs);
+        avatar.setObjectCollection(chairGame1.getObjectCollection());
         control.getNinjaTeam().add(avatar);
 
 //        NinjaAvatar bigBaby = new NinjaAvatar("Big Baby", wm);

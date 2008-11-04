@@ -87,7 +87,18 @@ public class ObjectCollection extends Entity
 
     public void addObject(SpatialObject obj) 
     {
+        if (objects.contains(obj))
+            return;
         objects.add(obj);
+    }
+    
+    // TODO
+    public void offsetPositionOfAllObjects(Vector3f offset)
+    {
+//        for(SpatialObject obj : objects)
+//        {
+//            
+//        }
     }
 
     public void generateChairs(Vector3f center, float maxRadius, int numberOfChairs) 

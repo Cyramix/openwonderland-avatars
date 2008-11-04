@@ -214,8 +214,8 @@ public class COLLADA_JointChannel implements PJointChannel
         
         float interpolationCoefficient = state.getTimeInTransition() / state.getTransitionDuration();
         
-        PMatrix firstTransform = calculateBlendedMatrix(fCurrentCycleTime, state.getCurrentCycleStartTime(), state.getCurrentCycleEndTime(), false);
-        PMatrix secondTransform = calculateBlendedMatrix(fTransitionCycleTime, state.getTransitionCycleStartTime(), state.getTransitionCycleEndTime(), false);
+        PMatrix firstTransform = calculateBlendedMatrix(fCurrentCycleTime, state.getCurrentCycleStartTime(), state.getCurrentCycleEndTime(), state.isReverseAnimation());
+        PMatrix secondTransform = calculateBlendedMatrix(fTransitionCycleTime, state.getTransitionCycleStartTime(), state.getTransitionCycleEndTime(), state.isTransitionReverseAnimation());
         
         PMatrix result = null;
         
