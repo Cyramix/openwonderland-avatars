@@ -301,6 +301,8 @@ public class AnimationGroup
      */
     public int getCycleCount()
     {
+        if (m_cycles == null)
+            return 0;
         return m_cycles.length;
     }
 
@@ -336,7 +338,8 @@ public class AnimationGroup
     public void addCycle(AnimationCycle cycle)
     {
         // Grow array
-        int cycleCount = getCycleCount();   
+        int cycleCount = getCycleCount();
+        
         AnimationCycle[] cycles = new AnimationCycle[cycleCount + 1];
 
         if (m_cycles != null)

@@ -326,8 +326,11 @@ public class FileIOPanel extends javax.swing.JPanel {
             iType = 3;          // Legs
         else if (ref.get(0)[1].equals("4"))
             iType = 4;
-                
-        m_sceneData.loadDAEURL(false, this, data, meshref, iType);   // loads models with skinned animations
+
+        if (m_meshes == null)
+            m_sceneData.loadDAEURL(true, this, data, meshref, iType);
+        else
+            m_sceneData.loadDAEURL(false, this, data, meshref, iType);   // loads models with skinned animations
         
         while (m_sceneData.getPScene().getAssetWaitingList().size() > 0) {
             //m_logger.log(Level.INFO, "Waiting to get assets...");

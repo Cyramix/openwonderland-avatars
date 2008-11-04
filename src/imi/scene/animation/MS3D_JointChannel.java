@@ -497,7 +497,7 @@ public class MS3D_JointChannel implements PJointChannel
 
     public void closeCycle(AnimationCycle cycle)
     {
-        throw new UnsupportedOperationException("TODO! hahahahahhahaha");
+        // throw new UnsupportedOperationException("TODO! hahahahahhahaha");
     }
 }
 

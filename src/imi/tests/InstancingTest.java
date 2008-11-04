@@ -81,7 +81,7 @@ public class InstancingTest extends DemoBase
                     if (asset != null && asset instanceof SkeletonNode)
                     {
                         SkeletonNode skeleton = (SkeletonNode)asset;
-                        skeleton.transitionTo("Kick");
+                        skeleton.transitionTo("Kick", false);
                         PPolygonSkinnedMeshInstance target = (PPolygonSkinnedMeshInstance)skeleton.findChild("MS3DSkinnedMesh");
                         target.setName("NinjaInstance");
                         // Create a material to use
