@@ -19,6 +19,7 @@ package imi.gui;
 
 import imi.scene.polygonmodel.PPolygonMeshInstance;
 import imi.scene.polygonmodel.PPolygonModelInstance;
+import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
 import imi.scene.polygonmodel.skinned.PPolygonSkinnedMeshInstance;
 import imi.scene.utils.tree.MeshInstanceSearchProcessor;
 import imi.scene.utils.tree.TreeTraverser;
@@ -193,6 +194,9 @@ public class JPanel_FileIO extends javax.swing.JPanel {
             while (sceneData.getPScene().getAssetWaitingList().size() > 0) {
                 //System.out.println("Waiting to get assets...");
             }
+
+            SkeletonNode skel = ((SkeletonNode)sceneData.getPScene().getInstances().getChild(0).getChild(0));
+            sceneData.setCurrentSkeleton(skel);
             
             if (shaderPanel != null)
                 shaderPanel.setPanel(sceneData.getPScene());

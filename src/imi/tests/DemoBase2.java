@@ -824,7 +824,7 @@ public class DemoBase2 extends javax.swing.JFrame implements FrameRateListener, 
         resetGUI(0);
         //jPanel_ShaderLoader1.setPanel(sceneData.getPScene());
         jPanel_ModelRotation1.setPanel(sceneData.getPScene(), jPanel_Animations1.getSelectedModelInstanceNode());
-        jPanel_FileIO1.setPanel(sceneData, jPanel_ModelRotation1, jPanel_Animations1);
+        fileIOPanel1.setPanel(sceneData, jPanel_ModelRotation1, jPanel_Animations1);
     }
 
     /**
@@ -964,9 +964,9 @@ public class DemoBase2 extends javax.swing.JFrame implements FrameRateListener, 
         jButton_AvatarOptions = new javax.swing.JButton();
         jToolBar11 = new javax.swing.JToolBar();
         jButton_ExplorerOptions = new javax.swing.JButton();
-        jPanel_FileIO1 = new imi.gui.JPanel_FileIO();
         jPanel_ModelRotation1 = new imi.gui.JPanel_ModelRotation();
         jPanel_Animations1 = new imi.gui.JPanel_Animations();
+        fileIOPanel1 = new imi.gui.FileIOPanel();
         jMenuBar_MainMenu = new javax.swing.JMenuBar();
         jMenu_File = new javax.swing.JMenu();
         jMenuItem_LoadModel = new javax.swing.JMenuItem();
@@ -1067,7 +1067,7 @@ public class DemoBase2 extends javax.swing.JFrame implements FrameRateListener, 
         jMenuItem_LoadModel.setText("Load Model");
         jMenuItem_LoadModel.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jPanel_FileIO1.loadModel(jPanel_ModelRotation1, jPanel_Animations1);
+                fileIOPanel1.loadModelFile();
             }
         });
         jMenu_File.add(jMenuItem_LoadModel);
@@ -1076,7 +1076,7 @@ public class DemoBase2 extends javax.swing.JFrame implements FrameRateListener, 
         jMenuItem_LoadTexture.setText("Load Texture");
         jMenuItem_LoadTexture.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jPanel_FileIO1.loadTexture(jPanel_Animations1);
+                fileIOPanel1.loadTexFile();
             }
         });
         jMenu_File.add(jMenuItem_LoadTexture);
@@ -1085,7 +1085,7 @@ public class DemoBase2 extends javax.swing.JFrame implements FrameRateListener, 
         jMenuItem_LoadXML.setText("Load Configuration");
         jMenuItem_LoadXML.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jPanel_FileIO1.loadxml(jPanel_ModelRotation1, jPanel_Animations1);
+                fileIOPanel1.loadConfigFile();
             }
         });
         jMenu_File.add(jMenuItem_LoadXML);
@@ -1094,7 +1094,7 @@ public class DemoBase2 extends javax.swing.JFrame implements FrameRateListener, 
         jMenuItem_SaveXML.setText("Save Configuration");
         jMenuItem_SaveXML.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jPanel_FileIO1.savexml();
+                fileIOPanel1.saveConfigFile();
             }
         });
         jMenu_File.add(jMenuItem_SaveXML);
@@ -1115,11 +1115,13 @@ public class DemoBase2 extends javax.swing.JFrame implements FrameRateListener, 
         layout.setHorizontalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(jPanel_FileIO1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 230, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(jToolBar_AvatarTools, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 230, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(jPanel_ModelRotation1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 230, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(jPanel_Animations1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                .add(0, 0, 0)
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
+                    .add(fileIOPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                    .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                        .add(jToolBar_AvatarTools, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 230, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                        .add(jPanel_ModelRotation1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 230, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                        .add(jPanel_Animations1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
                 .add(0, 0, 0)
                 .add(jPanel_DisplayWindow, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -1127,10 +1129,10 @@ public class DemoBase2 extends javax.swing.JFrame implements FrameRateListener, 
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
-                .add(jPanel_FileIO1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(fileIOPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .add(0, 0, 0)
                 .add(jToolBar_AvatarTools, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(0, 0, 0)
                 .add(jPanel_ModelRotation1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 175, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(jPanel_Animations1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 223, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
@@ -1168,6 +1170,7 @@ private void formKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_for
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private java.awt.Canvas canvas_SceneRenderWindow;
+    private imi.gui.FileIOPanel fileIOPanel1;
     private javax.swing.JButton jButton_AvatarOptions;
     private javax.swing.JButton jButton_ExplorerOptions;
     private javax.swing.JLabel jLabel_FPSCounter;
@@ -1181,7 +1184,6 @@ private void formKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_for
     private javax.swing.JMenu jMenu_Help;
     private imi.gui.JPanel_Animations jPanel_Animations1;
     private javax.swing.JPanel jPanel_DisplayWindow;
-    private imi.gui.JPanel_FileIO jPanel_FileIO1;
     private imi.gui.JPanel_ModelRotation jPanel_ModelRotation1;
     private javax.swing.JToolBar jToolBar11;
     private javax.swing.JToolBar jToolBar_AvatarOptions;

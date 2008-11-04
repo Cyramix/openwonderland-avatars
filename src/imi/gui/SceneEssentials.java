@@ -43,6 +43,7 @@ import java.io.FilenameFilter;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFileChooser;
@@ -75,6 +76,8 @@ public class SceneEssentials {
     // OTHER
         private float visualScale = 1.0f;
         private PMatrix origin = new PMatrix();
+        private SkeletonNode skeleton = null;
+        private Map<Integer, String[]> meshsetup = null;
         
         
     public SceneEssentials() {
@@ -91,6 +94,8 @@ public class SceneEssentials {
     public File getFileModel() { return fileModel; }
     public File getFileTexture() { return fileTexture; }
     public PPolygonModelInstance getModelInstance() { return modelInst; }
+    public SkeletonNode getCurrentSkeleton() { return skeleton; }
+    public Map<Integer, String[]> getMeshSetup() { return meshsetup; }
     
     // Mutators
     public void setJScene(JScene jscene) { currentJScene = jscene; }
@@ -103,6 +108,16 @@ public class SceneEssentials {
     public void setfileTexture(File file) { fileTexture = file; }
     public void setModelInstance(PPolygonModelInstance modinstance) { modelInst = modinstance; }
     public void setModelName(String name) { modelName = name; }
+    public void setCurrentSkeleton(SkeletonNode s) { skeleton = s; }
+    public void searchnSetSkeleton(PScene p) {
+        if (p.getInstances() == null || p.getInstances().getChild(0) == null) {
+            skeleton = null;
+            return;
+        }
+        
+        skeleton = ((SkeletonNode)p.getInstances().getChild(0).getChild(0));
+    }
+    public void setMeshSetup(Map<Integer, String[]> m) { meshsetup = m; }
     
     // Helper Functions
     public void setSceneData(JScene jscene, PScene pscene, Entity entity, WorldManager wm, ArrayList<ProcessorComponent> processors) {
@@ -332,17 +347,21 @@ public class SceneEssentials {
         File path = getAbsPath(fileModel);        
         String szURL = new String("file://" + path.getPath());
         try {
-            URL URLfile = new URL(szURL);
-            SharedAsset character = new SharedAsset(currentPScene.getRepository(), new AssetDescriptor(SharedAssetType.COLLADA_Model, URLfile));
-            character.setUserData(new ColladaLoaderParams(true, true, false, false, 4, fileModel.getName(), null));
-            String[] anim = null;
-            loadInitializer(fileModel.getName(), character, anim);
+            if (clear) {
+                URL URLfile = new URL(szURL);
+                SharedAsset character = new SharedAsset(currentPScene.getRepository(), new AssetDescriptor(SharedAssetType.COLLADA_Model, URLfile));
+                character.setUserData(new ColladaLoaderParams(true, true, false, false, 4, fileModel.getName(), null));
+                String[] anim = null;
+                loadInitializer(fileModel.getName(), character, anim);
+            } else {
+                
+            }
         } catch (MalformedURLException ex) {
             Logger.getLogger(SceneEssentials.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     
-    public void loadDAEURL(boolean clear, Component arg0, String[] data) {
+    public void loadDAEURL(boolean clear, Component arg0, String[] data, String[] meshRef, int region) {
         currentPScene.setUseRepository(false);
         if(clear)
             currentPScene.getInstances().removeAllChildren();
@@ -359,17 +378,53 @@ public class SceneEssentials {
                 Logger.getLogger(SceneEssentials.class.getName()).log(Level.SEVERE, null, ex);
                 return;
             }
-            
-            SharedAsset colladaAsset = new SharedAsset(currentPScene.getRepository(), new AssetDescriptor(SharedAssetType.COLLADA_Mesh, modelURL));
-            colladaAsset.setUserData(new ColladaLoaderParams(false, true, false, false, 3, data[0], null));
-            modelInst = currentPScene.addModelInstance(data[0], colladaAsset, new PMatrix());
+            if (clear) {
+                SharedAsset colladaAsset = new SharedAsset(currentPScene.getRepository(), new AssetDescriptor(SharedAssetType.COLLADA_Mesh, modelURL));
+                colladaAsset.setUserData(new ColladaLoaderParams(false, true, false, false, 3, data[0], null));
+                modelInst = currentPScene.addModelInstance(data[0], colladaAsset, new PMatrix());
+            } else {
+                // Add Mesh Onto Model
+                
+            }
         } else {
-            String bindPose = data[3];
-            SharedAsset character = new SharedAsset(currentPScene.getRepository(), new AssetDescriptor(SharedAssetType.COLLADA_Model, bindPose));
-            character.setUserData(new ColladaLoaderParams(true, true, false, false, 4, data[0], null));
-            String[] anim = null;
-            loadInitializer(data[0], character, anim);
+            try {
+                if (clear) {
+                    URL urlModel = new URL(data[3]);
+                    SharedAsset character = new SharedAsset(currentPScene.getRepository(), new AssetDescriptor(SharedAssetType.COLLADA_Model, urlModel));
+                    character.setUserData(new ColladaLoaderParams(true, true, false, false, 4, data[0], null));
+                    String[] anim = null;
+                    loadInitializer(data[0], character, anim);
+                } else {
+                    addDAEMeshURLToModel(data, meshRef, region);
+                }
+            } catch (MalformedURLException ex) {
+                Logger.getLogger(SceneEssentials.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
+    }
+    
+    public void addDAEMeshURLToModel(String[] data, String[] meshRef, int region) {
+        currentPScene.setUseRepository(false);
+        InstructionProcessor pProcessor = new InstructionProcessor(worldManager);
+        Instruction pRootInstruction = new Instruction();
+        pRootInstruction.addInstruction(InstructionNames.setSkeleton, skeleton);
+        
+        String[] meshestodelete = meshsetup.get(region);
+        for (int i = 0; i < meshestodelete.length; i++)
+            pRootInstruction.addInstruction(InstructionNames.deleteSkinnedMesh, meshestodelete[i]);
+        
+        pRootInstruction.addInstruction(InstructionNames.loadGeometry, data[3]);
+        
+        for (int i = 0; i < meshRef.length; i++)
+            pRootInstruction.addInstruction(InstructionNames.addSkinnedMesh, meshRef[i]);
+            
+        pProcessor.execute(pRootInstruction);
+        
+        skeleton.setShader(new VertexDeformer(worldManager));
+        ((ProcessorCollectionComponent) currentEntity.getComponent(ProcessorCollectionComponent.class)).addProcessor(new SkinnedAnimationProcessor(skeleton));
+        currentPScene.setDirty(true, true);
+        
+        meshsetup.put(region, meshRef);
     }
     
     public void loadDAECharacter(boolean clear, Component arg0) {
@@ -393,10 +448,15 @@ public class SceneEssentials {
         else
             currentHiProcessors.clear();
         
-        String bindPose = data[3];
-        SharedAsset character = new SharedAsset(currentPScene.getRepository(), new AssetDescriptor(SharedAssetType.COLLADA_Model, bindPose));
-        character.setUserData(new ColladaLoaderParams(true, true, false, false, 4, data[0], null));
-        loadInitializer(data[0], character, anim);
+        try {
+            URL urlModel = new URL(data[3]);
+            SharedAsset character = new SharedAsset(currentPScene.getRepository(), new AssetDescriptor(SharedAssetType.COLLADA_Model, urlModel));
+            character.setUserData(new ColladaLoaderParams(true, true, false, false, 4, data[0], null));
+            loadInitializer(data[0], character, anim);
+        } catch (MalformedURLException ex) {
+            Logger.getLogger(SceneEssentials.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
     }    
     
     public void loadDAEChar() {
@@ -490,11 +550,11 @@ public class SceneEssentials {
             public boolean initialize(Object asset) {
 
                 if (((PNode) asset).getChild(0) instanceof SkeletonNode) {
-                    final SkeletonNode skeleton = (SkeletonNode) ((PNode) asset).getChild(0);
+                    final SkeletonNode skel = (SkeletonNode) ((PNode) asset).getChild(0);
                     
                     // Visual Scale
                     if (visualScale != 1.0f) {
-                        ArrayList<PPolygonSkinnedMeshInstance> meshes = skeleton.getSkinnedMeshInstances();
+                        ArrayList<PPolygonSkinnedMeshInstance> meshes = skel.getSkinnedMeshInstances();
                         for (PPolygonSkinnedMeshInstance mesh : meshes) {
                             mesh.getTransform().getLocalMatrix(true).setScale(visualScale);
                         }
@@ -505,15 +565,15 @@ public class SceneEssentials {
                         InstructionProcessor pProcessor = new InstructionProcessor(worldManager);
                         Instruction pRootInstruction = new Instruction();
 
-                        pRootInstruction.addInstruction(InstructionNames.setSkeleton, skeleton);
+                        pRootInstruction.addInstruction(InstructionNames.setSkeleton, skel);
                         for (int i = 0; i < a.length; i++) {
                             pRootInstruction.addInstruction(InstructionNames.loadAnimation, a[i]);
                         }
                         pProcessor.execute(pRootInstruction);
                     }
                     
-                    skeleton.setShader(new VertexDeformer(worldManager));
-                    ((ProcessorCollectionComponent)currentEntity.getComponent(ProcessorCollectionComponent.class)).addProcessor(new SkinnedAnimationProcessor(skeleton));
+                    skel.setShader(new VertexDeformer(worldManager));
+                    ((ProcessorCollectionComponent)currentEntity.getComponent(ProcessorCollectionComponent.class)).addProcessor(new SkinnedAnimationProcessor(skel));
                     currentPScene.setDirty(true, true);
                 }
                 return true;
@@ -542,14 +602,20 @@ public class SceneEssentials {
             // Create a material to use
             int iIndex = fileTexture.getName().indexOf(".");
             String szName = fileTexture.getName().substring(0, iIndex);
-            int index = fileTexture.getPath().indexOf("assets");
-            String szTemp = fileTexture.getPath().substring(index, fileTexture.getPath().length());
-
-            PMeshMaterial material = new PMeshMaterial(szName + "material", szTemp);
-            if(meshInst instanceof PPolygonSkinnedMeshInstance)
-                ((PPolygonSkinnedMeshInstance)meshInst).setMaterial(material);
-            else if(meshInst instanceof PPolygonMeshInstance)
-                ((PPolygonMeshInstance)meshInst).setMaterial(material);
+            File fullpath = getAbsPath(fileTexture);
+            String szURL = new String("file://" + fullpath.toString());
+            
+            try {
+                URL urlFile = new URL(szURL);
+                PMeshMaterial material = new PMeshMaterial(szName + "Material", urlFile);
+                if (meshInst instanceof PPolygonSkinnedMeshInstance) {
+                    ((PPolygonSkinnedMeshInstance) meshInst).setMaterial(material);
+                } else if (meshInst instanceof PPolygonMeshInstance) {
+                    ((PPolygonMeshInstance) meshInst).setMaterial(material);
+                }
+            } catch (MalformedURLException ex) {
+                Logger.getLogger(SceneEssentials.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }
 }

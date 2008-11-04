@@ -33,7 +33,7 @@
                 <Property name="text" type="java.lang.String" value="Load Model"/>
               </Properties>
               <AuxValues>
-                <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="jMenuItem_LoadModel.addActionListener(new java.awt.event.ActionListener() {&#xa;    public void actionPerformed(java.awt.event.ActionEvent evt) {&#xa;        jPanel_FileIO1.loadModel(jPanel_ModelRotation1, jPanel_Animations1);&#xa;    }&#xa;});"/>
+                <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="jMenuItem_LoadModel.addActionListener(new java.awt.event.ActionListener() {&#xa;    public void actionPerformed(java.awt.event.ActionEvent evt) {&#xa;        fileIOPanel1.loadModelFile();&#xa;    }&#xa;});"/>
               </AuxValues>
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="jMenuItem_LoadTexture">
@@ -44,7 +44,7 @@
                 <Property name="text" type="java.lang.String" value="Load Texture"/>
               </Properties>
               <AuxValues>
-                <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="jMenuItem_LoadTexture.addActionListener(new java.awt.event.ActionListener() {&#xa;    public void actionPerformed(java.awt.event.ActionEvent evt) {&#xa;        jPanel_FileIO1.loadTexture(jPanel_Animations1);&#xa;    }&#xa;});"/>
+                <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="jMenuItem_LoadTexture.addActionListener(new java.awt.event.ActionListener() {&#xa;    public void actionPerformed(java.awt.event.ActionEvent evt) {&#xa;        fileIOPanel1.loadTexFile();&#xa;    }&#xa;});"/>
               </AuxValues>
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="jMenuItem_LoadXML">
@@ -55,7 +55,7 @@
                 <Property name="text" type="java.lang.String" value="Load Configuration"/>
               </Properties>
               <AuxValues>
-                <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="jMenuItem_LoadXML.addActionListener(new java.awt.event.ActionListener() {&#xa;    public void actionPerformed(java.awt.event.ActionEvent evt) {&#xa;        jPanel_FileIO1.loadxml(jPanel_ModelRotation1, jPanel_Animations1);&#xa;    }&#xa;});"/>
+                <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="jMenuItem_LoadXML.addActionListener(new java.awt.event.ActionListener() {&#xa;    public void actionPerformed(java.awt.event.ActionEvent evt) {&#xa;        fileIOPanel1.loadConfigFile();&#xa;    }&#xa;});"/>
               </AuxValues>
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="jMenuItem_SaveXML">
@@ -66,7 +66,7 @@
                 <Property name="text" type="java.lang.String" value="Save Configuration"/>
               </Properties>
               <AuxValues>
-                <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="jMenuItem_SaveXML.addActionListener(new java.awt.event.ActionListener() {&#xa;    public void actionPerformed(java.awt.event.ActionEvent evt) {&#xa;        jPanel_FileIO1.savexml();&#xa;    }&#xa;});"/>
+                <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="jMenuItem_SaveXML.addActionListener(new java.awt.event.ActionListener() {&#xa;    public void actionPerformed(java.awt.event.ActionEvent evt) {&#xa;        fileIOPanel1.saveConfigFile();&#xa;    }&#xa;});"/>
               </AuxValues>
             </MenuItem>
           </SubComponents>
@@ -114,11 +114,14 @@
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" attributes="0">
-              <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="jPanel_FileIO1" min="-2" pref="230" max="-2" attributes="0"/>
-                  <Component id="jToolBar_AvatarTools" min="-2" pref="230" max="-2" attributes="1"/>
-                  <Component id="jPanel_ModelRotation1" min="-2" pref="230" max="-2" attributes="0"/>
-                  <Component id="jPanel_Animations1" min="-2" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="0" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="1" attributes="0">
+                  <Component id="fileIOPanel1" min="-2" max="-2" attributes="0"/>
+                  <Group type="103" alignment="1" groupAlignment="0" attributes="0">
+                      <Component id="jToolBar_AvatarTools" min="-2" pref="230" max="-2" attributes="1"/>
+                      <Component id="jPanel_ModelRotation1" min="-2" pref="230" max="-2" attributes="0"/>
+                      <Component id="jPanel_Animations1" min="-2" max="-2" attributes="0"/>
+                  </Group>
               </Group>
               <EmptySpace min="-2" pref="0" max="-2" attributes="0"/>
               <Component id="jPanel_DisplayWindow" min="-2" max="-2" attributes="0"/>
@@ -129,10 +132,10 @@
     <DimensionLayout dim="1">
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" attributes="0">
-              <Component id="jPanel_FileIO1" min="-2" max="-2" attributes="0"/>
-              <EmptySpace max="-2" attributes="0"/>
+              <Component id="fileIOPanel1" min="-2" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="0" max="-2" attributes="0"/>
               <Component id="jToolBar_AvatarTools" min="-2" max="-2" attributes="0"/>
-              <EmptySpace max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="0" max="-2" attributes="0"/>
               <Component id="jPanel_ModelRotation1" min="-2" pref="175" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="jPanel_Animations1" min="-2" pref="223" max="-2" attributes="0"/>
@@ -289,11 +292,11 @@
         </Container>
       </SubComponents>
     </Container>
-    <Component class="imi.gui.JPanel_FileIO" name="jPanel_FileIO1">
-    </Component>
     <Component class="imi.gui.JPanel_ModelRotation" name="jPanel_ModelRotation1">
     </Component>
     <Component class="imi.gui.JPanel_Animations" name="jPanel_Animations1">
+    </Component>
+    <Component class="imi.gui.FileIOPanel" name="fileIOPanel1">
     </Component>
   </SubComponents>
 </Form>
