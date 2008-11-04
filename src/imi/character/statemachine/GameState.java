@@ -39,6 +39,7 @@ public class GameState extends NamedUpdatableObject
     protected float animationSpeed = 1.0f;
     private boolean bReverseAnimation = false;
     private float transitionDuration = 0.2f;
+    private boolean bTransitionReverseAnimation = false;
     
     private boolean bAnimationSet = false;
     
@@ -141,7 +142,7 @@ public class GameState extends NamedUpdatableObject
         {
             skeleton.getAnimationState().setTransitionDuration(transitionDuration);
             skeleton.getAnimationState().setAnimationSpeed(animationSpeed);
-            bAnimationSet = skeleton.transitionTo(animationName);
+            bAnimationSet = skeleton.transitionTo(animationName, bTransitionReverseAnimation);
             
             // Set reverse   
             if (bReverseAnimation)
@@ -249,10 +250,27 @@ public class GameState extends NamedUpdatableObject
         return bReverseAnimation;
     }
 
-    public void setReverseAnimation(boolean reverseAnimation) {
-        if(reverseAnimation != bReverseAnimation)
-            bAnimationSet = false;
+    public void setReverseAnimation(boolean reverseAnimation) 
+    {    
+        // Character's skeleton might be null untill loaded
+        SkeletonNode skeleton = gameContext.getSkeleton();
+        if (skeleton != null)
+        {
+            // Set reverse
+            if (bReverseAnimation)
+                skeleton.getAnimationState().setReverseAnimation(true);
+            else
+                skeleton.getAnimationState().setReverseAnimation(false);
+        }
         bReverseAnimation = reverseAnimation;
+    }
+
+    public boolean isTransitionReverseAnimation() {
+        return bTransitionReverseAnimation;
+    }
+
+    public void setTransitionReverseAnimation(boolean bTransitionReverseAnimation) {
+        this.bTransitionReverseAnimation = bTransitionReverseAnimation;
     }
     
     

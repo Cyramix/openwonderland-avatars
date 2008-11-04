@@ -126,7 +126,7 @@ public class NinjaSteeringHelm extends CharacterSteeringHelm
         if (!reachedGoal)
         {   
             // If the chair is occupied then abort mission
-            if (goal != null && ((Chair)goal).isOccupied())
+            if (goal != null && goal instanceof Chair && ((Chair)goal).isOccupied())
             {
                 ninjaContext.getController().getWindow().setTitle("Chair is Occupied!");
                 enabledState = false;

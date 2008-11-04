@@ -58,9 +58,9 @@ public class AnimationComponent
      * @param state      - the state of the instance to animate
      * @return false if the transition is already happening or not possible
      */
-    public boolean transitionTo(int cycleIndex, AnimationState state) 
+    public boolean transitionTo(int cycleIndex, AnimationState state, boolean bReverse) 
     {
-        return transitionTo(cycleIndex, state, 0);
+        return transitionTo(cycleIndex, state, 0, bReverse);
     }
     
     /**
@@ -68,9 +68,10 @@ public class AnimationComponent
      * @param cycleIndex - cycle to transition to
      * @param state      - the state of the instance to animate
      * @param animationGroupIndex - the animation group to use
+     * @param bReverse   - true if the animation being transitioned to should run in reverse
      * @return false if the transition is already happening or not possible
      */
-    public boolean transitionTo(int cycleIndex, AnimationState state, int animationGroupIndex)
+    public boolean transitionTo(int cycleIndex, AnimationState state, int animationGroupIndex, boolean bReverse)
     {
         if (cycleIndex == state.getCurrentCycle() || cycleIndex == state.getTransitionCycle())
             return false;
@@ -78,12 +79,15 @@ public class AnimationComponent
         if(cycleIndex == -1)
             return false;
         
-        state.setTransitionCycle(cycleIndex);
         state.setTimeInTransition(0.0f);
-        state.setTransitionCycleTime(m_AnimationGroups.get(animationGroupIndex).getCycle(cycleIndex).getStartTime());
+        state.setTransitionCycle(cycleIndex);
+        state.setTransitionReverseAnimation(bReverse);
+        if(bReverse)
+            state.setTransitionCycleTime(m_AnimationGroups.get(animationGroupIndex).getCycle(cycleIndex).getEndTime());
+        else
+            state.setTransitionCycleTime(m_AnimationGroups.get(animationGroupIndex).getCycle(cycleIndex).getStartTime());
         state.setTransitionCycleStartTime(m_AnimationGroups.get(animationGroupIndex).getCycle(cycleIndex).getStartTime());
         state.setTransitionCycleEndTime(m_AnimationGroups.get(animationGroupIndex).getCycle(cycleIndex).getEndTime());
-        
         
         return true;
     }
@@ -95,9 +99,9 @@ public class AnimationComponent
      * @param state      - the state of the instance to animate
      * @return false if the transition is already happening or not possible
      */
-    public boolean transitionTo(String cycleName, AnimationState state) 
+    public boolean transitionTo(String cycleName, AnimationState state, boolean bReverse) 
     {
-        return transitionTo(cycleName, state, 0);
+        return transitionTo(cycleName, state, 0, bReverse);
     }
     
     /**
@@ -107,14 +111,14 @@ public class AnimationComponent
      * @param animationGroupIndex - the animation group to use
      * @return false if the transition is already happening or not possible
      */
-    public boolean transitionTo(String cycleName, AnimationState state, int animationGroupIndex) 
+    public boolean transitionTo(String cycleName, AnimationState state, int animationGroupIndex, boolean bReverse) 
     {
         int index = findCycle(cycleName, animationGroupIndex);
         
         if (index == -1)
             return false;
         
-        return transitionTo(index, state);
+        return transitionTo(index, state, bReverse);
     }
 
     /**

@@ -44,12 +44,15 @@ public class MusicalChairs extends DemoBase
     @Override
     protected void createDemoEntities(WorldManager wm) 
     {
+        // Create one object collection for all to use (for testing)
+        ObjectCollection objects = new ObjectCollection("Musical Chairs Objects", wm);
+        
         // Create locations for the game
-        LocationNode chairGame1 = new LocationNode("Location 1", Vector3f.ZERO, 15.0f, wm);
+        LocationNode chairGame1 = new LocationNode("Location 1", Vector3f.ZERO, 15.0f, wm, objects);
         chairGame1.generateChairs(3);
-        LocationNode chairGame2 = new LocationNode("Location 2", Vector3f.UNIT_X.mult(30.0f),  15.0f, wm);
+        LocationNode chairGame2 = new LocationNode("Location 2", Vector3f.UNIT_X.mult(30.0f),  15.0f, wm, objects);
         chairGame2.generateChairs(3);
-        LocationNode chairGame3 = new LocationNode("Location 3", Vector3f.UNIT_Z.mult(30.0f),  15.0f, wm);
+        LocationNode chairGame3 = new LocationNode("Location 3", Vector3f.UNIT_Z.mult(30.0f),  15.0f, wm, objects);
         chairGame3.generateChairs(3);
         
         // Create paths
@@ -66,8 +69,8 @@ public class MusicalChairs extends DemoBase
         // Create avatar
         NinjaAvatar avatar = new NinjaAvatar("Avatar", wm);
         avatar.selectForInput();
-        avatar.setObjectCollection(chairGame1.getObjectCollection());
         control.getNinjaTeam().add(avatar);
+        avatar.setObjectCollection(objects);
 
 //        NinjaAvatar bigBaby = new NinjaAvatar("Big Baby", wm);
 //        bigBaby.getModelInst().getTransform().getLocalMatrix(true).setTranslation(Vector3f.UNIT_Z.mult(-5.0f));

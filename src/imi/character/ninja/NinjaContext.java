@@ -34,6 +34,7 @@ import imi.character.ninja.transitions.WalkToIdle;
 import imi.character.ninja.transitions.WalkToPunch;
 import imi.character.objects.Chair;
 import imi.character.objects.Goal;
+import imi.character.objects.LocationNode;
 import imi.character.objects.SpatialObject;
 import imi.character.statemachine.GameContext;
 import imi.character.statemachine.GameState.Action;
@@ -226,14 +227,24 @@ public class NinjaContext extends GameContext
         // Go to location - if path is available from the current location
         else if (trigger == TriggerNames.GoTo1.ordinal() && pressed)
         {
+            if (ninja.getObjectCollection() == null)
+                return;
+            
+            GoToNearestLocation();
         }
         else if (trigger == TriggerNames.GoTo2.ordinal() && pressed)
         {
+            if (ninja.getObjectCollection() == null)
+                return;
             
+            GoToNearestLocation();
         }
         else if (trigger == TriggerNames.GoTo3.ordinal() && pressed)
         {
+            if (ninja.getObjectCollection() == null)
+                return;
             
+            GoToNearestLocation();
         }
         
         // Select the next animation to play for the punch state
@@ -303,6 +314,37 @@ public class NinjaContext extends GameContext
 
     public NinjaSteeringHelm getSteering() {
         return steering;
+    }
+
+    private void GoToNearestLocation() 
+    {   
+        LocationNode location = ninja.getObjectCollection().findNearestLocation(ninja, 10000.0f, 1.0f, false);
+        if (location != null)
+        {
+            Vector3f pos = location.getPosition();
+            Vector3f direction = location.getForwardVector();
+            steering.setGoalPosition(pos);
+            steering.setSittingDirection(direction);
+            steering.setGoal(location);
+            // Go and sit there
+            steering.setEnable(true);
+            steering.setReachedGoal(false);
+
+            // Update global goal point
+            Goal goalPoint = (Goal) ninja.getWorldManager().getUserData(Goal.class);
+            if (goalPoint != null)
+            {
+                goalPoint.setGoal(location);
+                PMatrix goal = new PMatrix(pos); 
+                goal.lookAt(pos, pos.add(direction), Vector3f.UNIT_Y);
+                goal.invert();
+                goalPoint.getTransform().setLocalMatrix(goal);
+                goalPoint.getTransform().getLocalMatrix(true).setScale(1.0f);
+                PScene GPScene = goalPoint.getPScene();
+                GPScene.setDirty(true, true);
+                GPScene.submitTransforms();
+            }
+        }
     }
 
     

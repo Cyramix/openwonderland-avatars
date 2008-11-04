@@ -74,21 +74,19 @@ public class NinjaAvatar extends Ninja
         m_context.getStates().get(SitState.class).setAnimationName("Male_StandToSit");
         m_context.getStates().get(FlyState.class).setAnimationName("Male_Sitting");
         ((SitState)m_context.getStates().get(SitState.class)).setIdleSittingAnimationName("Male_Sitting");
-        //((SitState)m_context.getStates().get(SitState.class)).setGettingUpAnimationName("Male_StandToSit");    
-        ((SitState)m_context.getStates().get(SitState.class)).setGettingUpAnimationName("Male_Idle");    
+        ((SitState)m_context.getStates().get(SitState.class)).setGettingUpAnimationName("Male_StandToSit");    
         m_context.getStates().get(IdleState.class).setTransitionDuration(0.2f);
         m_context.getStates().get(WalkState.class).setTransitionDuration(0.15f);
         
         m_context.getStates().get(SitState.class).setAnimationSpeed(3.0f);
         m_context.getStates().get(SitState.class).setTransitionDuration(0.05f);
-        ((SitState)m_context.getStates().get(SitState.class)).setSittingAnimationTime(0.6f);
+        ((SitState)m_context.getStates().get(SitState.class)).setSittingAnimationTime(0.7f);
         
         ((SitState)m_context.getStates().get(SitState.class)).setIdleSittingTransitionDuration(0.025f);
         
-        ((SitState)m_context.getStates().get(SitState.class)).setGettingUpAnimationSpeed(2.0f);
-        ((SitState)m_context.getStates().get(SitState.class)).setGettingUpAnimationTime(0.6f);
-        //((SitState)m_context.getStates().get(SitState.class)).setGettingUpTransitionDuration(0.025f);
-        ((SitState)m_context.getStates().get(SitState.class)).setGettingUpTransitionDuration(0.25f);
+        ((SitState)m_context.getStates().get(SitState.class)).setGettingUpAnimationSpeed(1.0f);
+        ((SitState)m_context.getStates().get(SitState.class)).setGettingUpAnimationTime(5.0f);
+        ((SitState)m_context.getStates().get(SitState.class)).setGettingUpTransitionDuration(0.01f);
         
         // For testing, no transitions
         if (false)

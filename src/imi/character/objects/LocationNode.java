@@ -33,7 +33,7 @@ public class LocationNode extends GraphNode implements SpatialObject
 {
     private String              name     = null;
     private PSphere             bv       = null;
-    private Vector3f            forward  = null;
+    private Vector3f            forward  = Vector3f.UNIT_Z.mult(-1.0f);
     private ObjectCollection    objects  = null;
     private boolean             occupied = false;
 
@@ -42,6 +42,14 @@ public class LocationNode extends GraphNode implements SpatialObject
         this.name = name;
         bv        = new PSphere(position, radius);
         objects   = new ObjectCollection(name, wm);
+        objects.addObject(this);
+    }
+    
+    public LocationNode(String name, Vector3f position, float radius, WorldManager wm, ObjectCollection objectCollection)
+    {
+        this.name = name;
+        bv        = new PSphere(position, radius);
+        objects   = objectCollection;
         objects.addObject(this);
     }
     
@@ -77,11 +85,13 @@ public class LocationNode extends GraphNode implements SpatialObject
     }
 
     public Quaternion getQuaternion() {
-        return null;
+        Quaternion result = new Quaternion();
+        result.fromAxes(getRightVector(), Vector3f.UNIT_Y, forward);
+        return result;
     }
 
     public Vector3f getRightVector() {
-        return null;
+        return forward.cross(Vector3f.UNIT_Y);
     }
 
     public Vector3f getForwardVector() {
@@ -107,6 +117,13 @@ public class LocationNode extends GraphNode implements SpatialObject
 
     public void setOccupied(boolean occupied) {
         this.occupied = occupied;
+    }
+    
+    public boolean isOccupied(boolean occupiedMatters) 
+    {
+        if (occupiedMatters)
+            return occupied;
+        return false;
     }
     
     /**

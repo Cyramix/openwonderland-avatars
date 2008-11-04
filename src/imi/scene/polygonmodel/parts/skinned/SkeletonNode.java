@@ -391,9 +391,9 @@ public class SkeletonNode extends PNode implements Animated
         return m_animationComponent.getGroup();
     }
     
-    public boolean transitionTo(String cycleName)
+    public boolean transitionTo(String cycleName, boolean bReverse)
     {
-        return m_animationComponent.transitionTo(cycleName, getAnimationState(0));
+        return m_animationComponent.transitionTo(cycleName, getAnimationState(0), bReverse);
     }
     
     /**

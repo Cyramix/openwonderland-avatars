@@ -204,6 +204,9 @@ public class ObjectCollection extends Entity
      */
     public SpatialObject findNearest(SpatialObject obj, float consideredRange, float searchCone)
     {
+        if (obj == null)
+            return null;
+        
         SpatialObject nearest = null;
         float nearestObjDistance = 0.0f;
         for (SpatialObject check : objects)
@@ -261,6 +264,9 @@ public class ObjectCollection extends Entity
 
     public SpatialObject findNearestChair(SpatialObject obj, float consideredRange, float searchCone, boolean occupiedMatters)
     {
+        if (obj == null)
+            return null;
+        
         SpatialObject nearest = null;
         float nearestObjDistance = 0.0f;
         for (SpatialObject check : objects)
@@ -317,6 +323,69 @@ public class ObjectCollection extends Entity
         }
         
         return nearest;
+    }
+    
+    public LocationNode findNearestLocation(SpatialObject obj, float consideredRange, float searchCone, boolean occupiedMatters)
+    {
+        if (obj == null)
+            return null;
+        
+        SpatialObject nearest = null;
+        float nearestObjDistance = 0.0f;
+        for (SpatialObject check : objects)
+        {
+            if (check != obj && check instanceof LocationNode)
+            {
+                // Check if occupided
+                if (((LocationNode)check).isOccupied(occupiedMatters))
+                    continue;
+                
+                // Check range
+                float range = obj.getPosition().distance(check.getPosition());
+                if(range > consideredRange)
+                    continue;
+        
+                // First found element
+                if (nearest == null)
+                {
+                    nearest  = check;
+                    nearestObjDistance = range;
+                    continue;
+                }
+                
+                // Check if inside the search cone
+                if (searchCone < 1.0f)
+                {
+                    Vector3f rightVec = obj.getRightVector();
+                    Vector3f forwardVec = obj.getForwardVector();
+                    Vector3f directionToTarget = check.getPosition().subtract(obj.getPosition());
+                    directionToTarget.normalizeLocal();
+                    
+                    // Check if inside the front half of space
+                    float dot = directionToTarget.dot(forwardVec);
+                    if (dot > 0.0f)
+                        continue;
+                    
+                    dot = directionToTarget.dot(rightVec);
+                    if (dot < searchCone && dot > -searchCone)
+                    {
+                        if(range < nearestObjDistance)
+                        {
+                            nearest  = check;
+                            nearestObjDistance = range;
+                        }
+                    }
+                }
+                else if(range < nearestObjDistance)
+                {
+                    nearest  = check;
+                    nearestObjDistance = range;
+                }
+                 
+            }
+        }
+        
+        return (LocationNode)nearest;
     }
     
     public JScene getJScene() {

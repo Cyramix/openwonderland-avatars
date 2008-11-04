@@ -214,7 +214,7 @@ public class COLLADA_JointChannel implements PJointChannel
         
         float interpolationCoefficient = state.getTimeInTransition() / state.getTransitionDuration();
         
-        PMatrix firstTransform = calculateBlendedMatrix(fCurrentCycleTime, state.getCurrentCycleStartTime(), state.getCurrentCycleEndTime(), state.isReverseAnimation());
+        PMatrix firstTransform  = calculateBlendedMatrix(fCurrentCycleTime, state.getCurrentCycleStartTime(), state.getCurrentCycleEndTime(), state.isReverseAnimation());
         PMatrix secondTransform = calculateBlendedMatrix(fTransitionCycleTime, state.getTransitionCycleStartTime(), state.getTransitionCycleEndTime(), state.isTransitionReverseAnimation());
         
         PMatrix result = null;
@@ -304,7 +304,7 @@ public class COLLADA_JointChannel implements PJointChannel
             interpolationCoefficient = (fTime - leftFrame.getFrameTime()) / (rightFrame.getFrameTime() - leftFrame.getFrameTime());
 
             if (bReverse)
-                interpolationCoefficient *= -1.0f; // Reverese interpolation weights
+                interpolationCoefficient = 1.0f - interpolationCoefficient; // Reverese interpolation weights
             
             Quaternion rotationComponent = leftFrame.getValue().getRotationJME();
             rotationComponent.slerp(rotationComponent, rightFrame.getValue().getRotationJME(), interpolationCoefficient);

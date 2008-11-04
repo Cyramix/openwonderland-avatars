@@ -167,7 +167,7 @@ public class SitState extends GameState
             skeleton.getAnimationState().setTransitionDuration(idleSittingTransitionDuration);
             skeleton.getAnimationState().setAnimationSpeed(idleSittingAnimationSpeed);
             skeleton.getAnimationState().setReverseAnimation(false);
-            bIdleSittingAnimationSet = skeleton.transitionTo(idleSittingAnimationName);
+            bIdleSittingAnimationSet = skeleton.transitionTo(idleSittingAnimationName, false);
             setAnimationSetBoolean(true);
         }
     }
@@ -184,8 +184,7 @@ public class SitState extends GameState
         {
             skeleton.getAnimationState().setTransitionDuration(gettingUpTransitionDuration);
             skeleton.getAnimationState().setAnimationSpeed(gettingUpAnimationSpeed);
-            skeleton.getAnimationState().setReverseAnimation(true);
-            bGettingUpAnimationSet = skeleton.transitionTo(gettingUpAnimationName);
+            bGettingUpAnimationSet = skeleton.transitionTo(gettingUpAnimationName, true);
             // If sitting down and getting up is the same animation transitionTo will return false
             // when trying to get up immediatly after deciding to sit down... so
             if (skeleton.getAnimationState().getCurrentCycle() == skeleton.getAnimationGroup().findAnimationCycle(gettingUpAnimationName))

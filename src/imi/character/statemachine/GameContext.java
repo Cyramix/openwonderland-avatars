@@ -180,7 +180,7 @@ public class GameContext extends NamedUpdatableObject
         if (skeleton != null)
         {
             // Set first animation
-            skeleton.transitionTo(currentState.getAnimationName());
+            skeleton.transitionTo(currentState.getAnimationName(), false);
             initalized = true;
         }
     }

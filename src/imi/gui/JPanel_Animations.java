@@ -505,7 +505,7 @@ if (jComboBox_Animations.isEnabled()) {
         imi.scene.PNode node = ((imi.scene.PNode)instance.findChild("skeletonRoot"));
         imi.scene.polygonmodel.parts.skinned.SkeletonNode skeleton = ((imi.scene.polygonmodel.parts.skinned.SkeletonNode)node.getParent());
         skeleton.getAnimationState().setPauseAnimation(false);
-        skeleton.transitionTo(jComboBox_Animations.getSelectedItem().toString());
+        skeleton.transitionTo(jComboBox_Animations.getSelectedItem().toString(), false);
     }
 }//GEN-LAST:event_jComboBox_AnimationsActionPerformed
 
