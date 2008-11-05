@@ -48,9 +48,10 @@ import java.util.Hashtable;
  */
 public class NinjaContext extends GameContext
 {
-    private Ninja           ninja       = null;
-    private NinjaController controller  = null;
-    private NinjaSteeringHelm steering  = new NinjaSteeringHelm("Ninja Steering Helm", this);
+    private Ninja             ninja       = null;
+    private NinjaController   controller  = null;
+    private NinjaSteeringHelm steering    = new NinjaSteeringHelm("Ninja Steering Helm", this);
+    private LocationNode      location    = null;
     
     int testHack = 0;
     
@@ -174,36 +175,7 @@ public class NinjaContext extends GameContext
         // Find nearest chair and sit on it
         else if (trigger == TriggerNames.SelectNearestGoalPoint.ordinal() && pressed)
         {
-            if (ninja.getObjectCollection() == null)
-                return;
-            
-            SpatialObject obj = ninja.getObjectCollection().findNearestChair(ninja, 10000.0f, 1.0f, true);
-            if (obj != null && !((Chair)obj).isOccupied())
-            {
-                Vector3f pos = ((Chair)obj).getGoalPosition();
-                Vector3f direction = ((Chair)obj).getGoalForwardVector();
-                steering.setGoalPosition(pos);
-                steering.setSittingDirection(direction);
-                steering.setGoal(obj);
-                // Go and sit there
-                steering.setEnable(true);
-                steering.setReachedGoal(false);
-                
-                // Update global goal point
-                Goal goalPoint = (Goal) ninja.getWorldManager().getUserData(Goal.class);
-                if (goalPoint != null)
-                {
-                    goalPoint.setGoal(obj);
-                    PMatrix goal = new PMatrix(pos); 
-                    goal.lookAt(pos, pos.add(direction), Vector3f.UNIT_Y);
-                    goal.invert();
-                    goalPoint.getTransform().setLocalMatrix(goal);
-                    goalPoint.getTransform().getLocalMatrix(true).setScale(1.0f);
-                    PScene GPScene = goalPoint.getPScene();
-                    GPScene.setDirty(true, true);
-                    GPScene.submitTransforms();
-                }
-            }
+            GoToNearestChair();
         }
         
         // Set the current state to the sit state
@@ -227,23 +199,14 @@ public class NinjaContext extends GameContext
         // Go to location - if path is available from the current location
         else if (trigger == TriggerNames.GoTo1.ordinal() && pressed)
         {
-            if (ninja.getObjectCollection() == null)
-                return;
-            
             GoToNearestLocation();
         }
         else if (trigger == TriggerNames.GoTo2.ordinal() && pressed)
         {
-            if (ninja.getObjectCollection() == null)
-                return;
-            
             GoToNearestLocation();
         }
         else if (trigger == TriggerNames.GoTo3.ordinal() && pressed)
         {
-            if (ninja.getObjectCollection() == null)
-                return;
-            
             GoToNearestLocation();
         }
         
@@ -316,9 +279,12 @@ public class NinjaContext extends GameContext
         return steering;
     }
 
-    private void GoToNearestLocation() 
+    public void GoToNearestLocation() 
     {   
-        LocationNode location = ninja.getObjectCollection().findNearestLocation(ninja, 10000.0f, 1.0f, false);
+        if (ninja.getObjectCollection() == null)
+            return;
+        
+        location = ninja.getObjectCollection().findNearestLocation(ninja, 10000.0f, 1.0f, false);
         if (location != null)
         {
             Vector3f pos = location.getPosition();
@@ -345,6 +311,52 @@ public class NinjaContext extends GameContext
                 GPScene.submitTransforms();
             }
         }
+    }
+        
+    public boolean GoToNearestChair()
+    {
+        if (ninja.getObjectCollection() == null)
+            return false;
+
+        SpatialObject obj = ninja.getObjectCollection().findNearestChair(ninja, 10000.0f, 1.0f, true);
+        if (obj != null && !((Chair)obj).isOccupied())
+        {
+            Vector3f pos = ((Chair)obj).getGoalPosition();
+            Vector3f direction = ((Chair)obj).getGoalForwardVector();
+            steering.setGoalPosition(pos);
+            steering.setSittingDirection(direction);
+            steering.setGoal(obj);
+            // Go and sit there
+            steering.setEnable(true);
+            steering.setReachedGoal(false);
+
+            // Update global goal point
+            Goal goalPoint = (Goal) ninja.getWorldManager().getUserData(Goal.class);
+            if (goalPoint != null)
+            {
+                goalPoint.setGoal(obj);
+                PMatrix goal = new PMatrix(pos); 
+                goal.lookAt(pos, pos.add(direction), Vector3f.UNIT_Y);
+                goal.invert();
+                goalPoint.getTransform().setLocalMatrix(goal);
+                goalPoint.getTransform().getLocalMatrix(true).setScale(1.0f);
+                PScene GPScene = goalPoint.getPScene();
+                GPScene.setDirty(true, true);
+                GPScene.submitTransforms();
+            }
+            
+            return true;
+        }
+        
+        return false;
+    }
+
+    public LocationNode getLocation() {
+        return location;
+    }
+
+    public void setLocation(LocationNode location) {
+        this.location = location;
     }
 
     

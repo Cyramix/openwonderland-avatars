@@ -18,6 +18,7 @@
 package imi.character.ninja;
 
 import com.jme.math.Vector3f;
+import imi.character.ninja.NinjaContext.ActionNames;
 import imi.character.statemachine.GameContext;
 import imi.character.statemachine.GameState;
 import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
@@ -58,6 +59,18 @@ public class WalkState extends GameState
      */
     public boolean toWalk(Object data)
     {   
+        // Reverse animation if moving backwards
+        SkeletonNode skeleton = ninjaContext.getSkeleton();
+        if (skeleton != null)   // Ninja's skeleton might be null untill loaded
+        {        
+            NinjaController controller = ninjaContext.getController();
+
+            if (controller.isMovingForward())
+                setTransitionReverseAnimation(true);
+            else
+                setTransitionReverseAnimation(false);
+        }
+                
         return true;
     }
      
