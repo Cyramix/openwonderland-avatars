@@ -44,18 +44,33 @@ public class SharedAsset
     static public enum SharedAssetType
     {
         Unknown,                        
-        MS3D,        // unknown if skinned or not, determind by the existance of a *.anm file
+        MS3D_SkinnedMesh,        // unknown if skinned or not, determind by the existance of a *.anm file
         COLLADA_Model, // Loads a complete model including a skeleton and all geometry
         COLLADA_Animation, // Loads an animation file, also requires a skeleton node to attach to
         COLLADA_SkinnedMesh, // Loads a skinned mesh, requires a skeleton node to attach to.
         COLLADA_Mesh, // Loads a non-skinned mesh. 
-        Mesh,        // unknown if ms3d or collada
-        SkinnedMesh, // unknown if ms3d or collada, in the case of ms3d will load the skeleton even without an *.anm file
+        MS3D_Mesh,        // unknown if ms3d or collada
+        MS3D_SkinnedMesh1, // unknown if ms3d or collada, in the case of ms3d will load the skeleton even without an *.anm file
         Model,       // complex model (composed of shared asset references in a graph) defined in an xml
         Texture,
         AudioFX, AudioTrack, 
         AnimationProcessor, SkinnedAnimation, 
         AIProcessor, Code
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     };
 
     /**

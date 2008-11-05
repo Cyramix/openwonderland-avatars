@@ -231,7 +231,7 @@ public class COLLADA_ModelTest extends DemoBase
     }
 
 
-    //  Gets the SkinnedMesh with the specified name.
+    //  Gets the MS3D_SkinnedMesh1 with the specified name.
     private PPolygonSkinnedMesh getSkinnedMeshInNodeHiearchy(PNode pNode, String meshName)
     {
         if (pNode instanceof PPolygonSkinnedMeshInstance)

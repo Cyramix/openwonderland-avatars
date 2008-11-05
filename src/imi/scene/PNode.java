@@ -231,8 +231,14 @@ public class PNode //implements Serializable
         
         if (bDirty && bAffectKids)
         {
+            try{
             for (PNode kid : getChildren())
                 kid.setDirty(bDirty, bAffectKids);
+            }
+            catch (java.util.ConcurrentModificationException exception)
+            {
+                Logger.getLogger(this.getClass().toString()).log(Level.SEVERE, "During setDirty() a ConcurrentModificationException was thrown!");
+            }
         }
     }
 

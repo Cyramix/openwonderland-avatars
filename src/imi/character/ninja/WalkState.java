@@ -36,7 +36,7 @@ public class WalkState extends GameState
     private float walkSpeedFactor       = 4.0f; //  The walk state is using this value and OVERWRITES the super's animation speed...
     
     private float exitCounter           = 0.0f;
-    private float minimumTimeBeforeTransition = 0.18f;
+    private float minimumTimeBeforeTransition = 0.05f; // still needed?
     
     boolean bHack = true;
     float magic = 0.0f;

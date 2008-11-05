@@ -152,6 +152,9 @@ public class PPolygonSkinnedMeshInstance extends PPolygonMeshInstance
         // the appropriate collection of transform matrices
         if (m_pSkeletonNode == null)
             m_pSkeletonNode = ((SkeletonNode)getParent());
+
+        if (m_pSkeletonNode == null)
+            return m_instance;
         
         m_pSkeletonNode.setDirty(true, true);
 

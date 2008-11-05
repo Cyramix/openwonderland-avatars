@@ -71,7 +71,7 @@ public class Goal
         //ArrayList<ProcessorComponent> processors = new ArrayList<ProcessorComponent>();
         
         // Initialize the scene
-        SharedAsset modelAsset = new SharedAsset(pscene.getRepository(), new AssetDescriptor(SharedAssetType.Mesh, ""));
+        SharedAsset modelAsset = new SharedAsset(pscene.getRepository(), new AssetDescriptor(SharedAssetType.MS3D_Mesh, ""));
         PMeshMaterial geometryMaterial = new PMeshMaterial();
         geometryMaterial.setColorMaterial(ColorMaterial.Diffuse); // Make the vert colors affect diffuse coloring
         geometryMaterial.setDiffuse(ColorRGBA.white);

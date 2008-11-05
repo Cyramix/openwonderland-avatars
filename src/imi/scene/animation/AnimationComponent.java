@@ -131,7 +131,7 @@ public class AnimationComponent
     {
         if (m_AnimationGroups.isEmpty())
         {
-            System.out.println("can't find animation cycle: " + cycleName + ", m_AnimationGroups is empty!");
+            //System.out.println("can't find animation cycle: " + cycleName + ", m_AnimationGroups is empty!");
             return -1;
         }
         

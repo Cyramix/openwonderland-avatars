@@ -68,7 +68,7 @@ public class HeirarchyAttachmentTest extends DemoBase
         final PScene pscenef = pscene;
         // load a ninja
         SharedAsset ninjaAsset = new SharedAsset(pscene.getRepository(),
-                                    new AssetDescriptor(SharedAssetType.MS3D, new File("assets/models/ms3d/ninja.ms3d")),
+                                    new AssetDescriptor(SharedAssetType.MS3D_SkinnedMesh, new File("assets/models/ms3d/ninja.ms3d")),
                                     new AssetInitializer() {
                                         public boolean initialize(Object asset)
                                         {

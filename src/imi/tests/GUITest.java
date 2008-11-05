@@ -66,7 +66,7 @@ public class GUITest extends DemoBase2
         // Create a SharedAsset with the description of the ninja model file
         SharedAsset ninja = new SharedAsset(
                 ((Repository)wm.getUserData(Repository.class)),
-                new AssetDescriptor(SharedAsset.SharedAssetType.MS3D,
+                new AssetDescriptor(SharedAsset.SharedAssetType.MS3D_SkinnedMesh,
                 new File("assets/models/ms3d/ninja.ms3d")));
         
         // Set up an initializer to excecute once the asset is loaded into the scene

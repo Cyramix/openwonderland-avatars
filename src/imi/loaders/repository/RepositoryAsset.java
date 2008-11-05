@@ -24,10 +24,7 @@ import imi.loaders.collada.ColladaLoaderParams;
 import imi.loaders.ms3d.SkinnedMesh_MS3D_Importer;
 import imi.scene.PScene;
 import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
-import imi.scene.utils.tree.ColladaTransferProcessor;
-import imi.scene.utils.tree.TreeTraverser;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.jdesktop.mtgame.ProcessorArmingCollection;
@@ -93,35 +90,23 @@ public class RepositoryAsset extends ProcessorComponent
             m_data = new LinkedList<Object>();
             switch (m_descriptor.getType())
             {
-                case Mesh:
-                    // TODO: Refactor when / if the nonskinned MS3D loader is implemented  
+                case MS3D_Mesh: 
                     if (m_descriptor.getLocation().getPath().endsWith("ms3d"))
                         Logger.getLogger(this.getClass().toString()).log(Level.WARNING, "Non-skinned MS3D currently unsupported");
                     else if (m_descriptor.getLocation().getPath().endsWith("dae")) // collada
                         Logger.getLogger(this.getClass().toString()).log(Level.WARNING, "Collada asset requested as type Mesh, ignoring...");
                     break;
-                case SkinnedMesh:
+                case MS3D_SkinnedMesh:
                     {
                         if (m_descriptor.getLocation().getPath().endsWith("ms3d"))
                         {
                              SkeletonNode skeleton = new SkeletonNode(m_descriptor.getLocation().getFile() + " skeleton");
                              SkinnedMesh_MS3D_Importer importer = new SkinnedMesh_MS3D_Importer();
-
                              importer.load(skeleton , m_descriptor.getLocation());
-
                              m_data.add(skeleton);
                         }
                         else if (m_descriptor.getLocation().getPath().endsWith("dae")) // collada
                             Logger.getLogger(this.getClass().toString()).log(Level.WARNING, "Collada asset requested as type SkinnedMesh, ignoring...");
-                    }
-                    break;
-                case MS3D:  // Will assume to be skinned
-                    {
-                        SkinnedMesh_MS3D_Importer importer = new SkinnedMesh_MS3D_Importer();
-
-                        SkeletonNode skeleton = importer.loadMS3D(m_descriptor.getLocation());
-
-                        m_data.add(skeleton);
                     }
                     break;
                     // Intentional collada fall-throughs
@@ -134,21 +119,18 @@ public class RepositoryAsset extends ProcessorComponent
                         break;
                 case COLLADA_Mesh:
                     {
-                        Collada colladaLoader = null;
+                        // Load the collada file to the PScene
+                        Collada colladaLoader = new Collada();
                         if (m_userData != null && m_userData instanceof ColladaLoaderParams)
-                            colladaLoader = new Collada((ColladaLoaderParams)m_userData);
-                        else
-                            colladaLoader = new Collada();
+                        {
+                            ColladaLoaderParams loaderParams = (ColladaLoaderParams)m_userData;
+                            colladaLoader.applyConfiguration(loaderParams);
+                        }
+                        PScene colladaScene = new PScene("COLLADA : " + 
+                                m_descriptor.getLocation().getFile(), m_home.getWorldManager());
+                        colladaLoader.load(colladaScene, m_descriptor.getLocation());
 
-                        // Create a PScene and set it to m_data
-                        PScene scene = new PScene(m_descriptor.getType().toString() +
-                                " : " + m_descriptor.getLocation().getFile(),
-                                m_home.getWorldManager());
-                        scene.setUseRepository(true);
-
-                        colladaLoader.load(scene, m_descriptor.getLocation());
-                       
-                        m_data.add(scene);
+                        m_data.add(colladaScene);
                     }
                     break;
                 case Model:

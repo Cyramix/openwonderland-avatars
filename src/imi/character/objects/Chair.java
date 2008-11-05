@@ -132,7 +132,7 @@ public class Chair implements SpatialObject
     {
         if (sharedAsset != null)
         {
-            scene.setUseRepository(false);
+            //scene.setUseRepository(false);
             sharedAsset.setRepository(scene.getRepository());
             modelInst = scene.addModelInstance("Chair", sharedAsset, initOrigin);
         }

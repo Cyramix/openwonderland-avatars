@@ -293,7 +293,7 @@ public abstract class Character extends Entity implements SpatialObject
         {
             if (m_attributes.getModelFile().endsWith(".ms3d"))
             {       
-                SharedAsset character = new SharedAsset(m_pscene.getRepository(), new AssetDescriptor(SharedAssetType.MS3D, m_attributes.getModelFile()));
+                SharedAsset character = new SharedAsset(m_pscene.getRepository(), new AssetDescriptor(SharedAssetType.MS3D_SkinnedMesh, m_attributes.getModelFile()));
                 AssetInitializer init = new AssetInitializer() {
                     public boolean initialize(Object asset) {
 
@@ -435,8 +435,8 @@ public abstract class Character extends Entity implements SpatialObject
      */
     protected void initScene(ArrayList<ProcessorComponent> processors)
     {
-        if (m_attributes.getModelFile().endsWith(".dae"))
-            m_pscene.setUseRepository(false);
+//        if (m_attributes.getModelFile().endsWith(".dae"))
+//            m_pscene.setUseRepository(false);
         
         m_modelInst = m_pscene.addModelInstance(m_attributes.getName(), m_attributes.getAsset(), new PMatrix());
         

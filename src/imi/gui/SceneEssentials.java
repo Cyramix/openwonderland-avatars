@@ -180,7 +180,7 @@ public class SceneEssentials {
         // 1- Create a shared asset for the repository
         SharedAsset newAsset = new SharedAsset(
                 currentPScene.getRepository(),
-                new AssetDescriptor(SharedAsset.SharedAssetType.MS3D, fileModel));  // Type set as MS3D to load both skinned and regular
+                new AssetDescriptor(SharedAsset.SharedAssetType.MS3D_SkinnedMesh, fileModel));  // Type set as MS3D_SkinnedMesh to load both skinned and regular
         if(condition == 0) {
             // 2 - Open dialog to load associated texture for model
             int retValAsset = jFileChooser_LoadAssets.showOpenDialog(arg0);
@@ -383,7 +383,7 @@ public class SceneEssentials {
                 colladaAsset.setUserData(new ColladaLoaderParams(false, true, false, false, 3, data[0], null));
                 modelInst = currentPScene.addModelInstance(data[0], colladaAsset, new PMatrix());
             } else {
-                // Add Mesh Onto Model
+                // Add MS3D_Mesh Onto Model
                 
             }
         } else {

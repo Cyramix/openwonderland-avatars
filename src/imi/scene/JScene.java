@@ -297,7 +297,6 @@ public class JScene extends Node {
     @Override
     public void draw(Renderer r) 
     {
-        m_PScene.hackOnDraw();
         if (m_bRender) 
         {
             if (m_bRenderInternally && m_PScene != null) 

@@ -64,7 +64,9 @@ public class SkinnedAnimationProcessor extends ProcessorComponent
                 for (PNode kid : m_modelInst.getChildren()) // for each child
                 {
                     if (kid instanceof SkeletonNode)
+                    {
                         m_animated = (SkeletonNode) kid;
+                    }
                 }
             }
             // any luck?

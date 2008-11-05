@@ -157,9 +157,8 @@ public class Repository extends Entity
         switch (collectionType)
         {
             // Fall-throughs are intentional
-            case Mesh:
-            case SkinnedMesh:
-            case MS3D:
+            case MS3D_Mesh:
+            case MS3D_SkinnedMesh:
             case COLLADA_Model:
             case COLLADA_Mesh:
                 return m_Geometry;

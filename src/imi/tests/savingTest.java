@@ -67,12 +67,12 @@ public class savingTest extends DemoBase
         // Create a SharedAsset with the description of the ninja model file
         SharedAsset ninja = new SharedAsset(
                 ((Repository)wm.getUserData(Repository.class)),
-                new AssetDescriptor(SharedAsset.SharedAssetType.MS3D,
+                new AssetDescriptor(SharedAsset.SharedAssetType.MS3D_SkinnedMesh,
                 "assets/models/ms3d/ninja.ms3d"));
         // ant
         SharedAsset ant = new SharedAsset(
                 ((Repository)wm.getUserData(Repository.class)),
-                new AssetDescriptor(SharedAsset.SharedAssetType.MS3D,
+                new AssetDescriptor(SharedAsset.SharedAssetType.MS3D_SkinnedMesh,
                 "assets/models/ms3d/ant01.ms3d"));
         
         ant.setInitializer(

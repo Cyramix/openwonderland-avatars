@@ -432,7 +432,7 @@ public class Collada
                 }
             }
 
-            //  If there is no Mesh, then this is a joint.
+            //  If there is no MS3D_Mesh, then this is a joint.
             else
             {
                 if (pColladaNode.isJoint())
@@ -1217,7 +1217,7 @@ public class Collada
 //  ******************************
 
     //  Creates a PolygonMesh.
-    //  If we're supposed to load a SkinnedMesh, a PPolygonSkinnedMesh is created.
+    //  If we're supposed to load a MS3D_SkinnedMesh1, a PPolygonSkinnedMesh is created.
     //  Otherwise, a PPolygonMesh is created.
     public PPolygonMesh createPolygonMesh()
     {
@@ -1399,7 +1399,7 @@ public class Collada
                 }
             }
 
-            //  If there is no Mesh, then this is a joint.
+            //  If there is no MS3D_Mesh, then this is a joint.
             else
             {
                 if (pColladaNode.isJoint())
@@ -1499,7 +1499,7 @@ public class Collada
                     {
                         skeletonName = pColladaNode.getSkeleton(b);
 
-                        //  Get the JointName of the first Bone in the SkinnedMesh.
+                        //  Get the JointName of the first Bone in the MS3D_SkinnedMesh1.
                         firstJointName = pColladaSkin.getJointName(0);
                         if (firstJointName.equals(skeletonName))
                         {
@@ -1612,7 +1612,7 @@ public class Collada
 
             if (pPolygonMesh != null)
             {
-                //System.out.println("   Creating Mesh '" + meshName + "'.");
+                //System.out.println("   Creating MS3D_Mesh '" + meshName + "'.");
 
                 PPolygonMeshInstance pPolygonMeshInstance;
 
@@ -1970,7 +1970,7 @@ public class Collada
         
         try
         {
-            //  This node will be a MeshInstance if there is a Mesh assigned.
+            //  This node will be a MeshInstance if there is a MS3D_Mesh assigned.
             if (meshName.length() > 0)
             {
                 //System.out.println("MeshName:  " + meshName);
@@ -2020,7 +2020,7 @@ public class Collada
                 }
             }
 
-            //  If there is no Mesh, then this is a joint.
+            //  If there is no MS3D_Mesh, then this is a joint.
             else
             {
                 if (pColladaNode.isJoint())

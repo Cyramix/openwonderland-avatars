@@ -369,7 +369,7 @@ public class PPolygonModelInstance extends PNode
         if (geometryFile.endsWith("ms3d")) // milkshape
         {
             meshAsset = new SharedAsset(m_owningScene.getRepository(), 
-                                                new AssetDescriptor(SharedAssetType.MS3D, new File(geometryFile)));
+                                                new AssetDescriptor(SharedAssetType.MS3D_SkinnedMesh, new File(geometryFile)));
         }
         else if (geometryFile.endsWith("dae")) // COLLADA
         {

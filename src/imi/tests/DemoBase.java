@@ -124,7 +124,8 @@ public class DemoBase
         Logger.getLogger("com.jmex").setLevel(Level.SEVERE);
         Logger.getLogger("org.collada").setLevel(Level.SEVERE);
         Logger.getLogger("imi.loaders.collada").setLevel(Level.SEVERE);
-
+        Logger.getLogger("com.jme.scene.state.jogl.shader").setLevel(Level.OFF);
+        
         // add the repository
         worldManager.addUserData(Repository.class, new Repository(worldManager));
         createUI(worldManager);  
@@ -429,7 +430,7 @@ public class DemoBase
         //ArrayList<ProcessorComponent> processors = new ArrayList<ProcessorComponent>();
         
         // Initialize the scene
-        SharedAsset modelAsset = new SharedAsset(pscene.getRepository(), new AssetDescriptor(SharedAssetType.Mesh, ""));
+        SharedAsset modelAsset = new SharedAsset(pscene.getRepository(), new AssetDescriptor(SharedAssetType.MS3D_Mesh, ""));
         PMeshMaterial geometryMaterial = new PMeshMaterial();
         geometryMaterial.setColorMaterial(ColorMaterial.Diffuse); // Make the vert colors affect diffuse coloring
         geometryMaterial.setDiffuse(ColorRGBA.white);

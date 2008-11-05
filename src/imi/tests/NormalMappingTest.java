@@ -67,7 +67,7 @@ public class NormalMappingTest extends DemoBase
         PPolygonModelInstance modelInst = null;
         SharedAsset ninja = new SharedAsset(
                 ((Repository)wm.getUserData(Repository.class)),
-                new AssetDescriptor(SharedAsset.SharedAssetType.MS3D,
+                new AssetDescriptor(SharedAsset.SharedAssetType.MS3D_SkinnedMesh,
                 "assets/models/ms3d/beast.ms3d"));
         
         ninja.setInitializer(new AssetInitializer() {

@@ -37,7 +37,7 @@ public class NinjaSteeringHelm extends CharacterSteeringHelm
     
     private Vector3f sittingDirection = Vector3f.UNIT_Z;
     
-    private float directionSensitivity = 0.05f;
+    private float directionSensitivity = 0.1f;
     
     private float approvedDistanceFromGoal = 0.5f;
     
@@ -278,7 +278,7 @@ public class NinjaSteeringHelm extends CharacterSteeringHelm
                         ninjaContext.triggerReleased(TriggerNames.Move_Right.ordinal()); 
                         
                         precisionCounter++;
-                        if (precisionCounter > 60)
+                        if (precisionCounter > 200)
                         {
                             precisionCounter = 0;
                             if (dot > Float.MIN_VALUE)

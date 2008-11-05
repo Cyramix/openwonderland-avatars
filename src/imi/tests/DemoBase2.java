@@ -155,6 +155,8 @@ public class DemoBase2 extends javax.swing.JFrame implements FrameRateListener, 
             }
         });
         
+        Logger.getLogger("com.jme.scene.state.jogl.shader").setLevel(Level.OFF);
+        
         System.out.println("Current Directory: " + System.getProperty("user.dir"));
         
         worldManager = new WorldManager("DemoWorld");
