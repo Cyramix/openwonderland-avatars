@@ -23,7 +23,9 @@ import com.jme.scene.state.RenderState;
 import imi.scene.polygonmodel.PPolygonMeshInstance;
 import imi.scene.shader.ShaderProperty;
 import imi.scene.shader.dynamic.GLSLDataType;
+import imi.utils.FileUtils;
 import java.io.File;
+import java.net.URL;
 import org.jdesktop.mtgame.WorldManager;
 
 /**
@@ -40,9 +42,10 @@ public class NormalAndSpecularMapShader extends BaseShaderProgram
     {
         super(
                 wm,
-                new File("assets/shaders/NormalAndSpecularMapping.vert"),
-                new File("assets/shaders/NormalAndSpecularMapping.frag")
+                FileUtils.convertRelativePathToFileURL("assets/shaders/NormalAndSpecularMapping.vert"),
+                FileUtils.convertRelativePathToFileURL("assets/shaders/NormalAndSpecularMapping.frag")
              );
+        
         setProgramName(this.getClass().getSimpleName());
         setProgramDescription(new String("This program performs normal and specular mapping"));
         // initialize shader properties

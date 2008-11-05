@@ -22,6 +22,7 @@ import com.jme.scene.state.GLSLShaderObjectsState;
 import imi.scene.polygonmodel.PPolygonMeshInstance;
 import java.io.File;
 import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -40,7 +41,7 @@ import org.jdesktop.mtgame.WorldManager;
 public abstract class BaseShaderProgram implements RenderUpdater, AbstractShaderProgram
 {
     /** These files point to the vertex and fragment source respectively **/
-    protected File []       m_shaderFiles = new File [2];
+    protected URL []       m_shaderFiles = new URL [2];
     /** The world manager is needed in order to create render states **/
     protected WorldManager  m_WM          = null; 
     /** Map the relationships between property names and property objects **/
@@ -58,7 +59,7 @@ public abstract class BaseShaderProgram implements RenderUpdater, AbstractShader
      * @param vertexShader Location of the vertex shader source
      * @param fragmentShader Location of the fragment shader source
      */
-    protected BaseShaderProgram(WorldManager wm, File vertexShader, File fragmentShader) 
+    protected BaseShaderProgram(WorldManager wm, URL vertexShader, URL fragmentShader) 
     { 
         m_WM = wm; 
         m_shaderFiles[0] = vertexShader;
@@ -119,14 +120,8 @@ public abstract class BaseShaderProgram implements RenderUpdater, AbstractShader
     public final void update(Object obj)
     {
         GLSLShaderObjectsState shaderState = (GLSLShaderObjectsState) obj;
-        try
-        {
-
-            shaderState.load(m_shaderFiles[0].toURI().toURL(), m_shaderFiles[1].toURI().toURL());
-        } catch (MalformedURLException ex)
-        {
-            Logger.getLogger(SimpleTNLShader.class.getName()).log(Level.SEVERE, "Malformed URL from base shader class!", ex);
-        }
+        
+        shaderState.load(m_shaderFiles[0], m_shaderFiles[1]);
         // done
         m_bShaderLoaded = true;
     }

@@ -24,7 +24,7 @@ import imi.scene.polygonmodel.PPolygonMeshInstance;
 import imi.scene.polygonmodel.skinned.PPolygonSkinnedMesh;
 import imi.scene.shader.ShaderProperty;
 import imi.scene.shader.dynamic.GLSLDataType;
-import java.io.File;
+import imi.utils.FileUtils;
 import org.jdesktop.mtgame.WorldManager;
 
 /**
@@ -41,8 +41,8 @@ public class VertDeformerWithSpecAndNormalMap extends BaseShaderProgram
     {
         super(
                 wm,
-                new File("assets/shaders/VertDeformSpecNormalMap.vert"),
-                new File("assets/shaders/VertDeformSpecNormalMap.frag")
+                FileUtils.convertRelativePathToFileURL("assets/shaders/VertDeformSpecNormalMap.vert"),
+                FileUtils.convertRelativePathToFileURL("assets/shaders/VertDeformSpecNormalMap.frag")
              );
         setProgramName(this.getClass().getSimpleName());
         setProgramDescription(new String(

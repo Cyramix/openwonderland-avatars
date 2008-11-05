@@ -35,7 +35,9 @@ import imi.scene.polygonmodel.PPolygonMesh;
 import imi.scene.polygonmodel.PPolygonMeshInstance;
 import imi.scene.polygonmodel.PPolygonModelInstance;
 import imi.scene.polygonmodel.parts.PMeshMaterial;
+import imi.scene.polygonmodel.skinned.PPolygonSkinnedMeshInstance;
 import imi.scene.utils.PMeshUtils;
+import javolution.util.FastList;
 
 /**
  *
@@ -75,6 +77,20 @@ public class Chair implements SpatialObject
 
                     if (asset instanceof PNode)
                     {
+                        // find ever mesh instance and nullify it's color buffer
+                        FastList<PNode> queue = new FastList<PNode>();
+                        queue.add((PNode)asset);
+                        while (!queue.isEmpty())
+                        {
+                            PNode current = queue.removeFirst();
+                            if (current instanceof PPolygonMeshInstance)
+                            {
+                                PPolygonMeshInstance meshInst = (PPolygonMeshInstance)current;
+                                meshInst.getSharedMesh().getTarget().setColorBuffer(null);
+                            }
+                            // add all children
+                            queue.addAll(current.getChildren());
+                        }
                         //System.out.println(origin2);
 //                        
 //                        // Set position
