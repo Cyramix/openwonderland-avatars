@@ -39,7 +39,6 @@ import imi.scene.JScene;
 import imi.scene.PJoint;
 import imi.scene.PMatrix;
 import imi.scene.PNode;
-import imi.scene.PScene;
 import imi.scene.PTransform;
 import imi.scene.polygonmodel.PPolygonMesh;
 import imi.scene.polygonmodel.PPolygonModel;
@@ -89,8 +88,10 @@ import imi.loaders.repository.SharedAsset;
 import imi.loaders.repository.AssetDescriptor;
 import imi.loaders.repository.Repository;
 import imi.loaders.repository.SharedAsset.SharedAssetType;
+import imi.scene.PScene;
 import imi.scene.processors.CameraProcessor;
 import imi.scene.processors.JSceneEventProcessor;
+import org.jdesktop.mtgame.RenderBuffer;
 
 
 /**
@@ -621,7 +622,8 @@ public class DemoBase
         // Create input entity
         Entity InputEntity = new Entity("Input Entity");
         // Create event listener
-        AWTInputComponent eventListener = (AWTInputComponent)worldManager.getInputManager().createInputComponent(InputManager.KEY_EVENTS);
+        Canvas canvas = ((SwingFrame)wm.getUserData(JFrame.class)).getRenderBuffer().getCanvas();
+        AWTInputComponent eventListener = (AWTInputComponent)worldManager.getInputManager().createInputComponent(canvas, InputManager.KEY_EVENTS);
         // Create event processor
         JSceneAWTEventProcessor eventProcessor  = new JSceneAWTEventProcessor(eventListener, null, InputEntity);
         // Add the processor component to the entity
@@ -661,8 +663,11 @@ public class DemoBase
         Entity camera = new Entity("DefaultCamera");
         CameraComponent cc = wm.getRenderManager().createCameraComponent(cameraSG, cameraNode, 
                 width, height, 45.0f, aspect, 0.1f, 1000.0f, true);
-        camera.addComponent(CameraComponent.class, cc);
         
+        RenderBuffer renderBuffer = ((SwingFrame)wm.getUserData(JFrame.class)).getRenderBuffer();
+        
+        camera.addComponent(CameraComponent.class, cc);
+        renderBuffer.setCameraComponent(cc);
         //////////////////////////////////////////////////////////////////////
         // Skybox
         SkyBox sky = new SkyBox("skybox", 10.0f, 10.0f, 10.0f, wm);
@@ -681,12 +686,13 @@ public class DemoBase
 
         // Create the input listener and process for the camera
         int eventMask = InputManager.KEY_EVENTS | InputManager.MOUSE_EVENTS;
-        AWTInputComponent cameraListener = (AWTInputComponent)wm.getInputManager().createInputComponent(eventMask);
+        Canvas canvas = renderBuffer.getCanvas();
+        AWTInputComponent cameraListener = (AWTInputComponent)wm.getInputManager().createInputComponent(canvas, eventMask);
         m_cameraProcessor = new CameraProcessor(cameraListener, cameraNode, wm, camera, sky);
         //OrbitCameraProcessor eventProcessor = new OrbitCameraProcessor(cameraListener, cameraNode, wm, camera);
         m_cameraProcessor.setRunInRenderer(true);
         
-        AWTInputComponent selectionListener = (AWTInputComponent)wm.getInputManager().createInputComponent(eventMask);        
+        AWTInputComponent selectionListener = (AWTInputComponent)wm.getInputManager().createInputComponent(canvas, eventMask);        
         //SelectionProcessor selector = new SelectionProcessor(selectionListener, wm, camera, camera, width, height, m_cameraProcessor);
         //selector.setRunInRenderer(true);
         
@@ -768,7 +774,7 @@ public class DemoBase
         JPanel statusPanel = new JPanel();
         Canvas canvas = null;
         JLabel fpsLabel = new JLabel("FPS: ");
-        
+        RenderBuffer m_renderBuffer = null;
         JToggleButton coordButton = new JToggleButton("Coords", true);
         JToggleButton gridButton = new JToggleButton("Grid", true);
         JMenuItem loadItem = null;
@@ -816,10 +822,13 @@ public class DemoBase
             contentPane.add(menuPanel, BorderLayout.NORTH);
             
             // The Rendering Canvas
-            canvas = wm.getRenderManager().createCanvas(width, height);
-            wm.getRenderManager().setCurrentCanvas(canvas);
+            m_renderBuffer = new RenderBuffer(RenderBuffer.Target.ONSCREEN, width, height);
+            wm.getRenderManager().addRenderBuffer(m_renderBuffer);
+            canvas = m_renderBuffer.getCanvas();
+            //canvas = wm.getRenderManager().createCanvas(width, height);
+            //wm.getRenderManager().setCurrentCanvas(canvas);
             canvas.setVisible(true);
-            canvas.setBounds(0, 0, width, height);
+            //canvas.setBounds(0, 0, width, height);
             wm.getRenderManager().setFrameRateListener(this, 100);
             canvasPanel.setLayout(new GridBagLayout());           
             canvasPanel.add(canvas);
@@ -854,6 +863,11 @@ public class DemoBase
         public void actionPerformed(ActionEvent e)
         {
             throw new UnsupportedOperationException("Not supported yet.");
+        }
+        
+        public RenderBuffer getRenderBuffer()
+        {
+            return m_renderBuffer;
         }
     }
 }

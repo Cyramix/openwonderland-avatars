@@ -23,8 +23,6 @@ import com.jme.scene.state.LightState;
 import com.jme.scene.state.RenderState;
 import com.jme.scene.state.WireframeState;
 import imi.scene.utils.PRenderer;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * JScenes are the glue between the dynamic PScene nodes and the render-only JMonkey scene nodes.

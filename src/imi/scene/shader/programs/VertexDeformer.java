@@ -157,6 +157,7 @@ public class VertexDeformer extends GLSLShaderProgram
             // Set the ambient power and the diffuse map texture unit
             setProperty(new ShaderProperty("ambientPower", GLSLDataType.GLSL_FLOAT, Float.valueOf(fAmbientPower)));
             setProperty(new ShaderProperty("DiffuseMapIndex", GLSLDataType.GLSL_SAMPLER2D, Integer.valueOf(0)));
+            m_propertyMap.put("pose", new ShaderProperty("pose", GLSLDataType.GLSL_VOID, null));
         }
         catch (Exception e)
         {

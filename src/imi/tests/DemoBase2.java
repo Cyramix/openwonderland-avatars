@@ -84,6 +84,7 @@ import org.jdesktop.mtgame.RenderComponent;
 //import mtgame.tests.sigraph.SkyBox;
 import org.jdesktop.mtgame.AWTInputComponent;
 import org.jdesktop.mtgame.InputManager;
+import org.jdesktop.mtgame.RenderBuffer;
 import org.jdesktop.mtgame.processor.RotationProcessor;
 
 
@@ -107,6 +108,7 @@ public class DemoBase2 extends javax.swing.JFrame implements FrameRateListener, 
     private float        aspect             = 800.0f/600.0f;    
     protected CameraProcessor m_cameraProcessor = null;
     
+    private RenderBuffer renderBuffer       = null;
     // Class Data Members (GUI TOOLS)
     ////////////////////////////////////////////////////////////////////////////
     
@@ -287,6 +289,7 @@ public class DemoBase2 extends javax.swing.JFrame implements FrameRateListener, 
         jscene.setRenderState(cs);
         jscene.setRenderState(ws);
         jscene.setRenderState(ls);
+        jscene.updateRenderState();
     }
     
     public void createSpace(String name, Vector3f center, ZBufferState buf, ColorRGBA color, WorldManager wm) {
@@ -603,7 +606,7 @@ public class DemoBase2 extends javax.swing.JFrame implements FrameRateListener, 
         // Create input entity
         Entity InputEntity = new Entity("Input Entity");
         // Create event listener
-        AWTInputComponent eventListener = (AWTInputComponent)worldManager.getInputManager().createInputComponent(InputManager.KEY_EVENTS);
+        AWTInputComponent eventListener = (AWTInputComponent)worldManager.getInputManager().createInputComponent(canvas_SceneRenderWindow, InputManager.KEY_EVENTS);
         // Create event processor
         JSceneAWTEventProcessor eventProcessor  = new JSceneAWTEventProcessor(eventListener, null, InputEntity);
         // Add the processor component to the entity
@@ -641,6 +644,7 @@ public class DemoBase2 extends javax.swing.JFrame implements FrameRateListener, 
         Entity camera = new Entity("DefaultCamera");
         CameraComponent cc = wm.getRenderManager().createCameraComponent(cameraSG, cameraNode, 
                 width, height, 45.0f, aspect, 0.1f, 1000.0f, true);
+        renderBuffer.setCameraComponent(cc);
         camera.addComponent(CameraComponent.class, cc);
         
         //////////////////////////////////////////////////////////////////////
@@ -661,12 +665,12 @@ public class DemoBase2 extends javax.swing.JFrame implements FrameRateListener, 
 
         // Create the input listener and process for the camera
         int eventMask = InputManager.KEY_EVENTS | InputManager.MOUSE_EVENTS;
-        AWTInputComponent cameraListener = (AWTInputComponent)wm.getInputManager().createInputComponent(eventMask);
+        AWTInputComponent cameraListener = (AWTInputComponent)wm.getInputManager().createInputComponent(canvas_SceneRenderWindow, eventMask);
         m_cameraProcessor = new CameraProcessor(cameraListener, cameraNode, wm, camera, sky);
         //OrbitCameraProcessor eventProcessor = new OrbitCameraProcessor(cameraListener, cameraNode, wm, camera);
         m_cameraProcessor.setRunInRenderer(true);
         
-        AWTInputComponent selectionListener = (AWTInputComponent)wm.getInputManager().createInputComponent(eventMask);        
+        AWTInputComponent selectionListener = (AWTInputComponent)wm.getInputManager().createInputComponent(canvas_SceneRenderWindow, eventMask);        
         //SelectionProcessor selector = new SelectionProcessor(selectionListener, wm, camera, camera, width, height, m_cameraProcessor);
         //selector.setRunInRenderer(true);
         
@@ -740,9 +744,12 @@ public class DemoBase2 extends javax.swing.JFrame implements FrameRateListener, 
     
     private void setFrame(WorldManager wm) {
         // The Rendering Canvas
-        canvas_SceneRenderWindow = wm.getRenderManager().createCanvas(width, height);
-        wm.getRenderManager().setCurrentCanvas(canvas_SceneRenderWindow);
-        canvas_SceneRenderWindow.setVisible(true);
+        renderBuffer = new RenderBuffer(RenderBuffer.Target.ONSCREEN, width, height);
+        wm.getRenderManager().addRenderBuffer(renderBuffer);
+        canvas_SceneRenderWindow = renderBuffer.getCanvas();
+//        canvas_SceneRenderWindow = wm.getRenderManager().createCanvas(width, height);
+//        wm.getRenderManager().setCurrentCanvas(canvas_SceneRenderWindow);
+        //canvas_SceneRenderWindow.setVisible(true);
         wm.getRenderManager().setFrameRateListener(this, 100);
         jPanel_DisplayWindow.setLayout(new java.awt.GridBagLayout());
     }

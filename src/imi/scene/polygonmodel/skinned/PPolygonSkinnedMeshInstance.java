@@ -30,6 +30,8 @@ import imi.scene.PScene;
 import imi.scene.polygonmodel.PPolygonMeshInstance;
 import imi.scene.polygonmodel.parts.PMeshMaterial;
 import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
+import imi.scene.shader.AbstractShaderProgram;
+import imi.scene.shader.ShaderProperty;
 import imi.scene.utils.PRenderer;
 import imi.scene.utils.tree.LocalModifierCollector;
 import java.util.ArrayList;
@@ -180,8 +182,8 @@ public class PPolygonSkinnedMeshInstance extends PPolygonMeshInstance
                     pose[j+(i*16)] = matrixFloats[j];
                 }
             }
-
-            m_shaderState.setUniformMatrix4Array("pose", pose, false);
+            if (doesShaderContainDeformer() == true)
+                m_shaderState.setUniformMatrix4Array("pose", pose, false);
         }
 
         return m_instance;
@@ -305,4 +307,23 @@ public class PPolygonSkinnedMeshInstance extends PPolygonMeshInstance
             m_influenceIndices[i] = indexArray[i];
     }
     
+    private boolean bDeforming = false;
+    private boolean doesShaderContainDeformer()
+    {
+        if (bDeforming)
+            return true;
+        AbstractShaderProgram shader = getMaterialRef().getMaterial().getShader();
+        
+        ShaderProperty[] props = shader.getProperties();
+        
+        for (ShaderProperty prop : props)
+        {
+            if (prop.name.equals("pose"))
+            {
+                bDeforming = true;
+                return true;
+            }
+        }
+        return false;
+    }
 }

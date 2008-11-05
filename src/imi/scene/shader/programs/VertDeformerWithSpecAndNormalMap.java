@@ -54,6 +54,7 @@ public class VertDeformerWithSpecAndNormalMap extends BaseShaderProgram
         m_propertyMap.put("SpecularMapIndex", new ShaderProperty("SpecularMapIndex", GLSLDataType.GLSL_SAMPLER2D, Integer.valueOf(2)));
         
         m_propertyMap.put("SpecularPower", new ShaderProperty("SpecularPower", GLSLDataType.GLSL_FLOAT, Float.valueOf(8.0f)));
+        m_propertyMap.put("pose", new ShaderProperty("pose", GLSLDataType.GLSL_VOID, null));
     }
     
     

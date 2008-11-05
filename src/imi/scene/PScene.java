@@ -1213,4 +1213,13 @@ public class PScene extends PNode implements RepositoryUser
             result.addChild(processNode(kid));
         return result;
     }
+    
+    /**
+     * Accessor
+     * @return The JScene, may be null if unset
+     */
+    public JScene getJScene()
+    {
+        return m_JScene;
+    }
 }
