@@ -109,6 +109,8 @@ public abstract class Character extends Entity implements SpatialObject
         String m_ModelFile = null;
         
         String m_TextureFile = null;
+
+        private String m_baseURL = null;
         
         public Attributes(String name) {
             m_name = name;
@@ -145,8 +147,22 @@ public abstract class Character extends Entity implements SpatialObject
         public void setTextureFile(String TextureFile) {
             m_TextureFile = TextureFile;
         }
-        
-        
+
+        /**
+         * Get the base URL for these attributes
+         * @return
+         */
+        public String getBaseURL() {
+            return m_baseURL;
+        }
+
+        /**
+         * Set the base URL for these attributes
+         * @param baseURL
+         */
+        public void setBaseURL(String baseURL) {
+            m_baseURL = baseURL;
+        }
     }
         
     /**
@@ -349,7 +365,11 @@ public abstract class Character extends Entity implements SpatialObject
                             // Set animations
                             if (m_attributes instanceof NinjaAvatarAttributes && ((NinjaAvatarAttributes)m_attributes).getAnimations() != null)
                             {
-                                String fileProtocol = new String("file://localhost/" + System.getProperty("user.dir") + "/");
+
+                                String fileProtocol = m_attributes.getBaseURL();
+
+                                if (fileProtocol==null)
+                                    fileProtocol= new String("file://localhost/" + System.getProperty("user.dir") + "/");
 
                                 InstructionProcessor pProcessor = new InstructionProcessor(m_wm);
                                 Instruction pRootInstruction = new Instruction();
