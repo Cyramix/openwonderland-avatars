@@ -35,7 +35,6 @@ import imi.scene.polygonmodel.PPolygonMesh;
 import imi.scene.polygonmodel.PPolygonMeshInstance;
 import imi.scene.polygonmodel.PPolygonModelInstance;
 import imi.scene.polygonmodel.parts.PMeshMaterial;
-import imi.scene.polygonmodel.skinned.PPolygonSkinnedMeshInstance;
 import imi.scene.utils.PMeshUtils;
 import javolution.util.FastList;
 
@@ -90,16 +89,11 @@ public class Chair implements SpatialObject
                             }
                             // add all children
                             queue.addAll(current.getChildren());
+                            
+                            ((PPolygonModelInstance)asset).calculateBoundingSphere();
                         }
-                        //System.out.println(origin2);
-//                        
-//                        // Set position
-//                        PNode mesh = (PNode)asset;
-//                        mesh.getTransform().setLocalMatrix(((ColladaLoaderParams)sharedAsset.getUserData()).getOrigin());
                         
-//                        mesh.getParent().setDirty(true, true);
-//                        mesh.getParent().buildFlattenedHierarchy();
-//                        ((PScene)mesh.getParent().getParent()).submitTransformsAndGeometry();
+                        
                     }
                     
                     return true;
@@ -233,7 +227,7 @@ public class Chair implements SpatialObject
     }
 
     public PPolygonModelInstance getModelInst() {
-        return modelInst;
+        return modelInst; 
     }
 
     public Quaternion getQuaternion() {

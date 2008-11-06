@@ -855,8 +855,6 @@ public class PScene extends PNode implements RepositoryUser
         return asset;   
     }
     
-    // modelAsset represents a single meshAsset TODO complex modelAsset loading from the repository
-    
     /**
      * Add an instance to this scene by supplying a SharedAsset that contains
      * a descriptor

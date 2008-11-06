@@ -169,7 +169,7 @@ public class ObjectCollection extends Entity
         pscene.submitTransformsAndGeometry();
         
         // Dispaly PRenderer
-        //jscene.renderToggle();
+        //jscene.setRenderInternallyBool(true);
     }
     
     /**

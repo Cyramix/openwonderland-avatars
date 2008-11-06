@@ -19,11 +19,15 @@ package imi.character.ninja;
 
 import com.jme.math.Vector3f;
 import imi.character.CharacterSteeringHelm;
+import imi.character.Task;
 import imi.character.ninja.NinjaContext.TriggerNames;
 import imi.character.objects.Chair;
+import imi.character.objects.LocationNode;
 import imi.character.objects.SpatialObject;
 import imi.scene.PMatrix;
 import imi.scene.boundingvolumes.PSphere;
+import java.util.LinkedList;
+import java.util.Queue;
 
 /**
  *
@@ -33,7 +37,8 @@ public class NinjaSteeringHelm extends CharacterSteeringHelm
 {
     private NinjaContext ninjaContext = null;
     
-    private String        path = null;
+    private Queue<Task> taskQ = new LinkedList<Task>();
+    private Task        currentTask = null;
     
     private SpatialObject goal = null;
     
@@ -91,41 +96,43 @@ public class NinjaSteeringHelm extends CharacterSteeringHelm
     {
         // TODO : clean up and lay out combinations framework for steering behaviors
         
-        if (!enabledState)
+        if (!enabledState)// || currentTask == null)
             return;
-        
-        updateGoal();
         
         if (!verifyDestination())
             return;
+        
+        updateGoal();
 
         sampleProgress(deltaTime);
         
         if (!reachedGoal)
         {   
-            // If goal not reached
-            if (currentDistanceFromGoal > approvedDistanceFromGoal)
-            {   
-                // React if needed
-                if (!react(deltaTime));
-                {
-                    // If not walk forwards
-                    ninjaContext.triggerPressed(TriggerNames.Move_Forward.ordinal());
-                    ninjaContext.triggerReleased(TriggerNames.Move_Back.ordinal());
-                }
+            // React if needed
+            if ( react(deltaTime) == false )
+            {
+                // If not walk forwards
+                ninjaContext.triggerPressed(TriggerNames.Move_Forward.ordinal());
+                ninjaContext.triggerReleased(TriggerNames.Move_Back.ordinal());
                 
                 // Avoid obstacles or Seek the goal
-                if (!bAvoidObstacles || !avoidObstacles() )
+                if (bAvoidObstacles)
                 {
-                    seekGoal(deltaTime);
+                    if (!avoidObstacles())
+                        seekGoal(deltaTime);
                 }
+                else
+                    seekGoal(deltaTime);
             }
-            else
+
+            // Have we reached the goal?
+            if (currentDistanceFromGoal <= approvedDistanceFromGoal)
             {   
                 // Goal reached!
                 reachedGoal = true;
                 ninjaContext.resetTriggersAndActions();
                 bDoneTurning = false;
+                System.out.println("goal reached");
             }
         }
         else
@@ -142,6 +149,20 @@ public class NinjaSteeringHelm extends CharacterSteeringHelm
                 // We have reached the goal, rotate to sitting direction
                 Vector3f rightVec = ninjaContext.getController().getRightVector();
                 float dot = sittingDirection.dot(rightVec);
+                       
+                if (dot < Float.MIN_VALUE && dot > -Float.MIN_VALUE)
+                {
+                    System.out.println("turning around dot ~= 0!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+                    // Check if inside the front half of space
+                    Vector3f fwdVec = ninjaContext.getController().getForwardVector();
+                    float frontHalfDot = sittingDirection.dot(fwdVec);
+                    if (frontHalfDot > 0.0f)
+                    {
+                        System.out.println("turning around dot++");
+                        dot++;
+                    }
+                }
+                
                 if (dot > directionSensitivity)
                 {
                     ninjaContext.triggerPressed(TriggerNames.Move_Right.ordinal());
@@ -153,7 +174,7 @@ public class NinjaSteeringHelm extends CharacterSteeringHelm
                     ninjaContext.triggerReleased(TriggerNames.Move_Right.ordinal()); 
                 }
                 else 
-                {                
+                {    
                     ninjaContext.getController().getWindow().setTitle("Pulling towards the goal point");
                     ninjaContext.resetTriggersAndActions();
                     bDoneTurning = true;
@@ -217,6 +238,8 @@ public class NinjaSteeringHelm extends CharacterSteeringHelm
             {
                 walkBack = -1.0f;
                 initSteering();
+                System.out.println("stopping walk back");
+                return false;
             }
 
             ninjaContext.getController().getWindow().setTitle("Walking Back");
@@ -228,6 +251,61 @@ public class NinjaSteeringHelm extends CharacterSteeringHelm
         }
     }
     
+    private void updateGoal() 
+    {
+//        // Follow path?
+//        if (path != null && ninjaContext.getLocation() != null)
+//        {
+//            LocationNode location = ninjaContext.getLocation();
+//            if (!bFirstLocationReached)
+//            {
+//                //ninjaContext.GoTo(location);
+//            }
+//            else
+//            {
+//                
+//            }
+//        }
+        
+        currentCharacterPosition.set(ninjaContext.getController().getPosition());
+        currentDistanceFromGoal = goalPosition.distance(currentCharacterPosition);
+                
+        if (currentDistanceFromGoal > approvedDistanceFromGoal)
+        {
+            // Did we think that the goal was reached?
+            if (reachedGoal)
+            {
+                // Walk away from current position (we are probably colliding with an object now)
+                System.out.println("walking back from old reached goal");
+                walkBack     = 0.0f;
+                walkBackTime = 2.0f;
+                walkBackFlip = true;
+                ninjaContext.resetTriggersAndActions();
+            }
+            reachedGoal = false;
+        }
+    }
+
+    private boolean verifyDestination() 
+    {
+        // If the chair is occupied then try finding another or abort mission
+        if (goal != null && goal instanceof Chair && ((Chair)goal).isOccupied())
+        {
+            ninjaContext.getController().getWindow().setTitle("Chair is Occupied! I WILL find another one!");
+            if (!ninjaContext.GoToNearestChair())
+            {
+                System.out.println("Chair is Occupied! I give up! Can't find an empty chair in this damn virtual environment!");
+                ninjaContext.getController().getWindow().setTitle("Chair is Occupied! I give up! Can't find an empty chair in this damn virtual environment!");
+                enabledState = false;
+                ninjaContext.resetTriggersAndActions();
+                return false;
+            }
+            System.out.println("Chair is Occupied! I WILL find another one!");
+            return true;
+        }
+        return true;
+    }
+    
     private void seekGoal(float deltaTime)
     {
         ninjaContext.getController().getWindow().setTitle("Seeking Goal");
@@ -236,13 +314,17 @@ public class NinjaSteeringHelm extends CharacterSteeringHelm
         Vector3f desiredVelocity = goalPosition.subtract(currentCharacterPosition);
         desiredVelocity.normalizeLocal();
         float dot = desiredVelocity.dot(rightVec);
-        if (dot == 0.0f)
+        if (dot < Float.MIN_VALUE && dot > -Float.MIN_VALUE)
         {
+             System.out.println("dor ~= 0 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
             // Check if inside the front half of space
             Vector3f fwdVec = ninjaContext.getController().getForwardVector();
             float frontHalfDot = desiredVelocity.dot(fwdVec);
             if (frontHalfDot > 0.0f)
+            {
                 dot++;
+                System.out.println("seekGoal dot == 0.0f dot++");
+            }
 
         }
         if (dot > directionSensitivity)
@@ -261,7 +343,7 @@ public class NinjaSteeringHelm extends CharacterSteeringHelm
             ninjaContext.triggerReleased(TriggerNames.Move_Right.ordinal()); 
 
             precisionCounter++;
-            if (precisionCounter > 200)
+            if (precisionCounter > 60)
             {
                 precisionCounter = 0;
                 if (dot > Float.MIN_VALUE)
@@ -280,6 +362,12 @@ public class NinjaSteeringHelm extends CharacterSteeringHelm
     
     private boolean avoidObstacles()
     {
+        if (walkBack != -1.0f) // hack?
+        {
+            System.out.println("trying to avoid while walkback != -1.0f returning false.  " + walkBack);
+            return false;
+        }
+        
         boolean bNeedToAvoid = false;
         
         // Is there an imminent obstacle?
@@ -430,29 +518,6 @@ public class NinjaSteeringHelm extends CharacterSteeringHelm
         }
     }
 
-    private void updateGoal() 
-    {
-        currentCharacterPosition.set(ninjaContext.getController().getPosition());
-        currentDistanceFromGoal = goalPosition.distance(currentCharacterPosition);
-    }
-
-    private boolean verifyDestination() 
-    {
-        // If the chair is occupied then try finding another or abort mission
-        if (goal != null && goal instanceof Chair && ((Chair)goal).isOccupied())
-        {
-            ninjaContext.getController().getWindow().setTitle("Chair is Occupied! I WILL find another one!");
-            if (!ninjaContext.GoToNearestChair())
-            {
-                ninjaContext.getController().getWindow().setTitle("Chair is Occupied! I give up! Can't find an empty chair in this damn virtual environment!");
-                enabledState = false;
-                ninjaContext.resetTriggersAndActions();
-                return false;
-            }
-            return true;
-        }
-        return true;
-    }
     
     
 }
