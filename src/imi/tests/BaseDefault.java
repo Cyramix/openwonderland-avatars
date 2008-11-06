@@ -17,6 +17,9 @@
  */
 package imi.tests;
 
+////////////////////////////////////////////////////////////////////////////////
+// IMPORTS - BEGIN
+////////////////////////////////////////////////////////////////////////////////
 import com.jme.bounding.BoundingBox;
 import com.jme.image.Texture;
 import com.jme.light.PointLight;
@@ -34,9 +37,7 @@ import com.jme.scene.state.RenderState;
 import com.jme.scene.state.WireframeState;
 import com.jme.scene.state.ZBufferState;
 import com.jme.util.TextureManager;
-import imi.gui.OptionsGUI;
 import imi.gui.SceneEssentials;
-import imi.gui.TreeExplorer;
 import imi.loaders.PPolygonTriMeshAssembler;
 import imi.loaders.repository.Repository;
 import imi.scene.JScene;
@@ -57,22 +58,19 @@ import imi.scene.processors.CameraProcessor;
 import imi.scene.processors.JSceneAWTEventProcessor;
 import imi.scene.processors.JSceneEventProcessor;
 import imi.scene.utils.PMeshUtils;
-import imi.scene.utils.tree.KeyProcessor;
-import imi.scene.utils.tree.ScaleResetProcessor;
-import imi.scene.utils.tree.TreeTraverser;
 import imi.utils.FileUtils;
 import imi.utils.PMathUtils;
+import java.awt.Component;
 import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFrame;
+
 import org.jdesktop.mtgame.FrameRateListener;
 import org.jdesktop.mtgame.WorldManager;
 import org.jdesktop.mtgame.CameraComponent;
@@ -86,56 +84,38 @@ import org.jdesktop.mtgame.AWTInputComponent;
 import org.jdesktop.mtgame.InputManager;
 import org.jdesktop.mtgame.RenderBuffer;
 import org.jdesktop.mtgame.processor.RotationProcessor;
-
-
 ////////////////////////////////////////////////////////////////////////////////
+// IMPORTS - END
 ////////////////////////////////////////////////////////////////////////////////
 
 /**
  * New Demo Base that incorporates the main Avatar Creator as part of the GUI
  * @author  Lou Hayat, Ronald E Dahlgren, Paul Viet Nguyen Truong
  */
-public class DemoBase2 extends javax.swing.JFrame implements FrameRateListener, java.awt.event.ActionListener {
-    
-    // Class Data Members (DEMOBASE2)
-    ////////////////////////////////////////////////////////////////////////////
-    
-    private WorldManager worldManager       = null;
-    protected CameraNode cameraNode         = null;
-    private int          desiredFrameRate   = 60;
-    private int          width              = 800;
-    private int          height             = 600;
-    private float        aspect             = 800.0f/600.0f;    
-    protected CameraProcessor m_cameraProcessor = null;
-    
-    private RenderBuffer renderBuffer       = null;
-    // Class Data Members (GUI TOOLS)
-    ////////////////////////////////////////////////////////////////////////////
-    
-    private SceneEssentials sceneData = new SceneEssentials();
-    // Scaling Data
-    private ArrayList<String> keys = new ArrayList<String>();
-    private ArrayList<Vector3f> values = new ArrayList<Vector3f>();
-    private HashMap<String, Vector3f> scales = new HashMap<String, Vector3f>();
-    // Save Data
-    private String avatarName = new String("John Doe");
-    private String avatarGender = new String("male");
-    // Tools
-    private TreeExplorer explorer = null;
-    private OptionsGUI options = null;
-    // Options
-    private boolean bOptions = false;
-    private boolean bExplorer = false;
-    
-    // TEST //
-    private HashMap<String, ArrayList<PNode>> groupings = new HashMap<String, ArrayList<PNode>>();
-    
-    // DemoBase2 Methods
-    ////////////////////////////////////////////////////////////////////////////
-    
-    public DemoBase2(String[] args) {
+public class BaseDefault extends javax.swing.JFrame implements FrameRateListener, java.awt.event.ActionListener {
+////////////////////////////////////////////////////////////////////////////////
+// CLASS DATA MEMBERS - BEGIN
+////////////////////////////////////////////////////////////////////////////////    
+    private WorldManager        m_worldManager      = null;
+    protected CameraNode        m_cameraNode        = null;
+    protected CameraProcessor   m_cameraProcessor   = null;
+    protected int               m_desiredFrameRate  = 60;
+    protected int               m_width             = 800;
+    protected int               m_height            = 600;
+    protected float             m_aspect            = 800.0f/600.0f;
+    protected SceneEssentials   m_sceneData         = null;
+    protected boolean           m_bLoading          = false;
+    protected RenderBuffer      m_renderBuffer      = null;
+    protected Component         m_base              = this;
+////////////////////////////////////////////////////////////////////////////////
+// CLASS DATA MEMBERS - END
+////////////////////////////////////////////////////////////////////////////////
+
+////////////////////////////////////////////////////////////////////////////////
+// CLASS METHODS - BEGIN
+////////////////////////////////////////////////////////////////////////////////
+    public BaseDefault(String[] args) {
         //setLookFeel();
-        
         addWindowListener(new java.awt.event.WindowAdapter() {
 
             @Override
@@ -150,36 +130,30 @@ public class DemoBase2 extends javax.swing.JFrame implements FrameRateListener, 
         addPropertyChangeListener(new PropertyChangeListener() {
 
             public void propertyChange(PropertyChangeEvent arg0) {
-                if(arg0.getPropertyName().equals("NO OPTIONS")) {
+                if(arg0.getPropertyName().equals("NOTOOLS")) {
                     java.awt.Frame[] frames = getFrames();
                     frames[0].setSize(((Integer)arg0.getOldValue()).intValue(), ((Integer)arg0.getNewValue()).intValue());
                 }
             }
         });
         
-        Logger.getLogger("com.jme.scene.state.jogl.shader").setLevel(Level.OFF);
-        
         System.out.println("Current Directory: " + System.getProperty("user.dir"));
         
-        worldManager = new WorldManager("DemoWorld");
+        m_worldManager = new WorldManager("DemoWorld");
         
         processArgs(args);
-        worldManager.getRenderManager().setDesiredFrameRate(desiredFrameRate);
-
+        m_worldManager.getRenderManager().setDesiredFrameRate(m_desiredFrameRate);
         
         // add the repository
-        worldManager.addUserData(Repository.class, new Repository(worldManager));
-        createUI(worldManager);  
-        createTestSpace(worldManager);
-        createCameraEntity(worldManager);  
-        createInputEntity(worldManager); 
-        createDemoEntities(worldManager);
+        m_worldManager.addUserData(Repository.class, new Repository(m_worldManager));
+
+        createUI(m_worldManager);  
+        createTestSpace(m_worldManager);
+        createCameraEntity(m_worldManager);  
+        createInputEntity(m_worldManager); 
+        createDemoEntities(m_worldManager);
         
-        // Add my shader property panel
-//        JFrame testFrame = new JFrame("Shader Test");
-//        testFrame.add(new JPanel_ShaderProperties(new VertexDeformer(worldManager), worldManager));
-//        testFrame.setSize(300, 600);
-//        testFrame.setVisible(true);
+        runProgressBar(false);
     }
     
     /**
@@ -189,8 +163,9 @@ public class DemoBase2 extends javax.swing.JFrame implements FrameRateListener, 
      * @param wm (WorldManager)
      * @param processors (ArrayList<ProcessorComponent>)
      */
-    protected void simpleSceneInit(PScene pscene, WorldManager wm, ArrayList<ProcessorComponent> processors) {
-        //PPolygonModelInstance modelInst = pscene.addModelInstance(createArticulatedModel(1.3f, 1.0f, 2.0f, 10.0f, 3.0f, new PMatrix()), new PMatrix());
+    protected void simpleSceneInit(JScene jscene, WorldManager wm, Entity jsentity, ArrayList<ProcessorComponent> processors) {
+        m_sceneData = new SceneEssentials();
+        m_sceneData.setSceneData(jscene, jscene.getPScene(), jsentity, wm, processors);
     }
     
     /**
@@ -204,9 +179,6 @@ public class DemoBase2 extends javax.swing.JFrame implements FrameRateListener, 
         
         // The collection of processors for this entity
         ArrayList<ProcessorComponent> processors = new ArrayList<ProcessorComponent>();
-        
-        // Initialize the scene
-        simpleSceneInit(pscene, wm, processors);
         
         // The glue between JME and pscene
         JScene jscene = new JScene(pscene);
@@ -238,8 +210,8 @@ public class DemoBase2 extends javax.swing.JFrame implements FrameRateListener, 
         // Add the entity to the world manager
         wm.addEntity(JSEntity);
         
-        // called to set up the GUI Stuff
-        setGUI(jscene, wm, processors, JSEntity);
+        // Initialize the scene
+        simpleSceneInit(jscene, wm, JSEntity, processors);
     }
     
     public void setDefaultRenderStates(JScene jscene, WorldManager wm) {
@@ -289,7 +261,6 @@ public class DemoBase2 extends javax.swing.JFrame implements FrameRateListener, 
         jscene.setRenderState(cs);
         jscene.setRenderState(ws);
         jscene.setRenderState(ls);
-        jscene.updateRenderState();
     }
     
     public void createSpace(String name, Vector3f center, ZBufferState buf, ColorRGBA color, WorldManager wm) {
@@ -329,8 +300,7 @@ public class DemoBase2 extends javax.swing.JFrame implements FrameRateListener, 
         wm.addEntity(e);        
     }
     
-    private void createCube(Vector3f center, float xoff, float yoff, float zoff, 
-            ProcessorCollectionComponent pcc, Node parent, WorldManager wm) {
+    private void createCube(Vector3f center, float xoff, float yoff, float zoff, ProcessorCollectionComponent pcc, Node parent, WorldManager wm) {
         Vector3f cubeCenter = new Vector3f();
         Vector3f c = new Vector3f();
         
@@ -606,7 +576,7 @@ public class DemoBase2 extends javax.swing.JFrame implements FrameRateListener, 
         // Create input entity
         Entity InputEntity = new Entity("Input Entity");
         // Create event listener
-        AWTInputComponent eventListener = (AWTInputComponent)worldManager.getInputManager().createInputComponent(canvas_SceneRenderWindow, InputManager.KEY_EVENTS);
+        AWTInputComponent eventListener = (AWTInputComponent)m_worldManager.getInputManager().createInputComponent(canvas_SceneRenderWindow, InputManager.KEY_EVENTS);
         // Create event processor
         JSceneAWTEventProcessor eventProcessor  = new JSceneAWTEventProcessor(eventListener, null, InputEntity);
         // Add the processor component to the entity
@@ -642,9 +612,8 @@ public class DemoBase2 extends javax.swing.JFrame implements FrameRateListener, 
         
         // Add the camera
         Entity camera = new Entity("DefaultCamera");
-        CameraComponent cc = wm.getRenderManager().createCameraComponent(cameraSG, cameraNode, 
-                width, height, 45.0f, aspect, 0.1f, 1000.0f, true);
-        renderBuffer.setCameraComponent(cc);
+        CameraComponent cc = wm.getRenderManager().createCameraComponent(cameraSG, m_cameraNode, 
+                m_width, m_height, 45.0f, m_aspect, 0.1f, 1000.0f, true);
         camera.addComponent(CameraComponent.class, cc);
         
         //////////////////////////////////////////////////////////////////////
@@ -666,11 +635,11 @@ public class DemoBase2 extends javax.swing.JFrame implements FrameRateListener, 
         // Create the input listener and process for the camera
         int eventMask = InputManager.KEY_EVENTS | InputManager.MOUSE_EVENTS;
         AWTInputComponent cameraListener = (AWTInputComponent)wm.getInputManager().createInputComponent(canvas_SceneRenderWindow, eventMask);
-        m_cameraProcessor = new CameraProcessor(cameraListener, cameraNode, wm, camera, sky);
+        m_cameraProcessor = new CameraProcessor(cameraListener, m_cameraNode, wm, camera, sky);
         //OrbitCameraProcessor eventProcessor = new OrbitCameraProcessor(cameraListener, cameraNode, wm, camera);
         m_cameraProcessor.setRunInRenderer(true);
         
-        AWTInputComponent selectionListener = (AWTInputComponent)wm.getInputManager().createInputComponent(canvas_SceneRenderWindow, eventMask);        
+        AWTInputComponent selectionListener = (AWTInputComponent)wm.getInputManager().createInputComponent(canvas_SceneRenderWindow, eventMask);
         //SelectionProcessor selector = new SelectionProcessor(selectionListener, wm, camera, camera, width, height, m_cameraProcessor);
         //selector.setRunInRenderer(true);
         
@@ -684,8 +653,8 @@ public class DemoBase2 extends javax.swing.JFrame implements FrameRateListener, 
     
     private Node createCameraGraph(WorldManager wm) {
         Node cameraSG = new Node("MyCamera SG");        
-        cameraNode = new CameraNode("MyCamera", null);
-        cameraSG.attachChild(cameraNode);
+        m_cameraNode = new CameraNode("MyCamera", null);
+        cameraSG.attachChild(m_cameraNode);
         
         return (cameraSG);
     }
@@ -717,8 +686,8 @@ public class DemoBase2 extends javax.swing.JFrame implements FrameRateListener, 
     private void processArgs(String[] args) {
         for (int i=0; i<args.length;i++) {
             if (args[i].equals("-fps")) {
-                desiredFrameRate = Integer.parseInt(args[i+1]);
-                System.out.println("DesiredFrameRate: " + desiredFrameRate);
+                m_desiredFrameRate = Integer.parseInt(args[i+1]);
+                System.out.println("DesiredFrameRate: " + m_desiredFrameRate);
                 i++;
             }
         }
@@ -730,13 +699,16 @@ public class DemoBase2 extends javax.swing.JFrame implements FrameRateListener, 
     private void createUI(WorldManager wm) {
         // init GUI components
         initComponents();
-        firePropertyChange("NO OPTIONS", 1062, this.getHeight());
         // center the frame
         setLocationRelativeTo(null);
         // show frame with focus
         canvas_SceneRenderWindow.requestFocusInWindow();
+
         // make it visible
         setVisible(true);
+        
+        // start loading visualization
+        runProgressBar(true);
         
         // Add to the wm to set title string later during debugging
         wm.addUserData(JFrame.class, this);
@@ -744,41 +716,21 @@ public class DemoBase2 extends javax.swing.JFrame implements FrameRateListener, 
     
     private void setFrame(WorldManager wm) {
         // The Rendering Canvas
-        renderBuffer = new RenderBuffer(RenderBuffer.Target.ONSCREEN, width, height);
-        wm.getRenderManager().addRenderBuffer(renderBuffer);
-        canvas_SceneRenderWindow = renderBuffer.getCanvas();
-//        canvas_SceneRenderWindow = wm.getRenderManager().createCanvas(width, height);
-//        wm.getRenderManager().setCurrentCanvas(canvas_SceneRenderWindow);
-        //canvas_SceneRenderWindow.setVisible(true);
+        m_renderBuffer = new RenderBuffer(RenderBuffer.Target.ONSCREEN, m_width, m_height);
+        wm.getRenderManager().addRenderBuffer(m_renderBuffer);
+        canvas_SceneRenderWindow = m_renderBuffer.getCanvas();
         wm.getRenderManager().setFrameRateListener(this, 100);
         jPanel_DisplayWindow.setLayout(new java.awt.GridBagLayout());
     }
 
     public void currentFramerate(float framerate) {
-        jLabel_FPSCounter.setText("Avatar Display Window -- FPS: " + framerate);
+        jLabel_FPSCounter.setText("FPS: " + framerate);
     }
 
     public void actionPerformed(ActionEvent arg0) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    // Options GUI Methods
-    ////////////////////////////////////////////////////////////////////////////
-
-    // Accessors
-    public HashMap<String, Vector3f> getScales() {
-        return scales;
-    }
-    // Mutators
-    public void setAvatarName(String name) {
-        avatarName = name;
-    }
-
-    public void setAvatarGender(String gender) {
-        avatarGender = gender;
-    }
-
-    // Helper Functions
     /**
      * Sets the GUI to the default Java Look & Feel (Metal)
      */
@@ -805,157 +757,20 @@ public class DemoBase2 extends javax.swing.JFrame implements FrameRateListener, 
         }        
     }
     
-    /**
-     * Method called by other frames to set the set the scene information that
-     * the UI uses for manipulation
-     * @param jscene (JScene), worldmanager WorldManager,
-     *        hiprocessors (ArrayList<ProcessorComponent>), jentity (Entity)
-     */
-    public void setGUI(JScene jscene, WorldManager worldmanager, ArrayList<ProcessorComponent> hiprocessors, Entity jentity) {
-        sceneData.setSceneData(jscene, jscene.getPScene(), jentity, worldmanager, hiprocessors);
-
-        // Wait until the assets are available for use
-        while (sceneData.getPScene().getAssetWaitingList().size() > 0) {
-            Thread.yield();
-            //System.out.println("Waiting to get assets...");
-        }
-
-        setDefault();
-        jPanel_Animations1.startTimer();
-    }
-
-    /**
-     * Resets the AvatarEditor to default values and component positions
-     */
-    public void setDefault() {
-        jPanel_Animations1.setPScene(sceneData.getPScene());
-        resetDataMembers();
-        resetGUI(0);
-        //jPanel_ShaderLoader1.setPanel(sceneData.getPScene());
-        jPanel_ModelRotation1.setPanel(sceneData.getPScene(), jPanel_Animations1.getSelectedModelInstanceNode());
-        fileIOPanel1.setPanel(sceneData, jPanel_ModelRotation1, jPanel_Animations1);
-    }
-
-    /**
-     * Collect scaling data from the model
-     */
-    public void setLocalScales() {
-        scales.clear();
-        keys.clear();
-        values.clear();
-        // Retrieve new scale keys
-        if (sceneData.getPScene().getInstances().findChild("m_TransformHierarchy") != null) {
-            KeyProcessor keyProc = new KeyProcessor();
-            TreeTraverser.breadthFirst(sceneData.getPScene().getInstances().getChild(0).getChild(0).getChild(0).getChild(0), keyProc);
-            keys = keyProc.getKeys();
-            values = keyProc.getValues();
-            // Set the scale data to default values
-            for (int i = 0; i < keys.size(); i++) {
-                scales.put(keys.get(i), values.get(i));
-            }
-        }
-    }
-    
-    /**
-     * Resets the UI class data members to default values
-     */
-    public void resetDataMembers() {
-        if (sceneData.getPScene() == null) {
-            System.out.println("==================================================================");
-            System.out.println("UI has not been initialized... please call setGUI from main window");
-            System.out.println("==================================================================");
-            return;
-        }
-        // Clear out old scale data
-        resetLocalScales();
-    }
-
-    /**
-     * Resets the local scale variables to default 1:1:1 values
-     */
-    public void resetLocalScales() {
-        if (sceneData.getPScene().getInstances().findChild("m_TransformHierarchy") == null) {
-            System.out.println("No joints loaded yet");
-            return;
-        }
-        Vector3f normalVector = new Vector3f(1.0f, 1.0f, 1.0f);
-        scales.clear();
-        keys.clear();
-        values.clear();
-        // Retrieve new scale keys
-        KeyProcessor keyProc = new KeyProcessor();
-        if (sceneData.getPScene().getInstances().findChild("m_TransformHierarchy") != null) {
-            TreeTraverser.breadthFirst(sceneData.getPScene().getInstances().findChild("m_TransformHierarchy").getChild(0), keyProc);
-            keys = keyProc.getKeys();
-            // Set the scale data to default values
-            for (int i = 0; i < keys.size(); i++) {
-                scales.put(keys.get(i), normalVector);
-                values.add(normalVector);
-            }
-        }
-    }
-
-    /**
-     * Resets the UI to default positions
-     */
-    public void resetGUI(int type) {
-        if (type == 0) {
-            // Closes all tools options
-            if(options != null) {
-                options.dispose();
-                bOptions = false;
-            }
-            if(explorer != null) {
-                explorer.dispose();
-                bExplorer = false;
-            }
-        }
-        jPanel_Animations1.resetPanel();
-        jPanel_ModelRotation1.resetPanel();
-    }
-
-    /**
-     * Resets the model scale to default 1:1:1 scaling
-     */
-    public void resetModelScales() {
-        if (sceneData.getPScene().getInstances().getChildrenCount() > 0) {
-            sceneData.getPScene().getInstances().getChild(0).getTransform().getLocalMatrix(true).setScale(new Vector3f(1.0f, 1.0f, 1.0f));
-            if (sceneData.getPScene().getInstances().findChild("m_TransformHierarchy") != null) {
-                TreeTraverser.depthFirstPre(sceneData.getPScene().getInstances().getChild(0).getChild(0).getChild(0).getChild(0), new ScaleResetProcessor());
-            }
-        }
-    }
-    
-    public void OpenOptions() {
-        if (bOptions == false) {
-            options = new OptionsGUI();
-            options.setPScene(sceneData.getPScene());
-            options.setSelectedInstance(jPanel_Animations1.getSelectedModelInstance());
-            options.initValues();
-            options.setAvatarName(avatarName);
-            options.setAvatarGender(avatarGender);
-            options.setVisible(true);
-            bOptions = true;
+    public void runProgressBar(boolean b) {
+        if (b) {
+            m_bLoading = true;
+            jProgressBar_Progress.setIndeterminate(true);
+            jLabel_LoadingText.setText("Loading...");
         } else {
-            options.dispose();
-            bOptions = false;
+            jProgressBar_Progress.setIndeterminate(false);
+            jLabel_LoadingText.setText("");
+            m_bLoading = false;
         }
     }
-
-    public void OpenExplorer() {
-        if (bExplorer == false) {
-            explorer = new TreeExplorer();
-            explorer.setExplorer(sceneData);
-            explorer.setVisible(true);
-            explorer.expandTree();
-            bExplorer = true;
-        } else {
-            explorer.nodeUnselect();
-            explorer.dispose();
-            bExplorer = false;
-        }
-    }
-
+////////////////////////////////////////////////////////////////////////////////
+// CLASS METHODS - END
+////////////////////////////////////////////////////////////////////////////////
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
@@ -964,151 +779,242 @@ public class DemoBase2 extends javax.swing.JFrame implements FrameRateListener, 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
+        java.awt.GridBagConstraints gridBagConstraints;
 
+        jPanel_MainPanel = new javax.swing.JPanel();
+        jToolBar_Hotkeys = new javax.swing.JToolBar();
+        jButton1 = new javax.swing.JButton();
+        jSeparator1 = new javax.swing.JToolBar.Separator();
+        jButton2 = new javax.swing.JButton();
+        jSeparator2 = new javax.swing.JToolBar.Separator();
+        jButton3 = new javax.swing.JButton();
+        jSeparator3 = new javax.swing.JToolBar.Separator();
+        jButton4 = new javax.swing.JButton();
         jPanel_DisplayWindow = new javax.swing.JPanel();
         canvas_SceneRenderWindow = new java.awt.Canvas();
+        jToolBar_ProgressBar = new javax.swing.JToolBar();
+        jProgressBar_Progress = new javax.swing.JProgressBar();
+        jSeparator_VisualText = new javax.swing.JToolBar.Separator();
+        jLabel_LoadingText = new javax.swing.JLabel();
+        jSeparator_LoadingFPS = new javax.swing.JToolBar.Separator();
         jLabel_FPSCounter = new javax.swing.JLabel();
-        jToolBar_AvatarTools = new javax.swing.JToolBar();
-        jToolBar_AvatarOptions = new javax.swing.JToolBar();
-        jButton_AvatarOptions = new javax.swing.JButton();
-        jToolBar11 = new javax.swing.JToolBar();
-        jButton_ExplorerOptions = new javax.swing.JButton();
-        jPanel_ModelRotation1 = new imi.gui.JPanel_ModelRotation();
-        jPanel_Animations1 = new imi.gui.JPanel_Animations();
-        fileIOPanel1 = new imi.gui.FileIOPanel();
         jMenuBar_MainMenu = new javax.swing.JMenuBar();
         jMenu_File = new javax.swing.JMenu();
-        jMenuItem_LoadModel = new javax.swing.JMenuItem();
-        jMenuItem_LoadTexture = new javax.swing.JMenuItem();
-        jMenuItem_LoadXML = new javax.swing.JMenuItem();
-        jMenuItem_SaveXML = new javax.swing.JMenuItem();
+        jMenu_LoadModels = new javax.swing.JMenu();
+        jMenuItem_Avatar = new javax.swing.JMenuItem();
+        jMenuItem_Clothes = new javax.swing.JMenuItem();
+        jMenuItem_Accessories = new javax.swing.JMenuItem();
+        jMenuItem_LoadTextureFile = new javax.swing.JMenuItem();
+        jMenuItem_LoadXMLFile = new javax.swing.JMenuItem();
+        jMenuItem_SaveXMLFile = new javax.swing.JMenuItem();
+        jMenu_URL = new javax.swing.JMenu();
+        jMenuItem_LoadModelURL = new javax.swing.JMenuItem();
+        jMenuItem_LoadTextureURL = new javax.swing.JMenuItem();
+        jMenu_Tools = new javax.swing.JMenu();
+        jMenuItem_AvatarEditor = new javax.swing.JMenuItem();
+        jMenuItem_NodeExplorer = new javax.swing.JMenuItem();
+        jMenuItem_AnimationViewer = new javax.swing.JMenuItem();
+        jMenuItem_ShaderCreator = new javax.swing.JMenuItem();
         jMenu_Help = new javax.swing.JMenu();
         jMenuItem_About = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setName("frame_Main"); // NOI18N
-        setResizable(false);
-        addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                formKeyReleased(evt);
-            }
-        });
+        getContentPane().setLayout(new java.awt.GridBagLayout());
+
+        jPanel_MainPanel.setLayout(new java.awt.GridBagLayout());
+
+        jToolBar_Hotkeys.setRollover(true);
+
+        jButton1.setText("jButton1");
+        jButton1.setFocusable(false);
+        jButton1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton1.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jToolBar_Hotkeys.add(jButton1);
+        jToolBar_Hotkeys.add(jSeparator1);
+
+        jButton2.setText("jButton2");
+        jButton2.setFocusable(false);
+        jButton2.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton2.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jToolBar_Hotkeys.add(jButton2);
+        jToolBar_Hotkeys.add(jSeparator2);
+
+        jButton3.setText("jButton3");
+        jButton3.setFocusable(false);
+        jButton3.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton3.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jToolBar_Hotkeys.add(jButton3);
+        jToolBar_Hotkeys.add(jSeparator3);
+
+        jButton4.setText("jButton4");
+        jButton4.setFocusable(false);
+        jButton4.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton4.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jToolBar_Hotkeys.add(jButton4);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.ipadx = 520;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.weightx = 1.0;
+        jPanel_MainPanel.add(jToolBar_Hotkeys, gridBagConstraints);
 
         jPanel_DisplayWindow.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        jPanel_DisplayWindow.setPreferredSize(new java.awt.Dimension(800, 600));
+        jPanel_DisplayWindow.setLayout(new java.awt.GridBagLayout());
 
-        setFrame(worldManager);
+        setFrame(m_worldManager);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+        gridBagConstraints.gridheight = java.awt.GridBagConstraints.REMAINDER;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+        jPanel_DisplayWindow.add(canvas_SceneRenderWindow, gridBagConstraints);
 
-        jLabel_FPSCounter.setText("Avatar Display Window -- FPS: ");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+        jPanel_MainPanel.add(jPanel_DisplayWindow, gridBagConstraints);
 
-        org.jdesktop.layout.GroupLayout jPanel_DisplayWindowLayout = new org.jdesktop.layout.GroupLayout(jPanel_DisplayWindow);
-        jPanel_DisplayWindow.setLayout(jPanel_DisplayWindowLayout);
-        jPanel_DisplayWindowLayout.setHorizontalGroup(
-            jPanel_DisplayWindowLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(jPanel_DisplayWindowLayout.createSequentialGroup()
-                .add(295, 295, 295)
-                .add(jLabel_FPSCounter))
-            .add(canvas_SceneRenderWindow, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 800, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-        );
-        jPanel_DisplayWindowLayout.setVerticalGroup(
-            jPanel_DisplayWindowLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(jPanel_DisplayWindowLayout.createSequentialGroup()
-                .add(jLabel_FPSCounter)
-                .add(5, 5, 5)
-                .add(canvas_SceneRenderWindow, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 600, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-        );
+        jToolBar_ProgressBar.setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED));
+        jToolBar_ProgressBar.setFloatable(false);
+        jToolBar_ProgressBar.setRollover(true);
+        jToolBar_ProgressBar.setMaximumSize(new java.awt.Dimension(800, 24));
+        jToolBar_ProgressBar.setPreferredSize(new java.awt.Dimension(800, 24));
 
-        jToolBar_AvatarTools.setBorder(javax.swing.BorderFactory.createTitledBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED), "Avatar Tools", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Lucida Grande", 0, 13), new java.awt.Color(0, 0, 255))); // NOI18N
-        jToolBar_AvatarTools.setOrientation(1);
-        jToolBar_AvatarTools.setRollover(true);
+        jProgressBar_Progress.setMaximumSize(new java.awt.Dimension(146, 20));
+        jProgressBar_Progress.setMinimumSize(new java.awt.Dimension(146, 20));
+        jToolBar_ProgressBar.add(jProgressBar_Progress);
 
-        jToolBar_AvatarOptions.setFloatable(false);
-        jToolBar_AvatarOptions.setRollover(true);
-        jToolBar_AvatarOptions.setMaximumSize(new java.awt.Dimension(230, 26));
-        jToolBar_AvatarOptions.setPreferredSize(new java.awt.Dimension(230, 25));
+        jSeparator_VisualText.setSeparatorSize(new java.awt.Dimension(15, 0));
+        jToolBar_ProgressBar.add(jSeparator_VisualText);
 
-        jButton_AvatarOptions.setText("Avatar Options");
-        jButton_AvatarOptions.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
-        jButton_AvatarOptions.setFocusable(false);
-        jButton_AvatarOptions.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton_AvatarOptions.setMaximumSize(new java.awt.Dimension(230, 25));
-        jButton_AvatarOptions.setMinimumSize(new java.awt.Dimension(100, 25));
-        jButton_AvatarOptions.setPreferredSize(new java.awt.Dimension(100, 25));
-        jButton_AvatarOptions.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jButton_AvatarOptions.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                OpenOptions();
-            }
-        });
-        jToolBar_AvatarOptions.add(jButton_AvatarOptions);
+        jLabel_LoadingText.setText("jLabel1");
+        jToolBar_ProgressBar.add(jLabel_LoadingText);
 
-        jToolBar_AvatarTools.add(jToolBar_AvatarOptions);
+        jSeparator_LoadingFPS.setSeparatorSize(new java.awt.Dimension(480, 0));
+        jToolBar_ProgressBar.add(jSeparator_LoadingFPS);
 
-        jToolBar11.setFloatable(false);
-        jToolBar11.setRollover(true);
-        jToolBar11.setMaximumSize(new java.awt.Dimension(230, 26));
-        jToolBar11.setPreferredSize(new java.awt.Dimension(230, 25));
+        jLabel_FPSCounter.setText("FPS: 00.00 ");
+        jToolBar_ProgressBar.add(jLabel_FPSCounter);
 
-        jButton_ExplorerOptions.setText("Explorer Options");
-        jButton_ExplorerOptions.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
-        jButton_ExplorerOptions.setFocusable(false);
-        jButton_ExplorerOptions.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton_ExplorerOptions.setMaximumSize(new java.awt.Dimension(230, 25));
-        jButton_ExplorerOptions.setMinimumSize(new java.awt.Dimension(100, 25));
-        jButton_ExplorerOptions.setPreferredSize(new java.awt.Dimension(100, 25));
-        jButton_ExplorerOptions.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jButton_ExplorerOptions.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                OpenExplorer();
-            }
-        });
-        jToolBar11.add(jButton_ExplorerOptions);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridheight = java.awt.GridBagConstraints.RELATIVE;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.weightx = 1.0;
+        jPanel_MainPanel.add(jToolBar_ProgressBar, gridBagConstraints);
 
-        jToolBar_AvatarTools.add(jToolBar11);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+        gridBagConstraints.gridheight = java.awt.GridBagConstraints.REMAINDER;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+        getContentPane().add(jPanel_MainPanel, gridBagConstraints);
 
         jMenuBar_MainMenu.setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED));
         jMenuBar_MainMenu.setMaximumSize(new java.awt.Dimension(999999, 25));
         jMenuBar_MainMenu.setMinimumSize(new java.awt.Dimension(1024, 25));
-        jMenuBar_MainMenu.setPreferredSize(new java.awt.Dimension(1024, 25));
 
         jMenu_File.setText("File");
 
-        jMenuItem_LoadModel.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_M, java.awt.event.InputEvent.CTRL_MASK));
-        jMenuItem_LoadModel.setText("Load Model");
-        jMenuItem_LoadModel.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                fileIOPanel1.loadModelFile();
-            }
-        });
-        jMenu_File.add(jMenuItem_LoadModel);
+        jMenu_LoadModels.setText("Load Model");
 
-        jMenuItem_LoadTexture.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_T, java.awt.event.InputEvent.CTRL_MASK));
-        jMenuItem_LoadTexture.setText("Load Texture");
-        jMenuItem_LoadTexture.addActionListener(new java.awt.event.ActionListener() {
+        jMenuItem_Avatar.setText("Avatar");
+        jMenuItem_Avatar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                fileIOPanel1.loadTexFile();
+                runProgressBar(true);
+                m_sceneData.loadAvatarDAEFile(true, false, m_base);
+                runProgressBar(false);
             }
         });
-        jMenu_File.add(jMenuItem_LoadTexture);
+        jMenu_LoadModels.add(jMenuItem_Avatar);
 
-        jMenuItem_LoadXML.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_L, java.awt.event.InputEvent.CTRL_MASK));
-        jMenuItem_LoadXML.setText("Load Configuration");
-        jMenuItem_LoadXML.addActionListener(new java.awt.event.ActionListener() {
+        jMenuItem_Clothes.setText("Clothes");
+        jMenuItem_Clothes.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                fileIOPanel1.loadConfigFile();
+                runProgressBar(true);
+                m_sceneData.loadSMeshDAEFile(true, false, m_base);
+                runProgressBar(false);
             }
         });
-        jMenu_File.add(jMenuItem_LoadXML);
+        jMenu_LoadModels.add(jMenuItem_Clothes);
 
-        jMenuItem_SaveXML.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_C, java.awt.event.InputEvent.CTRL_MASK));
-        jMenuItem_SaveXML.setText("Save Configuration");
-        jMenuItem_SaveXML.addActionListener(new java.awt.event.ActionListener() {
+        jMenuItem_Accessories.setText("Accessories");
+        jMenuItem_Accessories.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                fileIOPanel1.saveConfigFile();
+                runProgressBar(true);
+                m_sceneData.loadMeshDAEFile(true, false, m_base);
+                runProgressBar(false);
             }
         });
-        jMenu_File.add(jMenuItem_SaveXML);
+        jMenu_LoadModels.add(jMenuItem_Accessories);
+
+        jMenu_File.add(jMenu_LoadModels);
+
+        jMenuItem_LoadTextureFile.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_T, java.awt.event.InputEvent.CTRL_MASK));
+        jMenuItem_LoadTextureFile.setText("Load Texture");
+        jMenuItem_LoadTextureFile.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                //fileIOPanel1.loadTexFile();
+            }
+        });
+        jMenu_File.add(jMenuItem_LoadTextureFile);
+
+        jMenuItem_LoadXMLFile.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_L, java.awt.event.InputEvent.CTRL_MASK));
+        jMenuItem_LoadXMLFile.setText("Load Configuration");
+        jMenuItem_LoadXMLFile.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                //fileIOPanel1.loadConfigFile();
+            }
+        });
+        jMenu_File.add(jMenuItem_LoadXMLFile);
+
+        jMenuItem_SaveXMLFile.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_C, java.awt.event.InputEvent.CTRL_MASK));
+        jMenuItem_SaveXMLFile.setText("Save Configuration");
+        jMenuItem_SaveXMLFile.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                //fileIOPanel1.saveConfigFile();
+            }
+        });
+        jMenu_File.add(jMenuItem_SaveXMLFile);
 
         jMenuBar_MainMenu.add(jMenu_File);
+
+        jMenu_URL.setText("URL");
+
+        jMenuItem_LoadModelURL.setText("Load Model");
+        jMenu_URL.add(jMenuItem_LoadModelURL);
+
+        jMenuItem_LoadTextureURL.setText("Load Texture");
+        jMenu_URL.add(jMenuItem_LoadTextureURL);
+
+        jMenuBar_MainMenu.add(jMenu_URL);
+
+        jMenu_Tools.setText("Tools");
+
+        jMenuItem_AvatarEditor.setText("Avatar Edittor");
+        jMenu_Tools.add(jMenuItem_AvatarEditor);
+
+        jMenuItem_NodeExplorer.setText("Node Explorer");
+        jMenu_Tools.add(jMenuItem_NodeExplorer);
+
+        jMenuItem_AnimationViewer.setText("Animation Viewer");
+        jMenu_Tools.add(jMenuItem_AnimationViewer);
+
+        jMenuItem_ShaderCreator.setText("Shader Creator");
+        jMenu_Tools.add(jMenuItem_ShaderCreator);
+
+        jMenuBar_MainMenu.add(jMenu_Tools);
 
         jMenu_Help.setText("Help");
 
@@ -1119,84 +1025,46 @@ public class DemoBase2 extends javax.swing.JFrame implements FrameRateListener, 
 
         setJMenuBar(jMenuBar_MainMenu);
 
-        org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(layout.createSequentialGroup()
-                .add(0, 0, 0)
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
-                    .add(fileIOPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                        .add(jToolBar_AvatarTools, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 230, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                        .add(jPanel_ModelRotation1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 230, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                        .add(jPanel_Animations1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
-                .add(0, 0, 0)
-                .add(jPanel_DisplayWindow, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(layout.createSequentialGroup()
-                .add(fileIOPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .add(0, 0, 0)
-                .add(jToolBar_AvatarTools, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .add(0, 0, 0)
-                .add(jPanel_ModelRotation1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 175, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jPanel_Animations1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 223, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-            .add(layout.createSequentialGroup()
-                .add(10, 10, 10)
-                .add(jPanel_DisplayWindow, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-        );
-
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-/**
- * If the checkbox is selected it opens up the Options window for editing the
- * avatar otherwise it will dispose of the options window if open
- * @param evt (ItemEvent)
- */
-/**
- * If the checkbox is selected it opens up the PScene Explorer window otherwise
- * it will dispose of the explorer window if open
- * @param evt (ItemEvent)
- */
-/**
- * This should be a quick keyshortuct for the GUI but no events are being captured ???
- * TODO: Make this work.
- * @param evt
- */
-private void formKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_formKeyReleased
-    if(evt.getKeyCode() == KeyEvent.VK_I)
-        jPanel_Animations1.mediaFunction(0);
-    if(evt.getKeyCode() == KeyEvent.VK_O)
-        jPanel_Animations1.mediaFunction(1);
-    if(evt.getKeyCode() == KeyEvent.VK_P)
-        jPanel_Animations1.mediaFunction(2);
-}//GEN-LAST:event_formKeyReleased
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private java.awt.Canvas canvas_SceneRenderWindow;
-    private imi.gui.FileIOPanel fileIOPanel1;
-    private javax.swing.JButton jButton_AvatarOptions;
-    private javax.swing.JButton jButton_ExplorerOptions;
+    private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButton3;
+    private javax.swing.JButton jButton4;
     private javax.swing.JLabel jLabel_FPSCounter;
+    private javax.swing.JLabel jLabel_LoadingText;
     private javax.swing.JMenuBar jMenuBar_MainMenu;
     private javax.swing.JMenuItem jMenuItem_About;
-    private javax.swing.JMenuItem jMenuItem_LoadModel;
-    private javax.swing.JMenuItem jMenuItem_LoadTexture;
-    private javax.swing.JMenuItem jMenuItem_LoadXML;
-    private javax.swing.JMenuItem jMenuItem_SaveXML;
+    private javax.swing.JMenuItem jMenuItem_Accessories;
+    private javax.swing.JMenuItem jMenuItem_AnimationViewer;
+    private javax.swing.JMenuItem jMenuItem_Avatar;
+    private javax.swing.JMenuItem jMenuItem_AvatarEditor;
+    private javax.swing.JMenuItem jMenuItem_Clothes;
+    private javax.swing.JMenuItem jMenuItem_LoadModelURL;
+    private javax.swing.JMenuItem jMenuItem_LoadTextureFile;
+    private javax.swing.JMenuItem jMenuItem_LoadTextureURL;
+    private javax.swing.JMenuItem jMenuItem_LoadXMLFile;
+    private javax.swing.JMenuItem jMenuItem_NodeExplorer;
+    private javax.swing.JMenuItem jMenuItem_SaveXMLFile;
+    private javax.swing.JMenuItem jMenuItem_ShaderCreator;
     private javax.swing.JMenu jMenu_File;
     private javax.swing.JMenu jMenu_Help;
-    private imi.gui.JPanel_Animations jPanel_Animations1;
+    private javax.swing.JMenu jMenu_LoadModels;
+    private javax.swing.JMenu jMenu_Tools;
+    private javax.swing.JMenu jMenu_URL;
     private javax.swing.JPanel jPanel_DisplayWindow;
-    private imi.gui.JPanel_ModelRotation jPanel_ModelRotation1;
-    private javax.swing.JToolBar jToolBar11;
-    private javax.swing.JToolBar jToolBar_AvatarOptions;
-    private javax.swing.JToolBar jToolBar_AvatarTools;
+    private javax.swing.JPanel jPanel_MainPanel;
+    private javax.swing.JProgressBar jProgressBar_Progress;
+    private javax.swing.JToolBar.Separator jSeparator1;
+    private javax.swing.JToolBar.Separator jSeparator2;
+    private javax.swing.JToolBar.Separator jSeparator3;
+    private javax.swing.JToolBar.Separator jSeparator_LoadingFPS;
+    private javax.swing.JToolBar.Separator jSeparator_VisualText;
+    private javax.swing.JToolBar jToolBar_Hotkeys;
+    private javax.swing.JToolBar jToolBar_ProgressBar;
     // End of variables declaration//GEN-END:variables
 
 }

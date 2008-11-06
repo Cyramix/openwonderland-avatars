@@ -976,33 +976,7 @@ private void jButton_NewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
      * @param evt (ActionEvent)
      */
 private void jButton_ModelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_ModelActionPerformed
-    System.out.println("=================================================");
-    System.out.println("Loading a model file per the user's request.....");
-    System.out.println("=================================================");
-
-    int retValModel = jFileChooser_LoadModels.showOpenDialog(this);
-    if (retValModel == JFileChooser.APPROVE_OPTION) {
-        File fileModel = jFileChooser_LoadModels.getSelectedFile();
-        sceneData.setfileModel(fileModel);
-
-        resetModelScales();
-        resetModelRotations();
-        resetDataMembers();
-        resetGUI(0);
-
-        if (fileModel.getName().endsWith(".ms3d")) {
-            sceneData.loadMS3DFile(0, true, this);
-        } else {
-            sceneData.loadDAEFile(true, this);
-        }
-
-        resetDataMembers();
-        resetGUI(0);
-    }
-
-    System.out.println("=================================================");
-    System.out.println("Loading of model file has been completed.........");
-    System.out.println("=================================================");    
+    sceneData.loadAvatarDAEFile(false, false, this);
 }//GEN-LAST:event_jButton_ModelActionPerformed
 
     /**

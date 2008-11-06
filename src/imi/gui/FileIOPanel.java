@@ -68,120 +68,55 @@ public class FileIOPanel extends javax.swing.JPanel {
     }
     
     public void loadModelFile() {
-        System.out.println("=================================================");
-        System.out.println("Loading a model file per the user's request......");
-        System.out.println("=================================================");
+        m_rotPanel.resetPanel();
+        m_sceneData.loadAvatarDAEFile(true, false, this);       // LOADS AVATAR
 
-        int retValModel = jFileChooser_Model.showOpenDialog(this);
-        if (retValModel == javax.swing.JFileChooser.APPROVE_OPTION) {
-            m_fileModel = jFileChooser_Model.getSelectedFile();
-            m_sceneData.setfileModel(m_fileModel);
-
-            m_rotPanel.resetPanel();
-
-            m_sceneData.loadDAECharacter(true, this);    // loads models with skinned animations
-
-            while (m_sceneData.getPScene().getAssetWaitingList().size() > 0) {
-                //m_logger.log(Level.INFO, "Waiting to get assets...");
-            }
-
-            if (m_animPanel != null)
-                m_animPanel.resetPanel();
-            if (m_rotPanel != null)
-                m_rotPanel.setModelInst(m_animPanel.getSelectedModelInstanceNode());
-            
-            loadMeshes();
-            
-            System.out.println("=================================================");
-            System.out.println("Loading of model file has been completed.........");
-            System.out.println("=================================================");
+        while (m_sceneData.getPScene().getAssetWaitingList().size() > 0) {
+            //m_logger.log(Level.INFO, "Waiting to get assets...");
         }
 
-        System.out.println("=================================================");
-        System.out.println("Loading of model file has been cancelled.........");
-        System.out.println("=================================================");
+        if (m_animPanel != null)
+            m_animPanel.resetPanel();
+        if (m_rotPanel != null)
+            m_rotPanel.setModelInst(m_animPanel.getSelectedModelInstanceNode());
+
+        loadMeshes();
     }
     
     public void loadMeshFile() {
-        System.out.println("=================================================");
-        System.out.println("Loading a model file per the user's request......");
-        System.out.println("=================================================");
+        m_rotPanel.resetPanel();
+        m_sceneData.loadMeshDAEFile(true, false, this);         // LOADS NON-SKINNED MESH
 
-        int retValModel = jFileChooser_Mesh.showOpenDialog(this);
-        if (retValModel == javax.swing.JFileChooser.APPROVE_OPTION) {
-            m_fileModel = jFileChooser_Mesh.getSelectedFile();
-            m_sceneData.setfileModel(m_fileModel);
-
-            m_rotPanel.resetPanel();
-
-            m_sceneData.loadDAEFile(true, this);    // Not skinned, no animations
-
-            while (m_sceneData.getPScene().getAssetWaitingList().size() > 0) {
-                //m_logger.log(Level.INFO, "Waiting to get assets...");
-            }
-
-            if (m_animPanel != null)
-                m_animPanel.resetPanel();
-            if (m_rotPanel != null)
-                m_rotPanel.setModelInst(m_animPanel.getSelectedModelInstanceNode());
-            
-            loadMeshes();
-            
-            System.out.println("=================================================");
-            System.out.println("Loading of model file has been completed.........");
-            System.out.println("=================================================");
+        while (m_sceneData.getPScene().getAssetWaitingList().size() > 0) {
+            //m_logger.log(Level.INFO, "Waiting to get assets...");
         }
 
-        System.out.println("=================================================");
-        System.out.println("Loading of model file has been cancelled.........");
-        System.out.println("=================================================");
+        if (m_animPanel != null)
+            m_animPanel.resetPanel();
+        if (m_rotPanel != null)
+            m_rotPanel.setModelInst(m_animPanel.getSelectedModelInstanceNode());
+
+        loadMeshes();
     }
     
     public void loadSkinnedMesh() {
-        System.out.println("=================================================");
-        System.out.println("Loading a model file per the user's request......");
-        System.out.println("=================================================");
+        m_rotPanel.resetPanel();
+        m_sceneData.loadSMeshDAEFile(true, false, this);
 
-        int retValModel = jFileChooser_Mesh.showOpenDialog(this);
-        if (retValModel == javax.swing.JFileChooser.APPROVE_OPTION) {
-            m_fileModel = jFileChooser_Mesh.getSelectedFile();
-            m_sceneData.setfileModel(m_fileModel);
-
-            m_rotPanel.resetPanel();
-
-            m_sceneData.loadDAESMeshFile(true, this);    // Not skinned, no animations
-
-            while (m_sceneData.getPScene().getAssetWaitingList().size() > 0) {
-                //m_logger.log(Level.INFO, "Waiting to get assets...");
-            }
-
-            if (m_animPanel != null)
-                m_animPanel.resetPanel();
-            if (m_rotPanel != null)
-                m_rotPanel.setModelInst(m_animPanel.getSelectedModelInstanceNode());
-            
-            loadMeshes();
-            
-            System.out.println("=================================================");
-            System.out.println("Loading of model file has been completed.........");
-            System.out.println("=================================================");
+        while (m_sceneData.getPScene().getAssetWaitingList().size() > 0) {
+            //m_logger.log(Level.INFO, "Waiting to get assets...");
         }
 
-        System.out.println("=================================================");
-        System.out.println("Loading of model file has been cancelled.........");
-        System.out.println("=================================================");
+        if (m_animPanel != null)
+            m_animPanel.resetPanel();
+        if (m_rotPanel != null)
+            m_rotPanel.setModelInst(m_animPanel.getSelectedModelInstanceNode());
+
+        loadMeshes();
     }
     
     public void loadTexFile() {
-        System.out.println("=================================================");
-        System.out.println("Loading a texture file per the user's request....");
-        System.out.println("=================================================");
-
         m_sceneData.loadTexture(((PPolygonMeshInstance)jComboBox_Meshes.getSelectedItem()), this);
-
-        System.out.println("=================================================");
-        System.out.println("Loading of texture file has been completed.......");
-        System.out.println("=================================================");
     }
     
     public void loadConfigFile() {
@@ -281,7 +216,7 @@ public class FileIOPanel extends javax.swing.JPanel {
         for(int i = 0; i < m_anim.size(); i++) {
             animations[i] = m_anim.get(i)[0].toString();
         }
-        m_sceneData.loadDAECharacterURL(true, this, m_data.get(jList_ServerFiles.getSelectedIndex()), animations);   // loads models with skinned animations
+        m_sceneData.loadAvatarDAEURL(true, false, this, m_data.get(jList_ServerFiles.getSelectedIndex()), animations);   // loads models with skinned animations
 
         while (m_sceneData.getPScene().getAssetWaitingList().size() > 0) {
             //m_logger.log(Level.INFO, "Waiting to get assets...");
@@ -328,9 +263,9 @@ public class FileIOPanel extends javax.swing.JPanel {
             iType = 4;
 
         if (m_meshes == null)
-            m_sceneData.loadDAEURL(true, this, data, meshref, iType);
+            m_sceneData.loadMeshDAEURL(true, false, this, data, meshref, iType);
         else
-            m_sceneData.loadDAEURL(false, this, data, meshref, iType);   // loads models with skinned animations
+            m_sceneData.loadMeshDAEURL(false, false, this, data, meshref, iType);   // loads models with skinned animations
         
         while (m_sceneData.getPScene().getAssetWaitingList().size() > 0) {
             //m_logger.log(Level.INFO, "Waiting to get assets...");

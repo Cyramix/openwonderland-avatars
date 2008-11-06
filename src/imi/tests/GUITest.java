@@ -45,7 +45,7 @@ import org.jdesktop.mtgame.RenderComponent;
  *
  * @author IMI
  */
-public class GUITest extends DemoBase2
+public class GUITest extends BaseDefault
 {
     //private static AvatarEditorGUI GUI = new AvatarEditorGUI();
     
@@ -53,7 +53,7 @@ public class GUITest extends DemoBase2
         super(args);
     }
     
-    public static void main(String[] args) {
+    public static void main(String[] args)  {
         GUITest worldTest = new GUITest(args);
     }
     
@@ -145,8 +145,8 @@ public class GUITest extends DemoBase2
         
         // Add the entity to the world manager
         wm.addEntity(JSEntity);
-        
-        setGUI(jscene, wm, processors, JSEntity);
+
+        simpleSceneInit(jscene, wm, JSEntity, processors);
         setVisible(true);
     }
 }

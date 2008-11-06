@@ -172,121 +172,121 @@ public class JPanel_FileIO extends javax.swing.JPanel {
      * @param animPanel (JPanel_Animation)
      */
     public void loadModel(JPanel_ModelRotation rotPanel, JPanel_Animations animPanel, JPanel_ShaderLoader shaderPanel) {
-        System.out.println("=================================================");
-        System.out.println("Loading a model file per the user's request.....");
-        System.out.println("=================================================");
-
-        int retValModel = jFileChooser_LoadModels.showOpenDialog(this);
-        if (retValModel == javax.swing.JFileChooser.APPROVE_OPTION) {
-            java.io.File fileModel = jFileChooser_LoadModels.getSelectedFile();
-            sceneData.setfileModel(fileModel);
-
-            rotPanel.resetPanel();
-
-            if (fileModel.getName().endsWith(".ms3d")) {
-                sceneData.loadMS3DFile(0, true, this);
-            } else if (fileModel.getName().endsWith(".dae")) {
-                sceneData.loadDAEFile(true, this);
-            } else {
-                sceneData.loadDAECharacter(true, this);
-            }
-
-            while (sceneData.getPScene().getAssetWaitingList().size() > 0) {
-                //System.out.println("Waiting to get assets...");
-            }
-
-            SkeletonNode skel = ((SkeletonNode)sceneData.getPScene().getInstances().getChild(0).getChild(0));
-            sceneData.setCurrentSkeleton(skel);
-            
-            if (shaderPanel != null)
-                shaderPanel.setPanel(sceneData.getPScene());
-            if (animPanel != null)
-                animPanel.setPanel(sceneData.getPScene());
-            if (rotPanel != null)
-                rotPanel.setModelInst(animPanel.getSelectedModelInstanceNode());
-            
-            System.out.println("=================================================");
-            System.out.println("Loading of model file has been completed.........");
-            System.out.println("=================================================");
-        } else {
-            System.out.println("=================================================");
-            System.out.println("Loading of model file has been cancelled.........");
-            System.out.println("=================================================");
-        }
+//        System.out.println("=================================================");
+//        System.out.println("Loading a model file per the user's request.....");
+//        System.out.println("=================================================");
+//
+//        int retValModel = jFileChooser_LoadModels.showOpenDialog(this);
+//        if (retValModel == javax.swing.JFileChooser.APPROVE_OPTION) {
+//            java.io.File fileModel = jFileChooser_LoadModels.getSelectedFile();
+//            sceneData.setfileModel(fileModel);
+//
+//            rotPanel.resetPanel();
+//
+//            if (fileModel.getName().endsWith(".ms3d")) {
+//                sceneData.loadMS3DFile(0, true, this);
+//            } else if (fileModel.getName().endsWith(".dae")) {
+//                sceneData.loadDAEFile(true, this);
+//            } else {
+//                sceneData.loadDAECharacter(true, this);
+//            }
+//
+//            while (sceneData.getPScene().getAssetWaitingList().size() > 0) {
+//                //System.out.println("Waiting to get assets...");
+//            }
+//
+//            SkeletonNode skel = ((SkeletonNode)sceneData.getPScene().getInstances().getChild(0).getChild(0));
+//            sceneData.setCurrentSkeleton(skel);
+//            
+//            if (shaderPanel != null)
+//                shaderPanel.setPanel(sceneData.getPScene());
+//            if (animPanel != null)
+//                animPanel.setPanel(sceneData.getPScene());
+//            if (rotPanel != null)
+//                rotPanel.setModelInst(animPanel.getSelectedModelInstanceNode());
+//            
+//            System.out.println("=================================================");
+//            System.out.println("Loading of model file has been completed.........");
+//            System.out.println("=================================================");
+//        } else {
+//            System.out.println("=================================================");
+//            System.out.println("Loading of model file has been cancelled.........");
+//            System.out.println("=================================================");
+//        }
     }
     
     public void loadSkinnedMeshModel() {
-        System.out.println("=================================================");
-        System.out.println("Loading a model file per the user's request.....");
-        System.out.println("=================================================");
-
-        int retValModel = jFileChooser_LoadModels.showOpenDialog(this);
-        if (retValModel == javax.swing.JFileChooser.APPROVE_OPTION) {
-            java.io.File fileModel = jFileChooser_LoadModels.getSelectedFile();
-            sceneData.setfileModel(fileModel);
-
-            rotPanel.resetPanel();
-
-            sceneData.loadDAESMeshFile(true, this);
-
-            while (sceneData.getPScene().getAssetWaitingList().size() > 0) {
-                //System.out.println("Waiting to get assets...");
-            }
-            
-            if (shaderPanel != null)
-                shaderPanel.setPanel(sceneData.getPScene());
-            if (animPanel != null)
-                animPanel.setPanel(sceneData.getPScene());
-            if (rotPanel != null)
-                rotPanel.setModelInst(animPanel.getSelectedModelInstanceNode());
-            
-            System.out.println("=================================================");
-            System.out.println("Loading of model file has been completed.........");
-            System.out.println("=================================================");
-        } else {
-            System.out.println("=================================================");
-            System.out.println("Loading of model file has been cancelled.........");
-            System.out.println("=================================================");
-        }
+//        System.out.println("=================================================");
+//        System.out.println("Loading a model file per the user's request.....");
+//        System.out.println("=================================================");
+//
+//        int retValModel = jFileChooser_LoadModels.showOpenDialog(this);
+//        if (retValModel == javax.swing.JFileChooser.APPROVE_OPTION) {
+//            java.io.File fileModel = jFileChooser_LoadModels.getSelectedFile();
+//            sceneData.setfileModel(fileModel);
+//
+//            rotPanel.resetPanel();
+//
+//            sceneData.loadDAESMeshFile(true, this);
+//
+//            while (sceneData.getPScene().getAssetWaitingList().size() > 0) {
+//                //System.out.println("Waiting to get assets...");
+//            }
+//            
+//            if (shaderPanel != null)
+//                shaderPanel.setPanel(sceneData.getPScene());
+//            if (animPanel != null)
+//                animPanel.setPanel(sceneData.getPScene());
+//            if (rotPanel != null)
+//                rotPanel.setModelInst(animPanel.getSelectedModelInstanceNode());
+//            
+//            System.out.println("=================================================");
+//            System.out.println("Loading of model file has been completed.........");
+//            System.out.println("=================================================");
+//        } else {
+//            System.out.println("=================================================");
+//            System.out.println("Loading of model file has been cancelled.........");
+//            System.out.println("=================================================");
+//        }
     }
     
     public void loadModel(JPanel_ModelRotation rotPanel, JPanel_Animations animPanel) {
-        System.out.println("=================================================");
-        System.out.println("Loading a model file per the user's request.....");
-        System.out.println("=================================================");
-
-        int retValModel = jFileChooser_LoadModels.showOpenDialog(this);
-        if (retValModel == javax.swing.JFileChooser.APPROVE_OPTION) {
-            java.io.File fileModel = jFileChooser_LoadModels.getSelectedFile();
-            sceneData.setfileModel(fileModel);
-
-            rotPanel.resetPanel();
-
-            if (fileModel.getName().endsWith(".ms3d")) {
-                sceneData.loadMS3DFile(0, true, this);
-            } else if (fileModel.getName().endsWith(".dae")) {
-                sceneData.loadDAEFile(true, this);
-            } else {
-                sceneData.loadDAECharacter(true, this);
-            }
-
-            while (sceneData.getPScene().getAssetWaitingList().size() > 0) {
-                //System.out.println("Waiting to get assets...");
-            }
-
-            if (animPanel != null)
-                animPanel.resetPanel();
-            if (rotPanel != null)
-                rotPanel.setModelInst(animPanel.getSelectedModelInstanceNode());
-            
-            System.out.println("=================================================");
-            System.out.println("Loading of model file has been completed.........");
-            System.out.println("=================================================");
-        } else {
-            System.out.println("=================================================");
-            System.out.println("Loading of model file has been cancelled.........");
-            System.out.println("=================================================");
-        }
+//        System.out.println("=================================================");
+//        System.out.println("Loading a model file per the user's request.....");
+//        System.out.println("=================================================");
+//
+//        int retValModel = jFileChooser_LoadModels.showOpenDialog(this);
+//        if (retValModel == javax.swing.JFileChooser.APPROVE_OPTION) {
+//            java.io.File fileModel = jFileChooser_LoadModels.getSelectedFile();
+//            sceneData.setfileModel(fileModel);
+//
+//            rotPanel.resetPanel();
+//
+//            if (fileModel.getName().endsWith(".ms3d")) {
+//                sceneData.loadMS3DFile(0, true, this);
+//            } else if (fileModel.getName().endsWith(".dae")) {
+//                sceneData.loadDAEFile(true, this);
+//            } else {
+//                sceneData.loadDAECharacter(true, this);
+//            }
+//
+//            while (sceneData.getPScene().getAssetWaitingList().size() > 0) {
+//                //System.out.println("Waiting to get assets...");
+//            }
+//
+//            if (animPanel != null)
+//                animPanel.resetPanel();
+//            if (rotPanel != null)
+//                rotPanel.setModelInst(animPanel.getSelectedModelInstanceNode());
+//            
+//            System.out.println("=================================================");
+//            System.out.println("Loading of model file has been completed.........");
+//            System.out.println("=================================================");
+//        } else {
+//            System.out.println("=================================================");
+//            System.out.println("Loading of model file has been cancelled.........");
+//            System.out.println("=================================================");
+//        }
     }
     
     /**

@@ -18,8 +18,6 @@
 package imi.tests;
 
 import org.jdesktop.mtgame.Entity;
-import imi.loaders.collada.Instruction;
-import imi.loaders.collada.InstructionProcessor;
 import imi.scene.JScene;
 import imi.scene.PMatrix;
 import imi.scene.PScene;
@@ -58,8 +56,7 @@ public class COLLADA_URL extends DemoBase2
 
     private void initGUITest(PScene pscene, JScene jscene, WorldManager wm, ArrayList<ProcessorComponent> processors, Entity JSEntity)
     {
-        simpleSceneInit(pscene, wm, processors);
-        setGUI(jscene, wm, processors, JSEntity);
+        simpleSceneInit(jscene, wm, JSEntity);
         setVisible(true);
     }
 
@@ -86,11 +83,9 @@ public class COLLADA_URL extends DemoBase2
         return null;// BREAK!! HAHAHAHAHAHAHA
     }
     
-    
-
-    @Override
-    protected void simpleSceneInit(PScene pscene, WorldManager wm, ArrayList<ProcessorComponent> processors)
+    protected void simpleSceneInit(JScene jscene, WorldManager wm, Entity jsentity)
     {
+        PScene pscene = jscene.getPScene();
         SkeletonNode pTheSkeletonNode = loadCharacter(pscene);
 
         //  Assign the specified shader to all SkinnedMeshes.
@@ -117,7 +112,7 @@ public class COLLADA_URL extends DemoBase2
         }
 
         modelInst.getTransform().getLocalMatrix(true).setScale(10.0f);
-        processors.add(new SkinnedAnimationProcessor(modelInst)); 
+        ((ProcessorCollectionComponent)jsentity.getComponent(ProcessorCollectionComponent.class)).addProcessor(new SkinnedAnimationProcessor(modelInst));
         pscene.setDirty(true, true);
     }
 

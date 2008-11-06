@@ -17,6 +17,7 @@
  */
 package imi.tests;
 
+import com.jme.entity.Entity;
 import com.jme.math.Vector3f;
 import imi.character.ninja.Adam;
 import imi.character.ninja.Ninja;
@@ -27,6 +28,7 @@ import imi.loaders.collada.ColladaLoaderParams;
 import imi.loaders.repository.AssetDescriptor;
 import imi.loaders.repository.SharedAsset;
 import imi.loaders.repository.SharedAsset.SharedAssetType;
+import imi.scene.JScene;
 import imi.scene.PMatrix;
 import imi.scene.PScene;
 import imi.scene.processors.JSceneEventProcessor;
@@ -34,10 +36,8 @@ import imi.utils.input.NinjaControlScheme;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.jdesktop.mtgame.ProcessorComponent;
 import org.jdesktop.mtgame.WorldManager;
 
 /**
@@ -54,10 +54,9 @@ public class COLLADA_OfficeTest extends DemoBase2
         COLLADA_OfficeTest worldTest = new COLLADA_OfficeTest(args);
     }
 
-    @Override
-    protected void simpleSceneInit(PScene pscene, WorldManager wm, ArrayList<ProcessorComponent> processors)
+    protected void simpleSceneInit(JScene jscene, WorldManager wm, Entity jsentity)
     {
-        
+        PScene pscene = jscene.getPScene();
         Logger.getLogger("com.jme.scene").setLevel(Level.OFF);
         Logger.getLogger("org.collada").setLevel(Level.OFF);
         Logger.getLogger("com.jme.renderer.jogl").setLevel(Level.OFF);
@@ -130,8 +129,7 @@ public class COLLADA_OfficeTest extends DemoBase2
         
         Adam adam = new Adam("Adam Corolla", wm);
         adam.selectForInput();
-        adam.setObjectCollection(objs);
-        
+        adam.setObjectCollection(objs);        
     }
     
     

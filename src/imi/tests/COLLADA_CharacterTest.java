@@ -62,8 +62,7 @@ public class COLLADA_CharacterTest extends DemoBase2
 
     private void initGUITest(PScene pscene, JScene jscene, WorldManager wm, ArrayList<ProcessorComponent> processors, Entity JSEntity)
     {
-        simpleSceneInit(pscene, wm, processors);
-        setGUI(jscene, wm, processors, JSEntity);
+        simpleSceneInit(jscene, wm, JSEntity, processors);
         setVisible(true);
     }
 
@@ -100,10 +99,10 @@ public class COLLADA_CharacterTest extends DemoBase2
     
     
 
-    protected void simpleSceneInit(PScene pscene, WorldManager wm, ArrayList<ProcessorComponent> processors)
+    protected void simpleSceneInit(JScene jscene, WorldManager wm, Entity jsentity, ArrayList<ProcessorComponent> processors)
     {
+        PScene pscene = jscene.getPScene();
         SkeletonNode pTheSkeletonNode = loadCharacter(pscene);
-
 
         PPolygonModelInstance modelInst = pscene.addModelInstance(pTheSkeletonNode, new PMatrix());
 
@@ -116,9 +115,7 @@ public class COLLADA_CharacterTest extends DemoBase2
 
         modelInst.getTransform().getLocalMatrix(true).setScale(10.0f);
         processors.add(new SkinnedAnimationProcessor(modelInst)); 
-        pscene.setDirty(true, true);
-        
-        
+        pscene.setDirty(true, true);        
 
 //        createSkinnedAnimationProcessors(pscene, processors);
     }

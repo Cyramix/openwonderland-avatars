@@ -67,6 +67,10 @@ public class SceneEssentials {
         private PPolygonModelInstance modelInst = null;
     // File IO GUI
         private JFileChooser jFileChooser_LoadAssets = null;
+        private JFileChooser jFileChooser_LoadColladaModel = null;
+        private JFileChooser jFileChooser_LoadModel = null;
+        private JFileChooser jFileChooser_LoadXML = null;
+        private JFileChooser jFileChooser_LoadAvatarDAE = null;
     // File Containers
         private File fileXML     = null;
         private File fileModel   = null;
@@ -162,14 +166,99 @@ public class SceneEssentials {
             }
         };
         jFileChooser_LoadAssets = new javax.swing.JFileChooser();
-
-        jFileChooser_LoadAssets.setDialogTitle("Load Asset File");
+        jFileChooser_LoadAssets.setDialogTitle("Load Texture File");
         java.io.File assetDirectory = new java.io.File("./assets/textures");
         jFileChooser_LoadAssets.setCurrentDirectory(assetDirectory);
         jFileChooser_LoadAssets.setDoubleBuffered(true);
-
         jFileChooser_LoadAssets.setDragEnabled(true);
         jFileChooser_LoadAssets.addChoosableFileFilter((FileFilter)assetFilter);
+////////////////////////////////////////////////////////////////////////////////
+        FileFilter colladaFilter = new FileFilter() {
+            @Override
+            public boolean accept(File f) {
+                if(f.isDirectory()) {
+                    return true;
+                }
+
+                if (f.getName().toLowerCase().endsWith(".dae")) {
+                    return true;
+                }
+                return false;
+            }
+            @Override
+            public String getDescription() {
+                String szDescription = new String("Collada (*.dae)");
+                return szDescription;
+            }
+        };
+        jFileChooser_LoadColladaModel = new javax.swing.JFileChooser();
+        jFileChooser_LoadColladaModel.setDialogTitle("Load Collada File");
+        java.io.File colladaDirectory = new java.io.File("./assets/models/collada");
+        jFileChooser_LoadColladaModel.setCurrentDirectory(colladaDirectory);
+        jFileChooser_LoadColladaModel.setDoubleBuffered(true);
+        jFileChooser_LoadColladaModel.setDragEnabled(true);
+        jFileChooser_LoadColladaModel.addChoosableFileFilter((FileFilter)colladaFilter);
+////////////////////////////////////////////////////////////////////////////////
+        FileFilter modelFilter = new FileFilter() {
+            @Override
+            public boolean accept(File f) {
+                if(f.isDirectory()) {
+                    return true;
+                }
+
+                if (f.getName().toLowerCase().endsWith(".dae") ||
+                    f.getName().toLowerCase().endsWith(".ms3d")) {
+                    return true;
+                }
+                return false;
+            }
+            @Override
+            public String getDescription() {
+                String szDescription = new String("Models (*.dae, *.ms3d)");
+                return szDescription;
+            }
+        };
+        jFileChooser_LoadModel = new javax.swing.JFileChooser();
+        jFileChooser_LoadModel.setDialogTitle("Load Model File");
+        java.io.File modelDirectory = new java.io.File("./assets/models");
+        jFileChooser_LoadModel.setCurrentDirectory(modelDirectory);
+        jFileChooser_LoadModel.setDoubleBuffered(true);
+        jFileChooser_LoadModel.setDragEnabled(true);
+        jFileChooser_LoadModel.addChoosableFileFilter((FileFilter)modelFilter);
+////////////////////////////////////////////////////////////////////////////////
+        FileFilter xmlFilter = new FileFilter() {
+            @Override
+            public boolean accept(File f) {
+                if(f.isDirectory()) {
+                    return true;
+                }
+
+                if (f.getName().toLowerCase().endsWith(".xml")) {
+                    return true;
+                }
+                return false;
+            }
+            @Override
+            public String getDescription() {
+                String szDescription = new String("Extensible Markup Language (*.xml)");
+                return szDescription;
+            }
+        };
+        jFileChooser_LoadXML = new javax.swing.JFileChooser();
+        jFileChooser_LoadXML.setDialogTitle("Load Configuration File");
+        java.io.File xmlDirectory = new java.io.File("./assets/");
+        jFileChooser_LoadXML.setCurrentDirectory(xmlDirectory);
+        jFileChooser_LoadXML.setDoubleBuffered(true);
+        jFileChooser_LoadXML.setDragEnabled(true);
+        jFileChooser_LoadXML.addChoosableFileFilter((FileFilter)xmlFilter);
+////////////////////////////////////////////////////////////////////////////////
+        jFileChooser_LoadAvatarDAE = new javax.swing.JFileChooser();
+        jFileChooser_LoadAvatarDAE.setDialogTitle("Load Avatar Model");
+        java.io.File avatarDirectory = new java.io.File("./assets/models/collada");
+        jFileChooser_LoadAvatarDAE.setCurrentDirectory(avatarDirectory);
+        jFileChooser_LoadAvatarDAE.setDoubleBuffered(true);
+        jFileChooser_LoadAvatarDAE.setDragEnabled(true);
+        jFileChooser_LoadAvatarDAE.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
     }
     
     /**
@@ -307,62 +396,105 @@ public class SceneEssentials {
         }
     }
 
-    /**
-     * Removes old model data from the pscene and replaces it with the user
-     * selected collada data
-     */
-    public void loadDAEFile(boolean clear, Component arg0) {
-        currentPScene.setUseRepository(false);
-        if(clear)
-            currentPScene.getInstances().removeAllChildren();
-        if(currentHiProcessors == null)
-            currentHiProcessors = new ArrayList<ProcessorComponent>();
-        else
-            currentHiProcessors.clear();
+    ////////////////////////////////////////////////////////////////////////////
+    // LOAD FROM USER HD - Collada
+    ////////////////////////////////////////////////////////////////////////////
+    public boolean loadMeshDAEFile(boolean clear, boolean useRepository, Component arg0) {
+        int returnValue = jFileChooser_LoadColladaModel.showOpenDialog(arg0);
+        if (returnValue == JFileChooser.APPROVE_OPTION) {
+            fileModel = jFileChooser_LoadColladaModel.getSelectedFile();
+            currentPScene.setUseRepository(useRepository);
+            if (clear)
+                currentPScene.getInstances().removeAllChildren();
+            if (currentHiProcessors == null)
+                currentHiProcessors = new ArrayList<ProcessorComponent>();
+            else
+                currentHiProcessors.clear();
+            
+            File path = getAbsPath(fileModel);
+            String szURL = new String("file://" + path.getPath());
+            URL modelURL = null;
 
-        File path = getAbsPath(fileModel);        
-        String szURL = new String("file://" + path.getPath());
-        URL modelURL = null;
-        
-        try {
-            modelURL = new URL(szURL);
-        } catch (MalformedURLException ex) {
-            Logger.getLogger(SceneEssentials.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        
-        SharedAsset colladaAsset = new SharedAsset(currentPScene.getRepository(), new AssetDescriptor(SharedAssetType.COLLADA_Mesh, modelURL));
-        colladaAsset.setUserData(new ColladaLoaderParams(false, true, false, false, 3, fileModel.getName(), null));
-        modelInst = currentPScene.addModelInstance(fileModel.getName(), colladaAsset, new PMatrix());
-    }
-    
-    public void loadDAESMeshFile(boolean clear, Component arg0) {
-        currentPScene.setUseRepository(false);
-        if(clear)
-            currentPScene.getInstances().removeAllChildren();
-        if(currentHiProcessors == null)
-            currentHiProcessors = new ArrayList<ProcessorComponent>();
-        else
-            currentHiProcessors.clear();
-        
-        File path = getAbsPath(fileModel);        
-        String szURL = new String("file://" + path.getPath());
-        try {
-            if (clear) {
-                URL URLfile = new URL(szURL);
-                SharedAsset character = new SharedAsset(currentPScene.getRepository(), new AssetDescriptor(SharedAssetType.COLLADA_Model, URLfile));
-                character.setUserData(new ColladaLoaderParams(true, true, false, false, 4, fileModel.getName(), null));
-                String[] anim = null;
-                loadInitializer(fileModel.getName(), character, anim);
-            } else {
-                
+            try {
+                modelURL = new URL(szURL);
+            } catch (MalformedURLException ex) {
+                Logger.getLogger(SceneEssentials.class.getName()).log(Level.SEVERE, null, ex);
             }
-        } catch (MalformedURLException ex) {
-            Logger.getLogger(SceneEssentials.class.getName()).log(Level.SEVERE, null, ex);
+
+            SharedAsset colladaAsset = new SharedAsset(currentPScene.getRepository(), new AssetDescriptor(SharedAssetType.COLLADA_Mesh, modelURL));
+            colladaAsset.setUserData(new ColladaLoaderParams(false, true, false, false, 3, fileModel.getName(), null));
+            modelInst = currentPScene.addModelInstance(fileModel.getName(), colladaAsset, new PMatrix());
+            return true;
         }
+        return false;
     }
     
-    public void loadDAEURL(boolean clear, Component arg0, String[] data, String[] meshRef, int region) {
-        currentPScene.setUseRepository(false);
+    public boolean loadSMeshDAEFile(boolean clear, boolean useRepository, Component arg0) {
+        int returnValue = jFileChooser_LoadColladaModel.showOpenDialog(arg0);
+        if (returnValue == JFileChooser.APPROVE_OPTION) {
+            fileModel = jFileChooser_LoadColladaModel.getSelectedFile();
+            currentPScene.setUseRepository(useRepository);
+            if (clear)
+                currentPScene.getInstances().removeAllChildren();
+            if (currentHiProcessors == null)
+                currentHiProcessors = new ArrayList<ProcessorComponent>();
+            else
+                currentHiProcessors.clear();
+            
+            File path = getAbsPath(fileModel);
+            String szURL = new String("file://" + path.getPath());
+            URL modelURL = null;
+
+            try {
+                modelURL = new URL(szURL);
+                SharedAsset colladaAsset = new SharedAsset(currentPScene.getRepository(), new AssetDescriptor(SharedAssetType.COLLADA_Mesh, modelURL));
+                colladaAsset.setUserData(new ColladaLoaderParams(true, true, false, false, 4, fileModel.getName(), null));
+                String[] anim = null;
+                loadInitializer(fileModel.getName(), colladaAsset, anim);
+                return true;
+            } catch (MalformedURLException ex) {
+                Logger.getLogger(SceneEssentials.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return false;
+    }
+    
+    public boolean loadAvatarDAEFile(boolean clear, boolean useRepository, Component arg0) {
+        int returnValue = jFileChooser_LoadAvatarDAE.showOpenDialog(arg0);
+        if (returnValue == JFileChooser.APPROVE_OPTION) {
+            fileModel = jFileChooser_LoadAvatarDAE.getSelectedFile();
+            currentPScene.setUseRepository(useRepository);
+            if (clear)
+                currentPScene.getInstances().removeAllChildren();
+
+            if (currentHiProcessors == null)
+                currentHiProcessors = new ArrayList<ProcessorComponent>();
+            else
+                currentHiProcessors.clear();
+
+            loadDAEChar();
+        }
+        return false;
+    }
+    
+    public void loadDAEChar() {
+        URL bindPose = findBindPose(fileModel);
+        final ArrayList<URL> animations = findAnims(fileModel);
+        String[] anim = new String[animations.size()];
+        for (int i = 0; i < animations.size(); i++) {
+            anim[i] = animations.get(i).toString();
+        }
+        
+        SharedAsset character = new SharedAsset(currentPScene.getRepository(), new AssetDescriptor(SharedAssetType.COLLADA_Model, bindPose));
+        character.setUserData(new ColladaLoaderParams(true, true, false, false, 4, fileModel.getName(), null));
+        loadInitializer(fileModel.getName(), character, anim);
+    }
+    
+    ////////////////////////////////////////////////////////////////////////////
+    // LOAD FROM SERVER
+    ////////////////////////////////////////////////////////////////////////////
+    public void loadMeshDAEURL(boolean clear, boolean useRepository, Component arg0, String[] data, String[] meshRef, int region) {
+        currentPScene.setUseRepository(useRepository);
         if(clear)
             currentPScene.getInstances().removeAllChildren();
         if(currentHiProcessors == null)
@@ -403,8 +535,27 @@ public class SceneEssentials {
         }
     }
     
+    public void loadAvatarDAEURL(boolean clear, boolean useRepository, Component arg0, String[] data, String[] anim) {
+        currentPScene.setUseRepository(useRepository);
+        if (clear)
+            currentPScene.getInstances().removeAllChildren();
+        
+        if (currentHiProcessors == null)
+            currentHiProcessors = new ArrayList<ProcessorComponent>();
+        else
+            currentHiProcessors.clear();
+        
+        try {
+            URL urlModel = new URL(data[3]);
+            SharedAsset character = new SharedAsset(currentPScene.getRepository(), new AssetDescriptor(SharedAssetType.COLLADA_Model, urlModel));
+            character.setUserData(new ColladaLoaderParams(true, true, false, false, 4, data[0], null));
+            loadInitializer(data[0], character, anim);
+        } catch (MalformedURLException ex) {
+            Logger.getLogger(SceneEssentials.class.getName()).log(Level.SEVERE, null, ex);
+        }        
+    }
+
     public void addDAEMeshURLToModel(String[] data, String[] meshRef, int region) {
-        currentPScene.setUseRepository(false);
         InstructionProcessor pProcessor = new InstructionProcessor(worldManager);
         Instruction pRootInstruction = new Instruction();
         pRootInstruction.addInstruction(InstructionNames.setSkeleton, skeleton);
@@ -427,51 +578,52 @@ public class SceneEssentials {
         meshsetup.put(region, meshRef);
     }
     
-    public void loadDAECharacter(boolean clear, Component arg0) {
-        if (clear)
-            currentPScene.getInstances().removeAllChildren();
-        
-        if (currentHiProcessors == null)
-            currentHiProcessors = new ArrayList<ProcessorComponent>();
-        else
-            currentHiProcessors.clear();
-        
-        loadDAEChar();
+    public void loadInitializer(String n, SharedAsset s, final String[] a) {
+        AssetInitializer init = new AssetInitializer() {
+
+            public boolean initialize(Object asset) {
+
+                if (((PNode) asset).getChild(0) instanceof SkeletonNode) {
+                    final SkeletonNode skel = (SkeletonNode) ((PNode) asset).getChild(0);
+                    
+                    // Visual Scale
+                    if (visualScale != 1.0f) {
+                        ArrayList<PPolygonSkinnedMeshInstance> meshes = skel.getSkinnedMeshInstances();
+                        for (PPolygonSkinnedMeshInstance mesh : meshes) {
+                            mesh.getTransform().getLocalMatrix(true).setScale(visualScale);
+                        }
+                    }
+                    
+                    // Set animations
+                    if (a != null) {
+                        InstructionProcessor pProcessor = new InstructionProcessor(worldManager);
+                        Instruction pRootInstruction = new Instruction();
+
+                        pRootInstruction.addInstruction(InstructionNames.setSkeleton, skel);
+                        for (int i = 0; i < a.length; i++) {
+                            pRootInstruction.addInstruction(InstructionNames.loadAnimation, a[i]);
+                        }
+                        pProcessor.execute(pRootInstruction);
+                    }
+                    
+                    skel.setShader(new VertexDeformer(worldManager));
+                    ((ProcessorCollectionComponent)currentEntity.getComponent(ProcessorCollectionComponent.class)).addProcessor(new SkinnedAnimationProcessor(skel));
+                    currentPScene.setDirty(true, true);
+                }
+                return true;
+            }
+        };
+        s.setInitializer(init);
+        modelInst = currentPScene.addModelInstance(n, s, new PMatrix());
+        // Set position
+        if (origin != null) {
+            modelInst.getTransform().setLocalMatrix(origin);                    // Set animations
+        }
     }
     
-    public void loadDAECharacterURL(boolean clear, Component arg0, String[] data, String[] anim) {
-        if (clear)
-            currentPScene.getInstances().removeAllChildren();
-        
-        if (currentHiProcessors == null)
-            currentHiProcessors = new ArrayList<ProcessorComponent>();
-        else
-            currentHiProcessors.clear();
-        
-        try {
-            URL urlModel = new URL(data[3]);
-            SharedAsset character = new SharedAsset(currentPScene.getRepository(), new AssetDescriptor(SharedAssetType.COLLADA_Model, urlModel));
-            character.setUserData(new ColladaLoaderParams(true, true, false, false, 4, data[0], null));
-            loadInitializer(data[0], character, anim);
-        } catch (MalformedURLException ex) {
-            Logger.getLogger(SceneEssentials.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        
-    }    
-    
-    public void loadDAEChar() {
-        URL bindPose = findBindPose(fileModel);
-        final ArrayList<URL> animations = findAnims(fileModel);
-        String[] anim = new String[animations.size()];
-        for (int i = 0; i < animations.size(); i++) {
-            anim[i] = animations.get(i).toString();
-        }
-        
-        SharedAsset character = new SharedAsset(currentPScene.getRepository(), new AssetDescriptor(SharedAssetType.COLLADA_Model, bindPose));
-        character.setUserData(new ColladaLoaderParams(true, true, false, false, 4, fileModel.getName(), null));
-        loadInitializer(fileModel.getName(), character, anim);
-    }
-    
+    ////////////////////////////////////////////////////////////////////////////
+    // HELPER FUNCTIONS
+    ////////////////////////////////////////////////////////////////////////////
     public File getAbsPath(File file) {
         String fullpath = null;
         int index = file.getParent().indexOf("./");
@@ -543,51 +695,7 @@ public class SceneEssentials {
         }
         return animURLs;
     }
-       
-    public void loadInitializer(String n, SharedAsset s, final String[] a) {
-        AssetInitializer init = new AssetInitializer() {
 
-            public boolean initialize(Object asset) {
-
-                if (((PNode) asset).getChild(0) instanceof SkeletonNode) {
-                    final SkeletonNode skel = (SkeletonNode) ((PNode) asset).getChild(0);
-                    
-                    // Visual Scale
-                    if (visualScale != 1.0f) {
-                        ArrayList<PPolygonSkinnedMeshInstance> meshes = skel.getSkinnedMeshInstances();
-                        for (PPolygonSkinnedMeshInstance mesh : meshes) {
-                            mesh.getTransform().getLocalMatrix(true).setScale(visualScale);
-                        }
-                    }
-                    
-                    // Set animations
-                    if (a != null) {
-                        InstructionProcessor pProcessor = new InstructionProcessor(worldManager);
-                        Instruction pRootInstruction = new Instruction();
-
-                        pRootInstruction.addInstruction(InstructionNames.setSkeleton, skel);
-                        for (int i = 0; i < a.length; i++) {
-                            pRootInstruction.addInstruction(InstructionNames.loadAnimation, a[i]);
-                        }
-                        pProcessor.execute(pRootInstruction);
-                    }
-                    
-                    skel.setShader(new VertexDeformer(worldManager));
-                    ((ProcessorCollectionComponent)currentEntity.getComponent(ProcessorCollectionComponent.class)).addProcessor(new SkinnedAnimationProcessor(skel));
-                    currentPScene.setDirty(true, true);
-                }
-                return true;
-            }
-        };
-        s.setInitializer(init);
-        currentPScene.setUseRepository(false);
-        modelInst = currentPScene.addModelInstance(n, s, new PMatrix());
-        // Set position
-        if (origin != null) {
-            modelInst.getTransform().setLocalMatrix(origin);                    // Set animations
-        }
-    }
-    
     /**
      * Replaces the texture of the currently selected model
      * TODO: Allow support for textures on multiple meshes.

@@ -17,7 +17,6 @@
  */
 package imi.tests;
 
-import com.jme.math.Vector3f;
 import imi.loaders.collada.ColladaLoaderParams;
 import imi.loaders.repository.AssetDescriptor;
 import imi.loaders.repository.AssetInitializer;
