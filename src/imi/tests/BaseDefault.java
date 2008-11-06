@@ -179,7 +179,7 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
         
         // The collection of processors for this entity
         ArrayList<ProcessorComponent> processors = new ArrayList<ProcessorComponent>();
-        
+                
         // The glue between JME and pscene
         JScene jscene = new JScene(pscene);
         
@@ -261,6 +261,7 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
         jscene.setRenderState(cs);
         jscene.setRenderState(ws);
         jscene.setRenderState(ls);
+        jscene.updateRenderState();
     }
     
     public void createSpace(String name, Vector3f center, ZBufferState buf, ColorRGBA color, WorldManager wm) {
@@ -614,6 +615,7 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
         Entity camera = new Entity("DefaultCamera");
         CameraComponent cc = wm.getRenderManager().createCameraComponent(cameraSG, m_cameraNode, 
                 m_width, m_height, 45.0f, m_aspect, 0.1f, 1000.0f, true);
+        m_renderBuffer.setCameraComponent(cc);
         camera.addComponent(CameraComponent.class, cc);
         
         //////////////////////////////////////////////////////////////////////
@@ -699,15 +701,17 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
     private void createUI(WorldManager wm) {
         // init GUI components
         initComponents();
+        
         // center the frame
         setLocationRelativeTo(null);
+        
         // show frame with focus
         canvas_SceneRenderWindow.requestFocusInWindow();
-
+        
         // make it visible
         setVisible(true);
         
-        // start loading visualization
+        // init progress bar
         runProgressBar(true);
         
         // Add to the wm to set title string later during debugging
@@ -730,7 +734,7 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
     public void actionPerformed(ActionEvent arg0) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
-
+    
     /**
      * Sets the GUI to the default Java Look & Feel (Metal)
      */

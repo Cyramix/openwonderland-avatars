@@ -189,7 +189,7 @@ public class DemoBase2 extends javax.swing.JFrame implements FrameRateListener, 
      * @param wm (WorldManager)
      * @param processors (ArrayList<ProcessorComponent>)
      */
-    protected void simpleSceneInit(PScene pscene, WorldManager wm, ArrayList<ProcessorComponent> processors) {
+    protected void simpleSceneInit(JScene jscene, WorldManager wm, Entity jsentity, ArrayList<ProcessorComponent> processors) {
         //PPolygonModelInstance modelInst = pscene.addModelInstance(createArticulatedModel(1.3f, 1.0f, 2.0f, 10.0f, 3.0f, new PMatrix()), new PMatrix());
     }
     
@@ -204,10 +204,7 @@ public class DemoBase2 extends javax.swing.JFrame implements FrameRateListener, 
         
         // The collection of processors for this entity
         ArrayList<ProcessorComponent> processors = new ArrayList<ProcessorComponent>();
-        
-        // Initialize the scene
-        simpleSceneInit(pscene, wm, processors);
-        
+                
         // The glue between JME and pscene
         JScene jscene = new JScene(pscene);
         
@@ -237,6 +234,9 @@ public class DemoBase2 extends javax.swing.JFrame implements FrameRateListener, 
         
         // Add the entity to the world manager
         wm.addEntity(JSEntity);
+        
+        // Initialize the scene
+        simpleSceneInit(jscene, wm, JSEntity, processors);
         
         // called to set up the GUI Stuff
         setGUI(jscene, wm, processors, JSEntity);
