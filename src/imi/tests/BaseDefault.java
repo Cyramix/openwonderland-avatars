@@ -996,6 +996,11 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
 
         jMenu_URL.setText("URL");
 
+        jMenuItem_LoadModelURL.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                m_sceneData.openServerBrowser();
+            }
+        });
         jMenuItem_LoadModelURL.setText("Load Model");
         jMenu_URL.add(jMenuItem_LoadModelURL);
 

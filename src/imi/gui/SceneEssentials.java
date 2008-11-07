@@ -71,6 +71,7 @@ public class SceneEssentials {
         private JFileChooser jFileChooser_LoadModel = null;
         private JFileChooser jFileChooser_LoadXML = null;
         private JFileChooser jFileChooser_LoadAvatarDAE = null;
+        private ServerBrowser serverFileChooser = null;
     // File Containers
         private File fileXML     = null;
         private File fileModel   = null;
@@ -81,8 +82,7 @@ public class SceneEssentials {
         private float visualScale = 1.0f;
         private PMatrix origin = new PMatrix();
         private SkeletonNode skeleton = null;
-        private Map<Integer, String[]> meshsetup = null;
-        
+        private Map<Integer, String[]> meshsetup = null;        
         
     public SceneEssentials() {
         initFileChooser();
@@ -259,6 +259,12 @@ public class SceneEssentials {
         jFileChooser_LoadAvatarDAE.setDoubleBuffered(true);
         jFileChooser_LoadAvatarDAE.setDragEnabled(true);
         jFileChooser_LoadAvatarDAE.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+    }
+    
+    public void openServerBrowser() {
+        serverFileChooser = new ServerBrowser();
+        serverFileChooser.initBrowser(0);
+        serverFileChooser.setVisible(true);
     }
     
     /**
