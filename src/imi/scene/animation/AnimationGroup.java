@@ -195,6 +195,7 @@ public class AnimationGroup
                     state.setCurrentCycleTime(state.getTransitionCycleTime());
                     state.setTimeInTransition(0.0f);
                     state.setReverseAnimation(state.isTransitionReverseAnimation());
+                    state.sendMessage(AnimationListener.AnimationMessageType.TransitionComplete);
                     return;
                 }
                 else

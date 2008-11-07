@@ -18,6 +18,7 @@
 package imi.scene.animation;
 
 import imi.scene.animation.AnimationComponent.PlaybackMode;
+import java.util.ArrayList;
 
 /**
  * This class stores the state for a given animated instance.
@@ -51,6 +52,10 @@ public class AnimationState
     private boolean m_bReverseAnimation         = false;
     private boolean m_bPauseAnimation           = false;
     private boolean m_bTransitionReverseAnimation = false;
+    
+    /** The list of listeners to inform of messages **/
+    private ArrayList<AnimationListener> m_listeners = null;
+    
     /**
      * 
      * Empty Constructor
@@ -332,5 +337,73 @@ public class AnimationState
     {
         m_currentCycleMode = playbackMode;
     }
+    
+    /**
+     * Adds a listener to the state
+     * @param listener
+     * @return True if added, false otherwise (including already being in the list)
+     */
+    public boolean addListener(AnimationListener listener)
+    {
+        boolean result = false;
+        if (m_listeners == null)
+        {
+            m_listeners = new ArrayList<AnimationListener>();
+            m_listeners.add(listener);
+            result = true;
+        }
+        else if (m_listeners.indexOf(listener) == -1)
+        {
+            m_listeners.add(listener);
+            result = true;
+        }
+        else
+            result = false;
+        
+        return result;
+    }
 
+    /**
+     * Removes the specified listener from the list. 
+     * @param listener
+     * @return True if found, false otherwise
+     */
+    public boolean removeListener(AnimationListener listener)
+    {
+        if (m_listeners == null)
+            return false;
+        
+        int index = m_listeners.indexOf(listener);
+        
+        if (index == -1)
+            return false;
+        else
+            m_listeners.remove(listener);
+        
+        return true;
+    }
+    
+    /**
+     * Remove all registered listeners
+     */
+    public void clearListeners()
+    {
+        if (m_listeners != null)
+        {
+            m_listeners.clear();
+            m_listeners = null;
+        }
+    }
+    
+    /**
+     * Send the message to all registered animation listeners
+     * @param message
+     */
+    public void sendMessage(AnimationListener.AnimationMessageType message)
+    {
+        if (m_listeners == null)
+            return;
+        for (AnimationListener listener : m_listeners)
+            listener.receiveAnimationMessage(message);
+    }
 }

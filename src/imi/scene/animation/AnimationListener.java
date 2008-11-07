@@ -31,6 +31,7 @@ public interface AnimationListener
     {
         // Used to indicate a cycle has completed; could be one end of an oscillation, or a completed loop iteration
         EndOfCycle, 
+        TransitionComplete,
         // Others...?
     }
     
