@@ -79,7 +79,7 @@ public class ServerBrowser extends javax.swing.JFrame {
         }
         
         DefaultTableModel tabModel = new DefaultTableModel(data, columnNames);
-        jTable1 = new JTable(tabModel);
+        jTable1.setModel(tabModel);
         m_loadType = dataType;
     }
    
@@ -117,7 +117,7 @@ public class ServerBrowser extends javax.swing.JFrame {
         }
         
         DefaultTableModel tabModel = new DefaultTableModel(data, columnNames);
-        jTable1 = new JTable(tabModel);
+        jTable1.setModel(tabModel);
         m_loadType = selection;
     }
     
@@ -266,17 +266,8 @@ public class ServerBrowser extends javax.swing.JFrame {
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
         jPanel_MainPanel.add(jLabel_TitleBar, gridBagConstraints);
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
-            },
-            new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
-            }
-        ));
+        DefaultTableModel t = new DefaultTableModel();
+        jTable1.setModel(t);
         jScrollPane1.setViewportView(jTable1);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -414,11 +405,11 @@ public class ServerBrowser extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(jPanel_MainPanel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 543, Short.MAX_VALUE)
+            .add(jPanel_MainPanel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 492, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(jPanel_MainPanel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 358, Short.MAX_VALUE)
+            .add(jPanel_MainPanel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 341, Short.MAX_VALUE)
         );
 
         pack();
