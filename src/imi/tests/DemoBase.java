@@ -19,7 +19,11 @@ package imi.tests;
 
 import com.jme.bounding.BoundingBox;
 import com.jme.image.Texture;
+import com.jme.light.DirectionalLight;
+import com.jme.light.LightNode;
 import com.jme.light.PointLight;
+import com.jme.math.Matrix3f;
+import com.jme.math.Quaternion;
 import com.jme.math.Vector2f;
 import com.jme.math.Vector3f;
 import com.jme.renderer.ColorRGBA;
@@ -187,6 +191,11 @@ public class DemoBase
         wm.addEntity(JSEntity);    
     }
     
+    /**
+     * Sets up several default render states including the lighting
+     * @param jscene
+     * @param wm
+     */
     public void setDefaultRenderStates(JScene jscene, WorldManager wm) 
     {
         // Z Buffer State
@@ -199,26 +208,27 @@ public class DemoBase
         matState = (MaterialState) wm.getRenderManager().createRendererState(RenderState.RS_MATERIAL);
         matState.setDiffuse(ColorRGBA.white);
         
-        // Light state
-//        Vector3f lightDir = new Vector3f(0.0f, -1.0f, 0.0f);
-//        DirectionalLight dr = new DirectionalLight();
-//        dr.setDiffuse(new ColorRGBA(1.0f, 1.0f, 1.0f, 1.0f));
-//        dr.setAmbient(new ColorRGBA(0.2f, 0.2f, 0.2f, 1.0f));
-//        dr.setSpecular(new ColorRGBA(0.7f, 0.7f, 0.7f, 1.0f));
-//        dr.setDirection(lightDir);
-//        dr.setEnabled(true);
-//        LightState ls = (LightState) wm.createRendererState(RenderState.RS_LIGHT);
-//        ls.setEnabled(true);
-//        ls.attach(dr);
-        // SET lighting
-        PointLight light = new PointLight();
-        light.setDiffuse(new ColorRGBA(1.0f, 1.0f, 1.0f, 1.0f));
-        light.setAmbient(new ColorRGBA(1.0f, 1.0f, 1.0f, 1.0f));
-        light.setLocation(new Vector3f(-1000, 1000, 0)); // not affecting anything
-        light.setEnabled(true);
-        LightState ls = (LightState) wm.getRenderManager().createRendererState(RenderState.RS_LIGHT);
-        ls.setEnabled(true);
-        ls.attach(light);
+        // LIGHT NODE TEST
+        // create the node 
+        LightNode lightNode = new LightNode("Dis is me light node man!");
+        
+        // Generate a new directional light to attach to the node
+        DirectionalLight directionLight = new DirectionalLight();
+        directionLight.setDirection(new Vector3f(1, 0, 0).normalize());
+        directionLight.setDiffuse(new ColorRGBA(1.0f, 1.0f, 1.0f, 1.0f));
+        directionLight.setAmbient(new ColorRGBA(0.2f, 0.2f, 0.2f, 0.2f));
+        directionLight.setEnabled(true);
+        // attach it to the LightNode
+        lightNode.setLight(directionLight);
+        // orient the LightNode in some direction 
+        
+        Matrix3f rotationMatrix = new Matrix3f();
+        rotationMatrix.fromAngleAxis(3.14159f, Vector3f.UNIT_XYZ);
+        lightNode.setLocalRotation(rotationMatrix);
+        
+        // add it to the render manager
+        wm.getRenderManager().addLight(lightNode);
+        wm.addToUpdateList(lightNode);
         
         // Cull State
         CullState cs = (CullState) wm.getRenderManager().createRendererState(RenderState.RS_CULL);      
@@ -234,7 +244,7 @@ public class DemoBase
         jscene.setRenderState(buf);
         jscene.setRenderState(cs);
         jscene.setRenderState(ws);
-        jscene.setRenderState(ls);
+        //jscene.setRenderState(ls);
     }
     
     public void createSpace(String name, Vector3f center, ZBufferState buf,

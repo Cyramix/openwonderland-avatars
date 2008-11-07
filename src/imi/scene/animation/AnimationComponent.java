@@ -30,6 +30,16 @@ import javolution.util.FastList;
  */
 public class AnimationComponent 
 {
+    /**
+     * This enumeration serves to describe the playback mode of an animation clip.
+     */
+    public enum PlaybackMode
+    {
+        PlayOnce, // Play the animation and stop on the final frame
+        Loop, // Continually loop from the beginning to the end (relative to time)
+        Oscillate, // Play from one end to the other, reverse direction and play to the beginning, repeat
+    }
+    
     /** The animation data is stored in groups, a group contains multiple animations that can be indexed via AnimationCycles */
     private ArrayList<AnimationGroup> m_AnimationGroups = new ArrayList<AnimationGroup>();
     

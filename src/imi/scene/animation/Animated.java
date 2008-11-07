@@ -18,7 +18,6 @@
 package imi.scene.animation;
 
 import imi.scene.PJoint;
-import java.util.ArrayList;
 
 /**
  * An interface for an animated instance
@@ -34,12 +33,23 @@ public interface Animated
     public AnimationState getAnimationState();
     
     /**
+     * Retrieve the animation component
+     * @return The component
+     */
+    public AnimationComponent getAnimationComponent();
+    /**
      * Retrieve the animation state at the specified index.
      * @param index 
      * @return The animation state or null if not available
      */
     public AnimationState getAnimationState(int index);
     
+    /**
+     * Add a new animation state to the collection
+     * @param newState
+     * @return The index of the newly added state
+     */
+    public int addAnimationState(AnimationState newState);
     /**
      * This method retrieves the joint with the specified name
      * @param jointName The name of the joint

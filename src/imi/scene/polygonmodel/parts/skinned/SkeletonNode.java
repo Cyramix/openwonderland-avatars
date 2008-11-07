@@ -374,6 +374,12 @@ public class SkeletonNode extends PNode implements Animated
     {
         return findSkinnedMeshJoint(jointName);
     }
+    
+    public int addAnimationState(AnimationState newState)
+    {
+        m_animationStates.add(newState);
+        return m_animationStates.size() - 1;
+    }
 
     public AnimationState getAnimationState(int index)
     {

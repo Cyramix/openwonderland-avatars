@@ -17,6 +17,8 @@
  */
 package imi.scene.animation;
 
+import imi.scene.animation.AnimationComponent.PlaybackMode;
+
 /**
  * This class stores the state for a given animated instance.
  * 
@@ -30,6 +32,8 @@ public class AnimationState
     private float   m_CurrentCycleTime          = 0.0f;
     private float   m_CurrentCycleStartTime     = 0.0f;
     private float   m_CurrentCycleEndTime       = 0.0f;
+    /** Describes the playback mode of the current animation cycle **/
+    private AnimationComponent.PlaybackMode m_currentCycleMode = AnimationComponent.PlaybackMode.Loop;
     
     // Transition cycle information
     private int     m_TransitionCycle           = -1;
@@ -38,6 +42,8 @@ public class AnimationState
     private float   m_TransitionCycleEndTime    = 0.0f;
     private float   m_TransitionDuration        = 0.5f; // how long the transition will last
     private float   m_TimeInTransition          = 0.0f; // goes 0.0f to trainsition duration
+    /** Describes the playback mode of the transitioning animation cycle **/
+    private AnimationComponent.PlaybackMode m_transitionCycleMode = AnimationComponent.PlaybackMode.PlayOnce;
     
     private float   m_AnimationSpeed            = 1.0f; // 1.0f
     
@@ -305,6 +311,26 @@ public class AnimationState
 
     public void setTransitionReverseAnimation(boolean bTransitionReverseAnimation) {
         this.m_bTransitionReverseAnimation = bTransitionReverseAnimation;
+    }
+
+    public PlaybackMode getTransitionPlaybackMode()
+    {
+        return m_transitionCycleMode;
+    }
+    
+    public void setTransitionPlaybackMode(PlaybackMode playbackMode)
+    {
+        m_transitionCycleMode = playbackMode;
+    }
+    
+    public PlaybackMode getCurrentCyclePlaybackMode()
+    {
+        return m_currentCycleMode;
+    }
+    
+    public void setCurrentCyclePlaybackMode(PlaybackMode playbackMode)
+    {
+        m_currentCycleMode = playbackMode;
     }
 
 }

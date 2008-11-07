@@ -18,7 +18,6 @@
 package imi.scene.animation;
 
 import imi.scene.PJoint;
-import java.util.ArrayList;
 import javolution.util.FastList;
 
 
@@ -107,6 +106,27 @@ public class AnimationGroup
     }
     
     /**
+     * This method iterates through each AnimationState object contained by 
+     * the animated thing passed in. The results of the most recent joint
+     * manipulation are stored in the final result.
+     * @param animated
+     */
+    public synchronized void calculateDecalFrame(Animated animated)
+    {
+        int index = 0;
+        while (true)
+        {
+            AnimationState state = animated.getAnimationState(index);
+            if (state == null) // out of states
+                break;
+            else
+            {
+                calculateFrame(state, animated);
+            }
+        }
+    }
+    
+    /**
      * Generates the current "pose" solutions based on state input.
      * @param animated The thing to animate
      */
@@ -121,11 +141,11 @@ public class AnimationGroup
      * @param animated That which is animated
      * @param index The index of the animation state to use for solving
      */
-    public synchronized void calculateFrame(Animated animated, int index)
+    private void calculateFrame(AnimationState state, Animated animated)
     {  
         // This was changed in order to support calculating frames on
         // multiple animation groups within a single animated thing
-        AnimationState state = animated.getAnimationState(index);
+        
 
         if (state.isPauseAnimation())
             return;
@@ -136,7 +156,7 @@ public class AnimationGroup
 
         AnimationCycle cycle = m_cycles[cycleIndex];
 
-        float fTime = clampCycleTime(state.getCurrentCycleTime(), cycle, state.isReverseAnimation());
+        float fTime = clampCycleTime(cycle, state, true);
         state.setCurrentCycleTime(fTime);
         state.setCurrentCycleStartTime(cycle.getStartTime());
         state.setCurrentCycleEndTime(cycle.getEndTime());
@@ -146,11 +166,13 @@ public class AnimationGroup
         {
             bTransitioning = true;
 
-            float fTransitionTime = clampCycleTime(state.getTransitionCycleTime(), m_cycles[state.getTransitionCycle()], state.isTransitionReverseAnimation());
+            
+            AnimationCycle transitionCycle = m_cycles[state.getTransitionCycle()];
+            
+            float fTransitionTime = clampCycleTime(transitionCycle, state, false);
             
             state.setTransitionCycleTime(fTransitionTime);
             
-            AnimationCycle transitionCycle = m_cycles[state.getTransitionCycle()];
             state.setTransitionCycleStartTime(transitionCycle.getStartTime());
             state.setTransitionCycleEndTime(transitionCycle.getEndTime());
         }
@@ -185,30 +207,83 @@ public class AnimationGroup
         }
     }
     
+    public synchronized void calculateFrame(Animated animated, int index)
+    {
+        AnimationState state = animated.getAnimationState(index);
+        calculateFrame(state, animated);
+    }
+    
     /**
-     * The animation jumps from the end to the beginning
-     * @param fTime - current animation time
-     * @param cycle - current animation cycle
-     * @param bReverse - true to play the animation in reverse
+     * Clamps the cycle time intelligently based on the provided state.
+     * @param cycle
+     * @param state
+     * @param bClampForCurrentCycle
      * @return
      */
-    // TODO : reverse needs more testing
-    // TODO : oscilate and single run
-    private float clampCycleTime(float fTime, AnimationCycle cycle, boolean bReverse)
+    private float clampCycleTime(AnimationCycle cycle, AnimationState state, boolean bClampForCurrentCycle)
     {
+        // Variables assigned meaningful values based on bClampForCurrentCycle
+        boolean bReverse  = false;
+        AnimationComponent.PlaybackMode mode = null;
+        float fTime = 0.0f;
+        
+        if (bClampForCurrentCycle == true) // Use current cycle info
+        {
+            bReverse = state.isReverseAnimation();
+            mode = state.getCurrentCyclePlaybackMode();
+            fTime = state.getCurrentCycleTime();
+        }
+        else // For transition cycle
+        {
+            bReverse = state.isTransitionReverseAnimation();
+            mode = state.getTransitionPlaybackMode();
+            fTime = state.getTransitionCycleTime();
+        }
+        
         if (bReverse)
         {
-            if (fTime < cycle.getStartTime())
+            if (fTime < cycle.getStartTime()) // Reverse left edge
+            {
+                if (mode == AnimationComponent.PlaybackMode.Loop)
+                    fTime = cycle.getEndTime() - Float.MIN_VALUE;
+                else if (mode == AnimationComponent.PlaybackMode.PlayOnce)
+                    fTime = cycle.getStartTime();
+                else if (mode == AnimationComponent.PlaybackMode.Oscillate)
+                {
+                    fTime = cycle.getStartTime() + Float.MIN_VALUE;
+                    // Reverse the cycle!
+                    if (bClampForCurrentCycle)
+                        state.setReverseAnimation(!state.isReverseAnimation());
+                    else
+                        state.setTransitionReverseAnimation(!state.isTransitionReverseAnimation());
+                }
+                    
+            }
+            else if (fTime > cycle.getEndTime()) // Reverse right edge, clamp to the right
                 fTime = cycle.getEndTime();
-            else if (fTime > cycle.getEndTime())
-                fTime = cycle.getEndTime();   
         }
         else
         {
-            if (fTime < cycle.getStartTime())
+            if (fTime < cycle.getStartTime()) // Forward, left edge, clamp to the left
+            {
                 fTime = cycle.getStartTime();
-            else if (fTime > cycle.getEndTime())
-                fTime = cycle.getStartTime();
+            }
+            else if (fTime > cycle.getEndTime()) // Forward, right edge
+            {
+                if (mode == AnimationComponent.PlaybackMode.Loop)
+                    fTime = cycle.getStartTime() + Float.MIN_VALUE;
+                else if (mode == AnimationComponent.PlaybackMode.PlayOnce)
+                    fTime = cycle.getEndTime();
+                else if (mode == AnimationComponent.PlaybackMode.Oscillate)
+                {
+                    fTime = cycle.getEndTime() - Float.MIN_VALUE;
+                    // Reverse the cycle!
+                    if (bClampForCurrentCycle)
+                        state.setReverseAnimation(!state.isReverseAnimation());
+                    else
+                        state.setTransitionReverseAnimation(!state.isTransitionReverseAnimation());
+                }
+            }
         }
         
         return fTime;

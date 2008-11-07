@@ -47,7 +47,7 @@ public class SynchronizedQueue <E>
      * Add an element to the end
      * @param object
      */
-    public synchronized void push(E object)
+    public synchronized void enqueue(E object)
     {
         m_collection.add(object);
     }

@@ -18,24 +18,24 @@
 package imi.scene.processors;
 
 import imi.scene.PNode;
-import imi.scene.animation.AnimationState;
+import imi.scene.animation.Animated;
 import imi.scene.animation.AnimationGroup;
-import imi.scene.animation.TransitionQueue;
+import imi.scene.animation.AnimationState;
 import imi.scene.polygonmodel.PPolygonModelInstance;
 import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
-import org.jdesktop.mtgame.ProcessorComponent;
-import org.jdesktop.mtgame.ProcessorArmingCollection;
 import org.jdesktop.mtgame.NewFrameCondition;
+import org.jdesktop.mtgame.ProcessorArmingCollection;
+import org.jdesktop.mtgame.ProcessorComponent;
 
 /**
- *
- * @author Lou Hayt
- * @author Ronald Dahlgren
+ * This processor handles animating a character. Do to our additive blending
+ * system, these animations are handled in a special, and specific way.
+ * @author Ronald E Dahlgren
  */
-public class SkinnedAnimationProcessor extends ProcessorComponent
+public class CharacterAnimationProcessor extends ProcessorComponent
 {
-    private SkeletonNode m_animated = null;
-    private PPolygonModelInstance m_modelInst = null;
+    private Animated                m_animated  = null;
+    private PPolygonModelInstance   m_modelInst = null;
 
     private static float fAnimationTimeStep = 0.01f;
 
@@ -45,11 +45,11 @@ public class SkinnedAnimationProcessor extends ProcessorComponent
      * This constructor receives the skeleton node
      * @param instance
      */
-    public SkinnedAnimationProcessor(SkeletonNode skeleton) 
+    public CharacterAnimationProcessor(SkeletonNode skeleton) 
     {
-        m_animated = skeleton;
+        //m_animated = skeleton;
     }
-    public SkinnedAnimationProcessor(PPolygonModelInstance modelInst) 
+    public CharacterAnimationProcessor(PPolygonModelInstance modelInst) 
     {
         m_modelInst = modelInst;
     }
@@ -66,7 +66,7 @@ public class SkinnedAnimationProcessor extends ProcessorComponent
                 {
                     if (kid instanceof SkeletonNode)
                     {
-                        m_animated = (SkeletonNode) kid;
+                        //m_animated = (SkeletonNode) kid;
                     }
                 }
             }
@@ -78,16 +78,24 @@ public class SkinnedAnimationProcessor extends ProcessorComponent
             return;
         
         // Slightly hardcoded section follows. Avert your eyes!
-        AnimationGroup AnimationGroup = m_animated.getAnimationComponent().getGroup();
-        AnimationState AnimationState = m_animated.getAnimationState();
-
-        // advance animation time
-        if (!AnimationState.isPauseAnimation())
-            AnimationState.advanceAnimationTime(fAnimationTimeStep);
+        // TODO: Map animation groups to the appropriate states
         
-        // calculate frame
+        AnimationGroup AnimationGroup = m_animated.getAnimationComponent().getGroup();
+        int index = 0;
+        while (true) // advance all times
+        {
+            AnimationState state = m_animated.getAnimationState(index);
+            
+            if (state == null)
+                break;
+            // TODO: use animatedcharacter interface
+            if (!state.isPauseAnimation())
+                state.advanceAnimationTime(fAnimationTimeStep);
+        }
+
+        // Calculate the final pose
         if (AnimationGroup != null)
-            AnimationGroup.calculateFrame(m_animated);
+            AnimationGroup.calculateDecalFrame(m_animated);
     }
 
     @Override
