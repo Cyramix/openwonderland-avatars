@@ -180,8 +180,8 @@ public class GameState extends NamedUpdatableObject
         if (logger.isLoggable(Level.FINE))
             logger.fine(getName() + " Enter");
         
-        if (gameContext.getController().getWindow() != null)
-            gameContext.getController().getWindow().setTitle(getName() + " Reverse: " + bReverseAnimation + " " + getAnimationName());
+//        if (gameContext.getController().getWindow() != null)
+//            gameContext.getController().getWindow().setTitle(getName() + " Reverse: " + bReverseAnimation + " " + getAnimationName());
         
         bAnimationSet = false;
         

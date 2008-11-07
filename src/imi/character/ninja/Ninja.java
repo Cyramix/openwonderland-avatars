@@ -73,7 +73,7 @@ public class Ninja extends imi.character.Character
 //        m_keyBindings.put(KeyEvent.VK_W,        TriggerNames.Move_Forward.ordinal());
 //        m_keyBindings.put(KeyEvent.VK_S,        TriggerNames.Move_Back.ordinal());
         m_keyBindings.put(KeyEvent.VK_CONTROL,      TriggerNames.Punch.ordinal());
-        m_keyBindings.put(KeyEvent.VK_ENTER,        TriggerNames.GoSit.ordinal());
+        m_keyBindings.put(KeyEvent.VK_ENTER,        TriggerNames.ToggleSteering.ordinal());
         m_keyBindings.put(KeyEvent.VK_BACK_SPACE,   TriggerNames.PositionGoalPoint.ordinal());
         m_keyBindings.put(KeyEvent.VK_HOME,         TriggerNames.SelectNearestGoalPoint.ordinal());
         m_keyBindings.put(KeyEvent.VK_ADD,          TriggerNames.Move_Down.ordinal());
@@ -97,16 +97,16 @@ public class Ninja extends imi.character.Character
         if (scheme instanceof NinjaControlScheme)
         {
             ((NinjaControlScheme)scheme).setNinja(this);
-            Goal goalPoint = (Goal)m_wm.getUserData(Goal.class);
-            if (goalPoint != null)
-            {
-                ((NinjaContext)m_context).getSteering().setGoalPosition(goalPoint.getTransform().getLocalMatrix(false).getTranslation());
-                ((NinjaContext)m_context).getSteering().setSittingDirection(goalPoint.getTransform().getLocalMatrix(false).getLocalZ());
-                ((NinjaContext)m_context).getSteering().setGoal(goalPoint.getGoal());
-            }
-            
-//            if (m_wm.getUserData(JFrame.class) != null)
-//                ((DemoBase2)m_wm.getUserData(JFrame.class)).setGUI(m_jscene, m_wm, null, this);
+//            Goal goalPoint = (Goal)m_wm.getUserData(Goal.class);
+//            if (goalPoint != null)
+//            {
+//                ((NinjaContext)m_context).getSteering().setGoalPosition(goalPoint.getTransform().getLocalMatrix(false).getTranslation());
+//                ((NinjaContext)m_context).getSteering().setSittingDirection(goalPoint.getTransform().getLocalMatrix(false).getLocalZ());
+//                ((NinjaContext)m_context).getSteering().setGoal(goalPoint.getGoal());
+//            }
+//            
+////            if (m_wm.getUserData(JFrame.class) != null)
+////                ((DemoBase2)m_wm.getUserData(JFrame.class)).setGUI(m_jscene, m_wm, null, this);
         }
     }
 

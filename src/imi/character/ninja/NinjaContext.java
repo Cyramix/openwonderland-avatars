@@ -18,6 +18,7 @@
 package imi.character.ninja;
 
 import com.jme.math.Vector3f;
+import imi.character.GoSit;
 import imi.character.ninja.transitions.FlyToIdle;
 import imi.character.ninja.transitions.IdleToFly;
 import imi.character.ninja.transitions.IdleToPunch;
@@ -64,7 +65,7 @@ public class NinjaContext extends GameContext
         Move_Back,
         Punch,
         Sit,
-        GoSit,
+        ToggleSteering,
         PositionGoalPoint,
         SelectNearestGoalPoint,
         Move_Up,
@@ -150,26 +151,26 @@ public class NinjaContext extends GameContext
     protected void triggerAlert(int trigger, boolean pressed)
     {
         // Toggle steering behavior towards the current goal
-        if (trigger == TriggerNames.GoSit.ordinal() && pressed)
+        if (trigger == TriggerNames.ToggleSteering.ordinal() && pressed)
             steering.toggleEnable();
      
         // Position the goal point for yourself and other characters you will switch controls to
         else if (trigger == TriggerNames.PositionGoalPoint.ordinal() && pressed)
         {
-            // Inform steering
-            steering.setGoalPosition(controller.getPosition());
-            steering.setSittingDirection(controller.getForwardVector());
-            
-            // Inform global goal point for visualization
-            Goal goalPoint = (Goal) ninja.getWorldManager().getUserData(Goal.class);
-            if (goalPoint != null)
-            {
-                goalPoint.getTransform().getLocalMatrix(true).set(controller.getTransform().getWorldMatrix(false));
-                goalPoint.getTransform().getLocalMatrix(true).setScale(1.0f);
-                PScene GPScene = goalPoint.getPScene();
-                GPScene.setDirty(true, true);
-                GPScene.submitTransforms();
-            }
+//            // Inform steering
+//            steering.setGoalPosition(controller.getPosition());
+//            steering.setSittingDirection(controller.getForwardVector());
+//            
+//            // Inform global goal point for visualization
+//            Goal goalPoint = (Goal) ninja.getWorldManager().getUserData(Goal.class);
+//            if (goalPoint != null)
+//            {
+//                goalPoint.getTransform().getLocalMatrix(true).set(controller.getTransform().getWorldMatrix(false));
+//                goalPoint.getTransform().getLocalMatrix(true).setScale(1.0f);
+//                PScene GPScene = goalPoint.getPScene();
+//                GPScene.setDirty(true, true);
+//                GPScene.submitTransforms();
+//            }
         }
         
         // Find nearest chair and sit on it
@@ -281,36 +282,36 @@ public class NinjaContext extends GameContext
 
     public void GoToNearestLocation() 
     {   
-        if (ninja.getObjectCollection() == null)
-            return;
-        
-        location = ninja.getObjectCollection().findNearestLocation(ninja, 10000.0f, 1.0f, false);
-        if (location != null)
-        {
-            Vector3f pos = location.getPosition();
-            Vector3f direction = location.getForwardVector();
-            steering.setGoalPosition(pos);
-            steering.setSittingDirection(direction);
-            steering.setGoal(location);
-            // Go and sit there
-            steering.setEnable(true);
-            steering.setReachedGoal(false);
-
-            // Update global goal point
-            Goal goalPoint = (Goal) ninja.getWorldManager().getUserData(Goal.class);
-            if (goalPoint != null)
-            {
-                goalPoint.setGoal(location);
-                PMatrix goal = new PMatrix(pos); 
-                goal.lookAt(pos, pos.add(direction), Vector3f.UNIT_Y);
-                goal.invert();
-                goalPoint.getTransform().setLocalMatrix(goal);
-                goalPoint.getTransform().getLocalMatrix(true).setScale(1.0f);
-                PScene GPScene = goalPoint.getPScene();
-                GPScene.setDirty(true, true);
-                GPScene.submitTransforms();
-            }
-        }
+//        if (ninja.getObjectCollection() == null)
+//            return;
+//        
+//        location = ninja.getObjectCollection().findNearestLocation(ninja, 10000.0f, 1.0f, false);
+//        if (location != null)
+//        {
+//            Vector3f pos = location.getPosition();
+//            Vector3f direction = location.getForwardVector();
+//            steering.setGoalPosition(pos);
+//            steering.setSittingDirection(direction);
+//            steering.setGoal(location);
+//            // Go and sit there
+//            steering.setEnable(true);
+//            steering.setReachedGoal(false);
+//
+//            // Update global goal point
+//            Goal goalPoint = (Goal) ninja.getWorldManager().getUserData(Goal.class);
+//            if (goalPoint != null)
+//            {
+//                goalPoint.setGoal(location);
+//                PMatrix goal = new PMatrix(pos); 
+//                goal.lookAt(pos, pos.add(direction), Vector3f.UNIT_Y);
+//                goal.invert();
+//                goalPoint.getTransform().setLocalMatrix(goal);
+//                goalPoint.getTransform().getLocalMatrix(true).setScale(1.0f);
+//                PScene GPScene = goalPoint.getPScene();
+//                GPScene.setDirty(true, true);
+//                GPScene.submitTransforms();
+//            }
+//        }
     }
         
     public boolean GoToNearestChair()
@@ -323,27 +324,32 @@ public class NinjaContext extends GameContext
         {
             Vector3f pos = ((Chair)obj).getGoalPosition();
             Vector3f direction = ((Chair)obj).getGoalForwardVector();
-            steering.setGoalPosition(pos);
-            steering.setSittingDirection(direction);
-            steering.setGoal(obj);
+            
+            GoSit task = new GoSit((Chair)obj, this);
+            steering.addTask(task);
+            
+//            steering.setGoalPosition(pos);
+//            steering.setSittingDirection(direction);
+//            steering.setGoal(obj);
+            
             // Go and sit there
             steering.setEnable(true);
-            steering.setReachedGoal(false);
+            //steering.setReachedGoal(false);
 
-            // Update global goal point
-            Goal goalPoint = (Goal) ninja.getWorldManager().getUserData(Goal.class);
-            if (goalPoint != null)
-            {
-                goalPoint.setGoal(obj);
-                PMatrix goal = new PMatrix(pos); 
-                goal.lookAt(pos, pos.add(direction), Vector3f.UNIT_Y);
-                goal.invert();
-                goalPoint.getTransform().setLocalMatrix(goal);
-                goalPoint.getTransform().getLocalMatrix(true).setScale(1.0f);
-                PScene GPScene = goalPoint.getPScene();
-                GPScene.setDirty(true, true);
-                GPScene.submitTransforms();
-            }
+//            // Update global goal point
+//            Goal goalPoint = (Goal) ninja.getWorldManager().getUserData(Goal.class);
+//            if (goalPoint != null)
+//            {
+//                goalPoint.setGoal(obj);
+//                PMatrix goal = new PMatrix(pos); 
+//                goal.lookAt(pos, pos.add(direction), Vector3f.UNIT_Y);
+//                goal.invert();
+//                goalPoint.getTransform().setLocalMatrix(goal);
+//                goalPoint.getTransform().getLocalMatrix(true).setScale(1.0f);
+//                PScene GPScene = goalPoint.getPScene();
+//                GPScene.setDirty(true, true);
+//                GPScene.submitTransforms();
+//            }
             
             return true;
         }

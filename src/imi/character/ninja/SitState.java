@@ -68,13 +68,13 @@ public class SitState extends GameState
      */
     public boolean toSit(Object data)
     {
-        // is the chair occupied?
-        if (ninjaContext.getSteering().getGoal() instanceof Chair)
-        {
-            chair = (Chair)ninjaContext.getSteering().getGoal();
-            if (chair.isOccupied())
-                return false;
-        }
+//        // is the chair occupied?
+//        if (ninjaContext.getSteering().getGoal() instanceof Chair)
+//        {
+//            chair = (Chair)ninjaContext.getSteering().getGoal();
+//            if (chair.isOccupied())
+//                return false;
+//        }
         
         return true;
     }

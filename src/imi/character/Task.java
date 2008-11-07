@@ -17,11 +17,19 @@
  */
 package imi.character;
 
+import imi.character.objects.SpatialObject;
+
 /**
  *
  * @author Lou Hayt
  */
-public class Task 
+public interface Task 
 {
+    public String getDescription();
+    public String getStatus();
 
+    public boolean verify();
+    public void update(float deltaTime);
+    public void onHold();
+    public SpatialObject getGoal();
 }
