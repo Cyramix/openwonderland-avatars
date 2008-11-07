@@ -42,6 +42,7 @@ import imi.scene.PScene;
 import imi.scene.polygonmodel.PPolygonModelInstance;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -68,6 +69,7 @@ import imi.scene.polygonmodel.parts.PMeshMaterial;
 import imi.scene.processors.JSceneEventProcessor;
 import imi.scene.shader.programs.VertDeformerWithSpecAndNormalMap;
 import java.io.File;
+import java.net.URL;
 
 /**
  *
@@ -109,6 +111,8 @@ public abstract class Character extends Entity implements SpatialObject
         String m_ModelFile = null;
         
         String m_TextureFile = null;
+
+        private String[] m_animations = new String[0];
 
         private String m_baseURL = null;
         
@@ -162,6 +166,14 @@ public abstract class Character extends Entity implements SpatialObject
          */
         public void setBaseURL(String baseURL) {
             m_baseURL = baseURL;
+        }
+
+        public String[] getAnimations() {
+            return m_animations;
+        }
+
+        public void setAnimations(String[] animations) {
+            this.m_animations = animations;
         }
     }
         
@@ -304,7 +316,7 @@ public abstract class Character extends Entity implements SpatialObject
             m_attributes.setModelFile(modelFile);
         if (textureFile != null)
             m_attributes.setTextureFile(textureFile);
-        
+
         if (modelIMI == null)
         {
             if (m_attributes.getModelFile().endsWith(".ms3d"))
@@ -341,10 +353,25 @@ public abstract class Character extends Entity implements SpatialObject
             }
             else if (m_attributes.getModelFile().endsWith(".dae"))
             {
-                SharedAsset character = new SharedAsset(m_pscene.getRepository(), new AssetDescriptor(SharedAssetType.COLLADA_Model, m_attributes.getModelFile()));
+                URL modelURL=null;
+                try {
+                    if (m_attributes.m_baseURL!=null)
+                        modelURL = new URL(m_attributes.m_baseURL + m_attributes.getModelFile());
+                } catch (MalformedURLException ex) {
+                    Logger.getLogger(Character.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                SharedAsset character;
+                
+                if (modelURL==null)
+                    character = new SharedAsset(m_pscene.getRepository(), new AssetDescriptor(SharedAssetType.COLLADA_Model, m_attributes.getModelFile()));
+                else
+                    character = new SharedAsset(m_pscene.getRepository(), new AssetDescriptor(SharedAssetType.COLLADA_Model, modelURL));
+                
                 character.setUserData(new ColladaLoaderParams(true, true, false, false, 4, "name", null));
                 AssetInitializer init = new AssetInitializer() {
                     public boolean initialize(Object asset) {
+
+                        URL rootURL = null;
 
                         if (((PNode)asset).getChild(0) instanceof SkeletonNode)
                         {
@@ -363,14 +390,14 @@ public abstract class Character extends Entity implements SpatialObject
                                 m_modelInst.getTransform().setLocalMatrix(origin);
                             
                             // Set animations
-                            if (m_attributes instanceof NinjaAvatarAttributes && ((NinjaAvatarAttributes)m_attributes).getAnimations() != null)
+                            if (m_attributes.getAnimations() != null)
                             {
 
                                 String fileProtocol = m_attributes.getBaseURL();
 
                                 if (fileProtocol==null)
                                     fileProtocol= new String("file://localhost/" + System.getProperty("user.dir") + "/");
-
+                                
                                 InstructionProcessor pProcessor = new InstructionProcessor(m_wm);
                                 Instruction pRootInstruction = new Instruction();
 
@@ -398,16 +425,24 @@ public abstract class Character extends Entity implements SpatialObject
                                 pRootInstruction.addInstruction(InstructionNames.loadGeometry, fileProtocol + "assets/models/collada/Shoes/TennisShoes_M/MaleTennisShoes.dae");
                                 pRootInstruction.addInstruction(InstructionNames.addSkinnedMesh, "TennisShoesShape");
 
-                                String [] anims = ((NinjaAvatarAttributes)m_attributes).getAnimations();
-                                for (int i = 0; i < anims.length; i++)
+                                String [] anims = m_attributes.getAnimations();
+                                for (int i = 0; i < anims.length; i++) {
                                     pRootInstruction.addInstruction(InstructionNames.loadAnimation, fileProtocol + anims[i]);
+                                }
                                 
                                 pProcessor.execute(pRootInstruction);
                                     
                             }
                             
+                            try {
+                                rootURL = new URL(m_attributes.getBaseURL());
+                            } catch (MalformedURLException ex) {
+                                Logger.getLogger(Character.class.getName()).log(Level.SEVERE, null, ex);
+                                rootURL = null;
+                            }
+
                             // Set material
-                            skeleton.setShader(new VertDeformerWithSpecAndNormalMap(m_wm));
+                            skeleton.setShader(new VertDeformerWithSpecAndNormalMap(m_wm, rootURL));
                         }
                         return true;
 

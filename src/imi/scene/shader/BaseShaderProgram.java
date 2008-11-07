@@ -20,6 +20,7 @@ package imi.scene.shader;
 import imi.scene.shader.programs.*;
 import com.jme.scene.state.GLSLShaderObjectsState;
 import imi.scene.polygonmodel.PPolygonMeshInstance;
+import imi.utils.FileUtils;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -119,11 +120,15 @@ public abstract class BaseShaderProgram implements RenderUpdater, AbstractShader
      */
     public final void update(Object obj)
     {
-        GLSLShaderObjectsState shaderState = (GLSLShaderObjectsState) obj;
-        
-        shaderState.load(m_shaderFiles[0], m_shaderFiles[1]);
-        // done
-        m_bShaderLoaded = true;
+        try {
+            GLSLShaderObjectsState shaderState = (GLSLShaderObjectsState) obj;
+
+            shaderState.load(m_shaderFiles[0], m_shaderFiles[1]);
+            // done
+            m_bShaderLoaded = true;
+        } catch(Exception e) {
+            Logger.getAnonymousLogger().log(Level.WARNING, "Failed to load shader "+m_shaderFiles[0]+"  "+ m_shaderFiles[1],e);
+        }
     }
     
     /**
@@ -190,4 +195,17 @@ public abstract class BaseShaderProgram implements RenderUpdater, AbstractShader
         m_programDescription = description;
     }
     
+    protected static URL wlaURL(URL prefix, String postfix) {
+        System.err.println("PREFIX "+prefix);
+        try {
+            if (prefix!=null && prefix.getProtocol().equalsIgnoreCase("wla")) {
+                return new URL("wla://"+prefix.getHost()+"/" + postfix);
+            } else {
+                return FileUtils.convertRelativePathToFileURL(postfix);
+            }
+        } catch (MalformedURLException ex) {
+            Logger.getLogger(NormalAndSpecularMapShader.class.getName()).log(Level.SEVERE, "Problem creating Shader URL "+prefix.getHost(), ex);
+            return null;
+        }
+    }
 }

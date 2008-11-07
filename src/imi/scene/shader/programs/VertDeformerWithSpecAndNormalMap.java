@@ -25,6 +25,7 @@ import imi.scene.polygonmodel.skinned.PPolygonSkinnedMesh;
 import imi.scene.shader.ShaderProperty;
 import imi.scene.shader.dynamic.GLSLDataType;
 import imi.utils.FileUtils;
+import java.net.URL;
 import org.jdesktop.mtgame.WorldManager;
 
 /**
@@ -58,6 +59,25 @@ public class VertDeformerWithSpecAndNormalMap extends BaseShaderProgram
     }
     
     
+    public VertDeformerWithSpecAndNormalMap(WorldManager wm, URL prefix)
+    {
+        super(
+                wm,
+                wlaURL(prefix, "assets/shaders/VertDeformSpecNormalMap.vert"),
+                wlaURL(prefix, "assets/shaders/VertDeformSpecNormalMap.frag")
+             );
+        setProgramName(this.getClass().getSimpleName());
+        setProgramDescription(new String(
+                "This program performs vertex deformation along with specular " +
+                "and normal mapping. Additionally, simple lighting is performed."
+                ));
+        m_propertyMap.put("DiffuseMapIndex",  new ShaderProperty("DiffuseMapIndex", GLSLDataType.GLSL_SAMPLER2D, Integer.valueOf(0)));
+        m_propertyMap.put("NormalMapIndex",   new ShaderProperty("NormalMapIndex", GLSLDataType.GLSL_SAMPLER2D, Integer.valueOf(1)));
+        m_propertyMap.put("SpecularMapIndex", new ShaderProperty("SpecularMapIndex", GLSLDataType.GLSL_SAMPLER2D, Integer.valueOf(2)));
+
+        m_propertyMap.put("SpecularPower", new ShaderProperty("SpecularPower", GLSLDataType.GLSL_FLOAT, Float.valueOf(8.0f)));
+        m_propertyMap.put("pose", new ShaderProperty("pose", GLSLDataType.GLSL_VOID, null));
+    }
     
     /**
      * Apply the shader to this mesh.

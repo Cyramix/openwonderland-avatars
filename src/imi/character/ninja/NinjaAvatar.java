@@ -49,15 +49,7 @@ public class NinjaAvatar extends Ninja
                 anims.add("assets/models/collada/Avatars/Male/Male_Jump.dae");
                 anims.add("assets/models/collada/Avatars/Male/Male_Laugh.dae");
             }
-            m_animations = anims.toArray(m_animations);
-        }
-
-        public String[] getAnimations() {
-            return m_animations;
-        }
-
-        public void setAnimations(String[] animations) {
-            this.m_animations = animations;
+            setAnimations(anims.toArray(new String[anims.size()]));
         }
     }
     

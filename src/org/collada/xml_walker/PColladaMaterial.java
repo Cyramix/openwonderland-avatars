@@ -274,7 +274,7 @@ public class PColladaMaterial
             {
                 // WORLD MANAGER STRIKES AGAIN!
                 if (m_pCollada != null && m_pCollada.getPScene() != null)
-                    result.setShader(new NormalAndSpecularMapShader(m_pCollada.getPScene().getWorldManager()));
+                    result.setShader(new NormalAndSpecularMapShader(m_pCollada.getPScene().getWorldManager(), m_pCollada.getFileLocation()));
                 else
                     Logger.getLogger(this.getClass().toString()).log(Level.SEVERE, "Unable to retrieve worldmanager, shaders unset. PColladaMaterial.java : 217");
             }

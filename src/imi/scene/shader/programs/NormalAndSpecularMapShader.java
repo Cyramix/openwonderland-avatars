@@ -25,7 +25,10 @@ import imi.scene.shader.ShaderProperty;
 import imi.scene.shader.dynamic.GLSLDataType;
 import imi.utils.FileUtils;
 import java.io.File;
+import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.jdesktop.mtgame.WorldManager;
 
 /**
@@ -55,7 +58,32 @@ public class NormalAndSpecularMapShader extends BaseShaderProgram
         
         m_propertyMap.put("SpecularPower", new ShaderProperty("SpecularPower", GLSLDataType.GLSL_FLOAT, Float.valueOf(8.0f)));
     }
-    
+
+
+    /**
+     * Load the shaders relative to the colladaFileURL. The current implementation
+     * assumes the wla url structure and uses the prefix of just the module name.
+     *
+     * @param wm
+     * @param colladaFileURL
+     */
+    public NormalAndSpecularMapShader(WorldManager wm, URL colladaFileURL)
+    {
+        super(
+                wm,
+                wlaURL(colladaFileURL, "assets/shaders/NormalAndSpecularMapping.vert"),
+                wlaURL(colladaFileURL, "assets/shaders/NormalAndSpecularMapping.frag")
+             );
+
+        setProgramName(this.getClass().getSimpleName());
+        setProgramDescription(new String("This program performs normal and specular mapping"));
+        // initialize shader properties
+        m_propertyMap.put("DiffuseMapIndex",  new ShaderProperty("DiffuseMapIndex", GLSLDataType.GLSL_SAMPLER2D, Integer.valueOf(0)));
+        m_propertyMap.put("NormalMapIndex",   new ShaderProperty("NormalMapIndex", GLSLDataType.GLSL_SAMPLER2D, Integer.valueOf(1)));
+        m_propertyMap.put("SpecularMapIndex", new ShaderProperty("SpecularMapIndex", GLSLDataType.GLSL_SAMPLER2D, Integer.valueOf(2)));
+
+        m_propertyMap.put("SpecularPower", new ShaderProperty("SpecularPower", GLSLDataType.GLSL_FLOAT, Float.valueOf(8.0f)));
+    }
 
     
     /**
