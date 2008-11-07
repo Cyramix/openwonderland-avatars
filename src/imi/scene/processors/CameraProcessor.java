@@ -60,7 +60,7 @@ public class CameraProcessor extends AWTEventProcessorComponent {
      */
     private float scaleX = 0.56f;
     private float scaleY = 0.56f;
-    private float walkInc = 0.2f;
+    private float walkInc = 0.075f;
     
     /**
      * States for movement

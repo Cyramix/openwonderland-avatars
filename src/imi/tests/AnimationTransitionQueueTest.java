@@ -21,44 +21,38 @@ import com.jme.math.Vector3f;
 import imi.character.ninja.NinjaAvatar;
 import imi.character.objects.LocationNode;
 import imi.character.objects.ObjectCollection;
-import imi.environments.ColladaEnvironment;
-import imi.loaders.collada.ColladaLoaderParams;
-import imi.loaders.repository.AssetDescriptor;
-import imi.loaders.repository.Repository;
-import imi.loaders.repository.SharedAsset;
-import imi.loaders.repository.SharedAsset.SharedAssetType;
+import imi.scene.animation.AnimationComponent.PlaybackMode;
+import imi.scene.animation.TransitionCommand;
+import imi.scene.animation.TransitionQueue;
 import imi.scene.processors.JSceneEventProcessor;
 import imi.utils.graph.Connection;
 import imi.utils.graph.Connection.ConnectionDirection;
 import imi.utils.input.NinjaControlScheme;
-import java.io.File;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.jdesktop.mtgame.WorldManager;
 
 /**
- *
- * @author Lou
+ * Test the animation queue!
+ * @author Ronald E Dahlgren
  */
-public class MusicalChairs extends DemoBase
+public class AnimationTransitionQueueTest extends DemoBase
 {
-    public MusicalChairs(String[] args){
+    public AnimationTransitionQueueTest(String[] args){
         super(args);
     }
-    
+
     public static void main(String[] args) {
         Logger.getLogger("com.jme.renderer").setLevel(Level.OFF);
-        MusicalChairs worldTest = new MusicalChairs(args);
+        AnimationTransitionQueueTest worldTest = new AnimationTransitionQueueTest(args);
     }
-    
+
     @Override
-    protected void createDemoEntities(WorldManager wm) 
+    protected void createDemoEntities(WorldManager wm)
     {
         // Create one object collection for all to use (for testing)
         ObjectCollection objects = new ObjectCollection("Musical Chairs Objects", wm);
-        
+
         // Create locations for the game
         LocationNode chairGame1 = new LocationNode("Location 1", Vector3f.ZERO, 30.0f, wm, objects);
         chairGame1.generateChairs(3);
@@ -66,7 +60,7 @@ public class MusicalChairs extends DemoBase
         chairGame2.generateChairs(3);
         LocationNode chairGame3 = new LocationNode("Location 3", Vector3f.UNIT_Z.mult(30.0f),  30.0f, wm, objects);
         chairGame3.generateChairs(3);
-        
+
         // Create paths
         chairGame1.addConnection(new Connection("Location 3", chairGame1, chairGame2, ConnectionDirection.OneWay));
         chairGame1.addConnection(new Connection("Location 2", chairGame1, chairGame2, ConnectionDirection.OneWay));
@@ -74,85 +68,96 @@ public class MusicalChairs extends DemoBase
         chairGame2.addConnection(new Connection("Location 1", chairGame2, chairGame1, ConnectionDirection.OneWay));
         chairGame3.addConnection(new Connection("Location 1", chairGame3, chairGame2, ConnectionDirection.OneWay));
         chairGame3.addConnection(new Connection("Location 2", chairGame3, chairGame2, ConnectionDirection.OneWay));
-     
+
         // Create ninja input scheme
         NinjaControlScheme control = (NinjaControlScheme)((JSceneEventProcessor)wm.getUserData(JSceneEventProcessor.class)).setDefault(new NinjaControlScheme(null));
-        
+
         // Create avatar
         NinjaAvatar avatar = new NinjaAvatar("Avatar", wm);
         avatar.selectForInput();
         control.getNinjaTeam().add(avatar);
         avatar.setObjectCollection(objects);
 
+        TransitionQueue trannyQueue = new TransitionQueue();
+        while (avatar.getSkeleton() == null || avatar.getSkeleton().getAnimationState() == null)
+        {
+            try {
+                Thread.sleep(15000);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(AnimationTransitionQueueTest.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
 
+        // just to make sure
+        try {
+                Thread.sleep(15000);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(AnimationTransitionQueueTest.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+        // play some stuff!
+//        trannyQueue.setTarget(avatar.getSkeleton(), 0);
+//        trannyQueue.addTransition(new TransitionCommand(1, 10.0f, PlaybackMode.Oscillate));
+//        trannyQueue.addTransition(new TransitionCommand(2, 10.0f, PlaybackMode.Oscillate));
+//        trannyQueue.addTransition(new TransitionCommand(3, 10.0f, PlaybackMode.Oscillate));
+//        trannyQueue.addTransition(new TransitionCommand(4, 10.0f, PlaybackMode.Oscillate));
+//        trannyQueue.addTransition(new TransitionCommand(5, 10.0f, PlaybackMode.Oscillate));
+//        trannyQueue.addTransition(new TransitionCommand(6, 10.0f, PlaybackMode.Oscillate));
+//        trannyQueue.addTransition(new TransitionCommand(7, 10.0f, PlaybackMode.Oscillate));
+//        trannyQueue.addTransition(new TransitionCommand(8, 10.0f, PlaybackMode.Oscillate));
+//        trannyQueue.addTransition(new TransitionCommand(9, 8.0f));
+//        trannyQueue.addTransition(new TransitionCommand(10, 8.0f));
         // Make some avatars
-        cloneAvatars(control, objects, wm);
-        
-        
-        
-//        NinjaAvatar bigBaby = new NinjaAvatar("Big Baby", wm);
-//        bigBaby.getModelInst().getTransform().getLocalMatrix(true).setTranslation(Vector3f.UNIT_Z.mult(-5.0f));
-//        control.getNinjaTeam().add(bigBaby);
-//        bigBaby.setObjectCollection(objects);
-        
-//        Ninja shadowBlade = new Ninja("Shadow Blade", new PMatrix().setTranslation(Vector3f.UNIT_X.mult(5.0f)), 0.22f, wm);
-//        //shadowBlade.selectForInput();
-//        control.getNinjaTeam().add(shadowBlade);
-//        shadowBlade.setObjectCollection(objects);
+        //cloneAvatars(control, objects, wm);
 
-//        Adam adam = new Adam("Adam", wm);
-//        adam.getModelInst().getTransform().getLocalMatrix(true).setTranslation(Vector3f.UNIT_X.mult(-5.0f));
-//        control.getNinjaTeam().add(adam);
-//        adam.setObjectCollection(objects);
     }
 
-    private void cloneAvatars(NinjaControlScheme control, ObjectCollection objects, WorldManager wm) 
-    {   
+    private void cloneAvatars(NinjaControlScheme control, ObjectCollection objects, WorldManager wm)
+    {
         NinjaAvatar avatar = new NinjaAvatar("Avatar Clone", wm);
         avatar.getModelInst().getTransform().getLocalMatrix(true).setTranslation(Vector3f.UNIT_Z.mult(-5.0f));
         control.getNinjaTeam().add(avatar);
         avatar.setObjectCollection(objects);
-        
+
         avatar = new NinjaAvatar("Avatar Clone", wm);
         avatar.getModelInst().getTransform().getLocalMatrix(true).setTranslation(Vector3f.UNIT_Z.mult(-10.0f));
         control.getNinjaTeam().add(avatar);
         avatar.setObjectCollection(objects);
-        
-        avatar = new NinjaAvatar("Avatar Clone", wm);
-        avatar.getModelInst().getTransform().getLocalMatrix(true).setTranslation(Vector3f.UNIT_Z.mult(-15.0f));
-        control.getNinjaTeam().add(avatar);
-        avatar.setObjectCollection(objects);
-        
-        avatar = new NinjaAvatar("Avatar Clone", wm);
-        avatar.getModelInst().getTransform().getLocalMatrix(true).setTranslation(Vector3f.UNIT_Z.mult(-20.0f));
-        control.getNinjaTeam().add(avatar);
-        avatar.setObjectCollection(objects);
-        
-        avatar = new NinjaAvatar("Avatar Clone", wm);
-        avatar.getModelInst().getTransform().getLocalMatrix(true).setTranslation(Vector3f.UNIT_Z.mult(-25.0f));
-        control.getNinjaTeam().add(avatar);
-        avatar.setObjectCollection(objects);
-        
-        avatar = new NinjaAvatar("Avatar Clone", wm);
-        avatar.getModelInst().getTransform().getLocalMatrix(true).setTranslation(Vector3f.UNIT_Z.mult(-30.0f));
-        control.getNinjaTeam().add(avatar);
-        avatar.setObjectCollection(objects);
-//        
+
+//        avatar = new NinjaAvatar("Avatar Clone", wm);
+//        avatar.getModelInst().getTransform().getLocalMatrix(true).setTranslation(Vector3f.UNIT_Z.mult(-15.0f));
+//        control.getNinjaTeam().add(avatar);
+//        avatar.setObjectCollection(objects);
+//
+//        avatar = new NinjaAvatar("Avatar Clone", wm);
+//        avatar.getModelInst().getTransform().getLocalMatrix(true).setTranslation(Vector3f.UNIT_Z.mult(-20.0f));
+//        control.getNinjaTeam().add(avatar);
+//        avatar.setObjectCollection(objects);
+//
+//        avatar = new NinjaAvatar("Avatar Clone", wm);
+//        avatar.getModelInst().getTransform().getLocalMatrix(true).setTranslation(Vector3f.UNIT_Z.mult(-25.0f));
+//        control.getNinjaTeam().add(avatar);
+//        avatar.setObjectCollection(objects);
+//
+//        avatar = new NinjaAvatar("Avatar Clone", wm);
+//        avatar.getModelInst().getTransform().getLocalMatrix(true).setTranslation(Vector3f.UNIT_Z.mult(-30.0f));
+//        control.getNinjaTeam().add(avatar);
+//        avatar.setObjectCollection(objects);
+//
 //        avatar = new NinjaAvatar("Avatar Clone", wm);
 //        avatar.getModelInst().getTransform().getLocalMatrix(true).setTranslation(Vector3f.UNIT_Z.mult(-35.0f));
 //        control.getNinjaTeam().add(avatar);
 //        avatar.setObjectCollection(objects);
-//        
+//
 //        avatar = new NinjaAvatar("Avatar Clone", wm);
 //        avatar.getModelInst().getTransform().getLocalMatrix(true).setTranslation(Vector3f.UNIT_Z.mult(-40.0f));
 //        control.getNinjaTeam().add(avatar);
 //        avatar.setObjectCollection(objects);
-//        
+//
 //        avatar = new NinjaAvatar("Avatar Clone", wm);
 //        avatar.getModelInst().getTransform().getLocalMatrix(true).setTranslation(Vector3f.UNIT_Z.mult(-45.0f));
 //        control.getNinjaTeam().add(avatar);
 //        avatar.setObjectCollection(objects);
-        
+
     }
-    
 }

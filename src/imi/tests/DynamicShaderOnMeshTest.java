@@ -27,6 +27,7 @@ import imi.scene.polygonmodel.PPolygonModelInstance;
 import imi.scene.polygonmodel.parts.PMeshMaterial;
 import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
 import imi.scene.polygonmodel.skinned.PPolygonSkinnedMesh;
+import imi.scene.polygonmodel.skinned.PPolygonSkinnedMeshInstance;
 import imi.scene.polygonmodel.skinned.SkinnedMeshJoint;
 import imi.scene.processors.JSceneAWTEventProcessor;
 import imi.scene.processors.JSceneEventProcessor;
@@ -39,6 +40,9 @@ import imi.scene.shader.dynamic.GLSLDefaultVariables;
 import imi.scene.shader.dynamic.GLSLShaderProgram;
 import imi.scene.shader.effects.AmbientNdotL_Lighting;
 import imi.scene.shader.effects.CalculateToLight_Lighting;
+import imi.scene.shader.effects.DecalTexture;
+import imi.scene.shader.effects.GenerateFragLocalNormal;
+import imi.scene.shader.effects.MeshColorModulation;
 import imi.scene.shader.effects.UnlitTexturing_Lighting;
 import imi.scene.shader.effects.VertexToPosition_Transform;
 import imi.scene.shader.effects.SimpleNdotL_Lighting;
@@ -75,6 +79,7 @@ public class DynamicShaderOnMeshTest extends DemoBase
         GLSLShaderProgram shaderOne = new GLSLShaderProgram(wm, true);
         shaderOne.addEffect(new VertexToPosition_Transform());
         shaderOne.addEffect(new VertexDeformer_Transform());
+        shaderOne.addEffect(new GenerateFragLocalNormal());
         shaderOne.addEffect(new UnlitTexturing_Lighting());
         shaderOne.addEffect(new CalculateToLight_Lighting());
         shaderOne.addEffect(new SimpleNdotL_Lighting());
@@ -97,9 +102,11 @@ public class DynamicShaderOnMeshTest extends DemoBase
         shaderTwo.addEffect(new VertexToPosition_Transform());
         shaderTwo.addEffect(new VertexDeformer_Transform());
         shaderTwo.addEffect(new CalculateToLight_Lighting());
+        shaderTwo.addEffect(new GenerateFragLocalNormal());
         shaderTwo.addEffect(new UnlitTexturing_Lighting());
         shaderTwo.addEffect(new AmbientNdotL_Lighting());
-        //shaderTwo.addEffect(new SimpleNdotL_Lighting());
+        shaderTwo.addEffect(new MeshColorModulation());
+        //shaderTwo.addEffect(new DecalTexture());
         try
         {
             shaderTwo.compile();
@@ -108,6 +115,7 @@ public class DynamicShaderOnMeshTest extends DemoBase
                     GLSLDefaultVariables.DiffuseMap.getName(), GLSLDataType.GLSL_SAMPLER2D, Integer.valueOf(0)));
             shaderTwo.setProperty(new ShaderProperty(
                     "ambientPower", GLSLDataType.GLSL_FLOAT, Float.valueOf(0.20f)));
+           // shaderTwo.setProperty(new ShaderProperty("decalTexture", GLSLDataType.GLSL_SAMPLER2D, Integer.valueOf(1)));
         } 
         catch (GLSLCompileException ex)
         {
@@ -167,9 +175,12 @@ public class DynamicShaderOnMeshTest extends DemoBase
         // make a new texture to slap on one of the instances
         mat = new PMeshMaterial("NewTexture");
         mat.setTexture("assets/textures/checkerboard2.PNG", 0);
+        //mat.setTexture("assets/textures/tgatest.tga", 0);
         mat.setShader(shaderTwo); // use the second shader we generated
         
         // Assign the material with the second shader to the upper half mesh
+        PPolygonSkinnedMeshInstance meshInst = ((SkeletonNode)modelInst.findChild("MyTestSkeleton")).getSkinnedMeshInstance("upperHalf");
+        meshInst.getSharedMesh().setSolidColor(ColorRGBA.white);
         ((SkeletonNode)modelInst.findChild("MyTestSkeleton")).getSkinnedMeshInstance("upperHalf").setMaterial(mat);
         ((SkeletonNode)modelInst.findChild("MyTestSkeleton")).getSkinnedMeshInstance("upperHalf").setUseGeometryMaterial(false);
                 

@@ -30,7 +30,7 @@ public class TransitionCommand
     /** How long should the transition take before this becomes the primary animation **/
     private float           m_transitionLength  = 0.0f;
     /** 
-     * After completing the transition, play the animaion for this minimum amount of time.
+     * After completing the transition, play the animation for this minimum amount of time.
      * The amount of time specified here is absolute and not affected by the playback
      * speed. 
      */
@@ -140,4 +140,10 @@ public class TransitionCommand
     {
         m_animationIndex = animationIndex;
     }
+
+    @Override
+    public String toString() {
+        return new String("Cycle: " + m_animationIndex + "TransitionLength: " + m_transitionLength + "Mode: " + m_playbackMode.toString());
+    }
+
 }

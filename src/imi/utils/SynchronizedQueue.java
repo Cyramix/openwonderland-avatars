@@ -17,6 +17,7 @@
  */
 package imi.utils;
 
+import java.util.NoSuchElementException;
 import javolution.util.FastList;
 
 /**
@@ -50,6 +51,24 @@ public class SynchronizedQueue <E>
     public synchronized void enqueue(E object)
     {
         m_collection.add(object);
+    }
+
+    /**
+     * Return, but do not remove the next element
+     * @return
+     */
+    public synchronized E peek()
+    {
+        E result = null;
+        try
+        {
+            result = (E) m_collection.getFirst();
+        }
+        catch (NoSuchElementException ex)
+        {
+            // No first element, empty queue
+        }
+        return result;
     }
     
     public synchronized void clear()

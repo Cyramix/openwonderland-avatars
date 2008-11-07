@@ -248,7 +248,10 @@ public class AnimationGroup
                 if (mode == AnimationComponent.PlaybackMode.Loop)
                     fTime = cycle.getEndTime() - Float.MIN_VALUE;
                 else if (mode == AnimationComponent.PlaybackMode.PlayOnce)
+                {
                     fTime = cycle.getStartTime();
+                    state.sendMessage(AnimationListener.AnimationMessageType.PlayOnceComplete);
+                }
                 else if (mode == AnimationComponent.PlaybackMode.Oscillate)
                 {
                     fTime = cycle.getStartTime() + Float.MIN_VALUE;
@@ -274,7 +277,10 @@ public class AnimationGroup
                 if (mode == AnimationComponent.PlaybackMode.Loop)
                     fTime = cycle.getStartTime() + Float.MIN_VALUE;
                 else if (mode == AnimationComponent.PlaybackMode.PlayOnce)
+                {
                     fTime = cycle.getEndTime();
+                    state.sendMessage(AnimationListener.AnimationMessageType.PlayOnceComplete);
+                }
                 else if (mode == AnimationComponent.PlaybackMode.Oscillate)
                 {
                     fTime = cycle.getEndTime() - Float.MIN_VALUE;
