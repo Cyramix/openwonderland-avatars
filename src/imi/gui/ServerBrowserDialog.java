@@ -8,9 +8,13 @@ package imi.gui;
 
 import imi.sql.SQLInterface;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JTable;
+import javax.swing.ListSelectionModel;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -26,8 +30,9 @@ public class ServerBrowserDialog extends javax.swing.JDialog {
     private ArrayList<String[]>     m_data, m_anim;
     private Map<Integer, String[]>  m_meshes;
     /** Return Data */
-    private String[]                m_modelInfo, m_animInfo;
-    private int                     m_loadType;
+    private String[]                m_modelInfo, m_animInfo, m_meshref;
+    private int                     m_loadType, m_region;
+    private SceneEssentials         m_sceneData;
 ////////////////////////////////////////////////////////////////////////////////
 // CLASS DATA MEMBERS - END
 ////////////////////////////////////////////////////////////////////////////////    
@@ -38,6 +43,17 @@ public class ServerBrowserDialog extends javax.swing.JDialog {
     public ServerBrowserDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        
+        ListSelectionModel rowSelection = jTable1.getSelectionModel();
+        rowSelection.addListSelectionListener(new ListSelectionListener() {
+            public void valueChanged(ListSelectionEvent e) {
+                if (e.getValueIsAdjusting())
+                    return;
+            ListSelectionModel rowSelect = (ListSelectionModel)e.getSource();
+            int selectedIndex = rowSelect.getMinSelectionIndex();
+            getSelectedData(selectedIndex);
+            }
+        });
     }
 
     public void initBrowser(int dataType) {
@@ -55,30 +71,41 @@ public class ServerBrowserDialog extends javax.swing.JDialog {
             case 0:         // AVATAR (SKINNED MESHES)
             {
                 query = "SELECT name, description, bodytype, url, id FROM DefaultAvatars";
+                m_data = loadSQLData(query);
+                filterResults("0");
                 break;
             }
-            case 1:         // CLOTHES (SKINNED MESHES) / ACCESSORIES (NON-SKINNED MESHES)
+            case 1:         // CLOTHES (SKINNED MESHES)
             {
                 query = "SELECT name, description, bodytype, url, type, id FROM Meshes";
+                m_data = loadSQLData(query);
+                filterResults("2");
                 break;
             }
-            case 2:         // TEXTURES (JPEG, TARGA, PNG, GIF)
+            case 2:         // ACCESSORIES (NON-SKINNED MESHES)
+            {
+                query = "SELECT name, description, bodytype, url, type, id FROM Meshes";
+                m_data = loadSQLData(query);
+                filterResults("1");
+                break;
+            }
+            case 3:         // TEXTURES (JPEG, TARGA, PNG, GIF)
             {
                 query = "SELECT name, description, bodytype, url, type FROM Textures";
+                m_data = loadSQLData(query);
                 break;
             }
         }
         
-        m_data = loadSQLData(query);
         data = new Object[m_data.size()][columnNames.length];
         for (int i = 0; i < data.length; i++) {
             for (int j = 0; j < data[i].length; j++) {
                 data[i][j] = m_data.get(i)[j];
             }
         }
-        
+                        
         DefaultTableModel tabModel = new DefaultTableModel(data, columnNames);
-        jTable1 = new JTable(tabModel);
+        jTable1.setModel(tabModel);
         m_loadType = dataType;
     }
    
@@ -93,21 +120,32 @@ public class ServerBrowserDialog extends javax.swing.JDialog {
             case 0:         // AVATAR (SKINNED MESHES)
             {
                 query = "SELECT name, description, bodytype, url, id FROM DefaultAvatars";
+                m_data = loadSQLData(query);
+                filterResults("0");
                 break;
             }
-            case 1:         // CLOTHES (SKINNED MESHES) / ACCESSORIES (NON-SKINNED MESHES)
+            case 1:         // CLOTHES (SKINNED MESHES)
             {
                 query = "SELECT name, description, bodytype, url, type, id FROM Meshes";
+                m_data = loadSQLData(query);
+                filterResults("2");
                 break;
             }
-            case 2:         // TEXTURES (JPEG, TARGA, PNG, GIF)
+            case 2:         // ACCESSORIES (NON-SKINNED MESHES)
+            {
+                query = "SELECT name, description, bodytype, url, type, id FROM Meshes";
+                m_data = loadSQLData(query);
+                filterResults("1");
+                break;
+            }
+            case 3:         // TEXTURES (JPEG, TARGA, PNG, GIF)
             {
                 query = "SELECT name, description, bodytype, url, type FROM Textures";
+                m_data = loadSQLData(query);
                 break;
             }
         }
         
-        m_data = loadSQLData(query);
         data = new Object[m_data.size()][columnNames.length];
         for (int i = 0; i < data.length; i++) {
             for (int j = 0; j < data[i].length; j++) {
@@ -116,12 +154,50 @@ public class ServerBrowserDialog extends javax.swing.JDialog {
         }
         
         DefaultTableModel tabModel = new DefaultTableModel(data, columnNames);
-        jTable1 = new JTable(tabModel);
+        jTable1.setModel(tabModel);
         m_loadType = selection;
     }
     
-    public void getSelectedData() {
-        int selection = jTable1.getSelectedRow();
+    public void filterResults(String typeFilter) {
+        ArrayList<String[]> genderFiltered = new ArrayList<String[]>();
+
+        if (jCheckBox_FilterMale.isSelected()) {
+            for (int i = 0; i < m_data.size(); i++) {
+                if (m_data.get(i)[2].equals("1") || m_data.get(i)[2].equals("3"))
+                    genderFiltered.add(m_data.get(i));
+            }
+        } else {
+            for (int i = 0; i < m_data.size(); i++) {
+                if (m_data.get(i)[2].equals("2") || m_data.get(i)[2].equals("3"))
+                    genderFiltered.add(m_data.get(i));
+            }
+        }
+        
+        m_data.clear();
+        m_data = new ArrayList<String[]>(genderFiltered);
+        genderFiltered.clear();
+        
+        if (typeFilter.equals("1")) {
+            for (int i = 0; i < m_data.size(); i++) {
+                if (m_data.get(i)[4].equals("1") || m_data.get(i)[4].equals("2"))
+                    genderFiltered.add(m_data.get(i));
+            }
+            m_data.clear();
+            m_data = new ArrayList<String[]>(genderFiltered);
+            genderFiltered.clear();
+        } else  if (typeFilter.equals("2")) {
+            for (int i = 0; i < m_data.size(); i++) {
+                if (!m_data.get(i)[4].equals("1") && !m_data.get(i)[4].equals("2"))
+                    genderFiltered.add(m_data.get(i));
+            }
+            m_data.clear();
+            m_data = new ArrayList<String[]>(genderFiltered);
+            genderFiltered.clear();
+        }
+    }
+    
+    public void getSelectedData(int selection) {
+        //int selection = jTable1.getSelectedRow();
         m_modelInfo = m_data.get(selection);
         if (m_loadType == 0) {
             String query = "SELECT url FROM Animations WHERE avatarid = ";
@@ -135,31 +211,71 @@ public class ServerBrowserDialog extends javax.swing.JDialog {
             String gender = null;
                         
             if (m_modelInfo[2].equals("1"))
-                gender = "Male";
+                gender = "\'Male\'";
             else
-                gender = "Female";
+                gender = "\'Female\'";
             
             query = "SELECT name, grouping FROM GeometryReferences WHERE tableref = ";
             query += gender;
+            if (m_meshes != null)
+                m_meshes.clear();
+            m_meshes = new HashMap<Integer, String[]>();
             ArrayList<String[]> meshes = loadSQLData(query);
-            for (int i = 0; i < meshes.size(); i++) {
-                int iType = 0;
-                if (meshes.get(i)[1].equals("0"))
-                    iType = 0;          // Head
-                else if (meshes.get(i)[1].equals("1"))
-                    iType = 1;          // Hands
-                else if (meshes.get(i)[1].equals("2"))
-                    iType = 2;          // Torso
-                else if (meshes.get(i)[1].equals("3"))
-                    iType = 3;          // Legs
-                else if (meshes.get(i)[1].equals("4"))
-                    iType = 4;          // Feet
-                
-                String[] geometry = new String[1];
-                geometry[0] = meshes.get(i)[0].toString();
-                m_meshes.put(iType, geometry);
+            
+            createMeshSwapList("0", meshes);
+            createMeshSwapList("1", meshes);
+            createMeshSwapList("2", meshes);
+            createMeshSwapList("3", meshes);
+            createMeshSwapList("4", meshes);
+        } else {
+            String query = "SELECT name, grouping FROM GeometryReferences WHERE referenceid = ";
+            query += m_modelInfo[5].toString();
+            ArrayList<String[]> ref = loadSQLData(query);
+            
+            m_meshref = new String[ref.size()];
+            for(int i = 0; i < ref.size(); i++)
+                m_meshref[i] = ref.get(i)[0];
+            
+            if (ref.get(0)[1].equals("0")) {
+                m_region = 0;          // Head
+            } else if (ref.get(0)[1].equals("1")) {
+                m_region = 1;          // Hands
+            } else if (ref.get(0)[1].equals("2")) {
+                m_region = 2;          // Torso
+            } else if (ref.get(0)[1].equals("3")) {
+                m_region = 3;          // Legs
+            } else if (ref.get(0)[1].equals("4")) {
+                m_region = 4;
             }
         }
+    }
+    
+    public void createMeshSwapList(String region, ArrayList<String[]> meshes) {
+        String[] geometry = null;
+        ArrayList<String> temp = new ArrayList<String>();
+        
+        for (int i = 0; i < meshes.size(); i++) {
+            if (meshes.get(i)[1].equals(region)) {
+                temp.add(meshes.get(i)[0].toString());
+            }
+        }
+        geometry = new String[temp.size()];
+        for (int i = 0; i < temp.size(); i++) {
+            geometry[i] = temp.get(i);
+        }
+        
+        if (region.equals("0"))
+            m_region = 0;          // Head
+        else if (region.equals("1"))
+            m_region = 1;          // Hands
+        else if (region.equals("2"))
+            m_region = 2;          // Torso
+        else if (region.equals("3"))
+            m_region = 3;          // Legs
+        else if (region.equals("4"))
+            m_region = 4;          // Feet
+        
+        m_meshes.put(m_region, geometry);
     }
     
     public ArrayList<String[]> loadSQLData(String query) {
@@ -184,8 +300,31 @@ public class ServerBrowserDialog extends javax.swing.JDialog {
     }
     
     public void pseudoClose() {
-        this.setVisible(false);
-        
+        setVisible(false);
+        switch(m_loadType)
+        {
+            case 0:         // LOAD AVATAR
+            {
+                m_sceneData.loadAvatarDAEURL(isReplace(), false, this, m_modelInfo, m_animInfo);
+                m_sceneData.setMeshSetup(m_meshes);
+                break;
+            }
+            case 1:         // LOAD CLOTHES
+            {
+                m_sceneData.loadMeshDAEURL(isReplace(), false, this, m_modelInfo, m_meshref, m_region);
+                break;
+            }
+            case 2:         // LOAD ACCESSORIES
+            {
+                m_sceneData.loadMeshDAEURL(isReplace(), false, this, m_modelInfo, m_meshref, m_region);
+                break;
+            }
+            case 3:         // LOAD TEXTURES
+            {
+                break;
+            }
+        }
+        dispose();
     }
     
     /** Accessors */
@@ -213,14 +352,22 @@ public class ServerBrowserDialog extends javax.swing.JDialog {
         return m_loadType;
     }   
     
+    public SceneEssentials getSceneData() {
+        return m_sceneData;
+    }
+    
     public boolean isReplace() {
-        return jCheckBox_FilterAdd.isSelected();
+        return jCheckBox_FilterView.isSelected();
     }
     
     public boolean isMale() {
         return jCheckBox_FilterMale.isSelected();
     }
     
+    /** Mutators */
+    public void setSceneEssentials(SceneEssentials sceneInfo) {
+        m_sceneData = sceneInfo;
+    }
 ////////////////////////////////////////////////////////////////////////////////
 // CLASS METHODS - END
 ////////////////////////////////////////////////////////////////////////////////
@@ -250,6 +397,7 @@ public class ServerBrowserDialog extends javax.swing.JDialog {
         jCheckBox_FilterFemale = new javax.swing.JCheckBox();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setResizable(false);
 
         jPanel_MainPanel.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
         jPanel_MainPanel.setLayout(new java.awt.GridBagLayout());
@@ -321,7 +469,7 @@ public class ServerBrowserDialog extends javax.swing.JDialog {
 
         jButton_Cancel.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                pseudoClose();
+                dispose();
             }
         });
         jButton_Cancel.setText("Cancel");
@@ -339,6 +487,7 @@ public class ServerBrowserDialog extends javax.swing.JDialog {
                 jCheckBox_FilterAdd.setSelected(false);
             }
         });
+        jCheckBox_FilterView.setSelected(true);
         jCheckBox_FilterView.setText("View Mode");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
@@ -346,7 +495,12 @@ public class ServerBrowserDialog extends javax.swing.JDialog {
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         jPanel_MainPanel.add(jCheckBox_FilterView, gridBagConstraints);
 
-        jCheckBox_FilterAdd.setSelected(true);
+        jCheckBox_FilterAdd.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jCheckBox_FilterAdd.setSelected(true);
+                jCheckBox_FilterView.setSelected(false);
+            }
+        });
         jCheckBox_FilterAdd.setText("Add Mode");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
@@ -355,6 +509,13 @@ public class ServerBrowserDialog extends javax.swing.JDialog {
         jPanel_MainPanel.add(jCheckBox_FilterAdd, gridBagConstraints);
 
         jCheckBox_FilterMale.setSelected(true);
+        jCheckBox_FilterMale.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jCheckBox_FilterMale.setSelected(true);
+                jCheckBox_FilterFemale.setSelected(false);
+                updateBrowser();
+            }
+        });
         jCheckBox_FilterMale.setText("Male");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
@@ -367,6 +528,7 @@ public class ServerBrowserDialog extends javax.swing.JDialog {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jCheckBox_FilterFemale.setSelected(true);
                 jCheckBox_FilterMale.setSelected(false);
+                updateBrowser();
             }
         });
         jCheckBox_FilterFemale.setText("Female");
@@ -381,11 +543,11 @@ public class ServerBrowserDialog extends javax.swing.JDialog {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(jPanel_MainPanel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 492, Short.MAX_VALUE)
+            .add(jPanel_MainPanel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 543, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(jPanel_MainPanel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 323, Short.MAX_VALUE)
+            .add(jPanel_MainPanel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 338, Short.MAX_VALUE)
         );
 
         pack();

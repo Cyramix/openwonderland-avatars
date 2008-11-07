@@ -37,16 +37,19 @@ import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
 import imi.scene.polygonmodel.skinned.PPolygonSkinnedMeshInstance;
 import imi.scene.processors.SkinnedAnimationProcessor;
 import imi.scene.shader.programs.VertexDeformer;
+import imi.sql.SQLInterface;
 import java.awt.Component;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFileChooser;
+import javax.swing.JFrame;
 import javax.swing.filechooser.FileFilter;
 import org.jdesktop.mtgame.WorldManager;
 import org.jdesktop.mtgame.Entity;
@@ -71,7 +74,7 @@ public class SceneEssentials {
         private JFileChooser jFileChooser_LoadModel = null;
         private JFileChooser jFileChooser_LoadXML = null;
         private JFileChooser jFileChooser_LoadAvatarDAE = null;
-        private ServerBrowser serverFileChooser = null;
+        private ServerBrowserDialog serverFileChooserD = null;
     // File Containers
         private File fileXML     = null;
         private File fileModel   = null;
@@ -82,7 +85,8 @@ public class SceneEssentials {
         private float visualScale = 1.0f;
         private PMatrix origin = new PMatrix();
         private SkeletonNode skeleton = null;
-        private Map<Integer, String[]> meshsetup = null;        
+        private Map<Integer, String[]> meshsetup = null;
+        private SQLInterface m_sql;
         
     public SceneEssentials() {
         initFileChooser();
@@ -261,10 +265,11 @@ public class SceneEssentials {
         jFileChooser_LoadAvatarDAE.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
     }
     
-    public void openServerBrowser() {
-        serverFileChooser = new ServerBrowser();
-        serverFileChooser.initBrowser(0);
-        serverFileChooser.setVisible(true);
+    public void openServerBrowser(JFrame c) {
+        serverFileChooserD = new ServerBrowserDialog(c, true);
+        serverFileChooserD.initBrowser(0);
+        serverFileChooserD.setSceneEssentials(this);
+        serverFileChooserD.setVisible(true);
     }
     
     /**
@@ -490,7 +495,7 @@ public class SceneEssentials {
         for (int i = 0; i < animations.size(); i++) {
             anim[i] = animations.get(i).toString();
         }
-        
+        setDefaultMeshSwapList();
         SharedAsset character = new SharedAsset(currentPScene.getRepository(), new AssetDescriptor(SharedAssetType.COLLADA_Model, bindPose));
         character.setUserData(new ColladaLoaderParams(true, true, false, false, 4, fileModel.getName(), null));
         loadInitializer(fileModel.getName(), character, anim);
@@ -591,6 +596,7 @@ public class SceneEssentials {
 
                 if (((PNode) asset).getChild(0) instanceof SkeletonNode) {
                     final SkeletonNode skel = (SkeletonNode) ((PNode) asset).getChild(0);
+                    skeleton = skel;
                     
                     // Visual Scale
                     if (visualScale != 1.0f) {
@@ -702,6 +708,79 @@ public class SceneEssentials {
         return animURLs;
     }
 
+    public void setDefaultMeshSwapList() {
+        int gender = fileModel.getName().lastIndexOf("Male");
+        String szGender = null;
+        
+        if (gender != -1)
+            szGender = "\'Male\'";
+        else
+            szGender = "\'Female\'";
+        
+        String query = "SELECT name, grouping FROM GeometryReferences WHERE tableref = ";
+        query += gender;
+        if (meshsetup != null)
+            meshsetup.clear();
+        meshsetup = new HashMap<Integer, String[]>();
+        ArrayList<String[]> meshes = loadSQLData(query);
+        
+        createMeshSwapList("0", meshes);
+        createMeshSwapList("1", meshes);
+        createMeshSwapList("2", meshes);
+        createMeshSwapList("3", meshes);
+        createMeshSwapList("4", meshes);
+    }
+    
+    public void createMeshSwapList(String region, ArrayList<String[]> meshes) {
+        String[] geometry = null;
+        ArrayList<String> temp = new ArrayList<String>();
+        
+        for (int i = 0; i < meshes.size(); i++) {
+            if (meshes.get(i)[1].equals(region)) {
+                temp.add(meshes.get(i)[0].toString());
+            }
+        }
+        geometry = new String[temp.size()];
+        for (int i = 0; i < temp.size(); i++) {
+            geometry[i] = temp.get(i);
+        }
+        
+        int iregion = 0;
+        if (region.equals("0"))
+            iregion = 0;          // Head
+        else if (region.equals("1"))
+            iregion = 1;          // Hands
+        else if (region.equals("2"))
+            iregion = 2;          // Torso
+        else if (region.equals("3"))
+            iregion = 3;          // Legs
+        else if (region.equals("4"))
+            iregion = 4;          // Feet
+        
+        meshsetup.put(iregion, geometry);
+    }
+    
+    public ArrayList<String[]> loadSQLData(String query) {
+        m_sql = new SQLInterface();
+        boolean connected = m_sql.Connect(null, "jdbc:mysql://zeitgeistgames.com:3306/ColladaShop", "ColladaShopper", "ColladaShopperPassword");
+        ArrayList<String[]> data = new ArrayList<String[]>();
+        
+        data = m_sql.Retrieve(query);
+        int iNumData = m_sql.getNumColumns();
+        ArrayList<String> temp = new ArrayList<String>();
+        int counter = 0;
+        for (int i = 0; i < data.size(); i++) {
+            for (int j = 0; j < iNumData; j++) {
+                temp.add(data.get(i)[j].toString());
+                System.out.println("retrieved " + temp.get(counter));
+                counter++;
+            }
+        }
+
+        m_sql.Disconnect();
+        return data;
+    }
+    
     /**
      * Replaces the texture of the currently selected model
      * TODO: Allow support for textures on multiple meshes.

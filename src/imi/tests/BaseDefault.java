@@ -37,7 +37,9 @@ import com.jme.scene.state.RenderState;
 import com.jme.scene.state.WireframeState;
 import com.jme.scene.state.ZBufferState;
 import com.jme.util.TextureManager;
+import imi.gui.OptionsGUI;
 import imi.gui.SceneEssentials;
+import imi.gui.TreeExplorer;
 import imi.loaders.PPolygonTriMeshAssembler;
 import imi.loaders.repository.Repository;
 import imi.scene.JScene;
@@ -48,6 +50,7 @@ import imi.scene.PScene;
 import imi.scene.PTransform;
 import imi.scene.polygonmodel.PPolygonMesh;
 import imi.scene.polygonmodel.PPolygonModel;
+import imi.scene.polygonmodel.PPolygonModelInstance;
 import imi.scene.polygonmodel.parts.PMeshMaterial;
 import imi.scene.polygonmodel.parts.polygon.PPolygon;
 import imi.scene.polygonmodel.parts.skinned.PBoneIndices;
@@ -107,6 +110,9 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
     protected boolean           m_bLoading          = false;
     protected RenderBuffer      m_renderBuffer      = null;
     protected Component         m_base              = this;
+    protected OptionsGUI        m_AvatarOptions     = null;
+    protected TreeExplorer      m_NodeExplorer      = null;
+    
 ////////////////////////////////////////////////////////////////////////////////
 // CLASS DATA MEMBERS - END
 ////////////////////////////////////////////////////////////////////////////////
@@ -772,6 +778,21 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
             m_bLoading = false;
         }
     }
+
+    public void openAvatarEditor() {
+        m_AvatarOptions = new OptionsGUI();
+        m_AvatarOptions.setPScene(m_sceneData.getPScene());
+        PNode node = m_sceneData.getPScene().getInstances();
+        if (node.getChildrenCount() > 0)
+            m_AvatarOptions.setSelectedInstance((PPolygonModelInstance) node.getChild(0));
+        m_AvatarOptions.setVisible(true);
+    }
+    
+    public void openNodeExplorer() {
+        m_NodeExplorer = new TreeExplorer();
+        m_NodeExplorer.setExplorer(m_sceneData);
+        m_NodeExplorer.setVisible(true);
+    }
 ////////////////////////////////////////////////////////////////////////////////
 // CLASS METHODS - END
 ////////////////////////////////////////////////////////////////////////////////
@@ -998,7 +1019,9 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
 
         jMenuItem_LoadModelURL.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                m_sceneData.openServerBrowser();
+                runProgressBar(true);
+                m_sceneData.openServerBrowser((JFrame) m_base);
+                runProgressBar(false);
             }
         });
         jMenuItem_LoadModelURL.setText("Load Model");
@@ -1011,9 +1034,23 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
 
         jMenu_Tools.setText("Tools");
 
-        jMenuItem_AvatarEditor.setText("Avatar Edittor");
+        jMenuItem_AvatarEditor.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                runProgressBar(true);
+                openAvatarEditor();
+                runProgressBar(false);
+            }
+        });
+        jMenuItem_AvatarEditor.setText("Avatar Editor");
         jMenu_Tools.add(jMenuItem_AvatarEditor);
 
+        jMenuItem_NodeExplorer.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                runProgressBar(true);
+                openNodeExplorer();
+                runProgressBar(false);
+            }
+        });
         jMenuItem_NodeExplorer.setText("Node Explorer");
         jMenu_Tools.add(jMenuItem_NodeExplorer);
 
