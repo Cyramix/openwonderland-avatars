@@ -19,6 +19,7 @@ package imi.character.statemachine;
 
 import imi.character.CharacterController;
 import imi.character.statemachine.GameState.Action;
+import imi.scene.animation.AnimationListener.AnimationMessageType;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
@@ -136,6 +137,11 @@ public class GameContext extends NamedUpdatableObject
 
     public imi.character.Character getCharacter(){
         return character;
+    }
+
+    public void notifyAnimationMessage(AnimationMessageType message) {
+        if (currentState != null)
+            currentState.notifyAnimationMessage(message);
     }
     
     public void setStates(HashMap<Class, GameState> states) {

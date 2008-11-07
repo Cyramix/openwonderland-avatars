@@ -27,7 +27,6 @@ import com.jme.scene.state.MaterialState;
 import com.jme.scene.state.RenderState;
 import com.jme.scene.state.WireframeState;
 import com.jme.scene.state.ZBufferState;
-import imi.character.ninja.NinjaAvatar.NinjaAvatarAttributes;
 import imi.character.objects.ObjectCollection;
 import imi.character.objects.SpatialObject;
 import imi.character.statemachine.GameContext;
@@ -63,6 +62,7 @@ import imi.loaders.repository.AssetInitializer;
 import imi.loaders.repository.SharedAsset;
 import imi.loaders.repository.SharedAsset.SharedAssetType;
 import imi.scene.PNode;
+import imi.scene.animation.AnimationListener;
 import imi.scene.boundingvolumes.PSphere;
 import imi.scene.shader.programs.VertexDeformer;
 import imi.scene.polygonmodel.parts.PMeshMaterial;
@@ -75,7 +75,7 @@ import java.net.URL;
  *
  * @author Lou Hayt
  */
-public abstract class Character extends Entity implements SpatialObject
+public abstract class Character extends Entity implements SpatialObject, AnimationListener
 {   
     public static int hack = 0;
     /**
@@ -655,6 +655,7 @@ public abstract class Character extends Entity implements SpatialObject
         {
             m_mesh       = (PPolygonSkinnedMeshInstance)m_modelInst.getChild(0).getChild(1);
             m_skeleton   = (SkeletonNode)m_modelInst.getChild(0);
+            m_skeleton.getAnimationState().addListener(this);
             m_initalized = true;
         }
     }
@@ -799,5 +800,9 @@ public abstract class Character extends Entity implements SpatialObject
         return null;
     }
     
+    public void receiveAnimationMessage(AnimationMessageType message)
+    {
+        m_context.notifyAnimationMessage(message);
+    }
     
 }

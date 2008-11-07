@@ -21,6 +21,8 @@ import imi.character.ninja.NinjaContext.TriggerNames;
 import imi.character.objects.Chair;
 import imi.character.statemachine.GameState;
 import imi.character.statemachine.GameContext;
+import imi.scene.animation.AnimationComponent.PlaybackMode;
+import imi.scene.animation.AnimationListener.AnimationMessageType;
 import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
 
 /**
@@ -267,6 +269,18 @@ public class SitState extends GameState
 
     public void setGettingUpTransitionDuration(float gettingUpTransitionDuration) {
         this.gettingUpTransitionDuration = gettingUpTransitionDuration;
+    }
+    
+    @Override
+    public void notifyAnimationMessage(AnimationMessageType message) {
+        
+        if (message == AnimationMessageType.TransitionComplete)
+        {
+            if (bGettingUp || !bIdleSittingAnimationSet)
+                gameContext.getSkeleton().getAnimationState().setCurrentCyclePlaybackMode(PlaybackMode.PlayOnce);
+            else
+                gameContext.getSkeleton().getAnimationState().setCurrentCyclePlaybackMode(PlaybackMode.Loop);
+        }
     }
     
 }

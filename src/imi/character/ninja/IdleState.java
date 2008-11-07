@@ -19,6 +19,7 @@ package imi.character.ninja;
 
 import imi.character.statemachine.GameContext;
 import imi.character.statemachine.GameState;
+import imi.scene.animation.AnimationComponent.PlaybackMode;
 
 /**
  *
@@ -42,6 +43,7 @@ public class IdleState extends GameState
         
         setName("Idle");
         setAnimationName("Idle");
+        setTransitionCycleMode(PlaybackMode.PlayOnce);
         setTransitionDuration(0.1f);
     }
     

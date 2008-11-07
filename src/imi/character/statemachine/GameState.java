@@ -17,6 +17,9 @@
  */
 package imi.character.statemachine;
 
+import imi.scene.animation.AnimationComponent;
+import imi.scene.animation.AnimationComponent.PlaybackMode;
+import imi.scene.animation.AnimationListener.AnimationMessageType;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Stack;
@@ -40,6 +43,9 @@ public class GameState extends NamedUpdatableObject
     private boolean bReverseAnimation = false;
     private float transitionDuration = 0.2f;
     private boolean bTransitionReverseAnimation = false;
+    
+    private AnimationComponent.PlaybackMode cycleMode = AnimationComponent.PlaybackMode.Loop; // set when a transition is complete
+    private AnimationComponent.PlaybackMode transitionCycleMode = AnimationComponent.PlaybackMode.Loop;
     
     private boolean bAnimationSet = false;
     
@@ -142,6 +148,7 @@ public class GameState extends NamedUpdatableObject
         {
             skeleton.getAnimationState().setTransitionDuration(transitionDuration);
             skeleton.getAnimationState().setAnimationSpeed(animationSpeed);
+            skeleton.getAnimationState().setCurrentCyclePlaybackMode(transitionCycleMode);
             bAnimationSet = skeleton.transitionTo(animationName, bTransitionReverseAnimation);
             
             // Set reverse   
@@ -232,6 +239,14 @@ public class GameState extends NamedUpdatableObject
     public void setAnimationSetBoolean(boolean bAnimationSet) {
         this.bAnimationSet = bAnimationSet;
     }
+
+    public PlaybackMode getCycleMode() {
+        return cycleMode;
+    }
+
+    public void setCycleMode(PlaybackMode cycleMode) {
+        this.cycleMode = cycleMode;
+    }
     
     public GameContext getContext()
     {
@@ -271,6 +286,22 @@ public class GameState extends NamedUpdatableObject
 
     public void setTransitionReverseAnimation(boolean bTransitionReverseAnimation) {
         this.bTransitionReverseAnimation = bTransitionReverseAnimation;
+    }
+
+    public void notifyAnimationMessage(AnimationMessageType message) {
+        
+        if (message == AnimationMessageType.TransitionComplete)
+        {
+            gameContext.getSkeleton().getAnimationState().setCurrentCyclePlaybackMode(cycleMode);
+        }
+    }
+
+    public PlaybackMode getTransitionCycleMode() {
+        return transitionCycleMode;
+    }
+
+    public void setTransitionCycleMode(PlaybackMode transitionCycleMode) {
+        this.transitionCycleMode = transitionCycleMode;
     }
     
     
