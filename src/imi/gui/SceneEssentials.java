@@ -557,7 +557,7 @@ public class SceneEssentials {
             currentHiProcessors.clear();
         
         try {
-            if (anim != null) {
+            if (clear) {
                 URL urlModel = new URL(data[3]);
                 SharedAsset character = new SharedAsset(currentPScene.getRepository(), new AssetDescriptor(SharedAssetType.COLLADA_Model, urlModel));
                 character.setUserData(new ColladaLoaderParams(true, true, false, false, 4, data[0], null));
