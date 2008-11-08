@@ -216,7 +216,27 @@ public class FileIOPanel extends javax.swing.JPanel {
         for(int i = 0; i < m_anim.size(); i++) {
             animations[i] = m_anim.get(i)[0].toString();
         }
-        m_sceneData.loadAvatarDAEURL(true, false, this, m_data.get(jList_ServerFiles.getSelectedIndex()), animations);   // loads models with skinned animations
+        
+        String[] data = m_data.get(jList_ServerFiles.getSelectedIndex());
+        query = "Select name, grouping FROM GeometryReferences WHERE referenceid = " + data[4];
+        ArrayList<String[]> ref = loadSQLData(query);
+        String[] meshref = new String[ref.size()];
+        for(int i = 0; i < ref.size(); i++)
+            meshref[i] = ref.get(i)[0];
+        
+        int iType = 0;
+        if (ref.get(0)[1].equals("0"))
+            iType = 0;          // Head
+        else if (ref.get(0)[1].equals("1"))
+            iType = 1;          // Hands
+        else if (ref.get(0)[1].equals("2"))
+            iType = 2;          // Torso
+        else if (ref.get(0)[1].equals("3"))
+            iType = 3;          // Legs
+        else if (ref.get(0)[1].equals("4"))
+            iType = 4;
+        
+        m_sceneData.loadAvatarDAEURL(true, false, this, m_data.get(jList_ServerFiles.getSelectedIndex()), animations, meshref, iType);   // loads models with skinned animations
 
         while (m_sceneData.getPScene().getAssetWaitingList().size() > 0) {
             //m_logger.log(Level.INFO, "Waiting to get assets...");

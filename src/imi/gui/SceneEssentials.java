@@ -546,7 +546,7 @@ public class SceneEssentials {
         }
     }
     
-    public void loadAvatarDAEURL(boolean clear, boolean useRepository, Component arg0, String[] data, String[] anim) {
+    public void loadAvatarDAEURL(boolean clear, boolean useRepository, Component arg0, String[] data, String[] anim, String[] meshRef, int region) {
         currentPScene.setUseRepository(useRepository);
         if (clear)
             currentPScene.getInstances().removeAllChildren();
@@ -557,10 +557,14 @@ public class SceneEssentials {
             currentHiProcessors.clear();
         
         try {
-            URL urlModel = new URL(data[3]);
-            SharedAsset character = new SharedAsset(currentPScene.getRepository(), new AssetDescriptor(SharedAssetType.COLLADA_Model, urlModel));
-            character.setUserData(new ColladaLoaderParams(true, true, false, false, 4, data[0], null));
-            loadInitializer(data[0], character, anim);
+            if (anim != null) {
+                URL urlModel = new URL(data[3]);
+                SharedAsset character = new SharedAsset(currentPScene.getRepository(), new AssetDescriptor(SharedAssetType.COLLADA_Model, urlModel));
+                character.setUserData(new ColladaLoaderParams(true, true, false, false, 4, data[0], null));
+                loadInitializer(data[0], character, anim);
+            } else {
+                addDAEMeshURLToModel(data, meshRef, region);
+            }                
         } catch (MalformedURLException ex) {
             Logger.getLogger(SceneEssentials.class.getName()).log(Level.SEVERE, null, ex);
         }        

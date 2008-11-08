@@ -203,30 +203,56 @@ public class ServerBrowserDialog extends javax.swing.JDialog {
             String query = "SELECT url FROM Animations WHERE avatarid = ";
             query += m_modelInfo[4].toString();
             m_anim = loadSQLData(query);
+            
             m_animInfo = new String[m_anim.size()];
             for(int i = 0; i < m_anim.size(); i++) {
                 m_animInfo[i] = m_anim.get(i)[0].toString();
             }
 
-            String gender = null;
-                        
-            if (m_modelInfo[2].equals("1"))
-                gender = "\'Male\'";
-            else
-                gender = "\'Female\'";
+            if (m_animInfo.length > 0) {
+                String gender = null;
+                if (m_modelInfo[2].equals("1"))
+                    gender = "\'Male\'";
+                else
+                    gender = "\'Female\'";
+
+                query = "SELECT name, grouping FROM GeometryReferences WHERE tableref = ";
+                query += gender;
+                if (m_meshes != null)
+                    m_meshes.clear();
+                m_meshes = new HashMap<Integer, String[]>();
+                ArrayList<String[]> meshes = loadSQLData(query);
+
+                createMeshSwapList("0", meshes);
+                createMeshSwapList("1", meshes);
+                createMeshSwapList("2", meshes);
+                createMeshSwapList("3", meshes);
+                createMeshSwapList("4", meshes);
+            } else {
+                query = "SELECT name, grouping FROM GeometryReferences WHERE referenceid = ";
+                query += m_modelInfo[4].toString();
+                ArrayList<String[]> ref = loadSQLData(query);
+
+                m_meshref = new String[ref.size()];
+                for(int i = 0; i < ref.size(); i++)
+                    m_meshref[i] = ref.get(i)[0];
+
+                if (ref.get(0)[1].equals("0")) {
+                    m_region = 0;          // Head
+                } else if (ref.get(0)[1].equals("1")) {
+                    m_region = 1;          // Hands
+                } else if (ref.get(0)[1].equals("2")) {
+                    m_region = 2;          // Torso
+                } else if (ref.get(0)[1].equals("3")) {
+                    m_region = 3;          // Legs
+                } else if (ref.get(0)[1].equals("4")) {
+                    m_region = 4;
+                }
+                
+                m_animInfo = null;
+            }
             
-            query = "SELECT name, grouping FROM GeometryReferences WHERE tableref = ";
-            query += gender;
-            if (m_meshes != null)
-                m_meshes.clear();
-            m_meshes = new HashMap<Integer, String[]>();
-            ArrayList<String[]> meshes = loadSQLData(query);
             
-            createMeshSwapList("0", meshes);
-            createMeshSwapList("1", meshes);
-            createMeshSwapList("2", meshes);
-            createMeshSwapList("3", meshes);
-            createMeshSwapList("4", meshes);
         } else {
             String query = "SELECT name, grouping FROM GeometryReferences WHERE referenceid = ";
             query += m_modelInfo[5].toString();
@@ -305,7 +331,7 @@ public class ServerBrowserDialog extends javax.swing.JDialog {
         {
             case 0:         // LOAD AVATAR
             {
-                m_sceneData.loadAvatarDAEURL(isReplace(), false, this, m_modelInfo, m_animInfo);
+                m_sceneData.loadAvatarDAEURL(isReplace(), false, this, m_modelInfo, m_animInfo, m_meshref, m_region);
                 m_sceneData.setMeshSetup(m_meshes);
                 break;
             }
