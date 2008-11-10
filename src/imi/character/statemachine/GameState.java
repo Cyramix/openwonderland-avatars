@@ -292,7 +292,7 @@ public class GameState extends NamedUpdatableObject
         
         if (message == AnimationMessageType.TransitionComplete)
         {
-            //gameContext.getSkeleton().getAnimationState().setCurrentCyclePlaybackMode(PlaybackMode.PlayOnce);
+            gameContext.getSkeleton().getAnimationState().setCurrentCyclePlaybackMode(PlaybackMode.Loop);
         }
     }
 

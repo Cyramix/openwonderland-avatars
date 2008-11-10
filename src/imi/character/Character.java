@@ -524,14 +524,14 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         
         if(m_attributes.isUseSimpleSphereModel())
         {
-            float radius = 3.0f;
+            float radius = 1.0f;
             ColorRGBA color = new ColorRGBA(ColorRGBA.randomColor());
             SharedAsset modelAsset = new SharedAsset(m_pscene.getRepository(), new AssetDescriptor(SharedAssetType.MS3D_Mesh, ""));
             PMeshMaterial geometryMaterial = new PMeshMaterial();
             geometryMaterial.setColorMaterial(ColorMaterial.Diffuse); // Make the vert colors affect diffuse coloring
             geometryMaterial.setDiffuse(ColorRGBA.white);
             try {
-                geometryMaterial.setTexture(new TextureMaterialProperties(new File("assets/textures/nskingr.jpg").toURI().toURL()), 0);
+                geometryMaterial.setTexture(new TextureMaterialProperties(new File("assets/textures/SmileFace.jpg").toURI().toURL()), 0);
             } catch (MalformedURLException ex) {
                 Logger.getLogger(Character.class.getName()).log(Level.SEVERE, null, ex);
             }

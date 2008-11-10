@@ -26,6 +26,7 @@ import com.jme.scene.state.MaterialState;
 import com.jme.scene.state.RenderState;
 import com.jme.scene.state.WireframeState;
 import com.jme.scene.state.ZBufferState;
+import imi.character.ninja.SitState;
 import imi.scene.JScene;
 import imi.scene.PScene;
 import java.util.ArrayList;
@@ -391,7 +392,21 @@ public class ObjectCollection extends Entity
     public JScene getJScene() {
         return jscene;
     }
-    
+
+    public void removeRandomChair() 
+    {    
+        for (SpatialObject check : objects)
+        {
+            if (check instanceof Chair)
+            {
+                objects.remove(check);
+                pscene.removeModelInstance(check.getModelInst());
+                
+                return;
+            }
+        }
+    }
+
     /**
      * Called in the constructor, override this method to set your own
      * non-default render states.

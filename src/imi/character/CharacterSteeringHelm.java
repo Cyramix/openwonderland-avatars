@@ -80,8 +80,12 @@ public class CharacterSteeringHelm extends NamedUpdatableObject
         taskList.clear();
     }
     
-    public void addTask(Task task) {
+    public void addTaskToTop(Task task) {
         taskList.add(task);
+    }
+    
+    public void addTaskToBottom(Task task) {
+        taskList.insertElementAt(task, 0);
     }
     
     public SpatialObject getGoal()

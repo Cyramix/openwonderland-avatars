@@ -54,11 +54,11 @@ public class LocationNode extends GraphNode implements SpatialObject
         objects.addObject(this);
     }
 
-    public Connection findConnection(String connectionName) 
+    public Connection findSourceConnection(String connectionName) 
     {
         for (Connection con : connections)
         {
-            if (con.getName().equals(connectionName))
+            if (con.getName().equals(connectionName) && con.getSource() == this)
                 return con;
         }
         return null;

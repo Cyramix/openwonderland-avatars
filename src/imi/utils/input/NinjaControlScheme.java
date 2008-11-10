@@ -18,9 +18,9 @@
 package imi.utils.input;
 
 import imi.character.ninja.Ninja;
+import imi.character.objects.ObjectCollection;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
-import java.util.Hashtable;
 
 /**
  *
@@ -28,7 +28,7 @@ import java.util.Hashtable;
  */
 public class NinjaControlScheme extends InputScheme
 {
-    private boolean m_bSkeletonMode = false;
+    private boolean bSkeletonMode = false;
   
     private Ninja   ninja = null;
     
@@ -36,6 +36,9 @@ public class NinjaControlScheme extends InputScheme
     private ArrayList<Ninja> ninjaTeam = new ArrayList<Ninja>();
     
     private   InputState      inputState     = new InputState();
+    
+    private boolean bCommandEntireTeam = false;
+    private ObjectCollection objects = null;
     
     public NinjaControlScheme(Ninja master)
     {
@@ -67,7 +70,15 @@ public class NinjaControlScheme extends InputScheme
             inputState.keyReleased(ke.getKeyCode());
             
             // Affect character actions
-            ninja.keyReleased(ke.getKeyCode());
+            if(bCommandEntireTeam)
+            {
+                for (int i = 0; i < ninjaTeam.size(); i++)
+                {
+                    ninjaTeam.get(i).keyReleased(ke.getKeyCode());
+                }
+            }
+            else
+                ninja.keyReleased(ke.getKeyCode());
         }
         
         if (ke.getID() == KeyEvent.KEY_PRESSED) 
@@ -76,7 +87,15 @@ public class NinjaControlScheme extends InputScheme
             inputState.keyPressed(ke.getKeyCode());
             
             // Affect character actions
-            ninja.keyPressed(ke.getKeyCode());
+            if(bCommandEntireTeam)
+            {
+                for (int i = 0; i < ninjaTeam.size(); i++)
+                {
+                    ninjaTeam.get(i).keyPressed(ke.getKeyCode());
+                }
+            }
+            else
+                ninja.keyPressed(ke.getKeyCode());
             
             /////////////////////////////////////////////////////////////
             
@@ -112,6 +131,15 @@ public class NinjaControlScheme extends InputScheme
                 }
             }
             
+            // Remove a chair from the object collection
+            if (ke.getKeyCode() == KeyEvent.VK_BACK_SPACE) 
+            {
+                if(objects != null)
+                {
+                    objects.removeRandomChair();
+                }
+            }
+            
             // Note: input only affects this JScene
             
             // JMonkey Wireframe (on\off)
@@ -139,7 +167,7 @@ public class NinjaControlScheme extends InputScheme
             
             if (ke.getKeyCode() == KeyEvent.VK_U)
             {
-                if (m_bSkeletonMode == false)
+                if (bSkeletonMode == false)
                 {
                     m_jscene.setRenderInternallyBool(false);
                     // turn the prenderer on, turn off the mesh drawing, turn on jme wireframe
@@ -161,7 +189,7 @@ public class NinjaControlScheme extends InputScheme
                     
                 }
                 // toggle
-                m_bSkeletonMode = !m_bSkeletonMode;
+                bSkeletonMode = !bSkeletonMode;
 
             }
             
@@ -176,4 +204,17 @@ public class NinjaControlScheme extends InputScheme
     {
         ninja = ninjaMaster;
     }
+
+    public boolean isCommandEntireTeam() {
+        return bCommandEntireTeam;
+    }
+
+    public void setCommandEntireTeam(boolean bCommandEntireTeam) {
+        this.bCommandEntireTeam = bCommandEntireTeam;
+    }
+    
+    public void setObjectCollection(ObjectCollection objectCollection) {
+        objects = objectCollection;
+    }
+    
 }

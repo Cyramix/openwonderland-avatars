@@ -102,6 +102,12 @@ public class SitState extends GameState
         bIdleSittingAnimationSet = false;
         bGettingUpAnimationSet = false;
         
+        if(owner.getCharacter().getAttributes().isUseSimpleSphereModel())
+        {
+            bGettingUpAnimationSet = true;
+            bIdleSittingAnimationSet = true;
+        }
+        
         setReverseAnimation(false);
         
         // Stop the character

@@ -59,7 +59,7 @@ public class GoTo implements Task
         goalDirection.set(goal.getForwardVector());
         
         if (goal.getBoundingSphere() != null)
-            approvedDistanceFromGoal = goal.getBoundingSphere().getRadius();
+            approvedDistanceFromGoal = goal.getBoundingSphere().getRadius() * 0.5f;
     }
     
     public boolean verify() 

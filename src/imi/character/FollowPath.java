@@ -66,17 +66,18 @@ public class FollowPath implements Task
 
     public void update(float deltaTime) 
     {
-        Connection con = location.findConnection(path);
+        Connection con = location.findSourceConnection(path);
         if (con == null)
         {
             status = "was no able to find connection";
             bDone = true;
+            return;
         }
         
         if (con.getDestination() instanceof LocationNode)
         {
             location = (LocationNode)con.getDestination();
-            ((NinjaContext)context).getSteering().addTask(new GoTo(location, context)); // TODO
+            ((NinjaContext)context).getSteering().addTaskToTop(new GoTo(location, context)); 
         }
     }
 

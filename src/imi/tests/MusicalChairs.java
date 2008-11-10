@@ -57,27 +57,35 @@ public class MusicalChairs extends DemoBase
     @Override
     protected void createDemoEntities(WorldManager wm) 
     {   
+        int numberOfAvatars = 5;
+        float block = 2.0f * numberOfAvatars;
+        float halfBlock = 1.0f * numberOfAvatars;
+        
         // Create one object collection for all to use (for testing)
         ObjectCollection objects = new ObjectCollection("Musical Chairs Objects", wm);
+        objects.generateChairs(new Vector3f(halfBlock, 0.0f, halfBlock), 2.0f * numberOfAvatars, numberOfAvatars-1);
         
         // Create locations for the game
-        LocationNode chairGame1 = new LocationNode("Location 1", Vector3f.ZERO, 30.0f, wm, objects);
-        chairGame1.generateChairs(3);
-        LocationNode chairGame2 = new LocationNode("Location 2", Vector3f.UNIT_X.mult(30.0f),  30.0f, wm, objects);
-        chairGame2.generateChairs(3);
-        LocationNode chairGame3 = new LocationNode("Location 3", Vector3f.UNIT_Z.mult(30.0f),  30.0f, wm, objects);
-        chairGame3.generateChairs(3);
+        LocationNode chairGame1 = new LocationNode("Location 1", Vector3f.ZERO, 3.0f, wm, objects);
+        LocationNode chairGame2 = new LocationNode("Location 2", Vector3f.UNIT_X.mult(block),  3.0f, wm, objects);
+        LocationNode chairGame3 = new LocationNode("Location 3", new Vector3f(block, 0.0f, block),  3.0f, wm, objects);
+        LocationNode chairGame4 = new LocationNode("Location 4", Vector3f.UNIT_Z.mult(block),  3.0f, wm, objects);
         
         // Create paths
-        chairGame1.addConnection(new Connection("Location 3", chairGame1, chairGame2, ConnectionDirection.OneWay));
-        chairGame1.addConnection(new Connection("Location 2", chairGame1, chairGame2, ConnectionDirection.OneWay));
-        chairGame2.addConnection(new Connection("Location 3", chairGame2, chairGame3, ConnectionDirection.OneWay));
-        chairGame2.addConnection(new Connection("Location 1", chairGame2, chairGame1, ConnectionDirection.OneWay));
-        chairGame3.addConnection(new Connection("Location 1", chairGame3, chairGame2, ConnectionDirection.OneWay));
-        chairGame3.addConnection(new Connection("Location 2", chairGame3, chairGame2, ConnectionDirection.OneWay));
+        chairGame1.addConnection(new Connection("MyPath", chairGame1, chairGame2, ConnectionDirection.OneWay));
+        chairGame2.addConnection(new Connection("MyPath", chairGame2, chairGame3, ConnectionDirection.OneWay));
+        chairGame3.addConnection(new Connection("MyPath", chairGame3, chairGame4, ConnectionDirection.OneWay));
+        chairGame4.addConnection(new Connection("MyPath", chairGame4, chairGame1, ConnectionDirection.OneWay));
+        
+        chairGame1.addConnection(new Connection("MyReversePath", chairGame1, chairGame4, ConnectionDirection.OneWay));
+        chairGame2.addConnection(new Connection("MyReversePath", chairGame4, chairGame3, ConnectionDirection.OneWay));
+        chairGame3.addConnection(new Connection("MyReversePath", chairGame3, chairGame2, ConnectionDirection.OneWay));
+        chairGame4.addConnection(new Connection("MyReversePath", chairGame2, chairGame1, ConnectionDirection.OneWay));
      
         // Create ninja input scheme
         NinjaControlScheme control = (NinjaControlScheme)((JSceneEventProcessor)wm.getUserData(JSceneEventProcessor.class)).setDefault(new NinjaControlScheme(null));
+        control.setCommandEntireTeam(true);
+        control.setObjectCollection(objects);
         
         // Create avatar
         NinjaAvatar avatar = new NinjaAvatar("Avatar", wm);
@@ -85,11 +93,13 @@ public class MusicalChairs extends DemoBase
         control.getNinjaTeam().add(avatar);
         avatar.setObjectCollection(objects);
 
-
         // Make some avatars
-        //cloneAvatars(control, objects, wm);
-        
-        
+        float zStep = 5.0f;
+        for (int i = 1; i < numberOfAvatars; i++)
+        {
+            cloneAvatar(control, objects, wm, 0.0f, 0.0f, zStep);
+            zStep += 5.0f;
+        }
         
 //        NinjaAvatar bigBaby = new NinjaAvatar("Big Baby", wm);
 //        bigBaby.getModelInst().getTransform().getLocalMatrix(true).setTranslation(Vector3f.UNIT_Z.mult(-5.0f));
@@ -107,40 +117,10 @@ public class MusicalChairs extends DemoBase
 //        adam.setObjectCollection(objects);
     }
 
-    private void cloneAvatars(NinjaControlScheme control, ObjectCollection objects, WorldManager wm) 
+    private void cloneAvatar(NinjaControlScheme control, ObjectCollection objects, WorldManager wm, float xOffset, float yOffset, float zOffset) 
     {   
-        NinjaAvatar avatar = new NinjaAvatar("Avatar Clone", wm);
-        avatar.getModelInst().getTransform().getLocalMatrix(true).setTranslation(Vector3f.UNIT_Z.mult(-5.0f));
-        avatar.getModelInst().setDirty(true, true);
-        control.getNinjaTeam().add(avatar);
-        avatar.setObjectCollection(objects);
-        
-        avatar = new NinjaAvatar("Avatar Clone", wm);
-        avatar.getModelInst().getTransform().getLocalMatrix(true).setTranslation(Vector3f.UNIT_Z.mult(-10.0f));
-        avatar.getModelInst().setDirty(true, true);
-        control.getNinjaTeam().add(avatar);
-        avatar.setObjectCollection(objects);
-        
-        avatar = new NinjaAvatar("Avatar Clone", wm);
-        avatar.getModelInst().getTransform().getLocalMatrix(true).setTranslation(Vector3f.UNIT_Z.mult(-15.0f));
-        avatar.getModelInst().setDirty(true, true);
-        control.getNinjaTeam().add(avatar);
-        avatar.setObjectCollection(objects);
-        
-        avatar = new NinjaAvatar("Avatar Clone", wm);
-        avatar.getModelInst().getTransform().getLocalMatrix(true).setTranslation(Vector3f.UNIT_Z.mult(-20.0f));
-        avatar.getModelInst().setDirty(true, true);
-        control.getNinjaTeam().add(avatar);
-        avatar.setObjectCollection(objects);
-        
-        avatar = new NinjaAvatar("Avatar Clone", wm);
-        avatar.getModelInst().getTransform().getLocalMatrix(true).setTranslation(Vector3f.UNIT_Z.mult(-25.0f));
-        avatar.getModelInst().setDirty(true, true);
-        control.getNinjaTeam().add(avatar);
-        avatar.setObjectCollection(objects);
-        
-        avatar = new NinjaAvatar("Avatar Clone", wm);
-        avatar.getModelInst().getTransform().getLocalMatrix(true).setTranslation(Vector3f.UNIT_Z.mult(-30.0f));
+        NinjaAvatar avatar = new NinjaAvatar("Avatar Clone " + xOffset+yOffset+zOffset, wm);
+        avatar.getModelInst().getTransform().getLocalMatrix(true).setTranslation(new Vector3f(xOffset, yOffset, zOffset));
         avatar.getModelInst().setDirty(true, true);
         control.getNinjaTeam().add(avatar);
         avatar.setObjectCollection(objects);

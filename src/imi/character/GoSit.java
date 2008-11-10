@@ -145,7 +145,7 @@ public class GoSit implements Task
         if (!bDoneTurning)
         {
             status = "turning at goal";
-            ninjaContext.getController().getWindow().setTitle("Turning to goal orientation");
+            //ninjaContext.getController().getWindow().setTitle("Turning to goal orientation");
 
             // We have reached the goal, rotate to sitting direction
             Vector3f rightVec = ninjaContext.getController().getRightVector();
@@ -275,7 +275,7 @@ public class GoSit implements Task
                 status = "collided with obstacle";
                 // Initiate walk back if colliding
                 Task walk = (Task) new Walk("Walking away from an obstacle", 1.0f, false, ninjaContext);
-                ninjaContext.getSteering().addTask(walk);
+                ninjaContext.getSteering().addTaskToTop(walk);
                 bNeedToAvoid  = true;
                 ninjaContext.resetTriggersAndActions();
 
@@ -357,7 +357,7 @@ public class GoSit implements Task
             {
                 // we are not closer to the goal after sampleTimeFrame secounds... let's try to get out of this loop
                 Task walk = (Task) new Walk("Walking away from loop", 0.5f, true, ninjaContext);
-                ninjaContext.getSteering().addTask(walk);
+                ninjaContext.getSteering().addTaskToTop(walk);
                 
                 System.out.println("sample tick: get out of loop");
                 status = "loop detected";

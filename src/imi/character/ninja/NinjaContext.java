@@ -183,21 +183,19 @@ public class NinjaContext extends GameContext
             steering.clearTasks();
             GoToNearestLocation();
             if (location != null)
-                steering.addTask(new FollowPath("Location 1", location, this));
+                steering.addTaskToBottom(new FollowPath("MyPath", location, this));
         }
         else if (trigger == TriggerNames.GoTo2.ordinal() && pressed)
         {
             steering.clearTasks();
             GoToNearestLocation();
             if (location != null)
-                steering.addTask(new FollowPath("Location 2", location, this));
+                steering.addTaskToBottom(new FollowPath("MyReversePath", location, this));
         }
         else if (trigger == TriggerNames.GoTo3.ordinal() && pressed)
         {
             steering.clearTasks();
-            GoToNearestLocation();
-            if (location != null)
-                steering.addTask(new FollowPath("Location 3", location, this));
+            GoToNearestChair();
         }
         
         // Select the next animation to play for the punch state
@@ -277,9 +275,9 @@ public class NinjaContext extends GameContext
         location = ninja.getObjectCollection().findNearestLocation(ninja, 10000.0f, 1.0f, false);
         if (location != null)
         {
-            steering.addTask(new GoTo(location, this));
+            steering.addTaskToTop(new GoTo(location, this));
             
-            ///steering.addTask(new )
+            ///steering.addTaskToTop(new )
 //            Vector3f pos = location.getPosition();
 //            Vector3f direction = location.getForwardVector();
 //            steering.setGoalPosition(pos);
@@ -318,7 +316,7 @@ public class NinjaContext extends GameContext
             //Vector3f direction = ((Chair)obj).getGoalForwardVector();
             
             GoSit task = new GoSit((Chair)obj, this);
-            steering.addTask(task);
+            steering.addTaskToTop(task);
             
 //            steering.setGoalPosition(pos);
 //            steering.setSittingDirection(direction);
