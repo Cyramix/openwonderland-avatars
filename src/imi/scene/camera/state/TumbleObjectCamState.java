@@ -40,7 +40,7 @@ public class TumbleObjectCamState extends CameraState
     private int lastMouseY      = -1;
     /** Maintain a reference to a PPolygonModelInstance to manipulate. **/
     private PPolygonModelInstance   modelInstance   = null;
-    private Vector3f                focalPoint      = null;
+    private Vector3f                focalPoint      = new Vector3f();
     /** Rotation about the Y axis **/
     private float                   rotationY       = 0.0f; 
     private Vector3f                worldYVec       = new Vector3f(0,1,0);
@@ -59,7 +59,8 @@ public class TumbleObjectCamState extends CameraState
     {
         setType(CameraStateType.TumbleObject);
         modelInstance = target;
-        setTargetFocalPoint(modelInstance.getTransform().getWorldMatrix(false).getTranslation());
+        if (target != null) // Grab the focal point
+            setTargetFocalPoint(modelInstance.getTransform().getWorldMatrix(false).getTranslation());
         newTargetNeedsUpdate = true;
     }
     
@@ -130,7 +131,7 @@ public class TumbleObjectCamState extends CameraState
 
     public void setTargetFocalPoint(Vector3f focalPoint)
     {
-        this.focalPoint = focalPoint;
+        this.focalPoint.set(focalPoint);
         newTargetNeedsUpdate = true;
     }
 
