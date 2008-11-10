@@ -196,10 +196,11 @@ public abstract class BaseShaderProgram implements RenderUpdater, AbstractShader
     }
     
     protected static URL wlaURL(URL prefix, String postfix) {
-        System.err.println("PREFIX "+prefix);
         try {
             if (prefix!=null && prefix.getProtocol().equalsIgnoreCase("wla")) {
-                return new URL("wla://"+prefix.getHost()+"/" + postfix);
+                String str = "wla://"+prefix.getUserInfo()+"@"+prefix.getHost()+":"+prefix.getPort()+"/" + postfix;
+//                System.err.println("Attempting to create URL "+str);
+                return new URL(str);
             } else {
                 return FileUtils.convertRelativePathToFileURL(postfix);
             }
