@@ -139,6 +139,7 @@ public class DemoBase
         createCameraEntity(worldManager);  
         createInputEntity(worldManager); 
         createDemoEntities(worldManager);
+        setGlobalLighting(worldManager);
     }
     
     // Override this for simple tests that only require a single scene
@@ -213,19 +214,6 @@ public class DemoBase
         matState.setEmissive(ColorRGBA.black);
         matState.setMaterialFace(MaterialFace.FrontAndBack);
         
-        // Lighting Configuration
-        LightNode lightNode = new LightNode("Dis is me light node man!");
-        // Must be a PointLight to function
-        PointLight pointLight = new PointLight();
-        pointLight.setDiffuse(new ColorRGBA(1.0f, 1.0f, 1.0f, 1.0f));
-        pointLight.setAmbient(new ColorRGBA(0.2f, 0.2f, 0.2f, 0.2f));
-        pointLight.setEnabled(true);
-        // attach it to the LightNode
-        lightNode.setLight(pointLight);
-        lightNode.setLocalTranslation(0.0f, 50.0f, 50.0f);
-        // add it to the render manager
-        wm.getRenderManager().addLight(lightNode);
-        
         // Cull State
         CullState cs = (CullState) wm.getRenderManager().createRendererState(RenderState.RS_CULL);      
         cs.setCullFace(CullState.Face.Back);
@@ -241,6 +229,22 @@ public class DemoBase
         jscene.setRenderState(cs);
         jscene.setRenderState(ws);
         jscene.updateRenderState();
+    }
+    
+    protected void setGlobalLighting(WorldManager wm)
+    {
+        // Lighting Configuration
+        LightNode lightNode = new LightNode("Dis is me light node man!");
+        // Must be a PointLight to function
+        PointLight pointLight = new PointLight();
+        pointLight.setDiffuse(new ColorRGBA(1.0f, 1.0f, 1.0f, 1.0f));
+        pointLight.setAmbient(new ColorRGBA(0.2f, 0.2f, 0.2f, 0.2f));
+        pointLight.setEnabled(true);
+        // attach it to the LightNode
+        lightNode.setLight(pointLight);
+        lightNode.setLocalTranslation(0.0f, 50.0f, 50.0f);
+        // add it to the render manager
+        wm.getRenderManager().addLight(lightNode);
     }
     
    public void createSpace(String name, Vector3f center, ZBufferState buf,

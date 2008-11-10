@@ -174,7 +174,7 @@ public class DemoBase2 extends javax.swing.JFrame implements FrameRateListener, 
         createCameraEntity(worldManager);  
         createInputEntity(worldManager); 
         createDemoEntities(worldManager);
-        
+        setGlobalLighting(worldManager);
         // Add my shader property panel
 //        JFrame testFrame = new JFrame("Shader Test");
 //        testFrame.add(new JPanel_ShaderProperties(new VertexDeformer(worldManager), worldManager));
@@ -253,19 +253,6 @@ public class DemoBase2 extends javax.swing.JFrame implements FrameRateListener, 
         matState = (MaterialState) wm.getRenderManager().createRendererState(RenderState.RS_MATERIAL);
         matState.setDiffuse(ColorRGBA.white);
         
-        // Lighting Configuration
-        LightNode lightNode = new LightNode("Dis is me light node man!");
-        // Must be a PointLight to function
-        PointLight pointLight = new PointLight();
-        pointLight.setDiffuse(new ColorRGBA(1.0f, 1.0f, 1.0f, 1.0f));
-        pointLight.setAmbient(new ColorRGBA(0.2f, 0.2f, 0.2f, 0.2f));
-        pointLight.setEnabled(true);
-        // attach it to the LightNode
-        lightNode.setLight(pointLight);
-        lightNode.setLocalTranslation(0.0f, 50.0f, 50.0f);
-        // add it to the render manager
-        wm.getRenderManager().addLight(lightNode);
-        
         // Cull State
         CullState cs = (CullState) wm.getRenderManager().createRendererState(RenderState.RS_CULL);      
         cs.setCullFace(CullState.Face.Back);
@@ -281,6 +268,25 @@ public class DemoBase2 extends javax.swing.JFrame implements FrameRateListener, 
         jscene.setRenderState(cs);
         jscene.setRenderState(ws);
         jscene.updateRenderState();
+    }
+    
+    /**
+     * Set up the global lighting
+     */
+    protected void setGlobalLighting(WorldManager wm)
+    {
+        // Lighting Configuration
+        LightNode lightNode = new LightNode("Dis is me light node man!");
+        // Must be a PointLight to function
+        PointLight pointLight = new PointLight();
+        pointLight.setDiffuse(new ColorRGBA(1.0f, 1.0f, 1.0f, 1.0f));
+        pointLight.setAmbient(new ColorRGBA(0.2f, 0.2f, 0.2f, 0.2f));
+        pointLight.setEnabled(true);
+        // attach it to the LightNode
+        lightNode.setLight(pointLight);
+        lightNode.setLocalTranslation(0.0f, 50.0f, 50.0f);
+        // add it to the render manager
+        wm.getRenderManager().addLight(lightNode);
     }
     
     public void createSpace(String name, Vector3f center, ZBufferState buf, ColorRGBA color, WorldManager wm) {
