@@ -124,4 +124,8 @@ public class AzimuthAngleState extends CameraState
         m_radius  = null;
     }
     
+    public void setCameraPosition(Vector3f position)
+    {
+       // Do nothing!
+    }
 }

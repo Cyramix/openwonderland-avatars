@@ -117,6 +117,11 @@ public class FirstPersonCamState extends CameraState
         return positionVec;
     }
     
+    public void setCameraPosition(Vector3f position)
+    {
+        setPosition(position);
+    }
+    
     public void setPosition(Vector3f position)
     {
         positionVec.set(position);

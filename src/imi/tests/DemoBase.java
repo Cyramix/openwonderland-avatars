@@ -28,6 +28,7 @@ import com.jme.scene.CameraNode;
 import com.jme.scene.Node;
 import com.jme.scene.shape.Box;
 import com.jme.scene.state.CullState;
+import com.jme.scene.state.LightState;
 import com.jme.scene.state.MaterialState;
 import com.jme.scene.state.MaterialState.ColorMaterial;
 import com.jme.scene.state.MaterialState.MaterialFace;
@@ -207,13 +208,16 @@ public class DemoBase
         buf.setEnabled(true);
         buf.setFunction(ZBufferState.TestFunction.LessThanOrEqualTo);
         
+        // LightState
+        LightState ls = (LightState)wm.getRenderManager().createRendererState(RenderState.RS_LIGHT);
+        ls.setEnabled(true);
+        ls.setTwoSidedLighting(false);
         // Material State
         MaterialState matState  = null;
         matState = (MaterialState) wm.getRenderManager().createRendererState(RenderState.RS_MATERIAL);
         matState.setAmbient(new ColorRGBA(0.1f, 0.1f, 0.1f, 1.0f));
         matState.setDiffuse(ColorRGBA.white);
         matState.setEmissive(ColorRGBA.black);
-        matState.setMaterialFace(MaterialFace.FrontAndBack);
         
         // Cull State
         CullState cs = (CullState) wm.getRenderManager().createRendererState(RenderState.RS_CULL);      
@@ -229,6 +233,7 @@ public class DemoBase
         jscene.setRenderState(buf);
         jscene.setRenderState(cs);
         jscene.setRenderState(ws);
+        jscene.setRenderState(ls);
         jscene.updateRenderState();
     }
     

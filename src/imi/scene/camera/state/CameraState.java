@@ -17,6 +17,8 @@
  */
 package imi.scene.camera.state;
 
+import com.jme.math.Vector3f;
+
 /**
  * The basis for Camera states
  * @author Ronald E Dahlgren
@@ -31,8 +33,9 @@ public abstract class CameraState
     {
         AzimuthAngle,
         FirstPerson,
-        ObjectTumble,
+        TumbleObject,
         Default
+    
     }
     
     private CameraStateType m_type = CameraStateType.Default;
@@ -54,4 +57,12 @@ public abstract class CameraState
     {
         m_type = type;
     }
+    
+    /**
+     * Sets the camera position. A state may choose to implement this
+     * method and ignore the parameter if it does not make sense for
+     * the model.
+     * @param position
+     */
+    protected abstract void setCameraPosition(Vector3f position);
 }

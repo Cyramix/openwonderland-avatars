@@ -27,7 +27,10 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 
 /**
- *
+ * This model provides the expected functionality for a first person driven 
+ * camera model. The W,A,S,D keys perform forward, strafe left, backward, and
+ * strafe right respectively. The Q and Z keys are used to move up and down.
+ * Click and drag the mouse to rotate the camera.
  * @author Ronald E Dahlgren
  */
 public class FirstPersonCamModel implements CameraModel
