@@ -91,6 +91,8 @@ public class PPolygonMesh extends PNode
     private boolean                         m_bInBatch          = false;
     
     private boolean                         m_bDebugInfo        = false; // True to dump extra debugging information
+    
+    private boolean                         m_bSubmitGeometry   = true;
 
     /**
      * Copy Constructor - This version performs a deep copy
@@ -214,7 +216,7 @@ public class PPolygonMesh extends PNode
      */
     public void submit(PPolygonTriMeshAssembler assembler) 
     {
-        if (isDirty())
+        if (isDirty() && m_bSubmitGeometry)
         {
             assembler.reconstructTriMesh(m_Geometry, this);
             
@@ -1464,6 +1466,14 @@ public class PPolygonMesh extends PNode
         m_SharedAsset = asset;
     }
 
+    public boolean isSubmitGeometry() {
+        return m_bSubmitGeometry;
+    }
+
+    public void setSubmitGeometry(boolean bSubmitGeometry) {
+        this.m_bSubmitGeometry = bSubmitGeometry;
+    }
+    
     @Override
     public boolean equals(Object obj) {
         if (obj == null) {

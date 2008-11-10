@@ -27,6 +27,7 @@ import imi.loaders.repository.AssetDescriptor;
 import imi.loaders.repository.Repository;
 import imi.loaders.repository.SharedAsset;
 import imi.loaders.repository.SharedAsset.SharedAssetType;
+import imi.scene.JScene;
 import imi.scene.processors.JSceneEventProcessor;
 import imi.utils.graph.Connection;
 import imi.utils.graph.Connection.ConnectionDirection;
@@ -55,7 +56,7 @@ public class MusicalChairs extends DemoBase
     
     @Override
     protected void createDemoEntities(WorldManager wm) 
-    {
+    {   
         // Create one object collection for all to use (for testing)
         ObjectCollection objects = new ObjectCollection("Musical Chairs Objects", wm);
         
@@ -86,7 +87,7 @@ public class MusicalChairs extends DemoBase
 
 
         // Make some avatars
-        cloneAvatars(control, objects, wm);
+        //cloneAvatars(control, objects, wm);
         
         
         
@@ -110,49 +111,39 @@ public class MusicalChairs extends DemoBase
     {   
         NinjaAvatar avatar = new NinjaAvatar("Avatar Clone", wm);
         avatar.getModelInst().getTransform().getLocalMatrix(true).setTranslation(Vector3f.UNIT_Z.mult(-5.0f));
+        avatar.getModelInst().setDirty(true, true);
         control.getNinjaTeam().add(avatar);
         avatar.setObjectCollection(objects);
         
         avatar = new NinjaAvatar("Avatar Clone", wm);
         avatar.getModelInst().getTransform().getLocalMatrix(true).setTranslation(Vector3f.UNIT_Z.mult(-10.0f));
+        avatar.getModelInst().setDirty(true, true);
         control.getNinjaTeam().add(avatar);
         avatar.setObjectCollection(objects);
         
         avatar = new NinjaAvatar("Avatar Clone", wm);
         avatar.getModelInst().getTransform().getLocalMatrix(true).setTranslation(Vector3f.UNIT_Z.mult(-15.0f));
+        avatar.getModelInst().setDirty(true, true);
         control.getNinjaTeam().add(avatar);
         avatar.setObjectCollection(objects);
         
         avatar = new NinjaAvatar("Avatar Clone", wm);
         avatar.getModelInst().getTransform().getLocalMatrix(true).setTranslation(Vector3f.UNIT_Z.mult(-20.0f));
+        avatar.getModelInst().setDirty(true, true);
         control.getNinjaTeam().add(avatar);
         avatar.setObjectCollection(objects);
         
         avatar = new NinjaAvatar("Avatar Clone", wm);
         avatar.getModelInst().getTransform().getLocalMatrix(true).setTranslation(Vector3f.UNIT_Z.mult(-25.0f));
+        avatar.getModelInst().setDirty(true, true);
         control.getNinjaTeam().add(avatar);
         avatar.setObjectCollection(objects);
         
         avatar = new NinjaAvatar("Avatar Clone", wm);
         avatar.getModelInst().getTransform().getLocalMatrix(true).setTranslation(Vector3f.UNIT_Z.mult(-30.0f));
+        avatar.getModelInst().setDirty(true, true);
         control.getNinjaTeam().add(avatar);
         avatar.setObjectCollection(objects);
-//        
-//        avatar = new NinjaAvatar("Avatar Clone", wm);
-//        avatar.getModelInst().getTransform().getLocalMatrix(true).setTranslation(Vector3f.UNIT_Z.mult(-35.0f));
-//        control.getNinjaTeam().add(avatar);
-//        avatar.setObjectCollection(objects);
-//        
-//        avatar = new NinjaAvatar("Avatar Clone", wm);
-//        avatar.getModelInst().getTransform().getLocalMatrix(true).setTranslation(Vector3f.UNIT_Z.mult(-40.0f));
-//        control.getNinjaTeam().add(avatar);
-//        avatar.setObjectCollection(objects);
-//        
-//        avatar = new NinjaAvatar("Avatar Clone", wm);
-//        avatar.getModelInst().getTransform().getLocalMatrix(true).setTranslation(Vector3f.UNIT_Z.mult(-45.0f));
-//        control.getNinjaTeam().add(avatar);
-//        avatar.setObjectCollection(objects);
-        
     }
     
 }

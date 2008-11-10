@@ -20,6 +20,7 @@ package imi.character.statemachine;
 import imi.character.CharacterController;
 import imi.character.statemachine.GameState.Action;
 import imi.scene.animation.AnimationListener.AnimationMessageType;
+import imi.scene.polygonmodel.PPolygonMeshInstance;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
@@ -28,7 +29,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import imi.utils.input.InputState;
 import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
-import imi.scene.polygonmodel.skinned.PPolygonSkinnedMeshInstance;
 import java.util.HashSet;
 
 /**
@@ -322,7 +322,7 @@ public class GameContext extends NamedUpdatableObject
         return m_triggerState;
     }
         
-    public PPolygonSkinnedMeshInstance getMesh()
+    public PPolygonMeshInstance getMesh()
     {
         return character.getMesh();
     }

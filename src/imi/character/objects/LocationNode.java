@@ -23,6 +23,7 @@ import imi.scene.boundingvolumes.PSphere;
 import imi.scene.polygonmodel.PPolygonModelInstance;
 import imi.utils.graph.Connection;
 import imi.utils.graph.GraphNode;
+import java.util.ArrayList;
 import org.jdesktop.mtgame.WorldManager;
 
 /**
@@ -51,6 +52,16 @@ public class LocationNode extends GraphNode implements SpatialObject
         bv        = new PSphere(position, radius);
         objects   = objectCollection;
         objects.addObject(this);
+    }
+
+    public Connection findConnection(String connectionName) 
+    {
+        for (Connection con : connections)
+        {
+            if (con.getName().equals(connectionName))
+                return con;
+        }
+        return null;
     }
     
     public PPolygonModelInstance getModelInst() {

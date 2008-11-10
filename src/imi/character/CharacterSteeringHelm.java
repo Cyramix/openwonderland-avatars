@@ -75,6 +75,11 @@ public class CharacterSteeringHelm extends NamedUpdatableObject
         return enabledState;
     }
     
+    public void clearTasks()
+    {
+        taskList.clear();
+    }
+    
     public void addTask(Task task) {
         taskList.add(task);
     }
