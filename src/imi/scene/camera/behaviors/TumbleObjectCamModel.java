@@ -197,6 +197,8 @@ public class TumbleObjectCamModel implements CameraModel
     
     private void updateTargetTransform(TumbleObjectCamState camState, boolean bUpdateRotations)
     {
+       if (camState.getTargetModelInstance() == null) // Model to rotate yet
+           return;
        PMatrix transform = camState.getTargetModelInstance().getTransform().getLocalMatrix(true);
        // update the transform with rotational info if necessary
        if (bUpdateRotations)
