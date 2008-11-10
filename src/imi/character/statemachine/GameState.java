@@ -148,7 +148,7 @@ public class GameState extends NamedUpdatableObject
         {
             skeleton.getAnimationState().setTransitionDuration(transitionDuration);
             skeleton.getAnimationState().setAnimationSpeed(animationSpeed);
-            skeleton.getAnimationState().setCurrentCyclePlaybackMode(PlaybackMode.PlayOnce);
+            //skeleton.getAnimationState().setCurrentCyclePlaybackMode(PlaybackMode.PlayOnce);
             bAnimationSet = skeleton.transitionTo(animationName, bTransitionReverseAnimation);
             
             // Set reverse   
@@ -292,7 +292,7 @@ public class GameState extends NamedUpdatableObject
         
         if (message == AnimationMessageType.TransitionComplete)
         {
-            gameContext.getSkeleton().getAnimationState().setCurrentCyclePlaybackMode(PlaybackMode.PlayOnce);
+            //gameContext.getSkeleton().getAnimationState().setCurrentCyclePlaybackMode(PlaybackMode.PlayOnce);
         }
     }
 
