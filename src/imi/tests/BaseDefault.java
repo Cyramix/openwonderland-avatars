@@ -48,6 +48,8 @@ import imi.scene.PMatrix;
 import imi.scene.PNode;
 import imi.scene.PScene;
 import imi.scene.PTransform;
+import imi.scene.camera.behaviors.FirstPersonCamModel;
+import imi.scene.camera.state.FirstPersonCamState;
 import imi.scene.polygonmodel.PPolygonMesh;
 import imi.scene.polygonmodel.PPolygonModel;
 import imi.scene.polygonmodel.PPolygonModelInstance;
@@ -57,7 +59,7 @@ import imi.scene.polygonmodel.parts.skinned.PBoneIndices;
 import imi.scene.polygonmodel.parts.skinned.PPolygonSkinnedVertexIndices;
 import imi.scene.polygonmodel.skinned.PPolygonSkinnedMesh;
 import imi.scene.polygonmodel.skinned.SkinnedMeshJoint;
-import imi.scene.processors.CameraProcessor;
+import imi.scene.processors.FlexibleCameraProcessor;
 import imi.scene.processors.JSceneAWTEventProcessor;
 import imi.scene.processors.JSceneEventProcessor;
 import imi.scene.utils.PMeshUtils;
@@ -101,7 +103,6 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
 ////////////////////////////////////////////////////////////////////////////////    
     private WorldManager        m_worldManager      = null;
     protected CameraNode        m_cameraNode        = null;
-    protected CameraProcessor   m_cameraProcessor   = null;
     protected int               m_desiredFrameRate  = 60;
     protected int               m_width             = 800;
     protected int               m_height            = 600;
@@ -113,6 +114,7 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
     protected OptionsGUI        m_AvatarOptions     = null;
     protected TreeExplorer      m_NodeExplorer      = null;
     
+    protected FlexibleCameraProcessor   m_cameraProcessor   = null;
 ////////////////////////////////////////////////////////////////////////////////
 // CLASS DATA MEMBERS - END
 ////////////////////////////////////////////////////////////////////////////////
@@ -158,10 +160,28 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
         createCameraEntity(m_worldManager);  
         createInputEntity(m_worldManager); 
         createDemoEntities(m_worldManager);
-        
+        setGlobalLighting(m_worldManager);
         runProgressBar(false);
     }
     
+    /**
+     * Set up the global lighting
+     */
+    protected void setGlobalLighting(WorldManager wm)
+    {
+        // Lighting Configuration
+        LightNode lightNode = new LightNode("Dis is me light node man!");
+        // Must be a PointLight to function
+        PointLight pointLight = new PointLight();
+        pointLight.setDiffuse(new ColorRGBA(1.0f, 1.0f, 1.0f, 1.0f));
+        pointLight.setAmbient(new ColorRGBA(0.2f, 0.2f, 0.2f, 0.2f));
+        pointLight.setEnabled(true);
+        // attach it to the LightNode
+        lightNode.setLight(pointLight);
+        lightNode.setLocalTranslation(0.0f, 50.0f, 50.0f);
+        // add it to the render manager
+        wm.getRenderManager().addLight(lightNode);
+    }
     /**
      * Override this for simple tests that only require a single scene that do
      * not need to set up the enity for fancy shmancy stuff
@@ -634,7 +654,11 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
         // Create the input listener and process for the camera
         int eventMask = InputManager.KEY_EVENTS | InputManager.MOUSE_EVENTS;
         AWTInputComponent cameraListener = (AWTInputComponent)wm.getInputManager().createInputComponent(canvas_SceneRenderWindow, eventMask);
-        m_cameraProcessor = new CameraProcessor(cameraListener, m_cameraNode, wm, camera, sky);
+        m_cameraProcessor = new FlexibleCameraProcessor(cameraListener, cameraSG, wm, camera, sky);
+        
+        FirstPersonCamState state = new FirstPersonCamState();
+        FirstPersonCamModel model = new FirstPersonCamModel();
+        m_cameraProcessor.setCameraBehavior(model, state);
         //OrbitCameraProcessor eventProcessor = new OrbitCameraProcessor(cameraListener, cameraNode, wm, camera);
         m_cameraProcessor.setRunInRenderer(true);
         

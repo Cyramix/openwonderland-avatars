@@ -30,6 +30,8 @@ public abstract class CameraState
     public enum CameraStateType
     {
         AzimuthAngle,
+        FirstPerson,
+        ObjectTumble,
         Default
     }
     

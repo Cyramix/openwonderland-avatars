@@ -19,7 +19,6 @@ package imi.tests;
 
 import com.jme.bounding.BoundingBox;
 import com.jme.image.Texture;
-import com.jme.light.DirectionalLight;
 import com.jme.light.LightNode;
 import com.jme.light.PointLight;
 import com.jme.math.Vector2f;
@@ -29,7 +28,6 @@ import com.jme.scene.CameraNode;
 import com.jme.scene.Node;
 import com.jme.scene.shape.Box;
 import com.jme.scene.state.CullState;
-import com.jme.scene.state.LightState;
 import com.jme.scene.state.MaterialState;
 import com.jme.scene.state.MaterialState.ColorMaterial;
 import com.jme.scene.state.MaterialState.MaterialFace;
@@ -92,7 +90,10 @@ import imi.loaders.repository.AssetDescriptor;
 import imi.loaders.repository.Repository;
 import imi.loaders.repository.SharedAsset.SharedAssetType;
 import imi.scene.PScene;
+import imi.scene.camera.behaviors.FirstPersonCamModel;
+import imi.scene.camera.state.FirstPersonCamState;
 import imi.scene.processors.CameraProcessor;
+import imi.scene.processors.FlexibleCameraProcessor;
 import imi.scene.processors.JSceneEventProcessor;
 import org.jdesktop.mtgame.RenderBuffer;
 
@@ -113,7 +114,7 @@ public class DemoBase
     
     private Entity m_jsceneEntity = null; // Maintained for lighting operations
     
-    protected CameraProcessor m_cameraProcessor = null;
+    protected FlexibleCameraProcessor m_cameraProcessor = null;
     
     
     public DemoBase(String[] args) 
@@ -698,7 +699,12 @@ public class DemoBase
         int eventMask = InputManager.KEY_EVENTS | InputManager.MOUSE_EVENTS;
         Canvas canvas = renderBuffer.getCanvas();
         AWTInputComponent cameraListener = (AWTInputComponent)wm.getInputManager().createInputComponent(canvas, eventMask);
-        m_cameraProcessor = new CameraProcessor(cameraListener, cameraNode, wm, camera, sky);
+        
+        m_cameraProcessor = new FlexibleCameraProcessor(cameraListener, cameraNode, wm, camera, sky);
+        
+        FirstPersonCamState state = new FirstPersonCamState();
+        FirstPersonCamModel model = new FirstPersonCamModel();
+        m_cameraProcessor.setCameraBehavior(model, state);
         //OrbitCameraProcessor eventProcessor = new OrbitCameraProcessor(cameraListener, cameraNode, wm, camera);
         m_cameraProcessor.setRunInRenderer(true);
         

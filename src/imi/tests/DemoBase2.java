@@ -45,6 +45,8 @@ import imi.scene.PMatrix;
 import imi.scene.PNode;
 import imi.scene.PScene;
 import imi.scene.PTransform;
+import imi.scene.camera.behaviors.FirstPersonCamModel;
+import imi.scene.camera.state.FirstPersonCamState;
 import imi.scene.polygonmodel.PPolygonMesh;
 import imi.scene.polygonmodel.PPolygonModel;
 import imi.scene.polygonmodel.parts.PMeshMaterial;
@@ -53,7 +55,7 @@ import imi.scene.polygonmodel.parts.skinned.PBoneIndices;
 import imi.scene.polygonmodel.parts.skinned.PPolygonSkinnedVertexIndices;
 import imi.scene.polygonmodel.skinned.PPolygonSkinnedMesh;
 import imi.scene.polygonmodel.skinned.SkinnedMeshJoint;
-import imi.scene.processors.CameraProcessor;
+import imi.scene.processors.FlexibleCameraProcessor;
 import imi.scene.processors.JSceneAWTEventProcessor;
 import imi.scene.processors.JSceneEventProcessor;
 import imi.scene.utils.PMeshUtils;
@@ -106,7 +108,7 @@ public class DemoBase2 extends javax.swing.JFrame implements FrameRateListener, 
     private int          width              = 800;
     private int          height             = 600;
     private float        aspect             = 800.0f/600.0f;    
-    protected CameraProcessor m_cameraProcessor = null;
+    protected FlexibleCameraProcessor m_cameraProcessor = null;
     
     private RenderBuffer renderBuffer       = null;
     // Class Data Members (GUI TOOLS)
@@ -663,7 +665,11 @@ public class DemoBase2 extends javax.swing.JFrame implements FrameRateListener, 
         // Create the input listener and process for the camera
         int eventMask = InputManager.KEY_EVENTS | InputManager.MOUSE_EVENTS;
         AWTInputComponent cameraListener = (AWTInputComponent)wm.getInputManager().createInputComponent(canvas_SceneRenderWindow, eventMask);
-        m_cameraProcessor = new CameraProcessor(cameraListener, cameraNode, wm, camera, sky);
+       m_cameraProcessor = new FlexibleCameraProcessor(cameraListener, cameraNode, wm, camera, sky);
+        
+        FirstPersonCamState state = new FirstPersonCamState();
+        FirstPersonCamModel model = new FirstPersonCamModel();
+        m_cameraProcessor.setCameraBehavior(model, state);
         //OrbitCameraProcessor eventProcessor = new OrbitCameraProcessor(cameraListener, cameraNode, wm, camera);
         m_cameraProcessor.setRunInRenderer(true);
         
