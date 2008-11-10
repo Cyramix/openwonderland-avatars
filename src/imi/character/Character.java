@@ -388,7 +388,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
                     if (m_attributes.m_baseURL!=null)
                         modelURL = new URL(m_attributes.m_baseURL + m_attributes.getModelFile());
                 } catch (MalformedURLException ex) {
-                    Logger.getLogger(Character.class.getName()).log(Level.SEVERE, null, ex);
+                    modelURL = null;
                 }
                 SharedAsset character;
                 
@@ -467,7 +467,6 @@ public abstract class Character extends Entity implements SpatialObject, Animati
                             try {
                                 rootURL = new URL(m_attributes.getBaseURL());
                             } catch (MalformedURLException ex) {
-                                Logger.getLogger(Character.class.getName()).log(Level.SEVERE, null, ex);
                                 rootURL = null;
                             }
 
