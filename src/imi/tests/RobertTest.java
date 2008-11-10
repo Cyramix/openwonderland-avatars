@@ -64,7 +64,7 @@ public class RobertTest extends DemoBase
     {
         pscene.setUseRepository(true);
          // position and orient the camera
-         m_cameraProcessor.setPosition(new Vector3f(20.0f, 0.0f, -30.0f));
+         //m_cameraProcessor.setPosition(new Vector3f(20.0f, 0.0f, -30.0f));
         
          // create the base tower for robert to stand on
          PPolygonModelInstance towerModel = initializeAndAnimateSkinnedMesh(pscene, processors);

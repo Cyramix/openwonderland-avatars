@@ -119,7 +119,7 @@ public class FirstPersonCamState extends CameraState
     
     public void setPosition(Vector3f position)
     {
-        positionVec.set(yDir);
+        positionVec.set(position);
     }
     
     public void setRotation(float _rotationX, float _rotationY)
