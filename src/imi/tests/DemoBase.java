@@ -22,8 +22,6 @@ import com.jme.image.Texture;
 import com.jme.light.DirectionalLight;
 import com.jme.light.LightNode;
 import com.jme.light.PointLight;
-import com.jme.math.Matrix3f;
-import com.jme.math.Quaternion;
 import com.jme.math.Vector2f;
 import com.jme.math.Vector3f;
 import com.jme.renderer.ColorRGBA;
@@ -34,6 +32,7 @@ import com.jme.scene.state.CullState;
 import com.jme.scene.state.LightState;
 import com.jme.scene.state.MaterialState;
 import com.jme.scene.state.MaterialState.ColorMaterial;
+import com.jme.scene.state.MaterialState.MaterialFace;
 import com.jme.scene.state.RenderState;
 import com.jme.scene.state.WireframeState;
 import com.jme.scene.state.ZBufferState;
@@ -112,6 +111,8 @@ public class DemoBase
     private int          height             = 600;
     private float        aspect             = 800.0f/600.0f;
     
+    private Entity m_jsceneEntity = null; // Maintained for lighting operations
+    
     protected CameraProcessor m_cameraProcessor = null;
     
     
@@ -147,6 +148,7 @@ public class DemoBase
         //PPolygonModelInstance modelInst = pscene.addModelInstance(createArticulatedModel(1.3f, 1.0f, 2.0f, 10.0f, 3.0f, new PMatrix()), new PMatrix());
     }
     
+    
     // Override this if you wish to have multiple entities or if you wish
     // to setup your entity for fancy shmanciness
     protected void createDemoEntities(WorldManager wm) 
@@ -163,21 +165,17 @@ public class DemoBase
         // The glue between JME and pscene
         JScene jscene = new JScene(pscene);
         
-        // Use default render states
-        setDefaultRenderStates(jscene, wm);
-        
         // Set this jscene to be the "selected" one for IMI input handling
         ((JSceneEventProcessor)wm.getUserData(JSceneEventProcessor.class)).setJScene(jscene); 
        
         // Create entity
-        Entity JSEntity = new Entity("Entity for a graph test");
+        m_jsceneEntity = new Entity("Entity for a graph test");
         
         // Create a scene component and set the root to our jscene
         RenderComponent sc = wm.getRenderManager().createRenderComponent(jscene);
-        
+        sc.setLightingEnabled(true);
         // Add the scene component with our jscene to the entity
-        JSEntity.addComponent(RenderComponent.class, sc);
-        
+        m_jsceneEntity.addComponent(RenderComponent.class, sc);
    
         // Add our two processors to a collection component
         ProcessorCollectionComponent processorCollection = new ProcessorCollectionComponent();
@@ -185,10 +183,14 @@ public class DemoBase
             processorCollection.addProcessor(processors.get(i));
         
         // Add the processor collection component to the entity
-        JSEntity.addComponent(ProcessorCollectionComponent.class, processorCollection);
+        m_jsceneEntity.addComponent(ProcessorCollectionComponent.class, processorCollection);
         
         // Add the entity to the world manager
-        wm.addEntity(JSEntity);    
+        wm.addEntity(m_jsceneEntity);    
+        
+        
+        // Use default render states
+        setDefaultRenderStates(jscene, wm);
     }
     
     /**
@@ -206,29 +208,23 @@ public class DemoBase
         // Material State
         MaterialState matState  = null;
         matState = (MaterialState) wm.getRenderManager().createRendererState(RenderState.RS_MATERIAL);
+        matState.setAmbient(new ColorRGBA(0.1f, 0.1f, 0.1f, 1.0f));
         matState.setDiffuse(ColorRGBA.white);
+        matState.setEmissive(ColorRGBA.black);
+        matState.setMaterialFace(MaterialFace.FrontAndBack);
         
-        // LIGHT NODE TEST
-        // create the node 
+        // Lighting Configuration
         LightNode lightNode = new LightNode("Dis is me light node man!");
-        
-        // Generate a new directional light to attach to the node
-        DirectionalLight directionLight = new DirectionalLight();
-        directionLight.setDirection(new Vector3f(1, 0, 0).normalize());
-        directionLight.setDiffuse(new ColorRGBA(1.0f, 1.0f, 1.0f, 1.0f));
-        directionLight.setAmbient(new ColorRGBA(0.2f, 0.2f, 0.2f, 0.2f));
-        directionLight.setEnabled(true);
+        // Must be a PointLight to function
+        PointLight pointLight = new PointLight();
+        pointLight.setDiffuse(new ColorRGBA(1.0f, 1.0f, 1.0f, 1.0f));
+        pointLight.setAmbient(new ColorRGBA(0.2f, 0.2f, 0.2f, 0.2f));
+        pointLight.setEnabled(true);
         // attach it to the LightNode
-        lightNode.setLight(directionLight);
-        // orient the LightNode in some direction 
-        
-        Matrix3f rotationMatrix = new Matrix3f();
-        rotationMatrix.fromAngleAxis(3.14159f, Vector3f.UNIT_XYZ);
-        lightNode.setLocalRotation(rotationMatrix);
-        
+        lightNode.setLight(pointLight);
+        lightNode.setLocalTranslation(0.0f, 50.0f, 50.0f);
         // add it to the render manager
         wm.getRenderManager().addLight(lightNode);
-        wm.addToUpdateList(lightNode);
         
         // Cull State
         CullState cs = (CullState) wm.getRenderManager().createRendererState(RenderState.RS_CULL);      
@@ -237,17 +233,17 @@ public class DemoBase
         
         // Wireframe State
         WireframeState ws = (WireframeState) wm.getRenderManager().createRendererState(RenderState.RS_WIREFRAME);
-        ws.setEnabled(false);
+        ws.setEnabled(true);
         
         // Push 'em down the pipe
         jscene.setRenderState(matState);
         jscene.setRenderState(buf);
         jscene.setRenderState(cs);
         jscene.setRenderState(ws);
-        //jscene.setRenderState(ls);
+        jscene.updateRenderState();
     }
     
-    public void createSpace(String name, Vector3f center, ZBufferState buf,
+   public void createSpace(String name, Vector3f center, ZBufferState buf,
             ColorRGBA color, WorldManager wm) {
         MaterialState matState = null;
 

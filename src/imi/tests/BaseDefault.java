@@ -22,6 +22,7 @@ package imi.tests;
 ////////////////////////////////////////////////////////////////////////////////
 import com.jme.bounding.BoundingBox;
 import com.jme.image.Texture;
+import com.jme.light.LightNode;
 import com.jme.light.PointLight;
 import com.jme.math.Vector2f;
 import com.jme.math.Vector3f;
@@ -30,7 +31,6 @@ import com.jme.scene.CameraNode;
 import com.jme.scene.Node;
 import com.jme.scene.shape.Box;
 import com.jme.scene.state.CullState;
-import com.jme.scene.state.LightState;
 import com.jme.scene.state.MaterialState;
 import com.jme.scene.state.MaterialState.ColorMaterial;
 import com.jme.scene.state.RenderState;
@@ -231,26 +231,18 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
         matState = (MaterialState) wm.getRenderManager().createRendererState(RenderState.RS_MATERIAL);
         matState.setDiffuse(ColorRGBA.white);
         
-        // Light state
-//        Vector3f lightDir = new Vector3f(0.0f, -1.0f, 0.0f);
-//        DirectionalLight dr = new DirectionalLight();
-//        dr.setDiffuse(new ColorRGBA(1.0f, 1.0f, 1.0f, 1.0f));
-//        dr.setAmbient(new ColorRGBA(0.2f, 0.2f, 0.2f, 1.0f));
-//        dr.setSpecular(new ColorRGBA(0.7f, 0.7f, 0.7f, 1.0f));
-//        dr.setDirection(lightDir);
-//        dr.setEnabled(true);
-//        LightState ls = (LightState) wm.createRendererState(RenderState.RS_LIGHT);
-//        ls.setEnabled(true);
-//        ls.attach(dr);
-        // SET lighting
-        PointLight light = new PointLight();
-        light.setDiffuse(new ColorRGBA(1.0f, 1.0f, 1.0f, 1.0f));
-        light.setAmbient(new ColorRGBA(1.0f, 1.0f, 1.0f, 1.0f));
-        light.setLocation(new Vector3f(-1000, 1000, 0)); // not affecting anything
-        light.setEnabled(true);
-        LightState ls = (LightState) wm.getRenderManager().createRendererState(RenderState.RS_LIGHT);
-        ls.setEnabled(true);
-        ls.attach(light);
+        // Lighting Configuration
+        LightNode lightNode = new LightNode("Dis is me light node man!");
+        // Must be a PointLight to function
+        PointLight pointLight = new PointLight();
+        pointLight.setDiffuse(new ColorRGBA(1.0f, 1.0f, 1.0f, 1.0f));
+        pointLight.setAmbient(new ColorRGBA(0.2f, 0.2f, 0.2f, 0.2f));
+        pointLight.setEnabled(true);
+        // attach it to the LightNode
+        lightNode.setLight(pointLight);
+        lightNode.setLocalTranslation(0.0f, 50.0f, 50.0f);
+        // add it to the render manager
+        wm.getRenderManager().addLight(lightNode);
         
         // Cull State
         CullState cs = (CullState) wm.getRenderManager().createRendererState(RenderState.RS_CULL);      
@@ -266,7 +258,6 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
         jscene.setRenderState(buf);
         jscene.setRenderState(cs);
         jscene.setRenderState(ws);
-        jscene.setRenderState(ls);
         jscene.updateRenderState();
     }
     
