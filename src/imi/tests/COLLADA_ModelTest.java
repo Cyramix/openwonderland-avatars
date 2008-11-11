@@ -18,6 +18,8 @@
 package imi.tests;
 
 
+import com.jme.math.Vector3f;
+import com.jme.renderer.ColorRGBA;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 
@@ -28,16 +30,18 @@ import imi.scene.PMatrix;
 import imi.scene.PScene;
 import imi.scene.PNode;
 import imi.scene.polygonmodel.PPolygonModelInstance;
-import imi.scene.polygonmodel.skinned.PPolygonSkinnedMeshInstance;
-import imi.scene.polygonmodel.skinned.PPolygonSkinnedMesh;
-import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.jdesktop.mtgame.WorldManager;
 import org.jdesktop.mtgame.ProcessorComponent;
 
-import imi.loaders.collada.Collada;
 import imi.loaders.collada.ColladaLoaderParams;
+import imi.scene.camera.behaviors.TumbleObjectCamModel;
+import imi.scene.camera.state.TumbleObjectCamState;
+import imi.scene.polygonmodel.PPolygonMesh;
+import imi.scene.polygonmodel.PPolygonMeshInstance;
+import imi.scene.polygonmodel.parts.PMeshMaterial;
+import imi.scene.utils.PMeshUtils;
 import java.io.File;
 import java.net.URL;
 
@@ -59,130 +63,45 @@ public class COLLADA_ModelTest extends DemoBase
     {
         COLLADA_ModelTest modelTest = new COLLADA_ModelTest(args);
     }
-
-
-    //  Loads a Skeleton.
-    public SkeletonNode loadSkeleton(PScene pScene, URL modelLocation)
-    {
-        boolean bResult = false;
-        SkeletonNode pSkeletonNode = null;
-
-//        pScene.setUseRepository(false);
-
-        //  Load the collada file to the PScene
-        Collada colladaLoader = new Collada();
-        PScene colladaScene = new PScene("COLLADA Scene", pScene.getWorldManager());
-        colladaScene.setUseRepository(false);
-        try
-        {
-            //  Load only the Skeleton (Geometry and Rig).
-            colladaLoader.setLoadFlags(true, true, false);
-            colladaLoader.load(colladaScene, modelLocation);
-            bResult = true;
-        }
-        catch (Exception ex)
-        {
-            System.out.println("Exception occured while loading skeleton.");
-            ex.printStackTrace();
-        } 
-
-//        pScene.setUseRepository(true);
-
-        if (bResult)
-            pSkeletonNode = colladaLoader.getSkeletonNode();
-        
-        return(pSkeletonNode);
-    }
-
-    //  Loads a Skeleton animation.
-    public boolean loadSkeletonAnimation(PScene pScene, SkeletonNode pSkeletonNode, URL animationLocation)
-    {
-        boolean bResult = false;
-
-//        pScene.setUseRepository(false);
-
-        //  Load the collada file to the PScene
-        Collada colladaLoader = new Collada();
-        PScene colladaScene = new PScene("COLLADA Scene", pScene.getWorldManager());
-        colladaScene.setUseRepository(false);
-        colladaLoader.setSkeletonNode(pSkeletonNode);
-
-        try
-        {
-            //  Load only the Skeleton (Geometry and Rig).
-            colladaLoader.setLoadFlags(false, false, true);
-            colladaLoader.load(colladaScene, animationLocation);
-            bResult = true;
-        }
-        catch (Exception ex)
-        {
-            System.out.println("Exception occured while loading skeleton.");
-            ex.printStackTrace();
-        } 
-
-//        pScene.setUseRepository(true);
-
-        return(bResult);
-    }
-
+    
     @Override
     protected void simpleSceneInit(PScene pscene, WorldManager wm, ArrayList<ProcessorComponent> processors) 
     {
+        // load a model from one of the listed locations below
         URL modelLocation = null;
         try
         {
             //modelLocation = new URL("http://www.zeitgeistgames.com/assets/collada/Clothing/FlipFlopsFeet.dae");
-            modelLocation = new File("assets/models/collada/Environments/Milan/DSI.dae").toURI().toURL();
+            //modelLocation = new File("assets/models/collada/Environments/Milan/DSI.dae").toURI().toURL();
+            modelLocation = new File("assets/models/collada/Avatars/MaleZip/MaleBind.dae").toURI().toURL();
         } catch (MalformedURLException ex)
         {
             Logger.getLogger(COLLADA_ModelTest.class.getName()).log(Level.SEVERE, null, ex);
         }
         SharedAsset colladaAsset = new SharedAsset(pscene.getRepository(), new AssetDescriptor(SharedAssetType.COLLADA_Mesh, modelLocation));
         //colladaAsset.setUserData(new ColladaLoaderParams(true, true, false, false, 3, "FlipFlops", null));
-        colladaAsset.setUserData(new ColladaLoaderParams(false, true, false, false, 3, "Milan", null));
+        colladaAsset.setUserData(new ColladaLoaderParams(true, true, false, false, 3, "Milan", null));
         PPolygonModelInstance modelInst = pscene.addModelInstance("Collada Model", colladaAsset, new PMatrix());
+        // create and add a standard cube to see the default lighting
+        PPolygonMesh cube = PMeshUtils.createBox("Cube!", Vector3f.ZERO, 2, 2, 2, ColorRGBA.cyan);
+        // add it to the pscene
+        PPolygonModelInstance modelInst2 = pscene.addModelInstance(cube, new PMatrix(Vector3f.UNIT_Z.mult(5.0f)));
+        // grab the mesh instance
+        PPolygonMeshInstance meshInst = (PPolygonMeshInstance) modelInst2.getChild(0);
+        // assign a texture to the mesh instance
+        PMeshMaterial material = new PMeshMaterial("cubeTex", "assets/textures/checkerboard.png");
+        meshInst.setMaterial(material);
+        meshInst.setUseGeometryMaterial(false);
 
-        modelInst.dump();
-
-/*
-        if (modelInst.getChild(0) instanceof SkeletonNode)
-        {
-            SkeletonNode pSkeletonNode = (SkeletonNode)modelInst.getChild(0);
-
-//            pSkeletonNode.dump();
-
-            ArrayList<PPolygonSkinnedMeshInstance> skinnedMeshInstances = pSkeletonNode.getSkinnedMeshInstances();
-            PPolygonSkinnedMeshInstance pSkinnedMeshInstance;
-
-            String textureFilename = imi.utils.FileUtils.findTextureFile("MaleCHeadCLR.png");
-  //          String[] textures = new String[1];
-  //          textures[0] = textureFilename;
-  //          PMeshMaterial mat = new PMeshMaterial("MyName!");
-  //          mat.setTextures(textures);
-//            mat.setShader(new VertexDeformer(wm));
-
-            for (int i=0; i<skinnedMeshInstances.size(); i++)
-            {
-                pSkinnedMeshInstance = skinnedMeshInstances.get(i);
-
-                pSkinnedMeshInstance.getMaterialRef();
-//                pSkinnedMeshInstance.setMaterial(mat);
-//                pSkinnedMeshInstance.setUseGeometryMaterial(false);
-
-                pSkinnedMeshInstance.buildAnimationJointMapping(pSkeletonNode);   
-            }
-
-//            pscene.addModelInstance(pSkeletonNode, new PMatrix());
-
+        // NEW CAMERA MODEL TEST CODE
+        TumbleObjectCamModel tumbleModel = new TumbleObjectCamModel();
+        TumbleObjectCamState tumbleState = new TumbleObjectCamState(modelInst);
+        tumbleState.setCameraPosition(new Vector3f(1,2,-6));
+        m_cameraProcessor.setCameraBehavior(tumbleModel, tumbleState);
         
-            //  Assign the specified shader to all SkinnedMeshes.
-            pSkeletonNode.setShader(new VertexDeformer(wm));
-        }
-*/
-
-//        modelInst.getTransform().getLocalMatrix(true).setScale(3.0f);
-//        modelInst.getTransform().getLocalMatrix(true).setTranslation(new Vector3f(4.95f, 1.3f, 0.3f));
-
+        // test setting a different focal point, say at the sphere
+        tumbleState.setTargetFocalPoint(modelInst2.getTransform().getWorldMatrix(false).getTranslation());
+        
         pscene.setDirty(true, true);
     }
 
@@ -190,32 +109,6 @@ public class COLLADA_ModelTest extends DemoBase
 
     private void createSkinnedAnimationProcessors(PNode pNode, ArrayList<ProcessorComponent> processors)
     {
-        if (pNode instanceof PPolygonSkinnedMeshInstance)
-        {
-            PPolygonSkinnedMeshInstance pSkinnedMeshInstance = (PPolygonSkinnedMeshInstance)pNode;
-//            ((PPolygonSkinnedMeshInstance)pNode).getAnimationState().setPauseAnimation(true);
-
-/*
-    LHandShape-skin
-    *** LegsNudeShape-skin
-    rightEyeGeoShape-skin
-    leftEyeGeoShape-skin
-    *** TorsoNudeShape-skin
-    LFootNudeShape-skin***
-    HeadGeoShape-skin
-    TongueGeoShape-skin
-    LowerTeethShape-skin
-    UpperTeethShape-skin
-    RHandShape-skin
-    RFootNudeShape-skin
-*/
-                    
-//            if (pSkinnedMeshInstance.getName().equals("LFootNudeShape"))
-//            if (pSkinnedMeshInstance.getName().equals("TorsoNudeShape"))
-//            if (pSkinnedMeshInstance.getName().equals("LHandShape"))
-            //processors.add(new SkinnedAnimationProcessor(pSkinnedMeshInstance));
-        }
-
         if (pNode.getChildrenCount() > 0)
         {
             int a;
@@ -226,71 +119,6 @@ public class COLLADA_ModelTest extends DemoBase
                 pChildNode = pNode.getChild(a);
                 
                 createSkinnedAnimationProcessors(pChildNode, processors);
-            }
-        }
-    }
-
-
-    //  Gets the MS3D_SkinnedMesh1 with the specified name.
-    private PPolygonSkinnedMesh getSkinnedMeshInNodeHiearchy(PNode pNode, String meshName)
-    {
-        if (pNode instanceof PPolygonSkinnedMeshInstance)
-        {
-            PPolygonSkinnedMeshInstance pSkinnedMeshInstance = (PPolygonSkinnedMeshInstance)pNode;
-
-            PPolygonSkinnedMesh pSkinnedMesh = (PPolygonSkinnedMesh)pSkinnedMeshInstance.getGeometry();
-
-            if (pSkinnedMesh.getName().equals(meshName))
-                return(pSkinnedMesh);
-        }
-
-        if (pNode.getChildrenCount() > 0)
-        {
-            int a;
-            PNode pChildNode;
-            PPolygonSkinnedMesh pTheSkinnedMesh;
-            
-            for (a=0; a<pNode.getChildrenCount(); a++)
-            {
-                pChildNode = pNode.getChild(a);
-                
-                pTheSkinnedMesh = getSkinnedMeshInNodeHiearchy(pChildNode, meshName);
-                if (pTheSkinnedMesh != null)
-                    return(pTheSkinnedMesh);
-            }
-        }
-
-        return(null);
-    }
-
-    
-    
-    private void dumpSkinnedMeshMatrices(PNode pNode)
-    {
-        if (pNode instanceof PPolygonSkinnedMeshInstance)
-        {
-            PPolygonSkinnedMeshInstance pSkinnedMeshInstance = (PPolygonSkinnedMeshInstance)pNode;
-            PMatrix pMatrix = pNode.getTransform().getLocalMatrix(false);
-            float []values = pMatrix.getFloatArray();
-            
-            System.out.println("SkinnedMeshInstance:  " + pNode.getName());
-            System.out.println("   SkinnedMesh:  " + pSkinnedMeshInstance.getGeometry().getName());
-            System.out.println("   " + values[0] + ", " + values[1] + ", " + values[2] + ", " + values[3]);
-            System.out.println("   " + values[4] + ", " + values[5] + ", " + values[6] + ", " + values[7]);
-            System.out.println("   " + values[8] + ", " + values[9] + ", " + values[10] + ", " + values[11]);
-            System.out.println("   " + values[12] + ", " + values[13] + ", " + values[14] + ", " + values[15]);
-        }
-
-        if (pNode.getChildrenCount() > 0)
-        {
-            int a;
-            PNode pChildNode;
-            
-            for (a=0; a<pNode.getChildrenCount(); a++)
-            {
-                pChildNode = pNode.getChild(a);
-                
-                dumpSkinnedMeshMatrices(pChildNode);
             }
         }
     }

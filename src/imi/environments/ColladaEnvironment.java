@@ -69,7 +69,7 @@ public class ColladaEnvironment extends Entity
         super(name);
         m_wm = wm;
         PScene scene = new PScene(m_wm);
-        scene.setUseRepository(false);
+        scene.setUseRepository(false); // Synchronous loading requested
         scene.addModelInstance(environment, new PMatrix());
         
         SceneGraphConvertor convertor = new SceneGraphConvertor();
@@ -83,7 +83,6 @@ public class ColladaEnvironment extends Entity
         // add ourselves to the world manager
         m_wm.addEntity(this);
  
-        //sphereTestCode();
     }
     
     public Node getSceneRoot()
