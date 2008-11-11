@@ -500,7 +500,32 @@ public class SceneEssentials {
         character.setUserData(new ColladaLoaderParams(true, true, false, false, 4, fileModel.getName(), null));
         loadInitializer(fileModel.getName(), character, anim);
     }
-    
+
+    public void loadDAEAnimationFile(boolean useRepository, Component arg0) {
+        if (skeleton == null)   // check to make sure you have a skinned meshed model loaded before adding animations
+            return;
+
+        int returnValue = jFileChooser_LoadColladaModel.showOpenDialog(arg0);
+        if (returnValue == JFileChooser.APPROVE_OPTION) {
+            fileModel = jFileChooser_LoadColladaModel.getSelectedFile();
+            currentPScene.setUseRepository(useRepository);
+
+            File path       = getAbsPath(fileModel);
+            String szURL    = new String("file://" + path.getPath());
+            URL modelURL    = null;
+            try {
+                modelURL = new URL(szURL);
+                InstructionProcessor pProcessor = new InstructionProcessor(worldManager);
+                Instruction pRootInstruction = new Instruction();
+                pRootInstruction.addInstruction(InstructionNames.setSkeleton, skeleton);
+                pRootInstruction.addInstruction(InstructionNames.loadAnimation, modelURL);
+                pProcessor.execute(pRootInstruction);
+            } catch (MalformedURLException ex) {
+                Logger.getLogger(SceneEssentials.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
+
     ////////////////////////////////////////////////////////////////////////////
     // LOAD FROM SERVER
     ////////////////////////////////////////////////////////////////////////////
@@ -636,7 +661,10 @@ public class SceneEssentials {
             modelInst.getTransform().setLocalMatrix(origin);                    // Set animations
         }
     }
-    
+
+    public void loadDAEAnimationURL(boolean useRepository, Component arg0) {
+        // TODO: add in sql table for this to work...
+    }
     ////////////////////////////////////////////////////////////////////////////
     // HELPER FUNCTIONS
     ////////////////////////////////////////////////////////////////////////////

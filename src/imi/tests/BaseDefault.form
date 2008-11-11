@@ -32,7 +32,7 @@
                     <Property name="text" type="java.lang.String" value="Avatar"/>
                   </Properties>
                   <AuxValues>
-                    <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="jMenuItem_Avatar.addActionListener(new java.awt.event.ActionListener() {&#xa;    public void actionPerformed(java.awt.event.ActionEvent evt) {&#xa;        runProgressBar(true);&#xa;        m_sceneData.loadAvatarDAEFile(true, false, m_base);&#xa;        runProgressBar(false);&#xa;    }&#xa;});"/>
+                    <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="jMenuItem_Avatar.addActionListener(new java.awt.event.ActionListener() {&#xa;    public void actionPerformed(java.awt.event.ActionEvent evt) {&#xa;        runProgressBar(true);&#xa;        m_sceneData.loadAvatarDAEFile(true, false, m_base);&#xa;        resetOpenTools();&#xa;        runProgressBar(false);&#xa;    }&#xa;});"/>
                   </AuxValues>
                 </MenuItem>
                 <MenuItem class="javax.swing.JMenuItem" name="jMenuItem_Clothes">
@@ -40,7 +40,7 @@
                     <Property name="text" type="java.lang.String" value="Clothes"/>
                   </Properties>
                   <AuxValues>
-                    <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="jMenuItem_Clothes.addActionListener(new java.awt.event.ActionListener() {&#xa;    public void actionPerformed(java.awt.event.ActionEvent evt) {&#xa;        runProgressBar(true);&#xa;        m_sceneData.loadSMeshDAEFile(true, false, m_base);&#xa;        runProgressBar(false);&#xa;    }&#xa;});"/>
+                    <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="jMenuItem_Clothes.addActionListener(new java.awt.event.ActionListener() {&#xa;    public void actionPerformed(java.awt.event.ActionEvent evt) {&#xa;        runProgressBar(true);&#xa;        m_sceneData.loadSMeshDAEFile(true, false, m_base);&#xa;        resetOpenTools();&#xa;        runProgressBar(false);&#xa;    }&#xa;});"/>
                   </AuxValues>
                 </MenuItem>
                 <MenuItem class="javax.swing.JMenuItem" name="jMenuItem_Accessories">
@@ -48,7 +48,7 @@
                     <Property name="text" type="java.lang.String" value="Accessories"/>
                   </Properties>
                   <AuxValues>
-                    <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="jMenuItem_Accessories.addActionListener(new java.awt.event.ActionListener() {&#xa;    public void actionPerformed(java.awt.event.ActionEvent evt) {&#xa;        runProgressBar(true);&#xa;        m_sceneData.loadMeshDAEFile(true, false, m_base);&#xa;        runProgressBar(false);&#xa;    }&#xa;});"/>
+                    <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="jMenuItem_Accessories.addActionListener(new java.awt.event.ActionListener() {&#xa;    public void actionPerformed(java.awt.event.ActionEvent evt) {&#xa;        runProgressBar(true);&#xa;        m_sceneData.loadMeshDAEFile(true, false, m_base);&#xa;        resetOpenTools();&#xa;        runProgressBar(false);&#xa;    }&#xa;});"/>
                   </AuxValues>
                 </MenuItem>
               </SubComponents>
@@ -98,7 +98,7 @@
                 <Property name="text" type="java.lang.String" value="Load Model"/>
               </Properties>
               <AuxValues>
-                <AuxValue name="JavaCodeGenerator_InitCodePre" type="java.lang.String" value="jMenuItem_LoadModelURL.addActionListener(new java.awt.event.ActionListener() {&#xa;    public void actionPerformed(java.awt.event.ActionEvent evt) {&#xa;        runProgressBar(true);&#xa;        m_sceneData.openServerBrowser((JFrame) m_base);&#xa;        runProgressBar(false);&#xa;    }&#xa;});"/>
+                <AuxValue name="JavaCodeGenerator_InitCodePre" type="java.lang.String" value="jMenuItem_LoadModelURL.addActionListener(new java.awt.event.ActionListener() {&#xa;    public void actionPerformed(java.awt.event.ActionEvent evt) {&#xa;        runProgressBar(true);&#xa;        m_sceneData.openServerBrowser((JFrame) m_base);&#xa;        resetOpenTools();&#xa;        runProgressBar(false);&#xa;    }&#xa;});"/>
               </AuxValues>
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="jMenuItem_LoadTextureURL">
@@ -133,6 +133,9 @@
               <Properties>
                 <Property name="text" type="java.lang.String" value="Animation Viewer"/>
               </Properties>
+              <AuxValues>
+                <AuxValue name="JavaCodeGenerator_InitCodePre" type="java.lang.String" value="jMenuItem_AnimationViewer.addActionListener(new java.awt.event.ActionListener() {&#xa;    public void actionPerformed(java.awt.event.ActionEvent evt) {&#xa;        runProgressBar(true);&#xa;        openAnimationViewer();&#xa;        runProgressBar(false);&#xa;    }&#xa;});"/>
+              </AuxValues>
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="jMenuItem_ShaderCreator">
               <Properties>
@@ -166,6 +169,7 @@
   <AuxValues>
     <AuxValue name="FormSettings_autoResourcing" type="java.lang.Integer" value="0"/>
     <AuxValue name="FormSettings_autoSetComponentName" type="java.lang.Boolean" value="false"/>
+    <AuxValue name="FormSettings_generateFQN" type="java.lang.Boolean" value="true"/>
     <AuxValue name="FormSettings_generateMnemonicsCode" type="java.lang.Boolean" value="false"/>
     <AuxValue name="FormSettings_i18nAutoMode" type="java.lang.Boolean" value="false"/>
     <AuxValue name="FormSettings_layoutCodeTarget" type="java.lang.Integer" value="2"/>

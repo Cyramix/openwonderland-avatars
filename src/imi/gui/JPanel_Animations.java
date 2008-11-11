@@ -19,18 +19,19 @@ package imi.gui;
 
 /**
  *
- * @author  ptruong
+ * @author  Paul Viet Nguyen Truong (ptruong)
  */
 public class JPanel_Animations extends javax.swing.JPanel {
 ////////////////////////////////////////////////////////////////////////////////
 // Data Members
 ////////////////////////////////////////////////////////////////////////////////
     /** Scene Data */
-    imi.scene.PScene pscene = null;
+    imi.scene.PScene        m_pscene        = null;
+    imi.gui.SceneEssentials m_sceneInfo     = null;
     /** Timer */
-    javax.swing.Timer animTimer;
+    javax.swing.Timer       m_animTimer;
     /** Animation Data */
-    private boolean bStopped = false;    
+    private boolean         m_bStopped      = false;
 
 ////////////////////////////////////////////////////////////////////////////////
 // Methods
@@ -45,13 +46,13 @@ public class JPanel_Animations extends javax.swing.JPanel {
      * Sets up a timer and adds an action listener to the panel
      */
     public void initTimer() {
-        animTimer = new javax.swing.Timer(1, new java.awt.event.ActionListener() {
+        m_animTimer = new javax.swing.Timer(1, new java.awt.event.ActionListener() {
 
             public void actionPerformed(java.awt.event.ActionEvent e) {
                 updateAnimTime();
             }
         });
-        animTimer.setInitialDelay(1);        
+        m_animTimer.setInitialDelay(1);
     }
     
     /**
@@ -61,7 +62,7 @@ public class JPanel_Animations extends javax.swing.JPanel {
     public void reloadModelInstances() {
         imi.scene.utils.tree.InstanceSearchProcessor proc = new imi.scene.utils.tree.InstanceSearchProcessor();
         proc.setProcessor();
-        imi.scene.utils.tree.TreeTraverser.breadthFirst(pscene, proc);
+        imi.scene.utils.tree.TreeTraverser.breadthFirst(m_pscene, proc);
         java.util.Vector<imi.scene.PNode> instances = proc.getModelInstances();
         jComboBox_ModelInstances.setModel(new javax.swing.DefaultComboBoxModel(instances));
     }
@@ -155,7 +156,7 @@ public class JPanel_Animations extends javax.swing.JPanel {
                     cycleTimeMil = skeleton.getAnimationState().getCurrentCycleTime() * 1000F;
                     cycleTimeSec = skeleton.getAnimationState().getCurrentCycleTime();
                     cycleTimeMin = skeleton.getAnimationState().getCurrentCycleTime() / 60F;
-                    if(!bStopped) {
+                    if(!m_bStopped) {
                         elapsedTimeMil = (skeleton.getAnimationState().getCurrentCycleTime() - skeleton.getAnimationGroup().getCycle(curIndex).getStartTime()) * 1000F;
                         elapsedTimeSec = skeleton.getAnimationState().getCurrentCycleTime() - skeleton.getAnimationGroup().getCycle(curIndex).getStartTime();
                         elapsedTimeMin = (skeleton.getAnimationState().getCurrentCycleTime() - skeleton.getAnimationGroup().getCycle(curIndex).getStartTime()) / 60F;
@@ -164,7 +165,7 @@ public class JPanel_Animations extends javax.swing.JPanel {
                     String time = null;
 
                     // Update the fields for the time display based on if the animation is paused or stopped
-                    if(bStopped) {
+                    if(m_bStopped) {
                         minutes = 0;    seconds = 0;    millisec = 0;
                         time = minutes.toString() + ":" + seconds.toString() + ":" + millisec.toString();
                         jFormattedTextField_Time.setText(time);
@@ -212,11 +213,11 @@ public class JPanel_Animations extends javax.swing.JPanel {
                 {
                     case 0:
                     {
-                        if(bStopped) {
+                        if(m_bStopped) {
                             skeleton.getAnimationState().setCurrentCycle(jComboBox_Animations.getSelectedIndex());
                             float time = skeleton.getAnimationGroup().getCycle(skeleton.getAnimationState().getCurrentCycle()).getStartTime();
                             skeleton.getAnimationState().setCurrentCycleTime(time);
-                            bStopped = false;
+                            m_bStopped = false;
                         }
                         skeleton.getAnimationState().setPauseAnimation(false);
                         break;
@@ -228,7 +229,7 @@ public class JPanel_Animations extends javax.swing.JPanel {
                     }
                     case 2:
                     {
-                        bStopped = true;
+                        m_bStopped = true;
                         skeleton.getAnimationState().setPauseAnimation(true);
                         break;
                     }
@@ -236,11 +237,15 @@ public class JPanel_Animations extends javax.swing.JPanel {
             }
         }        
     }
-    
+
+    public void loadAnimations() {
+        m_sceneInfo.loadDAEAnimationFile(true, this);
+    }
+
 ////////////////////////////////////////////////////////////////////////////////
 // Accessors
 ////////////////////////////////////////////////////////////////////////////////
-    public javax.swing.Timer getAnimTimer() { return animTimer; }
+    public javax.swing.Timer getAnimTimer() { return m_animTimer; }
     public imi.scene.PNode getSelectedModelInstanceNode() {return (imi.scene.PNode) jComboBox_ModelInstances.getSelectedItem(); }
     public imi.scene.polygonmodel.PPolygonModelInstance getSelectedModelInstance() {
         if (jComboBox_ModelInstances.getSelectedIndex() >= 0) {
@@ -252,11 +257,18 @@ public class JPanel_Animations extends javax.swing.JPanel {
 ////////////////////////////////////////////////////////////////////////////////
 // Mutators
 ////////////////////////////////////////////////////////////////////////////////    
-    public void setAnimTimer(javax.swing.Timer animTime) { animTimer = animTime; }
-    public void setPScene(imi.scene.PScene pScene) { pscene = pScene; }
-    public void startTimer() { animTimer.start(); }
-    public void setPanel(imi.scene.PScene pScene) {
-        pscene = pScene;
+    public void setAnimTimer(javax.swing.Timer animTime) { 
+        m_animTimer = animTime;
+    }
+    public void setPScene(imi.scene.PScene pScene) {
+        m_pscene = pScene;
+    }
+    public void startTimer() { 
+        m_animTimer.start();
+    }
+    public void setPanel(imi.gui.SceneEssentials sceneData) {
+        m_sceneInfo = sceneData;
+        m_pscene    = sceneData.getPScene();
         reloadModelInstances();
         reloadSelectedModelAnimations();
         setSpeedSlider();
@@ -275,76 +287,77 @@ public class JPanel_Animations extends javax.swing.JPanel {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
+        java.awt.GridBagConstraints gridBagConstraints;
 
-        jToolBar_ElapsedTime = new javax.swing.JToolBar();
         jLabel_ElapsedTime = new javax.swing.JLabel();
         java.text.Format time = new java.text.SimpleDateFormat("mm:ss:SS");
         jFormattedTextField_Time = new javax.swing.JFormattedTextField(time);
-        jToolBar_CurrentCycleTime = new javax.swing.JToolBar();
         jLabel_CurCycleTime = new javax.swing.JLabel();
         java.text.Format cycleTime = new java.text.SimpleDateFormat("mm:ss:SS");
         jFormattedTextField_CycleTime = new javax.swing.JFormattedTextField(cycleTime);
-        jToolBar_AnimSpeedGroup = new javax.swing.JToolBar();
         jLabel_AnimSpeed = new javax.swing.JLabel();
         jSlider_Animations = new javax.swing.JSlider();
-        jToolBar_ModelInstances = new javax.swing.JToolBar();
         jComboBox_ModelInstances = new javax.swing.JComboBox();
-        jToolBar_Animations = new javax.swing.JToolBar();
         jComboBox_Animations = new javax.swing.JComboBox();
-        jToolBar_MediaControls = new javax.swing.JToolBar();
         jButton_Play = new javax.swing.JButton();
         jButton_Pause = new javax.swing.JButton();
         jButton_Stop = new javax.swing.JButton();
-        jToolBar_Reload = new javax.swing.JToolBar();
         jButton_Reload = new javax.swing.JButton();
+        jButton_AddAnim = new javax.swing.JButton();
 
         setBorder(javax.swing.BorderFactory.createTitledBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED), "Model Animations", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Lucida Grande", 0, 13), new java.awt.Color(0, 0, 255))); // NOI18N
-        setMaximumSize(new java.awt.Dimension(230, 260));
-        setMinimumSize(new java.awt.Dimension(230, 260));
-        setPreferredSize(new java.awt.Dimension(230, 260));
-
-        jToolBar_ElapsedTime.setFloatable(false);
-        jToolBar_ElapsedTime.setRollover(true);
-        jToolBar_ElapsedTime.setMaximumSize(new java.awt.Dimension(230, 25));
-        jToolBar_ElapsedTime.setMinimumSize(new java.awt.Dimension(113, 25));
-        jToolBar_ElapsedTime.setPreferredSize(new java.awt.Dimension(230, 25));
+        setMaximumSize(new java.awt.Dimension(266, 250));
+        setMinimumSize(new java.awt.Dimension(266, 250));
+        setPreferredSize(new java.awt.Dimension(266, 250));
+        setLayout(new java.awt.GridBagLayout());
 
         jLabel_ElapsedTime.setText("Elapsed Time: ");
         jLabel_ElapsedTime.setMaximumSize(new java.awt.Dimension(230, 25));
-        jToolBar_ElapsedTime.add(jLabel_ElapsedTime);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.insets = new java.awt.Insets(0, 6, 0, 0);
+        add(jLabel_ElapsedTime, gridBagConstraints);
 
         jFormattedTextField_Time.setText("mm:ss:SS");
         jFormattedTextField_Time.setMaximumSize(new java.awt.Dimension(230, 25));
-        jFormattedTextField_Time.setMinimumSize(new java.awt.Dimension(14, 25));
+        jFormattedTextField_Time.setMinimumSize(new java.awt.Dimension(98, 25));
         jFormattedTextField_Time.setPreferredSize(new java.awt.Dimension(98, 25));
-        jToolBar_ElapsedTime.add(jFormattedTextField_Time);
-
-        jToolBar_CurrentCycleTime.setFloatable(false);
-        jToolBar_CurrentCycleTime.setRollover(true);
-        jToolBar_CurrentCycleTime.setMaximumSize(new java.awt.Dimension(230, 25));
-        jToolBar_CurrentCycleTime.setMinimumSize(new java.awt.Dimension(95, 25));
-        jToolBar_CurrentCycleTime.setPreferredSize(new java.awt.Dimension(230, 25));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+        gridBagConstraints.ipadx = 30;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        add(jFormattedTextField_Time, gridBagConstraints);
 
         jLabel_CurCycleTime.setText("Cycle Time:    ");
         jLabel_CurCycleTime.setMaximumSize(new java.awt.Dimension(230, 25));
         jLabel_CurCycleTime.setMinimumSize(new java.awt.Dimension(89, 25));
         jLabel_CurCycleTime.setPreferredSize(new java.awt.Dimension(89, 25));
-        jToolBar_CurrentCycleTime.add(jLabel_CurCycleTime);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.insets = new java.awt.Insets(0, 6, 0, 0);
+        add(jLabel_CurCycleTime, gridBagConstraints);
 
         jFormattedTextField_CycleTime.setText("mm:ss:SS");
         jFormattedTextField_CycleTime.setMaximumSize(new java.awt.Dimension(230, 25));
         jFormattedTextField_CycleTime.setMinimumSize(new java.awt.Dimension(14, 25));
         jFormattedTextField_CycleTime.setPreferredSize(new java.awt.Dimension(98, 25));
-        jToolBar_CurrentCycleTime.add(jFormattedTextField_CycleTime);
-
-        jToolBar_AnimSpeedGroup.setFloatable(false);
-        jToolBar_AnimSpeedGroup.setRollover(true);
-        jToolBar_AnimSpeedGroup.setMaximumSize(new java.awt.Dimension(230, 25));
-        jToolBar_AnimSpeedGroup.setMinimumSize(new java.awt.Dimension(150, 25));
-        jToolBar_AnimSpeedGroup.setPreferredSize(new java.awt.Dimension(230, 25));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+        gridBagConstraints.ipadx = 30;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        add(jFormattedTextField_CycleTime, gridBagConstraints);
 
         jLabel_AnimSpeed.setText("Animation Speed");
-        jToolBar_AnimSpeedGroup.add(jLabel_AnimSpeed);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.insets = new java.awt.Insets(0, 6, 0, 0);
+        add(jLabel_AnimSpeed, gridBagConstraints);
 
         jSlider_Animations.setMaximum(40);
         jSlider_Animations.setMinimum(1);
@@ -357,10 +370,13 @@ public class JPanel_Animations extends javax.swing.JPanel {
                 jSlider_AnimationsStateChanged(e);
             }
         });
-        jToolBar_AnimSpeedGroup.add(jSlider_Animations);
-
-        jToolBar_ModelInstances.setFloatable(false);
-        jToolBar_ModelInstances.setRollover(true);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+        gridBagConstraints.ipadx = 20;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        add(jSlider_Animations, gridBagConstraints);
 
         jComboBox_ModelInstances.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
         jComboBox_ModelInstances.setMaximumSize(new java.awt.Dimension(230, 25));
@@ -372,10 +388,13 @@ public class JPanel_Animations extends javax.swing.JPanel {
                 setSpeedSlider();
             }
         });
-        jToolBar_ModelInstances.add(jComboBox_ModelInstances);
-
-        jToolBar_Animations.setFloatable(false);
-        jToolBar_Animations.setRollover(true);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 3;
+        gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+        gridBagConstraints.ipadx = 160;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        add(jComboBox_ModelInstances, gridBagConstraints);
 
         jComboBox_Animations.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
         jComboBox_Animations.setMaximumSize(new java.awt.Dimension(230, 25));
@@ -386,117 +405,89 @@ public class JPanel_Animations extends javax.swing.JPanel {
                 jComboBox_AnimationsActionPerformed(evt);
             }
         });
-        jToolBar_Animations.add(jComboBox_Animations);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 4;
+        gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+        gridBagConstraints.ipadx = 160;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        add(jComboBox_Animations, gridBagConstraints);
 
-        jToolBar_MediaControls.setFloatable(false);
-        jToolBar_MediaControls.setRollover(true);
-        jToolBar_MediaControls.setMaximumSize(new java.awt.Dimension(230, 25));
-        jToolBar_MediaControls.setMinimumSize(new java.awt.Dimension(121, 25));
-        jToolBar_MediaControls.setPreferredSize(new java.awt.Dimension(230, 25));
-
-        jButton_Play.setBackground(new java.awt.Color(0, 255, 0));
-        jButton_Play.setText("PLAY");
-        jButton_Play.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
-        jButton_Play.setFocusable(false);
-        jButton_Play.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton_Play.setMaximumSize(new java.awt.Dimension(35, 25));
-        jButton_Play.setMinimumSize(new java.awt.Dimension(35, 25));
-        jButton_Play.setPreferredSize(new java.awt.Dimension(100, 25));
         jButton_Play.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         jButton_Play.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 mediaFunction(0);
             }
         });
-        jToolBar_MediaControls.add(jButton_Play);
+        jButton_Play.setText("PLAY");
+        jButton_Play.setMaximumSize(new java.awt.Dimension(83, 29));
+        jButton_Play.setMinimumSize(new java.awt.Dimension(83, 29));
+        jButton_Play.setPreferredSize(new java.awt.Dimension(83, 29));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 5;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        add(jButton_Play, gridBagConstraints);
 
-        jButton_Pause.setBackground(new java.awt.Color(255, 255, 0));
-        jButton_Pause.setText("PAUSE");
-        jButton_Pause.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
-        jButton_Pause.setFocusable(false);
-        jButton_Pause.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton_Pause.setMaximumSize(new java.awt.Dimension(42, 25));
-        jButton_Pause.setMinimumSize(new java.awt.Dimension(42, 25));
-        jButton_Pause.setPreferredSize(new java.awt.Dimension(100, 25));
         jButton_Pause.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         jButton_Pause.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 mediaFunction(1);
             }
         });
-        jToolBar_MediaControls.add(jButton_Pause);
+        jButton_Pause.setText("PAUSE");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 5;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.insets = new java.awt.Insets(0, -28, 0, 0);
+        add(jButton_Pause, gridBagConstraints);
 
-        jButton_Stop.setBackground(new java.awt.Color(255, 0, 0));
-        jButton_Stop.setText("STOP");
-        jButton_Stop.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
-        jButton_Stop.setFocusable(false);
-        jButton_Stop.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton_Stop.setMaximumSize(new java.awt.Dimension(36, 25));
-        jButton_Stop.setMinimumSize(new java.awt.Dimension(36, 25));
-        jButton_Stop.setPreferredSize(new java.awt.Dimension(100, 25));
         jButton_Stop.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         jButton_Stop.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 mediaFunction(2);
             }
         });
-        jToolBar_MediaControls.add(jButton_Stop);
+        jButton_Stop.setText("STOP");
+        jButton_Stop.setMaximumSize(new java.awt.Dimension(83, 29));
+        jButton_Stop.setMinimumSize(new java.awt.Dimension(83, 29));
+        jButton_Stop.setPreferredSize(new java.awt.Dimension(83, 29));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 5;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        add(jButton_Stop, gridBagConstraints);
 
-        jToolBar_Reload.setFloatable(false);
-        jToolBar_Reload.setRollover(true);
-        jToolBar_Reload.setMaximumSize(new java.awt.Dimension(86, 25));
-        jToolBar_Reload.setMinimumSize(new java.awt.Dimension(25, 25));
-        jToolBar_Reload.setPreferredSize(new java.awt.Dimension(86, 25));
-
-        jButton_Reload.setFont(new java.awt.Font("Lucida Grande", 0, 10));
-        jButton_Reload.setText("Reload PScene");
-        jButton_Reload.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
-        jButton_Reload.setFocusable(false);
-        jButton_Reload.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton_Reload.setMaximumSize(new java.awt.Dimension(220, 25));
-        jButton_Reload.setMinimumSize(new java.awt.Dimension(25, 25));
-        jButton_Reload.setPreferredSize(new java.awt.Dimension(220, 25));
-        jButton_Reload.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         jButton_Reload.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton_ReloadActionPerformed(evt);
+                reloadModelInstances();
+                reloadSelectedModelAnimations();
             }
         });
-        jToolBar_Reload.add(jButton_Reload);
+        jButton_Reload.setText("Reload Scene Information");
+        jButton_Reload.setMaximumSize(new java.awt.Dimension(150, 29));
+        jButton_Reload.setMinimumSize(new java.awt.Dimension(150, 29));
+        jButton_Reload.setPreferredSize(new java.awt.Dimension(150, 29));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 6;
+        gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+        gridBagConstraints.ipadx = 98;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        add(jButton_Reload, gridBagConstraints);
 
-        org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
-        this.setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(layout.createSequentialGroup()
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(jToolBar_CurrentCycleTime, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 215, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(jToolBar_AnimSpeedGroup, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 215, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(jToolBar_ElapsedTime, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 215, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(jToolBar_ModelInstances, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 215, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(jToolBar_Animations, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 215, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(jToolBar_MediaControls, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 215, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(jToolBar_Reload, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 215, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap())
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(layout.createSequentialGroup()
-                .add(jToolBar_ElapsedTime, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 25, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jToolBar_CurrentCycleTime, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 25, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jToolBar_AnimSpeedGroup, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 25, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jToolBar_ModelInstances, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 27, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jToolBar_Animations, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 27, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jToolBar_MediaControls, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 25, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jToolBar_Reload, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 25, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(51, Short.MAX_VALUE))
-        );
+        jButton_AddAnim.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                loadAnimations();
+                reloadSelectedModelAnimations();
+            }
+        });
+        jButton_AddAnim.setText("Add Animation");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        add(jButton_AddAnim, gridBagConstraints);
     }// </editor-fold>//GEN-END:initComponents
 
 private void jComboBox_AnimationsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox_AnimationsActionPerformed
@@ -508,11 +499,6 @@ if (jComboBox_Animations.isEnabled()) {
         skeleton.transitionTo(jComboBox_Animations.getSelectedItem().toString(), false);
     }
 }//GEN-LAST:event_jComboBox_AnimationsActionPerformed
-
-private void jButton_ReloadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_ReloadActionPerformed
-    reloadModelInstances();
-    reloadSelectedModelAnimations();
-}//GEN-LAST:event_jButton_ReloadActionPerformed
 
 /**
  * Change the speed of the animation
@@ -529,6 +515,7 @@ private void jSlider_AnimationsStateChanged(javax.swing.event.ChangeEvent e) {
 }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jButton_AddAnim;
     private javax.swing.JButton jButton_Pause;
     private javax.swing.JButton jButton_Play;
     private javax.swing.JButton jButton_Reload;
@@ -541,13 +528,6 @@ private void jSlider_AnimationsStateChanged(javax.swing.event.ChangeEvent e) {
     private javax.swing.JLabel jLabel_CurCycleTime;
     private javax.swing.JLabel jLabel_ElapsedTime;
     private javax.swing.JSlider jSlider_Animations;
-    private javax.swing.JToolBar jToolBar_AnimSpeedGroup;
-    private javax.swing.JToolBar jToolBar_Animations;
-    private javax.swing.JToolBar jToolBar_CurrentCycleTime;
-    private javax.swing.JToolBar jToolBar_ElapsedTime;
-    private javax.swing.JToolBar jToolBar_MediaControls;
-    private javax.swing.JToolBar jToolBar_ModelInstances;
-    private javax.swing.JToolBar jToolBar_Reload;
     // End of variables declaration//GEN-END:variables
 
 }

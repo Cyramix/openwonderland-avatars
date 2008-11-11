@@ -37,6 +37,7 @@ import com.jme.scene.state.RenderState;
 import com.jme.scene.state.WireframeState;
 import com.jme.scene.state.ZBufferState;
 import com.jme.util.TextureManager;
+import imi.gui.JPanel_Animations;
 import imi.gui.OptionsGUI;
 import imi.gui.SceneEssentials;
 import imi.gui.TreeExplorer;
@@ -113,7 +114,7 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
     protected Component         m_base              = this;
     protected OptionsGUI        m_AvatarOptions     = null;
     protected TreeExplorer      m_NodeExplorer      = null;
-    
+    protected JFrame            m_AnimationViewer   = null;
     protected FlexibleCameraProcessor   m_cameraProcessor   = null;
 ////////////////////////////////////////////////////////////////////////////////
 // CLASS DATA MEMBERS - END
@@ -808,6 +809,40 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
         m_NodeExplorer.setExplorer(m_sceneData);
         m_NodeExplorer.setVisible(true);
     }
+
+    public void openAnimationViewer() {
+        m_AnimationViewer = new JFrame();
+        JPanel_Animations animPanel = new JPanel_Animations();
+        animPanel.setPanel(m_sceneData);
+        animPanel.startTimer();
+        animPanel.setVisible(true);
+        m_AnimationViewer.add(animPanel);
+        m_AnimationViewer.pack();
+        m_AnimationViewer.setVisible(true);
+    }
+
+    public void resetOpenTools() {
+        if (m_AvatarOptions != null) {
+            if (m_AvatarOptions.isVisible()) {
+                m_AvatarOptions.dispose();
+                openAvatarEditor();
+            }
+        }
+
+        if (m_NodeExplorer != null) {
+            if (m_AvatarOptions.isVisible()) {
+                m_NodeExplorer.dispose();
+                openNodeExplorer();
+            }
+        }
+
+        if (m_AnimationViewer != null) {
+            if (m_AnimationViewer.isVisible()) {
+                m_AnimationViewer.dispose();
+                openAnimationViewer();
+            }
+        }
+    }
 ////////////////////////////////////////////////////////////////////////////////
 // CLASS METHODS - END
 ////////////////////////////////////////////////////////////////////////////////
@@ -974,6 +1009,7 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 runProgressBar(true);
                 m_sceneData.loadAvatarDAEFile(true, false, m_base);
+                resetOpenTools();
                 runProgressBar(false);
             }
         });
@@ -984,6 +1020,7 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 runProgressBar(true);
                 m_sceneData.loadSMeshDAEFile(true, false, m_base);
+                resetOpenTools();
                 runProgressBar(false);
             }
         });
@@ -994,6 +1031,7 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 runProgressBar(true);
                 m_sceneData.loadMeshDAEFile(true, false, m_base);
+                resetOpenTools();
                 runProgressBar(false);
             }
         });
@@ -1036,6 +1074,7 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 runProgressBar(true);
                 m_sceneData.openServerBrowser((JFrame) m_base);
+                resetOpenTools();
                 runProgressBar(false);
             }
         });
@@ -1069,6 +1108,13 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
         jMenuItem_NodeExplorer.setText("Node Explorer");
         jMenu_Tools.add(jMenuItem_NodeExplorer);
 
+        jMenuItem_AnimationViewer.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                runProgressBar(true);
+                openAnimationViewer();
+                runProgressBar(false);
+            }
+        });
         jMenuItem_AnimationViewer.setText("Animation Viewer");
         jMenu_Tools.add(jMenuItem_AnimationViewer);
 
