@@ -27,16 +27,23 @@ import imi.scene.PJoint;
 public interface Animated 
 {
     /**
+     * Retrieve the animation component
+     * @return The component
+     */
+    public AnimationComponent getAnimationComponent();
+    
+    /**
+     * Retrieve an animation group
+     * @return AnimationGroup at index i 
+     */
+    public AnimationGroup getAnimationGroup(int i);
+    
+    /**
      * Retrieve the animation state at index zero. 
      * @return The first animation state, or null if none is present
      */
     public AnimationState getAnimationState();
     
-    /**
-     * Retrieve the animation component
-     * @return The component
-     */
-    public AnimationComponent getAnimationComponent();
     /**
      * Retrieve the animation state at the specified index.
      * @param index 
@@ -50,6 +57,7 @@ public interface Animated
      * @return The index of the newly added state
      */
     public int addAnimationState(AnimationState newState);
+    
     /**
      * This method retrieves the joint with the specified name
      * @param jointName The name of the joint

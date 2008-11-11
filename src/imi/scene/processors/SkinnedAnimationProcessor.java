@@ -37,9 +37,7 @@ public class SkinnedAnimationProcessor extends ProcessorComponent
     private SkeletonNode m_animated = null;
     private PPolygonModelInstance m_modelInst = null;
 
-    private static float fAnimationTimeStep = 0.01f;
-
-
+    private float fAnimationTimeStep = 0.01f;
 
     /**
      * This constructor receives the skeleton node
@@ -83,11 +81,13 @@ public class SkinnedAnimationProcessor extends ProcessorComponent
 
         // advance animation time
         if (!AnimationState.isPauseAnimation())
+        {
             AnimationState.advanceAnimationTime(fAnimationTimeStep);
-        
-        // calculate frame
-        if (AnimationGroup != null)
-            AnimationGroup.calculateFrame(m_animated);
+
+            // calculate frame
+            if (AnimationGroup != null)
+                AnimationGroup.calculateFrame(m_animated);
+        }
     }
 
     @Override
@@ -101,6 +101,22 @@ public class SkinnedAnimationProcessor extends ProcessorComponent
     public void initialize() 
     {
         setArmingCondition(new NewFrameCondition(this));
+    }
+
+    /**
+     * The amount of time to advance every frame
+     * @return
+     */
+    public float getAnimationTimeStep() {
+        return fAnimationTimeStep;
+    }
+
+    /**
+     * The amount of time to advance every frame
+     * @param fAnimationTimeStep
+     */
+    public void setAnimationTimeStep(float fAnimationTimeStep) {
+        this.fAnimationTimeStep = fAnimationTimeStep;
     }
     
 }

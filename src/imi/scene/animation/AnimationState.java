@@ -28,6 +28,8 @@ import java.util.ArrayList;
  */
 public class AnimationState 
 {
+    private int     m_ID                        = -1;
+    
     // Current cycle information
     private int     m_CurrentCycle              = 0;
     private float   m_CurrentCycleTime          = 0.0f;
@@ -60,9 +62,9 @@ public class AnimationState
      * 
      * Empty Constructor
      */
-    public AnimationState()
+    public AnimationState(int id)
     {
-        
+        m_ID = id;
     }
 
     public AnimationState(AnimationState other)
@@ -393,6 +395,15 @@ public class AnimationState
         if (m_listeners == null)
             return;
         for (AnimationListener listener : m_listeners)
-            listener.receiveAnimationMessage(message);
+            listener.receiveAnimationMessage(message, m_ID);
     }
+
+    public int getID() {
+        return m_ID;
+    }
+
+    public void setID(int m_ID) {
+        this.m_ID = m_ID;
+    }
+    
 }

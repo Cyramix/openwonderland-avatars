@@ -23,7 +23,6 @@ import imi.scene.PNode;
 
 
 /**
- *
  * @author Chris Nagle
  */
 public class Instruction extends PNode
@@ -39,6 +38,7 @@ public class Instruction extends PNode
         deleteSkinnedMesh,
         addSkinnedMesh,
         loadAnimation,
+        loadFacialAnimation,
         setSkeleton,
     }
      

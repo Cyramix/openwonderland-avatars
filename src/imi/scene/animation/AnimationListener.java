@@ -42,5 +42,5 @@ public interface AnimationListener
      * reference assignments.
      * @param message
      */
-    public void receiveAnimationMessage(AnimationMessageType message);
+    public void receiveAnimationMessage(AnimationMessageType message, int stateID);
 }

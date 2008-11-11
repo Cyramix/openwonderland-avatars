@@ -154,7 +154,7 @@ public class TransitionQueue implements AnimationListener
         }
     }
 
-    public void receiveAnimationMessage(AnimationMessageType message)
+    public void receiveAnimationMessage(AnimationMessageType message, int stateID)
     {
         if (m_commandQueue == null || m_commandQueue.isEmpty())
             return; // No relevance

@@ -23,6 +23,7 @@ import imi.scene.animation.AnimationGroup;
 import imi.scene.animation.AnimationState;
 import imi.scene.polygonmodel.PPolygonModelInstance;
 import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
+import java.util.logging.Logger;
 import org.jdesktop.mtgame.NewFrameCondition;
 import org.jdesktop.mtgame.ProcessorArmingCollection;
 import org.jdesktop.mtgame.ProcessorComponent;
@@ -37,9 +38,9 @@ public class CharacterAnimationProcessor extends ProcessorComponent
     private Animated                m_animated  = null;
     private PPolygonModelInstance   m_modelInst = null;
 
-    private static float fAnimationTimeStep = 0.01f;
-
-
+    private float fAnimationTimeStep = 0.01f;
+    
+    private boolean bEnable = true;
 
     /**
      * This constructor receives the skeleton node
@@ -47,7 +48,9 @@ public class CharacterAnimationProcessor extends ProcessorComponent
      */
     public CharacterAnimationProcessor(SkeletonNode skeleton) 
     {
-        //m_animated = skeleton;
+        m_animated = skeleton;
+//        if(skeleton.getParent() instanceof PPolygonModelInstance) 
+//            m_modelInst = (PPolygonModelInstance) skeleton.getParent();
     }
     public CharacterAnimationProcessor(PPolygonModelInstance modelInst) 
     {
@@ -57,6 +60,10 @@ public class CharacterAnimationProcessor extends ProcessorComponent
     @Override
     public void compute(ProcessorArmingCollection collection) 
     {
+        if (!bEnable)
+            return;
+        
+        // If the modelInst constructor was used 
         if (m_animated == null && m_modelInst != null)
         {
             // try to grab the skeleton
@@ -66,7 +73,7 @@ public class CharacterAnimationProcessor extends ProcessorComponent
                 {
                     if (kid instanceof SkeletonNode)
                     {
-                        //m_animated = (SkeletonNode) kid;
+                        m_animated = (SkeletonNode) kid;
                     }
                 }
             }
@@ -76,26 +83,29 @@ public class CharacterAnimationProcessor extends ProcessorComponent
         }
         else if (m_animated == null && m_modelInst == null)
             return;
-        
-        // Slightly hardcoded section follows. Avert your eyes!
-        // TODO: Map animation groups to the appropriate states
-        
-        AnimationGroup AnimationGroup = m_animated.getAnimationComponent().getGroup();
-        int index = 0;
-        while (true) // advance all times
+      
+        // Assuming a one to one relationship between groups and states,
+        // each AnimationState is holding state for the animation stored in 
+        // that same AnimationGroup index
+        AnimationState state = null;
+        AnimationGroup group = null;
+        int numberOfGroups = m_animated.getAnimationComponent().getGroups().size();
+        for (int i = 0; i < numberOfGroups; i++)
         {
-            AnimationState state = m_animated.getAnimationState(index);
+            state = m_animated.getAnimationState(i);
+            group = m_animated.getAnimationGroup(i);
             
-            if (state == null)
-                break;
-            // TODO: use animatedcharacter interface
-            if (!state.isPauseAnimation())
+            if (state == null || group == null)
+            {
+                Logger.getLogger(this.getClass().toString()).severe("Character animation processor iterated on a null state or group");
+                return;
+            }
+            else if (!state.isPauseAnimation())
+            {
                 state.advanceAnimationTime(fAnimationTimeStep);
+                group.calculateFrame(m_animated);
+            }
         }
-
-        // Calculate the final pose
-        if (AnimationGroup != null)
-            AnimationGroup.calculateDecalFrame(m_animated);
     }
 
     @Override
@@ -109,6 +119,30 @@ public class CharacterAnimationProcessor extends ProcessorComponent
     public void initialize() 
     {
         setArmingCondition(new NewFrameCondition(this));
+    }
+
+    /**
+     * The amount of time to advance every frame
+     * @return
+     */
+    public float getAnimationTimeStep() {
+        return fAnimationTimeStep;
+    }
+
+    /**
+     * The amount of time to advance every frame
+     * @return
+     */
+    public void setAnimationTimeStep(float fAnimationTimeStep) {
+        this.fAnimationTimeStep = fAnimationTimeStep;
+    }
+
+    public boolean isEnable() {
+        return bEnable;
+    }
+
+    public void setEnable(boolean bEnable) {
+        this.bEnable = bEnable;
     }
     
 }

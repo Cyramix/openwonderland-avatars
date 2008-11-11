@@ -57,7 +57,7 @@ public class InstructionProcessor
 
     //  Executes all instructions.
     public void execute(Instruction pRootInstruction)
-    {
+    {   
         m_characterLoader = new CharacterLoader();
         
         printInstruction("", pRootInstruction);
@@ -116,8 +116,15 @@ public class InstructionProcessor
                 case loadAnimation:
                 {
                     URL animationLocation = new URL(pInstruction.getDataAsString());
-                    if (!m_characterLoader.loadAnimation(loadingPScene, m_skeleton, animationLocation))
+                    if (!m_characterLoader.loadAnimation(loadingPScene, m_skeleton, animationLocation, 0))
                         System.out.println("COLLADA configuration ERROR: was not able to LOAD ANIMATION!");
+                }
+                break;
+                case loadFacialAnimation:
+                {
+                    URL animationLocation = new URL(pInstruction.getDataAsString());
+                    if (!m_characterLoader.loadAnimation(loadingPScene, m_skeleton, animationLocation, 1))
+                        System.out.println("COLLADA configuration ERROR: was not able to LOAD FACIAL ANIMATION!");
                 }
                 break;
                 case loadBindPose:

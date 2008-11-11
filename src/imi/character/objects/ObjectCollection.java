@@ -104,6 +104,9 @@ public class ObjectCollection extends Entity
 
     public void generateChairs(Vector3f center, float maxRadius, int numberOfChairs) 
     {
+        if (numberOfChairs <= 0)
+            return;
+        
         for (int i = 0; i < numberOfChairs; i++)
         {
             float randomX = (float) Math.random();

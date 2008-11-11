@@ -62,6 +62,8 @@ public class GoSit implements Task
     private Vector3f sampleAvgPos      = new Vector3f();
     private Vector3f samplePrevAvgPos  = new Vector3f();
 
+    private boolean  bTryAgain         = false;
+    
     public GoSit(Chair chair, NinjaContext context) 
     {
         ninjaContext = context;
@@ -77,11 +79,12 @@ public class GoSit implements Task
             return false;
         
         // If the chair is occupied then try finding another or abort mission
-        if (goal != null && goal.isOccupied())
+        if (goal != null && goal.isOccupied() || bTryAgain)
         {
             if (!ninjaContext.GoToNearestChair())
                 System.out.println("Chair is Occupied! I give up! Can't find an empty chair in this damn virtual environment!");
             
+            bTryAgain = false;
             System.out.println("Chair is Occupied! I WILL find another one!");
             status = "chair is occupied";
             return false;
@@ -137,6 +140,12 @@ public class GoSit implements Task
     
     public void atGoal(float deltaTime)
     {
+        // Own the chair if no one else does
+        if (goal.getOwner() == null)
+            goal.setOwner(ninjaContext.getNinja());
+        else if (goal.getOwner() != ninjaContext.getNinja())
+            bTryAgain = true;
+        
         // Pull towards the goal
         PMatrix local = ninjaContext.getController().getTransform().getLocalMatrix(true);
         Vector3f pull = goalPosition.subtract(currentCharacterPosition).normalize().mult(currentDistanceFromGoal * deltaTime * pullTime);

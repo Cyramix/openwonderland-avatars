@@ -139,8 +139,8 @@ public class GameContext extends NamedUpdatableObject
         return character;
     }
 
-    public void notifyAnimationMessage(AnimationMessageType message) {
-        if (currentState != null)
+    public void notifyAnimationMessage(AnimationMessageType message, int stateID) {
+        if (currentState != null && stateID == 0)
             currentState.notifyAnimationMessage(message);
     }
     

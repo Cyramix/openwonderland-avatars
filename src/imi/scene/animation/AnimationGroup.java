@@ -104,28 +104,7 @@ public class AnimationGroup
             pJointChannel.dump("   ");
         }
     }
-    
-    /**
-     * This method iterates through each AnimationState object contained by 
-     * the animated thing passed in. The results of the most recent joint
-     * manipulation are stored in the final result.
-     * @param animated
-     */
-    public synchronized void calculateDecalFrame(Animated animated)
-    {
-        int index = 0;
-        while (true)
-        {
-            AnimationState state = animated.getAnimationState(index);
-            if (state == null) // out of states
-                break;
-            else
-            {
-                calculateFrame(state, animated);
-            }
-        }
-    }
-    
+        
     /**
      * Generates the current "pose" solutions based on state input.
      * @param animated The thing to animate

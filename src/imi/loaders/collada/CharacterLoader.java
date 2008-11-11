@@ -85,7 +85,7 @@ public class CharacterLoader
     }
 
     //  Loads replacement animation from a file.
-    public boolean loadAnimation(PScene loadingPScene, SkeletonNode pSkeleton, URL animationLocation)
+    public boolean loadAnimation(PScene loadingPScene, SkeletonNode pSkeleton, URL animationLocation, int mergeToGroup)
     {
         //  Load the collada file to the PScene
         m_pCollada = new Collada();
@@ -94,7 +94,8 @@ public class CharacterLoader
         m_pCollada.setSkeletonNode(pSkeleton);
         boolean result = m_pCollada.load(loadingPScene, animationLocation);
 
-        mergeMultipleAnimationGroupsIntoOne(pSkeleton);
+        if (mergeToGroup >= 0)
+            mergeLastToAnimationGroup(pSkeleton, mergeToGroup);
 
         return result;
     }
@@ -123,54 +124,19 @@ public class CharacterLoader
         return(false);
     }
 
-    void mergeMultipleAnimationGroupsIntoOne(SkeletonNode pSkeletonNode)
-    {
+    private void mergeLastToAnimationGroup(SkeletonNode pSkeletonNode, int groupIndex)
+    {   
         AnimationComponent pAnimationComponent = pSkeletonNode.getAnimationComponent();
         
+        //  Append to the end of first AnimationGroup.
         if (pAnimationComponent.getGroups().size() > 1)
         {
-            AnimationGroup pFirstAnimationGroup = pAnimationComponent.getGroups().get(0);
-            AnimationGroup pAnimationGroupToMerge;
-
-            while (pAnimationComponent.getGroups().size() > 1)
-            {
-                pAnimationGroupToMerge = pAnimationComponent.getGroups().get(1);
-                pAnimationComponent.getGroups().remove(1);
-
-                //  Append pAnimationGroupToMerge onto the end of the first AnimationGroup.
-                pFirstAnimationGroup.appendAnimationGroup(pAnimationGroupToMerge);
-            }
-        }
-        
-        //System.out.println("Done! Duration: " + pAnimationComponent.getGroup().getDuration());
-    }
-
-    void removeAllSkinnedMeshesExcept(SkeletonNode pSkeleton, String skinnedMeshName)
-    {
-        int a;
-        PNode pChildNode;
-        boolean bMeshRemoved = true;
-
-        do
-        {
-            bMeshRemoved = false;
-            for (a=0; a<pSkeleton.getChildrenCount(); a++)
-            {
-                pChildNode = pSkeleton.getChild(a);
-
-                if (pChildNode instanceof PPolygonSkinnedMeshInstance)
-                {
-                    PPolygonSkinnedMeshInstance pSkinnedMesh = (PPolygonSkinnedMeshInstance)pChildNode;
-                    if (!pSkinnedMesh.getName().equals(skinnedMeshName))
-                    {
-                        pSkeleton.removeChild(pChildNode);
-                        bMeshRemoved = true;
-                        break;
-                    }
-                }
-            }
+            AnimationGroup group = pAnimationComponent.getGroups().get(groupIndex);
+            AnimationGroup lastGroup = pAnimationComponent.getGroups().get(pAnimationComponent.getGroups().size() - 1);
             
-        } while (bMeshRemoved);
+            group.appendAnimationGroup(lastGroup);
+            pAnimationComponent.getGroups().remove(lastGroup);
+        }
     }
 
 }

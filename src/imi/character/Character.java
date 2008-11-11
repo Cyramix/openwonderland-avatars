@@ -19,7 +19,6 @@ package imi.character;
 
 import com.jme.light.PointLight;
 import com.jme.math.Quaternion;
-import com.jme.math.Triangle;
 import com.jme.math.Vector3f;
 import com.jme.renderer.ColorRGBA;
 import com.jme.scene.shape.Sphere;
@@ -34,7 +33,6 @@ import imi.character.objects.ObjectCollection;
 import imi.character.objects.SpatialObject;
 import imi.character.statemachine.GameContext;
 import imi.character.statemachine.TransitionObject;
-import imi.loaders.PPolygonTriMeshAssembler;
 import imi.loaders.collada.ColladaLoaderParams;
 import imi.loaders.collada.Instruction;
 import imi.loaders.collada.Instruction.InstructionNames;
@@ -60,19 +58,20 @@ import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
 import imi.loaders.repository.SharedAssetPlaceHolder;
 import imi.scene.polygonmodel.skinned.PPolygonSkinnedMeshInstance;
 import imi.scene.processors.CharacterProcessor;
-import imi.scene.processors.SkinnedAnimationProcessor;
 import imi.loaders.repository.AssetDescriptor;
 import imi.loaders.repository.AssetInitializer;
 import imi.loaders.repository.SharedAsset;
 import imi.loaders.repository.SharedAsset.SharedAssetType;
 import imi.scene.PNode;
 import imi.scene.animation.AnimationListener;
+import imi.scene.animation.AnimationState;
 import imi.scene.boundingvolumes.PSphere;
 import imi.scene.polygonmodel.PPolygonMesh;
 import imi.scene.polygonmodel.PPolygonMeshInstance;
 import imi.scene.shader.programs.VertexDeformer;
 import imi.scene.polygonmodel.parts.PMeshMaterial;
 import imi.scene.polygonmodel.parts.TextureMaterialProperties;
+import imi.scene.processors.CharacterAnimationProcessor;
 import imi.scene.processors.JSceneEventProcessor;
 import imi.scene.shader.programs.VertDeformerWithSpecAndNormalMap;
 import imi.scene.utils.PMeshUtils;
@@ -109,6 +108,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
     protected PPolygonMeshInstance m_mesh = null;
     
     protected ObjectCollection m_objectCollection = null;
+    protected CharacterAnimationProcessor m_AnimationProcessor = null;
         
     public class Attributes
     {
@@ -422,7 +422,6 @@ public abstract class Character extends Entity implements SpatialObject, Animati
                             // Set animations
                             if (m_attributes.getAnimations() != null)
                             {
-
                                 String fileProtocol = m_attributes.getBaseURL();
 
                                 if (fileProtocol==null)
@@ -454,6 +453,11 @@ public abstract class Character extends Entity implements SpatialObject, Animati
                                 pRootInstruction.addInstruction(InstructionNames.deleteSkinnedMesh, "RFootNudeShape");
                                 pRootInstruction.addInstruction(InstructionNames.loadGeometry, fileProtocol + "assets/models/collada/Shoes/TennisShoes_M/MaleTennisShoes.dae");
                                 pRootInstruction.addInstruction(InstructionNames.addSkinnedMesh, "TennisShoesShape");
+                                
+                                
+                                // Hack test
+                                //pRootInstruction.addInstruction(InstructionNames.loadFacialAnimation, fileProtocol + "assets/models/collada/Avatars/MaleFacialAnimation/MaleSmile.dae");
+                                
 
                                 String [] anims = m_attributes.getAnimations();
                                 for (int i = 0; i < anims.length; i++) {
@@ -461,7 +465,6 @@ public abstract class Character extends Entity implements SpatialObject, Animati
                                 }
                                 
                                 pProcessor.execute(pRootInstruction);
-                                    
                             }
                             
                             try {
@@ -547,7 +550,8 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         else
         {
             m_modelInst = m_pscene.addModelInstance(m_attributes.getName(), m_attributes.getAsset(), new PMatrix());
-            processors.add(new SkinnedAnimationProcessor(m_modelInst));
+            m_AnimationProcessor = new CharacterAnimationProcessor(m_modelInst);
+            processors.add(m_AnimationProcessor);
         }
         
         processors.add(new CharacterProcessor(this));
@@ -720,6 +724,10 @@ public abstract class Character extends Entity implements SpatialObject, Animati
             m_mesh       = (PPolygonSkinnedMeshInstance)m_modelInst.getChild(0).getChild(1);
             m_skeleton   = (SkeletonNode)m_modelInst.getChild(0);
             m_skeleton.getAnimationState().addListener(this);
+            
+            //m_skeleton.addAnimationState(new AnimationState(1));
+            //m_skeleton.getAnimationState(1).setCurrentCycle(-1);
+            
             m_initalized = true;
         }
     }
@@ -864,9 +872,11 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         return null;
     }
     
-    public void receiveAnimationMessage(AnimationMessageType message)
+    public void receiveAnimationMessage(AnimationMessageType message, int stateID)
     {
-        m_context.notifyAnimationMessage(message);
+        m_context.notifyAnimationMessage(message, stateID);
     }
+
+    
     
 }

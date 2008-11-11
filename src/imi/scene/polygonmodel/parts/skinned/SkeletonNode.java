@@ -69,7 +69,7 @@ public class SkeletonNode extends PNode implements Animated
     {
         super(name, new PTransform());
         // add an animation state
-        m_animationStates.add(new AnimationState());
+        m_animationStates.add(new AnimationState(0));
     }
     
     /**
@@ -395,6 +395,15 @@ public class SkeletonNode extends PNode implements Animated
     public AnimationGroup getAnimationGroup() 
     {
         return m_animationComponent.getGroup();
+    }
+    
+    /**
+     * Retrieve an animation group
+     * @return AnimationGroup at index i 
+     */
+    public AnimationGroup getAnimationGroup(int index)
+    {
+        return m_animationComponent.getGroups().get(index);
     }
     
     public boolean transitionTo(String cycleName, boolean bReverse)

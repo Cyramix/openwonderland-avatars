@@ -63,13 +63,13 @@ public class MusicalChairs extends DemoBase
         
         // Create one object collection for all to use (for testing)
         ObjectCollection objects = new ObjectCollection("Musical Chairs Objects", wm);
-        objects.generateChairs(new Vector3f(halfBlock, 0.0f, halfBlock), 2.0f * numberOfAvatars, numberOfAvatars-1);
+        objects.generateChairs(new Vector3f(halfBlock, 0.0f, halfBlock), halfBlock, numberOfAvatars-1);
         
         // Create locations for the game
-        LocationNode chairGame1 = new LocationNode("Location 1", Vector3f.ZERO, 3.0f, wm, objects);
-        LocationNode chairGame2 = new LocationNode("Location 2", Vector3f.UNIT_X.mult(block),  3.0f, wm, objects);
-        LocationNode chairGame3 = new LocationNode("Location 3", new Vector3f(block, 0.0f, block),  3.0f, wm, objects);
-        LocationNode chairGame4 = new LocationNode("Location 4", Vector3f.UNIT_Z.mult(block),  3.0f, wm, objects);
+        LocationNode chairGame1 = new LocationNode("Location 1", Vector3f.ZERO, halfBlock, wm, objects);
+        LocationNode chairGame2 = new LocationNode("Location 2", Vector3f.UNIT_X.mult(block),  halfBlock, wm, objects);
+        LocationNode chairGame3 = new LocationNode("Location 3", new Vector3f(block, 0.0f, block),  halfBlock, wm, objects);
+        LocationNode chairGame4 = new LocationNode("Location 4", Vector3f.UNIT_Z.mult(block),  halfBlock, wm, objects);
         
         // Create paths
         chairGame1.addConnection(new Connection("MyPath", chairGame1, chairGame2, ConnectionDirection.OneWay));
@@ -93,7 +93,7 @@ public class MusicalChairs extends DemoBase
         control.getNinjaTeam().add(avatar);
         avatar.setObjectCollection(objects);
 
-        // Make some avatars
+        // Make some more avatars
         float zStep = 5.0f;
         for (int i = 1; i < numberOfAvatars; i++)
         {
@@ -121,7 +121,6 @@ public class MusicalChairs extends DemoBase
     {   
         NinjaAvatar avatar = new NinjaAvatar("Avatar Clone " + xOffset+yOffset+zOffset, wm);
         avatar.getModelInst().getTransform().getLocalMatrix(true).setTranslation(new Vector3f(xOffset, yOffset, zOffset));
-        avatar.getModelInst().setDirty(true, true);
         control.getNinjaTeam().add(avatar);
         avatar.setObjectCollection(objects);
     }
