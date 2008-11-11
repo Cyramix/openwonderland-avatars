@@ -108,4 +108,11 @@ public class AzimuthAngleModel implements CameraModel
         state.setAzimuth(state.getAzimuth() + Math.toRadians(deltaY));
         state.setElevation(state.getElevation() + Math.toRadians(deltaX));
     }
+
+    public void update(CameraState state, float deltaTime) throws WrongStateTypeException
+    {
+        if (state.getType() != CameraState.CameraStateType.AzimuthAngle)
+            throw new WrongStateTypeException("Wrong state type");
+        // Do nothing;
+    }
 }

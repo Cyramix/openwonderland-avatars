@@ -198,4 +198,12 @@ public class FirstPersonCamModel implements CameraModel
         quat.fromAngles(camState.getRotationX() * (float)Math.PI/180.0f, camState.getRotationY() * (float)Math.PI/180.0f, 0.0f);
     }
 
+
+    public void update(CameraState state, float deltaTime) throws WrongStateTypeException
+    {
+        if (state.getType() != CameraState.CameraStateType.FirstPerson)
+            throw new WrongStateTypeException("Wrong state type");
+        // Do nothing;
+    }
+
 }

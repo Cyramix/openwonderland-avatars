@@ -23,38 +23,65 @@ import imi.scene.polygonmodel.PPolygonModelInstance;
 
 /**
  * This class encapsultes the required state for the TumbleObject camera model.
+ * There is no complex logic in this class, just lots of accessors and mutators.
  * @author Ronald E Dahlgren
  */
 public class TumbleObjectCamState extends CameraState
 {
-    // Camera spatial data
+    /** The camera's transformation matrix **/
     private PMatrix camTransform = new PMatrix();
-    // User experience configuration
-    private float movementRate = 0.03f; 
+    /** If this is non-null, the camera is moving towards this position **/
+    private Vector3f nextPosition = null;
+    /** Cached for proper lerping **/
+    private Vector3f originalPosition = null;
+
+    // User experience configuration below
+    /** The amount of movement per second **/
+    private float movementRate = 0.0386f;
+    /** Scale rotation from screen delta by this amount **/
     private float scaleRotationX = 0.56f;
     private float scaleRotationY = 0.56f;
+    /** Length of transition in seconds **/
+    private float transitionDuration = 1.5f; 
+
     // Cached cursor info
     private int currentMouseX   = -1;
     private int currentMouseY   = -1;
     private int lastMouseX      = -1;
     private int lastMouseY      = -1;
+
     /** Maintain a reference to a PPolygonModelInstance to manipulate. **/
     private PPolygonModelInstance   modelInstance   = null;
+    /** This is the place that the camera looks at and zooms towards **/
     private Vector3f                focalPoint      = new Vector3f();
+    /** If this is non-null, the camera is transitioning to this focal point **/
+    private Vector3f                nextFocalPoint  = null;
+    /** Kept to lerp properly **/
+    private Vector3f                originalFocalPoint  = null;
     /** Rotation about the Y axis **/
-    private float                   rotationY       = 0.0f; 
-    private Vector3f                worldYVec       = new Vector3f(0,1,0);
+    private float                   rotationY       = 0.0f;
     
     /** State indicators **/
     public final static int ZOOMING_IN  = 1;
     public final static int ZOOMING_OUT = 2;
     public final static int STOPPED     = 0;
-    
+    /** Current movement state **/
     private int movementState = STOPPED;
+
+    /** Data for transitioning **/
+    private float timeInPositionTransition = 0.0f;
+    private float timeInFocusTransition = 0.0f;
+
     /** True anytime a new target is set, the camera must lookAt **/
     private boolean newTargetNeedsUpdate = false;
-    private boolean bDirty = false;
-    
+    /** This is the minimum distance squared that is allowed between the camera and its focal point **/
+    private float minimumDistanceSquared = 1.5f;
+
+    /**
+     * Construct a new state object with the given target. The provided target
+     * may be null but a focus point must be manually set if that is the case.
+     * @param target
+     */
     public TumbleObjectCamState(PPolygonModelInstance target)
     {
         setType(CameraStateType.TumbleObject);
@@ -63,16 +90,28 @@ public class TumbleObjectCamState extends CameraState
             setTargetFocalPoint(modelInstance.getTransform().getWorldMatrix(false).getTranslation());
         newTargetNeedsUpdate = true;
     }
-    
+
+    /**
+     * Construct a new state object with the given target. If the target provided
+     * is null, a focal point must be manually set.
+     * @param target
+     * @param rotationOnYAxis
+     */
     public TumbleObjectCamState(PPolygonModelInstance target, float rotationOnYAxis)
     {
         setType(CameraStateType.TumbleObject);
         modelInstance = target;
-        setTargetFocalPoint(modelInstance.getTransform().getWorldMatrix(false).getTranslation());
+        if (modelInstance != null)
+            setTargetFocalPoint(modelInstance.getTransform().getWorldMatrix(false).getTranslation());
         newTargetNeedsUpdate = true;
         rotationY = rotationOnYAxis;
     }
 
+    //////////////////////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////    Accessors & Mutators, aka The Dungeon ////////////////////////
+    //////////////////////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////////////////
     public int getCurrentMouseX()
     {
         return currentMouseX;
@@ -220,19 +259,74 @@ public class TumbleObjectCamState extends CameraState
     {
         newTargetNeedsUpdate = needed;
     }
-    
-    public Vector3f getWorldYVector()
-    {
-        return worldYVec;
+
+    public Vector3f getNextFocalPoint() {
+        return nextFocalPoint;
     }
-    
-    public boolean isDirty()
-    {
-        return bDirty;
+
+    public void setNextFocalPoint(Vector3f nextFocalPoint) {
+        this.nextFocalPoint = nextFocalPoint;
     }
-    
-    public void setDirty(boolean dirty)
+
+    public Vector3f getNextPosition() {
+        return nextPosition;
+    }
+
+    public void setNextPosition(Vector3f nextPosition) {
+        this.nextPosition = nextPosition;
+    }
+
+    public float getTimeInFocusTransition()
     {
-        bDirty = dirty;
+        return timeInFocusTransition;
+    }
+
+    public void setTimeInFocusTransition(float timeInFocusTransition)
+    {
+        this.timeInFocusTransition = timeInFocusTransition;
+    }
+
+    public float getTimeInPositionTransition()
+    {
+        return timeInPositionTransition;
+    }
+
+    public void setTimeInPositionTransition(float timeInPositionTransition)
+    {
+        this.timeInPositionTransition = timeInPositionTransition;
+    }
+
+    public float getTransitionDuration()
+    {
+        return transitionDuration;
+    }
+
+    public void setTransitionDuration(float transitionDuration)
+    {
+        this.transitionDuration = transitionDuration;
+    }
+
+    public Vector3f getOriginalFocalPoint() {
+        return originalFocalPoint;
+    }
+
+    public void setOriginalFocalPoint(Vector3f originalFocalPoint) {
+        this.originalFocalPoint = originalFocalPoint;
+    }
+
+    public Vector3f getOriginalPosition() {
+        return originalPosition;
+    }
+
+    public void setOriginalPosition(Vector3f originalPosition) {
+        this.originalPosition = originalPosition;
+    }
+
+    public float getMinimumDistanceSquared() {
+        return minimumDistanceSquared;
+    }
+
+    public void setMinimumDistanceSquared(float minimumDistanceSquared) {
+        this.minimumDistanceSquared = minimumDistanceSquared;
     }
 }

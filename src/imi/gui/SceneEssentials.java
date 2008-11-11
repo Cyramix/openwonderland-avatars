@@ -655,6 +655,7 @@ public class SceneEssentials {
             }
         };
         s.setInitializer(init);
+
         modelInst = currentPScene.addModelInstance(n, s, new PMatrix());
         // Set position
         if (origin != null) {

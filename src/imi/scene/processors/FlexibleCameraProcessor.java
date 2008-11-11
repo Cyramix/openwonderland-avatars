@@ -45,6 +45,8 @@ public class FlexibleCameraProcessor extends AWTEventProcessorComponent
     private Node    m_skyNode   = null;
     
     private WorldManager m_WM   = null;
+
+    private float m_lastFrameTime = 0.0f;
     
     private ProcessorArmingCollection m_armingConditions = null;
     
@@ -76,6 +78,11 @@ public class FlexibleCameraProcessor extends AWTEventProcessorComponent
         m_model = newModel;
         m_state = newState;
     }
+
+    public CameraModel getModel()
+    {
+        return m_model;
+    }
     
     public CameraState getState()
     {
@@ -95,10 +102,16 @@ public class FlexibleCameraProcessor extends AWTEventProcessorComponent
     @Override
     public void compute(ProcessorArmingCollection arg0)
     {
+        float fCurrentTime = System.currentTimeMillis() / 1000.0f;
+        float delta = 0.00356f;//fCurrentTime - m_lastFrameTime;
+        if (delta > 1.0f)
+            delta = 0.0f;
+
         if (m_model != null && m_state != null)
         {
             try
             {
+                m_model.update(m_state, delta);
                 m_model.handleInputEvents(m_state, getEvents());
                 m_model.determineTransform(m_state, m_transform);
             } catch (WrongStateTypeException ex)
@@ -106,6 +119,8 @@ public class FlexibleCameraProcessor extends AWTEventProcessorComponent
                 Logger.getLogger(FlexibleCameraProcessor.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
+        
+        m_lastFrameTime = fCurrentTime;
     }
 
     @Override

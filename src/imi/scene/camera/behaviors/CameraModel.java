@@ -46,4 +46,11 @@ public interface CameraModel
      * @throws imi.scene.camera.behaviors.WrongStateTypeException
      */
     public void handleInputEvents(CameraState state, Object[] events) throws WrongStateTypeException;
+
+    /**
+     * Update the camera, this allows for animated camera models
+     * @param state
+     * @param deltaTime
+     */
+    public void update(CameraState state, float deltaTime) throws WrongStateTypeException;
 }
