@@ -20,6 +20,7 @@ package imi.character;
 import com.jme.math.Vector3f;
 import imi.character.ninja.NinjaContext;
 import imi.character.ninja.NinjaContext.TriggerNames;
+import imi.character.ninja.SitState;
 import imi.character.objects.Chair;
 import imi.character.objects.SpatialObject;
 import imi.scene.PMatrix;
@@ -204,8 +205,10 @@ public class GoSit implements Task
             //enabledState = false;
             ninjaContext.resetTriggersAndActions();
 
-            // Trigger sitting
-            ninjaContext.triggerPressed(TriggerNames.Sit.ordinal());
+            // Initiate SitState
+            SitState sit = (SitState) ninjaContext.getStates().get(SitState.class);
+            if (sit != null && sit.toSit(null))
+                ninjaContext.setCurrentState(sit);
         }
     }
     

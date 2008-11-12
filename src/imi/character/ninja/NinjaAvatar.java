@@ -38,6 +38,9 @@ public class NinjaAvatar extends Ninja
             anims.add("assets/models/collada/Avatars/MaleZip/Male_Idle.dae");
             anims.add("assets/models/collada/Avatars/MaleZip/Male_StandToSit.dae");
             anims.add("assets/models/collada/Avatars/MaleZip/Male_Wave.dae");
+            anims.add("assets/models/collada/Avatars/Male/Male_FallFromSitting.dae");
+            anims.add("assets/models/collada/Avatars/Male/Male_FloorSitting.dae");
+            anims.add("assets/models/collada/Avatars/Male/Male_FloorGetup.dae");
             //anims.add("assets/models/collada/Avatars/MaleFacialAnimation/MaleSmile.dae");
             anims.add("assets/models/collada/Avatars/MaleZip/Male_Walk.dae");
             anims.add("assets/models/collada/Avatars/MaleZip/Male_Sitting.dae");
@@ -63,6 +66,7 @@ public class NinjaAvatar extends Ninja
         m_context.getController().setReverseHeading(true);
         m_context.getStates().get(IdleState.class).setAnimationName("Male_Idle");
         m_context.getStates().get(PunchState.class).setAnimationName("Male_Wave");
+        //m_context.getStates().get(PunchState.class).setAnimationName("Male_FloorGetup");
         m_context.getStates().get(TurnState.class).setAnimationName("Male_Idle");
         m_context.getStates().get(WalkState.class).setAnimationName("Male_Walk");
         m_context.getStates().get(SitState.class).setAnimationName("Male_StandToSit");
@@ -85,7 +89,7 @@ public class NinjaAvatar extends Ninja
         ((SitState)m_context.getStates().get(SitState.class)).setGettingUpAnimationSpeed(4.0f);
         ((SitState)m_context.getStates().get(SitState.class)).setGettingUpAnimationTime(0.8f);
         ((SitState)m_context.getStates().get(SitState.class)).setGettingUpTransitionDuration(0.05f);
-        
+                
         // For testing, no transitions
         if (false)
         {

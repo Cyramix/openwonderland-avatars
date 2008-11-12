@@ -75,6 +75,10 @@ public class COLLADA_CharacterTest extends DemoBase
             cloneAvatar(control, objects, wm, 0.0f, 0.0f, zStep);
             zStep += 5.0f;
         }
+        
+        // Make a chair and let the control the collection so it can delete it
+        objects.generateChairs(Vector3f.ZERO, 10.0f, 5);
+        control.setObjectCollection(objects);
     }
 
     private void cloneAvatar(NinjaControlScheme control, ObjectCollection objects, WorldManager wm, float xOffset, float yOffset, float zOffset) 

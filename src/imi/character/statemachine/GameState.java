@@ -148,14 +148,8 @@ public class GameState extends NamedUpdatableObject
         {
             skeleton.getAnimationState().setTransitionDuration(transitionDuration);
             skeleton.getAnimationState().setAnimationSpeed(animationSpeed);
-            //skeleton.getAnimationState().setCurrentCyclePlaybackMode(PlaybackMode.PlayOnce);
+            skeleton.getAnimationState().setReverseAnimation(bReverseAnimation);
             bAnimationSet = skeleton.transitionTo(animationName, bTransitionReverseAnimation);
-            
-            // Set reverse   
-            if (bReverseAnimation)
-                skeleton.getAnimationState().setReverseAnimation(true);
-            else
-                skeleton.getAnimationState().setReverseAnimation(false);
         }
     }
     
@@ -176,7 +170,7 @@ public class GameState extends NamedUpdatableObject
      */
     protected void stateEnter(GameContext owner)
     {
-//        System.out.println(getName() + " enter");
+        System.out.println(getName() + " enter");
         if (logger.isLoggable(Level.FINE))
             logger.fine(getName() + " Enter");
         

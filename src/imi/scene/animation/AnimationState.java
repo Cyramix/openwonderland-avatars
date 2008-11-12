@@ -69,6 +69,8 @@ public class AnimationState
 
     public AnimationState(AnimationState other)
     {
+        m_ID = other.m_ID;
+        
         // Current cycle information
         m_CurrentCycle = other.m_CurrentCycle;
         m_CurrentCycleTime = other.m_CurrentCycleTime;

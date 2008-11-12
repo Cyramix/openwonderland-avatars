@@ -465,6 +465,16 @@ public abstract class Character extends Entity implements SpatialObject, Animati
                                 }
                                 
                                 pProcessor.execute(pRootInstruction);
+                                
+//                                // Test
+//                                int cycleIndex = skeleton.getAnimationComponent().findCycle("Male_FloorGetup", 0);
+//                                
+//                                System.out.println(skeleton.getAnimationGroup().getCycle(cycleIndex).getStartTime() + "    " + skeleton.getAnimationGroup().getCycle(cycleIndex).getEndTime());
+//                                
+//                                skeleton.getAnimationGroup().getCycle(cycleIndex).setEndTime(   (skeleton.getAnimationGroup().getCycle(cycleIndex).getEndTime() - 1.0f)    );
+//                                
+//                                System.out.println("ddddddddddddddddddddddddddddddddddddddddddddddddddddddddfgsgsgsdfgsdf   " + cycleIndex);
+//                                System.out.println(skeleton.getAnimationGroup().getCycle(cycleIndex).getStartTime() + "    " + skeleton.getAnimationGroup().getCycle(cycleIndex).getEndTime());
                             }
                             
                             try {

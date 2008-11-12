@@ -70,12 +70,9 @@ public class Ninja extends imi.character.Character
         m_keyBindings.put(KeyEvent.VK_RIGHT,        TriggerNames.Move_Right.ordinal());
         m_keyBindings.put(KeyEvent.VK_UP,           TriggerNames.Move_Forward.ordinal());
         m_keyBindings.put(KeyEvent.VK_DOWN,         TriggerNames.Move_Back.ordinal());
-//        m_keyBindings.put(KeyEvent.VK_W,        TriggerNames.Move_Forward.ordinal());
-//        m_keyBindings.put(KeyEvent.VK_S,        TriggerNames.Move_Back.ordinal());
         m_keyBindings.put(KeyEvent.VK_CONTROL,      TriggerNames.Punch.ordinal());
         m_keyBindings.put(KeyEvent.VK_ENTER,        TriggerNames.ToggleSteering.ordinal());
-        m_keyBindings.put(KeyEvent.VK_BACK_SPACE,   TriggerNames.PositionGoalPoint.ordinal());
-        m_keyBindings.put(KeyEvent.VK_HOME,         TriggerNames.SelectNearestGoalPoint.ordinal());
+        m_keyBindings.put(KeyEvent.VK_HOME,         TriggerNames.GoSit.ordinal());
         m_keyBindings.put(KeyEvent.VK_ADD,          TriggerNames.Move_Down.ordinal());
         m_keyBindings.put(KeyEvent.VK_SUBTRACT,     TriggerNames.Move_Up.ordinal());
         m_keyBindings.put(KeyEvent.VK_COMMA,        TriggerNames.Reverse.ordinal());
@@ -83,6 +80,7 @@ public class Ninja extends imi.character.Character
         m_keyBindings.put(KeyEvent.VK_1,            TriggerNames.GoTo1.ordinal());
         m_keyBindings.put(KeyEvent.VK_2,            TriggerNames.GoTo2.ordinal());
         m_keyBindings.put(KeyEvent.VK_3,            TriggerNames.GoTo3.ordinal());
+        m_keyBindings.put(KeyEvent.VK_G,            TriggerNames.SitOnGround.ordinal());
     }
             
     /**

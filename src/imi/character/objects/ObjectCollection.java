@@ -402,6 +402,7 @@ public class ObjectCollection extends Entity
         {
             if (check instanceof Chair)
             {
+                ((Chair)check).setOwner(null);
                 objects.remove(check);
                 pscene.removeModelInstance(check.getModelInst());
                 

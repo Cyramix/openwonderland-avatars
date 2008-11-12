@@ -23,7 +23,6 @@ import imi.character.CharacterController;
 import imi.scene.PMatrix;
 import imi.scene.PTransform;
 import imi.scene.polygonmodel.PPolygonModelInstance;
-import imi.tests.DemoBase.SwingFrame;
 import javax.swing.JFrame;
 
 /**
@@ -85,7 +84,7 @@ public class NinjaController extends CharacterController
     public void stop() 
     {
         fwdAcceleration = 0.0f;
-        acceleration.zero();
+        acceleration.set(Vector3f.ZERO);
         velocity.set(Vector3f.ZERO);
     }
     

@@ -18,6 +18,7 @@
 package imi.character.statemachine;
 
 import imi.character.CharacterController;
+import imi.character.CharacterSteeringHelm;
 import imi.character.statemachine.GameState.Action;
 import imi.scene.animation.AnimationListener.AnimationMessageType;
 import imi.scene.polygonmodel.PPolygonMeshInstance;
@@ -342,6 +343,14 @@ public class GameContext extends NamedUpdatableObject
      * @return
      */
     public CharacterController getController() {
+        return null;
+    }
+    
+    /**
+     * Override to return concerte steering
+     * @return
+     */
+    public CharacterSteeringHelm getSteering() {
         return null;
     }
 }

@@ -23,11 +23,13 @@ import imi.character.GoTo;
 import imi.character.ninja.transitions.FlyToIdle;
 import imi.character.ninja.transitions.IdleToFly;
 import imi.character.ninja.transitions.IdleToPunch;
+import imi.character.ninja.transitions.IdleToSitOnGround;
 import imi.character.ninja.transitions.IdleToTurn;
 import imi.character.ninja.transitions.IdleToWalk;
 import imi.character.ninja.transitions.PunchToIdle;
 import imi.character.ninja.transitions.PunchToTurn;
 import imi.character.ninja.transitions.PunchToWalk;
+import imi.character.ninja.transitions.SitOnGroundToIdle;
 import imi.character.ninja.transitions.SitToIdle;
 import imi.character.ninja.transitions.TurnToIdle;
 import imi.character.ninja.transitions.TurnToPunch;
@@ -61,18 +63,17 @@ public class NinjaContext extends GameContext
         Move_Right,
         Move_Forward,
         Move_Back,
-        Punch,
-        Sit,
-        ToggleSteering,
-        PositionGoalPoint,
-        SelectNearestGoalPoint,
         Move_Up,
         Move_Down,
-        NextAction,
-        Reverse,
+        Punch,
+        SitOnGround,
+        ToggleSteering,
+        GoSit,
         GoTo1,
         GoTo2,
         GoTo3,
+        NextAction,
+        Reverse,
     }
     
     public static enum ActionNames
@@ -109,6 +110,8 @@ public class NinjaContext extends GameContext
         gameStates.put(PunchState.class, new PunchState(this));
         gameStates.put(SitState.class,   new SitState(this));
         gameStates.put(FlyState.class,   new FlyState(this));
+        gameStates.put(FallFromSitState.class,   new FallFromSitState(this));
+        gameStates.put(SitOnGroundState.class,   new SitOnGroundState(this));
         
         // Set the state to start with
         setCurrentState(gameStates.get(IdleState.class));
@@ -119,6 +122,7 @@ public class NinjaContext extends GameContext
         RegisterStateEntryPoint(gameStates.get(TurnState.class),  "toTurn");
         RegisterStateEntryPoint(gameStates.get(PunchState.class), "toPunch");
         RegisterStateEntryPoint(gameStates.get(FlyState.class),   "toFly");
+        RegisterStateEntryPoint(gameStates.get(SitOnGroundState.class),   "toSitOnGround");
                 
         // Add transitions (exit points)
         gameStates.get(IdleState.class).addTransition(new IdleToTurn());
@@ -135,6 +139,9 @@ public class NinjaContext extends GameContext
         gameStates.get(SitState.class).addTransition(new SitToIdle());
         gameStates.get(FlyState.class).addTransition(new FlyToIdle());
         gameStates.get(IdleState.class).addTransition(new IdleToFly());
+        gameStates.get(IdleState.class).addTransition(new IdleToSitOnGround());
+        gameStates.get(FallFromSitState.class).addTransition(new SitOnGroundToIdle());
+        gameStates.get(SitOnGroundState.class).addTransition(new SitOnGroundToIdle());
     }
     
     @Override
@@ -153,28 +160,10 @@ public class NinjaContext extends GameContext
             steering.toggleEnable();
     
         // Find nearest chair and sit on it
-        else if (trigger == TriggerNames.SelectNearestGoalPoint.ordinal() && pressed)
+        else if (trigger == TriggerNames.GoSit.ordinal() && pressed)
         {
             steering.clearTasks();
             GoToNearestChair();
-        }
-        
-        // Set the current state to the sit state
-        else if (trigger == TriggerNames.Sit.ordinal() && pressed)
-        {
-            SitState sit = (SitState) gameStates.get(SitState.class);
-            if (sit.toSit(null))
-            {
-                setCurrentState(sit);
-                triggerReleased(TriggerNames.Sit.ordinal()); 
-            }
-        }
-        
-        // Reverse the animation for the punch state
-        else if (trigger == TriggerNames.Reverse.ordinal() && pressed)
-        {
-            PunchState punch = (PunchState) gameStates.get(PunchState.class);
-            punch.setReverseAnimation(!punch.isReverseAnimation());
         }
         
         // GoTo to location - if path is available from the current location
@@ -196,6 +185,13 @@ public class NinjaContext extends GameContext
         {
             steering.clearTasks();
             GoToNearestChair();
+        }
+        
+        // Reverse the animation for the punch state
+        else if (trigger == TriggerNames.Reverse.ordinal() && pressed)
+        {
+            PunchState punch = (PunchState) gameStates.get(PunchState.class);
+            punch.setReverseAnimation(!punch.isReverseAnimation());
         }
         
         // Select the next animation to play for the punch state
@@ -263,6 +259,7 @@ public class NinjaContext extends GameContext
         return controller;
     }
 
+    @Override
     public NinjaSteeringHelm getSteering() {
         return steering;
     }
