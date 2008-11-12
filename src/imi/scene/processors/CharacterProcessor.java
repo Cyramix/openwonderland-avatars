@@ -17,6 +17,10 @@
  */
 package imi.scene.processors;
 
+import com.jme.math.Vector3f;
+import imi.scene.PMatrix;
+import imi.scene.polygonmodel.skinned.SkinnedMeshJoint;
+import imi.utils.PMathUtils;
 import org.jdesktop.mtgame.NewFrameCondition;
 import org.jdesktop.mtgame.ProcessorArmingCollection;
 import org.jdesktop.mtgame.ProcessorComponent;
@@ -39,7 +43,8 @@ public class CharacterProcessor extends ProcessorComponent
     
     @Override
     public void compute(ProcessorArmingCollection collection) {
-        
+        // look at the origin you creepy eyeballs!
+        //performEyeballLookAt(Vector3f.ZERO); <-- not yet functional, need some inversion or something
     }
 
     @Override
@@ -52,6 +57,33 @@ public class CharacterProcessor extends ProcessorComponent
         ProcessorArmingCollection collection = new ProcessorArmingCollection(this);
         collection.addCondition(new NewFrameCondition(this));
         setArmingCondition(collection);
+    }
+
+    private void performEyeballLookAt(Vector3f targetInWorldSpace)
+    {
+        // ensure that we have a character, and that the character has a skeleton
+        if (character == null || character.getSkeleton() == null)
+            return; // try again later
+        // grab the appropriate joints to look at
+        final String leftEyeballJointName = "leftEye";
+        final String rightEyeballJointName = "rightEye";
+
+        SkinnedMeshJoint leftEyeJoint = character.getSkeleton().findSkinnedMeshJoint(leftEyeballJointName);
+        SkinnedMeshJoint rightEyeJoint = character.getSkeleton().findSkinnedMeshJoint(rightEyeballJointName);
+
+        // Perform lookAt to target
+        // Left eyeball
+        PMatrix leftEyeWorldXForm = PMathUtils.lookAt(
+                targetInWorldSpace,
+                leftEyeJoint.getTransform().getWorldMatrix(false).getTranslation(),
+                Vector3f.UNIT_Y);
+        leftEyeJoint.getTransform().getLocalMatrix(true).set(leftEyeWorldXForm);
+        // Right eyeball
+        PMatrix rightEyeWorldXForm = PMathUtils.lookAt(
+                targetInWorldSpace,
+                rightEyeJoint.getTransform().getWorldMatrix(false).getTranslation(),
+                Vector3f.UNIT_Y);
+        rightEyeJoint.getTransform().getLocalMatrix(true).set(rightEyeWorldXForm);
     }
 
 }

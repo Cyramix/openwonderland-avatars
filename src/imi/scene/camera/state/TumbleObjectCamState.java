@@ -243,11 +243,16 @@ public class TumbleObjectCamState extends CameraState
     {
         return camTransform.getTranslation();
     }
-    
+
     public void setCameraPosition(Vector3f newPosition)
     {
+        setCameraPosition(newPosition, true);
+    }
+    
+    public void setCameraPosition(Vector3f newPosition, boolean needsUpdate)
+    {
         camTransform.setTranslation(newPosition);
-        newTargetNeedsUpdate = true;
+        newTargetNeedsUpdate = needsUpdate;
     }
     
     public boolean needsTargetUpdate()

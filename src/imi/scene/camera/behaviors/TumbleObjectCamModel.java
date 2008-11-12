@@ -130,7 +130,7 @@ public class TumbleObjectCamModel implements CameraModel
         Vector3f toTarget = camState.getTargetFocalPoint().subtract(camState.getCameraPosition().add(zoomVec));
         // Dist squared is used to save a square root operation
         if (toTarget.lengthSquared() >= camState.getMinimumDistanceSquared())
-            camState.setCameraPosition(camState.getCameraPosition().add(zoomVec));
+            camState.setCameraPosition(camState.getCameraPosition().add(zoomVec), false); // No turn-to needed, we are moving along the correct vector
     }
 
     /**
@@ -349,8 +349,7 @@ public class TumbleObjectCamModel implements CameraModel
         float s = camState.getTimeInPositionTransition() / camState.getTransitionDuration();
         Vector3f newPosition = new Vector3f(camState.getOriginalPosition());
         newPosition.interpolate(nextPosition, s);
-        camState.setCameraPosition(newPosition);
-        camState.setTargetNeedsUpdate(true);// Perform lookAt
+        camState.setCameraPosition(newPosition, true); // lookAt
     }
 
     /**
@@ -365,7 +364,6 @@ public class TumbleObjectCamModel implements CameraModel
         Vector3f newFocus = new Vector3f(camState.getOriginalFocalPoint());
         newFocus.interpolate(nextPosition, s);
         camState.setTargetFocalPoint(newFocus);
-        camState.setTargetNeedsUpdate(true); // perform look at
     }
 
     /**

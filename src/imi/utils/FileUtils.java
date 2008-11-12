@@ -39,7 +39,7 @@ public class FileUtils
     public static final String getShortFilename(String fullFilename)
     {
         if (fullFilename == null)
-            return("");
+            return null;
 
         int lastDirectoryDividerIndex = fullFilename.lastIndexOf('/');
         if (lastDirectoryDividerIndex == -1)
@@ -48,7 +48,7 @@ public class FileUtils
         if (lastDirectoryDividerIndex == -1)
             return(fullFilename);
 
-        String shortFilename = "";
+        String shortFilename = null;
         if (lastDirectoryDividerIndex != -1)
             shortFilename = fullFilename.substring(lastDirectoryDividerIndex+1, fullFilename.length());
         else

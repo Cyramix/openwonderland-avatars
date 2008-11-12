@@ -25,7 +25,6 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.xml.bind.JAXBException;
-import org.collada.colladaschema.Asset;
 import org.collada.colladaschema.COLLADA;
 import org.collada.xml_walker.ProcessorFactory;
 import org.collada.xml_walker.PColladaNode;
@@ -55,7 +54,6 @@ import imi.scene.PMatrix;
 import imi.scene.PNode;
 import imi.scene.PTransform;
 
-import imi.utils.FileUtils;
 
 import imi.scene.polygonmodel.PPolygonModelInstance;
 import imi.scene.polygonmodel.PPolygonMeshInstance;
@@ -105,7 +103,6 @@ public class Collada
     LibraryNodes                                m_pLibraryNodes;
 
     FastMap<String, PColladaImage>              m_Images = new FastMap<String, PColladaImage>();
-    private ArrayList<PColladaImage>            m_ColladaImages = new ArrayList<PColladaImage>();
 
     FastMap<String, PColladaMaterial>           m_Materials = new FastMap<String, PColladaMaterial>();
     private ArrayList                           m_ColladaMaterials = new ArrayList();
@@ -858,57 +855,6 @@ public class Collada
     }
 
 
-
-
-
-
-//  ******************************
-//  ColladaImage methods.
-//  ******************************
-
-    //  Adds a ColladaImage with minimal info.
-    public void addColladaImage(String name, String originalFilename)
-    {
-        String shortFilename = FileUtils.getShortFilename(originalFilename);
-
-        PColladaImage pColladaImage = new PColladaImage(name, shortFilename, this, null);
-
-        //  Put the ColladaImage into the Images HashMap.
-        m_Images.put(name, pColladaImage);
-
-        m_ColladaImages.add(pColladaImage);
-    }
-    
-    public void addColladaImage(PColladaImage colladaImage)
-    {
-        // add it to the two collections used to track this
-        m_Images.put(colladaImage.getName(), colladaImage);
-        m_ColladaImages.add(colladaImage);
-    }
-
-    //  Gets the number of ColladaImages.
-    public int getColladaImageCount()
-    {
-        return(m_ColladaImages.size());
-    }
-
-    //  Gets the ColladaImage at the specified index.
-    public PColladaImage getColladaImage(int index)
-    {
-        return( (PColladaImage)m_ColladaImages.get(index));
-    }
-
-    //  Finds the ColladaImage with the specified name.
-    public PColladaImage findColladaImage(String name)
-    {
-        //  Get the ColladaImage from the HashMap.
-        return(m_Images.get(name));
-    }
-
-
-
-
-
 //  ******************************
 //  ColladaMaterial methods.
 //  ******************************
@@ -1250,7 +1196,7 @@ public class Collada
     //  Finds the PolygonMesh with the specified name.
     public PPolygonMesh findPolygonMesh(String meshName)
     {
-        PPolygonMesh pPolygonMesh;
+        PPolygonMesh pPolygonMesh = null;
         for (int a=0; a<getPolygonMeshCount(); a++)
         {
             pPolygonMesh = getPolygonMesh(a);

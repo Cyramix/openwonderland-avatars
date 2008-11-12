@@ -71,6 +71,7 @@ public class PColladaMaterial
     private float           m_fShininess                = 0.0f;
     private PColladaColor   m_ReflectiveColor           = new PColladaColor();
     private float           m_fReflectivity             = 0.0f;
+
     /** Transparency information **/
     private PColladaColor   m_TransparentColor          = new PColladaColor();
     private float           m_fTransparency             = 0.0f;
@@ -82,7 +83,6 @@ public class PColladaMaterial
     /** Ambient map    **/
     private String          m_AmbientImageFilename      = "";
     /** Treated as the default diffuse map  **/
-    //private String[]        m_DiffuseImageFilename      = new String[8];
     private List<String>    m_DiffuseImageFilename      = new ArrayList<String>();
     /** Interpreted as a specular map       **/
     private String          m_SpecularImageFilename     = "";
@@ -318,22 +318,20 @@ public class PColladaMaterial
     private String processColorOrTexture(CommonColorOrTextureType pAttribute, PColladaColor pColor)
     {
         if (pAttribute == null)
-            return(""); 
+            return null;
         if (pAttribute.getTexture() != null && pAttribute.getTexture().size() > 0)
         {
             Texture pTexture = pAttribute.getTexture().get(0);
 
             String textureSamplerName = pTexture.getTexture();
-            String textureTexCoord = pTexture.getTexcoord();
 
             String textureFilename = getTextureFilename(textureSamplerName);
-//                    m_pCollada.getTextureFilename(textureSamplerName);
-            //  Should lookup the Texture to determine the filename.
+            //  Returns a string containing just the relevant portion of the filename.
+            // let's assume for now that it is a relative and correct path
+            //String shortTextureFilename = FileUtils.getShortFilename(textureFilename);
 
-            //  Returns a string containing just the short filename.
-            String shortTextureFilename = FileUtils.getShortFilename(textureFilename);
-
-            return(shortTextureFilename);
+            //return shortTextureFilename;
+            return textureFilename;
         }
         else if (pAttribute.getColor() != null)
         {
@@ -344,10 +342,10 @@ public class PColladaMaterial
             pColor.Blue  = c.get(2).floatValue();
             pColor.Alpha = c.get(3).floatValue();
 
-            return("");
+            return null;
         }
 
-        return("");
+        return null;
     }
 
     private List<String> processDiffuseColorsOrTextures(CommonColorOrTextureType diffuse, PColladaColor color)
@@ -370,6 +368,7 @@ public class PColladaMaterial
 
                 String shortTextureFilename = FileUtils.getShortFilename(textureFilename);
                 
+                //result.add(textureFilename); <-- uncomment this line and comment out the one below to use relative paths
                 result.add(shortTextureFilename);
             }
             return result;
@@ -431,36 +430,32 @@ public class PColladaMaterial
         {
             m_fTransparency = (float) ((transparency != null) ? transparency.getFloat().getValue() : 1.0f);
         }
-//        if (transparentType.getOpaque() == FxOpaqueEnum.A_ONE)
-//            pColor.set(0.0f, 0.0f, 0.0f, 1.0f);
-//        else if (transparentType.getOpaque() == FxOpaqueEnum.RGB_ZERO)
-//            pColor.set(0.0f, 0.0f, 0.0f, 0.0f);
     }
 
 
- public String getTextureFilename(String samplerName)
+    private String getTextureFilename(String samplerName)
     {
         CommonNewparamType pSamplerParamType = getImageNewParamType(samplerName);
         if (pSamplerParamType == null)
-            return("");
+            return null;
 
         FxSampler2DCommon pSampler2D = pSamplerParamType.getSampler2D();
         if (pSampler2D == null)
-            return("");
+            return null;
 
         String surfaceName = pSampler2D.getSource();
 
         CommonNewparamType pSurfaceParamType = getImageNewParamType(surfaceName);
         if (pSurfaceParamType == null)
-            return("");
+            return null;
 
         FxSurfaceCommon pSurfaceCommon = pSurfaceParamType.getSurface();
         if (pSurfaceCommon == null)
-            return("");
+            return null;
 
         List<FxSurfaceInitFromCommon> pInitFroms = pSurfaceCommon.getInitFroms();
         if (pInitFroms == null)
-            return("");
+            return null;
 
         FxSurfaceInitFromCommon pSurface;
 
@@ -476,7 +471,7 @@ public class PColladaMaterial
             }
         }
 
-        return("");
+        return null;
     }
 
     private CommonNewparamType getImageNewParamType(String name)
@@ -507,88 +502,6 @@ public class PColladaMaterial
 
         return(pColorRGBA);
     }
-
-    private URL[] buildTextures()
-    {
-        int textureCount = calculateTextureCount();
-        if (textureCount == 0)
-            return(null);
-        
-        URL []textures = new URL[textureCount];
-        int textureIndex = 0;
-        URL fileLocation = null;
-        // lots of dereferencing, I know....
-        String currentFolder = m_pCollada.getFileLocation().toString().substring(0, m_pCollada.getFileLocation().toString().lastIndexOf('/') + 1);
-        
-        try
-        {
-            if (m_DiffuseImageFilename != null && m_DiffuseImageFilename.size() > 0)
-            {
-                for (int i = 0; i < m_DiffuseImageFilename.size(); ++i)
-                {
-                    fileLocation = new URL(currentFolder + m_DiffuseImageFilename.get(i));
-                    textures[textureIndex] = fileLocation;
-                    textureIndex++;
-                }
-            }
-            if (m_SpecularImageFilename.length() > 0)
-            {
-                fileLocation = new URL(currentFolder + m_SpecularImageFilename);
-                textures[textureIndex] = fileLocation;
-                textureIndex++;
-            }
-            if (m_AmbientImageFilename.length() > 0)
-            {
-                fileLocation = new URL(currentFolder + m_AmbientImageFilename);
-                textures[textureIndex] = fileLocation;
-                textureIndex++;
-            }
-            if (m_EmissiveImageFilename.length() > 0)
-            {
-                fileLocation = new URL(currentFolder + m_EmissiveImageFilename);
-                textures[textureIndex] = fileLocation;
-                textureIndex++;
-            }
-
-            if (m_ReflectiveImageFilename.length() > 0)
-            {
-                fileLocation = new URL(currentFolder + m_ReflectiveImageFilename);
-                textures[textureIndex] = fileLocation;
-                textureIndex++;
-            }
-        }
-        catch (MalformedURLException ex)
-        {
-            Logger.getLogger(this.getClass().toString()).log(Level.SEVERE, "Malformed url! : " + ex.getMessage());
-        }
-       
-        return(textures);
-    }
-
-    private int calculateTextureCount()
-    {
-        int textureCount = 0;
-
-        if (m_EmissiveImageFilename.length() > 0)
-            textureCount++;
-        if (m_AmbientImageFilename.length() > 0)
-            textureCount++;
-        if (m_DiffuseImageFilename != null)
-            textureCount += m_DiffuseImageFilename.size();
-        if (m_SpecularImageFilename.length() > 0)
-            textureCount++;
-
-        if (m_ReflectiveImageFilename.length() > 0)
-            textureCount++;
-
-        return(textureCount);
-    }
-
-
-
-
-
-
 
     //  Gets the image filename for the Emissive channel.
     public String getEmissiveImageFilename()
