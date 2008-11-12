@@ -12,9 +12,13 @@
 package imi.gui;
 
 import imi.sql.SQLInterface;
+import java.awt.Cursor;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import javax.media.jai.PropertyChangeEmitter;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
@@ -56,7 +60,10 @@ public class JPanel_ServerBrowser extends javax.swing.JPanel {
                 }
                 ListSelectionModel rowSelect = (ListSelectionModel) e.getSource();
                 int selectedIndex = rowSelect.getMinSelectionIndex();
-                getSelectedData(selectedIndex);
+                if (selectedIndex != -1) {
+                    getSelectedData(selectedIndex);
+                    jButton_Load.setEnabled(true);
+                }
             }
         });
     }
@@ -112,6 +119,7 @@ public class JPanel_ServerBrowser extends javax.swing.JPanel {
         DefaultTableModel tabModel = new DefaultTableModel(data, columnNames);
         jTable1.setModel(tabModel);
         m_loadType = dataType;
+        jButton_Load.setEnabled(false);
     }
 
     public void updateBrowser() {
@@ -159,8 +167,10 @@ public class JPanel_ServerBrowser extends javax.swing.JPanel {
         }
 
         DefaultTableModel tabModel = new DefaultTableModel(data, columnNames);
+        jTable1.removeAll();
         jTable1.setModel(tabModel);
         m_loadType = selection;
+        jButton_Load.setEnabled(false);
     }
 
     public void filterResults(String typeFilter) {
@@ -263,6 +273,9 @@ public class JPanel_ServerBrowser extends javax.swing.JPanel {
             query += m_modelInfo[5].toString();
             ArrayList<String[]> ref = loadSQLData(query);
 
+            if (m_modelInfo[4].equals("1") || m_modelInfo[4].equals("2"))
+                return;
+            
             m_meshref = new String[ref.size()];
             for(int i = 0; i < ref.size(); i++)
                 m_meshref[i] = ref.get(i)[0];
@@ -317,20 +330,22 @@ public class JPanel_ServerBrowser extends javax.swing.JPanel {
         data = m_sql.Retrieve(query);
         int iNumData = m_sql.getNumColumns();
         ArrayList<String> temp = new ArrayList<String>();
-        int counter = 0;
         for (int i = 0; i < data.size(); i++) {
             for (int j = 0; j < iNumData; j++) {
                 temp.add(data.get(i)[j].toString());
-                System.out.println("retrieved " + temp.get(counter));
-                counter++;
             }
         }
 
+        System.out.println("sql query complete");
         m_sql.Disconnect();
         return data;
     }
 
     public void executeLoad() {
+        if (jTable1.getSelectedRow() == -1)
+            return;
+
+        setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         switch(m_loadType)
         {
             case 0:         // LOAD AVATAR
@@ -354,6 +369,8 @@ public class JPanel_ServerBrowser extends javax.swing.JPanel {
                 break;
             }
         }
+        m_sceneData.setCameraOnModel();
+        setCursor(null);
     }
 
     /** Accessors */
@@ -423,10 +440,9 @@ public class JPanel_ServerBrowser extends javax.swing.JPanel {
         jCheckBox_FilterFemale = new javax.swing.JCheckBox();
         jCheckBox_FilterAdd = new javax.swing.JCheckBox();
         jCheckBox_FilterView = new javax.swing.JCheckBox();
-        jButton_Close = new javax.swing.JButton();
         jButton_Load = new javax.swing.JButton();
 
-        setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED), "Server Browser", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Lucida Grande", 0, 13), new java.awt.Color(0, 0, 255))); // NOI18N
+        setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED), "Server Browser", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.BELOW_TOP, new java.awt.Font("Lucida Grande", 0, 13), new java.awt.Color(0, 0, 255))); // NOI18N
         setMinimumSize(new java.awt.Dimension(320, 480));
         setPreferredSize(new java.awt.Dimension(320, 480));
         setLayout(new java.awt.GridBagLayout());
@@ -459,6 +475,13 @@ public class JPanel_ServerBrowser extends javax.swing.JPanel {
         add(jComboBox_Filter, gridBagConstraints);
 
         jCheckBox_FilterMale.setSelected(true);
+        jCheckBox_FilterMale.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jCheckBox_FilterMale.setSelected(true);
+                jCheckBox_FilterFemale.setSelected(false);
+                updateBrowser();
+            }
+        });
         jCheckBox_FilterMale.setText("Male");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -482,6 +505,12 @@ public class JPanel_ServerBrowser extends javax.swing.JPanel {
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         add(jCheckBox_FilterFemale, gridBagConstraints);
 
+        jCheckBox_FilterAdd.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jCheckBox_FilterAdd.setSelected(true);
+                jCheckBox_FilterView.setSelected(false);
+            }
+        });
         jCheckBox_FilterAdd.setText("Add Mode");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
@@ -505,18 +534,6 @@ public class JPanel_ServerBrowser extends javax.swing.JPanel {
         gridBagConstraints.insets = new java.awt.Insets(0, 120, 0, 0);
         add(jCheckBox_FilterView, gridBagConstraints);
 
-        jButton_Close.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                //TODO: add close panel options to remove this panel from parent
-            }
-        });
-        jButton_Close.setText("Close");
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 4;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        add(jButton_Close, gridBagConstraints);
-
         jButton_Load.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 executeLoad();
@@ -524,15 +541,16 @@ public class JPanel_ServerBrowser extends javax.swing.JPanel {
         });
         jButton_Load.setText("Load");
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 4;
+        gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
         add(jButton_Load, gridBagConstraints);
     }// </editor-fold>//GEN-END:initComponents
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton_Close;
     private javax.swing.JButton jButton_Load;
     private javax.swing.JCheckBox jCheckBox_FilterAdd;
     private javax.swing.JCheckBox jCheckBox_FilterFemale;
@@ -543,5 +561,6 @@ public class JPanel_ServerBrowser extends javax.swing.JPanel {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;
     // End of variables declaration//GEN-END:variables
+
 
 }

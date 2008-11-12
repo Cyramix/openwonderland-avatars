@@ -68,7 +68,10 @@ import imi.scene.utils.PMeshUtils;
 import imi.utils.FileUtils;
 import imi.utils.PMathUtils;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
@@ -106,9 +109,9 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
     private WorldManager        m_worldManager      = null;
     protected CameraNode        m_cameraNode        = null;
     protected int               m_desiredFrameRate  = 60;
-    protected int               m_width             = 800;
+    protected int               m_width             = 400;
     protected int               m_height            = 600;
-    protected float             m_aspect            = 800.0f/600.0f;
+    protected float             m_aspect            = 400.0f/600.0f;
     protected SceneEssentials   m_sceneData         = null;
     protected boolean           m_bLoading          = false;
     protected RenderBuffer      m_renderBuffer      = null;
@@ -823,9 +826,8 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
         m_AnimationViewer.setVisible(true);
     }
 
-        public void openServerBrowser() {
+    public void openServerBrowser() {
         m_ServerBrowser = m_sceneData.openServerBrowserPanel();
-        m_ServerBrowser.initBrowser(0);
         java.awt.GridBagConstraints gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
@@ -1085,8 +1087,8 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
         jMenuItem_LoadModelURL.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 runProgressBar(true);
-                //openServerBrowser();
-                m_sceneData.openServerBrowser((JFrame) m_base);
+                openServerBrowser();
+                //m_sceneData.openServerBrowser((JFrame) m_base);
                 resetOpenTools();
                 runProgressBar(false);
             }

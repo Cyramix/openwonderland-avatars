@@ -18,6 +18,7 @@
 
 package imi.gui;
 
+import com.jme.math.Vector3f;
 import imi.loaders.collada.ColladaLoaderParams;
 import imi.loaders.collada.Instruction;
 import imi.loaders.collada.Instruction.InstructionNames;
@@ -30,11 +31,13 @@ import imi.scene.JScene;
 import imi.scene.PMatrix;
 import imi.scene.PNode;
 import imi.scene.PScene;
+import imi.scene.camera.state.TumbleObjectCamState;
 import imi.scene.polygonmodel.PPolygonMeshInstance;
 import imi.scene.polygonmodel.PPolygonModelInstance;
 import imi.scene.polygonmodel.parts.PMeshMaterial;
 import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
 import imi.scene.polygonmodel.skinned.PPolygonSkinnedMeshInstance;
+import imi.scene.processors.FlexibleCameraProcessor;
 import imi.scene.processors.SkinnedAnimationProcessor;
 import imi.scene.shader.programs.VertexDeformer;
 import imi.sql.SQLInterface;
@@ -88,6 +91,8 @@ public class SceneEssentials {
         private SkeletonNode skeleton = null;
         private Map<Integer, String[]> meshsetup = null;
         private SQLInterface m_sql;
+        private Vector3f camPos = new Vector3f(0.0f, 1.5f, -3.2f);
+        protected FlexibleCameraProcessor curCameraProcessor = null;
         
     public SceneEssentials() {
         initFileChooser();
@@ -105,7 +110,10 @@ public class SceneEssentials {
     public PPolygonModelInstance getModelInstance() { return modelInst; }
     public SkeletonNode getCurrentSkeleton() { return skeleton; }
     public Map<Integer, String[]> getMeshSetup() { return meshsetup; }
-    
+    public FlexibleCameraProcessor getCurCamProcessor() {
+        return curCameraProcessor;
+    }
+
     // Mutators
     public void setJScene(JScene jscene) { currentJScene = jscene; }
     public void setPScene(PScene pscene) { currentPScene = pscene; }
@@ -127,7 +135,10 @@ public class SceneEssentials {
         skeleton = ((SkeletonNode)p.getInstances().getChild(0).getChild(0));
     }
     public void setMeshSetup(Map<Integer, String[]> m) { meshsetup = m; }
-    
+    public void setCurCamProcessor(FlexibleCameraProcessor camProc) {
+        curCameraProcessor = camProc;
+    }
+
     // Helper Functions
     public void setSceneData(JScene jscene, PScene pscene, Entity entity, WorldManager wm, ArrayList<ProcessorComponent> processors) {
         currentJScene = jscene;
@@ -810,19 +821,34 @@ public class SceneEssentials {
         data = m_sql.Retrieve(query);
         int iNumData = m_sql.getNumColumns();
         ArrayList<String> temp = new ArrayList<String>();
-        int counter = 0;
+        //int counter = 0;
         for (int i = 0; i < data.size(); i++) {
             for (int j = 0; j < iNumData; j++) {
                 temp.add(data.get(i)[j].toString());
-                System.out.println("retrieved " + temp.get(counter));
-                counter++;
+                //System.out.println("retrieved " + temp.get(counter));
+                //counter++;
             }
         }
-
+        System.out.println("sql query complete");
         m_sql.Disconnect();
         return data;
     }
-    
+
+    public void setCameraOnModel() {
+        PNode node = currentPScene.getInstances();
+        if (node != null && node.getChildrenCount() > 0) {
+            PPolygonModelInstance pmInstance = ((PPolygonModelInstance) node.getChild(0));
+            TumbleObjectCamState camState = ((TumbleObjectCamState)curCameraProcessor.getState());
+            camState.setTargetModelInstance(pmInstance);
+            camState.setCameraPosition(camPos);
+
+            if (pmInstance.getBoundingSphere() == null)
+                pmInstance.calculateBoundingSphere();
+            camState.setTargetFocalPoint(pmInstance.getBoundingSphere().getCenter());
+            camState.setTargetNeedsUpdate(true);
+        }
+    }
+
     /**
      * Replaces the texture of the currently selected model
      * TODO: Allow support for textures on multiple meshes.
