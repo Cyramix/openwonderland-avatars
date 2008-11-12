@@ -75,6 +75,7 @@ public class SceneEssentials {
         private JFileChooser jFileChooser_LoadXML = null;
         private JFileChooser jFileChooser_LoadAvatarDAE = null;
         private ServerBrowserDialog serverFileChooserD = null;
+        private JPanel_ServerBrowser serverBrowserPanel = null;
     // File Containers
         private File fileXML     = null;
         private File fileModel   = null;
@@ -270,6 +271,14 @@ public class SceneEssentials {
         serverFileChooserD.initBrowser(0);
         serverFileChooserD.setSceneEssentials(this);
         serverFileChooserD.setVisible(true);
+    }
+
+    public JPanel_ServerBrowser openServerBrowserPanel() {
+        serverBrowserPanel = new JPanel_ServerBrowser();
+        serverBrowserPanel.initBrowser(0);
+        serverBrowserPanel.setSceneEssentials(this);
+        serverBrowserPanel.setVisible(true);
+        return serverBrowserPanel;
     }
     
     /**

@@ -38,6 +38,7 @@ import com.jme.scene.state.WireframeState;
 import com.jme.scene.state.ZBufferState;
 import com.jme.util.TextureManager;
 import imi.gui.JPanel_Animations;
+import imi.gui.JPanel_ServerBrowser;
 import imi.gui.OptionsGUI;
 import imi.gui.SceneEssentials;
 import imi.gui.TreeExplorer;
@@ -115,6 +116,7 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
     protected OptionsGUI        m_AvatarOptions     = null;
     protected TreeExplorer      m_NodeExplorer      = null;
     protected JFrame            m_AnimationViewer   = null;
+    protected JPanel_ServerBrowser m_ServerBrowser  = null;
     protected FlexibleCameraProcessor   m_cameraProcessor   = null;
 ////////////////////////////////////////////////////////////////////////////////
 // CLASS DATA MEMBERS - END
@@ -821,6 +823,18 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
         m_AnimationViewer.setVisible(true);
     }
 
+        public void openServerBrowser() {
+        m_ServerBrowser = m_sceneData.openServerBrowserPanel();
+        m_ServerBrowser.initBrowser(0);
+        java.awt.GridBagConstraints gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.gridheight = java.awt.GridBagConstraints.REMAINDER;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.VERTICAL;
+        jPanel_MainPanel.add(m_ServerBrowser, gridBagConstraints);
+    }
+
     public void resetOpenTools() {
         if (m_AvatarOptions != null) {
             if (m_AvatarOptions.isVisible()) {
@@ -894,6 +908,7 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
         jMenuItem_About = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setResizable(false);
         getContentPane().setLayout(new java.awt.GridBagLayout());
 
         jPanel_MainPanel.setLayout(new java.awt.GridBagLayout());
@@ -942,9 +957,6 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
 
         setFrame(m_worldManager);
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
-        gridBagConstraints.gridheight = java.awt.GridBagConstraints.REMAINDER;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.weighty = 1.0;
@@ -952,8 +964,6 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.weighty = 1.0;
@@ -982,6 +992,8 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
         jToolBar_ProgressBar.add(jLabel_FPSCounter);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
         gridBagConstraints.gridheight = java.awt.GridBagConstraints.RELATIVE;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
@@ -1073,6 +1085,7 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
         jMenuItem_LoadModelURL.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 runProgressBar(true);
+                //openServerBrowser();
                 m_sceneData.openServerBrowser((JFrame) m_base);
                 resetOpenTools();
                 runProgressBar(false);
