@@ -186,6 +186,9 @@ public class PPolygonSkinnedMeshInstance extends PPolygonMeshInstance
                 m_shaderState.setUniformMatrix4Array("pose", pose, false);
         }
 
+
+        if (m_instance.getTarget().getIndexBuffer() == null)
+            return null;
         return m_instance;
     }
     

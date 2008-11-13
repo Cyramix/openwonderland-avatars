@@ -208,6 +208,8 @@ public class PPolygonMeshInstance extends PNode
     
     public SharedMesh getSharedMesh()
     {
+        if (m_instance.getTarget().getIndexBuffer() == null)
+            return null;
         return m_instance;
     }
     
@@ -221,7 +223,9 @@ public class PPolygonMeshInstance extends PNode
         m_instance.setLocalRotation(world.getRotation());
         m_instance.setLocalTranslation(world.getTranslation());
         m_instance.setLocalScale(world.getScaleVector());
-        
+
+        if (m_instance.getTarget().getIndexBuffer() == null)
+            return null;
         return m_instance;
     }
     

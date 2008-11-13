@@ -236,19 +236,6 @@ public class PPolygonMesh extends PNode
     @Override
     public void draw(PRenderer renderer)
     {
-//        if (getTransform() != null)
-//        {
-//            // Set world origin
-//            PMatrix origin       = getTransform().getWorldMatrix(false);
-//            Quaternion rotation  = new Quaternion();
-//            Vector3f translation = new Vector3f();
-//            Vector3f scale       = new Vector3f();
-//            origin.getRotation(rotation);
-//            origin.getTranslation(translation);
-//            origin.getScale(scale);
-//            renderer.setOrigin(rotation, translation, scale);
-//        }
-        
         renderer.drawPPolygonMesh(this);
     }
  
@@ -301,6 +288,7 @@ public class PPolygonMesh extends PNode
             m_pMaterial.adjustReferenceCount(-1);
 
         m_pMaterial = pMaterial;
+        // copy sidedness
 
         if (m_pMaterial != null)
             m_pMaterial.adjustReferenceCount(1);

@@ -65,16 +65,20 @@ public class LibraryGeometriesProcessor extends Processor
                 //System.out.println("   ConvexMesh");
                 children.add(ProcessorFactory.createProcessor(pCollada, g.getConvexMesh(), this));
             }
+
             if (g.getMesh()!=null)
             {
                 //System.out.println("   Mesh");
                 children.add(ProcessorFactory.createProcessor(pCollada, g.getMesh(), this));
             }
+
             if (g.getSpline()!=null)
             {
               //  System.out.println("   Spline");
                 children.add(ProcessorFactory.createProcessor(pCollada, g.getSpline(), this));
             }
+
+            // TODO: process the extras - for instance the double sided tag :)
         }
     }
 

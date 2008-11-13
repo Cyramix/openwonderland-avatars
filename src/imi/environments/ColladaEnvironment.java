@@ -35,6 +35,9 @@ import com.jme.scene.state.RenderState;
 import com.jme.scene.state.TextureState;
 import com.jme.scene.state.ZBufferState;
 import com.jme.util.TextureManager;
+import imi.loaders.collada.ColladaLoaderParams;
+import imi.loaders.repository.AssetDescriptor;
+import imi.loaders.repository.Repository;
 import imi.loaders.repository.SharedAsset;
 import imi.scene.PMatrix;
 import imi.scene.PScene;
@@ -60,17 +63,23 @@ public class ColladaEnvironment extends Entity
      * Primary constructor. This initializes and loads the environment. The provided
      * pscene is used to request the loading action, and once the loading has finished
      * the scene is then initialized.
-     * @param freshPScene This should be a newly constructed PScene.
-     * @param environment 
-     * @param name The name to refer to the environment by
+     * @param wm The world manager; used in PScene construction and referencing the repository
+     * @param relativePath The relative path to the collada file containing the environment
+     * @param name The name of the land!
      */
-    public ColladaEnvironment(WorldManager wm, SharedAsset environment, String name)
+    public ColladaEnvironment(WorldManager wm, String relativePath, String name)
     {
         super(name);
         m_wm = wm;
+        // create and load the environment
+        Repository repo = (Repository)wm.getUserData(Repository.class);
+        AssetDescriptor descriptor = new AssetDescriptor(SharedAsset.SharedAssetType.COLLADA_Model, relativePath);
+        SharedAsset worldAsset = new SharedAsset(repo, descriptor, null);
+        worldAsset.setUserData(new ColladaLoaderParams(false, true, false, false, 0, name, null));
+
         PScene scene = new PScene(m_wm);
         scene.setUseRepository(false); // Synchronous loading requested
-        scene.addModelInstance(environment, new PMatrix());
+        scene.addModelInstance(worldAsset, new PMatrix());
         
         SceneGraphConvertor convertor = new SceneGraphConvertor();
         m_jmeRoot = convertor.convert(scene);
@@ -110,7 +119,7 @@ public class ColladaEnvironment extends Entity
   
         LightState ls = (LightState) m_wm.getRenderManager().createRendererState(RenderState.RS_LIGHT);
         ls.setTwoSidedLighting(false);
-        ls.setEnabled(false);
+        ls.setEnabled(true);
         
         // Cull State
         CullState cs = (CullState) m_wm.getRenderManager().createRendererState(RenderState.RS_CULL);      
@@ -123,7 +132,7 @@ public class ColladaEnvironment extends Entity
         m_jmeRoot.setRenderState(cs);
         m_jmeRoot.setRenderState(ls);
         nullifyColorBuffers();
-        //visitNodes();
+        visitNodes();
         m_jmeRoot.updateRenderState();
         
     }

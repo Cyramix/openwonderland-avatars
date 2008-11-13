@@ -200,10 +200,6 @@ public class PolylistProcessor extends Processor
         int normalIndex             = -1;
         int texCoord0Index          = -1;
 
-        Vector3f position           = null;
-        Vector3f normal             = null;
-        Vector2f texCoord0          = null;
-
         int meshPositionIndex       = -1;
         int meshNormalIndex         = -1;
         int meshTexCoord0Index      = -1;
@@ -248,28 +244,9 @@ public class PolylistProcessor extends Processor
                     texCoord0Index = polygonIndices[index + m_pTexCoordSemantic.m_Offset];
                 index += m_VertexOffset;
 
-/*
-                if (m_pPositionSemantic != null)
-                    position = m_pPositionSemantic.getVector3f(positionIndex);
-                if (m_pNormalSemantic != null)
-                    normal = m_pNormalSemantic.getVector3f(normalIndex);
-                if (m_pTexCoordSemantic != null)
-                    texCoord0 = m_pTexCoordSemantic.getVector2f(texCoord0Index);
-
-
-                if (m_pPositionSemantic != null)
-                    meshPositionIndex = pPolygonMesh.getPosition(position);
-                if (m_pNormalSemantic != null)
-                    meshNormalIndex = pPolygonMesh.getNormal(normal);
-                if (m_pTexCoordSemantic != null)
-                    meshTexCoord0Index = pPolygonMesh.getTexCoord(texCoord0);
-*/
-
-
                 meshPositionIndex = positionIndex;
                 meshNormalIndex = normalIndex;
                 meshTexCoord0Index = texCoord0Index;
-
 
                 //  Add the Vertex to the Polygon.
                 pPolygon.addVertex(meshPositionIndex,       //  PositionIndex
@@ -278,12 +255,7 @@ public class PolylistProcessor extends Processor
                                    -1,                      //  TexCoord2Index
                                    -1,                      //  TexCoord3Index
                                    -1);                     //  TexCoord4Index
-
-//                System.out.print("   Vert[" + vertexIndex + "]:  ");
-//                System.out.print("Position: (" + position.x + ", " + position.y + ", " + position.z + "), ");
-//                System.out.println("Normal: (" + normal.x + ", " + normal.y + ", " + normal.z + ")");
             }
-
             pPolygon.endBatch();
         }
 

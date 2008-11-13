@@ -74,8 +74,8 @@ public class MeshProcessor extends Processor
         ProcessorFactory.createProcessor(pCollada, pMesh.getVertices(), this);  // exactly 1 vertices
 
         List primitives = pMesh.getTrianglesAndLinestripsAndPolygons();  // 0 or more
-        // lines, linestrips, polygons, polylist, triangles, trifans, tristrips
 
+        // lines, linestrips, polygons, polylist, triangles, trifans, tristrips
         for(Object prim : primitives)
         {
             Processor pProcessor = ProcessorFactory.createProcessor(pCollada, prim, this);

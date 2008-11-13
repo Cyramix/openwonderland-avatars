@@ -710,13 +710,8 @@ public class DemoBase
         FirstPersonCamState state = new FirstPersonCamState();
         FirstPersonCamModel model = new FirstPersonCamModel();
         m_cameraProcessor.setCameraBehavior(model, state);
-        //OrbitCameraProcessor eventProcessor = new OrbitCameraProcessor(cameraListener, cameraNode, wm, camera);
         m_cameraProcessor.setRunInRenderer(true);
-        
-        AWTInputComponent selectionListener = (AWTInputComponent)wm.getInputManager().createInputComponent(canvas, eventMask);        
-        //SelectionProcessor selector = new SelectionProcessor(selectionListener, wm, camera, camera, width, height, m_cameraProcessor);
-        //selector.setRunInRenderer(true);
-        
+         
         ProcessorCollectionComponent pcc = new ProcessorCollectionComponent();
         pcc.addProcessor(m_cameraProcessor);
         //pcc.addProcessor(selector);
@@ -789,18 +784,11 @@ public class DemoBase
     public class SwingFrame extends JFrame implements FrameRateListener, ActionListener {
 
         JPanel contentPane;
-        JPanel menuPanel = new JPanel();
         JPanel canvasPanel = new JPanel();
-        JPanel optionsPanel = new JPanel();
         JPanel statusPanel = new JPanel();
         Canvas canvas = null;
         JLabel fpsLabel = new JLabel("FPS: ");
         RenderBuffer m_renderBuffer = null;
-        JToggleButton coordButton = new JToggleButton("Coords", true);
-        JToggleButton gridButton = new JToggleButton("Grid", true);
-        JMenuItem loadItem = null;
-        JMenuItem exitItem = null;
-        JMenuItem createTeapotItem = null;
 
 
         // Construct the frame
@@ -819,53 +807,26 @@ public class DemoBase
             contentPane.setLayout(new BorderLayout());
             
             // The Menu Bar
-            menuPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
             JMenuBar menuBar = new JMenuBar();
             
             // File Menu
             JMenu fileMenu = new JMenu("File");
-            exitItem = new JMenuItem("Exit");
-            exitItem.addActionListener(this);
-            loadItem = new JMenuItem("Load");
-            loadItem.addActionListener(this);
-            fileMenu.add(loadItem);
-            fileMenu.add(exitItem);
             menuBar.add(fileMenu);
             
             // Create Menu
             JMenu createMenu = new JMenu("Create");
-            createTeapotItem = new JMenuItem("Teapot");
-            createTeapotItem.addActionListener(this);
-            createMenu.add(createTeapotItem);
             menuBar.add(createMenu);
-            
-            menuPanel.add(menuBar);
-            contentPane.add(menuPanel, BorderLayout.NORTH);
             
             // The Rendering Canvas
             m_renderBuffer = new RenderBuffer(RenderBuffer.Target.ONSCREEN, width, height);
             wm.getRenderManager().addRenderBuffer(m_renderBuffer);
             canvas = m_renderBuffer.getCanvas();
-            //canvas = wm.getRenderManager().createCanvas(width, height);
-            //wm.getRenderManager().setCurrentCanvas(canvas);
             canvas.setVisible(true);
-            //canvas.setBounds(0, 0, width, height);
             wm.getRenderManager().setFrameRateListener(this, 100);
             canvasPanel.setLayout(new GridBagLayout());           
             canvasPanel.add(canvas);
             contentPane.add(canvasPanel, BorderLayout.CENTER);
-            
-            // The options panel
-            optionsPanel.setLayout(new GridBagLayout());
-            
-            coordButton.addActionListener(this);
-            optionsPanel.add(coordButton);
-          
-            gridButton.addActionListener(this);
-            optionsPanel.add(gridButton);
-            
-            contentPane.add(optionsPanel, BorderLayout.WEST);
-            
+
             // The status panel
             statusPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
             statusPanel.add(fpsLabel);

@@ -25,9 +25,7 @@ import imi.scene.polygonmodel.skinned.PPolygonSkinnedMeshInstance;
 import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
 
 import imi.scene.animation.AnimationComponent;
-import imi.scene.animation.AnimationGroup;
 import imi.loaders.collada.Collada;
-import imi.scene.animation.AnimationCycle;
 import imi.scene.animation.AnimationGroup;
 import java.net.URL;
 
@@ -82,6 +80,7 @@ public class CharacterLoader
             System.out.println("Exception occured while loading skeleton.");
             ex.printStackTrace();
         }
+
         return result;
     }
 
