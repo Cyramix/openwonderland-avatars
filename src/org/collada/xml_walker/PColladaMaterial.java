@@ -21,6 +21,7 @@ import org.collada.colladaschema.Technique;
 import java.util.List;
 import imi.scene.polygonmodel.parts.PMeshMaterial;
 import com.jme.renderer.ColorRGBA;
+import com.jme.scene.state.CullState.Face;
 import org.collada.colladaschema.Extra;
 import org.collada.colladaschema.ProfileCOMMON.Technique.Blinn;
 import org.collada.colladaschema.ProfileCOMMON.Technique.Lambert;
@@ -308,6 +309,9 @@ public class PColladaMaterial
                 result.setAlphaState(PMeshMaterial.AlphaTransparencyType.NO_TRANSPARENCY);
                 break;
         }
+
+        // HACK : Default COLLADA to have no backface culling
+        result.setCullFace(Face.None);
 
         return result;
     }
