@@ -18,7 +18,6 @@ import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import javax.media.jai.PropertyChangeEmitter;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;

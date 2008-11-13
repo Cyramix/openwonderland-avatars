@@ -17,6 +17,8 @@
  */
 package imi.character.ninja;
 
+import com.jme.math.Vector3f;
+import imi.scene.PMatrix;
 import java.util.ArrayList;
 import org.jdesktop.mtgame.WorldManager;
 
@@ -27,13 +29,16 @@ import org.jdesktop.mtgame.WorldManager;
 public class NinjaAvatar extends Ninja 
 {
     public class NinjaAvatarAttributes extends Attributes
-    {
-        String [] m_animations = new String [0];
-        
-        public NinjaAvatarAttributes(String name) {
+    {   
+        public NinjaAvatarAttributes(String name, int preset) 
+        {
             super(name);
-            //setModelFile("assets/models/collada/Avatars/MaleZip/MaleBind.dae");
-            setModelFile("assets/models/collada/Avatars/Male2/Male_Bind.dae");
+            
+            // Bind Pose
+            setBindPoseFile("assets/models/collada/Avatars/MaleZip/MaleBind.dae");
+            //setBindPoseFile("assets/models/collada/Avatars/Male2/Male_Bind.dae");
+            
+            // Animations
             ArrayList<String> anims = new ArrayList<String>();
             anims.add("assets/models/collada/Avatars/MaleZip/Male_Idle.dae");
             anims.add("assets/models/collada/Avatars/MaleZip/Male_StandToSit.dae");
@@ -43,7 +48,6 @@ public class NinjaAvatar extends Ninja
             anims.add("assets/models/collada/Avatars/Male/Male_FloorGetup.dae");
             anims.add("assets/models/collada/Avatars/MaleZip/Male_Walk.dae");
             anims.add("assets/models/collada/Avatars/MaleZip/Male_Sitting.dae");
-            //anims.add("assets/models/collada/Avatars/MaleFacialAnimation/MaleSmile.dae");
             if (false)
             {
                 anims.add("assets/models/collada/Avatars/MaleZip/Male_Run.dae");
@@ -55,6 +59,80 @@ public class NinjaAvatar extends Ninja
                 anims.add("assets/models/collada/Avatars/Male/Male_Laugh.dae");
             }
             setAnimations(anims.toArray(new String[anims.size()]));
+            
+            // Facial Animations
+            ArrayList<String> facialAnims = new ArrayList<String>();
+            facialAnims.add("assets/models/collada/Avatars/MaleFacialAnimation/MaleSmile.dae");
+            facialAnims.add("assets/models/collada/Avatars/MaleFacialAnimation/MaleFrown.dae");
+            facialAnims.add("assets/models/collada/Avatars/MaleFacialAnimation/MaleScorn.dae");
+            setFacialAnimations(facialAnims.toArray(new String[facialAnims.size()]));
+            
+            // Customizations
+            switch(preset)
+            {
+                case 0:
+                {
+                    // Jeans and shoes
+                    ArrayList<String> delete = new ArrayList<String>();
+                    delete.add("TorsoNudeShape");
+                    delete.add("LegsNudeShape");
+                    delete.add("LFootNudeShape");
+                    delete.add("RFootNudeShape");
+                    setDeleteInstructions(delete.toArray(new String[delete.size()]));
+
+                    ArrayList<String> load = new ArrayList<String>();
+                    load.add("assets/models/collada/Pants/Jeans_M/Jeans.dae");
+                    load.add("assets/models/collada/Shoes/TennisShoes_M/MaleTennisShoes.dae");
+                    load.add("assets/models/collada/Shirts/TShirt_M/MaleTShirt.dae");
+                    load.add("assets/models/collada/Hair/HairPlaceable.dae");
+                    setLoadInstructions(load.toArray(new String[load.size()]));
+
+                    ArrayList<String> add = new ArrayList<String>();
+                    add.add("polySurface3Shape");
+                    add.add("TennisShoesShape");
+                    add.add("PoloShape");
+                    add.add("ArmsShape");
+                    setAddInstructions(add.toArray(new String[add.size()]));
+
+                    ArrayList<AttachmentParams> attachments = new ArrayList<AttachmentParams>();
+                    attachments.add(new AttachmentParams("curly", "Head", new PMatrix(new Vector3f(0.0f,(float) Math.toRadians(180), 0.0f), new Vector3f(1.0f, 1.2f, 1.0f), Vector3f.ZERO)));
+                    setAttachmentsInstructions(attachments.toArray(new AttachmentParams[attachments.size()]));
+                }
+                break;
+                case 1:
+                {
+                    // Shorts and flip flops
+                    ArrayList<String> delete = new ArrayList<String>();
+                    delete.add("TorsoNudeShape");
+                    delete.add("LegsNudeShape");
+                    delete.add("LFootNudeShape");
+                    delete.add("RFootNudeShape");
+                    setDeleteInstructions(delete.toArray(new String[delete.size()]));
+
+                    ArrayList<String> load = new ArrayList<String>();
+                    load.add("assets/models/collada/Pants/Shorts_M/Shorts.dae");
+                    load.add("assets/models/collada/Clothing/FlipFlopsFeet.dae");
+                    load.add("assets/models/collada/Shirts/PoloShirt_M/MalePolo.dae");
+                    load.add("assets/models/collada/Hair/HairPlaceable.dae");
+                    setLoadInstructions(load.toArray(new String[load.size()]));
+
+                    ArrayList<String> add = new ArrayList<String>();
+                    add.add("LegsNudeShape");
+                    add.add("MaleShortsShape");
+                    add.add("LFootNudeShape");
+                    add.add("RFootNudeShape");
+                    add.add("LFlipFlopShape");
+                    add.add("RFlipFlopShape");
+                    add.add("PoloShape");
+                    add.add("TorsoNudeShape");
+                    setAddInstructions(add.toArray(new String[add.size()]));
+                    
+                    ArrayList<AttachmentParams> attachments = new ArrayList<AttachmentParams>();
+                    attachments.add(new AttachmentParams("S_Pt_left", "Head", new PMatrix(new Vector3f(0.0f,(float) Math.toRadians(180), 0.0f), new Vector3f(1.0f, 1.2f, 1.0f), Vector3f.ZERO)));
+                    setAttachmentsInstructions(attachments.toArray(new AttachmentParams[attachments.size()]));
+                }
+                break;
+            }
         }
     }
     
@@ -107,7 +185,12 @@ public class NinjaAvatar extends Ninja
     @Override
     protected Attributes createAttributes(String name)
     {
-        return new NinjaAvatarAttributes(name);
+        int preset = -1;
+        if (Math.random() < 0.5)
+            preset = 0;
+        else 
+            preset = 1;
+        return new NinjaAvatarAttributes(name, preset);
     }
 
 }

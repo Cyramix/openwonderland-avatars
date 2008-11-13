@@ -113,21 +113,42 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         
     public class Attributes
     {
+        public class AttachmentParams
+        {
+            public String  m_meshName   = null;
+            public String  m_jointName  = null;
+            public PMatrix m_matrix     = null;
+            public AttachmentParams(String mesh, String joint, PMatrix orientation)
+            {
+                m_meshName  = mesh;
+                m_jointName = joint;
+                m_matrix    = orientation;
+            }
+        }
+        
         String m_name ="nameless";
 
         SharedAsset m_asset = null;
         
-        String m_ModelFile = null;
+        String m_BindPoseFile = null;
         
-        String m_TextureFile = null;
+        String m_TextureFile = null; // Used for ms3d
 
         private String[] m_animations = new String[0];
+        
+        private String[] m_facialAnimations = new String[0];
 
+        private String[] m_deleteInstructions = new String[0];
+        private String[] m_loadInstructions = new String[0];
+        private String[] m_addInstructions = new String[0];
+        
+        private AttachmentParams[] m_attachmentsInstructions = new AttachmentParams[0];
+        
         private String m_baseURL = null;
         
         boolean bUseSimpleSphereModel = false;  // use this to load all avatars with a simple sphere model instead
         
-        PMatrix origin = null;
+        PMatrix origin = null; // Used for the simple sphere model
         
         public Attributes(String name) {
             m_name = name;
@@ -149,12 +170,12 @@ public abstract class Character extends Entity implements SpatialObject, Animati
             m_asset = asset;
         }
 
-        public String getModelFile() {
-            return m_ModelFile;
+        public String getBindPoseFile() {
+            return m_BindPoseFile;
         }
 
-        public void setModelFile(String ModelFile) {
-            m_ModelFile = ModelFile;
+        public void setBindPoseFile(String ModelFile) {
+            m_BindPoseFile = ModelFile;
         }
 
         public String getTextureFile() {
@@ -204,6 +225,46 @@ public abstract class Character extends Entity implements SpatialObject, Animati
 
         public void setAnimations(String[] animations) {
             this.m_animations = animations;
+        }
+
+        public String[] getFacialAnimations() {
+            return m_facialAnimations;
+        }
+
+        public void setFacialAnimations(String[] facialAnimations) {
+            this.m_facialAnimations = facialAnimations;
+        }
+
+        public String[] getAddInstructions() {
+            return m_addInstructions;
+        }
+
+        public void setAddInstructions(String[] m_addInstructions) {
+            this.m_addInstructions = m_addInstructions;
+        }
+
+        public String[] getDeleteInstructions() {
+            return m_deleteInstructions;
+        }
+
+        public void setDeleteInstructions(String[] m_deleteInstructions) {
+            this.m_deleteInstructions = m_deleteInstructions;
+        }
+
+        public String[] getLoadInstructions() {
+            return m_loadInstructions;
+        }
+
+        public void setLoadInstructions(String[] m_loadInstructions) {
+            this.m_loadInstructions = m_loadInstructions;
+        }
+
+        public AttachmentParams[] getAttachmentsInstructions() {
+            return m_attachmentsInstructions;
+        }
+
+        public void setAttachmentsInstructions(AttachmentParams[] attachmentsInstructions) {
+            this.m_attachmentsInstructions = attachmentsInstructions;
         }
     }
         
@@ -344,15 +405,15 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         m_attributes = createAttributes(name);
         m_attributes.setOrigin(origin);
         if (modelFile != null)
-            m_attributes.setModelFile(modelFile);
+            m_attributes.setBindPoseFile(modelFile);
         if (textureFile != null)
             m_attributes.setTextureFile(textureFile);
 
         if (modelIMI == null)
         {
-            if (m_attributes.getModelFile().endsWith(".ms3d"))
+            if (m_attributes.getBindPoseFile().endsWith(".ms3d"))
             {       
-                SharedAsset character = new SharedAsset(m_pscene.getRepository(), new AssetDescriptor(SharedAssetType.MS3D_SkinnedMesh, m_attributes.getModelFile()));
+                SharedAsset character = new SharedAsset(m_pscene.getRepository(), new AssetDescriptor(SharedAssetType.MS3D_SkinnedMesh, m_attributes.getBindPoseFile()));
                 AssetInitializer init = new AssetInitializer() {
                     public boolean initialize(Object asset) {
 
@@ -382,19 +443,19 @@ public abstract class Character extends Entity implements SpatialObject, Animati
                 character.setInitializer(init);
                 m_attributes.setAsset(character);
             }
-            else if (m_attributes.getModelFile().endsWith(".dae"))
+            else if (m_attributes.getBindPoseFile().endsWith(".dae"))
             {
                 URL modelURL=null;
                 try {
                     if (m_attributes.m_baseURL!=null)
-                        modelURL = new URL(m_attributes.m_baseURL + m_attributes.getModelFile());
+                        modelURL = new URL(m_attributes.m_baseURL + m_attributes.getBindPoseFile());
                 } catch (MalformedURLException ex) {
                     modelURL = null;
                 }
                 SharedAsset character;
                 
                 if (modelURL==null)
-                    character = new SharedAsset(m_pscene.getRepository(), new AssetDescriptor(SharedAssetType.COLLADA_Model, m_attributes.getModelFile()));
+                    character = new SharedAsset(m_pscene.getRepository(), new AssetDescriptor(SharedAssetType.COLLADA_Model, m_attributes.getBindPoseFile()));
                 else
                     character = new SharedAsset(m_pscene.getRepository(), new AssetDescriptor(SharedAssetType.COLLADA_Model, modelURL));
                 
@@ -407,11 +468,6 @@ public abstract class Character extends Entity implements SpatialObject, Animati
                         if (((PNode)asset).getChild(0) instanceof SkeletonNode)
                         {
                             SkeletonNode skeleton = (SkeletonNode)((PNode)asset).getChild(0);
-                            
-                            // Facial animation test
-                            AnimationState facialAnimationState = new AnimationState(1);
-                            facialAnimationState.setCurrentCycle(1);
-                            skeleton.addAnimationState(facialAnimationState);
                             
                             // Visual Scale
                             if (visualScale != 1.0f)
@@ -437,51 +493,44 @@ public abstract class Character extends Entity implements SpatialObject, Animati
                                 Instruction pRootInstruction = new Instruction();
 
                                 pRootInstruction.addInstruction(InstructionNames.setSkeleton, skeleton);
-
-//                                // flip flops, blue polo shirt, shorts!
-//                                pRootInstruction.addInstruction(InstructionNames.deleteSkinnedMesh, "Legs_LegsNudeShape");
-//                                pRootInstruction.addInstruction(InstructionNames.loadGeometry, fileProtocol + "assets/models/collada/Pants/Shorts_M/Shorts.dae");
-//                                pRootInstruction.addInstruction(InstructionNames.addSkinnedMesh, "LegsNudeShape");
-//                                pRootInstruction.addInstruction(InstructionNames.addSkinnedMesh, "MaleShortsShape");
-//                                pRootInstruction.addInstruction(InstructionNames.deleteSkinnedMesh, "LFootNudeShape");
-//                                pRootInstruction.addInstruction(InstructionNames.deleteSkinnedMesh, "RFootNudeShape");
-//                                pRootInstruction.addInstruction(InstructionNames.loadGeometry, fileProtocol + "assets/models/collada/Clothing/FlipFlopsFeet.dae");
-//                                pRootInstruction.addInstruction(InstructionNames.addSkinnedMesh, "LFootNudeShape");
-//                                pRootInstruction.addInstruction(InstructionNames.addSkinnedMesh, "RFootNudeShape");
-//                                pRootInstruction.addInstruction(InstructionNames.addSkinnedMesh, "LFlipFlopShape");
-//                                pRootInstruction.addInstruction(InstructionNames.addSkinnedMesh, "RFlipFlopShape");
-
-                                // hat sunglasses sneakers jeans (polySurface3Shape) etc
-                                pRootInstruction.addInstruction(InstructionNames.deleteSkinnedMesh, "Legs_LegsNudeShape");
-                                pRootInstruction.addInstruction(InstructionNames.loadGeometry, fileProtocol + "assets/models/collada/Pants/Jeans_M/Jeans.dae");
-                                pRootInstruction.addInstruction(InstructionNames.addSkinnedMesh, "polySurface3Shape");
-                                pRootInstruction.addInstruction(InstructionNames.deleteSkinnedMesh, "LFootNudeShape");
-                                pRootInstruction.addInstruction(InstructionNames.deleteSkinnedMesh, "RFootNudeShape");
-                                pRootInstruction.addInstruction(InstructionNames.loadGeometry, fileProtocol + "assets/models/collada/Shoes/TennisShoes_M/MaleTennisShoes.dae");
-                                pRootInstruction.addInstruction(InstructionNames.addSkinnedMesh, "TennisShoesShape");
-                                                                
+                                
+                                String [] delete = m_attributes.getDeleteInstructions();
+                                for (int i = 0; i < delete.length; i++) {
+                                    pRootInstruction.addInstruction(InstructionNames.deleteSkinnedMesh, delete[i]);
+                                }
+                                
+                                String [] load = m_attributes.getLoadInstructions();
+                                for (int i = 0; i < load.length; i++) {
+                                    pRootInstruction.addInstruction(InstructionNames.loadGeometry, fileProtocol + load[i]);
+                                }
+                                
+                                String [] add = m_attributes.getAddInstructions();
+                                for (int i = 0; i < add.length; i++) {
+                                    pRootInstruction.addInstruction(InstructionNames.addSkinnedMesh, add[i]);
+                                }
+                                
+                                Attributes.AttachmentParams [] attachments = m_attributes.getAttachmentsInstructions();
+                                for (int i = 0; i < attachments.length; i++) {
+                                    pRootInstruction.addInstruction(InstructionNames.addAttachment, attachments[i].m_meshName, attachments[i].m_jointName, attachments[i].m_matrix);
+                                }
+                                
                                 String [] anims = m_attributes.getAnimations();
                                 for (int i = 0; i < anims.length; i++) {
                                     pRootInstruction.addInstruction(InstructionNames.loadAnimation, fileProtocol + anims[i]);
                                 }
-                                
-                                // Facial animation test
-                                pRootInstruction.addInstruction(InstructionNames.loadFacialAnimation, fileProtocol + "assets/models/collada/Avatars/MaleFacialAnimation/MaleSmile.dae");
-                                pRootInstruction.addInstruction(InstructionNames.loadFacialAnimation, fileProtocol + "assets/models/collada/Avatars/MaleFacialAnimation/MaleScorn.dae");
-                                pRootInstruction.addInstruction(InstructionNames.loadFacialAnimation, fileProtocol + "assets/models/collada/Avatars/MaleFacialAnimation/MaleFrown.dae");
-                                
+                                                            
+                                String [] facialAnims = m_attributes.getFacialAnimations();
+                                for (int i = 0; i < facialAnims.length; i++) {
+                                    pRootInstruction.addInstruction(InstructionNames.loadFacialAnimation, fileProtocol + facialAnims[i]);
+                                }
                                 
                                 pProcessor.execute(pRootInstruction);
-                                
-//                                // Test
-//                                int cycleIndex = skeleton.getAnimationComponent().findCycle("Male_FloorGetup", 0);
-//                                
-//                                System.out.println(skeleton.getAnimationGroup().getCycle(cycleIndex).getStartTime() + "    " + skeleton.getAnimationGroup().getCycle(cycleIndex).getEndTime());
-//                                
-//                                skeleton.getAnimationGroup().getCycle(cycleIndex).setEndTime(   (skeleton.getAnimationGroup().getCycle(cycleIndex).getEndTime() - 1.0f)    );
-//                                
-//                                System.out.println("ddddddddddddddddddddddddddddddddddddddddddddddddddddddddfgsgsgsdfgsdf   " + cycleIndex);
-//                                System.out.println(skeleton.getAnimationGroup().getCycle(cycleIndex).getStartTime() + "    " + skeleton.getAnimationGroup().getCycle(cycleIndex).getEndTime());
+                            
+                                // Facial animation state is designated to id 1
+                                AnimationState facialAnimationState = new AnimationState(1);
+                                facialAnimationState.setCurrentCycle(1); // 0 is "All Cycles"
+                                facialAnimationState.setCurrentCyclePlaybackMode(PlaybackMode.PlayOnce);
+                                skeleton.addAnimationState(facialAnimationState);
                             }
                             
                             try {
@@ -539,7 +588,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
      */
     protected void initScene(ArrayList<ProcessorComponent> processors)
     {
-//        if (m_attributes.getModelFile().endsWith(".dae"))
+//        if (m_attributes.getBindPoseFile().endsWith(".dae"))
 //            m_pscene.setUseRepository(false);
         
         if(m_attributes.isUseSimpleSphereModel())

@@ -32,7 +32,7 @@ public class Adam extends Ninja
     {
         public AdamAttributes(String name) {
             super(name);
-            setModelFile("assets/models/ms3d/Adam.ms3d");
+            setBindPoseFile("assets/models/ms3d/Adam.ms3d");
             setTextureFile("assets/textures/AdamDiffuse.png");
         }
     }

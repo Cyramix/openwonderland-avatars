@@ -39,7 +39,7 @@ public class Ninja extends imi.character.Character
     {
         public NinjaAttributes(String name) {
             super(name);
-            setModelFile("assets/models/ms3d/ninja.ms3d");
+            setBindPoseFile("assets/models/ms3d/ninja.ms3d");
             setTextureFile("assets/textures/checkerboard2.PNG");
         }
     }

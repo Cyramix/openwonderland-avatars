@@ -18,12 +18,17 @@
 package imi.loaders.collada;
 
 
+import imi.scene.PJoint;
 import imi.scene.PMatrix;
+import imi.scene.PNode;
 import imi.scene.PScene;
+import imi.scene.PTransform;
 import imi.scene.polygonmodel.PPolygonMesh;
+import imi.scene.polygonmodel.PPolygonMeshInstance;
 import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
 import imi.scene.polygonmodel.skinned.PPolygonSkinnedMesh;
 import imi.scene.polygonmodel.skinned.PPolygonSkinnedMeshInstance;
+import imi.scene.polygonmodel.skinned.SkinnedMeshJoint;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Iterator;
@@ -106,6 +111,13 @@ public class InstructionProcessor
                         System.out.println("COLLADA configuration ERROR: was not able to ADD a skinned mesh!");
                 }
                 break;
+                case addAttachment:
+                {
+                    Object [] array = (Object[])pInstruction.getData();
+                    if (!addAttachment(array))
+                        System.out.println("COLLADA configuration ERROR: was not able to ADD an ATTACHMENT!");
+                }
+                break;
                 case deleteSkinnedMesh:
                 {
                     String skinnedMeshName = pInstruction.getDataAsString();
@@ -166,6 +178,35 @@ public class InstructionProcessor
                 executeInstruction(loadingPScene, pChildInstruction);
             }
         }
+    }
+    
+    private boolean addAttachment(Object[] array) 
+    {
+        if (m_skeleton == null)
+            return false;
+
+        // Find the mesh
+        String meshName = (String)array[0];
+        PNode node = m_loadingPScene.findChild(meshName);
+        PPolygonMeshInstance mesh = null;
+        if (node instanceof PPolygonMeshInstance)
+            mesh = (PPolygonMeshInstance)node;
+        if (mesh == null)
+            return false;
+        mesh.getTransform().setLocalMatrix(new PMatrix());
+        
+        // Find the joint
+        String jointName = (String)array[1];
+        SkinnedMeshJoint joint = m_skeleton.findSkinnedMeshJoint(jointName);
+        if (joint == null)
+            return false;
+
+        // Create new joint
+        PJoint newJoint = new PJoint(meshName + " joint", new PTransform((PMatrix)array[2]));
+        newJoint.addChild(mesh);
+        joint.addChild(newJoint);
+        
+        return true;
     }
     
     private boolean addSkinnedMesh(String skinnedMeshName) 

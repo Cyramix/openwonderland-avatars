@@ -18,6 +18,7 @@
 package imi.loaders.collada;
 
 
+import imi.scene.PMatrix;
 import imi.scene.PNode;
 
 
@@ -37,6 +38,7 @@ public class Instruction extends PNode
         loadGeometry,
         deleteSkinnedMesh,
         addSkinnedMesh,
+        addAttachment,
         loadAnimation,
         loadFacialAnimation,
         setSkeleton,
@@ -79,8 +81,19 @@ public class Instruction extends PNode
         return(pInstruction);
     }
 
-
-
+    public void addInstruction(InstructionNames instruction, String meshName, String jointName, PMatrix oreintation) 
+    {
+        Instruction inst = new Instruction(instruction);
+        
+        Object[] array = new Object [3];
+        array[0] = meshName;
+        array[1] = jointName;
+        array[2] = oreintation;
+        inst.setData(array);
+        
+        addChild(inst);
+    }
+    
     public InstructionNames getInstruction()
     {
         return(m_Instruction);
