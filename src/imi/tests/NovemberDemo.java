@@ -17,8 +17,13 @@
  */
 package imi.tests;
 
+import com.jme.math.Vector3f;
+import imi.character.ninja.NinjaAvatar;
+import imi.character.objects.ObjectCollection;
 import imi.environments.ColladaEnvironment;
 import imi.scene.PScene;
+import imi.scene.processors.JSceneEventProcessor;
+import imi.utils.input.NinjaControlScheme;
 import java.util.ArrayList;
 import org.jdesktop.mtgame.ProcessorComponent;
 import org.jdesktop.mtgame.WorldManager;
@@ -50,7 +55,43 @@ public class NovemberDemo extends DemoBase
             ArrayList<ProcessorComponent> processors)
     {
         // create the backdrop
-        theWorld = new ColladaEnvironment(wm, "assets/models/collada/Environments/BizObj/BusinessObjectsCenter.dae", WorldName);
+        //theWorld = new ColladaEnvironment(wm, "assets/models/collada/Environments/BizObj/BusinessObjectsCenter.dae", WorldName);
+
+
+        int numberOfAvatars = 2;
+        // make an object collection and a few chairs
+        // Create one object collection for all to use (for testing)
+        ObjectCollection objects = new ObjectCollection("Musical Chairs Objects", wm);
+        objects.generateChairs(new Vector3f(20.0f, 0.0f, 20.0f), 20.0f, numberOfAvatars-1);
+
+
+         // Create ninja input scheme
+        NinjaControlScheme control = (NinjaControlScheme)((JSceneEventProcessor)wm.getUserData(JSceneEventProcessor.class)).setDefault(new NinjaControlScheme(null));
+        control.setCommandEntireTeam(true);
+        control.setObjectCollection(objects);
+
+        // Create avatar
+        NinjaAvatar avatar = new NinjaAvatar("Avatar", wm);
+        avatar.selectForInput();
+        control.getNinjaTeam().add(avatar);
+        avatar.setObjectCollection(objects);
+
+
+        // Make some more avatars
+        float zStep = 1.0f;
+        for (int i = 1; i < numberOfAvatars; i++)
+        {
+            cloneAvatar(control, objects, wm, 0.0f, 0.0f, zStep);
+            zStep += 5.0f;
+        }
+    }
+
+    private void cloneAvatar(NinjaControlScheme control, ObjectCollection objects, WorldManager wm, float xOffset, float yOffset, float zOffset)
+    {
+        NinjaAvatar avatar = new NinjaAvatar("Avatar Clone " + xOffset+yOffset+zOffset, wm);
+        avatar.getModelInst().getTransform().getLocalMatrix(true).setTranslation(new Vector3f(xOffset, yOffset, zOffset));
+        control.getNinjaTeam().add(avatar);
+        avatar.setObjectCollection(objects);
     }
 
 }

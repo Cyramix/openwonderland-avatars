@@ -83,11 +83,11 @@ public class AnimationComponent
      */
     public boolean transitionTo(int cycleIndex, AnimationState state, int animationGroupIndex, boolean bReverse)
     {
-        if (cycleIndex == state.getCurrentCycle() || cycleIndex == state.getTransitionCycle())
-            return false;
-        
         if(cycleIndex == -1)
             return false;
+        if (cycleIndex == state.getTransitionCycle()) // Already transitioning there!
+            return false;
+        
         
         state.setTimeInTransition(0.0f);
         state.setTransitionCycle(cycleIndex);
