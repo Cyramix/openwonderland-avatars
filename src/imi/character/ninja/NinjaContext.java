@@ -41,6 +41,8 @@ import imi.character.objects.LocationNode;
 import imi.character.objects.SpatialObject;
 import imi.character.statemachine.GameContext;
 import imi.character.statemachine.GameState.Action;
+import imi.scene.animation.AnimationComponent.PlaybackMode;
+import imi.scene.animation.TransitionCommand;
 import java.util.Hashtable;
 
 /**
@@ -201,18 +203,18 @@ public class NinjaContext extends GameContext
             punch.setAnimationSetBoolean(false);
             
             testHack++;
-            if (testHack > 2) // 11
+            if (testHack > 3) // 11
                 testHack = 0;
             switch (testHack)
             {
                 case 0:
-                    ninja.getSkeleton().getAnimationState(1).setCurrentCycle(2);
+                    ninja.initiateFacialAnimation(2, 4.0f, 1.5f);
                     break;
                 case 1:
-                    ninja.getSkeleton().getAnimationState(1).setCurrentCycle(3);
+                    ninja.initiateFacialAnimation(3, 4.0f, 1.5f);
                     break;
                 case 2:
-                    ninja.getSkeleton().getAnimationState(1).setCurrentCycle(1);
+                    ninja.initiateFacialAnimation(1, 1.0f, 0.5f);
                     break;
 //                case 0:
 //                    punch.setAnimationName("Male_Wave");

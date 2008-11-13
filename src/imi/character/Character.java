@@ -66,6 +66,8 @@ import imi.scene.PNode;
 import imi.scene.animation.AnimationComponent.PlaybackMode;
 import imi.scene.animation.AnimationListener;
 import imi.scene.animation.AnimationState;
+import imi.scene.animation.TransitionCommand;
+import imi.scene.animation.TransitionQueue;
 import imi.scene.boundingvolumes.PSphere;
 import imi.scene.polygonmodel.PPolygonMesh;
 import imi.scene.polygonmodel.PPolygonMeshInstance;
@@ -110,6 +112,8 @@ public abstract class Character extends Entity implements SpatialObject, Animati
     
     protected ObjectCollection m_objectCollection = null;
     protected CharacterAnimationProcessor m_AnimationProcessor = null;
+    
+    protected TransitionQueue m_facialAnimationQ = null;
         
     public class Attributes
     {
@@ -525,12 +529,6 @@ public abstract class Character extends Entity implements SpatialObject, Animati
                                 }
                                 
                                 pProcessor.execute(pRootInstruction);
-                            
-                                // Facial animation state is designated to id 1
-                                AnimationState facialAnimationState = new AnimationState(1);
-                                facialAnimationState.setCurrentCycle(1); // 0 is "All Cycles"
-                                facialAnimationState.setCurrentCyclePlaybackMode(PlaybackMode.PlayOnce);
-                                skeleton.addAnimationState(facialAnimationState);
                             }
                             
                             try {
@@ -791,11 +789,34 @@ public abstract class Character extends Entity implements SpatialObject, Animati
             m_skeleton   = (SkeletonNode)m_modelInst.getChild(0);
             m_skeleton.getAnimationState().addListener(this);
             
-            //m_skeleton.addAnimationState(new AnimationState(1));
-            //m_skeleton.getAnimationState(1).setCurrentCycle(-1);
+            // Facial animation state is designated to id 1
+            AnimationState facialAnimationState = new AnimationState(1);
+            facialAnimationState.setCurrentCycle(1); // 0 is "All Cycles"
+            facialAnimationState.setCurrentCyclePlaybackMode(PlaybackMode.PlayOnce);
+            facialAnimationState.setAnimationSpeed(0.1f);
+            m_skeleton.addAnimationState(facialAnimationState);
+            m_facialAnimationQ = new TransitionQueue(m_skeleton, 1);
             
             m_initalized = true;
         }
+    }
+    
+    public void initiateFacialAnimation(String cycleName, float fTimeIn, float fTimeOut) 
+    {
+        if (m_facialAnimationQ == null)
+            return;   
+        
+        int cycle = m_skeleton.getAnimationGroup(1).findAnimationCycle(cycleName);
+        if (cycle != -1)
+            initiateFacialAnimation(cycle, fTimeIn, fTimeOut);
+    }
+    
+    public void initiateFacialAnimation(int cycleIndex, float fTimeIn, float fTimeOut)
+    {
+        if (m_facialAnimationQ == null)
+            return;
+        m_facialAnimationQ.addTransition(new TransitionCommand(cycleIndex, fTimeIn, PlaybackMode.PlayOnce, false));
+        m_facialAnimationQ.addTransition(new TransitionCommand(cycleIndex, fTimeOut, PlaybackMode.PlayOnce, true));
     }
     
     /**
@@ -941,6 +962,10 @@ public abstract class Character extends Entity implements SpatialObject, Animati
     public void receiveAnimationMessage(AnimationMessageType message, int stateID)
     {
         m_context.notifyAnimationMessage(message, stateID);
+    }
+
+    public TransitionQueue getFacialAnimationQ() {
+        return m_facialAnimationQ;
     }
 
     

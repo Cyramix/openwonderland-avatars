@@ -66,8 +66,7 @@ public class TransitionQueue implements AnimationListener
             return;
 
         // Is there a state to operate on?
-        AnimationState state = m_target.getAnimationState();
-        if (state == null)
+        if (m_state == null)
             return;
         
         /**
@@ -75,22 +74,22 @@ public class TransitionQueue implements AnimationListener
          * reason to enqueue this command. Otherwise we place it on the queue
          * to wait its turn.
          */
-        if (m_target.getAnimationState().isTransitioning())
+        if (m_state.isTransitioning())
             m_commandQueue.enqueue(newCommand);
         else // Do it now!
         {
             AnimationCycle newCycle = m_target.getAnimationComponent().getGroup().getCycle(newCommand.getAnimationIndex());
-            state.setTransitionCycle(newCommand.getAnimationIndex());
+            m_state.setTransitionCycle(newCommand.getAnimationIndex());
             
             if (newCommand.isReverse())
-                state.setTransitionCycleTime(newCycle.getEndTime());
+                m_state.setTransitionCycleTime(newCycle.getEndTime());
             else
-                state.setTransitionCycleTime(newCycle.getStartTime());
+                m_state.setTransitionCycleTime(newCycle.getStartTime());
 
-            state.setTransitionDuration(newCommand.getTransitionLength());
-            state.setTransitionReverseAnimation(newCommand.isReverse());
-            state.setTransitionPlaybackMode(newCommand.getPlaybackMode());
-            state.setTimeInTransition(0.0f);
+            m_state.setTransitionDuration(newCommand.getTransitionLength());
+            m_state.setTransitionReverseAnimation(newCommand.isReverse());
+            m_state.setTransitionPlaybackMode(newCommand.getPlaybackMode());
+            m_state.setTimeInTransition(0.0f);
         }
     }
     
@@ -138,16 +137,14 @@ public class TransitionQueue implements AnimationListener
         TransitionCommand nextCommand = m_commandQueue.dequeue();
         
         if (nextCommand != null && isTargetSet() == true) // if there is a command to process...
-        {
-            AnimationState state = m_target.getAnimationState();
-            
-            if (state != null) // Is there a state set for this fellow yet?
+        {   
+            if (m_state != null) // Is there a state set for this fellow yet?
             {
-                state.setTransitionCycle(nextCommand.getAnimationIndex());
-                state.setTransitionDuration(nextCommand.getTransitionLength());
-                state.setTransitionReverseAnimation(nextCommand.isReverse());
-                state.setTransitionPlaybackMode(nextCommand.getPlaybackMode());
-                state.setTimeInTransition(0.0f);
+                m_state.setTransitionCycle(nextCommand.getAnimationIndex());
+                m_state.setTransitionDuration(nextCommand.getTransitionLength());
+                m_state.setTransitionReverseAnimation(nextCommand.isReverse());
+                m_state.setTransitionPlaybackMode(nextCommand.getPlaybackMode());
+                m_state.setTimeInTransition(0.0f);
             }
             else
                 Logger.getLogger(this.getClass().toString()).log(Level.FINE, "Animated target had no animation state!");
@@ -159,11 +156,11 @@ public class TransitionQueue implements AnimationListener
         if (m_commandQueue == null || m_commandQueue.isEmpty())
             return; // No relevance
         // dump debug info
-        System.out.println("Received an animation message: " + message.toString());
+        //System.out.println("Received an animation message: " + message.toString());
         // next command
-        TransitionCommand command = m_commandQueue.peek();
-        if (command != null)
-            System.out.println("Next command is: " + command.toString());
+//        TransitionCommand command = m_commandQueue.peek();
+//        if (command != null)
+//            System.out.println("Next command is: " + command.toString());
         switch (message)
         {
             case EndOfCycle:

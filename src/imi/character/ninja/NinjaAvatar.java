@@ -128,7 +128,7 @@ public class NinjaAvatar extends Ninja
                     setAddInstructions(add.toArray(new String[add.size()]));
                     
                     ArrayList<AttachmentParams> attachments = new ArrayList<AttachmentParams>();
-                    attachments.add(new AttachmentParams("S_Pt_left", "Head", new PMatrix(new Vector3f(0.0f,(float) Math.toRadians(180), 0.0f), new Vector3f(1.0f, 1.2f, 1.0f), Vector3f.ZERO)));
+                    attachments.add(new AttachmentParams("Hair_ShavedFlatTop", "Head", new PMatrix(new Vector3f(0.0f,(float) Math.toRadians(180), 0.0f), new Vector3f(1.0f, 1.2f, 1.0f), Vector3f.ZERO)));
                     setAttachmentsInstructions(attachments.toArray(new AttachmentParams[attachments.size()]));
                 }
                 break;

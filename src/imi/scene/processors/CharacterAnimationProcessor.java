@@ -87,6 +87,7 @@ public class CharacterAnimationProcessor extends ProcessorComponent
         // Assuming a one to one relationship between groups and states,
         // each AnimationState is holding state for the animation stored in 
         // that same AnimationGroup index
+        // Current groups in use: 0 - full body animations, 1 - face only animations
         AnimationState state = null;
         AnimationGroup group = null;
         int numberOfGroups = m_animated.getAnimationComponent().getGroups().size();

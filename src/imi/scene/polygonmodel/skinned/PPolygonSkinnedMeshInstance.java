@@ -158,9 +158,6 @@ public class PPolygonSkinnedMeshInstance extends PPolygonMeshInstance
         if (m_pSkeletonNode == null)
             return m_instance;
         
-        m_pSkeletonNode.setDirty(true, true);
-
-
         if (m_InverseBindPose == null) // Initialize the bind pose by querying the skeleton for its bind pose
             m_InverseBindPose = m_pSkeletonNode.getInverseBindPose(getInfluenceIndices());  // the group's transform is ignored
         // Retrieve the collection of influences in their current pose
@@ -175,7 +172,7 @@ public class PPolygonSkinnedMeshInstance extends PPolygonMeshInstance
             {
                 PMatrix matrix = new PMatrix(matrixStack[i]);
                 matrix.mul(m_InverseBindPose[i]);
-                
+                postAnimationMatrixModifier(matrix, i);
                 float [] matrixFloats = matrix.getFloatArray();
                 for(int j = 0; j < 16; j++)
                 {
@@ -328,5 +325,10 @@ public class PPolygonSkinnedMeshInstance extends PPolygonMeshInstance
             }
         }
         return false;
+    }
+
+    protected void postAnimationMatrixModifier(PMatrix matrix, int index) 
+    {
+        
     }
 }

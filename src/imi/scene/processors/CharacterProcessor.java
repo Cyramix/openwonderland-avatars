@@ -44,7 +44,7 @@ public class CharacterProcessor extends ProcessorComponent
     @Override
     public void compute(ProcessorArmingCollection collection) {
         // look at the origin you creepy eyeballs!
-        //performEyeballLookAt(Vector3f.ZERO); <-- not yet functional, need some inversion or something
+        //performEyeballLookAt(Vector3f.ZERO); //<-- not yet functional, need some inversion or something
     }
 
     @Override
@@ -77,13 +77,15 @@ public class CharacterProcessor extends ProcessorComponent
                 targetInWorldSpace,
                 leftEyeJoint.getTransform().getWorldMatrix(false).getTranslation(),
                 Vector3f.UNIT_Y);
-        leftEyeJoint.getTransform().getLocalMatrix(true).set(leftEyeWorldXForm);
+        leftEyeJoint.getTransform().getWorldMatrix(true).set(leftEyeWorldXForm);
+        leftEyeJoint.getTransform().setDirtyWorldMat(false);
         // Right eyeball
         PMatrix rightEyeWorldXForm = PMathUtils.lookAt(
                 targetInWorldSpace,
                 rightEyeJoint.getTransform().getWorldMatrix(false).getTranslation(),
                 Vector3f.UNIT_Y);
-        rightEyeJoint.getTransform().getLocalMatrix(true).set(rightEyeWorldXForm);
+        rightEyeJoint.getTransform().getWorldMatrix(true).set(rightEyeWorldXForm);
+        rightEyeJoint.getTransform().setDirtyWorldMat(false);
     }
 
 }
