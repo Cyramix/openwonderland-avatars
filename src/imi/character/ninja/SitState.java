@@ -36,18 +36,18 @@ public class SitState extends GameState
     Chair chair = null;
     
     private float counter = 0.0f;
-    private float sittingAnimationTime = 0.4f;
+    private float sittingAnimationTime = 0.7f;
     
     private boolean bIdleSittingAnimationSet = false;
-    private float idleSittingTransitionDuration = 0.2f;
+    private float idleSittingTransitionDuration = 0.3f;
     private float idleSittingAnimationSpeed = 1.0f;
     private String idleSittingAnimationName = "Block";
     
     private boolean bGettingUp = false;
     private boolean bGettingUpAnimationSet = false;
-    private float gettingUpAnimationTime = 0.4f;
-    private float gettingUpTransitionDuration = 0.2f;
-    private float gettingUpAnimationSpeed = 0.5f;
+    private float gettingUpAnimationTime = 0.8f;
+    private float gettingUpTransitionDuration = 0.05f;
+    private float gettingUpAnimationSpeed = 4.0f;
     private String gettingUpAnimationName = "PickUp";
                     
     public SitState(NinjaContext master)
@@ -57,8 +57,8 @@ public class SitState extends GameState
         
         setName("Sit");
         setAnimationName("PickUp");
-        setTransitionDuration(0.2f);
-        setAnimationSpeed(0.5f);
+        setTransitionDuration(0.05f);
+        setAnimationSpeed(3.0f);
     }
     
     /**

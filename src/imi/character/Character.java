@@ -63,6 +63,7 @@ import imi.loaders.repository.AssetInitializer;
 import imi.loaders.repository.SharedAsset;
 import imi.loaders.repository.SharedAsset.SharedAssetType;
 import imi.scene.PNode;
+import imi.scene.animation.AnimationComponent.PlaybackMode;
 import imi.scene.animation.AnimationListener;
 import imi.scene.animation.AnimationState;
 import imi.scene.boundingvolumes.PSphere;
@@ -407,6 +408,11 @@ public abstract class Character extends Entity implements SpatialObject, Animati
                         {
                             SkeletonNode skeleton = (SkeletonNode)((PNode)asset).getChild(0);
                             
+                            // Facial animation test
+                            AnimationState facialAnimationState = new AnimationState(1);
+                            facialAnimationState.setCurrentCycle(1);
+                            skeleton.addAnimationState(facialAnimationState);
+                            
                             // Visual Scale
                             if (visualScale != 1.0f)
                             {
@@ -453,16 +459,17 @@ public abstract class Character extends Entity implements SpatialObject, Animati
                                 pRootInstruction.addInstruction(InstructionNames.deleteSkinnedMesh, "RFootNudeShape");
                                 pRootInstruction.addInstruction(InstructionNames.loadGeometry, fileProtocol + "assets/models/collada/Shoes/TennisShoes_M/MaleTennisShoes.dae");
                                 pRootInstruction.addInstruction(InstructionNames.addSkinnedMesh, "TennisShoesShape");
-                                
-                                
-                                // Hack test
-                                //pRootInstruction.addInstruction(InstructionNames.loadFacialAnimation, fileProtocol + "assets/models/collada/Avatars/MaleFacialAnimation/MaleSmile.dae");
-                                
-
+                                                                
                                 String [] anims = m_attributes.getAnimations();
                                 for (int i = 0; i < anims.length; i++) {
                                     pRootInstruction.addInstruction(InstructionNames.loadAnimation, fileProtocol + anims[i]);
                                 }
+                                
+                                // Facial animation test
+                                pRootInstruction.addInstruction(InstructionNames.loadFacialAnimation, fileProtocol + "assets/models/collada/Avatars/MaleFacialAnimation/MaleSmile.dae");
+                                pRootInstruction.addInstruction(InstructionNames.loadFacialAnimation, fileProtocol + "assets/models/collada/Avatars/MaleFacialAnimation/MaleScorn.dae");
+                                pRootInstruction.addInstruction(InstructionNames.loadFacialAnimation, fileProtocol + "assets/models/collada/Avatars/MaleFacialAnimation/MaleFrown.dae");
+                                
                                 
                                 pProcessor.execute(pRootInstruction);
                                 

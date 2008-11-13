@@ -103,7 +103,7 @@ public class CharacterAnimationProcessor extends ProcessorComponent
             else if (!state.isPauseAnimation())
             {
                 state.advanceAnimationTime(fAnimationTimeStep);
-                group.calculateFrame(m_animated);
+                group.calculateFrame(m_animated, i);
             }
         }
     }

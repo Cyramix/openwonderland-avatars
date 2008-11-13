@@ -118,7 +118,7 @@ public class AnimationGroup
      * Generates the current pose solution based on the specified state
      * of the animated thing.
      * @param animated That which is animated
-     * @param index The index of the animation state to use for solving
+     * @param animationStateIndex The animationStateIndex of the animation state to use for solving
      */
     private void calculateFrame(AnimationState state, Animated animated)
     {  
@@ -187,9 +187,9 @@ public class AnimationGroup
         }
     }
     
-    public synchronized void calculateFrame(Animated animated, int index)
+    public synchronized void calculateFrame(Animated animated, int animationStateIndex)
     {
-        AnimationState state = animated.getAnimationState(index);
+        AnimationState state = animated.getAnimationState(animationStateIndex);
         calculateFrame(state, animated);
     }
     
@@ -335,7 +335,7 @@ public class AnimationGroup
     /**
      * Find an animation cycle by name
      * @param cycleName
-     * @return cycle index
+     * @return cycle animationStateIndex
      */
     public int findAnimationCycle(String cycleName) 
     {
@@ -363,9 +363,9 @@ public class AnimationGroup
     }
 
     /**
-     * Get an animation cycle by index
-     * @param index
-     * @return m_cycles[index] (animation at said index)
+     * Get an animation cycle by animationStateIndex
+     * @param animationStateIndex
+     * @return m_cycles[animationStateIndex] (animation at said animationStateIndex)
      */
     public AnimationCycle getCycle(int index)
     {
@@ -378,7 +378,7 @@ public class AnimationGroup
 
     /**
      * Gets the last animation cycle.
-     * @return m_cycles[index] (animation at said index)
+     * @return m_cycles[animationStateIndex] (animation at said animationStateIndex)
      */
     public AnimationCycle getLastCycle()
     {
@@ -536,9 +536,9 @@ public class AnimationGroup
                 addJointChannel(pAnimationGroup, pJointChannel, fEndOfInitialKeyframes);
         }
         
-        calculateDuration();
+        //calculateDuration();
 
-        updateDefaultCycle();
+        updateDefaultCycle(); // calls calculateDuration()
         
         pAnimationGroup.clear();
     }

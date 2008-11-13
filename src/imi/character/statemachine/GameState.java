@@ -170,7 +170,7 @@ public class GameState extends NamedUpdatableObject
      */
     protected void stateEnter(GameContext owner)
     {
-        System.out.println(getName() + " enter");
+        //System.out.println(getName() + " enter");
         if (logger.isLoggable(Level.FINE))
             logger.fine(getName() + " Enter");
         

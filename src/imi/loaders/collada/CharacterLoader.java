@@ -27,7 +27,8 @@ import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
 import imi.scene.animation.AnimationComponent;
 import imi.scene.animation.AnimationGroup;
 import imi.loaders.collada.Collada;
-import imi.scene.polygonmodel.skinned.PPolygonSkinnedMesh;
+import imi.scene.animation.AnimationCycle;
+import imi.scene.animation.AnimationGroup;
 import java.net.URL;
 
 
@@ -128,14 +129,25 @@ public class CharacterLoader
     {   
         AnimationComponent pAnimationComponent = pSkeletonNode.getAnimationComponent();
         
-        //  Append to the end of first AnimationGroup.
-        if (pAnimationComponent.getGroups().size() > 1)
+        //  Append to the end of the AnimationGroup.
+        if (pAnimationComponent.getGroups().size() > groupIndex)
         {
             AnimationGroup group = pAnimationComponent.getGroups().get(groupIndex);
             AnimationGroup lastGroup = pAnimationComponent.getGroups().get(pAnimationComponent.getGroups().size() - 1);
             
-            group.appendAnimationGroup(lastGroup);
-            pAnimationComponent.getGroups().remove(lastGroup);
+            if (group != lastGroup)
+            {
+                group.appendAnimationGroup(lastGroup);
+                pAnimationComponent.getGroups().remove(lastGroup);
+            }
+        }
+        else
+        {
+            System.out.println("The animation where loaded in the wrong order, facial animation must be loaded last");
+//            AnimationGroup newGroup = new AnimationGroup();
+//            newGroup.addCycle(new AnimationCycle("All Cycles", 0.0f, 0.0f));
+//            pAnimationComponent.getGroups().add(newGroup);
+//            mergeLastToAnimationGroup(pSkeletonNode, groupIndex);
         }
     }
 

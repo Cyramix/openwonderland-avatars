@@ -39,7 +39,7 @@ public class PunchState extends GameState
         setName("Punch");
         setAnimationName("Punch");
         setTransitionDuration(0.2f);
-        setAnimationSpeed(1.5f);
+        setAnimationSpeed(1.0f);
     }
     
     /**
