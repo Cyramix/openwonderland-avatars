@@ -326,12 +326,11 @@ public class PColladaMaterial
             String textureSamplerName = pTexture.getTexture();
 
             String textureFilename = getTextureFilename(textureSamplerName);
-            //  Returns a string containing just the relevant portion of the filename.
-            // let's assume for now that it is a relative and correct path
-            //String shortTextureFilename = FileUtils.getShortFilename(textureFilename);
-
-            //return shortTextureFilename;
-            return textureFilename;
+            //  Comment out the two lines below and uncomment the return statement
+            // in order to use relative paths
+            String shortTextureFilename = FileUtils.getShortFilename(textureFilename);
+            return shortTextureFilename;
+            //return textureFilename;
         }
         else if (pAttribute.getColor() != null)
         {
