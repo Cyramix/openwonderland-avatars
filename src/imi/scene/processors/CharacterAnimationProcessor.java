@@ -38,7 +38,8 @@ public class CharacterAnimationProcessor extends ProcessorComponent
     private Animated                m_animated  = null;
     private PPolygonModelInstance   m_modelInst = null;
 
-    private float fAnimationTimeStep = 0.01f;
+    private double oldTime = 0.0f;
+    private float deltaTime = 0.0f;
     
     private boolean bEnable = true;
 
@@ -62,7 +63,11 @@ public class CharacterAnimationProcessor extends ProcessorComponent
     {
         if (!bEnable)
             return;
-        
+
+        double newTime = System.nanoTime() / 1000000000.0;
+        deltaTime = (float) (newTime - oldTime);
+        oldTime = newTime;
+
         // If the modelInst constructor was used 
         if (m_animated == null && m_modelInst != null)
         {
@@ -103,7 +108,10 @@ public class CharacterAnimationProcessor extends ProcessorComponent
             }
             else if (!state.isPauseAnimation())
             {
-                state.advanceAnimationTime(fAnimationTimeStep);
+                // The new awesome way
+                //state.advanceAnimationTime(deltaTime);
+                // old lame way
+                state.advanceAnimationTime(1 / 60.0f);
                 group.calculateFrame(m_animated, i);
             }
         }
@@ -120,22 +128,6 @@ public class CharacterAnimationProcessor extends ProcessorComponent
     public void initialize() 
     {
         setArmingCondition(new NewFrameCondition(this));
-    }
-
-    /**
-     * The amount of time to advance every frame
-     * @return
-     */
-    public float getAnimationTimeStep() {
-        return fAnimationTimeStep;
-    }
-
-    /**
-     * The amount of time to advance every frame
-     * @return
-     */
-    public void setAnimationTimeStep(float fAnimationTimeStep) {
-        this.fAnimationTimeStep = fAnimationTimeStep;
     }
 
     public boolean isEnable() {

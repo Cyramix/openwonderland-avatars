@@ -31,7 +31,8 @@ import org.jdesktop.mtgame.ProcessorComponent;
  */
 public class CharacterProcessor extends ProcessorComponent
 {
-    private float deltaTime = 1.0f / 60.0f;
+    private float deltaTime = 0.0f;
+    private double oldTime = 0.0f;
     
     private imi.character.Character character = null;
     
@@ -43,13 +44,19 @@ public class CharacterProcessor extends ProcessorComponent
     
     @Override
     public void compute(ProcessorArmingCollection collection) {
+        double newTime = System.nanoTime() / 1000000000.0;
+        deltaTime = (float) (newTime - oldTime);
+        oldTime = newTime;
         // look at the origin you creepy eyeballs!
         //performEyeballLookAt(Vector3f.ZERO); //<-- not yet functional, need some inversion or something
     }
 
     @Override
     public void commit(ProcessorArmingCollection collection) {
-        character.update(deltaTime);
+        // The new sweet way
+//        character.update(deltaTime);
+        // The old lame way
+        character.update(1 / 60.0f);
     }
 
     @Override
