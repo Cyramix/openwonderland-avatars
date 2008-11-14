@@ -141,16 +141,6 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
             }
         });
         
-        addPropertyChangeListener(new PropertyChangeListener() {
-
-            public void propertyChange(PropertyChangeEvent arg0) {
-                if(arg0.getPropertyName().equals("NOTOOLS")) {
-                    java.awt.Frame[] frames = getFrames();
-                    frames[0].setSize(((Integer)arg0.getOldValue()).intValue(), ((Integer)arg0.getNewValue()).intValue());
-                }
-            }
-        });
-        
         System.out.println("Current Directory: " + System.getProperty("user.dir"));
         
         m_worldManager = new WorldManager("DemoWorld");

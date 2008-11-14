@@ -193,7 +193,7 @@ public class JPanel_ServerBrowser extends javax.swing.JPanel {
 
         if (typeFilter.equals("1")) {
             for (int i = 0; i < m_data.size(); i++) {
-                if (m_data.get(i)[4].equals("1") || m_data.get(i)[4].equals("2"))
+                if (m_data.get(i)[4].equals("0") || m_data.get(i)[4].equals("1") || m_data.get(i)[4].equals("2"))
                     genderFiltered.add(m_data.get(i));
             }
             m_data.clear();
@@ -201,7 +201,7 @@ public class JPanel_ServerBrowser extends javax.swing.JPanel {
             genderFiltered.clear();
         } else  if (typeFilter.equals("2")) {
             for (int i = 0; i < m_data.size(); i++) {
-                if (!m_data.get(i)[4].equals("1") && !m_data.get(i)[4].equals("2"))
+                if (!m_data.get(i)[4].equals("0") && !m_data.get(i)[4].equals("1") && !m_data.get(i)[4].equals("2"))
                     genderFiltered.add(m_data.get(i));
             }
             m_data.clear();
@@ -272,7 +272,7 @@ public class JPanel_ServerBrowser extends javax.swing.JPanel {
             query += m_modelInfo[5].toString();
             ArrayList<String[]> ref = loadSQLData(query);
 
-            if (m_modelInfo[4].equals("1") || m_modelInfo[4].equals("2"))
+            if (m_modelInfo[4].equals("0") || m_modelInfo[4].equals("1") || m_modelInfo[4].equals("2"))
                 return;
             
             m_meshref = new String[ref.size()];
@@ -342,6 +342,9 @@ public class JPanel_ServerBrowser extends javax.swing.JPanel {
 
     public void executeLoad() {
         if (jTable1.getSelectedRow() == -1)
+            return;
+
+        if (!jButton_Load.isEnabled())
             return;
 
         setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
