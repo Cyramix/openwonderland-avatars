@@ -571,8 +571,7 @@ public class SceneEssentials {
                 colladaAsset.setUserData(new ColladaLoaderParams(false, true, false, false, 3, data[0], null));
                 modelInst = currentPScene.addModelInstance(data[0], colladaAsset, new PMatrix());
             } else {
-                // Add MS3D_Mesh Onto Model
-                
+                addDAEMeshURLToModelA(data);
             }
         } else {
             try {
@@ -637,7 +636,21 @@ public class SceneEssentials {
         
         meshsetup.put(region, meshRef);
     }
-    
+
+    public void addDAEMeshURLToModelA(String[] data) {
+        InstructionProcessor pProcessor = new InstructionProcessor(worldManager);
+        Instruction pRootInstruction = new Instruction();
+        pRootInstruction.addInstruction(InstructionNames.setSkeleton, skeleton);
+
+        pRootInstruction.addInstruction(InstructionNames.loadGeometry, data[3]);
+        pRootInstruction.addInstruction(InstructionNames.addAttachment, data[0], "Head", new PMatrix());
+        pProcessor.execute(pRootInstruction);
+
+        skeleton.setShader(new VertexDeformer(worldManager));
+        ((ProcessorCollectionComponent) currentEntity.getComponent(ProcessorCollectionComponent.class)).addProcessor(new SkinnedAnimationProcessor(skeleton));
+        currentPScene.setDirty(true, true);
+    }
+
     public void loadInitializer(String n, SharedAsset s, final String[] a) {
         AssetInitializer init = new AssetInitializer() {
 
