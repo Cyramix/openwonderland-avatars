@@ -35,22 +35,21 @@ public class NinjaAvatar extends Ninja
             super(name);
             
             // Bind Pose
-            setBindPoseFile("assets/models/collada/Avatars/MaleZip/MaleBind.dae");
-            //setBindPoseFile("assets/models/collada/Avatars/Male2/Male_Bind.dae");
+            setBindPoseFile("assets/models/collada/Avatars/Male/MaleBind.dae");
             
             // Animations
             ArrayList<String> anims = new ArrayList<String>();
-            anims.add("assets/models/collada/Avatars/MaleZip/Male_Idle.dae");
-            anims.add("assets/models/collada/Avatars/MaleZip/Male_StandToSit.dae");
-            anims.add("assets/models/collada/Avatars/MaleZip/Male_Wave.dae");
+            anims.add("assets/models/collada/Avatars/Male/Male_Idle.dae");
+            anims.add("assets/models/collada/Avatars/Male/Male_StandToSit.dae");
+            anims.add("assets/models/collada/Avatars/Male/Male_Wave.dae");
             anims.add("assets/models/collada/Avatars/Male/Male_FallFromSitting.dae");
             anims.add("assets/models/collada/Avatars/Male/Male_FloorSitting.dae");
             anims.add("assets/models/collada/Avatars/Male/Male_FloorGetup.dae");
-            anims.add("assets/models/collada/Avatars/MaleZip/Male_Walk.dae");
-            anims.add("assets/models/collada/Avatars/MaleZip/Male_Sitting.dae");
+            anims.add("assets/models/collada/Avatars/Male/Male_Walk.dae");
+            anims.add("assets/models/collada/Avatars/Male/Male_Sitting.dae");
             if (false)
             {
-                anims.add("assets/models/collada/Avatars/MaleZip/Male_Run.dae");
+                anims.add("assets/models/collada/Avatars/Male/Male_Run.dae");
                 anims.add("assets/models/collada/Avatars/Male/Male_Bow.dae");
                 anims.add("assets/models/collada/Avatars/Male/Male_Cheer.dae");
                 anims.add("assets/models/collada/Avatars/Male/Male_Clap.dae");
@@ -128,7 +127,7 @@ public class NinjaAvatar extends Ninja
                     setAddInstructions(add.toArray(new String[add.size()]));
                     
                     ArrayList<AttachmentParams> attachments = new ArrayList<AttachmentParams>();
-                    attachments.add(new AttachmentParams("Hair_ShavedFlatTop", "Head", new PMatrix(new Vector3f(0.0f,(float) Math.toRadians(180), 0.0f), new Vector3f(1.0f, 1.2f, 1.0f), Vector3f.ZERO)));
+                    attachments.add(new AttachmentParams("Hair_ShavedFlatTop", "Head", new PMatrix(new Vector3f(0.0f,(float) Math.toRadians(180), 0.0f), new Vector3f(1.0f, 1.0f, 1.0f), Vector3f.ZERO)));
                     setAttachmentsInstructions(attachments.toArray(new AttachmentParams[attachments.size()]));
                 }
                 break;

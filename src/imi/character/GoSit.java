@@ -99,9 +99,9 @@ public class GoSit implements Task
         currentCharacterPosition.set(ninjaContext.getController().getPosition());
         currentDistanceFromGoal = goalPosition.distance(currentCharacterPosition);
         
-//        // Detect looping
-//        if (sampleProgress(deltaTime))
-//            return;
+        // Detect looping
+        if (sampleProgress(deltaTime))
+            return;
         
         // Go for the goal
         if(reachGoal(deltaTime))
@@ -354,6 +354,7 @@ public class GoSit implements Task
     // TODO finer increments and better analasys
     private boolean sampleProgress(float deltaTime) 
     {
+        boolean result = false;
         sampleCounter += deltaTime;
         samples++;
         sampleAvgPos.addLocal(currentCharacterPosition);
@@ -368,12 +369,13 @@ public class GoSit implements Task
             if (currentAvgDistance > previousAvgDistance)
             {
                 // we are not closer to the goal after sampleTimeFrame secounds... let's try to get out of this loop
-                Task walk = (Task) new Walk("Walking away from loop", 0.5f, true, ninjaContext);
-                ninjaContext.getSteering().addTaskToTop(walk);
+                //Task walk = (Task) new Walk("Walking away from loop", 0.5f, true, ninjaContext);
+                //ninjaContext.getSteering().addTaskToTop(walk);
+                ninjaContext.getController().stop();
                 
                 System.out.println("sample tick: get out of loop");
                 status = "loop detected";
-                return true;
+                result = true;
             }
             else
                 System.out.println("sample tick");
@@ -383,7 +385,7 @@ public class GoSit implements Task
             samples       = 1;
             sampleCounter = 0.0f;
         }
-        return false;
+        return result;
     }
     
     public String getDescription() {

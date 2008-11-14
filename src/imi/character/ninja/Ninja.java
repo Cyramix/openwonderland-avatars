@@ -81,6 +81,9 @@ public class Ninja extends imi.character.Character
         m_keyBindings.put(KeyEvent.VK_2,            TriggerNames.GoTo2.ordinal());
         m_keyBindings.put(KeyEvent.VK_3,            TriggerNames.GoTo3.ordinal());
         m_keyBindings.put(KeyEvent.VK_G,            TriggerNames.SitOnGround.ordinal());
+        m_keyBindings.put(KeyEvent.VK_0,            TriggerNames.Smile.ordinal());
+        m_keyBindings.put(KeyEvent.VK_9,            TriggerNames.Frown.ordinal());
+        m_keyBindings.put(KeyEvent.VK_8,            TriggerNames.Scorn.ordinal());
     }
             
     /**

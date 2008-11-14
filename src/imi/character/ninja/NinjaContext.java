@@ -56,7 +56,7 @@ public class NinjaContext extends GameContext
     private NinjaSteeringHelm steering    = new NinjaSteeringHelm("Ninja Steering Helm", this);
     private LocationNode      location    = null;
     
-    int testHack = 0;
+    int punchActionIndex = 0;
     
     public static enum TriggerNames
     {
@@ -76,6 +76,9 @@ public class NinjaContext extends GameContext
         GoTo3,
         NextAction,
         Reverse,
+        Smile,
+        Frown,
+        Scorn,
     }
     
     public static enum ActionNames
@@ -189,6 +192,24 @@ public class NinjaContext extends GameContext
             GoToNearestChair();
         }
         
+        else if (trigger == TriggerNames.Smile.ordinal() && pressed)
+        {
+            if (ninja.getFacialAnimationQ().calculateTotalRemainingTime() < 1.0f)
+                ninja.initiateFacialAnimation(1, 0.75f, 0.5f);
+        }   
+        
+        else if (trigger == TriggerNames.Frown.ordinal() && pressed)
+        {
+            if (ninja.getFacialAnimationQ().calculateTotalRemainingTime() < 1.0f)
+                ninja.initiateFacialAnimation(2, 3.0f, 1.5f);
+        }   
+        
+        else if (trigger == TriggerNames.Scorn.ordinal() && pressed)
+        {
+            if (ninja.getFacialAnimationQ().calculateTotalRemainingTime() < 1.0f)
+                ninja.initiateFacialAnimation(3, 3.0f, 1.5f);
+        }   
+                
         // Reverse the animation for the punch state
         else if (trigger == TriggerNames.Reverse.ordinal() && pressed)
         {
@@ -202,57 +223,56 @@ public class NinjaContext extends GameContext
             PunchState punch = (PunchState) gameStates.get(PunchState.class);
             punch.setAnimationSetBoolean(false);
             
-            testHack++;
-            if (testHack > 3) // 11
-                testHack = 0;
-            switch (testHack)
+            punchActionIndex++;
+            if (punchActionIndex > 14)
+                punchActionIndex = 0;
+            switch (punchActionIndex)
             {
                 case 0:
-                    ninja.initiateFacialAnimation(2, 4.0f, 1.5f);
+                    punch.setAnimationName("Male_Wave");
                     break;
                 case 1:
-                    ninja.initiateFacialAnimation(3, 4.0f, 1.5f);
+                    punch.setAnimationName("Male_Run");
                     break;
                 case 2:
-                    ninja.initiateFacialAnimation(1, 1.0f, 0.5f);
+                    punch.setAnimationName("Male_Bow");
                     break;
-//                case 0:
-//                    punch.setAnimationName("Male_Wave");
-//                    break;
-//                case 1:
-//                    punch.setAnimationName("Male_Run");
-//                    break;
-//                case 2:
-//                    punch.setAnimationName("Male_Bow");
-//                    break;
-//                case 3:
-//                    punch.setAnimationName("Male_Cheer");
-//                    break;
-//                case 4:
-//                    punch.setAnimationName("Male_Follow");
-//                    break;
-//                case 5:
-//                    punch.setAnimationName("Male_Jump");
-//                    break;
-//                case 6:
-//                    punch.setAnimationName("Male_Laugh");
-//                    break;
-//                case 7:
-//                    punch.setAnimationName("Male_Clap");
-//                    break;
-//                case 8:
-//                    punch.setAnimationName("Male_Idle");
-//                    break;
-//                case 9:
-//                    punch.setAnimationName("Male_Walk");
-//                    break;
-//                case 10:
-//                    punch.setAnimationName("Male_StandToSit");
-//                    break;
-//                case 11:
-//                    punch.setAnimationName("Male_Sitting");
-//                    break;
-                    
+                case 3:
+                    punch.setAnimationName("Male_Cheer");
+                    break;
+                case 4:
+                    punch.setAnimationName("Male_Follow");
+                    break;
+                case 5:
+                    punch.setAnimationName("Male_Jump");
+                    break;
+                case 6:
+                    punch.setAnimationName("Male_Laugh");
+                    break;
+                case 7:
+                    punch.setAnimationName("Male_Clap");
+                    break;
+                case 8:
+                    punch.setAnimationName("Male_Idle");
+                    break;
+                case 9:
+                    punch.setAnimationName("Male_Walk");
+                    break;
+                case 10:
+                    punch.setAnimationName("Male_StandToSit");
+                    break;
+                case 11:
+                    punch.setAnimationName("Male_Sitting");
+                    break;
+                case 12:
+                    punch.setAnimationName("Male_FallFromSitting");
+                    break;
+                case 13:
+                    punch.setAnimationName("Male_FloorSitting");
+                    break;
+                case 14:
+                    punch.setAnimationName("Male_FloorGetup");
+                    break;
             }
         }
     }
