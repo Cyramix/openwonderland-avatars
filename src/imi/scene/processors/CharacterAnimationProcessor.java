@@ -111,7 +111,7 @@ public class CharacterAnimationProcessor extends ProcessorComponent
                 // The new awesome way
                 //state.advanceAnimationTime(deltaTime);
                 // old lame way
-                state.advanceAnimationTime(1 / 60.0f);
+                state.advanceAnimationTime(0.01f);
                 group.calculateFrame(m_animated, i);
             }
         }
