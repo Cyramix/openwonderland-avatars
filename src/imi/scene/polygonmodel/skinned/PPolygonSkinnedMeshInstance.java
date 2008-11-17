@@ -70,6 +70,7 @@ public class PPolygonSkinnedMeshInstance extends PPolygonMeshInstance
         super(meshInstance.getName(), meshInstance.getGeometry(), meshInstance.getTransform().getLocalMatrix(false), pscene);
         if (meshInstance.getInfluenceIndices() != null)
             setInfluenceIndices(meshInstance.getInfluenceIndices());
+        setSkeletonNode(meshInstance.getSkeletonNode());
     }
     
         
@@ -172,7 +173,7 @@ public class PPolygonSkinnedMeshInstance extends PPolygonMeshInstance
             {
                 PMatrix matrix = new PMatrix(matrixStack[i]);
                 matrix.mul(m_InverseBindPose[i]);
-                postAnimationMatrixModifier(matrix, i);
+                postAnimationMatrixModifier(matrix, m_InverseBindPose[i], i);
                 float [] matrixFloats = matrix.getFloatArray();
                 for(int j = 0; j < 16; j++)
                 {
@@ -181,6 +182,11 @@ public class PPolygonSkinnedMeshInstance extends PPolygonMeshInstance
             }
             if (doesShaderContainDeformer() == true)
                 m_shaderState.setUniformMatrix4Array("pose", pose, false);
+            else
+            {
+                int hack = 0;
+                hack++;
+            }
         }
 
 
@@ -327,7 +333,7 @@ public class PPolygonSkinnedMeshInstance extends PPolygonMeshInstance
         return false;
     }
 
-    protected void postAnimationMatrixModifier(PMatrix matrix, int index) 
+    protected void postAnimationMatrixModifier(PMatrix matrix, PMatrix inverseBindPose, int index) 
     {
         
     }

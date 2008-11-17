@@ -195,7 +195,7 @@ public class NinjaContext extends GameContext
         else if (trigger == TriggerNames.Smile.ordinal() && pressed)
         {
             if (ninja.getFacialAnimationQ().calculateTotalRemainingTime() < 1.0f)
-                ninja.initiateFacialAnimation(1, 0.75f, 0.5f);
+                ninja.initiateFacialAnimation(1, 1.0f, 1.0f);
         }   
         
         else if (trigger == TriggerNames.Frown.ordinal() && pressed)

@@ -17,9 +17,12 @@
  */
 package imi.character;
 
+import com.jme.math.Vector3f;
 import imi.scene.PMatrix;
 import imi.scene.PScene;
+import imi.scene.polygonmodel.PPolygonModelInstance;
 import imi.scene.polygonmodel.skinned.PPolygonSkinnedMeshInstance;
+import imi.utils.PMathUtils;
 
 /**
  *
@@ -28,43 +31,45 @@ import imi.scene.polygonmodel.skinned.PPolygonSkinnedMeshInstance;
  */
 public class EyeBall extends PPolygonSkinnedMeshInstance
 {
-    public EyeBall(PPolygonSkinnedMeshInstance meshInstance, PScene pscene)
+    protected PPolygonModelInstance m_modelInst  = null;
+    
+    public EyeBall(PPolygonSkinnedMeshInstance meshInstance, PPolygonModelInstance modelInst, PScene pscene)
     {
         super(meshInstance, pscene);
+        m_modelInst = modelInst;
+        applyMaterial();
     }
     
     @Override
-    protected void postAnimationMatrixModifier(PMatrix matrix, int index)
+    protected void postAnimationMatrixModifier(PMatrix matrix, PMatrix inverseBindPose, int index)
     {
-        matrix.setIdentity();
+//        PMatrix rot = new PMatrix();
+//        rot.fromAngleAxis((float)Math.toRadians(90.0f), getTransform().getWorldMatrix(false).getLocalX());
+//        rot.mul(inverseBindPose);
+//        matrix.mul(rot, matrix);
+        
+//        Vector3f targetInWorldSpace = new Vector3f(0.0f, 0.0f, 0.0f);
+//        //m_modelInst.getTransform().getWorldMatrix(false).transformPoint(targetInWorldSpace);
+//        
+//        // Perform lookAt to target
+//        PMatrix eyeWorldXForm = PMathUtils.lookAt(
+//                targetInWorldSpace,
+//                m_modelInst.getTransform().getWorldMatrix(false).getTranslation(),
+//                Vector3f.UNIT_Y);
+//        matrix.set(eyeWorldXForm);
+//        setDirty(true, true);
+        
+        //matrix.
     }
     
-//    private void performEyeballLookAt(Vector3f targetInWorldSpace)
-//    {
-//        // ensure that we have a character, and that the character has a skeleton
-//        if (character == null || character.getSkeleton() == null)
-//            return; // try again later
-//        // grab the appropriate joints to look at
-//        final String leftEyeballJointName = "leftEye";
-//        final String rightEyeballJointName = "rightEye";
-//
-//        SkinnedMeshJoint leftEyeJoint = character.getSkeleton().findSkinnedMeshJoint(leftEyeballJointName);
-//        SkinnedMeshJoint rightEyeJoint = character.getSkeleton().findSkinnedMeshJoint(rightEyeballJointName);
-//
-//        // Perform lookAt to target
-//        // Left eyeball
-//        PMatrix leftEyeWorldXForm = PMathUtils.lookAt(
-//                targetInWorldSpace,
-//                leftEyeJoint.getTransform().getWorldMatrix(false).getTranslation(),
-//                Vector3f.UNIT_Y);
-//        leftEyeJoint.getTransform().getWorldMatrix(true).set(leftEyeWorldXForm);
-//        leftEyeJoint.getTransform().setDirtyWorldMat(false);
-//        // Right eyeball
-//        PMatrix rightEyeWorldXForm = PMathUtils.lookAt(
-//                targetInWorldSpace,
-//                rightEyeJoint.getTransform().getWorldMatrix(false).getTranslation(),
-//                Vector3f.UNIT_Y);
-//        rightEyeJoint.getTransform().getWorldMatrix(true).set(rightEyeWorldXForm);
-//        rightEyeJoint.getTransform().setDirtyWorldMat(false);
-//    }
+    private void performEyeballLookAt(Vector3f targetInWorldSpace)
+    {
+        // Perform lookAt to target
+        PMatrix leftEyeWorldXForm = PMathUtils.lookAt(
+                targetInWorldSpace,
+                getTransform().getWorldMatrix(false).getTranslation(),
+                Vector3f.UNIT_Y);
+        getTransform().getWorldMatrix(true).set(leftEyeWorldXForm);
+        getTransform().setDirtyWorldMat(false);
+    }
 }

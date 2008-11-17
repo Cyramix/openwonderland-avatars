@@ -485,7 +485,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
                             if (origin != null)
                                 m_modelInst.getTransform().setLocalMatrix(origin);
                             
-                            // Set animations
+                            // Set animations and custom meshes
                             if (m_attributes.getAnimations() != null)
                             {
                                 String fileProtocol = m_attributes.getBaseURL();
@@ -540,7 +540,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
                             // Set material
                             skeleton.setShader(new VertDeformerWithSpecAndNormalMap(m_wm, rootURL));
 
-                            // Facial animation state is designated to id 1
+                            // Facial animation state is designated to id (and index) 1
                             AnimationState facialAnimationState = new AnimationState(1);
                             facialAnimationState.setCurrentCycle(1); // 0 is "All Cycles"
                             facialAnimationState.setCurrentCyclePlaybackMode(PlaybackMode.PlayOnce);
@@ -548,6 +548,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
                             m_skeleton.addAnimationState(facialAnimationState);
                             m_facialAnimationQ = new TransitionQueue(m_skeleton, 1);
                             initiateFacialAnimation(1, 0.75f, 0.5f);
+                            
                         }
                         return true;
 
@@ -797,6 +798,14 @@ public abstract class Character extends Entity implements SpatialObject, Animati
             m_mesh       = (PPolygonSkinnedMeshInstance)m_modelInst.getChild(0).getChild(1);
             m_skeleton   = (SkeletonNode)m_modelInst.getChild(0);
             m_skeleton.getAnimationState().addListener(this);
+            
+            // Gimme them eyeballs
+            PPolygonSkinnedMeshInstance leftEye = (PPolygonSkinnedMeshInstance) m_skeleton.findChild("leftEyeGeoShape");
+            PPolygonSkinnedMeshInstance leftEyeBall = new EyeBall(leftEye, m_modelInst, m_pscene);
+            leftEye.getParent().replaceChild(leftEye, leftEyeBall, true);
+            PPolygonSkinnedMeshInstance rightEye = (PPolygonSkinnedMeshInstance) m_skeleton.findChild("rightEyeGeoShape");
+            PPolygonSkinnedMeshInstance rightEyeBall = new EyeBall(rightEye, m_modelInst, m_pscene);
+            rightEye.getParent().replaceChild(rightEye, rightEyeBall, true);
             
             m_initalized = true;
         }

@@ -26,7 +26,6 @@ import com.jme.scene.state.MaterialState;
 import com.jme.scene.state.RenderState;
 import com.jme.scene.state.WireframeState;
 import com.jme.scene.state.ZBufferState;
-import imi.character.ninja.SitState;
 import imi.scene.JScene;
 import imi.scene.PScene;
 import java.util.ArrayList;
@@ -174,6 +173,24 @@ public class ObjectCollection extends Entity
         
         // Dispaly PRenderer
         //jscene.setRenderInternallyBool(true);
+        
+        /////////
+//        
+//        Gadget lighSwitch = new Gadget(new Vector3f(2.0f, 1.5f, 0.0f), Vector3f.UNIT_Z, "assets/models/collada/Objects/Interface/InterfaceSlider.dae");
+//        lighSwitch.setInScene(pscene);
+//        lighSwitch.setObjectCollection(this);
+//        lighSwitch.getModelInst().calculateBoundingSphere();
+//        
+//        lighSwitch.translateSubMesh(Vector3f.UNIT_X, "Slider");
+//        
+//        pscene.setDirty(true, true);
+//        pscene.buildFlattenedHierarchy();
+//        pscene.submitTransformsAndGeometry();
+//        
+//        Gadget lighDimmer = new Gadget(new Vector3f(3.0f, 1.5f, 0.0f), Vector3f.UNIT_Z, "assets/models/collada/Objects/Interface/InterfaceKnobPlate.dae");
+//        lighDimmer.setInScene(pscene);
+//        lighDimmer.setObjectCollection(this);
+//        lighDimmer.getModelInst().calculateBoundingSphere();
     }
     
     /**
@@ -423,6 +440,7 @@ public class ObjectCollection extends Entity
             if (check instanceof Chair)
             {
                 ((Chair)check).setOwner(null);
+                ((Chair)check).setOccupied(true);
                 objects.remove(check);
                 pscene.removeModelInstance(check.getModelInst());
                 

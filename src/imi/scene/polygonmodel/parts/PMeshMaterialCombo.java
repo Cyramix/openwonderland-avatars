@@ -259,6 +259,10 @@ public class PMeshMaterialCombo
         m_Material2 = Material2;
     }
 
+    /**
+     * Returns a reference
+     * @return
+     */
     public PMeshMaterial getMaterial() 
     {
         return m_MaterialCombo;
