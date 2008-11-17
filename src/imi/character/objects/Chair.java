@@ -58,6 +58,8 @@ public class Chair implements SpatialObject
     private PMatrix goalOffset = new PMatrix();
     private float   goalForwardOffset = 0.5f;
     
+    private float desiredDistanceFromOtherChairs = 3.0f;
+    
     public Chair(Vector3f position, Vector3f heading, String modelFile)
     {
         if (modelFile != null && modelFile.endsWith(".dae"))
@@ -258,4 +260,13 @@ public class Chair implements SpatialObject
     {
         return owner;
     }
+
+    public float getDesiredDistanceFromOtherChairs() {
+        return desiredDistanceFromOtherChairs;
+    }
+
+    public void setDesiredDistanceFromOtherChairs(float desiredDistanceFromOtherChairs) {
+        this.desiredDistanceFromOtherChairs = desiredDistanceFromOtherChairs;
+    }
+    
 }

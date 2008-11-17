@@ -707,7 +707,7 @@ public class PScene extends PNode implements RepositoryUser
                     // remove from the waiting list
                     m_SharedAssetWaitingList.remove(i);
                     
-                    System.out.println(asset.getDescriptor().getType().toString() + " receiveAsset - asset removed from m_SharedAssetWaitingList: " + asset.getDescriptor().getLocation().getPath());
+                    //System.out.println(asset.getDescriptor().getType().toString() + " receiveAsset - asset removed from m_SharedAssetWaitingList: " + asset.getDescriptor().getLocation().getPath());
                     
                     // take care of all the freeloaders
                     for (int j = 0; j < placeHolder.getFreeloaderCount(); j++)

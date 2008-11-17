@@ -46,7 +46,7 @@ public class TurnState extends GameState
         setName("Turn");
         setAnimationName("Stalk");
         setAnimationSpeed(1.5f);
-        setTransitionDuration(0.2f);
+        setTransitionDuration(0.05f);
     }
     
     /**

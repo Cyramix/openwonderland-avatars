@@ -30,6 +30,7 @@ public class TransitionQueue implements AnimationListener
 {
     private Animated    m_target = null; // The target to affect
     private AnimationState m_state = null; // The animation state of the target
+    private AnimationGroup m_group = null;
     /** The list of animation commands being processed **/
     private final SynchronizedQueue<TransitionCommand>   m_commandQueue  = new SynchronizedQueue<TransitionCommand>();
     
@@ -45,12 +46,13 @@ public class TransitionQueue implements AnimationListener
      * Construct a new transition queue to deal with this target. The target's
      * AnimationState object should not be null.
      * @param target
-     * @param animationStateIndex
+     * @param animationStateAndGroupIndex
      */
-    public TransitionQueue(Animated target, int animationStateIndex)
+    public TransitionQueue(Animated target, int animationStateAndGroupIndex)
     {
         m_target = target;
-        m_state = m_target.getAnimationState(animationStateIndex);
+        m_state = m_target.getAnimationState(animationStateAndGroupIndex);
+        m_group = m_target.getAnimationGroup(animationStateAndGroupIndex);
         m_state.addListener(this);
     }
     
@@ -78,7 +80,7 @@ public class TransitionQueue implements AnimationListener
             m_commandQueue.enqueue(newCommand);
         else // Do it now!
         {
-            AnimationCycle newCycle = m_target.getAnimationComponent().getGroup().getCycle(newCommand.getAnimationIndex());
+            AnimationCycle newCycle = m_group.getCycle(newCommand.getAnimationIndex());
             m_state.setTransitionCycle(newCommand.getAnimationIndex());
             
             if (newCommand.isReverse())
@@ -105,9 +107,9 @@ public class TransitionQueue implements AnimationListener
     /**
      * Set the target for this queue
      * @param target
-     * @param animationStateIndex
+     * @param animationStateAndGroupIndex
      */
-    public void setTarget(Animated target, int animationStateIndex)
+    public void setTarget(Animated target, int animationStateAndGroupIndex)
     {
         if (isTargetSet() == true)
         {
@@ -115,10 +117,12 @@ public class TransitionQueue implements AnimationListener
             m_state.removeListener(this);
             m_target = null;
             m_state = null;
+            m_group = null;
         }
 
         m_target = target;
-        m_state = target.getAnimationState(animationStateIndex);
+        m_state = target.getAnimationState(animationStateAndGroupIndex);
+        m_group = target.getAnimationGroup(animationStateAndGroupIndex);
         m_state.addListener(this);
     }
     

@@ -108,7 +108,7 @@ public class InstructionProcessor
                 {
                     String skinnedMeshName = pInstruction.getDataAsString();
                     if (!addSkinnedMesh(skinnedMeshName))
-                        System.out.println("COLLADA configuration ERROR: was not able to ADD a skinned mesh!");
+                        System.out.println("COLLADA configuration ERROR: was not able to ADD a skinned mesh! " + skinnedMeshName);
                 }
                 break;
                 case addAttachment:

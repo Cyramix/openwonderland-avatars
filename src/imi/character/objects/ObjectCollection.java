@@ -135,7 +135,7 @@ public class ObjectCollection extends Entity
             newChair.getModelInst().calculateBoundingSphere();
             
             int attemptsCounter = 0;
-            while(isColliding(newChair) && attemptsCounter < 100)
+            while(isCloseToOtherChairs(newChair) && attemptsCounter < 100)
             {
                 attemptsCounter++;
                 
@@ -190,6 +190,26 @@ public class ObjectCollection extends Entity
             if (check != obj)
             {
                 if (check.getBoundingSphere().isColliding(obj.getBoundingSphere()))
+                    return true;
+            }
+        }
+        return false;
+    }
+    
+    // The chair's bounding volumes are not correct until finished loading, this method is still good on load time.
+    private boolean isCloseToOtherChairs(Chair newChair) 
+    {
+        for (SpatialObject check : objects)
+        {
+            if (!(check instanceof Chair))
+                continue;
+            Chair chair = (Chair)check;
+            if (chair != newChair)
+            {
+                Vector3f chairPos    = chair.getPosition();
+                Vector3f newChairPos = newChair.getPosition();
+                float desiredDistance = chair.getDesiredDistanceFromOtherChairs() + newChair.getDesiredDistanceFromOtherChairs();
+                if (chairPos.distanceSquared(newChairPos) < desiredDistance * desiredDistance)
                     return true;
             }
         }

@@ -539,6 +539,15 @@ public abstract class Character extends Entity implements SpatialObject, Animati
 
                             // Set material
                             skeleton.setShader(new VertDeformerWithSpecAndNormalMap(m_wm, rootURL));
+
+                            // Facial animation state is designated to id 1
+                            AnimationState facialAnimationState = new AnimationState(1);
+                            facialAnimationState.setCurrentCycle(1); // 0 is "All Cycles"
+                            facialAnimationState.setCurrentCyclePlaybackMode(PlaybackMode.PlayOnce);
+                            facialAnimationState.setAnimationSpeed(0.1f);
+                            m_skeleton.addAnimationState(facialAnimationState);
+                            m_facialAnimationQ = new TransitionQueue(m_skeleton, 1);
+                            initiateFacialAnimation(1, 0.75f, 0.5f);
                         }
                         return true;
 
@@ -788,14 +797,6 @@ public abstract class Character extends Entity implements SpatialObject, Animati
             m_mesh       = (PPolygonSkinnedMeshInstance)m_modelInst.getChild(0).getChild(1);
             m_skeleton   = (SkeletonNode)m_modelInst.getChild(0);
             m_skeleton.getAnimationState().addListener(this);
-            
-            // Facial animation state is designated to id 1
-            AnimationState facialAnimationState = new AnimationState(1);
-            facialAnimationState.setCurrentCycle(1); // 0 is "All Cycles"
-            facialAnimationState.setCurrentCyclePlaybackMode(PlaybackMode.PlayOnce);
-            facialAnimationState.setAnimationSpeed(0.1f);
-            m_skeleton.addAnimationState(facialAnimationState);
-            m_facialAnimationQ = new TransitionQueue(m_skeleton, 1);
             
             m_initalized = true;
         }
