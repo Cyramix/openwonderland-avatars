@@ -73,19 +73,36 @@ public class LibraryCamerasProcessor extends Processor
                 {
                     Perspective pPerspective = pCamera.getOptics().getTechniqueCommon().getPerspective();
 
-                    float xfov, yfov, znear, zfar;
+                    float xfov = 0.0f;
+                    float yfov = 0.0f;
+                    float znear = 0.0f;
+                    float zfar = 0.0f;
 
-                    yfov  = (float)pPerspective.getYfov().getValue();
-                    znear = (float)pPerspective.getZnear().getValue();
-                    zfar  = (float)pPerspective.getZfar().getValue();
-                    
+                    // Attempt to grab parameters; if any are not present we use
+                    // some default values.
+                    if (pPerspective.getYfov() != null)
+                        yfov  = (float)pPerspective.getYfov().getValue();
+                    else
+                        yfov = 45.0f;
+
+                    if (pPerspective.getZnear() != null)
+                        znear = (float)pPerspective.getZnear().getValue();
+                    else
+                        znear = 0.1f;
+
+                    if (pPerspective.getZfar() != null)
+                        zfar  = (float)pPerspective.getZfar().getValue();
+                    else
+                        zfar = 1000.0f;
+
+                    // If an aspect ratio was provided, use it instead
                     if (pPerspective.getAspectRatio() != null)
                     {
                         float fAspectRatio = (float)pPerspective.getAspectRatio().getValue();
                         
                         xfov = yfov * fAspectRatio;
                     }
-                    else
+                    else if (pPerspective.getXfov() != null)
                         xfov  = (float)pPerspective.getXfov().getValue();
 
 

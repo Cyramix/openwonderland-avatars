@@ -108,26 +108,27 @@ public class LibraryNodesProcessor extends Processor
         if (pNode.getInstanceGeometries() != null && pNode.getInstanceGeometries().size() == 0)
             return;
 
-        int a;
-        InstanceGeometry pInstanceGeometry;
-        String meshName;
+        InstanceGeometry instancedGeometry = null;
+        String meshURL = null;
 
 
-        for (a=0; a<pNode.getInstanceGeometries().size(); a++)
+        for (int i = 0; i < pNode.getInstanceGeometries().size(); i++)
         {
-            pInstanceGeometry = (InstanceGeometry)pNode.getInstanceGeometries().get(a);
+            instancedGeometry = (InstanceGeometry)pNode.getInstanceGeometries().get(i);
 
-            meshName = pInstanceGeometry.getUrl();
-            if (meshName.startsWith("#"))
-                meshName = meshName.substring(1, meshName.length());
+            meshURL = instancedGeometry.getUrl();
+            if (meshURL.startsWith("#"))
+                meshURL = meshURL.substring(1, meshURL.length());
 
-            pColladaNode.setMeshName(meshName);
+            //pColladaNode.setMeshName(pInstanceGeometry.getName());
+            pColladaNode.setMeshURL(meshURL);
+            pColladaNode.setMeshName(instancedGeometry.getName());
 
-            if (pInstanceGeometry.getBindMaterial() != null)
+            if (instancedGeometry.getBindMaterial() != null)
             {
-                BindMaterial    pBindMaterial;
+                BindMaterial    pBindMaterial  = null;
 
-                pBindMaterial = pInstanceGeometry.getBindMaterial();
+                pBindMaterial = instancedGeometry.getBindMaterial();
 
                 if (pBindMaterial.getTechniqueCommon() != null)
                 {
@@ -136,13 +137,12 @@ public class LibraryNodesProcessor extends Processor
                     if (pTechniqueCommon.getInstanceMaterials() != null &&
                         pTechniqueCommon.getInstanceMaterials().size() > 0)
                     {
-                        int b;
-                        InstanceMaterial pInstanceMaterial;
-                        String materialName;
+                        InstanceMaterial pInstanceMaterial = null;
+                        String materialName = null;
 
-                        for (b=0; b<pTechniqueCommon.getInstanceMaterials().size(); b++)
+                        for (int j = 0; j < pTechniqueCommon.getInstanceMaterials().size(); j++)
                         {
-                            pInstanceMaterial = pTechniqueCommon.getInstanceMaterials().get(b);
+                            pInstanceMaterial = pTechniqueCommon.getInstanceMaterials().get(j);
                             
                             materialName = pInstanceMaterial.getTarget();
                             if (materialName.startsWith("#"))

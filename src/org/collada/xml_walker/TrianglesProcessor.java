@@ -183,7 +183,7 @@ public class TrianglesProcessor extends Processor
     {
         if (m_pMeshProcessor != null)
             return(m_pMeshProcessor.getName());
-        return("");
+        return null;
     }
 
 

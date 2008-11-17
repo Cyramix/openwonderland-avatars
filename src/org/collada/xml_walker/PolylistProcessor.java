@@ -177,7 +177,7 @@ public class PolylistProcessor extends Processor
     {
         if (m_pMeshProcessor != null)
             return(m_pMeshProcessor.getName());
-        return("");
+        return null;
     }
 
 

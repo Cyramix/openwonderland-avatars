@@ -40,7 +40,7 @@ import imi.loaders.collada.Collada;
  */
 public class MeshProcessor extends Processor
 {
-    private String                      m_Name = "";
+    private String                      m_Name = null;
     
     private ArrayList<VertexDataArray>  m_VertexDataArrays = new ArrayList<VertexDataArray>();
 
@@ -140,7 +140,7 @@ public class MeshProcessor extends Processor
      * @param name
      * @return
      */
-    public VertexDataArray getVertexDataArray(String name)
+    VertexDataArray getVertexDataArray(String name)
     {
         int a;
         VertexDataArray pVertexDataArray;

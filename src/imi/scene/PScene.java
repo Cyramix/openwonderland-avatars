@@ -526,7 +526,7 @@ public class PScene extends PNode implements RepositoryUser
      * @param mesh
      * @return meshInst (PNode)
      */
-    public PNode processSkinnedMesh(PPolygonSkinnedMesh mesh) 
+    public PPolygonSkinnedMeshInstance processSkinnedMesh(PPolygonSkinnedMesh mesh)
     {
         // Put the kids in a sack
         ArrayList<PNode> kids = new ArrayList<PNode>(mesh.getChildren());

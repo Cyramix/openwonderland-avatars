@@ -108,7 +108,7 @@ public class LibraryVisualScenesProcessor extends Processor
             pColladaNode = new PColladaNode();
             
             //  Process the Node.
-            if (processNode("", pColladaNode, pNode))
+            if (processNode(pColladaNode, pNode))
             {
                 //  Add the root ColladaNode.
                 m_pCollada.addColladaNode(pColladaNode);
@@ -119,29 +119,20 @@ public class LibraryVisualScenesProcessor extends Processor
     }
 
     //  Processes a Node.
-    private boolean processNode(String spacing, PColladaNode pColladaNode, Node pNode)
+    private boolean processNode(PColladaNode pColladaNode, Node pNode)
     {
-        int a;
-
-        //System.out.println(spacing + "Node:  " + pNode.getId());
-
 
         pColladaNode.setName(pNode.getName());
 
-
         //  Process the assigned InstanceControllers.
-        processInstanceControllers(spacing, pColladaNode, pNode);
+        processInstanceControllers(pColladaNode, pNode);
 
-
-        if (m_pCollada.getPrintStats())
-            System.out.println("ColladaNode='" + pColladaNode.getName() + "', ControllerName='" + pColladaNode.getControllerName() + "'");
-        
         //  Read in the Node's matrix.
-        readNodeMatrix(spacing, pColladaNode, pNode);
+        readNodeMatrix(pColladaNode, pNode);
 
 
         //  Node might be a camera.
-        if (readCameraInfo(spacing, pColladaNode, pNode))
+        if (readCameraInfo(pColladaNode, pNode))
             return(false);
 
 
@@ -154,84 +145,15 @@ public class LibraryVisualScenesProcessor extends Processor
 
 
         //  Read in the Material associated with the Bone.
-        readNodeMaterial(spacing, pColladaNode, pNode);
+        readNodeMaterial(pColladaNode, pNode);
 
 
         //  Read in the MeshInstance information for the Node.
-        readNodeMeshInstance(spacing, pColladaNode, pNode);
+        readNodeMeshInstance(pColladaNode, pNode);
 
 
         //  Read in the NodeInstance information for the Node.
-        readNodeInstanceNode(spacing, pColladaNode, pNode);
-
-
-/*
-        if (pNode.getInstanceGeometries() != null && pNode.getInstanceGeometries().size() > 0)
-        {
-            int b;
-            InstanceGeometry pInstanceGeometry;
-            String meshName;
-            
-            for (b=0; b<pNode.getInstanceGeometries().size(); b++)
-            {
-                pInstanceGeometry = (InstanceGeometry)pNode.getInstanceGeometries().get(b);
-
-                meshName = pInstanceGeometry.getUrl();
-                if (meshName.startsWith("#"))
-                    meshName = meshName.substring(1, meshName.length());
-
-                pColladaNode.setMeshName(meshName);
-            
-                // Now, iterate through all the bind Materials.
-                if (pInstanceGeometry.getBindMaterial() != null)
-                {
-                    if (pInstanceGeometry.getBindMaterial().getTechniqueCommon() != null)
-                    {
-                        int c;
-                        InstanceMaterial pInstanceMaterial;
-                        String materialSymbol;
-                        String materialTarget;
-                        PColladaMaterialInstance pMaterialInstance;
-                                
-                        for (c=0; c<pInstanceGeometry.getBindMaterial().getTechniqueCommon().getInstanceMaterials().size(); c++)
-                        {
-                            pInstanceMaterial = (InstanceMaterial)pInstanceGeometry.getBindMaterial().getTechniqueCommon().getInstanceMaterials().get(c);
-
-                            pMaterialInstance = new PColladaMaterialInstance();
-
-                            materialSymbol = pInstanceMaterial.getSymbol();
-                            materialTarget = pInstanceMaterial.getTarget();
-
-                            pMaterialInstance.setMeshMaterialName(materialSymbol);
-                            pMaterialInstance.setEffectName(materialTarget);
-
-                            //  Assign the MaterialInstance to the ColladaNode.
-                            pColladaNode.setMaterialInstance(pMaterialInstance);
-
-                            if (pInstanceMaterial.getBindVertexInputs() != null)
-                            {
-                                int d;
-                                BindVertexInput pBindVertexInput;
-                                
-                                for (d=0; d<pInstanceMaterial.getBindVertexInputs().size(); d++)
-                                {
-                                    pBindVertexInput = (BindVertexInput)pInstanceMaterial.getBindVertexInputs().get(d);
-                                    
-                                    pMaterialInstance.addVertexInput(pBindVertexInput.getSemantic());
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        if (pNode.getInstanceNodes() != null && pNode.getInstanceNodes().size() > 0)
-        {
-            int bb = 0;
-        }
-*/
-
+        readNodeInstanceNode(pColladaNode, pNode);
 
         //  **********************
         //  Now, process all child nodes.
@@ -240,11 +162,11 @@ public class LibraryVisualScenesProcessor extends Processor
         {
             PColladaNode pChildColladaNode;
                     
-            for (a=0; a<pNode.getNodes().size(); a++)
+            for (int i = 0; i < pNode.getNodes().size(); i++)
             {
                 pChildColladaNode = new PColladaNode();
                 
-                if (processNode(spacing + "   ", pChildColladaNode, (Node)pNode.getNodes().get(a)))
+                if (processNode(pChildColladaNode, (Node)pNode.getNodes().get(i)))
                     pColladaNode.addChildNode(pChildColladaNode);
             }
         }
@@ -253,7 +175,7 @@ public class LibraryVisualScenesProcessor extends Processor
     }
 
 
-    private void processInstanceControllers(String spacing, PColladaNode pColladaNode, Node pNode)
+    private void processInstanceControllers(PColladaNode pColladaNode, Node pNode)
     {
         if (pNode.getInstanceControllers().size() == 0)
             return;
@@ -289,7 +211,7 @@ public class LibraryVisualScenesProcessor extends Processor
     }
                           
           
-    private boolean readCameraInfo(String spacing, PColladaNode pColladaNode, Node pNode)
+    private boolean readCameraInfo(PColladaNode pColladaNode, Node pNode)
     {
         if (pNode.getInstanceCameras() != null && pNode.getInstanceCameras().size() > 0)
         {
@@ -320,18 +242,7 @@ public class LibraryVisualScenesProcessor extends Processor
 
             //  Let the ColladaLoader know about the Camera.
             m_pCollada.addColladaCamera(pCamera);
-                
-/*
-         <node id="Camera" name="Camera">
-            <matrix>
-               0.678325 0.054385 0.732747 205.150618
-               0.734762 -0.050208 -0.676464 -204.150926
-               0.000000 0.997257 -0.074017 59.925539
-               0.000000 0.000000 0.000000 1.000000
-            </matrix>
-            <instance_camera url="#Camera-camera"/>
-         </node>
-*/
+
 
             return(true);
         }
@@ -341,16 +252,12 @@ public class LibraryVisualScenesProcessor extends Processor
 
 
                          
-    private void readNodeMatrix(String spacing, PColladaNode pColladaNode, Node pNode)
+    private void readNodeMatrix(PColladaNode pColladaNode, Node pNode)
     {
         //  Process the Node's matrix parameters.
         int a = 0;
         Object pMatrixElement;
         Rotate pRotate;
-        float []pTranslation = null;
-        float []pRotateJointOrientX = null;
-        float []pRotateJointOrientY = null;
-        float []pRotateJointOrientZ = null;
 
 
         //  Iterate through all the translateAndMatrixesAndLookAts.
@@ -373,36 +280,27 @@ public class LibraryVisualScenesProcessor extends Processor
                 JAXBElement pJAXBElement = (JAXBElement)pMatrixElement;
                 
                 if (pJAXBElement.getName().getLocalPart().equals("translate"))
-                {
-                    pTranslation = parseTranslation((TargetableFloat3)pJAXBElement.getValue());
-                    //System.out.println(spacing + "   translation:  (" + pTranslation[0] + ", " + pTranslation[1] + ", " + pTranslation[2] + ")");
-                }
+                    parseTranslation((TargetableFloat3)pJAXBElement.getValue());
                 
             }
             else if (pMatrixElement instanceof Rotate)
             {
                 pRotate = (Rotate)pMatrixElement;
-                
-                if (pRotate.getSid().equals("jointOrientX"))
+                String sidValue = pRotate.getSid();
+                if (sidValue != null)
                 {
-                    pRotateJointOrientX = parseRotateJointOrient(pRotate);
-                    //System.out.println(spacing + "   jointOrientX:  (" + pRotateJointOrientX[0] + ", " + pRotateJointOrientX[1] + ", " + pRotateJointOrientX[2] + ", " + pRotateJointOrientX[3] + ")");
-                }
-                else if (pRotate.getSid().equals("jointOrientY"))
-                {
-                    pRotateJointOrientY = parseRotateJointOrient(pRotate);
-                    //System.out.println(spacing + "   jointOrientY:  (" + pRotateJointOrientY[0] + ", " + pRotateJointOrientY[1] + ", " + pRotateJointOrientY[2] + ", " + pRotateJointOrientY[3] + ")");
-                }
-                else if (pRotate.getSid().equals("jointOrientZ"))
-                {
-                    pRotateJointOrientZ = parseRotateJointOrient(pRotate);
-                    //System.out.println(spacing + "   jointOrientZ:  (" + pRotateJointOrientZ[0] + ", " + pRotateJointOrientZ[1] + ", " + pRotateJointOrientZ[2] + ", " + pRotateJointOrientZ[3] + ")");
+                    if (sidValue.equals("jointOrientX"))
+                        parseRotateJointOrient(pRotate);
+                    else if (sidValue.equals("jointOrientY"))
+                        parseRotateJointOrient(pRotate);
+                    else if (sidValue.equals("jointOrientZ"))
+                        parseRotateJointOrient(pRotate);
                 }
             }
         }
     }
 
-    private void readNodeMaterial(String spacing, PColladaNode pColladaNode, Node pNode)
+    private void readNodeMaterial(PColladaNode pColladaNode, Node pNode)
     {
         int a;
         TechniqueCommon pTechniqueCommon;
@@ -419,11 +317,7 @@ public class LibraryVisualScenesProcessor extends Processor
                 {
                     pTechniqueCommon = pInstanceController.getBindMaterial().getTechniqueCommon();
 
-                    //System.out.println("hhhhhhhhhhhhhhhhhhhhh");
-                    //System.out.println("   InstanceController has MaterialInstance.");
-                    //System.out.println("hhhhhhhhhhhhhhhhhhhhh");
-                    //System.out.flush();
-                    processNodeMaterial(spacing, pColladaNode, pNode, pTechniqueCommon);
+                    processNodeMaterial(pColladaNode, pNode, pTechniqueCommon);
                 }
             }
         }
@@ -440,32 +334,14 @@ public class LibraryVisualScenesProcessor extends Processor
                 {
                     pTechniqueCommon = pInstanceGeometry.getBindMaterial().getTechniqueCommon();
 
-                    //System.out.println("hhhhhhhhhhhhhhhhhhhhh");
-                    //System.out.println("   InstanceGeometry has MaterialInstance.");
-                    //System.out.println("hhhhhhhhhhhhhhhhhhhhh");
-                    //System.out.flush();
-                    processNodeMaterial(spacing, pColladaNode, pNode, pTechniqueCommon);
+                    processNodeMaterial(pColladaNode, pNode, pTechniqueCommon);
                 }
             }
         }
-      /*
-        <instance_controller url="#HeadShape-skin">
-          <skeleton>#Neck</skeleton>
-          <bind_material>
-            <technique_common>
-              <instance_material symbol="lambert2SG" target="#blinn1">
-                <bind_vertex_input semantic="TEX0" input_semantic="TEXCOORD" input_set="0"/>
-                <bind_vertex_input semantic="TEX1" input_semantic="TEXCOORD" input_set="0"/>
-                <bind_vertex_input semantic="TEX2" input_semantic="TEXCOORD" input_set="0"/>
-              </instance_material>
-            </technique_common>
-          </bind_material>
-        </instance_controller>
-      */
     }
 
     // Now, iterate through all the bind Materials.
-    private void processNodeMaterial(String spacing, PColladaNode pColladaNode, Node pNode, TechniqueCommon pTechniqueCommon)
+    private void processNodeMaterial(PColladaNode pColladaNode, Node pNode, TechniqueCommon pTechniqueCommon)
     {
         int                         c;
         InstanceMaterial            pInstanceMaterial;
@@ -507,29 +383,29 @@ public class LibraryVisualScenesProcessor extends Processor
         }
     }
 
-    private void readNodeMeshInstance(String spacing, PColladaNode pColladaNode, Node pNode)
+    private void readNodeMeshInstance(PColladaNode colladaNode, Node pNode)
     {
         if (pNode.getInstanceGeometries() != null && pNode.getInstanceGeometries().size() > 0)
         {
-            int b;
-            InstanceGeometry pInstanceGeometry;
-            String meshName;
-            
-            for (b=0; b<pNode.getInstanceGeometries().size(); b++)
-            {
-                pInstanceGeometry = (InstanceGeometry)pNode.getInstanceGeometries().get(b);
+            InstanceGeometry instance = null;
+            String instancedGeometryURL = null;
+            // OK, so this logic is obviously flawed.. the loop is counter productive
+//            for (int i = 0; i < pNode.getInstanceGeometries().size(); i++)
+//            {
+                instance = (InstanceGeometry)pNode.getInstanceGeometries().get(0); // Change to get i for looping
 
-                meshName = pInstanceGeometry.getUrl();
-                if (meshName.startsWith("#"))
-                    meshName = meshName.substring(1, meshName.length());
+                instancedGeometryURL = instance.getUrl();
+                if (instancedGeometryURL.startsWith("#"))
+                    instancedGeometryURL = instancedGeometryURL.substring(1, instancedGeometryURL.length());
 
-                pColladaNode.setMeshName(meshName);
-            }
+                colladaNode.setMeshURL(instancedGeometryURL);
+                colladaNode.setMeshName(pNode.getName());
+            //}
         }
     }
 
     //  Reads in the NodeInstance information for the Node.
-    private void readNodeInstanceNode(String spacing, PColladaNode pColladaNode, Node pNode)
+    private void readNodeInstanceNode(PColladaNode pColladaNode, Node pNode)
     {
         if (pNode.getInstanceNodes() != null && pNode.getInstanceNodes().size() > 0)
         {
@@ -547,19 +423,8 @@ public class LibraryVisualScenesProcessor extends Processor
             
                 pColladaNode.setInstanceNodeName(instanceName);
             }
-            
-            
-            
         }
-        
-        
-
     }
-    
-    
-    
-    
-    
     
     private float []parseTranslation(TargetableFloat3 pFloat3)
     {

@@ -34,10 +34,9 @@ public class PColladaNode
 {
     PColladaNode                m_pParentNode = null;
 
-    //  Pointer to the collada Node.
     Node                        m_pNode = null;
 
-    String                      m_Name = "";
+    String                      m_Name = null;
 
     PMatrix                     m_Matrix = new PMatrix();
     float                       []m_MatrixFloats = new float[16];
@@ -45,13 +44,14 @@ public class PColladaNode
     boolean                     m_bIsJoint;
     String                      m_JointName;
 
-    String                      m_MeshName = "";
+    String                      m_MeshName = null;
+    String                      m_MeshURL = null;
 
-    String                      m_InstanceNodeName = "";
+    String                      m_InstanceNodeName = null;
 
-    ArrayList                   m_ChildNodes = new ArrayList();
+    ArrayList<PColladaNode>     m_ChildNodes = new ArrayList<PColladaNode>();
 
-    String                      m_ControllerName = "";
+    String                      m_ControllerName = null;
 
     ArrayList                   m_Skeletons = new ArrayList();
 
@@ -285,22 +285,18 @@ public class PColladaNode
     public PColladaNode findNode(String nodeName)
     {
         if (m_Name.equals(nodeName))
-            return(this);
+            return this;
 
-        int a;
-        PColladaNode pColladaNode;
-        PColladaNode pFoundColladaNode;
+        PColladaNode pFoundColladaNode = null;
 
-        for (a=0; a<m_ChildNodes.size(); a++)
+        for (PColladaNode node : m_ChildNodes)
         {
-            pColladaNode = (PColladaNode)m_ChildNodes.get(a);
-
-            pFoundColladaNode = pColladaNode.findNode(nodeName);
+            pFoundColladaNode = node.findNode(nodeName);
             if (pFoundColladaNode != null)
-                return(pFoundColladaNode);
+                return pFoundColladaNode;
         }
 
-        return(null);
+        return null;
     }
 
     /**
@@ -313,7 +309,15 @@ public class PColladaNode
         return(m_pParentNode);
     }
             
+    public String getMeshURL()
+    {
+        return m_MeshURL;
+    }
 
+    public void setMeshURL(String meshURL)
+    {
+        m_MeshURL = meshURL;
+    }
 
     /**
      * Gets the MaterialInstance.
