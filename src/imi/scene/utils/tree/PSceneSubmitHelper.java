@@ -58,12 +58,6 @@ public class PSceneSubmitHelper  implements NodeProcessor
     {
         PNode parent = current.getParent();
 
-        // Special case for skeleton node
-        if (current instanceof SkeletonNode)
-        {
-            m_sharedMeshCollection.addAll(((SkeletonNode)current).collectSharedMeshes());
-            return false;
-        }
         // Get the parent's world matrix
         PTransform parentTransform = null;
         if (parent == null)
@@ -107,6 +101,13 @@ public class PSceneSubmitHelper  implements NodeProcessor
             // ensure we have indices
             if (((PPolygonMeshInstance)current).getGeometry().getGeometry().getMaxIndex() >= 0) // If no indices, don't attach this mesh.
                 m_sharedMeshCollection.add(((PPolygonMeshInstance)current).updateSharedMesh());
+        }
+
+        // Special case for skeleton node
+        if (current instanceof SkeletonNode)
+        {
+            m_sharedMeshCollection.addAll(((SkeletonNode)current).collectSharedMeshes());
+            return false;
         }
         
         return true;

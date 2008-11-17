@@ -436,12 +436,6 @@ public class SkeletonNode extends PNode implements Animated
         while (queue.isEmpty() == false)
         {
             PNode current = queue.removeFirst();
-            // special case for the skeleton node (see this method... haha)
-            if (current instanceof SkeletonNode)
-            {
-                result.addAll(((SkeletonNode)current).collectSharedMeshes());
-                continue;
-            }
 
             PNode parent = current.getParent();
 
@@ -485,6 +479,14 @@ public class SkeletonNode extends PNode implements Animated
                 if (((PPolygonMeshInstance)current).getGeometry().getGeometry().getMaxIndex() >= 0) // If no indices, don't attach this mesh.
                     result.add(((PPolygonMeshInstance)current).updateSharedMesh());
             }
+
+            // special case for the skeleton node (see this method... haha)
+            if (current instanceof SkeletonNode)
+            {
+                result.addAll(((SkeletonNode)current).collectSharedMeshes());
+                continue;
+            }
+
             // add all the kids
             for (PNode kid : current.getChildren())
                 queue.add(kid);
@@ -493,7 +495,10 @@ public class SkeletonNode extends PNode implements Animated
 
         // then get skinned mesh meshes
         for (PPolygonSkinnedMeshInstance meshInst : getSkinnedMeshInstances())
+        {
+            meshInst.getTransform().buildWorldMatrix(this.getTransform().getWorldMatrix(false));
             result.add(meshInst.updateSharedMesh());
+        }
         return result;
     }
 }
