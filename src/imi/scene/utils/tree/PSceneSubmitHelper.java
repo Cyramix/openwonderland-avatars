@@ -22,6 +22,7 @@ import imi.scene.PMatrix;
 import imi.scene.PNode;
 import imi.scene.PTransform;
 import imi.scene.polygonmodel.PPolygonMeshInstance;
+import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
 import imi.scene.polygonmodel.skinned.SkinnedMeshJoint;
 import java.util.ArrayList;
 
@@ -57,6 +58,12 @@ public class PSceneSubmitHelper  implements NodeProcessor
     {
         PNode parent = current.getParent();
 
+        // Special case for skeleton node
+        if (current instanceof SkeletonNode)
+        {
+            m_sharedMeshCollection.addAll(((SkeletonNode)current).collectSharedMeshes());
+            return false;
+        }
         // Get the parent's world matrix
         PTransform parentTransform = null;
         if (parent == null)

@@ -17,6 +17,7 @@
  */
 package imi.scene.polygonmodel.parts.skinned;
 
+import com.jme.scene.SharedMesh;
 import imi.scene.PJoint;
 import imi.scene.PMatrix;
 import imi.scene.PNode;
@@ -25,14 +26,17 @@ import imi.scene.animation.Animated;
 import imi.scene.animation.AnimationComponent;
 import imi.scene.animation.AnimationGroup;
 import imi.scene.animation.AnimationState;
+import imi.scene.polygonmodel.PPolygonMeshInstance;
 import imi.scene.polygonmodel.parts.PMeshMaterial;
 import imi.scene.polygonmodel.skinned.PPolygonSkinnedMeshInstance;
 import imi.scene.polygonmodel.skinned.SkinnedMeshJoint;
 import imi.scene.polygonmodel.skinned.PPolygonSkinnedMesh;
 import imi.scene.shader.AbstractShaderProgram;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javolution.util.FastList;
 
 
 
@@ -421,5 +425,75 @@ public class SkeletonNode extends PNode implements Animated
     {
         return m_BFTSkeleton.get(BFTIndex);
     }
-    
+
+    public List<SharedMesh> collectSharedMeshes()
+    {
+        ArrayList<SharedMesh> result = new ArrayList<SharedMesh>();
+
+        // first thing, traverse and flatten the skeleton, collecting sharedmeshes along the way
+        FastList<PNode> queue = new FastList<PNode>();
+        queue.add(getSkeletonRoot());
+        while (queue.isEmpty() == false)
+        {
+            PNode current = queue.removeFirst();
+            // special case for the skeleton node (see this method... haha)
+            if (current instanceof SkeletonNode)
+            {
+                result.addAll(((SkeletonNode)current).collectSharedMeshes());
+                continue;
+            }
+
+            PNode parent = current.getParent();
+
+            // Get the parent's world matrix
+            PTransform parentTransform = null;
+            if (parent == null)
+                parentTransform = new PTransform();
+            else
+                parentTransform = parent.getTransform();
+
+            // If we have a parent without a transform prune the branch!
+            if (parentTransform == null)
+            {
+                parentTransform = new PTransform();
+            }
+
+            if (current.getTransform() != null)
+            {
+                // Build the world matrix for the current instance
+                if (current.getTransform().isDirtyWorldMat() || current.isDirty())
+                {
+                    current.getTransform().buildWorldMatrix(parentTransform.getWorldMatrix(false));
+                    // Now we are clean!
+                    current.setDirty(false, false);
+                }
+                // handle mesh space case
+                if (current instanceof SkinnedMeshJoint)
+                {
+                    if (parent instanceof SkinnedMeshJoint)
+                    {
+                        PMatrix meshSpace = ((SkinnedMeshJoint)current).getMeshSpace();
+                        meshSpace.mul(((SkinnedMeshJoint)parent).getMeshSpace(), current.getTransform().getLocalMatrix(false));
+                    }
+                    else
+                        ((SkinnedMeshJoint)current).setMeshSpace(current.getTransform().getLocalMatrix(false));
+                }
+            }
+            if (current instanceof PPolygonMeshInstance)
+            {
+                // ensure we have indices
+                if (((PPolygonMeshInstance)current).getGeometry().getGeometry().getMaxIndex() >= 0) // If no indices, don't attach this mesh.
+                    result.add(((PPolygonMeshInstance)current).updateSharedMesh());
+            }
+            // add all the kids
+            for (PNode kid : current.getChildren())
+                queue.add(kid);
+
+        }
+
+        // then get skinned mesh meshes
+        for (PPolygonSkinnedMeshInstance meshInst : getSkinnedMeshInstances())
+            result.add(meshInst.updateSharedMesh());
+        return result;
+    }
 }
