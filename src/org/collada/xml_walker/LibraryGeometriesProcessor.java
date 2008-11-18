@@ -38,7 +38,7 @@ public class LibraryGeometriesProcessor extends Processor
 {
     private ArrayList<Processor> children = null;
     
-    String m_CurrentMeshName = "";
+    String m_CurrentMeshName = null;
 
 
     
@@ -58,25 +58,14 @@ public class LibraryGeometriesProcessor extends Processor
         for(Geometry g : geoms)
         {
             m_CurrentMeshName = g.getId();
-
-            //System.out.println("Processing Geometry "+g.getName());
             if (g.getConvexMesh()!=null)
-            {
-                //System.out.println("   ConvexMesh");
                 children.add(ProcessorFactory.createProcessor(pCollada, g.getConvexMesh(), this));
-            }
 
             if (g.getMesh()!=null)
-            {
-                //System.out.println("   Mesh");
                 children.add(ProcessorFactory.createProcessor(pCollada, g.getMesh(), this));
-            }
 
             if (g.getSpline()!=null)
-            {
-              //  System.out.println("   Spline");
                 children.add(ProcessorFactory.createProcessor(pCollada, g.getSpline(), this));
-            }
 
             // TODO: process the extras - for instance the double sided tag :)
         }

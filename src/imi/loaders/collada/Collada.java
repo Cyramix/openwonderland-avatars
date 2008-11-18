@@ -1022,9 +1022,9 @@ public class Collada
     //  Creates a PolygonMesh.
     public PPolygonMesh createPolygonMesh()
     {
-        PPolygonMesh pPolygonMesh = new PPolygonMesh();
+        PPolygonMesh newMesh = new PPolygonMesh();
 
-        return(pPolygonMesh);
+        return newMesh ;
     }
 
     //  Adds a PolygonMesh.
@@ -1051,15 +1051,13 @@ public class Collada
     //  Finds the PolygonMesh with the specified name.
     public PPolygonMesh findPolygonMesh(String meshName)
     {
-        PPolygonMesh pPolygonMesh = null;
-        for (int a=0; a<getPolygonMeshCount(); a++)
+        for (PPolygonMesh polyMesh : m_PolygonMeshes)
         {
-            pPolygonMesh = getPolygonMesh(a);
-            if (pPolygonMesh.getName().equals(meshName))
-                return(pPolygonMesh);
+            if (meshName.equals(polyMesh.getName()))
+                return polyMesh;
         }
 
-        return(null);
+        return null;
     }
 
     //  Removes a PolygonMesh.
@@ -1331,7 +1329,7 @@ public class Collada
                 bSkeletonsCreated = false;
             }
             else
-                System.out.println("   Unable to find Mesh '" + colladaNode.getMeshName() + "'!");
+                System.out.println("   Unable to find Mesh named " + meshName + " with URL'" + meshURL + "'!");
         }
         //  Otherwise, if the ColladaNode was assigned a InstanceNodeName, we need
         //  to create an instance of a PolygonMesh.

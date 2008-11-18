@@ -21,10 +21,8 @@ package org.collada.xml_walker;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
 import com.jme.math.Vector3f;
 import com.jme.math.Vector2f;
-import com.jme.renderer.ColorRGBA;
 import org.collada.colladaschema.InputLocalOffset;
 import org.collada.colladaschema.Polylist;
 import org.collada.colladaschema.Vertices;
@@ -33,8 +31,6 @@ import org.collada.colladaschema.InputLocal;
 import imi.scene.polygonmodel.PPolygonMesh;
 import imi.scene.polygonmodel.parts.polygon.PPolygon;
 import imi.scene.polygonmodel.parts.PMeshMaterial;
-import imi.scene.polygonmodel.skinned.PPolygonSkinnedMesh;
-import imi.scene.polygonmodel.parts.skinned.PPolygonSkinnedVertexIndices;
 
 import imi.loaders.collada.Collada;
 
@@ -46,21 +42,22 @@ import imi.loaders.collada.Collada;
  */
 public class PolylistProcessor extends Processor
 {
+    /** Store a convenience reference to the mesh processor **/
     private MeshProcessor m_pMeshProcessor = null;
 
     private int m_VertexOffset = 0;
 
     private ArrayList<VertexDataSemantic> m_VertexDataSemantics = new ArrayList<VertexDataSemantic>();
 
-    private VertexDataSemantic m_pPositionSemantic = null;
-    private VertexDataSemantic m_pNormalSemantic = null;
-    private VertexDataSemantic m_pTexCoordSemantic = null;
+    private VertexDataSemantic m_positionSemantic  = null;
+    private VertexDataSemantic m_normalSemantic    = null;
+    private VertexDataSemantic[] m_texCoordSemantic  = new VertexDataSemantic[4]; // Support for up to eight textures
 
 
     private int[] m_PolygonVertexCounts = null;
-    private int[] m_PolygonIndices;
+    private int[] m_PolygonIndices = null;
 
-    private String m_MaterialName = "";
+    private String m_MaterialName = null;
     private PColladaMaterial m_pColladaMaterial = null; 
 
 
@@ -73,45 +70,10 @@ public class PolylistProcessor extends Processor
         if (pParent instanceof MeshProcessor)
             m_pMeshProcessor = (MeshProcessor)pParent;
 
-        logger.info("Polylist " + pPolylist.getName());
-
         getMaterial(pPolylist);
 
         buildVertexDataSemanticArray(pPolylist);
         cacheVertexDataSemantics();
-
-/*
-        List<InputLocalOffset> inputs = pPolylist.getInputs();
-        
-        //  Calculate the VertexOffset.
-        m_VertexOffset = 0;
-        for(InputLocalOffset in : inputs)
-        {
-            m_VertexOffset = Math.max(in.getOffset().intValue(), m_VertexOffset);
-
-            VertexDataSemantic pVertexDataSemantic = new VertexDataSemantic(in);
-
-            m_VertexDataSemantics.add(pVertexDataSemantic);
-
-            
-            //  Gets the VertexDataArray with the specified name.
-            pVertexDataSemantic.m_DataArray = m_pMeshProcessor.getVertexDataArray(pVertexDataSemantic.m_DataName);
-            
-            
-            //  Cache pointers to the common Semantics.
-            if (pVertexDataSemantic.m_Name.equals("VERTEX"))
-                m_pPositionSemantic = pVertexDataSemantic;
-            else if (pVertexDataSemantic.m_Name.equals("NORMAL"))
-                m_pNormalSemantic = pVertexDataSemantic;
-            else if (pVertexDataSemantic.m_Name.equals("TEXCOORD"))
-                m_pTexCoordSemantic = pVertexDataSemantic;
-        }
-
-        m_VertexOffset++;
-*/
-
-//        System.out.println("VertexOffset:  " + m_VertexOffset);
-//        System.out.flush();
 
         processPolygonVertexCounts(pPolylist.getVcount());
         processPolygonIndices(pPolylist.getP());
@@ -119,45 +81,27 @@ public class PolylistProcessor extends Processor
     
     public void getMaterial(Polylist pPolylist)
     {
-        m_MaterialName = "";
-        if (pPolylist.getMaterial().length() > 2)
+        if (pPolylist.getMaterial() != null)
         {
-            m_MaterialName = pPolylist.getMaterial();//.substring(0, pPolylist.getMaterial().length()-2);
-            //System.out.println("   MaterialName:  " + m_MaterialName);
+            m_MaterialName = pPolylist.getMaterial();
             m_pColladaMaterial = m_pCollada.findColladaMaterial(m_MaterialName);
         }
     }
 
     private void processPolygonVertexCounts(List<BigInteger> polygonVertexCountsList)
     {
-        int count = polygonVertexCountsList.size();
-        int a;
-        BigInteger pBigInteger;
-        
-        m_PolygonVertexCounts = new int[count];
-        
-        for (a=0; a<count; a++)
-        {
-            pBigInteger = (BigInteger)polygonVertexCountsList.get(a);
-
-            m_PolygonVertexCounts[a] = pBigInteger.intValue();
-        }
+        m_PolygonVertexCounts = new int[polygonVertexCountsList.size()];
+        int arrayIndex = 0;
+        for (BigInteger bigInt : polygonVertexCountsList)
+            m_PolygonVertexCounts[arrayIndex++] = bigInt.intValue();
     }
 
     private void processPolygonIndices(List<BigInteger> polygonIndicesList)
     {
-        int count = polygonIndicesList.size();
-        int a;
-        BigInteger pBigInteger;
-        
-        m_PolygonIndices = new int[count];
-        
-        for (a=0; a<count; a++)
-        {
-            pBigInteger = (BigInteger)polygonIndicesList.get(a);
-
-            m_PolygonIndices[a] = pBigInteger.intValue();
-        }
+        m_PolygonIndices = new int[polygonIndicesList.size()];
+        int arrayIndex = 0;
+        for (BigInteger bigInt : polygonIndicesList)
+            m_PolygonIndices[arrayIndex++] = bigInt.intValue();
     }
 
     public int[] getPolygonVertexCounts()
@@ -183,11 +127,10 @@ public class PolylistProcessor extends Processor
 
             
     //  Populates a PolygonMesh with geometry data.
-    public void populatePolygonMesh(PPolygonMesh pPolygonMesh)
+    public void populatePolygonMesh(PPolygonMesh polyMesh)
     {
-        pPolygonMesh.setName(getMeshName());
-
-
+        polyMesh.setName(getMeshName());
+        // Grab some convenience references
         int [] polygonVertexCounts  = getPolygonVertexCounts();
         int [] polygonIndices       = getPolygonIndices();
 
@@ -199,29 +142,30 @@ public class PolylistProcessor extends Processor
         int positionIndex           = -1;
         int normalIndex             = -1;
         int texCoord0Index          = -1;
+        int texCoord1Index          = -1;
+        int texCoord2Index          = -1;
+        int texCoord3Index          = -1;
 
         int meshPositionIndex       = -1;
         int meshNormalIndex         = -1;
-        int meshTexCoord0Index      = -1;
 
         PPolygon pPolygon           = null;
 
 
-
-        pPolygonMesh.beginBatch();
-
+        // Begin work on the mesh
+        polyMesh.beginBatch();
         
         //  Add all the Positions to the PolygonMesh.
-        if (m_pPositionSemantic != null)
-            populatePolygonMeshWithPositions(pPolygonMesh);
+        if (m_positionSemantic != null)
+            populatePolygonMeshWithPositions(polyMesh);
 
         //  Add all the Normals to the PolygonMesh.
-        if (m_pNormalSemantic != null)
-            populatePolygonMeshWithNormals(pPolygonMesh);
+        if (m_normalSemantic != null)
+            populatePolygonMeshWithNormals(polyMesh);
 
         //  Add all the TexCoords to the PolygonMesh.
-        if (m_pTexCoordSemantic != null)
-            populatePolygonMeshWithTexCoords(pPolygonMesh);
+        if (m_texCoordSemantic != null)
+            populatePolygonMeshWithTexCoords(polyMesh);
 
 
         for (polygonIndex=0; polygonIndex<polygonVertexCounts.length; polygonIndex++)
@@ -230,41 +174,47 @@ public class PolylistProcessor extends Processor
 
 
             //  Create a new Polygon.
-            pPolygon = pPolygonMesh.createPolygon();
+            pPolygon = polyMesh.createPolygon();
 
             pPolygon.beginBatch();
 
             for (vertexIndex=0; vertexIndex<polygonVertexCount; vertexIndex++)
             {
-                if (m_pPositionSemantic != null)
-                    positionIndex = polygonIndices[index + m_pPositionSemantic.m_Offset];
-                if (m_pNormalSemantic != null)
-                    normalIndex = polygonIndices[index + m_pNormalSemantic.m_Offset];
-                if (m_pTexCoordSemantic != null)
-                    texCoord0Index = polygonIndices[index + m_pTexCoordSemantic.m_Offset];
+                if (m_positionSemantic != null)
+                    positionIndex = polygonIndices[index + m_positionSemantic.m_Offset];
+                if (m_normalSemantic != null)
+                    normalIndex = polygonIndices[index + m_normalSemantic.m_Offset];
+                if (m_texCoordSemantic[0] != null)
+                    texCoord0Index = polyMesh.getTexCoord(m_texCoordSemantic[0].getVector2f(polygonIndices[index + m_texCoordSemantic[0].m_Offset]));
+                if (m_texCoordSemantic[1] != null)
+                    texCoord1Index = polyMesh.getTexCoord(m_texCoordSemantic[1].getVector2f(polygonIndices[index + m_texCoordSemantic[1].m_Offset]));
+                if (m_texCoordSemantic[2] != null)
+                    texCoord2Index = polyMesh.getTexCoord(m_texCoordSemantic[2].getVector2f(polygonIndices[index + m_texCoordSemantic[2].m_Offset]));
+                if (m_texCoordSemantic[3] != null)
+                    texCoord3Index = polyMesh.getTexCoord(m_texCoordSemantic[3].getVector2f(polygonIndices[index + m_texCoordSemantic[3].m_Offset]));
+
                 index += m_VertexOffset;
 
                 meshPositionIndex = positionIndex;
                 meshNormalIndex = normalIndex;
-                meshTexCoord0Index = texCoord0Index;
 
                 //  Add the Vertex to the Polygon.
                 pPolygon.addVertex(meshPositionIndex,       //  PositionIndex
                                    meshNormalIndex,         //  NormalIndex
-                                   meshTexCoord0Index,      //  TexCoord1Index
-                                   -1,                      //  TexCoord2Index
-                                   -1,                      //  TexCoord3Index
-                                   -1);                     //  TexCoord4Index
+                                   texCoord0Index,      //  TexCoord1Index
+                                   texCoord1Index,                      //  TexCoord2Index
+                                   texCoord2Index,                      //  TexCoord3Index
+                                   texCoord3Index);                     //  TexCoord4Index
             }
             pPolygon.endBatch();
         }
 
-        if (m_pNormalSemantic != null)
-            pPolygonMesh.endBatch(false);
+        if (m_normalSemantic != null)
+            polyMesh.endBatch(false);
         else
         {
-            pPolygonMesh.setSmoothNormals(true);
-            pPolygonMesh.endBatch();
+            polyMesh.setSmoothNormals(true);
+            polyMesh.endBatch();
         }
 
 
@@ -275,8 +225,8 @@ public class PolylistProcessor extends Processor
             PMeshMaterial pMaterial = m_pColladaMaterial.createMeshMaterial();
             if (pMaterial != null)
             {
-                pPolygonMesh.setNumberOfTextures(3); // hack code
-                pPolygonMesh.setMaterial(pMaterial);
+                polyMesh.setNumberOfTextures(3); // hack code
+                polyMesh.setMaterial(pMaterial);
                 
             }
         }
@@ -289,12 +239,12 @@ public class PolylistProcessor extends Processor
     void populatePolygonMeshWithPositions(PPolygonMesh pPolygonMesh)
     {
         int a;
-        int PositionCount = m_pPositionSemantic.getVector3fCount();
+        int PositionCount = m_positionSemantic.getVector3fCount();
         Vector3f pPosition;
 
         for (a=0; a<PositionCount; a++)
         {
-            pPosition = m_pPositionSemantic.getVector3f(a);
+            pPosition = m_positionSemantic.getVector3f(a);
             
             pPolygonMesh.addPosition(pPosition);
         }
@@ -303,13 +253,12 @@ public class PolylistProcessor extends Processor
     //  Populates the PolygonMesh with Normals.
     void populatePolygonMeshWithNormals(PPolygonMesh pPolygonMesh)
     {
-        int a;
-        int NormalCount = m_pNormalSemantic.getVector3fCount();
-        Vector3f pNormal;
+        int NormalCount = m_normalSemantic.getVector3fCount();
+        Vector3f pNormal = null;
 
-        for (a=0; a<NormalCount; a++)
+        for (int i = 0; i < NormalCount; i++)
         {
-            pNormal = m_pNormalSemantic.getVector3f(a);
+            pNormal = m_normalSemantic.getVector3f(i);
             
             pPolygonMesh.addNormal(pNormal);
         }
@@ -318,15 +267,13 @@ public class PolylistProcessor extends Processor
     //  Populates the PolygonMesh with TexCoords.
     void populatePolygonMeshWithTexCoords(PPolygonMesh pPolygonMesh)
     {
-        int a;
-        int TexCoordCount = m_pTexCoordSemantic.getVector2fCount();
-        Vector2f pTexCoord;
-
-        for (a=0; a<TexCoordCount; a++)
+        for (VertexDataSemantic texCoordSemantic : m_texCoordSemantic)
         {
-            pTexCoord = m_pTexCoordSemantic.getVector2f(a);
-            
-            pPolygonMesh.addTexCoord(pTexCoord);
+            if (texCoordSemantic != null)
+            {
+                for (int i = 0; i < texCoordSemantic.getVector2fCount(); ++i)
+                    pPolygonMesh.addTexCoord(texCoordSemantic.getVector2f(i));
+            }
         }
     }
 
@@ -334,57 +281,54 @@ public class PolylistProcessor extends Processor
     //  Finds the VertexDataSemantic with the specified name.
     private VertexDataSemantic findVertexDataSemantic(String name)
     {
-        int a;
-        VertexDataSemantic pVertexDataSemantic;
-
-        for (a=0; a<m_VertexDataSemantics.size(); a++)
+        VertexDataSemantic result = null;
+        for (VertexDataSemantic semantic : m_VertexDataSemantics)
         {
-            pVertexDataSemantic = m_VertexDataSemantics.get(a);
-
-            if (pVertexDataSemantic.m_Name.equals(name))
-                return(pVertexDataSemantic);
+            if (name.equals(semantic.m_Name))
+            {
+                result = semantic;
+                break;
+            }
         }
 
-        return(null);
+        return result;
     }
 
     private void buildVertexDataSemanticArray(Polylist pPolylist)
     {
         List<InputLocalOffset> inputs = pPolylist.getInputs();
-        String name;
-        String arrayName;
-        int offset;
-        Vertices pVertices;
-        VertexDataArray pDataArray;
-        VertexDataSemantic pVertexDataSemantic;
+        String semanticAttribute = null;
+        String sourceName = null;
 
+        Vertices verts = null;
+        VertexDataArray pDataArray = null;
+        VertexDataSemantic pVertexDataSemantic = null;
 
         m_VertexOffset = 0;
-        for(InputLocalOffset in : inputs)
+
+        for(InputLocalOffset currentInput : inputs)
         {
-            m_VertexOffset = Math.max(in.getOffset().intValue(), m_VertexOffset);
+            m_VertexOffset = Math.max(currentInput.getOffset().intValue(), m_VertexOffset);
 
-            name = in.getSemantic();
-            arrayName = in.getSource();
-            if (arrayName.startsWith("#"))
-                arrayName = arrayName.substring(1);
+            semanticAttribute = currentInput.getSemantic();
+            sourceName = currentInput.getSource();
+            if (sourceName.startsWith("#")) // Indicates a link
+                sourceName = sourceName.substring(1);
 
-            offset = in.getOffset().intValue();
+            int semanticOffset = currentInput.getOffset().intValue();
 
+            //  Get the Vertices with the specified identifier
+            verts = m_pMeshProcessor.getVertices(sourceName);
 
-
-            //  Get the Vertices with the specified name.
-            pVertices = m_pMeshProcessor.getVertices(arrayName);
-            if (pVertices != null)
+            if (verts != null)
             {
-                int i;
-                InputLocal pInputLocal;
-                String inputLocalName;
-                String inputLocalSourceName;
+                InputLocal pInputLocal = null;
+                String inputLocalName = null;
+                String inputLocalSourceName = null;
 
-                for (i=0; i<pVertices.getInputs().size(); i++)
+                for (int i =0; i < verts.getInputs().size(); i++)
                 {
-                    pInputLocal = pVertices.getInputs().get(i);
+                    pInputLocal = verts.getInputs().get(i);
                     
                     inputLocalName = pInputLocal.getSemantic();
                     inputLocalSourceName = pInputLocal.getSource();
@@ -394,7 +338,7 @@ public class PolylistProcessor extends Processor
                     pDataArray = m_pMeshProcessor.getVertexDataArray(inputLocalSourceName);
 
                     //  Constructor.
-                    pVertexDataSemantic = new VertexDataSemantic(inputLocalName, offset, inputLocalSourceName, pDataArray);
+                    pVertexDataSemantic = new VertexDataSemantic(inputLocalName, semanticOffset, inputLocalSourceName, pDataArray);
 
                     m_VertexDataSemantics.add(pVertexDataSemantic);
                 }
@@ -402,9 +346,9 @@ public class PolylistProcessor extends Processor
             else
             {
                 //  Gets the VertexDataArray with the specified name.
-                pDataArray = m_pMeshProcessor.getVertexDataArray(arrayName);
+                pDataArray = m_pMeshProcessor.getVertexDataArray(sourceName);
             
-                pVertexDataSemantic = new VertexDataSemantic(name, offset, arrayName, pDataArray);
+                pVertexDataSemantic = new VertexDataSemantic(semanticAttribute, semanticOffset, sourceName, pDataArray);
 
                 m_VertexDataSemantics.add(pVertexDataSemantic);
             }
@@ -415,9 +359,19 @@ public class PolylistProcessor extends Processor
 
     private void cacheVertexDataSemantics()
     {
-        m_pPositionSemantic = findVertexDataSemantic("POSITION");
-        m_pNormalSemantic = findVertexDataSemantic("NORMAL");
-        m_pTexCoordSemantic = findVertexDataSemantic("TEXCOORD");
+        m_positionSemantic = findVertexDataSemantic("POSITION");
+        m_normalSemantic = findVertexDataSemantic("NORMAL");
+
+        // Handle texture coordinates
+        int textureSemanticCount = 0;
+        VertexDataSemantic semantic = null;
+        for (int i = 0; i < m_VertexDataSemantics.size(); i++)
+        {
+            semantic = m_VertexDataSemantics.get(i);
+
+            if (semantic.m_Name.equals("TEXCOORD"))
+                m_texCoordSemantic[textureSemanticCount++] = semantic;
+        }
     }
 
 }

@@ -211,7 +211,7 @@ public class PMeshMaterialCombo
                 float avg   =  m_Material1.getShininess();
                 avg         += m_Material2.getShininess();
                 avg         *= 0.5f;
-                m_MaterialCombo.setShininess(avg);
+                m_MaterialCombo.setShininess((int)avg);
                 break;
             }
         }

@@ -44,20 +44,11 @@ public class MeshProcessor extends Processor
     
     private ArrayList<VertexDataArray>  m_VertexDataArrays = new ArrayList<VertexDataArray>();
 
-    private PPolygonMesh                m_pRootPolygonMesh = null;
+    private PPolygonMesh                m_rootPolyMesh = null;
 
-
-
-    /**
-     * Constructor.
-     * 
-     * @param pCollada
-     * @param pMesh
-     * @param pParent
-     */
-    public MeshProcessor(Collada pCollada, Mesh pMesh, Processor pParent)
+    public MeshProcessor(Collada colladaDoc, Mesh pMesh, Processor pParent)
     {
-        super(pCollada, pMesh, pParent);
+        super(colladaDoc, pMesh, pParent);
 
         if (pParent instanceof LibraryGeometriesProcessor)
             m_Name = ((LibraryGeometriesProcessor)pParent).getMeshName();
@@ -71,47 +62,53 @@ public class MeshProcessor extends Processor
             processSourceData(s);
 
 
-        ProcessorFactory.createProcessor(pCollada, pMesh.getVertices(), this);  // exactly 1 vertices
+        ProcessorFactory.createProcessor(colladaDoc, pMesh.getVertices(), this);  // exactly 1 vertices
 
         List primitives = pMesh.getTrianglesAndLinestripsAndPolygons();  // 0 or more
 
         // lines, linestrips, polygons, polylist, triangles, trifans, tristrips
         for(Object prim : primitives)
         {
-            Processor pProcessor = ProcessorFactory.createProcessor(pCollada, prim, this);
+            Processor currentProcessor = ProcessorFactory.createProcessor(colladaDoc, prim, this);
 
-            PPolygonMesh pPolygonMesh = null;
+            PPolygonMesh polyMesh = null;
 
             //  Mesh contains Polygons?
-            if (pProcessor instanceof PolylistProcessor)
+            if (currentProcessor instanceof PolylistProcessor)
             {
                 //  Create a PolygonMesh.
-                pPolygonMesh = pCollada.createPolygonMesh();
+                polyMesh = colladaDoc.createPolygonMesh();
 
-                ((PolylistProcessor)pProcessor).populatePolygonMesh(pPolygonMesh);
+                ((PolylistProcessor)currentProcessor).populatePolygonMesh(polyMesh);
             }
-            
             //  Mesh contains Triangles?
-            else if (pProcessor instanceof TrianglesProcessor)
+            else if (currentProcessor instanceof TrianglesProcessor)
             {
-                pPolygonMesh = pCollada.createPolygonMesh();
+                polyMesh = colladaDoc.createPolygonMesh();
 
                 //  Populate the PolygonMesh.
-                ((TrianglesProcessor)pProcessor).populatePolygonMesh(pPolygonMesh);
+                ((TrianglesProcessor)currentProcessor).populatePolygonMesh(polyMesh);
+            }
+            else if (currentProcessor instanceof PolygonsProcessor)
+            {
+                polyMesh = colladaDoc.createPolygonMesh();
+                ((PolygonsProcessor)currentProcessor).populatePolygonMesh(polyMesh);
             }
 
+            // TODO: Handle lines and points
+
             //  If we haven't created a PolygonMesh yet, this is the root PolygonMesh.
-            if (pPolygonMesh != null)
+            if (polyMesh != null)
             {
-                if (m_pRootPolygonMesh == null)
+                if (m_rootPolyMesh == null)
                 {
-                    m_pRootPolygonMesh = pPolygonMesh;
-                    pCollada.addPolygonMesh(pPolygonMesh);
+                    m_rootPolyMesh = polyMesh;
+                    colladaDoc.addPolygonMesh(polyMesh);
                 }
                 //  Otherwise, assign the created PolygonMesh as a child of the root PolygonMesh.
                 else
                 {
-                    m_pRootPolygonMesh.addChild(pPolygonMesh);
+                    m_rootPolyMesh.addChild(polyMesh);
                 }
             }
         }
@@ -162,14 +159,14 @@ public class MeshProcessor extends Processor
      * @param name
      * @return Vertices
      */
-    public Vertices getVertices(String name)
+    public Vertices getVertices(String identifier)
     {
-        Mesh pMesh = (Mesh)m_pColladaSchema;
+        Mesh colladaMesh = (Mesh)m_pColladaSchema;
         
-        if (pMesh.getVertices() != null)
+        if (colladaMesh.getVertices() != null)
         {
-            if (pMesh.getVertices().getId().equals(name))
-                return(pMesh.getVertices());
+            if (colladaMesh.getVertices().getId().equals(identifier))
+                return(colladaMesh.getVertices());
         }
         
         return(null);

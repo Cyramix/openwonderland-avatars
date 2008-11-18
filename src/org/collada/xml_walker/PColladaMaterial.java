@@ -69,7 +69,7 @@ public class PColladaMaterial
     private PColladaColor   m_DiffuseColor              = new PColladaColor();
     private PColladaColor   m_SpecularColor             = new PColladaColor();
 
-    private float           m_fShininess                = 0.0f;
+    private int             m_shininess                 = 0;
     private PColladaColor   m_ReflectiveColor           = new PColladaColor();
     private float           m_fReflectivity             = 0.0f;
 
@@ -80,19 +80,19 @@ public class PColladaMaterial
     private float           m_fIndexOfRefraction        = 0.0f;
 
     /** Emissive map     **/
-    private String          m_EmissiveImageFilename     = "";
+    private String          m_EmissiveImageFilename     = null;
     /** Ambient map    **/
-    private String          m_AmbientImageFilename      = "";
+    private String          m_AmbientImageFilename      = null;
     /** Treated as the default diffuse map  **/
     private List<String>    m_DiffuseImageFilename      = new ArrayList<String>();
     /** Interpreted as a specular map       **/
-    private String          m_SpecularImageFilename     = "";
-    private String          m_ReflectiveImageFilename   = "";
+    private String          m_SpecularImageFilename     = null;
+    private String          m_ReflectiveImageFilename   = null;
 
     /** Bump map (currently unsupported)    **/
-    private String          m_BumpMapImageFilename      = "";
+    private String          m_BumpMapImageFilename      = null;
     /** Normal map **/
-    private String          m_NormalMapImageFilename    = "";
+    private String          m_NormalMapImageFilename    = null;
 
 
 
@@ -129,7 +129,7 @@ public class PColladaMaterial
         //m_NormalMapImageFilename = processColorOrTexture(pBlinn., m_AmbientColor)
         
                 
-        m_fShininess = processFloatAttribute(pBlinn.getShininess());
+        m_shininess = (int)processFloatAttribute(pBlinn.getShininess());
 
         m_ReflectiveImageFilename = processColorOrTexture(pBlinn.getReflective(), m_ReflectiveColor);
         m_fReflectivity = processFloatAttribute(pBlinn.getReflectivity());
@@ -149,7 +149,7 @@ public class PColladaMaterial
         m_DiffuseImageFilename = processDiffuseColorsOrTextures(pPhong.getDiffuse(), m_DiffuseColor);
         
         m_SpecularImageFilename = processColorOrTexture(pPhong.getSpecular(), m_SpecularColor);
-        m_fShininess = processFloatAttribute(pPhong.getShininess());
+        m_shininess = (int)processFloatAttribute(pPhong.getShininess());
 
         m_ReflectiveImageFilename = processColorOrTexture(pPhong.getReflective(), m_ReflectiveColor);
         m_fReflectivity = processFloatAttribute(pPhong.getReflectivity());
@@ -221,7 +221,7 @@ public class PColladaMaterial
         result.setDiffuse(buildColorRGBA(m_DiffuseColor));
         
         // Shininess
-        result.setShininess(m_fShininess);
+        result.setShininess(m_shininess);
         
         // Textures
         int textureCount = 0;

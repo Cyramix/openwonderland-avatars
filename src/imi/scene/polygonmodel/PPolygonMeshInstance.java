@@ -375,6 +375,7 @@ public class PPolygonMeshInstance extends PNode
             texProps[i] = meshMat.getTexture(i);
         
         m_textureInstaller = new TextureInstaller(texProps, m_textureState);
+
         // TODO add functionality and data to this instance if we want 
         // to handle textures differently than the geometry
         boolean bNeedToUseTextureInstaller = false;

@@ -57,7 +57,7 @@ public class PMeshMaterial extends PNode
     /** Transparency Color **/
     private ColorRGBA  m_TransparencyColor = null;
     /** Shininess value **/
-    private float      m_Shininess = 0.0f;   // 0 is none, around 5 is low, around 100 is high
+    private int      m_Shininess = 0;   // 0 is none, around 5 is low, around 100 is high
     /** Alpha state **/
     private AlphaTransparencyType m_alphaState = AlphaTransparencyType.NO_TRANSPARENCY;
     /** Texture properties **/
@@ -170,7 +170,7 @@ public class PMeshMaterial extends PNode
      * @param textures      - must be an array of size [8]
      */
     public PMeshMaterial(String name, ColorRGBA diffuse, ColorRGBA ambient, ColorRGBA emissive, ColorRGBA specular,
-            float shininess, String [] textures, Texture.ApplyMode textureMode)
+            int shininess, String [] textures, Texture.ApplyMode textureMode)
     {
         setName(name);
         
@@ -528,10 +528,18 @@ public class PMeshMaterial extends PNode
         m_textures[index] = new TextureMaterialProperties(location);
         m_textures[index].setTextureUnit(index);
     }
-    
-    public void setShininess(float shininess) 
+
+    /**
+     * Shininess should be between zero and 128
+     * @param shininess
+     */
+    public void setShininess(int shininess)
     {
-        if (shininess >= 0.0f)
+        if (shininess < 0)
+            m_Shininess = 0;
+        else if (shininess > 128)
+            m_Shininess = 128;
+        else
             m_Shininess = shininess;
     }
 
@@ -555,7 +563,7 @@ public class PMeshMaterial extends PNode
         return m_Specular;
     }
     
-    public float getShininess() 
+    public int getShininess()
     {
         return m_Shininess;
     }

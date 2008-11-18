@@ -54,6 +54,12 @@ public class FileUtils
         else
             shortFilename = new String(shortFilename);
 
+        if (shortFilename.equals("null"))
+        {
+            int a;
+            a = 100;
+            a++;
+        }
         return(shortFilename);
     }
 

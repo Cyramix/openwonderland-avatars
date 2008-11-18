@@ -44,6 +44,7 @@ import imi.scene.utils.PRenderer;
 import imi.scene.utils.tree.PSceneSubmitHelper;
 import imi.scene.utils.tree.TreeTraverser;
 import imi.utils.BooleanPointer;
+import java.io.FileNotFoundException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -1083,13 +1084,22 @@ public class PScene extends PNode implements RepositoryUser
         // Create a suitable asset
         SharedAsset texture = new SharedAsset(getRepository(), new AssetDescriptor(SharedAssetType.Texture, textureLocation));
         
-        // Check localy in the the SharedAsset list  
+        // Check locally in the the SharedAsset list
         int index = m_SharedAssets.indexOf(texture);        
         if (-1 == index) 
         {
             // If not found load and add it
-            Texture monkeyTexture = TextureManager.loadTexture(textureLocation,
+            Texture monkeyTexture = null;
+            try
+            {
+                textureLocation.openStream();
+                monkeyTexture = TextureManager.loadTexture(textureLocation,
                     Texture.MinificationFilter.BilinearNearestMipMap, Texture.MagnificationFilter.Bilinear);
+            }
+            catch (Exception ex)
+            {
+                monkeyTexture = null;
+            }
             
             if (monkeyTexture != null)
             {

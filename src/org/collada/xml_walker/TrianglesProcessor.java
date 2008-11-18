@@ -18,9 +18,6 @@
 
 package org.collada.xml_walker;
 
-//import com.sun.j3d.utils.geometry.GeometryInfo;
-//import com.sun.j3d.utils.geometry.Stripifier;
-//import com.sun.j3d.utils.geometry.StripifierStats;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
@@ -59,7 +56,7 @@ public class TrianglesProcessor extends Processor
 
     private int [] m_TriangleIndices = null;
 
-    private String m_MaterialName = "";
+    private String m_MaterialName = null;
     private PColladaMaterial m_pColladaMaterial = null; 
 
 
@@ -79,20 +76,10 @@ public class TrianglesProcessor extends Processor
         if (pParent instanceof MeshProcessor)
             m_pMeshProcessor = (MeshProcessor)pParent;
 
-        logger.info("Polylist " + pTriangles.getName());
-
         getMaterial(pTriangles);
-
-//	    if (doesMaterialContainTexture())
-//        {
-//            int aaa = 0;
-//        }
 
         buildVertexDataSemanticArray(pTriangles);
         cacheVertexDataSemantics();
-
-//        System.out.println("VertexOffset:  " + m_VertexOffset);
-//        System.out.flush();
 
         processTriangles(pTriangles.getP());
     }
@@ -135,11 +122,10 @@ public class TrianglesProcessor extends Processor
      */
     public void getMaterial(Triangles pTriangles)
     {
-        m_MaterialName = "";
-        if (pTriangles.getMaterial().length() > 2)
+        m_MaterialName = null;
+        if (pTriangles.getMaterial() != null)
         {
-            m_MaterialName = pTriangles.getMaterial();//.substring(0, pTriangles.getMaterial().length()-2);
-            //System.out.println("   MaterialName:  " + m_MaterialName);
+            m_MaterialName = pTriangles.getMaterial();
             m_pColladaMaterial = m_pCollada.findColladaMaterial(m_MaterialName);
         }
     }
@@ -152,18 +138,10 @@ public class TrianglesProcessor extends Processor
      */
     private void processTriangles(List<BigInteger> triangleList)
     {
-        int count = triangleList.size();
-        int a;
-        BigInteger pBigInteger;
-        
-        m_TriangleIndices = new int[count];
-        
-        for (a=0; a<count; a++)
-        {
-            pBigInteger = (BigInteger)triangleList.get(a);
-
-            m_TriangleIndices[a] = pBigInteger.intValue();
-        }
+        m_TriangleIndices = new int[triangleList.size()];
+        int arrayIndex = 0;
+        for (BigInteger bigInt : triangleList)
+            m_TriangleIndices[arrayIndex++] = bigInt.intValue();
     }
 
 
@@ -223,7 +201,7 @@ public class TrianglesProcessor extends Processor
         int vertex3TexCoord4Index       = -1;
 
 
-        PPolygon pPolygon;
+        PPolygon pPolygon = null;
 
 
         pPolygonMesh.beginBatch();
@@ -303,25 +281,25 @@ public class TrianglesProcessor extends Processor
             pPolygon.addVertex(vertex1PositionIndex,    //  PositionIndex
                                vertex1NormalIndex,      //  NormalIndex
                                vertex1TexCoord1Index,   //  TexCoord1Index
-                               vertex1TexCoord2Index,                          //  TexCoord2Index
-                               vertex1TexCoord3Index,                          //  TexCoord3Index
-                               vertex1TexCoord4Index);                         //  TexCoord4Index
+                               vertex1TexCoord2Index,   //  TexCoord2Index
+                               vertex1TexCoord3Index,   //  TexCoord3Index
+                               vertex1TexCoord4Index);  //  TexCoord4Index
 
             //  Add the second Vertex to the Polygon.
             pPolygon.addVertex(vertex2PositionIndex,    //  PositionIndex
                                vertex2NormalIndex,      //  NormalIndex
                                vertex2TexCoord1Index,   //  TexCoord1Index
-                               vertex2TexCoord2Index,                          //  TexCoord2Index
-                               vertex2TexCoord3Index,                          //  TexCoord3Index
-                               vertex2TexCoord4Index);                         //  TexCoord4Index
+                               vertex2TexCoord2Index,   //  TexCoord2Index
+                               vertex2TexCoord3Index,   //  TexCoord3Index
+                               vertex2TexCoord4Index);  //  TexCoord4Index
 
             //  Add the third Vertex to the Polygon.
             pPolygon.addVertex(vertex3PositionIndex,    //  PositionIndex
                                vertex3NormalIndex,      //  NormalIndex
                                vertex3TexCoord1Index,   //  TexCoord1Index
-                               vertex3TexCoord2Index,                          //  TexCoord2Index
-                               vertex3TexCoord3Index,                          //  TexCoord3Index
-                               vertex3TexCoord4Index);                         //  TexCoord4Index
+                               vertex3TexCoord2Index,   //  TexCoord2Index
+                               vertex3TexCoord3Index,   //  TexCoord3Index
+                               vertex3TexCoord4Index);  //  TexCoord4Index
 
             pPolygon.endBatch();
 
@@ -336,8 +314,6 @@ public class TrianglesProcessor extends Processor
             pPolygonMesh.endBatch();
         }
 
-    
-        //System.out.println("PolyList.MaterialName:  " + m_MaterialName);
         if (m_pColladaMaterial != null)
         {
             //  Create the Material to be assigned to the PolygonMesh.
@@ -448,18 +424,17 @@ public class TrianglesProcessor extends Processor
      */
     private VertexDataSemantic findVertexDataSemantic(String name)
     {
-        int a;
-        VertexDataSemantic pVertexDataSemantic;
-
-        for (a=0; a<m_VertexDataSemantics.size(); a++)
+        VertexDataSemantic result = null;
+        for (VertexDataSemantic semantic : m_VertexDataSemantics)
         {
-            pVertexDataSemantic = m_VertexDataSemantics.get(a);
-
-            if (pVertexDataSemantic.m_Name.equals(name))
-                return(pVertexDataSemantic);
+            if (name.equals(semantic.m_Name))
+            {
+                result = semantic;
+                break;
+            }
         }
 
-        return(null);
+        return result;
     }
     
     /**
@@ -550,13 +525,8 @@ public class TrianglesProcessor extends Processor
 
             if (semantic.m_Name.equals("TEXCOORD"))
                 m_texCoordSemanticArray[textureSemanticCount++] = semantic;
-        }
-        
-        boolean breakpoint = false;
-        breakpoint = !breakpoint;
-        
+        }        
     }
-
 }
 
 
