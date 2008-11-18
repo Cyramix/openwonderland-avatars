@@ -47,6 +47,9 @@ public class ObjectCollection extends Entity
     protected PScene          pscene         = null;
     protected JScene          jscene         = null;
     
+    // Test
+    Gadget lighSwitch = null;
+    
     public ObjectCollection(String name, WorldManager wm)
     {
         super(name);
@@ -174,9 +177,9 @@ public class ObjectCollection extends Entity
         // Dispaly PRenderer
         //jscene.setRenderInternallyBool(true);
         
-        /////////
+        /////////  TEest   TEest   TEest   TEest   TEest   TEest   TEest   TEest 
 //        
-//        Gadget lighSwitch = new Gadget(new Vector3f(2.0f, 1.5f, 0.0f), Vector3f.UNIT_Z, "assets/models/collada/Objects/Interface/InterfaceSlider.dae");
+//        lighSwitch = new Gadget(new Vector3f(2.0f, 1.5f, 0.0f), Vector3f.UNIT_Z, "assets/models/collada/Objects/Interface/InterfaceSlider.dae");
 //        lighSwitch.setInScene(pscene);
 //        lighSwitch.setObjectCollection(this);
 //        lighSwitch.getModelInst().calculateBoundingSphere();
@@ -191,6 +194,12 @@ public class ObjectCollection extends Entity
 //        lighDimmer.setInScene(pscene);
 //        lighDimmer.setObjectCollection(this);
 //        lighDimmer.getModelInst().calculateBoundingSphere();
+    }
+    
+    public void testLightToggle()
+    {
+        //lighSwitch.translateSubMesh(Vector3f.UNIT_X, "Slider");
+        //lighSwitch.setRotationSubMesh(new Vector3f((float)Math.toRadians(0.0f),(float)Math.toRadians(0.0f), (float)Math.toRadians(0.0f)), "Slider");
     }
     
     /**

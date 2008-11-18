@@ -27,7 +27,7 @@ import org.jdesktop.mtgame.WorldManager;
  * @author Lou Hayt
  */
 public class NinjaAvatar extends Ninja 
-{
+{   
     public class NinjaAvatarAttributes extends Attributes
     {   
         public NinjaAvatarAttributes(String name, boolean bRandomCustomizations) 
@@ -110,7 +110,6 @@ public class NinjaAvatar extends Ninja
                 }
                 break;
                 case 1:
-                    case 2:
                 {
                     // Flip flops
                     delete.add("LFootNudeShape");
@@ -122,15 +121,15 @@ public class NinjaAvatar extends Ninja
                     add.add("RFlipFlopShape");
                 }
                 break;
-//                case 2:
-//                {
-//                    // Dress shoes
-//                    delete.add("LFootNudeShape");
-//                    delete.add("RFootNudeShape");
-//                    load.add("assets/models/collada/Shoes/DressShoes_M/MaleDressShoes.dae");
-//                    add.add("can't find it");
-//                }
-//                break;
+                case 2:
+                {
+                    // Dress shoes
+                    delete.add("LFootNudeShape");
+                    delete.add("RFootNudeShape");
+                    load.add("assets/models/collada/Shoes/DressShoes_M/MaleDressShoes.dae");
+                    add.add("polySurfaceShape3");
+                }
+                break;
             }   
         }
 
@@ -173,7 +172,6 @@ public class NinjaAvatar extends Ninja
                 }
                 break;
                 case 1:
-                    case 2:
                 {
                     // Shorts
                     delete.add("LegsNudeShape");
@@ -182,14 +180,14 @@ public class NinjaAvatar extends Ninja
                     add.add("MaleShortsShape");
                 }
                 break;
-//                case 2:
-//                {
-//                    // Dress pants
-//                    delete.add("LegsNudeShape");
-//                    load.add("assets/models/collada/Pants/DressPants_M/MaleDressPants1.dae");
-//                    add.add("can't find it");
-//                }
-//                break;
+                case 2:
+                {
+                    // Dress pants
+                    delete.add("LegsNudeShape");
+                    load.add("assets/models/collada/Pants/DressPants_M/MaleDressPants1.dae");
+                    add.add("Legs_LegsNudeShape");
+                }
+                break;
             }   
         }
 

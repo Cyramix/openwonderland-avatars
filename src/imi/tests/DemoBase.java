@@ -92,6 +92,7 @@ import imi.loaders.repository.Repository;
 import imi.loaders.repository.SharedAsset.SharedAssetType;
 import imi.scene.PScene;
 import imi.scene.camera.behaviors.FirstPersonCamModel;
+import imi.scene.camera.state.CameraState;
 import imi.scene.camera.state.FirstPersonCamState;
 import imi.scene.processors.CameraProcessor;
 import imi.scene.processors.FlexibleCameraProcessor;
@@ -714,6 +715,8 @@ public class DemoBase
         FirstPersonCamModel model = new FirstPersonCamModel();
         m_cameraProcessor.setCameraBehavior(model, state);
         m_cameraProcessor.setRunInRenderer(true);
+        
+        wm.addUserData(CameraState.class, state);
          
         ProcessorCollectionComponent pcc = new ProcessorCollectionComponent();
         pcc.addProcessor(m_cameraProcessor);

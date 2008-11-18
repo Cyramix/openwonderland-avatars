@@ -64,7 +64,7 @@ public class FlyState extends GameState
         //float y = actions[ActionNames.Movement_Y.ordinal()];
         float y = ninjaContext.getActions()[NinjaContext.ActionNames.Movement_Y.ordinal()];
 
-        System.err.println("TakeAction "+y);
+        //System.err.println("TakeAction "+y);
 
         NinjaController controller = ninjaContext.getController();
         

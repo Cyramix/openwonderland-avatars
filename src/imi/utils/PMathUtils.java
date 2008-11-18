@@ -80,9 +80,9 @@ public class PMathUtils
     {
         PMatrix result = null;
         // perform lookat to focal point
-        Vector3f forward = target.subtract(eyePosition);
-        Vector3f right = worldUp.cross(forward);
-        Vector3f realUp = forward.cross(right);
+        Vector3f forward = eyePosition.subtract(target).normalize();
+        Vector3f right = worldUp.cross(forward).normalize();
+        Vector3f realUp = forward.cross(right).normalize();
         Vector3f translation = (eyePosition);
         // load it up manually
         float[] floats = new float[16];
@@ -93,7 +93,28 @@ public class PMathUtils
 
         result = new PMatrix(floats);
         return result;
+    }
+    
+    public static PMatrix lookAt(Vector3f target, Vector3f eyePosition, Vector3f worldUp, float yOffset)
+    {
+        PMatrix result = null;
+        // perform lookat to focal point
+        Vector3f forward = eyePosition.subtract(target).normalize();
+        forward.y += yOffset;
+        forward.normalizeLocal();
+        
+        Vector3f right = worldUp.cross(forward).normalize();
+        Vector3f realUp = forward.cross(right).normalize();
+        Vector3f translation = (eyePosition);
+        // load it up manually
+        float[] floats = new float[16];
+        floats[ 0] = right.x;  floats[ 1] = realUp.x;  floats[ 2] = forward.x;  floats[ 3] = translation.x;
+        floats[ 4] = right.y;  floats[ 5] = realUp.y;  floats[ 6] = forward.y;  floats[ 7] = translation.y;
+        floats[ 8] = right.z;  floats[ 9] = realUp.z;  floats[10] = forward.z;  floats[11] = translation.z;
+        floats[12] = 0.0f;     floats[13] = 0.0f;      floats[14] = 0.0f;       floats[15] = 1.0f;
 
+        result = new PMatrix(floats);
+        return result;
     }
     
     /**

@@ -31,45 +31,80 @@ import imi.utils.PMathUtils;
  */
 public class EyeBall extends PPolygonSkinnedMeshInstance
 {
-    protected PPolygonModelInstance m_modelInst  = null;
+    private PPolygonModelInstance modelInst  = null;
+    
+    private Vector3f target = new Vector3f(0.0f, 1.0f, 0.0f);
+    
+    private float limitCone = 0.57f;
+    private float yScale    = 1.0f;
+    
+    private boolean bInCone = false;
+    private EyeBall otherEye = null;
     
     public EyeBall(PPolygonSkinnedMeshInstance meshInstance, PPolygonModelInstance modelInst, PScene pscene)
     {
         super(meshInstance, pscene);
-        m_modelInst = modelInst;
+        this.modelInst = modelInst;
         applyMaterial();
     }
     
     @Override
-    protected void postAnimationMatrixModifier(PMatrix matrix, PMatrix inverseBindPose, int index)
+    protected void postAnimationModifiedMeshSpaceMatrixHook(PMatrix matrix, int jointIndex) 
     {
-//        PMatrix rot = new PMatrix();
-//        rot.fromAngleAxis((float)Math.toRadians(90.0f), getTransform().getWorldMatrix(false).getLocalX());
-//        rot.mul(inverseBindPose);
-//        matrix.mul(rot, matrix);
+        PMatrix modelWorldRef = modelInst.getTransform().getWorldMatrix(false);
         
-//        Vector3f targetInWorldSpace = new Vector3f(0.0f, 0.0f, 0.0f);
-//        //m_modelInst.getTransform().getWorldMatrix(false).transformPoint(targetInWorldSpace);
-//        
-//        // Perform lookAt to target
-//        PMatrix eyeWorldXForm = PMathUtils.lookAt(
-//                targetInWorldSpace,
-//                m_modelInst.getTransform().getWorldMatrix(false).getTranslation(),
-//                Vector3f.UNIT_Y);
-//        matrix.set(eyeWorldXForm);
-//        setDirty(true, true);
+        // Get eye world space
+        PMatrix eyeWorld = new PMatrix();
+        eyeWorld.mul(modelWorldRef, matrix);
         
-        //matrix.
+        // Check limits
+        Vector3f forwardVec = modelWorldRef.getLocalZ();
+        Vector3f directionToTarget = target.subtract(eyeWorld.getTranslation());
+        directionToTarget.y *= yScale;
+        directionToTarget.normalizeLocal();
+
+        // Check if inside the cone
+        float dot = directionToTarget.dot(forwardVec);
+        if (dot > limitCone)
+        {
+            bInCone = true;
+            if (otherEye.isInCone())
+            {
+                // Perform lookAt to target
+                Vector3f scale = matrix.getScaleVector();
+                PMatrix eyeWorldXForm = PMathUtils.lookAt(
+                        target,
+                        eyeWorld.getTranslation(),
+                        Vector3f.UNIT_Y);
+                matrix.set(eyeWorldXForm);
+                matrix.setScale(scale);
+
+                matrix.mul(modelWorldRef.inverse(), matrix);
+            }
+        }
+        else
+            bInCone = false;
+        
+    }
+
+    public Vector3f getTarget() {
+        return target;
+    }
+
+    public void setTarget(Vector3f target) {
+        this.target = target;
+    }
+
+    public PPolygonModelInstance getModelInst() {
+        return modelInst;
+    }
+
+    public void setOtherEye(EyeBall otherOne) {
+        otherEye = otherOne;
     }
     
-    private void performEyeballLookAt(Vector3f targetInWorldSpace)
+    public boolean isInCone()
     {
-        // Perform lookAt to target
-        PMatrix leftEyeWorldXForm = PMathUtils.lookAt(
-                targetInWorldSpace,
-                getTransform().getWorldMatrix(false).getTranslation(),
-                Vector3f.UNIT_Y);
-        getTransform().getWorldMatrix(true).set(leftEyeWorldXForm);
-        getTransform().setDirtyWorldMat(false);
+        return bInCone;
     }
 }

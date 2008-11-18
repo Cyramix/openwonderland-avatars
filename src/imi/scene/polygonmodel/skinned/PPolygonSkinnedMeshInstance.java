@@ -159,10 +159,12 @@ public class PPolygonSkinnedMeshInstance extends PPolygonMeshInstance
         if (m_pSkeletonNode == null)
             return m_instance;
         
+        int [] influenceIndices = getInfluenceIndices();
+        
         if (m_InverseBindPose == null) // Initialize the bind pose by querying the skeleton for its bind pose
-            m_InverseBindPose = m_pSkeletonNode.getInverseBindPose(getInfluenceIndices());  // the group's transform is ignored
+            m_InverseBindPose = m_pSkeletonNode.getInverseBindPose(influenceIndices);  // the group's transform is ignored
         // Retrieve the collection of influences in their current pose
-        PMatrix [] matrixStack = m_pSkeletonNode.getPose(getInfluenceIndices());
+        PMatrix [] matrixStack = m_pSkeletonNode.getPose(influenceIndices);
         
         if (m_shaderState != null) // may not have loaded yet
         {    
@@ -172,8 +174,8 @@ public class PPolygonSkinnedMeshInstance extends PPolygonMeshInstance
             for (int i = 0; i < matrixStack.length && i < m_InverseBindPose.length; i++)
             {
                 PMatrix matrix = new PMatrix(matrixStack[i]);
+                postAnimationModifiedMeshSpaceMatrixHook(matrix, influenceIndices[i]);
                 matrix.mul(m_InverseBindPose[i]);
-                postAnimationMatrixModifier(matrix, m_InverseBindPose[i], i);
                 float [] matrixFloats = matrix.getFloatArray();
                 for(int j = 0; j < 16; j++)
                 {
@@ -333,7 +335,7 @@ public class PPolygonSkinnedMeshInstance extends PPolygonMeshInstance
         return false;
     }
 
-    protected void postAnimationMatrixModifier(PMatrix matrix, PMatrix inverseBindPose, int index) 
+    protected void postAnimationModifiedMeshSpaceMatrixHook(PMatrix matrix, int jointIndex) 
     {
         
     }

@@ -174,6 +174,8 @@ public class NinjaContext extends GameContext
         // GoTo to location - if path is available from the current location
         else if (trigger == TriggerNames.GoTo1.ordinal() && pressed)
         {
+           //ninja.getObjectCollection().testLightToggle(); // test
+           
             steering.clearTasks();
             GoToNearestLocation();
             if (location != null)

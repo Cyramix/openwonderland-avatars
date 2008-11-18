@@ -801,11 +801,13 @@ public abstract class Character extends Entity implements SpatialObject, Animati
             
             // Gimme them eyeballs
             PPolygonSkinnedMeshInstance leftEye = (PPolygonSkinnedMeshInstance) m_skeleton.findChild("leftEyeGeoShape");
-            PPolygonSkinnedMeshInstance leftEyeBall = new EyeBall(leftEye, m_modelInst, m_pscene);
+            EyeBall leftEyeBall = new EyeBall(leftEye, m_modelInst, m_pscene);
             leftEye.getParent().replaceChild(leftEye, leftEyeBall, true);
             PPolygonSkinnedMeshInstance rightEye = (PPolygonSkinnedMeshInstance) m_skeleton.findChild("rightEyeGeoShape");
-            PPolygonSkinnedMeshInstance rightEyeBall = new EyeBall(rightEye, m_modelInst, m_pscene);
+            EyeBall rightEyeBall = new EyeBall(rightEye, m_modelInst, m_pscene);
             rightEye.getParent().replaceChild(rightEye, rightEyeBall, true);
+            leftEyeBall.setOtherEye(rightEyeBall);
+            rightEyeBall.setOtherEye(leftEyeBall);
             
             m_initalized = true;
         }

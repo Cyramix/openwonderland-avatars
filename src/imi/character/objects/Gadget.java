@@ -106,17 +106,24 @@ public class Gadget implements SpatialObject
     
     public void translateSubMesh(Vector3f move, String meshName)
     {
-        // Watch for the placeholder node!
+        // Watch for the placeholder node! (if the model is being loaded)
         PNode meshNode = modelInst.findChild(meshName);
         if (meshNode == null || !(meshNode instanceof PPolygonMeshInstance))
             return;
         PPolygonMeshInstance mesh = (PPolygonMeshInstance) modelInst.findChild(meshName);
-        mesh.getTransform().getLocalMatrix(true).setTranslation(mesh.getTransform().getLocalMatrix(true).getTranslation().add(move));
-//                
-//        modelInst.setDirty(true, true);
-//        modelInst.buildFlattenedHierarchy();
-//        //modelInst.submitTransformsAndGeometry();;
-        
+        if (mesh != null)
+            mesh.getTransform().getLocalMatrix(true).setTranslation(mesh.getTransform().getLocalMatrix(true).getTranslation().add(move));
+    }
+    
+    public void setRotationSubMesh(Vector3f eulerInRadians, String meshName)
+    {
+        // Watch for the placeholder node! (if the model is being loaded)
+        PNode meshNode = modelInst.findChild(meshName);
+        if (meshNode == null || !(meshNode instanceof PPolygonMeshInstance))
+            return;
+        PPolygonMeshInstance mesh = (PPolygonMeshInstance) modelInst.findChild(meshName);
+        if (mesh != null)
+            mesh.getTransform().getLocalMatrix(true).setRotation(eulerInRadians);
     }
     
     public PPolygonModelInstance getModelInst() {

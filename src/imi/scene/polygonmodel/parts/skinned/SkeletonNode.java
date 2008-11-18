@@ -247,7 +247,7 @@ public class SkeletonNode extends PNode implements Animated
     }
     
     /**
-     * This method builds and returns an array of the world
+     * This method builds and returns an array of the mesh space
      * transforms of the skinned mesh joints indicated by each 
      * index in indices multiplied by its correspondind local 
      * modifier.
