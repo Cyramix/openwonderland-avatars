@@ -52,7 +52,9 @@ import imi.scene.PNode;
 import imi.scene.PScene;
 import imi.scene.PTransform;
 import imi.scene.camera.behaviors.FirstPersonCamModel;
+import imi.scene.camera.behaviors.TumbleObjectCamModel;
 import imi.scene.camera.state.FirstPersonCamState;
+import imi.scene.camera.state.TumbleObjectCamState;
 import imi.scene.polygonmodel.PPolygonMesh;
 import imi.scene.polygonmodel.PPolygonModel;
 import imi.scene.polygonmodel.PPolygonModelInstance;
@@ -653,9 +655,14 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
         AWTInputComponent cameraListener = (AWTInputComponent)wm.getInputManager().createInputComponent(canvas_SceneRenderWindow, eventMask);
         m_cameraProcessor = new FlexibleCameraProcessor(cameraListener, cameraSG, wm, camera, sky);
         
-        FirstPersonCamState state = new FirstPersonCamState();
-        FirstPersonCamModel model = new FirstPersonCamModel();
-        m_cameraProcessor.setCameraBehavior(model, state);
+//        FirstPersonCamState state = new FirstPersonCamState();
+//        FirstPersonCamModel model = new FirstPersonCamModel();
+//        m_cameraProcessor.setCameraBehavior(model, state);
+
+        TumbleObjectCamState tobj = new TumbleObjectCamState(null);
+        tobj.setTargetFocalPoint(new Vector3f(0.0f, 0.0f, 0.0f));
+        tobj.setTargetNeedsUpdate(true);
+        m_cameraProcessor.setCameraBehavior(new TumbleObjectCamModel(), tobj);
         //OrbitCameraProcessor eventProcessor = new OrbitCameraProcessor(cameraListener, cameraNode, wm, camera);
         m_cameraProcessor.setRunInRenderer(true);
         
@@ -831,6 +838,7 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
     public void openBasicOptions() {
         JPanel_BasicOptions BasicOptions = new JPanel_BasicOptions();
         BasicOptions.setSceneData(m_sceneData);
+        m_sceneData.setCurCamProcessor(m_cameraProcessor);
         java.awt.GridBagConstraints gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;

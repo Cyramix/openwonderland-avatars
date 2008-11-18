@@ -28,6 +28,7 @@ import imi.loaders.repository.AssetInitializer;
 import imi.loaders.repository.SharedAsset;
 import imi.loaders.repository.SharedAsset.SharedAssetType;
 import imi.scene.JScene;
+import imi.scene.PJoint;
 import imi.scene.PMatrix;
 import imi.scene.PNode;
 import imi.scene.PScene;
@@ -37,6 +38,7 @@ import imi.scene.polygonmodel.PPolygonModelInstance;
 import imi.scene.polygonmodel.parts.PMeshMaterial;
 import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
 import imi.scene.polygonmodel.skinned.PPolygonSkinnedMeshInstance;
+import imi.scene.polygonmodel.skinned.SkinnedMeshJoint;
 import imi.scene.processors.FlexibleCameraProcessor;
 import imi.scene.processors.SkinnedAnimationProcessor;
 import imi.scene.shader.programs.VertexDeformer;
@@ -559,7 +561,7 @@ public class SceneEssentials {
         else
             currentHiProcessors.clear();
         
-        if (data[4].equals("0") || data[4].equals("1")) {
+        if (data[4].equals("0") || data[4].equals("1") || data[4].equals("2")) {
             URL modelURL;
             try {
                 modelURL = new URL(data[3]);
@@ -572,7 +574,10 @@ public class SceneEssentials {
                 colladaAsset.setUserData(new ColladaLoaderParams(false, true, false, false, 3, data[0], null));
                 modelInst = currentPScene.addModelInstance(data[0], colladaAsset, new PMatrix());
             } else {
-                addDAEMeshURLToModelA(data);
+                if (data[4].equals("0"))
+                    addDAEMeshURLToModelA(data, "Head");
+                else
+                    addDAEMeshURLToModelA(data, "skeletonRoot");
             }
         } else {
             try {
@@ -638,19 +643,38 @@ public class SceneEssentials {
         meshsetup.put(region, meshRef);
     }
 
-    public void addDAEMeshURLToModelA(String[] data) {
+    public void addDAEMeshURLToModelA(String[] data, String joint2addon) {
         InstructionProcessor pProcessor = new InstructionProcessor(worldManager);
         Instruction pRootInstruction = new Instruction();
         pRootInstruction.addInstruction(InstructionNames.setSkeleton, skeleton);
 
+        if (joint2addon.equals("skeletonRoot")) {
+            PNode node = null;
+            SkinnedMeshJoint rootJoint = null;
+
+            node = currentPScene.getInstances().findChild("testJoint");
+
+            if (node == null) {
+                rootJoint = new SkinnedMeshJoint();
+                rootJoint.setName("testJoint");
+                node = currentPScene.getInstances().findChild(joint2addon);
+                node.addChild(rootJoint);
+            }
+            
+            joint2addon = "testJoint";
+        }
+
+        String szName = joint2addon;
+
         pRootInstruction.addInstruction(InstructionNames.loadGeometry, data[3]);
         PMatrix tempSolution = new PMatrix(new Vector3f(0.0f,(float) Math.toRadians(180), 0.0f), new Vector3f(1.0f, 1.0f, 1.0f), Vector3f.ZERO);
-        pRootInstruction.addInstruction(InstructionNames.addAttachment, data[0], "Head", tempSolution);
+        pRootInstruction.addInstruction(InstructionNames.addAttachment, data[0], szName, tempSolution);
         pProcessor.execute(pRootInstruction);
 
         int hairCheck = data[3].indexOf("Hair");
-        if (hairCheck != -1)
+        if (hairCheck != -1) {
             bhairLoaded = true;
+        }
     }
 
     public void loadInitializer(String n, SharedAsset s, final String[] a) {
@@ -685,6 +709,7 @@ public class SceneEssentials {
                     skel.setShader(new VertexDeformer(worldManager));
                     ((ProcessorCollectionComponent)currentEntity.getComponent(ProcessorCollectionComponent.class)).addProcessor(new SkinnedAnimationProcessor(skel));
                     currentPScene.setDirty(true, true);
+                    setCameraOnModel();
                 }
                 return true;
             }
@@ -850,18 +875,18 @@ public class SceneEssentials {
     }
 
     public void setCameraOnModel() {
-//        PNode node = currentPScene.getInstances();
-//        if (node != null && node.getChildrenCount() > 0) {
-//            PPolygonModelInstance pmInstance = ((PPolygonModelInstance) node.getChild(0));
-//            TumbleObjectCamState camState = ((TumbleObjectCamState)curCameraProcessor.getState());
-//            camState.setTargetModelInstance(pmInstance);
-//            camState.setCameraPosition(camPos);
-//
-//            if (pmInstance.getBoundingSphere() == null)
-//                pmInstance.calculateBoundingSphere();
-//            camState.setTargetFocalPoint(pmInstance.getBoundingSphere().getCenter());
-//            camState.setTargetNeedsUpdate(true);
-//        }
+        PNode node = currentPScene.getInstances();
+        if (node != null && node.getChildrenCount() > 0) {
+            PPolygonModelInstance pmInstance = ((PPolygonModelInstance) node.getChild(0));
+            TumbleObjectCamState camState = ((TumbleObjectCamState)curCameraProcessor.getState());
+            camState.setTargetModelInstance(pmInstance);
+            camState.setCameraPosition(camPos);
+
+            if (pmInstance.getBoundingSphere() == null)
+                pmInstance.calculateBoundingSphere();
+            camState.setTargetFocalPoint(pmInstance.getBoundingSphere().getCenter());
+            camState.setTargetNeedsUpdate(true);
+        }
     }
 
     /**

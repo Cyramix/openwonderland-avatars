@@ -52,7 +52,9 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
     public JPanel_BasicOptions() {
         initComponents();
     }
-
+    ////////////////////////////////////////////////////////////////////////////
+    // Inits
+    ////////////////////////////////////////////////////////////////////////////
     public void InitHeadList() {
         ArrayList<String[]> data;
         String[] list;
@@ -250,9 +252,14 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
         InitHatsList();
         InitSpecsList();
     }
-
+    ////////////////////////////////////////////////////////////////////////////
+    // Loading
+    ////////////////////////////////////////////////////////////////////////////
     public void loadHead() {
         if (m_sceneData.getCurrentSkeleton() == null)
+            return;
+
+        if (jList_Heads.getSelectedValues().length == 0)
             return;
 
         if (!jButton_ApplyHead.isEnabled())
@@ -260,6 +267,10 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
 
         jButton_ApplyHead.setEnabled(false);
         String selection = jList_Heads.getSelectedValues()[0].toString();
+
+        if (selection.equals("N/A"))
+            return;
+
         String query = new String();
         ArrayList<String[]> data, meshref;
         String[] meshes;
@@ -279,6 +290,286 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
         
         m_meshes.put(0, meshes);
         jButton_ApplyHead.setEnabled(true);
+        jLabel_CurrHead.setText(selection);
+        jLabel_CurrHead1.setText(selection);
+    }
+
+    public void loadUpperBody() {
+        if (m_sceneData.getCurrentSkeleton() == null)
+            return;
+
+        if (jList_UpperBody.getSelectedValues().length == 0)
+            return;
+
+        if (!jButton_ApplyBody.isEnabled())
+            return;
+
+        jButton_ApplyBody.setEnabled(false);
+        String selection = jList_UpperBody.getSelectedValues()[0].toString();
+
+        if (selection.equals("N/A"))
+            return;
+
+        String query = new String();
+        ArrayList<String[]> data, meshref;
+        String[] meshes;
+
+        query = "SELECT name, description, bodytype, url, type, id FROM Meshes WHERE description = '" + selection + "'";
+        data = m_sceneData.loadSQLData(query);
+
+        query = "SELECT name FROM GeometryReferences WHERE referenceid = " + data.get(0)[5];
+        meshref = m_sceneData.loadSQLData(query);
+
+        meshes = new String[meshref.size()];
+        for (int i = 0; i < meshes.length; i++) {
+            meshes[i] = meshref.get(i)[0];
+        }
+
+        m_sceneData.loadMeshDAEURL(false, true, this, data.get(0), meshes, 2);
+
+        m_meshes.put(2, meshes);
+        jButton_ApplyBody.setEnabled(true);
+        jLabel_CurrUpperBody.setText(selection);
+    }
+
+    public void loadLowerBody() {
+        if (m_sceneData.getCurrentSkeleton() == null)
+            return;
+
+        if (jList_LowerBody.getSelectedValues().length == 0)
+            return;
+
+        if (!jButton_ApplyLegs.isEnabled())
+            return;
+
+        jButton_ApplyLegs.setEnabled(false);
+        String selection = jList_LowerBody.getSelectedValues()[0].toString();
+
+        if (selection.equals("N/A"))
+            return;
+
+        String query = new String();
+        ArrayList<String[]> data, meshref;
+        String[] meshes;
+
+        query = "SELECT name, description, bodytype, url, type, id FROM Meshes WHERE description = '" + selection + "'";
+        data = m_sceneData.loadSQLData(query);
+
+        query = "SELECT name FROM GeometryReferences WHERE referenceid = " + data.get(0)[5];
+        meshref = m_sceneData.loadSQLData(query);
+
+        meshes = new String[meshref.size()];
+        for (int i = 0; i < meshes.length; i++) {
+            meshes[i] = meshref.get(i)[0];
+        }
+
+        m_sceneData.loadMeshDAEURL(false, true, this, data.get(0), meshes, 3);
+
+        m_meshes.put(3, meshes);
+        jButton_ApplyLegs.setEnabled(true);
+        jLabel_CurrLowerBody.setText(selection);
+    }
+
+    public void loadShoes() {
+        if (m_sceneData.getCurrentSkeleton() == null)
+            return;
+
+        if (jList_Shoes.getSelectedValues().length == 0)
+            return;
+
+        if (!jButton_ApplyShoes.isEnabled())
+            return;
+
+        jButton_ApplyShoes.setEnabled(false);
+        String selection = jList_Shoes.getSelectedValues()[0].toString();
+
+        if (selection.equals("N/A"))
+            return;
+
+        String query = new String();
+        ArrayList<String[]> data, meshref;
+        String[] meshes;
+
+        query = "SELECT name, description, bodytype, url, type, id FROM Meshes WHERE description = '" + selection + "'";
+        data = m_sceneData.loadSQLData(query);
+
+        query = "SELECT name FROM GeometryReferences WHERE referenceid = " + data.get(0)[5];
+        meshref = m_sceneData.loadSQLData(query);
+
+        meshes = new String[meshref.size()];
+        for (int i = 0; i < meshes.length; i++) {
+            meshes[i] = meshref.get(i)[0];
+        }
+
+        m_sceneData.loadMeshDAEURL(false, true, this, data.get(0), meshes, 4);
+
+        m_meshes.put(4, meshes);
+        jButton_ApplyShoes.setEnabled(true);
+        jLabel_CurrShoes.setText(selection);
+    }
+
+    public void loadHair() {
+        if (m_sceneData.getCurrentSkeleton() == null)
+            return;
+
+        if (jList_Hair.getSelectedValues().length == 0)
+            return;
+
+        if (!jButton_ApplyHair.isEnabled())
+            return;
+
+        jButton_ApplyHair.setEnabled(false);
+        String selection = jList_Hair.getSelectedValues()[0].toString();
+
+        if (selection.equals("N/A"))
+            return;
+
+        String query = new String();
+        ArrayList<String[]> data, meshref;
+        String[] meshes;
+
+        query = "SELECT name, description, bodytype, url, type, id FROM Meshes WHERE description = '" + selection + "'";
+        data = m_sceneData.loadSQLData(query);
+
+        query = "SELECT name FROM GeometryReferences WHERE referenceid = " + data.get(0)[5];
+        meshref = m_sceneData.loadSQLData(query);
+
+        meshes = new String[meshref.size()];
+        for (int i = 0; i < meshes.length; i++) {
+            meshes[i] = meshref.get(i)[0];
+        }
+
+        m_sceneData.loadMeshDAEURL(false, true, this, data.get(0), meshes, 5);
+
+        String[] hair = new String[] {data.get(0)[0]};
+        m_meshes.put(5, hair);
+        m_sceneData.setMeshSetup(m_meshes);
+
+        jButton_ApplyHair.setEnabled(true);
+        jLabel_CurrHair.setText(selection);
+    }
+
+    public void loadFacialHair() {
+        if (m_sceneData.getCurrentSkeleton() == null)
+            return;
+
+        if (jList_FacialHair.getSelectedValues().length == 0)
+            return;
+
+        if (!jButton_ApplyFacialHair.isEnabled())
+            return;
+
+        jButton_ApplyFacialHair.setEnabled(false);
+        String selection = jList_FacialHair.getSelectedValues()[0].toString();
+
+        if (selection.equals("N/A"))
+            return;
+
+        String query = new String();
+        ArrayList<String[]> data, meshref;
+        String[] meshes;
+
+        query = "SELECT name, description, bodytype, url, type, id FROM Meshes WHERE description = '" + selection + "'";
+        data = m_sceneData.loadSQLData(query);
+
+        query = "SELECT name FROM GeometryReferences WHERE referenceid = " + data.get(0)[5];
+        meshref = m_sceneData.loadSQLData(query);
+
+        meshes = new String[meshref.size()];
+        for (int i = 0; i < meshes.length; i++) {
+            meshes[i] = meshref.get(i)[0];
+        }
+
+        m_sceneData.loadMeshDAEURL(false, true, this, data.get(0), meshes, 6);
+
+        String[] facialHair = new String[] {};
+        m_meshes.put(6, facialHair);
+        m_sceneData.setMeshSetup(m_meshes);
+
+        jButton_ApplyFacialHair.setEnabled(true);
+        jLabel_CurrFacialHair.setText(selection);
+    }
+
+    public void loadHats() {
+        if (m_sceneData.getCurrentSkeleton() == null)
+            return;
+
+        if (jList_Hats.getSelectedValues().length == 0)
+            return;
+
+        if (!jButton_ApplyHat.isEnabled())
+            return;
+
+        jButton_ApplyHat.setEnabled(false);
+        String selection = jList_Hats.getSelectedValues()[0].toString();
+
+        if (selection.equals("N/A"))
+            return;
+
+        String query = new String();
+        ArrayList<String[]> data, meshref;
+        String[] meshes;
+
+        query = "SELECT name, description, bodytype, url, type, id FROM Meshes WHERE description = '" + selection + "'";
+        data = m_sceneData.loadSQLData(query);
+
+        query = "SELECT name FROM GeometryReferences WHERE referenceid = " + data.get(0)[5];
+        meshref = m_sceneData.loadSQLData(query);
+
+        meshes = new String[meshref.size()];
+        for (int i = 0; i < meshes.length; i++) {
+            meshes[i] = meshref.get(i)[0];
+        }
+
+        m_sceneData.loadMeshDAEURL(false, true, this, data.get(0), meshes, 7);
+
+        String[] hair = new String[] {data.get(0)[0]};
+        m_meshes.put(7, hair);
+        m_sceneData.setMeshSetup(m_meshes);
+
+        jButton_ApplyHat.setEnabled(true);
+        jLabel_CurrHat.setText(selection);
+    }
+
+    public void loadSpecs() {
+        if (m_sceneData.getCurrentSkeleton() == null)
+            return;
+
+        if (jList_Specs.getSelectedValues().length == 0)
+            return;
+
+        if (!jButton_ApplySpecs.isEnabled())
+            return;
+
+        jButton_ApplySpecs.setEnabled(false);
+        String selection = jList_Specs.getSelectedValues()[0].toString();
+
+        if (selection.equals("N/A"))
+            return;
+
+        String query = new String();
+        ArrayList<String[]> data, meshref;
+        String[] meshes;
+
+        query = "SELECT name, description, bodytype, url, type, id FROM Meshes WHERE description = '" + selection + "'";
+        data = m_sceneData.loadSQLData(query);
+
+        query = "SELECT name FROM GeometryReferences WHERE referenceid = " + data.get(0)[5];
+        meshref = m_sceneData.loadSQLData(query);
+
+        meshes = new String[meshref.size()];
+        for (int i = 0; i < meshes.length; i++) {
+            meshes[i] = meshref.get(i)[0];
+        }
+
+        m_sceneData.loadMeshDAEURL(false, true, this, data.get(0), meshes, 8);
+
+        String[] hair = new String[] {data.get(0)[0]};
+        m_meshes.put(8, hair);
+        m_sceneData.setMeshSetup(m_meshes);
+
+        jButton_ApplySpecs.setEnabled(true);
+        jLabel_CurrSpecs.setText(selection);
     }
 
     public void loadDefaultAvatar() {
@@ -397,8 +688,8 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
         jButton_Female = new javax.swing.JButton();
         jTabbedPane_Options = new javax.swing.JTabbedPane();
         jPanel_MainBody = new javax.swing.JPanel();
+        jLabel_Head = new javax.swing.JLabel();
         jLabel_CurrHead = new javax.swing.JLabel();
-        jLabel_CurrentHeadSelection = new javax.swing.JLabel();
         jButton_ApplyHead = new javax.swing.JButton();
         jScrollPane_Heads = new javax.swing.JScrollPane();
         jList_Heads = new javax.swing.JList();
@@ -419,8 +710,8 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
         jList_Shoes = new javax.swing.JList();
         jButton_ApplyAllBody = new javax.swing.JButton();
         jPanel_MainHead = new javax.swing.JPanel();
+        jLabel_Head1 = new javax.swing.JLabel();
         jLabel_CurrHead1 = new javax.swing.JLabel();
-        jLabel_CurrentHeadSelection1 = new javax.swing.JLabel();
         jButton_ApplyHead1 = new javax.swing.JButton();
         jScrollPane_Heads1 = new javax.swing.JScrollPane();
         jList_Heads1 = new javax.swing.JList();
@@ -493,22 +784,22 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
         jPanel_MainBody.setPreferredSize(new java.awt.Dimension(320, 450));
         jPanel_MainBody.setLayout(new java.awt.GridBagLayout());
 
-        jLabel_CurrHead.setFont(new java.awt.Font("Lucida Grande", 1, 13));
-        jLabel_CurrHead.setForeground(new java.awt.Color(0, 0, 255));
-        jLabel_CurrHead.setText("Head");
+        jLabel_Head.setFont(new java.awt.Font("Lucida Grande", 1, 13));
+        jLabel_Head.setForeground(new java.awt.Color(0, 0, 255));
+        jLabel_Head.setText("Head");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        jPanel_MainBody.add(jLabel_CurrHead, gridBagConstraints);
+        jPanel_MainBody.add(jLabel_Head, gridBagConstraints);
 
-        jLabel_CurrentHeadSelection.setText("Default");
-        jLabel_CurrentHeadSelection.setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED));
-        jLabel_CurrentHeadSelection.setMaximumSize(new java.awt.Dimension(50, 25));
-        jLabel_CurrentHeadSelection.setPreferredSize(new java.awt.Dimension(150, 25));
+        jLabel_CurrHead.setText("Default");
+        jLabel_CurrHead.setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED));
+        jLabel_CurrHead.setMaximumSize(new java.awt.Dimension(50, 25));
+        jLabel_CurrHead.setPreferredSize(new java.awt.Dimension(150, 25));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
         gridBagConstraints.insets = new java.awt.Insets(0, 0, 5, 0);
-        jPanel_MainBody.add(jLabel_CurrentHeadSelection, gridBagConstraints);
+        jPanel_MainBody.add(jLabel_CurrHead, gridBagConstraints);
 
         jButton_ApplyHead.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -564,6 +855,13 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
         gridBagConstraints.insets = new java.awt.Insets(0, 0, 5, 0);
         jPanel_MainBody.add(jLabel_CurrUpperBody, gridBagConstraints);
 
+        jButton_ApplyBody.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+                loadUpperBody();
+                setCursor(null);
+            }
+        });
         jButton_ApplyBody.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imi/icons/Apply.png"))); // NOI18N
         jButton_ApplyBody.setPreferredSize(new java.awt.Dimension(55, 55));
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -611,6 +909,13 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
         gridBagConstraints.insets = new java.awt.Insets(0, 0, 5, 0);
         jPanel_MainBody.add(jLabel_CurrLowerBody, gridBagConstraints);
 
+        jButton_ApplyLegs.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+                loadLowerBody();
+                setCursor(null);
+            }
+        });
         jButton_ApplyLegs.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imi/icons/Apply.png"))); // NOI18N
         jButton_ApplyLegs.setPreferredSize(new java.awt.Dimension(55, 55));
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -658,6 +963,13 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
         gridBagConstraints.insets = new java.awt.Insets(0, 0, 5, 0);
         jPanel_MainBody.add(jLabel_CurrShoes, gridBagConstraints);
 
+        jButton_ApplyShoes.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+                loadShoes();
+                setCursor(null);
+            }
+        });
         jButton_ApplyShoes.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imi/icons/Apply.png"))); // NOI18N
         jButton_ApplyShoes.setPreferredSize(new java.awt.Dimension(55, 55));
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -684,6 +996,16 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
         gridBagConstraints.insets = new java.awt.Insets(0, 0, 5, 0);
         jPanel_MainBody.add(jScrollPane_Shoes, gridBagConstraints);
 
+        jButton_ApplyAllBody.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+                loadHead();
+                loadUpperBody();
+                loadLowerBody();
+                loadShoes();
+                setCursor(null);
+            }
+        });
         jButton_ApplyAllBody.setText("Apply All");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -697,24 +1019,31 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
 
         jPanel_MainHead.setLayout(new java.awt.GridBagLayout());
 
-        jLabel_CurrHead1.setFont(new java.awt.Font("Lucida Grande", 1, 13));
-        jLabel_CurrHead1.setForeground(new java.awt.Color(0, 0, 255));
-        jLabel_CurrHead1.setText("Head");
+        jLabel_Head1.setFont(new java.awt.Font("Lucida Grande", 1, 13));
+        jLabel_Head1.setForeground(new java.awt.Color(0, 0, 255));
+        jLabel_Head1.setText("Head");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        jPanel_MainHead.add(jLabel_CurrHead1, gridBagConstraints);
+        jPanel_MainHead.add(jLabel_Head1, gridBagConstraints);
 
-        jLabel_CurrentHeadSelection1.setText("Default");
-        jLabel_CurrentHeadSelection1.setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED));
-        jLabel_CurrentHeadSelection1.setMaximumSize(new java.awt.Dimension(50, 25));
-        jLabel_CurrentHeadSelection1.setMinimumSize(new java.awt.Dimension(50, 25));
-        jLabel_CurrentHeadSelection1.setPreferredSize(new java.awt.Dimension(150, 25));
+        jLabel_CurrHead1.setText("Default");
+        jLabel_CurrHead1.setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED));
+        jLabel_CurrHead1.setMaximumSize(new java.awt.Dimension(50, 25));
+        jLabel_CurrHead1.setMinimumSize(new java.awt.Dimension(50, 25));
+        jLabel_CurrHead1.setPreferredSize(new java.awt.Dimension(150, 25));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.insets = new java.awt.Insets(7, 0, 5, 0);
-        jPanel_MainHead.add(jLabel_CurrentHeadSelection1, gridBagConstraints);
+        jPanel_MainHead.add(jLabel_CurrHead1, gridBagConstraints);
 
+        jButton_ApplyHead1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+                loadHead();
+                setCursor(null);
+            }
+        });
         jButton_ApplyHead1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imi/icons/Apply.png"))); // NOI18N
         jButton_ApplyHead1.setMinimumSize(new java.awt.Dimension(55, 55));
         jButton_ApplyHead1.setPreferredSize(new java.awt.Dimension(55, 55));
@@ -766,6 +1095,13 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
         gridBagConstraints.insets = new java.awt.Insets(0, 0, 5, 0);
         jPanel_MainHead.add(jLabel_CurrHair, gridBagConstraints);
 
+        jButton_ApplyHair.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+                loadHair();
+                setCursor(null);
+            }
+        });
         jButton_ApplyHair.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imi/icons/Apply.png"))); // NOI18N
         jButton_ApplyHair.setMinimumSize(new java.awt.Dimension(55, 55));
         jButton_ApplyHair.setPreferredSize(new java.awt.Dimension(55, 55));
@@ -834,6 +1170,13 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
         gridBagConstraints.insets = new java.awt.Insets(0, 0, 5, 0);
         jPanel_MainHead.add(jLabel_CurrFacialHair, gridBagConstraints);
 
+        jButton_ApplyFacialHair.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+                loadFacialHair();
+                setCursor(null);
+            }
+        });
         jButton_ApplyFacialHair.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imi/icons/Apply.png"))); // NOI18N
         jButton_ApplyFacialHair.setMinimumSize(new java.awt.Dimension(55, 55));
         jButton_ApplyFacialHair.setPreferredSize(new java.awt.Dimension(55, 55));
@@ -903,6 +1246,15 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         jPanel_MainHead.add(jLabel_CurrColorST, gridBagConstraints);
 
+        jButton_ApplyAllHead.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+                loadHead();
+                loadHair();
+                loadFacialHair();
+                setCursor(null);
+            }
+        });
         jButton_ApplyAllHead.setText("Apply All");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -936,6 +1288,13 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
         gridBagConstraints.insets = new java.awt.Insets(0, 0, 5, 0);
         jPanel_MainAcc.add(jLabel_CurrHat, gridBagConstraints);
 
+        jButton_ApplyHat.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+                loadHats();
+                setCursor(null);
+            }
+        });
         jButton_ApplyHat.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imi/icons/Apply.png"))); // NOI18N
         jButton_ApplyHat.setMinimumSize(new java.awt.Dimension(55, 55));
         jButton_ApplyHat.setPreferredSize(new java.awt.Dimension(55, 55));
@@ -985,6 +1344,13 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
         gridBagConstraints.insets = new java.awt.Insets(0, 0, 5, 0);
         jPanel_MainAcc.add(jLabel_CurrSpecs, gridBagConstraints);
 
+        jButton_ApplySpecs.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+                loadSpecs();
+                setCursor(null);
+            }
+        });
         jButton_ApplySpecs.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imi/icons/Apply.png"))); // NOI18N
         jButton_ApplySpecs.setMinimumSize(new java.awt.Dimension(55, 55));
         jButton_ApplySpecs.setPreferredSize(new java.awt.Dimension(55, 55));
@@ -1013,6 +1379,14 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
         gridBagConstraints.insets = new java.awt.Insets(0, 0, 5, 0);
         jPanel_MainAcc.add(jScrollPane_Specs, gridBagConstraints);
 
+        jButton_ApplyAllAcc.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+                loadHats();
+                loadSpecs();
+                setCursor(null);
+            }
+        });
         jButton_ApplyAllAcc.setText("Apply All");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -1028,7 +1402,6 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
         gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
-        gridBagConstraints.gridheight = java.awt.GridBagConstraints.REMAINDER;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         add(jTabbedPane_Options, gridBagConstraints);
     }// </editor-fold>//GEN-END:initComponents
@@ -1064,11 +1437,11 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel_CurrShoes;
     private javax.swing.JLabel jLabel_CurrSpecs;
     private javax.swing.JLabel jLabel_CurrUpperBody;
-    private javax.swing.JLabel jLabel_CurrentHeadSelection;
-    private javax.swing.JLabel jLabel_CurrentHeadSelection1;
     private javax.swing.JLabel jLabel_FacialHair;
     private javax.swing.JLabel jLabel_Hair;
     private javax.swing.JLabel jLabel_Hats;
+    private javax.swing.JLabel jLabel_Head;
+    private javax.swing.JLabel jLabel_Head1;
     private javax.swing.JLabel jLabel_LowerBody;
     private javax.swing.JLabel jLabel_Shoes;
     private javax.swing.JLabel jLabel_SkinTone;
