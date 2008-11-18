@@ -38,6 +38,7 @@ import com.jme.scene.state.WireframeState;
 import com.jme.scene.state.ZBufferState;
 import com.jme.util.TextureManager;
 import imi.gui.JPanel_Animations;
+import imi.gui.JPanel_BasicOptions;
 import imi.gui.JPanel_ServerBrowser;
 import imi.gui.OptionsGUI;
 import imi.gui.SceneEssentials;
@@ -827,6 +828,18 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
         jPanel_MainPanel.add(m_ServerBrowser, gridBagConstraints);
     }
 
+    public void openBasicOptions() {
+        JPanel_BasicOptions BasicOptions = new JPanel_BasicOptions();
+        BasicOptions.setSceneData(m_sceneData);
+        java.awt.GridBagConstraints gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.gridheight = java.awt.GridBagConstraints.REMAINDER;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.VERTICAL;
+        jPanel_MainPanel.add(BasicOptions, gridBagConstraints);
+    }
+
     public void resetOpenTools() {
         if (m_AvatarOptions != null) {
             if (m_AvatarOptions.isVisible()) {
@@ -993,8 +1006,10 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
         jPanel_MainPanel.add(jToolBar_ProgressBar, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
-        gridBagConstraints.gridheight = java.awt.GridBagConstraints.REMAINDER;
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.gridwidth = java.awt.GridBagConstraints.RELATIVE;
+        gridBagConstraints.gridheight = java.awt.GridBagConstraints.RELATIVE;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.weighty = 1.0;
@@ -1077,8 +1092,9 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
         jMenuItem_LoadModelURL.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 runProgressBar(true);
-                openServerBrowser();
+                //openServerBrowser();
                 //m_sceneData.openServerBrowser((JFrame) m_base);
+                openBasicOptions();
                 resetOpenTools();
                 runProgressBar(false);
             }

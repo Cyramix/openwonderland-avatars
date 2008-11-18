@@ -1,12 +1,19 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
-/*
- * JPanel_ServerBrowser.java
+/**
+ * Project Wonderland
  *
- * Created on Nov 12, 2008, 10:42:52 AM
+ * Copyright (c) 2004-2008, Sun Microsystems, Inc., All Rights Reserved
+ *
+ * Redistributions in source code form must reproduce the above
+ * copyright and this condition.
+ *
+ * The contents of this file are subject to the GNU General Public
+ * License, Version 2 (the "License"); you may not use this file
+ * except in compliance with the License. A copy of the License is
+ * available at http://www.opensource.org/licenses/gpl-license.php.
+ *
+ * $Revision$
+ * $Date$
+ * $State$
  */
 
 package imi.gui;
@@ -26,7 +33,7 @@ import javax.swing.table.DefaultTableModel;
 
 /**
  *
- * @author ptruong
+ * @author Paul Viet Nguyen Truong (ptruong)
  */
 public class JPanel_ServerBrowser extends javax.swing.JPanel {
 ////////////////////////////////////////////////////////////////////////////////

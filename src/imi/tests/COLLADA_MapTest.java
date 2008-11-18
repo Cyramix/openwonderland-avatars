@@ -18,15 +18,9 @@
 package imi.tests;
 
 import imi.environments.ColladaEnvironment;
-import imi.loaders.collada.ColladaLoaderParams;
-import imi.loaders.repository.AssetDescriptor;
-import imi.loaders.repository.SharedAsset;
-import imi.loaders.repository.SharedAsset.SharedAssetType;
+import imi.gui.SceneEssentials;
 import imi.scene.JScene;
 import imi.scene.PScene;
-import java.io.File;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -38,7 +32,7 @@ import org.jdesktop.mtgame.WorldManager;
  * Testing environments
  * @author Ronald E Dahlgren
  */
-public class COLLADA_MapTest extends DemoBase2 
+public class COLLADA_MapTest extends BaseDefault
 {
     public COLLADA_MapTest(String[] args){
         super(args);
@@ -48,6 +42,7 @@ public class COLLADA_MapTest extends DemoBase2
         COLLADA_MapTest worldTest = new COLLADA_MapTest(args);
     }
 
+    @Override
     protected void simpleSceneInit(JScene jscene, WorldManager wm, Entity jsentity, ArrayList<ProcessorComponent> processors)
     {
         PScene pscene = jscene.getPScene();
@@ -58,6 +53,9 @@ public class COLLADA_MapTest extends DemoBase2
         pscene.setUseRepository(true);
         
         ColladaEnvironment ourEnv = new ColladaEnvironment(wm, "assets/models/collada/Environments/Milan/DSI.dae", "MaldenLabs");
+
+        m_sceneData = new SceneEssentials();
+        m_sceneData.setSceneData(jscene, jscene.getPScene(), jsentity, wm, processors);
     }
     
     
