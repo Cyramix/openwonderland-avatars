@@ -82,7 +82,7 @@ class VerletObjectVisualization
         {
             // add a new sphere and map it
             Vector3f particlePosition = particle.getCurrentPosition(); // This should actually come from the particle
-            Sphere particleSphere = new Sphere("Particle#" + index, particlePosition, 10, 10, 0.05f);
+            Sphere particleSphere = new Sphere("Particle#" + index, Vector3f.ZERO, 10, 10, 0.05f);
             particleSphere.setDefaultColor(ColorRGBA.cyan);
 
             // add this particle to the mapping

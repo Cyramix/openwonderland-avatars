@@ -17,11 +17,16 @@
  */
 package imi.scene.utils.visualizations;
 
-import com.jme.math.Vector3f;
 import com.jme.scene.Node;
+import com.jme.scene.state.RenderState;
+import com.jme.scene.state.ZBufferState;
 import imi.character.VerletArm;
 import javolution.util.FastList;
 import org.jdesktop.mtgame.Entity;
+import org.jdesktop.mtgame.NewFrameCondition;
+import org.jdesktop.mtgame.ProcessorArmingCollection;
+import org.jdesktop.mtgame.ProcessorArmingCondition;
+import org.jdesktop.mtgame.ProcessorComponent;
 import org.jdesktop.mtgame.RenderComponent;
 import org.jdesktop.mtgame.WorldManager;
 
@@ -37,6 +42,8 @@ public class VerletVisualManager extends Entity
     private Node                m_jmeRoot   = null;
     /** Collection of all the verlet objects we are tracking **/
     private FastList<VerletObjectVisualization> m_objects = null;
+    /** ProcessorComponent! **/
+    private UpdateDriver m_updater = null;
 
     /**
      * Constuct a new verlet visualizer with the given worldmanager
@@ -49,13 +56,18 @@ public class VerletVisualManager extends Entity
         // Allocate data members
         m_WM = wm;
         m_jmeRoot = new Node("VerletVisualsROOT");
-
+        m_updater = new UpdateDriver();
+        // Get the ZBufferState
+        ZBufferState zstate = (ZBufferState) wm.getRenderManager().createRendererState(RenderState.RS_ZBUFFER);
+        m_jmeRoot.setRenderState(zstate);
         // Create our render component
         RenderComponent rc = wm.getRenderManager().createRenderComponent(m_jmeRoot);
         rc.setLightingEnabled(false); // Unlight visualizations
         super.addComponent(RenderComponent.class, rc);
         // Add ourselves to the world manager
         wm.addEntity(this);
+        // Add our processor component on
+        super.addComponent(UpdateDriver.class, m_updater);
     }
 
     public int addVerletObject(VerletArm verletObject)
@@ -109,5 +121,30 @@ public class VerletVisualManager extends Entity
             obj.updateParticlePositions();
             obj.updateConstraintVisuals();
         }
+    }
+
+    private class UpdateDriver extends ProcessorComponent
+    {
+        public UpdateDriver()
+        {
+        }
+
+        @Override
+        public void compute(ProcessorArmingCollection arg0) {
+            update();
+        }
+
+        @Override
+        public void commit(ProcessorArmingCollection arg0) {
+            // Do nothing!
+        }
+
+        @Override
+        public void initialize() {
+            ProcessorArmingCollection collection = new ProcessorArmingCollection(this);
+            collection.addCondition(new NewFrameCondition(this));
+            setArmingCondition(collection);
+        }
+
     }
 }
