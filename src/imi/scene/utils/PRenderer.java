@@ -932,7 +932,7 @@ public class PRenderer
                     PJoint selected = (PJoint)current;
                     if (selected.isSelected())
                     {
-                        boneSelectionSphere.set(currentTransform.getWorldMatrix(false).getTranslation(), 0.25f);
+                        boneSelectionSphere.set(currentTransform.getWorldMatrix(false).getTranslation(), 0.05f);
                         drawSphere(boneSelectionSphere, 3, 3, true);
                     }
                 }

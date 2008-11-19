@@ -74,6 +74,7 @@ import imi.scene.polygonmodel.PPolygonMeshInstance;
 import imi.scene.shader.programs.VertexDeformer;
 import imi.scene.polygonmodel.parts.PMeshMaterial;
 import imi.scene.polygonmodel.parts.TextureMaterialProperties;
+import imi.scene.polygonmodel.skinned.SkinnedMeshJoint;
 import imi.scene.processors.CharacterAnimationProcessor;
 import imi.scene.processors.JSceneEventProcessor;
 import imi.scene.shader.programs.VertDeformerWithSpecAndNormalMap;
@@ -114,6 +115,10 @@ public abstract class Character extends Entity implements SpatialObject, Animati
     protected CharacterAnimationProcessor m_AnimationProcessor = null;
     
     protected TransitionQueue m_facialAnimationQ = null;
+    
+    protected VerletArm m_arm         = null;
+    private   float     m_armTimer    = 0.0f;
+    private   float     m_armTimeTick = 1.0f / 60.0f;
         
     public class Attributes
     {
@@ -774,6 +779,16 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         
         if (m_attributes.bUseSimpleSphereModel)
             m_modelInst.setDirty(true, true);
+        
+        if (m_arm != null)
+        {
+            m_armTimer += deltaTime;
+            if (m_armTimer >= m_armTimeTick)
+            {
+                m_armTimer = 0.0f;
+                m_arm.update(m_armTimeTick);
+            }
+        }
     }
     
     /**
@@ -808,6 +823,10 @@ public abstract class Character extends Entity implements SpatialObject, Animati
             rightEye.getParent().replaceChild(rightEye, rightEyeBall, true);
             leftEyeBall.setOtherEye(rightEyeBall);
             rightEyeBall.setOtherEye(leftEyeBall);
+            
+            // The verlet arm!
+            SkinnedMeshJoint shoulderJoint = (SkinnedMeshJoint) m_skeleton.findChild("rightArm");
+            m_arm = new VerletArm(shoulderJoint);
             
             m_initalized = true;
         }

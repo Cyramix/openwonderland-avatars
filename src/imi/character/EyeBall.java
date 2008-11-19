@@ -30,6 +30,7 @@ import imi.utils.PMathUtils;
  *
  * @author Lou Hayt
  * @author Ronald E. Dahlgren
+ * @author Shawn Kendall
  */
 public class EyeBall extends PPolygonSkinnedMeshInstance
 {
@@ -38,7 +39,7 @@ public class EyeBall extends PPolygonSkinnedMeshInstance
     private Vector3f target = new Vector3f(0.0f, 1.0f, 0.0f);
     
     private float limitCone = 0.57f;
-    private float yScale    = 1.0f;
+    private float yScale    = 2.0f;
     
     private boolean bInCone = false;
     private EyeBall otherEye = null;
