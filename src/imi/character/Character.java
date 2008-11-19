@@ -79,6 +79,7 @@ import imi.scene.processors.CharacterAnimationProcessor;
 import imi.scene.processors.JSceneEventProcessor;
 import imi.scene.shader.programs.VertDeformerWithSpecAndNormalMap;
 import imi.scene.utils.PMeshUtils;
+import imi.scene.utils.visualizations.VerletVisualManager;
 import java.io.File;
 import java.net.URL;
 
@@ -827,7 +828,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
             // The verlet arm!
             SkinnedMeshJoint shoulderJoint = (SkinnedMeshJoint) m_skeleton.findChild("rightArm");
             m_arm = new VerletArm(shoulderJoint);
-            
+
             m_initalized = true;
         }
     }
@@ -999,6 +1000,8 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         return m_facialAnimationQ;
     }
 
-    
-    
+    public VerletArm getArm() {
+        return m_arm;
+    }
+
 }

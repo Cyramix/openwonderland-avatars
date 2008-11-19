@@ -5,7 +5,6 @@
 
 package org.collada.xml_walker;
 
-import com.jme.math.Vector3f;
 import imi.loaders.collada.Collada;
 import imi.scene.polygonmodel.PPolygonMesh;
 import imi.scene.polygonmodel.parts.PMeshMaterial;

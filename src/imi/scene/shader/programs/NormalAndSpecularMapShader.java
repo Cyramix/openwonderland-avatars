@@ -24,11 +24,7 @@ import imi.scene.polygonmodel.PPolygonMeshInstance;
 import imi.scene.shader.ShaderProperty;
 import imi.scene.shader.dynamic.GLSLDataType;
 import imi.utils.FileUtils;
-import java.io.File;
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.jdesktop.mtgame.WorldManager;
 
 /**

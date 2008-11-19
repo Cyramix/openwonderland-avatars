@@ -18,7 +18,6 @@
 package org.collada.xml_walker;
 
 
-import org.collada.colladaschema.Animation;
 import org.collada.colladaschema.LibraryAnimations;
 
 import imi.loaders.collada.Collada;
@@ -44,15 +43,15 @@ import org.collada.colladaschema.Param;
  */
 public class LibraryAnimationsProcessor extends Processor
 {
-    String                  m_AnimatedItemID;
-    String                  m_AnimatedItemName;
-    String                  m_Type;
+    private String m_AnimatedItemID     = null;
+    private String m_AnimatedItemName   = null;
+    private String m_Type               = null;
     
-    Source                  m_pTransformInputSource;
-    Source                  m_pTransformOutputSource;
-    Source                  m_pTransformInterpolationSource;
+    private Source m_pTransformInputSource  = null;
+    private Source m_pTransformOutputSource = null;
+    private Source m_pTransformInterpolationSource = null;
 
-    int                     m_KeyframeCount;
+    private int m_KeyframeCount = -1;
 
 
     /**

@@ -83,7 +83,7 @@ public class ColladaEnvironment extends Entity
         
         SceneGraphConvertor convertor = new SceneGraphConvertor();
         m_jmeRoot = convertor.convert(scene);
-//        m_jmeRoot = new Node("DasRoot");
+        //m_jmeRoot = new Node("NodeRoot");
         // Now assign the rendering component
         RenderComponent rc = m_wm.getRenderManager().createRenderComponent(m_jmeRoot);
         this.addComponent(RenderComponent.class, rc);

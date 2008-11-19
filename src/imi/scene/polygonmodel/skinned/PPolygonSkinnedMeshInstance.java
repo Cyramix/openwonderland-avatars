@@ -184,11 +184,6 @@ public class PPolygonSkinnedMeshInstance extends PPolygonMeshInstance
             }
             if (doesShaderContainDeformer() == true)
                 m_shaderState.setUniformMatrix4Array("pose", pose, false);
-            else
-            {
-                int hack = 0;
-                hack++;
-            }
         }
 
 
