@@ -42,6 +42,7 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
     private Map<Integer, String[]>  m_meshes;
     /** Others */
     private int                     m_gender;
+    private boolean                 m_isViewMode;
 ////////////////////////////////////////////////////////////////////////////////
 // CLASS DATA MEMBERS - END
 ////////////////////////////////////////////////////////////////////////////////
@@ -55,12 +56,16 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
     ////////////////////////////////////////////////////////////////////////////
     // Inits
     ////////////////////////////////////////////////////////////////////////////
-    public void InitHeadList() {
+    public void InitHeadList(boolean isViewMode) {
         ArrayList<String[]> data;
         String[] list;
         String query = new String();
 
-        query = "SELECT name, description FROM DefaultAvatars WHERE name like '%Head%' and bodytype = " + m_gender;
+        if (isViewMode)
+            query = "SELECT name, description FROM DefaultAvatars WHERE name like '%Head%'";
+        else
+            query = "SELECT name, description FROM DefaultAvatars WHERE name like '%Head%' and bodytype = " + m_gender;
+
         data = m_sceneData.loadSQLData(query);
         
         if (data.size() <= 0) {
@@ -80,12 +85,16 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
         jList_Heads1.setListData(list);
     }
 
-    public void InitUpperBodyList() {
+    public void InitUpperBodyList(boolean isViewMode) {
         ArrayList<String[]> data;
         String[] list;
         String query = new String();
 
-        query = "SELECT description FROM Meshes WHERE type = 3 and bodyType = " + m_gender;
+        if (isViewMode)
+            query = "SELECT description FROM Meshes WHERE type = 3";
+        else
+            query = "SELECT description FROM Meshes WHERE type = 3 and bodyType = " + m_gender;
+
         data = m_sceneData.loadSQLData(query);
         
         if (data.size() <= 0) {
@@ -103,12 +112,16 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
         jList_UpperBody.setListData(list);
     }
 
-    public void InitLowerBodyList() {
+    public void InitLowerBodyList(boolean isViewMode) {
         ArrayList<String[]> data;
         String[] list;
         String query = new String();
 
-        query = "SELECT description FROM Meshes WHERE type in (5,6) and bodyType = " + m_gender;
+        if (isViewMode)
+            query = "SELECT description FROM Meshes WHERE type in (5,6)";
+        else
+            query = "SELECT description FROM Meshes WHERE type in (5,6) and bodyType = " + m_gender;
+
         data = m_sceneData.loadSQLData(query);
 
         if (data.size() <= 0) {
@@ -126,12 +139,15 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
         jList_LowerBody.setListData(list);
     }
 
-    public void InitShoesList() {
+    public void InitShoesList(boolean isViewMode) {
         ArrayList<String[]> data;
         String[] list;
         String query = new String();
 
-        query = "SELECT description FROM Meshes WHERE type = 10 and bodyType = " + m_gender;
+        if (isViewMode)
+            query = "SELECT description FROM Meshes WHERE type = 10";
+        else
+            query = "SELECT description FROM Meshes WHERE type = 10 and bodyType = " + m_gender;
         data = m_sceneData.loadSQLData(query);
 
         if (data.size() <= 0) {
@@ -149,12 +165,16 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
         jList_Shoes.setListData(list);
     }
 
-    public void InitHairList() {
+    public void InitHairList(boolean isViewMode) {
         ArrayList<String[]> data;
         String[] list;
         String query = new String();
 
-        query = "SELECT description FROM Meshes WHERE type = 0 and bodyType = " + m_gender;
+        if (isViewMode)
+            query = "SELECT description FROM Meshes WHERE type = 0";
+        else
+            query = "SELECT description FROM Meshes WHERE type = 0 and bodyType = " + m_gender;
+
         data = m_sceneData.loadSQLData(query);
 
         if (data.size() <= 0) {
@@ -172,13 +192,17 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
         jList_Hair.setListData(list);
     }
 
-    public void InitFacialHairList() {
+    public void InitFacialHairList(boolean isViewMode) {
         // TODO: Once we get some facial hair stuff
         ArrayList<String[]> data;
         String[] list;
         String query = new String();
 
-        query = "SELECT description FROM Meshes WHERE type = 11 and bodyType = " + m_gender;
+        if (isViewMode)
+            query = "SELECT description FROM Meshes WHERE type = 11";
+        else
+            query = "SELECT description FROM Meshes WHERE type = 11 and bodyType = " + m_gender;
+
         data = m_sceneData.loadSQLData(query);
 
         if (data.size() <= 0) {
@@ -196,12 +220,16 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
         jList_FacialHair.setListData(list);
     }
 
-    public void InitHatsList() {
+    public void InitHatsList(boolean isViewMode) {
         ArrayList<String[]> data;
         String[] list;
         String query = new String();
 
-        query = "SELECT description FROM Meshes WHERE type = 1 and bodyType = " + m_gender;
+        if (isViewMode)
+            query = "SELECT description FROM Meshes WHERE type = 1";
+        else
+            query = "SELECT description FROM Meshes WHERE type = 1 and bodyType = " + m_gender;
+
         data = m_sceneData.loadSQLData(query);
         
         if (data.size() <= 0) {
@@ -219,12 +247,16 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
         jList_Hats.setListData(list);
     }
 
-    public void InitSpecsList() {
+    public void InitSpecsList(boolean isViewMode) {
         ArrayList<String[]> data;
         String[] list;
         String query = new String();
 
-        query = "SELECT description FROM Meshes WHERE type = 2 and bodyType = " + m_gender;
+        if (isViewMode)
+            query = "SELECT description FROM Meshes WHERE type = 2";
+        else
+            query = "SELECT description FROM Meshes WHERE type = 2 and bodyType = " + m_gender;
+
         data = m_sceneData.loadSQLData(query);
         
         if (data.size() <= 0) {
@@ -242,22 +274,24 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
         jList_Specs.setListData(list);
     }
 
-    public void InitListBoxes() {
-        InitHeadList();
-        InitUpperBodyList();
-        InitLowerBodyList();
-        InitShoesList();
-        InitHairList();
-        InitFacialHairList();
-        InitHatsList();
-        InitSpecsList();
+    public void InitListBoxes(boolean isViewMode) {
+        InitHeadList(isViewMode);
+        InitUpperBodyList(isViewMode);
+        InitLowerBodyList(isViewMode);
+        InitShoesList(isViewMode);
+        InitHairList(isViewMode);
+        InitFacialHairList(isViewMode);
+        InitHatsList(isViewMode);
+        InitSpecsList(isViewMode);
     }
     ////////////////////////////////////////////////////////////////////////////
     // Loading
     ////////////////////////////////////////////////////////////////////////////
-    public void loadHead() {
-        if (m_sceneData.getCurrentSkeleton() == null)
-            return;
+    public void loadHead(boolean isViewMode) {
+        if (!isViewMode) {
+            if (m_sceneData.getCurrentSkeleton() == null)
+                return;
+        }
 
         if (jList_Heads.getSelectedValues().length == 0)
             return;
@@ -286,17 +320,72 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
             meshes[i] = meshref.get(i)[0];
         }
 
-        m_sceneData.loadMeshDAEURL(false, true, this, data.get(0), meshes, 0);
-        
-        m_meshes.put(0, meshes);
+        if (isViewMode) {
+            String[] anim = null;
+            m_sceneData.loadAvatarDAEURL(true, true, this, data.get(0), anim, meshes, 0);
+        }
+        else {
+            m_sceneData.loadMeshDAEURL(false, true, this, data.get(0), meshes, 0);
+            m_meshes.put(0, meshes);
+        }
+
         jButton_ApplyHead.setEnabled(true);
         jLabel_CurrHead.setText(selection);
         jLabel_CurrHead1.setText(selection);
     }
 
-    public void loadUpperBody() {
-        if (m_sceneData.getCurrentSkeleton() == null)
+    public void loadHead1(boolean isViewMode) {
+        if (!isViewMode) {
+            if (m_sceneData.getCurrentSkeleton() == null)
+                return;
+        }
+
+        if (jList_Heads1.getSelectedValues().length == 0)
             return;
+
+        if (!jButton_ApplyHead1.isEnabled())
+            return;
+
+        jButton_ApplyHead1.setEnabled(false);
+        String selection = jList_Heads1.getSelectedValues()[0].toString();
+
+        if (selection.equals("N/A"))
+            return;
+
+        String query = new String();
+        ArrayList<String[]> data, meshref;
+        String[] meshes;
+
+        query = "SELECT name, description, bodytype, url, id FROM DefaultAvatars WHERE description = '" + selection + "'";
+        data = m_sceneData.loadSQLData(query);
+
+        query = "SELECT name FROM GeometryReferences WHERE referenceid = " + data.get(0)[4];
+        meshref = m_sceneData.loadSQLData(query);
+
+        meshes = new String[meshref.size()];
+        for (int i = 0; i < meshes.length; i++) {
+            meshes[i] = meshref.get(i)[0];
+        }
+
+        if (isViewMode) {
+            String[] anim = null;
+            m_sceneData.loadAvatarDAEURL(true, true, this, data.get(0), anim, meshes, 0);
+        }
+        else {
+            m_sceneData.loadMeshDAEURL(false, true, this, data.get(0), meshes, 0);
+            m_meshes.put(0, meshes);
+        }
+
+        jButton_ApplyHead1.setEnabled(true);
+        jLabel_CurrHead.setText(selection);
+        jLabel_CurrHead1.setText(selection);
+    }
+
+    public void loadUpperBody(boolean isViewMode) {
+        if (!isViewMode) {
+            if (m_sceneData.getCurrentSkeleton() == null)
+                return;
+        }
 
         if (jList_UpperBody.getSelectedValues().length == 0)
             return;
@@ -325,16 +414,22 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
             meshes[i] = meshref.get(i)[0];
         }
 
-        m_sceneData.loadMeshDAEURL(false, true, this, data.get(0), meshes, 2);
+        if (isViewMode)
+            m_sceneData.loadMeshDAEURL(true, true, this, data.get(0), meshes, 2);
+        else {
+            m_sceneData.loadMeshDAEURL(false, true, this, data.get(0), meshes, 2);
+            m_meshes.put(2, meshes);
+        }
 
-        m_meshes.put(2, meshes);
         jButton_ApplyBody.setEnabled(true);
         jLabel_CurrUpperBody.setText(selection);
     }
 
-    public void loadLowerBody() {
-        if (m_sceneData.getCurrentSkeleton() == null)
-            return;
+    public void loadLowerBody(boolean isViewMode) {
+        if (!isViewMode) {
+            if (m_sceneData.getCurrentSkeleton() == null)
+                return;
+        }
 
         if (jList_LowerBody.getSelectedValues().length == 0)
             return;
@@ -363,16 +458,22 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
             meshes[i] = meshref.get(i)[0];
         }
 
-        m_sceneData.loadMeshDAEURL(false, true, this, data.get(0), meshes, 3);
+        if (isViewMode)
+            m_sceneData.loadMeshDAEURL(true, true, this, data.get(0), meshes, 3);
+        else {
+            m_sceneData.loadMeshDAEURL(false, true, this, data.get(0), meshes, 3);
+            m_meshes.put(3, meshes);
+        }
 
-        m_meshes.put(3, meshes);
         jButton_ApplyLegs.setEnabled(true);
         jLabel_CurrLowerBody.setText(selection);
     }
 
-    public void loadShoes() {
-        if (m_sceneData.getCurrentSkeleton() == null)
-            return;
+    public void loadShoes(boolean isViewMode) {
+        if (!isViewMode) {
+            if (m_sceneData.getCurrentSkeleton() == null)
+                return;
+        }
 
         if (jList_Shoes.getSelectedValues().length == 0)
             return;
@@ -401,16 +502,22 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
             meshes[i] = meshref.get(i)[0];
         }
 
-        m_sceneData.loadMeshDAEURL(false, true, this, data.get(0), meshes, 4);
+        if (isViewMode)
+            m_sceneData.loadMeshDAEURL(true, true, this, data.get(0), meshes, 4);
+        else {
+            m_sceneData.loadMeshDAEURL(false, true, this, data.get(0), meshes, 4);
+            m_meshes.put(4, meshes);
+        }
 
-        m_meshes.put(4, meshes);
         jButton_ApplyShoes.setEnabled(true);
         jLabel_CurrShoes.setText(selection);
     }
 
-    public void loadHair() {
-        if (m_sceneData.getCurrentSkeleton() == null)
-            return;
+    public void loadHair(boolean isViewMode) {
+        if (!isViewMode) {
+            if (m_sceneData.getCurrentSkeleton() == null)
+                return;
+        }
 
         if (jList_Hair.getSelectedValues().length == 0)
             return;
@@ -439,19 +546,24 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
             meshes[i] = meshref.get(i)[0];
         }
 
-        m_sceneData.loadMeshDAEURL(false, true, this, data.get(0), meshes, 5);
-
-        String[] hair = new String[] {data.get(0)[0]};
-        m_meshes.put(5, hair);
-        m_sceneData.setMeshSetup(m_meshes);
+        if (isViewMode)
+            m_sceneData.loadMeshDAEURL(true, true, this, data.get(0), meshes, 5);
+        else {
+            m_sceneData.loadMeshDAEURL(false, true, this, data.get(0), meshes, 5);
+            String[] hair = new String[] {data.get(0)[0]};
+            m_meshes.put(5, hair);
+            m_sceneData.setMeshSetup(m_meshes);
+        }
 
         jButton_ApplyHair.setEnabled(true);
         jLabel_CurrHair.setText(selection);
     }
 
-    public void loadFacialHair() {
-        if (m_sceneData.getCurrentSkeleton() == null)
-            return;
+    public void loadFacialHair(boolean isViewmode) {
+        if (!isViewmode) {
+            if (m_sceneData.getCurrentSkeleton() == null)
+                return;
+        }
 
         if (jList_FacialHair.getSelectedValues().length == 0)
             return;
@@ -480,19 +592,24 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
             meshes[i] = meshref.get(i)[0];
         }
 
-        m_sceneData.loadMeshDAEURL(false, true, this, data.get(0), meshes, 6);
-
-        String[] facialHair = new String[] {};
-        m_meshes.put(6, facialHair);
-        m_sceneData.setMeshSetup(m_meshes);
+        if (isViewmode)
+            m_sceneData.loadMeshDAEURL(true, true, this, data.get(0), meshes, 6);
+        else {
+            m_sceneData.loadMeshDAEURL(false, true, this, data.get(0), meshes, 6);
+            String[] facialHair = new String[] {};
+            m_meshes.put(6, facialHair);
+            m_sceneData.setMeshSetup(m_meshes);
+        }
 
         jButton_ApplyFacialHair.setEnabled(true);
         jLabel_CurrFacialHair.setText(selection);
     }
 
-    public void loadHats() {
-        if (m_sceneData.getCurrentSkeleton() == null)
-            return;
+    public void loadHats(boolean isViewMode) {
+        if (!isViewMode) {
+            if (m_sceneData.getCurrentSkeleton() == null)
+                return;
+        }
 
         if (jList_Hats.getSelectedValues().length == 0)
             return;
@@ -521,19 +638,24 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
             meshes[i] = meshref.get(i)[0];
         }
 
-        m_sceneData.loadMeshDAEURL(false, true, this, data.get(0), meshes, 7);
-
-        String[] hair = new String[] {data.get(0)[0]};
-        m_meshes.put(7, hair);
-        m_sceneData.setMeshSetup(m_meshes);
+        if (isViewMode)
+            m_sceneData.loadMeshDAEURL(true, true, this, data.get(0), meshes, 7);
+        else {
+            m_sceneData.loadMeshDAEURL(false, true, this, data.get(0), meshes, 7);
+            String[] hair = new String[] {data.get(0)[0]};
+            m_meshes.put(7, hair);
+            m_sceneData.setMeshSetup(m_meshes);
+        }
 
         jButton_ApplyHat.setEnabled(true);
         jLabel_CurrHat.setText(selection);
     }
 
-    public void loadSpecs() {
-        if (m_sceneData.getCurrentSkeleton() == null)
-            return;
+    public void loadSpecs(boolean isViewMode) {
+        if (!isViewMode) {
+            if (m_sceneData.getCurrentSkeleton() == null)
+                return;
+        }
 
         if (jList_Specs.getSelectedValues().length == 0)
             return;
@@ -562,11 +684,14 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
             meshes[i] = meshref.get(i)[0];
         }
 
-        m_sceneData.loadMeshDAEURL(false, true, this, data.get(0), meshes, 8);
-
-        String[] hair = new String[] {data.get(0)[0]};
-        m_meshes.put(8, hair);
-        m_sceneData.setMeshSetup(m_meshes);
+        if (isViewMode)
+            m_sceneData.loadMeshDAEURL(true, true, this, data.get(0), meshes, 8);
+        else {
+            m_sceneData.loadMeshDAEURL(false, true, this, data.get(0), meshes, 8);
+            String[] hair = new String[] {data.get(0)[0]};
+            m_meshes.put(8, hair);
+            m_sceneData.setMeshSetup(m_meshes);
+        }
 
         jButton_ApplySpecs.setEnabled(true);
         jLabel_CurrSpecs.setText(selection);
@@ -614,10 +739,37 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
         createMeshSwapList("2", meshref);
         createMeshSwapList("3", meshref);
         createMeshSwapList("4", meshref);
+        createMeshSwapList("5", meshref);
+        createMeshSwapList("6", meshref);
+        createMeshSwapList("7", meshref);
+        createMeshSwapList("8", meshref);
+
         m_sceneData.setMeshSetup(m_meshes);
 
         // NOTE: the last 2 params not important since we are adding in a new avatar
         m_sceneData.loadAvatarDAEURL(true, true, this, data.get(0), anim.get(0), anim.get(0), 0);
+
+        if (m_gender == 1) {
+            m_meshes = m_sceneData.getMeshSetup();
+            String geom = null;
+            String query2 = null;
+            String[] meshies = new String[3];
+            ArrayList<String[]> data2;
+
+            for (int i = 0; i < 3; i++) {
+                geom = m_meshes.get(i+2)[0];
+                query = "SELECT referenceid FROM GeometryReferences WHERE tableref = 'Meshes' and name = '" + geom + "'";
+                data2 = m_sceneData.loadSQLData(query);
+                query = "SELECT description FROM Meshes WHERE id = " + data2.get(0)[0];
+                data2.clear();
+                data2 = m_sceneData.loadSQLData(query);
+                meshies[i] = data2.get(0)[0];
+            }
+
+            jLabel_CurrUpperBody.setText(meshies[0]);
+            jLabel_CurrLowerBody.setText(meshies[1]);
+            jLabel_CurrShoes.setText(meshies[2]);
+        }
 
         jButton_Male.setEnabled(true);
         jButton_Female.setEnabled(true);
@@ -634,6 +786,10 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
                 temp.add(meshes.get(i)[0].toString());
             }
         }
+
+        if (temp.size() == 0)
+            return;
+
         geometry = new String[temp.size()];
         for (int i = 0; i < temp.size(); i++) {
             geometry[i] = temp.get(i);
@@ -649,6 +805,14 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
             iRegion = 3;          // Legs
         else if (region.equals("4"))
             iRegion = 4;          // Feet
+        else if (region.equals("5"))
+            iRegion = 5;          // Hair
+        else if (region.equals("6"))
+            iRegion = 6;          // Facial Hair
+        else if (region.equals("7"))
+            iRegion = 7;          // Hats
+        else if (region.equals("8"))
+            iRegion = 8;          // Glasses
 
         m_meshes.put(iRegion, geometry);
     }
@@ -685,6 +849,7 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
         java.awt.GridBagConstraints gridBagConstraints;
 
         jButton_Male = new javax.swing.JButton();
+        jButton_ModelViewer = new javax.swing.JButton();
         jButton_Female = new javax.swing.JButton();
         jTabbedPane_Options = new javax.swing.JTabbedPane();
         jPanel_MainBody = new javax.swing.JPanel();
@@ -746,6 +911,8 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
         jList_Specs = new javax.swing.JList();
         jButton_ApplyAllAcc = new javax.swing.JButton();
 
+        setMaximumSize(new java.awt.Dimension(2222222, 2222222));
+        setMinimumSize(new java.awt.Dimension(320, 480));
         setPreferredSize(new java.awt.Dimension(320, 480));
         setLayout(new java.awt.GridBagLayout());
 
@@ -753,34 +920,70 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 m_gender = 1;
                 setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-                InitListBoxes();
+                m_isViewMode = false;
+                InitListBoxes(m_isViewMode);
+                m_sceneData.setDefaultLoad(true);
                 loadDefaultAvatar();
                 setCursor(null);
             }
         });
+        jButton_Male.setFont(new java.awt.Font("Lucida Grande", 0, 10)); // NOI18N
         jButton_Male.setText("Male Avatar");
-        jButton_Male.setPreferredSize(new java.awt.Dimension(150, 29));
+        jButton_Male.setMaximumSize(new java.awt.Dimension(100, 25));
+        jButton_Male.setMinimumSize(new java.awt.Dimension(100, 25));
+        jButton_Male.setPreferredSize(new java.awt.Dimension(100, 25));
         gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.ipadx = 5;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         add(jButton_Male, gridBagConstraints);
+
+        jButton_ModelViewer.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+                m_isViewMode = true;
+                InitListBoxes(m_isViewMode);
+                setCursor(null);
+            }
+        });
+        jButton_ModelViewer.setFont(new java.awt.Font("Lucida Grande", 0, 10)); // NOI18N
+        jButton_ModelViewer.setText("Model View");
+        jButton_ModelViewer.setMaximumSize(new java.awt.Dimension(100, 25));
+        jButton_ModelViewer.setMinimumSize(new java.awt.Dimension(100, 25));
+        jButton_ModelViewer.setPreferredSize(new java.awt.Dimension(100, 25));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        add(jButton_ModelViewer, gridBagConstraints);
 
         jButton_Female.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 m_gender = 2;
                 setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-                InitListBoxes();
+                m_isViewMode = false;
+                InitListBoxes(m_isViewMode);
+                m_sceneData.setDefaultLoad(false);
                 loadDefaultAvatar();
                 setCursor(null);
             }
         });
+        jButton_Female.setFont(new java.awt.Font("Lucida Grande", 0, 10)); // NOI18N
         jButton_Female.setText("Female Avatar");
-        jButton_Female.setPreferredSize(new java.awt.Dimension(150, 29));
+        jButton_Female.setMaximumSize(new java.awt.Dimension(100, 25));
+        jButton_Female.setMinimumSize(new java.awt.Dimension(100, 25));
+        jButton_Female.setPreferredSize(new java.awt.Dimension(100, 25));
         gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.ipadx = 14;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
         add(jButton_Female, gridBagConstraints);
 
         jTabbedPane_Options.setPreferredSize(new java.awt.Dimension(320, 450));
 
+        jPanel_MainBody.setMaximumSize(new java.awt.Dimension(320, 450));
         jPanel_MainBody.setPreferredSize(new java.awt.Dimension(320, 450));
         jPanel_MainBody.setLayout(new java.awt.GridBagLayout());
 
@@ -796,7 +999,6 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
         jLabel_CurrHead.setMaximumSize(new java.awt.Dimension(50, 25));
         jLabel_CurrHead.setPreferredSize(new java.awt.Dimension(150, 25));
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
         gridBagConstraints.insets = new java.awt.Insets(0, 0, 5, 0);
         jPanel_MainBody.add(jLabel_CurrHead, gridBagConstraints);
@@ -804,7 +1006,7 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
         jButton_ApplyHead.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-                loadHead();
+                loadHead(m_isViewMode);
                 setCursor(null);
             }
         });
@@ -858,7 +1060,7 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
         jButton_ApplyBody.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-                loadUpperBody();
+                loadUpperBody(m_isViewMode);
                 setCursor(null);
             }
         });
@@ -912,7 +1114,7 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
         jButton_ApplyLegs.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-                loadLowerBody();
+                loadLowerBody(m_isViewMode);
                 setCursor(null);
             }
         });
@@ -966,7 +1168,7 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
         jButton_ApplyShoes.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-                loadShoes();
+                loadShoes(m_isViewMode);
                 setCursor(null);
             }
         });
@@ -999,10 +1201,10 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
         jButton_ApplyAllBody.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-                loadHead();
-                loadUpperBody();
-                loadLowerBody();
-                loadShoes();
+                loadHead(m_isViewMode);
+                loadUpperBody(m_isViewMode);
+                loadLowerBody(m_isViewMode);
+                loadShoes(m_isViewMode);
                 setCursor(null);
             }
         });
@@ -1040,7 +1242,7 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
         jButton_ApplyHead1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-                loadHead();
+                loadHead1(m_isViewMode);
                 setCursor(null);
             }
         });
@@ -1098,7 +1300,7 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
         jButton_ApplyHair.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-                loadHair();
+                loadHair(m_isViewMode);
                 setCursor(null);
             }
         });
@@ -1173,7 +1375,7 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
         jButton_ApplyFacialHair.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-                loadFacialHair();
+                loadFacialHair(m_isViewMode);
                 setCursor(null);
             }
         });
@@ -1249,9 +1451,9 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
         jButton_ApplyAllHead.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-                loadHead();
-                loadHair();
-                loadFacialHair();
+                loadHead1(m_isViewMode);
+                loadHair(m_isViewMode);
+                loadFacialHair(m_isViewMode);
                 setCursor(null);
             }
         });
@@ -1291,7 +1493,7 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
         jButton_ApplyHat.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-                loadHats();
+                loadHats(m_isViewMode);
                 setCursor(null);
             }
         });
@@ -1347,7 +1549,7 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
         jButton_ApplySpecs.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-                loadSpecs();
+                loadSpecs(m_isViewMode);
                 setCursor(null);
             }
         });
@@ -1382,8 +1584,8 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
         jButton_ApplyAllAcc.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-                loadHats();
-                loadSpecs();
+                loadHats(m_isViewMode);
+                loadSpecs(m_isViewMode);
                 setCursor(null);
             }
         });
@@ -1402,7 +1604,6 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
         gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         add(jTabbedPane_Options, gridBagConstraints);
     }// </editor-fold>//GEN-END:initComponents
 
@@ -1425,6 +1626,7 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
     private javax.swing.JButton jButton_ColorST;
     private javax.swing.JButton jButton_Female;
     private javax.swing.JButton jButton_Male;
+    private javax.swing.JButton jButton_ModelViewer;
     private javax.swing.JLabel jLabel_CurrColorFH;
     private javax.swing.JLabel jLabel_CurrColorH;
     private javax.swing.JLabel jLabel_CurrColorST;

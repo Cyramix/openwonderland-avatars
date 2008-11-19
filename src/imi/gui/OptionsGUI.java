@@ -572,47 +572,6 @@ public class OptionsGUI extends javax.swing.JFrame {
         jRadioButton_GenderM = new javax.swing.JRadioButton();
         jRadioButton_GenderF = new javax.swing.JRadioButton();
         jTabbedPane_Options = new javax.swing.JTabbedPane();
-        jScrollPanel_Colors = new javax.swing.JScrollPane();
-        jPanel_Colors = new javax.swing.JPanel();
-        jPanel_HairColor = new javax.swing.JPanel();
-        jToolBar_HairR = new javax.swing.JToolBar();
-        jPanel_HairColorR = new javax.swing.JPanel();
-        jSlider_HairColorR = new javax.swing.JSlider();
-        jSpinner_HairR = new javax.swing.JSpinner();
-        jToolBar_HairG = new javax.swing.JToolBar();
-        jPanel_HairColorG = new javax.swing.JPanel();
-        jSlider_HairColorG = new javax.swing.JSlider();
-        jSpinner_HairG = new javax.swing.JSpinner();
-        jToolBar_HairB = new javax.swing.JToolBar();
-        jPanel_HairColorB = new javax.swing.JPanel();
-        jSlider_HairColorB = new javax.swing.JSlider();
-        jSpinner_HairB = new javax.swing.JSpinner();
-        jPanel_EyeColor = new javax.swing.JPanel();
-        jToolBar_EyeR = new javax.swing.JToolBar();
-        jPanel_EyeColorR = new javax.swing.JPanel();
-        jSlider_EyeColorR = new javax.swing.JSlider();
-        jSpinner_EyeR = new javax.swing.JSpinner();
-        jToolBar_EyeG = new javax.swing.JToolBar();
-        jPanel_EyeColorG = new javax.swing.JPanel();
-        jSlider_EyeColorG = new javax.swing.JSlider();
-        jSpinner_EyeG = new javax.swing.JSpinner();
-        jToolBar_EyeB = new javax.swing.JToolBar();
-        jPanel_EyeColorB = new javax.swing.JPanel();
-        jSlider_EyeColorB = new javax.swing.JSlider();
-        jSpinner_EyeB = new javax.swing.JSpinner();
-        jPanel_SkinColor = new javax.swing.JPanel();
-        jToolBar_SkinR = new javax.swing.JToolBar();
-        jPanel_SkinColorR = new javax.swing.JPanel();
-        jSlider_SkinColorR = new javax.swing.JSlider();
-        jSpinner_SkinR = new javax.swing.JSpinner();
-        jToolBar_SkinG = new javax.swing.JToolBar();
-        jPanel_SkinColorG = new javax.swing.JPanel();
-        jSlider_SkinColorG = new javax.swing.JSlider();
-        jSpinner_SkinG = new javax.swing.JSpinner();
-        jToolBar_SkinB = new javax.swing.JToolBar();
-        jPanel_SkinColorB = new javax.swing.JPanel();
-        jSlider_SkinColorB = new javax.swing.JSlider();
-        jSpinner_SkinB = new javax.swing.JSpinner();
         jScrollPane_Head = new javax.swing.JScrollPane();
         jPanel_Head = new javax.swing.JPanel();
         jToolBar_HeadHeight = new javax.swing.JToolBar();
@@ -661,46 +620,6 @@ public class OptionsGUI extends javax.swing.JFrame {
         jToolBar_FootSize = new javax.swing.JToolBar();
         jLabel_FootSize = new javax.swing.JLabel();
         jSlider_FootSize = new javax.swing.JSlider();
-        jScrollPanel_Details = new javax.swing.JScrollPane();
-        jSplitPane2 = new javax.swing.JSplitPane();
-        jPanel_BodyDetails = new javax.swing.JPanel();
-        jToolBar_BodyScars = new javax.swing.JToolBar();
-        jLabel_BodyScars = new javax.swing.JLabel();
-        jSpinner_BodyScars = new javax.swing.JSpinner();
-        jToolBar_BodyTattoos = new javax.swing.JToolBar();
-        jLabel_BodyTattoos = new javax.swing.JLabel();
-        jSpinner_BodyTattoos = new javax.swing.JSpinner();
-        jToolBar_BodyPiercings = new javax.swing.JToolBar();
-        jLabel_BodyPiercings = new javax.swing.JLabel();
-        jSpinner_BodyPiercings = new javax.swing.JSpinner();
-        jPanel_HeadDetails = new javax.swing.JPanel();
-        jToolBar_HairStyle = new javax.swing.JToolBar();
-        jLabel_HairStyle = new javax.swing.JLabel();
-        jSpinner_HairStyle = new javax.swing.JSpinner();
-        jToolBar_FacialHair = new javax.swing.JToolBar();
-        jLabel_FacialHair = new javax.swing.JLabel();
-        jSpinner_FacialHair = new javax.swing.JSpinner();
-        jToolBar_Ears = new javax.swing.JToolBar();
-        jLabel_Ears = new javax.swing.JLabel();
-        jSpinner_EarPiercing = new javax.swing.JSpinner();
-        jToolBar_Nose = new javax.swing.JToolBar();
-        jLabel_Nose = new javax.swing.JLabel();
-        jSpinner_NosePiercing = new javax.swing.JSpinner();
-        jToolBar_Eyes = new javax.swing.JToolBar();
-        jLabel_Eyes = new javax.swing.JLabel();
-        jSpinner_EyePiercings = new javax.swing.JSpinner();
-        jToolBar_Lips = new javax.swing.JToolBar();
-        jLabel_Lips = new javax.swing.JLabel();
-        jSpinner_LipPiercing = new javax.swing.JSpinner();
-        jToolBar_Tattoos = new javax.swing.JToolBar();
-        jLabel_Tattoos = new javax.swing.JLabel();
-        jSpinner_Tattoos = new javax.swing.JSpinner();
-        jToolBar_Scars = new javax.swing.JToolBar();
-        jLabel_Scars = new javax.swing.JLabel();
-        jSpinner_Scars = new javax.swing.JSpinner();
-        jPanel_Shirts = new javax.swing.JPanel();
-        jPanel_Pants = new javax.swing.JPanel();
-        jPanel_Dresses = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -750,357 +669,6 @@ public class OptionsGUI extends javax.swing.JFrame {
                 .add(jRadioButton_GenderM)
                 .add(jRadioButton_GenderF))
         );
-
-        jScrollPanel_Colors.setMaximumSize(new java.awt.Dimension(230, 575));
-        jScrollPanel_Colors.setMinimumSize(new java.awt.Dimension(230, 372));
-
-        jPanel_Colors.setMaximumSize(new java.awt.Dimension(253, 353));
-        jPanel_Colors.setPreferredSize(new java.awt.Dimension(230, 353));
-
-        jPanel_HairColor.setBorder(javax.swing.BorderFactory.createTitledBorder("Hair Color"));
-
-        jToolBar_HairR.setFloatable(false);
-        jToolBar_HairR.setRollover(true);
-
-        jPanel_HairColorR.setBackground(new java.awt.Color(255, 0, 0));
-        jPanel_HairColorR.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
-        jPanel_HairColorR.setMaximumSize(new java.awt.Dimension(20, 20));
-        jPanel_HairColorR.setMinimumSize(new java.awt.Dimension(20, 20));
-        jPanel_HairColorR.setPreferredSize(new java.awt.Dimension(20, 20));
-
-        org.jdesktop.layout.GroupLayout jPanel_HairColorRLayout = new org.jdesktop.layout.GroupLayout(jPanel_HairColorR);
-        jPanel_HairColorR.setLayout(jPanel_HairColorRLayout);
-        jPanel_HairColorRLayout.setHorizontalGroup(
-            jPanel_HairColorRLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 16, Short.MAX_VALUE)
-        );
-        jPanel_HairColorRLayout.setVerticalGroup(
-            jPanel_HairColorRLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 16, Short.MAX_VALUE)
-        );
-
-        jToolBar_HairR.add(jPanel_HairColorR);
-
-        jSlider_HairColorR.setMaximum(255);
-        jSlider_HairColorR.setValue(127);
-        jSlider_HairColorR.setPreferredSize(new java.awt.Dimension(120, 29));
-        jToolBar_HairR.add(jSlider_HairColorR);
-        jToolBar_HairR.add(jSpinner_HairR);
-
-        jToolBar_HairG.setFloatable(false);
-        jToolBar_HairG.setRollover(true);
-
-        jPanel_HairColorG.setBackground(new java.awt.Color(0, 255, 0));
-        jPanel_HairColorG.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
-        jPanel_HairColorG.setMaximumSize(new java.awt.Dimension(20, 20));
-        jPanel_HairColorG.setMinimumSize(new java.awt.Dimension(20, 20));
-        jPanel_HairColorG.setPreferredSize(new java.awt.Dimension(20, 20));
-
-        org.jdesktop.layout.GroupLayout jPanel_HairColorGLayout = new org.jdesktop.layout.GroupLayout(jPanel_HairColorG);
-        jPanel_HairColorG.setLayout(jPanel_HairColorGLayout);
-        jPanel_HairColorGLayout.setHorizontalGroup(
-            jPanel_HairColorGLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 16, Short.MAX_VALUE)
-        );
-        jPanel_HairColorGLayout.setVerticalGroup(
-            jPanel_HairColorGLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 16, Short.MAX_VALUE)
-        );
-
-        jToolBar_HairG.add(jPanel_HairColorG);
-
-        jSlider_HairColorG.setMaximum(255);
-        jSlider_HairColorG.setValue(127);
-        jSlider_HairColorG.setPreferredSize(new java.awt.Dimension(120, 29));
-        jToolBar_HairG.add(jSlider_HairColorG);
-        jToolBar_HairG.add(jSpinner_HairG);
-
-        jToolBar_HairB.setFloatable(false);
-        jToolBar_HairB.setRollover(true);
-
-        jPanel_HairColorB.setBackground(new java.awt.Color(0, 0, 255));
-        jPanel_HairColorB.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
-        jPanel_HairColorB.setMaximumSize(new java.awt.Dimension(20, 20));
-        jPanel_HairColorB.setMinimumSize(new java.awt.Dimension(20, 20));
-        jPanel_HairColorB.setPreferredSize(new java.awt.Dimension(20, 20));
-
-        org.jdesktop.layout.GroupLayout jPanel_HairColorBLayout = new org.jdesktop.layout.GroupLayout(jPanel_HairColorB);
-        jPanel_HairColorB.setLayout(jPanel_HairColorBLayout);
-        jPanel_HairColorBLayout.setHorizontalGroup(
-            jPanel_HairColorBLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 16, Short.MAX_VALUE)
-        );
-        jPanel_HairColorBLayout.setVerticalGroup(
-            jPanel_HairColorBLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 16, Short.MAX_VALUE)
-        );
-
-        jToolBar_HairB.add(jPanel_HairColorB);
-
-        jSlider_HairColorB.setMaximum(255);
-        jSlider_HairColorB.setValue(127);
-        jSlider_HairColorB.setPreferredSize(new java.awt.Dimension(120, 29));
-        jToolBar_HairB.add(jSlider_HairColorB);
-        jToolBar_HairB.add(jSpinner_HairB);
-
-        org.jdesktop.layout.GroupLayout jPanel_HairColorLayout = new org.jdesktop.layout.GroupLayout(jPanel_HairColor);
-        jPanel_HairColor.setLayout(jPanel_HairColorLayout);
-        jPanel_HairColorLayout.setHorizontalGroup(
-            jPanel_HairColorLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(jToolBar_HairB, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 220, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-            .add(jToolBar_HairG, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 220, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-            .add(jToolBar_HairR, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 220, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-        );
-        jPanel_HairColorLayout.setVerticalGroup(
-            jPanel_HairColorLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(jPanel_HairColorLayout.createSequentialGroup()
-                .add(jToolBar_HairR, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 25, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jToolBar_HairG, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 25, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jToolBar_HairB, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 25, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-
-        jPanel_EyeColor.setBorder(javax.swing.BorderFactory.createTitledBorder("Eye Color"));
-
-        jToolBar_EyeR.setFloatable(false);
-        jToolBar_EyeR.setRollover(true);
-
-        jPanel_EyeColorR.setBackground(new java.awt.Color(255, 0, 0));
-        jPanel_EyeColorR.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
-        jPanel_EyeColorR.setMaximumSize(new java.awt.Dimension(20, 20));
-        jPanel_EyeColorR.setMinimumSize(new java.awt.Dimension(20, 20));
-        jPanel_EyeColorR.setPreferredSize(new java.awt.Dimension(20, 20));
-
-        org.jdesktop.layout.GroupLayout jPanel_EyeColorRLayout = new org.jdesktop.layout.GroupLayout(jPanel_EyeColorR);
-        jPanel_EyeColorR.setLayout(jPanel_EyeColorRLayout);
-        jPanel_EyeColorRLayout.setHorizontalGroup(
-            jPanel_EyeColorRLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 16, Short.MAX_VALUE)
-        );
-        jPanel_EyeColorRLayout.setVerticalGroup(
-            jPanel_EyeColorRLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 16, Short.MAX_VALUE)
-        );
-
-        jToolBar_EyeR.add(jPanel_EyeColorR);
-
-        jSlider_EyeColorR.setMaximum(255);
-        jSlider_EyeColorR.setValue(127);
-        jSlider_EyeColorR.setPreferredSize(new java.awt.Dimension(120, 29));
-        jToolBar_EyeR.add(jSlider_EyeColorR);
-        jToolBar_EyeR.add(jSpinner_EyeR);
-
-        jToolBar_EyeG.setFloatable(false);
-        jToolBar_EyeG.setRollover(true);
-
-        jPanel_EyeColorG.setBackground(new java.awt.Color(0, 255, 0));
-        jPanel_EyeColorG.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
-        jPanel_EyeColorG.setMaximumSize(new java.awt.Dimension(20, 20));
-        jPanel_EyeColorG.setMinimumSize(new java.awt.Dimension(20, 20));
-        jPanel_EyeColorG.setPreferredSize(new java.awt.Dimension(20, 20));
-
-        org.jdesktop.layout.GroupLayout jPanel_EyeColorGLayout = new org.jdesktop.layout.GroupLayout(jPanel_EyeColorG);
-        jPanel_EyeColorG.setLayout(jPanel_EyeColorGLayout);
-        jPanel_EyeColorGLayout.setHorizontalGroup(
-            jPanel_EyeColorGLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 16, Short.MAX_VALUE)
-        );
-        jPanel_EyeColorGLayout.setVerticalGroup(
-            jPanel_EyeColorGLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 16, Short.MAX_VALUE)
-        );
-
-        jToolBar_EyeG.add(jPanel_EyeColorG);
-
-        jSlider_EyeColorG.setMaximum(255);
-        jSlider_EyeColorG.setValue(127);
-        jSlider_EyeColorG.setPreferredSize(new java.awt.Dimension(120, 29));
-        jToolBar_EyeG.add(jSlider_EyeColorG);
-        jToolBar_EyeG.add(jSpinner_EyeG);
-
-        jToolBar_EyeB.setFloatable(false);
-        jToolBar_EyeB.setRollover(true);
-
-        jPanel_EyeColorB.setBackground(new java.awt.Color(0, 0, 255));
-        jPanel_EyeColorB.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
-        jPanel_EyeColorB.setMaximumSize(new java.awt.Dimension(20, 20));
-        jPanel_EyeColorB.setMinimumSize(new java.awt.Dimension(20, 20));
-        jPanel_EyeColorB.setPreferredSize(new java.awt.Dimension(20, 20));
-
-        org.jdesktop.layout.GroupLayout jPanel_EyeColorBLayout = new org.jdesktop.layout.GroupLayout(jPanel_EyeColorB);
-        jPanel_EyeColorB.setLayout(jPanel_EyeColorBLayout);
-        jPanel_EyeColorBLayout.setHorizontalGroup(
-            jPanel_EyeColorBLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 16, Short.MAX_VALUE)
-        );
-        jPanel_EyeColorBLayout.setVerticalGroup(
-            jPanel_EyeColorBLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 16, Short.MAX_VALUE)
-        );
-
-        jToolBar_EyeB.add(jPanel_EyeColorB);
-
-        jSlider_EyeColorB.setMaximum(255);
-        jSlider_EyeColorB.setValue(127);
-        jSlider_EyeColorB.setPreferredSize(new java.awt.Dimension(120, 29));
-        jToolBar_EyeB.add(jSlider_EyeColorB);
-        jToolBar_EyeB.add(jSpinner_EyeB);
-
-        org.jdesktop.layout.GroupLayout jPanel_EyeColorLayout = new org.jdesktop.layout.GroupLayout(jPanel_EyeColor);
-        jPanel_EyeColor.setLayout(jPanel_EyeColorLayout);
-        jPanel_EyeColorLayout.setHorizontalGroup(
-            jPanel_EyeColorLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(jToolBar_EyeR, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 220, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-            .add(jToolBar_EyeG, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 220, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-            .add(jToolBar_EyeB, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 220, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-        );
-        jPanel_EyeColorLayout.setVerticalGroup(
-            jPanel_EyeColorLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(jPanel_EyeColorLayout.createSequentialGroup()
-                .add(jToolBar_EyeR, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 25, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jToolBar_EyeG, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 25, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jToolBar_EyeB, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 25, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-
-        jPanel_SkinColor.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Skin/Body Color"));
-
-        jToolBar_SkinR.setFloatable(false);
-        jToolBar_SkinR.setRollover(true);
-
-        jPanel_SkinColorR.setBackground(new java.awt.Color(255, 0, 0));
-        jPanel_SkinColorR.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
-        jPanel_SkinColorR.setMaximumSize(new java.awt.Dimension(20, 20));
-        jPanel_SkinColorR.setMinimumSize(new java.awt.Dimension(20, 20));
-        jPanel_SkinColorR.setPreferredSize(new java.awt.Dimension(20, 20));
-
-        org.jdesktop.layout.GroupLayout jPanel_SkinColorRLayout = new org.jdesktop.layout.GroupLayout(jPanel_SkinColorR);
-        jPanel_SkinColorR.setLayout(jPanel_SkinColorRLayout);
-        jPanel_SkinColorRLayout.setHorizontalGroup(
-            jPanel_SkinColorRLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 16, Short.MAX_VALUE)
-        );
-        jPanel_SkinColorRLayout.setVerticalGroup(
-            jPanel_SkinColorRLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 16, Short.MAX_VALUE)
-        );
-
-        jToolBar_SkinR.add(jPanel_SkinColorR);
-
-        jSlider_SkinColorR.setMaximum(255);
-        jSlider_SkinColorR.setValue(127);
-        jSlider_SkinColorR.setPreferredSize(new java.awt.Dimension(120, 29));
-        jToolBar_SkinR.add(jSlider_SkinColorR);
-        jToolBar_SkinR.add(jSpinner_SkinR);
-
-        jToolBar_SkinG.setFloatable(false);
-        jToolBar_SkinG.setRollover(true);
-
-        jPanel_SkinColorG.setBackground(new java.awt.Color(0, 255, 0));
-        jPanel_SkinColorG.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
-        jPanel_SkinColorG.setMaximumSize(new java.awt.Dimension(20, 20));
-        jPanel_SkinColorG.setMinimumSize(new java.awt.Dimension(20, 20));
-        jPanel_SkinColorG.setPreferredSize(new java.awt.Dimension(20, 20));
-
-        org.jdesktop.layout.GroupLayout jPanel_SkinColorGLayout = new org.jdesktop.layout.GroupLayout(jPanel_SkinColorG);
-        jPanel_SkinColorG.setLayout(jPanel_SkinColorGLayout);
-        jPanel_SkinColorGLayout.setHorizontalGroup(
-            jPanel_SkinColorGLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 16, Short.MAX_VALUE)
-        );
-        jPanel_SkinColorGLayout.setVerticalGroup(
-            jPanel_SkinColorGLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 16, Short.MAX_VALUE)
-        );
-
-        jToolBar_SkinG.add(jPanel_SkinColorG);
-
-        jSlider_SkinColorG.setMaximum(255);
-        jSlider_SkinColorG.setValue(127);
-        jSlider_SkinColorG.setPreferredSize(new java.awt.Dimension(120, 29));
-        jToolBar_SkinG.add(jSlider_SkinColorG);
-        jToolBar_SkinG.add(jSpinner_SkinG);
-
-        jToolBar_SkinB.setFloatable(false);
-        jToolBar_SkinB.setRollover(true);
-
-        jPanel_SkinColorB.setBackground(new java.awt.Color(0, 0, 255));
-        jPanel_SkinColorB.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
-        jPanel_SkinColorB.setMaximumSize(new java.awt.Dimension(20, 20));
-        jPanel_SkinColorB.setMinimumSize(new java.awt.Dimension(20, 20));
-        jPanel_SkinColorB.setPreferredSize(new java.awt.Dimension(20, 20));
-
-        org.jdesktop.layout.GroupLayout jPanel_SkinColorBLayout = new org.jdesktop.layout.GroupLayout(jPanel_SkinColorB);
-        jPanel_SkinColorB.setLayout(jPanel_SkinColorBLayout);
-        jPanel_SkinColorBLayout.setHorizontalGroup(
-            jPanel_SkinColorBLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 16, Short.MAX_VALUE)
-        );
-        jPanel_SkinColorBLayout.setVerticalGroup(
-            jPanel_SkinColorBLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 16, Short.MAX_VALUE)
-        );
-
-        jToolBar_SkinB.add(jPanel_SkinColorB);
-
-        jSlider_SkinColorB.setMaximum(255);
-        jSlider_SkinColorB.setValue(127);
-        jSlider_SkinColorB.setPreferredSize(new java.awt.Dimension(120, 29));
-        jToolBar_SkinB.add(jSlider_SkinColorB);
-        jToolBar_SkinB.add(jSpinner_SkinB);
-
-        org.jdesktop.layout.GroupLayout jPanel_SkinColorLayout = new org.jdesktop.layout.GroupLayout(jPanel_SkinColor);
-        jPanel_SkinColor.setLayout(jPanel_SkinColorLayout);
-        jPanel_SkinColorLayout.setHorizontalGroup(
-            jPanel_SkinColorLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(jPanel_SkinColorLayout.createSequentialGroup()
-                .add(0, 0, 0)
-                .add(jPanel_SkinColorLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(jToolBar_SkinR, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 220, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(jToolBar_SkinG, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 220, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(jToolBar_SkinB, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 220, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                .add(0, 0, 0))
-        );
-        jPanel_SkinColorLayout.setVerticalGroup(
-            jPanel_SkinColorLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(jPanel_SkinColorLayout.createSequentialGroup()
-                .add(jToolBar_SkinR, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 25, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jToolBar_SkinG, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 25, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jToolBar_SkinB, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 25, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-
-        org.jdesktop.layout.GroupLayout jPanel_ColorsLayout = new org.jdesktop.layout.GroupLayout(jPanel_Colors);
-        jPanel_Colors.setLayout(jPanel_ColorsLayout);
-        jPanel_ColorsLayout.setHorizontalGroup(
-            jPanel_ColorsLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(jPanel_ColorsLayout.createSequentialGroup()
-                .add(jPanel_ColorsLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(jPanel_EyeColor, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(jPanel_HairColor, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(jPanel_SkinColor, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        jPanel_ColorsLayout.setVerticalGroup(
-            jPanel_ColorsLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(jPanel_ColorsLayout.createSequentialGroup()
-                .add(jPanel_SkinColor, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 110, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jPanel_HairColor, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 110, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jPanel_EyeColor, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 110, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(38, Short.MAX_VALUE))
-        );
-
-        jScrollPanel_Colors.setViewportView(jPanel_Colors);
-
-        jTabbedPane_Options.addTab("Color", jScrollPanel_Colors);
 
         jPanel_Head.setMaximumSize(new java.awt.Dimension(253, 575));
         jPanel_Head.setPreferredSize(new java.awt.Dimension(230, 353));
@@ -1456,227 +1024,6 @@ public class OptionsGUI extends javax.swing.JFrame {
 
         jTabbedPane_Options.addTab("Scale - Body", jScrollPane_Body);
 
-        jScrollPanel_Details.setPreferredSize(new java.awt.Dimension(234, 353));
-
-        jSplitPane2.setDividerLocation(240);
-        jSplitPane2.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
-        jSplitPane2.setPreferredSize(new java.awt.Dimension(210, 363));
-
-        jPanel_BodyDetails.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Body Details", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.DEFAULT_POSITION));
-        jPanel_BodyDetails.setAlignmentX(0.0F);
-        jPanel_BodyDetails.setAlignmentY(0.0F);
-        jPanel_BodyDetails.setPreferredSize(new java.awt.Dimension(230, 353));
-
-        jToolBar_BodyScars.setFloatable(false);
-        jToolBar_BodyScars.setRollover(true);
-
-        jLabel_BodyScars.setText("Scars");
-        jLabel_BodyScars.setPreferredSize(new java.awt.Dimension(57, 16));
-        jToolBar_BodyScars.add(jLabel_BodyScars);
-        jToolBar_BodyScars.add(jSpinner_BodyScars);
-
-        jToolBar_BodyTattoos.setFloatable(false);
-        jToolBar_BodyTattoos.setRollover(true);
-
-        jLabel_BodyTattoos.setText("Tattoos");
-        jLabel_BodyTattoos.setPreferredSize(new java.awt.Dimension(57, 16));
-        jToolBar_BodyTattoos.add(jLabel_BodyTattoos);
-        jToolBar_BodyTattoos.add(jSpinner_BodyTattoos);
-
-        jToolBar_BodyPiercings.setFloatable(false);
-        jToolBar_BodyPiercings.setRollover(true);
-
-        jLabel_BodyPiercings.setText("Piercings");
-        jToolBar_BodyPiercings.add(jLabel_BodyPiercings);
-        jToolBar_BodyPiercings.add(jSpinner_BodyPiercings);
-
-        org.jdesktop.layout.GroupLayout jPanel_BodyDetailsLayout = new org.jdesktop.layout.GroupLayout(jPanel_BodyDetails);
-        jPanel_BodyDetails.setLayout(jPanel_BodyDetailsLayout);
-        jPanel_BodyDetailsLayout.setHorizontalGroup(
-            jPanel_BodyDetailsLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(jPanel_BodyDetailsLayout.createSequentialGroup()
-                .add(jPanel_BodyDetailsLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(jToolBar_BodyTattoos, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 200, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(jToolBar_BodyPiercings, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 200, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                .add(0, 0, 0))
-            .add(org.jdesktop.layout.GroupLayout.TRAILING, jPanel_BodyDetailsLayout.createSequentialGroup()
-                .add(0, 0, 0)
-                .add(jToolBar_BodyScars, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 200, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .add(0, 0, 0))
-        );
-        jPanel_BodyDetailsLayout.setVerticalGroup(
-            jPanel_BodyDetailsLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(jPanel_BodyDetailsLayout.createSequentialGroup()
-                .add(jToolBar_BodyScars, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 25, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .add(0, 0, 0)
-                .add(jToolBar_BodyTattoos, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 25, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .add(0, 0, 0)
-                .add(jToolBar_BodyPiercings, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 25, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .add(365, 365, 365))
-        );
-
-        jSplitPane2.setRightComponent(jPanel_BodyDetails);
-
-        jPanel_HeadDetails.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Head Details", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.DEFAULT_POSITION));
-        jPanel_HeadDetails.setAlignmentX(0.0F);
-        jPanel_HeadDetails.setAlignmentY(0.0F);
-        jPanel_HeadDetails.setPreferredSize(new java.awt.Dimension(230, 353));
-
-        jToolBar_HairStyle.setFloatable(false);
-        jToolBar_HairStyle.setRollover(true);
-
-        jLabel_HairStyle.setText("Hair Style");
-        jLabel_HairStyle.setPreferredSize(new java.awt.Dimension(66, 16));
-        jToolBar_HairStyle.add(jLabel_HairStyle);
-        jToolBar_HairStyle.add(jSpinner_HairStyle);
-
-        jToolBar_FacialHair.setFloatable(false);
-        jToolBar_FacialHair.setRollover(true);
-
-        jLabel_FacialHair.setText("Facial Hair");
-        jToolBar_FacialHair.add(jLabel_FacialHair);
-        jToolBar_FacialHair.add(jSpinner_FacialHair);
-
-        jToolBar_Ears.setFloatable(false);
-        jToolBar_Ears.setRollover(true);
-
-        jLabel_Ears.setText("Ears");
-        jLabel_Ears.setPreferredSize(new java.awt.Dimension(66, 16));
-        jToolBar_Ears.add(jLabel_Ears);
-        jToolBar_Ears.add(jSpinner_EarPiercing);
-
-        jToolBar_Nose.setFloatable(false);
-        jToolBar_Nose.setRollover(true);
-
-        jLabel_Nose.setText("Nose");
-        jLabel_Nose.setPreferredSize(new java.awt.Dimension(66, 16));
-        jToolBar_Nose.add(jLabel_Nose);
-        jToolBar_Nose.add(jSpinner_NosePiercing);
-
-        jToolBar_Eyes.setFloatable(false);
-        jToolBar_Eyes.setRollover(true);
-
-        jLabel_Eyes.setText("Eyes");
-        jLabel_Eyes.setPreferredSize(new java.awt.Dimension(66, 16));
-        jToolBar_Eyes.add(jLabel_Eyes);
-        jToolBar_Eyes.add(jSpinner_EyePiercings);
-
-        jToolBar_Lips.setFloatable(false);
-        jToolBar_Lips.setRollover(true);
-
-        jLabel_Lips.setText("Lips");
-        jLabel_Lips.setPreferredSize(new java.awt.Dimension(66, 16));
-        jToolBar_Lips.add(jLabel_Lips);
-        jToolBar_Lips.add(jSpinner_LipPiercing);
-
-        jToolBar_Tattoos.setFloatable(false);
-        jToolBar_Tattoos.setRollover(true);
-
-        jLabel_Tattoos.setText("Tattoos");
-        jLabel_Tattoos.setPreferredSize(new java.awt.Dimension(66, 16));
-        jToolBar_Tattoos.add(jLabel_Tattoos);
-        jToolBar_Tattoos.add(jSpinner_Tattoos);
-
-        jToolBar_Scars.setFloatable(false);
-        jToolBar_Scars.setRollover(true);
-
-        jLabel_Scars.setText("Scars");
-        jLabel_Scars.setPreferredSize(new java.awt.Dimension(66, 16));
-        jToolBar_Scars.add(jLabel_Scars);
-        jToolBar_Scars.add(jSpinner_Scars);
-
-        org.jdesktop.layout.GroupLayout jPanel_HeadDetailsLayout = new org.jdesktop.layout.GroupLayout(jPanel_HeadDetails);
-        jPanel_HeadDetails.setLayout(jPanel_HeadDetailsLayout);
-        jPanel_HeadDetailsLayout.setHorizontalGroup(
-            jPanel_HeadDetailsLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(jPanel_HeadDetailsLayout.createSequentialGroup()
-                .add(jPanel_HeadDetailsLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(jPanel_HeadDetailsLayout.createSequentialGroup()
-                        .add(0, 0, 0)
-                        .add(jPanel_HeadDetailsLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                            .add(jPanel_HeadDetailsLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
-                                .add(jToolBar_Ears, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 200, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                                .add(jToolBar_FacialHair, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 200, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                            .add(jToolBar_Nose, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 200, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                            .add(jToolBar_Eyes, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 200, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                            .add(jToolBar_Lips, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 200, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                            .add(jToolBar_Tattoos, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 200, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                            .add(jToolBar_Scars, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 200, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
-                    .add(jToolBar_HairStyle, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 200, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        jPanel_HeadDetailsLayout.setVerticalGroup(
-            jPanel_HeadDetailsLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(jPanel_HeadDetailsLayout.createSequentialGroup()
-                .add(jToolBar_HairStyle, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 25, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .add(0, 0, 0)
-                .add(jToolBar_FacialHair, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 25, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .add(0, 0, 0)
-                .add(jToolBar_Ears, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 25, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jToolBar_Nose, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 25, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jToolBar_Eyes, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 25, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jToolBar_Lips, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 25, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jToolBar_Tattoos, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 25, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jToolBar_Scars, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 25, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-
-        jSplitPane2.setTopComponent(jPanel_HeadDetails);
-
-        jScrollPanel_Details.setViewportView(jSplitPane2);
-
-        jTabbedPane_Options.addTab("Details", jScrollPanel_Details);
-
-        jPanel_Shirts.setPreferredSize(new java.awt.Dimension(234, 357));
-
-        org.jdesktop.layout.GroupLayout jPanel_ShirtsLayout = new org.jdesktop.layout.GroupLayout(jPanel_Shirts);
-        jPanel_Shirts.setLayout(jPanel_ShirtsLayout);
-        jPanel_ShirtsLayout.setHorizontalGroup(
-            jPanel_ShirtsLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 234, Short.MAX_VALUE)
-        );
-        jPanel_ShirtsLayout.setVerticalGroup(
-            jPanel_ShirtsLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 372, Short.MAX_VALUE)
-        );
-
-        jTabbedPane_Options.addTab("Shirts", jPanel_Shirts);
-
-        jPanel_Pants.setPreferredSize(new java.awt.Dimension(234, 357));
-
-        org.jdesktop.layout.GroupLayout jPanel_PantsLayout = new org.jdesktop.layout.GroupLayout(jPanel_Pants);
-        jPanel_Pants.setLayout(jPanel_PantsLayout);
-        jPanel_PantsLayout.setHorizontalGroup(
-            jPanel_PantsLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 234, Short.MAX_VALUE)
-        );
-        jPanel_PantsLayout.setVerticalGroup(
-            jPanel_PantsLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 372, Short.MAX_VALUE)
-        );
-
-        jTabbedPane_Options.addTab("Pants", jPanel_Pants);
-
-        jPanel_Dresses.setPreferredSize(new java.awt.Dimension(234, 357));
-
-        org.jdesktop.layout.GroupLayout jPanel_DressesLayout = new org.jdesktop.layout.GroupLayout(jPanel_Dresses);
-        jPanel_Dresses.setLayout(jPanel_DressesLayout);
-        jPanel_DressesLayout.setHorizontalGroup(
-            jPanel_DressesLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 234, Short.MAX_VALUE)
-        );
-        jPanel_DressesLayout.setVerticalGroup(
-            jPanel_DressesLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 372, Short.MAX_VALUE)
-        );
-
-        jTabbedPane_Options.addTab("Dresses", jPanel_Dresses);
-
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -1712,136 +1059,55 @@ public class OptionsGUI extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup buttonGroup_Gender;
     private javax.swing.JLabel jLabel_ArmLength;
-    private javax.swing.JLabel jLabel_BodyPiercings;
-    private javax.swing.JLabel jLabel_BodyScars;
-    private javax.swing.JLabel jLabel_BodyTattoos;
     private javax.swing.JLabel jLabel_Calfs;
-    private javax.swing.JLabel jLabel_Ears;
-    private javax.swing.JLabel jLabel_Eyes;
-    private javax.swing.JLabel jLabel_FacialHair;
     private javax.swing.JLabel jLabel_FootSize;
     private javax.swing.JLabel jLabel_Forearms;
-    private javax.swing.JLabel jLabel_HairStyle;
     private javax.swing.JLabel jLabel_HandSize;
     private javax.swing.JLabel jLabel_HeadDepth;
     private javax.swing.JLabel jLabel_HeadHeight;
     private javax.swing.JLabel jLabel_HeadWidth;
     private javax.swing.JLabel jLabel_HeightScale;
     private javax.swing.JLabel jLabel_LegLength;
-    private javax.swing.JLabel jLabel_Lips;
-    private javax.swing.JLabel jLabel_Nose;
-    private javax.swing.JLabel jLabel_Scars;
-    private javax.swing.JLabel jLabel_Tattoos;
     private javax.swing.JLabel jLabel_Thighs;
     private javax.swing.JLabel jLabel_UniformScale;
     private javax.swing.JLabel jLabel_UpperArm;
     private javax.swing.JLabel jLabel_WidthScale;
     private javax.swing.JPanel jPanel_Body;
-    private javax.swing.JPanel jPanel_BodyDetails;
     private javax.swing.JPanel jPanel_BodyParts;
-    private javax.swing.JPanel jPanel_Colors;
-    private javax.swing.JPanel jPanel_Dresses;
-    private javax.swing.JPanel jPanel_EyeColor;
-    private javax.swing.JPanel jPanel_EyeColorB;
-    private javax.swing.JPanel jPanel_EyeColorG;
-    private javax.swing.JPanel jPanel_EyeColorR;
     private javax.swing.JPanel jPanel_Gender;
-    private javax.swing.JPanel jPanel_HairColor;
-    private javax.swing.JPanel jPanel_HairColorB;
-    private javax.swing.JPanel jPanel_HairColorG;
-    private javax.swing.JPanel jPanel_HairColorR;
     private javax.swing.JPanel jPanel_Head;
-    private javax.swing.JPanel jPanel_HeadDetails;
     private javax.swing.JPanel jPanel_Name;
-    private javax.swing.JPanel jPanel_Pants;
-    private javax.swing.JPanel jPanel_Shirts;
-    private javax.swing.JPanel jPanel_SkinColor;
-    private javax.swing.JPanel jPanel_SkinColorB;
-    private javax.swing.JPanel jPanel_SkinColorG;
-    private javax.swing.JPanel jPanel_SkinColorR;
     private javax.swing.JRadioButton jRadioButton_GenderF;
     private javax.swing.JRadioButton jRadioButton_GenderM;
     private javax.swing.JScrollPane jScrollPane_Body;
     private javax.swing.JScrollPane jScrollPane_Head;
-    private javax.swing.JScrollPane jScrollPanel_Colors;
-    private javax.swing.JScrollPane jScrollPanel_Details;
     private javax.swing.JSlider jSlider_ArmLength;
     private javax.swing.JSlider jSlider_Calfs;
-    private javax.swing.JSlider jSlider_EyeColorB;
-    private javax.swing.JSlider jSlider_EyeColorG;
-    private javax.swing.JSlider jSlider_EyeColorR;
     private javax.swing.JSlider jSlider_FootSize;
     private javax.swing.JSlider jSlider_Forearms;
-    private javax.swing.JSlider jSlider_HairColorB;
-    private javax.swing.JSlider jSlider_HairColorG;
-    private javax.swing.JSlider jSlider_HairColorR;
     private javax.swing.JSlider jSlider_HandSize;
     private javax.swing.JSlider jSlider_HeadDepth;
     private javax.swing.JSlider jSlider_HeadHeight;
     private javax.swing.JSlider jSlider_HeadWidth;
     private javax.swing.JSlider jSlider_Height;
     private javax.swing.JSlider jSlider_LegLength;
-    private javax.swing.JSlider jSlider_SkinColorB;
-    private javax.swing.JSlider jSlider_SkinColorG;
-    private javax.swing.JSlider jSlider_SkinColorR;
     private javax.swing.JSlider jSlider_Thighs;
     private javax.swing.JSlider jSlider_UniformScale;
     private javax.swing.JSlider jSlider_UpperArm;
     private javax.swing.JSlider jSlider_Width;
-    private javax.swing.JSpinner jSpinner_BodyPiercings;
-    private javax.swing.JSpinner jSpinner_BodyScars;
-    private javax.swing.JSpinner jSpinner_BodyTattoos;
-    private javax.swing.JSpinner jSpinner_EarPiercing;
-    private javax.swing.JSpinner jSpinner_EyeB;
-    private javax.swing.JSpinner jSpinner_EyeG;
-    private javax.swing.JSpinner jSpinner_EyePiercings;
-    private javax.swing.JSpinner jSpinner_EyeR;
-    private javax.swing.JSpinner jSpinner_FacialHair;
-    private javax.swing.JSpinner jSpinner_HairB;
-    private javax.swing.JSpinner jSpinner_HairG;
-    private javax.swing.JSpinner jSpinner_HairR;
-    private javax.swing.JSpinner jSpinner_HairStyle;
-    private javax.swing.JSpinner jSpinner_LipPiercing;
-    private javax.swing.JSpinner jSpinner_NosePiercing;
-    private javax.swing.JSpinner jSpinner_Scars;
-    private javax.swing.JSpinner jSpinner_SkinB;
-    private javax.swing.JSpinner jSpinner_SkinG;
-    private javax.swing.JSpinner jSpinner_SkinR;
-    private javax.swing.JSpinner jSpinner_Tattoos;
     private javax.swing.JSplitPane jSplitPane1;
-    private javax.swing.JSplitPane jSplitPane2;
     private javax.swing.JTabbedPane jTabbedPane_Options;
     private javax.swing.JTextField jTextField_Name;
     private javax.swing.JToolBar jToolBar_ArmLength;
-    private javax.swing.JToolBar jToolBar_BodyPiercings;
-    private javax.swing.JToolBar jToolBar_BodyScars;
-    private javax.swing.JToolBar jToolBar_BodyTattoos;
     private javax.swing.JToolBar jToolBar_Calfs;
-    private javax.swing.JToolBar jToolBar_Ears;
-    private javax.swing.JToolBar jToolBar_EyeB;
-    private javax.swing.JToolBar jToolBar_EyeG;
-    private javax.swing.JToolBar jToolBar_EyeR;
-    private javax.swing.JToolBar jToolBar_Eyes;
-    private javax.swing.JToolBar jToolBar_FacialHair;
     private javax.swing.JToolBar jToolBar_FootSize;
     private javax.swing.JToolBar jToolBar_Forearms;
-    private javax.swing.JToolBar jToolBar_HairB;
-    private javax.swing.JToolBar jToolBar_HairG;
-    private javax.swing.JToolBar jToolBar_HairR;
-    private javax.swing.JToolBar jToolBar_HairStyle;
     private javax.swing.JToolBar jToolBar_HandSize;
     private javax.swing.JToolBar jToolBar_HeadDepth;
     private javax.swing.JToolBar jToolBar_HeadHeight;
     private javax.swing.JToolBar jToolBar_HeadWidth;
     private javax.swing.JToolBar jToolBar_HeightScale;
     private javax.swing.JToolBar jToolBar_LegLength;
-    private javax.swing.JToolBar jToolBar_Lips;
-    private javax.swing.JToolBar jToolBar_Nose;
-    private javax.swing.JToolBar jToolBar_Scars;
-    private javax.swing.JToolBar jToolBar_SkinB;
-    private javax.swing.JToolBar jToolBar_SkinG;
-    private javax.swing.JToolBar jToolBar_SkinR;
-    private javax.swing.JToolBar jToolBar_Tattoos;
     private javax.swing.JToolBar jToolBar_Thighs;
     private javax.swing.JToolBar jToolBar_UniformScale;
     private javax.swing.JToolBar jToolBar_UpperArm;

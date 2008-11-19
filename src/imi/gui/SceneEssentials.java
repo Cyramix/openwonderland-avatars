@@ -42,6 +42,8 @@ import imi.scene.polygonmodel.skinned.SkinnedMeshJoint;
 import imi.scene.processors.FlexibleCameraProcessor;
 import imi.scene.processors.SkinnedAnimationProcessor;
 import imi.scene.shader.programs.VertexDeformer;
+import imi.scene.utils.tree.MeshInstanceSearchProcessor;
+import imi.scene.utils.tree.TreeTraverser;
 import imi.sql.SQLInterface;
 import java.awt.Component;
 import java.io.File;
@@ -51,6 +53,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFileChooser;
@@ -96,9 +99,22 @@ public class SceneEssentials {
         private Vector3f camPos = new Vector3f(0.0f, 1.5f, -3.2f);
         private FlexibleCameraProcessor curCameraProcessor = null;
         private boolean bhairLoaded = false;
+        private boolean bdefaultload = false;
+     // URLS
+        private URL poloShirt;
+        private URL jeansPants;
+        private URL tennisShoes;
         
     public SceneEssentials() {
         initFileChooser();
+
+        try {
+            poloShirt   = new URL("http://www.zeitgeistgames.com/assets/collada/Clothing/Shirts/PoloShirt_M/MalePolo.dae");
+            jeansPants  = new URL("http://www.zeitgeistgames.com/assets/collada/Clothing/Pants/Jeans_M/Jeans.dae");
+            tennisShoes = new URL("http://www.zeitgeistgames.com/assets/collada/Clothing/Shoes/TennisShoes_M/MaleTennisShoes.dae");
+        } catch (MalformedURLException ex) {
+            Logger.getLogger(SceneEssentials.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }    
     
     // Accessors
@@ -115,6 +131,9 @@ public class SceneEssentials {
     public Map<Integer, String[]> getMeshSetup() { return meshsetup; }
     public FlexibleCameraProcessor getCurCamProcessor() {
         return curCameraProcessor;
+    }
+    public boolean isDefaultLoad() {
+        return bdefaultload;
     }
 
     // Mutators
@@ -141,7 +160,9 @@ public class SceneEssentials {
     public void setCurCamProcessor(FlexibleCameraProcessor camProc) {
         curCameraProcessor = camProc;
     }
-
+    public void setDefaultLoad(boolean load) {
+        bdefaultload = load;
+    }
     // Helper Functions
     public void setSceneData(JScene jscene, PScene pscene, Entity entity, WorldManager wm, ArrayList<ProcessorComponent> processors) {
         currentJScene = jscene;
@@ -572,12 +593,12 @@ public class SceneEssentials {
             if (clear) {
                 SharedAsset colladaAsset = new SharedAsset(currentPScene.getRepository(), new AssetDescriptor(SharedAssetType.COLLADA_Mesh, modelURL));
                 colladaAsset.setUserData(new ColladaLoaderParams(false, true, false, false, 3, data[0], null));
-                modelInst = currentPScene.addModelInstance(data[0], colladaAsset, new PMatrix());
+                pruneMeshes(data[0], colladaAsset, data);
             } else {
                 if (data[4].equals("0"))
-                    addDAEMeshURLToModelA(data, "Head");
+                    addDAEMeshURLToModelA(data, "Head", region);
                 else
-                    addDAEMeshURLToModelA(data, "skeletonRoot");
+                    addDAEMeshURLToModelA(data, "skeletonRoot", region);
             }
         } else {
             try {
@@ -611,7 +632,10 @@ public class SceneEssentials {
                 URL urlModel = new URL(data[3]);
                 SharedAsset character = new SharedAsset(currentPScene.getRepository(), new AssetDescriptor(SharedAssetType.COLLADA_Model, urlModel));
                 character.setUserData(new ColladaLoaderParams(true, true, false, false, 4, data[0], null));
-                loadInitializer(data[0], character, anim);
+                if (bdefaultload)
+                    specialloadInitializer(data[0], character, anim);
+                else
+                    loadInitializer(data[0], character, anim);
             } else {
                 addDAEMeshURLToModel(data, meshRef, region);
             }                
@@ -643,7 +667,7 @@ public class SceneEssentials {
         meshsetup.put(region, meshRef);
     }
 
-    public void addDAEMeshURLToModelA(String[] data, String joint2addon) {
+    public void addDAEMeshURLToModelA(String[] data, String joint2addon, int region) {
         InstructionProcessor pProcessor = new InstructionProcessor(worldManager);
         Instruction pRootInstruction = new Instruction();
         pRootInstruction.addInstruction(InstructionNames.setSkeleton, skeleton);
@@ -666,14 +690,62 @@ public class SceneEssentials {
 
         String szName = joint2addon;
 
+        if (meshsetup.get(region) != null) {
+            // TODO: DELETE STATIC MESHES LIKE HAIR AND STUFF IF IT IS LOADED...
+        }
+
         pRootInstruction.addInstruction(InstructionNames.loadGeometry, data[3]);
         PMatrix tempSolution = new PMatrix(new Vector3f(0.0f,(float) Math.toRadians(180), 0.0f), new Vector3f(1.0f, 1.0f, 1.0f), Vector3f.ZERO);
         pRootInstruction.addInstruction(InstructionNames.addAttachment, data[0], szName, tempSolution);
         pProcessor.execute(pRootInstruction);
 
+        skeleton.setShader(new VertexDeformer(worldManager));
+        
         int hairCheck = data[3].indexOf("Hair");
         if (hairCheck != -1) {
             bhairLoaded = true;
+        }
+    }
+
+    public void pruneMeshes(String n, SharedAsset s, final String[] data) {
+        AssetInitializer init = new AssetInitializer() {
+
+            public boolean initialize(Object asset) {
+
+                MeshInstanceSearchProcessor proc = new MeshInstanceSearchProcessor();
+                proc.setProcessor();
+                TreeTraverser.breadthFirst(currentPScene, proc);
+                Vector<PPolygonMeshInstance> meshes = proc.getMeshInstances();
+                for (int i = 0; i < meshes.size(); i++) {
+                    if (!meshes.get(i).getName().equals(data[0]))
+                        currentPScene.getInstances().findAndRemoveChild(meshes.get(i));
+                    else {
+                        meshes.get(i).getTransform().setLocalMatrix(new PMatrix());
+                    }
+
+                }
+                setCameraOnModel();
+                return true;
+            }
+        };
+        s.setInitializer(init);
+
+        modelInst = currentPScene.addModelInstance(n, s, new PMatrix());
+
+        if (currentPScene.getAssetWaitingList().size() <= 0) {
+            MeshInstanceSearchProcessor proc = new MeshInstanceSearchProcessor();
+            proc.setProcessor();
+            TreeTraverser.breadthFirst(currentPScene, proc);
+            Vector<PPolygonMeshInstance> meshes = proc.getMeshInstances();
+            for (int i = 0; i < meshes.size(); i++) {
+                if (!meshes.get(i).getName().equals(data[0]))
+                    currentPScene.getInstances().findAndRemoveChild(meshes.get(i));
+                else {
+                    meshes.get(i).getTransform().setLocalMatrix(new PMatrix());
+                }
+
+            }
+            setCameraOnModel();
         }
     }
 
@@ -723,6 +795,78 @@ public class SceneEssentials {
         }
     }
 
+    public void specialloadInitializer(String n, SharedAsset s, final String[] a) {
+        AssetInitializer init = new AssetInitializer() {
+
+            public boolean initialize(Object asset) {
+
+                if (((PNode) asset).getChild(0) instanceof SkeletonNode) {
+                    final SkeletonNode skel = (SkeletonNode) ((PNode) asset).getChild(0);
+                    skeleton = skel;
+                    
+                    // Visual Scale
+                    if (visualScale != 1.0f) {
+                        ArrayList<PPolygonSkinnedMeshInstance> meshes = skel.getSkinnedMeshInstances();
+                        for (PPolygonSkinnedMeshInstance mesh : meshes) {
+                            mesh.getTransform().getLocalMatrix(true).setScale(visualScale);
+                        }
+                    }
+                    
+                    String[] meshes = null;
+                    InstructionProcessor pProcessor = new InstructionProcessor(worldManager);
+                    Instruction pRootInstruction = new Instruction();
+                    pRootInstruction.addInstruction(InstructionNames.setSkeleton, skel);
+
+                    // Set animations and clothes
+                    if (a != null) {
+                        for (int i = 0; i < meshsetup.get(2).length; i++)
+                            pRootInstruction.addInstruction(InstructionNames.deleteSkinnedMesh, meshsetup.get(2)[i]);
+                        
+                        for (int i = 0; i < meshsetup.get(3).length; i++)
+                            pRootInstruction.addInstruction(InstructionNames.deleteSkinnedMesh, meshsetup.get(3)[i]);
+                        
+                        for (int i = 0; i < meshsetup.get(4).length; i++)
+                            pRootInstruction.addInstruction(InstructionNames.deleteSkinnedMesh, meshsetup.get(4)[i]);
+                        
+                        pRootInstruction.addInstruction(InstructionNames.loadGeometry, poloShirt);
+                        pRootInstruction.addInstruction(InstructionNames.addSkinnedMesh, "TorsoNudeShape");
+                        pRootInstruction.addInstruction(InstructionNames.addSkinnedMesh, "PoloShape");
+                        meshes = new String[] {"TorsoNudeShape", "PoloShape" };
+                        meshsetup.put(2, meshes);
+                        
+                        pRootInstruction.addInstruction(InstructionNames.loadGeometry, jeansPants);
+                        pRootInstruction.addInstruction(InstructionNames.addSkinnedMesh, "polySurface3Shape");
+                        meshes = new String[] {"polySurface3Shape"};
+                        meshsetup.put(3, meshes);
+                        
+                        pRootInstruction.addInstruction(InstructionNames.loadGeometry, tennisShoes);
+                        pRootInstruction.addInstruction(InstructionNames.addSkinnedMesh, "TennisShoesShape");
+                        meshes = new String[] {"TennisShoesShape"};
+                        meshsetup.put(4, meshes);
+
+                        for (int i = 0; i < a.length; i++) {
+                            pRootInstruction.addInstruction(InstructionNames.loadAnimation, a[i]);
+                        }
+                        pProcessor.execute(pRootInstruction);
+                    }
+                    
+                    skel.setShader(new VertexDeformer(worldManager));
+                    ((ProcessorCollectionComponent)currentEntity.getComponent(ProcessorCollectionComponent.class)).addProcessor(new SkinnedAnimationProcessor(skel));
+                    currentPScene.setDirty(true, true);
+                    setCameraOnModel();
+                }
+                return true;
+            }
+        };
+        s.setInitializer(init);
+
+        modelInst = currentPScene.addModelInstance(n, s, new PMatrix());
+        // Set position
+        if (origin != null) {
+            modelInst.getTransform().setLocalMatrix(origin);                    // Set animations
+        }
+    }
+    
     public void loadDAEAnimationURL(boolean useRepository, Component arg0) {
         // TODO: add in sql table for this to work...
     }
