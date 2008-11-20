@@ -18,6 +18,8 @@
 package imi.character;
 
 import com.jme.math.Vector3f;
+import imi.scene.PMatrix;
+import imi.scene.polygonmodel.PPolygonModelInstance;
 import imi.scene.polygonmodel.skinned.SkinnedMeshJoint;
 import java.util.ArrayList;
 
@@ -29,24 +31,26 @@ import java.util.ArrayList;
  */
 public class VerletArm 
 {
-    SkinnedMeshJoint shoulderJoint = null;
+    PPolygonModelInstance modelInst = null;
+    SkinnedMeshJoint shoulderJoint  = null;
     
     ArrayList<VerletParticle>  particles    = new ArrayList<VerletParticle>();
     ArrayList<StickConstraint> constraints  = new ArrayList<StickConstraint>();
     
     Vector3f gravity = new Vector3f(0.0f, -9.8f, 0.0f);
     
-    public VerletArm(SkinnedMeshJoint shoulder) 
+    public VerletArm(SkinnedMeshJoint shoulder, PPolygonModelInstance modelInstance) 
     {
+        modelInst     = modelInstance;
         shoulderJoint = shoulder;
         
         // Lets make an arm
         Vector3f shoulderPosition = shoulderJoint.getTransform().getWorldMatrix(false).getTranslation();
         particles.add(new VerletParticle(shoulderPosition));
-        particles.add(new VerletParticle(shoulderPosition.add(Vector3f.UNIT_Y.mult(-0.38f))));
-        particles.add(new VerletParticle(shoulderPosition.add(Vector3f.UNIT_Y.mult(-0.76f))));
-        constraints.add(new StickConstraint(0, 1, 0.38f));
-        constraints.add(new StickConstraint(1, 2, 0.38f));
+        particles.add(new VerletParticle(shoulderPosition.add(Vector3f.UNIT_Y.mult(-0.246216f))));
+        particles.add(new VerletParticle(shoulderPosition.add(Vector3f.UNIT_Y.mult(-0.4852301f))));
+        constraints.add(new StickConstraint(0, 1, 0.246216f));
+        constraints.add(new StickConstraint(1, 2, 0.2390151f));
     }
 
     public void update(float physicsUpdateTime) 
@@ -55,18 +59,18 @@ public class VerletArm
         particles.get(0).position(shoulderJoint.getTransform().getWorldMatrix(false).getTranslation());
         
 	// Verlet integration step
-	for (VerletParticle p : particles)
+	for (int i = 1; i < particles.size(); i++)
 	{
-            p.setForceAccumulator(gravity);
-            p.verletIntegration(physicsUpdateTime);
+            particles.get(i).setForceAccumulator(gravity);
+            particles.get(i).verletIntegration(physicsUpdateTime);
 	}
         
 	// Solving constraints by relaxation
 	for(int i = 0; i < 3; i++)
-            SatisfyConstraints(); 
+            satisfyConstraints(); 
     }
     
-    public void SatisfyConstraints()
+    public void satisfyConstraints()
     {
         for (StickConstraint constraint : constraints)
         {
@@ -88,6 +92,20 @@ public class VerletArm
 
     public ArrayList<VerletParticle> getParticles() {
         return particles;
+    }
+
+    public PMatrix getInverseModelWorldMatrix()
+    {
+        return modelInst.getTransform().getWorldMatrix(false).inverse();
+    }
+    
+    public Vector3f getElbowPosition() 
+    {
+        return particles.get(1).getCurrentPosition();
+    }
+
+    public Vector3f getWristPosition() {
+        return particles.get(2).getCurrentPosition();
     }
     
     //////////////////////////////////////////////////////////////////////////

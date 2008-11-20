@@ -53,7 +53,7 @@ public class PPolygonSkinnedMeshInstance extends PPolygonMeshInstance
     
     private int[]        m_influenceIndices = null;
 
-
+    private PostAnimationJointManipulator m_jointManipulator = null;
 
     //  Constructor.
     public PPolygonSkinnedMeshInstance(String name, PPolygonSkinnedMesh geometry, PMatrix origin, PScene pscene) 
@@ -332,6 +332,19 @@ public class PPolygonSkinnedMeshInstance extends PPolygonMeshInstance
 
     protected void postAnimationModifiedMeshSpaceMatrixHook(PMatrix matrix, int jointIndex) 
     {
+        if (m_jointManipulator == null)
+            return;
         
+        m_jointManipulator.postAnimationModifiedMeshSpaceMatrixHook(matrix, jointIndex);
     }
+
+    public PostAnimationJointManipulator getJointManipulator() {
+        return m_jointManipulator;
+    }
+
+    public void setJointManipulator(PostAnimationJointManipulator jointManipulator) {
+        this.m_jointManipulator = jointManipulator;
+    }
+    
+    
 }

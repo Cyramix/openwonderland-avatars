@@ -117,7 +117,10 @@ public abstract class Character extends Entity implements SpatialObject, Animati
     
     protected TransitionQueue m_facialAnimationQ = null;
     
+    protected EyeBall m_leftEyeBall = null;
+    protected EyeBall m_rightEyeBall = null;
     protected VerletArm m_arm         = null;
+    private   VerletJointManipulator m_armJointManipulator = null;
     private   float     m_armTimer    = 0.0f;
     private   float     m_armTimeTick = 1.0f / 60.0f;
         
@@ -554,6 +557,16 @@ public abstract class Character extends Entity implements SpatialObject, Animati
                             m_skeleton.addAnimationState(facialAnimationState);
                             m_facialAnimationQ = new TransitionQueue(m_skeleton, 1);
                             initiateFacialAnimation(1, 0.75f, 0.5f);
+
+                            // The verlet arm!
+                            SkinnedMeshJoint shoulderJoint = (SkinnedMeshJoint) m_skeleton.findChild("rightArm");
+                            m_arm = new VerletArm(shoulderJoint, m_modelInst);
+                            new VerletVisualManager("avatar arm visuals", m_wm).addVerletObject(m_arm);
+                            // Set the joint manipulator on every skinned mesh (remember to set it again when adding new meshes!)
+                            ArrayList<PPolygonSkinnedMeshInstance> skinnedMeshes = m_skeleton.getSkinnedMeshInstances();
+                            m_armJointManipulator = new VerletJointManipulator(m_arm, m_skeleton);
+                            for(PPolygonSkinnedMeshInstance mesh : skinnedMeshes)
+                                mesh.setJointManipulator(m_armJointManipulator);
                             
                         }
                         return true;
@@ -817,18 +830,14 @@ public abstract class Character extends Entity implements SpatialObject, Animati
             
             // Gimme them eyeballs
             PPolygonSkinnedMeshInstance leftEye = (PPolygonSkinnedMeshInstance) m_skeleton.findChild("leftEyeGeoShape");
-            EyeBall leftEyeBall = new EyeBall(leftEye, m_modelInst, m_pscene);
-            leftEye.getParent().replaceChild(leftEye, leftEyeBall, true);
+            m_leftEyeBall = new EyeBall(leftEye, m_modelInst, m_pscene);
+            leftEye.getParent().replaceChild(leftEye, m_leftEyeBall, true);
             PPolygonSkinnedMeshInstance rightEye = (PPolygonSkinnedMeshInstance) m_skeleton.findChild("rightEyeGeoShape");
-            EyeBall rightEyeBall = new EyeBall(rightEye, m_modelInst, m_pscene);
-            rightEye.getParent().replaceChild(rightEye, rightEyeBall, true);
-            leftEyeBall.setOtherEye(rightEyeBall);
-            rightEyeBall.setOtherEye(leftEyeBall);
+            m_rightEyeBall = new EyeBall(rightEye, m_modelInst, m_pscene);
+            rightEye.getParent().replaceChild(rightEye, m_rightEyeBall, true);
+            m_leftEyeBall.setOtherEye(m_rightEyeBall);
+            m_rightEyeBall.setOtherEye(m_leftEyeBall);
             
-            // The verlet arm!
-            SkinnedMeshJoint shoulderJoint = (SkinnedMeshJoint) m_skeleton.findChild("rightArm");
-            m_arm = new VerletArm(shoulderJoint);
-
             m_initalized = true;
         }
     }
@@ -1000,8 +1009,21 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         return m_facialAnimationQ;
     }
 
+    public EyeBall getLeftEyeBall() {
+        return m_leftEyeBall;
+    }
+
+    public EyeBall getRightEyeBall() {
+        return m_rightEyeBall;
+    }
+
     public VerletArm getArm() {
         return m_arm;
+    }
+    
+    public VerletJointManipulator getArmJointManipulator()
+    {
+        return m_armJointManipulator;
     }
 
 }

@@ -265,6 +265,26 @@ public class SkeletonNode extends PNode implements Animated
         return result;
     }
     
+    
+    
+    /**
+     * This method calculates the joint matrix after 
+     * multiplying it with the local modifier (used for things such as body fat)
+     * @param BFTJointIndex
+     * @return
+     */
+    public PMatrix getModifiedJointMatrix(int BFTJointIndex)
+    {
+        PMatrix result = new PMatrix(m_BFTSkeleton.get(BFTJointIndex).getMeshSpace());
+        result.mul(m_BFTSkeletonLocalModifiers.get(BFTJointIndex));
+        return result;
+    }
+    
+    public PMatrix getJointLocalModifier(int BFTJointIndex)
+    {
+        return m_BFTSkeletonLocalModifiers.get(BFTJointIndex);
+    }
+    
     /**
      * This method builds and returns an array of references to the world transforms
      * of the inverse bind pose for this skeleton as indicated by the indices
