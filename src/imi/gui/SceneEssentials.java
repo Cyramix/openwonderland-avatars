@@ -32,6 +32,7 @@ import imi.scene.PJoint;
 import imi.scene.PMatrix;
 import imi.scene.PNode;
 import imi.scene.PScene;
+import imi.scene.PTransform;
 import imi.scene.camera.state.TumbleObjectCamState;
 import imi.scene.polygonmodel.PPolygonMeshInstance;
 import imi.scene.polygonmodel.PPolygonModelInstance;
@@ -679,9 +680,7 @@ public class SceneEssentials {
             node = currentPScene.getInstances().findChild("testJoint");
 
             if (node == null) {
-                rootJoint = new SkinnedMeshJoint();
-                rootJoint.setName("testJoint");
-                node = currentPScene.getInstances().findChild(joint2addon);
+                rootJoint = new SkinnedMeshJoint("SceneEssentials root Joint", new PTransform());
                 node.addChild(rootJoint);
             }
             

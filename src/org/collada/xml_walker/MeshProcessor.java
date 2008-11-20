@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import java.util.List;
 import org.collada.colladaschema.Mesh;
 import org.collada.colladaschema.Source;
-import org.collada.xml_walker.Processor;
 import org.collada.colladaschema.Vertices;
 
 import imi.scene.polygonmodel.PPolygonMesh;
@@ -139,18 +138,15 @@ public class MeshProcessor extends Processor
      */
     VertexDataArray getVertexDataArray(String name)
     {
-        int a;
-        VertexDataArray pVertexDataArray;
-
-        for (a=0; a<m_VertexDataArrays.size(); a++)
+        VertexDataArray result = null;
+        for (VertexDataArray vda : m_VertexDataArrays)
         {
-            pVertexDataArray = m_VertexDataArrays.get(a);
-
-            if (pVertexDataArray.m_Name.equals(name))
-                return(pVertexDataArray);
+            if (name.equals(vda.m_Name))
+            {
+                result = vda;
+            }
         }
-
-        return(null);
+        return result;
     }
 
     /**

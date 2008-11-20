@@ -124,9 +124,9 @@ public class Collada
     public ArrayList<PPolygonMesh>              m_PolygonMeshes = new ArrayList<PPolygonMesh>();
 
     //  Contains the PolygonSkinnedMeshes loaded.
-    public ArrayList                            m_PolygonSkinnedMeshes = new ArrayList();
+    public ArrayList<PPolygonSkinnedMesh>      m_PolygonSkinnedMeshes = new ArrayList<PPolygonSkinnedMesh>();
 
-    public ArrayList                            m_ColladaSkins = new ArrayList();
+    public ArrayList<PColladaSkin>              m_ColladaSkins = new ArrayList<PColladaSkin>();
 
     private ArrayList<PColladaNode>             m_ColladaNodes = new ArrayList<PColladaNode>();
 
@@ -135,9 +135,9 @@ public class Collada
 
 
     private int                                 m_MaxNumberOfWeights = 4;
-    private ArrayList                           m_ColladaAnimatedItems = new ArrayList();
+    private ArrayList<PColladaAnimatedItem>     m_ColladaAnimatedItems = new ArrayList<PColladaAnimatedItem>();
     private ArrayList<PColladaCameraParams>     m_ColladaCameraParams = new ArrayList<PColladaCameraParams>();
-    private ArrayList                           m_ColladaCameras = new ArrayList();
+    private ArrayList<PColladaCamera>           m_ColladaCameras = new ArrayList<PColladaCamera>();
 
     private boolean                             m_bLoadRig = false;
     private boolean                             m_bLoadGeometry = true;
@@ -635,7 +635,7 @@ public class Collada
         {
             pCameraParams = (PColladaCameraParams)m_ColladaCameraParams.get(a);
             
-            if (pCameraParams.getName().equals(name))
+            if (name.equals(pCameraParams.getName()))
                 return(pCameraParams);
         }
 
@@ -672,18 +672,16 @@ public class Collada
     //  Finds the ColladaCamera with the specified name.
     public PColladaCamera findColladaCamera(String name)
     {
-        int a;
-        PColladaCamera pCamera;
-        
-        for (a=0; a<m_ColladaCameras.size(); a++)
+        PColladaCamera result = null;
+        for (PColladaCamera cam : m_ColladaCameras)
         {
-            pCamera = (PColladaCamera)m_ColladaCameras.get(a);
-            
-            if (pCamera.getName().equals(name))
-                return(pCamera);
+            if (name.equals(cam.getName()))
+            {
+                result = cam;
+                break;
+            }
         }
-        
-        return(null);
+        return result;
     }
 
     
@@ -714,18 +712,12 @@ public class Collada
     //  Finds the ColladaSkin with the specified name.
     public PColladaSkin findColladaSkin(String name)
     {
-        int a;
-        PColladaSkin pColladaSkin;
-
-        for (a=0; a<m_ColladaSkins.size(); a++)
+        for (PColladaSkin skin : m_ColladaSkins)
         {
-            pColladaSkin = (PColladaSkin)m_ColladaSkins.get(a);
-
-            if (pColladaSkin.getName().equals(name))
-                return(pColladaSkin);
+            if (name.equals(skin.getName()))
+                return skin;
         }
-
-        return(null);
+        return null;
     }
 
 
@@ -940,17 +932,10 @@ public class Collada
 
     public void dumpColladaNode(PColladaNode theNode)
     {
-        float []pMatrixFloats = theNode.getMatrixFloats();
-
         System.out.println("Node:  " + theNode.getName());
         System.out.println("   Mesh:    " + theNode.getMeshName());
         if (theNode.isJoint())
             System.out.println("   Joint:   " + theNode.getJointName());
-        System.out.print("   Matrix:  (" + pMatrixFloats[0] + ", " + pMatrixFloats[1] + ", " + pMatrixFloats[2] + ", " + pMatrixFloats[3] + ")");
-        System.out.print(" (" + pMatrixFloats[4] + ", " + pMatrixFloats[5] + ", " + pMatrixFloats[6] + ", " + pMatrixFloats[7] + ")");
-        System.out.print(" (" + pMatrixFloats[8] + ", " + pMatrixFloats[9] + ", " + pMatrixFloats[10] + ", " + pMatrixFloats[11] + ")");
-        System.out.println(" (" + pMatrixFloats[12] + ", " + pMatrixFloats[13] + ", " + pMatrixFloats[14] + ", " + pMatrixFloats[15] + ")");
-
 
         PColladaMaterialInstance pMaterialInstance = theNode.getMaterialInstance();
         if (pMaterialInstance != null)
@@ -1028,7 +1013,7 @@ public class Collada
     public void addPolygonMesh(PPolygonMesh polyMesh)
     {
         if (polyMesh instanceof PPolygonSkinnedMesh)
-            m_PolygonSkinnedMeshes.add(polyMesh);
+            m_PolygonSkinnedMeshes.add((PPolygonSkinnedMesh)polyMesh);
         else
             m_PolygonMeshes.add(polyMesh);
     }

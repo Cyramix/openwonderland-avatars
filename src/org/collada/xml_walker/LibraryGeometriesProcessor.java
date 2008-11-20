@@ -37,10 +37,7 @@ import imi.loaders.collada.Collada;
 public class LibraryGeometriesProcessor extends Processor
 {
     private ArrayList<Processor> children = null;
-    
-    String m_CurrentMeshName = null;
-
-
+    private String m_CurrentMeshName = null;
     
     /**
      * Constructor.
@@ -78,7 +75,7 @@ public class LibraryGeometriesProcessor extends Processor
      */
     public String getMeshName()
     {
-        return(m_CurrentMeshName);
+        return m_CurrentMeshName;
     }
 
 }

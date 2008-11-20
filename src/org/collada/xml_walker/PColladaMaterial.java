@@ -62,7 +62,7 @@ public class PColladaMaterial
     private Collada         m_pCollada                  = null;
     private ProfileCOMMON   m_pProfileCommon            = null;
 
-    private String          m_Name                      = "";
+    private String          m_Name                      = null;
 
     private PColladaColor   m_EmissiveColor             = new PColladaColor();
     private PColladaColor   m_AmbientColor              = new PColladaColor();
@@ -108,7 +108,7 @@ public class PColladaMaterial
     //  Gets the Material's name.
     public String getName()
     {
-        return(m_Name);
+        return m_Name;
     }
 
 
@@ -211,9 +211,11 @@ public class PColladaMaterial
      */
     public PMeshMaterial createMeshMaterial()
     {
-        //boolean bTransparency = (m_nTransparencyMode >= 0);
-        
-        PMeshMaterial result = new PMeshMaterial(m_Name);
+        PMeshMaterial result = null;
+        if (m_Name == null)
+            result = new PMeshMaterial("Untitled Material : PColladaMaterial.java :: createMeshMaterial()");
+        else
+            result = new PMeshMaterial(m_Name);
         // Colors!
         result.setEmissive(buildColorRGBA(m_EmissiveColor));
         result.setAmbient(buildColorRGBA(m_AmbientColor));
@@ -240,8 +242,8 @@ public class PColladaMaterial
                 }
             }
 
-            boolean bNormalMapped = (m_NormalMapImageFilename != null && m_NormalMapImageFilename.length() > 0);
-            boolean bSpecularMapped = (m_SpecularImageFilename != null && m_SpecularImageFilename.length() > 0);
+            boolean bNormalMapped = (m_NormalMapImageFilename != null);
+            boolean bSpecularMapped = (m_SpecularImageFilename != null);
 
             if (bNormalMapped)
             {

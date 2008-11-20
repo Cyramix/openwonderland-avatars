@@ -18,7 +18,6 @@
 package org.collada.xml_walker;
 
 
-import java.lang.Double;
 import org.collada.colladaschema.Animation;
 import org.collada.colladaschema.Source;
 import org.collada.colladaschema.Source.TechniqueCommon;
@@ -36,18 +35,15 @@ import imi.scene.PMatrix;
  */
 public class PColladaAnimatedItem
 {
-    String                  m_AnimatedItemID;
-    String                  m_AnimatedItemName;
-    String                  m_Type;
+    private String                  m_AnimatedItemID = null;
+    private String                  m_AnimatedItemName = null;
+    private String                  m_Type = null;
     
-    Animation               m_pAnimation;
-    Source                  m_pTransformInputSource;
-    Source                  m_pTransformOutputSource;
-    Source                  m_pTransformInterpolationSource;
+    private Animation               m_animation = null;
+    private Source                  m_transformInputSource = null;
+    private Source                  m_transformOutputSource = null;
 
-    int                     m_KeyframeCount;
-
-
+    private int                     m_KeyframeCount = 0;
 
     /**
      * Default constructor.
@@ -73,19 +69,15 @@ public class PColladaAnimatedItem
      * 
      * @param pAnimation Collada animation PColladaAnimatedItem wrappers.
      */
-    public void setAnimation(Animation pAnimation)
+    public void setAnimation(Animation theAnimation)
     {
-        m_pAnimation = pAnimation;
+        m_animation = theAnimation;
 
         //  Sanity check.
-        if (m_pAnimation == null)
+        if (m_animation == null)
             return;
 
-        int a;
-        Source pSource;
-        String sourceID;
-
-        m_AnimatedItemID = pAnimation.getId();
+        m_AnimatedItemID = theAnimation.getId();
         int periodIndex = m_AnimatedItemID.indexOf(".");
         if (periodIndex != -1)
         {
@@ -95,19 +87,15 @@ public class PColladaAnimatedItem
         else
         {
             m_AnimatedItemName = m_AnimatedItemID;
-            m_Type = "Unknown";
+            m_Type = "NO PERIOD FOUND IN STRING : PColladaAnimatedItem.java :: setAnimation()";
         }
-
-        //System.out.println("Animated Item:  " + m_AnimatedItemName);
 
         Source pInputSource = getSource("input");
         if (pInputSource != null)
         {
-            String inputSourceParamName = getSourceParamName(pInputSource);
-            String inputSourceParamType = getSourceParamType(pInputSource);
             if (pInputSource.getId().endsWith("transform-input"))
             {
-                m_pTransformInputSource = pInputSource;
+                m_transformInputSource = pInputSource;
                 m_KeyframeCount = pInputSource.getFloatArray().getValues().size();
             }
         }
@@ -115,40 +103,9 @@ public class PColladaAnimatedItem
         Source pOutputSource = getSource("output");
         if (pOutputSource != null)
         {
-            String outputSourceParamName = getSourceParamName(pOutputSource);
-            String outputSourceParamType = getSourceParamType(pOutputSource);
             if (pOutputSource.getId().endsWith("transform-output"))
-            {
-                m_pTransformOutputSource = pOutputSource;
-            }
+                m_transformOutputSource = pOutputSource;
         }
-
-/*
-        for (a=0; a<pAnimation.getSources().size(); a++)
-        {
-            pSource = pAnimation.getSources().get(a);
-            sourceID = pSource.getId();
-
-            //  Keyframe Time.
-            if (sourceID.endsWith("transform-input"))
-            {
-                m_pTransformInputSource = pSource;
-                m_KeyframeCount = pSource.getFloatArray().getValues().size();
-            }
-            //  Keyframe Matrices.
-            else if (sourceID.endsWith("transform-output"))
-            {
-                m_pTransformOutputSource = pSource;
-            }
-            //  Keyframe Interpolation.
-            else if (sourceID.endsWith("transform-interpolations"))
-            {
-                m_pTransformInterpolationSource = pSource;
-            }
-        }
-*/
-
-        //System.out.println("Animation:  " + pAnimation.getId() + ", KeyframeCount=" + m_KeyframeCount);
     }
 
 
@@ -162,47 +119,17 @@ public class PColladaAnimatedItem
      */
     private Source getSource(String sourceType)
     {
-        Source pSource;
-
-        for (int a=0; a<m_pAnimation.getSources().size(); a++)
+        Source result = null;
+        for (Source source : m_animation.getSources())
         {
-            pSource = m_pAnimation.getSources().get(a);
-            if (pSource.getId().endsWith(sourceType))
-                return(pSource);
+            if (source.getId().endsWith(sourceType))
+            {
+                result = source;
+                break;
+            }
         }
-
-        return(null);
+        return result;
     }
-
-    /**
-     * Gets the name of a collada source.
-     *
-     * @param pSource
-     * @return String The name of the collada source.
-     */
-    private String getSourceParamName(Source pSource)
-    {
-        TechniqueCommon pTechniqueCommon = pSource.getTechniqueCommon();
-        Param pParam = (Param)pTechniqueCommon.getAccessor().getParams().get(0);
-        
-        return(pParam.getName());
-    }
-
-    /**
-     * Gets the type of a collada source.
-     *
-     * @param pSource
-     * @return String The type of the collada source.
-     */
-    private String getSourceParamType(Source pSource)
-    {
-        TechniqueCommon pTechniqueCommon = pSource.getTechniqueCommon();
-        Param pParam = (Param)pTechniqueCommon.getAccessor().getParams().get(0);
-        
-        return(pParam.getType());
-    }
-
-
 
     /**
      * Gets the ID of the AnimatedItem.
@@ -254,9 +181,9 @@ public class PColladaAnimatedItem
      */
     public float getKeyframeTime(int Index)
     {
-        float fKeyframeTime = ((Double)m_pTransformInputSource.getFloatArray().getValues().get(Index)).floatValue();
+        float result = (m_transformInputSource.getFloatArray().getValues().get(Index)).floatValue();
 
-        return(fKeyframeTime);
+        return result;
     }
 
     /**
@@ -265,22 +192,22 @@ public class PColladaAnimatedItem
      * @param pMatrix - Gets filled in with the keyframe's matrix.
      * @return boolean - true if Index is valid, false otherwise.
      */
-    public boolean getKeyframeMatrix(int Index, PMatrix pMatrix)
+    public boolean getKeyframeMatrix(int index, PMatrix matrixOut)
     {
-        int FloatIndex = Index * 16;
-        
-        //  Sanity check.
-        if (FloatIndex < 0 || FloatIndex+16 > m_pTransformOutputSource.getFloatArray().getValues().size())
-            return(false);
+        int FloatIndex = index * 16; // Scale to 1-D array index
+        //  Bounds checking
+        if (FloatIndex < 0 || FloatIndex+16 > m_transformOutputSource.getFloatArray().getValues().size())
+            return false;
 
-        float []pMatrixFloats = pMatrix.getData();
+        float [] matrixFloats = new float[16];
         
-        for (int a= 0; a<16; a++)
-        {
-            pMatrixFloats[a] = ((Double)m_pTransformOutputSource.getFloatArray().getValues().get(FloatIndex+a)).floatValue();
-        }
+        for (int i = 0; i < 16; i++)
+            matrixFloats[i] = ((Double)m_transformOutputSource.getFloatArray().getValues().get(FloatIndex + i)).floatValue();
+
+        // Load it into the output matrix
+        matrixOut.set(matrixFloats);
         
-        return(true);
+        return true;
     }
 }
 

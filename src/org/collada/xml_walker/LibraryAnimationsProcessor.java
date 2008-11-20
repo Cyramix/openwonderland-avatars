@@ -45,11 +45,9 @@ public class LibraryAnimationsProcessor extends Processor
 {
     private String m_AnimatedItemID     = null;
     private String m_AnimatedItemName   = null;
-    private String m_Type               = null;
     
     private Source m_pTransformInputSource  = null;
     private Source m_pTransformOutputSource = null;
-    private Source m_pTransformInterpolationSource = null;
 
     private int m_KeyframeCount = -1;
 
@@ -61,34 +59,26 @@ public class LibraryAnimationsProcessor extends Processor
      * @param pAnimations
      * @param pParent
      */
-    public LibraryAnimationsProcessor(Collada pCollada, LibraryAnimations pAnimations, Processor pParent)
+    public LibraryAnimationsProcessor(Collada colladaRef, LibraryAnimations animationLibrary, Processor pParent)
     {
-        super(pCollada, pAnimations, pParent);
+        super(colladaRef, animationLibrary, pParent);
 
 
-        if (pAnimations.getAnimations().size() > 0)
+        if (animationLibrary.getAnimations().size() > 0)
         {
-            AnimationGroup pAnimationLoop = new AnimationGroup();
+            AnimationGroup newGroup = new AnimationGroup();
 
-            int a;
-            Animation pAnimation;
+            for (Animation anim : animationLibrary.getAnimations())
+                processAnimation(colladaRef, anim, newGroup);
 
+            newGroup.calculateDuration();
+            newGroup.createDefaultCycle();
 
-            for (a=0; a<pAnimations.getAnimations().size(); a++)
-            {
-                pAnimation = (Animation)pAnimations.getAnimations().get(a);
-
-                processAnimation(pCollada, pAnimation, pAnimationLoop);
-            }
-
-            pAnimationLoop.calculateDuration();
-            pAnimationLoop.createDefaultCycle();
-
-            pAnimationLoop.getCycle(0).setName(m_pCollada.getName());
-            System.out.println("   Animation:  '" + m_pCollada.getName() + "'");
+            newGroup.getCycle(0).setName(m_pCollada.getName());
+            System.out.println("   Animation:  '" + animationLibrary.getId() + "'");
 
             //  Add the AnimationLoop to the SkeletonNode.
-            m_pCollada.getSkeletonNode().getAnimationComponent().getGroups().add(pAnimationLoop);
+            m_pCollada.getSkeletonNode().getAnimationComponent().getGroups().add(newGroup);
         }
     }
 
@@ -115,12 +105,10 @@ public class LibraryAnimationsProcessor extends Processor
         if (periodIndex != -1)
         {
             m_AnimatedItemName = m_AnimatedItemID.substring(0, periodIndex);
-            m_Type = m_AnimatedItemID.substring(periodIndex+1);
         }
         else
         {
             m_AnimatedItemName = m_AnimatedItemID;
-            m_Type = "Unknown";
         }
 
         
@@ -254,7 +242,7 @@ public class LibraryAnimationsProcessor extends Processor
      * @param pMatrix
      * @return boolean
      */
-    private boolean getKeyframeMatrix(int Index, PMatrix pMatrix)
+    private boolean getKeyframeMatrix(int Index, PMatrix matrixOut)
     {
         int FloatIndex = Index * 16;
 
@@ -262,12 +250,13 @@ public class LibraryAnimationsProcessor extends Processor
         if (FloatIndex < 0 || FloatIndex+16 > m_pTransformOutputSource.getFloatArray().getValues().size())
             return(false);
 
-        float []pMatrixFloats = pMatrix.getData();
+        float [] matrixFloats = new float[16];
 
-        for (int a= 0; a<16; a++)
-        {
-            pMatrixFloats[a] = ((Double)m_pTransformOutputSource.getFloatArray().getValues().get(FloatIndex+a)).floatValue();
-        }
+        for (int i = 0; i < 16; i++)
+            matrixFloats[i] = ((Double)m_pTransformOutputSource.getFloatArray().getValues().get(FloatIndex + i)).floatValue();
+
+        // Load it into the output matrix
+        matrixOut.set(matrixFloats);
 
         return(true);
     }

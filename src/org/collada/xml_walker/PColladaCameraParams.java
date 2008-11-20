@@ -25,7 +25,7 @@ package org.collada.xml_walker;
  */
 public class PColladaCameraParams
 {
-    private String          m_Name = "";
+    private String          m_Name = null;
     private boolean         m_bPerspective = true;
     private float           m_xfov;
     private float           m_yfov;

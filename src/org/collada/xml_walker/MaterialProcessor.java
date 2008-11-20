@@ -42,12 +42,8 @@ public class MaterialProcessor extends Processor
     public MaterialProcessor(Collada pCollada, Material pMaterial, Processor pParent)
     {
         super(pCollada, pMaterial, pParent);
-
-        
         InstanceEffect instanceEffect = pMaterial.getInstanceEffect();
         String instanceURL = instanceEffect.getUrl();
-        
-        //System.out.println("Material "+instanceURL +"  "+ElementCache.cache().get(instanceURL));
     }
 
 }

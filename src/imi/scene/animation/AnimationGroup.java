@@ -419,7 +419,6 @@ public class AnimationGroup
     {
         calculateDuration();
 
-//        float fDuration = 10.0f;//this.getDuration();
         AnimationCycle pAnimationCycle = new AnimationCycle("default", getStartTime(), m_Duration);
      
         m_cycles = new AnimationCycle[1];

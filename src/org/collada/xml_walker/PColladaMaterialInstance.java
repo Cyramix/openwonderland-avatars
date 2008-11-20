@@ -29,10 +29,10 @@ import java.util.ArrayList;
  */
 public class PColladaMaterialInstance
 {
-    String              m_InstanceName;
-    String              m_MaterialName;
+    private String              m_InstanceName = null;
+    private String              m_MaterialName = null;
 
-    ArrayList           m_VertexInputs = new ArrayList();
+    private ArrayList<String>   m_VertexInputs = null;
 
     
     
@@ -46,18 +46,14 @@ public class PColladaMaterialInstance
     //  Gets the Instance Name.
     public String getInstanceName()
     {
-        return(m_InstanceName);
+        return m_InstanceName;
     }
 
     //  Sets the InstanceName.
     public void setInstanceName(String instanceName)
     {
         m_InstanceName = instanceName;
-
-        //System.out.println("PColladaMaterialInstance.m_InstanceName = " + m_InstanceName);
     }
-
-
 
     //  Gets the MaterialName.
     public String getMaterialName()
@@ -65,18 +61,21 @@ public class PColladaMaterialInstance
         return(m_MaterialName);
     }
 
-    //  Sets the MaterialName.
+    /**
+     * Set the material name. If the material is a link (starts with '#'), the
+     * first character will be removed.
+     * @param materialName
+     */
     public void setMaterialName(String materialName)
     {
         m_MaterialName = materialName;
         if (m_MaterialName.startsWith("#"))
             m_MaterialName = m_MaterialName.substring(1, m_MaterialName.length());
 
-        int indexOfMaterialNameEnd = m_MaterialName.lastIndexOf("-");
+        int indexOfMaterialNameEnd = m_MaterialName.lastIndexOf("-"); // <-- What is this hack?
         if (indexOfMaterialNameEnd != -1)
             m_MaterialName = m_MaterialName.substring(0, indexOfMaterialNameEnd);
 
-        //System.out.println("PColladaMaterialInstance.m_MaterialName = " + m_MaterialName);
     }
 
 
@@ -84,19 +83,27 @@ public class PColladaMaterialInstance
     //  Adds a VertexInput.
     public void addVertexInput(String vertexInput)
     {
+        if (m_VertexInputs == null)
+            m_VertexInputs = new ArrayList<String>();
         m_VertexInputs.add(vertexInput);
     }
 
     //  Gets the number of VertexInputs.
     public int getVertexInputCount()
     {
-        return(m_VertexInputs.size());
+        if (m_VertexInputs != null)
+            return m_VertexInputs.size();
+        else
+            return 0;
     }
 
     //  Gets the VertexInput at the specified index.
     public String getVertexInput(int index)
     {
-        return( (String)m_VertexInputs.get(index));
+        if (m_VertexInputs != null)
+            return m_VertexInputs.get(index);
+        else
+            return null;
     }
 
 }

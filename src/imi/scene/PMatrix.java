@@ -190,15 +190,7 @@ public class PMatrix
      */
     public PMatrix(float[] matrix) 
     {
-	set(matrix);
-    }
-
-    
-    
-    //  Gets the Matrix data.
-    public float []getData()
-    {
-        return(mat);
+        set(matrix);
     }
 
     /**
@@ -337,33 +329,7 @@ public class PMatrix
         
         Matrix4fToPMatrix(jMonkeyMatrix, this);
     }
-
-    public void Matrix4fToPMatrix(Matrix4f matrix4f, PMatrix pMatrix)
-    {
-        float []matrixFloats = pMatrix.getData();
-        
-        matrixFloats[0] = matrix4f.m00;
-        matrixFloats[1] = matrix4f.m01;
-        matrixFloats[2] = matrix4f.m02;
-        matrixFloats[3] = matrix4f.m03;
-
-        matrixFloats[4] = matrix4f.m10;
-        matrixFloats[5] = matrix4f.m11;
-        matrixFloats[6] = matrix4f.m12;
-        matrixFloats[7] = matrix4f.m13;
-
-        matrixFloats[8] = matrix4f.m20;
-        matrixFloats[9] = matrix4f.m21;
-        matrixFloats[10] = matrix4f.m22;
-        matrixFloats[11] = matrix4f.m23;
-
-        matrixFloats[12] = matrix4f.m30;
-        matrixFloats[13] = matrix4f.m31;
-        matrixFloats[14] = matrix4f.m32;
-        matrixFloats[15] = matrix4f.m33;
-    }
-   
-            
+    
     void set(Quaternion rotation, Vector3f translation, Vector3f scale) 
     {
         setRotation(rotation);
@@ -3839,19 +3805,31 @@ public class PMatrix
         mat[14] = 0.0f;
         mat[15] = 1.0f;
     }
-    
-    
-    
-/*
-    // XXX: This tests more solid than converting the q to a matrix and multiplying... why?
-    public void multLocal(Quaternion rotation)
+
+        public static void Matrix4fToPMatrix(Matrix4f matrix4f, PMatrix sourceMatrix)
     {
-        Vector3f axis = new Vector3f();
-        float angle = rotation.toAngleAxis(axis);
-        PMatrix matrix = new PMatrix();
-        matrix.fromAngleAxis(angle, axis);
-        multLocal(matrix);
+        float []matrixFloats = sourceMatrix.mat;
+
+        matrixFloats[0] = matrix4f.m00;
+        matrixFloats[1] = matrix4f.m01;
+        matrixFloats[2] = matrix4f.m02;
+        matrixFloats[3] = matrix4f.m03;
+
+        matrixFloats[4] = matrix4f.m10;
+        matrixFloats[5] = matrix4f.m11;
+        matrixFloats[6] = matrix4f.m12;
+        matrixFloats[7] = matrix4f.m13;
+
+        matrixFloats[8] = matrix4f.m20;
+        matrixFloats[9] = matrix4f.m21;
+        matrixFloats[10] = matrix4f.m22;
+        matrixFloats[11] = matrix4f.m23;
+
+        matrixFloats[12] = matrix4f.m30;
+        matrixFloats[13] = matrix4f.m31;
+        matrixFloats[14] = matrix4f.m32;
+        matrixFloats[15] = matrix4f.m33;
     }
-*/
+
 
 }

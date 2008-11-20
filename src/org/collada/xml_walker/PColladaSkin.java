@@ -29,14 +29,14 @@ import imi.scene.PMatrix;
  */
 public class PColladaSkin
 {
-    String                          m_Name = "";
-    String                          m_MeshName = "";
-    PMatrix                         m_BindMatrix = new PMatrix();
+    private String                          m_Name          = null;
+    private String                          m_MeshName      = null;
+    private PMatrix                         m_BindMatrix    = new PMatrix();
 
-    ArrayList<String>               m_BoneNames = new ArrayList<String>();
-    ArrayList<String>               m_JointNames = new ArrayList<String>();
-    ArrayList<PMatrix>              m_BindMatrices = new ArrayList<PMatrix>();
-    ArrayList<PColladaSkinWeight>   m_SkinWeights = new ArrayList<PColladaSkinWeight>();
+    private ArrayList<String>               m_BoneNames     = new ArrayList<String>();
+    private ArrayList<String>               m_JointNames    = new ArrayList<String>();
+    private ArrayList<PMatrix>              m_BindMatrices  = new ArrayList<PMatrix>();
+    private ArrayList<PColladaSkinWeight>   m_SkinWeights   = new ArrayList<PColladaSkinWeight>();
 
 
 
@@ -66,7 +66,7 @@ public class PColladaSkin
      */
     public String getName()
     {
-        return(m_Name);
+        return m_Name;
     }
 
     /**
@@ -88,7 +88,7 @@ public class PColladaSkin
      */
     public String getMeshName()
     {
-        return(m_MeshName);
+        return m_MeshName;
     }
 
     /**
@@ -122,7 +122,8 @@ public class PColladaSkin
      */
     public void addBoneName(String boneName)
     {
-        m_BoneNames.add(boneName);
+        if (boneName != null)
+            m_BoneNames.add(boneName);
     }
 
     /**
@@ -133,18 +134,12 @@ public class PColladaSkin
      */
     public boolean containsBoneName(String boneName)
     {
-        int a;
-        String theBoneName;
-        
-        for (a=0; a<m_BoneNames.size(); a++)
+        for (String name : m_BoneNames)
         {
-            theBoneName = m_BoneNames.get(a);
-            
-            if (theBoneName.equals(boneName))
-                return(true);
+            if (boneName.equals(name))
+                return true;
         }
-
-        return(false);
+        return false;
     }
 
     /**
@@ -154,9 +149,9 @@ public class PColladaSkin
     public String getRootBoneName()
     {
         if (m_BoneNames.size() == 0)
-            return("");
+            return null;
         
-        return(m_BoneNames.get(0));
+        return m_BoneNames.get(0);
     }
 
 
@@ -177,7 +172,7 @@ public class PColladaSkin
      */
     public int getJointNameCount()
     {
-        return(m_JointNames.size());
+        return m_JointNames.size();
     }
 
     /**
@@ -188,7 +183,7 @@ public class PColladaSkin
      */
     public String getJointName(int Index)
     {
-        return(m_JointNames.get(Index));
+        return m_JointNames.get(Index);
     }
 
     /**
@@ -199,13 +194,12 @@ public class PColladaSkin
      */
     public boolean containsJointName(String jointName)
     {
-        for (int a=0; a<m_JointNames.size(); a++)
+        for (String name : m_JointNames)
         {
-            if (m_JointNames.get(a).equals(jointName))
-                return(true);
+            if (jointName.equals(name))
+                return true;
         }
-
-        return(false);
+        return false;
     }
 
 

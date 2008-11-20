@@ -94,36 +94,6 @@ public class SkinnedMeshJoint extends PJoint
 
         return(null);
     }
-
-    public void dump(String spacing)
-    {
-        System.out.println(spacing + this.getClass().toString() + " - " + this.getName());
-        if (this.getTransform() != null)
-        {
-            PMatrix localMatrix = this.getTransform().getWorldMatrix(false);
-            float []mat = localMatrix.getData();
-            
-            System.out.println(spacing + "   Matrix:");
-            System.out.println(spacing + "      " + mat[0] + ", " + mat[1] + ", " + mat[2] + ", " + mat[3] + ", ");
-            System.out.println(spacing + "      " + mat[4] + ", " + mat[5] + ", " + mat[6] + ", " + mat[7] + ", ");
-            System.out.println(spacing + "      " + mat[8] + ", " + mat[9] + ", " + mat[10] + ", " + mat[11] + ", ");
-            System.out.println(spacing + "      " + mat[12] + ", " + mat[13] + ", " + mat[14] + ", " + mat[15] + ", ");
-        }
-
-        dumpChildren(spacing);
-    }
-/*
-    //  Dumps the contents of the PPolygonSkinnedMeshJoint.
-    public void dump(String spacing)
-    {
-        System.out.println(spacing + "PPolygonSkinnedMeshJoint:  '" + getName() + "'");
-        System.out.println(spacing + "   ParentJointName:   '" + m_ParentJointName + "'");
-        //System.out.println(spacing + "   ParentJointIndex:  " + m_ParentJointIndex);
-        //System.out.println(spacing + "   Translation:       (" + m_Translation.x + ", " + m_Translation.y + ", " + m_Translation.z + ")");
-        //System.out.println(spacing + "   Rotation:          (" + m_Rotation.x + ", " + m_Rotation.y + ", " + m_Rotation.z + ")");
-    }
-*/
-
 }
 
 

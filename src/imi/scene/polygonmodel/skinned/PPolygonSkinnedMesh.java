@@ -409,99 +409,20 @@ public class PPolygonSkinnedMesh extends PPolygonMesh
 
 
     //  Builds the array of bone influences.
-    public void linkJointsToSkeletonNode(SkeletonNode pSkeletonNode)
+    public void linkJointsToSkeletonNode(SkeletonNode skeleton)
     {
-//        if (m_pPolygonSkinnedMesh.getInfluenceIndices() == null)
-//            return(false);
-
-        int a;
-        String jointName = "";
-        int jointIndex;
-        int []influenceIndices = new int[m_JointNames.size()];
-
-        for (a=0; a<m_JointNames.size(); a++)
+        int index = 0;
+        int [] influenceIndices = new int[m_JointNames.size()];
+        for (String jointName : m_JointNames)
         {
-            jointName = m_JointNames.get(a);
-
-            //  Get the index of the Joint.
-            jointIndex = pSkeletonNode.getSkinnedMeshJointIndex(jointName);
-
-            influenceIndices[a] = jointIndex;
+            int BFTIndex = skeleton.getSkinnedMeshJointIndex(jointName);
+            influenceIndices[index] = BFTIndex;
+            index++;
         }
-
+       
         setInfluenceIndices(influenceIndices);
     }
 
-
-/*
-    @Override
-    public void dumpHeader(String spacing)
-    {
-        int a;
-        PBoneIndices pBoneIndices = null;
-        Vector3f pBoneWeight = null;
-        PNode pChildNode;
-
-
-        super.dumpHeader(spacing);
-
-        //  Dump the BoneIndices.
-        if (m_PBoneIndices != null)
-        {
-            System.out.println(spacing + "   BoneIndices:  " + m_PBoneIndices.size());
-            for (a=0; a<m_PBoneIndices.size(); a++)
-            {
-                pBoneIndices = (PBoneIndices)m_PBoneIndices.get(a);
-            
-                System.out.println(spacing + "      BoneIndices[" + a + "]:  (" + pBoneIndices.index[0] + ", " + pBoneIndices.index[1] + ", " + pBoneIndices.index[2] + ", " + pBoneIndices.index[3] + ")");
-            }
-        }
-
-        //  Dump the BoneWeights.
-        if (m_BoneWeights != null)
-        {
-            System.out.println(spacing + "   BoneWeights:  " + m_BoneWeights.size());
-            for (a=0; a<m_BoneWeights.size(); a++)
-            {
-                pBoneWeight = (Vector3f)m_BoneWeights.get(a);
-            
-                System.out.println(spacing + "      BoneWeight[" + a + "]:  (" + pBoneWeight.x + ", " + pBoneWeight.y + ", " + pBoneWeight.z + ")");
-            }
-        }
-
-//
-//        //  Dump the Joint hiearchy.
-//        System.out.println(spacing + "Joint Hierarchy:");
-//        for (a=0; a<m_BindPoseSkeleton.getChildrenCount(); a++)
-//        {
-//            pChildNode = m_BindPoseSkeleton.getChild(a);
-//            
-//            dumpJoints(spacing + "   ", pChildNode);
-//        }
-    }
-*/
-
-    private void dumpJoints(String spacing, PNode pJoint)
-    {
-        int a;
-        PNode pChildNode;
-        PMatrix pLocalMatrix = pJoint.getTransform().getLocalMatrix(false);
-        float [] pMatrixFloats = pLocalMatrix.getData();
-            
-        
-        System.out.println(spacing + "'" + pJoint.getName() + "'   -   " + pJoint.getClass());
-        System.out.println(spacing + "   Matrix:  (" + pMatrixFloats[0] + ", " + pMatrixFloats[1] + ", " + pMatrixFloats[2] + ", " + pMatrixFloats[3] + ")");
-        System.out.println(spacing + "            (" + pMatrixFloats[4] + ", " + pMatrixFloats[5] + ", " + pMatrixFloats[6] + ", " + pMatrixFloats[7] + ")");
-        System.out.println(spacing + "            (" + pMatrixFloats[8] + ", " + pMatrixFloats[9] + ", " + pMatrixFloats[10] + ", " + pMatrixFloats[11] + ")");
-        System.out.println(spacing + "            (" + pMatrixFloats[12] + ", " + pMatrixFloats[13] + ", " + pMatrixFloats[14] + ", " + pMatrixFloats[15] + ")");
-        
-        for (a=0; a<pJoint.getChildrenCount(); a++)
-        {
-            pChildNode = pJoint.getChild(a);
-            
-            dumpJoints(spacing + "   ", pChildNode);
-        }
-    }
 }
 
 

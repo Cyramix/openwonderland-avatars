@@ -19,7 +19,6 @@ package org.collada.xml_walker;
 
 import imi.loaders.collada.Collada;
 import imi.scene.polygonmodel.parts.TextureMaterialProperties;
-import imi.utils.FileUtils;
 
 /**
  * The PColladaImage class represents an image referenced in a collada file.
@@ -149,11 +148,9 @@ public class PColladaImage
      */
     public void calculateFilename()
     {
+        // HACK : Again with the file location hacks
         String currentFolder = m_loaderRef.getFileLocation().toString().substring(0, m_loaderRef.getFileLocation().toString().lastIndexOf('/') + 1);
         m_Filename = currentFolder + m_ShortFilename;
-//        m_Filename = FileUtils.findTextureFile(m_ShortFilename);
-//        if (m_Filename.length() == 0)
-//            m_Filename = FileUtils.findTextureFile("default.png");
     }
 
 }

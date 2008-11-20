@@ -28,7 +28,7 @@ import imi.scene.PMatrix;
  */
 public class PColladaCamera
 {
-    private String                  m_Name = "";
+    private String                  m_Name = null;
     private PColladaCameraParams    m_pCameraParams;
     private PMatrix                 m_Matrix = new PMatrix();
 
