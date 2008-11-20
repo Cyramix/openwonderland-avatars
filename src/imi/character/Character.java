@@ -561,7 +561,9 @@ public abstract class Character extends Entity implements SpatialObject, Animati
                             // The verlet arm!
                             SkinnedMeshJoint shoulderJoint = (SkinnedMeshJoint) m_skeleton.findChild("rightArm");
                             m_arm = new VerletArm(shoulderJoint, m_modelInst);
-                            new VerletVisualManager("avatar arm visuals", m_wm).addVerletObject(m_arm);
+                            VerletVisualManager visual = new VerletVisualManager("avatar arm visuals", m_wm);
+                            visual.addVerletObject(m_arm);
+                            visual.setWireframe(true);
                             // Set the joint manipulator on every skinned mesh (remember to set it again when adding new meshes!)
                             ArrayList<PPolygonSkinnedMeshInstance> skinnedMeshes = m_skeleton.getSkinnedMeshInstances();
                             m_armJointManipulator = new VerletJointManipulator(m_arm, m_skeleton);

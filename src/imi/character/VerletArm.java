@@ -31,13 +31,14 @@ import java.util.ArrayList;
  */
 public class VerletArm 
 {
-    PPolygonModelInstance modelInst = null;
-    SkinnedMeshJoint shoulderJoint  = null;
+    private PPolygonModelInstance modelInst = null;
+    private SkinnedMeshJoint shoulderJoint  = null;
     
-    ArrayList<VerletParticle>  particles    = new ArrayList<VerletParticle>();
-    ArrayList<StickConstraint> constraints  = new ArrayList<StickConstraint>();
+    private ArrayList<VerletParticle>  particles    = new ArrayList<VerletParticle>();
+    private ArrayList<StickConstraint> constraints  = new ArrayList<StickConstraint>();
     
-    Vector3f gravity = new Vector3f(0.0f, -9.8f, 0.0f);
+    private Vector3f gravity = new Vector3f(0.0f, -9.8f, 0.0f);
+    private float velocityDampener = 0.9f;
     
     public VerletArm(SkinnedMeshJoint shoulder, PPolygonModelInstance modelInstance) 
     {
@@ -62,6 +63,7 @@ public class VerletArm
 	for (int i = 1; i < particles.size(); i++)
 	{
             particles.get(i).setForceAccumulator(gravity);
+            particles.get(i).scaleVelocity(velocityDampener);
             particles.get(i).verletIntegration(physicsUpdateTime);
 	}
         
@@ -94,7 +96,7 @@ public class VerletArm
         return particles;
     }
 
-    public PMatrix getInverseModelWorldMatrix()
+    public PMatrix calculateInverseModelWorldMatrix()
     {
         return modelInst.getTransform().getWorldMatrix(false).inverse();
     }
@@ -137,6 +139,12 @@ public class VerletArm
             return currentPosition.subtract(previousPosition);
         }
         
+        public void scaleVelocity(float scalar)
+        {
+            Vector3f reverseVelocity    =   previousPosition.subtract(currentPosition);
+            previousPosition.set(currentPosition.add(reverseVelocity.mult(scalar)));
+        }
+        
         public void stop()
         {
             previousPosition.set(currentPosition);
@@ -157,7 +165,7 @@ public class VerletArm
         
         public void dislocate(Vector3f directionNormalized, float distance)
         {
-            directionNormalized.mult(distance);
+            directionNormalized.multLocal(distance);
             currentPosition.addLocal(directionNormalized);
             previousPosition.addLocal(directionNormalized);
         }
@@ -177,7 +185,7 @@ public class VerletArm
         }
 
         public void setCurrentPosition(Vector3f currentPosition) {
-            this.currentPosition = currentPosition;
+            this.currentPosition.set(currentPosition);
         }
 
         public float getMass() {
@@ -193,7 +201,7 @@ public class VerletArm
         }
 
         public void setPreviousPosition(Vector3f previousPosition) {
-            this.previousPosition = previousPosition;
+            this.previousPosition.set(previousPosition);
         }
 
         public Vector3f getForceAccumulator() {
@@ -201,7 +209,7 @@ public class VerletArm
         }
 
         public void setForceAccumulator(Vector3f forceAccumulator) {
-            this.forceAccumulator = forceAccumulator;
+            this.forceAccumulator.set(forceAccumulator);
         }
 
         public void addToForceAccumulator(Vector3f force) {

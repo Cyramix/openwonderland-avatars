@@ -702,6 +702,48 @@ public class PMatrix
     }
     
     /**
+     * Warning: this will invalidate previous scale and rotational data
+     * @param X
+     * @return
+     */
+    public PMatrix setLocalX(Vector3f X)
+    {
+        mat[0] = X.x;
+        mat[4] = X.y;
+        mat[8] = X.z;
+        dirtyBits = ALL_DIRTY;
+        return this;
+    }
+    
+    /**
+     * Warning: this will invalidate previous scale and rotational data
+     * @param Y
+     * @return
+     */
+    public PMatrix setLocalY(Vector3f Y)
+    {
+        mat[1] = Y.x;
+        mat[5] = Y.y;
+        mat[9] = Y.z;
+        dirtyBits = ALL_DIRTY;
+        return this;
+    }
+    
+    /**
+     * Warning: this will invalidate previous scale and rotational data
+     * @param Z
+     * @return
+     */
+    public PMatrix setLocalZ(Vector3f Z)
+    {
+        mat[2]  = Z.x;
+        mat[6]  = Z.y;
+        mat[10] = Z.z;
+        dirtyBits = ALL_DIRTY;
+        return this;
+    }
+    
+    /**
      * Sets this transform to all zeros.
      */
     public final void setZero() {
