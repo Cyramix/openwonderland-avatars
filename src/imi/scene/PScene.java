@@ -623,7 +623,7 @@ public class PScene extends PNode implements RepositoryUser
                 break;
             }
         }
-        if (asset.getAssetData() instanceof PScene)
+        else if (asset.getAssetData() instanceof PScene)
         {
             PScene otherScene = ((PScene)asset.getAssetData());
             // copy over the shared assets from the other PScene
