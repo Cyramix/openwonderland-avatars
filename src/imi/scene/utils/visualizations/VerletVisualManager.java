@@ -19,6 +19,7 @@ package imi.scene.utils.visualizations;
 
 import com.jme.scene.Node;
 import com.jme.scene.state.RenderState;
+import com.jme.scene.state.WireframeState;
 import com.jme.scene.state.ZBufferState;
 import imi.character.VerletArm;
 import javolution.util.FastList;
@@ -44,6 +45,8 @@ public class VerletVisualManager extends Entity
     private FastList<VerletObjectVisualization> m_objects = null;
     /** ProcessorComponent! **/
     private UpdateDriver m_updater = null;
+    /** Used for toggling wireframe **/
+    private WireframeState m_wireframeState = null;
 
     /**
      * Constuct a new verlet visualizer with the given worldmanager
@@ -60,6 +63,8 @@ public class VerletVisualManager extends Entity
         // Get the ZBufferState
         ZBufferState zstate = (ZBufferState) wm.getRenderManager().createRendererState(RenderState.RS_ZBUFFER);
         m_jmeRoot.setRenderState(zstate);
+        m_wireframeState = (WireframeState)wm.getRenderManager().createRendererState(RenderState.RS_WIREFRAME);
+        m_jmeRoot.setRenderState(m_wireframeState);
         // Create our render component
         RenderComponent rc = wm.getRenderManager().createRenderComponent(m_jmeRoot);
         rc.setLightingEnabled(false); // Unlight visualizations
@@ -70,7 +75,11 @@ public class VerletVisualManager extends Entity
         super.addComponent(UpdateDriver.class, m_updater);
     }
 
-    public int addVerletObject(VerletArm verletObject)
+    /**
+     * This method adds a verlet object to the collection
+     * @param verletObject The object to add
+     */
+    public void addVerletObject(VerletArm verletObject)
     {
         if (m_objects == null) // First object, allocate collection space
             m_objects = new FastList<VerletObjectVisualization>();
@@ -87,10 +96,14 @@ public class VerletVisualManager extends Entity
         // hard code a single update
         visuals.updateConstraintVisuals();
         m_jmeRoot.updateRenderState();
-        return m_objects.size() - 1;
 
     }
-    
+
+    /**
+     * This method removes the specified verlet object from the manager
+     * @param verletObject
+     * @return True if found, false otherwise
+     */
     public boolean removeVerletObject(VerletArm verletObject)
     {
         boolean result = false;
@@ -115,12 +128,25 @@ public class VerletVisualManager extends Entity
         return result;
     }
 
+    public void clearVerletObjects()
+    {
+        // begone objects!
+        m_objects.clear();
+        m_objects = null;
+    }
+
     public void update() {
         for (VerletObjectVisualization obj : m_objects)
         {
             obj.updateParticlePositions();
             obj.updateConstraintVisuals();
         }
+    }
+
+    public void setWireframe(boolean bWireframeOn)
+    {
+            m_wireframeState.setEnabled(bWireframeOn);
+            m_jmeRoot.updateRenderState();
     }
 
     private class UpdateDriver extends ProcessorComponent
