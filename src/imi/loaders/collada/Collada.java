@@ -433,11 +433,8 @@ public class Collada
                 if (colladaNode.isJoint())
                 {
                     //  Create a SkinnedMeshJoint.
-                    SkinnedMeshJoint pSkinnedMeshJoint = new SkinnedMeshJoint();
-
-                    pSkinnedMeshJoint.setTransform(new PTransform());
-                    pSkinnedMeshJoint.setName(colladaNode.getName());
-                    pSkinnedMeshJoint.getTransform().getLocalMatrix(true).set(colladaNode.getMatrix());
+                    SkinnedMeshJoint pSkinnedMeshJoint = new SkinnedMeshJoint(colladaNode.getName(),
+                            new PTransform(colladaNode.getMatrix()));
 
                     pThisNode = pSkinnedMeshJoint;
                 }
@@ -1168,12 +1165,9 @@ public class Collada
             {
                 if (pColladaNode.isJoint())
                 {
-                    //  Create a SkinnedMeshJoint.
-                    SkinnedMeshJoint pSkinnedMeshJoint = new SkinnedMeshJoint();
-
-                    pSkinnedMeshJoint.setTransform(new PTransform());
-                    pSkinnedMeshJoint.setName(pColladaNode.getName());
-                    pSkinnedMeshJoint.getTransform().getLocalMatrix(true).set(pColladaNode.getMatrix());
+                    //  Create a SkinnedMeshJoint
+                    SkinnedMeshJoint pSkinnedMeshJoint = new SkinnedMeshJoint(pColladaNode.getName(),
+                            new PTransform(pColladaNode.getMatrix()));
 
                     pThisNode = pSkinnedMeshJoint;
                 }
@@ -1660,13 +1654,10 @@ public class Collada
         {
             if (colladaNode.isJoint() == true)
             {
-                SkinnedMeshJoint skinnedJoint = new SkinnedMeshJoint();
-
-                skinnedJoint.setTransform(new PTransform());
-                skinnedJoint.setName(colladaNode.getName());
-                skinnedJoint.getTransform().getLocalMatrix(true).set(colladaNode.getMatrix());
-
-                processedNode = skinnedJoint;
+                //  Create a SkinnedMeshJoint
+                SkinnedMeshJoint pSkinnedMeshJoint = new SkinnedMeshJoint(colladaNode.getName(),
+                        new PTransform(colladaNode.getMatrix()));
+                processedNode = pSkinnedMeshJoint;
             }
             else
             {

@@ -1212,11 +1212,9 @@ public class PScene extends PNode implements RepositoryUser
 
     private PNode processSkinnedMeshJoint(SkinnedMeshJoint skinnedMeshJoint)
     {
-        SkinnedMeshJoint result = new SkinnedMeshJoint();
-        
-        result.setName(skinnedMeshJoint.getName());
-        result.setTransform(new PTransform(skinnedMeshJoint.getTransform()));
-        
+        SkinnedMeshJoint result = new SkinnedMeshJoint(skinnedMeshJoint.getName(),
+                                    new PTransform(skinnedMeshJoint.getTransform()));
+ 
         for (PNode kid : skinnedMeshJoint.getChildren())
             result.addChild(processNode(kid));
         return result;

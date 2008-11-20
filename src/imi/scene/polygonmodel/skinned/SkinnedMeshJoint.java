@@ -35,11 +35,7 @@ public class SkinnedMeshJoint extends PJoint
     /** The name! **/
     public String           m_ParentJointName = "Skinned Mesh Joint";
     /** The bind transform **/
-    public PMatrix          m_bindPoseTransform = null;
-
-    public SkinnedMeshJoint() 
-    {
-    }
+    private PMatrix          m_bindPoseTransform = null;
 
     public SkinnedMeshJoint(PTransform transform) 
     {
@@ -62,6 +58,7 @@ public class SkinnedMeshJoint extends PJoint
     public SkinnedMeshJoint(String name, PNode parent, ArrayList<PNode> children, PTransform transform) 
     {
         super(name, parent, children, transform);
+        m_bindPoseTransform = new PMatrix(transform.getLocalMatrix(false));
     }
 
     public void set(String jointName,
@@ -74,8 +71,6 @@ public class SkinnedMeshJoint extends PJoint
         
         getTransform().getLocalMatrix(true).set(rotation, translation, Vector3f.UNIT_XYZ);
 
-	//m_Translation.set(translation);
-	//m_Rotation.set(rotation);
     }
 
     public PMatrix getBindPose()

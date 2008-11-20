@@ -446,6 +446,11 @@ public class SkeletonNode extends PNode implements Animated
         return m_BFTSkeleton.get(BFTIndex);
     }
 
+    public int getSkinnedMeshJointCount()
+    {
+        return m_BFTSkeleton.size();
+    }
+
     public List<SharedMesh> collectSharedMeshes()
     {
         ArrayList<SharedMesh> result = new ArrayList<SharedMesh>();
