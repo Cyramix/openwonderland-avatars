@@ -18,6 +18,7 @@
 package imi.loaders.collada;
 
 
+
 import imi.loaders.repository.AssetDescriptor;
 import imi.loaders.repository.SharedAsset;
 import java.util.ArrayList;
@@ -30,7 +31,7 @@ import org.collada.xml_walker.ProcessorFactory;
 import org.collada.xml_walker.PColladaNode;
 import org.collada.xml_walker.PColladaMaterialInstance;
 import org.collada.xml_walker.PColladaImage;
-import org.collada.xml_walker.PColladaMaterial;
+import org.collada.xml_walker.PColladaEffect;
 import org.collada.xml_walker.PColladaAnimatedItem;
 import org.collada.xml_walker.PColladaCameraParams;
 import org.collada.xml_walker.PColladaCamera;
@@ -70,11 +71,11 @@ import imi.scene.animation.COLLADA_JointChannel;
 import imi.scene.PJoint;
 
 
-import imi.scene.shader.programs.VertexDeformer;
 import imi.scene.utils.tree.PPolygonMeshAssemblingProcessor;
 import imi.scene.utils.tree.TreeTraverser;
 import java.net.URL;
 import javolution.util.FastMap;
+import org.collada.xml_walker.ColladaMaterial;
 
 
 
@@ -104,8 +105,11 @@ public class Collada
 
     FastMap<String, PColladaImage>              m_Images = new FastMap<String, PColladaImage>();
 
-    FastMap<String, PColladaMaterial>           m_Materials = new FastMap<String, PColladaMaterial>();
-    private ArrayList                           m_ColladaMaterials = new ArrayList();
+    FastMap<String, PColladaEffect>             m_EffectMap = new FastMap<String, PColladaEffect>();
+    private ArrayList<PColladaEffect>           m_EffectList = new ArrayList<PColladaEffect>();
+
+    FastMap<String, ColladaMaterial>             m_MaterialMap = new FastMap<String, ColladaMaterial>();
+    private ArrayList<ColladaMaterial>           m_MaterialList = new ArrayList<ColladaMaterial>();
 
     FastMap<String, PColladaMaterialInstance>   m_MaterialInstances = new FastMap<String, PColladaMaterialInstance>();
     private ArrayList                           m_ColladaMaterialInstances = new ArrayList();
@@ -545,50 +549,6 @@ public class Collada
         return null;
     }
 
-//    private void postProcessInstances()
-//    {
-//        if (getPolygonSkinnedMeshCount() > 0)
-//        {
-//            for (int i = 0; i < getPolygonSkinnedMeshCount(); i++)
-//            {
-//                PPolygonSkinnedMesh pSkinnedMesh = getPolygonSkinnedMesh(i);
-//                PMeshMaterial pMaterial = new PMeshMaterial("Collada Skinned Default");
-//
-//                pMaterial.setShader(new VertexDeformer(m_pLoadingPScene.getWorldManager()));
-//
-//                pSkinnedMesh.setMaterial(pMaterial);
-//                //pSkinnedMesh.setNumberOfTextures(0);
-//
-//                SharedAsset asset = new SharedAsset(m_pLoadingPScene.getRepository(), new AssetDescriptor(SharedAsset.SharedAssetType.Unknown, pSkinnedMesh.getName()));
-//                asset.setAssetData(pSkinnedMesh);
-//                PPolygonModelInstance pModelInstance = m_pLoadingPScene.addModelInstance(asset, new PMatrix());
-//            }
-//        }
-//        else if (getPolygonMeshCount() > 0)
-//        {
-//            if (m_ColladaNodes.size() > 0)
-//                populateSceneWithNodeHiearchy();
-//            else
-//                populateWithPolygonMeshInstances();
-//        }
-//        // Submit the geometry of every PPolygonMesh we encounter
-//        TreeTraverser.breadthFirst(m_pLoadingPScene, new PPolygonMeshAssemblingProcessor());
-//    }
-//
-//
-//    private void populateWithPolygonMeshInstances()
-//    {
-//        PPolygonMeshInstance pMeshInstance = null;
-//
-//        for (PPolygonMesh mesh : m_PolygonMeshes)
-//        {
-//            //  Create a MeshInstance.
-//            pMeshInstance = createMeshInstance(mesh, null, "Unnamed meshInstance from Collada.java : 597");
-//
-//            m_pLoadingPScene.addInstanceNode(pMeshInstance);
-//        }
-//    }
-
                 
     //  Gets the max number of weights.
     public int getMaxNumberOfWeights()
@@ -641,11 +601,6 @@ public class Collada
 
         return(null);
     }
-    
-
-    
-    
-
 
 //  ******************************
 //  ColladaCamera methods.
@@ -684,9 +639,6 @@ public class Collada
         return result;
     }
 
-    
-    
-
 //  ******************************
 //  ColladaSkin methods.
 //  ******************************
@@ -722,51 +674,79 @@ public class Collada
 
 
 //  ******************************
-//  ColladaMaterial methods.
+//  Collada Effect methods.
 //  ******************************
 
-    //  Adds a ColladaMaterial.
-    public void addColladaMaterial(PColladaMaterial pColladaMaterial)
+    //  Adds a Collada Effect
+    public void addColladaEffect(PColladaEffect colladaEffect)
     {
         //  Put the ColladaMaterial into the Materials HashMap.
-        m_Materials.put(pColladaMaterial.getName(), pColladaMaterial);
+        m_EffectMap.put(colladaEffect.getEffectIdentifier(), colladaEffect);
 
-        m_ColladaMaterials.add(pColladaMaterial);
+        m_EffectList.add(colladaEffect);
     }
-    
-    public PColladaMaterial getColladaMaterial(String materialName)
+
+    public PColladaEffect getColladaEffect(String effectName)
     {
-        return m_Materials.get(materialName);
+        return m_EffectMap.get(effectName);
+    }
+
+    //  Gets the number of ColladaMaterials.
+    public int getColladaEffectCount()
+    {
+        return(m_EffectList.size());
+    }
+
+    //  Gets the ColladaMaterial at the specified index.
+    public PColladaEffect getColladaEffect(int index)
+    {
+        return( (PColladaEffect)m_EffectList.get(index));
+    }
+
+    //  Finds the ColladaMaterial with the specified name.
+    public PColladaEffect findColladaEffectByIdentifier(String identifier)
+    {
+        //  First, attempt to find a ColladaMaterialInstance.
+        PColladaEffect result = m_EffectMap.get(identifier);
+        return result;
+    }
+
+    // Material management
+
+    //  Adds a ColladaMaterial.
+    public void addColladaMaterial(ColladaMaterial colladaMaterial)
+    {
+        //  Put the ColladaMaterial into the Materials HashMap.
+        m_MaterialMap.put(colladaMaterial.getID(), colladaMaterial);
+        m_MaterialList.add(colladaMaterial);
+    }
+
+    public ColladaMaterial getColladaMaterial(String materialName)
+    {
+        return m_MaterialMap.get(materialName);
     }
 
     //  Gets the number of ColladaMaterials.
     public int getColladaMaterialCount()
     {
-        return(m_ColladaMaterials.size());
+        return m_MaterialList.size();
     }
 
     //  Gets the ColladaMaterial at the specified index.
-    public PColladaMaterial getColladaMaterial(int index)
+    public ColladaMaterial getColladaMaterial(int index)
     {
-        return( (PColladaMaterial)m_ColladaMaterials.get(index));
+        return m_MaterialList.get(index);
     }
 
     //  Finds the ColladaMaterial with the specified name.
-    public PColladaMaterial findColladaMaterial(String name)
+    public ColladaMaterial findColladaMaterialByIdentifier(String identifier)
     {
         //  First, attempt to find a ColladaMaterialInstance.
-        PColladaMaterialInstance pColladaMaterialInstance = findColladaMaterialInstance(name);
-        if (pColladaMaterialInstance != null)
-            name = pColladaMaterialInstance.getMaterialName();// + "-fx";
-
-        //  Get the ColladaMaterial from the HashMap.
-        PColladaMaterial pColladaMaterial = m_Materials.get(name);
-
-        return(pColladaMaterial);
+        return m_MaterialMap.get(identifier);
     }
 
-    
-    
+
+
     
     
 
@@ -778,7 +758,7 @@ public class Collada
     public void addColladaMaterialInstance(PColladaMaterialInstance pColladaMaterialInstance)
     {
         //  Put the ColladaMaterialInstance into the MaterialInstances HashMap.
-        m_MaterialInstances.put(pColladaMaterialInstance.getInstanceName(), pColladaMaterialInstance);
+        m_MaterialInstances.put(pColladaMaterialInstance.getInstanceSymbolString(), pColladaMaterialInstance);
 
         m_ColladaMaterialInstances.add(pColladaMaterialInstance);
     }
@@ -796,10 +776,10 @@ public class Collada
     }
 
     //  Finds the ColladaMaterialInstance with the specified name.
-    public PColladaMaterialInstance findColladaMaterialInstance(String name)
+    public PColladaMaterialInstance findColladaMaterialInstanceBySymbol(String instanceSymbol)
     {
         //  Get the ColladaMaterialInstance from the HashMap.
-        return(m_MaterialInstances.get(name));
+        return(m_MaterialInstances.get(instanceSymbol));
     }
 
     
@@ -932,25 +912,25 @@ public class Collada
 
     public void dumpColladaNode(PColladaNode theNode)
     {
-        System.out.println("Node:  " + theNode.getName());
-        System.out.println("   Mesh:    " + theNode.getMeshName());
-        if (theNode.isJoint())
-            System.out.println("   Joint:   " + theNode.getJointName());
-
-        PColladaMaterialInstance pMaterialInstance = theNode.getMaterialInstance();
-        if (pMaterialInstance != null)
-        {
-            System.out.println("   MaterialInstance:");
-            System.out.println("      InstanceName:   " + pMaterialInstance.getInstanceName());
-            System.out.println("      MaterialName:   " + pMaterialInstance.getMaterialName());
-            System.out.println("      VertexInputs:");
-            for (int b=0; b<pMaterialInstance.getVertexInputCount(); b++)
-                System.out.println("         " + pMaterialInstance.getVertexInput(b));
-        }
-
-        // recurse
-        for (int i = 0; i < theNode.getChildNodeCount(); i++)
-            dumpColladaNode(theNode.getChildNode(i));
+//        System.out.println("Node:  " + theNode.getName());
+//        System.out.println("   Mesh:    " + theNode.getMeshName());
+//        if (theNode.isJoint())
+//            System.out.println("   Joint:   " + theNode.getJointName());
+//
+//        PColladaMaterialInstance pMaterialInstance = theNode.getMaterialInstance();
+//        if (pMaterialInstance != null)
+//        {
+//            System.out.println("   MaterialInstance:");
+//            System.out.println("      InstanceName:   " + pMaterialInstance.getInstanceSymbolString());
+//            System.out.println("      targetMaterialURL:   " + pMaterialInstance.getTargetMaterialURL());
+//            System.out.println("      VertexInputs:");
+//            for (int b=0; b<pMaterialInstance.getVertexInputCount(); b++)
+//                System.out.println("         " + pMaterialInstance.getVertexInput(b));
+//        }
+//
+//        // recurse
+//        for (int i = 0; i < theNode.getChildNodeCount(); i++)
+//            dumpColladaNode(theNode.getChildNode(i));
     }
 
 
@@ -1550,27 +1530,24 @@ public class Collada
 
         if (pColladaNode != null)
         {
-            PColladaMaterialInstance colladaMaterialInstance    = null;
-            PColladaMaterial colladaMaterial                    = null;
+            ColladaMaterial colladaMaterial    = null;
+            PColladaEffect colladaEffect                    = null;
             PMeshMaterial meshMat                               = null;
         
-            colladaMaterialInstance = pColladaNode.getMaterialInstance();
+            colladaMaterial = pColladaNode.getMaterial();
 
-            if (colladaMaterialInstance != null)
+            if (colladaMaterial != null)
             {
-                colladaMaterial = findColladaMaterial(colladaMaterialInstance.getMaterialName());
-                if (colladaMaterial != null)
+                colladaEffect = findColladaEffectByIdentifier(colladaMaterial.getInstanceEffectTargetURL());
+                try
                 {
-                    try
-                    {
-                        meshMat = colladaMaterial.createMeshMaterial();
-                        pMeshInstance.setMaterial(meshMat);
-                        pMeshInstance.setUseGeometryMaterial(false);
-                    }
-                    catch (Exception e)
-                    {
-                        e.printStackTrace();
-                    }
+                    meshMat = colladaEffect.createMeshMaterial();
+                    pMeshInstance.setMaterial(meshMat);
+                    pMeshInstance.setUseGeometryMaterial(false);
+                }
+                catch (Exception e)
+                {
+                    e.printStackTrace();
                 }
             }
         }

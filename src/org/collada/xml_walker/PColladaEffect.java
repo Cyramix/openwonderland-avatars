@@ -57,12 +57,12 @@ import org.w3c.dom.NodeList;
  *
  * @author Chris Nagle
  */
-public class PColladaMaterial
+public class PColladaEffect
 {
     private Collada         m_pCollada                  = null;
     private ProfileCOMMON   m_pProfileCommon            = null;
 
-    private String          m_Name                      = null;
+    private String          m_effectIdentifier          = null;
 
     private PColladaColor   m_EmissiveColor             = new PColladaColor();
     private PColladaColor   m_AmbientColor              = new PColladaColor();
@@ -97,7 +97,7 @@ public class PColladaMaterial
 
 
     //  Constructor.
-    public PColladaMaterial(Collada pCollada, ProfileCOMMON pProfileCommon)
+    public PColladaEffect(Collada pCollada, ProfileCOMMON pProfileCommon)
     {
         m_pCollada = pCollada;
         m_pProfileCommon = pProfileCommon;
@@ -105,18 +105,18 @@ public class PColladaMaterial
 
 
 
-    //  Gets the Material's name.
-    public String getName()
+    //  Gets the Material's ID
+    public String getEffectIdentifier()
     {
-        return m_Name;
+        return m_effectIdentifier;
     }
 
 
 
     //  Initializes the ColladaMaterial based on a blinn effect.
-    public void initialize(String name, Blinn pBlinn)
+    public void initialize(String effectIdentifier, Blinn pBlinn)
     {
-        m_Name = name;
+        m_effectIdentifier = effectIdentifier;
 
         m_EmissiveImageFilename = processColorOrTexture(pBlinn.getEmission(), m_EmissiveColor);
         m_AmbientImageFilename = processColorOrTexture(pBlinn.getAmbient(), m_AmbientColor);
@@ -139,9 +139,9 @@ public class PColladaMaterial
     }
 
     //  Initializes the ColladaMaterial based on a phong effect.
-    public void initialize(String name, Phong pPhong)
+    public void initialize(String effectIdentifier, Phong pPhong)
     {
-        m_Name = name;
+        m_effectIdentifier = effectIdentifier;
         
         m_EmissiveImageFilename = processColorOrTexture(pPhong.getEmission(), m_EmissiveColor);
         m_AmbientImageFilename = processColorOrTexture(pPhong.getAmbient(), m_AmbientColor);
@@ -159,9 +159,9 @@ public class PColladaMaterial
     }
 
     //  Initializes the ColladaMaterial based on a lambert effect.
-    public void initialize(String name, Lambert pLambert)
+    public void initialize(String effectIdentifier, Lambert pLambert)
     {
-        m_Name = name;
+        m_effectIdentifier = effectIdentifier;
 
         m_EmissiveImageFilename = processColorOrTexture(pLambert.getEmission(), m_EmissiveColor);
         m_AmbientImageFilename = processColorOrTexture(pLambert.getAmbient(), m_AmbientColor);
@@ -212,10 +212,10 @@ public class PColladaMaterial
     public PMeshMaterial createMeshMaterial()
     {
         PMeshMaterial result = null;
-        if (m_Name == null)
+        if (m_effectIdentifier == null)
             result = new PMeshMaterial("Untitled Material : PColladaMaterial.java :: createMeshMaterial()");
         else
-            result = new PMeshMaterial(m_Name);
+            result = new PMeshMaterial(m_effectIdentifier);
         // Colors!
         result.setEmissive(buildColorRGBA(m_EmissiveColor));
         result.setAmbient(buildColorRGBA(m_AmbientColor));

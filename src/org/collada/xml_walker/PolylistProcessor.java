@@ -57,8 +57,8 @@ public class PolylistProcessor extends Processor
     private int[] m_PolygonVertexCounts = null;
     private int[] m_PolygonIndices = null;
 
-    private String m_MaterialName = null;
-    private PColladaMaterial m_pColladaMaterial = null; 
+    private String m_materialInstanceSymbol = null;
+    private PColladaEffect m_effect = null;
 
 
 
@@ -79,12 +79,15 @@ public class PolylistProcessor extends Processor
         processPolygonIndices(pPolylist.getP());
     }
     
-    public void getMaterial(Polylist pPolylist)
+    public void getMaterial(Polylist polygonList)
     {
-        if (pPolylist.getMaterial() != null)
+        if (polygonList.getMaterial() != null)
         {
-            m_MaterialName = pPolylist.getMaterial();
-            m_pColladaMaterial = m_colladaRef.findColladaMaterial(m_MaterialName);
+
+            m_materialInstanceSymbol = polygonList.getMaterial();
+            PColladaMaterialInstance matInst = m_colladaRef.findColladaMaterialInstanceBySymbol(m_materialInstanceSymbol);
+            ColladaMaterial mat = m_colladaRef.findColladaMaterialByIdentifier(matInst.getTargetMaterialURL());
+            m_effect = m_colladaRef.findColladaEffectByIdentifier(mat.getInstanceEffectTargetURL());
         }
     }
 
@@ -219,10 +222,10 @@ public class PolylistProcessor extends Processor
 
 
         //System.out.println("PolyList.MaterialName:  " + m_MaterialName);
-        if (m_pColladaMaterial != null)
+        if (m_effect != null)
         {
             //  Create the Material to be assigned to the PolygonMesh.
-            PMeshMaterial pMaterial = m_pColladaMaterial.createMeshMaterial();
+            PMeshMaterial pMaterial = m_effect.createMeshMaterial();
             if (pMaterial != null)
             {
                 polyMesh.setNumberOfTextures(3); // hack code

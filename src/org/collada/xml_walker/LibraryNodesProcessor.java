@@ -150,9 +150,9 @@ public class LibraryNodesProcessor extends Processor
                             if (materialName.endsWith("ID"))
                                 materialName = materialName.substring(0, materialName.length()-2);
 
-                            PColladaMaterialInstance pMaterialInstance = m_colladaRef.findColladaMaterialInstance(materialName);
-
-                            pColladaNode.setMaterialInstance(pMaterialInstance);
+                            PColladaMaterialInstance pMaterialInstance = m_colladaRef.findColladaMaterialInstanceBySymbol(materialName);
+                            pColladaNode.setMaterial(m_colladaRef.findColladaMaterialByIdentifier(pMaterialInstance.getTargetMaterialURL()));
+//                            pColladaNode.setMaterialInstance(pMaterialInstance);
                         }
                     }
                 }

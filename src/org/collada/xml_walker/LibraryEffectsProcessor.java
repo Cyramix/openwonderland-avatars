@@ -53,13 +53,9 @@ public class LibraryEffectsProcessor extends Processor
 
     private void processEffect(Effect pEffect)
     {
-        String materialName = pEffect.getId();
-        JAXBElement pJAXBElement;
-        ProfileCOMMON pProfileCOMMON;
-        
-        int indexOfMaterialNameEnd = materialName.lastIndexOf("-");
-        if (indexOfMaterialNameEnd != -1)
-            materialName = materialName.substring(0, indexOfMaterialNameEnd);
+        String effectIdentifier = pEffect.getId();
+        JAXBElement pJAXBElement = null;
+        ProfileCOMMON pProfileCOMMON = null;
 
         pJAXBElement = (JAXBElement)pEffect.getFxProfileAbstracts().get(0);
         
@@ -69,11 +65,11 @@ public class LibraryEffectsProcessor extends Processor
         {
             pProfileCOMMON = (ProfileCOMMON)pJAXBElement.getValue();
 
-            processProfileCOMMON(pProfileCOMMON, materialName);
+            processProfileCOMMON(pProfileCOMMON, effectIdentifier);
         }
     }
     
-    private void processProfileCOMMON(ProfileCOMMON pProfileCommon, String materialName)
+    private void processProfileCOMMON(ProfileCOMMON pProfileCommon, String effectIdentifier)
     {
         ProfileCOMMON.Technique pTechnique = pProfileCommon.getTechnique();
         if (pTechnique == null)
@@ -81,23 +77,23 @@ public class LibraryEffectsProcessor extends Processor
 
         //  Process the Blinn type of Material if the Profile contains it.
         if (pTechnique.getBlinn() != null)
-            processBlinn(pProfileCommon, pTechnique.getBlinn(), materialName);
+            processBlinn(pProfileCommon, pTechnique.getBlinn(), effectIdentifier);
 
         //  Otherwise, process the Phong type of Material if the Profile contains it.
         else if (pTechnique.getPhong() != null)
-            processPhong(pProfileCommon, pTechnique.getPhong(), materialName);
+            processPhong(pProfileCommon, pTechnique.getPhong(), effectIdentifier);
 
         //  Otherwise, process the Lambert type of Material if the Profile contains it.
         if (pTechnique.getLambert() != null)
-            processLambert(pProfileCommon, pTechnique.getLambert(), materialName);
+            processLambert(pProfileCommon, pTechnique.getLambert(), effectIdentifier);
         
         for (Extra extra : pTechnique.getExtras())
-            processExtra(pProfileCommon, extra, materialName);
+            processExtra(extra, effectIdentifier);
     }
 
-    private void processExtra(ProfileCOMMON profile, Extra extra, String materialName)
+    private void processExtra(Extra extra, String effectIdentifier)
     {
-        PColladaMaterial colladaMaterial = m_colladaRef.getColladaMaterial(materialName);
+        PColladaEffect colladaMaterial = m_colladaRef.getColladaEffect(effectIdentifier);
         if (colladaMaterial != null)
         {
             colladaMaterial.applyBumpMappingData(extra);
@@ -110,40 +106,34 @@ public class LibraryEffectsProcessor extends Processor
     }
 
     
-    private void processBlinn(ProfileCOMMON pProfileCommon, Blinn pBlinn, String materialName)
+    private void processBlinn(ProfileCOMMON pProfileCommon, Blinn pBlinn, String effectIdentifier)
     {
-       // System.out.println("Material Blinn '" + materialName + "'");
-       
         //  Create a ColladaMaterial.
-        PColladaMaterial pColladaMaterial = new PColladaMaterial(m_colladaRef, pProfileCommon);
+        PColladaEffect blinnEffect = new PColladaEffect(m_colladaRef, pProfileCommon);
         
-        pColladaMaterial.initialize(materialName, pBlinn);
+        blinnEffect.initialize(effectIdentifier, pBlinn);
 
-        m_colladaRef.addColladaMaterial(pColladaMaterial);
+        m_colladaRef.addColladaEffect(blinnEffect);
     }
     
-    private void processPhong(ProfileCOMMON pProfileCommon, Phong pPhong, String materialName)
+    private void processPhong(ProfileCOMMON pProfileCommon, Phong pPhong, String effectIdentifier)
     {
-        //System.out.println("Material Phong '" + materialName + "'");
-
         //  Create a ColladaMaterial.
-        PColladaMaterial pColladaMaterial = new PColladaMaterial(m_colladaRef, pProfileCommon);
+        PColladaEffect phongEffect = new PColladaEffect(m_colladaRef, pProfileCommon);
         
-        pColladaMaterial.initialize(materialName, pPhong);
+        phongEffect.initialize(effectIdentifier, pPhong);
 
-        m_colladaRef.addColladaMaterial(pColladaMaterial);
+        m_colladaRef.addColladaEffect(phongEffect);
     }
 
-    private void processLambert(ProfileCOMMON pProfileCommon, Lambert pLambert, String materialName)
+    private void processLambert(ProfileCOMMON pProfileCommon, Lambert pLambert, String effectIdentifier)
     {
-        //System.out.println("Material Lambert '" + materialName + "'");
-
         //  Create a ColladaMaterial.
-        PColladaMaterial pColladaMaterial = new PColladaMaterial(m_colladaRef, pProfileCommon);
+        PColladaEffect lambertEffect = new PColladaEffect(m_colladaRef, pProfileCommon);
         
-        pColladaMaterial.initialize(materialName, pLambert);
+        lambertEffect.initialize(effectIdentifier, pLambert);
 
-        m_colladaRef.addColladaMaterial(pColladaMaterial);
+        m_colladaRef.addColladaEffect(lambertEffect);
     }
 }
 

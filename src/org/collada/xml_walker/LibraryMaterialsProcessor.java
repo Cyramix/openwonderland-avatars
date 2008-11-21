@@ -23,6 +23,7 @@ import org.collada.colladaschema.LibraryMaterials;
 import org.collada.colladaschema.Material;
 
 import imi.loaders.collada.Collada;
+import org.collada.colladaschema.InstanceEffect;
 
 
 
@@ -49,16 +50,28 @@ public class LibraryMaterialsProcessor extends Processor {
     }
 
 
-    private void processMaterial(Material pMaterial)
+    private void processMaterial(Material theMaterial)
     {
-        String instanceName = pMaterial.getName();
-        String materialName = pMaterial.getInstanceEffect().getUrl();
-        
-        PColladaMaterialInstance pMaterialInstance = new PColladaMaterialInstance();
-        
-        pMaterialInstance.setInstanceName(instanceName);
-        pMaterialInstance.setMaterialName(materialName);
-        
-        m_colladaRef.addColladaMaterialInstance(pMaterialInstance);
+        ColladaMaterial colladaMaterial = new ColladaMaterial(theMaterial.getName(),
+                                                                theMaterial.getId(),
+                                                                theMaterial.getAsset(),
+                                                                theMaterial.getInstanceEffect(),
+                                                                theMaterial.getExtras());
+        m_colladaRef.addColladaMaterial(colladaMaterial);
+//
+//        PColladaEffect colladaMaterial = new PColladaEffect(m_colladaRef, effect.);
+//        m_colladaRef.addColladaMaterial(pColladaMaterial);
+
+        // THESE ARE NOT INSTANCES
+//
+//        String instanceName = pMaterial.getName();
+//        String effectURL = pMaterial.getInstanceEffect().getUrl();
+//
+//        PColladaMaterialInstance pMaterialInstance = new PColladaMaterialInstance();
+//
+//        pMaterialInstance.setInstanceSymbolString(instanceName);
+//        pMaterialInstance.setTargetMaterialURL(effectURL);
+//
+//        m_colladaRef.addColladaMaterialInstance(pMaterialInstance);
     }
 }

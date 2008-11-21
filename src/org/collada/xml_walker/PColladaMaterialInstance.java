@@ -29,8 +29,8 @@ import java.util.ArrayList;
  */
 public class PColladaMaterialInstance
 {
-    private String              m_InstanceName = null;
-    private String              m_MaterialName = null;
+    private String              m_instanceSymbol = null;
+    private String              m_targetMaterialURL = null;
 
     private ArrayList<String>   m_VertexInputs = null;
 
@@ -44,41 +44,16 @@ public class PColladaMaterialInstance
 
     
     //  Gets the Instance Name.
-    public String getInstanceName()
+    public String getInstanceSymbolString()
     {
-        return m_InstanceName;
+        return m_instanceSymbol;
     }
 
     //  Sets the InstanceName.
-    public void setInstanceName(String instanceName)
+    public void setInstanceSymbolString(String symbolString)
     {
-        m_InstanceName = instanceName;
+        m_instanceSymbol = symbolString;
     }
-
-    //  Gets the MaterialName.
-    public String getMaterialName()
-    {
-        return(m_MaterialName);
-    }
-
-    /**
-     * Set the material name. If the material is a link (starts with '#'), the
-     * first character will be removed.
-     * @param materialName
-     */
-    public void setMaterialName(String materialName)
-    {
-        m_MaterialName = materialName;
-        if (m_MaterialName.startsWith("#"))
-            m_MaterialName = m_MaterialName.substring(1, m_MaterialName.length());
-
-        int indexOfMaterialNameEnd = m_MaterialName.lastIndexOf("-"); // <-- What is this hack?
-        if (indexOfMaterialNameEnd != -1)
-            m_MaterialName = m_MaterialName.substring(0, indexOfMaterialNameEnd);
-
-    }
-
-
 
     //  Adds a VertexInput.
     public void addVertexInput(String vertexInput)
@@ -106,6 +81,18 @@ public class PColladaMaterialInstance
             return null;
     }
 
+    public String getTargetMaterialURL()
+    {
+        return m_targetMaterialURL;
+    }
+
+    public void setTargetMaterialURL(String effectURL)
+    {
+        m_targetMaterialURL = effectURL;
+        // dereference.
+        if (m_targetMaterialURL.startsWith("#"))
+            m_targetMaterialURL = m_targetMaterialURL.substring(1);
+    }
 }
 
 

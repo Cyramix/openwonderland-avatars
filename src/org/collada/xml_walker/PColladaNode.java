@@ -44,7 +44,8 @@ public class PColladaNode
     private String                      m_ControllerName = null;
     private ArrayList<PColladaNode>     m_ChildNodes = null;
     private ArrayList<String>           m_skeletonNames = null;
-    private PColladaMaterialInstance    m_pMaterialInstance = null;
+    //private PColladaMaterialInstance    m_pMaterialInstance = null;
+    private ColladaMaterial             m_colladaMaterial = null;
 
 
 
@@ -286,9 +287,9 @@ public class PColladaNode
      * 
      * @return PColladaMaterialInstance
      */
-    public PColladaMaterialInstance getMaterialInstance()
+    public ColladaMaterial getMaterial()
     {
-        return m_pMaterialInstance;
+        return m_colladaMaterial;
     }
     
     /**
@@ -296,9 +297,9 @@ public class PColladaNode
      * 
      * @param PColladaMaterialInstance pMaterialInstance
      */
-    public void setMaterialInstance(PColladaMaterialInstance pMaterialInstance)
+    public void setMaterial(ColladaMaterial material)
     {
-        m_pMaterialInstance = pMaterialInstance;
+        m_colladaMaterial = material;
     }
 
 

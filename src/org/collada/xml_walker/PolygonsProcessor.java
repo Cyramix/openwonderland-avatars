@@ -27,7 +27,7 @@ public class PolygonsProcessor extends Processor
     /** Convenience reference to the processor that spawned us **/
     private MeshProcessor       m_meshProcessor = null;
     /** Track the material **/
-    private PColladaMaterial    m_meshMaterial = null;
+    private PColladaEffect    m_meshEffect = null;
     /** List of semantics associated with the data pool **/
     private ArrayList<VertexDataSemantic> m_VertexDataSemantics = new ArrayList<VertexDataSemantic>();
 
@@ -60,7 +60,12 @@ public class PolygonsProcessor extends Processor
         m_polyCount = polygonsData.getCount().intValue();
         // Grab the material
         if (polygonsData.getMaterial() != null)
-            m_meshMaterial = m_colladaRef.findColladaMaterial(polygonsData.getMaterial());
+        { 
+            String instanceSymbol = polygonsData.getMaterial();
+            PColladaMaterialInstance materialInstance = m_colladaRef.findColladaMaterialInstanceBySymbol(instanceSymbol);
+            ColladaMaterial material = m_colladaRef.findColladaMaterialByIdentifier(materialInstance.getTargetMaterialURL());
+            m_meshEffect = m_colladaRef.findColladaEffectByIdentifier(material.getInstanceEffectTargetURL());
+        }
 
         buildVertexDataSemanticArray(polygonsData);
         grabSemanticReferences();
@@ -179,10 +184,10 @@ public class PolygonsProcessor extends Processor
             polyMesh.endBatch();
         }
 
-        if (m_meshMaterial != null)
+        if (m_meshEffect != null)
         {
             //  Create the Material to be assigned to the PolygonMesh.
-            PMeshMaterial pMaterial = m_meshMaterial.createMeshMaterial();
+            PMeshMaterial pMaterial = m_meshEffect.createMeshMaterial();
             if (pMaterial != null)
             {
                 polyMesh.setNumberOfTextures(3); // hack code

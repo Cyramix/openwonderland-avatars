@@ -112,6 +112,8 @@ public class LibraryVisualScenesProcessor extends Processor
 
         colladaNode.setName(currentNode.getName());
 
+        readBindMaterials(colladaNode, currentNode);
+
         //  Process the assigned InstanceControllers.
         processInstanceControllers(colladaNode, currentNode);
 
@@ -131,11 +133,6 @@ public class LibraryVisualScenesProcessor extends Processor
 
         }
 
-
-        //  Read in the Material associated with the Bone.
-        readNodeMaterial(colladaNode, currentNode);
-
-
         //  Read in the MeshInstance information for the Node.
         readNodeMeshInstance(colladaNode, currentNode);
 
@@ -148,8 +145,6 @@ public class LibraryVisualScenesProcessor extends Processor
         //  **********************
         if (currentNode.getNodes() != null)
         {
-            PColladaNode pChildColladaNode;
-                    
             for (Node kid : currentNode.getNodes())
             {
                 PColladaNode newNode = new PColladaNode();
@@ -160,7 +155,6 @@ public class LibraryVisualScenesProcessor extends Processor
 
         return true;
     }
-
 
     private void processInstanceControllers(PColladaNode colladaNode, Node currentNode)
     {
@@ -179,7 +173,10 @@ public class LibraryVisualScenesProcessor extends Processor
                 controllerName = controllerName.substring(0, controllerName.length()-5);
 
             colladaNode.setControllerName(controllerName);
-
+            // handle the bind material
+            List<InstanceMaterial> materialList = instController.getBindMaterial().getTechniqueCommon().getInstanceMaterials();
+//            if (materialList != null && materialList.size() > 0)
+//                bindMaterial = materialList.get(0);
             //  Loop through the skeletons.
             for (String skeletonName : instController.getSkeletons())
             {
@@ -275,7 +272,7 @@ public class LibraryVisualScenesProcessor extends Processor
         }
     }
 
-    private void readNodeMaterial(PColladaNode colladaNode, Node standardNode)
+    private void readBindMaterials(PColladaNode colladaNode, Node standardNode)
     {
         TechniqueCommon commonTech = null;
 
@@ -308,25 +305,24 @@ public class LibraryVisualScenesProcessor extends Processor
     private void processNodeMaterial(PColladaNode pColladaNode, TechniqueCommon pTechniqueCommon)
     {
         PColladaMaterialInstance    pMaterialInstance = null;
-        String                      instanceName = null;
-        String                      materialName = null;
+        String                      materialSymbol = null;
+        String                      materialTargetURL = null;
     
         
         for (InstanceMaterial instMat : pTechniqueCommon.getInstanceMaterials())
         {
-            instanceName = instMat.getSymbol();
-            materialName = instMat.getTarget();
+            materialSymbol = instMat.getSymbol();
+            materialTargetURL = instMat.getTarget();
 
             pMaterialInstance = new PColladaMaterialInstance();
 
-            pMaterialInstance.setInstanceName(instanceName);
-            pMaterialInstance.setMaterialName(materialName);
-
+            pMaterialInstance.setInstanceSymbolString(materialSymbol);
+            pMaterialInstance.setTargetMaterialURL(materialTargetURL);
             m_colladaRef.addColladaMaterialInstance(pMaterialInstance);
 
 
             //  Assign the MaterialInstance to the ColladaNode.
-            pColladaNode.setMaterialInstance(pMaterialInstance);
+            pColladaNode.setMaterial(m_colladaRef.findColladaMaterialByIdentifier(pMaterialInstance.getTargetMaterialURL()));
 
             if (instMat.getBindVertexInputs() != null)
             {                
@@ -353,6 +349,8 @@ public class LibraryVisualScenesProcessor extends Processor
 
                 colladaNode.setMeshURL(instancedGeometryURL);
                 colladaNode.setMeshName(pNode.getName());
+//                ColladaMaterial colladaMaterial = m_colladaRef.findColladaMaterialByIdentifier(bindMaterial.getTarget().substring(1));
+//                colladaNode.setMaterial(colladaMaterial);
             //}
         }
     }

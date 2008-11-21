@@ -56,8 +56,8 @@ public class TrianglesProcessor extends Processor
 
     private int [] m_TriangleIndices = null;
 
-    private String m_MaterialName = null;
-    private PColladaMaterial m_pColladaMaterial = null; 
+    private String m_InstanceMaterialSymbol = null;
+    private PColladaEffect m_effect = null;
 
 
 
@@ -76,7 +76,7 @@ public class TrianglesProcessor extends Processor
         if (pParent instanceof MeshProcessor)
             m_pMeshProcessor = (MeshProcessor)pParent;
 
-        getMaterial(pTriangles);
+        assignMaterial(pTriangles);
 
         buildVertexDataSemanticArray(pTriangles);
         cacheVertexDataSemantics();
@@ -84,49 +84,20 @@ public class TrianglesProcessor extends Processor
         processTriangles(pTriangles.getP());
     }
 
-    
-    boolean doesMaterialContainTexture()
-    {
-        if (m_pColladaMaterial == null)
-            return(false);
-
-        if (m_pColladaMaterial.getEmissiveImageFilename().length() > 0)
-            return(true);
-
-        if (m_pColladaMaterial.getAmbientImageFilename().length() > 0)
-            return(true);
-
-        if (m_pColladaMaterial.getDiffuseImageFilename().size() > 0)
-            return(true);
-
-        if (m_pColladaMaterial.getSpecularImageFilename().length() > 0)
-            return(true);
-
-        if (m_pColladaMaterial.getReflectiveImageFilename().length() > 0)
-            return(true);
-
-        if (m_pColladaMaterial.getBumpMapImageFilename().length() > 0)
-            return(true);
-
-        if (m_pColladaMaterial.getNormalMapImageFilename().length() > 0)
-            return(true);
-
-        return(false);
-    }
-    
-
     /**
      * Gets the Material assigned to the Triangles.
      * 
      * @param pTriangles
      */
-    public void getMaterial(Triangles pTriangles)
+    public void assignMaterial(Triangles trianglesData)
     {
-        m_MaterialName = null;
-        if (pTriangles.getMaterial() != null)
+        m_InstanceMaterialSymbol = null;
+        if (trianglesData.getMaterial() != null)
         {
-            m_MaterialName = pTriangles.getMaterial();
-            m_pColladaMaterial = m_colladaRef.findColladaMaterial(m_MaterialName);
+            m_InstanceMaterialSymbol = trianglesData.getMaterial();
+            PColladaMaterialInstance materialInstance = m_colladaRef.findColladaMaterialInstanceBySymbol(m_InstanceMaterialSymbol);
+            ColladaMaterial material = m_colladaRef.findColladaMaterialByIdentifier(materialInstance.getTargetMaterialURL());
+            m_effect = m_colladaRef.findColladaEffectByIdentifier(material.getInstanceEffectTargetURL());
         }
     }
 
@@ -314,10 +285,9 @@ public class TrianglesProcessor extends Processor
             pPolygonMesh.endBatch();
         }
 
-        if (m_pColladaMaterial != null)
+        if (m_effect != null)
         {
-            //  Create the Material to be assigned to the PolygonMesh.
-            PMeshMaterial pMaterial = m_pColladaMaterial.createMeshMaterial();
+            PMeshMaterial pMaterial = m_effect.createMeshMaterial();
             if (pMaterial != null)
             {
                 pPolygonMesh.setNumberOfTextures(3); // at least three....
