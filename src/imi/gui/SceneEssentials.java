@@ -28,7 +28,6 @@ import imi.loaders.repository.AssetInitializer;
 import imi.loaders.repository.SharedAsset;
 import imi.loaders.repository.SharedAsset.SharedAssetType;
 import imi.scene.JScene;
-import imi.scene.PJoint;
 import imi.scene.PMatrix;
 import imi.scene.PNode;
 import imi.scene.PScene;
@@ -42,6 +41,8 @@ import imi.scene.polygonmodel.skinned.PPolygonSkinnedMeshInstance;
 import imi.scene.polygonmodel.skinned.SkinnedMeshJoint;
 import imi.scene.processors.FlexibleCameraProcessor;
 import imi.scene.processors.SkinnedAnimationProcessor;
+import imi.scene.shader.programs.VertDeformerWithNormalMapping;
+import imi.scene.shader.programs.VertDeformerWithSpecAndNormalMap;
 import imi.scene.shader.programs.VertexDeformer;
 import imi.scene.utils.tree.MeshInstanceSearchProcessor;
 import imi.scene.utils.tree.TreeTraverser;
@@ -661,7 +662,7 @@ public class SceneEssentials {
             
         pProcessor.execute(pRootInstruction);
         
-        skeleton.setShader(new VertexDeformer(worldManager));
+        skeleton.setShader(new VertDeformerWithNormalMapping(worldManager));
         ((ProcessorCollectionComponent) currentEntity.getComponent(ProcessorCollectionComponent.class)).addProcessor(new SkinnedAnimationProcessor(skeleton));
         currentPScene.setDirty(true, true);
         
@@ -698,7 +699,8 @@ public class SceneEssentials {
         pRootInstruction.addInstruction(InstructionNames.addAttachment, data[0], szName, tempSolution);
         pProcessor.execute(pRootInstruction);
 
-        skeleton.setShader(new VertexDeformer(worldManager));
+        skeleton.setShader(new VertDeformerWithNormalMapping(worldManager));
+        currentPScene.setDirty(true, true);
         
         int hairCheck = data[3].indexOf("Hair");
         if (hairCheck != -1) {
@@ -777,7 +779,7 @@ public class SceneEssentials {
                         pProcessor.execute(pRootInstruction);
                     }
                     
-                    skel.setShader(new VertexDeformer(worldManager));
+                    skel.setShader(new VertDeformerWithSpecAndNormalMap(worldManager));
                     ((ProcessorCollectionComponent)currentEntity.getComponent(ProcessorCollectionComponent.class)).addProcessor(new SkinnedAnimationProcessor(skel));
                     currentPScene.setDirty(true, true);
                     setCameraOnModel();
@@ -849,7 +851,7 @@ public class SceneEssentials {
                         pProcessor.execute(pRootInstruction);
                     }
                     
-                    skel.setShader(new VertexDeformer(worldManager));
+                    skel.setShader(new VertDeformerWithNormalMapping(worldManager));
                     ((ProcessorCollectionComponent)currentEntity.getComponent(ProcessorCollectionComponent.class)).addProcessor(new SkinnedAnimationProcessor(skel));
                     currentPScene.setDirty(true, true);
                     setCameraOnModel();

@@ -697,6 +697,42 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
         jLabel_CurrSpecs.setText(selection);
     }
 
+    public void applyAllBody(boolean isViewMode) {
+        setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+
+        if (!isViewMode) {
+            loadHead(isViewMode);
+            loadUpperBody(isViewMode);
+            loadLowerBody(isViewMode);
+            loadShoes(isViewMode);
+        }
+
+        setCursor(null);
+    }
+
+    public void applyAllHair(boolean isViewMode) {
+        setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+
+        if (!isViewMode) {
+            loadHead1(isViewMode);
+            loadHair(isViewMode);
+            loadFacialHair(isViewMode);
+        }
+
+        setCursor(null);
+    }
+
+    public void applyAllAcc(boolean isViewMode) {
+        setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+
+        if (!isViewMode) {
+            loadHats(m_isViewMode);
+            loadSpecs(m_isViewMode);
+        }
+
+        setCursor(null);
+    }
+
     public void loadDefaultAvatar() {
         if (!jButton_Male.isEnabled())
             return;
@@ -817,6 +853,57 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
         m_meshes.put(iRegion, geometry);
     }
 
+    public void maleAvatarMode() {
+        setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        m_gender = 1;
+        m_isViewMode = false;
+        jButton_ApplyAllHead.setEnabled(true);
+        jButton_ApplyAllBody.setEnabled(true);
+        jButton_ApplyAllAcc.setEnabled(true);
+
+        InitListBoxes(m_isViewMode);
+        m_sceneData.setDefaultLoad(true);
+        loadDefaultAvatar();
+
+        jPanel_MainBody.setVisible(true);
+        jPanel_MainHead.setVisible(true);
+        jPanel_MainAcc.setVisible(true);
+        setCursor(null);
+    }
+
+    public void femaleAvatarMode() {
+        setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        m_gender = 2;
+        m_isViewMode = false;
+        jButton_ApplyAllHead.setEnabled(true);
+        jButton_ApplyAllBody.setEnabled(true);
+        jButton_ApplyAllAcc.setEnabled(true);
+
+        InitListBoxes(m_isViewMode);
+        m_sceneData.setDefaultLoad(false);
+        loadDefaultAvatar();
+
+        jPanel_MainBody.setVisible(true);
+        jPanel_MainHead.setVisible(true);
+        jPanel_MainAcc.setVisible(true);
+        setCursor(null);
+    }
+
+    public void viewMode() {
+        setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        m_isViewMode = true;
+        jButton_ApplyAllHead.setEnabled(false);
+        jButton_ApplyAllBody.setEnabled(false);
+        jButton_ApplyAllAcc.setEnabled(false);
+
+        InitListBoxes(m_isViewMode);
+
+        jPanel_MainBody.setVisible(true);
+        jPanel_MainHead.setVisible(true);
+        jPanel_MainAcc.setVisible(true);
+        setCursor(null);
+    }
+
     /** Accessors */
     public SceneEssentials getSceneData() {
         return m_sceneData;
@@ -911,23 +998,17 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
         jList_Specs = new javax.swing.JList();
         jButton_ApplyAllAcc = new javax.swing.JButton();
 
-        setMaximumSize(new java.awt.Dimension(2222222, 2222222));
+        setMaximumSize(new java.awt.Dimension(320, 2222222));
         setMinimumSize(new java.awt.Dimension(320, 480));
         setPreferredSize(new java.awt.Dimension(320, 480));
         setLayout(new java.awt.GridBagLayout());
 
         jButton_Male.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                m_gender = 1;
-                setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-                m_isViewMode = false;
-                InitListBoxes(m_isViewMode);
-                m_sceneData.setDefaultLoad(true);
-                loadDefaultAvatar();
-                setCursor(null);
+                maleAvatarMode();
             }
         });
-        jButton_Male.setFont(new java.awt.Font("Lucida Grande", 0, 10)); // NOI18N
+        jButton_Male.setFont(new java.awt.Font("Lucida Grande", 0, 10));
         jButton_Male.setText("Male Avatar");
         jButton_Male.setMaximumSize(new java.awt.Dimension(100, 25));
         jButton_Male.setMinimumSize(new java.awt.Dimension(100, 25));
@@ -940,13 +1021,10 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
 
         jButton_ModelViewer.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-                m_isViewMode = true;
-                InitListBoxes(m_isViewMode);
-                setCursor(null);
+                viewMode();
             }
         });
-        jButton_ModelViewer.setFont(new java.awt.Font("Lucida Grande", 0, 10)); // NOI18N
+        jButton_ModelViewer.setFont(new java.awt.Font("Lucida Grande", 0, 10));
         jButton_ModelViewer.setText("Model View");
         jButton_ModelViewer.setMaximumSize(new java.awt.Dimension(100, 25));
         jButton_ModelViewer.setMinimumSize(new java.awt.Dimension(100, 25));
@@ -959,16 +1037,10 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
 
         jButton_Female.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                m_gender = 2;
-                setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-                m_isViewMode = false;
-                InitListBoxes(m_isViewMode);
-                m_sceneData.setDefaultLoad(false);
-                loadDefaultAvatar();
-                setCursor(null);
+                femaleAvatarMode();
             }
         });
-        jButton_Female.setFont(new java.awt.Font("Lucida Grande", 0, 10)); // NOI18N
+        jButton_Female.setFont(new java.awt.Font("Lucida Grande", 0, 10));
         jButton_Female.setText("Female Avatar");
         jButton_Female.setMaximumSize(new java.awt.Dimension(100, 25));
         jButton_Female.setMinimumSize(new java.awt.Dimension(100, 25));
@@ -981,6 +1053,7 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
         gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
         add(jButton_Female, gridBagConstraints);
 
+        jTabbedPane_Options.setMaximumSize(new java.awt.Dimension(320, 32767));
         jTabbedPane_Options.setPreferredSize(new java.awt.Dimension(320, 450));
 
         jPanel_MainBody.setMaximumSize(new java.awt.Dimension(320, 450));
@@ -1021,7 +1094,7 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
         jScrollPane_Heads.setPreferredSize(new java.awt.Dimension(200, 55));
 
         jList_Heads.setModel(new javax.swing.AbstractListModel() {
-            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
+            String[] strings = { "Please choose Male Avatar, Female Avatar or Model View" };
             public int getSize() { return strings.length; }
             public Object getElementAt(int i) { return strings[i]; }
         });
@@ -1075,7 +1148,7 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
         jScrollPane_UpperBody.setPreferredSize(new java.awt.Dimension(200, 55));
 
         jList_UpperBody.setModel(new javax.swing.AbstractListModel() {
-            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
+            String[] strings = { "N/A" };
             public int getSize() { return strings.length; }
             public Object getElementAt(int i) { return strings[i]; }
         });
@@ -1129,7 +1202,7 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
         jScrollPane_LowerBody.setPreferredSize(new java.awt.Dimension(200, 55));
 
         jList_LowerBody.setModel(new javax.swing.AbstractListModel() {
-            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
+            String[] strings = { "N/A" };
             public int getSize() { return strings.length; }
             public Object getElementAt(int i) { return strings[i]; }
         });
@@ -1183,7 +1256,7 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
         jScrollPane_Shoes.setPreferredSize(new java.awt.Dimension(200, 55));
 
         jList_Shoes.setModel(new javax.swing.AbstractListModel() {
-            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
+            String[] strings = { "N/A" };
             public int getSize() { return strings.length; }
             public Object getElementAt(int i) { return strings[i]; }
         });
@@ -1200,12 +1273,7 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
 
         jButton_ApplyAllBody.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-                loadHead(m_isViewMode);
-                loadUpperBody(m_isViewMode);
-                loadLowerBody(m_isViewMode);
-                loadShoes(m_isViewMode);
-                setCursor(null);
+                applyAllBody(m_isViewMode);
             }
         });
         jButton_ApplyAllBody.setText("Apply All");
@@ -1216,6 +1284,8 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
         gridBagConstraints.gridheight = java.awt.GridBagConstraints.REMAINDER;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         jPanel_MainBody.add(jButton_ApplyAllBody, gridBagConstraints);
+
+        jPanel_MainBody.setVisible(false);
 
         jTabbedPane_Options.addTab("Body", jPanel_MainBody);
 
@@ -1260,7 +1330,7 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
         jScrollPane_Heads1.setPreferredSize(new java.awt.Dimension(230, 55));
 
         jList_Heads1.setModel(new javax.swing.AbstractListModel() {
-            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
+            String[] strings = { "N/A" };
             public int getSize() { return strings.length; }
             public Object getElementAt(int i) { return strings[i]; }
         });
@@ -1336,7 +1406,7 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
         jScrollPane_Hair.setPreferredSize(new java.awt.Dimension(230, 55));
 
         jList_Hair.setModel(new javax.swing.AbstractListModel() {
-            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
+            String[] strings = { "N/A" };
             public int getSize() { return strings.length; }
             public Object getElementAt(int i) { return strings[i]; }
         });
@@ -1393,7 +1463,7 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
         jScrollPane_FacialHair.setPreferredSize(new java.awt.Dimension(230, 55));
 
         jList_FacialHair.setModel(new javax.swing.AbstractListModel() {
-            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
+            String[] strings = { "N/A" };
             public int getSize() { return strings.length; }
             public Object getElementAt(int i) { return strings[i]; }
         });
@@ -1450,11 +1520,7 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
 
         jButton_ApplyAllHead.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-                loadHead1(m_isViewMode);
-                loadHair(m_isViewMode);
-                loadFacialHair(m_isViewMode);
-                setCursor(null);
+                applyAllHair(m_isViewMode);
             }
         });
         jButton_ApplyAllHead.setText("Apply All");
@@ -1464,6 +1530,8 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
         gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         jPanel_MainHead.add(jButton_ApplyAllHead, gridBagConstraints);
+
+        jPanel_MainHead.setVisible(false);
 
         jTabbedPane_Options.addTab("Head", jPanel_MainHead);
 
@@ -1511,7 +1579,7 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
         jScrollPane_Hats.setPreferredSize(new java.awt.Dimension(230, 55));
 
         jList_Hats.setModel(new javax.swing.AbstractListModel() {
-            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
+            String[] strings = { "N/A" };
             public int getSize() { return strings.length; }
             public Object getElementAt(int i) { return strings[i]; }
         });
@@ -1567,7 +1635,7 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
         jScrollPane_Specs.setPreferredSize(new java.awt.Dimension(230, 55));
 
         jList_Specs.setModel(new javax.swing.AbstractListModel() {
-            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
+            String[] strings = { "N/A" };
             public int getSize() { return strings.length; }
             public Object getElementAt(int i) { return strings[i]; }
         });
@@ -1583,10 +1651,7 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
 
         jButton_ApplyAllAcc.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-                loadHats(m_isViewMode);
-                loadSpecs(m_isViewMode);
-                setCursor(null);
+                applyAllAcc(m_isViewMode);
             }
         });
         jButton_ApplyAllAcc.setText("Apply All");
@@ -1597,6 +1662,8 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         jPanel_MainAcc.add(jButton_ApplyAllAcc, gridBagConstraints);
+
+        jPanel_MainAcc.setVisible(false);
 
         jTabbedPane_Options.addTab("Acc", jPanel_MainAcc);
 
