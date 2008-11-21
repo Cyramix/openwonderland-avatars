@@ -99,8 +99,8 @@ public class NinjaControlScheme extends InputScheme
                         int deltaY = currentMouseY - lastMouseY;
                         
                         // Translate to input offset
-                        offset.x = deltaX * -0.025f;
-                        offset.z = deltaY * -0.025f;
+                        offset.x = deltaX * -0.0075f;
+                        offset.z = deltaY * -0.0075f;
                         
                         // Set the last
                         lastMouseX    = me.getX();
@@ -115,7 +115,10 @@ public class NinjaControlScheme extends InputScheme
                             offset.y   = scroll * -0.05f;
                         }
                     }
-                                        
+
+                    if (me.getID() == MouseEvent.MOUSE_PRESSED && me.getButton() == MouseEvent.BUTTON2)
+                        ninjaTeam.get(currentNinja).getArm().toggleManualDriveReachUp();
+                    
                     ninjaTeam.get(currentNinja).getArm().addInputOffset(offset);
                 }
             }

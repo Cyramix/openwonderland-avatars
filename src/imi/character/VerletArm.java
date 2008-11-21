@@ -45,34 +45,60 @@ public class VerletArm
     
     private Vector3f currentInputOffset = new Vector3f();
     
-    public VerletArm(SkinnedMeshJoint shoulder, PPolygonModelInstance modelInstance) 
+    private float maxReach = 0.4834519f + 0.0075f;
+    
+    private final int shoulder  = 0;
+    private final int elbow     = 1;
+    private final int wrist     = 2;
+    
+    private boolean manualDriveReachUp = true; // otherwise reach forward
+    
+    public VerletArm(SkinnedMeshJoint shoulderJ, PPolygonModelInstance modelInstance) 
     {
         modelInst     = modelInstance;
-        shoulderJoint = shoulder;
+        shoulderJoint = shoulderJ;
         
         // Lets make an arm
         Vector3f shoulderPosition = shoulderJoint.getTransform().getWorldMatrix(false).getTranslation();
         particles.add(new VerletParticle(shoulderPosition));
         particles.add(new VerletParticle(shoulderPosition.add(Vector3f.UNIT_Y.mult(-0.246216f))));
         particles.add(new VerletParticle(shoulderPosition.add(Vector3f.UNIT_Y.mult(-0.4852301f))));
-        constraints.add(new StickConstraint(0, 1, 0.246216f));
-        constraints.add(new StickConstraint(1, 2, 0.2390151f));
+        constraints.add(new StickConstraint(shoulder, elbow, 0.246216f));
+        constraints.add(new StickConstraint(elbow, wrist, 0.2390151f));
     }
 
     public void update(float physicsUpdateTime) 
     {
         // Attach the first particle to the shoulder joint
-        particles.get(0).position(shoulderJoint.getTransform().getWorldMatrix(false).getTranslation());
+        particles.get(shoulder).position(shoulderJoint.getTransform().getWorldMatrix(false).getTranslation());
         
+        // Apply current input offset to the wrist particle
         if (currentInputOffset.x != 0.0f || currentInputOffset.y != 0.0f || currentInputOffset.z != 0.0f)
         {
-            // Apply current input offset to the wrist particle
-            PMatrix modelWorldInverse = modelInst.getTransform().getWorldMatrix(false).inverse();
-            System.out.println("before           "  + currentInputOffset);
-            modelWorldInverse.transformNormal(currentInputOffset);
-            particles.get(2).dislocate(currentInputOffset);
-            System.out.println("after                   "  + currentInputOffset);
-            // zero out the current input offset
+            if (manualDriveReachUp)
+            {
+                float temp = currentInputOffset.z;
+                currentInputOffset.z = currentInputOffset.y;
+                currentInputOffset.y = temp;
+            }
+            
+            PMatrix modelWorld = modelInst.getTransform().getWorldMatrix(false);
+            modelWorld.transformNormal(currentInputOffset);
+            
+            // Check if it is ok to move the wrist to the new position
+            Vector3f newWristPosition = particles.get(wrist).getCurrentPosition().add(currentInputOffset);
+            Vector3f shoulderPosition = particles.get(shoulder).getCurrentPosition();
+            if (newWristPosition.distance(shoulderPosition) < maxReach)
+            {
+                float backReach = 0.01f;
+                
+                Vector3f directionFromShoulderToWrist = newWristPosition.subtract(shoulderPosition).normalize();
+                if (modelWorld.getLocalZ().dot(directionFromShoulderToWrist) > backReach)
+                    particles.get(wrist).dislocate(currentInputOffset);
+                else
+                    particles.get(wrist).dislocate(directionFromShoulderToWrist.mult(-0.1f).add(modelWorld.getLocalZ().mult(0.1f)));
+            }
+            
             currentInputOffset.zero();
         }
         
@@ -104,6 +130,17 @@ public class VerletArm
             particles.get(constraint.getParticle2()).moveCurrentPosition(	vDelta.mult( 0.5f * fDiff)	);
         }
     }
+    
+    public void resetArmPosition()
+    {
+        Vector3f shoulderPosition = shoulderJoint.getTransform().getWorldMatrix(false).getTranslation();
+        particles.get(shoulder).position(shoulderPosition);
+        particles.get(elbow).position(shoulderPosition.add(Vector3f.UNIT_Y.mult(-0.246216f)));
+        particles.get(wrist).position(shoulderPosition.add(Vector3f.UNIT_Y.mult(-0.4852301f)));
+        
+        PMatrix modelWorld = modelInst.getTransform().getWorldMatrix(false);
+        particles.get(wrist).dislocate(modelWorld.getLocalZ().mult(0.1f));
+    }
 
     public ArrayList<StickConstraint> getConstraints() {
         return constraints;
@@ -120,11 +157,11 @@ public class VerletArm
     
     public Vector3f getElbowPosition() 
     {
-        return particles.get(1).getCurrentPosition();
+        return particles.get(elbow).getCurrentPosition();
     }
 
     public Vector3f getWristPosition() {
-        return particles.get(2).getCurrentPosition();
+        return particles.get(wrist).getCurrentPosition();
     }
 
     public boolean isEnabled() 
@@ -137,6 +174,8 @@ public class VerletArm
         enabled = bEnabled;
         if (jointManipulator != null)
             jointManipulator.setEnabled(bEnabled);
+        if (enabled)
+            resetArmPosition();
     }
     
     public boolean toggleEnabled()
@@ -144,6 +183,8 @@ public class VerletArm
         enabled = !enabled;
         if (jointManipulator != null)
             jointManipulator.setEnabled(enabled);
+        if (enabled)
+            resetArmPosition();
         return enabled;
     }
 
@@ -155,6 +196,26 @@ public class VerletArm
     public void addInputOffset(Vector3f offset)
     {
         currentInputOffset.addLocal(offset);
+    }
+
+    /**
+     * If not reach up the arm will reach forward
+     * @return
+     */
+    public boolean isManualDriveReachUp() {
+        return manualDriveReachUp;
+    }
+
+    /**
+     * If not reach up the arm will reach forward
+     * @param manualDriveReachUp
+     */
+    public void setManualDriveReachUp(boolean manualDriveReachUp) {
+        this.manualDriveReachUp = manualDriveReachUp;
+    }
+    
+    public void toggleManualDriveReachUp(){
+        manualDriveReachUp = !manualDriveReachUp;
     }
     
     //////////////////////////////////////////////////////////////////////////

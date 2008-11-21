@@ -71,6 +71,7 @@ public class NinjaContext extends GameContext
         SitOnGround,
         ToggleSteering,
         ToggleArm,
+        ToggleArmManualDriveReachMode,
         GoSit,
         GoTo1,
         GoTo2,
