@@ -53,7 +53,7 @@ public class MeshProcessor extends Processor
             m_Name = ((LibraryGeometriesProcessor)pParent).getMeshName();
 
 
-        if (m_pCollada.getPrintStats())
+        if (m_colladaRef.getPrintStats())
             System.out.println("Mesh:  " + m_Name);
 
         List<Source> pSources = pMesh.getSources();   // 1 or more
@@ -126,7 +126,7 @@ public class MeshProcessor extends Processor
 
         m_VertexDataArrays.add(pVertexDataArray);
 
-        if (m_pCollada.getPrintStats())
+        if (m_colladaRef.getPrintStats())
             System.out.println("   VertexDataArray:  " + pVertexDataArray.m_Name + ", " + pVertexDataArray.m_Data.length);
     }
 

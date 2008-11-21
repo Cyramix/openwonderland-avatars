@@ -69,7 +69,7 @@ public class LibraryNodesProcessor extends Processor
         pColladaNode.setName(pNode.getId());
 
 
-        m_pCollada.addFactoryColladaNode(pColladaNode);
+        m_colladaRef.addFactoryColladaNode(pColladaNode);
 
 
         //  Process the instance_geometry property.
@@ -150,7 +150,7 @@ public class LibraryNodesProcessor extends Processor
                             if (materialName.endsWith("ID"))
                                 materialName = materialName.substring(0, materialName.length()-2);
 
-                            PColladaMaterialInstance pMaterialInstance = m_pCollada.findColladaMaterialInstance(materialName);
+                            PColladaMaterialInstance pMaterialInstance = m_colladaRef.findColladaMaterialInstance(materialName);
 
                             pColladaNode.setMaterialInstance(pMaterialInstance);
                         }

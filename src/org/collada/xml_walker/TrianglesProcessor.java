@@ -126,7 +126,7 @@ public class TrianglesProcessor extends Processor
         if (pTriangles.getMaterial() != null)
         {
             m_MaterialName = pTriangles.getMaterial();
-            m_pColladaMaterial = m_pCollada.findColladaMaterial(m_MaterialName);
+            m_pColladaMaterial = m_colladaRef.findColladaMaterial(m_MaterialName);
         }
     }
 

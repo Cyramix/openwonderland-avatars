@@ -59,6 +59,6 @@ public class LibraryMaterialsProcessor extends Processor {
         pMaterialInstance.setInstanceName(instanceName);
         pMaterialInstance.setMaterialName(materialName);
         
-        m_pCollada.addColladaMaterialInstance(pMaterialInstance);
+        m_colladaRef.addColladaMaterialInstance(pMaterialInstance);
     }
 }

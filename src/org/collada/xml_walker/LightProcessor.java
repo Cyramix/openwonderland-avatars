@@ -39,10 +39,7 @@ public class LightProcessor extends Processor
     public LightProcessor(Collada pCollada, Light pLight, Processor pParent)
     {
         super(pCollada, pLight, pParent);
-        
-        //  Not processing lights right now.
-
-        //logger.warning("LightProcessor not implemented");
+        logger.warning("LightProcessor not implemented");
     }
 
 }

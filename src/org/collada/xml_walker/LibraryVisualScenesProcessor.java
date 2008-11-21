@@ -59,153 +59,134 @@ public class LibraryVisualScenesProcessor extends Processor
     public LibraryVisualScenesProcessor(Collada pCollada, LibraryVisualScenes pNode, Processor pParent)
     {
         super(pCollada, pNode, pParent);
-        logger.info("LibraryVisualScene");
+
         List<VisualScene> visualScenes = pNode.getVisualScenes();
 
-        for (int a=0; a<visualScenes.size(); a++)
+        int index = 0;
+        for (VisualScene vs : visualScenes)
         {
-            processVisualScene((VisualScene)visualScenes.get(a), a);
+            processVisualScene(vs, index);
+            index++;
         }
     }
     
     void assignNameToAnimationGroup(String name)
     {
-        SkeletonNode pSkeleton = m_pCollada.getSkeletonNode();
-        if (pSkeleton != null)
+        SkeletonNode skeleton = m_colladaRef.getSkeletonNode();
+        if (skeleton != null)
         {
-            if (pSkeleton.getAnimationComponent() != null &&
-                pSkeleton.getAnimationComponent().getGroups() != null &&
-                pSkeleton.getAnimationComponent().getGroups().size() > 0)
+            if (skeleton.getAnimationComponent() != null &&
+                skeleton.getAnimationComponent().getGroups() != null &&
+                skeleton.getAnimationComponent().getGroups().size() > 0)
             {
-                AnimationGroup pLastAnimationGroup = pSkeleton.getAnimationComponent().getGroups().get(pSkeleton.getAnimationComponent().getGroups().size()-1);
-                AnimationCycle pAnimationCycle = pLastAnimationGroup.getCycle(0);
+                AnimationGroup lastGroup = skeleton.getAnimationComponent().getGroups().get(skeleton.getAnimationComponent().getGroups().size()-1);
+                AnimationCycle animCycle = lastGroup.getCycle(0);
             
-                pAnimationCycle.setName(name);
+                animCycle.setName(name);
 
             }
         }
     }
 
-    void processVisualScene(VisualScene pVisualScene, int index)
+    void processVisualScene(VisualScene theScene, int index)
     {
-        PColladaNode pColladaNode;
-        Node pNode;
-
         //  Should we process the name of the VisualScene.
         if (index == 0)
         {
-            String name = pVisualScene.getName();
-            m_pCollada.setName(name);
+            String name = theScene.getName();
+            m_colladaRef.setName(name);
 
             assignNameToAnimationGroup(name);
         }
-        
-        //  Iterate through all the Nodes in the VisualScene.
-        for (int a=0; a<pVisualScene.getNodes().size(); a++)
+        for (Node currentNode : theScene.getNodes())
         {
-            pNode = (Node)pVisualScene.getNodes().get(a);
-
-            pColladaNode = new PColladaNode();
-            
-            //  Process the Node.
-            if (processNode(pColladaNode, pNode))
-            {
-                //  Add the root ColladaNode.
-                m_pCollada.addColladaNode(pColladaNode);
-            }
-
-//            pColladaNode.dump();
+            PColladaNode colladaNode = new PColladaNode();
+            if (processNode(colladaNode, currentNode) == true)
+                m_colladaRef.addColladaNode(colladaNode);
         }
     }
 
     //  Processes a Node.
-    private boolean processNode(PColladaNode pColladaNode, Node pNode)
+    private boolean processNode(PColladaNode colladaNode, Node currentNode)
     {
 
-        pColladaNode.setName(pNode.getName());
+        colladaNode.setName(currentNode.getName());
 
         //  Process the assigned InstanceControllers.
-        processInstanceControllers(pColladaNode, pNode);
+        processInstanceControllers(colladaNode, currentNode);
 
         //  Read in the Node's matrix.
-        readNodeMatrix(pColladaNode, pNode);
+        readNodeMatrix(colladaNode, currentNode);
 
 
         //  Node might be a camera.
-        if (readCameraInfo(pColladaNode, pNode))
+        if (readCameraInfo(colladaNode, currentNode))
             return(false);
 
 
-        if (pNode.getType() == NodeType.JOINT)
+        if (currentNode.getType() == NodeType.JOINT)
         {
-            pColladaNode.isJoint(true);
-            pColladaNode.setJointName(pNode.getSid());
+            colladaNode.isJoint(true);
+            colladaNode.setJointName(currentNode.getSid());
 
         }
 
 
         //  Read in the Material associated with the Bone.
-        readNodeMaterial(pColladaNode, pNode);
+        readNodeMaterial(colladaNode, currentNode);
 
 
         //  Read in the MeshInstance information for the Node.
-        readNodeMeshInstance(pColladaNode, pNode);
+        readNodeMeshInstance(colladaNode, currentNode);
 
 
         //  Read in the NodeInstance information for the Node.
-        readNodeInstanceNode(pColladaNode, pNode);
+        readNodeInstanceNode(colladaNode, currentNode);
 
         //  **********************
         //  Now, process all child nodes.
         //  **********************
-        if (pNode.getNodes() != null)
+        if (currentNode.getNodes() != null)
         {
             PColladaNode pChildColladaNode;
                     
-            for (int i = 0; i < pNode.getNodes().size(); i++)
+            for (Node kid : currentNode.getNodes())
             {
-                pChildColladaNode = new PColladaNode();
-                
-                if (processNode(pChildColladaNode, (Node)pNode.getNodes().get(i)))
-                    pColladaNode.addChildNode(pChildColladaNode);
+                PColladaNode newNode = new PColladaNode();
+                if (processNode(newNode, kid))
+                    colladaNode.addChildNode(newNode);
             }
         }
 
-        return(true);
+        return true;
     }
 
 
-    private void processInstanceControllers(PColladaNode pColladaNode, Node pNode)
+    private void processInstanceControllers(PColladaNode colladaNode, Node currentNode)
     {
-        if (pNode.getInstanceControllers().size() == 0)
+        if (currentNode.getInstanceControllers().size() == 0)
             return;
 
-        int a, b;
-        InstanceController pInstanceController;
-        String controllerName;
-        String skeletonString;
+        String controllerName = null;
         
-        for (a=0; a<pNode.getInstanceControllers().size(); a++)
+        for (InstanceController instController : currentNode.getInstanceControllers())
         {
-            pInstanceController = pNode.getInstanceControllers().get(a);
-
-            controllerName = pInstanceController.getUrl();
+            controllerName = instController.getUrl();
             if (controllerName.startsWith("#"))
                 controllerName = controllerName.substring(1);
 
             if (controllerName.endsWith("-skin"))
                 controllerName = controllerName.substring(0, controllerName.length()-5);
 
-            pColladaNode.setControllerName(controllerName);
+            colladaNode.setControllerName(controllerName);
 
             //  Loop through the skeletons.
-            for (b=0; b<pInstanceController.getSkeletons().size(); b++)
+            for (String skeletonName : instController.getSkeletons())
             {
-                skeletonString = pInstanceController.getSkeletons().get(b);
-                if (skeletonString.startsWith("#"))
-                    skeletonString = skeletonString.substring(1);
+                if (skeletonName.startsWith("#"))
+                    skeletonName = skeletonName.substring(1);
 
-                pColladaNode.addSkeleton(skeletonString);
+                colladaNode.addSkeleton(skeletonName);
             }
         }
     }
@@ -216,18 +197,14 @@ public class LibraryVisualScenesProcessor extends Processor
         if (pNode.getInstanceCameras() != null && pNode.getInstanceCameras().size() > 0)
         {
             String cameraName = pNode.getName();
-            int a;
-            InstanceWithExtra pInstanceWithExtra;
-            String cameraParamsName = "";
-            PMatrix cameraMatrix;
-            PColladaCameraParams pCameraParams;
-            PColladaCamera pCamera;
+            String cameraParamsName = null;
+            PMatrix cameraMatrix = null;
+            PColladaCameraParams cameraParams = null;
+            PColladaCamera camera = null;
             
-            for (a=0; a<pNode.getInstanceCameras().size(); a++)
+            for (InstanceWithExtra extraInst : pNode.getInstanceCameras())
             {
-                pInstanceWithExtra = pNode.getInstanceCameras().get(a);
-                
-                cameraParamsName = pInstanceWithExtra.getUrl();
+                cameraParamsName = extraInst.getUrl();
                 if (cameraParamsName.startsWith("#"))
                     cameraParamsName = cameraParamsName.substring(1);
             }
@@ -235,57 +212,55 @@ public class LibraryVisualScenesProcessor extends Processor
             cameraMatrix = pColladaNode.getMatrix();
 
             //  Find the ColladaCameraParams which were already encountered.
-            pCameraParams = m_pCollada.findColladaCameraParams(cameraParamsName);
+            cameraParams = m_colladaRef.findColladaCameraParams(cameraParamsName);
             
             //  Create the ColladaCamera.
-            pCamera = new PColladaCamera(cameraName, pCameraParams, cameraMatrix);
+            camera = new PColladaCamera(cameraName, cameraParams, cameraMatrix);
 
             //  Let the ColladaLoader know about the Camera.
-            m_pCollada.addColladaCamera(pCamera);
+            m_colladaRef.addColladaCamera(camera);
 
 
             return(true);
         }
-
-        return(false);
+        else
+            return(false);
     }
 
 
                          
-    private void readNodeMatrix(PColladaNode pColladaNode, Node pNode)
+    private void readNodeMatrix(PColladaNode colladaNode, Node standardNode)
     {
         //  Process the Node's matrix parameters.
-        int a = 0;
-        Object pMatrixElement;
-        Rotate pRotate;
-
-
+        Rotate pRotate = null;
         //  Iterate through all the translateAndMatrixesAndLookAts.
-        for (a=0; a<pNode.getTranslatesAndMatrixesAndLookats().size(); a++)
+        for (Object matrixObject : standardNode.getTranslatesAndMatrixesAndLookats())
         {
-            pMatrixElement = pNode.getTranslatesAndMatrixesAndLookats().get(a);
-
-            if (pMatrixElement instanceof Matrix)
+            if (matrixObject instanceof Matrix)
             {
-                Matrix pMatrix = (Matrix)pMatrixElement;
+                Matrix theMatrix = (Matrix)matrixObject;
                 float []matrixFloats = new float[16];
 
-                for (int b=0; b<pMatrix.getValues().size(); b++)
-                    matrixFloats[b] = ((Double)pMatrix.getValues().get(b)).floatValue();
+                int index = 0;
+                for (Double val : theMatrix.getValues())
+                {
+                    matrixFloats[index] = val.floatValue();
+                    index++;
+                }
 
-                pColladaNode.setMatrix(matrixFloats);
+                colladaNode.setMatrix(matrixFloats);
             }
-            else if (pMatrixElement instanceof JAXBElement)
+            else if (matrixObject instanceof JAXBElement)
             {
-                JAXBElement pJAXBElement = (JAXBElement)pMatrixElement;
+                JAXBElement pJAXBElement = (JAXBElement)matrixObject;
                 
                 if (pJAXBElement.getName().getLocalPart().equals("translate"))
                     parseTranslation((TargetableFloat3)pJAXBElement.getValue());
                 
             }
-            else if (pMatrixElement instanceof Rotate)
+            else if (matrixObject instanceof Rotate)
             {
-                pRotate = (Rotate)pMatrixElement;
+                pRotate = (Rotate)matrixObject;
                 String sidValue = pRotate.getSid();
                 if (sidValue != null)
                 {
@@ -300,85 +275,63 @@ public class LibraryVisualScenesProcessor extends Processor
         }
     }
 
-    private void readNodeMaterial(PColladaNode pColladaNode, Node pNode)
+    private void readNodeMaterial(PColladaNode colladaNode, Node standardNode)
     {
-        int a;
-        TechniqueCommon pTechniqueCommon;
+        TechniqueCommon commonTech = null;
 
-        if (pNode.getInstanceControllers() != null && pNode.getInstanceControllers().size() > 0)
+        if (standardNode.getInstanceControllers() != null && standardNode.getInstanceControllers().size() > 0)
         {
-            InstanceController pInstanceController;
-            
-            for (a=0; a<pNode.getInstanceControllers().size(); a++)
+            for (InstanceController controller : standardNode.getInstanceControllers())
             {
-                pInstanceController = (InstanceController)pNode.getInstanceControllers().get(a);
-
-                if (pInstanceController.getBindMaterial() != null)
+                if (controller.getBindMaterial() != null)
                 {
-                    pTechniqueCommon = pInstanceController.getBindMaterial().getTechniqueCommon();
-
-                    processNodeMaterial(pColladaNode, pNode, pTechniqueCommon);
+                    commonTech = controller.getBindMaterial().getTechniqueCommon();
+                    processNodeMaterial(colladaNode, commonTech);
                 }
             }
         }
-        else if (pNode.getInstanceGeometries() != null && pNode.getInstanceGeometries().size() > 0)
+        else if (standardNode.getInstanceGeometries() != null && standardNode.getInstanceGeometries().size() > 0)
         {
-            InstanceGeometry pInstanceGeometry;
-            
-            for (a=0; a<pNode.getInstanceGeometries().size(); a++)
+            for (InstanceGeometry instGeom : standardNode.getInstanceGeometries())
             {
-                pInstanceGeometry = (InstanceGeometry)pNode.getInstanceGeometries().get(a);
-
                 // Now, iterate through all the bind Materials.
-                if (pInstanceGeometry.getBindMaterial() != null)
+                if (instGeom.getBindMaterial() != null)
                 {
-                    pTechniqueCommon = pInstanceGeometry.getBindMaterial().getTechniqueCommon();
-
-                    processNodeMaterial(pColladaNode, pNode, pTechniqueCommon);
+                    commonTech = instGeom.getBindMaterial().getTechniqueCommon();
+                    processNodeMaterial(colladaNode, commonTech);
                 }
             }
         }
     }
 
     // Now, iterate through all the bind Materials.
-    private void processNodeMaterial(PColladaNode pColladaNode, Node pNode, TechniqueCommon pTechniqueCommon)
+    private void processNodeMaterial(PColladaNode pColladaNode, TechniqueCommon pTechniqueCommon)
     {
-        int                         c;
-        InstanceMaterial            pInstanceMaterial;
-        PColladaMaterialInstance    pMaterialInstance;
-        String                      instanceName;
-        String                      materialName;
+        PColladaMaterialInstance    pMaterialInstance = null;
+        String                      instanceName = null;
+        String                      materialName = null;
     
         
-        for (c=0; c<pTechniqueCommon.getInstanceMaterials().size(); c++)
+        for (InstanceMaterial instMat : pTechniqueCommon.getInstanceMaterials())
         {
-            pInstanceMaterial = (InstanceMaterial)pTechniqueCommon.getInstanceMaterials().get(c);
-
-            instanceName = pInstanceMaterial.getSymbol();
-            materialName = pInstanceMaterial.getTarget();
+            instanceName = instMat.getSymbol();
+            materialName = instMat.getTarget();
 
             pMaterialInstance = new PColladaMaterialInstance();
 
             pMaterialInstance.setInstanceName(instanceName);
             pMaterialInstance.setMaterialName(materialName);
 
-            m_pCollada.addColladaMaterialInstance(pMaterialInstance);
+            m_colladaRef.addColladaMaterialInstance(pMaterialInstance);
 
 
             //  Assign the MaterialInstance to the ColladaNode.
             pColladaNode.setMaterialInstance(pMaterialInstance);
 
-            if (pInstanceMaterial.getBindVertexInputs() != null)
-            {
-                int d;
-                BindVertexInput pBindVertexInput;
-                                
-                for (d=0; d<pInstanceMaterial.getBindVertexInputs().size(); d++)
-                {
-                    pBindVertexInput = (BindVertexInput)pInstanceMaterial.getBindVertexInputs().get(d);
-                                    
-                    pMaterialInstance.addVertexInput(pBindVertexInput.getSemantic());
-                }
+            if (instMat.getBindVertexInputs() != null)
+            {                
+                for (BindVertexInput bvi : instMat.getBindVertexInputs())
+                    pMaterialInstance.addVertexInput(bvi.getSemantic());
             }
         }
     }
@@ -405,23 +358,19 @@ public class LibraryVisualScenesProcessor extends Processor
     }
 
     //  Reads in the NodeInstance information for the Node.
-    private void readNodeInstanceNode(PColladaNode pColladaNode, Node pNode)
+    private void readNodeInstanceNode(PColladaNode colladaNode, Node standardNode)
     {
-        if (pNode.getInstanceNodes() != null && pNode.getInstanceNodes().size() > 0)
+        if (standardNode.getInstanceNodes() != null && standardNode.getInstanceNodes().size() > 0)
         {
-            int a;
-            InstanceWithExtra pInstanceWithExtra;
-            String instanceName;
+            String instanceName = null;
             
-            for (a=0; a<pNode.getInstanceNodes().size(); a++)
+            for (InstanceWithExtra instanceNode : standardNode.getInstanceNodes())
             {
-                pInstanceWithExtra = pNode.getInstanceNodes().get(a);
-
-                instanceName = pInstanceWithExtra.getUrl();
+                instanceName = instanceNode.getUrl();
                 if (instanceName.startsWith("#"))
                     instanceName = instanceName.substring(1);
             
-                pColladaNode.setInstanceNodeName(instanceName);
+                colladaNode.setInstanceNodeName(instanceName);
             }
         }
     }
@@ -431,9 +380,9 @@ public class LibraryVisualScenesProcessor extends Processor
         float []values = new float[3];
         
         for (int a=0; a<pFloat3.getValues().size(); a++)
-            values[a] = ((Double)pFloat3.getValues().get(a)).floatValue();
+            values[a] = pFloat3.getValues().get(a).floatValue();
 
-        return(values);
+        return values;
     }
 
     private float []parseRotateJointOrient(Rotate pRotate)
@@ -441,7 +390,7 @@ public class LibraryVisualScenesProcessor extends Processor
         float []values = new float[4];
         
         for (int a=0; a<pRotate.getValues().size(); a++)
-            values[a] = ((Double)pRotate.getValues().get(a)).floatValue();
+            values[a] = pRotate.getValues().get(a).floatValue();
 
         return(values);
     }

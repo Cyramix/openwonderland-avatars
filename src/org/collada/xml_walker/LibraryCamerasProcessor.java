@@ -111,7 +111,7 @@ public class LibraryCamerasProcessor extends Processor
 
                     pCameraParams.initialize(cameraName, xfov, yfov, znear, zfar, true);
 
-                    m_pCollada.addColladaCameraParams(pCameraParams);
+                    m_colladaRef.addColladaCameraParams(pCameraParams);
                 }
             }
         }

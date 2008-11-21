@@ -34,7 +34,7 @@ public abstract class Processor
 {
     protected Logger logger = Logger.getLogger("org.collada.xml_walker");
 
-    protected Collada   m_pCollada = null;
+    protected Collada   m_colladaRef = null;
     protected Object    m_pColladaSchema = null;
     protected Processor m_pParent = null;
 
@@ -49,7 +49,7 @@ public abstract class Processor
      */
     public Processor(Collada pCollada, Object pColladaSchema, Processor pParent)
     {
-        m_pCollada = pCollada;
+        m_colladaRef = pCollada;
         m_pColladaSchema = pColladaSchema;
         m_pParent = pParent;
     }

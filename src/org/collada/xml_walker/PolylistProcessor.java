@@ -84,7 +84,7 @@ public class PolylistProcessor extends Processor
         if (pPolylist.getMaterial() != null)
         {
             m_MaterialName = pPolylist.getMaterial();
-            m_pColladaMaterial = m_pCollada.findColladaMaterial(m_MaterialName);
+            m_pColladaMaterial = m_colladaRef.findColladaMaterial(m_MaterialName);
         }
     }
 

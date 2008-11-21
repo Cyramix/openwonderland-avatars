@@ -145,7 +145,7 @@ public class LibraryControllersProcessor extends Processor
 
         //  Create the PolygonSkinnedMesh.
         //  Will have to convert the PolygonMesh to a PolygonSkinnedMesh.
-        pPolygonMesh = m_pCollada.findPolygonMesh(meshName);
+        pPolygonMesh = m_colladaRef.findPolygonMesh(meshName);
 
         m_pPolygonSkinnedMesh = new PPolygonSkinnedMesh(pPolygonMesh);
 
@@ -153,10 +153,10 @@ public class LibraryControllersProcessor extends Processor
         pPolygonMesh.clear(false);
 
         //  Remove the PolygonMesh, we'll be creating a PolygonSkinnedMesh instead.
-        m_pCollada.removePolygonMesh(pPolygonMesh);
+        m_colladaRef.removePolygonMesh(pPolygonMesh);
 
         //  Let the Collada loader know about the created PolygonSkinnedMesh.
-        m_pCollada.addPolygonSkinnedMesh(m_pPolygonSkinnedMesh);
+        m_colladaRef.addPolygonSkinnedMesh(m_pPolygonSkinnedMesh);
 
 
         if (m_bPrintStats)
@@ -194,7 +194,7 @@ public class LibraryControllersProcessor extends Processor
         for (a=0; a<pSkinJoints.getNameArray().getValues().size(); a++)
         {
             boneName = pSkinJoints.getNameArray().getValues().get(a);
-            pJointColladaNode = m_pCollada.findJoint(boneName);
+            pJointColladaNode = m_colladaRef.findJoint(boneName);
             jointName = pJointColladaNode.getName();
 
             m_pPolygonSkinnedMesh.addJointName(jointName);
@@ -249,7 +249,7 @@ public class LibraryControllersProcessor extends Processor
 
         m_bPrintStats = false;
 
-        m_pCollada.addColladaSkin(pColladaSkin);
+        m_colladaRef.addColladaSkin(pColladaSkin);
     }
 
     
@@ -270,9 +270,9 @@ public class LibraryControllersProcessor extends Processor
         {
             jointName = pColladaSkin.getJointName(a);
 
-            pJointColladaNode = m_pCollada.findColladaNode(jointName);
+            pJointColladaNode = m_colladaRef.findColladaNode(jointName);
 
-            pAnimatedItem = m_pCollada.findAnimatedItem(jointName);
+            pAnimatedItem = m_colladaRef.findAnimatedItem(jointName);
             if (pAnimatedItem != null && pAnimatedItem.getKeyframeCount() > 0)
             {
                 int b;
@@ -328,7 +328,7 @@ public class LibraryControllersProcessor extends Processor
             pAnimationLoop.calculateDuration();
             pAnimationLoop.createDefaultCycle();
 
-            pAnimationLoop.getCycle(0).setName(m_pCollada.getName());
+            pAnimationLoop.getCycle(0).setName(m_colladaRef.getName());
         }
     }
 

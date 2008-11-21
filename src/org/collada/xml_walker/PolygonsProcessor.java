@@ -60,7 +60,7 @@ public class PolygonsProcessor extends Processor
         m_polyCount = polygonsData.getCount().intValue();
         // Grab the material
         if (polygonsData.getMaterial() != null)
-            m_meshMaterial = m_pCollada.findColladaMaterial(polygonsData.getMaterial());
+            m_meshMaterial = m_colladaRef.findColladaMaterial(polygonsData.getMaterial());
 
         buildVertexDataSemanticArray(polygonsData);
         grabSemanticReferences();

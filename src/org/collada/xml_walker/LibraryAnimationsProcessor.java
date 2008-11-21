@@ -74,11 +74,11 @@ public class LibraryAnimationsProcessor extends Processor
             newGroup.calculateDuration();
             newGroup.createDefaultCycle();
 
-            newGroup.getCycle(0).setName(m_pCollada.getName());
+            newGroup.getCycle(0).setName(m_colladaRef.getName());
             System.out.println("   Animation:  '" + animationLibrary.getId() + "'");
 
             //  Add the AnimationLoop to the SkeletonNode.
-            m_pCollada.getSkeletonNode().getAnimationComponent().getGroups().add(newGroup);
+            m_colladaRef.getSkeletonNode().getAnimationComponent().getGroups().add(newGroup);
         }
     }
 
@@ -114,7 +114,7 @@ public class LibraryAnimationsProcessor extends Processor
         
         String jointName = m_AnimatedItemName;
 
-        PJoint pJoint = m_pCollada.getSkeletonNode().getJoint(jointName);
+        PJoint pJoint = m_colladaRef.getSkeletonNode().getJoint(jointName);
         if (pJoint == null)
         {
 //            System.out.println("   Skipping AnimationChannel for joint " + jointName + ".");

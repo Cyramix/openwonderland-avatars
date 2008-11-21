@@ -97,7 +97,7 @@ public class LibraryEffectsProcessor extends Processor
 
     private void processExtra(ProfileCOMMON profile, Extra extra, String materialName)
     {
-        PColladaMaterial colladaMaterial = m_pCollada.getColladaMaterial(materialName);
+        PColladaMaterial colladaMaterial = m_colladaRef.getColladaMaterial(materialName);
         if (colladaMaterial != null)
         {
             colladaMaterial.applyBumpMappingData(extra);
@@ -115,11 +115,11 @@ public class LibraryEffectsProcessor extends Processor
        // System.out.println("Material Blinn '" + materialName + "'");
        
         //  Create a ColladaMaterial.
-        PColladaMaterial pColladaMaterial = new PColladaMaterial(m_pCollada, pProfileCommon);
+        PColladaMaterial pColladaMaterial = new PColladaMaterial(m_colladaRef, pProfileCommon);
         
         pColladaMaterial.initialize(materialName, pBlinn);
 
-        m_pCollada.addColladaMaterial(pColladaMaterial);
+        m_colladaRef.addColladaMaterial(pColladaMaterial);
     }
     
     private void processPhong(ProfileCOMMON pProfileCommon, Phong pPhong, String materialName)
@@ -127,11 +127,11 @@ public class LibraryEffectsProcessor extends Processor
         //System.out.println("Material Phong '" + materialName + "'");
 
         //  Create a ColladaMaterial.
-        PColladaMaterial pColladaMaterial = new PColladaMaterial(m_pCollada, pProfileCommon);
+        PColladaMaterial pColladaMaterial = new PColladaMaterial(m_colladaRef, pProfileCommon);
         
         pColladaMaterial.initialize(materialName, pPhong);
 
-        m_pCollada.addColladaMaterial(pColladaMaterial);
+        m_colladaRef.addColladaMaterial(pColladaMaterial);
     }
 
     private void processLambert(ProfileCOMMON pProfileCommon, Lambert pLambert, String materialName)
@@ -139,11 +139,11 @@ public class LibraryEffectsProcessor extends Processor
         //System.out.println("Material Lambert '" + materialName + "'");
 
         //  Create a ColladaMaterial.
-        PColladaMaterial pColladaMaterial = new PColladaMaterial(m_pCollada, pProfileCommon);
+        PColladaMaterial pColladaMaterial = new PColladaMaterial(m_colladaRef, pProfileCommon);
         
         pColladaMaterial.initialize(materialName, pLambert);
 
-        m_pCollada.addColladaMaterial(pColladaMaterial);
+        m_colladaRef.addColladaMaterial(pColladaMaterial);
     }
 }
 
