@@ -32,6 +32,8 @@ import imi.scene.PMatrix;
 import imi.scene.PNode;
 import imi.scene.PScene;
 import imi.scene.PTransform;
+import imi.scene.camera.behaviors.FirstPersonCamModel;
+import imi.scene.camera.state.FirstPersonCamState;
 import imi.scene.camera.state.TumbleObjectCamState;
 import imi.scene.polygonmodel.PPolygonMeshInstance;
 import imi.scene.polygonmodel.PPolygonModelInstance;
@@ -1023,14 +1025,21 @@ public class SceneEssentials {
         PNode node = currentPScene.getInstances();
         if (node != null && node.getChildrenCount() > 0) {
             PPolygonModelInstance pmInstance = ((PPolygonModelInstance) node.getChild(0));
-            TumbleObjectCamState camState = ((TumbleObjectCamState)curCameraProcessor.getState());
-            camState.setTargetModelInstance(pmInstance);
-            camState.setCameraPosition(camPos);
+            if (curCameraProcessor.getState() instanceof TumbleObjectCamState) {
+                TumbleObjectCamState camState = ((TumbleObjectCamState)curCameraProcessor.getState());
+                camState.setTargetModelInstance(pmInstance);
+                camState.setCameraPosition(camPos);
 
-            if (pmInstance.getBoundingSphere() == null)
-                pmInstance.calculateBoundingSphere();
-            camState.setTargetFocalPoint(pmInstance.getBoundingSphere().getCenter());
-            camState.setTargetNeedsUpdate(true);
+                if (pmInstance.getBoundingSphere() == null)
+                    pmInstance.calculateBoundingSphere();
+                camState.setTargetFocalPoint(pmInstance.getBoundingSphere().getCenter());
+                camState.setTargetNeedsUpdate(true);
+            } else if (curCameraProcessor.getState() instanceof FirstPersonCamState) {
+                FirstPersonCamState camState = ((FirstPersonCamState)curCameraProcessor.getState());
+                Vector3f pos = pmInstance.getTransform().getWorldMatrix(false).getTranslation();
+                pos.z = -3.2f;
+                camState.setCameraPosition(pos);
+            }
         }
     }
 

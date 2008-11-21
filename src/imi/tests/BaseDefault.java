@@ -112,9 +112,9 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
     private WorldManager        m_worldManager      = null;
     protected CameraNode        m_cameraNode        = null;
     protected int               m_desiredFrameRate  = 60;
-    protected int               m_width             = 400;
+    protected int               m_width             = 800;
     protected int               m_height            = 600;
-    protected float             m_aspect            = 400.0f/600.0f;
+    protected float             m_aspect            = 800.0f/600.0f;
     protected SceneEssentials   m_sceneData         = null;
     protected boolean           m_bLoading          = false;
     protected RenderBuffer      m_renderBuffer      = null;
@@ -655,14 +655,14 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
         AWTInputComponent cameraListener = (AWTInputComponent)wm.getInputManager().createInputComponent(canvas_SceneRenderWindow, eventMask);
         m_cameraProcessor = new FlexibleCameraProcessor(cameraListener, cameraSG, wm, camera, sky);
         
-//        FirstPersonCamState state = new FirstPersonCamState();
-//        FirstPersonCamModel model = new FirstPersonCamModel();
-//        m_cameraProcessor.setCameraBehavior(model, state);
+        FirstPersonCamState state = new FirstPersonCamState();
+        FirstPersonCamModel model = new FirstPersonCamModel();
+        m_cameraProcessor.setCameraBehavior(model, state);
 
-        TumbleObjectCamState tobj = new TumbleObjectCamState(null);
-        tobj.setTargetFocalPoint(new Vector3f(0.0f, 0.0f, 0.0f));
-        tobj.setTargetNeedsUpdate(true);
-        m_cameraProcessor.setCameraBehavior(new TumbleObjectCamModel(), tobj);
+//        TumbleObjectCamState tobj = new TumbleObjectCamState(null);
+//        tobj.setTargetFocalPoint(new Vector3f(0.0f, 0.0f, 0.0f));
+//        tobj.setTargetNeedsUpdate(true);
+//        m_cameraProcessor.setCameraBehavior(new TumbleObjectCamModel(), tobj);
         //OrbitCameraProcessor eventProcessor = new OrbitCameraProcessor(cameraListener, cameraNode, wm, camera);
         m_cameraProcessor.setRunInRenderer(true);
         
@@ -924,9 +924,14 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
         setResizable(false);
         getContentPane().setLayout(new java.awt.GridBagLayout());
 
+        jPanel_MainPanel.setMinimumSize(new java.awt.Dimension(800, 600));
+        jPanel_MainPanel.setPreferredSize(new java.awt.Dimension(800, 600));
         jPanel_MainPanel.setLayout(new java.awt.GridBagLayout());
 
         jToolBar_Hotkeys.setRollover(true);
+        jToolBar_Hotkeys.setMaximumSize(new java.awt.Dimension(800, 22));
+        jToolBar_Hotkeys.setMinimumSize(new java.awt.Dimension(400, 22));
+        jToolBar_Hotkeys.setPreferredSize(new java.awt.Dimension(800, 22));
 
         jButton1.setText("jButton1");
         jButton1.setFocusable(false);
@@ -965,6 +970,8 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
         jPanel_MainPanel.add(jToolBar_Hotkeys, gridBagConstraints);
 
         jPanel_DisplayWindow.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        jPanel_DisplayWindow.setMaximumSize(new java.awt.Dimension(800, 600));
+        jPanel_DisplayWindow.setMinimumSize(new java.awt.Dimension(400, 300));
         jPanel_DisplayWindow.setPreferredSize(new java.awt.Dimension(800, 600));
         jPanel_DisplayWindow.setLayout(new java.awt.GridBagLayout());
 
@@ -977,6 +984,9 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridwidth = java.awt.GridBagConstraints.RELATIVE;
+        gridBagConstraints.gridheight = java.awt.GridBagConstraints.RELATIVE;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.weighty = 1.0;
