@@ -21,6 +21,7 @@ package imi.gui;
 // Imports - BEGIN
 ////////////////////////////////////////////////////////////////////////////////
 import java.awt.Cursor;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -811,6 +812,100 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
         jButton_Female.setEnabled(true);
     }
 
+    public void loadMaleAvatar(File path) {
+        if (!jButton_Male.isEnabled())
+            return;
+
+        jButton_Male.setEnabled(false);
+        jButton_Female.setEnabled(false);
+        String query = new String();
+        ArrayList<String[]> data, anim, meshref;
+        String[] nada = null;
+
+        query = "SELECT name, grouping FROM GeometryReferences WHERE tableref = 'Male'";
+        meshref = m_sceneData.loadSQLData(query);
+
+        if (m_meshes != null)
+            m_meshes.clear();
+        m_meshes = new HashMap<Integer, String[]>();
+
+        createMeshSwapList("0", meshref);
+        createMeshSwapList("1", meshref);
+        createMeshSwapList("2", meshref);
+        createMeshSwapList("3", meshref);
+        createMeshSwapList("4", meshref);
+        createMeshSwapList("5", meshref);
+        createMeshSwapList("6", meshref);
+        createMeshSwapList("7", meshref);
+        createMeshSwapList("8", meshref);
+
+        m_sceneData.setMeshSetup(m_meshes);
+
+        // NOTE: the last 2 params not important since we are adding in a new avatar
+        m_sceneData.loadUnZippedAvatar(true, true, this, path, nada, 0);
+
+//        if (m_gender == 1) {
+//            m_meshes = m_sceneData.getMeshSetup();
+//            String geom = null;
+//            String query2 = null;
+//            String[] meshies = new String[3];
+//            ArrayList<String[]> data2;
+//
+//            for (int i = 0; i < 3; i++) {
+//                geom = m_meshes.get(i+2)[0];
+//                query = "SELECT referenceid FROM GeometryReferences WHERE tableref = 'Meshes' and name = '" + geom + "'";
+//                data2 = m_sceneData.loadSQLData(query);
+//                query = "SELECT description FROM Meshes WHERE id = " + data2.get(0)[0];
+//                data2.clear();
+//                data2 = m_sceneData.loadSQLData(query);
+//                meshies[i] = data2.get(0)[0];
+//            }
+//
+//            jLabel_CurrUpperBody.setText(meshies[0]);
+//            jLabel_CurrLowerBody.setText(meshies[1]);
+//            jLabel_CurrShoes.setText(meshies[2]);
+//        }
+
+        jButton_Male.setEnabled(true);
+        jButton_Female.setEnabled(true);
+    }
+
+    public void loadFemaleAvatar(File path) {
+        if (!jButton_Male.isEnabled())
+            return;
+
+        jButton_Male.setEnabled(false);
+        jButton_Female.setEnabled(false);
+        String query = new String();
+        ArrayList<String[]> data, anim, meshref;
+        String[] nada = null;
+
+        query = "SELECT name, grouping FROM GeometryReferences WHERE tableref = 'Female'";
+        meshref = m_sceneData.loadSQLData(query);
+
+        if (m_meshes != null)
+            m_meshes.clear();
+        m_meshes = new HashMap<Integer, String[]>();
+
+        createMeshSwapList("0", meshref);
+        createMeshSwapList("1", meshref);
+        createMeshSwapList("2", meshref);
+        createMeshSwapList("3", meshref);
+        createMeshSwapList("4", meshref);
+        createMeshSwapList("5", meshref);
+        createMeshSwapList("6", meshref);
+        createMeshSwapList("7", meshref);
+        createMeshSwapList("8", meshref);
+
+        m_sceneData.setMeshSetup(m_meshes);
+
+        // NOTE: the last 2 params not important since we are adding in a new avatar
+        m_sceneData.loadUnZippedAvatar(true, true, this, path, nada, 0);
+
+        jButton_Male.setEnabled(true);
+        jButton_Female.setEnabled(true);
+    }
+
     public void createMeshSwapList(String region, ArrayList<String[]> meshes) {
         String[] geometry = null;
         int iRegion = 0;
@@ -862,8 +957,29 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
         jButton_ApplyAllAcc.setEnabled(true);
 
         InitListBoxes(m_isViewMode);
-        m_sceneData.setDefaultLoad(true);
-        loadDefaultAvatar();
+        m_sceneData.setDefaultLoad(false);
+        
+        ////////////////////////////////////////////////////////////////////////
+        // ZIP Stream TEST
+        ////////////////////////////////////////////////////////////////////////
+        String query = "SELECT url FROM DefaultAvatars WHERE id = 5";
+        ArrayList<String[]> data = m_sceneData.loadSQLData(query);
+
+        String destination = System.getProperty("user.dir");
+        destination += "/temp/";
+        File dest = new File(destination);
+        dest.mkdir();
+        int index = data.get(0)[0].lastIndexOf("/");
+        String name = data.get(0)[0].substring(index+1);
+        dest = new File(dest, name);
+        m_sceneData.downloadZipStream(data.get(0)[0], dest);
+        loadMaleAvatar(dest);
+        dest.getParentFile().deleteOnExit();
+        ////////////////////////////////////////////////////////////////////////
+        // ZIP Stream TEST
+        ////////////////////////////////////////////////////////////////////////
+
+        //loadDefaultAvatar();
 
         jPanel_MainBody.setVisible(true);
         jPanel_MainHead.setVisible(true);
@@ -881,7 +997,27 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
 
         InitListBoxes(m_isViewMode);
         m_sceneData.setDefaultLoad(false);
-        loadDefaultAvatar();
+        ////////////////////////////////////////////////////////////////////////
+        // ZIP Stream TEST
+        ////////////////////////////////////////////////////////////////////////
+        String query = "SELECT url FROM DefaultAvatars WHERE id = 6";
+        ArrayList<String[]> data = m_sceneData.loadSQLData(query);
+
+        String destination = System.getProperty("user.dir");
+        destination += "/temp/";
+        File dest = new File(destination);
+        dest.mkdir();
+        int index = data.get(0)[0].lastIndexOf("/");
+        String name = data.get(0)[0].substring(index+1);
+        dest = new File(dest, name);
+        m_sceneData.downloadZipStream(data.get(0)[0], dest);
+        loadFemaleAvatar(dest);
+        dest.getParentFile().deleteOnExit();
+        ////////////////////////////////////////////////////////////////////////
+        // ZIP Stream TEST
+        ////////////////////////////////////////////////////////////////////////
+
+        //loadDefaultAvatar();
 
         jPanel_MainBody.setVisible(true);
         jPanel_MainHead.setVisible(true);

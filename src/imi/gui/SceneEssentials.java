@@ -50,16 +50,30 @@ import imi.scene.utils.tree.MeshInstanceSearchProcessor;
 import imi.scene.utils.tree.TreeTraverser;
 import imi.sql.SQLInterface;
 import java.awt.Component;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FilenameFilter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
+import javax.print.DocFlavor.CHAR_ARRAY;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.filechooser.FileFilter;
@@ -108,6 +122,8 @@ public class SceneEssentials {
         private URL poloShirt;
         private URL jeansPants;
         private URL tennisShoes;
+        static final int BUFFER = 2048;
+        private File zipFileLoc = null;
         
     public SceneEssentials() {
         initFileChooser();
@@ -873,6 +889,106 @@ public class SceneEssentials {
     public void loadDAEAnimationURL(boolean useRepository, Component arg0) {
         // TODO: add in sql table for this to work...
     }
+
+    public void downloadZipStream(String link, File destination) {
+        downloadURLFile(link, destination);
+        try {
+            BufferedOutputStream dest = null;
+            BufferedInputStream is = null;
+            ZipEntry entry;
+            ZipFile zipfile = new ZipFile(zipFileLoc);
+            Enumeration e = zipfile.entries();
+            while (e.hasMoreElements()) {
+                entry = (ZipEntry) e.nextElement();
+                System.out.println("Extracting: " + entry);
+                is = new BufferedInputStream(zipfile.getInputStream(entry));
+                int count;
+                byte data[] = new byte[BUFFER];
+                FileOutputStream fos = new FileOutputStream(destination.getParent() + "/" + entry.getName());
+                dest = new BufferedOutputStream(fos, BUFFER);
+                while ((count = is.read(data, 0, BUFFER)) != -1) {
+                    dest.write(data, 0, count);
+                }
+                dest.flush();
+                dest.close();
+                is.close();
+            }
+        } catch (IOException ex) {
+            Logger.getLogger(SceneEssentials.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public void downloadURLFile(String address, File destinationFile) {
+        OutputStream out = null;
+        URLConnection conn = null;
+        InputStream in = null;
+        try {
+            URL url = new URL(address);
+            out = new BufferedOutputStream(new FileOutputStream(destinationFile));
+            conn = url.openConnection();
+            in = conn.getInputStream();
+            byte[] buffer = new byte[1024];
+            int numRead;
+            long numWritten = 0;
+            while ((numRead = in.read(buffer)) != -1) {
+                out.write(buffer, 0, numRead);
+                numWritten += numRead;
+            }
+            System.out.println(destinationFile + "\t" + numWritten);
+        } catch (Exception exception) {
+            System.out.print(exception.getMessage() + "... Retrying");
+            downloadURLFile(address, destinationFile);
+        } finally {
+            try {
+                if (in != null) {
+                    in.close();
+                }
+                if (out != null) {
+                    out.close();
+                }
+            } catch (IOException ioe) {
+            }
+        }
+        zipFileLoc = destinationFile;
+    }
+
+    ////////////////////////////////////////////////////////////////////////////
+    // TESTS
+    ////////////////////////////////////////////////////////////////////////////
+    public void loadUnZippedAvatar(boolean clear, boolean useRepository, Component arg0, File data, String[] meshRef, int region) {
+        currentPScene.setUseRepository(useRepository);
+        if (clear)
+            currentPScene.getInstances().removeAllChildren();
+
+        if (currentHiProcessors == null)
+            currentHiProcessors = new ArrayList<ProcessorComponent>();
+        else
+            currentHiProcessors.clear();
+
+        URL bindPose = findBindPose(data.getParentFile());
+        final ArrayList<URL> animations = findAnims(data.getParentFile());
+        String[] anim = new String[animations.size()];
+        for (int i = 0; i < animations.size(); i++) {
+            anim[i] = animations.get(i).toString();
+        }
+
+        int a,b;
+        a = bindPose.toString().lastIndexOf("/");
+        b = bindPose.toString().lastIndexOf(".");
+        String name = bindPose.toString().substring(a+1, b);
+
+        if (clear) {
+            SharedAsset character = new SharedAsset(currentPScene.getRepository(), new AssetDescriptor(SharedAssetType.COLLADA_Model, bindPose));
+            character.setUserData(new ColladaLoaderParams(true, true, false, false, 4, name, null));
+            if (bdefaultload)
+                specialloadInitializer(name, character, anim);
+            else
+                loadInitializer(name, character, anim);
+        } else {
+            //addDAEMeshURLToModel(data, meshRef, region);
+        }
+    }
+
     ////////////////////////////////////////////////////////////////////////////
     // HELPER FUNCTIONS
     ////////////////////////////////////////////////////////////////////////////
