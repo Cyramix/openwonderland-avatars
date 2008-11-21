@@ -717,6 +717,7 @@ public class DemoBase
         m_cameraProcessor.setRunInRenderer(true);
         
         wm.addUserData(CameraState.class, state);
+        wm.addUserData(FlexibleCameraProcessor.class, m_cameraProcessor);
          
         ProcessorCollectionComponent pcc = new ProcessorCollectionComponent();
         pcc.addProcessor(m_cameraProcessor);

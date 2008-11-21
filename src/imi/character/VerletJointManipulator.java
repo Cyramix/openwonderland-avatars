@@ -42,6 +42,8 @@ public class VerletJointManipulator implements PostAnimationJointManipulator
     private Vector3f localX = new Vector3f();
     private PMatrix  wristAnimationDelta = new PMatrix();
     
+    private boolean enabled = false;
+    
     public VerletJointManipulator(VerletArm verletArm, SkeletonNode skeletonNode)
     {
         arm      = verletArm;
@@ -50,6 +52,9 @@ public class VerletJointManipulator implements PostAnimationJointManipulator
     
     public void postAnimationModifiedMeshSpaceMatrixHook(PMatrix matrix, int jointIndex) 
     {
+        if (!enabled)
+            return;
+        
         switch (jointIndex)
         {
             case shoulder:
@@ -138,50 +143,85 @@ public class VerletJointManipulator implements PostAnimationJointManipulator
 
     private void modifyForeArm(PMatrix matrix) 
     {
-        PMatrix elbowMatrix = new PMatrix();
-        modifyElbow(elbowMatrix);
-        
-        matrix.set(elbowMatrix);
-        matrix.mul(skeleton.getSkinnedMeshJoint(foreArm).getBindPose());
-        
-        ////////////////////////////////////////////////////////////////////
-        
-//        Vector3f elbowPosition    = new Vector3f(arm.getElbowPosition());
-//        Vector3f wristPosition    = new Vector3f(arm.getWristPosition());
-//        PMatrix inverseModelWorldMatrix = arm.calculateInverseModelWorldMatrix();
-//        inverseModelWorldMatrix.transformPoint(elbowPosition);
-//        inverseModelWorldMatrix.transformPoint(wristPosition);
-//        Vector3f offsetFromElbow   = wristPosition.subtract(elbowPosition).normalize();
+//        PMatrix elbowMatrix = new PMatrix();
+//        modifyElbow(elbowMatrix);
 //        
-//        // The Y-Axis is aligned with the elbow offset
-//        Vector3f localY = new Vector3f(offsetFromElbow);
+//        matrix.set(elbowMatrix);
+//        matrix.mul(skeleton.getSkinnedMeshJoint(foreArm).getBindPose());
+////                
+////        Vector3f elbowBindPosition   = skeleton.getSkinnedMeshJoint(elbow).getBindPose().getTranslation();
+////        Vector3f foreArmBindPosition = skeleton.getSkinnedMeshJoint(foreArm).getBindPose().getTranslation();
+////        
+////        Vector3f direction = foreArmBindPosition.subtract(elbowBindPosition).normalize();
+////        
+////        elbowMatrix.transformNormal(direction);
+////        
+////        direction.multLocal(0.0862977f);
+////        matrix.setTranslation(elbowMatrix.getTranslation().add(direction));
 //        
-//        offsetFromElbow.multLocal(0.1331867f);
 //        
-//        // generate the local Z axis
+//        // Rotation
+//        PMatrix wristMatrix = new PMatrix();
+//        calculateWrist(wristMatrix);
+//        
+//        Vector3f localY = matrix.getTranslation().subtract(wristMatrix.getTranslation()).normalize();
 //        Vector3f localZ = localX.cross(localY).normalize();
 //        
 //        matrix.setLocalX(localX);
 //        matrix.setLocalY(localY);
 //        matrix.setLocalZ(localZ);
-//        matrix.setTranslation(elbowPosition.add(offsetFromElbow));
-//        matrix.mul(skeleton.getJointLocalModifier(foreArm));
+        
+        ////////////////////////////////////////////////////////////////////
+        
+        Vector3f elbowPosition    = new Vector3f(arm.getElbowPosition());
+        Vector3f wristPosition    = new Vector3f(arm.getWristPosition());
+        PMatrix inverseModelWorldMatrix = arm.calculateInverseModelWorldMatrix();
+        inverseModelWorldMatrix.transformPoint(elbowPosition);
+        inverseModelWorldMatrix.transformPoint(wristPosition);
+        Vector3f offsetFromElbow   = wristPosition.subtract(elbowPosition).normalize();
+        
+        // The Y-Axis is aligned with the elbow offset
+        Vector3f localY = new Vector3f(offsetFromElbow);
+        
+        offsetFromElbow.multLocal(0.1331867f);
+        
+        // generate the local Z axis
+        Vector3f localZ = localX.cross(localY).normalize();
+        
+        matrix.setLocalX(localX);
+        matrix.setLocalY(localY);
+        matrix.setLocalZ(localZ);
+        matrix.setTranslation(elbowPosition.add(offsetFromElbow));
+        matrix.mul(skeleton.getJointLocalModifier(foreArm));
+        
+        //////////////////////////////////////////////////////////////////////
+        
+        
     }
 
-    private void modifyWrist(PMatrix matrix) 
+    private void modifyWrist(PMatrix matrix)
     {
-        wristAnimationDelta.set(matrix.inverse());
-        
+        wristAnimationDelta.set(matrix.inverse());   
+        calculateWrist(matrix);
+        wristAnimationDelta.mul(matrix, wristAnimationDelta);   
+    }
+    
+    private void calculateWrist(PMatrix matrix) 
+    {
         PMatrix inverseModelWorldMatrix = arm.calculateInverseModelWorldMatrix();
         
         Vector3f wristPosition = new Vector3f(arm.getWristPosition());
         inverseModelWorldMatrix.transformPoint(wristPosition);
+                
+        // The Y-Axis is aligned with the foreArm offset
         
-        // The Y-Axis is aligned with the elbow offset
-        Vector3f elbowPosition    = new Vector3f(arm.getElbowPosition());
-        inverseModelWorldMatrix.transformPoint(elbowPosition);
-        Vector3f offsetFromElbow   = wristPosition.subtract(elbowPosition).normalize();
-        Vector3f localY = new Vector3f(offsetFromElbow);
+        PMatrix foreArmMatrix = new PMatrix();
+        modifyElbow(foreArmMatrix);
+        foreArmMatrix.mul(skeleton.getSkinnedMeshJoint(foreArm).getBindPose());
+        
+        Vector3f foreArmPosition    = new Vector3f(foreArmMatrix.getTranslation());
+        Vector3f offsetFromForeArm   = wristPosition.subtract(foreArmPosition).normalize();
+        Vector3f localY = new Vector3f(offsetFromForeArm);
                 
         // generate the local Z axis
         Vector3f localZ = localX.cross(localY).normalize();
@@ -192,13 +232,11 @@ public class VerletJointManipulator implements PostAnimationJointManipulator
         matrix.setTranslation(wristPosition);
         matrix.mul(skeleton.getJointLocalModifier(wrist));
         
-        
 //        PMatrix fixRotation = new PMatrix();
 //        fixRotation.buildRotationZ((float)Math.toRadians(45));
 //        fixRotation.mul(matrix, fixRotation);
 //        wristAnimationDelta.mul(fixRotation, wristAnimationDelta);   
         
-        wristAnimationDelta.mul(matrix, wristAnimationDelta);   
     }
     
     private void modifyHand(PMatrix matrix)
@@ -206,4 +244,19 @@ public class VerletJointManipulator implements PostAnimationJointManipulator
         matrix.mul(wristAnimationDelta, matrix);
     }
 
+    public boolean isEnabled() 
+    {
+        return enabled;
+    }
+    
+    public void setEnabled(boolean bEnabled)
+    {
+        enabled = bEnabled;
+    }
+    
+    public boolean toggleEnabled()
+    {
+        enabled = !enabled;
+        return enabled;
+    }
 }

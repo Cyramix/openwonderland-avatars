@@ -567,6 +567,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
                             // Set the joint manipulator on every skinned mesh (remember to set it again when adding new meshes!)
                             ArrayList<PPolygonSkinnedMeshInstance> skinnedMeshes = m_skeleton.getSkinnedMeshInstances();
                             m_armJointManipulator = new VerletJointManipulator(m_arm, m_skeleton);
+                            m_arm.setJointManipulator(m_armJointManipulator);
                             for(PPolygonSkinnedMeshInstance mesh : skinnedMeshes)
                                 mesh.setJointManipulator(m_armJointManipulator);
                             
@@ -796,7 +797,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         if (m_attributes.bUseSimpleSphereModel)
             m_modelInst.setDirty(true, true);
         
-        if (m_arm != null)
+        if (m_arm != null && m_arm.isEnabled())
         {
             m_armTimer += deltaTime;
             if (m_armTimer >= m_armTimeTick)

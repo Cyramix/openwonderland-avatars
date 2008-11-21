@@ -37,8 +37,13 @@ public class VerletArm
     private ArrayList<VerletParticle>  particles    = new ArrayList<VerletParticle>();
     private ArrayList<StickConstraint> constraints  = new ArrayList<StickConstraint>();
     
-    private Vector3f gravity = new Vector3f(0.0f, -9.8f, 0.0f);
+    //private Vector3f gravity = new Vector3f(0.0f, -9.8f, 0.0f);
+    private Vector3f gravity = new Vector3f(0.0f, 0.0f, 0.0f);
     private float velocityDampener = 0.9f;
+    private boolean enabled = false;;
+    private VerletJointManipulator jointManipulator = null;
+    
+    private Vector3f currentInputOffset = new Vector3f();
     
     public VerletArm(SkinnedMeshJoint shoulder, PPolygonModelInstance modelInstance) 
     {
@@ -58,6 +63,18 @@ public class VerletArm
     {
         // Attach the first particle to the shoulder joint
         particles.get(0).position(shoulderJoint.getTransform().getWorldMatrix(false).getTranslation());
+        
+        if (currentInputOffset.x != 0.0f || currentInputOffset.y != 0.0f || currentInputOffset.z != 0.0f)
+        {
+            // Apply current input offset to the wrist particle
+            PMatrix modelWorldInverse = modelInst.getTransform().getWorldMatrix(false).inverse();
+            System.out.println("before           "  + currentInputOffset);
+            modelWorldInverse.transformNormal(currentInputOffset);
+            particles.get(2).dislocate(currentInputOffset);
+            System.out.println("after                   "  + currentInputOffset);
+            // zero out the current input offset
+            currentInputOffset.zero();
+        }
         
 	// Verlet integration step
 	for (int i = 1; i < particles.size(); i++)
@@ -108,6 +125,36 @@ public class VerletArm
 
     public Vector3f getWristPosition() {
         return particles.get(2).getCurrentPosition();
+    }
+
+    public boolean isEnabled() 
+    {
+        return enabled;
+    }
+    
+    public void setEnabled(boolean bEnabled)
+    {
+        enabled = bEnabled;
+        if (jointManipulator != null)
+            jointManipulator.setEnabled(bEnabled);
+    }
+    
+    public boolean toggleEnabled()
+    {
+        enabled = !enabled;
+        if (jointManipulator != null)
+            jointManipulator.setEnabled(enabled);
+        return enabled;
+    }
+
+    public void setJointManipulator(VerletJointManipulator armJointManipulator) 
+    {
+        jointManipulator = armJointManipulator;
+    }
+        
+    public void addInputOffset(Vector3f offset)
+    {
+        currentInputOffset.addLocal(offset);
     }
     
     //////////////////////////////////////////////////////////////////////////

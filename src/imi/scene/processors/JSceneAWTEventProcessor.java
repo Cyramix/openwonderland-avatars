@@ -64,14 +64,14 @@ public final class JSceneAWTEventProcessor extends AWTEventProcessorComponent im
     {
         Object[] events = getEvents();
         m_scheme.processEvents(events);
-        for (int i=0; i<events.length; i++) 
-        {
-            if (events[i] instanceof KeyEvent) 
-            {
-                KeyEvent ke = (KeyEvent) events[i];
-                processKeyEvent(ke);
-            }
-        }
+//        for (int i=0; i<events.length; i++) 
+//        {
+//            if (events[i] instanceof KeyEvent) 
+//            {
+//                KeyEvent ke = (KeyEvent) events[i];
+//                processKeyEvent(ke);
+//            }
+//        }
     }
 
     private void processKeyEvent(KeyEvent ke) 
@@ -80,7 +80,7 @@ public final class JSceneAWTEventProcessor extends AWTEventProcessorComponent im
         
         if (ke.getID() == KeyEvent.KEY_PRESSED) 
         {
-            // Smooth normals toggle
+            // Cycle input schemes
             if (ke.getKeyCode() == KeyEvent.VK_ADD) 
             {
                 index = m_schemeList.indexOf(m_scheme);
@@ -93,7 +93,7 @@ public final class JSceneAWTEventProcessor extends AWTEventProcessorComponent im
                 m_scheme.setJScene(m_jscene);
             }
             
-            // Toggle PRenderer mesh display
+            // Cycle input schemes
             if (ke.getKeyCode() == KeyEvent.VK_SUBTRACT)
             {
                 index = m_schemeList.indexOf(m_scheme);

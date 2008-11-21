@@ -20,14 +20,12 @@ package imi.tests;
 
 import com.jme.math.Vector3f;
 import imi.character.ninja.NinjaAvatar;
-import imi.character.objects.LocationNode;
 import imi.character.objects.ObjectCollection;
+import imi.scene.processors.FlexibleCameraProcessor;
 import org.jdesktop.mtgame.WorldManager;
 
 
 import imi.scene.processors.JSceneEventProcessor;
-import imi.utils.graph.Connection;
-import imi.utils.graph.Connection.ConnectionDirection;
 import imi.utils.input.NinjaControlScheme;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -61,6 +59,7 @@ public class COLLADA_CharacterTest extends DemoBase
         
         // Create ninja input scheme
         NinjaControlScheme control = (NinjaControlScheme)((JSceneEventProcessor)wm.getUserData(JSceneEventProcessor.class)).setDefault(new NinjaControlScheme(null));
+        ((FlexibleCameraProcessor)wm.getUserData(FlexibleCameraProcessor.class)).setControl(control);
         
         // Create avatar
         NinjaAvatar avatar = new NinjaAvatar("Avatar", wm);

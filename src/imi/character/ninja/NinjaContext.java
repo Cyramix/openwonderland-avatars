@@ -70,6 +70,7 @@ public class NinjaContext extends GameContext
         Punch,
         SitOnGround,
         ToggleSteering,
+        ToggleArm,
         GoSit,
         GoTo1,
         GoTo2,
@@ -160,9 +161,13 @@ public class NinjaContext extends GameContext
     @Override
     protected void triggerAlert(int trigger, boolean pressed)
     {
-        // Toggle steering behavior towards the current goal
+        // Toggle automatic steering behavior towards the current goal
         if (trigger == TriggerNames.ToggleSteering.ordinal() && pressed)
             steering.toggleEnable();
+        
+        // Toggle manual control over the right arm
+        if (trigger == TriggerNames.ToggleArm.ordinal() && pressed)
+            ninja.getArm().toggleEnabled();
     
         // Find nearest chair and sit on it
         else if (trigger == TriggerNames.GoSit.ordinal() && pressed)

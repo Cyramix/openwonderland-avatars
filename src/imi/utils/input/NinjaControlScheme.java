@@ -17,9 +17,12 @@
  */
 package imi.utils.input;
 
+import com.jme.math.Vector3f;
 import imi.character.ninja.Ninja;
 import imi.character.objects.ObjectCollection;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseWheelEvent;
 import java.util.ArrayList;
 
 /**
@@ -40,6 +43,14 @@ public class NinjaControlScheme extends InputScheme
     private boolean bCommandEntireTeam = false;
     private ObjectCollection objects = null;
     
+    private int currentMouseX = 0;
+    private int currentMouseY = 0;
+    private int lastMouseX    = 0;
+    private int lastMouseY    = 0;
+    private boolean mouseDown = false;
+    
+    
+    
     public NinjaControlScheme(Ninja master)
     {
         super();
@@ -59,9 +70,58 @@ public class NinjaControlScheme extends InputScheme
                 KeyEvent ke = (KeyEvent) events[i];
                 processKeyEvent(ke);
             }
+            
+            if (events[i] instanceof MouseEvent)
+            {
+                if (ninjaTeam.get(currentNinja).getArm() != null &&  ninjaTeam.get(currentNinja).getArm().isEnabled())
+                {
+                    Vector3f offset = new Vector3f();
+
+                    MouseEvent me = (MouseEvent) events[i];
+                    if (me.getID() == MouseEvent.MOUSE_PRESSED && me.getButton() == MouseEvent.BUTTON3)
+                    {
+                        // Mouse pressed, reset initial settings
+                        currentMouseX = me.getX();
+                        currentMouseY = me.getY();
+                        lastMouseX    = me.getX();
+                        lastMouseY    = me.getY();
+                        mouseDown = !mouseDown;
+                    }
+
+                    if (mouseDown)//me.getID() == MouseEvent.MOUSE_DRAGGED) 
+                    {
+                        // Set the current
+                        currentMouseX = me.getX();
+                        currentMouseY = me.getY();
+                        
+                        // Calculate delta
+                        int deltaX = currentMouseX - lastMouseX;
+                        int deltaY = currentMouseY - lastMouseY;
+                        
+                        // Translate to input offset
+                        offset.x = deltaX * -0.025f;
+                        offset.z = deltaY * -0.025f;
+                        
+                        // Set the last
+                        lastMouseX    = me.getX();
+                        lastMouseY    = me.getY();
+                    }
+
+                    if (me.getID() == MouseEvent.MOUSE_WHEEL)
+                    {
+                        if (me instanceof MouseWheelEvent)
+                        {
+                            int scroll = ((MouseWheelEvent)me).getWheelRotation();
+                            offset.y   = scroll * -0.05f;
+                        }
+                    }
+                                        
+                    ninjaTeam.get(currentNinja).getArm().addInputOffset(offset);
+                }
+            }
         }
     }
-       
+    
     private void processKeyEvent(KeyEvent ke) 
     {           
         if (ke.getID() == KeyEvent.KEY_RELEASED) 
