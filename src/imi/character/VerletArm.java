@@ -37,9 +37,9 @@ public class VerletArm
     private ArrayList<VerletParticle>  particles    = new ArrayList<VerletParticle>();
     private ArrayList<StickConstraint> constraints  = new ArrayList<StickConstraint>();
     
-    //private Vector3f gravity = new Vector3f(0.0f, -9.8f, 0.0f);
-    private Vector3f gravity = new Vector3f(0.0f, 0.0f, 0.0f);
-    private float velocityDampener = 0.9f;
+    private Vector3f gravity = new Vector3f(0.0f, -9.8f * 2.0f, 0.0f);
+    //private Vector3f gravity = new Vector3f(0.0f, 0.0f, 0.0f);
+    private float velocityDampener = 0.8f;
     private boolean enabled = false;;
     private VerletJointManipulator jointManipulator = null;
     
@@ -60,9 +60,9 @@ public class VerletArm
         
         // Lets make an arm
         Vector3f shoulderPosition = shoulderJoint.getTransform().getWorldMatrix(false).getTranslation();
-        particles.add(new VerletParticle(shoulderPosition));
-        particles.add(new VerletParticle(shoulderPosition.add(Vector3f.UNIT_Y.mult(-0.246216f))));
-        particles.add(new VerletParticle(shoulderPosition.add(Vector3f.UNIT_Y.mult(-0.4852301f))));
+        particles.add(new VerletParticle(shoulderPosition, false));
+        particles.add(new VerletParticle(shoulderPosition.add(Vector3f.UNIT_Y.mult(-0.246216f)), true));
+        particles.add(new VerletParticle(shoulderPosition.add(Vector3f.UNIT_Y.mult(-0.4852301f)), false));
         constraints.add(new StickConstraint(shoulder, elbow, 0.246216f));
         constraints.add(new StickConstraint(elbow, wrist, 0.2390151f));
     }
@@ -90,7 +90,7 @@ public class VerletArm
             Vector3f shoulderPosition = particles.get(shoulder).getCurrentPosition();
             if (newWristPosition.distance(shoulderPosition) < maxReach)
             {
-                float backReach = 0.01f;
+                float backReach = 0.0f;
                 
                 Vector3f directionFromShoulderToWrist = newWristPosition.subtract(shoulderPosition).normalize();
                 if (modelWorld.getLocalZ().dot(directionFromShoulderToWrist) > backReach)
@@ -105,13 +105,16 @@ public class VerletArm
 	// Verlet integration step
 	for (int i = 1; i < particles.size(); i++)
 	{
-            particles.get(i).setForceAccumulator(gravity);
+            if (particles.get(i).isMoveable())
+                particles.get(i).setForceAccumulator(gravity);
+            else
+                particles.get(i).setForceAccumulator(Vector3f.ZERO);
             particles.get(i).scaleVelocity(velocityDampener);
             particles.get(i).verletIntegration(physicsUpdateTime);
 	}
         
 	// Solving constraints by relaxation
-	for(int i = 0; i < 3; i++)
+	for(int i = 0; i < 5; i++)
             satisfyConstraints(); 
     }
     
@@ -126,8 +129,23 @@ public class VerletArm
             float fDeltaLength          =	vDelta.length();
             float fDiff			=	(fDeltaLength - (constraint.getRestDistance())) / fDeltaLength;
 
-            particles.get(constraint.getParticle1()).moveCurrentPosition(	vDelta.mult(-0.5f * fDiff)	);
-            particles.get(constraint.getParticle2()).moveCurrentPosition(	vDelta.mult( 0.5f * fDiff)	);
+            VerletParticle P1 = particles.get(constraint.getParticle1());
+            VerletParticle P2 = particles.get(constraint.getParticle2());
+            
+            if (!P1.isMoveable())
+            {
+                if (!P2.isMoveable())
+                    return;
+                
+                P2.moveCurrentPosition(	vDelta.mult(fDiff));    
+            }
+            else if (!P2.isMoveable())
+                P1.moveCurrentPosition(	vDelta.mult(-fDiff));    
+            else
+            {
+                P1.moveCurrentPosition(	vDelta.mult(-0.5f * fDiff) );
+                P2.moveCurrentPosition(	vDelta.mult( 0.5f * fDiff) );
+            }
         }
     }
     
@@ -212,10 +230,12 @@ public class VerletArm
      */
     public void setManualDriveReachUp(boolean manualDriveReachUp) {
         this.manualDriveReachUp = manualDriveReachUp;
+        jointManipulator.setManualDriveReachUp(manualDriveReachUp);
     }
     
     public void toggleManualDriveReachUp(){
         manualDriveReachUp = !manualDriveReachUp;
+        jointManipulator.setManualDriveReachUp(manualDriveReachUp);
     }
     
     //////////////////////////////////////////////////////////////////////////
@@ -229,10 +249,13 @@ public class VerletArm
         
         private Vector3f    integrationHelper   = new Vector3f();
         
-        public VerletParticle(Vector3f position)
+        private boolean     moveable            = true;
+        
+        public VerletParticle(Vector3f position, boolean isMoveable)
         {
             currentPosition.set(position);
             previousPosition.set(position);
+            moveable = isMoveable;
         }
         
         public void verletIntegration(float physicsUpdateTime)
@@ -322,8 +345,15 @@ public class VerletArm
 
         public void addToForceAccumulator(Vector3f force) {
             forceAccumulator.addLocal(force);
-        }        
-        
+        }
+
+        public boolean isMoveable() {
+            return moveable;
+        }
+
+        public void setMoveable(boolean moveable) {
+            this.moveable = moveable;
+        }
     }
     
     //////////////////////////////////////////////////////////////////////////

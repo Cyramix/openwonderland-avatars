@@ -168,7 +168,10 @@ public class NinjaContext extends GameContext
         
         // Toggle manual control over the right arm
         if (trigger == TriggerNames.ToggleArm.ordinal() && pressed)
+        {
+            ninja.setCameraOnMe();
             ninja.getArm().toggleEnabled();
+        }
     
         // Find nearest chair and sit on it
         else if (trigger == TriggerNames.GoSit.ordinal() && pressed)
@@ -182,10 +185,12 @@ public class NinjaContext extends GameContext
         {
            //ninja.getObjectCollection().testLightToggle(); // test
            
-            steering.clearTasks();
-            GoToNearestLocation();
-            if (location != null)
-                steering.addTaskToBottom(new FollowPath("MyPath", location, this));
+            System.out.println("fix: " + ninja.getPosition());
+            
+//            steering.clearTasks();
+//            GoToNearestLocation();
+//            if (location != null)
+//                steering.addTaskToBottom(new FollowPath("MyPath", location, this));
         }
         else if (trigger == TriggerNames.GoTo2.ordinal() && pressed)
         {

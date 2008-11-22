@@ -123,7 +123,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
     private   VerletJointManipulator m_armJointManipulator = null;
     private   float     m_armTimer    = 0.0f;
     private   float     m_armTimeTick = 1.0f / 60.0f;
-        
+    
     public class Attributes
     {
         public class AttachmentParams
@@ -561,9 +561,9 @@ public abstract class Character extends Entity implements SpatialObject, Animati
                             // The verlet arm!
                             SkinnedMeshJoint shoulderJoint = (SkinnedMeshJoint) m_skeleton.findChild("rightArm");
                             m_arm = new VerletArm(shoulderJoint, m_modelInst);
-                            VerletVisualManager visual = new VerletVisualManager("avatar arm visuals", m_wm);
-                            visual.addVerletObject(m_arm);
-                            visual.setWireframe(true);
+//                            VerletVisualManager visual = new VerletVisualManager("avatar arm visuals", m_wm);
+//                            visual.addVerletObject(m_arm);
+//                            visual.setWireframe(true);
                             // Set the joint manipulator on every skinned mesh (remember to set it again when adding new meshes!)
                             ArrayList<PPolygonSkinnedMeshInstance> skinnedMeshes = m_skeleton.getSkinnedMeshInstances();
                             m_armJointManipulator = new VerletJointManipulator(m_arm, m_skeleton);
@@ -861,6 +861,11 @@ public abstract class Character extends Entity implements SpatialObject, Animati
             return;
         m_facialAnimationQ.addTransition(new TransitionCommand(cycleIndex, fTimeIn, PlaybackMode.PlayOnce, false));
         m_facialAnimationQ.addTransition(new TransitionCommand(cycleIndex, fTimeOut, PlaybackMode.PlayOnce, true));
+    }
+    
+    public void setCameraOnMe() 
+    {
+        //m_wm.getUserData(arg0);
     }
     
     /**

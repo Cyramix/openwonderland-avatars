@@ -44,6 +44,8 @@ public class VerletJointManipulator implements PostAnimationJointManipulator
     
     private boolean enabled = false;
     
+    private boolean manualDriveReachUp = true; // otherwise reaching forward
+    
     public VerletJointManipulator(VerletArm verletArm, SkeletonNode skeletonNode)
     {
         arm      = verletArm;
@@ -89,14 +91,26 @@ public class VerletJointManipulator implements PostAnimationJointManipulator
         arm.calculateInverseModelWorldMatrix().transformPoint(elbowPosition);
         Vector3f localY = elbowPosition.subtract(shoulderPosition).normalize();
         localX.set(shoulderJoint.getMeshSpace().getLocalXNormalized());
-        Vector3f localZ = localX.cross(localY).normalize();
-        localX.set(localY.cross(localZ).normalize());
+        Vector3f localZ = new Vector3f(Vector3f.UNIT_Y);
+//        if (localZ.dot(localY) < -0.99f)
+//        {
+//            localZ.set(localX.cross(localY).normalize());
+//        }
+//        else
+        {
+            localX.set(localY.cross(localZ).normalize());
+            localZ.set(localX.cross(localY).normalize());
+        }
         
         matrix.setLocalX(localX);
         matrix.setLocalY(localY);
         matrix.setLocalZ(localZ);
         matrix.setTranslation(shoulderPosition);
         matrix.mul(skeleton.getJointLocalModifier(shoulder));
+        
+        
+       // SkinnedMeshJoint shoulderParentJoint = shoulderJoint.getParentJoint();
+        
     }
 
     private void modifyUpperArm(PMatrix matrix) 
@@ -124,21 +138,31 @@ public class VerletJointManipulator implements PostAnimationJointManipulator
     
     private void modifyElbow(PMatrix matrix) 
     {   
+        PMatrix inverseModelWorldMatrix = arm.calculateInverseModelWorldMatrix();
+        
         Vector3f elbowPosition = new Vector3f(arm.getElbowPosition());
-        arm.calculateInverseModelWorldMatrix().transformPoint(elbowPosition);
+        inverseModelWorldMatrix.transformPoint(elbowPosition);
         
         // The Y-Axis is aligned with the shoulder offset
         SkinnedMeshJoint shoulderJoint = skeleton.getSkinnedMeshJoint(shoulder);
-        Vector3f shoulderPosition = shoulderJoint.getMeshSpace().getTranslation();
-        Vector3f localY   = elbowPosition.subtract(shoulderPosition).normalize();
-        // generate the local Z axis
-        Vector3f localZ = localX.cross(localY).normalize();
         
-        matrix.setLocalX(localX);
+        Vector3f wristPosition = new Vector3f(arm.getWristPosition());
+        inverseModelWorldMatrix.transformPoint(wristPosition);
+        Vector3f localY   = wristPosition.subtract(elbowPosition).normalize();
+        Vector3f shoulderPosition = shoulderJoint.getMeshSpace().getTranslation();
+        
+        inverseModelWorldMatrix.transformPoint(wristPosition);
+        Vector3f shoulderToWrist = wristPosition.subtract(shoulderPosition).normalize();
+        Vector3f localX2 = shoulderToWrist.cross(Vector3f.UNIT_Y).normalize();
+                
+        Vector3f localZ = localX2.cross(localY);
+        
+        matrix.setLocalX(localX2);
         matrix.setLocalY(localY);
         matrix.setLocalZ(localZ);
         matrix.setTranslation(elbowPosition);
         matrix.mul(skeleton.getJointLocalModifier(elbow));
+        
     }
 
     private void modifyForeArm(PMatrix matrix) 
@@ -173,25 +197,30 @@ public class VerletJointManipulator implements PostAnimationJointManipulator
         
         ////////////////////////////////////////////////////////////////////
         
+        SkinnedMeshJoint shoulderJoint = skeleton.getSkinnedMeshJoint(shoulder);
+        Vector3f shoulderPosition = shoulderJoint.getMeshSpace().getTranslation();
         Vector3f elbowPosition    = new Vector3f(arm.getElbowPosition());
         Vector3f wristPosition    = new Vector3f(arm.getWristPosition());
         PMatrix inverseModelWorldMatrix = arm.calculateInverseModelWorldMatrix();
         inverseModelWorldMatrix.transformPoint(elbowPosition);
         inverseModelWorldMatrix.transformPoint(wristPosition);
-        Vector3f offsetFromElbow   = wristPosition.subtract(elbowPosition).normalize();
+        
+        Vector3f elbowToWrist   = wristPosition.subtract(elbowPosition).normalize();
         
         // The Y-Axis is aligned with the elbow offset
-        Vector3f localY = new Vector3f(offsetFromElbow);
+        Vector3f localY = new Vector3f(elbowToWrist);
         
-        offsetFromElbow.multLocal(0.1331867f);
+        elbowToWrist.multLocal(0.0862977f);
         
-        // generate the local Z axis
-        Vector3f localZ = localX.cross(localY).normalize();
+        Vector3f shoulderToWrist   = wristPosition.subtract(shoulderPosition).normalize();
+        Vector3f localX2 = shoulderToWrist.cross(localY).normalize();
         
-        matrix.setLocalX(localX);
+        Vector3f localZ = localX2.cross(localY).normalize();
+        
+        matrix.setLocalX(localX2);
         matrix.setLocalY(localY);
         matrix.setLocalZ(localZ);
-        matrix.setTranslation(elbowPosition.add(offsetFromElbow));
+        matrix.setTranslation(elbowPosition.add(elbowToWrist));
         matrix.mul(skeleton.getJointLocalModifier(foreArm));
         
         //////////////////////////////////////////////////////////////////////
@@ -213,30 +242,36 @@ public class VerletJointManipulator implements PostAnimationJointManipulator
         Vector3f wristPosition = new Vector3f(arm.getWristPosition());
         inverseModelWorldMatrix.transformPoint(wristPosition);
                 
-        // The Y-Axis is aligned with the foreArm offset
+        SkinnedMeshJoint shoulderJoint = skeleton.getSkinnedMeshJoint(shoulder);
+        Vector3f shoulderPosition = shoulderJoint.getMeshSpace().getTranslation();
+        Vector3f localY = wristPosition.subtract(shoulderPosition).normalize();
         
-        PMatrix foreArmMatrix = new PMatrix();
-        modifyElbow(foreArmMatrix);
-        foreArmMatrix.mul(skeleton.getSkinnedMeshJoint(foreArm).getBindPose());
+        Vector3f localZ = new Vector3f();
+        Vector3f localX2 = new Vector3f();
         
-        Vector3f foreArmPosition    = new Vector3f(foreArmMatrix.getTranslation());
-        Vector3f offsetFromForeArm   = wristPosition.subtract(foreArmPosition).normalize();
-        Vector3f localY = new Vector3f(offsetFromForeArm);
-                
-        // generate the local Z axis
-        Vector3f localZ = localX.cross(localY).normalize();
+        if (manualDriveReachUp)
+        {
+            localZ.set(localY);
+            localY.set(Vector3f.UNIT_Y);
+            localX2.set(localZ.cross(localY).normalize());
+            localZ.set(localX2.cross(localY).normalize());
+        }
+        else
+        {
+            localX2.set(localY.cross(Vector3f.UNIT_Y).normalize());
+            localZ.set(localX2.cross(localY).normalize());
+        }
         
-        matrix.setLocalX(localX);
+        matrix.setLocalX(localX2);
         matrix.setLocalY(localY);
         matrix.setLocalZ(localZ);
         matrix.setTranslation(wristPosition);
+        
+        PMatrix fixRotation = new PMatrix();
+        fixRotation.buildRotationZ((float)Math.toRadians(40));
+        matrix.mul(fixRotation);
+        
         matrix.mul(skeleton.getJointLocalModifier(wrist));
-        
-//        PMatrix fixRotation = new PMatrix();
-//        fixRotation.buildRotationZ((float)Math.toRadians(45));
-//        fixRotation.mul(matrix, fixRotation);
-//        wristAnimationDelta.mul(fixRotation, wristAnimationDelta);   
-        
     }
     
     private void modifyHand(PMatrix matrix)
@@ -259,4 +294,14 @@ public class VerletJointManipulator implements PostAnimationJointManipulator
         enabled = !enabled;
         return enabled;
     }
+
+    public boolean isManualDriveReachUp() {
+        return manualDriveReachUp;
+    }
+
+    public void setManualDriveReachUp(boolean manualDriveReachUp) {
+        this.manualDriveReachUp = manualDriveReachUp;
+    }
+    
+    
 }

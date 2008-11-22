@@ -35,6 +35,7 @@ import org.jdesktop.mtgame.WorldManager;
  */
 public class Ninja extends imi.character.Character
 {
+
     public class NinjaAttributes extends Attributes
     {
         public NinjaAttributes(String name) {
