@@ -24,6 +24,10 @@ import imi.loaders.collada.ColladaLoaderParams;
 import imi.loaders.ms3d.SkinnedMesh_MS3D_Importer;
 import imi.scene.PScene;
 import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.LinkedList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -144,11 +148,17 @@ public class RepositoryAsset extends ProcessorComponent
                 {
                     // TODO expose texture configuration settings
                     Texture tex = null;
-
-                    tex = TextureManager.loadTexture(m_descriptor.getLocation(),
-                                                    Texture.MinificationFilter.Trilinear,
-                                                    Texture.MagnificationFilter.Bilinear);
-
+                    try {
+                        URL loc = m_descriptor.getLocation();
+                        URLConnection conn = loc.openConnection();
+                        InputStream in = conn.getInputStream();
+                        tex = TextureManager.loadTexture(loc,
+                                                        Texture.MinificationFilter.Trilinear,
+                                                        Texture.MagnificationFilter.Bilinear);
+                    } catch (Exception exception) {
+                        System.out.println(exception.getMessage() + "... Retrying");
+                        loadSelf();
+                    }
 
                     if (tex != null)
                     {

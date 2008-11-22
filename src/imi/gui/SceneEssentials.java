@@ -936,7 +936,7 @@ public class SceneEssentials {
             }
             System.out.println(destinationFile + "\t" + numWritten);
         } catch (Exception exception) {
-            System.out.print(exception.getMessage() + "... Retrying");
+            System.out.println(exception.getMessage() + "... Retrying");
             downloadURLFile(address, destinationFile);
         } finally {
             try {
@@ -1152,7 +1152,9 @@ public class SceneEssentials {
                 camState.setTargetNeedsUpdate(true);
             } else if (curCameraProcessor.getState() instanceof FirstPersonCamState) {
                 FirstPersonCamState camState = ((FirstPersonCamState)curCameraProcessor.getState());
-                Vector3f pos = pmInstance.getTransform().getWorldMatrix(false).getTranslation();
+                if (pmInstance.getBoundingSphere() == null)
+                    pmInstance.calculateBoundingSphere();
+                Vector3f pos = pmInstance.getBoundingSphere().getCenter();
                 pos.z = -3.2f;
                 camState.setCameraPosition(pos);
             }

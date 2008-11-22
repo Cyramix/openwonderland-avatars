@@ -1098,7 +1098,8 @@ public class PScene extends PNode implements RepositoryUser
             }
             catch (Exception ex)
             {
-                monkeyTexture = null;
+                //monkeyTexture = null;
+                loadTexture(textureLocation);
             }
             
             if (monkeyTexture != null)

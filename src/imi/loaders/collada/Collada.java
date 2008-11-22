@@ -73,7 +73,11 @@ import imi.scene.PJoint;
 
 import imi.scene.utils.tree.PPolygonMeshAssemblingProcessor;
 import imi.scene.utils.tree.TreeTraverser;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URL;
+import java.net.URLConnection;
 import javolution.util.FastMap;
 import org.collada.xml_walker.ColladaMaterial;
 
@@ -260,47 +264,107 @@ public class Collada
 
 
 
-    public boolean load(URL colladaFile)
-    {
+//    public boolean load(URL colladaFile)
+//    {
+//        m_fileLocation = colladaFile;
+//        try
+//        {
+//            javax.xml.bind.JAXBContext jc = javax.xml.bind.JAXBContext.newInstance("org.collada.colladaschema");
+//            javax.xml.bind.Unmarshaller unmarshaller = jc.createUnmarshaller();
+//            org.collada.colladaschema.COLLADA collada = (org.collada.colladaschema.COLLADA) unmarshaller.unmarshal(colladaFile);
+//            doLoad(collada);
+//            return true;
+//        }
+//        catch (JAXBException ex)
+//        {
+//            Logger.getLogger("global").log(Level.SEVERE, null, ex);
+//            return false;
+//        }
+//    }
+    
+//    public boolean load(PScene loadingPScene, URL colladaFile)
+//    {
+//        boolean result = false;
+//        m_fileLocation = colladaFile;
+//        try
+//        {
+//            m_pLoadingPScene = loadingPScene;
+//            m_pLoadingPScene.setUseRepository(false); // the repository will extract the data later
+//
+//            javax.xml.bind.JAXBContext jc = javax.xml.bind.JAXBContext.newInstance("org.collada.colladaschema");
+//            javax.xml.bind.Unmarshaller unmarshaller = jc.createUnmarshaller();
+//            org.collada.colladaschema.COLLADA collada =
+//                    (org.collada.colladaschema.COLLADA) unmarshaller.unmarshal(colladaFile);
+//
+//            doLoad(collada);
+//            result = true;
+//        }
+//        catch (JAXBException ex)
+//        {
+//            Logger.getLogger("global").log(Level.SEVERE, null, ex);
+//        }
+//        return result;
+//    }
+
+    public boolean load(URL colladaFile) {
         m_fileLocation = colladaFile;
-        try
-        {
+        URLConnection conn = null;
+        InputStream in = null;
+        try {
+            conn = colladaFile.openConnection();
+            in = conn.getInputStream();
             javax.xml.bind.JAXBContext jc = javax.xml.bind.JAXBContext.newInstance("org.collada.colladaschema");
             javax.xml.bind.Unmarshaller unmarshaller = jc.createUnmarshaller();
-            org.collada.colladaschema.COLLADA collada = (org.collada.colladaschema.COLLADA) unmarshaller.unmarshal(colladaFile);
+            org.collada.colladaschema.COLLADA collada = (org.collada.colladaschema.COLLADA) unmarshaller.unmarshal(in);
             doLoad(collada);
             return true;
-        }
-        catch (JAXBException ex)
-        {
-            Logger.getLogger("global").log(Level.SEVERE, null, ex);
-            return false;
+        } catch (Exception exception) {
+            if (!exception.getMessage().equals("null")) {
+                System.out.print(exception.getMessage() + "... Retrying");
+                load(colladaFile);
+            }
+        } finally {
+            try {
+                if (in != null) {
+                    in.close();
+                }
+                return true;
+            } catch (IOException ioe) {
+                return false;
+            }
         }
     }
 
-    
-    public boolean load(PScene loadingPScene, URL colladaFile)
-    {
-        boolean result = false;
+    public boolean load(PScene loadingPScene, URL colladaFile) {
         m_fileLocation = colladaFile;
-        try
-        {
+        URLConnection conn = null;
+        InputStream in = null;
+        try {
+            conn = colladaFile.openConnection();
+            in = conn.getInputStream();
             m_pLoadingPScene = loadingPScene;
             m_pLoadingPScene.setUseRepository(false); // the repository will extract the data later
 
             javax.xml.bind.JAXBContext jc = javax.xml.bind.JAXBContext.newInstance("org.collada.colladaschema");
             javax.xml.bind.Unmarshaller unmarshaller = jc.createUnmarshaller();
-            org.collada.colladaschema.COLLADA collada =
-                    (org.collada.colladaschema.COLLADA) unmarshaller.unmarshal(colladaFile);
-
+            org.collada.colladaschema.COLLADA collada = (org.collada.colladaschema.COLLADA) unmarshaller.unmarshal(in);
             doLoad(collada);
-            result = true;
+            return true;
+        } catch (Exception exception) {
+            if (!exception.getMessage().equals("null")) {
+                System.out.print(exception.getMessage() + "... Retrying");
+                load(loadingPScene, colladaFile);
+            }
+        } finally {
+            try {
+                if (in != null) {
+                    in.close();
+                }
+                return true;
+            } catch (IOException ioe) {
+                return false;
+            }
         }
-        catch (JAXBException ex)
-        {
-            Logger.getLogger("global").log(Level.SEVERE, null, ex);
-        }
-        return result;
     }
 
     public void loadSkinnedMesh(PScene pScene, URL location)
