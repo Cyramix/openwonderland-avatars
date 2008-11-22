@@ -38,7 +38,7 @@ class RepositoryWorker extends ProcessorComponent
     RepositoryAsset     m_repoAsset     = null; // Source
     SharedAsset         m_asset         = null; // Destination
     RepositoryUser      m_user          = null; // Caller
-    long                m_maxQueryTime  = 0l;   // How many nano-seconds to wait before giving up
+    long                m_maxQueryTime  = 0l;   // How many milliseconds to wait before giving up
     long                m_startTime     = 0l;
    
     ConcurrentHashMap<AssetDescriptor, RepositoryAsset> m_collection = null;
@@ -49,7 +49,7 @@ class RepositoryWorker extends ProcessorComponent
             RepositoryAsset repoAsset, ConcurrentHashMap collection,
             long maxQueryTime)
     {
-        m_startTime     = System.nanoTime();
+        m_startTime     = System.currentTimeMillis();
         
         m_home          = home;
         m_repoAsset     = repoAsset;
@@ -120,14 +120,14 @@ class RepositoryWorker extends ProcessorComponent
                 // If this asset is a geometry we will set the shared asset for it so it can save to a configuration file later
                 if (m_asset.getAssetData() instanceof PPolygonMesh)
                     ((PPolygonMesh)m_asset.getAssetData()).setSharedAsset(m_asset);
-                    
+       
                 m_user.receiveAsset(m_asset);
                 ShutDown();
             }
             else
             {
                 // Not loaded, has the timeout expired?
-                if ((System.nanoTime() - m_startTime) > m_maxQueryTime)
+                if ((System.currentTimeMillis() - m_startTime) > m_maxQueryTime)
                 {
                     // remove this RepositoryAsset from the collection.
                     m_collection.remove(m_asset.getDescriptor());
