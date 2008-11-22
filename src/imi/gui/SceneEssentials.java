@@ -714,6 +714,7 @@ public class SceneEssentials {
 
         pRootInstruction.addInstruction(InstructionNames.loadGeometry, data[3]);
         PMatrix tempSolution = new PMatrix(new Vector3f(0.0f,(float) Math.toRadians(180), 0.0f), new Vector3f(1.0f, 1.0f, 1.0f), Vector3f.ZERO);
+        //PMatrix tempSolution = new PMatrix();
         pRootInstruction.addInstruction(InstructionNames.addAttachment, data[0], szName, tempSolution);
         pProcessor.execute(pRootInstruction);
 
@@ -891,7 +892,14 @@ public class SceneEssentials {
     }
 
     public void downloadZipStream(String link, File destination) {
+        int a = destination.toString().lastIndexOf("/");
+        int b = destination.toString().lastIndexOf(".");
+        String fold = destination.toString().substring(a, b) + "/";
+        File desti = new File(destination.getParent(), fold);
+        desti.mkdirs();
+        
         downloadURLFile(link, destination);
+
         try {
             BufferedOutputStream dest = null;
             BufferedInputStream is = null;
@@ -904,7 +912,7 @@ public class SceneEssentials {
                 is = new BufferedInputStream(zipfile.getInputStream(entry));
                 int count;
                 byte data[] = new byte[BUFFER];
-                FileOutputStream fos = new FileOutputStream(destination.getParent() + "/" + entry.getName());
+                FileOutputStream fos = new FileOutputStream(desti + "/" + entry.getName());
                 dest = new BufferedOutputStream(fos, BUFFER);
                 while ((count = is.read(data, 0, BUFFER)) != -1) {
                     dest.write(data, 0, count);
@@ -965,17 +973,16 @@ public class SceneEssentials {
         else
             currentHiProcessors.clear();
 
-        URL bindPose = findBindPose(data.getParentFile());
-        final ArrayList<URL> animations = findAnims(data.getParentFile());
+        URL bindPose = findBindPose(data);
+        final ArrayList<URL> animations = findAnims(data);
         String[] anim = new String[animations.size()];
         for (int i = 0; i < animations.size(); i++) {
             anim[i] = animations.get(i).toString();
         }
 
-        int a,b;
-        a = bindPose.toString().lastIndexOf("/");
-        b = bindPose.toString().lastIndexOf(".");
-        String name = bindPose.toString().substring(a+1, b);
+        int a;
+        a = data.toString().lastIndexOf("/");
+        String name = data.toString().substring(a+1);
 
         if (clear) {
             SharedAsset character = new SharedAsset(currentPScene.getRepository(), new AssetDescriptor(SharedAssetType.COLLADA_Model, bindPose));

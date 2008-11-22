@@ -968,11 +968,14 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
         String destination = System.getProperty("user.dir");
         destination += "/temp/";
         File dest = new File(destination);
-        dest.mkdir();
         int index = data.get(0)[0].lastIndexOf("/");
+        int indez = data.get(0)[0].lastIndexOf(".");
         String name = data.get(0)[0].substring(index+1);
+        String fold = data.get(0)[0].substring(index+1, indez);
+        fold += "/";
         dest = new File(dest, name);
         m_sceneData.downloadZipStream(data.get(0)[0], dest);
+        dest = new File(dest.getParent(), fold);
         loadMaleAvatar(dest);
         dest.getParentFile().deleteOnExit();
         ////////////////////////////////////////////////////////////////////////
@@ -1006,12 +1009,15 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
         String destination = System.getProperty("user.dir");
         destination += "/temp/";
         File dest = new File(destination);
-        dest.mkdir();
         int index = data.get(0)[0].lastIndexOf("/");
+        int indez = data.get(0)[0].lastIndexOf(".");
         String name = data.get(0)[0].substring(index+1);
+        String fold = data.get(0)[0].substring(index+1, indez);
+        fold += "/";
         dest = new File(dest, name);
         m_sceneData.downloadZipStream(data.get(0)[0], dest);
-        loadFemaleAvatar(dest);
+        dest = new File(dest.getParent(), fold);
+        loadMaleAvatar(dest);
         dest.getParentFile().deleteOnExit();
         ////////////////////////////////////////////////////////////////////////
         // ZIP Stream TEST
