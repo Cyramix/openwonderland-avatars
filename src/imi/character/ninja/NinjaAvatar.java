@@ -40,13 +40,13 @@ public class NinjaAvatar extends Ninja
             // Animations
             ArrayList<String> anims = new ArrayList<String>();
             anims.add("assets/models/collada/Avatars/Male/Male_Idle.dae");
-//            anims.add("assets/models/collada/Avatars/Male/Male_StandToSit.dae");
-//            anims.add("assets/models/collada/Avatars/Male/Male_Wave.dae");
-//            anims.add("assets/models/collada/Avatars/Male/Male_FallFromSitting.dae");
-//            anims.add("assets/models/collada/Avatars/Male/Male_FloorSitting.dae");
-//            anims.add("assets/models/collada/Avatars/Male/Male_FloorGetup.dae");
-//            anims.add("assets/models/collada/Avatars/Male/Male_Walk.dae");
-//            anims.add("assets/models/collada/Avatars/Male/Male_Sitting.dae");
+            anims.add("assets/models/collada/Avatars/Male/Male_StandToSit.dae");
+            anims.add("assets/models/collada/Avatars/Male/Male_Wave.dae");
+            anims.add("assets/models/collada/Avatars/Male/Male_FallFromSitting.dae");
+            anims.add("assets/models/collada/Avatars/Male/Male_FloorSitting.dae");
+            anims.add("assets/models/collada/Avatars/Male/Male_FloorGetup.dae");
+            anims.add("assets/models/collada/Avatars/Male/Male_Walk.dae");
+            anims.add("assets/models/collada/Avatars/Male/Male_Sitting.dae");
             if (false)
             {
                 anims.add("assets/models/collada/Avatars/Male/Male_Run.dae");
