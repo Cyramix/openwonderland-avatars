@@ -20,6 +20,7 @@ package imi.tests;
 
 import com.jme.math.Vector3f;
 import imi.character.ninja.NinjaAvatar;
+import imi.character.ninja.NinjaAvatarDressShirt;
 import imi.character.objects.ObjectCollection;
 import imi.scene.processors.FlexibleCameraProcessor;
 import org.jdesktop.mtgame.WorldManager;
@@ -62,7 +63,7 @@ public class COLLADA_CharacterTest extends DemoBase
         ((FlexibleCameraProcessor)wm.getUserData(FlexibleCameraProcessor.class)).setControl(control);
         
         // Create avatar
-        NinjaAvatar avatar = new NinjaAvatar("Avatar", wm);
+        NinjaAvatar avatar = new NinjaAvatarDressShirt("Avatar", wm);
         avatar.selectForInput();
         control.getNinjaTeam().add(avatar);
         avatar.setObjectCollection(objects);

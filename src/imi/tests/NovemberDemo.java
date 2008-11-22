@@ -125,11 +125,40 @@ public class NovemberDemo extends DemoBase
         yellowEntryOut.addConnection(new Connection("redRoom", yellowEntryOut, yellowHallEntry, ConnectionDirection.OneWay));
         yellowEntryOut.addConnection(new Connection("lobbyCenter", yellowEntryOut, yellowHallEntry, ConnectionDirection.OneWay));
         
+        yellowEntryDoor.addConnection(new Connection("yellowRoom", yellowEntryDoor, yellowEntryIn, ConnectionDirection.OneWay));
+        yellowEntryDoor.addConnection(new Connection("blueRoom", yellowEntryDoor, yellowEntryOut, ConnectionDirection.OneWay));
+        yellowEntryDoor.addConnection(new Connection("redRoom", yellowEntryDoor, yellowEntryOut, ConnectionDirection.OneWay));
+        yellowEntryDoor.addConnection(new Connection("lobbyCenter", yellowEntryDoor, yellowEntryOut, ConnectionDirection.OneWay));
+        
+        yellowEntryIn.addConnection(new Connection("yellowRoom", yellowEntryIn, yellowRoom, ConnectionDirection.OneWay));
+        yellowEntryIn.addConnection(new Connection("blueRoom", yellowEntryIn, yellowEntryDoor, ConnectionDirection.OneWay));
+        yellowEntryIn.addConnection(new Connection("redRoom", yellowEntryIn, yellowEntryDoor, ConnectionDirection.OneWay));
+        yellowEntryIn.addConnection(new Connection("lobbyCenter", yellowEntryIn, yellowEntryDoor, ConnectionDirection.OneWay));
+        
+        yellowRoom.addConnection(new Connection("blueRoom", yellowRoom, yellowExitIn, ConnectionDirection.OneWay));
+        yellowRoom.addConnection(new Connection("redRoom", yellowRoom, yellowExitIn, ConnectionDirection.OneWay));
+        yellowRoom.addConnection(new Connection("lobbyCenter", yellowRoom, yellowExitIn, ConnectionDirection.OneWay));
+        
+        yellowExitIn.addConnection(new Connection("yellowRoom", yellowExitIn, yellowRoom, ConnectionDirection.OneWay));
+        yellowExitIn.addConnection(new Connection("blueRoom", yellowExitIn, yellowExitDoor, ConnectionDirection.OneWay));
+        yellowExitIn.addConnection(new Connection("redRoom", yellowExitIn, yellowExitDoor, ConnectionDirection.OneWay));
+        yellowExitIn.addConnection(new Connection("lobbyCenter", yellowExitIn, yellowExitDoor, ConnectionDirection.OneWay));
+        
+        yellowExitDoor.addConnection(new Connection("yellowRoom", yellowExitDoor, yellowExitIn, ConnectionDirection.OneWay));
+        yellowExitDoor.addConnection(new Connection("blueRoom", yellowExitDoor, yellowExitOut, ConnectionDirection.OneWay));
+        yellowExitDoor.addConnection(new Connection("redRoom", yellowExitDoor, yellowExitOut, ConnectionDirection.OneWay));
+        yellowExitDoor.addConnection(new Connection("lobbyCenter", yellowExitDoor, yellowExitOut, ConnectionDirection.OneWay));
+        
+        yellowExitOut.addConnection(new Connection("yellowRoom", yellowExitOut, yellowExitDoor, ConnectionDirection.OneWay));
+        yellowExitOut.addConnection(new Connection("blueRoom", yellowExitOut, yellowHallEntry, ConnectionDirection.OneWay));
+        yellowExitOut.addConnection(new Connection("redRoom", yellowExitOut, yellowHallEntry, ConnectionDirection.OneWay));
+        yellowExitOut.addConnection(new Connection("lobbyCenter", yellowExitOut, yellowHallEntry, ConnectionDirection.OneWay));
+        
 
-        int numberOfAvatars = 2;
-        // make an object collection and a few chairs
-        // Create one object collection for all to use (for testing)
-        objects.generateChairs(new Vector3f(20.0f, 0.0f, 20.0f), 20.0f, numberOfAvatars-1);
+        int numberOfAvatars = 3;
+        
+        objects.generateChairs(lobbyCenter.getPosition(), 7.0f, numberOfAvatars);
+        objects.generateChairs(yellowRoom.getPosition(), 7.0f, numberOfAvatars);
 
          // Create ninja input scheme
         NinjaControlScheme control = (NinjaControlScheme)((JSceneEventProcessor)wm.getUserData(JSceneEventProcessor.class)).setDefault(new NinjaControlScheme(null));
@@ -138,24 +167,24 @@ public class NovemberDemo extends DemoBase
 
         // Create avatar
         NinjaAvatar avatar = new NinjaAvatar("Avatar", wm);
+        avatar.getModelInst().getTransform().getLocalMatrix(true).setTranslation(lobbyCenter.getPosition());
         avatar.selectForInput();
         control.getNinjaTeam().add(avatar);
         avatar.setObjectCollection(objects);
 
-
-//        // Make some more avatars
-//        float zStep = 1.0f;
-//        for (int i = 1; i < numberOfAvatars; i++)
-//        {
-//            cloneAvatar(control, objects, wm, 0.0f, 0.0f, zStep);
-//            zStep += 5.0f;
-//        }
+        // Make some more avatars
+        float zStep = 1.0f;
+        for (int i = 1; i < numberOfAvatars; i++)
+        {
+            cloneAvatar(control, objects, wm, 0.0f, 0.0f, zStep, lobbyCenter.getPosition());
+            zStep += 5.0f;
+        }
     }
 
-    private void cloneAvatar(NinjaControlScheme control, ObjectCollection objects, WorldManager wm, float xOffset, float yOffset, float zOffset)
+    private void cloneAvatar(NinjaControlScheme control, ObjectCollection objects, WorldManager wm, float xOffset, float yOffset, float zOffset, Vector3f origin)
     {
         NinjaAvatar avatar = new NinjaAvatar("Avatar Clone " + xOffset+yOffset+zOffset, wm);
-        avatar.getModelInst().getTransform().getLocalMatrix(true).setTranslation(new Vector3f(xOffset, yOffset, zOffset));
+        avatar.getModelInst().getTransform().getLocalMatrix(true).setTranslation(new Vector3f(xOffset, yOffset, zOffset).add(origin));
         control.getNinjaTeam().add(avatar);
         avatar.setObjectCollection(objects);
     }

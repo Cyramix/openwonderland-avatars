@@ -72,15 +72,15 @@ public class MusicalChairs extends DemoBase
         LocationNode chairGame4 = new LocationNode("Location 4", Vector3f.UNIT_Z.mult(block),  halfBlock, wm, objects);
         
         // Create paths
-        chairGame1.addConnection(new Connection("MyPath", chairGame1, chairGame2, ConnectionDirection.OneWay));
-        chairGame2.addConnection(new Connection("MyPath", chairGame2, chairGame3, ConnectionDirection.OneWay));
-        chairGame3.addConnection(new Connection("MyPath", chairGame3, chairGame4, ConnectionDirection.OneWay));
-        chairGame4.addConnection(new Connection("MyPath", chairGame4, chairGame1, ConnectionDirection.OneWay));
+        chairGame1.addConnection(new Connection("yellowRoom", chairGame1, chairGame2, ConnectionDirection.OneWay));
+        chairGame2.addConnection(new Connection("yellowRoom", chairGame2, chairGame3, ConnectionDirection.OneWay));
+        chairGame3.addConnection(new Connection("yellowRoom", chairGame3, chairGame4, ConnectionDirection.OneWay));
+        chairGame4.addConnection(new Connection("yellowRoom", chairGame4, chairGame1, ConnectionDirection.OneWay));
         
-        chairGame1.addConnection(new Connection("MyReversePath", chairGame1, chairGame4, ConnectionDirection.OneWay));
-        chairGame2.addConnection(new Connection("MyReversePath", chairGame4, chairGame3, ConnectionDirection.OneWay));
-        chairGame3.addConnection(new Connection("MyReversePath", chairGame3, chairGame2, ConnectionDirection.OneWay));
-        chairGame4.addConnection(new Connection("MyReversePath", chairGame2, chairGame1, ConnectionDirection.OneWay));
+        chairGame1.addConnection(new Connection("lobbyCenter", chairGame1, chairGame4, ConnectionDirection.OneWay));
+        chairGame2.addConnection(new Connection("lobbyCenter", chairGame4, chairGame3, ConnectionDirection.OneWay));
+        chairGame3.addConnection(new Connection("lobbyCenter", chairGame3, chairGame2, ConnectionDirection.OneWay));
+        chairGame4.addConnection(new Connection("lobbyCenter", chairGame2, chairGame1, ConnectionDirection.OneWay));
      
         // Create ninja input scheme
         NinjaControlScheme control = (NinjaControlScheme)((JSceneEventProcessor)wm.getUserData(JSceneEventProcessor.class)).setDefault(new NinjaControlScheme(null));

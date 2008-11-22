@@ -457,6 +457,14 @@ public class ObjectCollection extends Entity
             }
         }
     }
+    
+    public void addRandomChair() 
+    {
+        Vector3f center = new Vector3f(3.905138f, 0.0f, 18.265793f);
+       
+        generateChairs(center, 7.0f, 1);
+    }
+
 
     /**
      * Called in the constructor, override this method to set your own

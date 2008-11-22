@@ -175,6 +175,7 @@ public class NinjaControlScheme extends InputScheme
                     
                     ninja = ninjaTeam.get(currentNinja);
                     ninja.selectForInput();
+                    ninja.initiateFacialAnimation("MaleSmile", 0.5f, 3.0f);
                 }
             }
             
@@ -191,6 +192,7 @@ public class NinjaControlScheme extends InputScheme
                     
                     ninja = ninjaTeam.get(currentNinja);
                     ninja.selectForInput();
+                    ninja.initiateFacialAnimation("MaleSmile", 0.5f, 3.0f);
                 }
             }
             
@@ -200,6 +202,15 @@ public class NinjaControlScheme extends InputScheme
                 if(objects != null)
                 {
                     objects.removeRandomChair();
+                }
+            }
+            
+            // Add a chair to the object collection
+            if (ke.getKeyCode() == KeyEvent.VK_BACK_SLASH) 
+            {
+                if(objects != null)
+                {
+                    objects.addRandomChair();
                 }
             }
             

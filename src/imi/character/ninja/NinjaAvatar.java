@@ -191,7 +191,7 @@ public class NinjaAvatar extends Ninja
             }   
         }
 
-        private void customizeTorsoPresets(int preset, ArrayList<String> delete, ArrayList<String> load, ArrayList<String> add, ArrayList<AttachmentParams> attachments) 
+        protected void customizeTorsoPresets(int preset, ArrayList<String> delete, ArrayList<String> load, ArrayList<String> add, ArrayList<AttachmentParams> attachments) 
         {
             //preset = 2;
             

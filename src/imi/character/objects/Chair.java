@@ -92,7 +92,7 @@ public class Chair implements SpatialObject
                             // add all children
                             queue.addAll(current.getChildren());
                             
-                            ((PPolygonModelInstance)asset).calculateBoundingSphere();
+                            //((PPolygonModelInstance)asset).calculateBoundingSphere();
                         }
                         
                         

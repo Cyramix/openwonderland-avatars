@@ -185,19 +185,19 @@ public class NinjaContext extends GameContext
         {
            //ninja.getObjectCollection().testLightToggle(); // test
            
-            System.out.println("fix: " + ninja.getPosition());
+           // System.out.println("fix: " + ninja.getPosition());
             
-//            steering.clearTasks();
-//            GoToNearestLocation();
-//            if (location != null)
-//                steering.addTaskToBottom(new FollowPath("MyPath", location, this));
+            steering.clearTasks();
+            GoToNearestLocation();
+            if (location != null)
+                steering.addTaskToBottom(new FollowPath("yellowRoom", location, this));
         }
         else if (trigger == TriggerNames.GoTo2.ordinal() && pressed)
         {
             steering.clearTasks();
             GoToNearestLocation();
             if (location != null)
-                steering.addTaskToBottom(new FollowPath("MyReversePath", location, this));
+                steering.addTaskToBottom(new FollowPath("lobbyCenter", location, this));
         }
         else if (trigger == TriggerNames.GoTo3.ordinal() && pressed)
         {
