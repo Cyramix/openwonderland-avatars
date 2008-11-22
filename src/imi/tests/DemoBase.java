@@ -250,7 +250,7 @@ public class DemoBase
         // attach it to the LightNode
         lightNode.setLight(pointLight);
 
-        lightNode.setLocalTranslation(0.0f, 50.0f, 50.0f);
+        lightNode.setLocalTranslation(0.0f, 40.0f, -50.0f);
         // add it to the render manager
         wm.getRenderManager().addLight(lightNode);
     }

@@ -44,6 +44,11 @@ public class TreeExplorer extends javax.swing.JFrame {
     private DefaultTreeModel model = null;
     private TreePopUpMenu popupMenu = new TreePopUpMenu();
     private SceneEssentials sceneData = null;
+
+    public void refresh() {
+        this.setVisible(false);
+        this.setVisible(true);
+    }
     
     // Mutators
     /**

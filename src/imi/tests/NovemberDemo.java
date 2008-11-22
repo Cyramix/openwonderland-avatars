@@ -23,6 +23,7 @@ import imi.character.objects.LocationNode;
 import imi.character.objects.ObjectCollection;
 import imi.environments.ColladaEnvironment;
 import imi.scene.PScene;
+import imi.scene.camera.state.FirstPersonCamState;
 import imi.scene.processors.JSceneEventProcessor;
 import imi.utils.graph.Connection;
 import imi.utils.graph.Connection.ConnectionDirection;
@@ -179,6 +180,10 @@ public class NovemberDemo extends DemoBase
             cloneAvatar(control, objects, wm, 0.0f, 0.0f, zStep, lobbyCenter.getPosition());
             zStep += 5.0f;
         }
+
+        // change the initial camera position
+        FirstPersonCamState fpsState = (FirstPersonCamState)m_cameraProcessor.getState();
+        fpsState.setCameraPosition(Vector3f.UNIT_Y.mult(2.3f));
     }
 
     private void cloneAvatar(NinjaControlScheme control, ObjectCollection objects, WorldManager wm, float xOffset, float yOffset, float zOffset, Vector3f origin)
