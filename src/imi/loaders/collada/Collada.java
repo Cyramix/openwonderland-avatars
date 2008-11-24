@@ -319,7 +319,7 @@ public class Collada
             doLoad(collada);
             return true;
         } catch (Exception exception) {
-            if (!exception.getMessage().equals("null")) {
+            if (exception.getMessage().equals("Connection refused")) {
                 System.out.print(exception.getMessage() + "... Retrying");
                 load(colladaFile);
             }
@@ -351,7 +351,7 @@ public class Collada
             doLoad(collada);
             return true;
         } catch (Exception exception) {
-            if (!exception.getMessage().equals("null")) {
+            if (exception.getMessage().equals("Connection refused")) {
                 System.out.print(exception.getMessage() + "... Retrying");
                 load(loadingPScene, colladaFile);
             }

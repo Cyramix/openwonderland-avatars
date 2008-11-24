@@ -1099,7 +1099,11 @@ public class PScene extends PNode implements RepositoryUser
             catch (Exception ex)
             {
                 //monkeyTexture = null;
-                loadTexture(textureLocation);
+                if (ex.getMessage().equals("Connection refused")) {
+                    System.out.println(ex.getMessage() + "... Retrying");
+                    loadTexture(textureLocation);
+                } else
+                    System.out.println(ex.getMessage());
             }
             
             if (monkeyTexture != null)

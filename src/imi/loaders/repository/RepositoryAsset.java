@@ -156,8 +156,10 @@ public class RepositoryAsset extends ProcessorComponent
                                                         Texture.MinificationFilter.Trilinear,
                                                         Texture.MagnificationFilter.Bilinear);
                     } catch (Exception exception) {
-                        System.out.println(exception.getMessage() + "... Retrying");
-                        loadSelf();
+                        if (exception.getMessage().equals("Connection refused")) {
+                            System.out.println(exception.getMessage() + "... Retrying");
+                            loadSelf();
+                        }
                     }
 
                     if (tex != null)
