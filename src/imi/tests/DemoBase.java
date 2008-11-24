@@ -682,7 +682,7 @@ public class DemoBase
         // Add the camera
         Entity camera = new Entity("DefaultCamera");
         CameraComponent cc = wm.getRenderManager().createCameraComponent(cameraSG, cameraNode, 
-                width, height, 45.0f, aspect, 0.1f, 1000.0f, true);
+                width, height, 45.0f, aspect, 0.01f, 1000.0f, true);
         
         RenderBuffer renderBuffer = ((SwingFrame)wm.getUserData(JFrame.class)).getRenderBuffer();
         
