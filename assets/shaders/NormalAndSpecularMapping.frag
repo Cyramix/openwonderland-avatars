@@ -32,7 +32,7 @@ void main(void)
 	specular *= ceil(nxDir);
 	specular *=  specColor;
 
-	vec4 color = diffuse * 0.70 + texColor * 0.35 + specular * 0.25;
+	vec4 color = diffuse * 0.65 + texColor * 0.35 + specular;// * 0.25;
 
     	//gl_FragColor = vec4(camVector, 1.0);
 	//gl_FragColor = specColor;

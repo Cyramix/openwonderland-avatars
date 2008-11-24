@@ -36,7 +36,7 @@ void main(void)
 	// if nxDir <= 0, specular is 0
 	//specular *= ceil(nxDir);  
 
-	vec4 color = diffuse * 0.65 + texColor * 0.35 + specular * 0.25; // shininess value
+	vec4 color = diffuse * 0.65 + texColor * 0.35 + specular;// * 0.25; // shininess value
 	color = clamp(color, 0.0, 1.0);
 
     	//gl_FragColor = vec4(camVector, 1.0);
