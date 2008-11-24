@@ -58,8 +58,8 @@ public class FirstPersonCamModel implements CameraModel
             if (events[i] instanceof MouseEvent)
             {
                 MouseEvent me = (MouseEvent) events[i];
-                if (me.getID() == MouseEvent.MOUSE_PRESSED &&
-                        me.getButton() == MouseEvent.BUTTON1)
+                if (me.getID() == MouseEvent.MOUSE_PRESSED )
+                        //&& me.getButton() == MouseEvent.BUTTON1)
                 {
                     // Mouse pressed, reset initial settings
                     camState.setCurrentMouseX(me.getX());
@@ -68,8 +68,8 @@ public class FirstPersonCamModel implements CameraModel
                     camState.setLastMouseY(me.getY());
                 }
                 
-                if (me.getID() == MouseEvent.MOUSE_DRAGGED &&
-                        me.getButton() == MouseEvent.BUTTON1) {
+                if (me.getID() == MouseEvent.MOUSE_DRAGGED ){
+                        //&& me.getButton() == MouseEvent.BUTTON1) {
                     processRotations(me, camState);
                     updateRotations = true;
                 }

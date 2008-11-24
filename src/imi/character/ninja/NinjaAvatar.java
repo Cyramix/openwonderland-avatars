@@ -19,7 +19,11 @@ package imi.character.ninja;
 
 import com.jme.math.Vector3f;
 import imi.scene.PMatrix;
+import imi.scene.PNode;
+import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
+import imi.scene.polygonmodel.skinned.SkinnedMeshJoint;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import org.jdesktop.mtgame.WorldManager;
 
 /**
@@ -27,7 +31,7 @@ import org.jdesktop.mtgame.WorldManager;
  * @author Lou Hayt
  */
 public class NinjaAvatar extends Ninja 
-{   
+{
     public class NinjaAvatarAttributes extends Attributes
     {   
         public NinjaAvatarAttributes(String name, boolean bRandomCustomizations) 
@@ -278,5 +282,5 @@ public class NinjaAvatar extends Ninja
     {
         return new NinjaAvatarAttributes(name, true);
     }
-
+    
 }

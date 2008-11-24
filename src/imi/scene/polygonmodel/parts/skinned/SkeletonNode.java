@@ -496,6 +496,12 @@ public class SkeletonNode extends PNode implements Animated
                     }
                     else
                         ((SkinnedMeshJoint)current).setMeshSpace(current.getTransform().getLocalMatrix(false));
+                    
+                    if (((SkinnedMeshJoint)current).getSkeletonModifier() != null)
+                    {
+                        ((SkinnedMeshJoint)current).getMeshSpace().mul(((SkinnedMeshJoint)current).getSkeletonModifier());
+                        ((SkinnedMeshJoint)current).getTransform().getWorldMatrix(true).mul(((SkinnedMeshJoint)current).getSkeletonModifier());
+                    }
                 }
             }
             if (current instanceof PPolygonMeshInstance)

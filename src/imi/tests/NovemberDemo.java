@@ -173,6 +173,9 @@ public class NovemberDemo extends DemoBase
         control.getNinjaTeam().add(avatar);
         avatar.setObjectCollection(objects);
 
+        // Get the mouse evets so the verlet arm can be controlled
+        control.getMouseEventsFromCamera();
+        
         // Make some more avatars
         float zStep = 1.0f;
         for (int i = 1; i < numberOfAvatars; i++)

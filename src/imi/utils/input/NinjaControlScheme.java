@@ -20,6 +20,7 @@ package imi.utils.input;
 import com.jme.math.Vector3f;
 import imi.character.ninja.Ninja;
 import imi.character.objects.ObjectCollection;
+import imi.scene.processors.FlexibleCameraProcessor;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
@@ -55,6 +56,13 @@ public class NinjaControlScheme extends InputScheme
     {
         super();
         ninja = master;
+    }
+    
+    public void getMouseEventsFromCamera()
+    {
+        // Get the hacked mouse events that the camera is stealing from us
+        if (ninja != null)
+            ((FlexibleCameraProcessor)ninja.getWorldManager().getUserData(FlexibleCameraProcessor.class)).setControl(this);
     }
     
     @Override

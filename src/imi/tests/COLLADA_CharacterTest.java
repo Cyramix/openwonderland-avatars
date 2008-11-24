@@ -18,11 +18,11 @@
 package imi.tests;
 
 
-import com.jme.math.Vector3f;
 import imi.character.ninja.NinjaAvatar;
 import imi.character.ninja.NinjaAvatarDressShirt;
-import imi.character.objects.ObjectCollection;
-import imi.scene.processors.FlexibleCameraProcessor;
+import imi.loaders.collada.Instruction;
+import imi.loaders.collada.Instruction.InstructionNames;
+import imi.loaders.collada.InstructionProcessor;
 import org.jdesktop.mtgame.WorldManager;
 
 
@@ -35,6 +35,13 @@ import java.util.logging.Logger;
 
 /**
  *
+ * 
+ * 
+ *  VerletArm has its own test now imi.tests.VerletArmTest
+ * 
+ *  testing loading heads with different bind pose settings
+ * 
+ * 
  * @author Lou Hayt
  */
 public class COLLADA_CharacterTest extends DemoBase
@@ -53,40 +60,37 @@ public class COLLADA_CharacterTest extends DemoBase
     @Override
     protected void createDemoEntities(WorldManager wm) 
     {   
-        int numberOfAvatars = 1;
-        
-        // Create one object collection for all to use (for testing)
-        ObjectCollection objects = new ObjectCollection("Character Test Objects", wm);
-        
         // Create ninja input scheme
         NinjaControlScheme control = (NinjaControlScheme)((JSceneEventProcessor)wm.getUserData(JSceneEventProcessor.class)).setDefault(new NinjaControlScheme(null));
-        ((FlexibleCameraProcessor)wm.getUserData(FlexibleCameraProcessor.class)).setControl(control);
         
         // Create avatar
         NinjaAvatar avatar = new NinjaAvatarDressShirt("Avatar", wm);
         avatar.selectForInput();
         control.getNinjaTeam().add(avatar);
-        avatar.setObjectCollection(objects);
-
-        // Make some more avatars
-        float zStep = 5.0f;
-        for (int i = 1; i < numberOfAvatars; i++)
+        // Get the mouse evets so the verlet arm can be controlled
+        control.getMouseEventsFromCamera();
+        
+        // Load the african head
+        String fileProtocol = avatar.getAttributes().getBaseURL();
+        if (fileProtocol == null)
+            fileProtocol = new String("file://localhost/" + System.getProperty("user.dir") + "/");
+        InstructionProcessor pProcessor = new InstructionProcessor(wm);
+        Instruction pRootInstruction = new Instruction();
+        pRootInstruction.addInstruction(InstructionNames.loadBindPose, fileProtocol + "assets/models/collada/Heads/MaleAfricanHead/AfricanAmericanMaleHead1_Bind.dae");
+        //pRootInstruction.addInstruction(InstructionNames.loadBindPose, fileProtocol + "assets/models/collada/Heads/MaleAsianHead/AsianMaleHead1_Bind.dae");
+        pProcessor.execute(pRootInstruction, false);
+        
+        // Wait for the avatar to load
+        while (!avatar.isInitialized())
         {
-            cloneAvatar(control, objects, wm, 0.0f, 0.0f, zStep);
-            zStep += 5.0f;
+            try {
+            Thread.sleep(500);
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(COLLADA_CharacterTest.class.getName()).log(Level.SEVERE, null, ex);
+                                                  }
         }
         
-        // Make a chair and let the control the collection so it can delete it
-        objects.generateChairs(Vector3f.ZERO, 10.0f, 5);
-        control.setObjectCollection(objects);
+        // Set the avatars head 
+        avatar.installHead(pProcessor.getSkeleton());
     }
-
-    private void cloneAvatar(NinjaControlScheme control, ObjectCollection objects, WorldManager wm, float xOffset, float yOffset, float zOffset) 
-    {   
-        NinjaAvatar avatar = new NinjaAvatar("Avatar Clone " + xOffset+yOffset+zOffset, wm);
-        avatar.getModelInst().getTransform().getLocalMatrix(true).setTranslation(new Vector3f(xOffset, yOffset, zOffset));
-        control.getNinjaTeam().add(avatar);
-        avatar.setObjectCollection(objects);
-    }
-    
 }

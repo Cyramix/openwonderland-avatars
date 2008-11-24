@@ -63,6 +63,12 @@ public class InstructionProcessor
     //  Executes all instructions.
     public void execute(Instruction pRootInstruction)
     {   
+        execute(pRootInstruction, true);
+    }
+    
+    //  Executes all instructions.
+    public void execute(Instruction pRootInstruction, boolean nullMembersWhenFinished)
+    {   
         m_characterLoader = new CharacterLoader();
         
         printInstruction("", pRootInstruction);
@@ -71,9 +77,12 @@ public class InstructionProcessor
         executeInstruction(m_loadingPScene, pRootInstruction);
         
         // garbage collection...
-        m_characterLoader = null;
-        m_loadingPScene   = null;
-        m_skeleton        = null;
+        if (nullMembersWhenFinished)
+        {
+            m_characterLoader = null;
+            m_loadingPScene   = null;
+            m_skeleton        = null;
+        }
     }
 
     public SkeletonNode getSkeleton() {

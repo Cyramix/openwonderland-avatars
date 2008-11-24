@@ -141,8 +141,8 @@ public class DemoBase
         createTestSpace(worldManager);
         createCameraEntity(worldManager);  
         createInputEntity(worldManager); 
-        createDemoEntities(worldManager);
         setGlobalLighting(worldManager);
+        createDemoEntities(worldManager);
     }
     
     // Override this for simple tests that only require a single scene

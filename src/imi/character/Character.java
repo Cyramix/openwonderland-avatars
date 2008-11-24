@@ -79,9 +79,9 @@ import imi.scene.processors.CharacterAnimationProcessor;
 import imi.scene.processors.JSceneEventProcessor;
 import imi.scene.shader.programs.VertDeformerWithSpecAndNormalMap;
 import imi.scene.utils.PMeshUtils;
-import imi.scene.utils.visualizations.VerletVisualManager;
 import java.io.File;
 import java.net.URL;
+import java.util.LinkedList;
 
 /**
  *
@@ -507,14 +507,14 @@ public abstract class Character extends Entity implements SpatialObject, Animati
 
                                 pRootInstruction.addInstruction(InstructionNames.setSkeleton, skeleton);
                                 
-                                String [] delete = m_attributes.getDeleteInstructions();
-                                for (int i = 0; i < delete.length; i++) {
-                                    pRootInstruction.addInstruction(InstructionNames.deleteSkinnedMesh, delete[i]);
-                                }
-                                
                                 String [] load = m_attributes.getLoadInstructions();
                                 for (int i = 0; i < load.length; i++) {
                                     pRootInstruction.addInstruction(InstructionNames.loadGeometry, fileProtocol + load[i]);
+                                }
+                                
+                                String [] delete = m_attributes.getDeleteInstructions();
+                                for (int i = 0; i < delete.length; i++) {
+                                    pRootInstruction.addInstruction(InstructionNames.deleteSkinnedMesh, delete[i]);
                                 }
                                 
                                 String [] add = m_attributes.getAddInstructions();
@@ -551,12 +551,12 @@ public abstract class Character extends Entity implements SpatialObject, Animati
 
                             // Facial animation state is designated to id (and index) 1
                             AnimationState facialAnimationState = new AnimationState(1);
-                            facialAnimationState.setCurrentCycle(1); // 0 is "All Cycles"
+                            facialAnimationState.setCurrentCycle(-1); // 0 is "All Cycles"
                             facialAnimationState.setCurrentCyclePlaybackMode(PlaybackMode.PlayOnce);
                             facialAnimationState.setAnimationSpeed(0.1f);
                             m_skeleton.addAnimationState(facialAnimationState);
                             m_facialAnimationQ = new TransitionQueue(m_skeleton, 1);
-                            initiateFacialAnimation(1, 0.75f, 0.5f);
+                            //initiateFacialAnimation(1, 0.75f, 0.5f);
 
                             // The verlet arm!
                             SkinnedMeshJoint shoulderJoint = (SkinnedMeshJoint) m_skeleton.findChild("rightArm");
@@ -1034,4 +1034,72 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         return m_armJointManipulator;
     }
 
+    /**
+     * Will return true if the character is loaded and has a valid skeleton
+     * and meshes
+     * @return
+     */
+    public boolean isInitialized()
+    {
+        return m_initalized;
+    }
+    
+    public void installHead(SkeletonNode skeleton) 
+    {
+        if (skeleton == null || m_skeleton == null)
+        {
+            System.out.println(getName() + " can not install head, got a null skeleton! current one: " + m_skeleton + " new one: " + skeleton);
+            return;
+        }
+        
+        // Gather the joints and set the new local modifiers
+        SkinnedMeshJoint head = m_skeleton.findSkinnedMeshJoint("Head");
+        LinkedList<PNode> list = new LinkedList<PNode>();
+        list.add(head);
+        PNode current = null;
+        while(!list.isEmpty())
+        {
+            // Grab the next guy
+            current = list.poll();
+            // Process him! If not a skinned mesh joint skip and prune
+            if (current instanceof SkinnedMeshJoint)
+            {
+                SkinnedMeshJoint currentHeadJoint = (SkinnedMeshJoint)current;
+                SkinnedMeshJoint newHeadJoint     = skeleton.findSkinnedMeshJoint(currentHeadJoint.getName());
+                
+                PMatrix modifierDelta = new PMatrix();
+                modifierDelta.mulInverse(newHeadJoint.getTransform().getLocalMatrix(false), currentHeadJoint.getTransform().getLocalMatrix(false)); 
+                currentHeadJoint.setSkeletonModifier(modifierDelta);
+            }
+            else
+                continue; // Prune (kids are not added to the list)
+            // Add to the list all the kids
+            for (PNode kid : current.getChildren())
+                list.add(kid);
+        }
+        
+        // Delete the old head mesh and add the new head mesh
+        
+        // Don't forget to remove the old teeth and toung!
+        
+        // we should re-use the head that was already loaded... for quick testing....
+        String fileProtocol = getAttributes().getBaseURL();
+        if (fileProtocol == null)
+            fileProtocol = new String("file://localhost/" + System.getProperty("user.dir") + "/");
+        InstructionProcessor pProcessor = new InstructionProcessor(m_wm);
+        Instruction pRootInstruction = new Instruction();
+        pRootInstruction.addInstruction(InstructionNames.setSkeleton, m_skeleton);
+        
+        pRootInstruction.addInstruction(InstructionNames.deleteSkinnedMesh, "HeadGeoShape");  // original head is HeadOneShape
+        
+        // African
+        pRootInstruction.addInstruction(InstructionNames.loadGeometry, fileProtocol + "assets/models/collada/Heads/MaleAfricanHead/AfricanAmericanMaleHead1_Bind.dae");
+        pRootInstruction.addInstruction(InstructionNames.addSkinnedMesh, "headOneShape");
+        
+        // Asian
+//        pRootInstruction.addInstruction(InstructionNames.loadGeometry, fileProtocol + "assets/models/collada/Heads/MaleAsianHead/AsianMaleHead1_Bind.dae");
+//        pRootInstruction.addInstruction(InstructionNames.addSkinnedMesh, "head2Shape");  
+        
+        pProcessor.execute(pRootInstruction);
+    }
 }

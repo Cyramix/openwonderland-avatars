@@ -81,19 +81,22 @@ public class PSceneSubmitHelper  implements NodeProcessor
             if (current.getTransform().isDirtyWorldMat() || current.isDirty())
             {
                 current.getTransform().buildWorldMatrix(parentTransform.getWorldMatrix(false));
+                
                 // Now we are clean!
                 current.setDirty(false, false);
             }
             // handle mesh space case
             if (current instanceof SkinnedMeshJoint)
             {
+                SkinnedMeshJoint currentSkinnedMeshJoint = ((SkinnedMeshJoint)current);
+                
                 if (parent instanceof SkinnedMeshJoint)
                 {
-                    PMatrix meshSpace = ((SkinnedMeshJoint)current).getMeshSpace();
+                    PMatrix meshSpace = currentSkinnedMeshJoint.getMeshSpace();
                     meshSpace.mul(((SkinnedMeshJoint)parent).getMeshSpace(), current.getTransform().getLocalMatrix(false));
                 }
                 else
-                    ((SkinnedMeshJoint)current).setMeshSpace(current.getTransform().getLocalMatrix(false));
+                    currentSkinnedMeshJoint.setMeshSpace(current.getTransform().getLocalMatrix(false));
             }
         }
         if (current instanceof PPolygonMeshInstance)
