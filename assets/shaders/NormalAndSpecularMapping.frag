@@ -22,7 +22,7 @@ void main(void)
 
 	vec3 camVector = normalize(ToCamera);
 
-	vec3 reflection = normalize(reflect(lightVector * -1.0, normal));
+	vec3 reflection = normalize(reflect(lightVector , normal));
          
   	float nxDir = max(0.0, dot(normal, lightVector));
   
