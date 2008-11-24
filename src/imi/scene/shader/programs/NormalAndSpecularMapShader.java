@@ -52,7 +52,7 @@ public class NormalAndSpecularMapShader extends BaseShaderProgram
         m_propertyMap.put("NormalMapIndex",   new ShaderProperty("NormalMapIndex", GLSLDataType.GLSL_SAMPLER2D, Integer.valueOf(1)));
         m_propertyMap.put("SpecularMapIndex", new ShaderProperty("SpecularMapIndex", GLSLDataType.GLSL_SAMPLER2D, Integer.valueOf(2)));
         
-        m_propertyMap.put("SpecularPower", new ShaderProperty("SpecularPower", GLSLDataType.GLSL_FLOAT, Float.valueOf(2.0f)));
+        m_propertyMap.put("SpecularPower", new ShaderProperty("SpecularPower", GLSLDataType.GLSL_FLOAT, Float.valueOf(3.25f)));
     }
 
 
