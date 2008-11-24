@@ -72,7 +72,7 @@ public class TextureMaterialProperties
         m_wrapS = WrapMode.Repeat;
         m_wrapT = WrapMode.Repeat;
         m_alphaCombineMode = CombinerFunctionAlpha.Add;
-        m_minFilter = MinificationFilter.BilinearNearestMipMap;
+        m_minFilter = MinificationFilter.Trilinear;
         m_magFilter = MagnificationFilter.Bilinear;
         m_applyMode = Texture.ApplyMode.Modulate;
     }
