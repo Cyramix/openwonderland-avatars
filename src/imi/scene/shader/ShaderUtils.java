@@ -27,6 +27,7 @@ import imi.scene.shader.effects.GenerateFragLocalNormal;
 import imi.scene.shader.effects.NormalMapping;
 import imi.scene.shader.effects.VertexToPosition_Transform;
 import imi.scene.shader.effects.SimpleNdotL_Lighting;
+import imi.scene.shader.effects.SpecularMapping_Lighting;
 import imi.scene.shader.effects.UnlitTexturing_Lighting;
 import imi.scene.shader.effects.VertexDeformer_Transform;
 import java.io.File;
@@ -225,6 +226,7 @@ public class ShaderUtils
         GloballyAvailableEffects.add(new VertexDeformer_Transform());
         GloballyAvailableEffects.add(new NormalMapping());
         GloballyAvailableEffects.add(new GenerateFragLocalNormal());
+        GloballyAvailableEffects.add(new SpecularMapping_Lighting());
     }
     
     /**

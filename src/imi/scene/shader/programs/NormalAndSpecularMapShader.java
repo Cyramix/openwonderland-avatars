@@ -17,98 +17,71 @@
  */
 package imi.scene.shader.programs;
 
-import imi.scene.shader.BaseShaderProgram;
-import com.jme.scene.state.GLSLShaderObjectsState;
-import com.jme.scene.state.RenderState;
-import imi.scene.polygonmodel.PPolygonMeshInstance;
 import imi.scene.shader.ShaderProperty;
 import imi.scene.shader.dynamic.GLSLDataType;
-import imi.utils.FileUtils;
-import java.net.URL;
+import imi.scene.shader.dynamic.GLSLDefaultVariables;
+import imi.scene.shader.dynamic.GLSLShaderProgram;
+import imi.scene.shader.effects.AmbientNdotL_Lighting;
+import imi.scene.shader.effects.CalculateToLight_Lighting;
+import imi.scene.shader.effects.NormalMapping;
+import imi.scene.shader.effects.SpecularMapping_Lighting;
+import imi.scene.shader.effects.UnlitTexturing_Lighting;
+import imi.scene.shader.effects.VertexToPosition_Transform;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.jdesktop.mtgame.WorldManager;
 
 /**
- * This shader performs normal mapping using the texture in the specified
- * texture unit as the normal map.
+ * This shader performs normal and specular mapping.
  * @author Ronald E Dahlgren
  */
-public class NormalAndSpecularMapShader extends BaseShaderProgram
+public class NormalAndSpecularMapShader extends GLSLShaderProgram
 {
     /**
-     * Default constructor
+     * Constructs a new instance defaulting to use 20% ambient contribution
+     * @param wm
      */
     public NormalAndSpecularMapShader(WorldManager wm)
     {
-        super(
-                wm,
-                FileUtils.convertRelativePathToFileURL("assets/shaders/NormalAndSpecularMapping.vert"),
-                FileUtils.convertRelativePathToFileURL("assets/shaders/NormalAndSpecularMapping.frag")
-             );
-        
-        setProgramName(this.getClass().getSimpleName());
-        setProgramDescription(new String("This program performs normal and specular mapping"));
-        // initialize shader properties
-        m_propertyMap.put("DiffuseMapIndex",  new ShaderProperty("DiffuseMapIndex", GLSLDataType.GLSL_SAMPLER2D, Integer.valueOf(0)));
-        m_propertyMap.put("NormalMapIndex",   new ShaderProperty("NormalMapIndex", GLSLDataType.GLSL_SAMPLER2D, Integer.valueOf(1)));
-        m_propertyMap.put("SpecularMapIndex", new ShaderProperty("SpecularMapIndex", GLSLDataType.GLSL_SAMPLER2D, Integer.valueOf(2)));
-        
-        m_propertyMap.put("SpecularPower", new ShaderProperty("SpecularPower", GLSLDataType.GLSL_FLOAT, Float.valueOf(3.25f)));
+        this(wm, 0.2f, 3.25f);
     }
 
-
     /**
-     * Load the shaders relative to the colladaFileURL. The current implementation
-     * assumes the wla url structure and uses the prefix of just the module name.
-     *
+     * Construct a new instance with the specified ambient power
      * @param wm
-     * @param colladaFileURL
+     * @param fAmbientPower A normalized (0.0 - 1.0) float representing the amount of
+     * ambient to use for the final fragment color
      */
-    public NormalAndSpecularMapShader(WorldManager wm, URL colladaFileURL)
+    public NormalAndSpecularMapShader(WorldManager wm, float fAmbientPower, float specularExponent)
     {
-        super(
-                wm,
-                wlaURL(colladaFileURL, "assets/shaders/NormalAndSpecularMapping.vert"),
-                wlaURL(colladaFileURL, "assets/shaders/NormalAndSpecularMapping.frag")
-             );
-
+        super(wm, true); // Use default initializers
         setProgramName(this.getClass().getSimpleName());
-        setProgramDescription(new String("This program performs normal and specular mapping"));
-        // initialize shader properties
-        m_propertyMap.put("DiffuseMapIndex",  new ShaderProperty("DiffuseMapIndex", GLSLDataType.GLSL_SAMPLER2D, Integer.valueOf(0)));
-        m_propertyMap.put("NormalMapIndex",   new ShaderProperty("NormalMapIndex", GLSLDataType.GLSL_SAMPLER2D, Integer.valueOf(1)));
-        m_propertyMap.put("SpecularMapIndex", new ShaderProperty("SpecularMapIndex", GLSLDataType.GLSL_SAMPLER2D, Integer.valueOf(2)));
-
-        m_propertyMap.put("SpecularPower", new ShaderProperty("SpecularPower", GLSLDataType.GLSL_FLOAT, Float.valueOf(8.0f)));
-    }
-
-    
-    /**
-     * Apply the shader to this mesh.
-     * @param meshInst The mesh to apply the shader on
-     * @return true on success
-     */
-    @Override
-    public boolean applyToMesh(PPolygonMeshInstance meshInst)
-    {
-        GLSLShaderObjectsState shaderState = 
-                (GLSLShaderObjectsState) m_WM.getRenderManager().createRendererState(RenderState.RS_GLSL_SHADER_OBJECTS);
-        // Apply uniforms and vertex attributes as needed
-        blockUntilLoaded(shaderState);
-        
-        shaderState.setAttributePointer(
-                                "tangent",  // The name, referenced in the shader code
-                                3, // Total size of the data
-                                false,                                    // "Normalized"
-                                0,                                        // The "stride" (between entries)
-                                meshInst.getGeometry().getGeometry().getTangentBuffer());    // The actual data   
-        setProperties(shaderState);
-        
-//        shaderState.setUniform("diffuseMap", m_nDiffuseMapIndex);
-//        shaderState.setUniform("normalMap", m_nNormalMapTextureUnitIndex);
-//        shaderState.setUniform("specularMap", m_nSpecularMapTextureUnitIndex);
-        
-        meshInst.setShaderState(shaderState);
-        
-        return true;
+        setProgramDescription(new String(
+                "This program performs normal and specular mapping and ambient lighting with " +
+                "single texturing."
+                ));
+        // add the effects in
+        addEffect(new VertexToPosition_Transform()); // Set up the position
+        addEffect(new UnlitTexturing_Lighting()); // Grab pixel color from the diffuse map
+        addEffect(new CalculateToLight_Lighting()); // Determine the vector to the light source (gl_LightSource[0])
+        addEffect(new NormalMapping());
+        addEffect(new AmbientNdotL_Lighting()); // Calculate N * L and modulate the final color by it, mixing in a ratio of ambient
+        addEffect(new SpecularMapping_Lighting());
+        try
+        {
+            this.compile();
+            m_vertAttributes.add(GLSLDefaultVariables.Tangents);
+            this.synchronizePropertyObjects();
+            // Set the ambient power and the diffuse map texture unit
+            setProperty(new ShaderProperty("ambientPower", GLSLDataType.GLSL_FLOAT, Float.valueOf(fAmbientPower)));
+            setProperty(new ShaderProperty("DiffuseMapIndex", GLSLDataType.GLSL_SAMPLER2D, Integer.valueOf(0)));
+            setProperty(new ShaderProperty("NormalMapIndex", GLSLDataType.GLSL_SAMPLER2D, Integer.valueOf(1)));
+            setProperty(new ShaderProperty("SpecularMapIndex", GLSLDataType.GLSL_SAMPLER2D, Integer.valueOf(2)));
+            setProperty(new ShaderProperty("specularExponent", GLSLDataType.GLSL_FLOAT, Float.valueOf(specularExponent)));
+        }
+        catch (Exception e)
+        {
+            Logger.getLogger(this.getClass().toString()).log(Level.SEVERE, "Caught " + e.getClass().getName() + ": " + e.getMessage());
+        }
     }
 }

@@ -56,9 +56,11 @@ public class NormalMapping extends GLSLShaderEffect
                 " from the normal map texture."
                 );
         // allocate globals we intend to use
-        m_fragmentGlobals = new GLSLShaderVariable[2];
+        m_fragmentGlobals = new GLSLShaderVariable[1];
         m_fragmentGlobals[0] = GLSLDefaultVariables.FragmentLocalNormal;
-        m_fragmentGlobals[1] = GLSLDefaultVariables.TBNMatrix;
+
+        m_vertexGlobals = new GLSLShaderVariable[1];
+        m_vertexGlobals[0] = GLSLDefaultVariables.TBNMatrix;
         
         // allocate uniforms we use or expose
         m_fragmentUniforms = new GLSLShaderUniform[1];
@@ -101,9 +103,9 @@ public class NormalMapping extends GLSLShaderEffect
     {
         StringBuilder vertexLogic = new StringBuilder();
         vertexLogic.append("vec3 binormal = normalize(cross(" + m_vertAttributes[0].getName() + ", gl_Normal));" + NL);
-        vertexLogic.append(m_fragmentGlobals[1].assign("mat3(" + m_vertAttributes[0].getName() + ", binormal, gl_Normal)"));
+        vertexLogic.append(m_vertexGlobals[0].getName() + " = mat3(" + m_vertAttributes[0].getName() + ", binormal, gl_Normal);" + NL);
         // transform the ToLight vector
-        vertexLogic.append(m_VertexModifications.get(0).getName() + " *= " + m_fragmentGlobals[1].getName() + ";" + NL);
+        vertexLogic.append(m_VertexModifications.get(0).getName() + " *= " + m_vertexGlobals[0].getName() + ";" + NL);
         m_vertexLogic = vertexLogic.toString();
     }
 }

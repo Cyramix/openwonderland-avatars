@@ -547,7 +547,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
                             }
 
                             // Set material
-                            skeleton.setShader(new VertDeformerWithSpecAndNormalMap(m_wm, rootURL));
+                            skeleton.setShader(new VertDeformerWithSpecAndNormalMap(m_wm));
 
                             // Facial animation state is designated to id (and index) 1
                             AnimationState facialAnimationState = new AnimationState(1);

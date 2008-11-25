@@ -149,6 +149,13 @@ public class GLSLDefaultVariables
      */
     public static final GLSLShaderVarying ToLight = 
             new GLSLShaderVarying("ToLight", GLSLDataType.GLSL_VEC3);
+    /**
+     * This is the vector that points to the camera from the current position.
+     * As a varying, it should always be normalized prior to use in fragment
+     * shader logic.
+     */
+    public static final GLSLShaderVarying ToCamera =
+            new GLSLShaderVarying("ToCamera", GLSLDataType.GLSL_VEC3);
     
     /**
      * This enumeration is used to indicate which parts of the shader pipeline
