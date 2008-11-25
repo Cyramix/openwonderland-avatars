@@ -71,12 +71,7 @@ import imi.scene.utils.PMeshUtils;
 import imi.utils.FileUtils;
 import imi.utils.PMathUtils;
 import java.awt.Component;
-import java.awt.Dimension;
 import java.awt.event.ActionEvent;
-import java.awt.event.ComponentEvent;
-import java.awt.event.ComponentListener;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
@@ -109,20 +104,20 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
 ////////////////////////////////////////////////////////////////////////////////
 // CLASS DATA MEMBERS - BEGIN
 ////////////////////////////////////////////////////////////////////////////////    
-    private WorldManager        m_worldManager      = null;
-    protected CameraNode        m_cameraNode        = null;
-    protected int               m_desiredFrameRate  = 60;
-    protected int               m_width             = 800;
-    protected int               m_height            = 600;
-    protected float             m_aspect            = 800.0f/600.0f;
-    protected SceneEssentials   m_sceneData         = null;
-    protected boolean           m_bLoading          = false;
-    protected RenderBuffer      m_renderBuffer      = null;
-    protected Component         m_base              = this;
-    protected OptionsGUI        m_AvatarOptions     = null;
-    protected TreeExplorer      m_NodeExplorer      = null;
-    protected JFrame            m_AnimationViewer   = null;
-    protected JPanel_ServerBrowser m_ServerBrowser  = null;
+    private WorldManager                m_worldManager      = null;
+    protected CameraNode                m_cameraNode        = null;
+    protected int                       m_desiredFrameRate  = 60;
+    protected int                       m_width             = 800;
+    protected int                       m_height            = 600;
+    protected float                     m_aspect            = 800.0f/600.0f;
+    protected SceneEssentials           m_sceneData         = null;
+    protected boolean                   m_bLoading          = false;
+    protected RenderBuffer              m_renderBuffer      = null;
+    protected Component                 m_base              = this;
+    protected OptionsGUI                m_AvatarOptions     = null;
+    protected TreeExplorer              m_NodeExplorer      = null;
+    protected JFrame                    m_AnimationViewer   = null;
+    protected JPanel_ServerBrowser      m_ServerBrowser  = null;
     protected FlexibleCameraProcessor   m_cameraProcessor   = null;
 ////////////////////////////////////////////////////////////////////////////////
 // CLASS DATA MEMBERS - END
@@ -1213,4 +1208,11 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
     private javax.swing.JToolBar jToolBar_ProgressBar;
     // End of variables declaration//GEN-END:variables
 
+    public String getOS() {
+        return System.getProperty("os.name");
+    }
+    
+    public boolean isWindowsOS() {
+        return getOS().contains("Windows");
+    }
 }

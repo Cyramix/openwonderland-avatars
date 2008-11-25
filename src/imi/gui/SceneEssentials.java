@@ -892,9 +892,21 @@ public class SceneEssentials {
     }
 
     public void downloadZipStream(String link, File destination) {
-        int a = destination.toString().lastIndexOf("/");
-        int b = destination.toString().lastIndexOf(".");
-        String fold = destination.toString().substring(a, b) + "/";
+        int a, b;
+        String fold;
+        
+        if (isWindowsOS())
+            a = destination.toString().lastIndexOf('\\');
+        else
+            a = destination.toString().lastIndexOf('/');
+        
+        b = destination.toString().lastIndexOf(".");
+        
+        if (isWindowsOS())
+            fold = destination.toString().substring(a, b) + '\\';
+        else
+            fold = destination.toString().substring(a, b) + '/';
+        
         File desti = new File(destination.getParent(), fold);
         desti.mkdirs();
         
@@ -912,7 +924,11 @@ public class SceneEssentials {
                 is = new BufferedInputStream(zipfile.getInputStream(entry));
                 int count;
                 byte data[] = new byte[BUFFER];
-                FileOutputStream fos = new FileOutputStream(desti + "/" + entry.getName());
+                FileOutputStream fos;
+                if (isWindowsOS())
+                    fos = new FileOutputStream(desti.toString() + '\\' + entry.getName());
+                else
+                    fos = new FileOutputStream(desti.toString() + '/' + entry.getName());
                 dest = new BufferedOutputStream(fos, BUFFER);
                 while ((count = is.read(data, 0, BUFFER)) != -1) {
                     dest.write(data, 0, count);
@@ -981,7 +997,10 @@ public class SceneEssentials {
         }
 
         int a;
-        a = data.toString().lastIndexOf("/");
+        if (isWindowsOS())
+            a = data.toString().lastIndexOf('\\');
+        else
+            a = data.toString().lastIndexOf('/');
         String name = data.toString().substring(a+1);
 
         if (clear) {
@@ -1001,7 +1020,12 @@ public class SceneEssentials {
     ////////////////////////////////////////////////////////////////////////////
     public File getAbsPath(File file) {
         String fullpath = null;
-        int index = file.getParent().indexOf("./");
+        int index;
+        if (isWindowsOS())
+            index = file.getParent().indexOf(".\\");
+        else
+            index = file.getParent().indexOf("./");
+        
         if (index > 0) {
             fullpath = file.getPath().substring(0, index);
             fullpath += file.getPath().substring(index+2);
@@ -1168,6 +1192,14 @@ public class SceneEssentials {
         }
     }
 
+    public String getOS() {
+        return System.getProperty("os.name");
+    }
+    
+    public boolean isWindowsOS() {
+        return getOS().contains("Windows");
+    }
+    
     /**
      * Replaces the texture of the currently selected model
      * TODO: Allow support for textures on multiple meshes.
