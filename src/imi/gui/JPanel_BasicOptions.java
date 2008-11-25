@@ -643,8 +643,7 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
             m_sceneData.loadMeshDAEURL(true, true, this, data.get(0), meshes, 7);
         else {
             m_sceneData.loadMeshDAEURL(false, true, this, data.get(0), meshes, 7);
-            String[] hair = new String[] {data.get(0)[0]};
-            m_meshes.put(7, hair);
+            m_meshes.put(7, meshes);
             m_sceneData.setMeshSetup(m_meshes);
         }
 
@@ -957,32 +956,44 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
         jButton_ApplyAllAcc.setEnabled(true);
 
         InitListBoxes(m_isViewMode);
-        m_sceneData.setDefaultLoad(false);
+        m_sceneData.setDefaultLoad(true);
         
         ////////////////////////////////////////////////////////////////////////
         // ZIP Stream TEST
         ////////////////////////////////////////////////////////////////////////
-        String query = "SELECT url FROM DefaultAvatars WHERE id = 5";
-        ArrayList<String[]> data = m_sceneData.loadSQLData(query);
-
-        String destination = System.getProperty("user.dir");
-        destination += "/temp/";
-        File dest = new File(destination);
-        int index = data.get(0)[0].lastIndexOf("/");
-        int indez = data.get(0)[0].lastIndexOf(".");
-        String name = data.get(0)[0].substring(index+1);
-        String fold = data.get(0)[0].substring(index+1, indez);
-        fold += "/";
-        dest = new File(dest, name);
-        m_sceneData.downloadZipStream(data.get(0)[0], dest);
-        dest = new File(dest.getParent(), fold);
-        loadMaleAvatar(dest);
-        dest.getParentFile().deleteOnExit();
+//        String query = "SELECT url FROM DefaultAvatars WHERE id = 5";
+//        ArrayList<String[]> data = m_sceneData.loadSQLData(query);
+//
+//        String destination = System.getProperty("user.dir");
+//        if (isWindowsOS())
+//            destination += "\\temp\\";
+//        else
+//            destination += "/temp/";
+//        File dest = new File(destination);
+//        int index;
+//
+//        if (isWindowsOS())
+//            index = data.get(0)[0].lastIndexOf('\\');
+//        else
+//            index = data.get(0)[0].lastIndexOf('/');
+//
+//        int indez = data.get(0)[0].lastIndexOf(".");
+//        String name = data.get(0)[0].substring(index+1);
+//        String fold = data.get(0)[0].substring(index+1, indez);
+//        if (isWindowsOS())
+//            fold += '\\';
+//        else
+//            fold += '/';
+//        dest = new File(dest, name);
+//        m_sceneData.downloadZipStream(data.get(0)[0], dest);
+//        dest = new File(dest.getParent(), fold);
+//        loadMaleAvatar(dest);
+//        dest.getParentFile().deleteOnExit();
         ////////////////////////////////////////////////////////////////////////
         // ZIP Stream TEST
         ////////////////////////////////////////////////////////////////////////
 
-        //loadDefaultAvatar();
+        loadDefaultAvatar();
 
         jPanel_MainBody.setVisible(true);
         jPanel_MainHead.setVisible(true);
@@ -1003,27 +1014,38 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
         ////////////////////////////////////////////////////////////////////////
         // ZIP Stream TEST
         ////////////////////////////////////////////////////////////////////////
-        String query = "SELECT url FROM DefaultAvatars WHERE id = 6";
-        ArrayList<String[]> data = m_sceneData.loadSQLData(query);
-
-        String destination = System.getProperty("user.dir");
-        destination += "/temp/";
-        File dest = new File(destination);
-        int index = data.get(0)[0].lastIndexOf("/");
-        int indez = data.get(0)[0].lastIndexOf(".");
-        String name = data.get(0)[0].substring(index+1);
-        String fold = data.get(0)[0].substring(index+1, indez);
-        fold += "/";
-        dest = new File(dest, name);
-        m_sceneData.downloadZipStream(data.get(0)[0], dest);
-        dest = new File(dest.getParent(), fold);
-        loadMaleAvatar(dest);
-        dest.getParentFile().deleteOnExit();
+//        String query = "SELECT url FROM DefaultAvatars WHERE id = 6";
+//        ArrayList<String[]> data = m_sceneData.loadSQLData(query);
+//
+//        String destination = System.getProperty("user.dir");
+//        if (isWindowsOS())
+//            destination += "\\temp\\";
+//        else
+//            destination += "/temp/";
+//        File dest = new File(destination);
+//        int index;
+//
+//        if (isWindowsOS())
+//            index = data.get(0)[0].lastIndexOf('\\');
+//        else
+//            index = data.get(0)[0].lastIndexOf('/');
+//        int indez = data.get(0)[0].lastIndexOf(".");
+//        String name = data.get(0)[0].substring(index+1);
+//        String fold = data.get(0)[0].substring(index+1, indez);
+//        if (isWindowsOS())
+//            fold += '\\';
+//        else
+//            fold += '/';
+//        dest = new File(dest, name);
+//        m_sceneData.downloadZipStream(data.get(0)[0], dest);
+//        dest = new File(dest.getParent(), fold);
+//        loadMaleAvatar(dest);
+//        dest.getParentFile().deleteOnExit();
         ////////////////////////////////////////////////////////////////////////
         // ZIP Stream TEST
         ////////////////////////////////////////////////////////////////////////
 
-        //loadDefaultAvatar();
+        loadDefaultAvatar();
 
         jPanel_MainBody.setVisible(true);
         jPanel_MainHead.setVisible(true);
@@ -1884,7 +1906,13 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
 ////////////////////////////////////////////////////////////////////////////////
 // Helper Functions - Begin
 ////////////////////////////////////////////////////////////////////////////////
+    public String getOS() {
+        return System.getProperty("os.name");
+    }
 
+    public boolean isWindowsOS() {
+        return getOS().contains("Windows");
+    }
 ////////////////////////////////////////////////////////////////////////////////
 // Helper Functions - End
 ////////////////////////////////////////////////////////////////////////////////

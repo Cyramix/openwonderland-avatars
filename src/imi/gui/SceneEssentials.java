@@ -227,7 +227,13 @@ public class SceneEssentials {
         };
         jFileChooser_LoadAssets = new javax.swing.JFileChooser();
         jFileChooser_LoadAssets.setDialogTitle("Load Texture File");
-        java.io.File assetDirectory = new java.io.File("./assets/textures");
+        java.io.File assetDirectory;
+
+        if (isWindowsOS())
+            assetDirectory = new java.io.File(".\\assets\\textures");
+        else
+            assetDirectory = new java.io.File("./assets/textures");
+
         jFileChooser_LoadAssets.setCurrentDirectory(assetDirectory);
         jFileChooser_LoadAssets.setDoubleBuffered(true);
         jFileChooser_LoadAssets.setDragEnabled(true);
@@ -251,9 +257,16 @@ public class SceneEssentials {
                 return szDescription;
             }
         };
+
         jFileChooser_LoadColladaModel = new javax.swing.JFileChooser();
         jFileChooser_LoadColladaModel.setDialogTitle("Load Collada File");
-        java.io.File colladaDirectory = new java.io.File("./assets/models/collada");
+        java.io.File colladaDirectory;
+
+        if (isWindowsOS())
+            colladaDirectory = new java.io.File(".\\assets\\models\\collada");
+        else
+            colladaDirectory = new java.io.File("./assets/models/collada");
+
         jFileChooser_LoadColladaModel.setCurrentDirectory(colladaDirectory);
         jFileChooser_LoadColladaModel.setDoubleBuffered(true);
         jFileChooser_LoadColladaModel.setDragEnabled(true);
@@ -280,7 +293,13 @@ public class SceneEssentials {
         };
         jFileChooser_LoadModel = new javax.swing.JFileChooser();
         jFileChooser_LoadModel.setDialogTitle("Load Model File");
-        java.io.File modelDirectory = new java.io.File("./assets/models");
+        java.io.File modelDirectory;
+        
+        if (isWindowsOS())
+            modelDirectory = new java.io.File(".\\assets\\models");
+        else
+            modelDirectory = new java.io.File("./assets/models");
+
         jFileChooser_LoadModel.setCurrentDirectory(modelDirectory);
         jFileChooser_LoadModel.setDoubleBuffered(true);
         jFileChooser_LoadModel.setDragEnabled(true);
@@ -306,7 +325,13 @@ public class SceneEssentials {
         };
         jFileChooser_LoadXML = new javax.swing.JFileChooser();
         jFileChooser_LoadXML.setDialogTitle("Load Configuration File");
-        java.io.File xmlDirectory = new java.io.File("./assets/");
+        java.io.File xmlDirectory;
+
+        if (isWindowsOS())
+            xmlDirectory = new java.io.File(".\\assets\\");
+        else
+            xmlDirectory = new java.io.File("./assets/");
+
         jFileChooser_LoadXML.setCurrentDirectory(xmlDirectory);
         jFileChooser_LoadXML.setDoubleBuffered(true);
         jFileChooser_LoadXML.setDragEnabled(true);
@@ -314,7 +339,13 @@ public class SceneEssentials {
 ////////////////////////////////////////////////////////////////////////////////
         jFileChooser_LoadAvatarDAE = new javax.swing.JFileChooser();
         jFileChooser_LoadAvatarDAE.setDialogTitle("Load Avatar Model");
-        java.io.File avatarDirectory = new java.io.File("./assets/models/collada");
+        java.io.File avatarDirectory;
+
+        if (isWindowsOS())
+            avatarDirectory = new java.io.File(".\\assets\\models\\collada");
+        else
+            avatarDirectory = new java.io.File("./assets/models/collada");
+
         jFileChooser_LoadAvatarDAE.setCurrentDirectory(avatarDirectory);
         jFileChooser_LoadAvatarDAE.setDoubleBuffered(true);
         jFileChooser_LoadAvatarDAE.setDragEnabled(true);
@@ -487,7 +518,13 @@ public class SceneEssentials {
                 currentHiProcessors.clear();
             
             File path = getAbsPath(fileModel);
-            String szURL = new String("file://" + path.getPath());
+            String szURL;
+            
+            if (isWindowsOS())
+                szURL = new String("file:\\" + path.getPath());
+            else
+                szURL = new String("file://" + path.getPath());
+
             URL modelURL = null;
 
             try {
@@ -517,7 +554,13 @@ public class SceneEssentials {
                 currentHiProcessors.clear();
             
             File path = getAbsPath(fileModel);
-            String szURL = new String("file://" + path.getPath());
+            String szURL;
+
+            if (isWindowsOS())
+                szURL = new String("file:\\" + path.getPath());
+            else
+                szURL = new String("file://" + path.getPath());
+
             URL modelURL = null;
 
             try {
@@ -575,7 +618,13 @@ public class SceneEssentials {
             currentPScene.setUseRepository(useRepository);
 
             File path       = getAbsPath(fileModel);
-            String szURL    = new String("file://" + path.getPath());
+            String szURL;
+
+            if (isWindowsOS())
+                szURL = new String("file:\\" + path.getPath());
+            else
+                szURL = new String("file://" + path.getPath());
+
             URL modelURL    = null;
             try {
                 modelURL = new URL(szURL);
@@ -615,10 +664,11 @@ public class SceneEssentials {
                 colladaAsset.setUserData(new ColladaLoaderParams(false, true, false, false, 3, data[0], null));
                 pruneMeshes(data[0], colladaAsset, data);
             } else {
-                if (data[4].equals("0"))
-                    addDAEMeshURLToModelA(data, "Head", region);
-                else
-                    addDAEMeshURLToModelA(data, "skeletonRoot", region);
+                addDAEMeshURLToModelA(data, "Head", region);
+//                if (data[4].equals("0"))
+//                    addDAEMeshURLToModelA(data, "Head", region);
+//                else
+//                    addDAEMeshURLToModelA(data, "skeletonRoot", region);
             }
         } else {
             try {
@@ -692,19 +742,20 @@ public class SceneEssentials {
         Instruction pRootInstruction = new Instruction();
         pRootInstruction.addInstruction(InstructionNames.setSkeleton, skeleton);
 
-        if (joint2addon.equals("skeletonRoot")) {
-            PNode node = null;
-            SkinnedMeshJoint rootJoint = null;
-
-            node = currentPScene.getInstances().findChild("testJoint");
-
-            if (node == null) {
-                rootJoint = new SkinnedMeshJoint("SceneEssentials root Joint", new PTransform());
-                node.addChild(rootJoint);
-            }
-            
-            joint2addon = "testJoint";
-        }
+//        if (joint2addon.equals("skeletonRoot")) {
+//            PNode node = null;
+//            SkinnedMeshJoint rootJoint = null;
+//
+//            node = currentPScene.getInstances().findChild("testJoint");
+//
+//            if (node == null) {
+//                rootJoint = new SkinnedMeshJoint("testJoint", new PTransform());
+//                node = currentPScene.getInstances().getChild(0).getChild(0);
+//                node.addChild(rootJoint);
+//            }
+//
+//            joint2addon = "testJoint";
+//        }
 
         String szName = joint2addon;
 
@@ -713,13 +764,16 @@ public class SceneEssentials {
         }
 
         pRootInstruction.addInstruction(InstructionNames.loadGeometry, data[3]);
-        PMatrix tempSolution = new PMatrix(new Vector3f(0.0f,(float) Math.toRadians(180), 0.0f), new Vector3f(1.0f, 1.0f, 1.0f), Vector3f.ZERO);
+        
+        PMatrix tempSolution;
+        if (data[3].indexOf("Female") != -1)
+            tempSolution = new PMatrix();
+        else
+            tempSolution = new PMatrix(new Vector3f(0.0f,(float) Math.toRadians(180), 0.0f), new Vector3f(1.0f, 1.0f, 1.0f), Vector3f.ZERO);
+
         //PMatrix tempSolution = new PMatrix();
         pRootInstruction.addInstruction(InstructionNames.addAttachment, data[0], szName, tempSolution);
         pProcessor.execute(pRootInstruction);
-
-        skeleton.setShader(new VertDeformerWithNormalMapping(worldManager));
-        currentPScene.setDirty(true, true);
         
         int hairCheck = data[3].indexOf("Hair");
         if (hairCheck != -1) {
@@ -774,6 +828,15 @@ public class SceneEssentials {
 
             public boolean initialize(Object asset) {
 
+                while (((PNode)asset).getChildrenCount() < 1) {
+                    try {
+                        Thread.sleep(3000);
+                        Thread.yield();
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(SceneEssentials.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+
                 if (((PNode) asset).getChild(0) instanceof SkeletonNode) {
                     final SkeletonNode skel = (SkeletonNode) ((PNode) asset).getChild(0);
                     skeleton = skel;
@@ -819,6 +882,15 @@ public class SceneEssentials {
         AssetInitializer init = new AssetInitializer() {
 
             public boolean initialize(Object asset) {
+
+                while (((PNode)asset).getChildrenCount() < 1) {
+                    try {
+                        Thread.sleep(3000);
+                        Thread.yield();
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(SceneEssentials.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
 
                 if (((PNode) asset).getChild(0) instanceof SkeletonNode) {
                     final SkeletonNode skel = (SkeletonNode) ((PNode) asset).getChild(0);
@@ -1057,12 +1129,21 @@ public class SceneEssentials {
         String bind = null;
         for (int i = 0; i < colladaList.length; i++) {
             if (colladaList[i].lastIndexOf("Bind") != -1) {
-                bind = absPath + "/" + colladaList[i];
+                if (isWindowsOS())
+                    bind = absPath + '\\' + colladaList[i];
+                else
+                    bind = absPath + '/' + colladaList[i];
                 break;
             }
         }
         
-        String szURL = new String("file://" + bind);
+        String szURL;
+        
+        if (isWindowsOS())
+            szURL = new String("file:\\\\" + bind);
+        else
+            szURL = new String("file://" + bind);
+
         URL modelURL = null;
         try {
             modelURL = new URL(szURL);
@@ -1080,10 +1161,17 @@ public class SceneEssentials {
         String[] colladaList = getFileList(file);
         
         String anim = null;
+        String szAnim = null;
         for (int i = 0; i < colladaList.length; i++) {
             if (colladaList[i].lastIndexOf("Anim") != -1) {
-                anim = absPath + "/" + colladaList[i];
-                String szAnim = new String("file://" + anim);
+                if (isWindowsOS()) {
+                    anim = absPath + '\\' + colladaList[i];
+                    szAnim = new String("file:\\\\" + anim);
+                } else {
+                    anim = absPath + "/" + colladaList[i];
+                    szAnim = new String("file://" + anim);
+                }
+
                 try {
                     URL animURL = new URL(szAnim);
                     animURLs.add(animURL);
@@ -1100,10 +1188,10 @@ public class SceneEssentials {
         String szGender = null;
         
         if (gender != -1)
-            szGender = "\'Male\'";
+            szGender = "'Male'";
         else
-            szGender = "\'Female\'";
-        
+            szGender = "'Female'";
+
         String query = "SELECT name, grouping FROM GeometryReferences WHERE tableref = ";
         query += gender;
         if (meshsetup != null)
@@ -1215,7 +1303,12 @@ public class SceneEssentials {
             int iIndex = fileTexture.getName().indexOf(".");
             String szName = fileTexture.getName().substring(0, iIndex);
             File fullpath = getAbsPath(fileTexture);
-            String szURL = new String("file://" + fullpath.toString());
+            String szURL;
+            
+            if (isWindowsOS())
+                szURL= new String("file:\\\\" + fullpath.toString());
+            else
+                szURL= new String("file://" + fullpath.toString());
             
             try {
                 URL urlFile = new URL(szURL);
