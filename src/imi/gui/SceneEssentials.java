@@ -760,12 +760,12 @@ public class SceneEssentials {
         pRootInstruction.addInstruction(InstructionNames.loadGeometry, data[3]);
         
         PMatrix tempSolution;
-        if (data[3].indexOf("Female") != -1)
+        if (data[3].indexOf("Female") != -1) {
             tempSolution = new PMatrix();
-        else
+            tempSolution.setRotation(new Vector3f(0.0f,(float) Math.toRadians(180), 0.0f));
+        } else
             tempSolution = new PMatrix(new Vector3f(0.0f,(float) Math.toRadians(180), 0.0f), new Vector3f(1.0f, 1.0f, 1.0f), Vector3f.ZERO);
 
-        //PMatrix tempSolution = new PMatrix();
         pRootInstruction.addInstruction(InstructionNames.addAttachment, data[0], szName, tempSolution);
         pProcessor.execute(pRootInstruction);
         

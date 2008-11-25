@@ -805,6 +805,10 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
             jLabel_CurrUpperBody.setText(meshies[0]);
             jLabel_CurrLowerBody.setText(meshies[1]);
             jLabel_CurrShoes.setText(meshies[2]);
+        } else {
+            jLabel_CurrUpperBody.setText("Default");
+            jLabel_CurrLowerBody.setText("Default");
+            jLabel_CurrShoes.setText("Default");
         }
 
         jButton_Male.setEnabled(true);
@@ -955,6 +959,7 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
         jButton_ApplyAllBody.setEnabled(true);
         jButton_ApplyAllAcc.setEnabled(true);
 
+        jTabbedPane_Options.setSelectedIndex(0);
         InitListBoxes(m_isViewMode);
         m_sceneData.setDefaultLoad(true);
         
@@ -1009,6 +1014,7 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
         jButton_ApplyAllBody.setEnabled(true);
         jButton_ApplyAllAcc.setEnabled(true);
 
+        jTabbedPane_Options.setSelectedIndex(0);
         InitListBoxes(m_isViewMode);
         m_sceneData.setDefaultLoad(false);
         ////////////////////////////////////////////////////////////////////////
@@ -1060,6 +1066,7 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
         jButton_ApplyAllBody.setEnabled(false);
         jButton_ApplyAllAcc.setEnabled(false);
 
+        jTabbedPane_Options.setSelectedIndex(0);
         InitListBoxes(m_isViewMode);
 
         jPanel_MainBody.setVisible(true);
