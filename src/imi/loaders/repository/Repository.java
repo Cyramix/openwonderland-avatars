@@ -102,7 +102,7 @@ public class Repository extends Entity
                 // If we don't already have it in the collection we will add it now
                 repoAsset = new RepositoryAsset(asset.getDescriptor(), asset.getUserData(), this);
                 
-                // The new repository asset will loaditself, inceremnt the counter
+                // The new repository asset will loaditself, incerement the counter
                 m_numberOfLoadRequests++;
 
                 collection.put(asset.getDescriptor(), repoAsset);
@@ -123,7 +123,10 @@ public class Repository extends Entity
         }   
         
         if (repoAsset.loadData(asset)) // success?
+        {
+            assert(asset.getAssetData() != null);
             user.receiveAsset(asset); // we call back the user after loading the data into the asset
+        }
         else
         {   
             // create a worker that will setup the SharedAsset and notify the user when the repo asset finished loading itself
@@ -229,7 +232,7 @@ public class Repository extends Entity
     
     protected class WorkOrder
     {
-        private long    m_timeStamp    = System.nanoTime();
+        private long    m_timeStamp    = System.currentTimeMillis();
         
         SharedAsset     m_asset        = null;
         RepositoryUser  m_user         = null;

@@ -1079,8 +1079,6 @@ public class PScene extends PNode implements RepositoryUser
      */
     public Texture loadTexture(URL textureLocation)
     {
-        //System.out.println("Thread: " + Thread.currentThread().getName() + " -Loading a texture in PScene: " + textureLocation);
-        
         // Create a suitable asset
         SharedAsset texture = new SharedAsset(getRepository(), new AssetDescriptor(SharedAssetType.Texture, textureLocation));
         
@@ -1100,10 +1098,10 @@ public class PScene extends PNode implements RepositoryUser
             {
                 //monkeyTexture = null;
                 if (ex.getMessage().equals("Connection refused")) {
-                    System.out.println(ex.getMessage() + "... Retrying");
-                    loadTexture(textureLocation);
+                    System.out.println(ex.getMessage() + "... Aborting -- PScene : loadTexture");
                 } else
                     System.out.println(ex.getMessage());
+                return null;
             }
             
             if (monkeyTexture != null)

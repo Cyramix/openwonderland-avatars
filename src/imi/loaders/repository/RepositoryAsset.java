@@ -146,19 +146,17 @@ public class RepositoryAsset extends ProcessorComponent
                 break;
                 case Texture:
                 {
-                    // TODO expose texture configuration settings
                     Texture tex = null;
                     try {
                         URL loc = m_descriptor.getLocation();
-                        URLConnection conn = loc.openConnection();
-                        InputStream in = conn.getInputStream();
                         tex = TextureManager.loadTexture(loc,
                                                         Texture.MinificationFilter.Trilinear,
                                                         Texture.MagnificationFilter.Bilinear);
                     } catch (Exception exception) {
                         if (exception.getMessage().equals("Connection refused")) {
                             System.out.println(exception.getMessage() + "... Retrying");
-                            loadSelf();
+                            m_data = null;
+                            return;
                         }
                     }
 
@@ -168,7 +166,6 @@ public class RepositoryAsset extends ProcessorComponent
                         tex.setWrap(Texture.WrapAxis.T, Texture.WrapMode.Repeat);
                     }
 
-                    //tex.setWrap(Texture.WM_WRAP_S_WRAP_T);  // TODO need configs
                     m_data.add(tex);
                 }
                 break;
@@ -178,7 +175,6 @@ public class RepositoryAsset extends ProcessorComponent
                 m_data = null;
             // finished loading, remove ourselves from the update pool
             m_home.removeProcessor(this);
-            // THIS IS THE ENTRY POINT INTO CORRECTIONS MODE!
             setArmingCondition(new ProcessorArmingCollection(this));
         }
     }

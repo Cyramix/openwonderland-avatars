@@ -1509,73 +1509,7 @@ public class Collada
         }
     }
 
-    public void populateSceneWithNodeHiearchy()
-    {
-/*
-        int b;
-        PPolygonMesh pPolygonMesh;
-        PMatrix identityMatrix = new PMatrix();
-
-        //  Populate the scene with all the loaded PolygonMeshes.
-        for (b=0; b<getPolygonMeshCount(); b++)
-        {
-            pPolygonMesh = getPolygonMesh(b);
-
-            m_pLoadingPScene.addModelInstance(pPolygonMesh, identityMatrix);
-        }
-*/
-        
-        //  If a PolygonSkinnedMesh was loaded, then create a ModelInstance
-        //  containing a PolygonSkinnedMeshInstance.
-        if (getPolygonSkinnedMeshCount() > 0)
-        {
-            PPolygonSkinnedMesh pSkinnedMesh;
-            PMatrix pSkinnedMeshMatrix = new PMatrix();
-
-            for (int a=0; a<getPolygonSkinnedMeshCount(); a++)
-            {
-                pSkinnedMesh = getPolygonSkinnedMesh(a);
-                
-                SharedAsset asset = new SharedAsset(m_pLoadingPScene.getRepository(), new AssetDescriptor(SharedAsset.SharedAssetType.Unknown, pSkinnedMesh.getName()));
-                asset.setAssetData(pSkinnedMesh);
-                
-                PPolygonModelInstance pModelInstance = m_pLoadingPScene.addModelInstance(asset, pSkinnedMeshMatrix);
-            }
-        }
-        else
-        {
-            int a;
-
-//            System.out.println("populateSceneWithNodeHiearchy()");
-//            System.out.println("   Materials:  " + getColladaMaterialCount());
-//            for (a=0; a<getColladaMaterialCount(); a++)
-//                System.out.println("      " + getColladaMaterial(a).getName());
-//            System.out.println("   PolygonMeshes:  " + getPolygonMeshCount());
-//            for (a=0; a<getPolygonMeshCount(); a++)
-//                System.out.println("      " + getPolygonMesh(a).getName());
-
-
-            //PMatrix rootMatrix = new PMatrix();
-            //PNode pRootNode = new PNode("Root");
-            
-            //  Iterate through all the root Nodes.
-            PColladaNode pColladaNode;
-            int colladaNodeCount = getColladaNodeCount();
-
-            for (a=0; a<colladaNodeCount; a++)
-            {
-                pColladaNode = getColladaNode(a);
-
-                createColladaNode(m_pLoadingPScene.getInstances(), pColladaNode, false);
-            }
-
-            //  Add the root node to the Scene.
-            //m_pLoadingPScene.addInstanceNode(pRootNode);
-            
-            //m_pLoadingPScene.setDirty(true, true);
-        }
-    }
-
+    
     //  Creates a MeshInstance.
     public PPolygonMeshInstance createMeshInstance(PPolygonMesh pPolygonMesh, PColladaNode pColladaNode, String meshName)
     {

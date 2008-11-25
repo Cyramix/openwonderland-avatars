@@ -62,7 +62,7 @@ class RepositoryWorker extends ProcessorComponent
     
     private void reset(WorkOrder statementOfWork)
     {
-        m_startTime     = System.nanoTime();
+        m_startTime     = System.currentTimeMillis();
         
         m_repoAsset     = statementOfWork.m_repoAsset;
         m_asset         = statementOfWork.m_asset;
@@ -120,7 +120,7 @@ class RepositoryWorker extends ProcessorComponent
                 // If this asset is a geometry we will set the shared asset for it so it can save to a configuration file later
                 if (m_asset.getAssetData() instanceof PPolygonMesh)
                     ((PPolygonMesh)m_asset.getAssetData()).setSharedAsset(m_asset);
-       
+                assert(m_asset.getAssetData() != null);
                 m_user.receiveAsset(m_asset);
                 ShutDown();
             }
@@ -132,7 +132,7 @@ class RepositoryWorker extends ProcessorComponent
                     // remove this RepositoryAsset from the collection.
                     m_collection.remove(m_asset.getDescriptor());
                     assert(m_asset.getAssetData() == null);
-                    m_user.receiveAsset(m_asset); // the asset is returned with null datda
+                    m_user.receiveAsset(m_asset); // the asset is returned with null data
                     ShutDown();
                 }
                 try 
