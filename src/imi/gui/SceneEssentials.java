@@ -412,6 +412,7 @@ public class SceneEssentials {
                             String szTemp = fileTexture.getPath().substring(index, fileTexture.getPath().length());
 
                             PMeshMaterial material = new PMeshMaterial(szName + "material", szTemp);
+                            material.setShader(new VertDeformerWithSpecAndNormalMap(worldManager));
                             // Set the material
                             target.setMaterial(material);
                             // We must disable the use of the geometry's material to see the texture we set for the instance
@@ -468,7 +469,8 @@ public class SceneEssentials {
                             int index = fileTexture.getPath().indexOf("assets");
                             String szTemp = fileTexture.getPath().substring(index, fileTexture.getPath().length());
 
-                            PMeshMaterial material = new PMeshMaterial(szName + "material", szTemp);                   
+                            PMeshMaterial material = new PMeshMaterial(szName + "material", szTemp);
+                            material.setShader(new VertDeformerWithSpecAndNormalMap(worldManager));
                             // Set the material
                             target.setMaterial(material);
                             // We must disable the use of the geometry's material to see the texture we set for the instance
@@ -852,7 +854,8 @@ public class SceneEssentials {
                         }
                         pProcessor.execute(pRootInstruction);
                     }
-                    
+
+                    skeleton.setShader(new VertDeformerWithSpecAndNormalMap(worldManager));
                     ((ProcessorCollectionComponent)currentEntity.getComponent(ProcessorCollectionComponent.class)).addProcessor(new SkinnedAnimationProcessor(skel));
                     currentPScene.setDirty(true, true);
                     setCameraOnModel();
@@ -932,7 +935,8 @@ public class SceneEssentials {
                         }
                         pProcessor.execute(pRootInstruction);
                     }
-                    
+
+                    skeleton.setShader(new VertDeformerWithSpecAndNormalMap(worldManager));
                     ((ProcessorCollectionComponent)currentEntity.getComponent(ProcessorCollectionComponent.class)).addProcessor(new SkinnedAnimationProcessor(skel));
                     currentPScene.setDirty(true, true);
                     setCameraOnModel();
