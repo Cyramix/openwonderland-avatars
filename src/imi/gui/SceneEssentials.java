@@ -412,8 +412,6 @@ public class SceneEssentials {
                             String szTemp = fileTexture.getPath().substring(index, fileTexture.getPath().length());
 
                             PMeshMaterial material = new PMeshMaterial(szName + "material", szTemp);
-                            // Set the shader (if no vertex deformer then there is no animations)
-                            material.setShader(new VertexDeformer(worldManager));                            
                             // Set the material
                             target.setMaterial(material);
                             // We must disable the use of the geometry's material to see the texture we set for the instance
@@ -470,9 +468,7 @@ public class SceneEssentials {
                             int index = fileTexture.getPath().indexOf("assets");
                             String szTemp = fileTexture.getPath().substring(index, fileTexture.getPath().length());
 
-                            PMeshMaterial material = new PMeshMaterial(szName + "material", szTemp);
-                            // Set the shader (if no vertex deformer then there is no animations)
-                            material.setShader(new VertexDeformer(worldManager));                            
+                            PMeshMaterial material = new PMeshMaterial(szName + "material", szTemp);                   
                             // Set the material
                             target.setMaterial(material);
                             // We must disable the use of the geometry's material to see the texture we set for the instance
@@ -730,10 +726,6 @@ public class SceneEssentials {
             
         pProcessor.execute(pRootInstruction);
         
-        skeleton.setShader(new VertDeformerWithNormalMapping(worldManager));
-        ((ProcessorCollectionComponent) currentEntity.getComponent(ProcessorCollectionComponent.class)).addProcessor(new SkinnedAnimationProcessor(skeleton));
-        currentPScene.setDirty(true, true);
-        
         meshsetup.put(region, meshRef);
     }
 
@@ -861,7 +853,6 @@ public class SceneEssentials {
                         pProcessor.execute(pRootInstruction);
                     }
                     
-                    skel.setShader(new VertDeformerWithSpecAndNormalMap(worldManager));
                     ((ProcessorCollectionComponent)currentEntity.getComponent(ProcessorCollectionComponent.class)).addProcessor(new SkinnedAnimationProcessor(skel));
                     currentPScene.setDirty(true, true);
                     setCameraOnModel();
@@ -942,7 +933,6 @@ public class SceneEssentials {
                         pProcessor.execute(pRootInstruction);
                     }
                     
-                    skel.setShader(new VertDeformerWithNormalMapping(worldManager));
                     ((ProcessorCollectionComponent)currentEntity.getComponent(ProcessorCollectionComponent.class)).addProcessor(new SkinnedAnimationProcessor(skel));
                     currentPScene.setDirty(true, true);
                     setCameraOnModel();
