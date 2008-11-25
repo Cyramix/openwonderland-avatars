@@ -41,8 +41,7 @@ public class Repository extends Entity
     // The maximum number of load requests that can handled at a time
     private long m_numberOfLoadRequests      = 0l;
     private long m_maxConcurrentLoadRequests = 10l;
-    private static long m_maxQueryTime  = 200000l; // 10000000000l
-    
+    private static long m_maxQueryTime  = 2000000l; // Lengthy timeout for testing purposes
     private FastList<WorkOrder> m_workOrders = new FastList<WorkOrder>();
     
     // geometry
