@@ -24,10 +24,7 @@ import imi.loaders.collada.ColladaLoaderParams;
 import imi.loaders.ms3d.SkinnedMesh_MS3D_Importer;
 import imi.scene.PScene;
 import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
-import java.io.IOException;
-import java.io.InputStream;
 import java.net.URL;
-import java.net.URLConnection;
 import java.util.LinkedList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -65,7 +62,7 @@ public class RepositoryAsset extends ProcessorComponent
     /** The home repository for this asset **/
     private Repository           m_home       = null;
     
-    private Boolean m_lock = Boolean.TRUE;
+    private final Boolean m_lock = Boolean.TRUE;
 
     /**
      * Construct a new instance
@@ -88,8 +85,11 @@ public class RepositoryAsset extends ProcessorComponent
         synchronized (m_lock)
         {
             // First, has loading already occured?
-            if (m_data != null)
+            if (m_data != null && m_data.size() > 0)
                 return;
+            else if (m_data != null && m_data.isEmpty()) // weirdness
+                m_data = null;
+
             // allocate data storage
             m_data = new LinkedList<Object>();
             switch (m_descriptor.getType())
@@ -154,16 +154,22 @@ public class RepositoryAsset extends ProcessorComponent
                                                         Texture.MagnificationFilter.Bilinear);
                     } catch (Exception exception) {
                         if (exception.getMessage().equals("Connection refused")) {
-                            System.out.println(exception.getMessage() + "... Retrying");
-                            m_data = null;
-                            return;
+                            System.out.println(this.toString() + " " + exception.getMessage() + "... Retrying from RepositoryAsset loadSelf");
                         }
+                        m_data = null;
+                        return;
                     }
 
                     if (tex != null)
                     {
                         tex.setWrap(Texture.WrapAxis.S, Texture.WrapMode.Repeat);
                         tex.setWrap(Texture.WrapAxis.T, Texture.WrapMode.Repeat);
+                    }
+                    else // failure
+                    {
+                        System.out.println(this.toString() + " texture failed.");
+                        m_data = null;
+                        return;
                     }
 
                     m_data.add(tex);
@@ -172,7 +178,10 @@ public class RepositoryAsset extends ProcessorComponent
             }
             // first, if the size of data is still zero, there is a problem
             if (m_data != null && m_data.size() <= 0)
+            {
                 m_data = null;
+                return;
+            }
             // finished loading, remove ourselves from the update pool
             m_home.removeProcessor(this);
             setArmingCondition(new ProcessorArmingCollection(this));
@@ -221,7 +230,7 @@ public class RepositoryAsset extends ProcessorComponent
     @Override
     public void commit(ProcessorArmingCollection collection) 
     {
-       
+
     }
 
     

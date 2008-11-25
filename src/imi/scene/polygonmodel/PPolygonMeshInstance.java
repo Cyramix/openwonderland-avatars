@@ -151,43 +151,6 @@ public class PPolygonMeshInstance extends PNode
             result.getScale().set(scale.x, scale.y, scale.z);
         }
         
-        if(!isUseGeometryMaterial())
-        {
-            // TODO : Rework material serializatin process to fit with the latest changes!
-//            sbMaterial configMat = new sbMaterial();
-//            
-//            // Shaders
-//            if (getMaterialRef().getMaterial().getFragShader() != null && getMaterialRef().getMaterial().getVertShader() != null)
-//            {
-//                bNeeded = true;
-//                sbShaderPair pair = new sbShaderPair();
-//                pair.setFragmentShaderPath(getMaterialRef().getMaterial().getFragShader().getPath());
-//                pair.setVertexShaderPath(getMaterialRef().getMaterial().getVertShader().getPath());
-//                configMat.setShaderPair(pair);
-//            }
-//
-//            // Textures
-//            List<sbTexture> textureList = new ArrayList<sbTexture>();
-//            URL[] textures = getMaterialRef().getMaterial().getTextures();
-//            for (int i = 0; i < 8; i++)
-//            {
-//                if (textures[i] != null)
-//                {
-//                    bNeeded = true;
-//                    sbTexture texture = new sbTexture();
-//                    texture.setTextureUnit(i);
-//                    texture.setPath(textures[i].getPath());
-//                    textureList.add(texture);
-//                }
-//                else
-//                    break;
-//            }
-//            if (!textureList.isEmpty())
-//                configMat.setTextureFiles(textureList);
-//            
-//            result.setMaterial(configMat);
-        }
-        
         if (bNeeded)
             return result;
         else

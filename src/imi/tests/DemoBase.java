@@ -667,10 +667,10 @@ public class DemoBase
 
         if (monkeyTexture != null)
         {
-            monkeyTexture.setWrap(Texture.WrapAxis.S, Texture.WrapMode.Clamp);
-            monkeyTexture.setWrap(Texture.WrapAxis.T, Texture.WrapMode.Clamp);
-            monkeyTexture.setMinificationFilter(Texture.MinificationFilter.BilinearNoMipMaps);
-            monkeyTexture.setMagnificationFilter(Texture.MagnificationFilter.NearestNeighbor);
+            monkeyTexture.setWrap(Texture.WrapAxis.S, Texture.WrapMode.BorderClamp);
+            monkeyTexture.setWrap(Texture.WrapAxis.T, Texture.WrapMode.BorderClamp);
+            monkeyTexture.setMinificationFilter(Texture.MinificationFilter.Trilinear);
+            monkeyTexture.setMagnificationFilter(Texture.MagnificationFilter.Bilinear);
         }
         return monkeyTexture;
     }

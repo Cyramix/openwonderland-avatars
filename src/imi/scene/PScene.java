@@ -68,7 +68,7 @@ public class PScene extends PNode implements RepositoryUser
     // Shared Assets
     private boolean m_bUseRepository                = true;
     private FastList<SharedAsset> m_SharedAssets    = new FastList<SharedAsset>();
-    private ArrayList<SharedAssetPlaceHolder> m_SharedAssetWaitingList = new ArrayList<SharedAssetPlaceHolder>();
+    private final ArrayList<SharedAssetPlaceHolder> m_SharedAssetWaitingList = new ArrayList<SharedAssetPlaceHolder>();
 
     // Instances
     private PNode m_Instances                       = null;
@@ -466,16 +466,8 @@ public class PScene extends PNode implements RepositoryUser
             }
         }
         
-        //geometry = originalMeshInstance.getGeometry();
-        
         if (geometry == null)
         {
-//            SharedAssetType type = null;
-//            
-//            if (originalMeshInstance.getGeometry() instanceof PPolygonMesh)
-//                type = SharedAsset.SharedAssetType.MS3D_Mesh;
-//            else if (originalMeshInstance.getGeometry() instanceof PPolygonSkinnedMesh)
-//                type = SharedAsset.SharedAssetType.MS3D_SkinnedMesh1;
             
             SharedAsset asset = new SharedAsset(getRepository(), new AssetDescriptor(SharedAsset.SharedAssetType.Unknown, originalMeshInstance.getGeometry().getName()));
             asset.setAssetData(originalMeshInstance.getGeometry());

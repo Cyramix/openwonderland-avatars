@@ -137,7 +137,7 @@ class RepositoryWorker extends ProcessorComponent
                 }
                 try 
                 {
-                    Thread.sleep(10); // suspend execution until a notify all happens
+                    Thread.sleep(100); // wait a second
                 } 
                 catch (InterruptedException ex) 
                 {
