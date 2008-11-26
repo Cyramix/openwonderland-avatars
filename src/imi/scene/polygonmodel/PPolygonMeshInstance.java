@@ -344,7 +344,7 @@ public class PPolygonMeshInstance extends PNode
         boolean bNeedToUseTextureInstaller = false;
         for (int i = 0; i < m_geometry.getNumberOfTextures(); i++)
         {
-            if (meshMat.getTexture(i) != null)// && meshMat.getTexture(i).getPath().length() > 0)
+            if (meshMat.getTexture(i) != null)
             {
                 bNeedToUseTextureInstaller = true;
                 if (m_PScene.isUseRepository())
@@ -362,29 +362,7 @@ public class PPolygonMeshInstance extends PNode
             m_textureInstaller = null;
         m_instance.setRenderState(m_textureState);
         if (meshMat.getShader() != null)
-        {
             meshMat.getShader().applyToMesh(this);
-        }
-        // Shaders
-        // Send SharedAsset request to the PScene
-        // This shader state will not be shared (can we fix that?)
-        // The shader state will be created and loaded on the render thread (can we get this to work another way?)
-        //File [] shaderPairPath = new File[2];
-        //shaderPairPath[0] = meshMat.getVertShader();
-        //shaderPairPath[1] = meshMat.getFragShader();
-        //if (shaderPairPath[0] != null && shaderPairPath[1] != null)
-        //{
-        //    SharedAsset shaders = new SharedAsset(m_PScene.getRepository(),
-        //            new AssetDescriptor(SharedAssetType.ShaderPair, shaderPairPath));
-        //    shaders.setInitializer(m_shaderInitializer);
-        //    m_PScene.loadShaders(shaders, this);
-        //}
-        
-        ////////////////////////////////////////////////////////////////////
-//        m_shaderState       = new LWJGLShaderObjectsState();
-//        m_shaderState.load( PPolygonMeshInstanceFileUtils.rootPath + "assets/shaders/shaderDeform_3.vert"),
-//                            PPolygonMeshInstanceFileUtils.rootPath + "assets/shaders/wood.frag"));
-//        setShaderState(m_shaderState);
     }
     
     protected void load_processConfiguration(sbConfigurationData config) 

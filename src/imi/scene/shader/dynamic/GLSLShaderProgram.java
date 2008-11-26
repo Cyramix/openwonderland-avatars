@@ -871,7 +871,7 @@ public class GLSLShaderProgram implements AbstractShaderProgram, RenderUpdater
         {
             try
             {
-                Thread.sleep(100);
+                Thread.sleep(333);
             } catch (InterruptedException ex)
             {
                 Logger.getLogger(SimpleTNLShader.class.getName()).log(Level.SEVERE, "Sleeping beauty was interrupted", ex);

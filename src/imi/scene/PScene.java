@@ -126,12 +126,6 @@ public class PScene extends PNode implements RepositoryUser
         submitTransforms();
     }
 
-//    @Override
-//    public void setDirty(boolean bDirty, boolean bAffectKids)
-//    {
-//        super.setDirty(bDirty, bAffectKids); // used for a break point location for testing
-//    }
-
     /**
      * The PScene will flatten its hierarchy (build the transform world matrices)
      * This method will clear all the children from m_JScene and resubmit thier

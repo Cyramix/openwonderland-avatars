@@ -250,7 +250,7 @@ public class DemoBase
         // attach it to the LightNode
         lightNode.setLight(pointLight);
 
-        lightNode.setLocalTranslation(0.0f, 40.0f, -50.0f);
+        lightNode.setLocalTranslation(10.0f, 15.0f, -5.0f);
         // add it to the render manager
         wm.getRenderManager().addLight(lightNode);
     }
@@ -667,8 +667,8 @@ public class DemoBase
 
         if (monkeyTexture != null)
         {
-            monkeyTexture.setWrap(Texture.WrapAxis.S, Texture.WrapMode.BorderClamp);
-            monkeyTexture.setWrap(Texture.WrapAxis.T, Texture.WrapMode.BorderClamp);
+            monkeyTexture.setWrap(Texture.WrapAxis.S, Texture.WrapMode.EdgeClamp);
+            monkeyTexture.setWrap(Texture.WrapAxis.T, Texture.WrapMode.EdgeClamp);
             monkeyTexture.setMinificationFilter(Texture.MinificationFilter.Trilinear);
             monkeyTexture.setMagnificationFilter(Texture.MagnificationFilter.Bilinear);
         }

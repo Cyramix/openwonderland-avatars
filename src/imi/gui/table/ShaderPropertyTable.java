@@ -169,6 +169,8 @@ public class ShaderPropertyTable extends javax.swing.JPanel
         JTable_Properties = new imi.gui.table.JTableExtended();
         JButton_Apply = new javax.swing.JButton();
 
+        jScrollPane1.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+
         JTable_Properties.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null}
@@ -216,7 +218,7 @@ public class ShaderPropertyTable extends javax.swing.JPanel
             .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
                 .add(JButton_Apply)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .add(jScrollPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 242, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 242, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 

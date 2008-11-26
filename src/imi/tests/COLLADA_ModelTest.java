@@ -78,7 +78,7 @@ public class COLLADA_ModelTest extends DemoBase
         {
             //modelLocation = new URL("http://www.zeitgeistgames.com/assets/collada/Clothing/FlipFlopsFeet.dae");
             //modelLocation = new File("assets/models/collada/Environments/Milan/DSI.dae").toURI().toURL();
-            modelLocation = new File("assets/models/collada/Avatars/Female/Female_Bind.dae").toURI().toURL();
+            modelLocation = new File("assets/models/collada/Avatars/Male/MaleBind.dae").toURI().toURL();
             //modelLocation = new File("assets/models/collada/Avatars/AfricanAmericanMaleHead1_Bind.dae").toURI().toURL();
         } catch (MalformedURLException ex)
         {

@@ -97,7 +97,7 @@ public class FloatVectorCellEditor extends AbstractCellEditor implements TableCe
             while (i < 4)
             {
                 m_textFields[i].setText("N/A");
-                m_textFields[i].setEnabled(false);
+                //m_textFields[i].setEnabled(false);
                 i++;
             }
         }

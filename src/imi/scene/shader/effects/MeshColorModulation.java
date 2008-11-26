@@ -40,8 +40,11 @@ public class MeshColorModulation extends GLSLShaderEffect
         // set our name
         m_effectName = new String("MeshColorModulation");
         // optionally set a description
-        m_effectDescription = new String("This effect uses gl_Color (Material color) " +
+        m_effectDescription = new String("This effect uses a provided uniform " +
                 "to modulate the final fragment color.");
+        // declare uniforms we expose
+        m_fragmentUniforms = new GLSLShaderUniform[1];
+        m_fragmentUniforms[0] = new GLSLShaderUniform("materialColor", GLSLDataType.GLSL_VEC3);
         // declare globals we intend to use
         m_fragmentGlobals = new GLSLShaderVariable[1];
         m_fragmentGlobals[0] = GLSLDefaultVariables.FinalFragmentColor;
@@ -60,7 +63,7 @@ public class MeshColorModulation extends GLSLShaderEffect
     private void createFragmentLogic()
     {
         StringBuilder fragmentLogic = new StringBuilder();
-        fragmentLogic.append(m_fragmentGlobals[0].getName() + " *= gl_Color;" + NL);
+        fragmentLogic.append(m_fragmentGlobals[0].getName() + " *= vec4(" + m_fragmentUniforms[0].getName() + ",1.0);" + NL);
         m_fragmentLogic = fragmentLogic.toString();
     }
 
@@ -70,7 +73,6 @@ public class MeshColorModulation extends GLSLShaderEffect
      */
     private void createVertexLogic()
     {
-        // generate texture coordinates
         m_vertexLogic = new String("");
     }
 }

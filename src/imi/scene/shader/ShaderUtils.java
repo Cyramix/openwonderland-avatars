@@ -24,6 +24,7 @@ import imi.scene.shader.dynamic.GLSLShaderEffect;
 import imi.scene.shader.effects.AmbientNdotL_Lighting;
 import imi.scene.shader.effects.CalculateToLight_Lighting;
 import imi.scene.shader.effects.GenerateFragLocalNormal;
+import imi.scene.shader.effects.MeshColorModulation;
 import imi.scene.shader.effects.NormalMapping;
 import imi.scene.shader.effects.VertexToPosition_Transform;
 import imi.scene.shader.effects.SimpleNdotL_Lighting;
@@ -227,6 +228,7 @@ public class ShaderUtils
         GloballyAvailableEffects.add(new NormalMapping());
         GloballyAvailableEffects.add(new GenerateFragLocalNormal());
         GloballyAvailableEffects.add(new SpecularMapping_Lighting());
+        GloballyAvailableEffects.add(new MeshColorModulation());
     }
     
     /**
