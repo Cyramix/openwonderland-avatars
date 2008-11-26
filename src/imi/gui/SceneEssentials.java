@@ -33,6 +33,7 @@ import imi.scene.PNode;
 import imi.scene.PScene;
 import imi.scene.PTransform;
 import imi.scene.camera.behaviors.FirstPersonCamModel;
+import imi.scene.camera.behaviors.TumbleObjectCamModel;
 import imi.scene.camera.state.FirstPersonCamState;
 import imi.scene.camera.state.TumbleObjectCamState;
 import imi.scene.polygonmodel.PPolygonMeshInstance;
@@ -727,7 +728,8 @@ public class SceneEssentials {
             pRootInstruction.addInstruction(InstructionNames.addSkinnedMesh, meshRef[i]);
             
         pProcessor.execute(pRootInstruction);
-        
+
+        skeleton.setShader(new VertDeformerWithSpecAndNormalMap(worldManager));
         meshsetup.put(region, meshRef);
     }
 
@@ -1256,12 +1258,14 @@ public class SceneEssentials {
             PPolygonModelInstance pmInstance = ((PPolygonModelInstance) node.getChild(0));
             if (curCameraProcessor.getState() instanceof TumbleObjectCamState) {
                 TumbleObjectCamState camState = ((TumbleObjectCamState)curCameraProcessor.getState());
+                TumbleObjectCamModel camModel = ((TumbleObjectCamModel)curCameraProcessor.getModel());
                 camState.setTargetModelInstance(pmInstance);
                 camState.setCameraPosition(camPos);
 
                 if (pmInstance.getBoundingSphere() == null)
                     pmInstance.calculateBoundingSphere();
                 camState.setTargetFocalPoint(pmInstance.getBoundingSphere().getCenter());
+                camModel.turnTo(pmInstance.getBoundingSphere().getCenter(), camState);
                 camState.setTargetNeedsUpdate(true);
             } else if (curCameraProcessor.getState() instanceof FirstPersonCamState) {
                 FirstPersonCamState camState = ((FirstPersonCamState)curCameraProcessor.getState());
