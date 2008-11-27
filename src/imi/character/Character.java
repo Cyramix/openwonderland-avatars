@@ -33,6 +33,8 @@ import imi.character.objects.ObjectCollection;
 import imi.character.objects.SpatialObject;
 import imi.character.statemachine.GameContext;
 import imi.character.statemachine.TransitionObject;
+import imi.gui.SceneEssentials;
+import imi.gui.TreeExplorer;
 import imi.loaders.collada.ColladaLoaderParams;
 import imi.loaders.collada.Instruction;
 import imi.loaders.collada.Instruction.InstructionNames;
@@ -548,15 +550,17 @@ public abstract class Character extends Entity implements SpatialObject, Animati
 
                             // Set material
                             skeleton.setShader(new VertDeformerWithSpecAndNormalMap(m_wm));
+                            m_leftEyeBall.applyShader(m_wm);
+                            m_rightEyeBall.applyShader(m_wm);
 
                             // Facial animation state is designated to id (and index) 1
                             AnimationState facialAnimationState = new AnimationState(1);
-                            facialAnimationState.setCurrentCycle(-1); // 0 is "All Cycles"
+                            facialAnimationState.setCurrentCycle(1); // 0 is "All Cycles"
                             facialAnimationState.setCurrentCyclePlaybackMode(PlaybackMode.PlayOnce);
                             facialAnimationState.setAnimationSpeed(0.1f);
                             m_skeleton.addAnimationState(facialAnimationState);
                             m_facialAnimationQ = new TransitionQueue(m_skeleton, 1);
-                            //initiateFacialAnimation(1, 0.75f, 0.5f);
+                            initiateFacialAnimation(1, 0.75f, 0.5f);
 
                             // The verlet arm!
                             SkinnedMeshJoint shoulderJoint = (SkinnedMeshJoint) m_skeleton.findChild("rightArm");
@@ -1068,7 +1072,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
                 SkinnedMeshJoint newHeadJoint     = skeleton.findSkinnedMeshJoint(currentHeadJoint.getName());
                 
                 PMatrix modifierDelta = new PMatrix();
-                modifierDelta.mul(currentHeadJoint.getTransform().getLocalMatrix(false).inverse(), newHeadJoint.getTransform().getLocalMatrix(false));
+                modifierDelta.mul(newHeadJoint.getTransform().getLocalMatrix(false), currentHeadJoint.getTransform().getLocalMatrix(false).inverse());
                 //modifierDelta.mulInverse(newHeadJoint.getTransform().getLocalMatrix(false), currentHeadJoint.getTransform().getLocalMatrix(false));
                 currentHeadJoint.setSkeletonModifier(modifierDelta);
             }
@@ -1095,11 +1099,12 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         
         // African
         pRootInstruction.addInstruction(InstructionNames.loadGeometry, fileProtocol + "assets/models/collada/Heads/MaleAfricanHead/AfricanAmericanMaleHead1_Bind.dae");
+        //pRootInstruction.addInstruction(InstructionNames.loadGeometry, fileProtocol + "assets/models/collada/Avatars/Male/MaleBind.dae");
         pRootInstruction.addInstruction(InstructionNames.addSkinnedMesh, "headOneShape");
         
         // Asian
 //        pRootInstruction.addInstruction(InstructionNames.loadGeometry, fileProtocol + "assets/models/collada/Heads/MaleAsianHead/AsianMaleHead1_Bind.dae");
-//        pRootInstruction.addInstruction(InstructionNames.addSkinnedMesh, "head2Shape");  
+//        pRootInstruction.addInstruction(InstructionNames.addSkinnedMesh, "head2Shape");
         
         pProcessor.execute(pRootInstruction);
     }

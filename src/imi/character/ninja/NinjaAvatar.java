@@ -51,6 +51,7 @@ public class NinjaAvatar extends Ninja
             anims.add("assets/models/collada/Avatars/Male/Male_FloorGetup.dae");
             anims.add("assets/models/collada/Avatars/Male/Male_Walk.dae");
             anims.add("assets/models/collada/Avatars/Male/Male_Sitting.dae");
+            
             if (false)
             {
                 anims.add("assets/models/collada/Avatars/Male/Male_Run.dae");

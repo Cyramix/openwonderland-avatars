@@ -714,7 +714,7 @@ public class GLSLShaderProgram implements AbstractShaderProgram, RenderUpdater
         m_effects.add(effect);
         return m_effects.size() - 1;
     }
-    
+
     public boolean removeEffect(String name)
     {
         for (int i = 0; i < m_effects.size(); ++i)

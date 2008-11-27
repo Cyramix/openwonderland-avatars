@@ -51,6 +51,6 @@ public class NinjaAvatarDressShirt extends NinjaAvatar
     @Override
     protected Attributes createAttributes(String name)
     {
-        return new NinjaAvatarDressShirtAttributes(name, false);
+        return new NinjaAvatarDressShirtAttributes(name, true);
     }
 }

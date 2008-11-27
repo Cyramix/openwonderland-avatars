@@ -24,7 +24,17 @@ import imi.scene.PScene;
 import imi.scene.polygonmodel.PPolygonModelInstance;
 import imi.scene.polygonmodel.parts.PMeshMaterial;
 import imi.scene.polygonmodel.skinned.PPolygonSkinnedMeshInstance;
+import imi.scene.shader.NoSuchPropertyException;
+import imi.scene.shader.ShaderProperty;
+import imi.scene.shader.dynamic.GLSLCompileException;
+import imi.scene.shader.dynamic.GLSLDataType;
+import imi.scene.shader.dynamic.GLSLShaderProgram;
+import imi.scene.shader.effects.MeshColorModulation;
+import imi.scene.shader.programs.VertDeformerWithSpecAndNormalMap;
 import imi.utils.PMathUtils;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.jdesktop.mtgame.WorldManager;
 
 /**
  *
@@ -48,10 +58,6 @@ public class EyeBall extends PPolygonSkinnedMeshInstance
     {
         super(meshInstance, pscene);
         this.modelInst = modelInst;
-        // change textures to not use mip maps... leads to freaky eyeballs
-        PMeshMaterial myMaterial = getMaterialRef().getMaterial();
-        myMaterial.getTexture(0).setMinFilter(MinificationFilter.BilinearNoMipMaps);
-        applyMaterial();
     }
     
     @Override
@@ -112,5 +118,35 @@ public class EyeBall extends PPolygonSkinnedMeshInstance
     public boolean isInCone()
     {
         return bInCone;
+    }
+
+    void applyShader(WorldManager wm) {
+        // change textures to not use mip maps... leads to freaky eyeballs
+        PMeshMaterial myMaterial = getMaterialRef().getMaterial();
+        myMaterial.getTexture(0).setMinFilter(MinificationFilter.BilinearNoMipMaps);
+        
+//        GLSLShaderProgram shader = new VertDeformerWithSpecAndNormalMap(wm);
+//        shader.addEffect(new MeshColorModulation());
+//
+//        try {
+//            shader.compile();
+//            float[] matColor = new float[3];
+//            matColor[0] = 0.4f;
+//            matColor[1] = 1.0f;
+//            matColor[2] = 0.4f;
+//            shader.setProperty(new ShaderProperty("ambientPower", GLSLDataType.GLSL_FLOAT, Float.valueOf(0.45f)));
+//            shader.setProperty(new ShaderProperty("DiffuseMapIndex", GLSLDataType.GLSL_SAMPLER2D, Integer.valueOf(0)));
+//            shader.setProperty(new ShaderProperty("NormalMapIndex", GLSLDataType.GLSL_SAMPLER2D, Integer.valueOf(0)));
+//            shader.setProperty(new ShaderProperty("SpecularMapIndex", GLSLDataType.GLSL_SAMPLER2D, Integer.valueOf(0)));
+//            shader.setProperty(new ShaderProperty("specularExponent", GLSLDataType.GLSL_FLOAT, Float.valueOf(32.0f)));
+//            shader.setProperty(new ShaderProperty("materialColor", GLSLDataType.GLSL_VEC3, matColor));
+//        } catch (GLSLCompileException ex) {
+//            Logger.getLogger(EyeBall.class.getName()).log(Level.SEVERE, null, ex);
+//        } catch (NoSuchPropertyException ex) {
+//            Logger.getLogger(EyeBall.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+//
+//        myMaterial.setShader(shader);
+        applyMaterial();
     }
 }
