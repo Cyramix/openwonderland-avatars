@@ -1,6 +1,19 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+/**
+ * Project Wonderland
+ *
+ * Copyright (c) 2004-2008, Sun Microsystems, Inc., All Rights Reserved
+ *
+ * Redistributions in source code form must reproduce the above
+ * copyright and this condition.
+ *
+ * The contents of this file are subject to the GNU General Public
+ * License, Version 2 (the "License"); you may not use this file
+ * except in compliance with the License. A copy of the License is
+ * available at http://www.opensource.org/licenses/gpl-license.php.
+ *
+ * $Revision$
+ * $Date$
+ * $State$
  */
 
 /*
@@ -13,7 +26,7 @@ package imi.gui;
 
 /**
  *
- * @author ptruong
+ * @author Paul Viet Nguyen Truong (ptruong)
  */
 public class AdvOptions extends javax.swing.JFrame {
 
@@ -41,16 +54,19 @@ public class AdvOptions extends javax.swing.JFrame {
         jSlider_EyePosHR = new javax.swing.JSlider();
         jFormattedTextField_EyePosHL = new javax.swing.JFormattedTextField();
         jFormattedTextField_EyePosHR = new javax.swing.JFormattedTextField();
+        jCheckBox_EyesHPosSync = new javax.swing.JCheckBox();
         jPanel_EyePosV = new javax.swing.JPanel();
         jSlider_EyePosVL = new javax.swing.JSlider();
         jSlider_EyePosVR = new javax.swing.JSlider();
         jFormattedTextField_EyePosVL = new javax.swing.JFormattedTextField();
         jFormattedTextField_EyePosVR = new javax.swing.JFormattedTextField();
+        jCheckBox_EyeVPosSync = new javax.swing.JCheckBox();
         jPanel_EyePosD = new javax.swing.JPanel();
         jSlider_EyePosDL = new javax.swing.JSlider();
         jSlider_EyePosDR = new javax.swing.JSlider();
         jFormattedTextField_EyePosDL = new javax.swing.JFormattedTextField();
         jFormattedTextField_EyePosDR = new javax.swing.JFormattedTextField();
+        jCheckBox_EyeDPosSync = new javax.swing.JCheckBox();
         jPanel_EyeScaling = new javax.swing.JPanel();
         jLabel_EyeX = new javax.swing.JLabel();
         jSlider_EyeX = new javax.swing.JSlider();
@@ -61,42 +77,173 @@ public class AdvOptions extends javax.swing.JFrame {
         jLabel_EyeUni = new javax.swing.JLabel();
         jSlider_EyeUni = new javax.swing.JSlider();
         jPanel_Nose = new javax.swing.JPanel();
-        jPanel_EyePosH1 = new javax.swing.JPanel();
-        jSlider_EyePosHL1 = new javax.swing.JSlider();
-        jFormattedTextField_EyePosHL1 = new javax.swing.JFormattedTextField();
-        jPanel_EyePosV1 = new javax.swing.JPanel();
-        jSlider_EyePosVL1 = new javax.swing.JSlider();
-        jFormattedTextField_EyePosVL1 = new javax.swing.JFormattedTextField();
-        jPanel_EyePosD1 = new javax.swing.JPanel();
-        jSlider_EyePosDL1 = new javax.swing.JSlider();
-        jFormattedTextField_EyePosDL1 = new javax.swing.JFormattedTextField();
-        jPanel_EyeScaling1 = new javax.swing.JPanel();
-        jLabel_EyeX1 = new javax.swing.JLabel();
-        jSlider_EyeX1 = new javax.swing.JSlider();
-        jLabel_EyeY1 = new javax.swing.JLabel();
-        jSlider_EyeY1 = new javax.swing.JSlider();
-        jLabel_EyeZ1 = new javax.swing.JLabel();
-        jSlider_EyeZ1 = new javax.swing.JSlider();
-        jLabel_EyeUni1 = new javax.swing.JLabel();
-        jSlider_EyeUni1 = new javax.swing.JSlider();
+        jPanel_NosePosH = new javax.swing.JPanel();
+        jSlider_NosePosH = new javax.swing.JSlider();
+        jFormattedTextField_NosePosH = new javax.swing.JFormattedTextField();
+        jPanel_NoseLen = new javax.swing.JPanel();
+        jSlider_NoseLen = new javax.swing.JSlider();
+        jFormattedTextField_NoseLen = new javax.swing.JFormattedTextField();
+        jPanel_NoseWidth = new javax.swing.JPanel();
+        jSlider_NoseWidth = new javax.swing.JSlider();
+        jFormattedTextField_NoseWidth = new javax.swing.JFormattedTextField();
+        jPanel_NoseScaling = new javax.swing.JPanel();
+        jLabel_NoseX = new javax.swing.JLabel();
+        jSlider_NoseX = new javax.swing.JSlider();
+        jLabel_NoseY = new javax.swing.JLabel();
+        jSlider_NoseY = new javax.swing.JSlider();
+        jLabel_NoseZ = new javax.swing.JLabel();
+        jSlider_NoseZ = new javax.swing.JSlider();
+        jLabel_NoseU = new javax.swing.JLabel();
+        jSlider_NoseU = new javax.swing.JSlider();
         jPanel_Mouth = new javax.swing.JPanel();
+        jPanel_LipsPos = new javax.swing.JPanel();
+        jSlider_UpperLip = new javax.swing.JSlider();
+        jFormattedTextField_UpperLip = new javax.swing.JFormattedTextField();
+        jSlider_LowerLip = new javax.swing.JSlider();
+        jFormattedTextField_LowerLip = new javax.swing.JFormattedTextField();
+        jPanel_MouthWidth = new javax.swing.JPanel();
+        jSlider_MouthWidth = new javax.swing.JSlider();
+        jFormattedTextField_MouthWidth = new javax.swing.JFormattedTextField();
+        jPanel_MouthScaling = new javax.swing.JPanel();
+        jLabel_MouthX = new javax.swing.JLabel();
+        jSlider_MouthX = new javax.swing.JSlider();
+        jLabel_MouthY = new javax.swing.JLabel();
+        jSlider_MouthY = new javax.swing.JSlider();
+        jLabel_MouthZ = new javax.swing.JLabel();
+        jSlider_MouthZ = new javax.swing.JSlider();
+        jLabel_MouthU = new javax.swing.JLabel();
+        jSlider_MouthU = new javax.swing.JSlider();
         jPanel_UniformHead = new javax.swing.JPanel();
+        jPanel_HeadWidth = new javax.swing.JPanel();
+        jSlider_HeadWidth = new javax.swing.JSlider();
+        jFormattedTextField_HeadWidth = new javax.swing.JFormattedTextField();
+        jPanel_HeadHeight = new javax.swing.JPanel();
+        jSlider_HeadHeight = new javax.swing.JSlider();
+        jFormattedTextField_HeadHeight = new javax.swing.JFormattedTextField();
+        jPanel_HeadDepth = new javax.swing.JPanel();
+        jSlider_HeadDepth = new javax.swing.JSlider();
+        jFormattedTextField_HeadDepth = new javax.swing.JFormattedTextField();
+        jPanel_HeadUniform = new javax.swing.JPanel();
+        jSlider_HeadUniform = new javax.swing.JSlider();
+        jFormattedTextField_HeadUniform = new javax.swing.JFormattedTextField();
         jPanel_MainArmsHands = new javax.swing.JPanel();
         jTabbedPane_ArmsHands = new javax.swing.JTabbedPane();
         jPanel_Hands = new javax.swing.JPanel();
+        jPanel_FingerLength = new javax.swing.JPanel();
+        jSlider_FingerLengthR = new javax.swing.JSlider();
+        jFormattedTextField_FingerLengthR = new javax.swing.JFormattedTextField();
+        jSlider_FingerLengthL = new javax.swing.JSlider();
+        jFormattedTextField_FingerLengthL = new javax.swing.JFormattedTextField();
+        jCheckBox_HandsLenSync = new javax.swing.JCheckBox();
+        jPanel_HandThickness = new javax.swing.JPanel();
+        jSlider_HandThicknessR = new javax.swing.JSlider();
+        jFormattedTextField_HandThicknessR = new javax.swing.JFormattedTextField();
+        jSlider_HandThicknessL = new javax.swing.JSlider();
+        jFormattedTextField_HandThicknessL = new javax.swing.JFormattedTextField();
+        jCheckBox_HandThickSync = new javax.swing.JCheckBox();
         jPanel_Forearms = new javax.swing.JPanel();
+        jPanel_ForearmLength = new javax.swing.JPanel();
+        jSlider_ForearmLengthR = new javax.swing.JSlider();
+        jFormattedTextField_ForearmLengthR = new javax.swing.JFormattedTextField();
+        jSlider_ForearmLengthL = new javax.swing.JSlider();
+        jFormattedTextField_ForearmLengthL = new javax.swing.JFormattedTextField();
+        jCheckBox_ForearmLenSync = new javax.swing.JCheckBox();
+        jPanel_ForearmThickness = new javax.swing.JPanel();
+        jSlider_ForearmThicknessR = new javax.swing.JSlider();
+        jFormattedTextField_ForearmThicknessR = new javax.swing.JFormattedTextField();
+        jSlider_ForearmThicknessL = new javax.swing.JSlider();
+        jFormattedTextField_ForearmThicknessL = new javax.swing.JFormattedTextField();
+        jCheckBox_ForearmThickSync = new javax.swing.JCheckBox();
         jPanel_UpperArms = new javax.swing.JPanel();
-        jPanel_LegsFeet = new javax.swing.JPanel();
+        jPanel_UpperarmLength = new javax.swing.JPanel();
+        jSlider_UpperarmLengthR = new javax.swing.JSlider();
+        jFormattedTextField_UpperarmLengthR = new javax.swing.JFormattedTextField();
+        jSlider_UpperArmLengthL = new javax.swing.JSlider();
+        jFormattedTextField_UpperArmLengthL = new javax.swing.JFormattedTextField();
+        jCheckBox_UpperarmLenSync = new javax.swing.JCheckBox();
+        jPanel_UpperarmThickness = new javax.swing.JPanel();
+        jSlider_UpperarmThicknessR = new javax.swing.JSlider();
+        jFormattedTextField_UpperarmThicknessR = new javax.swing.JFormattedTextField();
+        jSlider_UpperarmThicknessL = new javax.swing.JSlider();
+        jFormattedTextField_UpperarmThicknessL = new javax.swing.JFormattedTextField();
+        jCheckBox_UpperarmThickSync = new javax.swing.JCheckBox();
+        jPanel_MainLegsFeet = new javax.swing.JPanel();
         jTabbedPane_LegsFeet = new javax.swing.JTabbedPane();
         jPanel_Feet = new javax.swing.JPanel();
+        jPanel_FeetLength = new javax.swing.JPanel();
+        jSlider_FeetLengthR = new javax.swing.JSlider();
+        jFormattedTextField_FeetLengthR = new javax.swing.JFormattedTextField();
+        jSlider_FeetLengthL = new javax.swing.JSlider();
+        jFormattedTextField_FeetLengthL = new javax.swing.JFormattedTextField();
+        jCheckBox_FeetLenSync = new javax.swing.JCheckBox();
+        jPanel_FeetThickness = new javax.swing.JPanel();
+        jSlider_FeetThicknessR = new javax.swing.JSlider();
+        jFormattedTextField_FeetThicknessR = new javax.swing.JFormattedTextField();
+        jSlider_FeetThicknessL = new javax.swing.JSlider();
+        jFormattedTextField_FeetThicknessL = new javax.swing.JFormattedTextField();
+        jCheckBox_FeetThickSync = new javax.swing.JCheckBox();
         jPanel_Calves = new javax.swing.JPanel();
+        jPanel_CalvesLength = new javax.swing.JPanel();
+        jSlider_CalvesLengthR = new javax.swing.JSlider();
+        jFormattedTextField_CalvesLengthR = new javax.swing.JFormattedTextField();
+        jSlider_CalvesLengthL = new javax.swing.JSlider();
+        jFormattedTextField_CalvesLengthL = new javax.swing.JFormattedTextField();
+        jCheckBox_CalvesLenSync = new javax.swing.JCheckBox();
+        jPanel_CalvesThickness = new javax.swing.JPanel();
+        jSlider_CalvesThicknessR = new javax.swing.JSlider();
+        jFormattedTextField_CalvesThicknessR = new javax.swing.JFormattedTextField();
+        jSlider_CalvesThicknessL = new javax.swing.JSlider();
+        jFormattedTextField_CalvesThicknessL = new javax.swing.JFormattedTextField();
+        jCheckBox_CalvesThickSync = new javax.swing.JCheckBox();
         jPanel_Thighs = new javax.swing.JPanel();
-        jPanel_Body = new javax.swing.JPanel();
+        jPanel_ThighLength = new javax.swing.JPanel();
+        jSlider_ThighLengthR = new javax.swing.JSlider();
+        jFormattedTextField_ThighLengthR = new javax.swing.JFormattedTextField();
+        jSlider_ThighLengthL = new javax.swing.JSlider();
+        jFormattedTextField_ThighLengthL = new javax.swing.JFormattedTextField();
+        jCheckBox_ThighLenSync = new javax.swing.JCheckBox();
+        jPanel_ThighThickness = new javax.swing.JPanel();
+        jSlider_ThighThicknessR = new javax.swing.JSlider();
+        jFormattedTextField_ThighThicknessR = new javax.swing.JFormattedTextField();
+        jSlider_ThighThicknessL = new javax.swing.JSlider();
+        jFormattedTextField_ThighThicknessL = new javax.swing.JFormattedTextField();
+        jCheckBox_ThighThickSync = new javax.swing.JCheckBox();
+        jPanel_MainBody = new javax.swing.JPanel();
         jTabbedPane_Body = new javax.swing.JTabbedPane();
         jPanel_Chest = new javax.swing.JPanel();
+        jPanel_ChestBulk = new javax.swing.JPanel();
+        jSlider_ChestBulk = new javax.swing.JSlider();
+        jFormattedTextField_ChestBulk = new javax.swing.JFormattedTextField();
+        jPanel_ChestBroadness = new javax.swing.JPanel();
+        jSlider_ChestBroadness = new javax.swing.JSlider();
+        jFormattedTextField_ChestBroadness = new javax.swing.JFormattedTextField();
         jPanel_Abs = new javax.swing.JPanel();
+        jPanel_BellyRoundness = new javax.swing.JPanel();
+        jSlider_BellyRoundness = new javax.swing.JSlider();
+        jFormattedTextField_BellyRoundness = new javax.swing.JFormattedTextField();
+        jPanel_Waistline = new javax.swing.JPanel();
+        jSlider_Waistline = new javax.swing.JSlider();
+        jFormattedTextField_Waistline = new javax.swing.JFormattedTextField();
         jPanel_Gluts = new javax.swing.JPanel();
+        jPanel_GlutRoundness = new javax.swing.JPanel();
+        jSlider_GlutRoundness = new javax.swing.JSlider();
+        jFormattedTextField_GlutRoundness = new javax.swing.JFormattedTextField();
+        jPanel_GlutSag = new javax.swing.JPanel();
+        jSlider_GlutSag = new javax.swing.JSlider();
+        jFormattedTextField_GlutSag = new javax.swing.JFormattedTextField();
         jPanel_UniformBody = new javax.swing.JPanel();
+        jPanel_BodyWidth = new javax.swing.JPanel();
+        jSlider_BodyWidth = new javax.swing.JSlider();
+        jFormattedTextField_BodyWidth = new javax.swing.JFormattedTextField();
+        jPanel_BodyHeight = new javax.swing.JPanel();
+        jSlider_BodyHeight = new javax.swing.JSlider();
+        jFormattedTextField_BodyHeight = new javax.swing.JFormattedTextField();
+        jPanel_BodyDepth = new javax.swing.JPanel();
+        jSlider_BodyDepth = new javax.swing.JSlider();
+        jFormattedTextField_BodyDepth = new javax.swing.JFormattedTextField();
+        jPanel_BodyUniform = new javax.swing.JPanel();
+        jSlider_BodyUniform = new javax.swing.JSlider();
+        jFormattedTextField_BodyUniform = new javax.swing.JFormattedTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         getContentPane().setLayout(new java.awt.GridBagLayout());
@@ -107,43 +254,55 @@ public class AdvOptions extends javax.swing.JFrame {
         jPanel_MainHead.setLayout(new java.awt.GridBagLayout());
 
         jTabbedPane_Head.setTabPlacement(javax.swing.JTabbedPane.LEFT);
+        jTabbedPane_Head.setMinimumSize(new java.awt.Dimension(262, 560));
+        jTabbedPane_Head.setPreferredSize(new java.awt.Dimension(262, 560));
 
-        jPanel_Eyes.setPreferredSize(new java.awt.Dimension(200, 500));
+        jPanel_Eyes.setMinimumSize(new java.awt.Dimension(210, 500));
+        jPanel_Eyes.setPreferredSize(new java.awt.Dimension(210, 500));
         jPanel_Eyes.setLayout(new java.awt.GridBagLayout());
 
         jPanel_EyePosH.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Horizontal Position", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Lucida Grande", 0, 13), new java.awt.Color(0, 0, 255))); // NOI18N
-        jPanel_EyePosH.setPreferredSize(new java.awt.Dimension(210, 128));
+        jPanel_EyePosH.setPreferredSize(new java.awt.Dimension(210, 110));
         jPanel_EyePosH.setLayout(new java.awt.GridBagLayout());
 
         jSlider_EyePosHL.setMinimumSize(new java.awt.Dimension(100, 29));
         jSlider_EyePosHL.setPreferredSize(new java.awt.Dimension(100, 29));
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridwidth = java.awt.GridBagConstraints.RELATIVE;
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         jPanel_EyePosH.add(jSlider_EyePosHL, gridBagConstraints);
 
         jSlider_EyePosHR.setMinimumSize(new java.awt.Dimension(100, 29));
         jSlider_EyePosHR.setPreferredSize(new java.awt.Dimension(100, 29));
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridwidth = java.awt.GridBagConstraints.RELATIVE;
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 0;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         jPanel_EyePosH.add(jSlider_EyePosHR, gridBagConstraints);
 
         jFormattedTextField_EyePosHL.setText("jFormattedTextField1");
+        jFormattedTextField_EyePosHL.setMinimumSize(new java.awt.Dimension(75, 28));
+        jFormattedTextField_EyePosHL.setPreferredSize(new java.awt.Dimension(75, 28));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
-        gridBagConstraints.gridwidth = java.awt.GridBagConstraints.RELATIVE;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         jPanel_EyePosH.add(jFormattedTextField_EyePosHL, gridBagConstraints);
 
         jFormattedTextField_EyePosHR.setText("jFormattedTextField1");
+        jFormattedTextField_EyePosHR.setMinimumSize(new java.awt.Dimension(75, 28));
+        jFormattedTextField_EyePosHR.setPreferredSize(new java.awt.Dimension(75, 28));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 1;
-        gridBagConstraints.gridwidth = java.awt.GridBagConstraints.RELATIVE;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         jPanel_EyePosH.add(jFormattedTextField_EyePosHR, gridBagConstraints);
+
+        jCheckBox_EyesHPosSync.setText("Sync");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+        jPanel_EyePosH.add(jCheckBox_EyesHPosSync, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
@@ -151,46 +310,52 @@ public class AdvOptions extends javax.swing.JFrame {
         jPanel_Eyes.add(jPanel_EyePosH, gridBagConstraints);
 
         jPanel_EyePosV.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Vertical Position", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Lucida Grande", 0, 13), new java.awt.Color(0, 0, 255))); // NOI18N
-        jPanel_EyePosV.setPreferredSize(new java.awt.Dimension(200, 128));
+        jPanel_EyePosV.setMinimumSize(new java.awt.Dimension(177, 175));
+        jPanel_EyePosV.setPreferredSize(new java.awt.Dimension(200, 175));
         jPanel_EyePosV.setLayout(new java.awt.GridBagLayout());
 
         jSlider_EyePosVL.setOrientation(javax.swing.JSlider.VERTICAL);
+        jSlider_EyePosVL.setMinimumSize(new java.awt.Dimension(29, 100));
         jSlider_EyePosVL.setPreferredSize(new java.awt.Dimension(29, 100));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
-        gridBagConstraints.gridheight = java.awt.GridBagConstraints.RELATIVE;
         gridBagConstraints.fill = java.awt.GridBagConstraints.VERTICAL;
-        gridBagConstraints.ipady = 90;
         jPanel_EyePosV.add(jSlider_EyePosVL, gridBagConstraints);
 
         jSlider_EyePosVR.setOrientation(javax.swing.JSlider.VERTICAL);
+        jSlider_EyePosVR.setMinimumSize(new java.awt.Dimension(29, 100));
         jSlider_EyePosVR.setPreferredSize(new java.awt.Dimension(29, 100));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 0;
-        gridBagConstraints.gridheight = java.awt.GridBagConstraints.RELATIVE;
         gridBagConstraints.fill = java.awt.GridBagConstraints.VERTICAL;
-        gridBagConstraints.ipady = 90;
         jPanel_EyePosV.add(jSlider_EyePosVR, gridBagConstraints);
 
         jFormattedTextField_EyePosVL.setText("jFormattedTextField1");
+        jFormattedTextField_EyePosVL.setMinimumSize(new java.awt.Dimension(75, 28));
+        jFormattedTextField_EyePosVL.setPreferredSize(new java.awt.Dimension(75, 28));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
-        gridBagConstraints.gridwidth = java.awt.GridBagConstraints.RELATIVE;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.ipadx = 80;
         jPanel_EyePosV.add(jFormattedTextField_EyePosVL, gridBagConstraints);
 
         jFormattedTextField_EyePosVR.setText("jFormattedTextField1");
+        jFormattedTextField_EyePosVR.setMinimumSize(new java.awt.Dimension(75, 28));
+        jFormattedTextField_EyePosVR.setPreferredSize(new java.awt.Dimension(75, 28));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 1;
-        gridBagConstraints.gridwidth = java.awt.GridBagConstraints.RELATIVE;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.ipadx = 80;
         jPanel_EyePosV.add(jFormattedTextField_EyePosVR, gridBagConstraints);
+
+        jCheckBox_EyeVPosSync.setText("Sync");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+        jPanel_EyePosV.add(jCheckBox_EyeVPosSync, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -200,34 +365,43 @@ public class AdvOptions extends javax.swing.JFrame {
         jPanel_Eyes.add(jPanel_EyePosV, gridBagConstraints);
 
         jPanel_EyePosD.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Depth Position", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Lucida Grande", 0, 13), new java.awt.Color(0, 0, 255))); // NOI18N
-        jPanel_EyePosD.setPreferredSize(new java.awt.Dimension(200, 128));
+        jPanel_EyePosD.setPreferredSize(new java.awt.Dimension(200, 110));
         jPanel_EyePosD.setLayout(new java.awt.GridBagLayout());
+
+        jSlider_EyePosDL.setMinimumSize(new java.awt.Dimension(100, 29));
+        jSlider_EyePosDL.setPreferredSize(new java.awt.Dimension(100, 29));
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridwidth = java.awt.GridBagConstraints.RELATIVE;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         jPanel_EyePosD.add(jSlider_EyePosDL, gridBagConstraints);
+
+        jSlider_EyePosDR.setMinimumSize(new java.awt.Dimension(100, 29));
+        jSlider_EyePosDR.setPreferredSize(new java.awt.Dimension(100, 29));
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridwidth = java.awt.GridBagConstraints.RELATIVE;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         jPanel_EyePosD.add(jSlider_EyePosDR, gridBagConstraints);
 
         jFormattedTextField_EyePosDL.setText("jFormattedTextField1");
+        jFormattedTextField_EyePosDL.setMinimumSize(new java.awt.Dimension(75, 28));
+        jFormattedTextField_EyePosDL.setPreferredSize(new java.awt.Dimension(75, 28));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
-        gridBagConstraints.gridwidth = java.awt.GridBagConstraints.RELATIVE;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.ipadx = 80;
         jPanel_EyePosD.add(jFormattedTextField_EyePosDL, gridBagConstraints);
 
         jFormattedTextField_EyePosDR.setText("jFormattedTextField1");
+        jFormattedTextField_EyePosDR.setMinimumSize(new java.awt.Dimension(75, 28));
+        jFormattedTextField_EyePosDR.setPreferredSize(new java.awt.Dimension(75, 28));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 1;
-        gridBagConstraints.gridwidth = java.awt.GridBagConstraints.RELATIVE;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.ipadx = 80;
         jPanel_EyePosD.add(jFormattedTextField_EyePosDR, gridBagConstraints);
+
+        jCheckBox_EyeDPosSync.setText("Sync");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+        jPanel_EyePosD.add(jCheckBox_EyeDPosSync, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -282,176 +456,351 @@ public class AdvOptions extends javax.swing.JFrame {
 
         jTabbedPane_Head.addTab("Eyes", jPanel_Eyes);
 
-        jPanel_Nose.setPreferredSize(new java.awt.Dimension(200, 300));
+        jPanel_Nose.setMinimumSize(new java.awt.Dimension(210, 500));
+        jPanel_Nose.setPreferredSize(new java.awt.Dimension(210, 500));
         jPanel_Nose.setLayout(new java.awt.GridBagLayout());
 
-        jPanel_EyePosH1.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Bridge Position", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Lucida Grande", 0, 13), new java.awt.Color(0, 0, 255))); // NOI18N
-        jPanel_EyePosH1.setPreferredSize(new java.awt.Dimension(210, 128));
-        jPanel_EyePosH1.setLayout(new java.awt.GridBagLayout());
+        jPanel_NosePosH.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Bridge Position", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Lucida Grande", 0, 13), new java.awt.Color(0, 0, 255))); // NOI18N
+        jPanel_NosePosH.setMinimumSize(new java.awt.Dimension(87, 160));
+        jPanel_NosePosH.setPreferredSize(new java.awt.Dimension(210, 160));
+        jPanel_NosePosH.setLayout(new java.awt.GridBagLayout());
 
-        jSlider_EyePosHL1.setMinimumSize(new java.awt.Dimension(190, 29));
+        jSlider_NosePosH.setOrientation(javax.swing.JSlider.VERTICAL);
+        jSlider_NosePosH.setMinimumSize(new java.awt.Dimension(29, 100));
+        jSlider_NosePosH.setPreferredSize(new java.awt.Dimension(29, 100));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
         gridBagConstraints.gridwidth = java.awt.GridBagConstraints.RELATIVE;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        jPanel_EyePosH1.add(jSlider_EyePosHL1, gridBagConstraints);
+        jPanel_NosePosH.add(jSlider_NosePosH, gridBagConstraints);
 
-        jFormattedTextField_EyePosHL1.setText("jFormattedTextField1");
+        jFormattedTextField_NosePosH.setText("jFormattedTextField1");
+        jFormattedTextField_NosePosH.setMinimumSize(new java.awt.Dimension(75, 28));
+        jFormattedTextField_NosePosH.setPreferredSize(new java.awt.Dimension(75, 28));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
         gridBagConstraints.gridwidth = java.awt.GridBagConstraints.RELATIVE;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        jPanel_EyePosH1.add(jFormattedTextField_EyePosHL1, gridBagConstraints);
+        jPanel_NosePosH.add(jFormattedTextField_NosePosH, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        jPanel_Nose.add(jPanel_EyePosH1, gridBagConstraints);
+        jPanel_Nose.add(jPanel_NosePosH, gridBagConstraints);
 
-        jPanel_EyePosV1.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Length", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Lucida Grande", 0, 13), new java.awt.Color(0, 0, 255))); // NOI18N
-        jPanel_EyePosV1.setPreferredSize(new java.awt.Dimension(200, 128));
-        jPanel_EyePosV1.setLayout(new java.awt.GridBagLayout());
+        jPanel_NoseLen.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Length", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Lucida Grande", 0, 13), new java.awt.Color(0, 0, 255))); // NOI18N
+        jPanel_NoseLen.setMinimumSize(new java.awt.Dimension(210, 110));
+        jPanel_NoseLen.setPreferredSize(new java.awt.Dimension(210, 110));
+        jPanel_NoseLen.setLayout(new java.awt.GridBagLayout());
 
-        jSlider_EyePosVL1.setMinimumSize(new java.awt.Dimension(190, 29));
+        jSlider_NoseLen.setMinimumSize(new java.awt.Dimension(190, 29));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
         gridBagConstraints.gridwidth = java.awt.GridBagConstraints.RELATIVE;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        jPanel_EyePosV1.add(jSlider_EyePosVL1, gridBagConstraints);
+        jPanel_NoseLen.add(jSlider_NoseLen, gridBagConstraints);
 
-        jFormattedTextField_EyePosVL1.setText("jFormattedTextField1");
+        jFormattedTextField_NoseLen.setText("jFormattedTextField1");
+        jFormattedTextField_NoseLen.setMinimumSize(new java.awt.Dimension(75, 28));
+        jFormattedTextField_NoseLen.setPreferredSize(new java.awt.Dimension(75, 28));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
         gridBagConstraints.gridwidth = java.awt.GridBagConstraints.RELATIVE;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        jPanel_EyePosV1.add(jFormattedTextField_EyePosVL1, gridBagConstraints);
+        jPanel_NoseLen.add(jFormattedTextField_NoseLen, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        jPanel_Nose.add(jPanel_EyePosV1, gridBagConstraints);
+        jPanel_Nose.add(jPanel_NoseLen, gridBagConstraints);
 
-        jPanel_EyePosD1.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Width", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Lucida Grande", 0, 13), new java.awt.Color(0, 0, 255))); // NOI18N
-        jPanel_EyePosD1.setPreferredSize(new java.awt.Dimension(200, 128));
-        jPanel_EyePosD1.setLayout(new java.awt.GridBagLayout());
+        jPanel_NoseWidth.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Width", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Lucida Grande", 0, 13), new java.awt.Color(0, 0, 255))); // NOI18N
+        jPanel_NoseWidth.setMinimumSize(new java.awt.Dimension(210, 110));
+        jPanel_NoseWidth.setPreferredSize(new java.awt.Dimension(210, 110));
+        jPanel_NoseWidth.setLayout(new java.awt.GridBagLayout());
 
-        jSlider_EyePosDL1.setMinimumSize(new java.awt.Dimension(190, 29));
+        jSlider_NoseWidth.setMinimumSize(new java.awt.Dimension(190, 29));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
         gridBagConstraints.gridwidth = java.awt.GridBagConstraints.RELATIVE;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        jPanel_EyePosD1.add(jSlider_EyePosDL1, gridBagConstraints);
+        jPanel_NoseWidth.add(jSlider_NoseWidth, gridBagConstraints);
 
-        jFormattedTextField_EyePosDL1.setText("jFormattedTextField1");
+        jFormattedTextField_NoseWidth.setText("jFormattedTextField1");
+        jFormattedTextField_NoseWidth.setMinimumSize(new java.awt.Dimension(75, 28));
+        jFormattedTextField_NoseWidth.setPreferredSize(new java.awt.Dimension(75, 28));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
         gridBagConstraints.gridwidth = java.awt.GridBagConstraints.RELATIVE;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        jPanel_EyePosD1.add(jFormattedTextField_EyePosDL1, gridBagConstraints);
+        jPanel_NoseWidth.add(jFormattedTextField_NoseWidth, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 2;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        jPanel_Nose.add(jPanel_EyePosD1, gridBagConstraints);
+        jPanel_Nose.add(jPanel_NoseWidth, gridBagConstraints);
 
-        jPanel_EyeScaling1.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Scaling", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Lucida Grande", 0, 13), new java.awt.Color(0, 0, 255))); // NOI18N
-        jPanel_EyeScaling1.setLayout(new java.awt.GridBagLayout());
+        jPanel_NoseScaling.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Scaling", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Lucida Grande", 0, 13), new java.awt.Color(0, 0, 255))); // NOI18N
+        jPanel_NoseScaling.setMinimumSize(new java.awt.Dimension(210, 144));
+        jPanel_NoseScaling.setPreferredSize(new java.awt.Dimension(210, 144));
+        jPanel_NoseScaling.setLayout(new java.awt.GridBagLayout());
 
-        jLabel_EyeX1.setText("X");
-        jPanel_EyeScaling1.add(jLabel_EyeX1, new java.awt.GridBagConstraints());
+        jLabel_NoseX.setText("X");
+        jPanel_NoseScaling.add(jLabel_NoseX, new java.awt.GridBagConstraints());
 
-        jSlider_EyeX1.setMinimumSize(new java.awt.Dimension(170, 29));
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridwidth = java.awt.GridBagConstraints.RELATIVE;
-        jPanel_EyeScaling1.add(jSlider_EyeX1, gridBagConstraints);
+        jSlider_NoseX.setMinimumSize(new java.awt.Dimension(170, 29));
+        jPanel_NoseScaling.add(jSlider_NoseX, new java.awt.GridBagConstraints());
 
-        jLabel_EyeY1.setText("Y");
+        jLabel_NoseY.setText("Y");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
-        jPanel_EyeScaling1.add(jLabel_EyeY1, gridBagConstraints);
+        jPanel_NoseScaling.add(jLabel_NoseY, gridBagConstraints);
 
-        jSlider_EyeY1.setMinimumSize(new java.awt.Dimension(170, 29));
+        jSlider_NoseY.setMinimumSize(new java.awt.Dimension(170, 29));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 1;
-        gridBagConstraints.gridwidth = java.awt.GridBagConstraints.RELATIVE;
-        jPanel_EyeScaling1.add(jSlider_EyeY1, gridBagConstraints);
+        jPanel_NoseScaling.add(jSlider_NoseY, gridBagConstraints);
 
-        jLabel_EyeZ1.setText("Z");
+        jLabel_NoseZ.setText("Z");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 2;
-        jPanel_EyeScaling1.add(jLabel_EyeZ1, gridBagConstraints);
+        jPanel_NoseScaling.add(jLabel_NoseZ, gridBagConstraints);
 
-        jSlider_EyeZ1.setMinimumSize(new java.awt.Dimension(170, 29));
+        jSlider_NoseZ.setMinimumSize(new java.awt.Dimension(170, 29));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 2;
-        gridBagConstraints.gridwidth = java.awt.GridBagConstraints.RELATIVE;
-        jPanel_EyeScaling1.add(jSlider_EyeZ1, gridBagConstraints);
+        jPanel_NoseScaling.add(jSlider_NoseZ, gridBagConstraints);
 
-        jLabel_EyeUni1.setText("U");
+        jLabel_NoseU.setText("U");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 3;
-        jPanel_EyeScaling1.add(jLabel_EyeUni1, gridBagConstraints);
+        jPanel_NoseScaling.add(jLabel_NoseU, gridBagConstraints);
 
-        jSlider_EyeUni1.setMinimumSize(new java.awt.Dimension(170, 29));
+        jSlider_NoseU.setMinimumSize(new java.awt.Dimension(170, 29));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 3;
-        gridBagConstraints.gridwidth = java.awt.GridBagConstraints.RELATIVE;
-        jPanel_EyeScaling1.add(jSlider_EyeUni1, gridBagConstraints);
+        jPanel_NoseScaling.add(jSlider_NoseU, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 3;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        jPanel_Nose.add(jPanel_EyeScaling1, gridBagConstraints);
+        jPanel_Nose.add(jPanel_NoseScaling, gridBagConstraints);
 
         jTabbedPane_Head.addTab("Nose", jPanel_Nose);
 
         jPanel_Mouth.setPreferredSize(new java.awt.Dimension(200, 300));
+        jPanel_Mouth.setLayout(new java.awt.GridBagLayout());
 
-        org.jdesktop.layout.GroupLayout jPanel_MouthLayout = new org.jdesktop.layout.GroupLayout(jPanel_Mouth);
-        jPanel_Mouth.setLayout(jPanel_MouthLayout);
-        jPanel_MouthLayout.setHorizontalGroup(
-            jPanel_MouthLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 228, Short.MAX_VALUE)
-        );
-        jPanel_MouthLayout.setVerticalGroup(
-            jPanel_MouthLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 496, Short.MAX_VALUE)
-        );
+        jPanel_LipsPos.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Lips Position", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Lucida Grande", 0, 13), new java.awt.Color(0, 0, 255))); // NOI18N
+        jPanel_LipsPos.setMinimumSize(new java.awt.Dimension(210, 190));
+        jPanel_LipsPos.setPreferredSize(new java.awt.Dimension(210, 190));
+        jPanel_LipsPos.setLayout(new java.awt.GridBagLayout());
+
+        jSlider_UpperLip.setOrientation(javax.swing.JSlider.VERTICAL);
+        jSlider_UpperLip.setMinimumSize(new java.awt.Dimension(29, 100));
+        jSlider_UpperLip.setPreferredSize(new java.awt.Dimension(29, 100));
+        jPanel_LipsPos.add(jSlider_UpperLip, new java.awt.GridBagConstraints());
+
+        jFormattedTextField_UpperLip.setText("jFormattedTextField1");
+        jFormattedTextField_UpperLip.setMinimumSize(new java.awt.Dimension(75, 28));
+        jFormattedTextField_UpperLip.setPreferredSize(new java.awt.Dimension(75, 28));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        jPanel_LipsPos.add(jFormattedTextField_UpperLip, gridBagConstraints);
+
+        jSlider_LowerLip.setOrientation(javax.swing.JSlider.VERTICAL);
+        jSlider_LowerLip.setMinimumSize(new java.awt.Dimension(29, 100));
+        jSlider_LowerLip.setPreferredSize(new java.awt.Dimension(29, 100));
+        jPanel_LipsPos.add(jSlider_LowerLip, new java.awt.GridBagConstraints());
+
+        jFormattedTextField_LowerLip.setText("jFormattedTextField2");
+        jFormattedTextField_LowerLip.setMinimumSize(new java.awt.Dimension(75, 28));
+        jFormattedTextField_LowerLip.setPreferredSize(new java.awt.Dimension(75, 28));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 1;
+        jPanel_LipsPos.add(jFormattedTextField_LowerLip, gridBagConstraints);
+
+        jPanel_Mouth.add(jPanel_LipsPos, new java.awt.GridBagConstraints());
+
+        jPanel_MouthWidth.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Mouth Width", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Lucida Grande", 0, 13), new java.awt.Color(0, 0, 255))); // NOI18N
+        jPanel_MouthWidth.setMinimumSize(new java.awt.Dimension(210, 190));
+        jPanel_MouthWidth.setPreferredSize(new java.awt.Dimension(210, 190));
+        jPanel_MouthWidth.setLayout(new java.awt.GridBagLayout());
+        jPanel_MouthWidth.add(jSlider_MouthWidth, new java.awt.GridBagConstraints());
+
+        jFormattedTextField_MouthWidth.setText("jFormattedTextField1");
+        jFormattedTextField_MouthWidth.setMinimumSize(new java.awt.Dimension(75, 28));
+        jFormattedTextField_MouthWidth.setPreferredSize(new java.awt.Dimension(75, 28));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        jPanel_MouthWidth.add(jFormattedTextField_MouthWidth, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        jPanel_Mouth.add(jPanel_MouthWidth, gridBagConstraints);
+
+        jPanel_MouthScaling.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Scaling", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Lucida Grande", 0, 13), new java.awt.Color(0, 0, 255))); // NOI18N
+        jPanel_MouthScaling.setMinimumSize(new java.awt.Dimension(210, 144));
+        jPanel_MouthScaling.setPreferredSize(new java.awt.Dimension(210, 144));
+        jPanel_MouthScaling.setLayout(new java.awt.GridBagLayout());
+
+        jLabel_MouthX.setText("X");
+        jPanel_MouthScaling.add(jLabel_MouthX, new java.awt.GridBagConstraints());
+
+        jSlider_MouthX.setMinimumSize(new java.awt.Dimension(170, 29));
+        jPanel_MouthScaling.add(jSlider_MouthX, new java.awt.GridBagConstraints());
+
+        jLabel_MouthY.setText("Y");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        jPanel_MouthScaling.add(jLabel_MouthY, gridBagConstraints);
+
+        jSlider_MouthY.setMinimumSize(new java.awt.Dimension(170, 29));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 1;
+        jPanel_MouthScaling.add(jSlider_MouthY, gridBagConstraints);
+
+        jLabel_MouthZ.setText("Z");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
+        jPanel_MouthScaling.add(jLabel_MouthZ, gridBagConstraints);
+
+        jSlider_MouthZ.setMinimumSize(new java.awt.Dimension(170, 29));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 2;
+        jPanel_MouthScaling.add(jSlider_MouthZ, gridBagConstraints);
+
+        jLabel_MouthU.setText("U");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 3;
+        jPanel_MouthScaling.add(jLabel_MouthU, gridBagConstraints);
+
+        jSlider_MouthU.setMinimumSize(new java.awt.Dimension(170, 29));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 3;
+        jPanel_MouthScaling.add(jSlider_MouthU, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 3;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        jPanel_Mouth.add(jPanel_MouthScaling, gridBagConstraints);
 
         jTabbedPane_Head.addTab("Mouth", jPanel_Mouth);
 
         jPanel_UniformHead.setPreferredSize(new java.awt.Dimension(200, 300));
+        jPanel_UniformHead.setLayout(new java.awt.GridBagLayout());
 
-        org.jdesktop.layout.GroupLayout jPanel_UniformHeadLayout = new org.jdesktop.layout.GroupLayout(jPanel_UniformHead);
-        jPanel_UniformHead.setLayout(jPanel_UniformHeadLayout);
-        jPanel_UniformHeadLayout.setHorizontalGroup(
-            jPanel_UniformHeadLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 228, Short.MAX_VALUE)
-        );
-        jPanel_UniformHeadLayout.setVerticalGroup(
-            jPanel_UniformHeadLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 496, Short.MAX_VALUE)
-        );
+        jPanel_HeadWidth.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Width Scale", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Lucida Grande", 0, 13), new java.awt.Color(0, 0, 255))); // NOI18N
+        jPanel_HeadWidth.setMinimumSize(new java.awt.Dimension(210, 115));
+        jPanel_HeadWidth.setPreferredSize(new java.awt.Dimension(210, 115));
+        jPanel_HeadWidth.setLayout(new java.awt.GridBagLayout());
+        jPanel_HeadWidth.add(jSlider_HeadWidth, new java.awt.GridBagConstraints());
+
+        jFormattedTextField_HeadWidth.setText("jFormattedTextField1");
+        jFormattedTextField_HeadWidth.setMinimumSize(new java.awt.Dimension(75, 28));
+        jFormattedTextField_HeadWidth.setPreferredSize(new java.awt.Dimension(75, 28));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        jPanel_HeadWidth.add(jFormattedTextField_HeadWidth, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        jPanel_UniformHead.add(jPanel_HeadWidth, gridBagConstraints);
+
+        jPanel_HeadHeight.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Height Scale", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Lucida Grande", 0, 13), new java.awt.Color(0, 0, 255))); // NOI18N
+        jPanel_HeadHeight.setMinimumSize(new java.awt.Dimension(210, 180));
+        jPanel_HeadHeight.setPreferredSize(new java.awt.Dimension(210, 180));
+        jPanel_HeadHeight.setLayout(new java.awt.GridBagLayout());
+
+        jSlider_HeadHeight.setOrientation(javax.swing.JSlider.VERTICAL);
+        jSlider_HeadHeight.setMinimumSize(new java.awt.Dimension(29, 100));
+        jSlider_HeadHeight.setPreferredSize(new java.awt.Dimension(29, 100));
+        jPanel_HeadHeight.add(jSlider_HeadHeight, new java.awt.GridBagConstraints());
+
+        jFormattedTextField_HeadHeight.setText("jFormattedTextField2");
+        jFormattedTextField_HeadHeight.setMinimumSize(new java.awt.Dimension(75, 28));
+        jFormattedTextField_HeadHeight.setPreferredSize(new java.awt.Dimension(75, 28));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        jPanel_HeadHeight.add(jFormattedTextField_HeadHeight, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        jPanel_UniformHead.add(jPanel_HeadHeight, gridBagConstraints);
+
+        jPanel_HeadDepth.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Depth Scale", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Lucida Grande", 0, 13), new java.awt.Color(0, 0, 255))); // NOI18N
+        jPanel_HeadDepth.setMinimumSize(new java.awt.Dimension(210, 115));
+        jPanel_HeadDepth.setPreferredSize(new java.awt.Dimension(210, 115));
+        jPanel_HeadDepth.setLayout(new java.awt.GridBagLayout());
+        jPanel_HeadDepth.add(jSlider_HeadDepth, new java.awt.GridBagConstraints());
+
+        jFormattedTextField_HeadDepth.setText("jFormattedTextField3");
+        jFormattedTextField_HeadDepth.setMinimumSize(new java.awt.Dimension(75, 28));
+        jFormattedTextField_HeadDepth.setPreferredSize(new java.awt.Dimension(75, 28));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        jPanel_HeadDepth.add(jFormattedTextField_HeadDepth, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        jPanel_UniformHead.add(jPanel_HeadDepth, gridBagConstraints);
+
+        jPanel_HeadUniform.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Uniform Scale", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Lucida Grande", 0, 13), new java.awt.Color(0, 0, 255))); // NOI18N
+        jPanel_HeadUniform.setMinimumSize(new java.awt.Dimension(210, 115));
+        jPanel_HeadUniform.setPreferredSize(new java.awt.Dimension(210, 115));
+        jPanel_HeadUniform.setLayout(new java.awt.GridBagLayout());
+        jPanel_HeadUniform.add(jSlider_HeadUniform, new java.awt.GridBagConstraints());
+
+        jFormattedTextField_HeadUniform.setText("jFormattedTextField1");
+        jFormattedTextField_HeadUniform.setMinimumSize(new java.awt.Dimension(75, 28));
+        jFormattedTextField_HeadUniform.setPreferredSize(new java.awt.Dimension(75, 28));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        jPanel_HeadUniform.add(jFormattedTextField_HeadUniform, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 3;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        jPanel_UniformHead.add(jPanel_HeadUniform, gridBagConstraints);
 
         jTabbedPane_Head.addTab("Uniform", jPanel_UniformHead);
 
@@ -460,189 +809,837 @@ public class AdvOptions extends javax.swing.JFrame {
         jTabbedPane_Main.addTab("Head", jPanel_MainHead);
 
         jPanel_MainArmsHands.setPreferredSize(new java.awt.Dimension(260, 600));
+        jPanel_MainArmsHands.setLayout(new java.awt.GridBagLayout());
 
         jTabbedPane_ArmsHands.setTabPlacement(javax.swing.JTabbedPane.LEFT);
+        jTabbedPane_ArmsHands.setMinimumSize(new java.awt.Dimension(262, 560));
+        jTabbedPane_ArmsHands.setPreferredSize(new java.awt.Dimension(262, 560));
 
-        org.jdesktop.layout.GroupLayout jPanel_HandsLayout = new org.jdesktop.layout.GroupLayout(jPanel_Hands);
-        jPanel_Hands.setLayout(jPanel_HandsLayout);
-        jPanel_HandsLayout.setHorizontalGroup(
-            jPanel_HandsLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 233, Short.MAX_VALUE)
-        );
-        jPanel_HandsLayout.setVerticalGroup(
-            jPanel_HandsLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 533, Short.MAX_VALUE)
-        );
+        jPanel_Hands.setPreferredSize(new java.awt.Dimension(216, 500));
+        jPanel_Hands.setLayout(new java.awt.GridBagLayout());
+
+        jPanel_FingerLength.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Finger Length", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Lucida Grande", 0, 13), new java.awt.Color(0, 0, 255))); // NOI18N
+        jPanel_FingerLength.setMinimumSize(new java.awt.Dimension(210, 260));
+        jPanel_FingerLength.setPreferredSize(new java.awt.Dimension(210, 260));
+        jPanel_FingerLength.setLayout(new java.awt.GridBagLayout());
+
+        jSlider_FingerLengthR.setOrientation(javax.swing.JSlider.VERTICAL);
+        jSlider_FingerLengthR.setMinimumSize(new java.awt.Dimension(29, 100));
+        jSlider_FingerLengthR.setPreferredSize(new java.awt.Dimension(29, 100));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 0;
+        jPanel_FingerLength.add(jSlider_FingerLengthR, gridBagConstraints);
+
+        jFormattedTextField_FingerLengthR.setText("jFormattedTextField1");
+        jFormattedTextField_FingerLengthR.setMinimumSize(new java.awt.Dimension(75, 28));
+        jFormattedTextField_FingerLengthR.setPreferredSize(new java.awt.Dimension(75, 28));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 1;
+        jPanel_FingerLength.add(jFormattedTextField_FingerLengthR, gridBagConstraints);
+
+        jSlider_FingerLengthL.setOrientation(javax.swing.JSlider.VERTICAL);
+        jSlider_FingerLengthL.setMinimumSize(new java.awt.Dimension(29, 100));
+        jSlider_FingerLengthL.setPreferredSize(new java.awt.Dimension(29, 100));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        jPanel_FingerLength.add(jSlider_FingerLengthL, gridBagConstraints);
+
+        jFormattedTextField_FingerLengthL.setText("jFormattedTextField2");
+        jFormattedTextField_FingerLengthL.setMinimumSize(new java.awt.Dimension(75, 28));
+        jFormattedTextField_FingerLengthL.setPreferredSize(new java.awt.Dimension(75, 28));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        jPanel_FingerLength.add(jFormattedTextField_FingerLengthL, gridBagConstraints);
+
+        jCheckBox_HandsLenSync.setText("Sync");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+        jPanel_FingerLength.add(jCheckBox_HandsLenSync, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        jPanel_Hands.add(jPanel_FingerLength, gridBagConstraints);
+
+        jPanel_HandThickness.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Hand Thickness", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Lucida Grande", 0, 13), new java.awt.Color(0, 0, 204))); // NOI18N
+        jPanel_HandThickness.setMinimumSize(new java.awt.Dimension(210, 260));
+        jPanel_HandThickness.setPreferredSize(new java.awt.Dimension(210, 260));
+        jPanel_HandThickness.setLayout(new java.awt.GridBagLayout());
+
+        jSlider_HandThicknessR.setMinimumSize(new java.awt.Dimension(100, 29));
+        jSlider_HandThicknessR.setPreferredSize(new java.awt.Dimension(100, 29));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 0;
+        jPanel_HandThickness.add(jSlider_HandThicknessR, gridBagConstraints);
+
+        jFormattedTextField_HandThicknessR.setText("jFormattedTextField1");
+        jFormattedTextField_HandThicknessR.setMinimumSize(new java.awt.Dimension(75, 28));
+        jFormattedTextField_HandThicknessR.setPreferredSize(new java.awt.Dimension(75, 28));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 1;
+        jPanel_HandThickness.add(jFormattedTextField_HandThicknessR, gridBagConstraints);
+
+        jSlider_HandThicknessL.setMinimumSize(new java.awt.Dimension(100, 29));
+        jSlider_HandThicknessL.setPreferredSize(new java.awt.Dimension(100, 29));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        jPanel_HandThickness.add(jSlider_HandThicknessL, gridBagConstraints);
+
+        jFormattedTextField_HandThicknessL.setText("jFormattedTextField2");
+        jFormattedTextField_HandThicknessL.setMinimumSize(new java.awt.Dimension(75, 28));
+        jFormattedTextField_HandThicknessL.setPreferredSize(new java.awt.Dimension(75, 28));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        jPanel_HandThickness.add(jFormattedTextField_HandThicknessL, gridBagConstraints);
+
+        jCheckBox_HandThickSync.setText("Sync");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+        jPanel_HandThickness.add(jCheckBox_HandThickSync, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        jPanel_Hands.add(jPanel_HandThickness, gridBagConstraints);
 
         jTabbedPane_ArmsHands.addTab("Hands", jPanel_Hands);
 
-        org.jdesktop.layout.GroupLayout jPanel_ForearmsLayout = new org.jdesktop.layout.GroupLayout(jPanel_Forearms);
-        jPanel_Forearms.setLayout(jPanel_ForearmsLayout);
-        jPanel_ForearmsLayout.setHorizontalGroup(
-            jPanel_ForearmsLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 233, Short.MAX_VALUE)
-        );
-        jPanel_ForearmsLayout.setVerticalGroup(
-            jPanel_ForearmsLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 533, Short.MAX_VALUE)
-        );
+        jPanel_Forearms.setLayout(new java.awt.GridBagLayout());
+
+        jPanel_ForearmLength.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Forearm Length", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Lucida Grande", 0, 13), new java.awt.Color(0, 0, 255))); // NOI18N
+        jPanel_ForearmLength.setMinimumSize(new java.awt.Dimension(210, 260));
+        jPanel_ForearmLength.setPreferredSize(new java.awt.Dimension(210, 260));
+        jPanel_ForearmLength.setLayout(new java.awt.GridBagLayout());
+
+        jSlider_ForearmLengthR.setOrientation(javax.swing.JSlider.VERTICAL);
+        jSlider_ForearmLengthR.setMinimumSize(new java.awt.Dimension(29, 100));
+        jSlider_ForearmLengthR.setPreferredSize(new java.awt.Dimension(29, 100));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 0;
+        jPanel_ForearmLength.add(jSlider_ForearmLengthR, gridBagConstraints);
+
+        jFormattedTextField_ForearmLengthR.setText("jFormattedTextField1");
+        jFormattedTextField_ForearmLengthR.setMinimumSize(new java.awt.Dimension(75, 28));
+        jFormattedTextField_ForearmLengthR.setPreferredSize(new java.awt.Dimension(75, 28));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 1;
+        jPanel_ForearmLength.add(jFormattedTextField_ForearmLengthR, gridBagConstraints);
+
+        jSlider_ForearmLengthL.setOrientation(javax.swing.JSlider.VERTICAL);
+        jSlider_ForearmLengthL.setMinimumSize(new java.awt.Dimension(29, 100));
+        jSlider_ForearmLengthL.setPreferredSize(new java.awt.Dimension(29, 100));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        jPanel_ForearmLength.add(jSlider_ForearmLengthL, gridBagConstraints);
+
+        jFormattedTextField_ForearmLengthL.setText("jFormattedTextField2");
+        jFormattedTextField_ForearmLengthL.setMinimumSize(new java.awt.Dimension(75, 28));
+        jFormattedTextField_ForearmLengthL.setPreferredSize(new java.awt.Dimension(75, 28));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        jPanel_ForearmLength.add(jFormattedTextField_ForearmLengthL, gridBagConstraints);
+
+        jCheckBox_ForearmLenSync.setText("Sync");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+        jPanel_ForearmLength.add(jCheckBox_ForearmLenSync, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        jPanel_Forearms.add(jPanel_ForearmLength, gridBagConstraints);
+
+        jPanel_ForearmThickness.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Forearm Thickness", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Lucida Grande", 0, 13), new java.awt.Color(0, 0, 204))); // NOI18N
+        jPanel_ForearmThickness.setMinimumSize(new java.awt.Dimension(210, 260));
+        jPanel_ForearmThickness.setPreferredSize(new java.awt.Dimension(210, 260));
+        jPanel_ForearmThickness.setLayout(new java.awt.GridBagLayout());
+
+        jSlider_ForearmThicknessR.setMinimumSize(new java.awt.Dimension(100, 29));
+        jSlider_ForearmThicknessR.setPreferredSize(new java.awt.Dimension(100, 29));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 0;
+        jPanel_ForearmThickness.add(jSlider_ForearmThicknessR, gridBagConstraints);
+
+        jFormattedTextField_ForearmThicknessR.setText("jFormattedTextField1");
+        jFormattedTextField_ForearmThicknessR.setMinimumSize(new java.awt.Dimension(75, 28));
+        jFormattedTextField_ForearmThicknessR.setPreferredSize(new java.awt.Dimension(75, 28));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 1;
+        jPanel_ForearmThickness.add(jFormattedTextField_ForearmThicknessR, gridBagConstraints);
+
+        jSlider_ForearmThicknessL.setMinimumSize(new java.awt.Dimension(100, 29));
+        jSlider_ForearmThicknessL.setPreferredSize(new java.awt.Dimension(100, 29));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        jPanel_ForearmThickness.add(jSlider_ForearmThicknessL, gridBagConstraints);
+
+        jFormattedTextField_ForearmThicknessL.setText("jFormattedTextField2");
+        jFormattedTextField_ForearmThicknessL.setMinimumSize(new java.awt.Dimension(75, 28));
+        jFormattedTextField_ForearmThicknessL.setPreferredSize(new java.awt.Dimension(75, 28));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        jPanel_ForearmThickness.add(jFormattedTextField_ForearmThicknessL, gridBagConstraints);
+
+        jCheckBox_ForearmThickSync.setText("Sync");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+        jPanel_ForearmThickness.add(jCheckBox_ForearmThickSync, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        jPanel_Forearms.add(jPanel_ForearmThickness, gridBagConstraints);
 
         jTabbedPane_ArmsHands.addTab("Forearms", jPanel_Forearms);
 
-        org.jdesktop.layout.GroupLayout jPanel_UpperArmsLayout = new org.jdesktop.layout.GroupLayout(jPanel_UpperArms);
-        jPanel_UpperArms.setLayout(jPanel_UpperArmsLayout);
-        jPanel_UpperArmsLayout.setHorizontalGroup(
-            jPanel_UpperArmsLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 233, Short.MAX_VALUE)
-        );
-        jPanel_UpperArmsLayout.setVerticalGroup(
-            jPanel_UpperArmsLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 533, Short.MAX_VALUE)
-        );
+        jPanel_UpperArms.setLayout(new java.awt.GridBagLayout());
+
+        jPanel_UpperarmLength.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Upperarm Length", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Lucida Grande", 0, 13), new java.awt.Color(0, 0, 255))); // NOI18N
+        jPanel_UpperarmLength.setMinimumSize(new java.awt.Dimension(210, 260));
+        jPanel_UpperarmLength.setPreferredSize(new java.awt.Dimension(210, 260));
+        jPanel_UpperarmLength.setLayout(new java.awt.GridBagLayout());
+
+        jSlider_UpperarmLengthR.setOrientation(javax.swing.JSlider.VERTICAL);
+        jSlider_UpperarmLengthR.setMinimumSize(new java.awt.Dimension(29, 100));
+        jSlider_UpperarmLengthR.setPreferredSize(new java.awt.Dimension(29, 100));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 0;
+        jPanel_UpperarmLength.add(jSlider_UpperarmLengthR, gridBagConstraints);
+
+        jFormattedTextField_UpperarmLengthR.setText("jFormattedTextField1");
+        jFormattedTextField_UpperarmLengthR.setMinimumSize(new java.awt.Dimension(75, 28));
+        jFormattedTextField_UpperarmLengthR.setPreferredSize(new java.awt.Dimension(75, 28));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 1;
+        jPanel_UpperarmLength.add(jFormattedTextField_UpperarmLengthR, gridBagConstraints);
+
+        jSlider_UpperArmLengthL.setOrientation(javax.swing.JSlider.VERTICAL);
+        jSlider_UpperArmLengthL.setMinimumSize(new java.awt.Dimension(29, 100));
+        jSlider_UpperArmLengthL.setPreferredSize(new java.awt.Dimension(29, 100));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        jPanel_UpperarmLength.add(jSlider_UpperArmLengthL, gridBagConstraints);
+
+        jFormattedTextField_UpperArmLengthL.setText("jFormattedTextField2");
+        jFormattedTextField_UpperArmLengthL.setMinimumSize(new java.awt.Dimension(75, 28));
+        jFormattedTextField_UpperArmLengthL.setPreferredSize(new java.awt.Dimension(75, 28));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        jPanel_UpperarmLength.add(jFormattedTextField_UpperArmLengthL, gridBagConstraints);
+
+        jCheckBox_UpperarmLenSync.setText("Sync");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+        jPanel_UpperarmLength.add(jCheckBox_UpperarmLenSync, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        jPanel_UpperArms.add(jPanel_UpperarmLength, gridBagConstraints);
+
+        jPanel_UpperarmThickness.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Upperarm Thickness", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Lucida Grande", 0, 13), new java.awt.Color(0, 0, 204))); // NOI18N
+        jPanel_UpperarmThickness.setMinimumSize(new java.awt.Dimension(210, 260));
+        jPanel_UpperarmThickness.setPreferredSize(new java.awt.Dimension(210, 260));
+        jPanel_UpperarmThickness.setLayout(new java.awt.GridBagLayout());
+
+        jSlider_UpperarmThicknessR.setMinimumSize(new java.awt.Dimension(100, 29));
+        jSlider_UpperarmThicknessR.setPreferredSize(new java.awt.Dimension(100, 29));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 0;
+        jPanel_UpperarmThickness.add(jSlider_UpperarmThicknessR, gridBagConstraints);
+
+        jFormattedTextField_UpperarmThicknessR.setText("jFormattedTextField1");
+        jFormattedTextField_UpperarmThicknessR.setMinimumSize(new java.awt.Dimension(75, 28));
+        jFormattedTextField_UpperarmThicknessR.setPreferredSize(new java.awt.Dimension(75, 28));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 1;
+        jPanel_UpperarmThickness.add(jFormattedTextField_UpperarmThicknessR, gridBagConstraints);
+
+        jSlider_UpperarmThicknessL.setMinimumSize(new java.awt.Dimension(100, 29));
+        jSlider_UpperarmThicknessL.setPreferredSize(new java.awt.Dimension(100, 29));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        jPanel_UpperarmThickness.add(jSlider_UpperarmThicknessL, gridBagConstraints);
+
+        jFormattedTextField_UpperarmThicknessL.setText("jFormattedTextField2");
+        jFormattedTextField_UpperarmThicknessL.setMinimumSize(new java.awt.Dimension(75, 28));
+        jFormattedTextField_UpperarmThicknessL.setPreferredSize(new java.awt.Dimension(75, 28));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        jPanel_UpperarmThickness.add(jFormattedTextField_UpperarmThicknessL, gridBagConstraints);
+
+        jCheckBox_UpperarmThickSync.setText("Sync");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+        jPanel_UpperarmThickness.add(jCheckBox_UpperarmThickSync, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        jPanel_UpperArms.add(jPanel_UpperarmThickness, gridBagConstraints);
 
         jTabbedPane_ArmsHands.addTab("UpperArms", jPanel_UpperArms);
 
-        org.jdesktop.layout.GroupLayout jPanel_MainArmsHandsLayout = new org.jdesktop.layout.GroupLayout(jPanel_MainArmsHands);
-        jPanel_MainArmsHands.setLayout(jPanel_MainArmsHandsLayout);
-        jPanel_MainArmsHandsLayout.setHorizontalGroup(
-            jPanel_MainArmsHandsLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(jTabbedPane_ArmsHands, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 279, Short.MAX_VALUE)
-        );
-        jPanel_MainArmsHandsLayout.setVerticalGroup(
-            jPanel_MainArmsHandsLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(jTabbedPane_ArmsHands, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 554, Short.MAX_VALUE)
-        );
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        jPanel_MainArmsHands.add(jTabbedPane_ArmsHands, gridBagConstraints);
 
         jTabbedPane_Main.addTab("Arms/Hands", jPanel_MainArmsHands);
 
-        jPanel_LegsFeet.setPreferredSize(new java.awt.Dimension(260, 600));
+        jPanel_MainLegsFeet.setPreferredSize(new java.awt.Dimension(260, 600));
+        jPanel_MainLegsFeet.setLayout(new java.awt.GridBagLayout());
 
         jTabbedPane_LegsFeet.setTabPlacement(javax.swing.JTabbedPane.LEFT);
+        jTabbedPane_LegsFeet.setMinimumSize(new java.awt.Dimension(262, 560));
+        jTabbedPane_LegsFeet.setPreferredSize(new java.awt.Dimension(262, 560));
 
-        org.jdesktop.layout.GroupLayout jPanel_FeetLayout = new org.jdesktop.layout.GroupLayout(jPanel_Feet);
-        jPanel_Feet.setLayout(jPanel_FeetLayout);
-        jPanel_FeetLayout.setHorizontalGroup(
-            jPanel_FeetLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 233, Short.MAX_VALUE)
-        );
-        jPanel_FeetLayout.setVerticalGroup(
-            jPanel_FeetLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 533, Short.MAX_VALUE)
-        );
+        jPanel_Feet.setLayout(new java.awt.GridBagLayout());
+
+        jPanel_FeetLength.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Feet Length", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Lucida Grande", 0, 13), new java.awt.Color(0, 0, 255))); // NOI18N
+        jPanel_FeetLength.setMinimumSize(new java.awt.Dimension(210, 260));
+        jPanel_FeetLength.setPreferredSize(new java.awt.Dimension(210, 260));
+        jPanel_FeetLength.setLayout(new java.awt.GridBagLayout());
+
+        jSlider_FeetLengthR.setOrientation(javax.swing.JSlider.VERTICAL);
+        jSlider_FeetLengthR.setMinimumSize(new java.awt.Dimension(29, 100));
+        jSlider_FeetLengthR.setPreferredSize(new java.awt.Dimension(29, 100));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 0;
+        jPanel_FeetLength.add(jSlider_FeetLengthR, gridBagConstraints);
+
+        jFormattedTextField_FeetLengthR.setText("jFormattedTextField1");
+        jFormattedTextField_FeetLengthR.setMinimumSize(new java.awt.Dimension(75, 28));
+        jFormattedTextField_FeetLengthR.setPreferredSize(new java.awt.Dimension(75, 28));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 1;
+        jPanel_FeetLength.add(jFormattedTextField_FeetLengthR, gridBagConstraints);
+
+        jSlider_FeetLengthL.setOrientation(javax.swing.JSlider.VERTICAL);
+        jSlider_FeetLengthL.setMinimumSize(new java.awt.Dimension(29, 100));
+        jSlider_FeetLengthL.setPreferredSize(new java.awt.Dimension(29, 100));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        jPanel_FeetLength.add(jSlider_FeetLengthL, gridBagConstraints);
+
+        jFormattedTextField_FeetLengthL.setText("jFormattedTextField2");
+        jFormattedTextField_FeetLengthL.setMinimumSize(new java.awt.Dimension(75, 28));
+        jFormattedTextField_FeetLengthL.setPreferredSize(new java.awt.Dimension(75, 28));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        jPanel_FeetLength.add(jFormattedTextField_FeetLengthL, gridBagConstraints);
+
+        jCheckBox_FeetLenSync.setText("Sync");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+        jPanel_FeetLength.add(jCheckBox_FeetLenSync, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        jPanel_Feet.add(jPanel_FeetLength, gridBagConstraints);
+
+        jPanel_FeetThickness.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Feet Thickness", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Lucida Grande", 0, 13), new java.awt.Color(0, 0, 204))); // NOI18N
+        jPanel_FeetThickness.setMinimumSize(new java.awt.Dimension(210, 260));
+        jPanel_FeetThickness.setPreferredSize(new java.awt.Dimension(210, 260));
+        jPanel_FeetThickness.setLayout(new java.awt.GridBagLayout());
+
+        jSlider_FeetThicknessR.setMinimumSize(new java.awt.Dimension(100, 29));
+        jSlider_FeetThicknessR.setPreferredSize(new java.awt.Dimension(100, 29));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 0;
+        jPanel_FeetThickness.add(jSlider_FeetThicknessR, gridBagConstraints);
+
+        jFormattedTextField_FeetThicknessR.setText("jFormattedTextField1");
+        jFormattedTextField_FeetThicknessR.setMinimumSize(new java.awt.Dimension(75, 28));
+        jFormattedTextField_FeetThicknessR.setPreferredSize(new java.awt.Dimension(75, 28));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 1;
+        jPanel_FeetThickness.add(jFormattedTextField_FeetThicknessR, gridBagConstraints);
+
+        jSlider_FeetThicknessL.setMinimumSize(new java.awt.Dimension(100, 29));
+        jSlider_FeetThicknessL.setPreferredSize(new java.awt.Dimension(100, 29));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        jPanel_FeetThickness.add(jSlider_FeetThicknessL, gridBagConstraints);
+
+        jFormattedTextField_FeetThicknessL.setText("jFormattedTextField2");
+        jFormattedTextField_FeetThicknessL.setMinimumSize(new java.awt.Dimension(75, 28));
+        jFormattedTextField_FeetThicknessL.setPreferredSize(new java.awt.Dimension(75, 28));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        jPanel_FeetThickness.add(jFormattedTextField_FeetThicknessL, gridBagConstraints);
+
+        jCheckBox_FeetThickSync.setText("Sync");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+        jPanel_FeetThickness.add(jCheckBox_FeetThickSync, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        jPanel_Feet.add(jPanel_FeetThickness, gridBagConstraints);
 
         jTabbedPane_LegsFeet.addTab("Feet", jPanel_Feet);
 
-        org.jdesktop.layout.GroupLayout jPanel_CalvesLayout = new org.jdesktop.layout.GroupLayout(jPanel_Calves);
-        jPanel_Calves.setLayout(jPanel_CalvesLayout);
-        jPanel_CalvesLayout.setHorizontalGroup(
-            jPanel_CalvesLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 233, Short.MAX_VALUE)
-        );
-        jPanel_CalvesLayout.setVerticalGroup(
-            jPanel_CalvesLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 533, Short.MAX_VALUE)
-        );
+        jPanel_Calves.setLayout(new java.awt.GridBagLayout());
+
+        jPanel_CalvesLength.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Calves Length", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Lucida Grande", 0, 13), new java.awt.Color(0, 0, 255))); // NOI18N
+        jPanel_CalvesLength.setMinimumSize(new java.awt.Dimension(210, 260));
+        jPanel_CalvesLength.setPreferredSize(new java.awt.Dimension(210, 260));
+        jPanel_CalvesLength.setLayout(new java.awt.GridBagLayout());
+
+        jSlider_CalvesLengthR.setOrientation(javax.swing.JSlider.VERTICAL);
+        jSlider_CalvesLengthR.setMinimumSize(new java.awt.Dimension(29, 100));
+        jSlider_CalvesLengthR.setPreferredSize(new java.awt.Dimension(29, 100));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 0;
+        jPanel_CalvesLength.add(jSlider_CalvesLengthR, gridBagConstraints);
+
+        jFormattedTextField_CalvesLengthR.setText("jFormattedTextField1");
+        jFormattedTextField_CalvesLengthR.setMinimumSize(new java.awt.Dimension(75, 28));
+        jFormattedTextField_CalvesLengthR.setPreferredSize(new java.awt.Dimension(75, 28));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 1;
+        jPanel_CalvesLength.add(jFormattedTextField_CalvesLengthR, gridBagConstraints);
+
+        jSlider_CalvesLengthL.setOrientation(javax.swing.JSlider.VERTICAL);
+        jSlider_CalvesLengthL.setMinimumSize(new java.awt.Dimension(29, 100));
+        jSlider_CalvesLengthL.setPreferredSize(new java.awt.Dimension(29, 100));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        jPanel_CalvesLength.add(jSlider_CalvesLengthL, gridBagConstraints);
+
+        jFormattedTextField_CalvesLengthL.setText("jFormattedTextField2");
+        jFormattedTextField_CalvesLengthL.setMinimumSize(new java.awt.Dimension(75, 28));
+        jFormattedTextField_CalvesLengthL.setPreferredSize(new java.awt.Dimension(75, 28));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        jPanel_CalvesLength.add(jFormattedTextField_CalvesLengthL, gridBagConstraints);
+
+        jCheckBox_CalvesLenSync.setText("Sync");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+        jPanel_CalvesLength.add(jCheckBox_CalvesLenSync, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        jPanel_Calves.add(jPanel_CalvesLength, gridBagConstraints);
+
+        jPanel_CalvesThickness.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Calves Thickness", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Lucida Grande", 0, 13), new java.awt.Color(0, 0, 204))); // NOI18N
+        jPanel_CalvesThickness.setMinimumSize(new java.awt.Dimension(210, 260));
+        jPanel_CalvesThickness.setPreferredSize(new java.awt.Dimension(210, 260));
+        jPanel_CalvesThickness.setLayout(new java.awt.GridBagLayout());
+
+        jSlider_CalvesThicknessR.setMinimumSize(new java.awt.Dimension(100, 29));
+        jSlider_CalvesThicknessR.setPreferredSize(new java.awt.Dimension(100, 29));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 0;
+        jPanel_CalvesThickness.add(jSlider_CalvesThicknessR, gridBagConstraints);
+
+        jFormattedTextField_CalvesThicknessR.setText("jFormattedTextField1");
+        jFormattedTextField_CalvesThicknessR.setMinimumSize(new java.awt.Dimension(75, 28));
+        jFormattedTextField_CalvesThicknessR.setPreferredSize(new java.awt.Dimension(75, 28));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 1;
+        jPanel_CalvesThickness.add(jFormattedTextField_CalvesThicknessR, gridBagConstraints);
+
+        jSlider_CalvesThicknessL.setMinimumSize(new java.awt.Dimension(100, 29));
+        jSlider_CalvesThicknessL.setPreferredSize(new java.awt.Dimension(100, 29));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        jPanel_CalvesThickness.add(jSlider_CalvesThicknessL, gridBagConstraints);
+
+        jFormattedTextField_CalvesThicknessL.setText("jFormattedTextField2");
+        jFormattedTextField_CalvesThicknessL.setMinimumSize(new java.awt.Dimension(75, 28));
+        jFormattedTextField_CalvesThicknessL.setPreferredSize(new java.awt.Dimension(75, 28));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        jPanel_CalvesThickness.add(jFormattedTextField_CalvesThicknessL, gridBagConstraints);
+
+        jCheckBox_CalvesThickSync.setText("Sync");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+        jPanel_CalvesThickness.add(jCheckBox_CalvesThickSync, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        jPanel_Calves.add(jPanel_CalvesThickness, gridBagConstraints);
 
         jTabbedPane_LegsFeet.addTab("Calves", jPanel_Calves);
 
-        org.jdesktop.layout.GroupLayout jPanel_ThighsLayout = new org.jdesktop.layout.GroupLayout(jPanel_Thighs);
-        jPanel_Thighs.setLayout(jPanel_ThighsLayout);
-        jPanel_ThighsLayout.setHorizontalGroup(
-            jPanel_ThighsLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 233, Short.MAX_VALUE)
-        );
-        jPanel_ThighsLayout.setVerticalGroup(
-            jPanel_ThighsLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 533, Short.MAX_VALUE)
-        );
+        jPanel_Thighs.setLayout(new java.awt.GridBagLayout());
+
+        jPanel_ThighLength.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Thigh Length", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Lucida Grande", 0, 13), new java.awt.Color(0, 0, 255))); // NOI18N
+        jPanel_ThighLength.setMinimumSize(new java.awt.Dimension(210, 260));
+        jPanel_ThighLength.setPreferredSize(new java.awt.Dimension(210, 260));
+        jPanel_ThighLength.setLayout(new java.awt.GridBagLayout());
+
+        jSlider_ThighLengthR.setOrientation(javax.swing.JSlider.VERTICAL);
+        jSlider_ThighLengthR.setMinimumSize(new java.awt.Dimension(29, 100));
+        jSlider_ThighLengthR.setPreferredSize(new java.awt.Dimension(29, 100));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 0;
+        jPanel_ThighLength.add(jSlider_ThighLengthR, gridBagConstraints);
+
+        jFormattedTextField_ThighLengthR.setText("jFormattedTextField1");
+        jFormattedTextField_ThighLengthR.setMinimumSize(new java.awt.Dimension(75, 28));
+        jFormattedTextField_ThighLengthR.setPreferredSize(new java.awt.Dimension(75, 28));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 1;
+        jPanel_ThighLength.add(jFormattedTextField_ThighLengthR, gridBagConstraints);
+
+        jSlider_ThighLengthL.setOrientation(javax.swing.JSlider.VERTICAL);
+        jSlider_ThighLengthL.setMinimumSize(new java.awt.Dimension(29, 100));
+        jSlider_ThighLengthL.setPreferredSize(new java.awt.Dimension(29, 100));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        jPanel_ThighLength.add(jSlider_ThighLengthL, gridBagConstraints);
+
+        jFormattedTextField_ThighLengthL.setText("jFormattedTextField2");
+        jFormattedTextField_ThighLengthL.setMinimumSize(new java.awt.Dimension(75, 28));
+        jFormattedTextField_ThighLengthL.setPreferredSize(new java.awt.Dimension(75, 28));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        jPanel_ThighLength.add(jFormattedTextField_ThighLengthL, gridBagConstraints);
+
+        jCheckBox_ThighLenSync.setText("Sync");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+        jPanel_ThighLength.add(jCheckBox_ThighLenSync, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        jPanel_Thighs.add(jPanel_ThighLength, gridBagConstraints);
+
+        jPanel_ThighThickness.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Thigh Thickness", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Lucida Grande", 0, 13), new java.awt.Color(0, 0, 204))); // NOI18N
+        jPanel_ThighThickness.setMinimumSize(new java.awt.Dimension(210, 260));
+        jPanel_ThighThickness.setPreferredSize(new java.awt.Dimension(210, 260));
+        jPanel_ThighThickness.setLayout(new java.awt.GridBagLayout());
+
+        jSlider_ThighThicknessR.setMinimumSize(new java.awt.Dimension(100, 29));
+        jSlider_ThighThicknessR.setPreferredSize(new java.awt.Dimension(100, 29));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 0;
+        jPanel_ThighThickness.add(jSlider_ThighThicknessR, gridBagConstraints);
+
+        jFormattedTextField_ThighThicknessR.setText("jFormattedTextField1");
+        jFormattedTextField_ThighThicknessR.setMinimumSize(new java.awt.Dimension(75, 28));
+        jFormattedTextField_ThighThicknessR.setPreferredSize(new java.awt.Dimension(75, 28));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 1;
+        jPanel_ThighThickness.add(jFormattedTextField_ThighThicknessR, gridBagConstraints);
+
+        jSlider_ThighThicknessL.setMinimumSize(new java.awt.Dimension(100, 29));
+        jSlider_ThighThicknessL.setPreferredSize(new java.awt.Dimension(100, 29));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        jPanel_ThighThickness.add(jSlider_ThighThicknessL, gridBagConstraints);
+
+        jFormattedTextField_ThighThicknessL.setText("jFormattedTextField2");
+        jFormattedTextField_ThighThicknessL.setMinimumSize(new java.awt.Dimension(75, 28));
+        jFormattedTextField_ThighThicknessL.setPreferredSize(new java.awt.Dimension(75, 28));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        jPanel_ThighThickness.add(jFormattedTextField_ThighThicknessL, gridBagConstraints);
+
+        jCheckBox_ThighThickSync.setText("Sync");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+        jPanel_ThighThickness.add(jCheckBox_ThighThickSync, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        jPanel_Thighs.add(jPanel_ThighThickness, gridBagConstraints);
 
         jTabbedPane_LegsFeet.addTab("Thighs", jPanel_Thighs);
 
-        org.jdesktop.layout.GroupLayout jPanel_LegsFeetLayout = new org.jdesktop.layout.GroupLayout(jPanel_LegsFeet);
-        jPanel_LegsFeet.setLayout(jPanel_LegsFeetLayout);
-        jPanel_LegsFeetLayout.setHorizontalGroup(
-            jPanel_LegsFeetLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 279, Short.MAX_VALUE)
-            .add(jPanel_LegsFeetLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                .add(jTabbedPane_LegsFeet, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 279, Short.MAX_VALUE))
-        );
-        jPanel_LegsFeetLayout.setVerticalGroup(
-            jPanel_LegsFeetLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 554, Short.MAX_VALUE)
-            .add(jPanel_LegsFeetLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                .add(jTabbedPane_LegsFeet, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 554, Short.MAX_VALUE))
-        );
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        jPanel_MainLegsFeet.add(jTabbedPane_LegsFeet, gridBagConstraints);
 
-        jTabbedPane_Main.addTab("Legs/Feet", jPanel_LegsFeet);
+        jTabbedPane_Main.addTab("Legs/Feet", jPanel_MainLegsFeet);
 
-        jPanel_Body.setPreferredSize(new java.awt.Dimension(260, 600));
+        jPanel_MainBody.setPreferredSize(new java.awt.Dimension(262, 600));
+        jPanel_MainBody.setLayout(new java.awt.GridBagLayout());
 
         jTabbedPane_Body.setTabPlacement(javax.swing.JTabbedPane.LEFT);
+        jTabbedPane_Body.setMinimumSize(new java.awt.Dimension(262, 560));
+        jTabbedPane_Body.setPreferredSize(new java.awt.Dimension(262, 560));
 
-        org.jdesktop.layout.GroupLayout jPanel_ChestLayout = new org.jdesktop.layout.GroupLayout(jPanel_Chest);
-        jPanel_Chest.setLayout(jPanel_ChestLayout);
-        jPanel_ChestLayout.setHorizontalGroup(
-            jPanel_ChestLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 233, Short.MAX_VALUE)
-        );
-        jPanel_ChestLayout.setVerticalGroup(
-            jPanel_ChestLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 533, Short.MAX_VALUE)
-        );
+        jPanel_Chest.setLayout(new java.awt.GridBagLayout());
+
+        jPanel_ChestBulk.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Bulk", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Lucida Grande", 0, 13), new java.awt.Color(0, 0, 255))); // NOI18N
+        jPanel_ChestBulk.setLayout(new java.awt.GridBagLayout());
+        jPanel_ChestBulk.add(jSlider_ChestBulk, new java.awt.GridBagConstraints());
+
+        jFormattedTextField_ChestBulk.setText("jFormattedTextField1");
+        jFormattedTextField_ChestBulk.setMinimumSize(new java.awt.Dimension(75, 28));
+        jFormattedTextField_ChestBulk.setPreferredSize(new java.awt.Dimension(75, 28));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        jPanel_ChestBulk.add(jFormattedTextField_ChestBulk, gridBagConstraints);
+
+        jPanel_Chest.add(jPanel_ChestBulk, new java.awt.GridBagConstraints());
+
+        jPanel_ChestBroadness.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Broadness", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Lucida Grande", 0, 13), new java.awt.Color(0, 0, 255))); // NOI18N
+        jPanel_ChestBroadness.setLayout(new java.awt.GridBagLayout());
+        jPanel_ChestBroadness.add(jSlider_ChestBroadness, new java.awt.GridBagConstraints());
+
+        jFormattedTextField_ChestBroadness.setText("jFormattedTextField2");
+        jFormattedTextField_ChestBroadness.setMinimumSize(new java.awt.Dimension(75, 28));
+        jFormattedTextField_ChestBroadness.setPreferredSize(new java.awt.Dimension(75, 28));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        jPanel_ChestBroadness.add(jFormattedTextField_ChestBroadness, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        jPanel_Chest.add(jPanel_ChestBroadness, gridBagConstraints);
 
         jTabbedPane_Body.addTab("Chest", jPanel_Chest);
 
-        org.jdesktop.layout.GroupLayout jPanel_AbsLayout = new org.jdesktop.layout.GroupLayout(jPanel_Abs);
-        jPanel_Abs.setLayout(jPanel_AbsLayout);
-        jPanel_AbsLayout.setHorizontalGroup(
-            jPanel_AbsLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 233, Short.MAX_VALUE)
-        );
-        jPanel_AbsLayout.setVerticalGroup(
-            jPanel_AbsLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 533, Short.MAX_VALUE)
-        );
+        jPanel_Abs.setLayout(new java.awt.GridBagLayout());
+
+        jPanel_BellyRoundness.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Belly Roundness", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Lucida Grande", 0, 13), new java.awt.Color(0, 0, 255))); // NOI18N
+        jPanel_BellyRoundness.setLayout(new java.awt.GridBagLayout());
+        jPanel_BellyRoundness.add(jSlider_BellyRoundness, new java.awt.GridBagConstraints());
+
+        jFormattedTextField_BellyRoundness.setText("jFormattedTextField1");
+        jFormattedTextField_BellyRoundness.setMinimumSize(new java.awt.Dimension(75, 28));
+        jFormattedTextField_BellyRoundness.setPreferredSize(new java.awt.Dimension(75, 28));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        jPanel_BellyRoundness.add(jFormattedTextField_BellyRoundness, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        jPanel_Abs.add(jPanel_BellyRoundness, gridBagConstraints);
+
+        jPanel_Waistline.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Waistline", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Lucida Grande", 0, 13), new java.awt.Color(0, 0, 255))); // NOI18N
+        jPanel_Waistline.setLayout(new java.awt.GridBagLayout());
+        jPanel_Waistline.add(jSlider_Waistline, new java.awt.GridBagConstraints());
+
+        jFormattedTextField_Waistline.setText("jFormattedTextField2");
+        jFormattedTextField_Waistline.setMinimumSize(new java.awt.Dimension(75, 28));
+        jFormattedTextField_Waistline.setPreferredSize(new java.awt.Dimension(75, 28));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        jPanel_Waistline.add(jFormattedTextField_Waistline, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        jPanel_Abs.add(jPanel_Waistline, gridBagConstraints);
 
         jTabbedPane_Body.addTab("Abdominals", jPanel_Abs);
 
-        org.jdesktop.layout.GroupLayout jPanel_GlutsLayout = new org.jdesktop.layout.GroupLayout(jPanel_Gluts);
-        jPanel_Gluts.setLayout(jPanel_GlutsLayout);
-        jPanel_GlutsLayout.setHorizontalGroup(
-            jPanel_GlutsLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 233, Short.MAX_VALUE)
-        );
-        jPanel_GlutsLayout.setVerticalGroup(
-            jPanel_GlutsLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 533, Short.MAX_VALUE)
-        );
+        jPanel_Gluts.setLayout(new java.awt.GridBagLayout());
+
+        jPanel_GlutRoundness.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Roundness", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Lucida Grande", 0, 13), new java.awt.Color(0, 0, 255))); // NOI18N
+        jPanel_GlutRoundness.setLayout(new java.awt.GridBagLayout());
+        jPanel_GlutRoundness.add(jSlider_GlutRoundness, new java.awt.GridBagConstraints());
+
+        jFormattedTextField_GlutRoundness.setText("jFormattedTextField1");
+        jFormattedTextField_GlutRoundness.setMinimumSize(new java.awt.Dimension(75, 28));
+        jFormattedTextField_GlutRoundness.setPreferredSize(new java.awt.Dimension(75, 28));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        jPanel_GlutRoundness.add(jFormattedTextField_GlutRoundness, gridBagConstraints);
+
+        jPanel_Gluts.add(jPanel_GlutRoundness, new java.awt.GridBagConstraints());
+
+        jPanel_GlutSag.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Sag", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Lucida Grande", 0, 13), new java.awt.Color(0, 0, 255))); // NOI18N
+        jPanel_GlutSag.setLayout(new java.awt.GridBagLayout());
+        jPanel_GlutSag.add(jSlider_GlutSag, new java.awt.GridBagConstraints());
+
+        jFormattedTextField_GlutSag.setText("jFormattedTextField2");
+        jFormattedTextField_GlutSag.setMinimumSize(new java.awt.Dimension(75, 28));
+        jFormattedTextField_GlutSag.setPreferredSize(new java.awt.Dimension(75, 28));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        jPanel_GlutSag.add(jFormattedTextField_GlutSag, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        jPanel_Gluts.add(jPanel_GlutSag, gridBagConstraints);
 
         jTabbedPane_Body.addTab("Gluts", jPanel_Gluts);
 
-        org.jdesktop.layout.GroupLayout jPanel_UniformBodyLayout = new org.jdesktop.layout.GroupLayout(jPanel_UniformBody);
-        jPanel_UniformBody.setLayout(jPanel_UniformBodyLayout);
-        jPanel_UniformBodyLayout.setHorizontalGroup(
-            jPanel_UniformBodyLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 233, Short.MAX_VALUE)
-        );
-        jPanel_UniformBodyLayout.setVerticalGroup(
-            jPanel_UniformBodyLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 533, Short.MAX_VALUE)
-        );
+        jPanel_UniformBody.setLayout(new java.awt.GridBagLayout());
+
+        jPanel_BodyWidth.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Width Scale", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Lucida Grande", 0, 13), new java.awt.Color(0, 0, 255))); // NOI18N
+        jPanel_BodyWidth.setMinimumSize(new java.awt.Dimension(210, 115));
+        jPanel_BodyWidth.setPreferredSize(new java.awt.Dimension(210, 115));
+        jPanel_BodyWidth.setLayout(new java.awt.GridBagLayout());
+        jPanel_BodyWidth.add(jSlider_BodyWidth, new java.awt.GridBagConstraints());
+
+        jFormattedTextField_BodyWidth.setText("jFormattedTextField1");
+        jFormattedTextField_BodyWidth.setMinimumSize(new java.awt.Dimension(75, 28));
+        jFormattedTextField_BodyWidth.setPreferredSize(new java.awt.Dimension(75, 28));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        jPanel_BodyWidth.add(jFormattedTextField_BodyWidth, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        jPanel_UniformBody.add(jPanel_BodyWidth, gridBagConstraints);
+
+        jPanel_BodyHeight.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Height Scale", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Lucida Grande", 0, 13), new java.awt.Color(0, 0, 255))); // NOI18N
+        jPanel_BodyHeight.setMinimumSize(new java.awt.Dimension(210, 180));
+        jPanel_BodyHeight.setPreferredSize(new java.awt.Dimension(210, 180));
+        jPanel_BodyHeight.setLayout(new java.awt.GridBagLayout());
+
+        jSlider_BodyHeight.setOrientation(javax.swing.JSlider.VERTICAL);
+        jSlider_BodyHeight.setMinimumSize(new java.awt.Dimension(29, 100));
+        jSlider_BodyHeight.setPreferredSize(new java.awt.Dimension(29, 100));
+        jPanel_BodyHeight.add(jSlider_BodyHeight, new java.awt.GridBagConstraints());
+
+        jFormattedTextField_BodyHeight.setText("jFormattedTextField2");
+        jFormattedTextField_BodyHeight.setMinimumSize(new java.awt.Dimension(75, 28));
+        jFormattedTextField_BodyHeight.setPreferredSize(new java.awt.Dimension(75, 28));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        jPanel_BodyHeight.add(jFormattedTextField_BodyHeight, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        jPanel_UniformBody.add(jPanel_BodyHeight, gridBagConstraints);
+
+        jPanel_BodyDepth.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Depth Scale", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Lucida Grande", 0, 13), new java.awt.Color(0, 0, 255))); // NOI18N
+        jPanel_BodyDepth.setMinimumSize(new java.awt.Dimension(210, 115));
+        jPanel_BodyDepth.setPreferredSize(new java.awt.Dimension(210, 115));
+        jPanel_BodyDepth.setLayout(new java.awt.GridBagLayout());
+        jPanel_BodyDepth.add(jSlider_BodyDepth, new java.awt.GridBagConstraints());
+
+        jFormattedTextField_BodyDepth.setText("jFormattedTextField3");
+        jFormattedTextField_BodyDepth.setMinimumSize(new java.awt.Dimension(75, 28));
+        jFormattedTextField_BodyDepth.setPreferredSize(new java.awt.Dimension(75, 28));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        jPanel_BodyDepth.add(jFormattedTextField_BodyDepth, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        jPanel_UniformBody.add(jPanel_BodyDepth, gridBagConstraints);
+
+        jPanel_BodyUniform.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Uniform Scale", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Lucida Grande", 0, 13), new java.awt.Color(0, 0, 255))); // NOI18N
+        jPanel_BodyUniform.setMinimumSize(new java.awt.Dimension(210, 115));
+        jPanel_BodyUniform.setPreferredSize(new java.awt.Dimension(210, 115));
+        jPanel_BodyUniform.setLayout(new java.awt.GridBagLayout());
+        jPanel_BodyUniform.add(jSlider_BodyUniform, new java.awt.GridBagConstraints());
+
+        jFormattedTextField_BodyUniform.setText("jFormattedTextField1");
+        jFormattedTextField_BodyUniform.setMinimumSize(new java.awt.Dimension(75, 28));
+        jFormattedTextField_BodyUniform.setPreferredSize(new java.awt.Dimension(75, 28));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        jPanel_BodyUniform.add(jFormattedTextField_BodyUniform, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 3;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        jPanel_UniformBody.add(jPanel_BodyUniform, gridBagConstraints);
 
         jTabbedPane_Body.addTab("Uniform", jPanel_UniformBody);
 
-        org.jdesktop.layout.GroupLayout jPanel_BodyLayout = new org.jdesktop.layout.GroupLayout(jPanel_Body);
-        jPanel_Body.setLayout(jPanel_BodyLayout);
-        jPanel_BodyLayout.setHorizontalGroup(
-            jPanel_BodyLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(jTabbedPane_Body, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 279, Short.MAX_VALUE)
-        );
-        jPanel_BodyLayout.setVerticalGroup(
-            jPanel_BodyLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(jTabbedPane_Body, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 554, Short.MAX_VALUE)
-        );
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        jPanel_MainBody.add(jTabbedPane_Body, gridBagConstraints);
 
-        jTabbedPane_Main.addTab("Body", jPanel_Body);
+        jTabbedPane_Main.addTab("Body", jPanel_MainBody);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -666,66 +1663,200 @@ public class AdvOptions extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JCheckBox jCheckBox_CalvesLenSync;
+    private javax.swing.JCheckBox jCheckBox_CalvesThickSync;
+    private javax.swing.JCheckBox jCheckBox_EyeDPosSync;
+    private javax.swing.JCheckBox jCheckBox_EyeVPosSync;
+    private javax.swing.JCheckBox jCheckBox_EyesHPosSync;
+    private javax.swing.JCheckBox jCheckBox_FeetLenSync;
+    private javax.swing.JCheckBox jCheckBox_FeetThickSync;
+    private javax.swing.JCheckBox jCheckBox_ForearmLenSync;
+    private javax.swing.JCheckBox jCheckBox_ForearmThickSync;
+    private javax.swing.JCheckBox jCheckBox_HandThickSync;
+    private javax.swing.JCheckBox jCheckBox_HandsLenSync;
+    private javax.swing.JCheckBox jCheckBox_ThighLenSync;
+    private javax.swing.JCheckBox jCheckBox_ThighThickSync;
+    private javax.swing.JCheckBox jCheckBox_UpperarmLenSync;
+    private javax.swing.JCheckBox jCheckBox_UpperarmThickSync;
+    private javax.swing.JFormattedTextField jFormattedTextField_BellyRoundness;
+    private javax.swing.JFormattedTextField jFormattedTextField_BodyDepth;
+    private javax.swing.JFormattedTextField jFormattedTextField_BodyHeight;
+    private javax.swing.JFormattedTextField jFormattedTextField_BodyUniform;
+    private javax.swing.JFormattedTextField jFormattedTextField_BodyWidth;
+    private javax.swing.JFormattedTextField jFormattedTextField_CalvesLengthL;
+    private javax.swing.JFormattedTextField jFormattedTextField_CalvesLengthR;
+    private javax.swing.JFormattedTextField jFormattedTextField_CalvesThicknessL;
+    private javax.swing.JFormattedTextField jFormattedTextField_CalvesThicknessR;
+    private javax.swing.JFormattedTextField jFormattedTextField_ChestBroadness;
+    private javax.swing.JFormattedTextField jFormattedTextField_ChestBulk;
     private javax.swing.JFormattedTextField jFormattedTextField_EyePosDL;
-    private javax.swing.JFormattedTextField jFormattedTextField_EyePosDL1;
     private javax.swing.JFormattedTextField jFormattedTextField_EyePosDR;
     private javax.swing.JFormattedTextField jFormattedTextField_EyePosHL;
-    private javax.swing.JFormattedTextField jFormattedTextField_EyePosHL1;
     private javax.swing.JFormattedTextField jFormattedTextField_EyePosHR;
     private javax.swing.JFormattedTextField jFormattedTextField_EyePosVL;
-    private javax.swing.JFormattedTextField jFormattedTextField_EyePosVL1;
     private javax.swing.JFormattedTextField jFormattedTextField_EyePosVR;
+    private javax.swing.JFormattedTextField jFormattedTextField_FeetLengthL;
+    private javax.swing.JFormattedTextField jFormattedTextField_FeetLengthR;
+    private javax.swing.JFormattedTextField jFormattedTextField_FeetThicknessL;
+    private javax.swing.JFormattedTextField jFormattedTextField_FeetThicknessR;
+    private javax.swing.JFormattedTextField jFormattedTextField_FingerLengthL;
+    private javax.swing.JFormattedTextField jFormattedTextField_FingerLengthR;
+    private javax.swing.JFormattedTextField jFormattedTextField_ForearmLengthL;
+    private javax.swing.JFormattedTextField jFormattedTextField_ForearmLengthR;
+    private javax.swing.JFormattedTextField jFormattedTextField_ForearmThicknessL;
+    private javax.swing.JFormattedTextField jFormattedTextField_ForearmThicknessR;
+    private javax.swing.JFormattedTextField jFormattedTextField_GlutRoundness;
+    private javax.swing.JFormattedTextField jFormattedTextField_GlutSag;
+    private javax.swing.JFormattedTextField jFormattedTextField_HandThicknessL;
+    private javax.swing.JFormattedTextField jFormattedTextField_HandThicknessR;
+    private javax.swing.JFormattedTextField jFormattedTextField_HeadDepth;
+    private javax.swing.JFormattedTextField jFormattedTextField_HeadHeight;
+    private javax.swing.JFormattedTextField jFormattedTextField_HeadUniform;
+    private javax.swing.JFormattedTextField jFormattedTextField_HeadWidth;
+    private javax.swing.JFormattedTextField jFormattedTextField_LowerLip;
+    private javax.swing.JFormattedTextField jFormattedTextField_MouthWidth;
+    private javax.swing.JFormattedTextField jFormattedTextField_NoseLen;
+    private javax.swing.JFormattedTextField jFormattedTextField_NosePosH;
+    private javax.swing.JFormattedTextField jFormattedTextField_NoseWidth;
+    private javax.swing.JFormattedTextField jFormattedTextField_ThighLengthL;
+    private javax.swing.JFormattedTextField jFormattedTextField_ThighLengthR;
+    private javax.swing.JFormattedTextField jFormattedTextField_ThighThicknessL;
+    private javax.swing.JFormattedTextField jFormattedTextField_ThighThicknessR;
+    private javax.swing.JFormattedTextField jFormattedTextField_UpperArmLengthL;
+    private javax.swing.JFormattedTextField jFormattedTextField_UpperLip;
+    private javax.swing.JFormattedTextField jFormattedTextField_UpperarmLengthR;
+    private javax.swing.JFormattedTextField jFormattedTextField_UpperarmThicknessL;
+    private javax.swing.JFormattedTextField jFormattedTextField_UpperarmThicknessR;
+    private javax.swing.JFormattedTextField jFormattedTextField_Waistline;
     private javax.swing.JLabel jLabel_EyeUni;
-    private javax.swing.JLabel jLabel_EyeUni1;
     private javax.swing.JLabel jLabel_EyeX;
-    private javax.swing.JLabel jLabel_EyeX1;
     private javax.swing.JLabel jLabel_EyeY;
-    private javax.swing.JLabel jLabel_EyeY1;
     private javax.swing.JLabel jLabel_EyeZ;
-    private javax.swing.JLabel jLabel_EyeZ1;
+    private javax.swing.JLabel jLabel_MouthU;
+    private javax.swing.JLabel jLabel_MouthX;
+    private javax.swing.JLabel jLabel_MouthY;
+    private javax.swing.JLabel jLabel_MouthZ;
+    private javax.swing.JLabel jLabel_NoseU;
+    private javax.swing.JLabel jLabel_NoseX;
+    private javax.swing.JLabel jLabel_NoseY;
+    private javax.swing.JLabel jLabel_NoseZ;
     private javax.swing.JPanel jPanel_Abs;
-    private javax.swing.JPanel jPanel_Body;
+    private javax.swing.JPanel jPanel_BellyRoundness;
+    private javax.swing.JPanel jPanel_BodyDepth;
+    private javax.swing.JPanel jPanel_BodyHeight;
+    private javax.swing.JPanel jPanel_BodyUniform;
+    private javax.swing.JPanel jPanel_BodyWidth;
     private javax.swing.JPanel jPanel_Calves;
+    private javax.swing.JPanel jPanel_CalvesLength;
+    private javax.swing.JPanel jPanel_CalvesThickness;
     private javax.swing.JPanel jPanel_Chest;
+    private javax.swing.JPanel jPanel_ChestBroadness;
+    private javax.swing.JPanel jPanel_ChestBulk;
     private javax.swing.JPanel jPanel_EyePosD;
-    private javax.swing.JPanel jPanel_EyePosD1;
     private javax.swing.JPanel jPanel_EyePosH;
-    private javax.swing.JPanel jPanel_EyePosH1;
     private javax.swing.JPanel jPanel_EyePosV;
-    private javax.swing.JPanel jPanel_EyePosV1;
     private javax.swing.JPanel jPanel_EyeScaling;
-    private javax.swing.JPanel jPanel_EyeScaling1;
     private javax.swing.JPanel jPanel_Eyes;
     private javax.swing.JPanel jPanel_Feet;
+    private javax.swing.JPanel jPanel_FeetLength;
+    private javax.swing.JPanel jPanel_FeetThickness;
+    private javax.swing.JPanel jPanel_FingerLength;
+    private javax.swing.JPanel jPanel_ForearmLength;
+    private javax.swing.JPanel jPanel_ForearmThickness;
     private javax.swing.JPanel jPanel_Forearms;
+    private javax.swing.JPanel jPanel_GlutRoundness;
+    private javax.swing.JPanel jPanel_GlutSag;
     private javax.swing.JPanel jPanel_Gluts;
+    private javax.swing.JPanel jPanel_HandThickness;
     private javax.swing.JPanel jPanel_Hands;
-    private javax.swing.JPanel jPanel_LegsFeet;
+    private javax.swing.JPanel jPanel_HeadDepth;
+    private javax.swing.JPanel jPanel_HeadHeight;
+    private javax.swing.JPanel jPanel_HeadUniform;
+    private javax.swing.JPanel jPanel_HeadWidth;
+    private javax.swing.JPanel jPanel_LipsPos;
     private javax.swing.JPanel jPanel_MainArmsHands;
+    private javax.swing.JPanel jPanel_MainBody;
     private javax.swing.JPanel jPanel_MainHead;
+    private javax.swing.JPanel jPanel_MainLegsFeet;
     private javax.swing.JPanel jPanel_Mouth;
+    private javax.swing.JPanel jPanel_MouthScaling;
+    private javax.swing.JPanel jPanel_MouthWidth;
     private javax.swing.JPanel jPanel_Nose;
+    private javax.swing.JPanel jPanel_NoseLen;
+    private javax.swing.JPanel jPanel_NosePosH;
+    private javax.swing.JPanel jPanel_NoseScaling;
+    private javax.swing.JPanel jPanel_NoseWidth;
+    private javax.swing.JPanel jPanel_ThighLength;
+    private javax.swing.JPanel jPanel_ThighThickness;
     private javax.swing.JPanel jPanel_Thighs;
     private javax.swing.JPanel jPanel_UniformBody;
     private javax.swing.JPanel jPanel_UniformHead;
     private javax.swing.JPanel jPanel_UpperArms;
+    private javax.swing.JPanel jPanel_UpperarmLength;
+    private javax.swing.JPanel jPanel_UpperarmThickness;
+    private javax.swing.JPanel jPanel_Waistline;
+    private javax.swing.JSlider jSlider_BellyRoundness;
+    private javax.swing.JSlider jSlider_BodyDepth;
+    private javax.swing.JSlider jSlider_BodyHeight;
+    private javax.swing.JSlider jSlider_BodyUniform;
+    private javax.swing.JSlider jSlider_BodyWidth;
+    private javax.swing.JSlider jSlider_CalvesLengthL;
+    private javax.swing.JSlider jSlider_CalvesLengthR;
+    private javax.swing.JSlider jSlider_CalvesThicknessL;
+    private javax.swing.JSlider jSlider_CalvesThicknessR;
+    private javax.swing.JSlider jSlider_ChestBroadness;
+    private javax.swing.JSlider jSlider_ChestBulk;
     private javax.swing.JSlider jSlider_EyePosDL;
-    private javax.swing.JSlider jSlider_EyePosDL1;
     private javax.swing.JSlider jSlider_EyePosDR;
     private javax.swing.JSlider jSlider_EyePosHL;
-    private javax.swing.JSlider jSlider_EyePosHL1;
     private javax.swing.JSlider jSlider_EyePosHR;
     private javax.swing.JSlider jSlider_EyePosVL;
-    private javax.swing.JSlider jSlider_EyePosVL1;
     private javax.swing.JSlider jSlider_EyePosVR;
     private javax.swing.JSlider jSlider_EyeUni;
-    private javax.swing.JSlider jSlider_EyeUni1;
     private javax.swing.JSlider jSlider_EyeX;
-    private javax.swing.JSlider jSlider_EyeX1;
     private javax.swing.JSlider jSlider_EyeY;
-    private javax.swing.JSlider jSlider_EyeY1;
     private javax.swing.JSlider jSlider_EyeZ;
-    private javax.swing.JSlider jSlider_EyeZ1;
+    private javax.swing.JSlider jSlider_FeetLengthL;
+    private javax.swing.JSlider jSlider_FeetLengthR;
+    private javax.swing.JSlider jSlider_FeetThicknessL;
+    private javax.swing.JSlider jSlider_FeetThicknessR;
+    private javax.swing.JSlider jSlider_FingerLengthL;
+    private javax.swing.JSlider jSlider_FingerLengthR;
+    private javax.swing.JSlider jSlider_ForearmLengthL;
+    private javax.swing.JSlider jSlider_ForearmLengthR;
+    private javax.swing.JSlider jSlider_ForearmThicknessL;
+    private javax.swing.JSlider jSlider_ForearmThicknessR;
+    private javax.swing.JSlider jSlider_GlutRoundness;
+    private javax.swing.JSlider jSlider_GlutSag;
+    private javax.swing.JSlider jSlider_HandThicknessL;
+    private javax.swing.JSlider jSlider_HandThicknessR;
+    private javax.swing.JSlider jSlider_HeadDepth;
+    private javax.swing.JSlider jSlider_HeadHeight;
+    private javax.swing.JSlider jSlider_HeadUniform;
+    private javax.swing.JSlider jSlider_HeadWidth;
+    private javax.swing.JSlider jSlider_LowerLip;
+    private javax.swing.JSlider jSlider_MouthU;
+    private javax.swing.JSlider jSlider_MouthWidth;
+    private javax.swing.JSlider jSlider_MouthX;
+    private javax.swing.JSlider jSlider_MouthY;
+    private javax.swing.JSlider jSlider_MouthZ;
+    private javax.swing.JSlider jSlider_NoseLen;
+    private javax.swing.JSlider jSlider_NosePosH;
+    private javax.swing.JSlider jSlider_NoseU;
+    private javax.swing.JSlider jSlider_NoseWidth;
+    private javax.swing.JSlider jSlider_NoseX;
+    private javax.swing.JSlider jSlider_NoseY;
+    private javax.swing.JSlider jSlider_NoseZ;
+    private javax.swing.JSlider jSlider_ThighLengthL;
+    private javax.swing.JSlider jSlider_ThighLengthR;
+    private javax.swing.JSlider jSlider_ThighThicknessL;
+    private javax.swing.JSlider jSlider_ThighThicknessR;
+    private javax.swing.JSlider jSlider_UpperArmLengthL;
+    private javax.swing.JSlider jSlider_UpperLip;
+    private javax.swing.JSlider jSlider_UpperarmLengthR;
+    private javax.swing.JSlider jSlider_UpperarmThicknessL;
+    private javax.swing.JSlider jSlider_UpperarmThicknessR;
+    private javax.swing.JSlider jSlider_Waistline;
     private javax.swing.JTabbedPane jTabbedPane_ArmsHands;
     private javax.swing.JTabbedPane jTabbedPane_Body;
     private javax.swing.JTabbedPane jTabbedPane_Head;
