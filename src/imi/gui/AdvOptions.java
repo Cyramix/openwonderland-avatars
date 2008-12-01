@@ -52,21 +52,21 @@ public class AdvOptions extends javax.swing.JFrame {
         jPanel_EyePosH = new javax.swing.JPanel();
         jSlider_EyePosHL = new javax.swing.JSlider();
         jSlider_EyePosHR = new javax.swing.JSlider();
-        jFormattedTextField_EyePosHL = new javax.swing.JFormattedTextField();
-        jFormattedTextField_EyePosHR = new javax.swing.JFormattedTextField();
+        jSpinner_EyePosHL = new javax.swing.JSpinner();
+        jSpinner_EyePosHR = new javax.swing.JSpinner();
         jCheckBox_EyesHPosSync = new javax.swing.JCheckBox();
         jPanel_EyePosV = new javax.swing.JPanel();
         jSlider_EyePosVL = new javax.swing.JSlider();
         jSlider_EyePosVR = new javax.swing.JSlider();
-        jFormattedTextField_EyePosVL = new javax.swing.JFormattedTextField();
-        jFormattedTextField_EyePosVR = new javax.swing.JFormattedTextField();
+        jSpinner_EyePosVL = new javax.swing.JSpinner();
+        jSpinner_EyePosVR = new javax.swing.JSpinner();
         jCheckBox_EyeVPosSync = new javax.swing.JCheckBox();
         jPanel_EyePosD = new javax.swing.JPanel();
         jSlider_EyePosDL = new javax.swing.JSlider();
         jSlider_EyePosDR = new javax.swing.JSlider();
-        jFormattedTextField_EyePosDL = new javax.swing.JFormattedTextField();
-        jFormattedTextField_EyePosDR = new javax.swing.JFormattedTextField();
         jCheckBox_EyeDPosSync = new javax.swing.JCheckBox();
+        jSpinner_EyePosDL = new javax.swing.JSpinner();
+        jSpinner_EyePosDR = new javax.swing.JSpinner();
         jPanel_EyeScaling = new javax.swing.JPanel();
         jLabel_EyeX = new javax.swing.JLabel();
         jSlider_EyeX = new javax.swing.JSlider();
@@ -79,13 +79,13 @@ public class AdvOptions extends javax.swing.JFrame {
         jPanel_Nose = new javax.swing.JPanel();
         jPanel_NosePosH = new javax.swing.JPanel();
         jSlider_NosePosH = new javax.swing.JSlider();
-        jFormattedTextField_NosePosH = new javax.swing.JFormattedTextField();
+        jSpinner_NosePosH = new javax.swing.JSpinner();
         jPanel_NoseLen = new javax.swing.JPanel();
         jSlider_NoseLen = new javax.swing.JSlider();
-        jFormattedTextField_NoseLen = new javax.swing.JFormattedTextField();
+        jSpinner_NoseLen = new javax.swing.JSpinner();
         jPanel_NoseWidth = new javax.swing.JPanel();
         jSlider_NoseWidth = new javax.swing.JSlider();
-        jFormattedTextField_NoseWidth = new javax.swing.JFormattedTextField();
+        jSpinner_NoseWidth = new javax.swing.JSpinner();
         jPanel_NoseScaling = new javax.swing.JPanel();
         jLabel_NoseX = new javax.swing.JLabel();
         jSlider_NoseX = new javax.swing.JSlider();
@@ -98,12 +98,12 @@ public class AdvOptions extends javax.swing.JFrame {
         jPanel_Mouth = new javax.swing.JPanel();
         jPanel_LipsPos = new javax.swing.JPanel();
         jSlider_UpperLip = new javax.swing.JSlider();
-        jFormattedTextField_UpperLip = new javax.swing.JFormattedTextField();
         jSlider_LowerLip = new javax.swing.JSlider();
-        jFormattedTextField_LowerLip = new javax.swing.JFormattedTextField();
+        jSpinner_UpperLip = new javax.swing.JSpinner();
+        jSpinner_LowerLip = new javax.swing.JSpinner();
         jPanel_MouthWidth = new javax.swing.JPanel();
         jSlider_MouthWidth = new javax.swing.JSlider();
-        jFormattedTextField_MouthWidth = new javax.swing.JFormattedTextField();
+        jSpinner_MouthWidth = new javax.swing.JSpinner();
         jPanel_MouthScaling = new javax.swing.JPanel();
         jLabel_MouthX = new javax.swing.JLabel();
         jSlider_MouthX = new javax.swing.JSlider();
@@ -116,134 +116,134 @@ public class AdvOptions extends javax.swing.JFrame {
         jPanel_UniformHead = new javax.swing.JPanel();
         jPanel_HeadWidth = new javax.swing.JPanel();
         jSlider_HeadWidth = new javax.swing.JSlider();
-        jFormattedTextField_HeadWidth = new javax.swing.JFormattedTextField();
+        jSpinner_HeadWidth = new javax.swing.JSpinner();
         jPanel_HeadHeight = new javax.swing.JPanel();
         jSlider_HeadHeight = new javax.swing.JSlider();
-        jFormattedTextField_HeadHeight = new javax.swing.JFormattedTextField();
+        jSpinner_HeadHeight = new javax.swing.JSpinner();
         jPanel_HeadDepth = new javax.swing.JPanel();
         jSlider_HeadDepth = new javax.swing.JSlider();
-        jFormattedTextField_HeadDepth = new javax.swing.JFormattedTextField();
+        jSpinner_HeadDepth = new javax.swing.JSpinner();
         jPanel_HeadUniform = new javax.swing.JPanel();
         jSlider_HeadUniform = new javax.swing.JSlider();
-        jFormattedTextField_HeadUniform = new javax.swing.JFormattedTextField();
+        jSpinner_HeadUniform = new javax.swing.JSpinner();
         jPanel_MainArmsHands = new javax.swing.JPanel();
         jTabbedPane_ArmsHands = new javax.swing.JTabbedPane();
         jPanel_Hands = new javax.swing.JPanel();
         jPanel_FingerLength = new javax.swing.JPanel();
         jSlider_FingerLengthR = new javax.swing.JSlider();
-        jFormattedTextField_FingerLengthR = new javax.swing.JFormattedTextField();
         jSlider_FingerLengthL = new javax.swing.JSlider();
-        jFormattedTextField_FingerLengthL = new javax.swing.JFormattedTextField();
         jCheckBox_HandsLenSync = new javax.swing.JCheckBox();
+        jSpinner_FingerLengthR = new javax.swing.JSpinner();
+        jSpinner_FingerLengthL = new javax.swing.JSpinner();
         jPanel_HandThickness = new javax.swing.JPanel();
         jSlider_HandThicknessR = new javax.swing.JSlider();
-        jFormattedTextField_HandThicknessR = new javax.swing.JFormattedTextField();
         jSlider_HandThicknessL = new javax.swing.JSlider();
-        jFormattedTextField_HandThicknessL = new javax.swing.JFormattedTextField();
         jCheckBox_HandThickSync = new javax.swing.JCheckBox();
+        jSpinner_HandThicknessL = new javax.swing.JSpinner();
+        jSpinner_HandThicknessR = new javax.swing.JSpinner();
         jPanel_Forearms = new javax.swing.JPanel();
         jPanel_ForearmLength = new javax.swing.JPanel();
         jSlider_ForearmLengthR = new javax.swing.JSlider();
-        jFormattedTextField_ForearmLengthR = new javax.swing.JFormattedTextField();
         jSlider_ForearmLengthL = new javax.swing.JSlider();
-        jFormattedTextField_ForearmLengthL = new javax.swing.JFormattedTextField();
         jCheckBox_ForearmLenSync = new javax.swing.JCheckBox();
+        jSpinner_ForearmLengthL = new javax.swing.JSpinner();
+        jSpinner_ForearmLengthR = new javax.swing.JSpinner();
         jPanel_ForearmThickness = new javax.swing.JPanel();
         jSlider_ForearmThicknessR = new javax.swing.JSlider();
-        jFormattedTextField_ForearmThicknessR = new javax.swing.JFormattedTextField();
         jSlider_ForearmThicknessL = new javax.swing.JSlider();
-        jFormattedTextField_ForearmThicknessL = new javax.swing.JFormattedTextField();
         jCheckBox_ForearmThickSync = new javax.swing.JCheckBox();
+        jSpinner_ForearmThicknessL = new javax.swing.JSpinner();
+        jSpinner_ForearmThicknessR = new javax.swing.JSpinner();
         jPanel_UpperArms = new javax.swing.JPanel();
         jPanel_UpperarmLength = new javax.swing.JPanel();
         jSlider_UpperarmLengthR = new javax.swing.JSlider();
-        jFormattedTextField_UpperarmLengthR = new javax.swing.JFormattedTextField();
         jSlider_UpperArmLengthL = new javax.swing.JSlider();
-        jFormattedTextField_UpperArmLengthL = new javax.swing.JFormattedTextField();
         jCheckBox_UpperarmLenSync = new javax.swing.JCheckBox();
+        jSpinner_UpperarmLengthL = new javax.swing.JSpinner();
+        jSpinner_UpperarmLengthR = new javax.swing.JSpinner();
         jPanel_UpperarmThickness = new javax.swing.JPanel();
         jSlider_UpperarmThicknessR = new javax.swing.JSlider();
-        jFormattedTextField_UpperarmThicknessR = new javax.swing.JFormattedTextField();
         jSlider_UpperarmThicknessL = new javax.swing.JSlider();
-        jFormattedTextField_UpperarmThicknessL = new javax.swing.JFormattedTextField();
         jCheckBox_UpperarmThickSync = new javax.swing.JCheckBox();
+        jSpinner_UpperarmThicknessL = new javax.swing.JSpinner();
+        jSpinner_UpperarmThicknessR = new javax.swing.JSpinner();
         jPanel_MainLegsFeet = new javax.swing.JPanel();
         jTabbedPane_LegsFeet = new javax.swing.JTabbedPane();
         jPanel_Feet = new javax.swing.JPanel();
         jPanel_FeetLength = new javax.swing.JPanel();
         jSlider_FeetLengthR = new javax.swing.JSlider();
-        jFormattedTextField_FeetLengthR = new javax.swing.JFormattedTextField();
         jSlider_FeetLengthL = new javax.swing.JSlider();
-        jFormattedTextField_FeetLengthL = new javax.swing.JFormattedTextField();
         jCheckBox_FeetLenSync = new javax.swing.JCheckBox();
+        jSpinner_FeetLengthL = new javax.swing.JSpinner();
+        jSpinner_FeetLengthR = new javax.swing.JSpinner();
         jPanel_FeetThickness = new javax.swing.JPanel();
         jSlider_FeetThicknessR = new javax.swing.JSlider();
-        jFormattedTextField_FeetThicknessR = new javax.swing.JFormattedTextField();
         jSlider_FeetThicknessL = new javax.swing.JSlider();
-        jFormattedTextField_FeetThicknessL = new javax.swing.JFormattedTextField();
         jCheckBox_FeetThickSync = new javax.swing.JCheckBox();
+        jSpinner_FeetThicknessL = new javax.swing.JSpinner();
+        jSpinner_FeetThicknessR = new javax.swing.JSpinner();
         jPanel_Calves = new javax.swing.JPanel();
         jPanel_CalvesLength = new javax.swing.JPanel();
         jSlider_CalvesLengthR = new javax.swing.JSlider();
-        jFormattedTextField_CalvesLengthR = new javax.swing.JFormattedTextField();
         jSlider_CalvesLengthL = new javax.swing.JSlider();
-        jFormattedTextField_CalvesLengthL = new javax.swing.JFormattedTextField();
         jCheckBox_CalvesLenSync = new javax.swing.JCheckBox();
+        jSpinner_CalvesLengthL = new javax.swing.JSpinner();
+        jSpinner_CalvesLengthR = new javax.swing.JSpinner();
         jPanel_CalvesThickness = new javax.swing.JPanel();
         jSlider_CalvesThicknessR = new javax.swing.JSlider();
-        jFormattedTextField_CalvesThicknessR = new javax.swing.JFormattedTextField();
         jSlider_CalvesThicknessL = new javax.swing.JSlider();
-        jFormattedTextField_CalvesThicknessL = new javax.swing.JFormattedTextField();
         jCheckBox_CalvesThickSync = new javax.swing.JCheckBox();
+        jSpinner_CalvesThicknessL = new javax.swing.JSpinner();
+        jSpinner_CalvesThicknessR = new javax.swing.JSpinner();
         jPanel_Thighs = new javax.swing.JPanel();
         jPanel_ThighLength = new javax.swing.JPanel();
         jSlider_ThighLengthR = new javax.swing.JSlider();
-        jFormattedTextField_ThighLengthR = new javax.swing.JFormattedTextField();
         jSlider_ThighLengthL = new javax.swing.JSlider();
-        jFormattedTextField_ThighLengthL = new javax.swing.JFormattedTextField();
         jCheckBox_ThighLenSync = new javax.swing.JCheckBox();
+        jSpinner_ThighLengthL = new javax.swing.JSpinner();
+        jSpinner_ThighLengthR = new javax.swing.JSpinner();
         jPanel_ThighThickness = new javax.swing.JPanel();
         jSlider_ThighThicknessR = new javax.swing.JSlider();
-        jFormattedTextField_ThighThicknessR = new javax.swing.JFormattedTextField();
         jSlider_ThighThicknessL = new javax.swing.JSlider();
-        jFormattedTextField_ThighThicknessL = new javax.swing.JFormattedTextField();
         jCheckBox_ThighThickSync = new javax.swing.JCheckBox();
+        jSpinner_ThighThicknessL = new javax.swing.JSpinner();
+        jSpinner_ThighThicknessR = new javax.swing.JSpinner();
         jPanel_MainBody = new javax.swing.JPanel();
         jTabbedPane_Body = new javax.swing.JTabbedPane();
         jPanel_Chest = new javax.swing.JPanel();
         jPanel_ChestBulk = new javax.swing.JPanel();
         jSlider_ChestBulk = new javax.swing.JSlider();
-        jFormattedTextField_ChestBulk = new javax.swing.JFormattedTextField();
+        jSpinner_ChestBulk = new javax.swing.JSpinner();
         jPanel_ChestBroadness = new javax.swing.JPanel();
         jSlider_ChestBroadness = new javax.swing.JSlider();
-        jFormattedTextField_ChestBroadness = new javax.swing.JFormattedTextField();
+        jSpinner_ChestBroadness = new javax.swing.JSpinner();
         jPanel_Abs = new javax.swing.JPanel();
         jPanel_BellyRoundness = new javax.swing.JPanel();
         jSlider_BellyRoundness = new javax.swing.JSlider();
-        jFormattedTextField_BellyRoundness = new javax.swing.JFormattedTextField();
+        jSpinner_BellyRoundness = new javax.swing.JSpinner();
         jPanel_Waistline = new javax.swing.JPanel();
         jSlider_Waistline = new javax.swing.JSlider();
-        jFormattedTextField_Waistline = new javax.swing.JFormattedTextField();
+        jSpinner_Waistline = new javax.swing.JSpinner();
         jPanel_Gluts = new javax.swing.JPanel();
         jPanel_GlutRoundness = new javax.swing.JPanel();
         jSlider_GlutRoundness = new javax.swing.JSlider();
-        jFormattedTextField_GlutRoundness = new javax.swing.JFormattedTextField();
+        jSpinner_GlutRoundness = new javax.swing.JSpinner();
         jPanel_GlutSag = new javax.swing.JPanel();
         jSlider_GlutSag = new javax.swing.JSlider();
-        jFormattedTextField_GlutSag = new javax.swing.JFormattedTextField();
+        jSpinner_GlutSag = new javax.swing.JSpinner();
         jPanel_UniformBody = new javax.swing.JPanel();
         jPanel_BodyWidth = new javax.swing.JPanel();
         jSlider_BodyWidth = new javax.swing.JSlider();
-        jFormattedTextField_BodyWidth = new javax.swing.JFormattedTextField();
+        jSpinner1 = new javax.swing.JSpinner();
         jPanel_BodyHeight = new javax.swing.JPanel();
         jSlider_BodyHeight = new javax.swing.JSlider();
-        jFormattedTextField_BodyHeight = new javax.swing.JFormattedTextField();
+        jSpinner2 = new javax.swing.JSpinner();
         jPanel_BodyDepth = new javax.swing.JPanel();
         jSlider_BodyDepth = new javax.swing.JSlider();
-        jFormattedTextField_BodyDepth = new javax.swing.JFormattedTextField();
+        jSpinner3 = new javax.swing.JSpinner();
         jPanel_BodyUniform = new javax.swing.JPanel();
         jSlider_BodyUniform = new javax.swing.JSlider();
-        jFormattedTextField_BodyUniform = new javax.swing.JFormattedTextField();
+        jSpinner4 = new javax.swing.JSpinner();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         getContentPane().setLayout(new java.awt.GridBagLayout());
@@ -281,21 +281,19 @@ public class AdvOptions extends javax.swing.JFrame {
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         jPanel_EyePosH.add(jSlider_EyePosHR, gridBagConstraints);
 
-        jFormattedTextField_EyePosHL.setText("jFormattedTextField1");
-        jFormattedTextField_EyePosHL.setMinimumSize(new java.awt.Dimension(75, 28));
-        jFormattedTextField_EyePosHL.setPreferredSize(new java.awt.Dimension(75, 28));
+        jSpinner_EyePosHL.setMinimumSize(new java.awt.Dimension(75, 28));
+        jSpinner_EyePosHL.setPreferredSize(new java.awt.Dimension(75, 28));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
-        jPanel_EyePosH.add(jFormattedTextField_EyePosHL, gridBagConstraints);
+        jPanel_EyePosH.add(jSpinner_EyePosHL, gridBagConstraints);
 
-        jFormattedTextField_EyePosHR.setText("jFormattedTextField1");
-        jFormattedTextField_EyePosHR.setMinimumSize(new java.awt.Dimension(75, 28));
-        jFormattedTextField_EyePosHR.setPreferredSize(new java.awt.Dimension(75, 28));
+        jSpinner_EyePosHR.setMinimumSize(new java.awt.Dimension(75, 28));
+        jSpinner_EyePosHR.setPreferredSize(new java.awt.Dimension(75, 28));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 1;
-        jPanel_EyePosH.add(jFormattedTextField_EyePosHR, gridBagConstraints);
+        jPanel_EyePosH.add(jSpinner_EyePosHR, gridBagConstraints);
 
         jCheckBox_EyesHPosSync.setText("Sync");
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -332,23 +330,19 @@ public class AdvOptions extends javax.swing.JFrame {
         gridBagConstraints.fill = java.awt.GridBagConstraints.VERTICAL;
         jPanel_EyePosV.add(jSlider_EyePosVR, gridBagConstraints);
 
-        jFormattedTextField_EyePosVL.setText("jFormattedTextField1");
-        jFormattedTextField_EyePosVL.setMinimumSize(new java.awt.Dimension(75, 28));
-        jFormattedTextField_EyePosVL.setPreferredSize(new java.awt.Dimension(75, 28));
+        jSpinner_EyePosVL.setMinimumSize(new java.awt.Dimension(75, 28));
+        jSpinner_EyePosVL.setPreferredSize(new java.awt.Dimension(75, 28));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        jPanel_EyePosV.add(jFormattedTextField_EyePosVL, gridBagConstraints);
+        jPanel_EyePosV.add(jSpinner_EyePosVL, gridBagConstraints);
 
-        jFormattedTextField_EyePosVR.setText("jFormattedTextField1");
-        jFormattedTextField_EyePosVR.setMinimumSize(new java.awt.Dimension(75, 28));
-        jFormattedTextField_EyePosVR.setPreferredSize(new java.awt.Dimension(75, 28));
+        jSpinner_EyePosVR.setMinimumSize(new java.awt.Dimension(75, 28));
+        jSpinner_EyePosVR.setPreferredSize(new java.awt.Dimension(75, 28));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 1;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        jPanel_EyePosV.add(jFormattedTextField_EyePosVR, gridBagConstraints);
+        jPanel_EyePosV.add(jSpinner_EyePosVR, gridBagConstraints);
 
         jCheckBox_EyeVPosSync.setText("Sync");
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -380,28 +374,26 @@ public class AdvOptions extends javax.swing.JFrame {
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         jPanel_EyePosD.add(jSlider_EyePosDR, gridBagConstraints);
 
-        jFormattedTextField_EyePosDL.setText("jFormattedTextField1");
-        jFormattedTextField_EyePosDL.setMinimumSize(new java.awt.Dimension(75, 28));
-        jFormattedTextField_EyePosDL.setPreferredSize(new java.awt.Dimension(75, 28));
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 1;
-        jPanel_EyePosD.add(jFormattedTextField_EyePosDL, gridBagConstraints);
-
-        jFormattedTextField_EyePosDR.setText("jFormattedTextField1");
-        jFormattedTextField_EyePosDR.setMinimumSize(new java.awt.Dimension(75, 28));
-        jFormattedTextField_EyePosDR.setPreferredSize(new java.awt.Dimension(75, 28));
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 1;
-        jPanel_EyePosD.add(jFormattedTextField_EyePosDR, gridBagConstraints);
-
         jCheckBox_EyeDPosSync.setText("Sync");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 2;
         gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
         jPanel_EyePosD.add(jCheckBox_EyeDPosSync, gridBagConstraints);
+
+        jSpinner_EyePosDL.setMinimumSize(new java.awt.Dimension(75, 28));
+        jSpinner_EyePosDL.setPreferredSize(new java.awt.Dimension(75, 28));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        jPanel_EyePosD.add(jSpinner_EyePosDL, gridBagConstraints);
+
+        jSpinner_EyePosDR.setMinimumSize(new java.awt.Dimension(75, 28));
+        jSpinner_EyePosDR.setPreferredSize(new java.awt.Dimension(75, 28));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 1;
+        jPanel_EyePosD.add(jSpinner_EyePosDR, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -475,15 +467,12 @@ public class AdvOptions extends javax.swing.JFrame {
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         jPanel_NosePosH.add(jSlider_NosePosH, gridBagConstraints);
 
-        jFormattedTextField_NosePosH.setText("jFormattedTextField1");
-        jFormattedTextField_NosePosH.setMinimumSize(new java.awt.Dimension(75, 28));
-        jFormattedTextField_NosePosH.setPreferredSize(new java.awt.Dimension(75, 28));
+        jSpinner_NosePosH.setMinimumSize(new java.awt.Dimension(75, 28));
+        jSpinner_NosePosH.setPreferredSize(new java.awt.Dimension(75, 28));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
-        gridBagConstraints.gridwidth = java.awt.GridBagConstraints.RELATIVE;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        jPanel_NosePosH.add(jFormattedTextField_NosePosH, gridBagConstraints);
+        jPanel_NosePosH.add(jSpinner_NosePosH, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -505,14 +494,12 @@ public class AdvOptions extends javax.swing.JFrame {
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         jPanel_NoseLen.add(jSlider_NoseLen, gridBagConstraints);
 
-        jFormattedTextField_NoseLen.setText("jFormattedTextField1");
-        jFormattedTextField_NoseLen.setMinimumSize(new java.awt.Dimension(75, 28));
-        jFormattedTextField_NoseLen.setPreferredSize(new java.awt.Dimension(75, 28));
+        jSpinner_NoseLen.setMinimumSize(new java.awt.Dimension(75, 28));
+        jSpinner_NoseLen.setPreferredSize(new java.awt.Dimension(75, 28));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
-        gridBagConstraints.gridwidth = java.awt.GridBagConstraints.RELATIVE;
-        jPanel_NoseLen.add(jFormattedTextField_NoseLen, gridBagConstraints);
+        jPanel_NoseLen.add(jSpinner_NoseLen, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -534,14 +521,12 @@ public class AdvOptions extends javax.swing.JFrame {
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         jPanel_NoseWidth.add(jSlider_NoseWidth, gridBagConstraints);
 
-        jFormattedTextField_NoseWidth.setText("jFormattedTextField1");
-        jFormattedTextField_NoseWidth.setMinimumSize(new java.awt.Dimension(75, 28));
-        jFormattedTextField_NoseWidth.setPreferredSize(new java.awt.Dimension(75, 28));
+        jSpinner_NoseWidth.setMinimumSize(new java.awt.Dimension(75, 28));
+        jSpinner_NoseWidth.setPreferredSize(new java.awt.Dimension(75, 28));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
-        gridBagConstraints.gridwidth = java.awt.GridBagConstraints.RELATIVE;
-        jPanel_NoseWidth.add(jFormattedTextField_NoseWidth, gridBagConstraints);
+        jPanel_NoseWidth.add(jSpinner_NoseWidth, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -619,26 +604,24 @@ public class AdvOptions extends javax.swing.JFrame {
         jSlider_UpperLip.setPreferredSize(new java.awt.Dimension(29, 100));
         jPanel_LipsPos.add(jSlider_UpperLip, new java.awt.GridBagConstraints());
 
-        jFormattedTextField_UpperLip.setText("jFormattedTextField1");
-        jFormattedTextField_UpperLip.setMinimumSize(new java.awt.Dimension(75, 28));
-        jFormattedTextField_UpperLip.setPreferredSize(new java.awt.Dimension(75, 28));
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 1;
-        jPanel_LipsPos.add(jFormattedTextField_UpperLip, gridBagConstraints);
-
         jSlider_LowerLip.setOrientation(javax.swing.JSlider.VERTICAL);
         jSlider_LowerLip.setMinimumSize(new java.awt.Dimension(29, 100));
         jSlider_LowerLip.setPreferredSize(new java.awt.Dimension(29, 100));
         jPanel_LipsPos.add(jSlider_LowerLip, new java.awt.GridBagConstraints());
 
-        jFormattedTextField_LowerLip.setText("jFormattedTextField2");
-        jFormattedTextField_LowerLip.setMinimumSize(new java.awt.Dimension(75, 28));
-        jFormattedTextField_LowerLip.setPreferredSize(new java.awt.Dimension(75, 28));
+        jSpinner_UpperLip.setMinimumSize(new java.awt.Dimension(75, 28));
+        jSpinner_UpperLip.setPreferredSize(new java.awt.Dimension(75, 28));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        jPanel_LipsPos.add(jSpinner_UpperLip, gridBagConstraints);
+
+        jSpinner_LowerLip.setMinimumSize(new java.awt.Dimension(75, 28));
+        jSpinner_LowerLip.setPreferredSize(new java.awt.Dimension(75, 28));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 1;
-        jPanel_LipsPos.add(jFormattedTextField_LowerLip, gridBagConstraints);
+        jPanel_LipsPos.add(jSpinner_LowerLip, gridBagConstraints);
 
         jPanel_Mouth.add(jPanel_LipsPos, new java.awt.GridBagConstraints());
 
@@ -648,13 +631,12 @@ public class AdvOptions extends javax.swing.JFrame {
         jPanel_MouthWidth.setLayout(new java.awt.GridBagLayout());
         jPanel_MouthWidth.add(jSlider_MouthWidth, new java.awt.GridBagConstraints());
 
-        jFormattedTextField_MouthWidth.setText("jFormattedTextField1");
-        jFormattedTextField_MouthWidth.setMinimumSize(new java.awt.Dimension(75, 28));
-        jFormattedTextField_MouthWidth.setPreferredSize(new java.awt.Dimension(75, 28));
+        jSpinner_MouthWidth.setMinimumSize(new java.awt.Dimension(75, 28));
+        jSpinner_MouthWidth.setPreferredSize(new java.awt.Dimension(75, 28));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
-        jPanel_MouthWidth.add(jFormattedTextField_MouthWidth, gridBagConstraints);
+        jPanel_MouthWidth.add(jSpinner_MouthWidth, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -726,13 +708,12 @@ public class AdvOptions extends javax.swing.JFrame {
         jPanel_HeadWidth.setLayout(new java.awt.GridBagLayout());
         jPanel_HeadWidth.add(jSlider_HeadWidth, new java.awt.GridBagConstraints());
 
-        jFormattedTextField_HeadWidth.setText("jFormattedTextField1");
-        jFormattedTextField_HeadWidth.setMinimumSize(new java.awt.Dimension(75, 28));
-        jFormattedTextField_HeadWidth.setPreferredSize(new java.awt.Dimension(75, 28));
+        jSpinner_HeadWidth.setMinimumSize(new java.awt.Dimension(75, 28));
+        jSpinner_HeadWidth.setPreferredSize(new java.awt.Dimension(75, 28));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
-        jPanel_HeadWidth.add(jFormattedTextField_HeadWidth, gridBagConstraints);
+        jPanel_HeadWidth.add(jSpinner_HeadWidth, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
@@ -748,13 +729,12 @@ public class AdvOptions extends javax.swing.JFrame {
         jSlider_HeadHeight.setPreferredSize(new java.awt.Dimension(29, 100));
         jPanel_HeadHeight.add(jSlider_HeadHeight, new java.awt.GridBagConstraints());
 
-        jFormattedTextField_HeadHeight.setText("jFormattedTextField2");
-        jFormattedTextField_HeadHeight.setMinimumSize(new java.awt.Dimension(75, 28));
-        jFormattedTextField_HeadHeight.setPreferredSize(new java.awt.Dimension(75, 28));
+        jSpinner_HeadHeight.setMinimumSize(new java.awt.Dimension(75, 28));
+        jSpinner_HeadHeight.setPreferredSize(new java.awt.Dimension(75, 28));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
-        jPanel_HeadHeight.add(jFormattedTextField_HeadHeight, gridBagConstraints);
+        jPanel_HeadHeight.add(jSpinner_HeadHeight, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -768,13 +748,12 @@ public class AdvOptions extends javax.swing.JFrame {
         jPanel_HeadDepth.setLayout(new java.awt.GridBagLayout());
         jPanel_HeadDepth.add(jSlider_HeadDepth, new java.awt.GridBagConstraints());
 
-        jFormattedTextField_HeadDepth.setText("jFormattedTextField3");
-        jFormattedTextField_HeadDepth.setMinimumSize(new java.awt.Dimension(75, 28));
-        jFormattedTextField_HeadDepth.setPreferredSize(new java.awt.Dimension(75, 28));
+        jSpinner_HeadDepth.setMinimumSize(new java.awt.Dimension(75, 28));
+        jSpinner_HeadDepth.setPreferredSize(new java.awt.Dimension(75, 28));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
-        jPanel_HeadDepth.add(jFormattedTextField_HeadDepth, gridBagConstraints);
+        jPanel_HeadDepth.add(jSpinner_HeadDepth, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -788,13 +767,12 @@ public class AdvOptions extends javax.swing.JFrame {
         jPanel_HeadUniform.setLayout(new java.awt.GridBagLayout());
         jPanel_HeadUniform.add(jSlider_HeadUniform, new java.awt.GridBagConstraints());
 
-        jFormattedTextField_HeadUniform.setText("jFormattedTextField1");
-        jFormattedTextField_HeadUniform.setMinimumSize(new java.awt.Dimension(75, 28));
-        jFormattedTextField_HeadUniform.setPreferredSize(new java.awt.Dimension(75, 28));
+        jSpinner_HeadUniform.setMinimumSize(new java.awt.Dimension(75, 28));
+        jSpinner_HeadUniform.setPreferredSize(new java.awt.Dimension(75, 28));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
-        jPanel_HeadUniform.add(jFormattedTextField_HeadUniform, gridBagConstraints);
+        jPanel_HeadUniform.add(jSpinner_HeadUniform, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -831,14 +809,6 @@ public class AdvOptions extends javax.swing.JFrame {
         gridBagConstraints.gridy = 0;
         jPanel_FingerLength.add(jSlider_FingerLengthR, gridBagConstraints);
 
-        jFormattedTextField_FingerLengthR.setText("jFormattedTextField1");
-        jFormattedTextField_FingerLengthR.setMinimumSize(new java.awt.Dimension(75, 28));
-        jFormattedTextField_FingerLengthR.setPreferredSize(new java.awt.Dimension(75, 28));
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 1;
-        jPanel_FingerLength.add(jFormattedTextField_FingerLengthR, gridBagConstraints);
-
         jSlider_FingerLengthL.setOrientation(javax.swing.JSlider.VERTICAL);
         jSlider_FingerLengthL.setMinimumSize(new java.awt.Dimension(29, 100));
         jSlider_FingerLengthL.setPreferredSize(new java.awt.Dimension(29, 100));
@@ -847,20 +817,26 @@ public class AdvOptions extends javax.swing.JFrame {
         gridBagConstraints.gridy = 0;
         jPanel_FingerLength.add(jSlider_FingerLengthL, gridBagConstraints);
 
-        jFormattedTextField_FingerLengthL.setText("jFormattedTextField2");
-        jFormattedTextField_FingerLengthL.setMinimumSize(new java.awt.Dimension(75, 28));
-        jFormattedTextField_FingerLengthL.setPreferredSize(new java.awt.Dimension(75, 28));
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 1;
-        jPanel_FingerLength.add(jFormattedTextField_FingerLengthL, gridBagConstraints);
-
         jCheckBox_HandsLenSync.setText("Sync");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 2;
         gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
         jPanel_FingerLength.add(jCheckBox_HandsLenSync, gridBagConstraints);
+
+        jSpinner_FingerLengthR.setMinimumSize(new java.awt.Dimension(75, 28));
+        jSpinner_FingerLengthR.setPreferredSize(new java.awt.Dimension(75, 28));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 1;
+        jPanel_FingerLength.add(jSpinner_FingerLengthR, gridBagConstraints);
+
+        jSpinner_FingerLengthL.setMinimumSize(new java.awt.Dimension(75, 28));
+        jSpinner_FingerLengthL.setPreferredSize(new java.awt.Dimension(75, 28));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        jPanel_FingerLength.add(jSpinner_FingerLengthL, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
@@ -878,14 +854,6 @@ public class AdvOptions extends javax.swing.JFrame {
         gridBagConstraints.gridy = 0;
         jPanel_HandThickness.add(jSlider_HandThicknessR, gridBagConstraints);
 
-        jFormattedTextField_HandThicknessR.setText("jFormattedTextField1");
-        jFormattedTextField_HandThicknessR.setMinimumSize(new java.awt.Dimension(75, 28));
-        jFormattedTextField_HandThicknessR.setPreferredSize(new java.awt.Dimension(75, 28));
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 1;
-        jPanel_HandThickness.add(jFormattedTextField_HandThicknessR, gridBagConstraints);
-
         jSlider_HandThicknessL.setMinimumSize(new java.awt.Dimension(100, 29));
         jSlider_HandThicknessL.setPreferredSize(new java.awt.Dimension(100, 29));
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -893,20 +861,26 @@ public class AdvOptions extends javax.swing.JFrame {
         gridBagConstraints.gridy = 0;
         jPanel_HandThickness.add(jSlider_HandThicknessL, gridBagConstraints);
 
-        jFormattedTextField_HandThicknessL.setText("jFormattedTextField2");
-        jFormattedTextField_HandThicknessL.setMinimumSize(new java.awt.Dimension(75, 28));
-        jFormattedTextField_HandThicknessL.setPreferredSize(new java.awt.Dimension(75, 28));
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 1;
-        jPanel_HandThickness.add(jFormattedTextField_HandThicknessL, gridBagConstraints);
-
         jCheckBox_HandThickSync.setText("Sync");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 2;
         gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
         jPanel_HandThickness.add(jCheckBox_HandThickSync, gridBagConstraints);
+
+        jSpinner_HandThicknessL.setMinimumSize(new java.awt.Dimension(75, 28));
+        jSpinner_HandThicknessL.setPreferredSize(new java.awt.Dimension(75, 28));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        jPanel_HandThickness.add(jSpinner_HandThicknessL, gridBagConstraints);
+
+        jSpinner_HandThicknessR.setMinimumSize(new java.awt.Dimension(75, 28));
+        jSpinner_HandThicknessR.setPreferredSize(new java.awt.Dimension(75, 28));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 1;
+        jPanel_HandThickness.add(jSpinner_HandThicknessR, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -931,14 +905,6 @@ public class AdvOptions extends javax.swing.JFrame {
         gridBagConstraints.gridy = 0;
         jPanel_ForearmLength.add(jSlider_ForearmLengthR, gridBagConstraints);
 
-        jFormattedTextField_ForearmLengthR.setText("jFormattedTextField1");
-        jFormattedTextField_ForearmLengthR.setMinimumSize(new java.awt.Dimension(75, 28));
-        jFormattedTextField_ForearmLengthR.setPreferredSize(new java.awt.Dimension(75, 28));
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 1;
-        jPanel_ForearmLength.add(jFormattedTextField_ForearmLengthR, gridBagConstraints);
-
         jSlider_ForearmLengthL.setOrientation(javax.swing.JSlider.VERTICAL);
         jSlider_ForearmLengthL.setMinimumSize(new java.awt.Dimension(29, 100));
         jSlider_ForearmLengthL.setPreferredSize(new java.awt.Dimension(29, 100));
@@ -947,20 +913,26 @@ public class AdvOptions extends javax.swing.JFrame {
         gridBagConstraints.gridy = 0;
         jPanel_ForearmLength.add(jSlider_ForearmLengthL, gridBagConstraints);
 
-        jFormattedTextField_ForearmLengthL.setText("jFormattedTextField2");
-        jFormattedTextField_ForearmLengthL.setMinimumSize(new java.awt.Dimension(75, 28));
-        jFormattedTextField_ForearmLengthL.setPreferredSize(new java.awt.Dimension(75, 28));
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 1;
-        jPanel_ForearmLength.add(jFormattedTextField_ForearmLengthL, gridBagConstraints);
-
         jCheckBox_ForearmLenSync.setText("Sync");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 2;
         gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
         jPanel_ForearmLength.add(jCheckBox_ForearmLenSync, gridBagConstraints);
+
+        jSpinner_ForearmLengthL.setMinimumSize(new java.awt.Dimension(75, 28));
+        jSpinner_ForearmLengthL.setPreferredSize(new java.awt.Dimension(75, 28));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        jPanel_ForearmLength.add(jSpinner_ForearmLengthL, gridBagConstraints);
+
+        jSpinner_ForearmLengthR.setMinimumSize(new java.awt.Dimension(75, 28));
+        jSpinner_ForearmLengthR.setPreferredSize(new java.awt.Dimension(75, 28));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 1;
+        jPanel_ForearmLength.add(jSpinner_ForearmLengthR, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
@@ -978,14 +950,6 @@ public class AdvOptions extends javax.swing.JFrame {
         gridBagConstraints.gridy = 0;
         jPanel_ForearmThickness.add(jSlider_ForearmThicknessR, gridBagConstraints);
 
-        jFormattedTextField_ForearmThicknessR.setText("jFormattedTextField1");
-        jFormattedTextField_ForearmThicknessR.setMinimumSize(new java.awt.Dimension(75, 28));
-        jFormattedTextField_ForearmThicknessR.setPreferredSize(new java.awt.Dimension(75, 28));
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 1;
-        jPanel_ForearmThickness.add(jFormattedTextField_ForearmThicknessR, gridBagConstraints);
-
         jSlider_ForearmThicknessL.setMinimumSize(new java.awt.Dimension(100, 29));
         jSlider_ForearmThicknessL.setPreferredSize(new java.awt.Dimension(100, 29));
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -993,20 +957,26 @@ public class AdvOptions extends javax.swing.JFrame {
         gridBagConstraints.gridy = 0;
         jPanel_ForearmThickness.add(jSlider_ForearmThicknessL, gridBagConstraints);
 
-        jFormattedTextField_ForearmThicknessL.setText("jFormattedTextField2");
-        jFormattedTextField_ForearmThicknessL.setMinimumSize(new java.awt.Dimension(75, 28));
-        jFormattedTextField_ForearmThicknessL.setPreferredSize(new java.awt.Dimension(75, 28));
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 1;
-        jPanel_ForearmThickness.add(jFormattedTextField_ForearmThicknessL, gridBagConstraints);
-
         jCheckBox_ForearmThickSync.setText("Sync");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 2;
         gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
         jPanel_ForearmThickness.add(jCheckBox_ForearmThickSync, gridBagConstraints);
+
+        jSpinner_ForearmThicknessL.setMinimumSize(new java.awt.Dimension(75, 28));
+        jSpinner_ForearmThicknessL.setPreferredSize(new java.awt.Dimension(75, 28));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        jPanel_ForearmThickness.add(jSpinner_ForearmThicknessL, gridBagConstraints);
+
+        jSpinner_ForearmThicknessR.setMinimumSize(new java.awt.Dimension(75, 28));
+        jSpinner_ForearmThicknessR.setPreferredSize(new java.awt.Dimension(75, 28));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 1;
+        jPanel_ForearmThickness.add(jSpinner_ForearmThicknessR, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -1031,14 +1001,6 @@ public class AdvOptions extends javax.swing.JFrame {
         gridBagConstraints.gridy = 0;
         jPanel_UpperarmLength.add(jSlider_UpperarmLengthR, gridBagConstraints);
 
-        jFormattedTextField_UpperarmLengthR.setText("jFormattedTextField1");
-        jFormattedTextField_UpperarmLengthR.setMinimumSize(new java.awt.Dimension(75, 28));
-        jFormattedTextField_UpperarmLengthR.setPreferredSize(new java.awt.Dimension(75, 28));
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 1;
-        jPanel_UpperarmLength.add(jFormattedTextField_UpperarmLengthR, gridBagConstraints);
-
         jSlider_UpperArmLengthL.setOrientation(javax.swing.JSlider.VERTICAL);
         jSlider_UpperArmLengthL.setMinimumSize(new java.awt.Dimension(29, 100));
         jSlider_UpperArmLengthL.setPreferredSize(new java.awt.Dimension(29, 100));
@@ -1047,20 +1009,26 @@ public class AdvOptions extends javax.swing.JFrame {
         gridBagConstraints.gridy = 0;
         jPanel_UpperarmLength.add(jSlider_UpperArmLengthL, gridBagConstraints);
 
-        jFormattedTextField_UpperArmLengthL.setText("jFormattedTextField2");
-        jFormattedTextField_UpperArmLengthL.setMinimumSize(new java.awt.Dimension(75, 28));
-        jFormattedTextField_UpperArmLengthL.setPreferredSize(new java.awt.Dimension(75, 28));
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 1;
-        jPanel_UpperarmLength.add(jFormattedTextField_UpperArmLengthL, gridBagConstraints);
-
         jCheckBox_UpperarmLenSync.setText("Sync");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 2;
         gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
         jPanel_UpperarmLength.add(jCheckBox_UpperarmLenSync, gridBagConstraints);
+
+        jSpinner_UpperarmLengthL.setMinimumSize(new java.awt.Dimension(75, 28));
+        jSpinner_UpperarmLengthL.setPreferredSize(new java.awt.Dimension(75, 28));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        jPanel_UpperarmLength.add(jSpinner_UpperarmLengthL, gridBagConstraints);
+
+        jSpinner_UpperarmLengthR.setMinimumSize(new java.awt.Dimension(75, 28));
+        jSpinner_UpperarmLengthR.setPreferredSize(new java.awt.Dimension(75, 28));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 1;
+        jPanel_UpperarmLength.add(jSpinner_UpperarmLengthR, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
@@ -1078,14 +1046,6 @@ public class AdvOptions extends javax.swing.JFrame {
         gridBagConstraints.gridy = 0;
         jPanel_UpperarmThickness.add(jSlider_UpperarmThicknessR, gridBagConstraints);
 
-        jFormattedTextField_UpperarmThicknessR.setText("jFormattedTextField1");
-        jFormattedTextField_UpperarmThicknessR.setMinimumSize(new java.awt.Dimension(75, 28));
-        jFormattedTextField_UpperarmThicknessR.setPreferredSize(new java.awt.Dimension(75, 28));
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 1;
-        jPanel_UpperarmThickness.add(jFormattedTextField_UpperarmThicknessR, gridBagConstraints);
-
         jSlider_UpperarmThicknessL.setMinimumSize(new java.awt.Dimension(100, 29));
         jSlider_UpperarmThicknessL.setPreferredSize(new java.awt.Dimension(100, 29));
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -1093,20 +1053,26 @@ public class AdvOptions extends javax.swing.JFrame {
         gridBagConstraints.gridy = 0;
         jPanel_UpperarmThickness.add(jSlider_UpperarmThicknessL, gridBagConstraints);
 
-        jFormattedTextField_UpperarmThicknessL.setText("jFormattedTextField2");
-        jFormattedTextField_UpperarmThicknessL.setMinimumSize(new java.awt.Dimension(75, 28));
-        jFormattedTextField_UpperarmThicknessL.setPreferredSize(new java.awt.Dimension(75, 28));
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 1;
-        jPanel_UpperarmThickness.add(jFormattedTextField_UpperarmThicknessL, gridBagConstraints);
-
         jCheckBox_UpperarmThickSync.setText("Sync");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 2;
         gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
         jPanel_UpperarmThickness.add(jCheckBox_UpperarmThickSync, gridBagConstraints);
+
+        jSpinner_UpperarmThicknessL.setMinimumSize(new java.awt.Dimension(75, 28));
+        jSpinner_UpperarmThicknessL.setPreferredSize(new java.awt.Dimension(75, 28));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        jPanel_UpperarmThickness.add(jSpinner_UpperarmThicknessL, gridBagConstraints);
+
+        jSpinner_UpperarmThicknessR.setMinimumSize(new java.awt.Dimension(75, 28));
+        jSpinner_UpperarmThicknessR.setPreferredSize(new java.awt.Dimension(75, 28));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 1;
+        jPanel_UpperarmThickness.add(jSpinner_UpperarmThicknessR, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -1144,14 +1110,6 @@ public class AdvOptions extends javax.swing.JFrame {
         gridBagConstraints.gridy = 0;
         jPanel_FeetLength.add(jSlider_FeetLengthR, gridBagConstraints);
 
-        jFormattedTextField_FeetLengthR.setText("jFormattedTextField1");
-        jFormattedTextField_FeetLengthR.setMinimumSize(new java.awt.Dimension(75, 28));
-        jFormattedTextField_FeetLengthR.setPreferredSize(new java.awt.Dimension(75, 28));
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 1;
-        jPanel_FeetLength.add(jFormattedTextField_FeetLengthR, gridBagConstraints);
-
         jSlider_FeetLengthL.setOrientation(javax.swing.JSlider.VERTICAL);
         jSlider_FeetLengthL.setMinimumSize(new java.awt.Dimension(29, 100));
         jSlider_FeetLengthL.setPreferredSize(new java.awt.Dimension(29, 100));
@@ -1160,20 +1118,26 @@ public class AdvOptions extends javax.swing.JFrame {
         gridBagConstraints.gridy = 0;
         jPanel_FeetLength.add(jSlider_FeetLengthL, gridBagConstraints);
 
-        jFormattedTextField_FeetLengthL.setText("jFormattedTextField2");
-        jFormattedTextField_FeetLengthL.setMinimumSize(new java.awt.Dimension(75, 28));
-        jFormattedTextField_FeetLengthL.setPreferredSize(new java.awt.Dimension(75, 28));
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 1;
-        jPanel_FeetLength.add(jFormattedTextField_FeetLengthL, gridBagConstraints);
-
         jCheckBox_FeetLenSync.setText("Sync");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 2;
         gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
         jPanel_FeetLength.add(jCheckBox_FeetLenSync, gridBagConstraints);
+
+        jSpinner_FeetLengthL.setMinimumSize(new java.awt.Dimension(75, 28));
+        jSpinner_FeetLengthL.setPreferredSize(new java.awt.Dimension(75, 28));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        jPanel_FeetLength.add(jSpinner_FeetLengthL, gridBagConstraints);
+
+        jSpinner_FeetLengthR.setMinimumSize(new java.awt.Dimension(75, 28));
+        jSpinner_FeetLengthR.setPreferredSize(new java.awt.Dimension(75, 28));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 1;
+        jPanel_FeetLength.add(jSpinner_FeetLengthR, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
@@ -1191,14 +1155,6 @@ public class AdvOptions extends javax.swing.JFrame {
         gridBagConstraints.gridy = 0;
         jPanel_FeetThickness.add(jSlider_FeetThicknessR, gridBagConstraints);
 
-        jFormattedTextField_FeetThicknessR.setText("jFormattedTextField1");
-        jFormattedTextField_FeetThicknessR.setMinimumSize(new java.awt.Dimension(75, 28));
-        jFormattedTextField_FeetThicknessR.setPreferredSize(new java.awt.Dimension(75, 28));
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 1;
-        jPanel_FeetThickness.add(jFormattedTextField_FeetThicknessR, gridBagConstraints);
-
         jSlider_FeetThicknessL.setMinimumSize(new java.awt.Dimension(100, 29));
         jSlider_FeetThicknessL.setPreferredSize(new java.awt.Dimension(100, 29));
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -1206,20 +1162,26 @@ public class AdvOptions extends javax.swing.JFrame {
         gridBagConstraints.gridy = 0;
         jPanel_FeetThickness.add(jSlider_FeetThicknessL, gridBagConstraints);
 
-        jFormattedTextField_FeetThicknessL.setText("jFormattedTextField2");
-        jFormattedTextField_FeetThicknessL.setMinimumSize(new java.awt.Dimension(75, 28));
-        jFormattedTextField_FeetThicknessL.setPreferredSize(new java.awt.Dimension(75, 28));
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 1;
-        jPanel_FeetThickness.add(jFormattedTextField_FeetThicknessL, gridBagConstraints);
-
         jCheckBox_FeetThickSync.setText("Sync");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 2;
         gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
         jPanel_FeetThickness.add(jCheckBox_FeetThickSync, gridBagConstraints);
+
+        jSpinner_FeetThicknessL.setMinimumSize(new java.awt.Dimension(75, 28));
+        jSpinner_FeetThicknessL.setPreferredSize(new java.awt.Dimension(75, 28));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        jPanel_FeetThickness.add(jSpinner_FeetThicknessL, gridBagConstraints);
+
+        jSpinner_FeetThicknessR.setMinimumSize(new java.awt.Dimension(75, 28));
+        jSpinner_FeetThicknessR.setPreferredSize(new java.awt.Dimension(75, 28));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 1;
+        jPanel_FeetThickness.add(jSpinner_FeetThicknessR, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -1244,14 +1206,6 @@ public class AdvOptions extends javax.swing.JFrame {
         gridBagConstraints.gridy = 0;
         jPanel_CalvesLength.add(jSlider_CalvesLengthR, gridBagConstraints);
 
-        jFormattedTextField_CalvesLengthR.setText("jFormattedTextField1");
-        jFormattedTextField_CalvesLengthR.setMinimumSize(new java.awt.Dimension(75, 28));
-        jFormattedTextField_CalvesLengthR.setPreferredSize(new java.awt.Dimension(75, 28));
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 1;
-        jPanel_CalvesLength.add(jFormattedTextField_CalvesLengthR, gridBagConstraints);
-
         jSlider_CalvesLengthL.setOrientation(javax.swing.JSlider.VERTICAL);
         jSlider_CalvesLengthL.setMinimumSize(new java.awt.Dimension(29, 100));
         jSlider_CalvesLengthL.setPreferredSize(new java.awt.Dimension(29, 100));
@@ -1260,20 +1214,26 @@ public class AdvOptions extends javax.swing.JFrame {
         gridBagConstraints.gridy = 0;
         jPanel_CalvesLength.add(jSlider_CalvesLengthL, gridBagConstraints);
 
-        jFormattedTextField_CalvesLengthL.setText("jFormattedTextField2");
-        jFormattedTextField_CalvesLengthL.setMinimumSize(new java.awt.Dimension(75, 28));
-        jFormattedTextField_CalvesLengthL.setPreferredSize(new java.awt.Dimension(75, 28));
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 1;
-        jPanel_CalvesLength.add(jFormattedTextField_CalvesLengthL, gridBagConstraints);
-
         jCheckBox_CalvesLenSync.setText("Sync");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 2;
         gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
         jPanel_CalvesLength.add(jCheckBox_CalvesLenSync, gridBagConstraints);
+
+        jSpinner_CalvesLengthL.setMinimumSize(new java.awt.Dimension(75, 28));
+        jSpinner_CalvesLengthL.setPreferredSize(new java.awt.Dimension(75, 28));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        jPanel_CalvesLength.add(jSpinner_CalvesLengthL, gridBagConstraints);
+
+        jSpinner_CalvesLengthR.setMinimumSize(new java.awt.Dimension(75, 28));
+        jSpinner_CalvesLengthR.setPreferredSize(new java.awt.Dimension(75, 28));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 1;
+        jPanel_CalvesLength.add(jSpinner_CalvesLengthR, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
@@ -1291,14 +1251,6 @@ public class AdvOptions extends javax.swing.JFrame {
         gridBagConstraints.gridy = 0;
         jPanel_CalvesThickness.add(jSlider_CalvesThicknessR, gridBagConstraints);
 
-        jFormattedTextField_CalvesThicknessR.setText("jFormattedTextField1");
-        jFormattedTextField_CalvesThicknessR.setMinimumSize(new java.awt.Dimension(75, 28));
-        jFormattedTextField_CalvesThicknessR.setPreferredSize(new java.awt.Dimension(75, 28));
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 1;
-        jPanel_CalvesThickness.add(jFormattedTextField_CalvesThicknessR, gridBagConstraints);
-
         jSlider_CalvesThicknessL.setMinimumSize(new java.awt.Dimension(100, 29));
         jSlider_CalvesThicknessL.setPreferredSize(new java.awt.Dimension(100, 29));
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -1306,20 +1258,26 @@ public class AdvOptions extends javax.swing.JFrame {
         gridBagConstraints.gridy = 0;
         jPanel_CalvesThickness.add(jSlider_CalvesThicknessL, gridBagConstraints);
 
-        jFormattedTextField_CalvesThicknessL.setText("jFormattedTextField2");
-        jFormattedTextField_CalvesThicknessL.setMinimumSize(new java.awt.Dimension(75, 28));
-        jFormattedTextField_CalvesThicknessL.setPreferredSize(new java.awt.Dimension(75, 28));
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 1;
-        jPanel_CalvesThickness.add(jFormattedTextField_CalvesThicknessL, gridBagConstraints);
-
         jCheckBox_CalvesThickSync.setText("Sync");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 2;
         gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
         jPanel_CalvesThickness.add(jCheckBox_CalvesThickSync, gridBagConstraints);
+
+        jSpinner_CalvesThicknessL.setMinimumSize(new java.awt.Dimension(75, 28));
+        jSpinner_CalvesThicknessL.setPreferredSize(new java.awt.Dimension(75, 28));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        jPanel_CalvesThickness.add(jSpinner_CalvesThicknessL, gridBagConstraints);
+
+        jSpinner_CalvesThicknessR.setMinimumSize(new java.awt.Dimension(75, 28));
+        jSpinner_CalvesThicknessR.setPreferredSize(new java.awt.Dimension(75, 28));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 1;
+        jPanel_CalvesThickness.add(jSpinner_CalvesThicknessR, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -1344,14 +1302,6 @@ public class AdvOptions extends javax.swing.JFrame {
         gridBagConstraints.gridy = 0;
         jPanel_ThighLength.add(jSlider_ThighLengthR, gridBagConstraints);
 
-        jFormattedTextField_ThighLengthR.setText("jFormattedTextField1");
-        jFormattedTextField_ThighLengthR.setMinimumSize(new java.awt.Dimension(75, 28));
-        jFormattedTextField_ThighLengthR.setPreferredSize(new java.awt.Dimension(75, 28));
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 1;
-        jPanel_ThighLength.add(jFormattedTextField_ThighLengthR, gridBagConstraints);
-
         jSlider_ThighLengthL.setOrientation(javax.swing.JSlider.VERTICAL);
         jSlider_ThighLengthL.setMinimumSize(new java.awt.Dimension(29, 100));
         jSlider_ThighLengthL.setPreferredSize(new java.awt.Dimension(29, 100));
@@ -1360,20 +1310,26 @@ public class AdvOptions extends javax.swing.JFrame {
         gridBagConstraints.gridy = 0;
         jPanel_ThighLength.add(jSlider_ThighLengthL, gridBagConstraints);
 
-        jFormattedTextField_ThighLengthL.setText("jFormattedTextField2");
-        jFormattedTextField_ThighLengthL.setMinimumSize(new java.awt.Dimension(75, 28));
-        jFormattedTextField_ThighLengthL.setPreferredSize(new java.awt.Dimension(75, 28));
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 1;
-        jPanel_ThighLength.add(jFormattedTextField_ThighLengthL, gridBagConstraints);
-
         jCheckBox_ThighLenSync.setText("Sync");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 2;
         gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
         jPanel_ThighLength.add(jCheckBox_ThighLenSync, gridBagConstraints);
+
+        jSpinner_ThighLengthL.setMinimumSize(new java.awt.Dimension(75, 28));
+        jSpinner_ThighLengthL.setPreferredSize(new java.awt.Dimension(75, 28));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        jPanel_ThighLength.add(jSpinner_ThighLengthL, gridBagConstraints);
+
+        jSpinner_ThighLengthR.setMinimumSize(new java.awt.Dimension(75, 28));
+        jSpinner_ThighLengthR.setPreferredSize(new java.awt.Dimension(75, 28));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 1;
+        jPanel_ThighLength.add(jSpinner_ThighLengthR, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
@@ -1391,14 +1347,6 @@ public class AdvOptions extends javax.swing.JFrame {
         gridBagConstraints.gridy = 0;
         jPanel_ThighThickness.add(jSlider_ThighThicknessR, gridBagConstraints);
 
-        jFormattedTextField_ThighThicknessR.setText("jFormattedTextField1");
-        jFormattedTextField_ThighThicknessR.setMinimumSize(new java.awt.Dimension(75, 28));
-        jFormattedTextField_ThighThicknessR.setPreferredSize(new java.awt.Dimension(75, 28));
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 1;
-        jPanel_ThighThickness.add(jFormattedTextField_ThighThicknessR, gridBagConstraints);
-
         jSlider_ThighThicknessL.setMinimumSize(new java.awt.Dimension(100, 29));
         jSlider_ThighThicknessL.setPreferredSize(new java.awt.Dimension(100, 29));
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -1406,20 +1354,26 @@ public class AdvOptions extends javax.swing.JFrame {
         gridBagConstraints.gridy = 0;
         jPanel_ThighThickness.add(jSlider_ThighThicknessL, gridBagConstraints);
 
-        jFormattedTextField_ThighThicknessL.setText("jFormattedTextField2");
-        jFormattedTextField_ThighThicknessL.setMinimumSize(new java.awt.Dimension(75, 28));
-        jFormattedTextField_ThighThicknessL.setPreferredSize(new java.awt.Dimension(75, 28));
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 1;
-        jPanel_ThighThickness.add(jFormattedTextField_ThighThicknessL, gridBagConstraints);
-
         jCheckBox_ThighThickSync.setText("Sync");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 2;
         gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
         jPanel_ThighThickness.add(jCheckBox_ThighThickSync, gridBagConstraints);
+
+        jSpinner_ThighThicknessL.setMinimumSize(new java.awt.Dimension(75, 28));
+        jSpinner_ThighThicknessL.setPreferredSize(new java.awt.Dimension(75, 28));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        jPanel_ThighThickness.add(jSpinner_ThighThicknessL, gridBagConstraints);
+
+        jSpinner_ThighThicknessR.setMinimumSize(new java.awt.Dimension(75, 28));
+        jSpinner_ThighThicknessR.setPreferredSize(new java.awt.Dimension(75, 28));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 1;
+        jPanel_ThighThickness.add(jSpinner_ThighThicknessR, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -1448,13 +1402,12 @@ public class AdvOptions extends javax.swing.JFrame {
         jPanel_ChestBulk.setLayout(new java.awt.GridBagLayout());
         jPanel_ChestBulk.add(jSlider_ChestBulk, new java.awt.GridBagConstraints());
 
-        jFormattedTextField_ChestBulk.setText("jFormattedTextField1");
-        jFormattedTextField_ChestBulk.setMinimumSize(new java.awt.Dimension(75, 28));
-        jFormattedTextField_ChestBulk.setPreferredSize(new java.awt.Dimension(75, 28));
+        jSpinner_ChestBulk.setMinimumSize(new java.awt.Dimension(75, 28));
+        jSpinner_ChestBulk.setPreferredSize(new java.awt.Dimension(75, 28));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
-        jPanel_ChestBulk.add(jFormattedTextField_ChestBulk, gridBagConstraints);
+        jPanel_ChestBulk.add(jSpinner_ChestBulk, gridBagConstraints);
 
         jPanel_Chest.add(jPanel_ChestBulk, new java.awt.GridBagConstraints());
 
@@ -1462,13 +1415,12 @@ public class AdvOptions extends javax.swing.JFrame {
         jPanel_ChestBroadness.setLayout(new java.awt.GridBagLayout());
         jPanel_ChestBroadness.add(jSlider_ChestBroadness, new java.awt.GridBagConstraints());
 
-        jFormattedTextField_ChestBroadness.setText("jFormattedTextField2");
-        jFormattedTextField_ChestBroadness.setMinimumSize(new java.awt.Dimension(75, 28));
-        jFormattedTextField_ChestBroadness.setPreferredSize(new java.awt.Dimension(75, 28));
+        jSpinner_ChestBroadness.setMinimumSize(new java.awt.Dimension(75, 28));
+        jSpinner_ChestBroadness.setPreferredSize(new java.awt.Dimension(75, 28));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
-        jPanel_ChestBroadness.add(jFormattedTextField_ChestBroadness, gridBagConstraints);
+        jPanel_ChestBroadness.add(jSpinner_ChestBroadness, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -1483,13 +1435,12 @@ public class AdvOptions extends javax.swing.JFrame {
         jPanel_BellyRoundness.setLayout(new java.awt.GridBagLayout());
         jPanel_BellyRoundness.add(jSlider_BellyRoundness, new java.awt.GridBagConstraints());
 
-        jFormattedTextField_BellyRoundness.setText("jFormattedTextField1");
-        jFormattedTextField_BellyRoundness.setMinimumSize(new java.awt.Dimension(75, 28));
-        jFormattedTextField_BellyRoundness.setPreferredSize(new java.awt.Dimension(75, 28));
+        jSpinner_BellyRoundness.setMinimumSize(new java.awt.Dimension(75, 28));
+        jSpinner_BellyRoundness.setPreferredSize(new java.awt.Dimension(75, 28));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
-        jPanel_BellyRoundness.add(jFormattedTextField_BellyRoundness, gridBagConstraints);
+        jPanel_BellyRoundness.add(jSpinner_BellyRoundness, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
@@ -1499,13 +1450,12 @@ public class AdvOptions extends javax.swing.JFrame {
         jPanel_Waistline.setLayout(new java.awt.GridBagLayout());
         jPanel_Waistline.add(jSlider_Waistline, new java.awt.GridBagConstraints());
 
-        jFormattedTextField_Waistline.setText("jFormattedTextField2");
-        jFormattedTextField_Waistline.setMinimumSize(new java.awt.Dimension(75, 28));
-        jFormattedTextField_Waistline.setPreferredSize(new java.awt.Dimension(75, 28));
+        jSpinner_Waistline.setMinimumSize(new java.awt.Dimension(75, 28));
+        jSpinner_Waistline.setPreferredSize(new java.awt.Dimension(75, 28));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
-        jPanel_Waistline.add(jFormattedTextField_Waistline, gridBagConstraints);
+        jPanel_Waistline.add(jSpinner_Waistline, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -1520,13 +1470,12 @@ public class AdvOptions extends javax.swing.JFrame {
         jPanel_GlutRoundness.setLayout(new java.awt.GridBagLayout());
         jPanel_GlutRoundness.add(jSlider_GlutRoundness, new java.awt.GridBagConstraints());
 
-        jFormattedTextField_GlutRoundness.setText("jFormattedTextField1");
-        jFormattedTextField_GlutRoundness.setMinimumSize(new java.awt.Dimension(75, 28));
-        jFormattedTextField_GlutRoundness.setPreferredSize(new java.awt.Dimension(75, 28));
+        jSpinner_GlutRoundness.setMinimumSize(new java.awt.Dimension(75, 28));
+        jSpinner_GlutRoundness.setPreferredSize(new java.awt.Dimension(75, 28));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
-        jPanel_GlutRoundness.add(jFormattedTextField_GlutRoundness, gridBagConstraints);
+        jPanel_GlutRoundness.add(jSpinner_GlutRoundness, gridBagConstraints);
 
         jPanel_Gluts.add(jPanel_GlutRoundness, new java.awt.GridBagConstraints());
 
@@ -1534,13 +1483,12 @@ public class AdvOptions extends javax.swing.JFrame {
         jPanel_GlutSag.setLayout(new java.awt.GridBagLayout());
         jPanel_GlutSag.add(jSlider_GlutSag, new java.awt.GridBagConstraints());
 
-        jFormattedTextField_GlutSag.setText("jFormattedTextField2");
-        jFormattedTextField_GlutSag.setMinimumSize(new java.awt.Dimension(75, 28));
-        jFormattedTextField_GlutSag.setPreferredSize(new java.awt.Dimension(75, 28));
+        jSpinner_GlutSag.setMinimumSize(new java.awt.Dimension(75, 28));
+        jSpinner_GlutSag.setPreferredSize(new java.awt.Dimension(75, 28));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
-        jPanel_GlutSag.add(jFormattedTextField_GlutSag, gridBagConstraints);
+        jPanel_GlutSag.add(jSpinner_GlutSag, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -1557,13 +1505,12 @@ public class AdvOptions extends javax.swing.JFrame {
         jPanel_BodyWidth.setLayout(new java.awt.GridBagLayout());
         jPanel_BodyWidth.add(jSlider_BodyWidth, new java.awt.GridBagConstraints());
 
-        jFormattedTextField_BodyWidth.setText("jFormattedTextField1");
-        jFormattedTextField_BodyWidth.setMinimumSize(new java.awt.Dimension(75, 28));
-        jFormattedTextField_BodyWidth.setPreferredSize(new java.awt.Dimension(75, 28));
+        jSpinner1.setMinimumSize(new java.awt.Dimension(75, 28));
+        jSpinner1.setPreferredSize(new java.awt.Dimension(75, 28));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
-        jPanel_BodyWidth.add(jFormattedTextField_BodyWidth, gridBagConstraints);
+        jPanel_BodyWidth.add(jSpinner1, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
@@ -1579,13 +1526,12 @@ public class AdvOptions extends javax.swing.JFrame {
         jSlider_BodyHeight.setPreferredSize(new java.awt.Dimension(29, 100));
         jPanel_BodyHeight.add(jSlider_BodyHeight, new java.awt.GridBagConstraints());
 
-        jFormattedTextField_BodyHeight.setText("jFormattedTextField2");
-        jFormattedTextField_BodyHeight.setMinimumSize(new java.awt.Dimension(75, 28));
-        jFormattedTextField_BodyHeight.setPreferredSize(new java.awt.Dimension(75, 28));
+        jSpinner2.setMinimumSize(new java.awt.Dimension(75, 28));
+        jSpinner2.setPreferredSize(new java.awt.Dimension(75, 28));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
-        jPanel_BodyHeight.add(jFormattedTextField_BodyHeight, gridBagConstraints);
+        jPanel_BodyHeight.add(jSpinner2, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -1599,13 +1545,12 @@ public class AdvOptions extends javax.swing.JFrame {
         jPanel_BodyDepth.setLayout(new java.awt.GridBagLayout());
         jPanel_BodyDepth.add(jSlider_BodyDepth, new java.awt.GridBagConstraints());
 
-        jFormattedTextField_BodyDepth.setText("jFormattedTextField3");
-        jFormattedTextField_BodyDepth.setMinimumSize(new java.awt.Dimension(75, 28));
-        jFormattedTextField_BodyDepth.setPreferredSize(new java.awt.Dimension(75, 28));
+        jSpinner3.setMinimumSize(new java.awt.Dimension(75, 28));
+        jSpinner3.setPreferredSize(new java.awt.Dimension(75, 28));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
-        jPanel_BodyDepth.add(jFormattedTextField_BodyDepth, gridBagConstraints);
+        jPanel_BodyDepth.add(jSpinner3, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -1619,13 +1564,12 @@ public class AdvOptions extends javax.swing.JFrame {
         jPanel_BodyUniform.setLayout(new java.awt.GridBagLayout());
         jPanel_BodyUniform.add(jSlider_BodyUniform, new java.awt.GridBagConstraints());
 
-        jFormattedTextField_BodyUniform.setText("jFormattedTextField1");
-        jFormattedTextField_BodyUniform.setMinimumSize(new java.awt.Dimension(75, 28));
-        jFormattedTextField_BodyUniform.setPreferredSize(new java.awt.Dimension(75, 28));
+        jSpinner4.setMinimumSize(new java.awt.Dimension(75, 28));
+        jSpinner4.setPreferredSize(new java.awt.Dimension(75, 28));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
-        jPanel_BodyUniform.add(jFormattedTextField_BodyUniform, gridBagConstraints);
+        jPanel_BodyUniform.add(jSpinner4, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -1678,56 +1622,6 @@ public class AdvOptions extends javax.swing.JFrame {
     private javax.swing.JCheckBox jCheckBox_ThighThickSync;
     private javax.swing.JCheckBox jCheckBox_UpperarmLenSync;
     private javax.swing.JCheckBox jCheckBox_UpperarmThickSync;
-    private javax.swing.JFormattedTextField jFormattedTextField_BellyRoundness;
-    private javax.swing.JFormattedTextField jFormattedTextField_BodyDepth;
-    private javax.swing.JFormattedTextField jFormattedTextField_BodyHeight;
-    private javax.swing.JFormattedTextField jFormattedTextField_BodyUniform;
-    private javax.swing.JFormattedTextField jFormattedTextField_BodyWidth;
-    private javax.swing.JFormattedTextField jFormattedTextField_CalvesLengthL;
-    private javax.swing.JFormattedTextField jFormattedTextField_CalvesLengthR;
-    private javax.swing.JFormattedTextField jFormattedTextField_CalvesThicknessL;
-    private javax.swing.JFormattedTextField jFormattedTextField_CalvesThicknessR;
-    private javax.swing.JFormattedTextField jFormattedTextField_ChestBroadness;
-    private javax.swing.JFormattedTextField jFormattedTextField_ChestBulk;
-    private javax.swing.JFormattedTextField jFormattedTextField_EyePosDL;
-    private javax.swing.JFormattedTextField jFormattedTextField_EyePosDR;
-    private javax.swing.JFormattedTextField jFormattedTextField_EyePosHL;
-    private javax.swing.JFormattedTextField jFormattedTextField_EyePosHR;
-    private javax.swing.JFormattedTextField jFormattedTextField_EyePosVL;
-    private javax.swing.JFormattedTextField jFormattedTextField_EyePosVR;
-    private javax.swing.JFormattedTextField jFormattedTextField_FeetLengthL;
-    private javax.swing.JFormattedTextField jFormattedTextField_FeetLengthR;
-    private javax.swing.JFormattedTextField jFormattedTextField_FeetThicknessL;
-    private javax.swing.JFormattedTextField jFormattedTextField_FeetThicknessR;
-    private javax.swing.JFormattedTextField jFormattedTextField_FingerLengthL;
-    private javax.swing.JFormattedTextField jFormattedTextField_FingerLengthR;
-    private javax.swing.JFormattedTextField jFormattedTextField_ForearmLengthL;
-    private javax.swing.JFormattedTextField jFormattedTextField_ForearmLengthR;
-    private javax.swing.JFormattedTextField jFormattedTextField_ForearmThicknessL;
-    private javax.swing.JFormattedTextField jFormattedTextField_ForearmThicknessR;
-    private javax.swing.JFormattedTextField jFormattedTextField_GlutRoundness;
-    private javax.swing.JFormattedTextField jFormattedTextField_GlutSag;
-    private javax.swing.JFormattedTextField jFormattedTextField_HandThicknessL;
-    private javax.swing.JFormattedTextField jFormattedTextField_HandThicknessR;
-    private javax.swing.JFormattedTextField jFormattedTextField_HeadDepth;
-    private javax.swing.JFormattedTextField jFormattedTextField_HeadHeight;
-    private javax.swing.JFormattedTextField jFormattedTextField_HeadUniform;
-    private javax.swing.JFormattedTextField jFormattedTextField_HeadWidth;
-    private javax.swing.JFormattedTextField jFormattedTextField_LowerLip;
-    private javax.swing.JFormattedTextField jFormattedTextField_MouthWidth;
-    private javax.swing.JFormattedTextField jFormattedTextField_NoseLen;
-    private javax.swing.JFormattedTextField jFormattedTextField_NosePosH;
-    private javax.swing.JFormattedTextField jFormattedTextField_NoseWidth;
-    private javax.swing.JFormattedTextField jFormattedTextField_ThighLengthL;
-    private javax.swing.JFormattedTextField jFormattedTextField_ThighLengthR;
-    private javax.swing.JFormattedTextField jFormattedTextField_ThighThicknessL;
-    private javax.swing.JFormattedTextField jFormattedTextField_ThighThicknessR;
-    private javax.swing.JFormattedTextField jFormattedTextField_UpperArmLengthL;
-    private javax.swing.JFormattedTextField jFormattedTextField_UpperLip;
-    private javax.swing.JFormattedTextField jFormattedTextField_UpperarmLengthR;
-    private javax.swing.JFormattedTextField jFormattedTextField_UpperarmThicknessL;
-    private javax.swing.JFormattedTextField jFormattedTextField_UpperarmThicknessR;
-    private javax.swing.JFormattedTextField jFormattedTextField_Waistline;
     private javax.swing.JLabel jLabel_EyeUni;
     private javax.swing.JLabel jLabel_EyeX;
     private javax.swing.JLabel jLabel_EyeY;
@@ -1857,6 +1751,56 @@ public class AdvOptions extends javax.swing.JFrame {
     private javax.swing.JSlider jSlider_UpperarmThicknessL;
     private javax.swing.JSlider jSlider_UpperarmThicknessR;
     private javax.swing.JSlider jSlider_Waistline;
+    private javax.swing.JSpinner jSpinner1;
+    private javax.swing.JSpinner jSpinner2;
+    private javax.swing.JSpinner jSpinner3;
+    private javax.swing.JSpinner jSpinner4;
+    private javax.swing.JSpinner jSpinner_BellyRoundness;
+    private javax.swing.JSpinner jSpinner_CalvesLengthL;
+    private javax.swing.JSpinner jSpinner_CalvesLengthR;
+    private javax.swing.JSpinner jSpinner_CalvesThicknessL;
+    private javax.swing.JSpinner jSpinner_CalvesThicknessR;
+    private javax.swing.JSpinner jSpinner_ChestBroadness;
+    private javax.swing.JSpinner jSpinner_ChestBulk;
+    private javax.swing.JSpinner jSpinner_EyePosDL;
+    private javax.swing.JSpinner jSpinner_EyePosDR;
+    private javax.swing.JSpinner jSpinner_EyePosHL;
+    private javax.swing.JSpinner jSpinner_EyePosHR;
+    private javax.swing.JSpinner jSpinner_EyePosVL;
+    private javax.swing.JSpinner jSpinner_EyePosVR;
+    private javax.swing.JSpinner jSpinner_FeetLengthL;
+    private javax.swing.JSpinner jSpinner_FeetLengthR;
+    private javax.swing.JSpinner jSpinner_FeetThicknessL;
+    private javax.swing.JSpinner jSpinner_FeetThicknessR;
+    private javax.swing.JSpinner jSpinner_FingerLengthL;
+    private javax.swing.JSpinner jSpinner_FingerLengthR;
+    private javax.swing.JSpinner jSpinner_ForearmLengthL;
+    private javax.swing.JSpinner jSpinner_ForearmLengthR;
+    private javax.swing.JSpinner jSpinner_ForearmThicknessL;
+    private javax.swing.JSpinner jSpinner_ForearmThicknessR;
+    private javax.swing.JSpinner jSpinner_GlutRoundness;
+    private javax.swing.JSpinner jSpinner_GlutSag;
+    private javax.swing.JSpinner jSpinner_HandThicknessL;
+    private javax.swing.JSpinner jSpinner_HandThicknessR;
+    private javax.swing.JSpinner jSpinner_HeadDepth;
+    private javax.swing.JSpinner jSpinner_HeadHeight;
+    private javax.swing.JSpinner jSpinner_HeadUniform;
+    private javax.swing.JSpinner jSpinner_HeadWidth;
+    private javax.swing.JSpinner jSpinner_LowerLip;
+    private javax.swing.JSpinner jSpinner_MouthWidth;
+    private javax.swing.JSpinner jSpinner_NoseLen;
+    private javax.swing.JSpinner jSpinner_NosePosH;
+    private javax.swing.JSpinner jSpinner_NoseWidth;
+    private javax.swing.JSpinner jSpinner_ThighLengthL;
+    private javax.swing.JSpinner jSpinner_ThighLengthR;
+    private javax.swing.JSpinner jSpinner_ThighThicknessL;
+    private javax.swing.JSpinner jSpinner_ThighThicknessR;
+    private javax.swing.JSpinner jSpinner_UpperLip;
+    private javax.swing.JSpinner jSpinner_UpperarmLengthL;
+    private javax.swing.JSpinner jSpinner_UpperarmLengthR;
+    private javax.swing.JSpinner jSpinner_UpperarmThicknessL;
+    private javax.swing.JSpinner jSpinner_UpperarmThicknessR;
+    private javax.swing.JSpinner jSpinner_Waistline;
     private javax.swing.JTabbedPane jTabbedPane_ArmsHands;
     private javax.swing.JTabbedPane jTabbedPane_Body;
     private javax.swing.JTabbedPane jTabbedPane_Head;

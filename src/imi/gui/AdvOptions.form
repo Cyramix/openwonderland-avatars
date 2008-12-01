@@ -140,9 +140,8 @@
                             </Constraint>
                           </Constraints>
                         </Component>
-                        <Component class="javax.swing.JFormattedTextField" name="jFormattedTextField_EyePosHL">
+                        <Component class="javax.swing.JSpinner" name="jSpinner_EyePosHL">
                           <Properties>
-                            <Property name="text" type="java.lang.String" value="jFormattedTextField1"/>
                             <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                               <Dimension value="[75, 28]"/>
                             </Property>
@@ -156,9 +155,8 @@
                             </Constraint>
                           </Constraints>
                         </Component>
-                        <Component class="javax.swing.JFormattedTextField" name="jFormattedTextField_EyePosHR">
+                        <Component class="javax.swing.JSpinner" name="jSpinner_EyePosHR">
                           <Properties>
-                            <Property name="text" type="java.lang.String" value="jFormattedTextField1"/>
                             <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                               <Dimension value="[75, 28]"/>
                             </Property>
@@ -240,9 +238,8 @@
                             </Constraint>
                           </Constraints>
                         </Component>
-                        <Component class="javax.swing.JFormattedTextField" name="jFormattedTextField_EyePosVL">
+                        <Component class="javax.swing.JSpinner" name="jSpinner_EyePosVL">
                           <Properties>
-                            <Property name="text" type="java.lang.String" value="jFormattedTextField1"/>
                             <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                               <Dimension value="[75, 28]"/>
                             </Property>
@@ -252,13 +249,12 @@
                           </Properties>
                           <Constraints>
                             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
-                              <GridBagConstraints gridX="0" gridY="1" gridWidth="1" gridHeight="1" fill="2" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.0" weightY="0.0"/>
+                              <GridBagConstraints gridX="0" gridY="1" gridWidth="1" gridHeight="1" fill="0" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.0" weightY="0.0"/>
                             </Constraint>
                           </Constraints>
                         </Component>
-                        <Component class="javax.swing.JFormattedTextField" name="jFormattedTextField_EyePosVR">
+                        <Component class="javax.swing.JSpinner" name="jSpinner_EyePosVR">
                           <Properties>
-                            <Property name="text" type="java.lang.String" value="jFormattedTextField1"/>
                             <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                               <Dimension value="[75, 28]"/>
                             </Property>
@@ -268,7 +264,7 @@
                           </Properties>
                           <Constraints>
                             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
-                              <GridBagConstraints gridX="1" gridY="1" gridWidth="1" gridHeight="1" fill="2" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.0" weightY="0.0"/>
+                              <GridBagConstraints gridX="1" gridY="1" gridWidth="1" gridHeight="1" fill="0" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.0" weightY="0.0"/>
                             </Constraint>
                           </Constraints>
                         </Component>
@@ -335,9 +331,18 @@
                             </Constraint>
                           </Constraints>
                         </Component>
-                        <Component class="javax.swing.JFormattedTextField" name="jFormattedTextField_EyePosDL">
+                        <Component class="javax.swing.JCheckBox" name="jCheckBox_EyeDPosSync">
                           <Properties>
-                            <Property name="text" type="java.lang.String" value="jFormattedTextField1"/>
+                            <Property name="text" type="java.lang.String" value="Sync"/>
+                          </Properties>
+                          <Constraints>
+                            <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
+                              <GridBagConstraints gridX="0" gridY="2" gridWidth="0" gridHeight="1" fill="0" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.0" weightY="0.0"/>
+                            </Constraint>
+                          </Constraints>
+                        </Component>
+                        <Component class="javax.swing.JSpinner" name="jSpinner_EyePosDL">
+                          <Properties>
                             <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                               <Dimension value="[75, 28]"/>
                             </Property>
@@ -351,9 +356,8 @@
                             </Constraint>
                           </Constraints>
                         </Component>
-                        <Component class="javax.swing.JFormattedTextField" name="jFormattedTextField_EyePosDR">
+                        <Component class="javax.swing.JSpinner" name="jSpinner_EyePosDR">
                           <Properties>
-                            <Property name="text" type="java.lang.String" value="jFormattedTextField1"/>
                             <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                               <Dimension value="[75, 28]"/>
                             </Property>
@@ -364,16 +368,6 @@
                           <Constraints>
                             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
                               <GridBagConstraints gridX="1" gridY="1" gridWidth="1" gridHeight="1" fill="0" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.0" weightY="0.0"/>
-                            </Constraint>
-                          </Constraints>
-                        </Component>
-                        <Component class="javax.swing.JCheckBox" name="jCheckBox_EyeDPosSync">
-                          <Properties>
-                            <Property name="text" type="java.lang.String" value="Sync"/>
-                          </Properties>
-                          <Constraints>
-                            <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
-                              <GridBagConstraints gridX="0" gridY="2" gridWidth="0" gridHeight="1" fill="0" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.0" weightY="0.0"/>
                             </Constraint>
                           </Constraints>
                         </Component>
@@ -528,9 +522,8 @@
                             </Constraint>
                           </Constraints>
                         </Component>
-                        <Component class="javax.swing.JFormattedTextField" name="jFormattedTextField_NosePosH">
+                        <Component class="javax.swing.JSpinner" name="jSpinner_NosePosH">
                           <Properties>
-                            <Property name="text" type="java.lang.String" value="jFormattedTextField1"/>
                             <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                               <Dimension value="[75, 28]"/>
                             </Property>
@@ -540,7 +533,7 @@
                           </Properties>
                           <Constraints>
                             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
-                              <GridBagConstraints gridX="0" gridY="1" gridWidth="-1" gridHeight="1" fill="2" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.0" weightY="0.0"/>
+                              <GridBagConstraints gridX="0" gridY="1" gridWidth="1" gridHeight="1" fill="0" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.0" weightY="0.0"/>
                             </Constraint>
                           </Constraints>
                         </Component>
@@ -582,9 +575,8 @@
                             </Constraint>
                           </Constraints>
                         </Component>
-                        <Component class="javax.swing.JFormattedTextField" name="jFormattedTextField_NoseLen">
+                        <Component class="javax.swing.JSpinner" name="jSpinner_NoseLen">
                           <Properties>
-                            <Property name="text" type="java.lang.String" value="jFormattedTextField1"/>
                             <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                               <Dimension value="[75, 28]"/>
                             </Property>
@@ -594,7 +586,7 @@
                           </Properties>
                           <Constraints>
                             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
-                              <GridBagConstraints gridX="0" gridY="1" gridWidth="-1" gridHeight="1" fill="0" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.0" weightY="0.0"/>
+                              <GridBagConstraints gridX="0" gridY="1" gridWidth="1" gridHeight="1" fill="0" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.0" weightY="0.0"/>
                             </Constraint>
                           </Constraints>
                         </Component>
@@ -636,9 +628,8 @@
                             </Constraint>
                           </Constraints>
                         </Component>
-                        <Component class="javax.swing.JFormattedTextField" name="jFormattedTextField_NoseWidth">
+                        <Component class="javax.swing.JSpinner" name="jSpinner_NoseWidth">
                           <Properties>
-                            <Property name="text" type="java.lang.String" value="jFormattedTextField1"/>
                             <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                               <Dimension value="[75, 28]"/>
                             </Property>
@@ -648,7 +639,7 @@
                           </Properties>
                           <Constraints>
                             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
-                              <GridBagConstraints gridX="0" gridY="1" gridWidth="-1" gridHeight="1" fill="0" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.0" weightY="0.0"/>
+                              <GridBagConstraints gridX="0" gridY="1" gridWidth="1" gridHeight="1" fill="0" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.0" weightY="0.0"/>
                             </Constraint>
                           </Constraints>
                         </Component>
@@ -826,22 +817,6 @@
                             </Constraint>
                           </Constraints>
                         </Component>
-                        <Component class="javax.swing.JFormattedTextField" name="jFormattedTextField_UpperLip">
-                          <Properties>
-                            <Property name="text" type="java.lang.String" value="jFormattedTextField1"/>
-                            <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                              <Dimension value="[75, 28]"/>
-                            </Property>
-                            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                              <Dimension value="[75, 28]"/>
-                            </Property>
-                          </Properties>
-                          <Constraints>
-                            <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
-                              <GridBagConstraints gridX="0" gridY="1" gridWidth="1" gridHeight="1" fill="0" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.0" weightY="0.0"/>
-                            </Constraint>
-                          </Constraints>
-                        </Component>
                         <Component class="javax.swing.JSlider" name="jSlider_LowerLip">
                           <Properties>
                             <Property name="orientation" type="int" value="1"/>
@@ -858,9 +833,23 @@
                             </Constraint>
                           </Constraints>
                         </Component>
-                        <Component class="javax.swing.JFormattedTextField" name="jFormattedTextField_LowerLip">
+                        <Component class="javax.swing.JSpinner" name="jSpinner_UpperLip">
                           <Properties>
-                            <Property name="text" type="java.lang.String" value="jFormattedTextField2"/>
+                            <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                              <Dimension value="[75, 28]"/>
+                            </Property>
+                            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                              <Dimension value="[75, 28]"/>
+                            </Property>
+                          </Properties>
+                          <Constraints>
+                            <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
+                              <GridBagConstraints gridX="0" gridY="1" gridWidth="1" gridHeight="1" fill="0" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.0" weightY="0.0"/>
+                            </Constraint>
+                          </Constraints>
+                        </Component>
+                        <Component class="javax.swing.JSpinner" name="jSpinner_LowerLip">
+                          <Properties>
                             <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                               <Dimension value="[75, 28]"/>
                             </Property>
@@ -907,9 +896,8 @@
                             </Constraint>
                           </Constraints>
                         </Component>
-                        <Component class="javax.swing.JFormattedTextField" name="jFormattedTextField_MouthWidth">
+                        <Component class="javax.swing.JSpinner" name="jSpinner_MouthWidth">
                           <Properties>
-                            <Property name="text" type="java.lang.String" value="jFormattedTextField1"/>
                             <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                               <Dimension value="[75, 28]"/>
                             </Property>
@@ -1088,9 +1076,8 @@
                             </Constraint>
                           </Constraints>
                         </Component>
-                        <Component class="javax.swing.JFormattedTextField" name="jFormattedTextField_HeadWidth">
+                        <Component class="javax.swing.JSpinner" name="jSpinner_HeadWidth">
                           <Properties>
-                            <Property name="text" type="java.lang.String" value="jFormattedTextField1"/>
                             <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                               <Dimension value="[75, 28]"/>
                             </Property>
@@ -1146,9 +1133,8 @@
                             </Constraint>
                           </Constraints>
                         </Component>
-                        <Component class="javax.swing.JFormattedTextField" name="jFormattedTextField_HeadHeight">
+                        <Component class="javax.swing.JSpinner" name="jSpinner_HeadHeight">
                           <Properties>
-                            <Property name="text" type="java.lang.String" value="jFormattedTextField2"/>
                             <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                               <Dimension value="[75, 28]"/>
                             </Property>
@@ -1195,9 +1181,8 @@
                             </Constraint>
                           </Constraints>
                         </Component>
-                        <Component class="javax.swing.JFormattedTextField" name="jFormattedTextField_HeadDepth">
+                        <Component class="javax.swing.JSpinner" name="jSpinner_HeadDepth">
                           <Properties>
-                            <Property name="text" type="java.lang.String" value="jFormattedTextField3"/>
                             <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                               <Dimension value="[75, 28]"/>
                             </Property>
@@ -1244,9 +1229,8 @@
                             </Constraint>
                           </Constraints>
                         </Component>
-                        <Component class="javax.swing.JFormattedTextField" name="jFormattedTextField_HeadUniform">
+                        <Component class="javax.swing.JSpinner" name="jSpinner_HeadUniform">
                           <Properties>
-                            <Property name="text" type="java.lang.String" value="jFormattedTextField1"/>
                             <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                               <Dimension value="[75, 28]"/>
                             </Property>
@@ -1358,22 +1342,6 @@
                             </Constraint>
                           </Constraints>
                         </Component>
-                        <Component class="javax.swing.JFormattedTextField" name="jFormattedTextField_FingerLengthR">
-                          <Properties>
-                            <Property name="text" type="java.lang.String" value="jFormattedTextField1"/>
-                            <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                              <Dimension value="[75, 28]"/>
-                            </Property>
-                            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                              <Dimension value="[75, 28]"/>
-                            </Property>
-                          </Properties>
-                          <Constraints>
-                            <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
-                              <GridBagConstraints gridX="1" gridY="1" gridWidth="1" gridHeight="1" fill="0" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.0" weightY="0.0"/>
-                            </Constraint>
-                          </Constraints>
-                        </Component>
                         <Component class="javax.swing.JSlider" name="jSlider_FingerLengthL">
                           <Properties>
                             <Property name="orientation" type="int" value="1"/>
@@ -1390,9 +1358,33 @@
                             </Constraint>
                           </Constraints>
                         </Component>
-                        <Component class="javax.swing.JFormattedTextField" name="jFormattedTextField_FingerLengthL">
+                        <Component class="javax.swing.JCheckBox" name="jCheckBox_HandsLenSync">
                           <Properties>
-                            <Property name="text" type="java.lang.String" value="jFormattedTextField2"/>
+                            <Property name="text" type="java.lang.String" value="Sync"/>
+                          </Properties>
+                          <Constraints>
+                            <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
+                              <GridBagConstraints gridX="0" gridY="2" gridWidth="0" gridHeight="1" fill="0" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.0" weightY="0.0"/>
+                            </Constraint>
+                          </Constraints>
+                        </Component>
+                        <Component class="javax.swing.JSpinner" name="jSpinner_FingerLengthR">
+                          <Properties>
+                            <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                              <Dimension value="[75, 28]"/>
+                            </Property>
+                            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                              <Dimension value="[75, 28]"/>
+                            </Property>
+                          </Properties>
+                          <Constraints>
+                            <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
+                              <GridBagConstraints gridX="1" gridY="1" gridWidth="1" gridHeight="1" fill="0" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.0" weightY="0.0"/>
+                            </Constraint>
+                          </Constraints>
+                        </Component>
+                        <Component class="javax.swing.JSpinner" name="jSpinner_FingerLengthL">
+                          <Properties>
                             <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                               <Dimension value="[75, 28]"/>
                             </Property>
@@ -1403,16 +1395,6 @@
                           <Constraints>
                             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
                               <GridBagConstraints gridX="0" gridY="1" gridWidth="1" gridHeight="1" fill="0" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.0" weightY="0.0"/>
-                            </Constraint>
-                          </Constraints>
-                        </Component>
-                        <Component class="javax.swing.JCheckBox" name="jCheckBox_HandsLenSync">
-                          <Properties>
-                            <Property name="text" type="java.lang.String" value="Sync"/>
-                          </Properties>
-                          <Constraints>
-                            <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
-                              <GridBagConstraints gridX="0" gridY="2" gridWidth="0" gridHeight="1" fill="0" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.0" weightY="0.0"/>
                             </Constraint>
                           </Constraints>
                         </Component>
@@ -1457,22 +1439,6 @@
                             </Constraint>
                           </Constraints>
                         </Component>
-                        <Component class="javax.swing.JFormattedTextField" name="jFormattedTextField_HandThicknessR">
-                          <Properties>
-                            <Property name="text" type="java.lang.String" value="jFormattedTextField1"/>
-                            <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                              <Dimension value="[75, 28]"/>
-                            </Property>
-                            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                              <Dimension value="[75, 28]"/>
-                            </Property>
-                          </Properties>
-                          <Constraints>
-                            <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
-                              <GridBagConstraints gridX="1" gridY="1" gridWidth="1" gridHeight="1" fill="0" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.0" weightY="0.0"/>
-                            </Constraint>
-                          </Constraints>
-                        </Component>
                         <Component class="javax.swing.JSlider" name="jSlider_HandThicknessL">
                           <Properties>
                             <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
@@ -1488,9 +1454,18 @@
                             </Constraint>
                           </Constraints>
                         </Component>
-                        <Component class="javax.swing.JFormattedTextField" name="jFormattedTextField_HandThicknessL">
+                        <Component class="javax.swing.JCheckBox" name="jCheckBox_HandThickSync">
                           <Properties>
-                            <Property name="text" type="java.lang.String" value="jFormattedTextField2"/>
+                            <Property name="text" type="java.lang.String" value="Sync"/>
+                          </Properties>
+                          <Constraints>
+                            <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
+                              <GridBagConstraints gridX="0" gridY="2" gridWidth="0" gridHeight="1" fill="0" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.0" weightY="0.0"/>
+                            </Constraint>
+                          </Constraints>
+                        </Component>
+                        <Component class="javax.swing.JSpinner" name="jSpinner_HandThicknessL">
+                          <Properties>
                             <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                               <Dimension value="[75, 28]"/>
                             </Property>
@@ -1504,13 +1479,18 @@
                             </Constraint>
                           </Constraints>
                         </Component>
-                        <Component class="javax.swing.JCheckBox" name="jCheckBox_HandThickSync">
+                        <Component class="javax.swing.JSpinner" name="jSpinner_HandThicknessR">
                           <Properties>
-                            <Property name="text" type="java.lang.String" value="Sync"/>
+                            <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                              <Dimension value="[75, 28]"/>
+                            </Property>
+                            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                              <Dimension value="[75, 28]"/>
+                            </Property>
                           </Properties>
                           <Constraints>
                             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
-                              <GridBagConstraints gridX="0" gridY="2" gridWidth="0" gridHeight="1" fill="0" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.0" weightY="0.0"/>
+                              <GridBagConstraints gridX="1" gridY="1" gridWidth="1" gridHeight="1" fill="0" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.0" weightY="0.0"/>
                             </Constraint>
                           </Constraints>
                         </Component>
@@ -1569,22 +1549,6 @@
                             </Constraint>
                           </Constraints>
                         </Component>
-                        <Component class="javax.swing.JFormattedTextField" name="jFormattedTextField_ForearmLengthR">
-                          <Properties>
-                            <Property name="text" type="java.lang.String" value="jFormattedTextField1"/>
-                            <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                              <Dimension value="[75, 28]"/>
-                            </Property>
-                            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                              <Dimension value="[75, 28]"/>
-                            </Property>
-                          </Properties>
-                          <Constraints>
-                            <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
-                              <GridBagConstraints gridX="1" gridY="1" gridWidth="1" gridHeight="1" fill="0" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.0" weightY="0.0"/>
-                            </Constraint>
-                          </Constraints>
-                        </Component>
                         <Component class="javax.swing.JSlider" name="jSlider_ForearmLengthL">
                           <Properties>
                             <Property name="orientation" type="int" value="1"/>
@@ -1601,9 +1565,18 @@
                             </Constraint>
                           </Constraints>
                         </Component>
-                        <Component class="javax.swing.JFormattedTextField" name="jFormattedTextField_ForearmLengthL">
+                        <Component class="javax.swing.JCheckBox" name="jCheckBox_ForearmLenSync">
                           <Properties>
-                            <Property name="text" type="java.lang.String" value="jFormattedTextField2"/>
+                            <Property name="text" type="java.lang.String" value="Sync"/>
+                          </Properties>
+                          <Constraints>
+                            <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
+                              <GridBagConstraints gridX="0" gridY="2" gridWidth="0" gridHeight="1" fill="0" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.0" weightY="0.0"/>
+                            </Constraint>
+                          </Constraints>
+                        </Component>
+                        <Component class="javax.swing.JSpinner" name="jSpinner_ForearmLengthL">
+                          <Properties>
                             <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                               <Dimension value="[75, 28]"/>
                             </Property>
@@ -1617,13 +1590,18 @@
                             </Constraint>
                           </Constraints>
                         </Component>
-                        <Component class="javax.swing.JCheckBox" name="jCheckBox_ForearmLenSync">
+                        <Component class="javax.swing.JSpinner" name="jSpinner_ForearmLengthR">
                           <Properties>
-                            <Property name="text" type="java.lang.String" value="Sync"/>
+                            <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                              <Dimension value="[75, 28]"/>
+                            </Property>
+                            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                              <Dimension value="[75, 28]"/>
+                            </Property>
                           </Properties>
                           <Constraints>
                             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
-                              <GridBagConstraints gridX="0" gridY="2" gridWidth="0" gridHeight="1" fill="0" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.0" weightY="0.0"/>
+                              <GridBagConstraints gridX="1" gridY="1" gridWidth="1" gridHeight="1" fill="0" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.0" weightY="0.0"/>
                             </Constraint>
                           </Constraints>
                         </Component>
@@ -1668,22 +1646,6 @@
                             </Constraint>
                           </Constraints>
                         </Component>
-                        <Component class="javax.swing.JFormattedTextField" name="jFormattedTextField_ForearmThicknessR">
-                          <Properties>
-                            <Property name="text" type="java.lang.String" value="jFormattedTextField1"/>
-                            <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                              <Dimension value="[75, 28]"/>
-                            </Property>
-                            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                              <Dimension value="[75, 28]"/>
-                            </Property>
-                          </Properties>
-                          <Constraints>
-                            <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
-                              <GridBagConstraints gridX="1" gridY="1" gridWidth="1" gridHeight="1" fill="0" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.0" weightY="0.0"/>
-                            </Constraint>
-                          </Constraints>
-                        </Component>
                         <Component class="javax.swing.JSlider" name="jSlider_ForearmThicknessL">
                           <Properties>
                             <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
@@ -1699,9 +1661,18 @@
                             </Constraint>
                           </Constraints>
                         </Component>
-                        <Component class="javax.swing.JFormattedTextField" name="jFormattedTextField_ForearmThicknessL">
+                        <Component class="javax.swing.JCheckBox" name="jCheckBox_ForearmThickSync">
                           <Properties>
-                            <Property name="text" type="java.lang.String" value="jFormattedTextField2"/>
+                            <Property name="text" type="java.lang.String" value="Sync"/>
+                          </Properties>
+                          <Constraints>
+                            <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
+                              <GridBagConstraints gridX="0" gridY="2" gridWidth="0" gridHeight="1" fill="0" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.0" weightY="0.0"/>
+                            </Constraint>
+                          </Constraints>
+                        </Component>
+                        <Component class="javax.swing.JSpinner" name="jSpinner_ForearmThicknessL">
+                          <Properties>
                             <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                               <Dimension value="[75, 28]"/>
                             </Property>
@@ -1715,13 +1686,18 @@
                             </Constraint>
                           </Constraints>
                         </Component>
-                        <Component class="javax.swing.JCheckBox" name="jCheckBox_ForearmThickSync">
+                        <Component class="javax.swing.JSpinner" name="jSpinner_ForearmThicknessR">
                           <Properties>
-                            <Property name="text" type="java.lang.String" value="Sync"/>
+                            <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                              <Dimension value="[75, 28]"/>
+                            </Property>
+                            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                              <Dimension value="[75, 28]"/>
+                            </Property>
                           </Properties>
                           <Constraints>
                             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
-                              <GridBagConstraints gridX="0" gridY="2" gridWidth="0" gridHeight="1" fill="0" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.0" weightY="0.0"/>
+                              <GridBagConstraints gridX="1" gridY="1" gridWidth="1" gridHeight="1" fill="0" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.0" weightY="0.0"/>
                             </Constraint>
                           </Constraints>
                         </Component>
@@ -1780,22 +1756,6 @@
                             </Constraint>
                           </Constraints>
                         </Component>
-                        <Component class="javax.swing.JFormattedTextField" name="jFormattedTextField_UpperarmLengthR">
-                          <Properties>
-                            <Property name="text" type="java.lang.String" value="jFormattedTextField1"/>
-                            <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                              <Dimension value="[75, 28]"/>
-                            </Property>
-                            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                              <Dimension value="[75, 28]"/>
-                            </Property>
-                          </Properties>
-                          <Constraints>
-                            <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
-                              <GridBagConstraints gridX="1" gridY="1" gridWidth="1" gridHeight="1" fill="0" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.0" weightY="0.0"/>
-                            </Constraint>
-                          </Constraints>
-                        </Component>
                         <Component class="javax.swing.JSlider" name="jSlider_UpperArmLengthL">
                           <Properties>
                             <Property name="orientation" type="int" value="1"/>
@@ -1812,9 +1772,18 @@
                             </Constraint>
                           </Constraints>
                         </Component>
-                        <Component class="javax.swing.JFormattedTextField" name="jFormattedTextField_UpperArmLengthL">
+                        <Component class="javax.swing.JCheckBox" name="jCheckBox_UpperarmLenSync">
                           <Properties>
-                            <Property name="text" type="java.lang.String" value="jFormattedTextField2"/>
+                            <Property name="text" type="java.lang.String" value="Sync"/>
+                          </Properties>
+                          <Constraints>
+                            <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
+                              <GridBagConstraints gridX="0" gridY="2" gridWidth="0" gridHeight="1" fill="0" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.0" weightY="0.0"/>
+                            </Constraint>
+                          </Constraints>
+                        </Component>
+                        <Component class="javax.swing.JSpinner" name="jSpinner_UpperarmLengthL">
+                          <Properties>
                             <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                               <Dimension value="[75, 28]"/>
                             </Property>
@@ -1828,13 +1797,18 @@
                             </Constraint>
                           </Constraints>
                         </Component>
-                        <Component class="javax.swing.JCheckBox" name="jCheckBox_UpperarmLenSync">
+                        <Component class="javax.swing.JSpinner" name="jSpinner_UpperarmLengthR">
                           <Properties>
-                            <Property name="text" type="java.lang.String" value="Sync"/>
+                            <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                              <Dimension value="[75, 28]"/>
+                            </Property>
+                            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                              <Dimension value="[75, 28]"/>
+                            </Property>
                           </Properties>
                           <Constraints>
                             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
-                              <GridBagConstraints gridX="0" gridY="2" gridWidth="0" gridHeight="1" fill="0" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.0" weightY="0.0"/>
+                              <GridBagConstraints gridX="1" gridY="1" gridWidth="1" gridHeight="1" fill="0" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.0" weightY="0.0"/>
                             </Constraint>
                           </Constraints>
                         </Component>
@@ -1879,22 +1853,6 @@
                             </Constraint>
                           </Constraints>
                         </Component>
-                        <Component class="javax.swing.JFormattedTextField" name="jFormattedTextField_UpperarmThicknessR">
-                          <Properties>
-                            <Property name="text" type="java.lang.String" value="jFormattedTextField1"/>
-                            <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                              <Dimension value="[75, 28]"/>
-                            </Property>
-                            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                              <Dimension value="[75, 28]"/>
-                            </Property>
-                          </Properties>
-                          <Constraints>
-                            <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
-                              <GridBagConstraints gridX="1" gridY="1" gridWidth="1" gridHeight="1" fill="0" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.0" weightY="0.0"/>
-                            </Constraint>
-                          </Constraints>
-                        </Component>
                         <Component class="javax.swing.JSlider" name="jSlider_UpperarmThicknessL">
                           <Properties>
                             <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
@@ -1910,9 +1868,18 @@
                             </Constraint>
                           </Constraints>
                         </Component>
-                        <Component class="javax.swing.JFormattedTextField" name="jFormattedTextField_UpperarmThicknessL">
+                        <Component class="javax.swing.JCheckBox" name="jCheckBox_UpperarmThickSync">
                           <Properties>
-                            <Property name="text" type="java.lang.String" value="jFormattedTextField2"/>
+                            <Property name="text" type="java.lang.String" value="Sync"/>
+                          </Properties>
+                          <Constraints>
+                            <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
+                              <GridBagConstraints gridX="0" gridY="2" gridWidth="0" gridHeight="1" fill="0" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.0" weightY="0.0"/>
+                            </Constraint>
+                          </Constraints>
+                        </Component>
+                        <Component class="javax.swing.JSpinner" name="jSpinner_UpperarmThicknessL">
+                          <Properties>
                             <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                               <Dimension value="[75, 28]"/>
                             </Property>
@@ -1926,13 +1893,18 @@
                             </Constraint>
                           </Constraints>
                         </Component>
-                        <Component class="javax.swing.JCheckBox" name="jCheckBox_UpperarmThickSync">
+                        <Component class="javax.swing.JSpinner" name="jSpinner_UpperarmThicknessR">
                           <Properties>
-                            <Property name="text" type="java.lang.String" value="Sync"/>
+                            <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                              <Dimension value="[75, 28]"/>
+                            </Property>
+                            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                              <Dimension value="[75, 28]"/>
+                            </Property>
                           </Properties>
                           <Constraints>
                             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
-                              <GridBagConstraints gridX="0" gridY="2" gridWidth="0" gridHeight="1" fill="0" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.0" weightY="0.0"/>
+                              <GridBagConstraints gridX="1" gridY="1" gridWidth="1" gridHeight="1" fill="0" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.0" weightY="0.0"/>
                             </Constraint>
                           </Constraints>
                         </Component>
@@ -2029,22 +2001,6 @@
                             </Constraint>
                           </Constraints>
                         </Component>
-                        <Component class="javax.swing.JFormattedTextField" name="jFormattedTextField_FeetLengthR">
-                          <Properties>
-                            <Property name="text" type="java.lang.String" value="jFormattedTextField1"/>
-                            <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                              <Dimension value="[75, 28]"/>
-                            </Property>
-                            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                              <Dimension value="[75, 28]"/>
-                            </Property>
-                          </Properties>
-                          <Constraints>
-                            <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
-                              <GridBagConstraints gridX="1" gridY="1" gridWidth="1" gridHeight="1" fill="0" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.0" weightY="0.0"/>
-                            </Constraint>
-                          </Constraints>
-                        </Component>
                         <Component class="javax.swing.JSlider" name="jSlider_FeetLengthL">
                           <Properties>
                             <Property name="orientation" type="int" value="1"/>
@@ -2061,9 +2017,18 @@
                             </Constraint>
                           </Constraints>
                         </Component>
-                        <Component class="javax.swing.JFormattedTextField" name="jFormattedTextField_FeetLengthL">
+                        <Component class="javax.swing.JCheckBox" name="jCheckBox_FeetLenSync">
                           <Properties>
-                            <Property name="text" type="java.lang.String" value="jFormattedTextField2"/>
+                            <Property name="text" type="java.lang.String" value="Sync"/>
+                          </Properties>
+                          <Constraints>
+                            <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
+                              <GridBagConstraints gridX="0" gridY="2" gridWidth="0" gridHeight="1" fill="0" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.0" weightY="0.0"/>
+                            </Constraint>
+                          </Constraints>
+                        </Component>
+                        <Component class="javax.swing.JSpinner" name="jSpinner_FeetLengthL">
+                          <Properties>
                             <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                               <Dimension value="[75, 28]"/>
                             </Property>
@@ -2077,13 +2042,18 @@
                             </Constraint>
                           </Constraints>
                         </Component>
-                        <Component class="javax.swing.JCheckBox" name="jCheckBox_FeetLenSync">
+                        <Component class="javax.swing.JSpinner" name="jSpinner_FeetLengthR">
                           <Properties>
-                            <Property name="text" type="java.lang.String" value="Sync"/>
+                            <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                              <Dimension value="[75, 28]"/>
+                            </Property>
+                            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                              <Dimension value="[75, 28]"/>
+                            </Property>
                           </Properties>
                           <Constraints>
                             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
-                              <GridBagConstraints gridX="0" gridY="2" gridWidth="0" gridHeight="1" fill="0" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.0" weightY="0.0"/>
+                              <GridBagConstraints gridX="1" gridY="1" gridWidth="1" gridHeight="1" fill="0" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.0" weightY="0.0"/>
                             </Constraint>
                           </Constraints>
                         </Component>
@@ -2128,22 +2098,6 @@
                             </Constraint>
                           </Constraints>
                         </Component>
-                        <Component class="javax.swing.JFormattedTextField" name="jFormattedTextField_FeetThicknessR">
-                          <Properties>
-                            <Property name="text" type="java.lang.String" value="jFormattedTextField1"/>
-                            <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                              <Dimension value="[75, 28]"/>
-                            </Property>
-                            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                              <Dimension value="[75, 28]"/>
-                            </Property>
-                          </Properties>
-                          <Constraints>
-                            <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
-                              <GridBagConstraints gridX="1" gridY="1" gridWidth="1" gridHeight="1" fill="0" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.0" weightY="0.0"/>
-                            </Constraint>
-                          </Constraints>
-                        </Component>
                         <Component class="javax.swing.JSlider" name="jSlider_FeetThicknessL">
                           <Properties>
                             <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
@@ -2159,9 +2113,18 @@
                             </Constraint>
                           </Constraints>
                         </Component>
-                        <Component class="javax.swing.JFormattedTextField" name="jFormattedTextField_FeetThicknessL">
+                        <Component class="javax.swing.JCheckBox" name="jCheckBox_FeetThickSync">
                           <Properties>
-                            <Property name="text" type="java.lang.String" value="jFormattedTextField2"/>
+                            <Property name="text" type="java.lang.String" value="Sync"/>
+                          </Properties>
+                          <Constraints>
+                            <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
+                              <GridBagConstraints gridX="0" gridY="2" gridWidth="0" gridHeight="1" fill="0" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.0" weightY="0.0"/>
+                            </Constraint>
+                          </Constraints>
+                        </Component>
+                        <Component class="javax.swing.JSpinner" name="jSpinner_FeetThicknessL">
+                          <Properties>
                             <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                               <Dimension value="[75, 28]"/>
                             </Property>
@@ -2175,13 +2138,18 @@
                             </Constraint>
                           </Constraints>
                         </Component>
-                        <Component class="javax.swing.JCheckBox" name="jCheckBox_FeetThickSync">
+                        <Component class="javax.swing.JSpinner" name="jSpinner_FeetThicknessR">
                           <Properties>
-                            <Property name="text" type="java.lang.String" value="Sync"/>
+                            <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                              <Dimension value="[75, 28]"/>
+                            </Property>
+                            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                              <Dimension value="[75, 28]"/>
+                            </Property>
                           </Properties>
                           <Constraints>
                             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
-                              <GridBagConstraints gridX="0" gridY="2" gridWidth="0" gridHeight="1" fill="0" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.0" weightY="0.0"/>
+                              <GridBagConstraints gridX="1" gridY="1" gridWidth="1" gridHeight="1" fill="0" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.0" weightY="0.0"/>
                             </Constraint>
                           </Constraints>
                         </Component>
@@ -2240,22 +2208,6 @@
                             </Constraint>
                           </Constraints>
                         </Component>
-                        <Component class="javax.swing.JFormattedTextField" name="jFormattedTextField_CalvesLengthR">
-                          <Properties>
-                            <Property name="text" type="java.lang.String" value="jFormattedTextField1"/>
-                            <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                              <Dimension value="[75, 28]"/>
-                            </Property>
-                            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                              <Dimension value="[75, 28]"/>
-                            </Property>
-                          </Properties>
-                          <Constraints>
-                            <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
-                              <GridBagConstraints gridX="1" gridY="1" gridWidth="1" gridHeight="1" fill="0" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.0" weightY="0.0"/>
-                            </Constraint>
-                          </Constraints>
-                        </Component>
                         <Component class="javax.swing.JSlider" name="jSlider_CalvesLengthL">
                           <Properties>
                             <Property name="orientation" type="int" value="1"/>
@@ -2272,9 +2224,18 @@
                             </Constraint>
                           </Constraints>
                         </Component>
-                        <Component class="javax.swing.JFormattedTextField" name="jFormattedTextField_CalvesLengthL">
+                        <Component class="javax.swing.JCheckBox" name="jCheckBox_CalvesLenSync">
                           <Properties>
-                            <Property name="text" type="java.lang.String" value="jFormattedTextField2"/>
+                            <Property name="text" type="java.lang.String" value="Sync"/>
+                          </Properties>
+                          <Constraints>
+                            <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
+                              <GridBagConstraints gridX="0" gridY="2" gridWidth="0" gridHeight="1" fill="0" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.0" weightY="0.0"/>
+                            </Constraint>
+                          </Constraints>
+                        </Component>
+                        <Component class="javax.swing.JSpinner" name="jSpinner_CalvesLengthL">
+                          <Properties>
                             <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                               <Dimension value="[75, 28]"/>
                             </Property>
@@ -2288,13 +2249,18 @@
                             </Constraint>
                           </Constraints>
                         </Component>
-                        <Component class="javax.swing.JCheckBox" name="jCheckBox_CalvesLenSync">
+                        <Component class="javax.swing.JSpinner" name="jSpinner_CalvesLengthR">
                           <Properties>
-                            <Property name="text" type="java.lang.String" value="Sync"/>
+                            <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                              <Dimension value="[75, 28]"/>
+                            </Property>
+                            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                              <Dimension value="[75, 28]"/>
+                            </Property>
                           </Properties>
                           <Constraints>
                             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
-                              <GridBagConstraints gridX="0" gridY="2" gridWidth="0" gridHeight="1" fill="0" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.0" weightY="0.0"/>
+                              <GridBagConstraints gridX="1" gridY="1" gridWidth="1" gridHeight="1" fill="0" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.0" weightY="0.0"/>
                             </Constraint>
                           </Constraints>
                         </Component>
@@ -2339,22 +2305,6 @@
                             </Constraint>
                           </Constraints>
                         </Component>
-                        <Component class="javax.swing.JFormattedTextField" name="jFormattedTextField_CalvesThicknessR">
-                          <Properties>
-                            <Property name="text" type="java.lang.String" value="jFormattedTextField1"/>
-                            <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                              <Dimension value="[75, 28]"/>
-                            </Property>
-                            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                              <Dimension value="[75, 28]"/>
-                            </Property>
-                          </Properties>
-                          <Constraints>
-                            <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
-                              <GridBagConstraints gridX="1" gridY="1" gridWidth="1" gridHeight="1" fill="0" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.0" weightY="0.0"/>
-                            </Constraint>
-                          </Constraints>
-                        </Component>
                         <Component class="javax.swing.JSlider" name="jSlider_CalvesThicknessL">
                           <Properties>
                             <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
@@ -2370,9 +2320,18 @@
                             </Constraint>
                           </Constraints>
                         </Component>
-                        <Component class="javax.swing.JFormattedTextField" name="jFormattedTextField_CalvesThicknessL">
+                        <Component class="javax.swing.JCheckBox" name="jCheckBox_CalvesThickSync">
                           <Properties>
-                            <Property name="text" type="java.lang.String" value="jFormattedTextField2"/>
+                            <Property name="text" type="java.lang.String" value="Sync"/>
+                          </Properties>
+                          <Constraints>
+                            <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
+                              <GridBagConstraints gridX="0" gridY="2" gridWidth="0" gridHeight="1" fill="0" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.0" weightY="0.0"/>
+                            </Constraint>
+                          </Constraints>
+                        </Component>
+                        <Component class="javax.swing.JSpinner" name="jSpinner_CalvesThicknessL">
+                          <Properties>
                             <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                               <Dimension value="[75, 28]"/>
                             </Property>
@@ -2386,13 +2345,18 @@
                             </Constraint>
                           </Constraints>
                         </Component>
-                        <Component class="javax.swing.JCheckBox" name="jCheckBox_CalvesThickSync">
+                        <Component class="javax.swing.JSpinner" name="jSpinner_CalvesThicknessR">
                           <Properties>
-                            <Property name="text" type="java.lang.String" value="Sync"/>
+                            <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                              <Dimension value="[75, 28]"/>
+                            </Property>
+                            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                              <Dimension value="[75, 28]"/>
+                            </Property>
                           </Properties>
                           <Constraints>
                             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
-                              <GridBagConstraints gridX="0" gridY="2" gridWidth="0" gridHeight="1" fill="0" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.0" weightY="0.0"/>
+                              <GridBagConstraints gridX="1" gridY="1" gridWidth="1" gridHeight="1" fill="0" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.0" weightY="0.0"/>
                             </Constraint>
                           </Constraints>
                         </Component>
@@ -2451,22 +2415,6 @@
                             </Constraint>
                           </Constraints>
                         </Component>
-                        <Component class="javax.swing.JFormattedTextField" name="jFormattedTextField_ThighLengthR">
-                          <Properties>
-                            <Property name="text" type="java.lang.String" value="jFormattedTextField1"/>
-                            <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                              <Dimension value="[75, 28]"/>
-                            </Property>
-                            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                              <Dimension value="[75, 28]"/>
-                            </Property>
-                          </Properties>
-                          <Constraints>
-                            <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
-                              <GridBagConstraints gridX="1" gridY="1" gridWidth="1" gridHeight="1" fill="0" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.0" weightY="0.0"/>
-                            </Constraint>
-                          </Constraints>
-                        </Component>
                         <Component class="javax.swing.JSlider" name="jSlider_ThighLengthL">
                           <Properties>
                             <Property name="orientation" type="int" value="1"/>
@@ -2483,9 +2431,18 @@
                             </Constraint>
                           </Constraints>
                         </Component>
-                        <Component class="javax.swing.JFormattedTextField" name="jFormattedTextField_ThighLengthL">
+                        <Component class="javax.swing.JCheckBox" name="jCheckBox_ThighLenSync">
                           <Properties>
-                            <Property name="text" type="java.lang.String" value="jFormattedTextField2"/>
+                            <Property name="text" type="java.lang.String" value="Sync"/>
+                          </Properties>
+                          <Constraints>
+                            <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
+                              <GridBagConstraints gridX="0" gridY="2" gridWidth="0" gridHeight="1" fill="0" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.0" weightY="0.0"/>
+                            </Constraint>
+                          </Constraints>
+                        </Component>
+                        <Component class="javax.swing.JSpinner" name="jSpinner_ThighLengthL">
+                          <Properties>
                             <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                               <Dimension value="[75, 28]"/>
                             </Property>
@@ -2499,13 +2456,18 @@
                             </Constraint>
                           </Constraints>
                         </Component>
-                        <Component class="javax.swing.JCheckBox" name="jCheckBox_ThighLenSync">
+                        <Component class="javax.swing.JSpinner" name="jSpinner_ThighLengthR">
                           <Properties>
-                            <Property name="text" type="java.lang.String" value="Sync"/>
+                            <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                              <Dimension value="[75, 28]"/>
+                            </Property>
+                            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                              <Dimension value="[75, 28]"/>
+                            </Property>
                           </Properties>
                           <Constraints>
                             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
-                              <GridBagConstraints gridX="0" gridY="2" gridWidth="0" gridHeight="1" fill="0" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.0" weightY="0.0"/>
+                              <GridBagConstraints gridX="1" gridY="1" gridWidth="1" gridHeight="1" fill="0" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.0" weightY="0.0"/>
                             </Constraint>
                           </Constraints>
                         </Component>
@@ -2550,22 +2512,6 @@
                             </Constraint>
                           </Constraints>
                         </Component>
-                        <Component class="javax.swing.JFormattedTextField" name="jFormattedTextField_ThighThicknessR">
-                          <Properties>
-                            <Property name="text" type="java.lang.String" value="jFormattedTextField1"/>
-                            <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                              <Dimension value="[75, 28]"/>
-                            </Property>
-                            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                              <Dimension value="[75, 28]"/>
-                            </Property>
-                          </Properties>
-                          <Constraints>
-                            <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
-                              <GridBagConstraints gridX="1" gridY="1" gridWidth="1" gridHeight="1" fill="0" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.0" weightY="0.0"/>
-                            </Constraint>
-                          </Constraints>
-                        </Component>
                         <Component class="javax.swing.JSlider" name="jSlider_ThighThicknessL">
                           <Properties>
                             <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
@@ -2581,9 +2527,18 @@
                             </Constraint>
                           </Constraints>
                         </Component>
-                        <Component class="javax.swing.JFormattedTextField" name="jFormattedTextField_ThighThicknessL">
+                        <Component class="javax.swing.JCheckBox" name="jCheckBox_ThighThickSync">
                           <Properties>
-                            <Property name="text" type="java.lang.String" value="jFormattedTextField2"/>
+                            <Property name="text" type="java.lang.String" value="Sync"/>
+                          </Properties>
+                          <Constraints>
+                            <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
+                              <GridBagConstraints gridX="0" gridY="2" gridWidth="0" gridHeight="1" fill="0" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.0" weightY="0.0"/>
+                            </Constraint>
+                          </Constraints>
+                        </Component>
+                        <Component class="javax.swing.JSpinner" name="jSpinner_ThighThicknessL">
+                          <Properties>
                             <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                               <Dimension value="[75, 28]"/>
                             </Property>
@@ -2597,13 +2552,18 @@
                             </Constraint>
                           </Constraints>
                         </Component>
-                        <Component class="javax.swing.JCheckBox" name="jCheckBox_ThighThickSync">
+                        <Component class="javax.swing.JSpinner" name="jSpinner_ThighThicknessR">
                           <Properties>
-                            <Property name="text" type="java.lang.String" value="Sync"/>
+                            <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                              <Dimension value="[75, 28]"/>
+                            </Property>
+                            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                              <Dimension value="[75, 28]"/>
+                            </Property>
                           </Properties>
                           <Constraints>
                             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
-                              <GridBagConstraints gridX="0" gridY="2" gridWidth="0" gridHeight="1" fill="0" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.0" weightY="0.0"/>
+                              <GridBagConstraints gridX="1" gridY="1" gridWidth="1" gridHeight="1" fill="0" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.0" weightY="0.0"/>
                             </Constraint>
                           </Constraints>
                         </Component>
@@ -2685,9 +2645,8 @@
                             </Constraint>
                           </Constraints>
                         </Component>
-                        <Component class="javax.swing.JFormattedTextField" name="jFormattedTextField_ChestBulk">
+                        <Component class="javax.swing.JSpinner" name="jSpinner_ChestBulk">
                           <Properties>
-                            <Property name="text" type="java.lang.String" value="jFormattedTextField1"/>
                             <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                               <Dimension value="[75, 28]"/>
                             </Property>
@@ -2728,9 +2687,8 @@
                             </Constraint>
                           </Constraints>
                         </Component>
-                        <Component class="javax.swing.JFormattedTextField" name="jFormattedTextField_ChestBroadness">
+                        <Component class="javax.swing.JSpinner" name="jSpinner_ChestBroadness">
                           <Properties>
-                            <Property name="text" type="java.lang.String" value="jFormattedTextField2"/>
                             <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                               <Dimension value="[75, 28]"/>
                             </Property>
@@ -2784,9 +2742,8 @@
                             </Constraint>
                           </Constraints>
                         </Component>
-                        <Component class="javax.swing.JFormattedTextField" name="jFormattedTextField_BellyRoundness">
+                        <Component class="javax.swing.JSpinner" name="jSpinner_BellyRoundness">
                           <Properties>
-                            <Property name="text" type="java.lang.String" value="jFormattedTextField1"/>
                             <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                               <Dimension value="[75, 28]"/>
                             </Property>
@@ -2827,9 +2784,8 @@
                             </Constraint>
                           </Constraints>
                         </Component>
-                        <Component class="javax.swing.JFormattedTextField" name="jFormattedTextField_Waistline">
+                        <Component class="javax.swing.JSpinner" name="jSpinner_Waistline">
                           <Properties>
-                            <Property name="text" type="java.lang.String" value="jFormattedTextField2"/>
                             <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                               <Dimension value="[75, 28]"/>
                             </Property>
@@ -2883,9 +2839,8 @@
                             </Constraint>
                           </Constraints>
                         </Component>
-                        <Component class="javax.swing.JFormattedTextField" name="jFormattedTextField_GlutRoundness">
+                        <Component class="javax.swing.JSpinner" name="jSpinner_GlutRoundness">
                           <Properties>
-                            <Property name="text" type="java.lang.String" value="jFormattedTextField1"/>
                             <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                               <Dimension value="[75, 28]"/>
                             </Property>
@@ -2926,9 +2881,8 @@
                             </Constraint>
                           </Constraints>
                         </Component>
-                        <Component class="javax.swing.JFormattedTextField" name="jFormattedTextField_GlutSag">
+                        <Component class="javax.swing.JSpinner" name="jSpinner_GlutSag">
                           <Properties>
-                            <Property name="text" type="java.lang.String" value="jFormattedTextField2"/>
                             <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                               <Dimension value="[75, 28]"/>
                             </Property>
@@ -2988,9 +2942,8 @@
                             </Constraint>
                           </Constraints>
                         </Component>
-                        <Component class="javax.swing.JFormattedTextField" name="jFormattedTextField_BodyWidth">
+                        <Component class="javax.swing.JSpinner" name="jSpinner1">
                           <Properties>
-                            <Property name="text" type="java.lang.String" value="jFormattedTextField1"/>
                             <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                               <Dimension value="[75, 28]"/>
                             </Property>
@@ -3046,9 +2999,8 @@
                             </Constraint>
                           </Constraints>
                         </Component>
-                        <Component class="javax.swing.JFormattedTextField" name="jFormattedTextField_BodyHeight">
+                        <Component class="javax.swing.JSpinner" name="jSpinner2">
                           <Properties>
-                            <Property name="text" type="java.lang.String" value="jFormattedTextField2"/>
                             <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                               <Dimension value="[75, 28]"/>
                             </Property>
@@ -3095,9 +3047,8 @@
                             </Constraint>
                           </Constraints>
                         </Component>
-                        <Component class="javax.swing.JFormattedTextField" name="jFormattedTextField_BodyDepth">
+                        <Component class="javax.swing.JSpinner" name="jSpinner3">
                           <Properties>
-                            <Property name="text" type="java.lang.String" value="jFormattedTextField3"/>
                             <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                               <Dimension value="[75, 28]"/>
                             </Property>
@@ -3144,9 +3095,8 @@
                             </Constraint>
                           </Constraints>
                         </Component>
-                        <Component class="javax.swing.JFormattedTextField" name="jFormattedTextField_BodyUniform">
+                        <Component class="javax.swing.JSpinner" name="jSpinner4">
                           <Properties>
-                            <Property name="text" type="java.lang.String" value="jFormattedTextField1"/>
                             <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                               <Dimension value="[75, 28]"/>
                             </Property>
