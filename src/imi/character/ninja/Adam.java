@@ -50,7 +50,7 @@ public class Adam extends Ninja
         // Tweak animation names and speeds
         m_context.getController().setReverseHeading(true);
         m_context.getStates().get(PunchState.class).setAnimationSpeed(3.0f);
-        ((PunchState)m_context.getStates().get(PunchState.class)).setMinimumTimeBeforeTransition(1.25f);
+        //((PunchState)m_context.getStates().get(PunchState.class)).setMinimumTimeBeforeTransition(1.25f);
         m_context.getStates().get(TurnState.class).setAnimationName("StrafeRight");
         m_context.getStates().get(TurnState.class).setAnimationSpeed(5.0f);
         ((WalkState)m_context.getStates().get(WalkState.class)).setWalkSpeedFactor(5.0f);

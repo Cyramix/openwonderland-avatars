@@ -19,6 +19,8 @@ package imi.character.ninja;
 
 import imi.character.statemachine.GameState;
 import imi.character.statemachine.GameContext;
+import imi.scene.animation.AnimationComponent.PlaybackMode;
+import imi.scene.animation.AnimationListener.AnimationMessageType;
 
 /**
  *
@@ -28,8 +30,7 @@ public class PunchState extends GameState
 {
     NinjaContext ninjaContext = null;
             
-    private float exitCounter      = 0.0f;
-    private float minimumTimeBeforeTransition = 0.5f;
+    private boolean bPlayedOnce = false;
     
     public PunchState(NinjaContext master)
     {
@@ -66,7 +67,7 @@ public class PunchState extends GameState
     {       
         super.stateEnter(owner);
         
-        exitCounter   = 0.0f;
+        bPlayedOnce = false;
                       
         // Stop the character
         ninjaContext.getController().stop();
@@ -76,19 +77,18 @@ public class PunchState extends GameState
     public void update(float deltaTime)
     {
         super.update(deltaTime);
-                
-        exitCounter += deltaTime;
                                  
         // Check for possible transitions
-        if (exitCounter > minimumTimeBeforeTransition)
+        if (bPlayedOnce)
             transitionCheck();
     }
     
-    public float getMinimumTimeBeforeTransition() {
-        return minimumTimeBeforeTransition;
-    }
-
-    public void setMinimumTimeBeforeTransition(float minimumTimeBeforeTransition) {
-        this.minimumTimeBeforeTransition = minimumTimeBeforeTransition;
+    @Override
+    public void notifyAnimationMessage(AnimationMessageType message) 
+    {
+        if (message == AnimationMessageType.TransitionComplete)
+            gameContext.getSkeleton().getAnimationState().setCurrentCyclePlaybackMode(PlaybackMode.PlayOnce);
+        else if (message == AnimationMessageType.PlayOnceComplete)
+            bPlayedOnce = true;
     }
 }
