@@ -121,6 +121,11 @@ public abstract class Character extends Entity implements SpatialObject, Animati
     
     protected EyeBall m_leftEyeBall = null;
     protected EyeBall m_rightEyeBall = null;
+    protected SkinnedMeshJoint m_headJoint = null;
+    protected boolean m_bEyesWander = true;
+    protected Vector3f m_eyesWanderOffset = new Vector3f();
+    private    float m_eyesWanderCounter = 0.0f;
+    private    int   m_eyesWanderIntCounter = 0;
     protected VerletArm m_arm         = null;
     private   VerletJointManipulator m_armJointManipulator = null;
     private   float     m_armTimer    = 0.0f;
@@ -801,6 +806,8 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         if (m_attributes.bUseSimpleSphereModel)
             m_modelInst.setDirty(true, true);
         
+        updateEyes(deltaTime);
+        
         if (m_arm != null && m_arm.isEnabled())
         {
             m_armTimer += deltaTime;
@@ -810,6 +817,50 @@ public abstract class Character extends Entity implements SpatialObject, Animati
                 m_arm.update(m_armTimeTick);
             }
         }
+    }
+    
+    private void updateEyes(float deltaTime)
+    {
+        if (!m_bEyesWander || m_leftEyeBall == null || m_rightEyeBall == null)
+            return;
+
+        if (m_headJoint == null)
+            m_headJoint = (SkinnedMeshJoint)m_modelInst.findChild("Head");
+                    
+        // Position the target in fornt of the eyes
+        Vector3f target = m_modelInst.getTransform().getWorldMatrix(false).getTranslation();
+        target.addLocal(m_modelInst.getTransform().getWorldMatrix(false).getLocalZ().mult(5.0f));
+        target.addLocal(m_headJoint.getTransform().getWorldMatrix(false).getTranslation().add(Vector3f.UNIT_Y.mult(-1.4f)));
+        //Vector3f targetOrigin = new Vector3f(target);
+        
+        // Offset the target with a quick and dirty wander algorythim
+        m_eyesWanderCounter += deltaTime;
+        if (m_eyesWanderCounter > (float)Math.random() + 0.15f)
+        {
+            m_eyesWanderIntCounter += 1;
+            m_eyesWanderCounter = 0.0f;
+            
+            float randomScale = 0.15f;
+            
+            if (Math.random() > 0.5)
+                randomScale *= -1.0f;
+            m_eyesWanderOffset.x += (float)Math.random() * randomScale;
+            if (Math.random() > 0.5)
+                randomScale *= -1.0f;
+            m_eyesWanderOffset.y += (float)Math.random() * randomScale;
+            if (Math.random() > 0.5)
+                randomScale *= -1.0f;
+            m_eyesWanderOffset.z += (float)Math.random() * randomScale;
+        }
+        if (m_eyesWanderIntCounter > 20)
+        {
+            m_eyesWanderIntCounter = 0;
+            m_eyesWanderOffset.zero();
+        }
+        target.addLocal(m_eyesWanderOffset);
+        
+        m_leftEyeBall.setTarget(target);
+        m_rightEyeBall.setTarget(target);
     }
     
     /**
@@ -1108,4 +1159,25 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         
         pProcessor.execute(pRootInstruction);
     }
+
+    public boolean isEyesWander() {
+        return m_bEyesWander;
+    }
+
+    public void setEyesWander(boolean m_bEyesWander) {
+        this.m_bEyesWander = m_bEyesWander;
+    }
+    
+    /**
+     * Will set m_bEyesWander to false and set the target
+     * of both eyes.
+     * @param target
+     */
+    public void setEyesTarget(Vector3f target)
+    {
+        m_bEyesWander = false;
+        m_leftEyeBall.setTarget(target);
+        m_rightEyeBall.setTarget(target);
+    }
+    
 }

@@ -73,8 +73,8 @@ public class GoSit implements Task
         goalPosition.set(chair.getGoalPosition());
         sittingDirection.set(chair.getGoalForwardVector());
         
-        context.getCharacter().getLeftEyeBall().setTarget(goalPosition.add(0.0f, 1.0f, 0.0f));
-        context.getCharacter().getRightEyeBall().setTarget(goalPosition.add(0.0f, 1.0f, 0.0f));
+        //context.getCharacter().getLeftEyeBall().setTarget(goalPosition.add(0.0f, 1.0f, 0.0f));
+        //context.getCharacter().getRightEyeBall().setTarget(goalPosition.add(0.0f, 1.0f, 0.0f));
     }
     
     public boolean verify() 
