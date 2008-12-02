@@ -39,6 +39,7 @@ import com.jme.scene.state.ZBufferState;
 import com.jme.util.TextureManager;
 import imi.gui.JPanel_Animations;
 import imi.gui.JPanel_BasicOptions;
+import imi.gui.JPanel_EZOptions;
 import imi.gui.JPanel_ServerBrowser;
 import imi.gui.OptionsGUI;
 import imi.gui.SceneEssentials;
@@ -74,6 +75,7 @@ import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.io.File;
 import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -843,6 +845,21 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
         jPanel_MainPanel.add(BasicOptions, gridBagConstraints);
     }
 
+    public void openEZOptions() {
+        JPanel_EZOptions EZOptions = new JPanel_EZOptions();
+        java.awt.GridBagConstraints gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.gridheight = java.awt.GridBagConstraints.REMAINDER;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.VERTICAL;
+        jPanel_MainPanel.add(EZOptions, gridBagConstraints);
+
+        String url = new String(System.getProperty("user.dir") + "/assets/file/avatars_cau.xml");
+        File xml = new File(url);
+        EZOptions.readPresetList(xml);
+    }
+
     public void resetOpenTools() {
         if (m_AvatarOptions != null) {
             if (m_AvatarOptions.isVisible()) {
@@ -1107,7 +1124,8 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
                 runProgressBar(true);
                 //openServerBrowser();
                 //m_sceneData.openServerBrowser((JFrame) m_base);
-                openBasicOptions();
+                //openBasicOptions();
+                openEZOptions();
                 resetOpenTools();
                 runProgressBar(false);
             }
