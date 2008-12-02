@@ -82,8 +82,6 @@ public class TurnState extends GameState
         
         // Ninja's skeleton might be null untill loaded
         SkeletonNode skeleton = ninjaContext.getSkeleton();
-        if (skeleton == null)  
-            return;
             
         // Turn
         if (x != 0.0f)
@@ -91,10 +89,13 @@ public class TurnState extends GameState
             bTurning = true;
                 
             // Set animation direction
-            if ( x > 0.0f)
-                skeleton.getAnimationState().setReverseAnimation(true);
-            else 
-                skeleton.getAnimationState().setReverseAnimation(false);
+            if (skeleton != null)  
+            {
+                if ( x > 0.0f)
+                    skeleton.getAnimationState().setReverseAnimation(true);
+                else 
+                    skeleton.getAnimationState().setReverseAnimation(false);
+            }
             
             // Turn only if transitioned to the turning animation
             if (!ninjaContext.isTransitioning())
