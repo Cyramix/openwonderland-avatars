@@ -41,7 +41,6 @@ public class JPanel_EZOptions extends javax.swing.JPanel {
     }
 
     public void readPresetList(File xmlURL) {
-        
 
         try {
 
@@ -58,9 +57,14 @@ public class JPanel_EZOptions extends javax.swing.JPanel {
             int totalAvatars = listOfAvatars.getLength();
             System.out.println("Total no of avatar presets : " + totalAvatars);
 
+            m_presets = new ArrayList<Map<Integer, String[]>>();
+            m_presetLists = new ArrayList<String[]>();
+
             for (int s = 0; s < listOfAvatars.getLength(); s++) {
 
                 m_addList = new HashMap<Integer, String[]>();
+                String[] list = new String[4];
+
                 Node AvatarNode = listOfAvatars.item(s);
                 if (AvatarNode.getNodeType() == Node.ELEMENT_NODE) {
 
@@ -73,6 +77,7 @@ public class JPanel_EZOptions extends javax.swing.JPanel {
 
                     NodeList textDescList = descElement.getChildNodes();
                     System.out.println("Avatar Desc : " + ((Node) textDescList.item(0)).getNodeValue().trim());
+                    list[0] = ((Node) textDescList.item(0)).getNodeValue().trim();
 
                     //-------
                     NodeList imageList = avatarElement.getElementsByTagName("image");
@@ -80,6 +85,7 @@ public class JPanel_EZOptions extends javax.swing.JPanel {
 
                     NodeList textImageList = imageElement.getChildNodes();
                     System.out.println("Image loc : " + ((Node) textImageList.item(0)).getNodeValue().trim());
+                    list[1] = ((Node) textImageList.item(0)).getNodeValue().trim();
 
                     //-------
                     NodeList bindList = avatarElement.getElementsByTagName("bind");
@@ -87,6 +93,7 @@ public class JPanel_EZOptions extends javax.swing.JPanel {
 
                     NodeList textBindList = bindElement.getChildNodes();
                     System.out.println("Bind loc : " + ((Node) textBindList.item(0)).getNodeValue().trim());
+                    list[2] = ((Node) textBindList.item(0)).getNodeValue().trim();
 
                     //-------
                     NodeList headList = avatarElement.getElementsByTagName("head");
@@ -96,12 +103,14 @@ public class JPanel_EZOptions extends javax.swing.JPanel {
                     System.out.println("Head loc : " + ((Node) textHeadList.item(0)).getNodeValue().trim());
 
                     if (!((Node) textHeadList.item(0)).getNodeValue().trim().equals("null")) {
+                        String source = ((Node) textHeadList.item(0)).getNodeValue().trim();
                         NodeList countList = avatarElement.getElementsByTagName("headnum");
                         Element countElement = (Element) countList.item(0);
 
                         NodeList textCountList = countElement.getChildNodes();
                         String szCount = ((Node) textCountList.item(0)).getNodeValue().trim();
                         int iCount = Integer.parseInt(szCount);
+                        ++iCount;
 
                         NodeList geomList = avatarElement.getElementsByTagName("headgeom");
                         Element geomElement = (Element) geomList.item(0);
@@ -110,8 +119,17 @@ public class JPanel_EZOptions extends javax.swing.JPanel {
                         String[] szMeshes = new String[iCount];
 
                         for (int i = 0; i < iCount; i ++) {
-                            szMeshes[i] = ((Node) textGeomList.item(i)).getNodeValue().trim();
+                            if (i == 0)
+                                szMeshes[i] = source;
+                            else {
+                                szMeshes[i] = ((Node) textGeomList.item(0)).getNodeValue().trim();
+                                if (i < iCount -1) {
+                                    geomElement = (Element) geomList.item(i);
+                                    textGeomList = geomElement.getChildNodes();
+                                }
+                            }
                         }
+                        m_addList.put(0, szMeshes);
                     }
 
                     //-------
@@ -121,8 +139,34 @@ public class JPanel_EZOptions extends javax.swing.JPanel {
                     NodeList textHairList = hairElement.getChildNodes();
                     System.out.println("Hair loc : " + ((Node) textHairList.item(0)).getNodeValue().trim());
 
-                    if (((Node) textHairList.item(0)).getNodeValue().trim() != null) {
+                    if (!((Node) textHairList.item(0)).getNodeValue().trim().equals("null")) {
+                        String source = ((Node) textHairList.item(0)).getNodeValue().trim();
+                        NodeList countList = avatarElement.getElementsByTagName("hairnum");
+                        Element countElement = (Element) countList.item(0);
 
+                        NodeList textCountList = countElement.getChildNodes();
+                        String szCount = ((Node) textCountList.item(0)).getNodeValue().trim();
+                        int iCount = Integer.parseInt(szCount);
+                        ++iCount;
+
+                        NodeList geomList = avatarElement.getElementsByTagName("hairgeom");
+                        Element geomElement = (Element) geomList.item(0);
+
+                        NodeList textGeomList = geomElement.getChildNodes();
+                        String[] szMeshes = new String[iCount];
+
+                        for (int i = 0; i < iCount; i ++) {
+                            if (i == 0)
+                                szMeshes[i] = source;
+                            else {
+                                szMeshes[i] = ((Node) textGeomList.item(0)).getNodeValue().trim();
+                                if (i < iCount -1) {
+                                    geomElement = (Element) geomList.item(i);
+                                    textGeomList = geomElement.getChildNodes();
+                                }
+                            }
+                        }
+                        m_addList.put(5, szMeshes);
                     }
 
                     //-------
@@ -132,8 +176,34 @@ public class JPanel_EZOptions extends javax.swing.JPanel {
                     NodeList textShirtList = shirtElement.getChildNodes();
                     System.out.println("Shirt loc : " + ((Node) textShirtList.item(0)).getNodeValue().trim());
 
-                    if (((Node) textShirtList.item(0)).getNodeValue().trim() != null) {
+                    if (!((Node) textShirtList.item(0)).getNodeValue().trim().equals("null")) {
+                        String source = ((Node) textShirtList.item(0)).getNodeValue().trim();
+                        NodeList countList = avatarElement.getElementsByTagName("shirtnum");
+                        Element countElement = (Element) countList.item(0);
 
+                        NodeList textCountList = countElement.getChildNodes();
+                        String szCount = ((Node) textCountList.item(0)).getNodeValue().trim();
+                        int iCount = Integer.parseInt(szCount);
+                        ++iCount;
+
+                        NodeList geomList = avatarElement.getElementsByTagName("shirtgeom");
+                        Element geomElement = (Element) geomList.item(0);
+
+                        NodeList textGeomList = geomElement.getChildNodes();
+                        String[] szMeshes = new String[iCount];
+
+                        for (int i = 0; i < iCount; i ++) {
+                            if (i == 0)
+                                szMeshes[i] = source;
+                            else {
+                                szMeshes[i] = ((Node) textGeomList.item(0)).getNodeValue().trim();
+                                if (i < iCount -1) {
+                                    geomElement = (Element) geomList.item(i);
+                                    textGeomList = geomElement.getChildNodes();
+                                }
+                            }
+                        }
+                        m_addList.put(2, szMeshes);
                     }
 
                     //-------
@@ -143,8 +213,34 @@ public class JPanel_EZOptions extends javax.swing.JPanel {
                     NodeList textPantsList = pantsElement.getChildNodes();
                     System.out.println("Pants loc : " + ((Node) textPantsList.item(0)).getNodeValue().trim());
 
-                    if (((Node) textPantsList.item(0)).getNodeValue().trim() != null) {
+                    if (!((Node) textPantsList.item(0)).getNodeValue().trim().equals("null")) {
+                        String source = ((Node) textPantsList.item(0)).getNodeValue().trim();
+                        NodeList countList = avatarElement.getElementsByTagName("pantsnum");
+                        Element countElement = (Element) countList.item(0);
 
+                        NodeList textCountList = countElement.getChildNodes();
+                        String szCount = ((Node) textCountList.item(0)).getNodeValue().trim();
+                        int iCount = Integer.parseInt(szCount);
+                        ++iCount;
+
+                        NodeList geomList = avatarElement.getElementsByTagName("pantsgeom");
+                        Element geomElement = (Element) geomList.item(0);
+
+                        NodeList textGeomList = geomElement.getChildNodes();
+                        String[] szMeshes = new String[iCount];
+
+                        for (int i = 0; i < iCount; i ++) {
+                            if (i == 0)
+                                szMeshes[i] = source;
+                            else {
+                                szMeshes[i] = ((Node) textGeomList.item(0)).getNodeValue().trim();
+                                if (i < iCount -1) {
+                                    geomElement = (Element) geomList.item(i);
+                                    textGeomList = geomElement.getChildNodes();
+                                }
+                            }
+                        }
+                        m_addList.put(3, szMeshes);
                     }
 
                     //-------
@@ -154,8 +250,34 @@ public class JPanel_EZOptions extends javax.swing.JPanel {
                     NodeList textShoesList = shoesElement.getChildNodes();
                     System.out.println("Shoes loc : " + ((Node) textShoesList.item(0)).getNodeValue().trim());
 
-                    if (((Node) textPantsList.item(0)).getNodeValue().trim() != null) {
+                    if (!((Node) textPantsList.item(0)).getNodeValue().trim().equals("null")) {
+                        String source = ((Node) textShoesList.item(0)).getNodeValue().trim();
+                        NodeList countList = avatarElement.getElementsByTagName("shoesnum");
+                        Element countElement = (Element) countList.item(0);
 
+                        NodeList textCountList = countElement.getChildNodes();
+                        String szCount = ((Node) textCountList.item(0)).getNodeValue().trim();
+                        int iCount = Integer.parseInt(szCount);
+                        ++iCount;
+
+                        NodeList geomList = avatarElement.getElementsByTagName("shoesgeom");
+                        Element geomElement = (Element) geomList.item(0);
+
+                        NodeList textGeomList = geomElement.getChildNodes();
+                        String[] szMeshes = new String[iCount];
+
+                        for (int i = 0; i < iCount; i ++) {
+                            if (i == 0)
+                                szMeshes[i] = source;
+                            else {
+                                szMeshes[i] = ((Node) textGeomList.item(0)).getNodeValue().trim();
+                                if (i < iCount -1) {
+                                    geomElement = (Element) geomList.item(i);
+                                    textGeomList = geomElement.getChildNodes();
+                                }
+                            }
+                        }
+                        m_addList.put(4, szMeshes);
                     }
 
                     //-------
@@ -164,6 +286,11 @@ public class JPanel_EZOptions extends javax.swing.JPanel {
 
                     NodeList textAnimList = animElement.getChildNodes();
                     System.out.println("Anim loc : " + ((Node) textAnimList.item(0)).getNodeValue().trim());
+                    list[3] = ((Node) textAnimList.item(0)).getNodeValue().trim();
+
+                    //-------
+                    m_presets.add(m_addList);
+                    m_presetLists.add(list);
 
                 //------
 
