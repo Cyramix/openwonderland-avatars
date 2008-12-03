@@ -551,11 +551,14 @@ public class PColladaEffect
 
     private String locateSizedImage(String fullFileName, String sizeSuffix)
     {
-        String result = null;
-        // first, grab the file extension
-        String fileExtension = fullFileName.substring(fullFileName.lastIndexOf("."));
-        result = fullFileName.substring(0, fullFileName.lastIndexOf(".")) + "-" + sizeSuffix + fileExtension;
-        return result;
+        return fullFileName;
+
+        // WIP
+//        String result = null;
+//        // first, grab the file extension
+//        String fileExtension = fullFileName.substring(fullFileName.lastIndexOf("."));
+//        result = fullFileName.substring(0, fullFileName.lastIndexOf(".")) + "-" + sizeSuffix + fileExtension;
+//        return result;
     }
 
 }
