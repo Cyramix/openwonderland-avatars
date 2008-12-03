@@ -713,6 +713,28 @@ public class SceneEssentials {
         }        
     }
 
+    public void loadAvatarDAEURL(boolean clear, boolean useRepository, String[] data, Map<Integer, String[]> swapdata) {
+        currentPScene.setUseRepository(useRepository);
+        if (clear)
+            currentPScene.getInstances().removeAllChildren();
+
+        if (currentHiProcessors == null)
+            currentHiProcessors = new ArrayList<ProcessorComponent>();
+        else
+            currentHiProcessors.clear();
+
+        try {
+            if (clear) {
+                URL urlModel = new URL(data[2]);
+                SharedAsset character = new SharedAsset(currentPScene.getRepository(), new AssetDescriptor(SharedAssetType.COLLADA_Model, urlModel));
+                character.setUserData(new ColladaLoaderParams(true, true, false, false, 4, "Avatar", null));
+                loadInitializer("Avatar", character, swapdata, data[3]);
+            }
+        } catch (MalformedURLException ex) {
+            Logger.getLogger(SceneEssentials.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
     public void addDAEMeshURLToModel(String[] data, String[] meshRef, int region) {
         InstructionProcessor pProcessor = new InstructionProcessor(worldManager);
         Instruction pRootInstruction = new Instruction();
@@ -856,6 +878,142 @@ public class SceneEssentials {
                         }
                         pProcessor.execute(pRootInstruction);
                     }
+
+                    skeleton.setShader(new VertDeformerWithSpecAndNormalMap(worldManager));
+                    ((ProcessorCollectionComponent)currentEntity.getComponent(ProcessorCollectionComponent.class)).addProcessor(new SkinnedAnimationProcessor(skel));
+                    currentPScene.setDirty(true, true);
+                    setCameraOnModel();
+                }
+                return true;
+            }
+        };
+        s.setInitializer(init);
+
+        modelInst = currentPScene.addModelInstance(n, s, new PMatrix());
+        // Set position
+        if (origin != null) {
+            modelInst.getTransform().setLocalMatrix(origin);                    // Set animations
+        }
+    }
+
+    public void loadInitializer(String n, SharedAsset s, final Map<Integer, String[]> d, final String a) {
+        AssetInitializer init = new AssetInitializer() {
+
+            public boolean initialize(Object asset) {
+
+                while (((PNode)asset).getChildrenCount() < 1) {
+                    try {
+                        Thread.sleep(3000);
+                        Thread.yield();
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(SceneEssentials.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+
+                if (((PNode) asset).getChild(0) instanceof SkeletonNode) {
+                    final SkeletonNode skel = (SkeletonNode) ((PNode) asset).getChild(0);
+                    skeleton = skel;
+                    
+                    // Visual Scale
+                    if (visualScale != 1.0f) {
+                        ArrayList<PPolygonSkinnedMeshInstance> meshes = skel.getSkinnedMeshInstances();
+                        for (PPolygonSkinnedMeshInstance mesh : meshes) {
+                            mesh.getTransform().getLocalMatrix(true).setScale(visualScale);
+                        }
+                    }
+                    
+                    String[] meshes = null;
+                    InstructionProcessor pProcessor = new InstructionProcessor(worldManager);
+                    Instruction pRootInstruction = new Instruction();
+                    pRootInstruction.addInstruction(InstructionNames.setSkeleton, skel);
+
+                    // Set animations clothes heads and hair
+//                    if (d.get(0) != null) {
+//                        for (int i = 0; i < meshsetup.get(0).length; i++)
+//                            pRootInstruction.addInstruction(InstructionNames.deleteSkinnedMesh, meshsetup.get(0)[i]);
+//                        
+//                        pRootInstruction.addInstruction(InstructionNames.loadGeometry, d.get(0)[0]);
+//                        for (int i = 1; i < d.get(0).length; i++)
+//                            pRootInstruction.addInstruction(InstructionNames.addSkinnedMesh, d.get(0)[i]);
+//                    }
+//
+//                    if (d.get(1) != null) {
+//                        for (int i = 0; i < meshsetup.get(1).length; i++)
+//                            pRootInstruction.addInstruction(InstructionNames.deleteSkinnedMesh, meshsetup.get(1)[i]);
+//                        
+//                        pRootInstruction.addInstruction(InstructionNames.loadGeometry, d.get(1)[0]);
+//                        for (int i = 1; i < d.get(1).length; i++)
+//                            pRootInstruction.addInstruction(InstructionNames.addSkinnedMesh, d.get(1)[i]);
+//                    }
+//                    
+//                    if (d.get(2) != null) {
+//                        for (int i = 0; i < meshsetup.get(2).length; i++)
+//                            pRootInstruction.addInstruction(InstructionNames.deleteSkinnedMesh, meshsetup.get(2)[i]);
+//                        
+//                        pRootInstruction.addInstruction(InstructionNames.loadGeometry, d.get(2)[0]);
+//                        for (int i = 1; i < d.get(2).length; i++)
+//                            pRootInstruction.addInstruction(InstructionNames.addSkinnedMesh, d.get(2)[i]);
+//                    }
+//
+//                    if (d.get(3) != null) {
+//                        for (int i = 0; i < meshsetup.get(3).length; i++)
+//                            pRootInstruction.addInstruction(InstructionNames.deleteSkinnedMesh, meshsetup.get(3)[i]);
+//                        
+//                        pRootInstruction.addInstruction(InstructionNames.loadGeometry, d.get(3)[0]);
+//                        for (int i = 1; i < d.get(3).length; i++)
+//                            pRootInstruction.addInstruction(InstructionNames.addSkinnedMesh, d.get(3)[i]);
+//                    }
+//                    
+//                    if (d.get(4) != null) {
+//                        for (int i = 0; i < meshsetup.get(4).length; i++)
+//                            pRootInstruction.addInstruction(InstructionNames.deleteSkinnedMesh, meshsetup.get(4)[i]);
+//                        
+//                        pRootInstruction.addInstruction(InstructionNames.loadGeometry, d.get(4)[0]);
+//                        for (int i = 1; i < d.get(4).length; i++)
+//                            pRootInstruction.addInstruction(InstructionNames.addSkinnedMesh, d.get(4)[i]);
+//                    }
+//                    
+//                    if (d.get(5) != null) {
+//                        for (int i = 0; i < meshsetup.get(5).length; i++)
+//                            pRootInstruction.addInstruction(InstructionNames.deleteSkinnedMesh, meshsetup.get(5)[i]);
+//                        
+//                        pRootInstruction.addInstruction(InstructionNames.loadGeometry, d.get(5)[0]);
+//                        for (int i = 1; i < d.get(5).length; i++)
+//                            pRootInstruction.addInstruction(InstructionNames.addSkinnedMesh, d.get(5)[i]);
+//                    }
+//                    
+//                    if (d.get(6) != null) {
+//                        for (int i = 0; i < meshsetup.get(6).length; i++)
+//                            pRootInstruction.addInstruction(InstructionNames.deleteSkinnedMesh, meshsetup.get(6)[i]);
+//                        
+//                        pRootInstruction.addInstruction(InstructionNames.loadGeometry, d.get(6)[0]);
+//                        for (int i = 1; i < d.get(6).length; i++)
+//                            pRootInstruction.addInstruction(InstructionNames.addSkinnedMesh, d.get(6)[i]);
+//                    }
+//                    
+//                    if (d.get(7) != null) {
+//                        for (int i = 0; i < meshsetup.get(7).length; i++)
+//                            pRootInstruction.addInstruction(InstructionNames.deleteSkinnedMesh, meshsetup.get(7)[i]);
+//                        
+//                        pRootInstruction.addInstruction(InstructionNames.loadGeometry, d.get(7)[0]);
+//                        for (int i = 1; i < d.get(7).length; i++)
+//                            pRootInstruction.addInstruction(InstructionNames.addSkinnedMesh, d.get(7)[i]);
+//                    }
+//                    
+//                    if (d.get(8) != null) {
+//                        for (int i = 0; i < meshsetup.get(8).length; i++)
+//                            pRootInstruction.addInstruction(InstructionNames.deleteSkinnedMesh, meshsetup.get(8)[i]);
+//                        
+//                        pRootInstruction.addInstruction(InstructionNames.loadGeometry, d.get(8)[0]);
+//                        for (int i = 1; i < d.get(8).length; i++)
+//                            pRootInstruction.addInstruction(InstructionNames.addSkinnedMesh, d.get(8)[i]);
+//                    }
+
+                    for (int i = 0; i < 9; i++)
+                        deleteNLoad(pRootInstruction, d.get(i), i);
+                    
+                    pRootInstruction.addInstruction(InstructionNames.loadAnimation, a);
+                    pProcessor.execute(pRootInstruction);
 
                     skeleton.setShader(new VertDeformerWithSpecAndNormalMap(worldManager));
                     ((ProcessorCollectionComponent)currentEntity.getComponent(ProcessorCollectionComponent.class)).addProcessor(new SkinnedAnimationProcessor(skel));
@@ -1042,6 +1200,21 @@ public class SceneEssentials {
             }
         }
         zipFileLoc = destinationFile;
+    }
+
+    public void deleteNLoad(final Instruction instruct, final String[] d, int iRegion) {
+        if (d != null) {
+            for (int i = 0; i < meshsetup.get(iRegion).length; i++)
+                instruct.addInstruction(InstructionNames.deleteSkinnedMesh, meshsetup.get(iRegion)[i]);
+
+            String[] meshes = new String[d.length -1];
+
+            instruct.addInstruction(InstructionNames.loadGeometry, d[0]);
+            for (int i = 1; i < d.length; i++) {
+                instruct.addInstruction(InstructionNames.addSkinnedMesh, d[i]);
+                meshes[i-1] = d[i];
+            }
+        }
     }
 
     ////////////////////////////////////////////////////////////////////////////

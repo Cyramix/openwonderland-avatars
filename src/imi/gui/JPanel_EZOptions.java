@@ -11,11 +11,27 @@
 
 package imi.gui;
 
+import java.awt.Color;
+import java.awt.Component;
 import java.io.File;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
+import javax.swing.JTable;
+import javax.swing.JTextArea;
+import javax.swing.ListSelectionModel;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableColumn;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.DocumentBuilder;
 import org.w3c.dom.Document;
@@ -33,11 +49,31 @@ public class JPanel_EZOptions extends javax.swing.JPanel {
 
     ArrayList<String[]>                 m_presetLists;
     ArrayList<Map<Integer, String[]>>   m_presets;
-    Map<Integer, String[]>              m_addList;
+    Map<Integer, String[]>              m_meshes, m_addList;
+    int                                 m_rowHeight     = 200;
+    int                                 m_imageColWidth = 10;
+    int                                 m_selectedIndex = -1;
+    Color                               m_selectedRow   = new Color(0, 0, 255);
+    SceneEssentials                     m_sceneData;
 
     /** Creates new form JPanel_EZOptions */
     public JPanel_EZOptions() {
         initComponents();
+
+        ListSelectionModel rowSelection = jTable_Presets.getSelectionModel();
+        rowSelection.addListSelectionListener(new ListSelectionListener() {
+
+            public void valueChanged(ListSelectionEvent e) {
+                if (e.getValueIsAdjusting()) {
+                    return;
+                }
+                ListSelectionModel rowSelect = (ListSelectionModel) e.getSource();
+                m_selectedIndex = rowSelect.getMinSelectionIndex();
+                if (m_selectedIndex != -1) {
+                    jButton_Load.setEnabled(true);
+                }
+            }
+        });
     }
 
     public void readPresetList(File xmlURL) {
@@ -313,6 +349,37 @@ public class JPanel_EZOptions extends javax.swing.JPanel {
             t.printStackTrace();
         }
     }
+
+    public void setTable() {
+        if (m_presetLists == null)
+            return;
+
+        String[][] data = formatTableData();
+        String[] colNames = new String[] { "Image", "Description" };
+        DefaultTableModel model = new DefaultTableModel(data, colNames);
+        jTable_Presets.setModel(model);
+        TableColumn col0 = jTable_Presets.getColumnModel().getColumn(0);
+        col0.setCellRenderer(new advImageCellRender());
+        col0.setPreferredWidth(m_imageColWidth);
+        TableColumn col1 = jTable_Presets.getColumnModel().getColumn(1);
+        col1.setCellRenderer(new advTextCellRender());
+        jTable_Presets.setRowHeight(m_rowHeight);
+        jTable_Presets.setVisible(true);
+    }
+
+    public void loadAvatar(int selection) {
+        if (jRadioButton_GenderMale.isSelected())
+            retrieveBindMeshInfo(1);
+        else
+            retrieveBindMeshInfo(2);
+
+        m_sceneData.loadAvatarDAEURL(true, true, m_presetLists.get(selection), m_presets.get(selection));
+    }
+
+    public void setSceneData(SceneEssentials se) {
+        m_sceneData = se;
+    }
+
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
@@ -367,7 +434,7 @@ public class JPanel_EZOptions extends javax.swing.JPanel {
         setPreferredSize(new java.awt.Dimension(320, 480));
         setLayout(new java.awt.GridBagLayout());
 
-        jLabel_TitleBar.setFont(new java.awt.Font("Lucida Grande", 1, 13)); // NOI18N
+        jLabel_TitleBar.setFont(new java.awt.Font("Lucida Grande", 1, 13));
         jLabel_TitleBar.setForeground(new java.awt.Color(0, 0, 255));
         jLabel_TitleBar.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel_TitleBar.setText("Quick Pick");
@@ -471,39 +538,30 @@ public class JPanel_EZOptions extends javax.swing.JPanel {
         jTabbedPane_Options.setMinimumSize(new java.awt.Dimension(320, 310));
         jTabbedPane_Options.setPreferredSize(new java.awt.Dimension(320, 275));
 
+        jPanel_MainPresets.setLayout(new java.awt.GridBagLayout());
+
+        jScrollPane_Presets.setMinimumSize(new java.awt.Dimension(295, 300));
+
         jTable_Presets.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+
             },
             new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
+                "Image", "Description"
             }
-        ));
-        jScrollPane_Presets.setViewportView(jTable_Presets);
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false
+            };
 
-        org.jdesktop.layout.GroupLayout jPanel_MainPresetsLayout = new org.jdesktop.layout.GroupLayout(jPanel_MainPresets);
-        jPanel_MainPresets.setLayout(jPanel_MainPresetsLayout);
-        jPanel_MainPresetsLayout.setHorizontalGroup(
-            jPanel_MainPresetsLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 299, Short.MAX_VALUE)
-            .add(jPanel_MainPresetsLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                .add(jPanel_MainPresetsLayout.createSequentialGroup()
-                    .add(0, 2, Short.MAX_VALUE)
-                    .add(jScrollPane_Presets, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 295, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(0, 2, Short.MAX_VALUE)))
-        );
-        jPanel_MainPresetsLayout.setVerticalGroup(
-            jPanel_MainPresetsLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 260, Short.MAX_VALUE)
-            .add(jPanel_MainPresetsLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                .add(jPanel_MainPresetsLayout.createSequentialGroup()
-                    .add(0, 0, Short.MAX_VALUE)
-                    .add(jScrollPane_Presets, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 260, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(0, 0, Short.MAX_VALUE)))
-        );
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jScrollPane_Presets.setViewportView(jTable_Presets);
+        jTable_Presets.getColumnModel().getColumn(0).setPreferredWidth(20);
+
+        jPanel_MainPresets.add(jScrollPane_Presets, new java.awt.GridBagConstraints());
 
         jTabbedPane_Options.addTab("Avatars", jPanel_MainPresets);
 
@@ -708,6 +766,13 @@ public class JPanel_EZOptions extends javax.swing.JPanel {
         add(jTabbedPane_Options, gridBagConstraints);
 
         jButton_Load.setText("Load");
+        jButton_Load.setEnabled(false);
+        jButton_Load.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                if (jButton_Load.isEnabled())
+                loadAvatar(m_selectedIndex);
+            }
+        });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 5;
@@ -758,4 +823,133 @@ public class JPanel_EZOptions extends javax.swing.JPanel {
     private javax.swing.JTextField jTextField_AvatarName;
     // End of variables declaration//GEN-END:variables
 
+    public class advImageCellRender extends JLabel implements TableCellRenderer {
+
+        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+            if (value instanceof String) {
+                if (((String) value).equals("null")) {
+                    setText("N/A");
+                } else {
+                    try {
+                        URL loc = new URL(((String) value));
+                        Icon icon = new ImageIcon(loc);
+                        setIcon(icon);
+                    } catch (MalformedURLException ex) {
+                        Logger.getLogger(JPanel_EZOptions.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+
+                if (isSelected) {
+                    table.setSelectionBackground(m_selectedRow);
+                }
+            }
+            return this;
+        }
+    }
+
+    public class advTextCellRender extends JTextArea implements TableCellRenderer {
+
+        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+            if (value instanceof String) {
+                if (((String) value).equals("null")) {
+                    setText("N/A");
+                } else {
+                    setText(((String) value));
+                    setLineWrap(true);
+                    setWrapStyleWord(true);
+                }
+
+                if (isSelected) {
+                    table.setSelectionBackground(m_selectedRow);
+                }
+            }
+            return this;
+        }
+    }
+
+    public String[][] formatTableData() {
+        String[][] data = null;
+        if (m_presetLists != null) {
+            int size = m_presetLists.size();
+            data = new String[size][2];
+
+            for (int i = 0; i < size; i++) {
+                data[i][0] = m_presetLists.get(i)[1];
+                data[i][1] = m_presetLists.get(i)[0];
+            }
+        }
+        return data;
+    }
+
+    public void retrieveBindMeshInfo(int iGender) {
+        String query = new String();
+        ArrayList<String[]> data, anim, meshref;
+
+        if (iGender == 1) {
+            query = "SELECT name, grouping FROM GeometryReferences WHERE tableref = 'Male'";
+            meshref = m_sceneData.loadSQLData(query);
+        }
+        else {
+            query = "SELECT name, grouping FROM GeometryReferences WHERE tableref = 'Female'";
+            meshref = m_sceneData.loadSQLData(query);
+        }
+
+        if (m_meshes != null)
+            m_meshes.clear();
+        m_meshes = new HashMap<Integer, String[]>();
+
+        createMeshSwapList("0", meshref);
+        createMeshSwapList("1", meshref);
+        createMeshSwapList("2", meshref);
+        createMeshSwapList("3", meshref);
+        createMeshSwapList("4", meshref);
+        createMeshSwapList("5", meshref);
+        createMeshSwapList("6", meshref);
+        createMeshSwapList("7", meshref);
+        createMeshSwapList("8", meshref);
+
+        m_sceneData.setMeshSetup(m_meshes);
+    }
+
+    public void createMeshSwapList(String region, ArrayList<String[]> meshes) {
+        String[] geometry = null;
+        int iRegion = 0;
+
+        ArrayList<String> temp = new ArrayList<String>();
+
+        for (int i = 0; i < meshes.size(); i++) {
+            if (meshes.get(i)[1].equals(region)) {
+                temp.add(meshes.get(i)[0].toString());
+            }
+        }
+
+        if (temp.size() == 0)
+            return;
+
+        geometry = new String[temp.size()];
+        for (int i = 0; i < temp.size(); i++) {
+            geometry[i] = temp.get(i);
+        }
+
+        if (region.equals("0"))
+            iRegion = 0;          // Head
+        else if (region.equals("1"))
+            iRegion = 1;          // Hands
+        else if (region.equals("2"))
+            iRegion = 2;          // Torso
+        else if (region.equals("3"))
+            iRegion = 3;          // Legs
+        else if (region.equals("4"))
+            iRegion = 4;          // Feet
+        else if (region.equals("5"))
+            iRegion = 5;          // Hair
+        else if (region.equals("6"))
+            iRegion = 6;          // Facial Hair
+        else if (region.equals("7"))
+            iRegion = 7;          // Hats
+        else if (region.equals("8"))
+            iRegion = 8;          // Glasses
+
+        m_meshes.put(iRegion, geometry);
+    }
 }

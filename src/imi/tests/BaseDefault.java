@@ -847,6 +847,8 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
 
     public void openEZOptions() {
         JPanel_EZOptions EZOptions = new JPanel_EZOptions();
+        EZOptions.setSceneData(m_sceneData);
+        m_sceneData.setCurCamProcessor(m_cameraProcessor);
         java.awt.GridBagConstraints gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
@@ -858,6 +860,7 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
         String url = new String(System.getProperty("user.dir") + "/assets/file/avatars_cau.xml");
         File xml = new File(url);
         EZOptions.readPresetList(xml);
+        EZOptions.setTable();
     }
 
     public void resetOpenTools() {
