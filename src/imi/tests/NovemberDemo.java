@@ -62,8 +62,8 @@ public class NovemberDemo extends DemoBase
             ArrayList<ProcessorComponent> processors)
     {
         // create the backdrop
-        theWorld = new ColladaEnvironment(wm, "assets/models/collada/Environments/BizObj/BusinessObjectsCenter.dae", WorldName);
-
+        //theWorld = new ColladaEnvironment(wm, "assets/models/collada/Environments/BizObj/BusinessObjectsCenter.dae", WorldName);
+        theWorld = new ColladaEnvironment(wm, "assets/models/collada/Environments/Milan/DSI.dae", WorldName);
         
         ObjectCollection objects = new ObjectCollection("Objects", wm);
         
