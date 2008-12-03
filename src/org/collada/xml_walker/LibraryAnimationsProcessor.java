@@ -22,7 +22,6 @@ import org.collada.colladaschema.LibraryAnimations;
 
 import imi.loaders.collada.Collada;
 import imi.scene.animation.AnimationGroup;
-import imi.scene.animation.PMatrixKeyframe;
 import imi.scene.animation.COLLADA_JointChannel;
 import imi.scene.PMatrix;
 import imi.scene.PJoint;
@@ -69,7 +68,7 @@ public class LibraryAnimationsProcessor extends Processor
             AnimationGroup newGroup = new AnimationGroup();
 
             for (Animation anim : animationLibrary.getAnimations())
-                processAnimation(colladaRef, anim, newGroup);
+                processAnimation(anim, newGroup);
 
             newGroup.calculateDuration();
             newGroup.createDefaultCycle();
@@ -89,15 +88,12 @@ public class LibraryAnimationsProcessor extends Processor
      * @param pAnimation
      * @param pAnimationLoop
      */
-    private void processAnimation(Collada pCollada, Animation pAnimation, AnimationGroup pAnimationLoop)
+    private void processAnimation(Animation pAnimation, AnimationGroup pAnimationLoop)
     {
         int a;
-        PMatrixKeyframe pMatrixKeyframe;
         float fKeyframeTime;
         PMatrix pKeyframeMatrix = new PMatrix();
         COLLADA_JointChannel pAnimationChannel = null;
-        Source pSource;
-        String sourceID;
 
 
         m_AnimatedItemID = pAnimation.getId();

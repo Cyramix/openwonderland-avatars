@@ -28,6 +28,8 @@ import imi.scene.animation.AnimationComponent;
 import imi.loaders.collada.Collada;
 import imi.scene.animation.AnimationGroup;
 import java.net.URL;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 
@@ -39,18 +41,19 @@ import java.net.URL;
  */
 public class CharacterLoader
 {
-    private Collada         m_pCollada = null;
+    private Collada         m_pCollada = new Collada();
 
     //  Loads a rig.
     public SkeletonNode loadSkeletonRig(PScene pScene, URL rigLocation)
     {
         //  Load the collada file to the PScene
-        m_pCollada = new Collada();
+        m_pCollada.clear();
         try
         {
             //  Load only the rig and geometry.
             m_pCollada.setLoadFlags(true, true, false);
-            m_pCollada.load(pScene, rigLocation);
+            if (m_pCollada.load(pScene, rigLocation) == false) // uh oh
+                Logger.getLogger(CharacterLoader.class.toString()).log(Level.SEVERE, "COLLADA Loader returned false!");
         }
         catch (Exception ex)
         {
@@ -66,7 +69,7 @@ public class CharacterLoader
     {
         boolean result = false;
         //  Load the collada file to the PScene
-        m_pCollada = new Collada();
+        m_pCollada.clear();
         try
         {
             //  Load only the geometry.
@@ -88,7 +91,7 @@ public class CharacterLoader
     public boolean loadAnimation(PScene loadingPScene, SkeletonNode pSkeleton, URL animationLocation, int mergeToGroup)
     {
         //  Load the collada file to the PScene
-        m_pCollada = new Collada();
+        m_pCollada.clear();
         
         m_pCollada.setLoadFlags(false, false, true);
         m_pCollada.setSkeletonNode(pSkeleton);

@@ -23,7 +23,6 @@ import imi.loaders.repository.AssetDescriptor;
 import imi.loaders.repository.SharedAsset;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.xml.bind.JAXBException;
 import org.collada.colladaschema.COLLADA;
@@ -56,7 +55,6 @@ import imi.scene.PNode;
 import imi.scene.PTransform;
 
 
-import imi.scene.polygonmodel.PPolygonModelInstance;
 import imi.scene.polygonmodel.PPolygonMeshInstance;
 
 import imi.scene.polygonmodel.skinned.PPolygonSkinnedMesh;
@@ -75,96 +73,142 @@ import imi.scene.utils.tree.PPolygonMeshAssemblingProcessor;
 import imi.scene.utils.tree.TreeTraverser;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.logging.Level;
 import javolution.util.FastMap;
 import org.collada.xml_walker.ColladaMaterial;
 
 
 
 /**
- *
+ * Collada loading class.
  * @author paulby
+ * @author Chris Nagle
+ * @author Ronald E Dahlgren
  */
 public class Collada
 {
-    private static Logger logger = Logger.getLogger("imi.loaders.collada");
+    // Static members
+    /** Logger reference **/
+    private static Logger logger = Logger.getLogger(Collada.class.toString());
+    /** Context for the unmarshaller to operate within **/
+    private static javax.xml.bind.JAXBContext jaxbContext = null;
+    /** Used to synchronize access to the jaxb context **/
+    private static final Integer contextLock = Integer.valueOf(0);
+    /** The unmarshaller used to generate the DOM each time a file is loaded **/
+    private static javax.xml.bind.Unmarshaller unmarshaller = null;
 
-    private String                              m_Name = "";
-    private List                                m_Libraries = null; 
-    
-    private URL                                 m_fileLocation = null;
+    static
+    {
+        // Attempt to create the context and unmarshaller for JAXB
+        try
+        {
+            jaxbContext = javax.xml.bind.JAXBContext.newInstance("org.collada.colladaschema");
+            unmarshaller = jaxbContext.createUnmarshaller();
+        }
+        catch (JAXBException ex)
+        {
+            logger.log(Level.SEVERE, "Problem initializing JAXB Context and / or unmarshaller! -- " + ex.getMessage());
+        }
+    }
 
-    //  Pointers to the various Libraries found in the collada file.
-    LibraryCameras                              m_pLibraryCameras;
-    LibraryImages                               m_pLibraryImages;
-    LibraryEffects                              m_pLibraryEffects;
-    LibraryMaterials                            m_pLibraryMaterials;
-    LibraryAnimations                           m_pLibraryAnimations;
-    LibraryVisualScenes                         m_pLibraryVisualScenes;
-    LibraryGeometries                           m_pLibraryGeometries;
-    LibraryControllers                          m_pLibraryControllers;
-    LibraryNodes                                m_pLibraryNodes;
+    private List    m_Libraries = null;
+    private String  m_Name = "ColladaLoader";
+    private URL     m_fileLocation = null;
 
-    FastMap<String, PColladaImage>              m_Images = new FastMap<String, PColladaImage>();
+    /** Assorted library convenience references **/
+    private LibraryCameras                              m_pLibraryCameras = null;
+    private LibraryImages                               m_pLibraryImages = null;
+    private LibraryEffects                              m_pLibraryEffects = null;
+    private LibraryMaterials                            m_pLibraryMaterials = null;
+    private LibraryAnimations                           m_pLibraryAnimations = null;
+    private LibraryVisualScenes                         m_pLibraryVisualScenes = null;
+    private LibraryGeometries                           m_pLibraryGeometries = null;
+    private LibraryControllers                          m_pLibraryControllers = null;
+    private LibraryNodes                                m_pLibraryNodes = null;
 
-    FastMap<String, PColladaEffect>             m_EffectMap = new FastMap<String, PColladaEffect>();
-    private ArrayList<PColladaEffect>           m_EffectList = new ArrayList<PColladaEffect>();
+    private FastMap<String, PColladaEffect>             m_EffectMap = new FastMap<String, PColladaEffect>();
+    private ArrayList<PColladaEffect>                   m_EffectList = new ArrayList<PColladaEffect>();
 
-    FastMap<String, ColladaMaterial>             m_MaterialMap = new FastMap<String, ColladaMaterial>();
-    private ArrayList<ColladaMaterial>           m_MaterialList = new ArrayList<ColladaMaterial>();
+    private FastMap<String, ColladaMaterial>            m_MaterialMap = new FastMap<String, ColladaMaterial>();
+    private ArrayList<ColladaMaterial>                  m_MaterialList = new ArrayList<ColladaMaterial>();
 
-    FastMap<String, PColladaMaterialInstance>   m_MaterialInstances = new FastMap<String, PColladaMaterialInstance>();
-    private ArrayList                           m_ColladaMaterialInstances = new ArrayList();
+    private FastMap<String, PColladaMaterialInstance>   m_MaterialInstances = new FastMap<String, PColladaMaterialInstance>();
+    private ArrayList                                   m_ColladaMaterialInstances = new ArrayList();
 
-    SkeletonNode                                m_pSkeletonNode = null;
-            
-
-    
-    
-    private PScene                              m_pLoadingPScene = null;
-
-    public PPolygonModel                        m_pCurrentPolygonModel = null;
+    private SkeletonNode                                m_pSkeletonNode = null;
+    private PScene                                      m_pLoadingPScene = null;
 
 
     //  Constains the PolygonMeshes loaded.
     public ArrayList<PPolygonMesh>              m_PolygonMeshes = new ArrayList<PPolygonMesh>();
 
     //  Contains the PolygonSkinnedMeshes loaded.
-    public ArrayList<PPolygonSkinnedMesh>      m_PolygonSkinnedMeshes = new ArrayList<PPolygonSkinnedMesh>();
+    public ArrayList<PPolygonSkinnedMesh>       m_PolygonSkinnedMeshes = new ArrayList<PPolygonSkinnedMesh>();
 
     public ArrayList<PColladaSkin>              m_ColladaSkins = new ArrayList<PColladaSkin>();
 
     private ArrayList<PColladaNode>             m_ColladaNodes = new ArrayList<PColladaNode>();
-
-    private ArrayList                           m_FactoryColladaNodes = new ArrayList();
-
-
-
+    private ArrayList<PColladaNode>             m_FactoryColladaNodes = new ArrayList<PColladaNode>();
+    
     private int                                 m_MaxNumberOfWeights = 4;
     private ArrayList<PColladaAnimatedItem>     m_ColladaAnimatedItems = new ArrayList<PColladaAnimatedItem>();
     private ArrayList<PColladaCameraParams>     m_ColladaCameraParams = new ArrayList<PColladaCameraParams>();
     private ArrayList<PColladaCamera>           m_ColladaCameras = new ArrayList<PColladaCamera>();
 
-    private boolean                             m_bLoadRig = false;
-    private boolean                             m_bLoadGeometry = true;
-    private boolean                             m_bLoadAnimations = false;
-    private boolean                             m_bAddSkinnedMeshesToSkeleton = true;
-    
-    private boolean                             m_bPrintStats = false;
+    private boolean m_bLoadRig                      = false;
+    private boolean m_bLoadGeometry                 = true;
+    private boolean m_bLoadAnimations               = false;
+    private boolean m_bAddSkinnedMeshesToSkeleton   = true;
+    private boolean m_bPrintStats                   = false;
 
-
-    
-    
-
-    //  *****************************************
-    //  Public methods.
-    //  *****************************************
-
-    //  Constructor.
+    /**
+     * Default construction
+     */
     public Collada()
     {
+    }
+
+    /**
+     * Clear out any residual state in the collada loader
+     */
+    public void clear()
+    {
+        m_bPrintStats = false;
+        m_bAddSkinnedMeshesToSkeleton = true;
+        m_bLoadAnimations = false;
+        m_bLoadGeometry = true;
+        m_bLoadRig = false;
+        m_ColladaCameras.clear();
+        m_ColladaCameraParams.clear();
+        m_ColladaAnimatedItems.clear();
+        m_MaxNumberOfWeights = 4;
+        m_FactoryColladaNodes.clear();
+        m_ColladaNodes.clear();
+        m_ColladaSkins.clear();
+        m_PolygonSkinnedMeshes.clear();
+        m_PolygonMeshes.clear();
+        m_Libraries = null;
+        m_Name = "ColladaLoader";
+        m_fileLocation = null;
+        m_pLibraryCameras = null;
+        m_pLibraryImages = null;
+        m_pLibraryEffects = null;
+        m_pLibraryMaterials = null;
+        m_pLibraryAnimations = null;
+        m_pLibraryVisualScenes = null;
+        m_pLibraryGeometries = null;
+        m_pLibraryControllers = null;
+        m_pLibraryNodes = null;
+        m_EffectMap.clear();
+        m_EffectList.clear();
+        m_MaterialMap.clear();
+        m_MaterialList.clear();
+        m_MaterialInstances.clear();
+        m_ColladaMaterialInstances.clear();
+        m_pSkeletonNode = null;
+        m_pLoadingPScene = null;
     }
 
     /**
@@ -262,50 +306,12 @@ public class Collada
         m_bAddSkinnedMeshesToSkeleton = bAddSkinnedMeshesToSkeleton;
     }
 
-
-
-//    public boolean load(URL colladaFile)
-//    {
-//        m_fileLocation = colladaFile;
-//        try
-//        {
-//            javax.xml.bind.JAXBContext jc = javax.xml.bind.JAXBContext.newInstance("org.collada.colladaschema");
-//            javax.xml.bind.Unmarshaller unmarshaller = jc.createUnmarshaller();
-//            org.collada.colladaschema.COLLADA collada = (org.collada.colladaschema.COLLADA) unmarshaller.unmarshal(colladaFile);
-//            doLoad(collada);
-//            return true;
-//        }
-//        catch (JAXBException ex)
-//        {
-//            Logger.getLogger("global").log(Level.SEVERE, null, ex);
-//            return false;
-//        }
-//    }
-    
-//    public boolean load(PScene loadingPScene, URL colladaFile)
-//    {
-//        boolean result = false;
-//        m_fileLocation = colladaFile;
-//        try
-//        {
-//            m_pLoadingPScene = loadingPScene;
-//            m_pLoadingPScene.setUseRepository(false); // the repository will extract the data later
-//
-//            javax.xml.bind.JAXBContext jc = javax.xml.bind.JAXBContext.newInstance("org.collada.colladaschema");
-//            javax.xml.bind.Unmarshaller unmarshaller = jc.createUnmarshaller();
-//            org.collada.colladaschema.COLLADA collada =
-//                    (org.collada.colladaschema.COLLADA) unmarshaller.unmarshal(colladaFile);
-//
-//            doLoad(collada);
-//            result = true;
-//        }
-//        catch (JAXBException ex)
-//        {
-//            Logger.getLogger("global").log(Level.SEVERE, null, ex);
-//        }
-//        return result;
-//    }
-
+    /**
+     * Load the specified collada file. This method will attempt to retrieve the
+     * specified file, generate the DOM and then walk the tree.
+     * @param colladaFile Location of the COLLADA file to load
+     * @return True on success, false otherwise
+     */
     public boolean load(URL colladaFile) {
         m_fileLocation = colladaFile;
         URLConnection conn = null;
@@ -313,9 +319,15 @@ public class Collada
         try {
             conn = colladaFile.openConnection();
             in = conn.getInputStream();
-            javax.xml.bind.JAXBContext jc = javax.xml.bind.JAXBContext.newInstance("org.collada.colladaschema");
-            javax.xml.bind.Unmarshaller unmarshaller = jc.createUnmarshaller();
-            org.collada.colladaschema.COLLADA collada = (org.collada.colladaschema.COLLADA) unmarshaller.unmarshal(in);
+//            javax.xml.bind.JAXBContext jc = javax.xml.bind.JAXBContext.newInstance("org.collada.colladaschema");
+//            javax.xml.bind.Unmarshaller unmarshaller = jc.createUnmarshaller();
+            org.collada.colladaschema.COLLADA collada = null;
+            synchronized(contextLock)
+            {
+                collada = (org.collada.colladaschema.COLLADA) unmarshaller.unmarshal(in);
+            }
+            // Give other threads a little break before the next lengthy series of heavy-weight ops
+            Thread.yield();
             doLoad(collada);
             return true;
         } catch (Exception exception) {
@@ -335,6 +347,13 @@ public class Collada
         }
     }
 
+    /**
+     * Same as the single parameter load, except rather than using a newly created
+     * PScene, the one provided will be used as the target for the loading process.
+     * @param loadingPScene The pscene to load into
+     * @param colladaFile
+     * @return
+     */
     public boolean load(PScene loadingPScene, URL colladaFile) {
         m_fileLocation = colladaFile;
         URLConnection conn = null;
@@ -344,10 +363,11 @@ public class Collada
             in = conn.getInputStream();
             m_pLoadingPScene = loadingPScene;
             m_pLoadingPScene.setUseRepository(false); // the repository will extract the data later
-
-            javax.xml.bind.JAXBContext jc = javax.xml.bind.JAXBContext.newInstance("org.collada.colladaschema");
-            javax.xml.bind.Unmarshaller unmarshaller = jc.createUnmarshaller();
-            org.collada.colladaschema.COLLADA collada = (org.collada.colladaschema.COLLADA) unmarshaller.unmarshal(in);
+            org.collada.colladaschema.COLLADA collada = null;
+            synchronized(contextLock)
+            {
+                collada = (org.collada.colladaschema.COLLADA) unmarshaller.unmarshal(in);
+            }
             doLoad(collada);
             return true;
         } catch (Exception exception) {
@@ -1771,8 +1791,7 @@ public class Collada
         setPrintStats(params.isShowingDebugInfo());
         
         m_MaxNumberOfWeights = params.getMaxInfluences();
-        
-        m_Name = params.getName();
+
     }
     
     public URL getFileLocation()

@@ -236,7 +236,7 @@ public class PColladaEffect
             {
                 for (int i = 0; i < m_DiffuseImageFilename.size(); ++i)
                 {
-                    fileLocation = new URL(currentFolder + m_DiffuseImageFilename.get(i));
+                    fileLocation = new URL(currentFolder + locateSizedImage(m_DiffuseImageFilename.get(i), "512x512"));
                     result.setTexture(fileLocation, textureCount);
                     textureCount++;
                 }
@@ -247,27 +247,27 @@ public class PColladaEffect
 
             if (bNormalMapped)
             {
-                fileLocation = new URL(currentFolder + m_NormalMapImageFilename);
+                fileLocation = new URL(currentFolder + locateSizedImage(m_NormalMapImageFilename, "512x512"));
                 result.setTexture(fileLocation, 1);
                 textureCount++;
             }
             if (bSpecularMapped)
             {
-                fileLocation = new URL(currentFolder + m_SpecularImageFilename);
+                fileLocation = new URL(currentFolder + locateSizedImage(m_SpecularImageFilename, "512x512"));
                 result.setTexture(fileLocation, 2);
                 textureCount++;
             }
 
             if (m_EmissiveImageFilename != null && m_EmissiveImageFilename.length() > 0)
             {
-                fileLocation = new URL(currentFolder + m_EmissiveImageFilename);
+                fileLocation = new URL(currentFolder + locateSizedImage(m_EmissiveImageFilename, "512x512"));
                 result.setTexture(fileLocation, textureCount);
                 textureCount++;
             }
 
             if (m_AmbientImageFilename != null && m_AmbientImageFilename.length() > 0)
             {
-                fileLocation = new URL(currentFolder + m_AmbientImageFilename);
+                fileLocation = new URL(currentFolder + locateSizedImage(m_AmbientImageFilename, "512x512"));
                 result.setTexture(fileLocation, textureCount);
                 textureCount++;
             }
@@ -314,7 +314,6 @@ public class PColladaEffect
 
         // HACK : Default COLLADA to have no backface culling
         result.setCullFace(Face.None);
-
         return result;
     }
 
@@ -548,6 +547,15 @@ public class PColladaEffect
     public String getNormalMapImageFilename()
     {
         return(m_NormalMapImageFilename);
+    }
+
+    private String locateSizedImage(String fullFileName, String sizeSuffix)
+    {
+        String result = null;
+        // first, grab the file extension
+        String fileExtension = fullFileName.substring(fullFileName.lastIndexOf("."));
+        result = fullFileName.substring(0, fullFileName.lastIndexOf(".")) + "-" + sizeSuffix + fileExtension;
+        return result;
     }
 
 }

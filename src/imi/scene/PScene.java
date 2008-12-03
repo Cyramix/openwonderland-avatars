@@ -678,7 +678,7 @@ public class PScene extends PNode implements RepositoryUser
                 if (asset.getDescriptor().equals(placeHolder.getDescriptor()))
                 {
                     // install the asset into the scene graph,
-                    // this will swap the placeHolder with the asset while maintaing the graph structure (kids from both will remain)
+                    // this will swap the placeHolder with the asset while maintaining the graph structure (kids from both will remain)
                     synchronized (placeHolder)
                     {
                         // If the asset was able to load

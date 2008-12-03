@@ -110,7 +110,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
     
     protected PPolygonModelInstance m_modelInst  = null;
     
-    private boolean           m_initalized     = false;
+    private boolean           m_initialized     = false;
     protected SkeletonNode    m_skeleton       = null;
     protected PPolygonMeshInstance m_mesh = null;
     
@@ -484,10 +484,10 @@ public abstract class Character extends Entity implements SpatialObject, Animati
                     public boolean initialize(Object asset) {
 
                         URL rootURL = null;
-
-                        if (((PNode)asset).getChild(0) instanceof SkeletonNode)
+                        PNode assetNode = (PNode)asset;
+                        if (assetNode.getChildrenCount() > 0 && assetNode.getChild(0) instanceof SkeletonNode)
                         {
-                            SkeletonNode skeleton = (SkeletonNode)((PNode)asset).getChild(0);
+                            SkeletonNode skeleton = (SkeletonNode)assetNode.getChild(0);
                             
                             // Visual Scale
                             if (visualScale != 1.0f)
@@ -797,7 +797,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
      */
     public void update(float deltaTime)
     {
-        if (!m_initalized)
+        if (!m_initialized)
             initialize();
         
         if (m_context != null)
@@ -868,8 +868,8 @@ public abstract class Character extends Entity implements SpatialObject, Animati
      */
     private void initialize()
     {
-        // safty against place holders
-        if (m_modelInst.getChild(0) instanceof SharedAssetPlaceHolder)
+        // safety against place holders
+        if (m_modelInst.getChildrenCount() <= 0 || m_modelInst.getChild(0) instanceof SharedAssetPlaceHolder)
             return;
         
         if (m_modelInst.getChild(0).getChildrenCount() == 0 && m_modelInst.getChild(0) instanceof PPolygonMeshInstance)
@@ -877,7 +877,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
             // Simple sphere model case
             m_mesh       = (PPolygonMeshInstance)m_modelInst.getChild(0);
             m_skeleton   = null;
-            m_initalized = true;   
+            m_initialized = true;
         }
         else if (m_modelInst.getChild(0).getChild(1) instanceof PPolygonSkinnedMeshInstance
                 && m_modelInst.getChild(0) instanceof SkeletonNode) 
@@ -896,7 +896,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
             m_leftEyeBall.setOtherEye(m_rightEyeBall);
             m_rightEyeBall.setOtherEye(m_leftEyeBall);
             
-            m_initalized = true;
+            m_initialized = true;
         }
     }
     
@@ -1096,7 +1096,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
      */
     public boolean isInitialized()
     {
-        return m_initalized;
+        return m_initialized;
     }
     
     public void installHead(SkeletonNode skeleton) 
