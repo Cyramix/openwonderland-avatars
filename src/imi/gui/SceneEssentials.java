@@ -921,94 +921,12 @@ public class SceneEssentials {
                             mesh.getTransform().getLocalMatrix(true).setScale(visualScale);
                         }
                     }
-                    
-                    String[] meshes = null;
+
                     InstructionProcessor pProcessor = new InstructionProcessor(worldManager);
                     Instruction pRootInstruction = new Instruction();
                     pRootInstruction.addInstruction(InstructionNames.setSkeleton, skel);
 
                     // Set animations clothes heads and hair
-//                    if (d.get(0) != null) {
-//                        for (int i = 0; i < meshsetup.get(0).length; i++)
-//                            pRootInstruction.addInstruction(InstructionNames.deleteSkinnedMesh, meshsetup.get(0)[i]);
-//                        
-//                        pRootInstruction.addInstruction(InstructionNames.loadGeometry, d.get(0)[0]);
-//                        for (int i = 1; i < d.get(0).length; i++)
-//                            pRootInstruction.addInstruction(InstructionNames.addSkinnedMesh, d.get(0)[i]);
-//                    }
-//
-//                    if (d.get(1) != null) {
-//                        for (int i = 0; i < meshsetup.get(1).length; i++)
-//                            pRootInstruction.addInstruction(InstructionNames.deleteSkinnedMesh, meshsetup.get(1)[i]);
-//                        
-//                        pRootInstruction.addInstruction(InstructionNames.loadGeometry, d.get(1)[0]);
-//                        for (int i = 1; i < d.get(1).length; i++)
-//                            pRootInstruction.addInstruction(InstructionNames.addSkinnedMesh, d.get(1)[i]);
-//                    }
-//                    
-//                    if (d.get(2) != null) {
-//                        for (int i = 0; i < meshsetup.get(2).length; i++)
-//                            pRootInstruction.addInstruction(InstructionNames.deleteSkinnedMesh, meshsetup.get(2)[i]);
-//                        
-//                        pRootInstruction.addInstruction(InstructionNames.loadGeometry, d.get(2)[0]);
-//                        for (int i = 1; i < d.get(2).length; i++)
-//                            pRootInstruction.addInstruction(InstructionNames.addSkinnedMesh, d.get(2)[i]);
-//                    }
-//
-//                    if (d.get(3) != null) {
-//                        for (int i = 0; i < meshsetup.get(3).length; i++)
-//                            pRootInstruction.addInstruction(InstructionNames.deleteSkinnedMesh, meshsetup.get(3)[i]);
-//                        
-//                        pRootInstruction.addInstruction(InstructionNames.loadGeometry, d.get(3)[0]);
-//                        for (int i = 1; i < d.get(3).length; i++)
-//                            pRootInstruction.addInstruction(InstructionNames.addSkinnedMesh, d.get(3)[i]);
-//                    }
-//                    
-//                    if (d.get(4) != null) {
-//                        for (int i = 0; i < meshsetup.get(4).length; i++)
-//                            pRootInstruction.addInstruction(InstructionNames.deleteSkinnedMesh, meshsetup.get(4)[i]);
-//                        
-//                        pRootInstruction.addInstruction(InstructionNames.loadGeometry, d.get(4)[0]);
-//                        for (int i = 1; i < d.get(4).length; i++)
-//                            pRootInstruction.addInstruction(InstructionNames.addSkinnedMesh, d.get(4)[i]);
-//                    }
-//                    
-//                    if (d.get(5) != null) {
-//                        for (int i = 0; i < meshsetup.get(5).length; i++)
-//                            pRootInstruction.addInstruction(InstructionNames.deleteSkinnedMesh, meshsetup.get(5)[i]);
-//                        
-//                        pRootInstruction.addInstruction(InstructionNames.loadGeometry, d.get(5)[0]);
-//                        for (int i = 1; i < d.get(5).length; i++)
-//                            pRootInstruction.addInstruction(InstructionNames.addSkinnedMesh, d.get(5)[i]);
-//                    }
-//                    
-//                    if (d.get(6) != null) {
-//                        for (int i = 0; i < meshsetup.get(6).length; i++)
-//                            pRootInstruction.addInstruction(InstructionNames.deleteSkinnedMesh, meshsetup.get(6)[i]);
-//                        
-//                        pRootInstruction.addInstruction(InstructionNames.loadGeometry, d.get(6)[0]);
-//                        for (int i = 1; i < d.get(6).length; i++)
-//                            pRootInstruction.addInstruction(InstructionNames.addSkinnedMesh, d.get(6)[i]);
-//                    }
-//                    
-//                    if (d.get(7) != null) {
-//                        for (int i = 0; i < meshsetup.get(7).length; i++)
-//                            pRootInstruction.addInstruction(InstructionNames.deleteSkinnedMesh, meshsetup.get(7)[i]);
-//                        
-//                        pRootInstruction.addInstruction(InstructionNames.loadGeometry, d.get(7)[0]);
-//                        for (int i = 1; i < d.get(7).length; i++)
-//                            pRootInstruction.addInstruction(InstructionNames.addSkinnedMesh, d.get(7)[i]);
-//                    }
-//                    
-//                    if (d.get(8) != null) {
-//                        for (int i = 0; i < meshsetup.get(8).length; i++)
-//                            pRootInstruction.addInstruction(InstructionNames.deleteSkinnedMesh, meshsetup.get(8)[i]);
-//                        
-//                        pRootInstruction.addInstruction(InstructionNames.loadGeometry, d.get(8)[0]);
-//                        for (int i = 1; i < d.get(8).length; i++)
-//                            pRootInstruction.addInstruction(InstructionNames.addSkinnedMesh, d.get(8)[i]);
-//                    }
-
                     for (int i = 0; i < 9; i++)
                         deleteNLoad(pRootInstruction, d.get(i), i);
                     
@@ -1204,15 +1122,26 @@ public class SceneEssentials {
 
     public void deleteNLoad(final Instruction instruct, final String[] d, int iRegion) {
         if (d != null) {
-            for (int i = 0; i < meshsetup.get(iRegion).length; i++)
-                instruct.addInstruction(InstructionNames.deleteSkinnedMesh, meshsetup.get(iRegion)[i]);
+            if (meshsetup.get(iRegion) != null) {
+                for (int i = 0; i < meshsetup.get(iRegion).length; i++)
+                    instruct.addInstruction(InstructionNames.deleteSkinnedMesh, meshsetup.get(iRegion)[i]);
+            }
 
             String[] meshes = new String[d.length -1];
 
             instruct.addInstruction(InstructionNames.loadGeometry, d[0]);
-            for (int i = 1; i < d.length; i++) {
-                instruct.addInstruction(InstructionNames.addSkinnedMesh, d[i]);
-                meshes[i-1] = d[i];
+            if (iRegion > 4) {
+                for (int i = 1; i < d.length; i++) {
+                    PMatrix tempSolution;
+                    tempSolution = new PMatrix(new Vector3f(0.0f, (float) Math.toRadians(180), 0.0f), new Vector3f(1.0f, 1.0f, 1.0f), Vector3f.ZERO);
+                    instruct.addInstruction(InstructionNames.addAttachment, d[i], "Head", tempSolution);
+                    meshes[i-1] = d[i];
+                }
+            } else {
+                for (int i = 1; i < d.length; i++) {
+                    instruct.addInstruction(InstructionNames.addSkinnedMesh, d[i]);
+                    meshes[i-1] = d[i];
+                }
             }
         }
     }
