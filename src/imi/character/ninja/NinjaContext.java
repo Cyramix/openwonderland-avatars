@@ -207,20 +207,29 @@ public class NinjaContext extends GameContext
         
         else if (trigger == TriggerNames.Smile.ordinal() && pressed)
         {
-            if (ninja.getFacialAnimationQ().calculateTotalRemainingTime() < 1.0f)
-                ninja.initiateFacialAnimation(1, 1.0f, 1.0f);
+            if (ninja.getFacialAnimationQ() != null)
+            {
+                if (ninja.getFacialAnimationQ().calculateTotalRemainingTime() < 1.0f)
+                    ninja.initiateFacialAnimation(1, 1.0f, 1.0f);
+            }
         }   
         
         else if (trigger == TriggerNames.Frown.ordinal() && pressed)
         {
-            if (ninja.getFacialAnimationQ().calculateTotalRemainingTime() < 1.0f)
-                ninja.initiateFacialAnimation(2, 3.0f, 1.5f);
+            if (ninja.getFacialAnimationQ() != null)
+            {
+                if (ninja.getFacialAnimationQ().calculateTotalRemainingTime() < 1.0f)
+                    ninja.initiateFacialAnimation(2, 3.0f, 1.5f);
+            }
         }   
         
         else if (trigger == TriggerNames.Scorn.ordinal() && pressed)
         {
-            if (ninja.getFacialAnimationQ().calculateTotalRemainingTime() < 1.0f)
-                ninja.initiateFacialAnimation(3, 3.0f, 1.5f);
+            if (ninja.getFacialAnimationQ() != null)
+            {
+                if (ninja.getFacialAnimationQ().calculateTotalRemainingTime() < 1.0f)
+                    ninja.initiateFacialAnimation(3, 3.0f, 1.5f);
+            }
         }   
                 
         // Reverse the animation for the punch state

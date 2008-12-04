@@ -152,7 +152,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         
         String m_BindPoseFile = null;
         
-        String m_TextureFile = null; // Used for ms3d
+        String m_TextureFile = null; // Used for ms3d only
 
         private String[] m_animations = new String[0];
         
@@ -483,7 +483,6 @@ public abstract class Character extends Entity implements SpatialObject, Animati
                 AssetInitializer init = new AssetInitializer() {
                     public boolean initialize(Object asset) {
 
-                        URL rootURL = null;
                         PNode assetNode = (PNode)asset;
                         if (assetNode.getChildrenCount() > 0 && assetNode.getChild(0) instanceof SkeletonNode)
                         {
@@ -506,8 +505,8 @@ public abstract class Character extends Entity implements SpatialObject, Animati
                             {
                                 String fileProtocol = m_attributes.getBaseURL();
 
-                                if (fileProtocol==null)
-                                    fileProtocol= new String("file://localhost/" + System.getProperty("user.dir") + "/");
+                                if (fileProtocol == null)
+                                    fileProtocol = new String("file://localhost/" + System.getProperty("user.dir") + "/");
                                 
                                 InstructionProcessor pProcessor = new InstructionProcessor(m_wm);
                                 Instruction pRootInstruction = new Instruction();
@@ -547,12 +546,6 @@ public abstract class Character extends Entity implements SpatialObject, Animati
                                 pProcessor.execute(pRootInstruction);
                             }
                             
-                            try {
-                                rootURL = new URL(m_attributes.getBaseURL());
-                            } catch (MalformedURLException ex) {
-                                rootURL = null;
-                            }
-
                             // Set material
                             skeleton.setShader(new VertDeformerWithSpecAndNormalMap(m_wm));
                             m_leftEyeBall.applyShader(m_wm);
@@ -560,12 +553,15 @@ public abstract class Character extends Entity implements SpatialObject, Animati
 
                             // Facial animation state is designated to id (and index) 1
                             AnimationState facialAnimationState = new AnimationState(1);
-                            facialAnimationState.setCurrentCycle(1); // 0 is "All Cycles"
+                            facialAnimationState.setCurrentCycle(-1); 
                             facialAnimationState.setCurrentCyclePlaybackMode(PlaybackMode.PlayOnce);
                             facialAnimationState.setAnimationSpeed(0.1f);
                             m_skeleton.addAnimationState(facialAnimationState);
-                            m_facialAnimationQ = new TransitionQueue(m_skeleton, 1);
-                            initiateFacialAnimation(1, 0.75f, 0.5f);
+                            if (m_skeleton.getAnimationComponent().getGroups().size() > 1)   
+                            {
+                                m_facialAnimationQ = new TransitionQueue(m_skeleton, 1);
+                                initiateFacialAnimation(1, 0.75f, 0.75f); // 0 is "All Cycles"
+                            }
 
                             // The verlet arm!
                             SkinnedMeshJoint shoulderJoint = (SkinnedMeshJoint) m_skeleton.findChild("rightArm");
@@ -903,8 +899,12 @@ public abstract class Character extends Entity implements SpatialObject, Animati
     public void initiateFacialAnimation(String cycleName, float fTimeIn, float fTimeOut) 
     {
         if (m_facialAnimationQ == null)
-            return;   
-        
+        {
+            if (m_skeleton.getAnimationComponent().getGroups().size() > 1)   
+                m_facialAnimationQ = new TransitionQueue(m_skeleton, 1);
+            else
+                return;   
+        }
         int cycle = m_skeleton.getAnimationGroup(1).findAnimationCycle(cycleName);
         if (cycle != -1)
             initiateFacialAnimation(cycle, fTimeIn, fTimeOut);
@@ -913,7 +913,12 @@ public abstract class Character extends Entity implements SpatialObject, Animati
     public void initiateFacialAnimation(int cycleIndex, float fTimeIn, float fTimeOut)
     {
         if (m_facialAnimationQ == null)
-            return;
+        {
+            if (m_skeleton.getAnimationComponent().getGroups().size() > 1)   
+                m_facialAnimationQ = new TransitionQueue(m_skeleton, 1);
+            else
+                return;   
+        }
         m_facialAnimationQ.addTransition(new TransitionCommand(cycleIndex, fTimeIn, PlaybackMode.PlayOnce, false));
         m_facialAnimationQ.addTransition(new TransitionCommand(cycleIndex, fTimeOut, PlaybackMode.PlayOnce, true));
     }
@@ -1068,7 +1073,13 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         m_context.notifyAnimationMessage(message, stateID);
     }
 
-    public TransitionQueue getFacialAnimationQ() {
+    public TransitionQueue getFacialAnimationQ() 
+    {
+        if (m_facialAnimationQ == null)
+        {
+            if (m_skeleton.getAnimationComponent().getGroups().size() > 1)   
+                m_facialAnimationQ = new TransitionQueue(m_skeleton, 1);
+        }
         return m_facialAnimationQ;
     }
 

@@ -78,6 +78,20 @@ public class TransitionQueue implements AnimationListener
          */
         if (m_state.isTransitioning())
             m_commandQueue.enqueue(newCommand);
+        else if (m_state.getCurrentCycle() == -1)
+        {
+            // This is not a transition... it's the first animation to play
+            AnimationCycle newCycle = m_group.getCycle(newCommand.getAnimationIndex());
+            m_state.setCurrentCycle(newCommand.getAnimationIndex());
+            
+            if (newCommand.isReverse())
+                m_state.setCurrentCycleTime(newCycle.getEndTime());
+            else
+                m_state.setCurrentCycleTime(newCycle.getStartTime());
+
+            m_state.setReverseAnimation(newCommand.isReverse());
+            m_state.setCurrentCyclePlaybackMode(newCommand.getPlaybackMode());
+        }
         else // Do it now!
         {
             AnimationCycle newCycle = m_group.getCycle(newCommand.getAnimationIndex());
