@@ -119,8 +119,9 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
     protected OptionsGUI                m_AvatarOptions     = null;
     protected TreeExplorer              m_NodeExplorer      = null;
     protected JFrame                    m_AnimationViewer   = null;
-    protected JPanel_ServerBrowser      m_ServerBrowser  = null;
+    protected JPanel_ServerBrowser      m_ServerBrowser     = null;
     protected FlexibleCameraProcessor   m_cameraProcessor   = null;
+    protected URL                       m_presetCaucasian   = null;
 ////////////////////////////////////////////////////////////////////////////////
 // CLASS DATA MEMBERS - END
 ////////////////////////////////////////////////////////////////////////////////
@@ -157,6 +158,12 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
         createInputEntity(m_worldManager); 
         createDemoEntities(m_worldManager);
         setGlobalLighting(m_worldManager);
+        try {
+            m_presetCaucasian = new URL("http://www.zeitgeistgames.com/assets/files/avatars_cau.xml");
+        } catch (MalformedURLException ex) {
+            Logger.getLogger(BaseDefault.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
         runProgressBar(false);
     }
     
@@ -857,9 +864,9 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
         gridBagConstraints.fill = java.awt.GridBagConstraints.VERTICAL;
         jPanel_MainPanel.add(EZOptions, gridBagConstraints);
 
-        String url = new String(System.getProperty("user.dir") + "/assets/file/avatars_cau.xml");
-        File xml = new File(url);
-        EZOptions.readPresetList(xml);
+//        String url = new String(System.getProperty("user.dir") + "/assets/file/avatars_cau.xml");
+//        File xml = new File(url);
+        EZOptions.readPresetList(m_presetCaucasian);
         EZOptions.setTable();
     }
 

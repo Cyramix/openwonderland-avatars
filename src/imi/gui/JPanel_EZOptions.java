@@ -76,13 +76,22 @@ public class JPanel_EZOptions extends javax.swing.JPanel {
         });
     }
 
-    public void readPresetList(File xmlURL) {
+    public void readPresetList(File xmlFile) {
+        try {
+            URL xmlURL = xmlFile.toURI().toURL();
+            readPresetList(xmlURL);
+        } catch (MalformedURLException ex) {
+            Logger.getLogger(JPanel_EZOptions.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public void readPresetList(URL xmlURL) {
 
         try {
 
             DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
-            Document doc = docBuilder.parse(xmlURL);
+            Document doc = docBuilder.parse(xmlURL.openStream());
 
             // normalize text representation
             doc.getDocumentElement().normalize();
@@ -350,6 +359,7 @@ public class JPanel_EZOptions extends javax.swing.JPanel {
         }
     }
 
+
     public void setTable() {
         if (m_presetLists == null)
             return;
@@ -561,7 +571,11 @@ public class JPanel_EZOptions extends javax.swing.JPanel {
         jScrollPane_Presets.setViewportView(jTable_Presets);
         jTable_Presets.getColumnModel().getColumn(0).setPreferredWidth(20);
 
-        jPanel_MainPresets.add(jScrollPane_Presets, new java.awt.GridBagConstraints());
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+        gridBagConstraints.gridheight = java.awt.GridBagConstraints.REMAINDER;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        jPanel_MainPresets.add(jScrollPane_Presets, gridBagConstraints);
 
         jTabbedPane_Options.addTab("Avatars", jPanel_MainPresets);
 
