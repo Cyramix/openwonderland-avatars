@@ -30,9 +30,9 @@ public class PGeometryVertex
     public Vector3f             m_Position      = new Vector3f();
     public Vector3f             m_Normal        = new Vector3f();
     public Vector3f             m_Tangent       = new Vector3f();
-    public ColorRGBA             m_Diffuse       = new ColorRGBA();
-    public ColorRGBA             m_Specular      = new ColorRGBA();
-    public Vector2f             []m_TexCoords   = new Vector2f[8];
+    public ColorRGBA            m_Diffuse       = new ColorRGBA();
+    public ColorRGBA            m_Specular      = new ColorRGBA();
+    public Vector2f []          m_TexCoords     = new Vector2f[8];
 
 
 

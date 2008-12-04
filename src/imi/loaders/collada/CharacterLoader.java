@@ -36,23 +36,31 @@ import java.util.logging.Logger;
 
 
 /**
- *
+ * This class is used to wrap the Collada loader and expose higher-level
+ * functionality.
  * @author Chris Nagle
  */
 public class CharacterLoader
 {
-    private Collada         m_pCollada = new Collada();
+    /** The collada loader that this class wraps **/
+    private Collada m_colladaLoader = new Collada();
 
-    //  Loads a rig.
+    /**
+     * Load the specified collada file and parse out the skeleton, associate it
+     * with the provided PScene, and return the skelton node.
+     * @param pScene
+     * @param rigLocation
+     * @return The completed skeleton node
+     */
     public SkeletonNode loadSkeletonRig(PScene pScene, URL rigLocation)
     {
         //  Load the collada file to the PScene
-        m_pCollada.clear();
+        m_colladaLoader.clear();
         try
         {
             //  Load only the rig and geometry.
-            m_pCollada.setLoadFlags(true, true, false);
-            if (m_pCollada.load(pScene, rigLocation) == false) // uh oh
+            m_colladaLoader.setLoadFlags(true, true, false);
+            if (m_colladaLoader.load(pScene, rigLocation) == false) // uh oh
                 Logger.getLogger(CharacterLoader.class.toString()).log(Level.SEVERE, "COLLADA Loader returned false!");
         }
         catch (Exception ex)
@@ -61,72 +69,95 @@ public class CharacterLoader
             ex.printStackTrace();
         }
 
-        return m_pCollada.getSkeletonNode();
+        return m_colladaLoader.getSkeletonNode();
     }
 
-    //  Loads replacement geometry from a file.
+    /**
+     * Load the geometry in the specified collada file into the provided pscene.
+     * @param loadingPScene
+     * @param geometryLocation
+     * @return True on success, false otherwise.
+     */
     public boolean loadGeometry(PScene loadingPScene, URL geometryLocation)
     {
         boolean result = false;
         //  Load the collada file to the PScene
-        m_pCollada.clear();
+        m_colladaLoader.clear();
         try
         {
             //  Load only the geometry.
-            m_pCollada.setLoadFlags(false, true, false);
-            m_pCollada.setAddSkinnedMeshesToSkeleton(false);
-            m_pCollada.load(loadingPScene, geometryLocation);
+            m_colladaLoader.setLoadFlags(false, true, false);
+            m_colladaLoader.setAddSkinnedMeshesToSkeleton(false);
+            m_colladaLoader.load(loadingPScene, geometryLocation);
             result = true;
         }
         catch (Exception ex)
         {
             System.out.println("Exception occured while loading skeleton.");
             ex.printStackTrace();
+            result = false;
         }
-
         return result;
     }
 
-    //  Loads replacement animation from a file.
-    public boolean loadAnimation(PScene loadingPScene, SkeletonNode pSkeleton, URL animationLocation, int mergeToGroup)
+    /**
+     * This method parses the collada file at the specified location using the
+     * provided skeleton node and pscene. If mergeToGroup is a non-negative value,
+     * it is used as the index of the animation group that the newly loaded data
+     * should be merged with.
+     * @param loadingPScene
+     * @param owningSkeleton
+     * @param animationLocation
+     * @param mergeToGroup
+     * @return True on success, false otherwise
+     */
+    public boolean loadAnimation(PScene loadingPScene, SkeletonNode owningSkeleton, URL animationLocation, int mergeToGroup)
     {
         //  Load the collada file to the PScene
-        m_pCollada.clear();
+        m_colladaLoader.clear();
         
-        m_pCollada.setLoadFlags(false, false, true);
-        m_pCollada.setSkeletonNode(pSkeleton);
-        boolean result = m_pCollada.load(loadingPScene, animationLocation);
+        m_colladaLoader.setLoadFlags(false, false, true);
+        m_colladaLoader.setSkeletonNode(owningSkeleton);
+        boolean result = m_colladaLoader.load(loadingPScene, animationLocation);
 
         if (mergeToGroup >= 0)
-            mergeLastToAnimationGroup(pSkeleton, mergeToGroup);
+            mergeLastToAnimationGroup(owningSkeleton, mergeToGroup);
 
         return result;
     }
 
-    //  Deletes a SkinnedMesh from the Skeleton.
-    public boolean deleteSkinnedMesh(SkeletonNode pSkeleton, String skinnedMeshName)
+    /**
+     * This method locates and removes the indicated skinned mesh from the provided
+     * skeleton.
+     * @param owningSkeleton
+     * @param skinnedMeshName
+     * @return True if the mesh was found and removed, false otherwise
+     */
+    public boolean deleteSkinnedMesh(SkeletonNode owningSkeleton, String skinnedMeshName)
     {
-        int a;
-        PNode pChildNode;
-
-        for (a=0; a<pSkeleton.getChildrenCount(); a++)
+        boolean result = false;
+        for (PNode kid : owningSkeleton.getChildren())
         {
-            pChildNode = pSkeleton.getChild(a);
-
-            if (pChildNode instanceof PPolygonSkinnedMeshInstance)
+            if (kid instanceof PPolygonSkinnedMeshInstance)
             {
-                PPolygonSkinnedMeshInstance pSkinnedMesh = (PPolygonSkinnedMeshInstance)pChildNode;
-                if (pSkinnedMesh.getName().equals(skinnedMeshName))
+                if (kid.getName().equals(skinnedMeshName))
                 {
-                    pSkeleton.removeChild(pChildNode);
-                    return(true);
+                    owningSkeleton.removeChild(kid);
+                    result = true;
+                    break;
                 }
             }
         }
-    
-        return(false);
+        return result;
     }
 
+    /**
+     * This method merges the last animation group within a component with the
+     * animation group indicated by the provided index. No action is taken if
+     * the specified group index already refers to the last group.
+     * @param pSkeletonNode
+     * @param groupIndex
+     */
     private void mergeLastToAnimationGroup(SkeletonNode pSkeletonNode, int groupIndex)
     {   
         AnimationComponent pAnimationComponent = pSkeletonNode.getAnimationComponent();
@@ -144,13 +175,7 @@ public class CharacterLoader
             }
         }
         else
-        {
             System.out.println("The animation where loaded in the wrong order, facial animation must be loaded last");
-//            AnimationGroup newGroup = new AnimationGroup();
-//            newGroup.addCycle(new AnimationCycle("All Cycles", 0.0f, 0.0f));
-//            pAnimationComponent.getGroups().add(newGroup);
-//            mergeLastToAnimationGroup(pSkeletonNode, groupIndex);
-        }
     }
 
 }

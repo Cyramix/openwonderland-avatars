@@ -63,7 +63,7 @@ public class NovemberDemo extends DemoBase
     {
         // create the backdrop
         //theWorld = new ColladaEnvironment(wm, "assets/models/collada/Environments/BizObj/BusinessObjectsCenter.dae", WorldName);
-        theWorld = new ColladaEnvironment(wm, "assets/models/collada/Environments/Milan/DSI.dae", WorldName);
+        theWorld = new ColladaEnvironment(wm, "assets/models/collada/Environments/MPK20/MPK20.dae", WorldName);
         
         ObjectCollection objects = new ObjectCollection("Objects", wm);
         

@@ -44,7 +44,7 @@ public class PPolygon
     //  Constructor.
     public PPolygon()
     {
-        m_Vertices = new ArrayList();
+        m_Vertices = new ArrayList<PPolygonVertexIndices>();
     }
     
     public PPolygon(PPolygon RHS)
@@ -54,7 +54,7 @@ public class PPolygon
     
     public void set(PPolygon RHS)
     {
-        m_Vertices = new ArrayList();
+        m_Vertices = new ArrayList<PPolygonVertexIndices>();
         m_Normal   = new Vector3f(RHS.m_Normal);
         m_Center   = new Vector3f(RHS.m_Center);
         // Copy all the vertices
@@ -80,7 +80,7 @@ public class PPolygon
 
     public PPolygon(PPolygonMesh pPolygonMesh)
     {
-        m_Vertices = new ArrayList();
+        m_Vertices = new ArrayList<PPolygonVertexIndices>();
         setPolygonMesh(pPolygonMesh);
     }
     
@@ -164,10 +164,10 @@ public class PPolygon
         return m_Vertices;
     }
     
-    //  Retrieves the vertice at the specified index.
+    //  Retrieves the vertex at the specified index.
     public PPolygonVertexIndices getVertex(int index)
     {
-        return( (PPolygonVertexIndices)m_Vertices.get(index));
+        return(m_Vertices.get(index));
     }
 
     //  Retrieves the number of vertices making up the Polygon.
@@ -179,18 +179,12 @@ public class PPolygon
     //  Checks to see if the Polygon is using the specified PositionIndex.
     public boolean isUsingPositionIndex(int PositionIndex)
     {
-        int             a;
-        PPolygonVertexIndices pVertice;
-
-        for (a=0; a<m_Vertices.size(); a++)
+        for (PPolygonVertexIndices vert : m_Vertices)
         {
-            pVertice = (PPolygonVertexIndices)m_Vertices.get(a);
-
-            if (pVertice.m_PositionIndex == PositionIndex)
-                return(true);
+            if (vert.m_PositionIndex == PositionIndex)
+                return true;
         }
-
-        return(false);
+        return false;
     }
 
     //  Calculates the Normal.
@@ -198,7 +192,7 @@ public class PPolygon
     {
         m_Normal.zero();
 
-        if (m_Vertices.size() < 3)
+        if (m_Vertices.size() <3 ) 
             return;
 
         PPolygonVertexIndices         pVertice1;

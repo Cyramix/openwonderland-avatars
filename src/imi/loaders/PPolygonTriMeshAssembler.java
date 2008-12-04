@@ -82,12 +82,12 @@ public class PPolygonTriMeshAssembler
         TriMesh [] result = new TriMesh[Model.getChildrenCount()];
         
         for (int i = 0; i < Model.getChildrenCount(); i++)
-            result[i] = getTriMesh((PPolygonMesh)Model.getChild(i));
+            result[i] = buildTriMesh((PPolygonMesh)Model.getChild(i));
         
         return result;
     }
     
-    public TriMesh getTriMesh(PPolygonMesh Mesh)
+    public TriMesh buildTriMesh(PPolygonMesh Mesh)
     {
         TriMesh result = new TriMesh();
         reconstructTriMesh(result, Mesh);

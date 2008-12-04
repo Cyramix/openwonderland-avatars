@@ -92,18 +92,10 @@ public class InstructionProcessor
     private void printInstruction(String spacing, Instruction pInstruction)
     {
         System.out.println(spacing + pInstruction.getInstruction() + " '" + pInstruction.getDataAsString() + "'");
-
-        if (pInstruction.getChildrenCount() > 0)
+        for (PNode kid : pInstruction.getChildren())
         {
-            int a;
-            Instruction pChildInstruction;
-            
-            for (a=0; a<pInstruction.getChildrenCount(); a++)
-            {
-                pChildInstruction = (Instruction)pInstruction.getChild(a);
-                
-                printInstruction(spacing + "   ", pChildInstruction);
-            }
+            if (kid instanceof Instruction)
+                printInstruction(spacing + "    ", (Instruction)kid);
         }
     }
 
@@ -175,17 +167,10 @@ public class InstructionProcessor
         catch (MalformedURLException ex){
             Logger.getLogger(InstructionProcessor.class.getName()).log(Level.SEVERE, null, ex); }
         
-        if (pInstruction.getChildrenCount() > 0)
+        for (PNode kid : pInstruction.getChildren())
         {
-            int a;
-            Instruction pChildInstruction;
-
-            for (a=0; a<pInstruction.getChildrenCount(); a++)
-            {
-                pChildInstruction = (Instruction)pInstruction.getChild(a);
-
-                executeInstruction(loadingPScene, pChildInstruction);
-            }
+            if (kid instanceof Instruction)
+                executeInstruction(loadingPScene, (Instruction)kid);
         }
     }
     

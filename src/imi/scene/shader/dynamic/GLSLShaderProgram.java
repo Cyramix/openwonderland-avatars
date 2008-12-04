@@ -615,6 +615,22 @@ public class GLSLShaderProgram implements AbstractShaderProgram, RenderUpdater
     {
         m_bUseDefaultInitializers = bDefaults;
     }
+
+    /**
+     * This method searches the list of effects in the shader and determines
+     * whether it already contains the indicated effect
+     * @param effect
+     * @return True if found, false otherwise
+     */
+    public boolean containsEffect(GLSLShaderEffect effect)
+    {
+        for (GLSLShaderEffect myEffect : m_effects)
+        {
+            if (myEffect.getEffectName().equals(effect.getEffectName()))
+                return true;
+        }
+        return false;
+    }
     
     /**
      * Accessor

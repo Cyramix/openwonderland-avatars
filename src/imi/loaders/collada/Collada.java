@@ -141,7 +141,7 @@ public class Collada
     private PScene                                      m_pLoadingPScene = null;
 
 
-    //  Constains the PolygonMeshes loaded.
+    //  Contains the PolygonMeshes loaded.
     public ArrayList<PPolygonMesh>              m_PolygonMeshes = new ArrayList<PPolygonMesh>();
 
     //  Contains the PolygonSkinnedMeshes loaded.

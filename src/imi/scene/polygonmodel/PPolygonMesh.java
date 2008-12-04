@@ -73,10 +73,10 @@ public class PPolygonMesh extends PNode
 
     // The data members below are the master lists of the components
     // referenced by the vertices of the PPolygons contained herein.
-    protected ArrayList<PPolygonPosition>     m_Positions         = new ArrayList();
-    protected ArrayList<PPolygonNormal>       m_Normals           = new ArrayList();
-    protected ArrayList<PPolygonColor>        m_Colors            = new ArrayList();
-    protected ArrayList<PPolygonTexCoord>     m_TexCoords         = new ArrayList();
+    protected ArrayList<PPolygonPosition>     m_Positions         = new ArrayList<PPolygonPosition>();
+    protected ArrayList<PPolygonNormal>       m_Normals           = new ArrayList<PPolygonNormal>();
+    protected ArrayList<PPolygonColor>        m_Colors            = new ArrayList<PPolygonColor>();
+    protected ArrayList<PPolygonTexCoord>     m_TexCoords         = new ArrayList<PPolygonTexCoord>();
 
     private boolean                         m_bUnifromTexCoords = false;    //  if true all textures will get index copy of texture number 0 TexCoords
     private int                             m_NumberOfTextures  = 1;        //  index multi textured mesh will have more than one texture
@@ -106,7 +106,7 @@ public class PPolygonMesh extends PNode
         setTransform(new PTransform(other.getTransform()));
         
         beginBatch(); // signal that the geometry is currently in flux
-        m_Polygons          = new ArrayList();
+        m_Polygons          = new ArrayList<PPolygon>();
         setMaterial(other.getMaterialCopy());
 
         m_BoundingCube      = new PCube();
@@ -150,7 +150,7 @@ public class PPolygonMesh extends PNode
     {
         setName("Untitled");
         setTransform(new PTransform());
-        m_Polygons          = new ArrayList();
+        m_Polygons = new ArrayList<PPolygon>();
     }
     
     /**
@@ -162,7 +162,7 @@ public class PPolygonMesh extends PNode
     {
         setName(name);
         setTransform(new PTransform());
-        m_Polygons          = new ArrayList();
+        m_Polygons = new ArrayList<PPolygon>();
     }
 
     /**
@@ -620,18 +620,8 @@ public class PPolygonMesh extends PNode
      */
     public int findTexCoord(Vector2f pTexCoord)
     {
-        int                  a;
-        PPolygonTexCoord pPolygonMeshTexCoord;
-
-	for (a=0; a<getTexCoordCount(); a++)
-	{
-            pPolygonMeshTexCoord = getTexCoord(a);
-
-            if (pPolygonMeshTexCoord.m_TexCoord.equals(pTexCoord))
-                return(a);
-        }
-
-        return(-1);
+        int result = m_TexCoords.indexOf(new PPolygonTexCoord(pTexCoord));
+        return result;
     }
 
     /**
@@ -708,7 +698,7 @@ public class PPolygonMesh extends PNode
      */
     public PPolygon getPolygon(int Index)
     {
-        return( (PPolygon)m_Polygons.get(Index));
+        return(m_Polygons.get(Index));
     }
 
     /**
@@ -728,19 +718,6 @@ public class PPolygonMesh extends PNode
     public int getPolygonCount()
     {
         return(m_Polygons.size());
-    }
-
-    /**
-     * Retrives the
-     * @return int
-     */
-    @Deprecated
-    public int getTriangleCount()
-    {
-        // This logic makes no sense.
-        // TODO: make this return something reliable and then remove the
-        //     deprecation mark
-        return(m_Polygons.size()-2);
     }
 
     /**

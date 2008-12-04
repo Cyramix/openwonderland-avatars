@@ -20,7 +20,6 @@ package imi.scene.polygonmodel.skinned;
 import imi.scene.polygonmodel.*;
 import com.jme.math.Vector3f;
 import imi.loaders.PPolygonTriMeshAssembler;
-import imi.scene.PMatrix;
 import imi.scene.PNode;
 import imi.scene.PTransform;
 import imi.scene.polygonmodel.parts.skinned.PBoneIndices;
@@ -31,6 +30,7 @@ import imi.scene.utils.PRenderer;
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
+import javolution.util.FastList;
 
 
 
