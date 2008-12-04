@@ -17,6 +17,7 @@
  */
 package imi.scene.polygonmodel.parts.skinned;
 
+import com.jme.math.Vector3f;
 import com.jme.scene.SharedMesh;
 import imi.scene.PJoint;
 import imi.scene.PMatrix;
@@ -33,6 +34,7 @@ import imi.scene.polygonmodel.skinned.SkinnedMeshJoint;
 import imi.scene.polygonmodel.skinned.PPolygonSkinnedMesh;
 import imi.scene.shader.AbstractShaderProgram;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -494,10 +496,13 @@ public class SkeletonNode extends PNode implements Animated
                         PMatrix meshSpace = ((SkinnedMeshJoint)current).getMeshSpace();
                         if (((SkinnedMeshJoint)current).getSkeletonModifier() != null)
                         {
-                            ((SkinnedMeshJoint)current).getMeshSpace().mul(((SkinnedMeshJoint)current).getSkeletonModifier());
+                            meshSpace.set(((SkinnedMeshJoint)parent).getMeshSpace());
+                            meshSpace.mul(current.getTransform().getLocalMatrix(false));
+                            meshSpace.mul(((SkinnedMeshJoint)current).getSkeletonModifier());
                             ((SkinnedMeshJoint)current).getTransform().getWorldMatrix(true).mul(((SkinnedMeshJoint)current).getSkeletonModifier());
                         }
-                        meshSpace.mul(((SkinnedMeshJoint)parent).getMeshSpace(), current.getTransform().getLocalMatrix(false));
+                        else
+                            meshSpace.mul(((SkinnedMeshJoint)parent).getMeshSpace(), current.getTransform().getLocalMatrix(false));
                     }
                     else
                         ((SkinnedMeshJoint)current).setMeshSpace(current.getTransform().getLocalMatrix(false));
@@ -531,4 +536,42 @@ public class SkeletonNode extends PNode implements Animated
         }
         return result;
     }
+
+    /**
+     * This method is used to generate skeleton modifiers as deltas from the
+     * provided base skeleton. For instance, in order to use the stock male animations
+     * with a different mesh, these deltas must be built and stored in order to
+     * avoid warping effects.
+     * @param baseSkeleton The skeleton that will be treated as the original, to which
+     * this skeleton will be modified
+     */
+    public void generateSkeletonModifiers(SkeletonNode baseSkeleton)
+    {
+        // Gather the joints and set the new local modifiers
+        LinkedList<PNode> list = new LinkedList<PNode>();
+        list.addAll(getSkeletonRoot().getChildren());
+        PNode current = null;
+        while(!list.isEmpty())
+        {
+            // Grab the next guy
+            current = list.poll();
+            // Process him! If not a skinned mesh joint skip and prune
+            if (current instanceof SkinnedMeshJoint)
+            {
+                SkinnedMeshJoint ourJoint = (SkinnedMeshJoint)current;
+                SkinnedMeshJoint baseJoint = baseSkeleton.findSkinnedMeshJoint(ourJoint.getName());
+
+                PMatrix modifierDelta = new PMatrix();
+                //modifierDelta.mul(ourJoint.getTransform().getLocalMatrix(false), baseJoint.getTransform().getLocalMatrix(false).inverse());
+                //modifierDelta.mulInverse(baseJoint.getTransform().getLocalMatrix(false), ourJoint.getTransform().getLocalMatrix(false));
+                ourJoint.setSkeletonModifier(modifierDelta);
+            }
+            else
+                continue; // Prune (kids are not added to the list)
+            // Add to the list all the kids
+            for (PNode kid : current.getChildren())
+                list.add(kid);
+        }
+    }
+
 }

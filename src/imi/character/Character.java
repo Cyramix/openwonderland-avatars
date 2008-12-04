@@ -1123,9 +1123,10 @@ public abstract class Character extends Entity implements SpatialObject, Animati
                 SkinnedMeshJoint newHeadJoint     = skeleton.findSkinnedMeshJoint(currentHeadJoint.getName());
                 
                 PMatrix modifierDelta = new PMatrix();
-                modifierDelta.mul(newHeadJoint.getTransform().getLocalMatrix(false), currentHeadJoint.getTransform().getLocalMatrix(false).inverse());
+                //modifierDelta.mul(newHeadJoint.getTransform().getLocalMatrix(false), currentHeadJoint.getTransform().getLocalMatrix(false).inverse());
+                modifierDelta.mul( currentHeadJoint.getTransform().getLocalMatrix(false).inverse(), newHeadJoint.getTransform().getLocalMatrix(false));
                 //modifierDelta.mulInverse(newHeadJoint.getTransform().getLocalMatrix(false), currentHeadJoint.getTransform().getLocalMatrix(false));
-                currentHeadJoint.setSkeletonModifier(modifierDelta);
+                //currentHeadJoint.setSkeletonModifier(modifierDelta);
             }
             else
                 continue; // Prune (kids are not added to the list)
