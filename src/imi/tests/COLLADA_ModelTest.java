@@ -20,8 +20,8 @@ package imi.tests;
 
 import com.jme.math.Vector3f;
 import com.jme.renderer.ColorRGBA;
-import imi.gui.SceneEssentials;
 import imi.gui.TreeExplorer;
+import imi.scene.shader.NoSuchPropertyException;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 
@@ -30,7 +30,6 @@ import imi.loaders.repository.SharedAsset;
 import imi.loaders.repository.SharedAsset.SharedAssetType;
 import imi.scene.PMatrix;
 import imi.scene.PScene;
-import imi.scene.PNode;
 import imi.scene.polygonmodel.PPolygonModelInstance;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -38,17 +37,26 @@ import org.jdesktop.mtgame.WorldManager;
 import org.jdesktop.mtgame.ProcessorComponent;
 
 import imi.loaders.collada.ColladaLoaderParams;
+import imi.loaders.collada.Instruction;
+import imi.loaders.collada.InstructionProcessor;
 import imi.loaders.repository.AssetInitializer;
+import imi.scene.PNode;
+import imi.scene.animation.AnimationState;
 import imi.scene.camera.behaviors.TumbleObjectCamModel;
 import imi.scene.camera.state.TumbleObjectCamState;
 import imi.scene.polygonmodel.PPolygonMesh;
 import imi.scene.polygonmodel.PPolygonMeshInstance;
 import imi.scene.polygonmodel.parts.PMeshMaterial;
 import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
-import imi.scene.shader.programs.VertDeformerWithSpecAndNormalMap;
+import imi.scene.processors.SkinnedAnimationProcessor;
+import imi.scene.shader.ShaderProperty;
+import imi.scene.shader.programs.SimpleTNLWithAmbient;
 import imi.scene.utils.PMeshUtils;
 import java.io.File;
 import java.net.URL;
+import imi.scene.shader.dynamic.*;
+import imi.scene.shader.effects.*;
+import imi.scene.shader.programs.VertDeformerWithSpecAndNormalMap;
 
 
 /**
@@ -79,7 +87,8 @@ public class COLLADA_ModelTest extends DemoBase
             //modelLocation = new URL("http://www.zeitgeistgames.com/assets/collada/Clothing/FlipFlopsFeet.dae");
             //modelLocation = new File("assets/models/collada/Environments/Milan/DSI.dae").toURI().toURL();
             modelLocation = new File("assets/models/collada/Avatars/Male/MaleBind.dae").toURI().toURL();
-            //modelLocation = new File("assets/models/collada/Avatars/AfricanAmericanMaleHead1_Bind.dae").toURI().toURL();
+            //modelLocation = new File("assets/models/pack/headOne.dae").toURI().toURL();
+            //modelLocation = new File("assets/models/collada/Heads/MaleAfricanHead/AfricanAmericanMaleHead1_Bind.dae").toURI().toURL();
         } catch (MalformedURLException ex)
         {
             Logger.getLogger(COLLADA_ModelTest.class.getName()).log(Level.SEVERE, null, ex);
@@ -91,20 +100,47 @@ public class COLLADA_ModelTest extends DemoBase
         SharedAsset colladaAsset = new SharedAsset(pscene.getRepository(), new AssetDescriptor(SharedAssetType.COLLADA_Mesh, modelLocation), new AssetInitializer() {
 
             public boolean initialize(Object asset) {
-                te = new TreeExplorer();
-                SceneEssentials se = new SceneEssentials();
-                se.setPScene(fpscene);
-                se.setWM(fwm);
-                te.setExplorer(se);
-                te.setVisible(true);
                 SkeletonNode skeleton = (SkeletonNode)((PNode)asset).getChild(0);
-                skeleton.setShader(new VertDeformerWithSpecAndNormalMap(fwm));
+                Instruction configurationInstruction = new Instruction(Instruction.InstructionNames.instructions, new String("Configurating My Avatar!"));
+                configurationInstruction.addInstruction(Instruction.InstructionNames.setSkeleton, skeleton);
+                try {
+                    configurationInstruction.addInstruction(Instruction.InstructionNames.loadAnimation, new URL("file://localhost/work/avatars/assets/models/collada/Avatars/Male/Male_Walk.dae"));
+                } catch (MalformedURLException ex) {
+                    Logger.getLogger(COLLADA_ModelTest.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                InstructionProcessor executor = new InstructionProcessor(fwm);
+                executor.execute(configurationInstruction);
+                AnimationState newState = skeleton.getAnimationState(0);
+
+                skeleton.addAnimationState(newState);
+                newState.setCurrentCycle(0); // skeleton.getAnimationGroup().getCycleCount() - 1
+                skeleton.setShaderOnSkinnedMeshes(new VertDeformerWithSpecAndNormalMap(fwm));
+                Instruction maleBind = new Instruction(Instruction.InstructionNames.instructions, new String("Loading the male bind pose"));
+                maleBind.addInstruction(Instruction.InstructionNames.setSkeleton, null);
+                try {
+                    maleBind.addInstruction(Instruction.InstructionNames.loadBindPose, new URL("file://localhost/work/avatars/assets/models/collada/Avatars/Male/MaleBind.dae"));
+                } catch (MalformedURLException ex) {
+                    Logger.getLogger(COLLADA_ModelTest.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                executor.execute(maleBind, false);
+                SkeletonNode originalBind = executor.getSkeleton();
+                skeleton.remapSkeleton(originalBind);
+
+//                te = new TreeExplorer();
+//                SceneEssentials se = new SceneEssentials();
+//                se.setPScene(fpscene);
+//                se.setWM(fwm);
+//                te.setExplorer(se);
+//                te.setVisible(true);
+//                SkeletonNode skeleton = (SkeletonNode)((PNode)asset).getChild(0);
+//                skeleton.setShaderOnSkinnedMeshes(new VertDeformerWithSpecAndNormalMap(fwm));
                 return true;
             }
         });
         //colladaAsset.setUserData(new ColladaLoaderParams(true, true, false, false, 3, "FlipFlops", null));
         colladaAsset.setUserData(new ColladaLoaderParams(true, true, false, false, 3, "Milan", null));
         PPolygonModelInstance modelInst = pscene.addModelInstance("Collada Model", colladaAsset, new PMatrix());
+        processors.add(new SkinnedAnimationProcessor(modelInst));
         // create and add a standard cube to see the default lighting
         PPolygonMesh cube = PMeshUtils.createBox("Cube!", Vector3f.ZERO, 2, 2, 2, ColorRGBA.cyan);
         // add it to the pscene
@@ -113,8 +149,12 @@ public class COLLADA_ModelTest extends DemoBase
         PPolygonMeshInstance meshInst = (PPolygonMeshInstance) modelInst2.getChild(0);
         // assign a texture to the mesh instance
         PMeshMaterial material = new PMeshMaterial("cubeTex", "assets/textures/checkerboard.png");
+        GLSLShaderProgram shader = new SimpleTNLWithAmbient(wm, 0.35f);
+        material.setShader(shader);
         meshInst.setMaterial(material);
         meshInst.setUseGeometryMaterial(false);
+
+
 
         // NEW CAMERA MODEL TEST CODE
         TumbleObjectCamModel tumbleModel = new TumbleObjectCamModel();

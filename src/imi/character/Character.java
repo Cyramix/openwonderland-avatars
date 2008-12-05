@@ -547,7 +547,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
                             }
                             
                             // Set material
-                            skeleton.setShader(new VertDeformerWithSpecAndNormalMap(m_wm));
+                            skeleton.setShaderOnSkinnedMeshes(new VertDeformerWithSpecAndNormalMap(m_wm));
                             m_leftEyeBall.applyShader(m_wm);
                             m_rightEyeBall.applyShader(m_wm);
 

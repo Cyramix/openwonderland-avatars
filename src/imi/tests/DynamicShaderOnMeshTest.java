@@ -47,6 +47,7 @@ import imi.scene.shader.effects.UnlitTexturing_Lighting;
 import imi.scene.shader.effects.VertexToPosition_Transform;
 import imi.scene.shader.effects.SimpleNdotL_Lighting;
 import imi.scene.shader.effects.VertexDeformer_Transform;
+import imi.scene.shader.programs.VertDeformerWithSpecAndNormalMap;
 import imi.scene.utils.PMeshUtils;
 import java.util.ArrayList;
 import java.util.logging.Level;
@@ -74,70 +75,17 @@ public class DynamicShaderOnMeshTest extends DemoBase
     @Override
     protected void simpleSceneInit(PScene pscene, WorldManager wm, ArrayList<ProcessorComponent> processors) 
     {
-        // create shaders the verbose way
-        // SHADER ONE
-        GLSLShaderProgram shaderOne = new GLSLShaderProgram(wm, true);
-        shaderOne.addEffect(new VertexToPosition_Transform());
-        shaderOne.addEffect(new VertexDeformer_Transform());
-        shaderOne.addEffect(new GenerateFragLocalNormal());
-        shaderOne.addEffect(new UnlitTexturing_Lighting());
-        shaderOne.addEffect(new CalculateToLight_Lighting());
-        shaderOne.addEffect(new SimpleNdotL_Lighting());
-        try
-        {
-            shaderOne.compile();
-            shaderOne.setProperty(new ShaderProperty(GLSLDefaultVariables.DiffuseMap.getName(), GLSLDataType.GLSL_SAMPLER2D, Integer.valueOf(0)));
-        } 
-        catch (GLSLCompileException ex)
-        {
-            Logger.getLogger(DynamicShaderOnMeshTest.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        catch (NoSuchPropertyException ex)
-        {
-            Logger.getLogger(DynamicShaderOnMeshTest.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        
-        // SHADER TWO
-        GLSLShaderProgram shaderTwo = new GLSLShaderProgram(wm, true);
-        shaderTwo.addEffect(new VertexToPosition_Transform());
-        shaderTwo.addEffect(new VertexDeformer_Transform());
-        shaderTwo.addEffect(new CalculateToLight_Lighting());
-        shaderTwo.addEffect(new GenerateFragLocalNormal());
-        shaderTwo.addEffect(new UnlitTexturing_Lighting());
-        shaderTwo.addEffect(new AmbientNdotL_Lighting());
-        shaderTwo.addEffect(new MeshColorModulation());
-        //shaderTwo.addEffect(new DecalTexture());
-        try
-        {
-            shaderTwo.compile();
-            // assign some default uniform values
-            shaderTwo.setProperty(new ShaderProperty(
-                    GLSLDefaultVariables.DiffuseMap.getName(), GLSLDataType.GLSL_SAMPLER2D, Integer.valueOf(0)));
-            shaderTwo.setProperty(new ShaderProperty(
-                    "ambientPower", GLSLDataType.GLSL_FLOAT, Float.valueOf(0.20f)));
-           // shaderTwo.setProperty(new ShaderProperty("decalTexture", GLSLDataType.GLSL_SAMPLER2D, Integer.valueOf(1)));
-        } 
-        catch (GLSLCompileException ex)
-        {
-            Logger.getLogger(DynamicShaderOnMeshTest.class.getName()).log(Level.SEVERE, null, ex);
-        } 
-        catch (NoSuchPropertyException ex)
-        {
-            Logger.getLogger(DynamicShaderOnMeshTest.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        
-        // Uncomment to dump source code that was generated
-        System.out.println(shaderOne.getVertexProgramSource());
-        System.out.println("---------- FRAGMENT ------------");
-        System.out.println(shaderOne.getFragmentProgramSource());
-        
         
         // just to prove it works...
         pscene.setUseRepository(true); 
         
         // Now make a materal with the new shaders to use
         PMeshMaterial mat = new PMeshMaterial("MyName!");
-        mat.setShader(shaderOne);
+        GLSLShaderProgram shader = new VertDeformerWithSpecAndNormalMap(wm, 0.35f);
+        System.out.print(shader.getVertexProgramSource());
+        System.out.println("\n\n----FRAG LOGIC---\n\n");
+        System.out.println(shader.getFragmentProgramSource());
+        mat.setShader(shader);
         
         // Create the skeleton to attach our meshes to
         SkeletonNode skeleton = generateSkeleton();
@@ -176,7 +124,7 @@ public class DynamicShaderOnMeshTest extends DemoBase
         mat = new PMeshMaterial("NewTexture");
         mat.setTexture("assets/textures/checkerboard2.PNG", 0);
         //mat.setTexture("assets/textures/tgatest.tga", 0);
-        mat.setShader(shaderTwo); // use the second shader we generated
+        mat.setShader(shader); // use the second shader we generated
         
         // Assign the material with the second shader to the upper half mesh
         PPolygonSkinnedMeshInstance meshInst = ((SkeletonNode)modelInst.findChild("MyTestSkeleton")).getSkinnedMeshInstance("upperHalf");

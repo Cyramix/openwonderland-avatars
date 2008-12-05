@@ -17,7 +17,6 @@
  */
 package imi.scene.polygonmodel.parts.skinned;
 
-import com.jme.math.Vector3f;
 import com.jme.scene.SharedMesh;
 import imi.scene.PJoint;
 import imi.scene.PMatrix;
@@ -27,6 +26,7 @@ import imi.scene.animation.Animated;
 import imi.scene.animation.AnimationComponent;
 import imi.scene.animation.AnimationGroup;
 import imi.scene.animation.AnimationState;
+import imi.scene.polygonmodel.PPolygonMesh;
 import imi.scene.polygonmodel.PPolygonMeshInstance;
 import imi.scene.polygonmodel.parts.PMeshMaterial;
 import imi.scene.polygonmodel.skinned.PPolygonSkinnedMeshInstance;
@@ -342,7 +342,7 @@ public class SkeletonNode extends PNode implements Animated
     /**
      * Adds the specified skinned mesh instance as a child to this skeleton. This
      * method was created in order to explicitely indicate the intended result.
-     * @param pSkinnedMeshInstance
+     * @param meshInst
      */
     public void addSkinnedMeshInstance(PPolygonSkinnedMeshInstance pSkinnedMeshInstance)
     {
@@ -368,25 +368,56 @@ public class SkeletonNode extends PNode implements Animated
         return(null);
     }
 
-    //  Assigns the specified shader to all SkinnedMeshes.
-    public void setShader(AbstractShaderProgram shader)
+    /**
+     * Set the provided shader on all the skinned meshes found underneath the
+     * skeleton node in the graph
+     * @param shader
+     */
+    public void setShaderOnSkinnedMeshes(AbstractShaderProgram shader)
     {
         for (PNode kid : getChildren())
         {
             if (kid instanceof PPolygonSkinnedMesh)
             {
                 PPolygonSkinnedMesh pSkinnedMesh = (PPolygonSkinnedMesh)kid;
-                
+
                 pSkinnedMesh.getMaterialRef().setShader(shader);
             }
             else if (kid instanceof PPolygonSkinnedMeshInstance)
             {
                 PPolygonSkinnedMeshInstance pSkinnedMeshInstance = (PPolygonSkinnedMeshInstance)kid;
-                
+
                 PMeshMaterial mat = pSkinnedMeshInstance.getMaterialRef().getMaterial();
                 mat.setShader(shader);
                 pSkinnedMeshInstance.setMaterial(mat);
                 pSkinnedMeshInstance.setUseGeometryMaterial(false);
+            }
+        }
+     }
+
+    /**
+     * Set the provided shader on all meshes (non-skinned) found under the
+     * skeleton node in the graph.
+     * @param shader
+     */
+    public void setShaderOnMeshes(AbstractShaderProgram shader)
+    {
+        for (PNode kid : getChildren())
+        {
+            if (kid instanceof PPolygonMesh)
+            {
+                PPolygonMesh mesh = (PPolygonMesh)kid;
+
+                mesh.getMaterialRef().setShader(shader);
+            }
+            else if (kid instanceof PPolygonMeshInstance)
+            {
+                PPolygonMeshInstance meshInst = (PPolygonMeshInstance)kid;
+
+                PMeshMaterial mat = meshInst.getMaterialRef().getMaterial();
+                mat.setShader(shader);
+                meshInst.setMaterial(mat);
+                meshInst.setUseGeometryMaterial(false);
             }
         }
      }

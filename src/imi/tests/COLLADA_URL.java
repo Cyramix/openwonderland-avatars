@@ -89,7 +89,7 @@ public class COLLADA_URL extends DemoBase2
         SkeletonNode pTheSkeletonNode = loadCharacter(pscene);
 
         //  Assign the specified shader to all SkinnedMeshes.
-        pTheSkeletonNode.setShader(new VertexDeformer(wm));
+        pTheSkeletonNode.setShaderOnSkinnedMeshes(new VertexDeformer(wm));
 
         PPolygonModelInstance modelInst = pscene.addModelInstance(pTheSkeletonNode, new PMatrix());
 
@@ -108,7 +108,7 @@ public class COLLADA_URL extends DemoBase2
             }
 
             //  Assign the specified shader to all SkinnedMeshes.
-            pSkeletonNode.setShader(new VertexDeformer(wm));
+            pSkeletonNode.setShaderOnSkinnedMeshes(new VertexDeformer(wm));
         }
 
         modelInst.getTransform().getLocalMatrix(true).setScale(10.0f);

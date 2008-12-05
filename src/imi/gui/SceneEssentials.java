@@ -751,7 +751,7 @@ public class SceneEssentials {
             
         pProcessor.execute(pRootInstruction);
 
-        skeleton.setShader(new VertDeformerWithSpecAndNormalMap(worldManager));
+        skeleton.setShaderOnSkinnedMeshes(new VertDeformerWithSpecAndNormalMap(worldManager));
         meshsetup.put(region, meshRef);
     }
 
@@ -879,7 +879,7 @@ public class SceneEssentials {
                         pProcessor.execute(pRootInstruction);
                     }
 
-                    skeleton.setShader(new VertDeformerWithSpecAndNormalMap(worldManager));
+                    skeleton.setShaderOnSkinnedMeshes(new VertDeformerWithSpecAndNormalMap(worldManager));
                     ((ProcessorCollectionComponent)currentEntity.getComponent(ProcessorCollectionComponent.class)).addProcessor(new SkinnedAnimationProcessor(skel));
                     currentPScene.setDirty(true, true);
                     setCameraOnModel();
@@ -933,7 +933,7 @@ public class SceneEssentials {
                     pRootInstruction.addInstruction(InstructionNames.loadAnimation, a);
                     pProcessor.execute(pRootInstruction);
 
-                    skeleton.setShader(new VertDeformerWithSpecAndNormalMap(worldManager));
+                    skeleton.setShaderOnSkinnedMeshes(new VertDeformerWithSpecAndNormalMap(worldManager));
                     ((ProcessorCollectionComponent)currentEntity.getComponent(ProcessorCollectionComponent.class)).addProcessor(new SkinnedAnimationProcessor(skel));
                     currentPScene.setDirty(true, true);
                     setCameraOnModel();
@@ -1014,7 +1014,7 @@ public class SceneEssentials {
                         pProcessor.execute(pRootInstruction);
                     }
 
-                    skeleton.setShader(new VertDeformerWithSpecAndNormalMap(worldManager));
+                    skeleton.setShaderOnSkinnedMeshes(new VertDeformerWithSpecAndNormalMap(worldManager));
                     ((ProcessorCollectionComponent)currentEntity.getComponent(ProcessorCollectionComponent.class)).addProcessor(new SkinnedAnimationProcessor(skel));
                     currentPScene.setDirty(true, true);
                     setCameraOnModel();
