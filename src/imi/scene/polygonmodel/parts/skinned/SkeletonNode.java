@@ -408,13 +408,13 @@ public class SkeletonNode extends PNode implements Animated
         while (queue.isEmpty() == false)
         {
             PNode kid = queue.removeFirst();
-            if (kid instanceof PPolygonMesh)
+            if (kid instanceof PPolygonMesh && !(kid instanceof PPolygonSkinnedMesh))
             {
                 PPolygonMesh mesh = (PPolygonMesh)kid;
 
                 mesh.getMaterialRef().setShader(shader);
             }
-            else if (kid instanceof PPolygonMeshInstance)
+            else if (kid instanceof PPolygonMeshInstance && !(kid instanceof PPolygonSkinnedMeshInstance))
             {
                 PPolygonMeshInstance meshInst = (PPolygonMeshInstance)kid;
 
