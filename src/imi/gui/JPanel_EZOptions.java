@@ -450,24 +450,34 @@ public class JPanel_EZOptions extends javax.swing.JPanel {
         for (int i = 0; i < m_Colors.length; i ++) {
             if (m_Colors[i] == false)
                 continue;
-            
+
+            GLSLShaderProgram shader = null;
+            int iCheck  = 0;
+            Color c     = null;
+
             switch(i)
             {
                 case 0: // Hair Color
                 {
                     if (m_meshes.get(5) == null)
                         break;
-                    
+
+                    iCheck = 0;
+                    c = jPanel_HairColor.getBackground();
+                    float[] color = new float[3];
+                    color[0] = ((float)c.getRed()/255);
+                    color[1] = ((float)c.getGreen()/255);
+                    color[2] = ((float)c.getBlue()/255);
+
                     for (int j = 0; j < m_meshes.get(5).length; j++) {
                         PNode node = m_sceneData.getPScene().findChild(m_meshes.get(5)[j]);
                         if (node != null) {
                             PPolygonMeshInstance mesh = (PPolygonMeshInstance)node;
-                            Color c = jPanel_HairColor.getBackground();
-                            float[] color = new float[3];
-                            color[0] = ((float)c.getRed()/255);
-                            color[1] = ((float)c.getGreen()/255);
-                            color[2] = ((float)c.getBlue()/255);
-                            setMeshColor(mesh, color);
+                            if (iCheck == 0) {
+                                shader = createMeshShader(mesh);
+                                iCheck = 1;
+                            }
+                            setMeshColor(mesh, shader, color);
                         }
                     }                        
                     break;
@@ -476,17 +486,23 @@ public class JPanel_EZOptions extends javax.swing.JPanel {
                 {
                     if (m_meshes.get(6) == null)
                         break;
-                    
+
+                    iCheck = 0;
+                    c = jPanel_FHairColor.getBackground();
+                    float[] color = new float[3];
+                    color[0] = ((float)c.getRed()/255);
+                    color[1] = ((float)c.getGreen()/255);
+                    color[2] = ((float)c.getBlue()/255);
+
                     for (int j = 0; j < m_meshes.get(6).length; j++) {
                         PNode node = m_sceneData.getPScene().findChild(m_meshes.get(6)[j]);
                         if (node != null) {
                             PPolygonMeshInstance mesh = (PPolygonMeshInstance)node;
-                            Color c = jPanel_FHairColor.getBackground();
-                            float[] color = new float[3];
-                            color[0] = ((float)c.getRed()/255);
-                            color[1] = ((float)c.getGreen()/255);
-                            color[2] = ((float)c.getBlue()/255);
-                            setMeshColor(mesh, color);
+                            if (iCheck == 0) {
+                                shader = createMeshShader(mesh);
+                                iCheck = 1;
+                            }
+                            setMeshColor(mesh, shader, color);
                         }
                     }   
                     break;
@@ -495,18 +511,24 @@ public class JPanel_EZOptions extends javax.swing.JPanel {
                 {
                     if (m_meshes.get(0) == null)
                         break;
-                    
+
+                    iCheck = 0;
+                    c = jPanel_EyeColors.getBackground();
+                    float[] color = new float[3];
+                    color[0] = ((float)c.getRed()/255);
+                    color[1] = ((float)c.getGreen()/255);
+                    color[2] = ((float)c.getBlue()/255);
+
                     for (int j = 0; j < m_meshes.get(0).length; j++) {
                         if (m_meshes.get(0)[j].contains("Eye")) {
                             PNode node = m_sceneData.getPScene().findChild(m_meshes.get(0)[j]);
                             if (node != null) {
                                 PPolygonMeshInstance mesh = (PPolygonMeshInstance)node;
-                                Color c = jPanel_EyeColors.getBackground();
-                                float[] color = new float[3];
-                                color[0] = ((float)c.getRed()/255);
-                                color[1] = ((float)c.getGreen()/255);
-                                color[2] = ((float)c.getBlue()/255);
-                                setMeshColor(mesh, color);
+                                if (iCheck == 0) {
+                                    shader = createMeshShader(mesh);
+                                    iCheck = 1;
+                                }
+                                setMeshColor(mesh, shader, color);
                             }
                         }
                     }   
@@ -514,36 +536,59 @@ public class JPanel_EZOptions extends javax.swing.JPanel {
                 }
                 case 3: // Skin Tone
                 {
-//                    if (m_meshes.get(0) == null)
-//                        break;
-//
-//                    for (int j = 0; j < m_meshes.get(5).length; j++) {
-//                        PNode node = m_sceneData.getPScene().findChild(m_meshes.get(5)[i]);
-//                        if (node != null) {
-//                            PPolygonMeshInstance mesh = (PPolygonMeshInstance)node;
-//                            setMeshColor(mesh);
-//                        }
-//                    }
+                    iCheck = 0;
+                    c = jPanel_SkinTone.getBackground();
+                    float[] color = new float[3];
+                    color[0] = ((float)c.getRed()/255);
+                    color[1] = ((float)c.getGreen()/255);
+                    color[2] = ((float)c.getBlue()/255);
+
+                    for (int x = 0; x < 5; x++) {
+                        if (m_meshes.get(x) == null)
+                            continue;
+
+                        for (int j = 0; j < m_meshes.get(x).length; j++) {
+                            if (m_meshes.get(x)[j].contains("Head") || m_meshes.get(x)[j].contains("Nude") ||
+                                m_meshes.get(x)[j].contains("Arms") || m_meshes.get(x)[j].contains("Legs") ||
+                                m_meshes.get(x)[j].contains("Hand")) {
+                                PNode node = m_sceneData.getPScene().findChild(m_meshes.get(x)[j]);
+                                if (node != null) {
+                                    PPolygonMeshInstance mesh = (PPolygonMeshInstance)node;
+                                    if (iCheck == 0) {
+                                        shader = createMeshShader(mesh);
+                                        iCheck = 1;
+                                    }
+                                    setMeshColor(mesh, shader, color);
+                                }
+                            }
+                        }
+                    }
                     break;
                 }
                 case 4: // Shirt Color
                 {
                     if (m_meshes.get(2) == null)
                         break;
-                    
+
+                    iCheck = 0;
+                    c = jPanel_ShirtColor.getBackground();
+                    float[] color = new float[3];
+                    color[0] = ((float)c.getRed()/255);
+                    color[1] = ((float)c.getGreen()/255);
+                    color[2] = ((float)c.getBlue()/255);
+
                     for (int j = 0; j < m_meshes.get(2).length; j++) {
-                        if (m_meshes.get(2)[j].contains("Nude"))
+                        if (m_meshes.get(2)[j].contains("Nude") || m_meshes.get(2)[j].contains("Arms"))
                             continue;
                         
                         PNode node = m_sceneData.getPScene().findChild(m_meshes.get(2)[j]);
                         if (node != null) {
                             PPolygonMeshInstance mesh = (PPolygonMeshInstance)node;
-                            Color c = jPanel_ShirtColor.getBackground();
-                            float[] color = new float[3];
-                            color[0] = ((float)c.getRed()/255);
-                            color[1] = ((float)c.getGreen()/255);
-                            color[2] = ((float)c.getBlue()/255);
-                            setMeshColor(mesh, color);
+                            if (iCheck == 0) {
+                                shader = createMeshShader(mesh);
+                                iCheck = 1;
+                            }
+                            setMeshColor(mesh, shader, color);
                         }
                     }   
                     break;
@@ -552,20 +597,26 @@ public class JPanel_EZOptions extends javax.swing.JPanel {
                 {
                     if (m_meshes.get(3) == null)
                         break;
-                    
+
+                    iCheck = 0;
+                    c = jPanel_PantsColor.getBackground();
+                    float[] color = new float[3];
+                    color[0] = ((float)c.getRed()/255);
+                    color[1] = ((float)c.getGreen()/255);
+                    color[2] = ((float)c.getBlue()/255);
+
                     for (int j = 0; j < m_meshes.get(3).length; j++) {
-                        if (m_meshes.get(3)[j].contains("Nude"))
+                        if (m_meshes.get(3)[j].contains("Nude") || m_meshes.get(3)[j].contains("Legs"))
                             continue;
                         
                         PNode node = m_sceneData.getPScene().findChild(m_meshes.get(3)[j]);
                         if (node != null) {
                             PPolygonMeshInstance mesh = (PPolygonMeshInstance)node;
-                            Color c = jPanel_PantsColor.getBackground();
-                            float[] color = new float[3];
-                            color[0] = ((float)c.getRed()/255);
-                            color[1] = ((float)c.getGreen()/255);
-                            color[2] = ((float)c.getBlue()/255);
-                            setMeshColor(mesh, color);
+                            if (iCheck == 0) {
+                                shader = createMeshShader(mesh);
+                                iCheck = 1;
+                            }
+                            setMeshColor(mesh, shader, color);
                         }
                     }   
                     break;
@@ -574,7 +625,14 @@ public class JPanel_EZOptions extends javax.swing.JPanel {
                 {
                     if (m_meshes.get(4) == null)
                         break;
-                    
+
+                    iCheck = 0;
+                    c = jPanel_ShoesColor.getBackground();
+                    float[] color = new float[3];
+                    color[0] = ((float)c.getRed()/255);
+                    color[1] = ((float)c.getGreen()/255);
+                    color[2] = ((float)c.getBlue()/255);
+
                     for (int j = 0; j < m_meshes.get(4).length; j++) {
                         if (m_meshes.get(4)[j].contains("Foot"))
                             continue;
@@ -582,12 +640,11 @@ public class JPanel_EZOptions extends javax.swing.JPanel {
                         PNode node = m_sceneData.getPScene().findChild(m_meshes.get(4)[j]);
                         if (node != null) {
                             PPolygonMeshInstance mesh = (PPolygonMeshInstance)node;
-                            Color c = jPanel_ShoesColor.getBackground();
-                            float[] color = new float[3];
-                            color[0] = ((float)c.getRed()/255);
-                            color[1] = ((float)c.getGreen()/255);
-                            color[2] = ((float)c.getBlue()/255);
-                            setMeshColor(mesh, color);
+                            if (iCheck == 0) {
+                                shader = createMeshShader(mesh);
+                                iCheck = 1;
+                            }
+                            setMeshColor(mesh, shader, color);
                         }
                     }   
                     break;
@@ -640,6 +697,38 @@ public class JPanel_EZOptions extends javax.swing.JPanel {
 
         meshInst.setMaterial(material);
         meshInst.setUseGeometryMaterial(false);
+    }
+
+    public void setMeshColor(PPolygonMeshInstance meshInst, GLSLShaderProgram shader, float[] fColorArray) {
+        PMeshMaterial material = meshInst.getMaterialRef().getMaterial();
+        try {
+            // Setting the new color property onto the model here
+            shader.setProperty(new ShaderProperty("materialColor", GLSLDataType.GLSL_VEC3, fColorArray));
+        } catch (NoSuchPropertyException ex) {
+            System.out.println("SEVER EXCEPTION: " + ex.getMessage());
+        }
+
+        meshInst.setMaterial(material);
+        meshInst.setUseGeometryMaterial(false);
+    }
+
+    public GLSLShaderProgram createMeshShader(PPolygonMeshInstance meshInst) {
+        // assign a texture to the mesh instance
+        PMeshMaterial material = meshInst.getMaterialRef().getMaterial();
+        GLSLShaderProgram shader = (GLSLShaderProgram) material.getShader();
+        MeshColorModulation meshModulator = new MeshColorModulation();
+        // Already contained?
+        if (shader.containsEffect(meshModulator) == false)
+        {
+            shader.addEffect(meshModulator);
+            try {
+                shader.compile();
+            } catch (GLSLCompileException ex) {
+                System.out.println("SEVER EXCEPTION: " + ex.getMessage());
+            }
+        }
+
+        return shader;
     }
 
     /** This method is called from within the constructor to

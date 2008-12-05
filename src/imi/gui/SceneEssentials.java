@@ -1135,7 +1135,7 @@ public class SceneEssentials {
             String[] meshes = new String[d.length -1];
 
             instruct.addInstruction(InstructionNames.loadGeometry, d[0]);
-            if (iRegion > 4) {
+            if (iRegion > 4 && iRegion < 9) {
                 for (int i = 1; i < d.length; i++) {
                     PMatrix tempSolution;
                     tempSolution = new PMatrix(new Vector3f(0.0f, (float) Math.toRadians(180), 0.0f), new Vector3f(1.0f, 1.0f, 1.0f), Vector3f.ZERO);
