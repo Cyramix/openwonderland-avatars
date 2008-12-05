@@ -44,6 +44,7 @@ import imi.scene.polygonmodel.skinned.PPolygonSkinnedMeshInstance;
 import imi.scene.polygonmodel.skinned.SkinnedMeshJoint;
 import imi.scene.processors.FlexibleCameraProcessor;
 import imi.scene.processors.SkinnedAnimationProcessor;
+import imi.scene.shader.programs.NormalAndSpecularMapShader;
 import imi.scene.shader.programs.VertDeformerWithNormalMapping;
 import imi.scene.shader.programs.VertDeformerWithSpecAndNormalMap;
 import imi.scene.shader.programs.VertexDeformer;
@@ -752,6 +753,7 @@ public class SceneEssentials {
         pProcessor.execute(pRootInstruction);
 
         skeleton.setShaderOnSkinnedMeshes(new VertDeformerWithSpecAndNormalMap(worldManager));
+        skeleton.setShaderOnMeshes(new NormalAndSpecularMapShader(worldManager));
         meshsetup.put(region, meshRef);
     }
 
@@ -880,6 +882,7 @@ public class SceneEssentials {
                     }
 
                     skeleton.setShaderOnSkinnedMeshes(new VertDeformerWithSpecAndNormalMap(worldManager));
+                    skeleton.setShaderOnMeshes(new NormalAndSpecularMapShader(worldManager));
                     ((ProcessorCollectionComponent)currentEntity.getComponent(ProcessorCollectionComponent.class)).addProcessor(new SkinnedAnimationProcessor(skel));
                     currentPScene.setDirty(true, true);
                     setCameraOnModel();
@@ -934,6 +937,7 @@ public class SceneEssentials {
                     pProcessor.execute(pRootInstruction);
 
                     skeleton.setShaderOnSkinnedMeshes(new VertDeformerWithSpecAndNormalMap(worldManager));
+                    skeleton.setShaderOnMeshes(new NormalAndSpecularMapShader(worldManager));
                     ((ProcessorCollectionComponent)currentEntity.getComponent(ProcessorCollectionComponent.class)).addProcessor(new SkinnedAnimationProcessor(skel));
                     currentPScene.setDirty(true, true);
                     setCameraOnModel();
@@ -1015,6 +1019,7 @@ public class SceneEssentials {
                     }
 
                     skeleton.setShaderOnSkinnedMeshes(new VertDeformerWithSpecAndNormalMap(worldManager));
+                    skeleton.setShaderOnMeshes(new NormalAndSpecularMapShader(worldManager));
                     ((ProcessorCollectionComponent)currentEntity.getComponent(ProcessorCollectionComponent.class)).addProcessor(new SkinnedAnimationProcessor(skel));
                     currentPScene.setDirty(true, true);
                     setCameraOnModel();
@@ -1143,6 +1148,7 @@ public class SceneEssentials {
                     meshes[i-1] = d[i];
                 }
             }
+            meshsetup.put(iRegion, meshes);
         }
     }
 

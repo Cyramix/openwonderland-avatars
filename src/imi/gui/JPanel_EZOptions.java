@@ -11,8 +11,21 @@
 
 package imi.gui;
 
+import imi.scene.PNode;
+import imi.scene.polygonmodel.PPolygonMeshInstance;
+import imi.scene.polygonmodel.parts.PMeshMaterial;
+import imi.scene.shader.NoSuchPropertyException;
+import imi.scene.shader.ShaderProperty;
+import imi.scene.shader.dynamic.GLSLCompileException;
+import imi.scene.shader.dynamic.GLSLDataType;
+import imi.scene.shader.dynamic.GLSLShaderProgram;
+import imi.scene.shader.effects.MeshColorModulation;
+import imi.scene.shader.programs.SimpleTNLWithAmbient;
+import imi.tests.COLLADA_ModelTest;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Graphics;
+import java.awt.Rectangle;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -23,10 +36,13 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.ListSelectionModel;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
@@ -50,11 +66,14 @@ public class JPanel_EZOptions extends javax.swing.JPanel {
     ArrayList<String[]>                 m_presetLists;
     ArrayList<Map<Integer, String[]>>   m_presets;
     Map<Integer, String[]>              m_meshes, m_addList;
-    int                                 m_rowHeight     = 200;
-    int                                 m_imageColWidth = 10;
-    int                                 m_selectedIndex = -1;
-    Color                               m_selectedRow   = new Color(0, 0, 255);
+    int                                 m_rowHeight         = 200;
+    int                                 m_imageColWidth     = 10;
+    int                                 m_selectedIndex     = -1;
+    int                                 m_colorSelection    = -1;
+    Color                               m_selectedRow       = new Color(0, 0, 255);
     SceneEssentials                     m_sceneData;
+    Component                           m_Parent;
+    boolean[]                           m_Colors            = new boolean[] { false, false, false, false, false, false, false };
 
     /** Creates new form JPanel_EZOptions */
     public JPanel_EZOptions() {
@@ -359,7 +378,6 @@ public class JPanel_EZOptions extends javax.swing.JPanel {
         }
     }
 
-
     public void setTable() {
         if (m_presetLists == null)
             return;
@@ -377,6 +395,209 @@ public class JPanel_EZOptions extends javax.swing.JPanel {
         jTable_Presets.setVisible(true);
     }
 
+    public void selectColor(Color selectedColor) {
+
+        if (selectedColor != null) {
+
+            switch(m_colorSelection)
+            {
+                case 0: // Hair Color
+                {
+                    jPanel_HairColor.setBackground(selectedColor);
+                    break;
+                }
+                case 1: // Facial Hair Color
+                {
+                    jPanel_FHairColor.setBackground(selectedColor);
+                    break;
+                }
+                case 2: // Eye Color
+                {
+                    jPanel_EyeColors.setBackground(selectedColor);
+                    break;
+                }
+                case 3: // Skin Tone
+                {
+                    jPanel_SkinTone.setBackground(selectedColor);
+                    break;
+                }
+                case 4: // Shirt Color
+                {
+                    jPanel_ShirtColor.setBackground(selectedColor);
+                    break;
+                }
+                case 5: // Pants Color
+                {
+                    jPanel_PantsColor.setBackground(selectedColor);
+                    break;
+                }
+                case 6: // Shoes Color
+                {
+                    jPanel_ShoesColor.setBackground(selectedColor);
+                    break;
+                }
+            }
+        }
+
+    }
+
+    public void setShaderColors() {
+        m_meshes =  m_sceneData.getMeshSetup();
+        
+        if (m_meshes == null)
+            return;
+        
+        for (int i = 0; i < m_Colors.length; i ++) {
+            if (m_Colors[i] == false)
+                continue;
+            
+            switch(i)
+            {
+                case 0: // Hair Color
+                {
+                    if (m_meshes.get(5) == null)
+                        break;
+                    
+                    for (int j = 0; j < m_meshes.get(5).length; j++) {
+                        PNode node = m_sceneData.getPScene().findChild(m_meshes.get(5)[j]);
+                        if (node != null) {
+                            PPolygonMeshInstance mesh = (PPolygonMeshInstance)node;
+                            Color c = jPanel_HairColor.getBackground();
+                            float[] color = new float[3];
+                            color[0] = ((float)c.getRed()/255);
+                            color[1] = ((float)c.getGreen()/255);
+                            color[2] = ((float)c.getBlue()/255);
+                            setMeshColor(mesh, color);
+                        }
+                    }                        
+                    break;
+                }
+                case 1: // Facial Hair Color
+                {
+                    if (m_meshes.get(6) == null)
+                        break;
+                    
+                    for (int j = 0; j < m_meshes.get(6).length; j++) {
+                        PNode node = m_sceneData.getPScene().findChild(m_meshes.get(6)[j]);
+                        if (node != null) {
+                            PPolygonMeshInstance mesh = (PPolygonMeshInstance)node;
+                            Color c = jPanel_FHairColor.getBackground();
+                            float[] color = new float[3];
+                            color[0] = ((float)c.getRed()/255);
+                            color[1] = ((float)c.getGreen()/255);
+                            color[2] = ((float)c.getBlue()/255);
+                            setMeshColor(mesh, color);
+                        }
+                    }   
+                    break;
+                }
+                case 2: // Eye Color
+                {
+                    if (m_meshes.get(0) == null)
+                        break;
+                    
+                    for (int j = 0; j < m_meshes.get(0).length; j++) {
+                        if (m_meshes.get(0)[j].contains("Eye")) {
+                            PNode node = m_sceneData.getPScene().findChild(m_meshes.get(0)[j]);
+                            if (node != null) {
+                                PPolygonMeshInstance mesh = (PPolygonMeshInstance)node;
+                                Color c = jPanel_EyeColors.getBackground();
+                                float[] color = new float[3];
+                                color[0] = ((float)c.getRed()/255);
+                                color[1] = ((float)c.getGreen()/255);
+                                color[2] = ((float)c.getBlue()/255);
+                                setMeshColor(mesh, color);
+                            }
+                        }
+                    }   
+                    break;
+                }
+                case 3: // Skin Tone
+                {
+//                    if (m_meshes.get(0) == null)
+//                        break;
+//
+//                    for (int j = 0; j < m_meshes.get(5).length; j++) {
+//                        PNode node = m_sceneData.getPScene().findChild(m_meshes.get(5)[i]);
+//                        if (node != null) {
+//                            PPolygonMeshInstance mesh = (PPolygonMeshInstance)node;
+//                            setMeshColor(mesh);
+//                        }
+//                    }
+                    break;
+                }
+                case 4: // Shirt Color
+                {
+                    if (m_meshes.get(2) == null)
+                        break;
+                    
+                    for (int j = 0; j < m_meshes.get(2).length; j++) {
+                        if (m_meshes.get(2)[j].contains("Nude"))
+                            continue;
+                        
+                        PNode node = m_sceneData.getPScene().findChild(m_meshes.get(2)[j]);
+                        if (node != null) {
+                            PPolygonMeshInstance mesh = (PPolygonMeshInstance)node;
+                            Color c = jPanel_ShirtColor.getBackground();
+                            float[] color = new float[3];
+                            color[0] = ((float)c.getRed()/255);
+                            color[1] = ((float)c.getGreen()/255);
+                            color[2] = ((float)c.getBlue()/255);
+                            setMeshColor(mesh, color);
+                        }
+                    }   
+                    break;
+                }
+                case 5: // Pants Color
+                {
+                    if (m_meshes.get(3) == null)
+                        break;
+                    
+                    for (int j = 0; j < m_meshes.get(3).length; j++) {
+                        if (m_meshes.get(3)[j].contains("Nude"))
+                            continue;
+                        
+                        PNode node = m_sceneData.getPScene().findChild(m_meshes.get(3)[j]);
+                        if (node != null) {
+                            PPolygonMeshInstance mesh = (PPolygonMeshInstance)node;
+                            Color c = jPanel_PantsColor.getBackground();
+                            float[] color = new float[3];
+                            color[0] = ((float)c.getRed()/255);
+                            color[1] = ((float)c.getGreen()/255);
+                            color[2] = ((float)c.getBlue()/255);
+                            setMeshColor(mesh, color);
+                        }
+                    }   
+                    break;
+                }
+                case 6: // Shoes Color
+                {
+                    if (m_meshes.get(4) == null)
+                        break;
+                    
+                    for (int j = 0; j < m_meshes.get(4).length; j++) {
+                        if (m_meshes.get(4)[j].contains("Foot"))
+                            continue;
+                        
+                        PNode node = m_sceneData.getPScene().findChild(m_meshes.get(4)[j]);
+                        if (node != null) {
+                            PPolygonMeshInstance mesh = (PPolygonMeshInstance)node;
+                            Color c = jPanel_ShoesColor.getBackground();
+                            float[] color = new float[3];
+                            color[0] = ((float)c.getRed()/255);
+                            color[1] = ((float)c.getGreen()/255);
+                            color[2] = ((float)c.getBlue()/255);
+                            setMeshColor(mesh, color);
+                        }
+                    }   
+                    break;
+                }
+            }
+        }
+        for (int i = 0; i < m_Colors.length; i++)
+            m_Colors[i] = false;
+    }
+
     public void loadAvatar(int selection) {
         if (jRadioButton_GenderMale.isSelected())
             retrieveBindMeshInfo(1);
@@ -388,6 +609,37 @@ public class JPanel_EZOptions extends javax.swing.JPanel {
 
     public void setSceneData(SceneEssentials se) {
         m_sceneData = se;
+    }
+
+    public void setParentFrame(Component c) {
+        m_Parent = c;
+    }
+
+    public void setMeshColor(PPolygonMeshInstance meshInst, float[] fColorArray) {
+        // assign a texture to the mesh instance
+        PMeshMaterial material = meshInst.getMaterialRef().getMaterial();
+        GLSLShaderProgram shader = (GLSLShaderProgram) material.getShader();
+        MeshColorModulation meshModulator = new MeshColorModulation();
+        // Already contained?
+        if (shader.containsEffect(meshModulator) == false)
+        {
+            shader.addEffect(meshModulator);
+            try {
+                shader.compile();
+            } catch (GLSLCompileException ex) {
+                System.out.println("SEVER EXCEPTION: " + ex.getMessage());
+            }
+        }
+
+        try {
+            // Setting the new color property onto the model here
+            shader.setProperty(new ShaderProperty("materialColor", GLSLDataType.GLSL_VEC3, fColorArray));
+        } catch (NoSuchPropertyException ex) {
+            System.out.println("SEVER EXCEPTION: " + ex.getMessage());
+        }
+
+        meshInst.setMaterial(material);
+        meshInst.setUseGeometryMaterial(false);
     }
 
     /** This method is called from within the constructor to
@@ -402,6 +654,8 @@ public class JPanel_EZOptions extends javax.swing.JPanel {
 
         buttonGroup_Gender = new javax.swing.ButtonGroup();
         buttonGroup_Ethnicity = new javax.swing.ButtonGroup();
+        buttonGroup_Colors = new javax.swing.ButtonGroup();
+        jColorChooser1 = new javax.swing.JColorChooser();
         jLabel_TitleBar = new javax.swing.JLabel();
         jPanel_AvatarName = new javax.swing.JPanel();
         jLabel_AvatarName = new javax.swing.JLabel();
@@ -420,24 +674,20 @@ public class JPanel_EZOptions extends javax.swing.JPanel {
         jScrollPane_Presets = new javax.swing.JScrollPane();
         jTable_Presets = new javax.swing.JTable();
         jPanel_MainColors = new javax.swing.JPanel();
-        jLabel_ColorHair = new javax.swing.JLabel();
-        jPanel_ColorHair = new javax.swing.JPanel();
         jButton_SelectColorH = new javax.swing.JButton();
-        jLabel_ColorFacialHair = new javax.swing.JLabel();
-        jPanel_ColorFacialHair = new javax.swing.JPanel();
         jButton_SelectColorFH = new javax.swing.JButton();
-        jLabel_ColorSkin = new javax.swing.JLabel();
-        jPanel_ColorSkin = new javax.swing.JPanel();
+        jButton_SelectColorEyes = new javax.swing.JButton();
         jButton_SelectColorS = new javax.swing.JButton();
-        jLabel_ColorShirt = new javax.swing.JLabel();
-        jPanel_ColorShirt = new javax.swing.JPanel();
         jButton_SelectColorSh = new javax.swing.JButton();
-        jLabel_ColorPants = new javax.swing.JLabel();
-        jPanel_ColorPants = new javax.swing.JPanel();
         jButton_SelectColorP = new javax.swing.JButton();
-        jLabel_ColorShoes = new javax.swing.JLabel();
-        jPanel_ColorShoes = new javax.swing.JPanel();
         jButton_SelectColorShoes = new javax.swing.JButton();
+        jPanel_HairColor = new javax.swing.JPanel();
+        jPanel_EyeColors = new javax.swing.JPanel();
+        jPanel_FHairColor = new javax.swing.JPanel();
+        jPanel_SkinTone = new javax.swing.JPanel();
+        jPanel_ShirtColor = new javax.swing.JPanel();
+        jPanel_PantsColor = new javax.swing.JPanel();
+        jPanel_ShoesColor = new javax.swing.JPanel();
         jButton_Load = new javax.swing.JButton();
 
         setMinimumSize(new java.awt.Dimension(320, 480));
@@ -581,196 +831,263 @@ public class JPanel_EZOptions extends javax.swing.JPanel {
 
         jPanel_MainColors.setLayout(new java.awt.GridBagLayout());
 
-        jLabel_ColorHair.setText("Hair Color");
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        jPanel_MainColors.add(jLabel_ColorHair, gridBagConstraints);
-
-        jPanel_ColorHair.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        jPanel_ColorHair.setMinimumSize(new java.awt.Dimension(25, 25));
-        jPanel_ColorHair.setPreferredSize(new java.awt.Dimension(25, 25));
-
-        org.jdesktop.layout.GroupLayout jPanel_ColorHairLayout = new org.jdesktop.layout.GroupLayout(jPanel_ColorHair);
-        jPanel_ColorHair.setLayout(jPanel_ColorHairLayout);
-        jPanel_ColorHairLayout.setHorizontalGroup(
-            jPanel_ColorHairLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 21, Short.MAX_VALUE)
-        );
-        jPanel_ColorHairLayout.setVerticalGroup(
-            jPanel_ColorHairLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 21, Short.MAX_VALUE)
-        );
-
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.insets = new java.awt.Insets(0, 5, 0, 0);
-        jPanel_MainColors.add(jPanel_ColorHair, gridBagConstraints);
-
-        jButton_SelectColorH.setText("Choose Color");
+        jButton_SelectColorH.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                m_colorSelection = 0;
+                Color selectedColor = jColorChooser1.showDialog(m_Parent, "Select Hair Color", null);
+                selectColor(selectedColor);
+                if (selectedColor != null)
+                m_Colors[0] = true;
+            }
+        });
+        jButton_SelectColorH.setText("Hair Color");
+        buttonGroup_Colors.add(jButton_SelectColorH);
+        jButton_SelectColorH.setMaximumSize(new java.awt.Dimension(148, 29));
+        jButton_SelectColorH.setMinimumSize(new java.awt.Dimension(148, 29));
+        jButton_SelectColorH.setPreferredSize(new java.awt.Dimension(148, 29));
         jPanel_MainColors.add(jButton_SelectColorH, new java.awt.GridBagConstraints());
 
-        jLabel_ColorFacialHair.setText("Facial Hair Color");
+        jButton_SelectColorFH.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                m_colorSelection = 1;
+                Color selectedColor = jColorChooser1.showDialog(m_Parent, "Select Facial Hair Color", null);
+                selectColor(selectedColor);
+                if (selectedColor != null)
+                m_Colors[1] = true;
+            }
+        });
+        jButton_SelectColorFH.setText("Facial Hair Color");
+        buttonGroup_Colors.add(jButton_SelectColorFH);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 1;
-        jPanel_MainColors.add(jLabel_ColorFacialHair, gridBagConstraints);
-
-        jPanel_ColorFacialHair.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        jPanel_ColorFacialHair.setMinimumSize(new java.awt.Dimension(25, 25));
-
-        org.jdesktop.layout.GroupLayout jPanel_ColorFacialHairLayout = new org.jdesktop.layout.GroupLayout(jPanel_ColorFacialHair);
-        jPanel_ColorFacialHair.setLayout(jPanel_ColorFacialHairLayout);
-        jPanel_ColorFacialHairLayout.setHorizontalGroup(
-            jPanel_ColorFacialHairLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 21, Short.MAX_VALUE)
-        );
-        jPanel_ColorFacialHairLayout.setVerticalGroup(
-            jPanel_ColorFacialHairLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 21, Short.MAX_VALUE)
-        );
-
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 1;
-        gridBagConstraints.insets = new java.awt.Insets(0, 5, 0, 0);
-        jPanel_MainColors.add(jPanel_ColorFacialHair, gridBagConstraints);
-
-        jButton_SelectColorFH.setText("Choose Color");
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 1;
         jPanel_MainColors.add(jButton_SelectColorFH, gridBagConstraints);
 
-        jLabel_ColorSkin.setText("Skin Tone");
+        jButton_SelectColorEyes.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                m_colorSelection = 2;
+                Color selectedColor = jColorChooser1.showDialog(m_Parent, "Select Eye Color", null);
+                selectColor(selectedColor);
+                if (selectedColor != null)
+                m_Colors[2] = true;
+            }
+        });
+        jButton_SelectColorEyes.setText("Eye Color");
+        buttonGroup_Colors.add(jButton_SelectColorEyes);
+        jButton_SelectColorEyes.setMaximumSize(new java.awt.Dimension(148, 29));
+        jButton_SelectColorEyes.setMinimumSize(new java.awt.Dimension(148, 29));
+        jButton_SelectColorEyes.setPreferredSize(new java.awt.Dimension(148, 29));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 2;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        jPanel_MainColors.add(jLabel_ColorSkin, gridBagConstraints);
+        jPanel_MainColors.add(jButton_SelectColorEyes, gridBagConstraints);
 
-        jPanel_ColorSkin.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        jPanel_ColorSkin.setMinimumSize(new java.awt.Dimension(25, 25));
-
-        org.jdesktop.layout.GroupLayout jPanel_ColorSkinLayout = new org.jdesktop.layout.GroupLayout(jPanel_ColorSkin);
-        jPanel_ColorSkin.setLayout(jPanel_ColorSkinLayout);
-        jPanel_ColorSkinLayout.setHorizontalGroup(
-            jPanel_ColorSkinLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 21, Short.MAX_VALUE)
-        );
-        jPanel_ColorSkinLayout.setVerticalGroup(
-            jPanel_ColorSkinLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 21, Short.MAX_VALUE)
-        );
-
+        jButton_SelectColorS.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                m_colorSelection = 3;
+                Color selectedColor = jColorChooser1.showDialog(m_Parent, "Select Skin Tone", null);
+                selectColor(selectedColor);
+                if (selectedColor != null)
+                m_Colors[3] = true;
+            }
+        });
+        jButton_SelectColorS.setText("Skin Tone");
+        buttonGroup_Colors.add(jButton_SelectColorS);
+        jButton_SelectColorS.setMaximumSize(new java.awt.Dimension(148, 29));
+        jButton_SelectColorS.setMinimumSize(new java.awt.Dimension(148, 29));
+        jButton_SelectColorS.setPreferredSize(new java.awt.Dimension(148, 29));
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 2;
-        gridBagConstraints.insets = new java.awt.Insets(0, 5, 0, 0);
-        jPanel_MainColors.add(jPanel_ColorSkin, gridBagConstraints);
-
-        jButton_SelectColorS.setText("Choose Color");
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 2;
-        gridBagConstraints.gridy = 2;
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 3;
         jPanel_MainColors.add(jButton_SelectColorS, gridBagConstraints);
 
-        jLabel_ColorShirt.setText("Shirt Color");
+        jButton_SelectColorSh.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                m_colorSelection = 4;
+                Color selectedColor = jColorChooser1.showDialog(m_Parent, "Select Shirt Color", null);
+                selectColor(selectedColor);
+                if (selectedColor != null)
+                m_Colors[4] = true;
+            }
+        });
+        jButton_SelectColorSh.setText("Shirt Color");
+        buttonGroup_Colors.add(jButton_SelectColorSh);
+        jButton_SelectColorSh.setMaximumSize(new java.awt.Dimension(148, 29));
+        jButton_SelectColorSh.setMinimumSize(new java.awt.Dimension(148, 29));
+        jButton_SelectColorSh.setPreferredSize(new java.awt.Dimension(148, 29));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 3;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        jPanel_MainColors.add(jLabel_ColorShirt, gridBagConstraints);
-
-        jPanel_ColorShirt.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        jPanel_ColorShirt.setMinimumSize(new java.awt.Dimension(25, 25));
-
-        org.jdesktop.layout.GroupLayout jPanel_ColorShirtLayout = new org.jdesktop.layout.GroupLayout(jPanel_ColorShirt);
-        jPanel_ColorShirt.setLayout(jPanel_ColorShirtLayout);
-        jPanel_ColorShirtLayout.setHorizontalGroup(
-            jPanel_ColorShirtLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 21, Short.MAX_VALUE)
-        );
-        jPanel_ColorShirtLayout.setVerticalGroup(
-            jPanel_ColorShirtLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 21, Short.MAX_VALUE)
-        );
-
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 3;
-        gridBagConstraints.insets = new java.awt.Insets(0, 5, 0, 0);
-        jPanel_MainColors.add(jPanel_ColorShirt, gridBagConstraints);
-
-        jButton_SelectColorSh.setText("Choose Color");
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 2;
-        gridBagConstraints.gridy = 3;
+        gridBagConstraints.gridy = 4;
         jPanel_MainColors.add(jButton_SelectColorSh, gridBagConstraints);
 
-        jLabel_ColorPants.setText("Pants Color");
+        jButton_SelectColorP.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                m_colorSelection = 5;
+                Color selectedColor = jColorChooser1.showDialog(m_Parent, "Select Pants Color", null);
+                selectColor(selectedColor);
+                if (selectedColor != null)
+                m_Colors[5] = true;
+            }
+        });
+        jButton_SelectColorP.setText("Pants Color");
+        buttonGroup_Colors.add(jButton_SelectColorP);
+        jButton_SelectColorP.setMaximumSize(new java.awt.Dimension(148, 29));
+        jButton_SelectColorP.setMinimumSize(new java.awt.Dimension(148, 29));
+        jButton_SelectColorP.setPreferredSize(new java.awt.Dimension(148, 29));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 4;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        jPanel_MainColors.add(jLabel_ColorPants, gridBagConstraints);
-
-        jPanel_ColorPants.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        jPanel_ColorPants.setMinimumSize(new java.awt.Dimension(25, 25));
-
-        org.jdesktop.layout.GroupLayout jPanel_ColorPantsLayout = new org.jdesktop.layout.GroupLayout(jPanel_ColorPants);
-        jPanel_ColorPants.setLayout(jPanel_ColorPantsLayout);
-        jPanel_ColorPantsLayout.setHorizontalGroup(
-            jPanel_ColorPantsLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 21, Short.MAX_VALUE)
-        );
-        jPanel_ColorPantsLayout.setVerticalGroup(
-            jPanel_ColorPantsLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 21, Short.MAX_VALUE)
-        );
-
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 4;
-        gridBagConstraints.insets = new java.awt.Insets(0, 5, 0, 0);
-        jPanel_MainColors.add(jPanel_ColorPants, gridBagConstraints);
-
-        jButton_SelectColorP.setText("Choose Color");
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 2;
-        gridBagConstraints.gridy = 4;
+        gridBagConstraints.gridy = 5;
         jPanel_MainColors.add(jButton_SelectColorP, gridBagConstraints);
 
-        jLabel_ColorShoes.setText("Shoes Color");
+        jButton_SelectColorShoes.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                m_colorSelection = 6;
+                Color selectedColor = jColorChooser1.showDialog(m_Parent, "Select Shoes Color", null);
+                selectColor(selectedColor);
+                if (selectedColor != null)
+                m_Colors[6] = true;
+            }
+        });
+        jButton_SelectColorShoes.setText("Shoes Color");
+        buttonGroup_Colors.add(jButton_SelectColorShoes);
+        jButton_SelectColorShoes.setMaximumSize(new java.awt.Dimension(148, 29));
+        jButton_SelectColorShoes.setMinimumSize(new java.awt.Dimension(148, 29));
+        jButton_SelectColorShoes.setPreferredSize(new java.awt.Dimension(148, 29));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 5;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        jPanel_MainColors.add(jLabel_ColorShoes, gridBagConstraints);
+        gridBagConstraints.gridy = 6;
+        jPanel_MainColors.add(jButton_SelectColorShoes, gridBagConstraints);
 
-        jPanel_ColorShoes.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        jPanel_ColorShoes.setMinimumSize(new java.awt.Dimension(25, 25));
+        jPanel_HairColor.setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED));
+        jPanel_HairColor.setMinimumSize(new java.awt.Dimension(25, 25));
+        jPanel_HairColor.setPreferredSize(new java.awt.Dimension(25, 25));
 
-        org.jdesktop.layout.GroupLayout jPanel_ColorShoesLayout = new org.jdesktop.layout.GroupLayout(jPanel_ColorShoes);
-        jPanel_ColorShoes.setLayout(jPanel_ColorShoesLayout);
-        jPanel_ColorShoesLayout.setHorizontalGroup(
-            jPanel_ColorShoesLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+        org.jdesktop.layout.GroupLayout jPanel_HairColorLayout = new org.jdesktop.layout.GroupLayout(jPanel_HairColor);
+        jPanel_HairColor.setLayout(jPanel_HairColorLayout);
+        jPanel_HairColorLayout.setHorizontalGroup(
+            jPanel_HairColorLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(0, 21, Short.MAX_VALUE)
         );
-        jPanel_ColorShoesLayout.setVerticalGroup(
-            jPanel_ColorShoesLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+        jPanel_HairColorLayout.setVerticalGroup(
+            jPanel_HairColorLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(0, 21, Short.MAX_VALUE)
+        );
+
+        jPanel_MainColors.add(jPanel_HairColor, new java.awt.GridBagConstraints());
+
+        jPanel_EyeColors.setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED));
+        jPanel_EyeColors.setMinimumSize(new java.awt.Dimension(25, 25));
+
+        org.jdesktop.layout.GroupLayout jPanel_EyeColorsLayout = new org.jdesktop.layout.GroupLayout(jPanel_EyeColors);
+        jPanel_EyeColors.setLayout(jPanel_EyeColorsLayout);
+        jPanel_EyeColorsLayout.setHorizontalGroup(
+            jPanel_EyeColorsLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(0, 21, Short.MAX_VALUE)
+        );
+        jPanel_EyeColorsLayout.setVerticalGroup(
+            jPanel_EyeColorsLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(0, 21, Short.MAX_VALUE)
+        );
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 2;
+        jPanel_MainColors.add(jPanel_EyeColors, gridBagConstraints);
+
+        jPanel_FHairColor.setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED));
+        jPanel_FHairColor.setMinimumSize(new java.awt.Dimension(25, 25));
+
+        org.jdesktop.layout.GroupLayout jPanel_FHairColorLayout = new org.jdesktop.layout.GroupLayout(jPanel_FHairColor);
+        jPanel_FHairColor.setLayout(jPanel_FHairColorLayout);
+        jPanel_FHairColorLayout.setHorizontalGroup(
+            jPanel_FHairColorLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(0, 21, Short.MAX_VALUE)
+        );
+        jPanel_FHairColorLayout.setVerticalGroup(
+            jPanel_FHairColorLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(0, 21, Short.MAX_VALUE)
+        );
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 1;
+        jPanel_MainColors.add(jPanel_FHairColor, gridBagConstraints);
+
+        jPanel_SkinTone.setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED));
+        jPanel_SkinTone.setMinimumSize(new java.awt.Dimension(25, 25));
+
+        org.jdesktop.layout.GroupLayout jPanel_SkinToneLayout = new org.jdesktop.layout.GroupLayout(jPanel_SkinTone);
+        jPanel_SkinTone.setLayout(jPanel_SkinToneLayout);
+        jPanel_SkinToneLayout.setHorizontalGroup(
+            jPanel_SkinToneLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(0, 21, Short.MAX_VALUE)
+        );
+        jPanel_SkinToneLayout.setVerticalGroup(
+            jPanel_SkinToneLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(0, 21, Short.MAX_VALUE)
+        );
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 3;
+        jPanel_MainColors.add(jPanel_SkinTone, gridBagConstraints);
+
+        jPanel_ShirtColor.setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED));
+        jPanel_ShirtColor.setMinimumSize(new java.awt.Dimension(25, 25));
+
+        org.jdesktop.layout.GroupLayout jPanel_ShirtColorLayout = new org.jdesktop.layout.GroupLayout(jPanel_ShirtColor);
+        jPanel_ShirtColor.setLayout(jPanel_ShirtColorLayout);
+        jPanel_ShirtColorLayout.setHorizontalGroup(
+            jPanel_ShirtColorLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(0, 21, Short.MAX_VALUE)
+        );
+        jPanel_ShirtColorLayout.setVerticalGroup(
+            jPanel_ShirtColorLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(0, 21, Short.MAX_VALUE)
+        );
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 4;
+        jPanel_MainColors.add(jPanel_ShirtColor, gridBagConstraints);
+
+        jPanel_PantsColor.setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED));
+        jPanel_PantsColor.setMinimumSize(new java.awt.Dimension(25, 25));
+
+        org.jdesktop.layout.GroupLayout jPanel_PantsColorLayout = new org.jdesktop.layout.GroupLayout(jPanel_PantsColor);
+        jPanel_PantsColor.setLayout(jPanel_PantsColorLayout);
+        jPanel_PantsColorLayout.setHorizontalGroup(
+            jPanel_PantsColorLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(0, 21, Short.MAX_VALUE)
+        );
+        jPanel_PantsColorLayout.setVerticalGroup(
+            jPanel_PantsColorLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(0, 21, Short.MAX_VALUE)
         );
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 5;
-        gridBagConstraints.insets = new java.awt.Insets(0, 5, 0, 0);
-        jPanel_MainColors.add(jPanel_ColorShoes, gridBagConstraints);
+        jPanel_MainColors.add(jPanel_PantsColor, gridBagConstraints);
 
-        jButton_SelectColorShoes.setText("Choose Color");
+        jPanel_ShoesColor.setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED));
+        jPanel_ShoesColor.setMinimumSize(new java.awt.Dimension(25, 25));
+
+        org.jdesktop.layout.GroupLayout jPanel_ShoesColorLayout = new org.jdesktop.layout.GroupLayout(jPanel_ShoesColor);
+        jPanel_ShoesColor.setLayout(jPanel_ShoesColorLayout);
+        jPanel_ShoesColorLayout.setHorizontalGroup(
+            jPanel_ShoesColorLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(0, 21, Short.MAX_VALUE)
+        );
+        jPanel_ShoesColorLayout.setVerticalGroup(
+            jPanel_ShoesColorLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(0, 21, Short.MAX_VALUE)
+        );
+
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 2;
-        gridBagConstraints.gridy = 5;
-        jPanel_MainColors.add(jButton_SelectColorShoes, gridBagConstraints);
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 6;
+        jPanel_MainColors.add(jPanel_ShoesColor, gridBagConstraints);
 
         jTabbedPane_Options.addTab("Colors", jPanel_MainColors);
 
@@ -783,8 +1100,12 @@ public class JPanel_EZOptions extends javax.swing.JPanel {
         jButton_Load.setEnabled(false);
         jButton_Load.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                if (jButton_Load.isEnabled())
-                loadAvatar(m_selectedIndex);
+                if (jButton_Load.isEnabled()) {
+                    if (jTabbedPane_Options.getSelectedIndex() == 0)
+                    loadAvatar(m_selectedIndex);
+                    if (jTabbedPane_Options.getSelectedIndex() == 1)
+                    setShaderColors();
+                }
             }
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -796,36 +1117,34 @@ public class JPanel_EZOptions extends javax.swing.JPanel {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.ButtonGroup buttonGroup_Colors;
     private javax.swing.ButtonGroup buttonGroup_Ethnicity;
     private javax.swing.ButtonGroup buttonGroup_Gender;
     private javax.swing.JButton jButton_Load;
+    private javax.swing.JButton jButton_SelectColorEyes;
     private javax.swing.JButton jButton_SelectColorFH;
     private javax.swing.JButton jButton_SelectColorH;
     private javax.swing.JButton jButton_SelectColorP;
     private javax.swing.JButton jButton_SelectColorS;
     private javax.swing.JButton jButton_SelectColorSh;
     private javax.swing.JButton jButton_SelectColorShoes;
+    private javax.swing.JColorChooser jColorChooser1;
     private javax.swing.JLabel jLabel_AvatarName;
-    private javax.swing.JLabel jLabel_ColorFacialHair;
-    private javax.swing.JLabel jLabel_ColorHair;
-    private javax.swing.JLabel jLabel_ColorPants;
-    private javax.swing.JLabel jLabel_ColorShirt;
-    private javax.swing.JLabel jLabel_ColorShoes;
-    private javax.swing.JLabel jLabel_ColorSkin;
     private javax.swing.JLabel jLabel_Ethnicity;
     private javax.swing.JLabel jLabel_Gender;
     private javax.swing.JLabel jLabel_TitleBar;
     private javax.swing.JPanel jPanel_AvatarEthnicity;
     private javax.swing.JPanel jPanel_AvatarGender;
     private javax.swing.JPanel jPanel_AvatarName;
-    private javax.swing.JPanel jPanel_ColorFacialHair;
-    private javax.swing.JPanel jPanel_ColorHair;
-    private javax.swing.JPanel jPanel_ColorPants;
-    private javax.swing.JPanel jPanel_ColorShirt;
-    private javax.swing.JPanel jPanel_ColorShoes;
-    private javax.swing.JPanel jPanel_ColorSkin;
+    private javax.swing.JPanel jPanel_EyeColors;
+    private javax.swing.JPanel jPanel_FHairColor;
+    private javax.swing.JPanel jPanel_HairColor;
     private javax.swing.JPanel jPanel_MainColors;
     private javax.swing.JPanel jPanel_MainPresets;
+    private javax.swing.JPanel jPanel_PantsColor;
+    private javax.swing.JPanel jPanel_ShirtColor;
+    private javax.swing.JPanel jPanel_ShoesColor;
+    private javax.swing.JPanel jPanel_SkinTone;
     private javax.swing.JRadioButton jRadioButton_EthnicAfrican;
     private javax.swing.JRadioButton jRadioButton_EthnicAsian;
     private javax.swing.JRadioButton jRadioButton_EthnicCaucasian;
@@ -878,6 +1197,36 @@ public class JPanel_EZOptions extends javax.swing.JPanel {
                 }
             }
             return this;
+        }
+    }
+
+    public class advButton extends JButton {
+        public int      m_x, m_y, m_width, m_height;
+        public Color    m_ColorDefault;
+        public Color    m_ColorCurrent;
+
+        public advButton() {
+            super();
+            setSize(75, 29);
+            m_x             = getBounds().x;
+            m_y             = getBounds().y;
+            m_width         = getBounds().width;
+            m_height        = getBounds().height;
+            m_ColorDefault  = getBackground();
+            m_ColorCurrent  = getBackground();
+        }
+
+        @Override
+        public void paintComponent(Graphics g) {
+            super.paintComponent(g);
+        }
+
+        public void setCurColor(Color c) {
+            m_ColorCurrent = c;
+        }
+
+        public void resetColor() {
+            m_ColorCurrent = m_ColorDefault;
         }
     }
 
