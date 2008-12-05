@@ -174,7 +174,6 @@ public class GLSLShaderProgram implements AbstractShaderProgram, RenderUpdater
      */
     public void compile() throws GLSLCompileException
     {
-        
         // prepare buffers
         m_initializationBuffer  = new FastSet<GLSLShaderVariable>();
         m_dependencyMap         = new HashMap<GLSLShaderVariable, GLSLShaderEffect>();
@@ -909,16 +908,22 @@ public class GLSLShaderProgram implements AbstractShaderProgram, RenderUpdater
             {
                 for (GLSLShaderUniform uniform : effect.getFragmentUniforms())
                 {
-                    ShaderProperty prop = new ShaderProperty(uniform.getName(), uniform.getDataType(), null);
-                    m_propertyMap.put(uniform.getName(), prop);
+                    if (m_propertyMap.containsKey(uniform.getName()) == false) // add it in!
+                    {
+                        ShaderProperty prop = new ShaderProperty(uniform.getName(), uniform.getDataType(), null);
+                        m_propertyMap.put(uniform.getName(), prop);
+                    }
                 }
             }
             if (effect.getVertexUniforms() != null)
             {
                 for (GLSLShaderUniform uniform : effect.getVertexUniforms())
                 {
-                    ShaderProperty prop = new ShaderProperty(uniform.getName(), uniform.getDataType(), null);
-                    m_propertyMap.put(uniform.getName(), prop);
+                    if (m_propertyMap.containsKey(uniform.getName()) == false) // Add it in!
+                    {
+                        ShaderProperty prop = new ShaderProperty(uniform.getName(), uniform.getDataType(), null);
+                        m_propertyMap.put(uniform.getName(), prop);
+                    }
                 }
             }
         }
