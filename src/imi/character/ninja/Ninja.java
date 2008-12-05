@@ -19,6 +19,7 @@ package imi.character.ninja;
 
 import imi.character.ninja.NinjaContext.TriggerNames;
 import imi.character.objects.Goal;
+import imi.character.statemachine.GameContext;
 import imi.utils.input.InputScheme;
 import imi.scene.PMatrix;
 import imi.scene.processors.JSceneEventProcessor;
@@ -48,15 +49,19 @@ public class Ninja extends imi.character.Character
     public Ninja(String name, WorldManager wm)
     {
         super(name, wm);
-        m_context = new NinjaContext(this);
+        m_context = instantiateContext();       // Initialize m_context
     }
             
     public Ninja(String name, PMatrix origin, float visualScale, WorldManager wm)
     {
         super(name, origin, null, null, visualScale, wm);
-        m_context = new NinjaContext(this);
+        m_context = instantiateContext();       // Initialize m_context
     }
-        
+
+    protected GameContext instantiateContext() {
+        return new NinjaContext(this);
+    }
+
     @Override
     protected Attributes createAttributes(String name)
     {

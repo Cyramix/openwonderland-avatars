@@ -17,6 +17,7 @@
  */
 package imi.character.ninja;
 
+import imi.character.CharacterController;
 import imi.character.FollowPath;
 import imi.character.GoSit;
 import imi.character.GoTo;
@@ -107,7 +108,7 @@ public class NinjaContext extends GameContext
     {
         super(master);
         ninja = master;
-        controller = new NinjaController(master);
+        controller = (NinjaController) instantiateController();
         actions    = new float [ActionNames.values().length];
                 
         // Add states to this context
@@ -310,6 +311,11 @@ public class NinjaContext extends GameContext
     @Override
     public NinjaController getController() {
         return controller;
+    }
+
+    @Override
+    protected CharacterController instantiateController() {
+        return new NinjaController(ninja);
     }
 
     @Override

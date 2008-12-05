@@ -33,8 +33,8 @@ import javax.swing.JFrame;
 public class NinjaController extends CharacterController
 {
     private Ninja    ninja               = null;
-    private boolean  initalized          = false;
-    private PPolygonModelInstance body   = null;
+    protected boolean  initalized          = false;
+    protected PPolygonModelInstance body   = null;
     
     private float    rotationSensetivity = -10.0f;
     private PMatrix  rotation            = new PMatrix();
@@ -69,7 +69,7 @@ public class NinjaController extends CharacterController
         setWindow((JFrame) ninja.getWorldManager().getUserData(JFrame.class));
     }
     
-    private void initialize() 
+    protected void initialize()
     {
         // Ninja's mesh might be null untill loaded
         PPolygonModelInstance model = ninja.getModelInst();
@@ -78,6 +78,8 @@ public class NinjaController extends CharacterController
             body       = model;
             initalized = true;
         }
+
+        System.err.println("GOT BODY "+body);
     }
 
     @Override
@@ -303,6 +305,7 @@ public class NinjaController extends CharacterController
     @Override
     public Vector3f getPosition()
     {
+        System.err.println("Bodyt "+body.getTransform().getWorldMatrix(false));
         if (body != null)
             return body.getTransform().getWorldMatrix(false).getTranslation();
         return null;

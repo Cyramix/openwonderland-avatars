@@ -19,6 +19,7 @@ package imi.character.statemachine;
 
 import imi.character.CharacterController;
 import imi.character.CharacterSteeringHelm;
+import imi.character.ninja.NinjaController;
 import imi.character.statemachine.GameState.Action;
 import imi.scene.animation.AnimationListener.AnimationMessageType;
 import imi.scene.polygonmodel.PPolygonMeshInstance;
@@ -351,6 +352,14 @@ public class GameContext extends NamedUpdatableObject
      * @return
      */
     public CharacterSteeringHelm getSteering() {
+        return null;
+    }
+
+    /**
+     * Instantiate and return a controller, TODO should be abstract
+     * @return
+     */
+    protected CharacterController instantiateController() {
         return null;
     }
 }
