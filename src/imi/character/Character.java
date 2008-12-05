@@ -29,13 +29,10 @@ import com.jme.scene.state.MaterialState.ColorMaterial;
 import com.jme.scene.state.RenderState;
 import com.jme.scene.state.WireframeState;
 import com.jme.scene.state.ZBufferState;
-import imi.character.ninja.NinjaContext;
 import imi.character.objects.ObjectCollection;
 import imi.character.objects.SpatialObject;
 import imi.character.statemachine.GameContext;
 import imi.character.statemachine.TransitionObject;
-import imi.gui.SceneEssentials;
-import imi.gui.TreeExplorer;
 import imi.loaders.collada.ColladaLoaderParams;
 import imi.loaders.collada.Instruction;
 import imi.loaders.collada.Instruction.InstructionNames;
@@ -74,7 +71,6 @@ import imi.scene.animation.TransitionQueue;
 import imi.scene.boundingvolumes.PSphere;
 import imi.scene.polygonmodel.PPolygonMesh;
 import imi.scene.polygonmodel.PPolygonMeshInstance;
-import imi.scene.shader.programs.VertexDeformer;
 import imi.scene.polygonmodel.parts.PMeshMaterial;
 import imi.scene.polygonmodel.parts.TextureMaterialProperties;
 import imi.scene.polygonmodel.skinned.SkinnedMeshJoint;
@@ -92,7 +88,6 @@ import java.util.LinkedList;
  */
 public abstract class Character extends Entity implements SpatialObject, AnimationListener
 {   
-    public static int hack = 0;
     /**
      * Maps to game triggers from VK_ key IDs that are forwarded from the input
      * manager. This defines which triggers react to what keyboard input.
@@ -101,7 +96,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
     protected Hashtable<Integer, Integer> m_keyBindings = new Hashtable<Integer, Integer>();
         
     protected GameContext     m_context        = null;
-    protected Attributes      m_attributes     = null;
+    protected CharacterAttributes m_attributes     = null;
     
     protected HashMap<String, GameContext> m_registry = new HashMap<String, GameContext>();
     
@@ -131,260 +126,29 @@ public abstract class Character extends Entity implements SpatialObject, Animati
     private   VerletJointManipulator m_armJointManipulator = null;
     private   float     m_armTimer    = 0.0f;
     private   float     m_armTimeTick = 1.0f / 60.0f;
-
-    public class Attributes
-    {
-        public class AttachmentParams
-        {
-            public String  m_meshName   = null;
-            public String  m_jointName  = null;
-            public PMatrix m_matrix     = null;
-            public AttachmentParams(String mesh, String joint, PMatrix orientation)
-            {
-                m_meshName  = mesh;
-                m_jointName = joint;
-                m_matrix    = orientation;
-            }
-        }
-        
-        String m_name ="nameless";
-
-        SharedAsset m_asset = null;
-        
-        String m_BindPoseFile = null;
-        
-        String m_TextureFile = null; // Used for ms3d only
-
-        private String[] m_animations = new String[0];
-        
-        private String[] m_facialAnimations = new String[0];
-
-        private String[] m_deleteInstructions = new String[0];
-        private String[] m_loadInstructions = new String[0];
-        private String[] m_addInstructions = new String[0];
-        
-        private AttachmentParams[] m_attachmentsInstructions = new AttachmentParams[0];
-        
-        private String m_baseURL = null;
-        
-        private boolean bUseSimpleSphereModel = false;  // use this to load all avatars with a simple sphere model instead
-        
-        PMatrix origin = null; // Used for the simple sphere model
-
-        private PScene simpleScene = null;
-        
-        public Attributes(String name) {
-            m_name = name;
-        }
-        
-        public String getName() {
-            return m_name;
-        }
-
-        public void setName(String name) {
-            m_name = name;
-        }
-
-        public SharedAsset getAsset() {
-            return m_asset;
-        }
-
-        public void setAsset(SharedAsset asset) {
-            m_asset = asset;
-        }
-
-        public String getBindPoseFile() {
-            return m_BindPoseFile;
-        }
-
-        public void setBindPoseFile(String ModelFile) {
-            m_BindPoseFile = ModelFile;
-        }
-
-        public String getTextureFile() {
-            return m_TextureFile;
-        }
-
-        public void setTextureFile(String TextureFile) {
-            m_TextureFile = TextureFile;
-            
-        }
-
-        public boolean isUseSimpleSphereModel() {
-            return bUseSimpleSphereModel;
-        }
-
-        public void setUseSimpleSphereModel(boolean bUseSimpleSphereModel, PScene pScene) {
-            this.bUseSimpleSphereModel = bUseSimpleSphereModel;
-            this.simpleScene = pScene;
-        }
-
-        public PMatrix getOrigin() {
-            return origin;
-        }
-
-        public void setOrigin(PMatrix origin) {
-            this.origin = origin;
-        }
-
-        /**
-         * Get the base URL for these attributes
-         * @return
-         */
-        public String getBaseURL() {
-            return m_baseURL;
-        }
-
-        /**
-         * Set the base URL for these attributes
-         * @param baseURL
-         */
-        public void setBaseURL(String baseURL) {
-            m_baseURL = baseURL;
-        }
-
-        public String[] getAnimations() {
-            return m_animations;
-        }
-
-        public void setAnimations(String[] animations) {
-            this.m_animations = animations;
-        }
-
-        public String[] getFacialAnimations() {
-            return m_facialAnimations;
-        }
-
-        public void setFacialAnimations(String[] facialAnimations) {
-            this.m_facialAnimations = facialAnimations;
-        }
-
-        public String[] getAddInstructions() {
-            return m_addInstructions;
-        }
-
-        public void setAddInstructions(String[] m_addInstructions) {
-            this.m_addInstructions = m_addInstructions;
-        }
-
-        public String[] getDeleteInstructions() {
-            return m_deleteInstructions;
-        }
-
-        public void setDeleteInstructions(String[] m_deleteInstructions) {
-            this.m_deleteInstructions = m_deleteInstructions;
-        }
-
-        public String[] getLoadInstructions() {
-            return m_loadInstructions;
-        }
-
-        public void setLoadInstructions(String[] m_loadInstructions) {
-            this.m_loadInstructions = m_loadInstructions;
-        }
-
-        public AttachmentParams[] getAttachmentsInstructions() {
-            return m_attachmentsInstructions;
-        }
-
-        public void setAttachmentsInstructions(AttachmentParams[] attachmentsInstructions) {
-            this.m_attachmentsInstructions = attachmentsInstructions;
-        }
-        
-        PScene getSimpleScene() {
-            return simpleScene;
-        }
-
-    }
-        
+ 
     /**
-     * This constructor calls initScne(), setRenderStates() and adds this
-     * Entity to the world manager.
+     * Sets up the mtgame entity 
+     * @param attributes
      * @param wm
-     * @param name
      */
-    public Character(String name, WorldManager wm)
+    public Character(CharacterAttributes attributes, WorldManager wm)
     {   
-        this(name, null, null, wm);
-    }
-        
-    /***
-     * This constructor calls initScne(), setRenderStates() and adds this
-     * Entity to the world manager.
-     * @param name
-     * @param modelIMI  -   the IMI xml file for loading of complex scenes 
-     * @param wm
-     */
-    public Character(String name, PMatrix origin, String modelIMI, WorldManager wm)
-    {
-        super(name);
+        super(attributes.getName());
         m_wm = wm;
                 
         // Initialize key bindings
         initKeyBindings();
     
         // The procedural scene graph
-        m_pscene = new PScene(name, m_wm);
+        m_pscene = new PScene(attributes.getName(), m_wm);
         
         // The collection of processors for this entity
         ArrayList<ProcessorComponent> processors = new ArrayList<ProcessorComponent>();
-        
-        // Initialize character attributes
-        initAttributes(name, null, null, origin, 1.0f, modelIMI);
-        
-        // Initialize the scene
-        initScene(processors);
-        
-        // The glue between JME and pscene
-        m_jscene = new JScene(m_pscene);
-        
-        // Use default render states (unless that method is overriden)
-        setRenderStates();
-        
-        // Create a scene component and set the root to our jscene
-        RenderComponent rc = m_wm.getRenderManager().createRenderComponent(m_jscene);
-        
-        // Add the scene component with our jscene to the entity
-        addComponent(RenderComponent.class, rc);
-        
-        // Add our processors to a collection component
-        ProcessorCollectionComponent processorCollection = new ProcessorCollectionComponent();
-        for (int i = 0; i < processors.size(); i++)
-            processorCollection.addProcessor(processors.get(i));
-        
-        // Add the processor collection component to the entity
-        addComponent(ProcessorCollectionComponent.class, processorCollection);
-        
-        // Add the entity to the world manager
-        wm.addEntity(this);   
-    }
-    
-    /***
-     * This constructor calls initScne(), setRenderStates() and adds this
-     * Entity to the world manager.
-     * @param name
-     * @param origin
-     * @param modelFile
-     * @param textureFile
-     * @param wm
-     */
-    
-    public Character(String name, PMatrix origin, String modelFile, String textureFile, final float visualScale, WorldManager wm)
-    {
-        super(name);
-        m_wm = wm;
-        
-        // Initialize key bindings
-        initKeyBindings();
-    
-        // The procedural scene graph
-        m_pscene = new PScene(name, m_wm);
-        
-        // The collection of processors for this entity
-        ArrayList<ProcessorComponent> processors = new ArrayList<ProcessorComponent>();
-        
-        // Initialize character attributes
-        initAttributes(name, modelFile, textureFile, origin, visualScale, null);
+                
+        // Initialize the SharedAsset of the attributes
+        m_attributes = attributes;
+        initAsset();
         
         // Initialize the scene
         initScene(processors);
@@ -412,7 +176,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         // Add the entity to the world manager
         wm.addEntity(this);  
     }
-
+     
     /**
      * Instantiate the GameContext for this Character
      * 
@@ -425,212 +189,129 @@ public abstract class Character extends Entity implements SpatialObject, Animati
      */
     protected abstract void initKeyBindings();
     
-    /**
-     * Override this method to allocate derrived attributes
-     */
-    protected Attributes createAttributes(String name)
+    private void initAsset()
     {
-        return new Attributes(name);
-    }
-    
-    /***
-     * Override this method to initialize the character's attributes diffrently
-     */
-    protected void initAttributes(String name, String modelFile, String textureFile, final PMatrix origin, final float visualScale, String modelIMI)
-    {
-        m_attributes = createAttributes(name);
-        m_attributes.setOrigin(origin);
-        if (modelFile != null)
-            m_attributes.setBindPoseFile(modelFile);
-        if (textureFile != null)
-            m_attributes.setTextureFile(textureFile);
-
-        if (modelIMI == null)
+        if (m_attributes.getBindPoseFile().endsWith(".dae"))
         {
-            if (m_attributes.getBindPoseFile().endsWith(".ms3d"))
-            {       
-                SharedAsset character = new SharedAsset(m_pscene.getRepository(), new AssetDescriptor(SharedAssetType.MS3D_SkinnedMesh, m_attributes.getBindPoseFile()));
-                AssetInitializer init = new AssetInitializer() {
-                    public boolean initialize(Object asset) {
-
-                        if (asset instanceof SkeletonNode)
-                        {
-                            // Grab the skinned mesh instance from the skelton node that was returned to us.
-                            PPolygonSkinnedMeshInstance skinned = (PPolygonSkinnedMeshInstance)((SkeletonNode)asset).findChild("MS3DSkinnedMesh");
-
-                            // Set position
-                            if (origin != null)
-                                m_modelInst.getTransform().setLocalMatrix(origin);
-
-                            // Visual scale affects the skinned mesh and not the model instance
-                            if (visualScale != 1.0f)
-                                skinned.getTransform().getLocalMatrix(true).setScale(visualScale);
-
-                            PMeshMaterial material = new PMeshMaterial("Character Material");
-                            material.setTexture(new File(m_attributes.getTextureFile()), 0);
-                            material.setShader(new VertexDeformer(m_wm));
-                            skinned.getGeometry().setMaterial(material);
-                            skinned.setUseGeometryMaterial(true);
-                        }
-                        return true;
-
-                    }
-                };
-                character.setInitializer(init);
-                m_attributes.setAsset(character);
+            URL bindPoseURL = null;
+            try {
+                if (m_attributes.getBaseURL() != null)
+                    bindPoseURL = new URL(m_attributes.getBaseURL() + m_attributes.getBindPoseFile());
+            } catch (MalformedURLException ex) {
+                bindPoseURL = null;
             }
-            else if (m_attributes.getBindPoseFile().endsWith(".dae"))
-            {
-                URL modelURL=null;
-                try {
-                    if (m_attributes.m_baseURL!=null)
-                        modelURL = new URL(m_attributes.m_baseURL + m_attributes.getBindPoseFile());
-                } catch (MalformedURLException ex) {
-                    modelURL = null;
-                }
-                SharedAsset character;
-                
-                if (modelURL==null)
-                    character = new SharedAsset(m_pscene.getRepository(), new AssetDescriptor(SharedAssetType.COLLADA_Model, m_attributes.getBindPoseFile()));
-                else
-                    character = new SharedAsset(m_pscene.getRepository(), new AssetDescriptor(SharedAssetType.COLLADA_Model, modelURL));
+            SharedAsset character;
 
-                System.err.println("GOT SHARED ASSET "+character);
+            if (bindPoseURL == null)
+                character = new SharedAsset(m_pscene.getRepository(), new AssetDescriptor(SharedAssetType.COLLADA_Model, m_attributes.getBindPoseFile()));
+            else
+                character = new SharedAsset(m_pscene.getRepository(), new AssetDescriptor(SharedAssetType.COLLADA_Model, bindPoseURL));
 
-                character.setUserData(new ColladaLoaderParams(true, true, false, false, 4, "name", null));
-                AssetInitializer init = new AssetInitializer() {
-                    public boolean initialize(Object asset) {
+            System.err.println("GOT SHARED ASSET "+character);
 
-                        PNode assetNode = (PNode)asset;
-                        if (assetNode.getChildrenCount() > 0 && assetNode.getChild(0) instanceof SkeletonNode)
+            character.setUserData(new ColladaLoaderParams(true, true, false, false, 4, m_attributes.getName(), null));
+            AssetInitializer init = new AssetInitializer() {
+                public boolean initialize(Object asset) {
+
+                    PNode assetNode = (PNode)asset;
+                    if (assetNode.getChildrenCount() > 0 && assetNode.getChild(0) instanceof SkeletonNode)
+                    {
+                        SkeletonNode skeleton = (SkeletonNode)assetNode.getChild(0);
+
+//                        // Visual Scale
+//                        if (visualScale != 1.0f)
+//                        {
+//                            ArrayList<PPolygonSkinnedMeshInstance> meshes = skeleton.getSkinnedMeshInstances();
+//                            for (PPolygonSkinnedMeshInstance mesh : meshes)
+//                                mesh.getTransform().getLocalMatrix(true).setScale(visualScale);
+//                        }
+
+                        // Set position
+                        if (m_attributes.getOrigin() != null)
+                            m_modelInst.getTransform().setLocalMatrix(m_attributes.getOrigin());
+
+                        // Set animations and custom meshes
+                        if (m_attributes.getAnimations() != null)
                         {
-                            SkeletonNode skeleton = (SkeletonNode)assetNode.getChild(0);
-                            
-                            // Visual Scale
-                            if (visualScale != 1.0f)
-                            {
-                                ArrayList<PPolygonSkinnedMeshInstance> meshes = skeleton.getSkinnedMeshInstances();
-                                for (PPolygonSkinnedMeshInstance mesh : meshes)
-                                    mesh.getTransform().getLocalMatrix(true).setScale(visualScale);
-                            }
-                            
-                            // Set position
-                            if (origin != null)
-                                m_modelInst.getTransform().setLocalMatrix(origin);
-                            
-                            // Set animations and custom meshes
-                            if (m_attributes.getAnimations() != null)
-                            {
-                                String fileProtocol = m_attributes.getBaseURL();
+                            String fileProtocol = m_attributes.getBaseURL();
 
-                                if (fileProtocol == null)
-                                    fileProtocol = new String("file://localhost/" + System.getProperty("user.dir") + "/");
-                                
-                                InstructionProcessor pProcessor = new InstructionProcessor(m_wm);
-                                Instruction pRootInstruction = new Instruction();
+                            if (fileProtocol == null)
+                                fileProtocol = new String("file://localhost/" + System.getProperty("user.dir") + "/");
 
-                                pRootInstruction.addInstruction(InstructionNames.setSkeleton, skeleton);
-                                
-                                String [] load = m_attributes.getLoadInstructions();
-                                for (int i = 0; i < load.length; i++) {
-                                    pRootInstruction.addInstruction(InstructionNames.loadGeometry, fileProtocol + load[i]);
-                                }
-                                
-                                String [] delete = m_attributes.getDeleteInstructions();
-                                for (int i = 0; i < delete.length; i++) {
-                                    pRootInstruction.addInstruction(InstructionNames.deleteSkinnedMesh, delete[i]);
-                                }
-                                
-                                String [] add = m_attributes.getAddInstructions();
-                                for (int i = 0; i < add.length; i++) {
-                                    pRootInstruction.addInstruction(InstructionNames.addSkinnedMesh, add[i]);
-                                }
-                                
-                                Attributes.AttachmentParams [] attachments = m_attributes.getAttachmentsInstructions();
-                                for (int i = 0; i < attachments.length; i++) {
-                                    pRootInstruction.addInstruction(InstructionNames.addAttachment, attachments[i].m_meshName, attachments[i].m_jointName, attachments[i].m_matrix);
-                                }
+                            InstructionProcessor pProcessor = new InstructionProcessor(m_wm);
+                            Instruction pRootInstruction = new Instruction();
 
-                                String [] anims = m_attributes.getAnimations();
-                                for (int i = 0; i < anims.length; i++) {
-                                    pRootInstruction.addInstruction(InstructionNames.loadAnimation, fileProtocol + anims[i]);
-                                }
-                                                            
-                                String [] facialAnims = m_attributes.getFacialAnimations();
-                                for (int i = 0; i < facialAnims.length; i++) {
-                                    pRootInstruction.addInstruction(InstructionNames.loadFacialAnimation, fileProtocol + facialAnims[i]);
-                                }
-                                
-                                pProcessor.execute(pRootInstruction);
-                            }
-                            
-                            // Set material
-                            skeleton.setShaderOnSkinnedMeshes(new VertDeformerWithSpecAndNormalMap(m_wm));
-                            m_leftEyeBall.applyShader(m_wm);
-                            m_rightEyeBall.applyShader(m_wm);
+                            pRootInstruction.addInstruction(InstructionNames.setSkeleton, skeleton);
 
-                            // Facial animation state is designated to id (and index) 1
-                            AnimationState facialAnimationState = new AnimationState(1);
-                            facialAnimationState.setCurrentCycle(-1); 
-                            facialAnimationState.setCurrentCyclePlaybackMode(PlaybackMode.PlayOnce);
-                            facialAnimationState.setAnimationSpeed(0.1f);
-                            m_skeleton.addAnimationState(facialAnimationState);
-                            if (m_skeleton.getAnimationComponent().getGroups().size() > 1)   
-                            {
-                                m_facialAnimationQ = new TransitionQueue(m_skeleton, 1);
-                                initiateFacialAnimation(1, 0.75f, 0.75f); // 0 is "All Cycles"
+                            String [] load = m_attributes.getLoadInstructions();
+                            for (int i = 0; i < load.length; i++) {
+                                pRootInstruction.addInstruction(InstructionNames.loadGeometry, fileProtocol + load[i]);
                             }
 
-                            // The verlet arm!
-                            SkinnedMeshJoint shoulderJoint = (SkinnedMeshJoint) m_skeleton.findChild("rightArm");
-                            m_arm = new VerletArm(shoulderJoint, m_modelInst);
+                            String [] delete = m_attributes.getDeleteInstructions();
+                            for (int i = 0; i < delete.length; i++) {
+                                pRootInstruction.addInstruction(InstructionNames.deleteSkinnedMesh, delete[i]);
+                            }
+
+                            String [] add = m_attributes.getAddInstructions();
+                            for (int i = 0; i < add.length; i++) {
+                                pRootInstruction.addInstruction(InstructionNames.addSkinnedMesh, add[i]);
+                            }
+
+                            CharacterAttributes.AttachmentParams [] attachments = m_attributes.getAttachmentsInstructions();
+                            for (int i = 0; i < attachments.length; i++) {
+                                pRootInstruction.addInstruction(InstructionNames.addAttachment, attachments[i].getMeshName(), attachments[i].getJointName(), attachments[i].getMatrix());
+                            }
+
+                            String [] anims = m_attributes.getAnimations();
+                            for (int i = 0; i < anims.length; i++) {
+                                pRootInstruction.addInstruction(InstructionNames.loadAnimation, fileProtocol + anims[i]);
+                            }
+
+                            String [] facialAnims = m_attributes.getFacialAnimations();
+                            for (int i = 0; i < facialAnims.length; i++) {
+                                pRootInstruction.addInstruction(InstructionNames.loadFacialAnimation, fileProtocol + facialAnims[i]);
+                            }
+
+                            pProcessor.execute(pRootInstruction);
+                        }
+
+                        // Set material
+                        skeleton.setShaderOnSkinnedMeshes(new VertDeformerWithSpecAndNormalMap(m_wm));
+                        m_leftEyeBall.applyShader(m_wm);
+                        m_rightEyeBall.applyShader(m_wm);
+
+                        // Facial animation state is designated to id (and index) 1
+                        AnimationState facialAnimationState = new AnimationState(1);
+                        facialAnimationState.setCurrentCycle(-1); 
+                        facialAnimationState.setCurrentCyclePlaybackMode(PlaybackMode.PlayOnce);
+                        facialAnimationState.setAnimationSpeed(0.1f);
+                        m_skeleton.addAnimationState(facialAnimationState);
+                        if (m_skeleton.getAnimationComponent().getGroups().size() > 1)   
+                        {
+                            m_facialAnimationQ = new TransitionQueue(m_skeleton, 1);
+                            initiateFacialAnimation(1, 0.75f, 0.75f); // 0 is "All Cycles"
+                        }
+
+                        // The verlet arm!
+                        SkinnedMeshJoint shoulderJoint = (SkinnedMeshJoint) m_skeleton.findChild("rightArm");
+                        m_arm = new VerletArm(shoulderJoint, m_modelInst);
 //                            VerletVisualManager visual = new VerletVisualManager("avatar arm visuals", m_wm);
 //                            visual.addVerletObject(m_arm);
 //                            visual.setWireframe(true);
-                            // Set the joint manipulator on every skinned mesh (remember to set it again when adding new meshes!)
-                            ArrayList<PPolygonSkinnedMeshInstance> skinnedMeshes = m_skeleton.getSkinnedMeshInstances();
-                            m_armJointManipulator = new VerletJointManipulator(m_arm, m_skeleton);
-                            m_arm.setJointManipulator(m_armJointManipulator);
-                            for(PPolygonSkinnedMeshInstance mesh : skinnedMeshes)
-                                mesh.setJointManipulator(m_armJointManipulator);
-                            
-                        }
-                        return true;
+                        // Set the joint manipulator on every skinned mesh (remember to set it again when adding new meshes!)
+                        ArrayList<PPolygonSkinnedMeshInstance> skinnedMeshes = m_skeleton.getSkinnedMeshInstances();
+                        m_armJointManipulator = new VerletJointManipulator(m_arm, m_skeleton);
+                        m_arm.setJointManipulator(m_armJointManipulator);
+                        for(PPolygonSkinnedMeshInstance mesh : skinnedMeshes)
+                            mesh.setJointManipulator(m_armJointManipulator);
 
                     }
-                };
-                character.setInitializer(init);
-                m_attributes.setAsset(character);
-            }
-        }
-        else // IMI xml configuration file (out of date)
-        {
-            SharedAsset character = new SharedAsset(m_pscene.getRepository(), new AssetDescriptor(SharedAssetType.Model, modelIMI));
-            
-            if (origin != null)
-            {
-                AssetInitializer init = new AssetInitializer() {
-                    public boolean initialize(Object asset) {
+                    return true;
 
-                        if (asset instanceof SkeletonNode)
-                        {
-                            // Grab the skinned mesh instance from the skelton node that was returned to us.
-                            PPolygonSkinnedMeshInstance skinned = (PPolygonSkinnedMeshInstance)((SkeletonNode)asset).findChild("MS3DSkinnedMesh");
-
-                            // Visual scale affects the skinned mesh and not the model instance
-                            // (might be defined in the xml... if so take this out)
-                            skinned.getTransform().getLocalMatrix(true).setScale(visualScale);
-                            
-                            // Set position
-                            if (origin != null)
-                                m_modelInst.getTransform().setLocalMatrix(origin);
-                        }
-                        return true;
-                    }
-                };
-                character.setInitializer(init);
-            }
-            
+                }
+            };
+            character.setInitializer(init);
             m_attributes.setAsset(character);
         }
     }
@@ -644,7 +325,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
 //        if (m_attributes.getBindPoseFile().endsWith(".dae"))
 //            m_pscene.setUseRepository(false);
         
-        if(m_attributes.isUseSimpleSphereModel())
+        if(m_attributes.isUseSimpleStaticModel())
         {
             if (m_attributes.getSimpleScene()==null) {
                 float radius = 1.0f;
@@ -825,7 +506,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         if (m_context != null)
             m_context.update(deltaTime);
         
-        if (m_attributes.bUseSimpleSphereModel)
+        if (m_attributes.isUseSimpleStaticModel())
             m_modelInst.setDirty(true, true);
         
         updateEyes(deltaTime);
@@ -1017,11 +698,11 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         m_context.triggerReleased(trigger);
     }
     
-    public Attributes getAttributes() {
+    public CharacterAttributes getAttributes() {
         return m_attributes;
     }
 
-    public void setAttributes(Attributes attributes) {
+    public void setAttributes(CharacterAttributes attributes) {
         m_attributes = attributes;
     }
 

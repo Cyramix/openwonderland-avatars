@@ -17,16 +17,13 @@
  */
 package imi.character.ninja;
 
+import imi.character.CharacterAttributes;
 import imi.character.ninja.NinjaContext.TriggerNames;
-import imi.character.objects.Goal;
 import imi.character.statemachine.GameContext;
 import imi.utils.input.InputScheme;
-import imi.scene.PMatrix;
 import imi.scene.processors.JSceneEventProcessor;
-import imi.tests.DemoBase2;
 import imi.utils.input.NinjaControlScheme;
 import java.awt.event.KeyEvent;
-import javax.swing.JFrame;
 import org.jdesktop.mtgame.WorldManager;
 
 /*
@@ -35,39 +32,17 @@ import org.jdesktop.mtgame.WorldManager;
  * @author Lou Hayt
  */
 public class Ninja extends imi.character.Character
-{
-
-    public class NinjaAttributes extends Attributes
+{   
+    public Ninja(CharacterAttributes attributes, WorldManager wm)
     {
-        public NinjaAttributes(String name) {
-            super(name);
-            setBindPoseFile("assets/models/ms3d/ninja.ms3d");
-            setTextureFile("assets/textures/checkerboard2.PNG");
-        }
-    }
-    
-    public Ninja(String name, WorldManager wm)
-    {
-        super(name, wm);
+        super(attributes, wm);
         m_context = instantiateContext();       // Initialize m_context
     }
-            
-    public Ninja(String name, PMatrix origin, float visualScale, WorldManager wm)
-    {
-        super(name, origin, null, null, visualScale, wm);
-        m_context = instantiateContext();       // Initialize m_context
-    }
-
+     
     protected GameContext instantiateContext() {
         return new NinjaContext(this);
     }
-
-    @Override
-    protected Attributes createAttributes(String name)
-    {
-        return new NinjaAttributes(name);
-    }
-    
+   
     @Override
     protected void initKeyBindings() 
     {   

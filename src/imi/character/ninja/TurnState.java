@@ -57,7 +57,7 @@ public class TurnState extends GameState
     public boolean toTurn(Object data)
     {
         // The character doesn't have a skeleton if it's represented as a sphere
-        if (ninjaContext.getCharacter().getAttributes().isUseSimpleSphereModel())
+        if (ninjaContext.getCharacter().getAttributes().isUseSimpleStaticModel())
             return true;
         
         // Ninja's skeleton might be null untill loaded

@@ -19,22 +19,13 @@ package imi.tests;
 
 
 import com.jme.math.Vector3f;
-import imi.character.EyeBall;
 import imi.character.ninja.NinjaAvatar;
-import imi.character.ninja.NinjaAvatarDressShirt;
+import imi.character.ninja.NinjaAvatarAttributes;
 import imi.scene.camera.state.FirstPersonCamState;
-import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
 import org.jdesktop.mtgame.WorldManager;
 
 
 import imi.scene.processors.JSceneEventProcessor;
-import imi.scene.shader.NoSuchPropertyException;
-import imi.scene.shader.ShaderProperty;
-import imi.scene.shader.dynamic.GLSLCompileException;
-import imi.scene.shader.dynamic.GLSLDataType;
-import imi.scene.shader.dynamic.GLSLShaderProgram;
-import imi.scene.shader.effects.MeshColorModulation;
-import imi.scene.shader.programs.VertDeformerWithSpecAndNormalMap;
 import imi.utils.input.NinjaControlScheme;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -72,7 +63,7 @@ public class COLLADA_CharacterTest extends DemoBase
         NinjaControlScheme control = (NinjaControlScheme)((JSceneEventProcessor)wm.getUserData(JSceneEventProcessor.class)).setDefault(new NinjaControlScheme(null));
 //
 //        // Create avatar
-        NinjaAvatar avatar = new NinjaAvatarDressShirt("Avatar", wm);
+        NinjaAvatar avatar = new NinjaAvatar(new NinjaAvatarAttributes("Avatar", true, false), wm);
         avatar.selectForInput();
         control.getNinjaTeam().add(avatar);
         // Get the mouse evets so the verlet arm can be controlled

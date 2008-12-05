@@ -19,6 +19,7 @@ package imi.tests;
 
 import com.jme.math.Vector3f;
 import imi.character.ninja.NinjaAvatar;
+import imi.character.ninja.NinjaAvatarAttributes;
 import imi.character.objects.LocationNode;
 import imi.character.objects.ObjectCollection;
 import imi.environments.ColladaEnvironment;
@@ -167,7 +168,7 @@ public class NovemberDemo extends DemoBase
         control.setObjectCollection(objects);
 
         // Create avatar
-        NinjaAvatar avatar = new NinjaAvatar("Avatar", wm);
+        NinjaAvatar avatar = new NinjaAvatar(new NinjaAvatarAttributes("Avatar", true, false), wm);
         avatar.getModelInst().getTransform().getLocalMatrix(true).setTranslation(lobbyCenter.getPosition());
         avatar.selectForInput();
         control.getNinjaTeam().add(avatar);
@@ -191,7 +192,7 @@ public class NovemberDemo extends DemoBase
 
     private void cloneAvatar(NinjaControlScheme control, ObjectCollection objects, WorldManager wm, float xOffset, float yOffset, float zOffset, Vector3f origin)
     {
-        NinjaAvatar avatar = new NinjaAvatar("Avatar Clone " + xOffset+yOffset+zOffset, wm);
+        NinjaAvatar avatar = new NinjaAvatar(new NinjaAvatarAttributes("Avatar Clone " + xOffset+yOffset+zOffset, true, false), wm);
         avatar.getModelInst().getTransform().getLocalMatrix(true).setTranslation(new Vector3f(xOffset, yOffset, zOffset).add(origin));
         control.getNinjaTeam().add(avatar);
         avatar.setObjectCollection(objects);

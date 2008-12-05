@@ -88,7 +88,7 @@ public class SitOnGroundState extends GameState
         
         // If using the simple sphere model for the avatar the animation
         // states will never be set
-        if(owner.getCharacter().getAttributes().isUseSimpleSphereModel())
+        if(owner.getCharacter().getAttributes().isUseSimpleStaticModel())
         {
             bGettingUpAnimationSet   = true;
             bIdleSittingAnimationSet = true;

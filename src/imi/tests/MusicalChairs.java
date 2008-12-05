@@ -19,22 +19,13 @@ package imi.tests;
 
 import com.jme.math.Vector3f;
 import imi.character.ninja.NinjaAvatar;
+import imi.character.ninja.NinjaAvatarAttributes;
 import imi.character.objects.LocationNode;
 import imi.character.objects.ObjectCollection;
-import imi.environments.ColladaEnvironment;
-import imi.loaders.collada.ColladaLoaderParams;
-import imi.loaders.repository.AssetDescriptor;
-import imi.loaders.repository.Repository;
-import imi.loaders.repository.SharedAsset;
-import imi.loaders.repository.SharedAsset.SharedAssetType;
-import imi.scene.JScene;
 import imi.scene.processors.JSceneEventProcessor;
 import imi.utils.graph.Connection;
 import imi.utils.graph.Connection.ConnectionDirection;
 import imi.utils.input.NinjaControlScheme;
-import java.io.File;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.jdesktop.mtgame.WorldManager;
@@ -88,7 +79,7 @@ public class MusicalChairs extends DemoBase
         control.setObjectCollection(objects);
         
         // Create avatar
-        NinjaAvatar avatar = new NinjaAvatar("Avatar", wm);
+        NinjaAvatar avatar = new NinjaAvatar(new NinjaAvatarAttributes("Avatar", true, false), wm);
         avatar.selectForInput();
         control.getNinjaTeam().add(avatar);
         avatar.setObjectCollection(objects);
@@ -119,7 +110,7 @@ public class MusicalChairs extends DemoBase
 
     private void cloneAvatar(NinjaControlScheme control, ObjectCollection objects, WorldManager wm, float xOffset, float yOffset, float zOffset) 
     {   
-        NinjaAvatar avatar = new NinjaAvatar("Avatar Clone " + xOffset+yOffset+zOffset, wm);
+        NinjaAvatar avatar = new NinjaAvatar(new NinjaAvatarAttributes("Avatar Clone " + xOffset+yOffset+zOffset, true, false), wm);
         avatar.getModelInst().getTransform().getLocalMatrix(true).setTranslation(new Vector3f(xOffset, yOffset, zOffset));
         control.getNinjaTeam().add(avatar);
         avatar.setObjectCollection(objects);

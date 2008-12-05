@@ -19,9 +19,8 @@ package imi.tests;
 
 import com.jme.math.Vector3f;
 import imi.character.ninja.NinjaAvatar;
-import imi.character.ninja.NinjaAvatarDressShirt;
+import imi.character.ninja.NinjaAvatarAttributes;
 import imi.character.objects.ObjectCollection;
-import imi.scene.processors.FlexibleCameraProcessor;
 import org.jdesktop.mtgame.WorldManager;
 
 
@@ -59,7 +58,7 @@ public class VerletArmTest  extends DemoBase
         NinjaControlScheme control = (NinjaControlScheme)((JSceneEventProcessor)wm.getUserData(JSceneEventProcessor.class)).setDefault(new NinjaControlScheme(null));
         
         // Create avatar
-        NinjaAvatar avatar = new NinjaAvatarDressShirt("Avatar", wm);
+        NinjaAvatar avatar = new NinjaAvatar(new NinjaAvatarAttributes("Avatar", true, true), wm);
         avatar.selectForInput();
         control.getNinjaTeam().add(avatar);
         avatar.setObjectCollection(objects);
@@ -82,7 +81,7 @@ public class VerletArmTest  extends DemoBase
 
     private void cloneAvatar(NinjaControlScheme control, ObjectCollection objects, WorldManager wm, float xOffset, float yOffset, float zOffset) 
     {   
-        NinjaAvatar avatar = new NinjaAvatar("Avatar Clone " + xOffset+yOffset+zOffset, wm);
+        NinjaAvatar avatar = new NinjaAvatar(new NinjaAvatarAttributes("Avatar Clone " + xOffset+yOffset+zOffset, true, false), wm);
         avatar.getModelInst().getTransform().getLocalMatrix(true).setTranslation(new Vector3f(xOffset, yOffset, zOffset));
         control.getNinjaTeam().add(avatar);
         avatar.setObjectCollection(objects);

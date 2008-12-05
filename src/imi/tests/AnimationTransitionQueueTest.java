@@ -19,10 +19,9 @@ package imi.tests;
 
 import com.jme.math.Vector3f;
 import imi.character.ninja.NinjaAvatar;
+import imi.character.ninja.NinjaAvatarAttributes;
 import imi.character.objects.LocationNode;
 import imi.character.objects.ObjectCollection;
-import imi.scene.animation.AnimationComponent.PlaybackMode;
-import imi.scene.animation.TransitionCommand;
 import imi.scene.animation.TransitionQueue;
 import imi.scene.processors.JSceneEventProcessor;
 import imi.utils.graph.Connection;
@@ -73,7 +72,7 @@ public class AnimationTransitionQueueTest extends DemoBase
         NinjaControlScheme control = (NinjaControlScheme)((JSceneEventProcessor)wm.getUserData(JSceneEventProcessor.class)).setDefault(new NinjaControlScheme(null));
 
         // Create avatar
-        NinjaAvatar avatar = new NinjaAvatar("Avatar", wm);
+        NinjaAvatar avatar = new NinjaAvatar(new NinjaAvatarAttributes("Avatar", true, false), wm);
         avatar.selectForInput();
         control.getNinjaTeam().add(avatar);
         avatar.setObjectCollection(objects);
@@ -114,12 +113,12 @@ public class AnimationTransitionQueueTest extends DemoBase
 
     private void cloneAvatars(NinjaControlScheme control, ObjectCollection objects, WorldManager wm)
     {
-        NinjaAvatar avatar = new NinjaAvatar("Avatar Clone", wm);
+        NinjaAvatar avatar = new NinjaAvatar(new NinjaAvatarAttributes("Avatar Clone", true, false), wm);
         avatar.getModelInst().getTransform().getLocalMatrix(true).setTranslation(Vector3f.UNIT_Z.mult(-5.0f));
         control.getNinjaTeam().add(avatar);
         avatar.setObjectCollection(objects);
 
-        avatar = new NinjaAvatar("Avatar Clone", wm);
+        avatar = new NinjaAvatar(new NinjaAvatarAttributes("Avatar Clone", true, false), wm);
         avatar.getModelInst().getTransform().getLocalMatrix(true).setTranslation(Vector3f.UNIT_Z.mult(-10.0f));
         control.getNinjaTeam().add(avatar);
         avatar.setObjectCollection(objects);
