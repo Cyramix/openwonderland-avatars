@@ -341,7 +341,7 @@ private void compileInitiated(java.awt.event.ActionEvent evt) {//GEN-FIRST:event
         m_shader.addEffect((GLSLShaderEffect)obj);
     // compile, watching for exceptions
     boolean success = false;
-    try { m_shader.compile(); success = true; }
+    try { m_shader.clearPropertyMap(); m_shader.compile(); success = true; }
     catch (GLSLCompileException ex)
     {
         success = false;

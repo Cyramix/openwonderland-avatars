@@ -539,13 +539,11 @@ public class SkeletonNode extends PNode implements Animated
 
     /**
      * This method is used to generate skeleton modifiers as deltas from the
-     * provided base skeleton. For instance, in order to use the stock male animations
-     * with a different mesh, these deltas must be built and stored in order to
-     * avoid warping effects.
-     * @param baseSkeleton The skeleton that will be treated as the original, to which
-     * this skeleton will be modified
+     * provided base skeleton and assign the initial base skeleton data as the
+     * transform for each joint.
+     * @param baseSkeleton 
      */
-    public void generateSkeletonModifiers(SkeletonNode baseSkeleton)
+    public void remapSkeleton(SkeletonNode baseSkeleton)
     {
         // Gather the joints and set the new local modifiers
         LinkedList<PNode> list = new LinkedList<PNode>();
@@ -562,9 +560,11 @@ public class SkeletonNode extends PNode implements Animated
                 SkinnedMeshJoint baseJoint = baseSkeleton.findSkinnedMeshJoint(ourJoint.getName());
 
                 PMatrix modifierDelta = new PMatrix();
-                //modifierDelta.mul(ourJoint.getTransform().getLocalMatrix(false), baseJoint.getTransform().getLocalMatrix(false).inverse());
+
+                modifierDelta.mul(baseJoint.getTransform().getLocalMatrix(false).inverse(), ourJoint.getTransform().getLocalMatrix(false));
                 //modifierDelta.mulInverse(baseJoint.getTransform().getLocalMatrix(false), ourJoint.getTransform().getLocalMatrix(false));
                 ourJoint.setSkeletonModifier(modifierDelta);
+                ourJoint.getTransform().getLocalMatrix(true).set(baseJoint.getBindPose());
             }
             else
                 continue; // Prune (kids are not added to the list)

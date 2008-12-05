@@ -901,8 +901,6 @@ public class GLSLShaderProgram implements AbstractShaderProgram, RenderUpdater
      */
     protected void synchronizePropertyObjects()
     {
-        // out with the old
-        m_propertyMap.clear();
         // for each effect
         for (GLSLShaderEffect effect : m_effects)
         {
@@ -924,6 +922,15 @@ public class GLSLShaderProgram implements AbstractShaderProgram, RenderUpdater
                 }
             }
         }
+    }
+
+    /**
+     * Clear the property map out. This should be called before a compile any time
+     * effects are removed from the program
+     */
+    public void clearPropertyMap()
+    {
+        m_propertyMap.clear();
     }
     
     /**
