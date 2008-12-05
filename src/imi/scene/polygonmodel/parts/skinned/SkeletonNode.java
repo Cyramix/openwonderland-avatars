@@ -369,8 +369,8 @@ public class SkeletonNode extends PNode implements Animated
     }
 
     /**
-     * Set the provided shader on all the skinned meshes found underneath the
-     * skeleton node in the graph
+     * Set the provided shader on all the skinned meshes that are direct children
+     * of this skeleton node
      * @param shader
      */
     public void setShaderOnSkinnedMeshes(AbstractShaderProgram shader)
@@ -402,8 +402,12 @@ public class SkeletonNode extends PNode implements Animated
      */
     public void setShaderOnMeshes(AbstractShaderProgram shader)
     {
-        for (PNode kid : getChildren())
+        FastList<PNode> queue = new FastList<PNode>();
+        queue.addAll(getChildren());
+
+        while (queue.isEmpty() == false)
         {
+            PNode kid = queue.removeFirst();
             if (kid instanceof PPolygonMesh)
             {
                 PPolygonMesh mesh = (PPolygonMesh)kid;
@@ -419,6 +423,8 @@ public class SkeletonNode extends PNode implements Animated
                 meshInst.setMaterial(mat);
                 meshInst.setUseGeometryMaterial(false);
             }
+            for (int i = 0; i < kid.getChildrenCount(); ++i)
+                queue.add(kid.getChild(i));
         }
      }
 
