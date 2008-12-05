@@ -39,69 +39,69 @@ public class NinjaAvatar extends Ninja
             super(name);
             
             // Bind Pose
-            setBindPoseFile("http://www.zeitgeistgames.com/assets/collada/Avatars/Male/Male_Bind.dae");
+            setBindPoseFile("assets/models/collada/Avatars/Male/Male_Bind.dae");
             
             // Animations
             ArrayList<String> anims = new ArrayList<String>();
-            anims.add("http://www.zeitgeistgames.com/assets/collada/Avatars/Male/Male_Anim_Idle.dae");
-//            anims.add("assets/models/collada/Avatars/Male/Male_StandToSit.dae");
-//            anims.add("assets/models/collada/Avatars/Male/Male_Wave.dae");
-//            anims.add("assets/models/collada/Avatars/Male/Male_FallFromSitting.dae");
-//            anims.add("assets/models/collada/Avatars/Male/Male_FloorSitting.dae");
-//            anims.add("assets/models/collada/Avatars/Male/Male_FloorGetup.dae");
-//            anims.add("assets/models/collada/Avatars/Male/Male_Walk.dae");
-//            anims.add("assets/models/collada/Avatars/Male/Male_Sitting.dae");
-//
-//            if (false)
-//            {
-//                anims.add("assets/models/collada/Avatars/Male/Male_Run.dae");
-//                anims.add("assets/models/collada/Avatars/Male/Male_Bow.dae");
-//                anims.add("assets/models/collada/Avatars/Male/Male_Cheer.dae");
-//                anims.add("assets/models/collada/Avatars/Male/Male_Clap.dae");
-//                anims.add("assets/models/collada/Avatars/Male/Male_Follow.dae");
-//                anims.add("assets/models/collada/Avatars/Male/Male_Jump.dae");
-//                anims.add("assets/models/collada/Avatars/Male/Male_Laugh.dae");
-//            }
+            anims.add("assets/models/collada/Avatars/Male/Male_Anim_Idle.dae");
+            anims.add("assets/models/collada/Avatars/Male/Male_Anim_StandToSit.dae");
+            anims.add("assets/models/collada/Avatars/Male/Male_Anim_Wave.dae");
+            anims.add("assets/models/collada/Avatars/Male/Male_Anim_FallFromSitting.dae");
+            anims.add("assets/models/collada/Avatars/Male/Male_Anim_FloorSitting.dae");
+            anims.add("assets/models/collada/Avatars/Male/Male_Anim_FloorGetup.dae");
+            anims.add("assets/models/collada/Avatars/Male/Male_Anim_Walk.dae");
+            anims.add("assets/models/collada/Avatars/Male/Male_Anim_Sitting.dae");
+
+            if (false)
+            {
+                anims.add("assets/models/collada/Avatars/Male/Male_Anim_Run.dae");
+                anims.add("assets/models/collada/Avatars/Male/Male_Anim_Bow.dae");
+                anims.add("assets/models/collada/Avatars/Male/Male_Anim_Cheer.dae");
+                anims.add("assets/models/collada/Avatars/Male/Male_Anim_Clap.dae");
+                anims.add("assets/models/collada/Avatars/Male/Male_Anim_Follow.dae");
+                anims.add("assets/models/collada/Avatars/Male/Male_Anim_Jump.dae");
+                anims.add("assets/models/collada/Avatars/Male/Male_Anim_Laugh.dae");
+            }
             setAnimations(anims.toArray(new String[anims.size()]));
-//
-//            // Facial Animations
+
+            // Facial Animations
             ArrayList<String> facialAnims = new ArrayList<String>();
-            setBaseURL("");
-            String fileprotocol = new String("file://localhost/");
-            fileprotocol += System.getProperty("user.dir") + "/";
-            facialAnims.add(fileprotocol + "assets/models/collada/Avatars/MaleFacialAnimation/MaleSmile.dae");
-            facialAnims.add(fileprotocol + "assets/models/collada/Avatars/MaleFacialAnimation/MaleFrown.dae");
-//            facialAnims.add("assets/models/collada/Avatars/MaleFacialAnimation/MaleScorn.dae");
+//            setBaseURL("");
+//            String fileprotocol = new String("file://localhost/");
+//            fileprotocol += System.getProperty("user.dir") + "/";
+            facialAnims.add("assets/models/collada/Avatars/MaleFacialAnimation/MaleSmile.dae");
+            facialAnims.add("assets/models/collada/Avatars/MaleFacialAnimation/MaleFrown.dae");
+            facialAnims.add("assets/models/collada/Avatars/MaleFacialAnimation/MaleScorn.dae");
             setFacialAnimations(facialAnims.toArray(new String[facialAnims.size()]));
-//
-//            // Customizations
-//            if (bRandomCustomizations)
-//            {
-//                int preset        = -1;
-//                int numberOfFeet  = 3;
-//                int numberOfLegs  = 3;
-//                int numberOfTorso = 3;
-//                int numberOfHair  = 3;
-//
-//                ArrayList<String> delete    = new ArrayList<String>();
-//                ArrayList<String> load      = new ArrayList<String>();
-//                ArrayList<String> add       = new ArrayList<String>();
-//                ArrayList<AttachmentParams> attachments = new ArrayList<AttachmentParams>();
-//
-//                preset = (int) (Math.random() * 1000000 % numberOfFeet);
-//                customizeFeetPresets(preset, delete, load, add, attachments);
-//                preset = (int) (Math.random() * 1000000 % numberOfLegs);
-//                customizeLegsPresets(preset, delete, load, add, attachments);
-//                preset = (int) (Math.random() * 1000000 % numberOfTorso);
-//                customizeTorsoPresets(preset, delete, load, add, attachments);
-//                preset = (int) (Math.random() * 1000000 % numberOfHair);
-//                customizeHairPresets(preset, delete, load, add, attachments);
-//
-//                setDeleteInstructions(delete.toArray(new String[delete.size()]));
-//                setLoadInstructions(load.toArray(new String[load.size()]));
-//                setAddInstructions(add.toArray(new String[add.size()]));
-//                setAttachmentsInstructions(attachments.toArray(new AttachmentParams[attachments.size()]));
-//            }
+
+            // Customizations
+            if (bRandomCustomizations)
+            {
+                int preset        = -1;
+                int numberOfFeet  = 3;
+                int numberOfLegs  = 3;
+                int numberOfTorso = 3;
+                int numberOfHair  = 3;
+
+                ArrayList<String> delete    = new ArrayList<String>();
+                ArrayList<String> load      = new ArrayList<String>();
+                ArrayList<String> add       = new ArrayList<String>();
+                ArrayList<AttachmentParams> attachments = new ArrayList<AttachmentParams>();
+
+                preset = (int) (Math.random() * 1000000 % numberOfFeet);
+                customizeFeetPresets(preset, delete, load, add, attachments);
+                preset = (int) (Math.random() * 1000000 % numberOfLegs);
+                customizeLegsPresets(preset, delete, load, add, attachments);
+                preset = (int) (Math.random() * 1000000 % numberOfTorso);
+                customizeTorsoPresets(preset, delete, load, add, attachments);
+                preset = (int) (Math.random() * 1000000 % numberOfHair);
+                customizeHairPresets(preset, delete, load, add, attachments);
+
+                setDeleteInstructions(delete.toArray(new String[delete.size()]));
+                setLoadInstructions(load.toArray(new String[load.size()]));
+                setAddInstructions(add.toArray(new String[add.size()]));
+                setAttachmentsInstructions(attachments.toArray(new AttachmentParams[attachments.size()]));
+            }
         }
 
         private void customizeFeetPresets(int preset, ArrayList<String> delete, ArrayList<String> load, ArrayList<String> add, ArrayList<AttachmentParams> attachments) 
