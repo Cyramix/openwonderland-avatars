@@ -68,11 +68,11 @@ public class VertDeformerWithSpecAndNormalMap extends GLSLShaderProgram
         // add the effects in
         addEffect(new VertexToPosition_Transform()); // Set up the position
         addEffect(new VertexDeformer_Transform()); // Deform those verts!
-        addEffect(new ExposePoseBlendAsVarying_Accessor()); // Let the frag shader have access to the upper 3x3 of the poseblend matrix
+        //addEffect(new ExposePoseBlendAsVarying_Accessor()); // Let the frag shader have access to the upper 3x3 of the poseblend matrix
         addEffect(new UnlitTexturing_Lighting()); // Grab pixel color from the diffuse map
         addEffect(new CalculateToLight_Lighting()); // Determine the vector to the light source (gl_LightSource[0])
         addEffect(new NormalMapping());
-        addEffect(new DeformFragmentNormal_Lighting()); // Change the normal's orientation depending on the animation solution
+        //addEffect(new DeformFragmentNormal_Lighting()); // Change the normal's orientation depending on the animation solution
         addEffect(new AmbientNdotL_Lighting()); // Calculate N * L and modulate the final color by it, mixing in a ratio of ambient
         addEffect(new SpecularMapping_Lighting());
 

@@ -674,7 +674,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         }
         else
         {
-            m_pscene.setUseRepository(false);
+
             m_modelInst = m_pscene.addModelInstance(m_attributes.getName(), m_attributes.getAsset(), new PMatrix());
             System.err.println("Model "+m_pscene+"  inst "+m_modelInst);
             m_AnimationProcessor = new CharacterAnimationProcessor(m_modelInst);
@@ -1188,7 +1188,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         
         // African
         pRootInstruction.addInstruction(InstructionNames.loadGeometry, fileProtocol + "assets/models/collada/Heads/MaleAfricanHead/AfricanAmericanMaleHead1_Bind.dae");
-        //pRootInstruction.addInstruction(InstructionNames.loadGeometry, fileProtocol + "assets/models/collada/Avatars/Male/MaleBind.dae");
+        //pRootInstruction.addInstruction(InstructionNames.loadGeometry, fileProtocol + "assets/models/collada/Avatars/Male/Male_Bind.dae");
         pRootInstruction.addInstruction(InstructionNames.addSkinnedMesh, "headOneShape");
         
         // Asian

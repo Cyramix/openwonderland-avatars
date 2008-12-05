@@ -86,7 +86,7 @@ public class COLLADA_ModelTest extends DemoBase
         {
             //modelLocation = new URL("http://www.zeitgeistgames.com/assets/collada/Clothing/FlipFlopsFeet.dae");
             //modelLocation = new File("assets/models/collada/Environments/Milan/DSI.dae").toURI().toURL();
-            modelLocation = new File("assets/models/collada/Avatars/Male/MaleBind.dae").toURI().toURL();
+            modelLocation = new File("assets/models/collada/Avatars/Male/Male_Bind.dae").toURI().toURL();
             //modelLocation = new File("assets/models/pack/headOne.dae").toURI().toURL();
             //modelLocation = new File("assets/models/collada/Heads/MaleAfricanHead/AfricanAmericanMaleHead1_Bind.dae").toURI().toURL();
         } catch (MalformedURLException ex)
@@ -118,7 +118,7 @@ public class COLLADA_ModelTest extends DemoBase
                 Instruction maleBind = new Instruction(Instruction.InstructionNames.instructions, new String("Loading the male bind pose"));
                 maleBind.addInstruction(Instruction.InstructionNames.setSkeleton, null);
                 try {
-                    maleBind.addInstruction(Instruction.InstructionNames.loadBindPose, new URL("file://localhost/work/avatars/assets/models/collada/Avatars/Male/MaleBind.dae"));
+                    maleBind.addInstruction(Instruction.InstructionNames.loadBindPose, new URL("file://localhost/work/avatars/assets/models/collada/Avatars/Male/Male_Bind.dae"));
                 } catch (MalformedURLException ex) {
                     Logger.getLogger(COLLADA_ModelTest.class.getName()).log(Level.SEVERE, null, ex);
                 }

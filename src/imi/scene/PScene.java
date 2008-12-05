@@ -970,7 +970,7 @@ public class PScene extends PNode implements RepositoryUser
                 {
                     m_SharedAssets.add(sa);
                 }
-                result = newInstance;
+                result = newInstance.getChild(0);
             }
             else if (loadedModel.getAssetData() instanceof SkeletonNode)
             {

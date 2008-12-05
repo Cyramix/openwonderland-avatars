@@ -68,7 +68,7 @@ public class COLLADA_URL extends DemoBase2
 //        Instruction pRootInstruction = new Instruction("loadCharacter");
 //        Instruction pLoadBindPoseInstruction = pRootInstruction.addInstruction("loadBindPose", fileProtocol + "Male2/Male_Bind.dae");
 //        Instruction pReplaceGeometryInstruction = pRootInstruction.addInstruction("replaceGeometry");
-//        pReplaceGeometryInstruction.addInstruction("loadGeometry", fileProtocol + "Male/MaleBind.dae");
+//        pReplaceGeometryInstruction.addInstruction("loadGeometry", fileProtocol + "Male/Male_Bind.dae");
 ////        pReplaceGeometryInstruction.addInstruction("deleteSkinnedMesh", "LHandShape");
 ////        pReplaceGeometryInstruction.addInstruction("addSkinnedMesh", "LHandShape");
 //        pReplaceGeometryInstruction.addInstruction("deleteSkinnedMesh", "TorsoNudeShape");
