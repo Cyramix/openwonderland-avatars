@@ -50,6 +50,8 @@ public class InstructionProcessor
     private PScene              m_loadingPScene = null;
     private CharacterLoader     m_characterLoader = null;
     private SkeletonNode        m_skeleton = null;
+
+    protected static final Logger logger = Logger.getLogger(InstructionProcessor.class.getName());
     
     /**
      * The world manager is used to create temporal pscenes for the loading process
@@ -91,7 +93,7 @@ public class InstructionProcessor
 
     private void printInstruction(String spacing, Instruction pInstruction)
     {
-        System.out.println(spacing + pInstruction.getInstruction() + " '" + pInstruction.getDataAsString() + "'");
+        logger.fine(spacing + pInstruction.getInstruction() + " '" + pInstruction.getDataAsString() + "'");
         for (PNode kid : pInstruction.getChildren())
         {
             if (kid instanceof Instruction)
@@ -109,35 +111,35 @@ public class InstructionProcessor
                 {
                     String skinnedMeshName = pInstruction.getDataAsString();
                     if (!addSkinnedMesh(skinnedMeshName))
-                        System.out.println("COLLADA configuration ERROR: was not able to ADD a skinned mesh! " + skinnedMeshName);
+                        logger.warning("COLLADA configuration ERROR: was not able to ADD a skinned mesh! " + skinnedMeshName);
                 }
                 break;
                 case addAttachment:
                 {
                     Object [] array = (Object[])pInstruction.getData();
                     if (!addAttachment(array))
-                        System.out.println("COLLADA configuration ERROR: was not able to ADD an ATTACHMENT!");
+                        logger.warning("COLLADA configuration ERROR: was not able to ADD an ATTACHMENT!");
                 }
                 break;
                 case deleteSkinnedMesh:
                 {
                     String skinnedMeshName = pInstruction.getDataAsString();
                     if (!m_characterLoader.deleteSkinnedMesh(m_skeleton, skinnedMeshName))
-                        System.out.println("COLLADA configuration ERROR: was not able to DELETE a skinned mesh!");
+                        logger.warning("COLLADA configuration ERROR: was not able to DELETE a skinned mesh!");
                 }
                 break;
                 case loadAnimation:
                 {
                     URL animationLocation = new URL(pInstruction.getDataAsString());
                     if (!m_characterLoader.loadAnimation(loadingPScene, m_skeleton, animationLocation, 0))
-                        System.out.println("COLLADA configuration ERROR: was not able to LOAD ANIMATION!");
+                        logger.warning("COLLADA configuration ERROR: was not able to LOAD ANIMATION!");
                 }
                 break;
                 case loadFacialAnimation:
                 {
                     URL animationLocation = new URL(pInstruction.getDataAsString());
                     if (!m_characterLoader.loadAnimation(loadingPScene, m_skeleton, animationLocation, 1))
-                        System.out.println("COLLADA configuration ERROR: was not able to LOAD FACIAL ANIMATION!");
+                        logger.warning("COLLADA configuration ERROR: was not able to LOAD FACIAL ANIMATION!");
                 }
                 break;
                 case loadBindPose:
@@ -145,14 +147,14 @@ public class InstructionProcessor
                     URL bindPoseLocation = new URL(pInstruction.getDataAsString());
                     m_skeleton = m_characterLoader.loadSkeletonRig(loadingPScene, bindPoseLocation);
                     if (m_skeleton == null)
-                        System.out.println("COLLADA configuration ERROR: was not able to LOAD BIND POSE!");
+                        logger.warning("COLLADA configuration ERROR: was not able to LOAD BIND POSE!");
                 }
                 break;
                 case loadGeometry:
                 {
                     URL geometryLocation = new URL(pInstruction.getDataAsString());
                     if (!m_characterLoader.loadGeometry(loadingPScene, geometryLocation))
-                        System.out.println("COLLADA configuration ERROR: was not able to LOAD GEOMETRY!");
+                        logger.warning("COLLADA configuration ERROR: was not able to LOAD GEOMETRY!");
                 }
                 break;
                 case setSkeleton:
@@ -225,7 +227,7 @@ public class InstructionProcessor
             // Make an instance
             PPolygonSkinnedMeshInstance skinnedMeshInstance = (PPolygonSkinnedMeshInstance) m_loadingPScene.addMeshInstance(pSkinnedMesh, new PMatrix());
             
-            System.out.println("Added SkinnedMesh '" + skinnedMeshName + "' to skeleton.");
+            logger.fine("Added SkinnedMesh '" + skinnedMeshName + "' to skeleton.");
 
             //  Link the SkinnedMesh to the Skeleton.
             skinnedMeshInstance.setSkeletonNode(m_skeleton);
