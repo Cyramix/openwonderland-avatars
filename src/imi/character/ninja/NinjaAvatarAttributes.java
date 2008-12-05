@@ -18,6 +18,7 @@
 package imi.character.ninja;
 
 import com.jme.math.Vector3f;
+import imi.character.AttachmentParams;
 import imi.character.CharacterAttributes;
 import imi.scene.PMatrix;
 import java.util.ArrayList;

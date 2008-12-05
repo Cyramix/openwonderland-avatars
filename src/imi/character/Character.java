@@ -258,7 +258,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
                                 pRootInstruction.addInstruction(InstructionNames.addSkinnedMesh, add[i]);
                             }
 
-                            CharacterAttributes.AttachmentParams [] attachments = m_attributes.getAttachmentsInstructions();
+                            AttachmentParams [] attachments = m_attributes.getAttachmentsInstructions();
                             for (int i = 0; i < attachments.length; i++) {
                                 pRootInstruction.addInstruction(InstructionNames.addAttachment, attachments[i].getMeshName(), attachments[i].getJointName(), attachments[i].getMatrix());
                             }

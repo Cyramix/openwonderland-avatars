@@ -152,42 +152,8 @@ public class CharacterAttributes
         this.attachmentsInstructions = attachmentsInstructions;
     }
     
-    public AttachmentParams createAttachmentParams(String mesh, String joint, PMatrix orientation) {
-        return new AttachmentParams(mesh, joint, orientation);
-    }
-
     PScene getSimpleScene() {
         return simpleScene;
     }
     
-    public class AttachmentParams
-    {
-        private String  meshName   = null;
-        private String  jointName  = null;
-        private PMatrix matrix     = null;
-        public AttachmentParams(String mesh, String joint, PMatrix orientation)
-        {
-            meshName  = mesh;
-            jointName = joint;
-            matrix    = orientation;
-        }
-        public String getJointName() {
-            return jointName;
-        }
-        public void setJointName(String jointName) {
-            this.jointName = jointName;
-        }
-        public PMatrix getMatrix() {
-            return matrix;
-        }
-        public void setMatrix(PMatrix matrix) {
-            this.matrix = matrix;
-        }
-        public String getMeshName() {
-            return meshName;
-        }
-        public void setMeshName(String meshName) {
-            this.meshName = meshName;
-        }
-    }
 }
