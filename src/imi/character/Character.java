@@ -76,6 +76,7 @@ import imi.scene.polygonmodel.parts.TextureMaterialProperties;
 import imi.scene.polygonmodel.skinned.SkinnedMeshJoint;
 import imi.scene.processors.CharacterAnimationProcessor;
 import imi.scene.processors.JSceneEventProcessor;
+import imi.scene.shader.programs.NormalAndSpecularMapShader;
 import imi.scene.shader.programs.VertDeformerWithSpecAndNormalMap;
 import imi.scene.utils.PMeshUtils;
 import java.io.File;
@@ -278,6 +279,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
 
                         // Set material
                         skeleton.setShaderOnSkinnedMeshes(new VertDeformerWithSpecAndNormalMap(m_wm));
+                        skeleton.setShaderOnMeshes(new NormalAndSpecularMapShader(m_wm));
                         m_leftEyeBall.applyShader(m_wm);
                         m_rightEyeBall.applyShader(m_wm);
 

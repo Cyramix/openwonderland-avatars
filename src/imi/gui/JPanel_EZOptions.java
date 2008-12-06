@@ -11,6 +11,11 @@
 
 package imi.gui;
 
+import com.jme.math.Vector3f;
+import imi.character.AttachmentParams;
+import imi.character.CharacterAttributes;
+import imi.character.ninja.NinjaAvatar;
+import imi.scene.PMatrix;
 import imi.scene.PNode;
 import imi.scene.polygonmodel.PPolygonMeshInstance;
 import imi.scene.polygonmodel.parts.PMeshMaterial;
@@ -20,12 +25,9 @@ import imi.scene.shader.dynamic.GLSLCompileException;
 import imi.scene.shader.dynamic.GLSLDataType;
 import imi.scene.shader.dynamic.GLSLShaderProgram;
 import imi.scene.shader.effects.MeshColorModulation;
-import imi.scene.shader.programs.SimpleTNLWithAmbient;
-import imi.tests.COLLADA_ModelTest;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Graphics;
-import java.awt.Rectangle;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -41,8 +43,6 @@ import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.ListSelectionModel;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
@@ -74,6 +74,7 @@ public class JPanel_EZOptions extends javax.swing.JPanel {
     SceneEssentials                     m_sceneData;
     Component                           m_Parent;
     boolean[]                           m_Colors            = new boolean[] { false, false, false, false, false, false, false };
+    NinjaAvatar                         m_avatar            = null;
 
     /** Creates new form JPanel_EZOptions */
     public JPanel_EZOptions() {
@@ -661,7 +662,67 @@ public class JPanel_EZOptions extends javax.swing.JPanel {
         else
             retrieveBindMeshInfo(2);
 
-        m_sceneData.loadAvatarDAEURL(true, true, m_presetLists.get(selection), m_presets.get(selection));
+        //m_sceneData.loadAvatarDAEURL(true, true, m_presetLists.get(selection), m_presets.get(selection));
+
+        // Create avatar attribs
+        ArrayList<String> add       = new ArrayList<String>();
+        ArrayList<String> delete    = new ArrayList<String>();
+        ArrayList<String> load      = new ArrayList<String>();
+        ArrayList<AttachmentParams> attach = new ArrayList<AttachmentParams>();
+        CharacterAttributes attribs = new CharacterAttributes("AvatarAttributes");
+
+        for (int i = 0; i < 9; i ++) {
+            if (m_presets.get(selection).get(i) == null)
+                continue;
+
+            if (m_meshes.get(i) != null) {
+                for (int j = 0; j < m_meshes.get(i).length; j++)
+                    delete.add(m_meshes.get(i)[j]);
+            }
+
+            if (i < 5) {
+                for (int j = 0; j < m_presets.get(selection).get(i).length; j ++) {
+                    if (j == 0)
+                        load.add(m_presets.get(selection).get(i)[j]);
+                    else
+                        add.add(m_presets.get(selection).get(i)[j]);
+                }
+            } else if (i < 9){
+                for (int j = 0; j < m_presets.get(selection).get(i).length; j ++) {
+                    if (j == 0)
+                        load.add(m_presets.get(selection).get(i)[j]);
+                    else {
+                        PMatrix tempSolution;
+                        tempSolution = new PMatrix(new Vector3f(0.0f, (float) Math.toRadians(180), 0.0f), new Vector3f(1.0f, 1.0f, 1.0f), Vector3f.ZERO);
+                        attach.add(new AttachmentParams(m_presets.get(selection).get(i)[j], "Head", tempSolution));
+                    }
+                }
+            }
+
+            String[] meshes = new String[m_presets.get(selection).get(i).length - 1];
+            for (int j = 1; j < m_presets.get(selection).get(i).length; j++)
+                meshes[j-1] = m_presets.get(selection).get(i)[j];
+            m_meshes.put(i, meshes);
+        }
+
+        m_sceneData.setMeshSetup(m_meshes);
+        
+        attribs.setBaseURL("");
+        attribs.setBindPoseFile(m_presetLists.get(selection)[2]);
+        attribs.setAnimations(new String[] {m_presetLists.get(selection)[3]} );
+        attribs.setDeleteInstructions(delete.toArray(new String[delete.size()]));
+        attribs.setLoadInstructions(load.toArray(new String[load.size()]));
+        attribs.setAddInstructions(add.toArray(new String[add.size()]));
+        attribs.setAttachmentsInstructions(attach.toArray(new AttachmentParams[attach.size()]));
+
+        if (m_avatar != null) {
+            m_sceneData.getWM().removeEntity(m_avatar);
+            m_avatar = null;
+        }
+        
+        m_avatar = new NinjaAvatar(attribs, m_sceneData.getWM());
+        m_avatar.selectForInput();
+        m_sceneData.setPScene(m_avatar.getPScene());
     }
 
     public void setSceneData(SceneEssentials se) {
