@@ -44,6 +44,7 @@ class RepositoryWorker extends ProcessorComponent
     ConcurrentHashMap<AssetDescriptor, RepositoryAsset> m_collection = null;
     
     boolean             m_bLive         = true;
+    boolean             m_bAssetSent    = false;
     
     public RepositoryWorker(Repository home, SharedAsset asset, RepositoryUser user,
             RepositoryAsset repoAsset, ConcurrentHashMap collection,
@@ -69,6 +70,9 @@ class RepositoryWorker extends ProcessorComponent
         m_user          = statementOfWork.m_user;
         m_maxQueryTime  = statementOfWork.m_maxQueryTime;
         m_collection    = statementOfWork.m_collection;   
+        
+        m_bLive         = true;
+        m_bAssetSent    = false;
     }
     
     private void ShutDown()
@@ -113,7 +117,7 @@ class RepositoryWorker extends ProcessorComponent
     {
         // the worker class will call loadData() on repoAsset until it returns true and then call receiveAsset() and shutdown()
         // if loadData() returns false continuesly for a maxQueryTime amount of time then repoAsset will be removed from collection and receiveAsset() will return null.. and then shutdown.
-        if (m_bLive) // this boolean might not be needed at all TODO
+        if (m_bLive) // this boolean might not be needed
         {
             if (m_repoAsset.loadData(m_asset)) // Success!
             {
@@ -121,8 +125,12 @@ class RepositoryWorker extends ProcessorComponent
                 if (m_asset.getAssetData() instanceof PPolygonMesh)
                     ((PPolygonMesh)m_asset.getAssetData()).setSharedAsset(m_asset);
                 assert(m_asset.getAssetData() != null);
-                m_user.receiveAsset(m_asset);
-                ShutDown();
+                if (!m_bAssetSent)
+                {
+                    m_bAssetSent = true;
+                    m_user.receiveAsset(m_asset);
+                    ShutDown();
+                }
             }
             else
             {
@@ -132,8 +140,12 @@ class RepositoryWorker extends ProcessorComponent
                     // remove this RepositoryAsset from the collection.
                     m_collection.remove(m_asset.getDescriptor());
                     assert(m_asset.getAssetData() == null);
-                    m_user.receiveAsset(m_asset); // the asset is returned with null data
-                    ShutDown();
+                    if (!m_bAssetSent)
+                    {
+                        m_bAssetSent = true;
+                        m_user.receiveAsset(m_asset); // the asset is returned with null data
+                        ShutDown();
+                    }
                 }
                 try 
                 {

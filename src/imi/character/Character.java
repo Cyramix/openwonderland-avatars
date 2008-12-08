@@ -211,12 +211,14 @@ public abstract class Character extends Entity implements SpatialObject, Animati
                     PNode assetNode = (PNode)asset;
                     if (assetNode.getChildrenCount() > 0 && assetNode.getChild(0) instanceof SkeletonNode)
                     {
-                        SkeletonNode skeleton = (SkeletonNode)assetNode.getChild(0);
-                        m_skeleton = skeleton;
+                        // Initialize references
+                        m_modelInst = (PPolygonModelInstance) assetNode;
+                        initializeCharacter();
+                        
 //                        // Visual Scale
 //                        if (visualScale != 1.0f)
 //                        {
-//                            ArrayList<PPolygonSkinnedMeshInstance> meshes = skeleton.getSkinnedMeshInstances();
+//                            ArrayList<PPolygonSkinnedMeshInstance> meshes = m_skeleton.getSkinnedMeshInstances();
 //                            for (PPolygonSkinnedMeshInstance mesh : meshes)
 //                                mesh.getTransform().getLocalMatrix(true).setScale(visualScale);
 //                        }
@@ -236,7 +238,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
                             InstructionProcessor pProcessor = new InstructionProcessor(m_wm);
                             Instruction pRootInstruction = new Instruction();
 
-                            pRootInstruction.addInstruction(InstructionNames.setSkeleton, skeleton);
+                            pRootInstruction.addInstruction(InstructionNames.setSkeleton, m_skeleton);
 
                             String [] load = m_attributes.getLoadInstructions();
                             if (load != null) {
@@ -283,9 +285,19 @@ public abstract class Character extends Entity implements SpatialObject, Animati
                             pProcessor.execute(pRootInstruction);
                         }
 
+                        // Gimme them eyeballs
+                        PPolygonSkinnedMeshInstance leftEye = (PPolygonSkinnedMeshInstance) m_skeleton.findChild("leftEyeGeoShape");
+                        m_leftEyeBall = new EyeBall(leftEye, m_modelInst, m_pscene);
+                        leftEye.getParent().replaceChild(leftEye, m_leftEyeBall, true);
+                        PPolygonSkinnedMeshInstance rightEye = (PPolygonSkinnedMeshInstance) m_skeleton.findChild("rightEyeGeoShape");
+                        m_rightEyeBall = new EyeBall(rightEye, m_modelInst, m_pscene);
+                        rightEye.getParent().replaceChild(rightEye, m_rightEyeBall, true);
+                        m_leftEyeBall.setOtherEye(m_rightEyeBall);
+                        m_rightEyeBall.setOtherEye(m_leftEyeBall);
+                        
                         // Set material
-                        skeleton.setShaderOnSkinnedMeshes(new VertDeformerWithSpecAndNormalMap(m_wm));
-                        skeleton.setShaderOnMeshes(new NormalAndSpecularMapShader(m_wm));
+                        m_skeleton.setShaderOnSkinnedMeshes(new VertDeformerWithSpecAndNormalMap(m_wm));
+                        m_skeleton.setShaderOnMeshes(new NormalAndSpecularMapShader(m_wm));
                         m_leftEyeBall.applyShader(m_wm);
                         m_rightEyeBall.applyShader(m_wm);
 
@@ -684,7 +696,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
     public void update(float deltaTime)
     {
         if (!m_initialized)
-            initialize();
+            initializeCharacter();
         
         if (m_context != null)
             m_context.update(deltaTime);
@@ -752,7 +764,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
     /**
      * Sets the mesh and skeleton references after load time
      */
-    private void initialize()
+    public void initializeCharacter()
     {
         // safety against place holders
         if (m_modelInst.getChildrenCount() <= 0 || m_modelInst.getChild(0) instanceof SharedAssetPlaceHolder)
@@ -771,16 +783,6 @@ public abstract class Character extends Entity implements SpatialObject, Animati
             m_mesh       = (PPolygonSkinnedMeshInstance)m_modelInst.getChild(0).getChild(1);
             m_skeleton   = (SkeletonNode)m_modelInst.getChild(0);
             m_skeleton.getAnimationState().addListener(this);
-            
-            // Gimme them eyeballs
-            PPolygonSkinnedMeshInstance leftEye = (PPolygonSkinnedMeshInstance) m_skeleton.findChild("leftEyeGeoShape");
-            m_leftEyeBall = new EyeBall(leftEye, m_modelInst, m_pscene);
-            leftEye.getParent().replaceChild(leftEye, m_leftEyeBall, true);
-            PPolygonSkinnedMeshInstance rightEye = (PPolygonSkinnedMeshInstance) m_skeleton.findChild("rightEyeGeoShape");
-            m_rightEyeBall = new EyeBall(rightEye, m_modelInst, m_pscene);
-            rightEye.getParent().replaceChild(rightEye, m_rightEyeBall, true);
-            m_leftEyeBall.setOtherEye(m_rightEyeBall);
-            m_rightEyeBall.setOtherEye(m_leftEyeBall);
             
             m_initialized = true;
         }

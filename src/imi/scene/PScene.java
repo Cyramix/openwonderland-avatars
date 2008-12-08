@@ -723,7 +723,7 @@ public class PScene extends PNode implements RepositoryUser
      */
     public PNode addMeshInstance(String name, SharedAsset meshAsset)
     {
-        return addMeshInstance(name, meshAsset, false);
+        return addMeshInstance(name, meshAsset, null);
     }
     
     public PNode processSkeletonNode(SkeletonNode skeletonNode)
@@ -746,7 +746,7 @@ public class PScene extends PNode implements RepositoryUser
      * @param forAModel
      * @return
      */
-    private PNode addMeshInstance(String name, SharedAsset meshAsset, boolean forAModel)
+    private PNode addMeshInstance(String name, SharedAsset meshAsset, PPolygonModelInstance forThisModelInstance)
     {
         if (!m_bUseRepository)
         {
@@ -820,7 +820,8 @@ public class PScene extends PNode implements RepositoryUser
         PNode asset = processSharedAsset(meshAsset, load);
         asset.setName(name);
         
-        if (!forAModel)
+        // Add to the scene instances or to a given model instance
+        if (forThisModelInstance == null)
         {
             setDirty(true, true);
             asset.buildFlattenedHierarchy();
@@ -833,6 +834,17 @@ public class PScene extends PNode implements RepositoryUser
             }
             else
                 m_Instances.addChild(asset);
+        }
+        else // This load process was done for a given model instance
+        {
+            // Add the processed shared asset (either a placeholder or the actual thing)
+            if (isColladaType(meshAsset.getDescriptor().getType()) && !(asset instanceof SharedAssetPlaceHolder))
+            {
+                while(asset.getChildrenCount() > 0)
+                    forThisModelInstance.addChild(asset.getChild(0));
+            }
+            else
+                forThisModelInstance.addChild(asset);
         }
 
         // Do this last... so recieveAsset() won't be called before this line
@@ -864,19 +876,11 @@ public class PScene extends PNode implements RepositoryUser
      */
     public PPolygonModelInstance addModelInstance(String name, SharedAsset modelAsset, PMatrix origin)
     {
-        PNode node = addMeshInstance(name, modelAsset, true);
-        
         // Create the modelAsset Instance
         PPolygonModelInstance modelInstance    = new PPolygonModelInstance(name, origin);
-       
-        // Add the processed shared asset (either a placeholder or the actual thing)
-        if (isColladaType(modelAsset.getDescriptor().getType()) && !(node instanceof SharedAssetPlaceHolder))
-        {
-            while(node.getChildrenCount() > 0)
-                modelInstance.addChild(node.getChild(0));
-        }
-        else
-            modelInstance.addChild(node);
+     
+        // Load the asset
+        addMeshInstance(name, modelAsset, modelInstance);
         
         // Add the modelAsset instance to this PScene
         setDirty(true, true);

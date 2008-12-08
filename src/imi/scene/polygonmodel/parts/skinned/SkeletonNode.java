@@ -69,7 +69,9 @@ public class SkeletonNode extends PNode implements Animated
     // skeleton uses.
     private AnimationComponent          m_animationComponent = new AnimationComponent();
     
-    
+    /** Enables a callback during the flatenning of the skeleton hierarchy for 
+     *  manipulations that need to have cascading affect down the hierarchy */
+    private SkeletonFlatteningHookManipulator m_flatteningHook = null;
     
     public SkeletonNode(String name)
     {
@@ -446,7 +448,7 @@ public class SkeletonNode extends PNode implements Animated
 
     public AnimationState getAnimationState(int index)
     {
-        if (index < 0 || index > m_animationStates.size())
+        if (index < 0 || index >= m_animationStates.size())
         {
             Logger.getLogger(this.getClass().getName()).log(Level.WARNING, "Invalid animation state requested, index was " + index);
             return null;   
@@ -545,6 +547,11 @@ public class SkeletonNode extends PNode implements Animated
                         ((SkinnedMeshJoint)current).setMeshSpace(current.getTransform().getLocalMatrix(false));
                 }
             }
+            
+            // Flatenning Hook - used for e.g. by physical overwrites such as the verlet arm
+            if (m_flatteningHook != null)
+                m_flatteningHook.processSkeletonNode(current);
+            
             if (current instanceof PPolygonMeshInstance)
             {
                 // ensure we have indices
@@ -609,6 +616,14 @@ public class SkeletonNode extends PNode implements Animated
             for (PNode kid : current.getChildren())
                 list.add(kid);
         }
+    }
+
+    public SkeletonFlatteningHookManipulator getFlatteningHook() {
+        return m_flatteningHook;
+    }
+
+    public void setFlatteningHook(SkeletonFlatteningHookManipulator flatteningHook) {
+        this.m_flatteningHook = flatteningHook;
     }
 
 }
