@@ -186,8 +186,8 @@ public class TreePopUpMenu extends MouseAdapter implements ActionListener {
 
             double dScreenWidth = Toolkit.getDefaultToolkit().getScreenSize().getWidth();
             double dScreenHeight = Toolkit.getDefaultToolkit().getScreenSize().getHeight();
-            int iXPos = (int) dScreenWidth - editor.getSize().width;
-            int iYPos = (int) dScreenHeight - editor.getSize().height;
+            int iXPos = (int) dScreenWidth - 500;//editor.getSize().width * 2;
+            int iYPos = (int) dScreenHeight - 500;//editor.getSize().height * 2;
             
             editor.setLocation(iXPos, iYPos);
             editor.setVisible(true);
