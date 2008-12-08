@@ -25,6 +25,7 @@ import imi.scene.shader.dynamic.GLSLCompileException;
 import imi.scene.shader.dynamic.GLSLDataType;
 import imi.scene.shader.dynamic.GLSLShaderProgram;
 import imi.scene.shader.effects.MeshColorModulation;
+import imi.tests.BaseDefault;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Graphics;
@@ -721,8 +722,10 @@ public class JPanel_EZOptions extends javax.swing.JPanel {
         }
         
         m_avatar = new NinjaAvatar(attribs, m_sceneData.getWM());
+        m_avatar.setGeomRef(m_meshes);
         m_avatar.selectForInput();
         m_sceneData.setPScene(m_avatar.getPScene());
+        setCharacterOnParent();
     }
 
     public void setSceneData(SceneEssentials se) {
@@ -1464,5 +1467,9 @@ public class JPanel_EZOptions extends javax.swing.JPanel {
             iRegion = 8;          // Glasses
 
         m_meshes.put(iRegion, geometry);
+    }
+
+    public void setCharacterOnParent() {
+        ((BaseDefault)m_Parent).setCharacter(m_avatar);
     }
 }

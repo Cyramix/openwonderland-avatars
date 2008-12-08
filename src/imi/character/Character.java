@@ -82,6 +82,7 @@ import imi.scene.utils.PMeshUtils;
 import java.io.File;
 import java.net.URL;
 import java.util.LinkedList;
+import java.util.Map;
 
 /**
  *
@@ -94,40 +95,33 @@ public abstract class Character extends Entity implements SpatialObject, Animati
      * manager. This defines which triggers react to what keyboard input.
      * <KeyID, TriggerID>
      */
-    protected Hashtable<Integer, Integer> m_keyBindings = new Hashtable<Integer, Integer>();
-        
-    protected GameContext     m_context        = null;
-    protected CharacterAttributes m_attributes     = null;
+    protected Hashtable<Integer, Integer>   m_keyBindings           = new Hashtable<Integer, Integer>();
+    protected GameContext                   m_context               = null;
+    protected CharacterAttributes           m_attributes            = null;
+    protected HashMap<String, GameContext>  m_registry              = new HashMap<String, GameContext>();
+    protected WorldManager                  m_wm                    = null;
+    protected PScene                        m_pscene                = null;
+    protected JScene                        m_jscene                = null;
+    protected PPolygonModelInstance         m_modelInst             = null;
+    private boolean                         m_initialized           = false;
+    protected SkeletonNode                  m_skeleton              = null;
+    protected PPolygonMeshInstance          m_mesh                  = null;
+    protected ObjectCollection              m_objectCollection      = null;
+    protected CharacterAnimationProcessor   m_AnimationProcessor    = null;
+    protected TransitionQueue               m_facialAnimationQ      = null;
     
-    protected HashMap<String, GameContext> m_registry = new HashMap<String, GameContext>();
-    
-    protected WorldManager    m_wm             = null;
-    protected PScene          m_pscene         = null;
-    protected JScene          m_jscene         = null;
-    
-    protected PPolygonModelInstance m_modelInst  = null;
-    
-    private boolean           m_initialized     = false;
-    protected SkeletonNode    m_skeleton       = null;
-    protected PPolygonMeshInstance m_mesh = null;
-    
-    protected ObjectCollection m_objectCollection = null;
-    protected CharacterAnimationProcessor m_AnimationProcessor = null;
-    
-    protected TransitionQueue m_facialAnimationQ = null;
-    
-    protected EyeBall m_leftEyeBall = null;
-    protected EyeBall m_rightEyeBall = null;
-    protected SkinnedMeshJoint m_headJoint = null;
-    protected boolean m_bEyesWander = true;
-    protected Vector3f m_eyesWanderOffset = new Vector3f();
-    private    float m_eyesWanderCounter = 0.0f;
-    private    int   m_eyesWanderIntCounter = 0;
-    protected VerletArm m_arm         = null;
-    private   VerletJointManipulator m_armJointManipulator = null;
-    private   float     m_armTimer    = 0.0f;
-    private   float     m_armTimeTick = 1.0f / 60.0f;
- 
+    protected EyeBall                       m_leftEyeBall           = null;
+    protected EyeBall                       m_rightEyeBall          = null;
+    protected SkinnedMeshJoint              m_headJoint             = null;
+    protected boolean                       m_bEyesWander           = true;
+    protected Vector3f                      m_eyesWanderOffset      = new Vector3f();
+    private float                           m_eyesWanderCounter     = 0.0f;
+    private int                             m_eyesWanderIntCounter  = 0;
+    protected VerletArm                     m_arm                   = null;
+    private VerletJointManipulator          m_armJointManipulator   = null;
+    private float                           m_armTimer              = 0.0f;
+    private float                           m_armTimeTick           = 1.0f / 60.0f;
+    private Map<Integer, String[]>          m_geomRef               = null;
     /**
      * Sets up the mtgame entity 
      * @param attributes
@@ -218,7 +212,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
                     if (assetNode.getChildrenCount() > 0 && assetNode.getChild(0) instanceof SkeletonNode)
                     {
                         SkeletonNode skeleton = (SkeletonNode)assetNode.getChild(0);
-
+                        m_skeleton = skeleton;
 //                        // Visual Scale
 //                        if (visualScale != 1.0f)
 //                        {
@@ -245,33 +239,45 @@ public abstract class Character extends Entity implements SpatialObject, Animati
                             pRootInstruction.addInstruction(InstructionNames.setSkeleton, skeleton);
 
                             String [] load = m_attributes.getLoadInstructions();
-                            for (int i = 0; i < load.length; i++) {
-                                pRootInstruction.addInstruction(InstructionNames.loadGeometry, fileProtocol + load[i]);
+                            if (load != null) {
+                                for (int i = 0; i < load.length; i++) {
+                                    pRootInstruction.addInstruction(InstructionNames.loadGeometry, fileProtocol + load[i]);
+                                }
                             }
 
                             String [] delete = m_attributes.getDeleteInstructions();
-                            for (int i = 0; i < delete.length; i++) {
-                                pRootInstruction.addInstruction(InstructionNames.deleteSkinnedMesh, delete[i]);
+                            if (delete != null) {
+                                for (int i = 0; i < delete.length; i++) {
+                                    pRootInstruction.addInstruction(InstructionNames.deleteSkinnedMesh, delete[i]);
+                                }
                             }
 
                             String [] add = m_attributes.getAddInstructions();
-                            for (int i = 0; i < add.length; i++) {
-                                pRootInstruction.addInstruction(InstructionNames.addSkinnedMesh, add[i]);
+                            if (add != null) {
+                                for (int i = 0; i < add.length; i++) {
+                                    pRootInstruction.addInstruction(InstructionNames.addSkinnedMesh, add[i]);
+                                }
                             }
 
                             AttachmentParams [] attachments = m_attributes.getAttachmentsInstructions();
-                            for (int i = 0; i < attachments.length; i++) {
-                                pRootInstruction.addInstruction(InstructionNames.addAttachment, attachments[i].getMeshName(), attachments[i].getJointName(), attachments[i].getMatrix());
+                            if (attachments != null) {
+                                for (int i = 0; i < attachments.length; i++) {
+                                    pRootInstruction.addInstruction(InstructionNames.addAttachment, attachments[i].getMeshName(), attachments[i].getJointName(), attachments[i].getMatrix());
+                                }
                             }
 
                             String [] anims = m_attributes.getAnimations();
-                            for (int i = 0; i < anims.length; i++) {
-                                pRootInstruction.addInstruction(InstructionNames.loadAnimation, fileProtocol + anims[i]);
+                            if (anims != null) {
+                                for (int i = 0; i < anims.length; i++) {
+                                    pRootInstruction.addInstruction(InstructionNames.loadAnimation, fileProtocol + anims[i]);
+                                }
                             }
 
                             String [] facialAnims = m_attributes.getFacialAnimations();
-                            for (int i = 0; i < facialAnims.length; i++) {
-                                pRootInstruction.addInstruction(InstructionNames.loadFacialAnimation, fileProtocol + facialAnims[i]);
+                            if (facialAnims != null) {
+                                for (int i = 0; i < facialAnims.length; i++) {
+                                    pRootInstruction.addInstruction(InstructionNames.loadFacialAnimation, fileProtocol + facialAnims[i]);
+                                }
                             }
 
                             pProcessor.execute(pRootInstruction);
@@ -317,7 +323,182 @@ public abstract class Character extends Entity implements SpatialObject, Animati
             m_attributes.setAsset(character);
         }
     }
-    
+
+    public void load(CharacterAttributes attributes) {
+        URL bindPoseURL = null;
+        try {
+            if (attributes.getBaseURL() != null)
+                bindPoseURL = new URL(attributes.getBaseURL() + attributes.getBindPoseFile());
+        } catch (MalformedURLException ex) {
+            bindPoseURL = null;
+        }
+
+        SharedAsset character = null;
+
+        if (bindPoseURL != null) {
+            character = new SharedAsset(m_pscene.getRepository(), new AssetDescriptor(SharedAssetType.COLLADA_Model, bindPoseURL));
+            character.setUserData(new ColladaLoaderParams(true, true, false, false, 4, attributes.getName(), null));
+            setAssetInitializer(character, attributes);
+        } else {
+            add(attributes);
+        }
+    }
+
+    private void add(CharacterAttributes attributes) {
+        InstructionProcessor pProcessor = new InstructionProcessor(m_wm);
+        Instruction pRootInstruction = new Instruction();
+        pRootInstruction.addInstruction(InstructionNames.setSkeleton, m_skeleton);
+
+        String fileProtocol = m_attributes.getBaseURL();
+
+        if (fileProtocol == null)
+            fileProtocol = new String("file://localhost/" + System.getProperty("user.dir") + "/");
+
+        String[] load = attributes.getLoadInstructions();
+        if (load != null && load.length > 0) {
+            for (int i = 0; i < load.length; i++) {
+                pRootInstruction.addInstruction(InstructionNames.loadGeometry, fileProtocol + load[i]);
+            }
+        }
+
+        String[] delete = attributes.getDeleteInstructions();
+        if (delete != null && delete.length > 0) {
+            for (int i = 0; i < delete.length; i++) {
+                pRootInstruction.addInstruction(InstructionNames.deleteSkinnedMesh, delete[i]);
+            }
+        }
+
+        String[] add = attributes.getAddInstructions();
+        if (add != null && add.length > 0) {
+            for (int i = 0; i < add.length; i++) {
+                pRootInstruction.addInstruction(InstructionNames.addSkinnedMesh, add[i]);
+            }
+        }
+
+        AttachmentParams[] attachments = attributes.getAttachmentsInstructions();
+        if (attachments != null && attachments.length > 0) {
+            for (int i = 0; i < attachments.length; i++) {
+                pRootInstruction.addInstruction(InstructionNames.addAttachment, attachments[i].getMeshName(), attachments[i].getJointName(), attachments[i].getMatrix());
+            }
+        }
+
+        String[] anims = m_attributes.getAnimations();
+        if (anims != null && anims.length > 0) {
+            for (int i = 0; i < anims.length; i++) {
+                pRootInstruction.addInstruction(InstructionNames.loadAnimation, fileProtocol + anims[i]);
+            }
+        }
+
+        String[] facialAnims = m_attributes.getFacialAnimations();
+        if (facialAnims != null && facialAnims.length > 0) {
+            for (int i = 0; i < facialAnims.length; i++) {
+                pRootInstruction.addInstruction(InstructionNames.loadFacialAnimation, fileProtocol + facialAnims[i]);
+            }
+        }
+
+        pProcessor.execute(pRootInstruction);
+
+        m_skeleton.setShaderOnSkinnedMeshes(new VertDeformerWithSpecAndNormalMap(m_wm));
+        m_skeleton.setShaderOnMeshes(new NormalAndSpecularMapShader(m_wm));
+    }
+
+    private void setAssetInitializer(SharedAsset character, final CharacterAttributes attributes) {
+        AssetInitializer init = new AssetInitializer() {
+
+            public boolean initialize(Object asset) {
+
+                PNode assetNode = (PNode) asset;
+                if (assetNode.getChildrenCount() > 0 && assetNode.getChild(0) instanceof SkeletonNode) {
+                    SkeletonNode skeleton = (SkeletonNode) assetNode.getChild(0);
+                    m_skeleton = skeleton;
+
+                    // Set position
+                    if (attributes.getOrigin() != null) {
+                        m_modelInst.getTransform().setLocalMatrix(attributes.getOrigin());
+                    }
+
+                    // Set animations and custom meshes
+                    if (attributes.getAnimations() != null) {
+                        String fileProtocol = attributes.getBaseURL();
+
+                        if (fileProtocol == null) {
+                            fileProtocol = new String("file://localhost/" + System.getProperty("user.dir") + "/");
+                        }
+
+                        InstructionProcessor pProcessor = new InstructionProcessor(m_wm);
+                        Instruction pRootInstruction = new Instruction();
+
+                        pRootInstruction.addInstruction(InstructionNames.setSkeleton, skeleton);
+
+                        String[] load = attributes.getLoadInstructions();
+                        for (int i = 0; i < load.length; i++) {
+                            pRootInstruction.addInstruction(InstructionNames.loadGeometry, fileProtocol + load[i]);
+                        }
+
+                        String[] delete = attributes.getDeleteInstructions();
+                        for (int i = 0; i < delete.length; i++) {
+                            pRootInstruction.addInstruction(InstructionNames.deleteSkinnedMesh, delete[i]);
+                        }
+
+                        String[] add = attributes.getAddInstructions();
+                        for (int i = 0; i < add.length; i++) {
+                            pRootInstruction.addInstruction(InstructionNames.addSkinnedMesh, add[i]);
+                        }
+
+                        AttachmentParams[] attachments = attributes.getAttachmentsInstructions();
+                        for (int i = 0; i < attachments.length; i++) {
+                            pRootInstruction.addInstruction(InstructionNames.addAttachment, attachments[i].getMeshName(), attachments[i].getJointName(), attachments[i].getMatrix());
+                        }
+
+                        String[] anims = attributes.getAnimations();
+                        for (int i = 0; i < anims.length; i++) {
+                            pRootInstruction.addInstruction(InstructionNames.loadAnimation, fileProtocol + anims[i]);
+                        }
+
+                        String[] facialAnims = attributes.getFacialAnimations();
+                        for (int i = 0; i < facialAnims.length; i++) {
+                            pRootInstruction.addInstruction(InstructionNames.loadFacialAnimation, fileProtocol + facialAnims[i]);
+                        }
+
+                        pProcessor.execute(pRootInstruction);
+                    }
+
+                    // Set material
+                    skeleton.setShaderOnSkinnedMeshes(new VertDeformerWithSpecAndNormalMap(m_wm));
+                    skeleton.setShaderOnMeshes(new NormalAndSpecularMapShader(m_wm));
+                    m_leftEyeBall.applyShader(m_wm);
+                    m_rightEyeBall.applyShader(m_wm);
+
+                    // Facial animation state is designated to id (and index) 1
+                    AnimationState facialAnimationState = new AnimationState(1);
+                    facialAnimationState.setCurrentCycle(-1);
+                    facialAnimationState.setCurrentCyclePlaybackMode(PlaybackMode.PlayOnce);
+                    facialAnimationState.setAnimationSpeed(0.1f);
+                    m_skeleton.addAnimationState(facialAnimationState);
+                    if (m_skeleton.getAnimationComponent().getGroups().size() > 1) {
+                        m_facialAnimationQ = new TransitionQueue(m_skeleton, 1);
+                        initiateFacialAnimation(1, 0.75f, 0.75f); // 0 is "All Cycles"
+                    }
+
+                    // The verlet arm!
+                    SkinnedMeshJoint shoulderJoint = (SkinnedMeshJoint) m_skeleton.findChild("rightArm");
+                    m_arm = new VerletArm(shoulderJoint, m_modelInst);
+
+                    // Set the joint manipulator on every skinned mesh (remember to set it again when adding new meshes!)
+                    ArrayList<PPolygonSkinnedMeshInstance> skinnedMeshes = m_skeleton.getSkinnedMeshInstances();
+                    m_armJointManipulator = new VerletJointManipulator(m_arm, m_skeleton);
+                    m_arm.setJointManipulator(m_armJointManipulator);
+                    for (PPolygonSkinnedMeshInstance mesh : skinnedMeshes) {
+                        mesh.setJointManipulator(m_armJointManipulator);
+                    }
+                }
+                return true;
+            }
+        };
+        character.setInitializer(init);
+        attributes.setAsset(character);
+    }
+
     /**
      * Loads the model and sets processors 
      * @param processors
@@ -900,5 +1081,20 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         m_leftEyeBall.setTarget(target);
         m_rightEyeBall.setTarget(target);
     }
-    
+
+    public Map<Integer, String[]> getGeomRef() {
+        return m_geomRef;
+    }
+
+    public String[] getGeomRefNames(int iRegion) {
+        return m_geomRef.get(iRegion);
+    }
+
+    public void setGeomRef(Map<Integer, String[]> ref) {
+        m_geomRef = ref;
+    }
+
+    public void setGeomRefNames(String[] names, int iRegion) {
+        m_geomRef.put(iRegion, names);
+    }
 }

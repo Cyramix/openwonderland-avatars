@@ -20,6 +20,7 @@ package imi.character;
 import imi.loaders.repository.SharedAsset;
 import imi.scene.PMatrix;
 import imi.scene.PScene;
+import java.util.Map;
 
 /**
  *
@@ -37,6 +38,7 @@ public class CharacterAttributes
     private String[] loadInstructions     = new String[0];
     private String[] addInstructions      = new String[0];
     private AttachmentParams[] attachmentsInstructions = new AttachmentParams[0];
+    private Map<Integer, String[]>  geomRef = null;
 
     // For simple static geometry replacement
     private boolean useSimpleStaticModel    = false; 
@@ -155,5 +157,20 @@ public class CharacterAttributes
     PScene getSimpleScene() {
         return simpleScene;
     }
-    
+
+    public Map<Integer, String[]> getGeomRef() {
+        return geomRef;
+    }
+
+    public String[] getGeomRefNames(int iRegion) {
+        return geomRef.get(iRegion);
+    }
+
+    public void setGeomRef(Map<Integer, String[]> ref) {
+        geomRef = ref;
+    }
+
+    public void setGeomRefNames(String[] names, int iRegion) {
+        geomRef.put(iRegion, names);
+    }
 }

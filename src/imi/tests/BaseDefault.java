@@ -37,6 +37,7 @@ import com.jme.scene.state.RenderState;
 import com.jme.scene.state.WireframeState;
 import com.jme.scene.state.ZBufferState;
 import com.jme.util.TextureManager;
+import imi.character.Character;
 import imi.gui.JPanel_Animations;
 import imi.gui.JPanel_BasicOptions;
 import imi.gui.JPanel_EZOptions;
@@ -125,6 +126,7 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
     protected URL                       m_presetCaucasian   = null;
     protected Dimension                 m_DefaultSize       = new Dimension(m_width, 650);
     protected Dimension                 m_OpenSize          = new Dimension(800, 650);
+    protected Character                 m_Character         = null;
 ////////////////////////////////////////////////////////////////////////////////
 // CLASS DATA MEMBERS - END
 ////////////////////////////////////////////////////////////////////////////////
@@ -861,6 +863,7 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
     public void openEZOptions() {
         JPanel_EZOptions EZOptions = new JPanel_EZOptions();
         EZOptions.setSceneData(m_sceneData);
+        EZOptions.setParentFrame(this);
         m_sceneData.setCurCamProcessor(m_cameraProcessor);
         java.awt.GridBagConstraints gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -897,6 +900,11 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
             }
         }
     }
+
+    public void setCharacter(Character avatar) {
+        m_Character = avatar;
+    }
+
 ////////////////////////////////////////////////////////////////////////////////
 // CLASS METHODS - END
 ////////////////////////////////////////////////////////////////////////////////
@@ -1136,8 +1144,8 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
                 runProgressBar(true);
                 //openServerBrowser();
                 //m_sceneData.openServerBrowser((JFrame) m_base);
-                //openBasicOptions();
-                openEZOptions();
+                openBasicOptions();
+                //openEZOptions();
                 resetOpenTools();
                 runProgressBar(false);
             }
