@@ -12,6 +12,7 @@
 package imi.gui;
 
 import com.jme.math.Vector3f;
+import imi.character.Character;
 import imi.character.AttachmentParams;
 import imi.character.CharacterAttributes;
 import imi.character.ninja.NinjaAvatar;
@@ -75,7 +76,7 @@ public class JPanel_EZOptions extends javax.swing.JPanel {
     SceneEssentials                     m_sceneData;
     Component                           m_Parent;
     boolean[]                           m_Colors            = new boolean[] { false, false, false, false, false, false, false };
-    NinjaAvatar                         m_avatar            = null;
+    Character                           m_avatar            = null;
 
     /** Creates new form JPanel_EZOptions */
     public JPanel_EZOptions() {
@@ -1467,6 +1468,10 @@ public class JPanel_EZOptions extends javax.swing.JPanel {
             iRegion = 8;          // Glasses
 
         m_meshes.put(iRegion, geometry);
+    }
+
+    public void setCharacter(Character avatar) {
+        m_avatar = avatar;
     }
 
     public void setCharacterOnParent() {
