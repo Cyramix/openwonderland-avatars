@@ -122,6 +122,8 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
     protected TreeExplorer              m_NodeExplorer      = null;
     protected JFrame                    m_AnimationViewer   = null;
     protected JPanel_ServerBrowser      m_ServerBrowser     = null;
+    protected JPanel_BasicOptions       m_BasicOptions      = null;
+    protected JPanel_EZOptions          m_EZOptions         = null;
     protected FlexibleCameraProcessor   m_cameraProcessor   = null;
     protected URL                       m_presetCaucasian   = null;
     protected Dimension                 m_DefaultSize       = new Dimension(m_width, 650);
@@ -835,6 +837,29 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
     }
 
     public void openServerBrowser() {
+        if (m_ServerBrowser != null) {
+            if (m_ServerBrowser.isVisible()) {
+                jPanel_MainPanel.remove(m_ServerBrowser);
+                m_ServerBrowser = null;
+                this.setSize(m_DefaultSize);
+                return;
+            }
+        }
+
+        if (m_BasicOptions != null) {
+            if (m_BasicOptions.isVisible()) {
+                jPanel_MainPanel.remove(m_BasicOptions);
+                m_BasicOptions = null;
+            }
+        }
+
+        if (m_EZOptions != null) {
+            if (m_EZOptions.isVisible()) {
+                jPanel_MainPanel.remove(m_EZOptions);
+                m_EZOptions = null;
+            }
+        }
+
         m_ServerBrowser = m_sceneData.openServerBrowserPanel();
         java.awt.GridBagConstraints gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -847,8 +872,31 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
     }
 
     public void openBasicOptions() {
-        JPanel_BasicOptions BasicOptions = new JPanel_BasicOptions();
-        BasicOptions.setSceneData(m_sceneData);
+        if (m_BasicOptions != null) {
+            if (m_BasicOptions.isVisible()) {
+                jPanel_MainPanel.remove(m_BasicOptions);
+                m_BasicOptions = null;
+                this.setSize(m_DefaultSize);
+                return;
+            }
+        }
+
+        if (m_ServerBrowser != null) {
+            if (m_ServerBrowser.isVisible()) {
+                jPanel_MainPanel.remove(m_ServerBrowser);
+                m_ServerBrowser = null;
+            }
+        }
+
+        if (m_EZOptions != null) {
+            if (m_EZOptions.isVisible()) {
+                jPanel_MainPanel.remove(m_EZOptions);
+                m_EZOptions = null;
+            }
+        }
+
+        m_BasicOptions = new JPanel_BasicOptions();
+        m_BasicOptions.setSceneData(m_sceneData);
         m_sceneData.setCurCamProcessor(m_cameraProcessor);
         java.awt.GridBagConstraints gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -856,14 +904,37 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
         gridBagConstraints.gridy = 0;
         gridBagConstraints.gridheight = java.awt.GridBagConstraints.REMAINDER;
         gridBagConstraints.fill = java.awt.GridBagConstraints.VERTICAL;
-        jPanel_MainPanel.add(BasicOptions, gridBagConstraints);
+        jPanel_MainPanel.add(m_BasicOptions, gridBagConstraints);
         this.pack();
     }
 
     public void openEZOptions() {
-        JPanel_EZOptions EZOptions = new JPanel_EZOptions();
-        EZOptions.setSceneData(m_sceneData);
-        EZOptions.setParentFrame(this);
+        if (m_EZOptions != null) {
+            if (m_EZOptions.isVisible()) {
+                jPanel_MainPanel.remove(m_EZOptions);
+                m_EZOptions = null;
+                this.setSize(m_DefaultSize);
+                return;
+            }
+        }
+
+        if (m_ServerBrowser != null) {
+            if (m_ServerBrowser.isVisible()) {
+                jPanel_MainPanel.remove(m_ServerBrowser);
+                m_ServerBrowser = null;
+            }
+        }
+
+        if (m_BasicOptions != null) {
+            if (m_BasicOptions.isVisible()) {
+                jPanel_MainPanel.remove(m_BasicOptions);
+                m_BasicOptions = null;
+            }
+        }
+
+        m_EZOptions = new JPanel_EZOptions();
+        m_EZOptions.setSceneData(m_sceneData);
+        m_EZOptions.setParentFrame(this);
         m_sceneData.setCurCamProcessor(m_cameraProcessor);
         java.awt.GridBagConstraints gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -872,10 +943,10 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
         gridBagConstraints.gridheight = java.awt.GridBagConstraints.REMAINDER;
         gridBagConstraints.fill = java.awt.GridBagConstraints.VERTICAL;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
-        jPanel_MainPanel.add(EZOptions, gridBagConstraints);
+        jPanel_MainPanel.add(m_EZOptions, gridBagConstraints);
         this.pack();
-        EZOptions.readPresetList(m_presetCaucasian);
-        EZOptions.setTable();
+        m_EZOptions.readPresetList(m_presetCaucasian);
+        m_EZOptions.setTable();
     }
 
     public void resetOpenTools() {
@@ -970,6 +1041,11 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
         jButton1.setFocusable(false);
         jButton1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton1.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                openEZOptions();
+            }
+        });
         jToolBar_Hotkeys.add(jButton1);
         jToolBar_Hotkeys.add(jSeparator1);
 
@@ -977,6 +1053,11 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
         jButton2.setFocusable(false);
         jButton2.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton2.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                openBasicOptions();
+            }
+        });
         jToolBar_Hotkeys.add(jButton2);
         jToolBar_Hotkeys.add(jSeparator2);
 
@@ -984,6 +1065,11 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
         jButton3.setFocusable(false);
         jButton3.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton3.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                openServerBrowser();
+            }
+        });
         jToolBar_Hotkeys.add(jButton3);
         jToolBar_Hotkeys.add(jSeparator3);
 
