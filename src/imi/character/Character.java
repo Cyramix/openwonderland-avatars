@@ -324,7 +324,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         }
     }
 
-    public void load(CharacterAttributes attributes) {
+    public void loadAttributes(CharacterAttributes attributes) {
         URL bindPoseURL = null;
         try {
             if (attributes.getBaseURL() != null)
@@ -340,11 +340,11 @@ public abstract class Character extends Entity implements SpatialObject, Animati
             character.setUserData(new ColladaLoaderParams(true, true, false, false, 4, attributes.getName(), null));
             setAssetInitializer(character, attributes);
         } else {
-            add(attributes);
+            addAttributes(attributes);
         }
     }
 
-    private void add(CharacterAttributes attributes) {
+    private void addAttributes(CharacterAttributes attributes) {
         InstructionProcessor pProcessor = new InstructionProcessor(m_wm);
         Instruction pRootInstruction = new Instruction();
         pRootInstruction.addInstruction(InstructionNames.setSkeleton, m_skeleton);

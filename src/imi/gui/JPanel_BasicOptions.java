@@ -341,7 +341,7 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
 //            m_sceneData.loadMeshDAEURL(false, true, this, data.get(0), meshes, 0);
 //            m_meshes.put(0, meshes);
             addToAttributes(null, data, meshes, null, 0);
-            m_Avatar.load(m_Attributes);
+            m_Avatar.loadAttributes(m_Attributes);
         }
 
         jButton_ApplyHead.setEnabled(true);
@@ -391,7 +391,7 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
 //            m_sceneData.loadMeshDAEURL(false, true, this, data.get(0), meshes, 0);
 //            m_meshes.put(0, meshes);
             addToAttributes(null, data, meshes, null, 0);
-            m_Avatar.load(m_Attributes);
+            m_Avatar.loadAttributes(m_Attributes);
         }
 
         jButton_ApplyHead1.setEnabled(true);
@@ -439,7 +439,7 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
 //            m_sceneData.loadMeshDAEURL(false, true, this, data.get(0), meshes, 2);
 //            m_meshes.put(2, meshes);
             addToAttributes(null, data, meshes, null, 2);
-            m_Avatar.load(m_Attributes);
+            m_Avatar.loadAttributes(m_Attributes);
         }
 
         jButton_ApplyBody.setEnabled(true);
@@ -486,7 +486,7 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
 //            m_sceneData.loadMeshDAEURL(false, true, this, data.get(0), meshes, 3);
 //            m_meshes.put(3, meshes);
             addToAttributes(null, data, meshes, null, 3);
-            m_Avatar.load(m_Attributes);
+            m_Avatar.loadAttributes(m_Attributes);
         }
 
         jButton_ApplyLegs.setEnabled(true);
@@ -533,7 +533,7 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
 //            m_sceneData.loadMeshDAEURL(false, true, this, data.get(0), meshes, 4);
 //            m_meshes.put(4, meshes);
             addToAttributes(null, data, meshes, null, 4);
-            m_Avatar.load(m_Attributes);
+            m_Avatar.loadAttributes(m_Attributes);
         }
 
         jButton_ApplyShoes.setEnabled(true);
@@ -582,7 +582,7 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
 //            m_meshes.put(5, hair);
 //            m_sceneData.setMeshSetup(m_meshes);
             addToAttributes(null, data, hair, null, 5);
-            m_Avatar.load(m_Attributes);
+            m_Avatar.loadAttributes(m_Attributes);
         }
 
         jButton_ApplyHair.setEnabled(true);
@@ -631,7 +631,7 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
 //            m_meshes.put(6, facialHair);
 //            m_sceneData.setMeshSetup(m_meshes);
             addToAttributes(null, data, meshes, null, 6);
-            m_Avatar.load(m_Attributes);
+            m_Avatar.loadAttributes(m_Attributes);
         }
 
         jButton_ApplyFacialHair.setEnabled(true);
@@ -679,7 +679,7 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
 //            m_meshes.put(7, meshes);
 //            m_sceneData.setMeshSetup(m_meshes);
             addToAttributes(null, data, meshes, null, 7);
-            m_Avatar.load(m_Attributes);
+            m_Avatar.loadAttributes(m_Attributes);
         }
 
         jButton_ApplyHat.setEnabled(true);
@@ -727,7 +727,7 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
 //            m_meshes.put(8, meshes);
 //            m_sceneData.setMeshSetup(m_meshes);
             addToAttributes(null, data, meshes, null, 8);
-            m_Avatar.load(m_Attributes);
+            m_Avatar.loadAttributes(m_Attributes);
         }
 
         jButton_ApplySpecs.setEnabled(true);

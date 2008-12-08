@@ -1144,8 +1144,8 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
                 runProgressBar(true);
                 //openServerBrowser();
                 //m_sceneData.openServerBrowser((JFrame) m_base);
-                openBasicOptions();
-                //openEZOptions();
+                //openBasicOptions();
+                openEZOptions();
                 resetOpenTools();
                 runProgressBar(false);
             }
