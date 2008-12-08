@@ -72,6 +72,7 @@ import imi.scene.utils.PMeshUtils;
 import imi.utils.FileUtils;
 import imi.utils.PMathUtils;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.io.File;
 import java.net.MalformedURLException;
@@ -109,9 +110,9 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
     private WorldManager                m_worldManager      = null;
     protected CameraNode                m_cameraNode        = null;
     protected int                       m_desiredFrameRate  = 60;
-    protected int                       m_width             = 800;
+    protected int                       m_width             = 400;
     protected int                       m_height            = 600;
-    protected float                     m_aspect            = 800.0f/600.0f;
+    protected float                     m_aspect            = 400.0f/600.0f;
     protected SceneEssentials           m_sceneData         = null;
     protected boolean                   m_bLoading          = false;
     protected RenderBuffer              m_renderBuffer      = null;
@@ -122,6 +123,8 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
     protected JPanel_ServerBrowser      m_ServerBrowser     = null;
     protected FlexibleCameraProcessor   m_cameraProcessor   = null;
     protected URL                       m_presetCaucasian   = null;
+    protected Dimension                 m_DefaultSize       = new Dimension(m_width, 650);
+    protected Dimension                 m_OpenSize          = new Dimension(800, 650);
 ////////////////////////////////////////////////////////////////////////////////
 // CLASS DATA MEMBERS - END
 ////////////////////////////////////////////////////////////////////////////////
@@ -164,6 +167,7 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
             Logger.getLogger(BaseDefault.class.getName()).log(Level.SEVERE, null, ex);
         }
 
+        this.setSize(m_DefaultSize);
         runProgressBar(false);
     }
     
@@ -837,6 +841,7 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
         gridBagConstraints.gridheight = java.awt.GridBagConstraints.REMAINDER;
         gridBagConstraints.fill = java.awt.GridBagConstraints.VERTICAL;
         jPanel_MainPanel.add(m_ServerBrowser, gridBagConstraints);
+        this.pack();
     }
 
     public void openBasicOptions() {
@@ -850,6 +855,7 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
         gridBagConstraints.gridheight = java.awt.GridBagConstraints.REMAINDER;
         gridBagConstraints.fill = java.awt.GridBagConstraints.VERTICAL;
         jPanel_MainPanel.add(BasicOptions, gridBagConstraints);
+        this.pack();
     }
 
     public void openEZOptions() {
@@ -862,10 +868,9 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
         gridBagConstraints.gridy = 0;
         gridBagConstraints.gridheight = java.awt.GridBagConstraints.REMAINDER;
         gridBagConstraints.fill = java.awt.GridBagConstraints.VERTICAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
         jPanel_MainPanel.add(EZOptions, gridBagConstraints);
-
-//        String url = new String(System.getProperty("user.dir") + "/assets/file/avatars_cau.xml");
-//        File xml = new File(url);
+        this.pack();
         EZOptions.readPresetList(m_presetCaucasian);
         EZOptions.setTable();
     }
@@ -916,11 +921,9 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
         jButton4 = new javax.swing.JButton();
         jPanel_DisplayWindow = new javax.swing.JPanel();
         canvas_SceneRenderWindow = new java.awt.Canvas();
-        jToolBar_ProgressBar = new javax.swing.JToolBar();
+        jPanel_ProgressBar = new javax.swing.JPanel();
         jProgressBar_Progress = new javax.swing.JProgressBar();
-        jSeparator_VisualText = new javax.swing.JToolBar.Separator();
         jLabel_LoadingText = new javax.swing.JLabel();
-        jSeparator_LoadingFPS = new javax.swing.JToolBar.Separator();
         jLabel_FPSCounter = new javax.swing.JLabel();
         jMenuBar_MainMenu = new javax.swing.JMenuBar();
         jMenu_File = new javax.swing.JMenu();
@@ -953,7 +956,7 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
         jToolBar_Hotkeys.setRollover(true);
         jToolBar_Hotkeys.setMaximumSize(new java.awt.Dimension(800, 22));
         jToolBar_Hotkeys.setMinimumSize(new java.awt.Dimension(400, 22));
-        jToolBar_Hotkeys.setPreferredSize(new java.awt.Dimension(800, 22));
+        jToolBar_Hotkeys.setPreferredSize(new java.awt.Dimension(400, 22));
 
         jButton1.setText("jButton1");
         jButton1.setFocusable(false);
@@ -985,16 +988,14 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.ipadx = 520;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.weightx = 1.0;
         jPanel_MainPanel.add(jToolBar_Hotkeys, gridBagConstraints);
 
         jPanel_DisplayWindow.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
         jPanel_DisplayWindow.setMaximumSize(new java.awt.Dimension(800, 600));
-        jPanel_DisplayWindow.setMinimumSize(new java.awt.Dimension(400, 300));
-        jPanel_DisplayWindow.setPreferredSize(new java.awt.Dimension(800, 600));
+        jPanel_DisplayWindow.setMinimumSize(new java.awt.Dimension(400, 600));
+        jPanel_DisplayWindow.setPreferredSize(new java.awt.Dimension(400, 600));
         jPanel_DisplayWindow.setLayout(new java.awt.GridBagLayout());
 
         setFrame(m_worldManager);
@@ -1006,44 +1007,45 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridwidth = java.awt.GridBagConstraints.RELATIVE;
-        gridBagConstraints.gridheight = java.awt.GridBagConstraints.RELATIVE;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.weighty = 1.0;
         jPanel_MainPanel.add(jPanel_DisplayWindow, gridBagConstraints);
 
-        jToolBar_ProgressBar.setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED));
-        jToolBar_ProgressBar.setFloatable(false);
-        jToolBar_ProgressBar.setRollover(true);
-        jToolBar_ProgressBar.setMaximumSize(new java.awt.Dimension(800, 24));
-        jToolBar_ProgressBar.setPreferredSize(new java.awt.Dimension(800, 24));
+        jPanel_ProgressBar.setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED));
+        jPanel_ProgressBar.setMinimumSize(new java.awt.Dimension(400, 25));
+        jPanel_ProgressBar.setPreferredSize(new java.awt.Dimension(400, 25));
+        jPanel_ProgressBar.setLayout(new java.awt.GridBagLayout());
 
         jProgressBar_Progress.setMaximumSize(new java.awt.Dimension(146, 20));
-        jProgressBar_Progress.setMinimumSize(new java.awt.Dimension(146, 20));
-        jToolBar_ProgressBar.add(jProgressBar_Progress);
-
-        jSeparator_VisualText.setSeparatorSize(new java.awt.Dimension(15, 0));
-        jToolBar_ProgressBar.add(jSeparator_VisualText);
+        jProgressBar_Progress.setMinimumSize(new java.awt.Dimension(100, 20));
+        jProgressBar_Progress.setPreferredSize(new java.awt.Dimension(100, 20));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        jPanel_ProgressBar.add(jProgressBar_Progress, gridBagConstraints);
 
         jLabel_LoadingText.setText("jLabel1");
-        jToolBar_ProgressBar.add(jLabel_LoadingText);
+        jLabel_LoadingText.setMaximumSize(new java.awt.Dimension(150, 16));
+        jLabel_LoadingText.setMinimumSize(new java.awt.Dimension(140, 16));
+        jLabel_LoadingText.setPreferredSize(new java.awt.Dimension(140, 16));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        jPanel_ProgressBar.add(jLabel_LoadingText, gridBagConstraints);
 
-        jSeparator_LoadingFPS.setSeparatorSize(new java.awt.Dimension(480, 0));
-        jToolBar_ProgressBar.add(jSeparator_LoadingFPS);
-
+        jLabel_FPSCounter.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jLabel_FPSCounter.setText("FPS: 00.00 ");
-        jToolBar_ProgressBar.add(jLabel_FPSCounter);
+        jLabel_FPSCounter.setMinimumSize(new java.awt.Dimension(150, 16));
+        jLabel_FPSCounter.setPreferredSize(new java.awt.Dimension(150, 16));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
+        jPanel_ProgressBar.add(jLabel_FPSCounter, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 2;
-        gridBagConstraints.gridheight = java.awt.GridBagConstraints.RELATIVE;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.weightx = 1.0;
-        jPanel_MainPanel.add(jToolBar_ProgressBar, gridBagConstraints);
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        jPanel_MainPanel.add(jPanel_ProgressBar, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -1057,7 +1059,7 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
 
         jMenuBar_MainMenu.setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED));
         jMenuBar_MainMenu.setMaximumSize(new java.awt.Dimension(999999, 25));
-        jMenuBar_MainMenu.setMinimumSize(new java.awt.Dimension(1024, 25));
+        jMenuBar_MainMenu.setMinimumSize(new java.awt.Dimension(400, 25));
 
         jMenu_File.setText("File");
 
@@ -1226,14 +1228,12 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
     private javax.swing.JMenu jMenu_URL;
     private javax.swing.JPanel jPanel_DisplayWindow;
     private javax.swing.JPanel jPanel_MainPanel;
+    private javax.swing.JPanel jPanel_ProgressBar;
     private javax.swing.JProgressBar jProgressBar_Progress;
     private javax.swing.JToolBar.Separator jSeparator1;
     private javax.swing.JToolBar.Separator jSeparator2;
     private javax.swing.JToolBar.Separator jSeparator3;
-    private javax.swing.JToolBar.Separator jSeparator_LoadingFPS;
-    private javax.swing.JToolBar.Separator jSeparator_VisualText;
     private javax.swing.JToolBar jToolBar_Hotkeys;
-    private javax.swing.JToolBar jToolBar_ProgressBar;
     // End of variables declaration//GEN-END:variables
 
     public String getOS() {

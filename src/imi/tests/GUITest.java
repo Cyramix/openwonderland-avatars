@@ -59,51 +59,51 @@ public class GUITest extends BaseDefault
     
     private void initGUITest(PScene pscene, JScene jscene, WorldManager wm, ArrayList<ProcessorComponent> processors, Entity JSEntity) 
     {
-        pscene.setUseRepository(true); // test
-        
-        final PScene fpscene = pscene;
-        
-        // Create a SharedAsset with the description of the ninja model file
-        SharedAsset ninja = new SharedAsset(
-                ((Repository)wm.getUserData(Repository.class)),
-                new AssetDescriptor(SharedAsset.SharedAssetType.MS3D_SkinnedMesh,
-                new File("assets/models/ms3d/ninja.ms3d")));
-        
-        // Set up an initializer to excecute once the asset is loaded into the scene
-        ninja.setInitializer(
-                new AssetInitializer() 
-                {
-                public boolean initialize(Object asset) 
-                {
-                    if (asset != null && asset instanceof SkeletonNode)
-                    {
-                        SkeletonNode skeleton = (SkeletonNode)asset;
-                        skeleton.getAnimationState().setCurrentCycle(0);
-                        skeleton.getAnimationState().setPauseAnimation(false);
-                        PPolygonSkinnedMeshInstance target = (PPolygonSkinnedMeshInstance)skeleton.findChild("MS3DSkinnedMesh");
-                        target.setName("NinjaInstance");
-                         
-                        // Create a material to use
-                        PMeshMaterial material =  new PMeshMaterial("ninja material", "assets/textures/checkerboard2.PNG");
-                        
-                        material.setShader(new VertexDeformer(fpscene.getWorldManager()));
-                        
-                        // Set the material
-                        target.setMaterial(material);
-                        // We must disable the use of the geometry's material to see the texture we set for the instance
-                        target.setUseGeometryMaterial(false);
-                    }
-                    // To refresh the skeleton visualization
-                    fpscene.setDirty(true, true);
-                    return true;
-                }
-                });
-        
-        // Add an instance to the scene
-        PPolygonModelInstance modelInst = pscene.addModelInstance(ninja, new PMatrix(new Vector3f(0.0f, 0.0f, 5.0f)));
-                
-        // Add animation processor
-        processors.add(new SkinnedAnimationProcessor(modelInst)); 
+//        pscene.setUseRepository(true); // test
+//
+//        final PScene fpscene = pscene;
+//
+//        // Create a SharedAsset with the description of the ninja model file
+//        SharedAsset ninja = new SharedAsset(
+//                ((Repository)wm.getUserData(Repository.class)),
+//                new AssetDescriptor(SharedAsset.SharedAssetType.MS3D_SkinnedMesh,
+//                new File("assets/models/ms3d/ninja.ms3d")));
+//
+//        // Set up an initializer to excecute once the asset is loaded into the scene
+//        ninja.setInitializer(
+//                new AssetInitializer()
+//                {
+//                public boolean initialize(Object asset)
+//                {
+//                    if (asset != null && asset instanceof SkeletonNode)
+//                    {
+//                        SkeletonNode skeleton = (SkeletonNode)asset;
+//                        skeleton.getAnimationState().setCurrentCycle(0);
+//                        skeleton.getAnimationState().setPauseAnimation(false);
+//                        PPolygonSkinnedMeshInstance target = (PPolygonSkinnedMeshInstance)skeleton.findChild("MS3DSkinnedMesh");
+//                        target.setName("NinjaInstance");
+//
+//                        // Create a material to use
+//                        PMeshMaterial material =  new PMeshMaterial("ninja material", "assets/textures/checkerboard2.PNG");
+//
+//                        material.setShader(new VertexDeformer(fpscene.getWorldManager()));
+//
+//                        // Set the material
+//                        target.setMaterial(material);
+//                        // We must disable the use of the geometry's material to see the texture we set for the instance
+//                        target.setUseGeometryMaterial(false);
+//                    }
+//                    // To refresh the skeleton visualization
+//                    fpscene.setDirty(true, true);
+//                    return true;
+//                }
+//                });
+//
+//        // Add an instance to the scene
+//        PPolygonModelInstance modelInst = pscene.addModelInstance(ninja, new PMatrix(new Vector3f(0.0f, 0.0f, 5.0f)));
+//
+//        // Add animation processor
+//        processors.add(new SkinnedAnimationProcessor(modelInst));
     }
     
     @Override
