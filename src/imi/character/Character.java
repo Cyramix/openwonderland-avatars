@@ -215,16 +215,22 @@ public abstract class Character extends Entity implements SpatialObject, Animati
             System.err.println("GOT SHARED ASSET "+character);
 
             character.setUserData(new ColladaLoaderParams(true, true, false, false, 4, m_attributes.getName(), null));
-            AssetInitializer init = new AssetInitializer() {
-                public boolean initialize(Object asset) {
+            setAssetInitializer(character, m_attributes);
+        }
+    }
+    
+    private void setAssetInitializer(SharedAsset character, final CharacterAttributes attributes) 
+    {
+        AssetInitializer init = new AssetInitializer() {
+            public boolean initialize(Object asset) 
+            {
+                PNode assetNode = (PNode)asset;
+                if (assetNode.getChildrenCount() > 0 && assetNode.getChild(0) instanceof SkeletonNode)
+                {
+                    // Initialize references
+                    m_modelInst = (PPolygonModelInstance) assetNode;
+                    initializeCharacter();
 
-                    PNode assetNode = (PNode)asset;
-                    if (assetNode.getChildrenCount() > 0 && assetNode.getChild(0) instanceof SkeletonNode)
-                    {
-                        // Initialize references
-                        m_modelInst = (PPolygonModelInstance) assetNode;
-                        initializeCharacter();
-                        
 //                        // Visual Scale
 //                        if (visualScale != 1.0f)
 //                        {
@@ -233,119 +239,123 @@ public abstract class Character extends Entity implements SpatialObject, Animati
 //                                mesh.getTransform().getLocalMatrix(true).setScale(visualScale);
 //                        }
 
-                        // Set position
-                        if (m_attributes.getOrigin() != null)
-                            m_modelInst.getTransform().setLocalMatrix(m_attributes.getOrigin());
+                    // Set position
+                    if (attributes.getOrigin() != null)
+                        m_modelInst.getTransform().setLocalMatrix(attributes.getOrigin());
 
-                        // Set animations and custom meshes
-                        if (m_attributes.getAnimations() != null)
-                        {
-                            String fileProtocol = m_attributes.getBaseURL();
+                    // Set animations and custom meshes
+                    excecuteAttributes(m_attributes);
 
-                            if (fileProtocol == null)
-                                fileProtocol = new String("file://localhost/" + System.getProperty("user.dir") + "/");
+                    // Gimme them eyeballs
+                    PPolygonSkinnedMeshInstance leftEye = (PPolygonSkinnedMeshInstance) m_skeleton.findChild("leftEyeGeoShape");
+                    m_leftEyeBall = new EyeBall(leftEye, m_modelInst, m_pscene);
+                    leftEye.getParent().replaceChild(leftEye, m_leftEyeBall, true);
+                    PPolygonSkinnedMeshInstance rightEye = (PPolygonSkinnedMeshInstance) m_skeleton.findChild("rightEyeGeoShape");
+                    m_rightEyeBall = new EyeBall(rightEye, m_modelInst, m_pscene);
+                    rightEye.getParent().replaceChild(rightEye, m_rightEyeBall, true);
+                    m_leftEyeBall.setOtherEye(m_rightEyeBall);
+                    m_rightEyeBall.setOtherEye(m_leftEyeBall);
 
-                            InstructionProcessor pProcessor = new InstructionProcessor(m_wm);
-                            Instruction pRootInstruction = new Instruction();
+                    // Set material
+                    m_skeleton.setShaderOnSkinnedMeshes(new VertDeformerWithSpecAndNormalMap(m_wm));
+                    m_skeleton.setShaderOnMeshes(new NormalAndSpecularMapShader(m_wm));
+                    m_leftEyeBall.applyShader(m_wm);
+                    m_rightEyeBall.applyShader(m_wm);
 
-                            pRootInstruction.addInstruction(InstructionNames.setSkeleton, m_skeleton);
+                    // Facial animation state is designated to id (and index) 1
+                    AnimationState facialAnimationState = new AnimationState(1);
+                    facialAnimationState.setCurrentCycle(-1); 
+                    facialAnimationState.setCurrentCyclePlaybackMode(PlaybackMode.PlayOnce);
+                    facialAnimationState.setAnimationSpeed(0.1f);
+                    m_skeleton.addAnimationState(facialAnimationState);
+                    if (m_skeleton.getAnimationComponent().getGroups().size() > 1)   
+                    {
+                        m_facialAnimationQ = new TransitionQueue(m_skeleton, 1);
+                        initiateFacialAnimation(1, 0.75f, 0.75f); // 0 is "All Cycles"
+                    }
 
-                            String [] load = m_attributes.getLoadInstructions();
-                            if (load != null) {
-                                for (int i = 0; i < load.length; i++) {
-                                    pRootInstruction.addInstruction(InstructionNames.loadGeometry, fileProtocol + load[i]);
-                                }
-                            }
-
-                            String [] delete = m_attributes.getDeleteInstructions();
-                            if (delete != null) {
-                                for (int i = 0; i < delete.length; i++) {
-                                    pRootInstruction.addInstruction(InstructionNames.deleteSkinnedMesh, delete[i]);
-                                }
-                            }
-
-                            String [] add = m_attributes.getAddInstructions();
-                            if (add != null) {
-                                for (int i = 0; i < add.length; i++) {
-                                    pRootInstruction.addInstruction(InstructionNames.addSkinnedMesh, add[i]);
-                                }
-                            }
-
-                            AttachmentParams [] attachments = m_attributes.getAttachmentsInstructions();
-                            if (attachments != null) {
-                                for (int i = 0; i < attachments.length; i++) {
-                                    pRootInstruction.addInstruction(InstructionNames.addAttachment, attachments[i].getMeshName(), attachments[i].getJointName(), attachments[i].getMatrix());
-                                }
-                            }
-
-                            String [] anims = m_attributes.getAnimations();
-                            if (anims != null) {
-                                for (int i = 0; i < anims.length; i++) {
-                                    pRootInstruction.addInstruction(InstructionNames.loadAnimation, fileProtocol + anims[i]);
-                                }
-                            }
-
-                            String [] facialAnims = m_attributes.getFacialAnimations();
-                            if (facialAnims != null) {
-                                for (int i = 0; i < facialAnims.length; i++) {
-                                    pRootInstruction.addInstruction(InstructionNames.loadFacialAnimation, fileProtocol + facialAnims[i]);
-                                }
-                            }
-
-                            pProcessor.execute(pRootInstruction);
-                        }
-
-                        // Gimme them eyeballs
-                        PPolygonSkinnedMeshInstance leftEye = (PPolygonSkinnedMeshInstance) m_skeleton.findChild("leftEyeGeoShape");
-                        m_leftEyeBall = new EyeBall(leftEye, m_modelInst, m_pscene);
-                        leftEye.getParent().replaceChild(leftEye, m_leftEyeBall, true);
-                        PPolygonSkinnedMeshInstance rightEye = (PPolygonSkinnedMeshInstance) m_skeleton.findChild("rightEyeGeoShape");
-                        m_rightEyeBall = new EyeBall(rightEye, m_modelInst, m_pscene);
-                        rightEye.getParent().replaceChild(rightEye, m_rightEyeBall, true);
-                        m_leftEyeBall.setOtherEye(m_rightEyeBall);
-                        m_rightEyeBall.setOtherEye(m_leftEyeBall);
-                        
-                        // Set material
-                        m_skeleton.setShaderOnSkinnedMeshes(new VertDeformerWithSpecAndNormalMap(m_wm));
-                        m_skeleton.setShaderOnMeshes(new NormalAndSpecularMapShader(m_wm));
-                        m_leftEyeBall.applyShader(m_wm);
-                        m_rightEyeBall.applyShader(m_wm);
-
-                        // Facial animation state is designated to id (and index) 1
-                        AnimationState facialAnimationState = new AnimationState(1);
-                        facialAnimationState.setCurrentCycle(-1); 
-                        facialAnimationState.setCurrentCyclePlaybackMode(PlaybackMode.PlayOnce);
-                        facialAnimationState.setAnimationSpeed(0.1f);
-                        m_skeleton.addAnimationState(facialAnimationState);
-                        if (m_skeleton.getAnimationComponent().getGroups().size() > 1)   
-                        {
-                            m_facialAnimationQ = new TransitionQueue(m_skeleton, 1);
-                            initiateFacialAnimation(1, 0.75f, 0.75f); // 0 is "All Cycles"
-                        }
-
-                        // The verlet arm!
-                        SkinnedMeshJoint shoulderJoint = (SkinnedMeshJoint) m_skeleton.findChild("rightArm");
-                        m_arm = new VerletArm(shoulderJoint, m_modelInst);
+                    // The verlet arm!
+                    SkinnedMeshJoint shoulderJoint = (SkinnedMeshJoint) m_skeleton.findChild("rightArm");
+                    m_arm = new VerletArm(shoulderJoint, m_modelInst);
 //                            VerletVisualManager visual = new VerletVisualManager("avatar arm visuals", m_wm);
 //                            visual.addVerletObject(m_arm);
 //                            visual.setWireframe(true);
-                        // Set the joint manipulator on every skinned mesh (remember to set it again when adding new meshes!)
-                        ArrayList<PPolygonSkinnedMeshInstance> skinnedMeshes = m_skeleton.getSkinnedMeshInstances();
-                        m_armJointManipulator = new VerletJointManipulator(m_arm, m_skeleton);
-                        m_arm.setJointManipulator(m_armJointManipulator);
-                        for(PPolygonSkinnedMeshInstance mesh : skinnedMeshes)
-                            mesh.setJointManipulator(m_armJointManipulator);
-
-                    }
-                    return true;
+                    // Set the joint manipulator on every skinned mesh (remember to set it again when adding new meshes!)
+                    ArrayList<PPolygonSkinnedMeshInstance> skinnedMeshes = m_skeleton.getSkinnedMeshInstances();
+                    m_armJointManipulator = new VerletJointManipulator(m_arm, m_skeleton);
+                    m_arm.setJointManipulator(m_armJointManipulator);
+                    for(PPolygonSkinnedMeshInstance mesh : skinnedMeshes)
+                        mesh.setJointManipulator(m_armJointManipulator);
 
                 }
-            };
-            character.setInitializer(init);
-            m_attributes.setAsset(character);
-        }
-    }
+                return true;
 
+            }
+        };
+        character.setInitializer(init);
+        attributes.setAsset(character);
+    }
+    
+    private void excecuteAttributes(CharacterAttributes attributes) 
+    {   
+        String fileProtocol = attributes.getBaseURL();
+
+        if (fileProtocol == null)
+            fileProtocol = new String("file://localhost/" + System.getProperty("user.dir") + "/");
+
+        InstructionProcessor pProcessor = new InstructionProcessor(m_wm);
+        Instruction pRootInstruction = new Instruction();
+
+        pRootInstruction.addInstruction(InstructionNames.setSkeleton, m_skeleton);
+
+        String [] load = attributes.getLoadInstructions();
+        if (load != null) {
+            for (int i = 0; i < load.length; i++) {
+                pRootInstruction.addInstruction(InstructionNames.loadGeometry, fileProtocol + load[i]);
+            }
+        }
+
+        String [] delete = attributes.getDeleteInstructions();
+        if (delete != null) {
+            for (int i = 0; i < delete.length; i++) {
+                pRootInstruction.addInstruction(InstructionNames.deleteSkinnedMesh, delete[i]);
+            }
+        }
+
+        String [] add = attributes.getAddInstructions();
+        if (add != null) {
+            for (int i = 0; i < add.length; i++) {
+                pRootInstruction.addInstruction(InstructionNames.addSkinnedMesh, add[i]);
+            }
+        }
+
+        AttachmentParams [] attachments = attributes.getAttachmentsInstructions();
+        if (attachments != null) {
+            for (int i = 0; i < attachments.length; i++) {
+                pRootInstruction.addInstruction(InstructionNames.addAttachment, attachments[i].getMeshName(), attachments[i].getJointName(), attachments[i].getMatrix());
+            }
+        }
+
+        String [] anims = attributes.getAnimations();
+        if (anims != null) {
+            for (int i = 0; i < anims.length; i++) {
+                pRootInstruction.addInstruction(InstructionNames.loadAnimation, fileProtocol + anims[i]);
+            }
+        }
+
+        String [] facialAnims = attributes.getFacialAnimations();
+        if (facialAnims != null) {
+            for (int i = 0; i < facialAnims.length; i++) {
+                pRootInstruction.addInstruction(InstructionNames.loadFacialAnimation, fileProtocol + facialAnims[i]);
+            }
+        }
+
+        pProcessor.execute(pRootInstruction);
+        
+        m_skeleton.setShaderOnSkinnedMeshes(new VertDeformerWithSpecAndNormalMap(m_wm));
+        m_skeleton.setShaderOnMeshes(new NormalAndSpecularMapShader(m_wm));
+    }
+    
     public void loadAttributes(CharacterAttributes attributes) {
         URL bindPoseURL = null;
         try {
@@ -362,163 +372,8 @@ public abstract class Character extends Entity implements SpatialObject, Animati
             character.setUserData(new ColladaLoaderParams(true, true, false, false, 4, attributes.getName(), null));
             setAssetInitializer(character, attributes);
         } else {
-            addAttributes(attributes);
+            excecuteAttributes(attributes);
         }
-    }
-
-    private void addAttributes(CharacterAttributes attributes) {
-        InstructionProcessor pProcessor = new InstructionProcessor(m_wm);
-        Instruction pRootInstruction = new Instruction();
-        pRootInstruction.addInstruction(InstructionNames.setSkeleton, m_skeleton);
-
-        String fileProtocol = m_attributes.getBaseURL();
-
-        if (fileProtocol == null)
-            fileProtocol = new String("file://localhost/" + System.getProperty("user.dir") + "/");
-
-        String[] load = attributes.getLoadInstructions();
-        if (load != null && load.length > 0) {
-            for (int i = 0; i < load.length; i++) {
-                pRootInstruction.addInstruction(InstructionNames.loadGeometry, fileProtocol + load[i]);
-            }
-        }
-
-        String[] delete = attributes.getDeleteInstructions();
-        if (delete != null && delete.length > 0) {
-            for (int i = 0; i < delete.length; i++) {
-                pRootInstruction.addInstruction(InstructionNames.deleteSkinnedMesh, delete[i]);
-            }
-        }
-
-        String[] add = attributes.getAddInstructions();
-        if (add != null && add.length > 0) {
-            for (int i = 0; i < add.length; i++) {
-                pRootInstruction.addInstruction(InstructionNames.addSkinnedMesh, add[i]);
-            }
-        }
-
-        AttachmentParams[] attachments = attributes.getAttachmentsInstructions();
-        if (attachments != null && attachments.length > 0) {
-            for (int i = 0; i < attachments.length; i++) {
-                pRootInstruction.addInstruction(InstructionNames.addAttachment, attachments[i].getMeshName(), attachments[i].getJointName(), attachments[i].getMatrix());
-            }
-        }
-
-        String[] anims = m_attributes.getAnimations();
-        if (anims != null && anims.length > 0) {
-            for (int i = 0; i < anims.length; i++) {
-                pRootInstruction.addInstruction(InstructionNames.loadAnimation, fileProtocol + anims[i]);
-            }
-        }
-
-        String[] facialAnims = m_attributes.getFacialAnimations();
-        if (facialAnims != null && facialAnims.length > 0) {
-            for (int i = 0; i < facialAnims.length; i++) {
-                pRootInstruction.addInstruction(InstructionNames.loadFacialAnimation, fileProtocol + facialAnims[i]);
-            }
-        }
-
-        pProcessor.execute(pRootInstruction);
-
-        m_skeleton.setShaderOnSkinnedMeshes(new VertDeformerWithSpecAndNormalMap(m_wm));
-        m_skeleton.setShaderOnMeshes(new NormalAndSpecularMapShader(m_wm));
-    }
-
-    private void setAssetInitializer(SharedAsset character, final CharacterAttributes attributes) {
-        AssetInitializer init = new AssetInitializer() {
-
-            public boolean initialize(Object asset) {
-
-                PNode assetNode = (PNode) asset;
-                if (assetNode.getChildrenCount() > 0 && assetNode.getChild(0) instanceof SkeletonNode) {
-                    SkeletonNode skeleton = (SkeletonNode) assetNode.getChild(0);
-                    m_skeleton = skeleton;
-
-                    // Set position
-                    if (attributes.getOrigin() != null) {
-                        m_modelInst.getTransform().setLocalMatrix(attributes.getOrigin());
-                    }
-
-                    // Set animations and custom meshes
-                    if (attributes.getAnimations() != null) {
-                        String fileProtocol = attributes.getBaseURL();
-
-                        if (fileProtocol == null) {
-                            fileProtocol = new String("file://localhost/" + System.getProperty("user.dir") + "/");
-                        }
-
-                        InstructionProcessor pProcessor = new InstructionProcessor(m_wm);
-                        Instruction pRootInstruction = new Instruction();
-
-                        pRootInstruction.addInstruction(InstructionNames.setSkeleton, skeleton);
-
-                        String[] load = attributes.getLoadInstructions();
-                        for (int i = 0; i < load.length; i++) {
-                            pRootInstruction.addInstruction(InstructionNames.loadGeometry, fileProtocol + load[i]);
-                        }
-
-                        String[] delete = attributes.getDeleteInstructions();
-                        for (int i = 0; i < delete.length; i++) {
-                            pRootInstruction.addInstruction(InstructionNames.deleteSkinnedMesh, delete[i]);
-                        }
-
-                        String[] add = attributes.getAddInstructions();
-                        for (int i = 0; i < add.length; i++) {
-                            pRootInstruction.addInstruction(InstructionNames.addSkinnedMesh, add[i]);
-                        }
-
-                        AttachmentParams[] attachments = attributes.getAttachmentsInstructions();
-                        for (int i = 0; i < attachments.length; i++) {
-                            pRootInstruction.addInstruction(InstructionNames.addAttachment, attachments[i].getMeshName(), attachments[i].getJointName(), attachments[i].getMatrix());
-                        }
-
-                        String[] anims = attributes.getAnimations();
-                        for (int i = 0; i < anims.length; i++) {
-                            pRootInstruction.addInstruction(InstructionNames.loadAnimation, fileProtocol + anims[i]);
-                        }
-
-                        String[] facialAnims = attributes.getFacialAnimations();
-                        for (int i = 0; i < facialAnims.length; i++) {
-                            pRootInstruction.addInstruction(InstructionNames.loadFacialAnimation, fileProtocol + facialAnims[i]);
-                        }
-
-                        pProcessor.execute(pRootInstruction);
-                    }
-
-                    // Set material
-                    skeleton.setShaderOnSkinnedMeshes(new VertDeformerWithSpecAndNormalMap(m_wm));
-                    skeleton.setShaderOnMeshes(new NormalAndSpecularMapShader(m_wm));
-                    m_leftEyeBall.applyShader(m_wm);
-                    m_rightEyeBall.applyShader(m_wm);
-
-                    // Facial animation state is designated to id (and index) 1
-                    AnimationState facialAnimationState = new AnimationState(1);
-                    facialAnimationState.setCurrentCycle(-1);
-                    facialAnimationState.setCurrentCyclePlaybackMode(PlaybackMode.PlayOnce);
-                    facialAnimationState.setAnimationSpeed(0.1f);
-                    m_skeleton.addAnimationState(facialAnimationState);
-                    if (m_skeleton.getAnimationComponent().getGroups().size() > 1) {
-                        m_facialAnimationQ = new TransitionQueue(m_skeleton, 1);
-                        initiateFacialAnimation(1, 0.75f, 0.75f); // 0 is "All Cycles"
-                    }
-
-                    // The verlet arm!
-                    SkinnedMeshJoint shoulderJoint = (SkinnedMeshJoint) m_skeleton.findChild("rightArm");
-                    m_arm = new VerletArm(shoulderJoint, m_modelInst);
-
-                    // Set the joint manipulator on every skinned mesh (remember to set it again when adding new meshes!)
-                    ArrayList<PPolygonSkinnedMeshInstance> skinnedMeshes = m_skeleton.getSkinnedMeshInstances();
-                    m_armJointManipulator = new VerletJointManipulator(m_arm, m_skeleton);
-                    m_arm.setJointManipulator(m_armJointManipulator);
-                    for (PPolygonSkinnedMeshInstance mesh : skinnedMeshes) {
-                        mesh.setJointManipulator(m_armJointManipulator);
-                    }
-                }
-                return true;
-            }
-        };
-        character.setInitializer(init);
-        attributes.setAsset(character);
     }
 
     /**

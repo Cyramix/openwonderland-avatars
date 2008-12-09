@@ -9,7 +9,7 @@
 package imi.serialization.xml.bindings;
 
 import com.jme.math.Vector3f;
-import javax.vecmath.Vector4f;
+//import javax.vecmath.Vector4f;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -134,9 +134,9 @@ public class xmlFloatRow {
         setValues(vec.x, vec.y, vec.z, w);
     }
 
-    public void setValues(Vector4f vec)
-    {
-        setValues(vec.x, vec.y, vec.z, vec.w);
-    }
+//    public void setValues(Vector4f vec)
+//    {
+//        setValues(vec.x, vec.y, vec.z, vec.w);
+//    }
 
 }
