@@ -41,7 +41,8 @@ public class VerletArm
     //private Vector3f gravity = new Vector3f(0.0f, 0.0f, 0.0f);
     private float velocityDampener = 0.8f;
     private boolean enabled = false;;
-    private VerletJointManipulator jointManipulator = null;
+    private VerletJointManipulator jointManipulator = null; // old prototype
+    private VerletSkeletonFlatteningManipulator skeletonManipulator = null;
     
     private Vector3f currentInputOffset = new Vector3f();
     
@@ -191,7 +192,9 @@ public class VerletArm
     {
         enabled = bEnabled;
         if (jointManipulator != null)
-            jointManipulator.setEnabled(bEnabled);
+            jointManipulator.setEnabled(enabled);
+        if (skeletonManipulator != null)
+            skeletonManipulator.setEnabled(enabled);
         if (enabled)
             resetArmPosition();
     }
@@ -201,6 +204,8 @@ public class VerletArm
         enabled = !enabled;
         if (jointManipulator != null)
             jointManipulator.setEnabled(enabled);
+        if (skeletonManipulator != null)
+            skeletonManipulator.setEnabled(enabled);
         if (enabled)
             resetArmPosition();
         return enabled;
@@ -211,6 +216,11 @@ public class VerletArm
         jointManipulator = armJointManipulator;
     }
         
+    public void setSkeletonManipulator(VerletSkeletonFlatteningManipulator armSkeletonManipulator) 
+    {
+        this.skeletonManipulator = armSkeletonManipulator;
+    }
+    
     public void addInputOffset(Vector3f offset)
     {
         currentInputOffset.addLocal(offset);
@@ -230,14 +240,20 @@ public class VerletArm
      */
     public void setManualDriveReachUp(boolean manualDriveReachUp) {
         this.manualDriveReachUp = manualDriveReachUp;
-        jointManipulator.setManualDriveReachUp(manualDriveReachUp);
+        if (jointManipulator != null)
+            jointManipulator.setManualDriveReachUp(manualDriveReachUp);
+        if (skeletonManipulator != null)
+            skeletonManipulator.setManualDriveReachUp(manualDriveReachUp);
     }
     
     public void toggleManualDriveReachUp(){
         manualDriveReachUp = !manualDriveReachUp;
-        jointManipulator.setManualDriveReachUp(manualDriveReachUp);
+        if (jointManipulator != null)
+            jointManipulator.setManualDriveReachUp(manualDriveReachUp);
+        if (skeletonManipulator != null)
+            skeletonManipulator.setManualDriveReachUp(manualDriveReachUp);
     }
-    
+
     //////////////////////////////////////////////////////////////////////////
     
     public class VerletParticle

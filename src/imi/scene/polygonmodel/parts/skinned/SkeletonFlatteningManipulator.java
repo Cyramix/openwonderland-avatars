@@ -23,7 +23,7 @@ import imi.scene.PNode;
  *
  * @author Lou Hayt
  */
-public interface SkeletonFlatteningHookManipulator 
+public interface SkeletonFlatteningManipulator 
 {
     /**
      * Called during that flatening of the skeleton hierarchy

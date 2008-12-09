@@ -129,7 +129,8 @@ public abstract class Character extends Entity implements SpatialObject, Animati
     private float                           m_eyesWanderCounter     = 0.0f;
     private int                             m_eyesWanderIntCounter  = 0;
     protected VerletArm                     m_arm                   = null;
-    private VerletJointManipulator          m_armJointManipulator   = null;
+    private VerletJointManipulator          m_armJointManipulator   = null;          // old last minute joint manipulator
+    private VerletSkeletonFlatteningManipulator m_armSkeletonManipulator = null; // new skeleton manipulator
     private float                           m_armTimer              = 0.0f;
     private float                           m_armTimeTick           = 1.0f / 60.0f;
     private Map<Integer, String[]>          m_geomRef               = null;
@@ -270,16 +271,20 @@ public abstract class Character extends Entity implements SpatialObject, Animati
                     // The verlet arm!
                     SkinnedMeshJoint shoulderJoint = (SkinnedMeshJoint) m_skeleton.findChild("rightArm");
                     m_arm = new VerletArm(shoulderJoint, m_modelInst);
+                    // Debugging visualization
 //                            VerletVisualManager visual = new VerletVisualManager("avatar arm visuals", m_wm);
 //                            visual.addVerletObject(m_arm);
 //                            visual.setWireframe(true);
-                    // Set the joint manipulator on every skinned mesh (remember to set it again when adding new meshes!)
-                    ArrayList<PPolygonSkinnedMeshInstance> skinnedMeshes = m_skeleton.getSkinnedMeshInstances();
-                    m_armJointManipulator = new VerletJointManipulator(m_arm, m_skeleton);
-                    m_arm.setJointManipulator(m_armJointManipulator);
-                    for(PPolygonSkinnedMeshInstance mesh : skinnedMeshes)
-                        mesh.setJointManipulator(m_armJointManipulator);
-
+                    // old prototype
+//                    // Set the joint manipulator on every skinned mesh (remember to set it again when adding new meshes!)
+//                    ArrayList<PPolygonSkinnedMeshInstance> skinnedMeshes = m_skeleton.getSkinnedMeshInstances();
+//                    m_armJointManipulator = new VerletJointManipulator(m_arm, m_skeleton);
+//                    m_arm.setJointManipulator(m_armJointManipulator);
+//                    for(PPolygonSkinnedMeshInstance mesh : skinnedMeshes)
+//                        mesh.setJointManipulator(m_armJointManipulator);
+                    // New verlet skeleton manipulator
+                    m_armSkeletonManipulator = new VerletSkeletonFlatteningManipulator(m_arm, m_skeleton);
+                    m_arm.setSkeletonManipulator(m_armSkeletonManipulator);
                 }
                 return true;
 
@@ -858,11 +863,6 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         return m_arm;
     }
     
-    public VerletJointManipulator getArmJointManipulator()
-    {
-        return m_armJointManipulator;
-    }
-
     /**
      * Will return true if the character is loaded and has a valid skeleton
      * and meshes

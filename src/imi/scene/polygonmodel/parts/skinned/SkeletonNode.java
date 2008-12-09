@@ -71,7 +71,7 @@ public class SkeletonNode extends PNode implements Animated
     
     /** Enables a callback during the flatenning of the skeleton hierarchy for 
      *  manipulations that need to have cascading affect down the hierarchy */
-    private SkeletonFlatteningHookManipulator m_flatteningHook = null;
+    private SkeletonFlatteningManipulator m_flatteningHook = null;
     
     public SkeletonNode(String name)
     {
@@ -618,11 +618,11 @@ public class SkeletonNode extends PNode implements Animated
         }
     }
 
-    public SkeletonFlatteningHookManipulator getFlatteningHook() {
+    public SkeletonFlatteningManipulator getFlatteningHook() {
         return m_flatteningHook;
     }
 
-    public void setFlatteningHook(SkeletonFlatteningHookManipulator flatteningHook) {
+    public void setFlatteningHook(SkeletonFlatteningManipulator flatteningHook) {
         this.m_flatteningHook = flatteningHook;
     }
 
