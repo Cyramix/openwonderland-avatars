@@ -63,6 +63,7 @@ import imi.loaders.repository.AssetInitializer;
 import imi.loaders.repository.SharedAsset;
 import imi.loaders.repository.SharedAsset.SharedAssetType;
 import imi.scene.PNode;
+import imi.scene.animation.AnimationComponent;
 import imi.scene.animation.AnimationComponent.PlaybackMode;
 import imi.scene.animation.AnimationListener;
 import imi.scene.animation.AnimationState;
@@ -360,13 +361,13 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         SharedAsset character = null;
 
         if (bindPoseURL != null) {
+            this.numEntities();
             m_pscene = new PScene(attributes.getName(), m_wm);
             this.getJScene().setPScene(m_pscene);
             this.setPScene(m_pscene);
             m_attributes = attributes;
             ArrayList<ProcessorComponent> processors = new ArrayList<ProcessorComponent>();
             this.removeComponent(ProcessorCollectionComponent.class);
-
             character = new SharedAsset(m_pscene.getRepository(), new AssetDescriptor(SharedAssetType.COLLADA_Model, bindPoseURL));
             character.setUserData(new ColladaLoaderParams(true, true, false, false, 4, attributes.getName(), null));
             setAssetInitializer(character, attributes);
