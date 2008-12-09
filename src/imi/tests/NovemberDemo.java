@@ -53,8 +53,8 @@ public class NovemberDemo extends DemoBase
     }
 
     public static void main(String[] args) {
-        NovemberDemo worldTest = new NovemberDemo(args);
         Logger.getLogger("com.jme.renderer.jogl.JOGLRenderer").setLevel(Level.OFF);
+        NovemberDemo worldTest = new NovemberDemo(args);
     }
 
     @Override

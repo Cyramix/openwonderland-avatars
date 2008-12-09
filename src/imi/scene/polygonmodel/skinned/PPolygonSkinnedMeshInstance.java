@@ -87,8 +87,9 @@ public class PPolygonSkinnedMeshInstance extends PPolygonMeshInstance
             PMatrix origin = getTransform().getWorldMatrix(false);
             renderer.setOrigin(origin);
 
-            // Draw geometry
-            ((PPolygonSkinnedMesh) m_geometry).draw(renderer, ((SkeletonNode)getParent()).getSkeletonRoot());
+            // Draw geometry if it is ready
+            if (m_pSkeletonNode != null)
+                ((PPolygonSkinnedMesh) m_geometry).draw(renderer, m_pSkeletonNode.getSkeletonRoot());
         }
 
 
@@ -149,7 +150,11 @@ public class PPolygonSkinnedMeshInstance extends PPolygonMeshInstance
         // The new skinning model has this mesh query its skeleton for
         // the appropriate collection of transform matrices
         if (m_pSkeletonNode == null)
-            m_pSkeletonNode = ((SkeletonNode)getParent());
+        {
+            // make sure our parent is actually a skeleton node
+            if (getParent() instanceof SkeletonNode)
+                m_pSkeletonNode = ((SkeletonNode)getParent());
+        }
 
         if (m_pSkeletonNode == null)
             return m_instance;

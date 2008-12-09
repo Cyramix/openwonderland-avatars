@@ -133,10 +133,4 @@ public class xmlFloatRow {
     {
         setValues(vec.x, vec.y, vec.z, w);
     }
-
-//    public void setValues(Vector4f vec)
-//    {
-//        setValues(vec.x, vec.y, vec.z, vec.w);
-//    }
-
 }

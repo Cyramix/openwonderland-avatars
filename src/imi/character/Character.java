@@ -642,8 +642,9 @@ public abstract class Character extends Entity implements SpatialObject, Animati
             m_skeleton   = null;
             m_initialized = true;
         }
-        else if (m_modelInst.getChild(0).getChild(1) instanceof PPolygonSkinnedMeshInstance
-                && m_modelInst.getChild(0) instanceof SkeletonNode) 
+        else if (m_modelInst.getChild(0) instanceof SkeletonNode
+                && m_modelInst.getChild(0).getChildrenCount() >= 2
+                && m_modelInst.getChild(0).getChild(1) instanceof PPolygonSkinnedMeshInstance)
         {
             m_mesh       = (PPolygonSkinnedMeshInstance)m_modelInst.getChild(0).getChild(1);
             m_skeleton   = (SkeletonNode)m_modelInst.getChild(0);
