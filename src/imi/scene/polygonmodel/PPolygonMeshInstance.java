@@ -27,10 +27,6 @@ import com.jme.scene.state.TextureState;
 import imi.loaders.repository.AssetDescriptor;
 import imi.loaders.repository.SharedAsset;
 import imi.loaders.repository.SharedAsset.SharedAssetType;
-import imi.loaders.scenebindings.sbConfigurationData;
-import imi.loaders.scenebindings.sbScale;
-import imi.loaders.scenebindings.sbTexture;
-import imi.loaders.scenebindings.sbMaterial;
 import imi.scene.PMatrix;
 import imi.scene.PNode;
 import imi.scene.PScene;
@@ -135,28 +131,7 @@ public class PPolygonMeshInstance extends PNode
         }
     }
    
-    public sbConfigurationData load_createConfigurationData()
-    {
-        boolean bNeeded = false; // true if this configuration is needed
-        
-        // Allocate memory
-        sbConfigurationData result = new sbConfigurationData();
-        
-        // Scale
-        Vector3f scale = getTransform().getLocalMatrix(false).getScaleVector();
-        if (!scale.equals(Vector3f.UNIT_XYZ))
-        {
-            bNeeded = true;
-            result.setScale(new sbScale());
-            result.getScale().set(scale.x, scale.y, scale.z);
-        }
-        
-        if (bNeeded)
-            return result;
-        else
-            return null;
-    }
-
+    
     /**
      * Initialize the material and texture state objects for this mesh.
      * This is relies on grabbing the render manager from the world manager.
@@ -363,43 +338,6 @@ public class PPolygonMeshInstance extends PNode
         m_instance.setRenderState(m_textureState);
         if (meshMat.getShader() != null)
             meshMat.getShader().applyToMesh(this);
-    }
-    
-    protected void load_processConfiguration(sbConfigurationData config) 
-    {
-        PMatrix local = getTransform().getLocalMatrix(true);
-        local.setIdentity();
-        
-        // Scale
-        if (config.getScale() != null);
-            local.setScale(config.getScale().getVec3());
-            
-        if (config.getMaterial() != null)
-        {
-            PMeshMaterial mat = new PMeshMaterial();
-            sbMaterial configMat = config.getMaterial();
-            
-            // Textures
-            if (configMat.getTextureFiles() != null)
-            {
-                List<sbTexture> textures = configMat.getTextureFiles();
-                for (sbTexture tex : textures)
-                    mat.setTexture(tex.getPath(), tex.getTextureUnit());
-            }
-
-            // Shaders
-            // TODO: Convert to the new system
-//            if (configMat.getShaderPair() != null)
-//            {
-//                sbShaderPair shades = configMat.getShaderPair();
-//                mat.setVertShader(new File(shades.getVertexShaderPath()));
-//                mat.setFragShader(new File(shades.getFragmentShaderPath()));
-//            }
-            
-            // Set the material (applies it)
-            setMaterial(mat);
-            setUseGeometryMaterial(false);
-        }
     }
     
     public PMeshMaterialCombo getMaterialRef() 

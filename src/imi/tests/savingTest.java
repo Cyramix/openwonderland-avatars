@@ -132,13 +132,14 @@ public class savingTest extends DemoBase
                         //joint.setLocalModifierMatrix(new PMatrix(Vector3f.UNIT_X, Vector3f.UNIT_XYZ, Vector3f.UNIT_X));
                         //target.getParent().addChild(joint);
                         target.findChild("Joint15").addChild(antInst);
-                        
+
+                        // Switch to Character API when possible
                         // Test saving 
-                        ((PPolygonModelInstance)target.getParent()).saveModel(new File(FileUtils.rootPath, "assets/configurations/ninjaDude.xml"));
+                        //((PPolygonModelInstance)target.getParent()).saveModel(new File(FileUtils.rootPath, "assets/configurations/ninjaDude.xml"));
                         
                         // Test loading
                         PPolygonModelInstance loadedNinja = new PPolygonModelInstance("Loading test ninja", new PMatrix());
-                        loadedNinja.loadModel(new File(FileUtils.rootPath, "assets/configurations/ninjaDude.xml"), scene);
+                        //loadedNinja.loadModel(new File(FileUtils.rootPath, "assets/configurations/ninjaDude.xml"), scene);
                         loadedNinja.getTransform().setLocalMatrix(new PMatrix(Vector3f.UNIT_X.mult(10.0f)));
                         processorsFinal.add(new SkinnedAnimationProcessor((loadedNinja)));
                         scene.addInstanceNode(loadedNinja);

@@ -20,7 +20,11 @@ package imi.character;
 import imi.loaders.repository.SharedAsset;
 import imi.scene.PMatrix;
 import imi.scene.PScene;
+import imi.serialization.xml.bindings.xmlCharacterAttributes;
+import java.util.ArrayList;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -173,4 +177,66 @@ public class CharacterAttributes
     public void setGeomRefNames(String[] names, int iRegion) {
         geomRef.put(iRegion, names);
     }
+
+    /**
+     * Package private method for serializing this object
+     * @return The DOM representation of this object
+     */
+    xmlCharacterAttributes generateAttributesDOM()
+    {
+        xmlCharacterAttributes result = new xmlCharacterAttributes();
+        // load her up!
+        if (name != null)
+            result.setName(name);
+        else
+            result.setName("Seymour Slizzle");
+        if (baseURL != null)
+            result.setBaseURL(baseURL);
+        else
+            result.setBaseURL("");
+
+        if (BindPoseFile != null)
+            result.setBindPoseFile(BindPoseFile);
+        else
+            Logger.getLogger(CharacterAttributes.class.getName()).log(Level.SEVERE,
+                    "No bind pose file specified.");
+        
+        // Body animations
+        ArrayList<String> stringArray = new ArrayList<String>();
+        for (String str : animations)
+            stringArray.add(str);
+        result.setBodyAnimations(stringArray);
+            
+        // facial animations
+        stringArray = new ArrayList<String>();
+        for (String str : facialAnimations)
+            stringArray.add(str);
+        result.setFacialAnimations(stringArray);
+
+        // deletion instructions
+        stringArray = new ArrayList<String>();
+        for (String str : deleteInstructions)
+            stringArray.add(str);
+        result.setDeletionInstructions(stringArray);
+
+        // loading instructions
+        stringArray = new ArrayList<String>();
+        for (String str : loadInstructions)
+            stringArray.add(str);
+        result.setLoadingInstructions(stringArray);
+
+        // addition instructions
+        stringArray = new ArrayList<String>();
+        for (String str : addInstructions)
+            stringArray.add(str);
+        result.setAdditionInstructions(stringArray);
+        
+        // load up all the attachment params
+        for (AttachmentParams param : attachmentsInstructions)
+            result.addAttachment(param.generateParamsDOM());
+        
+        return result;
+    }
+
+
 }

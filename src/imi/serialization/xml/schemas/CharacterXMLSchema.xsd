@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    targetNamespace="http://xml.netbeans.org/schema/CharacterXMLSchema"
+    xmlns:tns="http://xml.netbeans.org/schema/CharacterXMLSchema"
+    elementFormDefault="unqualified" attributeFormDefault="unqualified">
+    <xsd:complexType name="FloatRow">
+        <xsd:sequence>
+            <xsd:element name="X" default="0" maxOccurs="1" type="xsd:float"/>
+            <xsd:element name="Y" default="0" type="xsd:float"/>
+            <xsd:element name="Z" default="0" type="xsd:float"/>
+            <xsd:element name="W" default="0" type="xsd:float"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="Matrix">
+        <xsd:sequence>
+            <xsd:element name="RowOne" type="tns:FloatRow"/>
+            <xsd:element name="RowTwo" type="tns:FloatRow"/>
+            <xsd:element name="RowThree" type="tns:FloatRow"/>
+            <xsd:element name="RowFour" type="tns:FloatRow"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="CharacterAttachmentParameters">
+        <xsd:sequence>
+            <xsd:element name="MeshName" type="xsd:string"/>
+            <xsd:element name="JointToAttachOn" type="xsd:string"/>
+            <xsd:element name="LocalSpaceTransform" type="tns:Matrix"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="CharacterAttributes">
+        <xsd:sequence>
+            <xsd:element name="Name" type="xsd:string" nillable="true"/>
+            <xsd:element name="BaseURL" type="xsd:string" nillable="true"/>
+            <xsd:element name="BindPoseFile" type="xsd:string"/>
+            <xsd:element name="BodyAnimations" minOccurs="0" maxOccurs="unbounded" type="xsd:string"/>
+            <xsd:element name="FacialAnimations" minOccurs="0" maxOccurs="unbounded" type="xsd:string"/>
+            <xsd:element name="DeletionInstructions" minOccurs="0" maxOccurs="unbounded" type="xsd:string"/>
+            <xsd:element name="LoadingInstructions" minOccurs="0" maxOccurs="unbounded" type="xsd:string"/>
+            <xsd:element name="AdditionInstructions" minOccurs="0" maxOccurs="unbounded" type="xsd:string"/>
+            <xsd:element name="Attachments" type="tns:CharacterAttachmentParameters" minOccurs="0" maxOccurs="unbounded"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="Character">
+        <xsd:sequence>
+            <xsd:element name="Attributes" type="tns:CharacterAttributes"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:element name="Character" type="tns:Character" abstract="false" nillable="false"/>
+</xsd:schema>

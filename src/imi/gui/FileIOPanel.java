@@ -187,7 +187,8 @@ public class FileIOPanel extends javax.swing.JPanel {
             m_fileConfig = jFileChooser_Config.getSelectedFile();
             m_sceneData.setfileXML(m_fileConfig);
             imi.scene.polygonmodel.PPolygonModelInstance modInst = ((imi.scene.polygonmodel.PPolygonModelInstance) m_sceneData.getPScene().getInstances().getChild(0));
-            modInst.saveModel(m_fileConfig);
+            // Switch to Character API when possible
+            //modInst.saveModel(m_fileConfig);
             
             System.out.println("=================================================");
             System.out.println("Saving of current avatar configuration is complete");

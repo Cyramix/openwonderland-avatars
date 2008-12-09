@@ -125,7 +125,8 @@ public class JPanel_FileIO extends javax.swing.JPanel {
         sceneData.getPScene().getInstances().removeAllChildren();
         //2- Get the modelinstance to load the saved file into the scene
         imi.scene.polygonmodel.PPolygonModelInstance newModelInst = new imi.scene.polygonmodel.PPolygonModelInstance("this name needs to be set by user... nudge paul nudge...");
-        boolean success = newModelInst.loadModel(sceneData.getFileXML(), sceneData.getPScene());
+        // Switch to Character API when possible
+        boolean success = false;//newModelInst.loadModel(sceneData.getFileXML(), sceneData.getPScene());
         sceneData.getPScene().addInstanceNode(newModelInst);
         if (success) {
             System.out.println("<<<<SHOULD HAVE LOADED... CROSS YOUR FINGERS>>>>");
@@ -153,7 +154,8 @@ public class JPanel_FileIO extends javax.swing.JPanel {
             fileXML = jFileChooser_SaveXML.getSelectedFile();
             sceneData.setfileXML(fileXML);
             imi.scene.polygonmodel.PPolygonModelInstance modInst = ((imi.scene.polygonmodel.PPolygonModelInstance) sceneData.getPScene().getInstances().getChild(0));
-            modInst.saveModel(fileXML);
+            // Switch to Character API when possible
+            //modInst.saveModel(fileXML);
             
             System.out.println("=================================================");
             System.out.println("Saving of current avatar configuration is complete");

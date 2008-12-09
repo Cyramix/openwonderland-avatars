@@ -324,7 +324,8 @@ public class AvatarEditorGUI extends javax.swing.JFrame {
         sceneData.getPScene().getInstances().removeAllChildren();
         //2- Get the modelinstance to load the saved file into the scene
         PPolygonModelInstance newModelInst = new PPolygonModelInstance("this name needs to be set by user... nudge paul nudge...");
-        boolean success = newModelInst.loadModel(sceneData.getFileXML(), sceneData.getPScene());
+        // Switch to character API when possible
+        boolean success = false; //newModelInst.loadModel(sceneData.getFileXML(), sceneData.getPScene());
         sceneData.getPScene().addInstanceNode(newModelInst);
         if (success) {
             System.out.println("<<<<SHOULD HAVE LOADED... CROSS YOUR FINGERS>>>>");
@@ -385,7 +386,8 @@ public class AvatarEditorGUI extends javax.swing.JFrame {
             fileXML = jFileChooser_SaveXML.getSelectedFile();
             sceneData.setfileXML(fileXML);
             PPolygonModelInstance modInst = ((PPolygonModelInstance) sceneData.getPScene().getInstances().getChild(0));
-            modInst.saveModel(fileXML);
+            // Switch to Character API when possible
+            //modInst.saveModel(fileXML);
         }
 
         System.out.println("=================================================");

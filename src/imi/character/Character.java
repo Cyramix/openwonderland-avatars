@@ -79,10 +79,20 @@ import imi.scene.processors.JSceneEventProcessor;
 import imi.scene.shader.programs.NormalAndSpecularMapShader;
 import imi.scene.shader.programs.VertDeformerWithSpecAndNormalMap;
 import imi.scene.utils.PMeshUtils;
+import imi.serialization.xml.bindings.xmlCharacter;
+import imi.serialization.xml.bindings.xmlCharacterAttributes;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URL;
 import java.util.LinkedList;
 import java.util.Map;
+import javax.naming.OperationNotSupportedException;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
 
 /**
  *
@@ -173,7 +183,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
     }
      
     /**
-     * Instantiate the GameContext for this Character
+     * Instantiate the GameContext for this xmlCharacter
      * 
      * @return
      */
@@ -1084,6 +1094,140 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         m_rightEyeBall.setTarget(target);
     }
 
+    /**
+     * Save the current avatar configuration to the specified location. This
+     * method does not currently function, as the file protocol cannot open an
+     * output stream to a particular file.
+     * @param targetSaveLocation The location of the file that will be generated
+     */
+    public void saveConfiguration(URL targetSaveLocation)
+    {
+        // TODO : Find some workaround for this if one exists
+        throw new UnsupportedOperationException("This method is currently unsupported " +
+                "as the file URL protocol cannot open an OutputStream. A workaround is " +
+                "being researched. In the interim, use the File overload of this method.");
+//        try {
+//            final JAXBContext context = JAXBContext.newInstance("imi.serialization.xml.bindings");
+//            final Marshaller m = context.createMarshaller();
+//            OutputStream os = targetSaveLocation.openConnection().getOutputStream();
+//            m.marshal( generateCharacterDOM(), os);
+//        }
+//        catch (JAXBException ex) {
+//            Logger.getLogger(Character.class.getName()).log(Level.SEVERE, "Failed to write save file! " + ex.getMessage());
+//        }
+//        catch (IOException ex) {
+//            Logger.getLogger(Character.class.getName()).log(Level.SEVERE, "Failed to open OutputStream to " +
+//                                    targetSaveLocation.toString() + "! " + ex.getMessage());
+//        }
+    }
+
+    /**
+     * This method saves the character's current configuration to the specified
+     * location.
+     * @param location
+     */
+    public void saveConfiguration(File location)
+    {
+        try {
+            final JAXBContext context = JAXBContext.newInstance("imi.serialization.xml.bindings");
+            final Marshaller m = context.createMarshaller();
+            if (location.exists() == true && location.canWrite() == false)
+                throw new IOException("Request file (" + location.toString() + ") is not writeable.");
+            else if (location.exists() == false)
+                location.createNewFile();
+            xmlCharacter characterDom = generateCharacterDOM();
+            m.marshal( characterDom, location);
+        }
+        catch (JAXBException ex) {
+            Logger log = Logger.getLogger(Character.class.getName());
+            log.log(Level.SEVERE, "Failed to write save file! " + ex.getMessage());
+            log.log(Level.SEVERE, ex.getErrorCode() + " : " + ex.getLocalizedMessage() + " : " + ex.toString());
+            ex.printStackTrace();
+
+        }
+        catch (IOException ex) {
+            Logger.getLogger(Character.class.getName()).log(Level.SEVERE, "Failed to open OutputStream to " +
+                                    location.toString() + "! " + ex.getMessage());
+        }
+    }
+    
+    /**
+     * Load the configuration file at the specified location and apply it to this
+     * character instance.
+     * @param location
+     */
+    public void loadConfiguration(URL location)
+    {
+        try {
+            final JAXBContext context = JAXBContext.newInstance("imi.serialization.xml.bindings");
+            final Unmarshaller m = context.createUnmarshaller();
+
+            InputStream is = location.openConnection().getInputStream();
+
+            Object characterObj = m.unmarshal( is );
+            if (characterObj instanceof xmlCharacter)
+            {
+                applyCharacterDOM((xmlCharacter)characterObj);
+            }
+            else
+            {
+                Logger.getLogger(Character.class.getName()).log(Level.SEVERE,
+                        "JAXB somehow parsed the file and made some other object: " + characterObj.toString());
+            }
+
+        }
+        catch (JAXBException ex) {
+            Logger log = Logger.getLogger(Character.class.getName());
+            log.log(Level.SEVERE, "Failed to parse the file! " + ex.getMessage());
+            log.log(Level.SEVERE, ex.getErrorCode() + " : " + ex.getLocalizedMessage() + " : " + ex.toString());
+            ex.printStackTrace();
+
+        }
+        catch (IOException ex) {
+            Logger.getLogger(Character.class.getName()).log(Level.SEVERE, "Failed to open InputStream to " +
+                                    location.toString() + "! " + ex.getMessage());
+        }
+    }
+
+    /**
+     * Apply the data with to this character instance
+     * @param characterDOM
+     */
+    private void applyCharacterDOM(xmlCharacter characterDOM)
+    {
+        xmlCharacterAttributes xmlAttributes = characterDOM.getAttributes();
+
+        CharacterAttributes attributes = new CharacterAttributes(xmlAttributes.getName());
+        attributes.setBaseURL(xmlAttributes.getBaseURL());
+        attributes.setBindPoseFile(xmlAttributes.getBindPoseFile());
+
+        attributes.setAddInstructions((String[]) xmlAttributes.getAdditionInstructions().toArray(new String[0]));
+        attributes.setDeleteInstructions((String[]) xmlAttributes.getDeletionInstructions().toArray(new String[0]));
+        attributes.setAnimations((String[]) xmlAttributes.getBodyAnimations().toArray(new String[0]));
+        attributes.setFacialAnimations((String[]) xmlAttributes.getFacialAnimations().toArray(new String[0]));
+        attributes.setLoadInstructions((String[]) xmlAttributes.getLoadingInstructions().toArray(new String[0]));
+
+        // Apply the loaded attributes
+        loadAttributes(attributes);
+    }
+
+    /**
+     * This method is used to serialize the character's configuration into a DOM object
+     * @return
+     */
+    private xmlCharacter generateCharacterDOM()
+    {
+        xmlCharacter result = new xmlCharacter();
+        if (m_attributes != null)
+            result.setAttributes(m_attributes.generateAttributesDOM());
+        else
+        {
+            Logger.getLogger(Character.class.getName()).log(Level.WARNING,
+                    "Attemping to serialize a character with no attributes!");
+        }
+        return result;
+    }
+    
     public Map<Integer, String[]> getGeomRef() {
         return m_geomRef;
     }

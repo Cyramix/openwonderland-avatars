@@ -18,6 +18,8 @@
 package imi.character;
 
 import imi.scene.PMatrix;
+import imi.serialization.xml.bindings.xmlCharacterAttachmentParameters;
+import imi.serialization.xml.bindings.xmlMatrix;
 
 /**
  *
@@ -51,5 +53,21 @@ public class AttachmentParams
     }
     public void setMeshName(String meshName) {
         this.meshName = meshName;
+    }
+    /**
+     * Serialize this attachment parameters object
+     * @return The DOM representation
+     */
+    xmlCharacterAttachmentParameters generateParamsDOM()
+    {
+        xmlCharacterAttachmentParameters result =
+                new xmlCharacterAttachmentParameters();
+
+        result.setMeshName(meshName);
+        result.setJointToAttachOn(jointName);
+        xmlMatrix transform = new xmlMatrix();
+        transform.set(matrix);
+
+        return result;
     }
 }
