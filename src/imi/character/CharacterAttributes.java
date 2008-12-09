@@ -32,17 +32,18 @@ import java.util.logging.Logger;
  */
 public class CharacterAttributes 
 {
-    private String      name              = "nameless";
-    private SharedAsset asset             = null;
-    private String   baseURL              = null;
-    private String   BindPoseFile         = null;
-    private String[] animations           = new String[0];
-    private String[] facialAnimations     = new String[0];
-    private String[] deleteInstructions   = new String[0];
-    private String[] loadInstructions     = new String[0];
-    private String[] addInstructions      = new String[0];
-    private AttachmentParams[] attachmentsInstructions = new AttachmentParams[0];
-    private Map<Integer, String[]>  geomRef = null;
+    private String                  name                    = "nameless";
+    private SharedAsset             asset                   = null;
+    private String                  baseURL                 = null;
+    private String                  BindPoseFile            = null;
+    private String[]                animations              = new String[0];
+    private String[]                facialAnimations        = new String[0];
+    private String[]                deleteInstructions      = new String[0];
+    private String[]                loadInstructions        = new String[0];
+    private String[]                addInstructions         = new String[0];
+    private AttachmentParams[]      attachmentsInstructions = new AttachmentParams[0];
+    private Map<Integer, String[]>  geomRef                 = null;
+    private boolean                 bMale                   = true;
 
     // For simple static geometry replacement
     private boolean useSimpleStaticModel    = false; 
@@ -178,6 +179,14 @@ public class CharacterAttributes
         geomRef.put(iRegion, names);
     }
 
+    public boolean isMale() {
+        return bMale;
+    }
+
+    public void setIsMale(boolean gender) {
+        bMale = gender;
+    }
+
     /**
      * Package private method for serializing this object
      * @return The DOM representation of this object
@@ -237,6 +246,4 @@ public class CharacterAttributes
         
         return result;
     }
-
-
 }
