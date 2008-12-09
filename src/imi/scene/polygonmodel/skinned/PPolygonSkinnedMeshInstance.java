@@ -28,7 +28,7 @@ import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
 import imi.scene.shader.AbstractShaderProgram;
 import imi.scene.shader.ShaderProperty;
 import imi.scene.utils.PRenderer;
-import imi.scene.utils.tree.LocalModifierCollector;
+import imi.scene.utils.tree.JointModificationCollector;
 import java.util.ArrayList;
 import java.util.List;
 

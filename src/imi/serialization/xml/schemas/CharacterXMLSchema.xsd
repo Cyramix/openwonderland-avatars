@@ -43,6 +43,14 @@
     <xsd:complexType name="Character">
         <xsd:sequence>
             <xsd:element name="Attributes" type="tns:CharacterAttributes"/>
+            <xsd:element name="SkeletonDetails" minOccurs="0" maxOccurs="unbounded" type="tns:JointModification"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="JointModification">
+        <xsd:sequence>
+            <xsd:element name="TargetJointName" minOccurs="1" maxOccurs="1" type="xsd:string"></xsd:element>
+            <xsd:element name="LocalModifierMatrix" minOccurs="0" type="tns:Matrix"/>
+            <xsd:element name="SkeletonModifierMatrix" minOccurs="0" type="tns:Matrix"/>
         </xsd:sequence>
     </xsd:complexType>
     <xsd:element name="Character" type="tns:Character" abstract="false" nillable="false"/>

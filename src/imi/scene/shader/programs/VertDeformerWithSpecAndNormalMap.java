@@ -44,7 +44,7 @@ public class VertDeformerWithSpecAndNormalMap extends GLSLShaderProgram
     
     public VertDeformerWithSpecAndNormalMap(WorldManager wm)
     {
-        this(wm, 0.2f, 3.25f);
+        this(wm, 0.35f, 3.25f);
     }
 
     public VertDeformerWithSpecAndNormalMap(WorldManager wm,

@@ -63,7 +63,6 @@ import imi.loaders.repository.AssetInitializer;
 import imi.loaders.repository.SharedAsset;
 import imi.loaders.repository.SharedAsset.SharedAssetType;
 import imi.scene.PNode;
-import imi.scene.animation.AnimationComponent;
 import imi.scene.animation.AnimationComponent.PlaybackMode;
 import imi.scene.animation.AnimationListener;
 import imi.scene.animation.AnimationState;
@@ -80,16 +79,18 @@ import imi.scene.processors.JSceneEventProcessor;
 import imi.scene.shader.programs.NormalAndSpecularMapShader;
 import imi.scene.shader.programs.VertDeformerWithSpecAndNormalMap;
 import imi.scene.utils.PMeshUtils;
+import imi.scene.utils.tree.JointModificationCollector;
+import imi.scene.utils.tree.TreeTraverser;
 import imi.serialization.xml.bindings.xmlCharacter;
 import imi.serialization.xml.bindings.xmlCharacterAttributes;
+import imi.serialization.xml.bindings.xmlJointModification;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.URL;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
-import javax.naming.OperationNotSupportedException;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
@@ -1068,20 +1069,68 @@ public abstract class Character extends Entity implements SpatialObject, Animati
      */
     private void applyCharacterDOM(xmlCharacter characterDOM)
     {
-        xmlCharacterAttributes xmlAttributes = characterDOM.getAttributes();
+        // The Attribute loading section is not functional currently,
+        // skeleton and local modifiers can be saved and loaded however
+//        // Attributes
+//        xmlCharacterAttributes xmlAttributes = characterDOM.getAttributes();
+//
+//        CharacterAttributes attributes = new CharacterAttributes(xmlAttributes.getName());
+//        attributes.setBaseURL(xmlAttributes.getBaseURL());
+//        attributes.setBindPoseFile(xmlAttributes.getBindPoseFile());
+//
+//        attributes.setAddInstructions((String[]) xmlAttributes.getAdditionInstructions().toArray(new String[0]));
+//        attributes.setDeleteInstructions((String[]) xmlAttributes.getDeletionInstructions().toArray(new String[0]));
+//        attributes.setAnimations((String[]) xmlAttributes.getBodyAnimations().toArray(new String[0]));
+//        attributes.setFacialAnimations((String[]) xmlAttributes.getFacialAnimations().toArray(new String[0]));
+//        attributes.setLoadInstructions((String[]) xmlAttributes.getLoadingInstructions().toArray(new String[0]));
+//
+//        // Apply the loaded attributes
+//        loadAttributes(attributes);
 
-        CharacterAttributes attributes = new CharacterAttributes(xmlAttributes.getName());
-        attributes.setBaseURL(xmlAttributes.getBaseURL());
-        attributes.setBindPoseFile(xmlAttributes.getBindPoseFile());
+        // Skeletal modifications
+        applySkeletalModifications(characterDOM);
+    }
 
-        attributes.setAddInstructions((String[]) xmlAttributes.getAdditionInstructions().toArray(new String[0]));
-        attributes.setDeleteInstructions((String[]) xmlAttributes.getDeletionInstructions().toArray(new String[0]));
-        attributes.setAnimations((String[]) xmlAttributes.getBodyAnimations().toArray(new String[0]));
-        attributes.setFacialAnimations((String[]) xmlAttributes.getFacialAnimations().toArray(new String[0]));
-        attributes.setLoadInstructions((String[]) xmlAttributes.getLoadingInstructions().toArray(new String[0]));
+    /**
+     * This method parses through the SkeletonDetails list in the DOM and applies
+     * the modifications.
+     * @param characterDOM
+     */
+    private void applySkeletalModifications(xmlCharacter characterDOM)
+    {
+        List<xmlJointModification> jointMods = characterDOM.getSkeletonDetails();
+        if (jointMods != null)
+        {
+            for (xmlJointModification jMod : jointMods)
+            {
+                SkinnedMeshJoint targetJoint = m_skeleton.findSkinnedMeshJoint(jMod.getTargetJointName());
+                if (targetJoint != null)
+                {
+                    // Apply customizations
+                    PMatrix mat = null;
+                    if (jMod.getLocalModifierMatrix() != null)
+                    {
+                        mat = jMod.getLocalModifierMatrix().getPMatrix();
+                        targetJoint.setLocalModifierMatrix(mat);
+                    }
 
-        // Apply the loaded attributes
-        loadAttributes(attributes);
+                    if (jMod.getSkeletonModifierMatrix() != null)
+                    {
+                        mat = jMod.getSkeletonModifierMatrix().getPMatrix();
+                        targetJoint.setSkeletonModifier(mat);
+                    }
+                }
+                else
+                {
+                    Logger.getLogger(Character.class.getName()).log(Level.WARNING,
+                            "Target joint not found for modifier: " + jMod.getTargetJointName());
+                }
+            }
+        }
+    }
+
+    public Character(String name) {
+        super(name);
     }
 
     /**
@@ -1091,12 +1140,22 @@ public abstract class Character extends Entity implements SpatialObject, Animati
     private xmlCharacter generateCharacterDOM()
     {
         xmlCharacter result = new xmlCharacter();
+        // Attributes
         if (m_attributes != null)
             result.setAttributes(m_attributes.generateAttributesDOM());
         else
         {
             Logger.getLogger(Character.class.getName()).log(Level.WARNING,
                     "Attemping to serialize a character with no attributes!");
+        }
+        // Store skeletal modifications
+        JointModificationCollector collector = new JointModificationCollector();
+        for (PNode kid : m_skeleton.getSkeletonRoot().getChildren())
+        {
+            collector.clearList();
+            TreeTraverser.breadthFirst(kid, collector);
+            for (xmlJointModification jMod : collector.getModifierList())
+                result.addJointModification(jMod);
         }
         return result;
     }

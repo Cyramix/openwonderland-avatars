@@ -173,4 +173,27 @@ public class xmlMatrix {
         rowFour = row;
     }
 
+    public PMatrix getPMatrix()
+    {
+        float[] fArray = new float[16];
+        fArray[ 0] = rowOne.x;
+        fArray[ 1] = rowOne.y;
+        fArray[ 2] = rowOne.z;
+        fArray[ 3] = rowOne.w;
+        fArray[ 4] = rowTwo.x;
+        fArray[ 5] = rowTwo.y;
+        fArray[ 6] = rowTwo.z;
+        fArray[ 7] = rowTwo.w;
+        fArray[ 8] = rowThree.x;
+        fArray[ 9] = rowThree.y;
+        fArray[10] = rowThree.z;
+        fArray[11] = rowThree.w;
+        fArray[12] = rowFour.x;
+        fArray[13] = rowFour.y;
+        fArray[14] = rowFour.z;
+        fArray[15] = rowFour.w;
+        PMatrix result = new PMatrix(fArray);
+        return result;
+    }
+
 }

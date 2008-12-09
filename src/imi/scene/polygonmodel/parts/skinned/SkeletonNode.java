@@ -346,10 +346,18 @@ public class SkeletonNode extends PNode implements Animated
      * Adds the specified skinned mesh instance as a child to this skeleton. This
      * method was created in order to explicitely indicate the intended result.
      * @param meshInst
+     * @param subGroup
      */
-    public void addSkinnedMeshInstance(PPolygonSkinnedMeshInstance pSkinnedMeshInstance)
+    public void addToSubGroup(PPolygonSkinnedMeshInstance meshInstance, String subGroup)
     {
-        addChild(pSkinnedMeshInstance);
+        PNode groupNode = findChild(subGroup);
+        if (groupNode == null)
+        {
+            groupNode = new PNode(subGroup);
+            addChild(groupNode);
+        }
+
+        groupNode.addChild(meshInstance);
     }
 
     /**
@@ -371,6 +379,46 @@ public class SkeletonNode extends PNode implements Animated
         return(null);
     }
 
+    /**
+     * Retrieve the list of meshes from the specified subGroup, if the subGroup
+     * is not found, null is returned. If the subGroup is found but it has no
+     * children, an empty list is returned
+     * @param subGroup Name of the subGroupto inspect
+     * @return
+     */
+    public List<PPolygonSkinnedMeshInstance> retrieveSkinnedMeshes(String subGroup)
+    {
+        ArrayList<PPolygonSkinnedMeshInstance> result = null;
+        final PNode groupNode = findChild(subGroup);
+
+        if (groupNode != null)
+        {
+            for (PNode kid : groupNode.getChildren())
+            {
+                if (kid instanceof PPolygonSkinnedMeshInstance)
+                    result.add((PPolygonSkinnedMeshInstance)kid);
+            }
+        }
+
+        return result;
+    }
+
+    /**
+     * Clear all skinned meshes from the specified subGroup
+     * @param subGroupName
+     * @return true if cleared, false if the subgroup was not found
+     */
+    public boolean clearSubGroup(String subGroupName)
+    {
+        boolean result = false;
+        PNode groupNode = findChild(subGroupName);
+        if (groupNode != null)
+        {
+            groupNode.removeAllChildren();
+            result = true;
+        }
+        return result;
+    }
     /**
      * Set the provided shader on all the skinned meshes that are direct children
      * of this skeleton node
