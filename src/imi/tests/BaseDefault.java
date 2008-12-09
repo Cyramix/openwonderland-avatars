@@ -129,6 +129,8 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
     protected Dimension                 m_DefaultSize       = new Dimension(m_width, 650);
     protected Dimension                 m_OpenSize          = new Dimension(800, 650);
     protected Character                 m_Character         = null;
+    protected int                       m_Gender            = 1;
+
 ////////////////////////////////////////////////////////////////////////////////
 // CLASS DATA MEMBERS - END
 ////////////////////////////////////////////////////////////////////////////////
@@ -874,6 +876,7 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
     public void openBasicOptions() {
         if (m_BasicOptions != null) {
             if (m_BasicOptions.isVisible()) {
+                m_Character = m_BasicOptions.getCharacter();
                 jPanel_MainPanel.remove(m_BasicOptions);
                 m_BasicOptions = null;
                 this.setSize(m_DefaultSize);
@@ -890,6 +893,7 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
 
         if (m_EZOptions != null) {
             if (m_EZOptions.isVisible()) {
+                m_Character = m_EZOptions.getCharacter();
                 jPanel_MainPanel.remove(m_EZOptions);
                 m_EZOptions = null;
             }
@@ -897,7 +901,10 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
 
         m_BasicOptions = new JPanel_BasicOptions();
         m_BasicOptions.setSceneData(m_sceneData);
+        m_BasicOptions.setGender(m_Gender);
+        m_BasicOptions.setCharacter(m_Character);
         m_sceneData.setCurCamProcessor(m_cameraProcessor);
+
         java.awt.GridBagConstraints gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
@@ -911,6 +918,7 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
     public void openEZOptions() {
         if (m_EZOptions != null) {
             if (m_EZOptions.isVisible()) {
+                m_Character = m_EZOptions.getCharacter();
                 jPanel_MainPanel.remove(m_EZOptions);
                 m_EZOptions = null;
                 this.setSize(m_DefaultSize);
@@ -927,6 +935,7 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
 
         if (m_BasicOptions != null) {
             if (m_BasicOptions.isVisible()) {
+                m_Character = m_BasicOptions.getCharacter();
                 jPanel_MainPanel.remove(m_BasicOptions);
                 m_BasicOptions = null;
             }
@@ -935,7 +944,10 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
         m_EZOptions = new JPanel_EZOptions();
         m_EZOptions.setSceneData(m_sceneData);
         m_EZOptions.setParentFrame(this);
+        m_EZOptions.setGender(m_Gender);
+        m_EZOptions.setCharacter(m_Character);
         m_sceneData.setCurCamProcessor(m_cameraProcessor);
+
         java.awt.GridBagConstraints gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
@@ -974,6 +986,14 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
 
     public void setCharacter(Character avatar) {
         m_Character = avatar;
+    }
+
+    public int getGender() {
+        return m_Gender;
+    }
+
+    public void setGender(int gender) {
+        m_Gender = gender;
     }
 
 ////////////////////////////////////////////////////////////////////////////////

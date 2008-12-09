@@ -43,7 +43,7 @@ public class CharacterAttributes
     private String[]                addInstructions         = new String[0];
     private AttachmentParams[]      attachmentsInstructions = new AttachmentParams[0];
     private Map<Integer, String[]>  geomRef                 = null;
-    private boolean                 bMale                   = true;
+    private int                     gender                  = -1;
 
     // For simple static geometry replacement
     private boolean useSimpleStaticModel    = false; 
@@ -179,12 +179,12 @@ public class CharacterAttributes
         geomRef.put(iRegion, names);
     }
 
-    public boolean isMale() {
-        return bMale;
+    public int getGender() {
+        return gender;
     }
 
-    public void setIsMale(boolean gender) {
-        bMale = gender;
+    public void setGender(int sex) {
+        gender = sex;
     }
 
     /**

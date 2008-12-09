@@ -77,6 +77,7 @@ public class JPanel_EZOptions extends javax.swing.JPanel {
     Component                           m_Parent;
     boolean[]                           m_Colors            = new boolean[] { false, false, false, false, false, false, false };
     Character                           m_avatar            = null;
+    int                                 m_gender            = 1;
 
     /** Creates new form JPanel_EZOptions */
     public JPanel_EZOptions() {
@@ -659,12 +660,13 @@ public class JPanel_EZOptions extends javax.swing.JPanel {
     }
 
     public void loadAvatar(int selection) {
-        if (jRadioButton_GenderMale.isSelected())
+        if (jRadioButton_GenderMale.isSelected()) {
             retrieveBindMeshInfo(1);
-        else
+            m_gender = 1;
+        } else {
             retrieveBindMeshInfo(2);
-
-        //m_sceneData.loadAvatarDAEURL(true, true, m_presetLists.get(selection), m_presets.get(selection));
+            m_gender = 2;
+        }
 
         // Create avatar attribs
         ArrayList<String> add       = new ArrayList<String>();
@@ -708,7 +710,8 @@ public class JPanel_EZOptions extends javax.swing.JPanel {
         }
 
         m_sceneData.setMeshSetup(m_meshes);
-        
+
+        attribs.setGeomRef(m_meshes);
         attribs.setBaseURL("");
         attribs.setBindPoseFile(m_presetLists.get(selection)[2]);
         attribs.setAnimations(new String[] {m_presetLists.get(selection)[3]} );
@@ -716,6 +719,7 @@ public class JPanel_EZOptions extends javax.swing.JPanel {
         attribs.setLoadInstructions(load.toArray(new String[load.size()]));
         attribs.setAddInstructions(add.toArray(new String[add.size()]));
         attribs.setAttachmentsInstructions(attach.toArray(new AttachmentParams[attach.size()]));
+        attribs.setGender(m_gender);
 
         if (m_avatar != null) {
             m_sceneData.getWM().removeEntity(m_avatar);
@@ -726,7 +730,6 @@ public class JPanel_EZOptions extends javax.swing.JPanel {
         m_avatar.setGeomRef(m_meshes);
         m_avatar.selectForInput();
         m_sceneData.setPScene(m_avatar.getPScene());
-        setCharacterOnParent();
     }
 
     public void setSceneData(SceneEssentials se) {
@@ -1474,7 +1477,20 @@ public class JPanel_EZOptions extends javax.swing.JPanel {
         m_avatar = avatar;
     }
 
+    public Character getCharacter() {
+        return m_avatar;
+    }
+    
     public void setCharacterOnParent() {
         ((BaseDefault)m_Parent).setCharacter(m_avatar);
+    }
+
+    public void setGender(int sex) {
+        m_gender = sex;
+
+        if (m_gender == 1)
+            jRadioButton_GenderMale.setSelected(true);
+        else if (m_gender == 2)
+            jRadioButton_GenderFemale.setSelected(true);
     }
 }
