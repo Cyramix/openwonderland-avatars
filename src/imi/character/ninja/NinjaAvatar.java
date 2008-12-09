@@ -18,6 +18,7 @@
 package imi.character.ninja;
 
 import imi.character.CharacterAttributes;
+import java.net.URL;
 import org.jdesktop.mtgame.WorldManager;
 
 /**
@@ -70,6 +71,16 @@ public class NinjaAvatar extends Ninja
             ((SitState)m_context.getStates().get(SitState.class)).setIdleSittingAnimationName("Male_Walk");
             ((SitState)m_context.getStates().get(SitState.class)).setGettingUpAnimationName("Male_Walk"); 
         }
+    }
+
+    /**
+     * Construct a new instance configured with the specified file.
+     * @param configurationFile
+     * @param wm
+     */
+    public NinjaAvatar(URL configurationFile, WorldManager wm)
+    {
+        super(configurationFile, wm);
     }
     
 }

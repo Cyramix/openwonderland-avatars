@@ -24,6 +24,7 @@ import imi.utils.input.InputScheme;
 import imi.scene.processors.JSceneEventProcessor;
 import imi.utils.input.NinjaControlScheme;
 import java.awt.event.KeyEvent;
+import java.net.URL;
 import org.jdesktop.mtgame.WorldManager;
 
 /*
@@ -37,6 +38,16 @@ public class Ninja extends imi.character.Character
     {
         super(attributes, wm);
         m_context = instantiateContext();       // Initialize m_context
+    }
+
+    /**
+     * Construct a new instance with the provided configuration file.
+     * @param configurationFile
+     * @param wm
+     */
+    public Ninja(URL configurationFile, WorldManager wm)
+    {
+        super(configurationFile, wm);
     }
      
     protected GameContext instantiateContext() {

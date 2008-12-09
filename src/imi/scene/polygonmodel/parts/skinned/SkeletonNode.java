@@ -34,6 +34,7 @@ import imi.scene.polygonmodel.skinned.SkinnedMeshJoint;
 import imi.scene.polygonmodel.skinned.PPolygonSkinnedMesh;
 import imi.scene.shader.AbstractShaderProgram;
 import java.util.ArrayList;
+import java.util.ConcurrentModificationException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
@@ -374,26 +375,43 @@ public class SkeletonNode extends PNode implements Animated
      * Set the provided shader on all the skinned meshes that are direct children
      * of this skeleton node
      * @param shader
+     * @return true on success, false otherwise (Concurrent modification for instance)
      */
-    public void setShaderOnSkinnedMeshes(AbstractShaderProgram shader)
+    public boolean setShaderOnSkinnedMeshes(AbstractShaderProgram shader)
     {
-        for (PNode kid : getChildren())
+        boolean result = false;
+        try
         {
-            if (kid instanceof PPolygonSkinnedMesh)
+            for (PNode kid : getChildren())
             {
-                PPolygonSkinnedMesh pSkinnedMesh = (PPolygonSkinnedMesh)kid;
+                if (kid instanceof PPolygonSkinnedMesh)
+                {
+                    PPolygonSkinnedMesh pSkinnedMesh = (PPolygonSkinnedMesh)kid;
 
-                pSkinnedMesh.getMaterialRef().setShader(shader);
-            }
-            else if (kid instanceof PPolygonSkinnedMeshInstance)
-            {
-                PPolygonSkinnedMeshInstance pSkinnedMeshInstance = (PPolygonSkinnedMeshInstance)kid;
+                    pSkinnedMesh.getMaterialRef().setShader(shader);
+                }
+                else if (kid instanceof PPolygonSkinnedMeshInstance)
+                {
+                    PPolygonSkinnedMeshInstance pSkinnedMeshInstance = (PPolygonSkinnedMeshInstance)kid;
 
-                PMeshMaterial mat = pSkinnedMeshInstance.getMaterialRef().getMaterial();
-                mat.setShader(shader);
-                pSkinnedMeshInstance.setMaterial(mat);
-                pSkinnedMeshInstance.setUseGeometryMaterial(false);
+                    PMeshMaterial mat = pSkinnedMeshInstance.getMaterialRef().getMaterial();
+                    mat.setShader(shader);
+                    pSkinnedMeshInstance.setMaterial(mat);
+                    pSkinnedMeshInstance.setUseGeometryMaterial(false);
+                }
             }
+            result = true;
+        }
+        catch (ConcurrentModificationException ex) // Someone else could be messing with our children
+        {
+            Logger.getLogger(SkeletonNode.class.getName()).log(Level.WARNING,
+                    "Concurrent Modification exception caught while attempting to apply" +
+                    "shaders to this SkeletonNode's skinned mesh instances.");
+            result = true;
+        }
+        finally
+        {
+            return result;
         }
      }
 

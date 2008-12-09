@@ -88,7 +88,7 @@ public class CharacterAnimationProcessor extends ProcessorComponent
         }
         else if (m_animated == null && m_modelInst == null)
             return;
-      
+
         // Assuming a one to one relationship between groups and states,
         // each AnimationState is holding state for the animation stored in 
         // that same AnimationGroup index

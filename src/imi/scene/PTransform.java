@@ -30,8 +30,8 @@ import com.jme.math.Vector3f;
  */
 public class PTransform 
 {
-    private PMatrix     m_local               = new PMatrix();
-    private PMatrix     m_world               = null;
+    private final PMatrix     m_local = new PMatrix();
+    private final PMatrix     m_world = new PMatrix();
     
     /** if false the world matrix needs to be recalculated */
     protected boolean   m_bDirtyWorldMat      = true;
@@ -42,7 +42,6 @@ public class PTransform
      */
     public PTransform() 
     {
-        m_world = new PMatrix(m_local);
     }
     
     /**
@@ -54,7 +53,7 @@ public class PTransform
     public PTransform(Vector3f rotation, Vector3f translation, Vector3f scale) 
     {
         m_local.set(rotation, translation, scale);
-        m_world = new PMatrix(m_local);
+        m_world.set(m_local);
     }
     
     /**
@@ -66,7 +65,7 @@ public class PTransform
     public PTransform(Vector3f rotation, Vector3f translation, float scale) 
     {
         m_local.set(rotation, translation, scale);
-        m_world = new PMatrix(m_local);
+        m_world.set(m_local);
     }
     
     /**
@@ -78,7 +77,7 @@ public class PTransform
     public PTransform(Quaternion rotation, Vector3f translation, Vector3f scale) 
     {
         m_local.set(rotation, translation, scale);
-        m_world = new PMatrix(m_local);
+        m_world.set(m_local);
     }
     
     /**
@@ -90,7 +89,7 @@ public class PTransform
     public PTransform(Quaternion rotation, Vector3f translation, float scale) 
     {
         m_local.set(rotation, translation, scale);
-        m_world = new PMatrix(m_local);
+        m_world.set(m_local);
     }
     
     /**
@@ -102,7 +101,7 @@ public class PTransform
         if (local == null)
             local = new PMatrix();
         m_local.set(local);
-        m_world = new PMatrix(m_local);
+        m_world.set(m_local);
     }
     
     /**
@@ -121,7 +120,7 @@ public class PTransform
     public PTransform(Matrix4f local) 
     {
         m_local.set(local);
-        m_world = new PMatrix(m_local);
+        m_world.set(m_local);
     }
     
     /**
@@ -177,7 +176,7 @@ public class PTransform
      */
     public void setLocalMatrix(PMatrix local) 
     {
-        m_local          = local;
+        m_local.set(local);
         m_bDirtyWorldMat = true;
     }
 

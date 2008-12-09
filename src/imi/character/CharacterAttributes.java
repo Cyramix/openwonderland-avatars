@@ -202,7 +202,7 @@ public class CharacterAttributes
         if (baseURL != null)
             result.setBaseURL(baseURL);
         else
-            result.setBaseURL("");
+            result.setBaseURL(null);
 
         if (BindPoseFile != null)
             result.setBindPoseFile(BindPoseFile);
@@ -212,38 +212,68 @@ public class CharacterAttributes
         
         // Body animations
         ArrayList<String> stringArray = new ArrayList<String>();
-        for (String str : animations)
-            stringArray.add(str);
-        result.setBodyAnimations(stringArray);
+        if (animations != null)
+        {
+            for (String str : animations)
+                stringArray.add(str);
+            result.setBodyAnimations(stringArray);
+        }
+        else
+            result.setBodyAnimations(null);
             
         // facial animations
-        stringArray = new ArrayList<String>();
-        for (String str : facialAnimations)
-            stringArray.add(str);
-        result.setFacialAnimations(stringArray);
+        if (facialAnimations != null)
+        {
+            stringArray = new ArrayList<String>();
+            for (String str : facialAnimations)
+                stringArray.add(str);
+            result.setFacialAnimations(stringArray);
+        }
+        else
+            result.setFacialAnimations(null);
 
         // deletion instructions
-        stringArray = new ArrayList<String>();
-        for (String str : deleteInstructions)
-            stringArray.add(str);
-        result.setDeletionInstructions(stringArray);
+        if (deleteInstructions != null)
+        {
+            stringArray = new ArrayList<String>();
+            for (String str : deleteInstructions)
+                stringArray.add(str);
+            result.setDeletionInstructions(stringArray);
+        }
+        else
+            result.setDeletionInstructions(null);
 
         // loading instructions
-        stringArray = new ArrayList<String>();
-        for (String str : loadInstructions)
-            stringArray.add(str);
-        result.setLoadingInstructions(stringArray);
+        if (loadInstructions != null)
+        {
+            stringArray = new ArrayList<String>();
+            for (String str : loadInstructions)
+                stringArray.add(str);
+            result.setLoadingInstructions(stringArray);
+        }
+        else
+            result.setLoadingInstructions(null);
 
         // addition instructions
-        stringArray = new ArrayList<String>();
-        for (String str : addInstructions)
-            stringArray.add(str);
-        result.setAdditionInstructions(stringArray);
+        if (addInstructions != null)
+        {
+            stringArray = new ArrayList<String>();
+            for (String str : addInstructions)
+                stringArray.add(str);
+            result.setAdditionInstructions(stringArray);
+        }
+        else
+            result.setAdditionInstructions(null);
         
         // load up all the attachment params
-        for (AttachmentParams param : attachmentsInstructions)
-            result.addAttachment(param.generateParamsDOM());
-        
+        if (attachmentsInstructions != null)
+        {
+            for (AttachmentParams param : attachmentsInstructions)
+                result.addAttachment(param.generateParamsDOM());
+        }
+        else
+            result.setAttachments(null);
+        // Finished
         return result;
     }
 }

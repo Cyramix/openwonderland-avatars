@@ -183,6 +183,18 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         // Add the entity to the world manager
         wm.addEntity(this);  
     }
+
+    /**
+     * Construct a new character using the specified configuration file and world
+     * manager.
+     * @param configurationFile
+     * @param wm
+     */
+    public Character(URL configurationFile, WorldManager wm)
+    {
+        super("unsupported");
+        throw new UnsupportedOperationException("Not implemented, check back later.");
+    }
      
     /**
      * Instantiate the GameContext for this xmlCharacter
