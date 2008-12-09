@@ -53,8 +53,8 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
     private int                     m_gender;
     private boolean                 m_isViewMode;
     private Component               m_Parent;
-    private CharacterAttributes     m_Attributes;
-    private Character               m_Avatar;
+    protected CharacterAttributes   m_Attributes;
+    protected Character             m_Avatar;
 ////////////////////////////////////////////////////////////////////////////////
 // CLASS DATA MEMBERS - END
 ////////////////////////////////////////////////////////////////////////////////
