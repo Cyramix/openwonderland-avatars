@@ -1169,7 +1169,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         attributes.setLoadInstructions((String[]) xmlAttributes.getLoadingInstructions().toArray(new String[0]));
 
         // Apply the loaded attributes
-//        loadAttributes(attributes);
+        loadAttributes(attributes);
 
         // Skeletal modifications
         applySkeletalModifications(characterDOM);
