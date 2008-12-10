@@ -371,10 +371,10 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         }
 
         // Skinned mesh attachments
-        String [] add = attributes.getAddInstructions();
+        CharacterAttributes.SkinnedMeshParams [] add = attributes.getAddInstructions();
         if (add != null && add.length > 0) {
             for (int i = 0; i < add.length; i++) {
-                pRootInstruction.addInstruction(InstructionNames.addSkinnedMesh, add[i]);
+                pRootInstruction.addSkinnedMeshInstruction(add[i].meshName, add[i].subGroupName);
             }
         }
 
@@ -382,7 +382,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         AttachmentParams [] attachments = attributes.getAttachmentsInstructions();
         if (attachments != null && attachments.length > 0) {
             for (int i = 0; i < attachments.length; i++) {
-                pRootInstruction.addInstruction(InstructionNames.addAttachment, attachments[i].getMeshName(), attachments[i].getJointName(), attachments[i].getMatrix());
+                pRootInstruction.addAttachmentInstruction( attachments[i].getMeshName(), attachments[i].getJointName(), attachments[i].getMatrix());
             }
         }
 
@@ -1017,12 +1017,12 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         
         // African
         pRootInstruction.addInstruction(InstructionNames.loadGeometry, fileProtocol + "assets/models/collada/Heads/MaleAfricanHead/AfricanAmericanMaleHead1_Bind.dae");
-        //pRootInstruction.addInstruction(InstructionNames.loadGeometry, fileProtocol + "assets/models/collada/Avatars/Male/Male_Bind.dae");
+        //pRootInstruction.addAttachmentInstruction(InstructionNames.loadGeometry, fileProtocol + "assets/models/collada/Avatars/Male/Male_Bind.dae");
         pRootInstruction.addInstruction(InstructionNames.addSkinnedMesh, "headOneShape");
         
         // Asian
-//        pRootInstruction.addInstruction(InstructionNames.loadGeometry, fileProtocol + "assets/models/collada/Heads/MaleAsianHead/AsianMaleHead1_Bind.dae");
-//        pRootInstruction.addInstruction(InstructionNames.addSkinnedMesh, "head2Shape");
+//        pRootInstruction.addAttachmentInstruction(InstructionNames.loadGeometry, fileProtocol + "assets/models/collada/Heads/MaleAsianHead/AsianMaleHead1_Bind.dae");
+//        pRootInstruction.addAttachmentInstruction(InstructionNames.addSkinnedMesh, "head2Shape");
         
         pProcessor.execute(pRootInstruction);
     }
@@ -1153,31 +1153,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         // Attributes
         xmlCharacterAttributes xmlAttributes = characterDOM.getAttributes();
 
-        CharacterAttributes attributes = new CharacterAttributes(xmlAttributes.getName());
-        attributes.setBaseURL(xmlAttributes.getBaseURL());
-        attributes.setBindPoseFile(xmlAttributes.getBindPoseFile());
-
-        attributes.setAddInstructions((String[]) xmlAttributes.getAdditionInstructions().toArray(new String[0]));
-        attributes.setDeleteInstructions((String[]) xmlAttributes.getDeletionInstructions().toArray(new String[0]));
-        attributes.setAnimations((String[]) xmlAttributes.getBodyAnimations().toArray(new String[0]));
-        attributes.setFacialAnimations((String[]) xmlAttributes.getFacialAnimations().toArray(new String[0]));
-        attributes.setLoadInstructions((String[]) xmlAttributes.getLoadingInstructions().toArray(new String[0]));
-        AttachmentParams[] attatch = new AttachmentParams[xmlAttributes.getAttachmentCount()];
-        for (int i = 0; i < xmlAttributes.getAttachmentCount(); i++) {
-            // TODO: Get rid of this.... once the hair loading works.... do not do this
-            PMatrix tempSolution = null;
-            if (xmlAttributes.getAttachments().get(i).getLocalSpaceTransform() == null)
-                tempSolution = new PMatrix(new Vector3f(0.0f, (float) Math.toRadians(180), 0.0f), new Vector3f(1.0f, 1.0f, 1.0f), Vector3f.ZERO);
-            else
-                tempSolution = xmlAttributes.getAttachments().get(i).getLocalSpaceTransform().getPMatrix();
-
-            AttachmentParams att = new AttachmentParams(xmlAttributes.getAttachments().get(i).getMeshName(),
-                                                        xmlAttributes.getAttachments().get(i).getJointToAttachOn(),
-                                                        tempSolution);
-            attatch[i] = att;
-        }
-        
-        attributes.setAttachmentsInstructions(attatch);
+        CharacterAttributes attributes = new CharacterAttributes(xmlAttributes);
 
         // Apply the loaded attributes
         loadAttributes(attributes);

@@ -837,7 +837,7 @@ public class SceneEssentials {
         } else
             tempSolution = new PMatrix(new Vector3f(0.0f,(float) Math.toRadians(180), 0.0f), new Vector3f(1.0f, 1.0f, 1.0f), Vector3f.ZERO);
 
-        pRootInstruction.addInstruction(InstructionNames.addAttachment, data[0], szName, tempSolution);
+        pRootInstruction.addAttachmentInstruction( data[0], szName, tempSolution);
         pProcessor.execute(pRootInstruction);
         
         int hairCheck = data[3].indexOf("Hair");
@@ -1042,18 +1042,24 @@ public class SceneEssentials {
                             pRootInstruction.addInstruction(InstructionNames.deleteSkinnedMesh, meshsetup.get(4)[i]);
                         
                         pRootInstruction.addInstruction(InstructionNames.loadGeometry, poloShirt);
-                        pRootInstruction.addInstruction(InstructionNames.addSkinnedMesh, "TorsoNudeShape");
-                        pRootInstruction.addInstruction(InstructionNames.addSkinnedMesh, "PoloShape");
+                        // This is the old way
+//                        pRootInstruction.addInstruction(InstructionNames.addSkinnedMesh, "TorsoNudeShape");
+//                        pRootInstruction.addInstruction(InstructionNames.addSkinnedMesh, "PoloShape");
+                        // Here is the new way
+                        pRootInstruction.addSkinnedMeshInstruction("TorsoNudeShape", "UpperBody");
+                        pRootInstruction.addSkinnedMeshInstruction("PoloShape", "UpperBody");
                         meshes = new String[] {"TorsoNudeShape", "PoloShape" };
                         meshsetup.put(2, meshes);
                         
                         pRootInstruction.addInstruction(InstructionNames.loadGeometry, jeansPants);
-                        pRootInstruction.addInstruction(InstructionNames.addSkinnedMesh, "polySurface3Shape");
+                        //pRootInstruction.addInstruction(InstructionNames.addSkinnedMesh, "polySurface3Shape");
+                        pRootInstruction.addSkinnedMeshInstruction("polySurface3Shape", "LowerBody");
                         meshes = new String[] {"polySurface3Shape"};
                         meshsetup.put(3, meshes);
                         
                         pRootInstruction.addInstruction(InstructionNames.loadGeometry, tennisShoes);
-                        pRootInstruction.addInstruction(InstructionNames.addSkinnedMesh, "TennisShoesShape");
+                        //pRootInstruction.addInstruction(InstructionNames.addSkinnedMesh, "TennisShoesShape");
+                        pRootInstruction.addSkinnedMeshInstruction("TennisShoesShape", "Feet");
                         meshes = new String[] {"TennisShoesShape"};
                         meshsetup.put(4, meshes);
 
@@ -1184,12 +1190,13 @@ public class SceneEssentials {
                 for (int i = 1; i < d.length; i++) {
                     PMatrix tempSolution;
                     tempSolution = new PMatrix(new Vector3f(0.0f, (float) Math.toRadians(180), 0.0f), new Vector3f(1.0f, 1.0f, 1.0f), Vector3f.ZERO);
-                    instruct.addInstruction(InstructionNames.addAttachment, d[i], "Head", tempSolution);
+                    instruct.addAttachmentInstruction( d[i], "Head", tempSolution);
                     meshes[i-1] = d[i];
                 }
             } else {
                 for (int i = 1; i < d.length; i++) {
-                    instruct.addInstruction(InstructionNames.addSkinnedMesh, d[i]);
+                    //instruct.addInstruction(InstructionNames.addSkinnedMesh, d[i]);
+                    instruct.addSkinnedMeshInstruction(d[i], "PORT MEEEEEEEE");
                     meshes[i-1] = d[i];
                 }
             }

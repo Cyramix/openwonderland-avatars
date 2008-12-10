@@ -154,6 +154,9 @@ public class xmlMatrix {
     // Convenience methods
     public void set(PMatrix mat)
     {
+        // Null check for safety
+        if (mat == null) // Do not serialize
+            return;
         float[] matrix = mat.getFloatArray();
 
         xmlFloatRow row = new xmlFloatRow();

@@ -53,7 +53,8 @@ import javax.xml.bind.annotation.XmlType;
     "deletionInstructions",
     "loadingInstructions",
     "additionInstructions",
-    "attachments"
+    "attachments",
+    "gender"
 })
 public class xmlCharacterAttributes {
 
@@ -72,9 +73,11 @@ public class xmlCharacterAttributes {
     @XmlElement(name = "LoadingInstructions")
     protected List<String> loadingInstructions;
     @XmlElement(name = "AdditionInstructions")
-    protected List<String> additionInstructions;
+    protected List<xmlSkinnedMeshParams> additionInstructions;
     @XmlElement(name = "Attachments")
     protected List<xmlCharacterAttachmentParameters> attachments;
+    @XmlElement(name = "Gender")
+    protected int gender;
 
     /**
      * Gets the value of the name property.
@@ -391,9 +394,9 @@ public class xmlCharacterAttributes {
      * 
      * 
      */
-    public List<String> getAdditionInstructions() {
+    public List<xmlSkinnedMeshParams> getAdditionInstructions() {
         if (additionInstructions == null) {
-            additionInstructions = new ArrayList<String>();
+            additionInstructions = new ArrayList<xmlSkinnedMeshParams>();
         }
         return this.additionInstructions;
     }
@@ -405,15 +408,15 @@ public class xmlCharacterAttributes {
         else return additionInstructions.size();
     }
 
-    public void setAdditionInstructions(List<String> instructionList) {
+    public void setAdditionInstructions(List<xmlSkinnedMeshParams> instructionList) {
         additionInstructions = instructionList;
     }
 
-    public void addAdditionInstruction(String instructionString)
+    public void addAdditionInstruction(xmlSkinnedMeshParams params)
     {
         if (additionInstructions == null)
-            additionInstructions = new ArrayList<String>();
-        additionInstructions.add(instructionString);
+            additionInstructions = new ArrayList<xmlSkinnedMeshParams>();
+        additionInstructions.add(params);
     }
 
     public void clearAdditionInstructionList()
@@ -479,5 +482,15 @@ public class xmlCharacterAttributes {
             attachments.clear();
             attachments = null;
         }
+    }
+
+    public int getGender()
+    {
+        return gender;
+    }
+
+    public void setGender(int gender)
+    {
+        this.gender = gender;
     }
 }

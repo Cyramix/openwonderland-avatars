@@ -49,6 +49,15 @@ public class AttachmentParams
         matrix    = orientation;
     }
 
+    /**
+     * Package private cons
+     * @param paramsDOM
+     */
+    AttachmentParams(xmlCharacterAttachmentParameters paramsDOM)
+    {
+        applyParamsDOM(paramsDOM);
+    }
+
 
     public String getJointName() {
         return jointName;
@@ -84,5 +93,19 @@ public class AttachmentParams
         transform.set(matrix);
 
         return result;
+    }
+
+    /**
+     * Package private method to apply the provided DOM to this instance
+     * @param paramsDOM
+     */
+    void applyParamsDOM(xmlCharacterAttachmentParameters paramsDOM)
+    {
+        if (paramsDOM == null)
+            return;
+        setMeshName(paramsDOM.getMeshName());
+        setJointName(paramsDOM.getJointToAttachOn());
+        if (paramsDOM.getLocalSpaceTransform() != null)
+            setMatrix(paramsDOM.getLocalSpaceTransform().getPMatrix());
     }
 }

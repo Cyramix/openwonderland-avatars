@@ -723,13 +723,13 @@ public class JPanel_EZOptions extends javax.swing.JPanel {
 
         m_sceneData.setMeshSetup(m_meshes);
 
-        attribs.setGeomRef(m_meshes);
         attribs.setBaseURL("");
         attribs.setBindPoseFile(m_presetLists.get(selection)[2]);
         attribs.setAnimations(new String[] {m_presetLists.get(selection)[3]} );
         attribs.setDeleteInstructions(delete.toArray(new String[delete.size()]));
         attribs.setLoadInstructions(load.toArray(new String[load.size()]));
-        attribs.setAddInstructions(add.toArray(new String[add.size()]));
+        // TODO : Port meeeeeeee
+        //attribs.setAddInstructions(add.toArray(new String[add.size()]));
         attribs.setAttachmentsInstructions(attach.toArray(new AttachmentParams[attach.size()]));
         attribs.setGender(m_gender);
 

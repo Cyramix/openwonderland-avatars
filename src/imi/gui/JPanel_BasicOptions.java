@@ -790,7 +790,6 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
         m_sceneData.setMeshSetup(m_meshes);
 
         m_Attributes = new CharacterAttributes("Avatar");
-        m_Attributes.setGeomRef(m_meshes);
         m_Attributes.setBaseURL("");
         m_Attributes.setBindPoseFile(data.get(0)[3]);
         m_Attributes.setAnimations(anim.get(0));
@@ -1124,7 +1123,8 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
             m_Attributes.setAnimations(anim);
         m_Attributes.setDeleteInstructions(delete.toArray(new String[delete.size()]));
         m_Attributes.setLoadInstructions(load.toArray(new String[load.size()]));
-        m_Attributes.setAddInstructions(add.toArray(new String[add.size()]));
+        // TODO : POrt meeeeeeeeeeee
+        //m_Attributes.setAddInstructions(add.toArray(new String[add.size()]));
         m_Attributes.setAttachmentsInstructions(attach.toArray(new AttachmentParams[attach.size()]));
     }
 

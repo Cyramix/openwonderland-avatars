@@ -41,7 +41,7 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link Matrix }
+     * Create an instance of {@link xmlMatrix }
      * 
      */
     public xmlMatrix createMatrix() {
@@ -57,7 +57,7 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link CharacterAttributes }
+     * Create an instance of {@link xmlCharacterAttributes }
      * 
      */
     public xmlCharacterAttributes createCharacterAttributes() {
@@ -73,7 +73,7 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link FloatRow }
+     * Create an instance of {@link xmlFloatRow }
      * 
      */
     public xmlFloatRow createFloatRow() {
@@ -81,11 +81,15 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link CharacterAttachmentParameters }
+     * Create an instance of {@link xmlCharacterAttachmentParameters }
      * 
      */
     public xmlCharacterAttachmentParameters createCharacterAttachmentParameters() {
         return new xmlCharacterAttachmentParameters();
+    }
+
+    public xmlSkinnedMeshParams createSkinnedMeshAdditionParams() {
+        return new xmlSkinnedMeshParams();
     }
 
     /**

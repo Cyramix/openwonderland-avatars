@@ -24,12 +24,14 @@ import imi.scene.PNode;
 
 
 /**
+ * This class is used to represent an instruction that will be interpreted by the
+ * instruction processor.
  * @author Chris Nagle
  */
 public class Instruction extends PNode
 {
-    private InstructionNames    m_Instruction;
-    private Object              m_Data;
+    private InstructionNames    m_Instruction = null;
+    private Object              m_Data = null;
 
     public enum InstructionNames
     {
@@ -68,12 +70,24 @@ public class Instruction extends PNode
     
         return(addInstruction(pNewInstruction));
     }
-    
+
+    /**
+     * This method is used to create, add to the tree, and return a new instruction.
+     * @param instruction
+     * @param data
+     * @return
+     */
     public Instruction addInstruction(InstructionNames instruction, Object data)
     {
         Instruction pNewInstruction = new Instruction(instruction, data);
         return(addInstruction(pNewInstruction));
     }
+
+    /**
+     * Add a
+     * @param pInstruction
+     * @return
+     */
     public Instruction addInstruction(Instruction pInstruction)
     {
         addChild(pInstruction);
@@ -81,16 +95,37 @@ public class Instruction extends PNode
         return(pInstruction);
     }
 
-    public void addInstruction(InstructionNames instruction, String meshName, String jointName, PMatrix oreintation) 
+    /**
+     *
+     * @param meshName
+     * @param jointName
+     * @param orientation
+     */
+    public void addAttachmentInstruction( String meshName, String jointName, PMatrix orientation )
     {
-        Instruction inst = new Instruction(instruction);
+        Instruction inst = new Instruction(Instruction.InstructionNames.addAttachment);
         
         Object[] array = new Object [3];
         array[0] = meshName;
         array[1] = jointName;
-        array[2] = oreintation;
+        array[2] = orientation;
         inst.setData(array);
         
+        addChild(inst);
+    }
+
+    /**
+     *
+     * @param meshName
+     * @param subGroupName
+     */
+    public void addSkinnedMeshInstruction(String meshName, String subGroupName)
+    {
+        Instruction inst = new Instruction(InstructionNames.addSkinnedMesh);
+        Object[] array = new Object[2];
+        array[0] = meshName;
+        array[1] = subGroupName;
+        inst.setData(array);
         addChild(inst);
     }
     

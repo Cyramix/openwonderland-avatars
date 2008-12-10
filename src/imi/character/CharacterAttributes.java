@@ -20,7 +20,9 @@ package imi.character;
 import imi.loaders.repository.SharedAsset;
 import imi.scene.PMatrix;
 import imi.scene.PScene;
+import imi.serialization.xml.bindings.xmlCharacterAttachmentParameters;
 import imi.serialization.xml.bindings.xmlCharacterAttributes;
+import imi.serialization.xml.bindings.xmlSkinnedMeshParams;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.logging.Level;
@@ -51,13 +53,12 @@ public class CharacterAttributes
     /** List of mesh names to be loaded **/
     private String[]                loadInstructions        = new String[0];
     /** List of skinned meshes to be added to the skeleton **/
-    private String[]                addInstructions         = new String[0];
+    //private String[]                addInstructions         = new String[0];
+    private SkinnedMeshParams[]     addInstructions = new SkinnedMeshParams[0];
     /** List of meshes to add as attachment nodes on the skeleton **/
     private AttachmentParams[]      attachmentsInstructions = new AttachmentParams[0];
-    /** **/
-    private Map<Integer, String[]>  geomRef                 = null;
-
-    private int                     gender                  = 1;
+    /** This specifies the gender of the avatar. Its exact meaning is not yet defined **/
+    private int                     gender                  = -1;
 
 
     // For simple static geometry replacement
@@ -71,6 +72,11 @@ public class CharacterAttributes
      */
     public CharacterAttributes(String name) {
         this.name = name;
+    }
+
+    CharacterAttributes(xmlCharacterAttributes attributesDOM)
+    {
+        applyAttributesDOM(attributesDOM);
     }
 
     public String getName() {
@@ -146,11 +152,11 @@ public class CharacterAttributes
         this.facialAnimations = facialAnimations;
     }
 
-    public String[] getAddInstructions() {
+    public SkinnedMeshParams[] getAddInstructions() {
         return addInstructions;
     }
 
-    public void setAddInstructions(String[] addInstructions) {
+    public void setAddInstructions(SkinnedMeshParams[] addInstructions) {
         this.addInstructions = addInstructions;
     }
 
@@ -180,22 +186,6 @@ public class CharacterAttributes
     
     PScene getSimpleScene() {
         return simpleScene;
-    }
-
-    public Map<Integer, String[]> getGeomRef() {
-        return geomRef;
-    }
-
-    public String[] getGeomRefNames(int iRegion) {
-        return geomRef.get(iRegion);
-    }
-
-    public void setGeomRef(Map<Integer, String[]> ref) {
-        geomRef = ref;
-    }
-
-    public void setGeomRefNames(String[] names, int iRegion) {
-        geomRef.put(iRegion, names);
     }
 
     public int getGender() {
@@ -276,10 +266,8 @@ public class CharacterAttributes
         // addition instructions
         if (addInstructions != null)
         {
-            stringArray = new ArrayList<String>();
-            for (String str : addInstructions)
-                stringArray.add(str);
-            result.setAdditionInstructions(stringArray);
+            for (SkinnedMeshParams params : addInstructions)
+                result.addAdditionInstruction(params.generateParamsDOM());
         }
         else
             result.setAdditionInstructions(null);
@@ -292,7 +280,95 @@ public class CharacterAttributes
         }
         else
             result.setAttachments(null);
+
+        // save the sex integer
+        result.setGender(gender);
         // Finished
         return result;
+    }
+
+    /**
+     * Package private method to apply the provided DOM information to this instance.
+     * @param attributesDOM
+     */
+    void applyAttributesDOM(xmlCharacterAttributes attributesDOM)
+    {
+        if (attributesDOM == null)
+            return;
+
+        this.setName(attributesDOM.getName());
+        this.setBaseURL(attributesDOM.getBaseURL());
+        this.setBindPoseFile(attributesDOM.getBindPoseFile());
+
+        this.setDeleteInstructions((String[]) attributesDOM.getDeletionInstructions().toArray(new String[0]));
+        this.setAnimations((String[]) attributesDOM.getBodyAnimations().toArray(new String[0]));
+        this.setFacialAnimations((String[]) attributesDOM.getFacialAnimations().toArray(new String[0]));
+        this.setLoadInstructions((String[]) attributesDOM.getLoadingInstructions().toArray(new String[0]));
+        // Attachment params
+        if (attributesDOM.getAttachments() != null)
+        {
+            AttachmentParams[] paramArray = new AttachmentParams[attributesDOM.getAttachments().size()];
+            int index = 0;
+            for (xmlCharacterAttachmentParameters params : attributesDOM.getAttachments())
+            {
+                paramArray[index] = new AttachmentParams(params);
+                index++;
+            }
+            this.setAttachmentsInstructions(paramArray);
+        }
+        // Skinned mesh addition params
+        if (attributesDOM.getAdditionInstructions() != null)
+        {
+            SkinnedMeshParams[] paramArray = new SkinnedMeshParams[attributesDOM.getAdditionInstructions().size()];
+            int index = 0;
+            for (xmlSkinnedMeshParams params : attributesDOM.getAdditionInstructions())
+            {
+                paramArray[index] = new SkinnedMeshParams(params);
+                index++;
+            }
+            this.setAddInstructions(paramArray);
+        }
+
+    }
+
+    public CharacterAttributes() {
+    }
+
+    /**
+     * This class wraps up the data needed to attach a skinned mesh
+     */
+    public class SkinnedMeshParams
+    {
+        public String meshName = null;
+        public String subGroupName = null;
+
+        public SkinnedMeshParams(xmlSkinnedMeshParams paramsDOM)
+        {
+            meshName = paramsDOM.getSkinnedMeshName();
+            subGroupName = paramsDOM.getSubGroupName();
+        }
+
+        public SkinnedMeshParams()
+        {
+            // Do nothing!
+        }
+        
+        public SkinnedMeshParams(String meshName, String subGroupName)
+        {
+            set(meshName, subGroupName);
+        }
+
+        public void set(String meshName, String subGroupName)
+        {
+            this.meshName = meshName;
+            this.subGroupName = subGroupName;
+        }
+
+        private xmlSkinnedMeshParams generateParamsDOM() {
+            xmlSkinnedMeshParams result = new xmlSkinnedMeshParams();
+            result.setSkinnedMeshName(meshName);
+            result.setSubGroupName(subGroupName);
+            return result;
+        }
     }
 }

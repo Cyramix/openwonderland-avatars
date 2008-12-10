@@ -80,7 +80,7 @@ public class NinjaAvatarAttributes extends CharacterAttributes
 
             ArrayList<String> delete    = new ArrayList<String>();
             ArrayList<String> load      = new ArrayList<String>();
-            ArrayList<String> add       = new ArrayList<String>();
+            ArrayList<SkinnedMeshParams> add       = new ArrayList<SkinnedMeshParams>();
             ArrayList<AttachmentParams> attachments = new ArrayList<AttachmentParams>();
 
             preset = (int) (Math.random() * 1000000 % numberOfFeet);
@@ -99,12 +99,12 @@ public class NinjaAvatarAttributes extends CharacterAttributes
 
             setDeleteInstructions(delete.toArray(new String[delete.size()]));
             setLoadInstructions(load.toArray(new String[load.size()]));
-            setAddInstructions(add.toArray(new String[add.size()]));
+            setAddInstructions(add.toArray(new SkinnedMeshParams[add.size()]));
             setAttachmentsInstructions(attachments.toArray(new AttachmentParams[attachments.size()]));
         }
     }
 
-    private void customizeFeetPresets(int preset, ArrayList<String> delete, ArrayList<String> load, ArrayList<String> add, ArrayList<AttachmentParams> attachments) 
+    private void customizeFeetPresets(int preset, ArrayList<String> delete, ArrayList<String> load, ArrayList<SkinnedMeshParams> add, ArrayList<AttachmentParams> attachments)
     {
         switch(preset)
         {
@@ -114,7 +114,7 @@ public class NinjaAvatarAttributes extends CharacterAttributes
                 delete.add("LFootNudeShape");
                 delete.add("RFootNudeShape");
                 load.add("assets/models/collada/Shoes/TennisShoes_M/MaleTennisShoes.dae");
-                add.add("TennisShoesShape");
+                add.add(new SkinnedMeshParams("TennisShoesShape", "Feet"));
             }
             break;
             case 1:
@@ -123,10 +123,10 @@ public class NinjaAvatarAttributes extends CharacterAttributes
                 delete.add("LFootNudeShape");
                 delete.add("RFootNudeShape");
                 load.add("assets/models/collada/Clothing/FlipFlopsFeet.dae");
-                add.add("LFootNudeShape");
-                add.add("RFootNudeShape");
-                add.add("LFlipFlopShape");
-                add.add("RFlipFlopShape");
+                add.add(new SkinnedMeshParams("LFootNudeShape", "Feet"));
+                add.add(new SkinnedMeshParams("RFootNudeShape", "Feet"));
+                add.add(new SkinnedMeshParams("LFlipFlopShape", "Feet"));
+                add.add(new SkinnedMeshParams("RFlipFlopShape", "Feet"));
             }
             break;
             case 2:
@@ -135,13 +135,13 @@ public class NinjaAvatarAttributes extends CharacterAttributes
                 delete.add("LFootNudeShape");
                 delete.add("RFootNudeShape");
                 load.add("assets/models/collada/Shoes/DressShoes_M/MaleDressShoes.dae");
-                add.add("polySurfaceShape3");
+                add.add(new SkinnedMeshParams("polySurfaceShape3", "Feet"));
             }
             break;
         }   
     }
 
-    private void customizeHairPresets(int preset, ArrayList<String> delete, ArrayList<String> load, ArrayList<String> add, ArrayList<AttachmentParams> attachments) 
+    private void customizeHairPresets(int preset, ArrayList<String> delete, ArrayList<String> load, ArrayList<SkinnedMeshParams> add, ArrayList<AttachmentParams> attachments)
     {
         PMatrix oreintation = new PMatrix(new Vector3f(0.0f,(float) Math.toRadians(180), 0.0f), new Vector3f(1.05f, 1.05f, 1.05f), Vector3f.ZERO);
         switch(preset)
@@ -167,7 +167,7 @@ public class NinjaAvatarAttributes extends CharacterAttributes
         }   
     }
 
-    private void customizeLegsPresets(int preset, ArrayList<String> delete, ArrayList<String> load, ArrayList<String> add, ArrayList<AttachmentParams> attachments) 
+    private void customizeLegsPresets(int preset, ArrayList<String> delete, ArrayList<String> load, ArrayList<SkinnedMeshParams> add, ArrayList<AttachmentParams> attachments)
     {
         switch(preset)
         {
@@ -176,7 +176,7 @@ public class NinjaAvatarAttributes extends CharacterAttributes
                 // Jeans
                 delete.add("LegsNudeShape");
                 load.add("assets/models/collada/Pants/Jeans_M/Jeans.dae");
-                add.add("polySurface3Shape");
+                add.add(new SkinnedMeshParams("polySurface3Shape", "LowerBody"));
             }
             break;
             case 1:
@@ -184,8 +184,8 @@ public class NinjaAvatarAttributes extends CharacterAttributes
                 // Shorts
                 delete.add("LegsNudeShape");
                 load.add("assets/models/collada/Pants/Shorts_M/Shorts.dae");
-                add.add("LegsNudeShape");
-                add.add("MaleShortsShape");
+                add.add(new SkinnedMeshParams("LegsNudeShape", "LowerBody"));
+                add.add(new SkinnedMeshParams("MaleShortsShape", "LowerBody"));
             }
             break;
             case 2:
@@ -193,13 +193,13 @@ public class NinjaAvatarAttributes extends CharacterAttributes
                 // Dress pants
                 delete.add("LegsNudeShape");
                 load.add("assets/models/collada/Pants/DressPants_M/MaleDressPants1.dae");
-                add.add("Legs_LegsNudeShape");
+                add.add(new SkinnedMeshParams("Legs_LegsNudeShape", "LowerBody"));
             }
             break;
         }   
     }
 
-    protected void customizeTorsoPresets(int preset, ArrayList<String> delete, ArrayList<String> load, ArrayList<String> add, ArrayList<AttachmentParams> attachments) 
+    protected void customizeTorsoPresets(int preset, ArrayList<String> delete, ArrayList<String> load, ArrayList<SkinnedMeshParams> add, ArrayList<AttachmentParams> attachments)
     {
         //preset = 2;
 
@@ -210,8 +210,8 @@ public class NinjaAvatarAttributes extends CharacterAttributes
                 // T Shirt
                 delete.add("TorsoNudeShape");
                 load.add("assets/models/collada/Shirts/TShirt_M/MaleTShirt.dae");
-                add.add("PoloShape");
-                add.add("ArmsShape");
+                add.add(new SkinnedMeshParams("PoloShape", "UpperBody"));
+                add.add(new SkinnedMeshParams("ArmsShape", "UpperBody"));
             }
             break;
             case 1:
@@ -219,8 +219,8 @@ public class NinjaAvatarAttributes extends CharacterAttributes
                 // Polo Strips
                 delete.add("TorsoNudeShape");
                 load.add("assets/models/collada/Shirts/PoloShirt_M/MalePolo.dae");
-                add.add("PoloShape");
-                add.add("TorsoNudeShape");
+                add.add(new SkinnedMeshParams("PoloShape", "UpperBody"));
+                add.add(new SkinnedMeshParams("TorsoNudeShape", "UpperBody"));
             }
             break;
             case 2:
@@ -228,7 +228,7 @@ public class NinjaAvatarAttributes extends CharacterAttributes
                 // Dress shirt
                 delete.add("TorsoNudeShape");
                 load.add("assets/models/collada/Shirts/DressShirt_M/MaleDressShirt.dae");
-                add.add("DressShirtShape");
+                add.add(new SkinnedMeshParams("DressShirtShape", "UpperBody"));
             }
             break;
         }   

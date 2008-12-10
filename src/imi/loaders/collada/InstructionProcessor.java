@@ -109,9 +109,8 @@ public class InstructionProcessor
             {
                 case addSkinnedMesh:
                 {
-                    String skinnedMeshName = pInstruction.getDataAsString();
-                    if (!addSkinnedMesh(skinnedMeshName))
-                        logger.warning("COLLADA configuration ERROR: was not able to ADD a skinned mesh! " + skinnedMeshName);
+                    if (!addSkinnedMesh((Object[])pInstruction.getData()))
+                        logger.warning("COLLADA configuration ERROR: was not able to ADD a skinned mesh!");
                 }
                 break;
                 case addAttachment:
@@ -205,8 +204,10 @@ public class InstructionProcessor
         return true;
     }
     
-    private boolean addSkinnedMesh(String skinnedMeshName) 
+    private boolean addSkinnedMesh(Object[] parameters)
     {
+        String skinnedMeshName = (String)parameters[0];
+        String subGroupName = (String)parameters[1];
         //  Find the SkinnedMesh that is the replacement.
         PPolygonSkinnedMesh pSkinnedMesh = null;
         
