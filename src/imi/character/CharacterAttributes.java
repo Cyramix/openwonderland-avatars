@@ -334,6 +334,11 @@ public class CharacterAttributes
     public CharacterAttributes() {
     }
 
+    public SkinnedMeshParams createSkinnedMeshParams(String meshName, String subGroupName)
+    {
+        return new SkinnedMeshParams(meshName, subGroupName);
+    }
+
     /**
      * This class wraps up the data needed to attach a skinned mesh
      */
