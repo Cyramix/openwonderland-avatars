@@ -11,9 +11,9 @@
  * except in compliance with the License. A copy of the License is
  * available at http://www.opensource.org/licenses/gpl-license.php.
  *
- * $Revision$
- * $Date$
- * $State$
+ * Sun designates this particular file as subject to the "Classpath" 
+ * exception as provided by Sun in the License file that accompanied 
+ * this code.
  */
 package imi.scene.polygonmodel;
 
@@ -223,7 +223,7 @@ public class PPolygonMeshInstance extends PNode
         
         if (m_textureInstaller == null)
         {
-            System.out.println("Why is the texture installer null?");
+            System.out.println("Why is the texture installer null? "+path.toString()+"  "+this);
             return;   
         }
         
@@ -313,6 +313,7 @@ public class PPolygonMeshInstance extends PNode
             texProps[i] = meshMat.getTexture(i);
         
         m_textureInstaller = new TextureInstaller(texProps, m_textureState);
+        System.err.println("Creating textureInstallter "+this);
 
         // TODO add functionality and data to this instance if we want 
         // to handle textures differently than the geometry

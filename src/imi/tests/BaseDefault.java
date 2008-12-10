@@ -11,9 +11,9 @@
  * except in compliance with the License. A copy of the License is
  * available at http://www.opensource.org/licenses/gpl-license.php.
  *
- * $Revision$
- * $Date$
- * $State$
+ * Sun designates this particular file as subject to the "Classpath" 
+ * exception as provided by Sun in the License file that accompanied 
+ * this code.
  */
 package imi.tests;
 
@@ -757,7 +757,7 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
     
     private void setFrame(WorldManager wm) {
         // The Rendering Canvas
-        m_renderBuffer = new RenderBuffer(RenderBuffer.Target.ONSCREEN, m_width, m_height);
+        m_renderBuffer = wm.getRenderManager().createRenderBuffer(RenderBuffer.Target.ONSCREEN, m_width, m_height);
         wm.getRenderManager().addRenderBuffer(m_renderBuffer);
         canvas_SceneRenderWindow = m_renderBuffer.getCanvas();
         wm.getRenderManager().setFrameRateListener(this, 100);

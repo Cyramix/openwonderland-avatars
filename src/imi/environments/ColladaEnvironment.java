@@ -11,9 +11,9 @@
  * except in compliance with the License. A copy of the License is
  * available at http://www.opensource.org/licenses/gpl-license.php.
  *
- * $Revision$
- * $Date$
- * $State$
+ * Sun designates this particular file as subject to the "Classpath" 
+ * exception as provided by Sun in the License file that accompanied 
+ * this code.
  */
 package imi.environments;
 
@@ -41,6 +41,7 @@ import imi.loaders.repository.Repository;
 import imi.loaders.repository.SharedAsset;
 import imi.scene.PMatrix;
 import imi.scene.PScene;
+import java.net.URL;
 import javolution.util.FastList;
 import org.jdesktop.mtgame.Entity;
 import org.jdesktop.mtgame.RenderComponent;
@@ -58,7 +59,9 @@ public class ColladaEnvironment extends Entity
     protected Boolean   m_finishedLoading = Boolean.FALSE;
     /** WorldManager HOOOOOOOO! **/
     protected WorldManager  m_wm = null;
-    
+
+    private PScene scene = null;
+
     /**
      * Primary constructor. This initializes and loads the environment. The provided
      * pscene is used to request the loading action, and once the loading has finished
@@ -94,9 +97,40 @@ public class ColladaEnvironment extends Entity
  
     }
     
+    public ColladaEnvironment(WorldManager wm, URL relativePath, String name)
+    {
+        super(name);
+        m_wm = wm;
+        // create and load the environment
+        Repository repo = (Repository)wm.getUserData(Repository.class);
+        AssetDescriptor descriptor = new AssetDescriptor(SharedAsset.SharedAssetType.COLLADA_Model, relativePath);
+        SharedAsset worldAsset = new SharedAsset(repo, descriptor, null);
+        worldAsset.setUserData(new ColladaLoaderParams(false, true, false, false, 0, name, null));
+
+        PScene scene = new PScene(m_wm);
+        scene.setUseRepository(false); // Synchronous loading requested
+        scene.addModelInstance(worldAsset, new PMatrix());
+
+        SceneGraphConvertor convertor = new SceneGraphConvertor();
+        m_jmeRoot = convertor.convert(scene);
+        //m_jmeRoot = new Node("NodeRoot");
+        // Now assign the rendering component
+        RenderComponent rc = m_wm.getRenderManager().createRenderComponent(m_jmeRoot);
+        this.addComponent(RenderComponent.class, rc);
+        // set some default rendering behavior
+        setDefaultRenderStates();
+        // add ourselves to the world manager
+        m_wm.addEntity(this);
+
+    }
+
     public Node getSceneRoot()
     {
         return m_jmeRoot;
+    }
+
+    public PScene getPScene() {
+        return scene;
     }
     
     public void setDefaultRenderStates()

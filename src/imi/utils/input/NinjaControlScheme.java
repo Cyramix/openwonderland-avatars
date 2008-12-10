@@ -11,9 +11,9 @@
  * except in compliance with the License. A copy of the License is
  * available at http://www.opensource.org/licenses/gpl-license.php.
  *
- * $Revision$
- * $Date$
- * $State$
+ * Sun designates this particular file as subject to the "Classpath" 
+ * exception as provided by Sun in the License file that accompanied 
+ * this code.
  */
 package imi.utils.input;
 
@@ -134,7 +134,7 @@ public class NinjaControlScheme extends InputScheme
     }
     
     private void processKeyEvent(KeyEvent ke) 
-    {           
+    {
         if (ke.getID() == KeyEvent.KEY_RELEASED) 
         {
             // Alter the input state for random reference
@@ -171,7 +171,7 @@ public class NinjaControlScheme extends InputScheme
             /////////////////////////////////////////////////////////////
             
             // Next Ninja
-            if (ke.getKeyCode() == KeyEvent.VK_PAGE_UP) 
+            if (ke.getKeyCode() == KeyEvent.VK_COMMA)
             {
                 if (!ninjaTeam.isEmpty())
                 {
@@ -188,7 +188,7 @@ public class NinjaControlScheme extends InputScheme
             }
             
             // Previouse Ninja
-            if (ke.getKeyCode() == KeyEvent.VK_PAGE_DOWN) 
+            if (ke.getKeyCode() == KeyEvent.VK_PERIOD)
             {
                 if (!ninjaTeam.isEmpty())
                 {

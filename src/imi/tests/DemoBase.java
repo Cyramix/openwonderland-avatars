@@ -11,9 +11,9 @@
  * except in compliance with the License. A copy of the License is
  * available at http://www.opensource.org/licenses/gpl-license.php.
  *
- * $Revision$
- * $Date$
- * $State$
+ * Sun designates this particular file as subject to the "Classpath" 
+ * exception as provided by Sun in the License file that accompanied 
+ * this code.
  */
 package imi.tests;
 
@@ -825,7 +825,7 @@ public class DemoBase
             menuBar.add(createMenu);
             
             // The Rendering Canvas
-            m_renderBuffer = new RenderBuffer(RenderBuffer.Target.ONSCREEN, width, height);
+            m_renderBuffer = wm.getRenderManager().createRenderBuffer(RenderBuffer.Target.ONSCREEN, width, height);
             wm.getRenderManager().addRenderBuffer(m_renderBuffer);
             canvas = m_renderBuffer.getCanvas();
             canvas.setVisible(true);
