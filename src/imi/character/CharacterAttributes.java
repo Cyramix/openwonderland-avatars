@@ -27,22 +27,36 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- *
+ * This class contains all the different attributes of a character. It contains
+ * things like the list of animations that need to be loaded as well as geometry
+ * substitutions, the bind pose, and other information.
  * @author Lou Hayt
  */
 public class CharacterAttributes 
 {
+    /** Name of the character **/
     private String                  name                    = "nameless";
+    /** The SharedAsset associated with this character's COLLADA model **/
     private SharedAsset             asset                   = null;
+    /** A string to be applied to the beginning of all paths **/
     private String                  baseURL                 = null;
+    /** The location of the bind pose file, relative to the base url**/
     private String                  BindPoseFile            = null;
+    /** List of body animations to load **/
     private String[]                animations              = new String[0];
+    /** List of facial animations to load **/
     private String[]                facialAnimations        = new String[0];
+    /** List of mesh names to delete**/
     private String[]                deleteInstructions      = new String[0];
+    /** List of mesh names to be loaded **/
     private String[]                loadInstructions        = new String[0];
+    /** List of skinned meshes to be added to the skeleton **/
     private String[]                addInstructions         = new String[0];
+    /** List of meshes to add as attachment nodes on the skeleton **/
     private AttachmentParams[]      attachmentsInstructions = new AttachmentParams[0];
+    /** **/
     private Map<Integer, String[]>  geomRef                 = null;
+    /** **/
     private int                     gender                  = -1;
 
     // For simple static geometry replacement
@@ -50,6 +64,10 @@ public class CharacterAttributes
     private PMatrix origin                  = null; 
     private PScene  simpleScene             = null;
 
+    /**
+     * Construct a new instance with the provided name
+     * @param name
+     */
     public CharacterAttributes(String name) {
         this.name = name;
     }

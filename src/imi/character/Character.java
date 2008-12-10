@@ -97,7 +97,8 @@ import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
 /**
- *
+ * This class represents the high level avatar. It provides methods for performing
+ * tasks that are character related.
  * @author Lou Hayt
  */
 public abstract class Character extends Entity implements SpatialObject, AnimationListener
@@ -130,11 +131,11 @@ public abstract class Character extends Entity implements SpatialObject, Animati
     private float                           m_eyesWanderCounter     = 0.0f;
     private int                             m_eyesWanderIntCounter  = 0;
     protected VerletArm                     m_arm                   = null;
-    private VerletJointManipulator          m_armJointManipulator   = null;          // old last minute joint manipulator
     private VerletSkeletonFlatteningManipulator m_armSkeletonManipulator = null; // new skeleton manipulator
     private float                           m_armTimer              = 0.0f;
     private float                           m_armTimeTick           = 1.0f / 60.0f;
     private Map<Integer, String[]>          m_geomRef               = null;
+
     /**
      * Sets up the mtgame entity 
      * @param attributes
@@ -208,32 +209,59 @@ public abstract class Character extends Entity implements SpatialObject, Animati
      * Override this method to initialize the game trigger actions mappings
      */
     protected abstract void initKeyBindings();
-    
+
+    /**
+     * Initialize the SharedAsset that will be used to load the character.
+     */
     private void initAsset()
     {
         if (m_attributes.getBindPoseFile().endsWith(".dae"))
         {
             URL bindPoseURL = null;
+
             try {
                 if (m_attributes.getBaseURL() != null)
                     bindPoseURL = new URL(m_attributes.getBaseURL() + m_attributes.getBindPoseFile());
             } catch (MalformedURLException ex) {
+                Logger.getLogger(Character.class.getName()).log(Level.SEVERE,
+                        "URL for the bind pose was malformed, it was: " +
+                        m_attributes.getBaseURL().toString() +
+                        m_attributes.getBindPoseFile().toString() +
+                        "Exception says, \"" + ex.getMessage() + "\"");
                 bindPoseURL = null;
             }
-            SharedAsset character;
+
+            SharedAsset character = null;
 
             if (bindPoseURL == null)
-                character = new SharedAsset(m_pscene.getRepository(), new AssetDescriptor(SharedAssetType.COLLADA_Model, m_attributes.getBindPoseFile()));
+            {
+                character = new SharedAsset(m_pscene.getRepository(),
+                        new AssetDescriptor(SharedAssetType.COLLADA_Model,
+                        m_attributes.getBindPoseFile()));
+            }
             else
-                character = new SharedAsset(m_pscene.getRepository(), new AssetDescriptor(SharedAssetType.COLLADA_Model, bindPoseURL));
+            {
+                character = new SharedAsset(m_pscene.getRepository(),
+                                new AssetDescriptor(SharedAssetType.COLLADA_Model,
+                                        bindPoseURL));
+            }
 
-            System.err.println("GOT SHARED ASSET "+character);
+            // Debugging / Diagnostic information
+            //System.err.println("GOT SHARED ASSET " + character);
 
             character.setUserData(new ColladaLoaderParams(true, true, false, false, 4, m_attributes.getName(), null));
+            // Set up the asset initializer to apply the attributes on this character when it executes
             setAssetInitializer(character, m_attributes);
+            m_attributes.setAsset(character);
         }
     }
-    
+
+    /**
+     * Set up an asset initializer for the provided shared asset and using some
+     * information from the provided CharacterAttributes object
+     * @param character
+     * @param attributes
+     */
     private void setAssetInitializer(SharedAsset character, final CharacterAttributes attributes) 
     {
         AssetInitializer init = new AssetInitializer() {
@@ -303,22 +331,30 @@ public abstract class Character extends Entity implements SpatialObject, Animati
 
             }
         };
+        /// Set it on the provided SharedAsset
         character.setInitializer(init);
-        attributes.setAsset(character);
     }
-    
+
+    /**
+     * This method applies all the commands of the CharacterAttributes object.
+     * Things such as animation files to load, geometry to remove or add, etc.
+     * @param attributes The attributes to process
+     */
     private void excecuteAttributes(CharacterAttributes attributes) 
     {   
         String fileProtocol = attributes.getBaseURL();
 
+        // If no base url was provided by the character attributes, then it is
+        // assumed that the prefix should be the file protocol to the local machine
+        // in the current folder.
         if (fileProtocol == null)
             fileProtocol = new String("file://localhost/" + System.getProperty("user.dir") + "/");
 
         InstructionProcessor pProcessor = new InstructionProcessor(m_wm);
         Instruction pRootInstruction = new Instruction();
-
+        // Set the skeleton to our skeleton
         pRootInstruction.addInstruction(InstructionNames.setSkeleton, m_skeleton);
-
+        // Load up any geometry requested by the provided attributes object
         String [] load = attributes.getLoadInstructions();
         if (load != null && load.length > 0) {
             for (int i = 0; i < load.length; i++) {
@@ -326,6 +362,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
             }
         }
 
+        // Skinned mesh removals
         String [] delete = attributes.getDeleteInstructions();
         if (delete != null && delete.length > 0) {
             for (int i = 0; i < delete.length; i++) {
@@ -333,6 +370,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
             }
         }
 
+        // Skinned mesh attachments
         String [] add = attributes.getAddInstructions();
         if (add != null && add.length > 0) {
             for (int i = 0; i < add.length; i++) {
@@ -340,6 +378,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
             }
         }
 
+        // Regular mesh attachments
         AttachmentParams [] attachments = attributes.getAttachmentsInstructions();
         if (attachments != null && attachments.length > 0) {
             for (int i = 0; i < attachments.length; i++) {
@@ -347,6 +386,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
             }
         }
 
+        // Load up body animations
         String [] anims = attributes.getAnimations();
         if (anims != null && anims.length > 0) {
             for (int i = 0; i < anims.length; i++) {
@@ -354,6 +394,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
             }
         }
 
+        // Load up facial animations
         String [] facialAnims = attributes.getFacialAnimations();
         if (facialAnims != null && facialAnims.length > 0) {
             for (int i = 0; i < facialAnims.length; i++) {
@@ -361,23 +402,37 @@ public abstract class Character extends Entity implements SpatialObject, Animati
             }
         }
 
+        // Execute the instruction tree
         pProcessor.execute(pRootInstruction);
-        
+
+        // Set shaders on all the meshes, as they may have changed during the above process
         m_skeleton.setShaderOnSkinnedMeshes(new VertDeformerWithSpecAndNormalMap(m_wm));
         m_skeleton.setShaderOnMeshes(new NormalAndSpecularMapShader(m_wm));
     }
-    
+
+    /**
+     * Interpret and apply the provided attributes and modify this character.
+     * @param attributes
+     */
     public void loadAttributes(CharacterAttributes attributes) {
+        // if a URL prefix was specified, it needs to be glued to the front of the paths
         URL bindPoseURL = null;
         try {
             if (attributes.getBaseURL() != null)
                 bindPoseURL = new URL(attributes.getBaseURL() + attributes.getBindPoseFile());
         } catch (MalformedURLException ex) {
+            Logger.getLogger(Character.class.getName()).log(Level.SEVERE,
+                    "Provided bind pose URL was malformed: " +
+                    attributes.getBaseURL().toString() +
+                    attributes.getBindPoseFile().toString() +
+                    " Exception says, \"" + ex.getMessage() + "\"");
             bindPoseURL = null;
         }
 
         SharedAsset character = null;
 
+        // If a bind pose file was specified then we need to completely reinitialize
+        // this avatar
         if (bindPoseURL != null) {
             this.numEntities();
             m_pscene = new PScene(attributes.getName(), m_wm);
@@ -387,8 +442,9 @@ public abstract class Character extends Entity implements SpatialObject, Animati
             ArrayList<ProcessorComponent> processors = new ArrayList<ProcessorComponent>();
             this.removeComponent(ProcessorCollectionComponent.class);
             character = new SharedAsset(m_pscene.getRepository(), new AssetDescriptor(SharedAssetType.COLLADA_Model, bindPoseURL));
-            character.setUserData(new ColladaLoaderParams(true, true, false, false, 4, attributes.getName(), null));
-            setAssetInitializer(character, attributes);
+            character.setUserData(new ColladaLoaderParams(true, true, false, false, 4, m_attributes.getName(), null));
+            setAssetInitializer(character, m_attributes);
+            m_attributes.setAsset(character);
             initScene(processors);
             ProcessorCollectionComponent processorCollection = new ProcessorCollectionComponent();
             for (int i = 0; i < processors.size(); i++)
@@ -405,12 +461,11 @@ public abstract class Character extends Entity implements SpatialObject, Animati
      */
     protected void initScene(ArrayList<ProcessorComponent> processors)
     {
-//        if (m_attributes.getBindPoseFile().endsWith(".dae"))
-//            m_pscene.setUseRepository(false);
-        
-        if(m_attributes.isUseSimpleStaticModel())
+
+        if(m_attributes.isUseSimpleStaticModel()) // Using the sphere simplification
         {
-            if (m_attributes.getSimpleScene()==null) {
+            if (m_attributes.getSimpleScene() == null) {
+
                 float radius = 1.0f;
                 ColorRGBA color = new ColorRGBA(ColorRGBA.randomColor());
                 SharedAsset modelAsset = new SharedAsset(m_pscene.getRepository(), new AssetDescriptor(SharedAssetType.MS3D_Mesh, ""));
@@ -426,7 +481,8 @@ public abstract class Character extends Entity implements SpatialObject, Animati
                 Sphere s = new Sphere("Character Sphere", Vector3f.ZERO, 25, 25, radius);
                 sphereMesh.getGeometry().reconstruct(s.getVertexBuffer(), s.getNormalBuffer(), s.getColorBuffer(), s.getTextureCoords(0), s.getIndexBuffer());
                 sphereMesh.setMaterial(geometryMaterial);
-                //sphereMesh.submit(new PPolygonTriMeshAssembler());
+
+
                 sphereMesh.setSubmitGeometry(false);
                 modelAsset.setAssetData(sphereMesh);
                 m_modelInst = m_pscene.addModelInstance("Character", modelAsset, m_attributes.getOrigin());
@@ -436,11 +492,11 @@ public abstract class Character extends Entity implements SpatialObject, Animati
                 m_modelInst = m_pscene.addModelInstance("Character", modelAsset, m_attributes.getOrigin()); 
             }
         }
-        else
+        else // Otherwise use the specified collada model
         {
-
             m_modelInst = m_pscene.addModelInstance(m_attributes.getName(), m_attributes.getAsset(), new PMatrix());
-            System.err.println("Model "+m_pscene+"  inst "+m_modelInst);
+            // Debugging / Diagnostic output
+            //System.err.println("Model "+m_pscene+"  inst "+m_modelInst);
             m_AnimationProcessor = new CharacterAnimationProcessor(m_modelInst);
             processors.add(m_AnimationProcessor);
         }
@@ -578,7 +634,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
     }
     
     /**
-     * Called each frame
+     * Called each frame; used to drive the character's assorted time-based functionality.
      * @param deltaTime
      */
     public void update(float deltaTime)
@@ -604,7 +660,11 @@ public abstract class Character extends Entity implements SpatialObject, Animati
             }
         }
     }
-    
+
+    /**
+     * Perform eyeball behavior. This method is driven by the update method
+     * @param deltaTime The timestep
+     */
     private void updateEyes(float deltaTime)
     {
         if (!m_bEyesWander || m_leftEyeBall == null || m_rightEyeBall == null)
@@ -676,7 +736,14 @@ public abstract class Character extends Entity implements SpatialObject, Animati
             m_initialized = true;
         }
     }
-    
+
+    /**
+     * Use this convenience method to animate a facial expression for a short
+     * amount of time.
+     * @param cycleName The name of the facial animation cycle to play
+     * @param fTimeIn How long should to transition into the animation take
+     * @param fTimeOut How long the transition out of the animation takes
+     */
     public void initiateFacialAnimation(String cycleName, float fTimeIn, float fTimeOut) 
     {
         if (m_facialAnimationQ == null)
@@ -690,7 +757,13 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         if (cycle != -1)
             initiateFacialAnimation(cycle, fTimeIn, fTimeOut);
     }
-    
+
+    /**
+     * Convenience method for playing facial animations.
+     * @param cycleIndex The index of the desired facial animation cycle
+     * @param fTimeIn Transition-to time.
+     * @param fTimeOut Transition-out time.
+     */
     public void initiateFacialAnimation(int cycleIndex, float fTimeIn, float fTimeOut)
     {
         if (m_facialAnimationQ == null)
@@ -725,7 +798,11 @@ public abstract class Character extends Entity implements SpatialObject, Animati
     public ObjectCollection getObjectCollection() {
         return m_objectCollection;
     }
-    
+
+    /**
+     * Return a new PSphere that is built around the model instances bounding sphere.
+     * @return The sphere
+     */
     public PSphere getBoundingSphere() 
     {
         if (m_modelInst.getBoundingSphere() == null)
@@ -885,7 +962,14 @@ public abstract class Character extends Entity implements SpatialObject, Animati
     {
         return m_initialized;
     }
-    
+
+    /**
+     * Convenience method to switch heads on this character. The provided skeleton
+     * should be the bind pose for the new head. The difference between the original
+     * skeleton and the new head's bind pose is calculated and used to fit the mesh
+     * more correctly to a different skeleton.
+     * @param skeleton The skeleton of the new head mesh.
+     */
     public void installHead(SkeletonNode skeleton) 
     {
         if (skeleton == null || m_skeleton == null)
@@ -1071,20 +1155,20 @@ public abstract class Character extends Entity implements SpatialObject, Animati
     {
         // The Attribute loading section is not functional currently,
         // skeleton and local modifiers can be saved and loaded however
-//        // Attributes
-//        xmlCharacterAttributes xmlAttributes = characterDOM.getAttributes();
-//
-//        CharacterAttributes attributes = new CharacterAttributes(xmlAttributes.getName());
-//        attributes.setBaseURL(xmlAttributes.getBaseURL());
-//        attributes.setBindPoseFile(xmlAttributes.getBindPoseFile());
-//
-//        attributes.setAddInstructions((String[]) xmlAttributes.getAdditionInstructions().toArray(new String[0]));
-//        attributes.setDeleteInstructions((String[]) xmlAttributes.getDeletionInstructions().toArray(new String[0]));
-//        attributes.setAnimations((String[]) xmlAttributes.getBodyAnimations().toArray(new String[0]));
-//        attributes.setFacialAnimations((String[]) xmlAttributes.getFacialAnimations().toArray(new String[0]));
-//        attributes.setLoadInstructions((String[]) xmlAttributes.getLoadingInstructions().toArray(new String[0]));
-//
-//        // Apply the loaded attributes
+        // Attributes
+        xmlCharacterAttributes xmlAttributes = characterDOM.getAttributes();
+
+        CharacterAttributes attributes = new CharacterAttributes(xmlAttributes.getName());
+        attributes.setBaseURL(xmlAttributes.getBaseURL());
+        attributes.setBindPoseFile(xmlAttributes.getBindPoseFile());
+
+        attributes.setAddInstructions((String[]) xmlAttributes.getAdditionInstructions().toArray(new String[0]));
+        attributes.setDeleteInstructions((String[]) xmlAttributes.getDeletionInstructions().toArray(new String[0]));
+        attributes.setAnimations((String[]) xmlAttributes.getBodyAnimations().toArray(new String[0]));
+        attributes.setFacialAnimations((String[]) xmlAttributes.getFacialAnimations().toArray(new String[0]));
+        attributes.setLoadInstructions((String[]) xmlAttributes.getLoadingInstructions().toArray(new String[0]));
+
+        // Apply the loaded attributes
 //        loadAttributes(attributes);
 
         // Skeletal modifications
@@ -1127,10 +1211,6 @@ public abstract class Character extends Entity implements SpatialObject, Animati
                 }
             }
         }
-    }
-
-    public Character(String name) {
-        super(name);
     }
 
     /**
