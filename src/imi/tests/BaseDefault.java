@@ -897,6 +897,7 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
 
         m_BasicOptions = new JPanel_BasicOptions();
         m_BasicOptions.setSceneData(m_sceneData);
+        m_BasicOptions.avatarCheck();
         m_sceneData.setCurCamProcessor(m_cameraProcessor);
 
         java.awt.GridBagConstraints gridBagConstraints = new java.awt.GridBagConstraints();

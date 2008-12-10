@@ -421,11 +421,6 @@ public abstract class Character extends Entity implements SpatialObject, Animati
             if (attributes.getBaseURL() != null)
                 bindPoseURL = new URL(attributes.getBaseURL() + attributes.getBindPoseFile());
         } catch (MalformedURLException ex) {
-            Logger.getLogger(Character.class.getName()).log(Level.SEVERE,
-                    "Provided bind pose URL was malformed: " +
-                    attributes.getBaseURL().toString() +
-                    attributes.getBindPoseFile().toString() +
-                    " Exception says, \"" + ex.getMessage() + "\"");
             bindPoseURL = null;
         }
 

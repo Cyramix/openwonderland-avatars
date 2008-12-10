@@ -1152,6 +1152,7 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
 
     public void avatarCheck() {
         if (m_sceneData.getAvatar() != null) {
+            m_gender = m_sceneData.getAvatar().getAttributes().getGender();
             InitListBoxes(false);
             m_meshes     = m_sceneData.getAvatar().getGeomRef();
             m_Attributes = m_sceneData.getAvatar().getAttributes();
