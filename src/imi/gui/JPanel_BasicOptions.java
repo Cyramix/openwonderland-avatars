@@ -1082,10 +1082,10 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
 
     public void addToAttributes(String bindpose, ArrayList<String[]> data, String[] geom, String[] anim, int region) {
         // Create avatar attribs
-        ArrayList<String> add               = new ArrayList<String>();
-        ArrayList<String> delete            = new ArrayList<String>();
-        ArrayList<String> load              = new ArrayList<String>();
-        ArrayList<AttachmentParams> attach  = new ArrayList<AttachmentParams>();
+        ArrayList<CharacterAttributes.SkinnedMeshParams> add    = new ArrayList<CharacterAttributes.SkinnedMeshParams>();
+        ArrayList<String> delete                                = new ArrayList<String>();
+        ArrayList<String> load                                  = new ArrayList<String>();
+        ArrayList<AttachmentParams> attach                      = new ArrayList<AttachmentParams>();
 
         load.add(data.get(0)[3]);
 
@@ -1096,7 +1096,8 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
             }
 
             for (int j = 0; j < geom.length; j ++) {
-                add.add(geom[j]);
+                CharacterAttributes.SkinnedMeshParams param = m_Attributes.createSkinnedMeshParams(geom[j], m_sceneData.m_regions[j]);
+                add.add(param);
             }
         } else if (region < 9) {
             for (int j = 0; j < geom.length; j ++) {
@@ -1123,8 +1124,7 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
             m_Attributes.setAnimations(anim);
         m_Attributes.setDeleteInstructions(delete.toArray(new String[delete.size()]));
         m_Attributes.setLoadInstructions(load.toArray(new String[load.size()]));
-        // TODO : POrt meeeeeeeeeeee
-        //m_Attributes.setAddInstructions(add.toArray(new String[add.size()]));
+        m_Attributes.setAddInstructions(add.toArray(new CharacterAttributes.SkinnedMeshParams[add.size()]));
         m_Attributes.setAttachmentsInstructions(attach.toArray(new AttachmentParams[attach.size()]));
     }
 

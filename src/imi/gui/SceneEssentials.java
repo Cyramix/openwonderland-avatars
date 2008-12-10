@@ -132,7 +132,8 @@ public class SceneEssentials {
      // Avatar
         private Character avatar;
         private int gender;
-        
+        public String[] m_regions = new String[] { "Head", "Hands", "UpperBody", "LowerBody", "Feet", "Hair", "FacialHair", "Hats", "Glasses", "Jackets" };
+
     public SceneEssentials() {
         initFileChooser();
 

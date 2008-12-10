@@ -97,9 +97,6 @@ public class JPanel_EZOptions extends javax.swing.JPanel {
                 }
             }
         });
-
-        if (m_sceneData.getAvatar() != null)
-            jButton_Load.setEnabled(true);
     }
 
     public void readPresetList(File xmlFile) {
@@ -392,6 +389,9 @@ public class JPanel_EZOptions extends javax.swing.JPanel {
         } catch (Throwable t) {
             t.printStackTrace();
         }
+
+        if (m_sceneData.getAvatar() != null)
+            jButton_Load.setEnabled(true);
     }
 
     public void setTable() {
@@ -681,11 +681,11 @@ public class JPanel_EZOptions extends javax.swing.JPanel {
         }
 
         // Create avatar attribs
-        ArrayList<String> add       = new ArrayList<String>();
-        ArrayList<String> delete    = new ArrayList<String>();
-        ArrayList<String> load      = new ArrayList<String>();
-        ArrayList<AttachmentParams> attach = new ArrayList<AttachmentParams>();
-        CharacterAttributes attribs = new CharacterAttributes("AvatarAttributes");
+        CharacterAttributes attribs                             = new CharacterAttributes("AvatarAttributes");
+        ArrayList<CharacterAttributes.SkinnedMeshParams> add    = new ArrayList<CharacterAttributes.SkinnedMeshParams>();
+        ArrayList<String> delete                                = new ArrayList<String>();
+        ArrayList<String> load                                  = new ArrayList<String>();
+        ArrayList<AttachmentParams> attach                      = new ArrayList<AttachmentParams>();
 
         for (int i = 0; i < 9; i ++) {
             if (m_presets.get(selection).get(i) == null)
@@ -700,8 +700,10 @@ public class JPanel_EZOptions extends javax.swing.JPanel {
                 for (int j = 0; j < m_presets.get(selection).get(i).length; j ++) {
                     if (j == 0)
                         load.add(m_presets.get(selection).get(i)[j]);
-                    else
-                        add.add(m_presets.get(selection).get(i)[j]);
+                    else {
+                        CharacterAttributes.SkinnedMeshParams param = attribs.createSkinnedMeshParams(m_presets.get(selection).get(i)[j], m_sceneData.m_regions[j]);
+                        add.add(param);
+                    }
                 }
             } else if (i < 9){
                 for (int j = 0; j < m_presets.get(selection).get(i).length; j ++) {
@@ -728,8 +730,7 @@ public class JPanel_EZOptions extends javax.swing.JPanel {
         attribs.setAnimations(new String[] {m_presetLists.get(selection)[3]} );
         attribs.setDeleteInstructions(delete.toArray(new String[delete.size()]));
         attribs.setLoadInstructions(load.toArray(new String[load.size()]));
-        // TODO : Port meeeeeeee
-        //attribs.setAddInstructions(add.toArray(new String[add.size()]));
+        attribs.setAddInstructions(add.toArray(new CharacterAttributes.SkinnedMeshParams[add.size()]));
         attribs.setAttachmentsInstructions(attach.toArray(new AttachmentParams[attach.size()]));
         attribs.setGender(m_gender);
 
