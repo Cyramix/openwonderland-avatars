@@ -46,14 +46,14 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
 // CLASS DATA MEMBERS - BEGIN
 ////////////////////////////////////////////////////////////////////////////////
     /** Scene Info */
-    private SceneEssentials         m_sceneData;
+    protected SceneEssentials         m_sceneData;
     /** Data Containers */
-    private Map<Integer, String[]>  m_meshes;
+    protected Map<Integer, String[]>  m_meshes;
     /** Others */
-    private int                     m_gender;
-    private boolean                 m_isViewMode;
-    private Component               m_Parent;
-    protected CharacterAttributes   m_Attributes;
+    protected int                     m_gender;
+    protected boolean                 m_isViewMode;
+    protected Component               m_Parent;
+    protected CharacterAttributes     m_Attributes;
 ////////////////////////////////////////////////////////////////////////////////
 // CLASS DATA MEMBERS - END
 ////////////////////////////////////////////////////////////////////////////////
