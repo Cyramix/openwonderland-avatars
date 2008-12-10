@@ -118,7 +118,7 @@ public class COLLADA_ModelTest extends DemoBase
                 Instruction maleBind = new Instruction(Instruction.InstructionNames.instructions, new String("Loading the male bind pose"));
                 maleBind.addInstruction(Instruction.InstructionNames.setSkeleton, null);
                 try {
-                    maleBind.addInstruction(Instruction.InstructionNames.loadBindPose, new URL("file://localhost/work/avatars/assets/models/collada/Avatars/Male/Male_Bind.dae"));
+                    maleBind.addInstruction(Instruction.InstructionNames.loadHumanoidAvatarBindPose, new URL("file://localhost/work/avatars/assets/models/collada/Avatars/Male/Male_Bind.dae"));
                 } catch (MalformedURLException ex) {
                     Logger.getLogger(COLLADA_ModelTest.class.getName()).log(Level.SEVERE, null, ex);
                 }
