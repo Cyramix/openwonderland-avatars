@@ -97,6 +97,9 @@ public class JPanel_EZOptions extends javax.swing.JPanel {
                 }
             }
         });
+
+        if (m_sceneData.getAvatar() != null)
+            jButton_Load.setEnabled(true);
     }
 
     public void readPresetList(File xmlFile) {
