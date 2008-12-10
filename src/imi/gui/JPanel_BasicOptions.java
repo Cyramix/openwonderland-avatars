@@ -54,7 +54,6 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
     private boolean                 m_isViewMode;
     private Component               m_Parent;
     protected CharacterAttributes   m_Attributes;
-    protected Character             m_Avatar;
 ////////////////////////////////////////////////////////////////////////////////
 // CLASS DATA MEMBERS - END
 ////////////////////////////////////////////////////////////////////////////////
@@ -302,7 +301,7 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
     ////////////////////////////////////////////////////////////////////////////
     public void loadHead(boolean isViewMode) {
         if (!isViewMode) {
-            if (m_Avatar == null)
+            if (m_sceneData.getAvatar() == null)
                 return;
         }
 
@@ -339,7 +338,7 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
         }
         else {
             addToAttributes(null, data, meshes, null, 0);
-            m_Avatar.loadAttributes(m_Attributes);
+            m_sceneData.getAvatar().loadAttributes(m_Attributes);
         }
 
         jButton_ApplyHead.setEnabled(true);
@@ -349,7 +348,7 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
 
     public void loadHead1(boolean isViewMode) {
         if (!isViewMode) {
-            if (m_Avatar == null)
+            if (m_sceneData.getAvatar() == null)
                 return;
         }
 
@@ -386,7 +385,7 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
         }
         else {
             addToAttributes(null, data, meshes, null, 0);
-            m_Avatar.loadAttributes(m_Attributes);
+            m_sceneData.getAvatar().loadAttributes(m_Attributes);
         }
 
         jButton_ApplyHead1.setEnabled(true);
@@ -396,7 +395,7 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
 
     public void loadUpperBody(boolean isViewMode) {
         if (!isViewMode) {
-            if (m_Avatar == null)
+            if (m_sceneData.getAvatar() == null)
                 return;
         }
 
@@ -431,7 +430,7 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
             m_sceneData.loadMeshDAEURL(true, true, this, data.get(0), meshes, 2);
         else {
             addToAttributes(null, data, meshes, null, 2);
-            m_Avatar.loadAttributes(m_Attributes);
+            m_sceneData.getAvatar().loadAttributes(m_Attributes);
         }
 
         jButton_ApplyBody.setEnabled(true);
@@ -440,7 +439,7 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
 
     public void loadLowerBody(boolean isViewMode) {
         if (!isViewMode) {
-            if (m_Avatar == null)
+            if (m_sceneData.getAvatar() == null)
                 return;
         }
 
@@ -475,7 +474,7 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
             m_sceneData.loadMeshDAEURL(true, true, this, data.get(0), meshes, 3);
         else {
             addToAttributes(null, data, meshes, null, 3);
-            m_Avatar.loadAttributes(m_Attributes);
+            m_sceneData.getAvatar().loadAttributes(m_Attributes);
         }
 
         jButton_ApplyLegs.setEnabled(true);
@@ -484,7 +483,7 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
 
     public void loadShoes(boolean isViewMode) {
         if (!isViewMode) {
-            if (m_Avatar == null)
+            if (m_sceneData.getAvatar() == null)
                 return;
         }
 
@@ -519,7 +518,7 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
             m_sceneData.loadMeshDAEURL(true, true, this, data.get(0), meshes, 4);
         else {
             addToAttributes(null, data, meshes, null, 4);
-            m_Avatar.loadAttributes(m_Attributes);
+            m_sceneData.getAvatar().loadAttributes(m_Attributes);
         }
 
         jButton_ApplyShoes.setEnabled(true);
@@ -528,7 +527,7 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
 
     public void loadHair(boolean isViewMode) {
         if (!isViewMode) {
-            if (m_Avatar == null)
+            if (m_sceneData.getAvatar() == null)
                 return;
         }
 
@@ -564,7 +563,7 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
         else {
             String[] hair = new String[] {data.get(0)[0]};
             addToAttributes(null, data, hair, null, 5);
-            m_Avatar.loadAttributes(m_Attributes);
+            m_sceneData.getAvatar().loadAttributes(m_Attributes);
         }
 
         jButton_ApplyHair.setEnabled(true);
@@ -573,7 +572,7 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
 
     public void loadFacialHair(boolean isViewmode) {
         if (!isViewmode) {
-            if (m_Avatar == null)
+            if (m_sceneData.getAvatar() == null)
                 return;
         }
 
@@ -609,7 +608,7 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
         else {
             String[] facialHair = new String[] {data.get(0)[0]};
             addToAttributes(null, data, facialHair, null, 6);
-            m_Avatar.loadAttributes(m_Attributes);
+            m_sceneData.getAvatar().loadAttributes(m_Attributes);
         }
 
         jButton_ApplyFacialHair.setEnabled(true);
@@ -618,7 +617,7 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
 
     public void loadHats(boolean isViewMode) {
         if (!isViewMode) {
-            if (m_Avatar == null)
+            if (m_sceneData.getAvatar() == null)
                 return;
         }
 
@@ -654,7 +653,7 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
         else {
             String [] acces = new String[] {data.get(0)[0]};
             addToAttributes(null, data, acces, null, 7);
-            m_Avatar.loadAttributes(m_Attributes);
+            m_sceneData.getAvatar().loadAttributes(m_Attributes);
         }
 
         jButton_ApplyHat.setEnabled(true);
@@ -663,7 +662,7 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
 
     public void loadSpecs(boolean isViewMode) {
         if (!isViewMode) {
-            if (m_Avatar == null)
+            if (m_sceneData.getAvatar() == null)
                 return;
         }
 
@@ -698,7 +697,7 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
             m_sceneData.loadMeshDAEURL(true, true, this, data.get(0), meshes, 8);
         else {
             addToAttributes(null, data, meshes, null, 8);
-            m_Avatar.loadAttributes(m_Attributes);
+            m_sceneData.getAvatar().loadAttributes(m_Attributes);
         }
 
         jButton_ApplySpecs.setEnabled(true);
@@ -801,18 +800,18 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
         m_Attributes.setAttachmentsInstructions(null);
         m_Attributes.setGender(m_gender);
 
-        if (m_Avatar != null) {
-            m_sceneData.getWM().removeEntity(m_Avatar);
-            m_Avatar = null;
+        if (m_sceneData.getAvatar() != null) {
+            m_sceneData.getWM().removeEntity(m_sceneData.getAvatar());
+            m_sceneData.setAvatar(null);
         }
 
-        m_Avatar = new NinjaAvatar(m_Attributes, m_sceneData.getWM());
-        while(!m_Avatar.isInitialized()) {
+        m_sceneData.setAvatar(new NinjaAvatar(m_Attributes, m_sceneData.getWM()));
+        while(!m_sceneData.getAvatar().isInitialized()) {
             
         }
-        m_Avatar.setGeomRef(m_meshes);
-        m_Avatar.selectForInput();
-        m_sceneData.setPScene(m_Avatar.getPScene());
+        m_sceneData.getAvatar().setGeomRef(m_meshes);
+        m_sceneData.getAvatar().selectForInput();
+        m_sceneData.setPScene(m_sceneData.getAvatar().getPScene());
 
         jLabel_CurrUpperBody.setText("Default");
         jLabel_CurrLowerBody.setText("Default");
@@ -1112,7 +1111,7 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
         for (int j = 0; j < geom.length; j++)
             meshes[j] = geom[j];
         m_meshes.put(region, meshes);
-        m_Avatar.getGeomRef().put(region, meshes);
+        m_sceneData.getAvatar().getGeomRef().put(region, meshes);
 
         m_Attributes.setBaseURL("");
         if (bindpose == null)
@@ -1138,10 +1137,6 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
         return m_meshes;
     }
 
-    public Character getCharacter() {
-        return m_Avatar;
-    }
-
     public int getGender() {
         return m_gender;
     }
@@ -1155,25 +1150,16 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
         m_meshes = meshes;
     }
 
-    public void setCharacter(Character avatar) {
-        m_Avatar = avatar;
-        if (m_Avatar != null) {
+    public void avatarCheck() {
+        if (m_sceneData.getAvatar() != null) {
             InitListBoxes(false);
-            m_meshes     = m_Avatar.getGeomRef();
-            m_Attributes = m_Avatar.getAttributes();
+            m_meshes     = m_sceneData.getAvatar().getGeomRef();
+            m_Attributes = m_sceneData.getAvatar().getAttributes();
         }
     }
 
     public void setGender(int gender) {
         m_gender = gender;
-    }
-
-    public void setCharacterOnParent() {
-        ((BaseDefault)m_Parent).setCharacter(m_Avatar);
-    }
-
-    public void setCharacterGenderOnParent() {
-        ((BaseDefault)m_Parent).setGender(m_gender);
     }
 
 ////////////////////////////////////////////////////////////////////////////////

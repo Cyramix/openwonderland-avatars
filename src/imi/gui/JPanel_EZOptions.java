@@ -31,6 +31,7 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Graphics;
 import java.io.File;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -76,7 +77,6 @@ public class JPanel_EZOptions extends javax.swing.JPanel {
     SceneEssentials                     m_sceneData;
     Component                           m_Parent;
     boolean[]                           m_Colors            = new boolean[] { false, false, false, false, false, false, false };
-    Character                           m_avatar            = null;
     int                                 m_gender            = 1;
 
     /** Creates new form JPanel_EZOptions */
@@ -114,7 +114,16 @@ public class JPanel_EZOptions extends javax.swing.JPanel {
 
             DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
-            Document doc = docBuilder.parse(xmlURL.openStream());
+            InputStream iStream = null;
+
+            try {
+                iStream = xmlURL.openStream();
+            } catch (Exception e) {
+                System.out.println(e.getMessage() + "...Retrying Connection");
+                readPresetList(xmlURL);
+            }
+
+            Document doc = docBuilder.parse(iStream);
 
             // normalize text representation
             doc.getDocumentElement().normalize();
@@ -721,15 +730,15 @@ public class JPanel_EZOptions extends javax.swing.JPanel {
         attribs.setAttachmentsInstructions(attach.toArray(new AttachmentParams[attach.size()]));
         attribs.setGender(m_gender);
 
-        if (m_avatar != null) {
-            m_sceneData.getWM().removeEntity(m_avatar);
-            m_avatar = null;
+        if (m_sceneData.getAvatar() != null) {
+            m_sceneData.getWM().removeEntity(m_sceneData.getAvatar());
+            m_sceneData.setAvatar(null);
         }
         
-        m_avatar = new NinjaAvatar(attribs, m_sceneData.getWM());
-        m_avatar.setGeomRef(m_meshes);
-        m_avatar.selectForInput();
-        m_sceneData.setPScene(m_avatar.getPScene());
+        m_sceneData.setAvatar(new NinjaAvatar(attribs, m_sceneData.getWM()));
+        m_sceneData.getAvatar().setGeomRef(m_meshes);
+        m_sceneData.getAvatar().selectForInput();
+        m_sceneData.setPScene(m_sceneData.getAvatar().getPScene());
     }
 
     public void setSceneData(SceneEssentials se) {
@@ -1471,18 +1480,6 @@ public class JPanel_EZOptions extends javax.swing.JPanel {
             iRegion = 8;          // Glasses
 
         m_meshes.put(iRegion, geometry);
-    }
-
-    public void setCharacter(Character avatar) {
-        m_avatar = avatar;
-    }
-
-    public Character getCharacter() {
-        return m_avatar;
-    }
-    
-    public void setCharacterOnParent() {
-        ((BaseDefault)m_Parent).setCharacter(m_avatar);
     }
 
     public void setGender(int sex) {

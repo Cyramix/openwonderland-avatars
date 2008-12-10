@@ -128,8 +128,6 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
     protected URL                       m_presetCaucasian   = null;
     protected Dimension                 m_DefaultSize       = new Dimension(m_width, 650);
     protected Dimension                 m_OpenSize          = new Dimension(800, 650);
-    protected Character                 m_Character         = null;
-    protected int                       m_Gender            = 1;
 
 ////////////////////////////////////////////////////////////////////////////////
 // CLASS DATA MEMBERS - END
@@ -876,7 +874,6 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
     public void openBasicOptions() {
         if (m_BasicOptions != null) {
             if (m_BasicOptions.isVisible()) {
-                m_Character = m_BasicOptions.getCharacter();
                 jPanel_MainPanel.remove(m_BasicOptions);
                 m_BasicOptions = null;
                 this.setSize(m_DefaultSize);
@@ -893,7 +890,6 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
 
         if (m_EZOptions != null) {
             if (m_EZOptions.isVisible()) {
-                m_Character = m_EZOptions.getCharacter();
                 jPanel_MainPanel.remove(m_EZOptions);
                 m_EZOptions = null;
             }
@@ -901,8 +897,6 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
 
         m_BasicOptions = new JPanel_BasicOptions();
         m_BasicOptions.setSceneData(m_sceneData);
-        m_BasicOptions.setGender(m_Gender);
-        m_BasicOptions.setCharacter(m_Character);
         m_sceneData.setCurCamProcessor(m_cameraProcessor);
 
         java.awt.GridBagConstraints gridBagConstraints = new java.awt.GridBagConstraints();
@@ -918,7 +912,6 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
     public void openEZOptions() {
         if (m_EZOptions != null) {
             if (m_EZOptions.isVisible()) {
-                m_Character = m_EZOptions.getCharacter();
                 jPanel_MainPanel.remove(m_EZOptions);
                 m_EZOptions = null;
                 this.setSize(m_DefaultSize);
@@ -935,7 +928,6 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
 
         if (m_BasicOptions != null) {
             if (m_BasicOptions.isVisible()) {
-                m_Character = m_BasicOptions.getCharacter();
                 jPanel_MainPanel.remove(m_BasicOptions);
                 m_BasicOptions = null;
             }
@@ -944,8 +936,6 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
         m_EZOptions = new JPanel_EZOptions();
         m_EZOptions.setSceneData(m_sceneData);
         m_EZOptions.setParentFrame(this);
-        m_EZOptions.setGender(m_Gender);
-        m_EZOptions.setCharacter(m_Character);
         m_sceneData.setCurCamProcessor(m_cameraProcessor);
 
         java.awt.GridBagConstraints gridBagConstraints = new java.awt.GridBagConstraints();
@@ -982,18 +972,6 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
                 openAnimationViewer();
             }
         }
-    }
-
-    public void setCharacter(Character avatar) {
-        m_Character = avatar;
-    }
-
-    public int getGender() {
-        return m_Gender;
-    }
-
-    public void setGender(int gender) {
-        m_Gender = gender;
     }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1230,6 +1208,11 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
                 //fileIOPanel1.loadConfigFile();
             }
         });
+        jMenuItem_LoadXMLFile.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem_LoadXMLFileActionPerformed(evt);
+            }
+        });
         jMenu_File.add(jMenuItem_LoadXMLFile);
 
         jMenuItem_SaveXMLFile.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_C, java.awt.event.InputEvent.CTRL_MASK));
@@ -1237,6 +1220,11 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
         jMenuItem_SaveXMLFile.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 //fileIOPanel1.saveConfigFile();
+            }
+        });
+        jMenuItem_SaveXMLFile.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem_SaveXMLFileActionPerformed(evt);
             }
         });
         jMenu_File.add(jMenuItem_SaveXMLFile);
@@ -1312,6 +1300,14 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void jMenuItem_LoadXMLFileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem_LoadXMLFileActionPerformed
+        m_sceneData.loadAvatarSaveFile(this);
+    }//GEN-LAST:event_jMenuItem_LoadXMLFileActionPerformed
+
+    private void jMenuItem_SaveXMLFileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem_SaveXMLFileActionPerformed
+        m_sceneData.saveAvatarSaveFile(this);
+    }//GEN-LAST:event_jMenuItem_SaveXMLFileActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private java.awt.Canvas canvas_SceneRenderWindow;

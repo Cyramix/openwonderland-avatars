@@ -56,8 +56,9 @@ public class CharacterAttributes
     private AttachmentParams[]      attachmentsInstructions = new AttachmentParams[0];
     /** **/
     private Map<Integer, String[]>  geomRef                 = null;
-    /** **/
-    private int                     gender                  = -1;
+
+    private int                     gender                  = 1;
+
 
     // For simple static geometry replacement
     private boolean useSimpleStaticModel    = false; 

@@ -27,6 +27,8 @@ import imi.loaders.repository.AssetDescriptor;
 import imi.loaders.repository.AssetInitializer;
 import imi.loaders.repository.SharedAsset;
 import imi.loaders.repository.SharedAsset.SharedAssetType;
+import imi.character.Character;
+import imi.character.ninja.NinjaAvatar;
 import imi.scene.JScene;
 import imi.scene.PMatrix;
 import imi.scene.PNode;
@@ -102,6 +104,7 @@ public class SceneEssentials {
         private JFileChooser jFileChooser_LoadModel = null;
         private JFileChooser jFileChooser_LoadXML = null;
         private JFileChooser jFileChooser_LoadAvatarDAE = null;
+        private JFileChooser jFileChooser_SaveXML = null;
         private ServerBrowserDialog serverFileChooserD = null;
         private JPanel_ServerBrowser serverBrowserPanel = null;
     // File Containers
@@ -126,6 +129,9 @@ public class SceneEssentials {
         private URL tennisShoes;
         static final int BUFFER = 2048;
         private File zipFileLoc = null;
+     // Avatar
+        private Character avatar;
+        private int gender;
         
     public SceneEssentials() {
         initFileChooser();
@@ -157,6 +163,12 @@ public class SceneEssentials {
     public boolean isDefaultLoad() {
         return bdefaultload;
     }
+    public Character getAvatar() {
+        return avatar;
+    }
+    public int getGender() {
+        return gender;
+    }
 
     // Mutators
     public void setJScene(JScene jscene) { currentJScene = jscene; }
@@ -184,6 +196,12 @@ public class SceneEssentials {
     }
     public void setDefaultLoad(boolean load) {
         bdefaultload = load;
+    }
+    public void setAvatar(Character c) {
+        avatar = c;
+    }
+    public void setGender(int sex) {
+        gender = sex;
     }
     // Helper Functions
     public void setSceneData(JScene jscene, PScene pscene, Entity entity, WorldManager wm, ArrayList<ProcessorComponent> processors) {
@@ -352,6 +370,33 @@ public class SceneEssentials {
         jFileChooser_LoadAvatarDAE.setDoubleBuffered(true);
         jFileChooser_LoadAvatarDAE.setDragEnabled(true);
         jFileChooser_LoadAvatarDAE.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+////////////////////////////////////////////////////////////////////////////////
+        FileFilter configFilter = new FileFilter() {
+            @Override
+            public boolean accept(File f) {
+                if(f.isDirectory()) {
+                    return true;
+                }
+
+                if (f.getName().toLowerCase().endsWith(".xml")) {
+                    return true;
+                }
+                return false;
+            }
+            @Override
+            public String getDescription() {
+                String szDescription = new String("Extensible Markup Language (*.xml)");
+                return szDescription;
+            }
+        };
+        jFileChooser_SaveXML = new javax.swing.JFileChooser();
+        jFileChooser_SaveXML.setDialogTitle("Save Extensible Markup Language File");
+        java.io.File source = new java.io.File("./assets/");
+        jFileChooser_SaveXML.setCurrentDirectory(xmlDirectory);
+
+        jFileChooser_SaveXML.setDragEnabled(true);
+        jFileChooser_SaveXML.addChoosableFileFilter((FileFilter)configFilter);
+
     }
     
     public void openServerBrowser(JFrame c) {
@@ -1426,6 +1471,36 @@ public class SceneEssentials {
                 }
             } catch (MalformedURLException ex) {
                 Logger.getLogger(SceneEssentials.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
+
+    public void loadAvatarSaveFile(Component arg0) {
+        int retVal = jFileChooser_LoadXML.showOpenDialog(arg0);
+        if (retVal == JFileChooser.APPROVE_OPTION) {
+            try {
+                File configfile = jFileChooser_LoadXML.getSelectedFile();
+                URL configURL   = configfile.toURI().toURL();
+                if (avatar == null) {
+                    avatar = new NinjaAvatar(configURL, worldManager);
+                } else if (avatar != null) {
+                    avatar.loadConfiguration(configURL);
+                }                
+            } catch (MalformedURLException ex) {
+                Logger.getLogger(SceneEssentials.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
+
+    public void saveAvatarSaveFile(Component arg0) {
+        File saveFile = new File("saveme.xml");
+        jFileChooser_SaveXML.setSelectedFile(saveFile);
+
+        int retVal = jFileChooser_SaveXML.showSaveDialog(arg0);
+        if (retVal == JFileChooser.APPROVE_OPTION) {
+            saveFile = jFileChooser_SaveXML.getSelectedFile();
+            if (avatar != null) {
+                avatar.saveConfiguration(saveFile);
             }
         }
     }
