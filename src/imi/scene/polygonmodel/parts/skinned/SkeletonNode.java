@@ -314,8 +314,15 @@ public class SkeletonNode extends PNode implements Animated
     {
         ArrayList<PPolygonSkinnedMeshInstance> result = new ArrayList<PPolygonSkinnedMeshInstance>();
         for (PNode kid : getChildren())
+        {
             if (kid instanceof PPolygonSkinnedMeshInstance)
                 result.add((PPolygonSkinnedMeshInstance)kid);
+            else if (kid.getName().equals("skeletonRoot") == false) // grouping node
+            {
+                for (PNode grandKid : kid.getChildren())
+                    result.add((PPolygonSkinnedMeshInstance)grandKid);
+            }
+        }
         return result;
     }
     

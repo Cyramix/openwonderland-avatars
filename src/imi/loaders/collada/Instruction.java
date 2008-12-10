@@ -36,7 +36,7 @@ public class Instruction extends PNode
     public enum InstructionNames
     {
         instructions,
-        loadBindPose,
+        loadHumanoidAvatarBindPose,
         loadGeometry,
         deleteSkinnedMesh,
         addSkinnedMesh,

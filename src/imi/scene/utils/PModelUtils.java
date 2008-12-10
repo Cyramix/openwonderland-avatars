@@ -24,6 +24,7 @@ import imi.scene.PMatrix;
 import imi.scene.polygonmodel.PPolygonMesh;
 import imi.scene.polygonmodel.PPolygonModel;
 import imi.utils.CircleUtil;
+import java.util.HashMap;
 
 
 public class PModelUtils 
@@ -389,6 +390,32 @@ public class PModelUtils
         return result;
     }
     
-    
 
+    /** Map of meshname to skeleton subgroup**/
+    private static HashMap<String, String> MeshToSubGroupMap = new HashMap<String, String>();
+    static
+    {
+        // Head
+        MeshToSubGroupMap.put("rightEyeGeoShape", "Head");
+        MeshToSubGroupMap.put("leftEyeGeoShape", "Head");
+        MeshToSubGroupMap.put("UpperTeethShape", "Head");
+        MeshToSubGroupMap.put("TongueGeoShape", "Head");
+        MeshToSubGroupMap.put("LowerTeethShape", "Head");
+        MeshToSubGroupMap.put("HeadGeoShape", "Head");
+        // UpperBody
+        MeshToSubGroupMap.put("TorsoNudeShape", "UpperBody");
+        // LowerBody
+        MeshToSubGroupMap.put("LegsNudeShape", "LowerBody");
+        // Feet
+        MeshToSubGroupMap.put("RFootNudeShape", "Feet");
+        MeshToSubGroupMap.put("LFootNudeShape", "Feet");
+        // Hands
+        MeshToSubGroupMap.put("RHandShape", "Hands");
+        MeshToSubGroupMap.put("LHandShape", "Hands");
+    }
+
+    public static String getSubGroupNameForMesh(String meshName)
+    {
+        return MeshToSubGroupMap.get(meshName);
+    }
 }

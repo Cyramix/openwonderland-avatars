@@ -29,6 +29,7 @@ import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
 import imi.scene.polygonmodel.skinned.PPolygonSkinnedMesh;
 import imi.scene.polygonmodel.skinned.PPolygonSkinnedMeshInstance;
 import imi.scene.polygonmodel.skinned.SkinnedMeshJoint;
+import imi.scene.utils.PModelUtils;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Iterator;
@@ -141,12 +142,24 @@ public class InstructionProcessor
                         logger.warning("COLLADA configuration ERROR: was not able to LOAD FACIAL ANIMATION!");
                 }
                 break;
-                case loadBindPose:
+                case loadHumanoidAvatarBindPose:
                 {
                     URL bindPoseLocation = new URL(pInstruction.getDataAsString());
                     m_skeleton = m_characterLoader.loadSkeletonRig(loadingPScene, bindPoseLocation);
                     if (m_skeleton == null)
                         logger.warning("COLLADA configuration ERROR: was not able to LOAD BIND POSE!");
+                    else
+                    {
+                        // sort the meshes!
+                        for (PPolygonSkinnedMeshInstance meshInst : m_skeleton.getSkinnedMeshInstances())
+                        {
+                            String subGroupName = PModelUtils.getSubGroupNameForMesh(meshInst.getName());
+                            if (subGroupName != null)
+                                m_skeleton.addToSubGroup(meshInst, subGroupName);
+                            else
+                                m_skeleton.addChild(meshInst);
+                        }
+                    }
                 }
                 break;
                 case loadGeometry:

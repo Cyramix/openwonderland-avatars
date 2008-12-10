@@ -484,7 +484,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
             } else {
                 SharedAsset modelAsset = new SharedAsset(m_pscene.getRepository(), new AssetDescriptor(SharedAssetType.MS3D_Mesh, ""));
                 modelAsset.setAssetData(m_attributes.getSimpleScene());
-                m_modelInst = m_pscene.addModelInstance("Character", modelAsset, m_attributes.getOrigin()); 
+                m_modelInst = m_pscene.addModelInstance("Character", modelAsset, m_attributes.getOrigin());
             }
         }
         else // Otherwise use the specified collada model
@@ -1084,6 +1084,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         try {
             final JAXBContext context = JAXBContext.newInstance("imi.serialization.xml.bindings");
             final Marshaller m = context.createMarshaller();
+            m.setProperty("jaxb.formatted.output", Boolean.TRUE);
             if (location.exists() == true && location.canWrite() == false)
                 throw new IOException("Request file (" + location.toString() + ") is not writeable.");
             else if (location.exists() == false)
