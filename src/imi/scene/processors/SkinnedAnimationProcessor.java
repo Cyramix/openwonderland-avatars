@@ -38,7 +38,7 @@ public class SkinnedAnimationProcessor extends ProcessorComponent
     private PPolygonModelInstance m_modelInst = null;
 
     private double oldTime = 0.0f;
-    private float deltaTime = 0.0f;
+    private double deltaTime = 0.0f;
 
     /**
      * This constructor receives the skeleton node
@@ -56,8 +56,14 @@ public class SkinnedAnimationProcessor extends ProcessorComponent
     @Override
     public void compute(ProcessorArmingCollection collection) 
     {
+        
+    }
+
+    @Override
+    public void commit(ProcessorArmingCollection collection) 
+    {
         double newTime = System.nanoTime() / 1000000000.0;
-        deltaTime = (float) (newTime - oldTime);
+        deltaTime = (newTime - oldTime);
         oldTime = newTime;
 
         if (m_animated == null && m_modelInst != null)
@@ -79,7 +85,7 @@ public class SkinnedAnimationProcessor extends ProcessorComponent
         }
         else if (m_animated == null && m_modelInst == null)
             return;
-        
+
         // Slightly hardcoded section follows. Avert your eyes!
         AnimationGroup AnimationGroup = m_animated.getAnimationComponent().getGroup();
         AnimationState AnimationState = m_animated.getAnimationState();
@@ -87,21 +93,12 @@ public class SkinnedAnimationProcessor extends ProcessorComponent
         // advance animation time
         if (!AnimationState.isPauseAnimation())
         {
-            // The new sweet way
-            //AnimationState.advanceAnimationTime(deltaTime);
-            // The old lame way
-            AnimationState.advanceAnimationTime(0.01f);
+            AnimationState.advanceAnimationTime((float)deltaTime);
             // calculate frame
             if (AnimationGroup != null)
                 AnimationGroup.calculateFrame(m_animated);
         }
-    }
-
-    @Override
-    public void commit(ProcessorArmingCollection collection) 
-    {
-        if (m_animated != null)
-            m_animated.setDirty(true, true);
+        m_animated.setDirty(true, true);
     }
 
     @Override

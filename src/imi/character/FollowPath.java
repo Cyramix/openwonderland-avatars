@@ -24,7 +24,7 @@ import imi.character.statemachine.GameContext;
 import imi.utils.graph.Connection;
 
 /**
- *
+ * This task performs path following along location nodes.
  * @author Lou Hayt
  */
 public class FollowPath implements Task
@@ -39,7 +39,14 @@ public class FollowPath implements Task
     private LocationNode location = null;
     
     private boolean bDone = false;
-    
+
+    /**
+     * Construct a new instance using the provided path name, location node,
+     * and game context
+     * @param pathName
+     * @param node
+     * @param context
+     */
     public FollowPath(String pathName, LocationNode node, GameContext context) 
     {
         this.context = context;
@@ -49,7 +56,11 @@ public class FollowPath implements Task
             location = node;
         }
     }
-    
+
+    /**
+     * Verify that the task is still valid (has not completed and has valid data)
+     * @return
+     */
     public boolean verify() 
     {
         if (path == null || location == null || bDone)
@@ -85,6 +96,10 @@ public class FollowPath implements Task
         status = "on hold";
     }
 
+    /**
+     * Has this task has no singular goal, null will always be returned.
+     * @return null
+     */
     public SpatialObject getGoal() {
         return null;
     }

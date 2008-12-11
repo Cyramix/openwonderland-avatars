@@ -33,8 +33,8 @@ public class WalkState extends GameState
         
     private float impulse               = 15.0f;
     
-    private float walkSpeedMax          = 4.5f;
-    private float walkSpeedFactor       = 4.0f; //  The walk state is using this value and OVERWRITES the super's animation speed...
+    private float walkSpeedMax          = 2.5f;
+    private float walkSpeedFactor       = 1.3f; //  The walk state is using this value and OVERWRITES the super's animation speed...
     
     private float exitCounter           = 0.0f;
     private float minimumTimeBeforeTransition = 0.05f; // still needed?
@@ -108,7 +108,7 @@ public class WalkState extends GameState
         
         // Set animation state
         SkeletonNode skeleton = ninjaContext.getSkeleton();
-        if (skeleton != null)   // Ninja's skeleton might be null untill loaded
+        if (skeleton != null)   // Ninja's skeleton might be null until loaded
         {        
             // Reverse animation if moving backwards
             NinjaController controller = ninjaContext.getController();

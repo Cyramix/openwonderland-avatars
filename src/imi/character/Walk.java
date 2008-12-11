@@ -20,6 +20,8 @@ package imi.character;
 import imi.character.ninja.NinjaContext;
 import imi.character.ninja.NinjaContext.TriggerNames;
 import imi.character.objects.SpatialObject;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *  Walk forward or backwards for a set amount of time
@@ -31,15 +33,23 @@ public class Walk implements Task
     private String  description  = "walk forward/backward for X secounds";
     private float   timeLength   = 0.0f;
     private boolean bForward     = true;
-    private float timeCounter = 0.0f;
+    private float   timeCounter  = 0.0f;
     
     private float turnTime = 0.5f;
     
     private NinjaContext ninjaContext = null;
-    
+
+    /**
+     * Construct a new instance of the walk task
+     * @param description A human-friendly description of this task instance
+     * @param time How long to walk
+     * @param bForward True for forward, false for reverse
+     * @param context The context to operate on.
+     */
     public Walk(String description, float time, boolean bForward, NinjaContext context) 
     {
-        System.out.println(description);
+        // Debugging / Diagnostic output
+        //Logger.getLogger(Walk.class.getName()).log(Level.INFO, description);
         
         ninjaContext = context;
         this.description = description;
@@ -79,24 +89,40 @@ public class Walk implements Task
         // stop walking 
         if (timeCounter > timeLength)
         {
-            System.out.println("stopping walk back");
+            // Debugging / Diagnostic output
+            //Logger.getLogger(Walk.class.getName()).log(Level.INFO, "Stopping walk back");
             return;
         }
 
         ninjaContext.getController().getWindow().setTitle("Walking Back");
     }
 
+    /**
+     * This method is called whenever a task must be put on hold temporarily
+     */
     public void onHold() {
     }
 
+    /**
+     * Return the human readable description of this walk task.
+     * @return
+     */
     public String getDescription() {
         return description;
     }
-    
+
+    /**
+     * Return a human readable string describing the status of this task.
+     * @return
+     */
     public String getStatus() {
         return "nothing interesting";
     }
 
+    /**
+     * This task has no goal. This method will always return null.
+     * @return NULL
+     */
     public SpatialObject getGoal() {
         return null;
     }

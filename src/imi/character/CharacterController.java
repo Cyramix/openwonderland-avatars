@@ -24,7 +24,8 @@ import java.util.HashSet;
 import javax.swing.JFrame;
 
 /**
- * NinjaController contains most concerte code at this point
+ * NinjaController contains most concrete code at this point. This class provides
+ * a base starting point for implementing character controllers.
  * 
  * @author Lou Hayt
  */
@@ -33,24 +34,42 @@ public class CharacterController
     protected boolean  bReverseHeading     = false;
     private PMatrix previousOrientation = new PMatrix();
     private Vector3f previousTranslation = new Vector3f();
-    
 
     private HashSet<CharacterMotionListener> listeners = null;
-    
+    /**
+     * Override to implement stopping functionality
+     */
     public void stop(){}
-    
+
+    /**
+     * Implement to return the character's current position
+     * @return
+     */
     public Vector3f getPosition() {
         return null;
     }
-    
+
+    /**
+     * Implement to return the character's right vector
+     * @return
+     */
     public Vector3f getRightVector() {
         return null;
     }
-    
+
+    /**
+     * Implement to return the character's forward vector
+     * @return
+     */
     public Vector3f getForwardVector() {
         return null;
     }
-    
+
+    /**
+     * Implement to return the character's rotational transform info as a
+     * quaternion
+     * @return
+     */
     public Quaternion getQuaternion() {
         return null;
     }

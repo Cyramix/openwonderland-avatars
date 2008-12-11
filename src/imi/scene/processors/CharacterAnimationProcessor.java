@@ -39,9 +39,10 @@ public class CharacterAnimationProcessor extends ProcessorComponent
     private PPolygonModelInstance   m_modelInst = null;
 
     private double oldTime = 0.0f;
-    private float deltaTime = 0.0f;
+    private double deltaTime = 0.0f;
     
     private boolean bEnable = true;
+    private boolean synchronizer = false;
 
     /**
      * This constructor receives the skeleton node
@@ -50,6 +51,7 @@ public class CharacterAnimationProcessor extends ProcessorComponent
     public CharacterAnimationProcessor(SkeletonNode skeleton) 
     {
         m_animated = skeleton;
+//        setRunInRenderer(true);
 //        if(skeleton.getParent() instanceof PPolygonModelInstance) 
 //            m_modelInst = (PPolygonModelInstance) skeleton.getParent();
     }
@@ -59,16 +61,22 @@ public class CharacterAnimationProcessor extends ProcessorComponent
     }
 
     @Override
-    public void compute(ProcessorArmingCollection collection) 
+    public synchronized void compute(ProcessorArmingCollection collection)
+    {
+
+    }
+
+    @Override
+    public void commit(ProcessorArmingCollection collection) 
     {
         if (!bEnable)
             return;
 
         double newTime = System.nanoTime() / 1000000000.0;
-        deltaTime = (float) (newTime - oldTime);
+        deltaTime = (newTime - oldTime);
         oldTime = newTime;
 
-        // If the modelInst constructor was used 
+        // If the modelInst constructor was used
         if (m_animated == null && m_modelInst != null)
         {
             // try to grab the skeleton
@@ -90,7 +98,7 @@ public class CharacterAnimationProcessor extends ProcessorComponent
             return;
 
         // Assuming a one to one relationship between groups and states,
-        // each AnimationState is holding state for the animation stored in 
+        // each AnimationState is holding state for the animation stored in
         // that same AnimationGroup index
         // Current groups in use: 0 - full body animations, 1 - face only animations
         AnimationState state = null;
@@ -100,7 +108,7 @@ public class CharacterAnimationProcessor extends ProcessorComponent
         {
             state = m_animated.getAnimationState(i);
             group = m_animated.getAnimationGroup(i);
-            
+
             if (state == null || group == null)
             {
                 Logger.getLogger(this.getClass().toString()).severe("Character animation processor iterated on a null state or group");
@@ -108,20 +116,13 @@ public class CharacterAnimationProcessor extends ProcessorComponent
             }
             else if (!state.isPauseAnimation())
             {
-                // The new awesome way
-                //state.advanceAnimationTime(deltaTime);
-                // old lame way
-                state.advanceAnimationTime(0.01f);
+                state.advanceAnimationTime((float)deltaTime);
+//                state.advanceAnimationTime(0.01666f);
                 group.calculateFrame(m_animated, i);
             }
         }
-    }
-
-    @Override
-    public void commit(ProcessorArmingCollection collection) 
-    {
-        if (m_animated != null)
-            m_animated.setDirty(true, true);
+        
+        m_animated.setDirty(true, true);
     }
 
     @Override

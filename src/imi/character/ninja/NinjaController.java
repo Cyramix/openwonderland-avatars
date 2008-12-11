@@ -23,6 +23,8 @@ import imi.character.CharacterController;
 import imi.scene.PMatrix;
 import imi.scene.PTransform;
 import imi.scene.polygonmodel.PPolygonModelInstance;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFrame;
 
 /**
@@ -305,6 +307,10 @@ public class NinjaController extends CharacterController
     @Override
     public Vector3f getPosition()
     {
+        // Debugging / Diagnostic information
+//        Logger.getLogger(NinjaController.class.getName()).log(Level.INFO,
+//                "Bodyt "+body.getTransform().getWorldMatrix(false));
+        
         if (body != null)
             return body.getTransform().getWorldMatrix(false).getTranslation();
         return null;

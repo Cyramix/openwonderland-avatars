@@ -24,42 +24,54 @@ import imi.scene.PScene;
 import imi.scene.polygonmodel.PPolygonModelInstance;
 import imi.scene.polygonmodel.parts.PMeshMaterial;
 import imi.scene.polygonmodel.skinned.PPolygonSkinnedMeshInstance;
-import imi.scene.shader.NoSuchPropertyException;
-import imi.scene.shader.ShaderProperty;
-import imi.scene.shader.dynamic.GLSLCompileException;
-import imi.scene.shader.dynamic.GLSLDataType;
-import imi.scene.shader.dynamic.GLSLShaderProgram;
-import imi.scene.shader.effects.MeshColorModulation;
-import imi.scene.shader.programs.VertDeformerWithSpecAndNormalMap;
 import imi.utils.PMathUtils;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.jdesktop.mtgame.WorldManager;
 
 /**
- *
+ * This class provides eyeball behavior by wrapping the mesh and setting particular
+ * attributes on it. The EyeBall class is capable of tracking a point within
+ * constraints (to avoid unnatural gazing angles).
  * @author Lou Hayt
  * @author Ronald E. Dahlgren
  * @author Shawn Kendall
  */
 public class EyeBall extends PPolygonSkinnedMeshInstance
 {
+    /** The Model Instance that owns this eyeball **/
     private PPolygonModelInstance modelInst  = null;
-    
+    /** World space coordinates of the view target **/
     private Vector3f target = new Vector3f(0.0f, 1.0f, 0.0f);
-    
+
+    /** Used as a limiting factor to restrict the range of motion of the eyeball **/
     private float limitCone = 0.57f;
+    /**
+     * This is used to warp space such that the eye's rotational range of motion
+     * is more ellipsoid rather than circular. Humans have a broader range
+     * horizontally than they do vertically.
+     **/
     private float yScale    = 2.0f;
     
     private boolean bInCone = false;
     private EyeBall otherEye = null;
-    
+
+    /**
+     * Construct a new eyeball using the provided mesh as the eye mesh, the model
+     * instance provided is the eyeball's owner, and the pscene containing both.
+     * @param meshInstance The eyeball mesh
+     * @param modelInst The owning model
+     * @param pscene The owning pscene
+     */
     public EyeBall(PPolygonSkinnedMeshInstance meshInstance, PPolygonModelInstance modelInst, PScene pscene)
     {
         super(meshInstance, pscene);
         this.modelInst = modelInst;
     }
-    
+
+    /**
+     * Performs the eyeball lookAt behavior.
+     * @param matrix The matrix being modified
+     * @param jointIndex Joint to modify
+     */
     @Override
     protected void postAnimationModifiedMeshSpaceMatrixHook(PMatrix matrix, int jointIndex) 
     {
@@ -120,6 +132,11 @@ public class EyeBall extends PPolygonSkinnedMeshInstance
         return bInCone;
     }
 
+    /**
+     * Package private method to apply particular shading effects to the eyeball
+     * instance.
+     * @param wm
+     */
     void applyShader(WorldManager wm) {
         // change textures to not use mip maps... leads to freaky eyeballs
         PMeshMaterial myMaterial = getMaterialRef().getMaterial();

@@ -38,11 +38,11 @@ public class GameState extends NamedUpdatableObject
     private Stack<TransitionObject> transitionStack = new Stack<TransitionObject>();
     boolean bReverseTransitionCheckTraversal = false;
     
-    protected String animationName = null;
-    protected float animationSpeed = 1.0f;
-    private boolean bReverseAnimation = false;
-    private float transitionDuration = 0.2f;
-    private boolean bTransitionReverseAnimation = false;
+    protected String    animationName       = null;
+    protected float     animationSpeed      = 0.8f;
+    private boolean     bReverseAnimation   = false;
+    private float       transitionDuration  = 0.2f;
+    private boolean     bTransitionReverseAnimation = false;
     
     private AnimationComponent.PlaybackMode cycleMode = AnimationComponent.PlaybackMode.Loop; // set when a transition is complete
     private AnimationComponent.PlaybackMode transitionCycleMode = AnimationComponent.PlaybackMode.Loop;

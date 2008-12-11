@@ -54,6 +54,10 @@ public class FlexibleCameraProcessor extends AWTEventProcessorComponent
     private CameraModel m_model = null;
     
     private NinjaControlScheme ninjaControl = null;
+
+    // Time
+    private double oldTime = 0.0;
+    private double deltaTime = 0.0;
     
     /**
      * The default constructor
@@ -108,16 +112,15 @@ public class FlexibleCameraProcessor extends AWTEventProcessorComponent
     @Override
     public void compute(ProcessorArmingCollection arg0)
     {
-        //float fCurrentTime = System.currentTimeMillis() / 1000.0f;
-        float delta = 0.00356f;//fCurrentTime - m_lastFrameTime;
-        if (delta > 1.0f)
-            delta = 0.0f;
+        double newTime = System.nanoTime() / 1000000000.0;
+        deltaTime = (newTime - oldTime);
+        oldTime = newTime;
 
         if (m_model != null && m_state != null)
         {
             try
             {
-                m_model.update(m_state, delta);
+                m_model.update(m_state, (float)deltaTime);
                 Object [] events = getEvents();
                 if (ninjaControl != null)
                     ninjaControl.processMouseEvents(events);
