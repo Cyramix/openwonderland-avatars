@@ -305,7 +305,6 @@ public class NinjaController extends CharacterController
     @Override
     public Vector3f getPosition()
     {
-        System.err.println("Bodyt "+body.getTransform().getWorldMatrix(false));
         if (body != null)
             return body.getTransform().getWorldMatrix(false).getTranslation();
         return null;
