@@ -65,20 +65,13 @@ public class NinjaControlScheme extends InputScheme
             ((FlexibleCameraProcessor)ninja.getWorldManager().getUserData(FlexibleCameraProcessor.class)).setControl(this);
     }
     
-    @Override
-    public void processEvents(Object[] events) 
+    public void processMouseEvents(Object[] events)
     {
         if (m_jscene == null || ninja == null)
             return;
         
         for (int i=0; i<events.length; i++) 
         {
-            if (events[i] instanceof KeyEvent) 
-            {
-                KeyEvent ke = (KeyEvent) events[i];
-                processKeyEvent(ke);
-            }
-            
             if (events[i] instanceof MouseEvent)
             {
                 if (ninjaTeam.get(currentNinja).getArm() != null &&  ninjaTeam.get(currentNinja).getArm().isEnabled())
@@ -133,6 +126,22 @@ public class NinjaControlScheme extends InputScheme
         }
     }
     
+    @Override
+    public void processEvents(Object[] events) 
+    {
+        if (m_jscene == null || ninja == null)
+            return;
+        
+        for (int i=0; i<events.length; i++) 
+        {
+            if (events[i] instanceof KeyEvent) 
+            {
+                KeyEvent ke = (KeyEvent) events[i];
+                processKeyEvent(ke);
+            }
+        }
+    }
+    
     private void processKeyEvent(KeyEvent ke) 
     {
         if (ke.getID() == KeyEvent.KEY_RELEASED) 
@@ -172,7 +181,7 @@ public class NinjaControlScheme extends InputScheme
             
             // Next Ninja
             if (ke.getKeyCode() == KeyEvent.VK_COMMA)
-            {
+            {   
                 if (!ninjaTeam.isEmpty())
                 {
                     currentNinja++;

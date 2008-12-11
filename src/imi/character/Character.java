@@ -326,6 +326,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
                     // New verlet skeleton manipulator
                     m_armSkeletonManipulator = new VerletSkeletonFlatteningManipulator(m_arm, m_skeleton);
                     m_arm.setSkeletonManipulator(m_armSkeletonManipulator);
+                    //m_arm.setPointAtLocation(Vector3f.UNIT_Y.mult(2.0f)); // test pointing, set to null to stop pointing 
                 }
                 return true;
 

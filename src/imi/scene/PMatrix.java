@@ -3410,7 +3410,7 @@ public class PMatrix
 	float determinant = t1.affineDeterminant();
 
 	if (determinant == 0.0)
-	    throw new UnsupportedOperationException("My ass is not yet inverted with your crap");
+	    throw new UnsupportedOperationException("invertAffine() PMatrix determinant == 0, can not invert matrix");
             //throw new SingularMatrixException(J3dI18N.getString("Transform3D1"));
         
 	float s = (t1.mat[0]*t1.mat[0] + t1.mat[1]*t1.mat[1] +
@@ -3458,7 +3458,7 @@ public class PMatrix
 	float determinant = affineDeterminant();
 
 	if (determinant == 0.0)
-	    throw new UnsupportedOperationException("My ass is not yet inverted with your crap");
+	    throw new UnsupportedOperationException("invertAffine() PMatrix determinant == 0, can not invert matrix");
         //throw new SingularMatrixException(J3dI18N.getString("Transform3D1"));
 
 	float s = (mat[0]*mat[0] + mat[1]*mat[1] +
@@ -3516,7 +3516,7 @@ public class PMatrix
 	// Calculate LU decomposition: Is the matrix singular?
 	if (!luDecomposition(tmp, row_perm)) {
 	    // Matrix has no inverse
-	    throw new UnsupportedOperationException("My ass is not yet inverted with your crap");
+	    throw new UnsupportedOperationException("invertAffine() PMatrix determinant == 0, can not invert matrix");
             //throw new SingularMatrixException(J3dI18N.getString("Transform3D1"));
 	}
 

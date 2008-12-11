@@ -120,7 +120,7 @@ public class FlexibleCameraProcessor extends AWTEventProcessorComponent
                 m_model.update(m_state, delta);
                 Object [] events = getEvents();
                 if (ninjaControl != null)
-                    ninjaControl.processEvents(events);
+                    ninjaControl.processMouseEvents(events);
                 m_model.handleInputEvents(m_state, events);
                 m_model.determineTransform(m_state, m_transform);
             } catch (WrongStateTypeException ex)

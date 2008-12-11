@@ -54,6 +54,8 @@ public class VerletArm
     
     private boolean manualDriveReachUp = true; // otherwise reach forward
     
+    private Vector3f pointAtLocation = null;
+    
     public VerletArm(SkinnedMeshJoint shoulderJ, PPolygonModelInstance modelInstance) 
     {
         modelInst     = modelInstance;
@@ -72,35 +74,46 @@ public class VerletArm
     {
         // Attach the first particle to the shoulder joint
         particles.get(shoulder).position(shoulderJoint.getTransform().getWorldMatrix(false).getTranslation());
-        
-        // Apply current input offset to the wrist particle
-        if (currentInputOffset.x != 0.0f || currentInputOffset.y != 0.0f || currentInputOffset.z != 0.0f)
-        {
-            if (manualDriveReachUp)
-            {
-                float temp = currentInputOffset.z;
-                currentInputOffset.z = currentInputOffset.y;
-                currentInputOffset.y = temp;
-            }
-            
-            PMatrix modelWorld = modelInst.getTransform().getWorldMatrix(false);
-            modelWorld.transformNormal(currentInputOffset);
-            
-            // Check if it is ok to move the wrist to the new position
-            Vector3f newWristPosition = particles.get(wrist).getCurrentPosition().add(currentInputOffset);
-            Vector3f shoulderPosition = particles.get(shoulder).getCurrentPosition();
-            if (newWristPosition.distance(shoulderPosition) < maxReach)
-            {
-                float backReach = 0.0f;
                 
-                Vector3f directionFromShoulderToWrist = newWristPosition.subtract(shoulderPosition).normalize();
-                if (modelWorld.getLocalZ().dot(directionFromShoulderToWrist) > backReach)
-                    particles.get(wrist).dislocate(currentInputOffset);
-                else
-                    particles.get(wrist).dislocate(directionFromShoulderToWrist.mult(-0.1f).add(modelWorld.getLocalZ().mult(0.1f)));
+        if (pointAtLocation != null)
+            pointAt();
+        else
+        {
+            Vector3f shoulderPosition = particles.get(shoulder).getCurrentPosition();
+            Vector3f wristPosition    = particles.get(wrist).getCurrentPosition();
+            if (wristPosition.distance(shoulderPosition) > maxReach)
+                particles.get(wrist).setMoveable(true);
+            else
+                particles.get(wrist).setMoveable(false);
+                
+            // Apply current input offset to the wrist particle
+            if (currentInputOffset.x != 0.0f || currentInputOffset.y != 0.0f || currentInputOffset.z != 0.0f)
+            {
+                if (manualDriveReachUp)
+                {
+                    float temp = currentInputOffset.z;
+                    currentInputOffset.z = currentInputOffset.y;
+                    currentInputOffset.y = temp;
+                }
+
+                PMatrix modelWorld = modelInst.getTransform().getWorldMatrix(false);
+                modelWorld.transformNormal(currentInputOffset);
+
+                // Check if it is ok to move the wrist to the new position
+                Vector3f newWristPosition = wristPosition.add(currentInputOffset);
+                if (newWristPosition.distance(shoulderPosition) < maxReach)
+                {
+                    float backReach = 0.0f;
+
+                    Vector3f directionFromShoulderToWrist = newWristPosition.subtract(shoulderPosition).normalize();
+                    if (modelWorld.getLocalZ().dot(directionFromShoulderToWrist) > backReach)
+                        particles.get(wrist).dislocate(currentInputOffset);
+                    else
+                        particles.get(wrist).dislocate(directionFromShoulderToWrist.mult(-0.1f).add(modelWorld.getLocalZ().mult(0.1f)));
+                }
+
+                currentInputOffset.zero();
             }
-            
-            currentInputOffset.zero();
         }
         
 	// Verlet integration step
@@ -150,8 +163,10 @@ public class VerletArm
         }
     }
     
-    public void resetArmPosition()
+    public void resetArm()
     {
+        pointAtLocation = null;
+        
         Vector3f shoulderPosition = shoulderJoint.getTransform().getWorldMatrix(false).getTranslation();
         particles.get(shoulder).position(shoulderPosition);
         particles.get(elbow).position(shoulderPosition.add(Vector3f.UNIT_Y.mult(-0.246216f)));
@@ -160,7 +175,27 @@ public class VerletArm
         PMatrix modelWorld = modelInst.getTransform().getWorldMatrix(false);
         particles.get(wrist).dislocate(modelWorld.getLocalZ().mult(0.1f));
     }
+    
+    private void pointAt()
+    {
+        float wristDistanceFromShoulder = 0.475f;
+        Vector3f shoulderPosition = particles.get(shoulder).getCurrentPosition();
+        Vector3f directionFromShoulderToWrist = pointAtLocation.subtract(shoulderPosition).normalize();
+        particles.get(wrist).position(shoulderPosition.add(directionFromShoulderToWrist.mult(wristDistanceFromShoulder)));
+    }
 
+    public Vector3f getPointAtLocation() {
+        return pointAtLocation;
+    }
+
+    /**
+     * Set to null to cancel pointing
+     * @param pointAtLocation
+     */
+    public void setPointAtLocation(Vector3f pointAtLocation) {
+        this.pointAtLocation = pointAtLocation;
+    }
+    
     public ArrayList<StickConstraint> getConstraints() {
         return constraints;
     }
@@ -196,7 +231,7 @@ public class VerletArm
         if (skeletonManipulator != null)
             skeletonManipulator.setEnabled(enabled);
         if (enabled)
-            resetArmPosition();
+            resetArm();
     }
     
     public boolean toggleEnabled()
@@ -207,7 +242,7 @@ public class VerletArm
         if (skeletonManipulator != null)
             skeletonManipulator.setEnabled(enabled);
         if (enabled)
-            resetArmPosition();
+            resetArm();
         return enabled;
     }
 

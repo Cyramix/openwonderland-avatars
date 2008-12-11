@@ -58,10 +58,12 @@ public class GoSit implements Task
     private int precisionCounter = 0;
             
     private float    sampleCounter     = 0.0f;
-    private float    sampleTimeFrame   = 3.0f;
+    private float    sampleTimeFrame   = 0.75f;
     private int      samples           = 1;
     private Vector3f sampleAvgPos      = new Vector3f();
     private Vector3f samplePrevAvgPos  = new Vector3f();
+    private int      sampleStreak      = 0;
+    private int      samplePrevStreak  = 0;
 
     private boolean  bTryAgain         = false;
     
@@ -163,20 +165,7 @@ public class GoSit implements Task
             // We have reached the goal, rotate to sitting direction
             Vector3f rightVec = ninjaContext.getController().getRightVector();
             float dot = sittingDirection.dot(rightVec);
-
-            if (dot < Float.MIN_VALUE && dot > -Float.MIN_VALUE)
-            {
-                System.out.println("turning around dot ~= 0!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-                // Check if inside the front half of space
-                Vector3f fwdVec = ninjaContext.getController().getForwardVector();
-                float frontHalfDot = sittingDirection.dot(fwdVec);
-                if (frontHalfDot > 0.0f)
-                {
-                    System.out.println("turning around dot++");
-                    dot++;
-                }
-            }
-
+            
             if (dot > directionSensitivity)
             {
                 ninjaContext.triggerPressed(TriggerNames.Move_Right.ordinal());
@@ -188,7 +177,19 @@ public class GoSit implements Task
                 ninjaContext.triggerReleased(TriggerNames.Move_Right.ordinal()); 
             }
             else 
-            {    
+            {
+                // Check if inside the front half of space
+                Vector3f fwdVec = ninjaContext.getController().getForwardVector();
+                float frontHalfDot = sittingDirection.dot(fwdVec);
+                if (frontHalfDot > 0.0f)
+                {
+                    System.out.println("turning around");
+                    if ( !ninjaContext.getTriggerState().isKeyPressed(TriggerNames.Move_Right.ordinal()) && 
+                         !ninjaContext.getTriggerState().isKeyPressed(TriggerNames.Move_Left.ordinal()) )
+                        ninjaContext.triggerPressed(TriggerNames.Move_Right.ordinal());        
+                    return;
+                }
+                
                 ninjaContext.getController().getWindow().setTitle("Pulling towards the goal point");
                 ninjaContext.resetTriggersAndActions();
                 bDoneTurning = true;
@@ -201,7 +202,7 @@ public class GoSit implements Task
 
             // Set position
             PMatrix localMat = ninjaContext.getController().getTransform().getLocalMatrix(true);
-            localMat.setTranslation(goalPosition); 
+            localMat.setTranslation(goalPosition);
 
             // Positioned properlly!
             bDone = true;
@@ -365,23 +366,41 @@ public class GoSit implements Task
         {
             // Sample "tick"
             sampleAvgPos.divideLocal(samples);
-            float currentAvgDistance  = sampleAvgPos.distance(goalPosition);
-            float previousAvgDistance = samplePrevAvgPos.distance(goalPosition);
+            float currentAvgDistance  = sampleAvgPos.distanceSquared(goalPosition);
+            float previousAvgDistance = samplePrevAvgPos.distanceSquared(goalPosition);
             
             // which is closer to the goal? the current sample average position or the previous one?
             if (currentAvgDistance > previousAvgDistance)
             {
-                // we are not closer to the goal after sampleTimeFrame secounds... let's try to get out of this loop
-                //Task walk = (Task) new Walk("Walking away from loop", 0.5f, true, ninjaContext);
-                //ninjaContext.getSteering().addTaskToTop(walk);
-                ninjaContext.getController().stop();
-                
-                System.out.println("sample tick: get out of loop");
-                status = "loop detected";
-                result = true;
+                sampleStreak++;
+                if (sampleStreak > 3)
+                {
+                    samplePrevStreak = sampleStreak;
+                    sampleStreak = 0;
+                    // we are not closer to the goal after sampleTimeFrame secounds... let's try to get out of this loop
+                    //Task walk = (Task) new Walk("Walking away from loop", 0.5f, true, ninjaContext);
+                    //ninjaContext.getSteering().addTaskToTop(walk);
+                    ninjaContext.getController().stop();
+
+                    System.out.println("sample tick: stop getting away from the target");
+                    status = "loop detected";
+                    result = true;
+                }
             }
             else
-                System.out.println("sample tick");
+            {
+                if (samplePrevStreak > 0 && sampleStreak > 0)
+                {
+                    System.out.println("fishy sample tick: stop the loop");    
+                    System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");    
+                    ninjaContext.getController().stop();
+                }
+                else
+                    System.out.println("sample tick: prev streak " + samplePrevStreak + " current streak " + sampleStreak);
+                
+                samplePrevStreak = sampleStreak;
+                sampleStreak = 0;
+            }
             
             samplePrevAvgPos.set(sampleAvgPos);
             sampleAvgPos.set(currentCharacterPosition);

@@ -49,7 +49,7 @@ public class VerletArmTest  extends DemoBase
     @Override
     protected void createDemoEntities(WorldManager wm) 
     {   
-        int numberOfAvatars = 1;
+        int numberOfAvatars = 2;
         
         // Create one object collection for all to use (for testing)
         ObjectCollection objects = new ObjectCollection("Character Test Objects", wm);
@@ -75,7 +75,7 @@ public class VerletArmTest  extends DemoBase
         }
         
         // Make a chair and let the control the collection so it can delete it
-        objects.generateChairs(Vector3f.ZERO, 10.0f, 5);
+        objects.generateChairs(Vector3f.ZERO, 5.0f, 4);
         control.setObjectCollection(objects);
     }
 

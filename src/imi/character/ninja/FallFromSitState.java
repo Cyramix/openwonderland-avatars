@@ -98,7 +98,7 @@ public class FallFromSitState extends GameState
         // Stop the character
         context.getController().stop();
         
-        context.getCharacter().initiateFacialAnimation("MaleFrown", 2.0f, 1.0f);
+        context.getCharacter().initiateFacialAnimation("MaleFrown", 0.75f, 2.0f);
     }
     
     @Override

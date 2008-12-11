@@ -40,7 +40,7 @@ public class CharacterAttributes
     private String                  name                    = "nameless";
     /** The SharedAsset associated with this character's COLLADA model **/
     private SharedAsset             asset                   = null;
-    /** A string to be applied to the beginning of all paths **/
+    /** A string to be applied to the beginning of all paths, if null asumming it's a local path **/
     private String                  baseURL                 = null;
     /** The location of the bind pose file, relative to the base url**/
     private String                  BindPoseFile            = null;
