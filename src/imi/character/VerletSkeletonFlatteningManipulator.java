@@ -35,35 +35,53 @@ public class VerletSkeletonFlatteningManipulator implements SkeletonFlatteningMa
     private final int elbow    = 43; // -0.49928188 // 0.2491934 distance between shoulder and elbow
     private final int foreArm  = 46; // -0.5855795  // 0.0862977 distance between elbow and forArm
     private final int wrist    = 48; // -0.73043364 // 0.1448541 distance between the elbow and the wrist
+    private final int rightEye = 36;
+    private final int leftEye  = 35;
     
-    private VerletArm       arm         = null;
-    private SkeletonNode    skeleton    = null;
+    protected EyeBall    leftEyeBall  = null;
+    protected EyeBall    rightEyeBall = null;
+    
+    private VerletArm    arm          = null;
+    private SkeletonNode skeleton     = null;
     
     private boolean manualDriveReachUp = true; // otherwise reaching forward
-    private boolean enabled = false;
+    private boolean armEnabled = false;
 
     private Vector3f localX = new Vector3f();
     private PMatrix  wristAnimationDelta = new PMatrix();
     
-    public VerletSkeletonFlatteningManipulator(VerletArm verletArm, SkeletonNode skeletonNode)
+    public VerletSkeletonFlatteningManipulator(VerletArm verletArm, EyeBall left, EyeBall right, SkeletonNode skeletonNode)
     {
+        leftEyeBall  = left;
+        rightEyeBall = right;
         arm      = verletArm;
         skeleton = skeletonNode;
         skeleton.setFlatteningHook(this);
     }
     
     public void processSkeletonNode(PNode current) 
-    {
-        if (!enabled)
-            return;
-        
+    {   
         if (!(current instanceof SkinnedMeshJoint))
             return;
         
         SkinnedMeshJoint joint = (SkinnedMeshJoint)current;
-        
         PMatrix matrix = joint.getMeshSpace();
         int jointIndex = skeleton.getSkinnedMeshJointIndex(joint);
+        
+        switch (jointIndex)
+        {
+            case rightEye:
+                if (rightEyeBall != null)
+                    rightEyeBall.lookAtTarget(matrix);
+                break;
+            case leftEye:
+                if (leftEyeBall != null)
+                    leftEyeBall.lookAtTarget(matrix);
+                break;
+        }
+     
+        if (!armEnabled)
+            return;
         
         switch (jointIndex)
         {
@@ -249,9 +267,9 @@ public class VerletSkeletonFlatteningManipulator implements SkeletonFlatteningMa
         matrix.mul(wristAnimationDelta, matrix);
     }
     
-    public void setEnabled(boolean bEnabled) 
+    public void setArmEnabled(boolean bEnabled) 
     {
-        this.enabled = bEnabled;
+        this.armEnabled = bEnabled;
     }
 
     public void setManualDriveReachUp(boolean manualDriveReachUp) 

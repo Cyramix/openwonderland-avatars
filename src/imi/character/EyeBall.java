@@ -72,8 +72,7 @@ public class EyeBall extends PPolygonSkinnedMeshInstance
      * @param matrix The matrix being modified
      * @param jointIndex Joint to modify
      */
-    @Override
-    protected void postAnimationModifiedMeshSpaceMatrixHook(PMatrix matrix, int jointIndex) 
+    protected void lookAtTarget(PMatrix matrix)
     {
         PMatrix modelWorldRef = modelInst.getTransform().getWorldMatrix(false);
         
@@ -108,7 +107,6 @@ public class EyeBall extends PPolygonSkinnedMeshInstance
         }
         else
             bInCone = false;
-        
     }
 
     public Vector3f getTarget() {

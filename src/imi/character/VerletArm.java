@@ -229,7 +229,7 @@ public class VerletArm
         if (jointManipulator != null)
             jointManipulator.setEnabled(enabled);
         if (skeletonManipulator != null)
-            skeletonManipulator.setEnabled(enabled);
+            skeletonManipulator.setArmEnabled(enabled);
         if (enabled)
             resetArm();
     }
@@ -240,7 +240,7 @@ public class VerletArm
         if (jointManipulator != null)
             jointManipulator.setEnabled(enabled);
         if (skeletonManipulator != null)
-            skeletonManipulator.setEnabled(enabled);
+            skeletonManipulator.setArmEnabled(enabled);
         if (enabled)
             resetArm();
         return enabled;

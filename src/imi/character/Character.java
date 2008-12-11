@@ -131,7 +131,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
     private float                           m_eyesWanderCounter     = 0.0f;
     private int                             m_eyesWanderIntCounter  = 0;
     protected VerletArm                     m_arm                   = null;
-    private VerletSkeletonFlatteningManipulator m_armSkeletonManipulator = null; // new skeleton manipulator
+    private VerletSkeletonFlatteningManipulator m_skeletonManipulator = null;
     private float                           m_armTimer              = 0.0f;
     private float                           m_armTimeTick           = 1.0f / 60.0f;
     private Map<Integer, String[]>          m_geomRef               = null;
@@ -324,8 +324,8 @@ public abstract class Character extends Entity implements SpatialObject, Animati
 //                    for(PPolygonSkinnedMeshInstance mesh : skinnedMeshes)
 //                        mesh.setJointManipulator(m_armJointManipulator);
                     // New verlet skeleton manipulator
-                    m_armSkeletonManipulator = new VerletSkeletonFlatteningManipulator(m_arm, m_skeleton);
-                    m_arm.setSkeletonManipulator(m_armSkeletonManipulator);
+                    m_skeletonManipulator = new VerletSkeletonFlatteningManipulator(m_arm, m_leftEyeBall, m_rightEyeBall, m_skeleton);
+                    m_arm.setSkeletonManipulator(m_skeletonManipulator);
                     //m_arm.setPointAtLocation(Vector3f.UNIT_Y.mult(2.0f)); // test pointing, set to null to stop pointing 
                 }
                 return true;

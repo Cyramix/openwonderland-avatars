@@ -18,19 +18,14 @@
 package imi.scene.polygonmodel.skinned;
 
 import com.jme.scene.SharedMesh;
-import imi.scene.PJoint;
 import imi.scene.PMatrix;
 import imi.scene.PNode;
 import imi.scene.PScene;
 import imi.scene.polygonmodel.PPolygonMeshInstance;
-import imi.scene.polygonmodel.parts.PMeshMaterial;
 import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
 import imi.scene.shader.AbstractShaderProgram;
 import imi.scene.shader.ShaderProperty;
 import imi.scene.utils.PRenderer;
-import imi.scene.utils.tree.JointModificationCollector;
-import java.util.ArrayList;
-import java.util.List;
 
 
 /**
@@ -48,7 +43,7 @@ public class PPolygonSkinnedMeshInstance extends PPolygonMeshInstance
     
     private int[]        m_influenceIndices = null;
 
-    private PostAnimationJointManipulator m_jointManipulator = null;
+    //private PostAnimationJointManipulator m_jointManipulator = null;
 
     //  Constructor.
     public PPolygonSkinnedMeshInstance(String name, PPolygonSkinnedMesh geometry, PMatrix origin, PScene pscene) 
@@ -174,7 +169,7 @@ public class PPolygonSkinnedMeshInstance extends PPolygonMeshInstance
             for (int i = 0; i < matrixStack.length && i < m_InverseBindPose.length; i++)
             {
                 PMatrix matrix = new PMatrix(matrixStack[i]);
-                postAnimationModifiedMeshSpaceMatrixHook(matrix, influenceIndices[i]);
+                //postAnimationModifiedMeshSpaceMatrixHook(matrix, influenceIndices[i]);
                 matrix.mul(m_InverseBindPose[i]);
                 float [] matrixFloats = matrix.getFloatArray();
                 for(int j = 0; j < 16; j++)
@@ -248,21 +243,21 @@ public class PPolygonSkinnedMeshInstance extends PPolygonMeshInstance
         return false;
     }
 
-    protected void postAnimationModifiedMeshSpaceMatrixHook(PMatrix matrix, int jointIndex) 
-    {
-        if (m_jointManipulator == null)
-            return;
-        
-        m_jointManipulator.postAnimationModifiedMeshSpaceMatrixHook(matrix, jointIndex);
-    }
-
-    public PostAnimationJointManipulator getJointManipulator() {
-        return m_jointManipulator;
-    }
-
-    public void setJointManipulator(PostAnimationJointManipulator jointManipulator) {
-        this.m_jointManipulator = jointManipulator;
-    }
+//    protected void postAnimationModifiedMeshSpaceMatrixHook(PMatrix matrix, int jointIndex) 
+//    {
+//        if (m_jointManipulator == null)
+//            return;
+//        
+//        m_jointManipulator.postAnimationModifiedMeshSpaceMatrixHook(matrix, jointIndex);
+//    }
+//
+//    public PostAnimationJointManipulator getJointManipulator() {
+//        return m_jointManipulator;
+//    }
+//
+//    public void setJointManipulator(PostAnimationJointManipulator jointManipulator) {
+//        this.m_jointManipulator = jointManipulator;
+//    }
     
     
 }

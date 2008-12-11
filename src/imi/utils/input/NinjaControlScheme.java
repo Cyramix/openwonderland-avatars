@@ -180,7 +180,7 @@ public class NinjaControlScheme extends InputScheme
             /////////////////////////////////////////////////////////////
             
             // Next Ninja
-            if (ke.getKeyCode() == KeyEvent.VK_COMMA)
+            if (ke.getKeyCode() == KeyEvent.VK_PAGE_UP)
             {   
                 if (!ninjaTeam.isEmpty())
                 {
@@ -197,7 +197,7 @@ public class NinjaControlScheme extends InputScheme
             }
             
             // Previouse Ninja
-            if (ke.getKeyCode() == KeyEvent.VK_PERIOD)
+            if (ke.getKeyCode() == KeyEvent.VK_PAGE_DOWN)
             {
                 if (!ninjaTeam.isEmpty())
                 {
