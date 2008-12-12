@@ -442,7 +442,7 @@ public class Collada
             processRig();
 
         if (m_bLoadGeometry)
-            processGeometry();
+            attachSkinnedMeshToSkeleton();
 
         if (m_pSkeletonNode == null)
             processColladaNodes();
@@ -531,7 +531,9 @@ public class Collada
                     //  Just create a Node.
                     pThisNode = new PJoint(new PTransform(colladaNode.getMatrix()));
                     pThisNode.setName(colladaNode.getName());
-                    pThisNode.getTransform().getLocalMatrix(true).set(colladaNode.getMatrix());
+                    // if it has a local transform, then set it
+                    if (colladaNode.getMatrix() != null)
+                        pThisNode.getTransform().getLocalMatrix(true).set(colladaNode.getMatrix());
                 }
             }
 
@@ -562,21 +564,14 @@ public class Collada
 
 
 
-    private void processGeometry()
+    private void attachSkinnedMeshToSkeleton()
     {
-        int a;
-        PPolygonSkinnedMesh pPolygonSkinnedMesh;
-
-//        System.out.println("Processing SkinnedMeshes for SkeletonNode.");
-        for (a=0; a<getPolygonSkinnedMeshCount(); a++)
+        for (PPolygonSkinnedMesh mesh : m_PolygonSkinnedMeshes)
         {
-            pPolygonSkinnedMesh = getPolygonSkinnedMesh(a);
-
             if (m_bAddSkinnedMeshesToSkeleton)
             {
-                m_pSkeletonNode.addChild(pPolygonSkinnedMesh);
-
-                pPolygonSkinnedMesh.linkJointsToSkeletonNode(m_pSkeletonNode);
+                m_pSkeletonNode.addChild(mesh);
+                mesh.linkJointsToSkeletonNode(m_pSkeletonNode);
             }
         }
 

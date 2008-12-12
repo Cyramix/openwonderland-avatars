@@ -240,14 +240,16 @@ public class InstructionProcessor
         {
             // Make an instance
             PPolygonSkinnedMeshInstance skinnedMeshInstance = (PPolygonSkinnedMeshInstance) m_loadingPScene.addMeshInstance(pSkinnedMesh, new PMatrix());
-            
-            logger.fine("Added SkinnedMesh '" + skinnedMeshName + "' to skeleton.");
+
+            // Debugging / Diagnostic information
+            logger.log(Level.INFO, "Adding mesh, \"" + skinnedMeshName + "\" to subgroup, \"" + subGroupName + "\"");
 
             //  Link the SkinnedMesh to the Skeleton.
             skinnedMeshInstance.setSkeletonNode(m_skeleton);
             skinnedMeshInstance.linkJointsToSkeletonNode(m_skeleton);
+
             // Add it to the skeleton
-            m_skeleton.addChild(skinnedMeshInstance);
+            m_skeleton.addToSubGroup(skinnedMeshInstance, subGroupName);
             
             return true;
         }

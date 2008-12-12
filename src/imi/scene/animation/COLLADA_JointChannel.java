@@ -80,7 +80,11 @@ public class COLLADA_JointChannel implements PJointChannel
         {
             PMatrix result = calculateBlendedMatrix(state.getCurrentCycleTime(), state.getCurrentCycleStartTime(), state.getCurrentCycleEndTime(), state.isReverseAnimation());
             if (result != null)
+            {
+                Vector3f translation = jointToAffect.getTransform().getLocalMatrix(false).getTranslation();
+                //result.setTranslation(translation); <-- uncomment to make skeleton remapping work
                 jointToAffect.getTransform().setLocalMatrix(result);
+            }
             return;
         }
     }
@@ -132,7 +136,11 @@ public class COLLADA_JointChannel implements PJointChannel
             result.set2(rotationComponent1, translationComponent1, 1.0f);
         }
         if (result != null)
+        {
+            Vector3f translation = jointToAffect.getTransform().getLocalMatrix(false).getTranslation();
+            //result.setTranslation(translation); <-- uncomment to make skeleton merging work
             jointToAffect.getTransform().setLocalMatrix(result);
+        }
     }
 
     public float calculateDuration()

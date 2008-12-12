@@ -17,6 +17,7 @@
  */
 package imi.scene.polygonmodel.parts.skinned;
 
+import com.jme.math.Vector3f;
 import com.jme.scene.SharedMesh;
 import imi.scene.PJoint;
 import imi.scene.PMatrix;
@@ -437,23 +438,12 @@ public class SkeletonNode extends PNode implements Animated
         boolean result = false;
         try
         {
-            for (PNode kid : getChildren())
+            for (PPolygonSkinnedMeshInstance meshInst : getSkinnedMeshInstances())
             {
-                if (kid instanceof PPolygonSkinnedMesh)
-                {
-                    PPolygonSkinnedMesh pSkinnedMesh = (PPolygonSkinnedMesh)kid;
-
-                    pSkinnedMesh.getMaterialRef().setShader(shader);
-                }
-                else if (kid instanceof PPolygonSkinnedMeshInstance)
-                {
-                    PPolygonSkinnedMeshInstance pSkinnedMeshInstance = (PPolygonSkinnedMeshInstance)kid;
-
-                    PMeshMaterial mat = pSkinnedMeshInstance.getMaterialRef().getMaterial();
+                    PMeshMaterial mat = meshInst.getMaterialRef().getMaterial();
                     mat.setShader(shader);
-                    pSkinnedMeshInstance.setMaterial(mat);
-                    pSkinnedMeshInstance.setUseGeometryMaterial(false);
-                }
+                    meshInst.setMaterial(mat);
+                    meshInst.setUseGeometryMaterial(false);
             }
             result = true;
         }
@@ -680,6 +670,7 @@ public class SkeletonNode extends PNode implements Animated
 
                 modifierDelta.mul(baseJoint.getTransform().getLocalMatrix(false).inverse(), ourJoint.getTransform().getLocalMatrix(false));
                 //modifierDelta.mulInverse(baseJoint.getTransform().getLocalMatrix(false), ourJoint.getTransform().getLocalMatrix(false));
+                //modifierDelta.setTranslation(Vector3f.ZERO);
                 ourJoint.setSkeletonModifier(modifierDelta);
                 ourJoint.getTransform().getLocalMatrix(true).set(baseJoint.getBindPose());
             }
