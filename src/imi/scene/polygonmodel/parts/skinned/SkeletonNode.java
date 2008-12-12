@@ -401,6 +401,7 @@ public class SkeletonNode extends PNode implements Animated
 
         if (groupNode != null)
         {
+            result = new ArrayList<PPolygonSkinnedMeshInstance>();
             for (PNode kid : groupNode.getChildren())
             {
                 if (kid instanceof PPolygonSkinnedMeshInstance)
@@ -672,7 +673,7 @@ public class SkeletonNode extends PNode implements Animated
                 //modifierDelta.mulInverse(baseJoint.getTransform().getLocalMatrix(false), ourJoint.getTransform().getLocalMatrix(false));
                 //modifierDelta.setTranslation(Vector3f.ZERO);
                 ourJoint.setSkeletonModifier(modifierDelta);
-                ourJoint.getTransform().getLocalMatrix(true).set(baseJoint.getBindPose());
+                //ourJoint.getTransform().getLocalMatrix(true).set(baseJoint.getBindPose());
             }
             else
                 continue; // Prune (kids are not added to the list)

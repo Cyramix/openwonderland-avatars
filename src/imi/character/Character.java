@@ -79,6 +79,7 @@ import imi.scene.processors.JSceneEventProcessor;
 import imi.scene.shader.programs.NormalAndSpecularMapShader;
 import imi.scene.shader.programs.VertDeformerWithSpecAndNormalMap;
 import imi.scene.utils.PMeshUtils;
+import imi.scene.utils.PModelUtils;
 import imi.scene.utils.tree.JointModificationCollector;
 import imi.scene.utils.tree.TreeTraverser;
 import imi.serialization.xml.bindings.xmlCharacter;
@@ -90,7 +91,6 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
@@ -160,6 +160,8 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         
         // Initialize the scene
         initScene(processors);
+        // Sort the meshes
+        sortMeshesInSkeletonAsynchronously();
         
         // The glue between JME and pscene
         m_jscene = new JScene(m_pscene);
@@ -208,6 +210,37 @@ public abstract class Character extends Entity implements SpatialObject, Animati
      * Override this method to initialize the game trigger actions mappings
      */
     protected abstract void initKeyBindings();
+
+    /**
+     * This method creates a worker thread to wait on the character to load,
+     * and once that happens sort the bind pose meshes into the appropriate
+     * buckets
+     */
+    private void sortMeshesInSkeletonAsynchronously()
+    {
+        Runnable sortingTask = new Runnable() {
+
+            public void run() {
+                while (isInitialized() == false)
+                {
+                    Thread.yield();
+                }
+                // sort the meshes!
+                for (PPolygonSkinnedMeshInstance meshInst : m_skeleton.getSkinnedMeshInstances())
+                {
+                    String subGroupName = PModelUtils.getSubGroupNameForMesh(meshInst.getName());
+                    if (subGroupName != null)
+                        m_skeleton.addToSubGroup(meshInst, subGroupName);
+                    else
+                        m_skeleton.addChild(meshInst);
+                }
+            }
+        };
+
+        // Start the task!
+        Thread workerThread = new Thread(sortingTask);
+        workerThread.start();
+    }
 
     /**
      * Initialize the SharedAsset that will be used to load the character.
@@ -631,6 +664,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
                 SharedAsset modelAsset = new SharedAsset(m_pscene.getRepository(), new AssetDescriptor(SharedAssetType.MS3D_Mesh, ""));
                 modelAsset.setAssetData(m_attributes.getSimpleScene());
                 m_modelInst = m_pscene.addModelInstance("Character", modelAsset, m_attributes.getOrigin());
+                sortMeshesInSkeletonAsynchronously();
             }
         }
         else // Otherwise use the specified collada model
