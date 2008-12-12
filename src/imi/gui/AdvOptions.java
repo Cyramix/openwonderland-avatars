@@ -23,15 +23,36 @@
 
 package imi.gui;
 
+import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
+import imi.scene.polygonmodel.skinned.SkinnedMeshJoint;
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  *
  * @author Paul Viet Nguyen Truong (ptruong)
  */
 public class AdvOptions extends javax.swing.JFrame {
+////////////////////////////////////////////////////////////////////////////////
+// Class Data Members
+////////////////////////////////////////////////////////////////////////////////
+    private Map<m_bodyPart, SkinnedMeshJoint[]> m_skeleton;
+    private SceneEssentials                     m_sceneData;
 
+////////////////////////////////////////////////////////////////////////////////
+// Enumerations for the skeleton and body
+////////////////////////////////////////////////////////////////////////////////
+    public  enum m_bodyPart { Left_UpperLeg, Left_LowerLeg, Left_Foot, Left_UpperArm, Left_LowerArm, Left_Hand, Left_Shoulder,
+                              Right_UpperLeg, Right_LowerLeg, Right_Foot, Right_UpperArm, Right_LowerArm, Right_Hand, Right_Shoulder,
+                              Head, Torso, Neck, Eyes, Lips };
+
+////////////////////////////////////////////////////////////////////////////////
+// Class Methods
+////////////////////////////////////////////////////////////////////////////////
     /** Creates new form AdvOptions */
     public AdvOptions() {
         initComponents();
+        createJointCatalog();
     }
 
     /** This method is called from within the constructor to
@@ -264,6 +285,11 @@ public class AdvOptions extends javax.swing.JFrame {
         jPanel_EyePosH.setPreferredSize(new java.awt.Dimension(210, 110));
         jPanel_EyePosH.setLayout(new java.awt.GridBagLayout());
 
+        jSlider_EyePosHL.setMaximum(10);
+        jSlider_EyePosHL.setMinorTickSpacing(1);
+        jSlider_EyePosHL.setPaintTicks(true);
+        jSlider_EyePosHL.setSnapToTicks(true);
+        jSlider_EyePosHL.setValue(5);
         jSlider_EyePosHL.setMinimumSize(new java.awt.Dimension(100, 29));
         jSlider_EyePosHL.setPreferredSize(new java.awt.Dimension(100, 29));
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -272,6 +298,11 @@ public class AdvOptions extends javax.swing.JFrame {
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         jPanel_EyePosH.add(jSlider_EyePosHL, gridBagConstraints);
 
+        jSlider_EyePosHR.setMaximum(10);
+        jSlider_EyePosHR.setMinorTickSpacing(1);
+        jSlider_EyePosHR.setPaintTicks(true);
+        jSlider_EyePosHR.setSnapToTicks(true);
+        jSlider_EyePosHR.setValue(5);
         jSlider_EyePosHR.setMinimumSize(new java.awt.Dimension(100, 29));
         jSlider_EyePosHR.setPreferredSize(new java.awt.Dimension(100, 29));
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -294,6 +325,7 @@ public class AdvOptions extends javax.swing.JFrame {
         gridBagConstraints.gridy = 1;
         jPanel_EyePosH.add(jSpinner_EyePosHR, gridBagConstraints);
 
+        jCheckBox_EyesHPosSync.setSelected(true);
         jCheckBox_EyesHPosSync.setText("Sync");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -311,7 +343,12 @@ public class AdvOptions extends javax.swing.JFrame {
         jPanel_EyePosV.setPreferredSize(new java.awt.Dimension(200, 175));
         jPanel_EyePosV.setLayout(new java.awt.GridBagLayout());
 
+        jSlider_EyePosVL.setMaximum(10);
+        jSlider_EyePosVL.setMinorTickSpacing(1);
         jSlider_EyePosVL.setOrientation(javax.swing.JSlider.VERTICAL);
+        jSlider_EyePosVL.setPaintTicks(true);
+        jSlider_EyePosVL.setSnapToTicks(true);
+        jSlider_EyePosVL.setValue(5);
         jSlider_EyePosVL.setMinimumSize(new java.awt.Dimension(29, 100));
         jSlider_EyePosVL.setPreferredSize(new java.awt.Dimension(29, 100));
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -320,7 +357,12 @@ public class AdvOptions extends javax.swing.JFrame {
         gridBagConstraints.fill = java.awt.GridBagConstraints.VERTICAL;
         jPanel_EyePosV.add(jSlider_EyePosVL, gridBagConstraints);
 
+        jSlider_EyePosVR.setMaximum(10);
+        jSlider_EyePosVR.setMinorTickSpacing(1);
         jSlider_EyePosVR.setOrientation(javax.swing.JSlider.VERTICAL);
+        jSlider_EyePosVR.setPaintTicks(true);
+        jSlider_EyePosVR.setSnapToTicks(true);
+        jSlider_EyePosVR.setValue(5);
         jSlider_EyePosVR.setMinimumSize(new java.awt.Dimension(29, 100));
         jSlider_EyePosVR.setPreferredSize(new java.awt.Dimension(29, 100));
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -343,6 +385,7 @@ public class AdvOptions extends javax.swing.JFrame {
         gridBagConstraints.gridy = 1;
         jPanel_EyePosV.add(jSpinner_EyePosVR, gridBagConstraints);
 
+        jCheckBox_EyeVPosSync.setSelected(true);
         jCheckBox_EyeVPosSync.setText("Sync");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -361,18 +404,29 @@ public class AdvOptions extends javax.swing.JFrame {
         jPanel_EyePosD.setPreferredSize(new java.awt.Dimension(200, 110));
         jPanel_EyePosD.setLayout(new java.awt.GridBagLayout());
 
+        jSlider_EyePosDL.setMaximum(10);
+        jSlider_EyePosDL.setMinorTickSpacing(1);
+        jSlider_EyePosDL.setPaintTicks(true);
+        jSlider_EyePosDL.setSnapToTicks(true);
+        jSlider_EyePosDL.setValue(5);
         jSlider_EyePosDL.setMinimumSize(new java.awt.Dimension(100, 29));
         jSlider_EyePosDL.setPreferredSize(new java.awt.Dimension(100, 29));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         jPanel_EyePosD.add(jSlider_EyePosDL, gridBagConstraints);
 
+        jSlider_EyePosDR.setMaximum(10);
+        jSlider_EyePosDR.setMinorTickSpacing(1);
+        jSlider_EyePosDR.setPaintTicks(true);
+        jSlider_EyePosDR.setSnapToTicks(true);
+        jSlider_EyePosDR.setValue(5);
         jSlider_EyePosDR.setMinimumSize(new java.awt.Dimension(100, 29));
         jSlider_EyePosDR.setPreferredSize(new java.awt.Dimension(100, 29));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         jPanel_EyePosD.add(jSlider_EyePosDR, gridBagConstraints);
 
+        jCheckBox_EyeDPosSync.setSelected(true);
         jCheckBox_EyeDPosSync.setText("Sync");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -406,6 +460,9 @@ public class AdvOptions extends javax.swing.JFrame {
 
         jLabel_EyeX.setText("X");
         jPanel_EyeScaling.add(jLabel_EyeX, new java.awt.GridBagConstraints());
+
+        jSlider_EyeX.setPaintTicks(true);
+        jSlider_EyeX.setSnapToTicks(true);
         jPanel_EyeScaling.add(jSlider_EyeX, new java.awt.GridBagConstraints());
 
         jLabel_EyeY.setText("Y");
@@ -413,6 +470,9 @@ public class AdvOptions extends javax.swing.JFrame {
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
         jPanel_EyeScaling.add(jLabel_EyeY, gridBagConstraints);
+
+        jSlider_EyeY.setPaintTicks(true);
+        jSlider_EyeY.setSnapToTicks(true);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 1;
@@ -423,6 +483,9 @@ public class AdvOptions extends javax.swing.JFrame {
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 2;
         jPanel_EyeScaling.add(jLabel_EyeZ, gridBagConstraints);
+
+        jSlider_EyeZ.setPaintTicks(true);
+        jSlider_EyeZ.setSnapToTicks(true);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 2;
@@ -433,6 +496,9 @@ public class AdvOptions extends javax.swing.JFrame {
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 3;
         jPanel_EyeScaling.add(jLabel_EyeUni, gridBagConstraints);
+
+        jSlider_EyeUni.setPaintTicks(true);
+        jSlider_EyeUni.setSnapToTicks(true);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 3;
@@ -457,6 +523,8 @@ public class AdvOptions extends javax.swing.JFrame {
         jPanel_NosePosH.setLayout(new java.awt.GridBagLayout());
 
         jSlider_NosePosH.setOrientation(javax.swing.JSlider.VERTICAL);
+        jSlider_NosePosH.setPaintTicks(true);
+        jSlider_NosePosH.setSnapToTicks(true);
         jSlider_NosePosH.setMinimumSize(new java.awt.Dimension(29, 100));
         jSlider_NosePosH.setPreferredSize(new java.awt.Dimension(29, 100));
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -485,6 +553,8 @@ public class AdvOptions extends javax.swing.JFrame {
         jPanel_NoseLen.setPreferredSize(new java.awt.Dimension(210, 110));
         jPanel_NoseLen.setLayout(new java.awt.GridBagLayout());
 
+        jSlider_NoseLen.setPaintTicks(true);
+        jSlider_NoseLen.setSnapToTicks(true);
         jSlider_NoseLen.setMinimumSize(new java.awt.Dimension(190, 29));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -512,6 +582,8 @@ public class AdvOptions extends javax.swing.JFrame {
         jPanel_NoseWidth.setPreferredSize(new java.awt.Dimension(210, 110));
         jPanel_NoseWidth.setLayout(new java.awt.GridBagLayout());
 
+        jSlider_NoseWidth.setPaintTicks(true);
+        jSlider_NoseWidth.setSnapToTicks(true);
         jSlider_NoseWidth.setMinimumSize(new java.awt.Dimension(190, 29));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -542,6 +614,8 @@ public class AdvOptions extends javax.swing.JFrame {
         jLabel_NoseX.setText("X");
         jPanel_NoseScaling.add(jLabel_NoseX, new java.awt.GridBagConstraints());
 
+        jSlider_NoseX.setPaintTicks(true);
+        jSlider_NoseX.setSnapToTicks(true);
         jSlider_NoseX.setMinimumSize(new java.awt.Dimension(170, 29));
         jPanel_NoseScaling.add(jSlider_NoseX, new java.awt.GridBagConstraints());
 
@@ -551,6 +625,8 @@ public class AdvOptions extends javax.swing.JFrame {
         gridBagConstraints.gridy = 1;
         jPanel_NoseScaling.add(jLabel_NoseY, gridBagConstraints);
 
+        jSlider_NoseY.setPaintTicks(true);
+        jSlider_NoseY.setSnapToTicks(true);
         jSlider_NoseY.setMinimumSize(new java.awt.Dimension(170, 29));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
@@ -563,6 +639,8 @@ public class AdvOptions extends javax.swing.JFrame {
         gridBagConstraints.gridy = 2;
         jPanel_NoseScaling.add(jLabel_NoseZ, gridBagConstraints);
 
+        jSlider_NoseZ.setPaintTicks(true);
+        jSlider_NoseZ.setSnapToTicks(true);
         jSlider_NoseZ.setMinimumSize(new java.awt.Dimension(170, 29));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
@@ -575,6 +653,8 @@ public class AdvOptions extends javax.swing.JFrame {
         gridBagConstraints.gridy = 3;
         jPanel_NoseScaling.add(jLabel_NoseU, gridBagConstraints);
 
+        jSlider_NoseU.setPaintTicks(true);
+        jSlider_NoseU.setSnapToTicks(true);
         jSlider_NoseU.setMinimumSize(new java.awt.Dimension(170, 29));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
@@ -599,11 +679,15 @@ public class AdvOptions extends javax.swing.JFrame {
         jPanel_LipsPos.setLayout(new java.awt.GridBagLayout());
 
         jSlider_UpperLip.setOrientation(javax.swing.JSlider.VERTICAL);
+        jSlider_UpperLip.setPaintTicks(true);
+        jSlider_UpperLip.setSnapToTicks(true);
         jSlider_UpperLip.setMinimumSize(new java.awt.Dimension(29, 100));
         jSlider_UpperLip.setPreferredSize(new java.awt.Dimension(29, 100));
         jPanel_LipsPos.add(jSlider_UpperLip, new java.awt.GridBagConstraints());
 
         jSlider_LowerLip.setOrientation(javax.swing.JSlider.VERTICAL);
+        jSlider_LowerLip.setPaintTicks(true);
+        jSlider_LowerLip.setSnapToTicks(true);
         jSlider_LowerLip.setMinimumSize(new java.awt.Dimension(29, 100));
         jSlider_LowerLip.setPreferredSize(new java.awt.Dimension(29, 100));
         jPanel_LipsPos.add(jSlider_LowerLip, new java.awt.GridBagConstraints());
@@ -628,6 +712,9 @@ public class AdvOptions extends javax.swing.JFrame {
         jPanel_MouthWidth.setMinimumSize(new java.awt.Dimension(210, 190));
         jPanel_MouthWidth.setPreferredSize(new java.awt.Dimension(210, 190));
         jPanel_MouthWidth.setLayout(new java.awt.GridBagLayout());
+
+        jSlider_MouthWidth.setPaintTicks(true);
+        jSlider_MouthWidth.setSnapToTicks(true);
         jPanel_MouthWidth.add(jSlider_MouthWidth, new java.awt.GridBagConstraints());
 
         jSpinner_MouthWidth.setMinimumSize(new java.awt.Dimension(75, 28));
@@ -650,6 +737,8 @@ public class AdvOptions extends javax.swing.JFrame {
         jLabel_MouthX.setText("X");
         jPanel_MouthScaling.add(jLabel_MouthX, new java.awt.GridBagConstraints());
 
+        jSlider_MouthX.setPaintTicks(true);
+        jSlider_MouthX.setSnapToTicks(true);
         jSlider_MouthX.setMinimumSize(new java.awt.Dimension(170, 29));
         jPanel_MouthScaling.add(jSlider_MouthX, new java.awt.GridBagConstraints());
 
@@ -659,6 +748,8 @@ public class AdvOptions extends javax.swing.JFrame {
         gridBagConstraints.gridy = 1;
         jPanel_MouthScaling.add(jLabel_MouthY, gridBagConstraints);
 
+        jSlider_MouthY.setPaintTicks(true);
+        jSlider_MouthY.setSnapToTicks(true);
         jSlider_MouthY.setMinimumSize(new java.awt.Dimension(170, 29));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
@@ -671,6 +762,8 @@ public class AdvOptions extends javax.swing.JFrame {
         gridBagConstraints.gridy = 2;
         jPanel_MouthScaling.add(jLabel_MouthZ, gridBagConstraints);
 
+        jSlider_MouthZ.setPaintTicks(true);
+        jSlider_MouthZ.setSnapToTicks(true);
         jSlider_MouthZ.setMinimumSize(new java.awt.Dimension(170, 29));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
@@ -683,6 +776,8 @@ public class AdvOptions extends javax.swing.JFrame {
         gridBagConstraints.gridy = 3;
         jPanel_MouthScaling.add(jLabel_MouthU, gridBagConstraints);
 
+        jSlider_MouthU.setPaintTicks(true);
+        jSlider_MouthU.setSnapToTicks(true);
         jSlider_MouthU.setMinimumSize(new java.awt.Dimension(170, 29));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
@@ -705,6 +800,9 @@ public class AdvOptions extends javax.swing.JFrame {
         jPanel_HeadWidth.setMinimumSize(new java.awt.Dimension(210, 115));
         jPanel_HeadWidth.setPreferredSize(new java.awt.Dimension(210, 115));
         jPanel_HeadWidth.setLayout(new java.awt.GridBagLayout());
+
+        jSlider_HeadWidth.setPaintTicks(true);
+        jSlider_HeadWidth.setSnapToTicks(true);
         jPanel_HeadWidth.add(jSlider_HeadWidth, new java.awt.GridBagConstraints());
 
         jSpinner_HeadWidth.setMinimumSize(new java.awt.Dimension(75, 28));
@@ -724,6 +822,8 @@ public class AdvOptions extends javax.swing.JFrame {
         jPanel_HeadHeight.setLayout(new java.awt.GridBagLayout());
 
         jSlider_HeadHeight.setOrientation(javax.swing.JSlider.VERTICAL);
+        jSlider_HeadHeight.setPaintTicks(true);
+        jSlider_HeadHeight.setSnapToTicks(true);
         jSlider_HeadHeight.setMinimumSize(new java.awt.Dimension(29, 100));
         jSlider_HeadHeight.setPreferredSize(new java.awt.Dimension(29, 100));
         jPanel_HeadHeight.add(jSlider_HeadHeight, new java.awt.GridBagConstraints());
@@ -745,6 +845,9 @@ public class AdvOptions extends javax.swing.JFrame {
         jPanel_HeadDepth.setMinimumSize(new java.awt.Dimension(210, 115));
         jPanel_HeadDepth.setPreferredSize(new java.awt.Dimension(210, 115));
         jPanel_HeadDepth.setLayout(new java.awt.GridBagLayout());
+
+        jSlider_HeadDepth.setPaintTicks(true);
+        jSlider_HeadDepth.setSnapToTicks(true);
         jPanel_HeadDepth.add(jSlider_HeadDepth, new java.awt.GridBagConstraints());
 
         jSpinner_HeadDepth.setMinimumSize(new java.awt.Dimension(75, 28));
@@ -764,6 +867,9 @@ public class AdvOptions extends javax.swing.JFrame {
         jPanel_HeadUniform.setMinimumSize(new java.awt.Dimension(210, 115));
         jPanel_HeadUniform.setPreferredSize(new java.awt.Dimension(210, 115));
         jPanel_HeadUniform.setLayout(new java.awt.GridBagLayout());
+
+        jSlider_HeadUniform.setPaintTicks(true);
+        jSlider_HeadUniform.setSnapToTicks(true);
         jPanel_HeadUniform.add(jSlider_HeadUniform, new java.awt.GridBagConstraints());
 
         jSpinner_HeadUniform.setMinimumSize(new java.awt.Dimension(75, 28));
@@ -801,6 +907,8 @@ public class AdvOptions extends javax.swing.JFrame {
         jPanel_FingerLength.setLayout(new java.awt.GridBagLayout());
 
         jSlider_FingerLengthR.setOrientation(javax.swing.JSlider.VERTICAL);
+        jSlider_FingerLengthR.setPaintTicks(true);
+        jSlider_FingerLengthR.setSnapToTicks(true);
         jSlider_FingerLengthR.setMinimumSize(new java.awt.Dimension(29, 100));
         jSlider_FingerLengthR.setPreferredSize(new java.awt.Dimension(29, 100));
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -809,6 +917,8 @@ public class AdvOptions extends javax.swing.JFrame {
         jPanel_FingerLength.add(jSlider_FingerLengthR, gridBagConstraints);
 
         jSlider_FingerLengthL.setOrientation(javax.swing.JSlider.VERTICAL);
+        jSlider_FingerLengthL.setPaintTicks(true);
+        jSlider_FingerLengthL.setSnapToTicks(true);
         jSlider_FingerLengthL.setMinimumSize(new java.awt.Dimension(29, 100));
         jSlider_FingerLengthL.setPreferredSize(new java.awt.Dimension(29, 100));
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -846,6 +956,8 @@ public class AdvOptions extends javax.swing.JFrame {
         jPanel_HandThickness.setPreferredSize(new java.awt.Dimension(210, 260));
         jPanel_HandThickness.setLayout(new java.awt.GridBagLayout());
 
+        jSlider_HandThicknessR.setPaintTicks(true);
+        jSlider_HandThicknessR.setSnapToTicks(true);
         jSlider_HandThicknessR.setMinimumSize(new java.awt.Dimension(100, 29));
         jSlider_HandThicknessR.setPreferredSize(new java.awt.Dimension(100, 29));
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -853,6 +965,8 @@ public class AdvOptions extends javax.swing.JFrame {
         gridBagConstraints.gridy = 0;
         jPanel_HandThickness.add(jSlider_HandThicknessR, gridBagConstraints);
 
+        jSlider_HandThicknessL.setPaintTicks(true);
+        jSlider_HandThicknessL.setSnapToTicks(true);
         jSlider_HandThicknessL.setMinimumSize(new java.awt.Dimension(100, 29));
         jSlider_HandThicknessL.setPreferredSize(new java.awt.Dimension(100, 29));
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -897,6 +1011,8 @@ public class AdvOptions extends javax.swing.JFrame {
         jPanel_ForearmLength.setLayout(new java.awt.GridBagLayout());
 
         jSlider_ForearmLengthR.setOrientation(javax.swing.JSlider.VERTICAL);
+        jSlider_ForearmLengthR.setPaintTicks(true);
+        jSlider_ForearmLengthR.setSnapToTicks(true);
         jSlider_ForearmLengthR.setMinimumSize(new java.awt.Dimension(29, 100));
         jSlider_ForearmLengthR.setPreferredSize(new java.awt.Dimension(29, 100));
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -905,6 +1021,8 @@ public class AdvOptions extends javax.swing.JFrame {
         jPanel_ForearmLength.add(jSlider_ForearmLengthR, gridBagConstraints);
 
         jSlider_ForearmLengthL.setOrientation(javax.swing.JSlider.VERTICAL);
+        jSlider_ForearmLengthL.setPaintTicks(true);
+        jSlider_ForearmLengthL.setSnapToTicks(true);
         jSlider_ForearmLengthL.setMinimumSize(new java.awt.Dimension(29, 100));
         jSlider_ForearmLengthL.setPreferredSize(new java.awt.Dimension(29, 100));
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -942,6 +1060,8 @@ public class AdvOptions extends javax.swing.JFrame {
         jPanel_ForearmThickness.setPreferredSize(new java.awt.Dimension(210, 260));
         jPanel_ForearmThickness.setLayout(new java.awt.GridBagLayout());
 
+        jSlider_ForearmThicknessR.setPaintTicks(true);
+        jSlider_ForearmThicknessR.setSnapToTicks(true);
         jSlider_ForearmThicknessR.setMinimumSize(new java.awt.Dimension(100, 29));
         jSlider_ForearmThicknessR.setPreferredSize(new java.awt.Dimension(100, 29));
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -949,6 +1069,8 @@ public class AdvOptions extends javax.swing.JFrame {
         gridBagConstraints.gridy = 0;
         jPanel_ForearmThickness.add(jSlider_ForearmThicknessR, gridBagConstraints);
 
+        jSlider_ForearmThicknessL.setPaintTicks(true);
+        jSlider_ForearmThicknessL.setSnapToTicks(true);
         jSlider_ForearmThicknessL.setMinimumSize(new java.awt.Dimension(100, 29));
         jSlider_ForearmThicknessL.setPreferredSize(new java.awt.Dimension(100, 29));
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -993,6 +1115,8 @@ public class AdvOptions extends javax.swing.JFrame {
         jPanel_UpperarmLength.setLayout(new java.awt.GridBagLayout());
 
         jSlider_UpperarmLengthR.setOrientation(javax.swing.JSlider.VERTICAL);
+        jSlider_UpperarmLengthR.setPaintTicks(true);
+        jSlider_UpperarmLengthR.setSnapToTicks(true);
         jSlider_UpperarmLengthR.setMinimumSize(new java.awt.Dimension(29, 100));
         jSlider_UpperarmLengthR.setPreferredSize(new java.awt.Dimension(29, 100));
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -1001,6 +1125,8 @@ public class AdvOptions extends javax.swing.JFrame {
         jPanel_UpperarmLength.add(jSlider_UpperarmLengthR, gridBagConstraints);
 
         jSlider_UpperArmLengthL.setOrientation(javax.swing.JSlider.VERTICAL);
+        jSlider_UpperArmLengthL.setPaintTicks(true);
+        jSlider_UpperArmLengthL.setSnapToTicks(true);
         jSlider_UpperArmLengthL.setMinimumSize(new java.awt.Dimension(29, 100));
         jSlider_UpperArmLengthL.setPreferredSize(new java.awt.Dimension(29, 100));
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -1038,6 +1164,8 @@ public class AdvOptions extends javax.swing.JFrame {
         jPanel_UpperarmThickness.setPreferredSize(new java.awt.Dimension(210, 260));
         jPanel_UpperarmThickness.setLayout(new java.awt.GridBagLayout());
 
+        jSlider_UpperarmThicknessR.setPaintTicks(true);
+        jSlider_UpperarmThicknessR.setSnapToTicks(true);
         jSlider_UpperarmThicknessR.setMinimumSize(new java.awt.Dimension(100, 29));
         jSlider_UpperarmThicknessR.setPreferredSize(new java.awt.Dimension(100, 29));
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -1045,6 +1173,8 @@ public class AdvOptions extends javax.swing.JFrame {
         gridBagConstraints.gridy = 0;
         jPanel_UpperarmThickness.add(jSlider_UpperarmThicknessR, gridBagConstraints);
 
+        jSlider_UpperarmThicknessL.setPaintTicks(true);
+        jSlider_UpperarmThicknessL.setSnapToTicks(true);
         jSlider_UpperarmThicknessL.setMinimumSize(new java.awt.Dimension(100, 29));
         jSlider_UpperarmThicknessL.setPreferredSize(new java.awt.Dimension(100, 29));
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -1102,6 +1232,8 @@ public class AdvOptions extends javax.swing.JFrame {
         jPanel_FeetLength.setLayout(new java.awt.GridBagLayout());
 
         jSlider_FeetLengthR.setOrientation(javax.swing.JSlider.VERTICAL);
+        jSlider_FeetLengthR.setPaintTicks(true);
+        jSlider_FeetLengthR.setSnapToTicks(true);
         jSlider_FeetLengthR.setMinimumSize(new java.awt.Dimension(29, 100));
         jSlider_FeetLengthR.setPreferredSize(new java.awt.Dimension(29, 100));
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -1110,6 +1242,8 @@ public class AdvOptions extends javax.swing.JFrame {
         jPanel_FeetLength.add(jSlider_FeetLengthR, gridBagConstraints);
 
         jSlider_FeetLengthL.setOrientation(javax.swing.JSlider.VERTICAL);
+        jSlider_FeetLengthL.setPaintTicks(true);
+        jSlider_FeetLengthL.setSnapToTicks(true);
         jSlider_FeetLengthL.setMinimumSize(new java.awt.Dimension(29, 100));
         jSlider_FeetLengthL.setPreferredSize(new java.awt.Dimension(29, 100));
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -1147,6 +1281,8 @@ public class AdvOptions extends javax.swing.JFrame {
         jPanel_FeetThickness.setPreferredSize(new java.awt.Dimension(210, 260));
         jPanel_FeetThickness.setLayout(new java.awt.GridBagLayout());
 
+        jSlider_FeetThicknessR.setPaintTicks(true);
+        jSlider_FeetThicknessR.setSnapToTicks(true);
         jSlider_FeetThicknessR.setMinimumSize(new java.awt.Dimension(100, 29));
         jSlider_FeetThicknessR.setPreferredSize(new java.awt.Dimension(100, 29));
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -1154,6 +1290,8 @@ public class AdvOptions extends javax.swing.JFrame {
         gridBagConstraints.gridy = 0;
         jPanel_FeetThickness.add(jSlider_FeetThicknessR, gridBagConstraints);
 
+        jSlider_FeetThicknessL.setPaintTicks(true);
+        jSlider_FeetThicknessL.setSnapToTicks(true);
         jSlider_FeetThicknessL.setMinimumSize(new java.awt.Dimension(100, 29));
         jSlider_FeetThicknessL.setPreferredSize(new java.awt.Dimension(100, 29));
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -1198,6 +1336,8 @@ public class AdvOptions extends javax.swing.JFrame {
         jPanel_CalvesLength.setLayout(new java.awt.GridBagLayout());
 
         jSlider_CalvesLengthR.setOrientation(javax.swing.JSlider.VERTICAL);
+        jSlider_CalvesLengthR.setPaintTicks(true);
+        jSlider_CalvesLengthR.setSnapToTicks(true);
         jSlider_CalvesLengthR.setMinimumSize(new java.awt.Dimension(29, 100));
         jSlider_CalvesLengthR.setPreferredSize(new java.awt.Dimension(29, 100));
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -1206,6 +1346,8 @@ public class AdvOptions extends javax.swing.JFrame {
         jPanel_CalvesLength.add(jSlider_CalvesLengthR, gridBagConstraints);
 
         jSlider_CalvesLengthL.setOrientation(javax.swing.JSlider.VERTICAL);
+        jSlider_CalvesLengthL.setPaintTicks(true);
+        jSlider_CalvesLengthL.setSnapToTicks(true);
         jSlider_CalvesLengthL.setMinimumSize(new java.awt.Dimension(29, 100));
         jSlider_CalvesLengthL.setPreferredSize(new java.awt.Dimension(29, 100));
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -1243,6 +1385,8 @@ public class AdvOptions extends javax.swing.JFrame {
         jPanel_CalvesThickness.setPreferredSize(new java.awt.Dimension(210, 260));
         jPanel_CalvesThickness.setLayout(new java.awt.GridBagLayout());
 
+        jSlider_CalvesThicknessR.setPaintTicks(true);
+        jSlider_CalvesThicknessR.setSnapToTicks(true);
         jSlider_CalvesThicknessR.setMinimumSize(new java.awt.Dimension(100, 29));
         jSlider_CalvesThicknessR.setPreferredSize(new java.awt.Dimension(100, 29));
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -1250,6 +1394,8 @@ public class AdvOptions extends javax.swing.JFrame {
         gridBagConstraints.gridy = 0;
         jPanel_CalvesThickness.add(jSlider_CalvesThicknessR, gridBagConstraints);
 
+        jSlider_CalvesThicknessL.setPaintTicks(true);
+        jSlider_CalvesThicknessL.setSnapToTicks(true);
         jSlider_CalvesThicknessL.setMinimumSize(new java.awt.Dimension(100, 29));
         jSlider_CalvesThicknessL.setPreferredSize(new java.awt.Dimension(100, 29));
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -1294,6 +1440,8 @@ public class AdvOptions extends javax.swing.JFrame {
         jPanel_ThighLength.setLayout(new java.awt.GridBagLayout());
 
         jSlider_ThighLengthR.setOrientation(javax.swing.JSlider.VERTICAL);
+        jSlider_ThighLengthR.setPaintTicks(true);
+        jSlider_ThighLengthR.setSnapToTicks(true);
         jSlider_ThighLengthR.setMinimumSize(new java.awt.Dimension(29, 100));
         jSlider_ThighLengthR.setPreferredSize(new java.awt.Dimension(29, 100));
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -1302,6 +1450,8 @@ public class AdvOptions extends javax.swing.JFrame {
         jPanel_ThighLength.add(jSlider_ThighLengthR, gridBagConstraints);
 
         jSlider_ThighLengthL.setOrientation(javax.swing.JSlider.VERTICAL);
+        jSlider_ThighLengthL.setPaintTicks(true);
+        jSlider_ThighLengthL.setSnapToTicks(true);
         jSlider_ThighLengthL.setMinimumSize(new java.awt.Dimension(29, 100));
         jSlider_ThighLengthL.setPreferredSize(new java.awt.Dimension(29, 100));
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -1339,6 +1489,8 @@ public class AdvOptions extends javax.swing.JFrame {
         jPanel_ThighThickness.setPreferredSize(new java.awt.Dimension(210, 260));
         jPanel_ThighThickness.setLayout(new java.awt.GridBagLayout());
 
+        jSlider_ThighThicknessR.setPaintTicks(true);
+        jSlider_ThighThicknessR.setSnapToTicks(true);
         jSlider_ThighThicknessR.setMinimumSize(new java.awt.Dimension(100, 29));
         jSlider_ThighThicknessR.setPreferredSize(new java.awt.Dimension(100, 29));
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -1346,6 +1498,8 @@ public class AdvOptions extends javax.swing.JFrame {
         gridBagConstraints.gridy = 0;
         jPanel_ThighThickness.add(jSlider_ThighThicknessR, gridBagConstraints);
 
+        jSlider_ThighThicknessL.setPaintTicks(true);
+        jSlider_ThighThicknessL.setSnapToTicks(true);
         jSlider_ThighThicknessL.setMinimumSize(new java.awt.Dimension(100, 29));
         jSlider_ThighThicknessL.setPreferredSize(new java.awt.Dimension(100, 29));
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -1399,6 +1553,9 @@ public class AdvOptions extends javax.swing.JFrame {
 
         jPanel_ChestBulk.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Bulk", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Lucida Grande", 0, 13), new java.awt.Color(0, 0, 255))); // NOI18N
         jPanel_ChestBulk.setLayout(new java.awt.GridBagLayout());
+
+        jSlider_ChestBulk.setPaintTicks(true);
+        jSlider_ChestBulk.setSnapToTicks(true);
         jPanel_ChestBulk.add(jSlider_ChestBulk, new java.awt.GridBagConstraints());
 
         jSpinner_ChestBulk.setMinimumSize(new java.awt.Dimension(75, 28));
@@ -1412,6 +1569,9 @@ public class AdvOptions extends javax.swing.JFrame {
 
         jPanel_ChestBroadness.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Broadness", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Lucida Grande", 0, 13), new java.awt.Color(0, 0, 255))); // NOI18N
         jPanel_ChestBroadness.setLayout(new java.awt.GridBagLayout());
+
+        jSlider_ChestBroadness.setPaintTicks(true);
+        jSlider_ChestBroadness.setSnapToTicks(true);
         jPanel_ChestBroadness.add(jSlider_ChestBroadness, new java.awt.GridBagConstraints());
 
         jSpinner_ChestBroadness.setMinimumSize(new java.awt.Dimension(75, 28));
@@ -1432,6 +1592,9 @@ public class AdvOptions extends javax.swing.JFrame {
 
         jPanel_BellyRoundness.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Belly Roundness", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Lucida Grande", 0, 13), new java.awt.Color(0, 0, 255))); // NOI18N
         jPanel_BellyRoundness.setLayout(new java.awt.GridBagLayout());
+
+        jSlider_BellyRoundness.setPaintTicks(true);
+        jSlider_BellyRoundness.setSnapToTicks(true);
         jPanel_BellyRoundness.add(jSlider_BellyRoundness, new java.awt.GridBagConstraints());
 
         jSpinner_BellyRoundness.setMinimumSize(new java.awt.Dimension(75, 28));
@@ -1447,6 +1610,9 @@ public class AdvOptions extends javax.swing.JFrame {
 
         jPanel_Waistline.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Waistline", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Lucida Grande", 0, 13), new java.awt.Color(0, 0, 255))); // NOI18N
         jPanel_Waistline.setLayout(new java.awt.GridBagLayout());
+
+        jSlider_Waistline.setPaintTicks(true);
+        jSlider_Waistline.setSnapToTicks(true);
         jPanel_Waistline.add(jSlider_Waistline, new java.awt.GridBagConstraints());
 
         jSpinner_Waistline.setMinimumSize(new java.awt.Dimension(75, 28));
@@ -1467,6 +1633,9 @@ public class AdvOptions extends javax.swing.JFrame {
 
         jPanel_GlutRoundness.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Roundness", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Lucida Grande", 0, 13), new java.awt.Color(0, 0, 255))); // NOI18N
         jPanel_GlutRoundness.setLayout(new java.awt.GridBagLayout());
+
+        jSlider_GlutRoundness.setPaintTicks(true);
+        jSlider_GlutRoundness.setSnapToTicks(true);
         jPanel_GlutRoundness.add(jSlider_GlutRoundness, new java.awt.GridBagConstraints());
 
         jSpinner_GlutRoundness.setMinimumSize(new java.awt.Dimension(75, 28));
@@ -1480,6 +1649,9 @@ public class AdvOptions extends javax.swing.JFrame {
 
         jPanel_GlutSag.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Sag", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Lucida Grande", 0, 13), new java.awt.Color(0, 0, 255))); // NOI18N
         jPanel_GlutSag.setLayout(new java.awt.GridBagLayout());
+
+        jSlider_GlutSag.setPaintTicks(true);
+        jSlider_GlutSag.setSnapToTicks(true);
         jPanel_GlutSag.add(jSlider_GlutSag, new java.awt.GridBagConstraints());
 
         jSpinner_GlutSag.setMinimumSize(new java.awt.Dimension(75, 28));
@@ -1502,6 +1674,9 @@ public class AdvOptions extends javax.swing.JFrame {
         jPanel_BodyWidth.setMinimumSize(new java.awt.Dimension(210, 115));
         jPanel_BodyWidth.setPreferredSize(new java.awt.Dimension(210, 115));
         jPanel_BodyWidth.setLayout(new java.awt.GridBagLayout());
+
+        jSlider_BodyWidth.setPaintTicks(true);
+        jSlider_BodyWidth.setSnapToTicks(true);
         jPanel_BodyWidth.add(jSlider_BodyWidth, new java.awt.GridBagConstraints());
 
         jSpinner1.setMinimumSize(new java.awt.Dimension(75, 28));
@@ -1521,6 +1696,8 @@ public class AdvOptions extends javax.swing.JFrame {
         jPanel_BodyHeight.setLayout(new java.awt.GridBagLayout());
 
         jSlider_BodyHeight.setOrientation(javax.swing.JSlider.VERTICAL);
+        jSlider_BodyHeight.setPaintTicks(true);
+        jSlider_BodyHeight.setSnapToTicks(true);
         jSlider_BodyHeight.setMinimumSize(new java.awt.Dimension(29, 100));
         jSlider_BodyHeight.setPreferredSize(new java.awt.Dimension(29, 100));
         jPanel_BodyHeight.add(jSlider_BodyHeight, new java.awt.GridBagConstraints());
@@ -1542,6 +1719,9 @@ public class AdvOptions extends javax.swing.JFrame {
         jPanel_BodyDepth.setMinimumSize(new java.awt.Dimension(210, 115));
         jPanel_BodyDepth.setPreferredSize(new java.awt.Dimension(210, 115));
         jPanel_BodyDepth.setLayout(new java.awt.GridBagLayout());
+
+        jSlider_BodyDepth.setPaintTicks(true);
+        jSlider_BodyDepth.setSnapToTicks(true);
         jPanel_BodyDepth.add(jSlider_BodyDepth, new java.awt.GridBagConstraints());
 
         jSpinner3.setMinimumSize(new java.awt.Dimension(75, 28));
@@ -1561,6 +1741,9 @@ public class AdvOptions extends javax.swing.JFrame {
         jPanel_BodyUniform.setMinimumSize(new java.awt.Dimension(210, 115));
         jPanel_BodyUniform.setPreferredSize(new java.awt.Dimension(210, 115));
         jPanel_BodyUniform.setLayout(new java.awt.GridBagLayout());
+
+        jSlider_BodyUniform.setPaintTicks(true);
+        jSlider_BodyUniform.setSnapToTicks(true);
         jPanel_BodyUniform.add(jSlider_BodyUniform, new java.awt.GridBagConstraints());
 
         jSpinner4.setMinimumSize(new java.awt.Dimension(75, 28));
@@ -1603,6 +1786,60 @@ public class AdvOptions extends javax.swing.JFrame {
                 new AdvOptions().setVisible(true);
             }
         });
+    }
+
+    private void adjustEyes(int type) {
+        SkinnedMeshJoint[] Eyes = m_skeleton.get(m_bodyPart.Eyes);
+
+        switch(type)
+        {
+            case 0: // Horizontal Eye Position
+            {
+                if (jCheckBox_EyesHPosSync.isSelected()) {
+
+                }
+                
+                break;
+            }
+            case 1: // Vertical Eye Position
+            {
+                if (jCheckBox_EyeVPosSync.isSelected()) {
+
+                }
+
+                break;
+            }
+            case 2: // Depth Eye Position
+            {
+                if (jCheckBox_EyeDPosSync.isSelected()) {
+
+                }
+
+                break;
+            }
+            case 3: // Eye Scaling
+            {
+                break;
+            }
+        }
+    }
+
+    /** Accessors **/
+    public SceneEssentials getSceneData() {
+        return m_sceneData;
+    }
+
+    public Map<m_bodyPart, SkinnedMeshJoint[]> getSkeletonJoints() {
+        return m_skeleton;
+    }
+
+    public SkinnedMeshJoint[] getSkeletonJointsBySection(int section) {
+        return m_skeleton.get(section);
+    }
+
+    /** Mutators **/
+    public void setSceneData(SceneEssentials scene) {
+        m_sceneData = scene;
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -1807,4 +2044,319 @@ public class AdvOptions extends javax.swing.JFrame {
     private javax.swing.JTabbedPane jTabbedPane_Main;
     // End of variables declaration//GEN-END:variables
 
+////////////////////////////////////////////////////////////////////////////////
+// Helper Functions
+////////////////////////////////////////////////////////////////////////////////
+
+    public void catalogHands() {
+        if (m_sceneData.getAvatar() == null)
+            return;
+
+        SkeletonNode skeleton   = m_sceneData.getAvatar().getSkeleton();
+
+        String[] szLeftHand = new String[] { "leftHand",    "leftThumb1",       "leftThumb2",       "leftThumb3",       "leftThumb4",
+                                                            "leftHandIndex1",   "leftHandIndex2",   "leftHandIndex3",   "leftHandIndex4",
+                                                            "leftHandMiddle1",  "leftHandMiddle2",  "leftHandMiddle3",  "leftHandMiddle4",
+                                                            "leftHandRing1",    "leftHandRing2",    "leftHandRing3",    "leftHandRing4",
+                                                            "leftHandPinky1",   "leftHandPinky2",   "leftHandPinky3",   "leftHandPinky4" };
+        String[] szRightHand = new String[] { "rightHand",  "rightThumb1",      "rightThumb2",      "rightThumb3",      "rightThumb4",
+                                                            "rightHandIndex1",  "rightHandIndex2",  "rightHandIndex3",  "rightHandIndex4",
+                                                            "rightHandMiddle1", "rightHandMiddle2", "rightHandMiddle3", "rightHandMiddle4",
+                                                            "rightHandRing1",   "rightHandRing2",   "rightHandRing3",   "rightHandRing4",
+                                                            "rightHandPinky1",  "rightHandPinky2",  "rightHandPinky3",  "rightHandPinky4"};
+
+        SkinnedMeshJoint[]  left     = new SkinnedMeshJoint[szLeftHand.length];
+        SkinnedMeshJoint[]  right    = new SkinnedMeshJoint[szRightHand.length];
+        int                 iSize    = szLeftHand.length;
+
+        for (int i = 0; i < iSize; i++) {
+            left[i]     = (SkinnedMeshJoint) skeleton.findChild(szLeftHand[i]);
+            right[i]    = (SkinnedMeshJoint) skeleton.findChild(szRightHand[i]);
+        }
+
+        if (m_skeleton == null)
+            m_skeleton = new HashMap<m_bodyPart, SkinnedMeshJoint[]>();
+
+        m_skeleton.put(m_bodyPart.Left_Hand, left);
+        m_skeleton.put(m_bodyPart.Right_Hand, right);
+    }
+
+    public void catalogLowerArms() {
+        if (m_sceneData.getAvatar() == null)
+            return;
+
+        SkeletonNode skeleton   = m_sceneData.getAvatar().getSkeleton();
+
+        String[] szLeftLowerArm     = new String[] { "leftForeArm",     "leftForeArmRoll" };
+        String[] szRightLowerArm    = new String[] { "rightForeArm",    "rightForeArmRoll"};
+
+        SkinnedMeshJoint[]  left     = new SkinnedMeshJoint[szLeftLowerArm.length];
+        SkinnedMeshJoint[]  right    = new SkinnedMeshJoint[szRightLowerArm.length];
+        int                 iSize    = szLeftLowerArm.length;
+
+        for (int i = 0; i < iSize; i++) {
+            left[i]     = (SkinnedMeshJoint) skeleton.findChild(szLeftLowerArm[i]);
+            right[i]    = (SkinnedMeshJoint) skeleton.findChild(szRightLowerArm[i]);
+        }
+
+        if (m_skeleton == null)
+            m_skeleton = new HashMap<m_bodyPart, SkinnedMeshJoint[]>();
+
+        m_skeleton.put(m_bodyPart.Left_LowerArm, left);
+        m_skeleton.put(m_bodyPart.Right_LowerArm, right);
+    }
+
+    public void catalogUpperArms() {
+        if (m_sceneData.getAvatar() == null)
+            return;
+
+        SkeletonNode skeleton   = m_sceneData.getAvatar().getSkeleton();
+
+        String[] szLeftUpperArm     = new String[] { "leftArm",     "leftArmRoll" };
+        String[] szRightUpperArm    = new String[] { "rightArm",    "rightArmRoll" };
+
+        SkinnedMeshJoint[]  left     = new SkinnedMeshJoint[szLeftUpperArm.length];
+        SkinnedMeshJoint[]  right    = new SkinnedMeshJoint[szRightUpperArm.length];
+        int                 iSize    = szLeftUpperArm.length;
+
+        for (int i = 0; i < iSize; i++) {
+            left[i]     = (SkinnedMeshJoint) skeleton.findChild(szLeftUpperArm[i]);
+            right[i]    = (SkinnedMeshJoint) skeleton.findChild(szRightUpperArm[i]);
+        }
+
+        if (m_skeleton == null)
+            m_skeleton = new HashMap<m_bodyPart, SkinnedMeshJoint[]>();
+
+        m_skeleton.put(m_bodyPart.Left_UpperArm, left);
+        m_skeleton.put(m_bodyPart.Right_UpperArm, right);
+    }
+
+    public void catalogShoulders() {
+        if (m_sceneData.getAvatar() == null)
+            return;
+
+        SkeletonNode skeleton   = m_sceneData.getAvatar().getSkeleton();
+
+        String[] szLeftShoulder     = new String[] { "leftShoulder" };
+        String[] szRightShoulder    = new String[] { "rightShoulder" };
+
+        SkinnedMeshJoint[]  left     = new SkinnedMeshJoint[szLeftShoulder.length];
+        SkinnedMeshJoint[]  right    = new SkinnedMeshJoint[szRightShoulder.length];
+        int                 iSize    = szLeftShoulder.length;
+
+        for (int i = 0; i < iSize; i++) {
+            left[i]     = (SkinnedMeshJoint) skeleton.findChild(szLeftShoulder[i]);
+            right[i]    = (SkinnedMeshJoint) skeleton.findChild(szRightShoulder[i]);
+        }
+
+        if (m_skeleton == null)
+            m_skeleton = new HashMap<m_bodyPart, SkinnedMeshJoint[]>();
+
+        m_skeleton.put(m_bodyPart.Left_Shoulder, left);
+        m_skeleton.put(m_bodyPart.Right_Shoulder, right);
+    }
+
+    public void catalogTorso() {
+        if (m_sceneData.getAvatar() == null)
+            return;
+
+        SkeletonNode skeleton   = m_sceneData.getAvatar().getSkeleton();
+
+        String[] szTorso     = new String[] { "Spine", "Spine1", "Spine2" };
+
+        SkinnedMeshJoint[]  torso     = new SkinnedMeshJoint[szTorso.length];
+        int                 iSize    = szTorso.length;
+
+        for (int i = 0; i < iSize; i++) {
+            torso[i]     = (SkinnedMeshJoint) skeleton.findChild(szTorso[i]);
+        }
+
+        if (m_skeleton == null)
+            m_skeleton = new HashMap<m_bodyPart, SkinnedMeshJoint[]>();
+
+        m_skeleton.put(m_bodyPart.Torso, torso);
+    }
+
+    public void catalogUpperLegs() {
+        if (m_sceneData.getAvatar() == null)
+            return;
+
+        SkeletonNode skeleton   = m_sceneData.getAvatar().getSkeleton();
+
+        String[] szLeftUpperLeg     = new String[] { "leftUpLeg",   "leftUpLegRoll" };
+        String[] szRightUpperLeg    = new String[] { "rightUpLeg",  "rightUpLegRoll" };
+
+        SkinnedMeshJoint[]  left     = new SkinnedMeshJoint[szLeftUpperLeg.length];
+        SkinnedMeshJoint[]  right    = new SkinnedMeshJoint[szRightUpperLeg.length];
+        int                 iSize    = szLeftUpperLeg.length;
+
+        for (int i = 0; i < iSize; i++) {
+            left[i]     = (SkinnedMeshJoint) skeleton.findChild(szLeftUpperLeg[i]);
+            right[i]    = (SkinnedMeshJoint) skeleton.findChild(szRightUpperLeg[i]);
+        }
+
+        if (m_skeleton == null)
+            m_skeleton = new HashMap<m_bodyPart, SkinnedMeshJoint[]>();
+
+        m_skeleton.put(m_bodyPart.Left_UpperLeg, left);
+        m_skeleton.put(m_bodyPart.Right_UpperLeg, right);
+    }
+
+    public void catalogLowerLegs() {
+        if (m_sceneData.getAvatar() == null)
+            return;
+
+        SkeletonNode skeleton   = m_sceneData.getAvatar().getSkeleton();
+
+        String[] szLeftLowerLeg     = new String[] { "leftLeg",     "leftLegRoll" };
+        String[] szRightLowerLeg    = new String[] { "rightLeg",    "rightLegRoll" };
+
+        SkinnedMeshJoint[]  left     = new SkinnedMeshJoint[szLeftLowerLeg.length];
+        SkinnedMeshJoint[]  right    = new SkinnedMeshJoint[szRightLowerLeg.length];
+        int                 iSize    = szLeftLowerLeg.length;
+
+        for (int i = 0; i < iSize; i++) {
+            left[i]     = (SkinnedMeshJoint) skeleton.findChild(szLeftLowerLeg[i]);
+            right[i]    = (SkinnedMeshJoint) skeleton.findChild(szRightLowerLeg[i]);
+        }
+
+        if (m_skeleton == null)
+            m_skeleton = new HashMap<m_bodyPart, SkinnedMeshJoint[]>();
+
+        m_skeleton.put(m_bodyPart.Left_LowerLeg, left);
+        m_skeleton.put(m_bodyPart.Right_LowerLeg, right);
+    }
+
+    public void catalogFeet() {
+        if (m_sceneData.getAvatar() == null)
+            return;
+
+        SkeletonNode skeleton   = m_sceneData.getAvatar().getSkeleton();
+
+        String[] szLeftFoot     = new String[] { "leftFoot",    "leftFootBall" };
+        String[] szRightFoot    = new String[] { "rightFoot",   "rightFootBall" };
+
+        SkinnedMeshJoint[]  left     = new SkinnedMeshJoint[szLeftFoot.length];
+        SkinnedMeshJoint[]  right    = new SkinnedMeshJoint[szRightFoot.length];
+        int                 iSize    = szLeftFoot.length;
+
+        for (int i = 0; i < iSize; i++) {
+            left[i]     = (SkinnedMeshJoint) skeleton.findChild(szLeftFoot[i]);
+            right[i]    = (SkinnedMeshJoint) skeleton.findChild(szRightFoot[i]);
+        }
+
+        if (m_skeleton == null)
+            m_skeleton = new HashMap<m_bodyPart, SkinnedMeshJoint[]>();
+
+        m_skeleton.put(m_bodyPart.Left_Foot, left);
+        m_skeleton.put(m_bodyPart.Right_Foot, right);
+    }
+
+    public void catalogHead() {
+        if (m_sceneData.getAvatar() == null)
+            return;
+
+        SkeletonNode skeleton   = m_sceneData.getAvatar().getSkeleton();
+
+        String[] szHead     = new String[] { "Head",            "Jaw",              "Tongue",           "Tongue1",
+                                             "leftLowerLip",    "rightLowerLip",    "leftInnerBrow",    "leftEyeLid",
+                                             "leftOuterBrow",   "leftCheek",        "leftUpperLip",     "leftOuterLip",
+                                             "rightInnerBrow",  "rightOuterBrow",   "rightCheek",       "rightOuterLip",
+                                             "rightUpperLip",   "rightEyeLid",      "leftEye",          "rightEye"};
+
+        SkinnedMeshJoint[]  head     = new SkinnedMeshJoint[szHead.length];
+        int                 iSize    = szHead.length;
+
+        for (int i = 0; i < iSize; i++) {
+            head[i]     = (SkinnedMeshJoint) skeleton.findChild(szHead[i]);
+        }
+
+        if (m_skeleton == null)
+            m_skeleton = new HashMap<m_bodyPart, SkinnedMeshJoint[]>();
+
+        m_skeleton.put(m_bodyPart.Head, head);
+    }
+
+    public void catalogNeck() {
+        if (m_sceneData.getAvatar() == null)
+            return;
+
+        SkeletonNode skeleton   = m_sceneData.getAvatar().getSkeleton();
+
+        String[] szNeck     = new String[] { "Neck" };
+
+        SkinnedMeshJoint[]  neck     = new SkinnedMeshJoint[szNeck.length];
+        int                 iSize    = szNeck.length;
+
+        for (int i = 0; i < iSize; i++) {
+            neck[i]     = (SkinnedMeshJoint) skeleton.findChild(szNeck[i]);
+        }
+
+        if (m_skeleton == null)
+            m_skeleton = new HashMap<m_bodyPart, SkinnedMeshJoint[]>();
+
+        m_skeleton.put(m_bodyPart.Neck, neck);
+    }
+
+    public void catalogEyes() {
+        if (m_sceneData.getAvatar() == null)
+            return;
+
+        SkeletonNode skeleton   = m_sceneData.getAvatar().getSkeleton();
+
+        String[] szEyes     = new String[] { "leftInnerBrow",   "rightInnerBrow",  "leftOuterBrow",    "rightOuterBrow",
+                                             "leftEyeLid",      "rightEyeLid",     "leftEye",          "rightEye" };
+
+        SkinnedMeshJoint[]  eyes     = new SkinnedMeshJoint[szEyes.length];
+        int                 iSize    = szEyes.length;
+
+        for (int i = 0; i < iSize; i++) {
+            eyes[i]     = (SkinnedMeshJoint) skeleton.findChild(szEyes[i]);
+        }
+
+        if (m_skeleton == null)
+            m_skeleton = new HashMap<m_bodyPart, SkinnedMeshJoint[]>();
+
+        m_skeleton.put(m_bodyPart.Eyes, eyes);
+    }
+
+    public void catalogLips() {
+        if (m_sceneData.getAvatar() == null)
+            return;
+
+        SkeletonNode skeleton   = m_sceneData.getAvatar().getSkeleton();
+
+        String[] szLips     = new String[] { "leftLowerLip",    "rightLowerLip",    "leftUpperLip",     "rightUpperLip",
+                                             "leftCheek",       "rightCheek",       "leftOuterLip",     "rightOuterLip" };
+
+        SkinnedMeshJoint[]  lips     = new SkinnedMeshJoint[szLips.length];
+        int                 iSize    = szLips.length;
+
+        for (int i = 0; i < iSize; i++) {
+            lips[i]     = (SkinnedMeshJoint) skeleton.findChild(szLips[i]);
+        }
+
+        if (m_skeleton == null)
+            m_skeleton = new HashMap<m_bodyPart, SkinnedMeshJoint[]>();
+
+        m_skeleton.put(m_bodyPart.Lips, lips);
+    }
+
+    public void createJointCatalog() {
+        if (m_sceneData.getAvatar() == null)
+            return;
+
+        catalogHands();
+        catalogLowerArms();
+        catalogUpperArms();
+        catalogShoulders();
+        catalogTorso();
+        catalogUpperLegs();
+        catalogLowerLegs();
+        catalogFeet();
+        catalogHead();
+        catalogNeck();
+        catalogEyes();
+        catalogLips();
+    }
 }

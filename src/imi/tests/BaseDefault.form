@@ -21,6 +21,9 @@
           <Properties>
             <Property name="text" type="java.lang.String" value="File"/>
           </Properties>
+          <AuxValues>
+            <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="jMenu_File.getPopupMenu().setLightWeightPopupEnabled(false);"/>
+          </AuxValues>
           <SubComponents>
             <Menu class="javax.swing.JMenu" name="jMenu_LoadModels">
               <Properties>
@@ -94,30 +97,13 @@
             </MenuItem>
           </SubComponents>
         </Menu>
-        <Menu class="javax.swing.JMenu" name="jMenu_URL">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="URL"/>
-          </Properties>
-          <SubComponents>
-            <MenuItem class="javax.swing.JMenuItem" name="jMenuItem_LoadModelURL">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="Load Model"/>
-              </Properties>
-              <AuxValues>
-                <AuxValue name="JavaCodeGenerator_InitCodePre" type="java.lang.String" value="jMenuItem_LoadModelURL.addActionListener(new java.awt.event.ActionListener() {&#xa;    public void actionPerformed(java.awt.event.ActionEvent evt) {&#xa;        runProgressBar(true);&#xa;        //openServerBrowser();&#xa;        //m_sceneData.openServerBrowser((JFrame) m_base);&#xa;        //openBasicOptions();&#xa;        openEZOptions();&#xa;        resetOpenTools();&#xa;        runProgressBar(false);&#xa;    }&#xa;});"/>
-              </AuxValues>
-            </MenuItem>
-            <MenuItem class="javax.swing.JMenuItem" name="jMenuItem_LoadTextureURL">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="Load Texture"/>
-              </Properties>
-            </MenuItem>
-          </SubComponents>
-        </Menu>
         <Menu class="javax.swing.JMenu" name="jMenu_Tools">
           <Properties>
             <Property name="text" type="java.lang.String" value="Tools"/>
           </Properties>
+          <AuxValues>
+            <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="jMenu_Tools.getPopupMenu().setLightWeightPopupEnabled(false);"/>
+          </AuxValues>
           <SubComponents>
             <MenuItem class="javax.swing.JMenuItem" name="jMenuItem_AvatarEditor">
               <Properties>
@@ -154,6 +140,9 @@
           <Properties>
             <Property name="text" type="java.lang.String" value="Help"/>
           </Properties>
+          <AuxValues>
+            <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="jMenu_Help.getPopupMenu().setLightWeightPopupEnabled(false);"/>
+          </AuxValues>
           <SubComponents>
             <MenuItem class="javax.swing.JMenuItem" name="jMenuItem_About">
               <Properties>

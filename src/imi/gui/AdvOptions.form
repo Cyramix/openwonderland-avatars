@@ -112,6 +112,11 @@
                       <SubComponents>
                         <Component class="javax.swing.JSlider" name="jSlider_EyePosHL">
                           <Properties>
+                            <Property name="maximum" type="int" value="10"/>
+                            <Property name="minorTickSpacing" type="int" value="1"/>
+                            <Property name="paintTicks" type="boolean" value="true"/>
+                            <Property name="snapToTicks" type="boolean" value="true"/>
+                            <Property name="value" type="int" value="5"/>
                             <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                               <Dimension value="[100, 29]"/>
                             </Property>
@@ -127,6 +132,11 @@
                         </Component>
                         <Component class="javax.swing.JSlider" name="jSlider_EyePosHR">
                           <Properties>
+                            <Property name="maximum" type="int" value="10"/>
+                            <Property name="minorTickSpacing" type="int" value="1"/>
+                            <Property name="paintTicks" type="boolean" value="true"/>
+                            <Property name="snapToTicks" type="boolean" value="true"/>
+                            <Property name="value" type="int" value="5"/>
                             <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                               <Dimension value="[100, 29]"/>
                             </Property>
@@ -172,6 +182,7 @@
                         </Component>
                         <Component class="javax.swing.JCheckBox" name="jCheckBox_EyesHPosSync">
                           <Properties>
+                            <Property name="selected" type="boolean" value="true"/>
                             <Property name="text" type="java.lang.String" value="Sync"/>
                           </Properties>
                           <Constraints>
@@ -208,7 +219,12 @@
                       <SubComponents>
                         <Component class="javax.swing.JSlider" name="jSlider_EyePosVL">
                           <Properties>
+                            <Property name="maximum" type="int" value="10"/>
+                            <Property name="minorTickSpacing" type="int" value="1"/>
                             <Property name="orientation" type="int" value="1"/>
+                            <Property name="paintTicks" type="boolean" value="true"/>
+                            <Property name="snapToTicks" type="boolean" value="true"/>
+                            <Property name="value" type="int" value="5"/>
                             <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                               <Dimension value="[29, 100]"/>
                             </Property>
@@ -224,7 +240,12 @@
                         </Component>
                         <Component class="javax.swing.JSlider" name="jSlider_EyePosVR">
                           <Properties>
+                            <Property name="maximum" type="int" value="10"/>
+                            <Property name="minorTickSpacing" type="int" value="1"/>
                             <Property name="orientation" type="int" value="1"/>
+                            <Property name="paintTicks" type="boolean" value="true"/>
+                            <Property name="snapToTicks" type="boolean" value="true"/>
+                            <Property name="value" type="int" value="5"/>
                             <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                               <Dimension value="[29, 100]"/>
                             </Property>
@@ -270,6 +291,7 @@
                         </Component>
                         <Component class="javax.swing.JCheckBox" name="jCheckBox_EyeVPosSync">
                           <Properties>
+                            <Property name="selected" type="boolean" value="true"/>
                             <Property name="text" type="java.lang.String" value="Sync"/>
                           </Properties>
                           <Constraints>
@@ -303,6 +325,11 @@
                       <SubComponents>
                         <Component class="javax.swing.JSlider" name="jSlider_EyePosDL">
                           <Properties>
+                            <Property name="maximum" type="int" value="10"/>
+                            <Property name="minorTickSpacing" type="int" value="1"/>
+                            <Property name="paintTicks" type="boolean" value="true"/>
+                            <Property name="snapToTicks" type="boolean" value="true"/>
+                            <Property name="value" type="int" value="5"/>
                             <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                               <Dimension value="[100, 29]"/>
                             </Property>
@@ -318,6 +345,11 @@
                         </Component>
                         <Component class="javax.swing.JSlider" name="jSlider_EyePosDR">
                           <Properties>
+                            <Property name="maximum" type="int" value="10"/>
+                            <Property name="minorTickSpacing" type="int" value="1"/>
+                            <Property name="paintTicks" type="boolean" value="true"/>
+                            <Property name="snapToTicks" type="boolean" value="true"/>
+                            <Property name="value" type="int" value="5"/>
                             <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                               <Dimension value="[100, 29]"/>
                             </Property>
@@ -333,6 +365,7 @@
                         </Component>
                         <Component class="javax.swing.JCheckBox" name="jCheckBox_EyeDPosSync">
                           <Properties>
+                            <Property name="selected" type="boolean" value="true"/>
                             <Property name="text" type="java.lang.String" value="Sync"/>
                           </Properties>
                           <Constraints>
@@ -402,6 +435,10 @@
                           </Constraints>
                         </Component>
                         <Component class="javax.swing.JSlider" name="jSlider_EyeX">
+                          <Properties>
+                            <Property name="paintTicks" type="boolean" value="true"/>
+                            <Property name="snapToTicks" type="boolean" value="true"/>
+                          </Properties>
                           <Constraints>
                             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
                               <GridBagConstraints gridX="-1" gridY="-1" gridWidth="1" gridHeight="1" fill="0" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.0" weightY="0.0"/>
@@ -419,6 +456,10 @@
                           </Constraints>
                         </Component>
                         <Component class="javax.swing.JSlider" name="jSlider_EyeY">
+                          <Properties>
+                            <Property name="paintTicks" type="boolean" value="true"/>
+                            <Property name="snapToTicks" type="boolean" value="true"/>
+                          </Properties>
                           <Constraints>
                             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
                               <GridBagConstraints gridX="1" gridY="1" gridWidth="1" gridHeight="1" fill="0" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.0" weightY="0.0"/>
@@ -436,6 +477,10 @@
                           </Constraints>
                         </Component>
                         <Component class="javax.swing.JSlider" name="jSlider_EyeZ">
+                          <Properties>
+                            <Property name="paintTicks" type="boolean" value="true"/>
+                            <Property name="snapToTicks" type="boolean" value="true"/>
+                          </Properties>
                           <Constraints>
                             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
                               <GridBagConstraints gridX="1" gridY="2" gridWidth="1" gridHeight="1" fill="0" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.0" weightY="0.0"/>
@@ -453,6 +498,10 @@
                           </Constraints>
                         </Component>
                         <Component class="javax.swing.JSlider" name="jSlider_EyeUni">
+                          <Properties>
+                            <Property name="paintTicks" type="boolean" value="true"/>
+                            <Property name="snapToTicks" type="boolean" value="true"/>
+                          </Properties>
                           <Constraints>
                             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
                               <GridBagConstraints gridX="1" gridY="3" gridWidth="1" gridHeight="1" fill="0" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.0" weightY="0.0"/>
@@ -509,6 +558,8 @@
                         <Component class="javax.swing.JSlider" name="jSlider_NosePosH">
                           <Properties>
                             <Property name="orientation" type="int" value="1"/>
+                            <Property name="paintTicks" type="boolean" value="true"/>
+                            <Property name="snapToTicks" type="boolean" value="true"/>
                             <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                               <Dimension value="[29, 100]"/>
                             </Property>
@@ -565,6 +616,8 @@
                       <SubComponents>
                         <Component class="javax.swing.JSlider" name="jSlider_NoseLen">
                           <Properties>
+                            <Property name="paintTicks" type="boolean" value="true"/>
+                            <Property name="snapToTicks" type="boolean" value="true"/>
                             <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                               <Dimension value="[190, 29]"/>
                             </Property>
@@ -618,6 +671,8 @@
                       <SubComponents>
                         <Component class="javax.swing.JSlider" name="jSlider_NoseWidth">
                           <Properties>
+                            <Property name="paintTicks" type="boolean" value="true"/>
+                            <Property name="snapToTicks" type="boolean" value="true"/>
                             <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                               <Dimension value="[190, 29]"/>
                             </Property>
@@ -681,6 +736,8 @@
                         </Component>
                         <Component class="javax.swing.JSlider" name="jSlider_NoseX">
                           <Properties>
+                            <Property name="paintTicks" type="boolean" value="true"/>
+                            <Property name="snapToTicks" type="boolean" value="true"/>
                             <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                               <Dimension value="[170, 29]"/>
                             </Property>
@@ -703,6 +760,8 @@
                         </Component>
                         <Component class="javax.swing.JSlider" name="jSlider_NoseY">
                           <Properties>
+                            <Property name="paintTicks" type="boolean" value="true"/>
+                            <Property name="snapToTicks" type="boolean" value="true"/>
                             <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                               <Dimension value="[170, 29]"/>
                             </Property>
@@ -725,6 +784,8 @@
                         </Component>
                         <Component class="javax.swing.JSlider" name="jSlider_NoseZ">
                           <Properties>
+                            <Property name="paintTicks" type="boolean" value="true"/>
+                            <Property name="snapToTicks" type="boolean" value="true"/>
                             <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                               <Dimension value="[170, 29]"/>
                             </Property>
@@ -747,6 +808,8 @@
                         </Component>
                         <Component class="javax.swing.JSlider" name="jSlider_NoseU">
                           <Properties>
+                            <Property name="paintTicks" type="boolean" value="true"/>
+                            <Property name="snapToTicks" type="boolean" value="true"/>
                             <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                               <Dimension value="[170, 29]"/>
                             </Property>
@@ -804,6 +867,8 @@
                         <Component class="javax.swing.JSlider" name="jSlider_UpperLip">
                           <Properties>
                             <Property name="orientation" type="int" value="1"/>
+                            <Property name="paintTicks" type="boolean" value="true"/>
+                            <Property name="snapToTicks" type="boolean" value="true"/>
                             <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                               <Dimension value="[29, 100]"/>
                             </Property>
@@ -820,6 +885,8 @@
                         <Component class="javax.swing.JSlider" name="jSlider_LowerLip">
                           <Properties>
                             <Property name="orientation" type="int" value="1"/>
+                            <Property name="paintTicks" type="boolean" value="true"/>
+                            <Property name="snapToTicks" type="boolean" value="true"/>
                             <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                               <Dimension value="[29, 100]"/>
                             </Property>
@@ -890,6 +957,10 @@
                       <Layout class="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout"/>
                       <SubComponents>
                         <Component class="javax.swing.JSlider" name="jSlider_MouthWidth">
+                          <Properties>
+                            <Property name="paintTicks" type="boolean" value="true"/>
+                            <Property name="snapToTicks" type="boolean" value="true"/>
+                          </Properties>
                           <Constraints>
                             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
                               <GridBagConstraints gridX="-1" gridY="-1" gridWidth="1" gridHeight="1" fill="0" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.0" weightY="0.0"/>
@@ -949,6 +1020,8 @@
                         </Component>
                         <Component class="javax.swing.JSlider" name="jSlider_MouthX">
                           <Properties>
+                            <Property name="paintTicks" type="boolean" value="true"/>
+                            <Property name="snapToTicks" type="boolean" value="true"/>
                             <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                               <Dimension value="[170, 29]"/>
                             </Property>
@@ -971,6 +1044,8 @@
                         </Component>
                         <Component class="javax.swing.JSlider" name="jSlider_MouthY">
                           <Properties>
+                            <Property name="paintTicks" type="boolean" value="true"/>
+                            <Property name="snapToTicks" type="boolean" value="true"/>
                             <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                               <Dimension value="[170, 29]"/>
                             </Property>
@@ -993,6 +1068,8 @@
                         </Component>
                         <Component class="javax.swing.JSlider" name="jSlider_MouthZ">
                           <Properties>
+                            <Property name="paintTicks" type="boolean" value="true"/>
+                            <Property name="snapToTicks" type="boolean" value="true"/>
                             <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                               <Dimension value="[170, 29]"/>
                             </Property>
@@ -1015,6 +1092,8 @@
                         </Component>
                         <Component class="javax.swing.JSlider" name="jSlider_MouthU">
                           <Properties>
+                            <Property name="paintTicks" type="boolean" value="true"/>
+                            <Property name="snapToTicks" type="boolean" value="true"/>
                             <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                               <Dimension value="[170, 29]"/>
                             </Property>
@@ -1070,6 +1149,10 @@
                       <Layout class="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout"/>
                       <SubComponents>
                         <Component class="javax.swing.JSlider" name="jSlider_HeadWidth">
+                          <Properties>
+                            <Property name="paintTicks" type="boolean" value="true"/>
+                            <Property name="snapToTicks" type="boolean" value="true"/>
+                          </Properties>
                           <Constraints>
                             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
                               <GridBagConstraints gridX="-1" gridY="-1" gridWidth="1" gridHeight="1" fill="0" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.0" weightY="0.0"/>
@@ -1120,6 +1203,8 @@
                         <Component class="javax.swing.JSlider" name="jSlider_HeadHeight">
                           <Properties>
                             <Property name="orientation" type="int" value="1"/>
+                            <Property name="paintTicks" type="boolean" value="true"/>
+                            <Property name="snapToTicks" type="boolean" value="true"/>
                             <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                               <Dimension value="[29, 100]"/>
                             </Property>
@@ -1175,6 +1260,10 @@
                       <Layout class="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout"/>
                       <SubComponents>
                         <Component class="javax.swing.JSlider" name="jSlider_HeadDepth">
+                          <Properties>
+                            <Property name="paintTicks" type="boolean" value="true"/>
+                            <Property name="snapToTicks" type="boolean" value="true"/>
+                          </Properties>
                           <Constraints>
                             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
                               <GridBagConstraints gridX="-1" gridY="-1" gridWidth="1" gridHeight="1" fill="0" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.0" weightY="0.0"/>
@@ -1223,6 +1312,10 @@
                       <Layout class="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout"/>
                       <SubComponents>
                         <Component class="javax.swing.JSlider" name="jSlider_HeadUniform">
+                          <Properties>
+                            <Property name="paintTicks" type="boolean" value="true"/>
+                            <Property name="snapToTicks" type="boolean" value="true"/>
+                          </Properties>
                           <Constraints>
                             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
                               <GridBagConstraints gridX="-1" gridY="-1" gridWidth="1" gridHeight="1" fill="0" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.0" weightY="0.0"/>
@@ -1329,6 +1422,8 @@
                         <Component class="javax.swing.JSlider" name="jSlider_FingerLengthR">
                           <Properties>
                             <Property name="orientation" type="int" value="1"/>
+                            <Property name="paintTicks" type="boolean" value="true"/>
+                            <Property name="snapToTicks" type="boolean" value="true"/>
                             <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                               <Dimension value="[29, 100]"/>
                             </Property>
@@ -1345,6 +1440,8 @@
                         <Component class="javax.swing.JSlider" name="jSlider_FingerLengthL">
                           <Properties>
                             <Property name="orientation" type="int" value="1"/>
+                            <Property name="paintTicks" type="boolean" value="true"/>
+                            <Property name="snapToTicks" type="boolean" value="true"/>
                             <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                               <Dimension value="[29, 100]"/>
                             </Property>
@@ -1426,6 +1523,8 @@
                       <SubComponents>
                         <Component class="javax.swing.JSlider" name="jSlider_HandThicknessR">
                           <Properties>
+                            <Property name="paintTicks" type="boolean" value="true"/>
+                            <Property name="snapToTicks" type="boolean" value="true"/>
                             <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                               <Dimension value="[100, 29]"/>
                             </Property>
@@ -1441,6 +1540,8 @@
                         </Component>
                         <Component class="javax.swing.JSlider" name="jSlider_HandThicknessL">
                           <Properties>
+                            <Property name="paintTicks" type="boolean" value="true"/>
+                            <Property name="snapToTicks" type="boolean" value="true"/>
                             <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                               <Dimension value="[100, 29]"/>
                             </Property>
@@ -1536,6 +1637,8 @@
                         <Component class="javax.swing.JSlider" name="jSlider_ForearmLengthR">
                           <Properties>
                             <Property name="orientation" type="int" value="1"/>
+                            <Property name="paintTicks" type="boolean" value="true"/>
+                            <Property name="snapToTicks" type="boolean" value="true"/>
                             <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                               <Dimension value="[29, 100]"/>
                             </Property>
@@ -1552,6 +1655,8 @@
                         <Component class="javax.swing.JSlider" name="jSlider_ForearmLengthL">
                           <Properties>
                             <Property name="orientation" type="int" value="1"/>
+                            <Property name="paintTicks" type="boolean" value="true"/>
+                            <Property name="snapToTicks" type="boolean" value="true"/>
                             <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                               <Dimension value="[29, 100]"/>
                             </Property>
@@ -1633,6 +1738,8 @@
                       <SubComponents>
                         <Component class="javax.swing.JSlider" name="jSlider_ForearmThicknessR">
                           <Properties>
+                            <Property name="paintTicks" type="boolean" value="true"/>
+                            <Property name="snapToTicks" type="boolean" value="true"/>
                             <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                               <Dimension value="[100, 29]"/>
                             </Property>
@@ -1648,6 +1755,8 @@
                         </Component>
                         <Component class="javax.swing.JSlider" name="jSlider_ForearmThicknessL">
                           <Properties>
+                            <Property name="paintTicks" type="boolean" value="true"/>
+                            <Property name="snapToTicks" type="boolean" value="true"/>
                             <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                               <Dimension value="[100, 29]"/>
                             </Property>
@@ -1743,6 +1852,8 @@
                         <Component class="javax.swing.JSlider" name="jSlider_UpperarmLengthR">
                           <Properties>
                             <Property name="orientation" type="int" value="1"/>
+                            <Property name="paintTicks" type="boolean" value="true"/>
+                            <Property name="snapToTicks" type="boolean" value="true"/>
                             <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                               <Dimension value="[29, 100]"/>
                             </Property>
@@ -1759,6 +1870,8 @@
                         <Component class="javax.swing.JSlider" name="jSlider_UpperArmLengthL">
                           <Properties>
                             <Property name="orientation" type="int" value="1"/>
+                            <Property name="paintTicks" type="boolean" value="true"/>
+                            <Property name="snapToTicks" type="boolean" value="true"/>
                             <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                               <Dimension value="[29, 100]"/>
                             </Property>
@@ -1840,6 +1953,8 @@
                       <SubComponents>
                         <Component class="javax.swing.JSlider" name="jSlider_UpperarmThicknessR">
                           <Properties>
+                            <Property name="paintTicks" type="boolean" value="true"/>
+                            <Property name="snapToTicks" type="boolean" value="true"/>
                             <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                               <Dimension value="[100, 29]"/>
                             </Property>
@@ -1855,6 +1970,8 @@
                         </Component>
                         <Component class="javax.swing.JSlider" name="jSlider_UpperarmThicknessL">
                           <Properties>
+                            <Property name="paintTicks" type="boolean" value="true"/>
+                            <Property name="snapToTicks" type="boolean" value="true"/>
                             <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                               <Dimension value="[100, 29]"/>
                             </Property>
@@ -1988,6 +2105,8 @@
                         <Component class="javax.swing.JSlider" name="jSlider_FeetLengthR">
                           <Properties>
                             <Property name="orientation" type="int" value="1"/>
+                            <Property name="paintTicks" type="boolean" value="true"/>
+                            <Property name="snapToTicks" type="boolean" value="true"/>
                             <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                               <Dimension value="[29, 100]"/>
                             </Property>
@@ -2004,6 +2123,8 @@
                         <Component class="javax.swing.JSlider" name="jSlider_FeetLengthL">
                           <Properties>
                             <Property name="orientation" type="int" value="1"/>
+                            <Property name="paintTicks" type="boolean" value="true"/>
+                            <Property name="snapToTicks" type="boolean" value="true"/>
                             <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                               <Dimension value="[29, 100]"/>
                             </Property>
@@ -2085,6 +2206,8 @@
                       <SubComponents>
                         <Component class="javax.swing.JSlider" name="jSlider_FeetThicknessR">
                           <Properties>
+                            <Property name="paintTicks" type="boolean" value="true"/>
+                            <Property name="snapToTicks" type="boolean" value="true"/>
                             <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                               <Dimension value="[100, 29]"/>
                             </Property>
@@ -2100,6 +2223,8 @@
                         </Component>
                         <Component class="javax.swing.JSlider" name="jSlider_FeetThicknessL">
                           <Properties>
+                            <Property name="paintTicks" type="boolean" value="true"/>
+                            <Property name="snapToTicks" type="boolean" value="true"/>
                             <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                               <Dimension value="[100, 29]"/>
                             </Property>
@@ -2195,6 +2320,8 @@
                         <Component class="javax.swing.JSlider" name="jSlider_CalvesLengthR">
                           <Properties>
                             <Property name="orientation" type="int" value="1"/>
+                            <Property name="paintTicks" type="boolean" value="true"/>
+                            <Property name="snapToTicks" type="boolean" value="true"/>
                             <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                               <Dimension value="[29, 100]"/>
                             </Property>
@@ -2211,6 +2338,8 @@
                         <Component class="javax.swing.JSlider" name="jSlider_CalvesLengthL">
                           <Properties>
                             <Property name="orientation" type="int" value="1"/>
+                            <Property name="paintTicks" type="boolean" value="true"/>
+                            <Property name="snapToTicks" type="boolean" value="true"/>
                             <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                               <Dimension value="[29, 100]"/>
                             </Property>
@@ -2292,6 +2421,8 @@
                       <SubComponents>
                         <Component class="javax.swing.JSlider" name="jSlider_CalvesThicknessR">
                           <Properties>
+                            <Property name="paintTicks" type="boolean" value="true"/>
+                            <Property name="snapToTicks" type="boolean" value="true"/>
                             <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                               <Dimension value="[100, 29]"/>
                             </Property>
@@ -2307,6 +2438,8 @@
                         </Component>
                         <Component class="javax.swing.JSlider" name="jSlider_CalvesThicknessL">
                           <Properties>
+                            <Property name="paintTicks" type="boolean" value="true"/>
+                            <Property name="snapToTicks" type="boolean" value="true"/>
                             <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                               <Dimension value="[100, 29]"/>
                             </Property>
@@ -2402,6 +2535,8 @@
                         <Component class="javax.swing.JSlider" name="jSlider_ThighLengthR">
                           <Properties>
                             <Property name="orientation" type="int" value="1"/>
+                            <Property name="paintTicks" type="boolean" value="true"/>
+                            <Property name="snapToTicks" type="boolean" value="true"/>
                             <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                               <Dimension value="[29, 100]"/>
                             </Property>
@@ -2418,6 +2553,8 @@
                         <Component class="javax.swing.JSlider" name="jSlider_ThighLengthL">
                           <Properties>
                             <Property name="orientation" type="int" value="1"/>
+                            <Property name="paintTicks" type="boolean" value="true"/>
+                            <Property name="snapToTicks" type="boolean" value="true"/>
                             <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                               <Dimension value="[29, 100]"/>
                             </Property>
@@ -2499,6 +2636,8 @@
                       <SubComponents>
                         <Component class="javax.swing.JSlider" name="jSlider_ThighThicknessR">
                           <Properties>
+                            <Property name="paintTicks" type="boolean" value="true"/>
+                            <Property name="snapToTicks" type="boolean" value="true"/>
                             <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                               <Dimension value="[100, 29]"/>
                             </Property>
@@ -2514,6 +2653,8 @@
                         </Component>
                         <Component class="javax.swing.JSlider" name="jSlider_ThighThicknessL">
                           <Properties>
+                            <Property name="paintTicks" type="boolean" value="true"/>
+                            <Property name="snapToTicks" type="boolean" value="true"/>
                             <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                               <Dimension value="[100, 29]"/>
                             </Property>
@@ -2639,6 +2780,10 @@
                       <Layout class="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout"/>
                       <SubComponents>
                         <Component class="javax.swing.JSlider" name="jSlider_ChestBulk">
+                          <Properties>
+                            <Property name="paintTicks" type="boolean" value="true"/>
+                            <Property name="snapToTicks" type="boolean" value="true"/>
+                          </Properties>
                           <Constraints>
                             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
                               <GridBagConstraints gridX="-1" gridY="-1" gridWidth="1" gridHeight="1" fill="0" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.0" weightY="0.0"/>
@@ -2681,6 +2826,10 @@
                       <Layout class="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout"/>
                       <SubComponents>
                         <Component class="javax.swing.JSlider" name="jSlider_ChestBroadness">
+                          <Properties>
+                            <Property name="paintTicks" type="boolean" value="true"/>
+                            <Property name="snapToTicks" type="boolean" value="true"/>
+                          </Properties>
                           <Constraints>
                             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
                               <GridBagConstraints gridX="-1" gridY="-1" gridWidth="1" gridHeight="1" fill="0" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.0" weightY="0.0"/>
@@ -2736,6 +2885,10 @@
                       <Layout class="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout"/>
                       <SubComponents>
                         <Component class="javax.swing.JSlider" name="jSlider_BellyRoundness">
+                          <Properties>
+                            <Property name="paintTicks" type="boolean" value="true"/>
+                            <Property name="snapToTicks" type="boolean" value="true"/>
+                          </Properties>
                           <Constraints>
                             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
                               <GridBagConstraints gridX="-1" gridY="-1" gridWidth="1" gridHeight="1" fill="0" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.0" weightY="0.0"/>
@@ -2778,6 +2931,10 @@
                       <Layout class="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout"/>
                       <SubComponents>
                         <Component class="javax.swing.JSlider" name="jSlider_Waistline">
+                          <Properties>
+                            <Property name="paintTicks" type="boolean" value="true"/>
+                            <Property name="snapToTicks" type="boolean" value="true"/>
+                          </Properties>
                           <Constraints>
                             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
                               <GridBagConstraints gridX="-1" gridY="-1" gridWidth="1" gridHeight="1" fill="0" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.0" weightY="0.0"/>
@@ -2833,6 +2990,10 @@
                       <Layout class="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout"/>
                       <SubComponents>
                         <Component class="javax.swing.JSlider" name="jSlider_GlutRoundness">
+                          <Properties>
+                            <Property name="paintTicks" type="boolean" value="true"/>
+                            <Property name="snapToTicks" type="boolean" value="true"/>
+                          </Properties>
                           <Constraints>
                             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
                               <GridBagConstraints gridX="-1" gridY="-1" gridWidth="1" gridHeight="1" fill="0" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.0" weightY="0.0"/>
@@ -2875,6 +3036,10 @@
                       <Layout class="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout"/>
                       <SubComponents>
                         <Component class="javax.swing.JSlider" name="jSlider_GlutSag">
+                          <Properties>
+                            <Property name="paintTicks" type="boolean" value="true"/>
+                            <Property name="snapToTicks" type="boolean" value="true"/>
+                          </Properties>
                           <Constraints>
                             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
                               <GridBagConstraints gridX="-1" gridY="-1" gridWidth="1" gridHeight="1" fill="0" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.0" weightY="0.0"/>
@@ -2936,6 +3101,10 @@
                       <Layout class="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout"/>
                       <SubComponents>
                         <Component class="javax.swing.JSlider" name="jSlider_BodyWidth">
+                          <Properties>
+                            <Property name="paintTicks" type="boolean" value="true"/>
+                            <Property name="snapToTicks" type="boolean" value="true"/>
+                          </Properties>
                           <Constraints>
                             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
                               <GridBagConstraints gridX="-1" gridY="-1" gridWidth="1" gridHeight="1" fill="0" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.0" weightY="0.0"/>
@@ -2986,6 +3155,8 @@
                         <Component class="javax.swing.JSlider" name="jSlider_BodyHeight">
                           <Properties>
                             <Property name="orientation" type="int" value="1"/>
+                            <Property name="paintTicks" type="boolean" value="true"/>
+                            <Property name="snapToTicks" type="boolean" value="true"/>
                             <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                               <Dimension value="[29, 100]"/>
                             </Property>
@@ -3041,6 +3212,10 @@
                       <Layout class="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout"/>
                       <SubComponents>
                         <Component class="javax.swing.JSlider" name="jSlider_BodyDepth">
+                          <Properties>
+                            <Property name="paintTicks" type="boolean" value="true"/>
+                            <Property name="snapToTicks" type="boolean" value="true"/>
+                          </Properties>
                           <Constraints>
                             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
                               <GridBagConstraints gridX="-1" gridY="-1" gridWidth="1" gridHeight="1" fill="0" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.0" weightY="0.0"/>
@@ -3089,6 +3264,10 @@
                       <Layout class="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout"/>
                       <SubComponents>
                         <Component class="javax.swing.JSlider" name="jSlider_BodyUniform">
+                          <Properties>
+                            <Property name="paintTicks" type="boolean" value="true"/>
+                            <Property name="snapToTicks" type="boolean" value="true"/>
+                          </Properties>
                           <Constraints>
                             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
                               <GridBagConstraints gridX="-1" gridY="-1" gridWidth="1" gridHeight="1" fill="0" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.0" weightY="0.0"/>

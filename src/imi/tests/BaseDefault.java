@@ -1012,9 +1012,6 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
         jMenuItem_LoadTextureFile = new javax.swing.JMenuItem();
         jMenuItem_LoadXMLFile = new javax.swing.JMenuItem();
         jMenuItem_SaveXMLFile = new javax.swing.JMenuItem();
-        jMenu_URL = new javax.swing.JMenu();
-        jMenuItem_LoadModelURL = new javax.swing.JMenuItem();
-        jMenuItem_LoadTextureURL = new javax.swing.JMenuItem();
         jMenu_Tools = new javax.swing.JMenu();
         jMenuItem_AvatarEditor = new javax.swing.JMenuItem();
         jMenuItem_NodeExplorer = new javax.swing.JMenuItem();
@@ -1155,6 +1152,7 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
         jMenuBar_MainMenu.setMinimumSize(new java.awt.Dimension(400, 25));
 
         jMenu_File.setText("File");
+        jMenu_File.getPopupMenu().setLightWeightPopupEnabled(false);
 
         jMenu_LoadModels.setText("Load Model");
 
@@ -1232,28 +1230,8 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
 
         jMenuBar_MainMenu.add(jMenu_File);
 
-        jMenu_URL.setText("URL");
-
-        jMenuItem_LoadModelURL.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                runProgressBar(true);
-                //openServerBrowser();
-                //m_sceneData.openServerBrowser((JFrame) m_base);
-                //openBasicOptions();
-                openEZOptions();
-                resetOpenTools();
-                runProgressBar(false);
-            }
-        });
-        jMenuItem_LoadModelURL.setText("Load Model");
-        jMenu_URL.add(jMenuItem_LoadModelURL);
-
-        jMenuItem_LoadTextureURL.setText("Load Texture");
-        jMenu_URL.add(jMenuItem_LoadTextureURL);
-
-        jMenuBar_MainMenu.add(jMenu_URL);
-
         jMenu_Tools.setText("Tools");
+        jMenu_Tools.getPopupMenu().setLightWeightPopupEnabled(false);
 
         jMenuItem_AvatarEditor.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1291,6 +1269,7 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
         jMenuBar_MainMenu.add(jMenu_Tools);
 
         jMenu_Help.setText("Help");
+        jMenu_Help.getPopupMenu().setLightWeightPopupEnabled(false);
 
         jMenuItem_About.setText("About");
         jMenu_Help.add(jMenuItem_About);
@@ -1325,9 +1304,7 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
     private javax.swing.JMenuItem jMenuItem_Avatar;
     private javax.swing.JMenuItem jMenuItem_AvatarEditor;
     private javax.swing.JMenuItem jMenuItem_Clothes;
-    private javax.swing.JMenuItem jMenuItem_LoadModelURL;
     private javax.swing.JMenuItem jMenuItem_LoadTextureFile;
-    private javax.swing.JMenuItem jMenuItem_LoadTextureURL;
     private javax.swing.JMenuItem jMenuItem_LoadXMLFile;
     private javax.swing.JMenuItem jMenuItem_NodeExplorer;
     private javax.swing.JMenuItem jMenuItem_SaveXMLFile;
@@ -1336,7 +1313,6 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
     private javax.swing.JMenu jMenu_Help;
     private javax.swing.JMenu jMenu_LoadModels;
     private javax.swing.JMenu jMenu_Tools;
-    private javax.swing.JMenu jMenu_URL;
     private javax.swing.JPanel jPanel_DisplayWindow;
     private javax.swing.JPanel jPanel_MainPanel;
     private javax.swing.JPanel jPanel_ProgressBar;
