@@ -52,7 +52,7 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
     protected int                     m_gender;
     protected boolean                 m_isViewMode;
     protected Component               m_Parent;
-    protected CharacterAttributes     m_Attributes;
+    protected CharacterAttributes     m_Attributes, m_newAttribs;
 ////////////////////////////////////////////////////////////////////////////////
 // CLASS DATA MEMBERS - END
 ////////////////////////////////////////////////////////////////////////////////
@@ -337,7 +337,7 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
         }
         else {
             addToAttributes(null, data, meshes, null, 0);
-            m_sceneData.getAvatar().loadAttributes(m_Attributes);
+            m_sceneData.getAvatar().loadAttributes(m_newAttribs);
         }
 
         jButton_ApplyHead.setEnabled(true);
@@ -384,7 +384,7 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
         }
         else {
             addToAttributes(null, data, meshes, null, 0);
-            m_sceneData.getAvatar().loadAttributes(m_Attributes);
+            m_sceneData.getAvatar().loadAttributes(m_newAttribs);
         }
 
         jButton_ApplyHead1.setEnabled(true);
@@ -429,7 +429,7 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
             m_sceneData.loadMeshDAEURL(true, true, this, data.get(0), meshes, 2);
         else {
             addToAttributes(null, data, meshes, null, 2);
-            m_sceneData.getAvatar().loadAttributes(m_Attributes);
+            m_sceneData.getAvatar().loadAttributes(m_newAttribs);
         }
 
         jButton_ApplyBody.setEnabled(true);
@@ -473,7 +473,7 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
             m_sceneData.loadMeshDAEURL(true, true, this, data.get(0), meshes, 3);
         else {
             addToAttributes(null, data, meshes, null, 3);
-            m_sceneData.getAvatar().loadAttributes(m_Attributes);
+            m_sceneData.getAvatar().loadAttributes(m_newAttribs);
         }
 
         jButton_ApplyLegs.setEnabled(true);
@@ -517,7 +517,7 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
             m_sceneData.loadMeshDAEURL(true, true, this, data.get(0), meshes, 4);
         else {
             addToAttributes(null, data, meshes, null, 4);
-            m_sceneData.getAvatar().loadAttributes(m_Attributes);
+            m_sceneData.getAvatar().loadAttributes(m_newAttribs);
         }
 
         jButton_ApplyShoes.setEnabled(true);
@@ -562,7 +562,7 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
         else {
             String[] hair = new String[] {data.get(0)[0]};
             addToAttributes(null, data, hair, null, 5);
-            m_sceneData.getAvatar().loadAttributes(m_Attributes);
+            m_sceneData.getAvatar().loadAttributes(m_newAttribs);
         }
 
         jButton_ApplyHair.setEnabled(true);
@@ -607,7 +607,7 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
         else {
             String[] facialHair = new String[] {data.get(0)[0]};
             addToAttributes(null, data, facialHair, null, 6);
-            m_sceneData.getAvatar().loadAttributes(m_Attributes);
+            m_sceneData.getAvatar().loadAttributes(m_newAttribs);
         }
 
         jButton_ApplyFacialHair.setEnabled(true);
@@ -652,7 +652,7 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
         else {
             String [] acces = new String[] {data.get(0)[0]};
             addToAttributes(null, data, acces, null, 7);
-            m_sceneData.getAvatar().loadAttributes(m_Attributes);
+            m_sceneData.getAvatar().loadAttributes(m_newAttribs);
         }
 
         jButton_ApplyHat.setEnabled(true);
@@ -696,7 +696,7 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
             m_sceneData.loadMeshDAEURL(true, true, this, data.get(0), meshes, 8);
         else {
             addToAttributes(null, data, meshes, null, 8);
-            m_sceneData.getAvatar().loadAttributes(m_Attributes);
+            m_sceneData.getAvatar().loadAttributes(m_newAttribs);
         }
 
         jButton_ApplySpecs.setEnabled(true);
@@ -797,6 +797,10 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
         m_Attributes.setAddInstructions(null);
         m_Attributes.setAttachmentsInstructions(null);
         m_Attributes.setGender(m_gender);
+        if (m_gender == 1)
+            m_Attributes.setDefaultMaleMesh();
+        else
+            m_Attributes.setDefaultFemaleMesh();
 
         if (m_sceneData.getAvatar() != null) {
             m_sceneData.getWM().removeEntity(m_sceneData.getAvatar());
@@ -1083,10 +1087,11 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
         // Create avatar attribs
         ArrayList<CharacterAttributes.SkinnedMeshParams> add    = new ArrayList<CharacterAttributes.SkinnedMeshParams>();
         ArrayList<String> delete                                = new ArrayList<String>();
-        ArrayList<String> load                                  = new ArrayList<String>();
         ArrayList<AttachmentParams> attach                      = new ArrayList<AttachmentParams>();
 
-        load.add(data.get(0)[3]);
+        String[][] szload = new String[1][2];
+        szload[0][0] = data.get(0)[3];
+        szload[0][1] = m_sceneData.m_regions[region];
 
         if (region < 5) {
             if (m_meshes.get(region) != null) {
@@ -1095,15 +1100,17 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
             }
 
             for (int j = 0; j < geom.length; j ++) {
-                CharacterAttributes.SkinnedMeshParams param = m_Attributes.createSkinnedMeshParams(geom[j], m_sceneData.m_regions[j]);
+                CharacterAttributes.SkinnedMeshParams param = m_Attributes.createSkinnedMeshParams(geom[j], m_sceneData.m_regions[region]);
                 add.add(param);
             }
+            m_Attributes.setFlagForAlteredRegion(region, true);
         } else if (region < 9) {
             for (int j = 0; j < geom.length; j ++) {
                 PMatrix tempSolution;
                 tempSolution = new PMatrix(new Vector3f(0.0f, (float) Math.toRadians(180), 0.0f), new Vector3f(1.0f, 1.0f, 1.0f), Vector3f.ZERO);
                 attach.add(new AttachmentParams(geom[j], "Head", tempSolution));
             }
+            m_Attributes.setFlagForAlteredRegion(region, true);
         }
 
         String[] meshes = new String[geom.length];
@@ -1112,19 +1119,22 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
         m_meshes.put(region, meshes);
         m_sceneData.getAvatar().getGeomRef().put(region, meshes);
 
-        m_Attributes.setBaseURL("");
+        if (m_newAttribs == null)
+            m_newAttribs = new CharacterAttributes(m_Attributes.getName());
+
+        m_newAttribs.setBaseURL("");
         if (bindpose == null)
-            m_Attributes.setBindPoseFile(null);
+            m_newAttribs.setBindPoseFile(null);
         else
-            m_Attributes.setBindPoseFile(bindpose);
+            m_newAttribs.setBindPoseFile(bindpose);
         if (anim == null)
-            m_Attributes.setAnimations(null);
+            m_newAttribs.setAnimations(null);
         else
-            m_Attributes.setAnimations(anim);
-        m_Attributes.setDeleteInstructions(delete.toArray(new String[delete.size()]));
-        m_Attributes.setLoadInstructions(load.toArray(new String[load.size()]));
-        m_Attributes.setAddInstructions(add.toArray(new CharacterAttributes.SkinnedMeshParams[add.size()]));
-        m_Attributes.setAttachmentsInstructions(attach.toArray(new AttachmentParams[attach.size()]));
+            m_newAttribs.setAnimations(anim);
+        m_newAttribs.setDeleteInstructions(delete.toArray(new String[delete.size()]));
+        m_newAttribs.setLoadInstructions(szload);
+        m_newAttribs.setAddInstructions(add.toArray(new CharacterAttributes.SkinnedMeshParams[add.size()]));
+        m_newAttribs.setAttachmentsInstructions(attach.toArray(new AttachmentParams[attach.size()]));
     }
 
     /** Accessors */

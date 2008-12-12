@@ -24,6 +24,8 @@ import imi.serialization.xml.bindings.xmlCharacterAttachmentParameters;
 import imi.serialization.xml.bindings.xmlCharacterAttributes;
 import imi.serialization.xml.bindings.xmlSkinnedMeshParams;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -51,7 +53,7 @@ public class CharacterAttributes
     /** List of mesh names to delete**/
     private String[]                deleteInstructions      = new String[0];
     /** List of mesh names to be loaded **/
-    private String[]                loadInstructions        = new String[0];
+    private String[][]              loadInstructions        = new String[0][0];
     /** List of skinned meshes to be added to the skeleton **/
     //private String[]                addInstructions         = new String[0];
     private SkinnedMeshParams[]     addInstructions = new SkinnedMeshParams[0];
@@ -60,6 +62,9 @@ public class CharacterAttributes
     /** This specifies the gender of the avatar. Its exact meaning is not yet defined **/
     private int                     gender                  = -1;
 
+    private Map<Integer, String[]>  m_maleBindMeshes, m_femaleBindMeshes;
+
+    private boolean[]               m_areMeshesAltered      = new boolean[] { false, false, false, false, false, false, false, false, false, false };
 
     // For simple static geometry replacement
     private boolean useSimpleStaticModel    = false; 
@@ -168,11 +173,11 @@ public class CharacterAttributes
         this.deleteInstructions = deleteInstructions;
     }
 
-    public String[] getLoadInstructions() {
+    public String[][] getLoadInstructions() {
         return loadInstructions;
     }
 
-    public void setLoadInstructions(String[] loadInstructions) {
+    public void setLoadInstructions(String[][] loadInstructions) {
         this.loadInstructions = loadInstructions;
     }
 
@@ -194,6 +199,83 @@ public class CharacterAttributes
 
     public void setGender(int sex) {
         gender = sex;
+    }
+
+    public void setDefaultMaleMesh() {
+        String URL = new String("http://www.zeitgeistgames.com/assets/collada/Avatars/Male/Male_Bind.dae");
+        String[] szHead     = new String[] { URL, "HeadGeoShape", "rightEyeGeoShape", "leftEyeGeoShape", "UpperTeethShape", "LowerTeethShape", "TongueGeoShape" };
+        String[] szHands    = new String[] { URL, "RHandShape", "LHandShape" };
+        String[] szTorso    = new String[] { URL, "TorsoNudeShape" };
+        String[] szLegs     = new String[] { URL, "LegsNudeShape" };
+        String[] szFeet     = new String[] { URL, "RFootNudeShape", "LFootNudeShape" };
+        String[] szEmpty    = new String[0];
+
+        if (m_maleBindMeshes == null)
+            m_maleBindMeshes = new HashMap<Integer, String[]>();
+        else
+            m_maleBindMeshes.clear();
+
+        m_maleBindMeshes.put(0, szHead);
+        m_maleBindMeshes.put(1, szHands);
+        m_maleBindMeshes.put(2, szTorso);
+        m_maleBindMeshes.put(3, szLegs);
+        m_maleBindMeshes.put(4, szFeet);
+        m_maleBindMeshes.put(5, szEmpty);
+        m_maleBindMeshes.put(6, szEmpty);
+        m_maleBindMeshes.put(7, szEmpty);
+        m_maleBindMeshes.put(8, szEmpty);
+        m_maleBindMeshes.put(9, szEmpty);
+    }
+
+    public void setDefaultFemaleMesh() {
+        String URL = new String("http://www.zeitgeistgames.com/assets/collada/Avatars/Female/Female_Bind.dae");
+        String[] szHead     = new String[] { URL, "HeadGeoShape", "rightEyeGeoShape", "leftEyeGeoShape", "UpperTeethShape", "LowerTeethShape", "TongueGeoShape" };
+        String[] szHands    = new String[] { URL, "HandsShape" };
+        String[] szTorso    = new String[] { URL, "TorsoNudeShape" };
+        String[] szLegs     = new String[] { URL, "LegsNudeShape" };
+        String[] szFeet     = new String[] { URL, "ShoesShape" };
+        String[] szHair     = new String[] { URL, "M_pt_leftShape" };
+        String[] szEmpty    = new String[0];
+
+        if (m_femaleBindMeshes == null)
+            m_femaleBindMeshes = new HashMap<Integer, String[]>();
+        else
+            m_femaleBindMeshes.clear();
+
+        m_femaleBindMeshes.put(0, szHead);
+        m_femaleBindMeshes.put(1, szHands);
+        m_femaleBindMeshes.put(2, szTorso);
+        m_femaleBindMeshes.put(3, szLegs);
+        m_femaleBindMeshes.put(4, szFeet);
+        m_femaleBindMeshes.put(5, szHair);
+        m_femaleBindMeshes.put(6, szEmpty);
+        m_femaleBindMeshes.put(7, szEmpty);
+        m_femaleBindMeshes.put(8, szEmpty);
+        m_femaleBindMeshes.put(9, szEmpty);
+    }
+
+    public Map<Integer, String[]> getDefaultMaleMeshes() {
+        if (m_maleBindMeshes == null)
+            setDefaultMaleMesh();
+        return m_maleBindMeshes;
+    }
+
+    public Map<Integer, String[]> getDefaultFemaleMeshes() {
+        if (m_femaleBindMeshes == null)
+            setDefaultFemaleMesh();
+        return m_femaleBindMeshes;
+    }
+
+    public void setFlagForAlteredRegion(int region, boolean flag) {
+        m_areMeshesAltered[region] = flag;
+    }
+
+    public boolean getFlagForAlteredRegion(int region) {
+        return m_areMeshesAltered[region];
+    }
+
+    public boolean[] getMeshesAlteredArray() {
+        return m_areMeshesAltered;
     }
 
     /**
@@ -255,10 +337,10 @@ public class CharacterAttributes
         // loading instructions
         if (loadInstructions != null)
         {
-            stringArray = new ArrayList<String>();
-            for (String str : loadInstructions)
-                stringArray.add(str);
-            result.setLoadingInstructions(stringArray);
+            ArrayList<String[]> dblArr = new ArrayList<String[]>();
+            for (int i = 0; i < loadInstructions.length; i++)
+                dblArr.add(loadInstructions[i]);
+            result.setLoadingInstructions(dblArr);
         }
         else
             result.setLoadingInstructions(null);
@@ -303,7 +385,13 @@ public class CharacterAttributes
         this.setDeleteInstructions((String[]) attributesDOM.getDeletionInstructions().toArray(new String[0]));
         this.setAnimations((String[]) attributesDOM.getBodyAnimations().toArray(new String[0]));
         this.setFacialAnimations((String[]) attributesDOM.getFacialAnimations().toArray(new String[0]));
-        this.setLoadInstructions((String[]) attributesDOM.getLoadingInstructions().toArray(new String[0]));
+        List<String[]> list = attributesDOM.getLoadingInstructions();
+        String[][] att = new String[list.size()][2];
+        for(int i = 0; i < list.size(); i++)
+            for(int j = 0; j < 2; j++) {
+                att[i][j] = list.get(i)[j];
+            }
+        this.setLoadInstructions(att);
         // Attachment params
         if (attributesDOM.getAttachments() != null)
         {

@@ -279,7 +279,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
                         m_modelInst.getTransform().setLocalMatrix(attributes.getOrigin());
 
                     // Set animations and custom meshes
-                    excecuteAttributes(m_attributes);
+                    excecuteAttributes(m_attributes, false);
 
                     // Gimme them eyeballs
                     PPolygonSkinnedMeshInstance leftEye = (PPolygonSkinnedMeshInstance) m_skeleton.findChild("leftEyeGeoShape");
@@ -341,7 +341,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
      * Things such as animation files to load, geometry to remove or add, etc.
      * @param attributes The attributes to process
      */
-    private void excecuteAttributes(CharacterAttributes attributes) 
+    private void excecuteAttributes(CharacterAttributes attributes, boolean bUpdate)
     {   
         String fileProtocol = attributes.getBaseURL();
 
@@ -356,10 +356,10 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         // Set the skeleton to our skeleton
         pRootInstruction.addInstruction(InstructionNames.setSkeleton, m_skeleton);
         // Load up any geometry requested by the provided attributes object
-        String [] load = attributes.getLoadInstructions();
+        String [][] load = attributes.getLoadInstructions();
         if (load != null && load.length > 0) {
             for (int i = 0; i < load.length; i++) {
-                pRootInstruction.addInstruction(InstructionNames.loadGeometry, fileProtocol + load[i]);
+                pRootInstruction.addInstruction(InstructionNames.loadGeometry, fileProtocol + load[i][0]);
             }
         }
 
@@ -409,6 +409,146 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         // Set shaders on all the meshes, as they may have changed during the above process
         m_skeleton.setShaderOnSkinnedMeshes(new VertDeformerWithSpecAndNormalMap(m_wm));
         m_skeleton.setShaderOnMeshes(new NormalAndSpecularMapShader(m_wm));
+
+        if (bUpdate)
+            updateAttributes(attributes);
+    }
+
+    /**
+     * This method handles the updating of the attributes of the character when
+     * swapping out meshes during runtime
+     * @param attributes the new attributes to add into they system
+     */
+    private void updateAttributes(CharacterAttributes attributes) {
+        // Create avatar attribs
+        CharacterAttributes.SkinnedMeshParams[] oldAdd      = m_attributes.getAddInstructions();
+        CharacterAttributes.SkinnedMeshParams[] newAdd      = attributes.getAddInstructions();
+        String[]                                oldDelete   = m_attributes.getDeleteInstructions();
+        String[]                                newDelete   = attributes.getDeleteInstructions();
+        String[][]                              oldLoad     = m_attributes.getLoadInstructions();
+        String[][]                              newLoad     = attributes.getLoadInstructions();
+        AttachmentParams[]                      oldAttatch  = m_attributes.getAttachmentsInstructions();
+        AttachmentParams[]                      newAttatch  = attributes.getAttachmentsInstructions();
+        String[]                                oldAnim     = m_attributes.getAnimations();
+        String[]                                newAnim     = attributes.getAnimations();
+
+        ArrayList<CharacterAttributes.SkinnedMeshParams> ADD = new ArrayList<CharacterAttributes.SkinnedMeshParams>();
+        if (oldAdd == null || oldAdd.length <= 0) {
+            for (int i = 0; i < newAdd.length; i++)
+                ADD.add(newAdd[i]);
+        } else {
+            for (int i = 0; i < oldAdd.length; i ++) {
+                for (int j = 0; j < newDelete.length; j++) {
+                    if (oldAdd[i] == null)
+                        continue;
+                    if (oldAdd[i].meshName.equals(newDelete[j]))
+                        oldAdd[i] = null;
+                }
+                if (oldAdd[i] != null)
+                    ADD.add(oldAdd[i]);
+            }
+
+            for (int i = 0; i < newAdd.length; i++) {
+                boolean bFound = false;
+                for (int j = 0; j < ADD.size(); j++) {
+                    if (newAdd[i].meshName.equals(ADD.get(j).meshName))
+                        bFound = true;
+                }
+                if (!bFound)
+                    ADD.add(newAdd[i]);
+            }
+        }
+
+        ArrayList<String> DELETE = new ArrayList<String>();
+        for (int i = 0; i < m_attributes.getMeshesAlteredArray().length; i++) {
+            if(m_attributes.getFlagForAlteredRegion(i)) {
+                if (m_attributes.getGender() == 1) {
+                    for (int j = 1; j < m_attributes.getDefaultMaleMeshes().get(i).length; j++) {
+                        DELETE.add(m_attributes.getDefaultMaleMeshes().get(i)[j]);
+                    }
+                } else if (m_attributes.getGender() == 2) {
+                    for (int j = 1; j < m_attributes.getDefaultFemaleMeshes().get(i).length; j++) {
+                        DELETE.add(m_attributes.getDefaultFemaleMeshes().get(i)[j]);
+                    }
+                }
+            }
+        }
+
+        ArrayList<String[]> LOAD = new ArrayList<String[]>();
+        if (oldLoad == null || oldLoad.length <= 0) {
+            for (int i = 0; i < newLoad.length; i++)
+                LOAD.add(newLoad[i]);
+        } else {
+            for (int i = 0; i < newLoad.length; i++) {
+                boolean bFound = false;
+                for (int j = 0; j < oldLoad.length; j++) {
+                    if (oldLoad[j] == null)
+                        continue;
+                    if (newLoad[i][1].equals(oldLoad[j][1])) {
+                        bFound = true;
+                        oldLoad[j] = null;
+                    }
+                }
+                if (bFound)
+                    LOAD.add(newLoad[i]);
+            }
+
+            for (int i = 0; i < oldLoad.length; i++) {
+                if (oldLoad[i] != null)
+                    LOAD.add(oldLoad[i]);
+            }
+        }
+
+        ArrayList<AttachmentParams> ATTACH = new ArrayList<AttachmentParams>();
+        if (oldAttatch == null || oldAttatch.length <= 0) {
+            for (int i = 0; i < newAttatch.length; i++)
+                ATTACH.add(newAttatch[i]);
+        } else {
+            for (int i = 0; i < oldAttatch.length; i++)
+                ATTACH.add(oldAttatch[i]);
+            for (int i = 0; i < newAttatch.length; i++) {
+                boolean bFound = false;
+                for (int j = 0; j < oldAttatch.length; j++) {
+                    if (newAttatch[i].getMeshName().equals(oldAttatch[j].getMeshName()))
+                        bFound = true;
+                }
+                if (!bFound)
+                    ATTACH.add(newAttatch[i]);
+            }
+        }
+
+        ArrayList<String> ANIM = new ArrayList<String>();
+        if (oldAnim == null || oldAnim.length <= 0) {
+            if (newAnim != null && newAnim.length > 0) {
+                for (int i = 0; i < newAnim.length; i++)
+                    ANIM.add(newAnim[i]);
+            }
+        } else {
+            for (int i = 0; i < oldAnim.length; i++)
+                ANIM.add(oldAnim[i]);
+            if (newAnim != null && newAnim.length > 0) {
+                for (int i = 0; i < newAnim.length; i++) {
+                    boolean bFound = false;
+                    for (int j = 0; j < oldAnim.length; j++) {
+                        if (newAnim[i].equals(oldAnim[j]))
+                            bFound = true;
+                    }
+                    if (!bFound)
+                        ANIM.add(newAnim[i]);
+                }
+            }
+        }
+
+        m_attributes.setAnimations(ANIM.toArray(new String[ANIM.size()]));
+        m_attributes.setDeleteInstructions(DELETE.toArray(new String[DELETE.size()]));
+        String[][] att = new String[LOAD.size()][2];
+        for(int i = 0; i < LOAD.size(); i++)
+            for(int j = 0; j < 2; j++) {
+                att[i][j] = LOAD.get(i)[j];
+            }
+        m_attributes.setLoadInstructions(att);
+        m_attributes.setAddInstructions(ADD.toArray(new CharacterAttributes.SkinnedMeshParams[ADD.size()]));
+        m_attributes.setAttachmentsInstructions(ATTACH.toArray(new AttachmentParams[ATTACH.size()]));
     }
 
     /**
@@ -447,7 +587,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
                 processorCollection.addProcessor(processors.get(i));
             addComponent(ProcessorCollectionComponent.class, processorCollection);
         } else {
-            excecuteAttributes(attributes);
+            excecuteAttributes(attributes, true);
         }
     }
 
