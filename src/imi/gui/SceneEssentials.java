@@ -1195,8 +1195,7 @@ public class SceneEssentials {
                 }
             } else {
                 for (int i = 1; i < d.length; i++) {
-                    //instruct.addInstruction(InstructionNames.addSkinnedMesh, d[i]);
-                    instruct.addSkinnedMeshInstruction(d[i], "PORT MEEEEEEEE");
+                    instruct.addSkinnedMeshInstruction(d[i], m_regions[iRegion]);
                     meshes[i-1] = d[i];
                 }
             }

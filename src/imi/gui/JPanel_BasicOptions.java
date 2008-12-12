@@ -797,6 +797,7 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
         m_Attributes.setAddInstructions(null);
         m_Attributes.setAttachmentsInstructions(null);
         m_Attributes.setGender(m_gender);
+        m_Attributes.setGeomRef(m_meshes);
         if (m_gender == 1)
             m_Attributes.setDefaultMaleMesh();
         else
@@ -811,7 +812,6 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
         while(!m_sceneData.getAvatar().isInitialized()) {
             
         }
-        m_sceneData.getAvatar().setGeomRef(m_meshes);
         m_sceneData.getAvatar().selectForInput();
         m_sceneData.setPScene(m_sceneData.getAvatar().getPScene());
 
@@ -1117,7 +1117,6 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
         for (int j = 0; j < geom.length; j++)
             meshes[j] = geom[j];
         m_meshes.put(region, meshes);
-        m_sceneData.getAvatar().getGeomRef().put(region, meshes);
 
         if (m_newAttribs == null)
             m_newAttribs = new CharacterAttributes(m_Attributes.getName());
@@ -1131,6 +1130,7 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
             m_newAttribs.setAnimations(null);
         else
             m_newAttribs.setAnimations(anim);
+        m_Attributes.setGeomRefByRegion(region, meshes);
         m_newAttribs.setDeleteInstructions(delete.toArray(new String[delete.size()]));
         m_newAttribs.setLoadInstructions(szload);
         m_newAttribs.setAddInstructions(add.toArray(new CharacterAttributes.SkinnedMeshParams[add.size()]));
@@ -1163,7 +1163,7 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
         if (m_sceneData.getAvatar() != null) {
             m_gender = m_sceneData.getAvatar().getAttributes().getGender();
             InitListBoxes(false);
-            m_meshes     = m_sceneData.getAvatar().getGeomRef();
+            m_meshes     = m_sceneData.getAvatar().getAttributes().getGeomRef();
             m_Attributes = m_sceneData.getAvatar().getAttributes();
         }
     }

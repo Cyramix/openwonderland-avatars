@@ -755,6 +755,7 @@ public class JPanel_EZOptions extends javax.swing.JPanel {
         attribs.setAddInstructions(add.toArray(new CharacterAttributes.SkinnedMeshParams[add.size()]));
         attribs.setAttachmentsInstructions(attach.toArray(new AttachmentParams[attach.size()]));
         attribs.setGender(m_gender);
+        attribs.setGeomRef(m_meshes);
         if (m_gender == 1)
             attribs.setDefaultMaleMesh();
         else
@@ -766,7 +767,6 @@ public class JPanel_EZOptions extends javax.swing.JPanel {
         }
         
         m_sceneData.setAvatar(new NinjaAvatar(attribs, m_sceneData.getWM()));
-        m_sceneData.getAvatar().setGeomRef(m_meshes);
         m_sceneData.getAvatar().selectForInput();
         m_sceneData.setPScene(m_sceneData.getAvatar().getPScene());
     }

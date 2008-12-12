@@ -134,7 +134,6 @@ public abstract class Character extends Entity implements SpatialObject, Animati
     private VerletSkeletonFlatteningManipulator m_skeletonManipulator = null;
     private float                           m_armTimer              = 0.0f;
     private float                           m_armTimeTick           = 1.0f / 60.0f;
-    private Map<Integer, String[]>          m_geomRef               = null;
 
     /**
      * Sets up the mtgame entity 
@@ -383,7 +382,13 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         AttachmentParams [] attachments = attributes.getAttachmentsInstructions();
         if (attachments != null && attachments.length > 0) {
             for (int i = 0; i < attachments.length; i++) {
-                pRootInstruction.addAttachmentInstruction( attachments[i].getMeshName(), attachments[i].getJointName(), attachments[i].getMatrix());
+                // TODO: HACK for hair matrix... need to get this fixed its not outputing into config file
+                PMatrix tempsolution = null;
+                if (attachments[i].getMatrix() == null)
+                    tempsolution = new PMatrix(new Vector3f(0.0f, (float) Math.toRadians(180), 0.0f), new Vector3f(1.0f, 1.0f, 1.0f), Vector3f.ZERO);
+                else
+                    tempsolution = attachments[i].getMatrix();
+                pRootInstruction.addAttachmentInstruction( attachments[i].getMeshName(), attachments[i].getJointName(), tempsolution);
             }
         }
 
@@ -1367,21 +1372,5 @@ public abstract class Character extends Entity implements SpatialObject, Animati
                 result.addJointModification(jMod);
         }
         return result;
-    }
-    
-    public Map<Integer, String[]> getGeomRef() {
-        return m_geomRef;
-    }
-
-    public String[] getGeomRefNames(int iRegion) {
-        return m_geomRef.get(iRegion);
-    }
-
-    public void setGeomRef(Map<Integer, String[]> ref) {
-        m_geomRef = ref;
-    }
-
-    public void setGeomRefNames(String[] names, int iRegion) {
-        m_geomRef.put(iRegion, names);
     }
 }

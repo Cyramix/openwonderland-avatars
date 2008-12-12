@@ -62,7 +62,7 @@ public class CharacterAttributes
     /** This specifies the gender of the avatar. Its exact meaning is not yet defined **/
     private int                     gender                  = -1;
 
-    private Map<Integer, String[]>  m_maleBindMeshes, m_femaleBindMeshes;
+    private Map<Integer, String[]>  m_maleBindMeshes, m_femaleBindMeshes, m_geomref;
 
     private boolean[]               m_areMeshesAltered      = new boolean[] { false, false, false, false, false, false, false, false, false, false };
 
@@ -276,6 +276,22 @@ public class CharacterAttributes
 
     public boolean[] getMeshesAlteredArray() {
         return m_areMeshesAltered;
+    }
+
+    public Map<Integer, String[]> getGeomRef() {
+        return m_geomref;
+    }
+    
+    public String[] getGeomRefByRegion(int region) {
+        return m_geomref.get(region);
+    }
+    
+    public void setGeomRef(Map<Integer, String[]> geom) {
+        m_geomref = geom;
+    }
+    
+    public void setGeomRefByRegion(int region, String[] geomlist) {
+        m_geomref.put(region, geomlist);
     }
 
     /**
