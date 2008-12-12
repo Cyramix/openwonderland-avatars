@@ -25,7 +25,7 @@ import imi.scene.animation.AnimationListener.AnimationMessageType;
 import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
 
 /**
- *
+ * This state represents a character's behavior while sitting on the ground.
  * @author Lou Hayt
  */
 public class SitOnGroundState extends GameState  
@@ -48,7 +48,10 @@ public class SitOnGroundState extends GameState
     private float   gettingUpAnimationSpeed     = 2.0f;
     private String  gettingUpAnimationName      = "Male_FloorGetup";
     
-    
+    /**
+     * Construct a new instance with the given context.
+     * @param master
+     */
     public SitOnGroundState(GameContext master)
     {
         super(master);

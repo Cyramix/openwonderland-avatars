@@ -23,13 +23,14 @@ import imi.character.statemachine.GameState;
 import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
 
 /**
- *
+ * This class represents the turning behavior of a NinjaContext owner.
  * @author Lou
  */
 public class TurnState extends GameState
 {
+    /** The owning context. **/
     NinjaContext ninjaContext = null;
-                
+
     private boolean bTurning = true;
     
     private float exitCounter           = 0.0f;
@@ -37,7 +38,11 @@ public class TurnState extends GameState
     
     private boolean bMoveInput = false;
     private float moveCounter  = 0.0f;
-    
+
+    /**
+     * Construct a new turn state instance with the provided context
+     * @param master
+     */
     public TurnState(NinjaContext master)
     {
         super(master);

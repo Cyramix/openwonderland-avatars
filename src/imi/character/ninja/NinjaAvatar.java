@@ -22,11 +22,18 @@ import java.net.URL;
 import org.jdesktop.mtgame.WorldManager;
 
 /**
- *
+ * This class provides a more concrete starting point over the Ninja class. It
+ * defaults to using the COLLADA avatar as its geometric representation and
+ * additionally will load up several animations by default.
  * @author Lou Hayt
  */
 public class NinjaAvatar extends Ninja 
 {
+    /**
+     * Construct a new NinjaAvatar with the provided attributes and world manager.
+     * @param attributes
+     * @param wm
+     */
     public NinjaAvatar(CharacterAttributes attributes, WorldManager wm) 
     {
         super(attributes, wm);

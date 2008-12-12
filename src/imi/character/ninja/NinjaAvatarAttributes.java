@@ -24,13 +24,21 @@ import imi.scene.PMatrix;
 import java.util.ArrayList;
 
 /**
- *
+ * This class represents concrete attribute settings for the NinjaAvatar. It is
+ * basically a well-defined CharacterAttributes starting point for using the
+ * primary avatar geometry and animations.
  * @author Lou Hayt
  */
 public class NinjaAvatarAttributes extends CharacterAttributes
 {
     public String[] m_regions = new String[] { "Head", "Hands", "UpperBody", "LowerBody", "Feet", "Hair", "FacialHair", "Hats", "Glasses", "Jackets" };
 
+    /**
+     * Construct a new attributes instance.
+     * @param name The name of the avatar
+     * @param bRandomCustomizations If false, avatar starts in the bind pose, if true then random clothing will be applied
+     * @param bForceDressShirt If true, the dress shirt will be applied (overriding randomizations)
+     */
     public NinjaAvatarAttributes(String name, boolean bRandomCustomizations, boolean bForceDressShirt) 
     {
         super(name);

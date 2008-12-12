@@ -23,16 +23,20 @@ import imi.scene.animation.AnimationComponent.PlaybackMode;
 import imi.scene.animation.AnimationListener.AnimationMessageType;
 
 /**
- *
+ * This class represents a character's punching behavior
  * @author Lou
  */
 public class PunchState extends GameState 
 {
-    NinjaContext ninjaContext = null;
+    GameContext ninjaContext = null;
             
     private boolean bPlayedOnce = false;
-    
-    public PunchState(NinjaContext master)
+
+    /**
+     * Construct a new instance with the provided context.
+     * @param master
+     */
+    public PunchState(GameContext master)
     {
         super(master);
         ninjaContext = master;

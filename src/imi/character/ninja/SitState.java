@@ -26,13 +26,14 @@ import imi.scene.animation.AnimationListener.AnimationMessageType;
 import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
 
 /**
- *
+ * This state represents a character's behavior whilst sitting.
  * @author Lou
  */
 public class SitState extends GameState 
 {
+    /** The owning context **/
     NinjaContext ninjaContext = null;
-    
+    /** The chair we will be sitting in **/
     Chair chair = null;
     
     private float counter = 0.0f;
@@ -49,7 +50,11 @@ public class SitState extends GameState
     private float gettingUpTransitionDuration = 0.05f;
     private float gettingUpAnimationSpeed = 4.0f;
     private String gettingUpAnimationName = "PickUp";
-                    
+
+    /**
+     * Construct a new sitting state with the provided context as its owner
+     * @param master
+     */
     public SitState(NinjaContext master)
     {
         super(master);

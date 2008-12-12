@@ -24,38 +24,49 @@ import imi.scene.polygonmodel.skinned.SkinnedMeshJoint;
 import java.util.ArrayList;
 
 /**
- *
+ * This class encapsulates the data and logic necessary to simulate a verlet arm.
  * @author Lou Hayt
  * @author Ronald E. Dahlgren
  * @author Shawn Kendall
  */
 public class VerletArm 
 {
+    /** The owning instance **/
     private PPolygonModelInstance modelInst = null;
+    /** Reference to the joint where the arm attaches **/
     private SkinnedMeshJoint shoulderJoint  = null;
-    
+
+    /** List of verlet particles that make this arm **/
     private ArrayList<VerletParticle>  particles    = new ArrayList<VerletParticle>();
+    /** List of constraints applied to the verlet particles **/
     private ArrayList<StickConstraint> constraints  = new ArrayList<StickConstraint>();
     
-    private Vector3f gravity = new Vector3f(0.0f, -9.8f * 2.0f, 0.0f);
-    //private Vector3f gravity = new Vector3f(0.0f, 0.0f, 0.0f);
+    private Vector3f gravity = new Vector3f(0.0f, -9.8f * 2.0f, 0.0f); // <-- Why x2?
+    /** Used to simulate energy lost due to friction, drag, etc **/
     private float velocityDampener = 0.8f;
-    private boolean enabled = false;;
+    /** Switch the behavior on and off **/
+    private boolean enabled = false;
     private VerletJointManipulator jointManipulator = null; // old prototype
     private VerletSkeletonFlatteningManipulator skeletonManipulator = null;
     
     private Vector3f currentInputOffset = new Vector3f();
     
     private float maxReach = 0.4834519f + 0.0075f;
-    
+    /** Enumerations for clarity **/
     private final int shoulder  = 0;
     private final int elbow     = 1;
     private final int wrist     = 2;
-    
+    /** Switch the driving mode for the hand **/
     private boolean manualDriveReachUp = true; // otherwise reach forward
-    
+    /** Used as a pointing target for the arm **/
     private Vector3f pointAtLocation = null;
-    
+
+    /**
+     * Construct a new verlet arm attached to the provided joint as the shoulder,
+     * belonging to the provided model instance.
+     * @param shoulderJ The joint to attach to as a shoulder
+     * @param modelInstance The owner
+     */
     public VerletArm(SkinnedMeshJoint shoulderJ, PPolygonModelInstance modelInstance) 
     {
         modelInst     = modelInstance;
@@ -63,6 +74,7 @@ public class VerletArm
         
         // Lets make an arm
         Vector3f shoulderPosition = shoulderJoint.getTransform().getWorldMatrix(false).getTranslation();
+        // The magic numbers below are taken from the avatar's bind pose data
         particles.add(new VerletParticle(shoulderPosition, false));
         particles.add(new VerletParticle(shoulderPosition.add(Vector3f.UNIT_Y.mult(-0.246216f)), true));
         particles.add(new VerletParticle(shoulderPosition.add(Vector3f.UNIT_Y.mult(-0.4852301f)), false));
@@ -70,11 +82,15 @@ public class VerletArm
         constraints.add(new StickConstraint(elbow, wrist, 0.2390151f));
     }
 
+    /**
+     * Update the simulation with the given time step.
+     * @param physicsUpdateTime The time step
+     */
     public void update(float physicsUpdateTime) 
     {
         // Attach the first particle to the shoulder joint
         particles.get(shoulder).position(shoulderJoint.getTransform().getWorldMatrix(false).getTranslation());
-                
+        // If we are pointing, use the pointAt method, otherwise just run the simulation
         if (pointAtLocation != null)
             pointAt();
         else
@@ -99,7 +115,7 @@ public class VerletArm
                 PMatrix modelWorld = modelInst.getTransform().getWorldMatrix(false);
                 modelWorld.transformNormal(currentInputOffset);
 
-                // Check if it is ok to move the wrist to the new position
+                // Check if it is ok to offset the wrist to the new position
                 Vector3f newWristPosition = wristPosition.add(currentInputOffset);
                 if (newWristPosition.distance(shoulderPosition) < maxReach)
                 {
@@ -131,8 +147,11 @@ public class VerletArm
 	for(int i = 0; i < 5; i++)
             satisfyConstraints(); 
     }
-    
-    public void satisfyConstraints()
+
+    /**
+     * Move towards a state of equilibrium.
+     */
+    private void satisfyConstraints()
     {
         for (StickConstraint constraint : constraints)
         {
@@ -233,16 +252,14 @@ public class VerletArm
         if (enabled)
             resetArm();
     }
-    
+
+    /**
+     * <code>enabled = !enabled</code>
+     * @return The new state of <code>enabled</code>
+     */
     public boolean toggleEnabled()
     {
-        enabled = !enabled;
-        if (jointManipulator != null)
-            jointManipulator.setEnabled(enabled);
-        if (skeletonManipulator != null)
-            skeletonManipulator.setArmEnabled(enabled);
-        if (enabled)
-            resetArm();
+        setEnabled(!enabled);
         return enabled;
     }
 
@@ -290,26 +307,41 @@ public class VerletArm
     }
 
     //////////////////////////////////////////////////////////////////////////
-    
+    /**
+     * The standard Verlet particle
+     * @author Lou Hayt
+     */
     public class VerletParticle
     {
+        /** The mass of this particular particle **/
         private float       mass                = 1.0f;
+
         private Vector3f    currentPosition     = new Vector3f();
         private Vector3f    previousPosition    = new Vector3f();
+        /** Used during the update process to concatenate forces into one net-force vector**/
         private Vector3f    forceAccumulator    = new Vector3f();
         
         private Vector3f    integrationHelper   = new Vector3f();
-        
+        /** Determines if this particle is fixed or not **/
         private boolean     moveable            = true;
-        
+
+        /**
+         * Construct a new particle at the given position
+         * @param position
+         * @param isMoveable
+         */
         public VerletParticle(Vector3f position, boolean isMoveable)
         {
             currentPosition.set(position);
             previousPosition.set(position);
             moveable = isMoveable;
         }
-        
-        public void verletIntegration(float physicsUpdateTime)
+
+        /**
+         * Package-private helper method to aid in integration.
+         * @param physicsUpdateTime The time slice.
+         */
+        void verletIntegration(float physicsUpdateTime)
         {
             integrationHelper.set(currentPosition);
             currentPosition.addLocal( (currentPosition.subtract(previousPosition)).add(forceAccumulator.mult(physicsUpdateTime * physicsUpdateTime)) );
@@ -326,46 +358,82 @@ public class VerletArm
             Vector3f reverseVelocity    =   previousPosition.subtract(currentPosition);
             previousPosition.set(currentPosition.add(reverseVelocity.mult(scalar)));
         }
-        
+
+        /**
+         * Sets velocity to the zero vector.
+         */
         public void stop()
         {
             previousPosition.set(currentPosition);
         }
-        
+
+        /**
+         * Moves the particle to the provided position without introducing
+         * energy into the system
+         * @param position
+         */
         public void position(Vector3f position)
         {
             Vector3f velocity = getVelocity();
             currentPosition.set(position);
             previousPosition.set(currentPosition.subtract(velocity));
         }
-        
+
+        /**
+         * Offset the particle's current position by the given offset, does not
+         * introduce energy into the system.
+         * @param offset
+         */
         public void dislocate(Vector3f offset)
         {
             currentPosition.addLocal(offset);
             previousPosition.addLocal(offset);
         }
-        
+
+        /**
+         * Use the polar coordinates provided to offset the particle from its
+         * current position, does not introduce energy into the system.
+         * @param directionNormalized
+         * @param distance
+         */
         public void dislocate(Vector3f directionNormalized, float distance)
         {
             directionNormalized.multLocal(distance);
             currentPosition.addLocal(directionNormalized);
             previousPosition.addLocal(directionNormalized);
         }
-        
-        public void moveCurrentPosition(Vector3f move)
+
+        /**
+         * Change position by the provided offset vector. This does introduce
+         * energy into the system.
+         * @param offset
+         */
+        public void moveCurrentPosition(Vector3f offset)
         {
-            currentPosition.addLocal(move);
+            currentPosition.addLocal(offset);
         }
-        
-        public void movePreviousPosition(Vector3f move)
+
+        /**
+         * Change the history of the particle by moving its previous position
+         * by the provided offset. This will introduce energy into the system.
+         * @param offset
+         */
+        public void movePreviousPosition(Vector3f offset)
         {
-            previousPosition.addLocal(move);
+            previousPosition.addLocal(offset);
         }
-        
+
+        /**
+         * Retrieve a reference to the current position
+         * @return
+         */
         public Vector3f getCurrentPosition() {
             return currentPosition;
         }
-
+        /**
+         * Sets the current position; will introduce energy into the system
+         * @param currentPosition
+         */
         public void setCurrentPosition(Vector3f currentPosition) {
             this.currentPosition.set(currentPosition);
         }
@@ -408,13 +476,25 @@ public class VerletArm
     }
     
     //////////////////////////////////////////////////////////////////////////
-    
+    /**
+     * This class represents the basic stick constraint used with the verlet
+     * system.
+     * @author Lou Hayt
+     */
     public class StickConstraint
     {
         private int	particle1;
         private int	particle2;
         private float   fRestDistance;
 
+        /**
+         * Construct a new constraint between the two particles indicated by
+         * <code>particle1Index</code> and <code>particle2Index</code> that will
+         * try to maintain <code>restDistance</code> separation between the two.
+         * @param particle1Index
+         * @param particle2Index
+         * @param restDistance The optimal separation distance between the two particles
+         */
         StickConstraint(int particle1Index, int particle2Index, float restDistance)
         {
             particle1 = particle1Index;

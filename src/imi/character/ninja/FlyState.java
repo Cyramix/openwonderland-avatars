@@ -21,9 +21,11 @@ import com.jme.math.Vector3f;
 import imi.character.statemachine.GameContext;
 import imi.character.statemachine.GameState;
 import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
- *
+ * This state accounts for flying behavior with the character.
  * @author Lou Hayt
  */
 public class FlyState extends GameState 
@@ -64,16 +66,10 @@ public class FlyState extends GameState
         //float y = actions[ActionNames.Movement_Y.ordinal()];
         float y = ninjaContext.getActions()[NinjaContext.ActionNames.Movement_Y.ordinal()];
 
-        //System.err.println("TakeAction "+y);
+        // Debugging / Diagnostic output
+//        Logger.getLogger(FlyState.class.getName()).log(Level.INFO, "TakeAction " + y);
 
         NinjaController controller = ninjaContext.getController();
-        
-        // Turn
-//        if (x != 0.0f)
-//        {
-//            Vector3f direction = new Vector3f(x, 0.0f, z);
-//            controller.turnTo(direction);
-//        }
         
         // Move Up
         if (y != 0.0f)

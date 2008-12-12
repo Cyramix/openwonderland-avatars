@@ -637,7 +637,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         {
             m_modelInst = m_pscene.addModelInstance(m_attributes.getName(), m_attributes.getAsset(), new PMatrix());
             // Debugging / Diagnostic output
-            //System.err.println("Model "+m_pscene+"  inst "+m_modelInst);
+//            Logger.getLogger(Character.class.getName()).log(Level.INFO, "Model " + m_pscene + "  inst " + m_modelInst);
             m_AnimationProcessor = new CharacterAnimationProcessor(m_modelInst);
             processors.add(m_AnimationProcessor);
         }

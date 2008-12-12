@@ -28,12 +28,19 @@ import java.net.URL;
 import org.jdesktop.mtgame.WorldManager;
 
 /*
- * Ninja!
+ * Ninja! This class provides additional functality and concrete attributes for
+ * the base Character class. Things such as input mechanisms and a state layout
+ * are provided as a starting point.
  * 
  * @author Lou Hayt
  */
 public class Ninja extends imi.character.Character
-{   
+{
+    /**
+     * Construct a new Ninja with the provided attributes and world manager.
+     * @param attributes
+     * @param wm
+     */
     public Ninja(CharacterAttributes attributes, WorldManager wm)
     {
         super(attributes, wm);

@@ -22,7 +22,7 @@ import imi.character.statemachine.GameState;
 import imi.scene.animation.AnimationComponent.PlaybackMode;
 
 /**
- *
+ * Represents the character's idling behavior
  * @author Lou Hayt
  */
 public class IdleState extends GameState

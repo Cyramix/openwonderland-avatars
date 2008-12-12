@@ -25,7 +25,8 @@ import imi.scene.animation.AnimationListener.AnimationMessageType;
 import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
 
 /**
- *
+ * This state defines how an avatar will react when a chair disappears from under
+ * him / her.
  * @author Lou Hayt
  */
 public class FallFromSitState extends GameState  
@@ -48,7 +49,10 @@ public class FallFromSitState extends GameState
     private float   gettingUpAnimationSpeed     = 2.0f;
     private String  gettingUpAnimationName      = "Male_FloorGetup";
     
-    
+    /**
+     * Construct a new instance with the provided game context.
+     * @param master The context that will / does contain this state.
+     */
     public FallFromSitState(GameContext master)
     {
         super(master);
@@ -68,7 +72,8 @@ public class FallFromSitState extends GameState
     {
         return true;
     }
-    
+
+
     @Override
     protected void stateExit(GameContext owner)
     {
