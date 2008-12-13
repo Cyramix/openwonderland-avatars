@@ -23,6 +23,7 @@
 
 package imi.gui;
 
+import com.jme.math.Vector3f;
 import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
 import imi.scene.polygonmodel.skinned.SkinnedMeshJoint;
 import java.util.HashMap;
@@ -52,6 +53,11 @@ public class AdvOptions extends javax.swing.JFrame {
     /** Creates new form AdvOptions */
     public AdvOptions() {
         initComponents();
+    }
+
+    public AdvOptions(SceneEssentials scene) {
+        initComponents();
+        m_sceneData = scene;
         createJointCatalog();
     }
 
@@ -293,7 +299,7 @@ public class AdvOptions extends javax.swing.JFrame {
         jSlider_EyePosHL.setMinimumSize(new java.awt.Dimension(100, 29));
         jSlider_EyePosHL.setPreferredSize(new java.awt.Dimension(100, 29));
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 0;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         jPanel_EyePosH.add(jSlider_EyePosHL, gridBagConstraints);
@@ -306,7 +312,7 @@ public class AdvOptions extends javax.swing.JFrame {
         jSlider_EyePosHR.setMinimumSize(new java.awt.Dimension(100, 29));
         jSlider_EyePosHR.setPreferredSize(new java.awt.Dimension(100, 29));
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         jPanel_EyePosH.add(jSlider_EyePosHR, gridBagConstraints);
@@ -314,14 +320,14 @@ public class AdvOptions extends javax.swing.JFrame {
         jSpinner_EyePosHL.setMinimumSize(new java.awt.Dimension(75, 28));
         jSpinner_EyePosHL.setPreferredSize(new java.awt.Dimension(75, 28));
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 1;
         jPanel_EyePosH.add(jSpinner_EyePosHL, gridBagConstraints);
 
         jSpinner_EyePosHR.setMinimumSize(new java.awt.Dimension(75, 28));
         jSpinner_EyePosHR.setPreferredSize(new java.awt.Dimension(75, 28));
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
         jPanel_EyePosH.add(jSpinner_EyePosHR, gridBagConstraints);
 
@@ -343,7 +349,8 @@ public class AdvOptions extends javax.swing.JFrame {
         jPanel_EyePosV.setPreferredSize(new java.awt.Dimension(200, 175));
         jPanel_EyePosV.setLayout(new java.awt.GridBagLayout());
 
-        jSlider_EyePosVL.setMaximum(10);
+        jSlider_EyePosVL.setMaximum(20);
+        jSlider_EyePosVL.setMinimum(1);
         jSlider_EyePosVL.setMinorTickSpacing(1);
         jSlider_EyePosVL.setOrientation(javax.swing.JSlider.VERTICAL);
         jSlider_EyePosVL.setPaintTicks(true);
@@ -351,13 +358,20 @@ public class AdvOptions extends javax.swing.JFrame {
         jSlider_EyePosVL.setValue(5);
         jSlider_EyePosVL.setMinimumSize(new java.awt.Dimension(29, 100));
         jSlider_EyePosVL.setPreferredSize(new java.awt.Dimension(29, 100));
+        jSlider_EyePosVL.addChangeListener(new javax.swing.event.ChangeListener() {
+
+            public void stateChanged(javax.swing.event.ChangeEvent e) {
+                adjustEyes(1, e);
+            }
+        });
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 0;
         gridBagConstraints.fill = java.awt.GridBagConstraints.VERTICAL;
         jPanel_EyePosV.add(jSlider_EyePosVL, gridBagConstraints);
 
-        jSlider_EyePosVR.setMaximum(10);
+        jSlider_EyePosVR.setMaximum(20);
+        jSlider_EyePosVR.setMinimum(1);
         jSlider_EyePosVR.setMinorTickSpacing(1);
         jSlider_EyePosVR.setOrientation(javax.swing.JSlider.VERTICAL);
         jSlider_EyePosVR.setPaintTicks(true);
@@ -365,8 +379,14 @@ public class AdvOptions extends javax.swing.JFrame {
         jSlider_EyePosVR.setValue(5);
         jSlider_EyePosVR.setMinimumSize(new java.awt.Dimension(29, 100));
         jSlider_EyePosVR.setPreferredSize(new java.awt.Dimension(29, 100));
+        jSlider_EyePosVR.addChangeListener(new javax.swing.event.ChangeListener() {
+
+            public void stateChanged(javax.swing.event.ChangeEvent e) {
+                adjustEyes(1, e);
+            }
+        });
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
         gridBagConstraints.fill = java.awt.GridBagConstraints.VERTICAL;
         jPanel_EyePosV.add(jSlider_EyePosVR, gridBagConstraints);
@@ -374,14 +394,14 @@ public class AdvOptions extends javax.swing.JFrame {
         jSpinner_EyePosVL.setMinimumSize(new java.awt.Dimension(75, 28));
         jSpinner_EyePosVL.setPreferredSize(new java.awt.Dimension(75, 28));
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 1;
         jPanel_EyePosV.add(jSpinner_EyePosVL, gridBagConstraints);
 
         jSpinner_EyePosVR.setMinimumSize(new java.awt.Dimension(75, 28));
         jSpinner_EyePosVR.setPreferredSize(new java.awt.Dimension(75, 28));
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
         jPanel_EyePosV.add(jSpinner_EyePosVR, gridBagConstraints);
 
@@ -412,6 +432,8 @@ public class AdvOptions extends javax.swing.JFrame {
         jSlider_EyePosDL.setMinimumSize(new java.awt.Dimension(100, 29));
         jSlider_EyePosDL.setPreferredSize(new java.awt.Dimension(100, 29));
         gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 0;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         jPanel_EyePosD.add(jSlider_EyePosDL, gridBagConstraints);
 
@@ -423,6 +445,8 @@ public class AdvOptions extends javax.swing.JFrame {
         jSlider_EyePosDR.setMinimumSize(new java.awt.Dimension(100, 29));
         jSlider_EyePosDR.setPreferredSize(new java.awt.Dimension(100, 29));
         gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         jPanel_EyePosD.add(jSlider_EyePosDR, gridBagConstraints);
 
@@ -437,14 +461,14 @@ public class AdvOptions extends javax.swing.JFrame {
         jSpinner_EyePosDL.setMinimumSize(new java.awt.Dimension(75, 28));
         jSpinner_EyePosDL.setPreferredSize(new java.awt.Dimension(75, 28));
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 1;
         jPanel_EyePosD.add(jSpinner_EyePosDL, gridBagConstraints);
 
         jSpinner_EyePosDR.setMinimumSize(new java.awt.Dimension(75, 28));
         jSpinner_EyePosDR.setPreferredSize(new java.awt.Dimension(75, 28));
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
         jPanel_EyePosD.add(jSpinner_EyePosDR, gridBagConstraints);
 
@@ -1788,23 +1812,55 @@ public class AdvOptions extends javax.swing.JFrame {
         });
     }
 
-    private void adjustEyes(int type) {
+    private void adjustEyes(int type, javax.swing.event.ChangeEvent e) {
         SkinnedMeshJoint[] Eyes = m_skeleton.get(m_bodyPart.Eyes);
+        float adjust = 0.0f;
 
         switch(type)
         {
             case 0: // Horizontal Eye Position
             {
                 if (jCheckBox_EyesHPosSync.isSelected()) {
+                    if (jSlider_EyePosHR.getValue() == 5)
+                        adjust  = ((float)jSlider_EyePosHR.getValue() / 5.0f);
+                    else
+                        adjust  = (((float)jSlider_EyePosHR.getValue() / 5.0f) - 1.0f)/10.0f;
 
+                    for (int i = 0; i < Eyes.length; i++) {
+                        if (Eyes[i].getName().contains("left")) {
+
+                        } else {
+
+                        }
+                    }
                 }
                 
                 break;
             }
             case 1: // Vertical Eye Position
             {
-                if (jCheckBox_EyeVPosSync.isSelected()) {
+                Object obj = e.getSource();
 
+                if (jCheckBox_EyeVPosSync.isSelected()) {
+                    jSlider_EyePosVL.setValue(jSlider_EyePosVR.getValue());
+
+                    if (jSlider_EyePosVR.getValue() == 5)
+                        adjust  = (((float)jSlider_EyePosVR.getValue() / 5.0f) - 1.0f);
+                    else
+                        adjust  = (((float)jSlider_EyePosVR.getValue() / 5.0f) - 1.0f)/10.0f;
+
+                    for (int i = 0; i < Eyes.length; i++) {
+                        Vector3f mod    = new Vector3f(Eyes[i].getLocalModifierMatrix().getTranslation());
+                        mod.y           = 0.0f;
+                        mod.y          += adjust;
+
+                        if (Eyes[i].getName().contains("EyeLid"))
+                            Eyes[i].getLocalModifierMatrix().setTranslation(new Vector3f(mod.x, mod.y/4.0f, mod.z));
+                        else if (Eyes[i].getName().contains("Eye"))
+                            Eyes[i].getLocalModifierMatrix().setTranslation(new Vector3f(mod.x, mod.y/5.0f, mod.z));
+                        else
+                            Eyes[i].getLocalModifierMatrix().setTranslation(new Vector3f(mod.x, mod.y, mod.z));
+                    }
                 }
 
                 break;
@@ -2305,7 +2361,8 @@ public class AdvOptions extends javax.swing.JFrame {
         SkeletonNode skeleton   = m_sceneData.getAvatar().getSkeleton();
 
         String[] szEyes     = new String[] { "leftInnerBrow",   "rightInnerBrow",  "leftOuterBrow",    "rightOuterBrow",
-                                             "leftEyeLid",      "rightEyeLid",     "leftEye",          "rightEye" };
+                                             "leftEyeLid",      "rightEyeLid",     "leftEye",          "rightEye",
+                                             "leftCheek",       "rightCheek" };
 
         SkinnedMeshJoint[]  eyes     = new SkinnedMeshJoint[szEyes.length];
         int                 iSize    = szEyes.length;
