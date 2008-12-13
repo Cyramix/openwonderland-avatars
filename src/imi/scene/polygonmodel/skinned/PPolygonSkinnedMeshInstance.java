@@ -69,6 +69,10 @@ public class PPolygonSkinnedMeshInstance extends PPolygonMeshInstance
     {
         return(m_pSkeletonNode);
     }
+
+    public void setInverseBindPose(PMatrix[] newInverseBindPose) {
+        m_InverseBindPose = newInverseBindPose;
+    }
     
     public void setSkeletonNode(SkeletonNode skeleton)
     {

@@ -218,28 +218,28 @@ public abstract class Character extends Entity implements SpatialObject, Animati
      */
     private void sortMeshesInSkeletonAsynchronously()
     {
-        Runnable sortingTask = new Runnable() {
-
-            public void run() {
-                while (isInitialized() == false)
-                {
-                    Thread.yield();
-                }
-                // sort the meshes!
-                for (PPolygonSkinnedMeshInstance meshInst : m_skeleton.getSkinnedMeshInstances())
-                {
-                    String subGroupName = PModelUtils.getSubGroupNameForMesh(meshInst.getName());
-                    if (subGroupName != null)
-                        m_skeleton.addToSubGroup(meshInst, subGroupName);
-                    else
-                        m_skeleton.addChild(meshInst);
-                }
-            }
-        };
-
-        // Start the task!
-        Thread workerThread = new Thread(sortingTask);
-        workerThread.start();
+//        Runnable sortingTask = new Runnable() {
+//
+//            public void run() {
+//                while (isInitialized() == false)
+//                {
+//                    Thread.yield();
+//                }
+//                // sort the meshes!
+//                for (PPolygonSkinnedMeshInstance meshInst : m_skeleton.getSkinnedMeshInstances())
+//                {
+//                    String subGroupName = PModelUtils.getSubGroupNameForMesh(meshInst.getName());
+//                    if (subGroupName != null)
+//                        m_skeleton.addToSubGroup(meshInst, subGroupName);
+//                    else
+//                        m_skeleton.addChild(meshInst);
+//                }
+//            }
+//        };
+//
+//        // Start the task!
+//        Thread workerThread = new Thread(sortingTask);
+//        workerThread.start();
     }
 
     /**
@@ -312,7 +312,16 @@ public abstract class Character extends Entity implements SpatialObject, Animati
 
                     // Set animations and custom meshes
                     excecuteAttributes(m_attributes, false);
-
+                    
+                    // sort the meshes!
+                    for (PPolygonSkinnedMeshInstance meshInst : m_skeleton.getSkinnedMeshInstances())
+                    {
+                        String subGroupName = PModelUtils.getSubGroupNameForMesh(meshInst.getName());
+                        if (subGroupName != null)
+                            m_skeleton.addToSubGroup(meshInst, subGroupName);
+                        else
+                            m_skeleton.addChild(meshInst);
+                    }
                     // Gimme them eyeballs
                     PPolygonSkinnedMeshInstance leftEye = (PPolygonSkinnedMeshInstance) m_skeleton.findChild("leftEyeGeoShape");
                     m_leftEyeBall = new EyeBall(leftEye, m_modelInst, m_pscene);
@@ -1198,8 +1207,8 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         // African
         pRootInstruction.addInstruction(InstructionNames.loadGeometry, fileProtocol + "assets/models/collada/Heads/MaleAfricanHead/AfricanAmericanMaleHead1_Bind.dae");
         //pRootInstruction.addAttachmentInstruction(InstructionNames.loadGeometry, fileProtocol + "assets/models/collada/Avatars/Male/Male_Bind.dae");
-        pRootInstruction.addInstruction(InstructionNames.addSkinnedMesh, "headOneShape");
-        
+        //pRootInstruction.addInstruction(InstructionNames.addSkinnedMesh, "headOneShape");
+        pRootInstruction.addSkinnedMeshInstruction("headOneShape", "Head");
         // Asian
 //        pRootInstruction.addAttachmentInstruction(InstructionNames.loadGeometry, fileProtocol + "assets/models/collada/Heads/MaleAsianHead/AsianMaleHead1_Bind.dae");
 //        pRootInstruction.addAttachmentInstruction(InstructionNames.addSkinnedMesh, "head2Shape");

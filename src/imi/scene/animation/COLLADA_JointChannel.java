@@ -82,7 +82,7 @@ public class COLLADA_JointChannel implements PJointChannel
             if (result != null)
             {
                 Vector3f translation = jointToAffect.getTransform().getLocalMatrix(false).getTranslation();
-                //result.setTranslation(translation); <-- uncomment to make skeleton remapping work
+//                result.setTranslation(translation);// <-- uncomment to make skeleton remapping work
                 jointToAffect.getTransform().setLocalMatrix(result);
             }
             return;
@@ -138,7 +138,7 @@ public class COLLADA_JointChannel implements PJointChannel
         if (result != null)
         {
             Vector3f translation = jointToAffect.getTransform().getLocalMatrix(false).getTranslation();
-            //result.setTranslation(translation); <-- uncomment to make skeleton merging work
+//            result.setTranslation(translation);// <-- uncomment to make skeleton merging work
             jointToAffect.getTransform().setLocalMatrix(result);
         }
     }
@@ -166,6 +166,8 @@ public class COLLADA_JointChannel implements PJointChannel
 
     private PMatrix calculateBlendedMatrix(float fTime, float fLeftBoundaryTime, float fRightBoundaryTime, boolean bReverse)
     {
+//        if (true)
+//            return new PMatrix();
         float interpolationCoefficient = 0.0f;
         // determine what two keyframes to interpolate between for the first pose
         PMatrixKeyframe leftFrame = null;

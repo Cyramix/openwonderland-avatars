@@ -366,6 +366,7 @@ public class SkeletonNode extends PNode implements Animated
         }
 
         groupNode.addChild(meshInstance);
+        meshInstance.setSkeletonNode(this);
     }
 
     /**
@@ -661,19 +662,38 @@ public class SkeletonNode extends PNode implements Animated
         {
             // Grab the next guy
             current = list.poll();
+
             // Process him! If not a skinned mesh joint skip and prune
             if (current instanceof SkinnedMeshJoint)
             {
                 SkinnedMeshJoint ourJoint = (SkinnedMeshJoint)current;
                 SkinnedMeshJoint baseJoint = baseSkeleton.findSkinnedMeshJoint(ourJoint.getName());
 
+                // Calculate the Delta from the original skeleton to this one
                 PMatrix modifierDelta = new PMatrix();
-
                 modifierDelta.mul(baseJoint.getTransform().getLocalMatrix(false).inverse(), ourJoint.getTransform().getLocalMatrix(false));
-                //modifierDelta.mulInverse(baseJoint.getTransform().getLocalMatrix(false), ourJoint.getTransform().getLocalMatrix(false));
-                //modifierDelta.setTranslation(Vector3f.ZERO);
                 ourJoint.setSkeletonModifier(modifierDelta);
-                //ourJoint.getTransform().getLocalMatrix(true).set(baseJoint.getBindPose());
+
+                // Set the local transform to that of the other skeleton
+                ourJoint.getTransform().getLocalMatrix(true).set(baseJoint.getBindPose());
+
+                // copy other skeleton's inverse bind pose to our skeleton's inverse bind pose
+                int bftIndexForThisJoint = getSkinnedMeshJointIndex(ourJoint);
+                int otherBFTIndex = baseSkeleton.getSkinnedMeshJointIndex(baseJoint);
+//                m_BFTInverseBindPose.get(bftIndexForThisJoint).mul(m_BFTInverseBindPose.get(bftIndexForThisJoint), modifierDelta);
+                PMatrix otherJointIBP = baseSkeleton.m_BFTInverseBindPose.get(otherBFTIndex);
+                PMatrix newIBP = new PMatrix();
+//                newIBP.mul(otherJointIBP.inverse(), modifierDelta);
+                newIBP.mul(baseJoint.getBindPose(), modifierDelta);
+                newIBP.invert();
+
+                if (newIBP.epsilonEquals(m_BFTInverseBindPose.get(bftIndexForThisJoint), 0.05f))
+                    System.out.println("They are equal with epsilon == 0.05f");
+                else
+                    System.out.println("NOT EQUAL EPIC FAILURE");
+//                newIBP.mul(otherJointIBP, modifierDelta.inverse()); // Iteration One
+                //newIBP.mul(modifierDelta.inverse(), otherJointIBP); // Iteration Two
+                //m_BFTInverseBindPose.set(bftIndexForThisJoint, newIBP);
             }
             else
                 continue; // Prune (kids are not added to the list)
@@ -681,6 +701,9 @@ public class SkeletonNode extends PNode implements Animated
             for (PNode kid : current.getChildren())
                 list.add(kid);
         }
+        // go through each mesh and nullify the cached inverse bind pose reference
+        for (PPolygonSkinnedMeshInstance meshInst : getSkinnedMeshInstances())
+            meshInst.setInverseBindPose(null);
     }
 
     public SkeletonFlatteningManipulator getFlatteningHook() {
