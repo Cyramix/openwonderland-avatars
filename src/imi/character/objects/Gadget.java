@@ -32,17 +32,29 @@ import imi.scene.polygonmodel.PPolygonMeshInstance;
 import imi.scene.polygonmodel.PPolygonModelInstance;
 
 /**
- *
+ * This class represents the base 'gadget'. Gadgets are a way to expose
+ * configuration options to the user in a non-invasive and immersive manner.
+ * Subclasses will include things such as levels, switches, rotating knobs, etc.
  * @author Lou Hayt
  */
 public class Gadget implements SpatialObject
 {
+    /** The object collection that this gadget belongs to. **/
     ObjectCollection      objectCollection = null;
+    /** The model instance for this gadget's geometry **/
     PPolygonModelInstance modelInst        = null;
-    
+    /** The origin of this gadget **/
     PMatrix     initOrigin  = null;
+    /** Shared asset for our geometry **/
     SharedAsset sharedAsset = null;
-    
+
+    /**
+     * Construct a new instance of the gadget object at the given position and
+     * heading using the provided modelFile.
+     * @param position
+     * @param heading
+     * @param modelFile
+     */
     public Gadget(Vector3f position, Vector3f heading, String modelFile)
     {
         if (modelFile != null && modelFile.endsWith(".dae"))
@@ -92,7 +104,12 @@ public class Gadget implements SpatialObject
         objectCollection = objs;
         objs.addObject(this);
     }
-    
+
+    /**
+     * Set the appropriate data to associate this gadget with the provided
+     * pscene.
+     * @param scene
+     */
     public void setInScene(PScene scene)
     {
         if (sharedAsset != null)
@@ -103,8 +120,13 @@ public class Gadget implements SpatialObject
         }
         initOrigin = null; // only used to carry constructor's matrix
     }
-    
-    public void translateSubMesh(Vector3f move, String meshName)
+
+    /**
+     * Find the mesh with the given name and offset it by the provided offset.
+     * @param offset Offset to offset the submesh by.
+     * @param meshName Name of the mesh to affect.
+     */
+    public void translateSubMesh(Vector3f offset, String meshName)
     {
         // Watch for the placeholder node! (if the model is being loaded)
         PNode meshNode = modelInst.findChild(meshName);
@@ -112,9 +134,14 @@ public class Gadget implements SpatialObject
             return;
         PPolygonMeshInstance mesh = (PPolygonMeshInstance) modelInst.findChild(meshName);
         if (mesh != null)
-            mesh.getTransform().getLocalMatrix(true).setTranslation(mesh.getTransform().getLocalMatrix(true).getTranslation().add(move));
+            mesh.getTransform().getLocalMatrix(true).setTranslation(mesh.getTransform().getLocalMatrix(true).getTranslation().add(offset));
     }
-    
+
+    /**
+     * Rotate the submesh with the provided name to match the provided orientation.
+     * @param eulerInRadians
+     * @param meshName
+     */
     public void setRotationSubMesh(Vector3f eulerInRadians, String meshName)
     {
         // Watch for the placeholder node! (if the model is being loaded)

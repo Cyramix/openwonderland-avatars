@@ -218,7 +218,7 @@ public class NinjaControlScheme extends InputScheme
             {
                 if(objects != null)
                 {
-                    objects.removeRandomChair();
+                    objects.removeChair();
                 }
             }
             

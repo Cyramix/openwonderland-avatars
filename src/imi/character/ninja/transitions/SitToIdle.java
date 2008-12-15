@@ -22,8 +22,8 @@ import imi.character.statemachine.GameState;
 import imi.character.statemachine.TransitionObject;
 
 /**
- *
- * @author Lou
+ * This class represents the transition from the Sit state to the Idle state.
+ * @author Lou Hayt
  */
 public class SitToIdle extends TransitionObject
 {

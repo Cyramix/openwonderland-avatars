@@ -22,7 +22,7 @@ import imi.character.statemachine.GameState;
 import imi.character.statemachine.TransitionObject;
 
 /**
- *
+ * This class represents the transition from the Punch state to the Walk state.
  * @author Lou
  */
 public class PunchToWalk extends TransitionObject

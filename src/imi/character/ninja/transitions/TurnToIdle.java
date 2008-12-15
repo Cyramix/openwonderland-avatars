@@ -22,8 +22,8 @@ import imi.character.statemachine.GameState;
 import imi.character.statemachine.TransitionObject;
 
 /**
- *
- * @author Lou
+ * This class represents the transition from the Turn state to the Idlestate.
+ * @author Lou Hayt
  */
 public class TurnToIdle extends TransitionObject
 {

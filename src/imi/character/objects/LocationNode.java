@@ -27,17 +27,28 @@ import java.util.ArrayList;
 import org.jdesktop.mtgame.WorldManager;
 
 /**
- *
+ * This class represents a node (used in avatar path following) at a given location.
  * @author Lou Hayt
  */
 public class LocationNode extends GraphNode implements SpatialObject
 {
+    /** The name of this location **/
     private String              name     = null;
+    /** The bounding volume for this location **/
     private PSphere             bv       = null;
     private Vector3f            forward  = Vector3f.UNIT_Z.mult(-1.0f);
+    /** A collection of objects at this location (chairs in a classroom for instance) **/
     private ObjectCollection    objects  = null;
     private boolean             occupied = false;
 
+    /**
+     * Construct a new location node with the provided name at the specified
+     * position with the given radius.
+     * @param name
+     * @param position
+     * @param radius
+     * @param wm
+     */
     public LocationNode(String name, Vector3f position, float radius, WorldManager wm)
     {
         this.name = name;
@@ -45,7 +56,15 @@ public class LocationNode extends GraphNode implements SpatialObject
         objects   = new ObjectCollection(name, wm);
         objects.addObject(this);
     }
-    
+
+    /**
+     * Construct a new location node with the provided information.
+     * @param name
+     * @param position
+     * @param radius
+     * @param wm
+     * @param objectCollection
+     */
     public LocationNode(String name, Vector3f position, float radius, WorldManager wm, ObjectCollection objectCollection)
     {
         this.name = name;
@@ -85,6 +104,10 @@ public class LocationNode extends GraphNode implements SpatialObject
         return objects;
     }
 
+    /**
+     * Generate the given number of chairs within this location.
+     * @param numberOfChairs
+     */
     public void generateChairs(int numberOfChairs) {
         objects.generateChairs(bv.getCenter(), bv.getRadius(), numberOfChairs);
     }

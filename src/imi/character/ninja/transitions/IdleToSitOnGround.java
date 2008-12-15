@@ -22,7 +22,7 @@ import imi.character.statemachine.GameState;
 import imi.character.statemachine.TransitionObject;
 
 /**
- *
+ * This class represents the transition from the Idle state to the SitOnGround state.
  * @author Lou Hayt
  */
 public class IdleToSitOnGround extends TransitionObject 

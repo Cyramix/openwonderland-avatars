@@ -36,11 +36,13 @@ import org.jdesktop.mtgame.RenderComponent;
 import org.jdesktop.mtgame.WorldManager;
 
 /**
- *
- * @author Lou
+ * This class is a simple collection of objects, allowing for a very rudimentary
+ * spatial object management system.
+ * @author Lou Hayt
  */
 public class ObjectCollection extends Entity
 {
+    /** Collection of objects :) **/
     protected ArrayList<SpatialObject> objects = new ArrayList<SpatialObject>();
     
     protected WorldManager    worldManager   = null;
@@ -48,8 +50,13 @@ public class ObjectCollection extends Entity
     protected JScene          jscene         = null;
     
     // Test
-    Gadget lighSwitch = null;
-    
+    Gadget lightSwitch = null;
+
+    /**
+     * Construct a new object collection with the given name using the world manager.
+     * @param name
+     * @param wm
+     */
     public ObjectCollection(String name, WorldManager wm)
     {
         super(name);
@@ -88,6 +95,10 @@ public class ObjectCollection extends Entity
         worldManager.addEntity(this);  
     }
 
+    /**
+     * Add an object to the collection.
+     * @param obj
+     */
     public void addObject(SpatialObject obj) 
     {
         if (objects.contains(obj))
@@ -104,6 +115,13 @@ public class ObjectCollection extends Entity
 //        }
     }
 
+    /**
+     * Generate the specified number of chairs around the given center within
+     * maxRadius of that center.
+     * @param center
+     * @param maxRadius
+     * @param numberOfChairs
+     */
     public void generateChairs(Vector3f center, float maxRadius, int numberOfChairs) 
     {
         if (numberOfChairs <= 0)
@@ -179,12 +197,12 @@ public class ObjectCollection extends Entity
         
         /////////  TEest   TEest   TEest   TEest   TEest   TEest   TEest   TEest 
 //        
-//        lighSwitch = new Gadget(new Vector3f(2.0f, 1.5f, 0.0f), Vector3f.UNIT_Z, "assets/models/collada/Objects/Interface/InterfaceSlider.dae");
-//        lighSwitch.setInScene(pscene);
-//        lighSwitch.setObjectCollection(this);
-//        lighSwitch.getModelInst().calculateBoundingSphere();
+//        lightSwitch = new Gadget(new Vector3f(2.0f, 1.5f, 0.0f), Vector3f.UNIT_Z, "assets/models/collada/Objects/Interface/InterfaceSlider.dae");
+//        lightSwitch.setInScene(pscene);
+//        lightSwitch.setObjectCollection(this);
+//        lightSwitch.getModelInst().calculateBoundingSphere();
 //        
-//        lighSwitch.translateSubMesh(Vector3f.UNIT_X, "Slider");
+//        lightSwitch.translateSubMesh(Vector3f.UNIT_X, "Slider");
 //        
 //        pscene.setDirty(true, true);
 //        pscene.buildFlattenedHierarchy();
@@ -195,11 +213,11 @@ public class ObjectCollection extends Entity
 //        lighDimmer.setObjectCollection(this);
 //        lighDimmer.getModelInst().calculateBoundingSphere();
     }
-    
+
     public void testLightToggle()
     {
-        //lighSwitch.translateSubMesh(Vector3f.UNIT_X, "Slider");
-        //lighSwitch.setRotationSubMesh(new Vector3f((float)Math.toRadians(0.0f),(float)Math.toRadians(0.0f), (float)Math.toRadians(0.0f)), "Slider");
+        //lightSwitch.translateSubMesh(Vector3f.UNIT_X, "Slider");
+        //lightSwitch.setRotationSubMesh(new Vector3f((float)Math.toRadians(0.0f),(float)Math.toRadians(0.0f), (float)Math.toRadians(0.0f)), "Slider");
     }
     
     /**
@@ -311,7 +329,14 @@ public class ObjectCollection extends Entity
         return nearest;
     }
     
-
+    /**
+     * Retrieve the nearest chair given the specified constraints
+     * @param obj The object looking for a chair
+     * @param consideredRange The maximum relavent range
+     * @param searchCone 1.0 is 180 degree forward visibility, smaller values yield a smaller visibility wedge
+     * @param occupiedMatters False to ignore occupancy (which is considered rude!)
+     * @return The nearest chair, or null if none qualify
+     */
     public SpatialObject findNearestChair(SpatialObject obj, float consideredRange, float searchCone, boolean occupiedMatters)
     {
         if (obj == null)
@@ -374,7 +399,15 @@ public class ObjectCollection extends Entity
         
         return nearest;
     }
-    
+
+    /**
+     * Find the location nearest to the provided SpatialObject.
+     * @param obj The object that is looking
+     * @param consideredRange Maximum relevant distance
+     * @param searchCone 1.0 is 180 degree forward visibility, smaller values yield a smaller visibility wedge
+     * @param occupiedMatters False to ignore occupancy
+     * @return The nearest location, or null if none qualify
+     */
     public LocationNode findNearestLocation(SpatialObject obj, float consideredRange, float searchCone, boolean occupiedMatters)
     {
         if (obj == null)
@@ -442,7 +475,10 @@ public class ObjectCollection extends Entity
         return jscene;
     }
 
-    public void removeRandomChair() 
+    /**
+     * Removes a chair from the object collection.
+     */
+    public void removeChair()
     {    
         for (SpatialObject check : objects)
         {
@@ -457,9 +493,13 @@ public class ObjectCollection extends Entity
             }
         }
     }
-    
+
+    /**
+     * Add another chair to the object collection
+     */
     public void addRandomChair() 
     {
+        // What are these magic numbers?
         Vector3f center = new Vector3f(3.905138f, 0.0f, 18.265793f);
        
         generateChairs(center, 7.0f, 1);

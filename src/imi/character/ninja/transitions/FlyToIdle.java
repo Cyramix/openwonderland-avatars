@@ -23,8 +23,8 @@ import imi.character.statemachine.GameState;
 import imi.character.statemachine.TransitionObject;
 
 /**
- *
- * @author Lou
+ * This class represents the transition conditions from the fly to the idle state.
+ * @author Lou Hayt
  */
 public class FlyToIdle extends TransitionObject
 {

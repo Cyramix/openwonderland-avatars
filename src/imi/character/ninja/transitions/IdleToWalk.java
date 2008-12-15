@@ -23,8 +23,8 @@ import imi.character.statemachine.GameState;
 import imi.character.statemachine.TransitionObject;
 
 /**
- *
- * @author Lou
+ * This class represents the transition from the Idle state to the Walk state.
+ * @author Lou Hayt
  */
 public class IdleToWalk extends TransitionObject
 {

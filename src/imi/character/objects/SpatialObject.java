@@ -23,8 +23,8 @@ import imi.scene.boundingvolumes.PSphere;
 import imi.scene.polygonmodel.PPolygonModelInstance;
 
 /**
- *
- * @author Lou
+ * The base class for an object occupying some location in space.
+ * @author Lou Hayt
  */
 public interface SpatialObject 
 {

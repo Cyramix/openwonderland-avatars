@@ -47,7 +47,8 @@ import org.jdesktop.mtgame.RenderComponent;
 import org.jdesktop.mtgame.WorldManager;
 
 /**
- *
+ * This class represents a "Goal". This may be interpreted however is appropriate,
+ * the class handles visualizing the goal as well.
  * @author Lou Hayt
  */
 public class Goal 
@@ -57,7 +58,11 @@ public class Goal
     PPolygonModelInstance modelInst = null;
         
     JScene jscene = null;
-    
+
+    /**
+     * Construct a new goal using the provided WorldManager.
+     * @param wm
+     */
     public Goal(WorldManager wm)
     {
         float       radius  = 1.05f;

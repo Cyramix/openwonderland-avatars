@@ -73,7 +73,7 @@ public class SkeletonModifierTest extends DemoBase
         skinnedMeshMaterial.setShader(new VertexDeformer(wm, 0.35f));
         // create a skeleton and
         // add it to the pscene
-        PPolygonModelInstance modelInst = pscene.addModelInstance(generateSkeleton(), new PMatrix());
+        PPolygonModelInstance modelInst = pscene.addModelInstance(generateModifiedSkeleton(), new PMatrix());
         SkeletonNode skeleton = (SkeletonNode)modelInst.getChild(0);
 
         // create the lower skinned mesh
@@ -104,7 +104,7 @@ public class SkeletonModifierTest extends DemoBase
         meshInst.setMaterial(skinnedMeshMaterial);
         meshInst.setUseGeometryMaterial(false);
 
-        skeleton.remapSkeleton(generateModifiedSkeleton());
+        skeleton.remapSkeleton(generateSkeleton());
 
 
         // Grab some joint references to animate
@@ -165,11 +165,11 @@ public class SkeletonModifierTest extends DemoBase
         // build actual skeleton
         PNode skeletalRoot = new PNode(new PTransform());
         SkinnedMeshJoint base   = new SkinnedMeshJoint("base",   new PTransform());
-        SkinnedMeshJoint level1 = new SkinnedMeshJoint("level1", new PTransform(new PMatrix(new Vector3f(0.0f, 4.0f,    0 ))));
-        SkinnedMeshJoint level2 = new SkinnedMeshJoint("level2", new PTransform(new PMatrix(new Vector3f(0.7f, 0, 0), Vector3f.UNIT_XYZ, new Vector3f(0.0f, 4.0f,  0.0f))));
-        SkinnedMeshJoint level3 = new SkinnedMeshJoint("level3", new PTransform(new PMatrix(new Vector3f(0.7f, 0, 0), Vector3f.UNIT_XYZ, new Vector3f(0.0f, 4.0f,    0 ))));
-        SkinnedMeshJoint level4 = new SkinnedMeshJoint("level4", new PTransform(new PMatrix(new Vector3f(0.7f, 0, 0), Vector3f.UNIT_XYZ, new Vector3f(0.0f, 4.0f,  0.0f))));
-        SkinnedMeshJoint level5 = new SkinnedMeshJoint("level5", new PTransform(new PMatrix(new Vector3f(0.7f, 0, 0), Vector3f.UNIT_XYZ, new Vector3f(0.0f, 4.0f,  0.0f))));
+        SkinnedMeshJoint level1 = new SkinnedMeshJoint("level1", new PTransform(new PMatrix(new Vector3f(0.0f, 4.0f,  0.0f))));
+        SkinnedMeshJoint level2 = new SkinnedMeshJoint("level2", new PTransform(new PMatrix(new Vector3f(0.0f, 4.0f,  0.0f))));
+        SkinnedMeshJoint level3 = new SkinnedMeshJoint("level3", new PTransform(new PMatrix(new Vector3f(10.0f, 4.0f,  0.0f))));
+        SkinnedMeshJoint level4 = new SkinnedMeshJoint("level4", new PTransform(new PMatrix(new Vector3f(0.0f, 4.0f,  0.0f))));
+        SkinnedMeshJoint level5 = new SkinnedMeshJoint("level5", new PTransform(new PMatrix(new Vector3f(0.0f, 4.0f,  0.0f))));
         SkinnedMeshJoint level6 = new SkinnedMeshJoint("level6", new PTransform(new PMatrix(new Vector3f(0.0f, 4.0f,  0.0f))));
         SkinnedMeshJoint level7 = new SkinnedMeshJoint("level7", new PTransform(new PMatrix(new Vector3f(0.0f, 4.0f,  0.0f))));
         SkinnedMeshJoint level8 = new SkinnedMeshJoint("level8", new PTransform(new PMatrix(new Vector3f(0.0f, 4.0f,  0.0f))));

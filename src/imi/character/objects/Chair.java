@@ -39,27 +39,39 @@ import imi.scene.utils.PMeshUtils;
 import javolution.util.FastList;
 
 /**
- *
- * @author Lou
+ * This class is used to represent a "Chair" object in the world. It has properties
+ * that are important to avatars and allows for sitting at a specified orientation.
+ * @author Lou Hayt
  */
 public class Chair implements SpatialObject
 {
+    /** This is the shared asset that the chair uses. **/
     private SharedAsset sharedAsset = null;
-    
+    /** The model instance for the chair. **/
     protected PPolygonModelInstance modelInst   = null;
-    
+    /** The collection that this chai belongs to. **/
     protected ObjectCollection objectCollection = null;
     
     private SpatialObject owner = null;
+    /** True if the chair has someone or something sitting in it. **/
     private boolean occupied = false;
-    
+    /** Where to spawn this chair at. **/
     private PMatrix initOrigin = null;
-    
+    /** Where the goal point is (orientation as well) in chair reference space **/
     private PMatrix goalOffset = new PMatrix();
+
     private float   goalForwardOffset = 0.5f;
-    
+
+    /** Min-safe distance from other chairs. **/
     private float desiredDistanceFromOtherChairs = 3.0f;
-    
+
+    /**
+     * Construct a brand new chair object at the given position and heading
+     * using the specified model file.
+     * @param position
+     * @param heading
+     * @param modelFile
+     */
     public Chair(Vector3f position, Vector3f heading, String modelFile)
     {
         if (modelFile != null && modelFile.endsWith(".dae"))
@@ -91,19 +103,13 @@ public class Chair implements SpatialObject
                             }
                             // add all children
                             queue.addAll(current.getChildren());
-                            
                             //((PPolygonModelInstance)asset).calculateBoundingSphere();
                         }
-                        
-                        
                     }
-                    
                     return true;
-
                 }
             };
             sharedAsset.setInitializer(init);
-            
         }
         else
         {
@@ -139,7 +145,11 @@ public class Chair implements SpatialObject
         objectCollection = objs;
         objs.addObject(this);
     }
-    
+
+    /**
+     * Set the appropriate data to associate this chair with the provided pscene.
+     * @param scene
+     */
     public void setInScene(PScene scene)
     {
         if (sharedAsset != null)
@@ -203,7 +213,8 @@ public class Chair implements SpatialObject
 //        Vector3f pos = getPosition();
 //        return goalPos.subtract(pos).normalize();
     }
-    
+
+
     public PSphere getNearestObstacleSphere(Vector3f myPosition)
     {
 //        PPolygonMeshInstance mesh = (PPolygonMeshInstance) modelInst.getChild(0);

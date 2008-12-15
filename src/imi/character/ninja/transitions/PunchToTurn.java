@@ -22,8 +22,8 @@ import imi.character.statemachine.GameState;
 import imi.character.statemachine.TransitionObject;
 
 /**
- *
- * @author Lou
+ * This class represents the transition from the Punch state to the Turnstate.
+ * @author Lou Hayt
  */
 public class PunchToTurn extends TransitionObject
 {
