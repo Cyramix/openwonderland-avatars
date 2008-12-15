@@ -39,7 +39,8 @@ public class AdvOptions extends javax.swing.JFrame {
 ////////////////////////////////////////////////////////////////////////////////
     private Map<m_bodyPart, SkinnedMeshJoint[]> m_skeleton;
     private SceneEssentials                     m_sceneData;
-
+    private float                               m_baseLen = 10.0f;
+    private float                               m_baseScale = 20.0f;
 ////////////////////////////////////////////////////////////////////////////////
 // Enumerations for the skeleton and body
 ////////////////////////////////////////////////////////////////////////////////
@@ -260,18 +261,18 @@ public class AdvOptions extends javax.swing.JFrame {
         jPanel_UniformBody = new javax.swing.JPanel();
         jPanel_BodyWidth = new javax.swing.JPanel();
         jSlider_BodyWidth = new javax.swing.JSlider();
-        jSpinner1 = new javax.swing.JSpinner();
+        jSpinner_UBodyWidthScale = new javax.swing.JSpinner();
         jPanel_BodyHeight = new javax.swing.JPanel();
         jSlider_BodyHeight = new javax.swing.JSlider();
-        jSpinner2 = new javax.swing.JSpinner();
+        jSpinner_UBodyHeightScale = new javax.swing.JSpinner();
         jPanel_BodyDepth = new javax.swing.JPanel();
         jSlider_BodyDepth = new javax.swing.JSlider();
-        jSpinner3 = new javax.swing.JSpinner();
+        jSpinner_UBodyDepthScale = new javax.swing.JSpinner();
         jPanel_BodyUniform = new javax.swing.JPanel();
         jSlider_BodyUniform = new javax.swing.JSlider();
-        jSpinner4 = new javax.swing.JSpinner();
+        jSpinner_UbodyUniScale = new javax.swing.JSpinner();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         getContentPane().setLayout(new java.awt.GridBagLayout());
 
         jTabbedPane_Main.setPreferredSize(new java.awt.Dimension(300, 600));
@@ -930,23 +931,43 @@ public class AdvOptions extends javax.swing.JFrame {
         jPanel_FingerLength.setPreferredSize(new java.awt.Dimension(210, 260));
         jPanel_FingerLength.setLayout(new java.awt.GridBagLayout());
 
+        jSlider_FingerLengthR.setMaximum(20);
+        jSlider_FingerLengthR.setMinimum(1);
+        jSlider_FingerLengthR.setMinorTickSpacing(1);
         jSlider_FingerLengthR.setOrientation(javax.swing.JSlider.VERTICAL);
         jSlider_FingerLengthR.setPaintTicks(true);
         jSlider_FingerLengthR.setSnapToTicks(true);
+        jSlider_FingerLengthR.setValue(10);
         jSlider_FingerLengthR.setMinimumSize(new java.awt.Dimension(29, 100));
         jSlider_FingerLengthR.setPreferredSize(new java.awt.Dimension(29, 100));
+        jSlider_FingerLengthR.addChangeListener(new javax.swing.event.ChangeListener() {
+
+            public void stateChanged(javax.swing.event.ChangeEvent e) {
+                adjustHands(0, e);
+            }
+        });
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
         jPanel_FingerLength.add(jSlider_FingerLengthR, gridBagConstraints);
 
+        jSlider_FingerLengthL.setMaximum(20);
+        jSlider_FingerLengthL.setMinimum(1);
+        jSlider_FingerLengthL.setMinorTickSpacing(1);
         jSlider_FingerLengthL.setOrientation(javax.swing.JSlider.VERTICAL);
         jSlider_FingerLengthL.setPaintTicks(true);
         jSlider_FingerLengthL.setSnapToTicks(true);
+        jSlider_FingerLengthL.setValue(10);
         jSlider_FingerLengthL.setMinimumSize(new java.awt.Dimension(29, 100));
         jSlider_FingerLengthL.setPreferredSize(new java.awt.Dimension(29, 100));
+        jSlider_FingerLengthL.addChangeListener(new javax.swing.event.ChangeListener() {
+
+            public void stateChanged(javax.swing.event.ChangeEvent e) {
+                adjustHands(0, e);
+            }
+        });
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 0;
         jPanel_FingerLength.add(jSlider_FingerLengthL, gridBagConstraints);
 
@@ -960,14 +981,14 @@ public class AdvOptions extends javax.swing.JFrame {
         jSpinner_FingerLengthR.setMinimumSize(new java.awt.Dimension(75, 28));
         jSpinner_FingerLengthR.setPreferredSize(new java.awt.Dimension(75, 28));
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
         jPanel_FingerLength.add(jSpinner_FingerLengthR, gridBagConstraints);
 
         jSpinner_FingerLengthL.setMinimumSize(new java.awt.Dimension(75, 28));
         jSpinner_FingerLengthL.setPreferredSize(new java.awt.Dimension(75, 28));
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 1;
         jPanel_FingerLength.add(jSpinner_FingerLengthL, gridBagConstraints);
 
@@ -980,21 +1001,41 @@ public class AdvOptions extends javax.swing.JFrame {
         jPanel_HandThickness.setPreferredSize(new java.awt.Dimension(210, 260));
         jPanel_HandThickness.setLayout(new java.awt.GridBagLayout());
 
+        jSlider_HandThicknessR.setMaximum(40);
+        jSlider_HandThicknessR.setMinimum(1);
+        jSlider_HandThicknessR.setMinorTickSpacing(1);
         jSlider_HandThicknessR.setPaintTicks(true);
         jSlider_HandThicknessR.setSnapToTicks(true);
+        jSlider_HandThicknessR.setValue(20);
         jSlider_HandThicknessR.setMinimumSize(new java.awt.Dimension(100, 29));
         jSlider_HandThicknessR.setPreferredSize(new java.awt.Dimension(100, 29));
+        jSlider_HandThicknessR.addChangeListener(new javax.swing.event.ChangeListener() {
+
+            public void stateChanged(javax.swing.event.ChangeEvent e) {
+                adjustHands(1, e);
+            }
+        });
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
         jPanel_HandThickness.add(jSlider_HandThicknessR, gridBagConstraints);
 
+        jSlider_HandThicknessL.setMaximum(40);
+        jSlider_HandThicknessL.setMinimum(1);
+        jSlider_HandThicknessL.setMinorTickSpacing(1);
         jSlider_HandThicknessL.setPaintTicks(true);
         jSlider_HandThicknessL.setSnapToTicks(true);
+        jSlider_HandThicknessL.setValue(20);
         jSlider_HandThicknessL.setMinimumSize(new java.awt.Dimension(100, 29));
         jSlider_HandThicknessL.setPreferredSize(new java.awt.Dimension(100, 29));
+        jSlider_HandThicknessL.addChangeListener(new javax.swing.event.ChangeListener() {
+
+            public void stateChanged(javax.swing.event.ChangeEvent e) {
+                adjustHands(1, e);
+            }
+        });
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 0;
         jPanel_HandThickness.add(jSlider_HandThicknessL, gridBagConstraints);
 
@@ -1005,17 +1046,31 @@ public class AdvOptions extends javax.swing.JFrame {
         gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
         jPanel_HandThickness.add(jCheckBox_HandThickSync, gridBagConstraints);
 
+        jSpinner_HandThicknessL.setModel(new javax.swing.SpinnerNumberModel(Float.valueOf(1.0f), Float.valueOf(-1.2f), Float.valueOf(1.2f), Float.valueOf(0.01f)));
         jSpinner_HandThicknessL.setMinimumSize(new java.awt.Dimension(75, 28));
         jSpinner_HandThicknessL.setPreferredSize(new java.awt.Dimension(75, 28));
+        jSpinner_HandThicknessL.addChangeListener(new javax.swing.event.ChangeListener() {
+
+            public void stateChanged(javax.swing.event.ChangeEvent e) {
+                adjustHands(1, e);
+            }
+        });
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 1;
         jPanel_HandThickness.add(jSpinner_HandThicknessL, gridBagConstraints);
 
+        jSpinner_HandThicknessR.setModel(new javax.swing.SpinnerNumberModel(Float.valueOf(1.0f), Float.valueOf(-1.2f), Float.valueOf(1.2f), Float.valueOf(0.01f)));
         jSpinner_HandThicknessR.setMinimumSize(new java.awt.Dimension(75, 28));
         jSpinner_HandThicknessR.setPreferredSize(new java.awt.Dimension(75, 28));
+        jSpinner_HandThicknessR.addChangeListener(new javax.swing.event.ChangeListener() {
+
+            public void stateChanged(javax.swing.event.ChangeEvent e) {
+                adjustHands(1, e);
+            }
+        });
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
         jPanel_HandThickness.add(jSpinner_HandThicknessR, gridBagConstraints);
 
@@ -1034,23 +1089,43 @@ public class AdvOptions extends javax.swing.JFrame {
         jPanel_ForearmLength.setPreferredSize(new java.awt.Dimension(210, 260));
         jPanel_ForearmLength.setLayout(new java.awt.GridBagLayout());
 
+        jSlider_ForearmLengthR.setMaximum(20);
+        jSlider_ForearmLengthR.setMinimum(1);
+        jSlider_ForearmLengthR.setMinorTickSpacing(1);
         jSlider_ForearmLengthR.setOrientation(javax.swing.JSlider.VERTICAL);
         jSlider_ForearmLengthR.setPaintTicks(true);
         jSlider_ForearmLengthR.setSnapToTicks(true);
+        jSlider_ForearmLengthR.setValue(10);
         jSlider_ForearmLengthR.setMinimumSize(new java.awt.Dimension(29, 100));
         jSlider_ForearmLengthR.setPreferredSize(new java.awt.Dimension(29, 100));
+        jSlider_ForearmLengthR.addChangeListener(new javax.swing.event.ChangeListener() {
+
+            public void stateChanged(javax.swing.event.ChangeEvent e) {
+                adjustForearms(0, e);
+            }
+        });
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
         jPanel_ForearmLength.add(jSlider_ForearmLengthR, gridBagConstraints);
 
+        jSlider_ForearmLengthL.setMaximum(20);
+        jSlider_ForearmLengthL.setMinimum(1);
+        jSlider_ForearmLengthL.setMinorTickSpacing(1);
         jSlider_ForearmLengthL.setOrientation(javax.swing.JSlider.VERTICAL);
         jSlider_ForearmLengthL.setPaintTicks(true);
         jSlider_ForearmLengthL.setSnapToTicks(true);
+        jSlider_ForearmLengthL.setValue(10);
         jSlider_ForearmLengthL.setMinimumSize(new java.awt.Dimension(29, 100));
         jSlider_ForearmLengthL.setPreferredSize(new java.awt.Dimension(29, 100));
+        jSlider_ForearmLengthL.addChangeListener(new javax.swing.event.ChangeListener() {
+
+            public void stateChanged(javax.swing.event.ChangeEvent e) {
+                adjustForearms(0, e);
+            }
+        });
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 0;
         jPanel_ForearmLength.add(jSlider_ForearmLengthL, gridBagConstraints);
 
@@ -1064,14 +1139,14 @@ public class AdvOptions extends javax.swing.JFrame {
         jSpinner_ForearmLengthL.setMinimumSize(new java.awt.Dimension(75, 28));
         jSpinner_ForearmLengthL.setPreferredSize(new java.awt.Dimension(75, 28));
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 1;
         jPanel_ForearmLength.add(jSpinner_ForearmLengthL, gridBagConstraints);
 
         jSpinner_ForearmLengthR.setMinimumSize(new java.awt.Dimension(75, 28));
         jSpinner_ForearmLengthR.setPreferredSize(new java.awt.Dimension(75, 28));
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
         jPanel_ForearmLength.add(jSpinner_ForearmLengthR, gridBagConstraints);
 
@@ -1084,21 +1159,41 @@ public class AdvOptions extends javax.swing.JFrame {
         jPanel_ForearmThickness.setPreferredSize(new java.awt.Dimension(210, 260));
         jPanel_ForearmThickness.setLayout(new java.awt.GridBagLayout());
 
+        jSlider_ForearmThicknessR.setMaximum(40);
+        jSlider_ForearmThicknessR.setMinimum(1);
+        jSlider_ForearmThicknessR.setMinorTickSpacing(1);
         jSlider_ForearmThicknessR.setPaintTicks(true);
         jSlider_ForearmThicknessR.setSnapToTicks(true);
+        jSlider_ForearmThicknessR.setValue(20);
         jSlider_ForearmThicknessR.setMinimumSize(new java.awt.Dimension(100, 29));
         jSlider_ForearmThicknessR.setPreferredSize(new java.awt.Dimension(100, 29));
+        jSlider_ForearmThicknessR.addChangeListener(new javax.swing.event.ChangeListener() {
+
+            public void stateChanged(javax.swing.event.ChangeEvent e) {
+                adjustForearms(1, e);
+            }
+        });
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
         jPanel_ForearmThickness.add(jSlider_ForearmThicknessR, gridBagConstraints);
 
+        jSlider_ForearmThicknessL.setMaximum(40);
+        jSlider_ForearmThicknessL.setMinimum(1);
+        jSlider_ForearmThicknessL.setMinorTickSpacing(1);
         jSlider_ForearmThicknessL.setPaintTicks(true);
         jSlider_ForearmThicknessL.setSnapToTicks(true);
+        jSlider_ForearmThicknessL.setValue(20);
         jSlider_ForearmThicknessL.setMinimumSize(new java.awt.Dimension(100, 29));
         jSlider_ForearmThicknessL.setPreferredSize(new java.awt.Dimension(100, 29));
+        jSlider_ForearmThicknessL.addChangeListener(new javax.swing.event.ChangeListener() {
+
+            public void stateChanged(javax.swing.event.ChangeEvent e) {
+                adjustForearms(1, e);
+            }
+        });
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 0;
         jPanel_ForearmThickness.add(jSlider_ForearmThicknessL, gridBagConstraints);
 
@@ -1109,17 +1204,19 @@ public class AdvOptions extends javax.swing.JFrame {
         gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
         jPanel_ForearmThickness.add(jCheckBox_ForearmThickSync, gridBagConstraints);
 
+        jSpinner_ForearmThicknessL.setModel(new javax.swing.SpinnerNumberModel(Float.valueOf(1.0f), Float.valueOf(-1.2f), Float.valueOf(1.2f), Float.valueOf(0.01f)));
         jSpinner_ForearmThicknessL.setMinimumSize(new java.awt.Dimension(75, 28));
         jSpinner_ForearmThicknessL.setPreferredSize(new java.awt.Dimension(75, 28));
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 1;
         jPanel_ForearmThickness.add(jSpinner_ForearmThicknessL, gridBagConstraints);
 
+        jSpinner_ForearmThicknessR.setModel(new javax.swing.SpinnerNumberModel(Float.valueOf(1.0f), Float.valueOf(-1.2f), Float.valueOf(1.2f), Float.valueOf(0.01f)));
         jSpinner_ForearmThicknessR.setMinimumSize(new java.awt.Dimension(75, 28));
         jSpinner_ForearmThicknessR.setPreferredSize(new java.awt.Dimension(75, 28));
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
         jPanel_ForearmThickness.add(jSpinner_ForearmThicknessR, gridBagConstraints);
 
@@ -1138,23 +1235,43 @@ public class AdvOptions extends javax.swing.JFrame {
         jPanel_UpperarmLength.setPreferredSize(new java.awt.Dimension(210, 260));
         jPanel_UpperarmLength.setLayout(new java.awt.GridBagLayout());
 
+        jSlider_UpperarmLengthR.setMaximum(20);
+        jSlider_UpperarmLengthR.setMinimum(1);
+        jSlider_UpperarmLengthR.setMinorTickSpacing(1);
         jSlider_UpperarmLengthR.setOrientation(javax.swing.JSlider.VERTICAL);
         jSlider_UpperarmLengthR.setPaintTicks(true);
         jSlider_UpperarmLengthR.setSnapToTicks(true);
+        jSlider_UpperarmLengthR.setValue(10);
         jSlider_UpperarmLengthR.setMinimumSize(new java.awt.Dimension(29, 100));
         jSlider_UpperarmLengthR.setPreferredSize(new java.awt.Dimension(29, 100));
+        jSlider_UpperarmLengthR.addChangeListener(new javax.swing.event.ChangeListener() {
+
+            public void stateChanged(javax.swing.event.ChangeEvent e) {
+                adjustUpperarms(0, e);
+            }
+        });
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
         jPanel_UpperarmLength.add(jSlider_UpperarmLengthR, gridBagConstraints);
 
+        jSlider_UpperArmLengthL.setMaximum(20);
+        jSlider_UpperArmLengthL.setMinimum(1);
+        jSlider_UpperArmLengthL.setMinorTickSpacing(1);
         jSlider_UpperArmLengthL.setOrientation(javax.swing.JSlider.VERTICAL);
         jSlider_UpperArmLengthL.setPaintTicks(true);
         jSlider_UpperArmLengthL.setSnapToTicks(true);
+        jSlider_UpperArmLengthL.setValue(10);
         jSlider_UpperArmLengthL.setMinimumSize(new java.awt.Dimension(29, 100));
         jSlider_UpperArmLengthL.setPreferredSize(new java.awt.Dimension(29, 100));
+        jSlider_UpperArmLengthL.addChangeListener(new javax.swing.event.ChangeListener() {
+
+            public void stateChanged(javax.swing.event.ChangeEvent e) {
+                adjustUpperarms(0, e);
+            }
+        });
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 0;
         jPanel_UpperarmLength.add(jSlider_UpperArmLengthL, gridBagConstraints);
 
@@ -1165,17 +1282,19 @@ public class AdvOptions extends javax.swing.JFrame {
         gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
         jPanel_UpperarmLength.add(jCheckBox_UpperarmLenSync, gridBagConstraints);
 
+        jSpinner_UpperarmLengthL.setModel(new javax.swing.SpinnerNumberModel(Float.valueOf(0.0f), Float.valueOf(-0.1f), Float.valueOf(0.1f), Float.valueOf(0.01f)));
         jSpinner_UpperarmLengthL.setMinimumSize(new java.awt.Dimension(75, 28));
         jSpinner_UpperarmLengthL.setPreferredSize(new java.awt.Dimension(75, 28));
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 1;
         jPanel_UpperarmLength.add(jSpinner_UpperarmLengthL, gridBagConstraints);
 
+        jSpinner_UpperarmLengthR.setModel(new javax.swing.SpinnerNumberModel(Float.valueOf(0.0f), Float.valueOf(-0.1f), Float.valueOf(0.1f), Float.valueOf(0.01f)));
         jSpinner_UpperarmLengthR.setMinimumSize(new java.awt.Dimension(75, 28));
         jSpinner_UpperarmLengthR.setPreferredSize(new java.awt.Dimension(75, 28));
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
         jPanel_UpperarmLength.add(jSpinner_UpperarmLengthR, gridBagConstraints);
 
@@ -1188,21 +1307,41 @@ public class AdvOptions extends javax.swing.JFrame {
         jPanel_UpperarmThickness.setPreferredSize(new java.awt.Dimension(210, 260));
         jPanel_UpperarmThickness.setLayout(new java.awt.GridBagLayout());
 
+        jSlider_UpperarmThicknessR.setMaximum(40);
+        jSlider_UpperarmThicknessR.setMinimum(1);
+        jSlider_UpperarmThicknessR.setMinorTickSpacing(1);
         jSlider_UpperarmThicknessR.setPaintTicks(true);
         jSlider_UpperarmThicknessR.setSnapToTicks(true);
+        jSlider_UpperarmThicknessR.setValue(20);
         jSlider_UpperarmThicknessR.setMinimumSize(new java.awt.Dimension(100, 29));
         jSlider_UpperarmThicknessR.setPreferredSize(new java.awt.Dimension(100, 29));
+        jSlider_UpperarmThicknessR.addChangeListener(new javax.swing.event.ChangeListener() {
+
+            public void stateChanged(javax.swing.event.ChangeEvent e) {
+                adjustUpperarms(1, e);
+            }
+        });
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
         jPanel_UpperarmThickness.add(jSlider_UpperarmThicknessR, gridBagConstraints);
 
+        jSlider_UpperarmThicknessL.setMaximum(40);
+        jSlider_UpperarmThicknessL.setMinimum(1);
+        jSlider_UpperarmThicknessL.setMinorTickSpacing(1);
         jSlider_UpperarmThicknessL.setPaintTicks(true);
         jSlider_UpperarmThicknessL.setSnapToTicks(true);
+        jSlider_UpperarmThicknessL.setValue(20);
         jSlider_UpperarmThicknessL.setMinimumSize(new java.awt.Dimension(100, 29));
         jSlider_UpperarmThicknessL.setPreferredSize(new java.awt.Dimension(100, 29));
+        jSlider_UpperarmThicknessL.addChangeListener(new javax.swing.event.ChangeListener() {
+
+            public void stateChanged(javax.swing.event.ChangeEvent e) {
+                adjustUpperarms(1, e);
+            }
+        });
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 0;
         jPanel_UpperarmThickness.add(jSlider_UpperarmThicknessL, gridBagConstraints);
 
@@ -1213,17 +1352,19 @@ public class AdvOptions extends javax.swing.JFrame {
         gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
         jPanel_UpperarmThickness.add(jCheckBox_UpperarmThickSync, gridBagConstraints);
 
+        jSpinner_UpperarmThicknessL.setModel(new javax.swing.SpinnerNumberModel(Float.valueOf(1.0f), Float.valueOf(-1.2f), Float.valueOf(1.2f), Float.valueOf(0.01f)));
         jSpinner_UpperarmThicknessL.setMinimumSize(new java.awt.Dimension(75, 28));
         jSpinner_UpperarmThicknessL.setPreferredSize(new java.awt.Dimension(75, 28));
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 1;
         jPanel_UpperarmThickness.add(jSpinner_UpperarmThicknessL, gridBagConstraints);
 
+        jSpinner_UpperarmThicknessR.setModel(new javax.swing.SpinnerNumberModel(Float.valueOf(1.0f), Float.valueOf(-1.2f), Float.valueOf(1.2f), Float.valueOf(0.01f)));
         jSpinner_UpperarmThicknessR.setMinimumSize(new java.awt.Dimension(75, 28));
         jSpinner_UpperarmThicknessR.setPreferredSize(new java.awt.Dimension(75, 28));
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
         jPanel_UpperarmThickness.add(jSpinner_UpperarmThicknessR, gridBagConstraints);
 
@@ -1255,23 +1396,43 @@ public class AdvOptions extends javax.swing.JFrame {
         jPanel_FeetLength.setPreferredSize(new java.awt.Dimension(210, 260));
         jPanel_FeetLength.setLayout(new java.awt.GridBagLayout());
 
+        jSlider_FeetLengthR.setMaximum(20);
+        jSlider_FeetLengthR.setMinimum(1);
+        jSlider_FeetLengthR.setMinorTickSpacing(1);
         jSlider_FeetLengthR.setOrientation(javax.swing.JSlider.VERTICAL);
         jSlider_FeetLengthR.setPaintTicks(true);
         jSlider_FeetLengthR.setSnapToTicks(true);
+        jSlider_FeetLengthR.setValue(10);
         jSlider_FeetLengthR.setMinimumSize(new java.awt.Dimension(29, 100));
         jSlider_FeetLengthR.setPreferredSize(new java.awt.Dimension(29, 100));
+        jSlider_FeetLengthR.addChangeListener(new javax.swing.event.ChangeListener() {
+
+            public void stateChanged(javax.swing.event.ChangeEvent e) {
+                adjustFeet(0, e);
+            }
+        });
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
         jPanel_FeetLength.add(jSlider_FeetLengthR, gridBagConstraints);
 
+        jSlider_FeetLengthL.setMaximum(20);
+        jSlider_FeetLengthL.setMinimum(1);
+        jSlider_FeetLengthL.setMinorTickSpacing(1);
         jSlider_FeetLengthL.setOrientation(javax.swing.JSlider.VERTICAL);
         jSlider_FeetLengthL.setPaintTicks(true);
         jSlider_FeetLengthL.setSnapToTicks(true);
+        jSlider_FeetLengthL.setValue(10);
         jSlider_FeetLengthL.setMinimumSize(new java.awt.Dimension(29, 100));
         jSlider_FeetLengthL.setPreferredSize(new java.awt.Dimension(29, 100));
+        jSlider_FeetLengthL.addChangeListener(new javax.swing.event.ChangeListener() {
+
+            public void stateChanged(javax.swing.event.ChangeEvent e) {
+                adjustFeet(0, e);
+            }
+        });
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 0;
         jPanel_FeetLength.add(jSlider_FeetLengthL, gridBagConstraints);
 
@@ -1282,17 +1443,19 @@ public class AdvOptions extends javax.swing.JFrame {
         gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
         jPanel_FeetLength.add(jCheckBox_FeetLenSync, gridBagConstraints);
 
+        jSpinner_FeetLengthL.setModel(new javax.swing.SpinnerNumberModel(Float.valueOf(0.0f), Float.valueOf(-0.1f), Float.valueOf(0.1f), Float.valueOf(0.01f)));
         jSpinner_FeetLengthL.setMinimumSize(new java.awt.Dimension(75, 28));
         jSpinner_FeetLengthL.setPreferredSize(new java.awt.Dimension(75, 28));
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 1;
         jPanel_FeetLength.add(jSpinner_FeetLengthL, gridBagConstraints);
 
+        jSpinner_FeetLengthR.setModel(new javax.swing.SpinnerNumberModel(Float.valueOf(0.0f), Float.valueOf(-0.1f), Float.valueOf(0.1f), Float.valueOf(0.01f)));
         jSpinner_FeetLengthR.setMinimumSize(new java.awt.Dimension(75, 28));
         jSpinner_FeetLengthR.setPreferredSize(new java.awt.Dimension(75, 28));
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
         jPanel_FeetLength.add(jSpinner_FeetLengthR, gridBagConstraints);
 
@@ -1305,21 +1468,41 @@ public class AdvOptions extends javax.swing.JFrame {
         jPanel_FeetThickness.setPreferredSize(new java.awt.Dimension(210, 260));
         jPanel_FeetThickness.setLayout(new java.awt.GridBagLayout());
 
+        jSlider_FeetThicknessR.setMaximum(40);
+        jSlider_FeetThicknessR.setMinimum(1);
+        jSlider_FeetThicknessR.setMinorTickSpacing(1);
         jSlider_FeetThicknessR.setPaintTicks(true);
         jSlider_FeetThicknessR.setSnapToTicks(true);
+        jSlider_FeetThicknessR.setValue(20);
         jSlider_FeetThicknessR.setMinimumSize(new java.awt.Dimension(100, 29));
         jSlider_FeetThicknessR.setPreferredSize(new java.awt.Dimension(100, 29));
+        jSlider_FeetThicknessR.addChangeListener(new javax.swing.event.ChangeListener() {
+
+            public void stateChanged(javax.swing.event.ChangeEvent e) {
+                adjustFeet(1, e);
+            }
+        });
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
         jPanel_FeetThickness.add(jSlider_FeetThicknessR, gridBagConstraints);
 
+        jSlider_FeetThicknessL.setMaximum(40);
+        jSlider_FeetThicknessL.setMinimum(1);
+        jSlider_FeetThicknessL.setMinorTickSpacing(1);
         jSlider_FeetThicknessL.setPaintTicks(true);
         jSlider_FeetThicknessL.setSnapToTicks(true);
+        jSlider_FeetThicknessL.setValue(20);
         jSlider_FeetThicknessL.setMinimumSize(new java.awt.Dimension(100, 29));
         jSlider_FeetThicknessL.setPreferredSize(new java.awt.Dimension(100, 29));
+        jSlider_FeetThicknessL.addChangeListener(new javax.swing.event.ChangeListener() {
+
+            public void stateChanged(javax.swing.event.ChangeEvent e) {
+                adjustFeet(1, e);
+            }
+        });
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 0;
         jPanel_FeetThickness.add(jSlider_FeetThicknessL, gridBagConstraints);
 
@@ -1330,17 +1513,19 @@ public class AdvOptions extends javax.swing.JFrame {
         gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
         jPanel_FeetThickness.add(jCheckBox_FeetThickSync, gridBagConstraints);
 
+        jSpinner_FeetThicknessL.setModel(new javax.swing.SpinnerNumberModel(Float.valueOf(1.0f), Float.valueOf(-1.2f), Float.valueOf(1.2f), Float.valueOf(0.01f)));
         jSpinner_FeetThicknessL.setMinimumSize(new java.awt.Dimension(75, 28));
         jSpinner_FeetThicknessL.setPreferredSize(new java.awt.Dimension(75, 28));
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 1;
         jPanel_FeetThickness.add(jSpinner_FeetThicknessL, gridBagConstraints);
 
+        jSpinner_FeetThicknessR.setModel(new javax.swing.SpinnerNumberModel(Float.valueOf(1.0f), Float.valueOf(-1.2f), Float.valueOf(1.2f), Float.valueOf(0.01f)));
         jSpinner_FeetThicknessR.setMinimumSize(new java.awt.Dimension(75, 28));
         jSpinner_FeetThicknessR.setPreferredSize(new java.awt.Dimension(75, 28));
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
         jPanel_FeetThickness.add(jSpinner_FeetThicknessR, gridBagConstraints);
 
@@ -1359,23 +1544,43 @@ public class AdvOptions extends javax.swing.JFrame {
         jPanel_CalvesLength.setPreferredSize(new java.awt.Dimension(210, 260));
         jPanel_CalvesLength.setLayout(new java.awt.GridBagLayout());
 
+        jSlider_CalvesLengthR.setMaximum(20);
+        jSlider_CalvesLengthR.setMinimum(1);
+        jSlider_CalvesLengthR.setMinorTickSpacing(1);
         jSlider_CalvesLengthR.setOrientation(javax.swing.JSlider.VERTICAL);
         jSlider_CalvesLengthR.setPaintTicks(true);
         jSlider_CalvesLengthR.setSnapToTicks(true);
+        jSlider_CalvesLengthR.setValue(10);
         jSlider_CalvesLengthR.setMinimumSize(new java.awt.Dimension(29, 100));
         jSlider_CalvesLengthR.setPreferredSize(new java.awt.Dimension(29, 100));
+        jSlider_CalvesLengthR.addChangeListener(new javax.swing.event.ChangeListener() {
+
+            public void stateChanged(javax.swing.event.ChangeEvent e) {
+                adjustCalves(0, e);
+            }
+        });
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
         jPanel_CalvesLength.add(jSlider_CalvesLengthR, gridBagConstraints);
 
+        jSlider_CalvesLengthL.setMaximum(20);
+        jSlider_CalvesLengthL.setMinimum(1);
+        jSlider_CalvesLengthL.setMinorTickSpacing(1);
         jSlider_CalvesLengthL.setOrientation(javax.swing.JSlider.VERTICAL);
         jSlider_CalvesLengthL.setPaintTicks(true);
         jSlider_CalvesLengthL.setSnapToTicks(true);
+        jSlider_CalvesLengthL.setValue(10);
         jSlider_CalvesLengthL.setMinimumSize(new java.awt.Dimension(29, 100));
         jSlider_CalvesLengthL.setPreferredSize(new java.awt.Dimension(29, 100));
+        jSlider_CalvesLengthL.addChangeListener(new javax.swing.event.ChangeListener() {
+
+            public void stateChanged(javax.swing.event.ChangeEvent e) {
+                adjustCalves(0, e);
+            }
+        });
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 0;
         jPanel_CalvesLength.add(jSlider_CalvesLengthL, gridBagConstraints);
 
@@ -1386,17 +1591,19 @@ public class AdvOptions extends javax.swing.JFrame {
         gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
         jPanel_CalvesLength.add(jCheckBox_CalvesLenSync, gridBagConstraints);
 
+        jSpinner_CalvesLengthL.setModel(new javax.swing.SpinnerNumberModel(Float.valueOf(0.0f), Float.valueOf(-0.1f), Float.valueOf(0.1f), Float.valueOf(0.01f)));
         jSpinner_CalvesLengthL.setMinimumSize(new java.awt.Dimension(75, 28));
         jSpinner_CalvesLengthL.setPreferredSize(new java.awt.Dimension(75, 28));
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 1;
         jPanel_CalvesLength.add(jSpinner_CalvesLengthL, gridBagConstraints);
 
+        jSpinner_CalvesLengthR.setModel(new javax.swing.SpinnerNumberModel(Float.valueOf(0.0f), Float.valueOf(-0.1f), Float.valueOf(0.1f), Float.valueOf(0.01f)));
         jSpinner_CalvesLengthR.setMinimumSize(new java.awt.Dimension(75, 28));
         jSpinner_CalvesLengthR.setPreferredSize(new java.awt.Dimension(75, 28));
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
         jPanel_CalvesLength.add(jSpinner_CalvesLengthR, gridBagConstraints);
 
@@ -1409,21 +1616,41 @@ public class AdvOptions extends javax.swing.JFrame {
         jPanel_CalvesThickness.setPreferredSize(new java.awt.Dimension(210, 260));
         jPanel_CalvesThickness.setLayout(new java.awt.GridBagLayout());
 
+        jSlider_CalvesThicknessR.setMaximum(40);
+        jSlider_CalvesThicknessR.setMinimum(1);
+        jSlider_CalvesThicknessR.setMinorTickSpacing(1);
         jSlider_CalvesThicknessR.setPaintTicks(true);
         jSlider_CalvesThicknessR.setSnapToTicks(true);
+        jSlider_CalvesThicknessR.setValue(20);
         jSlider_CalvesThicknessR.setMinimumSize(new java.awt.Dimension(100, 29));
         jSlider_CalvesThicknessR.setPreferredSize(new java.awt.Dimension(100, 29));
+        jSlider_CalvesThicknessR.addChangeListener(new javax.swing.event.ChangeListener() {
+
+            public void stateChanged(javax.swing.event.ChangeEvent e) {
+                adjustCalves(1, e);
+            }
+        });
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
         jPanel_CalvesThickness.add(jSlider_CalvesThicknessR, gridBagConstraints);
 
+        jSlider_CalvesThicknessL.setMaximum(40);
+        jSlider_CalvesThicknessL.setMinimum(1);
+        jSlider_CalvesThicknessL.setMinorTickSpacing(1);
         jSlider_CalvesThicknessL.setPaintTicks(true);
         jSlider_CalvesThicknessL.setSnapToTicks(true);
+        jSlider_CalvesThicknessL.setValue(20);
         jSlider_CalvesThicknessL.setMinimumSize(new java.awt.Dimension(100, 29));
         jSlider_CalvesThicknessL.setPreferredSize(new java.awt.Dimension(100, 29));
+        jSlider_CalvesThicknessL.addChangeListener(new javax.swing.event.ChangeListener() {
+
+            public void stateChanged(javax.swing.event.ChangeEvent e) {
+                adjustCalves(1, e);
+            }
+        });
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 0;
         jPanel_CalvesThickness.add(jSlider_CalvesThicknessL, gridBagConstraints);
 
@@ -1434,17 +1661,19 @@ public class AdvOptions extends javax.swing.JFrame {
         gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
         jPanel_CalvesThickness.add(jCheckBox_CalvesThickSync, gridBagConstraints);
 
+        jSpinner_CalvesThicknessL.setModel(new javax.swing.SpinnerNumberModel(Float.valueOf(1.0f), Float.valueOf(-1.2f), Float.valueOf(1.2f), Float.valueOf(0.01f)));
         jSpinner_CalvesThicknessL.setMinimumSize(new java.awt.Dimension(75, 28));
         jSpinner_CalvesThicknessL.setPreferredSize(new java.awt.Dimension(75, 28));
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 1;
         jPanel_CalvesThickness.add(jSpinner_CalvesThicknessL, gridBagConstraints);
 
+        jSpinner_CalvesThicknessR.setModel(new javax.swing.SpinnerNumberModel(Float.valueOf(1.0f), Float.valueOf(-1.2f), Float.valueOf(1.2f), Float.valueOf(0.01f)));
         jSpinner_CalvesThicknessR.setMinimumSize(new java.awt.Dimension(75, 28));
         jSpinner_CalvesThicknessR.setPreferredSize(new java.awt.Dimension(75, 28));
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
         jPanel_CalvesThickness.add(jSpinner_CalvesThicknessR, gridBagConstraints);
 
@@ -1463,23 +1692,43 @@ public class AdvOptions extends javax.swing.JFrame {
         jPanel_ThighLength.setPreferredSize(new java.awt.Dimension(210, 260));
         jPanel_ThighLength.setLayout(new java.awt.GridBagLayout());
 
+        jSlider_ThighLengthR.setMaximum(20);
+        jSlider_ThighLengthR.setMinimum(1);
+        jSlider_ThighLengthR.setMinorTickSpacing(1);
         jSlider_ThighLengthR.setOrientation(javax.swing.JSlider.VERTICAL);
         jSlider_ThighLengthR.setPaintTicks(true);
         jSlider_ThighLengthR.setSnapToTicks(true);
+        jSlider_ThighLengthR.setValue(10);
         jSlider_ThighLengthR.setMinimumSize(new java.awt.Dimension(29, 100));
         jSlider_ThighLengthR.setPreferredSize(new java.awt.Dimension(29, 100));
+        jSlider_ThighLengthR.addChangeListener(new javax.swing.event.ChangeListener() {
+
+            public void stateChanged(javax.swing.event.ChangeEvent e) {
+                adjustThighs(0, e);
+            }
+        });
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
         jPanel_ThighLength.add(jSlider_ThighLengthR, gridBagConstraints);
 
+        jSlider_ThighLengthL.setMaximum(20);
+        jSlider_ThighLengthL.setMinimum(1);
+        jSlider_ThighLengthL.setMinorTickSpacing(1);
         jSlider_ThighLengthL.setOrientation(javax.swing.JSlider.VERTICAL);
         jSlider_ThighLengthL.setPaintTicks(true);
         jSlider_ThighLengthL.setSnapToTicks(true);
+        jSlider_ThighLengthL.setValue(10);
         jSlider_ThighLengthL.setMinimumSize(new java.awt.Dimension(29, 100));
         jSlider_ThighLengthL.setPreferredSize(new java.awt.Dimension(29, 100));
+        jSlider_ThighLengthL.addChangeListener(new javax.swing.event.ChangeListener() {
+
+            public void stateChanged(javax.swing.event.ChangeEvent e) {
+                adjustThighs(0, e);
+            }
+        });
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 0;
         jPanel_ThighLength.add(jSlider_ThighLengthL, gridBagConstraints);
 
@@ -1490,17 +1739,19 @@ public class AdvOptions extends javax.swing.JFrame {
         gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
         jPanel_ThighLength.add(jCheckBox_ThighLenSync, gridBagConstraints);
 
+        jSpinner_ThighLengthL.setModel(new javax.swing.SpinnerNumberModel(Float.valueOf(0.0f), Float.valueOf(-0.1f), Float.valueOf(0.1f), Float.valueOf(0.01f)));
         jSpinner_ThighLengthL.setMinimumSize(new java.awt.Dimension(75, 28));
         jSpinner_ThighLengthL.setPreferredSize(new java.awt.Dimension(75, 28));
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 1;
         jPanel_ThighLength.add(jSpinner_ThighLengthL, gridBagConstraints);
 
+        jSpinner_ThighLengthR.setModel(new javax.swing.SpinnerNumberModel(Float.valueOf(0.0f), Float.valueOf(-0.1f), Float.valueOf(0.1f), Float.valueOf(0.01f)));
         jSpinner_ThighLengthR.setMinimumSize(new java.awt.Dimension(75, 28));
         jSpinner_ThighLengthR.setPreferredSize(new java.awt.Dimension(75, 28));
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
         jPanel_ThighLength.add(jSpinner_ThighLengthR, gridBagConstraints);
 
@@ -1513,21 +1764,41 @@ public class AdvOptions extends javax.swing.JFrame {
         jPanel_ThighThickness.setPreferredSize(new java.awt.Dimension(210, 260));
         jPanel_ThighThickness.setLayout(new java.awt.GridBagLayout());
 
+        jSlider_ThighThicknessR.setMaximum(40);
+        jSlider_ThighThicknessR.setMinimum(1);
+        jSlider_ThighThicknessR.setMinorTickSpacing(1);
         jSlider_ThighThicknessR.setPaintTicks(true);
         jSlider_ThighThicknessR.setSnapToTicks(true);
+        jSlider_ThighThicknessR.setValue(20);
         jSlider_ThighThicknessR.setMinimumSize(new java.awt.Dimension(100, 29));
         jSlider_ThighThicknessR.setPreferredSize(new java.awt.Dimension(100, 29));
+        jSlider_ThighThicknessR.addChangeListener(new javax.swing.event.ChangeListener() {
+
+            public void stateChanged(javax.swing.event.ChangeEvent e) {
+                adjustThighs(1, e);
+            }
+        });
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
         jPanel_ThighThickness.add(jSlider_ThighThicknessR, gridBagConstraints);
 
+        jSlider_ThighThicknessL.setMaximum(40);
+        jSlider_ThighThicknessL.setMinimum(1);
+        jSlider_ThighThicknessL.setMinorTickSpacing(1);
         jSlider_ThighThicknessL.setPaintTicks(true);
         jSlider_ThighThicknessL.setSnapToTicks(true);
+        jSlider_ThighThicknessL.setValue(20);
         jSlider_ThighThicknessL.setMinimumSize(new java.awt.Dimension(100, 29));
         jSlider_ThighThicknessL.setPreferredSize(new java.awt.Dimension(100, 29));
+        jSlider_ThighThicknessL.addChangeListener(new javax.swing.event.ChangeListener() {
+
+            public void stateChanged(javax.swing.event.ChangeEvent e) {
+                adjustThighs(1, e);
+            }
+        });
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 0;
         jPanel_ThighThickness.add(jSlider_ThighThicknessL, gridBagConstraints);
 
@@ -1538,17 +1809,19 @@ public class AdvOptions extends javax.swing.JFrame {
         gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
         jPanel_ThighThickness.add(jCheckBox_ThighThickSync, gridBagConstraints);
 
+        jSpinner_ThighThicknessL.setModel(new javax.swing.SpinnerNumberModel(Float.valueOf(1.0f), Float.valueOf(-1.2f), Float.valueOf(1.2f), Float.valueOf(0.01f)));
         jSpinner_ThighThicknessL.setMinimumSize(new java.awt.Dimension(75, 28));
         jSpinner_ThighThicknessL.setPreferredSize(new java.awt.Dimension(75, 28));
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 1;
         jPanel_ThighThickness.add(jSpinner_ThighThicknessL, gridBagConstraints);
 
+        jSpinner_ThighThicknessR.setModel(new javax.swing.SpinnerNumberModel(Float.valueOf(1.0f), Float.valueOf(-1.2f), Float.valueOf(1.2f), Float.valueOf(0.01f)));
         jSpinner_ThighThicknessR.setMinimumSize(new java.awt.Dimension(75, 28));
         jSpinner_ThighThicknessR.setPreferredSize(new java.awt.Dimension(75, 28));
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
         jPanel_ThighThickness.add(jSpinner_ThighThicknessR, gridBagConstraints);
 
@@ -1703,12 +1976,12 @@ public class AdvOptions extends javax.swing.JFrame {
         jSlider_BodyWidth.setSnapToTicks(true);
         jPanel_BodyWidth.add(jSlider_BodyWidth, new java.awt.GridBagConstraints());
 
-        jSpinner1.setMinimumSize(new java.awt.Dimension(75, 28));
-        jSpinner1.setPreferredSize(new java.awt.Dimension(75, 28));
+        jSpinner_UBodyWidthScale.setMinimumSize(new java.awt.Dimension(75, 28));
+        jSpinner_UBodyWidthScale.setPreferredSize(new java.awt.Dimension(75, 28));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
-        jPanel_BodyWidth.add(jSpinner1, gridBagConstraints);
+        jPanel_BodyWidth.add(jSpinner_UBodyWidthScale, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
@@ -1726,12 +1999,12 @@ public class AdvOptions extends javax.swing.JFrame {
         jSlider_BodyHeight.setPreferredSize(new java.awt.Dimension(29, 100));
         jPanel_BodyHeight.add(jSlider_BodyHeight, new java.awt.GridBagConstraints());
 
-        jSpinner2.setMinimumSize(new java.awt.Dimension(75, 28));
-        jSpinner2.setPreferredSize(new java.awt.Dimension(75, 28));
+        jSpinner_UBodyHeightScale.setMinimumSize(new java.awt.Dimension(75, 28));
+        jSpinner_UBodyHeightScale.setPreferredSize(new java.awt.Dimension(75, 28));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
-        jPanel_BodyHeight.add(jSpinner2, gridBagConstraints);
+        jPanel_BodyHeight.add(jSpinner_UBodyHeightScale, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -1748,12 +2021,12 @@ public class AdvOptions extends javax.swing.JFrame {
         jSlider_BodyDepth.setSnapToTicks(true);
         jPanel_BodyDepth.add(jSlider_BodyDepth, new java.awt.GridBagConstraints());
 
-        jSpinner3.setMinimumSize(new java.awt.Dimension(75, 28));
-        jSpinner3.setPreferredSize(new java.awt.Dimension(75, 28));
+        jSpinner_UBodyDepthScale.setMinimumSize(new java.awt.Dimension(75, 28));
+        jSpinner_UBodyDepthScale.setPreferredSize(new java.awt.Dimension(75, 28));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
-        jPanel_BodyDepth.add(jSpinner3, gridBagConstraints);
+        jPanel_BodyDepth.add(jSpinner_UBodyDepthScale, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -1770,12 +2043,12 @@ public class AdvOptions extends javax.swing.JFrame {
         jSlider_BodyUniform.setSnapToTicks(true);
         jPanel_BodyUniform.add(jSlider_BodyUniform, new java.awt.GridBagConstraints());
 
-        jSpinner4.setMinimumSize(new java.awt.Dimension(75, 28));
-        jSpinner4.setPreferredSize(new java.awt.Dimension(75, 28));
+        jSpinner_UbodyUniScale.setMinimumSize(new java.awt.Dimension(75, 28));
+        jSpinner_UbodyUniScale.setPreferredSize(new java.awt.Dimension(75, 28));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
-        jPanel_BodyUniform.add(jSpinner4, gridBagConstraints);
+        jPanel_BodyUniform.add(jSpinner_UbodyUniScale, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -1824,7 +2097,7 @@ public class AdvOptions extends javax.swing.JFrame {
                     if (jSlider_EyePosHR.getValue() == 5)
                         adjust  = ((float)jSlider_EyePosHR.getValue() / 5.0f);
                     else
-                        adjust  = (((float)jSlider_EyePosHR.getValue() / 5.0f) - 1.0f)/10.0f;
+                        adjust  = (((float)jSlider_EyePosHR.getValue() / 5.0f) - 1.0f)/m_baseLen;
 
                     for (int i = 0; i < Eyes.length; i++) {
                         if (Eyes[i].getName().contains("left")) {
@@ -1847,7 +2120,7 @@ public class AdvOptions extends javax.swing.JFrame {
                     if (jSlider_EyePosVR.getValue() == 5)
                         adjust  = (((float)jSlider_EyePosVR.getValue() / 5.0f) - 1.0f);
                     else
-                        adjust  = (((float)jSlider_EyePosVR.getValue() / 5.0f) - 1.0f)/10.0f;
+                        adjust  = (((float)jSlider_EyePosVR.getValue() / 5.0f) - 1.0f)/m_baseLen;
 
                     for (int i = 0; i < Eyes.length; i++) {
                         Vector3f mod    = new Vector3f(Eyes[i].getLocalModifierMatrix().getTranslation());
@@ -1879,6 +2152,540 @@ public class AdvOptions extends javax.swing.JFrame {
             }
         }
     }
+
+    private void adjustHands(int type, javax.swing.event.ChangeEvent e) {
+        SkinnedMeshJoint[] LHand = m_skeleton.get(m_bodyPart.Left_Hand);
+        SkinnedMeshJoint[] RHand = m_skeleton.get(m_bodyPart.Right_Hand);
+
+        float Ladjust   = 0.0f;
+        float Radjust   = 0.0f;
+        Vector3f modL   = null;
+        Vector3f modR   = null;
+        Vector3f modlS  = null;
+        Vector3f modrS  = null;
+        Object obj = e.getSource();
+
+        switch(type)
+        {
+            case 0: // Length
+            {
+                if (jCheckBox_HandsLenSync.isSelected()) {
+                    float curValL = (float)jSlider_FingerLengthL.getValue();
+                    float curValR = (float)jSlider_FingerLengthR.getValue();
+                    Ladjust = (curValL - m_baseLen) / 100.0f;
+                    Radjust = (curValR - m_baseLen) / 100.0f;
+
+
+                    for(int i = 0; i < LHand.length; i++) {
+                        modL = new Vector3f(LHand[i].getLocalModifierMatrix().getTranslation());
+                        modR = new Vector3f(RHand[i].getLocalModifierMatrix().getTranslation());
+                        modlS = new Vector3f(LHand[i].getLocalModifierMatrix().getScaleVector());
+                        modrS = new Vector3f(RHand[i].getLocalModifierMatrix().getScaleVector());
+                        modL.y  = 0.0f;     modR.y  = 0.0f;     modlS.y = 1.0f;       modrS.y = 1.0f;
+                        modL.y += Ladjust;  modR.y += Radjust;  modlS.y += Ladjust;   modrS.y += Radjust;
+
+                        if (LHand[i].getName().equals("leftHand")) {
+//                            LHand[i].getLocalModifierMatrix().setTranslation(new Vector3f(modL.x, modL.y / 2.0f, modL.z));
+//                            LHand[i].getLocalModifierMatrix().setScale(modlS);
+                        }
+                        else if (LHand[i].getName().contains("Palm")) {
+                            LHand[i].getLocalModifierMatrix().setTranslation(new Vector3f(modL.x, modL.y / 2.0f, modL.z));
+                            LHand[i].getLocalModifierMatrix().setScale(modlS);
+                        }
+                        else {
+                            LHand[i].getLocalModifierMatrix().setTranslation(new Vector3f(modL.x, modL.y, modL.z));
+                            LHand[i].getLocalModifierMatrix().setScale(modlS);
+                        }
+
+                        if (RHand[i].getName().equals("rightHand")) {
+//                            RHand[i].getLocalModifierMatrix().setTranslation(new Vector3f(modR.x, modR.y / 2.0f, modR.z));
+//                            RHand[i].getLocalModifierMatrix().setScale(modrS);
+                        }
+                        else if (RHand[i].getName().contains("Palm")) {
+                            RHand[i].getLocalModifierMatrix().setTranslation(new Vector3f(modR.x, modR.y / 2.0f, modR.z));
+                            RHand[i].getLocalModifierMatrix().setScale(modrS);
+                        }
+                        else {
+                            RHand[i].getLocalModifierMatrix().setTranslation(new Vector3f(modR.x, modR.y, modR.z));
+                            RHand[i].getLocalModifierMatrix().setScale(modrS);
+                        }
+                    }
+
+                } else if (obj.equals(jSlider_FingerLengthL)) {
+                    float curVal  = (float)jSlider_FingerLengthL.getValue();
+                    Ladjust     = (curVal - m_baseLen) / 100.0f;
+                    for (int i = 0; i < LHand.length; i++) {
+                        modL = new Vector3f(LHand[i].getLocalModifierMatrix().getTranslation());
+                        modlS = new Vector3f(LHand[i].getLocalModifierMatrix().getScaleVector());
+                        modL.y   = 0.0f;     modlS.y = 1.0f;
+                        modL.y  += Ladjust;  modlS.y += Ladjust;
+                        if (LHand[i].getName().equals("leftHand")) {
+//                            LHand[i].getLocalModifierMatrix().setTranslation(new Vector3f(mod.x, mod.y / 2.0f, mod.z));
+//                            LHand[i].getLocalModifierMatrix().setScale(modlS);
+                        }
+                        else if (LHand[i].getName().contains("Palm")) {
+                            LHand[i].getLocalModifierMatrix().setTranslation(new Vector3f(modL.x, modL.y / 2.0f, modL.z));
+                            LHand[i].getLocalModifierMatrix().setScale(modlS);
+                        }
+                        else {
+                            LHand[i].getLocalModifierMatrix().setTranslation(new Vector3f(modL.x, modL.y, modL.z));
+                            LHand[i].getLocalModifierMatrix().setScale(modlS);
+                        }
+                    }
+                    jSpinner_FingerLengthL.setValue(modL.y);
+                } else if (obj.equals(jSlider_FingerLengthR)) {
+                    float curVal  = (float)jSlider_FingerLengthR.getValue();
+                    Radjust     = (curVal - m_baseLen) / 100.0f;
+                    for (int i = 0; i < RHand.length; i++) {
+                        modR = new Vector3f(RHand[i].getLocalModifierMatrix().getTranslation());
+                        modrS = new Vector3f(RHand[i].getLocalModifierMatrix().getScaleVector());
+                        modR.y  = 0.0f;     modR.y += Radjust;
+                        modrS.y = 1.0f;     modrS.y += Radjust;
+                        modrS.y = 1.0f; modrS.y += Radjust;
+                        if (RHand[i].getName().equals("rightHand")) {
+//                            RHand[i].getLocalModifierMatrix().setTranslation(new Vector3f(mod.x, mod.y / 2.0f, mod.z));
+//                            RHand[i].getLocalModifierMatrix().setScale(modrS);
+                        }
+                        else if (RHand[i].getName().contains("Palm")) {
+                            RHand[i].getLocalModifierMatrix().setTranslation(new Vector3f(modR.x, modR.y / 2.0f, modR.z));
+                            RHand[i].getLocalModifierMatrix().setScale(modrS);
+                        }
+                        else {
+                            RHand[i].getLocalModifierMatrix().setTranslation(new Vector3f(modR.x, modR.y, modR.z));
+                            RHand[i].getLocalModifierMatrix().setScale(modrS);
+                        }
+                    }
+                    jSpinner_FingerLengthR.setValue(modR.y);
+                }
+
+                break;
+            }
+            case 1: // Thickness
+            {
+                if (jCheckBox_HandThickSync.isSelected()) {
+
+                } else if (obj.equals(jSlider_HandThicknessL)) {
+                    float curVal = (float)jSlider_HandThicknessL.getValue();
+                    Ladjust = (curVal - m_baseScale) / 100.0f;
+                    jSpinner_HandThicknessL.setValue(1.0f + Ladjust);
+
+                    for (int i = 0; i < LHand.length; i++) {
+                        modlS = new Vector3f(LHand[i].getLocalModifierMatrix().getScaleVector());
+                        modlS.x = 1.0f; modlS.z = 1.0f;
+                        modlS.x += Ladjust; modlS.z += Ladjust;
+                        if (LHand[i].getName().contains("Palm") || LHand[i].getName().equals("leftHand"))
+                            LHand[i].getLocalModifierMatrix().setScale(modlS);
+                        else
+                            LHand[i].getLocalModifierMatrix().setScale(new Vector3f(modlS.x * 1.1f, modlS.y, modlS.z * 1.1f));
+                    }
+
+                } else if (obj.equals(jSlider_HandThicknessR)) {
+                    float curVal = (float)jSlider_HandThicknessR.getValue();
+                    Radjust = (curVal - m_baseScale) / 100.0f;
+                    jSpinner_HandThicknessR.setValue(1.0f + Radjust);
+
+                    for (int i = 0; i < RHand.length; i++) {
+                        modrS = new Vector3f(RHand[i].getLocalModifierMatrix().getScaleVector());
+                        modrS.x = 1.0f; modrS.z = 1.0f;
+                        modrS.x += Radjust; modrS.z += Radjust;
+                        if (RHand[i].getName().contains("Palm") || RHand[i].getName().equals("rightHand"))
+                            RHand[i].getLocalModifierMatrix().setScale(modrS);
+                        else
+                            RHand[i].getLocalModifierMatrix().setScale(new Vector3f(modrS.x * 1.1f, modrS.y, modrS.z * 1.1f));
+                    }
+                }
+
+                break;
+            }
+        }
+    }
+
+    private void adjustForearms(int type, javax.swing.event.ChangeEvent e) {
+        SkinnedMeshJoint[] LForearm = m_skeleton.get(m_bodyPart.Left_LowerArm);
+        SkinnedMeshJoint[] RForearm = m_skeleton.get(m_bodyPart.Right_LowerArm);
+
+        float Ladjust   = 0.0f;
+        float Radjust   = 0.0f;
+        Vector3f modL   = null;
+        Vector3f modR   = null;
+        Vector3f modlS  = null;
+        Vector3f modrS  = null;
+        Object obj = e.getSource();
+
+        switch(type)
+        {
+            case 0: // Length
+            {
+                if (jCheckBox_ForearmLenSync.isSelected()) {
+
+                } else if (obj.equals(jSlider_ForearmLengthL)) {
+                    float curVal = jSlider_ForearmLengthL.getValue();
+                    Ladjust = (curVal - m_baseLen) / 100.0f;
+                    jSpinner_ForearmLengthL.setValue(Ladjust);
+
+                    for (int i = 0; i < LForearm.length; i++) {
+                        modL = new Vector3f(LForearm[i].getLocalModifierMatrix().getTranslation());
+                        modL.y = 0.0f;     modL.y += Ladjust;
+
+                        LForearm[i].getLocalModifierMatrix().setTranslation(new Vector3f(modL.x, modL.y, modL.z));
+                    }
+                } else if (obj.equals(jSlider_ForearmLengthR)) {
+                    float curVal = jSlider_ForearmLengthR.getValue();
+                    Radjust = (curVal - m_baseLen) / 100.0f;
+                    jSpinner_ForearmLengthR.setValue(Radjust);
+
+                    for (int i = 0; i < RForearm.length; i++) {
+                        modR = new Vector3f(RForearm[i].getLocalModifierMatrix().getTranslation());
+                        modR.y = 0.0f;     modR.y += Radjust;
+
+                        RForearm[i].getLocalModifierMatrix().setTranslation(new Vector3f(modR.x, modR.y, modR.z));
+                    }
+                }
+                break;
+            }
+            case 1: // Thickness
+            {
+                if (jCheckBox_ForearmThickSync.isSelected()) {
+
+                } else if (obj.equals(jSlider_ForearmThicknessL)) {
+                    float curVal = jSlider_ForearmThicknessL.getValue();
+                    Ladjust = (curVal - m_baseScale) / 100.0f;
+                    jSpinner_ForearmThicknessL.setValue(1.0f + Ladjust);
+
+                    for (int i = 0; i < LForearm.length; i++) {
+                        modlS = new Vector3f(LForearm[i].getLocalModifierMatrix().getScaleVector());
+                        modlS.x = 1.0f;     modlS.x += Ladjust;
+                        modlS.z = 1.0f;     modlS.z += Ladjust;
+
+                        LForearm[i].getLocalModifierMatrix().setScale(new Vector3f(modlS.x, modlS.y, modlS.z));
+                    }
+                } else if (obj.equals(jSlider_ForearmThicknessR)) {
+                    float curVal = jSlider_ForearmThicknessR.getValue();
+                    Radjust = (curVal - m_baseScale) / 100.0f;
+                    jSpinner_ForearmThicknessR.setValue(1.0f + Radjust);
+
+                    for (int i = 0; i < RForearm.length; i++) {
+                        modrS = new Vector3f(RForearm[i].getLocalModifierMatrix().getScaleVector());
+                        modrS.x = 1.0f;     modrS.x += Radjust;
+                        modrS.z = 1.0f;     modrS.z += Radjust;
+
+                        RForearm[i].getLocalModifierMatrix().setScale(new Vector3f(modrS.x, modrS.y, modrS.z));
+                    }
+                }
+                break;
+            }
+        }
+    }
+
+    private void adjustUpperarms(int type, javax.swing.event.ChangeEvent e) {
+        SkinnedMeshJoint[] LUpperarm = m_skeleton.get(m_bodyPart.Left_UpperArm);
+        SkinnedMeshJoint[] RUpperarm = m_skeleton.get(m_bodyPart.Right_UpperArm);
+
+        float Ladjust   = 0.0f;
+        float Radjust   = 0.0f;
+        Vector3f modL   = null;
+        Vector3f modR   = null;
+        Vector3f modlS  = null;
+        Vector3f modrS  = null;
+        Object obj = e.getSource();
+
+        switch(type)
+        {
+            case 0: //  Length
+            {
+                if (jCheckBox_UpperarmLenSync.isSelected()) {
+
+                } else if (obj.equals(jSlider_UpperArmLengthL)) {
+                    float curVal = jSlider_UpperArmLengthL.getValue();
+                    Ladjust = (curVal - m_baseLen) / 100.0f;
+                    jSpinner_UpperarmLengthL.setValue(Ladjust);
+
+                    for (int i = 0; i < LUpperarm.length; i++) {
+                        modL = new Vector3f(LUpperarm[i].getLocalModifierMatrix().getTranslation());
+                        modL.y = 0.0f;     modL.y += Ladjust;
+
+                        LUpperarm[i].getLocalModifierMatrix().setTranslation(new Vector3f(modL.x, modL.y, modL.z));
+                    }
+                } else if (obj.equals(jSlider_UpperarmLengthR)) {
+                    float curVal = jSlider_UpperarmLengthR.getValue();
+                    Radjust = (curVal - m_baseLen) / 100.0f;
+                    jSpinner_UpperarmLengthR.setValue(Radjust);
+
+                    for (int i = 0; i < RUpperarm.length; i++) {
+                        modR = new Vector3f(RUpperarm[i].getLocalModifierMatrix().getTranslation());
+                        modR.y = 0.0f;     modR.y += Radjust;
+
+                        RUpperarm[i].getLocalModifierMatrix().setTranslation(new Vector3f(modR.x, modR.y, modR.z));
+                    }
+                }
+                break;
+            }
+            case 1: // Thickness
+            {
+                if (jCheckBox_UpperarmThickSync.isSelected()) {
+
+                } else if (obj.equals(jSlider_UpperarmThicknessL)) {
+                    float curVal = jSlider_UpperarmThicknessL.getValue();
+                    Ladjust = (curVal - m_baseScale) / 100.0f;
+                    jSpinner_UpperarmThicknessL.setValue(1.0f + Ladjust);
+
+                    for (int i = 0; i < LUpperarm.length; i++) {
+                        modlS = new Vector3f(LUpperarm[i].getLocalModifierMatrix().getScaleVector());
+                        modlS.x = 1.0f;     modlS.x += Ladjust;
+                        modlS.z = 1.0f;     modlS.z += Ladjust;
+
+                        LUpperarm[i].getLocalModifierMatrix().setScale(new Vector3f(modlS.x, modlS.y, modlS.z));
+                    }
+                } else if (obj.equals(jSlider_UpperarmThicknessR)) {
+                    float curVal = jSlider_UpperarmThicknessR.getValue();
+                    Radjust = (curVal - m_baseScale) / 100.0f;
+                    jSpinner_UpperarmThicknessR.setValue(1.0f + Radjust);
+
+                    for (int i = 0; i < RUpperarm.length; i++) {
+                        modrS = new Vector3f(RUpperarm[i].getLocalModifierMatrix().getScaleVector());
+                        modrS.x = 1.0f;     modrS.x += Radjust;
+                        modrS.z = 1.0f;     modrS.z += Radjust;
+
+                        RUpperarm[i].getLocalModifierMatrix().setScale(new Vector3f(modrS.x, modrS.y, modrS.z));
+                    }
+                }
+                break;
+            }
+        }
+    }
+
+    private void adjustFeet(int type, javax.swing.event.ChangeEvent e) {
+        SkinnedMeshJoint[] LFoot = m_skeleton.get(m_bodyPart.Left_Foot);
+        SkinnedMeshJoint[] RFoot = m_skeleton.get(m_bodyPart.Right_Foot);
+
+        float Ladjust   = 0.0f;
+        float Radjust   = 0.0f;
+        Vector3f modL   = null;
+        Vector3f modR   = null;
+        Vector3f modlS  = null;
+        Vector3f modrS  = null;
+        Object obj = e.getSource();
+
+        switch(type)
+        {
+            case 0: // Length
+            {
+                if (jCheckBox_FeetLenSync.isSelected()) {
+
+                } else if (obj.equals(jSlider_FeetLengthL)) {
+                    float curVal = jSlider_FeetLengthL.getValue();
+                    Ladjust = (curVal - m_baseLen) / 100.0f;
+                    jSpinner_FeetLengthL.setValue(Ladjust);
+
+                    for (int i = 0; i < LFoot.length; i++) {
+                        modL = new Vector3f(LFoot[i].getLocalModifierMatrix().getTranslation());
+                        modL.y = 0.0f;     modL.y += Ladjust;
+
+                        LFoot[i].getLocalModifierMatrix().setTranslation(new Vector3f(modL.x, modL.y, modL.z));
+                    }
+                } else if (obj.equals(jSlider_FeetLengthR)) {
+                    float curVal = jSlider_FeetLengthR.getValue();
+                    Radjust = (curVal - m_baseLen) / 100.0f;
+                    jSpinner_FeetLengthR.setValue(Radjust);
+
+                    for (int i = 0; i < RFoot.length; i++) {
+                        modR = new Vector3f(RFoot[i].getLocalModifierMatrix().getTranslation());
+                        modR.y = 0.0f;     modR.y += Radjust;
+
+                        RFoot[i].getLocalModifierMatrix().setTranslation(new Vector3f(modR.x, modR.y, modR.z));
+                    }
+                }
+                break;
+            }
+            case 1: // Thickness
+            {
+                if (jCheckBox_FeetThickSync.isSelected()) {
+
+                } else if (obj.equals(jSlider_FeetThicknessL)) {
+                    float curVal = jSlider_FeetThicknessL.getValue();
+                    Ladjust = (curVal - m_baseScale) / 100.0f;
+                    jSpinner_FeetThicknessL.setValue(1.0f + Ladjust);
+
+                    for (int i = 0; i < LFoot.length; i++) {
+                        modlS = new Vector3f(LFoot[i].getLocalModifierMatrix().getScaleVector());
+                        modlS.x = 1.0f;     modlS.x += Ladjust;
+                        modlS.z = 1.0f;     modlS.z += Ladjust;
+
+                        LFoot[i].getLocalModifierMatrix().setScale(new Vector3f(modlS.x, modlS.y, modlS.z));
+                    }
+                } else if (obj.equals(jSlider_FeetThicknessR)) {
+                    float curVal = jSlider_FeetThicknessR.getValue();
+                    Radjust = (curVal - m_baseScale) / 100.0f;
+                    jSpinner_FeetThicknessR.setValue(1.0f + Radjust);
+
+                    for (int i = 0; i < RFoot.length; i++) {
+                        modrS = new Vector3f(RFoot[i].getLocalModifierMatrix().getScaleVector());
+                        modrS.x = 1.0f;     modrS.x += Radjust;
+                        modrS.z = 1.0f;     modrS.z += Radjust;
+
+                        RFoot[i].getLocalModifierMatrix().setScale(new Vector3f(modrS.x, modrS.y, modrS.z));
+                    }
+                }
+                break;
+            }
+        }
+    }
+
+    private void adjustCalves(int type, javax.swing.event.ChangeEvent e) {
+        SkinnedMeshJoint[] LCalves = m_skeleton.get(m_bodyPart.Left_LowerLeg);
+        SkinnedMeshJoint[] RCalves = m_skeleton.get(m_bodyPart.Right_LowerLeg);
+
+        float Ladjust   = 0.0f;
+        float Radjust   = 0.0f;
+        Vector3f modL   = null;
+        Vector3f modR   = null;
+        Vector3f modlS  = null;
+        Vector3f modrS  = null;
+        Object obj = e.getSource();
+
+        switch(type)
+        {
+            case 0: // Length
+            {
+                if (jCheckBox_CalvesLenSync.isSelected()) {
+
+                } else if (obj.equals(jSlider_CalvesLengthL)) {
+                    float curVal = jSlider_CalvesLengthL.getValue();
+                    Ladjust = (curVal - m_baseLen) / 100.0f;
+                    jSpinner_CalvesLengthL.setValue(Ladjust);
+
+                    for (int i = 0; i < LCalves.length; i++) {
+                        modL = new Vector3f(LCalves[i].getLocalModifierMatrix().getTranslation());
+                        modL.y = 0.0f;     modL.y += Ladjust;
+
+                        LCalves[i].getLocalModifierMatrix().setTranslation(new Vector3f(modL.x, modL.y, modL.z));
+                    }
+                } else if (obj.equals(jSlider_CalvesLengthR)) {
+                    float curVal = jSlider_CalvesLengthR.getValue();
+                    Radjust = (curVal - m_baseLen) / 100.0f;
+                    jSpinner_CalvesLengthR.setValue(Radjust);
+
+                    for (int i = 0; i < RCalves.length; i++) {
+                        modR = new Vector3f(RCalves[i].getLocalModifierMatrix().getTranslation());
+                        modR.y = 0.0f;     modR.y += Radjust;
+
+                        RCalves[i].getLocalModifierMatrix().setTranslation(new Vector3f(modR.x, modR.y, modR.z));
+                    }
+                }
+                break;
+            }
+            case 1: // Thickness
+            {
+                if (jCheckBox_CalvesThickSync.isSelected()) {
+
+                } else if (obj.equals(jSlider_CalvesThicknessL)) {
+                    float curVal = jSlider_CalvesThicknessL.getValue();
+                    Ladjust = (curVal - m_baseScale) / 100.0f;
+                    jSpinner_CalvesThicknessL.setValue(1.0f + Ladjust);
+
+                    for (int i = 0; i < LCalves.length; i++) {
+                        modlS = new Vector3f(LCalves[i].getLocalModifierMatrix().getScaleVector());
+                        modlS.x = 1.0f;     modlS.x += Ladjust;
+                        modlS.z = 1.0f;     modlS.z += Ladjust;
+
+                        LCalves[i].getLocalModifierMatrix().setScale(new Vector3f(modlS.x, modlS.y, modlS.z));
+                    }
+                } else if (obj.equals(jSlider_CalvesThicknessR)) {
+                    float curVal = jSlider_CalvesThicknessR.getValue();
+                    Radjust = (curVal - m_baseScale) / 100.0f;
+                    jSpinner_CalvesThicknessR.setValue(1.0f + Radjust);
+
+                    for (int i = 0; i < RCalves.length; i++) {
+                        modrS = new Vector3f(RCalves[i].getLocalModifierMatrix().getScaleVector());
+                        modrS.x = 1.0f;     modrS.x += Radjust;
+                        modrS.z = 1.0f;     modrS.z += Radjust;
+
+                        RCalves[i].getLocalModifierMatrix().setScale(new Vector3f(modrS.x, modrS.y, modrS.z));
+                    }
+                }
+                break;
+            }
+        }
+    }
+
+    private void adjustThighs(int type, javax.swing.event.ChangeEvent e) {
+        SkinnedMeshJoint[] LThighs = m_skeleton.get(m_bodyPart.Left_UpperLeg);
+        SkinnedMeshJoint[] RThighs = m_skeleton.get(m_bodyPart.Right_UpperLeg);
+
+        float Ladjust   = 0.0f;
+        float Radjust   = 0.0f;
+        Vector3f modL   = null;
+        Vector3f modR   = null;
+        Vector3f modlS  = null;
+        Vector3f modrS  = null;
+        Object obj = e.getSource();
+
+        switch(type)
+        {
+            case 0: // Length
+            {
+                if (jCheckBox_ThighLenSync.isSelected()) {
+
+                } else if (obj.equals(jSlider_ThighLengthL)) {
+                    float curVal = jSlider_ThighLengthL.getValue();
+                    Ladjust = (curVal - m_baseLen) / 100.0f;
+                    jSpinner_ThighLengthL.setValue(Ladjust);
+
+                    for (int i = 0; i < LThighs.length; i++) {
+                        modL = new Vector3f(LThighs[i].getLocalModifierMatrix().getTranslation());
+                        modL.y = 0.0f;     modL.y += Ladjust;
+
+                        LThighs[i].getLocalModifierMatrix().setTranslation(new Vector3f(modL.x, modL.y, modL.z));
+                    }
+                } else if (obj.equals(jSlider_ThighLengthR)) {
+                    float curVal = jSlider_ThighLengthR.getValue();
+                    Radjust = (curVal - m_baseLen) / 100.0f;
+                    jSpinner_ThighLengthR.setValue(Radjust);
+
+                    for (int i = 0; i < RThighs.length; i++) {
+                        modR = new Vector3f(RThighs[i].getLocalModifierMatrix().getTranslation());
+                        modR.y = 0.0f;     modR.y += Radjust;
+
+                        RThighs[i].getLocalModifierMatrix().setTranslation(new Vector3f(modR.x, modR.y, modR.z));
+                    }
+                }
+                break;
+            }
+            case 1: // Thickness
+            {
+                if (jCheckBox_ThighThickSync.isSelected()) {
+
+                } else if (obj.equals(jSlider_ThighThicknessL)) {
+                    float curVal = jSlider_ThighThicknessL.getValue();
+                    Ladjust = (curVal - m_baseScale) / 100.0f;
+                    jSpinner_ThighThicknessL.setValue(1.0f + Ladjust);
+
+                    for (int i = 0; i < LThighs.length; i++) {
+                        modlS = new Vector3f(LThighs[i].getLocalModifierMatrix().getScaleVector());
+                        modlS.x = 1.0f;     modlS.x += Ladjust;
+                        modlS.z = 1.0f;     modlS.z += Ladjust;
+
+                        LThighs[i].getLocalModifierMatrix().setScale(new Vector3f(modlS.x, modlS.y, modlS.z));
+                    }
+                } else if (obj.equals(jSlider_ThighThicknessR)) {
+                    float curVal = jSlider_ThighThicknessR.getValue();
+                    Radjust = (curVal - m_baseScale) / 100.0f;
+                    jSpinner_ThighThicknessR.setValue(1.0f + Radjust);
+
+                    for (int i = 0; i < RThighs.length; i++) {
+                        modrS = new Vector3f(RThighs[i].getLocalModifierMatrix().getScaleVector());
+                        modrS.x = 1.0f;     modrS.x += Radjust;
+                        modrS.z = 1.0f;     modrS.z += Radjust;
+
+                        RThighs[i].getLocalModifierMatrix().setScale(new Vector3f(modrS.x, modrS.y, modrS.z));
+                    }
+                }
+                break;
+            }
+        }
+    }
+
+
 
     /** Accessors **/
     public SceneEssentials getSceneData() {
@@ -2043,10 +2850,6 @@ public class AdvOptions extends javax.swing.JFrame {
     private javax.swing.JSlider jSlider_UpperarmThicknessL;
     private javax.swing.JSlider jSlider_UpperarmThicknessR;
     private javax.swing.JSlider jSlider_Waistline;
-    private javax.swing.JSpinner jSpinner1;
-    private javax.swing.JSpinner jSpinner2;
-    private javax.swing.JSpinner jSpinner3;
-    private javax.swing.JSpinner jSpinner4;
     private javax.swing.JSpinner jSpinner_BellyRoundness;
     private javax.swing.JSpinner jSpinner_CalvesLengthL;
     private javax.swing.JSpinner jSpinner_CalvesLengthR;
@@ -2087,6 +2890,10 @@ public class AdvOptions extends javax.swing.JFrame {
     private javax.swing.JSpinner jSpinner_ThighLengthR;
     private javax.swing.JSpinner jSpinner_ThighThicknessL;
     private javax.swing.JSpinner jSpinner_ThighThicknessR;
+    private javax.swing.JSpinner jSpinner_UBodyDepthScale;
+    private javax.swing.JSpinner jSpinner_UBodyHeightScale;
+    private javax.swing.JSpinner jSpinner_UBodyWidthScale;
+    private javax.swing.JSpinner jSpinner_UbodyUniScale;
     private javax.swing.JSpinner jSpinner_UpperLip;
     private javax.swing.JSpinner jSpinner_UpperarmLengthL;
     private javax.swing.JSpinner jSpinner_UpperarmLengthR;
@@ -2110,13 +2917,13 @@ public class AdvOptions extends javax.swing.JFrame {
 
         SkeletonNode skeleton   = m_sceneData.getAvatar().getSkeleton();
 
-        String[] szLeftHand = new String[] { "leftHand",    "leftThumb1",       "leftThumb2",       "leftThumb3",       "leftThumb4",
-                                                            "leftHandIndex1",   "leftHandIndex2",   "leftHandIndex3",   "leftHandIndex4",
+        String[] szLeftHand = new String[] { "leftHand",    "leftHandThumb1",   "leftHandThumb2",   "leftHandThumb3",   "leftHandThumb4",
+                                             "leftPalm",    "leftHandIndex1",   "leftHandIndex2",   "leftHandIndex3",   "leftHandIndex4",
                                                             "leftHandMiddle1",  "leftHandMiddle2",  "leftHandMiddle3",  "leftHandMiddle4",
                                                             "leftHandRing1",    "leftHandRing2",    "leftHandRing3",    "leftHandRing4",
                                                             "leftHandPinky1",   "leftHandPinky2",   "leftHandPinky3",   "leftHandPinky4" };
-        String[] szRightHand = new String[] { "rightHand",  "rightThumb1",      "rightThumb2",      "rightThumb3",      "rightThumb4",
-                                                            "rightHandIndex1",  "rightHandIndex2",  "rightHandIndex3",  "rightHandIndex4",
+        String[] szRightHand = new String[] { "rightHand",  "rightHandThumb1",  "rightHandThumb2",  "rightHandThumb3",  "rightHandThumb4",
+                                              "rightPalm",  "rightHandIndex1",  "rightHandIndex2",  "rightHandIndex3",  "rightHandIndex4",
                                                             "rightHandMiddle1", "rightHandMiddle2", "rightHandMiddle3", "rightHandMiddle4",
                                                             "rightHandRing1",   "rightHandRing2",   "rightHandRing3",   "rightHandRing4",
                                                             "rightHandPinky1",  "rightHandPinky2",  "rightHandPinky3",  "rightHandPinky4"};
