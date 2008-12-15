@@ -62,7 +62,7 @@ public class VerletArmTest  extends DemoBase
         control.setObjectCollection(objects);
         
         // Create avatar
-        NinjaAvatar avatar = new NinjaAvatar(new NinjaAvatarAttributes("Avatar", true, true), wm);
+        NinjaAvatar avatar = new NinjaAvatar(new NinjaAvatarAttributes("Avatar", false, true), wm);
         avatar.selectForInput();
         control.getNinjaTeam().add(avatar);
         avatar.setObjectCollection(objects);

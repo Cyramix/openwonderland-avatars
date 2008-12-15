@@ -173,7 +173,6 @@ public class VerletSkeletonFlatteningManipulator implements SkeletonFlatteningMa
         Vector3f localY   = wristPosition.subtract(elbowPosition).normalize();
         Vector3f shoulderPosition = shoulderJoint.getMeshSpace().getTranslation();
         
-        inverseModelWorldMatrix.transformPoint(wristPosition);
         Vector3f shoulderToWrist = wristPosition.subtract(shoulderPosition).normalize();
         Vector3f localX2 = shoulderToWrist.cross(Vector3f.UNIT_Y).normalize();
                 

@@ -46,7 +46,6 @@ public class VerletArm
     private float velocityDampener = 0.8f;
     /** Switch the behavior on and off **/
     private boolean enabled = false;
-    private VerletJointManipulator jointManipulator = null; // old prototype
     private VerletSkeletonFlatteningManipulator skeletonManipulator = null;
     
     private Vector3f currentInputOffset = new Vector3f();
@@ -117,16 +116,18 @@ public class VerletArm
 
                 // Check if it is ok to offset the wrist to the new position
                 Vector3f newWristPosition = wristPosition.add(currentInputOffset);
+                Vector3f directionFromShoulderToWrist = newWristPosition.subtract(shoulderPosition).normalize();
                 if (newWristPosition.distance(shoulderPosition) < maxReach)
                 {
                     float backReach = 0.0f;
 
-                    Vector3f directionFromShoulderToWrist = newWristPosition.subtract(shoulderPosition).normalize();
                     if (modelWorld.getLocalZ().dot(directionFromShoulderToWrist) > backReach)
                         particles.get(wrist).dislocate(currentInputOffset);
                     else
-                        particles.get(wrist).dislocate(directionFromShoulderToWrist.mult(-0.1f).add(modelWorld.getLocalZ().mult(0.1f)));
+                        particles.get(wrist).dislocate(modelWorld.getLocalZ(), 0.001f);
                 }
+                else
+                    particles.get(wrist).dislocate(directionFromShoulderToWrist, -0.005f);
 
                 currentInputOffset.zero();
             }
@@ -191,8 +192,10 @@ public class VerletArm
         particles.get(elbow).position(shoulderPosition.add(Vector3f.UNIT_Y.mult(-0.246216f)));
         particles.get(wrist).position(shoulderPosition.add(Vector3f.UNIT_Y.mult(-0.4852301f)));
         
+        // set the hand a bit forwards and up
         PMatrix modelWorld = modelInst.getTransform().getWorldMatrix(false);
-        particles.get(wrist).dislocate(modelWorld.getLocalZ().mult(0.1f));
+        particles.get(wrist).dislocate(modelWorld.getLocalZ().mult(0.25f));
+        particles.get(wrist).dislocate(Vector3f.UNIT_Y.mult(0.25f));
     }
     
     private void pointAt()
@@ -245,8 +248,6 @@ public class VerletArm
     public void setEnabled(boolean bEnabled)
     {
         enabled = bEnabled;
-        if (jointManipulator != null)
-            jointManipulator.setEnabled(enabled);
         if (skeletonManipulator != null)
             skeletonManipulator.setArmEnabled(enabled);
         if (enabled)
@@ -261,11 +262,6 @@ public class VerletArm
     {
         setEnabled(!enabled);
         return enabled;
-    }
-
-    public void setJointManipulator(VerletJointManipulator armJointManipulator) 
-    {
-        jointManipulator = armJointManipulator;
     }
         
     public void setSkeletonManipulator(VerletSkeletonFlatteningManipulator armSkeletonManipulator) 
@@ -292,16 +288,12 @@ public class VerletArm
      */
     public void setManualDriveReachUp(boolean manualDriveReachUp) {
         this.manualDriveReachUp = manualDriveReachUp;
-        if (jointManipulator != null)
-            jointManipulator.setManualDriveReachUp(manualDriveReachUp);
         if (skeletonManipulator != null)
             skeletonManipulator.setManualDriveReachUp(manualDriveReachUp);
     }
     
     public void toggleManualDriveReachUp(){
         manualDriveReachUp = !manualDriveReachUp;
-        if (jointManipulator != null)
-            jointManipulator.setManualDriveReachUp(manualDriveReachUp);
         if (skeletonManipulator != null)
             skeletonManipulator.setManualDriveReachUp(manualDriveReachUp);
     }
