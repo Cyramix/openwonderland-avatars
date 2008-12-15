@@ -63,7 +63,7 @@ public class Chair implements SpatialObject
     private float   goalForwardOffset = 0.5f;
 
     /** Min-safe distance from other chairs. **/
-    private float desiredDistanceFromOtherChairs = 3.0f;
+    private float desiredDistanceFromOtherChairs = 1.5f;
 
     /**
      * Construct a brand new chair object at the given position and heading

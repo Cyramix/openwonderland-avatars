@@ -358,7 +358,7 @@ public class SkeletonNode extends PNode implements Animated
      */
     public void addToSubGroup(PPolygonSkinnedMeshInstance meshInstance, String subGroup)
     {
-        PNode groupNode = findChild(subGroup);
+        PNode groupNode = getChild(subGroup);
         if (groupNode == null)
         {
             groupNode = new PNode(subGroup);
@@ -398,7 +398,7 @@ public class SkeletonNode extends PNode implements Animated
     public List<PPolygonSkinnedMeshInstance> retrieveSkinnedMeshes(String subGroup)
     {
         ArrayList<PPolygonSkinnedMeshInstance> result = null;
-        final PNode groupNode = findChild(subGroup);
+        final PNode groupNode = getChild(subGroup);
 
         if (groupNode != null)
         {
@@ -421,7 +421,7 @@ public class SkeletonNode extends PNode implements Animated
     public boolean clearSubGroup(String subGroupName)
     {
         boolean result = false;
-        PNode groupNode = findChild(subGroupName);
+        PNode groupNode = getChild(subGroupName);
         if (groupNode != null)
         {
             groupNode.removeAllChildren();

@@ -49,13 +49,17 @@ public class VerletArmTest  extends DemoBase
     @Override
     protected void createDemoEntities(WorldManager wm) 
     {   
-        int numberOfAvatars = 2;
+        int numberOfAvatars = 1;
         
         // Create one object collection for all to use (for testing)
         ObjectCollection objects = new ObjectCollection("Character Test Objects", wm);
         
         // Create ninja input scheme
         NinjaControlScheme control = (NinjaControlScheme)((JSceneEventProcessor)wm.getUserData(JSceneEventProcessor.class)).setDefault(new NinjaControlScheme(null));
+        
+        // Make a chair and let the control the collection so it can delete it
+        objects.generateChairs(Vector3f.ZERO, 5.0f, 4);
+        control.setObjectCollection(objects);
         
         // Create avatar
         NinjaAvatar avatar = new NinjaAvatar(new NinjaAvatarAttributes("Avatar", true, true), wm);
@@ -73,10 +77,6 @@ public class VerletArmTest  extends DemoBase
             cloneAvatar(control, objects, wm, 0.0f, 0.0f, zStep);
             zStep += 5.0f;
         }
-        
-        // Make a chair and let the control the collection so it can delete it
-        objects.generateChairs(Vector3f.ZERO, 5.0f, 4);
-        control.setObjectCollection(objects);
     }
 
     private void cloneAvatar(NinjaControlScheme control, ObjectCollection objects, WorldManager wm, float xOffset, float yOffset, float zOffset) 

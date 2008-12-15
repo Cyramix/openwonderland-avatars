@@ -136,17 +136,11 @@ public class CharacterLoader
     public boolean deleteSkinnedMesh(SkeletonNode owningSkeleton, String skinnedMeshName)
     {
         boolean result = false;
-        for (PNode kid : owningSkeleton.getChildren())
+        PNode meshNode = owningSkeleton.findChild(skinnedMeshName);
+        if (meshNode instanceof PPolygonSkinnedMeshInstance)
         {
-            if (kid instanceof PPolygonSkinnedMeshInstance)
-            {
-                if (kid.getName().equals(skinnedMeshName))
-                {
-                    owningSkeleton.removeChild(kid);
-                    result = true;
-                    break;
-                }
-            }
+            meshNode.getParent().removeChild(meshNode);
+            result = true;
         }
         return result;
     }

@@ -152,10 +152,9 @@ public class ObjectCollection extends Entity
             Chair newChair = new Chair(randomPosition, randomSittingDirection, "assets/models/collada/Objects/Chairs/ConfChair1.dae");
             newChair.setInScene(pscene);
             newChair.setObjectCollection(this);
-            newChair.getModelInst().calculateBoundingSphere();
             
             int attemptsCounter = 0;
-            while(isCloseToOtherChairs(newChair) && attemptsCounter < 100)
+            while(isCloseToOtherChairs(newChair) && attemptsCounter < 1000)
             {
                 attemptsCounter++;
                 
@@ -167,20 +166,19 @@ public class ObjectCollection extends Entity
                     randomZ *= -1.0f;
                 randomDirection = new Vector3f(randomX, 0.0f, randomZ).normalize();
 
-                randomX = (float) Math.random();
-                if (Math.random() > 0.5)
-                    randomX *= -1.0f;
-                randomZ = (float) Math.random();
-                if (Math.random() > 0.5)
-                    randomZ *= -1.0f;
-                randomSittingDirection = new Vector3f(randomX, 0.0f, randomZ).normalize();
+//                randomX = (float) Math.random();
+//                if (Math.random() > 0.5)
+//                    randomX *= -1.0f;
+//                randomZ = (float) Math.random();
+//                if (Math.random() > 0.5)
+//                    randomZ *= -1.0f;
+//                randomSittingDirection = new Vector3f(randomX, 0.0f, randomZ).normalize();
                 
                 randomDistance  = (float)Math.random() * maxRadius;
                 randomPosition  = center.add(randomDirection.mult(randomDistance));
                 
                 newChair.setPosition(randomPosition);
                 newChair.getModelInst().buildFlattenedHierarchy();
-                newChair.getModelInst().calculateBoundingSphere();
                 
                 if (attemptsCounter == 100)
                     System.out.println("ObjectCollection - generateChairs() - after 100 attempts was not able to find an empty space for this chair");
@@ -213,7 +211,7 @@ public class ObjectCollection extends Entity
 //        lighDimmer.setObjectCollection(this);
 //        lighDimmer.getModelInst().calculateBoundingSphere();
     }
-
+    
     public void testLightToggle()
     {
         //lightSwitch.translateSubMesh(Vector3f.UNIT_X, "Slider");
