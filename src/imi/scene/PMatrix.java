@@ -166,7 +166,14 @@ public class PMatrix
        else
            setIdentity();
     }
-    
+
+    /**
+     * Construct a new PMatrix with the given properties. If any component is
+     * <code>null</code>, then the matrix will be set to identity.
+     * @param rotation Euler angles in radians
+     * @param scale X, Y, and Z axis scaling
+     * @param translation
+     */
     public PMatrix(Vector3f rotation, Vector3f scale, Vector3f translation) 
     {
        if (rotation != null && scale != null && translation != null)
@@ -278,6 +285,7 @@ public class PMatrix
     public final void set(Vector3f rotation, Vector3f translation,Vector3f scale) 
     {
         setRotation(rotation);
+        normalizeCP();
         setScale(scale);
         setTranslation(translation);
     }
@@ -506,45 +514,72 @@ public class PMatrix
      * Sets the rotational component (upper 3x3) of this transform to the
      * rotation matrix converted from the Euler angles provided; the other
      * <b>non-rotational elements are set as if this were an identity matrix.</b>
-     * The euler parameter is a Vector3d consisting of three rotation angles
+     * The euler parameter is a Vector3f consisting of three rotation angles
      * applied first about the X, then Y then Z axis.
      * These rotations are applied using a static frame of reference. In
      * other words, the orientation of the Y rotation axis is not affected
      * by the X rotation and the orientation of the Z rotation axis is not
      * affected by the X or Y rotation.
-     * @param euler  the Vector3d consisting of three rotation angles about X,Y,Z
+     * @param euler  the Vector3f consisting of three rotation angles about X,Y,Z in RADIANS
      *
      */
     public final void setRotation(Vector3f euler) {
-	float sina, sinb, sinc;
-	float cosa, cosb, cosc;
+        float sina, sinb, sinc;
+        float cosa, cosb, cosc;
 
-	sina =  (float) Math.sin(euler.x);
-	sinb = (float) Math.sin(euler.y);
-	sinc = (float) Math.sin(euler.z);
-	cosa = (float) Math.cos(euler.x);
-	cosb = (float) Math.cos(euler.y);
-	cosc = (float) Math.cos(euler.z);
+        sina = (float) Math.sin(euler.x);
+        sinb = (float) Math.sin(euler.y);
+        sinc = (float) Math.sin(euler.z);
+        cosa = (float) Math.cos(euler.x);
+        cosb = (float) Math.cos(euler.y);
+        cosc = (float) Math.cos(euler.z);
 
-	mat[0] = cosb * cosc;
-	mat[1] = -(cosa * sinc) + (sina * sinb * cosc);
-	mat[2] = (sina * sinc) + (cosa * sinb *cosc);
-	mat[3] = 0.0f;
+//        float ch = (float) Math.cos(euler.y);
+//        float sh = (float) Math.sin(euler.y);
+//        float ca = (float) Math.cos(euler.z);
+//        float sa = (float) Math.sin(euler.z);
+//        float cb = (float) Math.cos(euler.x);
+//        float sb = (float) Math.sin(euler.x);
+//
+//        mat[ 0] = ch * ca;
+//        mat[ 1] = sh*sb - ch*sa*cb;
+//        mat[ 2] = ch*sa*sb + sh*cb;
+//        mat[ 3] = 0;
+//
+//        mat[ 4] = sa;
+//        mat[ 5] = ca*cb;
+//        mat[ 6] = -ca*sb;
+//        mat[ 7] = 0;
+//
+//        mat[ 8] = -sh*ca;
+//        mat[ 9] = sh*sa*cb + ch*sb;
+//        mat[10] = -sh*sa*sb + ch*cb;
+//        mat[11] = 0.0f;
+//
+//        mat[12] = 0;
+//        mat[13] = 0;
+//        mat[14] = 0;
+//        mat[15] = 1;
 
-	mat[4] = cosb * sinc;
-	mat[5] = (cosa * cosc) + (sina * sinb * sinc);
-	mat[6] = -(sina * cosc) + (cosa * sinb *sinc);
-	mat[7] = 0.0f;
+        mat[0] = cosb * cosc;
+        mat[1] = -(cosa * sinc) + (sina * sinb * cosc);
+        mat[2] = (sina * sinc) + (cosa * sinb *cosc);
+        mat[3] = 0.0f;
 
-	mat[8] = -sinb;
-	mat[9] = sina * cosb;
-	mat[10] = cosa * cosb;
-	mat[11] = 0.0f;
+        mat[4] = cosb * sinc;
+        mat[5] = (cosa * cosc) + (sina * sinb * sinc);
+        mat[6] = -(sina * cosc) + (cosa * sinb *sinc);
+        mat[7] = 0.0f;
 
-	mat[12] = 0.0f;
-	mat[13] = 0.0f;
-	mat[14] = 0.0f;
-	mat[15] = 1.0f;
+        mat[8] = -sinb;
+        mat[9] = sina * cosb;
+        mat[10] = cosa * cosb;
+        mat[11] = 0.0f;
+
+        mat[12] = 0.0f;
+        mat[13] = 0.0f;
+        mat[14] = 0.0f;
+        mat[15] = 1.0f;
 
         // Issue 253: set all dirty bits if input is infinity or NaN
         if (isInfOrNaN(euler)) {
@@ -552,8 +587,8 @@ public class PMatrix
             return;
         }
 
-	type = AFFINE | CONGRUENT | RIGID | ORTHO;
-	dirtyBits = CLASSIFY_BIT | SCALE_BIT | ROTATION_BIT;
+        type = AFFINE | CONGRUENT | RIGID | ORTHO;
+        dirtyBits = CLASSIFY_BIT | SCALE_BIT | ROTATION_BIT;
     }
     
     /**

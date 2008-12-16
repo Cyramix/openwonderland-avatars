@@ -599,7 +599,7 @@ public class SkeletonNode extends PNode implements Animated
                         PMatrix meshSpace = curJoint.getMeshSpace();
                         meshSpace.set(((SkinnedMeshJoint)parent).getMeshSpace());
                         meshSpace.mul(curJoint.getBindPose());
-                        meshSpace.mul(curJoint.unmodifiedBindPose);
+                        meshSpace.mul(curJoint.unmodifiedInverseBindPose);
                         meshSpace.mul(curJoint.getTransform().getLocalMatrix(false));
                     }
                     else // First joint in the skeleton; mesh space is local space
@@ -666,7 +666,7 @@ public class SkeletonNode extends PNode implements Animated
                 SkinnedMeshJoint ourJoint = (SkinnedMeshJoint)current;
                 SkinnedMeshJoint baseJoint = baseSkeleton.findSkinnedMeshJoint(ourJoint.getName());
 
-                ourJoint.unmodifiedBindPose.set(baseJoint.getBindPose().inverse());
+                ourJoint.unmodifiedInverseBindPose.set(baseJoint.getBindPose().inverse());
                 // "prime the pump"
                 ourJoint.getTransform().setLocalMatrix(baseJoint.getBindPose());
             }

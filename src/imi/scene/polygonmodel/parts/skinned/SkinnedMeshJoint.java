@@ -40,12 +40,13 @@ public class SkinnedMeshJoint extends PJoint
     private PMatrix m_bindPoseTransform = null;
 
     /** Package private member for use by the SkeletonNode primarily **/
-    PMatrix unmodifiedBindPose = new PMatrix();
+    PMatrix unmodifiedInverseBindPose = new PMatrix();
 
     public SkinnedMeshJoint(PTransform transform) 
     {
         super(transform);
         m_bindPoseTransform = new PMatrix(transform.getLocalMatrix(false));
+        unmodifiedInverseBindPose.set(m_bindPoseTransform.inverse());
     }
 
     /**
@@ -58,12 +59,14 @@ public class SkinnedMeshJoint extends PJoint
     {
         super(name, transform);
         m_bindPoseTransform = new PMatrix(transform.getLocalMatrix(false));
+        unmodifiedInverseBindPose.set(m_bindPoseTransform.inverse());
     }
     
     public SkinnedMeshJoint(String name, PNode parent, ArrayList<PNode> children, PTransform transform) 
     {
         super(name, parent, children, transform);
         m_bindPoseTransform = new PMatrix(transform.getLocalMatrix(false));
+        unmodifiedInverseBindPose.set(m_bindPoseTransform.inverse());
     }
 
     public void set(String jointName,
