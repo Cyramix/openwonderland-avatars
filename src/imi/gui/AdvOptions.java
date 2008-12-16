@@ -2331,14 +2331,9 @@ public class AdvOptions extends javax.swing.JFrame {
                     else
                         modL = new Vector3f(LForearm[1].getSkeletonModifier().getTranslation());
                     modL.y = 0.0f;     modL.y += Ladjust;
-                    
+
                     LForearm[1].getSkeletonModifier().setTranslation(modL);
-//                    for (int i = 0; i < LForearm.length; i++) {
-//                        modL = new Vector3f(LForearm[i].getLocalModifierMatrix().getTranslation());
-//                        modL.y = 0.0f;     modL.y += Ladjust;
-//
-//                        LForearm[i].getLocalModifierMatrix().setTranslation(new Vector3f(modL.x, modL.y, modL.z));
-//                    }
+
                 } else if (obj.equals(jSlider_ForearmLengthR)) {
                     float curVal = jSlider_ForearmLengthR.getValue();
                     Radjust = (curVal - m_baseLen) / 100.0f;
@@ -2346,19 +2341,13 @@ public class AdvOptions extends javax.swing.JFrame {
 
                     if (RForearm[1].getSkeletonModifier() == null) {
                         RForearm[1].setSkeletonModifier(new PMatrix());
-                        modL = new Vector3f(LForearm[1].getSkeletonModifier().getTranslation());
+                        modR = new Vector3f(RForearm[1].getSkeletonModifier().getTranslation());
                     }
                     else
                         modR = new Vector3f(RForearm[1].getSkeletonModifier().getTranslation());
                     modR.y = 0.0f;     modR.y += Radjust;
 
                     RForearm[1].getSkeletonModifier().setTranslation(modR);
-//                    for (int i = 0; i < RForearm.length; i++) {
-//                        modR = new Vector3f(RForearm[i].getLocalModifierMatrix().getTranslation());
-//                        modR.y = 0.0f;     modR.y += Radjust;
-//
-//                        RForearm[i].getLocalModifierMatrix().setTranslation(new Vector3f(modR.x, modR.y, modR.z));
-//                    }
                 }
                 break;
             }
@@ -2419,23 +2408,30 @@ public class AdvOptions extends javax.swing.JFrame {
                     Ladjust = (curVal - m_baseLen) / 100.0f;
                     jSpinner_UpperarmLengthL.setValue(Ladjust);
 
-                    for (int i = 0; i < LUpperarm.length; i++) {
-                        modL = new Vector3f(LUpperarm[i].getLocalModifierMatrix().getTranslation());
-                        modL.y = 0.0f;     modL.y += Ladjust;
-
-                        LUpperarm[i].getLocalModifierMatrix().setTranslation(new Vector3f(modL.x, modL.y, modL.z));
+                    if (LUpperarm[1].getSkeletonModifier() == null) {
+                        LUpperarm[1].setSkeletonModifier(new PMatrix());
+                        modL = new Vector3f(LUpperarm[1].getSkeletonModifier().getTranslation());
                     }
+                    else
+                        modL = new Vector3f(LUpperarm[1].getSkeletonModifier().getTranslation());
+                    modL.y = 0.0f;     modL.y += Ladjust;
+
+                    LUpperarm[1].getSkeletonModifier().setTranslation(modL);
+
                 } else if (obj.equals(jSlider_UpperarmLengthR)) {
                     float curVal = jSlider_UpperarmLengthR.getValue();
                     Radjust = (curVal - m_baseLen) / 100.0f;
                     jSpinner_UpperarmLengthR.setValue(Radjust);
 
-                    for (int i = 0; i < RUpperarm.length; i++) {
-                        modR = new Vector3f(RUpperarm[i].getLocalModifierMatrix().getTranslation());
-                        modR.y = 0.0f;     modR.y += Radjust;
-
-                        RUpperarm[i].getLocalModifierMatrix().setTranslation(new Vector3f(modR.x, modR.y, modR.z));
+                    if (RUpperarm[1].getSkeletonModifier() == null) {
+                        RUpperarm[1].setSkeletonModifier(new PMatrix());
+                        modR = new Vector3f(RUpperarm[1].getSkeletonModifier().getTranslation());
                     }
+                    else
+                        modR = new Vector3f(RUpperarm[1].getSkeletonModifier().getTranslation());
+                    modR.y = 0.0f;     modR.y += Radjust;
+
+                    RUpperarm[1].getSkeletonModifier().setTranslation(modR);
                 }
                 break;
             }
@@ -2496,23 +2492,30 @@ public class AdvOptions extends javax.swing.JFrame {
                     Ladjust = (curVal - m_baseLen) / 100.0f;
                     jSpinner_FeetLengthL.setValue(Ladjust);
 
-                    for (int i = 0; i < LFoot.length; i++) {
-                        modL = new Vector3f(LFoot[i].getLocalModifierMatrix().getTranslation());
-                        modL.y = 0.0f;     modL.y += Ladjust;
-
-                        LFoot[i].getLocalModifierMatrix().setTranslation(new Vector3f(modL.x, modL.y, modL.z));
+                    if (LFoot[1].getSkeletonModifier() == null) {
+                        LFoot[1].setSkeletonModifier(new PMatrix());
+                        modL = new Vector3f(LFoot[1].getSkeletonModifier().getTranslation());
                     }
+                    else
+                        modL = new Vector3f(LFoot[1].getSkeletonModifier().getTranslation());
+                    modL.z = 0.0f;     modL.z += Ladjust;
+
+                    LFoot[1].getSkeletonModifier().setTranslation(modL);
+
                 } else if (obj.equals(jSlider_FeetLengthR)) {
                     float curVal = jSlider_FeetLengthR.getValue();
                     Radjust = (curVal - m_baseLen) / 100.0f;
                     jSpinner_FeetLengthR.setValue(Radjust);
 
-                    for (int i = 0; i < RFoot.length; i++) {
-                        modR = new Vector3f(RFoot[i].getLocalModifierMatrix().getTranslation());
-                        modR.y = 0.0f;     modR.y += Radjust;
-
-                        RFoot[i].getLocalModifierMatrix().setTranslation(new Vector3f(modR.x, modR.y, modR.z));
+                    if (RFoot[1].getSkeletonModifier() == null) {
+                        RFoot[1].setSkeletonModifier(new PMatrix());
+                        modR = new Vector3f(RFoot[1].getSkeletonModifier().getTranslation());
                     }
+                    else
+                        modR = new Vector3f(RFoot[1].getSkeletonModifier().getTranslation());
+                    modR.z = 0.0f;     modR.z += Radjust;
+
+                    RFoot[1].getSkeletonModifier().setTranslation(modR);
                 }
                 break;
             }
@@ -2573,23 +2576,31 @@ public class AdvOptions extends javax.swing.JFrame {
                     Ladjust = (curVal - m_baseLen) / 100.0f;
                     jSpinner_CalvesLengthL.setValue(Ladjust);
 
-                    for (int i = 0; i < LCalves.length; i++) {
-                        modL = new Vector3f(LCalves[i].getLocalModifierMatrix().getTranslation());
-                        modL.y = 0.0f;     modL.y += Ladjust;
-
-                        LCalves[i].getLocalModifierMatrix().setTranslation(new Vector3f(modL.x, modL.y, modL.z));
+                    if (LCalves[1].getSkeletonModifier() == null) {
+                        LCalves[1].setSkeletonModifier(new PMatrix());
+                        modL = new Vector3f(LCalves[1].getSkeletonModifier().getTranslation());
                     }
+                    else
+                        modL = new Vector3f(LCalves[1].getSkeletonModifier().getTranslation());
+                    modL.y = 0.0f;     modL.y += Ladjust;
+
+                    LCalves[1].getSkeletonModifier().setTranslation(modL);
+
                 } else if (obj.equals(jSlider_CalvesLengthR)) {
                     float curVal = jSlider_CalvesLengthR.getValue();
                     Radjust = (curVal - m_baseLen) / 100.0f;
                     jSpinner_CalvesLengthR.setValue(Radjust);
 
-                    for (int i = 0; i < RCalves.length; i++) {
-                        modR = new Vector3f(RCalves[i].getLocalModifierMatrix().getTranslation());
-                        modR.y = 0.0f;     modR.y += Radjust;
-
-                        RCalves[i].getLocalModifierMatrix().setTranslation(new Vector3f(modR.x, modR.y, modR.z));
+                    if (RCalves[1].getSkeletonModifier() == null) {
+                        RCalves[1].setSkeletonModifier(new PMatrix());
+                        modR = new Vector3f(RCalves[1].getSkeletonModifier().getTranslation());
                     }
+                    else
+                        modR = new Vector3f(RCalves[1].getSkeletonModifier().getTranslation());
+                    modR.y = 0.0f;     modR.y += Radjust;
+
+                    RCalves[1].getSkeletonModifier().setTranslation(modR);
+
                 }
                 break;
             }
@@ -2650,23 +2661,31 @@ public class AdvOptions extends javax.swing.JFrame {
                     Ladjust = (curVal - m_baseLen) / 100.0f;
                     jSpinner_ThighLengthL.setValue(Ladjust);
 
-                    for (int i = 0; i < LThighs.length; i++) {
-                        modL = new Vector3f(LThighs[i].getLocalModifierMatrix().getTranslation());
-                        modL.y = 0.0f;     modL.y += Ladjust;
-
-                        LThighs[i].getLocalModifierMatrix().setTranslation(new Vector3f(modL.x, modL.y, modL.z));
+                    if (LThighs[1].getSkeletonModifier() == null) {
+                        LThighs[1].setSkeletonModifier(new PMatrix());
+                        modL = new Vector3f(LThighs[1].getSkeletonModifier().getTranslation());
                     }
+                    else
+                        modL = new Vector3f(LThighs[1].getSkeletonModifier().getTranslation());
+                    modL.y = 0.0f;     modL.y += Ladjust;
+
+                    LThighs[1].getSkeletonModifier().setTranslation(modL);
+
                 } else if (obj.equals(jSlider_ThighLengthR)) {
                     float curVal = jSlider_ThighLengthR.getValue();
                     Radjust = (curVal - m_baseLen) / 100.0f;
                     jSpinner_ThighLengthR.setValue(Radjust);
 
-                    for (int i = 0; i < RThighs.length; i++) {
-                        modR = new Vector3f(RThighs[i].getLocalModifierMatrix().getTranslation());
-                        modR.y = 0.0f;     modR.y += Radjust;
-
-                        RThighs[i].getLocalModifierMatrix().setTranslation(new Vector3f(modR.x, modR.y, modR.z));
+                    if (RThighs[1].getSkeletonModifier() == null) {
+                        RThighs[1].setSkeletonModifier(new PMatrix());
+                        modR = new Vector3f(RThighs[1].getSkeletonModifier().getTranslation());
                     }
+                    else
+                        modR = new Vector3f(RThighs[1].getSkeletonModifier().getTranslation());
+                    modR.y = 0.0f;     modR.y += Radjust;
+
+                    RThighs[1].getSkeletonModifier().setTranslation(modR);
+
                 }
                 break;
             }

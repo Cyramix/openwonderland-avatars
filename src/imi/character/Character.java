@@ -77,10 +77,13 @@ import imi.scene.polygonmodel.parts.skinned.SkinnedMeshJoint;
 import imi.scene.processors.CharacterAnimationProcessor;
 import imi.scene.processors.JSceneEventProcessor;
 import imi.scene.shader.programs.NormalAndSpecularMapShader;
+import imi.scene.shader.programs.SimpleTNLShader;
+import imi.scene.shader.programs.VertDeformerWithNormalMapping;
 import imi.scene.shader.programs.VertDeformerWithSpecAndNormalMap;
 import imi.scene.utils.PMeshUtils;
 import imi.scene.utils.PModelUtils;
 import imi.scene.utils.tree.JointModificationCollector;
+import imi.scene.utils.tree.NodeProcessor;
 import imi.scene.utils.tree.TreeTraverser;
 import imi.serialization.xml.bindings.xmlCharacter;
 import imi.serialization.xml.bindings.xmlCharacterAttributes;
@@ -294,8 +297,10 @@ public abstract class Character extends Entity implements SpatialObject, Animati
                     m_rightEyeBall.setOtherEye(m_leftEyeBall);
 
                     // Set material
-                    m_skeleton.setShaderOnSkinnedMeshes(new VertDeformerWithSpecAndNormalMap(m_wm));
-                    m_skeleton.setShaderOnMeshes(new NormalAndSpecularMapShader(m_wm));
+//                    m_skeleton.setShaderOnSkinnedMeshes(new VertDeformerWithSpecAndNormalMap(m_wm));
+//                    m_skeleton.setShaderOnMeshes(new NormalAndSpecularMapShader(m_wm));
+                    setSkinnedMeshShaders();
+                    setMeshShaders();
                     m_leftEyeBall.applyShader(m_wm);
                     m_rightEyeBall.applyShader(m_wm);
 
@@ -431,8 +436,10 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         pProcessor.execute(pRootInstruction);
 
         // Set shaders on all the meshes, as they may have changed during the above process
-        m_skeleton.setShaderOnSkinnedMeshes(new VertDeformerWithSpecAndNormalMap(m_wm));
-        m_skeleton.setShaderOnMeshes(new NormalAndSpecularMapShader(m_wm));
+//        m_skeleton.setShaderOnSkinnedMeshes(new VertDeformerWithSpecAndNormalMap(m_wm));
+//        m_skeleton.setShaderOnMeshes(new NormalAndSpecularMapShader(m_wm));
+        setSkinnedMeshShaders();
+        setMeshShaders();
 
         if (bUpdate)
             updateAttributes(attributes);
@@ -612,6 +619,60 @@ public abstract class Character extends Entity implements SpatialObject, Animati
             addComponent(ProcessorCollectionComponent.class, processorCollection);
         } else {
             excecuteAttributes(attributes, true);
+        }
+    }
+
+    public void setSkinnedMeshShaders() {
+        if (m_skeleton == null)
+            return;
+
+        VertDeformerWithSpecAndNormalMap        shiney      = new VertDeformerWithSpecAndNormalMap(m_wm);
+        VertDeformerWithNormalMapping           noshiney    = new VertDeformerWithNormalMapping(m_wm);
+        ArrayList<PPolygonSkinnedMeshInstance>  smInst      = m_skeleton.getSkinnedMeshInstances();
+        String[] check = new String[] { "Head", "Eye", "Teeth", "Tongue", "Hand", "Nude", "Arms", "Legs" };
+
+        for (int i = 0; i < smInst.size(); i++) {
+            if (smInst.get(i).getName().contains(check[0]) || smInst.get(i).getName().contains(check[1]) || smInst.get(i).getName().contains(check[2]) ||
+                smInst.get(i).getName().contains(check[3]) || smInst.get(i).getName().contains(check[4]) || smInst.get(i).getName().contains(check[5]) ||
+                smInst.get(i).getName().contains(check[6]) || smInst.get(i).getName().contains(check[7])) {
+
+                PMeshMaterial mat = smInst.get(i).getMaterialRef().getMaterial();
+                mat.setShader(shiney);
+                smInst.get(i).setMaterial(mat);
+                smInst.get(i).setUseGeometryMaterial(false);
+            } else {
+                PMeshMaterial mat = smInst.get(i).getMaterialRef().getMaterial();
+                mat.setShader(noshiney);
+                smInst.get(i).setMaterial(mat);
+                smInst.get(i).setUseGeometryMaterial(false);
+            }
+        }
+    }
+
+    public void setMeshShaders() {
+        if (m_skeleton == null)
+            return;
+
+        NormalAndSpecularMapShader      shiney  = new NormalAndSpecularMapShader(m_wm);
+        SimpleTNLShader                 regular = new SimpleTNLShader(m_wm);
+        ArrayList<PPolygonMeshInstance> mInst   = null;
+        MeshInstanceProcessor proc = new MeshInstanceProcessor();
+
+        TreeTraverser.breadthFirst(m_pscene, proc);
+        mInst = proc.getMeshInstances();
+
+        for (int i = 0; i < mInst.size(); i++) {
+            if (mInst.get(i).getName().equals(m_attributes.getGeomRef().get(5)[0])) {
+                PMeshMaterial mat = mInst.get(i).getMaterialRef().getMaterial();
+                mat.setShader(regular);
+                mInst.get(i).setMaterial(mat);
+                mInst.get(i).setUseGeometryMaterial(false);
+            } else {
+                PMeshMaterial mat = mInst.get(i).getMaterialRef().getMaterial();
+                mat.setShader(shiney);
+                mInst.get(i).setMaterial(mat);
+                mInst.get(i).setUseGeometryMaterial(false);
+            }
         }
     }
 
@@ -1392,4 +1453,20 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         }
         return result;
     }
+
+    public class MeshInstanceProcessor implements NodeProcessor {
+
+        ArrayList<PPolygonMeshInstance> mInst = new ArrayList<PPolygonMeshInstance>();
+
+        public boolean processNode(PNode currentNode) {
+            if (currentNode instanceof PPolygonMeshInstance && !(currentNode instanceof PPolygonSkinnedMeshInstance)) {
+                mInst.add((PPolygonMeshInstance) currentNode);
+            }
+            return true;
+        }
+
+        public ArrayList<PPolygonMeshInstance> getMeshInstances() {
+            return mInst;
+        }
+    };
 }
