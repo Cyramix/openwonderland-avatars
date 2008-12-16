@@ -66,7 +66,7 @@ import imi.scene.polygonmodel.parts.polygon.PPolygon;
 import imi.scene.polygonmodel.parts.skinned.PBoneIndices;
 import imi.scene.polygonmodel.parts.skinned.PPolygonSkinnedVertexIndices;
 import imi.scene.polygonmodel.skinned.PPolygonSkinnedMesh;
-import imi.scene.polygonmodel.skinned.SkinnedMeshJoint;
+import imi.scene.polygonmodel.parts.skinned.SkinnedMeshJoint;
 import imi.scene.processors.FlexibleCameraProcessor;
 import imi.scene.processors.JSceneAWTEventProcessor;
 import imi.scene.processors.JSceneEventProcessor;

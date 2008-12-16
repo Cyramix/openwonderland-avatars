@@ -19,7 +19,7 @@ package imi.scene.utils.tree;
 
 import com.jme.math.Vector3f;
 import imi.scene.PNode;
-import imi.scene.polygonmodel.skinned.SkinnedMeshJoint;
+import imi.scene.polygonmodel.parts.skinned.SkinnedMeshJoint;
 
 /**
  *

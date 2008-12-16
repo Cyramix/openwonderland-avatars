@@ -18,7 +18,7 @@
 package imi.scene;
 
 import imi.scene.polygonmodel.PPolygonMeshInstance;
-import imi.scene.polygonmodel.skinned.SkinnedMeshJoint;
+import imi.scene.polygonmodel.parts.skinned.SkinnedMeshJoint;
 import imi.scene.utils.tree.SkinnedMeshJointFlattener;
 import imi.scene.utils.PRenderer;
 import imi.scene.utils.tree.FlattenedHierarchyNodeProcessor;

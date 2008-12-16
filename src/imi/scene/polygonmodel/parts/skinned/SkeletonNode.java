@@ -31,7 +31,7 @@ import imi.scene.polygonmodel.PPolygonMesh;
 import imi.scene.polygonmodel.PPolygonMeshInstance;
 import imi.scene.polygonmodel.parts.PMeshMaterial;
 import imi.scene.polygonmodel.skinned.PPolygonSkinnedMeshInstance;
-import imi.scene.polygonmodel.skinned.SkinnedMeshJoint;
+import imi.scene.polygonmodel.parts.skinned.SkinnedMeshJoint;
 import imi.scene.polygonmodel.skinned.PPolygonSkinnedMesh;
 import imi.scene.shader.AbstractShaderProgram;
 import java.util.ArrayList;
@@ -55,7 +55,7 @@ public class SkeletonNode extends PNode implements Animated
     // world matrix in the order of a breadth first traversal
     private ArrayList<SkinnedMeshJoint> m_BFTSkeleton = new ArrayList<SkinnedMeshJoint>();
     private ArrayList<PMatrix> m_BFTSkeletonLocalModifiers = new ArrayList<PMatrix>();
-    private ArrayList<PMatrix> m_BFTInverseBindPose = new ArrayList<PMatrix>();
+    private ArrayList<PMatrix> m_BFTFlattenedInverseBindPose = new ArrayList<PMatrix>();
     private ArrayList<String>  m_jointNames = new ArrayList<String>();
     
     //////////////////////////////
@@ -221,12 +221,14 @@ public class SkeletonNode extends PNode implements Animated
      */
     private void mapSkinnedMeshJointIndices()
     {
+        // Debugging / Diagnostic output
+        System.out.println("In mapSkinnedMeshJointIndices----");
         //m_initialInverseTransform.set(getTransform().getWorldMatrix(false).inverse());
         m_jointNames.clear();
         
         m_BFTSkeleton.clear();
         m_BFTSkeletonLocalModifiers.clear();
-        m_BFTInverseBindPose.clear();
+        m_BFTFlattenedInverseBindPose.clear();
         if (getChildrenCount() > 0)
         {
             PNode skeletonRoot = getChild("skeletonRoot");
@@ -240,11 +242,11 @@ public class SkeletonNode extends PNode implements Animated
                     m_jointNames.addAll(kid.generateSkinnedMeshJointNames());
 
 
-                    PMatrix[] matArray = kid.buildInverseFlattenedSkinnedMeshJointHierarchy();
-                    for (PMatrix matrix : matArray)
+                    List<PMatrix> ibpList = ((SkinnedMeshJoint)kid).buildIBPStack();
+                    for (PMatrix matrix : ibpList)
                     {
                         PMatrix newMatrix = new PMatrix(matrix);
-                        m_BFTInverseBindPose.add(newMatrix);
+                        m_BFTFlattenedInverseBindPose.add(newMatrix);
                     }
                 }
                 
@@ -298,11 +300,11 @@ public class SkeletonNode extends PNode implements Animated
      * @param indices
      * @return The resultant list
      */
-    public PMatrix[] getInverseBindPose(int[] indices)
+    public PMatrix[] getFlattenedInverseBindPose(int[] indices)
     {
         PMatrix[] result = new PMatrix[indices.length];
         for (int i = 0; i < indices.length; ++i)
-            result[i] = m_BFTInverseBindPose.get(indices[i]);
+            result[i] = m_BFTFlattenedInverseBindPose.get(indices[i]);
         return result;
     }
     
@@ -567,23 +569,16 @@ public class SkeletonNode extends PNode implements Animated
         while (queue.isEmpty() == false)
         {
             PNode current = queue.removeFirst();
-
             PNode parent = current.getParent();
 
             // Get the parent's world matrix
             PTransform parentTransform = null;
-            if (parent == null)
+            if (parent == null || parent.getTransform() == null)
                 parentTransform = new PTransform();
             else
                 parentTransform = parent.getTransform();
 
-            // If we have a parent without a transform prune the branch!
-            if (parentTransform == null)
-            {
-                parentTransform = new PTransform();
-            }
-
-            if (current.getTransform() != null)
+            if (current.getTransform() != null) // If this node has any sort of transform
             {
                 // Build the world matrix for the current instance
                 if (current.getTransform().isDirtyWorldMat() || current.isDirty())
@@ -592,24 +587,26 @@ public class SkeletonNode extends PNode implements Animated
                     // Now we are clean!
                     current.setDirty(false, false);
                 }
-                // handle mesh space case
+
+                // handle MeshSpace transform for the SkinnedMeshJoints
                 if (current instanceof SkinnedMeshJoint)
                 {
                     if (parent instanceof SkinnedMeshJoint)
                     {
-                        PMatrix meshSpace = ((SkinnedMeshJoint)current).getMeshSpace();
-                        if (((SkinnedMeshJoint)current).getSkeletonModifier() != null)
-                        {
-                            meshSpace.set(((SkinnedMeshJoint)parent).getMeshSpace());
-                            meshSpace.mul(current.getTransform().getLocalMatrix(false));
-                            meshSpace.mul(((SkinnedMeshJoint)current).getSkeletonModifier());
-                            ((SkinnedMeshJoint)current).getTransform().getWorldMatrix(true).mul(((SkinnedMeshJoint)current).getSkeletonModifier());
-                        }
-                        else
-                            meshSpace.mul(((SkinnedMeshJoint)parent).getMeshSpace(), current.getTransform().getLocalMatrix(false));
+                        // Grab some references
+                        SkinnedMeshJoint curJoint = (SkinnedMeshJoint)current;
+                        // Multiply chain: ParentMeshSpace * modifiedBindPose * originalInverseBind * AnimatedPose
+                        PMatrix meshSpace = curJoint.getMeshSpace();
+                        meshSpace.set(((SkinnedMeshJoint)parent).getMeshSpace());
+                        meshSpace.mul(curJoint.getBindPose());
+                        meshSpace.mul(curJoint.unmodifiedBindPose);
+                        meshSpace.mul(curJoint.getTransform().getLocalMatrix(false));
                     }
-                    else
+                    else // First joint in the skeleton; mesh space is local space
+                    {
+                        // This may fail in some circumstances where the root joint is modified and animated.
                         ((SkinnedMeshJoint)current).setMeshSpace(current.getTransform().getLocalMatrix(false));
+                    }
                 }
             }
             
@@ -669,31 +666,9 @@ public class SkeletonNode extends PNode implements Animated
                 SkinnedMeshJoint ourJoint = (SkinnedMeshJoint)current;
                 SkinnedMeshJoint baseJoint = baseSkeleton.findSkinnedMeshJoint(ourJoint.getName());
 
-                // Calculate the Delta from the original skeleton to this one
-                PMatrix modifierDelta = new PMatrix();
-                modifierDelta.mul(baseJoint.getTransform().getLocalMatrix(false).inverse(), ourJoint.getTransform().getLocalMatrix(false));
-                ourJoint.setSkeletonModifier(modifierDelta);
-
-                // Set the local transform to that of the other skeleton
-                ourJoint.getTransform().getLocalMatrix(true).set(baseJoint.getBindPose());
-
-                // copy other skeleton's inverse bind pose to our skeleton's inverse bind pose
-                int bftIndexForThisJoint = getSkinnedMeshJointIndex(ourJoint);
-                int otherBFTIndex = baseSkeleton.getSkinnedMeshJointIndex(baseJoint);
-//                m_BFTInverseBindPose.get(bftIndexForThisJoint).mul(m_BFTInverseBindPose.get(bftIndexForThisJoint), modifierDelta);
-                PMatrix otherJointIBP = baseSkeleton.m_BFTInverseBindPose.get(otherBFTIndex);
-                PMatrix newIBP = new PMatrix();
-//                newIBP.mul(otherJointIBP.inverse(), modifierDelta);
-                newIBP.mul(baseJoint.getBindPose(), modifierDelta);
-                newIBP.invert();
-
-                if (newIBP.epsilonEquals(m_BFTInverseBindPose.get(bftIndexForThisJoint), 0.05f))
-                    System.out.println("They are equal with epsilon == 0.05f");
-                else
-                    System.out.println("NOT EQUAL EPIC FAILURE");
-//                newIBP.mul(otherJointIBP, modifierDelta.inverse()); // Iteration One
-                //newIBP.mul(modifierDelta.inverse(), otherJointIBP); // Iteration Two
-                //m_BFTInverseBindPose.set(bftIndexForThisJoint, newIBP);
+                ourJoint.unmodifiedBindPose.set(baseJoint.getBindPose().inverse());
+                // "prime the pump"
+                ourJoint.getTransform().setLocalMatrix(baseJoint.getBindPose());
             }
             else
                 continue; // Prune (kids are not added to the list)
@@ -701,6 +676,8 @@ public class SkeletonNode extends PNode implements Animated
             for (PNode kid : current.getChildren())
                 list.add(kid);
         }
+        // Rebuild, among other things, the collection of inverseBindPoses
+        mapSkinnedMeshJointIndices();
         // go through each mesh and nullify the cached inverse bind pose reference
         for (PPolygonSkinnedMeshInstance meshInst : getSkinnedMeshInstances())
             meshInst.setInverseBindPose(null);

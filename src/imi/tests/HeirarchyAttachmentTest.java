@@ -32,7 +32,7 @@ import imi.scene.polygonmodel.parts.PMeshMaterial;
 import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
 import imi.scene.polygonmodel.skinned.PPolygonSkinnedMesh;
 import imi.scene.polygonmodel.skinned.PPolygonSkinnedMeshInstance;
-import imi.scene.polygonmodel.skinned.SkinnedMeshJoint;
+import imi.scene.polygonmodel.parts.skinned.SkinnedMeshJoint;
 import imi.scene.processors.SkinnedAnimationProcessor;
 import imi.scene.shader.programs.NormalAndSpecularMapShader;
 import imi.scene.shader.programs.VertexDeformer;

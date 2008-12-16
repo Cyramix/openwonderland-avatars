@@ -21,7 +21,7 @@ import com.jme.math.Matrix4f;
 import imi.scene.PMatrix;
 import imi.scene.PNode;
 import imi.scene.PTransform;
-import imi.scene.polygonmodel.skinned.SkinnedMeshJoint;
+import imi.scene.polygonmodel.parts.skinned.SkinnedMeshJoint;
 import java.util.ArrayList;
 
 /**

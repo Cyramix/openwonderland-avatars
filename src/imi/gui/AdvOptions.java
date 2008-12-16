@@ -26,7 +26,7 @@ package imi.gui;
 import com.jme.math.Vector3f;
 import imi.scene.PMatrix;
 import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
-import imi.scene.polygonmodel.skinned.SkinnedMeshJoint;
+import imi.scene.polygonmodel.parts.skinned.SkinnedMeshJoint;
 import java.util.HashMap;
 import java.util.Map;
 

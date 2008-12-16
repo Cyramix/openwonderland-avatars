@@ -22,7 +22,7 @@ import imi.scene.PNode;
 import imi.scene.PScene;
 import imi.scene.PTransform;
 import imi.scene.polygonmodel.PPolygonModelInstance;
-import imi.scene.polygonmodel.skinned.SkinnedMeshJoint;
+import imi.scene.polygonmodel.parts.skinned.SkinnedMeshJoint;
 import imi.scene.utils.tree.ModelInstanceProcessor;
 import imi.scene.utils.tree.TreeTraverser;
 import java.awt.Frame;

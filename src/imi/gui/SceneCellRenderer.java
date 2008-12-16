@@ -23,7 +23,7 @@ import imi.scene.PScene;
 import imi.scene.polygonmodel.PPolygonMeshInstance;
 import imi.scene.polygonmodel.PPolygonModelInstance;
 import imi.scene.polygonmodel.skinned.PPolygonSkinnedMeshInstance;
-import imi.scene.polygonmodel.skinned.SkinnedMeshJoint;
+import imi.scene.polygonmodel.parts.skinned.SkinnedMeshJoint;
 import java.awt.Component;
 import java.awt.GridLayout;
 import javax.swing.Icon;

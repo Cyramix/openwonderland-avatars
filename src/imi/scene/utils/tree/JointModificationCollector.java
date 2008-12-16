@@ -19,7 +19,7 @@ package imi.scene.utils.tree;
 
 import imi.scene.PMatrix;
 import imi.scene.PNode;
-import imi.scene.polygonmodel.skinned.SkinnedMeshJoint;
+import imi.scene.polygonmodel.parts.skinned.SkinnedMeshJoint;
 import imi.serialization.xml.bindings.xmlJointModification;
 import imi.serialization.xml.bindings.xmlMatrix;
 import java.util.ArrayList;

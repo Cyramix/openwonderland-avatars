@@ -15,7 +15,7 @@
  * exception as provided by Sun in the License file that accompanied 
  * this code.
  */
-package imi.scene.polygonmodel.skinned;
+package imi.scene.polygonmodel.parts.skinned;
 
 
 import com.jme.math.Vector3f;
@@ -24,6 +24,8 @@ import imi.scene.PJoint;
 import imi.scene.PNode;
 import imi.scene.PTransform;
 import java.util.ArrayList;
+import java.util.List;
+import javolution.util.FastList;
 
 
 /**
@@ -33,9 +35,12 @@ import java.util.ArrayList;
 public class SkinnedMeshJoint extends PJoint
 {
     /** The name! **/
-    public String           m_ParentJointName = "Skinned Mesh Joint";
+    public String   m_ParentJointName   = "Skinned Mesh Joint";
     /** The bind transform **/
-    private PMatrix          m_bindPoseTransform = null;
+    private PMatrix m_bindPoseTransform = null;
+
+    /** Package private member for use by the SkeletonNode primarily **/
+    PMatrix unmodifiedBindPose = new PMatrix();
 
     public SkinnedMeshJoint(PTransform transform) 
     {
@@ -93,6 +98,48 @@ public class SkinnedMeshJoint extends PJoint
             return( (SkinnedMeshJoint)getParent());
 
         return(null);
+    }
+
+    // Collect the inverse bind pose transforms of all skinned mesh joint children
+    public List<PMatrix> buildIBPStack()
+    {
+        ArrayList<PMatrix> result = new ArrayList<PMatrix>();
+        FastList<PNode> queue = new FastList<PNode>();
+        queue.add(this);
+        while (queue.isEmpty() == false)
+        {
+            // process
+            PNode current = queue.removeFirst();
+            SkinnedMeshJoint currentJoint = null;
+            if (current instanceof SkinnedMeshJoint)
+                currentJoint = (SkinnedMeshJoint)current;
+            else
+                continue;
+
+            // Parent meshSpace x current Bind pose, invert and store
+            PMatrix parentMeshSpace = null;
+            if (currentJoint.getParentJoint() != null)
+            {
+                parentMeshSpace = currentJoint.getParentJoint().getMeshSpace();
+                // Current meshSpace = parentMeshSpace * currentBindPose
+                currentJoint.getMeshSpace().mul(parentMeshSpace, currentJoint.getBindPose());
+                PMatrix stackAddition = new PMatrix();
+                // invert and add to the stack
+                stackAddition.set(currentJoint.getMeshSpace().inverse());
+                result.add(stackAddition);
+            }
+            else
+            {
+                currentJoint.getMeshSpace().set(currentJoint.getBindPose());
+                PMatrix stackAddition = new PMatrix();
+                stackAddition.set(currentJoint.getBindPose().inverse());
+                result.add(stackAddition);
+            }
+
+            // add children
+            queue.addAll(currentJoint.getChildren());
+        }
+        return result;
     }
 }
 

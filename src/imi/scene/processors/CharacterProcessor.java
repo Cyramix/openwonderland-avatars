@@ -19,7 +19,7 @@ package imi.scene.processors;
 
 import com.jme.math.Vector3f;
 import imi.scene.PMatrix;
-import imi.scene.polygonmodel.skinned.SkinnedMeshJoint;
+import imi.scene.polygonmodel.parts.skinned.SkinnedMeshJoint;
 import imi.utils.PMathUtils;
 import org.jdesktop.mtgame.NewFrameCondition;
 import org.jdesktop.mtgame.ProcessorArmingCollection;

@@ -20,7 +20,7 @@ package imi.character;
 import com.jme.math.Vector3f;
 import imi.scene.PMatrix;
 import imi.scene.polygonmodel.PPolygonModelInstance;
-import imi.scene.polygonmodel.skinned.SkinnedMeshJoint;
+import imi.scene.polygonmodel.parts.skinned.SkinnedMeshJoint;
 import java.util.ArrayList;
 
 /**

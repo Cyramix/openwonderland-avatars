@@ -42,7 +42,7 @@ import imi.scene.polygonmodel.PPolygonModelInstance;
 import imi.scene.polygonmodel.parts.PMeshMaterial;
 import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
 import imi.scene.polygonmodel.skinned.PPolygonSkinnedMeshInstance;
-import imi.scene.polygonmodel.skinned.SkinnedMeshJoint;
+import imi.scene.polygonmodel.parts.skinned.SkinnedMeshJoint;
 import imi.scene.processors.FlexibleCameraProcessor;
 import imi.scene.processors.SkinnedAnimationProcessor;
 import imi.scene.shader.programs.NormalAndSpecularMapShader;

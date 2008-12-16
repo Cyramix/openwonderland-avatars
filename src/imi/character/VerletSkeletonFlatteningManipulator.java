@@ -22,7 +22,7 @@ import imi.scene.PMatrix;
 import imi.scene.PNode;
 import imi.scene.polygonmodel.parts.skinned.SkeletonFlatteningManipulator;
 import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
-import imi.scene.polygonmodel.skinned.SkinnedMeshJoint;
+import imi.scene.polygonmodel.parts.skinned.SkinnedMeshJoint;
 
 /**
  *

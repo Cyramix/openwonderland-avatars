@@ -33,19 +33,29 @@ public class TestHierarchyAnimationProcessor extends ProcessorComponent
 {
     
     private PNode m_targetMesh = null;
-    //private WorldManager         m_wm         = null;
     
     private float m_angle;
     private Vector3f m_axis;
     private int m_frames = 0;
-    
-    public TestHierarchyAnimationProcessor(/*WorldManager wm,*/ PNode target, float angle, Vector3f axis)
+
+    private PMatrix bindMatrix = null;
+    private PMatrix rotationMatrix = null;
+
+    public TestHierarchyAnimationProcessor(PNode target, float angle, Vector3f axis)
+    {
+        this(target, angle, axis, new PMatrix());
+    }
+
+    public TestHierarchyAnimationProcessor(PNode target, float angle, Vector3f axis, PMatrix bindMat)
     {
         //m_wm = wm;
         m_targetMesh    = target;
         m_angle         = angle;
         m_axis          = axis;
         
+        bindMatrix = new PMatrix(bindMat);
+
+        rotationMatrix = new PMatrix();
     }
     
     /**
@@ -64,12 +74,13 @@ public class TestHierarchyAnimationProcessor extends ProcessorComponent
     public void compute(ProcessorArmingCollection collection) 
     {
         m_frames++;
-        PMatrix rotationMatrix = new PMatrix(m_axis.mult(m_angle), Vector3f.UNIT_XYZ, Vector3f.ZERO);
-        
+        rotationMatrix.mul(new PMatrix(m_axis.mult(m_angle), Vector3f.UNIT_XYZ, Vector3f.ZERO));
+
+        // Simulate the bind pose
+        //rotationMatrix.setTranslation(new Vector3f(0, 4, 10));
         if (m_targetMesh.getTransform() != null)
         {
             // rotate
-            float currentAngle = m_targetMesh.getTransform().getLocalMatrix(false).getRotation().toAngleAxis(m_axis);
             if (m_frames > 240)
             {
                 m_angle *= -1.0f;
@@ -77,9 +88,10 @@ public class TestHierarchyAnimationProcessor extends ProcessorComponent
             }
             
             PMatrix localMatrix = m_targetMesh.getTransform().getLocalMatrix(true);
-            localMatrix.mul(  rotationMatrix  );
+            localMatrix.mul(bindMatrix,  rotationMatrix);
             
             m_targetMesh.setDirty(true, true);
+
         }
     }
 

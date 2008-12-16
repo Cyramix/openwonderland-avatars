@@ -39,7 +39,7 @@ import imi.scene.polygonmodel.PPolygonModelInstance;
 import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
 import imi.scene.polygonmodel.skinned.PPolygonSkinnedMesh;
 import imi.scene.polygonmodel.skinned.PPolygonSkinnedMeshInstance;
-import imi.scene.polygonmodel.skinned.SkinnedMeshJoint;
+import imi.scene.polygonmodel.parts.skinned.SkinnedMeshJoint;
 import imi.scene.utils.PRenderer;
 import imi.scene.utils.tree.PSceneSubmitHelper;
 import imi.scene.utils.tree.TreeTraverser;
