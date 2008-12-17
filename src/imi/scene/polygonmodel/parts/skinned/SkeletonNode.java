@@ -17,6 +17,7 @@
  */
 package imi.scene.polygonmodel.parts.skinned;
 
+import com.jme.math.Quaternion;
 import com.jme.math.Vector3f;
 import com.jme.scene.SharedMesh;
 import imi.scene.PJoint;
@@ -221,8 +222,6 @@ public class SkeletonNode extends PNode implements Animated
      */
     private void mapSkinnedMeshJointIndices()
     {
-        // Debugging / Diagnostic output
-        System.out.println("In mapSkinnedMeshJointIndices----");
         //m_initialInverseTransform.set(getTransform().getWorldMatrix(false).inverse());
         m_jointNames.clear();
         
@@ -679,8 +678,7 @@ public class SkeletonNode extends PNode implements Animated
         // Rebuild, among other things, the collection of inverseBindPoses
         mapSkinnedMeshJointIndices();
         // go through each mesh and nullify the cached inverse bind pose reference
-        for (PPolygonSkinnedMeshInstance meshInst : getSkinnedMeshInstances())
-            meshInst.setInverseBindPose(null);
+        invalidateCachedBindPoses();
     }
 
     public SkeletonFlatteningManipulator getFlatteningHook() {
@@ -690,5 +688,97 @@ public class SkeletonNode extends PNode implements Animated
     public void setFlatteningHook(SkeletonFlatteningManipulator flatteningHook) {
         this.m_flatteningHook = flatteningHook;
     }
+
+    // Convenience Methods for joint manipulation - These are all relatively heavyweight operations
+
+    /**
+     * This method shifts the specified joint by the given offset.
+     * @param jointName Name of the joint to modify
+     * @param offset The displacement vector (in joint local space)
+     * @return True if joint found, false otherwise
+     */
+    public boolean displace(String jointName, Vector3f offset)
+    {
+        boolean result = false;
+        SkinnedMeshJoint joint = findSkinnedMeshJoint(jointName);
+        if (joint != null)
+        {
+            result = true;
+            Vector3f actualOffset = new Vector3f(offset);
+            joint.getBindPose().transformNormal(actualOffset);
+            joint.getBindPose().setTranslation(joint.getBindPose().getTranslation().add(actualOffset));
+        }
+        return result;
+    }
+
+    /**
+     * Sets the joint's local space position to the provided one.
+     * @param jointName Name of the joint to modify
+     * @param localSpaceTranslation The new local space location
+     * @return True if the joint was found, false otherwise.
+     */
+    public boolean setPosition(String jointName, Vector3f localSpaceTranslation)
+    {
+        boolean result = false;
+        SkinnedMeshJoint joint = findSkinnedMeshJoint(jointName);
+        if (joint != null)
+        {
+            result = true;
+            // Apply it!
+            Vector3f transformedVec = new Vector3f(localSpaceTranslation.subtract(joint.getBindPose().getTranslation()));
+            joint.getBindPose().transformNormal(transformedVec);
+            joint.getBindPose().setTranslation(joint.getBindPose().getTranslation().add(transformedVec));
+        }
+        return result;
+    }
+
+    /**
+     * This method sets the specified joint's rotation
+     * @param jointName The joint to manipulate
+     * @param rotation
+     * @return true if the joint was found, false otherwise
+     */
+    public boolean setRotation(String jointName, Quaternion rotation)
+    {
+        boolean result = false;
+        SkinnedMeshJoint joint = findSkinnedMeshJoint(jointName);
+        if (joint != null)
+        {
+            result = true;
+            // Apply it!
+            joint.getBindPose().setRotation(rotation);
+        }
+        return result;
+    }
+
+    /**
+     * Rotate the specified joint around the given axis by the given angle
+     * @param jointName The joint to manipulate
+     * @param axis The rotational axis
+     * @param angle Amount of rotation (radians)
+     * @return True if the joint was found, false otherwise
+     */
+    public boolean rotate(String jointName, Vector3f axis, float angle)
+    {
+        boolean result = false;
+        SkinnedMeshJoint joint = findSkinnedMeshJoint(jointName);
+        if (joint != null)
+        {
+            result = true;
+            Quaternion quat = new Quaternion();
+            quat.fromAngleAxis(angle, axis);
+            PMatrix rotationMatrix = new PMatrix();
+            rotationMatrix.setRotation(quat);
+            joint.getBindPose().mul(rotationMatrix);
+        }
+        return result;
+    }
+
+    private void invalidateCachedBindPoses()
+    {
+        for (PPolygonSkinnedMeshInstance meshInst : getSkinnedMeshInstances())
+            meshInst.setInverseBindPose(null);
+    }
+
 
 }

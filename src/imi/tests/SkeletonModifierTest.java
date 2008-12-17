@@ -17,6 +17,7 @@
  */
 package imi.tests;
 
+import com.jme.math.Quaternion;
 import com.jme.math.Vector3f;
 import imi.scene.PMatrix;
 import imi.scene.PNode;
@@ -33,7 +34,6 @@ import imi.scene.processors.FlexibleCameraProcessor;
 import imi.scene.processors.JSceneEventProcessor;
 import imi.scene.processors.TestHierarchyAnimationProcessor;
 import imi.scene.shader.programs.VertexDeformer;
-import imi.scene.utils.PMeshUtils;
 import imi.utils.input.DahlgrensInput;
 import java.io.File;
 import java.net.MalformedURLException;
@@ -104,8 +104,21 @@ public class SkeletonModifierTest extends DemoBase
 
         // Remap this skeleton onto the modified one
         skeleton.remapSkeleton(generateModifiedSkeleton());
+        // now try another change
+//        if (skeleton.displace("level3", new Vector3f(0, 100, 0)) == false)
+//            System.out.println("Unable to modify the specified joint.");
+//        if (skeleton.setPosition("level3", new Vector3f(10, 4, 0)) == false)
+//            System.out.println("Unable to modify the specified joint.");
+//        float[] fAngles = new float[3];
+//        fAngles[0] = 0;
+//        fAngles[1] = 0;
+//        fAngles[2] = (float)(Math.PI * 0.5);
+//        if (skeleton.setRotation("level3", new Quaternion(fAngles)) == false)
+//            System.out.println("Unable to modify the specified joint.");
+//        if (skeleton.rotate("level3", Vector3f.UNIT_Z, (float)(Math.PI * 0.5)) == false)
+//            System.out.println("Unable to modify the specified joint.");
 
-
+        
         // Grab some joint references to animate
 //        SkinnedMeshJoint joint1 = (SkinnedMeshJoint) modelInst.findChild("level1");
         SkinnedMeshJoint joint2 = (SkinnedMeshJoint) modelInst.findChild("level2");
@@ -159,6 +172,15 @@ public class SkeletonModifierTest extends DemoBase
         camState.setCameraPosition(new Vector3f(-15.0f, 3.0f, 0.0f));
         camState.setMovementRate(1.0f);
 
+//        runPMatrixTest();
+
+    }
+
+    private void runPMatrixTest()
+    {
+        // We need to check the output here
+        PMatrix testMatrix = new PMatrix(new Vector3f((float)(Math.PI * 0.5), 0, 0), new Vector3f(1, 1, 1), new Vector3f(10, 20, 30));
+        System.out.println(testMatrix.toString());
     }
 
     public SkeletonNode generateSkeleton()
