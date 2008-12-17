@@ -44,7 +44,7 @@ import org.jdesktop.mtgame.ProcessorComponent;
 import org.jdesktop.mtgame.WorldManager;
 
 /**
- * Unit test to determine the proper technique to
+ * Unit test for skeleton remapping.
  * @author Ronald E Dahlgren
  */
 public class SkeletonModifierTest extends DemoBase

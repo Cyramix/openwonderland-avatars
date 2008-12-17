@@ -34,20 +34,25 @@ import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
 import java.util.HashSet;
 
 /**
- *
+ * This class represents a certain context within the game for states to operate
+ * within.
  * @author Shawn Kendall
  * @author Lou Hayt
  */
 public class GameContext extends NamedUpdatableObject
 {
     private boolean initalized = false;
+    /** The character owning this context **/
     private imi.character.Character character = null;
+    /** The currently active state **/
     public GameState currentState = null;
-    protected HashMap<Class, GameState> gameStates = new HashMap<Class, GameState>();
-    protected HashMap<String, GameState> m_registry = new HashMap<String, GameState>();
+    /** Map of game state types to instances of that type **/
+    protected final HashMap<Class, GameState> gameStates = new HashMap<Class, GameState>();
+    /** Map of entry point method names to gamestate instances **/
+    protected final HashMap<String, GameState> m_registry = new HashMap<String, GameState>();
     
     /**
-     * This is a collection of all actions known to this context and thier analog state
+     * This is a collection of all actions known to this context and their analog state
      */
     protected float []        actions         = null;
     
@@ -56,7 +61,8 @@ public class GameContext extends NamedUpdatableObject
      */
     protected InputState      m_triggerState   = new InputState();
 
-    private HashSet<GameContextListener> listeners = new HashSet();
+    /** List of parties interested in the status of this context **/
+    private final HashSet<GameContextListener> listeners = new HashSet();
     
     
     /** Creates a new instance of GameContext */
@@ -66,7 +72,7 @@ public class GameContext extends NamedUpdatableObject
     }
 
     /**
-     * This method will atempt a state transition,
+     * This method will attempt a state transition,
      * if the transition object contains a context transition
      * then the character's excecuteContextTransition will be called instead.
      * @param transition
@@ -74,15 +80,14 @@ public class GameContext extends NamedUpdatableObject
      */
     public boolean  excecuteTransition(TransitionObject transition)
     {
-        if (transition.getContextMessageName() != null)
-        {
+        if (transition.getContextMessageName() != null) // If a context switch is needed
             return character.excecuteContextTransition(transition);
-        }
         
         GameState state = m_registry.get(transition.getStateMessageName());
-        if (state == null)
-            return false;
-        
+        if (state == null) // No state found matching the provided name
+            return false; // fail
+
+        // Grab a reference to the appropriate transition method
         Class stateClass = state.getClass();
         Method method = null;
         
@@ -99,7 +104,7 @@ public class GameContext extends NamedUpdatableObject
             Object bool = null;
             
             try {
-                bool = method.invoke(state, transition.getStateMessgeArgs());
+                bool = method.invoke(state, transition.getStateMessageArgs());
             } catch (IllegalAccessException ex) {
                 Logger.getLogger(Character.class.getName()).log(Level.SEVERE, null, ex);
             } catch (IllegalArgumentException ex) {
@@ -132,8 +137,9 @@ public class GameContext extends NamedUpdatableObject
     {
         m_registry.put(methodName, state);
     }
-    
-    public HashMap<Class, GameState> getStates() {
+
+
+    public HashMap<Class, GameState> getStateMapping() {
         return gameStates;
     }
 
@@ -141,16 +147,20 @@ public class GameContext extends NamedUpdatableObject
         return character;
     }
 
+    /**
+     * Sends the provided message to the currentState (if that state is non-null)
+     * @param message
+     * @param stateID
+     */
     public void notifyAnimationMessage(AnimationMessageType message, int stateID) {
         if (currentState != null && stateID == 0)
             currentState.notifyAnimationMessage(message);
     }
     
-    public void setStates(HashMap<Class, GameState> states) {
-        this.gameStates = states;
-    }
-    
-    // Set the new state
+    /**
+     * Set the current state to the one provided if it is non-null
+     * @param newState
+     */
     public void setCurrentState(GameState newState) // protected
     {
         if (currentState == newState)
@@ -183,7 +193,7 @@ public class GameContext extends NamedUpdatableObject
     @Override
     public void initialize()
     {
-        // Skeleton might be null untill loaded
+        // Skeleton might be null until loaded
         SkeletonNode skeleton = getSkeleton();
         if (skeleton != null)
         {
@@ -191,7 +201,11 @@ public class GameContext extends NamedUpdatableObject
             initalized = skeleton.transitionTo(currentState.getAnimationName(), false);
         }
     }
-    
+
+    /**
+     * Inform the context of a trigger event
+     * @param trigger The trigger type
+     */
     public void triggerPressed(int trigger)
     {
         if (actions == null)
@@ -220,7 +234,11 @@ public class GameContext extends NamedUpdatableObject
             m_triggerState.keyPressed(trigger);
         }
     }
-    
+
+    /**
+     * Inform the context of a trigger event
+     * @param trigger The trigger type
+     */
     public void triggerReleased(int trigger)
     {
         if (actions == null)
@@ -251,6 +269,11 @@ public class GameContext extends NamedUpdatableObject
 
     }
 
+    /**
+     * Inform the context of a trigger event
+     * @param pressed
+     * @param trigger The trigger type
+     */
     private void notifyTrigger(boolean pressed, int trigger) {
         if (listeners==null)
             return;

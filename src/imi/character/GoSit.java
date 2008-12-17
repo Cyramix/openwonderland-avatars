@@ -210,7 +210,7 @@ public class GoSit implements Task
             ninjaContext.resetTriggersAndActions();
 
             // Initiate SitState
-            SitState sit = (SitState) ninjaContext.getStates().get(SitState.class);
+            SitState sit = (SitState) ninjaContext.getStateMapping().get(SitState.class);
             if (sit != null && sit.toSit(null))
                 ninjaContext.setCurrentState(sit);
         }

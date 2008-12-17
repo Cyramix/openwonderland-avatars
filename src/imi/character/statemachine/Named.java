@@ -16,6 +16,11 @@
  * this code.
  */
 package imi.character.statemachine;
+/**
+ * Defines something as possessing a name.
+ * @author Shawn Kendall
+ * @author Lou Hayt
+ */
 public interface Named
 {
     public void setName(String name_);   

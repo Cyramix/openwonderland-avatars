@@ -24,7 +24,7 @@ import imi.scene.PNode;
 import imi.scene.polygonmodel.PPolygonMeshInstance;
 
 /**
- * This class takes in a root PNode and proceeds to clone and copy the
+ * This class takes in a root PNode and proceeds to clone and copy the graph
  * @author Ronald E Dahlgren
  */
 public class SceneGraphConvertor 
@@ -97,7 +97,7 @@ public class SceneGraphConvertor
     
     private Node processMeshInstance(PPolygonMeshInstance meshInst)
     {
-        SharedMesh mesh  = meshInst.getSharedMesh();//new SharedMesh(meshInst.getName(), meshInst.getGeometry().getGeometry());
+        SharedMesh mesh  = meshInst.getSharedMesh();
         
         // apply transform to a transform node
         Node transformNode = new Node(meshInst.getName() + " transform");

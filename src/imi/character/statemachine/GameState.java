@@ -28,34 +28,49 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- *
+ * This class represents the base state for the extendable state machine.
  * @author Shawn Kendall
  * @author Lou Hayt
  */
 public class GameState extends NamedUpdatableObject
 {
+    /** Reference to the context owning this state **/
     protected GameContext gameContext = null;
-    private Stack<TransitionObject> transitionStack = new Stack<TransitionObject>();
+    /** The stack of transitions **/
+    private final Stack<TransitionObject> transitionStack = new Stack<TransitionObject>();
+
     boolean bReverseTransitionCheckTraversal = false;
-    
+    /** Optional string naming the animation associated with this state **/
     protected String    animationName       = null;
+    /** Default playback speed for any animations used by this state **/
     protected float     animationSpeed      = 0.8f;
     private boolean     bReverseAnimation   = false;
+    /** Length of time to transition **/
     private float       transitionDuration  = 0.2f;
     private boolean     bTransitionReverseAnimation = false;
     
     private AnimationComponent.PlaybackMode cycleMode = AnimationComponent.PlaybackMode.Loop; // set when a transition is complete
     private AnimationComponent.PlaybackMode transitionCycleMode = AnimationComponent.PlaybackMode.Loop;
-    
+    /** Indicates when the appropriate animation has been set **/
     private boolean bAnimationSet = false;
-    
-    protected Logger logger = Logger.getLogger(GameState.class.getName());
-        
+    /** Logger convenience method **/
+    protected final static Logger logger = Logger.getLogger(GameState.class.getName());
+
+    /**
+     * Represents an action for a state. These are mapped to input triggers
+     */
     public static class Action
     {
+        /** type identifier **/
         public int   action;
+        /** support for analog input **/
         public float modifier;
-        
+
+        /**
+         * Construct a new instance with all data specified
+         * @param action
+         * @param modifier
+         */
         public Action(int action, float modifier)
         {
             this.action   = action;
@@ -84,7 +99,12 @@ public class GameState extends NamedUpdatableObject
     {
         gameContext.initDefaultActionMap(actionMap);
     }
-    
+
+    /**
+     * Retrieve the action associated with the provided trigger.
+     * @param trigger The trigger type in question
+     * @return The associated action
+     */
     public Action getAction(int trigger)
     {
         return actionMap.get(trigger);
@@ -119,7 +139,7 @@ public class GameState extends NamedUpdatableObject
         while(it.hasNext())
         {
             TransitionObject trans = (TransitionObject)it.next();
-            if (trans.getClass().equals(transitionObjClass)) // should this be == ?, shuold I use hashCode?
+            if (trans.getClass().equals(transitionObjClass)) // should this be == ?, should I use hashCode?
             {
                 return trans.transition(this);
             }
@@ -159,6 +179,7 @@ public class GameState extends NamedUpdatableObject
      */
     protected void stateExit(GameContext owner)
     {
+        // Debugging / Dianostic output
         //System.out.println(getName() + " exit");
         if (logger.isLoggable(Level.FINE))
             logger.fine(getName() + " Exit");
@@ -170,7 +191,7 @@ public class GameState extends NamedUpdatableObject
      */
     protected void stateEnter(GameContext owner)
     {
-        //System.out.println(getName() + " enter");
+        // Debugging / Diagnostic Output
         if (logger.isLoggable(Level.FINE))
             logger.fine(getName() + " Enter");
         
@@ -259,12 +280,21 @@ public class GameState extends NamedUpdatableObject
         return bReverseAnimation;
     }
 
-    public void setReverseAnimation(boolean reverseAnimation) 
-    {    
+    /**
+     * Although internal state is changed to reflect the parameter, it may not
+     * be applied to the animation if the SkeletonNode has not yet been set with
+     * the associated GameContext instance.
+     * @param reverseAnimation
+     * @return True if the animation system was notified, false otherwise
+     */
+    public boolean setReverseAnimation(boolean reverseAnimation)
+    {
+        boolean result = false;
         // Character's skeleton might be null untill loaded
         SkeletonNode skeleton = gameContext.getSkeleton();
         if (skeleton != null)
         {
+            result = true;
             // Set reverse
             if (bReverseAnimation)
                 skeleton.getAnimationState().setReverseAnimation(true);
@@ -272,6 +302,7 @@ public class GameState extends NamedUpdatableObject
                 skeleton.getAnimationState().setReverseAnimation(false);
         }
         bReverseAnimation = reverseAnimation;
+        return result;
     }
 
     public boolean isTransitionReverseAnimation() {

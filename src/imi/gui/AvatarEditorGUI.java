@@ -23,10 +23,8 @@ import com.jme.math.Vector3f;
 import imi.scene.JScene;
 import imi.scene.PMatrix;
 import imi.scene.PNode;
-import imi.scene.polygonmodel.PPolygonMesh;
 import imi.scene.polygonmodel.PPolygonMeshInstance;
 import imi.scene.polygonmodel.PPolygonModelInstance;
-import imi.scene.polygonmodel.skinned.PPolygonSkinnedMesh;
 import imi.scene.polygonmodel.skinned.PPolygonSkinnedMeshInstance;
 import imi.scene.utils.tree.InstanceSearchProcessor;
 import imi.scene.utils.tree.KeyProcessor;
@@ -37,6 +35,8 @@ import java.io.File;
 import javax.swing.filechooser.FileFilter;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
@@ -54,22 +54,24 @@ import org.jdesktop.mtgame.ProcessorComponent;
 public class AvatarEditorGUI extends javax.swing.JFrame {
 
     // Class Data Members
-    private SceneEssentials sceneData = new SceneEssentials();
+    private final SceneEssentials sceneData = new SceneEssentials();
     // Scaling Data
-    private ArrayList<String> keys = new ArrayList<String>();
-    private ArrayList<Vector3f> values = new ArrayList<Vector3f>();
-    private HashMap<String, Vector3f> scales = new HashMap<String, Vector3f>();
+    private final ArrayList<String>         keys    = new ArrayList<String>();
+    private final ArrayList<Vector3f>       values  = new ArrayList<Vector3f>();
+    private final HashMap<String, Vector3f> scales  = new HashMap<String, Vector3f>();
     // Rotation Data
-    private PMatrix xRotation = new PMatrix();
-    private PMatrix yRotation = new PMatrix();
-    private PMatrix zRotation = new PMatrix();
+    private final PMatrix xRotation = new PMatrix();
+    private final PMatrix yRotation = new PMatrix();
+    private final PMatrix zRotation = new PMatrix();
     // Save Data
-    private File fileXML = null;
-    private String avatarName = new String("John Doe");
+    private File fileXML        = null;
+    private String avatarName   = new String("John Doe");
     private String avatarGender = new String("male");
     // Tools
     private TreeExplorer explorer = null;
-    private OptionsGUI options = null;
+    private OptionsGUI   options  = null;
+
+    private final static Logger logger = Logger.getLogger(AvatarEditorGUI.class.getName());
 
     /**
      * Defalt constructor for the AvatarEditorGUI Class
@@ -80,20 +82,20 @@ public class AvatarEditorGUI extends javax.swing.JFrame {
             UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
         } catch (UnsupportedLookAndFeelException e) {
             // handle exception
-            System.out.println("Unsupported Look & Feel Exception...");
-            System.out.println(e.getMessage());
+            logger.log(Level.SEVERE, "Unsupported Look & Feel Exception...");
+            logger.log(Level.SEVERE, e.getMessage());
         } catch (ClassNotFoundException e) {
             // handle exception
-            System.out.println("Class Not Found Exception...");
-            System.out.println(e.getMessage());
+            logger.log(Level.SEVERE, "Class Not Found Exception...");
+            logger.log(Level.SEVERE, e.getMessage());
         } catch (InstantiationException e) {
             // handle exception
-            System.out.println("Instantiation Exception...");
-            System.out.println(e.getMessage());
+            logger.log(Level.SEVERE, "Instantiation Exception...");
+            logger.log(Level.SEVERE, e.getMessage());
         } catch (IllegalAccessException e) {
             // handle exception
-            System.out.println("Illegal Access Exception...");
-            System.out.println(e.getMessage());
+            logger.log(Level.SEVERE, "Illegal Access Exception...");
+            logger.log(Level.SEVERE, e.getMessage());
         }
         initComponents();
         this.setTitle("Avatar Editor GUI");
@@ -125,6 +127,7 @@ public class AvatarEditorGUI extends javax.swing.JFrame {
         // Wait until the assets are available for use
         while (sceneData.getPScene().getAssetWaitingList().size() > 0) {
             //System.out.println("Waiting to get assets...");
+            Thread.yield();
         }
 
         setDefault();
@@ -147,10 +150,13 @@ public class AvatarEditorGUI extends javax.swing.JFrame {
         values.clear();
         // Retrieve new scale keys
         if (sceneData.getPScene().getInstances().findChild("m_TransformHierarchy") != null) {
+
             KeyProcessor keyProc = new KeyProcessor();
             TreeTraverser.breadthFirst(sceneData.getPScene().getInstances().getChild(0).getChild(0).getChild(0).getChild(0), keyProc);
-            keys = keyProc.getKeys();
-            values = keyProc.getValues();
+
+            keys.addAll(keyProc.getKeys());
+            values.addAll(keyProc.getValues());
+
             // Set the scale data to default values
             for (int i = 0; i < keys.size(); i++) {
                 scales.put(keys.get(i), values.get(i));
@@ -190,9 +196,9 @@ public class AvatarEditorGUI extends javax.swing.JFrame {
      */
     public void resetDataMembers() {
         if (sceneData.getPScene() == null) {
-            System.out.println("==================================================================");
-            System.out.println("UI has not been initialized... please call setGUI from main window");
-            System.out.println("==================================================================");
+            logger.log(Level.WARNING, "==================================================================");
+            logger.log(Level.WARNING, "UI has not been initialized... please call setGUI from main window");
+            logger.log(Level.WARNING, "==================================================================");
             return;
         }
         // Clear out old scale data
@@ -207,19 +213,25 @@ public class AvatarEditorGUI extends javax.swing.JFrame {
      * Resets the local scale variables to default 1:1:1 values
      */
     public void resetLocalScales() {
+
         if (sceneData.getPScene().getInstances().findChild("m_TransformHierarchy") == null) {
-            System.out.println("No joints loaded yet");
+            logger.log(Level.WARNING, "No joints loaded yet");
             return;
         }
+
         Vector3f normalVector = new Vector3f(1.0f, 1.0f, 1.0f);
+
         scales.clear();
         keys.clear();
         values.clear();
+
         // Retrieve new scale keys
         KeyProcessor keyProc = new KeyProcessor();
         if (sceneData.getPScene().getInstances().findChild("m_TransformHierarchy") != null) {
             TreeTraverser.breadthFirst(sceneData.getPScene().getInstances().findChild("m_TransformHierarchy").getChild(0), keyProc);
-            keys = keyProc.getKeys();
+            
+            keys.addAll(keyProc.getKeys());
+
             // Set the scale data to default values
             for (int i = 0; i < keys.size(); i++) {
                 scales.put(keys.get(i), normalVector);
@@ -237,9 +249,11 @@ public class AvatarEditorGUI extends javax.swing.JFrame {
             jCheckBox_AvatarOptions.setSelected(false);
             jCheckBox_Explorer.setSelected(false);
         }
+
         jSlider_XAxis.setValue(180);
         jSlider_YAxis.setValue(180);
         jSlider_ZAxis.setValue(180);
+
         resetInstanceCount();
         resetAnimations();
     }
@@ -281,14 +295,16 @@ public class AvatarEditorGUI extends javax.swing.JFrame {
     }
 
     /**
-     * Checks the PScene for all the differnt instances in the scene and loads
+     * Checks the PScene for all the different instances in the scene and loads
      * it up in a drop down box
      */
     public void resetInstanceCount() {
         InstanceSearchProcessor proc = new InstanceSearchProcessor();
         proc.setProcessor();
+
         TreeTraverser.breadthFirst(sceneData.getPScene(), proc);
         java.util.Vector<PNode> instances = proc.getModelInstances();
+
         jComboBox_ModelInstances.setModel(new javax.swing.DefaultComboBoxModel(instances));
     }
 
@@ -328,9 +344,9 @@ public class AvatarEditorGUI extends javax.swing.JFrame {
         boolean success = false; //newModelInst.loadModel(sceneData.getFileXML(), sceneData.getPScene());
         sceneData.getPScene().addInstanceNode(newModelInst);
         if (success) {
-            System.out.println("<<<<SHOULD HAVE LOADED... CROSS YOUR FINGERS>>>>");
+            logger.log(Level.INFO, "<<<<SHOULD HAVE LOADED... CROSS YOUR FINGERS>>>>");
         } else {
-            System.out.println("<<<< FAILURE...FAILURE...FAILURE...FAILURE >>>>");
+            logger.log(Level.SEVERE, "<<<< FAILURE...FAILURE...FAILURE...FAILURE >>>>");
         }
 
     // add an animation processor to the skinned mesh child
@@ -342,11 +358,12 @@ public class AvatarEditorGUI extends javax.swing.JFrame {
      * created (xml format)
      */
     public void loadxml() {
-        System.out.println("=================================================");
-        System.out.println("User requested to load a saved configuration file");
-        System.out.println("=================================================");
+        logger.log(Level.INFO, "=================================================");
+        logger.log(Level.INFO, "User requested to load a saved configuration file");
+        logger.log(Level.INFO, "=================================================");
 
         int retValLoad = jFileChooser_LoadXML.showOpenDialog(this);
+
         if (retValLoad == JFileChooser.APPROVE_OPTION) {
             fileXML = jFileChooser_LoadXML.getSelectedFile();
             sceneData.setfileXML(fileXML);
@@ -362,9 +379,9 @@ public class AvatarEditorGUI extends javax.swing.JFrame {
             resetGUI(0);
         }
 
-        System.out.println("=================================================");
-        System.out.println("Loading of avatar configuration file is  complete");
-        System.out.println("=================================================");
+        logger.log(Level.INFO, "=================================================");
+        logger.log(Level.INFO, "Loading of avatar configuration file is  complete");
+        logger.log(Level.INFO, "=================================================");
     }
 
     /**
@@ -372,9 +389,9 @@ public class AvatarEditorGUI extends javax.swing.JFrame {
      * an xml formated file
      */
     public void savexml() {
-        System.out.println("=================================================");
-        System.out.println("User requested to save current avtar configuration");
-        System.out.println("=================================================");
+        logger.log(Level.INFO, "=================================================");
+        logger.log(Level.INFO, "User requested to save current avtar configuration");
+        logger.log(Level.INFO, "=================================================");
 
         if (fileXML == null) {
             fileXML = new File("NewAvatarConfig.xml");
@@ -390,9 +407,9 @@ public class AvatarEditorGUI extends javax.swing.JFrame {
             //modInst.saveModel(fileXML);
         }
 
-        System.out.println("=================================================");
-        System.out.println("Saving of current avatar configuration is complete");
-        System.out.println("=================================================");
+        logger.log(Level.INFO, "=================================================");
+        logger.log(Level.INFO, "Saving of current avatar configuration is complete");
+        logger.log(Level.INFO, "=================================================");
     }
 
     /**
@@ -987,16 +1004,16 @@ private void jButton_ModelActionPerformed(java.awt.event.ActionEvent evt) {//GEN
      * @param evt (Action Eent)
      */
 private void jButton_TextureActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_TextureActionPerformed
-    System.out.println("=================================================");
-    System.out.println("Loading a texture file per the user's request....");
-    System.out.println("=================================================");
+    logger.log(Level.INFO, "=================================================");
+    logger.log(Level.INFO, "Loading a texture file per the user's request....");
+    logger.log(Level.INFO, "=================================================");
     
     PPolygonMeshInstance meshInst = (PPolygonMeshInstance)((PPolygonModelInstance)jComboBox_ModelInstances.getSelectedItem()).getChild(0);
     sceneData.loadTexture(meshInst, this);
     
-    System.out.println("=================================================");
-    System.out.println("Loading of texture file has been completed.......");
-    System.out.println("=================================================");
+    logger.log(Level.INFO, "=================================================");
+    logger.log(Level.INFO, "Loading of texture file has been completed.......");
+    logger.log(Level.INFO, "=================================================");
 }//GEN-LAST:event_jButton_TextureActionPerformed
 
     /**

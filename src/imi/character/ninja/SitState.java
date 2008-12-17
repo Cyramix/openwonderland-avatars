@@ -177,7 +177,7 @@ public class SitState extends GameState
     {    
         if (chair.getOwner() != ninjaContext.getNinja())
         {
-            FallFromSitState fall = (FallFromSitState) ninjaContext.getStates().get(FallFromSitState.class);
+            FallFromSitState fall = (FallFromSitState) ninjaContext.getStateMapping().get(FallFromSitState.class);
             if (fall != null && fall.toFallFromSit(null))
             {
                 ninjaContext.setCurrentState(fall);

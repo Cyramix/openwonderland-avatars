@@ -752,7 +752,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
             Object bool = null;
             
             try {
-                bool = method.invoke(context, transition.getContextMessgeArgs());
+                bool = method.invoke(context, transition.getContextMessageArgs());
             } catch (IllegalAccessException ex) {
                 Logger.getLogger(Character.class.getName()).log(Level.SEVERE, null, ex);
             } catch (IllegalArgumentException ex) {

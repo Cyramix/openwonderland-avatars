@@ -19,23 +19,34 @@ package imi.character.statemachine;
 
 /**
  * Defines a possible exit transition from a state
- * @author Lou
+ * @author Lou Hayt
  */
 public abstract class TransitionObject 
 {
     protected String  stateMessageName   = null;
-    protected Object  stateMessgeArgs    = null;
+    protected Object  stateMessageArgs    = null;
     
     protected String  contextMessageName = null;
-    protected Object  contextMessgeArgs  = null;
-    
+    protected Object  contextMessageArgs  = null;
+
+    /**
+     * Transition from the provided state instance.
+     * @param state
+     * @return True on success, false on failure
+     */
     public boolean transition(GameState state)
     {
         if (testCondition(state))
             return true;
         return false;
     }
-    
+
+    /**
+     * Override to implement your validation logic against the provided GameState,
+     * which is the current state.
+     * @param state
+     * @return
+     */
     protected abstract boolean testCondition(GameState state);
 
     public String getContextMessageName() {
@@ -46,12 +57,12 @@ public abstract class TransitionObject
         this.contextMessageName = contextMessageName;
     }
 
-    public Object getContextMessgeArgs() {
-        return contextMessgeArgs;
+    public Object getContextMessageArgs() {
+        return contextMessageArgs;
     }
 
-    public void setContextMessgeArgs(Object contextMessgeArgs) {
-        this.contextMessgeArgs = contextMessgeArgs;
+    public void setContextMessageArgs(Object contextMessgeArgs) {
+        this.contextMessageArgs = contextMessgeArgs;
     }
 
     public String getStateMessageName() {
@@ -62,12 +73,12 @@ public abstract class TransitionObject
         this.stateMessageName = stateMessageName;
     }
 
-    public Object getStateMessgeArgs() {
-        return stateMessgeArgs;
+    public Object getStateMessageArgs() {
+        return stateMessageArgs;
     }
 
-    public void setStateMessgeArgs(Object stateMessgeArgs) {
-        this.stateMessgeArgs = stateMessgeArgs;
+    public void setStateMessageArgs(Object stateMessgeArgs) {
+        this.stateMessageArgs = stateMessgeArgs;
     }
     
     

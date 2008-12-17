@@ -24,9 +24,6 @@ package imi.character.statemachine;
  * game logic controller class.  Derived classes are used to perform Entity updating, networking, camera management, etc.
  *
  * @author Shawn Kendall
- * @see SimulationManager
- * @see ExecutionManager
- * @see RTXChangeNotifier
  */
 public class NamedUpdatableObject implements Updatable, Named
 {

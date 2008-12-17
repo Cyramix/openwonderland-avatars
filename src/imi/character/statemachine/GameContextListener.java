@@ -21,12 +21,19 @@ import com.jme.math.Quaternion;
 import com.jme.math.Vector3f;
 
 /**
- * Listener interface for CharacterController
+ * Listener interface for CharacterController.
  *
  * @author paulby
  */
 public interface GameContextListener {
 
+    /**
+     * Inform the listener that a trigger has occured.
+     * @param pressed True if the trigger is being engaged, false is disengaging
+     * @param trigger The trigger type
+     * @param location
+     * @param rotation
+     */
     public void trigger(boolean pressed, int trigger, Vector3f location, Quaternion rotation);
 
 
