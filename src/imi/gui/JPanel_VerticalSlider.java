@@ -24,7 +24,6 @@
 
 package imi.gui;
 
-import javax.swing.JFrame;
 import javax.swing.JSlider;
 import javax.swing.JSpinner;
 
@@ -36,18 +35,50 @@ public class JPanel_VerticalSlider extends javax.swing.JPanel {
 ////////////////////////////////////////////////////////////////////////////////
 // CLASS DATA MEMBERS
 ////////////////////////////////////////////////////////////////////////////////
-    public float    m_baseSliderVal =   15.0f;
-    private JFrame  m_baseFrame     =   null;
+    public float                m_baseSliderVal =   15.0f;
+    private AbstractOptions     m_Parent        =   null;
+    private int                 m_ObjectRef     =   -1;
 
     /** Creates new form JPanel_VerticalSlider */
     public JPanel_VerticalSlider() {
         initComponents();
     }
 
-    public JPanel_VerticalSlider(JFrame frame) {
-        initComponents();
-        m_baseFrame = frame;
+    public void updateComponents(javax.swing.event.ChangeEvent evt) {
+        int     index   = -1;
+        float   curVal  = 0.0f;
+        float   newVal  = 0.0f;
+        
+        if (evt.getSource().equals(jSlider1))
+            index = 0;
+        
+        if (evt.getSource().equals(jSpinner1))
+            index = 1;
+        
+        switch(index)
+        {
+            case 0:
+            {
+                if (jSlider1.isFocusOwner()) {
+                    curVal = (float)jSlider1.getValue();
+                    newVal = (curVal - m_baseSliderVal) / 100;
+                    jSpinner1.setValue(newVal);
+                }
+                break;
+            }
+            case 1:
+            {
+                if (jSpinner1.isFocusOwner()) {
+                    curVal = (Float)jSpinner1.getValue();
+                    newVal = (curVal * 100) + m_baseSliderVal;
+                    jSlider1.setValue((int)newVal);
+                }
+                break;
+            }
+        }        
     }
+
+
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
@@ -76,6 +107,11 @@ public class JPanel_VerticalSlider extends javax.swing.JPanel {
         jSlider1.setMaximumSize(new java.awt.Dimension(50, 32767));
         jSlider1.setMinimumSize(new java.awt.Dimension(50, 36));
         jSlider1.setPreferredSize(new java.awt.Dimension(50, 120));
+        jSlider1.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                updateComponents(evt);
+            }
+        });
         add(jSlider1, new java.awt.GridBagConstraints());
 
         jSpinner1.setModel(new javax.swing.SpinnerNumberModel(Float.valueOf(0.0f), Float.valueOf(-0.15f), Float.valueOf(0.15f), Float.valueOf(0.01f)));
@@ -153,7 +189,7 @@ public class JPanel_VerticalSlider extends javax.swing.JPanel {
         jSpinner1.setModel(spinnermodel);
     }
 
-    public void setParentFrame(JFrame frame) {
-        m_baseFrame = frame;
+    public void setParentComponent(AbstractOptions parent) {
+        m_Parent = parent;
     }
 }

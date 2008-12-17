@@ -24,12 +24,34 @@
 
 package imi.gui;
 
+import com.jme.math.Vector3f;
+import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
+import imi.scene.polygonmodel.parts.skinned.SkinnedMeshJoint;
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  *
  * @author Paul Viet Nguyen Truong (ptruong)
  */
 public class JFrame_AdvOptions extends javax.swing.JFrame {
+////////////////////////////////////////////////////////////////////////////////
+// Class Data Members
+////////////////////////////////////////////////////////////////////////////////
+    private Map<m_bodyPart, SkinnedMeshJoint[]> m_skeleton;
+    private SceneEssentials                     m_sceneData;
+    private float                               m_baseLen = 10.0f;
+    private float                               m_baseScale = 20.0f;
+////////////////////////////////////////////////////////////////////////////////
+// Enumerations for the skeleton and body
+////////////////////////////////////////////////////////////////////////////////
+    public  enum m_bodyPart { Left_UpperLeg, Left_LowerLeg, Left_Foot, Left_UpperArm, Left_LowerArm, Left_Hand, Left_Shoulder,
+                              Right_UpperLeg, Right_LowerLeg, Right_Foot, Right_UpperArm, Right_LowerArm, Right_Hand, Right_Shoulder,
+                              Head, Torso, Neck, Eyes, Lips };
 
+////////////////////////////////////////////////////////////////////////////////
+// Class Methods
+////////////////////////////////////////////////////////////////////////////////
     /** Creates new form JFrame_AdvOptions */
     public JFrame_AdvOptions() {
         initComponents();
@@ -47,6 +69,7 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
         jTabbedPane_Options = new javax.swing.JTabbedPane();
         HeadOptions = new imi.gui.JPanel_HeadOptions();
         ArmsHandsOptions = new imi.gui.JPanel_ArmsHandsOption();
+        LegsFeetOptions = new imi.gui.JPanel_LegsFeetOption();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         getContentPane().setLayout(new java.awt.GridBagLayout());
@@ -56,6 +79,7 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
         jTabbedPane_Options.setPreferredSize(new java.awt.Dimension(300, 650));
         jTabbedPane_Options.addTab("Head", HeadOptions);
         jTabbedPane_Options.addTab("Arms/Hands", ArmsHandsOptions);
+        jTabbedPane_Options.addTab("Legs/Feet", LegsFeetOptions);
 
         getContentPane().add(jTabbedPane_Options, new java.awt.GridBagConstraints());
 
@@ -73,10 +97,443 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
         });
     }
 
+    private void adjustEyes(int type, javax.swing.event.ChangeEvent e) {
+
+    }
+
+    private void adjustHands(int type, javax.swing.event.ChangeEvent e) {
+
+    }
+
+    private void adjustForearms(int type, javax.swing.event.ChangeEvent e) {
+
+    }
+
+    private void adjustUpperarms(int type, javax.swing.event.ChangeEvent e) {
+
+    }
+
+    private void adjustFeet(int type, javax.swing.event.ChangeEvent e) {
+
+    }
+
+    private void adjustCalves(int type, javax.swing.event.ChangeEvent e) {
+
+    }
+
+    private void adjustThighs(int type, javax.swing.event.ChangeEvent e) {
+
+    }
+
+    private void adjustChest(int type, javax.swing.event.ChangeEvent e) {
+        SkinnedMeshJoint[] Torso = m_skeleton.get(m_bodyPart.Torso);
+        SkinnedMeshJoint[] LShoulder = m_skeleton.get(m_bodyPart.Left_Shoulder);
+        SkinnedMeshJoint[] RShoulder;
+
+        float adjust    = 0.0f;
+        Vector3f mod    = null;
+        Vector3f modS   = null;
+        Object obj      = e.getSource();
+
+        switch(type)
+        {
+            case 0: // BULK
+            {
+
+                break;
+            }
+            case 1: // BROADNESS
+            {
+                break;
+            }
+        }
+    }
+
+    private void adjustStomach(int type, javax.swing.event.ChangeEvent e) {
+        SkinnedMeshJoint[] Torso = m_skeleton.get(m_bodyPart.Torso);
+
+        float adjust    = 0.0f;
+        Vector3f mod    = null;
+        Vector3f modS   = null;
+        Object obj      = e.getSource();
+
+        switch(type)
+        {
+            case 0: // Roundness
+            {
+                break;
+            }
+            case 1: // Waistline
+            {
+                break;
+            }
+        }
+    }
+
+    private void adjustGluts(int type, javax.swing.event.ChangeEvent e) {
+        SkinnedMeshJoint[] Gluts = m_skeleton.get(m_bodyPart.Torso);
+
+        float adjust    = 0.0f;
+        Vector3f mod    = null;
+        Vector3f modS   = null;
+        Object obj      = e.getSource();
+
+        switch(type)
+        {
+            case 0: // Roundness
+            {
+                break;
+            }
+            case 1: // Sag
+            {
+                break;
+            }
+        }
+    }
+
+    private void adjustBody(int type, javax.swing.event.ChangeEvent e) {
+
+    }
+
+    /** Accessors **/
+    public SceneEssentials getSceneData() {
+        return m_sceneData;
+    }
+
+    public Map<m_bodyPart, SkinnedMeshJoint[]> getSkeletonJoints() {
+        return m_skeleton;
+    }
+
+    public SkinnedMeshJoint[] getSkeletonJointsBySection(int section) {
+        return m_skeleton.get(section);
+    }
+
+    /** Mutators **/
+    public void setSceneData(SceneEssentials scene) {
+        m_sceneData = scene;
+    }
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private imi.gui.JPanel_ArmsHandsOption ArmsHandsOptions;
     private imi.gui.JPanel_HeadOptions HeadOptions;
+    private imi.gui.JPanel_LegsFeetOption LegsFeetOptions;
     private javax.swing.JTabbedPane jTabbedPane_Options;
     // End of variables declaration//GEN-END:variables
 
+////////////////////////////////////////////////////////////////////////////////
+// Helper Functions
+////////////////////////////////////////////////////////////////////////////////
+
+    public void catalogHands() {
+        if (m_sceneData.getAvatar() == null)
+            return;
+
+        SkeletonNode skeleton   = m_sceneData.getAvatar().getSkeleton();
+
+        String[] szLeftHand = new String[] { "leftHand",    "leftHandThumb1",   "leftHandThumb2",   "leftHandThumb3",   "leftHandThumb4",
+                                             "leftPalm",    "leftHandIndex1",   "leftHandIndex2",   "leftHandIndex3",   "leftHandIndex4",
+                                                            "leftHandMiddle1",  "leftHandMiddle2",  "leftHandMiddle3",  "leftHandMiddle4",
+                                                            "leftHandRing1",    "leftHandRing2",    "leftHandRing3",    "leftHandRing4",
+                                                            "leftHandPinky1",   "leftHandPinky2",   "leftHandPinky3",   "leftHandPinky4" };
+        String[] szRightHand = new String[] { "rightHand",  "rightHandThumb1",  "rightHandThumb2",  "rightHandThumb3",  "rightHandThumb4",
+                                              "rightPalm",  "rightHandIndex1",  "rightHandIndex2",  "rightHandIndex3",  "rightHandIndex4",
+                                                            "rightHandMiddle1", "rightHandMiddle2", "rightHandMiddle3", "rightHandMiddle4",
+                                                            "rightHandRing1",   "rightHandRing2",   "rightHandRing3",   "rightHandRing4",
+                                                            "rightHandPinky1",  "rightHandPinky2",  "rightHandPinky3",  "rightHandPinky4"};
+
+        SkinnedMeshJoint[]  left     = new SkinnedMeshJoint[szLeftHand.length];
+        SkinnedMeshJoint[]  right    = new SkinnedMeshJoint[szRightHand.length];
+        int                 iSize    = szLeftHand.length;
+
+        for (int i = 0; i < iSize; i++) {
+            left[i]     = (SkinnedMeshJoint) skeleton.findChild(szLeftHand[i]);
+            right[i]    = (SkinnedMeshJoint) skeleton.findChild(szRightHand[i]);
+        }
+
+        if (m_skeleton == null)
+            m_skeleton = new HashMap<m_bodyPart, SkinnedMeshJoint[]>();
+
+        m_skeleton.put(m_bodyPart.Left_Hand, left);
+        m_skeleton.put(m_bodyPart.Right_Hand, right);
+    }
+
+    public void catalogLowerArms() {
+        if (m_sceneData.getAvatar() == null)
+            return;
+
+        SkeletonNode skeleton   = m_sceneData.getAvatar().getSkeleton();
+
+        String[] szLeftLowerArm     = new String[] { "leftForeArm",     "leftForeArmRoll" };
+        String[] szRightLowerArm    = new String[] { "rightForeArm",    "rightForeArmRoll"};
+
+        SkinnedMeshJoint[]  left     = new SkinnedMeshJoint[szLeftLowerArm.length];
+        SkinnedMeshJoint[]  right    = new SkinnedMeshJoint[szRightLowerArm.length];
+        int                 iSize    = szLeftLowerArm.length;
+
+        for (int i = 0; i < iSize; i++) {
+            left[i]     = (SkinnedMeshJoint) skeleton.findChild(szLeftLowerArm[i]);
+            right[i]    = (SkinnedMeshJoint) skeleton.findChild(szRightLowerArm[i]);
+        }
+
+        if (m_skeleton == null)
+            m_skeleton = new HashMap<m_bodyPart, SkinnedMeshJoint[]>();
+
+        m_skeleton.put(m_bodyPart.Left_LowerArm, left);
+        m_skeleton.put(m_bodyPart.Right_LowerArm, right);
+    }
+
+    public void catalogUpperArms() {
+        if (m_sceneData.getAvatar() == null)
+            return;
+
+        SkeletonNode skeleton   = m_sceneData.getAvatar().getSkeleton();
+
+        String[] szLeftUpperArm     = new String[] { "leftArm",     "leftArmRoll" };
+        String[] szRightUpperArm    = new String[] { "rightArm",    "rightArmRoll" };
+
+        SkinnedMeshJoint[]  left     = new SkinnedMeshJoint[szLeftUpperArm.length];
+        SkinnedMeshJoint[]  right    = new SkinnedMeshJoint[szRightUpperArm.length];
+        int                 iSize    = szLeftUpperArm.length;
+
+        for (int i = 0; i < iSize; i++) {
+            left[i]     = (SkinnedMeshJoint) skeleton.findChild(szLeftUpperArm[i]);
+            right[i]    = (SkinnedMeshJoint) skeleton.findChild(szRightUpperArm[i]);
+        }
+
+        if (m_skeleton == null)
+            m_skeleton = new HashMap<m_bodyPart, SkinnedMeshJoint[]>();
+
+        m_skeleton.put(m_bodyPart.Left_UpperArm, left);
+        m_skeleton.put(m_bodyPart.Right_UpperArm, right);
+    }
+
+    public void catalogShoulders() {
+        if (m_sceneData.getAvatar() == null)
+            return;
+
+        SkeletonNode skeleton   = m_sceneData.getAvatar().getSkeleton();
+
+        String[] szLeftShoulder     = new String[] { "leftShoulder" };
+        String[] szRightShoulder    = new String[] { "rightShoulder" };
+
+        SkinnedMeshJoint[]  left     = new SkinnedMeshJoint[szLeftShoulder.length];
+        SkinnedMeshJoint[]  right    = new SkinnedMeshJoint[szRightShoulder.length];
+        int                 iSize    = szLeftShoulder.length;
+
+        for (int i = 0; i < iSize; i++) {
+            left[i]     = (SkinnedMeshJoint) skeleton.findChild(szLeftShoulder[i]);
+            right[i]    = (SkinnedMeshJoint) skeleton.findChild(szRightShoulder[i]);
+        }
+
+        if (m_skeleton == null)
+            m_skeleton = new HashMap<m_bodyPart, SkinnedMeshJoint[]>();
+
+        m_skeleton.put(m_bodyPart.Left_Shoulder, left);
+        m_skeleton.put(m_bodyPart.Right_Shoulder, right);
+    }
+
+    public void catalogTorso() {
+        if (m_sceneData.getAvatar() == null)
+            return;
+
+        SkeletonNode skeleton   = m_sceneData.getAvatar().getSkeleton();
+
+        String[] szTorso     = new String[] { "Spine", "Spine1", "Spine2" };
+
+        SkinnedMeshJoint[]  torso     = new SkinnedMeshJoint[szTorso.length];
+        int                 iSize    = szTorso.length;
+
+        for (int i = 0; i < iSize; i++) {
+            torso[i]     = (SkinnedMeshJoint) skeleton.findChild(szTorso[i]);
+        }
+
+        if (m_skeleton == null)
+            m_skeleton = new HashMap<m_bodyPart, SkinnedMeshJoint[]>();
+
+        m_skeleton.put(m_bodyPart.Torso, torso);
+    }
+
+    public void catalogUpperLegs() {
+        if (m_sceneData.getAvatar() == null)
+            return;
+
+        SkeletonNode skeleton   = m_sceneData.getAvatar().getSkeleton();
+
+        String[] szLeftUpperLeg     = new String[] { "leftUpLeg",   "leftUpLegRoll" };
+        String[] szRightUpperLeg    = new String[] { "rightUpLeg",  "rightUpLegRoll" };
+
+        SkinnedMeshJoint[]  left     = new SkinnedMeshJoint[szLeftUpperLeg.length];
+        SkinnedMeshJoint[]  right    = new SkinnedMeshJoint[szRightUpperLeg.length];
+        int                 iSize    = szLeftUpperLeg.length;
+
+        for (int i = 0; i < iSize; i++) {
+            left[i]     = (SkinnedMeshJoint) skeleton.findChild(szLeftUpperLeg[i]);
+            right[i]    = (SkinnedMeshJoint) skeleton.findChild(szRightUpperLeg[i]);
+        }
+
+        if (m_skeleton == null)
+            m_skeleton = new HashMap<m_bodyPart, SkinnedMeshJoint[]>();
+
+        m_skeleton.put(m_bodyPart.Left_UpperLeg, left);
+        m_skeleton.put(m_bodyPart.Right_UpperLeg, right);
+    }
+
+    public void catalogLowerLegs() {
+        if (m_sceneData.getAvatar() == null)
+            return;
+
+        SkeletonNode skeleton   = m_sceneData.getAvatar().getSkeleton();
+
+        String[] szLeftLowerLeg     = new String[] { "leftLeg",     "leftLegRoll" };
+        String[] szRightLowerLeg    = new String[] { "rightLeg",    "rightLegRoll" };
+
+        SkinnedMeshJoint[]  left     = new SkinnedMeshJoint[szLeftLowerLeg.length];
+        SkinnedMeshJoint[]  right    = new SkinnedMeshJoint[szRightLowerLeg.length];
+        int                 iSize    = szLeftLowerLeg.length;
+
+        for (int i = 0; i < iSize; i++) {
+            left[i]     = (SkinnedMeshJoint) skeleton.findChild(szLeftLowerLeg[i]);
+            right[i]    = (SkinnedMeshJoint) skeleton.findChild(szRightLowerLeg[i]);
+        }
+
+        if (m_skeleton == null)
+            m_skeleton = new HashMap<m_bodyPart, SkinnedMeshJoint[]>();
+
+        m_skeleton.put(m_bodyPart.Left_LowerLeg, left);
+        m_skeleton.put(m_bodyPart.Right_LowerLeg, right);
+    }
+
+    public void catalogFeet() {
+        if (m_sceneData.getAvatar() == null)
+            return;
+
+        SkeletonNode skeleton   = m_sceneData.getAvatar().getSkeleton();
+
+        String[] szLeftFoot     = new String[] { "leftFoot",    "leftFootBall" };
+        String[] szRightFoot    = new String[] { "rightFoot",   "rightFootBall" };
+
+        SkinnedMeshJoint[]  left     = new SkinnedMeshJoint[szLeftFoot.length];
+        SkinnedMeshJoint[]  right    = new SkinnedMeshJoint[szRightFoot.length];
+        int                 iSize    = szLeftFoot.length;
+
+        for (int i = 0; i < iSize; i++) {
+            left[i]     = (SkinnedMeshJoint) skeleton.findChild(szLeftFoot[i]);
+            right[i]    = (SkinnedMeshJoint) skeleton.findChild(szRightFoot[i]);
+        }
+
+        if (m_skeleton == null)
+            m_skeleton = new HashMap<m_bodyPart, SkinnedMeshJoint[]>();
+
+        m_skeleton.put(m_bodyPart.Left_Foot, left);
+        m_skeleton.put(m_bodyPart.Right_Foot, right);
+    }
+
+    public void catalogHead() {
+        if (m_sceneData.getAvatar() == null)
+            return;
+
+        SkeletonNode skeleton   = m_sceneData.getAvatar().getSkeleton();
+
+        String[] szHead     = new String[] { "Head",            "Jaw",              "Tongue",           "Tongue1",
+                                             "leftLowerLip",    "rightLowerLip",    "leftInnerBrow",    "leftEyeLid",
+                                             "leftOuterBrow",   "leftCheek",        "leftUpperLip",     "leftOuterLip",
+                                             "rightInnerBrow",  "rightOuterBrow",   "rightCheek",       "rightOuterLip",
+                                             "rightUpperLip",   "rightEyeLid",      "leftEye",          "rightEye"};
+
+        SkinnedMeshJoint[]  head     = new SkinnedMeshJoint[szHead.length];
+        int                 iSize    = szHead.length;
+
+        for (int i = 0; i < iSize; i++) {
+            head[i]     = (SkinnedMeshJoint) skeleton.findChild(szHead[i]);
+        }
+
+        if (m_skeleton == null)
+            m_skeleton = new HashMap<m_bodyPart, SkinnedMeshJoint[]>();
+
+        m_skeleton.put(m_bodyPart.Head, head);
+    }
+
+    public void catalogNeck() {
+        if (m_sceneData.getAvatar() == null)
+            return;
+
+        SkeletonNode skeleton   = m_sceneData.getAvatar().getSkeleton();
+
+        String[] szNeck     = new String[] { "Neck" };
+
+        SkinnedMeshJoint[]  neck     = new SkinnedMeshJoint[szNeck.length];
+        int                 iSize    = szNeck.length;
+
+        for (int i = 0; i < iSize; i++) {
+            neck[i]     = (SkinnedMeshJoint) skeleton.findChild(szNeck[i]);
+        }
+
+        if (m_skeleton == null)
+            m_skeleton = new HashMap<m_bodyPart, SkinnedMeshJoint[]>();
+
+        m_skeleton.put(m_bodyPart.Neck, neck);
+    }
+
+    public void catalogEyes() {
+        if (m_sceneData.getAvatar() == null)
+            return;
+
+        SkeletonNode skeleton   = m_sceneData.getAvatar().getSkeleton();
+
+        String[] szEyes     = new String[] { "leftInnerBrow",   "rightInnerBrow",  "leftOuterBrow",    "rightOuterBrow",
+                                             "leftEyeLid",      "rightEyeLid",     "leftEye",          "rightEye",
+                                             "leftCheek",       "rightCheek" };
+
+        SkinnedMeshJoint[]  eyes     = new SkinnedMeshJoint[szEyes.length];
+        int                 iSize    = szEyes.length;
+
+        for (int i = 0; i < iSize; i++) {
+            eyes[i]     = (SkinnedMeshJoint) skeleton.findChild(szEyes[i]);
+        }
+
+        if (m_skeleton == null)
+            m_skeleton = new HashMap<m_bodyPart, SkinnedMeshJoint[]>();
+
+        m_skeleton.put(m_bodyPart.Eyes, eyes);
+    }
+
+    public void catalogLips() {
+        if (m_sceneData.getAvatar() == null)
+            return;
+
+        SkeletonNode skeleton   = m_sceneData.getAvatar().getSkeleton();
+
+        String[] szLips     = new String[] { "leftLowerLip",    "rightLowerLip",    "leftUpperLip",     "rightUpperLip",
+                                             "leftCheek",       "rightCheek",       "leftOuterLip",     "rightOuterLip" };
+
+        SkinnedMeshJoint[]  lips     = new SkinnedMeshJoint[szLips.length];
+        int                 iSize    = szLips.length;
+
+        for (int i = 0; i < iSize; i++) {
+            lips[i]     = (SkinnedMeshJoint) skeleton.findChild(szLips[i]);
+        }
+
+        if (m_skeleton == null)
+            m_skeleton = new HashMap<m_bodyPart, SkinnedMeshJoint[]>();
+
+        m_skeleton.put(m_bodyPart.Lips, lips);
+    }
+
+    public void createJointCatalog() {
+        if (m_sceneData.getAvatar() == null)
+            return;
+
+        catalogHands();
+        catalogLowerArms();
+        catalogUpperArms();
+        catalogShoulders();
+        catalogTorso();
+        catalogUpperLegs();
+        catalogLowerLegs();
+        catalogFeet();
+        catalogHead();
+        catalogNeck();
+        catalogEyes();
+        catalogLips();
+    }
 }

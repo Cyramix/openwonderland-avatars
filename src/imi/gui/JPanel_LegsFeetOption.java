@@ -1,6 +1,19 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+/**
+ * Project Wonderland
+ *
+ * Copyright (c) 2004-2008, Sun Microsystems, Inc., All Rights Reserved
+ *
+ * Redistributions in source code form must reproduce the above
+ * copyright and this condition.
+ *
+ * The contents of this file are subject to the GNU General Public
+ * License, Version 2 (the "License"); you may not use this file
+ * except in compliance with the License. A copy of the License is
+ * available at http://www.opensource.org/licenses/gpl-license.php.
+ *
+ * Sun designates this particular file as subject to the "Classpath"
+ * exception as provided by Sun in the License file that accompanied
+ * this code.
  */
 
 /*
@@ -13,7 +26,7 @@ package imi.gui;
 
 /**
  *
- * @author ptruong
+ * @author Paul Viet Nguyen Truong (ptruong)
  */
 public class JPanel_LegsFeetOption extends javax.swing.JPanel {
 
@@ -35,15 +48,31 @@ public class JPanel_LegsFeetOption extends javax.swing.JPanel {
         jTabbedPane_LegsFeet = new javax.swing.JTabbedPane();
         jPanel_Upperlegs = new javax.swing.JPanel();
         jPanel_ULLength = new javax.swing.JPanel();
-        UpperLeftArm_Length = new imi.gui.JPanel_VerticalSlider();
-        UpperRightArm_Length = new imi.gui.JPanel_VerticalSlider();
-        jCheckBox_SyncUALength = new javax.swing.JCheckBox();
+        UpperLeftLeg_Length = new imi.gui.JPanel_VerticalSlider();
+        UpperRightLeg_Length = new imi.gui.JPanel_VerticalSlider();
+        jCheckBox_SyncULLength = new javax.swing.JCheckBox();
         jPanel_ULThickness = new javax.swing.JPanel();
-        UpperLeftArm_Thickness = new imi.gui.JPanel_HorizontalSlider();
-        UpperRightArm_Thickness = new imi.gui.JPanel_HorizontalSlider();
-        jCheckBox_SyncUAThickness = new javax.swing.JCheckBox();
+        UpperLeftLeg_Thickness = new imi.gui.JPanel_HorizontalSlider();
+        UpperRightLeg_Thickness = new imi.gui.JPanel_HorizontalSlider();
+        jCheckBox_SyncULThickness = new javax.swing.JCheckBox();
         jPanel_Lowerlegs = new javax.swing.JPanel();
+        jPanel_LLLength = new javax.swing.JPanel();
+        LowerLeftLeg_Length = new imi.gui.JPanel_VerticalSlider();
+        LowerRightLeg_Length = new imi.gui.JPanel_VerticalSlider();
+        jCheckBox_SyncLLLength = new javax.swing.JCheckBox();
+        jPanel_LLThickness = new javax.swing.JPanel();
+        LowerLeftLeg_Thickness = new imi.gui.JPanel_HorizontalSlider();
+        LowerRightLeg_Thickness = new imi.gui.JPanel_HorizontalSlider();
+        jCheckBox_SyncLLThickness = new javax.swing.JCheckBox();
         jPanel_Feet = new javax.swing.JPanel();
+        jPanel_FeetLength = new javax.swing.JPanel();
+        LeftFoot_Length = new imi.gui.JPanel_VerticalSlider();
+        RightFoot_Length = new imi.gui.JPanel_VerticalSlider();
+        jCheckBox_SyncFeetLength = new javax.swing.JCheckBox();
+        jPanel_FeetThickness = new javax.swing.JPanel();
+        LeftFoot_Thickness = new imi.gui.JPanel_HorizontalSlider();
+        RightFoot_Thickness = new imi.gui.JPanel_HorizontalSlider();
+        jCheckBox_SyncFeetThickness = new javax.swing.JCheckBox();
 
         setMinimumSize(new java.awt.Dimension(270, 600));
         setPreferredSize(new java.awt.Dimension(270, 600));
@@ -52,53 +81,53 @@ public class JPanel_LegsFeetOption extends javax.swing.JPanel {
 
         jPanel_Upperlegs.setLayout(new java.awt.GridBagLayout());
 
-        jPanel_ULLength.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Left & Right Upperarm Length", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Lucida Grande", 0, 13), new java.awt.Color(0, 0, 255))); // NOI18N
+        jPanel_ULLength.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Left & Right Thigh Length", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Lucida Grande", 0, 13), new java.awt.Color(0, 0, 255))); // NOI18N
         jPanel_ULLength.setMinimumSize(new java.awt.Dimension(230, 230));
         jPanel_ULLength.setPreferredSize(new java.awt.Dimension(230, 230));
         jPanel_ULLength.setLayout(new java.awt.GridBagLayout());
-        jPanel_ULLength.add(UpperLeftArm_Length, new java.awt.GridBagConstraints());
-        jPanel_ULLength.add(UpperRightArm_Length, new java.awt.GridBagConstraints());
+        jPanel_ULLength.add(UpperLeftLeg_Length, new java.awt.GridBagConstraints());
+        jPanel_ULLength.add(UpperRightLeg_Length, new java.awt.GridBagConstraints());
 
-        jCheckBox_SyncUALength.setText("Lock Sliders");
-        jCheckBox_SyncUALength.setMinimumSize(new java.awt.Dimension(120, 23));
-        jCheckBox_SyncUALength.setPreferredSize(new java.awt.Dimension(120, 23));
+        jCheckBox_SyncULLength.setText("Lock Sliders");
+        jCheckBox_SyncULLength.setMinimumSize(new java.awt.Dimension(120, 23));
+        jCheckBox_SyncULLength.setPreferredSize(new java.awt.Dimension(120, 23));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
         gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
-        jPanel_ULLength.add(jCheckBox_SyncUALength, gridBagConstraints);
+        jPanel_ULLength.add(jCheckBox_SyncULLength, gridBagConstraints);
 
         jPanel_Upperlegs.add(jPanel_ULLength, new java.awt.GridBagConstraints());
 
-        jPanel_ULThickness.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Left & Right Upperarm Thickness", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Lucida Grande", 0, 13), new java.awt.Color(0, 0, 255))); // NOI18N
+        jPanel_ULThickness.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Left & Right Thigh Thickness", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Lucida Grande", 0, 13), new java.awt.Color(0, 0, 255))); // NOI18N
         jPanel_ULThickness.setMinimumSize(new java.awt.Dimension(230, 230));
         jPanel_ULThickness.setPreferredSize(new java.awt.Dimension(230, 230));
         jPanel_ULThickness.setLayout(new java.awt.GridBagLayout());
 
-        UpperLeftArm_Thickness.setMinimumSize(new java.awt.Dimension(109, 57));
-        UpperLeftArm_Thickness.setPreferredSize(new java.awt.Dimension(109, 57));
+        UpperLeftLeg_Thickness.setMinimumSize(new java.awt.Dimension(109, 57));
+        UpperLeftLeg_Thickness.setPreferredSize(new java.awt.Dimension(109, 57));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
-        jPanel_ULThickness.add(UpperLeftArm_Thickness, gridBagConstraints);
+        jPanel_ULThickness.add(UpperLeftLeg_Thickness, gridBagConstraints);
 
-        UpperRightArm_Thickness.setMinimumSize(new java.awt.Dimension(109, 57));
-        UpperRightArm_Thickness.setParentFrame(null);
-        UpperRightArm_Thickness.setPreferredSize(new java.awt.Dimension(109, 57));
+        UpperRightLeg_Thickness.setMinimumSize(new java.awt.Dimension(109, 57));
+        UpperRightLeg_Thickness.setParentFrame(null);
+        UpperRightLeg_Thickness.setPreferredSize(new java.awt.Dimension(109, 57));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 0;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        jPanel_ULThickness.add(UpperRightArm_Thickness, gridBagConstraints);
+        jPanel_ULThickness.add(UpperRightLeg_Thickness, gridBagConstraints);
 
-        jCheckBox_SyncUAThickness.setText("Lock Sliders");
-        jCheckBox_SyncUAThickness.setMinimumSize(new java.awt.Dimension(120, 23));
-        jCheckBox_SyncUAThickness.setPreferredSize(new java.awt.Dimension(120, 23));
+        jCheckBox_SyncULThickness.setText("Lock Sliders");
+        jCheckBox_SyncULThickness.setMinimumSize(new java.awt.Dimension(120, 23));
+        jCheckBox_SyncULThickness.setPreferredSize(new java.awt.Dimension(120, 23));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
         gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
-        jPanel_ULThickness.add(jCheckBox_SyncUAThickness, gridBagConstraints);
+        jPanel_ULThickness.add(jCheckBox_SyncULThickness, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -107,29 +136,117 @@ public class JPanel_LegsFeetOption extends javax.swing.JPanel {
 
         jTabbedPane_LegsFeet.addTab("Thighs", jPanel_Upperlegs);
 
-        org.jdesktop.layout.GroupLayout jPanel_LowerlegsLayout = new org.jdesktop.layout.GroupLayout(jPanel_Lowerlegs);
-        jPanel_Lowerlegs.setLayout(jPanel_LowerlegsLayout);
-        jPanel_LowerlegsLayout.setHorizontalGroup(
-            jPanel_LowerlegsLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 224, Short.MAX_VALUE)
-        );
-        jPanel_LowerlegsLayout.setVerticalGroup(
-            jPanel_LowerlegsLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 579, Short.MAX_VALUE)
-        );
+        jPanel_Lowerlegs.setLayout(new java.awt.GridBagLayout());
+
+        jPanel_LLLength.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Left & Right Calf Length", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Lucida Grande", 0, 13), new java.awt.Color(0, 0, 255))); // NOI18N
+        jPanel_LLLength.setMinimumSize(new java.awt.Dimension(230, 230));
+        jPanel_LLLength.setPreferredSize(new java.awt.Dimension(230, 230));
+        jPanel_LLLength.setLayout(new java.awt.GridBagLayout());
+        jPanel_LLLength.add(LowerLeftLeg_Length, new java.awt.GridBagConstraints());
+        jPanel_LLLength.add(LowerRightLeg_Length, new java.awt.GridBagConstraints());
+
+        jCheckBox_SyncLLLength.setText("Lock Sliders");
+        jCheckBox_SyncLLLength.setMinimumSize(new java.awt.Dimension(120, 23));
+        jCheckBox_SyncLLLength.setPreferredSize(new java.awt.Dimension(120, 23));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+        jPanel_LLLength.add(jCheckBox_SyncLLLength, gridBagConstraints);
+
+        jPanel_Lowerlegs.add(jPanel_LLLength, new java.awt.GridBagConstraints());
+
+        jPanel_LLThickness.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Left & Right Clalf Thickness", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Lucida Grande", 0, 13), new java.awt.Color(0, 0, 255))); // NOI18N
+        jPanel_LLThickness.setMinimumSize(new java.awt.Dimension(230, 230));
+        jPanel_LLThickness.setPreferredSize(new java.awt.Dimension(230, 230));
+        jPanel_LLThickness.setLayout(new java.awt.GridBagLayout());
+
+        LowerLeftLeg_Thickness.setMinimumSize(new java.awt.Dimension(109, 57));
+        LowerLeftLeg_Thickness.setPreferredSize(new java.awt.Dimension(109, 57));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        jPanel_LLThickness.add(LowerLeftLeg_Thickness, gridBagConstraints);
+
+        LowerRightLeg_Thickness.setMinimumSize(new java.awt.Dimension(109, 57));
+        LowerRightLeg_Thickness.setParentFrame(null);
+        LowerRightLeg_Thickness.setPreferredSize(new java.awt.Dimension(109, 57));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        jPanel_LLThickness.add(LowerRightLeg_Thickness, gridBagConstraints);
+
+        jCheckBox_SyncLLThickness.setText("Lock Sliders");
+        jCheckBox_SyncLLThickness.setMinimumSize(new java.awt.Dimension(120, 23));
+        jCheckBox_SyncLLThickness.setPreferredSize(new java.awt.Dimension(120, 23));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+        jPanel_LLThickness.add(jCheckBox_SyncLLThickness, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        jPanel_Lowerlegs.add(jPanel_LLThickness, gridBagConstraints);
 
         jTabbedPane_LegsFeet.addTab("Calves", jPanel_Lowerlegs);
 
-        org.jdesktop.layout.GroupLayout jPanel_FeetLayout = new org.jdesktop.layout.GroupLayout(jPanel_Feet);
-        jPanel_Feet.setLayout(jPanel_FeetLayout);
-        jPanel_FeetLayout.setHorizontalGroup(
-            jPanel_FeetLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 224, Short.MAX_VALUE)
-        );
-        jPanel_FeetLayout.setVerticalGroup(
-            jPanel_FeetLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 579, Short.MAX_VALUE)
-        );
+        jPanel_Feet.setLayout(new java.awt.GridBagLayout());
+
+        jPanel_FeetLength.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Left & Right Feet Length", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Lucida Grande", 0, 13), new java.awt.Color(0, 0, 255))); // NOI18N
+        jPanel_FeetLength.setMinimumSize(new java.awt.Dimension(230, 230));
+        jPanel_FeetLength.setPreferredSize(new java.awt.Dimension(230, 230));
+        jPanel_FeetLength.setLayout(new java.awt.GridBagLayout());
+        jPanel_FeetLength.add(LeftFoot_Length, new java.awt.GridBagConstraints());
+        jPanel_FeetLength.add(RightFoot_Length, new java.awt.GridBagConstraints());
+
+        jCheckBox_SyncFeetLength.setText("Lock Sliders");
+        jCheckBox_SyncFeetLength.setMinimumSize(new java.awt.Dimension(120, 23));
+        jCheckBox_SyncFeetLength.setPreferredSize(new java.awt.Dimension(120, 23));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+        jPanel_FeetLength.add(jCheckBox_SyncFeetLength, gridBagConstraints);
+
+        jPanel_Feet.add(jPanel_FeetLength, new java.awt.GridBagConstraints());
+
+        jPanel_FeetThickness.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Left & Right Feet Thickness", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Lucida Grande", 0, 13), new java.awt.Color(0, 0, 255))); // NOI18N
+        jPanel_FeetThickness.setMinimumSize(new java.awt.Dimension(230, 230));
+        jPanel_FeetThickness.setPreferredSize(new java.awt.Dimension(230, 230));
+        jPanel_FeetThickness.setLayout(new java.awt.GridBagLayout());
+
+        LeftFoot_Thickness.setMinimumSize(new java.awt.Dimension(109, 57));
+        LeftFoot_Thickness.setPreferredSize(new java.awt.Dimension(109, 57));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        jPanel_FeetThickness.add(LeftFoot_Thickness, gridBagConstraints);
+
+        RightFoot_Thickness.setMinimumSize(new java.awt.Dimension(109, 57));
+        RightFoot_Thickness.setParentFrame(null);
+        RightFoot_Thickness.setPreferredSize(new java.awt.Dimension(109, 57));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        jPanel_FeetThickness.add(RightFoot_Thickness, gridBagConstraints);
+
+        jCheckBox_SyncFeetThickness.setText("Lock Sliders");
+        jCheckBox_SyncFeetThickness.setMinimumSize(new java.awt.Dimension(120, 23));
+        jCheckBox_SyncFeetThickness.setPreferredSize(new java.awt.Dimension(120, 23));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+        jPanel_FeetThickness.add(jCheckBox_SyncFeetThickness, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        jPanel_Feet.add(jPanel_FeetThickness, gridBagConstraints);
 
         jTabbedPane_LegsFeet.addTab("Feet", jPanel_Feet);
 
@@ -149,13 +266,29 @@ public class JPanel_LegsFeetOption extends javax.swing.JPanel {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private imi.gui.JPanel_VerticalSlider UpperLeftArm_Length;
-    private imi.gui.JPanel_HorizontalSlider UpperLeftArm_Thickness;
-    private imi.gui.JPanel_VerticalSlider UpperRightArm_Length;
-    private imi.gui.JPanel_HorizontalSlider UpperRightArm_Thickness;
-    private javax.swing.JCheckBox jCheckBox_SyncUALength;
-    private javax.swing.JCheckBox jCheckBox_SyncUAThickness;
+    private imi.gui.JPanel_VerticalSlider LeftFoot_Length;
+    private imi.gui.JPanel_HorizontalSlider LeftFoot_Thickness;
+    private imi.gui.JPanel_VerticalSlider LowerLeftLeg_Length;
+    private imi.gui.JPanel_HorizontalSlider LowerLeftLeg_Thickness;
+    private imi.gui.JPanel_VerticalSlider LowerRightLeg_Length;
+    private imi.gui.JPanel_HorizontalSlider LowerRightLeg_Thickness;
+    private imi.gui.JPanel_VerticalSlider RightFoot_Length;
+    private imi.gui.JPanel_HorizontalSlider RightFoot_Thickness;
+    private imi.gui.JPanel_VerticalSlider UpperLeftLeg_Length;
+    private imi.gui.JPanel_HorizontalSlider UpperLeftLeg_Thickness;
+    private imi.gui.JPanel_VerticalSlider UpperRightLeg_Length;
+    private imi.gui.JPanel_HorizontalSlider UpperRightLeg_Thickness;
+    private javax.swing.JCheckBox jCheckBox_SyncFeetLength;
+    private javax.swing.JCheckBox jCheckBox_SyncFeetThickness;
+    private javax.swing.JCheckBox jCheckBox_SyncLLLength;
+    private javax.swing.JCheckBox jCheckBox_SyncLLThickness;
+    private javax.swing.JCheckBox jCheckBox_SyncULLength;
+    private javax.swing.JCheckBox jCheckBox_SyncULThickness;
     private javax.swing.JPanel jPanel_Feet;
+    private javax.swing.JPanel jPanel_FeetLength;
+    private javax.swing.JPanel jPanel_FeetThickness;
+    private javax.swing.JPanel jPanel_LLLength;
+    private javax.swing.JPanel jPanel_LLThickness;
     private javax.swing.JPanel jPanel_Lowerlegs;
     private javax.swing.JPanel jPanel_ULLength;
     private javax.swing.JPanel jPanel_ULThickness;

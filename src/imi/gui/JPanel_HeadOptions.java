@@ -30,7 +30,7 @@ import javax.swing.JFrame;
  *
  * @author Paul Viet Nguyen Truong (ptruong)
  */
-public class JPanel_HeadOptions extends javax.swing.JPanel {
+public class JPanel_HeadOptions extends AbstractOptions {
 ////////////////////////////////////////////////////////////////////////////////
 // CLASS DATA MEMBERS
 ////////////////////////////////////////////////////////////////////////////////
@@ -450,17 +450,8 @@ public class JPanel_HeadOptions extends javax.swing.JPanel {
         m_baseFrame = frame;
     }
 
-    public void setComponentParentFrames() {
-        LeftEye_HPos.setParentFrame(m_baseFrame);
-        LeftEye_Size.setParentFrame(m_baseFrame);
-        LeftEye_VPos.setParentFrame(m_baseFrame);
-        LeftEye_Width.setParentFrame(m_baseFrame);
-        LowerLip_Size.setParentFrame(m_baseFrame);
-        Mouth_Width.setParentFrame(m_baseFrame);
-        RightEye_HPos.setParentFrame(m_baseFrame);
-        RightEye_Size.setParentFrame(m_baseFrame);
-        RightEye_VPos.setParentFrame(m_baseFrame);
-        RightEye_Width.setParentFrame(m_baseFrame);
-        UpperLip_Size.setParentFrame(m_baseFrame);
+    @Override
+    public void notifyParent() {
+
     }
 }
