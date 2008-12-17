@@ -53,7 +53,7 @@ public class EyeBall extends PPolygonSkinnedMeshInstance
     
     private boolean bInCone = false;
     private EyeBall otherEye = null;
-
+    
     /**
      * Construct a new eyeball using the provided mesh as the eye mesh, the model
      * instance provided is the eyeball's owner, and the pscene containing both.

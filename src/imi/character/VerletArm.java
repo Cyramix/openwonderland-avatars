@@ -60,6 +60,10 @@ public class VerletArm
     /** Used as a pointing target for the arm **/
     private Vector3f pointAtLocation = null;
 
+    
+    private float    armTimer         = 0.0f;
+    private float    armTimeTick      = 1.0f / 60.0f;
+    
     /**
      * Construct a new verlet arm attached to the provided joint as the shoulder,
      * belonging to the provided model instance.
@@ -82,11 +86,18 @@ public class VerletArm
     }
 
     /**
-     * Update the simulation with the given time step.
-     * @param physicsUpdateTime The time step
+     * Update the simulation
+     * @param deltaTime
      */
-    public void update(float physicsUpdateTime) 
+    public void update(float deltaTime) 
     {
+        // Updates occure at a fixed interval
+        armTimer += deltaTime;
+        if (armTimer < armTimeTick)
+            return;
+        armTimer  = 0.0f;
+        deltaTime = armTimeTick;
+        
         // Attach the first particle to the shoulder joint
         particles.get(shoulder).position(shoulderJoint.getTransform().getWorldMatrix(false).getTranslation());
         // If we are pointing, use the pointAt method, otherwise just run the simulation
@@ -141,7 +152,7 @@ public class VerletArm
             else
                 particles.get(i).setForceAccumulator(Vector3f.ZERO);
             particles.get(i).scaleVelocity(velocityDampener);
-            particles.get(i).verletIntegration(physicsUpdateTime);
+            particles.get(i).verletIntegration(deltaTime);
 	}
         
 	// Solving constraints by relaxation

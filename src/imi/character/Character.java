@@ -126,18 +126,9 @@ public abstract class Character extends Entity implements SpatialObject, Animati
     protected ObjectCollection              m_objectCollection      = null;
     protected CharacterAnimationProcessor   m_AnimationProcessor    = null;
     protected TransitionQueue               m_facialAnimationQ      = null;
-    
-    protected EyeBall                       m_leftEyeBall           = null;
-    protected EyeBall                       m_rightEyeBall          = null;
-    protected SkinnedMeshJoint              m_headJoint             = null;
-    protected boolean                       m_bEyesWander           = true;
-    protected Vector3f                      m_eyesWanderOffset      = new Vector3f();
-    private float                           m_eyesWanderCounter     = 0.0f;
-    private int                             m_eyesWanderIntCounter  = 0;
+    protected CharacterEyes                 m_eyes                  = null;
     protected VerletArm                     m_arm                   = null;
     private VerletSkeletonFlatteningManipulator m_skeletonManipulator = null;
-    private float                           m_armTimer              = 0.0f;
-    private float                           m_armTimeTick           = 1.0f / 60.0f;
 
     /**
      * Sets up the mtgame entity 
@@ -287,23 +278,14 @@ public abstract class Character extends Entity implements SpatialObject, Animati
                     // Set animations and custom meshes
                     excecuteAttributes(m_attributes, false);
                     
-                    // Gimme them eyeballs
-                    PPolygonSkinnedMeshInstance leftEye = (PPolygonSkinnedMeshInstance) m_skeleton.findChild("leftEyeGeoShape");
-                    m_leftEyeBall = new EyeBall(leftEye, m_modelInst, m_pscene);
-                    leftEye.getParent().replaceChild(leftEye, m_leftEyeBall, true);
-                    PPolygonSkinnedMeshInstance rightEye = (PPolygonSkinnedMeshInstance) m_skeleton.findChild("rightEyeGeoShape");
-                    m_rightEyeBall = new EyeBall(rightEye, m_modelInst, m_pscene);
-                    rightEye.getParent().replaceChild(rightEye, m_rightEyeBall, true);
-                    m_leftEyeBall.setOtherEye(m_rightEyeBall);
-                    m_rightEyeBall.setOtherEye(m_leftEyeBall);
-
+                    // Set eyes
+                    m_eyes = new CharacterEyes(m_skeleton, m_modelInst, m_pscene, m_wm);
+                    
                     // Set material
 //                    m_skeleton.setShaderOnSkinnedMeshes(new VertDeformerWithSpecAndNormalMap(m_wm));
 //                    m_skeleton.setShaderOnMeshes(new NormalAndSpecularMapShader(m_wm));
                     setSkinnedMeshShaders();
                     setMeshShaders();
-                    m_leftEyeBall.applyShader(m_wm);
-                    m_rightEyeBall.applyShader(m_wm);
 
                     // Facial animation state is designated to id (and index) 1
                     AnimationState facialAnimationState = new AnimationState(1);
@@ -332,7 +314,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
 //                    for(PPolygonSkinnedMeshInstance mesh : skinnedMeshes)
 //                        mesh.setJointManipulator(m_armJointManipulator);
                     // New verlet skeleton manipulator
-                    m_skeletonManipulator = new VerletSkeletonFlatteningManipulator(m_arm, m_leftEyeBall, m_rightEyeBall, m_skeleton);
+                    m_skeletonManipulator = new VerletSkeletonFlatteningManipulator(m_arm, m_eyes.getLeftEyeBall(), m_eyes.getRightEyeBall(), m_skeleton);
                     m_arm.setSkeletonManipulator(m_skeletonManipulator);
                     //m_arm.setPointAtLocation(Vector3f.UNIT_Y.mult(2.0f)); // test pointing, set to null to stop pointing 
                 }
@@ -871,68 +853,14 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         
         if (m_attributes.isUseSimpleStaticModel())
             m_modelInst.setDirty(true, true);
-        
-        updateEyes(deltaTime);
+
+        if (m_eyes != null)
+            m_eyes.updateEyes(deltaTime);
         
         if (m_arm != null && m_arm.isEnabled())
-        {
-            m_armTimer += deltaTime;
-            if (m_armTimer >= m_armTimeTick)
-            {
-                m_armTimer = 0.0f;
-                m_arm.update(m_armTimeTick);
-            }
-        }
+            m_arm.update(deltaTime);
     }
 
-    /**
-     * Perform eyeball behavior. This method is driven by the update method
-     * @param deltaTime The timestep
-     */
-    private void updateEyes(float deltaTime)
-    {
-        if (!m_bEyesWander || m_leftEyeBall == null || m_rightEyeBall == null)
-            return;
-
-        if (m_headJoint == null)
-            m_headJoint = (SkinnedMeshJoint)m_modelInst.findChild("Head");
-                    
-        // Position the target in fornt of the eyes
-        Vector3f target = m_modelInst.getTransform().getWorldMatrix(false).getTranslation();
-        target.addLocal(m_modelInst.getTransform().getWorldMatrix(false).getLocalZ().mult(5.0f));
-        target.addLocal(m_headJoint.getTransform().getWorldMatrix(false).getTranslation().add(Vector3f.UNIT_Y.mult(-1.4f)));
-        //Vector3f targetOrigin = new Vector3f(target);
-        
-        // Offset the target with a quick and dirty wander algorythim
-        m_eyesWanderCounter += deltaTime;
-        if (m_eyesWanderCounter > (float)Math.random() + 0.15f)
-        {
-            m_eyesWanderIntCounter += 1;
-            m_eyesWanderCounter = 0.0f;
-            
-            float randomScale = 0.15f;
-            
-            if (Math.random() > 0.5)
-                randomScale *= -1.0f;
-            m_eyesWanderOffset.x += (float)Math.random() * randomScale;
-            if (Math.random() > 0.5)
-                randomScale *= -1.0f;
-            m_eyesWanderOffset.y += (float)Math.random() * randomScale;
-            if (Math.random() > 0.5)
-                randomScale *= -1.0f;
-            m_eyesWanderOffset.z += (float)Math.random() * randomScale;
-        }
-        if (m_eyesWanderIntCounter > 20)
-        {
-            m_eyesWanderIntCounter = 0;
-            m_eyesWanderOffset.zero();
-        }
-        target.addLocal(m_eyesWanderOffset);
-        
-        m_leftEyeBall.setTarget(target);
-        m_rightEyeBall.setTarget(target);
-    }
-    
     /**
      * Sets the mesh and skeleton references after load time
      */
@@ -1165,12 +1093,8 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         return m_facialAnimationQ;
     }
 
-    public EyeBall getLeftEyeBall() {
-        return m_leftEyeBall;
-    }
-
-    public EyeBall getRightEyeBall() {
-        return m_rightEyeBall;
+    public CharacterEyes getEyes() {
+        return m_eyes;
     }
 
     public VerletArm getArm() {
@@ -1254,26 +1178,6 @@ public abstract class Character extends Entity implements SpatialObject, Animati
 //        pRootInstruction.addAttachmentInstruction(InstructionNames.addSkinnedMesh, "head2Shape");
         
         pProcessor.execute(pRootInstruction);
-    }
-
-    public boolean isEyesWander() {
-        return m_bEyesWander;
-    }
-
-    public void setEyesWander(boolean m_bEyesWander) {
-        this.m_bEyesWander = m_bEyesWander;
-    }
-    
-    /**
-     * Will set m_bEyesWander to false and set the target
-     * of both eyes.
-     * @param target
-     */
-    public void setEyesTarget(Vector3f target)
-    {
-        m_bEyesWander = false;
-        m_leftEyeBall.setTarget(target);
-        m_rightEyeBall.setTarget(target);
     }
 
     /**
