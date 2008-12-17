@@ -15,8 +15,9 @@
  * exception as provided by Sun in the License file that accompanied 
  * this code.
  */
-package imi.character;
+package imi.character.steering;
 
+import imi.character.*;
 import imi.character.ninja.NinjaContext;
 import imi.character.objects.LocationNode;
 import imi.character.objects.SpatialObject;

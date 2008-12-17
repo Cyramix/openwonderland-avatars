@@ -48,7 +48,6 @@ public class VerletSkeletonFlatteningManipulator implements SkeletonFlatteningMa
     private boolean armEnabled = false;
 
     private Vector3f localX = new Vector3f();
-    private PMatrix  wristAnimationDelta = new PMatrix();
     
     public VerletSkeletonFlatteningManipulator(VerletArm verletArm, EyeBall left, EyeBall right, SkeletonNode skeletonNode)
     {
@@ -132,7 +131,9 @@ public class VerletSkeletonFlatteningManipulator implements SkeletonFlatteningMa
         matrix.setLocalY(localY);
         matrix.setLocalZ(localZ);
         matrix.setTranslation(shoulderPosition);
-        matrix.mul(skeleton.getJointLocalModifier(shoulder));
+        
+        if (shoulderJoint.getSkeletonModifier() != null)
+            matrix.mul(shoulderJoint.getSkeletonModifier());
     }
 
     private void modifyUpperArm(PMatrix matrix) 
@@ -155,7 +156,9 @@ public class VerletSkeletonFlatteningManipulator implements SkeletonFlatteningMa
         matrix.setLocalY(localY);
         matrix.setLocalZ(localZ);
         matrix.setTranslation(shoulderPosition.add(offsetFromShoulder));
-        matrix.mul(skeleton.getJointLocalModifier(upperArm));
+        
+        if (skeleton.getSkinnedMeshJoint(upperArm).getSkeletonModifier() != null)
+            matrix.mul(skeleton.getSkinnedMeshJoint(upperArm).getSkeletonModifier());
     }
     
     private void modifyElbow(PMatrix matrix) 
@@ -182,7 +185,9 @@ public class VerletSkeletonFlatteningManipulator implements SkeletonFlatteningMa
         matrix.setLocalY(localY);
         matrix.setLocalZ(localZ);
         matrix.setTranslation(elbowPosition);
-        matrix.mul(skeleton.getJointLocalModifier(elbow));
+        
+        if (skeleton.getSkinnedMeshJoint(elbow).getSkeletonModifier() != null)
+            matrix.mul(skeleton.getSkinnedMeshJoint(elbow).getSkeletonModifier());
         
     }
 
@@ -212,17 +217,12 @@ public class VerletSkeletonFlatteningManipulator implements SkeletonFlatteningMa
         matrix.setLocalY(localY);
         matrix.setLocalZ(localZ);
         matrix.setTranslation(elbowPosition.add(elbowToWrist));
-        matrix.mul(skeleton.getJointLocalModifier(foreArm));
+        
+        if (skeleton.getSkinnedMeshJoint(foreArm).getSkeletonModifier() != null)
+            matrix.mul(skeleton.getSkinnedMeshJoint(foreArm).getSkeletonModifier());
     }
 
     private void modifyWrist(PMatrix matrix)
-    {
-        wristAnimationDelta.set(matrix.inverse());   
-        calculateWrist(matrix);
-        wristAnimationDelta.mul(matrix, wristAnimationDelta);   
-    }
-    
-    private void calculateWrist(PMatrix matrix) 
     {
         PMatrix inverseModelWorldMatrix = arm.calculateInverseModelWorldMatrix();
         
@@ -258,12 +258,8 @@ public class VerletSkeletonFlatteningManipulator implements SkeletonFlatteningMa
         fixRotation.buildRotationZ((float)Math.toRadians(40));
         matrix.mul(fixRotation);
         
-        matrix.mul(skeleton.getJointLocalModifier(wrist));
-    }
-    
-    private void modifyHand(PMatrix matrix)
-    {
-        matrix.mul(wristAnimationDelta, matrix);
+        if (skeleton.getSkinnedMeshJoint(wrist).getSkeletonModifier() != null)
+            matrix.mul(skeleton.getSkinnedMeshJoint(wrist).getSkeletonModifier());
     }
     
     public void setArmEnabled(boolean bEnabled) 

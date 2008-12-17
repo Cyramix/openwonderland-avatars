@@ -39,11 +39,11 @@ public class GameState extends NamedUpdatableObject
     /** The stack of transitions **/
     private final Stack<TransitionObject> transitionStack = new Stack<TransitionObject>();
 
-    boolean bReverseTransitionCheckTraversal = false;
-    /** Optional string naming the animation associated with this state **/
+    boolean bReverseTransitionCheckTraversal = false; // TODO
+    /** Name of the animation associated with this state **/
     protected String    animationName       = null;
     /** Default playback speed for any animations used by this state **/
-    protected float     animationSpeed      = 0.8f;
+    protected float     animationSpeed      = 1.0f;
     private boolean     bReverseAnimation   = false;
     /** Length of time to transition **/
     private float       transitionDuration  = 0.2f;
@@ -93,7 +93,7 @@ public class GameState extends NamedUpdatableObject
     /**
      * Override this method to initialize the state's action map.
      * By default the call will be forwarded to the context to initialize
-     * the context's default action map.
+     * with the context's default action map.
      */
     protected void initActionMap()
     {
@@ -216,8 +216,6 @@ public class GameState extends NamedUpdatableObject
     @Override
     public void update(float deltaTime)
     {
-        // This method is derived from interface cosmic.Updatable
-        
         // Set animation
         if (!bAnimationSet)
             setAnimation();
@@ -296,7 +294,7 @@ public class GameState extends NamedUpdatableObject
         {
             result = true;
             // Set reverse
-            if (bReverseAnimation)
+            if (reverseAnimation)
                 skeleton.getAnimationState().setReverseAnimation(true);
             else
                 skeleton.getAnimationState().setReverseAnimation(false);

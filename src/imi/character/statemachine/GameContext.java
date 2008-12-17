@@ -19,7 +19,6 @@ package imi.character.statemachine;
 
 import imi.character.CharacterController;
 import imi.character.CharacterSteeringHelm;
-import imi.character.ninja.NinjaController;
 import imi.character.statemachine.GameState.Action;
 import imi.scene.animation.AnimationListener.AnimationMessageType;
 import imi.scene.polygonmodel.PPolygonMeshInstance;
@@ -138,9 +137,12 @@ public class GameContext extends NamedUpdatableObject
         m_registry.put(methodName, state);
     }
 
-
     public HashMap<Class, GameState> getStateMapping() {
         return gameStates;
+    }
+    
+    public GameState getState(Class stateClass) {
+        return gameStates.get(stateClass);
     }
 
     public imi.character.Character getCharacter(){
@@ -150,7 +152,7 @@ public class GameContext extends NamedUpdatableObject
     /**
      * Sends the provided message to the currentState (if that state is non-null)
      * @param message
-     * @param stateID
+     * @param stateID - AnimationState ID, currently 0 for body, 1 for face
      */
     public void notifyAnimationMessage(AnimationMessageType message, int stateID) {
         if (currentState != null && stateID == 0)
@@ -158,10 +160,10 @@ public class GameContext extends NamedUpdatableObject
     }
     
     /**
-     * Set the current state to the one provided if it is non-null
+     * Exit current state and enter the one provided if it is not null
      * @param newState
      */
-    public void setCurrentState(GameState newState) // protected
+    public void setCurrentState(GameState newState)
     {
         if (currentState == newState)
             return;
@@ -183,9 +185,6 @@ public class GameContext extends NamedUpdatableObject
         if (!initalized)
             initialize();
         
-        //System.out.println("GameContext updating...");
-        // This method is derived from interface cosmic.Updatable
-        // to do: code goes here
         if (currentState != null && currentState.enabledState)
             currentState.update(deltaTime);
     }

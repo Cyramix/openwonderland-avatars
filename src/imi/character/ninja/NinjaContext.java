@@ -18,9 +18,9 @@
 package imi.character.ninja;
 
 import imi.character.CharacterController;
-import imi.character.FollowPath;
-import imi.character.GoSit;
-import imi.character.GoTo;
+import imi.character.steering.FollowPath;
+import imi.character.steering.GoSit;
+import imi.character.steering.GoTo;
 import imi.character.ninja.transitions.FlyToIdle;
 import imi.character.ninja.transitions.IdleToFly;
 import imi.character.ninja.transitions.IdleToPunch;
