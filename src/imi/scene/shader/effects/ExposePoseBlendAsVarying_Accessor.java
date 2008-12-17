@@ -15,7 +15,7 @@
  * exception as provided by Sun in the License file that accompanied 
  * this code.
  */
-package imi.scene.shader.programs;
+package imi.scene.shader.effects;
 
 import imi.scene.shader.dynamic.GLSLDataType;
 import imi.scene.shader.dynamic.GLSLDefaultVariables;

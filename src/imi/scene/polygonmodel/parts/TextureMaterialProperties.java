@@ -23,6 +23,7 @@ import com.jme.image.Texture.CombinerFunctionAlpha;
 import com.jme.image.Texture.MagnificationFilter;
 import com.jme.image.Texture.MinificationFilter;
 import com.jme.image.Texture.WrapMode;
+import imi.serialization.xml.bindings.xmlTextureAttributes;
 import java.net.URL;
 
 /**
@@ -92,6 +93,35 @@ public class TextureMaterialProperties
         tex.setMagnificationFilter(m_magFilter);
         tex.setAnisotropicFilterPercent(m_anistotropicValue);
         tex.setApply(m_applyMode);
+    }
+
+
+    public xmlTextureAttributes generateTexturePropertiesDOM()
+    {
+        xmlTextureAttributes result = new xmlTextureAttributes();
+        // Location
+        if (m_imageLocation != null)
+            result.setURL(m_imageLocation.toString());
+        else
+            result.setURL(null);
+        // Texture Unit
+        result.setTextureUnit(m_textureUnit);
+        // Wrap S
+        result.setWrapS(m_wrapS.toString());
+        // Wrap T
+        result.setWrapT(m_wrapT.toString());
+        // Alpha Combiner
+        result.setAlphaCombiner(m_alphaCombineMode.toString());
+        // Minification Filter
+        result.setMinificationFilter(m_minFilter.toString());
+        // Magnification Filter
+        result.setMagnificationFilter(m_magFilter.toString());
+        // Anisotropic Value
+        result.setAnisotropicValue(m_anistotropicValue);
+        // Texture Apply Mode
+        result.setTextureApplyMode(m_applyMode.toString());
+        // all done!
+        return result;
     }
 
     ///////////////////////////////////////////////////////////

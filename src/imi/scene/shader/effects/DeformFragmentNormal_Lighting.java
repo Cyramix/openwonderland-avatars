@@ -15,15 +15,15 @@
  * exception as provided by Sun in the License file that accompanied 
  * this code.
  */
-package imi.scene.shader.programs;
+package imi.scene.shader.effects;
 
 import imi.scene.shader.dynamic.GLSLDataType;
 import imi.scene.shader.dynamic.GLSLDefaultVariables;
 import imi.scene.shader.dynamic.GLSLShaderEffect;
-import imi.scene.shader.dynamic.GLSLShaderUniform;
 import imi.scene.shader.dynamic.GLSLShaderVariable;
 import imi.scene.shader.dynamic.GLSLShaderVarying;
 import imi.scene.shader.dynamic.GLSLVertexAttribute;
+import imi.serialization.xml.bindings.xmlShaderProgram;
 import java.util.ArrayList;
 
 /**

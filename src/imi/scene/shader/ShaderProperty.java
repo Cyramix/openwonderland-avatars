@@ -18,6 +18,7 @@
 package imi.scene.shader;
 
 import imi.scene.shader.dynamic.GLSLDataType;
+import imi.serialization.xml.bindings.xmlShaderProperty;
 
 /**
  * This class represents a property of a shader. A property is defined as a 
@@ -112,5 +113,13 @@ public class ShaderProperty
         }
         else
             return false;
+    }
+
+    public xmlShaderProperty generateShaderPropertyDOM() {
+        xmlShaderProperty result = new xmlShaderProperty();
+        result.setPropertyName(name);
+        result.setType(type.toString());
+        result.setValue(m_value.toString());
+        return result;
     }
 }

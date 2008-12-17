@@ -82,12 +82,13 @@ import imi.scene.shader.programs.VertDeformerWithNormalMapping;
 import imi.scene.shader.programs.VertDeformerWithSpecAndNormalMap;
 import imi.scene.utils.PMeshUtils;
 import imi.scene.utils.PModelUtils;
-import imi.scene.utils.tree.JointModificationCollector;
+import imi.scene.utils.tree.SerializationHelper;
 import imi.scene.utils.tree.NodeProcessor;
 import imi.scene.utils.tree.TreeTraverser;
 import imi.serialization.xml.bindings.xmlCharacter;
 import imi.serialization.xml.bindings.xmlCharacterAttributes;
 import imi.serialization.xml.bindings.xmlJointModification;
+import imi.serialization.xml.bindings.xmlMaterial;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -1312,11 +1313,14 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         try {
             final JAXBContext context = JAXBContext.newInstance("imi.serialization.xml.bindings");
             final Marshaller m = context.createMarshaller();
+            // Pretty files please
             m.setProperty("jaxb.formatted.output", Boolean.TRUE);
+
             if (location.exists() == true && location.canWrite() == false)
                 throw new IOException("Request file (" + location.toString() + ") is not writeable.");
             else if (location.exists() == false)
                 location.createNewFile();
+
             xmlCharacter characterDom = generateCharacterDOM();
             m.marshal( characterDom, location);
         }
@@ -1414,10 +1418,10 @@ public abstract class Character extends Entity implements SpatialObject, Animati
                         targetJoint.setLocalModifierMatrix(mat);
                     }
 
-                    if (jMod.getSkeletonModifierMatrix() != null)
+                    if (jMod.getBindPoseMatrix() != null)
                     {
-                        mat = jMod.getSkeletonModifierMatrix().getPMatrix();
-                        targetJoint.setSkeletonModifier(mat);
+                        mat = jMod.getBindPoseMatrix().getPMatrix();
+                        targetJoint.getBindPose().set(mat);
                     }
                 }
                 else
@@ -1445,14 +1449,15 @@ public abstract class Character extends Entity implements SpatialObject, Animati
                     "Attemping to serialize a character with no attributes!");
         }
         // Store skeletal modifications
-        JointModificationCollector collector = new JointModificationCollector();
-        for (PNode kid : m_skeleton.getSkeletonRoot().getChildren())
-        {
-            collector.clearList();
-            TreeTraverser.breadthFirst(kid, collector);
-            for (xmlJointModification jMod : collector.getModifierList())
-                result.addJointModification(jMod);
-        }
+        SerializationHelper collector = new SerializationHelper();
+
+        TreeTraverser.breadthFirst(m_skeleton, collector);
+        for (xmlJointModification jMod : collector.getJointModifierList())
+            result.addJointModification(jMod);
+        // Store material information
+        for (xmlMaterial mat : collector.getMaterials())
+            result.addMaterial(mat);
+
         return result;
     }
 

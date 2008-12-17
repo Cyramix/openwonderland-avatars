@@ -27,6 +27,7 @@ import imi.scene.shader.ShaderProperty;
 import imi.scene.shader.ShaderUtils;
 import imi.scene.shader.dynamic.GLSLDefaultVariables.Locality;
 import imi.scene.shader.programs.SimpleTNLShader;
+import imi.serialization.xml.bindings.xmlShaderProgram;
 import imi.utils.StringStack;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -948,6 +949,54 @@ public class GLSLShaderProgram implements AbstractShaderProgram, RenderUpdater
         m_VertexProgramSource = new StringBuilder(vertexSource);
         m_FragmentProgramSource = new StringBuilder(fragmentSource);
     }
-    
-    
+
+    /**
+     * Build and retrieve the shader program dom representation.
+     * @return
+     */
+    public xmlShaderProgram generateShaderProgramDOM()
+    {
+        xmlShaderProgram result = new xmlShaderProgram();
+        
+        return result;
+    }
+
+    /**
+     * Determines if this instance has the same effects as the other. The effect
+     * lists much match perfectly.
+     * @param other The program to compare against.
+     * @return True if the same effects are contained, false otherwise
+     */
+    public boolean containsSameEffectsAs(GLSLShaderProgram other)
+    {
+        boolean result = true; // Assume equality until proven otherwise
+        if (other != null)
+        {
+            if (m_effects != null && other.m_effects != null)
+            {
+                if (m_effects.size() != other.m_effects.size())
+                    result = false;
+                else
+                {
+                    // check all of ours against theirs
+                    for (GLSLShaderEffect effect : m_effects)
+                    {
+                        if (other.containsEffect(effect) == false)
+                        {
+                            result = false;
+                            break;
+                        }
+                    }
+                }
+            }
+            else if (m_effects == null && other.m_effects == null)
+                result = true;
+            else // inequality
+                result = false;
+        }
+        else
+            result = false;
+        
+        return result;
+    }
 }

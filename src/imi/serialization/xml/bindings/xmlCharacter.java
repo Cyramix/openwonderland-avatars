@@ -58,7 +58,8 @@ import javax.xml.bind.annotation.XmlType;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Character", propOrder = {
     "attributes",
-    "skeletonDetails"
+    "skeletonDetails",
+    "materials"
 })
 public class xmlCharacter {
 
@@ -66,6 +67,8 @@ public class xmlCharacter {
     protected xmlCharacterAttributes attributes;
     @XmlElement(name = "SkeletonDetails")
     protected List<xmlJointModification> skeletonDetails;
+    @XmlElement(name = "Materials")
+    protected List<xmlMaterial> materials;
 
     public void addJointModification(xmlJointModification jMod) {
         if (skeletonDetails == null)
@@ -124,6 +127,39 @@ public class xmlCharacter {
             skeletonDetails = new ArrayList<xmlJointModification>();
         }
         return this.skeletonDetails;
+    }
+
+        /**
+     * Gets the value of the materials property.
+     *
+     * <p>
+     * This accessor method returns a reference to the live list,
+     * not a snapshot. Therefore any modification you make to the
+     * returned list will be present inside the JAXB object.
+     * This is why there is not a <CODE>set</CODE> method for the materials property.
+     *
+     * <p>
+     * For example, to add a new item, do as follows:
+     * <pre>
+     *    getMaterials().add(newItem);
+     * </pre>
+     *
+     *
+     * <p>
+     * Objects of the following type(s) are allowed in the list
+     * {@link xmlMaterial }
+     *
+     *
+     */
+    public List<xmlMaterial> getMaterials() {
+        if (materials == null) {
+            materials = new ArrayList<xmlMaterial>();
+        }
+        return this.materials;
+    }
+
+    public void addMaterial(xmlMaterial mat) {
+        getMaterials().add(mat);
     }
 
 }

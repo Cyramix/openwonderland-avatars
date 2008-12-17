@@ -25,6 +25,7 @@ import imi.scene.shader.effects.CalculateToLight_Lighting;
 import imi.scene.shader.effects.GenerateFragLocalNormal;
 import imi.scene.shader.effects.VertexToPosition_Transform;
 import imi.scene.shader.effects.UnlitTexturing_Lighting;
+import imi.serialization.xml.bindings.xmlShaderProgram;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.jdesktop.mtgame.WorldManager;
@@ -77,5 +78,19 @@ public class SimpleTNLWithAmbient extends GLSLShaderProgram
         {
             Logger.getLogger(this.getClass().toString()).log(Level.SEVERE, "Caught " + e.getClass().getName() + ": " + e.getMessage());
         }
+    }
+
+    @Override
+    public xmlShaderProgram generateShaderProgramDOM() {
+        xmlShaderProgram result = new xmlShaderProgram();
+        // Determine if we are a vanilla instance, or if we have been modified
+        // TODO : See if there is a less wasteful way to do this
+        if (this.containsSameEffectsAs(new SimpleTNLWithAmbient(m_WM)))
+            result.setDefaultProgramName(this.getClass().getSimpleName());
+        else
+        {
+            // TODO for tomorrow
+        }
+        return result;
     }
 }

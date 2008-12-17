@@ -45,19 +45,74 @@
         <xsd:sequence>
             <xsd:element name="Attributes" type="tns:CharacterAttributes"/>
             <xsd:element name="SkeletonDetails" minOccurs="0" maxOccurs="unbounded" type="tns:JointModification"/>
+            <xsd:element name="Materials" maxOccurs="unbounded" type="tns:Material" minOccurs="0"/>
         </xsd:sequence>
     </xsd:complexType>
     <xsd:complexType name="JointModification">
         <xsd:sequence>
             <xsd:element name="TargetJointName" minOccurs="1" maxOccurs="1" type="xsd:string"></xsd:element>
             <xsd:element name="LocalModifierMatrix" minOccurs="0" type="tns:Matrix"/>
-            <xsd:element name="SkeletonModifierMatrix" minOccurs="0" type="tns:Matrix"/>
+            <xsd:element name="BindPoseMatrix" minOccurs="0" type="tns:Matrix"/>
         </xsd:sequence>
     </xsd:complexType>
     <xsd:complexType name="SkinnedMeshAdditionParams">
         <xsd:sequence>
             <xsd:element name="SkinnedMeshName" type="xsd:string"/>
             <xsd:element name="SubGroupName" type="xsd:string"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="ColorRGBA">
+        <xsd:attribute name="red" type="xsd:float"/>
+        <xsd:attribute name="green" type="xsd:float"/>
+        <xsd:attribute name="blue" type="xsd:float"/>
+        <xsd:attribute name="alpha" type="xsd:float"/>
+    </xsd:complexType>
+    <xsd:complexType name="TextureAttributes">
+        <xsd:sequence>
+            <xsd:element name="URL" type="xsd:string"/>
+            <xsd:element name="TextureUnit" type="xsd:int"/>
+            <xsd:element name="WrapS" type="xsd:string"/>
+            <xsd:element name="WrapT" type="xsd:string"/>
+            <xsd:element name="AlphaCombiner" type="xsd:string"/>
+            <xsd:element name="MinificationFilter" type="xsd:string"/>
+            <xsd:element name="MagnificationFilter" type="xsd:string"/>
+            <xsd:element name="AnisotropicValue" type="xsd:float"/>
+            <xsd:element name="TextureApplyMode" type="xsd:string"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="Material">
+        <xsd:sequence>
+            <xsd:element name="Textures" maxOccurs="8" type="tns:TextureAttributes"/>
+            <xsd:element name="DiffuseColor" type="tns:ColorRGBA" minOccurs="0"/>
+            <xsd:element name="AmbientColor" type="tns:ColorRGBA" minOccurs="0"/>
+            <xsd:element name="EmissiveColor" type="tns:ColorRGBA" minOccurs="0"/>
+            <xsd:element name="SpecularColor" type="tns:ColorRGBA" maxOccurs="0"/>
+            <xsd:element name="TransparencyColor" type="tns:ColorRGBA" minOccurs="0"/>
+            <xsd:element name="Shaders" maxOccurs="unbounded" type="tns:Shader"/>
+            <xsd:element name="Shininess" type="xsd:int"/>
+            <xsd:element name="ColorMaterial" type="xsd:string"/>
+            <xsd:element name="CullFace" type="xsd:string"/>
+            <xsd:element name="MaterialName" type="xsd:string"/>
+        </xsd:sequence>
+        <xsd:attribute name="TargetMeshName" type="xsd:string"/>
+    </xsd:complexType>
+    <xsd:complexType name="ShaderProgram">
+        <xsd:choice>
+            <xsd:element name="DefaultProgramName" type="xsd:string"/>
+            <xsd:element name="ListOfEffects" maxOccurs="unbounded" type="xsd:string"/>
+        </xsd:choice>
+    </xsd:complexType>
+    <xsd:complexType name="ShaderProperty">
+        <xsd:sequence>
+            <xsd:element name="Type" type="xsd:string"/>
+            <xsd:element name="Value" type="xsd:string"/>
+        </xsd:sequence>
+        <xsd:attribute name="PropertyName" type="xsd:string"/>
+    </xsd:complexType>
+    <xsd:complexType name="Shader">
+        <xsd:sequence>
+            <xsd:element name="Program" type="tns:ShaderProgram"/>
+            <xsd:element name="Properties" maxOccurs="unbounded" type="tns:ShaderProperty"/>
         </xsd:sequence>
     </xsd:complexType>
     <xsd:element name="Character" type="tns:Character" abstract="false" nillable="false"/>

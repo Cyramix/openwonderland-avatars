@@ -65,7 +65,7 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name = "JointModification", propOrder = {
     "targetJointName",
     "localModifierMatrix",
-    "skeletonModifierMatrix"
+    "bindPoseMatrix"
 })
 public class xmlJointModification {
 
@@ -73,8 +73,8 @@ public class xmlJointModification {
     protected String targetJointName;
     @XmlElement(name = "LocalModifierMatrix")
     protected xmlMatrix localModifierMatrix;
-    @XmlElement(name = "SkeletonModifierMatrix")
-    protected xmlMatrix skeletonModifierMatrix;
+    @XmlElement(name = "BindPoseMatrix")
+    protected xmlMatrix bindPoseMatrix;
 
     /**
      * Gets the value of the targetJointName property.
@@ -132,8 +132,8 @@ public class xmlJointModification {
      *     {@link Matrix }
      *     
      */
-    public xmlMatrix getSkeletonModifierMatrix() {
-        return skeletonModifierMatrix;
+    public xmlMatrix getBindPoseMatrix() {
+        return bindPoseMatrix;
     }
 
     /**
@@ -144,7 +144,7 @@ public class xmlJointModification {
      *     {@link Matrix }
      *     
      */
-    public void setSkeletonModifierMatrix(xmlMatrix value) {
-        this.skeletonModifierMatrix = value;
+    public void setBindPoseMatrix(xmlMatrix value) {
+        this.bindPoseMatrix = value;
     }
 }

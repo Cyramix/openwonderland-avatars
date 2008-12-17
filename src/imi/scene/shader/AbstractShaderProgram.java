@@ -18,6 +18,7 @@
 package imi.scene.shader;
 
 import imi.scene.polygonmodel.PPolygonMeshInstance;
+import imi.serialization.xml.bindings.xmlShaderProgram;
 
 /**
  * This interface provides common access and modification mechanisms for all
@@ -34,7 +35,7 @@ public interface AbstractShaderProgram
      * @param meshInst The mesh instance to apply the shader state on
      * @return true if "success"
      */
-    public boolean applyToMesh(PPolygonMeshInstance meshInst); 
+    public boolean applyToMesh(PPolygonMeshInstance meshInst);
     
     /**
      * This is the current work around to load shader objects on the 
@@ -70,4 +71,10 @@ public interface AbstractShaderProgram
      * @return
      */
     public String getProgramDescription();
+
+    /**
+     * Build and return an xmlShaderProgram object.
+     * @return The filled out object.
+     */
+    public xmlShaderProgram generateShaderProgramDOM();
 }
