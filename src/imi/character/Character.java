@@ -662,11 +662,13 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         mInst = proc.getMeshInstances();
 
         for (int i = 0; i < mInst.size(); i++) {
-            if (mInst.get(i).getName().equals(m_attributes.getGeomRef().get(5)[0])) {
-                PMeshMaterial mat = mInst.get(i).getMaterialRef().getMaterial();
-                mat.setShader(regular);
-                mInst.get(i).setMaterial(mat);
-                mInst.get(i).setUseGeometryMaterial(false);
+            if (m_attributes.getGeomRef() != null || m_attributes.getGeomRef().get(5) != null) {
+                if (mInst.get(i).getName().equals(m_attributes.getGeomRef().get(5)[0])) {
+                    PMeshMaterial mat = mInst.get(i).getMaterialRef().getMaterial();
+                    mat.setShader(regular);
+                    mInst.get(i).setMaterial(mat);
+                    mInst.get(i).setUseGeometryMaterial(false);
+                }
             } else {
                 PMeshMaterial mat = mInst.get(i).getMaterialRef().getMaterial();
                 mat.setShader(shiney);

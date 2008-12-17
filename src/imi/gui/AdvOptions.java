@@ -61,6 +61,7 @@ public class AdvOptions extends javax.swing.JFrame {
         initComponents();
         m_sceneData = scene;
         createJointCatalog();
+
     }
 
     /** This method is called from within the constructor to
@@ -2723,7 +2724,75 @@ public class AdvOptions extends javax.swing.JFrame {
         }
     }
 
+    private void adjustChest(int type, javax.swing.event.ChangeEvent e) {
+        SkinnedMeshJoint[] Torso = m_skeleton.get(m_bodyPart.Torso);
+        SkinnedMeshJoint[] LShoulder = m_skeleton.get(m_bodyPart.Left_Shoulder);
+        SkinnedMeshJoint[] RShoulder;
 
+        float adjust    = 0.0f;
+        Vector3f mod    = null;
+        Vector3f modS   = null;
+        Object obj      = e.getSource();
+
+        switch(type)
+        {
+            case 0: // BULK
+            {
+
+                break;
+            }
+            case 1: // BROADNESS
+            {
+                break;
+            }
+        }
+    }
+
+    private void adjustStomach(int type, javax.swing.event.ChangeEvent e) {
+        SkinnedMeshJoint[] Torso = m_skeleton.get(m_bodyPart.Torso);
+
+        float adjust    = 0.0f;
+        Vector3f mod    = null;
+        Vector3f modS   = null;
+        Object obj      = e.getSource();
+
+        switch(type)
+        {
+            case 0: // Roundness
+            {
+                break;
+            }
+            case 1: // Waistline
+            {
+                break;
+            }
+        }
+    }
+
+    private void adjustGluts(int type, javax.swing.event.ChangeEvent e) {
+        SkinnedMeshJoint[] Gluts = m_skeleton.get(m_bodyPart.Torso);
+
+        float adjust    = 0.0f;
+        Vector3f mod    = null;
+        Vector3f modS   = null;
+        Object obj      = e.getSource();
+
+        switch(type)
+        {
+            case 0: // Roundness
+            {
+                break;
+            }
+            case 1: // Sag
+            {
+                break;
+            }
+        }
+    }
+
+    private void adjustBody(int type, javax.swing.event.ChangeEvent e) {
+
+    }
 
     /** Accessors **/
     public SceneEssentials getSceneData() {
