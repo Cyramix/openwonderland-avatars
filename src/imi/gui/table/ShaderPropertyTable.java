@@ -41,18 +41,24 @@ import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 
 /**
- *
+ * This widget provides viewing of the properties contained in a shader. These
+ * properties are then used to populate a table with custom rendering and editting
+ * components based on the type of the property.
  * @author  Ronald E Dahlgren
  */
 public class ShaderPropertyTable extends javax.swing.JPanel
 {
+    /** The shader program being modified **/
     private AbstractShaderProgram   m_targetShader  = null;
+    /** List of properties of the target shader **/
     private ShaderProperty[]        m_properties    = null;
-    /** Creates new form ShaderPropertyTable */
+
+    /** Creates new form ShaderPropertyTable **/
     public ShaderPropertyTable()
     {
         initialize();
     }
+
     public ShaderPropertyTable(AbstractShaderProgram targetShader)
     {
         initComponents();
@@ -79,25 +85,36 @@ public class ShaderPropertyTable extends javax.swing.JPanel
         render.setClassRenderer(float[].class, new FloatVectorCellRenderer());
         jtx.getColumnModel().getColumn(1).setCellRenderer(render);
     }
-    
+
+    /**
+     * Set the shader that this widget is operating on. This also repopulates
+     * the property table to reflect the new shader.
+     * @param shader
+     */
     public void setTargetShader(AbstractShaderProgram shader)
     {
         clear();
         m_targetShader = shader;
         repopulateTable();
     }
-    
+
+    /**
+     * This method queries the target shader for its list of properties and
+     * then repopulates the table.
+     */
     public void repopulateTable()
     {
+        // Ensure we have a valid shader before continuing
         if (m_targetShader == null)
         {
-            System.out.println("null shader repopulated!");
-            return;
+            Logger.getLogger(ShaderPropertyTable.class.getName()).log(Level.WARNING,
+                    "null shader repopulated!");
         }
         else
         {
             m_properties = m_targetShader.getProperties();
             JTableExtended jtx = (JTableExtended)JTable_Properties;
+
             // resize
             ((DefaultTableModel)jtx.getModel()).setRowCount(m_properties.length);
             
@@ -121,38 +138,64 @@ public class ShaderPropertyTable extends javax.swing.JPanel
             }
         }
     }
-    
+
+    /**
+     * Clear out any residual state
+     */
     public void clear()
     {
         m_properties = null;
         m_targetShader = null;
         ((DefaultTableModel)JTable_Properties.getModel()).setRowCount(0);
     }
-    
+
+    /**
+     * This method applies the currently reflected values from the property editor
+     * to the target shader
+     * @return
+     */
     public boolean setPropertiesOnShader()
     {
+        boolean result = true;
         if (m_targetShader == null || m_properties == null)
-            return false;
-        for (ShaderProperty prop : m_properties)
         {
-            try
+            result = false;
+            Logger.getLogger(ShaderPropertyTable.class.getName()).log(Level.WARNING,
+                    "Attempting to set properties on a null shader!");
+        }
+        else
+        {
+            for (ShaderProperty prop : m_properties)
             {
-                m_targetShader.setProperty(prop);
-            } catch (NoSuchPropertyException ex)
-            {
-                Logger.getLogger(ShaderPropertyTable.class.getName()).log(Level.SEVERE, null, ex);
-                return false;
+                try
+                {
+                    m_targetShader.setProperty(prop);
+                } catch (NoSuchPropertyException ex)
+                {
+                    Logger.getLogger(ShaderPropertyTable.class.getName()).log(Level.SEVERE,
+                            "Attempted to set irrelevant property : ", ex);
+                    result = false;
+                    break;
+                }
             }
         }
-        return true;
+
+        return result;
     }
-    
-    private void applyTableToShader()
+
+
+    private void applyTableContentsToProperties()
     {
         if (m_properties == null)
             return;
         for (int i = 0; i < m_properties.length; ++i)
-            m_properties[i].setValue(JTable_Properties.getValueAt(i, 1));
+        {
+            if (m_properties[i].setValue(JTable_Properties.getValueAt(i, 1)) == false) // failure
+            {
+                Logger.getLogger(ShaderPropertyTable.class.getName()).log(Level.WARNING, 
+                        "Wrong type set on property!");
+            }
+        }
         
     }
 
@@ -223,7 +266,7 @@ public class ShaderPropertyTable extends javax.swing.JPanel
     }// </editor-fold>//GEN-END:initComponents
 
 private void applyButtonClicked(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_applyButtonClicked
-    applyTableToShader();
+    applyTableContentsToProperties();
     setPropertiesOnShader();
 }//GEN-LAST:event_applyButtonClicked
 

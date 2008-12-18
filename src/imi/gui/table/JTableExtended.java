@@ -26,19 +26,29 @@ import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableModel;
 
 /**
- *
+ * A simply extended JTable to allow for edittable rows. This allows for differentiation
+ * between editors based on the row selected. Generally editors must be uniform
+ * within a column.
  * @author Ronald E Dahlgren
  */
 public class JTableExtended extends JTable
 {
+    /** Class based cell editing **/
     private EdittableRowModel m_rowModel = null;
-    
+
+    /**
+     * Construct a new instance with no row model provided.
+     */
     public JTableExtended()
     {
         super();
         m_rowModel = null;
     }
 
+    /**
+     * Construct a new instance with the provided table model.
+     * @param tm
+     */
     public JTableExtended(TableModel tm)
     {
         super(tm);
@@ -76,7 +86,11 @@ public class JTableExtended extends JTable
         m_rowModel = null;
     }
 
-    // new constructor
+    /**
+     * Construct a new instance with the provided table and edittable row models.
+     * @param tm
+     * @param rm
+     */
     public JTableExtended(TableModel tm, EdittableRowModel rm)
     {
         super(tm, null, null);

@@ -20,18 +20,31 @@ package imi.gui.table;
 import java.awt.Component;
 import java.util.HashMap;
 import javax.swing.JTable;
-import javax.swing.JTextField;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 
 /**
- *
+ * This TableCellRenderer provides class based rendering of data based on the
+ * internally maintained map of TableCellRenderer's to Class types. It is essentially
+ * delegating the cell rendering to the appropriate cell renderer.
  * @author Ronald E Dahlgren
  */
 public class ClassBasedCellRenderer implements TableCellRenderer 
 {
-    private HashMap<Class, TableCellRenderer>   m_classMap  = new HashMap<Class, TableCellRenderer>();
-    
+    /** Mapping of class to cell renderer for dynamic binding of classes to renderers **/
+    private final HashMap<Class, TableCellRenderer>   m_classMap  = new HashMap<Class, TableCellRenderer>();
+
+    /**
+     * Return the appropriate component given the provided parameters. Required
+     * for TableCellRenderer interface.
+     * @param table
+     * @param value
+     * @param isSelected
+     * @param hasFocus
+     * @param row
+     * @param column
+     * @return
+     */
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column)
     {
         TableCellRenderer result = null;
@@ -42,7 +55,13 @@ public class ClassBasedCellRenderer implements TableCellRenderer
         
         return result.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
     }
-    
+
+    /**
+     * Set the TableCellRenderer that should be associated with the specified
+     * class.
+     * @param classz The class type in question
+     * @param renderer The renderer that should be used for this class type.
+     */
     public void setClassRenderer(Class classz, TableCellRenderer renderer)
     {
         m_classMap.put(classz, renderer);

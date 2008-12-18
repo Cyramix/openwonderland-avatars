@@ -17,6 +17,8 @@
  */
 package imi.gui.table.celleditor;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.DefaultCellEditor;
 import javax.swing.JTextField;
 
@@ -26,10 +28,15 @@ import javax.swing.JTextField;
  */
 public class FloatTextField extends DefaultCellEditor
 {
+    /**
+     * Construct a new instance with the provided text field
+     * @param text
+     */
     public FloatTextField(JTextField text)
     {
         super(text);
     }
+
     @Override
     public Object getCellEditorValue()
     {
@@ -40,8 +47,10 @@ public class FloatTextField extends DefaultCellEditor
         }
         catch (NumberFormatException ex)
         {
-            System.out.println("Incorrect format for float!");
-            result = Float.valueOf(-1.0f);
+            Logger.getLogger(FloatTextField.class.getName()).log(Level.WARNING,
+                    "Incorrect format for a float!", ex);
+            // Set that element to zero
+            result = Float.valueOf(0.0f);
         }
         return result;
     }

@@ -28,7 +28,7 @@ import javax.swing.table.DefaultTableCellRenderer;
  */
 public class FloatCellRenderer extends DefaultTableCellRenderer
 {
-    private JLabel  m_label = new JLabel("Unset");
+    private final JLabel  m_label = new JLabel("Unset");
 
     
     @Override

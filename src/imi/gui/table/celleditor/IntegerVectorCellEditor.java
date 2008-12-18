@@ -25,14 +25,20 @@ import javax.swing.JTable;
 import javax.swing.table.TableCellEditor;
 
 /**
- *
- * @author dahlgren
+ * This widget provides editing capabilities for an integer vector up to four
+ * dimensions.
+ * @author Ronald E Dahlgren
  */
 public class IntegerVectorCellEditor extends AbstractCellEditor implements TableCellEditor
 {
-    private JPanel      m_panelCollection   = new JPanel();
-    private JSpinner[]  m_spinnerArray      = new JSpinner[4];
-    
+    /** The panel that contains the spinners **/
+    private final JPanel      m_panelCollection   = new JPanel();
+    /** Spinners used for modifying the integer values **/
+    private final JSpinner[]  m_spinnerArray      = new JSpinner[4];
+
+    /**
+     * Construct a new instance of this widget
+     */
     public IntegerVectorCellEditor()
     {
         super();

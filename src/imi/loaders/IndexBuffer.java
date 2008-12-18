@@ -20,22 +20,26 @@ package imi.loaders;
 import java.util.ArrayList;
 
 /**
- *
+ * Wrap a list of integers. This is used along with the PGeometryVertexBuffer
+ * class to assist in vert and index buffer creation.
+ * @see PGeometryVertexBuffer
  * @author Ronald E Dahlgren
  */
-public class PIndexBuffer {
-    //public int [] m_Indices; // The list of indices
-    public ArrayList<Integer> m_Indices;
-    // Constructor
-    public PIndexBuffer()
+public class IndexBuffer {
+
+    public final ArrayList<Integer> m_Indices = new ArrayList<Integer>();
+
+    /**
+     * Construct a new instance
+     */
+    public IndexBuffer()
     {
-        m_Indices = new ArrayList<Integer>();
     }
     
     /**
      * Clears out the index buffer
      */
-    public void Clear()
+    public void clear()
     {
         m_Indices.clear();
     }
@@ -49,7 +53,7 @@ public class PIndexBuffer {
         return m_Indices.size();
     }
     
-    public int[] GetArray()
+    public int[] getArray()
     {
         int[] result = new int[m_Indices.size()];
         for (int i = 0; i < m_Indices.size(); ++i)
@@ -57,7 +61,7 @@ public class PIndexBuffer {
         return result;
     }
     
-    public void Add(int nNewIndexEntry)
+    public void add(int nNewIndexEntry)
     {
         m_Indices.add((Integer)nNewIndexEntry);
     }

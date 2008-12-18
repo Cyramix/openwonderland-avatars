@@ -30,13 +30,14 @@ import javax.swing.table.DefaultTableCellRenderer;
  */
 public class BooleanCellRenderer extends DefaultTableCellRenderer
 {
-    private JCheckBox   m_checkBox = new JCheckBox();
+    /** The check box used to indicate the boolean state **/
+    private final JCheckBox   m_checkBox = new JCheckBox();
+
     @Override
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column)
     {
         m_checkBox.setSelected(((Boolean)value).booleanValue());
         return m_checkBox;
-        //return super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
     }
 
 }

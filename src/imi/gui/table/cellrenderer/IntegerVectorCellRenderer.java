@@ -29,9 +29,14 @@ import javax.swing.table.DefaultTableCellRenderer;
  */
 public class IntegerVectorCellRenderer extends DefaultTableCellRenderer
 {
-    private JPanel      m_panelContainer = new JPanel();
-    private JLabel[]    m_displayLabels = new JLabel[4];
-    
+    /** Contains the four labels **/
+    private final JPanel      m_panelContainer = new JPanel();
+    /** Labels for displaying the values **/
+    private final JLabel[]    m_displayLabels = new JLabel[4];
+
+    /**
+     * Construct a new instance!
+     */
     public IntegerVectorCellRenderer()
     {
         super();

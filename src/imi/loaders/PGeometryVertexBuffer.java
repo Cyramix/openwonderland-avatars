@@ -25,12 +25,13 @@ import java.util.ArrayList;
 import java.util.HashSet;
 
 /**
- *
+ * This class is used to simplify the collecting of PGeometryVertex objects
+ * using duplicate checking.
  * @author Ronald E Dahlgren
  */
-public class PVertexBuffer {
-    // TODO: Use a better data structure; check out javalution (FastList)
-    private ArrayList<PGeometryVertex> m_Vertices = new ArrayList<PGeometryVertex>(); // The master list of vertices
+public class PGeometryVertexBuffer {
+    /** Collection of verts **/
+    private final ArrayList<PGeometryVertex> m_Vertices = new ArrayList<PGeometryVertex>(); // The master list of vertices
     
     /**
      * Attempts to add a vertex to the master list.
@@ -40,7 +41,7 @@ public class PVertexBuffer {
      * @param newVert The vertex to add
      * @return The index of the vertex within the master list
      */
-    public int AddVertex(PGeometryVertex newVert)
+    public int addVertex(PGeometryVertex newVert)
     {
         // Is the vert present?
         int index = m_Vertices.indexOf(newVert);
@@ -58,7 +59,7 @@ public class PVertexBuffer {
      * @param index Index of the desired vertex
      * @return The vertex
      */
-    public PGeometryVertex GetVertex(int index)
+    public PGeometryVertex getVertex(int index)
     {
         if (index >= m_Vertices.size() || index < 0)
             return null;
@@ -70,7 +71,7 @@ public class PVertexBuffer {
      * @param theVert The vertex to test against for removal
      * @return True is the vertex was found, false otherwise
      */
-    public boolean RemoveVertex(PGeometryVertex theVert)
+    public boolean removeVertex(PGeometryVertex theVert)
     {
         return m_Vertices.remove(theVert);
     }
@@ -80,20 +81,14 @@ public class PVertexBuffer {
      * @param theVert The vertex to search for
      * @return The index of the vertex is found, -1 otherwise
      */
-    public int FindVertex(PGeometryVertex theVert)
+    public int findVertex(PGeometryVertex theVert)
     {
-        for (int i = 0; i < m_Vertices.size(); ++i)
-        {
-            if (m_Vertices.get(i).hashCode() == theVert.hashCode())
-                return i;
-        }
-        // Otherwise, no match
-        return -1;
+        return m_Vertices.indexOf(theVert);
     }
     
     /**
      * Determine the number of vertices
-     * Same as <code>Count</code>
+     * Same as <code>count</code>
      * @return The number of vertices contained
      */
     public int size()
@@ -106,19 +101,19 @@ public class PVertexBuffer {
      * Same as <code>size</code>
      * @return The number of vertices contained
      */
-    public int Count()
+    public int count()
     {
         return m_Vertices.size();
     }
     /**
      * Clears out the master list
      */
-    public void Clear()
+    public void clear()
     {
         m_Vertices.clear();
     }
     
-    public Vector3f[] GetPositionArray()
+    public Vector3f[] getPositionArray()
     {
         Vector3f[] result = new Vector3f[m_Vertices.size()];
         for (int i = 0; i < m_Vertices.size(); ++i)
@@ -128,7 +123,7 @@ public class PVertexBuffer {
         return result;
     }
     
-    public Vector3f[] GetNormalArray()
+    public Vector3f[] getNormalArray()
     {
         
         Vector3f[] result = new Vector3f[m_Vertices.size()];
@@ -138,7 +133,7 @@ public class PVertexBuffer {
         }
         return result;
     }
-    public Vector3f[] GetTangentArray()
+    public Vector3f[] getTangentArray()
     {
         
         Vector3f[] result = new Vector3f[m_Vertices.size()];
@@ -149,7 +144,7 @@ public class PVertexBuffer {
         return result;
     }
     
-    public ColorRGBA[] GetColorArray()
+    public ColorRGBA[] getColorArray()
     {
         
         ColorRGBA[] result = new ColorRGBA[m_Vertices.size()];
@@ -166,7 +161,7 @@ public class PVertexBuffer {
      * @param nTextureTarget The texture target to retieve
      * @return The array
      */
-    public Vector2f[] GetTextureCoordinateArray(int nTextureTarget)
+    public Vector2f[] getTextureCoordinateArray(int nTextureTarget)
     {
         Vector2f[] result = new Vector2f[m_Vertices.size()]; // Allocate space for the array
         for (int i = 0; i < m_Vertices.size(); i++)
@@ -180,8 +175,8 @@ public class PVertexBuffer {
      * Returns the texture coordinates for target 0
      * @return The texture coordinates
      */
-    public Vector2f[] GetTextureCoordinateArray()
+    public Vector2f[] getTextureCoordinateArray()
     {
-        return GetTextureCoordinateArray(0);
+        return getTextureCoordinateArray(0);
     }
 }

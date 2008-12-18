@@ -29,9 +29,14 @@ import javax.swing.table.DefaultTableCellRenderer;
  */
 public class FloatVectorCellRenderer extends DefaultTableCellRenderer
 {
-    private JPanel      m_panelContainer = new JPanel();
-    private JLabel[]    m_displayLabels = new JLabel[4];
-    
+    /** The container for the four labels **/
+    private final JPanel      m_panelContainer = new JPanel();
+    /** Labels to display the component values **/
+    private final JLabel[]    m_displayLabels = new JLabel[4];
+
+    /**
+     * Construct a new instance
+     */
     public FloatVectorCellRenderer()
     {
         super();

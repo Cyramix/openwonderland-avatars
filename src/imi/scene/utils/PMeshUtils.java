@@ -22,7 +22,7 @@ import com.jme.math.Vector2f;
 import com.jme.math.Vector3f;
 import com.jme.renderer.ColorRGBA;
 import com.jme.util.geom.BufferUtils;
-import imi.loaders.PVertexBuffer;
+import imi.loaders.PGeometryVertexBuffer;
 import imi.scene.polygonmodel.PPolygonMesh;
 import imi.scene.polygonmodel.parts.PGeometryTriangle;
 import imi.scene.polygonmodel.parts.PGeometryVertex;
@@ -114,7 +114,7 @@ public class PMeshUtils
     static public void calculateVertexTangents(PPolygonSkinnedMesh sourceMesh)
     {
         int VertCount = sourceMesh.getPolygonCount() * 4;
-        PVertexBuffer vb = new PVertexBuffer();
+        PGeometryVertexBuffer vb = new PGeometryVertexBuffer();
         
         Vector3f [] tangentResult = new Vector3f [VertCount];
         
@@ -149,11 +149,11 @@ public class PMeshUtils
                 
                 // grab this triangles verts and their indices
                 PGeometryVertex vert1 = currentTriangle.m_Vertices[0];
-                int index1 = vb.AddVertex(vert1);
+                int index1 = vb.addVertex(vert1);
                 PGeometryVertex vert2 = currentTriangle.m_Vertices[1];
-                int index2 = vb.AddVertex(vert2);
+                int index2 = vb.addVertex(vert2);
                 PGeometryVertex vert3 = currentTriangle.m_Vertices[2];
-                int index3 = vb.AddVertex(vert3);
+                int index3 = vb.addVertex(vert3);
                 
                 // grab those verts texture coords
                 Vector2f texCoordVert1 = vert1.m_TexCoords[0];
@@ -190,7 +190,7 @@ public class PMeshUtils
                 tangents2.get(index3).add(tdir);
             }
             
-            for (int i = 0; i < vb.Count(); ++i)
+            for (int i = 0; i < vb.count(); ++i)
             {
                 Vector3f n = normals.get(i);
                 Vector3f t = tangents1.get(i);

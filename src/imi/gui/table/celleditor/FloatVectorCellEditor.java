@@ -18,6 +18,8 @@
 package imi.gui.table.celleditor;
 
 import java.awt.Component;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.AbstractCellEditor;
 import javax.swing.JPanel;
 import javax.swing.JTable;
@@ -30,8 +32,10 @@ import javax.swing.table.TableCellEditor;
  */
 public class FloatVectorCellEditor extends AbstractCellEditor implements TableCellEditor
 {
-    private JPanel          m_panelCollection = new JPanel();
-    private JTextField[]    m_textFields = new JTextField[4];
+    /** Panel that stores the text fields **/
+    private final JPanel          m_panelCollection = new JPanel();
+    /** Text fields for showing vector component values **/
+    private final JTextField[]    m_textFields      = new JTextField[4];
 
     public FloatVectorCellEditor()
     {
@@ -64,7 +68,9 @@ public class FloatVectorCellEditor extends AbstractCellEditor implements TableCe
                 }
                 catch(NumberFormatException ex)
                 {
-                    System.out.println("Incorrect format for a float!");
+                    Logger.getLogger(FloatVectorCellEditor.class.getName()).log(Level.WARNING,
+                            "Incorrect format for a float!", ex);
+                    // Set that element to zero
                     fArray[i] = 0.0f;
                 }
             }
@@ -97,7 +103,6 @@ public class FloatVectorCellEditor extends AbstractCellEditor implements TableCe
             while (i < 4)
             {
                 m_textFields[i].setText("N/A");
-                //m_textFields[i].setEnabled(false);
                 i++;
             }
         }

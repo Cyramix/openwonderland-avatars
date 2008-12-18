@@ -209,6 +209,10 @@ public class PPolygonMesh extends PNode
         m_BoundingSphere.clear();
     }
 
+    public Iterable<PPolygon> getPolygons() {
+        return m_Polygons;
+    }
+
     /**
      * This method uses the provider to reconstruct the jME TriMesh based on
      * current PPolygon data *IF* the inherited PNode.isDirty() method returns true.

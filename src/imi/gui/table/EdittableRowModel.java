@@ -29,9 +29,12 @@ import javax.swing.table.TableCellEditor;
  */
 public class EdittableRowModel 
 {
-    // This data structure defines the relationships between rows and their editors
-    private HashMap<Class, TableCellEditor> m_editorMap = new HashMap<Class, TableCellEditor>();
-    
+    /** Map classes to their corresponding cell editors **/
+    private final HashMap<Class, TableCellEditor> m_editorMap = new HashMap<Class, TableCellEditor>();
+
+    /**
+     * Construct a new instance
+     */
     public EdittableRowModel()
     {
         

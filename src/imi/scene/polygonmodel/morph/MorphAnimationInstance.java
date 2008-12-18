@@ -90,7 +90,7 @@ public class MorphAnimationInstance extends Node //implements Savable
         // first triangle
         mb.addTriangle(index1, index2, index3);
         // Build the m_mesh for the first time (TexCoords and indecies should not change past this point)
-        m_mesh = new TriMesh("test trimesh", BufferUtils.createFloatBuffer(mb.getPositions()), BufferUtils.createFloatBuffer(mb.getNormals()), null, TexCoords.makeNew(mb.getTexCoords()), BufferUtils.createIntBuffer(mb.getIndices()));
+        m_mesh = new TriMesh("test trimesh", BufferUtils.createFloatBuffer(mb.getPositions()), BufferUtils.createFloatBuffer(mb.getNormals()), null, TexCoords.makeNew(mb.getTexCoordZero()), BufferUtils.createIntBuffer(mb.getIndices()));
     }
 
     /**

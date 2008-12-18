@@ -21,8 +21,8 @@ import com.jme.math.Vector2f;
 import com.jme.math.Vector3f;
 import java.util.ArrayList;
 
-/**     MeshBuffer
- *  Utility to re-arange mesh data from: 
+/**     
+ * MeshBuffer - Utility to re-arange mesh data from:
  *  multiple index buffers (one for positions, one for texture coordinates... etc)
  *  - suitable for editing in Digital Conetent Creation tools 
  *  
@@ -49,7 +49,7 @@ import java.util.ArrayList;
  * 
  *       Vector3f[] vertices    = mb.getPositions();
  *       Vector3f[] normals     = mb.getNormals();
- *       Vector2f[] texCoords   = mb.getTexCoords();
+ *       Vector2f[] texCoords   = mb.getTexCoordZero();
  *       int[]      indecies    = mb.getIndices();
  *
  *       triMesh1.reconstruct(BufferUtils.createFloatBuffer(vertices), BufferUtils.createFloatBuffer(normals),
@@ -64,20 +64,31 @@ import java.util.ArrayList;
 public class MeshBuffer
 {
     static final int MAX_TEXTURES = 8;  // multi-texturing supported
-    
-    ArrayList       m_Positions         = new ArrayList();
-    ArrayList       m_Normals           = new ArrayList();
-    ArrayList []    m_TexCoords         = new ArrayList[MAX_TEXTURES];
-    ArrayList       m_TriangleIndices   = new ArrayList();
+    /** Collection of positions **/
+    private ArrayList<Vector3f> m_Positions = new ArrayList<Vector3f>();
+    /** Collection of normals **/
+    private ArrayList<Vector3f> m_Normals   = new ArrayList<Vector3f>();
+    /** Collection of texture coordinates **/
+    private ArrayList<Vector2f> []    m_TexCoords = new ArrayList[MAX_TEXTURES];
+    /** Index collection **/
+    private ArrayList<Integer>  m_TriangleIndices   = new ArrayList<Integer>();
 
+    /**
+     * Construct a new instance!
+     */
     public MeshBuffer()
     {
         for (int i = 0; i < MAX_TEXTURES; i++)
         {
-            m_TexCoords[i] = new ArrayList();
+            m_TexCoords[i] = new ArrayList<Vector2f>();
         }
     }
 
+    /**
+     * Add this position to the collection
+     * @param position
+     * @return index in the collection
+     */
     public int addPosition(Vector3f position)
     {
         if (position != null)
@@ -87,7 +98,14 @@ public class MeshBuffer
 
         return (m_Positions.size() - 1);
     }
-    
+
+    /**
+     * Add the vector represented by the provided components to the collection
+     * @param x
+     * @param y
+     * @param z
+     * @return index in the collection
+     */
     public int addPosition(float x, float y, float z)
     {
         m_Positions.add(new Vector3f(x, y, z));
@@ -95,6 +113,10 @@ public class MeshBuffer
         return (m_Positions.size() - 1);
     }
 
+    /**
+     * Add the provided normal to the collection
+     * @param normal
+     */
     public void addNormal(Vector3f normal)
     {
         //  TODO : should I normalize?
@@ -125,41 +147,26 @@ public class MeshBuffer
         m_TexCoords[index].add(new Vector2f(u, v));
     }
 
-    public void addTriangle(int Indice1, int Indice2, int Indice3)
+    public void addTriangle(int indexOne, int indexTwo, int indexThree)
     {
-        m_TriangleIndices.add(new Integer(Indice1));
-        m_TriangleIndices.add(new Integer(Indice2));
-        m_TriangleIndices.add(new Integer(Indice3));
+        m_TriangleIndices.add(new Integer(indexOne));
+        m_TriangleIndices.add(new Integer(indexTwo));
+        m_TriangleIndices.add(new Integer(indexThree));
     }
 
     public Vector3f[] getPositions()
     {
-//        Vector3f []arrayOfPositions = (Vector3f[])m_Positions.toArray();
-//        return(arrayOfPositions);
-
-        Vector3f[] arrayOfPositions = new Vector3f[m_Positions.size()];
-
-        for (int i = 0; i < m_Positions.size(); i++) 
-        {
-            arrayOfPositions[i] = (Vector3f) m_Positions.get(i);
-        }
-
-        return (arrayOfPositions);
+        Vector3f[] result = (Vector3f[])m_Positions.toArray(new Vector3f[0]);
+        return result;
     }
 
     public Vector3f[] getNormals()
     {
-        Vector3f[] arrayOfNormals = new Vector3f[m_Normals.size()];
-
-        for (int i = 0; i < m_Normals.size(); i++) 
-        {
-            arrayOfNormals[i] = (Vector3f) m_Normals.get(i);
-        }
-
-        return (arrayOfNormals);
+        Vector3f[] result = (Vector3f[])m_Normals.toArray(new Vector3f[0]);
+        return result;
     }
 
-    public Vector2f[] getTexCoords()
+    public Vector2f[] getTexCoordZero()
     {
         return getTexCoords(0);
     }
@@ -173,7 +180,7 @@ public class MeshBuffer
 
         for (int i = 0; i < m_TexCoords[multiTextureIndex].size(); i++) 
         {
-            arrayOfTexCoords[i] = (Vector2f) m_TexCoords[multiTextureIndex].get(i);
+            arrayOfTexCoords[i] = m_TexCoords[multiTextureIndex].get(i);
         }
 
         return (arrayOfTexCoords);
@@ -185,7 +192,7 @@ public class MeshBuffer
 
         for (int i = 0; i < m_TriangleIndices.size(); i++) 
         {
-            arrayOfIndices[i] = ((Integer) m_TriangleIndices.get(i));
+            arrayOfIndices[i] = (m_TriangleIndices.get(i));
         }
 
         return (arrayOfIndices);

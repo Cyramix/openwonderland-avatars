@@ -30,7 +30,7 @@ import javax.swing.table.TableCellEditor;
  */
 public class IntegerSpinBox extends AbstractCellEditor implements TableCellEditor
 {
-    private JSpinner m_spinBox = new JSpinner();
+    private final JSpinner m_spinBox = new JSpinner();
     
     public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column)
     {
