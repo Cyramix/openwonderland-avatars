@@ -136,7 +136,18 @@ public abstract class Character extends Entity implements SpatialObject, Animati
      * @param wm
      */
     public Character(CharacterAttributes attributes, WorldManager wm)
-    {   
+    {
+        this(attributes, wm, true);
+    }
+
+    /**
+     * Sets up the mtgame entity
+     * @param attributes
+     * @param wm
+     * @param addEntity determines if the entity is added to the world manager in the constructor
+     */
+    public Character(CharacterAttributes attributes, WorldManager wm, boolean addEntity)
+    {
         super(attributes.getName());
         m_wm = wm;
                 
@@ -175,9 +186,11 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         
         // Add the processor collection component to the entity
         addComponent(ProcessorCollectionComponent.class, processorCollection);
-        
-        // Add the entity to the world manager
-        wm.addEntity(this);  
+
+        if (addEntity) {
+            // Add the entity to the world manager
+            wm.addEntity(this);
+        }
     }
 
     /**
@@ -1290,10 +1303,15 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         // Attributes
         xmlCharacterAttributes xmlAttributes = characterDOM.getAttributes();
 
-        CharacterAttributes attributes = new CharacterAttributes(xmlAttributes);
+        if (m_attributes!=null) {
+            m_attributes.applyAttributesDOM(xmlAttributes);
+            loadAttributes(m_attributes);
+        } else {
+            CharacterAttributes attributes = new CharacterAttributes(xmlAttributes);
 
-        // Apply the loaded attributes
-        loadAttributes(attributes);
+            // Apply the loaded attributes
+            loadAttributes(attributes);
+        }
 
         // Skeletal modifications
         applySkeletalModifications(characterDOM);

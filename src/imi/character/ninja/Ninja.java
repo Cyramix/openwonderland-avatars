@@ -43,7 +43,16 @@ public class Ninja extends imi.character.Character
      */
     public Ninja(CharacterAttributes attributes, WorldManager wm)
     {
-        super(attributes, wm);
+        this(attributes, wm, true);
+    }
+    /**
+     * Construct a new Ninja with the provided attributes and world manager.
+     * @param attributes
+     * @param wm
+     */
+    public Ninja(CharacterAttributes attributes, WorldManager wm, boolean addEntity)
+    {
+        super(attributes, wm, addEntity);
         m_context = instantiateContext();       // Initialize m_context
     }
 

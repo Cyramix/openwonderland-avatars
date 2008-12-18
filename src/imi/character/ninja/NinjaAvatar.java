@@ -34,9 +34,17 @@ public class NinjaAvatar extends Ninja
      * @param attributes
      * @param wm
      */
-    public NinjaAvatar(CharacterAttributes attributes, WorldManager wm) 
+    public NinjaAvatar(CharacterAttributes attributes, WorldManager wm) {
+        this(attributes, wm , true);
+    }
+    /**
+     * Construct a new NinjaAvatar with the provided attributes and world manager.
+     * @param attributes
+     * @param wm
+     */
+    public NinjaAvatar(CharacterAttributes attributes, WorldManager wm, boolean addEntity)
     {
-        super(attributes, wm);
+        super(attributes, wm, addEntity);
         
         // Tweak animation names and speeds
         m_context.getController().setReverseHeading(true);
