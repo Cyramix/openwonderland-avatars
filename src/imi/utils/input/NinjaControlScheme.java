@@ -18,6 +18,7 @@
 package imi.utils.input;
 
 import com.jme.math.Vector3f;
+import imi.character.VerletArm;
 import imi.character.ninja.Ninja;
 import imi.character.objects.ObjectCollection;
 import imi.scene.processors.FlexibleCameraProcessor;
@@ -74,7 +75,7 @@ public class NinjaControlScheme extends InputScheme
         {
             if (events[i] instanceof MouseEvent)
             {
-                if (ninjaTeam.get(currentNinja).getArm() != null &&  ninjaTeam.get(currentNinja).getArm().isEnabled())
+                if (ninjaTeam.get(currentNinja).getSkeletonManipulator() != null && ninjaTeam.get(currentNinja).getSkeletonManipulator().isArmsEnabled())
                 {
                     Vector3f offset = new Vector3f();
 
@@ -117,10 +118,23 @@ public class NinjaControlScheme extends InputScheme
                         }
                     }
 
-                    if (me.getID() == MouseEvent.MOUSE_PRESSED && me.getButton() == MouseEvent.BUTTON2)
-                        ninjaTeam.get(currentNinja).getArm().toggleManualDriveReachUp();
-                    
-                    ninjaTeam.get(currentNinja).getArm().addInputOffset(offset);
+                    VerletArm rightArm = ninjaTeam.get(currentNinja).getRightArm();
+                    VerletArm leftArm  = ninjaTeam.get(currentNinja).getLeftArm();
+
+                    if (rightArm != null)
+                    {
+                        if (me.getID() == MouseEvent.MOUSE_PRESSED && me.getButton() == MouseEvent.BUTTON2)
+                            rightArm.toggleManualDriveReachUp();
+
+                        rightArm.addInputOffset(offset);    
+                    }
+                    if (leftArm != null)
+                    {
+                        if (me.getID() == MouseEvent.MOUSE_PRESSED && me.getButton() == MouseEvent.BUTTON2)
+                            leftArm.toggleManualDriveReachUp();
+
+                        leftArm.addInputOffset(offset);       
+                    }
                 }
             }
         }

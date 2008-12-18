@@ -127,7 +127,8 @@ public abstract class Character extends Entity implements SpatialObject, Animati
     protected CharacterAnimationProcessor   m_AnimationProcessor    = null;
     protected TransitionQueue               m_facialAnimationQ      = null;
     protected CharacterEyes                 m_eyes                  = null;
-    protected VerletArm                     m_arm                   = null;
+    protected VerletArm                     m_rightArm              = null;
+    protected VerletArm                     m_leftArm               = null;
     private VerletSkeletonFlatteningManipulator m_skeletonManipulator = null;
 
     /**
@@ -313,8 +314,10 @@ public abstract class Character extends Entity implements SpatialObject, Animati
                     }
 
                     // The verlet arm!
-                    SkinnedMeshJoint shoulderJoint = (SkinnedMeshJoint) m_skeleton.findChild("rightArm");
-                    m_arm = new VerletArm(shoulderJoint, m_modelInst);
+                    SkinnedMeshJoint rightShoulderJoint = (SkinnedMeshJoint) m_skeleton.findChild("rightArm");
+                    SkinnedMeshJoint leftShoulderJoint  = (SkinnedMeshJoint) m_skeleton.findChild("leftArm");
+                    m_rightArm = new VerletArm(rightShoulderJoint, m_modelInst, true);
+                    m_leftArm  = new VerletArm(leftShoulderJoint,  m_modelInst, false);
                     // Debugging visualization
 //                            VerletVisualManager visual = new VerletVisualManager("avatar arm visuals", m_wm);
 //                            visual.addVerletObject(m_arm);
@@ -327,8 +330,9 @@ public abstract class Character extends Entity implements SpatialObject, Animati
 //                    for(PPolygonSkinnedMeshInstance mesh : skinnedMeshes)
 //                        mesh.setJointManipulator(m_armJointManipulator);
                     // New verlet skeleton manipulator
-                    m_skeletonManipulator = new VerletSkeletonFlatteningManipulator(m_arm, m_eyes.getLeftEyeBall(), m_eyes.getRightEyeBall(), m_skeleton);
-                    m_arm.setSkeletonManipulator(m_skeletonManipulator);
+                    m_skeletonManipulator = new VerletSkeletonFlatteningManipulator(m_leftArm, m_rightArm, m_eyes.getLeftEyeBall(), m_eyes.getRightEyeBall(), m_skeleton, m_modelInst);
+                    m_rightArm.setSkeletonManipulator(m_skeletonManipulator);
+                    m_leftArm.setSkeletonManipulator(m_skeletonManipulator);
                     //m_arm.setPointAtLocation(Vector3f.UNIT_Y.mult(2.0f)); // test pointing, set to null to stop pointing 
                 }
                 return true;
@@ -861,17 +865,17 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         if (!m_initialized)
             initializeCharacter();
         
-        if (m_context != null)
-            m_context.update(deltaTime);
-        
         if (m_attributes.isUseSimpleStaticModel())
             m_modelInst.setDirty(true, true);
-
-        if (m_eyes != null)
-            m_eyes.updateEyes(deltaTime);
         
-        if (m_arm != null && m_arm.isEnabled())
-            m_arm.update(deltaTime);
+        if (m_context != null)
+            m_context.update(deltaTime);
+        if (m_eyes != null)
+            m_eyes.update(deltaTime);
+        if (m_rightArm != null)
+            m_rightArm.update(deltaTime);
+        if (m_leftArm != null)
+            m_leftArm.update(deltaTime);
     }
 
     /**
@@ -1110,8 +1114,16 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         return m_eyes;
     }
 
-    public VerletArm getArm() {
-        return m_arm;
+    public VerletArm getRightArm() {
+        return m_rightArm;
+    }
+    
+    public VerletArm getLeftArm() {
+        return m_leftArm;
+    }
+    
+    public VerletSkeletonFlatteningManipulator getSkeletonManipulator() {
+        return m_skeletonManipulator;
     }
     
     /**

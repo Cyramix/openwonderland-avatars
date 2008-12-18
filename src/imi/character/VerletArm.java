@@ -31,8 +31,11 @@ import java.util.ArrayList;
  */
 public class VerletArm 
 {
+    /** true for right hand and false for left hand **/
+    private boolean right = true;
+    
     /** The owning instance **/
-    private PPolygonModelInstance modelInst = null;
+    private PPolygonModelInstance characterModelInst = null;
     /** Reference to the joint where the arm attaches **/
     private SkinnedMeshJoint shoulderJoint  = null;
 
@@ -41,7 +44,7 @@ public class VerletArm
     /** List of constraints applied to the verlet particles **/
     private ArrayList<StickConstraint> constraints  = new ArrayList<StickConstraint>();
     
-    private Vector3f gravity = new Vector3f(0.0f, -9.8f * 2.0f, 0.0f); // <-- Why x2?
+    private Vector3f gravity = new Vector3f(0.0f, -9.8f * 2.0f, 0.0f); // gravity is increaced for a "better look"
     /** Used to simulate energy lost due to friction, drag, etc **/
     private float velocityDampener = 0.8f;
     /** Switch the behavior on and off **/
@@ -57,10 +60,10 @@ public class VerletArm
     private final int wrist     = 2;
     /** Switch the driving mode for the hand **/
     private boolean manualDriveReachUp = true; // otherwise reach forward
-    /** Used as a pointing target for the arm **/
+    /** Used as a pointing target for the arm, null disables pointing **/
     private Vector3f pointAtLocation = null;
 
-    
+    // Updates occure at a fixed interval
     private float    armTimer         = 0.0f;
     private float    armTimeTick      = 1.0f / 60.0f;
     
@@ -70,9 +73,10 @@ public class VerletArm
      * @param shoulderJ The joint to attach to as a shoulder
      * @param modelInstance The owner
      */
-    public VerletArm(SkinnedMeshJoint shoulderJ, PPolygonModelInstance modelInstance) 
+    public VerletArm(SkinnedMeshJoint shoulderJ, PPolygonModelInstance modelInstance, boolean rightHand) 
     {
-        modelInst     = modelInstance;
+        right = rightHand;
+        characterModelInst = modelInstance;
         shoulderJoint = shoulderJ;
         
         // Lets make an arm
@@ -91,6 +95,9 @@ public class VerletArm
      */
     public void update(float deltaTime) 
     {
+        if (!enabled)
+            return;
+        
         // Updates occure at a fixed interval
         armTimer += deltaTime;
         if (armTimer < armTimeTick)
@@ -122,7 +129,7 @@ public class VerletArm
                     currentInputOffset.y = temp;
                 }
 
-                PMatrix modelWorld = modelInst.getTransform().getWorldMatrix(false);
+                PMatrix modelWorld = characterModelInst.getTransform().getWorldMatrix(false);
                 modelWorld.transformNormal(currentInputOffset);
 
                 // Check if it is ok to offset the wrist to the new position
@@ -204,7 +211,7 @@ public class VerletArm
         particles.get(wrist).position(shoulderPosition.add(Vector3f.UNIT_Y.mult(-0.4852301f)));
         
         // set the hand a bit forwards and up
-        PMatrix modelWorld = modelInst.getTransform().getWorldMatrix(false);
+        PMatrix modelWorld = characterModelInst.getTransform().getWorldMatrix(false);
         particles.get(wrist).dislocate(modelWorld.getLocalZ().mult(0.25f));
         particles.get(wrist).dislocate(Vector3f.UNIT_Y.mult(0.25f));
     }
@@ -237,9 +244,9 @@ public class VerletArm
         return particles;
     }
 
-    public PMatrix calculateInverseModelWorldMatrix()
+    private PMatrix calculateInverseModelWorldMatrix()
     {
-        return modelInst.getTransform().getWorldMatrix(false).inverse();
+        return characterModelInst.getTransform().getWorldMatrix(false).inverse();
     }
     
     public Vector3f getElbowPosition() 
@@ -260,7 +267,12 @@ public class VerletArm
     {
         enabled = bEnabled;
         if (skeletonManipulator != null)
-            skeletonManipulator.setArmEnabled(enabled);
+        {
+            if (right)
+                skeletonManipulator.setRightArmEnabled(bEnabled);
+            else
+                skeletonManipulator.setLeftArmEnabled(bEnabled);
+        }
         if (enabled)
             resetArm();
     }

@@ -71,7 +71,8 @@ public class NinjaContext extends GameContext
         Punch,
         SitOnGround,
         ToggleSteering,
-        ToggleArm,
+        ToggleRightArm,
+        ToggleLeftArm,
         ToggleArmManualDriveReachMode,
         Point,
         GoSit,
@@ -169,23 +170,29 @@ public class NinjaContext extends GameContext
             steering.toggleEnable();
         
         // Toggle manual control over the right arm
-        if (trigger == TriggerNames.ToggleArm.ordinal() && pressed)
+        if (trigger == TriggerNames.ToggleRightArm.ordinal() && pressed)
         {
             ninja.setCameraOnMe();
-            ninja.getArm().toggleEnabled();
+            ninja.getRightArm().toggleEnabled();
+        }
+        // Toggle manual control over the left arm
+        if (trigger == TriggerNames.ToggleLeftArm.ordinal() && pressed)
+        {
+            ninja.setCameraOnMe();
+            ninja.getLeftArm().toggleEnabled();
         }
     
         // Point at the nearest chair
         if (trigger == TriggerNames.Point.ordinal() && pressed)
         {
-            if (ninja.getObjectCollection() == null || ninja.getArm() == null)
+            if (ninja.getObjectCollection() == null || ninja.getRightArm() == null)
                 return;
             
             SpatialObject obj = ninja.getObjectCollection().findNearestChair(ninja, 10000.0f, 1.0f, true);
             if (obj == null)
                 return;
             
-            ninja.getArm().setPointAtLocation(obj.getPosition());
+            ninja.getRightArm().setPointAtLocation(obj.getPosition());
         }
         
         // Find nearest chair and sit on it

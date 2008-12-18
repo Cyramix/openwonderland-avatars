@@ -52,11 +52,11 @@ public class CharacterEyes
     private boolean eyesClosed      = false;
     private boolean keepEyesClosed  = false;
     /** How long will it take to close the eyes **/
-    private float blinkingCloseTime = 0.25f;
+    private float blinkingCloseTime = 0.2f;
     /** How long will the eyes remain closed **/
-    private float blinkingShutTime  = 0.1f;
+    private float blinkingShutTime  = 0.05f;
     /** How long will it take to open the eyes **/
-    private float blinkingOpenTime  = 0.5f;
+    private float blinkingOpenTime  = 0.4f;
     
     private boolean winkRight = true;
     private boolean winkLeft  = true;
@@ -85,7 +85,7 @@ public class CharacterEyes
      * Perform eyeball behavior.
      * @param deltaTime The timestep
      */
-    public void updateEyes(float deltaTime)
+    public void update(float deltaTime)
     {
         if (!eyesWander || leftEyeBall == null || rightEyeBall == null)
             return;
