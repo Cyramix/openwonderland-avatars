@@ -52,11 +52,11 @@ public class CharacterEyes
     private boolean eyesClosed      = false;
     private boolean keepEyesClosed  = false;
     /** How long will it take to close the eyes **/
-    private float blinkingCloseTime = 0.5f;
+    private float blinkingCloseTime = 0.25f;
     /** How long will the eyes remain closed **/
     private float blinkingShutTime  = 0.1f;
     /** How long will it take to open the eyes **/
-    private float blinkingOpenTime  = 0.3f;
+    private float blinkingOpenTime  = 0.5f;
     
     private boolean winkRight = true;
     private boolean winkLeft  = true;
