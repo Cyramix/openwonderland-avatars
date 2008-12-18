@@ -17,36 +17,93 @@
  */
 
 /*
- * JPanel_HorizontalSlider.java
+ * JPanel_HorizontalSliderT.java
  *
  * Created on Dec 17, 2008, 10:52:18 AM
  */
 
 package imi.gui;
 
-import javax.swing.JFrame;
+import java.awt.AWTEvent;
+import java.awt.Toolkit;
+import java.awt.event.AWTEventListener;
+import java.awt.event.FocusEvent;
 import javax.swing.JSlider;
 import javax.swing.JSpinner;
+import javax.swing.text.JTextComponent;
 
 /**
  *
  * @author Paul Viet Nguyen Truong (ptruong)
  */
-public class JPanel_HorizontalSlider extends javax.swing.JPanel {
+public class JPanel_HorizontalSliderS extends javax.swing.JPanel {
 ////////////////////////////////////////////////////////////////////////////////
 // CLASS DATA MEMBERS
 ////////////////////////////////////////////////////////////////////////////////
-    public float    m_baseSliderVal =   25.0f;
-    private JFrame  m_baseFrame     =   null;
+    public float                                m_baseSliderVal =   25.0f;
+    private JFrame_AdvOptions.m_sliderControl   m_ObjectRef     =   null;
+    private JFrame_AdvOptions                   m_ParentFrame   =   null;
+    private boolean                             m_SliderInFocus     =   false;
+    private boolean                             m_SpinnerInFocus    =   false;
 
-    /** Creates new form JPanel_HorizontalSlider */
-    public JPanel_HorizontalSlider() {
+    /** Creates new form JPanel_HorizontalSliderT */
+    public JPanel_HorizontalSliderS() {
         initComponents();
+
+        Toolkit.getDefaultToolkit().addAWTEventListener(new AWTEventListener() {
+
+            public void eventDispatched(AWTEvent event) {
+                if (event.getID() == FocusEvent.FOCUS_GAINED) {
+                    if (event.getSource() instanceof JSlider) {
+                        m_SliderInFocus = true;
+                    } else if (event.getSource() instanceof JTextComponent) {
+                        m_SpinnerInFocus = true;
+                    }
+                } else if (event.getID() == FocusEvent.FOCUS_LOST) {
+                    if (event.getSource() instanceof JSlider) {
+                        m_SliderInFocus = false;
+                    } else if (event.getSource() instanceof JTextComponent) {
+                        m_SpinnerInFocus = false;
+                    }
+                }
+            }
+        }, AWTEvent.FOCUS_EVENT_MASK);
     }
 
-    public JPanel_HorizontalSlider(JFrame frame) {
-        initComponents();
-        m_baseFrame = frame;
+    public void updateComponents(javax.swing.event.ChangeEvent evt) {
+        int     index   = -1;
+        float   curVal  = 0.0f;
+        float   newVal  = 0.0f;
+
+        if (evt.getSource().equals(jSlider1))
+            index = 0;
+
+        if (evt.getSource().equals(jSpinner1))
+            index = 1;
+
+        switch(index)
+        {
+            case 0:
+            {
+                if (m_SliderInFocus) {
+                    curVal = (float)jSlider1.getValue();
+                    newVal = (curVal - m_baseSliderVal) / 100;
+                    jSpinner1.setValue(1.0f + newVal);
+                    m_ParentFrame.parseModification(m_ObjectRef, newVal, newVal);
+                }
+                break;
+            }
+            case 1:
+            {
+                if (m_SpinnerInFocus) {
+                    curVal = (Float)jSpinner1.getValue();
+                    newVal = ((curVal - 1.0f) * 100) + m_baseSliderVal;
+                    jSlider1.setValue((int)newVal);
+                    m_ParentFrame.parseModification(m_ObjectRef, newVal, newVal);
+                }
+                break;
+            }
+        }
     }
 
     /** This method is called from within the constructor to
@@ -75,11 +132,21 @@ public class JPanel_HorizontalSlider extends javax.swing.JPanel {
         jSlider1.setValue(25);
         jSlider1.setMinimumSize(new java.awt.Dimension(120, 29));
         jSlider1.setPreferredSize(new java.awt.Dimension(120, 29));
+        jSlider1.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                updateComponents(evt);
+            }
+        });
         add(jSlider1, new java.awt.GridBagConstraints());
 
         jSpinner1.setModel(new javax.swing.SpinnerNumberModel(Float.valueOf(1.0f), Float.valueOf(-1.25f), Float.valueOf(1.25f), Float.valueOf(0.01f)));
         jSpinner1.setMinimumSize(new java.awt.Dimension(80, 28));
         jSpinner1.setPreferredSize(new java.awt.Dimension(80, 28));
+        jSpinner1.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                updateComponents(evt);
+            }
+        });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
@@ -96,6 +163,26 @@ public class JPanel_HorizontalSlider extends javax.swing.JPanel {
 
     public JSpinner getSpinner() {
         return jSpinner1;
+    }
+
+    public JFrame_AdvOptions.m_sliderControl  getObjectRef() {
+        return m_ObjectRef;
+    }
+
+    public JFrame_AdvOptions getParentFrame() {
+        return m_ParentFrame;
+    }
+
+////////////////////////////////////////////////////////////////////////////////
+// MUTATORS
+////////////////////////////////////////////////////////////////////////////////
+
+    public void setObjectRef(JFrame_AdvOptions.m_sliderControl object) {
+        m_ObjectRef = object;
+    }
+
+    public void setParentFrame(JFrame_AdvOptions parent) {
+        m_ParentFrame = parent;
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -148,9 +235,5 @@ public class JPanel_HorizontalSlider extends javax.swing.JPanel {
     
     public void setJSpinner(javax.swing.SpinnerModel spinnermodel) {
         jSpinner1.setModel(spinnermodel);
-    }
-
-    public void setParentFrame(JFrame frame) {
-        m_baseFrame = frame;
     }
 }

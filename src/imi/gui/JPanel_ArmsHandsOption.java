@@ -24,15 +24,27 @@
 
 package imi.gui;
 
+import javax.swing.JFrame;
+
 /**
  *
  * @author Paul Viet Ngueyn Truong (ptruong)
  */
 public class JPanel_ArmsHandsOption extends javax.swing.JPanel {
+////////////////////////////////////////////////////////////////////////////////
+// CLASS DATA MEMBERS
+////////////////////////////////////////////////////////////////////////////////
+    private JFrame  m_baseFrame     =   null;
 
     /** Creates new form JPanel_ArmsHandsOption */
     public JPanel_ArmsHandsOption() {
         initComponents();
+    }
+
+    public JPanel_ArmsHandsOption(JFrame baseFrame) {
+        m_baseFrame = baseFrame;
+        initComponents();
+        setSliderControls();
     }
 
     /** This method is called from within the constructor to
@@ -48,31 +60,31 @@ public class JPanel_ArmsHandsOption extends javax.swing.JPanel {
         jTabbedPane_ArmsHands = new javax.swing.JTabbedPane();
         jPanel_UpperArms = new javax.swing.JPanel();
         jPanel_UALength = new javax.swing.JPanel();
-        UpperLeftArm_Length = new imi.gui.JPanel_VerticalSlider();
-        UpperRightArm_Length = new imi.gui.JPanel_VerticalSlider();
         jCheckBox_SyncUALength = new javax.swing.JCheckBox();
+        LeftUpperarm_Length = new imi.gui.JPanel_VerticalSliderT();
+        RightUpperarm_Length = new imi.gui.JPanel_VerticalSliderT();
         jPanel_UAThickness = new javax.swing.JPanel();
-        UpperLeftArm_Thickness = new imi.gui.JPanel_HorizontalSlider();
-        UpperRightArm_Thickness = new imi.gui.JPanel_HorizontalSlider();
         jCheckBox_SyncUAThickness = new javax.swing.JCheckBox();
+        LeftUpperarm_Thickness = new imi.gui.JPanel_HorizontalSliderS();
+        RightUpperarm_Thickness = new imi.gui.JPanel_HorizontalSliderS();
         jPanel_LowerArms = new javax.swing.JPanel();
         jPanel_LALength = new javax.swing.JPanel();
-        LowerLeftArm_Length = new imi.gui.JPanel_VerticalSlider();
-        LowerRightArm_Length = new imi.gui.JPanel_VerticalSlider();
         jCheckBox_SyncLALength = new javax.swing.JCheckBox();
+        LeftLowerarm_Length = new imi.gui.JPanel_VerticalSliderT();
+        RightLowerarm_Length = new imi.gui.JPanel_VerticalSliderT();
         jPanel_LAThickness = new javax.swing.JPanel();
-        LowerLeftArm_Thickness = new imi.gui.JPanel_HorizontalSlider();
-        LowerRightArm_Thickness = new imi.gui.JPanel_HorizontalSlider();
         jCheckBox_SyncLAThickness = new javax.swing.JCheckBox();
+        LeftLowerarm_Thickness = new imi.gui.JPanel_HorizontalSliderS();
+        RightLowerarm_Thickness = new imi.gui.JPanel_HorizontalSliderS();
         jPanel_Hands = new javax.swing.JPanel();
         jPanel_FingerLength = new javax.swing.JPanel();
-        LeftHand_Length = new imi.gui.JPanel_VerticalSlider();
-        RightHand_Length = new imi.gui.JPanel_VerticalSlider();
         jCheckBox_SyncHandLength = new javax.swing.JCheckBox();
+        LeftHand_Length = new imi.gui.JPanel_VerticalSliderT();
+        RightHand_Length = new imi.gui.JPanel_VerticalSliderT();
         jPanel_HandThickness = new javax.swing.JPanel();
-        LeftHand_Thickness = new imi.gui.JPanel_HorizontalSlider();
-        RightHand_Thickness = new imi.gui.JPanel_HorizontalSlider();
         jCheckBox_SyncHandThickness = new javax.swing.JCheckBox();
+        LeftHand_Thickness = new imi.gui.JPanel_HorizontalSliderS();
+        RightHand_Thickness = new imi.gui.JPanel_HorizontalSliderS();
 
         setMinimumSize(new java.awt.Dimension(270, 600));
         setPreferredSize(new java.awt.Dimension(270, 600));
@@ -85,8 +97,6 @@ public class JPanel_ArmsHandsOption extends javax.swing.JPanel {
         jPanel_UALength.setMinimumSize(new java.awt.Dimension(230, 230));
         jPanel_UALength.setPreferredSize(new java.awt.Dimension(230, 230));
         jPanel_UALength.setLayout(new java.awt.GridBagLayout());
-        jPanel_UALength.add(UpperLeftArm_Length, new java.awt.GridBagConstraints());
-        jPanel_UALength.add(UpperRightArm_Length, new java.awt.GridBagConstraints());
 
         jCheckBox_SyncUALength.setText("Lock Sliders");
         jCheckBox_SyncUALength.setMinimumSize(new java.awt.Dimension(120, 23));
@@ -96,6 +106,14 @@ public class JPanel_ArmsHandsOption extends javax.swing.JPanel {
         gridBagConstraints.gridy = 1;
         gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
         jPanel_UALength.add(jCheckBox_SyncUALength, gridBagConstraints);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        jPanel_UALength.add(LeftUpperarm_Length, gridBagConstraints);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 0;
+        jPanel_UALength.add(RightUpperarm_Length, gridBagConstraints);
 
         jPanel_UpperArms.add(jPanel_UALength, new java.awt.GridBagConstraints());
 
@@ -103,22 +121,6 @@ public class JPanel_ArmsHandsOption extends javax.swing.JPanel {
         jPanel_UAThickness.setMinimumSize(new java.awt.Dimension(230, 230));
         jPanel_UAThickness.setPreferredSize(new java.awt.Dimension(230, 230));
         jPanel_UAThickness.setLayout(new java.awt.GridBagLayout());
-
-        UpperLeftArm_Thickness.setMinimumSize(new java.awt.Dimension(109, 57));
-        UpperLeftArm_Thickness.setPreferredSize(new java.awt.Dimension(109, 57));
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 0;
-        jPanel_UAThickness.add(UpperLeftArm_Thickness, gridBagConstraints);
-
-        UpperRightArm_Thickness.setMinimumSize(new java.awt.Dimension(109, 57));
-        UpperRightArm_Thickness.setParentFrame(null);
-        UpperRightArm_Thickness.setPreferredSize(new java.awt.Dimension(109, 57));
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        jPanel_UAThickness.add(UpperRightArm_Thickness, gridBagConstraints);
 
         jCheckBox_SyncUAThickness.setText("Lock Sliders");
         jCheckBox_SyncUAThickness.setMinimumSize(new java.awt.Dimension(120, 23));
@@ -128,6 +130,20 @@ public class JPanel_ArmsHandsOption extends javax.swing.JPanel {
         gridBagConstraints.gridy = 1;
         gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
         jPanel_UAThickness.add(jCheckBox_SyncUAThickness, gridBagConstraints);
+
+        LeftUpperarm_Thickness.setMinimumSize(new java.awt.Dimension(108, 57));
+        LeftUpperarm_Thickness.setPreferredSize(new java.awt.Dimension(108, 57));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        jPanel_UAThickness.add(LeftUpperarm_Thickness, gridBagConstraints);
+
+        RightUpperarm_Thickness.setMinimumSize(new java.awt.Dimension(108, 57));
+        RightUpperarm_Thickness.setPreferredSize(new java.awt.Dimension(108, 57));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 0;
+        jPanel_UAThickness.add(RightUpperarm_Thickness, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -142,8 +158,6 @@ public class JPanel_ArmsHandsOption extends javax.swing.JPanel {
         jPanel_LALength.setMinimumSize(new java.awt.Dimension(230, 230));
         jPanel_LALength.setPreferredSize(new java.awt.Dimension(230, 230));
         jPanel_LALength.setLayout(new java.awt.GridBagLayout());
-        jPanel_LALength.add(LowerLeftArm_Length, new java.awt.GridBagConstraints());
-        jPanel_LALength.add(LowerRightArm_Length, new java.awt.GridBagConstraints());
 
         jCheckBox_SyncLALength.setText("Lock Sliders");
         jCheckBox_SyncLALength.setMinimumSize(new java.awt.Dimension(120, 23));
@@ -153,6 +167,14 @@ public class JPanel_ArmsHandsOption extends javax.swing.JPanel {
         gridBagConstraints.gridy = 1;
         gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
         jPanel_LALength.add(jCheckBox_SyncLALength, gridBagConstraints);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        jPanel_LALength.add(LeftLowerarm_Length, gridBagConstraints);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 0;
+        jPanel_LALength.add(RightLowerarm_Length, gridBagConstraints);
 
         jPanel_LowerArms.add(jPanel_LALength, new java.awt.GridBagConstraints());
 
@@ -160,22 +182,6 @@ public class JPanel_ArmsHandsOption extends javax.swing.JPanel {
         jPanel_LAThickness.setMinimumSize(new java.awt.Dimension(230, 230));
         jPanel_LAThickness.setPreferredSize(new java.awt.Dimension(230, 230));
         jPanel_LAThickness.setLayout(new java.awt.GridBagLayout());
-
-        LowerLeftArm_Thickness.setMinimumSize(new java.awt.Dimension(109, 57));
-        LowerLeftArm_Thickness.setPreferredSize(new java.awt.Dimension(109, 57));
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 0;
-        jPanel_LAThickness.add(LowerLeftArm_Thickness, gridBagConstraints);
-
-        LowerRightArm_Thickness.setMinimumSize(new java.awt.Dimension(109, 57));
-        LowerRightArm_Thickness.setParentFrame(null);
-        LowerRightArm_Thickness.setPreferredSize(new java.awt.Dimension(109, 57));
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        jPanel_LAThickness.add(LowerRightArm_Thickness, gridBagConstraints);
 
         jCheckBox_SyncLAThickness.setText("Lock Sliders");
         jCheckBox_SyncLAThickness.setMinimumSize(new java.awt.Dimension(120, 23));
@@ -185,6 +191,20 @@ public class JPanel_ArmsHandsOption extends javax.swing.JPanel {
         gridBagConstraints.gridy = 1;
         gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
         jPanel_LAThickness.add(jCheckBox_SyncLAThickness, gridBagConstraints);
+
+        LeftLowerarm_Thickness.setMinimumSize(new java.awt.Dimension(108, 57));
+        LeftLowerarm_Thickness.setPreferredSize(new java.awt.Dimension(108, 57));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        jPanel_LAThickness.add(LeftLowerarm_Thickness, gridBagConstraints);
+
+        RightLowerarm_Thickness.setMinimumSize(new java.awt.Dimension(108, 57));
+        RightLowerarm_Thickness.setPreferredSize(new java.awt.Dimension(108, 57));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 0;
+        jPanel_LAThickness.add(RightLowerarm_Thickness, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -199,8 +219,6 @@ public class JPanel_ArmsHandsOption extends javax.swing.JPanel {
         jPanel_FingerLength.setMinimumSize(new java.awt.Dimension(230, 230));
         jPanel_FingerLength.setPreferredSize(new java.awt.Dimension(230, 230));
         jPanel_FingerLength.setLayout(new java.awt.GridBagLayout());
-        jPanel_FingerLength.add(LeftHand_Length, new java.awt.GridBagConstraints());
-        jPanel_FingerLength.add(RightHand_Length, new java.awt.GridBagConstraints());
 
         jCheckBox_SyncHandLength.setText("Lock Sliders");
         jCheckBox_SyncHandLength.setMinimumSize(new java.awt.Dimension(120, 23));
@@ -210,6 +228,14 @@ public class JPanel_ArmsHandsOption extends javax.swing.JPanel {
         gridBagConstraints.gridy = 1;
         gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
         jPanel_FingerLength.add(jCheckBox_SyncHandLength, gridBagConstraints);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        jPanel_FingerLength.add(LeftHand_Length, gridBagConstraints);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 0;
+        jPanel_FingerLength.add(RightHand_Length, gridBagConstraints);
 
         jPanel_Hands.add(jPanel_FingerLength, new java.awt.GridBagConstraints());
 
@@ -217,22 +243,6 @@ public class JPanel_ArmsHandsOption extends javax.swing.JPanel {
         jPanel_HandThickness.setMinimumSize(new java.awt.Dimension(230, 230));
         jPanel_HandThickness.setPreferredSize(new java.awt.Dimension(230, 230));
         jPanel_HandThickness.setLayout(new java.awt.GridBagLayout());
-
-        LeftHand_Thickness.setMinimumSize(new java.awt.Dimension(109, 57));
-        LeftHand_Thickness.setPreferredSize(new java.awt.Dimension(109, 57));
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 0;
-        jPanel_HandThickness.add(LeftHand_Thickness, gridBagConstraints);
-
-        RightHand_Thickness.setMinimumSize(new java.awt.Dimension(109, 57));
-        RightHand_Thickness.setParentFrame(null);
-        RightHand_Thickness.setPreferredSize(new java.awt.Dimension(109, 57));
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        jPanel_HandThickness.add(RightHand_Thickness, gridBagConstraints);
 
         jCheckBox_SyncHandThickness.setText("Lock Sliders");
         jCheckBox_SyncHandThickness.setMinimumSize(new java.awt.Dimension(120, 23));
@@ -242,6 +252,20 @@ public class JPanel_ArmsHandsOption extends javax.swing.JPanel {
         gridBagConstraints.gridy = 1;
         gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
         jPanel_HandThickness.add(jCheckBox_SyncHandThickness, gridBagConstraints);
+
+        LeftHand_Thickness.setMinimumSize(new java.awt.Dimension(108, 57));
+        LeftHand_Thickness.setPreferredSize(new java.awt.Dimension(108, 57));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        jPanel_HandThickness.add(LeftHand_Thickness, gridBagConstraints);
+
+        RightHand_Thickness.setMinimumSize(new java.awt.Dimension(108, 57));
+        RightHand_Thickness.setPreferredSize(new java.awt.Dimension(108, 57));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 0;
+        jPanel_HandThickness.add(RightHand_Thickness, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -268,18 +292,18 @@ public class JPanel_ArmsHandsOption extends javax.swing.JPanel {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private imi.gui.JPanel_VerticalSlider LeftHand_Length;
-    private imi.gui.JPanel_HorizontalSlider LeftHand_Thickness;
-    private imi.gui.JPanel_VerticalSlider LowerLeftArm_Length;
-    private imi.gui.JPanel_HorizontalSlider LowerLeftArm_Thickness;
-    private imi.gui.JPanel_VerticalSlider LowerRightArm_Length;
-    private imi.gui.JPanel_HorizontalSlider LowerRightArm_Thickness;
-    private imi.gui.JPanel_VerticalSlider RightHand_Length;
-    private imi.gui.JPanel_HorizontalSlider RightHand_Thickness;
-    private imi.gui.JPanel_VerticalSlider UpperLeftArm_Length;
-    private imi.gui.JPanel_HorizontalSlider UpperLeftArm_Thickness;
-    private imi.gui.JPanel_VerticalSlider UpperRightArm_Length;
-    private imi.gui.JPanel_HorizontalSlider UpperRightArm_Thickness;
+    private imi.gui.JPanel_VerticalSliderT LeftHand_Length;
+    private imi.gui.JPanel_HorizontalSliderS LeftHand_Thickness;
+    private imi.gui.JPanel_VerticalSliderT LeftLowerarm_Length;
+    private imi.gui.JPanel_HorizontalSliderS LeftLowerarm_Thickness;
+    private imi.gui.JPanel_VerticalSliderT LeftUpperarm_Length;
+    private imi.gui.JPanel_HorizontalSliderS LeftUpperarm_Thickness;
+    private imi.gui.JPanel_VerticalSliderT RightHand_Length;
+    private imi.gui.JPanel_HorizontalSliderS RightHand_Thickness;
+    private imi.gui.JPanel_VerticalSliderT RightLowerarm_Length;
+    private imi.gui.JPanel_HorizontalSliderS RightLowerarm_Thickness;
+    private imi.gui.JPanel_VerticalSliderT RightUpperarm_Length;
+    private imi.gui.JPanel_HorizontalSliderS RightUpperarm_Thickness;
     private javax.swing.JCheckBox jCheckBox_SyncHandLength;
     private javax.swing.JCheckBox jCheckBox_SyncHandThickness;
     private javax.swing.JCheckBox jCheckBox_SyncLALength;
@@ -298,4 +322,39 @@ public class JPanel_ArmsHandsOption extends javax.swing.JPanel {
     private javax.swing.JTabbedPane jTabbedPane_ArmsHands;
     // End of variables declaration//GEN-END:variables
 
+////////////////////////////////////////////////////////////////////////////////
+// HELPER FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
+
+    public void setParentFrame(JFrame frame) {
+        m_baseFrame = frame;
+    }
+
+    public void setSliderControls() {
+        LeftHand_Length.setObjectRef(JFrame_AdvOptions.m_sliderControl.lefthandLength);
+        LeftHand_Thickness.setObjectRef(JFrame_AdvOptions.m_sliderControl.lefthandThickness);
+        LeftLowerarm_Length.setObjectRef(JFrame_AdvOptions.m_sliderControl.leftlowerarmLength);
+        LeftLowerarm_Thickness.setObjectRef(JFrame_AdvOptions.m_sliderControl.leftlowerarmThickness);
+        LeftUpperarm_Length.setObjectRef(JFrame_AdvOptions.m_sliderControl.leftupperarmLength);
+        LeftUpperarm_Thickness.setObjectRef(JFrame_AdvOptions.m_sliderControl.leftupperarmThickness);
+        RightHand_Length.setObjectRef(JFrame_AdvOptions.m_sliderControl.righthandLength);
+        RightHand_Thickness.setObjectRef(JFrame_AdvOptions.m_sliderControl.righthandThickness);
+        RightLowerarm_Length.setObjectRef(JFrame_AdvOptions.m_sliderControl.rightlowerarmLength);
+        RightLowerarm_Thickness.setObjectRef(JFrame_AdvOptions.m_sliderControl.rightlowerarmThickness);
+        RightUpperarm_Length.setObjectRef(JFrame_AdvOptions.m_sliderControl.rightupperarmLength);
+        RightUpperarm_Thickness.setObjectRef(JFrame_AdvOptions.m_sliderControl.rightupperarmThickness);
+
+        LeftHand_Length.setParentFrame((JFrame_AdvOptions) m_baseFrame);
+        LeftHand_Thickness.setParentFrame((JFrame_AdvOptions) m_baseFrame);
+        LeftLowerarm_Length.setParentFrame((JFrame_AdvOptions) m_baseFrame);
+        LeftLowerarm_Thickness.setParentFrame((JFrame_AdvOptions) m_baseFrame);
+        LeftUpperarm_Length.setParentFrame((JFrame_AdvOptions) m_baseFrame);
+        LeftUpperarm_Thickness.setParentFrame((JFrame_AdvOptions) m_baseFrame);
+        RightHand_Length.setParentFrame((JFrame_AdvOptions) m_baseFrame);
+        RightHand_Thickness.setParentFrame((JFrame_AdvOptions) m_baseFrame);
+        RightLowerarm_Length.setParentFrame((JFrame_AdvOptions) m_baseFrame);
+        RightLowerarm_Thickness.setParentFrame((JFrame_AdvOptions) m_baseFrame);
+        RightUpperarm_Length.setParentFrame((JFrame_AdvOptions) m_baseFrame);
+        RightUpperarm_Thickness.setParentFrame((JFrame_AdvOptions) m_baseFrame);
+    }
 }

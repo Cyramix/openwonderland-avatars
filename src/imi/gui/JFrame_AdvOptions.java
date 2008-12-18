@@ -29,6 +29,7 @@ import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
 import imi.scene.polygonmodel.parts.skinned.SkinnedMeshJoint;
 import java.util.HashMap;
 import java.util.Map;
+import org.jdesktop.mtgame.processor.EyeSelectionProcessor;
 
 /**
  *
@@ -49,12 +50,373 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
                               Right_UpperLeg, Right_LowerLeg, Right_Foot, Right_UpperArm, Right_LowerArm, Right_Hand, Right_Shoulder,
                               Head, Torso, Neck, Eyes, Lips };
 
+    public enum m_sliderControl { lefteyeHPos, lefteyeSize, lefteyeVPos, lefteyeWidth, righteyeHPos, righteyeSize, righteyeVPos, righteyeWidth,
+                                  lowerlipSize, upperlipSize, mouthWidth, lefthandLength, lefthandThickness, leftlowerarmLength, leftlowerarmThickness,
+                                  leftupperarmLength, leftupperarmThickness, righthandLength, righthandThickness, rightlowerarmLength, rightlowerarmThickness,
+                                  rightupperarmLength, rightupperarmThickness, leftfootLength, leftfootThickness, leftlowerlegLength, leftlowerlegThickness,
+                                  leftupperlegLength, leftupperlegThickness, rightfootLength, rightfootThickness, rightlowerlegLength, rightlowerlegThickness,
+                                  rightupperlegLength, rightupperlegThickness, headDepth, headHeight, headWidth};
+
 ////////////////////////////////////////////////////////////////////////////////
 // Class Methods
 ////////////////////////////////////////////////////////////////////////////////
+
     /** Creates new form JFrame_AdvOptions */
     public JFrame_AdvOptions() {
         initComponents();
+        HeadOptions.setParentFrame(this);
+    }
+
+    public JFrame_AdvOptions(SceneEssentials scene) {
+        m_sceneData = scene;
+        initComponents();
+        createJointCatalog();
+    }
+
+
+    private void adjustEyes(m_sliderControl type, float mod, float actualval) {
+        SkeletonNode skelnode   = m_sceneData.getAvatar().getSkeleton();
+        if (skelnode == null) { return; }
+        SkinnedMeshJoint[] eyes = m_skeleton.get(m_bodyPart.Eyes);
+
+        switch(type)
+        {
+            case lefteyeHPos:
+            {
+                break;
+            }
+            case righteyeHPos:
+            {
+                break;
+            }
+            case lefteyeVPos:
+            {
+                break;
+            }
+            case righteyeVPos:
+            {
+                break;
+            }
+            case lefteyeSize:
+            {
+                break;
+            }
+            case righteyeSize:
+            {
+                break;
+            }
+            case lefteyeWidth:
+            {
+                break;
+            }
+            case righteyeWidth:
+            {
+
+            }
+        }
+    }
+
+    private void adjustHands(m_sliderControl type, float mod, float actualval) {
+        SkeletonNode skelnode           = m_sceneData.getAvatar().getSkeleton();
+        if (skelnode == null) { return; }
+
+        SkinnedMeshJoint[] lefthand     = m_skeleton.get(m_bodyPart.Left_Hand);
+        SkinnedMeshJoint[] righthand    = m_skeleton.get(m_bodyPart.Right_Hand);
+        Vector3f            ladjust         = new Vector3f(0.0f, mod, 0.0f);
+        Vector3f            radjust         = new Vector3f(0.0f, mod, 0.0f);
+
+        switch(type)
+        {
+            case lefthandLength:
+            {
+                skelnode.displace(lefthand[0].getName(), ladjust);
+                break;
+            }
+            case righthandLength:
+            {
+                skelnode.displace(righthand[0].getName(), radjust);
+                break;
+            }
+            case lefthandThickness:
+            {
+                for (int i = 0; i < lefthand.length; i++) {
+                    ladjust = new Vector3f(lefthand[i].getLocalModifierMatrix().getScaleVector());
+                    ladjust.x = 1.0f;   ladjust.x += mod;
+                    ladjust.z = 1.0f;   ladjust.z += mod;
+                    lefthand[i].getLocalModifierMatrix().setScale(ladjust);
+                }
+                break;
+            }
+            case righthandThickness:
+            {
+                for (int i = 0; i < righthand.length; i++) {
+                    radjust = new Vector3f(righthand[i].getLocalModifierMatrix().getScaleVector());
+                    radjust.x = 1.0f;   radjust.x += mod;
+                    radjust.z = 1.0f;   radjust.z += mod;
+                    righthand[i].getLocalModifierMatrix().setScale(radjust);
+                }
+
+                break;
+            }
+        }
+    }
+
+    private void adjustForearms(m_sliderControl type, float mod, float actualval) {
+        SkeletonNode    skelnode    = m_sceneData.getAvatar().getSkeleton();
+        if (skelnode == null) { return; }
+
+        SkinnedMeshJoint[]  leftforearm     = m_skeleton.get(m_bodyPart.Left_LowerArm);
+        SkinnedMeshJoint[]  rightforearm    = m_skeleton.get(m_bodyPart.Right_LowerArm);
+        Vector3f            ladjust         = new Vector3f(0.0f, mod, 0.0f);
+        Vector3f            radjust         = new Vector3f(0.0f, mod, 0.0f);
+        Vector3f            scale           = new Vector3f(1.0f, 1.0f, 1.0f);
+
+        switch(type)
+        {
+            case leftlowerarmLength:
+            {
+                for (int i = 0; i < leftforearm.length; i++) {
+                    leftforearm[i].getLocalModifierMatrix().getScale(scale);
+                    scale.y += mod * 5;
+                    leftforearm[i].getLocalModifierMatrix().setScale(scale);
+                }
+                skelnode.displace(leftforearm[1].getName(), ladjust);
+                break;
+            }
+            case rightlowerarmLength:
+            {
+                for (int i = 0; i < rightforearm.length; i++) {
+                    rightforearm[i].getLocalModifierMatrix().getScale(scale);
+                    scale.y += mod * 5;
+                    rightforearm[i].getLocalModifierMatrix().setScale(scale);
+                }
+                skelnode.displace(rightforearm[1].getName(), radjust);
+                break;
+            }
+            case leftlowerarmThickness:
+            {
+                for (int i = 0; i < leftforearm.length; i++) {
+                    ladjust = new Vector3f(leftforearm[i].getLocalModifierMatrix().getScaleVector());
+                    ladjust.x = 1.0f;   ladjust.x += mod;
+                    ladjust.z = 1.0f;   ladjust.z += mod;
+                    leftforearm[i].getLocalModifierMatrix().setScale(ladjust);
+                }
+                break;
+            }
+            case rightlowerarmThickness:
+            {
+                for (int i = 0; i < rightforearm.length; i++) {
+                    radjust = new Vector3f(rightforearm[i].getLocalModifierMatrix().getScaleVector());
+                    radjust.x = 1.0f;   radjust.x += mod;
+                    radjust.z = 1.0f;   radjust.z += mod;
+                    rightforearm[i].getLocalModifierMatrix().setScale(radjust);
+                }
+                break;
+            }
+        }
+    }
+
+    private void adjustUpperarms(m_sliderControl type, float mod, float actualval) {
+        SkeletonNode    skelnode    = m_sceneData.getAvatar().getSkeleton();
+        if (skelnode == null) { return; }
+
+        SkinnedMeshJoint[]  leftupperarm    = m_skeleton.get(m_bodyPart.Left_UpperArm);
+        SkinnedMeshJoint[]  rightupperarm   = m_skeleton.get(m_bodyPart.Right_UpperArm);
+        Vector3f            ladjust         = new Vector3f(0.0f, mod, 0.0f);
+        Vector3f            radjust         = new Vector3f(0.0f, mod, 0.0f);
+        Vector3f            scale           = new Vector3f(1.0f, 1.0f, 1.0f);
+
+        switch(type)
+        {
+            case leftupperarmLength:
+            {
+                for (int i = 0; i < leftupperarm.length; i++) {
+                    leftupperarm[i].getLocalModifierMatrix().getScale(scale);
+                    scale.y += mod * 5;
+                    leftupperarm[i].getLocalModifierMatrix().setScale(scale);
+                }
+                skelnode.displace(leftupperarm[1].getName(), ladjust);
+                break;
+            }
+            case rightupperarmLength:
+            {
+                for (int i = 0; i < rightupperarm.length; i++) {
+                    rightupperarm[i].getLocalModifierMatrix().getScale(scale);
+                    scale.y += mod * 5;
+                    rightupperarm[i].getLocalModifierMatrix().setScale(scale);
+                }
+                skelnode.displace(rightupperarm[1].getName(), radjust);
+                break;
+            }
+            case leftupperarmThickness:
+            {
+                for (int i = 0; i < leftupperarm.length; i++) {
+                    ladjust = new Vector3f(leftupperarm[i].getLocalModifierMatrix().getScaleVector());
+                    ladjust.x = 1.0f;   ladjust.x += mod;
+                    ladjust.z = 1.0f;   ladjust.z += mod;
+                    leftupperarm[i].getLocalModifierMatrix().setScale(ladjust);
+                }
+                break;
+            }
+            case rightupperarmThickness:
+            {
+                for (int i = 0; i < rightupperarm.length; i++) {
+                    radjust = new Vector3f(rightupperarm[i].getLocalModifierMatrix().getScaleVector());
+                    radjust.x = 1.0f;   radjust.x += mod;
+                    radjust.z = 1.0f;   radjust.z += mod;
+                    rightupperarm[i].getLocalModifierMatrix().setScale(radjust);
+                }
+                break;
+            }
+        }
+    }
+
+    private void adjustFeet(m_sliderControl type, float mod, float actualval) {
+        SkeletonNode    skelnode    = m_sceneData.getAvatar().getSkeleton();
+        if (skelnode == null) { return; }
+
+        SkinnedMeshJoint[]  leftfoot    = m_skeleton.get(m_bodyPart.Left_Foot);
+        SkinnedMeshJoint[]  rightfoot   = m_skeleton.get(m_bodyPart.Right_Foot);
+        Vector3f            ladjust     = new Vector3f(0.0f, 0.0f, mod);
+        Vector3f            radjust     = new Vector3f(0.0f, 0.0f, mod);
+
+        switch(type)
+        {
+            case leftfootLength:
+            {
+                skelnode.displace(leftfoot[1].getName(), ladjust);
+                break;
+            }
+            case rightfootLength:
+            {
+                skelnode.displace(rightfoot[1].getName(), radjust);
+                break;
+            }
+            case leftfootThickness:
+            {
+                for (int i = 0; i < leftfoot.length; i++) {
+                    ladjust = new Vector3f(leftfoot[i].getLocalModifierMatrix().getScaleVector());
+                    ladjust.x = 1.0f;   ladjust.x += mod;
+                    ladjust.z = 1.0f;   ladjust.z += mod;
+                    leftfoot[i].getLocalModifierMatrix().setScale(ladjust);
+                }
+                break;
+            }
+            case rightfootThickness:
+            {
+                for (int i = 0; i < rightfoot.length; i++) {
+                    radjust = new Vector3f(rightfoot[i].getLocalModifierMatrix().getScaleVector());
+                    radjust.x = 1.0f;   radjust.x += mod;
+                    radjust.z = 1.0f;   radjust.z += mod;
+                    rightfoot[i].getLocalModifierMatrix().setScale(radjust);
+                }
+                break;
+            }
+        }
+    }
+
+    private void adjustCalves(m_sliderControl type, float mod, float actualval) {
+        SkeletonNode    skelnode    = m_sceneData.getAvatar().getSkeleton();
+        if (skelnode == null) { return; }
+
+        SkinnedMeshJoint[]  leftlowerleg    = m_skeleton.get(m_bodyPart.Left_LowerLeg);
+        SkinnedMeshJoint[]  rightlowerleg   = m_skeleton.get(m_bodyPart.Right_LowerLeg);
+        Vector3f            ladjust         = new Vector3f(0.0f, mod, 0.0f);
+        Vector3f            radjust         = new Vector3f(0.0f, mod, 0.0f);
+
+        switch(type)
+        {
+            case leftlowerlegLength:
+            {
+                skelnode.displace(leftlowerleg[1].getName(), ladjust);
+                break;
+            }
+            case rightlowerlegLength:
+            {
+                skelnode.displace(rightlowerleg[1].getName(), radjust);
+                break;
+            }
+            case leftlowerlegThickness:
+            {
+                for (int i = 0; i < leftlowerleg.length; i++) {
+                    ladjust = new Vector3f(leftlowerleg[i].getLocalModifierMatrix().getScaleVector());
+                    ladjust.x = 1.0f;   ladjust.x += mod;
+                    ladjust.z = 1.0f;   ladjust.z += mod;
+                    leftlowerleg[i].getLocalModifierMatrix().setScale(ladjust);
+                }
+                break;
+            }
+            case rightlowerlegThickness:
+            {
+                for (int i = 0; i < rightlowerleg.length; i++) {
+                    radjust = new Vector3f(rightlowerleg[i].getLocalModifierMatrix().getScaleVector());
+                    radjust.x = 1.0f;   radjust.x += mod;
+                    radjust.z = 1.0f;   radjust.z += mod;
+                    rightlowerleg[i].getLocalModifierMatrix().setScale(radjust);
+                }
+                break;
+            }
+        }
+    }
+
+    private void adjustThighs(m_sliderControl type, float mod, float actualval) {
+        SkeletonNode    skelnode    = m_sceneData.getAvatar().getSkeleton();
+        if (skelnode == null) { return; }
+
+        SkinnedMeshJoint[]  leftupperleg    = m_skeleton.get(m_bodyPart.Left_UpperLeg);
+        SkinnedMeshJoint[]  rightupperleg   = m_skeleton.get(m_bodyPart.Right_UpperLeg);
+        Vector3f            ladjust         = new Vector3f(0.0f, mod, 0.0f);
+        Vector3f            radjust         = new Vector3f(0.0f, mod, 0.0f);
+
+        switch(type)
+        {
+            case leftupperlegLength:
+            {
+                skelnode.displace(leftupperleg[1].getName(), ladjust);
+                break;
+            }
+            case rightupperlegLength:
+            {
+                skelnode.displace(rightupperleg[1].getName(), radjust);
+                break;
+            }
+            case leftupperlegThickness:
+            {
+                for (int i = 0; i < leftupperleg.length; i++) {
+                    ladjust = new Vector3f(leftupperleg[i].getLocalModifierMatrix().getScaleVector());
+                    ladjust.x = 1.0f;   ladjust.x += mod;
+                    ladjust.z = 1.0f;   ladjust.z += mod;
+                    leftupperleg[i].getLocalModifierMatrix().setScale(ladjust);
+                }
+                break;
+            }
+            case rightupperlegThickness:
+            {
+                for (int i = 0; i < rightupperleg.length; i++) {
+                    radjust = new Vector3f(rightupperleg[i].getLocalModifierMatrix().getScaleVector());
+                    radjust.x = 1.0f;   radjust.x += mod;
+                    radjust.z = 1.0f;   radjust.z += mod;
+                    rightupperleg[i].getLocalModifierMatrix().setScale(radjust);
+                }
+                break;
+            }
+        }
+    }
+
+    private void adjustChest(m_sliderControl type, float mod, float actualval) {
+
+    }
+
+    private void adjustStomach(m_sliderControl type, float mod, float actualval) {
+
+    }
+
+    private void adjustGluts(m_sliderControl type, float mod, float actualval) {
+
+    }
+
+    private void adjustBody(m_sliderControl type, float mod, float actualval) {
+
     }
 
     /** This method is called from within the constructor to
@@ -67,11 +429,11 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
     private void initComponents() {
 
         jTabbedPane_Options = new javax.swing.JTabbedPane();
-        HeadOptions = new imi.gui.JPanel_HeadOptions();
-        ArmsHandsOptions = new imi.gui.JPanel_ArmsHandsOption();
-        LegsFeetOptions = new imi.gui.JPanel_LegsFeetOption();
+        HeadOptions = new imi.gui.JPanel_HeadOptions(this);
+        ArmsHandsOptions = new imi.gui.JPanel_ArmsHandsOption(this);
+        LegsFeetOptions = new imi.gui.JPanel_LegsFeetOption(this);
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         getContentPane().setLayout(new java.awt.GridBagLayout());
 
         jTabbedPane_Options.setTabLayoutPolicy(javax.swing.JTabbedPane.SCROLL_TAB_LAYOUT);
@@ -97,105 +459,10 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
         });
     }
 
-    private void adjustEyes(int type, javax.swing.event.ChangeEvent e) {
+////////////////////////////////////////////////////////////////////////////////
+// ACCESSORS
+////////////////////////////////////////////////////////////////////////////////
 
-    }
-
-    private void adjustHands(int type, javax.swing.event.ChangeEvent e) {
-
-    }
-
-    private void adjustForearms(int type, javax.swing.event.ChangeEvent e) {
-
-    }
-
-    private void adjustUpperarms(int type, javax.swing.event.ChangeEvent e) {
-
-    }
-
-    private void adjustFeet(int type, javax.swing.event.ChangeEvent e) {
-
-    }
-
-    private void adjustCalves(int type, javax.swing.event.ChangeEvent e) {
-
-    }
-
-    private void adjustThighs(int type, javax.swing.event.ChangeEvent e) {
-
-    }
-
-    private void adjustChest(int type, javax.swing.event.ChangeEvent e) {
-        SkinnedMeshJoint[] Torso = m_skeleton.get(m_bodyPart.Torso);
-        SkinnedMeshJoint[] LShoulder = m_skeleton.get(m_bodyPart.Left_Shoulder);
-        SkinnedMeshJoint[] RShoulder;
-
-        float adjust    = 0.0f;
-        Vector3f mod    = null;
-        Vector3f modS   = null;
-        Object obj      = e.getSource();
-
-        switch(type)
-        {
-            case 0: // BULK
-            {
-
-                break;
-            }
-            case 1: // BROADNESS
-            {
-                break;
-            }
-        }
-    }
-
-    private void adjustStomach(int type, javax.swing.event.ChangeEvent e) {
-        SkinnedMeshJoint[] Torso = m_skeleton.get(m_bodyPart.Torso);
-
-        float adjust    = 0.0f;
-        Vector3f mod    = null;
-        Vector3f modS   = null;
-        Object obj      = e.getSource();
-
-        switch(type)
-        {
-            case 0: // Roundness
-            {
-                break;
-            }
-            case 1: // Waistline
-            {
-                break;
-            }
-        }
-    }
-
-    private void adjustGluts(int type, javax.swing.event.ChangeEvent e) {
-        SkinnedMeshJoint[] Gluts = m_skeleton.get(m_bodyPart.Torso);
-
-        float adjust    = 0.0f;
-        Vector3f mod    = null;
-        Vector3f modS   = null;
-        Object obj      = e.getSource();
-
-        switch(type)
-        {
-            case 0: // Roundness
-            {
-                break;
-            }
-            case 1: // Sag
-            {
-                break;
-            }
-        }
-    }
-
-    private void adjustBody(int type, javax.swing.event.ChangeEvent e) {
-
-    }
-
-    /** Accessors **/
     public SceneEssentials getSceneData() {
         return m_sceneData;
     }
@@ -208,7 +475,10 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
         return m_skeleton.get(section);
     }
 
-    /** Mutators **/
+////////////////////////////////////////////////////////////////////////////////
+// MUTATORS
+////////////////////////////////////////////////////////////////////////////////
+
     public void setSceneData(SceneEssentials scene) {
         m_sceneData = scene;
     }
@@ -535,5 +805,201 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
         catalogNeck();
         catalogEyes();
         catalogLips();
+    }
+
+    public void parseModification(m_sliderControl control, float mod, float actualval) {
+        switch(control)
+        {
+            case lefteyeHPos:
+            {
+                adjustEyes(control, mod, actualval);
+                break;
+            }
+            case lefteyeSize:
+            {
+                adjustEyes(control, mod, actualval);
+                break;
+            }
+            case lefteyeVPos:
+            {
+                adjustEyes(control, mod, actualval);
+                break;
+            }
+            case lefteyeWidth:
+            {
+                adjustEyes(control, mod, actualval);
+                break;
+            }
+            case righteyeHPos:
+            {
+                adjustEyes(control, mod, actualval);
+                break;
+            }
+            case righteyeSize:
+            {
+                adjustEyes(control, mod, actualval);
+                break;
+            }
+            case righteyeVPos:
+            {
+                adjustEyes(control, mod, actualval);
+                break;
+            }
+            case righteyeWidth:
+            {
+                adjustEyes(control, mod, actualval);
+                break;
+            }
+            case lowerlipSize:
+            {
+                // TODO: adjustMouth(control, mod, actualval);
+                break;
+            }
+            case upperlipSize:
+            {
+                // TODO: adjustMouth(control, mod, actualval);
+                break;
+            }
+            case mouthWidth:
+            {
+                // TODO: adjustMouth(control, mod, actualval);
+                break;
+            }
+            case lefthandLength:
+            {
+                adjustHands(control, mod, actualval);
+                break;
+            }
+            case lefthandThickness:
+            {
+                adjustHands(control, mod, actualval);
+                break;
+            }
+            case leftlowerarmLength:
+            {
+                adjustForearms(control, mod, actualval);
+                break;
+            }
+            case leftlowerarmThickness:
+            {
+                adjustForearms(control, mod, actualval);
+                break;
+            }
+            case leftupperarmLength:
+            {
+                adjustUpperarms(control, mod, actualval);
+                break;
+            }
+            case leftupperarmThickness:
+            {
+                adjustUpperarms(control, mod, actualval);
+                break;
+            }
+            case righthandLength:
+            {
+                adjustHands(control, mod, actualval);
+                break;
+            }
+            case righthandThickness:
+            {
+                adjustHands(control, mod, actualval);
+                break;
+            }
+            case rightlowerarmLength:
+            {
+                adjustForearms(control, mod, actualval);
+                break;
+            }
+            case rightlowerarmThickness:
+            {
+                adjustForearms(control, mod, actualval);
+                break;
+            }
+            case rightupperarmLength:
+            {
+                adjustUpperarms(control, mod, actualval);
+                break;
+            }
+            case rightupperarmThickness:
+            {
+                adjustUpperarms(control, mod, actualval);
+                break;
+            }
+            case leftfootLength:
+            {
+                adjustFeet(control, mod, actualval);
+                break;
+            }
+            case leftfootThickness:
+            {
+                adjustFeet(control, mod, actualval);
+                break;
+            }
+            case leftlowerlegLength:
+            {
+                adjustCalves(control, mod, actualval);
+                break;
+            }
+            case leftlowerlegThickness:
+            {
+                adjustCalves(control, mod, actualval);
+                break;
+            }
+            case leftupperlegLength:
+            {
+                adjustThighs(control, mod, actualval);
+                break;
+            }
+            case leftupperlegThickness:
+            {
+                adjustThighs(control, mod, actualval);
+                break;
+            }
+            case rightfootLength:
+            {
+                adjustFeet(control, mod, actualval);
+                break;
+            }
+            case rightfootThickness:
+            {
+                adjustFeet(control, mod, actualval);
+                break;
+            }
+            case rightlowerlegLength:
+            {
+                adjustCalves(control, mod, actualval);
+                break;
+            }
+            case rightlowerlegThickness:
+            {
+                adjustCalves(control, mod, actualval);
+                break;
+            }
+            case rightupperlegLength:
+            {
+                adjustThighs(control, mod, actualval);
+                break;
+            }
+            case rightupperlegThickness:
+            {
+                adjustThighs(control, mod, actualval);
+                break;
+            }
+            case headDepth:
+            {
+                // TODO: adjustHead(control, mod, actualval);
+                break;
+            }
+            case headHeight:
+            {
+                // TODO: adjustHead(control, mod, actualval);
+                break;
+            }
+            case headWidth:
+            {
+                // TODO: adjustHead(control, mod, actualval);
+                break;
+            }
+        }
     }
 }

@@ -30,7 +30,7 @@ import javax.swing.JFrame;
  *
  * @author Paul Viet Nguyen Truong (ptruong)
  */
-public class JPanel_HeadOptions extends AbstractOptions {
+public class JPanel_HeadOptions extends javax.swing.JPanel {
 ////////////////////////////////////////////////////////////////////////////////
 // CLASS DATA MEMBERS
 ////////////////////////////////////////////////////////////////////////////////
@@ -39,6 +39,12 @@ public class JPanel_HeadOptions extends AbstractOptions {
     /** Creates new form JPanel_HeadOptions */
     public JPanel_HeadOptions() {
         initComponents();
+    }
+
+    public JPanel_HeadOptions(JFrame baseFrame) {
+        m_baseFrame = baseFrame;
+        initComponents();
+        setSliderControls();
     }
 
     /** This method is called from within the constructor to
@@ -54,37 +60,37 @@ public class JPanel_HeadOptions extends AbstractOptions {
         jTabbedPane_Head = new javax.swing.JTabbedPane();
         jPanel_Eyes = new javax.swing.JPanel();
         jPanel_EyeHPos = new javax.swing.JPanel();
-        LeftEye_HPos = new imi.gui.JPanel_HorizontalSlider();
-        RightEye_HPos = new imi.gui.JPanel_HorizontalSlider();
         jCheckBox_SyncEyeHPos = new javax.swing.JCheckBox();
+        LeftEye_HPos = new imi.gui.JPanel_HorizontalSliderT();
+        RightEye_HPos = new imi.gui.JPanel_HorizontalSliderT();
         jPanel_EyeVPos = new javax.swing.JPanel();
-        LeftEye_VPos = new imi.gui.JPanel_VerticalSlider();
-        RightEye_VPos = new imi.gui.JPanel_VerticalSlider();
         jCheckBox_SyncEyeVPos = new javax.swing.JCheckBox();
+        LeftEye_VPos = new imi.gui.JPanel_VerticalSliderT();
+        RightEye_VPos = new imi.gui.JPanel_VerticalSliderT();
         jPanel_EyeWidth = new javax.swing.JPanel();
-        LeftEye_Width = new imi.gui.JPanel_HorizontalSlider();
-        RightEye_Width = new imi.gui.JPanel_HorizontalSlider();
         jCheckBox_SyncEyeWidth = new javax.swing.JCheckBox();
+        LeftEye_Width = new imi.gui.JPanel_HorizontalSliderS();
+        RightEye_Width = new imi.gui.JPanel_HorizontalSliderS();
         jPanel_EyeSize = new javax.swing.JPanel();
-        LeftEye_Size = new imi.gui.JPanel_HorizontalSlider();
-        RightEye_Size = new imi.gui.JPanel_HorizontalSlider();
         jCheckBox_SyncEyeSize = new javax.swing.JCheckBox();
+        LeftEye_Size = new imi.gui.JPanel_HorizontalSliderS();
+        RightEye_Size = new imi.gui.JPanel_HorizontalSliderS();
         jPanel_Mouth = new javax.swing.JPanel();
         jPanel_LipSize = new javax.swing.JPanel();
-        UpperLip_Size = new imi.gui.JPanel_VerticalSlider();
-        LowerLip_Size = new imi.gui.JPanel_VerticalSlider();
         jCheckBox_SyncLipSize = new javax.swing.JCheckBox();
+        UpperLip_Size = new imi.gui.JPanel_HorizontalSliderS();
+        LowerLip_Size = new imi.gui.JPanel_HorizontalSliderS();
         jPanel_MouthWidth = new javax.swing.JPanel();
-        Mouth_Width = new imi.gui.JPanel_HorizontalSlider();
+        Mouth_Width = new imi.gui.JPanel_HorizontalSliderT();
         jPanel_Uniform = new javax.swing.JPanel();
         jPanel_HeadWidth = new javax.swing.JPanel();
-        jPanel_HorizontalSlider1 = new imi.gui.JPanel_HorizontalSlider();
+        Head_Width = new imi.gui.JPanel_HorizontalSliderS();
         jPanel_HeadHeight = new javax.swing.JPanel();
-        jPanel_VerticalSlider1 = new imi.gui.JPanel_VerticalSlider();
+        Head_Height = new imi.gui.JPanel_VerticalSliderS();
         jPanel_HeadDepth = new javax.swing.JPanel();
-        jPanel_HorizontalSlider2 = new imi.gui.JPanel_HorizontalSlider();
+        Head_Depth = new imi.gui.JPanel_HorizontalSliderS();
         jPanel_HeadUniform = new javax.swing.JPanel();
-        jPanel_HorizontalSlider3 = new imi.gui.JPanel_HorizontalSlider();
+        jPanel_HorizontalSliderS1 = new imi.gui.JPanel_HorizontalSliderS();
 
         setMaximumSize(new java.awt.Dimension(270, 600));
         setMinimumSize(new java.awt.Dimension(270, 600));
@@ -103,6 +109,15 @@ public class JPanel_HeadOptions extends AbstractOptions {
         jPanel_EyeHPos.setPreferredSize(new java.awt.Dimension(230, 120));
         jPanel_EyeHPos.setLayout(new java.awt.GridBagLayout());
 
+        jCheckBox_SyncEyeHPos.setText("Lock Sliders");
+        jCheckBox_SyncEyeHPos.setMinimumSize(new java.awt.Dimension(120, 25));
+        jCheckBox_SyncEyeHPos.setPreferredSize(new java.awt.Dimension(120, 25));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+        jPanel_EyeHPos.add(jCheckBox_SyncEyeHPos, gridBagConstraints);
+
         LeftEye_HPos.setMinimumSize(new java.awt.Dimension(110, 57));
         LeftEye_HPos.setPreferredSize(new java.awt.Dimension(110, 57));
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -115,17 +130,7 @@ public class JPanel_HeadOptions extends AbstractOptions {
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 0;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         jPanel_EyeHPos.add(RightEye_HPos, gridBagConstraints);
-
-        jCheckBox_SyncEyeHPos.setText("Lock Sliders");
-        jCheckBox_SyncEyeHPos.setMinimumSize(new java.awt.Dimension(120, 25));
-        jCheckBox_SyncEyeHPos.setPreferredSize(new java.awt.Dimension(120, 25));
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 1;
-        gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
-        jPanel_EyeHPos.add(jCheckBox_SyncEyeHPos, gridBagConstraints);
 
         jPanel_Eyes.add(jPanel_EyeHPos, new java.awt.GridBagConstraints());
 
@@ -133,14 +138,6 @@ public class JPanel_HeadOptions extends AbstractOptions {
         jPanel_EyeVPos.setMinimumSize(new java.awt.Dimension(230, 207));
         jPanel_EyeVPos.setPreferredSize(new java.awt.Dimension(230, 230));
         jPanel_EyeVPos.setLayout(new java.awt.GridBagLayout());
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 0;
-        jPanel_EyeVPos.add(LeftEye_VPos, gridBagConstraints);
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 0;
-        jPanel_EyeVPos.add(RightEye_VPos, gridBagConstraints);
 
         jCheckBox_SyncEyeVPos.setText("Lock Sliders");
         jCheckBox_SyncEyeVPos.setMinimumSize(new java.awt.Dimension(120, 25));
@@ -149,8 +146,15 @@ public class JPanel_HeadOptions extends AbstractOptions {
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
         gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         jPanel_EyeVPos.add(jCheckBox_SyncEyeVPos, gridBagConstraints);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        jPanel_EyeVPos.add(LeftEye_VPos, gridBagConstraints);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 0;
+        jPanel_EyeVPos.add(RightEye_VPos, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -162,20 +166,6 @@ public class JPanel_HeadOptions extends AbstractOptions {
         jPanel_EyeWidth.setPreferredSize(new java.awt.Dimension(230, 120));
         jPanel_EyeWidth.setLayout(new java.awt.GridBagLayout());
 
-        LeftEye_Width.setMinimumSize(new java.awt.Dimension(110, 57));
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        jPanel_EyeWidth.add(LeftEye_Width, gridBagConstraints);
-
-        RightEye_Width.setMinimumSize(new java.awt.Dimension(110, 57));
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        jPanel_EyeWidth.add(RightEye_Width, gridBagConstraints);
-
         jCheckBox_SyncEyeWidth.setText("Lock Sliders");
         jCheckBox_SyncEyeWidth.setMinimumSize(new java.awt.Dimension(120, 25));
         jCheckBox_SyncEyeWidth.setPreferredSize(new java.awt.Dimension(120, 25));
@@ -184,6 +174,20 @@ public class JPanel_HeadOptions extends AbstractOptions {
         gridBagConstraints.gridy = 1;
         gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
         jPanel_EyeWidth.add(jCheckBox_SyncEyeWidth, gridBagConstraints);
+
+        LeftEye_Width.setMinimumSize(new java.awt.Dimension(110, 57));
+        LeftEye_Width.setPreferredSize(new java.awt.Dimension(110, 57));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        jPanel_EyeWidth.add(LeftEye_Width, gridBagConstraints);
+
+        RightEye_Width.setMinimumSize(new java.awt.Dimension(110, 57));
+        RightEye_Width.setPreferredSize(new java.awt.Dimension(110, 57));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 0;
+        jPanel_EyeWidth.add(RightEye_Width, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -195,22 +199,6 @@ public class JPanel_HeadOptions extends AbstractOptions {
         jPanel_EyeSize.setPreferredSize(new java.awt.Dimension(230, 120));
         jPanel_EyeSize.setLayout(new java.awt.GridBagLayout());
 
-        LeftEye_Size.setMinimumSize(new java.awt.Dimension(110, 57));
-        LeftEye_Size.setPreferredSize(new java.awt.Dimension(110, 57));
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        jPanel_EyeSize.add(LeftEye_Size, gridBagConstraints);
-
-        RightEye_Size.setMinimumSize(new java.awt.Dimension(110, 57));
-        RightEye_Size.setPreferredSize(new java.awt.Dimension(110, 57));
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        jPanel_EyeSize.add(RightEye_Size, gridBagConstraints);
-
         jCheckBox_SyncEyeSize.setText("Lock Sliders");
         jCheckBox_SyncEyeSize.setMinimumSize(new java.awt.Dimension(120, 25));
         jCheckBox_SyncEyeSize.setPreferredSize(new java.awt.Dimension(120, 25));
@@ -219,6 +207,20 @@ public class JPanel_HeadOptions extends AbstractOptions {
         gridBagConstraints.gridy = 1;
         gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
         jPanel_EyeSize.add(jCheckBox_SyncEyeSize, gridBagConstraints);
+
+        LeftEye_Size.setMinimumSize(new java.awt.Dimension(110, 57));
+        LeftEye_Size.setPreferredSize(new java.awt.Dimension(110, 57));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        jPanel_EyeSize.add(LeftEye_Size, gridBagConstraints);
+
+        RightEye_Size.setMinimumSize(new java.awt.Dimension(110, 57));
+        RightEye_Size.setPreferredSize(new java.awt.Dimension(110, 57));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 0;
+        jPanel_EyeSize.add(RightEye_Size, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -233,14 +235,6 @@ public class JPanel_HeadOptions extends AbstractOptions {
         jPanel_LipSize.setMinimumSize(new java.awt.Dimension(230, 230));
         jPanel_LipSize.setPreferredSize(new java.awt.Dimension(230, 230));
         jPanel_LipSize.setLayout(new java.awt.GridBagLayout());
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 1;
-        jPanel_LipSize.add(UpperLip_Size, gridBagConstraints);
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 1;
-        jPanel_LipSize.add(LowerLip_Size, gridBagConstraints);
 
         jCheckBox_SyncLipSize.setText("Lock Sliders");
         jCheckBox_SyncLipSize.setMaximumSize(new java.awt.Dimension(120, 23));
@@ -248,9 +242,23 @@ public class JPanel_HeadOptions extends AbstractOptions {
         jCheckBox_SyncLipSize.setPreferredSize(new java.awt.Dimension(120, 23));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 2;
+        gridBagConstraints.gridy = 1;
         gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
         jPanel_LipSize.add(jCheckBox_SyncLipSize, gridBagConstraints);
+
+        UpperLip_Size.setMinimumSize(new java.awt.Dimension(110, 57));
+        UpperLip_Size.setPreferredSize(new java.awt.Dimension(110, 57));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        jPanel_LipSize.add(UpperLip_Size, gridBagConstraints);
+
+        LowerLip_Size.setMinimumSize(new java.awt.Dimension(110, 57));
+        LowerLip_Size.setPreferredSize(new java.awt.Dimension(110, 57));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 0;
+        jPanel_LipSize.add(LowerLip_Size, gridBagConstraints);
 
         jPanel_Mouth.add(jPanel_LipSize, new java.awt.GridBagConstraints());
 
@@ -258,11 +266,7 @@ public class JPanel_HeadOptions extends AbstractOptions {
         jPanel_MouthWidth.setMinimumSize(new java.awt.Dimension(230, 230));
         jPanel_MouthWidth.setPreferredSize(new java.awt.Dimension(230, 230));
         jPanel_MouthWidth.setLayout(new java.awt.GridBagLayout());
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 4;
-        gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
-        jPanel_MouthWidth.add(Mouth_Width, gridBagConstraints);
+        jPanel_MouthWidth.add(Mouth_Width, new java.awt.GridBagConstraints());
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -276,54 +280,16 @@ public class JPanel_HeadOptions extends AbstractOptions {
         jPanel_HeadWidth.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Head Width Scale", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Lucida Grande", 0, 13), new java.awt.Color(0, 0, 255))); // NOI18N
         jPanel_HeadWidth.setMinimumSize(new java.awt.Dimension(230, 120));
         jPanel_HeadWidth.setPreferredSize(new java.awt.Dimension(230, 120));
-
-        org.jdesktop.layout.GroupLayout jPanel_HeadWidthLayout = new org.jdesktop.layout.GroupLayout(jPanel_HeadWidth);
-        jPanel_HeadWidth.setLayout(jPanel_HeadWidthLayout);
-        jPanel_HeadWidthLayout.setHorizontalGroup(
-            jPanel_HeadWidthLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 218, Short.MAX_VALUE)
-            .add(jPanel_HeadWidthLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                .add(jPanel_HeadWidthLayout.createSequentialGroup()
-                    .add(0, 49, Short.MAX_VALUE)
-                    .add(jPanel_HorizontalSlider1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(0, 49, Short.MAX_VALUE)))
-        );
-        jPanel_HeadWidthLayout.setVerticalGroup(
-            jPanel_HeadWidthLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 92, Short.MAX_VALUE)
-            .add(jPanel_HeadWidthLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                .add(jPanel_HeadWidthLayout.createSequentialGroup()
-                    .add(0, 17, Short.MAX_VALUE)
-                    .add(jPanel_HorizontalSlider1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(0, 18, Short.MAX_VALUE)))
-        );
+        jPanel_HeadWidth.setLayout(new java.awt.GridBagLayout());
+        jPanel_HeadWidth.add(Head_Width, new java.awt.GridBagConstraints());
 
         jPanel_Uniform.add(jPanel_HeadWidth, new java.awt.GridBagConstraints());
 
         jPanel_HeadHeight.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Head Height Scale", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Lucida Grande", 0, 13), new java.awt.Color(0, 0, 255))); // NOI18N
         jPanel_HeadHeight.setMinimumSize(new java.awt.Dimension(230, 200));
         jPanel_HeadHeight.setPreferredSize(new java.awt.Dimension(230, 120));
-
-        org.jdesktop.layout.GroupLayout jPanel_HeadHeightLayout = new org.jdesktop.layout.GroupLayout(jPanel_HeadHeight);
-        jPanel_HeadHeight.setLayout(jPanel_HeadHeightLayout);
-        jPanel_HeadHeightLayout.setHorizontalGroup(
-            jPanel_HeadHeightLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 218, Short.MAX_VALUE)
-            .add(jPanel_HeadHeightLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                .add(jPanel_HeadHeightLayout.createSequentialGroup()
-                    .add(0, 84, Short.MAX_VALUE)
-                    .add(jPanel_VerticalSlider1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(0, 84, Short.MAX_VALUE)))
-        );
-        jPanel_HeadHeightLayout.setVerticalGroup(
-            jPanel_HeadHeightLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 172, Short.MAX_VALUE)
-            .add(jPanel_HeadHeightLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                .add(jPanel_HeadHeightLayout.createSequentialGroup()
-                    .add(0, 12, Short.MAX_VALUE)
-                    .add(jPanel_VerticalSlider1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(0, 12, Short.MAX_VALUE)))
-        );
+        jPanel_HeadHeight.setLayout(new java.awt.GridBagLayout());
+        jPanel_HeadHeight.add(Head_Height, new java.awt.GridBagConstraints());
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -333,27 +299,8 @@ public class JPanel_HeadOptions extends AbstractOptions {
         jPanel_HeadDepth.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Head Depth Scale", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Lucida Grande", 0, 13), new java.awt.Color(0, 0, 255))); // NOI18N
         jPanel_HeadDepth.setMinimumSize(new java.awt.Dimension(230, 120));
         jPanel_HeadDepth.setPreferredSize(new java.awt.Dimension(230, 120));
-
-        org.jdesktop.layout.GroupLayout jPanel_HeadDepthLayout = new org.jdesktop.layout.GroupLayout(jPanel_HeadDepth);
-        jPanel_HeadDepth.setLayout(jPanel_HeadDepthLayout);
-        jPanel_HeadDepthLayout.setHorizontalGroup(
-            jPanel_HeadDepthLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 218, Short.MAX_VALUE)
-            .add(jPanel_HeadDepthLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                .add(jPanel_HeadDepthLayout.createSequentialGroup()
-                    .add(0, 49, Short.MAX_VALUE)
-                    .add(jPanel_HorizontalSlider2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(0, 49, Short.MAX_VALUE)))
-        );
-        jPanel_HeadDepthLayout.setVerticalGroup(
-            jPanel_HeadDepthLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 92, Short.MAX_VALUE)
-            .add(jPanel_HeadDepthLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                .add(jPanel_HeadDepthLayout.createSequentialGroup()
-                    .add(0, 17, Short.MAX_VALUE)
-                    .add(jPanel_HorizontalSlider2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(0, 18, Short.MAX_VALUE)))
-        );
+        jPanel_HeadDepth.setLayout(new java.awt.GridBagLayout());
+        jPanel_HeadDepth.add(Head_Depth, new java.awt.GridBagConstraints());
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -363,27 +310,8 @@ public class JPanel_HeadOptions extends AbstractOptions {
         jPanel_HeadUniform.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Uniform Scale", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Lucida Grande", 0, 13), new java.awt.Color(0, 0, 255))); // NOI18N
         jPanel_HeadUniform.setMinimumSize(new java.awt.Dimension(230, 120));
         jPanel_HeadUniform.setPreferredSize(new java.awt.Dimension(230, 120));
-
-        org.jdesktop.layout.GroupLayout jPanel_HeadUniformLayout = new org.jdesktop.layout.GroupLayout(jPanel_HeadUniform);
-        jPanel_HeadUniform.setLayout(jPanel_HeadUniformLayout);
-        jPanel_HeadUniformLayout.setHorizontalGroup(
-            jPanel_HeadUniformLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 218, Short.MAX_VALUE)
-            .add(jPanel_HeadUniformLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                .add(jPanel_HeadUniformLayout.createSequentialGroup()
-                    .add(0, 49, Short.MAX_VALUE)
-                    .add(jPanel_HorizontalSlider3, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(0, 49, Short.MAX_VALUE)))
-        );
-        jPanel_HeadUniformLayout.setVerticalGroup(
-            jPanel_HeadUniformLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 92, Short.MAX_VALUE)
-            .add(jPanel_HeadUniformLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                .add(jPanel_HeadUniformLayout.createSequentialGroup()
-                    .add(0, 17, Short.MAX_VALUE)
-                    .add(jPanel_HorizontalSlider3, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(0, 18, Short.MAX_VALUE)))
-        );
+        jPanel_HeadUniform.setLayout(new java.awt.GridBagLayout());
+        jPanel_HeadUniform.add(jPanel_HorizontalSliderS1, new java.awt.GridBagConstraints());
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -406,17 +334,20 @@ public class JPanel_HeadOptions extends AbstractOptions {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private imi.gui.JPanel_HorizontalSlider LeftEye_HPos;
-    private imi.gui.JPanel_HorizontalSlider LeftEye_Size;
-    private imi.gui.JPanel_VerticalSlider LeftEye_VPos;
-    private imi.gui.JPanel_HorizontalSlider LeftEye_Width;
-    private imi.gui.JPanel_VerticalSlider LowerLip_Size;
-    private imi.gui.JPanel_HorizontalSlider Mouth_Width;
-    private imi.gui.JPanel_HorizontalSlider RightEye_HPos;
-    private imi.gui.JPanel_HorizontalSlider RightEye_Size;
-    private imi.gui.JPanel_VerticalSlider RightEye_VPos;
-    private imi.gui.JPanel_HorizontalSlider RightEye_Width;
-    private imi.gui.JPanel_VerticalSlider UpperLip_Size;
+    private imi.gui.JPanel_HorizontalSliderS Head_Depth;
+    private imi.gui.JPanel_VerticalSliderS Head_Height;
+    private imi.gui.JPanel_HorizontalSliderS Head_Width;
+    private imi.gui.JPanel_HorizontalSliderT LeftEye_HPos;
+    private imi.gui.JPanel_HorizontalSliderS LeftEye_Size;
+    private imi.gui.JPanel_VerticalSliderT LeftEye_VPos;
+    private imi.gui.JPanel_HorizontalSliderS LeftEye_Width;
+    private imi.gui.JPanel_HorizontalSliderS LowerLip_Size;
+    private imi.gui.JPanel_HorizontalSliderT Mouth_Width;
+    private imi.gui.JPanel_HorizontalSliderT RightEye_HPos;
+    private imi.gui.JPanel_HorizontalSliderS RightEye_Size;
+    private imi.gui.JPanel_VerticalSliderT RightEye_VPos;
+    private imi.gui.JPanel_HorizontalSliderS RightEye_Width;
+    private imi.gui.JPanel_HorizontalSliderS UpperLip_Size;
     private javax.swing.JCheckBox jCheckBox_SyncEyeHPos;
     private javax.swing.JCheckBox jCheckBox_SyncEyeSize;
     private javax.swing.JCheckBox jCheckBox_SyncEyeVPos;
@@ -431,14 +362,11 @@ public class JPanel_HeadOptions extends AbstractOptions {
     private javax.swing.JPanel jPanel_HeadHeight;
     private javax.swing.JPanel jPanel_HeadUniform;
     private javax.swing.JPanel jPanel_HeadWidth;
-    private imi.gui.JPanel_HorizontalSlider jPanel_HorizontalSlider1;
-    private imi.gui.JPanel_HorizontalSlider jPanel_HorizontalSlider2;
-    private imi.gui.JPanel_HorizontalSlider jPanel_HorizontalSlider3;
+    private imi.gui.JPanel_HorizontalSliderS jPanel_HorizontalSliderS1;
     private javax.swing.JPanel jPanel_LipSize;
     private javax.swing.JPanel jPanel_Mouth;
     private javax.swing.JPanel jPanel_MouthWidth;
     private javax.swing.JPanel jPanel_Uniform;
-    private imi.gui.JPanel_VerticalSlider jPanel_VerticalSlider1;
     private javax.swing.JTabbedPane jTabbedPane_Head;
     // End of variables declaration//GEN-END:variables
 
@@ -450,8 +378,35 @@ public class JPanel_HeadOptions extends AbstractOptions {
         m_baseFrame = frame;
     }
 
-    @Override
-    public void notifyParent() {
+    public void setSliderControls() {
+        Head_Depth.setObjectRef(JFrame_AdvOptions.m_sliderControl.headDepth);
+        Head_Height.setObjectRef(JFrame_AdvOptions.m_sliderControl.headHeight);
+        Head_Width.setObjectRef(JFrame_AdvOptions.m_sliderControl.headWidth);
+        LeftEye_HPos.setObjectRef(JFrame_AdvOptions.m_sliderControl.lefteyeHPos);
+        LeftEye_Size.setObjectRef(JFrame_AdvOptions.m_sliderControl.lefteyeSize);
+        LeftEye_VPos.setObjectRef(JFrame_AdvOptions.m_sliderControl.lefteyeVPos);
+        LeftEye_Width.setObjectRef(JFrame_AdvOptions.m_sliderControl.lefteyeWidth);
+        LowerLip_Size.setObjectRef(JFrame_AdvOptions.m_sliderControl.lowerlipSize);
+        Mouth_Width.setObjectRef(JFrame_AdvOptions.m_sliderControl.mouthWidth);
+        RightEye_HPos.setObjectRef(JFrame_AdvOptions.m_sliderControl.righteyeHPos);
+        RightEye_Size.setObjectRef(JFrame_AdvOptions.m_sliderControl.righteyeSize);
+        RightEye_VPos.setObjectRef(JFrame_AdvOptions.m_sliderControl.righteyeWidth);
+        RightEye_Width.setObjectRef(JFrame_AdvOptions.m_sliderControl.righteyeWidth);
+        UpperLip_Size.setObjectRef(JFrame_AdvOptions.m_sliderControl.upperlipSize);
 
+        Head_Depth.setParentFrame((JFrame_AdvOptions) m_baseFrame);
+        Head_Height.setParentFrame((JFrame_AdvOptions) m_baseFrame);
+        Head_Width.setParentFrame((JFrame_AdvOptions) m_baseFrame);
+        LeftEye_HPos.setParentFrame((JFrame_AdvOptions) m_baseFrame);
+        LeftEye_Size.setParentFrame((JFrame_AdvOptions) m_baseFrame);
+        LeftEye_VPos.setParentFrame((JFrame_AdvOptions) m_baseFrame);
+        LeftEye_Width.setParentFrame((JFrame_AdvOptions) m_baseFrame);
+        LowerLip_Size.setParentFrame((JFrame_AdvOptions) m_baseFrame);
+        Mouth_Width.setParentFrame((JFrame_AdvOptions) m_baseFrame);
+        RightEye_HPos.setParentFrame((JFrame_AdvOptions) m_baseFrame);
+        RightEye_Size.setParentFrame((JFrame_AdvOptions) m_baseFrame);
+        RightEye_VPos.setParentFrame((JFrame_AdvOptions) m_baseFrame);
+        RightEye_Width.setParentFrame((JFrame_AdvOptions) m_baseFrame);
+        UpperLip_Size.setParentFrame((JFrame_AdvOptions) m_baseFrame);
     }
 }

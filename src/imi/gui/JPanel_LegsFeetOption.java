@@ -24,15 +24,27 @@
 
 package imi.gui;
 
+import javax.swing.JFrame;
+
 /**
  *
  * @author Paul Viet Nguyen Truong (ptruong)
  */
 public class JPanel_LegsFeetOption extends javax.swing.JPanel {
+////////////////////////////////////////////////////////////////////////////////
+// CLASS DATA MEMBERS
+////////////////////////////////////////////////////////////////////////////////
+    private JFrame  m_baseFrame     =   null;
 
     /** Creates new form JPanel_LegsFeetOption */
     public JPanel_LegsFeetOption() {
         initComponents();
+    }
+
+    public JPanel_LegsFeetOption(JFrame baseFrame) {
+        m_baseFrame = baseFrame;
+        initComponents();
+        setSliderControls();
     }
 
     /** This method is called from within the constructor to
@@ -48,31 +60,31 @@ public class JPanel_LegsFeetOption extends javax.swing.JPanel {
         jTabbedPane_LegsFeet = new javax.swing.JTabbedPane();
         jPanel_Upperlegs = new javax.swing.JPanel();
         jPanel_ULLength = new javax.swing.JPanel();
-        UpperLeftLeg_Length = new imi.gui.JPanel_VerticalSlider();
-        UpperRightLeg_Length = new imi.gui.JPanel_VerticalSlider();
         jCheckBox_SyncULLength = new javax.swing.JCheckBox();
+        LeftUpperleg_Length = new imi.gui.JPanel_VerticalSliderT();
+        RightUpperleg_Length = new imi.gui.JPanel_VerticalSliderT();
         jPanel_ULThickness = new javax.swing.JPanel();
-        UpperLeftLeg_Thickness = new imi.gui.JPanel_HorizontalSlider();
-        UpperRightLeg_Thickness = new imi.gui.JPanel_HorizontalSlider();
         jCheckBox_SyncULThickness = new javax.swing.JCheckBox();
+        LeftUpperleg_Thickness = new imi.gui.JPanel_HorizontalSliderS();
+        RightUpperleg_Thickness = new imi.gui.JPanel_HorizontalSliderS();
         jPanel_Lowerlegs = new javax.swing.JPanel();
         jPanel_LLLength = new javax.swing.JPanel();
-        LowerLeftLeg_Length = new imi.gui.JPanel_VerticalSlider();
-        LowerRightLeg_Length = new imi.gui.JPanel_VerticalSlider();
         jCheckBox_SyncLLLength = new javax.swing.JCheckBox();
+        LeftLowerleg_Length = new imi.gui.JPanel_VerticalSliderT();
+        RightLowerleg_Length = new imi.gui.JPanel_VerticalSliderT();
         jPanel_LLThickness = new javax.swing.JPanel();
-        LowerLeftLeg_Thickness = new imi.gui.JPanel_HorizontalSlider();
-        LowerRightLeg_Thickness = new imi.gui.JPanel_HorizontalSlider();
         jCheckBox_SyncLLThickness = new javax.swing.JCheckBox();
+        LeftLowerleg_Thickness = new imi.gui.JPanel_HorizontalSliderS();
+        RightLowerleg_Thickness = new imi.gui.JPanel_HorizontalSliderS();
         jPanel_Feet = new javax.swing.JPanel();
         jPanel_FeetLength = new javax.swing.JPanel();
-        LeftFoot_Length = new imi.gui.JPanel_VerticalSlider();
-        RightFoot_Length = new imi.gui.JPanel_VerticalSlider();
         jCheckBox_SyncFeetLength = new javax.swing.JCheckBox();
+        LeftFoot_Length = new imi.gui.JPanel_VerticalSliderT();
+        RightFoot_Length = new imi.gui.JPanel_VerticalSliderT();
         jPanel_FeetThickness = new javax.swing.JPanel();
-        LeftFoot_Thickness = new imi.gui.JPanel_HorizontalSlider();
-        RightFoot_Thickness = new imi.gui.JPanel_HorizontalSlider();
         jCheckBox_SyncFeetThickness = new javax.swing.JCheckBox();
+        LeftFoot_Thickness = new imi.gui.JPanel_HorizontalSliderS();
+        RightFoot_Thickness = new imi.gui.JPanel_HorizontalSliderS();
 
         setMinimumSize(new java.awt.Dimension(270, 600));
         setPreferredSize(new java.awt.Dimension(270, 600));
@@ -85,8 +97,6 @@ public class JPanel_LegsFeetOption extends javax.swing.JPanel {
         jPanel_ULLength.setMinimumSize(new java.awt.Dimension(230, 230));
         jPanel_ULLength.setPreferredSize(new java.awt.Dimension(230, 230));
         jPanel_ULLength.setLayout(new java.awt.GridBagLayout());
-        jPanel_ULLength.add(UpperLeftLeg_Length, new java.awt.GridBagConstraints());
-        jPanel_ULLength.add(UpperRightLeg_Length, new java.awt.GridBagConstraints());
 
         jCheckBox_SyncULLength.setText("Lock Sliders");
         jCheckBox_SyncULLength.setMinimumSize(new java.awt.Dimension(120, 23));
@@ -96,6 +106,14 @@ public class JPanel_LegsFeetOption extends javax.swing.JPanel {
         gridBagConstraints.gridy = 1;
         gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
         jPanel_ULLength.add(jCheckBox_SyncULLength, gridBagConstraints);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        jPanel_ULLength.add(LeftUpperleg_Length, gridBagConstraints);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 0;
+        jPanel_ULLength.add(RightUpperleg_Length, gridBagConstraints);
 
         jPanel_Upperlegs.add(jPanel_ULLength, new java.awt.GridBagConstraints());
 
@@ -103,22 +121,6 @@ public class JPanel_LegsFeetOption extends javax.swing.JPanel {
         jPanel_ULThickness.setMinimumSize(new java.awt.Dimension(230, 230));
         jPanel_ULThickness.setPreferredSize(new java.awt.Dimension(230, 230));
         jPanel_ULThickness.setLayout(new java.awt.GridBagLayout());
-
-        UpperLeftLeg_Thickness.setMinimumSize(new java.awt.Dimension(109, 57));
-        UpperLeftLeg_Thickness.setPreferredSize(new java.awt.Dimension(109, 57));
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 0;
-        jPanel_ULThickness.add(UpperLeftLeg_Thickness, gridBagConstraints);
-
-        UpperRightLeg_Thickness.setMinimumSize(new java.awt.Dimension(109, 57));
-        UpperRightLeg_Thickness.setParentFrame(null);
-        UpperRightLeg_Thickness.setPreferredSize(new java.awt.Dimension(109, 57));
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        jPanel_ULThickness.add(UpperRightLeg_Thickness, gridBagConstraints);
 
         jCheckBox_SyncULThickness.setText("Lock Sliders");
         jCheckBox_SyncULThickness.setMinimumSize(new java.awt.Dimension(120, 23));
@@ -128,6 +130,20 @@ public class JPanel_LegsFeetOption extends javax.swing.JPanel {
         gridBagConstraints.gridy = 1;
         gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
         jPanel_ULThickness.add(jCheckBox_SyncULThickness, gridBagConstraints);
+
+        LeftUpperleg_Thickness.setMinimumSize(new java.awt.Dimension(108, 57));
+        LeftUpperleg_Thickness.setPreferredSize(new java.awt.Dimension(108, 57));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        jPanel_ULThickness.add(LeftUpperleg_Thickness, gridBagConstraints);
+
+        RightUpperleg_Thickness.setMinimumSize(new java.awt.Dimension(108, 57));
+        RightUpperleg_Thickness.setPreferredSize(new java.awt.Dimension(108, 57));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 0;
+        jPanel_ULThickness.add(RightUpperleg_Thickness, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -142,8 +158,6 @@ public class JPanel_LegsFeetOption extends javax.swing.JPanel {
         jPanel_LLLength.setMinimumSize(new java.awt.Dimension(230, 230));
         jPanel_LLLength.setPreferredSize(new java.awt.Dimension(230, 230));
         jPanel_LLLength.setLayout(new java.awt.GridBagLayout());
-        jPanel_LLLength.add(LowerLeftLeg_Length, new java.awt.GridBagConstraints());
-        jPanel_LLLength.add(LowerRightLeg_Length, new java.awt.GridBagConstraints());
 
         jCheckBox_SyncLLLength.setText("Lock Sliders");
         jCheckBox_SyncLLLength.setMinimumSize(new java.awt.Dimension(120, 23));
@@ -153,6 +167,14 @@ public class JPanel_LegsFeetOption extends javax.swing.JPanel {
         gridBagConstraints.gridy = 1;
         gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
         jPanel_LLLength.add(jCheckBox_SyncLLLength, gridBagConstraints);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        jPanel_LLLength.add(LeftLowerleg_Length, gridBagConstraints);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 0;
+        jPanel_LLLength.add(RightLowerleg_Length, gridBagConstraints);
 
         jPanel_Lowerlegs.add(jPanel_LLLength, new java.awt.GridBagConstraints());
 
@@ -160,22 +182,6 @@ public class JPanel_LegsFeetOption extends javax.swing.JPanel {
         jPanel_LLThickness.setMinimumSize(new java.awt.Dimension(230, 230));
         jPanel_LLThickness.setPreferredSize(new java.awt.Dimension(230, 230));
         jPanel_LLThickness.setLayout(new java.awt.GridBagLayout());
-
-        LowerLeftLeg_Thickness.setMinimumSize(new java.awt.Dimension(109, 57));
-        LowerLeftLeg_Thickness.setPreferredSize(new java.awt.Dimension(109, 57));
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 0;
-        jPanel_LLThickness.add(LowerLeftLeg_Thickness, gridBagConstraints);
-
-        LowerRightLeg_Thickness.setMinimumSize(new java.awt.Dimension(109, 57));
-        LowerRightLeg_Thickness.setParentFrame(null);
-        LowerRightLeg_Thickness.setPreferredSize(new java.awt.Dimension(109, 57));
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        jPanel_LLThickness.add(LowerRightLeg_Thickness, gridBagConstraints);
 
         jCheckBox_SyncLLThickness.setText("Lock Sliders");
         jCheckBox_SyncLLThickness.setMinimumSize(new java.awt.Dimension(120, 23));
@@ -185,6 +191,20 @@ public class JPanel_LegsFeetOption extends javax.swing.JPanel {
         gridBagConstraints.gridy = 1;
         gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
         jPanel_LLThickness.add(jCheckBox_SyncLLThickness, gridBagConstraints);
+
+        LeftLowerleg_Thickness.setMinimumSize(new java.awt.Dimension(108, 57));
+        LeftLowerleg_Thickness.setPreferredSize(new java.awt.Dimension(108, 57));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        jPanel_LLThickness.add(LeftLowerleg_Thickness, gridBagConstraints);
+
+        RightLowerleg_Thickness.setMinimumSize(new java.awt.Dimension(108, 57));
+        RightLowerleg_Thickness.setPreferredSize(new java.awt.Dimension(108, 57));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 0;
+        jPanel_LLThickness.add(RightLowerleg_Thickness, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -199,8 +219,6 @@ public class JPanel_LegsFeetOption extends javax.swing.JPanel {
         jPanel_FeetLength.setMinimumSize(new java.awt.Dimension(230, 230));
         jPanel_FeetLength.setPreferredSize(new java.awt.Dimension(230, 230));
         jPanel_FeetLength.setLayout(new java.awt.GridBagLayout());
-        jPanel_FeetLength.add(LeftFoot_Length, new java.awt.GridBagConstraints());
-        jPanel_FeetLength.add(RightFoot_Length, new java.awt.GridBagConstraints());
 
         jCheckBox_SyncFeetLength.setText("Lock Sliders");
         jCheckBox_SyncFeetLength.setMinimumSize(new java.awt.Dimension(120, 23));
@@ -210,6 +228,14 @@ public class JPanel_LegsFeetOption extends javax.swing.JPanel {
         gridBagConstraints.gridy = 1;
         gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
         jPanel_FeetLength.add(jCheckBox_SyncFeetLength, gridBagConstraints);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        jPanel_FeetLength.add(LeftFoot_Length, gridBagConstraints);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 0;
+        jPanel_FeetLength.add(RightFoot_Length, gridBagConstraints);
 
         jPanel_Feet.add(jPanel_FeetLength, new java.awt.GridBagConstraints());
 
@@ -217,22 +243,6 @@ public class JPanel_LegsFeetOption extends javax.swing.JPanel {
         jPanel_FeetThickness.setMinimumSize(new java.awt.Dimension(230, 230));
         jPanel_FeetThickness.setPreferredSize(new java.awt.Dimension(230, 230));
         jPanel_FeetThickness.setLayout(new java.awt.GridBagLayout());
-
-        LeftFoot_Thickness.setMinimumSize(new java.awt.Dimension(109, 57));
-        LeftFoot_Thickness.setPreferredSize(new java.awt.Dimension(109, 57));
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 0;
-        jPanel_FeetThickness.add(LeftFoot_Thickness, gridBagConstraints);
-
-        RightFoot_Thickness.setMinimumSize(new java.awt.Dimension(109, 57));
-        RightFoot_Thickness.setParentFrame(null);
-        RightFoot_Thickness.setPreferredSize(new java.awt.Dimension(109, 57));
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        jPanel_FeetThickness.add(RightFoot_Thickness, gridBagConstraints);
 
         jCheckBox_SyncFeetThickness.setText("Lock Sliders");
         jCheckBox_SyncFeetThickness.setMinimumSize(new java.awt.Dimension(120, 23));
@@ -242,6 +252,20 @@ public class JPanel_LegsFeetOption extends javax.swing.JPanel {
         gridBagConstraints.gridy = 1;
         gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
         jPanel_FeetThickness.add(jCheckBox_SyncFeetThickness, gridBagConstraints);
+
+        LeftFoot_Thickness.setMinimumSize(new java.awt.Dimension(108, 57));
+        LeftFoot_Thickness.setPreferredSize(new java.awt.Dimension(108, 57));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        jPanel_FeetThickness.add(LeftFoot_Thickness, gridBagConstraints);
+
+        RightFoot_Thickness.setMinimumSize(new java.awt.Dimension(108, 57));
+        RightFoot_Thickness.setPreferredSize(new java.awt.Dimension(108, 57));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 0;
+        jPanel_FeetThickness.add(RightFoot_Thickness, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -266,18 +290,18 @@ public class JPanel_LegsFeetOption extends javax.swing.JPanel {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private imi.gui.JPanel_VerticalSlider LeftFoot_Length;
-    private imi.gui.JPanel_HorizontalSlider LeftFoot_Thickness;
-    private imi.gui.JPanel_VerticalSlider LowerLeftLeg_Length;
-    private imi.gui.JPanel_HorizontalSlider LowerLeftLeg_Thickness;
-    private imi.gui.JPanel_VerticalSlider LowerRightLeg_Length;
-    private imi.gui.JPanel_HorizontalSlider LowerRightLeg_Thickness;
-    private imi.gui.JPanel_VerticalSlider RightFoot_Length;
-    private imi.gui.JPanel_HorizontalSlider RightFoot_Thickness;
-    private imi.gui.JPanel_VerticalSlider UpperLeftLeg_Length;
-    private imi.gui.JPanel_HorizontalSlider UpperLeftLeg_Thickness;
-    private imi.gui.JPanel_VerticalSlider UpperRightLeg_Length;
-    private imi.gui.JPanel_HorizontalSlider UpperRightLeg_Thickness;
+    private imi.gui.JPanel_VerticalSliderT LeftFoot_Length;
+    private imi.gui.JPanel_HorizontalSliderS LeftFoot_Thickness;
+    private imi.gui.JPanel_VerticalSliderT LeftLowerleg_Length;
+    private imi.gui.JPanel_HorizontalSliderS LeftLowerleg_Thickness;
+    private imi.gui.JPanel_VerticalSliderT LeftUpperleg_Length;
+    private imi.gui.JPanel_HorizontalSliderS LeftUpperleg_Thickness;
+    private imi.gui.JPanel_VerticalSliderT RightFoot_Length;
+    private imi.gui.JPanel_HorizontalSliderS RightFoot_Thickness;
+    private imi.gui.JPanel_VerticalSliderT RightLowerleg_Length;
+    private imi.gui.JPanel_HorizontalSliderS RightLowerleg_Thickness;
+    private imi.gui.JPanel_VerticalSliderT RightUpperleg_Length;
+    private imi.gui.JPanel_HorizontalSliderS RightUpperleg_Thickness;
     private javax.swing.JCheckBox jCheckBox_SyncFeetLength;
     private javax.swing.JCheckBox jCheckBox_SyncFeetThickness;
     private javax.swing.JCheckBox jCheckBox_SyncLLLength;
@@ -296,4 +320,39 @@ public class JPanel_LegsFeetOption extends javax.swing.JPanel {
     private javax.swing.JTabbedPane jTabbedPane_LegsFeet;
     // End of variables declaration//GEN-END:variables
 
+////////////////////////////////////////////////////////////////////////////////
+// HELPER FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
+
+    public void setParentFrame(JFrame frame) {
+        m_baseFrame = frame;
+    }
+
+    public void setSliderControls() {
+        LeftFoot_Length.setObjectRef(JFrame_AdvOptions.m_sliderControl.leftfootLength);
+        LeftFoot_Thickness.setObjectRef(JFrame_AdvOptions.m_sliderControl.leftfootThickness);
+        LeftLowerleg_Length.setObjectRef(JFrame_AdvOptions.m_sliderControl.leftlowerlegLength);
+        LeftLowerleg_Thickness.setObjectRef(JFrame_AdvOptions.m_sliderControl.leftlowerlegThickness);
+        LeftUpperleg_Length.setObjectRef(JFrame_AdvOptions.m_sliderControl.leftupperlegLength);
+        LeftUpperleg_Thickness.setObjectRef(JFrame_AdvOptions.m_sliderControl.leftupperlegThickness);
+        RightFoot_Length.setObjectRef(JFrame_AdvOptions.m_sliderControl.rightfootLength);
+        RightFoot_Thickness.setObjectRef(JFrame_AdvOptions.m_sliderControl.rightfootThickness);
+        RightLowerleg_Length.setObjectRef(JFrame_AdvOptions.m_sliderControl.rightlowerlegLength);
+        RightLowerleg_Thickness.setObjectRef(JFrame_AdvOptions.m_sliderControl.rightlowerlegThickness);
+        RightUpperleg_Length.setObjectRef(JFrame_AdvOptions.m_sliderControl.rightupperlegLength);
+        RightUpperleg_Thickness.setObjectRef(JFrame_AdvOptions.m_sliderControl.rightupperlegThickness);
+
+        LeftFoot_Length.setParentFrame((JFrame_AdvOptions) m_baseFrame);
+        LeftFoot_Thickness.setParentFrame((JFrame_AdvOptions) m_baseFrame);
+        LeftLowerleg_Length.setParentFrame((JFrame_AdvOptions) m_baseFrame);
+        LeftLowerleg_Thickness.setParentFrame((JFrame_AdvOptions) m_baseFrame);
+        LeftUpperleg_Length.setParentFrame((JFrame_AdvOptions) m_baseFrame);
+        LeftUpperleg_Thickness.setParentFrame((JFrame_AdvOptions) m_baseFrame);
+        RightFoot_Length.setParentFrame((JFrame_AdvOptions) m_baseFrame);
+        RightFoot_Thickness.setParentFrame((JFrame_AdvOptions) m_baseFrame);
+        RightLowerleg_Length.setParentFrame((JFrame_AdvOptions) m_baseFrame);
+        RightLowerleg_Thickness.setParentFrame((JFrame_AdvOptions) m_baseFrame);
+        RightUpperleg_Length.setParentFrame((JFrame_AdvOptions) m_baseFrame);
+        RightUpperleg_Thickness.setParentFrame((JFrame_AdvOptions) m_baseFrame);
+    }
 }

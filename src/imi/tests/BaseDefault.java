@@ -39,6 +39,7 @@ import com.jme.scene.state.ZBufferState;
 import com.jme.util.TextureManager;
 import imi.character.Character;
 import imi.gui.AdvOptions;
+import imi.gui.JFrame_AdvOptions;
 import imi.gui.JPanel_Animations;
 import imi.gui.JPanel_BasicOptions;
 import imi.gui.JPanel_EZOptions;
@@ -120,7 +121,7 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
     protected RenderBuffer              m_renderBuffer      = null;
     protected Component                 m_base              = this;
     protected OptionsGUI                m_AvatarOptions     = null;
-    protected AdvOptions                m_AdvOptions        = null;
+    protected JFrame_AdvOptions         m_AdvOptions        = null;
     protected TreeExplorer              m_NodeExplorer      = null;
     protected JFrame                    m_AnimationViewer   = null;
     protected JPanel_ServerBrowser      m_ServerBrowser     = null;
@@ -819,7 +820,7 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
 //        if (node.getChildrenCount() > 0)
 //            m_AvatarOptions.setSelectedInstance((PPolygonModelInstance) node.getChild(0));
 //        m_AvatarOptions.setVisible(true);
-        m_AdvOptions = new AdvOptions(m_sceneData);
+        m_AdvOptions = new JFrame_AdvOptions(m_sceneData);
         m_AdvOptions.setVisible(true);
     }
     
