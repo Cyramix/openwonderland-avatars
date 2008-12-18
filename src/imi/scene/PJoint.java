@@ -17,8 +17,6 @@
  */
 package imi.scene;
 
-import imi.scene.PNode;
-import imi.scene.PTransform;
 import java.util.ArrayList;
 
 /**
@@ -42,14 +40,6 @@ public class PJoint extends PNode
     /** The local modifier matirx is used for effects that do not
      * cascade down the hierarchy, for e.g. body fat */
     private PMatrix         m_localModifier = new PMatrix();
-    
-    /**
-     * The skeleton modifier is used for enabling compatability
-     * with meshes that require re-positioning of skeleton nodes
-     * which must cascade down the hierarchy during the flatening process
-     * (such as heads)
-     */
-    private PMatrix         m_skeletonModifier = null;
 	
     /**
      * Empty constructor, for low level coding.
@@ -172,27 +162,4 @@ public class PJoint extends PNode
     {
         m_localModifier.set(mat);
     }
-
-    /**
-     * The skeleton modifier is used for enabling compatability
-     * with meshes that require re-positioning of skeleton nodes
-     * which must cascade down the hierarchy during the flatening process
-     * (such as heads)
-     * @return
-     */
-    public PMatrix getSkeletonModifier() {
-        return m_skeletonModifier;
-    }
-
-    /**
-     * The skeleton modifier is used for enabling compatability
-     * with meshes that require re-positioning of skeleton nodes
-     * which must cascade down the hierarchy during the flatening process
-     * (such as heads)
-     * @param skeletonModifier
-     */
-    public void setSkeletonModifier(PMatrix skeletonModifier) {
-        this.m_skeletonModifier = skeletonModifier;
-    }
-    
 }

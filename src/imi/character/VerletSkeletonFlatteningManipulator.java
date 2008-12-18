@@ -131,9 +131,6 @@ public class VerletSkeletonFlatteningManipulator implements SkeletonFlatteningMa
         matrix.setLocalY(localY);
         matrix.setLocalZ(localZ);
         matrix.setTranslation(shoulderPosition);
-        
-        if (shoulderJoint.getSkeletonModifier() != null)
-            matrix.mul(shoulderJoint.getSkeletonModifier());
     }
 
     private void modifyUpperArm(PMatrix matrix) 
@@ -156,9 +153,6 @@ public class VerletSkeletonFlatteningManipulator implements SkeletonFlatteningMa
         matrix.setLocalY(localY);
         matrix.setLocalZ(localZ);
         matrix.setTranslation(shoulderPosition.add(offsetFromShoulder));
-        
-        if (skeleton.getSkinnedMeshJoint(upperArm).getSkeletonModifier() != null)
-            matrix.mul(skeleton.getSkinnedMeshJoint(upperArm).getSkeletonModifier());
     }
     
     private void modifyElbow(PMatrix matrix) 
@@ -185,10 +179,6 @@ public class VerletSkeletonFlatteningManipulator implements SkeletonFlatteningMa
         matrix.setLocalY(localY);
         matrix.setLocalZ(localZ);
         matrix.setTranslation(elbowPosition);
-        
-        if (skeleton.getSkinnedMeshJoint(elbow).getSkeletonModifier() != null)
-            matrix.mul(skeleton.getSkinnedMeshJoint(elbow).getSkeletonModifier());
-        
     }
 
     private void modifyForeArm(PMatrix matrix) 
@@ -217,9 +207,6 @@ public class VerletSkeletonFlatteningManipulator implements SkeletonFlatteningMa
         matrix.setLocalY(localY);
         matrix.setLocalZ(localZ);
         matrix.setTranslation(elbowPosition.add(elbowToWrist));
-        
-        if (skeleton.getSkinnedMeshJoint(foreArm).getSkeletonModifier() != null)
-            matrix.mul(skeleton.getSkinnedMeshJoint(foreArm).getSkeletonModifier());
     }
 
     private void modifyWrist(PMatrix matrix)
@@ -257,9 +244,6 @@ public class VerletSkeletonFlatteningManipulator implements SkeletonFlatteningMa
         PMatrix fixRotation = new PMatrix();
         fixRotation.buildRotationZ((float)Math.toRadians(40));
         matrix.mul(fixRotation);
-        
-        if (skeleton.getSkinnedMeshJoint(wrist).getSkeletonModifier() != null)
-            matrix.mul(skeleton.getSkinnedMeshJoint(wrist).getSkeletonModifier());
     }
     
     public void setArmEnabled(boolean bEnabled) 

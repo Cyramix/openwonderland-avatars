@@ -2325,30 +2325,31 @@ public class AdvOptions extends javax.swing.JFrame {
                     Ladjust = (curVal - m_baseLen) / 100.0f;
                     jSpinner_ForearmLengthL.setValue(Ladjust);
 
-                    if (LForearm[1].getSkeletonModifier() == null) {
-                        LForearm[1].setSkeletonModifier(new PMatrix());
-                        modL = new Vector3f(LForearm[1].getSkeletonModifier().getTranslation());
-                    }
-                    else
-                        modL = new Vector3f(LForearm[1].getSkeletonModifier().getTranslation());
-                    modL.y = 0.0f;     modL.y += Ladjust;
-
-                    LForearm[1].getSkeletonModifier().setTranslation(modL);
+                    // Convert to new system! UNIQUESTRINGID
+//                    if (LForearm[1].getSkeletonModifier() == null) {
+//                        LForearm[1].setSkeletonModifier(new PMatrix());
+//                        modL = new Vector3f(LForearm[1].getSkeletonModifier().getTranslation());
+//                    }
+//                    else
+//                        modL = new Vector3f(LForearm[1].getSkeletonModifier().getTranslation());
+//                    modL.y = 0.0f;     modL.y += Ladjust;
+//
+//                    LForearm[1].getSkeletonModifier().setTranslation(modL);
 
                 } else if (obj.equals(jSlider_ForearmLengthR)) {
                     float curVal = jSlider_ForearmLengthR.getValue();
                     Radjust = (curVal - m_baseLen) / 100.0f;
                     jSpinner_ForearmLengthR.setValue(Radjust);
-
-                    if (RForearm[1].getSkeletonModifier() == null) {
-                        RForearm[1].setSkeletonModifier(new PMatrix());
-                        modR = new Vector3f(RForearm[1].getSkeletonModifier().getTranslation());
-                    }
-                    else
-                        modR = new Vector3f(RForearm[1].getSkeletonModifier().getTranslation());
-                    modR.y = 0.0f;     modR.y += Radjust;
-
-                    RForearm[1].getSkeletonModifier().setTranslation(modR);
+                    // Convert to new system! UNIQUESTRINGID
+//                    if (RForearm[1].getSkeletonModifier() == null) {
+//                        RForearm[1].setSkeletonModifier(new PMatrix());
+//                        modR = new Vector3f(RForearm[1].getSkeletonModifier().getTranslation());
+//                    }
+//                    else
+//                        modR = new Vector3f(RForearm[1].getSkeletonModifier().getTranslation());
+//                    modR.y = 0.0f;     modR.y += Radjust;
+//
+//                    RForearm[1].getSkeletonModifier().setTranslation(modR);
                 }
                 break;
             }
@@ -2408,31 +2409,32 @@ public class AdvOptions extends javax.swing.JFrame {
                     float curVal = jSlider_UpperArmLengthL.getValue();
                     Ladjust = (curVal - m_baseLen) / 100.0f;
                     jSpinner_UpperarmLengthL.setValue(Ladjust);
-
-                    if (LUpperarm[1].getSkeletonModifier() == null) {
-                        LUpperarm[1].setSkeletonModifier(new PMatrix());
-                        modL = new Vector3f(LUpperarm[1].getSkeletonModifier().getTranslation());
-                    }
-                    else
-                        modL = new Vector3f(LUpperarm[1].getSkeletonModifier().getTranslation());
-                    modL.y = 0.0f;     modL.y += Ladjust;
-
-                    LUpperarm[1].getSkeletonModifier().setTranslation(modL);
+                    // Convert to new system! UNIQUESTRINGID
+//                    if (LUpperarm[1].getSkeletonModifier() == null) {
+//                        LUpperarm[1].setSkeletonModifier(new PMatrix());
+//                        modL = new Vector3f(LUpperarm[1].getSkeletonModifier().getTranslation());
+//                    }
+//                    else
+//                        modL = new Vector3f(LUpperarm[1].getSkeletonModifier().getTranslation());
+//                    modL.y = 0.0f;     modL.y += Ladjust;
+//
+//                    LUpperarm[1].getSkeletonModifier().setTranslation(modL);
 
                 } else if (obj.equals(jSlider_UpperarmLengthR)) {
                     float curVal = jSlider_UpperarmLengthR.getValue();
                     Radjust = (curVal - m_baseLen) / 100.0f;
                     jSpinner_UpperarmLengthR.setValue(Radjust);
 
-                    if (RUpperarm[1].getSkeletonModifier() == null) {
-                        RUpperarm[1].setSkeletonModifier(new PMatrix());
-                        modR = new Vector3f(RUpperarm[1].getSkeletonModifier().getTranslation());
-                    }
-                    else
-                        modR = new Vector3f(RUpperarm[1].getSkeletonModifier().getTranslation());
-                    modR.y = 0.0f;     modR.y += Radjust;
-
-                    RUpperarm[1].getSkeletonModifier().setTranslation(modR);
+                    // Convert to new system! UNIQUESTRINGID
+//                    if (RUpperarm[1].getSkeletonModifier() == null) {
+//                        RUpperarm[1].setSkeletonModifier(new PMatrix());
+//                        modR = new Vector3f(RUpperarm[1].getSkeletonModifier().getTranslation());
+//                    }
+//                    else
+//                        modR = new Vector3f(RUpperarm[1].getSkeletonModifier().getTranslation());
+//                    modR.y = 0.0f;     modR.y += Radjust;
+//
+//                    RUpperarm[1].getSkeletonModifier().setTranslation(modR);
                 }
                 break;
             }
@@ -2493,30 +2495,32 @@ public class AdvOptions extends javax.swing.JFrame {
                     Ladjust = (curVal - m_baseLen) / 100.0f;
                     jSpinner_FeetLengthL.setValue(Ladjust);
 
-                    if (LFoot[1].getSkeletonModifier() == null) {
-                        LFoot[1].setSkeletonModifier(new PMatrix());
-                        modL = new Vector3f(LFoot[1].getSkeletonModifier().getTranslation());
-                    }
-                    else
-                        modL = new Vector3f(LFoot[1].getSkeletonModifier().getTranslation());
-                    modL.z = 0.0f;     modL.z += Ladjust;
-
-                    LFoot[1].getSkeletonModifier().setTranslation(modL);
+                    // Convert to new system! UNIQUESTRINGID
+//                    if (LFoot[1].getSkeletonModifier() == null) {
+//                        LFoot[1].setSkeletonModifier(new PMatrix());
+//                        modL = new Vector3f(LFoot[1].getSkeletonModifier().getTranslation());
+//                    }
+//                    else
+//                        modL = new Vector3f(LFoot[1].getSkeletonModifier().getTranslation());
+//                    modL.z = 0.0f;     modL.z += Ladjust;
+//
+//                    LFoot[1].getSkeletonModifier().setTranslation(modL);
 
                 } else if (obj.equals(jSlider_FeetLengthR)) {
                     float curVal = jSlider_FeetLengthR.getValue();
                     Radjust = (curVal - m_baseLen) / 100.0f;
                     jSpinner_FeetLengthR.setValue(Radjust);
 
-                    if (RFoot[1].getSkeletonModifier() == null) {
-                        RFoot[1].setSkeletonModifier(new PMatrix());
-                        modR = new Vector3f(RFoot[1].getSkeletonModifier().getTranslation());
-                    }
-                    else
-                        modR = new Vector3f(RFoot[1].getSkeletonModifier().getTranslation());
-                    modR.z = 0.0f;     modR.z += Radjust;
-
-                    RFoot[1].getSkeletonModifier().setTranslation(modR);
+                    // Convert to new system! UNIQUESTRINGID
+//                    if (RFoot[1].getSkeletonModifier() == null) {
+//                        RFoot[1].setSkeletonModifier(new PMatrix());
+//                        modR = new Vector3f(RFoot[1].getSkeletonModifier().getTranslation());
+//                    }
+//                    else
+//                        modR = new Vector3f(RFoot[1].getSkeletonModifier().getTranslation());
+//                    modR.z = 0.0f;     modR.z += Radjust;
+//
+//                    RFoot[1].getSkeletonModifier().setTranslation(modR);
                 }
                 break;
             }
@@ -2577,30 +2581,32 @@ public class AdvOptions extends javax.swing.JFrame {
                     Ladjust = (curVal - m_baseLen) / 100.0f;
                     jSpinner_CalvesLengthL.setValue(Ladjust);
 
-                    if (LCalves[1].getSkeletonModifier() == null) {
-                        LCalves[1].setSkeletonModifier(new PMatrix());
-                        modL = new Vector3f(LCalves[1].getSkeletonModifier().getTranslation());
-                    }
-                    else
-                        modL = new Vector3f(LCalves[1].getSkeletonModifier().getTranslation());
-                    modL.y = 0.0f;     modL.y += Ladjust;
-
-                    LCalves[1].getSkeletonModifier().setTranslation(modL);
+                    // Convert to new system! UNIQUESTRINGID
+//                    if (LCalves[1].getSkeletonModifier() == null) {
+//                        LCalves[1].setSkeletonModifier(new PMatrix());
+//                        modL = new Vector3f(LCalves[1].getSkeletonModifier().getTranslation());
+//                    }
+//                    else
+//                        modL = new Vector3f(LCalves[1].getSkeletonModifier().getTranslation());
+//                    modL.y = 0.0f;     modL.y += Ladjust;
+//
+//                    LCalves[1].getSkeletonModifier().setTranslation(modL);
 
                 } else if (obj.equals(jSlider_CalvesLengthR)) {
                     float curVal = jSlider_CalvesLengthR.getValue();
                     Radjust = (curVal - m_baseLen) / 100.0f;
                     jSpinner_CalvesLengthR.setValue(Radjust);
 
-                    if (RCalves[1].getSkeletonModifier() == null) {
-                        RCalves[1].setSkeletonModifier(new PMatrix());
-                        modR = new Vector3f(RCalves[1].getSkeletonModifier().getTranslation());
-                    }
-                    else
-                        modR = new Vector3f(RCalves[1].getSkeletonModifier().getTranslation());
-                    modR.y = 0.0f;     modR.y += Radjust;
-
-                    RCalves[1].getSkeletonModifier().setTranslation(modR);
+                    // Convert to new system! UNIQUESTRINGID
+//                    if (RCalves[1].getSkeletonModifier() == null) {
+//                        RCalves[1].setSkeletonModifier(new PMatrix());
+//                        modR = new Vector3f(RCalves[1].getSkeletonModifier().getTranslation());
+//                    }
+//                    else
+//                        modR = new Vector3f(RCalves[1].getSkeletonModifier().getTranslation());
+//                    modR.y = 0.0f;     modR.y += Radjust;
+//
+//                    RCalves[1].getSkeletonModifier().setTranslation(modR);
 
                 }
                 break;
@@ -2662,30 +2668,32 @@ public class AdvOptions extends javax.swing.JFrame {
                     Ladjust = (curVal - m_baseLen) / 100.0f;
                     jSpinner_ThighLengthL.setValue(Ladjust);
 
-                    if (LThighs[1].getSkeletonModifier() == null) {
-                        LThighs[1].setSkeletonModifier(new PMatrix());
-                        modL = new Vector3f(LThighs[1].getSkeletonModifier().getTranslation());
-                    }
-                    else
-                        modL = new Vector3f(LThighs[1].getSkeletonModifier().getTranslation());
-                    modL.y = 0.0f;     modL.y += Ladjust;
-
-                    LThighs[1].getSkeletonModifier().setTranslation(modL);
+                    // Convert to new system! UNIQUESTRINGID
+//                    if (LThighs[1].getSkeletonModifier() == null) {
+//                        LThighs[1].setSkeletonModifier(new PMatrix());
+//                        modL = new Vector3f(LThighs[1].getSkeletonModifier().getTranslation());
+//                    }
+//                    else
+//                        modL = new Vector3f(LThighs[1].getSkeletonModifier().getTranslation());
+//                    modL.y = 0.0f;     modL.y += Ladjust;
+//
+//                    LThighs[1].getSkeletonModifier().setTranslation(modL);
 
                 } else if (obj.equals(jSlider_ThighLengthR)) {
                     float curVal = jSlider_ThighLengthR.getValue();
                     Radjust = (curVal - m_baseLen) / 100.0f;
                     jSpinner_ThighLengthR.setValue(Radjust);
 
-                    if (RThighs[1].getSkeletonModifier() == null) {
-                        RThighs[1].setSkeletonModifier(new PMatrix());
-                        modR = new Vector3f(RThighs[1].getSkeletonModifier().getTranslation());
-                    }
-                    else
-                        modR = new Vector3f(RThighs[1].getSkeletonModifier().getTranslation());
-                    modR.y = 0.0f;     modR.y += Radjust;
-
-                    RThighs[1].getSkeletonModifier().setTranslation(modR);
+                    // Convert to new system! UNIQUESTRINGID
+//                    if (RThighs[1].getSkeletonModifier() == null) {
+//                        RThighs[1].setSkeletonModifier(new PMatrix());
+//                        modR = new Vector3f(RThighs[1].getSkeletonModifier().getTranslation());
+//                    }
+//                    else
+//                        modR = new Vector3f(RThighs[1].getSkeletonModifier().getTranslation());
+//                    modR.y = 0.0f;     modR.y += Radjust;
+//
+//                    RThighs[1].getSkeletonModifier().setTranslation(modR);
 
                 }
                 break;
