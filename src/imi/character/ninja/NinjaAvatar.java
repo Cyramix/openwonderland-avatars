@@ -57,8 +57,8 @@ public class NinjaAvatar extends Ninja
         ((SitState)m_context.getStateMapping().get(SitState.class)).setIdleSittingAnimationName("Male_Sitting");
         ((SitState)m_context.getStateMapping().get(SitState.class)).setGettingUpAnimationName("Male_StandToSit");
         
-        // Test
-        //m_context.getStateMapping().get(PunchState.class).setAnimationName("MaleSmile");
+        // Make him smile when waving
+        ((PunchState)m_context.getState(PunchState.class)).setFacialAnimationName("MaleSmile");
         
         // For testing, no transitions
         if (false)

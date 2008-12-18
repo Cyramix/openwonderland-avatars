@@ -31,6 +31,11 @@ public class PunchState extends GameState
     GameContext ninjaContext = null;
             
     private boolean bPlayedOnce = false;
+    
+    /** The facial animation will play when entering the state if not null **/
+    private String facialAnimationName    = null;
+    private float  facialAnimationTimeIn  = 1.0f;
+    private float  facialAnimationTimeOut = 2.0f;
 
     /**
      * Construct a new instance with the provided context.
@@ -75,6 +80,9 @@ public class PunchState extends GameState
                       
         // Stop the character
         ninjaContext.getController().stop();
+        
+        if (facialAnimationName != null)
+             ninjaContext.getCharacter().initiateFacialAnimation(facialAnimationName, facialAnimationTimeIn, facialAnimationTimeOut);
     }
     
     @Override
@@ -94,5 +102,34 @@ public class PunchState extends GameState
             gameContext.getSkeleton().getAnimationState().setCurrentCyclePlaybackMode(PlaybackMode.PlayOnce);
         else if (message == AnimationMessageType.PlayOnceComplete)
             bPlayedOnce = true;
+    }
+
+    public String getFacialAnimationName() {
+        return facialAnimationName;
+    }
+
+    /**
+     * The animation will play when entering the state.
+     * Set to null to disable facial animation.
+     * @param facialAnimationName
+     */
+    public void setFacialAnimationName(String facialAnimationName) {
+        this.facialAnimationName = facialAnimationName;
+    }
+
+    public float getFacialAnimationTimeIn() {
+        return facialAnimationTimeIn;
+    }
+
+    public void setFacialAnimationTimeIn(float facialAnimationTimeIn) {
+        this.facialAnimationTimeIn = facialAnimationTimeIn;
+    }
+
+    public float getFacialAnimationTimeOut() {
+        return facialAnimationTimeOut;
+    }
+
+    public void setFacialAnimationTimeOut(float facialAnimationTimeOut) {
+        this.facialAnimationTimeOut = facialAnimationTimeOut;
     }
 }
