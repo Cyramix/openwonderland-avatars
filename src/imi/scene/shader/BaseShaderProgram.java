@@ -42,13 +42,13 @@ import org.jdesktop.mtgame.WorldManager;
 public abstract class BaseShaderProgram implements RenderUpdater, AbstractShaderProgram
 {
     /** These files point to the vertex and fragment source respectively **/
-    protected URL []       m_shaderFiles = new URL [2];
+    protected String []       m_shaderSource = new String [2];
     /** The world manager is needed in order to create render states **/
     protected WorldManager  m_WM          = null; 
     /** Map the relationships between property names and property objects **/
     protected Map<String,ShaderProperty> m_propertyMap  = new HashMap<String,ShaderProperty>();
     /** Used to indicate that the shader state object has finsihed loading**/
-    private boolean         m_bShaderLoaded = false;
+    protected boolean         m_bShaderLoaded = false;
     /** The name of this program **/
     private String    m_programName = null;
     /** The description of what this program does **/
@@ -60,11 +60,11 @@ public abstract class BaseShaderProgram implements RenderUpdater, AbstractShader
      * @param vertexShader Location of the vertex shader source
      * @param fragmentShader Location of the fragment shader source
      */
-    protected BaseShaderProgram(WorldManager wm, URL vertexShader, URL fragmentShader) 
+    protected BaseShaderProgram(WorldManager wm, String vertexShader, String fragmentShader)
     { 
         m_WM = wm; 
-        m_shaderFiles[0] = vertexShader;
-        m_shaderFiles[1] = fragmentShader;
+        m_shaderSource[0] = vertexShader;
+        m_shaderSource[1] = fragmentShader;
         
     }
     
@@ -123,11 +123,11 @@ public abstract class BaseShaderProgram implements RenderUpdater, AbstractShader
         try {
             GLSLShaderObjectsState shaderState = (GLSLShaderObjectsState) obj;
 
-            shaderState.load(m_shaderFiles[0], m_shaderFiles[1]);
+            shaderState.load(m_shaderSource[0], m_shaderSource[1]);
             // done
             m_bShaderLoaded = true;
         } catch(Exception e) {
-            Logger.getAnonymousLogger().log(Level.WARNING, "Failed to load shader "+m_shaderFiles[0]+"  "+ m_shaderFiles[1],e);
+            Logger.getAnonymousLogger().log(Level.WARNING, "Failed to load shader ",e);
         }
     }
     

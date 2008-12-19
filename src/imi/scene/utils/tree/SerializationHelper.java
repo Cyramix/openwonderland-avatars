@@ -189,7 +189,10 @@ public class SerializationHelper implements NodeProcessor
         {
             for (ShaderProperty prop : shader.getProperties())
             {
-                shaderDOM.addShaderProperty(prop.generateShaderPropertyDOM());
+                if (prop.name.equals("pose")) // do not serialize the pose
+                    continue;
+                else
+                    shaderDOM.addShaderProperty(prop.generateShaderPropertyDOM());
             }
         }
         // add it to the xml material

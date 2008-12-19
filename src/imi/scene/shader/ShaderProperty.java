@@ -61,6 +61,10 @@ public class ShaderProperty
     {
         this(name, null, null);
     }
+
+    public ShaderProperty(xmlShaderProperty xmlProp) {
+        applyShaderPropertyDOM(xmlProp);
+    }
     
     /**
      * Construct a new instance.
@@ -119,7 +123,30 @@ public class ShaderProperty
         xmlShaderProperty result = new xmlShaderProperty();
         result.setPropertyName(name);
         result.setType(type.toString());
-        result.setValue(m_value.toString());
+        // Special case for array handling
+        if (type.getJavaType() == float[].class)
+        {
+            StringBuilder sb = new StringBuilder();
+            for (float f : (float[])m_value)
+                sb.append(" " + f);
+            result.setValue(sb.toString());
+        }
+        else if (type.getJavaType() == int[].class)
+        {
+            StringBuilder sb = new StringBuilder();
+            for (int i : (int[])m_value)
+                sb.append(" " + i);
+            result.setValue(sb.toString());
+        }
+        else // Good 'ol toString will be fine
+            result.setValue(m_value.toString());
         return result;
+    }
+
+    private void applyShaderPropertyDOM(xmlShaderProperty xmlProp) {
+        name = xmlProp.getPropertyName();
+        type = GLSLDataType.valueOf(xmlProp.getType());
+        m_value = ShaderUtils.parseStringValue(xmlProp.getValue(), type);
+
     }
 }

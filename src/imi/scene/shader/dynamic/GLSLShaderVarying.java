@@ -54,7 +54,7 @@ public class GLSLShaderVarying extends GLSLShaderVariable
    @Override
     public String declare()
     {
-        return new String("varying " + m_dataType.toString() + " " + m_name + ";" + NL);
+        return new String("varying " + m_dataType.getGLSLString() + " " + m_name + ";" + NL);
     }
     
 }

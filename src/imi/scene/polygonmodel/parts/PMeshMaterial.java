@@ -20,16 +20,26 @@ package imi.scene.polygonmodel.parts;
 import com.jme.image.Texture;
 import com.jme.renderer.ColorRGBA;
 import com.jme.scene.state.CullState;
+import com.jme.scene.state.CullState.Face;
 import com.jme.scene.state.MaterialState.ColorMaterial;
 import com.jme.scene.state.MaterialState.MaterialFace;
 import com.jme.scene.state.WireframeState;
 import imi.scene.PNode;
 import imi.scene.shader.AbstractShaderProgram;
+import imi.scene.shader.NoSuchPropertyException;
+import imi.scene.shader.ShaderProperty;
+import imi.scene.shader.ShaderUtils;
+import imi.serialization.xml.bindings.xmlMaterial;
+import imi.serialization.xml.bindings.xmlShader;
+import imi.serialization.xml.bindings.xmlShaderProperty;
+import imi.serialization.xml.bindings.xmlTextureAttributes;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.jdesktop.mtgame.WorldManager;
 
 /**
  * This class provides state for our materials system.
@@ -39,6 +49,7 @@ import java.util.logging.Logger;
 public class PMeshMaterial extends PNode
 {
     private static final ColorRGBA defaultAmbient = new ColorRGBA(0.30f, 0.30f, 0.30f, 1.0f);
+
     /** Alpha transparency enumeration **/
     public enum AlphaTransparencyType
     {
@@ -237,7 +248,12 @@ public class PMeshMaterial extends PNode
     {
         this(other, true);
     }
-    
+
+
+    public PMeshMaterial(xmlMaterial xmlMat, WorldManager wm) {
+        this();
+        applyMaterialDOM(xmlMat, wm);
+    }
     /**
      * Don't use this function, use the hashcode comparison ;)
      * @param otherObject
@@ -713,5 +729,66 @@ public class PMeshMaterial extends PNode
         m_TransparencyColor = transparencyColor;
     }
     
-    
+    private void applyMaterialDOM(xmlMaterial xmlMat, WorldManager wm)
+    {
+        int counter = 0;
+        // First, the texture materials!
+        for (xmlTextureAttributes texAttr : xmlMat.getTextures())
+        {
+            m_textures[counter] = new TextureMaterialProperties(texAttr);
+            counter++;
+        }
+        // diffuseColor
+        if (xmlMat.getDiffuseColor() != null)
+            setDiffuse(xmlMat.getDiffuseColor().getColorRGBA());
+        // ambientColor
+        if (xmlMat.getAmbientColor() != null)
+            setAmbient(xmlMat.getAmbientColor().getColorRGBA());
+        // emissiveColor
+        if (xmlMat.getEmissiveColor() != null)
+            setEmissive(xmlMat.getEmissiveColor().getColorRGBA());
+        // specularColor
+        if (xmlMat.getSpecularColor() != null)
+            setSpecular(xmlMat.getSpecularColor().getColorRGBA());
+        // transparencyColor
+        if (xmlMat.getTransparencyColor() != null)
+            setTransparencyColor(xmlMat.getTransparencyColor().getColorRGBA());
+        // shaders
+        for (xmlShader shaderDOM : xmlMat.getShaders())
+        {
+            // Parse the program
+            AbstractShaderProgram shader = ShaderUtils.createShader(shaderDOM.getProgram(), wm);
+            // Apply the properties
+            applyProperties(shaderDOM.getProperties(), shader);
+        }
+        // shininess
+        setShininess(xmlMat.getShininess());
+        // colorMaterial
+        setColorMaterial(ColorMaterial.valueOf(xmlMat.getColorMaterial()));
+        // cullFace
+        setCullFace(Face.valueOf(xmlMat.getCullFace()));
+        // name
+        setName(xmlMat.getName());
+    }
+
+    /**
+     * Apply the provided property list to the provided shader
+     * @param properties
+     * @param shader
+     */
+    private void applyProperties(List<xmlShaderProperty> properties,
+                                        AbstractShaderProgram shader)
+    {
+        for (xmlShaderProperty xmlProp : properties)
+        {
+            ShaderProperty prop = new ShaderProperty(xmlProp);
+            try {
+                shader.setProperty(prop);
+            }
+            catch (NoSuchPropertyException ex) {
+                Logger.getLogger(PMeshMaterial.class.getName()).log(Level.WARNING,
+                        "Unknown property read from XML file! : " + ex.getMessage());
+            }
+        }
+    }
 }

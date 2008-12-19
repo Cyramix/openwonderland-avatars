@@ -99,17 +99,4 @@ public class VertDeformerWithSpecAndNormalMap extends GLSLShaderProgram
         }
     }
 
-    @Override
-    public xmlShaderProgram generateShaderProgramDOM() {
-        xmlShaderProgram result = new xmlShaderProgram();
-        // Determine if we are a vanilla instance, or if we have been modified
-        // TODO : See if there is a less wasteful way to do this
-        if (this.containsSameEffectsAs(new VertDeformerWithSpecAndNormalMap(m_WM)))
-            result.setDefaultProgramName(this.getClass().getSimpleName());
-        else
-        {
-            // TODO for tomorrow
-        }
-        return result;
-    }
 }

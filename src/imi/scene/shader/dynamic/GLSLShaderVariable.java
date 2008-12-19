@@ -132,7 +132,7 @@ public class GLSLShaderVariable
      */
     public String assign(String rValue)
     {
-        return new String(m_dataType.toString() + " " + m_name + " = " + rValue + ";" + NL);
+        return new String(m_dataType.getGLSLString() + " " + m_name + " = " + rValue + ";" + NL);
     }
     
     /**
@@ -145,9 +145,9 @@ public class GLSLShaderVariable
     {
         String result = null;
         if (m_value == null)
-            result = new String(m_dataType + " " + m_name + ";" + NL);
+            result = new String(m_dataType.getGLSLString() + " " + m_name + ";" + NL);
         else
-            result = new String(m_dataType + " " + m_name + " = " + m_value.toString() + ";" + NL);
+            result = new String(m_dataType.getGLSLString() + " " + m_name + " = " + m_value.toString() + ";" + NL);
         return result;
     }
     /**

@@ -20,6 +20,7 @@ package imi.scene.shader;
 import com.jme.math.Matrix3f;
 import com.jme.math.Matrix4f;
 import com.jme.scene.state.GLSLShaderObjectsState;
+import imi.scene.shader.dynamic.GLSLDataType;
 import imi.scene.shader.dynamic.GLSLShaderEffect;
 import imi.scene.shader.effects.AmbientNdotL_Lighting;
 import imi.scene.shader.effects.CalculateToLight_Lighting;
@@ -31,10 +32,16 @@ import imi.scene.shader.effects.SimpleNdotL_Lighting;
 import imi.scene.shader.effects.SpecularMapping_Lighting;
 import imi.scene.shader.effects.UnlitTexturing_Lighting;
 import imi.scene.shader.effects.VertexDeformer_Transform;
+import imi.serialization.xml.bindings.xmlShaderProgram;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.StringTokenizer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.jdesktop.mtgame.WorldManager;
 
 /**
  * The following provides a collection of static convenience methods for
@@ -271,4 +278,74 @@ public class ShaderUtils
         throw new UnsupportedOperationException("Not yet implemented!");
     }
 
+    /**
+     * Factory method to aid in shader reconstitution.
+     * @param shaderDOM
+     * @return
+     */
+    public static AbstractShaderProgram createShader(xmlShaderProgram shaderDOM,
+                                                    WorldManager wm)
+    {
+        AbstractShaderProgram result = null;
+        // Could be a regular shader class
+        if (shaderDOM.getDefaultProgramName() != null) // Easy case
+        {
+            try
+            {
+                Class classz = Class.forName(shaderDOM.getDefaultProgramName());
+                Constructor ctor = classz.getConstructor(WorldManager.class);
+                result = (AbstractShaderProgram) ctor.newInstance(wm);
+            }
+            catch (Exception ex)
+            {
+
+            }
+
+        }
+        else // manually generate
+        {
+
+        }
+        return result;
+    }
+
+    /**
+     * Parse a given bit of text and return the correct derived type
+     * @param value
+     * @return
+     */
+    public static Object parseStringValue(String value, GLSLDataType type) {
+        String trimmedValue = value.trim();
+        Object result = null;
+        ArrayList arrayCollector = new ArrayList();
+        
+        if (type.getJavaType() == float[].class)
+        {
+            StringTokenizer tokenizer = new StringTokenizer (trimmedValue);
+            while (tokenizer.hasMoreTokens())
+                arrayCollector.add(Float.valueOf(tokenizer.nextToken()));
+            result = new float[arrayCollector.size()];
+
+            for (int i = 0; i < arrayCollector.size(); i++)
+                ((float[])result)[i] = ((Float)arrayCollector.get(i)).floatValue();
+        }
+        else if (type.getJavaType() == int[].class)
+        {
+            StringTokenizer tokenizer = new StringTokenizer (trimmedValue);
+            while (tokenizer.hasMoreTokens())
+                arrayCollector.add(Integer.valueOf(tokenizer.nextToken()));
+
+            result = new int[arrayCollector.size()];
+            for (int i = 0; i < arrayCollector.size(); i++)
+                ((int[])result)[i] = ((Integer)arrayCollector.get(i)).intValue();
+        }
+        else if (type.getJavaType() == Float.class)
+            result = Float.valueOf(trimmedValue);
+        else if (type.getJavaType() == Integer.class)
+            result = Integer.valueOf(trimmedValue);
+        else // weirdness
+            Logger.getLogger(ShaderUtils.class.getName()).log(Level.WARNING, "Unknown data type!");
+
+        return result;
+    }
 }

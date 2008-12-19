@@ -29,6 +29,8 @@ import imi.scene.shader.dynamic.GLSLDefaultVariables.Locality;
 import imi.scene.shader.programs.SimpleTNLShader;
 import imi.serialization.xml.bindings.xmlShaderProgram;
 import imi.utils.StringStack;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -74,13 +76,13 @@ public class GLSLShaderProgram implements AbstractShaderProgram, RenderUpdater
     /**
      * The list of shader effects that comprise this program
      */
-    private ArrayList<GLSLShaderEffect> m_effects = new ArrayList<GLSLShaderEffect>();
+    private final ArrayList<GLSLShaderEffect> m_effects = new ArrayList<GLSLShaderEffect>();
     
     // the following two containers are used during the compilation process
     private Map<GLSLShaderVariable, GLSLShaderEffect> m_dependencyMap = null;
     private FastSet<GLSLShaderVariable> m_initializationBuffer = null;
     // this container caches results of part of the compilation process
-    protected FastSet<GLSLVertexAttribute> m_vertAttributes = new FastSet<GLSLVertexAttribute>();
+    protected final FastSet<GLSLVertexAttribute> m_vertAttributes = new FastSet<GLSLVertexAttribute>();
     
     // TODO: Enhance dependency tracking functionality to include who the dependee is
     
@@ -954,11 +956,52 @@ public class GLSLShaderProgram implements AbstractShaderProgram, RenderUpdater
      * Build and retrieve the shader program dom representation.
      * @return
      */
-    public xmlShaderProgram generateShaderProgramDOM()
+    final public xmlShaderProgram generateShaderProgramDOM()
     {
         xmlShaderProgram result = new xmlShaderProgram();
-        
+
+        Constructor defaultCtor = null;
+        GLSLShaderProgram vanillaInstance = null;
+        // Run the exception gauntlet
+        try {
+            // Determine if we are a vanilla instance, or if we have been modified
+            defaultCtor = this.getClass().getConstructor(WorldManager.class);
+            vanillaInstance = (GLSLShaderProgram) defaultCtor.newInstance(m_WM);
+        } catch (NoSuchMethodException ex) {
+            Logger.getLogger(GLSLShaderProgram.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SecurityException ex) {
+            Logger.getLogger(GLSLShaderProgram.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (InstantiationException ex) {
+            Logger.getLogger(GLSLShaderProgram.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            Logger.getLogger(GLSLShaderProgram.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IllegalArgumentException ex) {
+            Logger.getLogger(GLSLShaderProgram.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (InvocationTargetException ex) {
+            Logger.getLogger(GLSLShaderProgram.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        // TODO : See if there is a less wasteful way to do this
+        if (this.containsSameEffectsAs(vanillaInstance))
+            result.setDefaultProgramName(this.getClass().getName());
+        else
+        {
+            constructManualShaderDOM(result);
+        }
         return result;
+    }
+
+    /**
+     * This method fills out the provided shader program dom with the
+     * appropriate list of constituent effects.
+     * @param shaderDOM
+     */
+    private void constructManualShaderDOM(xmlShaderProgram shaderDOM) {
+        // clear out program name portion
+        shaderDOM.setDefaultProgramName(null);
+        // list each effect
+        for (GLSLShaderEffect effect : m_effects)
+            shaderDOM.addEffect(effect.getClass().getSimpleName());
     }
 
     /**

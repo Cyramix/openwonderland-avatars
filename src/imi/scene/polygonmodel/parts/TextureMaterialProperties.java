@@ -25,6 +25,8 @@ import com.jme.image.Texture.MinificationFilter;
 import com.jme.image.Texture.WrapMode;
 import imi.serialization.xml.bindings.xmlTextureAttributes;
 import java.net.URL;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * This class is used to maintain information about the properties of textures
@@ -65,6 +67,11 @@ public class TextureMaterialProperties
     {
         setDefaultValues();
         setImageLocation(imageLocation);
+    }
+
+    public TextureMaterialProperties(xmlTextureAttributes texAttr)
+    {
+        applyTextureAttributesDOM(texAttr);
     }
     
     private void setDefaultValues()
@@ -283,5 +290,35 @@ public class TextureMaterialProperties
         hash = 17 * hash + Float.floatToIntBits(this.m_anistotropicValue);
         hash = 17 * hash + (this.m_applyMode != null ? this.m_applyMode.hashCode() : 0);
         return hash;
+    }
+
+
+    private void applyTextureAttributesDOM(xmlTextureAttributes texAttr) {
+        try
+        {
+            // url
+            setImageLocation(new URL(texAttr.getURL()));
+            // textureUnit
+            setTextureUnit(texAttr.getTextureUnit());
+            // wrapS
+            setWrapS(WrapMode.valueOf(texAttr.getWrapS()));
+            // wrapT
+            setWrapT(WrapMode.valueOf(texAttr.getWrapT()));
+            // alphaCombiner
+            setAlphaCombineMode(CombinerFunctionAlpha.valueOf(texAttr.getAlphaCombiner()));
+            // minificationFilter
+            setMinFilter(MinificationFilter.valueOf(texAttr.getMinificationFilter()));
+            // magnificationFilter
+            setMagFilter(MagnificationFilter.valueOf(texAttr.getMagnificationFilter()));
+            // anisotropicValue
+            setAnistotropicValue(texAttr.getAnisotropicValue());
+            // textureApplyMode
+            setApplyMode(ApplyMode.valueOf(texAttr.getTextureApplyMode()));
+        }
+        catch (Exception ex)
+        {
+            Logger.getLogger(TextureMaterialProperties.class.getName()).log(Level.SEVERE,
+                    "Error applying DOM! - " + ex.getMessage());
+        }
     }
 }

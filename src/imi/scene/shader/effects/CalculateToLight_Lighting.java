@@ -66,7 +66,7 @@ public class CalculateToLight_Lighting extends GLSLShaderEffect
         m_vertexLogic = new String(
                 m_varying[0].getName() + " = (gl_ModelViewMatrixInverse * (gl_LightSource[" +
                 "0" +
-                "].position - gl_Vertex)).xyz;" + NL
+                "].position - " + m_vertexGlobals[0].getName() + ")).xyz;" + NL
                 //"].position).xyz - " + GLSLDefaultVariables.Position.getName() + ".xyz;" + NL
                 );
     }

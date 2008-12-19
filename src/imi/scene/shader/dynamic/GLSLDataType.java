@@ -83,15 +83,13 @@ public enum GLSLDataType
     }
     
     /**
-     * Returns the associated GLSL code string
+     * Return the associated GLSL text
      * @return
      */
-    @Override
-    public String toString()
+    public String getGLSLString()
     {
         return this.glslText;
     }
-    
     /**
      * Retrieve the java class used to represent this type.
      * @return

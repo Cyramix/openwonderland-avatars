@@ -218,6 +218,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
      */
     protected abstract void initKeyBindings();
 
+
     /**
      * Initialize the SharedAsset that will be used to load the character.
      */
@@ -1325,6 +1326,9 @@ public abstract class Character extends Entity implements SpatialObject, Animati
             loadAttributes(attributes);
         }
 
+        // Material properties
+//        applyMaterialProperties(characterDOM);
+
         // Skeletal modifications
         applySkeletalModifications(characterDOM);
     }
@@ -1363,6 +1367,32 @@ public abstract class Character extends Entity implements SpatialObject, Animati
                     Logger.getLogger(Character.class.getName()).log(Level.WARNING,
                             "Target joint not found for modifier: " + jMod.getTargetJointName());
                 }
+            }
+        }
+    }
+
+    /**
+     * Apply the material properties from the DOM to the corresponding meshes
+     * @param characterDOM
+     */
+    private void applyMaterialProperties(xmlCharacter characterDOM) {
+        for (xmlMaterial xmlMat : characterDOM.getMaterials())
+        {
+            PMeshMaterial meshMat = new PMeshMaterial(xmlMat, m_wm);
+            String targetMeshName = xmlMat.getTargetMeshName();
+            // find the mesh it belongs to
+            PPolygonMeshInstance meshInst = getSkeleton().getSkinnedMeshInstance(targetMeshName);
+            if (meshInst != null)
+            {
+                // Sweet! Apply the material
+                meshInst.setMaterial(meshMat);
+                meshInst.setUseGeometryMaterial(false);
+            }
+            else
+            {
+                Logger.getLogger(Character.class.getName()).log(Level.WARNING,
+                        "xmlMaterial targetting nonexistant mesh; target was " +
+                        targetMeshName);
             }
         }
     }

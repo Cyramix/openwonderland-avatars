@@ -21,10 +21,14 @@ import com.jme.math.Vector3f;
 import imi.character.ninja.NinjaAvatar;
 import imi.character.ninja.NinjaAvatarAttributes;
 import imi.scene.camera.state.FirstPersonCamState;
+import imi.scene.polygonmodel.parts.PMeshMaterial;
 import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
 import imi.scene.processors.JSceneEventProcessor;
+import imi.scene.shader.programs.ClothingShader;
 import imi.utils.input.NinjaControlScheme;
 import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.jdesktop.mtgame.WorldManager;
@@ -55,7 +59,7 @@ public class SavingAndLoadingTest extends DemoBase
         NinjaControlScheme control = (NinjaControlScheme)((JSceneEventProcessor)wm.getUserData(JSceneEventProcessor.class)).setDefault(new NinjaControlScheme(null));
 
         // Create testCharacter
-        NinjaAvatar testCharacter = new NinjaAvatar(new NinjaAvatarAttributes("SavingAndLoadingTestCharacter", true, false), wm);
+        NinjaAvatar testCharacter = new NinjaAvatar(new NinjaAvatarAttributes("SavingAndLoadingTestCharacter", false, false), wm);
         testCharacter.selectForInput();
         control.getNinjaTeam().add(testCharacter);
         control.getMouseEventsFromCamera();
@@ -70,24 +74,55 @@ public class SavingAndLoadingTest extends DemoBase
         {
             try
             {
-                Thread.sleep(500);
+                Thread.sleep(12000);
             } catch (InterruptedException ex) {
                     logger.log(Level.SEVERE, null, ex);
             }
         }
 
-        // Perform some customizations
-        customizeCharacter(testCharacter);
+        try // last little bit
+        {
+            Thread.sleep(22000);
+        } catch (InterruptedException ex) {
+                logger.log(Level.SEVERE, null, ex);
+        }
 
-        // Save the file
-        testCharacter.saveConfiguration(new File("/work/avatars/assets/configurations/SavingTestOutput.xml"));
+
+//        Thread.yield();
+//        try {
+//            // Perform some customizations
+////            customizeCharacter(testCharacter, wm);
+//            testCharacter.loadConfiguration(new URL("file://localhost/work/avatars/assets/configurations/SavingTestOutput.xml"));
+////            testCharacter.saveConfiguration(new File("/work/avatars/assets/configurations/SavingTestOutput.xml"));
+//        } catch (MalformedURLException ex) {
+//            Logger.getLogger(SavingAndLoadingTest.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+////        testCharacter.saveConfiguration(new File("/work/avatars/assets/configurations/SavingTestOutput.xml"));
     }
 
-    private void customizeCharacter(NinjaAvatar testCharacter) {
+    private void customizeCharacter(NinjaAvatar testCharacter, WorldManager wm) {
         // tweak it!
         SkeletonNode skeleton = testCharacter.getSkeleton();
         skeleton.displace("Head", new Vector3f(0, 0.08f, -0.04f));
         skeleton.displace("rightEye", new Vector3f(0, 0, -0.018f));
         skeleton.displace("leftEye", new Vector3f(0, 0, -0.018f));
+
+        PMeshMaterial meshMat = new PMeshMaterial("HeadGeoShape");
+        meshMat.setTexture(new File("/work/avatars/assets/textures/default.png"), 0); // base diffuse
+        meshMat.setTexture(new File("/work/avatars/assets/textures/tgatest.tga"), 1); // pattern diffuse
+        meshMat.setTexture(new File("/work/avatars/assets/textures/normalmap2.jpg"), 2); // normal map
+        meshMat.setShader(new ClothingShader(wm));
+
+//        Thread.yield();
+//        try // last little bit
+//        {
+//            Thread.sleep(22000);
+//        } catch (InterruptedException ex) {
+//                logger.log(Level.SEVERE, null, ex);
+//        }
+//        PPolygonSkinnedMeshInstance meshInstance = skeleton.getSkinnedMeshInstance("HeadGeoShape"); // Dress shirt
+//        meshInstance.setMaterial(meshMat);
+//        meshInstance.setUseGeometryMaterial(false);
+
     }
 }
