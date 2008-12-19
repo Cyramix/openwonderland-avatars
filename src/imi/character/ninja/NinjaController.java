@@ -199,7 +199,6 @@ public class NinjaController extends CharacterController
 //            window.setTitle("yes");
 //        else
 //            window.setTitle("no");
-       System.out.println("Updating controller : body is " + body);
         //window.setTitle("acc: " + (int)fwdAcceleration + " vel: " + (int)velocity.x + " " + (int)velocity.y + " " + (int)velocity.z);
     }
     
