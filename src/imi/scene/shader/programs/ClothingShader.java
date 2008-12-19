@@ -32,7 +32,6 @@ import imi.serialization.xml.bindings.xmlShaderProgram;
 import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.vecmath.Vector4f;
 import org.jdesktop.mtgame.WorldManager;
 
 /**
