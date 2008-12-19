@@ -20,6 +20,8 @@ package imi.tests;
 import com.jme.math.Vector3f;
 import imi.character.ninja.NinjaAvatar;
 import imi.character.ninja.NinjaAvatarAttributes;
+import imi.gui.SceneEssentials;
+import imi.gui.TreeExplorer;
 import imi.scene.camera.state.FirstPersonCamState;
 import imi.scene.polygonmodel.parts.PMeshMaterial;
 import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
@@ -52,6 +54,7 @@ public class SavingAndLoadingTest extends DemoBase
         SavingAndLoadingTest worldTest = new SavingAndLoadingTest(args);
     }
 
+    private TreeExplorer te = null;
     @Override
     protected void createDemoEntities(WorldManager wm)
     {
@@ -66,7 +69,7 @@ public class SavingAndLoadingTest extends DemoBase
 
         // change camera speed and position
         FirstPersonCamState camState = (FirstPersonCamState)m_cameraProcessor.getState();
-        camState.setMovementRate(0.08f);
+        camState.setMovementRate(0.008f);
         camState.setCameraPosition(new Vector3f(0.0f, 1.8f, -2.0f));
 
         // Wait for the testCharacter to load
@@ -88,16 +91,27 @@ public class SavingAndLoadingTest extends DemoBase
         }
 
 
+        // Uncomment to create a save file
+//        customizeCharacter(testCharacter, wm);
+//        testCharacter.saveConfiguration(new File("/work/avatars/assets/configurations/SavingTestOutput.xml"));
+
+
+        // Uncomment to load a save file
 //        Thread.yield();
 //        try {
-//            // Perform some customizations
-////            customizeCharacter(testCharacter, wm);
 //            testCharacter.loadConfiguration(new URL("file://localhost/work/avatars/assets/configurations/SavingTestOutput.xml"));
-////            testCharacter.saveConfiguration(new File("/work/avatars/assets/configurations/SavingTestOutput.xml"));
+//
 //        } catch (MalformedURLException ex) {
 //            Logger.getLogger(SavingAndLoadingTest.class.getName()).log(Level.SEVERE, null, ex);
 //        }
-////        testCharacter.saveConfiguration(new File("/work/avatars/assets/configurations/SavingTestOutput.xml"));
+
+        // Uncomment to get a pscene explorer------
+//        te = new TreeExplorer();
+//        SceneEssentials se = new SceneEssentials();
+//        se.setPScene(testCharacter.getPScene());
+//        se.setWM(wm);
+//        te.setExplorer(se);
+//        te.setVisible(true);
     }
 
     private void customizeCharacter(NinjaAvatar testCharacter, WorldManager wm) {
