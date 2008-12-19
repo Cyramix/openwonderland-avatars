@@ -35,7 +35,7 @@ import imi.character.statemachine.GameContext;
 import imi.character.statemachine.TransitionObject;
 import imi.loaders.collada.ColladaLoaderParams;
 import imi.loaders.collada.Instruction;
-import imi.loaders.collada.Instruction.InstructionNames;
+import imi.loaders.collada.Instruction.InstructionType;
 import imi.loaders.collada.InstructionProcessor;
 import imi.scene.JScene;
 import imi.scene.PMatrix;
@@ -378,12 +378,12 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         InstructionProcessor pProcessor = new InstructionProcessor(m_wm);
         Instruction pRootInstruction = new Instruction();
         // Set the skeleton to our skeleton
-        pRootInstruction.addInstruction(InstructionNames.setSkeleton, m_skeleton);
+        pRootInstruction.addChildInstruction(InstructionType.setSkeleton, m_skeleton);
         // Load up any geometry requested by the provided attributes object
         String [][] load = attributes.getLoadInstructions();
         if (load != null && load.length > 0) {
             for (int i = 0; i < load.length; i++) {
-                pRootInstruction.addInstruction(InstructionNames.loadGeometry, fileProtocol + load[i][0]);
+                pRootInstruction.addChildInstruction(InstructionType.loadGeometry, fileProtocol + load[i][0]);
             }
         }
 
@@ -391,7 +391,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         String [] delete = attributes.getDeleteInstructions();
         if (delete != null && delete.length > 0) {
             for (int i = 0; i < delete.length; i++) {
-                pRootInstruction.addInstruction(InstructionNames.deleteSkinnedMesh, delete[i]);
+                pRootInstruction.addChildInstruction(InstructionType.deleteSkinnedMesh, delete[i]);
             }
         }
 
@@ -421,7 +421,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         String [] anims = attributes.getAnimations();
         if (anims != null && anims.length > 0) {
             for (int i = 0; i < anims.length; i++) {
-                pRootInstruction.addInstruction(InstructionNames.loadAnimation, fileProtocol + anims[i]);
+                pRootInstruction.addChildInstruction(InstructionType.loadAnimation, fileProtocol + anims[i]);
             }
         }
 
@@ -429,7 +429,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         String [] facialAnims = attributes.getFacialAnimations();
         if (facialAnims != null && facialAnims.length > 0) {
             for (int i = 0; i < facialAnims.length; i++) {
-                pRootInstruction.addInstruction(InstructionNames.loadFacialAnimation, fileProtocol + facialAnims[i]);
+                pRootInstruction.addChildInstruction(InstructionType.loadFacialAnimation, fileProtocol + facialAnims[i]);
             }
         }
 
@@ -1190,18 +1190,18 @@ public abstract class Character extends Entity implements SpatialObject, Animati
             fileProtocol = new String("file://localhost/" + System.getProperty("user.dir") + "/");
         InstructionProcessor pProcessor = new InstructionProcessor(m_wm);
         Instruction pRootInstruction = new Instruction();
-        pRootInstruction.addInstruction(InstructionNames.setSkeleton, m_skeleton);
+        pRootInstruction.addChildInstruction(InstructionType.setSkeleton, m_skeleton);
         
-        pRootInstruction.addInstruction(InstructionNames.deleteSkinnedMesh, "HeadGeoShape");  // original head is HeadOneShape
+        pRootInstruction.addChildInstruction(InstructionType.deleteSkinnedMesh, "HeadGeoShape");  // original head is HeadOneShape
         
         // African
-        pRootInstruction.addInstruction(InstructionNames.loadGeometry, fileProtocol + "assets/models/collada/Heads/MaleAfricanHead/AfricanAmericanMaleHead1_Bind.dae");
-        //pRootInstruction.addAttachmentInstruction(InstructionNames.loadGeometry, fileProtocol + "assets/models/collada/Avatars/Male/Male_Bind.dae");
-        //pRootInstruction.addInstruction(InstructionNames.addSkinnedMesh, "headOneShape");
+        pRootInstruction.addChildInstruction(InstructionType.loadGeometry, fileProtocol + "assets/models/collada/Heads/MaleAfricanHead/AfricanAmericanMaleHead1_Bind.dae");
+        //pRootInstruction.addAttachmentInstruction(InstructionType.loadGeometry, fileProtocol + "assets/models/collada/Avatars/Male/Male_Bind.dae");
+        //pRootInstruction.addChildInstructionOfType(InstructionType.addSkinnedMesh, "headOneShape");
         pRootInstruction.addSkinnedMeshInstruction("headOneShape", "Head");
         // Asian
-//        pRootInstruction.addAttachmentInstruction(InstructionNames.loadGeometry, fileProtocol + "assets/models/collada/Heads/MaleAsianHead/AsianMaleHead1_Bind.dae");
-//        pRootInstruction.addAttachmentInstruction(InstructionNames.addSkinnedMesh, "head2Shape");
+//        pRootInstruction.addAttachmentInstruction(InstructionType.loadGeometry, fileProtocol + "assets/models/collada/Heads/MaleAsianHead/AsianMaleHead1_Bind.dae");
+//        pRootInstruction.addAttachmentInstruction(InstructionType.addSkinnedMesh, "head2Shape");
         
         pProcessor.execute(pRootInstruction);
     }

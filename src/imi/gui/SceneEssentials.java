@@ -20,7 +20,7 @@ package imi.gui;
 import com.jme.math.Vector3f;
 import imi.loaders.collada.ColladaLoaderParams;
 import imi.loaders.collada.Instruction;
-import imi.loaders.collada.Instruction.InstructionNames;
+import imi.loaders.collada.Instruction.InstructionType;
 import imi.loaders.collada.InstructionProcessor;
 import imi.loaders.repository.AssetDescriptor;
 import imi.loaders.repository.AssetInitializer;
@@ -675,8 +675,8 @@ public class SceneEssentials {
                 modelURL = new URL(szURL);
                 InstructionProcessor pProcessor = new InstructionProcessor(worldManager);
                 Instruction pRootInstruction = new Instruction();
-                pRootInstruction.addInstruction(InstructionNames.setSkeleton, skeleton);
-                pRootInstruction.addInstruction(InstructionNames.loadAnimation, modelURL);
+                pRootInstruction.addChildInstruction(InstructionType.setSkeleton, skeleton);
+                pRootInstruction.addChildInstruction(InstructionType.loadAnimation, modelURL);
                 pProcessor.execute(pRootInstruction);
             } catch (MalformedURLException ex) {
                 Logger.getLogger(SceneEssentials.class.getName()).log(Level.SEVERE, null, ex);
@@ -784,16 +784,16 @@ public class SceneEssentials {
     public void addDAEMeshURLToModel(String[] data, String[] meshRef, int region) {
         InstructionProcessor pProcessor = new InstructionProcessor(worldManager);
         Instruction pRootInstruction = new Instruction();
-        pRootInstruction.addInstruction(InstructionNames.setSkeleton, skeleton);
+        pRootInstruction.addChildInstruction(InstructionType.setSkeleton, skeleton);
         
         String[] meshestodelete = meshsetup.get(region);
         for (int i = 0; i < meshestodelete.length; i++)
-            pRootInstruction.addInstruction(InstructionNames.deleteSkinnedMesh, meshestodelete[i]);
+            pRootInstruction.addChildInstruction(InstructionType.deleteSkinnedMesh, meshestodelete[i]);
         
-        pRootInstruction.addInstruction(InstructionNames.loadGeometry, data[3]);
+        pRootInstruction.addChildInstruction(InstructionType.loadGeometry, data[3]);
         
         for (int i = 0; i < meshRef.length; i++)
-            pRootInstruction.addInstruction(InstructionNames.addSkinnedMesh, meshRef[i]);
+            pRootInstruction.addChildInstruction(InstructionType.addSkinnedMesh, meshRef[i]);
             
         pProcessor.execute(pRootInstruction);
 
@@ -805,7 +805,7 @@ public class SceneEssentials {
     public void addDAEMeshURLToModelA(String[] data, String joint2addon, int region) {
         InstructionProcessor pProcessor = new InstructionProcessor(worldManager);
         Instruction pRootInstruction = new Instruction();
-        pRootInstruction.addInstruction(InstructionNames.setSkeleton, skeleton);
+        pRootInstruction.addChildInstruction(InstructionType.setSkeleton, skeleton);
 
 //        if (joint2addon.equals("skeletonRoot")) {
 //            PNode node = null;
@@ -828,7 +828,7 @@ public class SceneEssentials {
             // TODO: DELETE STATIC MESHES LIKE HAIR AND STUFF IF IT IS LOADED...
         }
 
-        pRootInstruction.addInstruction(InstructionNames.loadGeometry, data[3]);
+        pRootInstruction.addChildInstruction(InstructionType.loadGeometry, data[3]);
         
         PMatrix tempSolution;
         if (data[3].indexOf("Female") != -1) {
@@ -919,9 +919,9 @@ public class SceneEssentials {
                         InstructionProcessor pProcessor = new InstructionProcessor(worldManager);
                         Instruction pRootInstruction = new Instruction();
 
-                        pRootInstruction.addInstruction(InstructionNames.setSkeleton, skel);
+                        pRootInstruction.addChildInstruction(InstructionType.setSkeleton, skel);
                         for (int i = 0; i < a.length; i++) {
-                            pRootInstruction.addInstruction(InstructionNames.loadAnimation, a[i]);
+                            pRootInstruction.addChildInstruction(InstructionType.loadAnimation, a[i]);
                         }
                         pProcessor.execute(pRootInstruction);
                     }
@@ -972,13 +972,13 @@ public class SceneEssentials {
 
                     InstructionProcessor pProcessor = new InstructionProcessor(worldManager);
                     Instruction pRootInstruction = new Instruction();
-                    pRootInstruction.addInstruction(InstructionNames.setSkeleton, skel);
+                    pRootInstruction.addChildInstruction(InstructionType.setSkeleton, skel);
 
                     // Set animations clothes heads and hair
                     for (int i = 0; i < 9; i++)
                         deleteNLoad(pRootInstruction, d.get(i), i);
                     
-                    pRootInstruction.addInstruction(InstructionNames.loadAnimation, a);
+                    pRootInstruction.addChildInstruction(InstructionType.loadAnimation, a);
                     pProcessor.execute(pRootInstruction);
 
                     skeleton.setShaderOnSkinnedMeshes(new VertDeformerWithSpecAndNormalMap(worldManager));
@@ -1028,43 +1028,43 @@ public class SceneEssentials {
                     String[] meshes = null;
                     InstructionProcessor pProcessor = new InstructionProcessor(worldManager);
                     Instruction pRootInstruction = new Instruction();
-                    pRootInstruction.addInstruction(InstructionNames.setSkeleton, skel);
+                    pRootInstruction.addChildInstruction(InstructionType.setSkeleton, skel);
 
                     // Set animations and clothes
                     if (a != null) {
                         for (int i = 0; i < meshsetup.get(2).length; i++)
-                            pRootInstruction.addInstruction(InstructionNames.deleteSkinnedMesh, meshsetup.get(2)[i]);
+                            pRootInstruction.addChildInstruction(InstructionType.deleteSkinnedMesh, meshsetup.get(2)[i]);
                         
                         for (int i = 0; i < meshsetup.get(3).length; i++)
-                            pRootInstruction.addInstruction(InstructionNames.deleteSkinnedMesh, meshsetup.get(3)[i]);
+                            pRootInstruction.addChildInstruction(InstructionType.deleteSkinnedMesh, meshsetup.get(3)[i]);
                         
                         for (int i = 0; i < meshsetup.get(4).length; i++)
-                            pRootInstruction.addInstruction(InstructionNames.deleteSkinnedMesh, meshsetup.get(4)[i]);
+                            pRootInstruction.addChildInstruction(InstructionType.deleteSkinnedMesh, meshsetup.get(4)[i]);
                         
-                        pRootInstruction.addInstruction(InstructionNames.loadGeometry, poloShirt);
+                        pRootInstruction.addChildInstruction(InstructionType.loadGeometry, poloShirt);
                         // This is the old way
-//                        pRootInstruction.addInstruction(InstructionNames.addSkinnedMesh, "TorsoNudeShape");
-//                        pRootInstruction.addInstruction(InstructionNames.addSkinnedMesh, "PoloShape");
+//                        pRootInstruction.addChildInstructionOfType(InstructionType.addSkinnedMesh, "TorsoNudeShape");
+//                        pRootInstruction.addChildInstructionOfType(InstructionType.addSkinnedMesh, "PoloShape");
                         // Here is the new way
                         pRootInstruction.addSkinnedMeshInstruction("TorsoNudeShape", "UpperBody");
                         pRootInstruction.addSkinnedMeshInstruction("PoloShape", "UpperBody");
                         meshes = new String[] {"TorsoNudeShape", "PoloShape" };
                         meshsetup.put(2, meshes);
                         
-                        pRootInstruction.addInstruction(InstructionNames.loadGeometry, jeansPants);
-                        //pRootInstruction.addInstruction(InstructionNames.addSkinnedMesh, "polySurface3Shape");
+                        pRootInstruction.addChildInstruction(InstructionType.loadGeometry, jeansPants);
+                        //pRootInstruction.addChildInstructionOfType(InstructionType.addSkinnedMesh, "polySurface3Shape");
                         pRootInstruction.addSkinnedMeshInstruction("polySurface3Shape", "LowerBody");
                         meshes = new String[] {"polySurface3Shape"};
                         meshsetup.put(3, meshes);
                         
-                        pRootInstruction.addInstruction(InstructionNames.loadGeometry, tennisShoes);
-                        //pRootInstruction.addInstruction(InstructionNames.addSkinnedMesh, "TennisShoesShape");
+                        pRootInstruction.addChildInstruction(InstructionType.loadGeometry, tennisShoes);
+                        //pRootInstruction.addChildInstructionOfType(InstructionType.addSkinnedMesh, "TennisShoesShape");
                         pRootInstruction.addSkinnedMeshInstruction("TennisShoesShape", "Feet");
                         meshes = new String[] {"TennisShoesShape"};
                         meshsetup.put(4, meshes);
 
                         for (int i = 0; i < a.length; i++) {
-                            pRootInstruction.addInstruction(InstructionNames.loadAnimation, a[i]);
+                            pRootInstruction.addChildInstruction(InstructionType.loadAnimation, a[i]);
                         }
                         pProcessor.execute(pRootInstruction);
                     }
@@ -1180,12 +1180,12 @@ public class SceneEssentials {
         if (d != null) {
             if (meshsetup.get(iRegion) != null) {
                 for (int i = 0; i < meshsetup.get(iRegion).length; i++)
-                    instruct.addInstruction(InstructionNames.deleteSkinnedMesh, meshsetup.get(iRegion)[i]);
+                    instruct.addChildInstruction(InstructionType.deleteSkinnedMesh, meshsetup.get(iRegion)[i]);
             }
 
             String[] meshes = new String[d.length -1];
 
-            instruct.addInstruction(InstructionNames.loadGeometry, d[0]);
+            instruct.addChildInstruction(InstructionType.loadGeometry, d[0]);
             if (iRegion > 4 && iRegion < 9) {
                 for (int i = 1; i < d.length; i++) {
                     PMatrix tempSolution;

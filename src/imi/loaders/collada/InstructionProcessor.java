@@ -41,17 +41,21 @@ import org.jdesktop.mtgame.WorldManager;
 
 
 /**
- * Framework for applying chains of events to something.
- * TODO: Delegate execution logic
+ * Framework for applying chains of events to something. Specifically collada
+ * characters.
  * @author Chris Nagle
  */
 public class InstructionProcessor
 {
+    /** The WorldManager! **/
     private WorldManager        m_wm = null;
+    /** PScene that will be used for loading **/
     private PScene              m_loadingPScene = null;
+    /** Used for collada character loading tasks **/
     private CharacterLoader     m_characterLoader = null;
+    /** Reference to the character's skeleton **/
     private SkeletonNode        m_skeleton = null;
-
+    /** Logger **/
     protected static final Logger logger = Logger.getLogger(InstructionProcessor.class.getName());
     
     /**
@@ -63,21 +67,32 @@ public class InstructionProcessor
         m_wm = wm;
     }
 
-    //  Executes all instructions.
-    public void execute(Instruction pRootInstruction)
+    /**
+     * Executes the rootInstruction tree.
+     * @param rootInstruction Root of the rootInstruction tree.
+     */
+    public void execute(Instruction rootInstruction)
     {   
-        execute(pRootInstruction, true);
+        execute(rootInstruction, true);
     }
     
-    //  Executes all instructions.
-    public void execute(Instruction pRootInstruction, boolean nullMembersWhenFinished)
-    {   
+    /**
+     * Execute the provided rootInstruction tree. If nullMembersWhenFinished is
+     * true, then all references kept internally will be set to null (except
+     * the world manager reference).
+     * @param rootInstruction Root of the rootInstruction tree.
+     * @param nullMembersWhenFinished
+     */
+    public void execute(Instruction rootInstruction, boolean nullMembersWhenFinished)
+    {
+        // Allocate a new character loader to use in this process.
         m_characterLoader = new CharacterLoader();
-        
-        printInstruction("", pRootInstruction);
-
+        // Output the contents of the tree to the logger
+        logInstructionTree("", rootInstruction);
+        // Create a new pscene for the loading process
         m_loadingPScene = new PScene(m_wm);
-        executeInstruction(m_loadingPScene, pRootInstruction);
+        // Actually execute the grouping
+        executeInstruction(rootInstruction);
         
         // garbage collection...
         if (nullMembersWhenFinished)
@@ -88,64 +103,63 @@ public class InstructionProcessor
         }
     }
 
+    /**
+     * Retrieve the skeleton
+     * @return
+     */
     public SkeletonNode getSkeleton() {
         return m_skeleton;
     }
 
-    private void printInstruction(String spacing, Instruction pInstruction)
-    {
-        logger.fine(spacing + pInstruction.getInstruction() + " '" + pInstruction.getDataAsString() + "'");
-        for (PNode kid : pInstruction.getChildren())
-        {
-            if (kid instanceof Instruction)
-                printInstruction(spacing + "    ", (Instruction)kid);
-        }
-    }
-
-    private void executeInstruction(PScene loadingPScene, Instruction pInstruction)
+    /**
+     * Execute the provided instruction and recursively traverse the tree executing
+     * grouping along the way.
+     * @param instruction
+     */
+    private void executeInstruction(Instruction instruction)
     {
         try 
         {
-            switch(pInstruction.getInstruction())
+            switch(instruction.getInstructionType())
             {
                 case addSkinnedMesh:
                 {
-                    if (!addSkinnedMesh((Object[])pInstruction.getData()))
+                    if (!addSkinnedMesh((Object[])instruction.getData()))
                         logger.warning("COLLADA configuration ERROR: was not able to ADD a skinned mesh!");
                 }
                 break;
                 case addAttachment:
                 {
-                    Object [] array = (Object[])pInstruction.getData();
+                    Object [] array = (Object[])instruction.getData();
                     if (!addAttachment(array))
                         logger.warning("COLLADA configuration ERROR: was not able to ADD an ATTACHMENT!");
                 }
                 break;
                 case deleteSkinnedMesh:
                 {
-                    String skinnedMeshName = pInstruction.getDataAsString();
+                    String skinnedMeshName = instruction.getDataAsString();
                     if (!m_characterLoader.deleteSkinnedMesh(m_skeleton, skinnedMeshName))
                         logger.warning("COLLADA configuration ERROR: was not able to DELETE a skinned mesh!");
                 }
                 break;
                 case loadAnimation:
                 {
-                    URL animationLocation = new URL(pInstruction.getDataAsString());
-                    if (!m_characterLoader.loadAnimation(loadingPScene, m_skeleton, animationLocation, 0))
+                    URL animationLocation = new URL(instruction.getDataAsString());
+                    if (!m_characterLoader.loadAnimation(m_loadingPScene, m_skeleton, animationLocation, 0))
                         logger.warning("COLLADA configuration ERROR: was not able to LOAD ANIMATION!");
                 }
                 break;
                 case loadFacialAnimation:
                 {
-                    URL animationLocation = new URL(pInstruction.getDataAsString());
-                    if (!m_characterLoader.loadAnimation(loadingPScene, m_skeleton, animationLocation, 1))
+                    URL animationLocation = new URL(instruction.getDataAsString());
+                    if (!m_characterLoader.loadAnimation(m_loadingPScene, m_skeleton, animationLocation, 1))
                         logger.warning("COLLADA configuration ERROR: was not able to LOAD FACIAL ANIMATION!");
                 }
                 break;
                 case loadHumanoidAvatarBindPose:
                 {
-                    URL bindPoseLocation = new URL(pInstruction.getDataAsString());
-                    m_skeleton = m_characterLoader.loadSkeletonRig(loadingPScene, bindPoseLocation);
+                    URL bindPoseLocation = new URL(instruction.getDataAsString());
+                    m_skeleton = m_characterLoader.loadSkeletonRig(m_loadingPScene, bindPoseLocation);
                     if (m_skeleton == null)
                         logger.warning("COLLADA configuration ERROR: was not able to LOAD BIND POSE!");
                     else
@@ -164,50 +178,71 @@ public class InstructionProcessor
                 break;
                 case loadGeometry:
                 {
-                    URL geometryLocation = new URL(pInstruction.getDataAsString());
-                    if (!m_characterLoader.loadGeometry(loadingPScene, geometryLocation))
+                    URL geometryLocation = new URL(instruction.getDataAsString());
+                    if (!m_characterLoader.loadGeometry(m_loadingPScene, geometryLocation))
                         logger.warning("COLLADA configuration ERROR: was not able to LOAD GEOMETRY!");
                 }
                 break;
                 case setSkeleton:
                 {
-                    if (pInstruction.getData() instanceof SkeletonNode)
-                        m_skeleton = (SkeletonNode) pInstruction.getData();
+                    if (instruction.getData() instanceof SkeletonNode)
+                        m_skeleton = (SkeletonNode) instruction.getData();
                     else
                         m_skeleton = null;   
                 }
             }
         }
         catch (MalformedURLException ex){
-            Logger.getLogger(InstructionProcessor.class.getName()).log(Level.SEVERE, null, ex); }
-        
-        for (PNode kid : pInstruction.getChildren())
+            logger.log(Level.SEVERE, null, ex); }
+        // Recurse!
+        for (PNode kid : instruction.getChildren())
         {
             if (kid instanceof Instruction)
-                executeInstruction(loadingPScene, (Instruction)kid);
+                executeInstruction((Instruction)kid);
         }
     }
-    
+
+    /**
+     * Convenience method for adding an attachment to a skeleton
+     * @param array
+     * @return True on success, false otherwise
+     */
     private boolean addAttachment(Object[] array) 
     {
         if (m_skeleton == null)
+        {
+            logger.severe("Attempted to add an attachment, but there was no skeleton to attach on!");
             return false;
+        }
 
-        // Find the mesh
+        // Extract the mesh name and find it in the loading pscene
         String meshName = (String)array[0];
         PNode node = m_loadingPScene.findChild(meshName);
         PPolygonMeshInstance mesh = null;
+        // Verify that we have the right thing
         if (node instanceof PPolygonMeshInstance)
             mesh = (PPolygonMeshInstance)node;
-        if (mesh == null)
+        else if (node == null)
+        {
+            logger.severe("Specified attachment was not found in the loading pscene!");
             return false;
+        }
+        else // Not null,. but has the same name as the mesh we want
+        {
+            logger.severe("Found a node with the right name, but it was not a mesh instance!");
+            return false;
+        }
+        // Get rid of any residual transform information
         mesh.getTransform().setLocalMatrix(new PMatrix());
         
         // Find the joint
         String jointName = (String)array[1];
         SkinnedMeshJoint joint = m_skeleton.findSkinnedMeshJoint(jointName);
         if (joint == null)
+        {
+            logger.severe("Specified attachment joint not found!");
             return false;
+        }
 
         // Create new joint
         PJoint newJoint = new PJoint(meshName + " joint", new PTransform((PMatrix)array[2]));
@@ -216,31 +251,40 @@ public class InstructionProcessor
         
         return true;
     }
-    
+
+    /**
+     * Helper method to add a skinned mesh onto the current skeleton.
+     * @param parameters
+     * @return true on success, false otherwise
+     */
     private boolean addSkinnedMesh(Object[] parameters)
     {
+        boolean result = false;
+        // Extract the necessary information
         String skinnedMeshName = (String)parameters[0];
         String subGroupName = (String)parameters[1];
         //  Find the SkinnedMesh that is the replacement.
-        PPolygonSkinnedMesh pSkinnedMesh = null;
-        
-        List<PPolygonMesh> list = m_loadingPScene.getLocalGeometryList();
-        Iterator<PPolygonMesh> mesh = list.iterator();
-        while(mesh.hasNext())
+        PPolygonSkinnedMesh skinnedMesh = null;
+
+        Iterable<PPolygonMesh> list = m_loadingPScene.getLocalGeometryList();
+        for (PPolygonMesh mesh : list)
         {
-            PPolygonMesh it = mesh.next();
-            if (it.getName().equals(skinnedMeshName))
+            if (mesh.getName().equals(skinnedMeshName))
             {
-                pSkinnedMesh = (PPolygonSkinnedMesh) it;
+                skinnedMesh = (PPolygonSkinnedMesh) mesh;
                 break;
             }
         }
-        
-        if (pSkinnedMesh != null)
+        // Did we find it?
+        if (skinnedMesh == null)
+        {
+            logger.severe("Unable to find the specified skinned mesh for attaching");
+            result = false;
+        }
+        else
         {
             // Make an instance
-            PPolygonSkinnedMeshInstance skinnedMeshInstance = (PPolygonSkinnedMeshInstance) m_loadingPScene.addMeshInstance(pSkinnedMesh, new PMatrix());
-
+            PPolygonSkinnedMeshInstance skinnedMeshInstance = (PPolygonSkinnedMeshInstance) m_loadingPScene.addMeshInstance(skinnedMesh, new PMatrix());
             // Debugging / Diagnostic information
             logger.log(Level.INFO, "Adding mesh, \"" + skinnedMeshName + "\" to subgroup, \"" + subGroupName + "\"");
 
@@ -251,11 +295,25 @@ public class InstructionProcessor
             // Add it to the skeleton
             m_skeleton.addToSubGroup(skinnedMeshInstance, subGroupName);
             
-            return true;
+            result = true;
         }
-        return false;
+        return result;
     }
 
+    /**
+     * Recursively log the rootInstruction tree.
+     * @param spacing The spacing to lead the output with
+     * @param rootInstruction
+     */
+    private void logInstructionTree(String spacing, Instruction rootInstruction)
+    {
+        logger.fine(spacing + rootInstruction.getInstructionType() + " '" + rootInstruction.getDataAsString() + "'");
+        for (PNode kid : rootInstruction.getChildren())
+        {
+            if (kid instanceof Instruction)
+                logInstructionTree(spacing + "    ", (Instruction)kid);
+        }
+    }
 }
 
 

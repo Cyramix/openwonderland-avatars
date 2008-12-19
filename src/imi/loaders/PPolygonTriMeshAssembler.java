@@ -45,25 +45,8 @@ import java.util.logging.Logger;
  */
 public class PPolygonTriMeshAssembler 
 {
+    /** Static logger reference **/
     private final static Logger logger = Logger.getLogger(PPolygonTriMeshAssembler.class.getName());
-    /** Flag to indicate that debugging information should be logged **/
-    private boolean         m_bDumpDebugInfo;
-    
-    // Constructor
-    public PPolygonTriMeshAssembler() 
-    {
-        m_bDumpDebugInfo = false;
-    }
-
-    /**
-     * Sets whether or not the convertor
-     * should output debugging infomation
-     * @param bDebug true to output debug info
-     */
-    public void setDebug(boolean bDebug)
-    {
-        m_bDumpDebugInfo = bDebug;
-    }
     
     /**
      * This function converts a <code>PPolygonModel</code> into a series of
@@ -75,7 +58,7 @@ public class PPolygonTriMeshAssembler
      * hierarchies using the model's composite meshes.
      * @return result (TriMesh[])
      */
-    public TriMesh[] getTriMesh(PPolygonModel Model, boolean bCompile)
+    public static TriMesh[] buildTriMeshes(PPolygonModel Model, boolean bCompile)
     {
         if (bCompile)
             Model.compile();
@@ -93,7 +76,7 @@ public class PPolygonTriMeshAssembler
      * @param Mesh
      * @return
      */
-    public TriMesh buildTriMesh(PPolygonMesh Mesh)
+    public static TriMesh buildTriMesh(PPolygonMesh Mesh)
     {
         TriMesh result = new TriMesh();
         reconstructTriMesh(result, Mesh);
@@ -105,7 +88,7 @@ public class PPolygonTriMeshAssembler
      * @param triMesh
      * @param Mesh
      */
-    public void reconstructTriMesh(TriMesh triMesh, PPolygonMesh Mesh)
+    public static void reconstructTriMesh(TriMesh triMesh, PPolygonMesh Mesh)
     {
         // Different logic depending on the actual type
         if (Mesh instanceof PPolygonSkinnedMesh)
@@ -115,12 +98,11 @@ public class PPolygonTriMeshAssembler
     }
     
     /**
-     * This method is marked to be moved to the new MS3D loader for non-skinned
-     * meshes.
+     * Reconstruct a trimesh and do not attempt to extract skinning data from the mesh.
      * @param triMesh The triMesh to be reconstructed
      * @param Mesh The source data
      */
-    private void reconstructTriMeshWithoutSkinningData(TriMesh triMesh, PPolygonMesh Mesh)
+    private static void reconstructTriMeshWithoutSkinningData(TriMesh triMesh, PPolygonMesh Mesh)
     {
         if (Mesh.getPolygonCount() <= 0) // No geometry
         {
@@ -130,11 +112,10 @@ public class PPolygonTriMeshAssembler
         }
         
         // Buffers for containing the converted Mesh data
-        PGeometryVertexBuffer   VertBuffer    =   new PGeometryVertexBuffer();
-        IndexBuffer             IndexBuffer   =   new IndexBuffer();
-        
-        
+        PGeometryVertexBuffer   VertBuffer  = new PGeometryVertexBuffer();
+        ArrayList<Integer>      IndexBuffer = new ArrayList<Integer>();
         PGeometryVertex Vert = null;
+
         // Loop through each polygon, and build appropriate verts for it
         // For each Polygon
         for (PPolygon currentPoly : Mesh.getPolygons())
@@ -144,10 +125,10 @@ public class PPolygonTriMeshAssembler
             {
                 PGeometryTriangle curTri = new PGeometryTriangle();
                 currentPoly.getTriangle(triIndex, curTri);
+
                 // Generate the binormal and tangent for each vert in this triangle
                 Vector3f binormal = new Vector3f();
                 Vector3f tangent = new Vector3f();
-                
                 PMathUtils.generateTangentAndBinormal(curTri, tangent, binormal);
                 
                 // For each vertex in the triangle
@@ -155,7 +136,7 @@ public class PPolygonTriMeshAssembler
                 {
                     // Out with the old
                     Vert = new PGeometryVertex();
-                    // Grab the position, normal, and color
+                    // Grab the position, normal, and tangent
                     PGeometryVertex curVert = curTri.m_Vertices[vertIndex];
                     Vert.m_Position = curVert.m_Position;
                     Vert.m_Normal   = curVert.m_Normal;
@@ -169,6 +150,7 @@ public class PPolygonTriMeshAssembler
                     int TexNum = Mesh.getNumberOfTextures();
                     if (Mesh.isUniformTexCoords())
                         TexNum = 1;
+
                     for (int texCoordIter = 0; texCoordIter < TexNum; texCoordIter++)
                     {
                         // Copy over the tex coords
@@ -185,19 +167,16 @@ public class PPolygonTriMeshAssembler
         } // End polygon loop
 
         // Processing complete
-        if (m_bDumpDebugInfo == true)
-        {
-
-            logger.log(Level.INFO, "Contents of Vertex Buffer:\n");
-            for (int i = 0; i < VertBuffer.size(); i++)
-                logger.log(Level.INFO, VertBuffer.getVertex(i).toString());
-            logger.log(Level.INFO, "Contents of Index Buffer:\n");
-            for (int i = 0; i < IndexBuffer.m_Indices.size(); i++)
-            {
-                logger.log(Level.INFO, IndexBuffer.m_Indices.get(i).toString());
-                logger.log(Level.INFO, "\n");
-            }
-        }
+        // Diagnostic / Debugging info
+//        logger.log(Level.INFO, "Contents of Vertex Buffer:\n");
+//        for (int i = 0; i < VertBuffer.size(); i++)
+//            logger.log(Level.INFO, VertBuffer.getVertex(i).toString());
+//        logger.log(Level.INFO, "Contents of Index Buffer:\n");
+//        for (int i = 0; i < IndexBuffer.m_Indices.size(); i++)
+//        {
+//            logger.log(Level.INFO, IndexBuffer.m_Indices.get(i).toString());
+//            logger.log(Level.INFO, "\n");
+//        }
     
         // Positions, normals and colors are an easy copy
         Vector3f[]  positions      = VertBuffer.getPositionArray();
@@ -213,8 +192,10 @@ public class PPolygonTriMeshAssembler
         
         for (int i = 0; i < Mesh.getNumberOfTextures(); ++i)
             textureCoordinates.add(TexCoords.makeNew(VertBuffer.getTextureCoordinateArray(i)));
-
-        int[]       indices        = IndexBuffer.getArray();
+        // Copy over indices
+        int[] indices = new int[IndexBuffer.size()];
+        for (int i = 0; i < IndexBuffer.size(); ++i)
+            indices[i] = IndexBuffer.get(i).intValue();
         IntBuffer   indexBuffer    = BufferUtils.createIntBuffer(indices);
         
         triMesh.setName(Mesh.getName());
@@ -238,46 +219,44 @@ public class PPolygonTriMeshAssembler
      * @param triMesh The trimesh to reconstruct
      * @param Mesh The source data.
      */
-    private void reconstructTriMeshWithSkinningData(TriMesh triMesh, PPolygonSkinnedMesh Mesh) 
+    private static void reconstructTriMeshWithSkinningData(TriMesh triMesh, PPolygonSkinnedMesh Mesh)
     {
         if (Mesh.getPolygonCount() <= 0) // No source data
         {
-            Logger.getLogger(this.getClass().toString()).log(Level.WARNING,
+            logger.log(Level.WARNING,
                     "Attempted to reconstruct TriMesh from a mesh with no polygons!");
         }
         if (Mesh.getBoneWeightArray() == null || Mesh.getBoneIndexArray() == null)
         {
-            System.out.println("reconstructTriMeshWithSkinningData was called on null data (mesh was already reconstructed before?)");
+            logger.log(Level.SEVERE, "reconstructTriMeshWithSkinningData was called on null data (mesh was already reconstructed before?)");
             return;
         }
         
         // Buffers for containing the converted Mesh data
-        PGeometryVertexBuffer   VertBuffer       = new PGeometryVertexBuffer();
-        IndexBuffer    IndexBuffer      = new IndexBuffer();
+        PGeometryVertexBuffer VertBuffer = new PGeometryVertexBuffer();
+        ArrayList<Integer> IndexBuffer = new ArrayList<Integer>();
         
         // Skinning data
-        ColorRGBA []     weightArray     = new ColorRGBA[Mesh.getTessalatedVertexCount()];    // per vertex, weight of 4 influence from the indexed materices\bones
-        float []          boneIndexArray = new float[Mesh.getTessalatedVertexCount() * 4];     // per vertex, 4 indices of bones in the flatened matrix stack
-        
+        ColorRGBA[] weightArray     = new ColorRGBA[Mesh.getTessalatedVertexCount()]; // per vertex, weight of 4 influence from the indexed materices\bones
+        float[]     boneIndexArray  = new float[Mesh.getTessalatedVertexCount() * 4]; // per vertex, 4 indices of bones in the flatened matrix stack
         
         ArrayList<Vector3f> sourceWeightArrayList = Mesh.getBoneWeightArray();
         ArrayList<PBoneIndices> sourceIndexArrayList = Mesh.getBoneIndexArray();
         
-        PGeometryVertex Vert;
+        PGeometryVertex Vert = null;
         // Loop through each polygon, and build appropriate verts for it
         // For each Polygon
-        for (int i = 0; i < Mesh.getPolygonCount(); ++i) 
+        for (PPolygon currentPoly : Mesh.getPolygons())
         {
-            PPolygon currentPoly = Mesh.getPolygon(i);
             // For each triangle in the polygon
             for (int triIndex = 0; triIndex < currentPoly.getTriangleCount(); ++triIndex)
             {
                 PGeometryTriangle curTri = new PGeometryTriangle();
                 currentPoly.getTriangle(triIndex, curTri);
+
                 // Generate the binormal for each vert in this triangle
                 Vector3f binormal = new Vector3f();
                 Vector3f tangent = new Vector3f();
-                
                 PMathUtils.generateTangentAndBinormal(curTri, tangent, binormal);
                 
                 // For each vertex in the triangle
@@ -285,7 +264,7 @@ public class PPolygonTriMeshAssembler
                 {
                     // Out with the old
                     Vert = new PGeometryVertex();
-                    // Grab the position, normal, and color
+                    // Grab the position, normal, and tangent
                     PGeometryVertex curVert = curTri.m_Vertices[vertIndex];
                     Vert.m_Position = curVert.m_Position;
                     Vert.m_Normal = curVert.m_Normal;
@@ -297,6 +276,7 @@ public class PPolygonTriMeshAssembler
                     int TexNum = Mesh.getNumberOfTextures();
                     if (Mesh.isUniformTexCoords())
                         TexNum = 1;
+
                     for (int texCoordIter = 0; texCoordIter < TexNum; texCoordIter++)
                     {
                         // Copy over the tex coords
@@ -331,7 +311,7 @@ public class PPolygonTriMeshAssembler
                         if (vertIndex == 2)  
                         {
                             PPolygonSkinnedVertexIndices vert = (PPolygonSkinnedVertexIndices)currentPoly.getVertex(vertIndex);
-                        weightArray[index] = new ColorRGBA(sourceWeightArrayList.get(vert.m_BoneWeightIndex).x,
+                            weightArray[index] = new ColorRGBA(sourceWeightArrayList.get(vert.m_BoneWeightIndex).x,
                                 sourceWeightArrayList.get(vert.m_BoneWeightIndex).y,
                                 sourceWeightArrayList.get(vert.m_BoneWeightIndex).z,
                                 0.0f);
@@ -344,7 +324,7 @@ public class PPolygonTriMeshAssembler
                         else
                         {
                             PPolygonSkinnedVertexIndices vert = (PPolygonSkinnedVertexIndices)currentPoly.getVertex(triIndex + vertIndex);
-                        weightArray[index] = new ColorRGBA(sourceWeightArrayList.get(vert.m_BoneWeightIndex).x,
+                            weightArray[index] = new ColorRGBA(sourceWeightArrayList.get(vert.m_BoneWeightIndex).x,
                                 sourceWeightArrayList.get(vert.m_BoneWeightIndex).y,
                                 sourceWeightArrayList.get(vert.m_BoneWeightIndex).z,
                                 0.0f);
@@ -360,18 +340,17 @@ public class PPolygonTriMeshAssembler
             } // End triangle loop
         } // End polygon loop
         // Processing complete
-        if (m_bDumpDebugInfo == true)
-        {
-            System.out.println("Contents of Vertex Buffer:\n");
-            for (int i = 0; i < VertBuffer.size(); i++)
-                System.out.println(VertBuffer.getVertex(i).toString());
-            System.out.println("Contents of Index Buffer:\n");
-            for (int i = 0; i < IndexBuffer.m_Indices.size(); i++)
-            {
-                System.out.println(IndexBuffer.m_Indices.get(i).toString());
-                System.out.println("\n");
-            }
-        }
+        // Diagnostic / Debugging info
+//        logger.log(Level.INFO, "Contents of Vertex Buffer:\n");
+//        for (int i = 0; i < VertBuffer.size(); i++)
+//            logger.log(Level.INFO, VertBuffer.getVertex(i).toString());
+//        System.out.println("Contents of Index Buffer:\n");
+//        for (int i = 0; i < IndexBuffer.m_Indices.size(); i++)
+//        {
+//            logger.log(Level.INFO, IndexBuffer.m_Indices.get(i).toString());
+//            logger.log(Level.INFO, "\n");
+//        }
+        
     
         // Set skin data in PPolygonSkinnedMesh
         Mesh.setSkinningData(null, BufferUtils.createFloatBuffer(boneIndexArray));
@@ -385,7 +364,9 @@ public class PPolygonTriMeshAssembler
         FloatBuffer tangentBuffer  = BufferUtils.createFloatBuffer(VertBuffer.getTangentArray());
         TexCoords texCoordBuffer   = TexCoords.makeNew(VertBuffer.getTextureCoordinateArray(0));
 
-        int[]       indices        = IndexBuffer.getArray();
+        int[] indices = new int[IndexBuffer.size()];
+        for (int i = 0; i < IndexBuffer.size(); ++i)
+            indices[i] = IndexBuffer.get(i).intValue();
         IntBuffer   indexBuffer    = BufferUtils.createIntBuffer(indices);
         
         // Apply data to TriMesh

@@ -24,86 +24,107 @@ import imi.scene.PNode;
 
 
 /**
- * This class is used to represent an instruction that will be interpreted by the
- * instruction processor.
+ * This class is used to represent an type that will be interpreted by the
+ * type processor.
  * @author Chris Nagle
  */
 public class Instruction extends PNode
 {
-    private InstructionNames    m_Instruction = null;
-    private Object              m_Data = null;
-
-    public enum InstructionNames
+    /**
+     * The types of grouping that can be processed.
+     */
+    public enum InstructionType
     {
-        instructions,
-        loadHumanoidAvatarBindPose,
-        loadGeometry,
-        deleteSkinnedMesh,
-        addSkinnedMesh,
-        addAttachment,
-        loadAnimation,
-        loadFacialAnimation,
-        setSkeleton,
+        grouping, // Used to indicate a grouping type node, no payload
+        loadHumanoidAvatarBindPose, // Loads an avatar and then sorts its skinned meshes
+        loadGeometry, // Load a piece of geometry
+        deleteSkinnedMesh, // Remove a particular skinned mesh
+        addSkinnedMesh, // Add a skinned mesh to the current skeleton
+        addAttachment, // Add an attachment to the current skeleton
+        loadAnimation, // Load the specified animation on the current skeleton
+        loadFacialAnimation, // Load the specified facial animation on the current skeleton
+        setSkeleton, // Set the current skeleton
     }
+
+    /** The type of this type **/
+    private InstructionType m_type = null;
+    /** Payload **/
+    private Object  m_data = null;
      
-    //  Constructor.
+    /**
+     * Construct a new type of grouping type
+     */
     public Instruction()
     {
-        setInstruction(InstructionNames.instructions);
+        setInstructionType(InstructionType.grouping);
     }
-    public Instruction(InstructionNames instruction)
+
+    /**
+     * Construct a new instance of the specified type
+     * @param type The type of type this is
+     */
+    public Instruction(InstructionType instruction)
     {
-        setInstruction(instruction);
+        setInstructionType(instruction);
     }
-    public Instruction(InstructionNames instruction, Object data)
+
+    /**
+     * Construct a new instance of the specified type with the provided payload.
+     * @param type The type of this type
+     * @param data The payload
+     */
+    public Instruction(InstructionType instruction, Object data)
     {
-        setInstruction(instruction);
+        setInstructionType(instruction);
         setData(data);
     }
 
-
-
-    //  Adds an Instruction.
-    public Instruction addInstruction(InstructionNames instruction)
+    /**
+     * Add a new instruction of the specified type with a null data payload as a
+     * child of this instruction.
+     * @param type
+     * @return The newly created instruction
+     */
+    public Instruction addChildInstructionOfType(InstructionType type)
     {
-        Instruction pNewInstruction = new Instruction(instruction);
+        Instruction newInstruction = new Instruction(type);
     
-        return(addInstruction(pNewInstruction));
+        return addInstruction(newInstruction);
     }
 
     /**
-     * This method is used to create, add to the tree, and return a new instruction.
+     * Add a new instruction of the specified type with the provided payload as
+     * a child of this instruction
+     * @param type The type
+     * @param data The payload
+     * @return The newly created instruction.
+     */
+    public Instruction addChildInstruction(InstructionType type, Object data)
+    {
+        Instruction newInstruction = new Instruction(type, data);
+        return(addInstruction(newInstruction));
+    }
+
+    /**
+     * Add the provided instruction as a child of this instance and return it.
      * @param instruction
-     * @param data
      * @return
      */
-    public Instruction addInstruction(InstructionNames instruction, Object data)
+    public Instruction addInstruction(Instruction instruction)
     {
-        Instruction pNewInstruction = new Instruction(instruction, data);
-        return(addInstruction(pNewInstruction));
+        addChild(instruction);
+        return(instruction);
     }
 
     /**
-     * Add a
-     * @param pInstruction
-     * @return
-     */
-    public Instruction addInstruction(Instruction pInstruction)
-    {
-        addChild(pInstruction);
-        
-        return(pInstruction);
-    }
-
-    /**
-     *
-     * @param meshName
-     * @param jointName
-     * @param orientation
+     * Add an attachment instruction as a child of this instance.
+     * @param meshName The name of the mesh to attach
+     * @param jointName The name of the joint to attach on
+     * @param orientation The transform that should be used for attachment
      */
     public void addAttachmentInstruction( String meshName, String jointName, PMatrix orientation )
     {
-        Instruction inst = new Instruction(Instruction.InstructionNames.addAttachment);
+        Instruction inst = new Instruction(Instruction.InstructionType.addAttachment);
         
         Object[] array = new Object [3];
         array[0] = meshName;
@@ -115,46 +136,48 @@ public class Instruction extends PNode
     }
 
     /**
-     *
-     * @param meshName
-     * @param subGroupName
+     * Add an addSkinnedMeshInstruction as a child of this instance.
+     * @param meshName The mesh to add
+     * @param subGroupName The sub group to sort the mesh into
      */
     public void addSkinnedMeshInstruction(String meshName, String subGroupName)
     {
-        Instruction inst = new Instruction(InstructionNames.addSkinnedMesh);
+        Instruction inst = new Instruction(InstructionType.addSkinnedMesh);
+
         Object[] array = new Object[2];
         array[0] = meshName;
         array[1] = subGroupName;
         inst.setData(array);
+
         addChild(inst);
     }
     
-    public InstructionNames getInstruction()
+    public InstructionType getInstructionType()
     {
-        return(m_Instruction);
+        return m_type;
     }
-    public void setInstruction(InstructionNames instruction)
+    public void setInstructionType(InstructionType type)
     {
-        m_Instruction = instruction;
+        m_type = type;
     }
 
 
 
     public String getDataAsString()
     {
-        if (m_Data != null)
-            return(m_Data.toString());
+        if (m_data != null)
+            return(m_data.toString());
         return null;
     }
     
     public Object getData()
     {
-        return m_Data;
+        return m_data;
     }
     
     public void setData(Object data)
     {
-        m_Data = data;
+        m_data = data;
     }
 
 }
