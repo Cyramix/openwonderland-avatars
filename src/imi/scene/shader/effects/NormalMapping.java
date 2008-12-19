@@ -21,6 +21,7 @@ import imi.scene.shader.dynamic.GLSLDefaultVariables;
 import imi.scene.shader.dynamic.GLSLShaderEffect;
 import imi.scene.shader.dynamic.GLSLShaderUniform;
 import imi.scene.shader.dynamic.GLSLShaderVariable;
+import imi.scene.shader.dynamic.GLSLShaderVarying;
 import imi.scene.shader.dynamic.GLSLVertexAttribute;
 import java.util.ArrayList;
 
@@ -61,6 +62,9 @@ public class NormalMapping extends GLSLShaderEffect
 
         m_vertexGlobals = new GLSLShaderVariable[1];
         m_vertexGlobals[0] = GLSLDefaultVariables.TBNMatrix;
+
+        m_varying = new GLSLShaderVarying[1];
+        m_varying[0] = GLSLDefaultVariables.VNormal;
         
         // allocate uniforms we use or expose
         m_fragmentUniforms = new GLSLShaderUniform[1];
@@ -102,8 +106,8 @@ public class NormalMapping extends GLSLShaderEffect
     private void createVertexLogic()
     {
         StringBuilder vertexLogic = new StringBuilder();
-        vertexLogic.append("vec3 binormal = normalize(cross(" + m_vertAttributes[0].getName() + ", gl_Normal));" + NL);
-        vertexLogic.append(m_vertexGlobals[0].getName() + " = mat3(" + m_vertAttributes[0].getName() + ", binormal, gl_Normal);" + NL);
+        vertexLogic.append("vec3 binormal = normalize(cross(" + m_vertAttributes[0].getName() + ", " + m_varying[0].getName() + "));" + NL);
+        vertexLogic.append(m_vertexGlobals[0].getName() + " = mat3(" + m_vertAttributes[0].getName() + ", binormal, " + m_varying[0].getName() + ");" + NL);
         // transform the ToLight vector
         vertexLogic.append(m_VertexModifications.get(0).getName() + " *= " + m_vertexGlobals[0].getName() + ";" + NL);
         m_vertexLogic = vertexLogic.toString();
