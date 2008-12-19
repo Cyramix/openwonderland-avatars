@@ -68,9 +68,9 @@ public class EyeballShader extends GLSLShaderProgram
         addEffect(new VertexDeformer_Transform()); // Deform those verts!
         addEffect(new UnlitTexturing_Lighting()); // Grab pixel color from the diffuse map
         addEffect(new CalculateToLight_Lighting()); // Determine the vector to the light source (gl_LightSource[0])
-        addEffect(new NormalMapping());
+        //addEffect(new NormalMapping());
         addEffect(new AmbientNdotL_Lighting()); // Calculate N * L and modulate the final color by it, mixing in a ratio of ambient
-        addEffect(new SpecularMapping_Lighting());
+        //addEffect(new SpecularMapping_Lighting());
 
         try
         {
@@ -80,9 +80,7 @@ public class EyeballShader extends GLSLShaderProgram
             // Set some defaults
             setProperty(new ShaderProperty("ambientPower", GLSLDataType.GLSL_FLOAT, Float.valueOf(fAmbientPower)));
             setProperty(new ShaderProperty("DiffuseMapIndex", GLSLDataType.GLSL_SAMPLER2D, Integer.valueOf(0)));
-            setProperty(new ShaderProperty("NormalMapIndex", GLSLDataType.GLSL_SAMPLER2D, Integer.valueOf(1)));
-            setProperty(new ShaderProperty("SpecularMapIndex", GLSLDataType.GLSL_SAMPLER2D, Integer.valueOf(2)));
-            setProperty(new ShaderProperty("specularExponent", GLSLDataType.GLSL_FLOAT, Float.valueOf(specularExponent)));
+            //setProperty(new ShaderProperty("specularExponent", GLSLDataType.GLSL_FLOAT, Float.valueOf(specularExponent)));
             m_propertyMap.put("pose", new ShaderProperty("pose", GLSLDataType.GLSL_VOID, null));
         }
         catch (NoSuchPropertyException e)

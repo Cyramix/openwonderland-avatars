@@ -20,6 +20,7 @@ package imi.character;
 import com.jme.math.Quaternion;
 import com.jme.math.Vector3f;
 import imi.scene.PMatrix;
+import imi.scene.polygonmodel.PPolygonModelInstance;
 import java.util.HashSet;
 import javax.swing.JFrame;
 
@@ -29,7 +30,7 @@ import javax.swing.JFrame;
  * 
  * @author Lou Hayt
  */
-public class CharacterController 
+public abstract class CharacterController
 {
     protected boolean  bReverseHeading     = false;
     private PMatrix previousOrientation = new PMatrix();
@@ -133,4 +134,16 @@ public class CharacterController
         previousOrientation.set(orientation);
         previousTranslation.set(translation);
     }
+
+    /**
+     * Implement to provide access to the model being manipulated
+     * @return The model instance
+     */
+    abstract public PPolygonModelInstance getModelInstance();
+
+    /**
+     * Implement this to allow updating of the target model instance.
+     * @param newModelInstance
+     */
+    abstract public void setModelInstance(PPolygonModelInstance newModelInstance);
 }

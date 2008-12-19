@@ -42,8 +42,6 @@ import imi.character.objects.LocationNode;
 import imi.character.objects.SpatialObject;
 import imi.character.statemachine.GameContext;
 import imi.character.statemachine.GameState.Action;
-import imi.scene.animation.AnimationComponent.PlaybackMode;
-import imi.scene.animation.TransitionCommand;
 import java.util.Hashtable;
 
 /**

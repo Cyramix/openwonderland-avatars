@@ -610,18 +610,26 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         // If a bind pose file was specified then we need to completely reinitialize
         // this avatar
         if (bindPoseURL != null) {
-            this.numEntities();
+            // Craft a new pscene with the provided name
             m_pscene = new PScene(attributes.getName(), m_wm);
-            this.getJScene().setPScene(m_pscene);
-            this.setPScene(m_pscene);
+            // associate it with out jscene
+            m_jscene.setPScene(m_pscene);
+            // assign the attributes
             m_attributes = attributes;
-            ArrayList<ProcessorComponent> processors = new ArrayList<ProcessorComponent>();
-            this.removeComponent(ProcessorCollectionComponent.class);
+            // get rid of all the old processor components
+            {
+                ProcessorCollectionComponent procCollection = (ProcessorCollectionComponent) getComponent(ProcessorCollectionComponent.class);
+                procCollection.removeAllProcessors();
+                removeComponent(ProcessorCollectionComponent.class);
+            }
+            // Make a new shared asset for loading the character
             character = new SharedAsset(m_pscene.getRepository(), new AssetDescriptor(SharedAssetType.COLLADA_Model, bindPoseURL));
             character.setUserData(new ColladaLoaderParams(true, true, false, false, 4, m_attributes.getName(), null));
             setAssetInitializer(character, m_attributes);
             m_attributes.setAsset(character);
-            initScene(processors);
+            // Create new processor components
+            ArrayList<ProcessorComponent> processors = new ArrayList<ProcessorComponent>();
+            initScene(processors); // <-- at this point the model instance has been changed
             ProcessorCollectionComponent processorCollection = new ProcessorCollectionComponent();
             for (int i = 0; i < processors.size(); i++)
                 processorCollection.addProcessor(processors.get(i));
@@ -1345,10 +1353,13 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         }
 
         // Material properties
-//        applyMaterialProperties(characterDOM);
+        applyMaterialProperties(characterDOM);
 
         // Skeletal modifications
         applySkeletalModifications(characterDOM);
+
+        // assign to controller as well
+        m_context.getController().setModelInstance(m_modelInst);
     }
 
     /**

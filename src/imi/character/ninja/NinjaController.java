@@ -79,7 +79,8 @@ public class NinjaController extends CharacterController
             initalized = true;
         }
 
-        System.err.println("GOT BODY "+body);
+        // Diagnostic / Debug output
+        Logger.getLogger(NinjaController.class.getName()).log(Level.INFO, "GOT BODY " + body);
     }
 
     @Override
@@ -198,7 +199,7 @@ public class NinjaController extends CharacterController
 //            window.setTitle("yes");
 //        else
 //            window.setTitle("no");
-       
+       System.out.println("Updating controller : body is " + body);
         //window.setTitle("acc: " + (int)fwdAcceleration + " vel: " + (int)velocity.x + " " + (int)velocity.y + " " + (int)velocity.z);
     }
     
@@ -339,5 +340,16 @@ public class NinjaController extends CharacterController
             return body.getTransform();
         return null;
     }
-        
+
+    @Override
+    public PPolygonModelInstance getModelInstance() {
+        return body;
+    }
+
+    @Override
+    public void setModelInstance(PPolygonModelInstance newModelInstance) {
+        body = newModelInstance;
+    }
+
+
 }
