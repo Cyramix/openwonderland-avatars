@@ -125,6 +125,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
     protected PPolygonMeshInstance          m_mesh                  = null;
     protected ObjectCollection              m_objectCollection      = null;
     protected CharacterAnimationProcessor   m_AnimationProcessor    = null;
+    protected CharacterProcessor            m_characterProcessor    = null;
     protected TransitionQueue               m_facialAnimationQ      = null;
     protected CharacterEyes                 m_eyes                  = null;
     protected VerletArm                     m_rightArm              = null;
@@ -452,15 +453,19 @@ public abstract class Character extends Entity implements SpatialObject, Animati
      * @param attributes the new attributes to add into they system
      */
     private void updateAttributes(CharacterAttributes attributes) {
-        // Create avatar attribs
+        // Additions
         CharacterAttributes.SkinnedMeshParams[] oldAdd      = m_attributes.getAddInstructions();
         CharacterAttributes.SkinnedMeshParams[] newAdd      = attributes.getAddInstructions();
+        // Deletions
         String[]                                oldDelete   = m_attributes.getDeleteInstructions();
         String[]                                newDelete   = attributes.getDeleteInstructions();
+        // Load requests
         String[][]                              oldLoad     = m_attributes.getLoadInstructions();
         String[][]                              newLoad     = attributes.getLoadInstructions();
+        // Attachments
         AttachmentParams[]                      oldAttatch  = m_attributes.getAttachmentsInstructions();
         AttachmentParams[]                      newAttatch  = attributes.getAttachmentsInstructions();
+        // Animations
         String[]                                oldAnim     = m_attributes.getAnimations();
         String[]                                newAnim     = attributes.getAnimations();
 
@@ -516,7 +521,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
                 for (int j = 0; j < oldLoad.length; j++) {
                     if (oldLoad[j] == null)
                         continue;
-                    if (newLoad[i][1].equals(oldLoad[j][1])) {
+                    if (newLoad[i][1].equals(oldLoad[j][1])) { // <-- null pointer!
                         bFound = true;
                         oldLoad[j] = null;
                     }
@@ -593,7 +598,10 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         try {
             if (attributes.getBaseURL() != null)
                 bindPoseURL = new URL(attributes.getBaseURL() + attributes.getBindPoseFile());
+            else
+                bindPoseURL = new URL("file://localhost/" + System.getProperty("user.dir") + "/" + attributes.getBindPoseFile());
         } catch (MalformedURLException ex) {
+            Logger.getLogger(Character.class.getName()).severe("Malformed URL from bind pose file!" + ex.getMessage());
             bindPoseURL = null;
         }
 
@@ -724,8 +732,9 @@ public abstract class Character extends Entity implements SpatialObject, Animati
             m_AnimationProcessor = new CharacterAnimationProcessor(m_modelInst);
             processors.add(m_AnimationProcessor);
         }
-        
-        processors.add(new CharacterProcessor(this));
+
+        m_characterProcessor = new CharacterProcessor(this);
+        processors.add(m_characterProcessor);
     }
     
     /**
@@ -1274,6 +1283,11 @@ public abstract class Character extends Entity implements SpatialObject, Animati
      */
     public void loadConfiguration(URL location)
     {
+        // Turn off character processor and animation processor
+        boolean oldState = m_AnimationProcessor.isEnable();
+        m_AnimationProcessor.setEnable(false);
+        m_characterProcessor.stop();
+
         try {
             final JAXBContext context = JAXBContext.newInstance("imi.serialization.xml.bindings");
             final Unmarshaller m = context.createUnmarshaller();
@@ -1303,6 +1317,10 @@ public abstract class Character extends Entity implements SpatialObject, Animati
             Logger.getLogger(Character.class.getName()).log(Level.SEVERE, "Failed to open InputStream to " +
                                     location.toString() + "! " + ex.getMessage());
         }
+
+        // restart processors
+        m_AnimationProcessor.setEnable(oldState);
+        m_characterProcessor.start();
     }
 
     /**

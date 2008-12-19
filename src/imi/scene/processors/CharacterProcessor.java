@@ -17,10 +17,6 @@
  */
 package imi.scene.processors;
 
-import com.jme.math.Vector3f;
-import imi.scene.PMatrix;
-import imi.scene.polygonmodel.parts.skinned.SkinnedMeshJoint;
-import imi.utils.PMathUtils;
 import org.jdesktop.mtgame.NewFrameCondition;
 import org.jdesktop.mtgame.ProcessorArmingCollection;
 import org.jdesktop.mtgame.ProcessorComponent;
@@ -33,6 +29,7 @@ public class CharacterProcessor extends ProcessorComponent
 {
     private double oldTime = 0.0;
     private boolean synchronizer = false;
+    private boolean enabled = true;
     private imi.character.Character character = null;
 
     /**
@@ -51,6 +48,8 @@ public class CharacterProcessor extends ProcessorComponent
 
     @Override
     public void commit(ProcessorArmingCollection collection) {
+        if (!enabled)
+            return;
         if (!synchronizer)
         {
             synchronizer = true;
@@ -67,5 +66,15 @@ public class CharacterProcessor extends ProcessorComponent
         ProcessorArmingCollection collection = new ProcessorArmingCollection(this);
         collection.addCondition(new NewFrameCondition(this));
         setArmingCondition(collection);
+    }
+
+    public void stop()
+    {
+        enabled = false;
+    }
+
+    public void start()
+    {
+        enabled = true;
     }
 }
