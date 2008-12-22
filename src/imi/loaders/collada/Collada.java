@@ -29,6 +29,7 @@ import org.collada.colladaschema.COLLADA;
 import org.collada.xml_walker.ProcessorFactory;
 import org.collada.xml_walker.PColladaNode;
 import org.collada.xml_walker.PColladaMaterialInstance;
+import org.collada.xml_walker.PColladaImage;
 import org.collada.xml_walker.PColladaEffect;
 import org.collada.xml_walker.PColladaAnimatedItem;
 import org.collada.xml_walker.PColladaCameraParams;
@@ -75,7 +76,6 @@ import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.logging.Level;
-import javolution.util.FastList;
 import javolution.util.FastMap;
 import org.collada.xml_walker.ColladaMaterial;
 
@@ -89,8 +89,9 @@ import org.collada.xml_walker.ColladaMaterial;
  */
 public class Collada
 {
+    // Static members
     /** Logger reference **/
-    private static final Logger logger = Logger.getLogger(Collada.class.toString());
+    private static Logger logger = Logger.getLogger(Collada.class.toString());
     /** Context for the unmarshaller to operate within **/
     private static javax.xml.bind.JAXBContext jaxbContext = null;
     /** Used to synchronize access to the jaxb context **/
@@ -117,46 +118,45 @@ public class Collada
     private URL     m_fileLocation = null;
 
     /** Assorted library convenience references **/
-    private LibraryCameras                              m_libraryCameras = null;
-    private LibraryImages                               m_libraryImages = null;
-    private LibraryEffects                              m_libraryEffects = null;
-    private LibraryMaterials                            m_libraryMaterials = null;
-    private LibraryAnimations                           m_libraryAnimations = null;
-    private LibraryVisualScenes                         m_libraryVisualScenes = null;
-    private LibraryGeometries                           m_libraryGeometries = null;
-    private LibraryControllers                          m_libraryControllers = null;
-    private LibraryNodes                                m_libraryNodes = null;
+    private LibraryCameras                              m_pLibraryCameras = null;
+    private LibraryImages                               m_pLibraryImages = null;
+    private LibraryEffects                              m_pLibraryEffects = null;
+    private LibraryMaterials                            m_pLibraryMaterials = null;
+    private LibraryAnimations                           m_pLibraryAnimations = null;
+    private LibraryVisualScenes                         m_pLibraryVisualScenes = null;
+    private LibraryGeometries                           m_pLibraryGeometries = null;
+    private LibraryControllers                          m_pLibraryControllers = null;
+    private LibraryNodes                                m_pLibraryNodes = null;
 
-    private final FastMap<String, PColladaEffect>             m_EffectMap = new FastMap<String, PColladaEffect>();
-    private final ArrayList<PColladaEffect>                   m_EffectList = new ArrayList<PColladaEffect>();
+    private FastMap<String, PColladaEffect>             m_EffectMap = new FastMap<String, PColladaEffect>();
+    private ArrayList<PColladaEffect>                   m_EffectList = new ArrayList<PColladaEffect>();
 
-    private final FastMap<String, ColladaMaterial>            m_MaterialMap = new FastMap<String, ColladaMaterial>();
-    private final ArrayList<ColladaMaterial>                  m_MaterialList = new ArrayList<ColladaMaterial>();
+    private FastMap<String, ColladaMaterial>            m_MaterialMap = new FastMap<String, ColladaMaterial>();
+    private ArrayList<ColladaMaterial>                  m_MaterialList = new ArrayList<ColladaMaterial>();
 
-    private final FastMap<String, PColladaMaterialInstance>   m_MaterialInstances = new FastMap<String, PColladaMaterialInstance>();
-    private final ArrayList                                   m_ColladaMaterialInstances = new ArrayList();
+    private FastMap<String, PColladaMaterialInstance>   m_MaterialInstances = new FastMap<String, PColladaMaterialInstance>();
+    private ArrayList                                   m_ColladaMaterialInstances = new ArrayList();
 
-    private SkeletonNode    m_skeletonNode = null;
-    private PScene          m_loadingPScene = null;
+    private SkeletonNode                                m_pSkeletonNode = null;
+    private PScene                                      m_pLoadingPScene = null;
 
 
     //  Contains the PolygonMeshes loaded.
-    public final ArrayList<PPolygonMesh>              m_PolygonMeshes = new ArrayList<PPolygonMesh>();
+    public ArrayList<PPolygonMesh>              m_PolygonMeshes = new ArrayList<PPolygonMesh>();
 
     //  Contains the PolygonSkinnedMeshes loaded.
-    public final ArrayList<PPolygonSkinnedMesh>       m_PolygonSkinnedMeshes = new ArrayList<PPolygonSkinnedMesh>();
+    public ArrayList<PPolygonSkinnedMesh>       m_PolygonSkinnedMeshes = new ArrayList<PPolygonSkinnedMesh>();
 
-    public final ArrayList<PColladaSkin>              m_ColladaSkins = new ArrayList<PColladaSkin>();
+    public ArrayList<PColladaSkin>              m_ColladaSkins = new ArrayList<PColladaSkin>();
 
-    private final ArrayList<PColladaNode>             m_ColladaNodes = new ArrayList<PColladaNode>();
-    private final ArrayList<PColladaNode>             m_FactoryColladaNodes = new ArrayList<PColladaNode>();
-    /** The maximum number of weights read in per bone **/
-    private int                                     m_MaxNumberOfWeights    = 4;
-    private final ArrayList<PColladaAnimatedItem>   m_ColladaAnimatedItems  = new ArrayList<PColladaAnimatedItem>();
-    private final ArrayList<PColladaCameraParams>   m_ColladaCameraParams   = new ArrayList<PColladaCameraParams>();
-    private final ArrayList<PColladaCamera>         m_ColladaCameras        = new ArrayList<PColladaCamera>();
+    private ArrayList<PColladaNode>             m_ColladaNodes = new ArrayList<PColladaNode>();
+    private ArrayList<PColladaNode>             m_FactoryColladaNodes = new ArrayList<PColladaNode>();
+    
+    private int                                 m_MaxNumberOfWeights = 4;
+    private ArrayList<PColladaAnimatedItem>     m_ColladaAnimatedItems = new ArrayList<PColladaAnimatedItem>();
+    private ArrayList<PColladaCameraParams>     m_ColladaCameraParams = new ArrayList<PColladaCameraParams>();
+    private ArrayList<PColladaCamera>           m_ColladaCameras = new ArrayList<PColladaCamera>();
 
-    /** various state indicators **/
     private boolean m_bLoadRig                      = false;
     private boolean m_bLoadGeometry                 = true;
     private boolean m_bLoadAnimations               = false;
@@ -192,23 +192,23 @@ public class Collada
         m_Libraries = null;
         m_Name = "ColladaLoader";
         m_fileLocation = null;
-        m_libraryCameras = null;
-        m_libraryImages = null;
-        m_libraryEffects = null;
-        m_libraryMaterials = null;
-        m_libraryAnimations = null;
-        m_libraryVisualScenes = null;
-        m_libraryGeometries = null;
-        m_libraryControllers = null;
-        m_libraryNodes = null;
+        m_pLibraryCameras = null;
+        m_pLibraryImages = null;
+        m_pLibraryEffects = null;
+        m_pLibraryMaterials = null;
+        m_pLibraryAnimations = null;
+        m_pLibraryVisualScenes = null;
+        m_pLibraryGeometries = null;
+        m_pLibraryControllers = null;
+        m_pLibraryNodes = null;
         m_EffectMap.clear();
         m_EffectList.clear();
         m_MaterialMap.clear();
         m_MaterialList.clear();
         m_MaterialInstances.clear();
         m_ColladaMaterialInstances.clear();
-        m_skeletonNode = null;
-        m_loadingPScene = null;
+        m_pSkeletonNode = null;
+        m_pLoadingPScene = null;
     }
 
     /**
@@ -220,6 +220,92 @@ public class Collada
         applyConfiguration(params);
     }
 
+    //  Gets the name of the Collada file.
+    public String getName()
+    {
+        return(m_Name);
+    }
+
+    //  Sets the name of the Collada file.
+    public void setName(String name)
+    {
+        m_Name = name;
+    }
+
+
+    //  Retrieves boolean indicating whether stats should be printed.
+    public boolean getPrintStats()
+    {
+        return(m_bPrintStats);
+    }
+
+    //  Sets the boolean indicating whether stats should be printed.
+    public void setPrintStats(boolean bPrintStats)
+    {
+        m_bPrintStats = bPrintStats;
+    }
+
+    
+    
+    public void setLoadFlags(boolean bLoadRig, boolean bLoadGeometry, boolean bLoadAnimations)
+    {
+        setLoadRig(bLoadRig);
+        setLoadGeometry(bLoadGeometry);
+        setLoadAnimations(bLoadAnimations);
+    }
+
+    
+    //  Gets the boolean indicating whether the Rig should be loaded.
+    public boolean getLoadRig()
+    {
+        return(m_bLoadRig);
+    }
+    //  Sets the boolean indicating whether the Rig should be loaded.
+    public void setLoadRig(boolean bLoadRig)
+    {
+        m_bLoadRig = bLoadRig;
+    }
+
+    
+    //  Gets the boolean indicating whether the Geometry should be loaded.
+    public boolean getLoadGeometry()
+    {
+        return(m_bLoadGeometry);
+    }
+    //  Sets the boolean indicating whether the Geometry should be loaded.
+    public void setLoadGeometry(boolean bLoadGeometry)
+    {
+        m_bLoadGeometry = bLoadGeometry;
+    }
+
+    public PScene getPScene()
+    {
+        return m_pLoadingPScene;
+    }
+    
+    //  Gets the boolean indicating whether the Animations should be loaded.
+    public boolean getLoadAnimations()
+    {
+        return(m_bLoadAnimations);
+    }
+    //  Sets the boolean indicating whether the Animations should be loaded.
+    public void setLoadAnimations(boolean bLoadAnimations)
+    {
+        m_bLoadAnimations = bLoadAnimations;
+    }
+
+    //  Gets the boolean indicating whether the SkinnedMeshes should be added to the Skeleton.
+    public boolean getAddSkinnedMeshesToSkeleton()
+    {
+        return(m_bAddSkinnedMeshesToSkeleton);
+    }
+
+    //  Sets the boolean indicating whether the SkinnedMeshes should be added to the Skeleton.
+    public void setAddSkinnedMeshesToSkeleton(boolean bAddSkinnedMeshesToSkeleton)
+    {
+        m_bAddSkinnedMeshesToSkeleton = bAddSkinnedMeshesToSkeleton;
+    }
+
     /**
      * Load the specified collada file. This method will attempt to retrieve the
      * specified file, generate the DOM and then walk the tree.
@@ -227,41 +313,38 @@ public class Collada
      * @return True on success, false otherwise
      */
     public boolean load(URL colladaFile) {
-        boolean result = false;
         m_fileLocation = colladaFile;
-
         URLConnection conn = null;
         InputStream in = null;
-        // Attempt to open the connection and retrieve an input stream
         try {
             conn = colladaFile.openConnection();
             in = conn.getInputStream();
-
+//            javax.xml.bind.JAXBContext jc = javax.xml.bind.JAXBContext.newInstance("org.collada.colladaschema");
+//            javax.xml.bind.Unmarshaller unmarshaller = jc.createUnmarshaller();
             org.collada.colladaschema.COLLADA collada = null;
-            synchronized(contextLock) {
+            synchronized(contextLock)
+            {
                 collada = (org.collada.colladaschema.COLLADA) unmarshaller.unmarshal(in);
             }
-
             // Give other threads a little break before the next lengthy series of heavy-weight ops
             Thread.yield();
             doLoad(collada);
-            result = true;
+            return true;
         } catch (Exception exception) {
             if (exception.getMessage().equals("Connection refused")) {
-                logger.warning(exception.getMessage() + "... Retrying");
-                load(colladaFile); // <-- this is probably bad.... shouldnt recurse in exception handlers
+                System.out.print(exception.getMessage() + "... Retrying");
+                load(colladaFile);
             }
         } finally {
             try {
                 if (in != null) {
                     in.close();
                 }
+                return true;
             } catch (IOException ioe) {
-                logger.warning("Caught IOException! " + ioe.getMessage());
-                result = false;
+                return false;
             }
         }
-        return result;
     }
 
     /**
@@ -272,99 +355,87 @@ public class Collada
      * @return
      */
     public boolean load(PScene loadingPScene, URL colladaFile) {
-        boolean result = false;
         m_fileLocation = colladaFile;
-
         URLConnection conn = null;
         InputStream in = null;
-
         try {
             conn = colladaFile.openConnection();
             in = conn.getInputStream();
-
-            m_loadingPScene = loadingPScene;
-            m_loadingPScene.setUseRepository(false); // the repository will extract the data later
-
+            m_pLoadingPScene = loadingPScene;
+            m_pLoadingPScene.setUseRepository(false); // the repository will extract the data later
             org.collada.colladaschema.COLLADA collada = null;
-            synchronized(contextLock) {
+            synchronized(contextLock)
+            {
                 collada = (org.collada.colladaschema.COLLADA) unmarshaller.unmarshal(in);
             }
-            // Let other threads have a chance before the long operations ahead
-            Thread.yield();
             doLoad(collada);
-            result = true;
+            return true;
         } catch (Exception exception) {
-            if (exception.getMessage() != null &&
-                    exception.getMessage().equals("Connection refused")) {
-                logger.warning(exception.getMessage() + "... Retrying");
-                load(loadingPScene, colladaFile); // <-- this is bad!
-            }
-            else
-            {
-                logger.warning("Caught Exception! " + exception.getMessage());
-                logger.warning("Exception toString - " + exception.toString());
-                exception.printStackTrace();
+            if (exception.getMessage().equals("Connection refused")) {
+                System.out.print(exception.getMessage() + "... Retrying");
+                load(loadingPScene, colladaFile);
             }
         } finally {
             try {
                 if (in != null) {
                     in.close();
                 }
+                return true;
             } catch (IOException ioe) {
-                logger.warning("Caught IOException! " + ioe.getMessage());
-                result = false;
+                return false;
             }
         }
-        return result;
     }
 
-    /**
-     * Private method to actually perform the parsing of the collada file.
-     * @param collada
-     */
+    public void loadSkinnedMesh(PScene pScene, URL location)
+    {
+        load(pScene, location);
+    }
+
     private void doLoad(COLLADA collada)
     {
         m_Libraries = collada.getLibraryLightsAndLibraryGeometriesAndLibraryAnimationClips();
 
-        m_libraryCameras       = getInstanceOfLibraryCameras();
-        m_libraryImages        = getInstanceOfLibraryImages();
-        m_libraryEffects       = getInstanceOfLibraryEffects();
-        m_libraryMaterials     = getInstanceOfLibraryMaterials();
-        m_libraryAnimations    = getInstanceOfLibraryAnimations();
-        m_libraryVisualScenes  = getInstanceOfLibraryVisualScenes();
-        m_libraryGeometries    = getInstanceOfLibraryGeometries();
-        m_libraryControllers   = getInstanceOfLibraryControllers();
-        m_libraryNodes         = getInstanceOfLibraryNodes();
+        m_pLibraryCameras       = getInstanceOfLibraryCameras();
+        m_pLibraryImages        = getInstanceOfLibraryImages();
+        m_pLibraryEffects       = getInstanceOfLibraryEffects();
+        m_pLibraryMaterials     = getInstanceOfLibraryMaterials();
+        m_pLibraryAnimations    = getInstanceOfLibraryAnimations();
+        m_pLibraryVisualScenes  = getInstanceOfLibraryVisualScenes();
+        m_pLibraryGeometries    = getInstanceOfLibraryGeometries();
+        m_pLibraryControllers   = getInstanceOfLibraryControllers();
+        m_pLibraryNodes         = getInstanceOfLibraryNodes();
 
         //  Create the SkeletonNode if we're loading the rig.
         if (m_bLoadRig)
-            m_skeletonNode = createSkeletonNode();
-
+        {
+            m_pSkeletonNode = createSkeletonNode();
+        }
         //  Need to process these Libraries in this order.
         if (m_bLoadGeometry)
         {
-            ProcessorFactory.createProcessor(this, m_libraryCameras, null);
-            ProcessorFactory.createProcessor(this, m_libraryImages, null);
-            ProcessorFactory.createProcessor(this, m_libraryEffects, null);
-            ProcessorFactory.createProcessor(this, m_libraryMaterials, null);
+            ProcessorFactory.createProcessor(this, m_pLibraryCameras, null);
+            ProcessorFactory.createProcessor(this, m_pLibraryImages, null);
+            ProcessorFactory.createProcessor(this, m_pLibraryEffects, null);
+            ProcessorFactory.createProcessor(this, m_pLibraryMaterials, null);
         }
 
         //  Only load the Animations if we should.
         if (m_bLoadAnimations)
-            ProcessorFactory.createProcessor(this, m_libraryAnimations, null);
+            ProcessorFactory.createProcessor(this, m_pLibraryAnimations, null);
 
         if (m_bLoadGeometry)
-            ProcessorFactory.createProcessor(this, m_libraryNodes, null);
+            ProcessorFactory.createProcessor(this, m_pLibraryNodes, null);
 
         //  Preprocess the node hiearchy.
         //  Builds the node hiearchy.
-        ProcessorFactory.createProcessor(this, m_libraryVisualScenes, null);
+        ProcessorFactory.createProcessor(this, m_pLibraryVisualScenes, null);
 
         //  Gets the load option.
         if (m_bLoadGeometry)
         {
-            ProcessorFactory.createProcessor(this, m_libraryGeometries, null);
-            ProcessorFactory.createProcessor(this, m_libraryControllers, null);
+            ProcessorFactory.createProcessor(this, m_pLibraryGeometries, null);
+            ProcessorFactory.createProcessor(this, m_pLibraryControllers, null);
         }
 
         if (m_bLoadRig)
@@ -373,11 +444,11 @@ public class Collada
         if (m_bLoadGeometry)
             attachSkinnedMeshToSkeleton();
 
-        if (m_skeletonNode == null)
+        if (m_pSkeletonNode == null)
             processColladaNodes();
 
         // Submit the geometry of every PPolygonMesh we encounter
-        TreeTraverser.breadthFirst(m_loadingPScene, new PPolygonMeshAssemblingProcessor());
+        TreeTraverser.breadthFirst(m_pLoadingPScene, new PPolygonMeshAssemblingProcessor());
     }
 
 
@@ -395,8 +466,8 @@ public class Collada
                 processRig(pRootNode, pColladaNode, false);
         }
 
-        m_skeletonNode.setSkeletonRoot(pRootNode);
-        m_loadingPScene.addInstanceNode(m_skeletonNode);
+        m_pSkeletonNode.setSkeletonRoot(pRootNode);
+        m_pLoadingPScene.addInstanceNode(m_pSkeletonNode);
 
         return(pRootNode);
     }
@@ -425,7 +496,7 @@ public class Collada
                         pMeshInstance = createMeshInstance(pPolygonMesh, colladaNode, meshName);
 
                         pThisNode = pMeshInstance;
-            }
+                    }
                 }
             }
 
@@ -470,19 +541,19 @@ public class Collada
             {
                 if (pParentNode != null)
                     pParentNode.addChild(pThisNode);
-            
+
                 //  Iterate through all the child Nodes.
                 int a;
                 PColladaNode pChildColladaNode;
 
                 for (a=0; a<colladaNode.getChildNodeCount(); a++)
-            {
+                {
                     pChildColladaNode = colladaNode.getChildNode(a);
 
                     processRig(pThisNode, pChildColladaNode, bIgnoreMeshInstances);
+                }
             }
         }
-    }
         catch (Exception e)
         {
             e.printStackTrace();
@@ -499,13 +570,13 @@ public class Collada
         {
             if (m_bAddSkinnedMeshesToSkeleton)
             {
-                m_skeletonNode.addChild(mesh);
-                mesh.linkJointsToSkeletonNode(m_skeletonNode);
+                m_pSkeletonNode.addChild(mesh);
+                mesh.linkJointsToSkeletonNode(m_pSkeletonNode);
             }
         }
 
-        if (m_skeletonNode != null)
-            m_skeletonNode.setDirty(true, true);
+        if (m_pSkeletonNode != null)
+            m_pSkeletonNode.setDirty(true, true);
     }
 
 
@@ -518,22 +589,22 @@ public class Collada
     //  Creates the SkeletonNode.
     public SkeletonNode createSkeletonNode()
     {
-        if (m_skeletonNode == null)
-            m_skeletonNode = new SkeletonNode("Untitled");
+        if (m_pSkeletonNode == null)
+            m_pSkeletonNode = new SkeletonNode("Untitled");
 
-        return(m_skeletonNode);
+        return(m_pSkeletonNode);
     }
 
     //  Gets the SkeletonNode.
     public SkeletonNode getSkeletonNode()
     {
-        return(m_skeletonNode);
+        return(m_pSkeletonNode);
     }
 
     //  Sets the SkeletonNode.
     public void setSkeletonNode(SkeletonNode pSkeletonNode)
     {
-        m_skeletonNode = pSkeletonNode;
+        m_pSkeletonNode = pSkeletonNode;
     }
 
     private void populateSkeletonJointHierarchy(SkeletonNode pSkeletonNode)
@@ -1210,7 +1281,7 @@ public class Collada
                             //  Create a PolygonSkinnedMeshInstance.
                             PPolygonSkinnedMesh pSkinnedMesh = findPolygonSkinnedMesh(skinnedMeshName);
 
-                            m_skeletonNode.addChild(pSkinnedMesh);
+                            m_pSkeletonNode.addChild(pSkinnedMesh);
                         }
                     }
                 }
@@ -1241,7 +1312,7 @@ public class Collada
         {
             System.out.println("Root ColladaNode '" + node.getName() + "', isJoint " + ((node.isJoint()) ? "yes" : "no"));
 
-            processColladaNode(node, m_loadingPScene.getInstances());
+            processColladaNode(node, m_pLoadingPScene.getInstances());
         }
     }
     
@@ -1355,7 +1426,7 @@ public class Collada
 
         PPolygonSkinnedMesh skinnedMeshGeometry = findPolygonSkinnedMesh(colladaNode.getControllerName());
 
-        result = m_loadingPScene.processSkinnedMesh(skinnedMeshGeometry);
+        result = m_pLoadingPScene.processSkinnedMesh(skinnedMeshGeometry);
         result.setName(meshName);
         result.setTransform(new PTransform(colladaNode.getMatrix()));
 
@@ -1379,19 +1450,19 @@ public class Collada
         
         PNode pChildNode = null;
 
-        createColladaNode(m_loadingPScene.getInstances(), getColladaNodeWithChildren(), false);
+        createColladaNode(m_pLoadingPScene.getInstances(), getColladaNodeWithChildren(), false);
             
         //  Must process the Node hiearchy loaded.
         PNode pJointHierarchy = null;//pSkinnedMesh.getBindPoseTransformHierarchy();
         
-        for (a=0; a<m_loadingPScene.getInstances().getChildrenCount(); a++)
+        for (a=0; a<m_pLoadingPScene.getInstances().getChildrenCount(); a++)
         {
-            pChildNode = m_loadingPScene.getInstances().getChild(a);
+            pChildNode = m_pLoadingPScene.getInstances().getChild(a);
 
             //  Only add PJoints to the PolygonSkinnedMesh joint hiearchy node.
             if (pChildNode instanceof PJoint)
             {
-                m_loadingPScene.getInstances().removeChild(pChildNode);
+                m_pLoadingPScene.getInstances().removeChild(pChildNode);
                 a--;
 
                 pJointHierarchy.addChild(pChildNode);
@@ -1460,12 +1531,12 @@ public class Collada
         PPolygonMeshInstance pMeshInstance = null;
 
         //  Create the MeshInstance.
-        SharedAsset asset = new SharedAsset(    m_loadingPScene.getRepository(),
+        SharedAsset asset = new SharedAsset(    m_pLoadingPScene.getRepository(),
                                                 new AssetDescriptor(SharedAsset.SharedAssetType.Unknown,
                                                                     pPolygonMesh.getName()));
         asset.setAssetData(pPolygonMesh);
 
-        pMeshInstance = (PPolygonMeshInstance)m_loadingPScene.addMeshInstance(meshName, asset);
+        pMeshInstance = (PPolygonMeshInstance)m_pLoadingPScene.addMeshInstance(meshName, asset);
 
         if (pColladaNode != null)
             pMeshInstance.getTransform().getLocalMatrix(true).set(pColladaNode.getMatrix());
@@ -1584,11 +1655,13 @@ public class Collada
         }
     }
 
-    
 
-    ////////////////////////////////////////////////////////////////////////////
-    //  The dungeon! Getters, Setters, and minor helper methods...            //
-    ////////////////////////////////////////////////////////////////////////////
+
+
+
+    //  *****************************************
+    //  Private methods.
+    //  *****************************************
 
     //  Gets the instance of LibraryCameras in the list of Libraries.
     private LibraryCameras getInstanceOfLibraryCameras()
@@ -1637,7 +1710,7 @@ public class Collada
 
         return(null);
     }
-
+    
     //  Gets the instance of LibraryAnimations in the list of Libraries.
     private LibraryAnimations getInstanceOfLibraryAnimations()
     {
@@ -1685,7 +1758,7 @@ public class Collada
 
         return(null);
     }
-
+    
     //  Gets the instance of LibraryNodes in the list of Libraries.
     private LibraryNodes getInstanceOfLibraryNodes()
     {
@@ -1719,94 +1792,6 @@ public class Collada
     public URL getFileLocation()
     {
         return m_fileLocation;
-    }
-
-    public String getName()
-    {
-        return(m_Name);
-    }
-
-    public void setName(String name)
-    {
-        m_Name = name;
-    }
-
-
-    //  Retrieves boolean indicating whether stats should be printed.
-    public boolean getPrintStats()
-    {
-        return(m_bPrintStats);
-    }
-
-    //  Sets the boolean indicating whether stats should be printed.
-    public void setPrintStats(boolean bPrintStats)
-    {
-        m_bPrintStats = bPrintStats;
-    }
-
-    /**
-     * Set the various state flags.
-     * @param bLoadRig True to load the skeleton
-     * @param bLoadGeometry True to load all geometry
-     * @param bLoadAnimations True to load animations
-     */
-    public void setLoadFlags(boolean bLoadRig, boolean bLoadGeometry, boolean bLoadAnimations)
-    {
-        setLoadRig(bLoadRig);
-        setLoadGeometry(bLoadGeometry);
-        setLoadAnimations(bLoadAnimations);
-    }
-
-
-    //  Gets the boolean indicating whether the Rig should be loaded.
-    public boolean getLoadRig()
-    {
-        return(m_bLoadRig);
-    }
-    //  Sets the boolean indicating whether the Rig should be loaded.
-    public void setLoadRig(boolean bLoadRig)
-    {
-        m_bLoadRig = bLoadRig;
-    }
-
-
-    //  Gets the boolean indicating whether the Geometry should be loaded.
-    public boolean getLoadGeometry()
-    {
-        return(m_bLoadGeometry);
-    }
-    //  Sets the boolean indicating whether the Geometry should be loaded.
-    public void setLoadGeometry(boolean bLoadGeometry)
-    {
-        m_bLoadGeometry = bLoadGeometry;
-    }
-
-    public PScene getPScene()
-    {
-        return m_loadingPScene;
-    }
-
-    //  Gets the boolean indicating whether the Animations should be loaded.
-    public boolean getLoadAnimations()
-    {
-        return(m_bLoadAnimations);
-    }
-    //  Sets the boolean indicating whether the Animations should be loaded.
-    public void setLoadAnimations(boolean bLoadAnimations)
-    {
-        m_bLoadAnimations = bLoadAnimations;
-    }
-
-    //  Gets the boolean indicating whether the SkinnedMeshes should be added to the Skeleton.
-    public boolean getAddSkinnedMeshesToSkeleton()
-    {
-        return(m_bAddSkinnedMeshesToSkeleton);
-    }
-
-    //  Sets the boolean indicating whether the SkinnedMeshes should be added to the Skeleton.
-    public void setAddSkinnedMeshesToSkeleton(boolean bAddSkinnedMeshesToSkeleton)
-    {
-        m_bAddSkinnedMeshesToSkeleton = bAddSkinnedMeshesToSkeleton;
     }
 }
 

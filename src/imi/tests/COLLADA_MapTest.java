@@ -32,7 +32,7 @@ import org.jdesktop.mtgame.WorldManager;
  * Testing environments
  * @author Ronald E Dahlgren
  */
-public class COLLADA_MapTest extends BaseDefault
+public class COLLADA_MapTest extends DemoBase
 {
     public COLLADA_MapTest(String[] args){
         super(args);
@@ -43,19 +43,16 @@ public class COLLADA_MapTest extends BaseDefault
     }
 
     @Override
-    protected void simpleSceneInit(JScene jscene, WorldManager wm, Entity jsentity, ArrayList<ProcessorComponent> processors)
+    protected void simpleSceneInit(PScene pscene, WorldManager wm, ArrayList<ProcessorComponent> processors)
     {
-        PScene pscene = jscene.getPScene();
         Logger.getLogger("com.jme.scene").setLevel(Level.OFF);
         Logger.getLogger("org.collada").setLevel(Level.OFF);
         Logger.getLogger("com.jme.renderer.jogl").setLevel(Level.OFF);
 
         pscene.setUseRepository(true);
         
-        ColladaEnvironment ourEnv = new ColladaEnvironment(wm, "assets/models/collada/Environments/Milan/DSI.dae", "MaldenLabs");
+        ColladaEnvironment ourEnv = new ColladaEnvironment(wm, "assets/models/collada/Environments/BusinessObjectsCenter.dae", "MaldenLabs");
 
-        m_sceneData = new SceneEssentials();
-        m_sceneData.setSceneData(jscene, jscene.getPScene(), jsentity, wm, processors);
     }
     
     
