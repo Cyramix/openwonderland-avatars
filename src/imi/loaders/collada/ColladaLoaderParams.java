@@ -17,7 +17,6 @@
  */
 package imi.loaders.collada;
 
-import imi.scene.PMatrix;
 import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
 
 /**
@@ -42,9 +41,6 @@ public class ColladaLoaderParams
     
     /** The skeleton node to use for loading skinned meshes onto **/
     private SkeletonNode    m_skeletonNode = null;
-    
-    /** Not used in the loader, you may use it in the asset initializer) **/
-    private PMatrix         m_origin        = null;
     
     /**
      * Default constructor, make a new instance

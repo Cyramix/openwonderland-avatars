@@ -42,17 +42,19 @@ import java.util.logging.Logger;
  */
 public class CharacterLoader
 {
+    /** Logger ref **/
+    private final static Logger logger = Logger.getLogger(CharacterLoader.class.getName());
     /** The collada loader that this class wraps **/
-    private Collada m_colladaLoader = new Collada();
+    private final Collada m_colladaLoader = new Collada();
 
     /**
      * Load the specified collada file and parse out the skeleton, associate it
      * with the provided PScene, and return the skelton node.
-     * @param pScene
+     * @param pscene
      * @param rigLocation
      * @return The completed skeleton node
      */
-    public SkeletonNode loadSkeletonRig(PScene pScene, URL rigLocation)
+    public SkeletonNode loadSkeletonRig(PScene pscene, URL rigLocation)
     {
         //  Load the collada file to the PScene
         m_colladaLoader.clear();
@@ -60,12 +62,12 @@ public class CharacterLoader
         {
             //  Load only the rig and geometry.
             m_colladaLoader.setLoadFlags(true, true, false);
-            if (m_colladaLoader.load(pScene, rigLocation) == false) // uh oh
-                Logger.getLogger(CharacterLoader.class.toString()).log(Level.SEVERE, "COLLADA Loader returned false!");
+            if (m_colladaLoader.load(pscene, rigLocation) == false) // uh oh
+                logger.log(Level.SEVERE, "COLLADA Loader returned false!");
         }
         catch (Exception ex)
         {
-            System.out.println("Exception occured while loading skeleton.");
+            logger.warning("Exception occured while loading skeleton: " + ex.getMessage());
             ex.printStackTrace();
         }
 
@@ -93,7 +95,7 @@ public class CharacterLoader
         }
         catch (Exception ex)
         {
-            System.out.println("Exception occured while loading skeleton.");
+            logger.warning("Exception occured while loading skeleton: " + ex.getMessage());
             ex.printStackTrace();
             result = false;
         }
@@ -102,46 +104,28 @@ public class CharacterLoader
 
     /**
      * This method parses the collada file at the specified location using the
-     * provided skeleton node and pscene. If mergeToGroup is a non-negative value,
+     * provided skeleton node and pscene. If mergeToGroupIndex is a non-negative value,
      * it is used as the index of the animation group that the newly loaded data
-     * should be merged with.
-     * @param loadingPScene
-     * @param owningSkeleton
-     * @param animationLocation
-     * @param mergeToGroup
+     * should be merged with (typically index zero).
+     * @param loadingPScene The pscene to use for loading
+     * @param owningSkeleton The skeleton that will have animations added
+     * @param animationLocation Location of the collada file containing animation info
+     * @param mergeToGroupIndex Index of the group to merge newly loaded data with
      * @return True on success, false otherwise
      */
-    public boolean loadAnimation(PScene loadingPScene, SkeletonNode owningSkeleton, URL animationLocation, int mergeToGroup)
+    public boolean loadAnimation(PScene loadingPScene, SkeletonNode owningSkeleton, URL animationLocation, int mergeToGroupIndex)
     {
         //  Load the collada file to the PScene
         m_colladaLoader.clear();
         
         m_colladaLoader.setLoadFlags(false, false, true);
         m_colladaLoader.setSkeletonNode(owningSkeleton);
+
         boolean result = m_colladaLoader.load(loadingPScene, animationLocation);
 
-        if (mergeToGroup >= 0)
-            mergeLastToAnimationGroup(owningSkeleton, mergeToGroup);
+        if (mergeToGroupIndex >= 0)
+            mergeLastToAnimationGroup(owningSkeleton, mergeToGroupIndex);
 
-        return result;
-    }
-
-    /**
-     * This method locates and removes the indicated skinned mesh from the provided
-     * skeleton.
-     * @param owningSkeleton
-     * @param skinnedMeshName
-     * @return True if the mesh was found and removed, false otherwise
-     */
-    public boolean deleteSkinnedMesh(SkeletonNode owningSkeleton, String skinnedMeshName)
-    {
-        boolean result = false;
-        PNode meshNode = owningSkeleton.findChild(skinnedMeshName);
-        if (meshNode instanceof PPolygonSkinnedMeshInstance)
-        {
-            meshNode.getParent().removeChild(meshNode);
-            result = true;
-        }
         return result;
     }
 
@@ -149,27 +133,29 @@ public class CharacterLoader
      * This method merges the last animation group within a component with the
      * animation group indicated by the provided index. No action is taken if
      * the specified group index already refers to the last group.
-     * @param pSkeletonNode
+     * @param skeletonNode
      * @param groupIndex
      */
-    private void mergeLastToAnimationGroup(SkeletonNode pSkeletonNode, int groupIndex)
+    private void mergeLastToAnimationGroup(SkeletonNode skeletonNode, int groupIndex)
     {   
-        AnimationComponent pAnimationComponent = pSkeletonNode.getAnimationComponent();
+        AnimationComponent pAnimationComponent = skeletonNode.getAnimationComponent();
         
         //  Append to the end of the AnimationGroup.
-        if (pAnimationComponent.getGroups().size() > groupIndex)
+        if (groupIndex >= pAnimationComponent.getGroups().size())
+            logger.warning("The provided group index is out of bounds.");
+        else
         {
             AnimationGroup group = pAnimationComponent.getGroups().get(groupIndex);
             AnimationGroup lastGroup = pAnimationComponent.getGroups().get(pAnimationComponent.getGroups().size() - 1);
-            
-            if (group != lastGroup)
+
+            if (group == lastGroup) // Same instance?
+                logger.warning("Provided group index IS the last animation group.");
+            else
             {
                 group.appendAnimationGroup(lastGroup);
                 pAnimationComponent.getGroups().remove(lastGroup);
             }
         }
-        else
-            System.out.println("The animation where loaded in the wrong order, facial animation must be loaded last");
     }
 
 }

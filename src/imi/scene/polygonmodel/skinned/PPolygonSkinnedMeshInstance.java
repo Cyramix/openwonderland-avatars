@@ -122,20 +122,22 @@ public class PPolygonSkinnedMeshInstance extends PPolygonMeshInstance
 
     public void linkJointsToSkeletonNode(SkeletonNode skeleton) 
     {
-        int a;
-        String jointName = "";
-        int jointIndex;
+        int jointIndex = -1;
         PPolygonSkinnedMesh skinnedGeometry = (PPolygonSkinnedMesh)m_geometry;
-        int []influenceIndices = new int[skinnedGeometry.getJointNameCount()];
+        int[] influenceIndices = new int[skinnedGeometry.getJointNameCount()];
 
-        for (a=0; a<skinnedGeometry.getJointNameCount(); a++)
+        int counter = 0;
+        for (String jointName : skinnedGeometry.getJointNames())
         {
-            jointName = skinnedGeometry.getJointName(a);
-
-            //  Get the index of the Joint.
             jointIndex = m_pSkeletonNode.getSkinnedMeshJointIndex(jointName);
-
-            influenceIndices[a] = jointIndex;
+            if (jointIndex == -1) // Not found!
+            {
+                logger.severe("Joint not found for influence #" + counter + ", name: " + jointName + " - Skipping...");
+                continue;
+            }
+            else
+                influenceIndices[counter] = jointIndex;
+            counter++;
         }
 
         setInfluenceIndices(influenceIndices);
@@ -235,7 +237,9 @@ public class PPolygonSkinnedMeshInstance extends PPolygonMeshInstance
         if (bDeforming)
             return true;
         AbstractShaderProgram shader = getMaterialRef().getMaterial().getShader();
-        
+
+        if (shader == null) // No shader, no deformer!
+            return false;
         ShaderProperty[] props = shader.getProperties();
         
         for (ShaderProperty prop : props)

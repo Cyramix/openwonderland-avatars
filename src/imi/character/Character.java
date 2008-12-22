@@ -63,7 +63,9 @@ import imi.loaders.repository.AssetInitializer;
 import imi.loaders.repository.SharedAsset;
 import imi.loaders.repository.SharedAsset.SharedAssetType;
 import imi.scene.PNode;
+import imi.scene.animation.AnimationComponent;
 import imi.scene.animation.AnimationComponent.PlaybackMode;
+import imi.scene.animation.AnimationGroup;
 import imi.scene.animation.AnimationListener;
 import imi.scene.animation.AnimationState;
 import imi.scene.animation.TransitionCommand;
@@ -935,7 +937,9 @@ public abstract class Character extends Entity implements SpatialObject, Animati
     {
         if (m_facialAnimationQ == null)
         {
-            if (m_skeleton.getAnimationComponent().getGroups().size() > 1)   
+            AnimationComponent ac = m_skeleton.getAnimationComponent();
+            List<AnimationGroup> groups = ac.getGroups();
+            if (groups.size() > 1)
                 m_facialAnimationQ = new TransitionQueue(m_skeleton, 1);
             else
                 return;   

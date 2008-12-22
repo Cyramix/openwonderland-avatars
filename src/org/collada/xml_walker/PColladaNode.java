@@ -57,6 +57,10 @@ public class PColladaNode
     {
     }
 
+    public Iterable<PColladaNode> getChildren() {
+        return m_ChildNodes;
+    }
+
 
     /**
      * Gets the name of the PColladaNode.

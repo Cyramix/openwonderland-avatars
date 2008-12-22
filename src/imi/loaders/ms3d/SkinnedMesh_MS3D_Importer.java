@@ -318,7 +318,7 @@ public class SkinnedMesh_MS3D_Importer
         // generate jME geometry
         m_pMesh.submit(new PPolygonTriMeshAssembler());
         // ready our influence list
-        m_pMesh.setInfluenceIndices(indexSet.toArray());
+        m_pMesh.setInfluenceIndices(indexSet);
         // attach to our skeleton
         m_skeleton.addChild(m_pMesh);
     }

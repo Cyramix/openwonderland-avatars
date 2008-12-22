@@ -97,13 +97,13 @@ public class SavingAndLoadingTest extends DemoBase
 
 
         // Uncomment to load a save file
-//        Thread.yield();
-//        try {
-//            testCharacter.loadConfiguration(new URL("file://localhost/work/avatars/assets/configurations/SavingTestOutput.xml"));
-//
-//        } catch (MalformedURLException ex) {
-//            Logger.getLogger(SavingAndLoadingTest.class.getName()).log(Level.SEVERE, null, ex);
-//        }
+        Thread.yield();
+        try {
+            testCharacter.loadConfiguration(new URL("file://localhost/work/avatars/assets/configurations/SavingTestOutput.xml"));
+
+        } catch (MalformedURLException ex) {
+            Logger.getLogger(SavingAndLoadingTest.class.getName()).log(Level.SEVERE, null, ex);
+        }
 
         // Uncomment to get a pscene explorer------
 //        te = new TreeExplorer();

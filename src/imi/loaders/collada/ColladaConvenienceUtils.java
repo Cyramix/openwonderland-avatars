@@ -22,11 +22,17 @@ import org.collada.colladaschema.VisualScene;
 /**
  * This class provides static convenience methods for assistance in parsing
  * COLLADA documents.
+ * --- WORK IN PROGRESS -- This class is intended for use with the second iteration
+ * of the collada loader
  * @author Ronald E Dahlgren
  */
 public class ColladaConvenienceUtils
 {
-
+    /**
+     * Find the visual scene in the library that uses the provided identifier
+     * @param visualSceneIdentifier
+     * @return The VisualScene, or null if none matches
+     */
     public static VisualScene findVisualSceneInLibrary(String visualSceneIdentifier)
     {
         throw new UnsupportedOperationException("Not yet implemented");

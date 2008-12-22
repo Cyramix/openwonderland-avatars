@@ -30,7 +30,7 @@ import imi.scene.utils.PRenderer;
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
-import javolution.util.FastList;
+import java.util.List;
 
 
 
@@ -125,14 +125,12 @@ public class PPolygonSkinnedMesh extends PPolygonMesh
      * Set the list of influences for this mesh
      * @param array An array of type Integer
      */
-    public void setInfluenceIndices(Object[] array)
+    public void setInfluenceIndices(List<Integer> influences)
     {
-        // Safety checking!
-        if (array == null || array.length == 0 || !(array[0] instanceof Integer))
-            return;
-        m_influenceIndices = new int[array.length];
-        for (int i = 0; i < array.length; ++i)
-            m_influenceIndices[i] = ((Integer)array[i]).intValue();
+        m_influenceIndices = new int[influences.size()];
+        int counter = 0;
+        for (Integer index : influences)
+            m_influenceIndices[counter] = index;
     }
     
     /**
@@ -177,12 +175,12 @@ public class PPolygonSkinnedMesh extends PPolygonMesh
     /**
      * This method returns the number of bones that influence
      * this mesh. 
-     * @return Number of influences, or -1 if the list is null
+     * @return Number of influences
      */
     public int getNumberOfInfluences()
     {
         if (m_influenceIndices == null)
-            return -1;
+            return 0;
         else
             return m_influenceIndices.length;
     }
@@ -416,11 +414,21 @@ public class PPolygonSkinnedMesh extends PPolygonMesh
         for (String jointName : m_JointNames)
         {
             int BFTIndex = skeleton.getSkinnedMeshJointIndex(jointName);
-            influenceIndices[index] = BFTIndex;
+            if (BFTIndex == -1) // not found!
+            {
+                logger.severe("Joint not found for influence #" + index + ", name: " + jointName);
+                continue;
+            }
+            else
+                influenceIndices[index] = BFTIndex;
             index++;
         }
        
         setInfluenceIndices(influenceIndices);
+    }
+
+    public Iterable<String> getJointNames() {
+        return m_JointNames;
     }
 
 }

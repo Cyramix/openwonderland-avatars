@@ -138,7 +138,7 @@ public class InstructionProcessor
                 case deleteSkinnedMesh:
                 {
                     String skinnedMeshName = instruction.getDataAsString();
-                    if (!m_characterLoader.deleteSkinnedMesh(m_skeleton, skinnedMeshName))
+                    if (m_skeleton.findAndRemoveChild(skinnedMeshName) == null)
                         logger.warning("COLLADA configuration ERROR: was not able to DELETE a skinned mesh!");
                 }
                 break;

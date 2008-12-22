@@ -26,7 +26,8 @@ import org.collada.colladaschema.COLLADA.Scene;
 import org.jdesktop.mtgame.WorldManager;
 
 /**
- * The new and improved COLLADA loader
+ * The new and improved COLLADA loader.
+ * --- WORK IN PROGRESS ---
  * @author Ronald E Dahlgren
  */
 public class ColladaLoaderV2
@@ -38,23 +39,32 @@ public class ColladaLoaderV2
     /** The root node for the COLLADA document **/
     private COLLADA m_documentRoot = null;
 
-        //  Pointers to the various Libraries found in the collada file.
-    private LibraryCameras                              m_pLibraryCameras;
-    private LibraryImages                               m_pLibraryImages;
-    private LibraryEffects                              m_pLibraryEffects;
-    private LibraryMaterials                            m_pLibraryMaterials;
-    private LibraryAnimations                           m_pLibraryAnimations;
-    private LibraryVisualScenes                         m_pLibraryVisualScenes;
-    private LibraryGeometries                           m_pLibraryGeometries;
-    private LibraryControllers                          m_pLibraryControllers;
-    private LibraryNodes                                m_pLibraryNodes;
+    /** Library references **/
+    private LibraryCameras      m_libraryCameras       = null;
+    private LibraryImages       m_libraryImages        = null;
+    private LibraryEffects      m_libraryEffects       = null;
+    private LibraryMaterials    m_libraryMaterials     = null;
+    private LibraryAnimations   m_libraryAnimations    = null;
+    private LibraryVisualScenes m_libraryVisualScenes  = null;
+    private LibraryGeometries   m_libraryGeometries    = null;
+    private LibraryControllers  m_libraryControllers   = null;
+    private LibraryNodes        m_libraryNodes         = null;
 
+    /**
+     * Construct a new instance of the loader
+     * @param wm
+     */
     public ColladaLoaderV2(WorldManager wm)
     {
         m_WM = wm;
         m_pscene = new PScene("Collada Fodder PScene", wm);
     }
 
+    /**
+     * Load the specified collada file.
+     * @param file
+     * @throws javax.xml.bind.JAXBException
+     */
     public void loadCollada(URL file) throws JAXBException
     {
         // Out with any residual state
@@ -78,6 +88,9 @@ public class ColladaLoaderV2
         m_documentRoot = null;
     }
 
+    /**
+     * Instantiate the target scenes of the current collada file.
+     */
     private void instantiateDocument()
     {
         // instantiate the scene into the pscene
