@@ -101,10 +101,10 @@ public class COLLADA_ModelTest extends DemoBase
 
             public boolean initialize(Object asset) {
                 SkeletonNode skeleton = (SkeletonNode)((PNode)asset).getChild(0);
-                Instruction configurationInstruction = new Instruction(Instruction.InstructionNames.instructions, new String("Configurating My Avatar!"));
-                configurationInstruction.addInstruction(Instruction.InstructionNames.setSkeleton, skeleton);
+                Instruction configurationInstruction = new Instruction(Instruction.InstructionType.grouping, new String("Configurating My Avatar!"));
+                configurationInstruction.addChildInstruction(Instruction.InstructionType.setSkeleton, skeleton);
                 try {
-                    configurationInstruction.addInstruction(Instruction.InstructionNames.loadAnimation, new URL("file://localhost/work/avatars/assets/models/collada/Avatars/Male/Male_Walk.dae"));
+                    configurationInstruction.addChildInstruction(Instruction.InstructionType.loadAnimation, new URL("file://localhost/work/avatars/assets/models/collada/Avatars/Male/Male_Walk.dae"));
                 } catch (MalformedURLException ex) {
                     Logger.getLogger(COLLADA_ModelTest.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -115,10 +115,10 @@ public class COLLADA_ModelTest extends DemoBase
                 skeleton.addAnimationState(newState);
                 newState.setCurrentCycle(0); // skeleton.getAnimationGroup().getCycleCount() - 1
                 skeleton.setShaderOnSkinnedMeshes(new VertDeformerWithSpecAndNormalMap(fwm));
-                Instruction maleBind = new Instruction(Instruction.InstructionNames.instructions, new String("Loading the male bind pose"));
-                maleBind.addInstruction(Instruction.InstructionNames.setSkeleton, null);
+                Instruction maleBind = new Instruction(Instruction.InstructionType.grouping, new String("Loading the male bind pose"));
+                maleBind.addChildInstruction(Instruction.InstructionType.setSkeleton, null);
                 try {
-                    maleBind.addInstruction(Instruction.InstructionNames.loadHumanoidAvatarBindPose, new URL("file://localhost/work/avatars/assets/models/collada/Avatars/Male/Male_Bind.dae"));
+                    maleBind.addChildInstruction(Instruction.InstructionType.loadHumanoidAvatarBindPose, new URL("file://localhost/work/avatars/assets/models/collada/Avatars/Male/Male_Bind.dae"));
                 } catch (MalformedURLException ex) {
                     Logger.getLogger(COLLADA_ModelTest.class.getName()).log(Level.SEVERE, null, ex);
                 }
