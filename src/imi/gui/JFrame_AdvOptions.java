@@ -798,9 +798,8 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
 
         SkeletonNode skeleton   = m_sceneData.getAvatar().getSkeleton();
 
-        String[] szEyes     = new String[] { "leftInnerBrow",   "rightInnerBrow",  "leftOuterBrow",    "rightOuterBrow",
-                                             "leftEyeLid",      "rightEyeLid",     "leftEye",          "rightEye",
-                                             "leftCheek",       "rightCheek" };
+        String[] szEyes     = new String[] { "leftEye",     "leftEyeLid",       "leftInnerBrow",    "leftOuterBrow",    "leftCheek",
+                                             "rightEye",    "rightEyeLid",      "rightInnerBrow",   "rightOuterBrow",   "rightCheek" };
 
         SkinnedMeshJoint[]  eyes     = new SkinnedMeshJoint[szEyes.length];
         int                 iSize    = szEyes.length;
