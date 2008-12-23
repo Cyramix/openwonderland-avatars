@@ -42,8 +42,6 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
 ////////////////////////////////////////////////////////////////////////////////
     private Map<m_bodyPart, SkinnedMeshJoint[]> m_skeleton;
     private SceneEssentials                     m_sceneData;
-    private float                               m_baseLen = 10.0f;
-    private float                               m_baseScale = 20.0f;
     private NumberFormat                        m_format;
 ////////////////////////////////////////////////////////////////////////////////
 // Enumerations for the skeleton and body
@@ -179,91 +177,32 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
         {
             case leftlowerarmLength:
             {
-//                Vector3f base   = leftforearm[1].getTransform().getLocalMatrix(false).getTranslation();
-//                leftforearm[1].getBindPose().setTranslation(base.add(0.0f, actualval, 0.0f));
-//
-//                if (actualval <= 0.05f) {
-//                    for (int i = 0; i < leftforearm.length; i++) {
-//                        float y = scale.y;
-//                        y += mod * 5;
-//                        formattedNumber = m_format.format(y);
-//                        scale.y = Float.valueOf(formattedNumber);
-//
-//                        if (actualval == 0.0f)
-//                            scale.y = 1.0f;
-//
-//                        leftforearm[i].getLocalModifierMatrix().setScale(scale);
-//                    }
-//                }
-                SkinnedMeshJoint joint = skelnode.findSkinnedMeshJoint(leftforearm[1].getName());
-                Vector3f start = joint.getBindPose().getTranslation();
+                skelnode.displace(leftforearm[1].getName(), ladjust);
 
                 if (actualval <= 0.05f) {
                     for (int i = 0; i < leftforearm.length; i++) {
-                        leftforearm[i].getLocalModifierMatrix().getScale(scale);
-
-                        float y = scale.y;
-                        y += mod * 5;
+                        float y = scale.y += actualval * 3;
                         formattedNumber = m_format.format(y);
                         scale.y = Float.valueOf(formattedNumber);
-
-                        if (actualval == 0.0f)
-                            scale.y = 1.0f;
-
                         leftforearm[i].getLocalModifierMatrix().setScale(scale);
                     }
                 }
-
-                formattedNumber = m_format.format(ladjust.y * (1.0f/scale.y));
-                ladjust.x *= (1.0f/scale.x);    ladjust.y = Float.valueOf(formattedNumber);    ladjust.z *= (1.0f/scale.z);
-
-                // TODO: Need a better way to perform this range check... too hard coded
-                if (actualval == 0.0f) {
-                    Vector3f reset = joint.getTransform().getLocalMatrix(false).getTranslation();
-                    joint.getBindPose().setTranslation(reset);
-                } else if (start.y < -0.008531805f) {
-                    ladjust = new Vector3f(0.0f, -0.008531805f, 0.0f);
-                    joint.getBindPose().setTranslation(ladjust);
-                } else
-                    skelnode.displace(leftforearm[1].getName(), ladjust);
 
                 break;
             }
             case rightlowerarmLength:
             {
-                Vector3f base   = rightforearm[1].getTransform().getLocalMatrix(false).getTranslation();
-                rightforearm[1].getBindPose().setTranslation(base.add(0.0f, actualval, 0.0f));
-//                SkinnedMeshJoint joint = skelnode.findSkinnedMeshJoint(rightforearm[1].getName());
-//                Vector3f start = joint.getBindPose().getTranslation();
-//
-//                if (actualval <= 0.05f) {
-//                    for (int i = 0; i < rightforearm.length; i++) {
-//                        rightforearm[i].getLocalModifierMatrix().getScale(scale);
-//
-//                        float y = scale.y;
-//                        y += mod * 5;
-//                        formattedNumber = m_format.format(y);
-//                        scale.y = Float.valueOf(formattedNumber);
-//
-//                        if (actualval == 0.0f)
-//                            scale.y = 1.0f;
-//
-//                        rightforearm[i].getLocalModifierMatrix().setScale(scale);
-//                    }
-//                }
-//
-//                formattedNumber = m_format.format(radjust.y * (1.0f/scale.y));
-//                radjust.x *= (1.0f/scale.x);    radjust.y = Float.valueOf(formattedNumber);    radjust.z *= (1.0f/scale.z);
-//
-//                // TODO: Need a better way to perform this range check... too hard coded
-//                if (actualval == 0.0f) {
-//                    Vector3f reset = joint.getTransform().getLocalMatrix(false).getTranslation();
-//                    joint.getBindPose().setTranslation(reset);
-//                } else if (start.y < -0.008531805f) {
-//                    radjust = new Vector3f(0.0f, -0.008531805f, 0.0f);
-//                    joint.getBindPose().setTranslation(radjust);
-//                } else
-//                    skelnode.displace(rightforearm[1].getName(), radjust);
+                skelnode.displace(rightforearm[1].getName(), radjust);
+
+                if (actualval <= 0.05f) {
+                    for (int i = 0; i < rightforearm.length; i++) {
+                        float y = scale.y += actualval * 3;
+                        formattedNumber = m_format.format(y);
+                        scale.y = Float.valueOf(formattedNumber);
+                        rightforearm[i].getLocalModifierMatrix().setScale(scale);
+                    }
+                }
+
                 break;
             }
             case leftlowerarmThickness:
@@ -305,73 +244,31 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
         {
             case leftupperarmLength:
             {
-//                SkinnedMeshJoint joint = skelnode.findSkinnedMeshJoint(leftupperarm[1].getName());
-//                Vector3f start = joint.getBindPose().getTranslation();
-//
-//                if (actualval <= 0.05f) {
-//                    for (int i = 0; i < leftupperarm.length; i++) {
-//                        leftupperarm[i].getLocalModifierMatrix().getScale(scale);
-//
-//                        float y = scale.y;
-//                        y += mod;
-//                        formattedNumber = m_format.format(y);
-//                        scale.y = Float.valueOf(formattedNumber);
-//
-//                        if (actualval == 0.0f)
-//                            scale.y = 1.0f;
-//
-//                        leftupperarm[i].getLocalModifierMatrix().setScale(scale);
-//                    }
-//                }
-//
-//                formattedNumber = m_format.format(ladjust.y * (1.0f/scale.y));
-//                ladjust.x *= (1.0f/scale.x);    ladjust.y = Float.valueOf(formattedNumber);    ladjust.z *= (1.0f/scale.z);
-//
-//                // TODO: Need a better way to perform this range check... too hard coded
-//                if (actualval == 0.0f) {
-//                    ladjust = new Vector3f(0.0f, 0.134072f, 0.0f);
-//                    joint.getBindPose().setTranslation(ladjust);
-//                } else if (start.y < 0.044073634f) {
-//                    ladjust = new Vector3f(0.0f, 0.044073634f, 0.0f);
-//                    joint.getBindPose().setTranslation(ladjust);
-//                } else
-                    skelnode.displace(leftupperarm[1].getName(), ladjust);
+                skelnode.displace(leftupperarm[1].getName(), ladjust);
+
+                if (actualval <= 0.05f) {
+                    for (int i = 0; i < leftupperarm.length; i++) {
+                        float y = scale.y += actualval * 4;
+                        formattedNumber = m_format.format(y);
+                        scale.y = Float.valueOf(formattedNumber);
+                        leftupperarm[i].getLocalModifierMatrix().setScale(scale);
+                    }
+                }
 
                 break;
             }
             case rightupperarmLength:
             {
-                SkinnedMeshJoint joint = skelnode.findSkinnedMeshJoint(rightupperarm[1].getName());
-                Vector3f start = joint.getBindPose().getTranslation();
+                skelnode.displace(rightupperarm[1].getName(), radjust);
 
                 if (actualval <= 0.05f) {
                     for (int i = 0; i < rightupperarm.length; i++) {
-                        rightupperarm[i].getLocalModifierMatrix().getScale(scale);
-
-                        float y = scale.y;
-                        y += mod;
+                        float y = scale.y += actualval * 4;
                         formattedNumber = m_format.format(y);
                         scale.y = Float.valueOf(formattedNumber);
-
-                        if (actualval == 0.0f)
-                            scale.y = 1.0f;
-
                         rightupperarm[i].getLocalModifierMatrix().setScale(scale);
                     }
                 }
-
-                formattedNumber = m_format.format(radjust.y * (1.0f/scale.y));
-                radjust.x *= (1.0f/scale.x);    radjust.y = Float.valueOf(formattedNumber);    radjust.z *= (1.0f/scale.z);
-
-                // TODO: Need a better way to perform this range check... too hard coded
-                if (actualval == 0.0f) {
-                    radjust = new Vector3f(0.0f, 0.134072f, 0.0f);
-                    joint.getBindPose().setTranslation(radjust);
-                } else if (start.y < 0.044073634f) {
-                    radjust = new Vector3f(0.0f, 0.044073634f, 0.0f);
-                    joint.getBindPose().setTranslation(radjust);
-                } else
-                    skelnode.displace(rightupperarm[1].getName(), radjust);
 
                 break;
             }
@@ -444,23 +341,46 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
 
     private synchronized void adjustCalves(m_sliderControl type, float mod, float actualval) {
         SkeletonNode    skelnode    = m_sceneData.getAvatar().getSkeleton();
+        String          formattedNumber = null;
         if (skelnode == null) { return; }
 
         SkinnedMeshJoint[]  leftlowerleg    = m_skeleton.get(m_bodyPart.Left_LowerLeg);
         SkinnedMeshJoint[]  rightlowerleg   = m_skeleton.get(m_bodyPart.Right_LowerLeg);
         Vector3f            ladjust         = new Vector3f(0.0f, mod, 0.0f);
         Vector3f            radjust         = new Vector3f(0.0f, mod, 0.0f);
+        Vector3f            scale           = new Vector3f(1.0f, 1.0f, 1.0f);
+        m_format                            = new DecimalFormat("0.00");
 
         switch(type)
         {
             case leftlowerlegLength:
             {
                 skelnode.displace(leftlowerleg[1].getName(), ladjust);
+
+                if (actualval <= 0.05f) {
+                    for (int i = 0; i < leftlowerleg.length; i++) {
+                        float y = scale.y += actualval * 2;
+                        formattedNumber = m_format.format(y);
+                        scale.y = Float.valueOf(formattedNumber);
+                        leftlowerleg[i].getLocalModifierMatrix().setScale(scale);
+                    }
+                }
+
                 break;
             }
             case rightlowerlegLength:
             {
                 skelnode.displace(rightlowerleg[1].getName(), radjust);
+
+                if (actualval <= 0.05f) {
+                    for (int i = 0; i < rightlowerleg.length; i++) {
+                        float y = scale.y += actualval * 2;
+                        formattedNumber = m_format.format(y);
+                        scale.y = Float.valueOf(formattedNumber);
+                        rightlowerleg[i].getLocalModifierMatrix().setScale(scale);
+                    }
+                }
+
                 break;
             }
             case leftlowerlegThickness:
@@ -494,17 +414,18 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
         SkinnedMeshJoint[]  rightupperleg   = m_skeleton.get(m_bodyPart.Right_UpperLeg);
         Vector3f            ladjust         = new Vector3f(0.0f, mod, 0.0f);
         Vector3f            radjust         = new Vector3f(0.0f, mod, 0.0f);
+        m_format                            = new DecimalFormat("0.00");
 
         switch(type)
         {
             case leftupperlegLength:
             {
-                skelnode.displace(leftupperleg[1].getName(), ladjust);
+                skelnode.displace(leftupperleg[0].getName(), ladjust);
                 break;
             }
             case rightupperlegLength:
             {
-                skelnode.displace(rightupperleg[1].getName(), radjust);
+                skelnode.displace(rightupperleg[0].getName(), radjust);
                 break;
             }
             case leftupperlegThickness:
