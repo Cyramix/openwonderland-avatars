@@ -357,4 +357,8 @@ public class JPanel_ArmsHandsOption extends javax.swing.JPanel {
         RightUpperarm_Length.setParentFrame((JFrame_AdvOptions) m_baseFrame);
         RightUpperarm_Thickness.setParentFrame((JFrame_AdvOptions) m_baseFrame);
     }
+
+    public void setArmConstraints() {
+
+    }
 }

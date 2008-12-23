@@ -28,6 +28,8 @@ import java.awt.AWTEvent;
 import java.awt.Toolkit;
 import java.awt.event.AWTEventListener;
 import java.awt.event.FocusEvent;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import javax.swing.JSlider;
 import javax.swing.JSpinner;
 import javax.swing.text.JTextComponent;
@@ -47,6 +49,8 @@ public class JPanel_VerticalSliderT extends javax.swing.JPanel {
     private boolean                             m_SpinnerInFocus    =   false;
     private float                               m_curr              =   0.0f;
     private float                               m_prev              =   0.0f;
+    private NumberFormat                        m_format            =   new DecimalFormat("0.00");
+    private String                              m_formattedNumber   =   null;
 
     /** Creates new form JPanel_VerticalSliderT */
     public JPanel_VerticalSliderT() {
@@ -95,8 +99,9 @@ public class JPanel_VerticalSliderT extends javax.swing.JPanel {
                     float diff = newVal - m_curr;
                     m_prev = m_curr;
                     m_curr = newVal;
-                    
-                    m_ParentFrame.parseModification(m_ObjectRef, diff, newVal);
+
+                    m_formattedNumber = m_format.format(diff);
+                    m_ParentFrame.parseModification(m_ObjectRef, Float.valueOf(m_formattedNumber), newVal);
                 }
                 break;
             }
@@ -111,7 +116,8 @@ public class JPanel_VerticalSliderT extends javax.swing.JPanel {
                     m_prev = m_curr;
                     m_curr = curVal;
 
-                    m_ParentFrame.parseModification(m_ObjectRef, diff, newVal);
+                    m_formattedNumber = m_format.format(diff);
+                    m_ParentFrame.parseModification(m_ObjectRef, diff, curVal);
                 }
                 break;
             }
@@ -138,7 +144,7 @@ public class JPanel_VerticalSliderT extends javax.swing.JPanel {
         setLayout(new java.awt.GridBagLayout());
 
         jSlider1.setMaximum(30);
-        jSlider1.setMinimum(1);
+        jSlider1.setMinimum(6);
         jSlider1.setMinorTickSpacing(1);
         jSlider1.setOrientation(javax.swing.JSlider.VERTICAL);
         jSlider1.setPaintTicks(true);
@@ -154,7 +160,7 @@ public class JPanel_VerticalSliderT extends javax.swing.JPanel {
         });
         add(jSlider1, new java.awt.GridBagConstraints());
 
-        jSpinner1.setModel(new javax.swing.SpinnerNumberModel(Float.valueOf(0.0f), Float.valueOf(-0.15f), Float.valueOf(0.15f), Float.valueOf(0.01f)));
+        jSpinner1.setModel(new javax.swing.SpinnerNumberModel(Float.valueOf(0.0f), Float.valueOf(-0.09f), Float.valueOf(0.15f), Float.valueOf(0.01f)));
         jSpinner1.setMinimumSize(new java.awt.Dimension(80, 28));
         jSpinner1.setPreferredSize(new java.awt.Dimension(80, 28));
         jSpinner1.addChangeListener(new javax.swing.event.ChangeListener() {
