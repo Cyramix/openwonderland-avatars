@@ -118,7 +118,8 @@ import javolution.util.FastList;
  * @author Lou Hayt
  */
 public abstract class Character extends Entity implements SpatialObject, AnimationListener
-{   
+{
+    private static final Logger logger = Logger.getLogger(Character.class.getName());
     /**
      * Maps to game triggers from VK_ key IDs that are forwarded from the input
      * manager. This defines which triggers react to what keyboard input.
@@ -132,7 +133,6 @@ public abstract class Character extends Entity implements SpatialObject, Animati
     protected PScene                        m_pscene                = null;
     protected JScene                        m_jscene                = null;
     protected PPolygonModelInstance         m_modelInst             = null;
-    private boolean                         m_initialized           = false;
     protected SkeletonNode                  m_skeleton              = null;
     protected PPolygonMeshInstance          m_mesh                  = null;
     protected ObjectCollection              m_objectCollection      = null;
@@ -142,7 +142,8 @@ public abstract class Character extends Entity implements SpatialObject, Animati
     protected CharacterEyes                 m_eyes                  = null;
     protected VerletArm                     m_rightArm              = null;
     protected VerletArm                     m_leftArm               = null;
-    private VerletSkeletonFlatteningManipulator m_skeletonManipulator = null;
+    private VerletSkeletonFlatteningManipulator m_skeletonManipulator   = null;
+    private boolean                             m_initialized           = false;
 
     /**
      * Sets up the mtgame entity 
@@ -177,6 +178,8 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         // Initialize the SharedAsset of the attributes
         m_attributes = attributes;
         initAsset();
+        // Set up the asset initializer to apply the attributes on this character when it executes
+        setAssetInitializer(m_attributes, null);
         
         // Initialize the scene
         initScene(processors);
@@ -201,10 +204,8 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         // Add the processor collection component to the entity
         addComponent(ProcessorCollectionComponent.class, processorCollection);
 
-        if (addEntity) {
-            // Add the entity to the world manager
+        if (addEntity) // Add the entity to the world manager
             wm.addEntity(this);
-        }
     }
 
     /**
@@ -215,8 +216,75 @@ public abstract class Character extends Entity implements SpatialObject, Animati
      */
     public Character(URL configurationFile, WorldManager wm)
     {
-        super("unsupported");
-        throw new UnsupportedOperationException("Not implemented, check back later.");
+        super("InterimName");
+        m_wm = wm;
+        // reconstitute the CharacterAttributes
+        xmlCharacter configFileDOM = null;
+        try {
+            final JAXBContext context = JAXBContext.newInstance("imi.serialization.xml.bindings");
+            final Unmarshaller m = context.createUnmarshaller();
+
+            InputStream is = configurationFile.openConnection().getInputStream();
+            Object characterObj = m.unmarshal( is );
+
+            if (characterObj instanceof xmlCharacter)
+                configFileDOM = (xmlCharacter)characterObj;
+            else
+                logger.log(Level.SEVERE, "JAXB somehow parsed the file and made some other object: " + characterObj.toString());
+        }
+        catch (JAXBException ex) {
+            logger.log(Level.SEVERE, "Failed to parse the file! " + ex.getMessage());
+            logger.log(Level.SEVERE, ex.getErrorCode() + " : " + ex.getLocalizedMessage() + " : " + ex.toString());
+            ex.printStackTrace();
+
+        }
+        catch (IOException ex) {
+            logger.log(Level.SEVERE, "Failed to open InputStream to " +
+                                    configurationFile.toString() + "! " + ex.getMessage());
+        }
+        // Did it load successfully?
+        if (configFileDOM == null) // Error... abort
+        {
+            logger.severe("Error attempting to load configuration file!");
+            return;
+        }
+
+        // Initialize key bindings (abstract override hook)
+        initKeyBindings();
+        m_pscene = new PScene(configFileDOM.getAttributes().getName(), m_wm);
+        // The collection of processors for this entity
+        ArrayList<ProcessorComponent> processors = new ArrayList<ProcessorComponent>();
+        // Initialize the attributes
+        m_attributes = new CharacterAttributes(configFileDOM.getAttributes());
+
+        initAsset();
+        // Set up the asset initializer to apply the attributes on this character when it executes
+        setAssetInitializer(m_attributes, configFileDOM);
+
+        // Initialize the scene
+        initScene(processors);
+
+        // The glue between JME and pscene
+        m_jscene = new JScene(m_pscene);
+
+        // Use default render states (unless that method is overriden)
+        setRenderStates();
+
+        // Create a scene component and set the root to our jscene
+        RenderComponent rc = m_wm.getRenderManager().createRenderComponent(m_jscene);
+
+        // Add the scene component with our jscene to the entity
+        addComponent(RenderComponent.class, rc);
+
+        // Add our processors to a collection component
+        ProcessorCollectionComponent processorCollection = new ProcessorCollectionComponent();
+        for (int i = 0; i < processors.size(); i++)
+            processorCollection.addProcessor(processors.get(i));
+
+        // Add the processor collection component to the entity
+        addComponent(ProcessorCollectionComponent.class, processorCollection);
+
+        wm.addEntity(this);
     }
      
     /**
@@ -245,7 +313,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
                 if (m_attributes.getBaseURL() != null)
                     bindPoseURL = new URL(m_attributes.getBaseURL() + m_attributes.getBindPoseFile());
             } catch (MalformedURLException ex) {
-                Logger.getLogger(Character.class.getName()).log(Level.SEVERE,
+                logger.log(Level.SEVERE,
                         "URL for the bind pose was malformed, it was: " +
                         m_attributes.getBaseURL().toString() +
                         m_attributes.getBindPoseFile().toString() +
@@ -272,8 +340,6 @@ public abstract class Character extends Entity implements SpatialObject, Animati
             //System.err.println("GOT SHARED ASSET " + character);
 
             character.setUserData(new ColladaLoaderParams(true, true, false, false, 4, m_attributes.getName(), null));
-            // Set up the asset initializer to apply the attributes on this character when it executes
-            setAssetInitializer(character, m_attributes);
             m_attributes.setAsset(character);
         }
     }
@@ -284,8 +350,9 @@ public abstract class Character extends Entity implements SpatialObject, Animati
      * @param character
      * @param attributes
      */
-    private void setAssetInitializer(SharedAsset character, final CharacterAttributes attributes) 
+    private void setAssetInitializer(final CharacterAttributes attributes, final xmlCharacter characterDOM)
     {
+        SharedAsset character = attributes.getAsset();
         AssetInitializer init = new AssetInitializer() {
             public boolean initialize(Object asset) 
             {
@@ -294,7 +361,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
                 {
                     // Initialize references
                     m_modelInst = (PPolygonModelInstance) assetNode;
-                    initializeCharacter();
+                    initializeCharacter(); // Bind up skeleton reference, etc
 
                     // Set position
                     if (attributes.getOrigin() != null)
@@ -308,12 +375,17 @@ public abstract class Character extends Entity implements SpatialObject, Animati
 
                     // Set animations and custom meshes
                     excecuteAttributes(m_attributes, false);
-                    
-                    
-                    // Set material
-//                    m_skeleton.setShaderOnSkinnedMeshes(new VertDeformerWithSpecAndNormalMap(m_wm));
-//                    m_skeleton.setShaderOnMeshes(new NormalAndSpecularMapShader(m_wm));
-
+                    // Apply remaining customizations
+                    if (characterDOM != null)
+                    {
+                        // Materials
+                        applyMaterialProperties(characterDOM);
+                        // Skeletal modifications
+                        applySkeletalModifications(characterDOM);
+                    }
+                    else
+                        setDefaultShaders();
+  
                     // Facial animation state is designated to id (and index) 1
                     AnimationState facialAnimationState = new AnimationState(1);
                     facialAnimationState.setCurrentCycle(-1); 
@@ -336,13 +408,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
 //                            VerletVisualManager visual = new VerletVisualManager("avatar arm visuals", m_wm);
 //                            visual.addVerletObject(m_arm);
 //                            visual.setWireframe(true);
-                    // old prototype
-//                    // Set the joint manipulator on every skinned mesh (remember to set it again when adding new meshes!)
-//                    ArrayList<PPolygonSkinnedMeshInstance> skinnedMeshes = m_skeleton.getSkinnedMeshInstances();
-//                    m_armJointManipulator = new VerletJointManipulator(m_arm, m_skeleton);
-//                    m_arm.setJointManipulator(m_armJointManipulator);
-//                    for(PPolygonSkinnedMeshInstance mesh : skinnedMeshes)
-//                        mesh.setJointManipulator(m_armJointManipulator);
+
                     // New verlet skeleton manipulator
                     m_skeletonManipulator = new VerletSkeletonFlatteningManipulator(m_leftArm, m_rightArm, m_eyes.getLeftEyeBall(), m_eyes.getRightEyeBall(), m_skeleton, m_modelInst);
                     m_rightArm.setSkeletonManipulator(m_skeletonManipulator);
@@ -364,7 +430,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
             // Most clothes are not defaulting to use a pattern texture
             clothingShader.setProperty(new ShaderProperty("PatternDiffuseMapIndex", GLSLDataType.GLSL_INT, Integer.valueOf(0)));
         } catch (NoSuchPropertyException ex) {
-            Logger.getLogger(Character.class.getName()).log(Level.SEVERE, null, ex);
+            logger.log(Level.SEVERE, null, ex);
         }
         AbstractShaderProgram fleshShader = new VertDeformerWithSpecAndNormalMap(m_wm);
         AbstractShaderProgram accessoryShader = new SimpleTNLWithAmbient(m_wm);
@@ -515,7 +581,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
 //        m_skeleton.setShaderOnMeshes(new NormalAndSpecularMapShader(m_wm));
 //        setMeshShaders();
 //        setSkinnedMeshShaders();
-        setDefaultShaders();
+        
 
         if (bUpdate)
             updateAttributes(attributes);
@@ -675,7 +741,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
             else
                 bindPoseURL = new URL("file://localhost/" + System.getProperty("user.dir") + "/" + attributes.getBindPoseFile());
         } catch (MalformedURLException ex) {
-            Logger.getLogger(Character.class.getName()).severe("Malformed URL from bind pose file!" + ex.getMessage());
+            logger.severe("Malformed URL from bind pose file!" + ex.getMessage());
             bindPoseURL = null;
         }
 
@@ -699,8 +765,8 @@ public abstract class Character extends Entity implements SpatialObject, Animati
             // Make a new shared asset for loading the character
             character = new SharedAsset(m_pscene.getRepository(), new AssetDescriptor(SharedAssetType.COLLADA_Model, bindPoseURL));
             character.setUserData(new ColladaLoaderParams(true, true, false, false, 4, m_attributes.getName(), null));
-            setAssetInitializer(character, m_attributes);
             m_attributes.setAsset(character);
+            setAssetInitializer(m_attributes, null);
             // Create new processor components
             ArrayList<ProcessorComponent> processors = new ArrayList<ProcessorComponent>();
             initScene(processors); // <-- at this point the model instance has been changed
@@ -710,6 +776,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
             addComponent(ProcessorCollectionComponent.class, processorCollection);
         } else {
             excecuteAttributes(attributes, true);
+            setDefaultShaders();
         }
     }
 
@@ -789,7 +856,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
                 try {
                     geometryMaterial.setTexture(new TextureMaterialProperties(new File("assets/textures/SmileFace.jpg").toURI().toURL()), 0);
                 } catch (MalformedURLException ex) {
-                    Logger.getLogger(Character.class.getName()).log(Level.SEVERE, null, ex);
+                    logger.log(Level.SEVERE, null, ex);
                 }
                 PPolygonMesh sphereMesh = PMeshUtils.createSphere("Character Sphere", Vector3f.ZERO, radius, 25, 25, color);
                 Sphere s = new Sphere("Character Sphere", Vector3f.ZERO, 25, 25, radius);
@@ -836,9 +903,9 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         try {
             method = contextClass.getMethod(transition.getContextMessageName(), Object.class);
         } catch (NoSuchMethodException ex) {
-            Logger.getLogger(Character.class.getName()).log(Level.SEVERE, null, ex);
+            logger.log(Level.SEVERE, null, ex);
         } catch (SecurityException ex) {
-            Logger.getLogger(Character.class.getName()).log(Level.SEVERE, null, ex);
+            logger.log(Level.SEVERE, null, ex);
         }
         
         if (method != null)
@@ -848,11 +915,11 @@ public abstract class Character extends Entity implements SpatialObject, Animati
             try {
                 bool = method.invoke(context, transition.getContextMessageArgs());
             } catch (IllegalAccessException ex) {
-                Logger.getLogger(Character.class.getName()).log(Level.SEVERE, null, ex);
+                logger.log(Level.SEVERE, null, ex);
             } catch (IllegalArgumentException ex) {
-                Logger.getLogger(Character.class.getName()).log(Level.SEVERE, null, ex);
+                logger.log(Level.SEVERE, null, ex);
             } catch (InvocationTargetException ex) {
-                Logger.getLogger(Character.class.getName()).log(Level.SEVERE, null, ex);
+                logger.log(Level.SEVERE, null, ex);
             }
             
             if (bool instanceof Boolean)
@@ -1248,7 +1315,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
     {
         if (skeleton == null || m_skeleton == null)
         {
-            System.out.println(getName() + " can not install head, got a null skeleton! current one: " + m_skeleton + " new one: " + skeleton);
+            logger.severe(getName() + " can not install head, got a null skeleton! current one: " + m_skeleton + " new one: " + skeleton);
             return;
         }
         
@@ -1355,14 +1422,13 @@ public abstract class Character extends Entity implements SpatialObject, Animati
             m.marshal( characterDom, location);
         }
         catch (JAXBException ex) {
-            Logger log = Logger.getLogger(Character.class.getName());
-            log.log(Level.SEVERE, "Failed to write save file! " + ex.getMessage());
-            log.log(Level.SEVERE, ex.getErrorCode() + " : " + ex.getLocalizedMessage() + " : " + ex.toString());
+            logger.log(Level.SEVERE, "Failed to write save file! " + ex.getMessage());
+            logger.log(Level.SEVERE, ex.getErrorCode() + " : " + ex.getLocalizedMessage() + " : " + ex.toString());
             ex.printStackTrace();
 
         }
         catch (IOException ex) {
-            Logger.getLogger(Character.class.getName()).log(Level.SEVERE, "Failed to open OutputStream to " +
+            logger.log(Level.SEVERE, "Failed to open OutputStream to " +
                                     location.toString() + "! " + ex.getMessage());
         }
     }
@@ -1392,20 +1458,19 @@ public abstract class Character extends Entity implements SpatialObject, Animati
             }
             else
             {
-                Logger.getLogger(Character.class.getName()).log(Level.SEVERE,
+                logger.log(Level.SEVERE,
                         "JAXB somehow parsed the file and made some other object: " + characterObj.toString());
             }
 
         }
         catch (JAXBException ex) {
-            Logger log = Logger.getLogger(Character.class.getName());
-            log.log(Level.SEVERE, "Failed to parse the file! " + ex.getMessage());
-            log.log(Level.SEVERE, ex.getErrorCode() + " : " + ex.getLocalizedMessage() + " : " + ex.toString());
+            logger.log(Level.SEVERE, "Failed to parse the file! " + ex.getMessage());
+            logger.log(Level.SEVERE, ex.getErrorCode() + " : " + ex.getLocalizedMessage() + " : " + ex.toString());
             ex.printStackTrace();
 
         }
         catch (IOException ex) {
-            Logger.getLogger(Character.class.getName()).log(Level.SEVERE, "Failed to open InputStream to " +
+            logger.log(Level.SEVERE, "Failed to open InputStream to " +
                                     location.toString() + "! " + ex.getMessage());
         }
 
@@ -1421,8 +1486,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
     private void applyCharacterDOM(xmlCharacter characterDOM)
     {
         // The Attribute loading section is not functional currently,
-        // skeleton and local modifiers can be saved and loaded however
-        // Attributes
+        // skeleton and local modifiers can be saved and loaded.
         xmlCharacterAttributes xmlAttributes = characterDOM.getAttributes();
 
         if (m_attributes!=null) {
@@ -1476,7 +1540,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
                 }
                 else
                 {
-                    Logger.getLogger(Character.class.getName()).log(Level.WARNING,
+                    logger.log(Level.WARNING,
                             "Target joint not found for modifier: " + jMod.getTargetJointName());
                 }
             }
@@ -1499,10 +1563,12 @@ public abstract class Character extends Entity implements SpatialObject, Animati
                 // Sweet! Apply the material
                 meshInst.setMaterial(meshMat);
                 meshInst.setUseGeometryMaterial(false);
+                // debugging info
+                System.out.println("Applying " + meshMat.getShader().getProgramName() + " to " + meshInst.getName());
             }
             else
             {
-                Logger.getLogger(Character.class.getName()).log(Level.WARNING,
+                logger.log(Level.WARNING,
                         "xmlMaterial targetting nonexistant mesh; target was " +
                         targetMeshName);
             }
@@ -1521,7 +1587,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
             result.setAttributes(m_attributes.generateAttributesDOM());
         else
         {
-            Logger.getLogger(Character.class.getName()).log(Level.WARNING,
+            logger.log(Level.WARNING,
                     "Attemping to serialize a character with no attributes!");
         }
         // Store skeletal modifications

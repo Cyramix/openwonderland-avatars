@@ -45,7 +45,22 @@ public class NinjaAvatar extends Ninja
     public NinjaAvatar(CharacterAttributes attributes, WorldManager wm, boolean addEntity)
     {
         super(attributes, wm, addEntity);
-        
+        commonConstructionCode();
+    }
+
+    /**
+     * Construct a new instance configured with the specified file.
+     * @param configurationFile
+     * @param wm
+     */
+    public NinjaAvatar(URL configurationFile, WorldManager wm)
+    {
+        super(configurationFile, wm);
+        commonConstructionCode();
+    }
+
+    private void commonConstructionCode()
+    {
         // Tweak animation names and speeds
         m_context.getController().setReverseHeading(true);
         m_context.getStateMapping().get(IdleState.class).setAnimationName("Male_Idle");
@@ -56,10 +71,10 @@ public class NinjaAvatar extends Ninja
         m_context.getStateMapping().get(FlyState.class).setAnimationName("Male_Sitting");
         ((SitState)m_context.getStateMapping().get(SitState.class)).setIdleSittingAnimationName("Male_Sitting");
         ((SitState)m_context.getStateMapping().get(SitState.class)).setGettingUpAnimationName("Male_StandToSit");
-        
+
         // Make him smile when waving
         ((PunchState)m_context.getState(PunchState.class)).setFacialAnimationName("MaleSmile");
-        
+
         // For testing, no transitions
         if (false)
         {
@@ -72,7 +87,7 @@ public class NinjaAvatar extends Ninja
             ((SitState)m_context.getStateMapping().get(SitState.class)).setGettingUpTransitionDuration(0.0f);
             ((SitState)m_context.getStateMapping().get(SitState.class)).setIdleSittingTransitionDuration(0.0f);
         }
-        
+
         // For testing
         //m_context.getStateMapping().get(PunchState.class).setAnimationSpeed(1.0f);
         if (false)
@@ -86,16 +101,6 @@ public class NinjaAvatar extends Ninja
             ((SitState)m_context.getStateMapping().get(SitState.class)).setIdleSittingAnimationName("Male_Walk");
             ((SitState)m_context.getStateMapping().get(SitState.class)).setGettingUpAnimationName("Male_Walk");
         }
-    }
-
-    /**
-     * Construct a new instance configured with the specified file.
-     * @param configurationFile
-     * @param wm
-     */
-    public NinjaAvatar(URL configurationFile, WorldManager wm)
-    {
-        super(configurationFile, wm);
     }
     
 }

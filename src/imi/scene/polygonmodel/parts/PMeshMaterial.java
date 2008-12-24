@@ -754,12 +754,15 @@ public class PMeshMaterial extends PNode
         if (xmlMat.getTransparencyColor() != null)
             setTransparencyColor(xmlMat.getTransparencyColor().getColorRGBA());
         // shaders
+        counter = 0;
         for (xmlShader shaderDOM : xmlMat.getShaders())
         {
             // Parse the program
             AbstractShaderProgram shader = ShaderUtils.createShader(shaderDOM.getProgram(), wm);
             // Apply the properties
             applyProperties(shaderDOM.getProperties(), shader);
+            setShader(shader, counter);
+            counter++;
         }
         // shininess
         setShininess(xmlMat.getShininess());

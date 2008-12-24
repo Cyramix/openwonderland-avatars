@@ -164,7 +164,7 @@ public class SerializationHelper implements NodeProcessor
             for (AbstractShaderProgram shader : meshMaterial.getShaders())
             {
                 if (shader != null)
-                    processShader(meshMaterial, meshInst, shader, xmlMat);
+                    processShader(shader, xmlMat);
             }
         }
         // Shininess
@@ -178,7 +178,7 @@ public class SerializationHelper implements NodeProcessor
         materials.add(xmlMat);
     }
 
-    private void processShader(PMeshMaterial meshMaterial, PPolygonMeshInstance meshInst, AbstractShaderProgram shader, xmlMaterial xmlMat)
+    private void processShader(AbstractShaderProgram shader, xmlMaterial xmlMat)
     {
         xmlShader shaderDOM = new xmlShader();
         // fill it out

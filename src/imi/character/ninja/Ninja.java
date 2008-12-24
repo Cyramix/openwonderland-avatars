@@ -64,6 +64,7 @@ public class Ninja extends imi.character.Character
     public Ninja(URL configurationFile, WorldManager wm)
     {
         super(configurationFile, wm);
+        m_context = instantiateContext();
     }
      
     protected GameContext instantiateContext() {

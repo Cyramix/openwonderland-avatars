@@ -157,7 +157,7 @@ public class EyeballShader extends BaseShaderProgram implements AbstractShaderPr
 
     public xmlShaderProgram generateShaderProgramDOM() {
         xmlShaderProgram result = new xmlShaderProgram();
-        result.setDefaultProgramName(ClothingShader.class.getName());
+        result.setDefaultProgramName(EyeballShader.class.getName());
         return result;
     }
 }
