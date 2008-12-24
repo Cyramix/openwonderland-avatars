@@ -61,9 +61,10 @@ public class SpecularMapping_Lighting extends GLSLShaderEffect
         
 
         // allocate uniforms we use or expose
-        m_fragmentUniforms = new GLSLShaderUniform[2];
+        m_fragmentUniforms = new GLSLShaderUniform[3];
         m_fragmentUniforms[0] = GLSLDefaultVariables.SpecularMap;
         m_fragmentUniforms[1] = new GLSLShaderUniform("specularExponent", GLSLDataType.GLSL_FLOAT);
+        m_fragmentUniforms[2] = new GLSLShaderUniform("specularComponent", GLSLDataType.GLSL_FLOAT);
         
         // declare dependencies, modifications, and initializations
         m_VertexDependencies = new ArrayList<GLSLShaderVariable>();
@@ -124,7 +125,7 @@ public class SpecularMapping_Lighting extends GLSLShaderEffect
         fragmentLogic.append("vec4 specularComponent = gl_LightSource[0].specular * pow(max(dot(reflectionVector, camVector), 0.0), " + m_fragmentUniforms[1].getName() + ");" + NL);
         fragmentLogic.append("specularComponent *= ceil(" + m_FragmentDependencies.get(1).getName() + ");" + NL);
         fragmentLogic.append("specularComponent *= texture2D(" + m_fragmentUniforms[0].getName() + ", gl_TexCoord[0].st);" + NL);
-        fragmentLogic.append(m_FragmentModifications.get(0).getName() + " += specularComponent;" + NL);
+        fragmentLogic.append(m_FragmentModifications.get(0).getName() + " += (specularComponent * " + m_fragmentUniforms[2].getName() + ");" + NL);
         m_fragmentLogic = fragmentLogic.toString();
     }
 }

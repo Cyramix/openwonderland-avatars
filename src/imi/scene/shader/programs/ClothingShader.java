@@ -141,7 +141,7 @@ public class ClothingShader extends BaseShaderProgram implements AbstractShaderP
             m_propertyMap.put("ambientPower",           new ShaderProperty("ambientPower",
                                 GLSLDataType.GLSL_FLOAT, Float.valueOf(fAmbientPower)));
             m_propertyMap.put("SpecularComponent",    new ShaderProperty("SpecularComponent",
-                                GLSLDataType.GLSL_FLOAT, Float.valueOf(0.3f)));
+                                GLSLDataType.GLSL_FLOAT, Float.valueOf(0.24f)));
             m_propertyMap.put("SpecularExponent",    new ShaderProperty("SpecularExponent",
                                 GLSLDataType.GLSL_FLOAT, Float.valueOf(1.8f)));
             m_propertyMap.put("BaseDiffuseMapIndex",    new ShaderProperty("BaseDiffuseMapIndex",

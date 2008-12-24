@@ -44,7 +44,7 @@ public class NormalAndSpecularMapShader extends GLSLShaderProgram
      */
     public NormalAndSpecularMapShader(WorldManager wm)
     {
-        this(wm, 0.2f, 3.25f);
+        this(wm, 0.2f, 3.25f, 1.0f);
     }
 
     /**
@@ -54,6 +54,11 @@ public class NormalAndSpecularMapShader extends GLSLShaderProgram
      * ambient to use for the final fragment color
      */
     public NormalAndSpecularMapShader(WorldManager wm, float fAmbientPower, float specularExponent)
+    {
+        this(wm, fAmbientPower, specularExponent, 1.0f);
+    }
+
+    public NormalAndSpecularMapShader(WorldManager wm, float fAmbientPower, float specularExponent, float specularComponent)
     {
         super(wm, true); // Use default initializers
         setProgramName(this.getClass().getSimpleName());
@@ -79,6 +84,7 @@ public class NormalAndSpecularMapShader extends GLSLShaderProgram
             setProperty(new ShaderProperty("NormalMapIndex", GLSLDataType.GLSL_SAMPLER2D, Integer.valueOf(1)));
             setProperty(new ShaderProperty("SpecularMapIndex", GLSLDataType.GLSL_SAMPLER2D, Integer.valueOf(2)));
             setProperty(new ShaderProperty("specularExponent", GLSLDataType.GLSL_FLOAT, Float.valueOf(specularExponent)));
+            setProperty(new ShaderProperty("specularComponent", GLSLDataType.GLSL_FLOAT, Float.valueOf(specularComponent)));
         }
         catch (Exception e)
         {

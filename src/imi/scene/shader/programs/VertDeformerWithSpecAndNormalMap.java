@@ -44,18 +44,25 @@ public class VertDeformerWithSpecAndNormalMap extends GLSLShaderProgram
     
     public VertDeformerWithSpecAndNormalMap(WorldManager wm)
     {
-        this(wm, 0.35f, 3.25f);
+        this(wm, 0.35f, 3.25f, 1.0f);
     }
 
     public VertDeformerWithSpecAndNormalMap(WorldManager wm,
                                             float fAmbientPower)
     {
-        this(wm, fAmbientPower, 3.25f);
+        this(wm, fAmbientPower, 3.25f, 1.0f);
     }
 
     public VertDeformerWithSpecAndNormalMap(WorldManager wm,
                                         float fAmbientPower,
                                         float specularExponent)
+    {
+        this(wm, fAmbientPower, specularExponent, 1.0f);
+    }
+    public VertDeformerWithSpecAndNormalMap(WorldManager wm,
+                                        float fAmbientPower,
+                                        float specularExponent,
+                                        float specularComponent)
     {
         super(wm, true); // Use default initializers
         setProgramName(this.getClass().getSimpleName());
@@ -87,6 +94,7 @@ public class VertDeformerWithSpecAndNormalMap extends GLSLShaderProgram
             setProperty(new ShaderProperty("NormalMapIndex", GLSLDataType.GLSL_SAMPLER2D, Integer.valueOf(1)));
             setProperty(new ShaderProperty("SpecularMapIndex", GLSLDataType.GLSL_SAMPLER2D, Integer.valueOf(2)));
             setProperty(new ShaderProperty("specularExponent", GLSLDataType.GLSL_FLOAT, Float.valueOf(specularExponent)));
+            setProperty(new ShaderProperty("specularComponent", GLSLDataType.GLSL_FLOAT, Float.valueOf(specularComponent)));
             m_propertyMap.put("pose", new ShaderProperty("pose", GLSLDataType.GLSL_VOID, null));
         }
         catch (NoSuchPropertyException e)

@@ -38,12 +38,12 @@ import org.jdesktop.mtgame.WorldManager;
 public class SimpleTNLWithAmbient extends GLSLShaderProgram
 {
     /**
-     * Constructs a new instance defaulting to use 20% ambient contribution
+     * Constructs a new instance defaulting to use 35% ambient contribution
      * @param wm
      */
     public SimpleTNLWithAmbient(WorldManager wm)
     {
-        this(wm, 0.2f);
+        this(wm, 0.35f);
     }
     
     /**

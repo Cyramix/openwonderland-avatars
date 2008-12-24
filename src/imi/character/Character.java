@@ -41,6 +41,7 @@ import imi.scene.JScene;
 import imi.scene.PMatrix;
 import imi.scene.PScene;
 import imi.scene.polygonmodel.PPolygonModelInstance;
+import imi.scene.shader.NoSuchPropertyException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
@@ -62,6 +63,7 @@ import imi.loaders.repository.AssetDescriptor;
 import imi.loaders.repository.AssetInitializer;
 import imi.loaders.repository.SharedAsset;
 import imi.loaders.repository.SharedAsset.SharedAssetType;
+import imi.scene.PJoint;
 import imi.scene.PNode;
 import imi.scene.animation.AnimationComponent;
 import imi.scene.animation.AnimationComponent.PlaybackMode;
@@ -78,10 +80,17 @@ import imi.scene.polygonmodel.parts.TextureMaterialProperties;
 import imi.scene.polygonmodel.parts.skinned.SkinnedMeshJoint;
 import imi.scene.processors.CharacterAnimationProcessor;
 import imi.scene.processors.JSceneEventProcessor;
+import imi.scene.shader.AbstractShaderProgram;
+import imi.scene.shader.ShaderProperty;
+import imi.scene.shader.dynamic.GLSLDataType;
+import imi.scene.shader.programs.ClothingShader;
+import imi.scene.shader.programs.EyeballShader;
 import imi.scene.shader.programs.NormalAndSpecularMapShader;
 import imi.scene.shader.programs.SimpleTNLShader;
+import imi.scene.shader.programs.SimpleTNLWithAmbient;
 import imi.scene.shader.programs.VertDeformerWithNormalMapping;
 import imi.scene.shader.programs.VertDeformerWithSpecAndNormalMap;
+import imi.scene.shader.programs.VertexDeformer;
 import imi.scene.utils.PMeshUtils;
 import imi.scene.utils.PModelUtils;
 import imi.scene.utils.tree.SerializationHelper;
@@ -101,6 +110,7 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
+import javolution.util.FastList;
 
 /**
  * This class represents the high level avatar. It provides methods for performing
@@ -293,17 +303,16 @@ public abstract class Character extends Entity implements SpatialObject, Animati
                     // sort the meshes
                     sortBindPoseMeshesIntoSubGroups();
                     
+                    // Set eyes
+                    m_eyes = new CharacterEyes(m_skeleton, m_modelInst, m_pscene, m_wm);
+
                     // Set animations and custom meshes
                     excecuteAttributes(m_attributes, false);
                     
-                    // Set eyes
-                    m_eyes = new CharacterEyes(m_skeleton, m_modelInst, m_pscene, m_wm);
                     
                     // Set material
 //                    m_skeleton.setShaderOnSkinnedMeshes(new VertDeformerWithSpecAndNormalMap(m_wm));
 //                    m_skeleton.setShaderOnMeshes(new NormalAndSpecularMapShader(m_wm));
-                    setSkinnedMeshShaders();
-                    setMeshShaders();
 
                     // Facial animation state is designated to id (and index) 1
                     AnimationState facialAnimationState = new AnimationState(1);
@@ -345,6 +354,67 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         };
         /// Set it on the provided SharedAsset
         character.setInitializer(init);
+    }
+
+    public void setDefaultShaders()
+    {
+        AbstractShaderProgram clothingShader = new ClothingShader(m_wm);
+        try {
+            // Most clothes are not defaulting to use a pattern texture
+            clothingShader.setProperty(new ShaderProperty("PatternDiffuseMapIndex", GLSLDataType.GLSL_INT, Integer.valueOf(0)));
+        } catch (NoSuchPropertyException ex) {
+            Logger.getLogger(Character.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        AbstractShaderProgram fleshShader = new VertDeformerWithSpecAndNormalMap(m_wm);
+        AbstractShaderProgram accessoryShader = new SimpleTNLWithAmbient(m_wm);
+        AbstractShaderProgram eyeballShader = new EyeballShader(m_wm);
+        // first the skinned meshes
+        // String[] check = new String[] { "Head", "Eye", "Teeth", "Tongue", "Hand", "Nude", "Arms", "Legs" };
+        Iterable<PPolygonSkinnedMeshInstance> smInstances = m_skeleton.getSkinnedMeshInstances();
+        for (PPolygonSkinnedMeshInstance meshInst : smInstances)
+        {
+            PMeshMaterial meshMat = meshInst.getMaterialCopy().getMaterial();
+            // is this an eyeball? (also used for tongue and teeth)
+            if (meshInst.getName().contains("EyeGeoShape") ||
+                meshInst.getName().contains("Tongue")      ||
+                meshInst.getName().contains("Teeth"))
+                meshMat.setShader(eyeballShader);
+            else if (meshInst.getName().contains("Hand"))
+                meshMat.setShader(new VertDeformerWithSpecAndNormalMap(m_wm, 0.35f, 1.8f, 0.7f));
+            else if (meshInst.getName().contains("Head") ||
+                    meshInst.getName().contains("Nude") ||
+                    meshInst.getName().contains("Arms") )// is it flesh?
+                meshMat.setShader(fleshShader);
+            else // assume to be clothing
+                meshMat.setShader(clothingShader);
+            // Apply it!
+            meshInst.setMaterial(meshMat);
+            if (meshInst.isUseGeometryMaterial() == true)
+                meshInst.setUseGeometryMaterial(false);
+        }
+        // then the attachments
+        PNode skeletonRoot = m_skeleton.getSkeletonRoot();
+        FastList<PNode> queue = new FastList<PNode>();
+        queue.addAll(skeletonRoot.getChildren());
+        while (queue.isEmpty() == false)
+        {
+            // process
+            PNode current = queue.removeFirst();
+            if (current instanceof PPolygonMeshInstance)
+            {
+                PPolygonMeshInstance meshInst = (PPolygonMeshInstance) current;
+                // Grab a copy of the material
+                PMeshMaterial meshMat = meshInst.getMaterialCopy().getMaterial();
+                meshMat.setShader(accessoryShader);
+                meshInst.setMaterial(meshMat);
+                if (meshInst.isUseGeometryMaterial() == true)
+                    meshInst.setUseGeometryMaterial(false);
+            }
+            // add all the kids
+            if (current instanceof PJoint ||
+                current instanceof PPolygonMeshInstance)
+                queue.addAll(current.getChildren());
+        }
     }
 
     /**
@@ -442,8 +512,9 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         // Set shaders on all the meshes, as they may have changed during the above process
 //        m_skeleton.setShaderOnSkinnedMeshes(new VertDeformerWithSpecAndNormalMap(m_wm));
 //        m_skeleton.setShaderOnMeshes(new NormalAndSpecularMapShader(m_wm));
-        setSkinnedMeshShaders();
-        setMeshShaders();
+//        setMeshShaders();
+//        setSkinnedMeshShaders();
+        setDefaultShaders();
 
         if (bUpdate)
             updateAttributes(attributes);
