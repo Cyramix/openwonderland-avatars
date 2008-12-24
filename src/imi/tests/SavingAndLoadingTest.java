@@ -116,15 +116,15 @@ public class SavingAndLoadingTest extends DemoBase
     private void customizeCharacter(NinjaAvatar testCharacter, WorldManager wm) {
         // tweak it!
         SkeletonNode skeleton = testCharacter.getSkeleton();
-        skeleton.displace("Head", new Vector3f(0, 0.08f, -0.04f));
-        skeleton.displace("rightEye", new Vector3f(0, 0, -0.018f));
-        skeleton.displace("leftEye", new Vector3f(0, 0, -0.018f));
+        skeleton.displaceJoint("Head", new Vector3f(0, 0.08f, -0.04f));
+        skeleton.displaceJoint("rightEye", new Vector3f(0, 0, -0.018f));
+        skeleton.displaceJoint("leftEye", new Vector3f(0, 0, -0.018f));
 
         // Clothing
         PMeshMaterial meshMat = new PMeshMaterial("Clothing");
         meshMat.setTexture(new File("/work/avatars/assets/textures/checkerboard2.PNG"), 0); // base diffuse
         meshMat.setTexture(new File("/work/avatars/assets/textures/normal.jpg"), 1); // normal map
-        meshMat.setTexture(new File("/work/avatars/assets/textures/tgatest.tga"), 2); // pattern diffuse
+        //meshMat.setTexture(new File("/work/avatars/assets/textures/tgatest.tga"), 2); // pattern diffuse
         meshMat.setShader(new ClothingShader(wm));
 
         // eyeballs

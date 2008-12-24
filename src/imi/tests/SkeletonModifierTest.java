@@ -105,17 +105,17 @@ public class SkeletonModifierTest extends DemoBase
         // Remap this skeleton onto the modified one
         skeleton.remapSkeleton(generateModifiedSkeleton());
         // now try another change
-//        if (skeleton.displace("level3", new Vector3f(0, 100, 0)) == false)
+//        if (skeleton.displaceJoint("level3", new Vector3f(0, 100, 0)) == false)
 //            System.out.println("Unable to modify the specified joint.");
-//        if (skeleton.setPosition("level3", new Vector3f(10, 4, 0)) == false)
+//        if (skeleton.setJointPosition("level3", new Vector3f(10, 4, 0)) == false)
 //            System.out.println("Unable to modify the specified joint.");
 //        float[] fAngles = new float[3];
 //        fAngles[0] = 0;
 //        fAngles[1] = 0;
 //        fAngles[2] = (float)(Math.PI * 0.5);
-//        if (skeleton.setRotation("level3", new Quaternion(fAngles)) == false)
+//        if (skeleton.setJointRotation("level3", new Quaternion(fAngles)) == false)
 //            System.out.println("Unable to modify the specified joint.");
-//        if (skeleton.rotate("level3", Vector3f.UNIT_Z, (float)(Math.PI * 0.5)) == false)
+//        if (skeleton.rotateJoint("level3", Vector3f.UNIT_Z, (float)(Math.PI * 0.5)) == false)
 //            System.out.println("Unable to modify the specified joint.");
 
         

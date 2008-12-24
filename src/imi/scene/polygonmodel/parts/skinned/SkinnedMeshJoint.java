@@ -144,6 +144,11 @@ public class SkinnedMeshJoint extends PJoint
         }
         return result;
     }
+
+    public void resetBindPose()
+    {
+        m_bindPoseTransform = unmodifiedInverseBindPose.inverse();
+    }
 }
 
 

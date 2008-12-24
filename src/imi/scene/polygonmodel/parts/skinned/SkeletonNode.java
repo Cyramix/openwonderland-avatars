@@ -697,7 +697,7 @@ public class SkeletonNode extends PNode implements Animated
      * @param offset The displacement vector (in joint local space)
      * @return True if joint found, false otherwise
      */
-    public boolean displace(String jointName, Vector3f offset)
+    public boolean displaceJoint(String jointName, Vector3f offset)
     {
         boolean result = false;
         SkinnedMeshJoint joint = findSkinnedMeshJoint(jointName);
@@ -717,7 +717,7 @@ public class SkeletonNode extends PNode implements Animated
      * @param localSpaceTranslation The new local space location
      * @return True if the joint was found, false otherwise.
      */
-    public boolean setPosition(String jointName, Vector3f localSpaceTranslation)
+    public boolean setJointPosition(String jointName, Vector3f localSpaceTranslation)
     {
         boolean result = false;
         SkinnedMeshJoint joint = findSkinnedMeshJoint(jointName);
@@ -738,7 +738,7 @@ public class SkeletonNode extends PNode implements Animated
      * @param rotation
      * @return true if the joint was found, false otherwise
      */
-    public boolean setRotation(String jointName, Quaternion rotation)
+    public boolean setJointRotation(String jointName, Quaternion rotation)
     {
         boolean result = false;
         SkinnedMeshJoint joint = findSkinnedMeshJoint(jointName);
@@ -758,7 +758,7 @@ public class SkeletonNode extends PNode implements Animated
      * @param angle Amount of rotation (radians)
      * @return True if the joint was found, false otherwise
      */
-    public boolean rotate(String jointName, Vector3f axis, float angle)
+    public boolean rotateJoint(String jointName, Vector3f axis, float angle)
     {
         boolean result = false;
         SkinnedMeshJoint joint = findSkinnedMeshJoint(jointName);
@@ -770,6 +770,23 @@ public class SkeletonNode extends PNode implements Animated
             PMatrix rotationMatrix = new PMatrix();
             rotationMatrix.setRotation(quat);
             joint.getBindPose().mul(rotationMatrix);
+        }
+        return result;
+    }
+
+    /**
+     * Change the specified joint's bind pose to match its original, unmodified
+     * bind pose.
+     * @param jointName
+     */
+    public boolean resetJoint(String jointName)
+    {
+        boolean result = false;
+        SkinnedMeshJoint joint = findSkinnedMeshJoint(jointName);
+        if (joint != null)
+        {
+            result = true;
+            joint.resetBindPose();
         }
         return result;
     }

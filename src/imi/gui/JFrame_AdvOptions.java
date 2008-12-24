@@ -129,12 +129,12 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
         {
             case lefthandLength:
             {
-                skelnode.displace(lefthand[0].getName(), ladjust);
+                skelnode.displaceJoint(lefthand[0].getName(), ladjust);
                 break;
             }
             case righthandLength:
             {
-                skelnode.displace(righthand[0].getName(), radjust);
+                skelnode.displaceJoint(righthand[0].getName(), radjust);
                 break;
             }
             case lefthandThickness:
@@ -177,7 +177,7 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
         {
             case leftlowerarmLength:
             {
-                skelnode.displace(leftforearm[1].getName(), ladjust);
+                skelnode.displaceJoint(leftforearm[1].getName(), ladjust);
 
                 if (actualval <= 0.05f) {
                     for (int i = 0; i < leftforearm.length; i++) {
@@ -192,7 +192,7 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
             }
             case rightlowerarmLength:
             {
-                skelnode.displace(rightforearm[1].getName(), radjust);
+                skelnode.displaceJoint(rightforearm[1].getName(), radjust);
 
                 if (actualval <= 0.05f) {
                     for (int i = 0; i < rightforearm.length; i++) {
@@ -244,7 +244,7 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
         {
             case leftupperarmLength:
             {
-                skelnode.displace(leftupperarm[1].getName(), ladjust);
+                skelnode.displaceJoint(leftupperarm[1].getName(), ladjust);
 
                 if (actualval <= 0.05f) {
                     for (int i = 0; i < leftupperarm.length; i++) {
@@ -259,7 +259,7 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
             }
             case rightupperarmLength:
             {
-                skelnode.displace(rightupperarm[1].getName(), radjust);
+                skelnode.displaceJoint(rightupperarm[1].getName(), radjust);
 
                 if (actualval <= 0.05f) {
                     for (int i = 0; i < rightupperarm.length; i++) {
@@ -308,12 +308,12 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
         {
             case leftfootLength:
             {
-                skelnode.displace(leftfoot[1].getName(), ladjust);
+                skelnode.displaceJoint(leftfoot[1].getName(), ladjust);
                 break;
             }
             case rightfootLength:
             {
-                skelnode.displace(rightfoot[1].getName(), radjust);
+                skelnode.displaceJoint(rightfoot[1].getName(), radjust);
                 break;
             }
             case leftfootThickness:
@@ -355,7 +355,7 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
         {
             case leftlowerlegLength:
             {
-                skelnode.displace(leftlowerleg[1].getName(), ladjust);
+                skelnode.displaceJoint(leftlowerleg[1].getName(), ladjust);
 
                 if (actualval <= 0.05f) {
                     for (int i = 0; i < leftlowerleg.length; i++) {
@@ -370,7 +370,7 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
             }
             case rightlowerlegLength:
             {
-                skelnode.displace(rightlowerleg[1].getName(), radjust);
+                skelnode.displaceJoint(rightlowerleg[1].getName(), radjust);
 
                 if (actualval <= 0.05f) {
                     for (int i = 0; i < rightlowerleg.length; i++) {
@@ -420,12 +420,12 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
         {
             case leftupperlegLength:
             {
-                skelnode.displace(leftupperleg[0].getName(), ladjust);
+                skelnode.displaceJoint(leftupperleg[0].getName(), ladjust);
                 break;
             }
             case rightupperlegLength:
             {
-                skelnode.displace(rightupperleg[0].getName(), radjust);
+                skelnode.displaceJoint(rightupperleg[0].getName(), radjust);
                 break;
             }
             case leftupperlegThickness:
