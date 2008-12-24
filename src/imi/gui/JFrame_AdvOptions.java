@@ -81,25 +81,33 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
         SkinnedMeshJoint[]  eyes            = m_skeleton.get(m_bodyPart.Eyes);
         Vector3f            ladjust         = new Vector3f();
         Vector3f            radjust         = new Vector3f();
+        Vector3f            scale           = new Vector3f(1.0f, 1.0f, 1.0f);
         m_format                            = new DecimalFormat("0.00");
 
+//{ "leftEye",     "leftEyeLid",       "leftInnerBrow",    "leftOuterBrow",    "leftCheek",
+//  "rightEye",    "rightEyeLid",      "rightInnerBrow",   "rightOuterBrow",   "rightCheek" };
         switch(type)
         {
             case lefteyeHPos:
             {
                 for (int i = 0; i < 5; i++) {
                     Vector3f start = eyes[i].getTransform().getLocalMatrix(false).getTranslation();
+                    Vector3f curr  = new Vector3f(eyes[i].getBindPose().getTranslation());
+                    curr.x = start.x;
                     if (eyes[i].getName().contains("leftEye")) {
-                        formattedNumber = m_format.format(actualval / 4);
-                        ladjust.x = Float.valueOf(formattedNumber);
-                        eyes[i].getBindPose().setTranslation(ladjust.add(start));
+                        ladjust.x = (actualval / 15);
+                        eyes[i].getBindPose().setTranslation(curr.add(ladjust));
                     }
                     else {
-                        formattedNumber = m_format.format(actualval / 3);
-                        ladjust.x = Float.valueOf(formattedNumber);
-                        eyes[i].getBindPose().setTranslation(ladjust.add(start));
+                        ladjust.x = (actualval / 4);
+                        eyes[i].getBindPose().setTranslation(curr.add(ladjust));
                     }
                 }
+
+                float y = scale.y += actualval * 4;
+                formattedNumber = m_format.format(y);
+                scale.x = Float.valueOf(formattedNumber);
+                eyes[1].getLocalModifierMatrix().setScale(scale);
 
                 break;
             }
@@ -107,17 +115,22 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
             {
                 for (int i = 5; i < eyes.length; i++) {
                     Vector3f start = eyes[i].getTransform().getLocalMatrix(false).getTranslation();
+                    Vector3f curr  = new Vector3f(eyes[i].getBindPose().getTranslation());
+                    curr.x = start.x;
                     if (eyes[i].getName().contains("rightEye")) {
-                        formattedNumber = m_format.format(actualval / 4);
-                        radjust.x = Float.valueOf(formattedNumber);
-                        eyes[i].getBindPose().setTranslation(radjust.add(start));
+                        radjust.x = (actualval / 15);
+                        eyes[i].getBindPose().setTranslation(curr.add(radjust));
                     }
                     else {
-                        formattedNumber = m_format.format(actualval / 3);
-                        radjust.x = Float.valueOf(formattedNumber);
-                        eyes[i].getBindPose().setTranslation(radjust.add(start));
+                        radjust.x = (actualval / 4);
+                        eyes[i].getBindPose().setTranslation(curr.add(radjust));
                     }
                 }
+
+                float y = scale.y += actualval * 4;
+                formattedNumber = m_format.format(y);
+                scale.x = Float.valueOf(formattedNumber);
+                eyes[6].getLocalModifierMatrix().setScale(scale);
 
                 break;
             }
@@ -125,15 +138,15 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
             {
                 for (int i = 0; i < 5; i++) {
                     Vector3f start = eyes[i].getTransform().getLocalMatrix(false).getTranslation();
+                    Vector3f curr  = new Vector3f(eyes[i].getBindPose().getTranslation());
+                    curr.y = start.y;
                     if (eyes[i].getName().contains("leftEye")) {
-                        formattedNumber = m_format.format(actualval / 4);
-                        ladjust.y = Float.valueOf(formattedNumber);
-                        eyes[i].getBindPose().setTranslation(ladjust.add(start));
+                        ladjust.y = (actualval / 15);
+                        eyes[i].getBindPose().setTranslation(curr.add(ladjust));
                     }
                     else {
-                        formattedNumber = m_format.format(actualval / 3);
-                        ladjust.y = Float.valueOf(formattedNumber);
-                        eyes[i].getBindPose().setTranslation(ladjust.add(start));
+                        ladjust.y = (actualval / 4);
+                        eyes[i].getBindPose().setTranslation(curr.add(ladjust));
                     }
                 }
 
@@ -143,15 +156,15 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
             {
                 for (int i = 5; i < eyes.length; i++) {
                     Vector3f start = eyes[i].getTransform().getLocalMatrix(false).getTranslation();
+                    Vector3f curr  = new Vector3f(eyes[i].getBindPose().getTranslation());
+                    curr.y = start.y;
                     if (eyes[i].getName().contains("rightEye")) {
-                        formattedNumber = m_format.format(actualval / 4);
-                        radjust.y = Float.valueOf(formattedNumber);
-                        eyes[i].getBindPose().setTranslation(radjust.add(start));
+                        radjust.y = (actualval / 15);
+                        eyes[i].getBindPose().setTranslation(curr.add(radjust));
                     }
                     else {
-                        formattedNumber = m_format.format(actualval / 3);
-                        radjust.y = Float.valueOf(formattedNumber);
-                        eyes[i].getBindPose().setTranslation(radjust.add(start));
+                        radjust.y = (actualval / 4);
+                        eyes[i].getBindPose().setTranslation(curr.add(radjust));
                     }
                 }
 
@@ -167,11 +180,30 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
             }
             case lefteyeWidth:
             {
+                ladjust.x = -mod;
+                skelnode.displaceJoint(eyes[3].getName(), ladjust);
+                System.out.println(ladjust.x);
+
+                float y = scale.y += actualval * 3;
+                formattedNumber = m_format.format(y);
+                scale.x = Float.valueOf(formattedNumber);
+                eyes[0].getLocalModifierMatrix().setScale(scale);
+                eyes[1].getLocalModifierMatrix().setScale(scale);
+
                 break;
             }
             case righteyeWidth:
             {
+                radjust.x = mod;
+                skelnode.displaceJoint(eyes[8].getName(), radjust);
 
+                float y = scale.y += actualval * 3;
+                formattedNumber = m_format.format(y);
+                scale.x = Float.valueOf(formattedNumber);
+                eyes[5].getLocalModifierMatrix().setScale(scale);
+                eyes[6].getLocalModifierMatrix().setScale(scale);
+
+                break;
             }
         }
     }

@@ -28,6 +28,8 @@ import java.awt.AWTEvent;
 import java.awt.Toolkit;
 import java.awt.event.AWTEventListener;
 import java.awt.event.FocusEvent;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import javax.swing.JSlider;
 import javax.swing.JSpinner;
 import javax.swing.text.JTextComponent;
@@ -45,6 +47,10 @@ public class JPanel_HorizontalSliderS extends javax.swing.JPanel {
     private JFrame_AdvOptions                   m_ParentFrame   =   null;
     private boolean                             m_SliderInFocus     =   false;
     private boolean                             m_SpinnerInFocus    =   false;
+    private float                               m_curr              =   0.0f;
+    private float                               m_prev              =   0.0f;
+    private NumberFormat                        m_format            =   new DecimalFormat("0.00");
+    private String                              m_formattedNumber   =   null;
 
     /** Creates new form JPanel_HorizontalSliderT */
     public JPanel_HorizontalSliderS() {
@@ -89,7 +95,13 @@ public class JPanel_HorizontalSliderS extends javax.swing.JPanel {
                     curVal = (float)jSlider1.getValue();
                     newVal = (curVal - m_baseSliderVal) / 100;
                     jSpinner1.setValue(1.0f + newVal);
-                    m_ParentFrame.parseModification(m_ObjectRef, newVal, newVal);
+
+                    float diff = newVal - m_curr;
+                    m_prev = m_curr;
+                    m_curr = newVal;
+
+                    m_formattedNumber = m_format.format(diff);
+                    m_ParentFrame.parseModification(m_ObjectRef, Float.valueOf(m_formattedNumber), newVal);
                 }
                 break;
             }
@@ -99,7 +111,13 @@ public class JPanel_HorizontalSliderS extends javax.swing.JPanel {
                     curVal = (Float)jSpinner1.getValue();
                     newVal = ((curVal - 1.0f) * 100) + m_baseSliderVal;
                     jSlider1.setValue((int)newVal);
-                    m_ParentFrame.parseModification(m_ObjectRef, newVal, newVal);
+
+                    float diff = curVal - m_curr;
+                    m_prev = m_curr;
+                    m_curr = curVal;
+
+                    m_formattedNumber = m_format.format(diff);
+                    m_ParentFrame.parseModification(m_ObjectRef, Float.valueOf(m_formattedNumber), curVal - 1);
                 }
                 break;
             }

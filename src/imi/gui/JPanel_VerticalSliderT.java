@@ -117,7 +117,7 @@ public class JPanel_VerticalSliderT extends javax.swing.JPanel {
                     m_curr = curVal;
 
                     m_formattedNumber = m_format.format(diff);
-                    m_ParentFrame.parseModification(m_ObjectRef, diff, curVal);
+                    m_ParentFrame.parseModification(m_ObjectRef, Float.valueOf(m_formattedNumber), curVal);
                 }
                 break;
             }
