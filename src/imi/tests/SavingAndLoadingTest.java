@@ -20,17 +20,16 @@ package imi.tests;
 import com.jme.math.Vector3f;
 import imi.character.ninja.NinjaAvatar;
 import imi.character.ninja.NinjaAvatarAttributes;
-import imi.gui.SceneEssentials;
 import imi.gui.TreeExplorer;
 import imi.scene.camera.state.FirstPersonCamState;
 import imi.scene.polygonmodel.parts.PMeshMaterial;
 import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
+import imi.scene.polygonmodel.skinned.PPolygonSkinnedMeshInstance;
 import imi.scene.processors.JSceneEventProcessor;
 import imi.scene.shader.programs.ClothingShader;
+import imi.scene.shader.programs.EyeballShader;
 import imi.utils.input.NinjaControlScheme;
 import java.io.File;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.jdesktop.mtgame.WorldManager;
@@ -62,7 +61,7 @@ public class SavingAndLoadingTest extends DemoBase
         NinjaControlScheme control = (NinjaControlScheme)((JSceneEventProcessor)wm.getUserData(JSceneEventProcessor.class)).setDefault(new NinjaControlScheme(null));
 
         // Create testCharacter
-        NinjaAvatar testCharacter = new NinjaAvatar(new NinjaAvatarAttributes("SavingAndLoadingTestCharacter", false, false), wm);
+        NinjaAvatar testCharacter = new NinjaAvatar(new NinjaAvatarAttributes("SavingAndLoadingTestCharacter", true, true), wm);
         testCharacter.selectForInput();
         control.getNinjaTeam().add(testCharacter);
         control.getMouseEventsFromCamera();
@@ -92,18 +91,18 @@ public class SavingAndLoadingTest extends DemoBase
 
 
         // Uncomment to create a save file
-//        customizeCharacter(testCharacter, wm);
+        customizeCharacter(testCharacter, wm);
 //        testCharacter.saveConfiguration(new File("/work/avatars/assets/configurations/SavingTestOutput.xml"));
 
 
         // Uncomment to load a save file
-        Thread.yield();
-        try {
-            testCharacter.loadConfiguration(new URL("file://localhost/work/avatars/assets/configurations/SavingTestOutput.xml"));
-
-        } catch (MalformedURLException ex) {
-            Logger.getLogger(SavingAndLoadingTest.class.getName()).log(Level.SEVERE, null, ex);
-        }
+//        Thread.yield();
+//        try {
+//            testCharacter.loadConfiguration(new URL("file://localhost/work/avatars/assets/configurations/SavingTestOutput.xml"));
+//
+//        } catch (MalformedURLException ex) {
+//            Logger.getLogger(SavingAndLoadingTest.class.getName()).log(Level.SEVERE, null, ex);
+//        }
 
         // Uncomment to get a pscene explorer------
 //        te = new TreeExplorer();
@@ -121,20 +120,31 @@ public class SavingAndLoadingTest extends DemoBase
         skeleton.displace("rightEye", new Vector3f(0, 0, -0.018f));
         skeleton.displace("leftEye", new Vector3f(0, 0, -0.018f));
 
-        PMeshMaterial meshMat = new PMeshMaterial("HeadGeoShape");
-        meshMat.setTexture(new File("/work/avatars/assets/textures/default.png"), 0); // base diffuse
-        meshMat.setTexture(new File("/work/avatars/assets/textures/tgatest.tga"), 1); // pattern diffuse
-        meshMat.setTexture(new File("/work/avatars/assets/textures/normalmap2.jpg"), 2); // normal map
+        // Clothing
+        PMeshMaterial meshMat = new PMeshMaterial("Clothing");
+        meshMat.setTexture(new File("/work/avatars/assets/textures/checkerboard2.PNG"), 0); // base diffuse
+        meshMat.setTexture(new File("/work/avatars/assets/textures/normal.jpg"), 1); // normal map
+        meshMat.setTexture(new File("/work/avatars/assets/textures/tgatest.tga"), 2); // pattern diffuse
         meshMat.setShader(new ClothingShader(wm));
 
-//        Thread.yield();
-//        try // last little bit
-//        {
-//            Thread.sleep(22000);
-//        } catch (InterruptedException ex) {
-//                logger.log(Level.SEVERE, null, ex);
-//        }
-//        PPolygonSkinnedMeshInstance meshInstance = skeleton.getSkinnedMeshInstance("HeadGeoShape"); // Dress shirt
+        // eyeballs
+//        PMeshMaterial meshMat = new PMeshMaterial("eyeballs!");
+//        meshMat.setTexture(new File("/work/avatars/assets/models/collada/Avatars/Male/Blue_Eye.png"), 0); // base diffuse
+//        meshMat.setShader(new EyeballShader(wm));
+
+        Thread.yield();
+        try // last little bit
+        {
+            Thread.sleep(8000);
+        } catch (InterruptedException ex) {
+                logger.log(Level.SEVERE, null, ex);
+        }
+        PPolygonSkinnedMeshInstance meshInstance = skeleton.getSkinnedMeshInstance("DressShirtShape"); // Dress shirt
+//        PPolygonSkinnedMeshInstance meshInstance = skeleton.getSkinnedMeshInstance("rightEyeGeoShape"); // Eyes
+        meshInstance.setMaterial(meshMat);
+        meshInstance.setUseGeometryMaterial(false);
+
+//        meshInstance = skeleton.getSkinnedMeshInstance("leftEyeGeoShape"); // Eyes
 //        meshInstance.setMaterial(meshMat);
 //        meshInstance.setUseGeometryMaterial(false);
 

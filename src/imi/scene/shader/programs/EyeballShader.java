@@ -17,79 +17,147 @@
  */
 package imi.scene.shader.programs;
 
-import imi.scene.shader.NoSuchPropertyException;
+import com.jme.scene.state.GLSLShaderObjectsState;
+import com.jme.scene.state.RenderState;
+import imi.scene.polygonmodel.PPolygonMeshInstance;
+import imi.scene.polygonmodel.skinned.PPolygonSkinnedMesh;
+import imi.scene.shader.AbstractShaderProgram;
+import imi.scene.shader.BaseShaderProgram;
 import imi.scene.shader.ShaderProperty;
-import imi.scene.shader.dynamic.GLSLCompileException;
+import imi.scene.shader.ShaderUtils;
 import imi.scene.shader.dynamic.GLSLDataType;
 import imi.scene.shader.dynamic.GLSLDefaultVariables;
-import imi.scene.shader.dynamic.GLSLShaderProgram;
-import imi.scene.shader.effects.AmbientNdotL_Lighting;
-import imi.scene.shader.effects.CalculateToLight_Lighting;
-import imi.scene.shader.effects.NormalMapping;
-import imi.scene.shader.effects.SpecularMapping_Lighting;
-import imi.scene.shader.effects.UnlitTexturing_Lighting;
-import imi.scene.shader.effects.VertexDeformer_Transform;
-import imi.scene.shader.effects.VertexToPosition_Transform;
 import imi.serialization.xml.bindings.xmlShaderProgram;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.jdesktop.mtgame.WorldManager;
 
 /**
- *
+ * Create an eyeball effect. This is simply a single texture with specular.
  * @author Ronald E Dahlgren
  */
-public class EyeballShader extends GLSLShaderProgram
+public class EyeballShader extends BaseShaderProgram implements AbstractShaderProgram
 {
+    // The following two strings are the default source code for this effect
+    private static final String VertexSource = new String(
+        "attribute vec4 boneIndices;" +
+        "uniform mat4 pose[55];" +
+        "varying vec3 ToLight; " +
+        "varying vec3 position;" +
+        "varying vec3 VNormal;" +
+        "void main(void)" +
+        "{" +
+        "    	gl_TexCoord[0] = gl_MultiTexCoord0; " +
+        "    	vec3 weight = vec4(gl_Color).rgb;" +
+        "    	float weight4 = 1.0 - ( weight.x + weight.y + weight.z);" +
+        "    	mat4 poseBlend = (  (pose[int(boneIndices.x)]) * weight.x + " +
+        "                            (pose[int(boneIndices.y)]) * weight.y + " +
+        "                            (pose[int(boneIndices.z)]) * weight.z +" +
+        "                            (pose[int(boneIndices.w)]) * weight4     );" +
+        "    	vec4 pos = gl_Vertex * poseBlend;" +
+        "    	position = gl_Vertex.xyz;" +
+        "    	gl_Position = gl_ModelViewProjectionMatrix * pos;" +
+        "	    VNormal.x = dot (gl_Normal, poseBlend[0].xyz);" +
+        "    	VNormal.y = dot (gl_Normal, poseBlend[1].xyz);" +
+        "    	VNormal.z = dot (gl_Normal, poseBlend[2].xyz);" +
+        "  	    ToLight = (gl_ModelViewMatrixInverse * gl_LightSource[0].position).xyz - position;" +
+        "       position = (gl_ModelViewMatrix * gl_Vertex).xyz;" +
+        "}"
+    );
+
+    private static final String FragmentSource = new String(
+        "varying vec3 ToLight;" +
+        "varying vec3 position;" +
+        "varying vec3 VNormal;" +
+        "uniform sampler2D   BaseDiffuseMapIndex;" +
+        "uniform float SpecularComponent;" +
+        "uniform float SpecularExponent;" +
+        "uniform float ambientPower;" +
+        "void main(void)" +
+        "{" +
+        "    	vec4 texColor          = texture2D(BaseDiffuseMapIndex, gl_TexCoord[0].st);" +
+        "    	vec3 normal      = normalize(VNormal);" +
+        "	    vec3 lightVector = normalize(ToLight);" +
+        "  	    float nxDir = max(0.0, dot(normal, lightVector));" +
+        "  	    vec4 diffuse = texColor * (gl_LightSource[0].diffuse * nxDir);" +
+        "	    vec4 color = diffuse * (1.0 - ambientPower) + texColor * ambientPower;" +
+        "	    color = clamp(color, 0.0, 1.0);" +
+        "	    color.a = 1.0;" +
+        "       float RDotV = dot(normalize((reflect(-lightVector, normal))), normalize(vec3(-position)));" +
+        "       vec4 specular = gl_LightSource[0].specular * pow(max(0.0, RDotV), SpecularExponent);" +
+        "    	gl_FragColor = color + (specular * SpecularComponent);" +
+        "}"
+    );
 
     public EyeballShader(WorldManager wm)
     {
-        this(wm, 0.55f, 32.0f);
+        this(wm, 0.4f, 32.0f);
     }
 
     public EyeballShader(WorldManager wm,
-                                            float fAmbientPower)
+                         float fAmbientPower)
     {
         this(wm, fAmbientPower, 32.0f);
     }
 
     public EyeballShader(WorldManager wm,
-                                        float fAmbientPower,
-                                        float specularExponent)
+                         float fAmbientPower,
+                         float specularExponent)
     {
-        super(wm, true); // Use default initializers
+        super(wm, VertexSource, FragmentSource);
         setProgramName(this.getClass().getSimpleName());
         setProgramDescription(new String(
-                "Eyeball effect"
+                "The Eyeball shader."
                 ));
-
-        // add the effects in
-        addEffect(new VertexToPosition_Transform()); // Set up the position
-        addEffect(new VertexDeformer_Transform()); // Deform those verts!
-        addEffect(new UnlitTexturing_Lighting()); // Grab pixel color from the diffuse map
-        addEffect(new CalculateToLight_Lighting()); // Determine the vector to the light source (gl_LightSource[0])
-        //addEffect(new NormalMapping());
-        addEffect(new AmbientNdotL_Lighting()); // Calculate N * L and modulate the final color by it, mixing in a ratio of ambient
-        //addEffect(new SpecularMapping_Lighting());
 
         try
         {
-            this.compile();
-            m_vertAttributes.add(GLSLDefaultVariables.Tangents);
-            this.synchronizePropertyObjects();
-            // Set some defaults
-            setProperty(new ShaderProperty("ambientPower", GLSLDataType.GLSL_FLOAT, Float.valueOf(fAmbientPower)));
-            setProperty(new ShaderProperty("DiffuseMapIndex", GLSLDataType.GLSL_SAMPLER2D, Integer.valueOf(0)));
-            //setProperty(new ShaderProperty("specularExponent", GLSLDataType.GLSL_FLOAT, Float.valueOf(specularExponent)));
+            // Put the properties into the property map
+            m_propertyMap.put("ambientPower",           new ShaderProperty("ambientPower",
+                                GLSLDataType.GLSL_FLOAT, Float.valueOf(fAmbientPower)));
+            m_propertyMap.put("SpecularComponent",    new ShaderProperty("SpecularComponent",
+                                GLSLDataType.GLSL_FLOAT, Float.valueOf(1.0f)));
+            m_propertyMap.put("SpecularExponent",    new ShaderProperty("SpecularExponent",
+                                GLSLDataType.GLSL_FLOAT, Float.valueOf(7.0f)));
+            m_propertyMap.put("BaseDiffuseMapIndex",    new ShaderProperty("BaseDiffuseMapIndex",
+                                GLSLDataType.GLSL_SAMPLER2D, Integer.valueOf(0)));
+            // Vertex deformer default
             m_propertyMap.put("pose", new ShaderProperty("pose", GLSLDataType.GLSL_VOID, null));
         }
-        catch (NoSuchPropertyException e)
+        catch (Exception e)
         {
             Logger.getLogger(this.getClass().toString()).log(Level.SEVERE, "Caught " + e.getClass().getName() + ": " + e.getMessage());
         }
-        catch (GLSLCompileException e)
-        {
-            Logger.getLogger(this.getClass().toString()).log(Level.SEVERE, "Caught " + e.getClass().getName() + ": " + e.getMessage());
-        }
+    }
+
+    @Override
+    public boolean applyToMesh(PPolygonMeshInstance meshInst) {
+        if (m_WM == null) // No world manager!
+            return false;
+
+        GLSLShaderObjectsState shaderState =
+                (GLSLShaderObjectsState) m_WM.getRenderManager().createRendererState(RenderState.RS_GLSL_SHADER_OBJECTS);
+
+        m_bShaderLoaded = false;
+        blockUntilLoaded(shaderState);
+        // apply uniforms
+        ShaderUtils.assignProperties(m_propertyMap.values(), shaderState);
+
+        shaderState.setAttributePointer(
+                GLSLDefaultVariables.BoneIndices.getName(), // The name, referenced in the shader code
+                4,                                          // Total size of the data
+                false,                                      // "Normalized"
+                0,                                          // The "stride" (between entries)
+                ((PPolygonSkinnedMesh)meshInst.getGeometry()).getBoneIndexBuffer()); // The actual data
+
+        meshInst.setShaderState(shaderState);
+        m_bShaderLoaded = false;
+        return true;
+    }
+
+    public xmlShaderProgram generateShaderProgramDOM() {
+        xmlShaderProgram result = new xmlShaderProgram();
+        result.setDefaultProgramName(ClothingShader.class.getName());
+        return result;
     }
 }

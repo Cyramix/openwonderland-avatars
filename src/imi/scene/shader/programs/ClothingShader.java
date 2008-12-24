@@ -59,18 +59,20 @@ public class ClothingShader extends BaseShaderProgram implements AbstractShaderP
         "    	vec4 pos = gl_Vertex * poseBlend;" +
         "    	position = gl_Vertex.xyz;" +
         "    	gl_Position = gl_ModelViewProjectionMatrix * pos;" +
-        "	vec3 Normal;" +
-        "	Normal.x = dot (gl_Normal, poseBlend[0].xyz);" +
+        "	    vec3 Normal;" +
+        "	    Normal.x = dot (gl_Normal, poseBlend[0].xyz);" +
         "    	Normal.y = dot (gl_Normal, poseBlend[1].xyz);" +
         "    	Normal.z = dot (gl_Normal, poseBlend[2].xyz);" +
-        "	vec3 TangentVec;" +
-        "	TangentVec.x = dot (tangent, poseBlend[0].xyz);" +
+        "	    vec3 TangentVec;" +
+        "	    TangentVec.x = dot (tangent, poseBlend[0].xyz);" +
         "    	TangentVec.y = dot (tangent, poseBlend[1].xyz);" +
         "    	TangentVec.z = dot (tangent, poseBlend[2].xyz);" +
-        " 	vec3 binormal = normalize(cross(TangentVec, Normal));" +
-        "	mat3 TBNMatrix = mat3(TangentVec, binormal, Normal); " +
-        "  	ToLight = (gl_ModelViewMatrixInverse * gl_LightSource[0].position).xyz - position;" +
-        "  	ToLight *= TBNMatrix;  " +
+        " 	    vec3 binormal = normalize(cross(TangentVec, Normal));" +
+        "	    mat3 TBNMatrix = mat3(TangentVec, binormal, Normal); " +
+        "  	    ToLight = (gl_ModelViewMatrixInverse * gl_LightSource[0].position).xyz - position;" +
+        "  	    ToLight *= TBNMatrix;  " +
+        "       position = (gl_ModelViewMatrix * gl_Vertex).xyz;" +
+        "       position *= TBNMatrix;" +
         "}"
     );
     private static final String FragmentSource = new String(
@@ -82,24 +84,29 @@ public class ClothingShader extends BaseShaderProgram implements AbstractShaderP
         "uniform sampler2D   SpecularMapIndex;" +
         "uniform vec3 baseColor;" +
         "uniform vec3 patternColor;" +
-        "uniform float SpecularPower;" +
+        "uniform float SpecularComponent;" +
+        "uniform float SpecularExponent;" +
+        "uniform float ambientPower;" +
         "void main(void)" +
         "{" +
-        "    	vec4 texColor       = texture2D(BaseDiffuseMapIndex, gl_TexCoord[0].st);" +
+        "    	vec4 texColor          = texture2D(BaseDiffuseMapIndex, gl_TexCoord[0].st);" +
         "       vec4 patternTexColor   = texture2D(PatternDiffuseMapIndex, gl_TexCoord[0].st);" +
         "       patternTexColor *= vec4(patternColor, 1);" +
-        "       patternTexColor *= patternTexColor.a;" +
         "    	vec4 normalMapValue = texture2D(NormalMapIndex, gl_TexCoord[0].st, 0.5);" +
         "    	vec3 normal      = normalize(normalMapValue.xyz * 2.0 - 1.0);" +
         "	    vec3 lightVector = normalize(ToLight);" +
         "  	    float nxDir = max(0.0, dot(normal, lightVector));" +
+        "       texColor *= vec4(baseColor, 1);" +
+        "       texColor *= (1.0 - patternTexColor.a);" +
+        "       patternTexColor *= patternTexColor.a;" +
+        "       texColor += patternTexColor;" +
         "  	    vec4 diffuse = texColor * (gl_LightSource[0].diffuse * nxDir);" +
-        "       diffuse *= vec4(baseColor, 1);" +
-        "       diffuse += patternTexColor;" +
-        "	    vec4 color = diffuse * 0.75 + texColor * 0.25;" +
+        "	    vec4 color = diffuse * (1.0 - ambientPower) + texColor * ambientPower;" +
         "	    color = clamp(color, 0.0, 1.0);" +
         "	    color.a = 1.0;" +
-        "    	gl_FragColor = vec4(0,1,0,1);//color;" +
+        "       float RDotV = dot(normalize((reflect(-lightVector, normal))), normalize(vec3(-position)));" +
+        "       vec4 specular = gl_LightSource[0].specular * pow(max(0.0, RDotV), SpecularExponent);" +
+        "    	gl_FragColor = color + (specular * SpecularComponent);" +
         "}"
     );
     /**
@@ -127,26 +134,27 @@ public class ClothingShader extends BaseShaderProgram implements AbstractShaderP
                 "Furthermore, both of these maps may be modulated by a specified color."
                 ));
 
-        float[] redColor = new float[] {1, 0.3f, 0.3f};
-        float[] blueColor = new float[] {0.3f, 0.3f, 1};
+        float[] whiteColor = new float[] {1, 1, 1 };
         try
         {
             // Put the properties into the property map
-            m_propertyMap.put("ambientPower", new ShaderProperty("ambientPower", GLSLDataType.GLSL_FLOAT, Float.valueOf(fAmbientPower)));
-            m_propertyMap.put("BaseDiffuseMapIndex", new ShaderProperty("BaseDiffuseMapIndex", GLSLDataType.GLSL_SAMPLER2D, Integer.valueOf(0)));
-            m_propertyMap.put("PatternDiffuseMapIndex", new ShaderProperty("PatternDiffuseMapIndex", GLSLDataType.GLSL_SAMPLER2D, Integer.valueOf(1)));
-            m_propertyMap.put("NormalMapIndex", new ShaderProperty("NormalMapIndex", GLSLDataType.GLSL_SAMPLER2D, Integer.valueOf(2)));
-            m_propertyMap.put("baseColor", new ShaderProperty("baseColor", GLSLDataType.GLSL_VEC3, redColor));
-            m_propertyMap.put("patternColor", new ShaderProperty("patternColor", GLSLDataType.GLSL_VEC3, blueColor));
-            
-            // Set the ambient power and the diffuse map texture unit
-            // May not need the stuff below here since we included values above
-//            setProperty(new ShaderProperty("ambientPower", GLSLDataType.GLSL_FLOAT, Float.valueOf(fAmbientPower)));
-//            setProperty(new ShaderProperty("BaseDiffuseMapIndex", GLSLDataType.GLSL_SAMPLER2D, Integer.valueOf(0)));
-//            setProperty(new ShaderProperty("PatternDiffuseMapIndex", GLSLDataType.GLSL_SAMPLER2D, Integer.valueOf(1)));
-//            setProperty(new ShaderProperty("NormalMapIndex", GLSLDataType.GLSL_SAMPLER2D, Integer.valueOf(2)));
-//            setProperty(new ShaderProperty("baseColor", GLSLDataType.GLSL_VEC4, new Vector4f()));
-//            setProperty(new ShaderProperty("patternColor", GLSLDataType.GLSL_VEC4, Integer.valueOf(2)));
+            m_propertyMap.put("ambientPower",           new ShaderProperty("ambientPower",
+                                GLSLDataType.GLSL_FLOAT, Float.valueOf(fAmbientPower)));
+            m_propertyMap.put("SpecularComponent",    new ShaderProperty("SpecularComponent",
+                                GLSLDataType.GLSL_FLOAT, Float.valueOf(0.3f)));
+            m_propertyMap.put("SpecularExponent",    new ShaderProperty("SpecularExponent",
+                                GLSLDataType.GLSL_FLOAT, Float.valueOf(1.8f)));
+            m_propertyMap.put("BaseDiffuseMapIndex",    new ShaderProperty("BaseDiffuseMapIndex",
+                                GLSLDataType.GLSL_SAMPLER2D, Integer.valueOf(0)));
+            m_propertyMap.put("NormalMapIndex",         new ShaderProperty("NormalMapIndex",
+                                GLSLDataType.GLSL_SAMPLER2D, Integer.valueOf(1)));
+            m_propertyMap.put("PatternDiffuseMapIndex", new ShaderProperty("PatternDiffuseMapIndex",
+                                GLSLDataType.GLSL_SAMPLER2D, Integer.valueOf(2)));
+            m_propertyMap.put("baseColor",              new ShaderProperty("baseColor",
+                                GLSLDataType.GLSL_VEC3, whiteColor));
+            m_propertyMap.put("patternColor",           new ShaderProperty("patternColor",
+                                GLSLDataType.GLSL_VEC3, whiteColor));
+            // Vertex deformer default
             m_propertyMap.put("pose", new ShaderProperty("pose", GLSLDataType.GLSL_VOID, null));
         }
         catch (Exception e)
