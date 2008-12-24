@@ -75,26 +75,86 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
 
 
     private synchronized void adjustEyes(m_sliderControl type, float mod, float actualval) {
-        SkeletonNode skelnode   = m_sceneData.getAvatar().getSkeleton();
+        SkeletonNode        skelnode        = m_sceneData.getAvatar().getSkeleton();
+        String              formattedNumber = null;
         if (skelnode == null) { return; }
-        SkinnedMeshJoint[] eyes = m_skeleton.get(m_bodyPart.Eyes);
+        SkinnedMeshJoint[]  eyes            = m_skeleton.get(m_bodyPart.Eyes);
+        Vector3f            ladjust         = new Vector3f();
+        Vector3f            radjust         = new Vector3f();
+        m_format                            = new DecimalFormat("0.00");
 
         switch(type)
         {
             case lefteyeHPos:
             {
+                for (int i = 0; i < 5; i++) {
+                    Vector3f start = eyes[i].getTransform().getLocalMatrix(false).getTranslation();
+                    if (eyes[i].getName().contains("leftEye")) {
+                        formattedNumber = m_format.format(actualval / 4);
+                        ladjust.x = Float.valueOf(formattedNumber);
+                        eyes[i].getBindPose().setTranslation(ladjust.add(start));
+                    }
+                    else {
+                        formattedNumber = m_format.format(actualval / 3);
+                        ladjust.x = Float.valueOf(formattedNumber);
+                        eyes[i].getBindPose().setTranslation(ladjust.add(start));
+                    }
+                }
+
                 break;
             }
             case righteyeHPos:
             {
+                for (int i = 5; i < eyes.length; i++) {
+                    Vector3f start = eyes[i].getTransform().getLocalMatrix(false).getTranslation();
+                    if (eyes[i].getName().contains("rightEye")) {
+                        formattedNumber = m_format.format(actualval / 4);
+                        radjust.x = Float.valueOf(formattedNumber);
+                        eyes[i].getBindPose().setTranslation(radjust.add(start));
+                    }
+                    else {
+                        formattedNumber = m_format.format(actualval / 3);
+                        radjust.x = Float.valueOf(formattedNumber);
+                        eyes[i].getBindPose().setTranslation(radjust.add(start));
+                    }
+                }
+
                 break;
             }
             case lefteyeVPos:
             {
+                for (int i = 0; i < 5; i++) {
+                    Vector3f start = eyes[i].getTransform().getLocalMatrix(false).getTranslation();
+                    if (eyes[i].getName().contains("leftEye")) {
+                        formattedNumber = m_format.format(actualval / 4);
+                        ladjust.y = Float.valueOf(formattedNumber);
+                        eyes[i].getBindPose().setTranslation(ladjust.add(start));
+                    }
+                    else {
+                        formattedNumber = m_format.format(actualval / 3);
+                        ladjust.y = Float.valueOf(formattedNumber);
+                        eyes[i].getBindPose().setTranslation(ladjust.add(start));
+                    }
+                }
+
                 break;
             }
             case righteyeVPos:
             {
+                for (int i = 5; i < eyes.length; i++) {
+                    Vector3f start = eyes[i].getTransform().getLocalMatrix(false).getTranslation();
+                    if (eyes[i].getName().contains("rightEye")) {
+                        formattedNumber = m_format.format(actualval / 4);
+                        radjust.y = Float.valueOf(formattedNumber);
+                        eyes[i].getBindPose().setTranslation(radjust.add(start));
+                    }
+                    else {
+                        formattedNumber = m_format.format(actualval / 3);
+                        radjust.y = Float.valueOf(formattedNumber);
+                        eyes[i].getBindPose().setTranslation(radjust.add(start));
+                    }
+                }
+
                 break;
             }
             case lefteyeSize:

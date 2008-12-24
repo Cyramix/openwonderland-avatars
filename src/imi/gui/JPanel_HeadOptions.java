@@ -390,7 +390,7 @@ public class JPanel_HeadOptions extends javax.swing.JPanel {
         Mouth_Width.setObjectRef(JFrame_AdvOptions.m_sliderControl.mouthWidth);
         RightEye_HPos.setObjectRef(JFrame_AdvOptions.m_sliderControl.righteyeHPos);
         RightEye_Size.setObjectRef(JFrame_AdvOptions.m_sliderControl.righteyeSize);
-        RightEye_VPos.setObjectRef(JFrame_AdvOptions.m_sliderControl.righteyeWidth);
+        RightEye_VPos.setObjectRef(JFrame_AdvOptions.m_sliderControl.righteyeVPos);
         RightEye_Width.setObjectRef(JFrame_AdvOptions.m_sliderControl.righteyeWidth);
         UpperLip_Size.setObjectRef(JFrame_AdvOptions.m_sliderControl.upperlipSize);
 
