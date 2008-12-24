@@ -324,6 +324,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
                     {
                         m_facialAnimationQ = new TransitionQueue(m_skeleton, 1);
                         initiateFacialAnimation(1, 0.75f, 0.75f); // 0 is "All Cycles"
+                        applyDefaultFacialAnimation();
                     }
 
                     // The verlet arm!
@@ -997,6 +998,11 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         }
     }
 
+    public void applyDefaultFacialAnimation()
+    {
+        m_facialAnimationQ.setDefaultAnimation(new TransitionCommand(1, 0.5f, PlaybackMode.PlayOnce, false));
+    }
+    
     /**
      * Use this convenience method to animate a facial expression for a short
      * amount of time.

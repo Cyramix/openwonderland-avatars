@@ -34,6 +34,8 @@ public class TransitionQueue implements AnimationListener
     /** The list of animation commands being processed **/
     private final SynchronizedQueue<TransitionCommand>   m_commandQueue  = new SynchronizedQueue<TransitionCommand>();
     
+    private TransitionCommand m_defaultAnimation = null;
+    
     /**
      * Default constructor. A target must be specified before use
      */
@@ -119,6 +121,15 @@ public class TransitionQueue implements AnimationListener
     }
     
     /**
+     * Check to see if the transition queue is empty
+     * @return true if empty
+     */
+    public boolean isQueueEmpty()
+    {
+        return m_commandQueue.isEmpty();
+    }
+    
+    /**
      * Set the target for this queue
      * @param target
      * @param animationStateAndGroupIndex
@@ -171,8 +182,15 @@ public class TransitionQueue implements AnimationListener
 
     public void receiveAnimationMessage(AnimationMessageType message, int stateID)
     {
-        if (m_commandQueue == null || m_commandQueue.isEmpty())
-            return; // No relevance
+        if (m_commandQueue == null)
+            return;
+        else if (m_commandQueue.isEmpty())
+        {
+            if (m_defaultAnimation == null)
+                return;
+            // Apply default animation
+            addTransition(m_defaultAnimation);
+        }
         // dump debug info
         //System.out.println("Received an animation message: " + message.toString());
         // next command
@@ -218,4 +236,14 @@ public class TransitionQueue implements AnimationListener
         }
         return result;
     }
+
+    public TransitionCommand getDefaultAnimation() {
+        return m_defaultAnimation;
+    }
+
+    public void setDefaultAnimation(TransitionCommand defaultAnimation) {
+        this.m_defaultAnimation = defaultAnimation;
+    }
+    
+    
 }
