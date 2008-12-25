@@ -42,8 +42,10 @@ import java.util.List;
 public class PPolygonSkinnedMesh extends PPolygonMesh
 {   
     // Skinning loaded data (no duplicates), these fields are nulled after reconstruction of the mesh when setSkinningData() is called.
-    private ArrayList<Vector3f>     m_BoneWeights   	  = null; // indexed by polygons, weight of 4 influence from the indexed materices\bones
-    private ArrayList<PBoneIndices> m_PBoneIndices  	  = null; // indexed by polygons, 4 indices of bones in the flatened matrix stack
+    // indexed by polygons, weight of 4 influence from the indexed materices\bones
+    private final ArrayList<Vector3f>     m_BoneWeights   	  = new ArrayList<Vector3f>();
+    // indexed by polygons, 4 indices of bones in the flatened matrix stack
+    private final ArrayList<PBoneIndices> m_PBoneIndices  	  = new ArrayList<PBoneIndices>();
 
     // Skinning final data (calculated in PPolygonTriMeshAssembler)
     private FloatBuffer       		m_WeightBuffer        = null;    // per vertex, weight of 4 influence from the indexed materices\bones
@@ -61,17 +63,11 @@ public class PPolygonSkinnedMesh extends PPolygonMesh
 	public PPolygonSkinnedMesh()
     {
         super("PPolygonSkinnedMesh");
-        m_BoneWeights          = new ArrayList();
-        m_PBoneIndices         = new ArrayList();
-        //addChild(m_BindPoseSkeleton);
     }
     
     public PPolygonSkinnedMesh(String name)
     {
         super(name);
-        m_BoneWeights          = new ArrayList();
-        m_PBoneIndices         = new ArrayList();
-        //addChild(m_BindPoseSkeleton);
     }
 
     /***
@@ -80,8 +76,6 @@ public class PPolygonSkinnedMesh extends PPolygonMesh
      */
     public PPolygonSkinnedMesh(PPolygonMesh mesh)
     {
-        m_BoneWeights          = new ArrayList();
-        m_PBoneIndices         = new ArrayList();
         
         setName(mesh.getName());
         setTransform(new PTransform(mesh.getTransform()));
@@ -97,6 +91,22 @@ public class PPolygonSkinnedMesh extends PPolygonMesh
         m_Normals   = mesh.getNormalsRef();
         m_Colors    = mesh.getColorsRef();
         m_TexCoords = mesh.getTexCoordsRef();
+
+        // Copy skinning stuffs
+        if (mesh instanceof PPolygonSkinnedMesh)
+        {
+            ArrayList<Vector3f> otherWeights = ((PPolygonSkinnedMesh)mesh).getBoneWeightArray();
+            ArrayList<PBoneIndices> otherIndices = ((PPolygonSkinnedMesh)mesh).getBoneIndexArray();
+            // now copy them over onto ourselves
+            // weights
+            m_BoneWeights.clear();
+            for (Vector3f vec : otherWeights)
+                m_BoneWeights.add(new Vector3f(vec));
+            // Indices
+            m_PBoneIndices.clear();
+            for (PBoneIndices bones : otherIndices)
+                m_PBoneIndices.add(new PBoneIndices(bones));
+        }
         
         m_Polygons  = new ArrayList<PPolygon>();
         
@@ -262,9 +272,6 @@ public class PPolygonSkinnedMesh extends PPolygonMesh
     {
         m_WeightBuffer      = weightArray;
         m_BoneIndexBuffer   = boneIndexArray;
-        
-        m_BoneWeights       = null;
-        m_PBoneIndices      = null;
     }
     
 //    public ArrayList<SkinnedMeshJoint> getAnimationJointMapping()

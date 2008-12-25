@@ -225,8 +225,9 @@ public class PPolygonTriMeshAssembler
         {
             logger.log(Level.WARNING,
                     "Attempted to reconstruct TriMesh from a mesh with no polygons!");
+            return;
         }
-        if (Mesh.getBoneWeightArray() == null || Mesh.getBoneIndexArray() == null)
+        if (Mesh.getBoneWeightArray() == null && Mesh.getBoneIndexArray() == null)
         {
             logger.log(Level.SEVERE, "reconstructTriMeshWithSkinningData was called on null data (mesh was already reconstructed before?)");
             return;

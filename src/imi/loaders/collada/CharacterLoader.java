@@ -127,25 +127,6 @@ public class CharacterLoader
     }
 
     /**
-     * This method locates and removes the indicated skinned mesh from the provided
-     * skeleton.
-     * @param owningSkeleton
-     * @param skinnedMeshName
-     * @return True if the mesh was found and removed, false otherwise
-     */
-    public boolean deleteSkinnedMesh(SkeletonNode owningSkeleton, String skinnedMeshName)
-    {
-        boolean result = false;
-        PNode meshNode = owningSkeleton.findChild(skinnedMeshName);
-        if (meshNode instanceof PPolygonSkinnedMeshInstance)
-        {
-            meshNode.getParent().removeChild(meshNode);
-            result = true;
-        }
-        return result;
-    }
-
-    /**
      * This method merges the last animation group within a component with the
      * animation group indicated by the provided index. No action is taken if
      * the specified group index already refers to the last group.

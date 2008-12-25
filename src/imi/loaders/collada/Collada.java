@@ -89,7 +89,6 @@ import org.collada.xml_walker.ColladaMaterial;
  */
 public class Collada
 {
-    // Static members
     /** Logger reference **/
     private static Logger logger = Logger.getLogger(Collada.class.toString());
     /** Context for the unmarshaller to operate within **/

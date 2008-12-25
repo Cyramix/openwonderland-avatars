@@ -18,16 +18,26 @@
 package imi.scene.polygonmodel.parts.skinned;
 
 /**
- *
+ * This class wraps up a set of four ints
  * @author Lou Hayt
  */
 public class PBoneIndices
 {
+    /** The actual data **/
     public int [] index = new int[4];
 
     
     public PBoneIndices()
     {
+        // Do nothing!
+    }
+
+    public PBoneIndices(PBoneIndices bones)
+    {
+        index[0] = bones.index[0];
+        index[1] = bones.index[1];
+        index[2] = bones.index[2];
+        index[3] = bones.index[3];
     }
 
     public PBoneIndices(int index0, int index1, int index2, int index3)

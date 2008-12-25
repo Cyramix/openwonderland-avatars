@@ -1362,13 +1362,13 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         pRootInstruction.addChildInstruction(InstructionType.deleteSkinnedMesh, "HeadGeoShape");  // original head is HeadOneShape
         
         // African
-        pRootInstruction.addChildInstruction(InstructionType.loadGeometry, fileProtocol + "assets/models/collada/Heads/MaleAfricanHead/AfricanAmericanMaleHead1_Bind.dae");
+        //pRootInstruction.addChildInstruction(InstructionType.loadGeometry, fileProtocol + "assets/models/collada/Heads/MaleAfricanHead/blackHeadOne.dae");
+        // Asian
+        pRootInstruction.addChildInstruction(InstructionType.loadGeometry, fileProtocol + "assets/models/collada/Heads/MaleAsianHead/asiaHeadTwo.dae");
         //pRootInstruction.addAttachmentInstruction(InstructionType.loadGeometry, fileProtocol + "assets/models/collada/Avatars/Male/Male_Bind.dae");
         //pRootInstruction.addChildInstructionOfType(InstructionType.addSkinnedMesh, "headOneShape");
-        pRootInstruction.addSkinnedMeshInstruction("headOneShape", "Head");
-        // Asian
-//        pRootInstruction.addAttachmentInstruction(InstructionType.loadGeometry, fileProtocol + "assets/models/collada/Heads/MaleAsianHead/AsianMaleHead1_Bind.dae");
-//        pRootInstruction.addAttachmentInstruction(InstructionType.addSkinnedMesh, "head2Shape");
+        //pRootInstruction.addSkinnedMeshInstruction("headOneShape", "Head");
+        pRootInstruction.addSkinnedMeshInstruction("head2Shape", "Head");
         
         pProcessor.execute(pRootInstruction);
     }
