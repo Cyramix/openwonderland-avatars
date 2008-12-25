@@ -86,7 +86,7 @@ public class SkeletonModifierTest extends DemoBase
         PPolygonSkinnedMeshInstance meshInst = (PPolygonSkinnedMeshInstance) pscene.addMeshInstance(skinMesh, new PMatrix());
         skeleton.addToSubGroup(meshInst, "Tentacle");
         meshInst.setMaterial(skinnedMeshMaterial);
-        meshInst.setUseGeometryMaterial(false);
+        meshInst.applyMaterial();
         // create the upper half skinned mesh
         skinMesh = createSkinnedModel(5, 4, 3, new Vector3f(0,12.0f,0), "upperHalf");
         influences = new int[6];
@@ -100,7 +100,7 @@ public class SkeletonModifierTest extends DemoBase
         meshInst = (PPolygonSkinnedMeshInstance) pscene.addMeshInstance(skinMesh, new PMatrix());
         skeleton.addToSubGroup(meshInst, "Tentacle");
         meshInst.setMaterial(skinnedMeshMaterial);
-        meshInst.setUseGeometryMaterial(false);
+        meshInst.applyMaterial();
 
         // Remap this skeleton onto the modified one
         skeleton.remapSkeleton(generateModifiedSkeleton());

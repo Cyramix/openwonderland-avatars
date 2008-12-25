@@ -803,7 +803,7 @@ public class JPanel_EZOptions extends javax.swing.JPanel {
         }
 
         meshInst.setMaterial(material);
-        meshInst.setUseGeometryMaterial(false);
+        meshInst.applyMaterial();
     }
 
     public void setMeshColor(PPolygonMeshInstance meshInst, GLSLShaderProgram shader, float[] fColorArray) {
@@ -816,7 +816,7 @@ public class JPanel_EZOptions extends javax.swing.JPanel {
         }
 
         meshInst.setMaterial(material);
-        meshInst.setUseGeometryMaterial(false);
+        meshInst.applyMaterial();
     }
 
     public GLSLShaderProgram createMeshShader(PPolygonMeshInstance meshInst) {

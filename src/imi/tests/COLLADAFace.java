@@ -70,7 +70,7 @@ public class COLLADAFace extends DemoBase
                 {
                     PPolygonSkinnedMeshInstance skinned = (PPolygonSkinnedMeshInstance)((PNode)asset).getChild(0).getChild(0);
                     skinned.getGeometry().getMaterialRef().setTexture(new File("assets/textures/Head/TestHead1.png"), 0);
-                    skinned.setUseGeometryMaterial(true); // refresh.. apply the material... should we expose applyMaterial(), make it public?
+                    skinned.applyMaterial();
                 }
                 return true;
                 

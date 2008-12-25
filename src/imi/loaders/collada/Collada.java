@@ -1554,8 +1554,7 @@ public class Collada
                 try
                 {
                     meshMat = colladaEffect.createMeshMaterial();
-                    pMeshInstance.setMaterial(meshMat);
-                    pMeshInstance.setUseGeometryMaterial(false);
+                    pMeshInstance.setMaterial(meshMat); // This should be applied elsewhere
                 }
                 catch (Exception e)
                 {
@@ -1580,8 +1579,7 @@ public class Collada
                 pSubMeshInstance = createMeshInstance(pSubPolygonMesh, null, "SomeSubMesh");
 
                 pMeshMaterial = pSubPolygonMesh.getMaterialCopy();
-                pSubMeshInstance.setMaterial(pMeshMaterial);
-                pSubMeshInstance.setUseGeometryMaterial(false);                        
+                pSubMeshInstance.setMaterial(pMeshMaterial); // this should be applied elsewhere
 
                 pMeshInstance.addChild(pSubMeshInstance);
             }

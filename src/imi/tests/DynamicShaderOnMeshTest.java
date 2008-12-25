@@ -130,7 +130,7 @@ public class DynamicShaderOnMeshTest extends DemoBase
         PPolygonSkinnedMeshInstance meshInst = ((SkeletonNode)modelInst.findChild("MyTestSkeleton")).getSkinnedMeshInstance("upperHalf");
         meshInst.getSharedMesh().setSolidColor(ColorRGBA.white);
         ((SkeletonNode)modelInst.findChild("MyTestSkeleton")).getSkinnedMeshInstance("upperHalf").setMaterial(mat);
-        ((SkeletonNode)modelInst.findChild("MyTestSkeleton")).getSkinnedMeshInstance("upperHalf").setUseGeometryMaterial(false);
+        ((SkeletonNode)modelInst.findChild("MyTestSkeleton")).getSkinnedMeshInstance("upperHalf").applyMaterial();
                 
         // Grab some joint references to animate
         SkinnedMeshJoint joint1 = (SkinnedMeshJoint) modelInst.findChild("level1");

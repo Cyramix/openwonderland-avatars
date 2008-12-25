@@ -93,7 +93,7 @@ public class InstancingTest extends DemoBase
                         // Set the material
                         target.setMaterial(material);
                         // This will apply the material
-                        target.setUseGeometryMaterial(false);
+                        target.applyMaterial();
                     }
                     return true;
                 }

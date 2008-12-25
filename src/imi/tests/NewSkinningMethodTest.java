@@ -94,7 +94,7 @@ public class NewSkinningMethodTest extends DemoBase
         mat.setShader(new VertexDeformer(wm));
         
         ((SkeletonNode)modelInst.findChild("MyTestSkeleton")).getSkinnedMeshInstance("upperHalf").setMaterial(mat);
-        ((SkeletonNode)modelInst.findChild("MyTestSkeleton")).getSkinnedMeshInstance("upperHalf").setUseGeometryMaterial(false);
+        ((SkeletonNode)modelInst.findChild("MyTestSkeleton")).getSkinnedMeshInstance("upperHalf").applyMaterial();
                 
         SkinnedMeshJoint joint1 = (SkinnedMeshJoint) modelInst.findChild("level1");
         SkinnedMeshJoint joint2 = (SkinnedMeshJoint) modelInst.findChild("level3");

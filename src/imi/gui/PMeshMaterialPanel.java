@@ -222,7 +222,7 @@ public class PMeshMaterialPanel extends javax.swing.JPanel
      * Loads the textures that were populated in the Listbox (in actuality the
      * Arraylist of textures) into the material
      */
-    public void loadTextures() {
+    private void loadTexturesAndApplyToMesh() {
         if(textureLocations.size() > 0) {
             m_mat = m_mesh.getMaterialRef().getMaterial();
             int i = 0;
@@ -232,9 +232,8 @@ public class PMeshMaterialPanel extends javax.swing.JPanel
                 relativepath.substring(index);
                 m_mat.setTexture(new File(relativepath), i);
             }
-            m_mesh.getGeometry().setNumberOfTextures(i);
             m_mesh.setMaterial(m_mat);
-            m_mesh.setUseGeometryMaterial(false);
+            m_mesh.applyMaterial();
             populateListModel();
         }
     }
@@ -244,8 +243,7 @@ public class PMeshMaterialPanel extends javax.swing.JPanel
             return;
         if (m_shaderPropPanel != null && m_shaderPropPanel.getShader() != null)
             m_mat.setShader(m_shaderPropPanel.getShader());
-        m_mesh.setMaterial(m_mat);
-        m_mesh.setUseGeometryMaterial(false);
+        loadTexturesAndApplyToMesh();
     }
 
     public void setWM(WorldManager worldm) { wm = worldm; }
@@ -373,7 +371,6 @@ public class PMeshMaterialPanel extends javax.swing.JPanel
         jButton_Apply.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 applyMaterialRequested(evt);
-                loadTextures();
             }
         });
 

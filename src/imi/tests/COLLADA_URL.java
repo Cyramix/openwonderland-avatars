@@ -131,7 +131,7 @@ public class COLLADA_URL extends DemoBase2
             newMaterial.setShader(new VertDeformerWithSpecAndNormalMap(wm));
 
             pSkinnedMeshInstance.setMaterial(newMaterial);
-            pSkinnedMeshInstance.setUseGeometryMaterial(false);
+            pSkinnedMeshInstance.applyMaterial();
         } else if (meshName.equals("LHandShape") || meshName.equals("RHandShape")) {
             pSkinnedMeshInstance.getGeometry().setNumberOfTextures(3);
             PMeshMaterial newMaterial = new PMeshMaterial();
@@ -141,7 +141,7 @@ public class COLLADA_URL extends DemoBase2
             newMaterial.setShader(new VertDeformerWithSpecAndNormalMap(wm));
 
             pSkinnedMeshInstance.setMaterial(newMaterial);
-            pSkinnedMeshInstance.setUseGeometryMaterial(false);
+            pSkinnedMeshInstance.applyMaterial();
         } else if (meshName.equals("LFootNudeShape") || meshName.equals("RFootNudeShape")) {
             pSkinnedMeshInstance.getGeometry().setNumberOfTextures(3);
             PMeshMaterial newMaterial = new PMeshMaterial();
@@ -151,7 +151,7 @@ public class COLLADA_URL extends DemoBase2
             newMaterial.setShader(new VertDeformerWithSpecAndNormalMap(wm));
 
             pSkinnedMeshInstance.setMaterial(newMaterial);
-            pSkinnedMeshInstance.setUseGeometryMaterial(false);
+            pSkinnedMeshInstance.applyMaterial();
         } else if (meshName.equals("TorsoNudeShape") || meshName.equals("LegsNudeShape")) {
             pSkinnedMeshInstance.getGeometry().setNumberOfTextures(3);
             PMeshMaterial newMaterial = new PMeshMaterial();
@@ -161,7 +161,7 @@ public class COLLADA_URL extends DemoBase2
             newMaterial.setShader(new VertDeformerWithSpecAndNormalMap(wm));
 
             pSkinnedMeshInstance.setMaterial(newMaterial);
-            pSkinnedMeshInstance.setUseGeometryMaterial(false);
+            pSkinnedMeshInstance.applyMaterial();
         }
     }
 

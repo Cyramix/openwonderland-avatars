@@ -445,8 +445,7 @@ public class SkeletonNode extends PNode implements Animated
             {
                     PMeshMaterial mat = meshInst.getMaterialRef().getMaterial();
                     mat.setShader(shader);
-                    meshInst.setMaterial(mat);
-                    meshInst.setUseGeometryMaterial(false);
+                    meshInst.applyShader();
             }
             result = true;
         }
@@ -488,8 +487,7 @@ public class SkeletonNode extends PNode implements Animated
 
                 PMeshMaterial mat = meshInst.getMaterialRef().getMaterial();
                 mat.setShader(shader);
-                meshInst.setMaterial(mat);
-                meshInst.setUseGeometryMaterial(false);
+                meshInst.applyShader();
             }
             for (int i = 0; i < kid.getChildrenCount(); ++i)
                 queue.add(kid.getChild(i));

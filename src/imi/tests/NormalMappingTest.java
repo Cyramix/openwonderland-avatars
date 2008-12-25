@@ -96,7 +96,7 @@ public class NormalMappingTest extends DemoBase
              
 
                 meshInst.setMaterial(meshMat);
-                meshInst.setUseGeometryMaterial(false);
+                meshInst.applyMaterial();
 
                 return true;
             }
@@ -123,7 +123,7 @@ public class NormalMappingTest extends DemoBase
         
         meshInst.getGeometry().setNumberOfTextures(3);
         meshInst.setMaterial(testmaterial);
-        meshInst.setUseGeometryMaterial(false);
+        meshInst.applyMaterial();
         
 
         

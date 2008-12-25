@@ -462,8 +462,7 @@ public class SceneEssentials {
                             material.setShader(new VertDeformerWithSpecAndNormalMap(worldManager));
                             // Set the material
                             target.setMaterial(material);
-                            // We must disable the use of the geometry's material to see the texture we set for the instance
-                            target.setUseGeometryMaterial(false);
+                            target.applyMaterial();
 
                             PPolygonModelInstance modInst = ((PPolygonModelInstance)skeleton.getParent());
                             ((ProcessorCollectionComponent)currentEntity.getComponent(ProcessorCollectionComponent.class)).addProcessor(new SkinnedAnimationProcessor(modInst));
@@ -478,8 +477,7 @@ public class SceneEssentials {
                             PMeshMaterial material = new PMeshMaterial(szName + "material", szTemp);
                             // Set the material
                             target.setMaterial(material);
-                            // We must disable the use of the geometry's material to see the texture we set for the instance
-                            target.setUseGeometryMaterial(false);
+                            target.applyMaterial();
                         }
                         currentPScene.setDirty(true, true);
                         return true;
@@ -520,8 +518,7 @@ public class SceneEssentials {
                             material.setShader(new VertDeformerWithSpecAndNormalMap(worldManager));
                             // Set the material
                             target.setMaterial(material);
-                            // We must disable the use of the geometry's material to see the texture we set for the instance
-                            target.setUseGeometryMaterial(false);
+                            target.applyMaterial();
 
                             PPolygonModelInstance modInst = ((PPolygonModelInstance)skeleton.getParent());
                             ((ProcessorCollectionComponent)currentEntity.getComponent(ProcessorCollectionComponent.class)).addProcessor(new SkinnedAnimationProcessor(modInst));
@@ -536,8 +533,7 @@ public class SceneEssentials {
                             PMeshMaterial material = new PMeshMaterial(szName + "material", szTemp);
                             // Set the material
                             target.setMaterial(material);
-                            // We must disable the use of the geometry's material to see the texture we set for the instance
-                            target.setUseGeometryMaterial(false);
+                            target.applyMaterial();
                         }
                         currentPScene.setDirty(true, true);
                         return true;

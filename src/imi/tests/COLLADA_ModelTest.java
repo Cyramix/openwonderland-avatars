@@ -152,7 +152,7 @@ public class COLLADA_ModelTest extends DemoBase
         GLSLShaderProgram shader = new SimpleTNLWithAmbient(wm, 0.35f);
         material.setShader(shader);
         meshInst.setMaterial(material);
-        meshInst.setUseGeometryMaterial(false);
+        meshInst.applyMaterial();
 
 
 

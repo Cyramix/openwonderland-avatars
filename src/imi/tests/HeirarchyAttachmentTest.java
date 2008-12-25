@@ -95,8 +95,7 @@ public class HeirarchyAttachmentTest extends DemoBase
         material.setShader(new VertexDeformer(pscene.getWorldManager()));
         // Set the material
         target.setMaterial(material);
-        // We must disable the use of the geometry's material to see the texture we set for the instance
-        target.setUseGeometryMaterial(false);
+        target.applyMaterial();
         // generate animation to joint mapping
         //target.buildAnimationJointMapping(skeleton);
         // Select animation to play
@@ -151,7 +150,7 @@ public class HeirarchyAttachmentTest extends DemoBase
         
         meshInst.getGeometry().setNumberOfTextures(3);
         meshInst.setMaterial(testmaterial);
-        meshInst.setUseGeometryMaterial(false);
+        meshInst.applyMaterial();
         
         return modelInst;
     }

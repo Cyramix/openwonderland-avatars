@@ -18,10 +18,8 @@
 package imi.scene.polygonmodel;
 
 import com.jme.image.Texture;
-import com.jme.math.Vector3f;
 import com.jme.scene.SharedMesh;
 import com.jme.scene.state.GLSLShaderObjectsState;
-import com.jme.scene.state.MaterialState;
 import com.jme.scene.state.RenderState;
 import com.jme.scene.state.TextureState;
 import imi.loaders.repository.AssetDescriptor;
@@ -37,10 +35,7 @@ import imi.scene.polygonmodel.parts.PMeshMaterialStates;
 import imi.scene.polygonmodel.parts.TextureMaterialProperties;
 import imi.scene.utils.PRenderer;
 import imi.scene.utils.TextureInstaller;
-import java.io.File;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * This class contains a jME SharedMesh with a target TriMesh belonging to
@@ -266,40 +261,50 @@ public class PPolygonMeshInstance extends PNode
     public void setUseGeometryMaterial(boolean bUseGeometryMaterial) 
     {
         m_bUseGeometryMaterial = bUseGeometryMaterial;
-        
-        if (m_bUseGeometryMaterial)
-        {
-            m_material.setMaterial(m_geometry.getMaterialCopy());
-            applyMaterial();
-        }
-        else 
-        {
-            if (m_material != null)
-                applyMaterial();
-            else
-            {
-                setMaterial(m_geometry.getMaterialRef());
-                applyMaterial(); 
-            }
-        }
     }
 
     public void setMaterial(PMeshMaterialCombo material) 
     {
         m_material = material;
-        if (!m_bUseGeometryMaterial)
-            applyMaterial();
+        // No longer using the geometry's material
+        m_bUseGeometryMaterial = false;
     }
     
     public void setMaterial(PMeshMaterial material) 
     {
         m_material = new PMeshMaterialCombo(material, null);
-        if (!m_bUseGeometryMaterial)
-            applyMaterial();
+        // No longer using the geometry's material
+        m_bUseGeometryMaterial = false;
+    }
+
+    public void applyShader()
+    {
+        applyShader(0);
+    }
+
+    public void applyShader(int index)
+    {
+        if (m_material == null) // no use in trying
+        {
+            logger.severe("Cannot apply shaders without a material!");
+            return; // Abort
+        }
+        PMeshMaterial meshMat = m_material.getMaterial();
+        if (meshMat.getShader(index) != null)
+            meshMat.getShader(index).applyToMesh(this);
+        else
+            logger.severe("Requested shader does not exist!");
     }
     
-    protected void applyMaterial()
+    public void applyMaterial()
     {
+        if (m_material == null) // We better be using the geometry's material
+        {
+            if (m_bUseGeometryMaterial == true)
+                m_material = new PMeshMaterialCombo(m_geometry.getMaterialRef(), null);
+            else // cant do too much now
+                return;
+        }
         PMeshMaterial meshMat = m_material.getMaterial();
         m_pmaterialStates.configureStates(meshMat);
         m_pmaterialStates.applyToGeometry(m_instance);

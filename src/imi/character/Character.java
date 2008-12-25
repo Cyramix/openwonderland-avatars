@@ -440,7 +440,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         Iterable<PPolygonSkinnedMeshInstance> smInstances = m_skeleton.getSkinnedMeshInstances();
         for (PPolygonSkinnedMeshInstance meshInst : smInstances)
         {
-            PMeshMaterial meshMat = meshInst.getMaterialCopy().getMaterial();
+            PMeshMaterial meshMat = meshInst.getMaterialRef().getMaterial();
             // is this an eyeball? (also used for tongue and teeth)
             if (meshInst.getName().contains("EyeGeoShape") ||
                 meshInst.getName().contains("Tongue")      ||
@@ -455,9 +455,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
             else // assume to be clothing
                 meshMat.setShader(clothingShader);
             // Apply it!
-            meshInst.setMaterial(meshMat);
-            if (meshInst.isUseGeometryMaterial() == true)
-                meshInst.setUseGeometryMaterial(false);
+            meshInst.applyShader();
         }
         // then the attachments
         PNode skeletonRoot = m_skeleton.getSkeletonRoot();
@@ -473,9 +471,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
                 // Grab a copy of the material
                 PMeshMaterial meshMat = meshInst.getMaterialCopy().getMaterial();
                 meshMat.setShader(accessoryShader);
-                meshInst.setMaterial(meshMat);
-                if (meshInst.isUseGeometryMaterial() == true)
-                    meshInst.setUseGeometryMaterial(false);
+                meshInst.applyShader();
             }
             // add all the kids
             if (current instanceof PJoint ||
@@ -777,62 +773,6 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         } else {
             excecuteAttributes(attributes, true);
             setDefaultShaders();
-        }
-    }
-
-    public void setSkinnedMeshShaders() {
-        if (m_skeleton == null)
-            return;
-
-        VertDeformerWithSpecAndNormalMap        shiney      = new VertDeformerWithSpecAndNormalMap(m_wm);
-        VertDeformerWithNormalMapping           noshiney    = new VertDeformerWithNormalMapping(m_wm);
-        ArrayList<PPolygonSkinnedMeshInstance>  smInst      = m_skeleton.getSkinnedMeshInstances();
-        String[] check = new String[] { "Head", "Eye", "Teeth", "Tongue", "Hand", "Nude", "Arms", "Legs" };
-
-        for (int i = 0; i < smInst.size(); i++) {
-            if (smInst.get(i).getName().contains(check[0]) || smInst.get(i).getName().contains(check[1]) || smInst.get(i).getName().contains(check[2]) ||
-                smInst.get(i).getName().contains(check[3]) || smInst.get(i).getName().contains(check[4]) || smInst.get(i).getName().contains(check[5]) ||
-                smInst.get(i).getName().contains(check[6]) || smInst.get(i).getName().contains(check[7])) {
-
-                PMeshMaterial mat = smInst.get(i).getMaterialRef().getMaterial();
-                mat.setShader(shiney);
-                smInst.get(i).setMaterial(mat);
-                smInst.get(i).setUseGeometryMaterial(false);
-            } else {
-                PMeshMaterial mat = smInst.get(i).getMaterialRef().getMaterial();
-                mat.setShader(noshiney);
-                smInst.get(i).setMaterial(mat);
-                smInst.get(i).setUseGeometryMaterial(false);
-            }
-        }
-    }
-
-    public void setMeshShaders() {
-        if (m_skeleton == null)
-            return;
-
-        NormalAndSpecularMapShader      shiney  = new NormalAndSpecularMapShader(m_wm);
-        SimpleTNLShader                 regular = new SimpleTNLShader(m_wm);
-        ArrayList<PPolygonMeshInstance> mInst   = null;
-        MeshInstanceProcessor proc = new MeshInstanceProcessor();
-
-        TreeTraverser.breadthFirst(m_pscene, proc);
-        mInst = proc.getMeshInstances();
-
-        for (int i = 0; i < mInst.size(); i++) {
-            if (m_attributes.getGeomRef() != null && m_attributes.getGeomRef().get(5) != null) {
-                if (mInst.get(i).getName().equals(m_attributes.getGeomRef().get(5)[0])) {
-                    PMeshMaterial mat = mInst.get(i).getMaterialRef().getMaterial();
-                    mat.setShader(regular);
-                    mInst.get(i).setMaterial(mat);
-                    mInst.get(i).setUseGeometryMaterial(false);
-                }
-            } else {
-                PMeshMaterial mat = mInst.get(i).getMaterialRef().getMaterial();
-                mat.setShader(shiney);
-                mInst.get(i).setMaterial(mat);
-                mInst.get(i).setUseGeometryMaterial(false);
-            }
         }
     }
 
@@ -1562,9 +1502,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
             {
                 // Sweet! Apply the material
                 meshInst.setMaterial(meshMat);
-                meshInst.setUseGeometryMaterial(false);
-                // debugging info
-                System.out.println("Applying " + meshMat.getShader().getProgramName() + " to " + meshInst.getName());
+                meshInst.applyMaterial();
             }
             else
             {
