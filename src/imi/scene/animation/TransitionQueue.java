@@ -163,7 +163,11 @@ public class TransitionQueue implements AnimationListener
     
     public void applyNextTransition()
     {
-        TransitionCommand nextCommand = m_commandQueue.dequeue();
+        TransitionCommand nextCommand = null;
+        if (m_commandQueue.isEmpty())
+            nextCommand = m_defaultAnimation;
+        else
+            nextCommand = m_commandQueue.dequeue();
         
         if (nextCommand != null && isTargetSet() == true) // if there is a command to process...
         {   
@@ -182,15 +186,8 @@ public class TransitionQueue implements AnimationListener
 
     public void receiveAnimationMessage(AnimationMessageType message, int stateID)
     {
-        if (m_commandQueue == null)
-            return;
-        else if (m_commandQueue.isEmpty())
-        {
-            if (m_defaultAnimation == null)
-                return;
-            // Apply default animation
-            addTransition(m_defaultAnimation);
-        }
+//        if (m_commandQueue == null || m_commandQueue.isEmpty())
+//            return;
         // dump debug info
         //System.out.println("Received an animation message: " + message.toString());
         // next command

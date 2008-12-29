@@ -395,7 +395,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
                     if (m_skeleton.getAnimationComponent().getGroups().size() > 1)   
                     {
                         m_facialAnimationQ = new TransitionQueue(m_skeleton, 1);
-                        initiateFacialAnimation(1, 0.75f, 0.75f); // 0 is "All Cycles"
+                        initiateFacialAnimation(1, 0.75f, 0.75f); // smile when coming in
                         if (m_skeleton.getAnimationGroup(1).getCycle(4) != null)
                             m_facialAnimationQ.setDefaultAnimation(new TransitionCommand(4, 0.5f, PlaybackMode.PlayOnce, false));
                     }
@@ -1046,6 +1046,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
             else
                 return;   
         }
+        
         m_facialAnimationQ.addTransition(new TransitionCommand(cycleIndex, fTimeIn, PlaybackMode.PlayOnce, false));
         m_facialAnimationQ.addTransition(new TransitionCommand(cycleIndex, fTimeOut, PlaybackMode.PlayOnce, true));
     }
