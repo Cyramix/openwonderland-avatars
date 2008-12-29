@@ -994,7 +994,7 @@ public class PScene extends PNode implements RepositoryUser
     private PPolygonSkinnedMeshInstance buildSkinnedMeshInstance(PPolygonSkinnedMeshInstance meshInstance, PMatrix parentWorldMatrix)
     {
         // Initialize the meshAsset instance
-        PPolygonSkinnedMeshInstance meshInst  = new PPolygonSkinnedMeshInstance(meshInstance, this);
+        PPolygonSkinnedMeshInstance meshInst  = new PPolygonSkinnedMeshInstance(meshInstance, this, true);
 
         meshInst.getTransform().buildWorldMatrix(parentWorldMatrix);
         //meshInst.setTransformHierarchy(mesh.getBindPoseTransformHierarchy());
@@ -1013,7 +1013,7 @@ public class PScene extends PNode implements RepositoryUser
     private PPolygonSkinnedMeshInstance buildSkinnedMeshInstance(PPolygonSkinnedMesh mesh, PMatrix parentWorldMatrix) 
     {
         // Initialize the meshAsset instance
-        PPolygonSkinnedMeshInstance meshInst  = new PPolygonSkinnedMeshInstance(mesh.getName(), mesh, mesh.getTransform().getLocalMatrix(false), this);
+        PPolygonSkinnedMeshInstance meshInst  = new PPolygonSkinnedMeshInstance(mesh.getName(), mesh, mesh.getTransform().getLocalMatrix(false), this, true);
         
         meshInst.getTransform().buildWorldMatrix(parentWorldMatrix);
         //meshInst.setTransformHierarchy(mesh.getBindPoseTransformHierarchy());
@@ -1032,7 +1032,7 @@ public class PScene extends PNode implements RepositoryUser
     private PPolygonMeshInstance buildMeshInstance(PPolygonMesh mesh, PMatrix parentWorldMatrix)
     {
         // Initialize the meshAsset instance
-        PPolygonMeshInstance meshInst  = new PPolygonMeshInstance(mesh.getName(), mesh, mesh.getTransform().getLocalMatrix(false), this);
+        PPolygonMeshInstance meshInst  = new PPolygonMeshInstance(mesh.getName(), mesh, mesh.getTransform().getLocalMatrix(false), this, true);
         meshInst.getTransform().buildWorldMatrix(parentWorldMatrix);
         
         return meshInst;

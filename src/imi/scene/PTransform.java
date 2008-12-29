@@ -206,5 +206,15 @@ public class PTransform
         m_world.getMatrixRotationScale(matrix);
         return matrix;
     }
+
+    /**
+     * Set the values of this transform to the one provided
+     * @param transform
+     */
+    void set(PTransform transform)
+    {
+        m_local.set(transform.getLocalMatrix(false));
+        m_world.set(transform.getWorldMatrix(false));
+    }
     
 }

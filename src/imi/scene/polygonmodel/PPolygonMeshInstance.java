@@ -103,8 +103,9 @@ public class PPolygonMeshInstance extends PNode
      * @param geometry
      * @param origin
      * @param pscene
+     * @param bApplyMaterial
      */
-    public PPolygonMeshInstance(String name, PPolygonMesh geometry, PMatrix origin, PScene pscene) 
+    public PPolygonMeshInstance(String name, PPolygonMesh geometry, PMatrix origin, PScene pscene, boolean bApplyMaterial)
     {
         super(name, null, null, new PTransform(origin));
         
@@ -121,8 +122,8 @@ public class PPolygonMeshInstance extends PNode
             m_material = new PMeshMaterialCombo(m_geometry.getMaterialCopy(), null);
             m_instance.setTextureCoords(m_geometry.getGeometry().getTextureCoords(0));
             setUniformTexCoords(m_geometry.isUniformTexCoords());
-                
-            applyMaterial();
+            if (bApplyMaterial == true)
+                applyMaterial();
         }
     }
    
@@ -212,13 +213,13 @@ public class PPolygonMeshInstance extends PNode
         //System.out.println("Received " + path.toString());
         if (tex == null)
         {
-            System.out.println("Why is the texture null? Location is " + path.toString());
+            logger.severe("Why is the texture null? Location is " + path.toString());
             return;
         }
         
-        if (m_textureInstaller == null)
+        if (getTextureInstaller() == null)
         {
-            System.out.println("Why is the texture installer null? "+path.toString()+"  "+this);
+            logger.severe("Why is the texture installer null? "+path.toString()+"  "+this);
             return;   
         }
         
@@ -239,11 +240,11 @@ public class PPolygonMeshInstance extends PNode
         // did we find the texture?
         if (texUnit != -1)
         {
-            TextureState ts = m_textureInstaller.installTexture(tex, texUnit);
+            TextureState ts = getTextureInstaller().installTexture(tex, texUnit);
             if (ts != null)
             {
                 getSharedMesh().setRenderState(ts);
-                m_textureInstaller = null;
+                setTextureInstaller(null);
             }
         }
     }
@@ -293,11 +294,14 @@ public class PPolygonMeshInstance extends PNode
         if (meshMat.getShader(index) != null)
             meshMat.getShader(index).applyToMesh(this);
         else
-            logger.severe("Requested shader does not exist!");
+            logger.severe("Requested shader was null! (index was " + index + ", shader array length was " + meshMat.getShaders().length);
     }
     
     public void applyMaterial()
     {
+        // Debugging / Diagnostic output
+//        logger.info("applying material, I am " + getName() + " here is the call stack:");
+//        Thread.dumpStack();
         if (m_material == null) // We better be using the geometry's material
         {
             if (m_bUseGeometryMaterial == true)
@@ -317,8 +321,15 @@ public class PPolygonMeshInstance extends PNode
         for (int i = 0; i < numNeeded; ++i)
             texProps[i] = meshMat.getTexture(i);
         
-        m_textureInstaller = new TextureInstaller(texProps, m_textureState);
-        System.err.println("Creating textureInstallter "+this);
+        setTextureInstaller(new TextureInstaller(texProps, m_textureState));
+        // Debugging / Diagnostic outpout
+//        logger.info("[-----------------START------------------]");
+//        Thread.dumpStack();
+//        logger.info("[" + this + " - " + getName() + "]");
+//        logger.info("[Textures being loaded are: ]");
+//        for (int i = 0; i < numNeeded; ++i)
+//            logger.info(texProps[i].getImageLocation().toString());
+//        logger.info("[-----------------END------------------]");
 
         // TODO add functionality and data to this instance if we want 
         // to handle textures differently than the geometry
@@ -328,7 +339,7 @@ public class PPolygonMeshInstance extends PNode
             if (meshMat.getTexture(i) != null)
             {
                 bNeedToUseTextureInstaller = true;
-                if (m_PScene.isUseRepository())
+                if (m_PScene.isUseRepository() == true)
                 {
                     // Send SharedAsset request to the PScene
                     SharedAsset texture = new SharedAsset(m_PScene.getRepository(),
@@ -340,7 +351,7 @@ public class PPolygonMeshInstance extends PNode
             }
         }
         if (!bNeedToUseTextureInstaller || m_PScene.isUseRepository() == false)
-            m_textureInstaller = null;
+            setTextureInstaller(null);
         m_instance.setRenderState(m_textureState);
         if (meshMat.getShader() != null)
             meshMat.getShader().applyToMesh(this);
@@ -375,6 +386,30 @@ public class PPolygonMeshInstance extends PNode
         return super.isDirty() || m_geometry.isDirty();
     }
 
+    // Used for instrumentation
+    private void setTextureInstaller(TextureInstaller textureInstaller) {
+        m_textureInstaller = textureInstaller;
+//        if (textureInstaller == null)
+//        {
+//            System.err.println("NULLIFYING the texture installer");
+//            System.err.println("My name is " + getName());
+//            Thread.dumpStack();
+//
+//        }
+        // Debugging / Diagnostic output
+//        logger.severe("-----------Setting texture installer to " + textureInstaller);
+//        logger.severe("-----------this is " + this);
+//        Thread.dumpStack();
+    }
+
+    private TextureInstaller getTextureInstaller() {
+        // Debugging / Diagnostic output
+//        logger.severe("-----------Retrieving texture installer...");
+//        logger.severe("-----------this is " + this);
+//        Thread.dumpStack();
+        return m_textureInstaller;
+    }
+
     private void setUniformTexCoords(boolean uniformTexCoords)
     {
         
@@ -392,8 +427,8 @@ public class PPolygonMeshInstance extends PNode
     
     public boolean isWaitingOnTextures()
     {
-        if (m_textureInstaller != null)
-            return m_textureInstaller.isComplete();
+        if (getTextureInstaller() != null)
+            return getTextureInstaller().isComplete();
         return false;
     }
     

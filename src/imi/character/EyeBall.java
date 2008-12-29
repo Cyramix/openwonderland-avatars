@@ -63,7 +63,7 @@ public class EyeBall extends PPolygonSkinnedMeshInstance
      */
     public EyeBall(PPolygonSkinnedMeshInstance meshInstance, PPolygonModelInstance modelInst, PScene pscene)
     {
-        super(meshInstance, pscene);
+        super(meshInstance, pscene, false); // Material will be applied later
         this.modelInst = modelInst;
     }
 

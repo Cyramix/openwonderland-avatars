@@ -35,29 +35,29 @@ import imi.scene.utils.PRenderer;
  */
 public class PPolygonSkinnedMeshInstance extends PPolygonMeshInstance
 {
-    boolean bInit = true;
+    protected boolean bInit = true;
     
-    private PMatrix[]    m_InverseBindPose  = null; // TODO: Caching this may not be desireable
+    protected PMatrix[]    m_InverseBindPose  = null; // TODO: Caching this may not be desireable
     
-    private SkeletonNode m_pSkeletonNode    = null;
+    protected SkeletonNode m_pSkeletonNode    = null;
     
-    private int[]        m_influenceIndices = null;
+    protected int[]        m_influenceIndices = null;
 
     //private PostAnimationJointManipulator m_jointManipulator = null;
 
     //  Constructor.
-    public PPolygonSkinnedMeshInstance(String name, PPolygonSkinnedMesh geometry, PMatrix origin, PScene pscene) 
+    public PPolygonSkinnedMeshInstance(String name, PPolygonSkinnedMesh geometry, PMatrix origin, PScene pscene, boolean applyMaterial)
     {
-        super(name, geometry, origin, pscene);
+        super(name, geometry, origin, pscene, applyMaterial);
         if (geometry.getInfluenceIndices() != null)
             setInfluenceIndices(geometry.getInfluenceIndices());
         
     }
     
     //  Copy Constructor.
-    public PPolygonSkinnedMeshInstance(PPolygonSkinnedMeshInstance meshInstance, PScene pscene)
+    public PPolygonSkinnedMeshInstance(PPolygonSkinnedMeshInstance meshInstance, PScene pscene, boolean applyMaterial)
     {
-        super(meshInstance.getName(), meshInstance.getGeometry(), meshInstance.getTransform().getLocalMatrix(false), pscene);
+        super(meshInstance.getName(), meshInstance.getGeometry(), meshInstance.getTransform().getLocalMatrix(false), pscene, applyMaterial);
         if (meshInstance.getInfluenceIndices() != null)
             setInfluenceIndices(meshInstance.getInfluenceIndices());
         setSkeletonNode(meshInstance.getSkeletonNode());

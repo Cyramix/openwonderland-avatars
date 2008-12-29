@@ -90,7 +90,7 @@ import org.collada.xml_walker.ColladaMaterial;
 public class Collada
 {
     /** Logger reference **/
-    private static Logger logger = Logger.getLogger(Collada.class.toString());
+    private static final Logger logger = Logger.getLogger(Collada.class.getName());
     /** Context for the unmarshaller to operate within **/
     private static javax.xml.bind.JAXBContext jaxbContext = null;
     /** Used to synchronize access to the jaxb context **/
@@ -117,44 +117,44 @@ public class Collada
     private URL     m_fileLocation = null;
 
     /** Assorted library convenience references **/
-    private LibraryCameras                              m_pLibraryCameras = null;
-    private LibraryImages                               m_pLibraryImages = null;
-    private LibraryEffects                              m_pLibraryEffects = null;
-    private LibraryMaterials                            m_pLibraryMaterials = null;
-    private LibraryAnimations                           m_pLibraryAnimations = null;
-    private LibraryVisualScenes                         m_pLibraryVisualScenes = null;
-    private LibraryGeometries                           m_pLibraryGeometries = null;
-    private LibraryControllers                          m_pLibraryControllers = null;
-    private LibraryNodes                                m_pLibraryNodes = null;
+    private LibraryCameras                              m_libraryCameras = null;
+    private LibraryImages                               m_libraryImages = null;
+    private LibraryEffects                              m_libraryEffects = null;
+    private LibraryMaterials                            m_libraryMaterials = null;
+    private LibraryAnimations                           m_libraryAnimations = null;
+    private LibraryVisualScenes                         m_libraryVisualScenes = null;
+    private LibraryGeometries                           m_libraryGeometries = null;
+    private LibraryControllers                          m_libraryControllers = null;
+    private LibraryNodes                                m_libraryNodes = null;
 
-    private FastMap<String, PColladaEffect>             m_EffectMap = new FastMap<String, PColladaEffect>();
-    private ArrayList<PColladaEffect>                   m_EffectList = new ArrayList<PColladaEffect>();
-
-    private FastMap<String, ColladaMaterial>            m_MaterialMap = new FastMap<String, ColladaMaterial>();
-    private ArrayList<ColladaMaterial>                  m_MaterialList = new ArrayList<ColladaMaterial>();
-
-    private FastMap<String, PColladaMaterialInstance>   m_MaterialInstances = new FastMap<String, PColladaMaterialInstance>();
-    private ArrayList                                   m_ColladaMaterialInstances = new ArrayList();
+    // Effect mapping and list
+    private final FastMap<String, PColladaEffect>   m_EffectMap = new FastMap<String, PColladaEffect>();
+    private final ArrayList<PColladaEffect>         m_EffectList = new ArrayList<PColladaEffect>();
+    // Material mapping and list
+    private final FastMap<String, ColladaMaterial>  m_MaterialMap = new FastMap<String, ColladaMaterial>();
+    private final ArrayList<ColladaMaterial>        m_MaterialList = new ArrayList<ColladaMaterial>();
+    // Material instance mapping and list
+    private final FastMap<String, PColladaMaterialInstance>   m_MaterialInstances = new FastMap<String, PColladaMaterialInstance>();
+    private final ArrayList                                   m_ColladaMaterialInstances = new ArrayList();
 
     private SkeletonNode                                m_pSkeletonNode = null;
     private PScene                                      m_pLoadingPScene = null;
 
-
+    // Maximum number of weights to be read per-vertex
+    private int                             m_MaxNumberOfWeights = 4;
     //  Contains the PolygonMeshes loaded.
-    public ArrayList<PPolygonMesh>              m_PolygonMeshes = new ArrayList<PPolygonMesh>();
+    public final ArrayList<PPolygonMesh>    m_PolygonMeshes = new ArrayList<PPolygonMesh>();
 
     //  Contains the PolygonSkinnedMeshes loaded.
-    public ArrayList<PPolygonSkinnedMesh>       m_PolygonSkinnedMeshes = new ArrayList<PPolygonSkinnedMesh>();
-
-    public ArrayList<PColladaSkin>              m_ColladaSkins = new ArrayList<PColladaSkin>();
-
-    private ArrayList<PColladaNode>             m_ColladaNodes = new ArrayList<PColladaNode>();
-    private ArrayList<PColladaNode>             m_FactoryColladaNodes = new ArrayList<PColladaNode>();
+    public final ArrayList<PPolygonSkinnedMesh> m_PolygonSkinnedMeshes = new ArrayList<PPolygonSkinnedMesh>();
+    public final ArrayList<PColladaSkin>    m_ColladaSkins = new ArrayList<PColladaSkin>();
+    private final ArrayList<PColladaNode>   m_ColladaNodes = new ArrayList<PColladaNode>();
+    private final ArrayList<PColladaNode>   m_FactoryColladaNodes = new ArrayList<PColladaNode>();
     
-    private int                                 m_MaxNumberOfWeights = 4;
-    private ArrayList<PColladaAnimatedItem>     m_ColladaAnimatedItems = new ArrayList<PColladaAnimatedItem>();
-    private ArrayList<PColladaCameraParams>     m_ColladaCameraParams = new ArrayList<PColladaCameraParams>();
-    private ArrayList<PColladaCamera>           m_ColladaCameras = new ArrayList<PColladaCamera>();
+    
+    private final ArrayList<PColladaAnimatedItem>     m_ColladaAnimatedItems = new ArrayList<PColladaAnimatedItem>();
+    private final ArrayList<PColladaCameraParams>     m_ColladaCameraParams = new ArrayList<PColladaCameraParams>();
+    private final ArrayList<PColladaCamera>           m_ColladaCameras = new ArrayList<PColladaCamera>();
 
     private boolean m_bLoadRig                      = false;
     private boolean m_bLoadGeometry                 = true;
@@ -191,15 +191,15 @@ public class Collada
         m_Libraries = null;
         m_Name = "ColladaLoader";
         m_fileLocation = null;
-        m_pLibraryCameras = null;
-        m_pLibraryImages = null;
-        m_pLibraryEffects = null;
-        m_pLibraryMaterials = null;
-        m_pLibraryAnimations = null;
-        m_pLibraryVisualScenes = null;
-        m_pLibraryGeometries = null;
-        m_pLibraryControllers = null;
-        m_pLibraryNodes = null;
+        m_libraryCameras = null;
+        m_libraryImages = null;
+        m_libraryEffects = null;
+        m_libraryMaterials = null;
+        m_libraryAnimations = null;
+        m_libraryVisualScenes = null;
+        m_libraryGeometries = null;
+        m_libraryControllers = null;
+        m_libraryNodes = null;
         m_EffectMap.clear();
         m_EffectList.clear();
         m_MaterialMap.clear();
@@ -315,35 +315,47 @@ public class Collada
         m_fileLocation = colladaFile;
         URLConnection conn = null;
         InputStream in = null;
-        try {
-            conn = colladaFile.openConnection();
-            in = conn.getInputStream();
-//            javax.xml.bind.JAXBContext jc = javax.xml.bind.JAXBContext.newInstance("org.collada.colladaschema");
-//            javax.xml.bind.Unmarshaller unmarshaller = jc.createUnmarshaller();
+        boolean retry = true;
+        boolean result = false;
+        while (retry == true)
+        {
             org.collada.colladaschema.COLLADA collada = null;
-            synchronized(contextLock)
+            try
             {
-                collada = (org.collada.colladaschema.COLLADA) unmarshaller.unmarshal(in);
-            }
-            // Give other threads a little break before the next lengthy series of heavy-weight ops
-            Thread.yield();
-            doLoad(collada);
-            return true;
-        } catch (Exception exception) {
-            if (exception.getMessage().equals("Connection refused")) {
-                System.out.print(exception.getMessage() + "... Retrying");
-                load(colladaFile);
-            }
-        } finally {
-            try {
-                if (in != null) {
-                    in.close();
+                conn = colladaFile.openConnection();
+                in = conn.getInputStream();
+                synchronized(contextLock) {
+                    collada = (org.collada.colladaschema.COLLADA) unmarshaller.unmarshal(in);
                 }
-                return true;
-            } catch (IOException ioe) {
-                return false;
+                retry = false;
             }
-        }
+            catch (Exception exception)
+            {
+                if (exception.getMessage().equals("Connection refused"))
+                {
+                    logger.warning(exception.getMessage() + "... Retrying");
+                    retry = true;
+                }
+            }
+            finally
+            {
+                try
+                {
+                    if (in != null)
+                        in.close();
+                }
+                catch (IOException ex)
+                {
+                    logger.warning("Caught exception closing: " + ex.getMessage());
+                    result = false;
+                }
+                if (retry)
+                    continue;
+            }
+            doLoad(collada);
+            result = true;
+        } // End while loop
+        return result;
     }
 
     /**
@@ -395,15 +407,15 @@ public class Collada
     {
         m_Libraries = collada.getLibraryLightsAndLibraryGeometriesAndLibraryAnimationClips();
 
-        m_pLibraryCameras       = getInstanceOfLibraryCameras();
-        m_pLibraryImages        = getInstanceOfLibraryImages();
-        m_pLibraryEffects       = getInstanceOfLibraryEffects();
-        m_pLibraryMaterials     = getInstanceOfLibraryMaterials();
-        m_pLibraryAnimations    = getInstanceOfLibraryAnimations();
-        m_pLibraryVisualScenes  = getInstanceOfLibraryVisualScenes();
-        m_pLibraryGeometries    = getInstanceOfLibraryGeometries();
-        m_pLibraryControllers   = getInstanceOfLibraryControllers();
-        m_pLibraryNodes         = getInstanceOfLibraryNodes();
+        m_libraryCameras       = getInstanceOfLibraryCameras();
+        m_libraryImages        = getInstanceOfLibraryImages();
+        m_libraryEffects       = getInstanceOfLibraryEffects();
+        m_libraryMaterials     = getInstanceOfLibraryMaterials();
+        m_libraryAnimations    = getInstanceOfLibraryAnimations();
+        m_libraryVisualScenes  = getInstanceOfLibraryVisualScenes();
+        m_libraryGeometries    = getInstanceOfLibraryGeometries();
+        m_libraryControllers   = getInstanceOfLibraryControllers();
+        m_libraryNodes         = getInstanceOfLibraryNodes();
 
         //  Create the SkeletonNode if we're loading the rig.
         if (m_bLoadRig)
@@ -413,28 +425,28 @@ public class Collada
         //  Need to process these Libraries in this order.
         if (m_bLoadGeometry)
         {
-            ProcessorFactory.createProcessor(this, m_pLibraryCameras, null);
-            ProcessorFactory.createProcessor(this, m_pLibraryImages, null);
-            ProcessorFactory.createProcessor(this, m_pLibraryEffects, null);
-            ProcessorFactory.createProcessor(this, m_pLibraryMaterials, null);
+            ProcessorFactory.createProcessor(this, m_libraryCameras, null);
+            ProcessorFactory.createProcessor(this, m_libraryImages, null);
+            ProcessorFactory.createProcessor(this, m_libraryEffects, null);
+            ProcessorFactory.createProcessor(this, m_libraryMaterials, null);
         }
 
         //  Only load the Animations if we should.
         if (m_bLoadAnimations)
-            ProcessorFactory.createProcessor(this, m_pLibraryAnimations, null);
+            ProcessorFactory.createProcessor(this, m_libraryAnimations, null);
 
         if (m_bLoadGeometry)
-            ProcessorFactory.createProcessor(this, m_pLibraryNodes, null);
+            ProcessorFactory.createProcessor(this, m_libraryNodes, null);
 
         //  Preprocess the node hiearchy.
         //  Builds the node hiearchy.
-        ProcessorFactory.createProcessor(this, m_pLibraryVisualScenes, null);
+        ProcessorFactory.createProcessor(this, m_libraryVisualScenes, null);
 
         //  Gets the load option.
         if (m_bLoadGeometry)
         {
-            ProcessorFactory.createProcessor(this, m_pLibraryGeometries, null);
-            ProcessorFactory.createProcessor(this, m_pLibraryControllers, null);
+            ProcessorFactory.createProcessor(this, m_libraryGeometries, null);
+            ProcessorFactory.createProcessor(this, m_libraryControllers, null);
         }
 
         if (m_bLoadRig)

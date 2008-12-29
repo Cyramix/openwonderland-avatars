@@ -39,22 +39,22 @@ import javolution.util.FastList;
  * @author Chris Nagle
  * @author Shawn Kendall
  */
-public class PNode //implements Serializable
+public class PNode 
 {
     protected static final Logger logger = Logger.getLogger(PNode.class.getName());
     
-    private String              m_name          = "";
+    private String              m_name          = "MysteryNode!";
     private PNode               m_parent        = null;
-    private ArrayList<PNode>    m_children      = null;
+    private final ArrayList<PNode>    m_children      = new ArrayList<PNode>();
     
     /**  A PNode may or may not have a PTransform. */
-    private PTransform          m_transform     = null;   
+    private PTransform  m_transform     = null;
     
     /**  if true this node and its children will not be rendered. */
-    private boolean             m_bRenderStop   = false;   
+    private boolean     m_bRenderStop   = false;
     
     /** if true an update is required - meaning the JMonkey equivilent of this node is out of date */
-    private boolean             m_bDirty        = true;
+    private boolean     m_bDirty        = true;
     
     /** external references counter */
     private int m_referenceCount = 0;
@@ -69,8 +69,8 @@ public class PNode //implements Serializable
      */
     public PNode()
     {
-        m_children = new ArrayList<PNode>();
-        logger.info("PNode created : " + getClass().getName());    
+        // Diagnostic / Debugging output
+//        logger.info("PNode created : " + getClass().getName());
     }
     
     /**
@@ -79,9 +79,9 @@ public class PNode //implements Serializable
      */
     public PNode(String name) 
     {
-        m_children = new ArrayList<PNode>();
         setName(name);
-        logger.info("PNode created : " + m_name + " of type " + getClass().getName());
+        // Debugging / Diagnostic info
+//        logger.info("PNode created : " + m_name + " of type " + getClass().getName());
     }
     
     /**
@@ -91,7 +91,6 @@ public class PNode //implements Serializable
      */
     public PNode(PTransform transform)
     {
-        this();
         setTransform(transform);
     }
     
@@ -103,10 +102,10 @@ public class PNode //implements Serializable
      */
     public PNode(String name, PTransform transform)
     {
-        m_children = new ArrayList<PNode>();
         setName(name);
         setTransform(transform);
-        logger.info("PNode created : " + m_name + " of type " + getClass().getName());
+        // Debugging / Diagnostic output
+//        logger.info("PNode created : " + m_name + " of type " + getClass().getName());
     }
     
     /**
@@ -125,10 +124,9 @@ public class PNode //implements Serializable
             parent.addChild(this);
         
         setChildren(children);
-        if (m_children == null)
-            m_children = new ArrayList<PNode>();
         setTransform(transform);
-        logger.info("PNode created : " + m_name + " of type " + getClass().getName());
+        // Debugging / Diagnostic Output
+//        logger.info("PNode created : " + m_name + " of type " + getClass().getName());
     }
     
     /**
@@ -136,8 +134,7 @@ public class PNode //implements Serializable
      * @see PPolygonMeshInstance : draw()
      * @param renderer
      */
-    public void draw(PRenderer renderer)
-    { }
+    public void draw(PRenderer renderer) { /** Do Nothing! **/}
     
     /**
      * Calls draw on this node and all of its children cascading down
@@ -186,8 +183,7 @@ public class PNode //implements Serializable
      */
     public void setParent(PNode parent)
     {
-        //if (parent != null) sometimes we want to set the parent to null (adding a child)
-            m_parent = parent;
+        m_parent = parent;
     }
     
     /**
@@ -206,7 +202,12 @@ public class PNode //implements Serializable
     public void setTransform(PTransform transform)
     {
         if (transform != null)
-            m_transform = new PTransform(transform);
+        {
+            if (m_transform != null)
+                m_transform.set(transform);
+            else
+                m_transform = new PTransform(transform);
+        }
     }
     
     /**
@@ -231,13 +232,16 @@ public class PNode //implements Serializable
         
         if (bDirty && bAffectKids)
         {
-            try{
-            for (PNode kid : getChildren())
-                kid.setDirty(bDirty, bAffectKids);
+            try
+            {
+                for (PNode kid : getChildren())
+                    kid.setDirty(bDirty, true);
             }
             catch (java.util.ConcurrentModificationException exception)
             {
-                Logger.getLogger(this.getClass().toString()).log(Level.SEVERE, "During setDirty() a ConcurrentModificationException was thrown!");
+                Logger.getLogger(this.getClass().toString()).log(Level.SEVERE,
+                        "During setDirty() a ConcurrentModificationException was thrown! : " +
+                        exception.getMessage());
             }
         }
     }
@@ -272,12 +276,9 @@ public class PNode //implements Serializable
                 }
                 child.setParent(this);
                 m_children.add(child);
-                
-                if (logger.isLoggable(Level.INFO)) 
-                {
-                    logger.info("Child: " + child.getName()
-                            + " added to node: " + getName() );
-                }
+                // Debugging / Diagnostic output
+//                logger.info("Child: " + child.getName()
+//                        + " added to node: " + getName() );
             }
         }
         
@@ -355,11 +356,10 @@ public class PNode //implements Serializable
      */
     public void setChildren(ArrayList<PNode> children)
     {
+        // Out with the old
+        m_children.clear();
         if (children != null)
-        {
-            m_children = children;
-            logger.info("setChildren");
-        }
+            m_children.addAll(children);
     }
     
     /**
@@ -383,13 +383,11 @@ public class PNode //implements Serializable
     {
         if (name == null) 
             return null;
-        
-        PNode child;
-        for (int i = 0; i < getChildrenCount(); i++) 
+
+        for (PNode kid : m_children)
         {
-            child = m_children.get(i);
-            if (name.equals(child.getName())) 
-                return child;
+            if (name.equals(kid.getName()))
+                return kid;
         }
         return null;
     }
@@ -405,25 +403,18 @@ public class PNode //implements Serializable
     {
         if (name == null) 
             return null;
-        
-        PNode child;
-        for (int i = 0; i < getChildrenCount(); i++) 
+        if (name.equals(getName())) // it's us!
+            return this;
+
+        // Search away!
+        PNode result = null;
+        for (PNode kid : m_children)
         {
-            child = m_children.get(i);
-            if (name.equals(child.getName())) 
-            {
-                return child;
-            }
-            else
-            {
-                PNode subChild = child.findChild(name);
-                if (subChild != null)
-                {
-                    return subChild;
-                }    
-            }
+            result = kid.findChild(name);
+            if (result != null)
+                break;
         }
-        return null; 
+        return result;
     }
     
     /**
@@ -434,16 +425,13 @@ public class PNode //implements Serializable
     public PNode removeChild(int index)
     {
         PNode child = m_children.remove(index);
-        if ( child != null ) 
-        {
+        if ( child != null )
             child.setParent( null );
-            logger.info("Child removed.");
-        }
         return child;
     }
     
     /**
-     * Recursively search the hiearchy for the child
+     * Traverse the hiearchy, breadth-first, for the child
      * with the specified name and kill them. There
      * shall be no escape!
      * @param name 
@@ -452,7 +440,6 @@ public class PNode //implements Serializable
     public PNode findAndRemoveChild(String name)
     {
         // Recurse and find
-        
         FastList<PNode> kids = new FastList<PNode>();
         // Add ourselves
         kids.add(this);
@@ -462,12 +449,12 @@ public class PNode //implements Serializable
         {
             // process
             current = kids.removeFirst();
-            if (current.getName().equals(name)) // Found a match
+            if (name.equals(current.getName())) // Found a match
             {
                 PNode parent = current.getParent();
                 if (parent == null) // No parent? not sure why this happened
                 {
-                    System.out.println("Recursive Removal found null parent PNode.java:425");
+                    logger.severe("Removal found null parent PNode.java:425");
                     return null;
                 }
                 else
@@ -506,7 +493,7 @@ public class PNode //implements Serializable
                 PNode parent = current.getParent();
                 if (parent == null) // No parent? not sure why this happened
                 {
-                    System.out.println("Recursive Removal found null parent PNode.java:425");
+                    logger.severe("Recursive Removal found null parent PNode.java:425");
                     return null;
                 }
                 else
@@ -532,14 +519,12 @@ public class PNode //implements Serializable
         if (name == null)
             return null;
         
-        for (int i = 0; i < m_children.size(); i++) 
+        for (PNode kid : m_children)
         {
-            PNode child =  m_children.get(i);
-            if (name.equals(child.getName())) 
-            {
-                return removeChild( i );
-            }
+            if (name.equals(kid.getName()))
+                return removeChild(kid);
         }
+
         return null;
     }
     
@@ -571,8 +556,6 @@ public class PNode //implements Serializable
     public void removeAllChildren()
     {
         m_children.clear();
-        
-        logger.info("All children removed.");
     }
     
     /**
@@ -629,8 +612,6 @@ public class PNode //implements Serializable
         m_children.add(index1, kid2);
         m_children.remove(index2);
         m_children.add(index2, kid1);
-        
-        logger.info("Children swaped.");
     }
     
     /**
