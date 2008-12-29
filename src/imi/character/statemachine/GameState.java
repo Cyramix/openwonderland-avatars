@@ -53,6 +53,12 @@ public class GameState extends NamedUpdatableObject
     private AnimationComponent.PlaybackMode transitionCycleMode = AnimationComponent.PlaybackMode.Loop;
     /** Indicates when the appropriate animation has been set **/
     private boolean bAnimationSet = false;
+    
+    /** The facial animation will play when entering the state if not null **/
+    private String facialAnimationName    = null;
+    private float  facialAnimationTimeIn  = 1.0f;
+    private float  facialAnimationTimeOut = 2.0f;
+    
     /** Logger convenience method **/
     protected final static Logger logger = Logger.getLogger(GameState.class.getName());
 
@@ -198,6 +204,9 @@ public class GameState extends NamedUpdatableObject
 //        if (gameContext.getController().getWindow() != null)
 //            gameContext.getController().getWindow().setTitle(getName() + " Reverse: " + bReverseAnimation + " " + getAnimationName());
         
+        if (facialAnimationName != null)
+             gameContext.getCharacter().initiateFacialAnimation(facialAnimationName, facialAnimationTimeIn, facialAnimationTimeOut);
+        
         bAnimationSet = false;
         
         // Transition to the animation
@@ -327,5 +336,60 @@ public class GameState extends NamedUpdatableObject
         this.transitionCycleMode = transitionCycleMode;
     }
     
-    
+    /**
+     * The animation will play when entering the state if not null.
+     * @param facialAnimationName
+     */
+    public String getFacialAnimationName() {
+        return facialAnimationName;
+    }
+
+    /**
+     * The animation will play when entering the state.
+     * Set to null to disable facial animation.
+     * @param facialAnimationName
+     */
+    public void setFacialAnimationName(String facialAnimationName) {
+        this.facialAnimationName = facialAnimationName;
+    }
+
+    /**
+     * The time it takes to reach the facial pose
+     * The animation will play when entering the state if the name 
+     * is not null.
+     * @return
+     */
+    public float getFacialAnimationTimeIn() {
+        return facialAnimationTimeIn;
+    }
+
+    /**
+     * The time it takes to reach the facial pose
+     * The animation will play when entering the state if the name 
+     * is not null.
+     * @return
+     */
+    public void setFacialAnimationTimeIn(float facialAnimationTimeIn) {
+        this.facialAnimationTimeIn = facialAnimationTimeIn;
+    }
+
+    /**
+     * The time it takes to relax the facial pose
+     * The animation will play when entering the state if the name 
+     * is not null.
+     * @return
+     */
+    public float getFacialAnimationTimeOut() {
+        return facialAnimationTimeOut;
+    }
+
+    /**
+     * The time it takes to relax the facial pose
+     * The animation will play when entering the state if the name 
+     * is not null.
+     * @return
+     */
+    public void setFacialAnimationTimeOut(float facialAnimationTimeOut) {
+        this.facialAnimationTimeOut = facialAnimationTimeOut;
+    }
 }

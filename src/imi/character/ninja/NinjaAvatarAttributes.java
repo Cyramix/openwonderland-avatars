@@ -77,6 +77,7 @@ public class NinjaAvatarAttributes extends CharacterAttributes
         facialAnims.add("assets/models/collada/Avatars/MaleFacialAnimation/MaleSmile.dae");
         facialAnims.add("assets/models/collada/Avatars/MaleFacialAnimation/MaleFrown.dae");
         facialAnims.add("assets/models/collada/Avatars/MaleFacialAnimation/MaleScorn.dae");
+        facialAnims.add("assets/models/collada/Avatars/MaleFacialAnimation/MaleDefault.dae");
         setFacialAnimations(facialAnims.toArray(new String[facialAnims.size()]));
 
         // Customizations

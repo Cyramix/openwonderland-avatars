@@ -371,7 +371,7 @@ public class AnimationGroup
     {
         if (m_cycles == null)
             return null;
-        if (index < 0 || index > m_cycles.length)
+        if (index < 0 || index >= m_cycles.length)
             return null;
         return m_cycles[index];
     }

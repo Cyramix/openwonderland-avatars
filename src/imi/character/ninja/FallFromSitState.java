@@ -61,6 +61,11 @@ public class FallFromSitState extends GameState
         setAnimationName("Male_FallFromSitting");
         setTransitionDuration(0.05f);
         setAnimationSpeed(2.0f);
+        
+        // Frown when entering the state
+        setFacialAnimationName("MaleFrown");
+        setFacialAnimationTimeIn(0.75f);
+        setFacialAnimationTimeOut(2.0f);
     }
 
     /**
@@ -102,8 +107,6 @@ public class FallFromSitState extends GameState
         
         // Stop the character
         context.getController().stop();
-        
-        context.getCharacter().initiateFacialAnimation("MaleFrown", 0.75f, 2.0f);
     }
     
     @Override
