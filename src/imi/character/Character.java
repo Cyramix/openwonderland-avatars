@@ -396,8 +396,6 @@ public abstract class Character extends Entity implements SpatialObject, Animati
                     {
                         m_facialAnimationQ = new TransitionQueue(m_skeleton, 1);
                         initiateFacialAnimation(1, 0.75f, 0.75f); // smile when coming in
-                        if (m_skeleton.getAnimationGroup(1).getCycle(4) != null)
-                            m_facialAnimationQ.setDefaultAnimation(new TransitionCommand(4, 0.5f, PlaybackMode.PlayOnce, false));
                     }
 
                     // The verlet arm!
@@ -1047,8 +1045,15 @@ public abstract class Character extends Entity implements SpatialObject, Animati
                 return;   
         }
         
+//        // Return from default face pose if current
+//        if (m_skeleton.getAnimationState(1).getCurrentCycle() == 4 && m_skeleton.getAnimationState(1).isTransitioning() == false)
+//            m_facialAnimationQ.addTransition(new TransitionCommand(4, 0.5f, PlaybackMode.PlayOnce, true));
+        
         m_facialAnimationQ.addTransition(new TransitionCommand(cycleIndex, fTimeIn, PlaybackMode.PlayOnce, false));
         m_facialAnimationQ.addTransition(new TransitionCommand(cycleIndex, fTimeOut, PlaybackMode.PlayOnce, true));
+        
+        // Go to default face pose
+        m_facialAnimationQ.addTransition(new TransitionCommand(4, 0.5f, PlaybackMode.PlayOnce, false));
     }
     
     public void setCameraOnMe() 
