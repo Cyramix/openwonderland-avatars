@@ -1585,25 +1585,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
             return mInst;
         }
     };
-<<<<<<< .mine
 
-    public void HACKMETHODPLEASEREMOVEME(String meshName)
-    {
-                // Remove all the old head stuff from our skeleton
-        PNode pnode = m_skeleton.findChild(meshName);
-        if (pnode != null)
-        {
-            PPolygonSkinnedMeshInstance meshInst = (PPolygonSkinnedMeshInstance)pnode;
-            int counter = 0;
-            System.out.println(meshInst.getName());
-            for (int integer : meshInst.getInfluenceIndices())
-            {
-                System.out.println("Influence #" + counter + ": " + integer);
-                counter++;
-            }
-        }
-    }
-=======
 
     /**
      * The animation cycle index in the animation group (facial group is 1)
@@ -1637,6 +1619,4 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         this.m_defaultFacePoseTiming = defaultFacePoseTiming;
     }
     
-    
->>>>>>> .r363
 }
