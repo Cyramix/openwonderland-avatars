@@ -80,6 +80,9 @@ public class TransitionQueue implements AnimationListener
             m_commandQueue.enqueue(newCommand);
         else if (m_state.getCurrentCycle() == -1)
         {
+//            System.out.println("setting facial pose for the first time:");
+//            System.out.println("      animation " + newCommand.getAnimationIndex() + " reverse is " + newCommand.isReverse());
+            
             // This is not a transition... it's the first animation to play
             AnimationCycle newCycle = m_group.getCycle(newCommand.getAnimationIndex());
             m_state.setCurrentCycle(newCommand.getAnimationIndex());
@@ -94,6 +97,9 @@ public class TransitionQueue implements AnimationListener
         }
         else // Do it now!
         {
+//            System.out.println("setting facial pose:");
+//            System.out.println("      animation " + newCommand.getAnimationIndex() + " reverse is " + newCommand.isReverse());
+            
             AnimationCycle newCycle = m_group.getCycle(newCommand.getAnimationIndex());
             m_state.setTransitionCycle(newCommand.getAnimationIndex());
             
@@ -166,6 +172,8 @@ public class TransitionQueue implements AnimationListener
         
         TransitionCommand nextCommand = m_commandQueue.dequeue();
         
+        //System.out.println("animation " + nextCommand.getAnimationIndex() + " reverse is " + nextCommand.isReverse());
+        
         if (nextCommand != null && isTargetSet() == true) // if there is a command to process...
         {   
             if (m_state != null) // Is there a state set for this fellow yet?
@@ -175,6 +183,12 @@ public class TransitionQueue implements AnimationListener
                 m_state.setTransitionReverseAnimation(nextCommand.isReverse());
                 m_state.setTransitionPlaybackMode(nextCommand.getPlaybackMode());
                 m_state.setTimeInTransition(0.0f);
+                
+                AnimationCycle newCycle = m_group.getCycle(nextCommand.getAnimationIndex());
+                if (nextCommand.isReverse())
+                    m_state.setTransitionCycleTime(newCycle.getEndTime());
+                else
+                    m_state.setTransitionCycleTime(newCycle.getStartTime());
             }
             else
                 Logger.getLogger(this.getClass().toString()).log(Level.FINE, "Animated target had no animation state!");
@@ -191,6 +205,8 @@ public class TransitionQueue implements AnimationListener
 //        TransitionCommand command = m_commandQueue.peek();
 //        if (command != null)
 //            System.out.println("Next command is: " + command.toString());
+        
+        
         switch (message)
         {
             case EndOfCycle:

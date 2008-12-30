@@ -68,6 +68,7 @@ import imi.scene.PJoint;
 import imi.scene.PNode;
 import imi.scene.animation.AnimationComponent;
 import imi.scene.animation.AnimationComponent.PlaybackMode;
+import imi.scene.animation.AnimationCycle;
 import imi.scene.animation.AnimationGroup;
 import imi.scene.animation.AnimationListener;
 import imi.scene.animation.AnimationState;
@@ -142,6 +143,9 @@ public abstract class Character extends Entity implements SpatialObject, Animati
     protected VerletArm                     m_leftArm               = null;
     private VerletSkeletonFlatteningManipulator m_skeletonManipulator   = null;
     private boolean                             m_initialized           = false;
+    
+    private int                             m_defaultFacePose       = 4;
+    private float                           m_defaultFacePoseTiming = 0.1f;
 
     /**
      * Sets up the mtgame entity 
@@ -393,7 +397,10 @@ public abstract class Character extends Entity implements SpatialObject, Animati
                     if (m_skeleton.getAnimationComponent().getGroups().size() > 1)   
                     {
                         m_facialAnimationQ = new TransitionQueue(m_skeleton, 1);
-                        initiateFacialAnimation(1, 0.75f, 0.75f); // smile when coming in
+                        // Go to default face pose
+                        m_facialAnimationQ.addTransition(new TransitionCommand(m_defaultFacePose, m_defaultFacePoseTiming, PlaybackMode.PlayOnce, false));
+                        // Smile when comming in
+                        initiateFacialAnimation(1, 0.75f, 0.75f);
                     }
 
                     // The verlet arm!
@@ -1043,15 +1050,14 @@ public abstract class Character extends Entity implements SpatialObject, Animati
                 return;   
         }
         
-//        // Return from default face pose if current
-//        if (m_skeleton.getAnimationState(1).getCurrentCycle() == 4 && m_skeleton.getAnimationState(1).isTransitioning() == false)
-//            m_facialAnimationQ.addTransition(new TransitionCommand(4, 0.5f, PlaybackMode.PlayOnce, true));
+        // Return from default face pose if current
+        m_facialAnimationQ.addTransition(new TransitionCommand(m_defaultFacePose, m_defaultFacePoseTiming, PlaybackMode.PlayOnce, true));
         
         m_facialAnimationQ.addTransition(new TransitionCommand(cycleIndex, fTimeIn, PlaybackMode.PlayOnce, false));
         m_facialAnimationQ.addTransition(new TransitionCommand(cycleIndex, fTimeOut, PlaybackMode.PlayOnce, true));
         
         // Go to default face pose
-        m_facialAnimationQ.addTransition(new TransitionCommand(4, 0.5f, PlaybackMode.PlayOnce, false));
+        m_facialAnimationQ.addTransition(new TransitionCommand(m_defaultFacePose, m_defaultFacePoseTiming, PlaybackMode.PlayOnce, false));
     }
     
     public void setCameraOnMe() 
@@ -1560,4 +1566,38 @@ public abstract class Character extends Entity implements SpatialObject, Animati
             return mInst;
         }
     };
+
+    /**
+     * The animation cycle index in the animation group (facial group is 1)
+     * @return
+     */
+    public int getDefaultFacePose() {
+        return m_defaultFacePose;
+    }
+
+    /**
+     * The animation cycle index in the animation group (facial group is 1)
+     * @param defaultFacePose
+     */
+    public void setDefaultFacePose(int defaultFacePose) {
+        this.m_defaultFacePose = defaultFacePose;
+    }
+
+    /**
+     * How fast to animate in and out of the default face pose
+     * @return
+     */
+    public float getDefaultFacePoseTiming() {
+        return m_defaultFacePoseTiming;
+    }
+
+    /**
+     * How fast to animate in and out of the default face pose
+     * @param defaultFacePoseTiming
+     */
+    public void setDefaultFacePoseTiming(float defaultFacePoseTiming) {
+        this.m_defaultFacePoseTiming = defaultFacePoseTiming;
+    }
+    
+    
 }
