@@ -20,6 +20,7 @@ package imi.character.ninja;
 import imi.character.statemachine.GameContext;
 import imi.character.statemachine.GameState;
 import imi.scene.animation.AnimationComponent.PlaybackMode;
+import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
 
 /**
  * Represents the character's idling behavior
@@ -35,6 +36,8 @@ public class IdleState extends GameState
     private float moveCounter  = 0.0f;
     
     private boolean bTurning = false;
+
+    private boolean resetBodyParts = false; // Just feet currently
         
     public IdleState(NinjaContext master)
     {
@@ -90,7 +93,7 @@ public class IdleState extends GameState
     protected void stateEnter(GameContext owner)
     {
         super.stateEnter(owner);
-        
+        resetBodyParts = true;
         moveCounter   = 0.0f;
                 
         // Stop moving
@@ -114,7 +117,22 @@ public class IdleState extends GameState
         
         // Check for possible transitions
         if (!ninjaContext.isTransitioning())
+        {
+            if (resetBodyParts == true)
+            {
+                // do the resetting
+                SkeletonNode skeleton = ninjaContext.getSkeleton();
+                if (skeleton != null)
+                {
+                    skeleton.resetJointToBindPose("leftFoot");
+                    skeleton.resetJointToBindPose("leftFootBall");
+                    skeleton.resetJointToBindPose("rightFoot");
+                    skeleton.resetJointToBindPose("rightFootBall");
+                    resetBodyParts = false;
+                }
+            }
             transitionCheck();
+        }
     }
 
     public float getVelocityThreshhold() {

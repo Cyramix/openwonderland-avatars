@@ -777,7 +777,7 @@ public class SkeletonNode extends PNode implements Animated
      * bind pose.
      * @param jointName
      */
-    public boolean resetJoint(String jointName)
+    public boolean resetJointBindPose(String jointName)
     {
         boolean result = false;
         SkinnedMeshJoint joint = findSkinnedMeshJoint(jointName);
@@ -785,6 +785,22 @@ public class SkeletonNode extends PNode implements Animated
         {
             result = true;
             joint.resetBindPose();
+        }
+        return result;
+    }
+
+    /**
+     * Reset the joint's local transform to it's current bind pose.
+     * @param jointName
+     */
+    public boolean resetJointToBindPose(String jointName)
+    {
+        boolean result = false;
+        SkinnedMeshJoint joint = findSkinnedMeshJoint(jointName);
+        if (joint != null)
+        {
+            result = true;
+            joint.setToBindPose();
         }
         return result;
     }

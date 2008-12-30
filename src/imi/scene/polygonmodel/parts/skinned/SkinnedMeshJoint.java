@@ -149,6 +149,11 @@ public class SkinnedMeshJoint extends PJoint
     {
         m_bindPoseTransform = unmodifiedInverseBindPose.inverse();
     }
+
+    public void setToBindPose()
+    {
+        getTransform().getLocalMatrix(true).set(m_bindPoseTransform);
+    }
 }
 
 
