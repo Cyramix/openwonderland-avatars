@@ -290,8 +290,7 @@ public class InstructionProcessor
             logger.log(Level.INFO, "Adding mesh, \"" + skinnedMeshName + "\" to subgroup, \"" + subGroupName + "\"");
 
             //  Link the SkinnedMesh to the Skeleton.
-            skinnedMeshInstance.setSkeletonNode(m_skeleton);
-            skinnedMeshInstance.linkJointsToSkeletonNode(m_skeleton);
+            skinnedMeshInstance.setAndLinkSkeletonNode(m_skeleton);
 
             // Add it to the skeleton
             m_skeleton.addToSubGroup(skinnedMeshInstance, subGroupName);

@@ -367,7 +367,7 @@ public class SkeletonNode extends PNode implements Animated
         }
 
         groupNode.addChild(meshInstance);
-        meshInstance.setSkeletonNode(this);
+        meshInstance.setAndLinkSkeletonNode(this);
     }
 
     /**
@@ -789,7 +789,7 @@ public class SkeletonNode extends PNode implements Animated
         return result;
     }
 
-    private void invalidateCachedBindPoses()
+    public void invalidateCachedBindPoses()
     {
         for (PPolygonSkinnedMeshInstance meshInst : getSkinnedMeshInstances())
             meshInst.setInverseBindPose(null);

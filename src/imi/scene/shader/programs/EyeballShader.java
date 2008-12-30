@@ -118,7 +118,7 @@ public class EyeballShader extends BaseShaderProgram implements AbstractShaderPr
             m_propertyMap.put("SpecularComponent",    new ShaderProperty("SpecularComponent",
                                 GLSLDataType.GLSL_FLOAT, Float.valueOf(1.0f)));
             m_propertyMap.put("SpecularExponent",    new ShaderProperty("SpecularExponent",
-                                GLSLDataType.GLSL_FLOAT, Float.valueOf(7.0f)));
+                                GLSLDataType.GLSL_FLOAT, Float.valueOf(32.0f)));
             m_propertyMap.put("BaseDiffuseMapIndex",    new ShaderProperty("BaseDiffuseMapIndex",
                                 GLSLDataType.GLSL_SAMPLER2D, Integer.valueOf(0)));
             // Vertex deformer default

@@ -406,4 +406,20 @@ public class VerletSkeletonFlatteningManipulator implements SkeletonFlatteningMa
         return characterModelInst.getTransform().getWorldMatrix(false).inverse();
     }
 
+    public EyeBall getLeftEyeBall() {
+        return leftEyeBall;
+    }
+
+    public void setLeftEyeBall(EyeBall leftEyeBall) {
+        this.leftEyeBall = leftEyeBall;
+    }
+
+    public EyeBall getRightEyeBall() {
+        return rightEyeBall;
+    }
+
+    public void setRightEyeBall(EyeBall rightEyeBall) {
+        this.rightEyeBall = rightEyeBall;
+    }
+
 }

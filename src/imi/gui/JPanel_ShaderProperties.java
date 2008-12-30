@@ -21,6 +21,8 @@ import imi.gui.table.ShaderPropertyTable;
 import imi.scene.shader.AbstractShaderProgram;
 import imi.scene.shader.ShaderProperty;
 import imi.scene.shader.dynamic.GLSLShaderProgram;
+import imi.scene.shader.programs.ClothingShader;
+import imi.scene.shader.programs.EyeballShader;
 import imi.scene.shader.programs.NormalAndSpecularMapShader;
 import imi.scene.shader.programs.NormalMapShader;
 import imi.scene.shader.programs.SimpleTNLShader;
@@ -56,7 +58,7 @@ public class JPanel_ShaderProperties extends javax.swing.JPanel
     
     private WorldManager                m_wm = null;
     
-    private final ArrayList<AbstractShaderProgram> m_defaultShaders = new ArrayList<AbstractShaderProgram>(6);
+    private final ArrayList<AbstractShaderProgram> m_defaultShaders = new ArrayList<AbstractShaderProgram>(8);
     
     /**
      * Construct a new shader property panel!
@@ -77,7 +79,8 @@ public class JPanel_ShaderProperties extends javax.swing.JPanel
         m_defaultShaders.add(new SimpleTNLWithAmbient(wm));
         m_defaultShaders.add(new VertDeformerWithSpecAndNormalMap(wm));
         m_defaultShaders.add(new VertexDeformer(wm));
-        
+        m_defaultShaders.add(new EyeballShader(wm));
+        m_defaultShaders.add(new ClothingShader(wm));
         initComponents(); // <-- do not trust netbeans auto-code garbage!
         loadPropertyTable();
         populatePanel();

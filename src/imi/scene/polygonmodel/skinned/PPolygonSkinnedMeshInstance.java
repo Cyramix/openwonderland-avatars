@@ -39,7 +39,7 @@ public class PPolygonSkinnedMeshInstance extends PPolygonMeshInstance
     
     protected PMatrix[]    m_InverseBindPose  = null; // TODO: Caching this may not be desireable
     
-    protected SkeletonNode m_pSkeletonNode    = null;
+    protected SkeletonNode m_skeletonNode    = null;
     
     protected int[]        m_influenceIndices = null;
 
@@ -60,23 +60,24 @@ public class PPolygonSkinnedMeshInstance extends PPolygonMeshInstance
         super(meshInstance.getName(), meshInstance.getGeometry(), meshInstance.getTransform().getLocalMatrix(false), pscene, applyMaterial);
         if (meshInstance.getInfluenceIndices() != null)
             setInfluenceIndices(meshInstance.getInfluenceIndices());
-        setSkeletonNode(meshInstance.getSkeletonNode());
+        setAndLinkSkeletonNode(meshInstance.getSkeletonNode());
     }
     
         
     //  Gets the SkeletonNode.
     public SkeletonNode getSkeletonNode()
     {
-        return(m_pSkeletonNode);
+        return(m_skeletonNode);
     }
 
     public void setInverseBindPose(PMatrix[] newInverseBindPose) {
         m_InverseBindPose = newInverseBindPose;
     }
     
-    public void setSkeletonNode(SkeletonNode skeleton)
+    public void setAndLinkSkeletonNode(SkeletonNode skeleton)
     {
-        m_pSkeletonNode = skeleton;
+        m_skeletonNode = skeleton;
+        linkJointsToSkeletonNode();
     }
 
     @Override
@@ -87,8 +88,8 @@ public class PPolygonSkinnedMeshInstance extends PPolygonMeshInstance
             renderer.setOrigin(origin);
 
             // Draw geometry if it is ready
-            if (m_pSkeletonNode != null)
-                ((PPolygonSkinnedMesh) m_geometry).draw(renderer, m_pSkeletonNode.getSkeletonRoot());
+            if (m_skeletonNode != null)
+                ((PPolygonSkinnedMesh) m_geometry).draw(renderer, m_skeletonNode.getSkeletonRoot());
         }
 
 
@@ -120,7 +121,7 @@ public class PPolygonSkinnedMeshInstance extends PPolygonMeshInstance
         return(false);
     }
 
-    public void linkJointsToSkeletonNode(SkeletonNode skeleton) 
+    private void linkJointsToSkeletonNode()
     {
         int jointIndex = -1;
         PPolygonSkinnedMesh skinnedGeometry = (PPolygonSkinnedMesh)m_geometry;
@@ -129,7 +130,7 @@ public class PPolygonSkinnedMeshInstance extends PPolygonMeshInstance
         int counter = 0;
         for (String jointName : skinnedGeometry.getJointNames())
         {
-            jointIndex = m_pSkeletonNode.getSkinnedMeshJointIndex(jointName);
+            jointIndex = m_skeletonNode.getSkinnedMeshJointIndex(jointName);
             if (jointIndex == -1) // Not found!
             {
                 logger.severe("Joint not found for influence #" + counter + ", name: " + jointName + " - Skipping...");
@@ -150,22 +151,22 @@ public class PPolygonSkinnedMeshInstance extends PPolygonMeshInstance
         super.updateSharedMesh();
         // The new skinning model has this mesh query its skeleton for
         // the appropriate collection of transform matrices
-        if (m_pSkeletonNode == null)
+        if (m_skeletonNode == null)
         {
             // make sure our parent is actually a skeleton node
             if (getParent() instanceof SkeletonNode)
-                m_pSkeletonNode = ((SkeletonNode)getParent());
+                m_skeletonNode = ((SkeletonNode)getParent());
         }
 
-        if (m_pSkeletonNode == null)
+        if (m_skeletonNode == null)
             return m_instance;
         
         int [] influenceIndices = getInfluenceIndices();
         
         if (m_InverseBindPose == null) // Initialize the bind pose by querying the skeleton for its bind pose
-            m_InverseBindPose = m_pSkeletonNode.getFlattenedInverseBindPose(influenceIndices);  // the group's transform is ignored
+            m_InverseBindPose = m_skeletonNode.getFlattenedInverseBindPose(influenceIndices);  // the group's transform is ignored
         // Retrieve the collection of influences in their current pose
-        PMatrix [] matrixStack = m_pSkeletonNode.getPose(influenceIndices);
+        PMatrix [] matrixStack = m_skeletonNode.getPose(influenceIndices);
         
         if (m_shaderState != null) // may not have loaded yet
         {    

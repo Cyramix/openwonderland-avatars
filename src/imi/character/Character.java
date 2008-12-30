@@ -1267,6 +1267,14 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         SkeletonNode newHeadSkeleton = colladaLoader.getSkeletonNode();
 
         // Remove all the old head stuff from our skeleton
+        PNode pnode = m_skeleton.findChild("rightEyeGeoShape");
+        int[] influences = null;
+        if (pnode != null)
+        {
+            PPolygonSkinnedMeshInstance meshInst = (PPolygonSkinnedMeshInstance)pnode;
+            // cache le influences
+            influences = meshInst.getInfluenceIndices(); // We should not need to do this, but it fixes the problem
+        }
         m_skeleton.clearSubGroup("Head");
 
         Iterable<PNode> list = newHeadSkeleton.getChildren();
@@ -1279,8 +1287,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
                 PPolygonSkinnedMeshInstance skinnedMeshInstance = (PPolygonSkinnedMeshInstance) m_pscene.addMeshInstance(skinnedMesh, new PMatrix());
 
                 //  Link the SkinnedMesh to the Skeleton.
-                skinnedMeshInstance.setSkeletonNode(m_skeleton);
-                skinnedMeshInstance.linkJointsToSkeletonNode(m_skeleton);
+                skinnedMeshInstance.setAndLinkSkeletonNode(m_skeleton);
 
                 // Add it to the skeleton
                 m_skeleton.addToSubGroup(skinnedMeshInstance, "Head");
@@ -1288,7 +1295,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
             }
         }
         // Now fix the skeletal differences
-        generateDeltas(newHeadSkeleton, "Head");
+        generateDeltas(newHeadSkeleton, "Head"); 
         // Now reattach the eyes
         m_eyes = new CharacterEyes(m_skeleton, m_modelInst, m_pscene, m_wm);
 //        // reassociate this with the verlet thingy
@@ -1296,12 +1303,20 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         {
             Thread.yield();
         }
-        m_skeletonManipulator.leftEyeBall = m_eyes.leftEyeBall;
-        m_skeletonManipulator.rightEyeBall = m_eyes.rightEyeBall;
+        m_skeletonManipulator.setLeftEyeBall(m_eyes.getLeftEyeBall());
+        m_skeletonManipulator.setRightEyeBall(m_eyes.getRightEyeBall());
         // Finally, apply the default shaders
         setDefaultShaders();
+        pnode = m_skeleton.findChild("rightEyeGeoShape");
+        if (pnode != null)
+        {
+            PPolygonSkinnedMeshInstance meshInst = (PPolygonSkinnedMeshInstance)pnode;
+            // reset influence indices
+            meshInst.setInfluenceIndices(influences);
+        }
     }
 
+    
     private void generateDeltas(SkeletonNode newSkeleton, String rootJointName)
     {
         if (newSkeleton == null || m_skeleton == null)
@@ -1326,7 +1341,11 @@ public abstract class Character extends Entity implements SpatialObject, Animati
                 SkinnedMeshJoint newHeadJoint     = newSkeleton.findSkinnedMeshJoint(currentHeadJoint.getName());
                 
                 PMatrix modifierDelta = new PMatrix();
-                modifierDelta.mul( currentHeadJoint.getTransform().getLocalMatrix(false).inverse(), newHeadJoint.getTransform().getLocalMatrix(false));
+                modifierDelta.mul( currentHeadJoint.getTransform().getLocalMatrix(false).inverse(),
+                            newHeadJoint.getTransform().getLocalMatrix(false));
+
+                currentHeadJoint.getBindPose().mul(modifierDelta);
+//                currentHeadJoint.getBindPose().set(newHeadJoint.getBindPose());
             }
             else
                 continue; // Prune (kids are not added to the list)
@@ -1566,6 +1585,25 @@ public abstract class Character extends Entity implements SpatialObject, Animati
             return mInst;
         }
     };
+<<<<<<< .mine
+
+    public void HACKMETHODPLEASEREMOVEME(String meshName)
+    {
+                // Remove all the old head stuff from our skeleton
+        PNode pnode = m_skeleton.findChild(meshName);
+        if (pnode != null)
+        {
+            PPolygonSkinnedMeshInstance meshInst = (PPolygonSkinnedMeshInstance)pnode;
+            int counter = 0;
+            System.out.println(meshInst.getName());
+            for (int integer : meshInst.getInfluenceIndices())
+            {
+                System.out.println("Influence #" + counter + ": " + integer);
+                counter++;
+            }
+        }
+    }
+=======
 
     /**
      * The animation cycle index in the animation group (facial group is 1)
@@ -1600,4 +1638,5 @@ public abstract class Character extends Entity implements SpatialObject, Animati
     }
     
     
+>>>>>>> .r363
 }
