@@ -33,6 +33,7 @@ import imi.character.objects.ObjectCollection;
 import imi.character.objects.SpatialObject;
 import imi.character.statemachine.GameContext;
 import imi.character.statemachine.TransitionObject;
+import imi.loaders.collada.Collada;
 import imi.loaders.collada.ColladaLoaderParams;
 import imi.loaders.collada.Instruction;
 import imi.loaders.collada.Instruction.InstructionType;
@@ -78,6 +79,7 @@ import imi.scene.polygonmodel.PPolygonMeshInstance;
 import imi.scene.polygonmodel.parts.PMeshMaterial;
 import imi.scene.polygonmodel.parts.TextureMaterialProperties;
 import imi.scene.polygonmodel.parts.skinned.SkinnedMeshJoint;
+import imi.scene.polygonmodel.skinned.PPolygonSkinnedMesh;
 import imi.scene.processors.CharacterAnimationProcessor;
 import imi.scene.processors.JSceneEventProcessor;
 import imi.scene.shader.AbstractShaderProgram;
@@ -85,12 +87,8 @@ import imi.scene.shader.ShaderProperty;
 import imi.scene.shader.dynamic.GLSLDataType;
 import imi.scene.shader.programs.ClothingShader;
 import imi.scene.shader.programs.EyeballShader;
-import imi.scene.shader.programs.NormalAndSpecularMapShader;
-import imi.scene.shader.programs.SimpleTNLShader;
 import imi.scene.shader.programs.SimpleTNLWithAmbient;
-import imi.scene.shader.programs.VertDeformerWithNormalMapping;
 import imi.scene.shader.programs.VertDeformerWithSpecAndNormalMap;
-import imi.scene.shader.programs.VertexDeformer;
 import imi.scene.utils.PMeshUtils;
 import imi.scene.utils.PModelUtils;
 import imi.scene.utils.tree.SerializationHelper;
@@ -1246,23 +1244,68 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         return m_initialized;
     }
 
-    /**
-     * Convenience method to switch heads on this character. The provided skeleton
-     * should be the bind pose for the new head. The difference between the original
-     * skeleton and the new head's bind pose is calculated and used to fit the mesh
-     * more correctly to a different skeleton.
-     * @param skeleton The skeleton of the new head mesh.
-     */
-    public void installHead(SkeletonNode skeleton) 
+
+    public Character(String name) {
+        super(name);
+    }
+
+    public void installHead(URL headLocation)
     {
-        if (skeleton == null || m_skeleton == null)
+        // Ready the collada loader!
+        Collada colladaLoader = new Collada();
+        colladaLoader.setLoadFlags(true, true, false);
+        
+        PScene newHeadPScene = new PScene(m_wm);
+        colladaLoader.load(newHeadPScene, headLocation);
+
+        SkeletonNode newHeadSkeleton = colladaLoader.getSkeletonNode();
+
+        // Remove all the old head stuff from our skeleton
+        m_skeleton.clearSubGroup("Head");
+
+        Iterable<PNode> list = newHeadSkeleton.getChildren();
+        for (PNode node : list)
         {
-            logger.severe(getName() + " can not install head, got a null skeleton! current one: " + m_skeleton + " new one: " + skeleton);
+            if (node instanceof PPolygonSkinnedMesh)
+            {
+                PPolygonSkinnedMesh skinnedMesh = (PPolygonSkinnedMesh) node;
+                // Make an instance
+                PPolygonSkinnedMeshInstance skinnedMeshInstance = (PPolygonSkinnedMeshInstance) m_pscene.addMeshInstance(skinnedMesh, new PMatrix());
+
+                //  Link the SkinnedMesh to the Skeleton.
+                skinnedMeshInstance.setSkeletonNode(m_skeleton);
+                skinnedMeshInstance.linkJointsToSkeletonNode(m_skeleton);
+
+                // Add it to the skeleton
+                m_skeleton.addToSubGroup(skinnedMeshInstance, "Head");
+
+            }
+        }
+        // Now fix the skeletal differences
+        generateDeltas(newHeadSkeleton, "Head");
+        // Now reattach the eyes
+        m_eyes = new CharacterEyes(m_skeleton, m_modelInst, m_pscene, m_wm);
+//        // reassociate this with the verlet thingy
+        while (m_skeletonManipulator == null)
+        {
+            Thread.yield();
+        }
+        m_skeletonManipulator.leftEyeBall = m_eyes.leftEyeBall;
+        m_skeletonManipulator.rightEyeBall = m_eyes.rightEyeBall;
+        // Finally, apply the default shaders
+        setDefaultShaders();
+    }
+
+    private void generateDeltas(SkeletonNode newSkeleton, String rootJointName)
+    {
+        if (newSkeleton == null || m_skeleton == null)
+        {
+            logger.severe(getName() + " can not install head, got a null skeleton! current one: " + m_skeleton + " new one: " + newSkeleton);
             return;
         }
         
         // Gather the joints and set the new local modifiers
-        SkinnedMeshJoint head = m_skeleton.findSkinnedMeshJoint("Head");
+        SkinnedMeshJoint head = m_skeleton.findSkinnedMeshJoint(rootJointName);
         LinkedList<PNode> list = new LinkedList<PNode>();
         list.add(head);
         PNode current = null;
@@ -1274,13 +1317,10 @@ public abstract class Character extends Entity implements SpatialObject, Animati
             if (current instanceof SkinnedMeshJoint)
             {
                 SkinnedMeshJoint currentHeadJoint = (SkinnedMeshJoint)current;
-                SkinnedMeshJoint newHeadJoint     = skeleton.findSkinnedMeshJoint(currentHeadJoint.getName());
+                SkinnedMeshJoint newHeadJoint     = newSkeleton.findSkinnedMeshJoint(currentHeadJoint.getName());
                 
                 PMatrix modifierDelta = new PMatrix();
-                //modifierDelta.mul(newHeadJoint.getTransform().getLocalMatrix(false), currentHeadJoint.getTransform().getLocalMatrix(false).inverse());
                 modifierDelta.mul( currentHeadJoint.getTransform().getLocalMatrix(false).inverse(), newHeadJoint.getTransform().getLocalMatrix(false));
-                //modifierDelta.mulInverse(newHeadJoint.getTransform().getLocalMatrix(false), currentHeadJoint.getTransform().getLocalMatrix(false));
-                //currentHeadJoint.setSkeletonModifier(modifierDelta);
             }
             else
                 continue; // Prune (kids are not added to the list)
@@ -1288,31 +1328,6 @@ public abstract class Character extends Entity implements SpatialObject, Animati
             for (PNode kid : current.getChildren())
                 list.add(kid);
         }
-        
-        // Delete the old head mesh and add the new head mesh
-        
-        // Don't forget to remove the old teeth and tounge!
-        
-        // we should re-use the head that was already loaded... for quick testing....
-        String fileProtocol = getAttributes().getBaseURL();
-        if (fileProtocol == null)
-            fileProtocol = new String("file://localhost/" + System.getProperty("user.dir") + "/");
-        InstructionProcessor pProcessor = new InstructionProcessor(m_wm);
-        Instruction pRootInstruction = new Instruction();
-        pRootInstruction.addChildInstruction(InstructionType.setSkeleton, m_skeleton);
-        
-        pRootInstruction.addChildInstruction(InstructionType.deleteSkinnedMesh, "HeadGeoShape");  // original head is HeadOneShape
-        
-        // African
-        //pRootInstruction.addChildInstruction(InstructionType.loadGeometry, fileProtocol + "assets/models/collada/Heads/MaleAfricanHead/blackHeadOne.dae");
-        // Asian
-        pRootInstruction.addChildInstruction(InstructionType.loadGeometry, fileProtocol + "assets/models/collada/Heads/MaleAsianHead/asiaHeadTwo.dae");
-        //pRootInstruction.addAttachmentInstruction(InstructionType.loadGeometry, fileProtocol + "assets/models/collada/Avatars/Male/Male_Bind.dae");
-        //pRootInstruction.addChildInstructionOfType(InstructionType.addSkinnedMesh, "headOneShape");
-        //pRootInstruction.addSkinnedMeshInstruction("headOneShape", "Head");
-        pRootInstruction.addSkinnedMeshInstruction("head2Shape", "Head");
-        
-        pProcessor.execute(pRootInstruction);
     }
 
     /**
@@ -1327,19 +1342,6 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         throw new UnsupportedOperationException("This method is currently unsupported " +
                 "as the file URL protocol cannot open an OutputStream. A workaround is " +
                 "being researched. In the interim, use the File overload of this method.");
-//        try {
-//            final JAXBContext context = JAXBContext.newInstance("imi.serialization.xml.bindings");
-//            final Marshaller m = context.createMarshaller();
-//            OutputStream os = targetSaveLocation.openConnection().getOutputStream();
-//            m.marshal( generateCharacterDOM(), os);
-//        }
-//        catch (JAXBException ex) {
-//            Logger.getLogger(Character.class.getName()).log(Level.SEVERE, "Failed to write save file! " + ex.getMessage());
-//        }
-//        catch (IOException ex) {
-//            Logger.getLogger(Character.class.getName()).log(Level.SEVERE, "Failed to open OutputStream to " +
-//                                    targetSaveLocation.toString() + "! " + ex.getMessage());
-//        }
     }
 
     /**

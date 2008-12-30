@@ -278,7 +278,8 @@ public class InstructionProcessor
         // Did we find it?
         if (skinnedMesh == null)
         {
-            logger.severe("Unable to find the specified skinned mesh for attaching");
+            logger.severe("Unable to find the specified skinned mesh for attaching - "
+                            + skinnedMeshName + " attached to " + subGroupName);
             result = false;
         }
         else

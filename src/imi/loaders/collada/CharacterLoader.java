@@ -43,7 +43,7 @@ import java.util.logging.Logger;
 public class CharacterLoader
 {
     /** The collada loader that this class wraps **/
-    private Collada m_colladaLoader = new Collada();
+    private final Collada m_colladaLoader = new Collada();
 
     /**
      * Load the specified collada file and parse out the skeleton, associate it
