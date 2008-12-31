@@ -72,6 +72,10 @@ public class PColladaNode
         return m_Name;
     }
 
+    public Iterable<String> getSkeletonNames() {
+        return m_skeletonNames;
+    }
+
     /**
      * Sets the name of the PColladaNode.
      * 

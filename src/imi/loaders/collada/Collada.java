@@ -117,15 +117,15 @@ public class Collada
     private URL     m_fileLocation = null;
 
     /** Assorted library convenience references **/
-    private LibraryCameras                              m_libraryCameras = null;
-    private LibraryImages                               m_libraryImages = null;
-    private LibraryEffects                              m_libraryEffects = null;
-    private LibraryMaterials                            m_libraryMaterials = null;
-    private LibraryAnimations                           m_libraryAnimations = null;
-    private LibraryVisualScenes                         m_libraryVisualScenes = null;
-    private LibraryGeometries                           m_libraryGeometries = null;
-    private LibraryControllers                          m_libraryControllers = null;
-    private LibraryNodes                                m_libraryNodes = null;
+    private LibraryCameras      m_libraryCameras        = null;
+    private LibraryImages       m_libraryImages         = null;
+    private LibraryEffects      m_libraryEffects        = null;
+    private LibraryMaterials    m_libraryMaterials      = null;
+    private LibraryAnimations   m_libraryAnimations     = null;
+    private LibraryVisualScenes m_libraryVisualScenes   = null;
+    private LibraryGeometries   m_libraryGeometries     = null;
+    private LibraryControllers  m_libraryControllers    = null;
+    private LibraryNodes        m_libraryNodes          = null;
 
     // Effect mapping and list
     private final FastMap<String, PColladaEffect>   m_EffectMap = new FastMap<String, PColladaEffect>();
@@ -137,20 +137,19 @@ public class Collada
     private final FastMap<String, PColladaMaterialInstance>   m_MaterialInstances = new FastMap<String, PColladaMaterialInstance>();
     private final ArrayList                                   m_ColladaMaterialInstances = new ArrayList();
 
-    private SkeletonNode                                m_pSkeletonNode = null;
-    private PScene                                      m_pLoadingPScene = null;
+    private SkeletonNode    m_skeletonNode  = null;
+    private PScene          m_loadingPScene = null;
 
     // Maximum number of weights to be read per-vertex
     private int                             m_MaxNumberOfWeights = 4;
     //  Contains the PolygonMeshes loaded.
-    public final ArrayList<PPolygonMesh>    m_PolygonMeshes = new ArrayList<PPolygonMesh>();
+    private final ArrayList<PPolygonMesh>    m_PolygonMeshes = new ArrayList<PPolygonMesh>();
 
     //  Contains the PolygonSkinnedMeshes loaded.
-    public final ArrayList<PPolygonSkinnedMesh> m_PolygonSkinnedMeshes = new ArrayList<PPolygonSkinnedMesh>();
-    public final ArrayList<PColladaSkin>    m_ColladaSkins = new ArrayList<PColladaSkin>();
-    private final ArrayList<PColladaNode>   m_ColladaNodes = new ArrayList<PColladaNode>();
-    private final ArrayList<PColladaNode>   m_FactoryColladaNodes = new ArrayList<PColladaNode>();
-    
+    private final ArrayList<PPolygonSkinnedMesh> m_PolygonSkinnedMeshes = new ArrayList<PPolygonSkinnedMesh>();
+    private final ArrayList<PColladaSkin>        m_ColladaSkins = new ArrayList<PColladaSkin>();
+    private final ArrayList<PColladaNode>        m_ColladaNodes = new ArrayList<PColladaNode>();
+    private final ArrayList<PColladaNode>        m_FactoryColladaNodes = new ArrayList<PColladaNode>();
     
     private final ArrayList<PColladaAnimatedItem>     m_ColladaAnimatedItems = new ArrayList<PColladaAnimatedItem>();
     private final ArrayList<PColladaCameraParams>     m_ColladaCameraParams = new ArrayList<PColladaCameraParams>();
@@ -206,8 +205,8 @@ public class Collada
         m_MaterialList.clear();
         m_MaterialInstances.clear();
         m_ColladaMaterialInstances.clear();
-        m_pSkeletonNode = null;
-        m_pLoadingPScene = null;
+        m_skeletonNode = null;
+        m_loadingPScene = null;
     }
 
     /**
@@ -279,7 +278,7 @@ public class Collada
 
     public PScene getPScene()
     {
-        return m_pLoadingPScene;
+        return m_loadingPScene;
     }
     
     //  Gets the boolean indicating whether the Animations should be loaded.
@@ -312,34 +311,36 @@ public class Collada
      * @return True on success, false otherwise
      */
     public boolean load(URL colladaFile) {
+        final int maxNumberOfRetries = 5;
+        int retry = 1; // Retry while > 0 and <= maxNumberOfRetries
+
         m_fileLocation = colladaFile;
         URLConnection conn = null;
         InputStream in = null;
-        boolean retry = true;
         boolean result = false;
-        while (retry == true)
+        while (retry > 0 && retry <= maxNumberOfRetries)
         {
             org.collada.colladaschema.COLLADA collada = null;
-            try
+            try // to open the connection and unmarshal the file
             {
                 conn = colladaFile.openConnection();
                 in = conn.getInputStream();
                 synchronized(contextLock) {
                     collada = (org.collada.colladaschema.COLLADA) unmarshaller.unmarshal(in);
                 }
-                retry = false;
+                retry = 0; // No retry necessary
             }
             catch (Exception exception)
             {
                 if (exception.getMessage().equals("Connection refused"))
                 {
                     logger.warning(exception.getMessage() + "... Retrying");
-                    retry = true;
+                    retry++;
                 }
             }
             finally
             {
-                try
+                try // to close the connection
                 {
                     if (in != null)
                         in.close();
@@ -349,7 +350,7 @@ public class Collada
                     logger.warning("Caught exception closing: " + ex.getMessage());
                     result = false;
                 }
-                if (retry)
+                if (retry > 0)
                     continue;
             }
             doLoad(collada);
@@ -366,43 +367,15 @@ public class Collada
      * @return
      */
     public boolean load(PScene loadingPScene, URL colladaFile) {
-        m_fileLocation = colladaFile;
-        URLConnection conn = null;
-        InputStream in = null;
-        try {
-            conn = colladaFile.openConnection();
-            in = conn.getInputStream();
-            m_pLoadingPScene = loadingPScene;
-            m_pLoadingPScene.setUseRepository(false); // the repository will extract the data later
-            org.collada.colladaschema.COLLADA collada = null;
-            synchronized(contextLock)
-            {
-                collada = (org.collada.colladaschema.COLLADA) unmarshaller.unmarshal(in);
-            }
-            doLoad(collada);
-            return true;
-        } catch (Exception exception) {
-            if (exception.getMessage().equals("Connection refused")) {
-                System.out.print(exception.getMessage() + "... Retrying");
-                load(loadingPScene, colladaFile);
-            }
-        } finally {
-            try {
-                if (in != null) {
-                    in.close();
-                }
-                return true;
-            } catch (IOException ioe) {
-                return false;
-            }
-        }
+            m_loadingPScene = loadingPScene;
+            m_loadingPScene.setUseRepository(false); // the repository will extract the data later
+            return load(colladaFile);
     }
 
-    public void loadSkinnedMesh(PScene pScene, URL location)
-    {
-        load(pScene, location);
-    }
-
+    /**
+     * Perform the actual processing
+     * @param collada
+     */
     private void doLoad(COLLADA collada)
     {
         m_Libraries = collada.getLibraryLightsAndLibraryGeometriesAndLibraryAnimationClips();
@@ -419,9 +392,7 @@ public class Collada
 
         //  Create the SkeletonNode if we're loading the rig.
         if (m_bLoadRig)
-        {
-            m_pSkeletonNode = createSkeletonNode();
-        }
+            m_skeletonNode = createSkeletonNode();
         //  Need to process these Libraries in this order.
         if (m_bLoadGeometry)
         {
@@ -455,11 +426,11 @@ public class Collada
         if (m_bLoadGeometry)
             attachSkinnedMeshToSkeleton();
 
-        if (m_pSkeletonNode == null)
+        if (m_skeletonNode == null)
             processColladaNodes();
 
         // Submit the geometry of every PPolygonMesh we encounter
-        TreeTraverser.breadthFirst(m_pLoadingPScene, new PPolygonMeshAssemblingProcessor());
+        TreeTraverser.breadthFirst(m_loadingPScene, new PPolygonMeshAssemblingProcessor());
     }
 
 
@@ -467,123 +438,90 @@ public class Collada
     //  Processes the Rig.
     private PNode processRig()
     {
-        PColladaNode pColladaNode;
-        PNode pRootNode = new PNode("RootNode created in Collada.java : 374", new PTransform(new PMatrix()));
+        PNode rootNode = new PNode("RootNode created in Collada.java : 374", new PTransform(new PMatrix()));
 
-        for (int i = 0; i < m_ColladaNodes.size(); i++)
-        {
-            pColladaNode = (PColladaNode)m_ColladaNodes.get(i);
-            if (pColladaNode.isJoint())
-                processRig(pRootNode, pColladaNode, false);
-        }
+        for (PColladaNode currentColladaNode : m_ColladaNodes)
+            if (currentColladaNode.isJoint())
+                processRig(rootNode, currentColladaNode, false);
 
-        m_pSkeletonNode.setSkeletonRoot(pRootNode);
-        m_pLoadingPScene.addInstanceNode(m_pSkeletonNode);
+        m_skeletonNode.setSkeletonRoot(rootNode);
+        m_loadingPScene.addInstanceNode(m_skeletonNode);
 
-        return(pRootNode);
+        return(rootNode);
     }
 
-    private PNode processRig(PNode pParentNode, PColladaNode colladaNode, boolean bIgnoreMeshInstances)
+    private PNode processRig(PNode parentNode, PColladaNode colladaNode, boolean bIgnoreMeshInstances)
     {
         String meshURL = colladaNode.getMeshURL();
         String meshName = colladaNode.getMeshName();
         String nodeInstanceName = colladaNode.getInstanceNodeName();
 
-        PPolygonMeshInstance pMeshInstance;
-        PNode pThisNode = null;
+        PNode result = null;
 
         try
         {
-            //  ****  MeshInstance Node.
-            if (meshURL != null)
+            if (meshURL != null && !bIgnoreMeshInstances) //  ****  MeshInstance Node.
             {
-                //System.out.println("MeshName:  " + meshName);
-                if (!bIgnoreMeshInstances)
+                PPolygonMesh polyMesh = findPolygonMesh(meshURL);
+                if (polyMesh != null)
+                    result = createMeshInstance(polyMesh, colladaNode, meshName);
+            }
+            else if (nodeInstanceName != null) //  ****  NodeInstance Node.
+            {
+                PColladaNode instancedNode = findFactoryColladaNode(nodeInstanceName);
+                if (instancedNode != null)
                 {
-                    PPolygonMesh pPolygonMesh = findPolygonMesh(meshURL);
-                    if (pPolygonMesh != null)
-                    {
-                        //  Create a MeshInstance.
-                        pMeshInstance = createMeshInstance(pPolygonMesh, colladaNode, meshName);
+                    result = new PNode(colladaNode.getName());
+                    result.setTransform(new PTransform(colladaNode.getMatrix()));
 
-                        pThisNode = pMeshInstance;
-                    }
+                    colladaNode = instancedNode;
                 }
             }
-
-            //  ****  NodeInstance Node.
-            else if (nodeInstanceName != null)
-            {
-                PColladaNode pInstancedColladaNode = findFactoryColladaNode(nodeInstanceName);
-                if (pInstancedColladaNode != null)
-                {
-                    //pThisNode = m_pLoadingPScene.processJoint(null, pColladaNode.getMatrix());
-                    pThisNode = new PNode(colladaNode.getName());
-                    pThisNode.setTransform(new PTransform());
-                    pThisNode.getTransform().getLocalMatrix(true).set(colladaNode.getMatrix());
-
-                    colladaNode = pInstancedColladaNode;
-                }
-            }
-
-            //  If there is no MS3D_Mesh, then this is a joint.
-            else
+            else //  If there is no MS3D_Mesh, then this is a joint.
             {
                 if (colladaNode.isJoint())
-                {
-                    //  Create a SkinnedMeshJoint.
-                    SkinnedMeshJoint pSkinnedMeshJoint = new SkinnedMeshJoint(colladaNode.getName(),
-                            new PTransform(colladaNode.getMatrix()));
-
-                    pThisNode = pSkinnedMeshJoint;
-                }
+                    result = new SkinnedMeshJoint(colladaNode.getName(), new PTransform(colladaNode.getMatrix()));
                 else
                 {
                     //  Just create a Node.
-                    pThisNode = new PJoint(new PTransform(colladaNode.getMatrix()));
-                    pThisNode.setName(colladaNode.getName());
+                    result = new PJoint(new PTransform(colladaNode.getMatrix()));
+                    result.setName(colladaNode.getName());
                     // if it has a local transform, then set it
                     if (colladaNode.getMatrix() != null)
-                        pThisNode.getTransform().getLocalMatrix(true).set(colladaNode.getMatrix());
+                        result.getTransform().getLocalMatrix(true).set(colladaNode.getMatrix());
                 }
             }
 
-            if (pThisNode != null)
-            {
-                if (pParentNode != null)
-                    pParentNode.addChild(pThisNode);
+            if (parentNode != null)
+                parentNode.addChild(result);
 
-                //  Iterate through all the child Nodes
-                if (colladaNode.getChildren() != null)
-                {
-                    for (PColladaNode childNode : colladaNode.getChildren())
-                        processRig(pThisNode, childNode, bIgnoreMeshInstances);
-                }
-            }
+            //  recurse through all the child Nodes
+            if (colladaNode.getChildren() != null)
+                for (PColladaNode childNode : colladaNode.getChildren())
+                    processRig(result, childNode, bIgnoreMeshInstances);
         }
         catch (Exception e)
         {
             e.printStackTrace();
         }
 
-        return(pThisNode);
+        return(result);
     }
 
 
 
     private void attachSkinnedMeshToSkeleton()
     {
+        if (m_bAddSkinnedMeshesToSkeleton == false)
+            return;
+
         for (PPolygonSkinnedMesh mesh : m_PolygonSkinnedMeshes)
         {
-            if (m_bAddSkinnedMeshesToSkeleton)
-            {
-                m_pSkeletonNode.addChild(mesh);
-                mesh.linkJointsToSkeletonNode(m_pSkeletonNode);
-            }
+            m_skeletonNode.addChild(mesh);
+            mesh.linkJointsToSkeletonNode(m_skeletonNode);
         }
 
-        if (m_pSkeletonNode != null)
-            m_pSkeletonNode.setDirty(true, true);
+        m_skeletonNode.setDirty(true, true);
     }
 
 
@@ -596,29 +534,22 @@ public class Collada
     //  Creates the SkeletonNode.
     public SkeletonNode createSkeletonNode()
     {
-        if (m_pSkeletonNode == null)
-            m_pSkeletonNode = new SkeletonNode("Untitled");
+        if (m_skeletonNode == null)
+            m_skeletonNode = new SkeletonNode("Untitled");
 
-        return(m_pSkeletonNode);
+        return(m_skeletonNode);
     }
 
     //  Gets the SkeletonNode.
     public SkeletonNode getSkeletonNode()
     {
-        return(m_pSkeletonNode);
+        return(m_skeletonNode);
     }
 
     //  Sets the SkeletonNode.
-    public void setSkeletonNode(SkeletonNode pSkeletonNode)
+    public void setSkeletonNode(SkeletonNode skeletonNode)
     {
-        m_pSkeletonNode = pSkeletonNode;
-    }
-
-    private void populateSkeletonJointHierarchy(SkeletonNode pSkeletonNode)
-    {
-        PNode pSkeletonHierarchy = buildJointHierarchy();
-
-        pSkeletonNode.setSkeletonRoot(pSkeletonHierarchy);
+        m_skeletonNode = skeletonNode;
     }
 
     //  Finds the ColladaNode with the specified jointName.
@@ -654,9 +585,9 @@ public class Collada
 //  ******************************
 
     //  Adds a ColladaCameraParams.
-    public void addColladaCameraParams(PColladaCameraParams pCameraParams)
+    public void addColladaCameraParams(PColladaCameraParams cameraParams)
     {
-        m_ColladaCameraParams.add(pCameraParams);
+        m_ColladaCameraParams.add(cameraParams);
     }
 
     //  Gets the number of ColladaCameraParams.
@@ -674,18 +605,11 @@ public class Collada
     //  Finds the ColladaCameraParams with the specified name.
     public PColladaCameraParams findColladaCameraParams(String name)
     {
-        int a;
-        PColladaCameraParams pCameraParams;
+        for (PColladaCameraParams camParam : m_ColladaCameraParams)
+            if (name.equals(camParam.getName()))
+                return camParam;
 
-        for (a=0; a<m_ColladaCameraParams.size(); a++)
-        {
-            pCameraParams = (PColladaCameraParams)m_ColladaCameraParams.get(a);
-            
-            if (name.equals(pCameraParams.getName()))
-                return(pCameraParams);
-        }
-
-        return(null);
+        return null;
     }
 
 //  ******************************
@@ -693,9 +617,9 @@ public class Collada
 //  ******************************
 
     //  Adds a ColladaCamera.
-    public void addColladaCamera(PColladaCamera pCamera)
+    public void addColladaCamera(PColladaCamera camera)
     {
-        m_ColladaCameras.add(pCamera);
+        m_ColladaCameras.add(camera);
     }
 
     //  Gets the number of ColladaCameras.
@@ -713,16 +637,10 @@ public class Collada
     //  Finds the ColladaCamera with the specified name.
     public PColladaCamera findColladaCamera(String name)
     {
-        PColladaCamera result = null;
         for (PColladaCamera cam : m_ColladaCameras)
-        {
             if (name.equals(cam.getName()))
-            {
-                result = cam;
-                break;
-            }
-        }
-        return result;
+                return cam;
+        return null;
     }
 
 //  ******************************
@@ -730,9 +648,9 @@ public class Collada
 //  ******************************
 
     //  Adds a ColladaSkin.
-    public void addColladaSkin(PColladaSkin pColladaSkin)
+    public void addColladaSkin(PColladaSkin colladaSkin)
     {
-        m_ColladaSkins.add(pColladaSkin);
+        m_ColladaSkins.add(colladaSkin);
     }
 
     //  Gets the number of ColladaSkins.
@@ -751,10 +669,8 @@ public class Collada
     public PColladaSkin findColladaSkin(String name)
     {
         for (PColladaSkin skin : m_ColladaSkins)
-        {
             if (name.equals(skin.getName()))
                 return skin;
-        }
         return null;
     }
 
@@ -841,12 +757,12 @@ public class Collada
 //  ******************************
 
     //  Adds a ColladaMaterialInstance.
-    public void addColladaMaterialInstance(PColladaMaterialInstance pColladaMaterialInstance)
+    public void addColladaMaterialInstance(PColladaMaterialInstance colladaMaterialInstance)
     {
         //  Put the ColladaMaterialInstance into the MaterialInstances HashMap.
-        m_MaterialInstances.put(pColladaMaterialInstance.getInstanceSymbolString(), pColladaMaterialInstance);
+        m_MaterialInstances.put(colladaMaterialInstance.getInstanceSymbolString(), colladaMaterialInstance);
 
-        m_ColladaMaterialInstances.add(pColladaMaterialInstance);
+        m_ColladaMaterialInstances.add(colladaMaterialInstance);
     }
 
     //  Gets the number of ColladaMaterialInstances.
@@ -876,9 +792,9 @@ public class Collada
 //  ******************************
 
     //  Adds a factory ColladaNode.
-    public void addFactoryColladaNode(PColladaNode pColladaNode)
+    public void addFactoryColladaNode(PColladaNode colladaNode)
     {
-        m_FactoryColladaNodes.add(pColladaNode);
+        m_FactoryColladaNodes.add(colladaNode);
     }
 
     //  Gets the number of factory ColladaNodes.
@@ -896,16 +812,10 @@ public class Collada
     //  Gets the factory ColladaNode with the specified name.
     public PColladaNode findFactoryColladaNode(String name)
     {
-        PColladaNode pColladaNode;
-
-        for (int i = 0; i < getFactoryColladaNodeCount(); i++)
-        {
-            pColladaNode = getFactoryColladaNode(i);
-            if (name.equals(pColladaNode.getName()))
-                return(pColladaNode);
-        }
-
-        return(null);
+        for (PColladaNode node : m_FactoryColladaNodes)
+            if (name.equals(node.getName()))
+                return node;
+        return null;
     }
 
 
@@ -936,64 +846,40 @@ public class Collada
     //  Gets the first ColladaNode with children.
     public PColladaNode getColladaNodeWithChildren()
     {
-        int a;
-        PColladaNode pColladaNode;
-
-        for (a=0; a<getColladaNodeCount(); a++)
-        {
-            pColladaNode = getColladaNode(a);
-
-            if (pColladaNode.getChildNodeCount() > 0)
-                return(pColladaNode);
-        }
-
-        return(null);
+        for (PColladaNode node : m_ColladaNodes)
+            if (node.getChildNodeCount() > 0)
+                return node;
+        return null;
     }
 
     //  Finds the ColladaNode with the specified name.
     public PColladaNode findColladaNode(String nodeName)
     {
-        int a;
-        PColladaNode pColladaNode;
-        PColladaNode pColladaNodeFound;
-
-        for (a=0; a<getColladaNodeCount(); a++)
+        for (PColladaNode node : m_ColladaNodes)
         {
-            pColladaNode = getColladaNode(a);
-
-            pColladaNodeFound = pColladaNode.findNode(nodeName);
-            if (pColladaNodeFound != null)
-                return(pColladaNodeFound);
+            PColladaNode result = node.findNode(nodeName);
+            if (result != null)
+                return result;
         }
-
-        return(null);
+        return null;
     }
 
     //  Finds the ColladaNode with the specified joint name.
     public PColladaNode findJointColladaNode(String jointName)
     {
-        int a;
-        PColladaNode pColladaNode;
-        PColladaNode pColladaNodeFound;
-
-        for (a=0; a<getColladaNodeCount(); a++)
+        for (PColladaNode node : m_ColladaNodes)
         {
-            pColladaNode = getColladaNode(a);
-
-            pColladaNodeFound = pColladaNode.findJoint(jointName);
-            if (pColladaNodeFound != null)
-                return(pColladaNodeFound);
+            PColladaNode result = node.findJoint(jointName);
+            if (result != null)
+                return result;
         }
-
-        return(null);
+        return null;
     }
 
     public void dumpColladaNodes()
     {
-        for (PColladaNode node : m_ColladaNodes)
-        {
-            dumpColladaNode(node);
-        }
+//        for (PColladaNode node : m_ColladaNodes)
+//            dumpColladaNode(node);
     }
 
     public void dumpColladaNode(PColladaNode theNode)
@@ -1047,17 +933,10 @@ public class Collada
     //  Finds the AnimatedItem that contains animation data for an object of the specified name.
     public PColladaAnimatedItem findAnimatedItem(String name)
     {
-        int a;
-        PColladaAnimatedItem pAnimatedItem;
-        
-        for (a=0; a<getAnimatedItemCount(); a++)
-        {
-            pAnimatedItem = getAnimatedItem(a);
-            if (pAnimatedItem.getName().equals(name))
-                return(pAnimatedItem);
-        }
-        
-        return(null);
+        for (PColladaAnimatedItem anim : m_ColladaAnimatedItems)
+            if (name.equals(anim.getName()))
+                return anim;
+        return null;
     }
 
 
@@ -1070,9 +949,7 @@ public class Collada
     //  Creates a PolygonMesh.
     public PPolygonMesh createPolygonMesh()
     {
-        PPolygonMesh newMesh = new PPolygonMesh();
-
-        return newMesh ;
+        return new PPolygonMesh() ;
     }
 
     //  Adds a PolygonMesh.
@@ -1109,9 +986,9 @@ public class Collada
     }
 
     //  Removes a PolygonMesh.
-    public void removePolygonMesh(PPolygonMesh pPolygonMesh)
+    public void removePolygonMesh(PPolygonMesh polygonMesh)
     {
-        m_PolygonMeshes.remove(pPolygonMesh);
+        m_PolygonMeshes.remove(polygonMesh);
     }
 
 
@@ -1121,9 +998,9 @@ public class Collada
     //  PolygonSkinnedMesh management methods.
     //  ******************************
     //  Adds a PolygonSkinnedMesh.
-    public void addPolygonSkinnedMesh(PPolygonSkinnedMesh pPolygonSkinnedMesh)
+    public void addPolygonSkinnedMesh(PPolygonSkinnedMesh polygonSkinnedMesh)
     {
-        m_PolygonSkinnedMeshes.add(pPolygonSkinnedMesh);
+        m_PolygonSkinnedMeshes.add(polygonSkinnedMesh);
     }
 
     //  Gets the number of PolygonSkinnedMesh.
@@ -1133,230 +1010,50 @@ public class Collada
     }
     
     //  Gets the PolygonSkinnedMesh at the specified index.
-    public PPolygonSkinnedMesh getPolygonSkinnedMesh(int Index)
+    public PPolygonSkinnedMesh getPolygonSkinnedMesh(int index)
     {
-        return( (PPolygonSkinnedMesh)m_PolygonSkinnedMeshes.get(Index));
+        return( (PPolygonSkinnedMesh)m_PolygonSkinnedMeshes.get(index));
     }
 
     //  Finds the PolygonSkinnedMesh with the specified name.
     public PPolygonSkinnedMesh findPolygonSkinnedMesh(String meshName)
     {
-        PPolygonSkinnedMesh pPolygonSkinnedMesh;
-        for (int a=0; a<getPolygonSkinnedMeshCount(); a++)
-        {
-            pPolygonSkinnedMesh = getPolygonSkinnedMesh(a);
-            if (pPolygonSkinnedMesh.getName().equals(meshName))
-                return(pPolygonSkinnedMesh);
-        }
-
-        return(null);
+        for (PPolygonSkinnedMesh skinMesh : m_PolygonSkinnedMeshes)
+            if (meshName.equals(skinMesh.getName()))
+                return skinMesh;
+        return null;
     }
-
-    public PNode buildJointHierarchy()
-    {
-        PNode pRootNode = new PNode();
-        int a;
-        PColladaNode pColladaNode;        
-
-        for (a=0; a<m_ColladaNodes.size(); a++)
-        {
-            pColladaNode = (PColladaNode)m_ColladaNodes.get(a);
-
-            if (pColladaNode.isJoint())
-                buildJointHierarchy(pRootNode, pColladaNode, false);
-        }
-
-        pRootNode.setTransform(new PTransform(new PMatrix()));
-                
-        return(pRootNode);
-    }
-
-    private PNode buildJointHierarchy(PNode pParentNode, PColladaNode pColladaNode, boolean bIgnoreMeshInstances)
-    {
-        String meshName = pColladaNode.getMeshName();
-        String meshURL = pColladaNode.getMeshURL();
-        String nodeInstanceName = pColladaNode.getInstanceNodeName();
-        PPolygonMeshInstance pMeshInstance;
-        PNode pThisNode = null;
-
-        try
-        {
-            //  ****  MeshInstance Node.
-            if (meshURL != null)
-            {
-                //System.out.println("MeshName:  " + meshName);
-                if (!bIgnoreMeshInstances)
-                {
-                    PPolygonMesh pPolygonMesh = findPolygonMesh(meshURL);
-                    if (pPolygonMesh != null)
-                    {
-                        //  Create a MeshInstance.
-                        pMeshInstance = createMeshInstance(pPolygonMesh, pColladaNode, meshName);
-                        pThisNode = pMeshInstance;
-                    }
-                }
-            }
-
-            //  ****  NodeInstance Node.
-            else if (nodeInstanceName != null)
-            {
-                PColladaNode pInstancedColladaNode = findFactoryColladaNode(nodeInstanceName);
-                if (pInstancedColladaNode != null)
-                {
-                    pThisNode = new PNode(pColladaNode.getName());
-                    pThisNode.setTransform(new PTransform());
-                    pThisNode.getTransform().getLocalMatrix(true).set(pColladaNode.getMatrix());
-
-                    pColladaNode = pInstancedColladaNode;
-                }
-            }
-
-            //  If there is no MS3D_Mesh, then this is a joint.
-            else
-            {
-                if (pColladaNode.isJoint())
-                {
-                    //  Create a SkinnedMeshJoint
-                    SkinnedMeshJoint pSkinnedMeshJoint = new SkinnedMeshJoint(pColladaNode.getName(),
-                            new PTransform(pColladaNode.getMatrix()));
-
-                    pThisNode = pSkinnedMeshJoint;
-                }
-                else
-                {
-                    //  Just create a Node.
-                    pThisNode = new PJoint(new PTransform(pColladaNode.getMatrix()));
-                    pThisNode.setName(pColladaNode.getName());
-                    pThisNode.getTransform().getLocalMatrix(true).set(pColladaNode.getMatrix());
-                }
-            }
-
-            if (pThisNode != null)
-            {
-                if (pParentNode != null)
-                    pParentNode.addChild(pThisNode);
-
-                //  Iterate through all the child Nodes.
-                int a;
-                PColladaNode pChildColladaNode;
-
-                for (a=0; a<pColladaNode.getChildNodeCount(); a++)
-                {
-                    pChildColladaNode = pColladaNode.getChildNode(a);
-
-                    buildJointHierarchy(pThisNode, pChildColladaNode, bIgnoreMeshInstances);
-                }
-            }
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
-
-        return(pThisNode);
-    }
-
-    public void processColladaNodeForSkeleton(PColladaNode pColladaNode, SkeletonNode pSkeleton)
-    {
-        //  Ignore Joints.
-        if (pColladaNode.isJoint())
-            return;
-
-        //  If the ColladaNode contains skeletons, we need to build a
-        //  PolygonSkinnedMeshInstance tree.
-        if (pColladaNode.getSkeletonCount() > 0)
-        {
-            String skinnedControllerName = pColladaNode.getControllerName();
-            if (skinnedControllerName.length() > 0)
-            {
-                PColladaSkin pColladaSkin = findColladaSkin(skinnedControllerName);
-                if (pColladaSkin != null)
-                {
-                    int b;
-                    String skeletonName;
-                    String firstJointName;
-                    String skinnedMeshName = pColladaSkin.getMeshName();
-
-                    for (b=0; b<pColladaNode.getSkeletonCount(); b++)
-                    {
-                        skeletonName = pColladaNode.getSkeleton(b);
-
-                        //  Get the JointName of the first Bone in the MS3D_SkinnedMesh1.
-                        firstJointName = pColladaSkin.getJointName(0);
-                        if (firstJointName.equals(skeletonName))
-                        {
-                            //  Create a PolygonSkinnedMeshInstance.
-                            PPolygonSkinnedMesh pSkinnedMesh = findPolygonSkinnedMesh(skinnedMeshName);
-
-                            m_pSkeletonNode.addChild(pSkinnedMesh);
-                        }
-                    }
-                }
-            }
-        }
-
-
-        //  Process all child nodes.
-        if (pColladaNode.getChildNodeCount() > 0)
-        {
-            int a;
-            PColladaNode pChildColladaNode;
-
-            for (a=0; a<pColladaNode.getChildNodeCount(); a++)
-            {
-                pChildColladaNode = pColladaNode.getChildNode(a);
-
-                processColladaNodeForSkeleton(pChildColladaNode, pSkeleton);
-            }
-        }
-    }
-
-
 
     public void processColladaNodes()
     {   
         for (PColladaNode node : m_ColladaNodes)
         {
-            System.out.println("Root ColladaNode '" + node.getName() + "', isJoint " + ((node.isJoint()) ? "yes" : "no"));
-
-            processColladaNode(node, m_pLoadingPScene.getInstances());
+            // Debugging / diagnostic output
+//            logger.info("Root ColladaNode '" + node.getName() + "', isJoint " + ((node.isJoint()) ? "yes" : "no"));
+            processColladaNode(node, m_loadingPScene.getInstances());
         }
     }
     
-    public void processColladaNode(PColladaNode colladaNode, PNode pParentNode)
+    public void processColladaNode(PColladaNode colladaNode, PNode parentNode)
     {
         PNode processedNode = null;
         //  Ignore Joints.
         if (colladaNode.isJoint())
             return;
 
-        boolean bSkeletonsCreated = true;
-
         //  If the ColladaNode contains skeletons, we need to build a
         //  PolygonSkinnedMeshInstance tree.
         if (colladaNode.getSkeletonCount() > 0)
         {
-            String skeletonName = null;
-            PColladaNode pSkeletonColladaNode = null;
             String meshName = null;
-            for (int i = 0; i < colladaNode.getSkeletonCount(); i++)
-            {
-                skeletonName = colladaNode.getSkeleton(i);
-                meshName = colladaNode.getMeshName();
-                // Set a default mesh name if none was used
-                if (meshName == null)
-                    meshName = new String("SkinnedMeshInstance from Collada.java : 1521");
-                pSkeletonColladaNode = findColladaNode(skeletonName);
+            meshName = colladaNode.getMeshName();
+            // Set a default mesh name if none was used
+            if (meshName == null)
+                meshName = new String("SkinnedMeshInstance from Collada.java processColladaNode");
 
-                if (pSkeletonColladaNode == null)
-                    System.out.println("   Unable to find skeleton node '" + skeletonName + "'!");
-
-                processedNode = buildPolygonSkinnedMeshInstance(colladaNode, pParentNode, meshName);
-                if (processedNode != null)
-                    pParentNode.addChild(processedNode);
-            }
-            
-            bSkeletonsCreated = false;
+            processedNode = buildPolygonSkinnedMeshInstance(colladaNode, parentNode, meshName);
+            if (processedNode != null)
+                parentNode.addChild(processedNode);
         }
         //  Otherwise, if the ColladaNode was assigned a MeshName, we need
         //  to create a PolygonMeshInstance.
@@ -1364,17 +1061,15 @@ public class Collada
         {
             String meshURL = colladaNode.getMeshURL();
             String meshName = colladaNode.getMeshName();
-            PPolygonMesh polyMesh;
-
+            if (meshName == null) // Set a default
+                meshName = new String("SkinnedMeshInstance from Collada.java processColladaNode");
+            PPolygonMesh polyMesh = null;
             polyMesh = findPolygonMesh(meshURL);
 
             if (polyMesh != null)
-            {
                 processedNode = createMeshInstance(polyMesh, colladaNode, meshName);
-                bSkeletonsCreated = false;
-            }
             else
-                System.out.println("   Unable to find Mesh named " + meshName + " with URL'" + meshURL + "'!");
+                logger.warning("   Unable to find Mesh named " + meshName + " with URL'" + meshURL + "'!");
         }
         //  Otherwise, if the ColladaNode was assigned a InstanceNodeName, we need
         //  to create an instance of a PolygonMesh.
@@ -1385,45 +1080,23 @@ public class Collada
             PColladaNode instancedNode = findFactoryColladaNode(nodeInstanceName);
             if (instancedNode != null)
             {
-                processedNode = new PNode(colladaNode.getName());
-                processedNode.setTransform(new PTransform());
-                processedNode.getTransform().getLocalMatrix(true).set(colladaNode.getMatrix());
-
                 colladaNode = instancedNode;
-
-                bSkeletonsCreated = false;
+                processedNode = new PNode(colladaNode.getName(), new PTransform(colladaNode.getMatrix()));
             }
         }
         //  Otherwise, we need to create a Node.
         else
-        {
-            processedNode = new PNode(colladaNode.getName());
-            processedNode.setTransform(new PTransform());
-            processedNode.getTransform().getLocalMatrix(true).set(colladaNode.getMatrix());
-            bSkeletonsCreated = false;
-        }
-
-
-//        if (bSkeletonsCreated)
-//            return;
-
+            processedNode = new PNode(colladaNode.getName(), new PTransform(colladaNode.getMatrix()));
 
         if (processedNode != null)
-            pParentNode.addChild(processedNode);
+            parentNode.addChild(processedNode);
 
 
         //  Process all child nodes.
         if (colladaNode.getChildNodeCount() > 0)
         {
-            int a;
-            PColladaNode pChildColladaNode;
-            
-            for (a=0; a<colladaNode.getChildNodeCount(); a++)
-            {
-                pChildColladaNode = colladaNode.getChildNode(a);
-
-                processColladaNode(pChildColladaNode, processedNode);
-            }
+            for (PColladaNode kid : colladaNode.getChildren())
+                processColladaNode(kid, processedNode);
         }
     }
 
@@ -1433,7 +1106,7 @@ public class Collada
 
         PPolygonSkinnedMesh skinnedMeshGeometry = findPolygonSkinnedMesh(colladaNode.getControllerName());
 
-        result = m_pLoadingPScene.processSkinnedMesh(skinnedMeshGeometry);
+        result = m_loadingPScene.processSkinnedMesh(skinnedMeshGeometry);
         result.setName(meshName);
         result.setTransform(new PTransform(colladaNode.getMatrix()));
 
@@ -1442,159 +1115,63 @@ public class Collada
         return result;
     }
 
-    public void postProcessPolygonSkinnedMeshes()
-    {
-        if (getPolygonSkinnedMeshCount() == 0)
-            return;
-
-        for (int a=0; a<getPolygonSkinnedMeshCount(); a++)
-            postProcessPolygonSkinnedMesh(getPolygonSkinnedMesh(a));
-    }
-
-    public void postProcessPolygonSkinnedMesh(PPolygonSkinnedMesh pSkinnedMesh)
-    {
-        int a;
-        
-        PNode pChildNode = null;
-
-        createColladaNode(m_pLoadingPScene.getInstances(), getColladaNodeWithChildren(), false);
-            
-        //  Must process the Node hiearchy loaded.
-        PNode pJointHierarchy = null;//pSkinnedMesh.getBindPoseTransformHierarchy();
-        
-        for (a=0; a<m_pLoadingPScene.getInstances().getChildrenCount(); a++)
-        {
-            pChildNode = m_pLoadingPScene.getInstances().getChild(a);
-
-            //  Only add PJoints to the PolygonSkinnedMesh joint hiearchy node.
-            if (pChildNode instanceof PJoint)
-            {
-                m_pLoadingPScene.getInstances().removeChild(pChildNode);
-                a--;
-
-                pJointHierarchy.addChild(pChildNode);
-            }
-        }
-
-        AnimationGroup pAnimationLoop = new AnimationGroup();
-    
-        //  Create all the JointAnimations.
-        processNodeInJointHierarchy(pJointHierarchy, false, pAnimationLoop);
-    }
-
-    private void processNodeInJointHierarchy(PNode pNode, boolean bProcessThisNode, AnimationGroup pAnimationLoop)
-    {
-        if (bProcessThisNode)
-        {
-            if (pNode instanceof PJoint)
-            {
-                PJoint pJoint = (PJoint)pNode;
-                PColladaAnimatedItem pAnimatedItem = findAnimatedItem(pJoint.getName());
-                if (pAnimatedItem != null)
-                {
-                    int a;
-                    float fKeyframeTime;
-                    PMatrix pKeyframeMatrix = new PMatrix();
-
-                    //  Create a JointChannel.
-                    COLLADA_JointChannel pAnimationChannel = new COLLADA_JointChannel(pJoint.getName());
-
-
-                    //  Now, populate the newly created JointAnimation.
-                    for (a=0; a<pAnimatedItem.getKeyframeCount(); a++)
-                    {
-                        fKeyframeTime = pAnimatedItem.getKeyframeTime(a);
-                        pAnimatedItem.getKeyframeMatrix(a, pKeyframeMatrix);
-
-                        pAnimationChannel.addKeyframe(fKeyframeTime, pKeyframeMatrix);
-                    }
-
-           //         System.out.print("Adding joint animation for joint '" + pAnimationChannel.getTargetJointName() + "' to AnimationLoop.");
-//                    System.out.println("  " + pAnimationChannel.getKeyframeCount() + " keyframes.");
-
-                    //  Add the JointAnimation to the AnimationLoop.
-                    pAnimationLoop.getChannels().add(pAnimationChannel);
-                }
-            }
-        }
-
-        if (pNode.getChildrenCount() > 0)
-        {
-            int a;
-            PNode pChildNode;
-
-            for (a=0; a<pNode.getChildrenCount(); a++)
-            {
-                pChildNode = pNode.getChild(a);
-                processNodeInJointHierarchy(pChildNode, true, pAnimationLoop);
-            }
-        }
-    }
-
-    
     //  Creates a MeshInstance.
-    public PPolygonMeshInstance createMeshInstance(PPolygonMesh pPolygonMesh, PColladaNode pColladaNode, String meshName)
+    public PPolygonMeshInstance createMeshInstance(PPolygonMesh polygonMesh, PColladaNode colladaNode, String meshName)
     {
-        PPolygonMeshInstance pMeshInstance = null;
+        PPolygonMeshInstance meshInstance = null;
 
         //  Create the MeshInstance.
-        SharedAsset asset = new SharedAsset(    m_pLoadingPScene.getRepository(),
+        SharedAsset asset = new SharedAsset(    m_loadingPScene.getRepository(),
                                                 new AssetDescriptor(SharedAsset.SharedAssetType.Unknown,
-                                                                    pPolygonMesh.getName()));
-        asset.setAssetData(pPolygonMesh);
+                                                                    polygonMesh.getName()));
+        asset.setAssetData(polygonMesh);
 
-        pMeshInstance = (PPolygonMeshInstance)m_pLoadingPScene.addMeshInstance(meshName, asset);
+        meshInstance = (PPolygonMeshInstance)m_loadingPScene.addMeshInstance(meshName, asset);
 
-        if (pColladaNode != null)
-            pMeshInstance.getTransform().getLocalMatrix(true).set(pColladaNode.getMatrix());
+        if (colladaNode != null)
+            meshInstance.getTransform().getLocalMatrix(true).set(colladaNode.getMatrix());
 
-        if (pColladaNode != null)
+        if (colladaNode != null)
         {
-            ColladaMaterial colladaMaterial    = null;
-            PColladaEffect colladaEffect                    = null;
-            PMeshMaterial meshMat                               = null;
+            ColladaMaterial colladaMaterial = null;
+            PColladaEffect colladaEffect    = null;
+            PMeshMaterial meshMat           = null;
         
-            colladaMaterial = pColladaNode.getMaterial();
+            colladaMaterial = colladaNode.getMaterial();
 
             if (colladaMaterial != null)
             {
                 colladaEffect = findColladaEffectByIdentifier(colladaMaterial.getInstanceEffectTargetURL());
-                try
+                if (colladaEffect != null)
                 {
                     meshMat = colladaEffect.createMeshMaterial();
-                    pMeshInstance.setMaterial(meshMat); // This should be applied elsewhere
+                    meshInstance.setMaterial(meshMat); // This should be applied elsewhere
                 }
-                catch (Exception e)
-                {
-                    e.printStackTrace();
-                }
+                else
+                    logger.warning("Unable to locate effect with URL " + colladaMaterial.getInstanceEffectTargetURL());
+ 
             }
         }
 
 
         //  Are there sub-meshes?
-        if (pPolygonMesh.getChildrenCount() > 0)
+        if (polygonMesh.getChildrenCount() > 0)
         {
-            PPolygonMesh pSubPolygonMesh;
-            PPolygonMeshInstance pSubMeshInstance;
-            PMeshMaterial pMeshMaterial = null;
 
-            for (int i = 0; i < pPolygonMesh.getChildrenCount(); i++)
+            for (PNode node : polygonMesh.getChildren())
             {
-                pSubPolygonMesh = (PPolygonMesh)pPolygonMesh.getChild(i);
+                if (!(node instanceof PPolygonMesh))
+                    continue;
+
+                PPolygonMesh polyMesh = (PPolygonMesh)node;
                                 
                 //  Create a sub MeshInstance.
-                pSubMeshInstance = createMeshInstance(pSubPolygonMesh, null, "SomeSubMesh");
-
-                pMeshMaterial = pSubPolygonMesh.getMaterialCopy();
-                pSubMeshInstance.setMaterial(pMeshMaterial); // this should be applied elsewhere
-
-                pMeshInstance.addChild(pSubMeshInstance);
+                PPolygonMeshInstance childMeshInstance = createMeshInstance(polyMesh, null, "SomeSubMesh");
+                meshInstance.addChild(childMeshInstance);
             }
         }
 
-
-        return(pMeshInstance);
+        return(meshInstance);
     }
 
     void createColladaNode(PNode pParentNode, PColladaNode colladaNode, boolean bIgnoreMeshInstances)
