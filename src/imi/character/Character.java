@@ -1055,7 +1055,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
             else
                 return;   
         }
-        int cycle = m_skeleton.getAnimationGroup(1).findAnimationCycle(cycleName);
+        int cycle = m_skeleton.getAnimationGroup(1).findAnimationCycleIndex(cycleName);
         if (cycle != -1)
             initiateFacialAnimation(cycle, fTimeIn, fTimeOut);
     }

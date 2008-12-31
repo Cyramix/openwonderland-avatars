@@ -17,6 +17,7 @@
  */
 package imi.scene.animation;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import javolution.util.FastList;
 
@@ -28,7 +29,7 @@ import javolution.util.FastList;
  * @author Lou Hayt
  * @author Ronald E Dahlgren
  */
-public class AnimationComponent 
+public class AnimationComponent implements Serializable
 {
     /**
      * This enumeration serves to describe the playback mode of an animation clip.
@@ -41,7 +42,7 @@ public class AnimationComponent
     }
     
     /** The animation data is stored in groups, a group contains multiple animations that can be indexed via AnimationCycles */
-    private ArrayList<AnimationGroup> m_AnimationGroups = new ArrayList<AnimationGroup>();
+    private final ArrayList<AnimationGroup> m_AnimationGroups = new ArrayList<AnimationGroup>();
     
     /**
      * Empty constructor
@@ -149,7 +150,7 @@ public class AnimationComponent
         if (loop == null)
             return -1;
         
-        return loop.findAnimationCycle(cycleName);
+        return loop.findAnimationCycleIndex(cycleName);
     }
     
     /**

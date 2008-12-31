@@ -298,7 +298,6 @@ public class LibraryControllersProcessor extends Processor
                 }
 
                 pAnimationChannel.calculateDuration();
-                pAnimationChannel.setBindMatrix(pJointColladaNode.getMatrix());
 
 
                 if (m_bPrintStats)

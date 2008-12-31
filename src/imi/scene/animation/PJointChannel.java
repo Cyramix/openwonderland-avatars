@@ -18,13 +18,14 @@
 package imi.scene.animation;
 
 import imi.scene.PJoint;
+import java.io.Serializable;
 
 /**
  * This represents all of the animation frames a joint can go through
  * @author Ronald E Dahlgren
  * @author Lou Hayt
  */
-public interface PJointChannel 
+public interface PJointChannel extends Serializable
 {
     /**
      * This method should return a brand new copy with the same innards as 

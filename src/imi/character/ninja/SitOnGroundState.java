@@ -174,7 +174,7 @@ public class SitOnGroundState extends GameState
             bGettingUpAnimationSet = skeleton.transitionTo(gettingUpAnimationName, false);
             // If sitting down and getting up is the same animation transitionTo will return false
             // when trying to get up immediatly after deciding to sit down... so
-            if (skeleton.getAnimationState().getCurrentCycle() == skeleton.getAnimationGroup().findAnimationCycle(gettingUpAnimationName))
+            if (skeleton.getAnimationState().getCurrentCycle() == skeleton.getAnimationGroup().findAnimationCycleIndex(gettingUpAnimationName))
             {
                 bGettingUpAnimationSet = true;
             }

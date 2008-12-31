@@ -19,6 +19,7 @@ package imi.scene.animation;
 
 
 import com.jme.math.Vector3f;
+import java.io.Serializable;
 
 
 
@@ -26,7 +27,7 @@ import com.jme.math.Vector3f;
  *
  * @author Chris Nagle
  */
-public class VectorKeyframe implements KeyFrameInterface
+public class VectorKeyframe implements KeyFrameInterface, Serializable
 {
     float    m_fTime = 0.0f;
     Vector3f m_Value = new Vector3f();

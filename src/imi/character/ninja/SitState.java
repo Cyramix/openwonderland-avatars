@@ -220,7 +220,7 @@ public class SitState extends GameState
             bGettingUpAnimationSet = skeleton.transitionTo(gettingUpAnimationName, true);
             // If sitting down and getting up is the same animation transitionTo will return false
             // when trying to get up immediatly after deciding to sit down... so
-            if (skeleton.getAnimationState().getCurrentCycle() == skeleton.getAnimationGroup().findAnimationCycle(gettingUpAnimationName))
+            if (skeleton.getAnimationState().getCurrentCycle() == skeleton.getAnimationGroup().findAnimationCycleIndex(gettingUpAnimationName))
             {
                 bGettingUpAnimationSet = true;
             }
@@ -263,7 +263,7 @@ public class SitState extends GameState
     public void setSittingAnimationTime() {
         if (ninjaContext.getSkeleton() != null)
         {
-            int index = ninjaContext.getSkeleton().getAnimationGroup().findAnimationCycle(getAnimationName());
+            int index = ninjaContext.getSkeleton().getAnimationGroup().findAnimationCycleIndex(getAnimationName());
             float duration = ninjaContext.getSkeleton().getAnimationGroup().getCycle(index).getEndTime() - ninjaContext.getSkeleton().getAnimationGroup().getCycle(index).getStartTime();
             this.sittingAnimationTime = duration / getAnimationSpeed();   
             System.out.println("ddddddddddddddddddddddddddddddddddddddddddd       " +  this.sittingAnimationTime);

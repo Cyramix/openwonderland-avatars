@@ -23,9 +23,6 @@ import imi.scene.PJoint;
 import imi.scene.PMatrix;
 import javolution.util.FastList;
 
-import com.jme.math.Matrix4f;
-
-
 
 /**
  * Concrete channel implementation.
@@ -37,9 +34,8 @@ import com.jme.math.Matrix4f;
 public class COLLADA_JointChannel implements PJointChannel
 {
     private String                      m_TargetJointName = null;
-    private PMatrix                     m_TargetBindMatrix = null;
     
-    private FastList<PMatrixKeyframe>   m_KeyFrames = new FastList<PMatrixKeyframe>();
+    private final FastList<PMatrixKeyframe>   m_KeyFrames = new FastList<PMatrixKeyframe>();
     
     // Assorted data that is explicitely calculated
     private float                       m_fDuration = 0.0f;
@@ -66,12 +62,6 @@ public class COLLADA_JointChannel implements PJointChannel
         // Copy translation key frames
         for (PMatrixKeyframe frame : jointAnimation.m_KeyFrames)
             m_KeyFrames.add(new PMatrixKeyframe(frame));
-    }
-
-    //  Sets the BindMatrix.
-    public void setBindMatrix(PMatrix pBindMatrix)
-    {
-        m_TargetBindMatrix = pBindMatrix;
     }
 
     public void calculateFrame(PJoint jointToAffect, AnimationState state)
@@ -332,7 +322,6 @@ public class COLLADA_JointChannel implements PJointChannel
     public void clear()
     {
         m_TargetJointName = null;
-        m_TargetBindMatrix = null;
     
         m_KeyFrames.clear();
 

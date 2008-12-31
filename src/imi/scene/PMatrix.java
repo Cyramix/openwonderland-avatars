@@ -21,6 +21,7 @@ import com.jme.math.Matrix3f;
 import com.jme.math.Matrix4f;
 import com.jme.math.Quaternion;
 import com.jme.math.Vector3f;
+import java.io.Serializable;
 import org.lwjgl.util.vector.Vector4f;
 
 /**
@@ -29,7 +30,7 @@ import org.lwjgl.util.vector.Vector4f;
  * @author Ronald Dahlgren
  * @author Sun Microsystems
  */
-public class PMatrix 
+public class PMatrix implements Serializable
 {
     private float[] mat  = new float[16];
     

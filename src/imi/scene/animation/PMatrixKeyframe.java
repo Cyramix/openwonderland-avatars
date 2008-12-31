@@ -18,15 +18,16 @@
 package imi.scene.animation;
 
 import imi.scene.PMatrix;
+import java.io.Serializable;
 
 /**
  * Represents a transformation at a certain time
  * @author Ronald E Dahlgren
  */
-public class PMatrixKeyframe implements KeyFrameInterface
+public class PMatrixKeyframe implements KeyFrameInterface, Serializable
 {
-    float       m_fTime = 0.0f;
-    PMatrix     m_Value = new PMatrix();
+          float       m_fTime = 0.0f;
+    final PMatrix     m_Value = new PMatrix();
 
     //  Constructor.
     public PMatrixKeyframe(float time, PMatrix value)

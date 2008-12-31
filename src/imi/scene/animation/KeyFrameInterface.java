@@ -22,7 +22,7 @@ package imi.scene.animation;
  * @author Ronald E Dahlgren
  * @author Lou Hayt
  */
-public interface KeyFrameInterface 
+public interface KeyFrameInterface
 {
     /**
      * Return the time that this keyframe occurs

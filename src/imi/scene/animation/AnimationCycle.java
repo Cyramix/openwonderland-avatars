@@ -17,13 +17,15 @@
  */
 package imi.scene.animation;
 
+import java.io.Serializable;
+
 /**
  * Defines an animation cycle within an animation group
  * 
  * @author Lou Hayt
  * @author Ronald Dahlgren
  */
-public class AnimationCycle 
+public class AnimationCycle implements Serializable
 {
     private String   m_name       = "Untitled Cycle";
     private float    m_fStartTime = 0.0f;
