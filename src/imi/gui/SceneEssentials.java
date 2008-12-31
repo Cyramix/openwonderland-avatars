@@ -700,7 +700,11 @@ public class SceneEssentials {
                 avatar.getSkeleton().addAnimationState(facialAnimationState);
                 if (avatar.getSkeleton().getAnimationComponent().getGroups().size() > 1)
                 {
-                    avatar.setDefaultFacePose(0);
+                    if (avatar.getSkeleton().getAnimationGroup(1).getCycleCount() > 1)
+                        avatar.setDefaultFacePose(1);
+                    else
+                        avatar.setDefaultFacePose(0);
+
                     TransitionQueue facialAnimQ = avatar.getFacialAnimationQ();
                     // Go to default face pose
                     facialAnimQ.addTransition(new TransitionCommand(avatar.getDefaultFacePose(), avatar.getDefaultFacePoseTiming(), PlaybackMode.PlayOnce, false));
