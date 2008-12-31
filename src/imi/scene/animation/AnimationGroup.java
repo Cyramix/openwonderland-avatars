@@ -493,6 +493,20 @@ public class AnimationGroup implements Serializable
         m_JointChannels.add(jointChannel);
     }
 
+    @Override
+    public String toString()
+    {
+        StringBuilder sb = new StringBuilder();
+        sb.append("AnimationGroup: " + m_name + "\n");
+        sb.append("Cycles:\n");
+        for (AnimationCycle cycle : m_cycles)
+            sb.append(cycle.toString() + "\n");
+        sb.append("JointChannels:\n");
+        for (PJointChannel channel : m_JointChannels)
+            sb.append(channel.toString() + "\n");
+        return sb.toString();
+    }
+
 }
 
 

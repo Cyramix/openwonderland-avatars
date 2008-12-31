@@ -70,7 +70,7 @@ public class FloatVectorCellEditor extends AbstractCellEditor implements TableCe
                 {
                     Logger.getLogger(FloatVectorCellEditor.class.getName()).log(Level.WARNING,
                             "Incorrect format for a float!", ex);
-                    // Set that element to zero
+                    // Set that element to zero and continue along
                     fArray[i] = 0.0f;
                 }
             }

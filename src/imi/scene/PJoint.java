@@ -43,13 +43,11 @@ public class PJoint extends PNode
 	
     /**
      * Empty constructor, for low level coding.
-     * 
-     * Warnining : Do not use this constructor without insuring memory allocation
-     * for the transform member variable.
      */
     public PJoint()
     {
         super();
+        setTransform(new PTransform());
     }
 
     /**

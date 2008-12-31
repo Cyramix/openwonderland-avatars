@@ -21,12 +21,16 @@ package imi.tests;
 import com.jme.math.Vector3f;
 import imi.character.ninja.NinjaAvatar;
 import imi.character.ninja.NinjaAvatarAttributes;
+import imi.gui.SceneEssentials;
+import imi.gui.TreeExplorer;
 import imi.scene.camera.state.FirstPersonCamState;
+import java.net.MalformedURLException;
 import org.jdesktop.mtgame.WorldManager;
 
 
 import imi.scene.processors.JSceneEventProcessor;
 import imi.utils.input.NinjaControlScheme;
+import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -61,40 +65,58 @@ public class COLLADA_CharacterTest extends DemoBase
     {   
         // Create ninja input scheme
         NinjaControlScheme control = (NinjaControlScheme)((JSceneEventProcessor)wm.getUserData(JSceneEventProcessor.class)).setDefault(new NinjaControlScheme(null));
-//
-//        // Create avatar
+
+        // Create avatar
         NinjaAvatar avatar = new NinjaAvatar(new NinjaAvatarAttributes("Avatar", true, false), wm);
         avatar.selectForInput();
         control.getNinjaTeam().add(avatar);
+
         // Get the mouse evets so the verlet arm can be controlled
         control.getMouseEventsFromCamera();
-        
-//        // Load the african head
-//        String fileProtocol = avatar.getAttributes().getBaseURL();
-//        if (fileProtocol == null)
-//            fileProtocol = new String("file://localhost/" + System.getProperty("user.dir") + "/");
-//        InstructionProcessor pProcessor = new InstructionProcessor(wm);
-//        Instruction pRootInstruction = new Instruction();
-//        pRootInstruction.addInstruction(InstructionNames.loadBindPose, fileProtocol + "assets/models/collada/Heads/MaleAfricanHead/AfricanAmericanMaleHead1_Bind.dae");
-//        //pRootInstruction.addInstruction(InstructionNames.loadBindPose, fileProtocol + "assets/models/collada/Heads/MaleAsianHead/AsianMaleHead1_Bind.dae");
-//        pProcessor.execute(pRootInstruction, false);
-
+ 
         // change camera speed
         FirstPersonCamState camState = (FirstPersonCamState)m_cameraProcessor.getState();
-        camState.setMovementRate(0.003f);
+        camState.setMovementRate(0.03f);
         camState.setCameraPosition(new Vector3f(0.0f, 1.8f, -2.0f));
+
         // Wait for the avatar to load
-//        while (!avatar.isInitialized())
-//        {
-//            try {
-//            Thread.sleep(500);
-//                } catch (InterruptedException ex) {
-//                    Logger.getLogger(COLLADA_CharacterTest.class.getName()).log(Level.SEVERE, null, ex);
-//                                                  }
-//        }
-        
+        while (!avatar.isInitialized() || avatar.getModelInst() == null)
+        {
+            try {
+            Thread.sleep(25000);
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(COLLADA_CharacterTest.class.getName()).log(Level.SEVERE, null, ex);
+                                                  }
+        }
+
+        URL headLocation = null;
+        try {
+            // Set the avatars head
+//            headLocation = new URL("file://localhost/work/avatars/assets/models/collada/Avatars/Female/Female_Bind.dae");
+//            headLocation = new URL("file://localhost/work/avatars/assets/models/collada/Heads/MaleAfricanHead/MaleAAHead.dae");
+//            headLocation = new URL("file://localhost/work/avatars/assets/models/collada/Heads/FemaleCaucasian/FemaleCHead.dae");
+//            headLocation = new URL("file://localhost/work/avatars/assets/models/collada/Heads/FemaleKlingon/FemaleKlingonHead.dae");
+//            headLocation = new URL("file://localhost/work/avatars/assets/models/collada/Heads/MaleAsianHead/asiaHeadTwo.dae");
+//            headLocation = new URL("file://localhost/work/avatars/assets/models/collada/Heads/fourthHeadDIFb/fourthHeadDIFb.dae");
+//            headLocation = new URL("file://localhost/work/avatars/assets/models/collada/Heads/CaucasianHead/MaleMonkeyHead.dae");
+            headLocation = new URL("file://localhost/work/avatars/assets/models/collada/Heads/CaucasianHead/MaleCHead.dae");
+        } catch (MalformedURLException ex) {
+            Logger.getLogger(COLLADA_CharacterTest.class.getName()).log(Level.SEVERE, null, ex);
+        }
 //
-//        // Set the avatars head
-//        avatar.installHead(pProcessor.getSkeleton());
+////        avatar.HACKMETHODPLEASEREMOVEME("rightEyeGeoShape");
+//        avatar.HACKMETHODPLEASEREMOVEME("Legs_LegsNudeShape");
+//        avatar.installHead(headLocation);
+
+//        int rightEyeIndex = avatar.getSkeleton().getSkinnedMeshJointIndex("rightEye");
+//        int leftEyeIndex = avatar.getSkeleton().getSkinnedMeshJointIndex("leftEye");
+//
+//        boolean bHack = true;
+        // Uncomment for a tree explorer
+        TreeExplorer te = new TreeExplorer();
+        SceneEssentials se = new SceneEssentials();
+        se.setSceneData(avatar.getJScene(), avatar.getPScene(), avatar, wm, null);
+        te.setExplorer(se);
+        te.setVisible(true);
     }
 }

@@ -88,6 +88,7 @@ import imi.scene.shader.ShaderProperty;
 import imi.scene.shader.dynamic.GLSLDataType;
 import imi.scene.shader.programs.ClothingShader;
 import imi.scene.shader.programs.EyeballShader;
+import imi.scene.shader.programs.FleshShader;
 import imi.scene.shader.programs.SimpleTNLWithAmbient;
 import imi.scene.shader.programs.VertDeformerWithSpecAndNormalMap;
 import imi.scene.utils.PMeshUtils;
@@ -436,7 +437,13 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         } catch (NoSuchPropertyException ex) {
             logger.log(Level.SEVERE, null, ex);
         }
-        AbstractShaderProgram fleshShader = new VertDeformerWithSpecAndNormalMap(m_wm);
+        AbstractShaderProgram fleshShader = new FleshShader(m_wm);
+        float[] skinColor = { 0.807f, 0.662f, 0.615f };
+        try {
+            fleshShader.setProperty(new ShaderProperty("materialColor", GLSLDataType.GLSL_VEC3, skinColor));
+        } catch (NoSuchPropertyException ex) {
+            Logger.getLogger(Character.class.getName()).log(Level.SEVERE, null, ex);
+        }
         AbstractShaderProgram accessoryShader = new SimpleTNLWithAmbient(m_wm);
         AbstractShaderProgram eyeballShader = new EyeballShader(m_wm);
         // first the skinned meshes
@@ -1325,12 +1332,15 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         // Now reattach the eyes
         m_eyes = new CharacterEyes(m_skeleton, m_modelInst, m_pscene, m_wm);
 //        // reassociate this with the verlet thingy
-        while (m_skeletonManipulator == null)
+//        while (m_skeletonManipulator == null)
+//        {
+//            Thread.yield();
+//        }
+        if (m_skeletonManipulator != null)
         {
-            Thread.yield();
+            m_skeletonManipulator.setLeftEyeBall(m_eyes.getLeftEyeBall());
+            m_skeletonManipulator.setRightEyeBall(m_eyes.getRightEyeBall());
         }
-        m_skeletonManipulator.setLeftEyeBall(m_eyes.getLeftEyeBall());
-        m_skeletonManipulator.setRightEyeBall(m_eyes.getRightEyeBall());
         // Finally, apply the default shaders
         setDefaultShaders();
         pnode = m_skeleton.findChild("rightEyeGeoShape");
@@ -1365,7 +1375,9 @@ public abstract class Character extends Entity implements SpatialObject, Animati
             {
                 SkinnedMeshJoint currentHeadJoint = (SkinnedMeshJoint)current;
                 SkinnedMeshJoint newHeadJoint     = newSkeleton.findSkinnedMeshJoint(currentHeadJoint.getName());
-                
+
+                if (newHeadJoint == null) // Not found in the new skeleton
+                    logger.severe("Could not find associated joint in the new skeleton, joint name was " + currentHeadJoint.getName());
                 PMatrix modifierDelta = new PMatrix();
                 modifierDelta.mul( currentHeadJoint.getTransform().getLocalMatrix(false).inverse(),
                             newHeadJoint.getTransform().getLocalMatrix(false));
