@@ -438,7 +438,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
             logger.log(Level.SEVERE, null, ex);
         }
         AbstractShaderProgram fleshShader = new FleshShader(m_wm);
-        float[] skinColor = { 0.807f, 0.662f, 0.615f };
+        float[] skinColor = { 1.0f, 1.0f, 1.0f };
         try {
             fleshShader.setProperty(new ShaderProperty("materialColor", GLSLDataType.GLSL_VEC3, skinColor));
         } catch (NoSuchPropertyException ex) {
