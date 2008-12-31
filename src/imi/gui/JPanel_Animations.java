@@ -77,37 +77,73 @@ public class JPanel_Animations extends javax.swing.JPanel {
             imi.scene.PNode node = ((imi.scene.PNode)instance.findChild("skeletonRoot"));
             if(node != null) {
                 imi.scene.polygonmodel.parts.skinned.SkeletonNode skeleton = ((imi.scene.polygonmodel.parts.skinned.SkeletonNode)node.getParent());
-                if (skeleton.getAnimationGroup() != null) {
 
-                    int iNumAnimations = skeleton.getAnimationGroup().getCycleCount();
-                    int iCurrentAnim = skeleton.getAnimationState().getCurrentCycle();
+                if (skeleton.getAnimationGroup(0) != null) {
+
+                    int iNumAnimations = skeleton.getAnimationGroup(0).getCycleCount();
+                    int iCurrentAnim = skeleton.getAnimationState(0).getCurrentCycle();
                     String[] szAnimations = new String[iNumAnimations];
 
                     for (int i = 0; i < szAnimations.length; i++) {
-                        szAnimations[i] = skeleton.getAnimationGroup().getCycle(i).getName();
+                        szAnimations[i] = skeleton.getAnimationGroup(0).getCycle(i).getName();
                     }
 
-                    jComboBox_Animations.setEnabled(true);
+                    jComboBox_BodyAnimations.setEnabled(true);
                     jSlider_Animations.setEnabled(true);
-                    jComboBox_Animations.setModel(new javax.swing.DefaultComboBoxModel(szAnimations));
-                    jComboBox_Animations.setSelectedIndex(iCurrentAnim);
-
+                    jComboBox_BodyAnimations.setModel(new javax.swing.DefaultComboBoxModel(szAnimations));
+                    jComboBox_BodyAnimations.setSelectedIndex(iCurrentAnim);
                 } else {
                     String[] szAnimations = new String[1];
                     szAnimations[0] = "No Animations";
-                    jComboBox_Animations.setModel(new javax.swing.DefaultComboBoxModel(szAnimations));
-                    jComboBox_Animations.setEnabled(false);
+                    jComboBox_BodyAnimations.setModel(new javax.swing.DefaultComboBoxModel(szAnimations));
+                    jComboBox_BodyAnimations.setEnabled(false);
+                    jComboBox_BodyAnimations.setSelectedIndex(0);
                     jSlider_Animations.setEnabled(false);
-                    jComboBox_Animations.setSelectedIndex(0);
+                }
+
+                if (skeleton.getAnimationComponent().getGroups().size() > 1) {
+                    if (skeleton.getAnimationGroup(1) != null) {
+
+                        int iNumAnimations = skeleton.getAnimationGroup(1).getCycleCount();
+                        int iCurrentAnim = skeleton.getAnimationState(1).getCurrentCycle();
+                        String[] szAnimations = new String[iNumAnimations];
+
+                        for (int i = 0; i < szAnimations.length; i++) {
+                            szAnimations[i] = skeleton.getAnimationGroup(1).getCycle(i).getName();
+                        }
+
+                        jComboBox_FacialAnimations.setEnabled(true);
+                        jComboBox_FacialAnimations.setModel(new javax.swing.DefaultComboBoxModel(szAnimations));
+                        jComboBox_FacialAnimations.setSelectedIndex(iCurrentAnim);
+                    }
+                } else {
+                    String[] szAnimations = new String[1];
+                    szAnimations[0] = "No Animations";
+                    jComboBox_FacialAnimations.setModel(new javax.swing.DefaultComboBoxModel(szAnimations));
+                    jComboBox_FacialAnimations.setEnabled(false);
+                    jComboBox_FacialAnimations.setSelectedIndex(0);
+                }
+
+                if (skeleton.getAnimationGroup(0) == null && skeleton.getAnimationGroup(1) == null) {
+
+                    String[] szAnimations = new String[1];
+                    szAnimations[0] = "No Animations";
+                    jComboBox_BodyAnimations.setModel(new javax.swing.DefaultComboBoxModel(szAnimations));
+                    jComboBox_BodyAnimations.setEnabled(false);
+                    jComboBox_BodyAnimations.setSelectedIndex(0);
+                    jComboBox_FacialAnimations.setModel(new javax.swing.DefaultComboBoxModel(szAnimations));
+                    jComboBox_FacialAnimations.setEnabled(false);
+                    jComboBox_FacialAnimations.setSelectedIndex(0);
+                    jSlider_Animations.setEnabled(false);
                 }
             }
         } else {
             String[] szAnimations = new String[1];
             szAnimations[0] = "No Animations";
-            jComboBox_Animations.setModel(new javax.swing.DefaultComboBoxModel(szAnimations));
-            jComboBox_Animations.setEnabled(false);
+            jComboBox_BodyAnimations.setModel(new javax.swing.DefaultComboBoxModel(szAnimations));
+            jComboBox_BodyAnimations.setEnabled(false);
             jSlider_Animations.setEnabled(false);
-            jComboBox_Animations.setSelectedIndex(0);
+            jComboBox_BodyAnimations.setSelectedIndex(0);
         }
     }
     
@@ -148,7 +184,7 @@ public class JPanel_Animations extends javax.swing.JPanel {
                     jFormattedTextField_CycleTime.setEnabled(true);
 
                     // Determine the what are the animation indices
-                    int curIndex = jComboBox_Animations.getSelectedIndex();
+                    int curIndex = jComboBox_BodyAnimations.getSelectedIndex();
                     float cycleTimeMil, cycleTimeSec, cycleTimeMin, elapsedTimeMil, elapsedTimeSec, elapsedTimeMin;
                     elapsedTimeMil = elapsedTimeSec = elapsedTimeMin = 0.0f;
 
@@ -214,7 +250,7 @@ public class JPanel_Animations extends javax.swing.JPanel {
                     case 0:
                     {
                         if(m_bStopped) {
-                            skeleton.getAnimationState().setCurrentCycle(jComboBox_Animations.getSelectedIndex());
+                            skeleton.getAnimationState().setCurrentCycle(jComboBox_BodyAnimations.getSelectedIndex());
                             float time = skeleton.getAnimationGroup().getCycle(skeleton.getAnimationState().getCurrentCycle()).getStartTime();
                             skeleton.getAnimationState().setCurrentCycleTime(time);
                             m_bStopped = false;
@@ -238,8 +274,8 @@ public class JPanel_Animations extends javax.swing.JPanel {
         }        
     }
 
-    public void loadAnimations() {
-        m_sceneInfo.loadDAEAnimationFile(true, this);
+    public void loadAnimations(int type) {
+        m_sceneInfo.loadDAEAnimationFile(type, true, this);
     }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -298,17 +334,19 @@ public class JPanel_Animations extends javax.swing.JPanel {
         jLabel_AnimSpeed = new javax.swing.JLabel();
         jSlider_Animations = new javax.swing.JSlider();
         jComboBox_ModelInstances = new javax.swing.JComboBox();
-        jComboBox_Animations = new javax.swing.JComboBox();
+        jComboBox_BodyAnimations = new javax.swing.JComboBox();
+        jComboBox_FacialAnimations = new javax.swing.JComboBox();
         jButton_Play = new javax.swing.JButton();
         jButton_Pause = new javax.swing.JButton();
         jButton_Stop = new javax.swing.JButton();
         jButton_Reload = new javax.swing.JButton();
-        jButton_AddAnim = new javax.swing.JButton();
+        jButton_AddBodyAnim = new javax.swing.JButton();
+        jButton_AddFaceAnim = new javax.swing.JButton();
 
         setBorder(javax.swing.BorderFactory.createTitledBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED), "Model Animations", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Lucida Grande", 0, 13), new java.awt.Color(0, 0, 255))); // NOI18N
         setMaximumSize(new java.awt.Dimension(266, 250));
         setMinimumSize(new java.awt.Dimension(266, 250));
-        setPreferredSize(new java.awt.Dimension(266, 250));
+        setPreferredSize(new java.awt.Dimension(266, 300));
         setLayout(new java.awt.GridBagLayout());
 
         jLabel_ElapsedTime.setText("Elapsed Time: ");
@@ -392,26 +430,44 @@ public class JPanel_Animations extends javax.swing.JPanel {
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 3;
         gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.ipadx = 160;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         add(jComboBox_ModelInstances, gridBagConstraints);
 
-        jComboBox_Animations.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-        jComboBox_Animations.setMaximumSize(new java.awt.Dimension(230, 25));
-        jComboBox_Animations.setMinimumSize(new java.awt.Dimension(85, 25));
-        jComboBox_Animations.setPreferredSize(new java.awt.Dimension(85, 25));
-        jComboBox_Animations.addActionListener(new java.awt.event.ActionListener() {
+        jComboBox_BodyAnimations.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        jComboBox_BodyAnimations.setMaximumSize(new java.awt.Dimension(230, 25));
+        jComboBox_BodyAnimations.setMinimumSize(new java.awt.Dimension(85, 25));
+        jComboBox_BodyAnimations.setPreferredSize(new java.awt.Dimension(85, 25));
+        jComboBox_BodyAnimations.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jComboBox_AnimationsActionPerformed(evt);
+                jComboBox_BodyAnimationsActionPerformed(evt);
             }
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 4;
         gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.ipadx = 160;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        add(jComboBox_Animations, gridBagConstraints);
+        add(jComboBox_BodyAnimations, gridBagConstraints);
+
+        jComboBox_FacialAnimations.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        jComboBox_FacialAnimations.setMaximumSize(new java.awt.Dimension(230, 25));
+        jComboBox_FacialAnimations.setMinimumSize(new java.awt.Dimension(85, 25));
+        jComboBox_FacialAnimations.setPreferredSize(new java.awt.Dimension(85, 25));
+        jComboBox_FacialAnimations.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jComboBox_FacialAnimationsActionPerformed(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 5;
+        gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        add(jComboBox_FacialAnimations, gridBagConstraints);
 
         jButton_Play.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         jButton_Play.addActionListener(new java.awt.event.ActionListener() {
@@ -425,7 +481,7 @@ public class JPanel_Animations extends javax.swing.JPanel {
         jButton_Play.setPreferredSize(new java.awt.Dimension(83, 29));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 5;
+        gridBagConstraints.gridy = 6;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         add(jButton_Play, gridBagConstraints);
 
@@ -438,7 +494,7 @@ public class JPanel_Animations extends javax.swing.JPanel {
         jButton_Pause.setText("PAUSE");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 5;
+        gridBagConstraints.gridy = 6;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.insets = new java.awt.Insets(0, -28, 0, 0);
         add(jButton_Pause, gridBagConstraints);
@@ -455,7 +511,7 @@ public class JPanel_Animations extends javax.swing.JPanel {
         jButton_Stop.setPreferredSize(new java.awt.Dimension(83, 29));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
-        gridBagConstraints.gridy = 5;
+        gridBagConstraints.gridy = 6;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         add(jButton_Stop, gridBagConstraints);
 
@@ -471,34 +527,64 @@ public class JPanel_Animations extends javax.swing.JPanel {
         jButton_Reload.setPreferredSize(new java.awt.Dimension(150, 29));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 6;
+        gridBagConstraints.gridy = 7;
         gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.ipadx = 98;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         add(jButton_Reload, gridBagConstraints);
 
-        jButton_AddAnim.addActionListener(new java.awt.event.ActionListener() {
+        jButton_AddBodyAnim.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                loadAnimations();
+                loadAnimations(0);
                 reloadSelectedModelAnimations();
             }
         });
-        jButton_AddAnim.setText("Add Animation");
+        jButton_AddBodyAnim.setText("Add Body Animation");
         gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 8;
         gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        add(jButton_AddAnim, gridBagConstraints);
+        add(jButton_AddBodyAnim, gridBagConstraints);
+
+        jButton_AddFaceAnim.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                loadAnimations(1);
+                reloadSelectedModelAnimations();
+            }
+        });
+        jButton_AddFaceAnim.setText("Add Facial Animation");
+        jButton_AddFaceAnim.setMaximumSize(new java.awt.Dimension(138, 29));
+        jButton_AddFaceAnim.setMinimumSize(new java.awt.Dimension(138, 29));
+        jButton_AddFaceAnim.setPreferredSize(new java.awt.Dimension(138, 29));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 9;
+        gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        add(jButton_AddFaceAnim, gridBagConstraints);
     }// </editor-fold>//GEN-END:initComponents
 
-private void jComboBox_AnimationsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox_AnimationsActionPerformed
-if (jComboBox_Animations.isEnabled()) {
-        imi.scene.polygonmodel.PPolygonModelInstance instance = ((imi.scene.polygonmodel.PPolygonModelInstance)jComboBox_ModelInstances.getSelectedItem());
-        imi.scene.PNode node = ((imi.scene.PNode)instance.findChild("skeletonRoot"));
-        imi.scene.polygonmodel.parts.skinned.SkeletonNode skeleton = ((imi.scene.polygonmodel.parts.skinned.SkeletonNode)node.getParent());
-        skeleton.getAnimationState().setPauseAnimation(false);
-        skeleton.transitionTo(jComboBox_Animations.getSelectedItem().toString(), false);
-    }
-}//GEN-LAST:event_jComboBox_AnimationsActionPerformed
+    private void jComboBox_BodyAnimationsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox_BodyAnimationsActionPerformed
+        if (jComboBox_BodyAnimations.isEnabled()) {
+            imi.scene.polygonmodel.PPolygonModelInstance instance = ((imi.scene.polygonmodel.PPolygonModelInstance)jComboBox_ModelInstances.getSelectedItem());
+            imi.scene.PNode node = ((imi.scene.PNode)instance.findChild("skeletonRoot"));
+            imi.scene.polygonmodel.parts.skinned.SkeletonNode skeleton = ((imi.scene.polygonmodel.parts.skinned.SkeletonNode)node.getParent());
+            skeleton.getAnimationState(0).setPauseAnimation(false);
+            skeleton.transitionTo(jComboBox_BodyAnimations.getSelectedItem().toString(), false);
+        }
+}//GEN-LAST:event_jComboBox_BodyAnimationsActionPerformed
+
+    private void jComboBox_FacialAnimationsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox_FacialAnimationsActionPerformed
+        if (jComboBox_FacialAnimations.isEnabled()) {
+            imi.scene.polygonmodel.PPolygonModelInstance instance = ((imi.scene.polygonmodel.PPolygonModelInstance)jComboBox_ModelInstances.getSelectedItem());
+            imi.scene.PNode node = ((imi.scene.PNode)instance.findChild("skeletonRoot"));
+            imi.scene.polygonmodel.parts.skinned.SkeletonNode skeleton = ((imi.scene.polygonmodel.parts.skinned.SkeletonNode)node.getParent());
+            skeleton.getAnimationState(1).setPauseAnimation(false);
+            m_sceneInfo.getAvatar().initiateFacialAnimation(jComboBox_FacialAnimations.getSelectedItem().toString(), 0.75f, 0.75f);
+        }
+    }//GEN-LAST:event_jComboBox_FacialAnimationsActionPerformed
 
 /**
  * Change the speed of the animation
@@ -515,12 +601,14 @@ private void jSlider_AnimationsStateChanged(javax.swing.event.ChangeEvent e) {
 }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton_AddAnim;
+    private javax.swing.JButton jButton_AddBodyAnim;
+    private javax.swing.JButton jButton_AddFaceAnim;
     private javax.swing.JButton jButton_Pause;
     private javax.swing.JButton jButton_Play;
     private javax.swing.JButton jButton_Reload;
     private javax.swing.JButton jButton_Stop;
-    private javax.swing.JComboBox jComboBox_Animations;
+    private javax.swing.JComboBox jComboBox_BodyAnimations;
+    private javax.swing.JComboBox jComboBox_FacialAnimations;
     private javax.swing.JComboBox jComboBox_ModelInstances;
     private javax.swing.JFormattedTextField jFormattedTextField_CycleTime;
     private javax.swing.JFormattedTextField jFormattedTextField_Time;

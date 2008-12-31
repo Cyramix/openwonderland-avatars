@@ -605,9 +605,12 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         // Attachments
         AttachmentParams[]                      oldAttatch  = m_attributes.getAttachmentsInstructions();
         AttachmentParams[]                      newAttatch  = attributes.getAttachmentsInstructions();
-        // Animations
+        // Body Animations
         String[]                                oldAnim     = m_attributes.getAnimations();
         String[]                                newAnim     = attributes.getAnimations();
+        // Facial Animations
+        String[]                                oldfaceAnim = m_attributes.getFacialAnimations();
+        String[]                                newfaceAnim = attributes.getFacialAnimations();
 
         ArrayList<CharacterAttributes.SkinnedMeshParams> ADD = new ArrayList<CharacterAttributes.SkinnedMeshParams>();
         if (oldAdd == null || oldAdd.length <= 0) {
@@ -716,7 +719,30 @@ public abstract class Character extends Entity implements SpatialObject, Animati
             }
         }
 
+        ArrayList<String> FACEANIM = new ArrayList<String>();
+        if (oldfaceAnim == null || oldfaceAnim.length <= 0) {
+            if (newfaceAnim != null && newfaceAnim.length > 0) {
+                for (int i = 0; i < newfaceAnim.length; i++)
+                    FACEANIM.add(newfaceAnim[i]);
+            }
+        } else {
+            for (int i = 0; i < oldfaceAnim.length; i++)
+                FACEANIM.add(oldfaceAnim[i]);
+            if (newfaceAnim != null && newfaceAnim.length > 0) {
+                for (int i = 0; i < newfaceAnim.length; i++) {
+                    boolean bFound = false;
+                    for (int j = 0; j < oldfaceAnim.length; j++) {
+                        if (newfaceAnim[i].equals(oldfaceAnim[j]))
+                            bFound = true;
+                    }
+                    if (!bFound)
+                        FACEANIM.add(newfaceAnim[i]);
+                }
+            }
+        }
+
         m_attributes.setAnimations(ANIM.toArray(new String[ANIM.size()]));
+        m_attributes.setFacialAnimations(ANIM.toArray(new String[FACEANIM.size()]));
         m_attributes.setDeleteInstructions(DELETE.toArray(new String[DELETE.size()]));
         String[][] att = new String[LOAD.size()][2];
         for(int i = 0; i < LOAD.size(); i++)

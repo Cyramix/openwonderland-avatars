@@ -27,12 +27,16 @@ import imi.loaders.repository.AssetInitializer;
 import imi.loaders.repository.SharedAsset;
 import imi.loaders.repository.SharedAsset.SharedAssetType;
 import imi.character.Character;
+import imi.character.CharacterAttributes;
 import imi.character.ninja.NinjaAvatar;
 import imi.scene.JScene;
 import imi.scene.PMatrix;
 import imi.scene.PNode;
 import imi.scene.PScene;
-import imi.scene.PTransform;
+import imi.scene.animation.AnimationComponent.PlaybackMode;
+import imi.scene.animation.AnimationState;
+import imi.scene.animation.TransitionCommand;
+import imi.scene.animation.TransitionQueue;
 import imi.scene.camera.behaviors.FirstPersonCamModel;
 import imi.scene.camera.behaviors.TumbleObjectCamModel;
 import imi.scene.camera.state.FirstPersonCamState;
@@ -42,13 +46,10 @@ import imi.scene.polygonmodel.PPolygonModelInstance;
 import imi.scene.polygonmodel.parts.PMeshMaterial;
 import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
 import imi.scene.polygonmodel.skinned.PPolygonSkinnedMeshInstance;
-import imi.scene.polygonmodel.parts.skinned.SkinnedMeshJoint;
 import imi.scene.processors.FlexibleCameraProcessor;
 import imi.scene.processors.SkinnedAnimationProcessor;
 import imi.scene.shader.programs.NormalAndSpecularMapShader;
-import imi.scene.shader.programs.VertDeformerWithNormalMapping;
 import imi.scene.shader.programs.VertDeformerWithSpecAndNormalMap;
-import imi.scene.shader.programs.VertexDeformer;
 import imi.scene.utils.tree.MeshInstanceSearchProcessor;
 import imi.scene.utils.tree.TreeTraverser;
 import imi.sql.SQLInterface;
@@ -76,7 +77,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
-import javax.print.DocFlavor.CHAR_ARRAY;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.filechooser.FileFilter;
@@ -104,6 +104,7 @@ public class SceneEssentials {
         private JFileChooser jFileChooser_LoadXML = null;
         private JFileChooser jFileChooser_LoadAvatarDAE = null;
         private JFileChooser jFileChooser_SaveXML = null;
+        private JFileChooser jFileChooser_LoadAnim = null;
         private ServerBrowserDialog serverFileChooserD = null;
         private JPanel_ServerBrowser serverBrowserPanel = null;
     // File Containers
@@ -157,18 +158,10 @@ public class SceneEssentials {
     public PPolygonModelInstance getModelInstance() { return modelInst; }
     public SkeletonNode getCurrentSkeleton() { return skeleton; }
     public Map<Integer, String[]> getMeshSetup() { return meshsetup; }
-    public FlexibleCameraProcessor getCurCamProcessor() {
-        return curCameraProcessor;
-    }
-    public boolean isDefaultLoad() {
-        return bdefaultload;
-    }
-    public Character getAvatar() {
-        return avatar;
-    }
-    public int getGender() {
-        return gender;
-    }
+    public FlexibleCameraProcessor getCurCamProcessor() { return curCameraProcessor; }
+    public boolean isDefaultLoad() { return bdefaultload; }
+    public Character getAvatar() { return avatar; }
+    public int getGender() { return gender; }
 
     // Mutators
     public void setJScene(JScene jscene) { currentJScene = jscene; }
@@ -190,19 +183,13 @@ public class SceneEssentials {
         
         skeleton = ((SkeletonNode)p.getInstances().getChild(0).getChild(0));
     }
+
     public void setMeshSetup(Map<Integer, String[]> m) { meshsetup = m; }
-    public void setCurCamProcessor(FlexibleCameraProcessor camProc) {
-        curCameraProcessor = camProc;
-    }
-    public void setDefaultLoad(boolean load) {
-        bdefaultload = load;
-    }
-    public void setAvatar(Character c) {
-        avatar = c;
-    }
-    public void setGender(int sex) {
-        gender = sex;
-    }
+    public void setCurCamProcessor(FlexibleCameraProcessor camProc) { curCameraProcessor = camProc; }
+    public void setDefaultLoad(boolean load) { bdefaultload = load; }
+    public void setAvatar(Character c) { avatar = c; }
+    public void setGender(int sex) { gender = sex; }
+
     // Helper Functions
     public void setSceneData(JScene jscene, PScene pscene, Entity entity, WorldManager wm, ArrayList<ProcessorComponent> processors) {
         currentJScene = jscene;
@@ -396,7 +383,38 @@ public class SceneEssentials {
 
         jFileChooser_SaveXML.setDragEnabled(true);
         jFileChooser_SaveXML.addChoosableFileFilter((FileFilter)configFilter);
+////////////////////////////////////////////////////////////////////////////////
+        FileFilter animFilter = new FileFilter() {
+            @Override
+            public boolean accept(File f) {
+                if(f.isDirectory()) {
+                    return true;
+                }
 
+                if (f.getName().toLowerCase().endsWith(".dae")) {
+                    return true;
+                }
+                return false;
+            }
+            @Override
+            public String getDescription() {
+                String szDescription = new String("Collada File (*.dae)");
+                return szDescription;
+            }
+        };
+        jFileChooser_LoadAnim = new javax.swing.JFileChooser();
+        jFileChooser_LoadAnim.setDialogTitle("Load Animation File");
+        java.io.File animDirectory;
+
+        if (isWindowsOS())
+            animDirectory = new java.io.File(".\\assets\\");
+        else
+            animDirectory = new java.io.File("./assets/");
+
+        jFileChooser_LoadAnim.setCurrentDirectory(animDirectory);
+        jFileChooser_LoadAnim.setDoubleBuffered(true);
+        jFileChooser_LoadAnim.setDragEnabled(true);
+        jFileChooser_LoadAnim.addChoosableFileFilter((FileFilter)animFilter);
     }
     
     public void openServerBrowser(JFrame c) {
@@ -649,16 +667,18 @@ public class SceneEssentials {
         loadInitializer(fileModel.getName(), character, anim);
     }
 
-    public void loadDAEAnimationFile(boolean useRepository, Component arg0) {
-        if (skeleton == null)   // check to make sure you have a skinned meshed model loaded before adding animations
+    public void loadDAEAnimationFile(int type, boolean useRepository, Component arg0) {
+        if (avatar == null) {   // check to make sure you have a skinned meshed model loaded before adding animations
+            System.out.println("Please have an avatar loaded before you continue loading animations");
             return;
+        }
 
-        int returnValue = jFileChooser_LoadColladaModel.showOpenDialog(arg0);
+        int returnValue = jFileChooser_LoadAnim.showOpenDialog(arg0);
         if (returnValue == JFileChooser.APPROVE_OPTION) {
-            fileModel = jFileChooser_LoadColladaModel.getSelectedFile();
+            java.io.File animation = jFileChooser_LoadAnim.getSelectedFile();
             currentPScene.setUseRepository(useRepository);
 
-            File path       = getAbsPath(fileModel);
+            File path       = getAbsPath(animation);
             String szURL;
 
             if (isWindowsOS())
@@ -666,14 +686,25 @@ public class SceneEssentials {
             else
                 szURL = new String("file://" + path.getPath());
 
-            URL modelURL    = null;
+            URL animURL    = null;
             try {
-                modelURL = new URL(szURL);
-                InstructionProcessor pProcessor = new InstructionProcessor(worldManager);
-                Instruction pRootInstruction = new Instruction();
-                pRootInstruction.addChildInstruction(InstructionType.setSkeleton, skeleton);
-                pRootInstruction.addChildInstruction(InstructionType.loadAnimation, modelURL);
-                pProcessor.execute(pRootInstruction);
+                animURL = new URL(szURL);
+                CharacterAttributes attrib = makeAnimAttrib(type, animURL);
+                avatar.loadAttributes(attrib);
+                
+                // Facial animation state is designated to id (and index) 1
+                AnimationState facialAnimationState = new AnimationState(1);
+                facialAnimationState.setCurrentCycle(-1);
+                facialAnimationState.setCurrentCyclePlaybackMode(PlaybackMode.PlayOnce);
+                facialAnimationState.setAnimationSpeed(0.1f);
+                avatar.getSkeleton().addAnimationState(facialAnimationState);
+                if (avatar.getSkeleton().getAnimationComponent().getGroups().size() > 1)
+                {
+                    avatar.setDefaultFacePose(0);
+                    TransitionQueue facialAnimQ = avatar.getFacialAnimationQ();
+                    // Go to default face pose
+                    facialAnimQ.addTransition(new TransitionCommand(avatar.getDefaultFacePose(), avatar.getDefaultFacePoseTiming(), PlaybackMode.PlayOnce, false));
+                }
             } catch (MalformedURLException ex) {
                 Logger.getLogger(SceneEssentials.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -1440,7 +1471,21 @@ public class SceneEssentials {
     public boolean isWindowsOS() {
         return getOS().contains("Windows");
     }
-    
+
+    public CharacterAttributes makeAnimAttrib(int animType, URL animFile) {
+        // Create avatar animation attribs
+        CharacterAttributes newAttribs = new CharacterAttributes(avatar.getAttributes().getName());
+        String[] animation = new String[] { animFile.toString() };
+
+        newAttribs.setBaseURL("");
+        if (animType == 0)
+            newAttribs.setAnimations(animation);
+        else
+            newAttribs.setFacialAnimations(animation);
+
+        return newAttribs;
+    }
+
     /**
      * Replaces the texture of the currently selected model
      * TODO: Allow support for textures on multiple meshes.
