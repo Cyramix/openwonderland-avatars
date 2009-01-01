@@ -77,7 +77,7 @@ public class PunchState extends GameState
         // to exit the state
         if (ninjaContext.getSkeleton() != null)
         {
-            if (ninjaContext.getSkeleton().getAnimationGroup().findAnimationCycleIndex(getAnimationName()) == -1)
+            if (ninjaContext.getSkeleton().getAnimationComponent().findCycle(getAnimationName(), 0) == -1)
                 bPlayedOnce = true;
         }
         
