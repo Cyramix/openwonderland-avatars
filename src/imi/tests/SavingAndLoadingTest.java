@@ -27,9 +27,9 @@ import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
 import imi.scene.polygonmodel.skinned.PPolygonSkinnedMeshInstance;
 import imi.scene.processors.JSceneEventProcessor;
 import imi.scene.shader.programs.ClothingShader;
-import imi.scene.shader.programs.EyeballShader;
 import imi.utils.input.NinjaControlScheme;
 import java.io.File;
+import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.jdesktop.mtgame.WorldManager;
@@ -84,7 +84,7 @@ public class SavingAndLoadingTest extends DemoBase
 
         try // last little bit
         {
-            Thread.sleep(22000);
+            Thread.sleep(28000);
         } catch (InterruptedException ex) {
                 logger.log(Level.SEVERE, null, ex);
         }
@@ -92,18 +92,19 @@ public class SavingAndLoadingTest extends DemoBase
 
         // Uncomment to create a save file
         customizeCharacter(testCharacter, wm);
-//        testCharacter.saveConfiguration(new File("/work/avatars/assets/configurations/SavingTestOutput.xml"));
+//        testCharacter.saveConfiguration(new File("/work/IMI/sunSVN/assets/configurations/SavingAndLoadingOutput.xml"));
 
 
         // Uncomment to load a save file
-//        Thread.yield();
-//        try {
-//            testCharacter.loadConfiguration(new URL("file://localhost/work/avatars/assets/configurations/SavingTestOutput.xml"));
-//
-//        } catch (MalformedURLException ex) {
-//            Logger.getLogger(SavingAndLoadingTest.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-
+        Thread.yield();
+        try {
+            testCharacter.loadConfiguration(new URL("file://localhost/work/IMI/sunSVN/assets/configurations/SavingAndLoadingOutput.xml"));
+        }
+        catch (Exception ex)
+        {
+            logger.severe("Exception  : " + ex.getMessage());
+            ex.printStackTrace();
+        }
         // Uncomment to get a pscene explorer------
 //        te = new TreeExplorer();
 //        SceneEssentials se = new SceneEssentials();
