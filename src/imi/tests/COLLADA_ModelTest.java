@@ -21,7 +21,6 @@ package imi.tests;
 import com.jme.math.Vector3f;
 import com.jme.renderer.ColorRGBA;
 import imi.gui.TreeExplorer;
-import imi.scene.shader.NoSuchPropertyException;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 
@@ -41,6 +40,7 @@ import imi.loaders.collada.Instruction;
 import imi.loaders.collada.InstructionProcessor;
 import imi.loaders.repository.AssetInitializer;
 import imi.scene.PNode;
+import imi.scene.animation.AnimationGroup;
 import imi.scene.animation.AnimationState;
 import imi.scene.camera.behaviors.TumbleObjectCamModel;
 import imi.scene.camera.state.TumbleObjectCamState;
@@ -49,14 +49,15 @@ import imi.scene.polygonmodel.PPolygonMeshInstance;
 import imi.scene.polygonmodel.parts.PMeshMaterial;
 import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
 import imi.scene.processors.SkinnedAnimationProcessor;
-import imi.scene.shader.ShaderProperty;
 import imi.scene.shader.programs.SimpleTNLWithAmbient;
 import imi.scene.utils.PMeshUtils;
 import java.io.File;
 import java.net.URL;
 import imi.scene.shader.dynamic.*;
-import imi.scene.shader.effects.*;
 import imi.scene.shader.programs.VertDeformerWithSpecAndNormalMap;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 
 
 /**
@@ -104,7 +105,7 @@ public class COLLADA_ModelTest extends DemoBase
                 Instruction configurationInstruction = new Instruction(Instruction.InstructionType.grouping, new String("Configurating My Avatar!"));
                 configurationInstruction.addChildInstruction(Instruction.InstructionType.setSkeleton, skeleton);
                 try {
-                    configurationInstruction.addChildInstruction(Instruction.InstructionType.loadAnimation, new URL("file://localhost/work/avatars/assets/models/collada/Avatars/Male/Male_Walk.dae"));
+                    configurationInstruction.addChildInstruction(Instruction.InstructionType.loadAnimation, new URL("file://localhost/work/IMI/sunSVN/assets/models/collada/Avatars/Male/Male_Walk.dae"));
                 } catch (MalformedURLException ex) {
                     Logger.getLogger(COLLADA_ModelTest.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -118,7 +119,7 @@ public class COLLADA_ModelTest extends DemoBase
                 Instruction maleBind = new Instruction(Instruction.InstructionType.grouping, new String("Loading the male bind pose"));
                 maleBind.addChildInstruction(Instruction.InstructionType.setSkeleton, null);
                 try {
-                    maleBind.addChildInstruction(Instruction.InstructionType.loadHumanoidAvatarBindPose, new URL("file://localhost/work/avatars/assets/models/collada/Avatars/Male/Male_Bind.dae"));
+                    maleBind.addChildInstruction(Instruction.InstructionType.loadHumanoidAvatarBindPose, new URL("file://localhost/work/IMI/sunSVN/assets/models/collada/Avatars/Male/Male_Bind.dae"));
                 } catch (MalformedURLException ex) {
                     Logger.getLogger(COLLADA_ModelTest.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -126,6 +127,24 @@ public class COLLADA_ModelTest extends DemoBase
                 SkeletonNode originalBind = executor.getSkeleton();
                 skeleton.remapSkeleton(originalBind);
 
+                AnimationGroup serializeMe = skeleton.getAnimationGroup();
+                        /**
+         * Serialize the newly created animation group
+         */
+        FileOutputStream fos = null;
+        ObjectOutputStream out = null;
+        try
+        {
+            fos = new FileOutputStream(new URL("file://localhost/work/IMI/sunSVN/assets/models/collada/Avatars/Male/Male_Anim_FloorSitting.baf").getFile());
+            out = new ObjectOutputStream(fos);
+            out.writeObject(serializeMe);
+            out.close();
+        }
+        catch(Exception ex)
+        {
+            System.out.println("Caught exception while trying to serialize the animation group");
+            ex.printStackTrace();
+        }
 //                te = new TreeExplorer();
 //                SceneEssentials se = new SceneEssentials();
 //                se.setPScene(fpscene);

@@ -29,7 +29,7 @@ public class CharacterProcessor extends ProcessorComponent
 {
     private double oldTime = 0.0;
     private boolean synchronizer = false;
-    private boolean enabled = true;
+    private Boolean enabled = true;
     private imi.character.Character character = null;
 
     /**
@@ -48,16 +48,19 @@ public class CharacterProcessor extends ProcessorComponent
 
     @Override
     public void commit(ProcessorArmingCollection collection) {
-        if (!enabled)
-            return;
-        if (!synchronizer)
+        synchronized(enabled)
         {
-            synchronizer = true;
-            double newTime = System.nanoTime() / 1000000000.0;
-            double deltaTime = (double) (newTime - oldTime);
-            oldTime = newTime;
-            character.update((float)deltaTime);
-            synchronizer = false;
+            if (!enabled)
+                return;
+            if (!synchronizer)
+            {
+                synchronizer = true;
+                double newTime = System.nanoTime() / 1000000000.0;
+                double deltaTime = (double) (newTime - oldTime);
+                oldTime = newTime;
+                character.update((float)deltaTime);
+                synchronizer = false;
+            }
         }
     }
 

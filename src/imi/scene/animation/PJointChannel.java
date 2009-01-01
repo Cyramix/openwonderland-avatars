@@ -25,7 +25,7 @@ import java.io.Serializable;
  * @author Ronald E Dahlgren
  * @author Lou Hayt
  */
-public interface PJointChannel extends Serializable
+public interface PJointChannel 
 {
     /**
      * This method should return a brand new copy with the same innards as 

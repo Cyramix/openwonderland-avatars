@@ -21,6 +21,7 @@ import com.jme.math.Quaternion;
 import com.jme.math.Vector3f;
 import imi.scene.PJoint;
 import imi.scene.PMatrix;
+import java.io.Serializable;
 import javolution.util.FastList;
 
 
@@ -31,7 +32,7 @@ import javolution.util.FastList;
  * 
  * @author Ronald E Dahlgren
  */
-public class COLLADA_JointChannel implements PJointChannel
+public class COLLADA_JointChannel implements PJointChannel, Serializable
 {
     private String                      m_TargetJointName = null;
     
@@ -444,6 +445,11 @@ public class COLLADA_JointChannel implements PJointChannel
             // 3 - Adjust this cycle's end time to meet the new frame if it was created
             cycle.setEndTime(newFrame.getFrameTime());
         }
+    }
+
+    @Override
+    public String toString() {
+        return new String("Target: " + m_TargetJointName + ", Duration: " + m_fDuration);
     }
 }
 

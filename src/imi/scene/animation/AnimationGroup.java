@@ -342,7 +342,7 @@ public class AnimationGroup implements Serializable
 
     /**
      * Adds an AnimationCycle to the AnimationGroup.
-     * @param pAnimationCycle
+     * @param cycle
      */
     public void addCycle(AnimationCycle cycle)
     {
@@ -506,6 +506,55 @@ public class AnimationGroup implements Serializable
             sb.append(channel.toString() + "\n");
         return sb.toString();
     }
+
+    @Override
+    public boolean equals(Object obj)
+    {
+        if (obj == null)
+        {
+            return false;
+        }
+        if (getClass() != obj.getClass())
+        {
+            return false;
+        }
+        final AnimationGroup other = (AnimationGroup) obj;
+        if ((this.m_name == null) ? (other.m_name != null) : !this.m_name.equals(other.m_name))
+        {
+            return false;
+        }
+        if (this.m_JointChannels != other.m_JointChannels && (this.m_JointChannels == null || !this.m_JointChannels.equals(other.m_JointChannels)))
+        {
+            return false;
+        }
+        if (this.m_cycles != other.m_cycles && (this.m_cycles == null || !this.m_cycles.equals(other.m_cycles)))
+        {
+            return false;
+        }
+        if (this.m_Duration != other.m_Duration)
+        {
+            return false;
+        }
+        if (this.m_fTimePadding != other.m_fTimePadding)
+        {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public int hashCode()
+    {
+        int hash = 7;
+        hash = 11 * hash + (this.m_name != null ? this.m_name.hashCode() : 0);
+        hash = 11 * hash + (this.m_JointChannels != null ? this.m_JointChannels.hashCode() : 0);
+        hash = 11 * hash + (this.m_cycles != null ? this.m_cycles.hashCode() : 0);
+        hash = 11 * hash + Float.floatToIntBits(this.m_Duration);
+        hash = 11 * hash + Float.floatToIntBits(this.m_fTimePadding);
+        return hash;
+    }
+
+    
 
 }
 

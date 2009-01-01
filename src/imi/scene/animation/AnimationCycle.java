@@ -103,13 +103,49 @@ public class AnimationCycle implements Serializable
     public void setName(String name) {
         m_name = name;
     }
-    
-    /**
-     * Prints to the system output for debudding
-     */
-    public void dump()
+
+    @Override
+    public String toString()
     {
-        System.out.println(m_name + ":" + m_fStartTime + "-" + m_fEndTime);
+        return new String (m_name + ": " + m_fStartTime + " - " + m_fEndTime);
     }
-    
+
+    @Override
+    public boolean equals(Object obj)
+    {
+        if (obj == null)
+        {
+            return false;
+        }
+        if (getClass() != obj.getClass())
+        {
+            return false;
+        }
+        final AnimationCycle other = (AnimationCycle) obj;
+        if ((this.m_name == null) ? (other.m_name != null) : !this.m_name.equals(other.m_name))
+        {
+            return false;
+        }
+        if (this.m_fStartTime != other.m_fStartTime)
+        {
+            return false;
+        }
+        if (this.m_fEndTime != other.m_fEndTime)
+        {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public int hashCode()
+    {
+        int hash = 5;
+        hash = 29 * hash + (this.m_name != null ? this.m_name.hashCode() : 0);
+        hash = 29 * hash + Float.floatToIntBits(this.m_fStartTime);
+        hash = 29 * hash + Float.floatToIntBits(this.m_fEndTime);
+        return hash;
+    }
+
+
 }

@@ -115,10 +115,4 @@ public class MS3DAnimationMetaData
         m_metaDataLocation = fileToRead;
         process();
     }
-    
-    public void dump()
-    {
-        for (AnimationCycle desc : m_AnimLoopCycles)
-            desc.dump();
-    }
 }

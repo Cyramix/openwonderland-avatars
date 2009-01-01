@@ -20,6 +20,7 @@ package imi.scene.animation;
 import com.jme.math.Vector3f;
 import imi.scene.PJoint;
 import imi.scene.PMatrix;
+import java.io.Serializable;
 import javolution.util.FastList;
 
 /**
@@ -31,7 +32,7 @@ import javolution.util.FastList;
  * @author Ronald E Dahlgren
  * @author Lou Hayt
  */
-public class MS3D_JointChannel implements PJointChannel 
+public class MS3D_JointChannel implements PJointChannel, Serializable
 {
     private PMatrix                     m_targetJointBindPose    = null; // The bind pose for this joint
     private String                      m_targetJointName        = null; // The joint that is being manipulated
@@ -498,6 +499,11 @@ public class MS3D_JointChannel implements PJointChannel
     public void closeCycle(AnimationCycle cycle)
     {
         // throw new UnsupportedOperationException("TODO! hahahahahhahaha");
+    }
+
+    @Override
+    public String toString() {
+        return new String("Target: " + m_targetJointName + ", Duration: " + m_fDuration);
     }
 }
 
