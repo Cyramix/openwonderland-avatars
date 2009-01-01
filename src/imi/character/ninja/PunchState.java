@@ -72,7 +72,15 @@ public class PunchState extends GameState
         super.stateEnter(owner);
         
         bPlayedOnce = false;
-                      
+        
+        // If the animation doesn't exist make it possible 
+        // to exit the state
+        if (ninjaContext.getSkeleton() != null)
+        {
+            if (ninjaContext.getSkeleton().getAnimationGroup().findAnimationCycleIndex(getAnimationName()) == -1)
+                bPlayedOnce = true;
+        }
+        
         // Stop the character
         ninjaContext.getController().stop();
     }

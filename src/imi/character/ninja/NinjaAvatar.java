@@ -22,9 +22,9 @@ import java.net.URL;
 import org.jdesktop.mtgame.WorldManager;
 
 /**
- * This class provides a more concrete starting point over the Ninja class. It
- * defaults to using the COLLADA avatar as its geometric representation and
- * additionally will load up several animations by default.
+ * This class provides a ready to use Ninja. 
+ * It is designed to work with the NinjaAvatarAttributes class and sets up 
+ * animation names for the state machine.
  * @author Lou Hayt
  */
 public class NinjaAvatar extends Ninja 
@@ -45,7 +45,12 @@ public class NinjaAvatar extends Ninja
     public NinjaAvatar(CharacterAttributes attributes, WorldManager wm, boolean addEntity)
     {
         super(attributes, wm, addEntity);
-        commonConstructionCode();
+        
+        // For female loading test\demo
+        if (attributes instanceof NinjaFemaleAvatarAttributes)
+            femaleContextSetup();
+        else
+            maleContextSetup();
     }
 
     /**
@@ -56,10 +61,10 @@ public class NinjaAvatar extends Ninja
     public NinjaAvatar(URL configurationFile, WorldManager wm)
     {
         super(configurationFile, wm);
-        commonConstructionCode();
+        maleContextSetup();
     }
 
-    private void commonConstructionCode()
+    private void maleContextSetup()
     {
         // Tweak animation names and speeds
         m_context.getController().setReverseHeading(true);
@@ -103,4 +108,20 @@ public class NinjaAvatar extends Ninja
         }
     }
     
+    private void femaleContextSetup()
+    {
+        // Tweak animation names and speeds
+        m_context.getController().setReverseHeading(true);
+        m_context.getStateMapping().get(IdleState.class).setAnimationName("Female_Idle");
+        //m_context.getStateMapping().get(PunchState.class).setAnimationName("Female_Wave");
+        m_context.getStateMapping().get(TurnState.class).setAnimationName("Female_Idle");
+        m_context.getStateMapping().get(WalkState.class).setAnimationName("Female_Walk");
+        m_context.getStateMapping().get(SitState.class).setAnimationName("Female_StandToSit");
+        m_context.getStateMapping().get(FlyState.class).setAnimationName("Female_Sitting");
+        ((SitState)m_context.getStateMapping().get(SitState.class)).setIdleSittingAnimationName("Female_Sitting");
+        ((SitState)m_context.getStateMapping().get(SitState.class)).setGettingUpAnimationName("Female_StandToSit");
+
+        // Make him smile when waving
+        //((PunchState)m_context.getState(PunchState.class)).setFacialAnimationName("MaleSmile");
+    }
 }

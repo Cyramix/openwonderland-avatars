@@ -295,7 +295,7 @@ public class AnimationGroup implements Serializable
 
     /**
      * Find an animation currentCycle by name
-     * @param cycleName
+     * @param cycleName or -1 if not found
      * @return currentCycle animationStateIndex
      */
     public int findAnimationCycleIndex(String cycleName)
