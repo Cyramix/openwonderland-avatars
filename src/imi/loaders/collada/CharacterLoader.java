@@ -20,14 +20,18 @@ package imi.loaders.collada;
 
 
 import imi.scene.PScene;
-import imi.scene.PNode;
-import imi.scene.polygonmodel.skinned.PPolygonSkinnedMeshInstance;
 import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
 
 import imi.scene.animation.AnimationComponent;
 import imi.loaders.collada.Collada;
 import imi.scene.animation.AnimationGroup;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -42,6 +46,7 @@ import java.util.logging.Logger;
  */
 public class CharacterLoader
 {
+    private static final Logger logger = Logger.getLogger(CharacterLoader.class.getName());
     /** The collada loader that this class wraps **/
     private final Collada m_colladaLoader = new Collada();
 
@@ -61,11 +66,11 @@ public class CharacterLoader
             //  Load only the rig and geometry.
             m_colladaLoader.setLoadFlags(true, true, false);
             if (m_colladaLoader.load(pScene, rigLocation) == false) // uh oh
-                Logger.getLogger(CharacterLoader.class.toString()).log(Level.SEVERE, "COLLADA Loader returned false!");
+                logger.log(Level.SEVERE, "COLLADA Loader returned false!");
         }
         catch (Exception ex)
         {
-            System.out.println("Exception occured while loading skeleton.");
+            logger.severe("Exception occured while loading skeleton.");
             ex.printStackTrace();
         }
 
@@ -93,7 +98,7 @@ public class CharacterLoader
         }
         catch (Exception ex)
         {
-            System.out.println("Exception occured while loading skeleton.");
+            logger.severe("Exception occured while loading skeleton.");
             ex.printStackTrace();
             result = false;
         }
@@ -113,19 +118,65 @@ public class CharacterLoader
      */
     public boolean loadAnimation(PScene loadingPScene, SkeletonNode owningSkeleton, URL animationLocation, int mergeToGroup)
     {
-        //  Load the collada file to the PScene
-        m_colladaLoader.clear();
-        
-        m_colladaLoader.setLoadFlags(false, false, true);
-        m_colladaLoader.setSkeletonNode(owningSkeleton);
-        boolean result = m_colladaLoader.load(loadingPScene, animationLocation);
+        boolean result = false;
 
+        // check for binary version
+        AnimationGroup newGroup = null;
+        URL binaryLocation = null;
+        try
+        {
+            binaryLocation = new URL(animationLocation.toString().substring(0, animationLocation.toString().length() - 3) + "baf");
+            newGroup = loadBinaryAnimation(binaryLocation);
+        } catch (Exception ex)
+        {
+            Logger.getLogger(CharacterLoader.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        if (newGroup != null) // Success!
+        {
+            // Debugging output
+            logger.info("Loaded binary file " + binaryLocation.getFile() + ".");
+            owningSkeleton.getAnimationComponent().getGroups().add(newGroup);
+        }
+        else // otherwise use the collada loader
+        {
+            m_colladaLoader.clear();
+            m_colladaLoader.setLoadFlags(false, false, true);
+            m_colladaLoader.setSkeletonNode(owningSkeleton);
+            result = m_colladaLoader.load(loadingPScene, animationLocation);
+            // Serialize it for the next round
+            logger.info("Wrote binary file " + binaryLocation.getFile() + ".");
+            writeAnimationGroupToDisk(binaryLocation, owningSkeleton);
+        }
+        // Merge
         if (mergeToGroup >= 0)
             mergeLastToAnimationGroup(owningSkeleton, mergeToGroup);
 
         return result;
     }
 
+    private AnimationGroup loadBinaryAnimation(URL location)
+    {
+        AnimationGroup result = null;
+        FileInputStream fis = null;
+        ObjectInputStream in = null;
+        try
+        {
+            fis = new FileInputStream(location.getFile());
+            in = new ObjectInputStream(fis);
+            result = (AnimationGroup)in.readObject();
+            in.close();
+        }
+        catch(IOException ex)
+        {
+            ex.printStackTrace();
+        }
+        catch(ClassNotFoundException ex)
+        {
+            ex.printStackTrace();
+        }
+        return result;
+    }
     /**
      * This method merges the last animation group within a component with the
      * animation group indicated by the provided index. No action is taken if
@@ -133,24 +184,44 @@ public class CharacterLoader
      * @param pSkeletonNode
      * @param groupIndex
      */
-    private void mergeLastToAnimationGroup(SkeletonNode pSkeletonNode, int groupIndex)
+    private void mergeLastToAnimationGroup(SkeletonNode skeletonNode, int groupIndex)
     {   
-        AnimationComponent pAnimationComponent = pSkeletonNode.getAnimationComponent();
+        AnimationComponent animationComponent = skeletonNode.getAnimationComponent();
         
         //  Append to the end of the AnimationGroup.
-        if (pAnimationComponent.getGroups().size() > groupIndex)
+        if (animationComponent.getGroups().size() > groupIndex)
         {
-            AnimationGroup group = pAnimationComponent.getGroups().get(groupIndex);
-            AnimationGroup lastGroup = pAnimationComponent.getGroups().get(pAnimationComponent.getGroups().size() - 1);
+            AnimationGroup group = animationComponent.getGroups().get(groupIndex);
+            AnimationGroup lastGroup = animationComponent.getGroups().get(animationComponent.getGroups().size() - 1);
             
             if (group != lastGroup)
             {
                 group.appendAnimationGroup(lastGroup);
-                pAnimationComponent.getGroups().remove(lastGroup);
+                animationComponent.getGroups().remove(lastGroup);
             }
         }
         else
             System.out.println("The animation where loaded in the wrong order, facial animation must be loaded last");
+    }
+
+    private void writeAnimationGroupToDisk(URL binaryLocation, SkeletonNode owningSkeleton)
+    {
+        ArrayList<AnimationGroup> animGroups = owningSkeleton.getAnimationComponent().getGroups();
+        AnimationGroup groupToSerialize = animGroups.get(animGroups.size() - 1);
+
+        FileOutputStream fos = null;
+        ObjectOutputStream out = null;
+        try
+        {
+            fos = new FileOutputStream(binaryLocation.getFile());
+            out = new ObjectOutputStream(fos);
+            out.writeObject(groupToSerialize);
+            out.close();
+        }
+        catch(IOException ex)
+        {
+            ex.printStackTrace();
+        }
     }
 
 }
