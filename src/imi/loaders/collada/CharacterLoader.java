@@ -220,6 +220,7 @@ public class CharacterLoader
         }
         catch(IOException ex)
         {
+            logger.severe("Exception while trying to write binary data file!");
             ex.printStackTrace();
         }
     }
