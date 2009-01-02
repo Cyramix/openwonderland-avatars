@@ -98,7 +98,7 @@ public class FleshShader extends GLSLShaderProgram
 
             // Color
             float[] whiteColor = { 1, 1, 1 };
-            setProperty(new ShaderProperty("baseColor", GLSLDataType.GLSL_VEC3, whiteColor));
+            setProperty(new ShaderProperty("materialColor", GLSLDataType.GLSL_VEC3, whiteColor));
             m_propertyMap.put("pose", new ShaderProperty("pose", GLSLDataType.GLSL_VOID, null));
         }
         catch (NoSuchPropertyException e)

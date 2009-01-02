@@ -154,7 +154,7 @@ public abstract class BaseShaderProgram implements RenderUpdater, AbstractShader
     public final boolean setProperty(ShaderProperty prop) throws NoSuchPropertyException
     {
         if (m_propertyMap.containsKey(prop.name) == false)
-            throw new NoSuchPropertyException();
+            throw new NoSuchPropertyException(prop.name + " is not valid in this program.");
         m_propertyMap.get(prop.name).setValue(prop.getValue());
         
         return true;

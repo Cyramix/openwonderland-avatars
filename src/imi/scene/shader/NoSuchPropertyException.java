@@ -22,4 +22,10 @@ package imi.scene.shader;
  * property
  * @author Ronald E Dahlgren
  */
-public class NoSuchPropertyException extends Exception {}
+public class NoSuchPropertyException extends Exception
+{
+    public NoSuchPropertyException(String message)
+    {
+        super(message);
+    }
+}
