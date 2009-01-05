@@ -19,7 +19,6 @@ package imi.tests;
 
 import com.jme.math.Vector3f;
 import imi.character.ninja.NinjaAvatar;
-import imi.character.ninja.NinjaAvatarAttributes;
 import imi.gui.TreeExplorer;
 import imi.scene.camera.state.FirstPersonCamState;
 import imi.scene.polygonmodel.parts.PMeshMaterial;
@@ -29,6 +28,7 @@ import imi.scene.processors.JSceneEventProcessor;
 import imi.scene.shader.programs.ClothingShader;
 import imi.utils.input.NinjaControlScheme;
 import java.io.File;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -61,7 +61,13 @@ public class SavingAndLoadingTest extends DemoBase
         NinjaControlScheme control = (NinjaControlScheme)((JSceneEventProcessor)wm.getUserData(JSceneEventProcessor.class)).setDefault(new NinjaControlScheme(null));
 
         // Create testCharacter
-        NinjaAvatar testCharacter = new NinjaAvatar(new NinjaAvatarAttributes("SavingAndLoadingTestCharacter", true, true), wm);
+        NinjaAvatar testCharacter = null;
+        try {
+//      testCharacter = new NinjaAvatar(new NinjaAvatarAttributes("SavingAndLoadingTestCharacter", true, true), wm);
+            testCharacter = new NinjaAvatar(new URL("file://localhost/work/avatars/assets/configurations/SavingTestOutput.xml"), wm);
+        } catch (MalformedURLException ex) {
+            Logger.getLogger(SavingAndLoadingTest.class.getName()).log(Level.SEVERE, null, ex);
+        }
         testCharacter.selectForInput();
         control.getNinjaTeam().add(testCharacter);
         control.getMouseEventsFromCamera();
@@ -91,7 +97,7 @@ public class SavingAndLoadingTest extends DemoBase
 
 
         // Uncomment to create a save file
-        customizeCharacter(testCharacter, wm);
+//        customizeCharacter(testCharacter, wm);
 //        testCharacter.saveConfiguration(new File("/work/IMI/sunSVN/assets/configurations/SavingAndLoadingOutput.xml"));
 
 
@@ -125,7 +131,7 @@ public class SavingAndLoadingTest extends DemoBase
         PMeshMaterial meshMat = new PMeshMaterial("Clothing");
         meshMat.setTexture(new File("/work/avatars/assets/textures/checkerboard2.PNG"), 0); // base diffuse
         meshMat.setTexture(new File("/work/avatars/assets/textures/normal.jpg"), 1); // normal map
-        //meshMat.setTexture(new File("/work/avatars/assets/textures/tgatest.tga"), 2); // pattern diffuse
+        meshMat.setTexture(new File("/work/avatars/assets/textures/tgatest.tga"), 2); // pattern diffuse
         meshMat.setShader(new ClothingShader(wm));
 
         // eyeballs
@@ -143,7 +149,7 @@ public class SavingAndLoadingTest extends DemoBase
         PPolygonSkinnedMeshInstance meshInstance = skeleton.getSkinnedMeshInstance("DressShirtShape"); // Dress shirt
 //        PPolygonSkinnedMeshInstance meshInstance = skeleton.getSkinnedMeshInstance("rightEyeGeoShape"); // Eyes
         meshInstance.setMaterial(meshMat);
-        meshInstance.setUseGeometryMaterial(false);
+        meshInstance.applyMaterial();
 
 //        meshInstance = skeleton.getSkinnedMeshInstance("leftEyeGeoShape"); // Eyes
 //        meshInstance.setMaterial(meshMat);
