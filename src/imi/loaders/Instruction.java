@@ -15,7 +15,7 @@
  * exception as provided by Sun in the License file that accompanied 
  * this code.
  */
-package imi.loaders.collada;
+package imi.loaders;
 
 
 import imi.scene.PMatrix;

@@ -32,29 +32,37 @@ import org.jdesktop.mtgame.*;
  * @author Lou Hayt
  */
 public class Repository extends Entity
-{   
-    // Needed for processor operations
+{
+    /** Logger ref **/
+    private static final Logger logger = Logger.getLogger(Repository.class.getName());
+
+    /** The manager OF THE WORLD **/
     private WorldManager m_worldManager = null;
-    
-    ProcessorCollectionComponent m_processorCollection = new ProcessorCollectionComponent();
+
+    /** All our processors **/
+    private final ProcessorCollectionComponent m_processorCollection = new ProcessorCollectionComponent();
     
     // The maximum number of load requests that can handled at a time
     private long m_numberOfLoadRequests      = 0l;
     private long m_maxConcurrentLoadRequests = 35l;
     private static long m_maxQueryTime  = 20000000l; // Lengthy timeout for testing purposes
+    /** Collection of work requests for RepositoryWorkers to process **/
     private final FastList<WorkOrder> m_workOrders = new FastList<WorkOrder>();
     
-    // geometry
-    private ConcurrentHashMap<AssetDescriptor, RepositoryAsset> m_Geometry = new ConcurrentHashMap<AssetDescriptor, RepositoryAsset>();
+    /** Geometry Collection **/
+    private final ConcurrentHashMap<AssetDescriptor, RepositoryAsset> m_Geometry =
+            new ConcurrentHashMap<AssetDescriptor, RepositoryAsset>();
     
-    // textures
-    private ConcurrentHashMap<AssetDescriptor, RepositoryAsset> m_Textures = new ConcurrentHashMap<AssetDescriptor, RepositoryAsset>();
+    /** Texture Collection **/
+    private final ConcurrentHashMap<AssetDescriptor, RepositoryAsset> m_Textures =
+            new ConcurrentHashMap<AssetDescriptor, RepositoryAsset>();
     
-    // Animations
-    private ConcurrentHashMap<AssetDescriptor, RepositoryAsset> m_Animations = new ConcurrentHashMap<AssetDescriptor, RepositoryAsset>();
+    /** Animation Collection **/
+    private final ConcurrentHashMap<AssetDescriptor, RepositoryAsset> m_Animations =
+            new ConcurrentHashMap<AssetDescriptor, RepositoryAsset>();
     
+    // And potentially...
     // processors (AI, animations, etc)
-    
     // code
     
     /**
@@ -68,7 +76,8 @@ public class Repository extends Entity
         m_worldManager = wm;
         
         wm.addEntity(this);
-        
+
+        // Add our collection of processors to the entity
         addComponent(ProcessorCollectionComponent.class, m_processorCollection);
     }
     
@@ -76,27 +85,29 @@ public class Repository extends Entity
     {
         RepositoryAsset repoAsset = null;
         ConcurrentHashMap<AssetDescriptor, RepositoryAsset> collection = getCollection(asset.getDescriptor().getType());
+
         // Do some robust error checking
+        boolean failure = true;
         if (collection == null) // Collection not found?!
-        {
-            Logger.getLogger(this.getClass().toString()).log(Level.SEVERE,
-                    "Unable to get correct collection for " + asset.getDescriptor().toString());
-        }
+            logger.severe("Unable to get correct collection for " + asset.getDescriptor().toString());
         else if (asset == null)
-        {
-            Logger.getLogger(this.getClass().toString()).log(Level.SEVERE,
-                    "Asset requested was null!");
-        }
+            logger.severe("Asset requested was null!");
         else if (asset.getDescriptor() == null)
+            logger.severe("Asset descriptor was null!");
+        else
+            failure = false;
+        // To proceed, or not?
+        if (failure)
         {
-            Logger.getLogger(this.getClass().toString()).log(Level.SEVERE,
-                    "Asset descriptor was null!");
+            logger.severe("Failed to load the requested asset...");
+            return;
         }
+
         // If we already have it in the collection we will get it now
         repoAsset = collection.get(asset.getDescriptor());
         if (repoAsset == null)
         {
-            if (m_numberOfLoadRequests < m_maxConcurrentLoadRequests)
+            if (m_numberOfLoadRequests <= m_maxConcurrentLoadRequests)
             {
                 // We did not exceed the maxium number of workers so we can process this request now
                 // If we don't already have it in the collection we will add it now
@@ -118,7 +129,7 @@ public class Repository extends Entity
                 // This work order will be picked up by one of the currently 
                 // bussy workers on its shutdown()
                 m_workOrders.add(new WorkOrder(asset, user, null, collection, m_maxQueryTime));
-                return;
+                return; // Get out of here!
             }
         }   
         

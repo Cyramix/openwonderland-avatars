@@ -28,14 +28,17 @@ import javolution.util.FastList;
 
 /**
  * This class provides information about an asset that is requested 
- * for loading.
+ * for loading. It provides a list of URLs to point to the locations
+ * of the asset, as well as a type indicator.
  * @author Ronald E Dahlgren
  * @author Lou Hayt
  */
 public class AssetDescriptor 
 {
-    private SharedAssetType m_type      = SharedAssetType.Unknown;
-    private FastList<URL>  m_URLList      = new FastList<URL>();
+    /** Type indicator **/
+    private SharedAssetType m_type  = SharedAssetType.Unknown;
+    /** Collection of locations **/
+    private final FastList<URL>  m_URLList  = new FastList<URL>();
     
     /**
      * Construct a new instance
@@ -61,8 +64,9 @@ public class AssetDescriptor
     public AssetDescriptor(SharedAssetType type, String relativeFilePath)
     {
         m_type = type;
-        String currentDir = System.getProperty("user.dir");
+
         URL newURL = FileUtils.convertRelativePathToFileURL(relativeFilePath);
+
         if (newURL != null)
             m_URLList.add(newURL);
         else

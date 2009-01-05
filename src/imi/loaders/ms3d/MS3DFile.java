@@ -43,7 +43,7 @@ class MS3D_HEADER
 
 class MS3D_VERTEX
 {
-    int 		Flags;                                  //  SELECTED | SELECTED2 | HIDDEN
+    int                 Flags;                                  //  SELECTED | SELECTED2 | HIDDEN
     Vector3f            Position;                               //
     int                 BoneId;                                 //  -1 = no bone
     int                 ReferenceCount;
@@ -76,20 +76,20 @@ class MS3D_GROUP
 {
     int                 Flags;				//  SELECTED | HIDDEN
     String              Name;				//
-    int                 NumTriangles;			//
-    int                 []pTriangleIndices;		//  The groups group the triangles
-    int                 MaterialIndex;			//  -1 = no material
+    int                 NumTriangles;		//
+    int                 []pTriangleIndices;	//  The groups group the triangles
+    int                 MaterialIndex;		//  -1 = no material
 }
 
 class MS3D_MATERIAL
 {
-    String              Name;                           //
+    String              Name;
     Vector4f            Ambient;			//
     Vector4f            Diffuse;			//
     Vector4f            Specular;			//
     Vector4f            Emissive;			//
     float               Shininess;			//  0.0f - 128.0f
-    float               Transparency;			//  0.0f - 1.0f
+    float               Transparency;		//  0.0f - 1.0f
     int                 Mode;				//  0, 1, 2 is unused now
     String              Texture;			//  texture.bmp
     String              AlphaMap;			//  alpha.bmp
@@ -97,8 +97,8 @@ class MS3D_MATERIAL
 
 class MS3D_KEYFRAME_ROT
 {
-    float               fTime;                          //  time in seconds
-    Vector3f            Rotation;                       //  x, y, z angles
+    float               fTime;      //  time in seconds
+    Vector3f            Rotation;   //  x, y, z angles
 }
 
 class MS3D_KEYFRAME_TRANS

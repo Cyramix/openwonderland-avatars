@@ -15,9 +15,11 @@
  * exception as provided by Sun in the License file that accompanied 
  * this code.
  */
-package imi.loaders.collada;
+package imi.loaders;
 
 
+import imi.loaders.collada.*;
+import imi.loaders.Instruction;
 import imi.scene.PJoint;
 import imi.scene.PMatrix;
 import imi.scene.PNode;

@@ -1174,7 +1174,7 @@ public class Collada
         return(meshInstance);
     }
 
-    void createColladaNode(PNode pParentNode, PColladaNode colladaNode, boolean bIgnoreMeshInstances)
+    void createColladaNode(PNode parentNode, PColladaNode colladaNode, boolean bIgnoreMeshInstances)
     {
         String meshURL = colladaNode.getMeshURL();
         String meshName = colladaNode.getMeshName();
@@ -1185,26 +1185,29 @@ public class Collada
         {
             if (!bIgnoreMeshInstances)
             {
-                PPolygonMesh pPolygonMesh = findPolygonMesh(meshURL);
-                if (pPolygonMesh != null)
+                PPolygonMesh polyMesh = findPolygonMesh(meshURL);
+                if (polyMesh == null)
+                    logger.severe("Unable to find mesh at URL : " + meshURL.toString());
+                else
                 {
                     // Determine a good name
                     if (meshName == null)
                         meshName = new String("Unnamed Mesh created at Collada.java : 1864");
                     //  Create a MeshInstance.
-                    processedNode = createMeshInstance(pPolygonMesh, colladaNode, meshName);
+                    processedNode = createMeshInstance(polyMesh, colladaNode, meshName);
                 }
             }
         }
         else if (nodeInstanceName != null) // No mesh URL, maybe this is an instance node?
         {
-            PColladaNode pInstancedColladaNode = findFactoryColladaNode(nodeInstanceName);
+            PColladaNode instancedColladaNode = findFactoryColladaNode(nodeInstanceName);
 
-            if (pInstancedColladaNode != null)
+            if (instancedColladaNode == null)
+                logger.severe("Unable to find node named " + nodeInstanceName);
+            else
             {
                 processedNode = new PNode(colladaNode.getName());
-                processedNode.setTransform(new PTransform());
-                processedNode.getTransform().getLocalMatrix(true).set(colladaNode.getMatrix());
+                processedNode.setTransform(new PTransform(colladaNode.getMatrix()));
             }
         }
         else // Nope, is it a joint perhaps?
@@ -1220,13 +1223,12 @@ public class Collada
             {
                 processedNode = new PJoint(new PTransform(colladaNode.getMatrix()));
                 processedNode.setName(colladaNode.getName());
-                processedNode.getTransform().getLocalMatrix(true).set(colladaNode.getMatrix());
             }
         }
 
-        if (processedNode != null)
+        if (processedNode != null) // Could fail to locate a mesh
         {
-            pParentNode.addChild(processedNode);
+            parentNode.addChild(processedNode);
 
             for (int i = 0; i < colladaNode.getChildNodeCount(); i++)
             {
@@ -1354,20 +1356,21 @@ public class Collada
     }
 
     /**
-     * Applies the following configuration
+     * Applies the provided configuration
      * @param params
      */
     public void applyConfiguration(ColladaLoaderParams params)
     {
         if (params == null) // use defaults
-            return;
-        setLoadRig(params.isLoadingSkeleton());
-        setLoadGeometry(params.isLoadingGeometry());
-        setLoadAnimations(params.isLoadingAnimations());
-        
-        setPrintStats(params.isShowingDebugInfo());
-        
-        m_MaxNumberOfWeights = params.getMaxInfluences();
+            clear();
+        else
+        {
+            setLoadRig(params.isLoadingSkeleton());
+            setLoadGeometry(params.isLoadingGeometry());
+            setLoadAnimations(params.isLoadingAnimations());
+            setPrintStats(params.isShowingDebugInfo());
+            m_MaxNumberOfWeights = params.getMaxInfluences();
+        }
 
     }
     

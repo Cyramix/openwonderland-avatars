@@ -19,9 +19,9 @@ package imi.gui;
 
 import com.jme.math.Vector3f;
 import imi.loaders.collada.ColladaLoaderParams;
-import imi.loaders.collada.Instruction;
-import imi.loaders.collada.Instruction.InstructionType;
-import imi.loaders.collada.InstructionProcessor;
+import imi.loaders.Instruction;
+import imi.loaders.Instruction.InstructionType;
+import imi.loaders.InstructionProcessor;
 import imi.loaders.repository.AssetDescriptor;
 import imi.loaders.repository.AssetInitializer;
 import imi.loaders.repository.SharedAsset;

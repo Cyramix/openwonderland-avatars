@@ -36,8 +36,8 @@ import org.jdesktop.mtgame.WorldManager;
 import org.jdesktop.mtgame.ProcessorComponent;
 
 import imi.loaders.collada.ColladaLoaderParams;
-import imi.loaders.collada.Instruction;
-import imi.loaders.collada.InstructionProcessor;
+import imi.loaders.Instruction;
+import imi.loaders.InstructionProcessor;
 import imi.loaders.repository.AssetInitializer;
 import imi.scene.PNode;
 import imi.scene.animation.AnimationGroup;

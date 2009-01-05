@@ -46,6 +46,7 @@ import java.util.logging.Logger;
  */
 public class CharacterLoader
 {
+    /** Logger ref! **/
     private static final Logger logger = Logger.getLogger(CharacterLoader.class.getName());
     /** The collada loader that this class wraps **/
     private final Collada m_colladaLoader = new Collada();
@@ -155,11 +156,17 @@ public class CharacterLoader
         return result;
     }
 
+    /**
+     * Helper method to load a binary animation file from the specified URL
+     * @param location
+     * @return
+     */
     private AnimationGroup loadBinaryAnimation(URL location)
     {
         AnimationGroup result = null;
         FileInputStream fis = null;
         ObjectInputStream in = null;
+
         try
         {
             fis = new FileInputStream(location.getFile());
@@ -169,10 +176,12 @@ public class CharacterLoader
         }
         catch(IOException ex)
         {
+            logger.severe("Error attempting to load binary animation: " + ex.getMessage());
             ex.printStackTrace();
         }
         catch(ClassNotFoundException ex)
         {
+            logger.severe("Error attempting to load binary animation: " + ex.getMessage());
             ex.printStackTrace();
         }
         return result;
@@ -201,10 +210,15 @@ public class CharacterLoader
             }
         }
         else
-            System.out.println("The animation where loaded in the wrong order, facial animation must be loaded last");
+            logger.severe("The animation where loaded in the wrong order, facial animation must be loaded last");
     }
 
-    private void writeAnimationGroupToDisk(URL binaryLocation, SkeletonNode owningSkeleton)
+    /**
+     * Helper method to write the last AnimationGroup in the skeleton to disk.
+     * @param outputFileLocation Where the file should be written
+     * @param owningSkeleton The skeleton
+     */
+    private void writeAnimationGroupToDisk(URL outputFileLocation, SkeletonNode owningSkeleton)
     {
         ArrayList<AnimationGroup> animGroups = owningSkeleton.getAnimationComponent().getGroups();
         AnimationGroup groupToSerialize = animGroups.get(animGroups.size() - 1);
@@ -213,14 +227,14 @@ public class CharacterLoader
         ObjectOutputStream out = null;
         try
         {
-            fos = new FileOutputStream(binaryLocation.getFile());
+            fos = new FileOutputStream(outputFileLocation.getFile());
             out = new ObjectOutputStream(fos);
             out.writeObject(groupToSerialize);
             out.close();
         }
         catch(IOException ex)
         {
-            logger.severe("Exception while trying to write binary data file!");
+            logger.severe("Exception while trying to write binary data file: " + ex.getMessage());
             ex.printStackTrace();
         }
     }

@@ -18,9 +18,7 @@
 package imi.loaders.ms3d;
 
 import imi.scene.animation.AnimationCycle;
-import java.io.BufferedInputStream;
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
@@ -50,7 +48,7 @@ public class MS3DAnimationMetaData
      */
     public MS3DAnimationMetaData (URL fileToRead)
     {
-        setLocation(fileToRead);
+        loadFile(fileToRead);
     }
     
     /**
@@ -100,14 +98,18 @@ public class MS3DAnimationMetaData
         else
             m_AnimLoopCycles.addFirst(new AnimationCycle("Play All", 0.0f, 10.0f)); // if no animation file was found set the play all animation on 10 secounds
     }
-    
+
+    /**
+     * Retrieve the array of AnimationCycles represented by the loaded file.
+     * @return
+     */
     public AnimationCycle [] getCycles()
     {
         AnimationCycle[] cycles = new AnimationCycle[m_AnimLoopCycles.size()];
         return m_AnimLoopCycles.toArray(cycles);
     }
     
-    public void setLocation(URL fileToRead)
+    public void loadFile(URL fileToRead)
     {
         // clear old data
         m_AnimLoopCycles.clear();

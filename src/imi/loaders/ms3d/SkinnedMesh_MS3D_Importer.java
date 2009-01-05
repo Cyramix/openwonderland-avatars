@@ -35,11 +35,11 @@ import imi.scene.polygonmodel.parts.polygon.PPolygon;
 import imi.scene.polygonmodel.parts.skinned.PPolygonSkinnedVertexIndices;
 import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
 import imi.scene.utils.tree.MS3D_ConverterHelper;
-import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.logging.Logger;
 
 
 
@@ -50,16 +50,17 @@ import java.util.HashMap;
  */
 public class SkinnedMesh_MS3D_Importer
 {
+    /** Logger ref**/
+    private static final Logger logger = Logger.getLogger(SkinnedMesh_MS3D_Importer.class.getName());
     // Data build through the loading process
     private SkeletonNode            m_skeleton              = null;
-    private PPolygonSkinnedMesh     m_pMesh                 = null;
+    private PPolygonSkinnedMesh     m_mesh                 = null;
     // The milkshape file to load
-    private MS3DFile                m_pFile                 = null;
+    private MS3DFile                m_file                 = null;
     // Internally used mappings for index translation
-    HashMap<Integer, String>        MS3DJointIndexToName    = null;
-    HashMap<String, Integer>        MS3DJointNameToBFTIndex = null;
+    private HashMap<Integer, String>        MS3DJointIndexToName    = null;
     // Location of the animation cycle meta-data file
-    URL                             m_animationMeta         = null;
+    private URL                             m_animationMeta         = null;
     
     //  Constructor.
     public SkinnedMesh_MS3D_Importer()
@@ -91,21 +92,21 @@ public class SkinnedMesh_MS3D_Importer
     public boolean load(SkeletonNode skeleton, URL location, float scale)
     {
         boolean bResult;
-        m_pFile = new MS3DFile();
+        m_file = new MS3DFile();
         
-        bResult = m_pFile.load(location);
+        bResult = m_file.load(location);
         if (!bResult)
             return(false);
         generateAnimationMetaURL(location);
        
         m_skeleton = skeleton;
-        m_pMesh = new PPolygonSkinnedMesh("MS3DSkinnedMesh");
+        m_mesh = new PPolygonSkinnedMesh("MS3DSkinnedMesh");
         
-        m_pMesh.beginBatch();
+        m_mesh.beginBatch();
         populateSkinnedMesh(scale);
         
-        m_pMesh.setDirty(true, true);
-        m_pMesh.endBatch();
+        m_mesh.setDirty(true, true);
+        m_mesh.endBatch();
        
         return(true);
     }
@@ -135,6 +136,8 @@ public class SkinnedMesh_MS3D_Importer
         } catch (MalformedURLException ex)
         {
             // oh no!
+            logger.severe("Could not form animation meta file URL: " + ex.getMessage());
+            ex.printStackTrace();
         }
     }
 
@@ -144,12 +147,12 @@ public class SkinnedMesh_MS3D_Importer
      */
     private void populateSkinnedMesh(float scale)
     {
-        System.out.println("*SkinnedMesh_MS3D_Importer.populateSkinnedMesh()* @ scale: " + scale);
+        logger.info("*SkinnedMesh_MS3D_Importer.populateSkinnedMesh()* @ scale: " + scale);
         ///////////////////////////////////////////////////////////////////
         // Animations
-        PPolygonSkinnedMesh pSkinnedMesh = m_pMesh;
+        PPolygonSkinnedMesh pSkinnedMesh = m_mesh;
 
-        int jointCount = m_pFile.getJointCount();
+        int jointCount = m_file.getJointCount();
         
         MS3D_JOINT fileJoint;
         SkinnedMeshJoint pJoint;
@@ -162,7 +165,7 @@ public class SkinnedMesh_MS3D_Importer
 
         for (int currentJointIndex=0; currentJointIndex < jointCount; currentJointIndex++) // For each joint
         {
-            fileJoint = m_pFile.getJoint(currentJointIndex);
+            fileJoint = m_file.getJoint(currentJointIndex);
 
             //  Create the SkinnedMeshBone that will represent the Joint.
             pJoint = new SkinnedMeshJoint(new PTransform(new PMatrix(fileJoint.mRelative)));
@@ -211,15 +214,9 @@ public class SkinnedMesh_MS3D_Importer
         
         // Regenerate skeleton mappings (see implementation for details)
         m_skeleton.refresh();
-
-        // Determine BFT (Breadth First Traversal) index
-        MS3D_ConverterHelper processor = new MS3D_ConverterHelper();
         
-        // BROKEN --- The animation states are now kept at the skeleton node!
-        // Maps MS3D index to a joint name
-//        pSkinnedMesh.getAnimationComponent().getGroups().add(pAnimationGroup);
         m_skeleton.getAnimationComponent().getGroups().add(pAnimationGroup);
-//        // split the animation loop into cycles
+        // split the animation loop into cycles
         MS3DAnimationMetaData animationFile = new MS3DAnimationMetaData(m_animationMeta);
         
         AnimationCycle[] cycleArray = animationFile.getCycles();
@@ -233,8 +230,11 @@ public class SkinnedMesh_MS3D_Importer
         
         ///////////////////////////////////////////////////////////////////
         // Do triangles
-        MS3D_TRIANGLE sourceTriangle;
-        MS3D_VERTEX pVertex1, pVertex2, pVertex3;
+        MS3D_TRIANGLE sourceTriangle = null;
+
+        MS3D_VERTEX pVertex1 = null;
+        MS3D_VERTEX pVertex2 = null;
+        MS3D_VERTEX pVertex3 = null;
         
         PPolygon                        targetTriangle        = null;
         PPolygonSkinnedVertexIndices    targetVertex1Indices  = null;
@@ -244,17 +244,17 @@ public class SkinnedMesh_MS3D_Importer
         ArrayList<Integer> indexSet = new ArrayList<Integer>();
         
         for (int currentTriangleIndex = 0; 
-                 currentTriangleIndex < m_pFile.getTriangleCount();
+                 currentTriangleIndex < m_file.getTriangleCount();
                  currentTriangleIndex++)
         {
-            sourceTriangle = m_pFile.getTriangle(currentTriangleIndex);
-            targetTriangle = new PPolygon(m_pMesh);
+            sourceTriangle = m_file.getTriangle(currentTriangleIndex);
+            targetTriangle = new PPolygon(m_mesh);
             targetTriangle.beginBatch();
 
             //  Get the vertices making up the triangle.
-            pVertex1 = m_pFile.getVertex(sourceTriangle.VertexIndices[0]);
-            pVertex2 = m_pFile.getVertex(sourceTriangle.VertexIndices[1]);
-            pVertex3 = m_pFile.getVertex(sourceTriangle.VertexIndices[2]);
+            pVertex1 = m_file.getVertex(sourceTriangle.VertexIndices[0]);
+            pVertex2 = m_file.getVertex(sourceTriangle.VertexIndices[1]);
+            pVertex3 = m_file.getVertex(sourceTriangle.VertexIndices[2]);
 
             // allocate memory for the vertices on the target triangle
             targetVertex1Indices  = new PPolygonSkinnedVertexIndices();
@@ -262,24 +262,24 @@ public class SkinnedMesh_MS3D_Importer
             targetVertex3Indices  = new PPolygonSkinnedVertexIndices();
             
             // add positions to the targetTriangle
-            targetVertex1Indices.m_PositionIndex = m_pMesh.getPosition(pVertex1.Position.mult(scale));
-            targetVertex2Indices.m_PositionIndex = m_pMesh.getPosition(pVertex2.Position.mult(scale));
-            targetVertex3Indices.m_PositionIndex = m_pMesh.getPosition(pVertex3.Position.mult(scale));
+            targetVertex1Indices.m_PositionIndex = m_mesh.getPosition(pVertex1.Position.mult(scale));
+            targetVertex2Indices.m_PositionIndex = m_mesh.getPosition(pVertex2.Position.mult(scale));
+            targetVertex3Indices.m_PositionIndex = m_mesh.getPosition(pVertex3.Position.mult(scale));
 
             // add normals to the targetTriangle
-            targetVertex1Indices.m_NormalIndex = m_pMesh.getNormal(sourceTriangle.VertexNormals[0]);
-            targetVertex2Indices.m_NormalIndex = m_pMesh.getNormal(sourceTriangle.VertexNormals[1]);
-            targetVertex3Indices.m_NormalIndex = m_pMesh.getNormal(sourceTriangle.VertexNormals[2]);
+            targetVertex1Indices.m_NormalIndex = m_mesh.getNormal(sourceTriangle.VertexNormals[0]);
+            targetVertex2Indices.m_NormalIndex = m_mesh.getNormal(sourceTriangle.VertexNormals[1]);
+            targetVertex3Indices.m_NormalIndex = m_mesh.getNormal(sourceTriangle.VertexNormals[2]);
 
             // add texCoords to the targetTriangle (texture unit 0)
-            targetVertex1Indices.m_TexCoordIndex[0] = m_pMesh.getTexCoord(new Vector2f(sourceTriangle.s[0], sourceTriangle.t[0]));
-            targetVertex2Indices.m_TexCoordIndex[0] = m_pMesh.getTexCoord(new Vector2f(sourceTriangle.s[1], sourceTriangle.t[1]));
-            targetVertex3Indices.m_TexCoordIndex[0] = m_pMesh.getTexCoord(new Vector2f(sourceTriangle.s[2], sourceTriangle.t[2]));
+            targetVertex1Indices.m_TexCoordIndex[0] = m_mesh.getTexCoord(new Vector2f(sourceTriangle.s[0], sourceTriangle.t[0]));
+            targetVertex2Indices.m_TexCoordIndex[0] = m_mesh.getTexCoord(new Vector2f(sourceTriangle.s[1], sourceTriangle.t[1]));
+            targetVertex3Indices.m_TexCoordIndex[0] = m_mesh.getTexCoord(new Vector2f(sourceTriangle.s[2], sourceTriangle.t[2]));
             
             // add colors
-            targetVertex1Indices.m_ColorIndex = m_pMesh.getColor(ColorRGBA.white);
-            targetVertex2Indices.m_ColorIndex = m_pMesh.getColor(ColorRGBA.white);
-            targetVertex3Indices.m_ColorIndex = m_pMesh.getColor(ColorRGBA.white);
+            targetVertex1Indices.m_ColorIndex = m_mesh.getColor(ColorRGBA.white);
+            targetVertex2Indices.m_ColorIndex = m_mesh.getColor(ColorRGBA.white);
+            targetVertex3Indices.m_ColorIndex = m_mesh.getColor(ColorRGBA.white);
 
             ///////////////////////////////////////////////////////////////////
             // Animations
@@ -309,18 +309,18 @@ public class SkinnedMesh_MS3D_Importer
             targetTriangle.addVertex(targetVertex3Indices);
             targetTriangle.endBatch();
             
-            m_pMesh.addPolygon(targetTriangle);
+            m_mesh.addPolygon(targetTriangle);
         }
         // Behold, smooth normals!
-        m_pMesh.setSmoothNormals(true);
+        m_mesh.setSmoothNormals(true);
         // finished with mesh construction
-        m_pMesh.endBatch();
+        m_mesh.endBatch();
         // generate jME geometry
-        m_pMesh.submit(new PPolygonTriMeshAssembler());
+        m_mesh.submit(new PPolygonTriMeshAssembler());
         // ready our influence list
-        m_pMesh.setInfluenceIndices(indexSet);
+        m_mesh.setInfluenceIndices(indexSet);
         // attach to our skeleton
-        m_skeleton.addChild(m_pMesh);
+        m_skeleton.addChild(m_mesh);
     }
     
     /**
@@ -333,13 +333,13 @@ public class SkinnedMesh_MS3D_Importer
      */
     private int duplicateCheckAndAdd(Object obj, ArrayList list)
     {
-        for (int i = 0; i < list.size(); ++i)
+        int index = list.indexOf(obj);
+        if (index == -1)
         {
-            if (obj.equals(list.get(i))) // found a match
-                return i;
+            list.add(obj);
+            index = list.size() - 1;
         }
-        list.add(obj);
-        return list.size() - 1;
+        return index;
     }
      
     /**

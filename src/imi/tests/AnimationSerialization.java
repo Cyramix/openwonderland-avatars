@@ -5,8 +5,8 @@
 
 package imi.tests;
 
-import imi.loaders.collada.Instruction;
-import imi.loaders.collada.InstructionProcessor;
+import imi.loaders.Instruction;
+import imi.loaders.InstructionProcessor;
 import imi.scene.animation.AnimationGroup;
 import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
 import java.io.FileInputStream;
