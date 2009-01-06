@@ -268,6 +268,10 @@ public class PColladaSkin
         return(m_SkinWeights.get(index));
     }
 
+    Iterable<String> getJointNames() {
+        return m_JointNames;
+    }
+
 }
 
 

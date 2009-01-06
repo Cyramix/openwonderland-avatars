@@ -11,8 +11,8 @@
  * except in compliance with the License. A copy of the License is
  * available at http://www.opensource.org/licenses/gpl-license.php.
  *
- * Sun designates this particular file as subject to the "Classpath" 
- * exception as provided by Sun in the License file that accompanied 
+ * Sun designates this particular file as subject to the "Classpath"
+ * exception as provided by Sun in the License file that accompanied
  * this code.
  */
 package org.collada.xml_walker;
@@ -42,6 +42,7 @@ import imi.scene.polygonmodel.PPolygonMesh;
 import imi.scene.polygonmodel.skinned.PPolygonSkinnedMesh;
 
 import imi.scene.PMatrix;
+import imi.scene.PNode;
 import imi.scene.animation.AnimationGroup;
 import imi.scene.animation.COLLADA_JointChannel;
 
@@ -52,286 +53,118 @@ import imi.scene.animation.COLLADA_JointChannel;
  * @author Chris Nagle
  */
 public class LibraryControllersProcessor extends Processor
-{    
-    private float []                    m_BindShapeMatrix = new float[16];
-
-    private List<String>                m_TheJointNames = null;
-//    private ArrayList m_Joints = new ArrayList();
-//    private float []m_pSkinWeights = null;
-//    private int []m_VertexJointCounts = null;
-//    private int []m_VertexJoints = null;
-//    private PMatrix m_pTempMatrix = new PMatrix();
-
-    private boolean                     m_bPrintStats = false;
-
-    private PPolygonSkinnedMesh         m_pPolygonSkinnedMesh = null;
-
+{
     private int                         m_BoneIndexStart = 0;
 
-    private ArrayList<String>           m_BoneNames = new ArrayList<String>();
-    private ArrayList<String>           m_JointNames = new ArrayList<String>();
-    private int[]                       m_BoneUsageCounts = null;
-    private int[]                       m_ReassignedBoneIndexes = null;
-
-    private ArrayList<BoneSkinWeight>   m_BoneSkinWeights = new ArrayList<BoneSkinWeight>();
-
-    private ArrayList                   m_SkinBoneIndices = new ArrayList();
-    private ArrayList                   m_SkinWeightVecs = new ArrayList();
-
-
-
     //  Constructor.
-    public LibraryControllersProcessor(Collada pCollada, LibraryControllers pLibraryControllers, Processor pParent)
+    public LibraryControllersProcessor(Collada colladaRef, LibraryControllers libraryControllers, Processor parent)
     {
-        super(pCollada, pLibraryControllers, pParent);
+        super(colladaRef, libraryControllers, parent);
 
-        m_bPrintStats = pCollada.getPrintStats();
-
-        for (int a=0; a<pLibraryControllers.getControllers().size(); a++)
-        {
-            processController(pLibraryControllers.getControllers().get(a));
-        }
+        for (Controller controller : libraryControllers.getControllers())
+            processController(controller);
     }
 
-    private void processController(Controller pController)
+    private void processController(Controller controller)
     {
         //  Create the SkinProcessor.
-        processSkin(pController, pController.getSkin());
+        processSkin(controller);
+        // TODO process everything else
     }
 
-    private void processSkin(Controller pController, Skin pSkin)
+    private void processSkin(Controller controller)
     {
-        String controllerName;
-        String meshName;
-        PPolygonMesh pPolygonMesh;
-        float []matrixFloats = new float[16];
-        PMatrix pMatrix = new PMatrix();
-        int a, b;
-        String boneName;
-        String jointName;
-        int jointIndex;
-        float []skinWeights = null;
-        int[] influenceIndices = null;
-        PColladaNode pJointColladaNode;
+        Skin skin = controller.getSkin();
+        if (skin == null)
+            return; // No skin to process
 
-
-/*
-        //  Gets the load option.
-        if (m_pCollada.getLoadOption() != Collada.LoadOption.LOAD_OPTION_LOAD_ANIMATION)
-        {
-            //  Make sure a SkeletonNode has been created.
-            m_pSkeleton = m_pCollada.createSkeletonNode();
-        }
-        else
-        {
-            m_pSkeleton = m_pCollada.getSkeletonNode();
-        }
-*/
-
-        controllerName = pController.getId();
-
-        meshName = pSkin.getSource();
-        if (meshName.startsWith("#"))
+        String meshName = skin.getSource();
+        if (meshName.startsWith("#")) // Indicates a URL
             meshName = meshName.substring(1);
 
-        
-//        if (meshName.equals("LHandShape"))
-//            m_bPrintStats = true;
 
-        PColladaSkin pColladaSkin = new PColladaSkin(controllerName);
+        float[] floatBuffer =  new float[16]; // Used for filling the PMatrix below
+        PMatrix matrixBuffer = new PMatrix();
 
-        pColladaSkin.setMeshName(meshName);
-        
+        PColladaSkin colladaSkinNode = new PColladaSkin(controller.getId());
+
+        colladaSkinNode.setMeshName(meshName);
+
 
         //  Create the PolygonSkinnedMesh.
         //  Will have to convert the PolygonMesh to a PolygonSkinnedMesh.
-        pPolygonMesh = m_colladaRef.findPolygonMesh(meshName);
+        PPolygonMesh polyMesh = m_colladaRef.findPolygonMesh(meshName); // Could potentially be many
+        PPolygonSkinnedMesh skinnedMesh = new PPolygonSkinnedMesh(polyMesh);
+        ArrayList<PPolygonSkinnedMesh> skinnedChildren = new ArrayList<PPolygonSkinnedMesh>();
+        // handle any children
+        for (PNode kid : polyMesh.getChildren())
+            if (kid instanceof PPolygonMesh)
+                skinnedChildren.add(new PPolygonSkinnedMesh((PPolygonMesh)kid));
 
-        m_pPolygonSkinnedMesh = new PPolygonSkinnedMesh(pPolygonMesh);
-
-        //  Clear the PolygonMesh of all Geometry.
-        pPolygonMesh.clear(false);
-
-        //  Remove the PolygonMesh, we'll be creating a PolygonSkinnedMesh instead.
-        m_colladaRef.removePolygonMesh(pPolygonMesh);
-
-        //  Let the Collada loader know about the created PolygonSkinnedMesh.
-        m_colladaRef.addPolygonSkinnedMesh(m_pPolygonSkinnedMesh);
-
-
-        if (m_bPrintStats)
-            System.out.println("SkinnedMesh:  " + m_pPolygonSkinnedMesh.getName());
-
-
-
-        //  Read in the BindMatrix.
-        for (a=0; a<pSkin.getBindShapeMatrix().size(); a++)
-            matrixFloats[a] = pSkin.getBindShapeMatrix().get(a).floatValue();
-        pMatrix.set(matrixFloats);
-        pColladaSkin.setBindMatrix(pMatrix);
-
+        //  Read in the BindMatrix and convert it into a pmatrix
+        int counter = 0;
+        for (Double d : skin.getBindShapeMatrix())
+        {
+            floatBuffer[counter] = d.floatValue();
+            counter++;
+        }
+        matrixBuffer.set(floatBuffer);
+        colladaSkinNode.setBindMatrix(matrixBuffer);
 
 
         //  Read in all the Joints.
-        Source pSkinJoints = findSkinSourceElement(pSkin, "skin-joints");
-        m_TheJointNames = pSkinJoints.getNameArray().getValues();
-    
-        m_BoneNames.clear();
-        m_JointNames.clear();
-        
-        m_BoneUsageCounts = null;
-        m_BoneUsageCounts = new int[pSkinJoints.getNameArray().getValues().size()];
-        m_ReassignedBoneIndexes = new int[pSkinJoints.getNameArray().getValues().size()];
-
-        m_SkinBoneIndices.clear();
-        m_SkinWeightVecs.clear();
-            
-
-        if (m_bPrintStats)
-            System.out.println("Bones:  " + m_TheJointNames.size());
-
-        
-        for (a=0; a<pSkinJoints.getNameArray().getValues().size(); a++)
+        Source pSkinJoints = findSkinSourceElement(skin, "skin-joints");
+        for (String boneName : pSkinJoints.getNameArray().getValues())
         {
-            boneName = pSkinJoints.getNameArray().getValues().get(a);
-            pJointColladaNode = m_colladaRef.findJoint(boneName);
-            jointName = pJointColladaNode.getName();
-
-            m_pPolygonSkinnedMesh.addJointName(jointName);
-            
-            m_BoneNames.add(new String(boneName));
-            m_BoneUsageCounts[a] = 0;
-            m_JointNames.add(new String(jointName));
-        
-            if (m_bPrintStats)
-                System.out.println("   bone=" + boneName + ", jointName=" + jointName);
+            PColladaNode colladaJointNode = m_colladaRef.findJoint(boneName);
+            String jointName = colladaJointNode.getName();
+            skinnedMesh.addJointName(jointName);
+            for (PPolygonSkinnedMesh skinKid : skinnedChildren)
+                skinKid.addJointName(jointName);
         }
 
 
         //  Read in all the matrics.
-        Source pSkinBindMatrices = findSkinSourceElement(pSkin, "skin-bind_poses");
-        for (a=0; a<pSkinBindMatrices.getFloatArray().getValues().size(); a+=16)
+        Source pSkinBindMatrices = findSkinSourceElement(skin, "skin-bind_poses");
+        List<Double> valueList = pSkinBindMatrices.getFloatArray().getValues();
+        for (int i = 0; i < valueList.size(); i++)
         {
-            for (b=0; b<16; b++)
+            int matrixIndex = i%16;
+            floatBuffer[matrixIndex] = valueList.get(i).floatValue();
+            if (matrixIndex == 15) // Just finished a matrix
             {
-                matrixFloats[b] = pSkinBindMatrices.getFloatArray().getValues().get(a+b).floatValue();
+                // add it to the skin node
+                matrixBuffer.set(floatBuffer);
+                colladaSkinNode.addBindMatrix(matrixBuffer);
             }
-
-            pMatrix.set(matrixFloats);
-
-            pColladaSkin.addBindMatrix(pMatrix);
         }
-        
+
 
         //  Read in all the SkinWeights.
-        Source pSkinWeights = findSkinSourceElement(pSkin, "skin-weights");
-        skinWeights = new float[pSkinWeights.getFloatArray().getValues().size()];
-        for (a=0; a<pSkinWeights.getFloatArray().getValues().size(); a++)
-            skinWeights[a] = pSkinWeights.getFloatArray().getValues().get(a).floatValue();
-
-
-        if (m_bPrintStats)
-            System.out.println("Assigning JointNames to SkinnedMesh");
-
-        //  Assign all the JointNames to the PolygonSkinnedMesh.
-        for (a=0; a<m_JointNames.size(); a++)
+        Source pSkinWeights = findSkinSourceElement(skin, "skin-weights");
+        valueList = pSkinWeights.getFloatArray().getValues();
+        float[] skinWeights = new float[valueList.size()];
+        counter = 0;
+        for (Double d : valueList)
         {
-            jointName = (String)m_JointNames.get(a);
-
-            if (m_bPrintStats)
-                System.out.println("   Joint[" + a + "]:  " + jointName);
-
-            m_pPolygonSkinnedMesh.addJointName(jointName);
+            skinWeights[counter] = d.floatValue();
+            counter++;
         }
 
 
-        processVertexWeights(pController, pSkin, m_pPolygonSkinnedMesh, skinWeights);
-
-        m_bPrintStats = false;
-
-        m_colladaRef.addColladaSkin(pColladaSkin);
+//        processVertexWeights(skin, skinnedMesh, skinWeights);
+//        for (PPolygonSkinnedMesh skinKid : skinnedChildren)
+//            processVertexWeights(skin, skinKid, skinWeights);
+        processVertexWeights(controller, skin, skinnedMesh, skinWeights);
+        for (PPolygonSkinnedMesh skinKid : skinnedChildren)
+            processVertexWeights(controller, skin, skinKid, skinWeights);
+        // add stuff to the loader
+        m_colladaRef.addPolygonSkinnedMesh(skinnedMesh);
+        for (PPolygonSkinnedMesh skinKid : skinnedChildren)
+            m_colladaRef.addPolygonSkinnedMesh(skinKid);
+        m_colladaRef.addColladaSkin(colladaSkinNode);
     }
 
-    
-
-    void createAnimationLoopForSkinnedMesh(PColladaSkin pColladaSkin, PPolygonSkinnedMesh pSkinnedMesh)
-    {
-        int                  a;
-        String               jointName;
-        PColladaAnimatedItem pAnimatedItem;
-        PColladaNode         pJointColladaNode;
-
-
-        //  Create the AnimationLoop.
-        AnimationGroup pAnimationLoop = new AnimationGroup();
-
-
-        for (a=0; a<pColladaSkin.getJointNameCount(); a++)
-        {
-            jointName = pColladaSkin.getJointName(a);
-
-            pJointColladaNode = m_colladaRef.findColladaNode(jointName);
-
-            pAnimatedItem = m_colladaRef.findAnimatedItem(jointName);
-            if (pAnimatedItem != null && pAnimatedItem.getKeyframeCount() > 0)
-            {
-                int b;
-                float fFirstKeyframeTime = pAnimatedItem.getKeyframeTime(0);
-                float fKeyframeTime;
-                PMatrix pKeyframeMatrix = new PMatrix();
-
-                if (m_bPrintStats)
-                    System.out.println("   Processing animation channel for joint '" + jointName + "'.");
-
-                //  Create a JointChannel.
-                COLLADA_JointChannel pAnimationChannel = new COLLADA_JointChannel(jointName);
-
-
-                //  Now, populate the newly created JointAnimation.
-                for (b=0; b<pAnimatedItem.getKeyframeCount(); b++)
-                {
-                    fKeyframeTime = pAnimatedItem.getKeyframeTime(b);
-                    //fKeyframeTime -= fFirstKeyframeTime;
-                    pAnimatedItem.getKeyframeMatrix(b, pKeyframeMatrix);
-
-                    pAnimationChannel.addKeyframe(fKeyframeTime, pKeyframeMatrix);
-                }
-
-                pAnimationChannel.calculateDuration();
-
-
-                if (m_bPrintStats)
-                {
-                    System.out.println("   COLLADA_JointChannel created.");
-                    System.out.println("      Duration:  " + pAnimationChannel.getDuration());
-                }
-
-                //  Add the JointAnimation to the AnimationLoop.
-                pAnimationLoop.getChannels().add(pAnimationChannel);
-            }
-        }
-
-        //  Trim the AnimationLoop.
-//        pAnimationLoop.trim(1.55f);
-
-        float fAnimationLoopDuration = pAnimationLoop.getDuration();
-        
-        if (m_bPrintStats)
-            System.out.println("AnimationLoop contains " + pAnimationLoop.getChannels().size() + " animations.  It is " + fAnimationLoopDuration + " seconds long.");
-        if (pAnimationLoop.getChannels().size() == 0)
-        {
-            pAnimationLoop = null;
-        }
-        else
-        {
-            pAnimationLoop.calculateDuration();
-            pAnimationLoop.createDefaultCycle();
-
-            pAnimationLoop.getCycle(0).setName(m_colladaRef.getName());
-        }
-    }
-
-    
 //  ******************************
 //  ******************************
 //  Private methods.
@@ -340,7 +173,7 @@ public class LibraryControllersProcessor extends Processor
     void processVertexWeights(Controller pController,
                               Skin pSkin,
                               PPolygonSkinnedMesh pPolygonSkinnedMesh,
-                              float []skinWeights)
+                                      float []skinWeights)
     {
         int maxNumberOfWeights = 4;//m_pCollada.getMaxNumberOfWeights();
         int []vertexWeights = null;
@@ -353,14 +186,11 @@ public class LibraryControllersProcessor extends Processor
         int vertexWeightsIndex = 0;
         ArrayList<BoneSkinWeight> boneSkinWeights = new ArrayList<BoneSkinWeight>();
         BoneSkinWeight pBoneSkinWeight;
-        String jointName;
         PBoneIndices pBoneIndices;
         Vector3f pWeightVec;
         int boneIndiceIndex;
         int boneWeightIndex;
         int vertexIndex = 0;
-        boolean bWarningPrinted = false;
-            
 
 
         //  Read in the VertexJoints.
@@ -396,67 +226,25 @@ public class LibraryControllersProcessor extends Processor
                 vertexWeightsIndex += 2;
             }
 
-            
+
             //  Sort the array of BoneSkinWeights.
             if (boneSkinWeights.size() > 0)
                 Collections.sort(boneSkinWeights);
-
-
-            if (!bWarningPrinted)
-            {
-                if (boneSkinWeights.size() >= maxNumberOfWeights)
-                {
-//                    System.out.println("-----------------" + pPolygonSkinnedMesh.getName() + " Bone Weights '" + boneSkinWeights.size() + "' exceeds limit of '" + maxNumberOfWeights + "' limit.");
-                    bWarningPrinted = true;
-                }
-            }
-
-                        
             //  Process the SkinWeights for the Vertex.
             //  If there are more SkinWeights that supported, then the SkinWeights
             //  will be normalized.
             processJointSkinWeights(maxNumberOfWeights, boneSkinWeights);
 
 
-            //  Print out the SkinWeights.
-            if (m_bPrintStats)
-            {
-                System.out.print("Vertex[" + a + "]:  " + boneSkinWeights.size() + "  ");
-                for (b=0; b<boneSkinWeights.size(); b++)
-                {
-                    pBoneSkinWeight = (BoneSkinWeight)boneSkinWeights.get(b);
-                    jointName = m_TheJointNames.get(pBoneSkinWeight.m_BoneIndex);
-
-//                    System.out.print("(" + pBoneSkinWeight.m_BoneIndex + ", " + pBoneSkinWeight.m_fWeight + "), ");
-                    System.out.print("([" + pBoneSkinWeight.m_BoneIndex + ", " + jointName + "], " + pBoneSkinWeight.m_fWeight + "), ");
-                }
-                System.out.println("");
-            }
-
-            
             pBoneIndices = new PBoneIndices();
             pWeightVec = new Vector3f();
-            
-            //  Convert to BoneIndices.
-            toBoneIndices(maxNumberOfWeights, boneSkinWeights, pBoneIndices);
 
-/*
-            //  Increment the usage counts of each Bone used.
-            for (int bb=0; bb<pBoneIndices.index.length; bb++)
-            {
-                m_BoneUsageCounts[pBoneIndices.index[bb]]++;
-//                if (pBoneIndices.index[bb] >= this.m_JointNames.size())
-//                    int ggh = 0;
-            }
-*/
+            //  Convert to BoneIndices.
+            toBoneIndices(boneSkinWeights, pBoneIndices);
 
             //  Convert to Vector3f.
-            toWeights(maxNumberOfWeights, boneSkinWeights, pWeightVec);
+            toWeights(boneSkinWeights, pWeightVec);
 
-            m_SkinBoneIndices.add(pBoneIndices);
-            m_SkinWeightVecs.add(pWeightVec);
-
-    
 
             boneIndiceIndex = pPolygonSkinnedMesh.getBoneIndices(pBoneIndices);
             boneWeightIndex = pPolygonSkinnedMesh.getBoneWeights(pWeightVec);
@@ -470,119 +258,141 @@ public class LibraryControllersProcessor extends Processor
         }
     }
 
+    private void processVertexWeights(Skin skin,
+                                      PPolygonSkinnedMesh skinnedMesh,
+                                      float []skinWeights)
+    {
+        int maxNumberOfWeights = 4;//m_colladaRef.getMaxNumberOfWeights();
 
-    void toBoneIndices(int maxNumberOfWeights, ArrayList boneSkinWeights, PBoneIndices pBoneIndices)
+        //  Read in the VertexJoints.
+        Skin.VertexWeights vertWeights = skin.getVertexWeights();
+        int[] vertexWeights = new int[vertWeights.getV().size()];
+        int counter = 0;
+        for (Long value : vertWeights.getV())
+        {
+            vertexWeights[counter] = value.intValue();
+            counter++;
+        }
+
+        //  Read in the VertexJointCounts.
+        int[] vertexBoneCounts = new int[vertWeights.getVcount().size()];
+        counter = 0;
+        for (BigInteger value : vertWeights.getVcount())
+        {
+            vertexBoneCounts[counter] = value.intValue();
+            counter++;
+        }
+
+        ArrayList<BoneSkinWeight> boneSkinWeights = new ArrayList<BoneSkinWeight>();
+
+        counter = 0;
+        for (int vertexBoneCount : vertexBoneCounts)
+        {
+            int secondaryIndex = 0;
+            for (int i = 0; i < vertexBoneCount; i++)
+            {
+                boneSkinWeights.add(new BoneSkinWeight(vertexWeights[secondaryIndex], skinWeights[vertexWeights[secondaryIndex+1]]));
+                secondaryIndex += 2;
+            }
+
+            //  Sort the array of BoneSkinWeights.
+            if (boneSkinWeights.size() > 0)
+                Collections.sort(boneSkinWeights);
+
+            processJointSkinWeights(maxNumberOfWeights, boneSkinWeights);
+
+            PBoneIndices boneIndices = new PBoneIndices();
+            Vector3f weightVec = new Vector3f();
+
+            //  Convert to BoneIndices.
+            toBoneIndices(boneSkinWeights, boneIndices);
+            //  Convert to Vector3f.
+            toWeights(boneSkinWeights, weightVec);
+
+            int boneIndiceIndex = skinnedMesh.getBoneIndices(boneIndices);
+            int boneWeightIndex = skinnedMesh.getBoneWeights(weightVec);
+
+            assignSkinningIndicesToVertex(skinnedMesh, counter, boneIndiceIndex, boneWeightIndex);
+
+            boneSkinWeights.clear();
+
+            counter++;
+        }
+    }
+
+
+
+
+
+    private void toBoneIndices(ArrayList<BoneSkinWeight> boneSkinWeights, PBoneIndices boneIndices)
     {
         for (int a=0; a<boneSkinWeights.size(); a++)
-            pBoneIndices.index[a] = m_BoneIndexStart + ((BoneSkinWeight)boneSkinWeights.get(a)).m_BoneIndex;
+            boneIndices.index[a] = m_BoneIndexStart + boneSkinWeights.get(a).m_BoneIndex;
     }
 
 
-    void toWeights(int maxNumberOfWeights, ArrayList boneSkinWeights, Vector3f pWeightVec)
+    private void toWeights(ArrayList<BoneSkinWeight> boneSkinWeights, Vector3f weightVec)
     {
         if (boneSkinWeights.size() > 0)
-            pWeightVec.x = ((BoneSkinWeight)boneSkinWeights.get(0)).m_fWeight;
+            weightVec.x = boneSkinWeights.get(0).m_fWeight;
         if (boneSkinWeights.size() > 1)
-            pWeightVec.y = ((BoneSkinWeight)boneSkinWeights.get(1)).m_fWeight;
+            weightVec.y = boneSkinWeights.get(1).m_fWeight;
         if (boneSkinWeights.size() > 2)
-            pWeightVec.z = ((BoneSkinWeight)boneSkinWeights.get(2)).m_fWeight;
+            weightVec.z = boneSkinWeights.get(2).m_fWeight;
     }
 
 
-    void processJointSkinWeights(int maxNumberOfWeights, ArrayList boneSkinWeights)
+    private void processJointSkinWeights(int maxNumberOfWeights, ArrayList<BoneSkinWeight> boneSkinWeights)
     {
-        float fWeightSum = 0.0f;
         int NumberOfWeightsToProcess = maxNumberOfWeights;
-        int a;
-        BoneSkinWeight pBoneSkinWeight;
+        float fWeightSum = 0.0f;
 
         if (NumberOfWeightsToProcess > boneSkinWeights.size())
             NumberOfWeightsToProcess = boneSkinWeights.size();
 
-        for (a=0; a<NumberOfWeightsToProcess; a++)
-        {
-            pBoneSkinWeight = (BoneSkinWeight)boneSkinWeights.get(a);
-            fWeightSum += pBoneSkinWeight.m_fWeight;
-        }
-
-        for (a=0; a<NumberOfWeightsToProcess; a++)
-        {
-            pBoneSkinWeight = (BoneSkinWeight)boneSkinWeights.get(a);
-            pBoneSkinWeight.m_fWeight /= fWeightSum;
-        }
+        // Normalize the weights based on the max number of influences
+        for (int a=0; a<NumberOfWeightsToProcess; a++)
+            fWeightSum += boneSkinWeights.get(a).m_fWeight;
+        for (int a=0; a<NumberOfWeightsToProcess; a++)
+            boneSkinWeights.get(a).m_fWeight /= fWeightSum;
 
 
-        //  Delete the remaining BoneSkinWeights.
-        if (boneSkinWeights.size() > maxNumberOfWeights)
-        {
-            for (a=boneSkinWeights.size()-1; a>=maxNumberOfWeights; a--)
-                boneSkinWeights.remove(a);
-        }
-        else if (boneSkinWeights.size() < maxNumberOfWeights)
-        {
-            int count = maxNumberOfWeights-boneSkinWeights.size();
-            for (a=0; a<count; a++)
-            {
-                pBoneSkinWeight = new BoneSkinWeight(0, 0.0f);
-                boneSkinWeights.add(pBoneSkinWeight);
-            }
-        }
+        //  Resize to the correct amount
+        while (boneSkinWeights.size() > maxNumberOfWeights)
+            boneSkinWeights.remove(boneSkinWeights.size() - 1);
+        while (boneSkinWeights.size() < maxNumberOfWeights)
+            boneSkinWeights.add(new BoneSkinWeight(-1, 0.0f)); // May blow stuff up.
     }
 
 
-    private void assignSkinningIndicesToVertex(PPolygonSkinnedMesh pPolygonSkinnedMesh,
-                                               int positionIndex, int boneIndiceIndex, int boneWeightIndex)
+    private void assignSkinningIndicesToVertex(PPolygonSkinnedMesh skinnedMesh,
+                                               int positionIndex, int boneIndex, int weightIndex)
     {
-        int polygonIndex;
-        PPolygon pPolygon;
-        int vertexIndex;
-        PPolygonVertexIndices pPolygonVertexIndices;
-        PPolygonSkinnedVertexIndices pPolygonSkinnedVertexIndices;
-
-
-        //  Iterate throuh all the Polygons.
-        for (polygonIndex=0; polygonIndex<pPolygonSkinnedMesh.getPolygonCount(); polygonIndex++)
+        for (PPolygon poly : skinnedMesh.getPolygons())
         {
-            pPolygon = pPolygonSkinnedMesh.getPolygon(polygonIndex);
-
-            //  Iterate through all the Vertices in the Polygon.
-            for (vertexIndex=0; vertexIndex<pPolygon.getVertexCount(); vertexIndex++)
+            for (PPolygonVertexIndices vertIndices : poly.getVertexCollection())
             {
-                pPolygonVertexIndices = pPolygon.getVertex(vertexIndex);
-
-                //  Is this Vertice using the Position.
-                if (pPolygonVertexIndices.m_PositionIndex == positionIndex)
+                if (vertIndices.m_PositionIndex == positionIndex)
                 {
-                    pPolygonSkinnedVertexIndices = (PPolygonSkinnedVertexIndices)pPolygonVertexIndices;
-                    
-                    pPolygonSkinnedVertexIndices.m_BoneIndicesIndex = boneIndiceIndex;
-                    pPolygonSkinnedVertexIndices.m_BoneWeightIndex = boneWeightIndex;
+                    PPolygonSkinnedVertexIndices pPolygonSkinnedVertexIndices = (PPolygonSkinnedVertexIndices)vertIndices;
+                    pPolygonSkinnedVertexIndices.m_BoneIndicesIndex = boneIndex;
+                    pPolygonSkinnedVertexIndices.m_BoneWeightIndex = weightIndex;
                 }
             }
         }
     }
 
 
-    //  Finds a source element in the Skin.
-    public Source findSkinSourceElement(Skin pSkin, String elementName)
+    //  Finds i source element in the Skin.
+    private Source findSkinSourceElement(Skin skin, String elementName)
     {
-        int a;
-        Source pSource;
-        
-        for (a=0; a<pSkin.getSources().size(); a++)
-        {
-            pSource = pSkin.getSources().get(a);
-            if (pSource.getId().endsWith(elementName))
-                return(pSource);
-        }
-
-        return(null);
+        for (Source source : skin.getSources())
+            if (source.getId().endsWith(elementName))
+                return source;
+        return null;
     }
 
-
-    
-    
-    class BoneSkinWeight implements Comparable  
+    private class BoneSkinWeight implements Comparable
     {
         public int     m_BoneIndex = 0;
         public float   m_fWeight = 0.0f;
@@ -600,7 +410,7 @@ public class LibraryControllersProcessor extends Processor
         public int compareTo(Object o)
         {
             BoneSkinWeight pSkinWeight = (BoneSkinWeight)o;
-            
+
             if (m_fWeight < pSkinWeight.m_fWeight)
                 return(1);
             else if (m_fWeight > pSkinWeight.m_fWeight)
