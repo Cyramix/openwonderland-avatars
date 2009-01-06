@@ -100,11 +100,12 @@ public class JPanel_HorizontalSliderT extends javax.swing.JPanel {
                     float diff = newVal - m_curr;
                     m_prev = m_curr;
                     m_curr = newVal;
+                    m_formattedNumber = m_format.format(diff);
 
                     if (m_ParentFrame instanceof JFrame_AdvOptions)
-                        ((JFrame_AdvOptions)m_ParentFrame).parseModification(m_ObjectRef, diff, newVal);
+                        ((JFrame_AdvOptions)m_ParentFrame).parseModification(m_ObjectRef, Float.valueOf(m_formattedNumber), newVal);
                     else if (m_ParentFrame instanceof JFrame_SimpAdvOptions)
-                        ((JFrame_SimpAdvOptions)m_ParentFrame).parseModification(m_ObjectRef, diff, newVal);
+                        ((JFrame_SimpAdvOptions)m_ParentFrame).parseModification(m_ObjectRef, Float.valueOf(m_formattedNumber), newVal);
                 }
                 break;
             }
@@ -115,14 +116,15 @@ public class JPanel_HorizontalSliderT extends javax.swing.JPanel {
                     newVal = (curVal * 100) + m_baseSliderVal;
                     jSlider1.setValue((int)newVal);
 
-                    float diff = curVal - m_curr;
+                    float diff = newVal - m_curr;
                     m_prev = m_curr;
-                    m_curr = curVal;
+                    m_curr = newVal;
+                    m_formattedNumber = m_format.format(diff);
 
                     if (m_ParentFrame instanceof JFrame_AdvOptions)
-                        ((JFrame_AdvOptions)m_ParentFrame).parseModification(m_ObjectRef, diff, curVal);
+                        ((JFrame_AdvOptions)m_ParentFrame).parseModification(m_ObjectRef, Float.valueOf(m_formattedNumber), newVal);
                     else if (m_ParentFrame instanceof JFrame_SimpAdvOptions)
-                        ((JFrame_SimpAdvOptions)m_ParentFrame).parseModification(m_ObjectRef, diff, curVal);
+                        ((JFrame_SimpAdvOptions)m_ParentFrame).parseModification(m_ObjectRef, Float.valueOf(m_formattedNumber), newVal);
                 }
                 break;
             }

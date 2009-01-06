@@ -217,8 +217,8 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
             {
                 for (int i = 0; i < lefthand.length; i++) {
                     ladjust = new Vector3f(lefthand[i].getLocalModifierMatrix().getScaleVector());
-                    ladjust.x = 1.0f;   ladjust.x += mod;
-                    ladjust.z = 1.0f;   ladjust.z += mod;
+                    ladjust.x = 1.0f;   ladjust.x += actualval;
+                    ladjust.z = 1.0f;   ladjust.z += actualval;
                     lefthand[i].getLocalModifierMatrix().setScale(ladjust);
                 }
                 break;
@@ -227,8 +227,8 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
             {
                 for (int i = 0; i < righthand.length; i++) {
                     radjust = new Vector3f(righthand[i].getLocalModifierMatrix().getScaleVector());
-                    radjust.x = 1.0f;   radjust.x += mod;
-                    radjust.z = 1.0f;   radjust.z += mod;
+                    radjust.x = 1.0f;   radjust.x += actualval;
+                    radjust.z = 1.0f;   radjust.z += actualval;
                     righthand[i].getLocalModifierMatrix().setScale(radjust);
                 }
 
@@ -285,8 +285,8 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
             {
                 for (int i = 0; i < leftforearm.length; i++) {
                     ladjust = new Vector3f(leftforearm[i].getLocalModifierMatrix().getScaleVector());
-                    ladjust.x = 1.0f;   ladjust.x += mod;
-                    ladjust.z = 1.0f;   ladjust.z += mod;
+                    ladjust.x = 1.0f;   ladjust.x += actualval;
+                    ladjust.z = 1.0f;   ladjust.z += actualval;
                     leftforearm[i].getLocalModifierMatrix().setScale(ladjust);
                 }
                 break;
@@ -295,8 +295,8 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
             {
                 for (int i = 0; i < rightforearm.length; i++) {
                     radjust = new Vector3f(rightforearm[i].getLocalModifierMatrix().getScaleVector());
-                    radjust.x = 1.0f;   radjust.x += mod;
-                    radjust.z = 1.0f;   radjust.z += mod;
+                    radjust.x = 1.0f;   radjust.x += actualval;
+                    radjust.z = 1.0f;   radjust.z += actualval;
                     rightforearm[i].getLocalModifierMatrix().setScale(radjust);
                 }
                 break;
@@ -352,8 +352,8 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
             {
                 for (int i = 0; i < leftupperarm.length; i++) {
                     ladjust = new Vector3f(leftupperarm[i].getLocalModifierMatrix().getScaleVector());
-                    ladjust.x = 1.0f;   ladjust.x += mod;
-                    ladjust.z = 1.0f;   ladjust.z += mod;
+                    ladjust.x = 1.0f;   ladjust.x += actualval;
+                    ladjust.z = 1.0f;   ladjust.z += actualval;
                     leftupperarm[i].getLocalModifierMatrix().setScale(ladjust);
                 }
                 break;
@@ -362,8 +362,8 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
             {
                 for (int i = 0; i < rightupperarm.length; i++) {
                     radjust = new Vector3f(rightupperarm[i].getLocalModifierMatrix().getScaleVector());
-                    radjust.x = 1.0f;   radjust.x += mod;
-                    radjust.z = 1.0f;   radjust.z += mod;
+                    radjust.x = 1.0f;   radjust.x += actualval;
+                    radjust.z = 1.0f;   radjust.z += actualval;
                     rightupperarm[i].getLocalModifierMatrix().setScale(radjust);
                 }
                 break;
@@ -396,8 +396,8 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
             {
                 for (int i = 0; i < leftfoot.length; i++) {
                     ladjust = new Vector3f(leftfoot[i].getLocalModifierMatrix().getScaleVector());
-                    ladjust.x = 1.0f;   ladjust.x += mod;
-                    ladjust.z = 1.0f;   ladjust.z += mod;
+                    ladjust.x = 1.0f;   ladjust.x += actualval;
+                    ladjust.z = 1.0f;   ladjust.z += actualval;
                     leftfoot[i].getLocalModifierMatrix().setScale(ladjust);
                 }
                 break;
@@ -406,8 +406,8 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
             {
                 for (int i = 0; i < rightfoot.length; i++) {
                     radjust = new Vector3f(rightfoot[i].getLocalModifierMatrix().getScaleVector());
-                    radjust.x = 1.0f;   radjust.x += mod;
-                    radjust.z = 1.0f;   radjust.z += mod;
+                    radjust.x = 1.0f;   radjust.x += actualval;
+                    radjust.z = 1.0f;   radjust.z += actualval;
                     rightfoot[i].getLocalModifierMatrix().setScale(radjust);
                 }
                 break;
@@ -463,8 +463,8 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
             {
                 for (int i = 0; i < leftlowerleg.length; i++) {
                     ladjust = new Vector3f(leftlowerleg[i].getLocalModifierMatrix().getScaleVector());
-                    ladjust.x = 1.0f;   ladjust.x += mod;
-                    ladjust.z = 1.0f;   ladjust.z += mod;
+                    ladjust.x = 1.0f;   ladjust.x += actualval;
+                    ladjust.z = 1.0f;   ladjust.z += actualval;
                     leftlowerleg[i].getLocalModifierMatrix().setScale(ladjust);
                 }
                 break;
@@ -473,8 +473,8 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
             {
                 for (int i = 0; i < rightlowerleg.length; i++) {
                     radjust = new Vector3f(rightlowerleg[i].getLocalModifierMatrix().getScaleVector());
-                    radjust.x = 1.0f;   radjust.x += mod;
-                    radjust.z = 1.0f;   radjust.z += mod;
+                    radjust.x = 1.0f;   radjust.x += actualval;
+                    radjust.z = 1.0f;   radjust.z += actualval;
                     rightlowerleg[i].getLocalModifierMatrix().setScale(radjust);
                 }
                 break;
@@ -508,8 +508,8 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
             {
                 for (int i = 0; i < leftupperleg.length; i++) {
                     ladjust = new Vector3f(leftupperleg[i].getLocalModifierMatrix().getScaleVector());
-                    ladjust.x = 1.0f;   ladjust.x += mod;
-                    ladjust.z = 1.0f;   ladjust.z += mod;
+                    ladjust.x = 1.0f;   ladjust.x += actualval;
+                    ladjust.z = 1.0f;   ladjust.z += actualval;
                     leftupperleg[i].getLocalModifierMatrix().setScale(ladjust);
                 }
                 break;
@@ -518,8 +518,8 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
             {
                 for (int i = 0; i < rightupperleg.length; i++) {
                     radjust = new Vector3f(rightupperleg[i].getLocalModifierMatrix().getScaleVector());
-                    radjust.x = 1.0f;   radjust.x += mod;
-                    radjust.z = 1.0f;   radjust.z += mod;
+                    radjust.x = 1.0f;   radjust.x += actualval;
+                    radjust.z = 1.0f;   radjust.z += actualval;
                     rightupperleg[i].getLocalModifierMatrix().setScale(radjust);
                 }
                 break;

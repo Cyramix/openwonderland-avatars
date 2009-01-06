@@ -17,7 +17,6 @@
  */
 package imi.utils.input;
 
-import imi.gui.AvatarEditorGUI;
 import imi.gui.PNodePropertyPanel;
 import imi.scene.polygonmodel.skinned.PPolygonSkinnedMeshInstance;
 import java.awt.Dimension;

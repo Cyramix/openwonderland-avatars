@@ -15,7 +15,7 @@ public class GUI_Enums {
 ////////////////////////////////////////////////////////////////////////////////
     public  enum m_bodyPart { Left_UpperLeg, Left_LowerLeg, Left_Foot, Left_UpperArm, Left_LowerArm, Left_Hand, Left_Shoulder,
                               Right_UpperLeg, Right_LowerLeg, Right_Foot, Right_UpperArm, Right_LowerArm, Right_Hand, Right_Shoulder,
-                              Head, Torso, Neck, Eyes, Lips };
+                              Head, Torso, Neck, Eyes, Lips, Left_Arm, Right_Arm, Left_Leg, Right_Leg};
 
     public enum m_sliderControl {
         lefteyeHPos,            lefteyeSize,            lefteyeVPos,            lefteyeWidth,           righteyeHPos,           righteyeSize,           righteyeVPos,
@@ -24,6 +24,7 @@ public class GUI_Enums {
         rightupperarmLength,    rightupperarmThickness, leftfootLength,         leftfootThickness,      leftlowerlegLength,     leftlowerlegThickness,  leftupperlegLength,
         leftupperlegThickness,  rightfootLength,        rightfootThickness,     rightlowerlegLength,    rightlowerlegThickness, rightupperlegLength,    rightupperlegThickness,
         headDepth,              headHeight,             headWidth,              leftlegLength,          leftlegScale,           rightlegLength,         rightlegScale,
-        leftarmLength,          leftarmScale,           rightarmLength,         rightarmScale,
+        leftarmLength,          leftarmScale,           rightarmLength,         rightarmScale,          uniformHeight,          uniformThickness,       torsoLength,
+        torsoThickness
     };
 }

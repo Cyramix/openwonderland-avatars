@@ -97,7 +97,7 @@ public class FleshShader extends GLSLShaderProgram
             setProperty(new ShaderProperty("specularComponent", GLSLDataType.GLSL_FLOAT, Float.valueOf(specularComponent)));
 
             // Color
-            float[] whiteColor = { 1, 1, 1 };
+            float[] whiteColor = { 1.0f, 1.0f, 1.0f };
             setProperty(new ShaderProperty("materialColor", GLSLDataType.GLSL_VEC3, whiteColor));
             m_propertyMap.put("pose", new ShaderProperty("pose", GLSLDataType.GLSL_VOID, null));
         }

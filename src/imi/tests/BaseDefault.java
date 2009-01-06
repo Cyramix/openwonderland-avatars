@@ -44,7 +44,6 @@ import imi.gui.JPanel_Animations;
 import imi.gui.JPanel_BasicOptions;
 import imi.gui.JPanel_EZOptions;
 import imi.gui.JPanel_ServerBrowser;
-import imi.gui.OptionsGUI;
 import imi.gui.SceneEssentials;
 import imi.gui.TreeExplorer;
 import imi.loaders.PPolygonTriMeshAssembler;
@@ -120,7 +119,6 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
     protected boolean                   m_bLoading          = false;
     protected RenderBuffer              m_renderBuffer      = null;
     protected Component                 m_base              = this;
-    protected OptionsGUI                m_AvatarOptions     = null;
     protected JFrame_AdvOptions         m_AdvOptions        = null;
     protected TreeExplorer              m_NodeExplorer      = null;
     protected JFrame                    m_AnimationViewer   = null;
@@ -958,15 +956,15 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
     }
 
     public void resetOpenTools() {
-        if (m_AvatarOptions != null) {
-            if (m_AvatarOptions.isVisible()) {
-                m_AvatarOptions.dispose();
+        if (m_AdvOptions != null) {
+            if (m_AdvOptions.isVisible()) {
+                m_AdvOptions.dispose();
                 openAvatarEditor();
             }
         }
 
         if (m_NodeExplorer != null) {
-            if (m_AvatarOptions.isVisible()) {
+            if (m_NodeExplorer.isVisible()) {
                 m_NodeExplorer.dispose();
                 openNodeExplorer();
             }

@@ -34,7 +34,6 @@ import com.jme.scene.state.RenderState;
 import com.jme.scene.state.WireframeState;
 import com.jme.scene.state.ZBufferState;
 import com.jme.util.TextureManager;
-import imi.gui.OptionsGUI;
 import imi.gui.SceneEssentials;
 import imi.gui.TreeExplorer;
 import imi.loaders.PPolygonTriMeshAssembler;
@@ -124,7 +123,6 @@ public class DemoBase2 extends javax.swing.JFrame implements FrameRateListener, 
     private String avatarGender = new String("male");
     // Tools
     private TreeExplorer explorer = null;
-    private OptionsGUI options = null;
     // Options
     private boolean bOptions = false;
     private boolean bExplorer = false;
@@ -904,10 +902,6 @@ public class DemoBase2 extends javax.swing.JFrame implements FrameRateListener, 
     public void resetGUI(int type) {
         if (type == 0) {
             // Closes all tools options
-            if(options != null) {
-                options.dispose();
-                bOptions = false;
-            }
             if(explorer != null) {
                 explorer.dispose();
                 bExplorer = false;
@@ -928,19 +922,12 @@ public class DemoBase2 extends javax.swing.JFrame implements FrameRateListener, 
             }
         }
     }
-    
+
+    //** Clean up later... no longer used... using advoptions **/
     public void OpenOptions() {
         if (bOptions == false) {
-            options = new OptionsGUI();
-            options.setPScene(sceneData.getPScene());
-            options.setSelectedInstance(jPanel_Animations1.getSelectedModelInstance());
-            options.initValues();
-            options.setAvatarName(avatarName);
-            options.setAvatarGender(avatarGender);
-            options.setVisible(true);
             bOptions = true;
         } else {
-            options.dispose();
             bOptions = false;
         }
     }
