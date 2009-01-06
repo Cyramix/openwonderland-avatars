@@ -40,6 +40,7 @@ import com.jme.util.TextureManager;
 import imi.character.Character;
 import imi.gui.AdvOptions;
 import imi.gui.JFrame_AdvOptions;
+import imi.gui.JFrame_SimpAdvOptions;
 import imi.gui.JPanel_Animations;
 import imi.gui.JPanel_BasicOptions;
 import imi.gui.JPanel_EZOptions;
@@ -120,6 +121,7 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
     protected RenderBuffer              m_renderBuffer      = null;
     protected Component                 m_base              = this;
     protected JFrame_AdvOptions         m_AdvOptions        = null;
+    protected JFrame_SimpAdvOptions     m_SimpAdvOptions    = null;
     protected TreeExplorer              m_NodeExplorer      = null;
     protected JFrame                    m_AnimationViewer   = null;
     protected JPanel_ServerBrowser      m_ServerBrowser     = null;
@@ -127,8 +129,8 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
     protected JPanel_EZOptions          m_EZOptions         = null;
     protected FlexibleCameraProcessor   m_cameraProcessor   = null;
     protected URL                       m_presetCaucasian   = null;
-    protected Dimension                 m_DefaultSize       = new Dimension(m_width, 650);
-    protected Dimension                 m_OpenSize          = new Dimension(800, 650);
+    protected Dimension                 m_DefaultSize       = new Dimension(m_width, 675);
+    protected Dimension                 m_OpenSize          = new Dimension(500, 675);
 
 ////////////////////////////////////////////////////////////////////////////////
 // CLASS DATA MEMBERS - END
@@ -812,17 +814,37 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
     }
 
     public void openAvatarEditor() {
-//        m_AvatarOptions = new OptionsGUI();
-//        m_AvatarOptions.setPScene(m_sceneData.getPScene());
-//        PNode node = m_sceneData.getPScene().getInstances();
-//        if (node.getChildrenCount() > 0)
-//            m_AvatarOptions.setSelectedInstance((PPolygonModelInstance) node.getChild(0));
-//        m_AvatarOptions.setVisible(true);
+        if (m_AdvOptions != null) {
+            if (m_AdvOptions.isVisible()) {
+                m_AdvOptions.dispose();
+                return;
+            }
+        }
+
         m_AdvOptions = new JFrame_AdvOptions(m_sceneData);
         m_AdvOptions.setVisible(true);
     }
-    
+
+    public void openBasicEditor() {
+        if (m_SimpAdvOptions != null) {
+            if (m_SimpAdvOptions.isVisible()) {
+                m_SimpAdvOptions.dispose();
+                return;
+            }
+        }
+
+        m_SimpAdvOptions = new JFrame_SimpAdvOptions(m_sceneData);
+        m_SimpAdvOptions.setVisible(true);
+    }
+
     public void openNodeExplorer() {
+        if (m_NodeExplorer != null) {
+            if (m_NodeExplorer.isVisible()) {
+                m_NodeExplorer.dispose();
+                return;
+            }
+        }
+        
         m_NodeExplorer = new TreeExplorer();
         m_NodeExplorer.setExplorer(m_sceneData);
         m_NodeExplorer.setVisible(true);
@@ -867,9 +889,9 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
         java.awt.GridBagConstraints gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.gridheight = java.awt.GridBagConstraints.REMAINDER;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.VERTICAL;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.gridheight = java.awt.GridBagConstraints.RELATIVE;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTH;
         jPanel_MainPanel.add(m_ServerBrowser, gridBagConstraints);
         this.pack();
     }
@@ -906,10 +928,11 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
         java.awt.GridBagConstraints gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.gridheight = java.awt.GridBagConstraints.REMAINDER;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.VERTICAL;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.gridheight = java.awt.GridBagConstraints.RELATIVE;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTH;
         jPanel_MainPanel.add(m_BasicOptions, gridBagConstraints);
+
         this.pack();
     }
 
@@ -945,12 +968,13 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
         java.awt.GridBagConstraints gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.gridheight = java.awt.GridBagConstraints.REMAINDER;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.VERTICAL;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.gridheight = java.awt.GridBagConstraints.RELATIVE;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTH;
         jPanel_MainPanel.add(m_EZOptions, gridBagConstraints);
+
         this.pack();
+
         m_EZOptions.readPresetList(m_presetCaucasian);
         m_EZOptions.setTable();
     }
@@ -993,13 +1017,13 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
 
         jPanel_MainPanel = new javax.swing.JPanel();
         jToolBar_Hotkeys = new javax.swing.JToolBar();
-        jButton1 = new javax.swing.JButton();
+        jButton_EZoptions = new javax.swing.JButton();
         jSeparator1 = new javax.swing.JToolBar.Separator();
-        jButton2 = new javax.swing.JButton();
+        jButton_IntermediateOptions = new javax.swing.JButton();
         jSeparator2 = new javax.swing.JToolBar.Separator();
-        jButton3 = new javax.swing.JButton();
+        jButton_ServerBrowser = new javax.swing.JButton();
         jSeparator3 = new javax.swing.JToolBar.Separator();
-        jButton4 = new javax.swing.JButton();
+        jButton_BasicEditor = new javax.swing.JButton();
         jPanel_DisplayWindow = new javax.swing.JPanel();
         canvas_SceneRenderWindow = new java.awt.Canvas();
         jPanel_ProgressBar = new javax.swing.JPanel();
@@ -1025,58 +1049,66 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
-        getContentPane().setLayout(new java.awt.GridBagLayout());
 
-        jPanel_MainPanel.setMinimumSize(new java.awt.Dimension(800, 600));
-        jPanel_MainPanel.setPreferredSize(new java.awt.Dimension(800, 600));
+        jPanel_MainPanel.setMinimumSize(new java.awt.Dimension(400, 674));
+        jPanel_MainPanel.setPreferredSize(new java.awt.Dimension(400, 674));
         jPanel_MainPanel.setLayout(new java.awt.GridBagLayout());
 
         jToolBar_Hotkeys.setRollover(true);
-        jToolBar_Hotkeys.setMaximumSize(new java.awt.Dimension(800, 22));
-        jToolBar_Hotkeys.setMinimumSize(new java.awt.Dimension(400, 22));
-        jToolBar_Hotkeys.setPreferredSize(new java.awt.Dimension(400, 22));
+        jToolBar_Hotkeys.setMaximumSize(new java.awt.Dimension(800, 25));
+        jToolBar_Hotkeys.setMinimumSize(new java.awt.Dimension(400, 25));
+        jToolBar_Hotkeys.setPreferredSize(new java.awt.Dimension(400, 25));
 
-        jButton1.setText("jButton1");
-        jButton1.setFocusable(false);
-        jButton1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton1.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        jButton_EZoptions.setBackground(new java.awt.Color(0, 255, 255));
+        jButton_EZoptions.setText("EZOptions");
+        jButton_EZoptions.setFocusable(false);
+        jButton_EZoptions.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton_EZoptions.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jButton_EZoptions.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 openEZOptions();
             }
         });
-        jToolBar_Hotkeys.add(jButton1);
+        jToolBar_Hotkeys.add(jButton_EZoptions);
         jToolBar_Hotkeys.add(jSeparator1);
 
-        jButton2.setText("jButton2");
-        jButton2.setFocusable(false);
-        jButton2.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton2.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
+        jButton_IntermediateOptions.setBackground(new java.awt.Color(0, 204, 255));
+        jButton_IntermediateOptions.setText("+Options");
+        jButton_IntermediateOptions.setFocusable(false);
+        jButton_IntermediateOptions.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton_IntermediateOptions.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jButton_IntermediateOptions.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 openBasicOptions();
             }
         });
-        jToolBar_Hotkeys.add(jButton2);
+        jToolBar_Hotkeys.add(jButton_IntermediateOptions);
         jToolBar_Hotkeys.add(jSeparator2);
 
-        jButton3.setText("jButton3");
-        jButton3.setFocusable(false);
-        jButton3.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton3.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jButton3.addActionListener(new java.awt.event.ActionListener() {
+        jButton_ServerBrowser.setBackground(new java.awt.Color(0, 153, 204));
+        jButton_ServerBrowser.setText("Server Browser");
+        jButton_ServerBrowser.setFocusable(false);
+        jButton_ServerBrowser.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton_ServerBrowser.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jButton_ServerBrowser.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 openServerBrowser();
             }
         });
-        jToolBar_Hotkeys.add(jButton3);
+        jToolBar_Hotkeys.add(jButton_ServerBrowser);
         jToolBar_Hotkeys.add(jSeparator3);
 
-        jButton4.setText("jButton4");
-        jButton4.setFocusable(false);
-        jButton4.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton4.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jToolBar_Hotkeys.add(jButton4);
+        jButton_BasicEditor.setBackground(new java.awt.Color(0, 102, 204));
+        jButton_BasicEditor.setText("Basic Avatar Editor");
+        jButton_BasicEditor.setFocusable(false);
+        jButton_BasicEditor.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton_BasicEditor.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jButton_BasicEditor.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                openBasicEditor();
+            }
+        });
+        jToolBar_Hotkeys.add(jButton_BasicEditor);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -1086,7 +1118,7 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
         jPanel_MainPanel.add(jToolBar_Hotkeys, gridBagConstraints);
 
         jPanel_DisplayWindow.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
-        jPanel_DisplayWindow.setMaximumSize(new java.awt.Dimension(800, 600));
+        jPanel_DisplayWindow.setMaximumSize(new java.awt.Dimension(400, 600));
         jPanel_DisplayWindow.setMinimumSize(new java.awt.Dimension(400, 600));
         jPanel_DisplayWindow.setPreferredSize(new java.awt.Dimension(400, 600));
         jPanel_DisplayWindow.setLayout(new java.awt.GridBagLayout());
@@ -1140,19 +1172,10 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         jPanel_MainPanel.add(jPanel_ProgressBar, gridBagConstraints);
 
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.gridwidth = java.awt.GridBagConstraints.RELATIVE;
-        gridBagConstraints.gridheight = java.awt.GridBagConstraints.RELATIVE;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.weighty = 1.0;
-        getContentPane().add(jPanel_MainPanel, gridBagConstraints);
-
         jMenuBar_MainMenu.setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED));
         jMenuBar_MainMenu.setMaximumSize(new java.awt.Dimension(999999, 25));
         jMenuBar_MainMenu.setMinimumSize(new java.awt.Dimension(400, 25));
+        jMenuBar_MainMenu.setPreferredSize(new java.awt.Dimension(400, 25));
 
         jMenu_File.setText("File");
         jMenu_File.getPopupMenu().setLightWeightPopupEnabled(false);
@@ -1281,6 +1304,17 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
 
         setJMenuBar(jMenuBar_MainMenu);
 
+        org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(jPanel_MainPanel, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 720, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(jPanel_MainPanel, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 650, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+        );
+
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
@@ -1294,10 +1328,10 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private java.awt.Canvas canvas_SceneRenderWindow;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
+    private javax.swing.JButton jButton_BasicEditor;
+    private javax.swing.JButton jButton_EZoptions;
+    private javax.swing.JButton jButton_IntermediateOptions;
+    private javax.swing.JButton jButton_ServerBrowser;
     private javax.swing.JLabel jLabel_FPSCounter;
     private javax.swing.JLabel jLabel_LoadingText;
     private javax.swing.JMenuBar jMenuBar_MainMenu;

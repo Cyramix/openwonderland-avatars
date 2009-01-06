@@ -308,7 +308,7 @@ public class JFrame_SimpAdvOptions extends javax.swing.JFrame {
         ArmsNLegsOptions = new imi.gui.JPanel_SimpArmsLegsOptions();
         jPanel_SimpBodyOptions1 = new imi.gui.JPanel_SimpBodyOptions();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         jTabbedPane1.addTab("Head", HeadOptions);
         jTabbedPane1.addTab("Arms & Legs", ArmsNLegsOptions);
