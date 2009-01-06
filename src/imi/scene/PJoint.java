@@ -39,7 +39,7 @@ public class PJoint extends PNode
     
     /** The local modifier matirx is used for effects that do not
      * cascade down the hierarchy, for e.g. body fat */
-    private PMatrix         m_localModifier = new PMatrix();
+    private final PMatrix   m_localModifier = new PMatrix();
 	
     /**
      * Empty constructor, for low level coding.

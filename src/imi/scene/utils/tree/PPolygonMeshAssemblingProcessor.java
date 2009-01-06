@@ -29,6 +29,7 @@ import imi.scene.polygonmodel.PPolygonMeshInstance;
  */
 public class PPolygonMeshAssemblingProcessor implements NodeProcessor 
 {
+    private static final PPolygonTriMeshAssembler assembler = new PPolygonTriMeshAssembler();
     public PPolygonMeshAssemblingProcessor()
     {
         // do nothing
@@ -36,9 +37,9 @@ public class PPolygonMeshAssemblingProcessor implements NodeProcessor
     
     public boolean processNode(PNode currentNode) {
         if (currentNode instanceof PPolygonMesh)
-            ((PPolygonMesh)currentNode).submit(new PPolygonTriMeshAssembler());
+            ((PPolygonMesh)currentNode).submit(assembler);
         else if (currentNode instanceof PPolygonMeshInstance)
-            ((PPolygonMeshInstance)currentNode).getGeometry().submit(new PPolygonTriMeshAssembler());
+            ((PPolygonMeshInstance)currentNode).getGeometry().submit(assembler);
         // return true either way
         return true;
     }

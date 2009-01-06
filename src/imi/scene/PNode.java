@@ -770,7 +770,7 @@ public class PNode
     
     public ArrayList<PMatrix> generateSkinnedMeshLocalModifierReferences()
     {
-        ArrayList<PMatrix> names = new ArrayList<PMatrix>();
+        ArrayList<PMatrix> localModifiers = new ArrayList<PMatrix>();
         
         LinkedList<PNode> list = new LinkedList<PNode>();
         list.add(this);
@@ -784,12 +784,12 @@ public class PNode
             if (!(current instanceof SkinnedMeshJoint)) // Prune this branch?
                 continue;
             else
-                names.add(((SkinnedMeshJoint)current).getLocalModifierMatrix());
+                localModifiers.add(((SkinnedMeshJoint)current).getLocalModifierMatrix());
             // Add to the list all the kids
             for (PNode kid : current.getChildren())
                 list.add(kid);
         }
-        return names;
+        return localModifiers;
     }
     
     /**

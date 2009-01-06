@@ -261,7 +261,6 @@ public class InstructionProcessor
      */
     private boolean addSkinnedMesh(Object[] parameters)
     {
-        boolean result = false;
         // Extract the necessary information
         String skinnedMeshName = (String)parameters[0];
         String subGroupName = (String)parameters[1];
@@ -274,32 +273,43 @@ public class InstructionProcessor
             if (mesh.getName().equals(skinnedMeshName))
             {
                 skinnedMesh = (PPolygonSkinnedMesh) mesh;
-                break;
+                    // Make an instance
+                PPolygonSkinnedMeshInstance skinnedMeshInstance = (PPolygonSkinnedMeshInstance) m_loadingPScene.addMeshInstance(skinnedMesh, new PMatrix());
+                // Debugging / Diagnostic information
+                logger.log(Level.INFO, "Adding mesh, \"" + skinnedMeshName + "\" to subgroup, \"" + subGroupName + "\"");
+
+                //  Link the SkinnedMesh to the Skeleton.
+                skinnedMeshInstance.setAndLinkSkeletonNode(m_skeleton);
+
+                // Add it to the skeleton
+                m_skeleton.addToSubGroup(skinnedMeshInstance, subGroupName);
+//                break;
             }
         }
-        // Did we find it?
-        if (skinnedMesh == null)
-        {
-            logger.severe("Unable to find the specified skinned mesh for attaching - "
-                            + skinnedMeshName + " attached to " + subGroupName);
-            result = false;
-        }
-        else
-        {
-            // Make an instance
-            PPolygonSkinnedMeshInstance skinnedMeshInstance = (PPolygonSkinnedMeshInstance) m_loadingPScene.addMeshInstance(skinnedMesh, new PMatrix());
-            // Debugging / Diagnostic information
-            logger.log(Level.INFO, "Adding mesh, \"" + skinnedMeshName + "\" to subgroup, \"" + subGroupName + "\"");
-
-            //  Link the SkinnedMesh to the Skeleton.
-            skinnedMeshInstance.setAndLinkSkeletonNode(m_skeleton);
-
-            // Add it to the skeleton
-            m_skeleton.addToSubGroup(skinnedMeshInstance, subGroupName);
-            
-            result = true;
-        }
-        return result;
+//        // Did we find it?
+//        if (skinnedMesh == null)
+//        {
+//            logger.severe("Unable to find the specified skinned mesh for attaching - "
+//                            + skinnedMeshName + " attached to " + subGroupName);
+//            result = false;
+//        }
+//        else
+//        {
+//            // Make an instance
+//            PPolygonSkinnedMeshInstance skinnedMeshInstance = (PPolygonSkinnedMeshInstance) m_loadingPScene.addMeshInstance(skinnedMesh, new PMatrix());
+//            // Debugging / Diagnostic information
+//            logger.log(Level.INFO, "Adding mesh, \"" + skinnedMeshName + "\" to subgroup, \"" + subGroupName + "\"");
+//
+//            //  Link the SkinnedMesh to the Skeleton.
+//            skinnedMeshInstance.setAndLinkSkeletonNode(m_skeleton);
+//
+//            // Add it to the skeleton
+//            m_skeleton.addToSubGroup(skinnedMeshInstance, subGroupName);
+//
+//            result = true;
+//        }
+//        return result;
+        return true;
     }
 
     /**

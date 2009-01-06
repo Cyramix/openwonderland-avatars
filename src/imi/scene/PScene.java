@@ -44,9 +44,9 @@ import imi.scene.utils.PRenderer;
 import imi.scene.utils.tree.PSceneSubmitHelper;
 import imi.scene.utils.tree.TreeTraverser;
 import imi.utils.BooleanPointer;
-import java.io.FileNotFoundException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import javolution.util.FastList;
 import org.jdesktop.mtgame.WorldManager;
@@ -67,8 +67,8 @@ public class PScene extends PNode implements RepositoryUser
     
     // Shared Assets
     private boolean m_bUseRepository                = true;
-    private FastList<SharedAsset> m_SharedAssets    = new FastList<SharedAsset>();
-    private final ArrayList<SharedAssetPlaceHolder> m_SharedAssetWaitingList = new ArrayList<SharedAssetPlaceHolder>();
+    private final FastList<SharedAsset> m_SharedAssets    = new FastList<SharedAsset>();
+    private final FastList<SharedAssetPlaceHolder> m_SharedAssetWaitingList = new FastList<SharedAssetPlaceHolder>();
 
     // Instances
     private PNode m_Instances                       = null;
@@ -350,7 +350,7 @@ public class PScene extends PNode implements RepositoryUser
      * Returns the list of placeholder assets
      * @return m_SharedAssetWaitingList (ArrayList<SharedAssetPlaceHolder>)
      */
-    public ArrayList<SharedAssetPlaceHolder> getAssetWaitingList() {
+    public List<SharedAssetPlaceHolder> getAssetWaitingList() {
         return m_SharedAssetWaitingList;
     }
 
@@ -527,14 +527,11 @@ public class PScene extends PNode implements RepositoryUser
         meshInst.setName(mesh.getName());
         
         // Take the kids out of the sack
-        for (int i = 0; i < kids.size(); i++)
+        if (kids != null)
         {
-            PNode kid = kids.get(i);
-            if (kid.getName().equals("m_TransformHierarchy"))
-                continue;
+        for (PNode kid : kids)
             meshInst.addChild(processNode(kid));
         }
-        
         return meshInst;
     }
     
@@ -662,56 +659,54 @@ public class PScene extends PNode implements RepositoryUser
     public void receiveAsset(SharedAsset asset) 
     {
         if (asset.getAssetData() == null)
-        {
-            // Worker timed out - unable to reach source?
-            System.out.println("PScene - receiveAsset - timed out (data is null) - " + asset.getDescriptor().getLocation().getFile());
-        }
-        
-       boolean success = false;
-        
-       synchronized(m_SharedAssetWaitingList)
+            logger.severe("PScene - receiveAsset - timed out (data is null) - " + asset.getDescriptor().getLocation().getFile());
+
+       SharedAssetPlaceHolder target = null;
+
+       Iterator<SharedAssetPlaceHolder> placeHolderIter = m_SharedAssetWaitingList.iterator();
+
+       synchronized(m_SharedAssetWaitingList) // Watch out for concurrent modifications!
        {
-           for (int i = 0; i < m_SharedAssetWaitingList.size(); i++)
+           while (placeHolderIter.hasNext() && target == null)
            {
-                SharedAssetPlaceHolder placeHolder = m_SharedAssetWaitingList.get(i);
-
+               SharedAssetPlaceHolder placeHolder = placeHolderIter.next();
                 if (asset.getDescriptor().equals(placeHolder.getDescriptor()))
-                {
-                    // install the asset into the scene graph,
-                    // this will swap the placeHolder with the asset while maintaining the graph structure (kids from both will remain)
-                    synchronized (placeHolder)
-                    {
-                        // If the asset was able to load
-                        if (asset.getAssetData() != null)
-                            installAsset(placeHolder, asset);
-                        else
-                        {
-                            placeHolder.setName(placeHolder.getName() + " ERROR : Asset was unable to load");
-                            System.err.println(placeHolder.getName());
-                        }
-                    }
-
-                    // remove from the waiting list
-                    m_SharedAssetWaitingList.remove(i);
-                    
-                    //System.out.println(asset.getDescriptor().getType().toString() + " receiveAsset - asset removed from m_SharedAssetWaitingList: " + asset.getDescriptor().getLocation().getPath());
-                    
-                    // take care of all the freeloaders
-                    for (int j = 0; j < placeHolder.getFreeloaderCount(); j++)
-                    {
-                        SharedAssetPlaceHolder freeloader = placeHolder.getFreeloader(j);
-                        installAsset(freeloader, asset);
-                    }
-                    placeHolder.clearFreeloaders();
-
-                    success = true;
-                    break;
-                }
-            }
+                    target = placeHolder;
+           }
        }
-       
-       if (!success)
-           System.out.println(asset.getDescriptor().getType().toString() + " : " + getName() + "'s SharedAsset received but no one came to pick it up! " + asset.getDescriptor().getLocation().getPath());            
+
+
+       if (target != null)
+       {
+            // install the asset into the scene graph,
+            // this will swap the placeHolder with the asset while maintaining the graph structure (kids from both will remain)
+
+            // If the asset was able to load
+            if (asset.getAssetData() != null)
+                installAsset(target, asset);
+            else
+            {
+                target.setName(target.getName() + " ERROR : Asset was unable to load");
+                logger.severe("Unable to load asset for " + target.getName());
+            }
+
+
+            // remove from the waiting list
+            synchronized (m_SharedAssetWaitingList)
+            {
+                m_SharedAssetWaitingList.remove(target);
+            }
+
+            // take care of all the freeloaders
+            for (int j = 0; j < target.getFreeloaderCount(); j++)
+            {
+                SharedAssetPlaceHolder freeloader = target.getFreeloader(j);
+                installAsset(freeloader, asset);
+            }
+            target.clearFreeloaders();
+       }
+       else
+           logger.warning(asset.getDescriptor().getType().toString() + " : " + getName() + "'s SharedAsset received but no one came to pick it up! " + asset.getDescriptor().getLocation().getPath());
     }
     
     /**
