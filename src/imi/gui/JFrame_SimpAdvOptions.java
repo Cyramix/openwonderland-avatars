@@ -1,25 +1,12 @@
-/**
- * Project Wonderland
- *
- * Copyright (c) 2004-2008, Sun Microsystems, Inc., All Rights Reserved
- *
- * Redistributions in source code form must reproduce the above
- * copyright and this condition.
- *
- * The contents of this file are subject to the GNU General Public
- * License, Version 2 (the "License"); you may not use this file
- * except in compliance with the License. A copy of the License is
- * available at http://www.opensource.org/licenses/gpl-license.php.
- *
- * Sun designates this particular file as subject to the "Classpath"
- * exception as provided by Sun in the License file that accompanied
- * this code.
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
  */
 
 /*
- * JFrame_AdvOptions.java
+ * JFrame_SimpAdvOptions.java
  *
- * Created on Dec 17, 2008, 11:37:01 AM
+ * Created on Jan 5, 2009, 4:45:17 PM
  */
 
 package imi.gui;
@@ -34,28 +21,27 @@ import java.util.Map;
 
 /**
  *
- * @author Paul Viet Nguyen Truong (ptruong)
+ * @author ptruong
  */
-public class JFrame_AdvOptions extends javax.swing.JFrame {
+public class JFrame_SimpAdvOptions extends javax.swing.JFrame {
 ////////////////////////////////////////////////////////////////////////////////
 // Class Data Members
 ////////////////////////////////////////////////////////////////////////////////
-    private Map<GUI_Enums.m_bodyPart, SkinnedMeshJoint[]> m_skeleton;
-    private SceneEssentials                     m_sceneData;
-    private NumberFormat                        m_format;
+    private Map<GUI_Enums.m_bodyPart, SkinnedMeshJoint[]>   m_skeleton;
+    private SceneEssentials                                 m_sceneData;
+    private NumberFormat                                    m_format;
 
 ////////////////////////////////////////////////////////////////////////////////
 // Class Methods
 ////////////////////////////////////////////////////////////////////////////////
 
-    /** Creates new form JFrame_AdvOptions */
-    public JFrame_AdvOptions() {
+    /** Creates new form JFrame_SimpAdvOptions */
+    public JFrame_SimpAdvOptions() {
         initComponents();
-        HeadOptions.setParentFrame(this);
     }
 
-    public JFrame_AdvOptions(SceneEssentials scene) {
-        m_sceneData = scene;
+    public JFrame_SimpAdvOptions(SceneEssentials sceneinfo) {
+        m_sceneData = sceneinfo;
         initComponents();
         createJointCatalog();
     }
@@ -192,354 +178,11 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
         }
     }
 
-    private synchronized void adjustHands(GUI_Enums.m_sliderControl type, float mod, float actualval) {
-        SkeletonNode skelnode           = m_sceneData.getAvatar().getSkeleton();
-        if (skelnode == null) { return; }
-
-        SkinnedMeshJoint[] lefthand     = m_skeleton.get(GUI_Enums.m_bodyPart.Left_Hand);
-        SkinnedMeshJoint[] righthand    = m_skeleton.get(GUI_Enums.m_bodyPart.Right_Hand);
-        Vector3f            ladjust         = new Vector3f(0.0f, mod, 0.0f);
-        Vector3f            radjust         = new Vector3f(0.0f, mod, 0.0f);
-
-        switch(type)
-        {
-            case lefthandLength:
-            {
-                skelnode.displaceJoint(lefthand[0].getName(), ladjust);
-                break;
-            }
-            case righthandLength:
-            {
-                skelnode.displaceJoint(righthand[0].getName(), radjust);
-                break;
-            }
-            case lefthandThickness:
-            {
-                for (int i = 0; i < lefthand.length; i++) {
-                    ladjust = new Vector3f(lefthand[i].getLocalModifierMatrix().getScaleVector());
-                    ladjust.x = 1.0f;   ladjust.x += mod;
-                    ladjust.z = 1.0f;   ladjust.z += mod;
-                    lefthand[i].getLocalModifierMatrix().setScale(ladjust);
-                }
-                break;
-            }
-            case righthandThickness:
-            {
-                for (int i = 0; i < righthand.length; i++) {
-                    radjust = new Vector3f(righthand[i].getLocalModifierMatrix().getScaleVector());
-                    radjust.x = 1.0f;   radjust.x += mod;
-                    radjust.z = 1.0f;   radjust.z += mod;
-                    righthand[i].getLocalModifierMatrix().setScale(radjust);
-                }
-
-                break;
-            }
-        }
-    }
-
-    private synchronized void adjustForearms(GUI_Enums.m_sliderControl type, float mod, float actualval) {
-        SkeletonNode    skelnode    = m_sceneData.getAvatar().getSkeleton();
-        String          formattedNumber = null;
-        if (skelnode == null) { return; }
-
-        SkinnedMeshJoint[]  leftforearm     = m_skeleton.get(GUI_Enums.m_bodyPart.Left_LowerArm);
-        SkinnedMeshJoint[]  rightforearm    = m_skeleton.get(GUI_Enums.m_bodyPart.Right_LowerArm);
-        Vector3f            ladjust         = new Vector3f(0.0f, mod, 0.0f);
-        Vector3f            radjust         = new Vector3f(0.0f, mod, 0.0f);
-        Vector3f            scale           = new Vector3f(1.0f, 1.0f, 1.0f);
-        m_format                            = new DecimalFormat("0.00");
-
-        switch(type)
-        {
-            case leftlowerarmLength:
-            {
-                skelnode.displaceJoint(leftforearm[1].getName(), ladjust);
-
-                if (actualval <= 0.05f) {
-                    for (int i = 0; i < leftforearm.length; i++) {
-                        float y = scale.y += actualval * 3;
-                        formattedNumber = m_format.format(y);
-                        scale.y = Float.valueOf(formattedNumber);
-                        leftforearm[i].getLocalModifierMatrix().setScale(scale);
-                    }
-                }
-
-                break;
-            }
-            case rightlowerarmLength:
-            {
-                skelnode.displaceJoint(rightforearm[1].getName(), radjust);
-
-                if (actualval <= 0.05f) {
-                    for (int i = 0; i < rightforearm.length; i++) {
-                        float y = scale.y += actualval * 3;
-                        formattedNumber = m_format.format(y);
-                        scale.y = Float.valueOf(formattedNumber);
-                        rightforearm[i].getLocalModifierMatrix().setScale(scale);
-                    }
-                }
-
-                break;
-            }
-            case leftlowerarmThickness:
-            {
-                for (int i = 0; i < leftforearm.length; i++) {
-                    ladjust = new Vector3f(leftforearm[i].getLocalModifierMatrix().getScaleVector());
-                    ladjust.x = 1.0f;   ladjust.x += mod;
-                    ladjust.z = 1.0f;   ladjust.z += mod;
-                    leftforearm[i].getLocalModifierMatrix().setScale(ladjust);
-                }
-                break;
-            }
-            case rightlowerarmThickness:
-            {
-                for (int i = 0; i < rightforearm.length; i++) {
-                    radjust = new Vector3f(rightforearm[i].getLocalModifierMatrix().getScaleVector());
-                    radjust.x = 1.0f;   radjust.x += mod;
-                    radjust.z = 1.0f;   radjust.z += mod;
-                    rightforearm[i].getLocalModifierMatrix().setScale(radjust);
-                }
-                break;
-            }
-        }
-    }
-
-    private synchronized void adjustUpperarms(GUI_Enums.m_sliderControl type, float mod, float actualval) {
-        SkeletonNode    skelnode        = m_sceneData.getAvatar().getSkeleton();
-        String          formattedNumber = null;
-        if (skelnode == null) { return; }
-
-        SkinnedMeshJoint[]  leftupperarm    = m_skeleton.get(GUI_Enums.m_bodyPart.Left_UpperArm);
-        SkinnedMeshJoint[]  rightupperarm   = m_skeleton.get(GUI_Enums.m_bodyPart.Right_UpperArm);
-        Vector3f            ladjust         = new Vector3f(0.0f, mod, 0.0f);
-        Vector3f            radjust         = new Vector3f(0.0f, mod, 0.0f);
-        Vector3f            scale           = new Vector3f(1.0f, 1.0f, 1.0f);
-        m_format                            = new DecimalFormat("0.00");
-
-        switch(type)
-        {
-            case leftupperarmLength:
-            {
-                skelnode.displaceJoint(leftupperarm[1].getName(), ladjust);
-
-                if (actualval <= 0.05f) {
-                    for (int i = 0; i < leftupperarm.length; i++) {
-                        float y = scale.y += actualval * 4;
-                        formattedNumber = m_format.format(y);
-                        scale.y = Float.valueOf(formattedNumber);
-                        leftupperarm[i].getLocalModifierMatrix().setScale(scale);
-                    }
-                }
-
-                break;
-            }
-            case rightupperarmLength:
-            {
-                skelnode.displaceJoint(rightupperarm[1].getName(), radjust);
-
-                if (actualval <= 0.05f) {
-                    for (int i = 0; i < rightupperarm.length; i++) {
-                        float y = scale.y += actualval * 4;
-                        formattedNumber = m_format.format(y);
-                        scale.y = Float.valueOf(formattedNumber);
-                        rightupperarm[i].getLocalModifierMatrix().setScale(scale);
-                    }
-                }
-
-                break;
-            }
-            case leftupperarmThickness:
-            {
-                for (int i = 0; i < leftupperarm.length; i++) {
-                    ladjust = new Vector3f(leftupperarm[i].getLocalModifierMatrix().getScaleVector());
-                    ladjust.x = 1.0f;   ladjust.x += mod;
-                    ladjust.z = 1.0f;   ladjust.z += mod;
-                    leftupperarm[i].getLocalModifierMatrix().setScale(ladjust);
-                }
-                break;
-            }
-            case rightupperarmThickness:
-            {
-                for (int i = 0; i < rightupperarm.length; i++) {
-                    radjust = new Vector3f(rightupperarm[i].getLocalModifierMatrix().getScaleVector());
-                    radjust.x = 1.0f;   radjust.x += mod;
-                    radjust.z = 1.0f;   radjust.z += mod;
-                    rightupperarm[i].getLocalModifierMatrix().setScale(radjust);
-                }
-                break;
-            }
-        }
-    }
-
-    private synchronized void adjustFeet(GUI_Enums.m_sliderControl type, float mod, float actualval) {
-        SkeletonNode    skelnode    = m_sceneData.getAvatar().getSkeleton();
-        if (skelnode == null) { return; }
-
-        SkinnedMeshJoint[]  leftfoot    = m_skeleton.get(GUI_Enums.m_bodyPart.Left_Foot);
-        SkinnedMeshJoint[]  rightfoot   = m_skeleton.get(GUI_Enums.m_bodyPart.Right_Foot);
-        Vector3f            ladjust     = new Vector3f(0.0f, mod, mod);
-        Vector3f            radjust     = new Vector3f(0.0f, mod, mod);
-
-        switch(type)
-        {
-            case leftfootLength:
-            {
-                skelnode.displaceJoint(leftfoot[1].getName(), ladjust);
-                break;
-            }
-            case rightfootLength:
-            {
-                skelnode.displaceJoint(rightfoot[1].getName(), radjust);
-                break;
-            }
-            case leftfootThickness:
-            {
-                for (int i = 0; i < leftfoot.length; i++) {
-                    ladjust = new Vector3f(leftfoot[i].getLocalModifierMatrix().getScaleVector());
-                    ladjust.x = 1.0f;   ladjust.x += mod;
-                    ladjust.z = 1.0f;   ladjust.z += mod;
-                    leftfoot[i].getLocalModifierMatrix().setScale(ladjust);
-                }
-                break;
-            }
-            case rightfootThickness:
-            {
-                for (int i = 0; i < rightfoot.length; i++) {
-                    radjust = new Vector3f(rightfoot[i].getLocalModifierMatrix().getScaleVector());
-                    radjust.x = 1.0f;   radjust.x += mod;
-                    radjust.z = 1.0f;   radjust.z += mod;
-                    rightfoot[i].getLocalModifierMatrix().setScale(radjust);
-                }
-                break;
-            }
-        }
-    }
-
-    private synchronized void adjustCalves(GUI_Enums.m_sliderControl type, float mod, float actualval) {
-        SkeletonNode    skelnode    = m_sceneData.getAvatar().getSkeleton();
-        String          formattedNumber = null;
-        if (skelnode == null) { return; }
-
-        SkinnedMeshJoint[]  leftlowerleg    = m_skeleton.get(GUI_Enums.m_bodyPart.Left_LowerLeg);
-        SkinnedMeshJoint[]  rightlowerleg   = m_skeleton.get(GUI_Enums.m_bodyPart.Right_LowerLeg);
-        Vector3f            ladjust         = new Vector3f(0.0f, mod, 0.0f);
-        Vector3f            radjust         = new Vector3f(0.0f, mod, 0.0f);
-        Vector3f            scale           = new Vector3f(1.0f, 1.0f, 1.0f);
-        m_format                            = new DecimalFormat("0.00");
-
-        switch(type)
-        {
-            case leftlowerlegLength:
-            {
-                skelnode.displaceJoint(leftlowerleg[1].getName(), ladjust);
-
-                if (actualval <= 0.05f) {
-                    for (int i = 0; i < leftlowerleg.length; i++) {
-                        float y = scale.y += actualval * 2;
-                        formattedNumber = m_format.format(y);
-                        scale.y = Float.valueOf(formattedNumber);
-                        leftlowerleg[i].getLocalModifierMatrix().setScale(scale);
-                    }
-                }
-
-                break;
-            }
-            case rightlowerlegLength:
-            {
-                skelnode.displaceJoint(rightlowerleg[1].getName(), radjust);
-
-                if (actualval <= 0.05f) {
-                    for (int i = 0; i < rightlowerleg.length; i++) {
-                        float y = scale.y += actualval * 2;
-                        formattedNumber = m_format.format(y);
-                        scale.y = Float.valueOf(formattedNumber);
-                        rightlowerleg[i].getLocalModifierMatrix().setScale(scale);
-                    }
-                }
-
-                break;
-            }
-            case leftlowerlegThickness:
-            {
-                for (int i = 0; i < leftlowerleg.length; i++) {
-                    ladjust = new Vector3f(leftlowerleg[i].getLocalModifierMatrix().getScaleVector());
-                    ladjust.x = 1.0f;   ladjust.x += mod;
-                    ladjust.z = 1.0f;   ladjust.z += mod;
-                    leftlowerleg[i].getLocalModifierMatrix().setScale(ladjust);
-                }
-                break;
-            }
-            case rightlowerlegThickness:
-            {
-                for (int i = 0; i < rightlowerleg.length; i++) {
-                    radjust = new Vector3f(rightlowerleg[i].getLocalModifierMatrix().getScaleVector());
-                    radjust.x = 1.0f;   radjust.x += mod;
-                    radjust.z = 1.0f;   radjust.z += mod;
-                    rightlowerleg[i].getLocalModifierMatrix().setScale(radjust);
-                }
-                break;
-            }
-        }
-    }
-
-    private synchronized void adjustThighs(GUI_Enums.m_sliderControl type, float mod, float actualval) {
-        SkeletonNode    skelnode    = m_sceneData.getAvatar().getSkeleton();
-        if (skelnode == null) { return; }
-
-        SkinnedMeshJoint[]  leftupperleg    = m_skeleton.get(GUI_Enums.m_bodyPart.Left_UpperLeg);
-        SkinnedMeshJoint[]  rightupperleg   = m_skeleton.get(GUI_Enums.m_bodyPart.Right_UpperLeg);
-        Vector3f            ladjust         = new Vector3f(0.0f, mod, 0.0f);
-        Vector3f            radjust         = new Vector3f(0.0f, mod, 0.0f);
-        m_format                            = new DecimalFormat("0.00");
-
-        switch(type)
-        {
-            case leftupperlegLength:
-            {
-                skelnode.displaceJoint(leftupperleg[0].getName(), ladjust);
-                break;
-            }
-            case rightupperlegLength:
-            {
-                skelnode.displaceJoint(rightupperleg[0].getName(), radjust);
-                break;
-            }
-            case leftupperlegThickness:
-            {
-                for (int i = 0; i < leftupperleg.length; i++) {
-                    ladjust = new Vector3f(leftupperleg[i].getLocalModifierMatrix().getScaleVector());
-                    ladjust.x = 1.0f;   ladjust.x += mod;
-                    ladjust.z = 1.0f;   ladjust.z += mod;
-                    leftupperleg[i].getLocalModifierMatrix().setScale(ladjust);
-                }
-                break;
-            }
-            case rightupperlegThickness:
-            {
-                for (int i = 0; i < rightupperleg.length; i++) {
-                    radjust = new Vector3f(rightupperleg[i].getLocalModifierMatrix().getScaleVector());
-                    radjust.x = 1.0f;   radjust.x += mod;
-                    radjust.z = 1.0f;   radjust.z += mod;
-                    rightupperleg[i].getLocalModifierMatrix().setScale(radjust);
-                }
-                break;
-            }
-        }
-    }
-
-    private synchronized void adjustChest(GUI_Enums.m_sliderControl type, float mod, float actualval) {
+    private synchronized void adjustArms(GUI_Enums.m_sliderControl type, float mod, float actualval) {
 
     }
 
-    private synchronized void adjustStomach(GUI_Enums.m_sliderControl type, float mod, float actualval) {
-
-    }
-
-    private synchronized void adjustGluts(GUI_Enums.m_sliderControl type, float mod, float actualval) {
-
-    }
-
-    private synchronized void adjustBody(GUI_Enums.m_sliderControl type, float mod, float actualval) {
+    private synchronized void adjustLegs(GUI_Enums.m_sliderControl type, float mod, float actualval) {
 
     }
 
@@ -552,22 +195,25 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jTabbedPane_Options = new javax.swing.JTabbedPane();
-        HeadOptions = new imi.gui.JPanel_HeadOptions(this);
-        ArmsHandsOptions = new imi.gui.JPanel_ArmsHandsOption(this);
-        LegsFeetOptions = new imi.gui.JPanel_LegsFeetOption(this);
+        jTabbedPane1 = new javax.swing.JTabbedPane();
+        HeadOptions = new imi.gui.JPanel_HeadOptions();
+        ArmsNLegsOptions = new imi.gui.JPanel_SimpArmsLegsOptions();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        getContentPane().setLayout(new java.awt.GridBagLayout());
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jTabbedPane_Options.setTabLayoutPolicy(javax.swing.JTabbedPane.SCROLL_TAB_LAYOUT);
-        jTabbedPane_Options.setMinimumSize(new java.awt.Dimension(300, 650));
-        jTabbedPane_Options.setPreferredSize(new java.awt.Dimension(300, 650));
-        jTabbedPane_Options.addTab("Head", HeadOptions);
-        jTabbedPane_Options.addTab("Arms/Hands", ArmsHandsOptions);
-        jTabbedPane_Options.addTab("Legs/Feet", LegsFeetOptions);
+        jTabbedPane1.addTab("Head", HeadOptions);
+        jTabbedPane1.addTab("Arms & Legs", ArmsNLegsOptions);
 
-        getContentPane().add(jTabbedPane_Options, new java.awt.GridBagConstraints());
+        org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(jTabbedPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(jTabbedPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+        );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -578,7 +224,7 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
     public static void main(String args[]) {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new JFrame_AdvOptions().setVisible(true);
+                new JFrame_SimpAdvOptions().setVisible(true);
             }
         });
     }
@@ -608,10 +254,9 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private imi.gui.JPanel_ArmsHandsOption ArmsHandsOptions;
+    private imi.gui.JPanel_SimpArmsLegsOptions ArmsNLegsOptions;
     private imi.gui.JPanel_HeadOptions HeadOptions;
-    private imi.gui.JPanel_LegsFeetOption LegsFeetOptions;
-    private javax.swing.JTabbedPane jTabbedPane_Options;
+    private javax.swing.JTabbedPane jTabbedPane1;
     // End of variables declaration//GEN-END:variables
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -988,124 +633,44 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
                 // TODO: adjustMouth(control, mod, actualval);
                 break;
             }
-            case lefthandLength:
+            case leftarmLength:
             {
-                adjustHands(control, mod, actualval);
+                adjustArms(control, mod, actualval);
                 break;
             }
-            case lefthandThickness:
+            case leftarmScale:
             {
-                adjustHands(control, mod, actualval);
+                adjustArms(control, mod, actualval);
                 break;
             }
-            case leftlowerarmLength:
+            case rightarmLength:
             {
-                adjustForearms(control, mod, actualval);
+                adjustArms(control, mod, actualval);
                 break;
             }
-            case leftlowerarmThickness:
+            case rightarmScale:
             {
-                adjustForearms(control, mod, actualval);
+                adjustArms(control, mod, actualval);
                 break;
             }
-            case leftupperarmLength:
+            case leftlegLength:
             {
-                adjustUpperarms(control, mod, actualval);
+                adjustLegs(control, mod, actualval);
                 break;
             }
-            case leftupperarmThickness:
+            case leftlegScale:
             {
-                adjustUpperarms(control, mod, actualval);
+                adjustLegs(control, mod, actualval);
                 break;
             }
-            case righthandLength:
+            case rightlegLength:
             {
-                adjustHands(control, mod, actualval);
+                adjustLegs(control, mod, actualval);
                 break;
             }
-            case righthandThickness:
+            case rightlegScale:
             {
-                adjustHands(control, mod, actualval);
-                break;
-            }
-            case rightlowerarmLength:
-            {
-                adjustForearms(control, mod, actualval);
-                break;
-            }
-            case rightlowerarmThickness:
-            {
-                adjustForearms(control, mod, actualval);
-                break;
-            }
-            case rightupperarmLength:
-            {
-                adjustUpperarms(control, mod, actualval);
-                break;
-            }
-            case rightupperarmThickness:
-            {
-                adjustUpperarms(control, mod, actualval);
-                break;
-            }
-            case leftfootLength:
-            {
-                adjustFeet(control, mod, actualval);
-                break;
-            }
-            case leftfootThickness:
-            {
-                adjustFeet(control, mod, actualval);
-                break;
-            }
-            case leftlowerlegLength:
-            {
-                adjustCalves(control, mod, actualval);
-                break;
-            }
-            case leftlowerlegThickness:
-            {
-                adjustCalves(control, mod, actualval);
-                break;
-            }
-            case leftupperlegLength:
-            {
-                adjustThighs(control, mod, actualval);
-                break;
-            }
-            case leftupperlegThickness:
-            {
-                adjustThighs(control, mod, actualval);
-                break;
-            }
-            case rightfootLength:
-            {
-                adjustFeet(control, mod, actualval);
-                break;
-            }
-            case rightfootThickness:
-            {
-                adjustFeet(control, mod, actualval);
-                break;
-            }
-            case rightlowerlegLength:
-            {
-                adjustCalves(control, mod, actualval);
-                break;
-            }
-            case rightlowerlegThickness:
-            {
-                adjustCalves(control, mod, actualval);
-                break;
-            }
-            case rightupperlegLength:
-            {
-                adjustThighs(control, mod, actualval);
-                break;
-            }
-            case rightupperlegThickness:
-            {
-                adjustThighs(control, mod, actualval);
+                adjustLegs(control, mod, actualval);
                 break;
             }
             case headDepth:

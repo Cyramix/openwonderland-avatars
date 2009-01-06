@@ -29,9 +29,13 @@ import imi.tests.BaseDefault;
 import java.awt.Component;
 import java.awt.Cursor;
 import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 ////////////////////////////////////////////////////////////////////////////////
 // Imports - END
 ////////////////////////////////////////////////////////////////////////////////
@@ -323,7 +327,7 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
         query = "SELECT name, description, bodytype, url, id FROM DefaultAvatars WHERE description = '" + selection + "'";
         data = m_sceneData.loadSQLData(query);
 
-        query = "SELECT name FROM GeometryReferences WHERE referenceid = " + data.get(0)[4];
+        query = "SELECT name FROM GeometryReferences WHERE referenceid = " + data.get(0)[4] + " and tableref = 'DefaultAvatars'";
         meshref = m_sceneData.loadSQLData(query);
 
         meshes = new String[meshref.size()];
@@ -337,7 +341,13 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
         }
         else {
             addToAttributes(null, data, meshes, null, 0);
-            m_sceneData.getAvatar().loadAttributes(m_newAttribs);
+
+            try {
+                URL head = new URL(data.get(0)[3]);
+                m_sceneData.getAvatar().installHead(head);
+            } catch (MalformedURLException ex) {
+                Logger.getLogger(JPanel_BasicOptions.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
 
         jButton_ApplyHead.setEnabled(true);

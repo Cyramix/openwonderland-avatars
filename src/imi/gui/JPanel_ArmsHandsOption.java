@@ -331,18 +331,18 @@ public class JPanel_ArmsHandsOption extends javax.swing.JPanel {
     }
 
     public void setSliderControls() {
-        LeftHand_Length.setObjectRef(JFrame_AdvOptions.m_sliderControl.lefthandLength);
-        LeftHand_Thickness.setObjectRef(JFrame_AdvOptions.m_sliderControl.lefthandThickness);
-        LeftLowerarm_Length.setObjectRef(JFrame_AdvOptions.m_sliderControl.leftlowerarmLength);
-        LeftLowerarm_Thickness.setObjectRef(JFrame_AdvOptions.m_sliderControl.leftlowerarmThickness);
-        LeftUpperarm_Length.setObjectRef(JFrame_AdvOptions.m_sliderControl.leftupperarmLength);
-        LeftUpperarm_Thickness.setObjectRef(JFrame_AdvOptions.m_sliderControl.leftupperarmThickness);
-        RightHand_Length.setObjectRef(JFrame_AdvOptions.m_sliderControl.righthandLength);
-        RightHand_Thickness.setObjectRef(JFrame_AdvOptions.m_sliderControl.righthandThickness);
-        RightLowerarm_Length.setObjectRef(JFrame_AdvOptions.m_sliderControl.rightlowerarmLength);
-        RightLowerarm_Thickness.setObjectRef(JFrame_AdvOptions.m_sliderControl.rightlowerarmThickness);
-        RightUpperarm_Length.setObjectRef(JFrame_AdvOptions.m_sliderControl.rightupperarmLength);
-        RightUpperarm_Thickness.setObjectRef(JFrame_AdvOptions.m_sliderControl.rightupperarmThickness);
+        LeftHand_Length.setObjectRef(GUI_Enums.m_sliderControl.lefthandLength);
+        LeftHand_Thickness.setObjectRef(GUI_Enums.m_sliderControl.lefthandThickness);
+        LeftLowerarm_Length.setObjectRef(GUI_Enums.m_sliderControl.leftlowerarmLength);
+        LeftLowerarm_Thickness.setObjectRef(GUI_Enums.m_sliderControl.leftlowerarmThickness);
+        LeftUpperarm_Length.setObjectRef(GUI_Enums.m_sliderControl.leftupperarmLength);
+        LeftUpperarm_Thickness.setObjectRef(GUI_Enums.m_sliderControl.leftupperarmThickness);
+        RightHand_Length.setObjectRef(GUI_Enums.m_sliderControl.righthandLength);
+        RightHand_Thickness.setObjectRef(GUI_Enums.m_sliderControl.righthandThickness);
+        RightLowerarm_Length.setObjectRef(GUI_Enums.m_sliderControl.rightlowerarmLength);
+        RightLowerarm_Thickness.setObjectRef(GUI_Enums.m_sliderControl.rightlowerarmThickness);
+        RightUpperarm_Length.setObjectRef(GUI_Enums.m_sliderControl.rightupperarmLength);
+        RightUpperarm_Thickness.setObjectRef(GUI_Enums.m_sliderControl.rightupperarmThickness);
 
         LeftHand_Length.setParentFrame((JFrame_AdvOptions) m_baseFrame);
         LeftHand_Thickness.setParentFrame((JFrame_AdvOptions) m_baseFrame);

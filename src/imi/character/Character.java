@@ -457,11 +457,12 @@ public abstract class Character extends Entity implements SpatialObject, Animati
                 meshInst.getName().contains("Tongue")      ||
                 meshInst.getName().contains("Teeth"))
                 meshMat.setShader(eyeballShader);
-            else if (meshInst.getName().contains("Hand"))
-                meshMat.setShader(new VertDeformerWithSpecAndNormalMap(m_wm, 0.35f, 1.8f, 0.7f));
+//            else if (meshInst.getName().contains("Hand"))
+//                meshMat.setShader(new VertDeformerWithSpecAndNormalMap(m_wm, 0.35f, 1.8f, 0.7f));
             else if (meshInst.getName().contains("Head") ||
-                    meshInst.getName().contains("Nude") ||
-                    meshInst.getName().contains("Arms") )// is it flesh?
+                     meshInst.getName().contains("Nude") ||
+                     meshInst.getName().contains("Arms") ||
+                     meshInst.getName().contains("Hand"))// is it flesh?
                 meshMat.setShader(fleshShader);
             else // assume to be clothing
                 meshMat.setShader(clothingShader);

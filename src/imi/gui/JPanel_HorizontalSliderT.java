@@ -28,6 +28,9 @@ import java.awt.AWTEvent;
 import java.awt.Toolkit;
 import java.awt.event.AWTEventListener;
 import java.awt.event.FocusEvent;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import javax.swing.JFrame;
 import javax.swing.JSlider;
 import javax.swing.JSpinner;
 import javax.swing.text.JTextComponent;
@@ -41,12 +44,14 @@ public class JPanel_HorizontalSliderT extends javax.swing.JPanel {
 // CLASS DATA MEMBERS
 ////////////////////////////////////////////////////////////////////////////////
     public float                                m_baseSliderVal     =   25.0f;
-    private JFrame_AdvOptions.m_sliderControl   m_ObjectRef         =   null;
-    private JFrame_AdvOptions                   m_ParentFrame       =   null;
+    private GUI_Enums.m_sliderControl           m_ObjectRef         =   null;
+    private JFrame                              m_ParentFrame       =   null;
     private boolean                             m_SliderInFocus     =   false;
     private boolean                             m_SpinnerInFocus    =   false;
     private float                               m_curr              =   0.0f;
     private float                               m_prev              =   0.0f;
+    private NumberFormat                        m_format            =   new DecimalFormat("0.00");
+    private String                              m_formattedNumber   =   null;
 
     /** Creates new form JPanel_HorizontalSliderT */
     public JPanel_HorizontalSliderT() {
@@ -96,7 +101,10 @@ public class JPanel_HorizontalSliderT extends javax.swing.JPanel {
                     m_prev = m_curr;
                     m_curr = newVal;
 
-                    m_ParentFrame.parseModification(m_ObjectRef, diff, newVal);
+                    if (m_ParentFrame instanceof JFrame_AdvOptions)
+                        ((JFrame_AdvOptions)m_ParentFrame).parseModification(m_ObjectRef, diff, newVal);
+                    else if (m_ParentFrame instanceof JFrame_SimpAdvOptions)
+                        ((JFrame_SimpAdvOptions)m_ParentFrame).parseModification(m_ObjectRef, diff, newVal);
                 }
                 break;
             }
@@ -111,7 +119,10 @@ public class JPanel_HorizontalSliderT extends javax.swing.JPanel {
                     m_prev = m_curr;
                     m_curr = curVal;
 
-                    m_ParentFrame.parseModification(m_ObjectRef, diff, newVal);
+                    if (m_ParentFrame instanceof JFrame_AdvOptions)
+                        ((JFrame_AdvOptions)m_ParentFrame).parseModification(m_ObjectRef, diff, curVal);
+                    else if (m_ParentFrame instanceof JFrame_SimpAdvOptions)
+                        ((JFrame_SimpAdvOptions)m_ParentFrame).parseModification(m_ObjectRef, diff, curVal);
                 }
                 break;
             }
@@ -177,11 +188,11 @@ public class JPanel_HorizontalSliderT extends javax.swing.JPanel {
         return jSpinner1;
     }
 
-    public JFrame_AdvOptions.m_sliderControl  getObjectRef() {
+    public GUI_Enums.m_sliderControl  getObjectRef() {
         return m_ObjectRef;
     }
 
-    public JFrame_AdvOptions getParentFrame() {
+    public JFrame getParentFrame() {
         return m_ParentFrame;
     }
 
@@ -189,7 +200,7 @@ public class JPanel_HorizontalSliderT extends javax.swing.JPanel {
 // MUTATORS
 ////////////////////////////////////////////////////////////////////////////////
 
-    public void setObjectRef(JFrame_AdvOptions.m_sliderControl object) {
+    public void setObjectRef(GUI_Enums.m_sliderControl object) {
         m_ObjectRef = object;
     }
 

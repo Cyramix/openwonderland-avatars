@@ -28,6 +28,9 @@ import java.awt.AWTEvent;
 import java.awt.Toolkit;
 import java.awt.event.AWTEventListener;
 import java.awt.event.FocusEvent;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import javax.swing.JFrame;
 import javax.swing.JSlider;
 import javax.swing.JSpinner;
 import javax.swing.text.JTextComponent;
@@ -41,10 +44,14 @@ public class JPanel_VerticalSliderS extends javax.swing.JPanel {
 // CLASS DATA MEMBERS
 ////////////////////////////////////////////////////////////////////////////////
     public float                                m_baseSliderVal =   15.0f;
-    private JFrame_AdvOptions.m_sliderControl   m_ObjectRef     =   null;
-    private JFrame_AdvOptions                   m_ParentFrame   =   null;
+    private GUI_Enums.m_sliderControl           m_ObjectRef     =   null;
+    private JFrame                              m_ParentFrame   =   null;
     private boolean                             m_SliderInFocus     =   false;
     private boolean                             m_SpinnerInFocus    =   false;
+    private float                               m_curr              =   0.0f;
+    private float                               m_prev              =   0.0f;
+    private NumberFormat                        m_format            =   new DecimalFormat("0.00");
+    private String                              m_formattedNumber   =   null;
 
     /** Creates new form JPanel_VerticalSliderT */
     public JPanel_VerticalSliderS() {
@@ -89,7 +96,16 @@ public class JPanel_VerticalSliderS extends javax.swing.JPanel {
                     curVal = (float)jSlider1.getValue();
                     newVal = (curVal - m_baseSliderVal) / 100;
                     jSpinner1.setValue(1.0f + newVal);
-                    m_ParentFrame.parseModification(m_ObjectRef, newVal, newVal);
+
+                    float diff = newVal - m_curr;
+                    m_prev = m_curr;
+                    m_curr = newVal;
+                    m_formattedNumber = m_format.format(diff);
+
+                    if (m_ParentFrame instanceof JFrame_AdvOptions)
+                        ((JFrame_AdvOptions)m_ParentFrame).parseModification(m_ObjectRef, Float.valueOf(m_formattedNumber), newVal);
+                    else if (m_ParentFrame instanceof JFrame_SimpAdvOptions)
+                        ((JFrame_SimpAdvOptions)m_ParentFrame).parseModification(m_ObjectRef, Float.valueOf(m_formattedNumber), newVal);
                 }
                 break;
             }
@@ -99,7 +115,16 @@ public class JPanel_VerticalSliderS extends javax.swing.JPanel {
                     curVal = (Float)jSpinner1.getValue();
                     newVal = ((curVal - 1.0f) * 100) + m_baseSliderVal;
                     jSlider1.setValue((int)newVal);
-                    m_ParentFrame.parseModification(m_ObjectRef, newVal, newVal);
+                    
+                    float diff = curVal - m_curr;
+                    m_prev = m_curr;
+                    m_curr = curVal;
+                    m_formattedNumber = m_format.format(diff);
+                    
+                    if (m_ParentFrame instanceof JFrame_AdvOptions)
+                        ((JFrame_AdvOptions)m_ParentFrame).parseModification(m_ObjectRef, Float.valueOf(m_formattedNumber), curVal - 1);
+                    else if (m_ParentFrame instanceof JFrame_SimpAdvOptions)
+                        ((JFrame_SimpAdvOptions)m_ParentFrame).parseModification(m_ObjectRef, Float.valueOf(m_formattedNumber), curVal - 1);
                 }
                 break;
             }
@@ -168,11 +193,11 @@ public class JPanel_VerticalSliderS extends javax.swing.JPanel {
         return jSpinner1;
     }
 
-    public JFrame_AdvOptions.m_sliderControl  getObjectRef() {
+    public GUI_Enums.m_sliderControl  getObjectRef() {
         return m_ObjectRef;
     }
 
-    public JFrame_AdvOptions getParentFrame() {
+    public JFrame getParentFrame() {
         return m_ParentFrame;
     }
 
@@ -180,7 +205,7 @@ public class JPanel_VerticalSliderS extends javax.swing.JPanel {
 // MUTATORS
 ////////////////////////////////////////////////////////////////////////////////
 
-    public void setObjectRef(JFrame_AdvOptions.m_sliderControl object) {
+    public void setObjectRef(GUI_Enums.m_sliderControl object) {
         m_ObjectRef = object;
     }
 

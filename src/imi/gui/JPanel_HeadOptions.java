@@ -379,20 +379,20 @@ public class JPanel_HeadOptions extends javax.swing.JPanel {
     }
 
     public void setSliderControls() {
-        Head_Depth.setObjectRef(JFrame_AdvOptions.m_sliderControl.headDepth);
-        Head_Height.setObjectRef(JFrame_AdvOptions.m_sliderControl.headHeight);
-        Head_Width.setObjectRef(JFrame_AdvOptions.m_sliderControl.headWidth);
-        LeftEye_HPos.setObjectRef(JFrame_AdvOptions.m_sliderControl.lefteyeHPos);
-        LeftEye_Size.setObjectRef(JFrame_AdvOptions.m_sliderControl.lefteyeSize);
-        LeftEye_VPos.setObjectRef(JFrame_AdvOptions.m_sliderControl.lefteyeVPos);
-        LeftEye_Width.setObjectRef(JFrame_AdvOptions.m_sliderControl.lefteyeWidth);
-        LowerLip_Size.setObjectRef(JFrame_AdvOptions.m_sliderControl.lowerlipSize);
-        Mouth_Width.setObjectRef(JFrame_AdvOptions.m_sliderControl.mouthWidth);
-        RightEye_HPos.setObjectRef(JFrame_AdvOptions.m_sliderControl.righteyeHPos);
-        RightEye_Size.setObjectRef(JFrame_AdvOptions.m_sliderControl.righteyeSize);
-        RightEye_VPos.setObjectRef(JFrame_AdvOptions.m_sliderControl.righteyeVPos);
-        RightEye_Width.setObjectRef(JFrame_AdvOptions.m_sliderControl.righteyeWidth);
-        UpperLip_Size.setObjectRef(JFrame_AdvOptions.m_sliderControl.upperlipSize);
+        Head_Depth.setObjectRef(GUI_Enums.m_sliderControl.headDepth);
+        Head_Height.setObjectRef(GUI_Enums.m_sliderControl.headHeight);
+        Head_Width.setObjectRef(GUI_Enums.m_sliderControl.headWidth);
+        LeftEye_HPos.setObjectRef(GUI_Enums.m_sliderControl.lefteyeHPos);
+        LeftEye_Size.setObjectRef(GUI_Enums.m_sliderControl.lefteyeSize);
+        LeftEye_VPos.setObjectRef(GUI_Enums.m_sliderControl.lefteyeVPos);
+        LeftEye_Width.setObjectRef(GUI_Enums.m_sliderControl.lefteyeWidth);
+        LowerLip_Size.setObjectRef(GUI_Enums.m_sliderControl.lowerlipSize);
+        Mouth_Width.setObjectRef(GUI_Enums.m_sliderControl.mouthWidth);
+        RightEye_HPos.setObjectRef(GUI_Enums.m_sliderControl.righteyeHPos);
+        RightEye_Size.setObjectRef(GUI_Enums.m_sliderControl.righteyeSize);
+        RightEye_VPos.setObjectRef(GUI_Enums.m_sliderControl.righteyeVPos);
+        RightEye_Width.setObjectRef(GUI_Enums.m_sliderControl.righteyeWidth);
+        UpperLip_Size.setObjectRef(GUI_Enums.m_sliderControl.upperlipSize);
 
         Head_Depth.setParentFrame((JFrame_AdvOptions) m_baseFrame);
         Head_Height.setParentFrame((JFrame_AdvOptions) m_baseFrame);

@@ -329,18 +329,18 @@ public class JPanel_LegsFeetOption extends javax.swing.JPanel {
     }
 
     public void setSliderControls() {
-        LeftFoot_Length.setObjectRef(JFrame_AdvOptions.m_sliderControl.leftfootLength);
-        LeftFoot_Thickness.setObjectRef(JFrame_AdvOptions.m_sliderControl.leftfootThickness);
-        LeftLowerleg_Length.setObjectRef(JFrame_AdvOptions.m_sliderControl.leftlowerlegLength);
-        LeftLowerleg_Thickness.setObjectRef(JFrame_AdvOptions.m_sliderControl.leftlowerlegThickness);
-        LeftUpperleg_Length.setObjectRef(JFrame_AdvOptions.m_sliderControl.leftupperlegLength);
-        LeftUpperleg_Thickness.setObjectRef(JFrame_AdvOptions.m_sliderControl.leftupperlegThickness);
-        RightFoot_Length.setObjectRef(JFrame_AdvOptions.m_sliderControl.rightfootLength);
-        RightFoot_Thickness.setObjectRef(JFrame_AdvOptions.m_sliderControl.rightfootThickness);
-        RightLowerleg_Length.setObjectRef(JFrame_AdvOptions.m_sliderControl.rightlowerlegLength);
-        RightLowerleg_Thickness.setObjectRef(JFrame_AdvOptions.m_sliderControl.rightlowerlegThickness);
-        RightUpperleg_Length.setObjectRef(JFrame_AdvOptions.m_sliderControl.rightupperlegLength);
-        RightUpperleg_Thickness.setObjectRef(JFrame_AdvOptions.m_sliderControl.rightupperlegThickness);
+        LeftFoot_Length.setObjectRef(GUI_Enums.m_sliderControl.leftfootLength);
+        LeftFoot_Thickness.setObjectRef(GUI_Enums.m_sliderControl.leftfootThickness);
+        LeftLowerleg_Length.setObjectRef(GUI_Enums.m_sliderControl.leftlowerlegLength);
+        LeftLowerleg_Thickness.setObjectRef(GUI_Enums.m_sliderControl.leftlowerlegThickness);
+        LeftUpperleg_Length.setObjectRef(GUI_Enums.m_sliderControl.leftupperlegLength);
+        LeftUpperleg_Thickness.setObjectRef(GUI_Enums.m_sliderControl.leftupperlegThickness);
+        RightFoot_Length.setObjectRef(GUI_Enums.m_sliderControl.rightfootLength);
+        RightFoot_Thickness.setObjectRef(GUI_Enums.m_sliderControl.rightfootThickness);
+        RightLowerleg_Length.setObjectRef(GUI_Enums.m_sliderControl.rightlowerlegLength);
+        RightLowerleg_Thickness.setObjectRef(GUI_Enums.m_sliderControl.rightlowerlegThickness);
+        RightUpperleg_Length.setObjectRef(GUI_Enums.m_sliderControl.rightupperlegLength);
+        RightUpperleg_Thickness.setObjectRef(GUI_Enums.m_sliderControl.rightupperlegThickness);
 
         LeftFoot_Length.setParentFrame((JFrame_AdvOptions) m_baseFrame);
         LeftFoot_Thickness.setParentFrame((JFrame_AdvOptions) m_baseFrame);
