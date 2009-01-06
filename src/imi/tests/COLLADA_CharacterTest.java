@@ -113,10 +113,10 @@ public class COLLADA_CharacterTest extends DemoBase
 //
 //        boolean bHack = true;
         // Uncomment for a tree explorer
-        TreeExplorer te = new TreeExplorer();
-        SceneEssentials se = new SceneEssentials();
-        se.setSceneData(avatar.getJScene(), avatar.getPScene(), avatar, wm, null);
-        te.setExplorer(se);
-        te.setVisible(true);
+//        TreeExplorer te = new TreeExplorer();
+//        SceneEssentials se = new SceneEssentials();
+//        se.setSceneData(avatar.getJScene(), avatar.getPScene(), avatar, wm, null);
+//        te.setExplorer(se);
+//        te.setVisible(true);
     }
 }

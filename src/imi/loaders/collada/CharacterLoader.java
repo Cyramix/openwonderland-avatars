@@ -23,17 +23,16 @@ import imi.scene.PScene;
 import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
 
 import imi.scene.animation.AnimationComponent;
-import imi.loaders.collada.Collada;
 import imi.scene.animation.AnimationGroup;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.jdesktop.wonderland.common.comms.WonderlandObjectInputStream;
+import org.jdesktop.wonderland.common.comms.WonderlandObjectOutputStream;
 
 
 
@@ -138,6 +137,7 @@ public class CharacterLoader
             // Debugging output
             logger.info("Loaded binary file " + binaryLocation.getFile() + ".");
             owningSkeleton.getAnimationComponent().getGroups().add(newGroup);
+            result = true;
         }
         else // otherwise use the collada loader
         {
@@ -165,23 +165,25 @@ public class CharacterLoader
     {
         AnimationGroup result = null;
         FileInputStream fis = null;
-        ObjectInputStream in = null;
+        WonderlandObjectInputStream in = null;
 
         try
         {
             fis = new FileInputStream(location.getFile());
-            in = new ObjectInputStream(fis);
+            in = new WonderlandObjectInputStream(fis);
             result = (AnimationGroup)in.readObject();
             in.close();
         }
         catch(IOException ex)
         {
-            logger.severe("Error attempting to load binary animation: " + ex.getMessage());
+            logger.severe("Error attempting to load binary animation: " + location.toString());
+            logger.severe(ex.getMessage());
             ex.printStackTrace();
         }
         catch(ClassNotFoundException ex)
         {
-            logger.severe("Error attempting to load binary animation: " + ex.getMessage());
+            logger.severe("Error attempting to load binary animation: " + location.toString());
+            logger.severe(ex.getMessage());
             ex.printStackTrace();
         }
         return result;
@@ -224,11 +226,11 @@ public class CharacterLoader
         AnimationGroup groupToSerialize = animGroups.get(animGroups.size() - 1);
 
         FileOutputStream fos = null;
-        ObjectOutputStream out = null;
+        WonderlandObjectOutputStream out = null;
         try
         {
             fos = new FileOutputStream(outputFileLocation.getFile());
-            out = new ObjectOutputStream(fos);
+            out = new WonderlandObjectOutputStream(fos);
             out.writeObject(groupToSerialize);
             out.close();
         }

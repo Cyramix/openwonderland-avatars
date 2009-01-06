@@ -185,6 +185,11 @@ public class TransitionQueue implements AnimationListener
                 m_state.setTimeInTransition(0.0f);
                 
                 AnimationCycle newCycle = m_group.getCycle(nextCommand.getAnimationIndex());
+                if (newCycle == null) // uh oh
+                {
+                    Logger.getLogger(TransitionQueue.class.getName()).severe("Could not initiate transition!");
+                    return;
+                }
                 if (nextCommand.isReverse())
                     m_state.setTransitionCycleTime(newCycle.getEndTime());
                 else
