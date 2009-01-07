@@ -24,9 +24,11 @@ import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
 
 import imi.scene.animation.AnimationComponent;
 import imi.scene.animation.AnimationGroup;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.logging.Level;
@@ -49,6 +51,11 @@ public class CharacterLoader
     private static final Logger logger = Logger.getLogger(CharacterLoader.class.getName());
     /** The collada loader that this class wraps **/
     private final Collada m_colladaLoader = new Collada();
+
+    // Temporary, TODO remove this field
+    // Provides the root directory for the baf cache, this will be removed
+    // once the baf files are deployed into the asset server
+    private static String bafCacheURL = System.getProperty("BafCacheDir", "");
 
     /**
      * Load the specified collada file and parse out the skeleton, associate it
@@ -125,7 +132,7 @@ public class CharacterLoader
         URL binaryLocation = null;
         try
         {
-            binaryLocation = new URL(animationLocation.toString().substring(0, animationLocation.toString().length() - 3) + "baf");
+            binaryLocation = new URL(bafCacheURL+animationLocation.getFile().toString().substring(0, animationLocation.getFile().toString().length() - 3) + "baf");
             newGroup = loadBinaryAnimation(binaryLocation);
         } catch (Exception ex)
         {
@@ -135,7 +142,7 @@ public class CharacterLoader
         if (newGroup != null) // Success!
         {
             // Debugging output
-            logger.info("Loaded binary file " + binaryLocation.getFile() + ".");
+            logger.fine("Loaded binary file " + binaryLocation.getFile() + ".");
             owningSkeleton.getAnimationComponent().getGroups().add(newGroup);
             result = true;
         }
@@ -147,6 +154,16 @@ public class CharacterLoader
             result = m_colladaLoader.load(loadingPScene, animationLocation);
             // Serialize it for the next round
             logger.info("Wrote binary file " + binaryLocation.getFile() + ".");
+            try {
+                // Create the directory
+                File f = new File(binaryLocation.toURI());
+                File dir = f.getParentFile();
+                if (!dir.exists())
+                    dir.mkdirs();
+            } catch (URISyntaxException ex) {
+                Logger.getLogger(CharacterLoader.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
             writeAnimationGroupToDisk(binaryLocation, owningSkeleton);
         }
         // Merge
