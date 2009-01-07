@@ -100,6 +100,11 @@ public class LibraryControllersProcessor extends Processor
         for (PNode kid : polyMesh.getChildren())
             if (kid instanceof PPolygonMesh)
                 skinnedChildren.add(new PPolygonSkinnedMesh((PPolygonMesh)kid));
+        // Debugging / Diagnostic Output
+//        logger.info("SkinnedParent : " + skinnedMesh.getName());
+//        logger.info("SkinnedChildren : " + skinnedChildren.size());
+//        for (PPolygonSkinnedMesh mesh : skinnedChildren)
+//            logger.info("-Mesh " + mesh.getName()+ ", # influences: " + mesh.getNumberOfInfluences());
 
         //  Read in the BindMatrix and convert it into a pmatrix
         int counter = 0;
@@ -152,12 +157,10 @@ public class LibraryControllersProcessor extends Processor
         }
 
 
-//        processVertexWeights(skin, skinnedMesh, skinWeights);
-//        for (PPolygonSkinnedMesh skinKid : skinnedChildren)
-//            processVertexWeights(skin, skinKid, skinWeights);
-        processVertexWeights(controller, skin, skinnedMesh, skinWeights);
+        processVertexWeights(skin, skinnedMesh, skinWeights);
         for (PPolygonSkinnedMesh skinKid : skinnedChildren)
-            processVertexWeights(controller, skin, skinKid, skinWeights);
+            processVertexWeights(skin, skinKid, skinWeights);
+
         // add stuff to the loader
         m_colladaRef.addPolygonSkinnedMesh(skinnedMesh);
         for (PPolygonSkinnedMesh skinKid : skinnedChildren)
@@ -165,107 +168,16 @@ public class LibraryControllersProcessor extends Processor
         m_colladaRef.addColladaSkin(colladaSkinNode);
     }
 
-//  ******************************
-//  ******************************
-//  Private methods.
-//  ******************************
-//  ******************************
-    void processVertexWeights(Controller pController,
-                              Skin pSkin,
-                              PPolygonSkinnedMesh pPolygonSkinnedMesh,
-                                      float []skinWeights)
-    {
-        int maxNumberOfWeights = 4;//m_pCollada.getMaxNumberOfWeights();
-        int []vertexWeights = null;
-        int []vertexBoneCounts = null;
-        int a, b;
-        BigInteger pBigInteger;
-        int vertexBoneCount;
-        int jointIndex = 0;
-        int weightIndex = 0;
-        int vertexWeightsIndex = 0;
-        ArrayList<BoneSkinWeight> boneSkinWeights = new ArrayList<BoneSkinWeight>();
-        BoneSkinWeight pBoneSkinWeight;
-        PBoneIndices pBoneIndices;
-        Vector3f pWeightVec;
-        int boneIndiceIndex;
-        int boneWeightIndex;
-        int vertexIndex = 0;
-
-
-        //  Read in the VertexJoints.
-        vertexWeights = new int[pSkin.getVertexWeights().getV().size()];
-        for (a=0; a<pSkin.getVertexWeights().getV().size(); a++)
-            vertexWeights[a] = ((Long)pSkin.getVertexWeights().getV().get(a)).intValue();
-
-        //  Read in the VertexJointCounts.
-        vertexBoneCounts = new int[pSkin.getVertexWeights().getVcount().size()];
-        for (a=0; a<pSkin.getVertexWeights().getVcount().size(); a++)
-        {
-            pBigInteger = (BigInteger)pSkin.getVertexWeights().getVcount().get(a);
-            vertexBoneCounts[a] = pBigInteger.intValue();
-        }
-
-
-        for (a=0; a<vertexBoneCounts.length; a++)
-        {
-            vertexBoneCount = vertexBoneCounts[a];
-
-            boneSkinWeights.clear();
-
-            //  Populate the array list with all the BoneSkinWeights.
-            for (b=0; b<vertexBoneCount; b++)
-            {
-                jointIndex = vertexWeights[vertexWeightsIndex];
-                weightIndex = vertexWeights[vertexWeightsIndex+1];
-
-                pBoneSkinWeight = new BoneSkinWeight(jointIndex, skinWeights[weightIndex]);
-
-                boneSkinWeights.add(pBoneSkinWeight);
-
-                vertexWeightsIndex += 2;
-            }
-
-
-            //  Sort the array of BoneSkinWeights.
-            if (boneSkinWeights.size() > 0)
-                Collections.sort(boneSkinWeights);
-            //  Process the SkinWeights for the Vertex.
-            //  If there are more SkinWeights that supported, then the SkinWeights
-            //  will be normalized.
-            processJointSkinWeights(maxNumberOfWeights, boneSkinWeights);
-
-
-            pBoneIndices = new PBoneIndices();
-            pWeightVec = new Vector3f();
-
-            //  Convert to BoneIndices.
-            toBoneIndices(boneSkinWeights, pBoneIndices);
-
-            //  Convert to Vector3f.
-            toWeights(boneSkinWeights, pWeightVec);
-
-
-            boneIndiceIndex = pPolygonSkinnedMesh.getBoneIndices(pBoneIndices);
-            boneWeightIndex = pPolygonSkinnedMesh.getBoneWeights(pWeightVec);
-
-            assignSkinningIndicesToVertex(pPolygonSkinnedMesh, vertexIndex, boneIndiceIndex, boneWeightIndex);
-
-            boneSkinWeights.clear();
-
-
-            vertexIndex++;
-        }
-    }
 
     private void processVertexWeights(Skin skin,
                                       PPolygonSkinnedMesh skinnedMesh,
                                       float []skinWeights)
     {
         int maxNumberOfWeights = 4;//m_colladaRef.getMaxNumberOfWeights();
-
-        //  Read in the VertexJoints.
+        // Grab the vertex weights of this skin
         Skin.VertexWeights vertWeights = skin.getVertexWeights();
+
+        //  Read in the VertexWeights.
         int[] vertexWeights = new int[vertWeights.getV().size()];
         int counter = 0;
         for (Long value : vertWeights.getV())
@@ -283,16 +195,17 @@ public class LibraryControllersProcessor extends Processor
             counter++;
         }
 
-        ArrayList<BoneSkinWeight> boneSkinWeights = new ArrayList<BoneSkinWeight>();
 
+        ArrayList<BoneSkinWeight> boneSkinWeights = new ArrayList<BoneSkinWeight>();
         counter = 0;
+        int vertexWeightsIndex = 0;
         for (int vertexBoneCount : vertexBoneCounts)
         {
-            int secondaryIndex = 0;
             for (int i = 0; i < vertexBoneCount; i++)
             {
-                boneSkinWeights.add(new BoneSkinWeight(vertexWeights[secondaryIndex], skinWeights[vertexWeights[secondaryIndex+1]]));
-                secondaryIndex += 2;
+                boneSkinWeights.add(new BoneSkinWeight(vertexWeights[vertexWeightsIndex],
+                                                       skinWeights[vertexWeights[vertexWeightsIndex+1]]));
+                vertexWeightsIndex += 2;
             }
 
             //  Sort the array of BoneSkinWeights.
