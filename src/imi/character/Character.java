@@ -371,7 +371,8 @@ public abstract class Character extends Entity implements SpatialObject, Animati
                         m_modelInst.getTransform().setLocalMatrix(attributes.getOrigin());
 
                     // sort the meshes
-                    sortBindPoseMeshesIntoSubGroups();
+                    if (sortBindPoseMeshesIntoSubGroups() == false)
+                        logger.severe("Unable to sort meshes into subgroups!");
                     
                     // Set eyes
                     m_eyes = new CharacterEyes(m_skeleton, m_modelInst, m_pscene, m_wm);
@@ -495,8 +496,10 @@ public abstract class Character extends Entity implements SpatialObject, Animati
     /**
      * This method sorts the meshes into the appropriate mesh groups
      */
-    private void sortBindPoseMeshesIntoSubGroups()
+    private boolean sortBindPoseMeshesIntoSubGroups()
     {
+        if (m_skeleton == null || m_skeleton.getSkinnedMeshInstances() == null)
+            return false;
         // sort the meshes!
         for (PPolygonSkinnedMeshInstance meshInst : m_skeleton.getSkinnedMeshInstances())
         {
@@ -506,6 +509,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
             else
                 m_skeleton.addChild(meshInst);
         }
+        return true;
     }
     
     /**
