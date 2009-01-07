@@ -76,6 +76,10 @@ public class SharedAssetPlaceHolder extends PNode
     {
         m_freeloaders.clear();
     }
+
+    public Iterable<SharedAssetPlaceHolder> getFreeLoaders() {
+        return m_freeloaders;
+    }
     
     public int getFreeloaderCount()
     {
