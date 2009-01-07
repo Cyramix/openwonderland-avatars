@@ -698,11 +698,8 @@ public class PScene extends PNode implements RepositoryUser
             }
 
             // take care of all the freeloaders
-            for (int j = 0; j < target.getFreeloaderCount(); j++)
-            {
-                SharedAssetPlaceHolder freeloader = target.getFreeloader(j);
-                installAsset(freeloader, asset);
-            }
+            for (SharedAssetPlaceHolder freeLoader : target.getFreeLoaders())
+                installAsset(freeLoader, asset);
             target.clearFreeloaders();
        }
        else
