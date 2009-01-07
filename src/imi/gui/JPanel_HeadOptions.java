@@ -394,19 +394,19 @@ public class JPanel_HeadOptions extends javax.swing.JPanel {
         RightEye_Width.setObjectRef(GUI_Enums.m_sliderControl.righteyeWidth);
         UpperLip_Size.setObjectRef(GUI_Enums.m_sliderControl.upperlipSize);
 
-        Head_Depth.setParentFrame((JFrame_AdvOptions) m_baseFrame);
-        Head_Height.setParentFrame((JFrame_AdvOptions) m_baseFrame);
-        Head_Width.setParentFrame((JFrame_AdvOptions) m_baseFrame);
-        LeftEye_HPos.setParentFrame((JFrame_AdvOptions) m_baseFrame);
-        LeftEye_Size.setParentFrame((JFrame_AdvOptions) m_baseFrame);
-        LeftEye_VPos.setParentFrame((JFrame_AdvOptions) m_baseFrame);
-        LeftEye_Width.setParentFrame((JFrame_AdvOptions) m_baseFrame);
-        LowerLip_Size.setParentFrame((JFrame_AdvOptions) m_baseFrame);
-        Mouth_Width.setParentFrame((JFrame_AdvOptions) m_baseFrame);
-        RightEye_HPos.setParentFrame((JFrame_AdvOptions) m_baseFrame);
-        RightEye_Size.setParentFrame((JFrame_AdvOptions) m_baseFrame);
-        RightEye_VPos.setParentFrame((JFrame_AdvOptions) m_baseFrame);
-        RightEye_Width.setParentFrame((JFrame_AdvOptions) m_baseFrame);
-        UpperLip_Size.setParentFrame((JFrame_AdvOptions) m_baseFrame);
+        Head_Depth.setParentFrame(m_baseFrame);
+        Head_Height.setParentFrame(m_baseFrame);
+        Head_Width.setParentFrame(m_baseFrame);
+        LeftEye_HPos.setParentFrame(m_baseFrame);
+        LeftEye_Size.setParentFrame(m_baseFrame);
+        LeftEye_VPos.setParentFrame(m_baseFrame);
+        LeftEye_Width.setParentFrame(m_baseFrame);
+        LowerLip_Size.setParentFrame(m_baseFrame);
+        Mouth_Width.setParentFrame(m_baseFrame);
+        RightEye_HPos.setParentFrame(m_baseFrame);
+        RightEye_Size.setParentFrame(m_baseFrame);
+        RightEye_VPos.setParentFrame(m_baseFrame);
+        RightEye_Width.setParentFrame(m_baseFrame);
+        UpperLip_Size.setParentFrame(m_baseFrame);
     }
 }

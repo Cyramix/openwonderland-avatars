@@ -1443,28 +1443,29 @@ public class SceneEssentials {
     }
 
     public void setCameraOnModel() {
+        if (avatar == null)
+            return;
+        
         PNode node = currentPScene.getInstances();
-        if (node != null && node.getChildrenCount() > 0) {
-            PPolygonModelInstance pmInstance = ((PPolygonModelInstance) node.getChild(0));
-            if (curCameraProcessor.getState() instanceof TumbleObjectCamState) {
-                TumbleObjectCamState camState = ((TumbleObjectCamState)curCameraProcessor.getState());
-                TumbleObjectCamModel camModel = ((TumbleObjectCamModel)curCameraProcessor.getModel());
-                camState.setTargetModelInstance(pmInstance);
-                camState.setCameraPosition(camPos);
+        PPolygonModelInstance pmInstance = ((PPolygonModelInstance) node.getChild(0));
+        if (curCameraProcessor.getState() instanceof TumbleObjectCamState) {
+            TumbleObjectCamState camState = ((TumbleObjectCamState)curCameraProcessor.getState());
+            TumbleObjectCamModel camModel = ((TumbleObjectCamModel)curCameraProcessor.getModel());
+            camState.setTargetModelInstance(pmInstance);
+            camState.setCameraPosition(camPos);
 
-                if (pmInstance.getBoundingSphere() == null)
-                    pmInstance.calculateBoundingSphere();
-                camState.setTargetFocalPoint(pmInstance.getBoundingSphere().getCenter());
-                camModel.turnTo(pmInstance.getBoundingSphere().getCenter(), camState);
-                camState.setTargetNeedsUpdate(true);
-            } else if (curCameraProcessor.getState() instanceof FirstPersonCamState) {
-                FirstPersonCamState camState = ((FirstPersonCamState)curCameraProcessor.getState());
-                if (pmInstance.getBoundingSphere() == null)
-                    pmInstance.calculateBoundingSphere();
-                Vector3f pos = pmInstance.getBoundingSphere().getCenter();
-                pos.z = -3.2f;
-                camState.setCameraPosition(pos);
-            }
+            if (pmInstance.getBoundingSphere() == null)
+                pmInstance.calculateBoundingSphere();
+            camState.setTargetFocalPoint(pmInstance.getBoundingSphere().getCenter());
+            camModel.turnTo(pmInstance.getBoundingSphere().getCenter(), camState);
+            camState.setTargetNeedsUpdate(true);
+        } else if (curCameraProcessor.getState() instanceof FirstPersonCamState) {
+            FirstPersonCamState camState = ((FirstPersonCamState)curCameraProcessor.getState());
+            if (pmInstance.getBoundingSphere() == null)
+                pmInstance.calculateBoundingSphere();
+            Vector3f pos = pmInstance.getBoundingSphere().getCenter();
+            pos.z = -2.2f;
+            camState.setCameraPosition(pos);
         }
     }
 

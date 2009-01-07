@@ -83,8 +83,13 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 
+import javax.swing.JMenuItem;
+import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
+import javax.swing.JTextField;
 import org.jdesktop.mtgame.FrameRateListener;
 import org.jdesktop.mtgame.WorldManager;
 import org.jdesktop.mtgame.CameraComponent;
@@ -131,6 +136,7 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
     protected URL                       m_presetCaucasian   = null;
     protected Dimension                 m_DefaultSize       = new Dimension(m_width, 675);
     protected Dimension                 m_OpenSize          = new Dimension(500, 675);
+    protected JDialog                   m_LoadWindow        = null;
 
 ////////////////////////////////////////////////////////////////////////////////
 // CLASS DATA MEMBERS - END
@@ -756,6 +762,9 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
         
         // Add to the wm to set title string later during debugging
         wm.addUserData(JFrame.class, this);
+
+        m_LoadWindow = new JDialog(this, "Loading", false);
+        m_LoadWindow.setSize(150, 1);
     }
     
     private void setFrame(WorldManager wm) {
@@ -821,8 +830,12 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
             }
         }
 
+        loadingWindow(true);
+
         m_AdvOptions = new JFrame_AdvOptions(m_sceneData);
         m_AdvOptions.setVisible(true);
+
+        loadingWindow(false);
     }
 
     public void openBasicEditor() {
@@ -833,8 +846,12 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
             }
         }
 
+        loadingWindow(true);
+
         m_SimpAdvOptions = new JFrame_SimpAdvOptions(m_sceneData);
         m_SimpAdvOptions.setVisible(true);
+
+        loadingWindow(false);
     }
 
     public void openNodeExplorer() {
@@ -844,13 +861,25 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
                 return;
             }
         }
-        
+
+        loadingWindow(true);
+
         m_NodeExplorer = new TreeExplorer();
         m_NodeExplorer.setExplorer(m_sceneData);
         m_NodeExplorer.setVisible(true);
+
+        loadingWindow(false);
     }
 
     public void openAnimationViewer() {
+        if (m_AnimationViewer != null) {
+            if (m_AnimationViewer.isVisible()) {
+                m_AnimationViewer.dispose();
+                return;
+            }
+        }
+
+        loadingWindow(true);
         m_AnimationViewer = new JFrame();
         JPanel_Animations animPanel = new JPanel_Animations();
         animPanel.setPanel(m_sceneData);
@@ -859,6 +888,7 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
         m_AnimationViewer.add(animPanel);
         m_AnimationViewer.pack();
         m_AnimationViewer.setVisible(true);
+        loadingWindow(false);
     }
 
     public void openServerBrowser() {
@@ -885,6 +915,8 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
             }
         }
 
+        loadingWindow(true);
+
         m_ServerBrowser = m_sceneData.openServerBrowserPanel();
         java.awt.GridBagConstraints gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -893,7 +925,9 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
         gridBagConstraints.gridheight = java.awt.GridBagConstraints.RELATIVE;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTH;
         jPanel_MainPanel.add(m_ServerBrowser, gridBagConstraints);
+        
         this.pack();
+        loadingWindow(false);
     }
 
     public void openBasicOptions() {
@@ -920,6 +954,8 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
             }
         }
 
+        loadingWindow(true);
+
         m_BasicOptions = new JPanel_BasicOptions();
         m_BasicOptions.setSceneData(m_sceneData);
         m_BasicOptions.avatarCheck();
@@ -934,6 +970,7 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
         jPanel_MainPanel.add(m_BasicOptions, gridBagConstraints);
 
         this.pack();
+        loadingWindow(false);
     }
 
     public void openEZOptions() {
@@ -960,6 +997,8 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
             }
         }
 
+        loadingWindow(true);
+
         m_EZOptions = new JPanel_EZOptions();
         m_EZOptions.setSceneData(m_sceneData);
         m_EZOptions.setParentFrame(this);
@@ -977,6 +1016,8 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
 
         m_EZOptions.readPresetList(m_presetCaucasian);
         m_EZOptions.setTable();
+
+        loadingWindow(false);
     }
 
     public void resetOpenTools() {
@@ -999,6 +1040,25 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
                 m_AnimationViewer.dispose();
                 openAnimationViewer();
             }
+        }
+    }
+
+    public void loadingWindow(boolean bonoff) {
+        if (bonoff) {
+            int x   = this.getLocation().x;
+            int y   = this.getLocation().y;
+            int w1  = (this.getSize().width / 2);
+            int w2  = (m_LoadWindow.getSize().width / 2);
+            int h1  = (this.getSize().height / 2);
+            int h2  = (m_LoadWindow.getSize().height / 2);
+            int r1  = w1 - w2;
+            int r2  = h1 - h2;
+            int rX  = x + r1;
+            int rY  = y + r2;
+            m_LoadWindow.setLocation(rX, rY);
+            m_LoadWindow.setVisible(true);
+        } else {
+            m_LoadWindow.setVisible(false);
         }
     }
 

@@ -36,6 +36,7 @@ public class JPanel_SimpBodyOptions extends javax.swing.JPanel {
     public JPanel_SimpBodyOptions(JFrame baseFrame) {
         m_baseFrame = baseFrame;
         initComponents();
+        setSliderControls();
     }
 
     /** This method is called from within the constructor to

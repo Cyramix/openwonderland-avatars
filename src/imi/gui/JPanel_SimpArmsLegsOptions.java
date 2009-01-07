@@ -36,6 +36,7 @@ public class JPanel_SimpArmsLegsOptions extends javax.swing.JPanel {
     public JPanel_SimpArmsLegsOptions(JFrame baseFrame) {
         m_baseFrame = baseFrame;
         initComponents();
+        setSliderControls();
     }
 
     /** This method is called from within the constructor to
@@ -181,7 +182,15 @@ public class JPanel_SimpArmsLegsOptions extends javax.swing.JPanel {
         LeftLeg_Scale.setObjectRef(GUI_Enums.m_sliderControl.leftlegScale);
         RightLeg_Length.setObjectRef(GUI_Enums.m_sliderControl.rightlegLength);
         RightLeg_Scale.setObjectRef(GUI_Enums.m_sliderControl.rightlegScale);
+        LeftArm_Length.setObjectRef(GUI_Enums.m_sliderControl.leftarmLength);
+        LeftArm_Scale.setObjectRef(GUI_Enums.m_sliderControl.leftarmScale);
+        RightArm_Length.setObjectRef(GUI_Enums.m_sliderControl.rightarmLength);
+        RightArm_Scale.setObjectRef(GUI_Enums.m_sliderControl.rightarmScale);
 
+        LeftLeg_Length.setParentFrame((JFrame_SimpAdvOptions) m_baseFrame);
+        LeftLeg_Scale.setParentFrame((JFrame_SimpAdvOptions) m_baseFrame);
+        RightLeg_Length.setParentFrame((JFrame_SimpAdvOptions) m_baseFrame);
+        RightLeg_Scale.setParentFrame((JFrame_SimpAdvOptions) m_baseFrame);
         LeftArm_Length.setParentFrame((JFrame_SimpAdvOptions) m_baseFrame);
         LeftArm_Scale.setParentFrame((JFrame_SimpAdvOptions) m_baseFrame);
         RightArm_Length.setParentFrame((JFrame_SimpAdvOptions) m_baseFrame);

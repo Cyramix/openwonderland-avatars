@@ -684,6 +684,9 @@ public class JPanel_EZOptions extends javax.swing.JPanel {
     }
 
     public void loadAvatar(int selection) {
+        if (m_Parent instanceof BaseDefault)
+            ((BaseDefault)m_Parent).loadingWindow(true);
+
         if (jRadioButton_GenderMale.isSelected()) {
             retrieveBindMeshInfo(1);
             m_gender = 1;
@@ -769,6 +772,14 @@ public class JPanel_EZOptions extends javax.swing.JPanel {
         m_sceneData.setAvatar(new NinjaAvatar(attribs, m_sceneData.getWM()));
         m_sceneData.getAvatar().selectForInput();
         m_sceneData.setPScene(m_sceneData.getAvatar().getPScene());
+
+        if (m_Parent instanceof BaseDefault) {
+            while (!m_sceneData.getAvatar().isInitialized()) {
+
+            }
+            ((BaseDefault)m_Parent).loadingWindow(false);
+            m_sceneData.setCameraOnModel();
+        }
     }
 
     public void setSceneData(SceneEssentials se) {

@@ -183,8 +183,8 @@ public class JFrame_SimpAdvOptions extends javax.swing.JFrame {
         String          formattedNumber = null;
         if (skelnode == null) { return; }
 
-        SkinnedMeshJoint[]  leftupperarm    = m_skeleton.get(GUI_Enums.m_bodyPart.Left_Arm);
-        SkinnedMeshJoint[]  rightupperarm   = m_skeleton.get(GUI_Enums.m_bodyPart.Right_Arm);
+        SkinnedMeshJoint[]  leftarm    = m_skeleton.get(GUI_Enums.m_bodyPart.Left_Arm);
+        SkinnedMeshJoint[]  rightarm   = m_skeleton.get(GUI_Enums.m_bodyPart.Right_Arm);
         Vector3f            ladjust         = new Vector3f(0.0f, mod, 0.0f);
         Vector3f            radjust         = new Vector3f(0.0f, mod, 0.0f);
         Vector3f            scale           = new Vector3f(1.0f, 1.0f, 1.0f);
@@ -194,51 +194,53 @@ public class JFrame_SimpAdvOptions extends javax.swing.JFrame {
         {
             case leftarmLength:
             {
-                skelnode.displaceJoint(leftupperarm[1].getName(), ladjust);
-
-                if (actualval <= 0.05f) {
-                    for (int i = 0; i < leftupperarm.length; i++) {
-                        float y = scale.y += actualval * 4;
-                        formattedNumber = m_format.format(y);
-                        scale.y = Float.valueOf(formattedNumber);
-                        leftupperarm[i].getLocalModifierMatrix().setScale(scale);
-                    }
-                }
+                skelnode.displaceJoint(leftarm[1].getName(), ladjust);
+                skelnode.displaceJoint(leftarm[3].getName(), ladjust);
+                skelnode.displaceJoint(leftarm[4].getName(), ladjust);
+//                if (actualval <= 0.05f) {
+//                    for (int i = 0; i < 6; i++) {
+//                        float y = scale.y += actualval *3;
+//                        formattedNumber = m_format.format(y);
+//                        scale.y = Float.valueOf(formattedNumber);
+//                        leftarm[i].getLocalModifierMatrix().setScale(scale);
+//                    }
+//                }
 
                 break;
             }
             case rightarmLength:
             {
-                skelnode.displaceJoint(rightupperarm[1].getName(), radjust);
-
-                if (actualval <= 0.05f) {
-                    for (int i = 0; i < rightupperarm.length; i++) {
-                        float y = scale.y += actualval * 4;
-                        formattedNumber = m_format.format(y);
-                        scale.y = Float.valueOf(formattedNumber);
-                        rightupperarm[i].getLocalModifierMatrix().setScale(scale);
-                    }
-                }
+                skelnode.displaceJoint(rightarm[1].getName(), radjust);
+                skelnode.displaceJoint(rightarm[3].getName(), radjust);
+                skelnode.displaceJoint(rightarm[4].getName(), radjust);
+//                if (actualval <= 0.05f) {
+//                    for (int i = 0; i < 6; i++) {
+//                        float y = scale.y += actualval *3;
+//                        formattedNumber = m_format.format(y);
+//                        scale.y = Float.valueOf(formattedNumber);
+//                        rightarm[i].getLocalModifierMatrix().setScale(scale);
+//                    }
+//                }
 
                 break;
             }
             case leftarmScale:
             {
-                for (int i = 0; i < leftupperarm.length; i++) {
-                    ladjust = new Vector3f(leftupperarm[i].getLocalModifierMatrix().getScaleVector());
-                    ladjust.x = 1.0f;   ladjust.x += mod;
-                    ladjust.z = 1.0f;   ladjust.z += mod;
-                    leftupperarm[i].getLocalModifierMatrix().setScale(ladjust);
+                for (int i = 0; i < leftarm.length; i++) {
+                    ladjust = new Vector3f(leftarm[i].getLocalModifierMatrix().getScaleVector());
+                    ladjust.x = 1.0f;   ladjust.x += actualval;
+                    ladjust.z = 1.0f;   ladjust.z += actualval;
+                    leftarm[i].getLocalModifierMatrix().setScale(ladjust);
                 }
                 break;
             }
             case rightarmScale:
             {
-                for (int i = 0; i < rightupperarm.length; i++) {
-                    radjust = new Vector3f(rightupperarm[i].getLocalModifierMatrix().getScaleVector());
-                    radjust.x = 1.0f;   radjust.x += mod;
-                    radjust.z = 1.0f;   radjust.z += mod;
-                    rightupperarm[i].getLocalModifierMatrix().setScale(radjust);
+                for (int i = 0; i < rightarm.length; i++) {
+                    radjust = new Vector3f(rightarm[i].getLocalModifierMatrix().getScaleVector());
+                    radjust.x = 1.0f;   radjust.x += actualval;
+                    radjust.z = 1.0f;   radjust.z += actualval;
+                    rightarm[i].getLocalModifierMatrix().setScale(radjust);
                 }
                 break;
             }
@@ -249,8 +251,8 @@ public class JFrame_SimpAdvOptions extends javax.swing.JFrame {
         SkeletonNode    skelnode    = m_sceneData.getAvatar().getSkeleton();
         if (skelnode == null) { return; }
 
-        SkinnedMeshJoint[]  leftupperleg    = m_skeleton.get(GUI_Enums.m_bodyPart.Left_Leg);
-        SkinnedMeshJoint[]  rightupperleg   = m_skeleton.get(GUI_Enums.m_bodyPart.Right_Leg);
+        SkinnedMeshJoint[]  leftleg    = m_skeleton.get(GUI_Enums.m_bodyPart.Left_Leg);
+        SkinnedMeshJoint[]  rightleg   = m_skeleton.get(GUI_Enums.m_bodyPart.Right_Leg);
         Vector3f            ladjust         = new Vector3f(0.0f, mod, 0.0f);
         Vector3f            radjust         = new Vector3f(0.0f, mod, 0.0f);
         m_format                            = new DecimalFormat("0.00");
@@ -259,31 +261,31 @@ public class JFrame_SimpAdvOptions extends javax.swing.JFrame {
         {
             case leftlegLength:
             {
-                skelnode.displaceJoint(leftupperleg[0].getName(), ladjust);
+                skelnode.displaceJoint(leftleg[0].getName(), ladjust);
                 break;
             }
             case rightlegLength:
             {
-                skelnode.displaceJoint(rightupperleg[0].getName(), radjust);
+                skelnode.displaceJoint(rightleg[0].getName(), radjust);
                 break;
             }
             case leftlegScale:
             {
-                for (int i = 0; i < leftupperleg.length; i++) {
-                    ladjust = new Vector3f(leftupperleg[i].getLocalModifierMatrix().getScaleVector());
-                    ladjust.x = 1.0f;   ladjust.x += mod;
-                    ladjust.z = 1.0f;   ladjust.z += mod;
-                    leftupperleg[i].getLocalModifierMatrix().setScale(ladjust);
+                for (int i = 0; i < leftleg.length; i++) {
+                    ladjust = new Vector3f(leftleg[i].getLocalModifierMatrix().getScaleVector());
+                    ladjust.x = 1.0f;   ladjust.x += actualval;
+                    ladjust.z = 1.0f;   ladjust.z += actualval;
+                    leftleg[i].getLocalModifierMatrix().setScale(ladjust);
                 }
                 break;
             }
             case rightlegScale:
             {
-                for (int i = 0; i < rightupperleg.length; i++) {
-                    radjust = new Vector3f(rightupperleg[i].getLocalModifierMatrix().getScaleVector());
-                    radjust.x = 1.0f;   radjust.x += mod;
-                    radjust.z = 1.0f;   radjust.z += mod;
-                    rightupperleg[i].getLocalModifierMatrix().setScale(radjust);
+                for (int i = 0; i < rightleg.length; i++) {
+                    radjust = new Vector3f(rightleg[i].getLocalModifierMatrix().getScaleVector());
+                    radjust.x = 1.0f;   radjust.x += actualval;
+                    radjust.z = 1.0f;   radjust.z += actualval;
+                    rightleg[i].getLocalModifierMatrix().setScale(radjust);
                 }
                 break;
             }
@@ -304,9 +306,9 @@ public class JFrame_SimpAdvOptions extends javax.swing.JFrame {
     private void initComponents() {
 
         jTabbedPane1 = new javax.swing.JTabbedPane();
-        HeadOptions = new imi.gui.JPanel_HeadOptions();
-        ArmsNLegsOptions = new imi.gui.JPanel_SimpArmsLegsOptions();
-        jPanel_SimpBodyOptions1 = new imi.gui.JPanel_SimpBodyOptions();
+        HeadOptions = new imi.gui.JPanel_HeadOptions(this);
+        ArmsNLegsOptions = new imi.gui.JPanel_SimpArmsLegsOptions(this);
+        jPanel_SimpBodyOptions1 = new imi.gui.JPanel_SimpBodyOptions(this);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -381,13 +383,13 @@ public class JFrame_SimpAdvOptions extends javax.swing.JFrame {
         SkeletonNode skeleton   = m_sceneData.getAvatar().getSkeleton();
 
         String[] szLeftArm     = new String[] { "leftArm",          "leftArmRoll",      "leftForeArm",      "leftForeArmRoll",  "leftHand",
-                                                "leftHandThumb1",   "leftHandThumb2",   "leftHandThumb3",   "leftHandThumb4",   "leftPalm",
+                                                "leftPalm",         "leftHandThumb1",   "leftHandThumb2",   "leftHandThumb3",   "leftHandThumb4",
                                                 "leftHandIndex1",   "leftHandIndex2",   "leftHandIndex3",   "leftHandIndex4",   "leftHandMiddle1",
                                                 "leftHandMiddle2",  "leftHandMiddle3",  "leftHandMiddle4",  "leftHandRing1",    "leftHandRing2",
                                                 "leftHandRing3",    "leftHandRing4",    "leftHandPinky1",   "leftHandPinky2",   "leftHandPinky3",
                                                 "leftHandPinky4" };
         String[] szRightArm    = new String[] { "rightArm",         "rightArmRoll",     "rightForeArm",     "rightForeArmRoll", "rightHand",
-                                                "rightHandThumb1",  "rightHandThumb2",  "rightHandThumb3",  "rightHandThumb4",  "rightPalm",
+                                                "rightPalm",        "rightHandThumb1",  "rightHandThumb2",  "rightHandThumb3",  "rightHandThumb4",
                                                 "rightHandIndex1",  "rightHandIndex2",  "rightHandIndex3",  "rightHandIndex4",  "rightHandMiddle1",
                                                 "rightHandMiddle2", "rightHandMiddle3", "rightHandMiddle4", "rightHandRing1",   "rightHandRing2",
                                                 "rightHandRing3",   "rightHandRing4",   "rightHandPinky1",  "rightHandPinky2",  "rightHandPinky3",
@@ -591,7 +593,7 @@ public class JFrame_SimpAdvOptions extends javax.swing.JFrame {
             {
                 adjustEyes(control, mod, actualval);
                 break;
-            }
+                }
             case lefteyeSize:
             {
                 adjustEyes(control, mod, actualval);

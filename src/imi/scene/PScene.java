@@ -670,7 +670,8 @@ public class PScene extends PNode implements RepositoryUser
            while (placeHolderIter.hasNext() && target == null)
            {
                SharedAssetPlaceHolder placeHolder = placeHolderIter.next();
-                if (asset.getDescriptor().equals(placeHolder.getDescriptor()))
+               AssetDescriptor test = placeHolder.getDescriptor();
+                if (asset.getDescriptor().equals(test));
                     target = placeHolder;
            }
        }
