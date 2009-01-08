@@ -181,11 +181,12 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         // Initialize the SharedAsset of the attributes
         m_attributes = attributes;
         initAsset();
-        // Set up the asset initializer to apply the attributes on this character when it executes
-        setAssetInitializer(m_attributes, null);
         
         // Initialize the scene
         initScene(processors);
+
+        // Set up the asset initializer to apply the attributes on this character when it executes
+        setAssetInitializer(m_attributes, null);
         
         // The glue between JME and pscene
         m_jscene = new JScene(m_pscene);
@@ -261,11 +262,12 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         m_attributes = new CharacterAttributes(configFileDOM.getAttributes());
 
         initAsset();
-        // Set up the asset initializer to apply the attributes on this character when it executes
-        setAssetInitializer(m_attributes, configFileDOM);
-
+        
         // Initialize the scene
         initScene(processors);
+
+        // Set up the asset initializer to apply the attributes on this character when it executes
+        setAssetInitializer(m_attributes, configFileDOM);
 
         // The glue between JME and pscene
         m_jscene = new JScene(m_pscene);
@@ -422,6 +424,10 @@ public abstract class Character extends Entity implements SpatialObject, Animati
                     m_leftArm.setSkeletonManipulator(m_skeletonManipulator);
                     //m_arm.setPointAtLocation(Vector3f.UNIT_Y.mult(2.0f)); // test pointing, set to null to stop pointing 
                 }
+                // Turn on the animation
+                m_AnimationProcessor.setEnable(true);
+                // Turn on updates
+                m_characterProcessor.start();
                 return true;
 
             }
@@ -862,10 +868,13 @@ public abstract class Character extends Entity implements SpatialObject, Animati
             // Debugging / Diagnostic output
 //            Logger.getLogger(Character.class.getName()).log(Level.INFO, "Model " + m_pscene + "  inst " + m_modelInst);
             m_AnimationProcessor = new CharacterAnimationProcessor(m_modelInst);
+            // Start the animation processor disabled until we finish loading
+            m_AnimationProcessor.setEnable(false);
             processors.add(m_AnimationProcessor);
         }
 
         m_characterProcessor = new CharacterProcessor(this);
+        m_characterProcessor.stop();
         processors.add(m_characterProcessor);
     }
     
