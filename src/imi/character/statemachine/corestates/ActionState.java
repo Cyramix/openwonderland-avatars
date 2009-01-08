@@ -15,7 +15,7 @@
  * exception as provided by Sun in the License file that accompanied 
  * this code.
  */
-package imi.character.ninja;
+package imi.character.statemachine.corestates;
 
 import imi.character.statemachine.GameState;
 import imi.character.statemachine.GameContext;
@@ -23,12 +23,12 @@ import imi.scene.animation.AnimationComponent.PlaybackMode;
 import imi.scene.animation.AnimationListener.AnimationMessageType;
 
 /**
- * This class represents a character's punching behavior
- * @author Lou
+ * This class represents a character's general action behavior
+ * @author Lou Hayt
  */
-public class PunchState extends GameState 
+public class ActionState extends GameState 
 {
-    GameContext ninjaContext = null;
+    GameContext context = null;
             
     private boolean bPlayedOnce = false;
     
@@ -36,15 +36,11 @@ public class PunchState extends GameState
      * Construct a new instance with the provided context.
      * @param master
      */
-    public PunchState(GameContext master)
+    public ActionState(GameContext master)
     {
         super(master);
-        ninjaContext = master;
-        
-        setName("Punch");
-        setAnimationName("Punch");
-        setTransitionDuration(0.2f);
-        setAnimationSpeed(1.0f);
+        context = master;
+        setName("Action");
     }
     
     /**
@@ -62,8 +58,8 @@ public class PunchState extends GameState
     {
         super.stateExit(owner);
         
-        if (ninjaContext.getSkeleton() != null)
-            ninjaContext.getSkeleton().getAnimationState().setReverseAnimation(false);
+        if (context.getSkeleton() != null)
+            context.getSkeleton().getAnimationState().setReverseAnimation(false);
     }
     
     @Override
@@ -75,14 +71,14 @@ public class PunchState extends GameState
         
         // If the animation doesn't exist make it possible 
         // to exit the state
-        if (ninjaContext.getSkeleton() != null)
+        if (context.getSkeleton() != null)
         {
-            if (ninjaContext.getSkeleton().getAnimationComponent().findCycle(getAnimationName(), 0) == -1)
+            if (context.getSkeleton().getAnimationComponent().findCycle(getAnimationName(), 0) == -1)
                 bPlayedOnce = true;
         }
         
         // Stop the character
-        ninjaContext.getController().stop();
+        context.getController().stop();
     }
     
     @Override

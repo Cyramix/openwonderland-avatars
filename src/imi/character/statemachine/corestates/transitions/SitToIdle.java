@@ -15,9 +15,8 @@
  * exception as provided by Sun in the License file that accompanied 
  * this code.
  */
-package imi.character.ninja.transitions;
+package imi.character.statemachine.corestates.transitions;
 
-import imi.character.ninja.NinjaContext.TriggerNames;
 import imi.character.statemachine.GameState;
 import imi.character.statemachine.TransitionObject;
 

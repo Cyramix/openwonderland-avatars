@@ -15,8 +15,9 @@
  * exception as provided by Sun in the License file that accompanied 
  * this code.
  */
-package imi.character.ninja;
+package imi.character.statemachine.corestates;
 
+import imi.character.ninja.*;
 import imi.character.statemachine.GameContext;
 import imi.character.statemachine.GameState;
 import imi.scene.animation.AnimationComponent.PlaybackMode;
@@ -28,7 +29,7 @@ import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
  */
 public class IdleState extends GameState
 {
-    NinjaContext ninjaContext = null;
+    GameContext context = null;
         
     private float velocityThreshhold = 0.5f;
         
@@ -42,7 +43,7 @@ public class IdleState extends GameState
     public IdleState(NinjaContext master)
     {
         super(master);
-        ninjaContext = master;
+        context = master;
         
         setName("Idle");
         setAnimationName("Idle");
@@ -58,16 +59,16 @@ public class IdleState extends GameState
      */
     public boolean toIdle(Object data)
     {
-        if (ninjaContext.getController().getVelocityScalar() < velocityThreshhold)
+        if (context.getController().getVelocityScalar() < velocityThreshhold)
             return true;
         return false;
     }
 
     private void takeAction(float deltaTime) 
     {
-        float x = ninjaContext.getActions()[NinjaContext.ActionNames.Movement_X.ordinal()];
-        float y = ninjaContext.getActions()[NinjaContext.ActionNames.Movement_Y.ordinal()];
-        float z = ninjaContext.getActions()[NinjaContext.ActionNames.Movement_Z.ordinal()];
+        float x = context.getActions()[NinjaContext.ActionNames.Movement_X.ordinal()];
+        float y = context.getActions()[NinjaContext.ActionNames.Movement_Y.ordinal()];
+        float z = context.getActions()[NinjaContext.ActionNames.Movement_Z.ordinal()];
         
         // Turn
         if (x == 0.0f)
@@ -97,7 +98,7 @@ public class IdleState extends GameState
         moveCounter   = 0.0f;
                 
         // Stop moving
-        ninjaContext.getController().stop();
+        context.getController().stop();
     }
     
     @Override
@@ -116,12 +117,12 @@ public class IdleState extends GameState
         }
         
         // Check for possible transitions
-        if (!ninjaContext.isTransitioning())
+        if (!context.isTransitioning())
         {
             if (resetBodyParts == true)
             {
                 // do the resetting
-                SkeletonNode skeleton = ninjaContext.getSkeleton();
+                SkeletonNode skeleton = context.getSkeleton();
                 if (skeleton != null)
                 {
                     skeleton.resetJointToBindPose("leftFoot");

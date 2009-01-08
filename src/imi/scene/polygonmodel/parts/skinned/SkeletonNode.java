@@ -532,7 +532,12 @@ public class SkeletonNode extends PNode implements Animated
      */
     public AnimationGroup getAnimationGroup(int index)
     {
-        return m_animationComponent.getGroups().get(index);
+        try {
+        return m_animationComponent.getGroups().get(index);}
+        catch (IndexOutOfBoundsException ex){
+            logger.log(Level.SEVERE, null, ex);
+        }
+        return null;
     }
     
     public boolean transitionTo(String cycleName, boolean bReverse)

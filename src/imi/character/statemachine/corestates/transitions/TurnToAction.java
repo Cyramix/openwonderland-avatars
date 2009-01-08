@@ -15,20 +15,18 @@
  * exception as provided by Sun in the License file that accompanied 
  * this code.
  */
-package imi.character.ninja.transitions;
+package imi.character.statemachine.corestates.transitions;
 
-import imi.character.ninja.NinjaContext;
 import imi.character.ninja.NinjaContext.ActionNames;
 import imi.character.statemachine.GameState;
 import imi.character.statemachine.TransitionObject;
 
 /**
- * This class represents the transition from the Walk state to the Punch state.
+ * This class represents the transition from the Turn state to the Punch state.
  * @author Lou Hayt
  */
-public class WalkToPunch extends TransitionObject
+public class TurnToAction extends TransitionObject
 {
-
     @Override
     protected boolean testCondition(GameState state) 
     {
@@ -36,10 +34,7 @@ public class WalkToPunch extends TransitionObject
         
         // If the punch action is active
         if (state.getContext().getActions()[ActionNames.Punch.ordinal()] == 1.0f)
-        {
-            if (!((NinjaContext)state.getContext()).isTransitioning())
-                return state.getContext().excecuteTransition(this);
-        }
+            return state.getContext().excecuteTransition(this);
         
         return false;
     }

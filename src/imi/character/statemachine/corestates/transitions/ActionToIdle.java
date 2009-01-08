@@ -15,7 +15,7 @@
  * exception as provided by Sun in the License file that accompanied 
  * this code.
  */
-package imi.character.ninja.transitions;
+package imi.character.statemachine.corestates.transitions;
 
 import imi.character.ninja.NinjaContext.TriggerNames;
 import imi.character.statemachine.GameState;
@@ -25,7 +25,7 @@ import imi.character.statemachine.TransitionObject;
  * This class represents the transition from the Punch state to the Idle state.
  * @author Lou Hayt
  */
-public class PunchToIdle extends TransitionObject
+public class ActionToIdle extends TransitionObject
 {
     @Override
     protected boolean testCondition(GameState state) 

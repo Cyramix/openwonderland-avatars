@@ -20,7 +20,9 @@ package imi.tests;
 import com.jme.math.Vector3f;
 import imi.character.ninja.NinjaAvatar;
 import imi.character.ninja.NinjaAvatarAttributes;
+import imi.character.ninja.NinjaFemaleAvatarAttributes;
 import imi.character.objects.ObjectCollection;
+import imi.scene.camera.state.FirstPersonCamState;
 import org.jdesktop.mtgame.WorldManager;
 
 
@@ -61,8 +63,14 @@ public class VerletArmTest  extends DemoBase
         objects.generateChairs(Vector3f.ZERO, 5.0f, 4);
         control.setObjectCollection(objects);
         
+        // change camera speed
+        FirstPersonCamState camState = (FirstPersonCamState)m_cameraProcessor.getState();
+        camState.setMovementRate(0.02f);
+        camState.setCameraPosition(new Vector3f(0.0f, 1.8f, -2.0f));
+        
         // Create avatar
-        NinjaAvatar avatar = new NinjaAvatar(new NinjaAvatarAttributes("Avatar", true, true), wm);
+        //NinjaAvatar avatar = new NinjaAvatar(new NinjaAvatarAttributes("Avatar", true, true), wm);
+        NinjaAvatar avatar = new NinjaAvatar(new NinjaFemaleAvatarAttributes("Avatar", true, false), wm);
         avatar.selectForInput();
         control.getNinjaTeam().add(avatar);
         avatar.setObjectCollection(objects);

@@ -15,23 +15,22 @@
  * exception as provided by Sun in the License file that accompanied 
  * this code.
  */
-package imi.character.ninja.transitions;
+package imi.character.statemachine.corestates.transitions;
 
-import imi.character.ninja.NinjaContext;
-import imi.character.ninja.NinjaController;
+import imi.character.CharacterController;
 import imi.character.statemachine.GameState;
 import imi.character.statemachine.TransitionObject;
 
 /**
- * This class represents the transition conditions from the fly to the idle state.
+ * This class represents the transition from the Walk state to the Idle state.
  * @author Lou Hayt
  */
-public class FlyToIdle extends TransitionObject
+public class WalkToIdle extends TransitionObject
 {
     @Override
     protected boolean testCondition(GameState state) 
     {
-        NinjaController controller = ((NinjaContext)state.getContext()).getController();
+        CharacterController controller = state.getContext().getController();
         if (controller == null)
             return false;
         

@@ -37,6 +37,7 @@ public abstract class CharacterController
     private Vector3f previousTranslation = new Vector3f();
 
     private HashSet<CharacterMotionListener> listeners = null;
+
     /**
      * Override to implement stopping functionality
      */
@@ -146,4 +147,32 @@ public abstract class CharacterController
      * @param newModelInstance
      */
     abstract public void setModelInstance(PPolygonModelInstance newModelInstance);
+    
+    /** Override to implement optional functionalllity **/
+    public void accelerate(Vector3f acc) {
+    }
+
+    /** Override to implement optional functionalllity **/        
+    public void accelerate(float scalar) {
+    }
+    
+    /** Override to implement optional functionalllity **/
+    public float getVelocityScalar() {
+        return 0.0f;
+    }
+
+    /** Override to implement optional functionalllity **/
+    public boolean isMovingForward() {
+        return false;
+    }
+
+    /** Override to implement optional functionalllity **/    
+    public void turnTo(Vector3f direction) {
+    }
+
+    /** Override to implement optional functionalllity **/        
+    public float getFowardAcceleration() {
+        return 0.0f;
+    }
+
 }

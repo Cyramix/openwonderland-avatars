@@ -15,22 +15,24 @@
  * exception as provided by Sun in the License file that accompanied 
  * this code.
  */
-package imi.character.ninja;
+package imi.character.statemachine.corestates;
 
+import imi.character.ninja.*;
 import com.jme.math.Vector3f;
+import imi.character.CharacterController;
 import imi.character.statemachine.GameContext;
 import imi.character.statemachine.GameState;
 import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
- * This state accounts for flying behavior with the character.
+ * This state accounts for flying behavior with the character, this is a test 
+ * state made by Paul.
  * @author Lou Hayt
+ * @author PaulBy
  */
 public class FlyState extends GameState 
 {
-    NinjaContext ninjaContext           = null;
+    GameContext context           = null;
         
     private float impulse               = 15.0f;
     
@@ -43,7 +45,7 @@ public class FlyState extends GameState
     public FlyState(NinjaContext master)
     {
         super(master);
-        ninjaContext = master;
+        context = master;
         
         setName("Fly");
         setAnimationName("Fly");
@@ -64,12 +66,12 @@ public class FlyState extends GameState
     {
 //        float x = ninjaContext.getActions()[NinjaContext.ActionNames.Movement_X.ordinal()];
         //float y = actions[ActionNames.Movement_Y.ordinal()];
-        float y = ninjaContext.getActions()[NinjaContext.ActionNames.Movement_Y.ordinal()];
+        float y = context.getActions()[NinjaContext.ActionNames.Movement_Y.ordinal()];
 
         // Debugging / Diagnostic output
 //        Logger.getLogger(FlyState.class.getName()).log(Level.INFO, "TakeAction " + y);
 
-        NinjaController controller = ninjaContext.getController();
+        CharacterController controller = context.getController();
         
         // Move Up
         if (y != 0.0f)
@@ -89,11 +91,11 @@ public class FlyState extends GameState
         exitCounter += deltaTime;
         
         // Set animation state
-        SkeletonNode skeleton = ninjaContext.getSkeleton();
+        SkeletonNode skeleton = context.getSkeleton();
         if (skeleton != null)   // Ninja's skeleton might be null untill loaded
         {        
             // Reverse animation if moving backwards
-            NinjaController controller = ninjaContext.getController();
+            CharacterController controller = context.getController();
             
             if (controller.isMovingForward())
                 skeleton.getAnimationState().setReverseAnimation(true);
@@ -101,7 +103,7 @@ public class FlyState extends GameState
                 skeleton.getAnimationState().setReverseAnimation(false);
             
             // Set animation speed
-            float velocity = ninjaContext.getController().getVelocityScalar();
+            float velocity = context.getController().getVelocityScalar();
             float speed    = velocity * walkSpeedFactor;
             if (speed > walkSpeedMax)
                 speed = walkSpeedMax;
@@ -126,7 +128,7 @@ public class FlyState extends GameState
         super.stateExit(owner);
         
         // Ninja's skeleton might be null untill loaded
-        SkeletonNode skeleton = ninjaContext.getSkeleton();
+        SkeletonNode skeleton = context.getSkeleton();
         if (skeleton != null)   
         {
             // Clean up... make sure the animation is not on reverse

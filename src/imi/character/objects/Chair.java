@@ -84,7 +84,9 @@ public class Chair implements SpatialObject
             initOrigin.invert();
             
             sharedAsset = new SharedAsset(null, new AssetDescriptor(SharedAssetType.COLLADA_Model, modelFile));
-            sharedAsset.setUserData(new ColladaLoaderParams(false, true, false, false, 4, "name", null));
+            ColladaLoaderParams loaderParams = new ColladaLoaderParams(false, true, false, false, 4, "name", null);
+            loaderParams.setUsingSkeleton(false);
+            sharedAsset.setUserData(loaderParams);
             AssetInitializer init = new AssetInitializer() {
                 public boolean initialize(Object asset) {
 

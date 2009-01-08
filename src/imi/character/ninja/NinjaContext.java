@@ -17,26 +17,34 @@
  */
 package imi.character.ninja;
 
+import imi.character.statemachine.corestates.WalkState;
+import imi.character.statemachine.corestates.TurnState;
+import imi.character.statemachine.corestates.SitState;
+import imi.character.statemachine.corestates.SitOnGroundState;
+import imi.character.statemachine.corestates.IdleState;
+import imi.character.statemachine.corestates.FlyState;
+import imi.character.statemachine.corestates.FallFromSitState;
+import imi.character.statemachine.corestates.ActionState;
 import imi.character.CharacterController;
 import imi.character.steering.FollowPath;
 import imi.character.steering.GoSit;
 import imi.character.steering.GoTo;
-import imi.character.ninja.transitions.FlyToIdle;
-import imi.character.ninja.transitions.IdleToFly;
-import imi.character.ninja.transitions.IdleToPunch;
-import imi.character.ninja.transitions.IdleToSitOnGround;
-import imi.character.ninja.transitions.IdleToTurn;
-import imi.character.ninja.transitions.IdleToWalk;
-import imi.character.ninja.transitions.PunchToIdle;
-import imi.character.ninja.transitions.PunchToTurn;
-import imi.character.ninja.transitions.PunchToWalk;
-import imi.character.ninja.transitions.SitOnGroundToIdle;
-import imi.character.ninja.transitions.SitToIdle;
-import imi.character.ninja.transitions.TurnToIdle;
-import imi.character.ninja.transitions.TurnToPunch;
-import imi.character.ninja.transitions.TurnToWalk;
-import imi.character.ninja.transitions.WalkToIdle;
-import imi.character.ninja.transitions.WalkToPunch;
+import imi.character.statemachine.corestates.transitions.FlyToIdle;
+import imi.character.statemachine.corestates.transitions.IdleToFly;
+import imi.character.statemachine.corestates.transitions.IdleToAction;
+import imi.character.statemachine.corestates.transitions.IdleToSitOnGround;
+import imi.character.statemachine.corestates.transitions.IdleToTurn;
+import imi.character.statemachine.corestates.transitions.IdleToWalk;
+import imi.character.statemachine.corestates.transitions.ActionToIdle;
+import imi.character.statemachine.corestates.transitions.ActionToTurn;
+import imi.character.statemachine.corestates.transitions.ActionToWalk;
+import imi.character.statemachine.corestates.transitions.SitOnGroundToIdle;
+import imi.character.statemachine.corestates.transitions.SitToIdle;
+import imi.character.statemachine.corestates.transitions.TurnToIdle;
+import imi.character.statemachine.corestates.transitions.TurnToAction;
+import imi.character.statemachine.corestates.transitions.TurnToWalk;
+import imi.character.statemachine.corestates.transitions.WalkToIdle;
+import imi.character.statemachine.corestates.transitions.WalkToAction;
 import imi.character.objects.Chair;
 import imi.character.objects.LocationNode;
 import imi.character.objects.SpatialObject;
@@ -45,7 +53,7 @@ import imi.character.statemachine.GameState.Action;
 import java.util.Hashtable;
 
 /**
- *
+ * This is a game context concrete e.g.
  * @author Lou Hayt
  */
 public class NinjaContext extends GameContext
@@ -115,7 +123,7 @@ public class NinjaContext extends GameContext
         gameStates.put(IdleState.class,  new IdleState(this));
         gameStates.put(WalkState.class,  new WalkState(this));
         gameStates.put(TurnState.class,  new TurnState(this));
-        gameStates.put(PunchState.class, new PunchState(this));
+        gameStates.put(ActionState.class, new ActionState(this));
         gameStates.put(SitState.class,   new SitState(this));
         gameStates.put(FlyState.class,   new FlyState(this));
         gameStates.put(FallFromSitState.class,   new FallFromSitState(this));
@@ -128,22 +136,22 @@ public class NinjaContext extends GameContext
         RegisterStateEntryPoint(gameStates.get(IdleState.class),  "toIdle");
         RegisterStateEntryPoint(gameStates.get(WalkState.class),  "toWalk");
         RegisterStateEntryPoint(gameStates.get(TurnState.class),  "toTurn");
-        RegisterStateEntryPoint(gameStates.get(PunchState.class), "toPunch");
+        RegisterStateEntryPoint(gameStates.get(ActionState.class), "toPunch");
         RegisterStateEntryPoint(gameStates.get(FlyState.class),   "toFly");
         RegisterStateEntryPoint(gameStates.get(SitOnGroundState.class),   "toSitOnGround");
                 
         // Add transitions (exit points)
         gameStates.get(IdleState.class).addTransition(new IdleToTurn());
         gameStates.get(IdleState.class).addTransition(new IdleToWalk());
-        gameStates.get(IdleState.class).addTransition(new IdleToPunch());
+        gameStates.get(IdleState.class).addTransition(new IdleToAction());
         gameStates.get(WalkState.class).addTransition(new WalkToIdle());
-        gameStates.get(WalkState.class).addTransition(new WalkToPunch());
+        gameStates.get(WalkState.class).addTransition(new WalkToAction());
         gameStates.get(TurnState.class).addTransition(new TurnToIdle());
         gameStates.get(TurnState.class).addTransition(new TurnToWalk());
-        gameStates.get(TurnState.class).addTransition(new TurnToPunch());
-        gameStates.get(PunchState.class).addTransition(new PunchToWalk());
-        gameStates.get(PunchState.class).addTransition(new PunchToTurn());
-        gameStates.get(PunchState.class).addTransition(new PunchToIdle());
+        gameStates.get(TurnState.class).addTransition(new TurnToAction());
+        gameStates.get(ActionState.class).addTransition(new ActionToWalk());
+        gameStates.get(ActionState.class).addTransition(new ActionToTurn());
+        gameStates.get(ActionState.class).addTransition(new ActionToIdle());
         gameStates.get(SitState.class).addTransition(new SitToIdle());
         gameStates.get(FlyState.class).addTransition(new FlyToIdle());
         gameStates.get(IdleState.class).addTransition(new IdleToFly());
@@ -255,14 +263,14 @@ public class NinjaContext extends GameContext
         // Reverse the animation for the punch state
         else if (trigger == TriggerNames.Reverse.ordinal() && pressed)
         {
-            PunchState punch = (PunchState) gameStates.get(PunchState.class);
+            ActionState punch = (ActionState) gameStates.get(ActionState.class);
             punch.setReverseAnimation(!punch.isReverseAnimation());
         }
         
         // Select the next animation to play for the facial animation test
         else if (trigger == TriggerNames.NextAction.ordinal() && pressed)
         {
-            PunchState punch = (PunchState) gameStates.get(PunchState.class);
+            ActionState punch = (ActionState) gameStates.get(ActionState.class);
             punch.setAnimationSetBoolean(false);
             
             punchActionIndex++;

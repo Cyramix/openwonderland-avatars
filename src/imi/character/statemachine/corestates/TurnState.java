@@ -15,9 +15,11 @@
  * exception as provided by Sun in the License file that accompanied 
  * this code.
  */
-package imi.character.ninja;
+package imi.character.statemachine.corestates;
 
+import imi.character.ninja.*;
 import com.jme.math.Vector3f;
+import imi.character.CharacterController;
 import imi.character.statemachine.GameContext;
 import imi.character.statemachine.GameState;
 import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
@@ -29,7 +31,7 @@ import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
 public class TurnState extends GameState
 {
     /** The owning context. **/
-    NinjaContext ninjaContext = null;
+    GameContext context = null;
 
     private boolean bTurning = true;
     
@@ -46,12 +48,8 @@ public class TurnState extends GameState
     public TurnState(NinjaContext master)
     {
         super(master);
-        ninjaContext = master;
-                
+        context = master;
         setName("Turn");
-        setAnimationName("Stalk");
-        setAnimationSpeed(1.5f);
-        setTransitionDuration(0.05f);
     }
     
     /**
@@ -62,16 +60,16 @@ public class TurnState extends GameState
     public boolean toTurn(Object data)
     {
         // The character doesn't have a skeleton if it's represented as a sphere
-        if (ninjaContext.getCharacter().getAttributes().isUseSimpleStaticModel())
+        if (context.getCharacter().getAttributes().isUseSimpleStaticModel())
             return true;
         
         // Ninja's skeleton might be null untill loaded
-        SkeletonNode skeleton = ninjaContext.getSkeleton();
+        SkeletonNode skeleton = context.getSkeleton();
         if (skeleton == null)   
             return false;
         
         // Validate only if fully transitioned to the current animation
-        if (!ninjaContext.isTransitioning())
+        if (!context.isTransitioning())
             return true;
         
         return false;
@@ -79,14 +77,14 @@ public class TurnState extends GameState
          
     private void takeAction(float deltaTime) 
     {
-        float x = ninjaContext.getActions()[NinjaContext.ActionNames.Movement_X.ordinal()];
+        float x = context.getActions()[NinjaContext.ActionNames.Movement_X.ordinal()];
         //float y = actions[ActionNames.Movement_Y.ordinal()];
-        float z = ninjaContext.getActions()[NinjaContext.ActionNames.Movement_Z.ordinal()];
+        float z = context.getActions()[NinjaContext.ActionNames.Movement_Z.ordinal()];
         
-        NinjaController controller = ninjaContext.getController();
+        CharacterController controller = context.getController();
         
         // Ninja's skeleton might be null untill loaded
-        SkeletonNode skeleton = ninjaContext.getSkeleton();
+        SkeletonNode skeleton = context.getSkeleton();
             
         // Turn
         if (x != 0.0f)
@@ -103,7 +101,7 @@ public class TurnState extends GameState
             }
             
             // Turn only if transitioned to the turning animation
-            if (!ninjaContext.isTransitioning())
+            if (!context.isTransitioning())
             {
                 Vector3f direction = new Vector3f(x, 0.0f, z);
                 controller.turnTo(direction);
@@ -125,7 +123,7 @@ public class TurnState extends GameState
     {
         super.stateExit(owner);
         // Ninja's skeleton might be null untill loaded
-        SkeletonNode skeleton = ninjaContext.getSkeleton();
+        SkeletonNode skeleton = context.getSkeleton();
         
         // Make sure the animation is not set to reverse
         if (skeleton != null)
@@ -161,7 +159,7 @@ public class TurnState extends GameState
                                 
         // Check for possible transitions
         if ( exitCounter > minimumTimeBeforeTransition &&
-                !ninjaContext.isTransitioning() )
+                !context.isTransitioning() )
             transitionCheck();
     }
 
@@ -172,5 +170,12 @@ public class TurnState extends GameState
     public float getMoveCounter() {
         return moveCounter;
     }
-    
+
+    public float getMinimumTimeBeforeTransition() {
+        return minimumTimeBeforeTransition;
+    }
+
+    public void setMinimumTimeBeforeTransition(float minimumTimeBeforeTransition) {
+        this.minimumTimeBeforeTransition = minimumTimeBeforeTransition;
+    }
 }

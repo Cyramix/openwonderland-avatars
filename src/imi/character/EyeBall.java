@@ -37,6 +37,8 @@ import org.jdesktop.mtgame.WorldManager;
  */
 public class EyeBall extends PPolygonSkinnedMeshInstance
 {
+    /** The Character who owns this eyeball **/
+    private Character character = null;
     /** The Model Instance that owns this eyeball **/
     private PPolygonModelInstance modelInst  = null;
     /** World space coordinates of the view target **/
@@ -61,10 +63,11 @@ public class EyeBall extends PPolygonSkinnedMeshInstance
      * @param modelInst The owning model
      * @param pscene The owning pscene
      */
-    public EyeBall(PPolygonSkinnedMeshInstance meshInstance, PPolygonModelInstance modelInst, PScene pscene)
+    public EyeBall(PPolygonSkinnedMeshInstance meshInstance, Character character)
     {
-        super(meshInstance, pscene, false); // Material will be applied later
-        this.modelInst = modelInst;
+        super(meshInstance, character.getPScene(), false); // Material will be applied later
+        this.modelInst = character.getModelInst();
+        this.character = character;
     }
 
     /**
@@ -106,7 +109,10 @@ public class EyeBall extends PPolygonSkinnedMeshInstance
             }
         }
         else
+        {
+            //matrix.setIdentity();
             bInCone = false;
+        }
     }
 
     public Vector3f getTarget() {

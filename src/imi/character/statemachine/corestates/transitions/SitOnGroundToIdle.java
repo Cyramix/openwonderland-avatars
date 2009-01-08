@@ -15,35 +15,21 @@
  * exception as provided by Sun in the License file that accompanied 
  * this code.
  */
-package imi.character.ninja.transitions;
+package imi.character.statemachine.corestates.transitions;
 
-import imi.character.ninja.TurnState;
 import imi.character.statemachine.GameState;
 import imi.character.statemachine.TransitionObject;
 
 /**
- * This class represents the transition from the Turn state to the Walk state.
+ * This class represents the transition from the SitOnGround state to the Idle state.
  * @author Lou Hayt
  */
-public class TurnToWalk extends TransitionObject
+public class SitOnGroundToIdle extends TransitionObject
 {
-    private float moveDelay = 0.075f; //  how long do we need to press forward\backward to exit turn
-    
     @Override
     protected boolean testCondition(GameState state) 
     {
-        if (!(state instanceof TurnState))
-            return false;
-        
-        TurnState turn = (TurnState)state;
-        
-        if (turn.getMoveCounter() > moveDelay)
-        {
-            stateMessageName = "toWalk";
-            return state.getContext().excecuteTransition(this);
-        }
-        
-        return false;
+        stateMessageName = "toIdle";
+        return state.getContext().excecuteTransition(this);
     }
-
 }

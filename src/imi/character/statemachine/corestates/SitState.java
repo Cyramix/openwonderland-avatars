@@ -15,61 +15,70 @@
  * exception as provided by Sun in the License file that accompanied 
  * this code.
  */
-package imi.character.ninja;
+package imi.character.statemachine.corestates;
 
+import imi.character.ninja.*;
+import imi.character.statemachine.corestates.FallFromSitState;
 import imi.character.ninja.NinjaContext.TriggerNames;
-import imi.character.statemachine.GameContext;
+import imi.character.objects.Chair;
 import imi.character.statemachine.GameState;
+import imi.character.statemachine.GameContext;
 import imi.scene.animation.AnimationComponent.PlaybackMode;
 import imi.scene.animation.AnimationListener.AnimationMessageType;
 import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
 
 /**
- * This state represents a character's behavior while sitting on the ground.
- * @author Lou Hayt
+ * This state represents a character's behavior whilst sitting.
+ * @author Lou
  */
-public class SitOnGroundState extends GameState  
-{ 
-    GameContext     context = null;
-
+public class SitState extends GameState 
+{
+    /** The owning context **/
+    GameContext context = null;
+    /** The chair we will be sitting in **/
+    Chair chair = null;
+    
     private float   counter = 0.0f;
+    private float   sittingAnimationTime = 0.7f;
     
-    private float sittingAnimationTime = 0.7f;
-    
-    private boolean bIdleSittingAnimationSet        = false;
-    private float   idleSittingTransitionDuration   = 0.5f;
-    private float   idleSittingAnimationSpeed       = 1.0f;
-    private String  idleSittingAnimationName        = "Male_FloorSitting";
+    private boolean bIdleSittingAnimationSet      = false;
+    private float   idleSittingTransitionDuration = 0.3f;
+    private float   idleSittingAnimationSpeed     = 1.0f;
+    private String  idleSittingAnimationName      = null;
     
     private boolean bGettingUp                  = false;
     private boolean bGettingUpAnimationSet      = false;
-    private float   gettingUpAnimationTime      = 1.0f;
-    private float   gettingUpTransitionDuration = 0.1f;
-    private float   gettingUpAnimationSpeed     = 2.0f;
-    private String  gettingUpAnimationName      = "Male_FloorGetup";
-    
+    private float   gettingUpAnimationTime      = 0.8f;
+    private float   gettingUpTransitionDuration = 0.05f;
+    private float   gettingUpAnimationSpeed     = 1.0f;
+    private String  gettingUpAnimationName      = null;
+
     /**
-     * Construct a new instance with the given context.
+     * Construct a new sitting state with the provided context as its owner
      * @param master
      */
-    public SitOnGroundState(GameContext master)
+    public SitState(NinjaContext master)
     {
         super(master);
         context = master;
-        setName("Sit on the ground");
-        setAnimationName("Male_FloorGetup");
-        setTransitionReverseAnimation(true);
-        setTransitionDuration(1.0f);
-        setAnimationSpeed(1.5f);
+        setName("Sit");
     }
-
+    
     /**
-     * Entry point method, validates the transition 
+     * Entry point method, validates the transition if the chair is not occupied
      * @param data - not used
      * @return true if the transition is validated
      */
-    public boolean toSitOnGround(Object data)
+    public boolean toSit(Object data)
     {
+        // is the chair occupied?
+        if (context.getSteering().getGoal() instanceof Chair)
+        {
+            chair = (Chair)context.getSteering().getGoal();
+            if (chair.isOccupied())
+                return false;
+        }
+        
         return true;
     }
     
@@ -77,6 +86,13 @@ public class SitOnGroundState extends GameState
     protected void stateExit(GameContext owner)
     {
         super.stateExit(owner);
+        
+        // Set the chair to not occupied
+        if (chair != null)
+        {
+            chair.setOwner(null);
+            chair.setOccupied(false);
+        }
     }
     
     @Override
@@ -84,28 +100,46 @@ public class SitOnGroundState extends GameState
     {       
         super.stateEnter(owner);
         
-        counter                  = 0.0f;
-        bGettingUp               = false;
+        counter = 0.0f;
+        bGettingUp = false;
         bIdleSittingAnimationSet = false;
-        bGettingUpAnimationSet   = false;
+        bGettingUpAnimationSet = false;
         
-        // If using the simple sphere model for the avatar the animation
-        // states will never be set
-        if(owner.getCharacter().getAttributes().isUseSimpleStaticModel())
+        // If any of the animations are not found or 
+        // If using the simple sphere\scene model for the avatar the animation
+        // these will never be set so this safry lets us get out of the state
+        if( owner.getCharacter().getAttributes().isUseSimpleStaticModel() || context.getSkeleton() != null && (
+                context.getSkeleton().getAnimationComponent().findCycle(getAnimationName(), 0) == -1 ||
+                context.getSkeleton().getAnimationComponent().findCycle(getIdleSittingAnimationName(), 0) == -1 ||
+                context.getSkeleton().getAnimationComponent().findCycle(getGettingUpAnimationName(), 0) == -1 ))
         {
             bGettingUpAnimationSet   = true;
             bIdleSittingAnimationSet = true;
         }
         
+        setReverseAnimation(false);
+        
         // Stop the character
         context.getController().stop();
+        
+        // Set the chair to occupied
+        if (context.getSteering().getGoal() instanceof Chair)
+        {
+            chair = (Chair)context.getSteering().getGoal();
+            chair.setOwner(context.getCharacter());
+            chair.setOccupied(true);
+        }
     }
     
     @Override
     public void update(float deltaTime)
     {
         super.update(deltaTime);
-                            
+        
+        // If we no longer own the chair; set the FallFromSitState
+        if (checkForFalling())
+            return;
+                    
         if (!context.isTransitioning()) 
             counter += deltaTime;
         
@@ -141,6 +175,20 @@ public class SitOnGroundState extends GameState
         }
     }
 
+    private boolean checkForFalling() 
+    {    
+        if (chair.getOwner() != context.getCharacter())
+        {
+            FallFromSitState fall = (FallFromSitState) context.getStateMapping().get(FallFromSitState.class);
+            if (fall != null && fall.toFallFromSit(null))
+            {
+                context.setCurrentState(fall);
+                return true;
+            }
+        }
+        return false;
+    }
+
     /**
      * Transitions to the idle sitting animation and sets the speed and 
      * transition duration.
@@ -153,7 +201,7 @@ public class SitOnGroundState extends GameState
         {
             skeleton.getAnimationState().setTransitionDuration(idleSittingTransitionDuration);
             skeleton.getAnimationState().setAnimationSpeed(idleSittingAnimationSpeed);
-            //skeleton.getAnimationState().setReverseAnimation(false);
+            skeleton.getAnimationState().setReverseAnimation(false);
             bIdleSittingAnimationSet = skeleton.transitionTo(idleSittingAnimationName, false);
             setAnimationSetBoolean(true);
         }
@@ -171,7 +219,7 @@ public class SitOnGroundState extends GameState
         {
             skeleton.getAnimationState().setTransitionDuration(gettingUpTransitionDuration);
             skeleton.getAnimationState().setAnimationSpeed(gettingUpAnimationSpeed);
-            bGettingUpAnimationSet = skeleton.transitionTo(gettingUpAnimationName, false);
+            bGettingUpAnimationSet = skeleton.transitionTo(gettingUpAnimationName, true);
             // If sitting down and getting up is the same animation transitionTo will return false
             // when trying to get up immediatly after deciding to sit down... so
             if (skeleton.getAnimationState().getCurrentCycle() == skeleton.getAnimationGroup().findAnimationCycleIndex(gettingUpAnimationName))
@@ -206,6 +254,24 @@ public class SitOnGroundState extends GameState
         this.idleSittingTransitionDuration = idleSittingTransitionDuration;
     }
 
+    public float getSittingAnimationTime() {
+        return sittingAnimationTime;
+    }
+
+    public void setSittingAnimationTime(float sittingAnimationTime) {
+        this.sittingAnimationTime = sittingAnimationTime;
+    }
+    
+    public void setSittingAnimationTime() {
+        if (context.getSkeleton() != null)
+        {
+            int index = context.getSkeleton().getAnimationGroup().findAnimationCycleIndex(getAnimationName());
+            float duration = context.getSkeleton().getAnimationGroup().getCycle(index).getEndTime() - context.getSkeleton().getAnimationGroup().getCycle(index).getStartTime();
+            this.sittingAnimationTime = duration / getAnimationSpeed();   
+            System.out.println("ddddddddddddddddddddddddddddddddddddddddddd       " +  this.sittingAnimationTime);
+        }
+    }
+
     public String getGettingUpAnimationName() {
         return gettingUpAnimationName;
     }
@@ -238,14 +304,6 @@ public class SitOnGroundState extends GameState
         this.gettingUpTransitionDuration = gettingUpTransitionDuration;
     }
     
-    public float getSittingAnimationTime() {
-        return sittingAnimationTime;
-    }
-
-    public void setSittingAnimationTime(float sittingAnimationTime) {
-        this.sittingAnimationTime = sittingAnimationTime;
-    }
-    
     @Override
     public void notifyAnimationMessage(AnimationMessageType message) {
         
@@ -257,4 +315,5 @@ public class SitOnGroundState extends GameState
                 gameContext.getSkeleton().getAnimationState().setCurrentCyclePlaybackMode(PlaybackMode.Loop);
         }
     }
+    
 }

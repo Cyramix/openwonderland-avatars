@@ -21,7 +21,7 @@ import imi.character.*;
 import com.jme.math.Vector3f;
 import imi.character.ninja.NinjaContext;
 import imi.character.ninja.NinjaContext.TriggerNames;
-import imi.character.ninja.SitState;
+import imi.character.statemachine.corestates.SitState;
 import imi.character.objects.Chair;
 import imi.character.objects.SpatialObject;
 import imi.scene.PMatrix;

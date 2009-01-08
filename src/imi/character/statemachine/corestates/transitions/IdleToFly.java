@@ -15,30 +15,37 @@
  * exception as provided by Sun in the License file that accompanied 
  * this code.
  */
-package imi.character.ninja.transitions;
+package imi.character.statemachine.corestates.transitions;
 
-import imi.character.ninja.NinjaContext;
-import imi.character.ninja.NinjaController;
+import imi.character.statemachine.corestates.IdleState;
+import imi.character.ninja.NinjaContext.ActionNames;
 import imi.character.statemachine.GameState;
 import imi.character.statemachine.TransitionObject;
 
 /**
- * This class represents the transition from the Walk state to the Idle state.
+ * This class represents the transition from the Idle state to the Fly state.
  * @author Lou Hayt
  */
-public class WalkToIdle extends TransitionObject
+public class IdleToFly extends TransitionObject
 {
+    private float moveDelay = 0.075f; //  how long do we need to press up/down to exit idle
+    
     @Override
     protected boolean testCondition(GameState state) 
     {
-        NinjaController controller = ((NinjaContext)state.getContext()).getController();
-        if (controller == null)
+        if (!(state instanceof IdleState))
             return false;
         
-        if (controller.getFowardAcceleration() == 0.0f)
-        {    
-            stateMessageName = "toIdle";
-            return state.getContext().excecuteTransition(this);
+        IdleState idle = (IdleState)state;
+        
+        if (idle.getMoveCounter() > moveDelay)
+        {
+            stateMessageName = "toFly";
+
+            // If the fly action is active
+            float y = state.getContext().getActions()[ActionNames.Movement_Y.ordinal()];
+            if (y > 0.0f || y < 0.0f)
+                return state.getContext().excecuteTransition(this);
         }
         return false;
     }

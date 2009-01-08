@@ -28,6 +28,7 @@ import java.util.logging.Logger;
 import javax.swing.JFrame;
 
 /**
+ *  Concrete e.g. of character controller
  *  Controls the ninja according to internal and external actions
  * 
  * @author Lou Hayt

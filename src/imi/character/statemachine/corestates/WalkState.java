@@ -15,10 +15,11 @@
  * exception as provided by Sun in the License file that accompanied 
  * this code.
  */
-package imi.character.ninja;
+package imi.character.statemachine.corestates;
 
+import imi.character.ninja.*;
 import com.jme.math.Vector3f;
-import imi.character.ninja.NinjaContext.ActionNames;
+import imi.character.CharacterController;
 import imi.character.statemachine.GameContext;
 import imi.character.statemachine.GameState;
 import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
@@ -29,7 +30,7 @@ import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
  */
 public class WalkState extends GameState 
 {
-    NinjaContext ninjaContext           = null;
+    GameContext context           = null;
         
     private float impulse               = 15.0f;
     
@@ -39,17 +40,11 @@ public class WalkState extends GameState
     private float exitCounter           = 0.0f;
     private float minimumTimeBeforeTransition = 0.05f; // still needed?
     
-    boolean bHack = true;
-    float magic = 0.0f;
-    
     public WalkState(NinjaContext master)
     {
         super(master);
-        ninjaContext = master;
-        
+        context = master;
         setName("Walk");
-        setAnimationName("Walk");
-        setTransitionDuration(0.1f);
     }
     
     /**
@@ -60,10 +55,10 @@ public class WalkState extends GameState
     public boolean toWalk(Object data)
     {   
         // Reverse animation if moving backwards
-        SkeletonNode skeleton = ninjaContext.getSkeleton();
+        SkeletonNode skeleton = context.getSkeleton();
         if (skeleton != null)   // Ninja's skeleton might be null untill loaded
         {        
-            NinjaController controller = ninjaContext.getController();
+            CharacterController controller = context.getController();
 
             if (controller.isMovingForward())
                 setTransitionReverseAnimation(true);
@@ -76,11 +71,11 @@ public class WalkState extends GameState
      
     private void takeAction(float deltaTime) 
     {
-        float x = ninjaContext.getActions()[NinjaContext.ActionNames.Movement_X.ordinal()];
+        float x = context.getActions()[NinjaContext.ActionNames.Movement_X.ordinal()];
         //float y = actions[ActionNames.Movement_Y.ordinal()];
-        float z = ninjaContext.getActions()[NinjaContext.ActionNames.Movement_Z.ordinal()];
+        float z = context.getActions()[NinjaContext.ActionNames.Movement_Z.ordinal()];
         
-        NinjaController controller = ninjaContext.getController();
+        CharacterController controller = context.getController();
         
         // Turn
         if (x != 0.0f)
@@ -107,11 +102,11 @@ public class WalkState extends GameState
         exitCounter += deltaTime;
         
         // Set animation state
-        SkeletonNode skeleton = ninjaContext.getSkeleton();
+        SkeletonNode skeleton = context.getSkeleton();
         if (skeleton != null)   // Ninja's skeleton might be null until loaded
         {        
             // Reverse animation if moving backwards
-            NinjaController controller = ninjaContext.getController();
+            CharacterController controller = context.getController();
             
             if (controller.isMovingForward())
                 skeleton.getAnimationState().setReverseAnimation(true);
@@ -119,7 +114,7 @@ public class WalkState extends GameState
                 skeleton.getAnimationState().setReverseAnimation(false);
             
             // Set animation speed
-            float velocity = ninjaContext.getController().getVelocityScalar();
+            float velocity = context.getController().getVelocityScalar();
             float speed    = velocity * walkSpeedFactor;
             if (speed > walkSpeedMax)
                 speed = walkSpeedMax;
@@ -158,7 +153,7 @@ public class WalkState extends GameState
     {
         super.stateExit(owner);
         // Ninja's skeleton might be null untill loaded
-        SkeletonNode skeleton = ninjaContext.getSkeleton();
+        SkeletonNode skeleton = context.getSkeleton();
         if (skeleton != null)   
         {
             // Clean up... make sure the animation is not on reverse
@@ -177,6 +172,14 @@ public class WalkState extends GameState
 
     public void setWalkSpeedMax(float walkSpeedMax) {
         this.walkSpeedMax = walkSpeedMax;
+    }
+
+    public float getMinimumTimeBeforeTransition() {
+        return minimumTimeBeforeTransition;
+    }
+
+    public void setMinimumTimeBeforeTransition(float minimumTimeBeforeTransition) {
+        this.minimumTimeBeforeTransition = minimumTimeBeforeTransition;
     }
     
 }

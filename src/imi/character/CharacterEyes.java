@@ -31,6 +31,7 @@ import org.jdesktop.mtgame.WorldManager;
  */
 public class CharacterEyes 
 {
+    private Character             character            = null;
     private SkeletonNode          skeleton             = null;
     private PPolygonModelInstance characterModelInst   = null;
     private SkinnedMeshJoint      headJoint            = null;
@@ -64,22 +65,29 @@ public class CharacterEyes
     private boolean winkRight = true;
     private boolean winkLeft  = true;
     
-    public CharacterEyes(SkeletonNode skeleton, PPolygonModelInstance characterModelInst, PScene characterScene, boolean male, WorldManager wm)
+    public CharacterEyes(Character character, WorldManager wm)
     {
-        if (male)
+        if (character == null)
+        {
+            System.out.println("CharacterEyes recieved null character in the constructor!");
+            return;
+        }
+        
+        if (character.getAttributes().isMale())
             closedEyeLid = closedEyeLidMale;
         else
             closedEyeLid = closedEyeLidFemale;
         
-        this.skeleton = skeleton;
-        this.characterModelInst = characterModelInst;
+        this.character = character;
+        skeleton = character.getSkeleton();
+        characterModelInst = character.getModelInst();
         
         PPolygonSkinnedMeshInstance leftEyeMeshInst  = (PPolygonSkinnedMeshInstance) skeleton.findChild("leftEyeGeoShape");
         PPolygonSkinnedMeshInstance rightEyeMeshInst = (PPolygonSkinnedMeshInstance) skeleton.findChild("rightEyeGeoShape");
         
-        leftEyeBall = new EyeBall(leftEyeMeshInst, characterModelInst, characterScene);
+        leftEyeBall = new EyeBall(leftEyeMeshInst, character);
         leftEyeMeshInst.getParent().replaceChild(leftEyeMeshInst, leftEyeBall, true);
-        rightEyeBall = new EyeBall(rightEyeMeshInst, characterModelInst, characterScene);
+        rightEyeBall = new EyeBall(rightEyeMeshInst, character);
         rightEyeMeshInst.getParent().replaceChild(rightEyeMeshInst, rightEyeBall, true);
         
         leftEyeBall.setOtherEye(rightEyeBall);

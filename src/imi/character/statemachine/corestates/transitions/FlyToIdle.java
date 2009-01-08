@@ -15,28 +15,30 @@
  * exception as provided by Sun in the License file that accompanied 
  * this code.
  */
-package imi.character.ninja.transitions;
+package imi.character.statemachine.corestates.transitions;
 
-import imi.character.ninja.NinjaContext.TriggerNames;
+import imi.character.CharacterController;
 import imi.character.statemachine.GameState;
 import imi.character.statemachine.TransitionObject;
 
 /**
- * This class represents the transition from the Punch state to the Turnstate.
+ * This class represents the transition conditions from the fly to the idle state.
  * @author Lou Hayt
  */
-public class PunchToTurn extends TransitionObject
+public class FlyToIdle extends TransitionObject
 {
     @Override
     protected boolean testCondition(GameState state) 
     {
-        stateMessageName = "toTurn";
+        CharacterController controller = state.getContext().getController();
+        if (controller == null)
+            return false;
         
-        if ( !state.getContext().getTriggerState().isKeyPressed(TriggerNames.Punch.ordinal()) &&
-                (state.getContext().getTriggerState().isKeyPressed(TriggerNames.Move_Right.ordinal())
-                || state.getContext().getTriggerState().isKeyPressed(TriggerNames.Move_Left.ordinal()) ))
+        if (controller.getFowardAcceleration() == 0.0f)
+        {    
+            stateMessageName = "toIdle";
             return state.getContext().excecuteTransition(this);
-        
+        }
         return false;
     }
 }

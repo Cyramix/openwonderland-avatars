@@ -28,9 +28,9 @@ import java.net.URL;
 import org.jdesktop.mtgame.WorldManager;
 
 /*
- * Ninja! This class provides additional functality and concrete attributes for
- * the base Character class. Things such as input mechanisms and a state layout
- * are provided as a starting point.
+ * Ninja! This class is a concrete Character e.g. 
+ * Things such as input mechanisms and a state machine
+ * layout are provided as a starting point.
  * 
  * @author Lou Hayt
  */

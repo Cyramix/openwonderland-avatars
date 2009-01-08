@@ -15,7 +15,7 @@
  * exception as provided by Sun in the License file that accompanied 
  * this code.
  */
-package imi.character.ninja;
+package imi.character.statemachine.corestates;
 
 import imi.character.ninja.NinjaContext.TriggerNames;
 import imi.character.statemachine.GameContext;
@@ -25,12 +25,11 @@ import imi.scene.animation.AnimationListener.AnimationMessageType;
 import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
 
 /**
- * This state defines how an avatar will react when a chair disappears from under
- * him / her.
+ * This state represents a character's behavior while sitting on the ground.
  * @author Lou Hayt
  */
-public class FallFromSitState extends GameState  
-{
+public class SitOnGroundState extends GameState  
+{ 
     GameContext     context = null;
 
     private float   counter = 0.0f;
@@ -40,32 +39,24 @@ public class FallFromSitState extends GameState
     private boolean bIdleSittingAnimationSet        = false;
     private float   idleSittingTransitionDuration   = 0.5f;
     private float   idleSittingAnimationSpeed       = 1.0f;
-    private String  idleSittingAnimationName        = "Male_FloorSitting";
+    private String  idleSittingAnimationName        = null;
     
     private boolean bGettingUp                  = false;
     private boolean bGettingUpAnimationSet      = false;
     private float   gettingUpAnimationTime      = 1.0f;
     private float   gettingUpTransitionDuration = 0.1f;
-    private float   gettingUpAnimationSpeed     = 2.0f;
-    private String  gettingUpAnimationName      = "Male_FloorGetup";
+    private float   gettingUpAnimationSpeed     = 1.0f;
+    private String  gettingUpAnimationName      = null;
     
     /**
-     * Construct a new instance with the provided game context.
-     * @param master The context that will / does contain this state.
+     * Construct a new instance with the given context.
+     * @param master
      */
-    public FallFromSitState(GameContext master)
+    public SitOnGroundState(GameContext master)
     {
         super(master);
         context = master;
-        setName("Fall from sitting");
-        setAnimationName("Male_FallFromSitting");
-        setTransitionDuration(0.05f);
-        setAnimationSpeed(2.0f);
-        
-        // Frown when entering the state
-        setFacialAnimationName("MaleFrown");
-        setFacialAnimationTimeIn(0.75f);
-        setFacialAnimationTimeOut(2.0f);
+        setName("Sit on the ground");
     }
 
     /**
@@ -73,12 +64,11 @@ public class FallFromSitState extends GameState
      * @param data - not used
      * @return true if the transition is validated
      */
-    public boolean toFallFromSit(Object data)
+    public boolean toSitOnGround(Object data)
     {
         return true;
     }
-
-
+    
     @Override
     protected void stateExit(GameContext owner)
     {
@@ -95,15 +85,17 @@ public class FallFromSitState extends GameState
         bIdleSittingAnimationSet = false;
         bGettingUpAnimationSet   = false;
         
-        // If using the simple sphere model for the avatar the animation
-        // states will never be set
-        if(owner.getCharacter().getAttributes().isUseSimpleStaticModel())
+        // If any of the animations are not found or 
+        // If using the simple sphere\scene model for the avatar the animation
+        // these will never be set so this safry lets us get out of the state
+        if( owner.getCharacter().getAttributes().isUseSimpleStaticModel() || context.getSkeleton() != null && (
+                context.getSkeleton().getAnimationComponent().findCycle(getAnimationName(), 0) == -1 ||
+                context.getSkeleton().getAnimationComponent().findCycle(getIdleSittingAnimationName(), 0) == -1 ||
+                context.getSkeleton().getAnimationComponent().findCycle(getGettingUpAnimationName(), 0) == -1 ))
         {
             bGettingUpAnimationSet   = true;
             bIdleSittingAnimationSet = true;
         }
-        
-        setReverseAnimation(false);
         
         // Stop the character
         context.getController().stop();
@@ -161,7 +153,7 @@ public class FallFromSitState extends GameState
         {
             skeleton.getAnimationState().setTransitionDuration(idleSittingTransitionDuration);
             skeleton.getAnimationState().setAnimationSpeed(idleSittingAnimationSpeed);
-            skeleton.getAnimationState().setReverseAnimation(false);
+            //skeleton.getAnimationState().setReverseAnimation(false);
             bIdleSittingAnimationSet = skeleton.transitionTo(idleSittingAnimationName, false);
             setAnimationSetBoolean(true);
         }
@@ -265,5 +257,4 @@ public class FallFromSitState extends GameState
                 gameContext.getSkeleton().getAnimationState().setCurrentCyclePlaybackMode(PlaybackMode.Loop);
         }
     }
-    
 }

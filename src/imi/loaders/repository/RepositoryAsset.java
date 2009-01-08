@@ -125,13 +125,17 @@ public class RepositoryAsset extends ProcessorComponent
                     {
                         // Load the collada file to the PScene
                         Collada colladaLoader = new Collada();
+                        boolean usingSkeleton = true;
                         if (m_userData != null && m_userData instanceof ColladaLoaderParams)
                         {
                             ColladaLoaderParams loaderParams = (ColladaLoaderParams)m_userData;
                             colladaLoader.applyConfiguration(loaderParams);
+                            usingSkeleton = loaderParams.isUsingSkeleton();
                         }
                         PScene colladaScene = new PScene("COLLADA : " + 
                                 m_descriptor.getLocation().getFile(), m_home.getWorldManager());
+                        if (!usingSkeleton)
+                            colladaLoader.setAddSkinnedMeshesToSkeleton(false);
                         colladaLoader.load(colladaScene, m_descriptor.getLocation());
 
                         m_data.add(colladaScene);

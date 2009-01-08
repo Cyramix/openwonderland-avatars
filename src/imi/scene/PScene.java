@@ -669,10 +669,14 @@ public class PScene extends PNode implements RepositoryUser
        {
            while (placeHolderIter.hasNext() && target == null)
            {
-               SharedAssetPlaceHolder placeHolder = placeHolderIter.next();
+               try {
+               SharedAssetPlaceHolder placeHolder = placeHolderIter.next(); // NullPointerException?
                AssetDescriptor test = placeHolder.getDescriptor();
                 if (asset.getDescriptor().equals(test));
-                    target = placeHolder;
+                    target = placeHolder; }
+               catch (NullPointerException ex) {
+                   logger.severe(ex.toString()); // TODO why is this happening
+               }
            }
        }
 

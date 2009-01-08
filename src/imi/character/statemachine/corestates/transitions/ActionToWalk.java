@@ -15,26 +15,26 @@
  * exception as provided by Sun in the License file that accompanied 
  * this code.
  */
-package imi.character.ninja.transitions;
+package imi.character.statemachine.corestates.transitions;
 
-import imi.character.ninja.NinjaContext.ActionNames;
+import imi.character.ninja.NinjaContext.TriggerNames;
 import imi.character.statemachine.GameState;
 import imi.character.statemachine.TransitionObject;
 
 /**
- * This class represents the transition from the Idle state to the Punch state.
- * @author Lou Hayt
+ * This class represents the transition from the Punch state to the Walk state.
+ * @author Lou
  */
-public class IdleToPunch extends TransitionObject 
+public class ActionToWalk extends TransitionObject
 {
-
     @Override
     protected boolean testCondition(GameState state) 
     {
-        stateMessageName = "toPunch";
+        stateMessageName = "toWalk";
         
-        // If the punch action is active
-        if (state.getContext().getActions()[ActionNames.Punch.ordinal()] == 1.0f)
+        if ( !state.getContext().getTriggerState().isKeyPressed(TriggerNames.Punch.ordinal()) &&
+                (state.getContext().getTriggerState().isKeyPressed(TriggerNames.Move_Forward.ordinal())
+                || state.getContext().getTriggerState().isKeyPressed(TriggerNames.Move_Back.ordinal()) ))
             return state.getContext().excecuteTransition(this);
         
         return false;

@@ -15,32 +15,29 @@
  * exception as provided by Sun in the License file that accompanied 
  * this code.
  */
-package imi.character.ninja.transitions;
+package imi.character.statemachine.corestates.transitions;
 
-import imi.character.ninja.TurnState;
+import imi.character.ninja.NinjaContext.ActionNames;
 import imi.character.statemachine.GameState;
 import imi.character.statemachine.TransitionObject;
 
 /**
- * This class represents the transition from the Turn state to the Idlestate.
+ * This class represents the transition from the Idle state to the Punch state.
  * @author Lou Hayt
  */
-public class TurnToIdle extends TransitionObject
+public class IdleToAction extends TransitionObject 
 {
+
     @Override
     protected boolean testCondition(GameState state) 
     {
-        if (!(state instanceof TurnState))
-            return false;
+        stateMessageName = "toPunch";
         
-        TurnState turn = (TurnState)state;
-        
-        if (!turn.isTurning())
-        {
-            stateMessageName = "toIdle";
+        // If the punch action is active
+        if (state.getContext().getActions()[ActionNames.Punch.ordinal()] == 1.0f)
             return state.getContext().excecuteTransition(this);
-        }
         
         return false;
     }
+
 }

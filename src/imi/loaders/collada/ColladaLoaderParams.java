@@ -29,6 +29,8 @@ public class ColladaLoaderParams
 {
     /** Determine whether or not the skeleton should load **/
     private boolean     m_bLoadSkeleton  = false;
+    /** True if using a skeleton (if so skinned meshed will be handled for it) **/
+    private boolean     m_bUsingSkeleton  = true;
     /** Load geometry? **/
     private boolean     m_bLoadGeometry  = false;
     /** Load animation? **/
@@ -86,6 +88,14 @@ public class ColladaLoaderParams
         this.setLoadGeometry(other.isLoadingGeometry());
         this.setLoadSkeleton(other.isLoadingSkeleton());
         
+    }
+
+    public void setUsingSkeleton(boolean willUse) {
+        m_bUsingSkeleton = willUse;
+    }
+    
+    public boolean isUsingSkeleton() {
+        return m_bUsingSkeleton;
     }
     
     //////////////////////////////////////////////////////////

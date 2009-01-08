@@ -15,26 +15,31 @@
  * exception as provided by Sun in the License file that accompanied 
  * this code.
  */
-package imi.character.ninja.transitions;
+package imi.character.statemachine.corestates.transitions;
 
-import imi.character.ninja.NinjaContext.TriggerNames;
+import imi.character.statemachine.corestates.TurnState;
 import imi.character.statemachine.GameState;
 import imi.character.statemachine.TransitionObject;
 
 /**
- * This class represents the transition from the Idle state to the SitOnGround state.
+ * This class represents the transition from the Turn state to the Idlestate.
  * @author Lou Hayt
  */
-public class IdleToSitOnGround extends TransitionObject 
+public class TurnToIdle extends TransitionObject
 {
     @Override
     protected boolean testCondition(GameState state) 
     {
-        stateMessageName = "toSitOnGround";
+        if (!(state instanceof TurnState))
+            return false;
         
-        // If the sit on ground trigger is on
-        if (state.getContext().getTriggerState().isKeyPressed(TriggerNames.SitOnGround.ordinal()))
+        TurnState turn = (TurnState)state;
+        
+        if (!turn.isTurning())
+        {
+            stateMessageName = "toIdle";
             return state.getContext().excecuteTransition(this);
+        }
         
         return false;
     }
