@@ -55,7 +55,7 @@ public class CharacterLoader
     // Temporary, TODO remove this field
     // Provides the root directory for the baf cache, this will be removed
     // once the baf files are deployed into the asset server
-    private static String bafCacheURL = null;//System.getProperty("BafCacheDir", "");
+    private static String bafCacheURL = System.getProperty("BafCacheDir", null);
 
     /**
      * Load the specified collada file and parse out the skeleton, associate it
@@ -161,7 +161,7 @@ public class CharacterLoader
                 File f = new File(binaryLocation.toURI());
                 File dir = f.getParentFile();
                 if (!dir.exists())
-                dir.mkdirs();
+                    dir.mkdirs();
             } catch (URISyntaxException ex) {
                 Logger.getLogger(CharacterLoader.class.getName()).log(Level.SEVERE, null, ex);
             }
