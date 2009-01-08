@@ -105,8 +105,14 @@ public class VerletArm
         armTimer  = 0.0f;
         deltaTime = armTimeTick;
         
-        // Attach the first particle to the shoulder joint
+        // Attach the first particle to the shoulder joint, apply the difference
+        // on all particles so they arm will move with the body movements.
+        Vector3f prevPos = new Vector3f(particles.get(shoulder).getCurrentPosition());
         particles.get(shoulder).position(shoulderJoint.getTransform().getWorldMatrix(false).getTranslation());
+        Vector3f dif = particles.get(shoulder).getCurrentPosition().subtract(prevPos);
+        for (int i = 1; i < particles.size(); i++)
+            particles.get(i).dislocate(dif);
+        
         // If we are pointing, use the pointAt method, otherwise just run the simulation
         if (pointAtLocation != null)
             pointAt();
