@@ -89,6 +89,8 @@ public class EyeBall extends PPolygonSkinnedMeshInstance
         directionToTarget.y *= yScale;
         directionToTarget.normalizeLocal();
 
+        //boolean inConeCheck = bInCone;
+        
         // Check if inside the cone
         float dot = directionToTarget.dot(forwardVec);
         if (dot > limitCone)
@@ -110,9 +112,11 @@ public class EyeBall extends PPolygonSkinnedMeshInstance
         }
         else
         {
-            //matrix.setIdentity();
             bInCone = false;
         }
+        
+//        if (inConeCheck != bInCone)
+//            System.out.println("Now in cone: " + bInCone + "  target: " + target + "   direction: " + directionToTarget);
     }
 
     public Vector3f getTarget() {

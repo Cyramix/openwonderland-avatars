@@ -84,6 +84,7 @@ public abstract class CharacterController
         this.bReverseHeading = bReverseHeading;
     }
     
+    // testing code
     public JFrame getWindow() {
         return null;
     }

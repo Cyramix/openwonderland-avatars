@@ -111,9 +111,8 @@ public class CharacterEyes
                     
         // Position the target in fornt of the eyes
         Vector3f target = characterModelInst.getTransform().getWorldMatrix(false).getTranslation();
-        target.addLocal(characterModelInst.getTransform().getWorldMatrix(false).getLocalZ().mult(5.0f));
-        target.addLocal(headJoint.getTransform().getWorldMatrix(false).getTranslation().add(Vector3f.UNIT_Y.mult(-1.4f)));
-        //Vector3f targetOrigin = new Vector3f(target);
+        target.addLocal(characterModelInst.getTransform().getWorldMatrix(false).getLocalZ().mult(10.0f));
+        target.addLocal(headJoint.getTransform().getLocalMatrix(false).getTranslation());
         
         // Offset the target with a quick and dirty wander algorythim
         eyesWanderCounter += deltaTime;
