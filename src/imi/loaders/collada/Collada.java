@@ -1110,13 +1110,19 @@ public class Collada
     {
         PPolygonSkinnedMeshInstance result = null;
 
-        PPolygonSkinnedMesh skinnedMeshGeometry = findPolygonSkinnedMesh(colladaNode.getControllerName());
+        for (PPolygonSkinnedMesh skinMesh : m_PolygonSkinnedMeshes)
+        {
+            if (skinMesh.getName().equals(colladaNode.getControllerName()))
+            {
 
-        result = m_loadingPScene.processSkinnedMesh(skinnedMeshGeometry);
-        result.setName(meshName);
-        result.setTransform(new PTransform(colladaNode.getMatrix()));
+                result = m_loadingPScene.processSkinnedMesh(skinMesh);
+                result.setName(meshName);
+                result.setTransform(new PTransform(colladaNode.getMatrix()));
 
-        parent.addChild(result);
+                parent.addChild(result);
+            }
+        }
+        
 
         return result;
     }
