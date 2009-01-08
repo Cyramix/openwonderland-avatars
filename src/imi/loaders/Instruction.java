@@ -20,6 +20,7 @@ package imi.loaders;
 
 import imi.scene.PMatrix;
 import imi.scene.PNode;
+import java.net.URL;
 
 
 
@@ -44,6 +45,7 @@ public class Instruction extends PNode
         loadAnimation, // Load the specified animation on the current skeleton
         loadFacialAnimation, // Load the specified facial animation on the current skeleton
         setSkeleton, // Set the current skeleton
+        loadGeometryToSubgroup, // Loads all geometry in a file and attaches it to a specified subgroup
     }
 
     /** The type of this type **/
@@ -150,6 +152,16 @@ public class Instruction extends PNode
         inst.setData(array);
 
         addChild(inst);
+    }
+
+    public void addLoadGeometryToSubgroupInstruction(URL geometryLocation, String subgroupName)
+    {
+        Instruction newInstruction = new Instruction(InstructionType.loadGeometryToSubgroup);
+        Object[] paramArray = new Object[2];
+        paramArray[0] = geometryLocation;
+        paramArray[1] = subgroupName;
+        newInstruction.setData(paramArray);
+        addChild(newInstruction);
     }
     
     public InstructionType getInstructionType()

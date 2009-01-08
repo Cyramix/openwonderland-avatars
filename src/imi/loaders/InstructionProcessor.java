@@ -192,6 +192,12 @@ public class InstructionProcessor
                     else
                         m_skeleton = null;   
                 }
+                break;
+                case loadGeometryToSubgroup:
+                {
+                    if (!loadGeometryToSubgroup((Object[])instruction.getData()))
+                        logger.warning("Unable to add geometry to subgroup!");
+                }
             }
         }
         catch (MalformedURLException ex){
@@ -283,33 +289,54 @@ public class InstructionProcessor
 
                 // Add it to the skeleton
                 m_skeleton.addToSubGroup(skinnedMeshInstance, subGroupName);
-//                break;
             }
         }
-//        // Did we find it?
-//        if (skinnedMesh == null)
-//        {
-//            logger.severe("Unable to find the specified skinned mesh for attaching - "
-//                            + skinnedMeshName + " attached to " + subGroupName);
-//            result = false;
-//        }
-//        else
-//        {
-//            // Make an instance
-//            PPolygonSkinnedMeshInstance skinnedMeshInstance = (PPolygonSkinnedMeshInstance) m_loadingPScene.addMeshInstance(skinnedMesh, new PMatrix());
-//            // Debugging / Diagnostic information
-//            logger.log(Level.INFO, "Adding mesh, \"" + skinnedMeshName + "\" to subgroup, \"" + subGroupName + "\"");
-//
-//            //  Link the SkinnedMesh to the Skeleton.
-//            skinnedMeshInstance.setAndLinkSkeletonNode(m_skeleton);
-//
-//            // Add it to the skeleton
-//            m_skeleton.addToSubGroup(skinnedMeshInstance, subGroupName);
-//
-//            result = true;
-//        }
-//        return result;
         return true;
+    }
+
+    /**
+     * Load the geometry man!
+     * @param params
+     * @return
+     */
+    private boolean loadGeometryToSubgroup(Object[] params)
+    {
+        boolean result = true;
+        if (params.length != 2 ||
+            params[0] instanceof URL == false ||
+            params[1] instanceof String == false)
+        {
+            logger.warning("Incorrect arguements to loadGeometryToSubgroup instruction, aborting.");
+            result = false;
+        }
+        else
+        {
+            // first, load the file up
+            URL geometryLocation = (URL)params[0];
+            String subGroupName = (String)params[1];
+            if (!m_characterLoader.loadGeometry(m_loadingPScene, geometryLocation))
+                result = false;
+            else
+            {
+                // Success loading, now we need to iterate on the meshes and add them all
+                Iterable<PPolygonMesh> list = m_loadingPScene.getLocalGeometryList();
+                for (PPolygonMesh mesh : list)
+                {
+                        PPolygonSkinnedMesh skinnedMesh = (PPolygonSkinnedMesh) mesh;
+                        // Make an instance
+                        PPolygonSkinnedMeshInstance skinnedMeshInstance = (PPolygonSkinnedMeshInstance) m_loadingPScene.addMeshInstance(skinnedMesh, new PMatrix());
+
+                        //  Link the SkinnedMesh to the Skeleton.
+                        skinnedMeshInstance.setAndLinkSkeletonNode(m_skeleton);
+
+                        // Add it to the skeleton
+                        m_skeleton.addToSubGroup(skinnedMeshInstance, subGroupName);
+                }
+            }
+        }
+        return result;
+
+
     }
 
     /**
