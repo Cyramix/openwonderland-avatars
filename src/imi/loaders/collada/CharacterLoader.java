@@ -55,7 +55,7 @@ public class CharacterLoader
     // Temporary, TODO remove this field
     // Provides the root directory for the baf cache, this will be removed
     // once the baf files are deployed into the asset server
-    private static String bafCacheURL = System.getProperty("BafCacheDir", "");
+    private static String bafCacheURL = null;//System.getProperty("BafCacheDir", "");
 
     /**
      * Load the specified collada file and parse out the skeleton, associate it
@@ -124,54 +124,55 @@ public class CharacterLoader
      * @return True on success, false otherwise
      */
     public boolean loadAnimation(PScene loadingPScene, SkeletonNode owningSkeleton, URL animationLocation, int mergeToGroup)
+{
+    boolean result = false;
+    // check for binary version
+    AnimationGroup newGroup = null;
+    URL binaryLocation = null;
+    try
     {
-        boolean result = false;
-
-        // check for binary version
-        AnimationGroup newGroup = null;
-        URL binaryLocation = null;
-        try
-        {
+        if (bafCacheURL==null)
+            binaryLocation = new URL(animationLocation.toString().substring(0, animationLocation.toString().length() - 3) + "baf");
+        else
             binaryLocation = new URL(bafCacheURL+animationLocation.getFile().toString().substring(0, animationLocation.getFile().toString().length() - 3) + "baf");
-            newGroup = loadBinaryAnimation(binaryLocation);
-        } catch (Exception ex)
-        {
-            Logger.getLogger(CharacterLoader.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-        if (newGroup != null) // Success!
-        {
-            // Debugging output
-            logger.fine("Loaded binary file " + binaryLocation.getFile() + ".");
-            owningSkeleton.getAnimationComponent().getGroups().add(newGroup);
-            result = true;
-        }
-        else // otherwise use the collada loader
-        {
-            m_colladaLoader.clear();
-            m_colladaLoader.setLoadFlags(false, false, true);
-            m_colladaLoader.setSkeletonNode(owningSkeleton);
-            result = m_colladaLoader.load(loadingPScene, animationLocation);
-            // Serialize it for the next round
-            logger.info("Wrote binary file " + binaryLocation.getFile() + ".");
+        newGroup = loadBinaryAnimation(binaryLocation);
+    } catch (Exception ex)
+    {
+        Logger.getLogger(CharacterLoader.class.getName()).log(Level.SEVERE, null, ex);
+    }
+    if (newGroup != null) // Success!
+    {
+        // Debugging output
+        logger.fine("Loaded binary file " + binaryLocation.getFile() + ".");
+        owningSkeleton.getAnimationComponent().getGroups().add(newGroup);
+        result = true;
+    }
+    else // otherwise use the collada loader
+    {
+        m_colladaLoader.clear();
+        m_colladaLoader.setLoadFlags(false, false, true);
+        m_colladaLoader.setSkeletonNode(owningSkeleton);
+        result = m_colladaLoader.load(loadingPScene, animationLocation);
+        // Serialize it for the next round
+        logger.info("Wrote binary file " + binaryLocation.getFile() + ".");
+        if (bafCacheURL != null) {
             try {
                 // Create the directory
                 File f = new File(binaryLocation.toURI());
                 File dir = f.getParentFile();
                 if (!dir.exists())
-                    dir.mkdirs();
+                dir.mkdirs();
             } catch (URISyntaxException ex) {
                 Logger.getLogger(CharacterLoader.class.getName()).log(Level.SEVERE, null, ex);
             }
-
-            writeAnimationGroupToDisk(binaryLocation, owningSkeleton);
         }
-        // Merge
-        if (mergeToGroup >= 0)
-            mergeLastToAnimationGroup(owningSkeleton, mergeToGroup);
-
-        return result;
+        writeAnimationGroupToDisk(binaryLocation, owningSkeleton);
     }
+    // Merge
+    if (mergeToGroup >= 0)
+        mergeLastToAnimationGroup(owningSkeleton, mergeToGroup);
+    return result;
+}
 
     /**
      * Helper method to load a binary animation file from the specified URL
