@@ -38,7 +38,7 @@
                     <Property name="text" type="java.lang.String" value="Avatar"/>
                   </Properties>
                   <AuxValues>
-                    <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="jMenuItem_Avatar.addActionListener(new java.awt.event.ActionListener() {&#xa;    public void actionPerformed(java.awt.event.ActionEvent evt) {&#xa;        runProgressBar(true);&#xa;        m_sceneData.loadAvatarDAEFile(true, false, m_base);&#xa;        resetOpenTools();&#xa;        runProgressBar(false);&#xa;    }&#xa;});"/>
+                    <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="jMenuItem_Avatar.addActionListener(new java.awt.event.ActionListener() {&#xa;    public void actionPerformed(java.awt.event.ActionEvent evt) {&#xa;        loadingWindow(true);&#xa;        runProgressBar(true);&#xa;        m_sceneData.loadAvatarDAEFile(true, true, m_base);&#xa;        m_sceneData.setCameraOnModel();&#xa;        resetOpenTools();&#xa;        runProgressBar(false);&#xa;        loadingWindow(false);&#xa;    }&#xa;});"/>
                   </AuxValues>
                 </MenuItem>
                 <MenuItem class="javax.swing.JMenuItem" name="jMenuItem_Clothes">
@@ -46,7 +46,7 @@
                     <Property name="text" type="java.lang.String" value="Clothes"/>
                   </Properties>
                   <AuxValues>
-                    <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="jMenuItem_Clothes.addActionListener(new java.awt.event.ActionListener() {&#xa;    public void actionPerformed(java.awt.event.ActionEvent evt) {&#xa;        runProgressBar(true);&#xa;        m_sceneData.loadSMeshDAEFile(true, false, m_base);&#xa;        resetOpenTools();&#xa;        runProgressBar(false);&#xa;    }&#xa;});"/>
+                    <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="jMenuItem_Clothes.addActionListener(new java.awt.event.ActionListener() {&#xa;    public void actionPerformed(java.awt.event.ActionEvent evt) {&#xa;        runProgressBar(true);&#xa;        m_sceneData.loadSMeshDAEFile(false, true, m_base);&#xa;        resetOpenTools();&#xa;        runProgressBar(false);&#xa;    }&#xa;});"/>
                   </AuxValues>
                 </MenuItem>
                 <MenuItem class="javax.swing.JMenuItem" name="jMenuItem_Accessories">

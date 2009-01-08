@@ -212,6 +212,7 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
     protected void simpleSceneInit(JScene jscene, WorldManager wm, Entity jsentity, ArrayList<ProcessorComponent> processors) {
         m_sceneData = new SceneEssentials();
         m_sceneData.setSceneData(jscene, jscene.getPScene(), jsentity, wm, processors);
+        m_sceneData.setCurCamProcessor(m_cameraProcessor);
     }
     
     /**
@@ -1245,10 +1246,13 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
         jMenuItem_Avatar.setText("Avatar");
         jMenuItem_Avatar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
+                loadingWindow(true);
                 runProgressBar(true);
-                m_sceneData.loadAvatarDAEFile(true, false, m_base);
+                m_sceneData.loadAvatarDAEFile(true, true, m_base);
+                m_sceneData.setCameraOnModel();
                 resetOpenTools();
                 runProgressBar(false);
+                loadingWindow(false);
             }
         });
         jMenu_LoadModels.add(jMenuItem_Avatar);
@@ -1257,7 +1261,7 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
         jMenuItem_Clothes.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 runProgressBar(true);
-                m_sceneData.loadSMeshDAEFile(true, false, m_base);
+                m_sceneData.loadSMeshDAEFile(false, true, m_base);
                 resetOpenTools();
                 runProgressBar(false);
             }

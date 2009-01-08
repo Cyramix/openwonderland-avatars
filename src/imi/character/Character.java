@@ -700,19 +700,23 @@ public abstract class Character extends Entity implements SpatialObject, Animati
 
         ArrayList<AttachmentParams> ATTACH = new ArrayList<AttachmentParams>();
         if (oldAttatch == null || oldAttatch.length <= 0) {
-            for (int i = 0; i < newAttatch.length; i++)
-                ATTACH.add(newAttatch[i]);
+            if (newAttatch != null) {
+                for (int i = 0; i < newAttatch.length; i++)
+                    ATTACH.add(newAttatch[i]);
+            }
         } else {
             for (int i = 0; i < oldAttatch.length; i++)
                 ATTACH.add(oldAttatch[i]);
-            for (int i = 0; i < newAttatch.length; i++) {
-                boolean bFound = false;
-                for (int j = 0; j < oldAttatch.length; j++) {
-                    if (newAttatch[i].getMeshName().equals(oldAttatch[j].getMeshName()))
-                        bFound = true;
+            if (newAttatch != null) {
+                for (int i = 0; i < newAttatch.length; i++) {
+                    boolean bFound = false;
+                    for (int j = 0; j < oldAttatch.length; j++) {
+                        if (newAttatch[i].getMeshName().equals(oldAttatch[j].getMeshName()))
+                            bFound = true;
+                    }
+                    if (!bFound)
+                        ATTACH.add(newAttatch[i]);
                 }
-                if (!bFound)
-                    ATTACH.add(newAttatch[i]);
             }
         }
 

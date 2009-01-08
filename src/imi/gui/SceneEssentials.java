@@ -18,6 +18,8 @@
 package imi.gui;
 
 import com.jme.math.Vector3f;
+import com.sun.tools.javac.tree.Tree.ForeachLoop;
+import imi.character.AttachmentParams;
 import imi.loaders.collada.ColladaLoaderParams;
 import imi.loaders.Instruction;
 import imi.loaders.Instruction.InstructionType;
@@ -54,6 +56,7 @@ import imi.scene.utils.tree.MeshInstanceSearchProcessor;
 import imi.scene.utils.tree.TreeTraverser;
 import imi.sql.SQLInterface;
 import java.awt.Component;
+import java.awt.Frame;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
@@ -79,6 +82,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileFilter;
 import org.jdesktop.mtgame.WorldManager;
 import org.jdesktop.mtgame.Entity;
@@ -601,9 +605,44 @@ public class SceneEssentials {
     }
     
     public boolean loadSMeshDAEFile(boolean clear, boolean useRepository, Component arg0) {
+        if (avatar == null) {
+            System.out.println("You have not loaded an avatar yet... Please load one first");
+            return false;
+        }
+
         int returnValue = jFileChooser_LoadColladaModel.showOpenDialog(arg0);
         if (returnValue == JFileChooser.APPROVE_OPTION) {
             fileModel = jFileChooser_LoadColladaModel.getSelectedFile();
+
+            String meshNames    = null;
+            String subGroup     = null;
+            String[] meshes     = null;
+            int iSubGroup        = -1;
+
+            meshNames = (String)JOptionPane.showInputDialog(new Frame(), "Please input the mesh name(s) to load \n ending with a ; (semicolon) after each mesh",
+                                                            "SPECIFY MESHES TO ADD TO THE AVATAR", JOptionPane.YES_NO_CANCEL_OPTION,
+                                                            null, null, "exampleMesh;");
+
+            Object[] subgroups = { m_regions[0], m_regions[1], m_regions[2], m_regions[3], m_regions[4] };
+            subGroup = (String)JOptionPane.showInputDialog( new Frame(), "Please select the subgroup to which the meshes will be added",
+                                                            "SPECIFY SUBGROUP TO ADD MESHES IN", JOptionPane.PLAIN_MESSAGE,
+                                                            null, subgroups, m_regions[0]);
+
+            if (meshNames == null || meshNames.length() <= 0)
+                return false;
+            
+            meshes = meshNames.split(";");
+
+            if (subGroup == null)
+                return false;
+
+            for (int i = 0; i < m_regions.length; i++) {
+                if(subGroup.equalsIgnoreCase(m_regions[i])) {
+                    iSubGroup = i;
+                    break;
+                }
+            }
+
             currentPScene.setUseRepository(useRepository);
             if (clear)
                 currentPScene.getInstances().removeAllChildren();
@@ -624,10 +663,32 @@ public class SceneEssentials {
 
             try {
                 modelURL = new URL(szURL);
-                SharedAsset colladaAsset = new SharedAsset(currentPScene.getRepository(), new AssetDescriptor(SharedAssetType.COLLADA_Mesh, modelURL));
-                colladaAsset.setUserData(new ColladaLoaderParams(true, true, false, false, 4, fileModel.getName(), null));
-                String[] anim = null;
-                loadInitializer(fileModel.getName(), colladaAsset, anim);
+
+                // Create avatar attribs
+                CharacterAttributes attribs                             = new CharacterAttributes("AvatarAttributes");
+                ArrayList<CharacterAttributes.SkinnedMeshParams> add    = new ArrayList<CharacterAttributes.SkinnedMeshParams>();
+                String[] delete = null;
+
+                String[][] szload = new String[1][2];
+                szload[0][0] = modelURL.toString();
+                szload[0][1] = m_regions[iSubGroup];
+
+                for (int i = 0; i < meshes.length; i++) {
+                    CharacterAttributes.SkinnedMeshParams param = attribs.createSkinnedMeshParams(meshes[i], m_regions[iSubGroup]);
+                    add.add(param);
+                }
+
+                delete = avatar.getSkeleton().getMeshNamesBySubGroup(subGroup);
+
+                attribs.setBaseURL("");
+                attribs.setBindPoseFile(null);
+                attribs.setAnimations(null);
+                attribs.setDeleteInstructions(delete);
+                attribs.setLoadInstructions(szload);
+                attribs.setAddInstructions(add.toArray(new CharacterAttributes.SkinnedMeshParams[add.size()]));
+                attribs.setAttachmentsInstructions(null);
+                avatar.loadAttributes(attribs);
+
                 return true;
             } catch (MalformedURLException ex) {
                 Logger.getLogger(SceneEssentials.class.getName()).log(Level.SEVERE, null, ex);
@@ -662,9 +723,63 @@ public class SceneEssentials {
             anim[i] = animations.get(i).toString();
         }
         setDefaultMeshSwapList();
-        SharedAsset character = new SharedAsset(currentPScene.getRepository(), new AssetDescriptor(SharedAssetType.COLLADA_Model, bindPose));
-        character.setUserData(new ColladaLoaderParams(true, true, false, false, 4, fileModel.getName(), null));
-        loadInitializer(fileModel.getName(), character, anim);
+        
+        String query = new String();
+        ArrayList<String[]> meshref;
+        if (fileModel.toString().contains("Female")) {
+            gender = 2;
+            query = "SELECT name, grouping FROM GeometryReferences WHERE tableref = 'Female'";
+        } else {
+            gender = 1;
+            query = "SELECT name, grouping FROM GeometryReferences WHERE tableref = 'Male'";
+        }
+
+        meshref = loadSQLData(query);
+
+        if (meshsetup != null)
+            meshsetup.clear();
+        meshsetup = new HashMap<Integer, String[]>();
+
+        createMeshSwapList("0", meshref);
+        createMeshSwapList("1", meshref);
+        createMeshSwapList("2", meshref);
+        createMeshSwapList("3", meshref);
+        createMeshSwapList("4", meshref);
+        createMeshSwapList("5", meshref);
+        createMeshSwapList("6", meshref);
+        createMeshSwapList("7", meshref);
+        createMeshSwapList("8", meshref);
+
+        // Create avatar attribs
+        CharacterAttributes attribs = new CharacterAttributes("AvatarAttributes");
+
+        attribs = new CharacterAttributes("Avatar");
+        attribs.setBaseURL("");
+        attribs.setBindPoseFile(bindPose.toString());
+        attribs.setAnimations(anim);
+        attribs.setDeleteInstructions(null);
+        attribs.setLoadInstructions(null);
+        attribs.setAddInstructions(null);
+        attribs.setAttachmentsInstructions(null);
+        attribs.setGender(gender);
+        attribs.setGeomRef(meshsetup);
+
+        if (gender == 1)
+            attribs.setDefaultMaleMesh();
+        else
+            attribs.setDefaultFemaleMesh();
+
+        if (avatar != null) {
+            worldManager.removeEntity(avatar);
+            setAvatar(null);
+        }
+
+        setAvatar(new NinjaAvatar(attribs, worldManager));
+        while(!avatar.isInitialized()) {
+
+        }
+        avatar.selectForInput();
+        currentPScene = avatar.getPScene();
     }
 
     public void loadDAEAnimationFile(int type, boolean useRepository, Component arg0) {
@@ -1445,6 +1560,8 @@ public class SceneEssentials {
     public void setCameraOnModel() {
         if (avatar == null)
             return;
+
+        while (!avatar.isInitialized()) {}
         
         PNode node = currentPScene.getInstances();
         PPolygonModelInstance pmInstance = ((PPolygonModelInstance) node.getChild(0));

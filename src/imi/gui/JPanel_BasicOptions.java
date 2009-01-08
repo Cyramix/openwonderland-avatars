@@ -758,6 +758,10 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
 
         jButton_Male.setEnabled(false);
         jButton_Female.setEnabled(false);
+
+        if (m_Parent instanceof BaseDefault)
+            ((BaseDefault)m_Parent).loadingWindow(true);
+
         String query = new String();
         ArrayList<String[]> data, anim, meshref;
 
@@ -831,6 +835,11 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
 
         jButton_Male.setEnabled(true);
         jButton_Female.setEnabled(true);
+
+        if (m_Parent instanceof BaseDefault) {
+            m_sceneData.setCameraOnModel();
+            ((BaseDefault)m_Parent).loadingWindow(false);
+        }
     }
 
     public void loadMaleAvatar(File path) {

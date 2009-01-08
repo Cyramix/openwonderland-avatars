@@ -656,7 +656,6 @@ public class PScene extends PNode implements RepositoryUser
      * Implements RepositoryUser interface
      * @param asset
      */
-    @Override
     public void receiveAsset(SharedAsset asset) 
     {
         if (asset.getAssetData() == null)

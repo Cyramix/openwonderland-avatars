@@ -371,6 +371,25 @@ public class SkeletonNode extends PNode implements Animated
     }
 
     /**
+     * Retrieves the name of the meshes in the subgroup if it exists otherwise it returns null
+     * @param subGroup
+     * @return String[] of mesh names
+     */
+    public String[] getMeshNamesBySubGroup(String subGroup) {
+        String[] meshes = null;
+        PNode groupNode = getChild(subGroup);
+        if (groupNode == null)
+            return meshes;
+
+        meshes = new String[groupNode.getChildrenCount()];
+        for (int i = 0; i < meshes.length; i++) {
+            meshes[i] = groupNode.getChild(i).getName();
+        }
+
+        return meshes;
+    }
+
+    /**
      * 
      * @param meshName
      * @return

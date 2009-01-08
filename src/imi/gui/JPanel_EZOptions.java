@@ -774,11 +774,8 @@ public class JPanel_EZOptions extends javax.swing.JPanel {
         m_sceneData.setPScene(m_sceneData.getAvatar().getPScene());
 
         if (m_Parent instanceof BaseDefault) {
-            while (!m_sceneData.getAvatar().isInitialized()) {
-
-            }
-            ((BaseDefault)m_Parent).loadingWindow(false);
             m_sceneData.setCameraOnModel();
+            ((BaseDefault)m_Parent).loadingWindow(false);
         }
     }
 
