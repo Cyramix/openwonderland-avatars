@@ -375,7 +375,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
                         logger.severe("Unable to sort meshes into subgroups!");
                     
                     // Set eyes
-                    m_eyes = new CharacterEyes(m_skeleton, m_modelInst, m_pscene, m_wm);
+                    m_eyes = new CharacterEyes(m_skeleton, m_modelInst, m_pscene, m_attributes.isMale(), m_wm);
 
                     // Set animations and custom meshes
                     excecuteAttributes(m_attributes, false);
@@ -1335,7 +1335,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         // Now fix the skeletal differences
         generateDeltas(newHeadSkeleton, "Head"); 
         // Now reattach the eyes
-        m_eyes = new CharacterEyes(m_skeleton, m_modelInst, m_pscene, m_wm);
+        m_eyes = new CharacterEyes(m_skeleton, m_modelInst, m_pscene, m_attributes.isMale(), m_wm);
 //        // reassociate this with the verlet thingy
 //        while (m_skeletonManipulator == null)
 //        {

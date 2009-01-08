@@ -45,8 +45,11 @@ public class CharacterEyes
     
     private final int leftEyeLid     = 24;
     private final int rightEyeLid    = 34;
-    private final float   closedEyeLid  = -0.011f;
+    private float   closedEyeLid     = 0.0f;
+    private final float   closedEyeLidMale    = -0.011f;
+    private final float   closedEyeLidFemale  = -0.041f;
     
+    private boolean blinkingOn      = true;
     private float   blinkingTimer   = 0.0f;
     private boolean blinking        = false;
     private boolean eyesClosed      = false;
@@ -61,8 +64,13 @@ public class CharacterEyes
     private boolean winkRight = true;
     private boolean winkLeft  = true;
     
-    public CharacterEyes(SkeletonNode skeleton, PPolygonModelInstance characterModelInst, PScene characterScene, WorldManager wm)
+    public CharacterEyes(SkeletonNode skeleton, PPolygonModelInstance characterModelInst, PScene characterScene, boolean male, WorldManager wm)
     {
+        if (male)
+            closedEyeLid = closedEyeLidMale;
+        else
+            closedEyeLid = closedEyeLidFemale;
+        
         this.skeleton = skeleton;
         this.characterModelInst = characterModelInst;
         
@@ -122,7 +130,7 @@ public class CharacterEyes
         {
             eyesWanderIntCounter = 0;
             eyesWanderOffset.zero();
-            if (Math.random() > 0.35)
+            if (blinkingOn && Math.random() > 0.35)
                 blink();
         }
         target.addLocal(eyesWanderOffset);
@@ -298,5 +306,13 @@ public class CharacterEyes
 
     public void setKeepEyesClosed(boolean keepEyesClosed) {
         this.keepEyesClosed = keepEyesClosed;
+    }
+
+    public boolean isBlinkingOn() {
+        return blinkingOn;
+    }
+
+    public void setBlinkingOn(boolean blinkingOn) {
+        this.blinkingOn = blinkingOn;
     }
 }

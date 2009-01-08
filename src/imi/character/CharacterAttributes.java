@@ -443,6 +443,13 @@ public class CharacterAttributes
         return new SkinnedMeshParams(meshName, subGroupName);
     }
 
+    public boolean isMale() 
+    {
+        if (gender == 1)
+            return true;
+        return false;
+    }
+
     /**
      * This class wraps up the data needed to attach a skinned mesh
      */
