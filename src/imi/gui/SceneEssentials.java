@@ -18,7 +18,6 @@
 package imi.gui;
 
 import com.jme.math.Vector3f;
-import com.sun.tools.javac.tree.Tree.ForeachLoop;
 import imi.character.AttachmentParams;
 import imi.loaders.collada.ColladaLoaderParams;
 import imi.loaders.Instruction;
