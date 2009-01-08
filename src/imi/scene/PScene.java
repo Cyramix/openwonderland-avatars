@@ -66,9 +66,9 @@ public class PScene extends PNode implements RepositoryUser
     private FastList<PPolygonMesh> m_LocalGeometry = new FastList<PPolygonMesh>();
     
     // Shared Assets
-    private boolean m_bUseRepository                = true;
-    private final FastList<SharedAsset> m_SharedAssets    = new FastList<SharedAsset>();
-    private final FastList<SharedAssetPlaceHolder> m_SharedAssetWaitingList = new FastList<SharedAssetPlaceHolder>();
+    private boolean m_bUseRepository = true;
+    private final List<SharedAsset> m_SharedAssets  = new FastList<SharedAsset>();
+    private final List<SharedAssetPlaceHolder> m_SharedAssetWaitingList = new FastList<SharedAssetPlaceHolder>();
 
     // Instances
     private PNode m_Instances                       = null;
@@ -342,7 +342,7 @@ public class PScene extends PNode implements RepositoryUser
     /** Returns the list of shared assets in the repository
      * @return m_SharedAssets (FastList<SharedAssets>)
      */
-    public FastList<SharedAsset> getAssetList() {
+    public List<SharedAsset> getAssetList() {
         return m_SharedAssets;
     }
     
@@ -656,6 +656,7 @@ public class PScene extends PNode implements RepositoryUser
      * Implements RepositoryUser interface
      * @param asset
      */
+    @Override
     public void receiveAsset(SharedAsset asset) 
     {
         if (asset.getAssetData() == null)
@@ -663,19 +664,15 @@ public class PScene extends PNode implements RepositoryUser
 
        SharedAssetPlaceHolder target = null;
 
-       Iterator<SharedAssetPlaceHolder> placeHolderIter = m_SharedAssetWaitingList.iterator();
-
        synchronized(m_SharedAssetWaitingList) // Watch out for concurrent modifications!
        {
-           while (placeHolderIter.hasNext() && target == null)
+           for (SharedAssetPlaceHolder placeHolder : m_SharedAssetWaitingList)
            {
-               try {
-               SharedAssetPlaceHolder placeHolder = placeHolderIter.next(); // NullPointerException?
-               AssetDescriptor test = placeHolder.getDescriptor();
-                if (asset.getDescriptor().equals(test));
-                    target = placeHolder; }
-               catch (NullPointerException ex) {
-                   logger.severe(ex.toString()); // TODO why is this happening
+               if (asset.getDescriptor().equals(placeHolder.getDescriptor()));
+               {
+                    target = placeHolder;
+                    m_SharedAssetWaitingList.remove(target);
+                    break;
                }
            }
        }
@@ -685,7 +682,6 @@ public class PScene extends PNode implements RepositoryUser
        {
             // install the asset into the scene graph,
             // this will swap the placeHolder with the asset while maintaining the graph structure (kids from both will remain)
-
             // If the asset was able to load
             if (asset.getAssetData() != null)
                 installAsset(target, asset);
@@ -693,13 +689,6 @@ public class PScene extends PNode implements RepositoryUser
             {
                 target.setName(target.getName() + " ERROR : Asset was unable to load");
                 logger.severe("Unable to load asset for " + target.getName());
-            }
-
-
-            // remove from the waiting list
-            synchronized (m_SharedAssetWaitingList)
-            {
-                m_SharedAssetWaitingList.remove(target);
             }
 
             // take care of all the freeloaders
