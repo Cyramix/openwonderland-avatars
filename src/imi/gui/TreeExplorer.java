@@ -182,9 +182,7 @@ public class TreeExplorer extends javax.swing.JFrame {
     
     public void selectGroup() {
         if(currentSelection instanceof PPolygonSkinnedMeshInstance) {
-            SkeletonNode skeleton = null;
-            if(currentSelection.getParent() instanceof SkeletonNode)
-                skeleton = ((SkeletonNode)currentSelection.getParent());
+            SkeletonNode skeleton = sceneData.getAvatar().getSkeleton();
             
             if(skeleton != null) {
                 PPolygonSkinnedMeshInstance skinnedMeshInst = ((PPolygonSkinnedMeshInstance)currentSelection);
@@ -198,9 +196,7 @@ public class TreeExplorer extends javax.swing.JFrame {
     
     public void unselectGroup() {
         if(prevSelection instanceof PPolygonSkinnedMeshInstance) {
-            SkeletonNode skeleton = null;
-            if(currentSelection.getParent() instanceof SkeletonNode)
-                skeleton = ((SkeletonNode)currentSelection.getParent());
+            SkeletonNode skeleton = sceneData.getAvatar().getSkeleton();
             
             if(skeleton != null) {
                 PPolygonSkinnedMeshInstance skinnedMeshInst = ((PPolygonSkinnedMeshInstance)prevSelection);

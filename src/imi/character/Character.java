@@ -1675,5 +1675,27 @@ public abstract class Character extends Entity implements SpatialObject, Animati
     public void setDefaultFacePoseTiming(float defaultFacePoseTiming) {
         this.m_defaultFacePoseTiming = defaultFacePoseTiming;
     }
-    
+
+    public void die() {
+        if (m_wm == null)
+            return;
+
+        m_wm.removeEntity(this);
+
+        m_keyBindings           = null;
+        m_context               = null;
+        m_attributes            = null;
+        m_registry              = null;
+        m_modelInst             = null;
+        m_skeleton              = null;
+        m_mesh                  = null;
+        m_objectCollection      = null;
+        m_AnimationProcessor    = null;
+        m_characterProcessor    = null;
+        m_facialAnimationQ      = null;
+        m_eyes                  = null;
+        m_rightArm              = null;
+        m_leftArm               = null;
+        m_skeletonManipulator   = null;
+    }
 }
