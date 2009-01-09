@@ -1679,11 +1679,14 @@ public abstract class Character extends Entity implements SpatialObject, Animati
     public void die() {
         if (m_wm == null)
             return;
+        
 
-        CharacterAnimationProcessor cAnimProc   = (CharacterAnimationProcessor)this.getComponent(m_AnimationProcessor.getClass());
-        cAnimProc.removeFromChain(m_AnimationProcessor);
-        CharacterProcessor          cProc       = (CharacterProcessor)this.getComponent(m_characterProcessor.getClass());
-        cProc.removeFromChain(m_characterProcessor);
+        ProcessorCollectionComponent pcc = (ProcessorCollectionComponent) getComponent(ProcessorCollectionComponent.class);
+        pcc.removeAllProcessors();
+        // Something needs to wait until this is finished
+        m_characterProcessor.setEnabled(false);
+        m_characterProcessor.stop();
+        m_AnimationProcessor.setEnable(false);
 
         m_wm.removeEntity(this);
 
