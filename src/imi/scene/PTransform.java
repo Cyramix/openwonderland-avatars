@@ -21,6 +21,10 @@ import com.jme.math.Matrix3f;
 import com.jme.math.Matrix4f;
 import com.jme.math.Quaternion;
 import com.jme.math.Vector3f;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 
 
 /**
@@ -28,13 +32,13 @@ import com.jme.math.Vector3f;
  * @author Lou Hayt
  * @author Ron Daulgren
  */
-public class PTransform 
+public class PTransform implements Serializable
 {
     private final PMatrix     m_local = new PMatrix();
     private final PMatrix     m_world = new PMatrix();
     
     /** if false the world matrix needs to be recalculated */
-    protected boolean   m_bDirtyWorldMat      = true;
+    protected transient boolean   m_bDirtyWorldMat      = true;
 
     /**
      * Empty constructor
@@ -216,5 +220,18 @@ public class PTransform
         m_local.set(transform.getLocalMatrix(false));
         m_world.set(transform.getWorldMatrix(false));
     }
-    
+
+    /****************************
+     * SERIALIZATION ASSISTANCE *
+     ****************************/
+    private void writeObject(ObjectOutputStream out) throws IOException
+    {
+        out.defaultWriteObject();
+    }
+
+    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException
+    {
+        in.defaultReadObject();
+        m_bDirtyWorldMat = false;
+    }
 }

@@ -23,6 +23,10 @@ import imi.scene.utils.tree.SkinnedMeshJointFlattener;
 import imi.scene.utils.PRenderer;
 import imi.scene.utils.tree.FlattenedHierarchyNodeProcessor;
 import imi.scene.utils.tree.TreeTraverser;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.logging.Level;
@@ -38,14 +42,15 @@ import javolution.util.FastList;
  * @author Lou Hayt
  * @author Chris Nagle
  * @author Shawn Kendall
+ * @author Ronald E Dahlgren (Serialization)
  */
-public class PNode 
+public class PNode implements Serializable
 {
     protected static final Logger logger = Logger.getLogger(PNode.class.getName());
     
-    private String              m_name          = "MysteryNode!";
-    private PNode               m_parent        = null;
-    private final ArrayList<PNode>    m_children      = new ArrayList<PNode>();
+    private String  m_name  = "MysteryNode!";
+    private transient PNode m_parent    = null;
+    private final ArrayList<PNode>  m_children  = new ArrayList<PNode>();
     
     /**  A PNode may or may not have a PTransform. */
     private PTransform  m_transform     = null;
@@ -555,6 +560,8 @@ public class PNode
      */
     public void removeAllChildren()
     {
+        for (PNode child : m_children)
+            child.setParent(null);
         m_children.clear();
     }
     
@@ -830,5 +837,20 @@ public class PNode
         }
     }
 
+    /****************************
+     * SERIALIZATION ASSISTANCE *
+     ****************************/
+    private void writeObject(ObjectOutputStream out) throws IOException
+    {
+        out.defaultWriteObject();
+    }
+
+    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException
+    {
+        in.defaultReadObject();
+        // Tell all the children that I am their parent
+        for (PNode kid : m_children)
+            kid.m_parent = this;
+    }
 }
 

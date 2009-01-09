@@ -23,6 +23,10 @@ import imi.scene.PMatrix;
 import imi.scene.PJoint;
 import imi.scene.PNode;
 import imi.scene.PTransform;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import javolution.util.FastList;
@@ -32,7 +36,7 @@ import javolution.util.FastList;
  *
  * @author Chris Nagle
  */
-public class SkinnedMeshJoint extends PJoint
+public class SkinnedMeshJoint extends PJoint implements Serializable
 {
     /** The name! **/
     public String   m_ParentJointName   = "Skinned Mesh Joint";
@@ -40,7 +44,7 @@ public class SkinnedMeshJoint extends PJoint
     private PMatrix m_bindPoseTransform = null;
 
     /** Package private member for use by the SkeletonNode primarily **/
-    PMatrix unmodifiedInverseBindPose = new PMatrix();
+    transient PMatrix unmodifiedInverseBindPose = new PMatrix();
 
     public SkinnedMeshJoint(PTransform transform) 
     {
@@ -153,6 +157,20 @@ public class SkinnedMeshJoint extends PJoint
     public void setToBindPose()
     {
         getTransform().getLocalMatrix(true).set(m_bindPoseTransform);
+    }
+
+    /****************************
+     * SERIALIZATION ASSISTANCE *
+     ****************************/
+    private void writeObject(ObjectOutputStream out) throws IOException
+    {
+        out.defaultWriteObject();
+    }
+
+    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException
+    {
+        in.defaultReadObject();
+        unmodifiedInverseBindPose = m_bindPoseTransform.inverse();
     }
 }
 

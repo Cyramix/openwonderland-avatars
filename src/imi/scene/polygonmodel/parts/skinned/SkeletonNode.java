@@ -35,6 +35,10 @@ import imi.scene.polygonmodel.skinned.PPolygonSkinnedMeshInstance;
 import imi.scene.polygonmodel.parts.skinned.SkinnedMeshJoint;
 import imi.scene.polygonmodel.skinned.PPolygonSkinnedMesh;
 import imi.scene.shader.AbstractShaderProgram;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.ConcurrentModificationException;
 import java.util.LinkedList;
@@ -50,14 +54,20 @@ import javolution.util.FastList;
  * by this skeleton are attached as children.
  * @author Ronald E Dahlgren
  */
-public class SkeletonNode extends PNode implements Animated
+public class SkeletonNode extends PNode implements Animated, Serializable
 {
     // This is an array list with references to each skinned mesh joint's
     // world matrix in the order of a breadth first traversal
-    private ArrayList<SkinnedMeshJoint> m_BFTSkeleton = new ArrayList<SkinnedMeshJoint>();
-    private ArrayList<PMatrix> m_BFTSkeletonLocalModifiers = new ArrayList<PMatrix>();
-    private ArrayList<PMatrix> m_BFTFlattenedInverseBindPose = new ArrayList<PMatrix>();
-    private ArrayList<String>  m_jointNames = new ArrayList<String>();
+    private transient ArrayList<SkinnedMeshJoint> m_BFTSkeleton = new ArrayList<SkinnedMeshJoint>();
+    private transient ArrayList<PMatrix> m_BFTFlattenedInverseBindPose = new ArrayList<PMatrix>();
+    private transient ArrayList<String>  m_jointNames = new ArrayList<String>();
+    /**
+     * This field is marked as transient because the default heirarchies that will
+     * be serialized should not have any local modifiers. This will shrink the size
+     * of the save files as this can be regenerated during recreation.
+     */
+    private transient ArrayList<PMatrix> m_BFTSkeletonLocalModifiers = new ArrayList<PMatrix>();
+
     
     //////////////////////////////
     //  Animation Data Follows  //
@@ -67,14 +77,14 @@ public class SkeletonNode extends PNode implements Animated
     // For instance, tracking the head as transitioning from smiling to laughing
     // while maintaining the current state of the walk animation as it transitions
     // to run.
-    private ArrayList<AnimationState>   m_animationStates = new ArrayList<AnimationState>(); 
+    private transient ArrayList<AnimationState>   m_animationStates = new ArrayList<AnimationState>();
     // This component maintains a list of all the animation groups that this
     // skeleton uses.
     private AnimationComponent          m_animationComponent = new AnimationComponent();
     
     /** Enables a callback during the flatenning of the skeleton hierarchy for 
      *  manipulations that need to have cascading affect down the hierarchy */
-    private SkeletonFlatteningManipulator m_flatteningHook = null;
+    private transient SkeletonFlatteningManipulator m_flatteningHook = null;
     
     public SkeletonNode(String name)
     {
@@ -835,5 +845,27 @@ public class SkeletonNode extends PNode implements Animated
             meshInst.setInverseBindPose(null);
     }
 
+    /****************************
+     * SERIALIZATION ASSISTANCE *
+     ****************************/
+    private void writeObject(ObjectOutputStream out) throws IOException
+    {
+        out.defaultWriteObject();
+    }
 
+    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException
+    {
+        in.defaultReadObject();
+        // Re-allocate all transient objects
+        m_BFTSkeleton = new ArrayList<SkinnedMeshJoint>();
+        m_BFTFlattenedInverseBindPose = new ArrayList<PMatrix>();
+        m_jointNames = new ArrayList<String>();
+        m_BFTSkeletonLocalModifiers = new ArrayList<PMatrix>();
+        m_animationStates = new ArrayList<AnimationState>();
+        // Remap the joint refs
+        mapSkinnedMeshJointIndices();
+        // Now create a new animation state for each group read in
+        for (int i = 0; i < m_animationComponent.getGroups().size(); i++)
+            m_animationStates.add(new AnimationState(i));
+    }
 }

@@ -18,6 +18,7 @@
 package imi.scene.animation;
 
 import imi.scene.animation.AnimationComponent.PlaybackMode;
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
@@ -26,7 +27,7 @@ import java.util.ArrayList;
  * @author Ronald E Dahlgren
  * @author Lou Hayt
  */
-public class AnimationState 
+public class AnimationState
 {
     private int     m_ID                        = -1;
     
@@ -56,7 +57,7 @@ public class AnimationState
     private boolean m_bTransitionReverseAnimation = false;
     
     /** The list of listeners to inform of messages **/
-    private ArrayList<AnimationListener> m_listeners = null;
+    private transient ArrayList<AnimationListener> m_listeners = null;
     
     /**
      * 

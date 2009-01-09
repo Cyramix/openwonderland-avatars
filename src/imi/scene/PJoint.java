@@ -17,6 +17,7 @@
  */
 package imi.scene;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
@@ -28,7 +29,7 @@ import java.util.ArrayList;
  * 
  * @author Lou Hayt
  */
-public class PJoint extends PNode 
+public class PJoint extends PNode implements Serializable
 {
     /** Mesh space's origin is the location of the mesh,
      *  this is a "world matrix" in "mesh space". */
