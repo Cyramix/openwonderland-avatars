@@ -1448,6 +1448,18 @@ public class JPanel_EZOptions extends javax.swing.JPanel {
         return data;
     }
 
+    public void setMeshList() {
+        if (m_sceneData.getAvatar() == null)
+            return;
+
+        m_meshes = new HashMap<Integer, String[]>();
+        for (int i = 0; i < m_sceneData.m_regions.length; i++) {
+            String[] meshes = null;
+            meshes = m_sceneData.getAvatar().getSkeleton().getMeshNamesBySubGroup(m_sceneData.m_regions[i]);
+            m_meshes.put(i, meshes);
+        }
+    }
+
     public void retrieveBindMeshInfo(int iGender) {
         String query = new String();
         ArrayList<String[]> data, anim, meshref;

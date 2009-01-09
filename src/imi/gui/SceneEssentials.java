@@ -622,18 +622,18 @@ public class SceneEssentials {
                                                             "SPECIFY MESHES TO ADD TO THE AVATAR", JOptionPane.YES_NO_CANCEL_OPTION,
                                                             null, null, "exampleMesh;");
 
+            if (meshNames == null || meshNames.length() <= 0)
+                return false;
+
             Object[] subgroups = { m_regions[0], m_regions[1], m_regions[2], m_regions[3], m_regions[4] };
             subGroup = (String)JOptionPane.showInputDialog( new Frame(), "Please select the subgroup to which the meshes will be added",
                                                             "SPECIFY SUBGROUP TO ADD MESHES IN", JOptionPane.PLAIN_MESSAGE,
                                                             null, subgroups, m_regions[0]);
 
-            if (meshNames == null || meshNames.length() <= 0)
+            if (subGroup == null || subGroup.length() <= 0)
                 return false;
-            
-            meshes = meshNames.split(";");
 
-            if (subGroup == null)
-                return false;
+            meshes = meshNames.split(";");
 
             for (int i = 0; i < m_regions.length; i++) {
                 if(subGroup.equalsIgnoreCase(m_regions[i])) {
@@ -713,7 +713,48 @@ public class SceneEssentials {
         }
         return false;
     }
-    
+
+    public boolean loadAvatarHeadDAEFile(boolean clear, boolean useRepository, Component arg0) {
+        if (avatar == null) {
+            System.out.println("You have not loaded an avatar yet... Please load one first");
+            return false;
+        }
+
+        int returnValue = jFileChooser_LoadColladaModel.showOpenDialog(arg0);
+        if (returnValue == JFileChooser.APPROVE_OPTION) {
+            fileModel = jFileChooser_LoadColladaModel.getSelectedFile();
+
+            currentPScene.setUseRepository(useRepository);
+            
+            if (clear)
+                currentPScene.getInstances().removeAllChildren();
+            if (currentHiProcessors == null)
+                currentHiProcessors = new ArrayList<ProcessorComponent>();
+            else
+                currentHiProcessors.clear();
+            
+            File path = getAbsPath(fileModel);
+            String szURL;
+
+            if (isWindowsOS())
+                szURL = new String("file:\\" + path.getPath());
+            else
+                szURL = new String("file://" + path.getPath());
+
+            URL modelURL = null;
+
+            try {
+                modelURL = new URL(szURL);
+                avatar.installHead(modelURL);
+
+                return true;
+            } catch (MalformedURLException ex) {
+                Logger.getLogger(SceneEssentials.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return false;
+    }
+
     public void loadDAEChar() {
         URL bindPose = findBindPose(fileModel);
         final ArrayList<URL> animations = findAnims(fileModel);

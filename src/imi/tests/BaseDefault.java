@@ -1003,6 +1003,7 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
         m_EZOptions = new JPanel_EZOptions();
         m_EZOptions.setSceneData(m_sceneData);
         m_EZOptions.setParentFrame(this);
+        m_EZOptions.setMeshList();
         m_sceneData.setCurCamProcessor(m_cameraProcessor);
 
         java.awt.GridBagConstraints gridBagConstraints = new java.awt.GridBagConstraints();
@@ -1095,6 +1096,7 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
         jMenu_File = new javax.swing.JMenu();
         jMenu_LoadModels = new javax.swing.JMenu();
         jMenuItem_Avatar = new javax.swing.JMenuItem();
+        jMenuItem_Heads = new javax.swing.JMenuItem();
         jMenuItem_Clothes = new javax.swing.JMenuItem();
         jMenuItem_Accessories = new javax.swing.JMenuItem();
         jMenuItem_LoadTextureFile = new javax.swing.JMenuItem();
@@ -1257,6 +1259,20 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
         });
         jMenu_LoadModels.add(jMenuItem_Avatar);
 
+        jMenuItem_Heads.setText("Heads");
+        jMenuItem_Heads.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                loadingWindow(true);
+                runProgressBar(true);
+                m_sceneData.loadAvatarHeadDAEFile(false, true, m_base);
+                m_sceneData.setCameraOnModel();
+                resetOpenTools();
+                runProgressBar(false);
+                loadingWindow(false);
+            }
+        });
+        jMenu_LoadModels.add(jMenuItem_Heads);
+
         jMenuItem_Clothes.setText("Clothes");
         jMenuItem_Clothes.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1405,6 +1421,7 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
     private javax.swing.JMenuItem jMenuItem_Avatar;
     private javax.swing.JMenuItem jMenuItem_AvatarEditor;
     private javax.swing.JMenuItem jMenuItem_Clothes;
+    private javax.swing.JMenuItem jMenuItem_Heads;
     private javax.swing.JMenuItem jMenuItem_LoadTextureFile;
     private javax.swing.JMenuItem jMenuItem_LoadXMLFile;
     private javax.swing.JMenuItem jMenuItem_NodeExplorer;
