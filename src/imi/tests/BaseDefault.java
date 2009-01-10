@@ -134,7 +134,7 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
     protected JPanel_EZOptions          m_EZOptions         = null;
     protected FlexibleCameraProcessor   m_cameraProcessor   = null;
     protected URL                       m_presetCaucasian   = null;
-    protected Dimension                 m_DefaultSize       = new Dimension(m_width, 675);
+    protected Dimension                 m_DefaultSize       = new Dimension(m_width, 700);
     protected Dimension                 m_OpenSize          = new Dimension(500, 675);
     protected JDialog                   m_LoadWindow        = null;
 
@@ -164,7 +164,7 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
         
         processArgs(args);
         m_worldManager.getRenderManager().setDesiredFrameRate(m_desiredFrameRate);
-        
+
         // add the repository
         m_worldManager.addUserData(Repository.class, new Repository(m_worldManager));
 

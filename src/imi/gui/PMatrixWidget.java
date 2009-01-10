@@ -25,6 +25,8 @@ import java.awt.FocusTraversalPolicy;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.Vector;
 import java.util.logging.Level;
@@ -38,17 +40,19 @@ import javax.swing.Timer;
  */
 public class PMatrixWidget extends javax.swing.JPanel
 {
-    private PMatrix     m_theMatrix = null; // This is the matrix we are operating on
+    private PMatrix         m_theMatrix         = null;     // This is the matrix we are operating on
     
     // Rotation Data caching matrices.
-    private PMatrix xRotation = new PMatrix();
-    private PMatrix yRotation = new PMatrix();
-    private PMatrix zRotation = new PMatrix();
+    private PMatrix         xRotation           = new PMatrix();
+    private PMatrix         yRotation           = new PMatrix();
+    private PMatrix         zRotation           = new PMatrix();
     
     // Refresh timer, periodically causes a document refresh
-    private Timer refreshTimer = null;
-    
-    private boolean bRefreshing = false; // USed to stop incremental refreshing problem
+    private Timer           refreshTimer        = null;
+    private boolean         bRefreshing         = false;    // USed to stop incremental refreshing problem
+    private NumberFormat    m_format            = new DecimalFormat("#,###.######");
+    private String          m_formattedNumber   = null;
+
     /** Creates new form PMatrixWidget with a newly generated internal PMatrix (not tied to any existing one)*/
     public PMatrixWidget() 
     {
@@ -190,12 +194,18 @@ public class PMatrixWidget extends javax.swing.JPanel
             bRefreshing = true;
         // Only refresh if the component does not have focus!
         // Set the values of translation boxes
-        if (!TranslationXTextField.hasFocus())
-            TranslationXTextField.setValue(Double.valueOf(m_theMatrix.getTranslation().x));
-        if (!TranslationYTextField.hasFocus())
-            TranslationYTextField.setValue(Double.valueOf(m_theMatrix.getTranslation().y));
-        if (!TranslationZTextField.hasFocus())
-            TranslationZTextField.setValue(Double.valueOf(m_theMatrix.getTranslation().z));
+        if (!TranslationXTextField.hasFocus()) {
+            m_formattedNumber = m_format.format(m_theMatrix.getTranslation().x);
+            TranslationXTextField.setValue(Double.valueOf(Double.valueOf(m_formattedNumber)));
+        }
+        if (!TranslationYTextField.hasFocus()) {
+            m_formattedNumber = m_format.format(m_theMatrix.getTranslation().y);
+            TranslationYTextField.setValue(Double.valueOf(Double.valueOf(m_formattedNumber)));
+        }
+        if (!TranslationZTextField.hasFocus()) {
+            m_formattedNumber = m_format.format(m_theMatrix.getTranslation().z);
+            TranslationZTextField.setValue(Double.valueOf(Double.valueOf(m_formattedNumber)));
+        }
 
         // set the values of the rotation sliders
         if (!XRotationSlider.hasFocus())
@@ -206,12 +216,18 @@ public class PMatrixWidget extends javax.swing.JPanel
             ZRotationSlider.setValue((int)(m_theMatrix.getRotation().toAngles(null)[2] * (180.0 / Math.PI)));
         
         // set the values of the scale boxes
-        if (!ScalingXComponent.hasFocus())
-            ScalingXComponent.setValue(Double.valueOf(m_theMatrix.getScaleVector().x));
-        if (!ScalingYComponent.hasFocus())
-            ScalingYComponent.setValue(Double.valueOf(m_theMatrix.getScaleVector().y));
-        if (!ScalingZComponent.hasFocus())
-            ScalingZComponent.setValue(Double.valueOf(m_theMatrix.getScaleVector().z));
+        if (!ScalingXComponent.hasFocus()) {
+            m_formattedNumber = m_format.format(m_theMatrix.getScaleVector().x);
+            ScalingXComponent.setValue(Double.valueOf(Double.valueOf(m_formattedNumber)));
+        }
+        if (!ScalingYComponent.hasFocus()) {
+            m_formattedNumber = m_format.format(m_theMatrix.getScaleVector().y);
+            ScalingYComponent.setValue(Double.valueOf(Double.valueOf(m_formattedNumber)));
+        }
+        if (!ScalingZComponent.hasFocus()) {
+            m_formattedNumber = m_format.format(m_theMatrix.getScaleVector().z);
+            ScalingZComponent.setValue(Double.valueOf(Double.valueOf(m_formattedNumber)));
+        }
         
         // set the advanced view pane stuffs
         ((PMatrixTableModel)MatrixTable.getModel()).refreshComponents(); 
@@ -270,6 +286,7 @@ public class PMatrixWidget extends javax.swing.JPanel
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
+        java.awt.GridBagConstraints gridBagConstraints;
 
         ViewContainerTabbedPane = new javax.swing.JTabbedPane();
         StandardViewPane = new javax.swing.JPanel();
@@ -285,17 +302,14 @@ public class PMatrixWidget extends javax.swing.JPanel
         ZRotationSlider = new JSlider(-180, 180, 0);
         Label_MatrixName = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
-        jToolBar1 = new javax.swing.JToolBar();
         jLabel_TransX = new javax.swing.JLabel();
         TranslationXTextField = new javax.swing.JFormattedTextField();
         jLabel_ScaleX = new javax.swing.JLabel();
         ScalingXComponent = new javax.swing.JFormattedTextField();
-        jToolBar2 = new javax.swing.JToolBar();
         jLabel_TransY = new javax.swing.JLabel();
         TranslationYTextField = new javax.swing.JFormattedTextField();
         jLabel_ScaleY = new javax.swing.JLabel();
         ScalingYComponent = new javax.swing.JFormattedTextField();
-        jToolBar3 = new javax.swing.JToolBar();
         jLabel_TransZ = new javax.swing.JLabel();
         TranslationZTextField = new javax.swing.JFormattedTextField();
         jLabel_ScaleZ = new javax.swing.JLabel();
@@ -317,11 +331,17 @@ public class PMatrixWidget extends javax.swing.JPanel
         StandardViewPane.setMaximumSize(new java.awt.Dimension(240, 600));
         StandardViewPane.setName("StandardViewPane"); // NOI18N
         StandardViewPane.setPreferredSize(new java.awt.Dimension(240, 600));
+        StandardViewPane.setLayout(new java.awt.GridBagLayout());
 
         jPanel_Rotations.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Rotations", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.DEFAULT_POSITION));
+        jPanel_Rotations.setMinimumSize(new java.awt.Dimension(207, 200));
+        jPanel_Rotations.setPreferredSize(new java.awt.Dimension(207, 130));
+        jPanel_Rotations.setLayout(new java.awt.GridBagLayout());
 
         jToolBar_XRotation.setFloatable(false);
         jToolBar_XRotation.setRollover(true);
+        jToolBar_XRotation.setMinimumSize(new java.awt.Dimension(190, 33));
+        jToolBar_XRotation.setPreferredSize(new java.awt.Dimension(190, 33));
 
         jLabel_XAxis.setText("X");
         jToolBar_XRotation.add(jLabel_XAxis);
@@ -333,8 +353,12 @@ public class PMatrixWidget extends javax.swing.JPanel
         });
         jToolBar_XRotation.add(XRotationSlider);
 
+        jPanel_Rotations.add(jToolBar_XRotation, new java.awt.GridBagConstraints());
+
         jToolBar_YRotation.setFloatable(false);
         jToolBar_YRotation.setRollover(true);
+        jToolBar_YRotation.setMinimumSize(new java.awt.Dimension(190, 33));
+        jToolBar_YRotation.setPreferredSize(new java.awt.Dimension(190, 33));
 
         jLabel_YAxis.setText("Y");
         jToolBar_YRotation.add(jLabel_YAxis);
@@ -346,8 +370,15 @@ public class PMatrixWidget extends javax.swing.JPanel
         });
         jToolBar_YRotation.add(YRotationSlider);
 
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        jPanel_Rotations.add(jToolBar_YRotation, gridBagConstraints);
+
         jToolBar_ZRotation.setFloatable(false);
         jToolBar_ZRotation.setRollover(true);
+        jToolBar_ZRotation.setMinimumSize(new java.awt.Dimension(190, 33));
+        jToolBar_ZRotation.setPreferredSize(new java.awt.Dimension(190, 33));
 
         jLabel_ZAxis.setText("Z");
         jToolBar_ZRotation.add(jLabel_ZAxis);
@@ -359,46 +390,39 @@ public class PMatrixWidget extends javax.swing.JPanel
         });
         jToolBar_ZRotation.add(ZRotationSlider);
 
-        org.jdesktop.layout.GroupLayout jPanel_RotationsLayout = new org.jdesktop.layout.GroupLayout(jPanel_Rotations);
-        jPanel_Rotations.setLayout(jPanel_RotationsLayout);
-        jPanel_RotationsLayout.setHorizontalGroup(
-            jPanel_RotationsLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(jPanel_RotationsLayout.createSequentialGroup()
-                .add(jPanel_RotationsLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(jToolBar_XRotation, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 175, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(jToolBar_YRotation, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 175, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(jToolBar_ZRotation, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 175, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        jPanel_RotationsLayout.setVerticalGroup(
-            jPanel_RotationsLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(jPanel_RotationsLayout.createSequentialGroup()
-                .add(jToolBar_XRotation, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 25, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jToolBar_YRotation, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 25, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .add(jToolBar_ZRotation, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 25, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
-        );
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
+        jPanel_Rotations.add(jToolBar_ZRotation, gridBagConstraints);
 
-        Label_MatrixName.setFont(new java.awt.Font("Courier New", 1, 14));
+        StandardViewPane.add(jPanel_Rotations, new java.awt.GridBagConstraints());
+
+        Label_MatrixName.setFont(new java.awt.Font("Courier New", 1, 14)); // NOI18N
         Label_MatrixName.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         Label_MatrixName.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.LOWERED));
+        Label_MatrixName.setMaximumSize(new java.awt.Dimension(207, 25));
+        Label_MatrixName.setMinimumSize(new java.awt.Dimension(207, 25));
+        Label_MatrixName.setPreferredSize(new java.awt.Dimension(207, 25));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
+        StandardViewPane.add(Label_MatrixName, gridBagConstraints);
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Translation--Scaling", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.DEFAULT_POSITION));
-
-        jToolBar1.setFloatable(false);
-        jToolBar1.setRollover(true);
+        jPanel1.setMinimumSize(new java.awt.Dimension(207, 130));
+        jPanel1.setPreferredSize(new java.awt.Dimension(207, 130));
+        jPanel1.setLayout(new java.awt.GridBagLayout());
 
         jLabel_TransX.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         jLabel_TransX.setText("X");
-        jToolBar1.add(jLabel_TransX);
+        jPanel1.add(jLabel_TransX, new java.awt.GridBagConstraints());
 
-        TranslationXTextField.setText("0.00");
+        TranslationXTextField.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#,###.########"))));
         TranslationXTextField.setInputVerifier(new FloatingPointInputVerifier());
-        TranslationXTextField.setMaximumSize(new java.awt.Dimension(73, 42));
+        TranslationXTextField.setMaximumSize(new java.awt.Dimension(90, 25));
+        TranslationXTextField.setMinimumSize(new java.awt.Dimension(90, 25));
         TranslationXTextField.setName("XTranslationValue"); // NOI18N
-        TranslationXTextField.setPreferredSize(new java.awt.Dimension(73, 28));
+        TranslationXTextField.setPreferredSize(new java.awt.Dimension(90, 25));
         TranslationXTextField.setValue(Float.valueOf(m_theMatrix.getTranslation().getX()));
         TranslationXTextField.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusLost(java.awt.event.FocusEvent evt) {
@@ -410,16 +434,17 @@ public class PMatrixWidget extends javax.swing.JPanel
                 TranslationXTextFieldKeyPressed(evt);
             }
         });
-        jToolBar1.add(TranslationXTextField);
+        jPanel1.add(TranslationXTextField, new java.awt.GridBagConstraints());
 
         jLabel_ScaleX.setText("X");
-        jToolBar1.add(jLabel_ScaleX);
+        jPanel1.add(jLabel_ScaleX, new java.awt.GridBagConstraints());
 
-        ScalingXComponent.setText("0.00");
+        ScalingXComponent.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#,###.########"))));
         ScalingXComponent.setInputVerifier(new FloatingPointInputVerifier());
-        ScalingXComponent.setMaximumSize(new java.awt.Dimension(73, 42));
+        ScalingXComponent.setMaximumSize(new java.awt.Dimension(90, 25));
+        ScalingXComponent.setMinimumSize(new java.awt.Dimension(90, 25));
         ScalingXComponent.setName("XTranslationValue"); // NOI18N
-        ScalingXComponent.setPreferredSize(new java.awt.Dimension(73, 28));
+        ScalingXComponent.setPreferredSize(new java.awt.Dimension(90, 25));
         ScalingXComponent.setValue(Float.valueOf(m_theMatrix.getTranslation().getX()));
         ScalingXComponent.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusLost(java.awt.event.FocusEvent evt) {
@@ -431,19 +456,20 @@ public class PMatrixWidget extends javax.swing.JPanel
                 ScalingXComponentKeyPressed(evt);
             }
         });
-        jToolBar1.add(ScalingXComponent);
-
-        jToolBar2.setFloatable(false);
-        jToolBar2.setRollover(true);
+        jPanel1.add(ScalingXComponent, new java.awt.GridBagConstraints());
 
         jLabel_TransY.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         jLabel_TransY.setText("Y");
-        jToolBar2.add(jLabel_TransY);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        jPanel1.add(jLabel_TransY, gridBagConstraints);
 
-        TranslationYTextField.setText("0.00");
-        TranslationYTextField.setMaximumSize(new java.awt.Dimension(73, 42));
+        TranslationYTextField.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#,###.########"))));
+        TranslationYTextField.setMaximumSize(new java.awt.Dimension(90, 25));
+        TranslationYTextField.setMinimumSize(new java.awt.Dimension(90, 25));
         TranslationYTextField.setName("YTranslationValue"); // NOI18N
-        TranslationYTextField.setPreferredSize(new java.awt.Dimension(73, 28));
+        TranslationYTextField.setPreferredSize(new java.awt.Dimension(90, 25));
         TranslationYTextField.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusLost(java.awt.event.FocusEvent evt) {
                 TranslationYTextFieldFocusLost(evt);
@@ -454,15 +480,22 @@ public class PMatrixWidget extends javax.swing.JPanel
                 TranslationYTextFieldKeyPressed(evt);
             }
         });
-        jToolBar2.add(TranslationYTextField);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 1;
+        jPanel1.add(TranslationYTextField, gridBagConstraints);
 
         jLabel_ScaleY.setText("Y");
-        jToolBar2.add(jLabel_ScaleY);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 1;
+        jPanel1.add(jLabel_ScaleY, gridBagConstraints);
 
-        ScalingYComponent.setText("0.00");
-        ScalingYComponent.setMaximumSize(new java.awt.Dimension(73, 42));
+        ScalingYComponent.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#,###.########"))));
+        ScalingYComponent.setMaximumSize(new java.awt.Dimension(90, 25));
+        ScalingYComponent.setMinimumSize(new java.awt.Dimension(90, 25));
         ScalingYComponent.setName("XTranslationValue"); // NOI18N
-        ScalingYComponent.setPreferredSize(new java.awt.Dimension(73, 28));
+        ScalingYComponent.setPreferredSize(new java.awt.Dimension(90, 25));
         ScalingYComponent.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusLost(java.awt.event.FocusEvent evt) {
                 ScalingYComponentFocusLost(evt);
@@ -473,19 +506,23 @@ public class PMatrixWidget extends javax.swing.JPanel
                 ScalingYComponentKeyPressed(evt);
             }
         });
-        jToolBar2.add(ScalingYComponent);
-
-        jToolBar3.setFloatable(false);
-        jToolBar3.setRollover(true);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 3;
+        gridBagConstraints.gridy = 1;
+        jPanel1.add(ScalingYComponent, gridBagConstraints);
 
         jLabel_TransZ.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         jLabel_TransZ.setText("Z");
-        jToolBar3.add(jLabel_TransZ);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
+        jPanel1.add(jLabel_TransZ, gridBagConstraints);
 
-        TranslationZTextField.setText("0.00");
-        TranslationZTextField.setMaximumSize(new java.awt.Dimension(73, 42));
+        TranslationZTextField.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#,###.########"))));
+        TranslationZTextField.setMaximumSize(new java.awt.Dimension(90, 25));
+        TranslationZTextField.setMinimumSize(new java.awt.Dimension(90, 25));
         TranslationZTextField.setName("ZTranslationValue"); // NOI18N
-        TranslationZTextField.setPreferredSize(new java.awt.Dimension(73, 28));
+        TranslationZTextField.setPreferredSize(new java.awt.Dimension(90, 25));
         TranslationZTextField.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusLost(java.awt.event.FocusEvent evt) {
                 TranslationZTextFieldFocusLost(evt);
@@ -496,15 +533,22 @@ public class PMatrixWidget extends javax.swing.JPanel
                 TranslationZTextFieldKeyPressed(evt);
             }
         });
-        jToolBar3.add(TranslationZTextField);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 2;
+        jPanel1.add(TranslationZTextField, gridBagConstraints);
 
         jLabel_ScaleZ.setText("Z");
-        jToolBar3.add(jLabel_ScaleZ);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 2;
+        jPanel1.add(jLabel_ScaleZ, gridBagConstraints);
 
-        ScalingZComponent.setText("0.00");
-        ScalingZComponent.setMaximumSize(new java.awt.Dimension(73, 42));
+        ScalingZComponent.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#,###.########"))));
+        ScalingZComponent.setMaximumSize(new java.awt.Dimension(90, 25));
+        ScalingZComponent.setMinimumSize(new java.awt.Dimension(90, 25));
         ScalingZComponent.setName("XTranslationValue"); // NOI18N
-        ScalingZComponent.setPreferredSize(new java.awt.Dimension(73, 28));
+        ScalingZComponent.setPreferredSize(new java.awt.Dimension(90, 25));
         ScalingZComponent.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusLost(java.awt.event.FocusEvent evt) {
                 ScalingZComponentFocusLost(evt);
@@ -515,54 +559,15 @@ public class PMatrixWidget extends javax.swing.JPanel
                 ScalingZComponentKeyPressed(evt);
             }
         });
-        jToolBar3.add(ScalingZComponent);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 3;
+        gridBagConstraints.gridy = 2;
+        jPanel1.add(ScalingZComponent, gridBagConstraints);
 
-        org.jdesktop.layout.GroupLayout jPanel1Layout = new org.jdesktop.layout.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(jPanel1Layout.createSequentialGroup()
-                .add(jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(jToolBar1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 170, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(jToolBar2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 170, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(jToolBar3, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 170, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap())
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(jPanel1Layout.createSequentialGroup()
-                .add(jToolBar1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 25, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jToolBar2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 25, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jToolBar3, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 25, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
-        );
-
-        org.jdesktop.layout.GroupLayout StandardViewPaneLayout = new org.jdesktop.layout.GroupLayout(StandardViewPane);
-        StandardViewPane.setLayout(StandardViewPaneLayout);
-        StandardViewPaneLayout.setHorizontalGroup(
-            StandardViewPaneLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(StandardViewPaneLayout.createSequentialGroup()
-                .addContainerGap()
-                .add(StandardViewPaneLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(jPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 185, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(StandardViewPaneLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
-                        .add(jPanel_Rotations, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 185, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                        .add(Label_MatrixName, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        StandardViewPaneLayout.setVerticalGroup(
-            StandardViewPaneLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(StandardViewPaneLayout.createSequentialGroup()
-                .addContainerGap()
-                .add(jPanel_Rotations, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 110, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 113, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .add(18, 18, 18)
-                .add(Label_MatrixName, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 22, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        StandardViewPane.add(jPanel1, gridBagConstraints);
 
         ViewContainerTabbedPane.addTab("Standard", null, StandardViewPane, "Easy to use matrix tweaking controls.");
         StandardViewPane.getAccessibleContext().setAccessibleName("StandardViewPane");
@@ -639,9 +644,13 @@ private void TranslationXTextFieldFocusLost(java.awt.event.FocusEvent evt) {//GE
         return;
     }
     // validate the entry
-    float Xtrans = ((Number)TranslationXTextField.getValue()).floatValue();
+//    float Xtrans = ((Number)TranslationXTextField.getValue()).floatValue();
+//    Vector3f translationVector = m_theMatrix.getTranslation();
+//    translationVector.x = (float)Xtrans;
+    m_formattedNumber = m_format.format(((Number)TranslationXTextField.getValue()).doubleValue());
     Vector3f translationVector = m_theMatrix.getTranslation();
-    translationVector.x = (float)Xtrans;
+    translationVector.x = Float.valueOf(m_formattedNumber);
+
     // submit this to the matrix
     m_theMatrix.setTranslation(translationVector);
     // update components
@@ -663,9 +672,13 @@ private void TranslationYTextFieldFocusLost(java.awt.event.FocusEvent evt) {//GE
         return;
     }
     // validate the entry
-    float Ytrans = ((Number)TranslationYTextField.getValue()).floatValue();
+//    float Ytrans = ((Number)TranslationYTextField.getValue()).floatValue();
+//    Vector3f translationVector = m_theMatrix.getTranslation();
+//    translationVector.y = Ytrans;
+    m_formattedNumber = m_format.format(((Number)TranslationYTextField.getValue()).doubleValue());
     Vector3f translationVector = m_theMatrix.getTranslation();
-    translationVector.y = Ytrans;
+    translationVector.y = Float.valueOf(m_formattedNumber);
+
     // submit this to the matrix
     m_theMatrix.setTranslation(translationVector);
     // update components
@@ -687,9 +700,13 @@ private void TranslationZTextFieldFocusLost(java.awt.event.FocusEvent evt) {//GE
         return;
     }
     // validate the entry
-    float Ztrans = ((Number)TranslationZTextField.getValue()).floatValue();
+//    float Ztrans = ((Number)TranslationZTextField.getValue()).floatValue();
+//    Vector3f translationVector = m_theMatrix.getTranslation();
+//    translationVector.z = Ztrans;
+    m_formattedNumber = m_format.format(((Number)TranslationZTextField.getValue()).doubleValue());
     Vector3f translationVector = m_theMatrix.getTranslation();
-    translationVector.z = Ztrans;
+    translationVector.z = Float.valueOf(m_formattedNumber);
+
     // submit this to the matrix
     m_theMatrix.setTranslation(translationVector);
     // update components
@@ -703,20 +720,24 @@ private void TranslationXTextFieldKeyPressed(java.awt.event.KeyEvent evt) {//GEN
     // if it was the enter key, then submit this stuff!
     if (evt.getKeyCode() == KeyEvent.VK_ENTER)
     {
-            try 
-            {
-                // Commit this stuff
-                TranslationXTextField.commitEdit();
-            } catch (ParseException ex) 
-            {
-                // Bad text, just ignore it
-                Logger.getLogger(PMatrixWidget.class.getName()).log(Level.SEVERE, null, ex);
-                return;
-            }
+        try
+        {
+            // Commit this stuff
+            TranslationXTextField.commitEdit();
+        } catch (ParseException ex)
+        {
+            // Bad text, just ignore it
+            Logger.getLogger(PMatrixWidget.class.getName()).log(Level.SEVERE, null, ex);
+            return;
+        }
         // validate the entry
-        float Xtrans = ((Number)TranslationXTextField.getValue()).floatValue();
+//        float Xtrans = ((Number)TranslationXTextField.getValue()).floatValue();
+//        Vector3f translationVector = m_theMatrix.getTranslation();
+//        translationVector.x = Xtrans;
+        m_formattedNumber = m_format.format(((Number)TranslationXTextField.getValue()).doubleValue());
         Vector3f translationVector = m_theMatrix.getTranslation();
-        translationVector.x = Xtrans;
+        translationVector.x = Float.valueOf(m_formattedNumber);
+
         // submit this to the matrix
         m_theMatrix.setTranslation(translationVector);
         // update components
@@ -732,20 +753,24 @@ private void TranslationYTextFieldKeyPressed(java.awt.event.KeyEvent evt) {//GEN
     // if it was the enter key, then submit this stuff!
     if (evt.getKeyCode() == KeyEvent.VK_ENTER)
     {
-            try 
-            {
-                // Commit this stuff
-                TranslationYTextField.commitEdit();
-            } catch (ParseException ex) 
-            {
-                // Bad text, just ignore it
-                Logger.getLogger(PMatrixWidget.class.getName()).log(Level.SEVERE, null, ex);
-                return;
-            }
+        try
+        {
+            // Commit this stuff
+            TranslationYTextField.commitEdit();
+        } catch (ParseException ex)
+        {
+            // Bad text, just ignore it
+            Logger.getLogger(PMatrixWidget.class.getName()).log(Level.SEVERE, null, ex);
+            return;
+        }
         // validate the entry
-        float Ytrans = ((Number)TranslationYTextField.getValue()).floatValue();
+//        float Ytrans = ((Number)TranslationYTextField.getValue()).floatValue();
+//        Vector3f translationVector = m_theMatrix.getTranslation();
+//        translationVector.y = Ytrans;
+        m_formattedNumber = m_format.format(((Number)TranslationYTextField.getValue()).doubleValue());
         Vector3f translationVector = m_theMatrix.getTranslation();
-        translationVector.y = Ytrans;
+        translationVector.y = Float.valueOf(m_formattedNumber);
+
         // submit this to the matrix
         m_theMatrix.setTranslation(translationVector);
         // update components
@@ -761,22 +786,27 @@ private void TranslationZTextFieldKeyPressed(java.awt.event.KeyEvent evt) {//GEN
     // if it was the enter key, then submit this stuff!
     if (evt.getKeyCode() == KeyEvent.VK_ENTER)
     {
-            try 
-            {
-                // Commit this stuff
-                TranslationZTextField.commitEdit();
-            } catch (ParseException ex) 
-            {
-                // Bad text, just ignore it
-                Logger.getLogger(PMatrixWidget.class.getName()).log(Level.SEVERE, null, ex);
-                return;
-            }
+        try
+        {
+            // Commit this stuff
+            TranslationZTextField.commitEdit();
+        } catch (ParseException ex)
+        {
+            // Bad text, just ignore it
+            Logger.getLogger(PMatrixWidget.class.getName()).log(Level.SEVERE, null, ex);
+            return;
+        }
         // validate the entry
-        float Ztrans = ((Number)TranslationZTextField.getValue()).floatValue();
+//        float Ztrans = ((Number)TranslationZTextField.getValue()).floatValue();
+//        Vector3f translationVector = m_theMatrix.getTranslation();
+//        translationVector.z = Ztrans;
+        m_formattedNumber = m_format.format(((Number)TranslationZTextField.getValue()).doubleValue());
         Vector3f translationVector = m_theMatrix.getTranslation();
-        translationVector.z = Ztrans;
+        translationVector.z = Float.valueOf(m_formattedNumber);
+
         // submit this to the matrix
         m_theMatrix.setTranslation(translationVector);
+
         // update components
         refreshComponents();
         
@@ -798,11 +828,16 @@ private void ScalingZComponentFocusLost(java.awt.event.FocusEvent evt) {//GEN-FI
         return;
     }
     // validate the entry
-    float Zscale = ((Number)ScalingZComponent.getValue()).floatValue();
+//    float Zscale = ((Number)ScalingZComponent.getValue()).floatValue();
+//    Vector3f scaleVector = new Vector3f(m_theMatrix.getScaleVector());
+//    scaleVector.z = Zscale;
+    m_formattedNumber = m_format.format(((Number)ScalingZComponent.getValue()).doubleValue());
     Vector3f scaleVector = new Vector3f(m_theMatrix.getScaleVector());
-    scaleVector.z = Zscale;
+    scaleVector.z = Float.valueOf(m_formattedNumber);
+
     // submit this to the matrix
     m_theMatrix.setScale(scaleVector);
+
     // update components
     refreshComponents();
 }//GEN-LAST:event_ScalingZComponentFocusLost
@@ -814,22 +849,27 @@ private void ScalingZComponentKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIR
     // if it was the enter key, then submit this stuff!
     if (evt.getKeyCode() == KeyEvent.VK_ENTER)
     {
-            try 
-            {
-                // Commit this stuff
-                ScalingZComponent.commitEdit();
-            } catch (ParseException ex) 
-            {
-                // Bad text, just ignore it
-                Logger.getLogger(PMatrixWidget.class.getName()).log(Level.SEVERE, null, ex);
-                return;
-            }
+        try
+        {
+            // Commit this stuff
+            ScalingZComponent.commitEdit();
+        } catch (ParseException ex)
+        {
+            // Bad text, just ignore it
+            Logger.getLogger(PMatrixWidget.class.getName()).log(Level.SEVERE, null, ex);
+            return;
+        }
         // validate the entry
-        float Zscale = ((Number)ScalingZComponent.getValue()).floatValue();
+//        float Zscale = ((Number)ScalingZComponent.getValue()).floatValue();
+//        Vector3f scaleVector = new Vector3f(m_theMatrix.getScaleVector());
+//        scaleVector.z = Zscale;+
+        m_formattedNumber = m_format.format(((Number)ScalingZComponent.getValue()).doubleValue());
         Vector3f scaleVector = new Vector3f(m_theMatrix.getScaleVector());
-        scaleVector.z = Zscale;
+        scaleVector.z = Float.valueOf(m_formattedNumber);
+
         // submit this to the matrix
         m_theMatrix.setScale(scaleVector);
+
         // update components
         refreshComponents();
         
@@ -851,11 +891,16 @@ private void ScalingYComponentFocusLost(java.awt.event.FocusEvent evt) {//GEN-FI
         return;
     }
     // validate the entry
-    float Yscale = ((Number)ScalingYComponent.getValue()).floatValue();
+//    float Yscale = ((Number)ScalingYComponent.getValue()).floatValue();
+//    Vector3f scaleVector = new Vector3f(m_theMatrix.getScaleVector());
+//    scaleVector.y = Yscale;
+    m_formattedNumber = m_format.format(((Number)ScalingYComponent.getValue()).doubleValue());
     Vector3f scaleVector = new Vector3f(m_theMatrix.getScaleVector());
-    scaleVector.y = Yscale;
+    scaleVector.y = Float.valueOf(m_formattedNumber);
+
     // submit this to the matrix
     m_theMatrix.setScale(scaleVector);
+
     // update components
     refreshComponents();
 }//GEN-LAST:event_ScalingYComponentFocusLost
@@ -868,25 +913,29 @@ private void ScalingYComponentKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIR
     // if it was the enter key, then submit this stuff!
     if (evt.getKeyCode() == KeyEvent.VK_ENTER)
     {
-            try 
-            {
-                // Commit this stuff
-                ScalingYComponent.commitEdit();
-            } catch (ParseException ex) 
-            {
-                // Bad text, just ignore it
-                Logger.getLogger(PMatrixWidget.class.getName()).log(Level.SEVERE, null, ex);
-                return;
-            }
+        try
+        {
+            // Commit this stuff
+            ScalingYComponent.commitEdit();
+        } catch (ParseException ex)
+        {
+            // Bad text, just ignore it
+            Logger.getLogger(PMatrixWidget.class.getName()).log(Level.SEVERE, null, ex);
+            return;
+        }
         // validate the entry
-        float Yscale = ((Number)ScalingYComponent.getValue()).floatValue();
+//        float Yscale = ((Number)ScalingYComponent.getValue()).floatValue();
+//        Vector3f scaleVector = new Vector3f(m_theMatrix.getScaleVector());
+//        scaleVector.y = Yscale;
+        m_formattedNumber = m_format.format(((Number)ScalingYComponent.getValue()).doubleValue());
         Vector3f scaleVector = new Vector3f(m_theMatrix.getScaleVector());
-        scaleVector.y = Yscale;
+        scaleVector.y = Float.valueOf(m_formattedNumber);
+
         // submit this to the matrix
         m_theMatrix.setScale(scaleVector);
+
         // update components
-        refreshComponents();
-        
+        refreshComponents();        
     }
 }//GEN-LAST:event_ScalingYComponentKeyPressed
 
@@ -905,11 +954,16 @@ private void ScalingXComponentFocusLost(java.awt.event.FocusEvent evt) {//GEN-FI
         return;
     }
     // validate the entry
-    float Xscale = ((Number)ScalingXComponent.getValue()).floatValue();
+//    float Xscale = ((Number)ScalingXComponent.getValue()).floatValue();
+//    Vector3f scaleVector = new Vector3f(m_theMatrix.getScaleVector());
+//    scaleVector.x = Xscale;
+    m_formattedNumber = m_format.format(((Number)ScalingXComponent.getValue()).doubleValue());
     Vector3f scaleVector = new Vector3f(m_theMatrix.getScaleVector());
-    scaleVector.x = Xscale;
+    scaleVector.x = Float.valueOf(m_formattedNumber);
+
     // submit this to the matrix
     m_theMatrix.setScale(scaleVector);
+
     // update components
     refreshComponents();
 }//GEN-LAST:event_ScalingXComponentFocusLost
@@ -922,25 +976,29 @@ private void ScalingXComponentKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIR
     // if it was the enter key, then submit this stuff!
     if (evt.getKeyCode() == KeyEvent.VK_ENTER)
     {
-            try 
-            {
-                // Commit this stuff
-                ScalingXComponent.commitEdit();
-            } catch (ParseException ex) 
-            {
-                // Bad text, just ignore it
-                Logger.getLogger(PMatrixWidget.class.getName()).log(Level.SEVERE, null, ex);
-                return;
-            }
+        try
+        {
+            // Commit this stuff
+            ScalingXComponent.commitEdit();
+        } catch (ParseException ex)
+        {
+            // Bad text, just ignore it
+            Logger.getLogger(PMatrixWidget.class.getName()).log(Level.SEVERE, null, ex);
+            return;
+        }
         // validate the entry
-        float Xscale = ((Number)ScalingXComponent.getValue()).floatValue();
+//        float Xscale = ((Number)ScalingXComponent.getValue()).floatValue();
+//        Vector3f scaleVector = new Vector3f(m_theMatrix.getScaleVector());
+//        scaleVector.x = Xscale;
+        m_formattedNumber = m_format.format(((Number)ScalingXComponent.getValue()).doubleValue());
         Vector3f scaleVector = new Vector3f(m_theMatrix.getScaleVector());
-        scaleVector.x = Xscale;
+        scaleVector.x = Float.valueOf(m_formattedNumber);
+
         // submit this to the matrix
         m_theMatrix.setScale(scaleVector);
+
         // update components
-        refreshComponents();
-        
+        refreshComponents();        
     }
 }//GEN-LAST:event_ScalingXComponentKeyPressed
 
@@ -1006,9 +1064,6 @@ private void JButton_IdentityActionPerformed(java.awt.event.ActionEvent evt) {//
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel_Rotations;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JToolBar jToolBar1;
-    private javax.swing.JToolBar jToolBar2;
-    private javax.swing.JToolBar jToolBar3;
     private javax.swing.JToolBar jToolBar_XRotation;
     private javax.swing.JToolBar jToolBar_YRotation;
     private javax.swing.JToolBar jToolBar_ZRotation;

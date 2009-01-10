@@ -783,7 +783,7 @@ public class SceneEssentials {
         createMeshSwapList("8", meshref);
 
         // Create avatar attribs
-        CharacterAttributes attribs = new CharacterAttributes("AvatarAttributes");
+        CharacterAttributes attribs = new CharacterAttributes("Avatar");
 
         attribs = new CharacterAttributes("Avatar");
         attribs.setBaseURL("");
@@ -807,12 +807,14 @@ public class SceneEssentials {
             setAvatar(null);
         }
 
+        worldManager.getRenderManager().setDesiredFrameRate(1);
         setAvatar(new NinjaAvatar(attribs, worldManager));
         while(!avatar.isInitialized()) {
 
         }
         avatar.selectForInput();
         currentPScene = avatar.getPScene();
+        worldManager.getRenderManager().setDesiredFrameRate(60);
     }
 
     public void loadDAEAnimationFile(int type, boolean useRepository, Component arg0) {

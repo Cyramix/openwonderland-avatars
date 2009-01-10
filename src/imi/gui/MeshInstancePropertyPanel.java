@@ -72,22 +72,9 @@ public class MeshInstancePropertyPanel extends javax.swing.JPanel implements PNo
         setMaximumSize(new java.awt.Dimension(670, 345));
         setMinimumSize(new java.awt.Dimension(670, 345));
         setPreferredSize(new java.awt.Dimension(665, 345));
-
-        org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
-        this.setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(layout.createSequentialGroup()
-                .add(m_matrixWidget, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .add(0, 0, 0)
-                .add(m_materialPanel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 425, Short.MAX_VALUE))
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(m_matrixWidget, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-            .add(m_materialPanel, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-        );
-
+        setLayout(new java.awt.GridBagLayout());
+        add(m_matrixWidget, new java.awt.GridBagConstraints());
+        add(m_materialPanel, new java.awt.GridBagConstraints());
         m_materialPanel.setOwningMesh(m_meshInst);
         m_materialPanel.setTargetMaterial(m_meshInst.getMaterialRef().getMaterial());
     }// </editor-fold>//GEN-END:initComponents

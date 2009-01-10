@@ -18,6 +18,8 @@
 package imi.gui;
 
 import imi.scene.PMatrix;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import javax.swing.table.AbstractTableModel;
 
 /**
@@ -26,8 +28,10 @@ import javax.swing.table.AbstractTableModel;
  */
 public class PMatrixTableModel extends AbstractTableModel
 {
-    private PMatrix     m_Matrix = null; // the data to operate on
-    private String[]    m_ColumnNames = new String[4];
+    private PMatrix         m_Matrix = null; // the data to operate on
+    private String[]        m_ColumnNames = new String[4];
+    private NumberFormat    m_format            = new DecimalFormat("#,###.######");
+    private String          m_formattedNumber   = null;
     
     public PMatrixTableModel(PMatrix target)
     {
@@ -51,7 +55,8 @@ public class PMatrixTableModel extends AbstractTableModel
 
     public Object getValueAt(int rowIndex, int columnIndex) 
     {
-        return Float.valueOf(m_Matrix.getFloatArray()[columnIndex + rowIndex * 4]);
+        m_formattedNumber = m_format.format(m_Matrix.getFloatArray()[columnIndex + rowIndex * 4]);
+        return Float.valueOf(m_formattedNumber);
     }
 
     @Override
@@ -89,7 +94,8 @@ public class PMatrixTableModel extends AbstractTableModel
     {
         // First turn this bastard into a float
         float[] fArray = m_Matrix.getFloatArray();
-        fArray[columnIndex + rowIndex * 4] = (Float)aValue;
+        m_formattedNumber = m_format.format((Float)aValue);
+        fArray[columnIndex + rowIndex * 4] = Float.valueOf(m_formattedNumber);
         m_Matrix.set(fArray);
     }
     

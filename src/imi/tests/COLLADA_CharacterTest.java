@@ -66,7 +66,11 @@ public class COLLADA_CharacterTest extends DemoBase
         NinjaControlScheme control = (NinjaControlScheme)((JSceneEventProcessor)wm.getUserData(JSceneEventProcessor.class)).setDefault(new NinjaControlScheme(null));
 
         // Create avatar
+        long startTime = System.nanoTime();
         NinjaAvatar avatar = new NinjaAvatar(new NinjaAvatarAttributes("Avatar", true, false), wm);
+        float time = (float)((System.nanoTime() - startTime) / 1000000000.0f);
+        System.out.println("Constructing the male took: " + time);
+        
         avatar.selectForInput();
         control.getNinjaTeam().add(avatar);
 

@@ -256,12 +256,14 @@ public class PMeshMaterialPanel extends javax.swing.JPanel
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
+        java.awt.GridBagConstraints gridBagConstraints;
 
         jFileChooser_Texture = new javax.swing.JFileChooser();
         jTabbedPane_MaterialProp = new javax.swing.JTabbedPane();
         jPanel_MaterialPanel = new javax.swing.JPanel();
         jScrollPane_Textures = new javax.swing.JScrollPane();
         jList_Textures = new javax.swing.JList();
+        jPanel_Buttons = new javax.swing.JPanel();
         jButton_MoveUp = new javax.swing.JButton();
         jButton_MoveDown = new javax.swing.JButton();
         jButton_Add = new javax.swing.JButton();
@@ -298,12 +300,21 @@ public class PMeshMaterialPanel extends javax.swing.JPanel
         setMinimumSize(new java.awt.Dimension(420, 345));
         setPreferredSize(new java.awt.Dimension(420, 345));
 
+        jPanel_MaterialPanel.setLayout(new java.awt.GridBagLayout());
+
+        jScrollPane_Textures.setMinimumSize(new java.awt.Dimension(255, 300));
+        jScrollPane_Textures.setPreferredSize(new java.awt.Dimension(255, 300));
+
         jList_Textures.setModel(new javax.swing.DefaultListModel() {
             String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
             public int getSize() { return strings.length; }
             public Object getElementAt(int i) { return strings[i]; }
         });
         jScrollPane_Textures.setViewportView(jList_Textures);
+
+        jPanel_MaterialPanel.add(jScrollPane_Textures, new java.awt.GridBagConstraints());
+
+        jPanel_Buttons.setLayout(new java.awt.GridBagLayout());
 
         jButton_MoveUp.setText("Move Up");
         jButton_MoveUp.setFocusable(false);
@@ -317,6 +328,7 @@ public class PMeshMaterialPanel extends javax.swing.JPanel
                 moveSelectedItemUp();
             }
         });
+        jPanel_Buttons.add(jButton_MoveUp, new java.awt.GridBagConstraints());
 
         jButton_MoveDown.setText("Move Down");
         jButton_MoveDown.setFocusable(false);
@@ -330,6 +342,10 @@ public class PMeshMaterialPanel extends javax.swing.JPanel
                 moveSelectedItemDown();
             }
         });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        jPanel_Buttons.add(jButton_MoveDown, gridBagConstraints);
 
         jButton_Add.setText("Add");
         jButton_Add.setFocusable(false);
@@ -343,6 +359,10 @@ public class PMeshMaterialPanel extends javax.swing.JPanel
                 addTextureToList();
             }
         });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
+        jPanel_Buttons.add(jButton_Add, gridBagConstraints);
 
         jButton_Remove.setText("Remove");
         jButton_Remove.setFocusable(false);
@@ -356,13 +376,24 @@ public class PMeshMaterialPanel extends javax.swing.JPanel
                 removeSelectedTexture();
             }
         });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 3;
+        jPanel_Buttons.add(jButton_Remove, gridBagConstraints);
 
         jButton_RemoveAll.setText("Remove All");
+        jButton_RemoveAll.setMaximumSize(new java.awt.Dimension(150, 25));
+        jButton_RemoveAll.setMinimumSize(new java.awt.Dimension(150, 25));
+        jButton_RemoveAll.setPreferredSize(new java.awt.Dimension(150, 25));
         jButton_RemoveAll.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 removeSelectedTexture();
             }
         });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 4;
+        jPanel_Buttons.add(jButton_RemoveAll, gridBagConstraints);
 
         jButton_Apply.setText("Apply Material");
         jButton_Apply.setMaximumSize(new java.awt.Dimension(150, 25));
@@ -373,43 +404,14 @@ public class PMeshMaterialPanel extends javax.swing.JPanel
                 applyMaterialRequested(evt);
             }
         });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 5;
+        jPanel_Buttons.add(jButton_Apply, gridBagConstraints);
 
-        org.jdesktop.layout.GroupLayout jPanel_MaterialPanelLayout = new org.jdesktop.layout.GroupLayout(jPanel_MaterialPanel);
-        jPanel_MaterialPanel.setLayout(jPanel_MaterialPanelLayout);
-        jPanel_MaterialPanelLayout.setHorizontalGroup(
-            jPanel_MaterialPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(jPanel_MaterialPanelLayout.createSequentialGroup()
-                .add(8, 8, 8)
-                .add(jScrollPane_Textures, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 224, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jPanel_MaterialPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(jButton_Apply, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 150, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(jButton_RemoveAll, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 150, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(jButton_Remove, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(jButton_Add, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(jButton_MoveDown, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(jButton_MoveUp, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        jPanel_MaterialPanelLayout.setVerticalGroup(
-            jPanel_MaterialPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(jPanel_MaterialPanelLayout.createSequentialGroup()
-                .add(jPanel_MaterialPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(jScrollPane_Textures, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 271, Short.MAX_VALUE)
-                    .add(jPanel_MaterialPanelLayout.createSequentialGroup()
-                        .add(jButton_MoveUp, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(jButton_MoveDown, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(jButton_Add, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(jButton_Remove, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(jButton_RemoveAll, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 25, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(jButton_Apply, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 25, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
-                .add(28, 28, 28))
-        );
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTH;
+        jPanel_MaterialPanel.add(jPanel_Buttons, gridBagConstraints);
 
         jTabbedPane_MaterialProp.addTab("Material Properties", jPanel_MaterialPanel);
 
@@ -435,6 +437,7 @@ public class PMeshMaterialPanel extends javax.swing.JPanel
     private javax.swing.JButton jButton_RemoveAll;
     private javax.swing.JFileChooser jFileChooser_Texture;
     private javax.swing.JList jList_Textures;
+    private javax.swing.JPanel jPanel_Buttons;
     private javax.swing.JPanel jPanel_MaterialPanel;
     private javax.swing.JScrollPane jScrollPane_Textures;
     private javax.swing.JTabbedPane jTabbedPane_MaterialProp;

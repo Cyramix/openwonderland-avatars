@@ -28,8 +28,8 @@ import imi.scene.PNode;
 public class PJointPanel extends javax.swing.JPanel implements PNodeSubtypeToolkit 
 {
     // Widget dimensions
-    public static int TOOLKIT_HEIGHT = 380;
-    public static int TOOLKIT_WIDTH = 505;
+    public static int TOOLKIT_HEIGHT = 360;
+    public static int TOOLKIT_WIDTH = 500;
     
     // The data model to operate on
     private PJoint  m_Model = null;
@@ -57,31 +57,16 @@ public class PJointPanel extends javax.swing.JPanel implements PNodeSubtypeToolk
         PMatrixWidget_Local = new PMatrixWidget(m_Model.getTransform().getLocalMatrix(true), "Local Transform");
         PMatrixWidget_Modifier = new PMatrixWidget(m_Model.getLocalModifierMatrix(), "Modification Matrix");
 
-        setMaximumSize(new java.awt.Dimension(500, 370));
-        setMinimumSize(new java.awt.Dimension(500, 370));
-        setPreferredSize(new java.awt.Dimension(500, 370));
+        setMaximumSize(new java.awt.Dimension(500, 345));
+        setMinimumSize(new java.awt.Dimension(500, 345));
+        setPreferredSize(new java.awt.Dimension(500, 345));
+        setLayout(new java.awt.GridBagLayout());
 
         PMatrixWidget_Local.setToolTipText("Local Transform Properties");
+        add(PMatrixWidget_Local, new java.awt.GridBagConstraints());
 
         PMatrixWidget_Modifier.setToolTipText("Modifier Matrix Properties");
-
-        org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
-        this.setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(layout.createSequentialGroup()
-                .add(PMatrixWidget_Local, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(PMatrixWidget_Modifier, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(layout.createSequentialGroup()
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING, false)
-                    .add(org.jdesktop.layout.GroupLayout.LEADING, PMatrixWidget_Local, 0, 0, Short.MAX_VALUE)
-                    .add(org.jdesktop.layout.GroupLayout.LEADING, PMatrixWidget_Modifier, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 350, Short.MAX_VALUE))
-                .addContainerGap())
-        );
+        add(PMatrixWidget_Modifier, new java.awt.GridBagConstraints());
     }// </editor-fold>//GEN-END:initComponents
 
 

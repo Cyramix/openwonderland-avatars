@@ -34,12 +34,12 @@ import org.jdesktop.mtgame.WorldManager;
 public class PNodePropertyPanel extends javax.swing.JPanel 
 {
 
-    private PNode   m_targetNode = null; // The node to operate on
-    private Timer   m_refreshTimer = null; // Sends events to refresh the components
-    private PNodeSubtypeToolkit m_nodeToolKit = null; // Derived type widgets
-    private int iHeight = 500;  // Minimum window height
-    private int iWidth  = 320;  // Minimum window width
-    private WorldManager wm = null;
+    private PNode               m_targetNode    = null; // The node to operate on
+    private Timer               m_refreshTimer  = null; // Sends events to refresh the components
+    private PNodeSubtypeToolkit m_nodeToolKit   = null; // Derived type widgets
+    private int                 iHeight         = 500;  // Minimum window height
+    private int                 iWidth          = 320;  // Minimum window width
+    private WorldManager        wm              = null;
     
     /**
      * Creates default values with refresh mechanisms.
@@ -113,7 +113,7 @@ public class PNodePropertyPanel extends javax.swing.JPanel
         else if (m_targetNode instanceof PJoint) // Only implementation so far
         {
             PJointPanel panel = new PJointPanel((PJoint)m_targetNode);
-            panel.setSize(new Dimension(panel.getDefaultWidth(), panel.getDefaultHeight())); 
+            panel.setSize(new Dimension(panel.getDefaultWidth(), panel.getDefaultHeight()));
             JPanel_SpecificControls.add(panel);
             m_nodeToolKit = (PNodeSubtypeToolkit)panel;
             panel.setVisible(true);
@@ -190,6 +190,7 @@ public class PNodePropertyPanel extends javax.swing.JPanel
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
+        java.awt.GridBagConstraints gridBagConstraints;
 
         JPanel_BaseNodeProperties = new javax.swing.JPanel();
         jToolBar1 = new javax.swing.JToolBar();
@@ -216,11 +217,16 @@ public class PNodePropertyPanel extends javax.swing.JPanel
         setMaximumSize(new java.awt.Dimension(2000, 2000));
         setMinimumSize(new java.awt.Dimension(300, 300));
         setPreferredSize(new java.awt.Dimension(321, 300));
+        setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         JPanel_BaseNodeProperties.setMinimumSize(new java.awt.Dimension(321, 150));
+        JPanel_BaseNodeProperties.setPreferredSize(new java.awt.Dimension(321, 150));
+        JPanel_BaseNodeProperties.setLayout(new java.awt.GridBagLayout());
 
         jToolBar1.setFloatable(false);
         jToolBar1.setRollover(true);
+        jToolBar1.setMinimumSize(new java.awt.Dimension(200, 32));
+        jToolBar1.setPreferredSize(new java.awt.Dimension(200, 32));
 
         jLabel1.setText("Name: ");
         jLabel1.setFocusCycleRoot(true);
@@ -234,12 +240,21 @@ public class PNodePropertyPanel extends javax.swing.JPanel
         });
         jToolBar1.add(JTextField_NodeName);
 
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        JPanel_BaseNodeProperties.add(jToolBar1, gridBagConstraints);
+
         jToolBar2.setFloatable(false);
         jToolBar2.setRollover(true);
+        jToolBar2.setMaximumSize(new java.awt.Dimension(100, 32));
+        jToolBar2.setMinimumSize(new java.awt.Dimension(100, 32));
+        jToolBar2.setPreferredSize(new java.awt.Dimension(100, 32));
 
         JCheckBox_Dirty.setText("Dirty          ");
         JCheckBox_Dirty.setToolTipText("Sets the dirty boolean for this node.");
         JCheckBox_Dirty.setHorizontalTextPosition(javax.swing.SwingConstants.LEADING);
+        JCheckBox_Dirty.setIconTextGap(6);
+        JCheckBox_Dirty.setMargin(new java.awt.Insets(0, 0, 0, 0));
         JCheckBox_Dirty.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 JCheckBox_DirtyActionPerformed(evt);
@@ -247,8 +262,17 @@ public class PNodePropertyPanel extends javax.swing.JPanel
         });
         jToolBar2.add(JCheckBox_Dirty);
 
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        JPanel_BaseNodeProperties.add(jToolBar2, gridBagConstraints);
+
         jToolBar3.setFloatable(false);
         jToolBar3.setRollover(true);
+        jToolBar3.setMaximumSize(new java.awt.Dimension(200, 32));
+        jToolBar3.setMinimumSize(new java.awt.Dimension(200, 32));
+        jToolBar3.setPreferredSize(new java.awt.Dimension(200, 32));
 
         jLabel2.setText("Parent: ");
         jToolBar3.add(jLabel2);
@@ -258,11 +282,25 @@ public class PNodePropertyPanel extends javax.swing.JPanel
         JLabel_ParentNodeName.setText("PARENT NODE NAME");
         jToolBar3.add(JLabel_ParentNodeName);
 
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        JPanel_BaseNodeProperties.add(jToolBar3, gridBagConstraints);
+
         jToolBar4.setFloatable(false);
         jToolBar4.setRollover(true);
+        jToolBar4.setMaximumSize(new java.awt.Dimension(100, 32));
+        jToolBar4.setMinimumSize(new java.awt.Dimension(100, 32));
+        jToolBar4.setPreferredSize(new java.awt.Dimension(100, 32));
 
         JCheckBox_RenderStop.setText("RenderStop");
         JCheckBox_RenderStop.setHorizontalTextPosition(javax.swing.SwingConstants.LEADING);
+        JCheckBox_RenderStop.setIconTextGap(0);
+        JCheckBox_RenderStop.setMargin(new java.awt.Insets(0, 0, 0, 0));
+        JCheckBox_RenderStop.setMaximumSize(new java.awt.Dimension(88, 23));
+        JCheckBox_RenderStop.setMinimumSize(new java.awt.Dimension(88, 23));
+        JCheckBox_RenderStop.setPreferredSize(new java.awt.Dimension(88, 23));
         JCheckBox_RenderStop.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 JCheckBox_RenderStopActionPerformed(evt);
@@ -270,28 +308,58 @@ public class PNodePropertyPanel extends javax.swing.JPanel
         });
         jToolBar4.add(JCheckBox_RenderStop);
 
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        JPanel_BaseNodeProperties.add(jToolBar4, gridBagConstraints);
+
         jToolBar5.setFloatable(false);
         jToolBar5.setRollover(true);
+        jToolBar5.setMaximumSize(new java.awt.Dimension(200, 32));
+        jToolBar5.setMinimumSize(new java.awt.Dimension(200, 32));
+        jToolBar5.setPreferredSize(new java.awt.Dimension(200, 32));
 
-        jLabel4.setText("Children: ");
+        jLabel4.setText("Children:");
+        jLabel4.setMaximumSize(new java.awt.Dimension(66, 16));
+        jLabel4.setMinimumSize(new java.awt.Dimension(66, 16));
+        jLabel4.setPreferredSize(new java.awt.Dimension(66, 16));
         jToolBar5.add(jLabel4);
 
         JLabel_ChildCount.setFont(new java.awt.Font("Courier New", 1, 12));
         JLabel_ChildCount.setText("##");
         jToolBar5.add(JLabel_ChildCount);
 
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        JPanel_BaseNodeProperties.add(jToolBar5, gridBagConstraints);
+
         jToolBar6.setFloatable(false);
         jToolBar6.setRollover(true);
+        jToolBar6.setMaximumSize(new java.awt.Dimension(200, 32));
+        jToolBar6.setMinimumSize(new java.awt.Dimension(200, 32));
+        jToolBar6.setPreferredSize(new java.awt.Dimension(200, 32));
 
-        jLabel3.setText(" RefCount: ");
+        jLabel3.setText("RefCount: ");
         jToolBar6.add(jLabel3);
 
         JLabel_RefCount.setFont(new java.awt.Font("Courier New", 1, 12));
         JLabel_RefCount.setText("##");
         jToolBar6.add(JLabel_RefCount);
 
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 3;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        JPanel_BaseNodeProperties.add(jToolBar6, gridBagConstraints);
+
         jToolBar7.setFloatable(false);
         jToolBar7.setRollover(true);
+        jToolBar7.setMaximumSize(new java.awt.Dimension(300, 32));
+        jToolBar7.setMinimumSize(new java.awt.Dimension(300, 32));
+        jToolBar7.setPreferredSize(new java.awt.Dimension(300, 32));
 
         jLabel5.setText("Node Type: ");
         jToolBar7.add(jLabel5);
@@ -301,77 +369,30 @@ public class PNodePropertyPanel extends javax.swing.JPanel
         JLabel_NodeType.setText("TYPE OF NODE GOES HERE");
         jToolBar7.add(JLabel_NodeType);
 
-        org.jdesktop.layout.GroupLayout JPanel_BaseNodePropertiesLayout = new org.jdesktop.layout.GroupLayout(JPanel_BaseNodeProperties);
-        JPanel_BaseNodeProperties.setLayout(JPanel_BaseNodePropertiesLayout);
-        JPanel_BaseNodePropertiesLayout.setHorizontalGroup(
-            JPanel_BaseNodePropertiesLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(JPanel_BaseNodePropertiesLayout.createSequentialGroup()
-                .add(JPanel_BaseNodePropertiesLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(JPanel_BaseNodePropertiesLayout.createSequentialGroup()
-                        .add(jToolBar5, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 160, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(jToolBar6, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 162, Short.MAX_VALUE))
-                    .add(JPanel_BaseNodePropertiesLayout.createSequentialGroup()
-                        .add(jToolBar1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 220, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(jToolBar2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 102, Short.MAX_VALUE))
-                    .add(JPanel_BaseNodePropertiesLayout.createSequentialGroup()
-                        .add(jToolBar3, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 220, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(jToolBar4, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .add(jToolBar7, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 322, Short.MAX_VALUE))
-                .addContainerGap())
-        );
-        JPanel_BaseNodePropertiesLayout.setVerticalGroup(
-            JPanel_BaseNodePropertiesLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(JPanel_BaseNodePropertiesLayout.createSequentialGroup()
-                .add(JPanel_BaseNodePropertiesLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
-                    .add(jToolBar1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 25, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(jToolBar2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 25, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(JPanel_BaseNodePropertiesLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
-                    .add(jToolBar3, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 25, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(jToolBar4, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 25, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(JPanel_BaseNodePropertiesLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(jToolBar5, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 25, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(jToolBar6, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 25, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jToolBar7, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 25, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 4;
+        gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        JPanel_BaseNodeProperties.add(jToolBar7, gridBagConstraints);
 
-        JPanel_SpecificControls.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        add(JPanel_BaseNodeProperties, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, -1));
+
         JPanel_SpecificControls.setMinimumSize(new java.awt.Dimension(321, 150));
+        JPanel_SpecificControls.setPreferredSize(new java.awt.Dimension(670, 365));
 
         org.jdesktop.layout.GroupLayout JPanel_SpecificControlsLayout = new org.jdesktop.layout.GroupLayout(JPanel_SpecificControls);
         JPanel_SpecificControls.setLayout(JPanel_SpecificControlsLayout);
         JPanel_SpecificControlsLayout.setHorizontalGroup(
             JPanel_SpecificControlsLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 316, Short.MAX_VALUE)
+            .add(0, 670, Short.MAX_VALUE)
         );
         JPanel_SpecificControlsLayout.setVerticalGroup(
             JPanel_SpecificControlsLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 176, Short.MAX_VALUE)
+            .add(0, 365, Short.MAX_VALUE)
         );
 
-        org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
-        this.setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(layout.createSequentialGroup()
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(JPanel_SpecificControls, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 320, Short.MAX_VALUE)
-                    .add(JPanel_BaseNodeProperties, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 320, Short.MAX_VALUE))
-                .addContainerGap())
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(layout.createSequentialGroup()
-                .add(JPanel_BaseNodeProperties, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 120, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(JPanel_SpecificControls, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
+        add(JPanel_SpecificControls, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 150, -1, -1));
     }// </editor-fold>//GEN-END:initComponents
 
 private void JTextField_NodeNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JTextField_NodeNameActionPerformed
