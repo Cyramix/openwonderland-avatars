@@ -77,7 +77,9 @@ public class PScene extends PNode implements RepositoryUser
     private JScene                      m_JScene            = null;
     private WorldManager                m_WorldManager      = null;
     private PPolygonTriMeshAssembler    m_TriMeshAssembler  = null;
-
+    
+    // SFK 01-10-09
+    public static boolean jHack = true;
     /**
      * Constructor
      * @param wm
@@ -136,6 +138,7 @@ public class PScene extends PNode implements RepositoryUser
         List<Spatial> kids = m_JScene.getChildren();
         
         // Nuke the m_JScene
+        if ( jHack )
         if (kids == null)
         {
             Node dead = new Node("kill me"); // kids = new... will not work :(
