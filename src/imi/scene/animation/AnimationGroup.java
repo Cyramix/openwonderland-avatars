@@ -142,7 +142,9 @@ public class AnimationGroup implements Serializable
         //  Iterate through all the Joint channels and apply the state to the joint.
         for (PJointChannel jointChannel : m_JointChannels)
         {
-            PJoint pJoint = animated.getJoint(jointChannel.getTargetJointName());
+            PJoint joint = animated.getJoint(jointChannel.getTargetJointName());
+            if (joint == null)
+                System.out.println("Unable to locate joint " + jointChannel.getTargetJointName());
 
             if (bTransitioning)
             {
@@ -159,11 +161,11 @@ public class AnimationGroup implements Serializable
                     return;
                 }
                 else
-                    jointChannel.calculateBlendedFrame(pJoint, state);
+                    jointChannel.calculateBlendedFrame(joint, state);
             }
             else
             {
-                jointChannel.calculateFrame(pJoint, state);
+                jointChannel.calculateFrame(joint, state);
             }
         }
     }

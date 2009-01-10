@@ -56,6 +56,8 @@ public class PSceneSubmitHelper  implements NodeProcessor
      */
     public boolean processNode(PNode current) 
     {
+        if (current.getRenderStop() == true)
+            return false;
         PNode parent = current.getParent();
 
         // Get the parent's world matrix

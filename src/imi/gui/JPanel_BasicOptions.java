@@ -344,7 +344,7 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
 
             try {
                 URL head = new URL(data.get(0)[3]);
-                m_sceneData.getAvatar().installHead(head);
+//                m_sceneData.getAvatar().installHead(head);
             } catch (MalformedURLException ex) {
                 Logger.getLogger(JPanel_BasicOptions.class.getName()).log(Level.SEVERE, null, ex);
             }

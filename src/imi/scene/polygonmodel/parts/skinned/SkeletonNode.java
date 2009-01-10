@@ -81,7 +81,7 @@ public class SkeletonNode extends PNode implements Animated, Serializable
     private transient ArrayList<AnimationState>   m_animationStates = new ArrayList<AnimationState>();
     // This component maintains a list of all the animation groups that this
     // skeleton uses.
-    private AnimationComponent          m_animationComponent = new AnimationComponent();
+    private AnimationComponent  m_animationComponent = new AnimationComponent();
     
     /** Enables a callback during the flatenning of the skeleton hierarchy for 
      *  manipulations that need to have cascading affect down the hierarchy */
@@ -110,6 +110,7 @@ public class SkeletonNode extends PNode implements Animated, Serializable
         
     }
 
+    @Override
     public AnimationComponent getAnimationComponent()
     {
         return m_animationComponent;
@@ -117,6 +118,10 @@ public class SkeletonNode extends PNode implements Animated, Serializable
 
     public Iterable<AnimationState> getAnimationStates() {
         return m_animationStates;
+    }
+
+    public Iterable<String> getJointNames() {
+        return m_jointNames;
     }
 
     /**
@@ -237,9 +242,7 @@ public class SkeletonNode extends PNode implements Animated, Serializable
      */
     private void mapSkinnedMeshJointIndices()
     {
-        //m_initialInverseTransform.set(getTransform().getWorldMatrix(false).inverse());
         m_jointNames.clear();
-        
         m_BFTSkeleton.clear();
         m_BFTSkeletonLocalModifiers.clear();
         m_BFTFlattenedInverseBindPose.clear();

@@ -351,7 +351,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         m_AnimationProcessor.setEnable(true);
         // Turn on updates
         m_characterProcessor.start();
-        
+        m_modelInst.setRenderStop(false);
         m_initialized = true;
 
     }
@@ -417,6 +417,38 @@ public abstract class Character extends Entity implements SpatialObject, Animati
             if (current instanceof PJoint ||
                 current instanceof PPolygonMeshInstance)
                 queue.addAll(current.getChildren());
+        }
+    }
+
+    /**
+     * A subset of the functionality in setDefaultShaders
+     */
+    private void setDefaultHeadShaders()
+    {
+        AbstractShaderProgram fleshShader = new FleshShader(m_wm);
+        float[] skinColor = { (230.0f/255.0f), (197.0f/255.0f), (190.0f/255.0f) };
+        try {
+            fleshShader.setProperty(new ShaderProperty("materialColor", GLSLDataType.GLSL_VEC3, skinColor));
+        } catch (NoSuchPropertyException ex) {
+            Logger.getLogger(Character.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        AbstractShaderProgram eyeballShader = new EyeballShader(m_wm);
+
+        // first the skinned meshes
+        Iterable<PPolygonSkinnedMeshInstance> smInstances = m_skeleton.retrieveSkinnedMeshes("Head");
+        for (PPolygonSkinnedMeshInstance meshInst : smInstances)
+        {
+            PMeshMaterial meshMat = meshInst.getMaterialRef().getMaterial();
+            // is this an eyeball? (also used for tongue and teeth)
+            if (meshInst.getName().contains("EyeGeoShape") ||
+                meshInst.getName().contains("Tongue")      ||
+                meshInst.getName().contains("Teeth"))
+                meshMat.setShader(eyeballShader);
+            else
+                meshMat.setShader(fleshShader);
+            // Apply it!
+            meshInst.applyShader();
         }
     }
 
@@ -635,6 +667,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         else // Otherwise use the specified collada model
         {
             m_modelInst = new PPolygonModelInstance(m_attributes.getName());
+            m_modelInst.setRenderStop(true);
             m_modelInst.addChild(m_skeleton);
             m_pscene.addInstanceNode(m_modelInst);
 
@@ -1072,7 +1105,52 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         return m_initialized;
     }
 
-    public void installHead(URL headLocation)
+    public void installHead(URL headLocation, String attachmentJointName)
+    {
+        m_skeleton.setRenderStop(true);
+        m_AnimationProcessor.setEnable(false);
+        m_characterProcessor.setEnabled(false);
+        // Ready the collada loader!
+        Collada colladaLoader = new Collada();
+        colladaLoader.setLoadFlags(true, true, false);
+
+        PScene newHeadPScene = new PScene(m_wm);
+        colladaLoader.load(newHeadPScene, headLocation);
+
+        SkeletonNode newHeadSkeleton = colladaLoader.getSkeletonNode();
+
+        // Cut off the old skeleton at the specified attach point
+        SkinnedMeshJoint parent = (SkinnedMeshJoint)m_skeleton.findSkinnedMeshJoint(attachmentJointName).getParent();
+        parent.removeChild(attachmentJointName);
+        parent.addChild(newHeadSkeleton.findSkinnedMeshJoint(attachmentJointName));
+
+        m_skeleton.refresh();
+        m_skeleton.clearSubGroup("Head");
+
+        Iterable<PNode> list = newHeadSkeleton.getChildren();
+        for (PNode node : list)
+        {
+            if (node instanceof PPolygonSkinnedMesh)
+            {
+                PPolygonSkinnedMesh skinnedMesh = (PPolygonSkinnedMesh) node;
+                // Make an instance
+                PPolygonSkinnedMeshInstance skinnedMeshInstance = (PPolygonSkinnedMeshInstance) m_pscene.addMeshInstance(skinnedMesh, new PMatrix());
+                // Add it to the skeleton
+                m_skeleton.addToSubGroup(skinnedMeshInstance, "Head");
+            }
+        }
+        setDefaultHeadShaders();
+        // Relink all of the old meshes
+        for (PPolygonSkinnedMeshInstance meshInst : m_skeleton.getSkinnedMeshInstances())
+            meshInst.setAndLinkSkeletonNode(m_skeleton);
+        
+        m_AnimationProcessor.setEnable(true);
+        m_characterProcessor.setEnabled(true);
+        m_skeleton.setRenderStop(false);
+    }
+
+    @Deprecated
+    public void oldInstallHead(URL headLocation)
     {
         // Ready the collada loader!
         Collada colladaLoader = new Collada();

@@ -11,8 +11,8 @@
  * except in compliance with the License. A copy of the License is
  * available at http://www.opensource.org/licenses/gpl-license.php.
  *
- * Sun designates this particular file as subject to the "Classpath" 
- * exception as provided by Sun in the License file that accompanied 
+ * Sun designates this particular file as subject to the "Classpath"
+ * exception as provided by Sun in the License file that accompanied
  * this code.
  */
 package imi.tests;
@@ -66,20 +66,20 @@ import java.io.ObjectOutputStream;
  */
 public class COLLADA_ModelTest extends DemoBase
 {
-   
-    
+
+
     public COLLADA_ModelTest(String[] args)
     {
         super(args);
     }
-    
+
     public static void main(String[] args)
     {
         COLLADA_ModelTest modelTest = new COLLADA_ModelTest(args);
     }
     TreeExplorer te = null;
     @Override
-    protected void simpleSceneInit(PScene pscene, WorldManager wm, ArrayList<ProcessorComponent> processors) 
+    protected void simpleSceneInit(PScene pscene, WorldManager wm, ArrayList<ProcessorComponent> processors)
     {
         // load a model from one of the listed locations below
         URL modelLocation = null;
@@ -181,10 +181,10 @@ public class COLLADA_ModelTest extends DemoBase
         tumbleState.setCameraPosition(new Vector3f(1,2,-6));
         tumbleState.setMinimumDistanceSquared(0.05f);
         m_cameraProcessor.setCameraBehavior(tumbleModel, tumbleState);
-        
+
         // test setting a different focal point, say at the sphere
         tumbleState.setTargetFocalPoint(modelInst.getTransform().getWorldMatrix(false).getTranslation().add(0.0f, 1.7f, 0.0f));
-        
+
         pscene.setDirty(true, true);
 
 

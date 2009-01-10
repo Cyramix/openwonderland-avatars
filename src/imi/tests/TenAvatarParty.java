@@ -1,13 +1,26 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+/**
+ * Project Wonderland
+ *
+ * Copyright (c) 2004-2008, Sun Microsystems, Inc., All Rights Reserved
+ *
+ * Redistributions in source code form must reproduce the above
+ * copyright and this condition.
+ *
+ * The contents of this file are subject to the GNU General Public
+ * License, Version 2 (the "License"); you may not use this file
+ * except in compliance with the License. A copy of the License is
+ * available at http://www.opensource.org/licenses/gpl-license.php.
+ *
+ * Sun designates this particular file as subject to the "Classpath"
+ * exception as provided by Sun in the License file that accompanied
+ * this code.
  */
-
 package imi.tests;
 
 import com.jme.math.Vector2f;
 import com.jme.math.Vector3f;
 import imi.character.ninja.NinjaAvatar;
+import imi.character.ninja.NinjaAvatarAttributes;
 import imi.scene.PMatrix;
 import imi.scene.camera.state.FirstPersonCamState;
 import imi.scene.processors.JSceneEventProcessor;
@@ -57,7 +70,7 @@ public class TenAvatarParty extends DemoBase
     @Override
     protected void createDemoEntities(WorldManager wm)
     {
-        CircleUtil circle = new CircleUtil(numberOfAvatars, 13);
+        CircleUtil circle = new CircleUtil(numberOfAvatars, 6);
         Vector2f[] displacements = circle.calculatePoints();
 
         // Create ninja input scheme
@@ -69,8 +82,8 @@ public class TenAvatarParty extends DemoBase
         for (int i = 0; i < numberOfAvatars; ++i)
         {
             try {
-                testCharacter = new NinjaAvatar(new URL(configFiles[i]), wm);
-            } catch (MalformedURLException ex) {
+                testCharacter = new NinjaAvatar(new NinjaAvatarAttributes("Name", true, true), wm);//new NinjaAvatar(new URL(configFiles[i]), wm);
+            } catch (Exception ex) {
                 Logger.getLogger(SavingAndLoadingTest.class.getName()).log(Level.SEVERE, null, ex);
             }
             if (testCharacter != null)

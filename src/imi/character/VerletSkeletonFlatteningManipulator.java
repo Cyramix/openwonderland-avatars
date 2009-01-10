@@ -76,7 +76,7 @@ public class VerletSkeletonFlatteningManipulator implements SkeletonFlatteningMa
     }
     
     public void processSkeletonNode(PNode current) 
-    {   
+    {
         if (!(current instanceof SkinnedMeshJoint))
             return;
         

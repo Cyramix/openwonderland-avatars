@@ -731,13 +731,13 @@ public class SceneEssentials {
             if (isWindowsOS())
                 szURL = new String("file:\\" + path.getPath());
             else
-                szURL = new String("file://" + path.getPath());
+                szURL = new String("file://localhost/" + path.getPath());
 
             URL modelURL = null;
 
             try {
                 modelURL = new URL(szURL);
-                avatar.installHead(modelURL);
+//                avatar.installHead(modelURL);
 
                 return true;
             } catch (MalformedURLException ex) {
