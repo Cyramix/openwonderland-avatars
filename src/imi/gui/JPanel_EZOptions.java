@@ -699,7 +699,7 @@ public class JPanel_EZOptions extends javax.swing.JPanel {
         CharacterAttributes attribs                             = new CharacterAttributes("AvatarAttributes");
         ArrayList<CharacterAttributes.SkinnedMeshParams> add    = new ArrayList<CharacterAttributes.SkinnedMeshParams>();
         ArrayList<String> delete                                = new ArrayList<String>();
-        ArrayList<String[]> load                                  = new ArrayList<String[]>();
+        ArrayList<String> load                                  = new ArrayList<String>();
         ArrayList<AttachmentParams> attach                      = new ArrayList<AttachmentParams>();
 
         for (int i = 0; i < 9; i ++) {
@@ -714,8 +714,7 @@ public class JPanel_EZOptions extends javax.swing.JPanel {
             if (i < 5) {
                 for (int j = 0; j < m_presets.get(selection).get(i).length; j ++) {
                     if (j == 0) {
-                        String[] szload = new String[] { m_presets.get(selection).get(i)[j], m_sceneData.m_regions[i] };
-                        load.add(szload);
+                        load.add(m_presets.get(selection).get(i)[j]);
                     } else {
                         CharacterAttributes.SkinnedMeshParams param = attribs.createSkinnedMeshParams(m_presets.get(selection).get(i)[j], m_sceneData.m_regions[i]);
                         add.add(param);
@@ -725,8 +724,7 @@ public class JPanel_EZOptions extends javax.swing.JPanel {
             } else if (i < 9){
                 for (int j = 0; j < m_presets.get(selection).get(i).length; j ++) {
                     if (j == 0) {
-                        String[] szload = new String[] { m_presets.get(selection).get(i)[j], m_sceneData.m_regions[i] };
-                        load.add(szload);
+                        load.add(m_presets.get(selection).get(i)[j]);
                     }
                     else {
                         PMatrix tempSolution;
@@ -746,23 +744,20 @@ public class JPanel_EZOptions extends javax.swing.JPanel {
         m_sceneData.setMeshSetup(m_meshes);
 
         attribs.setBaseURL("");
-        attribs.setBindPoseFile(m_presetLists.get(selection)[2]);
+        // NOLONGERRELVANT---> attribs.setBindPoseFile(m_presetLists.get(selection)[2]);
         attribs.setAnimations(new String[] {m_presetLists.get(selection)[3]} );
-        attribs.setDeleteInstructions(delete.toArray(new String[delete.size()]));
-        String[][] att = new String[load.size()][2];
-        for(int i = 0; i < load.size(); i++)
-            for(int j = 0; j < 2; j++) {
-                att[i][j] = load.get(i)[j];
-            }
-        attribs.setLoadInstructions(att);
+        // NOLONGERRELVANT---> attribs.setDeleteInstructions(delete.toArray(new String[delete.size()]));
+  
+        attribs.setLoadInstructions(load);
         attribs.setAddInstructions(add.toArray(new CharacterAttributes.SkinnedMeshParams[add.size()]));
         attribs.setAttachmentsInstructions(attach.toArray(new AttachmentParams[attach.size()]));
         attribs.setGender(m_gender);
         attribs.setGeomRef(m_meshes);
-        if (m_gender == 1)
-            attribs.setDefaultMaleMesh();
-        else
-            attribs.setDefaultFemaleMesh();
+        // NOLONGERRELVANT--->
+//        if (m_gender == 1)
+//            attribs.setDefaultMaleMesh();
+//        else
+//            attribs.setDefaultFemaleMesh();
 
         if (m_sceneData.getAvatar() != null) {
             m_sceneData.getWM().removeEntity(m_sceneData.getAvatar());

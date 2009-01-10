@@ -20,6 +20,7 @@ package imi.scene.polygonmodel.parts.skinned;
 import com.jme.math.Quaternion;
 import com.jme.math.Vector3f;
 import com.jme.scene.SharedMesh;
+import imi.gui.GUI_Enums.m_sliderControl;
 import imi.scene.PJoint;
 import imi.scene.PMatrix;
 import imi.scene.PNode;
@@ -112,6 +113,10 @@ public class SkeletonNode extends PNode implements Animated, Serializable
     public AnimationComponent getAnimationComponent()
     {
         return m_animationComponent;
+    }
+
+    public Iterable<AnimationState> getAnimationStates() {
+        return m_animationStates;
     }
 
     /**
@@ -523,22 +528,26 @@ public class SkeletonNode extends PNode implements Animated, Serializable
         }
      }
 
+    @Override
     public AnimationState getAnimationState()
     {
         return getAnimationState(0);
     }
 
+    @Override
     public PJoint getJoint(String jointName)
     {
         return findSkinnedMeshJoint(jointName);
     }
     
+    @Override
     public int addAnimationState(AnimationState newState)
     {
         m_animationStates.add(newState);
         return m_animationStates.size() - 1;
     }
 
+    @Override
     public AnimationState getAnimationState(int index)
     {
         if (index < 0 || index >= m_animationStates.size())
@@ -559,6 +568,7 @@ public class SkeletonNode extends PNode implements Animated, Serializable
      * Retrieve an animation group
      * @return AnimationGroup at index i 
      */
+    @Override
     public AnimationGroup getAnimationGroup(int index)
     {
         try {

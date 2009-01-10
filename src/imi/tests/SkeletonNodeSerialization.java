@@ -19,7 +19,7 @@ package imi.tests;
 
 import com.jme.math.Vector3f;
 import imi.character.ninja.NinjaAvatar;
-import imi.character.ninja.NinjaAvatarAttributes;
+import imi.character.ninja.NinjaFemaleAvatarAttributes;
 import imi.scene.JScene;
 import imi.scene.PMatrix;
 import imi.scene.PNode;
@@ -47,7 +47,7 @@ import org.jdesktop.wonderland.common.comms.WonderlandObjectOutputStream;
 public class SkeletonNodeSerialization extends DemoBase
 {
     private final static Logger logger = Logger.getLogger(SkeletonNodeSerialization.class.getName());
-    private final static File saveFile = new File("/work/avatars/assets/skeletons/maleSkeleton.bs");
+    private final static File saveFile = new File("/work/avatars/assets/skeletons/Female.bs");
 
     public SkeletonNodeSerialization(String[] args)
     {
@@ -66,7 +66,7 @@ public class SkeletonNodeSerialization extends DemoBase
         NinjaControlScheme control = (NinjaControlScheme)((JSceneEventProcessor)wm.getUserData(JSceneEventProcessor.class)).setDefault(new NinjaControlScheme(null));
 
         // Create avatar
-        NinjaAvatar avatar = new NinjaAvatar(new NinjaAvatarAttributes("Avatar", false, false), wm);
+        NinjaAvatar avatar = new NinjaAvatar(new NinjaFemaleAvatarAttributes("Avatar", false, false), wm);
         avatar.selectForInput();
         control.getNinjaTeam().add(avatar);
 

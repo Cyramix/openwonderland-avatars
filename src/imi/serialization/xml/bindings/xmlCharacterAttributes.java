@@ -64,10 +64,8 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name = "CharacterAttributes", propOrder = {
     "name",
     "baseURL",
-    "bindPoseFile",
     "bodyAnimations",
     "facialAnimations",
-    "deletionInstructions",
     "loadingInstructions",
     "additionInstructions",
     "attachments",
@@ -79,16 +77,12 @@ public class xmlCharacterAttributes {
     protected String name;
     @XmlElement(name = "BaseURL", required = false)
     protected String baseURL;
-    @XmlElement(name = "BindPoseFile", required = true)
-    protected String bindPoseFile;
     @XmlElement(name = "BodyAnimations")
     protected List<String> bodyAnimations;
     @XmlElement(name = "FacialAnimations")
     protected List<String> facialAnimations;
-    @XmlElement(name = "DeletionInstructions")
-    protected List<String> deletionInstructions;
     @XmlElement(name = "LoadingInstructions")
-    protected List<String[]> loadingInstructions;
+    protected List<String> loadingInstructions;
     @XmlElement(name = "AdditionInstructions")
     protected List<xmlSkinnedMeshParams> additionInstructions;
     @XmlElement(name = "Attachments")
@@ -144,29 +138,6 @@ public class xmlCharacterAttributes {
         this.baseURL = value;
     }
 
-    /**
-     * Gets the value of the bindPoseFile property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getBindPoseFile() {
-        return bindPoseFile;
-    }
-
-    /**
-     * Sets the value of the bindPoseFile property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setBindPoseFile(String value) {
-        this.bindPoseFile = value;
-    }
 
     /**
      * Gets the value of the bodyAnimations property.
@@ -279,61 +250,7 @@ public class xmlCharacterAttributes {
             facialAnimations = null;
         }
     }
-    /**
-     * Gets the value of the deletionInstructions property.
-     * 
-     * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the deletionInstructions property.
-     * 
-     * <p>
-     * For example, to add a new item, do as follows:
-     * <pre>
-     *    getDeletionInstructions().add(newItem);
-     * </pre>
-     * 
-     * 
-     * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link String }
-     * 
-     * 
-     */
-    public List<String> getDeletionInstructions() {
-        if (deletionInstructions == null) {
-            deletionInstructions = new ArrayList<String>();
-        }
-        return this.deletionInstructions;
-    }
 
-    public int getDeletionInstructionCount()
-    {
-        if (deletionInstructions == null)
-            return 0;
-        else return deletionInstructions.size();
-    }
-
-    public void setDeletionInstructions(List<String> instructionList) {
-        deletionInstructions = instructionList;
-    }
-
-    public void addDeletionInstruction(String instructionString)
-    {
-        if (deletionInstructions == null)
-            deletionInstructions = new ArrayList<String>();
-        deletionInstructions.add(instructionString);
-    }
-
-    public void clearDeletionInstructionList()
-    {
-        if (deletionInstructions != null)
-        {
-            deletionInstructions.clear();
-            deletionInstructions = null;
-        }
-    }
     /**
      * Gets the value of the loadingInstructions property.
      * 
@@ -356,9 +273,9 @@ public class xmlCharacterAttributes {
      * 
      * 
      */
-    public List<String[]> getLoadingInstructions() {
+    public List<String> getLoadingInstructions() {
         if (loadingInstructions == null) {
-            loadingInstructions = new ArrayList<String[]>();
+            loadingInstructions = new ArrayList<String>();
         }
         return this.loadingInstructions;
     }
@@ -370,14 +287,14 @@ public class xmlCharacterAttributes {
         else return loadingInstructions.size();
     }
 
-    public void setLoadingInstructions(List<String[]> instructionList) {
+    public void setLoadingInstructions(List<String> instructionList) {
         loadingInstructions = instructionList;
     }
 
-    public void addLoadingInstruction(String[] instructionString)
+    public void addLoadingInstruction(String instructionString)
     {
         if (loadingInstructions == null)
-            loadingInstructions = new ArrayList<String[]>();
+            loadingInstructions = new ArrayList<String>();
         loadingInstructions.add(instructionString);
     }
 

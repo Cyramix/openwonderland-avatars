@@ -18,7 +18,6 @@
 package imi.gui;
 
 import com.jme.math.Vector3f;
-import imi.character.AttachmentParams;
 import imi.loaders.collada.ColladaLoaderParams;
 import imi.loaders.Instruction;
 import imi.loaders.Instruction.InstructionType;
@@ -38,7 +37,6 @@ import imi.scene.animation.AnimationComponent.PlaybackMode;
 import imi.scene.animation.AnimationState;
 import imi.scene.animation.TransitionCommand;
 import imi.scene.animation.TransitionQueue;
-import imi.scene.camera.behaviors.FirstPersonCamModel;
 import imi.scene.camera.behaviors.TumbleObjectCamModel;
 import imi.scene.camera.state.FirstPersonCamState;
 import imi.scene.camera.state.TumbleObjectCamState;
@@ -58,14 +56,11 @@ import java.awt.Component;
 import java.awt.Frame;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -73,6 +68,7 @@ import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 import java.util.logging.Level;
@@ -666,24 +662,20 @@ public class SceneEssentials {
                 // Create avatar attribs
                 CharacterAttributes attribs                             = new CharacterAttributes("AvatarAttributes");
                 ArrayList<CharacterAttributes.SkinnedMeshParams> add    = new ArrayList<CharacterAttributes.SkinnedMeshParams>();
-                String[] delete = null;
 
-                String[][] szload = new String[1][2];
-                szload[0][0] = modelURL.toString();
-                szload[0][1] = m_regions[iSubGroup];
+                List<String> load = new ArrayList<String>();
+                load.add(modelURL.toString());
 
                 for (int i = 0; i < meshes.length; i++) {
                     CharacterAttributes.SkinnedMeshParams param = attribs.createSkinnedMeshParams(meshes[i], m_regions[iSubGroup]);
                     add.add(param);
                 }
 
-                delete = avatar.getSkeleton().getMeshNamesBySubGroup(subGroup);
-
                 attribs.setBaseURL("");
-                attribs.setBindPoseFile(null);
+                // NOLONGERRELVANT---> attribs.setBindPoseFile(null);
                 attribs.setAnimations(null);
-                attribs.setDeleteInstructions(delete);
-                attribs.setLoadInstructions(szload);
+                // NOLONGERRELVANT---> attribs.setDeleteInstructions(delete);
+                attribs.setLoadInstructions(load);
                 attribs.setAddInstructions(add.toArray(new CharacterAttributes.SkinnedMeshParams[add.size()]));
                 attribs.setAttachmentsInstructions(null);
                 avatar.loadAttributes(attribs);
@@ -795,19 +787,20 @@ public class SceneEssentials {
 
         attribs = new CharacterAttributes("Avatar");
         attribs.setBaseURL("");
-        attribs.setBindPoseFile(bindPose.toString());
+        // NOLONGERRELVANT---> attribs.setBindPoseFile(bindPose.toString());
         attribs.setAnimations(anim);
-        attribs.setDeleteInstructions(null);
+        // NOLONGERRELVANT---> attribs.setDeleteInstructions(null);
         attribs.setLoadInstructions(null);
         attribs.setAddInstructions(null);
         attribs.setAttachmentsInstructions(null);
         attribs.setGender(gender);
         attribs.setGeomRef(meshsetup);
 
-        if (gender == 1)
-            attribs.setDefaultMaleMesh();
-        else
-            attribs.setDefaultFemaleMesh();
+        // NOLONGERRELVANT--->
+//        if (gender == 1)
+//            attribs.setDefaultMaleMesh();
+//        else
+//            attribs.setDefaultFemaleMesh();
 
         if (avatar != null) {
             worldManager.removeEntity(avatar);

@@ -84,7 +84,8 @@ public class CharacterEyes
         
         PPolygonSkinnedMeshInstance leftEyeMeshInst  = (PPolygonSkinnedMeshInstance) skeleton.findChild("leftEyeGeoShape");
         PPolygonSkinnedMeshInstance rightEyeMeshInst = (PPolygonSkinnedMeshInstance) skeleton.findChild("rightEyeGeoShape");
-        
+        if (leftEyeMeshInst == null || rightEyeMeshInst == null)
+            System.out.println("Meshes not loaded! FORM THE FRIGGIN EYEBALL!");
         leftEyeBall = new EyeBall(leftEyeMeshInst, character);
         leftEyeMeshInst.getParent().replaceChild(leftEyeMeshInst, leftEyeBall, true);
         rightEyeBall = new EyeBall(rightEyeMeshInst, character);

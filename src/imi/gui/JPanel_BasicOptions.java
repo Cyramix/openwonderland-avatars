@@ -21,7 +21,6 @@ package imi.gui;
 ////////////////////////////////////////////////////////////////////////////////
 import com.jme.math.Vector3f;
 import imi.character.AttachmentParams;
-import imi.character.Character;
 import imi.character.CharacterAttributes;
 import imi.character.ninja.NinjaAvatar;
 import imi.scene.PMatrix;
@@ -33,6 +32,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -804,18 +804,18 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
 
         m_Attributes = new CharacterAttributes("Avatar");
         m_Attributes.setBaseURL("");
-        m_Attributes.setBindPoseFile(data.get(0)[3]);
+        // NOLONGERRELVANT---> m_Attributes.setBindPoseFile(data.get(0)[3]);
         m_Attributes.setAnimations(anim.get(0));
-        m_Attributes.setDeleteInstructions(null);
+        // NOLONGERRELVANT---> m_Attributes.setDeleteInstructions(null);
         m_Attributes.setLoadInstructions(null);
         m_Attributes.setAddInstructions(null);
         m_Attributes.setAttachmentsInstructions(null);
         m_Attributes.setGender(m_gender);
         m_Attributes.setGeomRef(m_meshes);
-        if (m_gender == 1)
-            m_Attributes.setDefaultMaleMesh();
-        else
-            m_Attributes.setDefaultFemaleMesh();
+        // NOLONGERRELVANT---> if (m_gender == 1)
+//            m_Attributes.setDefaultMaleMesh();
+//        else
+//            m_Attributes.setDefaultFemaleMesh();
 
         if (m_sceneData.getAvatar() != null) {
             m_sceneData.getWM().removeEntity(m_sceneData.getAvatar());
@@ -1108,9 +1108,8 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
         ArrayList<String> delete                                = new ArrayList<String>();
         ArrayList<AttachmentParams> attach                      = new ArrayList<AttachmentParams>();
 
-        String[][] szload = new String[1][2];
-        szload[0][0] = data.get(0)[3];
-        szload[0][1] = m_sceneData.m_regions[region];
+        List<String> load = new ArrayList<String>();
+        load.add(data.get(0)[3]);
 
         if (region < 5) {
             if (m_meshes.get(region) != null) {
@@ -1141,17 +1140,18 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
             m_newAttribs = new CharacterAttributes(m_Attributes.getName());
 
         m_newAttribs.setBaseURL("");
-        if (bindpose == null)
-            m_newAttribs.setBindPoseFile(null);
-        else
-            m_newAttribs.setBindPoseFile(bindpose);
+        // NOLONGERRELVANT--->
+//        if (bindpose == null)
+//            m_newAttribs.setBindPoseFile(null);
+//        else
+//            m_newAttribs.setBindPoseFile(bindpose);
         if (anim == null)
             m_newAttribs.setAnimations(null);
         else
             m_newAttribs.setAnimations(anim);
         m_Attributes.setGeomRefByRegion(region, meshes);
-        m_newAttribs.setDeleteInstructions(delete.toArray(new String[delete.size()]));
-        m_newAttribs.setLoadInstructions(szload);
+        // NOLONGERRELVANT---> m_newAttribs.setDeleteInstructions(delete.toArray(new String[delete.size()]));
+        m_newAttribs.setLoadInstructions(load);
         m_newAttribs.setAddInstructions(add.toArray(new CharacterAttributes.SkinnedMeshParams[add.size()]));
         m_newAttribs.setAttachmentsInstructions(attach.toArray(new AttachmentParams[attach.size()]));
     }
