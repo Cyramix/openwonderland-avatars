@@ -227,7 +227,7 @@ public class DemoBase
         
         // Wireframe State
         WireframeState ws = (WireframeState) wm.getRenderManager().createRendererState(RenderState.RS_WIREFRAME);
-        ws.setEnabled(true);
+        ws.setEnabled(false);
         
         // Push 'em down the pipe
         jscene.setRenderState(matState);
