@@ -217,7 +217,6 @@ public class PNodePropertyPanel extends javax.swing.JPanel
         setMaximumSize(new java.awt.Dimension(2000, 2000));
         setMinimumSize(new java.awt.Dimension(300, 300));
         setPreferredSize(new java.awt.Dimension(321, 300));
-        setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         JPanel_BaseNodeProperties.setMinimumSize(new java.awt.Dimension(321, 150));
         JPanel_BaseNodeProperties.setPreferredSize(new java.awt.Dimension(321, 150));
@@ -376,8 +375,6 @@ public class PNodePropertyPanel extends javax.swing.JPanel
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         JPanel_BaseNodeProperties.add(jToolBar7, gridBagConstraints);
 
-        add(JPanel_BaseNodeProperties, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, -1));
-
         JPanel_SpecificControls.setMinimumSize(new java.awt.Dimension(321, 150));
         JPanel_SpecificControls.setPreferredSize(new java.awt.Dimension(670, 365));
 
@@ -392,7 +389,19 @@ public class PNodePropertyPanel extends javax.swing.JPanel
             .add(0, 365, Short.MAX_VALUE)
         );
 
-        add(JPanel_SpecificControls, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 150, -1, -1));
+        org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
+        this.setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(JPanel_BaseNodeProperties, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+            .add(JPanel_SpecificControls, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(layout.createSequentialGroup()
+                .add(JPanel_BaseNodeProperties, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .add(JPanel_SpecificControls, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+        );
     }// </editor-fold>//GEN-END:initComponents
 
 private void JTextField_NodeNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JTextField_NodeNameActionPerformed
