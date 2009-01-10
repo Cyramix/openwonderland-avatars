@@ -163,11 +163,11 @@ public class DemoBase
         // The collection of processors for this entity
         ArrayList<ProcessorComponent> processors = new ArrayList<ProcessorComponent>();
         
-        // Initialize the scene
-        simpleSceneInit(pscene, wm, processors);
-        
         // The glue between JME and pscene
         JScene jscene = new JScene(pscene);
+        
+        // Initialize the scene
+        simpleSceneInit(pscene, wm, processors);
         
         // Set this jscene to be the "selected" one for IMI input handling
         ((JSceneEventProcessor)wm.getUserData(JSceneEventProcessor.class)).setJScene(jscene); 
