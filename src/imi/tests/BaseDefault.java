@@ -1003,7 +1003,6 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
         m_EZOptions = new JPanel_EZOptions();
         m_EZOptions.setSceneData(m_sceneData);
         m_EZOptions.setParentFrame(this);
-        m_EZOptions.setMeshList();
         m_sceneData.setCurCamProcessor(m_cameraProcessor);
 
         java.awt.GridBagConstraints gridBagConstraints = new java.awt.GridBagConstraints();
@@ -1277,7 +1276,7 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
         jMenuItem_Clothes.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 runProgressBar(true);
-                m_sceneData.loadSMeshDAEFile(false, true, m_base);
+                m_sceneData.loadSMeshDAEFile(true, m_base);
                 resetOpenTools();
                 runProgressBar(false);
             }
@@ -1288,7 +1287,7 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
         jMenuItem_Accessories.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 runProgressBar(true);
-                m_sceneData.loadMeshDAEFile(true, false, m_base);
+                m_sceneData.loadMeshDAEFile(true, m_base);
                 resetOpenTools();
                 runProgressBar(false);
             }

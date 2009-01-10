@@ -358,18 +358,22 @@ public class JPanel_ServerBrowser extends javax.swing.JPanel {
         {
             case 0:         // LOAD AVATAR
             {
-                m_sceneData.loadAvatarDAEURL(isReplace(), false, this, m_modelInfo, m_animInfo, m_meshref, m_region);
-                m_sceneData.setMeshSetup(m_meshes);
+                int iGender = -1;
+                if (isMale())
+                    iGender = 1;
+                else
+                    iGender = 2;
+                m_sceneData.loadAvatarDAEURL(true, this, m_animInfo, iGender);
                 break;
             }
             case 1:         // LOAD CLOTHES
             {
-                m_sceneData.loadMeshDAEURL(isReplace(), false, this, m_modelInfo, m_meshref, m_region);
+                m_sceneData.loadSMeshDAEURL(true, this, m_modelInfo, m_meshref);
                 break;
             }
             case 2:         // LOAD ACCESSORIES
             {
-                m_sceneData.loadMeshDAEURL(isReplace(), false, this, m_modelInfo, m_meshref, m_region);
+                m_sceneData.loadMeshDAEURL(true, this, m_modelInfo);
                 break;
             }
             case 3:         // LOAD TEXTURES

@@ -252,7 +252,7 @@ public class TreePopUpMenu extends MouseAdapter implements ActionListener {
                 if (fileModel.getName().endsWith(".ms3d")) {
                     sceneData.loadMS3DFile(0, false, menu);
                 } else {
-                    sceneData.loadMeshDAEFile(false, false, menu);
+                    sceneData.loadMeshDAEFile(true, menu);
                 }
                 addToNode();
             }

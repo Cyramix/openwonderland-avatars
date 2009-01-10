@@ -337,7 +337,7 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
 
         if (isViewMode) {
             String[] anim = null;
-            m_sceneData.loadAvatarDAEURL(true, true, this, data.get(0), anim, meshes, 0);
+            m_sceneData.loadAvatarHeadDAEURL(true, this, data.get(0), anim);
         }
         else {
             addToAttributes(null, data, meshes, null, 0);
@@ -390,7 +390,7 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
 
         if (isViewMode) {
             String[] anim = null;
-            m_sceneData.loadAvatarDAEURL(true, true, this, data.get(0), anim, meshes, 0);
+            m_sceneData.loadAvatarHeadDAEURL(true, this, data.get(0), anim);
         }
         else {
             addToAttributes(null, data, meshes, null, 0);
@@ -436,10 +436,14 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
         }
 
         if (isViewMode)
-            m_sceneData.loadMeshDAEURL(true, true, this, data.get(0), meshes, 2);
+            m_sceneData.loadSMeshDAEURL(true, this, data.get(0), meshes);
         else {
-            addToAttributes(null, data, meshes, null, 2);
-            m_sceneData.getAvatar().loadAttributes(m_newAttribs);
+            try {
+                URL upperbody = new URL(data.get(0)[3]);
+                m_sceneData.addSMeshDAEURLToModel(upperbody, "UpperBody");
+            } catch (MalformedURLException ex) {
+                Logger.getLogger(SceneEssentials.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
 
         jButton_ApplyBody.setEnabled(true);
@@ -480,10 +484,14 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
         }
 
         if (isViewMode)
-            m_sceneData.loadMeshDAEURL(true, true, this, data.get(0), meshes, 3);
+            m_sceneData.loadSMeshDAEURL(true, this, data.get(0), meshes);
         else {
-            addToAttributes(null, data, meshes, null, 3);
-            m_sceneData.getAvatar().loadAttributes(m_newAttribs);
+            try {
+                URL lowerbody = new URL(data.get(0)[3]);
+                m_sceneData.addSMeshDAEURLToModel(lowerbody, "LowerBody");
+            } catch (MalformedURLException ex) {
+                Logger.getLogger(SceneEssentials.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
 
         jButton_ApplyLegs.setEnabled(true);
@@ -524,10 +532,14 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
         }
 
         if (isViewMode)
-            m_sceneData.loadMeshDAEURL(true, true, this, data.get(0), meshes, 4);
+            m_sceneData.loadSMeshDAEURL(true, this, data.get(0), meshes);
         else {
-            addToAttributes(null, data, meshes, null, 4);
-            m_sceneData.getAvatar().loadAttributes(m_newAttribs);
+            try {
+                URL shoes = new URL(data.get(0)[3]);
+                m_sceneData.addSMeshDAEURLToModel(shoes, "Feet");
+            } catch (MalformedURLException ex) {
+                Logger.getLogger(SceneEssentials.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
 
         jButton_ApplyShoes.setEnabled(true);
@@ -568,11 +580,10 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
         }
 
         if (isViewMode)
-            m_sceneData.loadMeshDAEURL(true, true, this, data.get(0), meshes, 5);
+            m_sceneData.loadMeshDAEURL(true, this, data.get(0));
         else {
             String[] hair = new String[] {data.get(0)[0]};
-            addToAttributes(null, data, hair, null, 5);
-            m_sceneData.getAvatar().loadAttributes(m_newAttribs);
+            m_sceneData.addMeshDAEURLToModel(hair, "Head", 5);
         }
 
         jButton_ApplyHair.setEnabled(true);
@@ -613,11 +624,10 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
         }
 
         if (isViewmode)
-            m_sceneData.loadMeshDAEURL(true, true, this, data.get(0), meshes, 6);
+            m_sceneData.loadMeshDAEURL(true, this, data.get(0));
         else {
             String[] facialHair = new String[] {data.get(0)[0]};
-            addToAttributes(null, data, facialHair, null, 6);
-            m_sceneData.getAvatar().loadAttributes(m_newAttribs);
+            m_sceneData.addMeshDAEURLToModel(facialHair, "Head", 6);
         }
 
         jButton_ApplyFacialHair.setEnabled(true);
@@ -658,11 +668,10 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
         }
 
         if (isViewMode)
-            m_sceneData.loadMeshDAEURL(true, true, this, data.get(0), meshes, 7);
+            m_sceneData.loadMeshDAEURL(true, this, data.get(0));
         else {
             String [] acces = new String[] {data.get(0)[0]};
-            addToAttributes(null, data, acces, null, 7);
-            m_sceneData.getAvatar().loadAttributes(m_newAttribs);
+            m_sceneData.addMeshDAEURLToModel(acces, "Head", 7);
         }
 
         jButton_ApplyHat.setEnabled(true);
@@ -703,10 +712,9 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
         }
 
         if (isViewMode)
-            m_sceneData.loadMeshDAEURL(true, true, this, data.get(0), meshes, 8);
+            m_sceneData.loadMeshDAEURL(true, this, data.get(0));
         else {
-            addToAttributes(null, data, meshes, null, 8);
-            m_sceneData.getAvatar().loadAttributes(m_newAttribs);
+            m_sceneData.addMeshDAEURLToModel(data.get(0), "Head", 8);
         }
 
         jButton_ApplySpecs.setEnabled(true);
@@ -763,59 +771,25 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
             ((BaseDefault)m_Parent).loadingWindow(true);
 
         String query = new String();
-        ArrayList<String[]> data, anim, meshref;
+        ArrayList<String[]> anim;
 
         if (m_gender == 1) {
-            query = "SELECT name, description, bodytype, url, id FROM DefaultAvatars WHERE id = 1";
-            data = m_sceneData.loadSQLData(query);
-
             query = "SELECT url FROM Animations WHERE avatarid = 1 and name like '%Idle%'";
             anim = m_sceneData.loadSQLData(query);
-
-            query = "SELECT name, grouping FROM GeometryReferences WHERE tableref = 'Male'";
-            meshref = m_sceneData.loadSQLData(query);
         }
         else {
-            query = "SELECT name, description, bodytype, url, id FROM DefaultAvatars WHERE id = 2";
-            data = m_sceneData.loadSQLData(query);
-
             query = "SELECT url FROM Animations WHERE avatarid = 2 and name like '%Idle%'";
             anim = m_sceneData.loadSQLData(query);
-
-            query = "SELECT name, grouping FROM GeometryReferences WHERE tableref = 'Female'";
-            meshref = m_sceneData.loadSQLData(query);
         }
-
-        if (m_meshes != null)
-            m_meshes.clear();
-        m_meshes = new HashMap<Integer, String[]>();
-
-        createMeshSwapList("0", meshref);
-        createMeshSwapList("1", meshref);
-        createMeshSwapList("2", meshref);
-        createMeshSwapList("3", meshref);
-        createMeshSwapList("4", meshref);
-        createMeshSwapList("5", meshref);
-        createMeshSwapList("6", meshref);
-        createMeshSwapList("7", meshref);
-        createMeshSwapList("8", meshref);
-
-        m_sceneData.setMeshSetup(m_meshes);
 
         m_Attributes = new CharacterAttributes("Avatar");
         m_Attributes.setBaseURL("");
-        // NOLONGERRELVANT---> m_Attributes.setBindPoseFile(data.get(0)[3]);
         m_Attributes.setAnimations(anim.get(0));
-        // NOLONGERRELVANT---> m_Attributes.setDeleteInstructions(null);
         m_Attributes.setLoadInstructions(null);
         m_Attributes.setAddInstructions(null);
         m_Attributes.setAttachmentsInstructions(null);
         m_Attributes.setGender(m_gender);
         m_Attributes.setGeomRef(m_meshes);
-        // NOLONGERRELVANT---> if (m_gender == 1)
-//            m_Attributes.setDefaultMaleMesh();
-//        else
-//            m_Attributes.setDefaultFemaleMesh();
 
         if (m_sceneData.getAvatar() != null) {
             m_sceneData.getWM().removeEntity(m_sceneData.getAvatar());
@@ -823,7 +797,7 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
         }
 
         m_sceneData.setAvatar(new NinjaAvatar(m_Attributes, m_sceneData.getWM()));
-        while(!m_sceneData.getAvatar().isInitialized()) {
+        while(!m_sceneData.getAvatar().isInitialized() || m_sceneData.getAvatar().getModelInst() == null) {
             
         }
         m_sceneData.getAvatar().selectForInput();
@@ -842,142 +816,6 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
         }
     }
 
-    public void loadMaleAvatar(File path) {
-        if (!jButton_Male.isEnabled())
-            return;
-
-        jButton_Male.setEnabled(false);
-        jButton_Female.setEnabled(false);
-        String query = new String();
-        ArrayList<String[]> data, anim, meshref;
-        String[] nada = null;
-
-        query = "SELECT name, grouping FROM GeometryReferences WHERE tableref = 'Male'";
-        meshref = m_sceneData.loadSQLData(query);
-
-        if (m_meshes != null)
-            m_meshes.clear();
-        m_meshes = new HashMap<Integer, String[]>();
-
-        createMeshSwapList("0", meshref);
-        createMeshSwapList("1", meshref);
-        createMeshSwapList("2", meshref);
-        createMeshSwapList("3", meshref);
-        createMeshSwapList("4", meshref);
-        createMeshSwapList("5", meshref);
-        createMeshSwapList("6", meshref);
-        createMeshSwapList("7", meshref);
-        createMeshSwapList("8", meshref);
-
-        m_sceneData.setMeshSetup(m_meshes);
-
-        // NOTE: the last 2 params not important since we are adding in a new avatar
-        m_sceneData.loadUnZippedAvatar(true, true, this, path, nada, 0);
-
-//        if (m_gender == 1) {
-//            m_meshes = m_sceneData.getMeshSetup();
-//            String geom = null;
-//            String query2 = null;
-//            String[] meshies = new String[3];
-//            ArrayList<String[]> data2;
-//
-//            for (int i = 0; i < 3; i++) {
-//                geom = m_meshes.get(i+2)[0];
-//                query = "SELECT referenceid FROM GeometryReferences WHERE tableref = 'Meshes' and name = '" + geom + "'";
-//                data2 = m_sceneData.loadSQLData(query);
-//                query = "SELECT description FROM Meshes WHERE id = " + data2.get(0)[0];
-//                data2.clear();
-//                data2 = m_sceneData.loadSQLData(query);
-//                meshies[i] = data2.get(0)[0];
-//            }
-//
-//            jLabel_CurrUpperBody.setText(meshies[0]);
-//            jLabel_CurrLowerBody.setText(meshies[1]);
-//            jLabel_CurrShoes.setText(meshies[2]);
-//        }
-
-        jButton_Male.setEnabled(true);
-        jButton_Female.setEnabled(true);
-    }
-
-    public void loadFemaleAvatar(File path) {
-        if (!jButton_Male.isEnabled())
-            return;
-
-        jButton_Male.setEnabled(false);
-        jButton_Female.setEnabled(false);
-        String query = new String();
-        ArrayList<String[]> data, anim, meshref;
-        String[] nada = null;
-
-        query = "SELECT name, grouping FROM GeometryReferences WHERE tableref = 'Female'";
-        meshref = m_sceneData.loadSQLData(query);
-
-        if (m_meshes != null)
-            m_meshes.clear();
-        m_meshes = new HashMap<Integer, String[]>();
-
-        createMeshSwapList("0", meshref);
-        createMeshSwapList("1", meshref);
-        createMeshSwapList("2", meshref);
-        createMeshSwapList("3", meshref);
-        createMeshSwapList("4", meshref);
-        createMeshSwapList("5", meshref);
-        createMeshSwapList("6", meshref);
-        createMeshSwapList("7", meshref);
-        createMeshSwapList("8", meshref);
-
-        m_sceneData.setMeshSetup(m_meshes);
-
-        // NOTE: the last 2 params not important since we are adding in a new avatar
-        m_sceneData.loadUnZippedAvatar(true, true, this, path, nada, 0);
-
-        jButton_Male.setEnabled(true);
-        jButton_Female.setEnabled(true);
-    }
-
-    public void createMeshSwapList(String region, ArrayList<String[]> meshes) {
-        String[] geometry = null;
-        int iRegion = 0;
-
-        ArrayList<String> temp = new ArrayList<String>();
-
-        for (int i = 0; i < meshes.size(); i++) {
-            if (meshes.get(i)[1].equals(region)) {
-                temp.add(meshes.get(i)[0].toString());
-            }
-        }
-
-        if (temp.size() == 0)
-            return;
-
-        geometry = new String[temp.size()];
-        for (int i = 0; i < temp.size(); i++) {
-            geometry[i] = temp.get(i);
-        }
-
-        if (region.equals("0"))
-            iRegion = 0;          // Head
-        else if (region.equals("1"))
-            iRegion = 1;          // Hands
-        else if (region.equals("2"))
-            iRegion = 2;          // Torso
-        else if (region.equals("3"))
-            iRegion = 3;          // Legs
-        else if (region.equals("4"))
-            iRegion = 4;          // Feet
-        else if (region.equals("5"))
-            iRegion = 5;          // Hair
-        else if (region.equals("6"))
-            iRegion = 6;          // Facial Hair
-        else if (region.equals("7"))
-            iRegion = 7;          // Hats
-        else if (region.equals("8"))
-            iRegion = 8;          // Glasses
-
-        m_meshes.put(iRegion, geometry);
-    }
-
     public void maleAvatarMode() {
         setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         m_gender = 1;
@@ -989,41 +827,6 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
         jTabbedPane_Options.setSelectedIndex(0);
         InitListBoxes(m_isViewMode);
         m_sceneData.setDefaultLoad(true);
-        
-        ////////////////////////////////////////////////////////////////////////
-        // ZIP Stream TEST
-        ////////////////////////////////////////////////////////////////////////
-//        String query = "SELECT url FROM DefaultAvatars WHERE id = 5";
-//        ArrayList<String[]> data = m_sceneData.loadSQLData(query);
-//
-//        String destination = System.getProperty("user.dir");
-//        if (isWindowsOS())
-//            destination += "\\temp\\";
-//        else
-//            destination += "/temp/";
-//        File dest = new File(destination);
-//        int index;
-//
-//        if (isWindowsOS())
-//            index = data.get(0)[0].lastIndexOf('\\');
-//        else
-//            index = data.get(0)[0].lastIndexOf('/');
-//
-//        int indez = data.get(0)[0].lastIndexOf(".");
-//        String name = data.get(0)[0].substring(index+1);
-//        String fold = data.get(0)[0].substring(index+1, indez);
-//        if (isWindowsOS())
-//            fold += '\\';
-//        else
-//            fold += '/';
-//        dest = new File(dest, name);
-//        m_sceneData.downloadZipStream(data.get(0)[0], dest);
-//        dest = new File(dest.getParent(), fold);
-//        loadMaleAvatar(dest);
-//        dest.getParentFile().deleteOnExit();
-        ////////////////////////////////////////////////////////////////////////
-        // ZIP Stream TEST
-        ////////////////////////////////////////////////////////////////////////
 
         loadDefaultAvatar();
 
@@ -1044,39 +847,6 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
         jTabbedPane_Options.setSelectedIndex(0);
         InitListBoxes(m_isViewMode);
         m_sceneData.setDefaultLoad(false);
-        ////////////////////////////////////////////////////////////////////////
-        // ZIP Stream TEST
-        ////////////////////////////////////////////////////////////////////////
-//        String query = "SELECT url FROM DefaultAvatars WHERE id = 6";
-//        ArrayList<String[]> data = m_sceneData.loadSQLData(query);
-//
-//        String destination = System.getProperty("user.dir");
-//        if (isWindowsOS())
-//            destination += "\\temp\\";
-//        else
-//            destination += "/temp/";
-//        File dest = new File(destination);
-//        int index;
-//
-//        if (isWindowsOS())
-//            index = data.get(0)[0].lastIndexOf('\\');
-//        else
-//            index = data.get(0)[0].lastIndexOf('/');
-//        int indez = data.get(0)[0].lastIndexOf(".");
-//        String name = data.get(0)[0].substring(index+1);
-//        String fold = data.get(0)[0].substring(index+1, indez);
-//        if (isWindowsOS())
-//            fold += '\\';
-//        else
-//            fold += '/';
-//        dest = new File(dest, name);
-//        m_sceneData.downloadZipStream(data.get(0)[0], dest);
-//        dest = new File(dest.getParent(), fold);
-//        loadMaleAvatar(dest);
-//        dest.getParentFile().deleteOnExit();
-        ////////////////////////////////////////////////////////////////////////
-        // ZIP Stream TEST
-        ////////////////////////////////////////////////////////////////////////
 
         loadDefaultAvatar();
 

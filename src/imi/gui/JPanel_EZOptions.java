@@ -470,308 +470,294 @@ public class JPanel_EZOptions extends javax.swing.JPanel {
     }
 
     public void setShaderColors() {
-        m_meshes =  m_sceneData.getMeshSetup();
-        
-        if (m_meshes == null)
-            return;
-        
-        for (int i = 0; i < m_Colors.length; i ++) {
-            if (m_Colors[i] == false)
-                continue;
-
-            GLSLShaderProgram shader = null;
-            int iCheck  = 0;
-            Color c     = null;
-
-            switch(i)
-            {
-                case 0: // Hair Color
-                {
-                    if (m_meshes.get(5) == null)
-                        break;
-
-                    iCheck = 0;
-                    c = jPanel_HairColor.getBackground();
-                    float[] color = new float[3];
-                    color[0] = ((float)c.getRed()/255);
-                    color[1] = ((float)c.getGreen()/255);
-                    color[2] = ((float)c.getBlue()/255);
-
-                    for (int j = 0; j < m_meshes.get(5).length; j++) {
-                        PNode node = m_sceneData.getPScene().findChild(m_meshes.get(5)[j]);
-                        if (node != null) {
-                            PPolygonMeshInstance mesh = (PPolygonMeshInstance)node;
-                            if (iCheck == 0) {
-                                shader = createMeshShader(mesh);
-                                iCheck = 1;
-                            }
-                            setMeshColor(mesh, shader, color);
-                        }
-                    }                        
-                    break;
-                }
-                case 1: // Facial Hair Color
-                {
-                    if (m_meshes.get(6) == null)
-                        break;
-
-                    iCheck = 0;
-                    c = jPanel_FHairColor.getBackground();
-                    float[] color = new float[3];
-                    color[0] = ((float)c.getRed()/255);
-                    color[1] = ((float)c.getGreen()/255);
-                    color[2] = ((float)c.getBlue()/255);
-
-                    for (int j = 0; j < m_meshes.get(6).length; j++) {
-                        PNode node = m_sceneData.getPScene().findChild(m_meshes.get(6)[j]);
-                        if (node != null) {
-                            PPolygonMeshInstance mesh = (PPolygonMeshInstance)node;
-                            if (iCheck == 0) {
-                                shader = createMeshShader(mesh);
-                                iCheck = 1;
-                            }
-                            setMeshColor(mesh, shader, color);
-                        }
-                    }   
-                    break;
-                }
-                case 2: // Eye Color
-                {
-                    if (m_meshes.get(0) == null)
-                        break;
-
-                    iCheck = 0;
-                    c = jPanel_EyeColors.getBackground();
-                    float[] color = new float[3];
-                    color[0] = ((float)c.getRed()/255);
-                    color[1] = ((float)c.getGreen()/255);
-                    color[2] = ((float)c.getBlue()/255);
-
-                    for (int j = 0; j < m_meshes.get(0).length; j++) {
-                        if (m_meshes.get(0)[j].contains("Eye")) {
-                            PNode node = m_sceneData.getPScene().findChild(m_meshes.get(0)[j]);
-                            if (node != null) {
-                                PPolygonMeshInstance mesh = (PPolygonMeshInstance)node;
-                                if (iCheck == 0) {
-                                    shader = createMeshShader(mesh);
-                                    iCheck = 1;
-                                }
-                                setMeshColor(mesh, shader, color);
-                            }
-                        }
-                    }   
-                    break;
-                }
-                case 3: // Skin Tone
-                {
-                    iCheck = 0;
-                    c = jPanel_SkinTone.getBackground();
-                    float[] color = new float[3];
-                    color[0] = ((float)c.getRed()/255);
-                    color[1] = ((float)c.getGreen()/255);
-                    color[2] = ((float)c.getBlue()/255);
-
-                    for (int x = 0; x < 5; x++) {
-                        if (m_meshes.get(x) == null)
-                            continue;
-
-                        for (int j = 0; j < m_meshes.get(x).length; j++) {
-                            if (m_meshes.get(x)[j].contains("Head") || m_meshes.get(x)[j].contains("Nude") ||
-                                m_meshes.get(x)[j].contains("Arms") || m_meshes.get(x)[j].contains("Legs") ||
-                                m_meshes.get(x)[j].contains("Hand")) {
-                                PNode node = m_sceneData.getPScene().findChild(m_meshes.get(x)[j]);
-                                if (node != null) {
-                                    PPolygonMeshInstance mesh = (PPolygonMeshInstance)node;
-                                    if (iCheck == 0) {
-                                        shader = createMeshShader(mesh);
-                                        iCheck = 1;
-                                    }
-                                    setMeshColor(mesh, shader, color);
-                                }
-                            }
-                        }
-                    }
-                    break;
-                }
-                case 4: // Shirt Color
-                {
-                    if (m_meshes.get(2) == null)
-                        break;
-
-                    iCheck = 0;
-                    c = jPanel_ShirtColor.getBackground();
-                    float[] color = new float[3];
-                    color[0] = ((float)c.getRed()/255);
-                    color[1] = ((float)c.getGreen()/255);
-                    color[2] = ((float)c.getBlue()/255);
-
-                    for (int j = 0; j < m_meshes.get(2).length; j++) {
-                        if (m_meshes.get(2)[j].contains("Nude") || m_meshes.get(2)[j].contains("Arms"))
-                            continue;
-                        
-                        PNode node = m_sceneData.getPScene().findChild(m_meshes.get(2)[j]);
-                        if (node != null) {
-                            PPolygonMeshInstance mesh = (PPolygonMeshInstance)node;
-                            if (iCheck == 0) {
-                                shader = createMeshShader(mesh);
-                                iCheck = 1;
-                            }
-                            setMeshColor(mesh, shader, color);
-                        }
-                    }   
-                    break;
-                }
-                case 5: // Pants Color
-                {
-                    if (m_meshes.get(3) == null)
-                        break;
-
-                    iCheck = 0;
-                    c = jPanel_PantsColor.getBackground();
-                    float[] color = new float[3];
-                    color[0] = ((float)c.getRed()/255);
-                    color[1] = ((float)c.getGreen()/255);
-                    color[2] = ((float)c.getBlue()/255);
-
-                    for (int j = 0; j < m_meshes.get(3).length; j++) {
-                        if (m_meshes.get(3)[j].contains("Nude") || m_meshes.get(3)[j].contains("Legs"))
-                            continue;
-                        
-                        PNode node = m_sceneData.getPScene().findChild(m_meshes.get(3)[j]);
-                        if (node != null) {
-                            PPolygonMeshInstance mesh = (PPolygonMeshInstance)node;
-                            if (iCheck == 0) {
-                                shader = createMeshShader(mesh);
-                                iCheck = 1;
-                            }
-                            setMeshColor(mesh, shader, color);
-                        }
-                    }   
-                    break;
-                }
-                case 6: // Shoes Color
-                {
-                    if (m_meshes.get(4) == null)
-                        break;
-
-                    iCheck = 0;
-                    c = jPanel_ShoesColor.getBackground();
-                    float[] color = new float[3];
-                    color[0] = ((float)c.getRed()/255);
-                    color[1] = ((float)c.getGreen()/255);
-                    color[2] = ((float)c.getBlue()/255);
-
-                    for (int j = 0; j < m_meshes.get(4).length; j++) {
-                        if (m_meshes.get(4)[j].contains("Foot"))
-                            continue;
-                        
-                        PNode node = m_sceneData.getPScene().findChild(m_meshes.get(4)[j]);
-                        if (node != null) {
-                            PPolygonMeshInstance mesh = (PPolygonMeshInstance)node;
-                            if (iCheck == 0) {
-                                shader = createMeshShader(mesh);
-                                iCheck = 1;
-                            }
-                            setMeshColor(mesh, shader, color);
-                        }
-                    }   
-                    break;
-                }
-            }
-        }
-        for (int i = 0; i < m_Colors.length; i++)
-            m_Colors[i] = false;
+//        m_meshes =  m_sceneData.getMeshSetup();
+//
+//        if (m_meshes == null)
+//            return;
+//
+//        for (int i = 0; i < m_Colors.length; i ++) {
+//            if (m_Colors[i] == false)
+//                continue;
+//
+//            GLSLShaderProgram shader = null;
+//            int iCheck  = 0;
+//            Color c     = null;
+//
+//            switch(i)
+//            {
+//                case 0: // Hair Color
+//                {
+//                    if (m_meshes.get(5) == null)
+//                        break;
+//
+//                    iCheck = 0;
+//                    c = jPanel_HairColor.getBackground();
+//                    float[] color = new float[3];
+//                    color[0] = ((float)c.getRed()/255);
+//                    color[1] = ((float)c.getGreen()/255);
+//                    color[2] = ((float)c.getBlue()/255);
+//
+//                    for (int j = 0; j < m_meshes.get(5).length; j++) {
+//                        PNode node = m_sceneData.getPScene().findChild(m_meshes.get(5)[j]);
+//                        if (node != null) {
+//                            PPolygonMeshInstance mesh = (PPolygonMeshInstance)node;
+//                            if (iCheck == 0) {
+//                                shader = createMeshShader(mesh);
+//                                iCheck = 1;
+//                            }
+//                            setMeshColor(mesh, shader, color);
+//                        }
+//                    }
+//                    break;
+//                }
+//                case 1: // Facial Hair Color
+//                {
+//                    if (m_meshes.get(6) == null)
+//                        break;
+//
+//                    iCheck = 0;
+//                    c = jPanel_FHairColor.getBackground();
+//                    float[] color = new float[3];
+//                    color[0] = ((float)c.getRed()/255);
+//                    color[1] = ((float)c.getGreen()/255);
+//                    color[2] = ((float)c.getBlue()/255);
+//
+//                    for (int j = 0; j < m_meshes.get(6).length; j++) {
+//                        PNode node = m_sceneData.getPScene().findChild(m_meshes.get(6)[j]);
+//                        if (node != null) {
+//                            PPolygonMeshInstance mesh = (PPolygonMeshInstance)node;
+//                            if (iCheck == 0) {
+//                                shader = createMeshShader(mesh);
+//                                iCheck = 1;
+//                            }
+//                            setMeshColor(mesh, shader, color);
+//                        }
+//                    }
+//                    break;
+//                }
+//                case 2: // Eye Color
+//                {
+//                    if (m_meshes.get(0) == null)
+//                        break;
+//
+//                    iCheck = 0;
+//                    c = jPanel_EyeColors.getBackground();
+//                    float[] color = new float[3];
+//                    color[0] = ((float)c.getRed()/255);
+//                    color[1] = ((float)c.getGreen()/255);
+//                    color[2] = ((float)c.getBlue()/255);
+//
+//                    for (int j = 0; j < m_meshes.get(0).length; j++) {
+//                        if (m_meshes.get(0)[j].contains("Eye")) {
+//                            PNode node = m_sceneData.getPScene().findChild(m_meshes.get(0)[j]);
+//                            if (node != null) {
+//                                PPolygonMeshInstance mesh = (PPolygonMeshInstance)node;
+//                                if (iCheck == 0) {
+//                                    shader = createMeshShader(mesh);
+//                                    iCheck = 1;
+//                                }
+//                                setMeshColor(mesh, shader, color);
+//                            }
+//                        }
+//                    }
+//                    break;
+//                }
+//                case 3: // Skin Tone
+//                {
+//                    iCheck = 0;
+//                    c = jPanel_SkinTone.getBackground();
+//                    float[] color = new float[3];
+//                    color[0] = ((float)c.getRed()/255);
+//                    color[1] = ((float)c.getGreen()/255);
+//                    color[2] = ((float)c.getBlue()/255);
+//
+//                    for (int x = 0; x < 5; x++) {
+//                        if (m_meshes.get(x) == null)
+//                            continue;
+//
+//                        for (int j = 0; j < m_meshes.get(x).length; j++) {
+//                            if (m_meshes.get(x)[j].contains("Head") || m_meshes.get(x)[j].contains("Nude") ||
+//                                m_meshes.get(x)[j].contains("Arms") || m_meshes.get(x)[j].contains("Legs") ||
+//                                m_meshes.get(x)[j].contains("Hand")) {
+//                                PNode node = m_sceneData.getPScene().findChild(m_meshes.get(x)[j]);
+//                                if (node != null) {
+//                                    PPolygonMeshInstance mesh = (PPolygonMeshInstance)node;
+//                                    if (iCheck == 0) {
+//                                        shader = createMeshShader(mesh);
+//                                        iCheck = 1;
+//                                    }
+//                                    setMeshColor(mesh, shader, color);
+//                                }
+//                            }
+//                        }
+//                    }
+//                    break;
+//                }
+//                case 4: // Shirt Color
+//                {
+//                    if (m_meshes.get(2) == null)
+//                        break;
+//
+//                    iCheck = 0;
+//                    c = jPanel_ShirtColor.getBackground();
+//                    float[] color = new float[3];
+//                    color[0] = ((float)c.getRed()/255);
+//                    color[1] = ((float)c.getGreen()/255);
+//                    color[2] = ((float)c.getBlue()/255);
+//
+//                    for (int j = 0; j < m_meshes.get(2).length; j++) {
+//                        if (m_meshes.get(2)[j].contains("Nude") || m_meshes.get(2)[j].contains("Arms"))
+//                            continue;
+//
+//                        PNode node = m_sceneData.getPScene().findChild(m_meshes.get(2)[j]);
+//                        if (node != null) {
+//                            PPolygonMeshInstance mesh = (PPolygonMeshInstance)node;
+//                            if (iCheck == 0) {
+//                                shader = createMeshShader(mesh);
+//                                iCheck = 1;
+//                            }
+//                            setMeshColor(mesh, shader, color);
+//                        }
+//                    }
+//                    break;
+//                }
+//                case 5: // Pants Color
+//                {
+//                    if (m_meshes.get(3) == null)
+//                        break;
+//
+//                    iCheck = 0;
+//                    c = jPanel_PantsColor.getBackground();
+//                    float[] color = new float[3];
+//                    color[0] = ((float)c.getRed()/255);
+//                    color[1] = ((float)c.getGreen()/255);
+//                    color[2] = ((float)c.getBlue()/255);
+//
+//                    for (int j = 0; j < m_meshes.get(3).length; j++) {
+//                        if (m_meshes.get(3)[j].contains("Nude") || m_meshes.get(3)[j].contains("Legs"))
+//                            continue;
+//
+//                        PNode node = m_sceneData.getPScene().findChild(m_meshes.get(3)[j]);
+//                        if (node != null) {
+//                            PPolygonMeshInstance mesh = (PPolygonMeshInstance)node;
+//                            if (iCheck == 0) {
+//                                shader = createMeshShader(mesh);
+//                                iCheck = 1;
+//                            }
+//                            setMeshColor(mesh, shader, color);
+//                        }
+//                    }
+//                    break;
+//                }
+//                case 6: // Shoes Color
+//                {
+//                    if (m_meshes.get(4) == null)
+//                        break;
+//
+//                    iCheck = 0;
+//                    c = jPanel_ShoesColor.getBackground();
+//                    float[] color = new float[3];
+//                    color[0] = ((float)c.getRed()/255);
+//                    color[1] = ((float)c.getGreen()/255);
+//                    color[2] = ((float)c.getBlue()/255);
+//
+//                    for (int j = 0; j < m_meshes.get(4).length; j++) {
+//                        if (m_meshes.get(4)[j].contains("Foot"))
+//                            continue;
+//
+//                        PNode node = m_sceneData.getPScene().findChild(m_meshes.get(4)[j]);
+//                        if (node != null) {
+//                            PPolygonMeshInstance mesh = (PPolygonMeshInstance)node;
+//                            if (iCheck == 0) {
+//                                shader = createMeshShader(mesh);
+//                                iCheck = 1;
+//                            }
+//                            setMeshColor(mesh, shader, color);
+//                        }
+//                    }
+//                    break;
+//                }
+//            }
+//        }
+//        for (int i = 0; i < m_Colors.length; i++)
+//            m_Colors[i] = false;
     }
 
     public void loadAvatar(int selection) {
-        if (m_Parent instanceof BaseDefault)
-            ((BaseDefault)m_Parent).loadingWindow(true);
-
-        if (jRadioButton_GenderMale.isSelected()) {
-            retrieveBindMeshInfo(1);
-            m_gender = 1;
-        } else {
-            retrieveBindMeshInfo(2);
-            m_gender = 2;
-        }
-
-        // Create avatar attribs
-        CharacterAttributes attribs                             = new CharacterAttributes("AvatarAttributes");
-        ArrayList<CharacterAttributes.SkinnedMeshParams> add    = new ArrayList<CharacterAttributes.SkinnedMeshParams>();
-        ArrayList<String> delete                                = new ArrayList<String>();
-        ArrayList<String> load                                  = new ArrayList<String>();
-        ArrayList<AttachmentParams> attach                      = new ArrayList<AttachmentParams>();
-
-        for (int i = 0; i < 9; i ++) {
-            if (m_presets.get(selection).get(i) == null)
-                continue;
-
-            if (m_meshes.get(i) != null) {
-                for (int j = 0; j < m_meshes.get(i).length; j++)
-                    delete.add(m_meshes.get(i)[j]);
-            }
-
-            if (i < 5) {
-                for (int j = 0; j < m_presets.get(selection).get(i).length; j ++) {
-                    if (j == 0) {
-                        load.add(m_presets.get(selection).get(i)[j]);
-                    } else {
-                        CharacterAttributes.SkinnedMeshParams param = attribs.createSkinnedMeshParams(m_presets.get(selection).get(i)[j], m_sceneData.m_regions[i]);
-                        add.add(param);
-                    }
-                }
-                attribs.setFlagForAlteredRegion(i, true);
-            } else if (i < 9){
-                for (int j = 0; j < m_presets.get(selection).get(i).length; j ++) {
-                    if (j == 0) {
-                        load.add(m_presets.get(selection).get(i)[j]);
-                    }
-                    else {
-                        PMatrix tempSolution;
-                        tempSolution = new PMatrix(new Vector3f(0.0f, (float) Math.toRadians(180), 0.0f), new Vector3f(1.0f, 1.0f, 1.0f), Vector3f.ZERO);
-                        attach.add(new AttachmentParams(m_presets.get(selection).get(i)[j], "Head", tempSolution));
-                    }
-                }
-                attribs.setFlagForAlteredRegion(i, true);
-            }
-
-            String[] meshes = new String[m_presets.get(selection).get(i).length - 1];
-            for (int j = 1; j < m_presets.get(selection).get(i).length; j++)
-                meshes[j-1] = m_presets.get(selection).get(i)[j];
-            m_meshes.put(i, meshes);
-        }
-
-        m_sceneData.setMeshSetup(m_meshes);
-
-        attribs.setBaseURL("");
-        // NOLONGERRELVANT---> attribs.setBindPoseFile(m_presetLists.get(selection)[2]);
-        attribs.setAnimations(new String[] {m_presetLists.get(selection)[3]} );
-        // NOLONGERRELVANT---> attribs.setDeleteInstructions(delete.toArray(new String[delete.size()]));
-  
-        attribs.setLoadInstructions(load);
-        attribs.setAddInstructions(add.toArray(new CharacterAttributes.SkinnedMeshParams[add.size()]));
-        attribs.setAttachmentsInstructions(attach.toArray(new AttachmentParams[attach.size()]));
-        attribs.setGender(m_gender);
-        attribs.setGeomRef(m_meshes);
-        // NOLONGERRELVANT--->
-//        if (m_gender == 1)
-//            attribs.setDefaultMaleMesh();
-//        else
-//            attribs.setDefaultFemaleMesh();
-
-        if (m_sceneData.getAvatar() != null) {
-            m_sceneData.getWM().removeEntity(m_sceneData.getAvatar());
-            m_sceneData.setAvatar(null);
-        }
-        
-        m_sceneData.setAvatar(new NinjaAvatar(attribs, m_sceneData.getWM()));
-        m_sceneData.getAvatar().selectForInput();
-        m_sceneData.setPScene(m_sceneData.getAvatar().getPScene());
-
-        if (m_Parent instanceof BaseDefault) {
-            m_sceneData.setCameraOnModel();
-            ((BaseDefault)m_Parent).loadingWindow(false);
-        }
+//        if (m_Parent instanceof BaseDefault)
+//            ((BaseDefault)m_Parent).loadingWindow(true);
+//
+//        // Create avatar attribs
+//        CharacterAttributes attribs                             = new CharacterAttributes("AvatarAttributes");
+//        ArrayList<CharacterAttributes.SkinnedMeshParams> add    = new ArrayList<CharacterAttributes.SkinnedMeshParams>();
+//        ArrayList<String> delete                                = new ArrayList<String>();
+//        ArrayList<String> load                                  = new ArrayList<String>();
+//        ArrayList<AttachmentParams> attach                      = new ArrayList<AttachmentParams>();
+//
+//        for (int i = 0; i < 9; i ++) {
+//            if (m_presets.get(selection).get(i) == null)
+//                continue;
+//
+//            if (m_meshes.get(i) != null) {
+//                for (int j = 0; j < m_meshes.get(i).length; j++)
+//                    delete.add(m_meshes.get(i)[j]);
+//            }
+//
+//            if (i < 5) {
+//                for (int j = 0; j < m_presets.get(selection).get(i).length; j ++) {
+//                    if (j == 0) {
+//                        load.add(m_presets.get(selection).get(i)[j]);
+//                    } else {
+//                        CharacterAttributes.SkinnedMeshParams param = attribs.createSkinnedMeshParams(m_presets.get(selection).get(i)[j], m_sceneData.m_regions[i]);
+//                        add.add(param);
+//                    }
+//                }
+//                attribs.setFlagForAlteredRegion(i, true);
+//            } else if (i < 9){
+//                for (int j = 0; j < m_presets.get(selection).get(i).length; j ++) {
+//                    if (j == 0) {
+//                        load.add(m_presets.get(selection).get(i)[j]);
+//                    }
+//                    else {
+//                        PMatrix tempSolution;
+//                        tempSolution = new PMatrix(new Vector3f(0.0f, (float) Math.toRadians(180), 0.0f), new Vector3f(1.0f, 1.0f, 1.0f), Vector3f.ZERO);
+//                        attach.add(new AttachmentParams(m_presets.get(selection).get(i)[j], "Head", tempSolution));
+//                    }
+//                }
+//                attribs.setFlagForAlteredRegion(i, true);
+//            }
+//
+//            String[] meshes = new String[m_presets.get(selection).get(i).length - 1];
+//            for (int j = 1; j < m_presets.get(selection).get(i).length; j++)
+//                meshes[j-1] = m_presets.get(selection).get(i)[j];
+//            m_meshes.put(i, meshes);
+//        }
+//
+//        m_sceneData.setMeshSetup(m_meshes);
+//
+//        attribs.setBaseURL("");
+//        attribs.setAnimations(new String[] {m_presetLists.get(selection)[3]} );
+//        // NOLONGERRELVANT---> attribs.setDeleteInstructions(delete.toArray(new String[delete.size()]));
+//
+//        attribs.setLoadInstructions(load);
+//        attribs.setAddInstructions(add.toArray(new CharacterAttributes.SkinnedMeshParams[add.size()]));
+//        attribs.setAttachmentsInstructions(attach.toArray(new AttachmentParams[attach.size()]));
+//        attribs.setGender(m_gender);
+//        attribs.setGeomRef(m_meshes);
+//
+//        if (m_sceneData.getAvatar() != null) {
+//            m_sceneData.getWM().removeEntity(m_sceneData.getAvatar());
+//            m_sceneData.setAvatar(null);
+//        }
+//
+//        m_sceneData.setAvatar(new NinjaAvatar(attribs, m_sceneData.getWM()));
+//        m_sceneData.getAvatar().selectForInput();
+//        m_sceneData.setPScene(m_sceneData.getAvatar().getPScene());
+//
+//        if (m_Parent instanceof BaseDefault) {
+//            m_sceneData.setCameraOnModel();
+//            ((BaseDefault)m_Parent).loadingWindow(false);
+//        }
     }
 
     public void setSceneData(SceneEssentials se) {
@@ -1441,90 +1427,6 @@ public class JPanel_EZOptions extends javax.swing.JPanel {
             }
         }
         return data;
-    }
-
-    public void setMeshList() {
-        if (m_sceneData.getAvatar() == null)
-            return;
-
-        m_meshes = new HashMap<Integer, String[]>();
-        for (int i = 0; i < m_sceneData.m_regions.length; i++) {
-            String[] meshes = null;
-            meshes = m_sceneData.getAvatar().getSkeleton().getMeshNamesBySubGroup(m_sceneData.m_regions[i]);
-            m_meshes.put(i, meshes);
-        }
-    }
-
-    public void retrieveBindMeshInfo(int iGender) {
-        String query = new String();
-        ArrayList<String[]> data, anim, meshref;
-
-        if (iGender == 1) {
-            query = "SELECT name, grouping FROM GeometryReferences WHERE tableref = 'Male'";
-            meshref = m_sceneData.loadSQLData(query);
-        }
-        else {
-            query = "SELECT name, grouping FROM GeometryReferences WHERE tableref = 'Female'";
-            meshref = m_sceneData.loadSQLData(query);
-        }
-
-        if (m_meshes != null)
-            m_meshes.clear();
-        m_meshes = new HashMap<Integer, String[]>();
-
-        createMeshSwapList("0", meshref);
-        createMeshSwapList("1", meshref);
-        createMeshSwapList("2", meshref);
-        createMeshSwapList("3", meshref);
-        createMeshSwapList("4", meshref);
-        createMeshSwapList("5", meshref);
-        createMeshSwapList("6", meshref);
-        createMeshSwapList("7", meshref);
-        createMeshSwapList("8", meshref);
-
-        m_sceneData.setMeshSetup(m_meshes);
-    }
-
-    public void createMeshSwapList(String region, ArrayList<String[]> meshes) {
-        String[] geometry = null;
-        int iRegion = 0;
-
-        ArrayList<String> temp = new ArrayList<String>();
-
-        for (int i = 0; i < meshes.size(); i++) {
-            if (meshes.get(i)[1].equals(region)) {
-                temp.add(meshes.get(i)[0].toString());
-            }
-        }
-
-        if (temp.size() == 0)
-            return;
-
-        geometry = new String[temp.size()];
-        for (int i = 0; i < temp.size(); i++) {
-            geometry[i] = temp.get(i);
-        }
-
-        if (region.equals("0"))
-            iRegion = 0;          // Head
-        else if (region.equals("1"))
-            iRegion = 1;          // Hands
-        else if (region.equals("2"))
-            iRegion = 2;          // Torso
-        else if (region.equals("3"))
-            iRegion = 3;          // Legs
-        else if (region.equals("4"))
-            iRegion = 4;          // Feet
-        else if (region.equals("5"))
-            iRegion = 5;          // Hair
-        else if (region.equals("6"))
-            iRegion = 6;          // Facial Hair
-        else if (region.equals("7"))
-            iRegion = 7;          // Hats
-        else if (region.equals("8"))
-            iRegion = 8;          // Glasses
-
-        m_meshes.put(iRegion, geometry);
     }
 
     public void setGender(int sex) {

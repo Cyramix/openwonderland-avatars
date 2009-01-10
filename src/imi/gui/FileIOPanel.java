@@ -102,7 +102,7 @@ public class FileIOPanel extends javax.swing.JPanel {
     
     public void loadMeshFile() {
         m_rotPanel.resetPanel();
-        m_sceneData.loadMeshDAEFile(true, false, this);         // LOADS NON-SKINNED MESH
+        m_sceneData.loadMeshDAEFile(true, this);
 
         while (m_sceneData.getPScene().getAssetWaitingList().size() > 0) {
             //m_logger.log(Level.INFO, "Waiting to get assets...");
@@ -118,7 +118,7 @@ public class FileIOPanel extends javax.swing.JPanel {
     
     public void loadSkinnedMesh() {
         m_rotPanel.resetPanel();
-        m_sceneData.loadSMeshDAEFile(true, false, this);
+        m_sceneData.loadSMeshDAEFile(true, this);
 
         while (m_sceneData.getPScene().getAssetWaitingList().size() > 0) {
             //m_logger.log(Level.INFO, "Waiting to get assets...");
@@ -254,8 +254,7 @@ public class FileIOPanel extends javax.swing.JPanel {
         else if (ref.get(0)[1].equals("4"))
             iType = 4;
         
-        m_sceneData.loadAvatarDAEURL(true, false, this, m_data.get(jList_ServerFiles.getSelectedIndex()), animations, meshref, iType);   // loads models with skinned animations
-
+        m_sceneData.loadAvatarDAEURL(true, this, m_data.get(jList_ServerFiles.getSelectedIndex()), iType);      // TODO: This needs a gender not type
         while (m_sceneData.getPScene().getAssetWaitingList().size() > 0) {
             //m_logger.log(Level.INFO, "Waiting to get assets...");
         }
@@ -301,9 +300,9 @@ public class FileIOPanel extends javax.swing.JPanel {
             iType = 4;
 
         if (m_meshes == null)
-            m_sceneData.loadMeshDAEURL(true, false, this, data, meshref, iType);
+            m_sceneData.loadMeshDAEURL(true, this, data);
         else
-            m_sceneData.loadMeshDAEURL(false, false, this, data, meshref, iType);   // loads models with skinned animations
+            m_sceneData.loadMeshDAEURL(true, this, data);
         
         while (m_sceneData.getPScene().getAssetWaitingList().size() > 0) {
             //m_logger.log(Level.INFO, "Waiting to get assets...");
@@ -435,7 +434,6 @@ public class FileIOPanel extends javax.swing.JPanel {
                 meshNames[0] = "Legs_LegsNudeShape";
                 m_meshes.put(3, meshNames);
                 
-                m_sceneData.setMeshSetup(m_meshes);
                 break;
             }
             case 1: // Mesh (URL)
