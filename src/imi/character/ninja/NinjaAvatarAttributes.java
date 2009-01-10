@@ -41,49 +41,6 @@ public class NinjaAvatarAttributes extends CharacterAttributes
      */
     public NinjaAvatarAttributes(String name, boolean bRandomCustomizations, boolean bForceDressShirt) 
     {
-//        super(name);
-//
-//        // Animations
-//        ArrayList<String> anims = new ArrayList<String>();
-//        anims.add("assets/models/collada/Avatars/Male/Male_Anim_Idle.dae");
-//        anims.add("assets/models/collada/Avatars/Male/Male_Anim_StandToSit.dae");
-//        anims.add("assets/models/collada/Avatars/Male/Male_Anim_Wave.dae");
-//        anims.add("assets/models/collada/Avatars/Male/Male_Anim_FallFromSitting.dae");
-//        anims.add("assets/models/collada/Avatars/Male/Male_Anim_FloorSitting.dae");
-//        anims.add("assets/models/collada/Avatars/Male/Male_Anim_FloorGetup.dae");
-//        anims.add("assets/models/collada/Avatars/Male/Male_Anim_Walk.dae");
-//        anims.add("assets/models/collada/Avatars/Male/Male_Anim_Sitting.dae");
-//        anims.add("assets/models/collada/Avatars/Male/Male_Anim_Bow.dae");
-//        anims.add("assets/models/collada/Avatars/Male/Male_Anim_Cheer.dae");
-//        anims.add("assets/models/collada/Avatars/Male/Male_Anim_Clap.dae");
-//        anims.add("assets/models/collada/Avatars/Male/Male_Anim_Follow.dae");
-//        anims.add("assets/models/collada/Avatars/Male/Male_Anim_Jump.dae");
-//        anims.add("assets/models/collada/Avatars/Male/Male_Anim_Laugh.dae");
-//        anims.add("assets/models/collada/Avatars/Male/Male_Anim_Run.dae");
-//
-//        if (false)
-//        {
-//            anims.add("assets/models/collada/Avatars/Male/Male_Anim_Run.dae");
-//            anims.add("assets/models/collada/Avatars/Male/Male_Anim_Bow.dae");
-//            anims.add("assets/models/collada/Avatars/Male/Male_Anim_Cheer.dae");
-//            anims.add("assets/models/collada/Avatars/Male/Male_Anim_Clap.dae");
-//            anims.add("assets/models/collada/Avatars/Male/Male_Anim_Follow.dae");
-//            anims.add("assets/models/collada/Avatars/Male/Male_Anim_Jump.dae");
-//            anims.add("assets/models/collada/Avatars/Male/Male_Anim_Laugh.dae");
-//        }
-//        setAnimations(anims.toArray(new String[anims.size()]));
-//
-//        // Facial Animations
-//        ArrayList<String> facialAnims = new ArrayList<String>();
-////            setBaseURL("");
-////            String fileprotocol = new String("file://localhost/");
-////            fileprotocol += System.getProperty("user.dir") + "/";
-//        facialAnims.add("assets/models/collada/Avatars/MaleFacialAnimation/MaleSmile.dae");
-//        facialAnims.add("assets/models/collada/Avatars/MaleFacialAnimation/MaleFrown.dae");
-//        facialAnims.add("assets/models/collada/Avatars/MaleFacialAnimation/MaleScorn.dae");
-//        facialAnims.add("assets/models/collada/Avatars/MaleFacialAnimation/MaleDefault.dae");
-//        setFacialAnimations(facialAnims.toArray(new String[facialAnims.size()]));
-
         // Customizations
         if (bRandomCustomizations)
         {
@@ -152,7 +109,8 @@ public class NinjaAvatarAttributes extends CharacterAttributes
 
     private void customizeHairPresets(int preset, ArrayList<String> load, ArrayList<SkinnedMeshParams> add, ArrayList<AttachmentParams> attachments)
     {
-        // load the head, eyes, teeth, and tongue; the customizeTorsePresets has already loaded the bind file
+        // load the head, eyes, teeth, and tongue
+        load.add(new String("assets/models/collada/Heads/CaucasianHead/MaleCHead.dae"));
         add.add(new SkinnedMeshParams("rightEyeGeoShape", "Head"));
         add.add(new SkinnedMeshParams("leftEyeGeoShape", "Head"));
         add.add(new SkinnedMeshParams("UpperTeethShape", "Head"));
@@ -215,9 +173,8 @@ public class NinjaAvatarAttributes extends CharacterAttributes
 
     protected void customizeTorsoPresets(int preset, ArrayList<String> load, ArrayList<SkinnedMeshParams> add, ArrayList<AttachmentParams> attachments)
     {
-        //preset = 2;
         // Add the hands in either way
-        load.add(new String("assets/models/collada/Avatars/Male/Male_Bind.dae")); // change!
+        load.add(new String("assets/models/collada/Avatars/Male/Male_Hands.dae")); // change!
         add.add(new SkinnedMeshParams("RHandShape",  m_regions[1]));
         add.add(new SkinnedMeshParams("LHandShape",  m_regions[1]));
 
@@ -260,6 +217,7 @@ public class NinjaAvatarAttributes extends CharacterAttributes
         add.add(new SkinnedMeshParams("UpperTeethShape", "Head"));
         add.add(new SkinnedMeshParams("LowerTeethShape", "Head"));
         add.add(new SkinnedMeshParams("TongueGeoShape", "Head"));
+        add.add(new SkinnedMeshParams("HeadGeoShape", "Head"));
         add.add(new SkinnedMeshParams("RHandShape",  "Hands"));
         add.add(new SkinnedMeshParams("LHandShape",  "Hands"));
         add.add(new SkinnedMeshParams("RFootNudeShape",  "Feet"));

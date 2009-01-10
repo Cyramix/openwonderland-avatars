@@ -44,24 +44,24 @@ public class NinjaFemaleAvatarAttributes extends CharacterAttributes
         super(name);
 
         // Animations
-        ArrayList<String> anims = new ArrayList<String>();
-        anims.add("assets/models/collada/Avatars/Female/Female_Anim_Idle.dae");
-        anims.add("assets/models/collada/Avatars/Female/Female_Anim_Sitting.dae");
-        anims.add("assets/models/collada/Avatars/Female/Female_Anim_StandToSit.dae");
-        anims.add("assets/models/collada/Avatars/Female/Female_Anim_Walk.dae");
+//        ArrayList<String> anims = new ArrayList<String>();
+//        anims.add("assets/models/collada/Avatars/Female/Female_Anim_Idle.dae");
+//        anims.add("assets/models/collada/Avatars/Female/Female_Anim_Sitting.dae");
+//        anims.add("assets/models/collada/Avatars/Female/Female_Anim_StandToSit.dae");
+//        anims.add("assets/models/collada/Avatars/Female/Female_Anim_Walk.dae");
 //        anims.add("assets/models/collada/Avatars/female/Male_Anim_Wave.dae");
 //        anims.add("assets/models/collada/Avatars/female/Male_Anim_FallFromSitting.dae");
 //        anims.add("assets/models/collada/Avatars/female/Male_Anim_FloorSitting.dae");
 //        anims.add("assets/models/collada/Avatars/female/Male_Anim_FloorGetup.dae");
-        setAnimations(anims.toArray(new String[anims.size()]));
+//        setAnimations(anims.toArray(new String[anims.size()]));
 
         // Facial Animations
-        ArrayList<String> facialAnims = new ArrayList<String>();
+//        ArrayList<String> facialAnims = new ArrayList<String>();
 //        facialAnims.add("assets/models/collada/Avatars/MaleFacialAnimation/MaleSmile.dae");
 //        facialAnims.add("assets/models/collada/Avatars/MaleFacialAnimation/MaleFrown.dae");
 //        facialAnims.add("assets/models/collada/Avatars/MaleFacialAnimation/MaleScorn.dae");
 //        facialAnims.add("assets/models/collada/Avatars/MaleFacialAnimation/MaleDefault.dae");
-        setFacialAnimations(facialAnims.toArray(new String[facialAnims.size()]));
+//        setFacialAnimations(facialAnims.toArray(new String[facialAnims.size()]));
 
         // Customizations
         if (false)//bRandomCustomizations)
@@ -95,6 +95,8 @@ public class NinjaFemaleAvatarAttributes extends CharacterAttributes
             setAddInstructions(add.toArray(new SkinnedMeshParams[add.size()]));
             setAttachmentsInstructions(attachments.toArray(new AttachmentParams[attachments.size()]));
         }
+        else
+            loadDefaultBind();
     }
 
     private void customizeFeetPresets(int preset, ArrayList<String> load, ArrayList<SkinnedMeshParams> add, ArrayList<AttachmentParams> attachments)
@@ -130,6 +132,15 @@ public class NinjaFemaleAvatarAttributes extends CharacterAttributes
 
     private void customizeHairPresets(int preset, ArrayList<String> load, ArrayList<SkinnedMeshParams> add, ArrayList<AttachmentParams> attachments)
     {
+        // load the head, eyes, teeth, and tongue
+        load.add(new String("assets/models/collada/Heads/FemaleCaucasian/FemaleCHead.dae"));
+        add.add(new SkinnedMeshParams("rightEyeGeoShape", "Head"));
+        add.add(new SkinnedMeshParams("leftEyeGeoShape", "Head"));
+        add.add(new SkinnedMeshParams("UpperTeethShape", "Head"));
+        add.add(new SkinnedMeshParams("LowerTeethShape", "Head"));
+        add.add(new SkinnedMeshParams("TongueGeoShape", "Head"));
+        add.add(new SkinnedMeshParams("HeadGeoShape", "Head"));
+
         PMatrix oreintation = new PMatrix(new Vector3f(0.0f,(float) Math.toRadians(180), 0.0f), new Vector3f(1.05f, 1.05f, 1.05f), Vector3f.ZERO);
         switch(preset)
         {
@@ -185,7 +196,10 @@ public class NinjaFemaleAvatarAttributes extends CharacterAttributes
 
     protected void customizeTorsoPresets(int preset, ArrayList<String> load, ArrayList<SkinnedMeshParams> add, ArrayList<AttachmentParams> attachments)
     {
-        //preset = 2;
+        // Add the hands in either way
+        load.add(new String("assets/models/collada/Avatars/Male/Female_Hands.dae")); // change!
+        add.add(new SkinnedMeshParams("RHandShape",  "Hands"));
+        add.add(new SkinnedMeshParams("LHandShape",  "Hands"));
 
         switch(preset)
         {
@@ -213,5 +227,28 @@ public class NinjaFemaleAvatarAttributes extends CharacterAttributes
             }
             break;
         }   
+    }
+
+    private void loadDefaultBind() {
+        ArrayList<String> load      = new ArrayList<String>();
+        load.add(new String("assets/models/collada/Avatars/Female/Female_Bind.dae")); // change!
+
+        ArrayList<SkinnedMeshParams> add       = new ArrayList<SkinnedMeshParams>();
+        add.add(new SkinnedMeshParams("rightEyeGeoShape", "Head"));
+        add.add(new SkinnedMeshParams("leftEyeGeoShape", "Head"));
+        add.add(new SkinnedMeshParams("UpperTeethShape", "Head"));
+        add.add(new SkinnedMeshParams("LowerTeethShape", "Head"));
+        add.add(new SkinnedMeshParams("TongueGeoShape", "Head"));
+        add.add(new SkinnedMeshParams("HeadGeoShape", "Head"));
+        add.add(new SkinnedMeshParams("RHandShape",  "Hands"));
+        add.add(new SkinnedMeshParams("LHandShape",  "Hands"));
+        add.add(new SkinnedMeshParams("RFootNudeShape",  "Feet"));
+        add.add(new SkinnedMeshParams("LFootNudeShape",  "Feet"));
+        add.add(new SkinnedMeshParams("TorsoNudeShape",  "UpperBody"));
+        add.add(new SkinnedMeshParams("LegsNudeShape",  "LowerBody"));
+
+
+        setLoadInstructions(load);
+        setAddInstructions(add.toArray(new SkinnedMeshParams[add.size()]));
     }
 }

@@ -24,11 +24,8 @@ import imi.serialization.xml.bindings.xmlCharacterAttachmentParameters;
 import imi.serialization.xml.bindings.xmlCharacterAttributes;
 import imi.serialization.xml.bindings.xmlSkinnedMeshParams;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * This class contains all the different attributes of a character. It contains
@@ -179,62 +176,6 @@ public class CharacterAttributes
     public void setGender(int sex) {
         gender = sex;
     }
-
-    // Flagged for removal!
-
-//    public void setDefaultMaleMesh() {
-//        String URL = new String("http://www.zeitgeistgames.com/assets/collada/Avatars/Male/Male_Bind.dae");
-//        String[] szHead     = new String[] { URL, "HeadGeoShape", "rightEyeGeoShape", "leftEyeGeoShape", "UpperTeethShape", "LowerTeethShape", "TongueGeoShape" };
-//        String[] szHands    = new String[] { URL, "RHandShape", "LHandShape" };
-//        String[] szTorso    = new String[] { URL, "TorsoNudeShape" };
-//        String[] szLegs     = new String[] { URL, "LegsNudeShape" };
-//        String[] szFeet     = new String[] { URL, "RFootNudeShape", "LFootNudeShape" };
-//        String[] szEmpty    = new String[0];
-//
-//        if (m_maleBindMeshes == null)
-//            m_maleBindMeshes = new HashMap<Integer, String[]>();
-//        else
-//            m_maleBindMeshes.clear();
-//
-//        m_maleBindMeshes.put(0, szHead);
-//        m_maleBindMeshes.put(1, szHands);
-//        m_maleBindMeshes.put(2, szTorso);
-//        m_maleBindMeshes.put(3, szLegs);
-//        m_maleBindMeshes.put(4, szFeet);
-//        m_maleBindMeshes.put(5, szEmpty);
-//        m_maleBindMeshes.put(6, szEmpty);
-//        m_maleBindMeshes.put(7, szEmpty);
-//        m_maleBindMeshes.put(8, szEmpty);
-//        m_maleBindMeshes.put(9, szEmpty);
-//    }
-//
-//    public void setDefaultFemaleMesh() {
-//        String URL = new String("http://www.zeitgeistgames.com/assets/collada/Avatars/Female/Female_Bind.dae");
-//        String[] szHead     = new String[] { URL, "HeadGeoShape", "rightEyeGeoShape", "leftEyeGeoShape", "UpperTeethShape", "LowerTeethShape", "TongueGeoShape" };
-//        String[] szHands    = new String[] { URL, "HandsShape" };
-//        String[] szTorso    = new String[] { URL, "TorsoNudeShape" };
-//        String[] szLegs     = new String[] { URL, "LegsNudeShape" };
-//        String[] szFeet     = new String[] { URL, "ShoesShape" };
-//        String[] szHair     = new String[] { URL, "M_pt_leftShape" };
-//        String[] szEmpty    = new String[0];
-//
-//        if (m_femaleBindMeshes == null)
-//            m_femaleBindMeshes = new HashMap<Integer, String[]>();
-//        else
-//            m_femaleBindMeshes.clear();
-//
-//        m_femaleBindMeshes.put(0, szHead);
-//        m_femaleBindMeshes.put(1, szHands);
-//        m_femaleBindMeshes.put(2, szTorso);
-//        m_femaleBindMeshes.put(3, szLegs);
-//        m_femaleBindMeshes.put(4, szFeet);
-//        m_femaleBindMeshes.put(5, szHair);
-//        m_femaleBindMeshes.put(6, szEmpty);
-//        m_femaleBindMeshes.put(7, szEmpty);
-//        m_femaleBindMeshes.put(8, szEmpty);
-//        m_femaleBindMeshes.put(9, szEmpty);
-//    }
-
 
     public void setFlagForAlteredRegion(int region, boolean flag) {
         m_areMeshesAltered[region] = flag;
