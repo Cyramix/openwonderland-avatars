@@ -50,6 +50,7 @@ public class TextureBinaryLoad extends DemoBase {
     @Override
     protected void simpleSceneInit(PScene pscene, WorldManager wm, ArrayList<ProcessorComponent> processors) {
 
+        PScene.jHack = false;
         Vector3f max = new Vector3f(2, 2, 2);
         Vector3f min = new Vector3f(-2, -2, -2);
 
