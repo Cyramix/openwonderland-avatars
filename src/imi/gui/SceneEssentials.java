@@ -641,6 +641,13 @@ public class SceneEssentials {
             else
                 m_currentHiProcessors.clear();
 
+            URL bindPose = findBindPose(m_fileModel);
+            if (bindPose.toString().contains("Female"))
+                m_gender = 2;
+            else
+                m_gender = 1;
+
+
             final ArrayList<URL> animations = findAnims(m_fileModel);
             String[] anim = new String[animations.size()];
             for (int i = 0; i < animations.size(); i++) {
@@ -652,7 +659,6 @@ public class SceneEssentials {
 
             attribs = new CharacterAttributes("Avatar");
             attribs.setBaseURL("");
-            attribs.setAnimations(anim);
             attribs.setLoadInstructions(null);
             attribs.setAddInstructions(null);
             attribs.setAttachmentsInstructions(null);
@@ -871,7 +877,6 @@ public class SceneEssentials {
         
         CharacterAttributes attribs = new CharacterAttributes("Avatar");
         attribs.setBaseURL("");
-        attribs.setAnimations(anim);
         attribs.setLoadInstructions(null);
         attribs.setAddInstructions(null);
         attribs.setAttachmentsInstructions(null);
