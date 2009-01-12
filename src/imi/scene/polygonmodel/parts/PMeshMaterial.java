@@ -34,6 +34,10 @@ import imi.serialization.xml.bindings.xmlShader;
 import imi.serialization.xml.bindings.xmlShaderProperty;
 import imi.serialization.xml.bindings.xmlTextureAttributes;
 import java.io.File;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
@@ -46,7 +50,7 @@ import org.jdesktop.mtgame.WorldManager;
  * @author Lou Hayt
  * @author Ronald E Dahlgren
  */
-public class PMeshMaterial extends PNode
+public class PMeshMaterial extends PNode implements Serializable
 {
     private static final ColorRGBA defaultAmbient = new ColorRGBA(0.30f, 0.30f, 0.30f, 1.0f);
 
@@ -793,5 +797,19 @@ public class PMeshMaterial extends PNode
                         "Unknown property read from XML file! : " + ex.getMessage());
             }
         }
+    }
+
+    /****************************
+     * SERIALIZATION ASSISTANCE *
+     ****************************/
+    private void writeObject(ObjectOutputStream out) throws IOException
+    {
+        out.defaultWriteObject();
+    }
+
+    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException
+    {
+        in.defaultReadObject();
+        // Re-allocate all transient objects
     }
 }

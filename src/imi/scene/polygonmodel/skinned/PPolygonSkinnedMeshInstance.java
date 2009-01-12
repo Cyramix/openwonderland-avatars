@@ -26,6 +26,7 @@ import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
 import imi.scene.shader.AbstractShaderProgram;
 import imi.scene.shader.ShaderProperty;
 import imi.scene.utils.PRenderer;
+import java.io.Serializable;
 
 
 /**
@@ -33,10 +34,8 @@ import imi.scene.utils.PRenderer;
  * @author Ronald Dahlgren
  * @author Lou Hayt
  */
-public class PPolygonSkinnedMeshInstance extends PPolygonMeshInstance
-{
-    protected boolean bInit = true;
-    
+public class PPolygonSkinnedMeshInstance extends PPolygonMeshInstance implements Serializable
+{   
     protected PMatrix[]    m_InverseBindPose  = null; // TODO: Caching this may not be desireable
     
     protected SkeletonNode m_skeletonNode    = null;

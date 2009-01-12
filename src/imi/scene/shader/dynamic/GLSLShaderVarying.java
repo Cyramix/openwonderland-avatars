@@ -17,6 +17,8 @@
  */
 package imi.scene.shader.dynamic;
 
+import java.io.Serializable;
+
 /**
  * This class represents a "varying" used in a shader program. These types are
  * declared in both the vertex and the shader program's resultant source code.
@@ -24,7 +26,7 @@ package imi.scene.shader.dynamic;
  * fragment logic.
  * @author Ronald E Dahlgren
  */
-public class GLSLShaderVarying extends GLSLShaderVariable
+public class GLSLShaderVarying extends GLSLShaderVariable implements Serializable
 {
     /**
      * Construct a new instance with the specified name and type

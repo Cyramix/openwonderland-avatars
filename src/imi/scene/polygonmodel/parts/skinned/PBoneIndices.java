@@ -17,11 +17,13 @@
  */
 package imi.scene.polygonmodel.parts.skinned;
 
+import java.io.Serializable;
+
 /**
  * This class wraps up a set of four ints
  * @author Lou Hayt
  */
-public class PBoneIndices
+public class PBoneIndices implements Serializable
 {
     /** The actual data **/
     public int [] index = new int[4];

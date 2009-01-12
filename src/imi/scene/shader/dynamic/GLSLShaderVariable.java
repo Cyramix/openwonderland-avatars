@@ -17,13 +17,15 @@
  */
 package imi.scene.shader.dynamic;
 
+import java.io.Serializable;
+
 /**
  * This class represents a GLSL shader variable. This includes a type, a name, 
  * and a value. Subclasses include representatives for uniform variables, varying
  * types, and vertex attributes.
  * @author Ronald E Dahlgren
  */
-public class GLSLShaderVariable 
+public class GLSLShaderVariable implements Serializable
 {
     /**
      * Convenience reference to the shader new line string

@@ -20,9 +20,10 @@ package imi.scene.polygonmodel.parts.polygon;
 
 import com.jme.math.Vector3f;
 import com.jme.renderer.ColorRGBA;
+import java.io.Serializable;
 
 
-public class PPolygonColor
+public class PPolygonColor implements Serializable
 {
     public ColorRGBA	m_Color = new ColorRGBA();
     public int          m_ReferenceCount = 0;

@@ -33,8 +33,14 @@ import imi.scene.polygonmodel.parts.PMeshMaterial;
 import imi.scene.polygonmodel.parts.PMeshMaterialCombo;
 import imi.scene.polygonmodel.parts.PMeshMaterialStates;
 import imi.scene.polygonmodel.parts.TextureMaterialProperties;
+import imi.scene.shader.AbstractShaderProgram;
+import imi.scene.shader.dynamic.GLSLShaderProgram;
 import imi.scene.utils.PRenderer;
 import imi.scene.utils.TextureInstaller;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.net.URL;
 
 /**
@@ -45,7 +51,7 @@ import java.net.URL;
  * @author Lou Hayt
  * @author Ron Dahlgren
  */
-public class PPolygonMeshInstance extends PNode
+public class PPolygonMeshInstance extends PNode implements Serializable
 {
     // The owning PScene
     protected PScene              m_PScene    = null;
@@ -339,15 +345,15 @@ public class PPolygonMeshInstance extends PNode
             if (meshMat.getTexture(i) != null)
             {
                 bNeedToUseTextureInstaller = true;
-                if (m_PScene.isUseRepository() == true)
-                {
+//                if (m_PScene.isUseRepository() == true)
+//                {
                     // Send SharedAsset request to the PScene
                     SharedAsset texture = new SharedAsset(m_PScene.getRepository(),
                             new AssetDescriptor(SharedAssetType.Texture, meshMat.getTexture(i).getImageLocation()));
                     m_PScene.loadTexture(texture, this);
-                }
-                else
-                    m_textureState.setTexture(  m_PScene.loadTexture(meshMat.getTexture(i).getImageLocation()), i);
+//                }
+//                else // Not using the repository, no sharing!
+//                    m_textureState.setTexture(  m_PScene.loadTexture(meshMat.getTexture(i).getImageLocation()), i);
             }
         }
         if (!bNeedToUseTextureInstaller || m_PScene.isUseRepository() == false)
@@ -440,5 +446,17 @@ public class PPolygonMeshInstance extends PNode
     {
         m_PScene = pscene;
     }
-    
+
+      /****************************
+     * SERIALIZATION ASSISTANCE *
+     ****************************/
+    private void writeObject(ObjectOutputStream out) throws IOException
+    {
+        out.defaultWriteObject();
+    }
+
+    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException
+    {
+        in.defaultReadObject();
+    }
 }

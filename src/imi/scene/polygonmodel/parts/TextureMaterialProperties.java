@@ -24,6 +24,7 @@ import com.jme.image.Texture.MagnificationFilter;
 import com.jme.image.Texture.MinificationFilter;
 import com.jme.image.Texture.WrapMode;
 import imi.serialization.xml.bindings.xmlTextureAttributes;
+import java.io.Serializable;
 import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -34,7 +35,7 @@ import java.util.logging.Logger;
  * URL of the image, and UV coordinate wrap modes.
  * @author Ronald E Dahlgren
  */
-public class TextureMaterialProperties 
+public class TextureMaterialProperties implements Serializable
 {
     /** The location of the image **/
     private URL     m_imageLocation = null;

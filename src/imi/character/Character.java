@@ -483,12 +483,10 @@ public abstract class Character extends Entity implements SpatialObject, Animati
     private void loadSkeleton(URL location)
     {
         m_skeleton = null;
-        FileInputStream fis = null;
         WonderlandObjectInputStream in = null;
         try
         {
-            fis = new FileInputStream(new File(location.toURI()));
-            in = new WonderlandObjectInputStream(fis);
+            in = new WonderlandObjectInputStream(location.openStream());
             m_skeleton = (SkeletonNode)in.readObject();
             in.close();
         }

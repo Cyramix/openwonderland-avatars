@@ -127,8 +127,8 @@ public class TreeExplorer extends javax.swing.JFrame {
         currentSelection = selectedNode;
         popupMenu.setPropertyPanel(selectedNode, dmtSelectedNode);
         
-        if(currentSelection instanceof PPolygonSkinnedMeshInstance)
-            selectGroup();
+//        if(currentSelection instanceof PPolygonSkinnedMeshInstance)
+//            selectGroup();
     }
     
     /**

@@ -19,6 +19,7 @@ package imi.scene.shader;
 
 import imi.scene.shader.dynamic.GLSLDataType;
 import imi.serialization.xml.bindings.xmlShaderProperty;
+import java.io.Serializable;
 
 /**
  * This class represents a property of a shader. A property is defined as a 
@@ -26,7 +27,7 @@ import imi.serialization.xml.bindings.xmlShaderProperty;
  * The exposed properties change the behavior of the owning shader.
  * @author Ronald E Dahlgren
  */
-public class ShaderProperty 
+public class ShaderProperty implements Serializable
 {
     /**
      * This is the name of the property as referenced in the shader code

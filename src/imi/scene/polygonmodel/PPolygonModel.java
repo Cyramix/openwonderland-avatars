@@ -28,6 +28,9 @@ import imi.scene.PNode;
 import imi.scene.PTransform;
 import imi.scene.polygonmodel.PPolygonMesh;
 import imi.scene.utils.*;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -41,12 +44,12 @@ import javolution.util.FastList;
  * 
  * @author Chris Nagle
  */
-public class PPolygonModel extends PNode
+public class PPolygonModel extends PNode implements Serializable
 {
-    PCube                       m_BoundingCube      = new PCube();
-    PSphere                     m_BoundingSphere    = new PSphere();
+    private PCube                       m_BoundingCube      = new PCube();
+    private PSphere                     m_BoundingSphere    = new PSphere();
 
-    boolean                     m_bInBatch          = false;
+    private transient boolean   m_bInBatch = false;
 
     //  Constructor.
     public PPolygonModel()
@@ -421,5 +424,12 @@ public class PPolygonModel extends PNode
             addChild(bufferMesh);
         }
         
+    }
+
+    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException
+    {
+        in.defaultReadObject();
+        // Re-allocate all transient objects
+        m_bInBatch = false;
     }
 }

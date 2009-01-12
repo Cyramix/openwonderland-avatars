@@ -19,11 +19,17 @@ package imi.loaders.repository;
 
 import com.jme.image.Texture;
 import com.jme.util.TextureManager;
+import com.jme.util.export.binary.BinaryExporter;
+import com.jme.util.export.binary.BinaryImporter;
 import imi.loaders.collada.Collada;
 import imi.loaders.collada.ColladaLoaderParams;
 import imi.loaders.ms3d.SkinnedMesh_MS3D_Importer;
 import imi.scene.PScene;
 import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.LinkedList;
 import java.util.logging.Level;
@@ -41,6 +47,12 @@ import org.jdesktop.mtgame.NewFrameCondition;
  */
 public class RepositoryAsset extends ProcessorComponent
 {
+    /** Logger ref **/
+    static final Logger logger = Logger.getLogger(RepositoryAsset.class.getName());
+    /** Exporter **/
+    static final BinaryExporter m_binaryExporter = new BinaryExporter();
+    /** Importer **/
+    static final BinaryImporter m_binaryImporter = new BinaryImporter();
     /** the maximum number of references per (deep) copy **/
     static final int m_referenceThreshHold   = 100; //  TODO ? how many
     /** The current number of references **/
@@ -63,6 +75,9 @@ public class RepositoryAsset extends ProcessorComponent
     private Repository           m_home       = null;
     
     private final Boolean m_lock = Boolean.TRUE;
+
+    /** True to enable the neew texture loading code **/
+    private boolean bUseTextureImporter = false;
 
     /**
      * Construct a new instance
@@ -149,36 +164,8 @@ public class RepositoryAsset extends ProcessorComponent
                 }
                 break;
                 case Texture:
-                {
-                    Texture tex = null;
-                    try {
-                        URL loc = m_descriptor.getLocation();
-                        tex = TextureManager.loadTexture(loc,
-                                                        Texture.MinificationFilter.Trilinear,
-                                                        Texture.MagnificationFilter.Bilinear);
-                    } catch (Exception exception) {
-                        if (exception.getMessage().equals("Connection refused")) {
-                            System.out.println(this.toString() + " " + exception.getMessage() + "... Retrying from RepositoryAsset loadSelf");
-                        }
-                        m_data = null;
-                        return;
-                    }
-
-                    if (tex != null)
-                    {
-                        tex.setWrap(Texture.WrapAxis.S, Texture.WrapMode.Repeat);
-                        tex.setWrap(Texture.WrapAxis.T, Texture.WrapMode.Repeat);
-                    }
-                    else // failure
-                    {
-                        System.out.println(this.toString() + " texture failed.");
-                        m_data = null;
-                        return;
-                    }
-
-                    m_data.add(tex);
-                }
-                break;
+                    loadTexture();
+                    break;
             }
             // first, if the size of data is still zero, there is a problem
             if (m_data != null && m_data.size() <= 0)
@@ -248,4 +235,87 @@ public class RepositoryAsset extends ProcessorComponent
         collection.addCondition(new NewFrameCondition(this));
         setArmingCondition(collection); 
     }
+
+    /**
+     * First searches for an existing binary texture form. Barring that, one is created
+     * to speed up the next time it is loaded.
+     * @return
+     */
+    private void loadTexture()
+    {
+        Texture result = null;
+        URL loc = m_descriptor.getLocation();
+        URL binaryLocation = null;
+        if (bUseTextureImporter)
+        {
+            // First check for the existence of the binary form
+            try
+            {
+                if (Repository.bafCacheURL == null)
+                    binaryLocation = new URL(loc.toString().substring(0, loc.toString().length() - 3) + "baf");
+                else
+                    binaryLocation = new URL(Repository.bafCacheURL + loc.getFile().toString().substring(0, loc.getFile().toString().length() - 3) + "baf");
+                result = loadBinaryTexture(binaryLocation);
+            } catch (Exception ex)
+            {
+                logger.warning(ex.getMessage());
+            }
+        }
+
+        if (result == null) // Load non-binary form
+        {
+            result = TextureManager.loadTexture(loc,
+                                            Texture.MinificationFilter.Trilinear,
+                                            Texture.MagnificationFilter.Bilinear);
+            result.setWrap(Texture.WrapAxis.S, Texture.WrapMode.Repeat);
+            result.setWrap(Texture.WrapAxis.T, Texture.WrapMode.Repeat);
+            if (bUseTextureImporter)
+                writeBinaryTexture(binaryLocation, result);
+        }
+
+        if (result != null)
+            m_data.add(result);
+        else // failure
+            m_data = null;
+    }
+
+    private Texture loadBinaryTexture(URL binaryLocation)
+    {
+        System.out.println("Attempting to load binary texture from " + binaryLocation.toString());
+        Texture result = null;
+        synchronized (m_binaryImporter)
+        {
+            try
+            {
+                InputStream is = binaryLocation.openStream();
+                result = (Texture)m_binaryImporter.load(is);
+            }
+            catch (Exception ex)
+            {
+                if (!(ex instanceof FileNotFoundException)) // Not a problem if it doesnt exist, we are just checking.
+                    logger.warning(ex.getMessage());
+            }
+        }
+        return result;
+    }
+
+    private void writeBinaryTexture(URL outputFileLocation, Texture tex)
+    {
+        System.out.println("Attempting to load binary texture from " + outputFileLocation.toString());
+        tex.setStoreTexture(true);
+        File destination = new File(outputFileLocation.getFile());
+        synchronized(m_binaryExporter)
+        {
+            try
+            {
+                m_binaryExporter.save(tex, destination);
+            }
+            catch (Exception ex)
+            {
+                logger.warning(ex.getMessage());
+            }
+        }
+    }
+
+
 }

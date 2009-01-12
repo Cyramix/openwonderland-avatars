@@ -27,7 +27,7 @@ import imi.scene.shader.effects.GenerateFragLocalNormal;
 import imi.scene.shader.effects.VertexToPosition_Transform;
 import imi.scene.shader.effects.UnlitTexturing_Lighting;
 import imi.scene.shader.effects.VertexDeformer_Transform;
-import imi.serialization.xml.bindings.xmlShaderProgram;
+import java.io.Serializable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.jdesktop.mtgame.WorldManager;
@@ -38,7 +38,7 @@ import org.jdesktop.mtgame.WorldManager;
  * lighting model.
  * @author Ronald E Dahlgren
  */
-public class VertexDeformer extends GLSLShaderProgram
+public class VertexDeformer extends GLSLShaderProgram implements Serializable
 {
     // The following two strings are the default source code for this effect
     private static final String VertexSource = new String(

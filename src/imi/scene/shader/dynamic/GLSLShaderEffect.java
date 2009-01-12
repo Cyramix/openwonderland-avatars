@@ -17,6 +17,7 @@
  */
 package imi.scene.shader.dynamic;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
@@ -45,7 +46,7 @@ import java.util.ArrayList;
  * some of the dependencies if there are special circumstances around it.
  * @author Ronald E Dahlgren
  */
-public class GLSLShaderEffect 
+public class GLSLShaderEffect implements Serializable
 {
     /** This is a convenience reference to the ShaderNewLine string **/
     protected static String         NL = GLSLDefaultVariables.ShaderNewline;

@@ -28,6 +28,7 @@ import imi.scene.shader.ShaderUtils;
 import imi.scene.shader.dynamic.GLSLDataType;
 import imi.scene.shader.dynamic.GLSLDefaultVariables;
 import imi.serialization.xml.bindings.xmlShaderProgram;
+import java.io.Serializable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.jdesktop.mtgame.WorldManager;
@@ -37,7 +38,7 @@ import org.jdesktop.mtgame.WorldManager;
  * pattern) and color modulation of both layers independently.
  * @author Ronald E Dahlgren
  */
-public class ClothingShader extends BaseShaderProgram implements AbstractShaderProgram
+public class ClothingShader extends BaseShaderProgram implements AbstractShaderProgram, Serializable
 {
     private static final Logger logger = Logger.getLogger(ClothingShader.class.getName());
     // The following two strings are the default source code for this effect

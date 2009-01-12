@@ -18,12 +18,13 @@
 package imi.scene.polygonmodel.parts.polygon;
 
 import com.jme.math.Vector3f;
+import java.io.Serializable;
 
 
-public class PPolygonNormal
+public class PPolygonNormal implements Serializable
 {
     public Vector3f	m_Normal = new Vector3f();
-    public int          m_ReferenceCount = 0;
+    public int m_ReferenceCount = 0;
 
     public PPolygonNormal(Vector3f normal)
     {

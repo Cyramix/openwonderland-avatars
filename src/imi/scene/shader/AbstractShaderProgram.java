@@ -19,6 +19,7 @@ package imi.scene.shader;
 
 import imi.scene.polygonmodel.PPolygonMeshInstance;
 import imi.serialization.xml.bindings.xmlShaderProgram;
+import java.io.Serializable;
 
 /**
  * This interface provides common access and modification mechanisms for all
@@ -26,7 +27,7 @@ import imi.serialization.xml.bindings.xmlShaderProgram;
  * is to provide compatibility between the different shader implementations.
  * @author Ronald E Dahlgren
  */
-public interface AbstractShaderProgram 
+public interface AbstractShaderProgram extends Serializable
 {
 /**
      * This method should be implemented by subclasses to generate a 

@@ -18,11 +18,12 @@
 package imi.scene.polygonmodel.parts.polygon;
 
 import com.jme.math.Vector3f;
+import java.io.Serializable;
 
-public class PPolygonPosition
+public class PPolygonPosition implements Serializable
 {
     public Vector3f	m_Position = new Vector3f();
-    public int          m_ReferenceCount = 0;
+    public int m_ReferenceCount = 0;
 
     public PPolygonPosition(Vector3f position)
     {

@@ -25,9 +25,9 @@ import com.jme.renderer.ColorRGBA;
 import imi.scene.polygonmodel.PPolygonMesh;
 import imi.scene.polygonmodel.parts.skinned.PPolygonSkinnedVertexIndices;
 import imi.utils.PMathUtils;
-import javolution.util.FastList;
+import java.io.Serializable;
 
-public class PPolygon
+public class PPolygon implements Serializable
 {
     /**
      * If vertex colors are not given this default color will be used.

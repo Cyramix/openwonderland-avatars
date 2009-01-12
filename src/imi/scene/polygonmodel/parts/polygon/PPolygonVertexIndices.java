@@ -17,8 +17,10 @@
  */
 package imi.scene.polygonmodel.parts.polygon;
 
+import java.io.Serializable;
 
-public class PPolygonVertexIndices
+
+public class PPolygonVertexIndices implements Serializable
 {
     public int          m_PositionIndex;
     public int          m_NormalIndex;

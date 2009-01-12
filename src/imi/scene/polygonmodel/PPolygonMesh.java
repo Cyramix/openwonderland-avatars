@@ -37,6 +37,9 @@ import imi.loaders.PPolygonTriMeshAssembler;
 import imi.loaders.repository.SharedAsset;
 import imi.scene.PTransform;
 import imi.scene.polygonmodel.parts.polygon.PPolygon;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.Serializable;
 import javolution.util.FastList;
 
 /**
@@ -48,12 +51,12 @@ import javolution.util.FastList;
  * @author Loud Hayt
  * @author Ronald E Dahlgen
  */
-public class PPolygonMesh extends PNode
+public class PPolygonMesh extends PNode implements Serializable
 {
-    private TriMesh                         m_Geometry          = new TriMesh("geometry"); // jME geometry
+    private transient TriMesh   m_Geometry          = new TriMesh("geometry"); // jME geometry
     
     /** A reference to the shared asset for this geometry, if null then the geometry was made procedurally */
-    private SharedAsset                     m_SharedAsset       = null;
+    private transient SharedAsset                     m_SharedAsset       = null;
     
     /**
      * <code>PMeshMaterial</code> is a reference to the Material common to all <code>PPolygon</code>s in this mesh.
@@ -88,11 +91,11 @@ public class PPolygonMesh extends PNode
     private int                             m_TessalatedVertexCount = 0;
     
 
-    private boolean                         m_bInBatch          = false;
+    private transient boolean m_bInBatch          = false;
     
-    private boolean                         m_bDebugInfo        = false; // True to dump extra debugging information
+    private transient boolean m_bDebugInfo        = false; // True to dump extra debugging information
     
-    private boolean                         m_bSubmitGeometry   = true;
+    private transient boolean m_bSubmitGeometry   = true;
 
     /**
      * Copy Constructor - This version performs a deep copy
@@ -1497,7 +1500,17 @@ public class PPolygonMesh extends PNode
         return hash;
     }
 
-    
+    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException
+    {
+        in.defaultReadObject();
+        // Re-allocate all transient objects
+        m_Geometry = new TriMesh(this.getName());
+        m_SharedAsset = null;
+        m_bInBatch = false;
+        m_bDebugInfo = false;
+        m_bSubmitGeometry = true;
+        
+    }
 
 }
 

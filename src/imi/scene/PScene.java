@@ -33,6 +33,7 @@ import imi.loaders.repository.RepositoryUser;
 import imi.loaders.repository.SharedAsset;
 import imi.loaders.repository.SharedAsset.SharedAssetType;
 import imi.loaders.repository.SharedAssetPlaceHolder;
+import imi.scene.animation.AnimationState;
 import imi.scene.polygonmodel.PPolygonMesh;
 import imi.scene.polygonmodel.PPolygonMeshInstance;
 import imi.scene.polygonmodel.PPolygonModelInstance;
@@ -44,9 +45,11 @@ import imi.scene.utils.PRenderer;
 import imi.scene.utils.tree.PSceneSubmitHelper;
 import imi.scene.utils.tree.TreeTraverser;
 import imi.utils.BooleanPointer;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.Serializable;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import javolution.util.FastList;
 import org.jdesktop.mtgame.WorldManager;
@@ -60,23 +63,24 @@ import org.jdesktop.mtgame.WorldManager;
  * @author Lou Hayt
  * @author Ron Dahlgren
  */
-public class PScene extends PNode implements RepositoryUser
+public class PScene extends PNode implements RepositoryUser, Serializable
 {
-    // None Shared Geometry
+    // Non-Shared Geometry
     private FastList<PPolygonMesh> m_LocalGeometry = new FastList<PPolygonMesh>();
     
     // Shared Assets
     private boolean m_bUseRepository = true;
     private final List<SharedAsset> m_SharedAssets  = new FastList<SharedAsset>();
-    private final List<SharedAssetPlaceHolder> m_SharedAssetWaitingList = new FastList<SharedAssetPlaceHolder>();
+
+    private transient List<SharedAssetPlaceHolder> m_SharedAssetWaitingList = new FastList<SharedAssetPlaceHolder>();
 
     // Instances
     private PNode m_Instances                       = null;
     
     // Utility
-    private JScene                      m_JScene            = null;
-    private WorldManager                m_WorldManager      = null;
-    private PPolygonTriMeshAssembler    m_TriMeshAssembler  = null;
+    private transient JScene m_JScene = null;
+    private transient WorldManager                m_WorldManager      = null;
+    private transient PPolygonTriMeshAssembler    m_TriMeshAssembler  = null;
     
     // SFK 01-10-09
     public static boolean jHack = true;
@@ -1074,7 +1078,6 @@ public class PScene extends PNode implements RepositoryUser
             }
             catch (Exception ex)
             {
-                //monkeyTexture = null;
                 if (ex.getMessage().equals("Connection refused")) {
                     System.out.println(ex.getMessage() + "... Aborting -- PScene : loadTexture");
                 } else
@@ -1119,19 +1122,21 @@ public class PScene extends PNode implements RepositoryUser
             SharedAssetPlaceHolder placeHolder =  new SharedAssetPlaceHolder(texture.getDescriptor().getType().toString() +
                     texture.getDescriptor().getLocation().getPath().toString(),
                     texture.getDescriptor(), textureInstaller);
-            
             // Can this placeholder be a freeloader?
             // Check to see if there is someone in the waiting list with the same descriptor...
             // if there is we will jump aboard as a freeloader
             boolean freeloader = false;
-            for (SharedAssetPlaceHolder holder : m_SharedAssetWaitingList)
+            synchronized(m_SharedAssetWaitingList)
             {
-                if (holder.getDescriptor().equals(placeHolder.getDescriptor()))
+                for (SharedAssetPlaceHolder holder : m_SharedAssetWaitingList)
                 {
-                    // if there is someone in the waiting list with the same descriptor we are added as freeloaders
-                    holder.addFreeloader(placeHolder);
-                    freeloader = true;
-                    break;
+                    if (holder.getDescriptor().hashCode() == placeHolder.getDescriptor().hashCode())
+                    {
+                        // if there is someone in the waiting list with the same descriptor we are added as freeloaders
+                        holder.addFreeloader(placeHolder);
+                        freeloader = true;
+                        break;
+                    }
                 }
             }
 
@@ -1145,7 +1150,7 @@ public class PScene extends PNode implements RepositoryUser
         }
         else
         {
-            // we alraedy have a local reference
+            // we already have a local reference
             SharedAsset sharedTexture = m_SharedAssets.get(index);
             textureInstaller.installTexture((Texture)sharedTexture.getAssetData(), sharedTexture.getDescriptor().getLocation());
         }
@@ -1208,5 +1213,14 @@ public class PScene extends PNode implements RepositoryUser
     public JScene getJScene()
     {
         return m_JScene;
+    }
+
+    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException
+    {
+        in.defaultReadObject();
+        // Re-allocate all relevant transient objects
+        m_SharedAssetWaitingList = new FastList<SharedAssetPlaceHolder>();
+        m_TriMeshAssembler = new PPolygonTriMeshAssembler();
+
     }
 }

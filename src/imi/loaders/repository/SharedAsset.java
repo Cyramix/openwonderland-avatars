@@ -47,7 +47,7 @@ public class SharedAsset
         MS3D_SkinnedMesh,        // unknown if skinned or not, determind by the existance of a *.anm file
         COLLADA_Model, // Loads a complete model including a skeleton and all geometry
         COLLADA_Animation, // Loads an animation file, also requires a skeleton node to attach to
-        COLLADA_SkinnedMesh, // Loads a skinned mesh, requires a skeleton node to attach to.
+        COLLADA_SkinnedMesh, // Loads a skinned mesh - Specifies which file to check into and the name to use
         COLLADA_Mesh, // Loads a non-skinned mesh. 
         MS3D_Mesh,        // unknown if ms3d or collada
         MS3D_SkinnedMesh1, // unknown if ms3d or collada, in the case of ms3d will load the skeleton even without an *.anm file
@@ -56,21 +56,6 @@ public class SharedAsset
         AudioFX, AudioTrack, 
         AnimationProcessor, SkinnedAnimation, 
         AIProcessor, Code
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
     };
 
     /**

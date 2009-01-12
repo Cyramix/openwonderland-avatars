@@ -25,7 +25,7 @@ import imi.scene.shader.effects.CalculateToLight_Lighting;
 import imi.scene.shader.effects.GenerateFragLocalNormal;
 import imi.scene.shader.effects.VertexToPosition_Transform;
 import imi.scene.shader.effects.UnlitTexturing_Lighting;
-import imi.serialization.xml.bindings.xmlShaderProgram;
+import java.io.Serializable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.jdesktop.mtgame.WorldManager;
@@ -35,7 +35,7 @@ import org.jdesktop.mtgame.WorldManager;
  * with a specified amount of ambient power mixed in to the final color result.
  * @author Ronald E Dahlgren
  */
-public class SimpleTNLWithAmbient extends GLSLShaderProgram
+public class SimpleTNLWithAmbient extends GLSLShaderProgram implements Serializable
 {
     /**
      * Constructs a new instance defaulting to use 35% ambient contribution

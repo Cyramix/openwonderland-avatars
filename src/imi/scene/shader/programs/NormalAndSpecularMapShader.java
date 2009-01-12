@@ -27,7 +27,7 @@ import imi.scene.shader.effects.NormalMapping;
 import imi.scene.shader.effects.SpecularMapping_Lighting;
 import imi.scene.shader.effects.UnlitTexturing_Lighting;
 import imi.scene.shader.effects.VertexToPosition_Transform;
-import imi.serialization.xml.bindings.xmlShaderProgram;
+import java.io.Serializable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.jdesktop.mtgame.WorldManager;
@@ -36,7 +36,7 @@ import org.jdesktop.mtgame.WorldManager;
  * This shader performs normal and specular mapping.
  * @author Ronald E Dahlgren
  */
-public class NormalAndSpecularMapShader extends GLSLShaderProgram
+public class NormalAndSpecularMapShader extends GLSLShaderProgram implements Serializable
 {
     /**
      * Constructs a new instance defaulting to use 20% ambient contribution

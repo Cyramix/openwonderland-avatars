@@ -17,12 +17,14 @@
  */
 package imi.scene.shader.dynamic;
 
+import java.io.Serializable;
+
 /**
  * This class represents a vertex attribute. Vertex attributes are read-only and
  * may only be accessed in the vertex logic. 
  * @author Ronald E Dahlgren
  */
-public class GLSLVertexAttribute extends GLSLShaderVariable 
+public class GLSLVertexAttribute extends GLSLShaderVariable implements Serializable
 {
     /**
      * Construct a new GLSLVertexAttribute instance with the specified

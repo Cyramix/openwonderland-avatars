@@ -19,12 +19,13 @@ package imi.scene.polygonmodel.parts.polygon;
 
 
 import com.jme.math.Vector2f;
+import java.io.Serializable;
 
 
-public class PPolygonTexCoord
+public class PPolygonTexCoord implements Serializable
 {
     public Vector2f	m_TexCoord = new Vector2f();
-    public int          m_ReferenceCount = 0;
+    public int m_ReferenceCount = 0;
 
     public PPolygonTexCoord(Vector2f texCoord)
     {

@@ -27,7 +27,7 @@ import imi.scene.shader.effects.NormalMapping;
 import imi.scene.shader.effects.UnlitTexturing_Lighting;
 import imi.scene.shader.effects.VertexDeformer_Transform;
 import imi.scene.shader.effects.VertexToPosition_Transform;
-import imi.serialization.xml.bindings.xmlShaderProgram;
+import java.io.Serializable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.jdesktop.mtgame.WorldManager;
@@ -36,7 +36,7 @@ import org.jdesktop.mtgame.WorldManager;
  *
  * @author Ronald E Dahlgren
  */
-public class VertDeformerWithNormalMapping extends GLSLShaderProgram
+public class VertDeformerWithNormalMapping extends GLSLShaderProgram implements Serializable
 {
     /**
      * Constructs a new instance defaulting to use 20% ambient contribution

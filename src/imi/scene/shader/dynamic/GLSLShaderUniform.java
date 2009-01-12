@@ -17,6 +17,8 @@
  */
 package imi.scene.shader.dynamic;
 
+import java.io.Serializable;
+
 /**
  * This class represents a uniform variable. Uniforms, although deriving from
  * GLSLShaderVariable, may not have values associated with them. This is due to
@@ -26,7 +28,7 @@ package imi.scene.shader.dynamic;
  * changes to the uniform values.
  * @author Ronald E Dahlgren
  */
-public class GLSLShaderUniform extends GLSLShaderVariable
+public class GLSLShaderUniform extends GLSLShaderVariable implements Serializable
 {
     /**
      * Construct a brand new instance of a GLSLShaderUniform

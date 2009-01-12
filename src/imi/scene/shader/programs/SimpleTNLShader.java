@@ -25,7 +25,7 @@ import imi.scene.shader.effects.GenerateFragLocalNormal;
 import imi.scene.shader.effects.VertexToPosition_Transform;
 import imi.scene.shader.effects.SimpleNdotL_Lighting;
 import imi.scene.shader.effects.UnlitTexturing_Lighting;
-import imi.serialization.xml.bindings.xmlShaderProgram;
+import java.io.Serializable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.jdesktop.mtgame.WorldManager;
@@ -35,7 +35,7 @@ import org.jdesktop.mtgame.WorldManager;
  * shader
  * @author Ronald E Dahlgren
  */
-public class SimpleTNLShader extends GLSLShaderProgram
+public class SimpleTNLShader extends GLSLShaderProgram implements Serializable
 {
     /**
      * Construct a brand new instance!

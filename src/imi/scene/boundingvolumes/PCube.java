@@ -19,11 +19,12 @@ package imi.scene.boundingvolumes;
 
 
 import com.jme.math.Vector3f;
+import java.io.Serializable;
 
 
 
 
-public class PCube
+public class PCube implements Serializable
 {
     private Vector3f m_MinCorner = new Vector3f(Vector3f.ZERO);
     private Vector3f m_MaxCorner = new Vector3f(Vector3f.ZERO);

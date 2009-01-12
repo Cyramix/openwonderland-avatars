@@ -18,14 +18,14 @@
 package imi.scene.polygonmodel.parts.skinned;
 
 import imi.scene.polygonmodel.parts.polygon.PPolygonVertexIndices;
-import imi.scene.polygonmodel.parts.*;
+import java.io.Serializable;
 
 /**
  *
  * @author Ronald E Dahlgren
  * @author Lou Hayt
  */
-public class PPolygonSkinnedVertexIndices  extends PPolygonVertexIndices
+public class PPolygonSkinnedVertexIndices  extends PPolygonVertexIndices implements Serializable
 {
     public int          m_BoneWeightIndex;  // Index into the parent mesh's bone weight collection
     public int          m_BoneIndicesIndex; // Index into the parent mesh's bone indices collection

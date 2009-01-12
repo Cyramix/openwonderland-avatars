@@ -31,7 +31,7 @@ import imi.scene.shader.effects.SpecularMapping_Lighting;
 import imi.scene.shader.effects.UnlitTexturing_Lighting;
 import imi.scene.shader.effects.VertexDeformer_Transform;
 import imi.scene.shader.effects.VertexToPosition_Transform;
-import imi.serialization.xml.bindings.xmlShaderProgram;
+import java.io.Serializable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.jdesktop.mtgame.WorldManager;
@@ -40,7 +40,7 @@ import org.jdesktop.mtgame.WorldManager;
  *
  * @author Ronald E Dahlgren
  */
-public class FleshShader extends GLSLShaderProgram
+public class FleshShader extends GLSLShaderProgram implements Serializable
 {
 
     public FleshShader(WorldManager wm)

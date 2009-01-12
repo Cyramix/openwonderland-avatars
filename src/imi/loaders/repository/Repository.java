@@ -19,10 +19,10 @@ package imi.loaders.repository;
 
 import imi.annotations.Debug;
 import imi.loaders.repository.SharedAsset.SharedAssetType;
-import imi.scene.animation.AnimationState;
 import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
 import java.io.File;
 import java.io.FileInputStream;
+import java.net.URL;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
 import javolution.util.FastList;
@@ -37,6 +37,9 @@ import org.jdesktop.wonderland.common.comms.WonderlandObjectInputStream;
  */
 public class Repository extends Entity
 {
+    /** Some package private references for convience and centricity **/
+    static String bafCacheURL = System.getProperty("BafCacheDir", null);
+
     /** Logger ref **/
     private static final Logger logger = Logger.getLogger(Repository.class.getName());
 
@@ -250,20 +253,20 @@ public class Repository extends Entity
     }
 
     private void loadSkeletons() {
-
-        FileInputStream fis = null;
         WonderlandObjectInputStream in = null;
         SkeletonNode MaleSkeleton = null;
         SkeletonNode FemaleSkeleton = null;
+        String fileProtocol = new String("file://localhost/" + System.getProperty("user.dir"));
         try
         {
-            fis = new FileInputStream(new File("assets/skeletons/Male.bs"));
-            in = new WonderlandObjectInputStream(fis);
+            URL maleSkeleton = new URL(fileProtocol + "assets/skeletons/Male.bs");
+            URL femaleSkeleton = new URL(fileProtocol + "assets/skeletons/Female.bs");
+            
+            in = new WonderlandObjectInputStream(maleSkeleton.openStream());
             MaleSkeleton = (SkeletonNode)in.readObject();
             in.close();
-            fis.close();
-            fis = new FileInputStream(new File("assets/skeletons/Female.bs"));
-            in = new WonderlandObjectInputStream(fis);
+
+            in = new WonderlandObjectInputStream(femaleSkeleton.openStream());
             FemaleSkeleton = (SkeletonNode)in.readObject();
         }
         catch(Exception ex)

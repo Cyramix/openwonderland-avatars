@@ -30,6 +30,7 @@ import imi.scene.utils.PRenderer;
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
+import java.io.Serializable;
 import java.util.List;
 
 
@@ -39,7 +40,7 @@ import java.util.List;
  * @author Ronald Dahlgren
  * @author Lou Hayt
  */
-public class PPolygonSkinnedMesh extends PPolygonMesh
+public class PPolygonSkinnedMesh extends PPolygonMesh implements Serializable
 {   
     // Skinning loaded data (no duplicates), these fields are nulled after reconstruction of the mesh when setSkinningData() is called.
     // indexed by polygons, weight of 4 influence from the indexed materices\bones
@@ -48,8 +49,8 @@ public class PPolygonSkinnedMesh extends PPolygonMesh
     private final ArrayList<PBoneIndices> m_PBoneIndices  	  = new ArrayList<PBoneIndices>();
 
     // Skinning final data (calculated in PPolygonTriMeshAssembler)
-    private FloatBuffer       		m_WeightBuffer        = null;    // per vertex, weight of 4 influence from the indexed materices\bones
-    private FloatBuffer       		m_BoneIndexBuffer     = null;    // per vertex, 4 indices of bones in the flatened matrix stack
+    private transient FloatBuffer       		m_WeightBuffer        = null;    // per vertex, weight of 4 influence from the indexed materices\bones
+    private transient FloatBuffer       		m_BoneIndexBuffer     = null;    // per vertex, 4 indices of bones in the flatened matrix stack
 
     private ArrayList<String>   	m_JointNames          = new ArrayList<String>();
     private int[]             		m_influenceIndices    = null;

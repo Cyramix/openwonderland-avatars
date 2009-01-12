@@ -108,7 +108,7 @@ public class GLSLShaderProgram implements AbstractShaderProgram, RenderUpdater
      * Used to create render states as well as adding instances onto the render
      * thread.
      */
-    protected WorldManager  m_WM            = null; 
+    protected transient WorldManager  m_WM            = null;
     
     /**
      * Mapping of property names to their instances

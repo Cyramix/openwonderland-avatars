@@ -28,6 +28,7 @@ import imi.scene.shader.ShaderUtils;
 import imi.scene.shader.dynamic.GLSLDataType;
 import imi.scene.shader.dynamic.GLSLDefaultVariables;
 import imi.serialization.xml.bindings.xmlShaderProgram;
+import java.io.Serializable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.jdesktop.mtgame.WorldManager;
@@ -36,7 +37,7 @@ import org.jdesktop.mtgame.WorldManager;
  * Create an eyeball effect. This is simply a single texture with specular.
  * @author Ronald E Dahlgren
  */
-public class EyeballShader extends BaseShaderProgram implements AbstractShaderProgram
+public class EyeballShader extends BaseShaderProgram implements AbstractShaderProgram, Serializable
 {
     // The following two strings are the default source code for this effect
     private static final String VertexSource = new String(

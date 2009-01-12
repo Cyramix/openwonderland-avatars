@@ -18,8 +18,9 @@
 package imi.scene.boundingvolumes;
 
 import com.jme.math.Vector3f;
+import java.io.Serializable;
 
-public class PSphere
+public class PSphere implements Serializable
 {
     private Vector3f m_Center = new Vector3f();
     private float m_fRadius = 0.0f;

@@ -20,12 +20,14 @@ package imi.scene.polygonmodel;
 import com.jme.math.Vector3f;
 import imi.scene.PMatrix;
 import imi.scene.PNode;
-import imi.scene.PScene;
 import imi.scene.PTransform;
 import imi.scene.boundingvolumes.PSphere;
 import imi.scene.utils.PRenderer;
 import imi.scene.utils.tree.BoundingVolumeCollector;
 import imi.scene.utils.tree.TreeTraverser;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.LinkedList;
 /**
@@ -33,13 +35,11 @@ import java.util.LinkedList;
  * @author Lou Hayt
  * @author Ron Dahlgren
  */
-public class PPolygonModelInstance extends PNode
+public class PPolygonModelInstance extends PNode implements Serializable
 {
-    PScene      m_owningScene = null; // The pscene that owns this instance, used for loading
+    private PSphere   m_boundingSphere = null; // The overall bounding sphere
     
-    PSphere     m_boundingSphere = null; // The overall bounding sphere
-    
-    PSphere [] debugSpheres = new PSphere[2];
+    private transient PSphere [] debugSpheres = new PSphere[2];
     
     public PPolygonModelInstance(String name, PTransform transform, ArrayList<PPolygonMeshInstance> meshes) 
     {
@@ -159,5 +159,12 @@ public class PPolygonModelInstance extends PNode
         }
         
         m_boundingSphere = new PSphere(boundingSphereCenter, fBoundingSphereRadius);
+    }   
+    
+    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException
+    {
+        in.defaultReadObject();
+        // Re-allocate all transient objects
+        debugSpheres = new PSphere[2];
     }
 }

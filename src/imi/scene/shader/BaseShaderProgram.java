@@ -21,7 +21,7 @@ import imi.scene.shader.programs.*;
 import com.jme.scene.state.GLSLShaderObjectsState;
 import imi.scene.polygonmodel.PPolygonMeshInstance;
 import imi.utils.FileUtils;
-import java.io.File;
+import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collection;
@@ -39,7 +39,7 @@ import org.jdesktop.mtgame.WorldManager;
  * getting things running.
  * @author Ronald E Dahlgren
  */
-public abstract class BaseShaderProgram implements RenderUpdater, AbstractShaderProgram
+public abstract class BaseShaderProgram implements RenderUpdater, AbstractShaderProgram, Serializable
 {
     /** These files point to the vertex and fragment source respectively **/
     protected String []       m_shaderSource = new String [2];
