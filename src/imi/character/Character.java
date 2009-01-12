@@ -466,9 +466,9 @@ public abstract class Character extends Entity implements SpatialObject, Animati
 
         // eat the skeleton
         if (m_attributes.isMale())
-           m_skeleton = Repository.MaleSkeleton.deepCopy();//loadSkeleton(maleSkeleton);
+           m_skeleton = m_pscene.getRepository().getSkeleton("MaleSkeleton");//loadSkeleton(maleSkeleton);
         else
-           m_skeleton = Repository.FemaleSkeleton.deepCopy();//loadSkeleton(femaleSkeleton);
+           m_skeleton = m_pscene.getRepository().getSkeleton("FemaleSkeleton");//loadSkeleton(femaleSkeleton);
         if (m_skeleton == null) // problem
         {
             logger.severe("Unable to load skeleton. Aborting applyAttributes.");

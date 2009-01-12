@@ -69,8 +69,7 @@ public class Repository extends Entity
     // processors (AI, animations, etc)
     // code
 
-    public static SkeletonNode MaleSkeleton = null;
-    public static SkeletonNode FemaleSkeleton = null;
+    public final FastList<SkeletonNode> m_Skeletons = new FastList<SkeletonNode>();
     
     /**
      * Construct a BRAND NEW REPOSITORY!
@@ -197,25 +196,25 @@ public class Repository extends Entity
         return m_maxConcurrentLoadRequests;
     }
 
-    public long getNumberOfLoadRequests() {
+    long getNumberOfLoadRequests() {
         return m_numberOfLoadRequests;
     }
 
-    public void adjustNumberOfLoadRequests(long workersModifierNumber) {
+    void adjustNumberOfLoadRequests(long workersModifierNumber) {
         m_numberOfLoadRequests += workersModifierNumber;
     }
 
     // Used to throtel the repository
-    public void setMaxConcurrentLoadRequests(long maxConcurrentWorkers) {
+    void setMaxConcurrentLoadRequests(long maxConcurrentWorkers) {
         m_maxConcurrentLoadRequests = maxConcurrentWorkers;
     }
     
-    public FastList<WorkOrder> getWorkOrders()
+    FastList<WorkOrder> getWorkOrders()
     {
         return m_workOrders;
     }
     
-    public WorkOrder popWorkOrder()
+    WorkOrder popWorkOrder()
     {
         WorkOrder statementOfWork = null;
         
@@ -230,7 +229,7 @@ public class Repository extends Entity
     
    
 
-    public void createRepositoryAsset(WorkOrder statementOfWork) 
+    void createRepositoryAsset(WorkOrder statementOfWork) 
     {
         // We did not exceed the maxium number of workers so we can process this request now
         // If we don't already have it in the collection we will add it now
@@ -254,6 +253,8 @@ public class Repository extends Entity
 
         FileInputStream fis = null;
         WonderlandObjectInputStream in = null;
+        SkeletonNode MaleSkeleton = null;
+        SkeletonNode FemaleSkeleton = null;
         try
         {
             fis = new FileInputStream(new File("assets/skeletons/Male.bs"));
@@ -270,6 +271,25 @@ public class Repository extends Entity
             logger.severe("Uh oh! Error loading skeleton for character: " + ex.getMessage());
             ex.printStackTrace();
         }
+        // Add these into our collection
+        MaleSkeleton.setName("MaleSkeleton");
+        FemaleSkeleton.setName("FemaleSkeleton");
+
+        m_Skeletons.add(MaleSkeleton);
+        m_Skeletons.add(FemaleSkeleton);
+    }
+
+    public SkeletonNode getSkeleton(String name)
+    {
+        for (SkeletonNode skeleton : m_Skeletons)
+            if (name.equals(skeleton.getName()))
+                return skeleton.deepCopy();
+        return null;
+    }
+
+    public void addSkeleton(SkeletonNode skeleton)
+    {
+        m_Skeletons.add(skeleton.deepCopy());
     }
     
     protected class WorkOrder
