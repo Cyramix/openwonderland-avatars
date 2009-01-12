@@ -336,8 +336,7 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
         }
 
         if (isViewMode) {
-            String[] anim = null;
-            m_sceneData.loadAvatarHeadDAEURL(true, this, data.get(0), anim);
+            m_sceneData.addAvatarHeadDAEURL(true, this, data.get(0));
         }
         else {
             addToAttributes(null, data, meshes, null, 0);
@@ -390,7 +389,7 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
 
         if (isViewMode) {
             String[] anim = null;
-            m_sceneData.loadAvatarHeadDAEURL(true, this, data.get(0), anim);
+            m_sceneData.loadAvatarHeadDAEURL(true, this, data.get(0), meshes);
         }
         else {
             addToAttributes(null, data, meshes, null, 0);

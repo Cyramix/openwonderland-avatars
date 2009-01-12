@@ -97,6 +97,7 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.jar.JarFile;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.xml.bind.JAXBContext;
@@ -127,19 +128,20 @@ public abstract class Character extends Entity implements SpatialObject, Animati
     private static URL femaleSkeleton = null;
     /** Logger ref **/
     private static final Logger logger = Logger.getLogger(Character.class.getName());
-
-    static
-    {
-        try
-        {
-            String fileProtocol = "file:///" + System.getProperty("user.dir") + "/";
-            maleSkeleton = new URL(fileProtocol + "assets/skeletons/Male.bs");
-            femaleSkeleton = new URL(fileProtocol + "assets/skeletons/Female.bs");
-        } catch (MalformedURLException ex) {
-            // This should never happen and should be caught immediately if it does happen.
-            logger.severe("Error initializing default URLs for binary skeletons!");
-        }
-    }
+//    static
+//    {
+//        try
+//        {
+//            String fileProtocol = "file:///" + System.getProperty("user.dir") + "/";
+//            maleSkeleton = new URL("http://www.zeitgeistgames.com/assets/skeletons/Male.bs");
+//            femaleSkeleton = new URL("http://www.zeitgeistgames.com/assets/skeletons/Female.bs");
+////            maleSkeleton = new URL(fileProtocol + "assets/skeletons/Male.bs");
+////            femaleSkeleton = new URL(fileProtocol + "assets/skeletons/Female.bs");
+//        } catch (MalformedURLException ex) {
+//            // This should never happen and should be caught immediately if it does happen.
+//            logger.severe("Error initializing default URLs for binary skeletons!");
+//        }
+//    }
     /**
      * Maps to game triggers from VK_ key IDs that are forwarded from the input
      * manager. This defines which triggers react to what keyboard input.
@@ -176,6 +178,8 @@ public abstract class Character extends Entity implements SpatialObject, Animati
     public Character(CharacterAttributes attributes, WorldManager wm)
     {
         this(attributes, wm, true);
+        maleSkeleton = getClass().getResource("/imi/character/skeleton/Male.bs");
+        femaleSkeleton = getClass().getResource("/imi/character/skeleton/Female.bs");
     }
 
     /**
@@ -187,8 +191,9 @@ public abstract class Character extends Entity implements SpatialObject, Animati
     public Character(CharacterAttributes attributes, WorldManager wm, boolean addEntity)
     {
         super(attributes.getName());
+        maleSkeleton = getClass().getResource("/imi/character/skeleton/Male.bs");
+        femaleSkeleton = getClass().getResource("/imi/character/skeleton/Female.bs");
         commonConstructionCode(wm, attributes, addEntity, null);
-
     }
 
     /**
@@ -200,6 +205,9 @@ public abstract class Character extends Entity implements SpatialObject, Animati
     public Character(URL configurationFile, WorldManager wm)
     {
         super("InterimName");
+
+        maleSkeleton = getClass().getResource("/imi/character/skeleton/Male.bs");
+        femaleSkeleton = getClass().getResource("/imi/character/skeleton/Female.bs");
         xmlCharacter characterDOM = null;
         CharacterAttributes loadedAttributes = null;
 
@@ -469,6 +477,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
            m_skeleton = m_pscene.getRepository().getSkeleton("MaleSkeleton");//loadSkeleton(maleSkeleton);
         else
            m_skeleton = m_pscene.getRepository().getSkeleton("FemaleSkeleton");//loadSkeleton(femaleSkeleton);
+        
         if (m_skeleton == null) // problem
         {
             logger.severe("Unable to load skeleton. Aborting applyAttributes.");

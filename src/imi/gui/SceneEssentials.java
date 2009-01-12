@@ -28,6 +28,7 @@ import imi.loaders.repository.SharedAsset;
 import imi.loaders.repository.SharedAsset.SharedAssetType;
 import imi.character.Character;
 import imi.character.CharacterAttributes;
+import imi.character.CharacterAttributes.SkinnedMeshParams;
 import imi.character.ninja.NinjaAvatar;
 import imi.scene.JScene;
 import imi.scene.PMatrix;
@@ -37,6 +38,7 @@ import imi.scene.animation.AnimationComponent.PlaybackMode;
 import imi.scene.animation.AnimationState;
 import imi.scene.animation.TransitionCommand;
 import imi.scene.animation.TransitionQueue;
+import imi.scene.camera.behaviors.FirstPersonCamModel;
 import imi.scene.camera.behaviors.TumbleObjectCamModel;
 import imi.scene.camera.state.FirstPersonCamState;
 import imi.scene.camera.state.TumbleObjectCamState;
@@ -574,12 +576,7 @@ public class SceneEssentials {
                 m_currentHiProcessors.clear();
             
             File path = getAbsPath(m_fileModel);
-            String szURL;
-            
-            if (isWindowsOS())
-                szURL = new String("file:\\" + path.getPath());
-            else
-                szURL = new String("file://" + path.getPath());
+            String szURL = new String("file://localhost/" + path.getPath());
 
             try {
                 URL modelURL = new URL(szURL);
@@ -606,12 +603,7 @@ public class SceneEssentials {
                 m_currentHiProcessors.clear();
 
             File path = getAbsPath(m_fileModel);
-            String szURL;
-
-            if (isWindowsOS())
-                szURL = new String("file:\\" + path.getPath());
-            else
-                szURL = new String("file://" + path.getPath());
+            String szURL = new String("file://localhost/" + path.getPath());
 
             try {
                 URL modelURL = new URL(szURL);
@@ -628,6 +620,11 @@ public class SceneEssentials {
         return false;
     }
     
+    // TODO load head for viewing w/o the install head function using processors
+    public boolean loadAvatarHeadDAEFile(boolean useRepository, Component arg0) {
+        return false;
+    }
+
     public boolean loadAvatarDAEFile(boolean clear, boolean useRepository, Component arg0) {
         int returnValue = m_jFileChooser_LoadAvatarDAE.showOpenDialog(arg0);
         if (returnValue == JFileChooser.APPROVE_OPTION) {
@@ -655,14 +652,7 @@ public class SceneEssentials {
             }
 
             // Create avatar attribs
-            CharacterAttributes attribs = new CharacterAttributes("Avatar");
-
-            attribs = new CharacterAttributes("Avatar");
-            attribs.setBaseURL("");
-            attribs.setLoadInstructions(null);
-            attribs.setAddInstructions(null);
-            attribs.setAttachmentsInstructions(null);
-            attribs.setGender(m_gender);
+            CharacterAttributes attribs = createDefaultAttributes(m_gender, bindPose.toString(), anim);
 
             if (m_avatar != null) {
                 m_worldManager.removeEntity(m_avatar);
@@ -679,7 +669,7 @@ public class SceneEssentials {
         return false;
     }
 
-    public boolean loadAvatarHeadDAEFile(boolean clear, boolean useRepository, Component arg0) {
+    public boolean addAvatarHeadDAEFile(boolean useRepository, Component arg0) {
         if (m_avatar == null) {
             System.out.println("You have not loaded an avatar yet... Please load one first");
             return false;
@@ -691,20 +681,8 @@ public class SceneEssentials {
 
             m_currentPScene.setUseRepository(useRepository);
             
-            if (clear)
-                m_currentPScene.getInstances().removeAllChildren();
-            if (m_currentHiProcessors == null)
-                m_currentHiProcessors = new ArrayList<ProcessorComponent>();
-            else
-                m_currentHiProcessors.clear();
-            
             File path = getAbsPath(m_fileModel);
-            String szURL;
-
-            if (isWindowsOS())
-                szURL = new String("file:\\" + path.getPath());
-            else
-                szURL = new String("file://localhost/" + path.getPath());
+            String szURL = new String("file://localhost/" + path.getPath());
 
             URL modelURL = null;
 
@@ -731,7 +709,6 @@ public class SceneEssentials {
             m_fileModel = m_jFileChooser_LoadColladaModel.getSelectedFile();
 
             String subGroup     = null;
-            String[] meshes     = null;
 
             Object[] subgroups = { m_regions[0], m_regions[1], m_regions[2], m_regions[3], m_regions[4] };
             subGroup = (String)JOptionPane.showInputDialog( new Frame(), "Please select the subgroup to which the meshes will be added",
@@ -744,12 +721,7 @@ public class SceneEssentials {
             m_currentPScene.setUseRepository(useRepository);
 
             File path = getAbsPath(m_fileModel);
-            String szURL;
-
-            if (isWindowsOS())
-                szURL = new String("file:\\" + path.getPath());
-            else
-                szURL = new String("file://" + path.getPath());
+            String szURL = new String("file://localhost/" + path.getPath());
 
             try {
                 URL modelURL = new URL(szURL);
@@ -759,15 +731,14 @@ public class SceneEssentials {
                 pRootInstruction.addChildInstruction(InstructionType.setSkeleton, m_avatar.getSkeleton());
 
                 String[] meshestodelete = m_avatar.getSkeleton().getMeshNamesBySubGroup(subGroup);
-                for (int i = 0; i < meshes.length; i++)
+                for (int i = 0; i < meshestodelete.length; i++)
                     pRootInstruction.addChildInstruction(InstructionType.deleteSkinnedMesh, meshestodelete[i]);
 
                 pRootInstruction.addLoadGeometryToSubgroupInstruction(modelURL, subGroup);
 
                 pProcessor.execute(pRootInstruction);
 
-                m_avatar.getSkeleton().setShaderOnSkinnedMeshes(new VertDeformerWithSpecAndNormalMap(m_worldManager));
-                m_avatar.getSkeleton().setShaderOnMeshes(new NormalAndSpecularMapShader(m_worldManager));
+                m_avatar.setDefaultShaders();
 
                 return true;
             } catch (MalformedURLException ex) {
@@ -788,13 +759,8 @@ public class SceneEssentials {
             java.io.File animation = m_jFileChooser_LoadAnim.getSelectedFile();
             m_currentPScene.setUseRepository(useRepository);
 
-            File path       = getAbsPath(animation);
-            String szURL;
-
-            if (isWindowsOS())
-                szURL = new String("file:\\" + path.getPath());
-            else
-                szURL = new String("file://" + path.getPath());
+            File path = getAbsPath(animation);
+            String szURL = new String("file://localhost/" + path.getPath());
 
             URL animURL    = null;
             try {
@@ -832,6 +798,66 @@ public class SceneEssentials {
                 Logger.getLogger(SceneEssentials.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
+    }
+
+    public CharacterAttributes createDefaultAttributes(int iGender, String szAvatarModelFile, String[] szAnimations) {
+
+        // Create avatar attribs
+        CharacterAttributes             attribs     = new CharacterAttributes("Avatar");
+        ArrayList<String>               load        = new ArrayList<String>();
+        ArrayList<SkinnedMeshParams>    add         = new ArrayList<SkinnedMeshParams>();
+        String[]                        faceanim    = new String[1];
+
+        switch (iGender)
+        {
+            case 1:
+            {
+                load.add(szAvatarModelFile);    // Load selected male skeleton
+                faceanim[0] = new String("file://localhost/" + System.getProperty("user.dir")
+                                         + "/assets/models/collada/Avatars/MaleFacialAnimation/MaleDefault.dae");
+                add.add(attribs.createSkinnedMeshParams("rightEyeGeoShape", "Head"));
+                add.add(attribs.createSkinnedMeshParams("leftEyeGeoShape",  "Head"));
+                add.add(attribs.createSkinnedMeshParams("UpperTeethShape",  "Head"));
+                add.add(attribs.createSkinnedMeshParams("LowerTeethShape",  "Head"));
+                add.add(attribs.createSkinnedMeshParams("TongueGeoShape",   "Head"));
+                add.add(attribs.createSkinnedMeshParams("HeadGeoShape",     "Head"));
+                add.add(attribs.createSkinnedMeshParams("RHandShape",       "Hands"));
+                add.add(attribs.createSkinnedMeshParams("LHandShape",       "Hands"));
+                add.add(attribs.createSkinnedMeshParams("RFootNudeShape",   "Feet"));
+                add.add(attribs.createSkinnedMeshParams("LFootNudeShape",   "Feet"));
+                add.add(attribs.createSkinnedMeshParams("TorsoNudeShape",   "UpperBody"));
+                add.add(attribs.createSkinnedMeshParams("LegsNudeShape",    "LowerBody"));
+                break;
+            }
+            case 2:
+            {
+                load.add(szAvatarModelFile);    // Load selected female skeleton
+                faceanim[0] = new String("file://localhost/" + System.getProperty("user.dir")
+                                         + "/assets/models/collada/Avatars/MaleFacialAnimation/MaleDefault.dae");   // TODO: Change to female default face anim
+                add.add(attribs.createSkinnedMeshParams("rightEyeGeoShape", "Head"));
+                add.add(attribs.createSkinnedMeshParams("leftEyeGeoShape",  "Head"));
+                add.add(attribs.createSkinnedMeshParams("UpperTeethShape",  "Head"));
+                add.add(attribs.createSkinnedMeshParams("LowerTeethShape",  "Head"));
+                add.add(attribs.createSkinnedMeshParams("TongueGeoShape",   "Head"));
+                add.add(attribs.createSkinnedMeshParams("HeadGeoShape",     "Head"));
+                add.add(attribs.createSkinnedMeshParams("HandsShape",       "Hands"));
+                add.add(attribs.createSkinnedMeshParams("ShoesShape",       "Feet"));
+                add.add(attribs.createSkinnedMeshParams("TorsoNudeShape",   "UpperBody"));
+                add.add(attribs.createSkinnedMeshParams("LegsNudeShape",    "LowerBody"));
+                break;
+            }
+
+        }
+
+        attribs.setBaseURL("");
+        attribs.setAnimations(szAnimations);
+        attribs.setFacialAnimations(faceanim);
+        attribs.setLoadInstructions(load);
+        attribs.setAddInstructions(add.toArray(new SkinnedMeshParams[add.size()]));
+        attribs.setAttachmentsInstructions(null);
+        attribs.setGender(iGender);
+
+        return attribs;
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -895,7 +921,11 @@ public class SceneEssentials {
         m_currentPScene = m_avatar.getPScene();
     }
 
-    public void loadAvatarHeadDAEURL(boolean useRepository, Component arg0, String[] data, String[] faceanim) {
+    public void loadAvatarHeadDAEURL(boolean useRepository, Component arg0, String[] data, String[] meshRef) {
+
+    }
+
+    public void addAvatarHeadDAEURL(boolean useRepository, Component arg0, String[] data) {
         if (m_avatar == null) {
             System.out.println("You have not loaded an avatar yet... Please load one first");
             return;
@@ -904,9 +934,6 @@ public class SceneEssentials {
         try {
             URL urlHead = new URL(data[3]);
             m_avatar.installHead(urlHead, "Neck");
-            if (faceanim != null) {     // TODO: load default facial anim base on gender
-
-            }
         } catch (MalformedURLException ex) {
             Logger.getLogger(SceneEssentials.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -930,8 +957,7 @@ public class SceneEssentials {
                     
         pProcessor.execute(pRootInstruction);
 
-        m_avatar.getSkeleton().setShaderOnSkinnedMeshes(new VertDeformerWithSpecAndNormalMap(m_worldManager));
-        m_avatar.getSkeleton().setShaderOnMeshes(new NormalAndSpecularMapShader(m_worldManager));
+        m_avatar.setDefaultShaders();
     }
 
     public void addMeshDAEURLToModel(String[] data, String joint2addon, int region) {
@@ -1260,27 +1286,17 @@ public class SceneEssentials {
     }
     
     public URL findBindPose(File file) {
+        String[] colladaList = getFileList(file);
         File abs = getAbsPath(file);
         String absPath = abs.getPath();
-        String[] colladaList = getFileList(file);
-        
-        String bind = null;
+        String szURL = null;
         for (int i = 0; i < colladaList.length; i++) {
             if (colladaList[i].lastIndexOf("Bind") != -1) {
-                if (isWindowsOS())
-                    bind = absPath + '\\' + colladaList[i];
-                else
-                    bind = absPath + '/' + colladaList[i];
+//                szURL = "file://localhost/" + System.getProperty("user.dir") + "/" + colladaList[i];
+                szURL = "file://localhost/" + absPath + "/" + colladaList[i];
                 break;
             }
         }
-        
-        String szURL;
-        
-        if (isWindowsOS())
-            szURL = new String("file:\\\\" + bind);
-        else
-            szURL = new String("file://" + bind);
 
         URL modelURL = null;
         try {
@@ -1298,20 +1314,13 @@ public class SceneEssentials {
         String absPath = abs.getPath();
         String[] colladaList = getFileList(file);
         
-        String anim = null;
-        String szAnim = null;
+        String szURL = null;
         for (int i = 0; i < colladaList.length; i++) {
             if (colladaList[i].lastIndexOf("Anim") != -1) {
-                if (isWindowsOS()) {
-                    anim = absPath + '\\' + colladaList[i];
-                    szAnim = new String("file:\\\\" + anim);
-                } else {
-                    anim = absPath + "/" + colladaList[i];
-                    szAnim = new String("file://" + anim);
-                }
+                szURL = "file://localhost/" + absPath + "/" + colladaList[i];
 
                 try {
-                    URL animURL = new URL(szAnim);
+                    URL animURL = new URL(szURL);
                     animURLs.add(animURL);
                 } catch (MalformedURLException ex) {
                     Logger.getLogger(SceneEssentials.class.getName()).log(Level.SEVERE, null, ex);
@@ -1362,6 +1371,7 @@ public class SceneEssentials {
             camState.setTargetNeedsUpdate(true);
         } else if (m_curCameraProcessor.getState() instanceof FirstPersonCamState) {
             FirstPersonCamState camState = ((FirstPersonCamState)m_curCameraProcessor.getState());
+            FirstPersonCamModel camModel = ((FirstPersonCamModel)m_curCameraProcessor.getModel());
             if (pmInstance.getBoundingSphere() == null)
                 pmInstance.calculateBoundingSphere();
             Vector3f pos = pmInstance.getBoundingSphere().getCenter();

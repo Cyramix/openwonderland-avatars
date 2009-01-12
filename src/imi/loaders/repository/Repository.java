@@ -256,11 +256,10 @@ public class Repository extends Entity
         WonderlandObjectInputStream in = null;
         SkeletonNode MaleSkeleton = null;
         SkeletonNode FemaleSkeleton = null;
-        String fileProtocol = new String("file://localhost/" + System.getProperty("user.dir"));
         try
         {
-            URL maleSkeleton = new URL(fileProtocol + "assets/skeletons/Male.bs");
-            URL femaleSkeleton = new URL(fileProtocol + "assets/skeletons/Female.bs");
+            URL maleSkeleton = getClass().getResource("/imi/character/skeleton/Male.bs");
+            URL femaleSkeleton = getClass().getResource("/imi/character/skeleton/Female.bs");
             
             in = new WonderlandObjectInputStream(maleSkeleton.openStream());
             MaleSkeleton = (SkeletonNode)in.readObject();

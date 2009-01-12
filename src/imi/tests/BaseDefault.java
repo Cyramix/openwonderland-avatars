@@ -1263,8 +1263,8 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 loadingWindow(true);
                 runProgressBar(true);
-                m_sceneData.loadAvatarHeadDAEFile(false, true, m_base);
-                m_sceneData.setCameraOnModel();
+                m_sceneData.addAvatarHeadDAEFile(true, m_base);
+                //m_sceneData.setCameraOnModel();
                 resetOpenTools();
                 runProgressBar(false);
                 loadingWindow(false);
@@ -1276,7 +1276,7 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
         jMenuItem_Clothes.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 runProgressBar(true);
-                m_sceneData.loadSMeshDAEFile(true, m_base);
+                m_sceneData.addSMeshDAEFile(true, m_base);
                 resetOpenTools();
                 runProgressBar(false);
             }
