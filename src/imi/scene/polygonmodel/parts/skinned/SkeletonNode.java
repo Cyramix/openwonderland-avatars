@@ -20,7 +20,6 @@ package imi.scene.polygonmodel.parts.skinned;
 import com.jme.math.Quaternion;
 import com.jme.math.Vector3f;
 import com.jme.scene.SharedMesh;
-import imi.gui.GUI_Enums.m_sliderControl;
 import imi.scene.PJoint;
 import imi.scene.PMatrix;
 import imi.scene.PNode;
@@ -109,6 +108,41 @@ public class SkeletonNode extends PNode implements Animated, Serializable
             m_animationStates.add(new AnimationState(animState));
         
     }
+
+    /**
+     * Brings along the skeleton node structure (w/out any attachments). Also,
+     * animations are copied.
+     * @return
+     */
+    public SkeletonNode deepCopy() {
+        SkeletonNode result = new SkeletonNode(this);
+        // Copy all the children
+        PNode skeletonRoot = new PNode(this.getSkeletonRoot());
+        result.setSkeletonRoot(skeletonRoot);
+        // Now copy the skeleton children over
+        // must use a depth first traversal here in order for this to make any sense
+        for (PNode kid : getSkeletonRoot().getChildren())
+            skeletonRoot.addChild(deepCopyRecurse(kid));
+        result.refresh();
+        return result;
+    }
+
+    private SkinnedMeshJoint deepCopyRecurse(PNode current)
+    {
+        // process current
+        SkinnedMeshJoint result = null;
+        if (current instanceof SkinnedMeshJoint) // Only process skinned mesh joints
+        {
+            result = new SkinnedMeshJoint((SkinnedMeshJoint)current);
+
+            // recurse on children
+            for (PNode kid : current.getChildren())
+                result.addChild(deepCopyRecurse(kid));
+        }
+        return result;
+
+    }
+
 
     @Override
     public AnimationComponent getAnimationComponent()

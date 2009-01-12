@@ -19,11 +19,15 @@ package imi.loaders.repository;
 
 import imi.annotations.Debug;
 import imi.loaders.repository.SharedAsset.SharedAssetType;
+import imi.scene.animation.AnimationState;
+import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
+import java.io.File;
+import java.io.FileInputStream;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import javolution.util.FastList;
 import org.jdesktop.mtgame.*;
+import org.jdesktop.wonderland.common.comms.WonderlandObjectInputStream;
 
 /**
  * The Repository is used as a mechanism for sharing data across threads and
@@ -64,6 +68,9 @@ public class Repository extends Entity
     // And potentially...
     // processors (AI, animations, etc)
     // code
+
+    public static SkeletonNode MaleSkeleton = null;
+    public static SkeletonNode FemaleSkeleton = null;
     
     /**
      * Construct a BRAND NEW REPOSITORY!
@@ -79,6 +86,8 @@ public class Repository extends Entity
 
         // Add our collection of processors to the entity
         addComponent(ProcessorCollectionComponent.class, m_processorCollection);
+
+        loadSkeletons();
     }
     
     public synchronized void loadSharedAsset(SharedAsset asset, RepositoryUser user)
@@ -239,6 +248,28 @@ public class Repository extends Entity
         
         // Update the work order
         statementOfWork.m_repoAsset = repoAsset;
+    }
+
+    private void loadSkeletons() {
+
+        FileInputStream fis = null;
+        WonderlandObjectInputStream in = null;
+        try
+        {
+            fis = new FileInputStream(new File("assets/skeletons/Male.bs"));
+            in = new WonderlandObjectInputStream(fis);
+            MaleSkeleton = (SkeletonNode)in.readObject();
+            in.close();
+            fis.close();
+            fis = new FileInputStream(new File("assets/skeletons/Female.bs"));
+            in = new WonderlandObjectInputStream(fis);
+            FemaleSkeleton = (SkeletonNode)in.readObject();
+        }
+        catch(Exception ex)
+        {
+            logger.severe("Uh oh! Error loading skeleton for character: " + ex.getMessage());
+            ex.printStackTrace();
+        }
     }
     
     protected class WorkOrder

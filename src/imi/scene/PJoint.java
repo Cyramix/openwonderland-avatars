@@ -90,6 +90,18 @@ public class PJoint extends PNode implements Serializable
         if (getTransform() == null)
             setTransform(new PTransform());
     }
+
+    /**
+     * Create a copy of the provided PJoint
+     * @param other
+     */
+    public PJoint(PJoint other)
+    {
+        super(other);
+        // Copy mesh space and local modifier
+        this.m_meshSpace.set(other.m_meshSpace);
+        this.m_localModifier.set(other.m_localModifier);
+    }
     
     /**
      * Selected joints will be visualized in the internal renderer (PRenderer)

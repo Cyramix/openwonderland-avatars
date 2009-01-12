@@ -37,9 +37,8 @@ import imi.loaders.Instruction;
 import imi.loaders.Instruction.InstructionType;
 import imi.loaders.InstructionProcessor;
 import imi.loaders.collada.Collada;
-import imi.loaders.collada.ColladaLoaderParams;
 import imi.loaders.repository.AssetDescriptor;
-import imi.loaders.repository.AssetInitializer;
+import imi.loaders.repository.Repository;
 import imi.loaders.repository.SharedAsset;
 import imi.loaders.repository.SharedAsset.SharedAssetType;
 import imi.loaders.repository.SharedAssetPlaceHolder;
@@ -78,7 +77,6 @@ import imi.scene.shader.programs.EyeballShader;
 import imi.scene.shader.programs.FleshShader;
 import imi.scene.shader.programs.SimpleTNLWithAmbient;
 import imi.scene.utils.PMeshUtils;
-import imi.scene.utils.PModelUtils;
 import imi.scene.utils.tree.NodeProcessor;
 import imi.scene.utils.tree.SerializationHelper;
 import imi.scene.utils.tree.TreeTraverser;
@@ -468,9 +466,9 @@ public abstract class Character extends Entity implements SpatialObject, Animati
 
         // eat the skeleton
         if (m_attributes.isMale())
-           loadSkeleton(maleSkeleton);
+           m_skeleton = Repository.MaleSkeleton.deepCopy();//loadSkeleton(maleSkeleton);
         else
-           loadSkeleton(femaleSkeleton);
+           m_skeleton = Repository.FemaleSkeleton.deepCopy();//loadSkeleton(femaleSkeleton);
         if (m_skeleton == null) // problem
         {
             logger.severe("Unable to load skeleton. Aborting applyAttributes.");
@@ -484,7 +482,6 @@ public abstract class Character extends Entity implements SpatialObject, Animati
      */
     private void loadSkeleton(URL location)
     {
-        long startTime = System.nanoTime();
         m_skeleton = null;
         FileInputStream fis = null;
         WonderlandObjectInputStream in = null;

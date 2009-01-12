@@ -73,6 +73,19 @@ public class SkinnedMeshJoint extends PJoint implements Serializable
         unmodifiedInverseBindPose.set(m_bindPoseTransform.inverse());
     }
 
+    /**
+     * Create a copy of the provided SkinnedMeshJoint
+     * @param other
+     */
+    public SkinnedMeshJoint(SkinnedMeshJoint other) {
+        super(other);
+        // Copy parent joint name and the bind pose transform
+        m_ParentJointName = other.m_ParentJointName;
+        if (other.m_bindPoseTransform != null)
+            this.m_bindPoseTransform = new PMatrix(other.m_bindPoseTransform);
+        this.unmodifiedInverseBindPose.set(other.unmodifiedInverseBindPose);
+    }
+
     public void set(String jointName,
                     String parentJointName,
                     Vector3f translation,

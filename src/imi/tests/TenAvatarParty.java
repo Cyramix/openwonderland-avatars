@@ -40,7 +40,7 @@ public class TenAvatarParty extends DemoBase
 {
     private static final Logger     logger = Logger.getLogger(TenAvatarParty.class.getName());
 
-    private static final Integer    numberOfAvatars = Integer.valueOf(10);
+    private static final Integer    numberOfAvatars = Integer.valueOf(5);
     private static final String[]   configFiles     = new String[numberOfAvatars];
 
     static {
@@ -50,11 +50,11 @@ public class TenAvatarParty extends DemoBase
         configFiles[ 2] = fileProtocol + "assets/configurations/SavingTestOutput.xml";
         configFiles[ 3] = fileProtocol + "assets/configurations/SavingTestOutput.xml";
         configFiles[ 4] = fileProtocol + "assets/configurations/SavingTestOutput.xml";
-        configFiles[ 5] = fileProtocol + "assets/configurations/SavingTestOutput.xml";
-        configFiles[ 6] = fileProtocol + "assets/configurations/SavingTestOutput.xml";
-        configFiles[ 7] = fileProtocol + "assets/configurations/SavingTestOutput.xml";
-        configFiles[ 8] = fileProtocol + "assets/configurations/SavingTestOutput.xml";
-        configFiles[ 9] = fileProtocol + "assets/configurations/SavingTestOutput.xml";
+//        configFiles[ 5] = fileProtocol + "assets/configurations/SavingTestOutput.xml";
+//        configFiles[ 6] = fileProtocol + "assets/configurations/SavingTestOutput.xml";
+//        configFiles[ 7] = fileProtocol + "assets/configurations/SavingTestOutput.xml";
+//        configFiles[ 8] = fileProtocol + "assets/configurations/SavingTestOutput.xml";
+//        configFiles[ 9] = fileProtocol + "assets/configurations/SavingTestOutput.xml";
     }
 
     public TenAvatarParty(String[] args)

@@ -77,6 +77,17 @@ public class PNode implements Serializable
         // Diagnostic / Debugging output
 //        logger.info("PNode created : " + getClass().getName());
     }
+
+    /**
+     * Creates a copy of this node. This does not include parent or child references.
+     * @param other
+     */
+    public PNode(PNode other) {
+        m_name = other.m_name;
+        if (other.m_transform != null)
+            m_transform = new PTransform(other.m_transform);
+
+    }
     
     /**
      * Insures m_children will not be null.
