@@ -42,6 +42,8 @@ public class PPolygonSkinnedMeshInstance extends PPolygonMeshInstance implements
     
     protected int[]        m_influenceIndices = null;
 
+    protected PMatrix[]    m_pose = null;
+
     //private PostAnimationJointManipulator m_jointManipulator = null;
 
     //  Constructor.
@@ -164,21 +166,20 @@ public class PPolygonSkinnedMeshInstance extends PPolygonMeshInstance implements
         if (m_InverseBindPose == null) // Initialize the bind pose by querying the skeleton for its bind pose
             m_InverseBindPose = m_skeletonNode.getFlattenedInverseBindPose(influenceIndices);  // the group's transform is ignored
         // Retrieve the collection of influences in their current pose
-        PMatrix [] matrixStack = m_skeletonNode.getPose(influenceIndices);
+        m_skeletonNode.getPose(influenceIndices, m_pose);
         
         if (m_shaderState != null) // may not have loaded yet
         {    
             // populate the matrix stack
             final float[] pose = new float[m_InverseBindPose.length * 16];
             
-            for (int i = 0; i < matrixStack.length && i < m_InverseBindPose.length; i++)
+            for (int i = 0; i < m_pose.length && i < m_InverseBindPose.length; i++)
             {
-                PMatrix matrix = new PMatrix(matrixStack[i]);
                 //postAnimationModifiedMeshSpaceMatrixHook(matrix, influenceIndices[i]);
 
-                matrix.mul(m_InverseBindPose[i]);
+                m_pose[i].mul(m_InverseBindPose[i]);
 
-                float [] matrixFloats = matrix.getFloatArray();
+                float [] matrixFloats = m_pose[i].getFloatArray();
                 for(int j = 0; j < 16; j++)
                 {
                     pose[j+(i*16)] = matrixFloats[j];
@@ -225,9 +226,13 @@ public class PPolygonSkinnedMeshInstance extends PPolygonMeshInstance implements
     {
         // out with the old
         m_influenceIndices = new int[indexArray.length];
-        
+        m_pose = new PMatrix[indexArray.length];
+        // in with the new
         for (int i = 0; i < indexArray.length; ++i)
+        {
             m_influenceIndices[i] = indexArray[i];
+            m_pose[i] = new PMatrix();
+        }
     }
     
     private boolean bDeforming = false;

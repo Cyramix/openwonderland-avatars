@@ -245,7 +245,7 @@ public class InstructionProcessor
         
         // Find the joint
         String jointName = (String)array[1];
-        SkinnedMeshJoint joint = m_skeleton.findSkinnedMeshJoint(jointName);
+        SkinnedMeshJoint joint = m_skeleton.getSkinnedMeshJoint(jointName);
         if (joint == null)
         {
             logger.severe("Specified attachment joint not found!");

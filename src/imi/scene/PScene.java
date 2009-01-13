@@ -283,7 +283,7 @@ public class PScene extends PNode implements RepositoryUser, Serializable
     {   
         PNode node = processNode(model);
         model.removeAllChildren();
-        ArrayList<PNode> children = node.getChildren();
+        FastList<PNode> children = node.getChildren();
         while (children.isEmpty() == false) 
             model.addChild(children.get(0)); 
         

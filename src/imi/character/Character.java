@@ -1032,9 +1032,9 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         SkeletonNode newHeadSkeleton = colladaLoader.getSkeletonNode();
 
         // Cut off the old skeleton at the specified attach point
-        SkinnedMeshJoint parent = (SkinnedMeshJoint)m_skeleton.findSkinnedMeshJoint(attachmentJointName).getParent();
+        SkinnedMeshJoint parent = (SkinnedMeshJoint)m_skeleton.getSkinnedMeshJoint(attachmentJointName).getParent();
         parent.removeChild(attachmentJointName);
-        parent.addChild(newHeadSkeleton.findSkinnedMeshJoint(attachmentJointName));
+        parent.addChild(newHeadSkeleton.getSkinnedMeshJoint(attachmentJointName));
 
         m_skeleton.refresh();
         m_skeleton.clearSubGroup("Head");
@@ -1140,7 +1140,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         }
         
         // Gather the joints and set the new local modifiers
-        SkinnedMeshJoint head = m_skeleton.findSkinnedMeshJoint(rootJointName);
+        SkinnedMeshJoint head = m_skeleton.getSkinnedMeshJoint(rootJointName);
         LinkedList<PNode> list = new LinkedList<PNode>();
         list.add(head);
         PNode current = null;
@@ -1152,7 +1152,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
             if (current instanceof SkinnedMeshJoint)
             {
                 SkinnedMeshJoint currentHeadJoint = (SkinnedMeshJoint)current;
-                SkinnedMeshJoint newHeadJoint     = newSkeleton.findSkinnedMeshJoint(currentHeadJoint.getName());
+                SkinnedMeshJoint newHeadJoint     = newSkeleton.getSkinnedMeshJoint(currentHeadJoint.getName());
 
                 if (newHeadJoint == null) // Not found in the new skeleton
                     logger.severe("Could not find associated joint in the new skeleton, joint name was " + currentHeadJoint.getName());
@@ -1306,7 +1306,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         {
             for (xmlJointModification jMod : jointMods)
             {
-                SkinnedMeshJoint targetJoint = m_skeleton.findSkinnedMeshJoint(jMod.getTargetJointName());
+                SkinnedMeshJoint targetJoint = m_skeleton.getSkinnedMeshJoint(jMod.getTargetJointName());
                 if (targetJoint != null)
                 {
                     // Apply customizations

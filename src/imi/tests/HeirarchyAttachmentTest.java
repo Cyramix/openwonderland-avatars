@@ -101,7 +101,7 @@ public class HeirarchyAttachmentTest extends DemoBase
         // Select animation to play
         //target.getAnimationState().setCurrentCycle(target.getAnimationGroup().findAnimationCycle("Walk"));
         // attach a cube to the head
-        SkinnedMeshJoint joint = skeleton.findSkinnedMeshJoint("Joint8");
+        SkinnedMeshJoint joint = skeleton.getSkinnedMeshJoint("Joint8");
         if (joint != null)
         {
             joint.addChild(createNormalMappedCube(Vector3f.ZERO, pscene));

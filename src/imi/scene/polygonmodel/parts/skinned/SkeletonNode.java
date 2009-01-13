@@ -46,6 +46,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javolution.util.FastList;
+import javolution.util.FastMap;
 
 
 
@@ -61,6 +62,9 @@ public class SkeletonNode extends PNode implements Animated, Serializable
     private transient ArrayList<SkinnedMeshJoint> m_BFTSkeleton = new ArrayList<SkinnedMeshJoint>();
     private transient ArrayList<PMatrix> m_BFTFlattenedInverseBindPose = new ArrayList<PMatrix>();
     private transient ArrayList<String>  m_jointNames = new ArrayList<String>();
+
+    /** Speedy map for joint retrieval by name **/
+    private transient FastMap<String, SkinnedMeshJoint> m_namesToJoints = new FastMap<String, SkinnedMeshJoint>();
     /**
      * This field is marked as transient because the default heirarchies that will
      * be serialized should not have any local modifiers. This will shrink the size
@@ -197,21 +201,9 @@ public class SkeletonNode extends PNode implements Animated, Serializable
      * @param name The name of the joint to retrieve
      * @return The requested joint, or null if not found
      */
-    public SkinnedMeshJoint findSkinnedMeshJoint(String name)
+    public SkinnedMeshJoint getSkinnedMeshJoint(String name)
     {
-        SkinnedMeshJoint result = null;
-        PNode skeletonRoot = getChild("skeletonRoot");
-        if (skeletonRoot != null)
-        {
-            try
-            {
-                result = (SkinnedMeshJoint)skeletonRoot.findChild(name);
-            }
-            catch (ClassCastException e)
-            {
-                result = null;
-            }
-        }
+        SkinnedMeshJoint result = m_namesToJoints.get(name);
         return result;
     }
    
@@ -303,6 +295,9 @@ public class SkeletonNode extends PNode implements Animated, Serializable
                 
             }
         }
+
+        for (SkinnedMeshJoint joint : m_BFTSkeleton)
+            m_namesToJoints.put(joint.getName(), joint);
     }
     
     /**
@@ -311,17 +306,16 @@ public class SkeletonNode extends PNode implements Animated, Serializable
      * index in indices multiplied by its correspondind local 
      * modifier.
      * @param indices A list of joint indices to query
+     * @param output This is where the resulting PMatrices are stored
      * @return The resulting list of PMatrix references
      */
-    public PMatrix[] getPose(int[] indices)
+    public void getPose(int[] indices, PMatrix[] output)
     {
-        PMatrix[] result = new PMatrix[indices.length];
         for (int i = 0; i < indices.length; ++i)
         {
-            result[i] = new PMatrix(m_BFTSkeleton.get(indices[i]).getMeshSpace());
-            result[i].mul(m_BFTSkeletonLocalModifiers.get(indices[i]));
+            output[i].set(m_BFTSkeleton.get(indices[i]).getMeshSpace());
+            output[i].mul(m_BFTSkeletonLocalModifiers.get(indices[i]));
         }
-        return result;
     }
     
     
@@ -574,7 +568,7 @@ public class SkeletonNode extends PNode implements Animated, Serializable
     @Override
     public PJoint getJoint(String jointName)
     {
-        return findSkinnedMeshJoint(jointName);
+        return getSkinnedMeshJoint(jointName);
     }
     
     @Override
@@ -746,7 +740,7 @@ public class SkeletonNode extends PNode implements Animated, Serializable
             if (current instanceof SkinnedMeshJoint)
             {
                 SkinnedMeshJoint ourJoint = (SkinnedMeshJoint)current;
-                SkinnedMeshJoint baseJoint = baseSkeleton.findSkinnedMeshJoint(ourJoint.getName());
+                SkinnedMeshJoint baseJoint = baseSkeleton.getSkinnedMeshJoint(ourJoint.getName());
 
                 ourJoint.unmodifiedInverseBindPose.set(baseJoint.getBindPose().inverse());
                 // "prime the pump"
@@ -783,7 +777,7 @@ public class SkeletonNode extends PNode implements Animated, Serializable
     public boolean displaceJoint(String jointName, Vector3f offset)
     {
         boolean result = false;
-        SkinnedMeshJoint joint = findSkinnedMeshJoint(jointName);
+        SkinnedMeshJoint joint = getSkinnedMeshJoint(jointName);
         if (joint != null)
         {
             result = true;
@@ -803,7 +797,7 @@ public class SkeletonNode extends PNode implements Animated, Serializable
     public boolean setJointPosition(String jointName, Vector3f localSpaceTranslation)
     {
         boolean result = false;
-        SkinnedMeshJoint joint = findSkinnedMeshJoint(jointName);
+        SkinnedMeshJoint joint = getSkinnedMeshJoint(jointName);
         if (joint != null)
         {
             result = true;
@@ -824,7 +818,7 @@ public class SkeletonNode extends PNode implements Animated, Serializable
     public boolean setJointRotation(String jointName, Quaternion rotation)
     {
         boolean result = false;
-        SkinnedMeshJoint joint = findSkinnedMeshJoint(jointName);
+        SkinnedMeshJoint joint = getSkinnedMeshJoint(jointName);
         if (joint != null)
         {
             result = true;
@@ -844,7 +838,7 @@ public class SkeletonNode extends PNode implements Animated, Serializable
     public boolean rotateJoint(String jointName, Vector3f axis, float angle)
     {
         boolean result = false;
-        SkinnedMeshJoint joint = findSkinnedMeshJoint(jointName);
+        SkinnedMeshJoint joint = getSkinnedMeshJoint(jointName);
         if (joint != null)
         {
             result = true;
@@ -865,7 +859,7 @@ public class SkeletonNode extends PNode implements Animated, Serializable
     public boolean resetJointBindPose(String jointName)
     {
         boolean result = false;
-        SkinnedMeshJoint joint = findSkinnedMeshJoint(jointName);
+        SkinnedMeshJoint joint = getSkinnedMeshJoint(jointName);
         if (joint != null)
         {
             result = true;
@@ -881,7 +875,7 @@ public class SkeletonNode extends PNode implements Animated, Serializable
     public boolean resetJointToBindPose(String jointName)
     {
         boolean result = false;
-        SkinnedMeshJoint joint = findSkinnedMeshJoint(jointName);
+        SkinnedMeshJoint joint = getSkinnedMeshJoint(jointName);
         if (joint != null)
         {
             result = true;
@@ -911,6 +905,7 @@ public class SkeletonNode extends PNode implements Animated, Serializable
         m_BFTSkeleton = new ArrayList<SkinnedMeshJoint>();
         m_BFTFlattenedInverseBindPose = new ArrayList<PMatrix>();
         m_jointNames = new ArrayList<String>();
+        m_namesToJoints = new FastMap<String, SkinnedMeshJoint>();
         m_BFTSkeletonLocalModifiers = new ArrayList<PMatrix>();
         m_animationStates = new ArrayList<AnimationState>();
         // Remap the joint refs

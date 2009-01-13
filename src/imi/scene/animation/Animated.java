@@ -59,7 +59,8 @@ public interface Animated
     public int addAnimationState(AnimationState newState);
     
     /**
-     * This method retrieves the joint with the specified name
+     * This method retrieves the joint with the specified name. This is called
+     * many times per frame, so IT MUST BE FAST!
      * @param jointName The name of the joint
      * @return the joint!
      */

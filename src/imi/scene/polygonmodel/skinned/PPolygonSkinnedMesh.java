@@ -290,7 +290,7 @@ public class PPolygonSkinnedMesh extends PPolygonMesh implements Serializable
 //        for (int i = 0; i < animGroup.getChannels().size(); ++i)
 //        {
 //            String name = animGroup.getChannels().get(i).getTargetJointName();
-//            m_animationJointMapping.add( (SkinnedMeshJoint) owningSkeleton.findSkinnedMeshJoint(name) );
+//            m_animationJointMapping.add( (SkinnedMeshJoint) owningSkeleton.getSkinnedMeshJoint(name) );
 //        }   
 //    }
 //
