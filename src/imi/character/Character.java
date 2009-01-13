@@ -285,11 +285,13 @@ public abstract class Character extends Entity implements SpatialObject, Animati
             m_modelInst.getTransform().setLocalMatrix(m_attributes.getOrigin());
 
         // Facial animation state is designated to id (and index) 1
-        AnimationState facialAnimationState = m_skeleton.getAnimationState(1);
-        facialAnimationState.setCurrentCycle(-1);
-        facialAnimationState.setCurrentCyclePlaybackMode(PlaybackMode.PlayOnce);
-        facialAnimationState.setAnimationSpeed(0.1f);
-
+        if (m_skeleton.getAnimationStateCount() > 1)
+        {
+            AnimationState facialAnimationState = m_skeleton.getAnimationState(1);
+            facialAnimationState.setCurrentCycle(-1);
+            facialAnimationState.setCurrentCyclePlaybackMode(PlaybackMode.PlayOnce);
+            facialAnimationState.setAnimationSpeed(0.1f);
+        }
         if (m_skeleton.getAnimationComponent().getGroups().size() > 1)
         {
             m_facialAnimationQ = new TransitionQueue(m_skeleton, 1);
@@ -466,6 +468,12 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         {
             logger.severe("Unable to load skeleton. Aborting applyAttributes.");
             return;
+        }
+        else
+        {
+            // synch up animation states with groups
+            while (m_skeleton.getAnimationComponent().getGroups().size() < m_skeleton.getAnimationStateCount())
+                m_skeleton.addAnimationState(new AnimationState(m_skeleton.getAnimationStateCount()));
         }
     }
     
