@@ -363,7 +363,7 @@ public class JPanel_ServerBrowser extends javax.swing.JPanel {
                     iGender = 1;
                 else
                     iGender = 2;
-                m_sceneData.loadAvatarDAEURL(true, this, m_animInfo, iGender);
+                m_sceneData.loadAvatarDAEURL(true, this, null, iGender);
                 break;
             }
             case 1:         // LOAD CLOTHES

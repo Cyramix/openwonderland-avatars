@@ -652,7 +652,7 @@ public class SceneEssentials {
             }
 
             // Create avatar attribs
-            CharacterAttributes attribs = createDefaultAttributes(m_gender, bindPose.toString(), anim);
+            CharacterAttributes attribs = createDefaultAttributes(m_gender, bindPose.toString());
 
             if (m_avatar != null) {
                 m_worldManager.removeEntity(m_avatar);
@@ -800,7 +800,7 @@ public class SceneEssentials {
         }
     }
 
-    public CharacterAttributes createDefaultAttributes(int iGender, String szAvatarModelFile, String[] szAnimations) {
+    public CharacterAttributes createDefaultAttributes(int iGender, String szAvatarModelFile) {
 
         // Create avatar attribs
         CharacterAttributes             attribs     = new CharacterAttributes("Avatar");
@@ -813,8 +813,6 @@ public class SceneEssentials {
             case 1:
             {
                 load.add(szAvatarModelFile);    // Load selected male skeleton
-                faceanim[0] = new String("file://localhost/" + System.getProperty("user.dir")
-                                         + "/assets/models/collada/Avatars/MaleFacialAnimation/MaleDefault.dae");
                 add.add(attribs.createSkinnedMeshParams("rightEyeGeoShape", "Head"));
                 add.add(attribs.createSkinnedMeshParams("leftEyeGeoShape",  "Head"));
                 add.add(attribs.createSkinnedMeshParams("UpperTeethShape",  "Head"));
@@ -832,8 +830,6 @@ public class SceneEssentials {
             case 2:
             {
                 load.add(szAvatarModelFile);    // Load selected female skeleton
-                faceanim[0] = new String("file://localhost/" + System.getProperty("user.dir")
-                                         + "/assets/models/collada/Avatars/MaleFacialAnimation/MaleDefault.dae");   // TODO: Change to female default face anim
                 add.add(attribs.createSkinnedMeshParams("rightEyeGeoShape", "Head"));
                 add.add(attribs.createSkinnedMeshParams("leftEyeGeoShape",  "Head"));
                 add.add(attribs.createSkinnedMeshParams("UpperTeethShape",  "Head"));
@@ -850,7 +846,6 @@ public class SceneEssentials {
         }
 
         attribs.setBaseURL("");
-        attribs.setAnimations(szAnimations);
         attribs.setFacialAnimations(faceanim);
         attribs.setLoadInstructions(load);
         attribs.setAddInstructions(add.toArray(new SkinnedMeshParams[add.size()]));
@@ -896,17 +891,22 @@ public class SceneEssentials {
         }
     }
 
-    public void loadAvatarDAEURL(boolean useRepository, Component arg0, String[] anim, int gender) {
+    public void loadAvatarDAEURL(boolean useRepository, Component arg0, CharacterAttributes attributes, int gender) {
         m_currentPScene.setUseRepository(useRepository);
-
         m_currentPScene.getInstances().removeAllChildren();
+
+        CharacterAttributes attribs = null;
         
-        CharacterAttributes attribs = new CharacterAttributes("Avatar");
-        attribs.setBaseURL("");
-        attribs.setLoadInstructions(null);
-        attribs.setAddInstructions(null);
-        attribs.setAttachmentsInstructions(null);
-        attribs.setGender(gender);
+        if (attributes != null) {
+            attribs = attributes;
+        } else {
+            attribs = new CharacterAttributes("Avatar");
+            attribs.setBaseURL("");
+            attribs.setLoadInstructions(null);
+            attribs.setAddInstructions(null);
+            attribs.setAttachmentsInstructions(null);
+            attribs.setGender(gender);
+        }
 
         if (m_avatar != null) {
             m_avatar.die();

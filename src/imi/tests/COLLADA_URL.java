@@ -40,7 +40,7 @@ import org.jdesktop.mtgame.WorldManager;
  *
  * @author Ronald E Dahlgren
  */
-public class COLLADA_URL extends DemoBase2
+public class COLLADA_URL extends DemoBase
 {
   //  Constructor.
     public COLLADA_URL(String[] args)
@@ -57,7 +57,6 @@ public class COLLADA_URL extends DemoBase2
     private void initGUITest(PScene pscene, JScene jscene, WorldManager wm, ArrayList<ProcessorComponent> processors, Entity JSEntity)
     {
         simpleSceneInit(jscene, wm, JSEntity);
-        setVisible(true);
     }
 
     

@@ -336,17 +336,10 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
         }
 
         if (isViewMode) {
-            m_sceneData.addAvatarHeadDAEURL(true, this, data.get(0));
+            m_sceneData.loadAvatarHeadDAEURL(true, this, data.get(0), meshes);
         }
         else {
-            addToAttributes(null, data, meshes, null, 0);
-
-            try {
-                URL head = new URL(data.get(0)[3]);
-//                m_sceneData.getAvatar().installHead(head);
-            } catch (MalformedURLException ex) {
-                Logger.getLogger(JPanel_BasicOptions.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            m_sceneData.addAvatarHeadDAEURL(true, m_Parent, data.get(0));
         }
 
         jButton_ApplyHead.setEnabled(true);
@@ -388,12 +381,10 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
         }
 
         if (isViewMode) {
-            String[] anim = null;
             m_sceneData.loadAvatarHeadDAEURL(true, this, data.get(0), meshes);
         }
         else {
-            addToAttributes(null, data, meshes, null, 0);
-            m_sceneData.getAvatar().loadAttributes(m_newAttribs);
+            m_sceneData.addAvatarHeadDAEURL(true, m_Parent, data.get(0));
         }
 
         jButton_ApplyHead1.setEnabled(true);
@@ -756,6 +747,7 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
         setCursor(null);
     }
 
+    // TODO: put facial animations on server and add it here. embed default faical anim and default idle
     public void loadDefaultAvatar() {
         if (!jButton_Male.isEnabled())
             return;
@@ -770,37 +762,19 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
             ((BaseDefault)m_Parent).loadingWindow(true);
 
         String query = new String();
-        ArrayList<String[]> anim;
+        ArrayList<String[]> anim, data;
 
         if (m_gender == 1) {
-            query = "SELECT url FROM Animations WHERE avatarid = 1 and name like '%Idle%'";
-            anim = m_sceneData.loadSQLData(query);
+            query = "SELECT url FROM DefaultAvatars WHERE id = 1";
+            data = m_sceneData.loadSQLData(query);
         }
         else {
-            query = "SELECT url FROM Animations WHERE avatarid = 2 and name like '%Idle%'";
-            anim = m_sceneData.loadSQLData(query);
+            query = "SELECT url FROM DefaultAvatars WHERE id = 2";
+            data = m_sceneData.loadSQLData(query);
         }
 
-        m_Attributes = new CharacterAttributes("Avatar");
-        m_Attributes.setBaseURL("");
-        m_Attributes.setAnimations(anim.get(0));
-        m_Attributes.setLoadInstructions(null);
-        m_Attributes.setAddInstructions(null);
-        m_Attributes.setAttachmentsInstructions(null);
-        m_Attributes.setGender(m_gender);
-        m_Attributes.setGeomRef(m_meshes);
-
-        if (m_sceneData.getAvatar() != null) {
-            m_sceneData.getWM().removeEntity(m_sceneData.getAvatar());
-            m_sceneData.setAvatar(null);
-        }
-
-        m_sceneData.setAvatar(new NinjaAvatar(m_Attributes, m_sceneData.getWM()));
-        while(!m_sceneData.getAvatar().isInitialized() || m_sceneData.getAvatar().getModelInst() == null) {
-            
-        }
-        m_sceneData.getAvatar().selectForInput();
-        m_sceneData.setPScene(m_sceneData.getAvatar().getPScene());
+        m_Attributes = m_sceneData.createDefaultAttributes(m_gender, data.get(0)[0]);
+        m_sceneData.loadAvatarDAEURL(true, m_Parent, m_Attributes, m_gender);
 
         jLabel_CurrUpperBody.setText("Default");
         jLabel_CurrLowerBody.setText("Default");

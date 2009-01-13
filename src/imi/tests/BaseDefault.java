@@ -726,7 +726,7 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        DemoBase2 worldTest = new DemoBase2(args);
+        BaseDefault worldTest = new BaseDefault(args);
     }
     
     /**

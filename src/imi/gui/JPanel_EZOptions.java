@@ -684,80 +684,57 @@ public class JPanel_EZOptions extends javax.swing.JPanel {
     }
 
     public void loadAvatar(int selection) {
-//        if (m_Parent instanceof BaseDefault)
-//            ((BaseDefault)m_Parent).loadingWindow(true);
-//
-//        // Create avatar attribs
-//        CharacterAttributes attribs                             = new CharacterAttributes("AvatarAttributes");
-//        ArrayList<CharacterAttributes.SkinnedMeshParams> add    = new ArrayList<CharacterAttributes.SkinnedMeshParams>();
-//        ArrayList<String> delete                                = new ArrayList<String>();
-//        ArrayList<String> load                                  = new ArrayList<String>();
-//        ArrayList<AttachmentParams> attach                      = new ArrayList<AttachmentParams>();
-//
-//        for (int i = 0; i < 9; i ++) {
-//            if (m_presets.get(selection).get(i) == null)
-//                continue;
-//
-//            if (m_meshes.get(i) != null) {
-//                for (int j = 0; j < m_meshes.get(i).length; j++)
-//                    delete.add(m_meshes.get(i)[j]);
-//            }
-//
-//            if (i < 5) {
-//                for (int j = 0; j < m_presets.get(selection).get(i).length; j ++) {
-//                    if (j == 0) {
-//                        load.add(m_presets.get(selection).get(i)[j]);
-//                    } else {
-//                        CharacterAttributes.SkinnedMeshParams param = attribs.createSkinnedMeshParams(m_presets.get(selection).get(i)[j], m_sceneData.m_regions[i]);
-//                        add.add(param);
-//                    }
-//                }
-//                attribs.setFlagForAlteredRegion(i, true);
-//            } else if (i < 9){
-//                for (int j = 0; j < m_presets.get(selection).get(i).length; j ++) {
-//                    if (j == 0) {
-//                        load.add(m_presets.get(selection).get(i)[j]);
-//                    }
-//                    else {
-//                        PMatrix tempSolution;
-//                        tempSolution = new PMatrix(new Vector3f(0.0f, (float) Math.toRadians(180), 0.0f), new Vector3f(1.0f, 1.0f, 1.0f), Vector3f.ZERO);
-//                        attach.add(new AttachmentParams(m_presets.get(selection).get(i)[j], "Head", tempSolution));
-//                    }
-//                }
-//                attribs.setFlagForAlteredRegion(i, true);
-//            }
-//
-//            String[] meshes = new String[m_presets.get(selection).get(i).length - 1];
-//            for (int j = 1; j < m_presets.get(selection).get(i).length; j++)
-//                meshes[j-1] = m_presets.get(selection).get(i)[j];
-//            m_meshes.put(i, meshes);
-//        }
-//
-//        m_sceneData.setMeshSetup(m_meshes);
-//
-//        attribs.setBaseURL("");
-//        attribs.setAnimations(new String[] {m_presetLists.get(selection)[3]} );
-//        // NOLONGERRELVANT---> attribs.setDeleteInstructions(delete.toArray(new String[delete.size()]));
-//
-//        attribs.setLoadInstructions(load);
-//        attribs.setAddInstructions(add.toArray(new CharacterAttributes.SkinnedMeshParams[add.size()]));
-//        attribs.setAttachmentsInstructions(attach.toArray(new AttachmentParams[attach.size()]));
-//        attribs.setGender(m_gender);
-//        attribs.setGeomRef(m_meshes);
-//
-//        if (m_sceneData.getAvatar() != null) {
-//            m_sceneData.getWM().removeEntity(m_sceneData.getAvatar());
-//            m_sceneData.setAvatar(null);
-//        }
-//
-//        m_sceneData.setAvatar(new NinjaAvatar(attribs, m_sceneData.getWM()));
-//        m_sceneData.getAvatar().selectForInput();
-//        m_sceneData.setPScene(m_sceneData.getAvatar().getPScene());
-//
-//        if (m_Parent instanceof BaseDefault) {
-//            m_sceneData.setCameraOnModel();
-//            ((BaseDefault)m_Parent).loadingWindow(false);
-//        }
+        if (m_Parent instanceof BaseDefault)
+            ((BaseDefault)m_Parent).loadingWindow(true);
+
+        // Create avatar attribs
+        CharacterAttributes                                 attribs = new CharacterAttributes("AvatarAttributes");
+        ArrayList<CharacterAttributes.SkinnedMeshParams>    add     = new ArrayList<CharacterAttributes.SkinnedMeshParams>();
+        ArrayList<String>                                   load    = new ArrayList<String>();
+        ArrayList<AttachmentParams>                         attach  = new ArrayList<AttachmentParams>();
+
+        for (int i = 0; i < 9; i ++) {
+            if (m_presets.get(selection).get(i) == null)
+                continue;
+
+            if (i < 5) {
+                for (int j = 0; j < m_presets.get(selection).get(i).length; j ++) {
+                    if (j == 0) {
+                        load.add(m_presets.get(selection).get(i)[j]);
+                    } else {
+                        CharacterAttributes.SkinnedMeshParams param = attribs.createSkinnedMeshParams(m_presets.get(selection).get(i)[j], m_sceneData.m_regions[i]);
+                        add.add(param);
+                    }
+                }
+                attribs.setFlagForAlteredRegion(i, true);
+            } else if (i < 9){
+                for (int j = 0; j < m_presets.get(selection).get(i).length; j ++) {
+                    if (j == 0) {
+                        load.add(m_presets.get(selection).get(i)[j]);
+                    }
+                    else {
+                        PMatrix tempSolution;
+                        tempSolution = new PMatrix(new Vector3f(0.0f, (float) Math.toRadians(180), 0.0f), new Vector3f(1.0f, 1.0f, 1.0f), Vector3f.ZERO);
+                        attach.add(new AttachmentParams(m_presets.get(selection).get(i)[j], "Head", tempSolution));
+                    }
+                }
+                attribs.setFlagForAlteredRegion(i, true);
+            }
+        }
+
+        attribs.setBaseURL("");
+        attribs.setAnimations(new String[] {m_presetLists.get(selection)[3]} );
+        attribs.setLoadInstructions(load);
+        attribs.setAddInstructions(add.toArray(new CharacterAttributes.SkinnedMeshParams[add.size()]));
+        attribs.setAttachmentsInstructions(attach.toArray(new AttachmentParams[attach.size()]));
+        attribs.setGender(m_gender);
+
+        m_sceneData.loadAvatarDAEURL(true, m_Parent, attribs, m_gender);
+
+        if (m_Parent instanceof BaseDefault) {
+            m_sceneData.setCameraOnModel();
+            ((BaseDefault)m_Parent).loadingWindow(false);
+        }
     }
 
     public void setSceneData(SceneEssentials se) {

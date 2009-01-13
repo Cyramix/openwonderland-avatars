@@ -37,7 +37,7 @@ import org.jdesktop.mtgame.WorldManager;
  * Testing environments
  * @author Ronald E Dahlgren
  */
-public class COLLADA_OfficeTest extends DemoBase2
+public class COLLADA_OfficeTest extends DemoBase
 {
     public COLLADA_OfficeTest(String[] args){
         super(args);
@@ -47,7 +47,6 @@ public class COLLADA_OfficeTest extends DemoBase2
         COLLADA_OfficeTest worldTest = new COLLADA_OfficeTest(args);
     }
 
-    @Override
     protected void simpleSceneInit(JScene jscene, WorldManager wm, Entity jsentity, ArrayList<ProcessorComponent> processors)
     {
         PScene pscene = jscene.getPScene();

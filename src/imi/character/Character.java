@@ -122,26 +122,9 @@ import org.jdesktop.wonderland.common.comms.WonderlandObjectInputStream;
  */
 public abstract class Character extends Entity implements SpatialObject, AnimationListener
 {
-    /** The location of the male skeleton **/
-    private static URL maleSkeleton = null;
-    /** The location of the female skeleton **/
-    private static URL femaleSkeleton = null;
     /** Logger ref **/
     private static final Logger logger = Logger.getLogger(Character.class.getName());
-//    static
-//    {
-//        try
-//        {
-//            String fileProtocol = "file:///" + System.getProperty("user.dir") + "/";
-//            maleSkeleton = new URL("http://www.zeitgeistgames.com/assets/skeletons/Male.bs");
-//            femaleSkeleton = new URL("http://www.zeitgeistgames.com/assets/skeletons/Female.bs");
-////            maleSkeleton = new URL(fileProtocol + "assets/skeletons/Male.bs");
-////            femaleSkeleton = new URL(fileProtocol + "assets/skeletons/Female.bs");
-//        } catch (MalformedURLException ex) {
-//            // This should never happen and should be caught immediately if it does happen.
-//            logger.severe("Error initializing default URLs for binary skeletons!");
-//        }
-//    }
+
     /**
      * Maps to game triggers from VK_ key IDs that are forwarded from the input
      * manager. This defines which triggers react to what keyboard input.
@@ -178,8 +161,6 @@ public abstract class Character extends Entity implements SpatialObject, Animati
     public Character(CharacterAttributes attributes, WorldManager wm)
     {
         this(attributes, wm, true);
-        maleSkeleton = getClass().getResource("/imi/character/skeleton/Male.bs");
-        femaleSkeleton = getClass().getResource("/imi/character/skeleton/Female.bs");
     }
 
     /**
@@ -191,8 +172,6 @@ public abstract class Character extends Entity implements SpatialObject, Animati
     public Character(CharacterAttributes attributes, WorldManager wm, boolean addEntity)
     {
         super(attributes.getName());
-        maleSkeleton = getClass().getResource("/imi/character/skeleton/Male.bs");
-        femaleSkeleton = getClass().getResource("/imi/character/skeleton/Female.bs");
         commonConstructionCode(wm, attributes, addEntity, null);
     }
 
@@ -205,9 +184,6 @@ public abstract class Character extends Entity implements SpatialObject, Animati
     public Character(URL configurationFile, WorldManager wm)
     {
         super("InterimName");
-
-        maleSkeleton = getClass().getResource("/imi/character/skeleton/Male.bs");
-        femaleSkeleton = getClass().getResource("/imi/character/skeleton/Female.bs");
         xmlCharacter characterDOM = null;
         CharacterAttributes loadedAttributes = null;
 
