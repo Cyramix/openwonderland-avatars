@@ -60,7 +60,7 @@ public class NinjaContext extends GameContext
 {
     private Ninja             ninja       = null;
     private NinjaController   controller  = null;
-    private NinjaSteeringHelm steering    = new NinjaSteeringHelm("Ninja Steering Helm", this);
+    private NinjaSteeringHelm AI    = new NinjaSteeringHelm("Ninja Steering Helm", this);
     private LocationNode      location    = null;
     
     int punchActionIndex = 0;
@@ -74,12 +74,13 @@ public class NinjaContext extends GameContext
         Move_Back,
         Move_Up,
         Move_Down,
-        Punch,
+        MiscAction,
         SitOnGround,
         ToggleSteering,
         ToggleRightArm,
         ToggleLeftArm,
-        ToggleArmManualDriveReachMode,
+        ToggleRightArmManualDriveReachMode,
+        ToggleLeftArmManualDriveReachMode,
         Point,
         GoSit,
         GoTo1,
@@ -107,7 +108,7 @@ public class NinjaContext extends GameContext
         actionMap.put(TriggerNames.Move_Right.ordinal(),    new Action(NinjaContext.ActionNames.Movement_X.ordinal(), 0.4f));
         actionMap.put(TriggerNames.Move_Forward.ordinal(),  new Action(NinjaContext.ActionNames.Movement_Z.ordinal(), 0.4f));
         actionMap.put(TriggerNames.Move_Back.ordinal(),     new Action(NinjaContext.ActionNames.Movement_Z.ordinal(), -0.4f));
-        actionMap.put(TriggerNames.Punch.ordinal(),         new Action(NinjaContext.ActionNames.Punch.ordinal(), 1.0f));
+        actionMap.put(TriggerNames.MiscAction.ordinal(),         new Action(NinjaContext.ActionNames.Punch.ordinal(), 1.0f));
         actionMap.put(TriggerNames.Move_Up.ordinal(),       new Action(NinjaContext.ActionNames.Movement_Y.ordinal(), 0.4f));
         actionMap.put(TriggerNames.Move_Down.ordinal(),     new Action(NinjaContext.ActionNames.Movement_Y.ordinal(), -0.4f));
     }
@@ -164,7 +165,7 @@ public class NinjaContext extends GameContext
     public void update(float deltaTime)
     {
         super.update(deltaTime);
-        steering.update(deltaTime);
+        AI.update(deltaTime);
         controller.update(deltaTime);
     }
         
@@ -173,7 +174,7 @@ public class NinjaContext extends GameContext
     {
         // Toggle automatic steering behavior towards the current goal
         if (trigger == TriggerNames.ToggleSteering.ordinal() && pressed)
-            steering.toggleEnable();
+            AI.toggleEnable();
         
         // Toggle manual control over the right arm
         if (trigger == TriggerNames.ToggleRightArm.ordinal() && pressed)
@@ -186,6 +187,17 @@ public class NinjaContext extends GameContext
         {
             ninja.setCameraOnMe();
             ninja.getLeftArm().toggleEnabled();
+        }
+        
+        // Toggle manual control mode over the left arm
+        if (trigger == TriggerNames.ToggleLeftArmManualDriveReachMode.ordinal() && pressed)
+        {
+            ninja.getLeftArm().toggleManualDriveReachUp();
+        }
+        // Toggle manual control mode over the right arm
+        if (trigger == TriggerNames.ToggleRightArmManualDriveReachMode.ordinal() && pressed)
+        {
+            ninja.getRightArm().toggleManualDriveReachUp();
         }
     
         // Point at the nearest chair
@@ -204,7 +216,7 @@ public class NinjaContext extends GameContext
         // Find nearest chair and sit on it
         else if (trigger == TriggerNames.GoSit.ordinal() && pressed)
         {
-            steering.clearTasks();
+            AI.clearTasks();
             GoToNearestChair();
         }
         
@@ -215,21 +227,21 @@ public class NinjaContext extends GameContext
            
            // System.out.println("fix: " + ninja.getPosition());
             
-            steering.clearTasks();
+            AI.clearTasks();
             GoToNearestLocation();
             if (location != null)
-                steering.addTaskToBottom(new FollowPath("yellowRoom", location, this));
+                AI.addTaskToBottom(new FollowPath("yellowRoom", location, this));
         }
         else if (trigger == TriggerNames.GoTo2.ordinal() && pressed)
         {
-            steering.clearTasks();
+            AI.clearTasks();
             GoToNearestLocation();
             if (location != null)
-                steering.addTaskToBottom(new FollowPath("lobbyCenter", location, this));
+                AI.addTaskToBottom(new FollowPath("lobbyCenter", location, this));
         }
         else if (trigger == TriggerNames.GoTo3.ordinal() && pressed)
         {
-            steering.clearTasks();
+            AI.clearTasks();
             GoToNearestChair();
         }
         
@@ -347,7 +359,7 @@ public class NinjaContext extends GameContext
 
     @Override
     public NinjaSteeringHelm getSteering() {
-        return steering;
+        return AI;
     }
 
     public void GoToNearestLocation() 
@@ -358,7 +370,7 @@ public class NinjaContext extends GameContext
         location = ninja.getObjectCollection().findNearestLocation(ninja, 10000.0f, 1.0f, false);
         if (location != null)
         {
-            steering.addTaskToTop(new GoTo(location, this));
+            AI.addTaskToTop(new GoTo(location, this));
             
             ///steering.addTaskToTop(new )
 //            Vector3f pos = location.getPosition();
@@ -367,7 +379,7 @@ public class NinjaContext extends GameContext
 //            steering.setSittingDirection(direction);
 //            steering.setGoal(location);
 //            // GoTo and sit there
-            steering.setEnable(true);
+            AI.setEnable(true);
 //            steering.setReachedGoal(false);
 //
 //            // Update global goal point
@@ -399,14 +411,14 @@ public class NinjaContext extends GameContext
             //Vector3f direction = ((Chair)obj).getGoalForwardVector();
             
             GoSit task = new GoSit((Chair)obj, this);
-            steering.addTaskToTop(task);
+            AI.addTaskToTop(task);
             
 //            steering.setGoalPosition(pos);
 //            steering.setSittingDirection(direction);
 //            steering.setGoal(obj);
             
             // GoTo and sit there
-            steering.setEnable(true);
+            AI.setEnable(true);
             //steering.setReachedGoal(false);
 
 //            // Update global goal point

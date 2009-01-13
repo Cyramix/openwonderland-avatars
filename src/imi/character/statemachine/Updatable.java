@@ -33,7 +33,7 @@ public interface Updatable
      * Accessor
      * @return True if this object is enables
      */
-    public boolean getEnable();
+    public boolean isEnabled();
 
     /**
      * Modifier

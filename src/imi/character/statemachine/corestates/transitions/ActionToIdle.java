@@ -32,7 +32,7 @@ public class ActionToIdle extends TransitionObject
     {
         stateMessageName = "toIdle";
         
-        if (!state.getContext().getTriggerState().isKeyPressed(TriggerNames.Punch.ordinal()))
+        if (!state.getContext().getTriggerState().isKeyPressed(TriggerNames.MiscAction.ordinal()))
             return state.getContext().excecuteTransition(this);
         
         return false;

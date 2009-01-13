@@ -32,7 +32,7 @@ public class ActionToWalk extends TransitionObject
     {
         stateMessageName = "toWalk";
         
-        if ( !state.getContext().getTriggerState().isKeyPressed(TriggerNames.Punch.ordinal()) &&
+        if ( !state.getContext().getTriggerState().isKeyPressed(TriggerNames.MiscAction.ordinal()) &&
                 (state.getContext().getTriggerState().isKeyPressed(TriggerNames.Move_Forward.ordinal())
                 || state.getContext().getTriggerState().isKeyPressed(TriggerNames.Move_Back.ordinal()) ))
             return state.getContext().excecuteTransition(this);

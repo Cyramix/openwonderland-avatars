@@ -86,7 +86,7 @@ public class Ninja extends imi.character.Character
         m_keyBindings.put(KeyEvent.VK_RIGHT,        TriggerNames.Move_Right.ordinal());
         m_keyBindings.put(KeyEvent.VK_UP,           TriggerNames.Move_Forward.ordinal());
         m_keyBindings.put(KeyEvent.VK_DOWN,         TriggerNames.Move_Back.ordinal());
-        m_keyBindings.put(KeyEvent.VK_CONTROL,      TriggerNames.Punch.ordinal());
+        m_keyBindings.put(KeyEvent.VK_CONTROL,      TriggerNames.MiscAction.ordinal());
         m_keyBindings.put(KeyEvent.VK_ENTER,        TriggerNames.ToggleSteering.ordinal());
         m_keyBindings.put(KeyEvent.VK_HOME,         TriggerNames.GoSit.ordinal());
         m_keyBindings.put(KeyEvent.VK_ADD,          TriggerNames.Move_Down.ordinal());
@@ -129,5 +129,4 @@ public class Ninja extends imi.character.Character
 ////                ((DemoBase2)m_wm.getUserData(JFrame.class)).setGUI(m_jscene, m_wm, null, this);
         }
     }
-
 }

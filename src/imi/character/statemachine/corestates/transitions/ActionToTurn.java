@@ -32,7 +32,7 @@ public class ActionToTurn extends TransitionObject
     {
         stateMessageName = "toTurn";
         
-        if ( !state.getContext().getTriggerState().isKeyPressed(TriggerNames.Punch.ordinal()) &&
+        if ( !state.getContext().getTriggerState().isKeyPressed(TriggerNames.MiscAction.ordinal()) &&
                 (state.getContext().getTriggerState().isKeyPressed(TriggerNames.Move_Right.ordinal())
                 || state.getContext().getTriggerState().isKeyPressed(TriggerNames.Move_Left.ordinal()) ))
             return state.getContext().excecuteTransition(this);

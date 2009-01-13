@@ -75,7 +75,7 @@ public class NamedUpdatableObject implements Updatable, Named
         return enabledState;
     }
     
-    public boolean getEnable()
+    public boolean isEnabled()
     {
         return enabledState;
     }

@@ -307,6 +307,16 @@ public class GameContext extends NamedUpdatableObject
         }
         
     }
+    
+    /**
+     * Removes all GameContextListeners for this character. 
+     */
+    public void removeAllGameContextListeners() {
+        synchronized(listeners) {
+            listeners.clear();
+        }
+        
+    }
 
     /**
      * Override this to hook up centext wide reactions to triggers

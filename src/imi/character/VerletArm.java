@@ -55,9 +55,9 @@ public class VerletArm
     
     private float maxReach = 0.4834519f + 0.0075f;
     /** Enumerations for clarity **/
-    private final int shoulder  = 0;
-    private final int elbow     = 1;
-    private final int wrist     = 2;
+    public static final int shoulder  = 0;
+    public static final int elbow     = 1;
+    public static final int wrist     = 2;
     /** Switch the driving mode for the hand **/
     private boolean manualDriveReachUp = true; // otherwise reach forward
     /** Used as a pointing target for the arm, null disables pointing **/
@@ -193,7 +193,7 @@ public class VerletArm
             if (!P1.isMoveable())
             {
                 if (!P2.isMoveable())
-                    return;
+                    continue;
                 
                 P2.moveCurrentPosition(	vDelta.mult(fDiff));    
             }

@@ -20,6 +20,7 @@ package imi.utils.input;
 import com.jme.math.Vector3f;
 import imi.character.VerletArm;
 import imi.character.ninja.Ninja;
+import imi.character.ninja.NinjaContext.TriggerNames;
 import imi.character.objects.ObjectCollection;
 import imi.scene.processors.FlexibleCameraProcessor;
 import java.awt.event.KeyEvent;
@@ -124,14 +125,20 @@ public class NinjaControlScheme extends InputScheme
                     if (rightArm != null)
                     {
                         if (me.getID() == MouseEvent.MOUSE_PRESSED && me.getButton() == MouseEvent.BUTTON2)
-                            rightArm.toggleManualDriveReachUp();
+                        {
+                            ninjaTeam.get(currentNinja).getContext().triggerPressed(TriggerNames.ToggleRightArmManualDriveReachMode.ordinal());
+                            ninjaTeam.get(currentNinja).getContext().triggerReleased(TriggerNames.ToggleRightArmManualDriveReachMode.ordinal());
+                        }
 
                         rightArm.addInputOffset(offset);    
                     }
                     if (leftArm != null)
                     {
                         if (me.getID() == MouseEvent.MOUSE_PRESSED && me.getButton() == MouseEvent.BUTTON2)
-                            leftArm.toggleManualDriveReachUp();
+                        {
+                            ninjaTeam.get(currentNinja).getContext().triggerPressed(TriggerNames.ToggleLeftArmManualDriveReachMode.ordinal());
+                            ninjaTeam.get(currentNinja).getContext().triggerReleased(TriggerNames.ToggleLeftArmManualDriveReachMode.ordinal());
+                        }
 
                         leftArm.addInputOffset(offset);       
                     }

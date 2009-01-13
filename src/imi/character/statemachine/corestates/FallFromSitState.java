@@ -109,7 +109,7 @@ public class FallFromSitState extends GameState
         if (!context.isTransitioning()) 
             counter += deltaTime;
         
-        if (bIdleSittingAnimationSet && (context.getTriggerState().isKeyPressed(TriggerNames.Punch.ordinal()) ||
+        if (bIdleSittingAnimationSet && (context.getTriggerState().isKeyPressed(TriggerNames.MiscAction.ordinal()) ||
             context.getTriggerState().isKeyPressed(TriggerNames.Move_Forward.ordinal()) ||
             context.getTriggerState().isKeyPressed(TriggerNames.Move_Back.ordinal()) ||
             context.getTriggerState().isKeyPressed(TriggerNames.Move_Left.ordinal()) ||
