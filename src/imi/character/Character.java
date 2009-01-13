@@ -36,6 +36,7 @@ import imi.character.statemachine.TransitionObject;
 import imi.loaders.Instruction;
 import imi.loaders.Instruction.InstructionType;
 import imi.loaders.InstructionProcessor;
+import imi.loaders.PPolygonTriMeshAssembler;
 import imi.loaders.collada.Collada;
 import imi.loaders.repository.AssetDescriptor;
 import imi.loaders.repository.Repository;
@@ -267,36 +268,21 @@ public abstract class Character extends Entity implements SpatialObject, Animati
     protected abstract void initKeyBindings();
 
     /**
-     * Set up an asset initializer for the provided shared asset and using some
-     * information from the provided CharacterAttributes object
+     * Wrap up the initialization process.
      * @param character
      * @param attributes
      */
-    private void finalizeInitialization(xmlCharacter characterDOM)
+    protected void finalizeInitialization(xmlCharacter characterDOM)
     {
         while (setMeshAndSkeletonRefs() == false) // Bind up skeleton reference, etc
             Thread.yield();
 
         // Set animations and custom meshes
-        executeAttributes(m_attributes, false);
+        executeAttributes(m_attributes);
 
         // Set position
         if (m_attributes.getOrigin() != null)
             m_modelInst.getTransform().setLocalMatrix(m_attributes.getOrigin());
-
-        // Set eyes
-        m_eyes = new CharacterEyes(this, m_wm);
-
-        // Apply remaining customizations
-        if (characterDOM != null)
-        {
-            // Materials
-            applyMaterialProperties(characterDOM);
-            // Skeletal modifications
-            applySkeletalModifications(characterDOM);
-        }
-        else
-            setDefaultShaders();
 
         // Facial animation state is designated to id (and index) 1
         AnimationState facialAnimationState = m_skeleton.getAnimationState(1);
@@ -313,6 +299,21 @@ public abstract class Character extends Entity implements SpatialObject, Animati
             initiateFacialAnimation(1, 0.75f, 0.75f);
         }
 
+        // Hook up eyeballs
+        m_eyes = new CharacterEyes(this, m_wm);
+        
+        // Apply remaining customizations
+        if (characterDOM != null)
+        {
+            // Materials
+            applyMaterialProperties(characterDOM);
+            // Skeletal modifications
+            applySkeletalModifications(characterDOM);
+        }
+        else
+            setDefaultShaders();
+
+
         // The verlet arm!
         SkinnedMeshJoint rightShoulderJoint = (SkinnedMeshJoint) m_skeleton.findChild("rightArm");
         SkinnedMeshJoint leftShoulderJoint  = (SkinnedMeshJoint) m_skeleton.findChild("leftArm");
@@ -323,23 +324,30 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         //                            visual.addVerletObject(m_arm);
         //                            visual.setWireframe(true);
 
+        
+        // Apply the material on everything that was just loaded.
+        for (PPolygonSkinnedMeshInstance meshInstance : m_skeleton.getSkinnedMeshInstances())
+            meshInstance.applyMaterial();
+
         // New verlet skeleton manipulator
         m_skeletonManipulator = new VerletSkeletonFlatteningManipulator(m_leftArm, m_rightArm, m_eyes.getLeftEyeBall(), m_eyes.getRightEyeBall(), m_skeleton, m_modelInst);
         m_rightArm.setSkeletonManipulator(m_skeletonManipulator);
         m_leftArm.setSkeletonManipulator(m_skeletonManipulator);
         //m_arm.setPointAtLocation(Vector3f.UNIT_Y.mult(2.0f)); // test pointing, set to null to stop pointing
-
+        
+        // Associate ourselves with our animation states
+        for (AnimationState animState : m_skeleton.getAnimationStates())
+            animState.addListener(this);
         // Turn on the animation
         m_AnimationProcessor.setEnable(true);
         // Turn on updates
         m_characterProcessor.start();
         m_modelInst.setRenderStop(false);
         m_initialized = true;
-
     }
 
     /**
-     * Sets shaders on the parts according to soe defaults.
+     * Sets shaders on the parts according to the defaults.
      */
     public void setDefaultShaders()
     {
@@ -460,38 +468,13 @@ public abstract class Character extends Entity implements SpatialObject, Animati
             return;
         }
     }
-
-    /**
-     * This method deserializes the skeleton at the provided location
-     * @param location
-     */
-    private void loadSkeleton(URL location)
-    {
-        m_skeleton = null;
-        WonderlandObjectInputStream in = null;
-        try
-        {
-            in = new WonderlandObjectInputStream(location.openStream());
-            m_skeleton = (SkeletonNode)in.readObject();
-            in.close();
-        }
-        catch(Exception ex)
-        {
-            logger.severe("Uh oh! Error loading skeleton for character: " + ex.getMessage());
-            ex.printStackTrace();
-        }
-    
-        // Register myself as an animation listener for each state
-        for (AnimationState state : m_skeleton.getAnimationStates())
-            state.addListener(this);
-    }
     
     /**
      * This method applies all the commands of the CharacterAttributes object.
      * Things such as animation files to load, geometry to remove or add, etc.
      * @param attributes The attributes to process
      */
-    private void executeAttributes(CharacterAttributes attributes, boolean bUpdate)
+    private void executeAttributes(CharacterAttributes attributes)
     {   
         String fileProtocol = attributes.getBaseURL();
         // If no base url was provided by the character attributes, then it is
@@ -558,53 +541,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
      */
     @Deprecated
     public void loadAttributes(CharacterAttributes attributes) {
-        // TODO rework this
 
-        // if a URL prefix was specified, it needs to be glued to the front of the paths
-//        URL bindPoseURL = null;
-//        try {
-//            if (attributes.getBaseURL() != null)
-//                bindPoseURL = new URL(attributes.getBaseURL() + attributes.getBindPoseFile());
-//            else
-//                bindPoseURL = new URL("file://localhost/" + System.getProperty("user.dir") + "/" + attributes.getBindPoseFile());
-//        } catch (MalformedURLException ex) {
-//            logger.severe("Malformed URL from bind pose file!" + ex.getMessage());
-//            bindPoseURL = null;
-//        }
-//
-//        SharedAsset character = null;
-//
-//        // If a bind pose file was specified then we need to completely reinitialize
-//        // this avatar
-//        if (bindPoseURL != null) {
-//            // Craft a new pscene with the provided name
-//            m_pscene = new PScene(attributes.getName(), m_wm);
-//            // associate it with out jscene
-//            m_jscene.setPScene(m_pscene);
-//            // assign the attributes
-//            m_attributes = attributes;
-//            // get rid of all the old processor components
-//            {
-//                ProcessorCollectionComponent procCollection = (ProcessorCollectionComponent) getComponent(ProcessorCollectionComponent.class);
-//                procCollection.removeAllProcessors();
-//                removeComponent(ProcessorCollectionComponent.class);
-//            }
-//            // Make a new shared asset for loading the character
-//            character = new SharedAsset(m_pscene.getRepository(), new AssetDescriptor(SharedAssetType.COLLADA_Model, bindPoseURL));
-//            character.setUserData(new ColladaLoaderParams(true, true, false, false, 4, m_attributes.getName(), null));
-//            m_attributes.setAsset(character);
-//            setAssetInitializer(m_attributes, null);
-//            // Create new processor components
-//            ArrayList<ProcessorComponent> processors = new ArrayList<ProcessorComponent>();
-//            initScene(processors); // <-- at this point the model instance has been changed
-//            ProcessorCollectionComponent processorCollection = new ProcessorCollectionComponent();
-//            for (int i = 0; i < processors.size(); i++)
-//                processorCollection.addProcessor(processors.get(i));
-//            addComponent(ProcessorCollectionComponent.class, processorCollection);
-//        } else {
-//            executeAttributes(attributes, true);
-//            setDefaultShaders();
-//        }
     }
 
     /**
@@ -744,18 +681,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         MaterialState matState  = null;
         matState = (MaterialState) m_wm.getRenderManager().createRendererState(RenderState.RS_MATERIAL);
         matState.setDiffuse(ColorRGBA.white);
-        
-        // Light state
-//        Vector3f lightDir = new Vector3f(0.0f, -1.0f, 0.0f);
-//        DirectionalLight dr = new DirectionalLight();
-//        dr.setDiffuse(new ColorRGBA(1.0f, 1.0f, 1.0f, 1.0f));
-//        dr.setAmbient(new ColorRGBA(0.2f, 0.2f, 0.2f, 1.0f));
-//        dr.setSpecular(new ColorRGBA(0.7f, 0.7f, 0.7f, 1.0f));
-//        dr.setDirection(lightDir);
-//        dr.setEnabled(true);
-//        LightState ls = (LightState) m_wm.createRendererState(RenderState.RS_LIGHT);
-//        ls.setEnabled(true);
-//        ls.attach(dr);
+
         // SET lighting
         PointLight light = new PointLight();
         light.setDiffuse(new ColorRGBA(1.0f, 1.0f, 1.0f, 1.0f));
@@ -1093,9 +1019,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         // Ready the collada loader!
         Collada colladaLoader = new Collada();
         colladaLoader.setLoadFlags(true, true, false);
-
-        PScene newHeadPScene = new PScene(m_wm);
-        colladaLoader.load(newHeadPScene, headLocation);
+        colladaLoader.load(new PScene(m_wm), headLocation);
 
         SkeletonNode newHeadSkeleton = colladaLoader.getSkeletonNode();
 
@@ -1129,15 +1053,19 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         m_skeleton.setRenderStop(false);
     }
 
+    /**
+     * This only remains in order to provide an example of the process.
+     * @param headLocation
+     * @deprecated
+     */
     @Deprecated
     public void oldInstallHead(URL headLocation)
     {
         // Ready the collada loader!
         Collada colladaLoader = new Collada();
         colladaLoader.setLoadFlags(true, true, false);
-        
-        PScene newHeadPScene = new PScene(m_wm);
-        colladaLoader.load(newHeadPScene, headLocation);
+
+        colladaLoader.load(new PScene(m_wm), headLocation);
 
         SkeletonNode newHeadSkeleton = colladaLoader.getSkeletonNode();
 
@@ -1449,22 +1377,6 @@ public abstract class Character extends Entity implements SpatialObject, Animati
 
         return result;
     }
-
-    public class MeshInstanceProcessor implements NodeProcessor {
-
-        ArrayList<PPolygonMeshInstance> mInst = new ArrayList<PPolygonMeshInstance>();
-
-        public boolean processNode(PNode currentNode) {
-            if (currentNode instanceof PPolygonMeshInstance && !(currentNode instanceof PPolygonSkinnedMeshInstance)) {
-                mInst.add((PPolygonMeshInstance) currentNode);
-            }
-            return true;
-        }
-
-        public ArrayList<PPolygonMeshInstance> getMeshInstances() {
-            return mInst;
-        }
-    };
 
 
     /**

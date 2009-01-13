@@ -602,18 +602,21 @@ public class PNode implements Serializable
      * @param newChild The replacement (Life as a PNode is tough)
      * @param bKeepOldGrandkids If true, grandkids are coalesced, otherwise the oldChild's kids are lost.
      */
-    public synchronized void replaceChild(PNode oldChild, PNode newChild, boolean bKeepOldGrandkids)
+    public synchronized boolean replaceChild(PNode oldChild, PNode newChild, boolean bKeepOldGrandkids)
     {
+        boolean result = false;
         // Grab oldChild's kids
         ArrayList<PNode> oldChildren = oldChild.getChildren();
         // remove the old child
-        removeChild(oldChild);
+        if (removeChild(oldChild) != null) // not found
+            result = true;
         // add our new one
         addChild(newChild);
         // coalesce the children if necessary
         if (bKeepOldGrandkids == true)
             newChild.getChildren().addAll(oldChildren);
         // Dassit!
+        return result;
         
     }
     

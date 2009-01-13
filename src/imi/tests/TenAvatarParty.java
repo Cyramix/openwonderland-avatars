@@ -40,7 +40,7 @@ public class TenAvatarParty extends DemoBase
 {
     private static final Logger     logger = Logger.getLogger(TenAvatarParty.class.getName());
 
-    private static final Integer    numberOfAvatars = Integer.valueOf(5);
+    private static final Integer    numberOfAvatars = Integer.valueOf(10);
     private static final String[]   configFiles     = new String[numberOfAvatars];
 
     static {
@@ -50,9 +50,9 @@ public class TenAvatarParty extends DemoBase
         configFiles[ 2] = fileProtocol + "assets/configurations/SavingTestOutput.xml";
         configFiles[ 3] = fileProtocol + "assets/configurations/SavingTestOutput.xml";
         configFiles[ 4] = fileProtocol + "assets/configurations/SavingTestOutput.xml";
-//        configFiles[ 5] = fileProtocol + "assets/configurations/SavingTestOutput.xml";
-//        configFiles[ 6] = fileProtocol + "assets/configurations/SavingTestOutput.xml";
-//        configFiles[ 7] = fileProtocol + "assets/configurations/SavingTestOutput.xml";
+        configFiles[ 5] = fileProtocol + "assets/configurations/SavingTestOutput.xml";
+        configFiles[ 6] = fileProtocol + "assets/configurations/SavingTestOutput.xml";
+        configFiles[ 7] = fileProtocol + "assets/configurations/SavingTestOutput.xml";
 //        configFiles[ 8] = fileProtocol + "assets/configurations/SavingTestOutput.xml";
 //        configFiles[ 9] = fileProtocol + "assets/configurations/SavingTestOutput.xml";
     }
@@ -70,7 +70,7 @@ public class TenAvatarParty extends DemoBase
     @Override
     protected void createDemoEntities(WorldManager wm)
     {
-        CircleUtil circle = new CircleUtil(numberOfAvatars, 6);
+        CircleUtil circle = new CircleUtil(numberOfAvatars, 4);
         Vector2f[] displacements = circle.calculatePoints();
 
         // Create ninja input scheme
@@ -82,7 +82,12 @@ public class TenAvatarParty extends DemoBase
         for (int i = 0; i < numberOfAvatars; ++i)
         {
             try {
-                testCharacter = new NinjaAvatar(new NinjaAvatarAttributes("Name", true, true), wm);//new NinjaAvatar(new URL(configFiles[i]), wm);
+                long startTime = System.nanoTime();
+                testCharacter = new NinjaAvatar(new NinjaAvatarAttributes("Name", false, false), wm);//new NinjaAvatar(new URL(configFiles[i]), wm);
+                long stopTime = System.nanoTime();
+                float length = (stopTime - startTime) / 1000000000.0f;
+                System.out.println("Loading avatar " + i + " took " + length + " seconds.");
+                
             } catch (Exception ex) {
                 Logger.getLogger(SavingAndLoadingTest.class.getName()).log(Level.SEVERE, null, ex);
             }

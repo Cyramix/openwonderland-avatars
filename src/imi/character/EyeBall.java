@@ -66,6 +66,7 @@ public class EyeBall extends PPolygonSkinnedMeshInstance
     public EyeBall(PPolygonSkinnedMeshInstance meshInstance, Character character)
     {
         super(meshInstance, character.getPScene(), false); // Material will be applied later
+        setAndLinkSkeletonNode(character.getSkeleton()); 
         this.modelInst = character.getModelInst();
         this.character = character;
     }

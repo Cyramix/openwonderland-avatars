@@ -59,7 +59,6 @@ public class PPolygonSkinnedMeshInstance extends PPolygonMeshInstance implements
         super(meshInstance.getName(), meshInstance.getGeometry(), meshInstance.getTransform().getLocalMatrix(false), pscene, applyMaterial);
         if (meshInstance.getInfluenceIndices() != null)
             setInfluenceIndices(meshInstance.getInfluenceIndices());
-        setAndLinkSkeletonNode(meshInstance.getSkeletonNode());
     }
     
         

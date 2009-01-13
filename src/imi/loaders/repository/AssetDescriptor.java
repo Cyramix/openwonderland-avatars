@@ -20,6 +20,7 @@ package imi.loaders.repository;
 import imi.loaders.repository.SharedAsset.SharedAssetType;
 import imi.utils.FileUtils;
 import java.io.File;
+import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.logging.Level;
@@ -33,7 +34,7 @@ import javolution.util.FastList;
  * @author Ronald E Dahlgren
  * @author Lou Hayt
  */
-public class AssetDescriptor 
+public class AssetDescriptor implements Serializable
 {
     /** Type indicator **/
     private SharedAssetType m_type  = SharedAssetType.Unknown;

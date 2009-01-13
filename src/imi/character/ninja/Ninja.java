@@ -22,6 +22,7 @@ import imi.character.ninja.NinjaContext.TriggerNames;
 import imi.character.statemachine.GameContext;
 import imi.utils.input.InputScheme;
 import imi.scene.processors.JSceneEventProcessor;
+import imi.serialization.xml.bindings.xmlCharacter;
 import imi.utils.input.NinjaControlScheme;
 import java.awt.event.KeyEvent;
 import java.net.URL;
@@ -53,7 +54,7 @@ public class Ninja extends imi.character.Character
     public Ninja(CharacterAttributes attributes, WorldManager wm, boolean addEntity)
     {
         super(attributes, wm, addEntity);
-        m_context = instantiateContext();       // Initialize m_context
+//        m_context = instantiateContext();       // Initialize m_context
     }
 
     /**
@@ -64,11 +65,17 @@ public class Ninja extends imi.character.Character
     public Ninja(URL configurationFile, WorldManager wm)
     {
         super(configurationFile, wm);
-        m_context = instantiateContext();
+//        m_context = instantiateContext();
     }
      
     protected GameContext instantiateContext() {
         return new NinjaContext(this);
+    }
+
+    @Override
+    protected void finalizeInitialization(xmlCharacter characterDOM) {
+        m_context = instantiateContext();
+        super.finalizeInitialization(characterDOM);
     }
    
     @Override

@@ -273,24 +273,34 @@ public class InstructionProcessor
         //  Find the SkinnedMesh that is the replacement.
         PPolygonSkinnedMesh skinnedMesh = null;
 
-        Iterable<PPolygonMesh> list = m_loadingPScene.getLocalGeometryList();
-        for (PPolygonMesh mesh : list)
+        PNode mesh = m_loadingPScene.findChild(skinnedMeshName);
+        if (mesh == null)
+            logger.severe("Requested mesh not found - " + skinnedMeshName);
+        else if (mesh instanceof PPolygonSkinnedMesh)
         {
-            if (mesh.getName().equals(skinnedMeshName))
-            {
-                skinnedMesh = (PPolygonSkinnedMesh) mesh;
-                    // Make an instance
-                PPolygonSkinnedMeshInstance skinnedMeshInstance = (PPolygonSkinnedMeshInstance) m_loadingPScene.addMeshInstance(skinnedMesh, new PMatrix());
-                // Debugging / Diagnostic information
-                logger.log(Level.INFO, "Adding mesh, \"" + skinnedMeshName + "\" to subgroup, \"" + subGroupName + "\"");
+            skinnedMesh = (PPolygonSkinnedMesh) mesh;
+            // Make an instance
+            PPolygonSkinnedMeshInstance skinnedMeshInstance = (PPolygonSkinnedMeshInstance) m_loadingPScene.addMeshInstance(skinnedMesh, new PMatrix());
+            // Debugging / Diagnostic information
+//            logger.log(Level.INFO, "Adding mesh, \"" + skinnedMeshName + "\" to subgroup, \"" + subGroupName + "\"");
 
-                //  Link the SkinnedMesh to the Skeleton.
-                skinnedMeshInstance.setAndLinkSkeletonNode(m_skeleton);
+            //  Link the SkinnedMesh to the Skeleton.
+            skinnedMeshInstance.setAndLinkSkeletonNode(m_skeleton);
 
-                // Add it to the skeleton
-                m_skeleton.addToSubGroup(skinnedMeshInstance, subGroupName);
-            }
+            // Add it to the skeleton
+            m_skeleton.addToSubGroup(skinnedMeshInstance, subGroupName);
         }
+        else if (mesh instanceof PPolygonSkinnedMeshInstance)
+        {
+//            logger.log(Level.INFO, "Adding meshinstance, \"" + skinnedMeshName + "\" to subgroup, \"" + subGroupName + "\"");
+            PPolygonSkinnedMeshInstance skinMeshInstance = (PPolygonSkinnedMeshInstance)mesh;
+            skinMeshInstance.setPScene(m_loadingPScene);
+            skinMeshInstance.setAndLinkSkeletonNode(m_skeleton);
+            m_skeleton.addToSubGroup(skinMeshInstance, subGroupName);
+        }
+        else
+            logger.severe("Node with same name found, but not skinned mesh");
+
         return true;
     }
 

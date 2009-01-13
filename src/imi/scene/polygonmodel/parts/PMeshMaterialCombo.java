@@ -18,13 +18,14 @@
 package imi.scene.polygonmodel.parts;
 
 import com.jme.renderer.ColorRGBA;
+import java.io.Serializable;
 
 /**
  *
  * @author Lou Hayt
  * @author Ronald Dahlgren
  */
-public class PMeshMaterialCombo 
+public class PMeshMaterialCombo implements Serializable
 {
     // Material references
     private PMeshMaterial   m_Material1     = null;

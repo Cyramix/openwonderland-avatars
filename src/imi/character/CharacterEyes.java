@@ -18,11 +18,11 @@
 package imi.character;
 
 import com.jme.math.Vector3f;
-import imi.scene.PScene;
 import imi.scene.polygonmodel.PPolygonModelInstance;
 import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
 import imi.scene.polygonmodel.parts.skinned.SkinnedMeshJoint;
 import imi.scene.polygonmodel.skinned.PPolygonSkinnedMeshInstance;
+import java.util.logging.Logger;
 import org.jdesktop.mtgame.WorldManager;
 
 /**
@@ -31,6 +31,9 @@ import org.jdesktop.mtgame.WorldManager;
  */
 public class CharacterEyes 
 {
+    private static final Logger logger = Logger.getLogger(CharacterEyes.class.getName());
+
+
     private Character             character            = null;
     private SkeletonNode          skeleton             = null;
     private PPolygonModelInstance characterModelInst   = null;
@@ -69,7 +72,7 @@ public class CharacterEyes
     {
         if (character == null)
         {
-            System.out.println("CharacterEyes recieved null character in the constructor!");
+            logger.severe("CharacterEyes recieved null character in the constructor!");
             return;
         }
         
@@ -85,7 +88,11 @@ public class CharacterEyes
         PPolygonSkinnedMeshInstance leftEyeMeshInst  = (PPolygonSkinnedMeshInstance) skeleton.findChild("leftEyeGeoShape");
         PPolygonSkinnedMeshInstance rightEyeMeshInst = (PPolygonSkinnedMeshInstance) skeleton.findChild("rightEyeGeoShape");
         if (leftEyeMeshInst == null || rightEyeMeshInst == null)
-            System.out.println("Meshes not loaded! FORM THE FRIGGIN EYEBALL!");
+        {
+            logger.severe("Eyeball meshes not located, aborting EyeBall construction!");
+            return;
+        }
+
         leftEyeBall = new EyeBall(leftEyeMeshInst, character);
         leftEyeMeshInst.getParent().replaceChild(leftEyeMeshInst, leftEyeBall, true);
         rightEyeBall = new EyeBall(rightEyeMeshInst, character);

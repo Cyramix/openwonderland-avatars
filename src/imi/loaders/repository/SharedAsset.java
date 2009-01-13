@@ -17,6 +17,8 @@
  */
 package imi.loaders.repository;
 
+import java.io.Serializable;
+
 /**
  * This class is used to represent an asset that is shared across threads via
  * the repository. It consists of a descriptor with details about its type and
@@ -24,10 +26,10 @@ package imi.loaders.repository;
  * @author Ronald E Dahlgren
  * @author Lou Hayt
  */
-public class SharedAsset 
+public class SharedAsset
 {
     // home
-    private Repository          m_repository = null;
+    private transient Repository          m_repository = null;
     
     // description
     private AssetDescriptor     m_descriptor = null;
@@ -39,7 +41,7 @@ public class SharedAsset
     private Object              m_userData   = null;
     
     // Any initialization code
-    private AssetInitializer    m_initializer = null;
+    private transient AssetInitializer    m_initializer = null;
     
     static public enum SharedAssetType
     {

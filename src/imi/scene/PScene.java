@@ -70,12 +70,12 @@ public class PScene extends PNode implements RepositoryUser, Serializable
     
     // Shared Assets
     private boolean m_bUseRepository = true;
-    private final List<SharedAsset> m_SharedAssets  = new FastList<SharedAsset>();
+    private transient List<SharedAsset> m_SharedAssets  = new FastList<SharedAsset>();
 
     private transient List<SharedAssetPlaceHolder> m_SharedAssetWaitingList = new FastList<SharedAssetPlaceHolder>();
 
     // Instances
-    private PNode m_Instances                       = null;
+    private PNode m_Instances   = null;
     
     // Utility
     private transient JScene m_JScene = null;
@@ -106,6 +106,25 @@ public class PScene extends PNode implements RepositoryUser, Serializable
     {
         this(wm);
         setName(name);
+    }
+
+    /**
+     * Special support method for deserialization. This should be called after
+     * the world manager reference has been tied up.
+     */
+    public void finalizeDeserialization()
+    {
+        for (PPolygonMesh mesh : m_LocalGeometry)
+        {
+            mesh.setDirty(true, false);
+            mesh.setSubmitGeometry(true);
+            mesh.submit(m_TriMeshAssembler);
+            mesh.setSubmitGeometry(false);
+        }
+    }
+
+    public PPolygonTriMeshAssembler getTriMeshAssembler() {
+        return m_TriMeshAssembler;
     }
 
     /**
@@ -344,6 +363,11 @@ public class PScene extends PNode implements RepositoryUser, Serializable
     public WorldManager getWorldManager()
     {
         return m_WorldManager;
+    }
+
+    public void setWorldManager(WorldManager wm)
+    {
+        m_WorldManager = wm;
     }
 
     /** Returns the list of shared assets in the repository
@@ -1220,6 +1244,7 @@ public class PScene extends PNode implements RepositoryUser, Serializable
         in.defaultReadObject();
         // Re-allocate all relevant transient objects
         m_SharedAssetWaitingList = new FastList<SharedAssetPlaceHolder>();
+        m_SharedAssets = new FastList<SharedAsset>();
         m_TriMeshAssembler = new PPolygonTriMeshAssembler();
 
     }

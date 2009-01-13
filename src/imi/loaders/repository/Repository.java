@@ -19,9 +19,8 @@ package imi.loaders.repository;
 
 import imi.annotations.Debug;
 import imi.loaders.repository.SharedAsset.SharedAssetType;
+import imi.scene.PScene;
 import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
-import java.io.File;
-import java.io.FileInputStream;
 import java.net.URL;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
@@ -52,7 +51,7 @@ public class Repository extends Entity
     // The maximum number of load requests that can handled at a time
     private long m_numberOfLoadRequests      = 0l;
     private long m_maxConcurrentLoadRequests = 35l;
-    private static long m_maxQueryTime  = 20000000l; // Lengthy timeout for testing purposes
+    private static long m_maxQueryTime  = 2000000000l; // Lengthy timeout for testing purposes
     /** Collection of work requests for RepositoryWorkers to process **/
     private final FastList<WorkOrder> m_workOrders = new FastList<WorkOrder>();
     
@@ -67,6 +66,10 @@ public class Repository extends Entity
     /** Animation Collection **/
     private final ConcurrentHashMap<AssetDescriptor, RepositoryAsset> m_Animations =
             new ConcurrentHashMap<AssetDescriptor, RepositoryAsset>();
+
+    /** PScene Collection **/
+    private final ConcurrentHashMap<URL, PScene> m_PScenes =
+            new ConcurrentHashMap<URL, PScene>();
     
     // And potentially...
     // processors (AI, animations, etc)
@@ -88,10 +91,47 @@ public class Repository extends Entity
 
         // Add our collection of processors to the entity
         addComponent(ProcessorCollectionComponent.class, m_processorCollection);
-
+        // Load up the default skeletons
         loadSkeletons();
     }
-    
+
+    /**
+     * Attempts to load the already serialized version of this collada file.
+     * If none exists, null will be returned.
+     * @param colladaFile
+     * @return
+     */
+    public synchronized PScene loadSerializedCollada(URL colladaFile) {
+        PScene result = null;
+        if (m_PScenes.containsKey(colladaFile) == true) // Already been loaded
+            result = m_PScenes.get(colladaFile);
+        else // see if one exists
+        {
+            URL binaryLocation = null;
+            try
+            {
+                if (bafCacheURL==null)
+                    binaryLocation = new URL(colladaFile.toString().substring(0, colladaFile.toString().length() - 3) + "baf");
+                else
+                    binaryLocation = new URL(bafCacheURL+colladaFile.getFile().toString().substring(0, colladaFile.getFile().toString().length() - 3) + "baf");
+                result = loadBinaryPScene(binaryLocation);
+                result.setWorldManager(m_worldManager);
+                result.finalizeDeserialization();
+                // Add into our collection
+                m_PScenes.put(colladaFile, result);
+            } catch (Exception ex)
+            {
+                // If we get here, assume no binary file exists
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Request to load the specified asset and deliver it to the user on completion.
+     * @param asset
+     * @param user
+     */
     public synchronized void loadSharedAsset(SharedAsset asset, RepositoryUser user)
     {
         RepositoryAsset repoAsset = null;
@@ -158,15 +198,23 @@ public class Repository extends Entity
             slave.initialize();
         }
     }
-    
-    public void removeProcessor(ProcessorComponent pc)
+
+    /**
+     * Remove the provided processor component from this Entity's processor collection.
+     * @param pc
+     */
+    void removeProcessor(ProcessorComponent pc)
     {
         // remove the processor from the entity process controller
         m_processorCollection.removeProcessor(pc);
     }
 
-    // one reference per thread\PScene
-    public void referenceSubtract(AssetDescriptor descriptor) 
+    /**
+     * Decrement the number of references maintained by the RepositoryAsset with
+     * the provided descriptor.
+     * @param descriptor
+     */
+    void referenceSubtract(AssetDescriptor descriptor) 
     {
         ConcurrentHashMap<AssetDescriptor, RepositoryAsset> collection = getCollection(descriptor.getType());
         
@@ -175,7 +223,12 @@ public class Repository extends Entity
         if (repoAsset != null)
             repoAsset.decrementReferenceCount();
     }
-    
+
+    /**
+     * Return the appropriate collection for the specified asset type.
+     * @param collectionType
+     * @return
+     */
     public ConcurrentHashMap<AssetDescriptor, RepositoryAsset> getCollection(SharedAssetType collectionType)
     {
         switch (collectionType)
@@ -229,9 +282,11 @@ public class Repository extends Entity
         
         return statementOfWork;
     }
-    
-   
 
+    /**
+     * Create and bind a repository asset from the provided statement of work.
+     * @param statementOfWork
+     */
     void createRepositoryAsset(WorkOrder statementOfWork) 
     {
         // We did not exceed the maxium number of workers so we can process this request now
@@ -252,6 +307,31 @@ public class Repository extends Entity
         statementOfWork.m_repoAsset = repoAsset;
     }
 
+    /**
+     * Attempt to load a serialized PScene from the specified location.
+     * @param binaryLocation Location to load
+     * @return The reconstituted PScene, or null on failure.
+     */
+    private PScene loadBinaryPScene(URL binaryLocation) {
+        PScene result = null;
+        WonderlandObjectInputStream in = null;
+        try
+        {
+            in = new WonderlandObjectInputStream(binaryLocation.openStream());
+            result = (PScene)in.readObject();
+            in.close();
+        }
+        catch(Exception ex)
+        {
+            logger.severe("Uh oh! " + ex.getMessage());
+            ex.printStackTrace();
+        }
+        return result;
+    }
+
+    /**
+     * Load the default skeletons.
+     */
     private void loadSkeletons() {
         WonderlandObjectInputStream in = null;
         SkeletonNode MaleSkeleton = null;
@@ -281,6 +361,11 @@ public class Repository extends Entity
         m_Skeletons.add(FemaleSkeleton);
     }
 
+    /**
+     * Retrieve the skeleton with the specified name.
+     * @param name
+     * @return
+     */
     public SkeletonNode getSkeleton(String name)
     {
         for (SkeletonNode skeleton : m_Skeletons)
@@ -289,6 +374,11 @@ public class Repository extends Entity
         return null;
     }
 
+    /**
+     * Add a <b>copy</b> of the provided skeleton to the repository's internal
+     * collection.
+     * @param skeleton
+     */
     public void addSkeleton(SkeletonNode skeleton)
     {
         m_Skeletons.add(skeleton.deepCopy());
@@ -342,8 +432,7 @@ public class Repository extends Entity
      * so DO NOT rely on this method!
      * @return The world manager
      */
-    @Deprecated
-    public WorldManager getWorldManager() 
+    WorldManager getWorldManager() 
     {
         return m_worldManager;
     }

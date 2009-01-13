@@ -56,7 +56,7 @@ public class PPolygonMeshInstance extends PNode implements Serializable
     // The owning PScene
     protected PScene              m_PScene    = null;
     // JMonkey instance object
-    protected SharedMesh          m_instance  = null;
+    protected transient SharedMesh          m_instance  = null;
     
     protected boolean             m_bUniformTexCoords = false;
     
@@ -64,11 +64,11 @@ public class PPolygonMeshInstance extends PNode implements Serializable
     protected PPolygonMesh        m_geometry  = null; // if this reference will be assigned again outside of the constructor then m_instance will need an update
     
     // Shader state. This must be allocated carefully (on render thread presumably)
-    protected GLSLShaderObjectsState    m_shaderState       = null;//new LWJGLShaderObjectsState();
+    protected transient GLSLShaderObjectsState    m_shaderState       = null;
     
     // Textures
-    protected TextureInstaller          m_textureInstaller  = null; // Needs to know how many texture units will be used
-    protected TextureState              m_textureState      = null;
+    protected transient TextureInstaller          m_textureInstaller  = null; // Needs to know how many texture units will be used
+    protected transient TextureState              m_textureState      = null;
     
 //    // JMonkey\LWJGL MaterialState
 //    protected MaterialState             m_matState          = null;
@@ -78,7 +78,7 @@ public class PPolygonMeshInstance extends PNode implements Serializable
     /** Use geometry material or not **/
     protected boolean  m_bUseGeometryMaterial       = true; 
     /** convenient state wrapper **/
-    protected PMeshMaterialStates m_pmaterialStates = null;
+    protected transient PMeshMaterialStates m_pmaterialStates = null;
     /**
      * This constructor copies all the data of the other instance and inserts
      * this instance into the scene graph as a child of the provided parent.
@@ -98,7 +98,7 @@ public class PPolygonMeshInstance extends PNode implements Serializable
         m_instance = new SharedMesh(getName(), m_geometry.getGeometry());
 
         m_material = new PMeshMaterialCombo(m_geometry.getMaterialCopy(), null);
-        applyMaterial();
+//        applyMaterial();
     }
 
     /**
@@ -151,7 +151,7 @@ public class PPolygonMeshInstance extends PNode implements Serializable
         return m_instance;
     }
     
-    // called when we faltten the hierarchy on submitTransform in PSCene
+    // called when we faltten the hierarchy on submitTransform in PScene
     public SharedMesh updateSharedMesh()
     {
         // TODO push shader data 
@@ -458,5 +458,6 @@ public class PPolygonMeshInstance extends PNode implements Serializable
     private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException
     {
         in.defaultReadObject();
+        m_instance = new SharedMesh(getName(), getGeometry().getGeometry());
     }
 }

@@ -16,9 +16,6 @@
  * this code.
  */
 package imi.loaders.collada;
-
-
-
 import imi.loaders.repository.AssetDescriptor;
 import imi.loaders.repository.SharedAsset;
 import java.util.ArrayList;
@@ -29,13 +26,11 @@ import org.collada.colladaschema.COLLADA;
 import org.collada.xml_walker.ProcessorFactory;
 import org.collada.xml_walker.PColladaNode;
 import org.collada.xml_walker.PColladaMaterialInstance;
-import org.collada.xml_walker.PColladaImage;
 import org.collada.xml_walker.PColladaEffect;
 import org.collada.xml_walker.PColladaAnimatedItem;
 import org.collada.xml_walker.PColladaCameraParams;
 import org.collada.xml_walker.PColladaCamera;
 import org.collada.xml_walker.PColladaSkin;
-
 import org.collada.colladaschema.LibraryCameras;
 import org.collada.colladaschema.LibraryImages;
 import org.collada.colladaschema.LibraryEffects;
@@ -45,32 +40,22 @@ import org.collada.colladaschema.LibraryVisualScenes;
 import org.collada.colladaschema.LibraryGeometries;
 import org.collada.colladaschema.LibraryControllers;
 import org.collada.colladaschema.LibraryNodes;
-
 import imi.scene.polygonmodel.parts.*;
 import imi.scene.polygonmodel.*;
-
 import imi.scene.PScene;
 import imi.scene.PMatrix;
 import imi.scene.PNode;
 import imi.scene.PTransform;
-
-
 import imi.scene.polygonmodel.PPolygonMeshInstance;
-
 import imi.scene.polygonmodel.skinned.PPolygonSkinnedMesh;
 import imi.scene.polygonmodel.skinned.PPolygonSkinnedMeshInstance;
 import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
-
 import imi.scene.polygonmodel.parts.skinned.SkinnedMeshJoint;
-
-import imi.scene.animation.AnimationGroup;
-import imi.scene.animation.COLLADA_JointChannel;
-        
 import imi.scene.PJoint;
-
-
 import imi.scene.utils.tree.PPolygonMeshAssemblingProcessor;
 import imi.scene.utils.tree.TreeTraverser;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -78,6 +63,7 @@ import java.net.URLConnection;
 import java.util.logging.Level;
 import javolution.util.FastMap;
 import org.collada.xml_walker.ColladaMaterial;
+import org.jdesktop.wonderland.common.comms.WonderlandObjectOutputStream;
 
 
 
@@ -304,68 +290,6 @@ public class Collada
         m_bAddSkinnedMeshesToSkeleton = bAddSkinnedMeshesToSkeleton;
     }
 
-    /**
-     * Load the specified collada file. This method will attempt to retrieve the
-     * specified file, generate the DOM and then walk the tree.
-     * @param colladaFile Location of the COLLADA file to load
-     * @return True on success, false otherwise
-     */
-    public boolean load(URL colladaFile) {
-        final int maxNumberOfRetries = 5;
-        int retry = 1; // Retry while > 0 and <= maxNumberOfRetries
-
-        m_fileLocation = colladaFile;
-        URLConnection conn = null;
-        InputStream in = null;
-        boolean result = false;
-        while (retry > 0 && retry <= maxNumberOfRetries)
-        {
-            org.collada.colladaschema.COLLADA collada = null;
-            try // to open the connection and unmarshal the file
-            {
-                conn = colladaFile.openConnection();
-                in = conn.getInputStream();
-                synchronized(contextLock) {
-                    collada = (org.collada.colladaschema.COLLADA) unmarshaller.unmarshal(in);
-                }
-                retry = 0; // No retry necessary
-            }
-            catch (Exception exception)
-            {
-                if (exception.getMessage().equals("Connection refused"))
-                {
-                    logger.warning(exception.getMessage() + "... Retrying");
-                    retry++;
-                }
-                else
-                {
-                    logger.severe("Exception while attempting to open collada file! : " +
-                            exception.getMessage());
-                    exception.printStackTrace();
-                    // Do not retry, simple abort
-                    retry = Integer.MAX_VALUE;
-                }
-            }
-            finally
-            {
-                try // to close the connection
-                {
-                    if (in != null)
-                        in.close();
-                }
-                catch (IOException ex)
-                {
-                    logger.warning("Caught exception closing: " + ex.getMessage());
-                    result = false;
-                }
-                if (retry > 0)
-                    continue;
-            }
-            doLoad(collada);
-            result = true;
-        } // End while loop
-        return result;
-    }
 
     /**
      * Same as the single parameter load, except rather than using a newly created
@@ -375,9 +299,78 @@ public class Collada
      * @return
      */
     public boolean load(PScene loadingPScene, URL colladaFile) {
+        boolean result = false;
+        m_fileLocation = colladaFile;
+        // First see if the repository can find an already serialized version to
+        // load up for us.
+        m_loadingPScene = loadingPScene.getRepository().loadSerializedCollada(colladaFile);
+        if (m_loadingPScene != null) // Sweet, binary shortcut taken!
+        {
+            loadingPScene.addModelInstance(m_loadingPScene, new PMatrix());
+            m_loadingPScene = loadingPScene;
+            result = true;
+        }
+        else // Load the typical way
+        {
             m_loadingPScene = loadingPScene;
             m_loadingPScene.setUseRepository(false); // the repository will extract the data later
-            return load(colladaFile);
+            final int maxNumberOfRetries = 5;
+            int retry = 1; // Retry while > 0 and <= maxNumberOfRetries
+
+            m_fileLocation = colladaFile;
+            URLConnection conn = null;
+            InputStream in = null;
+
+            while (retry > 0 && retry <= maxNumberOfRetries)
+            {
+                org.collada.colladaschema.COLLADA collada = null;
+                try // to open the connection and unmarshal the file
+                {
+                    conn = colladaFile.openConnection();
+                    in = conn.getInputStream();
+                    synchronized(contextLock) {
+                        collada = (org.collada.colladaschema.COLLADA) unmarshaller.unmarshal(in);
+                    }
+                    retry = 0; // No retry necessary
+                }
+                catch (Exception exception)
+                {
+                    if (exception.getMessage().equals("Connection refused"))
+                    {
+                        logger.warning(exception.getMessage() + "... Retrying");
+                        retry++;
+                    }
+                    else
+                    {
+                        logger.severe("Exception while attempting to open collada file! : " +
+                                exception.getMessage());
+                        exception.printStackTrace();
+                        // Do not retry, simple abort
+                        retry = Integer.MAX_VALUE;
+                    }
+                }
+                finally
+                {
+                    try // to close the connection
+                    {
+                        if (in != null)
+                            in.close();
+                    }
+                    catch (IOException ex)
+                    {
+                        logger.warning("Caught exception closing: " + ex.getMessage());
+                        result = false;
+                    }
+                    if (retry > 0)
+                        continue;
+                }
+                doLoad(collada);
+                result = true;
+            } // End while loop
+            // Write out the pscene!
+            serializePScene(m_fileLocation); // Probably dont want this in the final client code
+        }
+        return result;
     }
 
     /**
@@ -1054,7 +1047,9 @@ public class Collada
             String meshName = null;
             meshName = colladaNode.getMeshName();
             // Set a default mesh name if none was used
-            if (meshName == null)
+            if (meshName == null) // try the controller name
+                meshName = colladaNode.getControllerName();
+            if (meshName == null) // still null? Give a default then
                 meshName = new String("SkinnedMeshInstance from Collada.java : processColladaNode");
 
             processedNode = buildPolygonSkinnedMeshInstance(colladaNode, parentNode, meshName);
@@ -1067,8 +1062,6 @@ public class Collada
         {
             String meshURL = colladaNode.getMeshURL();
             String meshName = colladaNode.getMeshName();
-            if (meshName == null) // Set a default
-                meshName = new String("SkinnedMeshInstance from Collada.java processColladaNode");
             PPolygonMesh polyMesh = null;
             polyMesh = findPolygonMesh(meshURL);
 
@@ -1323,6 +1316,22 @@ public class Collada
     public URL getFileLocation()
     {
         return m_fileLocation;
+    }
+
+    private void serializePScene(URL originalLocation) {
+        WonderlandObjectOutputStream out = null;
+        File outputFile = new File(originalLocation.getFile().substring(0, originalLocation.getFile().length()-3) + "baf");
+        try
+        {
+          FileOutputStream fos = new FileOutputStream(outputFile);
+          out = new WonderlandObjectOutputStream(fos);
+          out.writeObject(m_loadingPScene);
+          out.close();
+        }
+        catch(IOException ex)
+        {
+          ex.printStackTrace();
+        }
     }
 }
 
