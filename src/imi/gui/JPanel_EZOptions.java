@@ -32,6 +32,7 @@ import imi.scene.PMatrix;
 import imi.scene.PNode;
 import imi.scene.polygonmodel.PPolygonMeshInstance;
 import imi.scene.polygonmodel.parts.PMeshMaterial;
+import imi.scene.polygonmodel.skinned.PPolygonSkinnedMeshInstance;
 import imi.scene.shader.NoSuchPropertyException;
 import imi.scene.shader.ShaderProperty;
 import imi.scene.shader.dynamic.GLSLCompileException;
@@ -48,6 +49,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -152,7 +154,7 @@ public class JPanel_EZOptions extends javax.swing.JPanel {
             for (int s = 0; s < listOfAvatars.getLength(); s++) {
 
                 m_addList = new HashMap<Integer, String[]>();
-                String[] list = new String[4];
+                String[] list = new String[3];
 
                 Node AvatarNode = listOfAvatars.item(s);
                 if (AvatarNode.getNodeType() == Node.ELEMENT_NODE) {
@@ -190,36 +192,10 @@ public class JPanel_EZOptions extends javax.swing.JPanel {
 
                     NodeList textHeadList = headElement.getChildNodes();
                     System.out.println("Head loc : " + ((Node) textHeadList.item(0)).getNodeValue().trim());
-
-                    if (!((Node) textHeadList.item(0)).getNodeValue().trim().equals("null")) {
-                        String source = ((Node) textHeadList.item(0)).getNodeValue().trim();
-                        NodeList countList = avatarElement.getElementsByTagName("headnum");
-                        Element countElement = (Element) countList.item(0);
-
-                        NodeList textCountList = countElement.getChildNodes();
-                        String szCount = ((Node) textCountList.item(0)).getNodeValue().trim();
-                        int iCount = Integer.parseInt(szCount);
-                        ++iCount;
-
-                        NodeList geomList = avatarElement.getElementsByTagName("headgeom");
-                        Element geomElement = (Element) geomList.item(0);
-
-                        NodeList textGeomList = geomElement.getChildNodes();
-                        String[] szMeshes = new String[iCount];
-
-                        for (int i = 0; i < iCount; i ++) {
-                            if (i == 0)
-                                szMeshes[i] = source;
-                            else {
-                                szMeshes[i] = ((Node) textGeomList.item(0)).getNodeValue().trim();
-                                if (i < iCount -1) {
-                                    geomElement = (Element) geomList.item(i);
-                                    textGeomList = geomElement.getChildNodes();
-                                }
-                            }
-                        }
-                        m_addList.put(0, szMeshes);
-                    }
+                    String[] szHead = new String[] { ((Node) textHeadList.item(0)).getNodeValue().trim() };
+                    if (szHead[0].equals("null"))
+                        szHead = new String[] { null, "rightEyeGeoShape", "leftEyeGeoShape", "UpperTeethShape", "LowerTeethShape", "TongueGeoShape", "HeadGeoShape" };
+                    m_addList.put(0, szHead);
 
                     //-------
                     NodeList hairList = avatarElement.getElementsByTagName("hair");
@@ -259,14 +235,54 @@ public class JPanel_EZOptions extends javax.swing.JPanel {
                     }
 
                     //-------
+                    NodeList handsList = avatarElement.getElementsByTagName("hands");
+                    Element handsElement = (Element) handsList.item(0);
+
+                    NodeList texthandsList = handsElement.getChildNodes();
+                    System.out.println("Hands loc : " + ((Node) texthandsList.item(0)).getNodeValue().trim());
+                    String handsSource = ((Node) texthandsList.item(0)).getNodeValue().trim();
+
+                    if (!handsSource.equals("null")) {
+                        NodeList countList = avatarElement.getElementsByTagName("handsnum");
+                        Element countElement = (Element) countList.item(0);
+
+                        NodeList textCountList = countElement.getChildNodes();
+                        String szCount = ((Node) textCountList.item(0)).getNodeValue().trim();
+                        int iCount = Integer.parseInt(szCount);
+                        ++iCount;
+
+                        NodeList geomList = avatarElement.getElementsByTagName("handsgeom");
+                        Element geomElement = (Element) geomList.item(0);
+
+                        NodeList textGeomList = geomElement.getChildNodes();
+                        String[] szMeshes = new String[iCount];
+
+                        for (int i = 0; i < iCount; i ++) {
+                            if (i == 0)
+                                szMeshes[i] = handsSource;
+                            else {
+                                szMeshes[i] = ((Node) textGeomList.item(0)).getNodeValue().trim();
+                                if (i < iCount -1) {
+                                    geomElement = (Element) geomList.item(i);
+                                    textGeomList = geomElement.getChildNodes();
+                                }
+                            }
+                        }
+                        m_addList.put(1, szMeshes);
+                    } else {
+                        String[] hands = new String[] { null, "RHandShape", "LHandShape" };
+                        m_addList.put(1, hands);
+                    }
+
+                    //-------
                     NodeList shirtList = avatarElement.getElementsByTagName("shirt");
                     Element shirtElement = (Element) shirtList.item(0);
 
                     NodeList textShirtList = shirtElement.getChildNodes();
                     System.out.println("Shirt loc : " + ((Node) textShirtList.item(0)).getNodeValue().trim());
+                    String torsoSource = ((Node) textShirtList.item(0)).getNodeValue().trim();
 
-                    if (!((Node) textShirtList.item(0)).getNodeValue().trim().equals("null")) {
-                        String source = ((Node) textShirtList.item(0)).getNodeValue().trim();
+                    if (!torsoSource.equals("null")) {
                         NodeList countList = avatarElement.getElementsByTagName("shirtnum");
                         Element countElement = (Element) countList.item(0);
 
@@ -283,7 +299,7 @@ public class JPanel_EZOptions extends javax.swing.JPanel {
 
                         for (int i = 0; i < iCount; i ++) {
                             if (i == 0)
-                                szMeshes[i] = source;
+                                szMeshes[i] = torsoSource;
                             else {
                                 szMeshes[i] = ((Node) textGeomList.item(0)).getNodeValue().trim();
                                 if (i < iCount -1) {
@@ -293,6 +309,9 @@ public class JPanel_EZOptions extends javax.swing.JPanel {
                             }
                         }
                         m_addList.put(2, szMeshes);
+                    } else {
+                        String[] torso = new String[] { null, "TorsoNudeShape" };
+                        m_addList.put(2, torso);
                     }
 
                     //-------
@@ -301,9 +320,9 @@ public class JPanel_EZOptions extends javax.swing.JPanel {
 
                     NodeList textPantsList = pantsElement.getChildNodes();
                     System.out.println("Pants loc : " + ((Node) textPantsList.item(0)).getNodeValue().trim());
+                    String legsSource = ((Node) textPantsList.item(0)).getNodeValue().trim();
 
-                    if (!((Node) textPantsList.item(0)).getNodeValue().trim().equals("null")) {
-                        String source = ((Node) textPantsList.item(0)).getNodeValue().trim();
+                    if (!legsSource.equals("null")) {
                         NodeList countList = avatarElement.getElementsByTagName("pantsnum");
                         Element countElement = (Element) countList.item(0);
 
@@ -320,7 +339,7 @@ public class JPanel_EZOptions extends javax.swing.JPanel {
 
                         for (int i = 0; i < iCount; i ++) {
                             if (i == 0)
-                                szMeshes[i] = source;
+                                szMeshes[i] = legsSource;
                             else {
                                 szMeshes[i] = ((Node) textGeomList.item(0)).getNodeValue().trim();
                                 if (i < iCount -1) {
@@ -330,6 +349,9 @@ public class JPanel_EZOptions extends javax.swing.JPanel {
                             }
                         }
                         m_addList.put(3, szMeshes);
+                    } else {
+                        String[] legs = new String[] { null, "LegsNudeShape" };
+                        m_addList.put(3, legs);
                     }
 
                     //-------
@@ -338,9 +360,9 @@ public class JPanel_EZOptions extends javax.swing.JPanel {
 
                     NodeList textShoesList = shoesElement.getChildNodes();
                     System.out.println("Shoes loc : " + ((Node) textShoesList.item(0)).getNodeValue().trim());
+                    String feetSource = ((Node) textShoesList.item(0)).getNodeValue().trim();
 
-                    if (!((Node) textPantsList.item(0)).getNodeValue().trim().equals("null")) {
-                        String source = ((Node) textShoesList.item(0)).getNodeValue().trim();
+                    if (!feetSource.equals("null")) {
                         NodeList countList = avatarElement.getElementsByTagName("shoesnum");
                         Element countElement = (Element) countList.item(0);
 
@@ -357,7 +379,7 @@ public class JPanel_EZOptions extends javax.swing.JPanel {
 
                         for (int i = 0; i < iCount; i ++) {
                             if (i == 0)
-                                szMeshes[i] = source;
+                                szMeshes[i] = feetSource;
                             else {
                                 szMeshes[i] = ((Node) textGeomList.item(0)).getNodeValue().trim();
                                 if (i < iCount -1) {
@@ -367,23 +389,16 @@ public class JPanel_EZOptions extends javax.swing.JPanel {
                             }
                         }
                         m_addList.put(4, szMeshes);
+                    } else {
+                        String[] feet = new String[] { null, "RFootNudeShape", "LFootNudeShape" };
+                        m_addList.put(4, feet);
                     }
-
-                    //-------
-                    NodeList animList = avatarElement.getElementsByTagName("anim");
-                    Element animElement = (Element) animList.item(0);
-
-                    NodeList textAnimList = animElement.getChildNodes();
-                    System.out.println("Anim loc : " + ((Node) textAnimList.item(0)).getNodeValue().trim());
-                    list[3] = ((Node) textAnimList.item(0)).getNodeValue().trim();
 
                     //-------
                     m_presets.add(m_addList);
                     m_presetLists.add(list);
 
                 //------
-
-
                 }//end of if clause
 
 
@@ -470,270 +485,337 @@ public class JPanel_EZOptions extends javax.swing.JPanel {
     }
 
     public void setShaderColors() {
-//        m_meshes =  m_sceneData.getMeshSetup();
-//
-//        if (m_meshes == null)
-//            return;
-//
-//        for (int i = 0; i < m_Colors.length; i ++) {
-//            if (m_Colors[i] == false)
-//                continue;
-//
-//            GLSLShaderProgram shader = null;
-//            int iCheck  = 0;
-//            Color c     = null;
-//
-//            switch(i)
-//            {
-//                case 0: // Hair Color
-//                {
-//                    if (m_meshes.get(5) == null)
-//                        break;
-//
-//                    iCheck = 0;
-//                    c = jPanel_HairColor.getBackground();
-//                    float[] color = new float[3];
-//                    color[0] = ((float)c.getRed()/255);
-//                    color[1] = ((float)c.getGreen()/255);
-//                    color[2] = ((float)c.getBlue()/255);
-//
-//                    for (int j = 0; j < m_meshes.get(5).length; j++) {
-//                        PNode node = m_sceneData.getPScene().findChild(m_meshes.get(5)[j]);
-//                        if (node != null) {
-//                            PPolygonMeshInstance mesh = (PPolygonMeshInstance)node;
-//                            if (iCheck == 0) {
-//                                shader = createMeshShader(mesh);
-//                                iCheck = 1;
-//                            }
-//                            setMeshColor(mesh, shader, color);
-//                        }
-//                    }
-//                    break;
-//                }
-//                case 1: // Facial Hair Color
-//                {
-//                    if (m_meshes.get(6) == null)
-//                        break;
-//
-//                    iCheck = 0;
-//                    c = jPanel_FHairColor.getBackground();
-//                    float[] color = new float[3];
-//                    color[0] = ((float)c.getRed()/255);
-//                    color[1] = ((float)c.getGreen()/255);
-//                    color[2] = ((float)c.getBlue()/255);
-//
-//                    for (int j = 0; j < m_meshes.get(6).length; j++) {
-//                        PNode node = m_sceneData.getPScene().findChild(m_meshes.get(6)[j]);
-//                        if (node != null) {
-//                            PPolygonMeshInstance mesh = (PPolygonMeshInstance)node;
-//                            if (iCheck == 0) {
-//                                shader = createMeshShader(mesh);
-//                                iCheck = 1;
-//                            }
-//                            setMeshColor(mesh, shader, color);
-//                        }
-//                    }
-//                    break;
-//                }
-//                case 2: // Eye Color
-//                {
-//                    if (m_meshes.get(0) == null)
-//                        break;
-//
-//                    iCheck = 0;
-//                    c = jPanel_EyeColors.getBackground();
-//                    float[] color = new float[3];
-//                    color[0] = ((float)c.getRed()/255);
-//                    color[1] = ((float)c.getGreen()/255);
-//                    color[2] = ((float)c.getBlue()/255);
-//
-//                    for (int j = 0; j < m_meshes.get(0).length; j++) {
-//                        if (m_meshes.get(0)[j].contains("Eye")) {
-//                            PNode node = m_sceneData.getPScene().findChild(m_meshes.get(0)[j]);
-//                            if (node != null) {
-//                                PPolygonMeshInstance mesh = (PPolygonMeshInstance)node;
-//                                if (iCheck == 0) {
-//                                    shader = createMeshShader(mesh);
-//                                    iCheck = 1;
-//                                }
-//                                setMeshColor(mesh, shader, color);
-//                            }
-//                        }
-//                    }
-//                    break;
-//                }
-//                case 3: // Skin Tone
-//                {
-//                    iCheck = 0;
-//                    c = jPanel_SkinTone.getBackground();
-//                    float[] color = new float[3];
-//                    color[0] = ((float)c.getRed()/255);
-//                    color[1] = ((float)c.getGreen()/255);
-//                    color[2] = ((float)c.getBlue()/255);
-//
-//                    for (int x = 0; x < 5; x++) {
-//                        if (m_meshes.get(x) == null)
-//                            continue;
-//
-//                        for (int j = 0; j < m_meshes.get(x).length; j++) {
-//                            if (m_meshes.get(x)[j].contains("Head") || m_meshes.get(x)[j].contains("Nude") ||
-//                                m_meshes.get(x)[j].contains("Arms") || m_meshes.get(x)[j].contains("Legs") ||
-//                                m_meshes.get(x)[j].contains("Hand")) {
-//                                PNode node = m_sceneData.getPScene().findChild(m_meshes.get(x)[j]);
-//                                if (node != null) {
-//                                    PPolygonMeshInstance mesh = (PPolygonMeshInstance)node;
-//                                    if (iCheck == 0) {
-//                                        shader = createMeshShader(mesh);
-//                                        iCheck = 1;
-//                                    }
-//                                    setMeshColor(mesh, shader, color);
-//                                }
-//                            }
-//                        }
-//                    }
-//                    break;
-//                }
-//                case 4: // Shirt Color
-//                {
-//                    if (m_meshes.get(2) == null)
-//                        break;
-//
-//                    iCheck = 0;
-//                    c = jPanel_ShirtColor.getBackground();
-//                    float[] color = new float[3];
-//                    color[0] = ((float)c.getRed()/255);
-//                    color[1] = ((float)c.getGreen()/255);
-//                    color[2] = ((float)c.getBlue()/255);
-//
-//                    for (int j = 0; j < m_meshes.get(2).length; j++) {
-//                        if (m_meshes.get(2)[j].contains("Nude") || m_meshes.get(2)[j].contains("Arms"))
-//                            continue;
-//
-//                        PNode node = m_sceneData.getPScene().findChild(m_meshes.get(2)[j]);
-//                        if (node != null) {
-//                            PPolygonMeshInstance mesh = (PPolygonMeshInstance)node;
-//                            if (iCheck == 0) {
-//                                shader = createMeshShader(mesh);
-//                                iCheck = 1;
-//                            }
-//                            setMeshColor(mesh, shader, color);
-//                        }
-//                    }
-//                    break;
-//                }
-//                case 5: // Pants Color
-//                {
-//                    if (m_meshes.get(3) == null)
-//                        break;
-//
-//                    iCheck = 0;
-//                    c = jPanel_PantsColor.getBackground();
-//                    float[] color = new float[3];
-//                    color[0] = ((float)c.getRed()/255);
-//                    color[1] = ((float)c.getGreen()/255);
-//                    color[2] = ((float)c.getBlue()/255);
-//
-//                    for (int j = 0; j < m_meshes.get(3).length; j++) {
-//                        if (m_meshes.get(3)[j].contains("Nude") || m_meshes.get(3)[j].contains("Legs"))
-//                            continue;
-//
-//                        PNode node = m_sceneData.getPScene().findChild(m_meshes.get(3)[j]);
-//                        if (node != null) {
-//                            PPolygonMeshInstance mesh = (PPolygonMeshInstance)node;
-//                            if (iCheck == 0) {
-//                                shader = createMeshShader(mesh);
-//                                iCheck = 1;
-//                            }
-//                            setMeshColor(mesh, shader, color);
-//                        }
-//                    }
-//                    break;
-//                }
-//                case 6: // Shoes Color
-//                {
-//                    if (m_meshes.get(4) == null)
-//                        break;
-//
-//                    iCheck = 0;
-//                    c = jPanel_ShoesColor.getBackground();
-//                    float[] color = new float[3];
-//                    color[0] = ((float)c.getRed()/255);
-//                    color[1] = ((float)c.getGreen()/255);
-//                    color[2] = ((float)c.getBlue()/255);
-//
-//                    for (int j = 0; j < m_meshes.get(4).length; j++) {
-//                        if (m_meshes.get(4)[j].contains("Foot"))
-//                            continue;
-//
-//                        PNode node = m_sceneData.getPScene().findChild(m_meshes.get(4)[j]);
-//                        if (node != null) {
-//                            PPolygonMeshInstance mesh = (PPolygonMeshInstance)node;
-//                            if (iCheck == 0) {
-//                                shader = createMeshShader(mesh);
-//                                iCheck = 1;
-//                            }
-//                            setMeshColor(mesh, shader, color);
-//                        }
-//                    }
-//                    break;
-//                }
-//            }
-//        }
-//        for (int i = 0; i < m_Colors.length; i++)
-//            m_Colors[i] = false;
+        if (m_sceneData.getAvatar() == null)
+            return;
+
+        List<PPolygonSkinnedMeshInstance> lHead, lHands, lUpperBody, lLowerBody, lFeet, lHair, lFacialHair;
+        lHead       = m_sceneData.getAvatar().getSkeleton().retrieveSkinnedMeshes("Head");
+        lHands      = m_sceneData.getAvatar().getSkeleton().retrieveSkinnedMeshes("Hands");
+        lUpperBody  = m_sceneData.getAvatar().getSkeleton().retrieveSkinnedMeshes("UpperBody");
+        lLowerBody  = m_sceneData.getAvatar().getSkeleton().retrieveSkinnedMeshes("LowerBody");
+        lFeet       = m_sceneData.getAvatar().getSkeleton().retrieveSkinnedMeshes("Feet");
+        lHair       = m_sceneData.getAvatar().getSkeleton().retrieveSkinnedMeshes("Hair");
+        lFacialHair = m_sceneData.getAvatar().getSkeleton().retrieveSkinnedMeshes("FacialHair");
+
+        for (int i = 0; i < m_Colors.length; i ++) {
+            if (m_Colors[i] == false)
+                continue;
+
+            GLSLShaderProgram shader = null;
+            int iCheck  = 0;
+            Color c     = null;
+
+            switch(i)
+            {
+                case 0: // Hair Color
+                {
+                    if (lHair == null)
+                        break;
+
+                    iCheck = 0;
+                    c = jPanel_HairColor.getBackground();
+                    float[] color = new float[3];
+                    color[0] = ((float)c.getRed()/255);
+                    color[1] = ((float)c.getGreen()/255);
+                    color[2] = ((float)c.getBlue()/255);
+
+                    for (int j = 0; j < lHair.size(); j++) {
+                        PPolygonMeshInstance mesh = (PPolygonMeshInstance)lHair.get(j);
+                        if (iCheck == 0) {
+                            shader = createMeshShader(mesh);
+                            iCheck = 1;
+                        }
+                        setMeshColor(mesh, shader, color);
+                    }
+                    break;
+                }
+                case 1: // Facial Hair Color
+                {
+                    if (lFacialHair == null)
+                        break;
+
+                    iCheck = 0;
+                    c = jPanel_FHairColor.getBackground();
+                    float[] color = new float[3];
+                    color[0] = ((float)c.getRed()/255);
+                    color[1] = ((float)c.getGreen()/255);
+                    color[2] = ((float)c.getBlue()/255);
+
+                    for (int j = 0; j < lFacialHair.size(); j++) {
+                        PPolygonMeshInstance mesh = (PPolygonMeshInstance)lFacialHair.get(j);
+                        if (iCheck == 0) {
+                            shader = createMeshShader(mesh);
+                            iCheck = 1;
+                        }
+                        setMeshColor(mesh, shader, color);
+                    }
+                    break;
+                }
+                case 2: // Eye Color
+                {
+                    if (lHead == null)
+                        break;
+
+                    iCheck = 0;
+                    c = jPanel_EyeColors.getBackground();
+                    float[] color = new float[3];
+                    color[0] = ((float)c.getRed()/255);
+                    color[1] = ((float)c.getGreen()/255);
+                    color[2] = ((float)c.getBlue()/255);
+
+                    for (int j = 0; j < lHead.size(); j++) {
+                        if (lHead.get(j).getName().contains("Eye")) {
+                           PPolygonMeshInstance mesh = (PPolygonMeshInstance)lHead.get(j);
+                            if (iCheck == 0) {
+                                shader = createMeshShader(mesh);
+                                iCheck = 1;
+                            }
+                            setMeshColor(mesh, shader, color);
+                        }
+                    }
+                    break;
+                }
+                case 3: // Skin Tone
+                {
+                    iCheck = 0;
+                    c = jPanel_SkinTone.getBackground();
+                    float[] color = new float[3];
+                    color[0] = ((float)c.getRed()/255);
+                    color[1] = ((float)c.getGreen()/255);
+                    color[2] = ((float)c.getBlue()/255);
+                    
+                    for (int j = 0; j < lHead.size(); j++) {
+                        if (lHead.get(j).getName().contains("Head")) {
+                           PPolygonMeshInstance mesh = (PPolygonMeshInstance)lHead.get(j);
+                            if (iCheck == 0) {
+                                shader = createMeshShader(mesh);
+                                iCheck = 1;
+                            }
+                            setMeshColor(mesh, shader, color);
+                        }
+                    }
+
+                    for (int j = 0; j < lHands.size(); j++) {
+                        PPolygonMeshInstance mesh = (PPolygonMeshInstance)lHands.get(j);
+                        if (iCheck == 0) {
+                            shader = createMeshShader(mesh);
+                            iCheck = 1;
+                        }
+                        setMeshColor(mesh, shader, color);
+                    }
+
+                    for (int j = 0; j < lUpperBody.size(); j++) {
+                        if (lUpperBody.get(j).getName().contains("Nude") || lUpperBody.get(j).getName().contains("Arms")) {
+                           PPolygonMeshInstance mesh = (PPolygonMeshInstance)lUpperBody.get(j);
+                            if (iCheck == 0) {
+                                shader = createMeshShader(mesh);
+                                iCheck = 1;
+                            }
+                            setMeshColor(mesh, shader, color);
+                        }
+                    }
+
+                    for (int j = 0; j < lLowerBody.size(); j++) {
+                        if (lLowerBody.get(j).getName().contains("Nude") || lLowerBody.get(j).getName().contains("Legs")) {
+                           PPolygonMeshInstance mesh = (PPolygonMeshInstance)lLowerBody.get(j);
+                            if (iCheck == 0) {
+                                shader = createMeshShader(mesh);
+                                iCheck = 1;
+                            }
+                            setMeshColor(mesh, shader, color);
+                        }
+                    }
+
+                    for (int j = 0; j < lFeet.size(); j++) {
+                        if (lFeet.get(j).getName().contains("Nude") || lFeet.get(j).getName().contains("Foot")) {
+                           PPolygonMeshInstance mesh = (PPolygonMeshInstance)lFeet.get(j);
+                            if (iCheck == 0) {
+                                shader = createMeshShader(mesh);
+                                iCheck = 1;
+                            }
+                            setMeshColor(mesh, shader, color);
+                        }
+                    }
+
+                    break;
+                }
+                case 4: // Shirt Color
+                {
+                    if (lUpperBody == null)
+                        break;
+
+                    iCheck = 0;
+                    c = jPanel_ShirtColor.getBackground();
+                    float[] color = new float[3];
+                    color[0] = ((float)c.getRed()/255);
+                    color[1] = ((float)c.getGreen()/255);
+                    color[2] = ((float)c.getBlue()/255);
+
+                    for (int j = 0; j < lUpperBody.size(); j++) {
+                        if (lUpperBody.get(j).getName().contains("Nude") || lUpperBody.get(j).getName().contains("Arms"))
+                            continue;
+
+                        PPolygonMeshInstance mesh = (PPolygonMeshInstance)lUpperBody.get(j);
+                        if (iCheck == 0) {
+                            shader = createMeshShader(mesh);
+                            iCheck = 1;
+                        }
+                        setMeshColor(mesh, shader, color);
+                    }
+
+                    break;
+                }
+                case 5: // Pants Color
+                {
+                    if (lLowerBody == null)
+                        break;
+
+                    iCheck = 0;
+                    c = jPanel_PantsColor.getBackground();
+                    float[] color = new float[3];
+                    color[0] = ((float)c.getRed()/255);
+                    color[1] = ((float)c.getGreen()/255);
+                    color[2] = ((float)c.getBlue()/255);
+
+                    for (int j = 0; j < lLowerBody.size(); j++) {
+                        if (lLowerBody.get(j).getName().contains("Nude") || lLowerBody.get(j).getName().contains("Legs"))
+                            continue;
+
+                        PPolygonMeshInstance mesh = (PPolygonMeshInstance)lLowerBody.get(j);
+                        if (iCheck == 0) {
+                            shader = createMeshShader(mesh);
+                            iCheck = 1;
+                        }
+                        setMeshColor(mesh, shader, color);
+                    }
+                    break;
+                }
+                case 6: // Shoes Color
+                {
+                    if (lFeet == null)
+                        break;
+
+                    iCheck = 0;
+                    c = jPanel_ShoesColor.getBackground();
+                    float[] color = new float[3];
+                    color[0] = ((float)c.getRed()/255);
+                    color[1] = ((float)c.getGreen()/255);
+                    color[2] = ((float)c.getBlue()/255);
+
+                    for (int j = 0; j < lFeet.size(); j++) {
+                        if (lFeet.get(j).getName().contains("Nude") || lFeet.get(j).getName().contains("Foot"))
+                            continue;
+
+                        PPolygonMeshInstance mesh = (PPolygonMeshInstance)lFeet.get(j);
+                        if (iCheck == 0) {
+                            shader = createMeshShader(mesh);
+                            iCheck = 1;
+                        }
+                        setMeshColor(mesh, shader, color);
+                    }
+                    break;
+                }
+            }
+        }
+        for (int i = 0; i < m_Colors.length; i++)
+            m_Colors[i] = false;
     }
 
     public void loadAvatar(int selection) {
-        if (m_Parent instanceof BaseDefault)
-            ((BaseDefault)m_Parent).loadingWindow(true);
-
         // Create avatar attribs
-        CharacterAttributes                                 attribs = new CharacterAttributes("AvatarAttributes");
+        CharacterAttributes                                 attribs = new CharacterAttributes("Avatar");
         ArrayList<CharacterAttributes.SkinnedMeshParams>    add     = new ArrayList<CharacterAttributes.SkinnedMeshParams>();
         ArrayList<String>                                   load    = new ArrayList<String>();
         ArrayList<AttachmentParams>                         attach  = new ArrayList<AttachmentParams>();
 
-        for (int i = 0; i < 9; i ++) {
+        // This file contains the mesh information for the basic body parts
+        load.add(m_presetLists.get(selection)[2]);
+
+        // Head (Default)
+        if (m_presets.get(selection).get(0) != null) {
+            if (m_presets.get(selection).get(0)[0] == null) {
+                for (int i = 1; i < m_presets.get(selection).get(0).length; i++) {
+                    CharacterAttributes.SkinnedMeshParams param = attribs.createSkinnedMeshParams(m_presets.get(selection).get(0)[i], m_sceneData.m_regions[0]);
+                    add.add(param);
+                }
+            }
+        }
+
+        // Hands
+        if (m_presets.get(selection).get(1) != null) {
+            if (m_presets.get(selection).get(1)[0] != null)
+                load.add(m_presets.get(selection).get(1)[0]);
+            for (int i = 1; i < m_presets.get(selection).get(1).length; i++) {
+                CharacterAttributes.SkinnedMeshParams param = attribs.createSkinnedMeshParams(m_presets.get(selection).get(1)[i], m_sceneData.m_regions[1]);
+                add.add(param);
+            }
+        }
+
+        // UpperBody
+        if (m_presets.get(selection).get(2) != null) {
+            if (m_presets.get(selection).get(2)[0] != null)
+                load.add(m_presets.get(selection).get(2)[0]);
+            for (int i = 1; i < m_presets.get(selection).get(2).length; i++) {
+                CharacterAttributes.SkinnedMeshParams param = attribs.createSkinnedMeshParams(m_presets.get(selection).get(2)[i], m_sceneData.m_regions[2]);
+                add.add(param);
+            }
+        }
+
+        // LowerBody
+        if (m_presets.get(selection).get(3) != null) {
+            if (m_presets.get(selection).get(3)[0] != null)
+                load.add(m_presets.get(selection).get(3)[0]);
+            for (int i = 1; i < m_presets.get(selection).get(3).length; i++) {
+                CharacterAttributes.SkinnedMeshParams param = attribs.createSkinnedMeshParams(m_presets.get(selection).get(3)[i], m_sceneData.m_regions[3]);
+                add.add(param);
+            }
+        }
+
+        // Feet
+        if (m_presets.get(selection).get(4) != null) {
+            if (m_presets.get(selection).get(4)[0] != null)
+                load.add(m_presets.get(selection).get(4)[0]);
+            for (int i = 1; i < m_presets.get(selection).get(4).length; i++) {
+                CharacterAttributes.SkinnedMeshParams param = attribs.createSkinnedMeshParams(m_presets.get(selection).get(4)[i], m_sceneData.m_regions[4]);
+                add.add(param);
+            }
+        }
+
+        // Non-skinned meshes (ie Hair, hats, glasses, etc...)
+        for (int i = 5; i < 9; i++) {
             if (m_presets.get(selection).get(i) == null)
                 continue;
-
-            if (i < 5) {
-                for (int j = 0; j < m_presets.get(selection).get(i).length; j ++) {
-                    if (j == 0) {
-                        load.add(m_presets.get(selection).get(i)[j]);
-                    } else {
-                        CharacterAttributes.SkinnedMeshParams param = attribs.createSkinnedMeshParams(m_presets.get(selection).get(i)[j], m_sceneData.m_regions[i]);
-                        add.add(param);
-                    }
+            for (int j = 0; j < m_presets.get(selection).get(i).length; j ++) {
+                if (j == 0) {
+                    load.add(m_presets.get(selection).get(i)[j]);
                 }
-                attribs.setFlagForAlteredRegion(i, true);
-            } else if (i < 9){
-                for (int j = 0; j < m_presets.get(selection).get(i).length; j ++) {
-                    if (j == 0) {
-                        load.add(m_presets.get(selection).get(i)[j]);
-                    }
-                    else {
-                        PMatrix tempSolution;
-                        tempSolution = new PMatrix(new Vector3f(0.0f, (float) Math.toRadians(180), 0.0f), new Vector3f(1.0f, 1.0f, 1.0f), Vector3f.ZERO);
-                        attach.add(new AttachmentParams(m_presets.get(selection).get(i)[j], "Head", tempSolution));
-                    }
+                else {
+                    PMatrix tempSolution;
+                    tempSolution = new PMatrix(new Vector3f(0.0f, (float) Math.toRadians(180), 0.0f), new Vector3f(1.0f, 1.0f, 1.0f), Vector3f.ZERO);
+                    attach.add(new AttachmentParams(m_presets.get(selection).get(i)[j], "Head", tempSolution));
                 }
-                attribs.setFlagForAlteredRegion(i, true);
             }
         }
 
         attribs.setBaseURL("");
-        attribs.setAnimations(new String[] {m_presetLists.get(selection)[3]} );
         attribs.setLoadInstructions(load);
         attribs.setAddInstructions(add.toArray(new CharacterAttributes.SkinnedMeshParams[add.size()]));
         attribs.setAttachmentsInstructions(attach.toArray(new AttachmentParams[attach.size()]));
         attribs.setGender(m_gender);
 
-        m_sceneData.loadAvatarDAEURL(true, m_Parent, attribs, m_gender);
+        m_sceneData.loadAvatarDAEURL(true, this, attribs, m_gender);
 
-        if (m_Parent instanceof BaseDefault) {
-            m_sceneData.setCameraOnModel();
-            ((BaseDefault)m_Parent).loadingWindow(false);
+        while (!m_sceneData.getAvatar().isInitialized() || m_sceneData.getAvatar().getModelInst() == null) {
+
+        }
+
+        if (m_presets.get(selection).get(0)[0] != null) {
+            try {
+                URL head = new URL(m_presets.get(selection).get(0)[0]);
+                m_sceneData.getAvatar().installHead(head, "Neck");
+            } catch (MalformedURLException ex) {
+                Logger.getLogger(JPanel_EZOptions.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }
 

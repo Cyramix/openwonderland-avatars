@@ -806,7 +806,6 @@ public class SceneEssentials {
         CharacterAttributes             attribs     = new CharacterAttributes("Avatar");
         ArrayList<String>               load        = new ArrayList<String>();
         ArrayList<SkinnedMeshParams>    add         = new ArrayList<SkinnedMeshParams>();
-        String[]                        faceanim    = new String[1];
 
         switch (iGender)
         {
@@ -846,7 +845,6 @@ public class SceneEssentials {
         }
 
         attribs.setBaseURL("");
-        attribs.setFacialAnimations(faceanim);
         attribs.setLoadInstructions(load);
         attribs.setAddInstructions(add.toArray(new SkinnedMeshParams[add.size()]));
         attribs.setAttachmentsInstructions(null);
