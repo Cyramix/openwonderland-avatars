@@ -595,7 +595,11 @@ public class SkeletonNode extends PNode implements Animated, Serializable
         else
             return m_animationStates.get(index);
     }
-    
+
+    public int getAnimationStateCount()
+    {
+        return m_animationStates.size();
+    }
     public AnimationGroup getAnimationGroup() 
     {
         return m_animationComponent.getGroup();

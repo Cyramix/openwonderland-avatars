@@ -42,7 +42,7 @@ public class NinjaFemaleAvatarAttributes extends CharacterAttributes
     public NinjaFemaleAvatarAttributes(String name, boolean bRandomCustomizations, boolean bForceDressShirt) 
     {
         super(name);
-
+        setGender(2);
         // Animations
 //        ArrayList<String> anims = new ArrayList<String>();
 //        anims.add("assets/models/collada/Avatars/Female/Female_Anim_Idle.dae");
@@ -240,10 +240,8 @@ public class NinjaFemaleAvatarAttributes extends CharacterAttributes
         add.add(new SkinnedMeshParams("LowerTeethShape", "Head"));
         add.add(new SkinnedMeshParams("TongueGeoShape", "Head"));
         add.add(new SkinnedMeshParams("HeadGeoShape", "Head"));
-        add.add(new SkinnedMeshParams("RHandShape",  "Hands"));
-        add.add(new SkinnedMeshParams("LHandShape",  "Hands"));
-        add.add(new SkinnedMeshParams("RFootNudeShape",  "Feet"));
-        add.add(new SkinnedMeshParams("LFootNudeShape",  "Feet"));
+        add.add(new SkinnedMeshParams("HandsShape",  "Hands"));
+        add.add(new SkinnedMeshParams("ShoesShape",  "Feet"));
         add.add(new SkinnedMeshParams("TorsoNudeShape",  "UpperBody"));
         add.add(new SkinnedMeshParams("LegsNudeShape",  "LowerBody"));
 

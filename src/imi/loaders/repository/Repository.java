@@ -21,6 +21,7 @@ import imi.annotations.Debug;
 import imi.loaders.repository.SharedAsset.SharedAssetType;
 import imi.scene.PScene;
 import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
+import java.io.FileNotFoundException;
 import java.net.URL;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
@@ -323,8 +324,8 @@ public class Repository extends Entity
         }
         catch(Exception ex)
         {
-            logger.severe("Uh oh! " + ex.getMessage());
-            ex.printStackTrace();
+            if (!(ex instanceof FileNotFoundException))
+                logger.severe(ex.getMessage());
         }
         return result;
     }

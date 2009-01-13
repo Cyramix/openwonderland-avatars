@@ -367,8 +367,9 @@ public class Collada
                 doLoad(collada);
                 result = true;
             } // End while loop
-            // Write out the pscene!
-            serializePScene(m_fileLocation); // Probably dont want this in the final client code
+            // Write out the pscene! (only if everything was loaded though... hrm)
+            if (m_bLoadGeometry && m_bLoadAnimations && m_bLoadRig)
+                serializePScene(m_fileLocation); // Probably dont want this in the final client code
         }
         return result;
     }
