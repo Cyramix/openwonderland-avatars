@@ -36,69 +36,23 @@ public class NinjaFemaleAvatarAttributes extends CharacterAttributes
     /**
      * Construct a new attributes instance.
      * @param name The name of the avatar
-     * @param bRandomCustomizations If false, avatar starts in the bind pose, if true then random clothing will be applied
-     * @param bForceDressShirt If true, the dress shirt will be applied (overriding randomizations)
+     * @param bRandomCustomizations ignored (test)
+     * @param bForceDressShirt ignored (test)
      */
     public NinjaFemaleAvatarAttributes(String name, boolean bRandomCustomizations, boolean bForceDressShirt) 
     {
         super(name);
         setGender(2);
-        // Animations
-//        ArrayList<String> anims = new ArrayList<String>();
-//        anims.add("assets/models/collada/Avatars/Female/Female_Anim_Idle.dae");
-//        anims.add("assets/models/collada/Avatars/Female/Female_Anim_Sitting.dae");
-//        anims.add("assets/models/collada/Avatars/Female/Female_Anim_StandToSit.dae");
-//        anims.add("assets/models/collada/Avatars/Female/Female_Anim_Walk.dae");
-//        anims.add("assets/models/collada/Avatars/female/Male_Anim_Wave.dae");
-//        anims.add("assets/models/collada/Avatars/female/Male_Anim_FallFromSitting.dae");
-//        anims.add("assets/models/collada/Avatars/female/Male_Anim_FloorSitting.dae");
-//        anims.add("assets/models/collada/Avatars/female/Male_Anim_FloorGetup.dae");
-//        setAnimations(anims.toArray(new String[anims.size()]));
-
-        // Facial Animations
-//        ArrayList<String> facialAnims = new ArrayList<String>();
-//        facialAnims.add("assets/models/collada/Avatars/MaleFacialAnimation/MaleSmile.dae");
-//        facialAnims.add("assets/models/collada/Avatars/MaleFacialAnimation/MaleFrown.dae");
-//        facialAnims.add("assets/models/collada/Avatars/MaleFacialAnimation/MaleScorn.dae");
-//        facialAnims.add("assets/models/collada/Avatars/MaleFacialAnimation/MaleDefault.dae");
-//        setFacialAnimations(facialAnims.toArray(new String[facialAnims.size()]));
-
-        // Customizations
-        if (false)//bRandomCustomizations)
-        {
-            int preset        = -1;
-            int numberOfFeet  = 3;
-            int numberOfLegs  = 3;
-            int numberOfTorso = 3;
-            int numberOfHair  = 3;
-
-           
-            ArrayList<String> load      = new ArrayList<String>();
-            ArrayList<SkinnedMeshParams> add       = new ArrayList<SkinnedMeshParams>();
-            ArrayList<AttachmentParams> attachments = new ArrayList<AttachmentParams>();
-
-            preset = (int) (Math.random() * 1000000 % numberOfFeet);
-            customizeFeetPresets(preset, load, add, attachments);
-            preset = (int) (Math.random() * 1000000 % numberOfLegs);
-            customizeLegsPresets(preset, load, add, attachments);
-            if (bForceDressShirt)
-                customizeTorsoPresets(2, load, add, attachments);
-            else
-            {
-                preset = (int) (Math.random() * 1000000 % numberOfTorso);
-                customizeTorsoPresets(preset, load, add, attachments);
-            }
-            preset = (int) (Math.random() * 1000000 % numberOfHair);
-            customizeHairPresets(preset, load, add, attachments);
-
-            setLoadInstructions(load);
-            setAddInstructions(add.toArray(new SkinnedMeshParams[add.size()]));
-            setAttachmentsInstructions(attachments.toArray(new AttachmentParams[attachments.size()]));
-        }
-        else
-            loadDefaultBind();
+        loadDefaultBind();
     }
 
+    public NinjaFemaleAvatarAttributes(String name, int feet, int legs, int torso, int hair) 
+    {
+        super(name);
+        setGender(2);
+        loadDefaultBind();
+    }
+    
     private void customizeFeetPresets(int preset, ArrayList<String> load, ArrayList<SkinnedMeshParams> add, ArrayList<AttachmentParams> attachments)
     {
         switch(preset)

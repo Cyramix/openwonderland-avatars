@@ -18,6 +18,7 @@
 package imi.tests;
 
 import com.jme.math.Vector3f;
+//import imi.character.networking.DarkstarClient;
 import imi.character.ninja.NinjaAvatar;
 import imi.character.ninja.NinjaAvatarAttributes;
 import imi.character.ninja.NinjaFemaleAvatarAttributes;
@@ -69,8 +70,15 @@ public class VerletArmTest  extends DemoBase
         camState.setCameraPosition(new Vector3f(0.0f, 1.8f, -2.0f));
         
         // Create avatar
-        //NinjaAvatar avatar = new NinjaAvatar(new NinjaAvatarAttributes("Avatar", true, true), wm);
-        NinjaAvatar avatar = new NinjaAvatar(new NinjaFemaleAvatarAttributes("Avatar", true, false), wm);
+        int presetNum = 3;
+        int feet  = (int) (Math.random() * 10000 % presetNum);
+        int legs  = (int) (Math.random() * 10000 % presetNum);
+        int torso = (int) (Math.random() * 10000 % presetNum);
+        int hair  = (int) (Math.random() * 10000 % presetNum);
+        NinjaAvatar avatar = new NinjaAvatar(new NinjaAvatarAttributes("Avatar", feet, legs, torso, hair), wm);
+        //avatar.setUpdateExtension(new DarkstarClient(avatar, true, feet, legs, torso, hair));
+        //((DarkstarClient)avatar.getUpdateExtension()).login();
+        //NinjaAvatar avatar = new NinjaAvatar(new NinjaFemaleAvatarAttributes("Avatar", true, false), wm);
         avatar.selectForInput();
         control.getNinjaTeam().add(avatar);
         avatar.setObjectCollection(objects);
