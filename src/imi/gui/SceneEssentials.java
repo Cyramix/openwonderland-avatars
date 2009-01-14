@@ -581,7 +581,7 @@ public class SceneEssentials {
             try {
                 URL modelURL = new URL(szURL);
                 SharedAsset colladaAsset = new SharedAsset(m_currentPScene.getRepository(), new AssetDescriptor(SharedAssetType.COLLADA_Mesh, modelURL));
-                colladaAsset.setUserData(new ColladaLoaderParams(false, true, false, false, 3, m_fileModel.getName(), null));
+                colladaAsset.setUserData(new ColladaLoaderParams(false, true, false, true, false, 3, m_fileModel.getName(), null));
                 m_modelInst = m_currentPScene.addModelInstance(m_fileModel.getName(), colladaAsset, new PMatrix());
                 //pruneMeshes(m_fileModel.getName(), colladaAsset);
                 return true;
@@ -608,7 +608,7 @@ public class SceneEssentials {
             try {
                 URL modelURL = new URL(szURL);
                 SharedAsset character = new SharedAsset(m_currentPScene.getRepository(), new AssetDescriptor(SharedAssetType.COLLADA_Model, modelURL));
-                character.setUserData(new ColladaLoaderParams(true, true, false, false, 4, m_fileModel.getName(), null));
+                character.setUserData(new ColladaLoaderParams(true, true, false, true, false, 4, m_fileModel.getName(), null));
                 String[] anim = null;
                 loadInitializer(m_fileModel.getName(), character, anim);
                 return true;
@@ -865,7 +865,7 @@ public class SceneEssentials {
         try {
             URL modelURL = new URL(data[3]);
             SharedAsset colladaAsset = new SharedAsset(m_currentPScene.getRepository(), new AssetDescriptor(SharedAssetType.COLLADA_Mesh, modelURL));
-            colladaAsset.setUserData(new ColladaLoaderParams(false, true, false, false, 3, data[0], null));
+            colladaAsset.setUserData(new ColladaLoaderParams(false, true, false, true, false, 3, data[0], null));
             pruneMeshes(data[0], colladaAsset);
         } catch (MalformedURLException ex) {
             Logger.getLogger(SceneEssentials.class.getName()).log(Level.SEVERE, null, ex);
@@ -881,7 +881,7 @@ public class SceneEssentials {
         try {
             URL urlModel = new URL(data[3]);
             SharedAsset character = new SharedAsset(m_currentPScene.getRepository(), new AssetDescriptor(SharedAssetType.COLLADA_Model, urlModel));
-            character.setUserData(new ColladaLoaderParams(true, true, false, false, 4, data[0], null));
+            character.setUserData(new ColladaLoaderParams(true, true, false, true, false, 4, data[0], null));
             String[] anim = null;
             loadInitializer(data[0], character, anim);
         } catch (MalformedURLException ex) {
@@ -1242,7 +1242,7 @@ public class SceneEssentials {
 
         if (clear) {
             SharedAsset character = new SharedAsset(m_currentPScene.getRepository(), new AssetDescriptor(SharedAssetType.COLLADA_Model, bindPose));
-            character.setUserData(new ColladaLoaderParams(true, true, false, false, 4, name, null));
+            character.setUserData(new ColladaLoaderParams(true, true, false, true, false, 4, name, null));
             loadInitializer(name, character, anim);
         } else {
             //addDAEMeshURLToModel(data, meshRef, region);

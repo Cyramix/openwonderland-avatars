@@ -37,6 +37,8 @@ public class ColladaLoaderParams
     private boolean     m_bLoadAnimation = false;
     /** Print debugging info **/
     private boolean     m_bShowDebugInfo = false;
+    /** Check for a serialized version first **/
+    private boolean     m_bUseCache      = true;
     /** The maximum number of weights allowed by any skinned items **/
     private int         m_nMaxWeights    = -1;
     /** The 'name' **/
@@ -60,7 +62,8 @@ public class ColladaLoaderParams
      * Explicit construction
      * @param loadSkeleton True to load a skeleton from the file
      * @param loadGeometry True to load geometry data from the file
-     * @param loadAnimations True to load animations 
+     * @param loadAnimations True to load animations
+     * @param useCache True to attempt loading predigested collada files if available
      * @param showDebugInfo True to show debugging output
      * @param maxInfluencesPerVertex Maximum number of influences to track
      * @param name The name
@@ -68,6 +71,7 @@ public class ColladaLoaderParams
     public ColladaLoaderParams(boolean  loadSkeleton,
                                boolean  loadGeometry,
                                boolean  loadAnimations,
+                               boolean  useCache,
                                boolean  showDebugInfo,
                                int      maxInfluencesPerVertex,
                                String   name,
@@ -76,10 +80,33 @@ public class ColladaLoaderParams
         this.setLoadSkeleton(loadSkeleton);
         this.setLoadGeometry(loadGeometry);
         this.setLoadAnimation(loadAnimations);
+        this.setUseCache(useCache);
         this.setShowDebugInfo(showDebugInfo);
         this.setMaxInfluences(maxInfluencesPerVertex);
         this.setName(name);
         this.setSkeletonNode(skeleton);
+    }
+    /**
+     * Explicit construction
+     * @param loadSkeleton True to load a skeleton from the file
+     * @param loadGeometry True to load geometry data from the file
+     * @param loadAnimations True to load animations
+     * @param showDebugInfo True to show debugging output
+     * @param maxInfluencesPerVertex Maximum number of influences to track
+     * @param name The name
+     */
+
+    public ColladaLoaderParams(boolean  loadSkeleton,
+                               boolean  loadGeometry,
+                               boolean  loadAnimations,
+                               boolean  showDebugInfo,
+                               int      maxInfluencesPerVertex,
+                               String   name,
+                               SkeletonNode skeleton)
+    {
+        this(loadSkeleton, loadGeometry, loadAnimations,
+             true, showDebugInfo, maxInfluencesPerVertex,
+             name, skeleton);
     }
         
     public ColladaLoaderParams(ColladaLoaderParams other)
@@ -129,6 +156,14 @@ public class ColladaLoaderParams
         m_bLoadAnimation = bLoadAnimation;
     }
     
+    /**
+     * Set to true to check for pre-digested collada files.
+     * @param bUseCache
+     */
+    private void setUseCache(boolean bUseCache)
+    {
+        m_bUseCache = bUseCache;
+    }
     /**
      * Sets whether or not debugging info should be displayed
      * @param bShowDebugInfo
@@ -183,6 +218,14 @@ public class ColladaLoaderParams
         return m_bLoadGeometry;
     }
     
+    /**
+     * Should the binary serialized collada files be used if available?
+     * @return
+     */
+    public boolean isUsingCache()
+    {
+        return m_bUseCache;
+    }
     /**
      * Is animation being loaded?
      * @return

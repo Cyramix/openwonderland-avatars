@@ -79,6 +79,9 @@ public class SkeletonNodeSerialization extends DemoBase
         "assets/models/collada/Avatars/Male/Male_Anim_StandToSit.dae",
         "assets/models/collada/Avatars/Male/Male_Anim_Walk.dae",
         "assets/models/collada/Avatars/Male/Male_Anim_Wave.dae",
+        "assets/models/collada/Avatars/Male/Male_Anim_No.dae",
+        "assets/models/collada/Avatars/Male/Male_Anim_Yes.dae",
+        "assets/models/collada/Avatars/Male/Male_Anim_Cell.dae",
     };
     private static String[] MaleFacialAnimationLocations = {
         "assets/models/collada/Avatars/MaleFacialAnimation/MaleSmile.dae",
@@ -102,8 +105,6 @@ public class SkeletonNodeSerialization extends DemoBase
             logger.severe("Could not initialize static urls to skeletons.");
         }
     }
-
-    private boolean bLoadMale = true; // Determine code path for skeleton creation
     
     public SkeletonNodeSerialization(String[] args)
     {
@@ -118,12 +119,11 @@ public class SkeletonNodeSerialization extends DemoBase
     @Override
     protected void createDemoEntities(WorldManager wm)
     {
-        createSerializedSkeleton(wm);
+        createSerializedSkeleton(wm, true); // load the male skeleton
     }
 
-    private void createSerializedSkeleton(WorldManager wm)
+    private void createSerializedSkeleton(WorldManager wm, boolean bLoadMale)
     {
-        bLoadMale = false;
         URL         skeletonLocation = null;
         String[]    animationFiles   = null;
         String[]    facialAnimations = null;
@@ -144,7 +144,8 @@ public class SkeletonNodeSerialization extends DemoBase
 
         // Create parameters for the collada loader we will use
         ColladaLoaderParams params = new ColladaLoaderParams(true, false, // load skeleton, load geometry
-                                                            false, false, // load animations, show debug output
+                                                            false,  false, // load animations, use cache
+                                                            false, // show debug output
                                                             4, // max influences per-vertex
                                                             "Skeleton", // 'name'
                                                             null); // existing skeleton (if applicable)

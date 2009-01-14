@@ -26,6 +26,7 @@ import imi.scene.animation.COLLADA_JointChannel;
 import imi.scene.PMatrix;
 import imi.scene.PJoint;
 
+import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
 import org.collada.colladaschema.Animation;
 import org.collada.colladaschema.Source;
 import org.collada.colladaschema.Source.TechniqueCommon;
@@ -45,8 +46,8 @@ public class LibraryAnimationsProcessor extends Processor
     private String m_AnimatedItemID     = null;
     private String m_AnimatedItemName   = null;
     
-    private Source m_pTransformInputSource  = null;
-    private Source m_pTransformOutputSource = null;
+    private Source m_transformInputSource  = null;
+    private Source m_transformOutputSource = null;
 
     private int m_KeyframeCount = -1;
 
@@ -85,92 +86,79 @@ public class LibraryAnimationsProcessor extends Processor
      * Processes an Animation defined in the collada file.
      * 
      * @param pCollada
-     * @param pAnimation
-     * @param pAnimationLoop
+     * @param colladaAnimation
+     * @param animationGroup
      */
-    private void processAnimation(Animation pAnimation, AnimationGroup pAnimationLoop)
+    private void processAnimation(Animation colladaAnimation, AnimationGroup animationGroup)
     {
-        int a;
-        float fKeyframeTime;
-        PMatrix pKeyframeMatrix = new PMatrix();
-        COLLADA_JointChannel pAnimationChannel = null;
+        float fKeyframeTime = 0.0f;
+        PMatrix matrixBuffer = new PMatrix();
+        COLLADA_JointChannel colladaJointChannel = null;
 
 
-        m_AnimatedItemID = pAnimation.getId();
+        m_AnimatedItemID = colladaAnimation.getId();
         int periodIndex = m_AnimatedItemID.indexOf(".");
         if (periodIndex != -1)
-        {
             m_AnimatedItemName = m_AnimatedItemID.substring(0, periodIndex);
-        }
         else
-        {
             m_AnimatedItemName = m_AnimatedItemID;
-        }
 
         
-        String jointName = m_AnimatedItemName;
-
-        PJoint pJoint = m_colladaRef.getSkeletonNode().getJoint(jointName);
-        if (pJoint == null)
+        String jointName        = m_AnimatedItemName;
+        SkeletonNode skeleton   = m_colladaRef.getSkeletonNode();
+        PJoint joint            = skeleton.getJoint(jointName);
+        if (joint == null)
         {
-//            System.out.println("   Skipping AnimationChannel for joint " + jointName + ".");
+            logger.severe("Unable to locate joint \"" + jointName +"\" referenced by animation.");
             return;
         }
-        
-        //System.out.println("AnimationChannel:  " + m_AnimatedItemName);
 
         //  The 'input' source contains keyframe times.  1 float per keyframe.
-        Source pInputSource = getSource(pAnimation, "input");
-        if (pInputSource != null)
+        Source inputSource = getSource(colladaAnimation, "input");
+        if (inputSource != null)
         {
-            String inputSourceParamName = getSourceParamName(pInputSource);
-            String inputSourceParamType = getSourceParamType(pInputSource);
-            if (pInputSource.getId().endsWith("transform-input"))
+            if (inputSource.getId().endsWith("transform-input"))
             {
-                m_pTransformInputSource = pInputSource;
-                m_KeyframeCount = pInputSource.getFloatArray().getValues().size();
+                m_transformInputSource = inputSource;
+                m_KeyframeCount = inputSource.getFloatArray().getValues().size();
             }
+            else
+                logger.warning("Unrecognized input source.");
         }
 
         //  The 'output' source contains keyframe matrices.  16 floats per keyframe.
-        Source pOutputSource = getSource(pAnimation, "output");
-        if (pOutputSource != null)
+        Source outputSource = getSource(colladaAnimation, "output");
+        if (outputSource != null)
         {
-            String outputSourceParamName = getSourceParamName(pOutputSource);
-            String outputSourceParamType = getSourceParamType(pOutputSource);
-            if (pOutputSource.getId().endsWith("transform-output"))
-            {
-                m_pTransformOutputSource = pOutputSource;
-            }
+            if (outputSource.getId().endsWith("transform-output"))
+                m_transformOutputSource = outputSource;
+            else
+                logger.warning("Unrecognized output source.");
         }
-
-        
                 
         //  Create the JointChannel.
-        pAnimationChannel = new COLLADA_JointChannel(m_AnimatedItemName);
+        colladaJointChannel = new COLLADA_JointChannel(m_AnimatedItemName);
 
 
         //  Create all the MatrixKeyframes.
-        for (a=0; a<m_KeyframeCount; a++)
+        for (int i = 0; i < m_KeyframeCount; i++)
         {
-            fKeyframeTime = getKeyframeTime(a);
-            getKeyframeMatrix(a, pKeyframeMatrix);
+            fKeyframeTime = getKeyframeTime(i);
+            getKeyframeMatrix(i, matrixBuffer);
 
-            pAnimationChannel.addKeyframe(fKeyframeTime, pKeyframeMatrix);
+            colladaJointChannel.addKeyframe(fKeyframeTime, matrixBuffer);
         }
 
-        pAnimationChannel.calculateDuration();
-
-//        System.out.println("      AnimationChannel:  " + m_AnimatedItemName + ", KeyframeCount=" + m_KeyframeCount);
+        colladaJointChannel.calculateDuration();
 
         //  Add the JointAnimation to the AnimationLoop.
-        pAnimationLoop.getChannels().add(pAnimationChannel);
+        animationGroup.getChannels().add(colladaJointChannel);
     }
 
     /**
      * Gets the Source of the specified type from the Animation.
      * 
-     * @param pAnimation
+     * @param colladaAnimation
      * @param sourceType
      * @return Source
      */
@@ -224,7 +212,7 @@ public class LibraryAnimationsProcessor extends Processor
      */
     private float getKeyframeTime(int Index)
     {
-        float fKeyframeTime = ((Double)m_pTransformInputSource.getFloatArray().getValues().get(Index)).floatValue();
+        float fKeyframeTime = ((Double)m_transformInputSource.getFloatArray().getValues().get(Index)).floatValue();
 
         return(fKeyframeTime);
     }
@@ -241,13 +229,13 @@ public class LibraryAnimationsProcessor extends Processor
         int FloatIndex = Index * 16;
 
         //  Sanity check.
-        if (FloatIndex < 0 || FloatIndex+16 > m_pTransformOutputSource.getFloatArray().getValues().size())
+        if (FloatIndex < 0 || FloatIndex+16 > m_transformOutputSource.getFloatArray().getValues().size())
             return(false);
 
         float [] matrixFloats = new float[16];
 
         for (int i = 0; i < 16; i++)
-            matrixFloats[i] = ((Double)m_pTransformOutputSource.getFloatArray().getValues().get(FloatIndex + i)).floatValue();
+            matrixFloats[i] = ((Double)m_transformOutputSource.getFloatArray().getValues().get(FloatIndex + i)).floatValue();
 
         // Load it into the output matrix
         matrixOut.set(matrixFloats);

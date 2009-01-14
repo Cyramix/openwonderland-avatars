@@ -157,7 +157,7 @@ public class COLLADA_ModelTest extends DemoBase
             }
         });
         //colladaAsset.setUserData(new ColladaLoaderParams(true, true, false, false, 3, "FlipFlops", null));
-        colladaAsset.setUserData(new ColladaLoaderParams(true, true, false, false, 3, "Milan", null));
+        colladaAsset.setUserData(new ColladaLoaderParams(true, true, false, true, false, 3, "Milan", null));
         PPolygonModelInstance modelInst = pscene.addModelInstance("Collada Model", colladaAsset, new PMatrix());
         processors.add(new SkinnedAnimationProcessor(modelInst));
         // create and add a standard cube to see the default lighting

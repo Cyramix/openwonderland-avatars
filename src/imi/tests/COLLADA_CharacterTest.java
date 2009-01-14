@@ -67,7 +67,7 @@ public class COLLADA_CharacterTest extends DemoBase
 
         // Create avatar
         long startTime = System.nanoTime();
-        NinjaAvatar avatar = new NinjaAvatar(new NinjaFemaleAvatarAttributes("Avatar", true, false), wm);
+        NinjaAvatar avatar = new NinjaAvatar(new NinjaAvatarAttributes("Avatar", true, false), wm);
         float time = (float)((System.nanoTime() - startTime) / 1000000000.0f);
         System.out.println("Constructing the male took: " + time);
         

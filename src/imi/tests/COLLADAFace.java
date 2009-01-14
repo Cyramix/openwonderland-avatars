@@ -60,7 +60,7 @@ public class COLLADAFace extends DemoBase
         
         pscene.setUseRepository(false);
         
-        ColladaLoaderParams params = new ColladaLoaderParams(true, true, true, false, 4, "ColladaHead", null);
+        ColladaLoaderParams params = new ColladaLoaderParams(true, true, true, true, false, 4, "ColladaHead", null);
         
         SharedAsset headAsset = new SharedAsset(pscene.getRepository(), new AssetDescriptor(SharedAssetType.COLLADA_Model, modelFilename), null, params);
         AssetInitializer headInit = new AssetInitializer() {
