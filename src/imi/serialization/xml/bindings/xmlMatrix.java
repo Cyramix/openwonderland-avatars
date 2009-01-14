@@ -174,7 +174,8 @@ public class xmlMatrix {
         // Null check for safety
         if (mat == null) // Do not serialize
             return;
-        float[] matrix = mat.getFloatArray();
+        float[] matrix = new float[16];
+        mat.getFloatArray(matrix);
 
         xmlFloatRow row = new xmlFloatRow();
         row.setValues(matrix[ 0], matrix[ 1], matrix[ 2], matrix[ 3]);

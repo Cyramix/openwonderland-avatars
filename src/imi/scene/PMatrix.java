@@ -821,9 +821,9 @@ public class PMatrix implements Serializable
 	m1.m22 = (float) mat[10];
     }
     
-    public float [] getFloatArray()
+    public void getFloatArray(float [] result)
     {
-        float [] result = new float[16];
+        //float [] result = new float[16];
         result[ 0] = mat[ 0];
         result[ 1] = mat[ 1];
         result[ 2] = mat[ 2];
@@ -840,7 +840,7 @@ public class PMatrix implements Serializable
         result[13] = mat[13];
         result[14] = mat[14];
         result[15] = mat[15];
-        return result;
+        //return result;
         //return mat.clone();
     }
     

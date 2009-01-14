@@ -148,6 +148,7 @@ public class PPolygonSkinnedMeshInstance extends PPolygonMeshInstance implements
     @Override
     public SharedMesh updateSharedMesh() 
     {
+        float [] matrixFloats = new float[16];
         super.updateSharedMesh();
         // The new skinning model has this mesh query its skeleton for
         // the appropriate collection of transform matrices
@@ -179,7 +180,7 @@ public class PPolygonSkinnedMeshInstance extends PPolygonMeshInstance implements
 
                 m_pose[i].mul(m_InverseBindPose[i]);
 
-                float [] matrixFloats = m_pose[i].getFloatArray();
+                m_pose[i].getFloatArray(matrixFloats);
                 for(int j = 0; j < 16; j++)
                 {
                     pose[j+(i*16)] = matrixFloats[j];

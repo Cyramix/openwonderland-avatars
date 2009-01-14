@@ -55,7 +55,9 @@ public class PMatrixTableModel extends AbstractTableModel
 
     public Object getValueAt(int rowIndex, int columnIndex) 
     {
-        m_formattedNumber = m_format.format(m_Matrix.getFloatArray()[columnIndex + rowIndex * 4]);
+        float[] matrix = new float[16];        
+        m_Matrix.getFloatArray(matrix);
+        m_formattedNumber = m_format.format(matrix[columnIndex + rowIndex * 4]);
         return Float.valueOf(m_formattedNumber);
     }
 
@@ -93,7 +95,8 @@ public class PMatrixTableModel extends AbstractTableModel
     public void setValueAt(Object aValue, int rowIndex, int columnIndex) 
     {
         // First turn this bastard into a float
-        float[] fArray = m_Matrix.getFloatArray();
+        float[] fArray = new float[16];
+        m_Matrix.getFloatArray(fArray);
         m_formattedNumber = m_format.format((Float)aValue);
         fArray[columnIndex + rowIndex * 4] = Float.valueOf(m_formattedNumber);
         m_Matrix.set(fArray);
