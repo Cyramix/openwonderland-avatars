@@ -21,9 +21,6 @@ import imi.loaders.Instruction;
 import imi.loaders.InstructionProcessor;
 import imi.loaders.collada.Collada;
 import imi.loaders.collada.ColladaLoaderParams;
-import imi.scene.JScene;
-import imi.scene.PMatrix;
-import imi.scene.PNode;
 import imi.scene.PScene;
 import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
 import java.io.File;
@@ -33,8 +30,6 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.logging.Logger;
-import org.jdesktop.mtgame.Entity;
-import org.jdesktop.mtgame.RenderComponent;
 import org.jdesktop.mtgame.WorldManager;
 import org.jdesktop.wonderland.common.comms.WonderlandObjectInputStream;
 import org.jdesktop.wonderland.common.comms.WonderlandObjectOutputStream;
@@ -119,7 +114,7 @@ public class SkeletonNodeSerialization extends DemoBase
     @Override
     protected void createDemoEntities(WorldManager wm)
     {
-        createSerializedSkeleton(wm, true); // load the male skeleton
+        createSerializedSkeleton(wm, false); // load the male skeleton
     }
 
     private void createSerializedSkeleton(WorldManager wm, boolean bLoadMale)

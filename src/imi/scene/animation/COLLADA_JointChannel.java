@@ -42,7 +42,10 @@ public class COLLADA_JointChannel implements PJointChannel, Serializable
     private float                       m_fDuration = 0.0f;
     private float                       m_fAverageFrameStep = 0.0f;
 
-    
+    /** Buffer variables to cut down on object creation **/
+    private final PMatrix m_blendedFrameLeft = new PMatrix();
+    private final PMatrix m_blendedFrameRight = new PMatrix();
+    private final PMatrix m_blendBuffer = new PMatrix();
     
     //  Constructor land!
     public COLLADA_JointChannel()
@@ -67,19 +70,12 @@ public class COLLADA_JointChannel implements PJointChannel, Serializable
 
     public void calculateFrame(PJoint jointToAffect, AnimationState state)
     {
-        if (true)
-        {
-            PMatrix result = calculateBlendedMatrix(state.getCurrentCycleTime(), state.getCurrentCycleStartTime(), state.getCurrentCycleEndTime(), state.isReverseAnimation());
-            if (result != null)
-            {
-                Vector3f translation = jointToAffect.getTransform().getLocalMatrix(false).getTranslation();
-//                result.setTranslation(translation);// <-- uncomment to make skeleton remapping work
-                jointToAffect.getTransform().setLocalMatrix(result);
-            }
-            return;
-        }
+        if (calculateBlendedMatrix(state.getCurrentCycleTime(), state.getCurrentCycleStartTime(),
+                state.getCurrentCycleEndTime(), m_blendBuffer) == true)
+            jointToAffect.getTransform().setLocalMatrix(m_blendBuffer);
+        return;
     }
-    
+
     /**
      * Calculate the pose given the specified transitioning animation state.
      * The current cycle pose is determined and then blended via a weighting
@@ -98,40 +94,35 @@ public class COLLADA_JointChannel implements PJointChannel, Serializable
         
         float interpolationCoefficient = state.getTimeInTransition() / state.getTransitionDuration();
         
-        PMatrix firstTransform  = calculateBlendedMatrix(fCurrentCycleTime, state.getCurrentCycleStartTime(), state.getCurrentCycleEndTime(), state.isReverseAnimation());
-        PMatrix secondTransform = calculateBlendedMatrix(fTransitionCycleTime, state.getTransitionCycleStartTime(), state.getTransitionCycleEndTime(), state.isTransitionReverseAnimation());
+        boolean resultOne = calculateBlendedMatrix(fCurrentCycleTime, state.getCurrentCycleStartTime(),
+                                state.getCurrentCycleEndTime(), m_blendedFrameLeft);
+        boolean resultTwo = calculateBlendedMatrix(fTransitionCycleTime, state.getTransitionCycleStartTime(),
+                state.getTransitionCycleEndTime(), m_blendedFrameRight);
         
         PMatrix result = null;
-        
-        if (secondTransform == null)
-            result = firstTransform;
-        else if (firstTransform == null)
-            result = secondTransform;
-        
-        
-        if (firstTransform != null && firstTransform.equals(secondTransform)) // no blend
-            result = firstTransform;
-        else if (firstTransform != null && secondTransform != null) // interpolate!
+        if (resultTwo == false)
+            result = m_blendedFrameLeft;
+        else if (resultOne == false)
+            result = m_blendedFrameRight;
+        else if (m_blendedFrameLeft.equals(m_blendedFrameRight)) // no blend
+            result = m_blendedFrameLeft;
+        else // Interpolate
         {
             // if we got here, then these two transforms need to be blended
-            Quaternion rotationComponent1 = firstTransform.getRotation();
-            Quaternion rotationComponent2 = secondTransform.getRotation();
+            Quaternion rotationComponent1 = m_blendedFrameLeft.getRotation();
+            Quaternion rotationComponent2 = m_blendedFrameRight.getRotation();
             rotationComponent1.slerp(rotationComponent2, interpolationCoefficient);
 
             // grab the translation and lerp it
-            Vector3f translationComponent1 = firstTransform.getTranslation();
-            Vector3f translationComponent2 = secondTransform.getTranslation();
+            Vector3f translationComponent1 = m_blendedFrameLeft.getTranslation();
+            Vector3f translationComponent2 = m_blendedFrameRight.getTranslation();
             translationComponent1.interpolate(translationComponent2, interpolationCoefficient);
             
-            result = new PMatrix();
-            result.set2(rotationComponent1, translationComponent1, 1.0f);
+            m_blendBuffer.set2(rotationComponent1, translationComponent1, 1.0f);
+            result = m_blendBuffer;
         }
-        if (result != null)
-        {
-            Vector3f translation = jointToAffect.getTransform().getLocalMatrix(false).getTranslation();
-//            result.setTranslation(translation);// <-- uncomment to make skeleton merging work
-            jointToAffect.getTransform().setLocalMatrix(result);
-        }
+
+        jointToAffect.getTransform().setLocalMatrix(result);
     }
 
     public float calculateDuration()
@@ -155,10 +146,19 @@ public class COLLADA_JointChannel implements PJointChannel, Serializable
         return m_fDuration;
     }
 
-    private PMatrix calculateBlendedMatrix(float fTime, float fLeftBoundaryTime, float fRightBoundaryTime, boolean bReverse)
+    private Vector3f m_blendedMatrixBufferVector = new Vector3f();
+    /**
+     * Calculate the result of blending the transform matrices found between the
+     * specified boundary times at the provided time.
+     * @param fTime
+     * @param fLeftBoundaryTime
+     * @param fRightBoundaryTime
+     * @param output This matrix is used to receive the calculation.
+     * @return False if there was no relevant calculation.
+     */
+    private boolean calculateBlendedMatrix(float fTime, float fLeftBoundaryTime, float fRightBoundaryTime, PMatrix output)
     {
-//        if (true)
-//            return new PMatrix();
+        boolean result = true;
         float interpolationCoefficient = 0.0f;
         // determine what two keyframes to interpolate between for the first pose
         PMatrixKeyframe leftFrame = null;
@@ -182,31 +182,27 @@ public class COLLADA_JointChannel implements PJointChannel, Serializable
         if (rightFrame != null)
             if (rightFrame.getFrameTime() < fLeftBoundaryTime || rightFrame.getFrameTime() > fRightBoundaryTime)
                 rightFrame = null; // No data, do nothing
-        
-        PMatrix delta = null;
+
         //  Are we directly aligned with a keyframe?!!?
         if (leftFrame != null && rightFrame == null)
-            delta = new PMatrix(leftFrame.getValue());
+            output.set(leftFrame.getValue());
         else if (leftFrame != null && leftFrame == rightFrame) // Same relationship, different manifestation
-            delta = new PMatrix(leftFrame.getValue());
+            output.set(leftFrame.getValue());
         else if (leftFrame != null && rightFrame != null) // Need to blend between two poses
         {
             interpolationCoefficient = (fTime - leftFrame.getFrameTime()) / (rightFrame.getFrameTime() - leftFrame.getFrameTime());
-
-//            if (bReverse)
-//                interpolationCoefficient = 1.0f - interpolationCoefficient; // Reverese interpolation weights
-            
+ 
             Quaternion rotationComponent = leftFrame.getValue().getRotationJME();
             rotationComponent.slerp(rotationComponent, rightFrame.getValue().getRotationJME(), interpolationCoefficient);
 
             // grab the translation and lerp it
-            Vector3f translationComponent = new Vector3f(leftFrame.getValue().getTranslation());
-            translationComponent.interpolate(rightFrame.getValue().getTranslation(), interpolationCoefficient);
-            delta = new PMatrix();
-            delta.set2(rotationComponent, translationComponent, 1.0f);
+            m_blendedMatrixBufferVector.set(leftFrame.getValue().getTranslation());
+            m_blendedMatrixBufferVector.interpolate(rightFrame.getValue().getTranslation(), interpolationCoefficient);
+            output.set2(rotationComponent, m_blendedMatrixBufferVector, 1.0f);
         }
-        
-        return delta;
+        else
+            result = false;
+        return result;
     }
     /**
      * This method calculates and returns the average timestep,
@@ -364,15 +360,8 @@ public class COLLADA_JointChannel implements PJointChannel, Serializable
      */
     public void adjustKeyframeTimes(float fAmount)
     {
-        int a;
-        PMatrixKeyframe pKeyframe;
-            
-        for (a=0; a<getKeyframeCount(); a++)
-        {
-            pKeyframe = getKeyframe(a);
-                
-            pKeyframe.setFrameTime(pKeyframe.getFrameTime() + fAmount);
-        }
+        for (PMatrixKeyframe keyFrame : m_KeyFrames)
+            keyFrame.m_fTime += fAmount;
     }
 
     /**

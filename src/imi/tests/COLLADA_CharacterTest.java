@@ -84,8 +84,6 @@ public class COLLADA_CharacterTest extends DemoBase
         FirstPersonCamState camState = (FirstPersonCamState)m_cameraProcessor.getState();
         camState.setMovementRate(0.03f);
         camState.setCameraPosition(new Vector3f(0.0f, 1.8f, -2.0f));
-
-        swapAvatarHead(avatar);;
     }
 
     private void swapAvatarHead(Character avatar)

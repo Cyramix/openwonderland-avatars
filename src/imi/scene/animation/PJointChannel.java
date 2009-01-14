@@ -21,7 +21,10 @@ import imi.scene.PJoint;
 import java.io.Serializable;
 
 /**
- * This represents all of the animation frames a joint can go through
+ * This represents all of the animation frames a joint can go through.
+ * Implementing classes should take note to ensure that the implementing methods
+ * are as optimal as possible and avoid object creation. The methods will be
+ * called many times per frame.
  * @author Ronald E Dahlgren
  * @author Lou Hayt
  */

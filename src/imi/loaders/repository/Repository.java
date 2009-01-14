@@ -90,6 +90,9 @@ public class Repository extends Entity
     // code
 
     public final FastList<SkeletonNode> m_Skeletons = new FastList<SkeletonNode>();
+
+    /** Indicates if the repository should be used. **/
+    private boolean m_bUseCache = true;
     
     /**
      * Construct a BRAND NEW REPOSITORY!
@@ -107,6 +110,8 @@ public class Repository extends Entity
         addComponent(ProcessorCollectionComponent.class, m_processorCollection);
         // Load up the default skeletons
         loadSkeletons();
+        // Boot up the cache
+        initCache();
         // create the shader factory
         m_shaderFactory = new ShaderFactory(wm);
     }
@@ -395,6 +400,39 @@ public class Repository extends Entity
         m_Skeletons.add(FemaleSkeleton);
     }
 
+    /**
+     * Get the cache directory ready.
+     */
+    private void initCache()
+    {
+        // Determine if the directory exists. If not, create it.
+        if (cacheFolder.exists() == false)
+        {
+            if (cacheFolder.mkdir() == false) // error
+            {
+                logger.severe("Cache is unavailable!");
+
+            }
+        }
+
+    }
+
+    /**
+     * Is this repository using the cache?
+     * @return
+     */
+    public boolean isUsingCache()
+    {
+        return m_bUseCache;
+    }
+    /**
+     * True to enable usage of the cache.
+     * @param bUseCache
+     */
+    public void setUseCache(boolean bUseCache)
+    {
+        m_bUseCache = bUseCache;
+    }
     /**
      * Retrieve the skeleton with the specified name.
      * @param name
