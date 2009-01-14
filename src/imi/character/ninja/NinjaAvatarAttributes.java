@@ -75,6 +75,22 @@ public class NinjaAvatarAttributes extends CharacterAttributes
         else
             loadDefaultBindPose();
     }
+    
+    public NinjaAvatarAttributes(String name, int feet, int legs, int torso, int hair) 
+    {
+        ArrayList<String> load                  = new ArrayList<String>();
+        ArrayList<SkinnedMeshParams> add        = new ArrayList<SkinnedMeshParams>();
+        ArrayList<AttachmentParams> attachments = new ArrayList<AttachmentParams>();
+
+        customizeFeetPresets(feet,   load, add, attachments);
+        customizeLegsPresets(legs,   load, add, attachments);
+        customizeTorsoPresets(torso, load, add, attachments);
+        customizeHairPresets(hair,   load, add, attachments);
+
+        setLoadInstructions(load);
+        setAddInstructions(add.toArray(new SkinnedMeshParams[add.size()]));
+        setAttachmentsInstructions(attachments.toArray(new AttachmentParams[attachments.size()]));
+    }
 
     private void customizeFeetPresets(int preset, ArrayList<String> load, ArrayList<SkinnedMeshParams> add, ArrayList<AttachmentParams> attachments)
     {
