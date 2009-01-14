@@ -58,7 +58,7 @@ public class NewSkinningMethodTest extends DemoBase
         pscene.setUseRepository(true); 
         
         PMeshMaterial mat = new PMeshMaterial("MyName!");
-        mat.setShader(new VertexDeformer(wm));
+        mat.setShader(repository.newShader(VertexDeformer.class));
         
         SkeletonNode skeleton = generateSkeleton();
         PPolygonSkinnedMesh skinMesh = createSkinnedModel(3, 4, 3, new Vector3f(0,0,0), "lowerHalf");
@@ -91,7 +91,7 @@ public class NewSkinningMethodTest extends DemoBase
         ((SkeletonNode)modelInst.findChild("MyTestSkeleton")).refresh();
         mat = new PMeshMaterial("NewTexture");
         mat.setTexture("assets/textures/checkerboard2.PNG", 0);
-        mat.setShader(new VertexDeformer(wm));
+        mat.setShader(repository.newShader(VertexDeformer.class));
         
         ((SkeletonNode)modelInst.findChild("MyTestSkeleton")).getSkinnedMeshInstance("upperHalf").setMaterial(mat);
         ((SkeletonNode)modelInst.findChild("MyTestSkeleton")).getSkinnedMeshInstance("upperHalf").applyMaterial();

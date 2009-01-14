@@ -92,7 +92,7 @@ public class HeirarchyAttachmentTest extends DemoBase
         // set vert deformer
         // Create a material to use
         PMeshMaterial material =  new PMeshMaterial("ninja material", "assets/textures/checkerboard2.PNG");
-        material.setShader(new VertexDeformer(pscene.getWorldManager()));
+        material.setShader(repository.newShader(VertexDeformer.class));
         // Set the material
         target.setMaterial(material);
         target.applyMaterial();
@@ -112,7 +112,7 @@ public class HeirarchyAttachmentTest extends DemoBase
         // add a pant leg
         PPolygonSkinnedMesh skinMesh = createSkinnedModel(3, 1.6f, 1.1f, new Vector3f(-0.55f,0,0.1f), "rightLeg");
         PMeshMaterial mat = new PMeshMaterial("MyName!", "assets/textures/rings.bmp");
-        mat.setShader(new VertexDeformer(pscene.getWorldManager()));
+        mat.setShader(repository.newShader(VertexDeformer.class));
         skinMesh.setMaterial(mat);
         int [] influences = new int[4];
         influences[0] = skeleton.getSkinnedMeshJointIndex("Joint26");
@@ -146,7 +146,7 @@ public class HeirarchyAttachmentTest extends DemoBase
         testmaterial.setTexture("assets/textures/checkerboard.png", 0);
         testmaterial.setTexture("assets/textures/normalmap2.jpg", 1);
         testmaterial.setTexture("assets/textures/spec_beast.jpg", 2);
-        testmaterial.setShader(new NormalAndSpecularMapShader(pscene.getWorldManager()));
+        testmaterial.setShader(repository.newShader(NormalAndSpecularMapShader.class));
         
         meshInst.getGeometry().setNumberOfTextures(3);
         meshInst.setMaterial(testmaterial);

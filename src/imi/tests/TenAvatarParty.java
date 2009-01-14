@@ -78,7 +78,7 @@ public class TenAvatarParty extends DemoBase
 
         // Create testCharacter
         NinjaAvatar testCharacter = null;
-
+        float totalLoadTime = 0.0f;
         for (int i = 0; i < numberOfAvatars; ++i)
         {
             try {
@@ -86,6 +86,7 @@ public class TenAvatarParty extends DemoBase
                 testCharacter = new NinjaAvatar(new NinjaAvatarAttributes("Name", false, false), wm);//new NinjaAvatar(new URL(configFiles[i]), wm);
                 long stopTime = System.nanoTime();
                 float length = (stopTime - startTime) / 1000000000.0f;
+                totalLoadTime += length;
                 System.out.println("Loading avatar " + i + " took " + length + " seconds.");
                 
             } catch (Exception ex) {
@@ -103,6 +104,7 @@ public class TenAvatarParty extends DemoBase
                 control.getMouseEventsFromCamera();
             }
         }
+        System.out.println("Took " + totalLoadTime + " seconds overall to load the avatars.");
 
         // Tweak the camera a bit
         FirstPersonCamState camState = (FirstPersonCamState)m_cameraProcessor.getState();

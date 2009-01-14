@@ -69,7 +69,7 @@ public class SkeletonModifierTest extends DemoBase
         } catch (MalformedURLException ex) {
             Logger.getLogger(SkeletonModifierTest.class.getName()).log(Level.SEVERE, null, ex);
         }
-        skinnedMeshMaterial.setShader(new VertexDeformer(wm, 0.35f));
+        skinnedMeshMaterial.setShader(repository.newShader(VertexDeformer.class));
         // create a skeleton and
         // add it to the pscene
         PPolygonModelInstance modelInst = pscene.addModelInstance(generateSkeleton(), new PMatrix());

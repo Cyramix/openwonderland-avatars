@@ -61,7 +61,6 @@ public class NormalMappingTest extends DemoBase
     @Override
     protected void simpleSceneInit(PScene pscene, WorldManager wm, ArrayList<ProcessorComponent> processors) 
     {
-        final WorldManager fwm = wm;
         pscene.setUseRepository(true); 
         // Create the beast
         PPolygonModelInstance modelInst = null;
@@ -83,7 +82,7 @@ public class NormalMappingTest extends DemoBase
                 meshMat.setTexture(new File("assets/textures/spec_beast.jpg"), 2);
                 // Shaders
                 //meshInst.buildAnimationJointMapping((SkeletonNode)asset);
-                meshMat.setShader(new VertDeformerWithSpecAndNormalMap(fwm));
+                meshMat.setShader(repository.newShader(VertDeformerWithSpecAndNormalMap.class));
                 //meshMat.setVertShader(new File("assets/shaders/NormalMapSpecMap_Rev2.vert"));
                 //meshMat.setFragShader(new File("assets/shaders/NormalMapSpecMap_Rev2.frag"));
                 
@@ -119,7 +118,7 @@ public class NormalMappingTest extends DemoBase
         testmaterial.setTexture("assets/textures/checkerboard2.PNG", 0);
         testmaterial.setTexture("assets/textures/normalmap2.jpg", 1);
         testmaterial.setTexture("assets/textures/spec_beast.jpg", 2);
-        testmaterial.setShader(new NormalAndSpecularMapShader(wm));
+        testmaterial.setShader(repository.newShader(NormalAndSpecularMapShader.class));
         
         meshInst.getGeometry().setNumberOfTextures(3);
         meshInst.setMaterial(testmaterial);

@@ -119,6 +119,11 @@ public class ClothingShader extends BaseShaderProgram implements AbstractShaderP
         this(wm, 0.2f);
     }
 
+    protected ClothingShader(ClothingShader other)
+    {
+        super(other);
+    }
+
     /**
      * Construct a new instance with the specified ambient power
      * @param wm
@@ -203,6 +208,10 @@ public class ClothingShader extends BaseShaderProgram implements AbstractShaderP
         return result;
     }
 
-    
+    public AbstractShaderProgram duplicate()
+    {
+        ClothingShader result = new ClothingShader(this);
+        return result;
+    }
 
 }

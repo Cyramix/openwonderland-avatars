@@ -74,7 +74,7 @@ public class ColladaEnvironment extends Entity
         Repository repo = (Repository)wm.getUserData(Repository.class);
         AssetDescriptor descriptor = new AssetDescriptor(SharedAsset.SharedAssetType.COLLADA_Model, relativePath);
         SharedAsset worldAsset = new SharedAsset(repo, descriptor, null);
-        worldAsset.setUserData(new ColladaLoaderParams(false, true, false, true, false, 0, name, null));
+        worldAsset.setUserData(new ColladaLoaderParams(false, true, false, false, 0, name, null));
 
         scene = new PScene(m_wm);
         scene.setUseRepository(false); // Synchronous loading requested
@@ -109,7 +109,7 @@ public class ColladaEnvironment extends Entity
         Repository repo = (Repository)wm.getUserData(Repository.class);
         AssetDescriptor descriptor = new AssetDescriptor(SharedAsset.SharedAssetType.COLLADA_Model, relativePath);
         SharedAsset worldAsset = new SharedAsset(repo, descriptor, null);
-        worldAsset.setUserData(new ColladaLoaderParams(false, true, false, true, false, 0, name, null));
+        worldAsset.setUserData(new ColladaLoaderParams(false, true, false, false, 0, name, null));
 
         scene = new PScene(m_wm);
         scene.setUseRepository(false); // Synchronous loading requested

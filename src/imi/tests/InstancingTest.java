@@ -87,7 +87,7 @@ public class InstancingTest extends DemoBase
                         // Create a material to use
                         PMeshMaterial material =  new PMeshMaterial("ninja material", "assets/textures/checkerboard2.PNG");
                         
-                        material.setShader(new VertexDeformer(fwm));
+                        material.setShader(repository.newShader(VertexDeformer.class));
                         // make sure we have geometry before setting the material
                         target.getGeometry().submit(new PPolygonTriMeshAssembler());
                         // Set the material

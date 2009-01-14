@@ -21,6 +21,8 @@ import imi.annotations.Debug;
 import imi.loaders.repository.SharedAsset.SharedAssetType;
 import imi.scene.PScene;
 import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
+import imi.scene.shader.AbstractShaderProgram;
+import imi.scene.shader.ShaderFactory;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -50,6 +52,9 @@ public class Repository extends Entity
     /** The manager OF THE WORLD **/
     private WorldManager m_worldManager = null;
 
+    /** Shader producing entity **/
+    private ShaderFactory m_shaderFactory = null;
+
     /** All our processors **/
     private final ProcessorCollectionComponent m_processorCollection = new ProcessorCollectionComponent();
     
@@ -57,9 +62,13 @@ public class Repository extends Entity
     private long m_numberOfLoadRequests      = 0l;
     private long m_maxConcurrentLoadRequests = 35l;
     private static long m_maxQueryTime  = 2000000000l; // Lengthy timeout for testing purposes
+
     /** Collection of work requests for RepositoryWorkers to process **/
     private final FastList<WorkOrder> m_workOrders = new FastList<WorkOrder>();
-    
+
+    /************************
+     *  Asset Collections   *
+     ************************/
     /** Geometry Collection **/
     private final ConcurrentHashMap<AssetDescriptor, RepositoryAsset> m_Geometry =
             new ConcurrentHashMap<AssetDescriptor, RepositoryAsset>();
@@ -98,6 +107,8 @@ public class Repository extends Entity
         addComponent(ProcessorCollectionComponent.class, m_processorCollection);
         // Load up the default skeletons
         loadSkeletons();
+        // create the shader factory
+        m_shaderFactory = new ShaderFactory(wm);
     }
 
     /**
@@ -138,6 +149,16 @@ public class Repository extends Entity
     public synchronized void addSerializedColladaScene()
     {
 
+    }
+
+    /**
+     * Create a new shader of the specified type.
+     * @param shaderType
+     * @return
+     */
+    public AbstractShaderProgram newShader(Class shaderType)
+    {
+        return m_shaderFactory.newShader(shaderType);
     }
 
     /**

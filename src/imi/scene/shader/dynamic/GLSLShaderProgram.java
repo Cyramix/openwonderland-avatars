@@ -17,6 +17,7 @@
  */
 package imi.scene.shader.dynamic;
 
+import com.jme.scene.lod.VETMesh.VertexAttribute;
 import com.jme.scene.state.GLSLShaderObjectsState;
 import com.jme.scene.state.RenderState;
 import imi.scene.polygonmodel.PPolygonMeshInstance;
@@ -52,6 +53,8 @@ import org.jdesktop.mtgame.WorldManager;
  */
 public class GLSLShaderProgram implements AbstractShaderProgram, RenderUpdater
 {
+    /** logger ref **/
+    private static final Logger logger = Logger.getLogger(GLSLShaderProgram.class.getName());
     /**
      * Convenience reference to the shader newline character
      */
@@ -122,25 +125,7 @@ public class GLSLShaderProgram implements AbstractShaderProgram, RenderUpdater
     {
         setWorldManager(null);
     }
-    
-    /**
-     * Construct a new instance not using default initializers
-     * @param wm The world manager
-     */
-    public GLSLShaderProgram(WorldManager wm)
-    {
-        setWorldManager(wm);
-    }
-    
-    /**
-     * Construct a brand new instance.
-     * @param useDefaultInitializers Use default initializers if true.
-     */
-    public GLSLShaderProgram(boolean useDefaultInitializers)
-    {
-        m_bUseDefaultInitializers = useDefaultInitializers;
-        setWorldManager(null);
-    }
+
     /**
      * Create a new instance
      * @param wm The world manager
@@ -161,11 +146,19 @@ public class GLSLShaderProgram implements AbstractShaderProgram, RenderUpdater
     {
         m_effects.addAll(other.getEffects());
         m_bUseDefaultInitializers = other.isUsingDefaultInitializers();
+        m_bShaderLoaded = other.m_bShaderLoaded;
         m_VertexProgramSource = new StringBuilder(other.m_VertexProgramSource);
         m_FragmentProgramSource = new StringBuilder(other.m_FragmentProgramSource);
         m_WM = other.m_WM;
+
         for (ShaderProperty prop : other.getProperties())
             m_propertyMap.put(prop.name, new ShaderProperty(prop));
+
+        for (GLSLVertexAttribute attr : other.m_vertAttributes)
+            m_vertAttributes.add(attr);
+
+        m_programName = new String(other.m_programName);
+        m_programDescription = new String(other.m_programDescription);
 
     }
     
@@ -177,6 +170,7 @@ public class GLSLShaderProgram implements AbstractShaderProgram, RenderUpdater
      */
     public void compile() throws GLSLCompileException
     {
+        long startTime = System.nanoTime();
         // prepare buffers
         m_initializationBuffer  = new FastSet<GLSLShaderVariable>();
         m_dependencyMap         = new HashMap<GLSLShaderVariable, GLSLShaderEffect>();
@@ -194,6 +188,11 @@ public class GLSLShaderProgram implements AbstractShaderProgram, RenderUpdater
         // free buffers
         m_initializationBuffer = null;
         m_dependencyMap = null;
+
+        long endTime = System.nanoTime();
+        float duration = (endTime - startTime) / 1000000000.0f;
+        logger.info("Compiled shader " + getProgramName() + ". Took " + duration + " seconds.");
+
     }
     
     /**
@@ -1040,6 +1039,12 @@ public class GLSLShaderProgram implements AbstractShaderProgram, RenderUpdater
         else
             result = false;
         
+        return result;
+    }
+
+    public AbstractShaderProgram duplicate()
+    {
+        GLSLShaderProgram result = new GLSLShaderProgram(this);
         return result;
     }
 }

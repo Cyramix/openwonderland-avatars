@@ -78,4 +78,10 @@ public interface AbstractShaderProgram extends Serializable
      * @return The filled out object.
      */
     public xmlShaderProgram generateShaderProgramDOM();
+
+    /**
+     * Return a new instance that represents an exact duplicate of this instance.
+     * @return
+     */
+    public AbstractShaderProgram duplicate();
 }

@@ -106,7 +106,7 @@ public class RobertTest extends DemoBase
         // set up the material to use the skinning shader
         PMeshMaterial pMaterial = new PMeshMaterial("Stucco Skinning", "assets/textures/nskinwh.jpg"); 
         // TODO: Convert to the new system
-        pMaterial.setShader(new VertexDeformer(pscene.getWorldManager()));
+        pMaterial.setShader(repository.newShader(VertexDeformer.class));
         // make sure we have geometry before setting the material
         skinnedMesh.submit(new PPolygonTriMeshAssembler());
         skinnedMesh.setMaterial(pMaterial); // setting the material implicitely "applies" it

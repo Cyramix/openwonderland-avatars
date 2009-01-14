@@ -88,7 +88,7 @@ public class COLLADA_URL extends DemoBase
         SkeletonNode pTheSkeletonNode = loadCharacter(pscene);
 
         //  Assign the specified shader to all SkinnedMeshes.
-        pTheSkeletonNode.setShaderOnSkinnedMeshes(new VertexDeformer(wm));
+        pTheSkeletonNode.setShaderOnSkinnedMeshes(repository.newShader(VertexDeformer.class));
 
         PPolygonModelInstance modelInst = pscene.addModelInstance(pTheSkeletonNode, new PMatrix());
 
@@ -107,7 +107,7 @@ public class COLLADA_URL extends DemoBase
             }
 
             //  Assign the specified shader to all SkinnedMeshes.
-            pSkeletonNode.setShaderOnSkinnedMeshes(new VertexDeformer(wm));
+            pSkeletonNode.setShaderOnSkinnedMeshes(repository.newShader(VertexDeformer.class));
         }
 
         modelInst.getTransform().getLocalMatrix(true).setScale(10.0f);
@@ -127,7 +127,7 @@ public class COLLADA_URL extends DemoBase
             newMaterial.setTexture(new File("assets/models/collada/Avatars/Male/MaleCHeadCLR.png"), 0);
             newMaterial.setTexture(new File("assets/models/collada/Avatars/Male/MaleHeadNRM.png"), 1);
             newMaterial.setTexture(new File("assets/models/collada/Avatars/Male/MaleCHeadSPC.png"), 2);
-            newMaterial.setShader(new VertDeformerWithSpecAndNormalMap(wm));
+            newMaterial.setShader(repository.newShader(VertDeformerWithSpecAndNormalMap.class));
 
             pSkinnedMeshInstance.setMaterial(newMaterial);
             pSkinnedMeshInstance.applyMaterial();
@@ -137,7 +137,7 @@ public class COLLADA_URL extends DemoBase
             newMaterial.setTexture(new File("assets/models/collada/Avatars/Male/MaleCHandsCLR.png"), 0);
             newMaterial.setTexture(new File("assets/models/collada/Avatars/Male/MaleHandNRM.png"), 1);
             newMaterial.setTexture(new File("assets/models/collada/Avatars/Male/MaleCHandsSPC.png"), 2);
-            newMaterial.setShader(new VertDeformerWithSpecAndNormalMap(wm));
+            newMaterial.setShader(repository.newShader(VertDeformerWithSpecAndNormalMap.class));
 
             pSkinnedMeshInstance.setMaterial(newMaterial);
             pSkinnedMeshInstance.applyMaterial();
@@ -147,7 +147,7 @@ public class COLLADA_URL extends DemoBase
             newMaterial.setTexture(new File("assets/models/collada/Avatars/Male/MaleCFeetCLR.png"), 0);
             newMaterial.setTexture(new File("assets/models/collada/Avatars/Male/MaleFeetNRM.png"), 1);
             newMaterial.setTexture(new File("assets/models/collada/Avatars/Male/MaleCFeetSPC.png"), 2);
-            newMaterial.setShader(new VertDeformerWithSpecAndNormalMap(wm));
+            newMaterial.setShader(repository.newShader(VertDeformerWithSpecAndNormalMap.class));
 
             pSkinnedMeshInstance.setMaterial(newMaterial);
             pSkinnedMeshInstance.applyMaterial();
@@ -157,7 +157,7 @@ public class COLLADA_URL extends DemoBase
             newMaterial.setTexture(new File("assets/models/collada/Avatars/Male/MaleCBodyCLRUndies.png"), 0);
             newMaterial.setTexture(new File("assets/models/collada/Avatars/Male/MaleBodyNRM.png"), 1);
             newMaterial.setTexture(new File("assets/models/collada/Avatars/Male/MaleCBodySPC.png"), 2);
-            newMaterial.setShader(new VertDeformerWithSpecAndNormalMap(wm));
+            newMaterial.setShader(repository.newShader(VertDeformerWithSpecAndNormalMap.class));
 
             pSkinnedMeshInstance.setMaterial(newMaterial);
             pSkinnedMeshInstance.applyMaterial();

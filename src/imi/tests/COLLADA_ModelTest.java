@@ -49,6 +49,7 @@ import imi.scene.polygonmodel.PPolygonMeshInstance;
 import imi.scene.polygonmodel.parts.PMeshMaterial;
 import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
 import imi.scene.processors.SkinnedAnimationProcessor;
+import imi.scene.shader.AbstractShaderProgram;
 import imi.scene.shader.programs.SimpleTNLWithAmbient;
 import imi.scene.utils.PMeshUtils;
 import java.io.File;
@@ -115,7 +116,7 @@ public class COLLADA_ModelTest extends DemoBase
 
                 skeleton.addAnimationState(newState);
                 newState.setCurrentCycle(0); // skeleton.getAnimationGroup().getCycleCount() - 1
-                skeleton.setShaderOnSkinnedMeshes(new VertDeformerWithSpecAndNormalMap(fwm));
+                skeleton.setShaderOnSkinnedMeshes(repository.newShader(VertDeformerWithSpecAndNormalMap.class));
                 Instruction maleBind = new Instruction(Instruction.InstructionType.grouping, new String("Loading the male bind pose"));
                 maleBind.addChildInstruction(Instruction.InstructionType.setSkeleton, null);
                 try {
@@ -157,7 +158,7 @@ public class COLLADA_ModelTest extends DemoBase
             }
         });
         //colladaAsset.setUserData(new ColladaLoaderParams(true, true, false, false, 3, "FlipFlops", null));
-        colladaAsset.setUserData(new ColladaLoaderParams(true, true, false, true, false, 3, "Milan", null));
+        colladaAsset.setUserData(new ColladaLoaderParams(true, true, false, false, 3, "Milan", null));
         PPolygonModelInstance modelInst = pscene.addModelInstance("Collada Model", colladaAsset, new PMatrix());
         processors.add(new SkinnedAnimationProcessor(modelInst));
         // create and add a standard cube to see the default lighting
@@ -168,7 +169,7 @@ public class COLLADA_ModelTest extends DemoBase
         PPolygonMeshInstance meshInst = (PPolygonMeshInstance) modelInst2.getChild(0);
         // assign a texture to the mesh instance
         PMeshMaterial material = new PMeshMaterial("cubeTex", "assets/textures/checkerboard.png");
-        GLSLShaderProgram shader = new SimpleTNLWithAmbient(wm, 0.35f);
+        AbstractShaderProgram shader = repository.newShader(SimpleTNLWithAmbient.class);
         material.setShader(shader);
         meshInst.setMaterial(material);
         meshInst.applyMaterial();

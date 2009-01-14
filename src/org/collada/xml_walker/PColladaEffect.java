@@ -41,6 +41,7 @@ import org.collada.colladaschema.ProfileCOMMON;
 import imi.utils.FileUtils;
 
 import imi.loaders.collada.Collada;
+import imi.loaders.repository.Repository;
 import imi.scene.shader.programs.NormalAndSpecularMapShader;
 import imi.scene.shader.programs.NormalMapShader;
 import java.net.MalformedURLException;
@@ -273,11 +274,12 @@ public class PColladaEffect
             }
 
             // Shaders if necessary
+            Repository repo = (Repository) m_pCollada.getPScene().getWorldManager().getUserData(Repository.class);
             if (bNormalMapped && bSpecularMapped)
             {
                 // WORLD MANAGER STRIKES AGAIN!
                 if (m_pCollada != null && m_pCollada.getPScene() != null)
-                    result.setShader(new NormalAndSpecularMapShader(m_pCollada.getPScene().getWorldManager()));
+                    result.setShader(repo.newShader(NormalAndSpecularMapShader.class));
                 else
                     Logger.getLogger(this.getClass().toString()).log(Level.SEVERE, "Unable to retrieve worldmanager, shaders unset. PColladaMaterial.java : 217");
             }
@@ -285,7 +287,7 @@ public class PColladaEffect
             {
                 // WORLD MANAGER STRIKES AGAIN!
                 if (m_pCollada != null && m_pCollada.getPScene() != null) // BEWARE THE HARDCODED NUMBER BELOW!
-                    result.setShader(new NormalMapShader(m_pCollada.getPScene().getWorldManager(), 0.2f));
+                    result.setShader(repo.newShader(NormalMapShader.class));
                 else
                     Logger.getLogger(this.getClass().toString()).log(Level.SEVERE, "Unable to retrieve worldmanager, shaders unset. PColladaMaterial.java : 217");
 

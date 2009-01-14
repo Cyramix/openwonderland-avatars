@@ -107,8 +107,10 @@ import org.jdesktop.mtgame.RenderBuffer;
  */
 public class DemoBase 
 {
-    private WorldManager worldManager       = null;
-    protected CameraNode   cameraNode         = null;
+    protected WorldManager  worldManager    = null;
+    protected Repository    repository      = null;
+    protected CameraNode    cameraNode      = null;
+    
     private int          desiredFrameRate   = 60;
     private int          width              = 800;
     private int          height             = 600;
@@ -136,7 +138,8 @@ public class DemoBase
         Logger.getLogger("com.jme.scene.state.jogl.shader").setLevel(Level.OFF);
         
         // add the repository
-        worldManager.addUserData(Repository.class, new Repository(worldManager));
+        repository = new Repository(worldManager);
+        worldManager.addUserData(Repository.class, repository);
         createUI(worldManager);  
         createTestSpace(worldManager);
         createCameraEntity(worldManager);  

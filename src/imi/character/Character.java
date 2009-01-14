@@ -350,22 +350,27 @@ public abstract class Character extends Entity implements SpatialObject, Animati
      */
     public void setDefaultShaders()
     {
-        AbstractShaderProgram clothingShader = new ClothingShader(m_wm);
+        Repository repo = (Repository)m_wm.getUserData(Repository.class);
+
+        AbstractShaderProgram accessoryShader = repo.newShader(SimpleTNLWithAmbient.class);
+        AbstractShaderProgram eyeballShader = repo.newShader(EyeballShader.class);
+        AbstractShaderProgram clothingShader = repo.newShader(ClothingShader.class);
         try {
             // Most clothes are not defaulting to use a pattern texture
             clothingShader.setProperty(new ShaderProperty("PatternDiffuseMapIndex", GLSLDataType.GLSL_INT, Integer.valueOf(0)));
         } catch (NoSuchPropertyException ex) {
             logger.log(Level.SEVERE, null, ex);
         }
-        AbstractShaderProgram fleshShader = new FleshShader(m_wm);
+        AbstractShaderProgram fleshShader = repo.newShader(FleshShader.class);
         float[] skinColor = { (230.0f/255.0f), (197.0f/255.0f), (190.0f/255.0f) };
         try {
             fleshShader.setProperty(new ShaderProperty("materialColor", GLSLDataType.GLSL_VEC3, skinColor));
         } catch (NoSuchPropertyException ex) {
             Logger.getLogger(Character.class.getName()).log(Level.SEVERE, null, ex);
         }
-        AbstractShaderProgram accessoryShader = new SimpleTNLWithAmbient(m_wm);
-        AbstractShaderProgram eyeballShader = new EyeballShader(m_wm);
+
+
+
         // first the skinned meshes
         Iterable<PPolygonSkinnedMeshInstance> smInstances = m_skeleton.getSkinnedMeshInstances();
         for (PPolygonSkinnedMeshInstance meshInst : smInstances)
@@ -414,15 +419,16 @@ public abstract class Character extends Entity implements SpatialObject, Animati
      */
     private void setDefaultHeadShaders()
     {
-        AbstractShaderProgram fleshShader = new FleshShader(m_wm);
+        Repository repo = (Repository)m_wm.getUserData(Repository.class);
+
+        AbstractShaderProgram eyeballShader = repo.newShader(EyeballShader.class);
+        AbstractShaderProgram fleshShader = repo.newShader(FleshShader.class);
         float[] skinColor = { (230.0f/255.0f), (197.0f/255.0f), (190.0f/255.0f) };
         try {
             fleshShader.setProperty(new ShaderProperty("materialColor", GLSLDataType.GLSL_VEC3, skinColor));
         } catch (NoSuchPropertyException ex) {
             Logger.getLogger(Character.class.getName()).log(Level.SEVERE, null, ex);
         }
-
-        AbstractShaderProgram eyeballShader = new EyeballShader(m_wm);
 
         // first the skinned meshes
         Iterable<PPolygonSkinnedMeshInstance> smInstances = m_skeleton.retrieveSkinnedMeshes("Head");
@@ -1020,8 +1026,14 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         return m_initialized;
     }
 
+    /**
+     * Change out the head (including head skeleton) that the avatar is using.
+     * @param headLocation Where the collada file is located.
+     * @param attachmentJointName The joint to attach on.
+     */
     public void installHead(URL headLocation, String attachmentJointName)
     {
+        // Stop all of our processing.
         m_skeleton.setRenderStop(true);
         m_AnimationProcessor.setEnable(false);
         m_characterProcessor.setEnabled(false);
@@ -1052,11 +1064,16 @@ public abstract class Character extends Entity implements SpatialObject, Animati
                 m_skeleton.addToSubGroup(skinnedMeshInstance, "Head");
             }
         }
+        // Apply the correct shaders to them
         setDefaultHeadShaders();
-        // Relink all of the old meshes
+        // Relink all of the old meshes and apply their materials
         for (PPolygonSkinnedMeshInstance meshInst : m_skeleton.getSkinnedMeshInstances())
+        {
             meshInst.setAndLinkSkeletonNode(m_skeleton);
-        
+            meshInst.applyMaterial();
+        }
+
+        // Re-enable all the processors that affect us.
         m_AnimationProcessor.setEnable(true);
         m_characterProcessor.setEnabled(true);
         m_skeleton.setRenderStop(false);

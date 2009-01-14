@@ -101,6 +101,11 @@ public class EyeballShader extends BaseShaderProgram implements AbstractShaderPr
         this(wm, fAmbientPower, 32.0f);
     }
 
+    protected EyeballShader(EyeballShader other) {
+        super(other);
+    }
+
+
     public EyeballShader(WorldManager wm,
                          float fAmbientPower,
                          float specularExponent)
@@ -159,6 +164,12 @@ public class EyeballShader extends BaseShaderProgram implements AbstractShaderPr
     public xmlShaderProgram generateShaderProgramDOM() {
         xmlShaderProgram result = new xmlShaderProgram();
         result.setDefaultProgramName(EyeballShader.class.getName());
+        return result;
+    }
+
+    @Override
+    public AbstractShaderProgram duplicate() {
+        EyeballShader result = new EyeballShader(this);
         return result;
     }
 }

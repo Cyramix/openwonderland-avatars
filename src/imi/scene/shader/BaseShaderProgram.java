@@ -67,6 +67,20 @@ public abstract class BaseShaderProgram implements RenderUpdater, AbstractShader
         m_shaderSource[1] = fragmentShader;
         
     }
+
+    protected BaseShaderProgram(BaseShaderProgram other)
+    {
+        m_shaderSource[0] = new String(other.m_shaderSource[0]);
+        m_shaderSource[1] = new String(other.m_shaderSource[1]);
+
+        m_WM = other.m_WM;
+        for (ShaderProperty prop : other.getProperties())
+            m_propertyMap.put(prop.name, prop);
+        
+        m_bShaderLoaded = other.m_bShaderLoaded;
+        m_programName = new String(other.m_programName);
+        m_programDescription = new String(other.m_programDescription);
+    }
     
     /**
      * This method should be implemented by subclasses to generate a 

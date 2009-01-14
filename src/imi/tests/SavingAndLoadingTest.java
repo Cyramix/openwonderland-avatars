@@ -20,6 +20,7 @@ package imi.tests;
 import com.jme.math.Vector3f;
 import imi.character.ninja.NinjaAvatar;
 import imi.gui.TreeExplorer;
+import imi.loaders.repository.Repository;
 import imi.scene.camera.state.FirstPersonCamState;
 import imi.scene.polygonmodel.parts.PMeshMaterial;
 import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
@@ -132,7 +133,7 @@ public class SavingAndLoadingTest extends DemoBase
         meshMat.setTexture(new File("/work/avatars/assets/textures/checkerboard2.PNG"), 0); // base diffuse
         meshMat.setTexture(new File("/work/avatars/assets/textures/normal.jpg"), 1); // normal map
         meshMat.setTexture(new File("/work/avatars/assets/textures/tgatest.tga"), 2); // pattern diffuse
-        meshMat.setShader(new ClothingShader(wm));
+        meshMat.setShader((ClothingShader)repository.newShader(ClothingShader.class));
 
         // eyeballs
 //        PMeshMaterial meshMat = new PMeshMaterial("eyeballs!");

@@ -38,7 +38,7 @@ public class ColladaLoaderParams
     /** Print debugging info **/
     private boolean     m_bShowDebugInfo = false;
     /** Check for a serialized version first **/
-    private boolean     m_bUseCache      = true;
+    private boolean     m_bUseCache      = false;
     /** The maximum number of weights allowed by any skinned items **/
     private int         m_nMaxWeights    = -1;
     /** The 'name' **/
@@ -105,7 +105,7 @@ public class ColladaLoaderParams
                                SkeletonNode skeleton)
     {
         this(loadSkeleton, loadGeometry, loadAnimations,
-             true, showDebugInfo, maxInfluencesPerVertex,
+             false, showDebugInfo, maxInfluencesPerVertex,
              name, skeleton);
     }
         

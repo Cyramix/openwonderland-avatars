@@ -38,6 +38,10 @@ public class GLSLVertexAttribute extends GLSLShaderVariable implements Serializa
         m_value = null;
     }
 
+    public GLSLVertexAttribute(GLSLVertexAttribute attr) {
+        super(attr.m_name, attr.m_dataType, attr.m_value);
+    }
+
     /**
      * Return a string in the form "attribute (name) = (value);\n"
      * @return

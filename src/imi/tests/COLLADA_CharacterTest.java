@@ -19,16 +19,16 @@ package imi.tests;
 
 
 import com.jme.math.Vector3f;
+import imi.character.Character;
 import imi.character.ninja.NinjaAvatar;
 import imi.character.ninja.NinjaAvatarAttributes;
-import imi.character.ninja.NinjaFemaleAvatarAttributes;
 import imi.scene.camera.state.FirstPersonCamState;
-import java.net.MalformedURLException;
 import org.jdesktop.mtgame.WorldManager;
 
 
 import imi.scene.processors.JSceneEventProcessor;
 import imi.utils.input.NinjaControlScheme;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -48,6 +48,9 @@ import java.util.logging.Logger;
  */
 public class COLLADA_CharacterTest extends DemoBase
 {
+    /** Logger ref **/
+    private static final Logger logger = Logger.getLogger(COLLADA_CharacterTest.class.getName());
+
     public COLLADA_CharacterTest(String[] args)
     {
         super(args);
@@ -81,5 +84,25 @@ public class COLLADA_CharacterTest extends DemoBase
         FirstPersonCamState camState = (FirstPersonCamState)m_cameraProcessor.getState();
         camState.setMovementRate(0.03f);
         camState.setCameraPosition(new Vector3f(0.0f, 1.8f, -2.0f));
+
+        swapAvatarHead(avatar);;
+    }
+
+    private void swapAvatarHead(Character avatar)
+    {
+        URL newHeadLocation = null;
+        String fileProtocol = "file://localhost/" + System.getProperty("user.dir") + "/";
+        try {
+//            newHeadLocation = new URL(fileProtocol + "assets/models/collada/Heads/CaucasianHead/MaleCHead-NS.dae");
+            newHeadLocation = new URL(fileProtocol + "assets/models/collada/Heads/CaucasianHead/MaleMonkeyHead.dae");
+        }
+        catch (MalformedURLException ex) {
+            logger.severe("Unable to form head URL");
+        }
+
+        if (newHeadLocation != null)
+        {
+            avatar.installHead(newHeadLocation, "Neck");
+        }
     }
 }

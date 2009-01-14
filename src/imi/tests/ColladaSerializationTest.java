@@ -66,7 +66,7 @@ public class ColladaSerializationTest extends DemoBase
 
         PScene sceneForLoading = new PScene(wm);
 
-        ColladaLoaderParams loaderParams = new ColladaLoaderParams(true, true, false, true, false, 4, "ColladaTest", null);
+        ColladaLoaderParams loaderParams = new ColladaLoaderParams(true, true, false, false, 4, "ColladaTest", null);
         Collada colladaLoader = new Collada(loaderParams);
         startTime = System.nanoTime();
         colladaLoader.load(sceneForLoading, colladaFileLocation);

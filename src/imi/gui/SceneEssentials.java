@@ -30,6 +30,7 @@ import imi.character.Character;
 import imi.character.CharacterAttributes;
 import imi.character.CharacterAttributes.SkinnedMeshParams;
 import imi.character.ninja.NinjaAvatar;
+import imi.loaders.repository.Repository;
 import imi.scene.JScene;
 import imi.scene.PMatrix;
 import imi.scene.PNode;
@@ -69,9 +70,6 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -81,10 +79,11 @@ import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileFilter;
-import org.jdesktop.mtgame.WorldManager;
 import org.jdesktop.mtgame.Entity;
 import org.jdesktop.mtgame.ProcessorCollectionComponent;
 import org.jdesktop.mtgame.ProcessorComponent;
+import org.jdesktop.mtgame.WorldManager;
+
 
 /**
  *
@@ -466,7 +465,8 @@ public class SceneEssentials {
                 new AssetInitializer() {                                        // WARNING: problem with not being ready when the model is ready
                     public boolean initialize(Object asset) {
                         if (asset != null && asset instanceof SkeletonNode) {
-                            
+                            // RED - 01/14/09
+                            Repository repo = (Repository)m_worldManager.getUserData(Repository.class);
                             SkeletonNode skeleton = (SkeletonNode)asset;
                             skeleton.getAnimationState().setCurrentCycle(0);
                             skeleton.getAnimationState().setPauseAnimation(false);
@@ -479,7 +479,7 @@ public class SceneEssentials {
                             String szTemp = m_fileTexture.getPath().substring(index, m_fileTexture.getPath().length());
 
                             PMeshMaterial material = new PMeshMaterial(szName + "material", szTemp);
-                            material.setShader(new VertDeformerWithSpecAndNormalMap(m_worldManager));
+                            material.setShader(repo.newShader(VertDeformerWithSpecAndNormalMap.class));
                             // Set the material
                             target.setMaterial(material);
                             target.applyMaterial();
@@ -522,7 +522,8 @@ public class SceneEssentials {
                 new AssetInitializer() {                                        // WARNING: problem with not being ready when the model is ready
                     public boolean initialize(Object asset) {
                         if (asset != null && asset instanceof SkeletonNode) {
-                            
+                            // RED - 01/14/09
+                            Repository repo = (Repository) m_worldManager.getUserData(Repository.class);
                             SkeletonNode skeleton = (SkeletonNode)asset;
                             skeleton.getAnimationState().setCurrentCycle(0);
                             skeleton.getAnimationState().setPauseAnimation(false);
@@ -535,7 +536,7 @@ public class SceneEssentials {
                             String szTemp = m_fileTexture.getPath().substring(index, m_fileTexture.getPath().length());
 
                             PMeshMaterial material = new PMeshMaterial(szName + "material", szTemp);
-                            material.setShader(new VertDeformerWithSpecAndNormalMap(m_worldManager));
+                            material.setShader(repo.newShader(VertDeformerWithSpecAndNormalMap.class));
                             // Set the material
                             target.setMaterial(material);
                             target.applyMaterial();
@@ -581,7 +582,7 @@ public class SceneEssentials {
             try {
                 URL modelURL = new URL(szURL);
                 SharedAsset colladaAsset = new SharedAsset(m_currentPScene.getRepository(), new AssetDescriptor(SharedAssetType.COLLADA_Mesh, modelURL));
-                colladaAsset.setUserData(new ColladaLoaderParams(false, true, false, true, false, 3, m_fileModel.getName(), null));
+                colladaAsset.setUserData(new ColladaLoaderParams(false, true, false, false, 3, m_fileModel.getName(), null));
                 m_modelInst = m_currentPScene.addModelInstance(m_fileModel.getName(), colladaAsset, new PMatrix());
                 //pruneMeshes(m_fileModel.getName(), colladaAsset);
                 return true;
@@ -608,7 +609,7 @@ public class SceneEssentials {
             try {
                 URL modelURL = new URL(szURL);
                 SharedAsset character = new SharedAsset(m_currentPScene.getRepository(), new AssetDescriptor(SharedAssetType.COLLADA_Model, modelURL));
-                character.setUserData(new ColladaLoaderParams(true, true, false, true, false, 4, m_fileModel.getName(), null));
+                character.setUserData(new ColladaLoaderParams(true, true, false, false, 4, m_fileModel.getName(), null));
                 String[] anim = null;
                 loadInitializer(m_fileModel.getName(), character, anim);
                 return true;
@@ -865,7 +866,7 @@ public class SceneEssentials {
         try {
             URL modelURL = new URL(data[3]);
             SharedAsset colladaAsset = new SharedAsset(m_currentPScene.getRepository(), new AssetDescriptor(SharedAssetType.COLLADA_Mesh, modelURL));
-            colladaAsset.setUserData(new ColladaLoaderParams(false, true, false, true, false, 3, data[0], null));
+            colladaAsset.setUserData(new ColladaLoaderParams(false, true, false, false, 3, data[0], null));
             pruneMeshes(data[0], colladaAsset);
         } catch (MalformedURLException ex) {
             Logger.getLogger(SceneEssentials.class.getName()).log(Level.SEVERE, null, ex);
@@ -1105,9 +1106,10 @@ public class SceneEssentials {
                         }
                         pProcessor.execute(pRootInstruction);
                     }
-
-                    m_skeleton.setShaderOnSkinnedMeshes(new VertDeformerWithSpecAndNormalMap(m_worldManager));
-                    m_skeleton.setShaderOnMeshes(new NormalAndSpecularMapShader(m_worldManager));
+                    // RED - 01/14/09
+                    Repository repo = (Repository)m_worldManager.getUserData(Repository.class);
+                    m_skeleton.setShaderOnSkinnedMeshes(repo.newShader(VertDeformerWithSpecAndNormalMap.class));
+                    m_skeleton.setShaderOnMeshes(repo.newShader(NormalAndSpecularMapShader.class));
                     ((ProcessorCollectionComponent)m_currentEntity.getComponent(ProcessorCollectionComponent.class)).addProcessor(new SkinnedAnimationProcessor(skel));
                     m_currentPScene.setDirty(true, true);
                     setCameraOnModel();
@@ -1242,7 +1244,7 @@ public class SceneEssentials {
 
         if (clear) {
             SharedAsset character = new SharedAsset(m_currentPScene.getRepository(), new AssetDescriptor(SharedAssetType.COLLADA_Model, bindPose));
-            character.setUserData(new ColladaLoaderParams(true, true, false, true, false, 4, name, null));
+            character.setUserData(new ColladaLoaderParams(true, true, false, false, 4, name, null));
             loadInitializer(name, character, anim);
         } else {
             //addDAEMeshURLToModel(data, meshRef, region);
