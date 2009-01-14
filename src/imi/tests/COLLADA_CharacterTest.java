@@ -96,20 +96,20 @@ public class COLLADA_CharacterTest extends DemoBase
         try {
             // Set the avatars head
 //            headLocation = new URL("file://localhost/work/avatars/assets/models/collada/Avatars/Female/Female_Bind.dae");
-//            headLocation = new URL("file://localhost/work/avatars/assets/models/collada/Heads/MaleAfricanHead/MaleAAHead.dae");
+            headLocation = new URL("file://localhost/work/IMI/sunSVN/assets/models/collada/Heads/MaleAfricanHead/MaleAAHead.dae");
 //            headLocation = new URL("file://localhost/work/avatars/assets/models/collada/Heads/FemaleCaucasian/FemaleCHead.dae");
 //            headLocation = new URL("file://localhost/work/avatars/assets/models/collada/Heads/FemaleKlingon/FemaleKlingonHead.dae");
 //            headLocation = new URL("file://localhost/work/avatars/assets/models/collada/Heads/MaleAsianHead/asiaHeadTwo.dae");
 //            headLocation = new URL("file://localhost/work/avatars/assets/models/collada/Heads/fourthHeadDIFb/fourthHeadDIFb.dae");
 //            headLocation = new URL("file://localhost/work/avatars/assets/models/collada/Heads/CaucasianHead/MaleMonkeyHead.dae");
-            headLocation = new URL("file://localhost/work/avatars/assets/models/collada/Heads/CaucasianHead/MaleCHead.dae");
+//            headLocation = new URL("file://localhost/work/avatars/assets/models/collada/Heads/CaucasianHead/MaleCHead.dae");
         } catch (MalformedURLException ex) {
             Logger.getLogger(COLLADA_CharacterTest.class.getName()).log(Level.SEVERE, null, ex);
         }
 //
 ////        avatar.HACKMETHODPLEASEREMOVEME("rightEyeGeoShape");
 //        avatar.HACKMETHODPLEASEREMOVEME("Legs_LegsNudeShape");
-//        avatar.installHead(headLocation);
+        avatar.installHead(headLocation, "Neck");
 
 //        int rightEyeIndex = avatar.getSkeleton().getSkinnedMeshJointIndex("rightEye");
 //        int leftEyeIndex = avatar.getSkeleton().getSkinnedMeshJointIndex("leftEye");

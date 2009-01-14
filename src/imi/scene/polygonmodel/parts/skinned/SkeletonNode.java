@@ -148,7 +148,7 @@ public class SkeletonNode extends PNode implements Animated, Serializable
     }
 
 
-    @Override
+    
     public AnimationComponent getAnimationComponent()
     {
         return m_animationComponent;
@@ -559,26 +559,22 @@ public class SkeletonNode extends PNode implements Animated, Serializable
         }
      }
 
-    @Override
     public AnimationState getAnimationState()
     {
         return getAnimationState(0);
     }
 
-    @Override
     public PJoint getJoint(String jointName)
     {
         return getSkinnedMeshJoint(jointName);
     }
-    
-    @Override
+
     public int addAnimationState(AnimationState newState)
     {
         m_animationStates.add(newState);
         return m_animationStates.size() - 1;
     }
 
-    @Override
     public AnimationState getAnimationState(int index)
     {
         if (index < 0 || index >= m_animationStates.size())
@@ -603,7 +599,6 @@ public class SkeletonNode extends PNode implements Animated, Serializable
      * Retrieve an animation group
      * @return AnimationGroup at index i 
      */
-    @Override
     public AnimationGroup getAnimationGroup(int index)
     {
         try {
