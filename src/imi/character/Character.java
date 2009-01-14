@@ -29,17 +29,17 @@ import com.jme.scene.state.MaterialState.ColorMaterial;
 import com.jme.scene.state.RenderState;
 import com.jme.scene.state.WireframeState;
 import com.jme.scene.state.ZBufferState;
+import imi.character.networking.DarkstarClient;
 import imi.character.objects.ObjectCollection;
 import imi.character.objects.SpatialObject;
 import imi.character.statemachine.GameContext;
 import imi.character.statemachine.TransitionObject;
+import imi.character.statemachine.Updatable;
 import imi.loaders.Instruction;
 import imi.loaders.Instruction.InstructionType;
 import imi.loaders.InstructionProcessor;
-import imi.loaders.PPolygonTriMeshAssembler;
 import imi.loaders.collada.Collada;
 import imi.loaders.repository.AssetDescriptor;
-import imi.loaders.repository.Repository;
 import imi.loaders.repository.SharedAsset;
 import imi.loaders.repository.SharedAsset.SharedAssetType;
 import imi.loaders.repository.SharedAssetPlaceHolder;
@@ -78,7 +78,6 @@ import imi.scene.shader.programs.EyeballShader;
 import imi.scene.shader.programs.FleshShader;
 import imi.scene.shader.programs.SimpleTNLWithAmbient;
 import imi.scene.utils.PMeshUtils;
-import imi.scene.utils.tree.NodeProcessor;
 import imi.scene.utils.tree.SerializationHelper;
 import imi.scene.utils.tree.TreeTraverser;
 import imi.serialization.xml.bindings.xmlCharacter;
@@ -86,7 +85,6 @@ import imi.serialization.xml.bindings.xmlCharacterAttributes;
 import imi.serialization.xml.bindings.xmlJointModification;
 import imi.serialization.xml.bindings.xmlMaterial;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
@@ -98,7 +96,6 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.jar.JarFile;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.xml.bind.JAXBContext;
@@ -111,7 +108,6 @@ import org.jdesktop.mtgame.ProcessorCollectionComponent;
 import org.jdesktop.mtgame.ProcessorComponent;
 import org.jdesktop.mtgame.RenderComponent;
 import org.jdesktop.mtgame.WorldManager;
-import org.jdesktop.wonderland.common.comms.WonderlandObjectInputStream;
 
 
 
@@ -150,6 +146,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
     protected VerletArm                     m_leftArm               = null;
     private VerletSkeletonFlatteningManipulator m_skeletonManipulator   = null;
     private boolean                             m_initialized           = false;
+    private Updatable                       m_updateExtension       = null;
     
     private int                             m_defaultFacePose       = 4;
     private float                           m_defaultFacePoseTiming = 0.1f;
@@ -747,8 +744,11 @@ public abstract class Character extends Entity implements SpatialObject, Animati
             m_rightArm.update(deltaTime);
         if (m_leftArm != null)
             m_leftArm.update(deltaTime);
+        
+        if (m_updateExtension != null)
+            m_updateExtension.update(deltaTime);
     }
-
+    
     /**
      * Sets the mesh and skeleton references after load time
      */
@@ -980,7 +980,8 @@ public abstract class Character extends Entity implements SpatialObject, Animati
     
     public void receiveAnimationMessage(AnimationMessageType message, int stateID)
     {
-        m_context.notifyAnimationMessage(message, stateID);
+        if (m_context != null)
+            m_context.notifyAnimationMessage(message, stateID);
     }
 
     public TransitionQueue getFacialAnimationQ() 
@@ -1417,6 +1418,22 @@ public abstract class Character extends Entity implements SpatialObject, Animati
      */
     public void setDefaultFacePoseTiming(float defaultFacePoseTiming) {
         this.m_defaultFacePoseTiming = defaultFacePoseTiming;
+    }
+
+    /**
+     * Get the update extension object (not used by default)
+     * @return
+     */
+    public Updatable getUpdateExtension() {
+        return m_updateExtension;
+    }
+
+    /**
+     * Set an updatable object to extened functionality
+     * @param updateExtension
+     */
+    public void setUpdateExtension(Updatable updateExtension) {
+        this.m_updateExtension = updateExtension;
     }
 
     public void die() {
