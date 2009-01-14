@@ -17,6 +17,9 @@
  */
 package imi.gui;
 
+////////////////////////////////////////////////////////////////////////////////
+// IMPORTS
+////////////////////////////////////////////////////////////////////////////////
 import com.jme.math.Vector3f;
 import imi.loaders.collada.ColladaLoaderParams;
 import imi.loaders.Instruction;
@@ -87,91 +90,109 @@ import org.jdesktop.mtgame.WorldManager;
 
 /**
  *
- * @author ptruong
+ * @author Paul Viet Nguyen Truong (ptruong)
  */
 public class SceneEssentials {
-    // Scene information
-        private JScene                          m_currentJScene                 = null;
-        private PScene                          m_currentPScene                 = null;
-        private Entity                          m_currentEntity                 = null;
-        private WorldManager                    m_worldManager                  = null;
-        private ArrayList<ProcessorComponent>   m_currentHiProcessors           = null;
-    // File IO
-        private JFileChooser                    m_jFileChooser_LoadAssets       = null;
-        private JFileChooser                    m_jFileChooser_LoadColladaModel = null;
-        private JFileChooser                    m_jFileChooser_LoadModel        = null;
-        private JFileChooser                    m_jFileChooser_LoadXML          = null;
-        private JFileChooser                    m_jFileChooser_LoadAvatarDAE    = null;
-        private JFileChooser                    m_jFileChooser_SaveXML          = null;
-        private JFileChooser                    m_jFileChooser_LoadAnim         = null;
-        private ServerBrowserDialog             m_serverFileChooserD            = null;
-        private JPanel_ServerBrowser            m_serverBrowserPanel            = null;
-        private File                            m_fileXML                       = null;
-        private File                            m_fileModel                     = null;
-        private File                            m_fileTexture                   = null;
-    // Camera information
-        private Vector3f                        m_camPos                        = new Vector3f(0.0f, 1.5f, -3.2f);
-        private FlexibleCameraProcessor         m_curCameraProcessor            = null;
-    // Model information
-        private String                          m_modelName                     = null;
-        private PPolygonModelInstance           m_modelInst                     = null;
-        private SkeletonNode                    m_skeleton                      = null;
-        private Character                       m_avatar                        = null;
-        private int                             m_gender                        = -1;
-        private float                           m_visualScale                   = 1.0f;
-        private PMatrix                         m_origin                        = new PMatrix();
-    // Misc
-        private SQLInterface                    m_sql;
-        private boolean                         m_bdefaultload                  = false;
-        private URL                             m_poloShirt;
-        private URL                             m_jeansPants;
-        private URL                             m_tennisShoes;
-        static final int                        m_buffer                        = 2048;
-        private File                            m_zipFileLoc                    = null;
-     // Enumerations
+////////////////////////////////////////////////////////////////////////////////
+// CLASS DATA MEMBERS
+////////////////////////////////////////////////////////////////////////////////
+// Scene information
+    private JScene                          m_currentJScene                 = null;
+    private PScene                          m_currentPScene                 = null;
+    private Entity                          m_currentEntity                 = null;
+    private WorldManager                    m_worldManager                  = null;
+    private ArrayList<ProcessorComponent>   m_currentHiProcessors           = null;
+// File IO
+    private JFileChooser                    m_jFileChooser_LoadAssets       = null;
+    private JFileChooser                    m_jFileChooser_LoadColladaModel = null;
+    private JFileChooser                    m_jFileChooser_LoadModel        = null;
+    private JFileChooser                    m_jFileChooser_LoadXML          = null;
+    private JFileChooser                    m_jFileChooser_LoadAvatarDAE    = null;
+    private JFileChooser                    m_jFileChooser_SaveXML          = null;
+    private JFileChooser                    m_jFileChooser_LoadAnim         = null;
+    private ServerBrowserDialog             m_serverFileChooserD            = null;
+    private JPanel_ServerBrowser            m_serverBrowserPanel            = null;
+    private File                            m_fileXML                       = null;
+    private File                            m_fileModel                     = null;
+    private File                            m_fileTexture                   = null;
+// Camera information
+    private Vector3f                        m_camPos                        = new Vector3f(0.0f, 1.5f, -3.2f);
+    private FlexibleCameraProcessor         m_curCameraProcessor            = null;
+// Model information
+    private String                          m_modelName                     = null;
+    private PPolygonModelInstance           m_modelInst                     = null;
+    private SkeletonNode                    m_skeleton                      = null;
+    private Character                       m_avatar                        = null;
+    private int                             m_gender                        = -1;
+    private float                           m_visualScale                   = 1.0f;
+    private PMatrix                         m_origin                        = new PMatrix();
+// Misc
+    private SQLInterface                    m_sql;
+    private boolean                         m_bdefaultload                  = false;
+    static final int                        m_buffer                        = 2048;
+    private File                            m_zipFileLoc                    = null;
+ // Enumerations
+    public String[] m_regions = new String[] { "Head", "Hands", "UpperBody", "LowerBody", "Feet", "Hair", "FacialHair", "Hats", "Glasses", "Jackets" };
 
-        public String[] m_regions = new String[] { "Head", "Hands", "UpperBody", "LowerBody", "Feet", "Hair", "FacialHair", "Hats", "Glasses", "Jackets" };
-
+////////////////////////////////////////////////////////////////////////////////
+// CLASS METHODS
+////////////////////////////////////////////////////////////////////////////////
     public SceneEssentials() {
         initFileChooser();
-
-        try {
-            m_poloShirt   = new URL("http://www.zeitgeistgames.com/assets/collada/Clothing/Shirts/PoloShirt_M/MalePolo.dae");
-            m_jeansPants  = new URL("http://www.zeitgeistgames.com/assets/collada/Clothing/Pants/Jeans_M/Jeans.dae");
-            m_tennisShoes = new URL("http://www.zeitgeistgames.com/assets/collada/Clothing/Shoes/TennisShoes_M/MaleTennisShoes.dae");
-        } catch (MalformedURLException ex) {
-            Logger.getLogger(SceneEssentials.class.getName()).log(Level.SEVERE, null, ex);
-        }
     }    
     
     // Accessors
     public JScene getJScene() { return m_currentJScene; }
+
     public PScene getPScene() { return m_currentPScene; }
+
     public Entity getEntity() { return m_currentEntity; }
+
     public WorldManager getWM() { return m_worldManager; }
+
     public ArrayList<ProcessorComponent> getProcessors() { return m_currentHiProcessors; }
+
     public File getFileXML() { return m_fileXML; }
+
     public File getFileModel() { return m_fileModel; }
+
     public File getFileTexture() { return m_fileTexture; }
+
     public PPolygonModelInstance getModelInstance() { return m_modelInst; }
+
     public SkeletonNode getCurrentSkeleton() { return m_skeleton; }
+
     public FlexibleCameraProcessor getCurCamProcessor() { return m_curCameraProcessor; }
+
     public boolean isDefaultLoad() { return m_bdefaultload; }
+
     public Character getAvatar() { return m_avatar; }
+
     public int getGender() { return m_gender; }
 
     // Mutators
     public void setJScene(JScene jscene) { m_currentJScene = jscene; }
+
     public void setPScene(PScene pscene) { m_currentPScene = pscene; }
+
     public void setEntity(Entity entity) { m_currentEntity = entity; }
+
     public void setWM(WorldManager wm) { m_worldManager = wm; }
+
     public void setProcessors(ArrayList<ProcessorComponent> processors) { m_currentHiProcessors = processors; }
+
     public void setfileXML(File file) { m_fileXML = file; }
+
     public void setfileModel(File file) { m_fileModel = file; }
+
     public void setfileTexture(File file) { m_fileTexture = file; }
+
     public void setModelInstance(PPolygonModelInstance modinstance) { m_modelInst = modinstance; }
+
     public void setModelName(String name) { m_modelName = name; }
+
     public void setCurrentSkeleton(SkeletonNode s) { m_skeleton = s; }
+
     public void searchnSetSkeleton(PScene p) {
         if (p.getInstances() == null || p.getInstances().getChild(0) == null) {
             m_skeleton = null;
@@ -181,11 +202,26 @@ public class SceneEssentials {
         m_skeleton = ((SkeletonNode)p.getInstances().getChild(0).getChild(0));
     }
     public void setCurCamProcessor(FlexibleCameraProcessor camProc) { m_curCameraProcessor = camProc; }
+
     public void setDefaultLoad(boolean load) { m_bdefaultload = load; }
+
     public void setAvatar(Character c) { m_avatar = c; }
+
     public void setGender(int sex) { m_gender = sex; }
 
-    // Helper Functions
+////////////////////////////////////////////////////////////////////////////////
+// HELPER FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////
+    /**
+     * Initializer for the scene essentials class.  Null safe s0 it won't crash
+     * if you decide you don't need something, but if you choose to do so some
+     * functions and classes that use a scene essential class may not work.
+     * @param jscene
+     * @param pscene
+     * @param entity
+     * @param wm
+     * @param processors
+     */
     public void setSceneData(JScene jscene, PScene pscene, Entity entity, WorldManager wm, ArrayList<ProcessorComponent> processors) {
         m_currentJScene = jscene;
         
@@ -204,7 +240,9 @@ public class SceneEssentials {
             m_currentHiProcessors = processors;
     }
     
-    // Initializes the JFileChooser GUI
+    /**
+     * Initializes the JFileChoosers that the scene essentials uses for file I/O
+     */
     public void initFileChooser() {
         FileFilter assetFilter = new FileFilter() {
             @Override
@@ -417,7 +455,13 @@ public class SceneEssentials {
         m_jFileChooser_LoadAnim.setDragEnabled(true);
         m_jFileChooser_LoadAnim.addChoosableFileFilter((FileFilter)animFilter);
     }
-    
+
+    /**
+     * Launches a custom browser window that lists and organizes the differnt
+     * files listed on the mySQL server
+     * @param c - The parent frame of the this window
+     */
+    @Deprecated
     public void openServerBrowser(JFrame c) {
         m_serverFileChooserD = new ServerBrowserDialog(c, true);
         m_serverFileChooserD.initBrowser(0);
@@ -425,6 +469,12 @@ public class SceneEssentials {
         m_serverFileChooserD.setVisible(true);
     }
 
+    /**
+     * Launces a custom panel that lists and organizes the differnt files listed
+     * on the mySQL server
+     * @return JPanel_ServerBrowser - custom panel
+     */
+    @Deprecated
     public JPanel_ServerBrowser openServerBrowserPanel() {
         m_serverBrowserPanel = new JPanel_ServerBrowser();
         m_serverBrowserPanel.initBrowser(0);
@@ -437,6 +487,7 @@ public class SceneEssentials {
      * Removes old model data from the pscene and replaces it with the user 
      * selected milkshake data
      */
+    @Deprecated
     public void loadMS3DFile(int condition, boolean clear, Component arg0) {
         // 1- Create a shared asset for the repository
         SharedAsset newAsset = new SharedAsset(
@@ -567,6 +618,14 @@ public class SceneEssentials {
     ////////////////////////////////////////////////////////////////////////////
     // LOAD FROM USER HD - Collada
     ////////////////////////////////////////////////////////////////////////////
+    /**
+     * Opens a JFileChooser window for the user to select a collada file (*.dae)
+     * of a non-skinned model and then subsequently creates a shared asset to
+     * to load the model for viewing.
+     * @param useRepository - boolean true to use repository
+     * @param arg0 - parent component that called this function
+     * @return true if succcessful
+     */
     public boolean loadMeshDAEFile(boolean useRepository, Component arg0) {
         int returnValue = m_jFileChooser_LoadColladaModel.showOpenDialog(arg0);
         if (returnValue == JFileChooser.APPROVE_OPTION) {
@@ -593,7 +652,15 @@ public class SceneEssentials {
         }
         return false;
     }
-    
+
+    /**
+     * Opens a JFileChooser window for the user to select a collada file (*.dae)
+     * of a skinned model and then subsequently creates a shared asset to
+     * to load the model for viewing.
+     * @param useRepository - boolean true to use repository
+     * @param arg0 - parent component that called this function
+     * @return true if succcessful
+     */
     public boolean loadSMeshDAEFile(boolean useRepository, Component arg0) {
         int returnValue = m_jFileChooser_LoadColladaModel.showOpenDialog(arg0);
         if (returnValue == JFileChooser.APPROVE_OPTION) {
@@ -620,12 +687,29 @@ public class SceneEssentials {
         }
         return false;
     }
-    
-    // TODO load head for viewing w/o the install head function using processors
+
+    /**
+     * Opens a JFileChooser window for the user to select a collada file (*.dae)
+     * of a avatar head (skinned model) and then subsequently creates a shared asset
+     * to load the model for viewing.
+     * @param useRepository - boolean true to use repository
+     * @param arg0 - parent component that called this function
+     * @return true if succcessful
+     */
+    // TODO: load head for viewing w/o the install head function using processors
     public boolean loadAvatarHeadDAEFile(boolean useRepository, Component arg0) {
         return false;
     }
 
+    /**
+     * Opens a JFileChooser window for the user to select a collada file (*.dae)
+     * of an avatar (skinned model) and then subsequently loads the avatar for
+     * viewing by creating a new characer class object and default attributes
+     * @param clear - boolean true to clear the pscene of all children
+     * @param useRepository - boolean true to use the repository
+     * @param arg0 - parent component that called this function
+     * @return true if successful
+     */
     public boolean loadAvatarDAEFile(boolean clear, boolean useRepository, Component arg0) {
         int returnValue = m_jFileChooser_LoadAvatarDAE.showOpenDialog(arg0);
         if (returnValue == JFileChooser.APPROVE_OPTION) {
@@ -670,6 +754,14 @@ public class SceneEssentials {
         return false;
     }
 
+    /**
+     * Opens a JFileChooser window for the user to select a collada file (*.dae)
+     * of an avatar head (skinned model) and then subsequently uses a load instruction
+     * to remove the current avatar's head and swap it with the selected head.
+     * @param useRepository - boolean true to use the repository
+     * @param arg0 - parent component that called this function
+     * @return true if successful
+     */
     public boolean addAvatarHeadDAEFile(boolean useRepository, Component arg0) {
         if (m_avatar == null) {
             System.out.println("You have not loaded an avatar yet... Please load one first");
@@ -699,6 +791,15 @@ public class SceneEssentials {
         return false;
     }
 
+    /**
+     * Opens a JFileChooser window for the user to select a collada file (*.dae)
+     * of an clothing (skinned model) and then subsequently uses a load instruction
+     * to remove the current clothes at the specified subgroup and loads the new
+     * clothes into that subgroup
+     * @param useRepository - boolean true to use the repository
+     * @param arg0 - parent component that called this function
+     * @return true if successful
+     */
     public boolean addSMeshDAEFile(boolean useRepository, Component arg0) {
         if (m_avatar == null) {
             System.out.println("You have not loaded an avatar yet... Please load one first");
@@ -748,7 +849,16 @@ public class SceneEssentials {
         }
         return false;
     }
-    
+
+    /**
+     * Opens a JFileChooser window for the user to select a collada file (*.dae)
+     * that contains animation data and then subsequently uses a load instruction
+     * to add the animation to either a body animation group or facial animation
+     * group.  The group depends on type specified on load (gui controled)
+     * @param type - 1 for body animation and 2 for facial animation (set by gui)
+     * @param useRepository - boolean true to use the repository
+     * @param arg0 - parent component that called this function
+     */
     public void loadDAEAnimationFile(int type, boolean useRepository, Component arg0) {
         if (m_avatar == null) {   // check to make sure you have a skinned meshed model loaded before adding animations
             System.out.println("Please have an avatar loaded before you continue loading animations");
@@ -801,6 +911,13 @@ public class SceneEssentials {
         }
     }
 
+    /**
+     * Sets up default attributes based on the current avatar standard being used.
+     * This will be obsolete if the avatar standards change.
+     * @param iGender - 1 for male and 2 for female
+     * @param szAvatarModelFile - the collada file containing the animations
+     * @return CharacterAttributes
+     */
     public CharacterAttributes createDefaultAttributes(int iGender, String szAvatarModelFile) {
 
         // Create avatar attribs
@@ -857,6 +974,15 @@ public class SceneEssentials {
     ////////////////////////////////////////////////////////////////////////////
     // LOAD FROM SERVER
     ////////////////////////////////////////////////////////////////////////////
+    /**
+     * Loads specified collada file (*.dae) which contains information of a
+     * non-skinned mesh for viewing by creating a shared asset and loading
+     * parmaters. Clears the scene before loading
+     * @param useRepository - boolean true to use repository
+     * @param arg0 - parent component that called the function
+     * @param data - string array containing information about the model
+     *        { 0= meshname, 1= description, 2= male/female, 3= file location, 4= meshtype, 5= table id }
+     */
     public void loadMeshDAEURL(boolean useRepository, Component arg0, String[] data) {
         m_currentPScene.setUseRepository(useRepository);
         m_currentPScene.getInstances().removeAllChildren();
@@ -873,6 +999,16 @@ public class SceneEssentials {
         }
     }
 
+    /**
+     * Loads specified collada file (*.dae) which contains information of a
+     * skinned mesh for viewing by creating a shared asset and loading
+     * parmaters.  Clears the scene before loading
+     * @param useRepository - boolean true to use repository
+     * @param arg0 - parent component that called the function
+     * @param data - string array containing information about the model
+     *        { 0= meshname, 1= description, 2= male/female, 3= file location, 4= meshtype, 5= table id }
+     * @param meshRef - name of meshes contained in the collada file
+     */
     public void loadSMeshDAEURL(boolean useRepository, Component arg0, String[] data, String[] meshRef) {
         m_currentPScene.setUseRepository(useRepository);
         m_currentPScene.getInstances().removeAllChildren();
@@ -890,6 +1026,16 @@ public class SceneEssentials {
         }
     }
 
+    /**
+     * Loads specified collada file (*.dae) which contains information on an avatar
+     * for viewing by creating a new character object and attributes.  If no
+     * attributes is specified (ie null) default attributes are used.  Clears the
+     * scene of all children before loading
+     * @param useRepository - boolean true to use repository
+     * @param arg0 - parent component that called the function
+     * @param attributes - characterattributes for the avatar containing load paramaters
+     * @param gender - 1= male 2= female; specifies which defaults to load.
+     */
     public void loadAvatarDAEURL(boolean useRepository, Component arg0, CharacterAttributes attributes, int gender) {
         m_currentPScene.setUseRepository(useRepository);
         m_currentPScene.getInstances().removeAllChildren();
@@ -920,10 +1066,30 @@ public class SceneEssentials {
         m_currentPScene = m_avatar.getPScene();
     }
 
+    /**
+     * Loads specified collada file (*.dae) that contains information on an avatar
+     * head for viewing by creating an asseet and loading paramaters.  Clears out
+     * the scene's children before loading.
+     * @param useRepository - boolean true to use repository
+     * @param arg0 - parent component that called the function
+     * @param data - string array containing information about the model
+     *        { 0= meshname, 1= description, 2= male/female, 3= file location, 4= meshtype, 5= table id }
+     * @param meshRef - name of meshes contained in the collada file
+     */
+    // TODO: write the functionality
     public void loadAvatarHeadDAEURL(boolean useRepository, Component arg0, String[] data, String[] meshRef) {
 
     }
 
+    /**
+     * Removes the current head installed on the avatar and swaps it out with the
+     * selected head model collada file (*.dae).  Method will return out if there
+     * is no avatar loaded in the current scene.
+     * @param useRepository - boolean true to use the repository
+     * @param arg0 - component parent containing information about the model
+     * @param data - string array containing information about the model
+     *        { 0= meshname, 1= description, 2= male/female, 3= file location, 4= meshtype, 5= table id }
+     */
     public void addAvatarHeadDAEURL(boolean useRepository, Component arg0, String[] data) {
         if (m_avatar == null) {
             System.out.println("You have not loaded an avatar yet... Please load one first");
@@ -938,6 +1104,13 @@ public class SceneEssentials {
         }
     }
 
+    /**
+     * Removes the meshes loaded in the specified subgroup and loads the new collada
+     * file (*.dae) mesh data into that subgroup.  Method will return out if there
+     * is no avatar loaded in the current scene.
+     * @param mesh - URL location of the file containing mesh data
+     * @param subgroup - the selected subgroup to load the mesh into
+     */
     public void addSMeshDAEURLToModel(URL mesh, String subgroup) {
         if (m_avatar == null) {
             System.out.println("No avatar has been loaded... please load an avatar first");
@@ -959,7 +1132,15 @@ public class SceneEssentials {
         m_avatar.setDefaultShaders();
     }
 
-    public void addMeshDAEURLToModel(String[] data, String joint2addon, int region) {
+    /**
+     * Removes the previous non-skinned mesh (if one was present) and replaces
+     * it with the new mesh(s) specified in the chosen collada file (*.dae).
+     * A joint is created and used to attach the mesh onto the model.
+     * @param data - string array containg information about the model
+     * @param joint2addon - the joint to the new mesh and joint needs to attach on
+     * @param prevAttchName - the name of the currently installed mesh to get rid of
+     */
+    public void addMeshDAEURLToModel(String[] data, String joint2addon, String prevAttchName) {
         if (m_avatar == null) {
             System.out.println("No avatar has been loaded... please load an avatar first");
             return;
@@ -969,48 +1150,10 @@ public class SceneEssentials {
         Instruction pRootInstruction = new Instruction();
         pRootInstruction.addChildInstruction(InstructionType.setSkeleton, m_avatar.getSkeleton());
 
-        String subgroup = null;
-        switch (region) {
-            case 5:
-            {
-                subgroup = "Hair";
-                break;
-            }
-            case 6:
-            {
-                subgroup = "FacialHair";
-                break;
-            }
-            case 7:
-            {
-                subgroup = "Hats";
-                break;
-            }
-            case 8:
-            {
-                subgroup = "Glasses";
-                break;
-            }
+        if (prevAttchName != null) {
+            PNode mesh = m_avatar.getSkeleton().findChild(prevAttchName);
+            m_avatar.getSkeleton().findAndRemoveChild(mesh.getParent());
         }
-
-        String[] meshes = m_avatar.getSkeleton().getMeshNamesBySubGroup(subgroup);
-        for (int i = 0; i < meshes.length; i++)
-            pRootInstruction.addChildInstruction(InstructionType.deleteSkinnedMesh, meshes[i]);
-
-//        if (joint2addon.equals("skeletonRoot")) {
-//            PNode node = null;
-//            SkinnedMeshJoint rootJoint = null;
-//
-//            node = currentPScene.getInstances().findChild("testJoint");
-//
-//            if (node == null) {
-//                rootJoint = new SkinnedMeshJoint("testJoint", new PTransform());
-//                node = currentPScene.getInstances().getChild(0).getChild(0);
-//                node.addChild(rootJoint);
-//            }
-//
-//            joint2addon = "testJoint";
-//        }
 
         String szName = joint2addon;
 
@@ -1023,10 +1166,18 @@ public class SceneEssentials {
         } else
             tempSolution = new PMatrix(new Vector3f(0.0f,(float) Math.toRadians(180), 0.0f), new Vector3f(1.0f, 1.0f, 1.0f), Vector3f.ZERO);
 
-        pRootInstruction.addAttachmentInstruction( data[0], szName, tempSolution);
+        pRootInstruction.addAttachmentInstruction( data[0], szName, tempSolution );
         pProcessor.execute(pRootInstruction);
     }
 
+    /**
+     * Removes meshes from a file that was not meant to be loaded.  Some collada
+     * files (*.dae) contain multiple mesh information (ie hair and accessories)
+     * and when loaded will load all meshes; this method removes the meshes that
+     * are not needed to be loaded.
+     * @param meshname - the mesh we want to load
+     * @param s - the shared asset used to load the model(s)
+     */
     public void pruneMeshes(final String meshname, SharedAsset s) {
         AssetInitializer init = new AssetInitializer() {
 
@@ -1069,6 +1220,14 @@ public class SceneEssentials {
         }
     }
 
+    /**
+     * Initializer used to load asset attributes post mesh loading.  Instruction
+     * processors can not run until after the model has been loaded, so all post
+     * processing is done after the model is initialized.
+     * @param n - name of the model
+     * @param s - shared asset used to load the model
+     * @param a - string array of animations to load
+     */
     public void loadInitializer(String n, SharedAsset s, final String[] a) {
         AssetInitializer init = new AssetInitializer() {
 
@@ -1125,11 +1284,24 @@ public class SceneEssentials {
             m_modelInst.getTransform().setLocalMatrix(m_origin);
         }
     }
-    
+
+    /**
+     * Adds selected facial or body animations from the server into the the
+     * animation subgroups of the avatar.
+     * @param useRepository - boolean true to use repository
+     * @param arg0 - parent component that called this function
+     */
+    // TODO: add in sql table for this to work...
     public void loadDAEAnimationURL(boolean useRepository, Component arg0) {
-        // TODO: add in sql table for this to work...
+        
     }
 
+    /**
+     * Downloads a zipped file to the current user directory and uncompresses the
+     * file.
+     * @param link - String representation of the file location to download
+     * @param destination - destination to save the file to
+     */
     public void downloadZipStream(String link, File destination) {
         int a, b;
         String fold;
@@ -1181,6 +1353,13 @@ public class SceneEssentials {
         }
     }
 
+    /**
+     * Opens  up a file stream to a specified file and downloads it to the
+     * specified location.  Called by the ZipStream function to retrieve the file
+     * so it can be unpacked.
+     * @param address - location of the file to download
+     * @param destinationFile - location to save the file.
+     */
     public void downloadURLFile(String address, File destinationFile) {
         OutputStream out = null;
         URLConnection conn = null;
@@ -1218,6 +1397,16 @@ public class SceneEssentials {
     ////////////////////////////////////////////////////////////////////////////
     // TESTS
     ////////////////////////////////////////////////////////////////////////////
+    /**
+     * Test method that loads an avatar from a zip file.
+     * @param clear - boolean true to clear the current scene before loading
+     * @param useRepository - boolean true to use the repository
+     * @param arg0 - parent component that called this function
+     * @param data - directory location containing the downloaded zip file
+     * @param meshRef - meshes to load
+     * @param region - location to load meshes
+     */
+    @Deprecated
     public void loadUnZippedAvatar(boolean clear, boolean useRepository, Component arg0, File data, String[] meshRef, int region) {
         m_currentPScene.setUseRepository(useRepository);
         if (clear)
@@ -1254,6 +1443,11 @@ public class SceneEssentials {
     ////////////////////////////////////////////////////////////////////////////
     // HELPER FUNCTIONS
     ////////////////////////////////////////////////////////////////////////////
+    /**
+     * Creates a file that contains the absolute path of a file located on the HD
+     * @param file - file located on the local HD
+     * @return File containg the absolute path
+     */
     public File getAbsPath(File file) {
         String fullpath = null;
         int index;
@@ -1271,7 +1465,13 @@ public class SceneEssentials {
         File absPath = new File(fullpath);
         return absPath;
     }
-    
+
+    /**
+     * Creates and returns an array containing the collada files (*.dae) located
+     * in directory specified by the file
+     * @param file - direcotry containing the collada files
+     * @return string[] - array of collada files located in the directory
+     */
     public String[] getFileList(File file) {
         File abs = getAbsPath(file);
         FilenameFilter filter = new FilenameFilter() {
@@ -1284,7 +1484,14 @@ public class SceneEssentials {
         String[] colladaList = abs.list(filter);
         return colladaList;
     }
-    
+
+    /**
+     * Locates and then returns a URL to the avatar bindpose that is located in
+     * the directory specified by the file.  Files must follow a strict naming
+     * convention to be found (ie contain BIND in the name);
+     * @param file direcotry containing the collada files
+     * @return URL to bindpose or null if not found
+     */
     public URL findBindPose(File file) {
         String[] colladaList = getFileList(file);
         File abs = getAbsPath(file);
@@ -1307,7 +1514,14 @@ public class SceneEssentials {
         }
         return modelURL;
     }
-    
+
+    /**
+     * Locates and then returns and arraylist of all collada animation files that
+     * are located in the directy specified by the file.  Files must follow a
+     * strict naming convention to be found (ie contain ANIM in the name);
+     * @param file directory containing the collada files
+     * @return ArrayList containing all the animation files or null if nothing found
+     */
     public ArrayList<URL> findAnims(File file) {
         ArrayList<URL> animURLs = new ArrayList<URL>();
         File abs = getAbsPath(file);
@@ -1329,7 +1543,14 @@ public class SceneEssentials {
         }
         return animURLs;
     }
-    
+
+    /**
+     * Opens a connection to the mySQL database and retrieves data asked for in
+     * the string query in the form of an ArrayList of String arrays.  When query
+     * is complete the connection is closed.
+     * @param query - string containing a syntax correct query for the database
+     * @return ArrayList of string arrays containing the data requested
+     */
     public ArrayList<String[]> loadSQLData(String query) {
         m_sql = new SQLInterface();
         boolean connected = m_sql.Connect(null, "jdbc:mysql://zeitgeistgames.com:3306/ColladaShop", "ColladaShopper", "ColladaShopperPassword");
@@ -1351,6 +1572,10 @@ public class SceneEssentials {
         return data;
     }
 
+    /**
+     * Sets the camera on the current scene's selected model.  Setting depends on
+     * the type of camnera used in the scene.
+     */
     public void setCameraOnModel() {
         while (m_currentPScene.getAssetWaitingList().size() > 0) {}
         PNode node = m_currentPScene.getInstances();
@@ -1380,14 +1605,29 @@ public class SceneEssentials {
         }
     }
 
+    /**
+     * Retrieves the name of the operating system that is running the application
+     * @return String containing the name of the operating system
+     */
     public String getOS() {
         return System.getProperty("os.name");
     }
-    
+
+    /**
+     * Determines if the operating system the application is running is Windows
+     * @return boolean true if it's winodows and false if it is not
+     */
     public boolean isWindowsOS() {
         return getOS().contains("Windows");
     }
 
+    /**
+     * Creates and returns a CharacterAttribute containng only animation information
+     * to be used in adding animations to an existing avatar
+     * @param animType
+     * @param animFile
+     * @return
+     */
     public CharacterAttributes makeAnimAttrib(int animType, URL animFile) {
         // Create avatar animation attribs
         CharacterAttributes newAttribs = new CharacterAttributes(m_avatar.getAttributes().getName());
@@ -1438,6 +1678,10 @@ public class SceneEssentials {
         }
     }
 
+    /**
+     * Load a previously saved configuration file containing avatar metrics
+     * @param arg0 - parent component that called this function
+     */
     public void loadAvatarSaveFile(Component arg0) {
         int retVal = m_jFileChooser_LoadXML.showOpenDialog(arg0);
         if (retVal == JFileChooser.APPROVE_OPTION) {
@@ -1455,6 +1699,10 @@ public class SceneEssentials {
         }
     }
 
+    /**
+     * Save out the current configuration of the avatar into a xml file
+     * @param arg0 - parent component that called this function
+     */
     public void saveAvatarSaveFile(Component arg0) {
         File saveFile = new File("saveme.xml");
         m_jFileChooser_SaveXML.setSelectedFile(saveFile);

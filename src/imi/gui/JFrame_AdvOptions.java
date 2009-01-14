@@ -40,26 +40,42 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
 ////////////////////////////////////////////////////////////////////////////////
 // Class Data Members
 ////////////////////////////////////////////////////////////////////////////////
-    private Map<GUI_Enums.m_bodyPart, SkinnedMeshJoint[]> m_skeleton;
-    private SceneEssentials                     m_sceneData;
-    private NumberFormat                        m_format;
+    private Map<GUI_Enums.m_bodyPart, SkinnedMeshJoint[]>   m_skeleton;
+    private SceneEssentials                                 m_sceneData;
+    private NumberFormat                                    m_format;
 
 ////////////////////////////////////////////////////////////////////////////////
 // Class Methods
 ////////////////////////////////////////////////////////////////////////////////
-
-    /** Creates new form JFrame_AdvOptions */
+    /**
+     * Default constructor to create an AdvOptions window.  Using this method
+     * requires manually setting the SceneEssentials using the setSceneData() method
+     * as well as calling the public function createJointCatalog() to setup joint
+     * informaiton
+     */
     public JFrame_AdvOptions() {
         initComponents();
         HeadOptions.setParentFrame(this);
     }
 
+    /**
+     * Overloaded constructor to create an AdvOptions window.  It sets the scene
+     * information as well as the information of the joints from the currently
+     * loaded avatar
+     * @param scene - reference to the main window's scene information
+     */
     public JFrame_AdvOptions(SceneEssentials scene) {
         m_sceneData = scene;
         initComponents();
         createJointCatalog();
     }
 
+    /**
+     * Adjusts the joints catagorized under eyes.  Adjusts location in 3D space
+     * and scaling.
+     * @param type - integer represents the type of eye manipulation
+     * @param e - ChangeEvent
+     */
     private synchronized void adjustEyes(GUI_Enums.m_sliderControl type, float mod, float actualval) {
         SkeletonNode        skelnode        = m_sceneData.getAvatar().getSkeleton();
         String              formattedNumber = null;
@@ -192,6 +208,12 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
         }
     }
 
+    /**
+     * Adjusts the joints catagorized under hands.  Adjusts location in 3D space
+     * and scaling.
+     * @param type integer represnts the type of hand manipulation
+     * @param e - ChangeEvent
+     */
     private synchronized void adjustHands(GUI_Enums.m_sliderControl type, float mod, float actualval) {
         SkeletonNode skelnode           = m_sceneData.getAvatar().getSkeleton();
         if (skelnode == null) { return; }
@@ -237,6 +259,12 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
         }
     }
 
+    /**
+     * Adjusts the joints catagorized under forearms.  Adjusts the location in 3D
+     * space and scaling
+     * @param type - integer represents the type of forearm manipulation
+     * @param e - ChangeEvent
+     */
     private synchronized void adjustForearms(GUI_Enums.m_sliderControl type, float mod, float actualval) {
         SkeletonNode    skelnode    = m_sceneData.getAvatar().getSkeleton();
         String          formattedNumber = null;
@@ -304,6 +332,12 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
         }
     }
 
+    /**
+     * Adjusts the joints catagorized under upperarms.  Adjusts the location in
+     * 3D space and scaling
+     * @param type - integer represents the type of upperarm manipulation
+     * @param e - ChangeEvent
+     */
     private synchronized void adjustUpperarms(GUI_Enums.m_sliderControl type, float mod, float actualval) {
         SkeletonNode    skelnode        = m_sceneData.getAvatar().getSkeleton();
         String          formattedNumber = null;
@@ -371,6 +405,12 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
         }
     }
 
+    /**
+     * Adjusts the joints catagorized under feet.  Adjusts the location in
+     * 3D space and scaling
+     * @param type - integer represents the type of feet manipulation
+     * @param e - ChangeEvent
+     */
     private synchronized void adjustFeet(GUI_Enums.m_sliderControl type, float mod, float actualval) {
         SkeletonNode    skelnode    = m_sceneData.getAvatar().getSkeleton();
         if (skelnode == null) { return; }
@@ -415,6 +455,12 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
         }
     }
 
+    /**
+     * Adjusts the joints catagorized under calves.  Adjusts the location in
+     * 3D space and scaling
+     * @param type - integer represents the type of calves manipulation
+     * @param e - ChangeEvent
+     */
     private synchronized void adjustCalves(GUI_Enums.m_sliderControl type, float mod, float actualval) {
         SkeletonNode    skelnode    = m_sceneData.getAvatar().getSkeleton();
         String          formattedNumber = null;
@@ -482,6 +528,12 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
         }
     }
 
+    /**
+     * Adjusts the joints catagorized under thighs.  Adjusts the location in
+     * 3D space and scaling
+     * @param type - integer represents the type of thighs manipulation
+     * @param e - ChangeEvent
+     */
     private synchronized void adjustThighs(GUI_Enums.m_sliderControl type, float mod, float actualval) {
         SkeletonNode    skelnode    = m_sceneData.getAvatar().getSkeleton();
         if (skelnode == null) { return; }
@@ -527,18 +579,46 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
         }
     }
 
+    /**
+     * Adjusts the joints catagorized under chest.  Adjusts the location in
+     * 3D space and scaling
+     * @param type - integer represents the type of chest manipulation
+     * @param e - ChangeEvent
+     */
+    // TODO: write functionality
     private synchronized void adjustChest(GUI_Enums.m_sliderControl type, float mod, float actualval) {
 
     }
 
+    /**
+     * Adjusts the joints catagorized under stomach.  Adjusts the location in
+     * 3D space and scaling
+     * @param type - integer represents the type of stomach manipulation
+     * @param e - ChangeEvent
+     */
+    // TODO: write functionality
     private synchronized void adjustStomach(GUI_Enums.m_sliderControl type, float mod, float actualval) {
 
     }
 
+    /**
+     * Adjusts the joints catagorized under butt.  Adjusts the location in
+     * 3D space and scaling
+     * @param type - integer represents the type of butt manipulation
+     * @param e - ChangeEvent
+     */
+    // TODO: write functionality
     private synchronized void adjustGluts(GUI_Enums.m_sliderControl type, float mod, float actualval) {
 
     }
 
+    /**
+     * Adjusts the joints catagorized under body.  Adjusts the location in
+     * 3D space and scaling
+     * @param type - integer represents the type of body manipulation
+     * @param e - ChangeEvent
+     */
+    // TODO: write functionality
     private synchronized void adjustBody(GUI_Enums.m_sliderControl type, float mod, float actualval) {
 
     }
@@ -618,6 +698,9 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
 // Helper Functions
 ////////////////////////////////////////////////////////////////////////////////
 
+    /**
+     * Sets up a listing of SkinnedMeshJoints for the hands for quick access
+     */
     public void catalogHands() {
         if (m_sceneData.getAvatar() == null)
             return;
@@ -651,6 +734,9 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
         m_skeleton.put(GUI_Enums.m_bodyPart.Right_Hand, right);
     }
 
+    /**
+     * Sets up a listing of SkinnedMeshJoints for the lowerarms for quick access
+     */
     public void catalogLowerArms() {
         if (m_sceneData.getAvatar() == null)
             return;
@@ -676,6 +762,9 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
         m_skeleton.put(GUI_Enums.m_bodyPart.Right_LowerArm, right);
     }
 
+    /**
+     * Sets up a listing of SkinnedMeshJoints for the upperarms for quick access
+     */
     public void catalogUpperArms() {
         if (m_sceneData.getAvatar() == null)
             return;
@@ -701,6 +790,9 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
         m_skeleton.put(GUI_Enums.m_bodyPart.Right_UpperArm, right);
     }
 
+    /**
+     * Sets up a listing of SkinnedMeshJoints for the shoulders for quick access
+     */
     public void catalogShoulders() {
         if (m_sceneData.getAvatar() == null)
             return;
@@ -726,6 +818,9 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
         m_skeleton.put(GUI_Enums.m_bodyPart.Right_Shoulder, right);
     }
 
+    /**
+     * Sets up a listing of SkinnedMeshJoints for the torso for quick access
+     */
     public void catalogTorso() {
         if (m_sceneData.getAvatar() == null)
             return;
@@ -747,6 +842,9 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
         m_skeleton.put(GUI_Enums.m_bodyPart.Torso, torso);
     }
 
+    /**
+     * Sets up a listing of SkinnedMeshJoints for the upperlegs for quick access
+     */
     public void catalogUpperLegs() {
         if (m_sceneData.getAvatar() == null)
             return;
@@ -772,6 +870,9 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
         m_skeleton.put(GUI_Enums.m_bodyPart.Right_UpperLeg, right);
     }
 
+    /**
+     * Sets up a listing of SkinnedMeshJoints for the lowerlegs for quick access
+     */
     public void catalogLowerLegs() {
         if (m_sceneData.getAvatar() == null)
             return;
@@ -797,6 +898,9 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
         m_skeleton.put(GUI_Enums.m_bodyPart.Right_LowerLeg, right);
     }
 
+    /**
+     * Sets up a listing of SkinnedMeshJoints for the feet for quick access
+     */
     public void catalogFeet() {
         if (m_sceneData.getAvatar() == null)
             return;
@@ -822,6 +926,9 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
         m_skeleton.put(GUI_Enums.m_bodyPart.Right_Foot, right);
     }
 
+    /**
+     * Sets up a listing of SkinnedMeshJoints for the head for quick access
+     */
     public void catalogHead() {
         if (m_sceneData.getAvatar() == null)
             return;
@@ -847,6 +954,9 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
         m_skeleton.put(GUI_Enums.m_bodyPart.Head, head);
     }
 
+    /**
+     * Sets up a listing of SkinnedMeshJoints for the neck for quick access
+     */
     public void catalogNeck() {
         if (m_sceneData.getAvatar() == null)
             return;
@@ -868,6 +978,9 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
         m_skeleton.put(GUI_Enums.m_bodyPart.Neck, neck);
     }
 
+    /**
+     * Sets up a listing of SkinnedMeshJoints for the eyes for quick access
+     */
     public void catalogEyes() {
         if (m_sceneData.getAvatar() == null)
             return;
@@ -890,6 +1003,9 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
         m_skeleton.put(GUI_Enums.m_bodyPart.Eyes, eyes);
     }
 
+    /**
+     * Sets up a listing of SkinnedMeshJoints for the lips for quick access
+     */
     public void catalogLips() {
         if (m_sceneData.getAvatar() == null)
             return;
@@ -912,6 +1028,10 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
         m_skeleton.put(GUI_Enums.m_bodyPart.Lips, lips);
     }
 
+    /**
+     * Creates a complete listing of all the SkinnedMeshJoints for the entire
+     * avatar body
+     */
     public void createJointCatalog() {
         if (m_sceneData.getAvatar() == null)
             return;
@@ -930,6 +1050,13 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
         catalogLips();
     }
 
+    /**
+     * Switchboard for all the joint sliders.  Pushes the correct response to the
+     * right methods.
+     * @param control - which slider control of effect
+     * @param mod - delta modification value from the slider
+     * @param actualval - actual modification value from the slider
+     */
     public void parseModification(GUI_Enums.m_sliderControl control, float mod, float actualval) {
         switch(control)
         {

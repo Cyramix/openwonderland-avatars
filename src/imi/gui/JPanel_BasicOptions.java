@@ -57,6 +57,7 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
     protected boolean                 m_isViewMode;
     protected Component               m_Parent;
     protected CharacterAttributes     m_Attributes, m_newAttribs;
+    protected String[]                m_PrevHeadAttachments         = new String[4];
 ////////////////////////////////////////////////////////////////////////////////
 // CLASS DATA MEMBERS - END
 ////////////////////////////////////////////////////////////////////////////////
@@ -572,9 +573,10 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
         if (isViewMode)
             m_sceneData.loadMeshDAEURL(true, this, data.get(0));
         else {
-            String[] hair = new String[] {data.get(0)[0]};
-            m_sceneData.addMeshDAEURLToModel(hair, "Head", 5);
+            m_sceneData.addMeshDAEURLToModel(data.get(0), "Head", m_PrevHeadAttachments[0]);
         }
+
+        m_PrevHeadAttachments[0] = data.get(0)[0];      // Used to keep track of what is on the head to remove
 
         jButton_ApplyHair.setEnabled(true);
         jLabel_CurrHair.setText(selection);
@@ -616,9 +618,10 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
         if (isViewmode)
             m_sceneData.loadMeshDAEURL(true, this, data.get(0));
         else {
-            String[] facialHair = new String[] {data.get(0)[0]};
-            m_sceneData.addMeshDAEURLToModel(facialHair, "Head", 6);
+            m_sceneData.addMeshDAEURLToModel(data.get(0), "Head", m_PrevHeadAttachments[1]);
         }
+
+        m_PrevHeadAttachments[1] = data.get(0)[0];
 
         jButton_ApplyFacialHair.setEnabled(true);
         jLabel_CurrFacialHair.setText(selection);
@@ -660,9 +663,10 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
         if (isViewMode)
             m_sceneData.loadMeshDAEURL(true, this, data.get(0));
         else {
-            String [] acces = new String[] {data.get(0)[0]};
-            m_sceneData.addMeshDAEURLToModel(acces, "Head", 7);
+            m_sceneData.addMeshDAEURLToModel(data.get(0), "Head", m_PrevHeadAttachments[2]);
         }
+
+        m_PrevHeadAttachments[2] = data.get(0)[0];
 
         jButton_ApplyHat.setEnabled(true);
         jLabel_CurrHat.setText(selection);
@@ -704,8 +708,10 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
         if (isViewMode)
             m_sceneData.loadMeshDAEURL(true, this, data.get(0));
         else {
-            m_sceneData.addMeshDAEURLToModel(data.get(0), "Head", 8);
+            m_sceneData.addMeshDAEURLToModel(data.get(0), "Head", m_PrevHeadAttachments[3]);
         }
+
+        m_PrevHeadAttachments[3] = data.get(0)[0];
 
         jButton_ApplySpecs.setEnabled(true);
         jLabel_CurrSpecs.setText(selection);

@@ -33,12 +33,16 @@ import imi.scene.PNode;
 import imi.scene.polygonmodel.PPolygonMeshInstance;
 import imi.scene.polygonmodel.parts.PMeshMaterial;
 import imi.scene.polygonmodel.skinned.PPolygonSkinnedMeshInstance;
+import imi.scene.shader.AbstractShaderProgram;
 import imi.scene.shader.NoSuchPropertyException;
 import imi.scene.shader.ShaderProperty;
 import imi.scene.shader.dynamic.GLSLCompileException;
 import imi.scene.shader.dynamic.GLSLDataType;
 import imi.scene.shader.dynamic.GLSLShaderProgram;
 import imi.scene.shader.effects.MeshColorModulation;
+import imi.scene.shader.programs.ClothingShader;
+import imi.scene.shader.programs.EyeballShader;
+import imi.scene.shader.programs.FleshShader;
 import imi.tests.BaseDefault;
 import java.awt.Color;
 import java.awt.Component;
@@ -270,7 +274,11 @@ public class JPanel_EZOptions extends javax.swing.JPanel {
                         }
                         m_addList.put(1, szMeshes);
                     } else {
-                        String[] hands = new String[] { null, "RHandShape", "LHandShape" };
+                        String[] hands = null;
+                        if (m_gender == 1)
+                            hands = new String[] { null, "RHandShape", "LHandShape" };
+                        else
+                            hands = new String[] { null, "HandsShape" };
                         m_addList.put(1, hands);
                     }
 
@@ -390,7 +398,11 @@ public class JPanel_EZOptions extends javax.swing.JPanel {
                         }
                         m_addList.put(4, szMeshes);
                     } else {
-                        String[] feet = new String[] { null, "RFootNudeShape", "LFootNudeShape" };
+                        String[] feet = null;
+                        if (m_gender == 1)
+                            feet = new String[] { null, "RFootNudeShape", "LFootNudeShape" };
+                        else
+                            feet = new String[] { null, "ShoesShape" };
                         m_addList.put(4, feet);
                     }
 
@@ -401,9 +413,7 @@ public class JPanel_EZOptions extends javax.swing.JPanel {
                 //------
                 }//end of if clause
 
-
             }//end of for loop with s var
-
 
         } catch (SAXParseException err) {
             System.out.println("** Parsing error" + ", line " + err.getLineNumber() + ", uri " + err.getSystemId());
@@ -501,7 +511,7 @@ public class JPanel_EZOptions extends javax.swing.JPanel {
             if (m_Colors[i] == false)
                 continue;
 
-            GLSLShaderProgram shader = null;
+            AbstractShaderProgram shader = null;
             int iCheck  = 0;
             Color c     = null;
 
@@ -854,11 +864,14 @@ public class JPanel_EZOptions extends javax.swing.JPanel {
         meshInst.applyMaterial();
     }
 
-    public void setMeshColor(PPolygonMeshInstance meshInst, GLSLShaderProgram shader, float[] fColorArray) {
+    public void setMeshColor(PPolygonMeshInstance meshInst, AbstractShaderProgram shader, float[] fColorArray) {
         PMeshMaterial material = meshInst.getMaterialRef().getMaterial();
         try {
             // Setting the new color property onto the model here
-            shader.setProperty(new ShaderProperty("materialColor", GLSLDataType.GLSL_VEC3, fColorArray));
+            if (shader instanceof FleshShader)
+                ((FleshShader)shader).setProperty(new ShaderProperty("materialColor", GLSLDataType.GLSL_VEC3, fColorArray));
+            if (shader instanceof ClothingShader)
+                ((ClothingShader)shader).setProperty(new ShaderProperty("materialColor", GLSLDataType.GLSL_VEC3, fColorArray));
         } catch (NoSuchPropertyException ex) {
             System.out.println("SEVER EXCEPTION: " + ex.getMessage());
         }
@@ -867,10 +880,11 @@ public class JPanel_EZOptions extends javax.swing.JPanel {
         meshInst.applyMaterial();
     }
 
-    public GLSLShaderProgram createMeshShader(PPolygonMeshInstance meshInst) {
+    public AbstractShaderProgram createMeshShader(PPolygonMeshInstance meshInst) {
         // assign a texture to the mesh instance
         PMeshMaterial material = meshInst.getMaterialRef().getMaterial();
         GLSLShaderProgram shader = (GLSLShaderProgram) material.getShader();
+
         MeshColorModulation meshModulator = new MeshColorModulation();
         // Already contained?
         if (shader.containsEffect(meshModulator) == false)
@@ -883,7 +897,7 @@ public class JPanel_EZOptions extends javax.swing.JPanel {
             }
         }
 
-        return shader;
+        return (AbstractShaderProgram)shader;
     }
 
     /** This method is called from within the constructor to
