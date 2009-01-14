@@ -56,7 +56,9 @@ public class SkeletonNodeSerialization extends DemoBase
         "assets/models/collada/Avatars/Female/Female_Anim_Idle.dae",
         "assets/models/collada/Avatars/Female/Female_Anim_Sitting.dae",
         "assets/models/collada/Avatars/Female/Female_Anim_StandToSit.dae",
-        "assets/models/collada/Avatars/Female/Female_Anim_Walk.dae"
+        "assets/models/collada/Avatars/Female/Female_Anim_Walk.dae",
+        "assets/models/collada/Avatars/Female/Female_Anim_Run.dae",
+        "assets/models/collada/Avatars/Female/Female_Anim_Wave.dae"
     };
     private static String[] FemaleFacialAnimations = {
 
