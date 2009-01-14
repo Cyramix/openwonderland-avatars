@@ -17,22 +17,21 @@
  */
 package imi.tests;
 
-import com.jme.math.Vector3f;
-import imi.character.ninja.NinjaAvatar;
-import imi.character.ninja.NinjaFemaleAvatarAttributes;
+import imi.loaders.Instruction;
+import imi.loaders.InstructionProcessor;
+import imi.loaders.collada.Collada;
+import imi.loaders.collada.ColladaLoaderParams;
 import imi.scene.JScene;
 import imi.scene.PMatrix;
 import imi.scene.PNode;
 import imi.scene.PScene;
-import imi.scene.camera.state.FirstPersonCamState;
 import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
-import imi.scene.processors.JSceneEventProcessor;
-import imi.utils.input.NinjaControlScheme;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.logging.Level;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.logging.Logger;
 import org.jdesktop.mtgame.Entity;
 import org.jdesktop.mtgame.RenderComponent;
@@ -47,8 +46,63 @@ import org.jdesktop.wonderland.common.comms.WonderlandObjectOutputStream;
 public class SkeletonNodeSerialization extends DemoBase
 {
     private final static Logger logger = Logger.getLogger(SkeletonNodeSerialization.class.getName());
-    private final static File saveFile = new File("/work/avatars/assets/skeletons/Female.bs");
 
+    private static URL MaleSkeletonLocation = null;
+    private static URL FemaleSkeletonLocation = null;
+    private static File MaleOutputFile = new File("src/imi/character/skeleton/Male.bs");
+    private static File FemaleOutputFile = new File("src/imi/character/skeleton/Female.bs");
+    /** Relative paths to animation files to load onto the skeletons. **/
+    private static String[] FemaleAnimationLocations = {
+        "assets/models/collada/Avatars/Female/Female_Anim_Idle.dae",
+        "assets/models/collada/Avatars/Female/Female_Anim_Sitting.dae",
+        "assets/models/collada/Avatars/Female/Female_Anim_StandToSit.dae",
+        "assets/models/collada/Avatars/Female/Female_Anim_Walk.dae"
+    };
+    private static String[] FemaleFacialAnimations = {
+
+    };
+    private static String[] MaleAnimationLocations = {
+        "assets/models/collada/Avatars/Male/Male_Anim_Bow.dae",
+        "assets/models/collada/Avatars/Male/Male_Anim_Cheer.dae",
+        "assets/models/collada/Avatars/Male/Male_Anim_Clap.dae",
+        "assets/models/collada/Avatars/Male/Male_Anim_FallFromSitting.dae",
+        "assets/models/collada/Avatars/Male/Male_Anim_FloorGetup.dae",
+        "assets/models/collada/Avatars/Male/Male_Anim_FloorSitting.dae",
+        "assets/models/collada/Avatars/Male/Male_Anim_Follow.dae",
+        "assets/models/collada/Avatars/Male/Male_Anim_Idle.dae",
+        "assets/models/collada/Avatars/Male/Male_Anim_Jump.dae",
+        "assets/models/collada/Avatars/Male/Male_Anim_Laugh.dae",
+        "assets/models/collada/Avatars/Male/Male_Anim_Run.dae",
+        "assets/models/collada/Avatars/Male/Male_Anim_Sitting.dae",
+        "assets/models/collada/Avatars/Male/Male_Anim_StandToSit.dae",
+        "assets/models/collada/Avatars/Male/Male_Anim_Walk.dae",
+        "assets/models/collada/Avatars/Male/Male_Anim_Wave.dae",
+    };
+    private static String[] MaleFacialAnimationLocations = {
+        "assets/models/collada/Avatars/MaleFacialAnimation/MaleSmile.dae",
+        "assets/models/collada/Avatars/MaleFacialAnimation/MaleFrown.dae",
+        "assets/models/collada/Avatars/MaleFacialAnimation/MaleScorn.dae",
+        "assets/models/collada/Avatars/MaleFacialAnimation/MaleDefault.dae",
+    };
+
+    /** URL preamble **/
+    private static String URLPreamble = "file://localhost/" + System.getProperty("user.dir") + "/";
+    /** Important state for base skeleton creation **/
+    static
+    {
+        // URL creation
+        try {
+            MaleSkeletonLocation = new URL(URLPreamble + "assets/models/collada/Avatars/Male/Male_Bind.dae");
+            FemaleSkeletonLocation = new URL(URLPreamble + "assets/models/collada/Avatars/Female/Female_Bind.dae");
+        }
+        catch (MalformedURLException ex)
+        {
+            logger.severe("Could not initialize static urls to skeletons.");
+        }
+    }
+
+    private boolean bLoadMale = true; // Determine code path for skeleton creation
+    
     public SkeletonNodeSerialization(String[] args)
     {
         super(args);
@@ -62,84 +116,75 @@ public class SkeletonNodeSerialization extends DemoBase
     @Override
     protected void createDemoEntities(WorldManager wm)
     {
-        // Create ninja input scheme
-        NinjaControlScheme control = (NinjaControlScheme)((JSceneEventProcessor)wm.getUserData(JSceneEventProcessor.class)).setDefault(new NinjaControlScheme(null));
-
-        // Create avatar
-        NinjaAvatar avatar = new NinjaAvatar(new NinjaFemaleAvatarAttributes("Avatar", false, false), wm);
-        avatar.selectForInput();
-        control.getNinjaTeam().add(avatar);
-
-        // Get the mouse evets so the verlet arm can be controlled
-        control.getMouseEventsFromCamera();
-
-        // change camera speed
-        FirstPersonCamState camState = (FirstPersonCamState)m_cameraProcessor.getState();
-        camState.setMovementRate(0.03f);
-        camState.setCameraPosition(new Vector3f(0.0f, 1.8f, -2.0f));
-
-        // Wait for the avatar to load
-        while (!avatar.isInitialized() || avatar.getModelInst() == null)
-        {
-            try {
-            Thread.sleep(25000);
-                } catch (InterruptedException ex) {
-                    Logger.getLogger(COLLADA_CharacterTest.class.getName()).log(Level.SEVERE, null, ex);
-                                                  }
-        }
-        SkeletonNode oldSkeleton = avatar.getSkeleton();
-        // All of this is required to remove the avatar without null pointer-ing somewhere
-        control.getNinjaTeam().clear();
-        control.setNinja(null);
-        avatar.die();
-        avatar = null;
-
-        // Do a little preparation
-        PNode skeletonRoot = oldSkeleton.getSkeletonRoot();
-        oldSkeleton.removeAllChildren();
-        oldSkeleton.setSkeletonRoot(skeletonRoot);
-        oldSkeleton.dump();
-        logger.info("Serializing skeleton!");
-        serializeSkeleton(oldSkeleton);
-
-        SkeletonNode resultSkeleton = deserializeSkeleton();
-        if (resultSkeleton != null)
-        {
-            logger.info("Reconstituted skeleton!");
-            resultSkeleton.dump();
-        }
-
-        Entity psceneEntity = new Entity("ThePscene");
-
-        PScene ps = new PScene("thePscene", wm);
-        JScene js = new JScene(ps);
-        ps.setJScene(js);
-        js.setRenderBothBool(true);
-        RenderComponent rc = wm.getRenderManager().createRenderComponent(js);
-        psceneEntity.addComponent(RenderComponent.class, rc);
-        wm.addEntity(psceneEntity);
-
-        ps.addModelInstance(resultSkeleton, new PMatrix());
+        createSerializedSkeleton(wm);
     }
 
-    private void serializeSkeleton(SkeletonNode skeleton)
+    private void createSerializedSkeleton(WorldManager wm)
+    {
+        bLoadMale = false;
+        URL         skeletonLocation = null;
+        String[]    animationFiles   = null;
+        String[]    facialAnimations = null;
+        File        outputFile       = null;
+
+        if (bLoadMale) {
+            skeletonLocation = MaleSkeletonLocation;
+            animationFiles = MaleAnimationLocations;
+            facialAnimations = MaleFacialAnimationLocations;
+            outputFile = MaleOutputFile;
+        }
+        else {
+            skeletonLocation = FemaleSkeletonLocation;
+            animationFiles = FemaleAnimationLocations;
+            facialAnimations = FemaleFacialAnimations;
+            outputFile = FemaleOutputFile;
+        }
+
+        // Create parameters for the collada loader we will use
+        ColladaLoaderParams params = new ColladaLoaderParams(true, false, // load skeleton, load geometry
+                                                            false, false, // load animations, show debug output
+                                                            4, // max influences per-vertex
+                                                            "Skeleton", // 'name'
+                                                            null); // existing skeleton (if applicable)
+        Collada loader = new Collada(params);
+        loader.load(new PScene(wm), skeletonLocation); // Don't need to hold on to the pscen
+        SkeletonNode skeleton = loader.getSkeletonNode();
+        // Now load it with animations using the InstructionProcessor
+        InstructionProcessor processor = new InstructionProcessor(wm);
+        Instruction animationInstruction = new Instruction(); // Grouping instruction node
+        // Load in the skeleton
+        animationInstruction.addChildInstruction(Instruction.InstructionType.setSkeleton, skeleton);
+        // Body animations
+        for (String filePath : animationFiles)
+            animationInstruction.addChildInstruction(Instruction.InstructionType.loadAnimation, URLPreamble + filePath);
+        // Facial animations
+        for (String filePath : facialAnimations)
+            animationInstruction.addChildInstruction(Instruction.InstructionType.loadFacialAnimation, URLPreamble + filePath);
+        // Execute it
+        processor.execute(animationInstruction);
+        // now our skeleton is loaded with animation data, time to write it out
+        serializeSkeleton(skeleton, outputFile);
+    }
+
+    private void serializeSkeleton(SkeletonNode skeleton, File destination)
     {
         FileOutputStream fos = null;
         WonderlandObjectOutputStream out = null;
         try
         {
-          fos = new FileOutputStream(saveFile);
+          fos = new FileOutputStream(destination);
           out = new WonderlandObjectOutputStream(fos);
           out.writeObject(skeleton);
           out.close();
         }
         catch(IOException ex)
         {
-          ex.printStackTrace();
+            logger.severe("Problem with serializing the skeleton : " + ex.getMessage());
+            ex.printStackTrace();
         }
     }
 
-    private SkeletonNode deserializeSkeleton()
+    private SkeletonNode deserializeSkeleton(URL location)
     {
         SkeletonNode result = null;
         FileInputStream fis = null;
@@ -147,8 +192,7 @@ public class SkeletonNodeSerialization extends DemoBase
 
         try
         {
-            fis = new FileInputStream(saveFile);
-            in = new WonderlandObjectInputStream(fis);
+            in = new WonderlandObjectInputStream(location.openStream());
             result = (SkeletonNode)in.readObject();
             in.close();
         }
