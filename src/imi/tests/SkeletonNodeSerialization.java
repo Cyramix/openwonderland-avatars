@@ -114,7 +114,7 @@ public class SkeletonNodeSerialization extends DemoBase
     @Override
     protected void createDemoEntities(WorldManager wm)
     {
-        createSerializedSkeleton(wm, false); // load the male skeleton
+        createSerializedSkeleton(wm, true); // load the male skeleton
     }
 
     private void createSerializedSkeleton(WorldManager wm, boolean bLoadMale)

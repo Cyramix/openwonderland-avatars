@@ -46,6 +46,8 @@ public class COLLADA_JointChannel implements PJointChannel, Serializable
     private final PMatrix m_blendedFrameLeft = new PMatrix();
     private final PMatrix m_blendedFrameRight = new PMatrix();
     private final PMatrix m_blendBuffer = new PMatrix();
+    private final Vector3f m_leftBufferVector = new Vector3f();
+    private final Vector3f m_rightBufferVector = new Vector3f();
     
     //  Constructor land!
     public COLLADA_JointChannel()
@@ -114,11 +116,11 @@ public class COLLADA_JointChannel implements PJointChannel, Serializable
             rotationComponent1.slerp(rotationComponent2, interpolationCoefficient);
 
             // grab the translation and lerp it
-            Vector3f translationComponent1 = m_blendedFrameLeft.getTranslation();
-            Vector3f translationComponent2 = m_blendedFrameRight.getTranslation();
-            translationComponent1.interpolate(translationComponent2, interpolationCoefficient);
+            m_blendedFrameLeft.getTranslation(m_leftBufferVector);
+            m_blendedFrameRight.getTranslation(m_rightBufferVector);
+            m_leftBufferVector.interpolate(m_rightBufferVector, interpolationCoefficient);
             
-            m_blendBuffer.set2(rotationComponent1, translationComponent1, 1.0f);
+            m_blendBuffer.set2(rotationComponent1, m_leftBufferVector, 1.0f);
             result = m_blendBuffer;
         }
 
@@ -145,8 +147,7 @@ public class COLLADA_JointChannel implements PJointChannel, Serializable
         // Return
         return m_fDuration;
     }
-
-    private Vector3f m_blendedMatrixBufferVector = new Vector3f();
+    
     /**
      * Calculate the result of blending the transform matrices found between the
      * specified boundary times at the provided time.
@@ -196,9 +197,11 @@ public class COLLADA_JointChannel implements PJointChannel, Serializable
             rotationComponent.slerp(rotationComponent, rightFrame.getValue().getRotationJME(), interpolationCoefficient);
 
             // grab the translation and lerp it
-            m_blendedMatrixBufferVector.set(leftFrame.getValue().getTranslation());
-            m_blendedMatrixBufferVector.interpolate(rightFrame.getValue().getTranslation(), interpolationCoefficient);
-            output.set2(rotationComponent, m_blendedMatrixBufferVector, 1.0f);
+            leftFrame.getValue().getTranslation(m_leftBufferVector);
+            rightFrame.getValue().getTranslation(m_rightBufferVector);
+            
+            m_leftBufferVector.interpolate(m_rightBufferVector, interpolationCoefficient);
+            output.set2(rotationComponent, m_leftBufferVector, 1.0f);
         }
         else
             result = false;

@@ -44,6 +44,10 @@ public class PPolygonSkinnedMeshInstance extends PPolygonMeshInstance implements
 
     protected PMatrix[]    m_pose = null;
 
+
+    private final float[] m_matrixFloats = new float[16];
+    private float[] m_poseFloats = null;
+
     //private PostAnimationJointManipulator m_jointManipulator = null;
 
     //  Constructor.
@@ -143,12 +147,10 @@ public class PPolygonSkinnedMeshInstance extends PPolygonMeshInstance implements
 
         setInfluenceIndices(influenceIndices);
     }
-    
-   
+
     @Override
     public SharedMesh updateSharedMesh() 
     {
-        float [] matrixFloats = new float[16];
         super.updateSharedMesh();
         // The new skinning model has this mesh query its skeleton for
         // the appropriate collection of transform matrices
@@ -162,32 +164,28 @@ public class PPolygonSkinnedMeshInstance extends PPolygonMeshInstance implements
         if (m_skeletonNode == null)
             return m_instance;
         
-        int [] influenceIndices = getInfluenceIndices();
-        
         if (m_InverseBindPose == null) // Initialize the bind pose by querying the skeleton for its bind pose
-            m_InverseBindPose = m_skeletonNode.getFlattenedInverseBindPose(influenceIndices);  // the group's transform is ignored
+            m_InverseBindPose = m_skeletonNode.getFlattenedInverseBindPose(m_influenceIndices);  // the group's transform is ignored
         // Retrieve the collection of influences in their current pose
-        m_skeletonNode.getPose(influenceIndices, m_pose);
+        m_skeletonNode.getPose(m_influenceIndices, m_pose);
         
         if (m_shaderState != null) // may not have loaded yet
         {    
             // populate the matrix stack
-            final float[] pose = new float[m_InverseBindPose.length * 16];
-            
             for (int i = 0; i < m_pose.length && i < m_InverseBindPose.length; i++)
             {
                 //postAnimationModifiedMeshSpaceMatrixHook(matrix, influenceIndices[i]);
 
                 m_pose[i].mul(m_InverseBindPose[i]);
 
-                m_pose[i].getFloatArray(matrixFloats);
+                m_pose[i].getFloatArray(m_matrixFloats);
                 for(int j = 0; j < 16; j++)
                 {
-                    pose[j+(i*16)] = matrixFloats[j];
+                    m_poseFloats[j+(i*16)] = m_matrixFloats[j];
                 }
             }
             if (doesShaderContainDeformer() == true)
-                m_shaderState.setUniformMatrix4Array("pose", pose, false);
+                m_shaderState.setUniformMatrix4Array("pose", m_poseFloats, false);
         }
 
 
@@ -227,6 +225,7 @@ public class PPolygonSkinnedMeshInstance extends PPolygonMeshInstance implements
     {
         // out with the old
         m_influenceIndices = new int[indexArray.length];
+        m_poseFloats = new float[indexArray.length * 16];
         m_pose = new PMatrix[indexArray.length];
         // in with the new
         for (int i = 0; i < indexArray.length; ++i)
