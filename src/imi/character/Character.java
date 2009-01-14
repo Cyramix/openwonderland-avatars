@@ -184,7 +184,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
      */
     public Character(URL configurationFile, WorldManager wm)
     {
-        super("InterimName");
+        super("InterimEntityName");
         xmlCharacter characterDOM = null;
         CharacterAttributes loadedAttributes = null;
 

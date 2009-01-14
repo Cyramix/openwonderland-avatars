@@ -38,6 +38,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javolution.util.FastList;
 import org.jdesktop.mtgame.WorldManager;
 
 
@@ -95,7 +96,8 @@ public class InstructionProcessor
         m_loadingPScene = new PScene(m_wm);
         // Actually execute the grouping
         executeInstruction(rootInstruction);
-        
+
+ 
         // garbage collection...
         if (nullMembersWhenFinished)
         {

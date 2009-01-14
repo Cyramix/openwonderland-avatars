@@ -121,6 +121,28 @@ public class PScene extends PNode implements RepositoryUser, Serializable
             mesh.submit(m_TriMeshAssembler);
             mesh.setSubmitGeometry(false);
         }
+        // also look for meshes dangling out in the scene graph
+        FastList<PNode> queue = new FastList<PNode>();
+        PNode current = null;
+        queue.add(m_Instances);
+
+        while (queue.isEmpty() == false)
+        {
+            current = queue.removeFirst();
+
+            if (current instanceof PPolygonMesh)
+            {
+                PPolygonMesh mesh = (PPolygonMesh)current;
+                mesh.setDirty(true, false);
+                mesh.setSubmitGeometry(true);
+                mesh.submit(m_TriMeshAssembler);
+                mesh.setSubmitGeometry(false);
+            }
+            // add all the kids
+            if (current.getChildren() != null)
+                queue.addAll(current.getChildren());
+
+        }
     }
 
     public PPolygonTriMeshAssembler getTriMeshAssembler() {

@@ -21,7 +21,9 @@ import imi.annotations.Debug;
 import imi.loaders.repository.SharedAsset.SharedAssetType;
 import imi.scene.PScene;
 import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
+import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.net.URL;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
@@ -39,6 +41,8 @@ public class Repository extends Entity
 {
     /** Some package private references for convience and centricity **/
     static String bafCacheURL = System.getProperty("BafCacheDir", null);
+    /** Path to the cache folder **/
+    static File cacheFolder = new File(System.getProperty("user.dir") + "/cache/");
 
     /** Logger ref **/
     private static final Logger logger = Logger.getLogger(Repository.class.getName());
@@ -116,16 +120,24 @@ public class Repository extends Entity
                 else
                     binaryLocation = new URL(bafCacheURL+colladaFile.getFile().toString().substring(0, colladaFile.getFile().toString().length() - 3) + "baf");
                 result = loadBinaryPScene(binaryLocation);
-                result.setWorldManager(m_worldManager);
-                result.finalizeDeserialization();
-                // Add into our collection
-                m_PScenes.put(colladaFile, result);
-            } catch (Exception ex)
+                if (result != null)
+                {
+                    result.setWorldManager(m_worldManager);
+                    result.finalizeDeserialization();
+                    // Add into our collection
+                    m_PScenes.put(colladaFile, result);
+                }
+            } catch (IOException ex)
             {
                 // If we get here, assume no binary file exists
             }
         }
         return result;
+    }
+
+    public synchronized void addSerializedColladaScene()
+    {
+
     }
 
     /**
