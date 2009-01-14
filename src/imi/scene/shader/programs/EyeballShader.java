@@ -166,8 +166,7 @@ public class EyeballShader extends BaseShaderProgram implements AbstractShaderPr
         result.setDefaultProgramName(EyeballShader.class.getName());
         return result;
     }
-
-    @Override
+    
     public AbstractShaderProgram duplicate() {
         EyeballShader result = new EyeballShader(this);
         return result;
