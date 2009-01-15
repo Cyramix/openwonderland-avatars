@@ -328,11 +328,13 @@ public class PMatrix implements Serializable
 	}
     }
 
-    
+    // only used in set2
+    // todo: convert set2 to perform Quat conversion internally or though utils. lib
+    // warning: pulling this out could cause multi-threading issues
+    private Matrix4f jMonkeyMatrix = new Matrix4f();
     public void set2(Quaternion rotation, Vector3f translation, float scale)
     {
-        Matrix4f jMonkeyMatrix = new Matrix4f();
-
+        jMonkeyMatrix.loadIdentity();
         jMonkeyMatrix.setTranslation(translation);
         jMonkeyMatrix.multLocal(rotation);
         
