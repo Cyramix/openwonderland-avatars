@@ -38,7 +38,7 @@ import org.jdesktop.wonderland.common.comms.WonderlandObjectOutputStream;
  * Serialize the skeleton!
  * @author Ronald E Dahlgren
  */
-public class SkeletonNodeSerialization extends DemoBase
+public class SkeletonNodeSerialization
 {
     private final static Logger logger = Logger.getLogger(SkeletonNodeSerialization.class.getName());
 
@@ -50,7 +50,7 @@ public class SkeletonNodeSerialization extends DemoBase
     private static String[] FemaleAnimationLocations = {
         "assets/models/collada/Avatars/Female/Female_Anim_Idle.dae",
         "assets/models/collada/Avatars/Female/Female_Anim_Sitting.dae",
-        "assets/models/collada/Avatars/Female/Female_Anim_StandToSit.dae",
+        "assets/models/collada/Avatars/Female/Female_Anim_StandtoSit.dae",
         "assets/models/collada/Avatars/Female/Female_Anim_Walk.dae",
         "assets/models/collada/Avatars/Female/Female_Anim_Run.dae",
         "assets/models/collada/Avatars/Female/Female_Anim_Wave.dae"
@@ -100,21 +100,36 @@ public class SkeletonNodeSerialization extends DemoBase
             logger.severe("Could not initialize static urls to skeletons.");
         }
     }
+
+    private final int NumArgs = 1;
     
     public SkeletonNodeSerialization(String[] args)
     {
-        super(args);
+        if (args.length != NumArgs)
+            printUsage();
+        else
+        {
+            WorldManager wm = null;
+            if (args[0].equalsIgnoreCase("-m"))
+            {
+                wm = new WorldManager("TheWorldManager");
+                createSerializedSkeleton(wm, true);
+            }
+            else if (args[0].equalsIgnoreCase("-f"))
+            {
+                wm = new WorldManager("TheWorldManager");
+                createSerializedSkeleton(wm, false);
+            }
+            else
+                printUsage();
+            System.exit(0);
+        }
+
     }
 
     public static void main(String[] args)
     {
         SkeletonNodeSerialization worldTest = new SkeletonNodeSerialization(args);
-    }
-
-    @Override
-    protected void createDemoEntities(WorldManager wm)
-    {
-        createSerializedSkeleton(wm, true); // load the male skeleton
     }
 
     private void createSerializedSkeleton(WorldManager wm, boolean bLoadMale)
@@ -201,6 +216,13 @@ public class SkeletonNodeSerialization extends DemoBase
         }
 
         return result;
+    }
+
+    private void printUsage()
+    {
+        System.err.println("Usage: <command> -m | -f");
+        System.err.println("-m : Bake the male skeleton");
+        System.err.println("-f : Bake the Female skeleton");
     }
 }
 
