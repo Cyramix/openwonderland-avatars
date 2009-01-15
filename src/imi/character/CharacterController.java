@@ -176,4 +176,11 @@ public abstract class CharacterController
         return 0.0f;
     }
 
+    /** Override to implement optional functionalllity **/ 
+    public void setMaxAcceleration(float max) {
+    }
+
+    /** Override to implement optional functionalllity **/ 
+    public void setMaxVelocity(float max) {
+    }    
 }

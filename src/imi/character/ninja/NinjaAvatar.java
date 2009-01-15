@@ -26,6 +26,7 @@ import imi.character.statemachine.corestates.FlyState;
 import imi.character.statemachine.corestates.FallFromSitState;
 import imi.character.statemachine.corestates.ActionState;
 import imi.character.CharacterAttributes;
+import imi.character.statemachine.corestates.RunState;
 import java.net.URL;
 import org.jdesktop.mtgame.WorldManager;
 
@@ -85,6 +86,13 @@ public class NinjaAvatar extends Ninja
         walk.setMinimumTimeBeforeTransition(0.05f);
         walk.setTransitionDuration(0.1f);
         
+        RunState run = (RunState)m_context.getState(RunState.class);
+        run.setImpulse(15.0f);
+        run.setWalkSpeedMax(1.0f);
+        run.setWalkSpeedFactor(1.0f);
+        run.setMinimumTimeBeforeTransition(0.5f);
+        run.setTransitionDuration(0.3f);
+        
         TurnState turn = (TurnState)m_context.getState(TurnState.class);
         turn.setAnimationSpeed(1.5f);
         turn.setTransitionDuration(0.05f);
@@ -132,6 +140,7 @@ public class NinjaAvatar extends Ninja
         m_context.getStateMapping().get(ActionState.class).setAnimationName("Male_Wave");
         m_context.getStateMapping().get(TurnState.class).setAnimationName("Male_Idle");
         m_context.getStateMapping().get(WalkState.class).setAnimationName("Male_Walk");
+        m_context.getStateMapping().get(RunState.class).setAnimationName("Male_Run");
         m_context.getStateMapping().get(SitState.class).setAnimationName("Male_StandToSit");
         m_context.getStateMapping().get(FlyState.class).setAnimationName("Male_Sitting");
         ((SitState)m_context.getStateMapping().get(SitState.class)).setIdleSittingAnimationName("Male_Sitting");

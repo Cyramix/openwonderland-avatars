@@ -245,6 +245,7 @@ public class NinjaController extends CharacterController
         return maxAcceleration;
     }
 
+    @Override
     public void setMaxAcceleration(float maxAcceleration) {
         this.maxAcceleration = maxAcceleration;
     }
@@ -253,6 +254,7 @@ public class NinjaController extends CharacterController
         return maxVelocity;
     }
 
+    @Override
     public void setMaxVelocity(float maxVelocity) {
         this.maxVelocity = maxVelocity;
     }
@@ -350,6 +352,4 @@ public class NinjaController extends CharacterController
     public void setModelInstance(PPolygonModelInstance newModelInstance) {
         body = newModelInstance;
     }
-
-
 }

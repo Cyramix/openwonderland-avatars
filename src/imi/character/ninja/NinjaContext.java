@@ -51,7 +51,9 @@ import imi.character.objects.SpatialObject;
 import imi.character.statemachine.GameContext;
 import imi.character.statemachine.GameState.Action;
 import imi.character.statemachine.corestates.ActionInfo;
-import imi.scene.animation.AnimationComponent.PlaybackMode;
+import imi.character.statemachine.corestates.RunState;
+import imi.character.statemachine.corestates.transitions.RunToWalk;
+import imi.character.statemachine.corestates.transitions.WalkToRun;
 import java.util.ArrayList;
 import java.util.Hashtable;
 
@@ -133,6 +135,7 @@ public class NinjaContext extends GameContext
         gameStates.put(FlyState.class,   new FlyState(this));
         gameStates.put(FallFromSitState.class,   new FallFromSitState(this));
         gameStates.put(SitOnGroundState.class,   new SitOnGroundState(this));
+        gameStates.put(RunState.class,   new RunState(this));
         
         // Set the state to start with
         setCurrentState(gameStates.get(IdleState.class));
@@ -144,6 +147,7 @@ public class NinjaContext extends GameContext
         RegisterStateEntryPoint(gameStates.get(ActionState.class), "toPunch");
         RegisterStateEntryPoint(gameStates.get(FlyState.class),   "toFly");
         RegisterStateEntryPoint(gameStates.get(SitOnGroundState.class),   "toSitOnGround");
+        RegisterStateEntryPoint(gameStates.get(RunState.class),   "toRun");
                 
         // Add transitions (exit points)
         gameStates.get(IdleState.class).addTransition(new IdleToTurn());
@@ -151,6 +155,7 @@ public class NinjaContext extends GameContext
         gameStates.get(IdleState.class).addTransition(new IdleToAction());
         gameStates.get(WalkState.class).addTransition(new WalkToIdle());
         gameStates.get(WalkState.class).addTransition(new WalkToAction());
+        gameStates.get(WalkState.class).addTransition(new WalkToRun());
         gameStates.get(TurnState.class).addTransition(new TurnToIdle());
         gameStates.get(TurnState.class).addTransition(new TurnToWalk());
         gameStates.get(TurnState.class).addTransition(new TurnToAction());
@@ -163,6 +168,7 @@ public class NinjaContext extends GameContext
         gameStates.get(IdleState.class).addTransition(new IdleToSitOnGround());
         gameStates.get(FallFromSitState.class).addTransition(new SitOnGroundToIdle());
         gameStates.get(SitOnGroundState.class).addTransition(new SitOnGroundToIdle());
+        gameStates.get(RunState.class).addTransition(new RunToWalk());
         
         // Set default info for animations utilizing the ActionState
         configureDefaultActionStateInfo();

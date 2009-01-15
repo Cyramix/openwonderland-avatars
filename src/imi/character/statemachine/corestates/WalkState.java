@@ -32,12 +32,12 @@ public class WalkState extends GameState
 {
     GameContext context           = null;
         
-    private float impulse               = 15.0f;
+    protected float impulse               = 15.0f;
     
     private float walkSpeedMax          = 2.5f;
     private float walkSpeedFactor       = 1.3f; //  The walk state is using this value and OVERWRITES the super's animation speed...
     
-    private float exitCounter           = 0.0f;
+    protected float exitCounter           = 0.0f;
     private float minimumTimeBeforeTransition = 0.05f; // still needed?
     
     public WalkState(NinjaContext master)
@@ -69,7 +69,7 @@ public class WalkState extends GameState
         return true;
     }
      
-    private void takeAction(float deltaTime) 
+    protected void takeAction(float deltaTime) 
     {
         float x = context.getActions()[NinjaContext.ActionNames.Movement_X.ordinal()];
         //float y = actions[ActionNames.Movement_Y.ordinal()];
@@ -131,6 +131,9 @@ public class WalkState extends GameState
         super.stateEnter(owner);
         
         exitCounter   = 0.0f;
+        
+        owner.getController().setMaxAcceleration(8.0f);
+        owner.getController().setMaxVelocity(3.0f);
         
 //        if (bHack)
 //        {
