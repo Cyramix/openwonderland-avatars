@@ -1,6 +1,19 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+/**
+ * Project Wonderland
+ *
+ * Copyright (c) 2004-2008, Sun Microsystems, Inc., All Rights Reserved
+ *
+ * Redistributions in source code form must reproduce the above
+ * copyright and this condition.
+ *
+ * The contents of this file are subject to the GNU General Public
+ * License, Version 2 (the "License"); you may not use this file
+ * except in compliance with the License. A copy of the License is
+ * available at http://www.opensource.org/licenses/gpl-license.php.
+ *
+ * Sun designates this particular file as subject to the "Classpath"
+ * exception as provided by Sun in the License file that accompanied
+ * this code.
  */
 
 /*
@@ -10,7 +23,9 @@
  */
 
 package imi.gui;
-
+////////////////////////////////////////////////////////////////////////////////
+// Imports
+////////////////////////////////////////////////////////////////////////////////
 import com.jme.math.Vector3f;
 import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
 import imi.scene.polygonmodel.parts.skinned.SkinnedMeshJoint;
@@ -21,7 +36,7 @@ import java.util.Map;
 
 /**
  *
- * @author ptruong
+ * @author Paul Viet Ngueyn Truong (ptruong)
  */
 public class JFrame_SimpAdvOptions extends javax.swing.JFrame {
 ////////////////////////////////////////////////////////////////////////////////
@@ -35,17 +50,34 @@ public class JFrame_SimpAdvOptions extends javax.swing.JFrame {
 // Class Methods
 ////////////////////////////////////////////////////////////////////////////////
 
-    /** Creates new form JFrame_SimpAdvOptions */
+    /**
+     * Default constructor initializes basic GUI components.  Requires setting of
+     * the scene essentials and creation of joint catalog afterwards before the
+     * window is usable
+     */
     public JFrame_SimpAdvOptions() {
         initComponents();
     }
 
+    /**
+     * Overloaded constructor initualizes the basic GUI componets as well as setting
+     * the class reference to the scene essentails and creates the joint catalog
+     * used to manipulate the skeleton
+     * @param sceneinfo - reference to the entire scene and file I/O controls
+     */
     public JFrame_SimpAdvOptions(SceneEssentials sceneinfo) {
         m_sceneData = sceneinfo;
         initComponents();
         createJointCatalog();
     }
 
+    /**
+     * Adjusts the joints catagorized under eyes.  Adjusts the location in
+     * 3D space and scaling
+     * @param type - integer represents the type of stomach manipulation
+     * @param mod - delta modification of the selected slider/scrollbox
+     * @param actualval - the actual value of modification from the selected slider/scrollbox
+     */
     private synchronized void adjustEyes(GUI_Enums.m_sliderControl type, float mod, float actualval) {
         SkeletonNode        skelnode        = m_sceneData.getAvatar().getSkeleton();
         String              formattedNumber = null;
@@ -178,6 +210,13 @@ public class JFrame_SimpAdvOptions extends javax.swing.JFrame {
         }
     }
 
+    /**
+     * Adjusts the joints catagorized under arms.  Adjusts the location in
+     * 3D space and scaling
+     * @param type - integer represents the type of stomach manipulation
+     * @param mod - delta modification of the selected slider/scrollbox
+     * @param actualval - the actual value of modification from the selected slider/scrollbox
+     */
     private synchronized void adjustArms(GUI_Enums.m_sliderControl type, float mod, float actualval) {
         SkeletonNode    skelnode        = m_sceneData.getAvatar().getSkeleton();
         String          formattedNumber = null;
@@ -247,6 +286,13 @@ public class JFrame_SimpAdvOptions extends javax.swing.JFrame {
         }
     }
 
+    /**
+     * Adjusts the joints catagorized under legs.  Adjusts the location in
+     * 3D space and scaling
+     * @param type - integer represents the type of stomach manipulation
+     * @param mod - delta modification of the selected slider/scrollbox
+     * @param actualval - the actual value of modification from the selected slider/scrollbox
+     */
     private synchronized void adjustLegs(GUI_Enums.m_sliderControl type, float mod, float actualval) {
         SkeletonNode    skelnode    = m_sceneData.getAvatar().getSkeleton();
         if (skelnode == null) { return; }
@@ -292,6 +338,13 @@ public class JFrame_SimpAdvOptions extends javax.swing.JFrame {
         }
     }
 
+    /**
+     * Adjusts the joints catagorized under body.  Adjusts the location in
+     * 3D space and scaling
+     * @param type - integer represents the type of stomach manipulation
+     * @param mod - delta modification of the selected slider/scrollbox
+     * @param actualval - the actual value of modification from the selected slider/scrollbox
+     */
     private synchronized void adjustBody(GUI_Enums.m_sliderControl type, float mod, float actualval) {
 
     }
@@ -376,6 +429,9 @@ public class JFrame_SimpAdvOptions extends javax.swing.JFrame {
 // Helper Functions
 ////////////////////////////////////////////////////////////////////////////////
 
+    /**
+     * Sets up a listing of SkinnedMeshJoints for the arms for quick access
+     */
     public void catalogArms() {
         if (m_sceneData.getAvatar() == null)
             return;
@@ -411,6 +467,9 @@ public class JFrame_SimpAdvOptions extends javax.swing.JFrame {
         m_skeleton.put(GUI_Enums.m_bodyPart.Right_Arm, right);
     }
 
+    /**
+     * Sets up a listing of SkinnedMeshJoints for the shoulders for quick access
+     */
     public void catalogShoulders() {
         if (m_sceneData.getAvatar() == null)
             return;
@@ -436,6 +495,9 @@ public class JFrame_SimpAdvOptions extends javax.swing.JFrame {
         m_skeleton.put(GUI_Enums.m_bodyPart.Right_Shoulder, right);
     }
 
+    /**
+     * Sets up a listing of SkinnedMeshJoints for the torso for quick access
+     */
     public void catalogTorso() {
         if (m_sceneData.getAvatar() == null)
             return;
@@ -457,6 +519,9 @@ public class JFrame_SimpAdvOptions extends javax.swing.JFrame {
         m_skeleton.put(GUI_Enums.m_bodyPart.Torso, torso);
     }
 
+    /**
+     * Sets up a listing of SkinnedMeshJoints for the legs for quick access
+     */
     public void catalogLegs() {
         if (m_sceneData.getAvatar() == null)
             return;
@@ -482,6 +547,9 @@ public class JFrame_SimpAdvOptions extends javax.swing.JFrame {
         m_skeleton.put(GUI_Enums.m_bodyPart.Right_Leg, right);
     }
 
+    /**
+     * Sets up a listing of SkinnedMeshJoints for the head for quick access
+     */
     public void catalogHead() {
         if (m_sceneData.getAvatar() == null)
             return;
@@ -507,6 +575,9 @@ public class JFrame_SimpAdvOptions extends javax.swing.JFrame {
         m_skeleton.put(GUI_Enums.m_bodyPart.Head, head);
     }
 
+    /**
+     * Sets up a listing of SkinnedMeshJoints for the neck for quick access
+     */
     public void catalogNeck() {
         if (m_sceneData.getAvatar() == null)
             return;
@@ -528,6 +599,9 @@ public class JFrame_SimpAdvOptions extends javax.swing.JFrame {
         m_skeleton.put(GUI_Enums.m_bodyPart.Neck, neck);
     }
 
+    /**
+     * Sets up a listing of SkinnedMeshJoints for the eyes for quick access
+     */
     public void catalogEyes() {
         if (m_sceneData.getAvatar() == null)
             return;
@@ -550,6 +624,9 @@ public class JFrame_SimpAdvOptions extends javax.swing.JFrame {
         m_skeleton.put(GUI_Enums.m_bodyPart.Eyes, eyes);
     }
 
+    /**
+     * Sets up a listing of SkinnedMeshJoints for the lips for quick access
+     */
     public void catalogLips() {
         if (m_sceneData.getAvatar() == null)
             return;
@@ -572,6 +649,10 @@ public class JFrame_SimpAdvOptions extends javax.swing.JFrame {
         m_skeleton.put(GUI_Enums.m_bodyPart.Lips, lips);
     }
 
+    /**
+     * Creates a complete listing of all the SkinnedMeshJoints for the entire
+     * avatar body
+     */
     public void createJointCatalog() {
         if (m_sceneData.getAvatar() == null)
             return;
@@ -586,6 +667,13 @@ public class JFrame_SimpAdvOptions extends javax.swing.JFrame {
         catalogLips();
     }
 
+    /**
+     * Switchboard for all the joint sliders.  Pushes the correct response to the
+     * right methods.
+     * @param control - which slider control of effect
+     * @param mod - delta modification value from the slider
+     * @param actualval - actual modification value from the slider
+     */
     public void parseModification(GUI_Enums.m_sliderControl control, float mod, float actualval) {
         switch(control)
         {

@@ -36,7 +36,10 @@ public class JPanel_Animations extends javax.swing.JPanel {
 ////////////////////////////////////////////////////////////////////////////////
 // Methods
 ////////////////////////////////////////////////////////////////////////////////
-    /** Creates new form JPanel_Animations */
+    /**
+     * Default constructor initializes all the GUI components and starts the update
+     * timer
+     */
     public JPanel_Animations() {
         initComponents();
         initTimer();
@@ -274,6 +277,12 @@ public class JPanel_Animations extends javax.swing.JPanel {
         }        
     }
 
+    /**
+     * Uses the scene essentials file I/O to let the user select a facial or body
+     * animation and then subsequently load that selected file into the appropriate
+     * animation group in the avatar.  Only available if an avatar is loaded
+     * @param type - integer 1 for body animations and 2 for facial animations
+     */
     public void loadAnimations(int type) {
         m_sceneInfo.loadDAEAnimationFile(type, true, this);
     }
@@ -282,7 +291,9 @@ public class JPanel_Animations extends javax.swing.JPanel {
 // Accessors
 ////////////////////////////////////////////////////////////////////////////////
     public javax.swing.Timer getAnimTimer() { return m_animTimer; }
+
     public imi.scene.PNode getSelectedModelInstanceNode() {return (imi.scene.PNode) jComboBox_ModelInstances.getSelectedItem(); }
+
     public imi.scene.polygonmodel.PPolygonModelInstance getSelectedModelInstance() {
         if (jComboBox_ModelInstances.getSelectedIndex() >= 0) {
             return ((imi.scene.polygonmodel.PPolygonModelInstance)jComboBox_ModelInstances.getSelectedItem());
@@ -296,12 +307,15 @@ public class JPanel_Animations extends javax.swing.JPanel {
     public void setAnimTimer(javax.swing.Timer animTime) { 
         m_animTimer = animTime;
     }
+
     public void setPScene(imi.scene.PScene pScene) {
         m_pscene = pScene;
     }
-    public void startTimer() { 
+
+    public void startTimer() {
         m_animTimer.start();
     }
+
     public void setPanel(imi.gui.SceneEssentials sceneData) {
         m_sceneInfo = sceneData;
         m_pscene    = sceneData.getPScene();
@@ -309,6 +323,7 @@ public class JPanel_Animations extends javax.swing.JPanel {
         reloadSelectedModelAnimations();
         setSpeedSlider();
     }
+
     public void resetPanel() {
         reloadModelInstances();
         reloadSelectedModelAnimations();
@@ -566,6 +581,11 @@ public class JPanel_Animations extends javax.swing.JPanel {
         add(jButton_AddFaceAnim, gridBagConstraints);
     }// </editor-fold>//GEN-END:initComponents
 
+    /**
+     * Switches to the user selected body animation from the combobox containing
+     * animations.
+     * @param evt
+     */
     private void jComboBox_BodyAnimationsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox_BodyAnimationsActionPerformed
         if (jComboBox_BodyAnimations.isEnabled()) {
             imi.scene.polygonmodel.PPolygonModelInstance instance = ((imi.scene.polygonmodel.PPolygonModelInstance)jComboBox_ModelInstances.getSelectedItem());
@@ -576,6 +596,11 @@ public class JPanel_Animations extends javax.swing.JPanel {
         }
 }//GEN-LAST:event_jComboBox_BodyAnimationsActionPerformed
 
+    /**
+     * Switches to the user selected body animation from the combobox containing
+     * facial animations
+     * @param evt
+     */
     private void jComboBox_FacialAnimationsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox_FacialAnimationsActionPerformed
         if (jComboBox_FacialAnimations.isEnabled()) {
             imi.scene.polygonmodel.PPolygonModelInstance instance = ((imi.scene.polygonmodel.PPolygonModelInstance)jComboBox_ModelInstances.getSelectedItem());
@@ -586,19 +611,19 @@ public class JPanel_Animations extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_jComboBox_FacialAnimationsActionPerformed
 
-/**
- * Change the speed of the animation
- * @param e (ChangeEvent)
- */
-private void jSlider_AnimationsStateChanged(javax.swing.event.ChangeEvent e) {
-    if (jSlider_Animations.isEnabled()) {
-        float fAnimSpeed = (jSlider_Animations.getValue() * 0.10f);
-        imi.scene.polygonmodel.PPolygonModelInstance instance = ((imi.scene.polygonmodel.PPolygonModelInstance)jComboBox_ModelInstances.getSelectedItem());
-        imi.scene.PNode node = ((imi.scene.PNode)instance.findChild("skeletonRoot"));
-        imi.scene.polygonmodel.parts.skinned.SkeletonNode skeleton = ((imi.scene.polygonmodel.parts.skinned.SkeletonNode)node.getParent());
-        skeleton.getAnimationState().setAnimationSpeed(fAnimSpeed);
+    /**
+     * Change the speed of the animation
+     * @param e (ChangeEvent)
+     */
+    private void jSlider_AnimationsStateChanged(javax.swing.event.ChangeEvent e) {
+        if (jSlider_Animations.isEnabled()) {
+            float fAnimSpeed = (jSlider_Animations.getValue() * 0.10f);
+            imi.scene.polygonmodel.PPolygonModelInstance instance = ((imi.scene.polygonmodel.PPolygonModelInstance)jComboBox_ModelInstances.getSelectedItem());
+            imi.scene.PNode node = ((imi.scene.PNode)instance.findChild("skeletonRoot"));
+            imi.scene.polygonmodel.parts.skinned.SkeletonNode skeleton = ((imi.scene.polygonmodel.parts.skinned.SkeletonNode)node.getParent());
+            skeleton.getAnimationState().setAnimationSpeed(fAnimSpeed);
+        }
     }
-}
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton_AddBodyAnim;

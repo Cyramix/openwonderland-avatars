@@ -17,28 +17,22 @@
  */
 package imi.gui;
 ////////////////////////////////////////////////////////////////////////////////
-// Imports - BEGIN
+// Imports
 ////////////////////////////////////////////////////////////////////////////////
 import com.jme.math.Vector3f;
 import imi.character.AttachmentParams;
 import imi.character.CharacterAttributes;
-import imi.character.ninja.NinjaAvatar;
 import imi.scene.PMatrix;
 import imi.tests.BaseDefault;
 import java.awt.Component;
 import java.awt.Cursor;
-import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-////////////////////////////////////////////////////////////////////////////////
-// Imports - END
-////////////////////////////////////////////////////////////////////////////////
 
 /**
  *
@@ -58,13 +52,13 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
     protected Component               m_Parent;
     protected CharacterAttributes     m_Attributes, m_newAttribs;
     protected String[]                m_PrevHeadAttachments         = new String[4];
-////////////////////////////////////////////////////////////////////////////////
-// CLASS DATA MEMBERS - END
-////////////////////////////////////////////////////////////////////////////////
+
 ////////////////////////////////////////////////////////////////////////////////
 // CLASS METHODS - BEGIN
 ////////////////////////////////////////////////////////////////////////////////
-    /** Creates new form JPanel_BasicOptions */
+    /**
+     * Default constructor initalizes the GUI Components
+     */
     public JPanel_BasicOptions() {
         initComponents();
     }
@@ -72,6 +66,13 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
     ////////////////////////////////////////////////////////////////////////////
     // Inits
     ////////////////////////////////////////////////////////////////////////////
+    /**
+     * Initializes the JList box with a listing of various available heads
+     * that are located on the server.  The list population is based on what mode
+     * the panel is set (Male- only shows male associations, Female- only shows
+     * female associations, View- shows all items
+     * @param isViewMode boolean true to only preview item not on an avatar
+     */
     public void InitHeadList(boolean isViewMode) {
         ArrayList<String[]> data;
         String[] list;
@@ -101,6 +102,13 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
         jList_Heads1.setListData(list);
     }
 
+    /**
+     * Initializes the JList box with a listing of various available UpperBody meshes
+     * that are located on the server.  The list population is based on what mode
+     * the panel is set (Male- only shows male associations, Female- only shows
+     * female associations, View- shows all associations
+     * @param isViewMode boolean true to only preview item not on an avatar
+     */
     public void InitUpperBodyList(boolean isViewMode) {
         ArrayList<String[]> data;
         String[] list;
@@ -128,6 +136,13 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
         jList_UpperBody.setListData(list);
     }
 
+    /**
+     * Initializes the JList box with a listing of various available LowerBody meshes
+     * that are located on the server.  The list population is based on what mode
+     * the panel is set (Male- only shows male associations, Female- only shows
+     * female associations, View- shows all associations
+     * @param isViewMode boolean true to only preview item not on an avatar
+     */
     public void InitLowerBodyList(boolean isViewMode) {
         ArrayList<String[]> data;
         String[] list;
@@ -155,6 +170,13 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
         jList_LowerBody.setListData(list);
     }
 
+    /**
+     * Initializes the JList box with a listing of various available Shoes meshes
+     * that are located on the server.  The list population is based on what mode
+     * the panel is set (Male- only shows male associations, Female- only shows
+     * female associations, View- shows all associations
+     * @param isViewMode boolean true to only preview item not on an avatar
+     */
     public void InitShoesList(boolean isViewMode) {
         ArrayList<String[]> data;
         String[] list;
@@ -181,6 +203,13 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
         jList_Shoes.setListData(list);
     }
 
+    /**
+     * Initializes the JList box with a listing of various available Hair meshes
+     * that are located on the server.  The list population is based on what mode
+     * the panel is set (Male- only shows male associations, Female- only shows
+     * female associations, View- shows all associations
+     * @param isViewMode boolean true to only preview item not on an avatar
+     */
     public void InitHairList(boolean isViewMode) {
         ArrayList<String[]> data;
         String[] list;
@@ -208,6 +237,13 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
         jList_Hair.setListData(list);
     }
 
+    /**
+     * Initializes the JList box with a listing of various available FacialHair meshes
+     * that are located on the server.  The list population is based on what mode
+     * the panel is set (Male- only shows male associations, Female- only shows
+     * female associations, View- shows all associations
+     * @param isViewMode boolean true to only preview item not on an avatar
+     */
     public void InitFacialHairList(boolean isViewMode) {
         // TODO: Once we get some facial hair stuff
         ArrayList<String[]> data;
@@ -236,6 +272,13 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
         jList_FacialHair.setListData(list);
     }
 
+    /**
+     * Initializes the JList box with a listing of various available Hat meshes
+     * that are located on the server.  The list population is based on what mode
+     * the panel is set (Male- only shows male associations, Female- only shows
+     * female associations, View- shows all associations
+     * @param isViewMode boolean true to only preview item not on an avatar
+     */
     public void InitHatsList(boolean isViewMode) {
         ArrayList<String[]> data;
         String[] list;
@@ -263,6 +306,13 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
         jList_Hats.setListData(list);
     }
 
+    /**
+     * Initializes the JList box with a listing of various available Spectacles meshes
+     * that are located on the server.  The list population is based on what mode
+     * the panel is set (Male- only shows male associations, Female- only shows
+     * female associations, View- shows all associations
+     * @param isViewMode boolean true to only preview item not on an avatar
+     */
     public void InitSpecsList(boolean isViewMode) {
         ArrayList<String[]> data;
         String[] list;
@@ -290,6 +340,11 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
         jList_Specs.setListData(list);
     }
 
+    /**
+     * Master function which initializes all the JList boxes by calling the
+     * individual method calls.
+     * @param isViewMode boolean true to only preview item not on an avatar
+     */
     public void InitListBoxes(boolean isViewMode) {
         InitHeadList(isViewMode);
         InitUpperBodyList(isViewMode);
@@ -303,6 +358,12 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
     ////////////////////////////////////////////////////////////////////////////
     // Loading
     ////////////////////////////////////////////////////////////////////////////
+    /**
+     * Loads the selected head mesh (selection from JListBox) onto the avatar or
+     * to view if set for view mode.  Method queries the database for the desiered
+     * model information and then calls load functions in the scene essentials class
+     * @param isViewMode boolean true to only preview item not on an avatar
+     */
     public void loadHead(boolean isViewMode) {
         if (!isViewMode) {
             if (m_sceneData.getAvatar() == null)
@@ -348,6 +409,13 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
         jLabel_CurrHead1.setText(selection);
     }
 
+    /**
+     * Loads the selected head mesh (selection from JListBox) onto the avatar or
+     * to view if set for view mode.  Method queries the database for the desiered
+     * model information and then calls load functions in the scene essentials class
+     * This method is for the second head JListBox
+     * @param isViewMode boolean true to only preview item not on an avatar
+     */
     public void loadHead1(boolean isViewMode) {
         if (!isViewMode) {
             if (m_sceneData.getAvatar() == null)
@@ -393,6 +461,13 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
         jLabel_CurrHead1.setText(selection);
     }
 
+    /**
+     * Loads the selected upperbody mesh(s) (selection from JListBox) onto the
+     * avatar or to view if set for view mode.  Method queries the database for
+     * the desiered model information and then calls load functions in the
+     * scene essentials class
+     * @param isViewMode boolean true to only preview item not on an avatar
+     */
     public void loadUpperBody(boolean isViewMode) {
         if (!isViewMode) {
             if (m_sceneData.getAvatar() == null)
@@ -441,6 +516,13 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
         jLabel_CurrUpperBody.setText(selection);
     }
 
+    /**
+     * Loads the selected lowerbody mesh(s) (selection from JListBox) onto the
+     * avatar or to view if set for view mode.  Method queries the database for
+     * the desiered model information and then calls load functions in the
+     * scene essentials class
+     * @param isViewMode boolean true to only preview item not on an avatar
+     */
     public void loadLowerBody(boolean isViewMode) {
         if (!isViewMode) {
             if (m_sceneData.getAvatar() == null)
@@ -489,6 +571,13 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
         jLabel_CurrLowerBody.setText(selection);
     }
 
+    /**
+     * Loads the selected shoe mesh(s) (selection from JListBox) onto the
+     * avatar or to view if set for view mode.  Method queries the database for
+     * the desiered model information and then calls load functions in the
+     * scene essentials class
+     * @param isViewMode boolean true to only preview item not on an avatar
+     */
     public void loadShoes(boolean isViewMode) {
         if (!isViewMode) {
             if (m_sceneData.getAvatar() == null)
@@ -537,6 +626,13 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
         jLabel_CurrShoes.setText(selection);
     }
 
+    /**
+     * Loads the selected hair mesh(s) (selection from JListBox) onto the
+     * avatar or to view if set for view mode.  Method queries the database for
+     * the desiered model information and then calls load functions in the
+     * scene essentials class
+     * @param isViewMode boolean true to only preview item not on an avatar
+     */
     public void loadHair(boolean isViewMode) {
         if (!isViewMode) {
             if (m_sceneData.getAvatar() == null)
@@ -582,6 +678,13 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
         jLabel_CurrHair.setText(selection);
     }
 
+    /**
+     * Loads the selected facial hair mesh(s) (selection from JListBox) onto the
+     * avatar or to view if set for view mode.  Method queries the database for
+     * the desiered model information and then calls load functions in the
+     * scene essentials class
+     * @param isViewMode boolean true to only preview item not on an avatar
+     */
     public void loadFacialHair(boolean isViewmode) {
         if (!isViewmode) {
             if (m_sceneData.getAvatar() == null)
@@ -627,6 +730,13 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
         jLabel_CurrFacialHair.setText(selection);
     }
 
+    /**
+     * Loads the selected hats mesh(s) (selection from JListBox) onto the
+     * avatar or to view if set for view mode.  Method queries the database for
+     * the desiered model information and then calls load functions in the
+     * scene essentials class
+     * @param isViewMode boolean true to only preview item not on an avatar
+     */
     public void loadHats(boolean isViewMode) {
         if (!isViewMode) {
             if (m_sceneData.getAvatar() == null)
@@ -672,6 +782,13 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
         jLabel_CurrHat.setText(selection);
     }
 
+    /**
+     * Loads the selected spectacles mesh(s) (selection from JListBox) onto the
+     * avatar or to view if set for view mode.  Method queries the database for
+     * the desiered model information and then calls load functions in the
+     * scene essentials class
+     * @param isViewMode boolean true to only preview item not on an avatar
+     */
     public void loadSpecs(boolean isViewMode) {
         if (!isViewMode) {
             if (m_sceneData.getAvatar() == null)
@@ -717,6 +834,11 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
         jLabel_CurrSpecs.setText(selection);
     }
 
+    /**
+     * Master method that loads each item that is selected in every JListBox by
+     * calling the specific method assigned to each box in the Body catagory
+     * @param isViewMode boolean true to only preview item not on an avatar
+     */
     public void applyAllBody(boolean isViewMode) {
         setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 
@@ -730,6 +852,11 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
         setCursor(null);
     }
 
+    /**
+     * Master method that loads each item that is selected in every JListBox by
+     * calling the specific method assigned to each box in the Head catagory
+     * @param isViewMode boolean true to only preview item not on an avatar
+     */
     public void applyAllHair(boolean isViewMode) {
         setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 
@@ -742,6 +869,11 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
         setCursor(null);
     }
 
+    /**
+     * Master method that loads each item that is selected in every JListBox by
+     * calling the specific method assigned to each box in the Acc catagory
+     * @param isViewMode boolean true to only preview item not on an avatar
+     */
     public void applyAllAcc(boolean isViewMode) {
         setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 
@@ -753,7 +885,10 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
         setCursor(null);
     }
 
-    // TODO: put facial animations on server and add it here. embed default faical anim and default idle
+    /**
+     * Loads a default avatar.  Based on if Male more or Female mode is selected
+     * a default avatar is created and loaded.
+     */
     public void loadDefaultAvatar() {
         if (!jButton_Male.isEnabled())
             return;
@@ -795,6 +930,10 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
         }
     }
 
+    /**
+     * Sets the gender variable to 1 (male), then subsuquently initializes all
+     * the JList boxes and then calls the loadDefaultAvatar() method
+     */
     public void maleAvatarMode() {
         setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         m_gender = 1;
@@ -805,7 +944,6 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
 
         jTabbedPane_Options.setSelectedIndex(0);
         InitListBoxes(m_isViewMode);
-        m_sceneData.setDefaultLoad(true);
 
         loadDefaultAvatar();
 
@@ -815,6 +953,10 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
         setCursor(null);
     }
 
+    /**
+     * Sets the gender variable to 2 (female), then subsuquently initializes all
+     * the JList boxes and then calls the loadDefaultAvatar() method
+     */
     public void femaleAvatarMode() {
         setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         m_gender = 2;
@@ -825,7 +967,6 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
 
         jTabbedPane_Options.setSelectedIndex(0);
         InitListBoxes(m_isViewMode);
-        m_sceneData.setDefaultLoad(false);
 
         loadDefaultAvatar();
 
@@ -835,6 +976,10 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
         setCursor(null);
     }
 
+    /**
+     * Sets the GUI to viewmode allowing viewing of all models available from the
+     * server individually (not loaded on an avatar)
+     */
     public void viewMode() {
         setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         m_isViewMode = true;
@@ -851,6 +996,16 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
         setCursor(null);
     }
 
+    /**
+     * Fills out the paramaters for attributes when swapping out or adding new meshes
+     * to the current loaded character
+     * @param bindpose - location to the collada file containing mesh data for model
+     * @param data - array of strings of locations to other collada file meshes to add to the model
+     * @param geom - array of strings of geometry names to add
+     * @param anim - array of strings of the names of body animations load onto the character
+     * @param region - subgroup to add the the actual geometry
+     */
+    @Deprecated
     public void addToAttributes(String bindpose, ArrayList<String[]> data, String[] geom, String[] anim, int region) {
         // Create avatar attribs
         ArrayList<CharacterAttributes.SkinnedMeshParams> add    = new ArrayList<CharacterAttributes.SkinnedMeshParams>();
@@ -889,17 +1044,11 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
             m_newAttribs = new CharacterAttributes(m_Attributes.getName());
 
         m_newAttribs.setBaseURL("");
-        // NOLONGERRELVANT--->
-//        if (bindpose == null)
-//            m_newAttribs.setBindPoseFile(null);
-//        else
-//            m_newAttribs.setBindPoseFile(bindpose);
         if (anim == null)
             m_newAttribs.setAnimations(null);
         else
             m_newAttribs.setAnimations(anim);
         m_Attributes.setGeomRefByRegion(region, meshes);
-        // NOLONGERRELVANT---> m_newAttribs.setDeleteInstructions(delete.toArray(new String[delete.size()]));
         m_newAttribs.setLoadInstructions(load);
         m_newAttribs.setAddInstructions(add.toArray(new CharacterAttributes.SkinnedMeshParams[add.size()]));
         m_newAttribs.setAttachmentsInstructions(attach.toArray(new AttachmentParams[attach.size()]));
@@ -940,12 +1089,8 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
         m_gender = gender;
     }
 
-////////////////////////////////////////////////////////////////////////////////
-// CLASS METHODS - END
-////////////////////////////////////////////////////////////////////////////////
-
     /** This method is called from within the constructor to
-     * initialize the form.
+     * initialize the form
      * WARNING: Do NOT modify this code. The content of this method is
      * always regenerated by the Form Editor.
      */
@@ -1768,7 +1913,4 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
     public boolean isWindowsOS() {
         return getOS().contains("Windows");
     }
-////////////////////////////////////////////////////////////////////////////////
-// Helper Functions - End
-////////////////////////////////////////////////////////////////////////////////
 }

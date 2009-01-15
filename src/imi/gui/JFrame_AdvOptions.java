@@ -74,7 +74,8 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
      * Adjusts the joints catagorized under eyes.  Adjusts location in 3D space
      * and scaling.
      * @param type - integer represents the type of eye manipulation
-     * @param e - ChangeEvent
+     * @param mod - delta modification of the selected slider/scrollbox
+     * @param actualval - the actual value of modification from the selected slider/scrollbox
      */
     private synchronized void adjustEyes(GUI_Enums.m_sliderControl type, float mod, float actualval) {
         SkeletonNode        skelnode        = m_sceneData.getAvatar().getSkeleton();
@@ -212,7 +213,8 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
      * Adjusts the joints catagorized under hands.  Adjusts location in 3D space
      * and scaling.
      * @param type integer represnts the type of hand manipulation
-     * @param e - ChangeEvent
+     * @param mod - delta modification of the selected slider/scrollbox
+     * @param actualval - the actual value of modification from the selected slider/scrollbox
      */
     private synchronized void adjustHands(GUI_Enums.m_sliderControl type, float mod, float actualval) {
         SkeletonNode skelnode           = m_sceneData.getAvatar().getSkeleton();
@@ -263,7 +265,8 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
      * Adjusts the joints catagorized under forearms.  Adjusts the location in 3D
      * space and scaling
      * @param type - integer represents the type of forearm manipulation
-     * @param e - ChangeEvent
+     * @param mod - delta modification of the selected slider/scrollbox
+     * @param actualval - the actual value of modification from the selected slider/scrollbox
      */
     private synchronized void adjustForearms(GUI_Enums.m_sliderControl type, float mod, float actualval) {
         SkeletonNode    skelnode    = m_sceneData.getAvatar().getSkeleton();
@@ -336,7 +339,8 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
      * Adjusts the joints catagorized under upperarms.  Adjusts the location in
      * 3D space and scaling
      * @param type - integer represents the type of upperarm manipulation
-     * @param e - ChangeEvent
+     * @param mod - delta modification of the selected slider/scrollbox
+     * @param actualval - the actual value of modification from the selected slider/scrollbox
      */
     private synchronized void adjustUpperarms(GUI_Enums.m_sliderControl type, float mod, float actualval) {
         SkeletonNode    skelnode        = m_sceneData.getAvatar().getSkeleton();
@@ -409,7 +413,8 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
      * Adjusts the joints catagorized under feet.  Adjusts the location in
      * 3D space and scaling
      * @param type - integer represents the type of feet manipulation
-     * @param e - ChangeEvent
+     * @param mod - delta modification of the selected slider/scrollbox
+     * @param actualval - the actual value of modification from the selected slider/scrollbox
      */
     private synchronized void adjustFeet(GUI_Enums.m_sliderControl type, float mod, float actualval) {
         SkeletonNode    skelnode    = m_sceneData.getAvatar().getSkeleton();
@@ -459,7 +464,8 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
      * Adjusts the joints catagorized under calves.  Adjusts the location in
      * 3D space and scaling
      * @param type - integer represents the type of calves manipulation
-     * @param e - ChangeEvent
+     * @param mod - delta modification of the selected slider/scrollbox
+     * @param actualval - the actual value of modification from the selected slider/scrollbox
      */
     private synchronized void adjustCalves(GUI_Enums.m_sliderControl type, float mod, float actualval) {
         SkeletonNode    skelnode    = m_sceneData.getAvatar().getSkeleton();
@@ -532,7 +538,8 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
      * Adjusts the joints catagorized under thighs.  Adjusts the location in
      * 3D space and scaling
      * @param type - integer represents the type of thighs manipulation
-     * @param e - ChangeEvent
+     * @param mod - delta modification of the selected slider/scrollbox
+     * @param actualval - the actual value of modification from the selected slider/scrollbox
      */
     private synchronized void adjustThighs(GUI_Enums.m_sliderControl type, float mod, float actualval) {
         SkeletonNode    skelnode    = m_sceneData.getAvatar().getSkeleton();
@@ -583,7 +590,8 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
      * Adjusts the joints catagorized under chest.  Adjusts the location in
      * 3D space and scaling
      * @param type - integer represents the type of chest manipulation
-     * @param e - ChangeEvent
+     * @param mod - delta modification of the selected slider/scrollbox
+     * @param actualval - the actual value of modification from the selected slider/scrollbox
      */
     // TODO: write functionality
     private synchronized void adjustChest(GUI_Enums.m_sliderControl type, float mod, float actualval) {
@@ -594,7 +602,8 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
      * Adjusts the joints catagorized under stomach.  Adjusts the location in
      * 3D space and scaling
      * @param type - integer represents the type of stomach manipulation
-     * @param e - ChangeEvent
+     * @param mod - delta modification of the selected slider/scrollbox
+     * @param actualval - the actual value of modification from the selected slider/scrollbox
      */
     // TODO: write functionality
     private synchronized void adjustStomach(GUI_Enums.m_sliderControl type, float mod, float actualval) {
@@ -605,7 +614,8 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
      * Adjusts the joints catagorized under butt.  Adjusts the location in
      * 3D space and scaling
      * @param type - integer represents the type of butt manipulation
-     * @param e - ChangeEvent
+     * @param mod - delta modification of the selected slider/scrollbox
+     * @param actualval - the actual value of modification from the selected slider/scrollbox
      */
     // TODO: write functionality
     private synchronized void adjustGluts(GUI_Enums.m_sliderControl type, float mod, float actualval) {
@@ -616,7 +626,8 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
      * Adjusts the joints catagorized under body.  Adjusts the location in
      * 3D space and scaling
      * @param type - integer represents the type of body manipulation
-     * @param e - ChangeEvent
+     * @param mod - delta modification of the selected slider/scrollbox
+     * @param actualval - the actual value of modification from the selected slider/scrollbox
      */
     // TODO: write functionality
     private synchronized void adjustBody(GUI_Enums.m_sliderControl type, float mod, float actualval) {

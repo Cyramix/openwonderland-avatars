@@ -36,11 +36,23 @@ public class JPanel_ArmsHandsOption extends javax.swing.JPanel {
 ////////////////////////////////////////////////////////////////////////////////
     private JFrame  m_baseFrame     =   null;
 
-    /** Creates new form JPanel_ArmsHandsOption */
+////////////////////////////////////////////////////////////////////////////////
+// CLASS METHODS
+////////////////////////////////////////////////////////////////////////////////
+    /**
+     * Default constructor initializes the GUI components.  Before frame is usable
+     * the parent frame needs to be set and the sliders need to be associated with
+     * the joint/grouping it controls.
+     */
     public JPanel_ArmsHandsOption() {
         initComponents();
     }
 
+    /**
+     * Overloaded constructor initializes the GUI components and sets the parent
+     * frame and the slider associations
+     * @param baseFrame
+     */
     public JPanel_ArmsHandsOption(JFrame baseFrame) {
         m_baseFrame = baseFrame;
         initComponents();
@@ -290,6 +302,13 @@ public class JPanel_ArmsHandsOption extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
+////////////////////////////////////////////////////////////////////////////////
+// MUTATORS
+////////////////////////////////////////////////////////////////////////////////
+
+    public void setParentFrame(JFrame frame) {
+        m_baseFrame = frame;
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private imi.gui.JPanel_VerticalSliderT LeftHand_Length;
@@ -326,10 +345,11 @@ public class JPanel_ArmsHandsOption extends javax.swing.JPanel {
 // HELPER FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 
-    public void setParentFrame(JFrame frame) {
-        m_baseFrame = frame;
-    }
-
+    /**
+     * Sets the slider's joint associations and parent windows.  The associations
+     * specify which joints the slider controls.  The parent window allows the slider
+     * data to be sent to the switchboard found in the base window.
+     */
     public void setSliderControls() {
         LeftHand_Length.setObjectRef(GUI_Enums.m_sliderControl.lefthandLength);
         LeftHand_Thickness.setObjectRef(GUI_Enums.m_sliderControl.lefthandThickness);
@@ -356,9 +376,5 @@ public class JPanel_ArmsHandsOption extends javax.swing.JPanel {
         RightLowerarm_Thickness.setParentFrame((JFrame_AdvOptions) m_baseFrame);
         RightUpperarm_Length.setParentFrame((JFrame_AdvOptions) m_baseFrame);
         RightUpperarm_Thickness.setParentFrame((JFrame_AdvOptions) m_baseFrame);
-    }
-
-    public void setArmConstraints() {
-
     }
 }

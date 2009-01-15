@@ -22,14 +22,13 @@
  */
 
 package imi.gui;
-
+////////////////////////////////////////////////////////////////////////////////
+// Imports
+////////////////////////////////////////////////////////////////////////////////
 import com.jme.math.Vector3f;
-import imi.character.Character;
 import imi.character.AttachmentParams;
 import imi.character.CharacterAttributes;
-import imi.character.ninja.NinjaAvatar;
 import imi.scene.PMatrix;
-import imi.scene.PNode;
 import imi.scene.polygonmodel.PPolygonMeshInstance;
 import imi.scene.polygonmodel.parts.PMeshMaterial;
 import imi.scene.polygonmodel.skinned.PPolygonSkinnedMeshInstance;
@@ -40,10 +39,9 @@ import imi.scene.shader.dynamic.GLSLCompileException;
 import imi.scene.shader.dynamic.GLSLDataType;
 import imi.scene.shader.dynamic.GLSLShaderProgram;
 import imi.scene.shader.effects.MeshColorModulation;
+import imi.scene.shader.programs.ClothingShaderDiffuseAsSpec;
 import imi.scene.shader.programs.ClothingShaderSpecColor;
-import imi.scene.shader.programs.EyeballShader;
 import imi.scene.shader.programs.FleshShader;
-import imi.tests.BaseDefault;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Graphics;
@@ -80,10 +78,12 @@ import org.xml.sax.SAXParseException;
 
 /**
  *
- * @author ptruong
+ * @author Paul Viet Ngueyn Truong (ptruong)
  */
 public class JPanel_EZOptions extends javax.swing.JPanel {
-
+////////////////////////////////////////////////////////////////////////////////
+// Class Data Members
+////////////////////////////////////////////////////////////////////////////////
     ArrayList<String[]>                 m_presetLists;
     ArrayList<Map<Integer, String[]>>   m_presets;
     Map<Integer, String[]>              m_meshes, m_addList;
@@ -97,7 +97,13 @@ public class JPanel_EZOptions extends javax.swing.JPanel {
     boolean[]                           m_Colors            = new boolean[] { false, false, false, false, false, false, false };
     int                                 m_gender            = 1;
 
-    /** Creates new form JPanel_EZOptions */
+////////////////////////////////////////////////////////////////////////////////
+// Class Methods
+////////////////////////////////////////////////////////////////////////////////
+    /**
+     * Default constructor initialzes all the GUI components and sets up a table
+     * listener for row selection events
+     */
     public JPanel_EZOptions() {
         initComponents();
 
@@ -117,6 +123,12 @@ public class JPanel_EZOptions extends javax.swing.JPanel {
         });
     }
 
+    /**
+     * Parses an xml file that contains preset avatar configurations for user selection.
+     * XML format is very specific (see the actual file for format).  This method
+     * converts the File to a URL to load
+     * @param xmlFile - the file location of the xmlFile to load and parse
+     */
     public void readPresetList(File xmlFile) {
         try {
             URL xmlURL = xmlFile.toURI().toURL();
@@ -126,6 +138,11 @@ public class JPanel_EZOptions extends javax.swing.JPanel {
         }
     }
 
+    /**
+     * Parses an xml file that contains preset avatar configurations for user selection.
+     * XML format is very specific (see the actual file for format).
+     * @param xmlURL - the URL location of the xmlFile to load and parse
+     */
     public void readPresetList(URL xmlURL) {
 
         try {
@@ -431,6 +448,11 @@ public class JPanel_EZOptions extends javax.swing.JPanel {
             jButton_Load.setEnabled(true);
     }
 
+    /**
+     * Creates a model and cellrenderer for the JTable that will contain the list
+     * of presets.  Once created it fills the model with the table information and
+     * sets it to the JTable.
+     */
     public void setTable() {
         if (m_presetLists == null)
             return;
@@ -448,6 +470,10 @@ public class JPanel_EZOptions extends javax.swing.JPanel {
         jTable_Presets.setVisible(true);
     }
 
+    /**
+     * Sets the color indicator to the user selected color.
+     * @param selectedColor - color object selected by the user
+     */
     public void selectColor(Color selectedColor) {
 
         if (selectedColor != null) {
@@ -494,6 +520,12 @@ public class JPanel_EZOptions extends javax.swing.JPanel {
 
     }
 
+    /**
+     * Creates a listing of skinnedmesh instances and uses this list to apply a
+     * color modulation to the avatar.  The color used for modulation is specified
+     * by the user per catagory (skine tone, hair color, etc).  Shader property is
+     * added to to the meshes in that catagory.
+     */
     public void setShaderColors() {
         if (m_sceneData.getAvatar() == null)
             return;
@@ -511,8 +543,6 @@ public class JPanel_EZOptions extends javax.swing.JPanel {
             if (m_Colors[i] == false)
                 continue;
 
-            AbstractShaderProgram shader = null;
-            int iCheck  = 0;
             Color c     = null;
 
             switch(i)
@@ -522,7 +552,6 @@ public class JPanel_EZOptions extends javax.swing.JPanel {
                     if (lHair == null)
                         break;
 
-                    iCheck = 0;
                     c = jPanel_HairColor.getBackground();
                     float[] color = new float[3];
                     color[0] = ((float)c.getRed()/255);
@@ -531,11 +560,7 @@ public class JPanel_EZOptions extends javax.swing.JPanel {
 
                     for (int j = 0; j < lHair.size(); j++) {
                         PPolygonMeshInstance mesh = (PPolygonMeshInstance)lHair.get(j);
-                        if (iCheck == 0) {
-                            shader = createMeshShader(mesh);
-                            iCheck = 1;
-                        }
-                        setMeshColor(mesh, shader, color);
+                        setMeshColor(mesh, color);
                     }
                     break;
                 }
@@ -544,7 +569,6 @@ public class JPanel_EZOptions extends javax.swing.JPanel {
                     if (lFacialHair == null)
                         break;
 
-                    iCheck = 0;
                     c = jPanel_FHairColor.getBackground();
                     float[] color = new float[3];
                     color[0] = ((float)c.getRed()/255);
@@ -553,11 +577,7 @@ public class JPanel_EZOptions extends javax.swing.JPanel {
 
                     for (int j = 0; j < lFacialHair.size(); j++) {
                         PPolygonMeshInstance mesh = (PPolygonMeshInstance)lFacialHair.get(j);
-                        if (iCheck == 0) {
-                            shader = createMeshShader(mesh);
-                            iCheck = 1;
-                        }
-                        setMeshColor(mesh, shader, color);
+                        setMeshColor(mesh, color);
                     }
                     break;
                 }
@@ -566,7 +586,6 @@ public class JPanel_EZOptions extends javax.swing.JPanel {
                     if (lHead == null)
                         break;
 
-                    iCheck = 0;
                     c = jPanel_EyeColors.getBackground();
                     float[] color = new float[3];
                     color[0] = ((float)c.getRed()/255);
@@ -576,18 +595,13 @@ public class JPanel_EZOptions extends javax.swing.JPanel {
                     for (int j = 0; j < lHead.size(); j++) {
                         if (lHead.get(j).getName().contains("Eye")) {
                            PPolygonMeshInstance mesh = (PPolygonMeshInstance)lHead.get(j);
-                            if (iCheck == 0) {
-                                shader = createMeshShader(mesh);
-                                iCheck = 1;
-                            }
-                            setMeshColor(mesh, shader, color);
+                           setMeshColor(mesh, color);
                         }
                     }
                     break;
                 }
                 case 3: // Skin Tone
                 {
-                    iCheck = 0;
                     c = jPanel_SkinTone.getBackground();
                     float[] color = new float[3];
                     color[0] = ((float)c.getRed()/255);
@@ -597,53 +611,33 @@ public class JPanel_EZOptions extends javax.swing.JPanel {
                     for (int j = 0; j < lHead.size(); j++) {
                         if (lHead.get(j).getName().contains("Head")) {
                            PPolygonMeshInstance mesh = (PPolygonMeshInstance)lHead.get(j);
-                            if (iCheck == 0) {
-                                shader = createMeshShader(mesh);
-                                iCheck = 1;
-                            }
-                            setMeshColor(mesh, shader, color);
+                           setMeshColor(mesh, color);
                         }
                     }
 
                     for (int j = 0; j < lHands.size(); j++) {
                         PPolygonMeshInstance mesh = (PPolygonMeshInstance)lHands.get(j);
-                        if (iCheck == 0) {
-                            shader = createMeshShader(mesh);
-                            iCheck = 1;
-                        }
-                        setMeshColor(mesh, shader, color);
+                        setMeshColor(mesh, color);
                     }
 
                     for (int j = 0; j < lUpperBody.size(); j++) {
                         if (lUpperBody.get(j).getName().contains("Nude") || lUpperBody.get(j).getName().contains("Arms")) {
                            PPolygonMeshInstance mesh = (PPolygonMeshInstance)lUpperBody.get(j);
-                            if (iCheck == 0) {
-                                shader = createMeshShader(mesh);
-                                iCheck = 1;
-                            }
-                            setMeshColor(mesh, shader, color);
+                           setMeshColor(mesh, color);
                         }
                     }
 
                     for (int j = 0; j < lLowerBody.size(); j++) {
                         if (lLowerBody.get(j).getName().contains("Nude") || lLowerBody.get(j).getName().contains("Legs")) {
                            PPolygonMeshInstance mesh = (PPolygonMeshInstance)lLowerBody.get(j);
-                            if (iCheck == 0) {
-                                shader = createMeshShader(mesh);
-                                iCheck = 1;
-                            }
-                            setMeshColor(mesh, shader, color);
+                           setMeshColor(mesh, color);
                         }
                     }
 
                     for (int j = 0; j < lFeet.size(); j++) {
                         if (lFeet.get(j).getName().contains("Nude") || lFeet.get(j).getName().contains("Foot")) {
                            PPolygonMeshInstance mesh = (PPolygonMeshInstance)lFeet.get(j);
-                            if (iCheck == 0) {
-                                shader = createMeshShader(mesh);
-                                iCheck = 1;
-                            }
-                            setMeshColor(mesh, shader, color);
+                           setMeshColor(mesh, color);
                         }
                     }
 
@@ -654,7 +648,6 @@ public class JPanel_EZOptions extends javax.swing.JPanel {
                     if (lUpperBody == null)
                         break;
 
-                    iCheck = 0;
                     c = jPanel_ShirtColor.getBackground();
                     float[] color = new float[3];
                     color[0] = ((float)c.getRed()/255);
@@ -666,11 +659,7 @@ public class JPanel_EZOptions extends javax.swing.JPanel {
                             continue;
 
                         PPolygonMeshInstance mesh = (PPolygonMeshInstance)lUpperBody.get(j);
-                        if (iCheck == 0) {
-                            shader = createMeshShader(mesh);
-                            iCheck = 1;
-                        }
-                        setMeshColor(mesh, shader, color);
+                        setMeshColor(mesh, color);
                     }
 
                     break;
@@ -680,7 +669,6 @@ public class JPanel_EZOptions extends javax.swing.JPanel {
                     if (lLowerBody == null)
                         break;
 
-                    iCheck = 0;
                     c = jPanel_PantsColor.getBackground();
                     float[] color = new float[3];
                     color[0] = ((float)c.getRed()/255);
@@ -692,11 +680,7 @@ public class JPanel_EZOptions extends javax.swing.JPanel {
                             continue;
 
                         PPolygonMeshInstance mesh = (PPolygonMeshInstance)lLowerBody.get(j);
-                        if (iCheck == 0) {
-                            shader = createMeshShader(mesh);
-                            iCheck = 1;
-                        }
-                        setMeshColor(mesh, shader, color);
+                        setMeshColor(mesh, color);
                     }
                     break;
                 }
@@ -705,7 +689,6 @@ public class JPanel_EZOptions extends javax.swing.JPanel {
                     if (lFeet == null)
                         break;
 
-                    iCheck = 0;
                     c = jPanel_ShoesColor.getBackground();
                     float[] color = new float[3];
                     color[0] = ((float)c.getRed()/255);
@@ -717,11 +700,7 @@ public class JPanel_EZOptions extends javax.swing.JPanel {
                             continue;
 
                         PPolygonMeshInstance mesh = (PPolygonMeshInstance)lFeet.get(j);
-                        if (iCheck == 0) {
-                            shader = createMeshShader(mesh);
-                            iCheck = 1;
-                        }
-                        setMeshColor(mesh, shader, color);
+                        setMeshColor(mesh, color);
                     }
                     break;
                 }
@@ -731,6 +710,91 @@ public class JPanel_EZOptions extends javax.swing.JPanel {
             m_Colors[i] = false;
     }
 
+    /**
+     * Grabs the material and shader set to the selected mesh and checks to see
+     * if a color modulation effect is applied.  If not it creates a new shader
+     * property and resets the material to the selected mesh instance.
+     * @param meshInst - mesh to apply the color modulation to
+     * @param fColorArray - the user specified color to apply
+     */
+    public void setMeshColor(PPolygonMeshInstance meshInst, float[] fColorArray) {
+        // assign a texture to the mesh instance
+        PMeshMaterial material = meshInst.getMaterialRef().getMaterial();
+        AbstractShaderProgram shader = material.getShader();
+
+        try {
+            
+            // Setting the new color property onto the model here
+            if (shader instanceof FleshShader)
+                ((FleshShader) shader).setProperty(new ShaderProperty("materialColor", GLSLDataType.GLSL_VEC3, fColorArray));
+            else if (shader instanceof ClothingShaderSpecColor)
+                ((ClothingShaderSpecColor) shader).setProperty(new ShaderProperty("baseColor", GLSLDataType.GLSL_VEC3, fColorArray));
+            else if (shader instanceof ClothingShaderDiffuseAsSpec)
+                ((ClothingShaderDiffuseAsSpec) shader).setProperty(new ShaderProperty("baseColor", GLSLDataType.GLSL_VEC3, fColorArray));
+
+        } catch (NoSuchPropertyException ex) {
+            System.out.println("SEVER EXCEPTION: " + ex.getMessage());
+        }
+
+        meshInst.setMaterial(material);
+        meshInst.applyMaterial();
+    }
+
+    /**
+     * Applys the user selected color to the shader by creating a new shader proprty
+     * with the color modulation and then reapplys the material to the mesh instance
+     * @param meshInst - mesh to apply the color modulation to
+     * @param shader - the shader to add the shaderproprty to
+     * @param fColorArray - the user specified color to apply
+     */
+    @Deprecated
+    public void setMeshColor(PPolygonMeshInstance meshInst, AbstractShaderProgram shader, float[] fColorArray) {
+        PMeshMaterial material = meshInst.getMaterialRef().getMaterial();
+        try {
+            // Setting the new color property onto the model here
+            if (shader instanceof FleshShader)
+                ((FleshShader)shader).setProperty(new ShaderProperty("materialColor", GLSLDataType.GLSL_VEC3, fColorArray));
+            if (shader instanceof ClothingShaderSpecColor)
+                ((ClothingShaderSpecColor)shader).setProperty(new ShaderProperty("materialColor", GLSLDataType.GLSL_VEC3, fColorArray));
+        } catch (NoSuchPropertyException ex) {
+            System.out.println("SEVER EXCEPTION: " + ex.getMessage());
+        }
+
+        meshInst.setMaterial(material);
+        meshInst.applyMaterial();
+    }
+
+    /**
+     * Adds the color modulation affect to the shader
+     * @param meshInst - the mesh to apply the color modulation
+     * @return AbstractShaderProgram shader
+     */
+    @Deprecated
+    public AbstractShaderProgram createMeshShader(PPolygonMeshInstance meshInst) {
+        // assign a texture to the mesh instance
+        PMeshMaterial material = meshInst.getMaterialRef().getMaterial();
+        GLSLShaderProgram shader = (GLSLShaderProgram) material.getShader();
+
+        MeshColorModulation meshModulator = new MeshColorModulation();
+        // Already contained?
+        if (shader.containsEffect(meshModulator) == false)
+        {
+            shader.addEffect(meshModulator);
+            try {
+                shader.compile();
+            } catch (GLSLCompileException ex) {
+                System.out.println("SEVER EXCEPTION: " + ex.getMessage());
+            }
+        }
+
+        return (AbstractShaderProgram)shader;
+    }
+
+    /**
+     * Creates an attribute based on the preset selected and loads the attributes
+     * into a new avatar
+     * @param selection - the selected preset from the JTable
+     */
     public void loadAvatar(int selection) {
         // Create avatar attribs
         CharacterAttributes                                 attribs = new CharacterAttributes("Avatar");
@@ -829,6 +893,7 @@ public class JPanel_EZOptions extends javax.swing.JPanel {
         }
     }
 
+    /** Mutators */
     public void setSceneData(SceneEssentials se) {
         m_sceneData = se;
     }
@@ -837,67 +902,13 @@ public class JPanel_EZOptions extends javax.swing.JPanel {
         m_Parent = c;
     }
 
-    public void setMeshColor(PPolygonMeshInstance meshInst, float[] fColorArray) {
-        // assign a texture to the mesh instance
-        PMeshMaterial material = meshInst.getMaterialRef().getMaterial();
-        GLSLShaderProgram shader = (GLSLShaderProgram) material.getShader();
-        MeshColorModulation meshModulator = new MeshColorModulation();
-        // Already contained?
-        if (shader.containsEffect(meshModulator) == false)
-        {
-            shader.addEffect(meshModulator);
-            try {
-                shader.compile();
-            } catch (GLSLCompileException ex) {
-                System.out.println("SEVER EXCEPTION: " + ex.getMessage());
-            }
-        }
+    public void setGender(int sex) {
+        m_gender = sex;
 
-        try {
-            // Setting the new color property onto the model here
-            shader.setProperty(new ShaderProperty("materialColor", GLSLDataType.GLSL_VEC3, fColorArray));
-        } catch (NoSuchPropertyException ex) {
-            System.out.println("SEVER EXCEPTION: " + ex.getMessage());
-        }
-
-        meshInst.setMaterial(material);
-        meshInst.applyMaterial();
-    }
-
-    public void setMeshColor(PPolygonMeshInstance meshInst, AbstractShaderProgram shader, float[] fColorArray) {
-        PMeshMaterial material = meshInst.getMaterialRef().getMaterial();
-        try {
-            // Setting the new color property onto the model here
-            if (shader instanceof FleshShader)
-                ((FleshShader)shader).setProperty(new ShaderProperty("materialColor", GLSLDataType.GLSL_VEC3, fColorArray));
-            if (shader instanceof ClothingShaderSpecColor)
-                ((ClothingShaderSpecColor)shader).setProperty(new ShaderProperty("materialColor", GLSLDataType.GLSL_VEC3, fColorArray));
-        } catch (NoSuchPropertyException ex) {
-            System.out.println("SEVER EXCEPTION: " + ex.getMessage());
-        }
-
-        meshInst.setMaterial(material);
-        meshInst.applyMaterial();
-    }
-
-    public AbstractShaderProgram createMeshShader(PPolygonMeshInstance meshInst) {
-        // assign a texture to the mesh instance
-        PMeshMaterial material = meshInst.getMaterialRef().getMaterial();
-        GLSLShaderProgram shader = (GLSLShaderProgram) material.getShader();
-
-        MeshColorModulation meshModulator = new MeshColorModulation();
-        // Already contained?
-        if (shader.containsEffect(meshModulator) == false)
-        {
-            shader.addEffect(meshModulator);
-            try {
-                shader.compile();
-            } catch (GLSLCompileException ex) {
-                System.out.println("SEVER EXCEPTION: " + ex.getMessage());
-            }
-        }
-
-        return (AbstractShaderProgram)shader;
+        if (m_gender == 1)
+            jRadioButton_GenderMale.setSelected(true);
+        else if (m_gender == 2)
+            jRadioButton_GenderFemale.setSelected(true);
     }
 
     /** This method is called from within the constructor to
@@ -1413,7 +1424,12 @@ public class JPanel_EZOptions extends javax.swing.JPanel {
     private javax.swing.JTable jTable_Presets;
     private javax.swing.JTextField jTextField_AvatarName;
     // End of variables declaration//GEN-END:variables
-
+////////////////////////////////////////////////////////////////////////////////
+// Helper Functions
+////////////////////////////////////////////////////////////////////////////////
+    /**
+     * Custom cell renderer for the JTable to display preview images of the avatar
+     */
     public class advImageCellRender extends JLabel implements TableCellRenderer {
 
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
@@ -1438,6 +1454,9 @@ public class JPanel_EZOptions extends javax.swing.JPanel {
         }
     }
 
+    /**
+     * Custom cell renderer for the JTable to display the description of the avatar
+     */
     public class advTextCellRender extends JTextArea implements TableCellRenderer {
 
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
@@ -1458,36 +1477,11 @@ public class JPanel_EZOptions extends javax.swing.JPanel {
         }
     }
 
-    public class advButton extends JButton {
-        public int      m_x, m_y, m_width, m_height;
-        public Color    m_ColorDefault;
-        public Color    m_ColorCurrent;
-
-        public advButton() {
-            super();
-            setSize(75, 29);
-            m_x             = getBounds().x;
-            m_y             = getBounds().y;
-            m_width         = getBounds().width;
-            m_height        = getBounds().height;
-            m_ColorDefault  = getBackground();
-            m_ColorCurrent  = getBackground();
-        }
-
-        @Override
-        public void paintComponent(Graphics g) {
-            super.paintComponent(g);
-        }
-
-        public void setCurColor(Color c) {
-            m_ColorCurrent = c;
-        }
-
-        public void resetColor() {
-            m_ColorCurrent = m_ColorDefault;
-        }
-    }
-
+    /**
+     * Takes the parsed data from the xml file and parses it to displayable data
+     * on the JTable
+     * @return string double array
+     */
     public String[][] formatTableData() {
         String[][] data = null;
         if (m_presetLists != null) {
@@ -1500,14 +1494,5 @@ public class JPanel_EZOptions extends javax.swing.JPanel {
             }
         }
         return data;
-    }
-
-    public void setGender(int sex) {
-        m_gender = sex;
-
-        if (m_gender == 1)
-            jRadioButton_GenderMale.setSelected(true);
-        else if (m_gender == 2)
-            jRadioButton_GenderFemale.setSelected(true);
-    }
+    }    
 }
