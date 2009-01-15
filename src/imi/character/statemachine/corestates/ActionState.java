@@ -23,14 +23,21 @@ import imi.scene.animation.AnimationComponent.PlaybackMode;
 import imi.scene.animation.AnimationListener.AnimationMessageType;
 
 /**
- * This class represents a character's general action behavior
+ * This class represents a character's general action behavior, it may
+ * be played once and exit or repeat with oscilation (back and forth) or loop.
  * @author Lou Hayt
  */
 public class ActionState extends GameState 
 {
+    /** The context of this state */
     GameContext context = null;
             
+    /** true if the animation played at least once since the state was entered */
     private boolean bPlayedOnce = false;
+    /** true to keep repeating the animation, this resets when the state is entered  */
+    private boolean bRepeat     = false;
+    /** true to have an oscilating repeat, false to have it loop */
+    private boolean bRepeatWillOscilate = false;
     
     /**
      * Construct a new instance with the provided context.
@@ -87,7 +94,7 @@ public class ActionState extends GameState
         super.update(deltaTime);
                                  
         // Check for possible transitions
-        if (bPlayedOnce)
+        if (bPlayedOnce && !bRepeat)
             transitionCheck();
     }
     
@@ -95,8 +102,60 @@ public class ActionState extends GameState
     public void notifyAnimationMessage(AnimationMessageType message) 
     {
         if (message == AnimationMessageType.TransitionComplete)
-            gameContext.getSkeleton().getAnimationState().setCurrentCyclePlaybackMode(PlaybackMode.PlayOnce);
+        {
+            if (bPlayedOnce)
+            {
+                if (bRepeatWillOscilate)
+                    gameContext.getSkeleton().getAnimationState().setCurrentCyclePlaybackMode(PlaybackMode.Oscillate);
+                else
+                    gameContext.getSkeleton().getAnimationState().setCurrentCyclePlaybackMode(PlaybackMode.Loop);
+            }
+            else
+                gameContext.getSkeleton().getAnimationState().setCurrentCyclePlaybackMode(PlaybackMode.PlayOnce);
+        }
         else if (message == AnimationMessageType.PlayOnceComplete)
             bPlayedOnce = true;
+    }
+
+    /**
+     * If repeat is on this state will not check for transitions
+     * (it will repeat the animation again and again)
+     * @return
+     */
+    public boolean isRepeat() {
+        return bRepeat;
+    }
+
+    /**
+     * Repeat animations for an open (undefined) period of time (e.g. talking on the cell phone)
+     * @param bRepeat
+     */
+    public void setRepeat(boolean bRepeat) {
+        this.bRepeat = bRepeat;
+    }
+
+    /**
+     * if Repeat is turned on it may repeat the animation with a loop or
+     * oscilation (back and forth)
+     * @return
+     */
+    public boolean isRepeatWillOscilate() {
+        return bRepeatWillOscilate;
+    }
+
+    /**
+     * The animation repeats will either oscilate or loop
+     * @param bRepeatWillOscilate
+     */
+    public void setRepeatWillOscilate(boolean bRepeatWillOscilate) {
+        this.bRepeatWillOscilate = bRepeatWillOscilate;
+    }
+
+    /** True if the animation for this state played at least once
+     * since the state was entered.
+     * @return
+     */
+    public boolean isPlayedOnce() {
+        return bPlayedOnce;
     }
 }

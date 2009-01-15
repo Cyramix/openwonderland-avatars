@@ -33,6 +33,8 @@ public class NinjaAvatarAttributes extends CharacterAttributes
 {
     public String[] m_regions = new String[] { "Head", "Hands", "UpperBody", "LowerBody", "Feet", "Hair", "FacialHair", "Hats", "Glasses", "Jackets" };
 
+    private boolean loadedBind = false;
+    
     /**
      * Construct a new attributes instance.
      * @param name The name of the avatar
@@ -127,6 +129,16 @@ public class NinjaAvatarAttributes extends CharacterAttributes
                 add.add(new SkinnedMeshParams("polySurfaceShape1", "Feet"));
             }
             break;
+            default:
+            {
+                if(!loadedBind)
+                {
+                    loadedBind = true;
+                    load.add(new String("assets/models/collada/Avatars/Male/Male_Bind.dae"));
+                }
+                add.add(new SkinnedMeshParams("RFootNudeShape",  "Feet"));
+                add.add(new SkinnedMeshParams("LFootNudeShape",  "Feet"));
+            }
         }   
     }
 
@@ -282,6 +294,15 @@ public class NinjaAvatarAttributes extends CharacterAttributes
                 add.add(new SkinnedMeshParams("SuitPantsShape", "LowerBody"));
             }
             break;
+            default:
+            {
+                if(!loadedBind)
+                {
+                    loadedBind = true;
+                    load.add(new String("assets/models/collada/Avatars/Male/Male_Bind.dae"));
+                }
+                add.add(new SkinnedMeshParams("LegsNudeShape",  "LowerBody"));
+            }
         }   
     }
 
@@ -338,13 +359,23 @@ public class NinjaAvatarAttributes extends CharacterAttributes
                 add.add(new SkinnedMeshParams("SuitJacketShape", "UpperBody"));
             }
             break;
+            default:
+            {
+                if(!loadedBind)
+                {
+                    loadedBind = true;
+                    load.add(new String("assets/models/collada/Avatars/Male/Male_Bind.dae"));
+                }
+                add.add(new SkinnedMeshParams("TorsoNudeShape",  "UpperBody"));
+            }
         }   
     }
 
     protected void loadDefaultBindPose()
     {
         ArrayList<String> load      = new ArrayList<String>();
-        load.add(new String("assets/models/collada/Avatars/Male/Male_Bind.dae")); // change!
+        load.add(new String("assets/models/collada/Avatars/Male/Male_Bind.dae"));
+        loadedBind = true;
 
         ArrayList<SkinnedMeshParams> add       = new ArrayList<SkinnedMeshParams>();
         add.add(new SkinnedMeshParams("rightEyeGeoShape", "Head"));
