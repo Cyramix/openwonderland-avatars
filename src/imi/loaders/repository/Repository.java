@@ -390,14 +390,19 @@ public class Repository extends Entity
         catch(Exception ex)
         {
             logger.severe("Uh oh! Error loading skeleton for character: " + ex.getMessage());
-            ex.printStackTrace();
+            // do some back up stuff
+            MaleSkeleton = null;
+            FemaleSkeleton = null;
         }
-        // Add these into our collection
-        MaleSkeleton.setName("MaleSkeleton");
-        FemaleSkeleton.setName("FemaleSkeleton");
 
-        m_Skeletons.add(MaleSkeleton);
-        m_Skeletons.add(FemaleSkeleton);
+        // Add these into our collection if they loaded successfuly
+        if (MaleSkeleton != null && FemaleSkeleton != null) // These will either both be null or both be valid
+        {
+            MaleSkeleton.setName("MaleSkeleton");
+            FemaleSkeleton.setName("FemaleSkeleton");
+            m_Skeletons.add(MaleSkeleton);
+            m_Skeletons.add(FemaleSkeleton);
+        }
     }
 
     /**

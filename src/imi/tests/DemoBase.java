@@ -107,6 +107,9 @@ import org.jdesktop.mtgame.RenderBuffer;
  */
 public class DemoBase 
 {
+    /** Logger ref **/
+    protected final static Logger logger = Logger.getLogger(DemoBase.class.getName());
+
     protected WorldManager  worldManager    = null;
     protected Repository    repository      = null;
     protected CameraNode    cameraNode      = null;
@@ -115,6 +118,8 @@ public class DemoBase
     private int          width              = 800;
     private int          height             = 600;
     private float        aspect             = 800.0f/600.0f;
+
+    private String[]    m_args = null; // Cache command line options for derived classes usage
     
     private Entity m_jsceneEntity = null; // Maintained for lighting operations
     
@@ -123,8 +128,8 @@ public class DemoBase
     
     public DemoBase(String[] args) 
     {
-        System.out.println("Current Directory: " + System.getProperty("user.dir"));
-        
+        logger.info("Current Directory: " + System.getProperty("user.dir"));
+        m_args = args;
         worldManager = new WorldManager("DemoWorld");
         
         processArgs(args);

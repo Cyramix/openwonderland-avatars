@@ -26,7 +26,7 @@ import imi.scene.polygonmodel.parts.PMeshMaterial;
 import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
 import imi.scene.polygonmodel.skinned.PPolygonSkinnedMeshInstance;
 import imi.scene.processors.JSceneEventProcessor;
-import imi.scene.shader.programs.ClothingShader;
+import imi.scene.shader.programs.ClothingShaderSpecColor;
 import imi.utils.input.NinjaControlScheme;
 import java.io.File;
 import java.net.MalformedURLException;
@@ -133,7 +133,7 @@ public class SavingAndLoadingTest extends DemoBase
         meshMat.setTexture(new File("/work/avatars/assets/textures/checkerboard2.PNG"), 0); // base diffuse
         meshMat.setTexture(new File("/work/avatars/assets/textures/normal.jpg"), 1); // normal map
         meshMat.setTexture(new File("/work/avatars/assets/textures/tgatest.tga"), 2); // pattern diffuse
-        meshMat.setShader((ClothingShader)repository.newShader(ClothingShader.class));
+        meshMat.setShader((ClothingShaderSpecColor)repository.newShader(ClothingShaderSpecColor.class));
 
         // eyeballs
 //        PMeshMaterial meshMat = new PMeshMaterial("eyeballs!");

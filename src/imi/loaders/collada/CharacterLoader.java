@@ -26,6 +26,7 @@ import imi.scene.animation.AnimationComponent;
 import imi.scene.animation.AnimationGroup;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -191,6 +192,10 @@ public class CharacterLoader
             in = new WonderlandObjectInputStream(fis);
             result = (AnimationGroup)in.readObject();
             in.close();
+        }
+        catch (FileNotFoundException ex) // Not a big deal
+        {
+            logger.info("Binary animation file \"" + location.toString() + "\" does not exist.");
         }
         catch(IOException ex)
         {

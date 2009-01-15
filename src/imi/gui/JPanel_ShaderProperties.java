@@ -21,7 +21,7 @@ import imi.gui.table.ShaderPropertyTable;
 import imi.scene.shader.AbstractShaderProgram;
 import imi.scene.shader.ShaderProperty;
 import imi.scene.shader.dynamic.GLSLShaderProgram;
-import imi.scene.shader.programs.ClothingShader;
+import imi.scene.shader.programs.ClothingShaderSpecColor;
 import imi.scene.shader.programs.EyeballShader;
 import imi.scene.shader.programs.NormalAndSpecularMapShader;
 import imi.scene.shader.programs.NormalMapShader;
@@ -80,7 +80,7 @@ public class JPanel_ShaderProperties extends javax.swing.JPanel
         m_defaultShaders.add(new VertDeformerWithSpecAndNormalMap(wm));
         m_defaultShaders.add(new VertexDeformer(wm));
         m_defaultShaders.add(new EyeballShader(wm));
-        m_defaultShaders.add(new ClothingShader(wm));
+        m_defaultShaders.add(new ClothingShaderSpecColor(wm));
         initComponents(); // <-- do not trust netbeans auto-code garbage!
         loadPropertyTable();
         populatePanel();

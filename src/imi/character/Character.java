@@ -73,7 +73,8 @@ import imi.scene.shader.AbstractShaderProgram;
 import imi.scene.shader.NoSuchPropertyException;
 import imi.scene.shader.ShaderProperty;
 import imi.scene.shader.dynamic.GLSLDataType;
-import imi.scene.shader.programs.ClothingShader;
+import imi.scene.shader.programs.ClothingShaderDiffuseAsSpec;
+import imi.scene.shader.programs.ClothingShaderSpecColor;
 import imi.scene.shader.programs.EyeballShader;
 import imi.scene.shader.programs.FleshShader;
 import imi.scene.shader.programs.SimpleTNLWithAmbient;
@@ -354,13 +355,8 @@ public abstract class Character extends Entity implements SpatialObject, Animati
 
         AbstractShaderProgram accessoryShader = repo.newShader(SimpleTNLWithAmbient.class);
         AbstractShaderProgram eyeballShader = repo.newShader(EyeballShader.class);
-        AbstractShaderProgram clothingShader = repo.newShader(ClothingShader.class);
-        try {
-            // Most clothes are not defaulting to use a pattern texture
-            clothingShader.setProperty(new ShaderProperty("PatternDiffuseMapIndex", GLSLDataType.GLSL_INT, Integer.valueOf(0)));
-        } catch (NoSuchPropertyException ex) {
-            logger.log(Level.SEVERE, null, ex);
-        }
+        AbstractShaderProgram clothingShader = repo.newShader(ClothingShaderDiffuseAsSpec.class);//repo.newShader(ClothingShaderSpecColor.class);
+
         AbstractShaderProgram fleshShader = repo.newShader(FleshShader.class);
         float[] skinColor = { (230.0f/255.0f), (197.0f/255.0f), (190.0f/255.0f) };
         try {

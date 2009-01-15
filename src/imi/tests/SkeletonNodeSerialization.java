@@ -101,22 +101,27 @@ public class SkeletonNodeSerialization
         }
     }
 
-    private final int NumArgs = 1;
+    private final int MinimumNumberArgs = 1;
     
     public SkeletonNodeSerialization(String[] args)
     {
-        if (args.length != NumArgs)
+        if (args.length < MinimumNumberArgs)
             printUsage();
         else
         {
             WorldManager wm = null;
             if (args[0].equalsIgnoreCase("-m"))
             {
+                if (args.length >= 2)
+                    MaleOutputFile = new File(args[1]);
                 wm = new WorldManager("TheWorldManager");
                 createSerializedSkeleton(wm, true);
             }
             else if (args[0].equalsIgnoreCase("-f"))
             {
+
+                if (args.length >= 2)
+                    FemaleOutputFile = new File(args[1]);
                 wm = new WorldManager("TheWorldManager");
                 createSerializedSkeleton(wm, false);
             }
@@ -220,9 +225,10 @@ public class SkeletonNodeSerialization
 
     private void printUsage()
     {
-        System.err.println("Usage: <command> -m | -f");
+        System.err.println("Usage: <command> (-m | -f) <outputfile>");
         System.err.println("-m : Bake the male skeleton");
         System.err.println("-f : Bake the Female skeleton");
+        System.err.println("outputfile : Optionally provide a path to output the skeleton to.");
     }
 }
 

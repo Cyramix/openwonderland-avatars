@@ -40,7 +40,7 @@ import imi.scene.shader.dynamic.GLSLCompileException;
 import imi.scene.shader.dynamic.GLSLDataType;
 import imi.scene.shader.dynamic.GLSLShaderProgram;
 import imi.scene.shader.effects.MeshColorModulation;
-import imi.scene.shader.programs.ClothingShader;
+import imi.scene.shader.programs.ClothingShaderSpecColor;
 import imi.scene.shader.programs.EyeballShader;
 import imi.scene.shader.programs.FleshShader;
 import imi.tests.BaseDefault;
@@ -870,8 +870,8 @@ public class JPanel_EZOptions extends javax.swing.JPanel {
             // Setting the new color property onto the model here
             if (shader instanceof FleshShader)
                 ((FleshShader)shader).setProperty(new ShaderProperty("materialColor", GLSLDataType.GLSL_VEC3, fColorArray));
-            if (shader instanceof ClothingShader)
-                ((ClothingShader)shader).setProperty(new ShaderProperty("materialColor", GLSLDataType.GLSL_VEC3, fColorArray));
+            if (shader instanceof ClothingShaderSpecColor)
+                ((ClothingShaderSpecColor)shader).setProperty(new ShaderProperty("materialColor", GLSLDataType.GLSL_VEC3, fColorArray));
         } catch (NoSuchPropertyException ex) {
             System.out.println("SEVER EXCEPTION: " + ex.getMessage());
         }

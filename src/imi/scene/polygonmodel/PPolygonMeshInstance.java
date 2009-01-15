@@ -18,6 +18,8 @@
 package imi.scene.polygonmodel;
 
 import com.jme.image.Texture;
+import com.jme.math.Quaternion;
+import com.jme.math.Vector3f;
 import com.jme.scene.SharedMesh;
 import com.jme.scene.state.GLSLShaderObjectsState;
 import com.jme.scene.state.RenderState;
@@ -79,6 +81,11 @@ public class PPolygonMeshInstance extends PNode implements Serializable
     protected boolean  m_bUseGeometryMaterial       = true; 
     /** convenient state wrapper **/
     protected transient PMeshMaterialStates m_pmaterialStates = null;
+
+    /** Used in calculations **/
+    private final Vector3f m_translationBufferVector = new Vector3f();
+    private final Vector3f m_scaleBufferVector = new Vector3f();
+    private final Quaternion m_rotationBufferQuat = new Quaternion();
     /**
      * This constructor copies all the data of the other instance and inserts
      * this instance into the scene graph as a child of the provided parent.
@@ -150,17 +157,20 @@ public class PPolygonMeshInstance extends PNode implements Serializable
     {
         return m_instance;
     }
-    
+
     // called when we faltten the hierarchy on submitTransform in PScene
     public SharedMesh updateSharedMesh()
     {
-        // TODO push shader data 
-        
+        // TODO push shader data
         // can we optimize this with dirty booleans?
         PMatrix world = getTransform().getWorldMatrix(false);
-        m_instance.setLocalRotation(world.getRotation());
-        m_instance.setLocalTranslation(world.getTranslation());
-        m_instance.setLocalScale(world.getScaleVector());
+        world.getTranslation(m_translationBufferVector);
+        world.getScale(m_scaleBufferVector);
+        world.getRotation(m_rotationBufferQuat);
+
+        m_instance.setLocalRotation(m_rotationBufferQuat);
+        m_instance.setLocalTranslation(m_translationBufferVector);
+        m_instance.setLocalScale(m_scaleBufferVector);
 
         if (m_instance.getTarget().getIndexBuffer() == null)
             return null;
