@@ -17,6 +17,7 @@
  */
 package imi.character;
 
+import com.jme.image.Texture.MinificationFilter;
 import com.jme.light.PointLight;
 import com.jme.math.Quaternion;
 import com.jme.math.Vector3f;
@@ -40,7 +41,9 @@ import imi.loaders.InstructionProcessor;
 import imi.loaders.PPolygonTriMeshAssembler;
 import imi.loaders.collada.Collada;
 import imi.loaders.repository.AssetDescriptor;
+import imi.loaders.repository.AssetInitializer;
 import imi.loaders.repository.Repository;
+import imi.loaders.repository.RepositoryUser;
 import imi.loaders.repository.SharedAsset;
 import imi.loaders.repository.SharedAsset.SharedAssetType;
 import imi.loaders.repository.SharedAssetPlaceHolder;
@@ -434,9 +437,12 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         {
             PMeshMaterial meshMat = meshInst.getMaterialRef().getMaterial();
             // is this an eyeball? (also used for tongue and teeth)
-            if (meshInst.getName().contains("EyeGeoShape") ||
-                meshInst.getName().contains("Tongue")      ||
-                meshInst.getName().contains("Teeth"))
+            if (meshInst.getName().contains("EyeGeoShape"))
+            {
+                meshMat.setShader(eyeballShader);
+                meshMat.getTexture(0).setMinFilter(MinificationFilter.BilinearNoMipMaps);
+            }
+            else if (meshInst.getName().contains("Tongue") || meshInst.getName().contains("Teeth"))
                 meshMat.setShader(eyeballShader);
             else
                 meshMat.setShader(fleshShader);
@@ -1024,6 +1030,8 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         return m_initialized;
     }
 
+    private boolean m_bWaitingOnAsset = false;
+    private SharedAsset asset = null;
     /**
      * Change out the head (including head skeleton) that the avatar is using.
      * @param headLocation Where the collada file is located.
@@ -1035,12 +1043,32 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         m_skeleton.setRenderStop(true);
         m_AnimationProcessor.setEnable(false);
         m_characterProcessor.setEnabled(false);
-        // Ready the collada loader!
-        Collada colladaLoader = new Collada();
-        colladaLoader.setLoadFlags(true, true, false);
-        colladaLoader.load(new PScene(m_wm), headLocation);
 
-        SkeletonNode newHeadSkeleton = colladaLoader.getSkeletonNode();
+        // Ready the collada loader!
+        RepositoryUser headInstaller = new RepositoryUser() {
+
+            @Override
+            public void receiveAsset(SharedAsset assetRecieved) {
+                asset = assetRecieved;
+                m_bWaitingOnAsset = false;
+            }
+        };
+        AssetDescriptor descriptor = new AssetDescriptor(SharedAssetType.COLLADA, headLocation);
+        asset = new SharedAsset(m_pscene.getRepository(), descriptor);
+        m_bWaitingOnAsset = true;
+        m_pscene.getRepository().loadSharedAsset(asset, headInstaller);
+        while (m_bWaitingOnAsset == true)
+        {
+            try {
+                Thread.sleep(100);
+            }
+            catch (InterruptedException ex)
+            {
+                logger.severe(ex.getMessage());
+            }
+        }
+        PScene newHeadPScene = (PScene)asset.getAssetData();
+        SkeletonNode newHeadSkeleton = (SkeletonNode)newHeadPScene.findChild("skeletonRoot").getParent();
 
         // Cut off the old skeleton at the specified attach point
         SkinnedMeshJoint parent = (SkinnedMeshJoint)m_skeleton.getSkinnedMeshJoint(attachmentJointName).getParent();
@@ -1049,6 +1077,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
 
         m_skeleton.refresh();
         m_skeleton.clearSubGroup("Head");
+        m_eyes = null;
 
         Iterable<PNode> list = newHeadSkeleton.getChildren();
         for (PNode node : list)
@@ -1062,6 +1091,10 @@ public abstract class Character extends Entity implements SpatialObject, Animati
                 m_skeleton.addToSubGroup(skinnedMeshInstance, "Head");
             }
         }
+        
+        m_eyes = new CharacterEyes(this, m_wm);
+        m_skeletonManipulator.setLeftEyeBall(m_eyes.leftEyeBall);
+        m_skeletonManipulator.setRightEyeBall(m_eyes.rightEyeBall);
         // Apply the correct shaders to them
         setDefaultHeadShaders();
         // Relink all of the old meshes and apply their materials
