@@ -22,7 +22,6 @@ import com.jme.math.Vector3f;
 import com.jme.renderer.ColorRGBA;
 import com.jme.scene.state.MaterialState.ColorMaterial;
 import imi.loaders.PPolygonTriMeshAssembler;
-import imi.loaders.collada.ColladaLoaderParams;
 import imi.loaders.repository.AssetDescriptor;
 import imi.loaders.repository.AssetInitializer;
 import imi.loaders.repository.SharedAsset;
@@ -35,6 +34,7 @@ import imi.scene.polygonmodel.PPolygonMesh;
 import imi.scene.polygonmodel.PPolygonMeshInstance;
 import imi.scene.polygonmodel.PPolygonModelInstance;
 import imi.scene.polygonmodel.parts.PMeshMaterial;
+import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
 import imi.scene.utils.PMeshUtils;
 import javolution.util.FastList;
 
@@ -84,9 +84,6 @@ public class Chair implements SpatialObject
             initOrigin.invert();
             // TODO!
             sharedAsset = new SharedAsset(null, new AssetDescriptor(SharedAssetType.COLLADA, modelFile));
-            ColladaLoaderParams loaderParams = new ColladaLoaderParams(false, true, false, false, 4, "name", null);
-            loaderParams.setUsingSkeleton(false);
-            sharedAsset.setUserData(loaderParams);
             AssetInitializer init = new AssetInitializer() {
                 public boolean initialize(Object asset) {
 
@@ -102,10 +99,12 @@ public class Chair implements SpatialObject
                             {
                                 PPolygonMeshInstance meshInst = (PPolygonMeshInstance)current;
                                 meshInst.getSharedMesh().getTarget().setColorBuffer(null);
+                                modelInst.removeAllChildren();
+                                modelInst.addChild(current);
+                                break;
                             }
                             // add all children
                             queue.addAll(current.getChildren());
-                            //((PPolygonModelInstance)asset).calculateBoundingSphere();
                         }
                     }
                     return true;

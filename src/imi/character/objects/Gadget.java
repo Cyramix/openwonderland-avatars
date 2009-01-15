@@ -30,6 +30,7 @@ import imi.scene.PScene;
 import imi.scene.boundingvolumes.PSphere;
 import imi.scene.polygonmodel.PPolygonMeshInstance;
 import imi.scene.polygonmodel.PPolygonModelInstance;
+import java.net.URL;
 
 /**
  * This class represents the base 'gadget'. Gadgets are a way to expose
@@ -55,45 +56,23 @@ public class Gadget implements SpatialObject
      * @param heading
      * @param modelFile
      */
-    public Gadget(Vector3f position, Vector3f heading, String modelFile)
+    public Gadget(Vector3f position, Vector3f heading, URL location)
     {
-        if (modelFile != null && modelFile.endsWith(".dae"))
-        {
-            // Store the initOrigin
-            initOrigin = new PMatrix();
-            initOrigin.lookAt(position, position.add(heading), Vector3f.UNIT_Y);
-            initOrigin.invert();
+        // Store the initOrigin
+        initOrigin = new PMatrix();
+        initOrigin.lookAt(position, position.add(heading), Vector3f.UNIT_Y);
+        initOrigin.invert();
 
-            // TODO !!
-            sharedAsset = new SharedAsset(null, new AssetDescriptor(SharedAssetType.COLLADA, modelFile));
-            sharedAsset.setUserData(new ColladaLoaderParams(false, true, false, false, 4, "slider switch", null));
-            AssetInitializer init = new AssetInitializer() {
+        sharedAsset = new SharedAsset(null, new AssetDescriptor(SharedAssetType.COLLADA, location));
+        AssetInitializer init = new AssetInitializer() {
+
+                @Override
                 public boolean initialize(Object asset) {
-
-//                    if (asset instanceof PNode)
-//                    {
-//                        // find ever mesh instance and nullify it's color buffer
-//                        FastList<PNode> queue = new FastList<PNode>();
-//                        queue.add((PNode)asset);
-//                        while (!queue.isEmpty())
-//                        {
-//                            PNode current = queue.removeFirst();
-//                            if (current instanceof PPolygonMeshInstance)
-//                            {
-//                                PPolygonMeshInstance meshInst = (PPolygonMeshInstance)current;
-//                                meshInst.getSharedMesh().getTarget().setColorBuffer(null);
-//                            }
-//                            // add all children
-//                            queue.addAll(current.getChildren());
-//                        }
-//                        
-//                    }
-                    
+                    // Initialize some stuffs
                     return true;
                 }
             };
-            sharedAsset.setInitializer(init);
-        }       
+        sharedAsset.setInitializer(init);
     }
     
     /**
@@ -115,7 +94,6 @@ public class Gadget implements SpatialObject
     {
         if (sharedAsset != null)
         {
-            //scene.setUseRepository(false);
             sharedAsset.setRepository(scene.getRepository());
             modelInst = scene.addModelInstance("Switch Slider", sharedAsset, initOrigin);
         }
