@@ -354,6 +354,24 @@ public class InstructionProcessor
                         // Add it to the skeleton
                         m_skeleton.addToSubGroup(skinnedMeshInstance, subGroupName);
                 }
+                // iterate through all new scene looking for instances
+                FastList<PNode> queue = new FastList<PNode>();
+                queue.add(newScene.getInstances());
+                while (queue.isEmpty() == false)
+                {
+                    PNode current = queue.removeFirst();
+                    if (current instanceof PPolygonSkinnedMeshInstance)
+                    {
+                        PPolygonSkinnedMeshInstance skinMeshInstance = (PPolygonSkinnedMeshInstance)current;
+                         //  Link the SkinnedMesh to the Skeleton.
+                        skinMeshInstance.setAndLinkSkeletonNode(m_skeleton);
+                        // Add it to the skeleton
+                        m_skeleton.addToSubGroup(skinMeshInstance, subGroupName);
+                    }
+                    // add all children
+                    queue.addAll(current.getChildren());
+
+                }
             }
         }
         return result;
