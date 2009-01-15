@@ -18,11 +18,13 @@
 package imi.loaders.repository;
 
 import imi.annotations.Debug;
+import imi.loaders.collada.Collada;
 import imi.loaders.repository.SharedAsset.SharedAssetType;
 import imi.scene.PScene;
 import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
 import imi.scene.shader.AbstractShaderProgram;
 import imi.scene.shader.ShaderFactory;
+import imi.utils.MD5HashUtils;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -82,8 +84,8 @@ public class Repository extends Entity
             new ConcurrentHashMap<AssetDescriptor, RepositoryAsset>();
 
     /** PScene Collection **/
-    private final ConcurrentHashMap<URL, PScene> m_PScenes =
-            new ConcurrentHashMap<URL, PScene>();
+    private final ConcurrentHashMap<AssetDescriptor, RepositoryAsset> m_PScenes =
+            new ConcurrentHashMap<AssetDescriptor, RepositoryAsset>();
     
     // And potentially...
     // processors (AI, animations, etc)
@@ -91,7 +93,7 @@ public class Repository extends Entity
 
     public final FastList<SkeletonNode> m_Skeletons = new FastList<SkeletonNode>();
 
-    /** Indicates if the repository should be used. **/
+    /** Indicates if the repository cache should be used. **/
     private boolean m_bUseCache = true;
     
     /**
@@ -114,46 +116,6 @@ public class Repository extends Entity
         initCache();
         // create the shader factory
         m_shaderFactory = new ShaderFactory(wm);
-    }
-
-    /**
-     * Attempts to load the already serialized version of this collada file.
-     * If none exists, null will be returned.
-     * @param colladaFile
-     * @return
-     */
-    public synchronized PScene loadSerializedCollada(URL colladaFile) {
-        PScene result = null;
-        if (m_PScenes.containsKey(colladaFile) == true) // Already been loaded
-            result = m_PScenes.get(colladaFile);
-        else // see if one exists
-        {
-            URL binaryLocation = null;
-            try
-            {
-                if (bafCacheURL==null)
-                    binaryLocation = new URL(colladaFile.toString().substring(0, colladaFile.toString().length() - 3) + "baf");
-                else
-                    binaryLocation = new URL(bafCacheURL+colladaFile.getFile().toString().substring(0, colladaFile.getFile().toString().length() - 3) + "baf");
-                result = loadBinaryPScene(binaryLocation);
-                if (result != null)
-                {
-                    result.setWorldManager(m_worldManager);
-                    result.finalizeDeserialization();
-                    // Add into our collection
-                    m_PScenes.put(colladaFile, result);
-                }
-            } catch (IOException ex)
-            {
-                // If we get here, assume no binary file exists
-            }
-        }
-        return result;
-    }
-
-    public synchronized void addSerializedColladaScene()
-    {
-
     }
 
     /**
@@ -275,11 +237,9 @@ public class Repository extends Entity
             // Fall-throughs are intentional
             case MS3D_Mesh:
             case MS3D_SkinnedMesh:
-            case COLLADA_Model:
-            case COLLADA_Mesh:
                 return m_Geometry;
-            case COLLADA_Animation:
-                return m_Animations;
+            case COLLADA:
+                return m_PScenes;
             case Texture:
                 return m_Textures;
         }
@@ -346,27 +306,6 @@ public class Repository extends Entity
         statementOfWork.m_repoAsset = repoAsset;
     }
 
-    /**
-     * Attempt to load a serialized PScene from the specified location.
-     * @param binaryLocation Location to load
-     * @return The reconstituted PScene, or null on failure.
-     */
-    private PScene loadBinaryPScene(URL binaryLocation) {
-        PScene result = null;
-        WonderlandObjectInputStream in = null;
-        try
-        {
-            in = new WonderlandObjectInputStream(binaryLocation.openStream());
-            result = (PScene)in.readObject();
-            in.close();
-        }
-        catch(Exception ex)
-        {
-            if (!(ex instanceof FileNotFoundException))
-                logger.severe(ex.getMessage());
-        }
-        return result;
-    }
 
     /**
      * Load the default skeletons.
@@ -420,6 +359,19 @@ public class Repository extends Entity
             }
         }
 
+    }
+
+    /**
+     * Provides a file object referencing the location that a cached copy of "file"
+     * will occupy if it exists.
+     * @param file
+     * @return
+     */
+    File getCacheEquivalent(URL file)
+    {
+        String urlString = file.toString();
+        String hashFileName = MD5HashUtils.getStringFromHash(urlString.getBytes());
+        return new File(cacheFolder, hashFileName);
     }
 
     /**

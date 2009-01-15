@@ -20,6 +20,7 @@ package imi.loaders;
 
 import imi.loaders.collada.*;
 import imi.loaders.Instruction;
+import imi.loaders.repository.Repository;
 import imi.scene.PJoint;
 import imi.scene.PMatrix;
 import imi.scene.PNode;
@@ -58,6 +59,8 @@ public class InstructionProcessor
     private CharacterLoader     m_characterLoader = null;
     /** Reference to the character's skeleton **/
     private SkeletonNode        m_skeleton = null;
+    /** The repository! **/
+    private Repository          m_repository = null;
     /** Logger **/
     protected static final Logger logger = Logger.getLogger(InstructionProcessor.class.getName());
     
@@ -68,6 +71,7 @@ public class InstructionProcessor
     public InstructionProcessor(WorldManager wm)
     {
         m_wm = wm;
+        m_repository = (Repository)m_wm.getUserData(Repository.class);
     }
 
     /**
@@ -89,7 +93,7 @@ public class InstructionProcessor
     public void execute(Instruction rootInstruction, boolean nullMembersWhenFinished)
     {
         // Allocate a new character loader to use in this process.
-        m_characterLoader = new CharacterLoader();
+        m_characterLoader = new CharacterLoader(m_repository);
         // Output the contents of the tree to the logger
         logInstructionTree("", rootInstruction);
         // Create a new pscene for the loading process
@@ -163,7 +167,7 @@ public class InstructionProcessor
                 case loadHumanoidAvatarBindPose:
                 {
                     URL bindPoseLocation = new URL(instruction.getDataAsString());
-                    m_skeleton = m_characterLoader.loadSkeletonRig(m_loadingPScene, bindPoseLocation);
+                    m_skeleton = m_characterLoader.loadSkeletonRig(bindPoseLocation);
                     if (m_skeleton == null)
                         logger.warning("COLLADA configuration ERROR: was not able to LOAD BIND POSE!");
                     else
@@ -183,8 +187,11 @@ public class InstructionProcessor
                 case loadGeometry:
                 {
                     URL geometryLocation = new URL(instruction.getDataAsString());
-                    if (!m_characterLoader.loadGeometry(m_loadingPScene, geometryLocation))
+                    PScene resultScene = m_characterLoader.loadGeometry(geometryLocation);
+                    if (resultScene == null)
                         logger.warning("COLLADA configuration ERROR: was not able to LOAD GEOMETRY!");
+                    else
+                        m_loadingPScene.addModelInstance(resultScene, new PMatrix());
                 }
                 break;
                 case setSkeleton:
@@ -254,6 +261,8 @@ public class InstructionProcessor
             return false;
         }
 
+        // bind the mesh up
+        mesh.setPScene(m_loadingPScene);
         // Create new joint
         PJoint newJoint = new PJoint(meshName + " joint", new PTransform((PMatrix)array[2]));
         newJoint.addChild(mesh);
@@ -326,12 +335,13 @@ public class InstructionProcessor
             // first, load the file up
             URL geometryLocation = (URL)params[0];
             String subGroupName = (String)params[1];
-            if (!m_characterLoader.loadGeometry(m_loadingPScene, geometryLocation))
+            PScene newScene = m_characterLoader.loadGeometry(geometryLocation);
+            if (newScene == null)
                 result = false;
             else
             {
                 // Success loading, now we need to iterate on the meshes and add them all
-                Iterable<PPolygonMesh> list = m_loadingPScene.getLocalGeometryList();
+                Iterable<PPolygonMesh> list = newScene.getLocalGeometryList();
                 for (PPolygonMesh mesh : list)
                 {
                         PPolygonSkinnedMesh skinnedMesh = (PPolygonSkinnedMesh) mesh;

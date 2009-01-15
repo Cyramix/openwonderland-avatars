@@ -19,11 +19,18 @@ package imi.loaders.collada;
 
 
 
+import imi.loaders.repository.AssetDescriptor;
+import imi.loaders.repository.Repository;
+import imi.loaders.repository.RepositoryUser;
+import imi.loaders.repository.SharedAsset;
+import imi.scene.PMatrix;
+import imi.scene.PNode;
 import imi.scene.PScene;
 import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
 
 import imi.scene.animation.AnimationComponent;
 import imi.scene.animation.AnimationGroup;
+import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -46,18 +53,30 @@ import org.jdesktop.wonderland.common.comms.WonderlandObjectOutputStream;
  * functionality.
  * @author Chris Nagle
  */
-public class CharacterLoader
+public class CharacterLoader implements RepositoryUser
 {
     /** Logger ref! **/
     private static final Logger logger = Logger.getLogger(CharacterLoader.class.getName());
-    /** The collada loader that this class wraps **/
-    private final Collada m_colladaLoader = new Collada();
 
     // Temporary, TODO remove this field
     // Provides the root directory for the baf cache, this will be removed
     // once the baf files are deployed into the asset server
     private static String bafCacheURL = System.getProperty("BafCacheDir", null);
 
+    private Repository repository = null;
+
+    /** Used to indicate status of requested assets **/
+    private boolean m_bWaitingOnAsset = false;
+    private SharedAsset m_asset = null;
+
+    /**
+     * Construct a new instance using the provided repository to load from.
+     * @param repositoryToUse
+     */
+    public CharacterLoader(Repository repositoryToUse)
+    {
+        repository = repositoryToUse;
+    }
     /**
      * Load the specified collada file and parse out the skeleton, associate it
      * with the provided PScene, and return the skelton node.
@@ -65,52 +84,22 @@ public class CharacterLoader
      * @param rigLocation
      * @return The completed skeleton node
      */
-    public SkeletonNode loadSkeletonRig(PScene pScene, URL rigLocation)
+    public SkeletonNode loadSkeletonRig(URL rigLocation)
     {
-        //  Load the collada file to the PScene
-        m_colladaLoader.clear();
-        try
-        {
-            //  Load only the rig and geometry.
-            m_colladaLoader.setLoadFlags(true, true, false);
-            if (m_colladaLoader.load(pScene, rigLocation) == false) // uh oh
-                logger.log(Level.SEVERE, "COLLADA Loader returned false!");
-        }
-        catch (Exception ex)
-        {
-            logger.severe("Exception occured while loading skeleton.");
-            ex.printStackTrace();
-        }
-
-        return m_colladaLoader.getSkeletonNode();
+        PScene scene = loadCollada(rigLocation);
+        PNode skeletonRoot = scene.findChild("SkeletonRoot");
+        return (SkeletonNode)skeletonRoot.getParent();
     }
 
     /**
      * Load the geometry in the specified collada file into the provided pscene.
-     * @param loadingPScene
      * @param geometryLocation
-     * @return True on success, false otherwise.
+     * @return The loaded scene
      */
-    public boolean loadGeometry(PScene loadingPScene, URL geometryLocation)
+    public PScene loadGeometry(URL geometryLocation)
     {
-        boolean result = false;
-        //  Load the collada file to the PScene
-        m_colladaLoader.clear();
-        try
-        {
-            //  Load only the geometry.
-            m_colladaLoader.setLoadFlags(false, true, false);
-            m_colladaLoader.setAddSkinnedMeshesToSkeleton(false);
-            m_colladaLoader.load(loadingPScene, geometryLocation);
-            result = true;
-        }
-        catch (Exception ex)
-        {
-            logger.severe("Exception occured while loading skeleton.");
-            ex.printStackTrace();
-            result = false;
-        }
-        return result;
+        PScene scene = loadCollada(geometryLocation);
+        return scene;
     }
 
     /**
@@ -150,10 +139,8 @@ public class CharacterLoader
         }
         else // otherwise use the collada loader
         {
-            m_colladaLoader.clear();
-            m_colladaLoader.setLoadFlags(false, false, true);
-            m_colladaLoader.setSkeletonNode(owningSkeleton);
-            result = m_colladaLoader.load(loadingPScene, animationLocation);
+            SkeletonNode skeleton = loadSkeletonRig(animationLocation);
+            owningSkeleton.getAnimationComponent().getGroups().addAll(skeleton.getAnimationComponent().getGroups());
             // Serialize it for the next round
             logger.info("Wrote binary file " + binaryLocation.getFile() + ".");
             if (bafCacheURL != null) {
@@ -173,6 +160,31 @@ public class CharacterLoader
         if (mergeToGroup >= 0)
             mergeLastToAnimationGroup(owningSkeleton, mergeToGroup);
         return result;
+    }
+
+    private void blockUntilAssetLoads() {
+        while (m_bWaitingOnAsset == true)
+        {
+            try {
+                Thread.sleep(100);
+            }
+            catch (InterruptedException ex)
+            {
+                logger.severe("I didnt want to wake up yet..." + ex.getMessage());
+            }
+        }
+    }
+
+    private PScene loadCollada(URL location)
+    {
+        m_asset = new SharedAsset(repository, new AssetDescriptor(
+                SharedAsset.SharedAssetType.COLLADA, location));
+
+        m_bWaitingOnAsset = true;
+        repository.loadSharedAsset(m_asset, this);
+        blockUntilAssetLoads();
+
+        return (PScene)m_asset.getAssetData();
     }
 
     /**
@@ -262,6 +274,12 @@ public class CharacterLoader
             logger.severe("Exception while trying to write binary data file: " + ex.getMessage());
             ex.printStackTrace();
         }
+    }
+
+    @Override
+    public void receiveAsset(SharedAsset asset) {
+        m_asset = asset;
+        m_bWaitingOnAsset = false;
     }
 
 }

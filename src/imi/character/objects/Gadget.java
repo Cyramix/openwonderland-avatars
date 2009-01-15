@@ -63,8 +63,9 @@ public class Gadget implements SpatialObject
             initOrigin = new PMatrix();
             initOrigin.lookAt(position, position.add(heading), Vector3f.UNIT_Y);
             initOrigin.invert();
-            
-            sharedAsset = new SharedAsset(null, new AssetDescriptor(SharedAssetType.COLLADA_Model, modelFile));
+
+            // TODO !!
+            sharedAsset = new SharedAsset(null, new AssetDescriptor(SharedAssetType.COLLADA, modelFile));
             sharedAsset.setUserData(new ColladaLoaderParams(false, true, false, false, 4, "slider switch", null));
             AssetInitializer init = new AssetInitializer() {
                 public boolean initialize(Object asset) {

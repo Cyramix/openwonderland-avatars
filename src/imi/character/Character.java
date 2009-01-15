@@ -37,6 +37,7 @@ import imi.character.statemachine.Updatable;
 import imi.loaders.Instruction;
 import imi.loaders.Instruction.InstructionType;
 import imi.loaders.InstructionProcessor;
+import imi.loaders.PPolygonTriMeshAssembler;
 import imi.loaders.collada.Collada;
 import imi.loaders.repository.AssetDescriptor;
 import imi.loaders.repository.Repository;

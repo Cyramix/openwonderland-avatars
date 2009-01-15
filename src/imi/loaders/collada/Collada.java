@@ -302,76 +302,62 @@ public class Collada
     public boolean load(PScene loadingPScene, URL colladaFile) {
         boolean result = false;
         m_fileLocation = colladaFile;
-        // First see if the repository can find an already serialized version to
-        // load up for us.
-        if (m_bUseCache)
-            m_loadingPScene = loadingPScene.getRepository().loadSerializedCollada(colladaFile);
-        if (m_loadingPScene != null) // Sweet, binary shortcut taken!
-        {
-            loadingPScene.addModelInstance(m_loadingPScene, new PMatrix());
-            m_loadingPScene = loadingPScene;
-            result = true;
-        }
-        else // Load the typical way
-        {
-            m_loadingPScene = loadingPScene;
-            m_loadingPScene.setUseRepository(false); // the repository will extract the data later
-            final int maxNumberOfRetries = 5;
-            int retry = 1; // Retry while > 0 and <= maxNumberOfRetries
+        m_loadingPScene = loadingPScene;
+        m_loadingPScene.setUseRepository(false); // the repository will extract the data later
+        
+        final int maxNumberOfRetries = 5;
+        int retry = 1; // Retry while > 0 and <= maxNumberOfRetries
 
-            m_fileLocation = colladaFile;
-            URLConnection conn = null;
-            InputStream in = null;
+        m_fileLocation = colladaFile;
+        URLConnection conn = null;
+        InputStream in = null;
 
-            while (retry > 0 && retry <= maxNumberOfRetries)
+        while (retry > 0 && retry <= maxNumberOfRetries)
+        {
+            org.collada.colladaschema.COLLADA collada = null;
+            try // to open the connection and unmarshal the file
             {
-                org.collada.colladaschema.COLLADA collada = null;
-                try // to open the connection and unmarshal the file
-                {
-                    conn = colladaFile.openConnection();
-                    in = conn.getInputStream();
-                    synchronized(contextLock) {
-                        collada = (org.collada.colladaschema.COLLADA) unmarshaller.unmarshal(in);
-                    }
-                    retry = 0; // No retry necessary
+                conn = colladaFile.openConnection();
+                in = conn.getInputStream();
+                synchronized(contextLock) {
+                    collada = (org.collada.colladaschema.COLLADA) unmarshaller.unmarshal(in);
                 }
-                catch (Exception exception)
+                retry = 0; // No retry necessary
+            }
+            catch (Exception exception)
+            {
+                if (exception.getMessage().equals("Connection refused"))
                 {
-                    if (exception.getMessage().equals("Connection refused"))
-                    {
-                        logger.warning(exception.getMessage() + "... Retrying");
-                        retry++;
-                    }
-                    else
-                    {
-                        logger.severe("Exception while attempting to open collada file! : " +
-                                exception.getMessage());
-                        exception.printStackTrace();
-                        // Do not retry, simple abort
-                        retry = Integer.MAX_VALUE;
-                    }
+                    logger.warning(exception.getMessage() + "... Retrying");
+                    retry++;
                 }
-                finally
+                else
                 {
-                    try // to close the connection
-                    {
-                        if (in != null)
-                            in.close();
-                    }
-                    catch (IOException ex)
-                    {
-                        logger.warning("Caught exception closing: " + ex.getMessage());
-                        result = false;
-                    }
-                    if (retry > 0)
-                        continue;
+                    logger.severe("Exception while attempting to open collada file! : " +
+                            exception.getMessage());
+                    exception.printStackTrace();
+                    // Do not retry, simple abort
+                    retry = Integer.MAX_VALUE;
                 }
-                doLoad(collada);
-                result = true;
-            } // End while loop
-            // Write out the pscene! (only if everything was loaded though... hrm)
-//                serializePScene(m_fileLocation); // Probably dont want this in the final client code
-        }
+            }
+            finally
+            {
+                try // to close the connection
+                {
+                    if (in != null)
+                        in.close();
+                }
+                catch (IOException ex)
+                {
+                    logger.warning("Caught exception closing: " + ex.getMessage());
+                    result = false;
+                }
+                if (retry > 0)
+                    continue;
+            }
+            doLoad(collada);
+            result = true;
+        } // End while loop
         return result;
     }
 
@@ -429,7 +415,7 @@ public class Collada
         if (m_bLoadGeometry && m_bAddSkinnedMeshesToSkeleton)
             attachSkinnedMeshToSkeleton();
 
-        if (m_skeletonNode == null)
+        //if (m_skeletonNode == null)
             processColladaNodes();
 
         // Submit the geometry of every PPolygonMesh we encounter
@@ -1321,21 +1307,6 @@ public class Collada
         return m_fileLocation;
     }
 
-    private void serializePScene(URL originalLocation) {
-        WonderlandObjectOutputStream out = null;
-        File outputFile = new File(originalLocation.getFile().substring(0, originalLocation.getFile().length()-3) + "baf");
-        try
-        {
-          FileOutputStream fos = new FileOutputStream(outputFile);
-          out = new WonderlandObjectOutputStream(fos);
-          out.writeObject(m_loadingPScene);
-          out.close();
-        }
-        catch(IOException ex)
-        {
-          ex.printStackTrace();
-        }
-    }
 
     public boolean isUsingCache()
     {

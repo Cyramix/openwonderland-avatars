@@ -1509,6 +1509,7 @@ public class PPolygonMesh extends PNode implements Serializable
         m_bInBatch = false;
         m_bDebugInfo = false;
         m_bSubmitGeometry = true;
+        setDirty(true, false);
         
     }
 

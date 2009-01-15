@@ -72,7 +72,8 @@ public class ColladaEnvironment extends Entity
         m_wm = wm;
         // create and load the environment
         Repository repo = (Repository)wm.getUserData(Repository.class);
-        AssetDescriptor descriptor = new AssetDescriptor(SharedAsset.SharedAssetType.COLLADA_Model, relativePath);
+        // TODO !!
+        AssetDescriptor descriptor = new AssetDescriptor(SharedAsset.SharedAssetType.COLLADA, relativePath);
         SharedAsset worldAsset = new SharedAsset(repo, descriptor, null);
         worldAsset.setUserData(new ColladaLoaderParams(false, true, false, false, 0, name, null));
 
@@ -107,7 +108,7 @@ public class ColladaEnvironment extends Entity
         m_wm = wm;
         // create and load the environment
         Repository repo = (Repository)wm.getUserData(Repository.class);
-        AssetDescriptor descriptor = new AssetDescriptor(SharedAsset.SharedAssetType.COLLADA_Model, relativePath);
+        AssetDescriptor descriptor = new AssetDescriptor(SharedAsset.SharedAssetType.COLLADA, relativePath);
         SharedAsset worldAsset = new SharedAsset(repo, descriptor, null);
         worldAsset.setUserData(new ColladaLoaderParams(false, true, false, false, 0, name, null));
 

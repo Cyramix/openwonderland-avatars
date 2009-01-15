@@ -138,6 +138,13 @@ public class PScene extends PNode implements RepositoryUser, Serializable
                 mesh.submit(m_TriMeshAssembler);
                 mesh.setSubmitGeometry(false);
             }
+            else if (current instanceof PPolygonMeshInstance)
+            {
+                PPolygonMeshInstance meshInst = (PPolygonMeshInstance)current;
+                PPolygonMesh mesh = meshInst.getGeometry();
+                mesh.submit(m_TriMeshAssembler);
+                mesh.setSubmitGeometry(false);
+            }
             // add all the kids
             if (current.getChildren() != null)
                 queue.addAll(current.getChildren());
@@ -405,17 +412,6 @@ public class PScene extends PNode implements RepositoryUser, Serializable
      */
     public List<SharedAssetPlaceHolder> getAssetWaitingList() {
         return m_SharedAssetWaitingList;
-    }
-
-    private boolean isColladaType(SharedAssetType type)
-    {
-        if (type == SharedAssetType.COLLADA_Animation ||
-            type == SharedAssetType.COLLADA_Mesh ||
-            type == SharedAssetType.COLLADA_Model ||
-            type == SharedAssetType.COLLADA_SkinnedMesh)
-            return true;
-        else
-            return false;
     }
     
     /***
@@ -830,9 +826,9 @@ public class PScene extends PNode implements RepositoryUser, Serializable
                     { 
                     }
                 }
-                else if (isColladaType(meshAsset.getDescriptor().getType()))
+                else if (meshAsset.getDescriptor().getType() == SharedAssetType.COLLADA)
                 {
-                    // Load the collada file to the PScene
+                    // Load the collada file to the PScene manually
                     Collada colladaLoader = new Collada();
                     if (meshAsset.getUserData() != null && meshAsset.getUserData() instanceof ColladaLoaderParams)
                     {
@@ -865,7 +861,7 @@ public class PScene extends PNode implements RepositoryUser, Serializable
             asset.buildFlattenedHierarchy();
         
             // Add the asset instance to this PScene,    
-            if (isColladaType(meshAsset.getDescriptor().getType()) && !(asset instanceof SharedAssetPlaceHolder))
+            if (meshAsset.getDescriptor().getType() == SharedAssetType.COLLADA && !(asset instanceof SharedAssetPlaceHolder))
             {
                 while(asset.getChildrenCount() > 0)
                     m_Instances.addChild(asset.getChild(0));
@@ -876,7 +872,7 @@ public class PScene extends PNode implements RepositoryUser, Serializable
         else // This load process was done for a given model instance
         {
             // Add the processed shared asset (either a placeholder or the actual thing)
-            if (isColladaType(meshAsset.getDescriptor().getType()) && !(asset instanceof SharedAssetPlaceHolder))
+            if (meshAsset.getDescriptor().getType() == SharedAssetType.COLLADA && !(asset instanceof SharedAssetPlaceHolder))
             {
                 while(asset.getChildrenCount() > 0)
                     forThisModelInstance.addChild(asset.getChild(0));

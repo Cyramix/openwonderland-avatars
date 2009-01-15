@@ -82,8 +82,8 @@ public class Chair implements SpatialObject
             initOrigin = new PMatrix();
             initOrigin.lookAt(position, position.add(heading), Vector3f.UNIT_Y);
             initOrigin.invert();
-            
-            sharedAsset = new SharedAsset(null, new AssetDescriptor(SharedAssetType.COLLADA_Model, modelFile));
+            // TODO!
+            sharedAsset = new SharedAsset(null, new AssetDescriptor(SharedAssetType.COLLADA, modelFile));
             ColladaLoaderParams loaderParams = new ColladaLoaderParams(false, true, false, false, 4, "name", null);
             loaderParams.setUsingSkeleton(false);
             sharedAsset.setUserData(loaderParams);

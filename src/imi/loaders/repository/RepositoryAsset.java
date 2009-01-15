@@ -22,12 +22,13 @@ import com.jme.util.TextureManager;
 import com.jme.util.export.binary.BinaryExporter;
 import com.jme.util.export.binary.BinaryImporter;
 import imi.loaders.collada.Collada;
-import imi.loaders.collada.ColladaLoaderParams;
 import imi.loaders.ms3d.SkinnedMesh_MS3D_Importer;
 import imi.scene.PScene;
 import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -37,6 +38,8 @@ import java.util.logging.Logger;
 import org.jdesktop.mtgame.ProcessorArmingCollection;
 import org.jdesktop.mtgame.ProcessorComponent;
 import org.jdesktop.mtgame.NewFrameCondition;
+import org.jdesktop.wonderland.common.comms.WonderlandObjectInputStream;
+import org.jdesktop.wonderland.common.comms.WonderlandObjectOutputStream;
 
 /**
  * This class is the internal representation of a loaded piece of data and its
@@ -53,6 +56,7 @@ public class RepositoryAsset extends ProcessorComponent
     static final BinaryExporter m_binaryExporter = new BinaryExporter();
     /** Importer **/
     static final BinaryImporter m_binaryImporter = new BinaryImporter();
+
     /** the maximum number of references per (deep) copy **/
     static final int m_referenceThreshHold   = 100; //  TODO ? how many
     /** The current number of references **/
@@ -131,30 +135,8 @@ public class RepositoryAsset extends ProcessorComponent
                     // Intentional collada fall-throughs
                     // These three cases require special set up to function.
                     // Separate enumerations are 
-                case COLLADA_SkinnedMesh:
-                case COLLADA_Model:
-                case COLLADA_Animation:
-                    if (m_userData == null || !(m_userData instanceof ColladaLoaderParams))
-                        break;
-                case COLLADA_Mesh:
-                    {
-                        // Load the collada file to the PScene
-                        Collada colladaLoader = new Collada();
-                        boolean usingSkeleton = true;
-                        if (m_userData != null && m_userData instanceof ColladaLoaderParams)
-                        {
-                            ColladaLoaderParams loaderParams = (ColladaLoaderParams)m_userData;
-                            colladaLoader.applyConfiguration(loaderParams);
-                            usingSkeleton = loaderParams.isUsingSkeleton();
-                        }
-                        PScene colladaScene = new PScene("COLLADA : " + 
-                                m_descriptor.getLocation().getFile(), m_home.getWorldManager());
-                        if (!usingSkeleton)
-                            colladaLoader.setAddSkinnedMeshesToSkeleton(false);
-                        colladaLoader.load(colladaScene, m_descriptor.getLocation());
-
-                        m_data.add(colladaScene);
-                    }
+                case COLLADA:
+                    loadCOLLADA();
                     break;
                 case Model:
                 {
@@ -234,6 +216,77 @@ public class RepositoryAsset extends ProcessorComponent
         ProcessorArmingCollection collection = new ProcessorArmingCollection(this);
         collection.addCondition(new NewFrameCondition(this));
         setArmingCondition(collection); 
+    }
+
+    private void loadCOLLADA()
+    {
+        // Check the cache for this file
+        File cachedFile = m_home.getCacheEquivalent(m_descriptor.getLocation());
+        if (cachedFile.exists() && m_home.isUsingCache()) // load it
+        {
+            PScene loadedScene = loadBinaryPScene(cachedFile);
+            loadedScene.setWorldManager(m_home.getWorldManager());
+            loadedScene.finalizeDeserialization();
+            m_data.add(loadedScene);
+        }
+        else // create it
+        {
+            Collada loader = new Collada();
+            loader.setLoadFlags(true, true, true); // load everything
+            loader.setMaxNumberOfWeights(4);
+            loader.setAddSkinnedMeshesToSkeleton(true);
+            PScene loadingScene = new PScene(m_home.getWorldManager());
+            loader.load(loadingScene, m_descriptor.getLocation());
+            // now we have the pscene prepared, write it to the cache location
+            if (m_home.isUsingCache())
+                serializePScene(cachedFile, loadingScene);
+            m_data.add(loadingScene);
+        }
+    }
+
+    /**
+     * Attempt to load a serialized PScene from the specified location.
+     * @param binaryLocation Location to load
+     * @return The reconstituted PScene, or null on failure.
+     */
+    private PScene loadBinaryPScene(File location) {
+        PScene result = null;
+        WonderlandObjectInputStream in = null;
+        FileInputStream fis = null;
+        try
+        {
+            fis = new FileInputStream(location);
+            in = new WonderlandObjectInputStream(fis);
+            result = (PScene)in.readObject();
+            in.close();
+        }
+        catch(Exception ex)
+        {
+            if (!(ex instanceof FileNotFoundException))
+                logger.severe(ex.getMessage());
+        }
+        return result;
+    }
+
+    /**
+     * Serialize the provided pscene to the specified location.
+     * @param destination
+     * @param sceneToWrite
+     */
+    private void serializePScene(File destination, PScene sceneToWrite)
+    {
+        WonderlandObjectOutputStream out = null;
+        try
+        {
+          FileOutputStream fos = new FileOutputStream(destination);
+          out = new WonderlandObjectOutputStream(fos);
+          out.writeObject(sceneToWrite);
+          out.close();
+        }
+        catch(IOException ex)
+        {
+          ex.printStackTrace();
+        }
     }
 
     /**

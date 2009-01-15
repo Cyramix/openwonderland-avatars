@@ -99,7 +99,7 @@ public class COLLADA_ModelTest extends DemoBase
         final WorldManager fwm = wm;
         final PScene fpscene = pscene;
 
-        SharedAsset colladaAsset = new SharedAsset(pscene.getRepository(), new AssetDescriptor(SharedAssetType.COLLADA_Mesh, modelLocation), new AssetInitializer() {
+        SharedAsset colladaAsset = new SharedAsset(pscene.getRepository(), new AssetDescriptor(SharedAssetType.COLLADA, modelLocation), new AssetInitializer() {
 
             public boolean initialize(Object asset) {
                 SkeletonNode skeleton = (SkeletonNode)((PNode)asset).getChild(0);
