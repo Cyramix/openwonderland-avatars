@@ -355,7 +355,8 @@ public abstract class Character extends Entity implements SpatialObject, Animati
 
         AbstractShaderProgram accessoryShader = repo.newShader(SimpleTNLWithAmbient.class);
         AbstractShaderProgram eyeballShader = repo.newShader(EyeballShader.class);
-        AbstractShaderProgram clothingShader = repo.newShader(ClothingShaderDiffuseAsSpec.class);//repo.newShader(ClothingShaderSpecColor.class);
+        AbstractShaderProgram clothingShader = repo.newShader(ClothingShaderDiffuseAsSpec.class);
+//        AbstractShaderProgram clothingShader = repo.newShader(ClothingShaderSpecColor.class);
 
         AbstractShaderProgram fleshShader = repo.newShader(FleshShader.class);
         float[] skinColor = { (230.0f/255.0f), (197.0f/255.0f), (190.0f/255.0f) };

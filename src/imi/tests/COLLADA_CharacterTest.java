@@ -22,6 +22,8 @@ import com.jme.math.Vector3f;
 import imi.character.Character;
 import imi.character.ninja.NinjaAvatar;
 import imi.character.ninja.NinjaAvatarAttributes;
+import imi.gui.SceneEssentials;
+import imi.gui.TreeExplorer;
 import imi.scene.camera.state.FirstPersonCamState;
 import org.jdesktop.mtgame.WorldManager;
 
@@ -70,7 +72,9 @@ public class COLLADA_CharacterTest extends DemoBase
 
         // Create avatar
         long startTime = System.nanoTime();
-        NinjaAvatar avatar = new NinjaAvatar(new NinjaAvatarAttributes("Avatar", true, false), wm);
+//        NinjaAvatarAttributes attribs = new NinjaAvatarAttributes("WierdGuy", 2, 3, 5, 10);
+        NinjaAvatarAttributes attribs = new NinjaAvatarAttributes("WierdGuy", false, false);
+        NinjaAvatar avatar = new NinjaAvatar(attribs, wm);
         float time = (float)((System.nanoTime() - startTime) / 1000000000.0f);
         System.out.println("Constructing the male took: " + time);
         
@@ -84,6 +88,13 @@ public class COLLADA_CharacterTest extends DemoBase
         FirstPersonCamState camState = (FirstPersonCamState)m_cameraProcessor.getState();
         camState.setMovementRate(0.03f);
         camState.setCameraPosition(new Vector3f(0.0f, 1.8f, -2.0f));
+
+        // give me a tree explorer!
+        TreeExplorer te = new TreeExplorer();
+        SceneEssentials se = new SceneEssentials();
+        se.setSceneData(avatar.getJScene(), avatar.getPScene(), avatar, wm, null);
+        te.setExplorer(se);
+        te.setVisible(true);
     }
 
     private void swapAvatarHead(Character avatar)

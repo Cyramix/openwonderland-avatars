@@ -135,6 +135,7 @@ public class ClothingShaderSpecColor extends BaseShaderProgram implements Abstra
                 ));
 
         float[] whiteColor = new float[] {1, 1, 1 };
+        float[] specColor = new float[] {1, 1, 1 };
         try
         {
             // Put the properties into the property map
@@ -151,7 +152,7 @@ public class ClothingShaderSpecColor extends BaseShaderProgram implements Abstra
             m_propertyMap.put("baseColor",              new ShaderProperty("baseColor",
                                 GLSLDataType.GLSL_VEC3, whiteColor));
             m_propertyMap.put("specColor",           new ShaderProperty("specColor",
-                                GLSLDataType.GLSL_VEC3, whiteColor));
+                                GLSLDataType.GLSL_VEC3, specColor));
             // Vertex deformer default
             m_propertyMap.put("pose", new ShaderProperty("pose", GLSLDataType.GLSL_VOID, null));
         }

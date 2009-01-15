@@ -102,7 +102,9 @@ public class COLLADA_JointChannel implements PJointChannel, Serializable
                 state.getTransitionCycleEndTime(), m_blendedFrameRight);
         
         PMatrix result = null;
-        if (resultTwo == false)
+        if (!resultOne && !resultTwo)
+            return; // No frame data
+        else if (resultTwo == false)
             result = m_blendedFrameLeft;
         else if (resultOne == false)
             result = m_blendedFrameRight;
