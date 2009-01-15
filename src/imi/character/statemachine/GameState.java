@@ -50,7 +50,7 @@ public class GameState extends NamedUpdatableObject
     private boolean     bTransitionReverseAnimation = false;
     
     private AnimationComponent.PlaybackMode cycleMode = AnimationComponent.PlaybackMode.Loop; // set when a transition is complete
-    private AnimationComponent.PlaybackMode transitionCycleMode = AnimationComponent.PlaybackMode.Loop;
+    private AnimationComponent.PlaybackMode transitionCycleMode = AnimationComponent.PlaybackMode.Loop; // still needed?
     /** Indicates when the appropriate animation has been set **/
     private boolean bAnimationSet = false;
     

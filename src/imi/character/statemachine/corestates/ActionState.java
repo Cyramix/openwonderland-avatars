@@ -34,7 +34,7 @@ public class ActionState extends GameState
             
     /** true if the animation played at least once since the state was entered */
     private boolean bPlayedOnce = false;
-    /** true to keep repeating the animation, this resets when the state is entered  */
+    /** true to keep repeating the animation */
     private boolean bRepeat     = false;
     /** true to have an oscilating repeat, false to have it loop */
     private boolean bRepeatWillOscilate = false;
@@ -94,7 +94,7 @@ public class ActionState extends GameState
         super.update(deltaTime);
                                  
         // Check for possible transitions
-        if (bPlayedOnce && !bRepeat)
+        if (bPlayedOnce || bRepeat)
             transitionCheck();
     }
     
@@ -103,7 +103,7 @@ public class ActionState extends GameState
     {
         if (message == AnimationMessageType.TransitionComplete)
         {
-            if (bPlayedOnce)
+            if (bRepeat)
             {
                 if (bRepeatWillOscilate)
                     gameContext.getSkeleton().getAnimationState().setCurrentCyclePlaybackMode(PlaybackMode.Oscillate);
@@ -114,7 +114,9 @@ public class ActionState extends GameState
                 gameContext.getSkeleton().getAnimationState().setCurrentCyclePlaybackMode(PlaybackMode.PlayOnce);
         }
         else if (message == AnimationMessageType.PlayOnceComplete)
+        {
             bPlayedOnce = true;
+        }
     }
 
     /**

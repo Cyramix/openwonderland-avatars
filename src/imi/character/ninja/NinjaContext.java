@@ -50,6 +50,9 @@ import imi.character.objects.LocationNode;
 import imi.character.objects.SpatialObject;
 import imi.character.statemachine.GameContext;
 import imi.character.statemachine.GameState.Action;
+import imi.character.statemachine.corestates.ActionInfo;
+import imi.scene.animation.AnimationComponent.PlaybackMode;
+import java.util.ArrayList;
 import java.util.Hashtable;
 
 /**
@@ -62,8 +65,9 @@ public class NinjaContext extends GameContext
     private NinjaController   controller  = null;
     private NinjaSteeringHelm AI    = new NinjaSteeringHelm("Ninja Steering Helm", this);
     private LocationNode      location    = null;
-    
-    int punchActionIndex = 0;
+    /** Animations that are using the ActionState to play out (such as wave, cheer etc) **/
+    private ArrayList<ActionInfo> genericAnimations = new ArrayList<ActionInfo>();
+    private int genericActionIndex = 0;
     
     public static enum TriggerNames
     {
@@ -98,7 +102,7 @@ public class NinjaContext extends GameContext
         Movement_X,
         Movement_Y,
         Movement_Z,
-        Punch,
+        Action,
     }
     
     @Override
@@ -108,7 +112,7 @@ public class NinjaContext extends GameContext
         actionMap.put(TriggerNames.Move_Right.ordinal(),    new Action(NinjaContext.ActionNames.Movement_X.ordinal(), 0.4f));
         actionMap.put(TriggerNames.Move_Forward.ordinal(),  new Action(NinjaContext.ActionNames.Movement_Z.ordinal(), 0.4f));
         actionMap.put(TriggerNames.Move_Back.ordinal(),     new Action(NinjaContext.ActionNames.Movement_Z.ordinal(), -0.4f));
-        actionMap.put(TriggerNames.MiscAction.ordinal(),         new Action(NinjaContext.ActionNames.Punch.ordinal(), 1.0f));
+        actionMap.put(TriggerNames.MiscAction.ordinal(),         new Action(NinjaContext.ActionNames.Action.ordinal(), 1.0f));
         actionMap.put(TriggerNames.Move_Up.ordinal(),       new Action(NinjaContext.ActionNames.Movement_Y.ordinal(), 0.4f));
         actionMap.put(TriggerNames.Move_Down.ordinal(),     new Action(NinjaContext.ActionNames.Movement_Y.ordinal(), -0.4f));
     }
@@ -159,6 +163,11 @@ public class NinjaContext extends GameContext
         gameStates.get(IdleState.class).addTransition(new IdleToSitOnGround());
         gameStates.get(FallFromSitState.class).addTransition(new SitOnGroundToIdle());
         gameStates.get(SitOnGroundState.class).addTransition(new SitOnGroundToIdle());
+        
+        // Set default info for animations utilizing the ActionState
+        configureDefaultActionStateInfo();
+        if (!genericAnimations.isEmpty())
+            genericAnimations.get(0).apply((ActionState) gameStates.get(ActionState.class));
     }
     
     @Override
@@ -282,60 +291,62 @@ public class NinjaContext extends GameContext
         // Select the next animation to play for the facial animation test
         else if (trigger == TriggerNames.NextAction.ordinal() && pressed)
         {
-            ActionState punch = (ActionState) gameStates.get(ActionState.class);
-            punch.setAnimationSetBoolean(false);
+            ActionState action = (ActionState) gameStates.get(ActionState.class);
+            action.setAnimationSetBoolean(false);
             
-            punchActionIndex++;
-            if (punchActionIndex > 14)
-                punchActionIndex = 0;
-            switch (punchActionIndex)
-            {
-                case 0:
-                    punch.setAnimationName("Male_Wave");
-                    break;
-                case 1:
-                    punch.setAnimationName("Male_Run");
-                    break;
-                case 2:
-                    punch.setAnimationName("Male_Bow");
-                    break;
-                case 3:
-                    punch.setAnimationName("Male_Cheer");
-                    break;
-                case 4:
-                    punch.setAnimationName("Male_Follow");
-                    break;
-                case 5:
-                    punch.setAnimationName("Male_Jump");
-                    break;
-                case 6:
-                    punch.setAnimationName("Male_Laugh");
-                    break;
-                case 7:
-                    punch.setAnimationName("Male_Clap");
-                    break;
-                case 8:
-                    punch.setAnimationName("Male_Idle");
-                    break;
-                case 9:
-                    punch.setAnimationName("Male_Walk");
-                    break;
-                case 10:
-                    punch.setAnimationName("Male_StandToSit");
-                    break;
-                case 11:
-                    punch.setAnimationName("Male_Sitting");
-                    break;
-                case 12:
-                    punch.setAnimationName("Male_FallFromSitting");
-                    break;
-                case 13:
-                    punch.setAnimationName("Male_FloorSitting");
-                    break;
-                case 14:
-                    punch.setAnimationName("Male_FloorGetup");
-                    break;
-            }
+            genericActionIndex++;
+            if (genericActionIndex >= genericAnimations.size())
+                genericActionIndex = 0;
+            
+            genericAnimations.get(genericActionIndex).apply(action);
+//            switch (genericActionIndex)
+//            {
+//                case 0:
+//                    action.setAnimationName("Male_Wave");
+//                    break;
+//                case 1:
+//                    action.setAnimationName("Male_Laugh");
+//                    break;
+//                case 2:
+//                    action.setAnimationName("Male_Cheer");
+//                    break;
+//                case 3:
+//                    action.setAnimationName("Male_Clap");
+//                    break;
+//                case 4:
+//                    action.setAnimationName("Male_Bow");
+//                    break;
+//                case 5:
+//                    action.setAnimationName("Male_Follow");
+//                    break;
+//                case 6:
+//                    punch.setAnimationName("Male_Jump");
+//                    break;
+//                case 7:
+//                    punch.setAnimationName("Male_Idle");
+//                    break;
+//                case 8:
+//                    punch.setAnimationName("Male_Run");
+//                    break;
+//                case 9:
+//                    punch.setAnimationName("Male_Walk");
+//                    break;
+//                case 10:
+//                    punch.setAnimationName("Male_StandToSit");
+//                    break;
+//                case 11:
+//                    punch.setAnimationName("Male_Sitting");
+//                    break;
+//                case 12:
+//                    punch.setAnimationName("Male_FallFromSitting");
+//                    break;
+//                case 13:
+//                    punch.setAnimationName("Male_FloorSitting");
+//                    break;
+//                case 14:
+//                    punch.setAnimationName("Male_FloorGetup");
+//                    break;
+//            }
         }
     }
     
@@ -448,6 +459,45 @@ public class NinjaContext extends GameContext
 
     public void setLocation(LocationNode location) {
         this.location = location;
+    }
+
+    /** Here we define the animation properties for the various animations
+     that are using the ActionState to play out **/
+    private void configureDefaultActionStateInfo() {
+        
+        ActionInfo info;
+        
+        /** Note: There are many more settings possible to set! **/
+        
+        info = new ActionInfo("Male_Wave", "MaleSmile", 1.0f, 2.0f);
+        genericAnimations.add(info);
+        
+        info = new ActionInfo("Male_No");
+        genericAnimations.add(info);
+        
+        info = new ActionInfo("Male_Yes");
+        genericAnimations.add(info);
+        
+        info = new ActionInfo("Male_Cell");
+        info.setRepeat(true);
+        info.setRepeatWillOscilate(true);
+        info.setTransitionDuration(0.5f);
+        genericAnimations.add(info);
+        
+        info = new ActionInfo("Male_Laugh", "MaleSmile", 0.5f, 2.5f);
+        genericAnimations.add(info);
+        
+        info = new ActionInfo("Male_Cheer", "MaleSmile", 0.5f, 3.0f);
+        genericAnimations.add(info);
+        
+        info = new ActionInfo("Male_Clap");
+        genericAnimations.add(info);
+        
+        info = new ActionInfo("Male_Bow");
+        genericAnimations.add(info);
+        
+        info = new ActionInfo("Male_Follow");
+        genericAnimations.add(info);
     }
 
     

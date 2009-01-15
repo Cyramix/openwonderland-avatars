@@ -20,6 +20,7 @@ package imi.character.statemachine.corestates.transitions;
 import imi.character.ninja.NinjaContext.TriggerNames;
 import imi.character.statemachine.GameState;
 import imi.character.statemachine.TransitionObject;
+import imi.character.statemachine.corestates.ActionState;
 
 /**
  * This class represents the transition from the Punch state to the Idle state.
@@ -30,6 +31,10 @@ public class ActionToIdle extends TransitionObject
     @Override
     protected boolean testCondition(GameState state) 
     {
+        ActionState action = (ActionState)state;
+        if (action.isRepeat())
+            return false;
+        
         stateMessageName = "toIdle";
         
         if (!state.getContext().getTriggerState().isKeyPressed(TriggerNames.MiscAction.ordinal()))

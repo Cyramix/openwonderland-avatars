@@ -33,7 +33,7 @@ public class TurnToAction extends TransitionObject
         stateMessageName = "toPunch";
         
         // If the punch action is active
-        if (state.getContext().getActions()[ActionNames.Punch.ordinal()] == 1.0f)
+        if (state.getContext().getActions()[ActionNames.Action.ordinal()] == 1.0f)
             return state.getContext().excecuteTransition(this);
         
         return false;
