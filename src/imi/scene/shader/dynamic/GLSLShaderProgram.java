@@ -59,6 +59,8 @@ public class GLSLShaderProgram implements AbstractShaderProgram, RenderUpdater
      * Convenience reference to the shader newline character
      */
     protected static String NL = GLSLDefaultVariables.ShaderNewline;
+
+    private static final float timeOut = 3.0f; // 3 Seconds.
     /**
      * This string is inserted at the beginning of each source
      * string.
@@ -884,7 +886,8 @@ public class GLSLShaderProgram implements AbstractShaderProgram, RenderUpdater
     private void blockUntilLoaded(GLSLShaderObjectsState shaderObject)
     {
         m_WM.addRenderUpdater(this, shaderObject);
-        while (m_bShaderLoaded == false)
+        float timeWaiting = 0.0f;
+        while (m_bShaderLoaded == false && timeWaiting < timeOut)
         {
             try
             {
@@ -893,7 +896,11 @@ public class GLSLShaderProgram implements AbstractShaderProgram, RenderUpdater
             {
                 Logger.getLogger(SimpleTNLShader.class.getName()).log(Level.SEVERE, "Sleeping beauty was interrupted", ex);
             }
+            timeWaiting += 0.3f;
         }
+
+        if (timeWaiting >= timeOut)
+            logger.severe("Timed out before the Render thread gave me a shader state.");
     }
     
     /**
