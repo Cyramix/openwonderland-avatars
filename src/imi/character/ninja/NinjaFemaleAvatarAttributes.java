@@ -33,61 +33,51 @@ public class NinjaFemaleAvatarAttributes extends CharacterAttributes
 {
     public String[] m_regions = new String[] { "Head", "Hands", "UpperBody", "LowerBody", "Feet", "Hair", "FacialHair", "Hats", "Glasses", "Jackets" };
 
-    /**
-     * Construct a new attributes instance.
-     * @param name The name of the avatar
-     * @param bRandomCustomizations ignored (test)
-     * @param bForceDressShirt ignored (test)
-     */
-    public NinjaFemaleAvatarAttributes(String name, boolean bRandomCustomizations, boolean bForceDressShirt) 
+    public NinjaFemaleAvatarAttributes(String name, boolean bRandomCustomizations) 
     {
         super(name);
         setGender(2);
         loadDefaultBind();
+        
+        int feet  = -1;//(int) (Math.random() * 10000 % 0);
+        int legs  = (int) (Math.random() * 10000 % 3);  // 1 and 2 problems
+        int torso = (int) (Math.random() * 10000 % 5);  // 3 and 3 problems
+        int hair  = (int) (Math.random() * 10000 % 53); // 8 is missing, test til 16
     }
 
     public NinjaFemaleAvatarAttributes(String name, int feet, int legs, int torso, int hair) 
     {
         super(name);
         setGender(2);
-        loadDefaultBind();
+        
+        ArrayList<String> load                  = new ArrayList<String>();
+        ArrayList<SkinnedMeshParams> add        = new ArrayList<SkinnedMeshParams>();
+        ArrayList<AttachmentParams> attachments = new ArrayList<AttachmentParams>();
+
+        load.add(new String("assets/models/collada/Avatars/Female/Female_Bind.dae")); // TODO name collision!
+        
+        customizeFeetPresets(feet,   load, add, attachments);
+        customizeLegsPresets(legs,   load, add, attachments);
+        customizeTorsoPresets(torso, load, add, attachments);
+        customizeHairPresets(hair,   load, add, attachments);
+
+        setLoadInstructions(load);
+        setAddInstructions(add.toArray(new SkinnedMeshParams[add.size()]));
+        setAttachmentsInstructions(attachments.toArray(new AttachmentParams[attachments.size()]));
     }
     
     private void customizeFeetPresets(int preset, ArrayList<String> load, ArrayList<SkinnedMeshParams> add, ArrayList<AttachmentParams> attachments)
     {
         switch(preset)
         {
-            case 0:
-            {
-                // Tennis shoes
-                load.add(new String("assets/models/collada/Shoes/TennisShoes_M/MaleTennisShoes.dae"));
-                add.add(new SkinnedMeshParams("TennisShoesShape", "Feet"));
-            }
-            break;
-            case 1:
-            {
-                // Flip flops
-                load.add(new String("assets/models/collada/Clothing/FlipFlopsFeet.dae"));
-                add.add(new SkinnedMeshParams("LFootNudeShape", "Feet"));
-                add.add(new SkinnedMeshParams("RFootNudeShape", "Feet"));
-                add.add(new SkinnedMeshParams("LFlipFlopShape", "Feet"));
-                add.add(new SkinnedMeshParams("RFlipFlopShape", "Feet"));
-            }
-            break;
-            case 2:
-            {
-                // Dress shoes
-                load.add(new String("assets/models/collada/Shoes/DressShoes_M/MaleDressShoes.dae"));
-                add.add(new SkinnedMeshParams("polySurfaceShape3", "Feet"));
-            }
-            break;
-        }   
+            default:
+                add.add(new SkinnedMeshParams("ShoesShape",  "Feet"));           
+        }  
     }
 
     private void customizeHairPresets(int preset, ArrayList<String> load, ArrayList<SkinnedMeshParams> add, ArrayList<AttachmentParams> attachments)
     {
         // load the head, eyes, teeth, and tongue
-        load.add(new String("assets/models/collada/Heads/FemaleCaucasian/FemaleCHead.dae"));
         add.add(new SkinnedMeshParams("rightEyeGeoShape", "Head"));
         add.add(new SkinnedMeshParams("leftEyeGeoShape", "Head"));
         add.add(new SkinnedMeshParams("UpperTeethShape", "Head"));
@@ -100,20 +90,320 @@ public class NinjaFemaleAvatarAttributes extends CharacterAttributes
         {
             case 0:
             {
-                load.add(new String("assets/models/collada/Hair/HairPlaceable.dae"));
-                attachments.add(new AttachmentParams("curly", "Head", oreintation));
+                load.add(new String("assets/models/collada/Hair/FemaleHairPlaceable.dae"));
+                attachments.add(new AttachmentParams("L_PigTails", "Head", oreintation));
             }
             break;
             case 1:
             {
-                load.add(new String("assets/models/collada/Hair/HairPlaceable.dae"));
-                attachments.add(new AttachmentParams("Hair_ShavedFlatTop", "Head", oreintation));
+                load.add(new String("assets/models/collada/Hair/FemaleHairPlaceable.dae"));
+                attachments.add(new AttachmentParams("M_PigTails", "Head", oreintation));
             }
             break;
             case 2:
             {
-                load.add(new String("assets/models/collada/Hair/HairPlaceable.dae"));
-                attachments.add(new AttachmentParams("Hair_Faux", "Head", oreintation));
+                load.add(new String("assets/models/collada/Hair/FemaleHairPlaceable.dae"));
+                attachments.add(new AttachmentParams("CulyPigTailz", "Head", oreintation));
+            }
+            break;
+            case 3:
+            {
+                load.add(new String("assets/models/collada/Hair/FemaleHairPlaceable.dae"));
+                attachments.add(new AttachmentParams("L_Bun", "Head", oreintation));
+            }
+            break;
+            case 4:
+            {
+                load.add(new String("assets/models/collada/Hair/FemaleHairPlaceable.dae"));
+                attachments.add(new AttachmentParams("M_Bun", "Head", oreintation));
+            }
+            break;
+            case 5:
+            {
+                load.add(new String("assets/models/collada/Hair/FemaleHairPlaceable.dae"));
+                attachments.add(new AttachmentParams("CurlyPonyTail", "Head", oreintation));
+            }
+            break;
+            case 6:
+            {
+                load.add(new String("assets/models/collada/Hair/FemaleHairPlaceable.dae"));
+                attachments.add(new AttachmentParams("L_PonyTail", "Head", oreintation));
+            }
+            break;
+            case 7:
+            {
+                load.add(new String("assets/models/collada/Hair/FemaleHairPlaceable.dae"));
+                attachments.add(new AttachmentParams("M_PonyTail", "Head", oreintation));
+            }
+            break;
+            case 8:   // Missing?
+            {
+                load.add(new String("assets/models/collada/Hair/FemaleHairPlaceable.dae"));
+                attachments.add(new AttachmentParams("Long_W_bangs", "Head", oreintation));
+            }
+            break;
+            case 9:
+            {
+                load.add(new String("assets/models/collada/Hair/FemaleHairPlaceable.dae"));
+                attachments.add(new AttachmentParams("Long_pt_L", "Head", oreintation));
+            }
+            break;
+            case 10:
+            {
+                load.add(new String("assets/models/collada/Hair/FemaleHairPlaceable.dae"));
+                attachments.add(new AttachmentParams("Long_pt_R", "Head", oreintation));
+            }
+            break;
+            case 11:
+            {
+                load.add(new String("assets/models/collada/Hair/FemaleHairPlaceable.dae"));
+                attachments.add(new AttachmentParams("Long_pt_center", "Head", oreintation));
+            }
+            break;
+            case 12:
+            {
+                load.add(new String("assets/models/collada/Hair/FemaleHairPlaceable.dae"));
+                attachments.add(new AttachmentParams("Layered_bang", "Head", oreintation));
+            }
+            break;
+            case 13:
+            {
+                load.add(new String("assets/models/collada/Hair/FemaleHairPlaceable.dae"));
+                attachments.add(new AttachmentParams("Layered_pt_L", "Head", oreintation));
+            }
+            break;
+            case 14:
+            {
+                load.add(new String("assets/models/collada/Hair/FemaleHairPlaceable.dae"));
+                attachments.add(new AttachmentParams("Layered_pt_R", "Head", oreintation));
+            }
+            break;
+            case 15:
+            {
+                load.add(new String("assets/models/collada/Hair/FemaleHairPlaceable.dae"));
+                attachments.add(new AttachmentParams("Layered_pt_center", "Head", oreintation));
+            }
+            break;
+            case 16:
+            {
+                load.add(new String("assets/models/collada/Hair/FemaleHairPlaceable.dae"));
+                attachments.add(new AttachmentParams("Curly_bangs", "Head", oreintation));
+            }
+            break;
+            case 17:
+            {
+                load.add(new String("assets/models/collada/Hair/FemaleHairPlaceable.dae"));
+                attachments.add(new AttachmentParams("Curly_pt_Right", "Head", oreintation));
+            }
+            break;
+            case 18:
+            {
+                load.add(new String("assets/models/collada/Hair/FemaleHairPlaceable.dae"));
+                attachments.add(new AttachmentParams("Curly_pt_Left", "Head", oreintation));
+            }
+            break;
+            case 19:
+            {
+                load.add(new String("assets/models/collada/Hair/FemaleHairPlaceable.dae"));
+                attachments.add(new AttachmentParams("Curly_Mid_Pt", "Head", oreintation));
+            }
+            break;
+            case 20:
+            {
+                load.add(new String("assets/models/collada/Hair/FemaleHairPlaceable.dae"));
+                attachments.add(new AttachmentParams("African_pt_right", "Head", oreintation));
+            }
+            break;
+            case 21:
+            {
+                load.add(new String("assets/models/collada/Hair/FemaleHairPlaceable.dae"));
+                attachments.add(new AttachmentParams("African_pt_left", "Head", oreintation));
+            }
+            break;
+            case 22:
+            {
+                load.add(new String("assets/models/collada/Hair/FemaleHairPlaceable.dae"));
+                attachments.add(new AttachmentParams("African_PT_Center", "Head", oreintation));
+            }
+            break;
+            case 23:
+            {
+                load.add(new String("assets/models/collada/Hair/FemaleHairPlaceable.dae"));
+                attachments.add(new AttachmentParams("African_Bangs", "Head", oreintation));
+            }
+            break;
+            case 24:
+            {
+                load.add(new String("assets/models/collada/Hair/FemaleHairPlaceable.dae"));
+                attachments.add(new AttachmentParams("Long_Dredz", "Head", oreintation));
+            }
+            break;
+            case 25:
+            {
+                load.add(new String("assets/models/collada/Hair/FemaleHairPlaceable.dae"));
+                attachments.add(new AttachmentParams("Med_Bangs", "Head", oreintation));
+            }
+            break;
+            case 26:
+            {
+                load.add(new String("assets/models/collada/Hair/FemaleHairPlaceable.dae"));
+                attachments.add(new AttachmentParams("Med_Pt_Bangz", "Head", oreintation));
+            }
+            break;
+            case 27:
+            {
+                load.add(new String("assets/models/collada/Hair/FemaleHairPlaceable.dae"));
+                attachments.add(new AttachmentParams("Med_Pt_Center", "Head", oreintation));
+            }
+            break;
+            case 28:
+            {
+                load.add(new String("assets/models/collada/Hair/FemaleHairPlaceable.dae"));
+                attachments.add(new AttachmentParams("Med_Pt_R", "Head", oreintation));
+            }
+            break;
+            case 29:
+            {
+                load.add(new String("assets/models/collada/Hair/FemaleHairPlaceable.dae"));
+                attachments.add(new AttachmentParams("Med_Pt_Left", "Head", oreintation));
+            }
+            break;
+            case 30:
+            {
+                load.add(new String("assets/models/collada/Hair/FemaleHairPlaceable.dae"));
+                attachments.add(new AttachmentParams("Med_Curly_Bangz", "Head", oreintation));
+            }
+            break;
+            case 31:
+            {
+                load.add(new String("assets/models/collada/Hair/FemaleHairPlaceable.dae"));
+                attachments.add(new AttachmentParams("Med_Curly_L", "Head", oreintation));
+            }
+            break;
+            case 32:
+            {
+                load.add(new String("assets/models/collada/Hair/FemaleHairPlaceable.dae"));
+                attachments.add(new AttachmentParams("Med_Curly_RT", "Head", oreintation));
+            }
+            break;
+            case 33:
+            {
+                load.add(new String("assets/models/collada/Hair/FemaleHairPlaceable.dae"));
+                attachments.add(new AttachmentParams("Med_Curly_Center", "Head", oreintation));
+            }
+            break;
+            case 34:
+            {
+                load.add(new String("assets/models/collada/Hair/FemaleHairPlaceable.dae"));
+                attachments.add(new AttachmentParams("Med_AfricanWBangz", "Head", oreintation));
+            }
+            break;
+            case 35:
+            {
+                load.add(new String("assets/models/collada/Hair/FemaleHairPlaceable.dae"));
+                attachments.add(new AttachmentParams("Med_African_pt_L", "Head", oreintation));
+            }
+            break;
+            case 36:
+            {
+                load.add(new String("assets/models/collada/Hair/FemaleHairPlaceable.dae"));
+                attachments.add(new AttachmentParams("Med_African_pt_R", "Head", oreintation));
+            }
+            break;
+            case 37:
+            {
+                load.add(new String("assets/models/collada/Hair/FemaleHairPlaceable.dae"));
+                attachments.add(new AttachmentParams("Med_AfriicanPT_Center", "Head", oreintation));
+            }
+            break;
+            case 38:
+            {
+                load.add(new String("assets/models/collada/Hair/FemaleHairPlaceable.dae"));
+                attachments.add(new AttachmentParams("MedDredzz", "Head", oreintation));
+            }
+            break;
+            case 39:
+            {
+                load.add(new String("assets/models/collada/Hair/FemaleHairPlaceable.dae"));
+                attachments.add(new AttachmentParams("Short_African_LBang", "Head", oreintation));
+            }
+            break;
+            case 40:
+            {
+                load.add(new String("assets/models/collada/Hair/FemaleHairPlaceable.dae"));
+                attachments.add(new AttachmentParams("Short_African_Messy", "Head", oreintation));
+            }
+            break;
+            case 41:
+            {
+                load.add(new String("assets/models/collada/Hair/FemaleHairPlaceable.dae"));
+                attachments.add(new AttachmentParams("Short_African_pt_R", "Head", oreintation));
+            }
+            break;
+            case 42:
+            {
+                load.add(new String("assets/models/collada/Hair/FemaleHairPlaceable.dae"));
+                attachments.add(new AttachmentParams("Short_African_pt_L", "Head", oreintation));
+            }
+            break;
+            case 43:
+            {
+                load.add(new String("assets/models/collada/Hair/FemaleHairPlaceable.dae"));
+                attachments.add(new AttachmentParams("Short_AfricanPT_Center", "Head", oreintation));
+            }
+            break;
+            case 44:
+            {
+                load.add(new String("assets/models/collada/Hair/FemaleHairPlaceable.dae"));
+                attachments.add(new AttachmentParams("ShortAfrican_BoB", "Head", oreintation));
+            }
+            break;
+            case 45:
+            {
+                load.add(new String("assets/models/collada/Hair/FemaleHairPlaceable.dae"));
+                attachments.add(new AttachmentParams("ShortDredzz", "Head", oreintation));
+            }
+            break;
+            case 46:
+            {
+                load.add(new String("assets/models/collada/Hair/FemaleHairPlaceable.dae"));
+                attachments.add(new AttachmentParams("Short_Messy", "Head", oreintation));
+            }
+            break;
+            case 47:
+            {
+                load.add(new String("assets/models/collada/Hair/FemaleHairPlaceable.dae"));
+                attachments.add(new AttachmentParams("Short_Long_Bang", "Head", oreintation));
+            }
+            break;
+            case 48:
+            {
+                load.add(new String("assets/models/collada/Hair/FemaleHairPlaceable.dae"));
+                attachments.add(new AttachmentParams("Short_Spikey", "Head", oreintation));
+            }
+            break;
+            case 49:
+            {
+                load.add(new String("assets/models/collada/Hair/FemaleHairPlaceable.dae"));
+                attachments.add(new AttachmentParams("Short_BOB", "Head", oreintation));
+            }
+            break;
+            case 50:
+            {
+                load.add(new String("assets/models/collada/Hair/FemaleHairPlaceable.dae"));
+                attachments.add(new AttachmentParams("Short_PT_R", "Head", oreintation));
+            }
+            break;
+            case 51:
+            {
+                load.add(new String("assets/models/collada/Hair/FemaleHairPlaceable.dae"));
+                attachments.add(new AttachmentParams("Short_PT_L", "Head", oreintation));
+            }
+            break;
+            case 52:
+            {
+                load.add(new String("assets/models/collada/Hair/FemaleHairPlaceable.dae"));
+                attachments.add(new AttachmentParams("Short_PT_Center", "Head", oreintation));
             }
             break;
         }   
@@ -126,60 +416,74 @@ public class NinjaFemaleAvatarAttributes extends CharacterAttributes
             case 0:
             {
                 // Jeans
-                load.add(new String("assets/models/collada/Pants/Jeans_M/Jeans.dae"));
-                add.add(new SkinnedMeshParams("polySurface3Shape", "LowerBody"));
+                load.add(new String("assets/models/collada/Clothes/Female/FemaleJeansStraight.dae"));
+                add.add(new SkinnedMeshParams("JeansShape", "LowerBody"));
             }
             break;
             case 1:
             {
-                // Shorts
-                load.add(new String("assets/models/collada/Pants/Shorts_M/Shorts.dae"));
-                add.add(new SkinnedMeshParams("LegsNudeShape", "LowerBody"));
-                add.add(new SkinnedMeshParams("MaleShortsShape", "LowerBody"));
-            }
-            break;
-            case 2:
-            {
                 // Dress pants
-                load.add(new String("assets/models/collada/Pants/DressPants_M/MaleDressPants1.dae"));
-                add.add(new SkinnedMeshParams("Legs_LegsNudeShape", "LowerBody"));
+                // Name collsiion... need to delete before the load?
+                load.add(new String("assets/models/collada/Clothes/Female/FemaleDressPants.dae"));
+                add.add(new SkinnedMeshParams("LegsNudeShape", "LowerBody"));
             }
             break;
+            case 2:  //  TODO error
+            {
+                // Shorts
+                load.add(new String("assets/models/collada/Clothes/Female/FemaleShorts.dae"));
+                add.add(new SkinnedMeshParams("ShortsShape", "LowerBody"));
+            }
+            break;
+            default:
+                add.add(new SkinnedMeshParams("LegsNudeShape",  "LowerBody"));
         }   
     }
 
     protected void customizeTorsoPresets(int preset, ArrayList<String> load, ArrayList<SkinnedMeshParams> add, ArrayList<AttachmentParams> attachments)
     {
         // Add the hands in either way
-        load.add(new String("assets/models/collada/Avatars/Male/Female_Hands.dae")); // change!
-        add.add(new SkinnedMeshParams("RHandShape",  "Hands"));
-        add.add(new SkinnedMeshParams("LHandShape",  "Hands"));
+        add.add(new SkinnedMeshParams("HandsShape",  "Hands"));
 
         switch(preset)
         {
             case 0:
             {
-                // T Shirt
-                load.add(new String("assets/models/collada/Shirts/TShirt_M/MaleTShirt.dae"));
-                add.add(new SkinnedMeshParams("PoloShape", "UpperBody"));
-                add.add(new SkinnedMeshParams("ArmsShape", "UpperBody"));
+                // Dress Shirt
+                load.add(new String("assets/models/collada/Clothes/Female/FemaleDressShirt.dae"));
+                add.add(new SkinnedMeshParams("ShirtMeshShape", "UpperBody"));
             }
             break;
             case 1:
             {
-                // Polo Strips
-                load.add(new String("assets/models/collada/Shirts/PoloShirt_M/MalePolo.dae"));
-                add.add(new SkinnedMeshParams("PoloShape", "UpperBody"));
-                add.add(new SkinnedMeshParams("TorsoNudeShape", "UpperBody"));
+                // Sweater
+                load.add(new String("assets/models/collada/Clothes/Female/FemaleSweaterCrew.dae"));
+                add.add(new SkinnedMeshParams("SweaterShape", "UpperBody"));
             }
             break;
             case 2:
             {
-                // Dress shirt
-                load.add(new String("assets/models/collada/Shirts/DressShirt_M/MaleDressShirt.dae"));
-                add.add(new SkinnedMeshParams("DressShirtShape", "UpperBody"));
+                // Jacket
+                load.add(new String("assets/models/collada/Clothes/Female/FemaleJacket.dae"));
+                add.add(new SkinnedMeshParams("Jacket1Shape", "UpperBody"));
             }
             break;
+            case 3:      //    TODO ?
+            {
+                // Blouse
+                load.add(new String("assets/models/collada/Clothes/Female/FemaleBlouse.dae"));
+                add.add(new SkinnedMeshParams("TShirtShape", "UpperBody"));
+            }
+            break;
+            case 4:
+            {
+                // T Shirt            TODO doesnt show?
+                load.add(new String("assets/models/collada/Clothes/Female/FemaleTShirt.dae"));
+                add.add(new SkinnedMeshParams("TShirtShape", "UpperBody"));
+            }
+            break;
+            default:
+                add.add(new SkinnedMeshParams("TorsoNudeShape",  "UpperBody"));
         }   
     }
 

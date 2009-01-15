@@ -70,12 +70,11 @@ public class VerletArmTest  extends DemoBase
         camState.setCameraPosition(new Vector3f(0.0f, 1.8f, -2.0f));
         
         // Create avatar
-        int presetNum = 3;
-        int feet  = (int) (Math.random() * 10000 % presetNum);
-        int legs  = (int) (Math.random() * 10000 % presetNum);
-        int torso = (int) (Math.random() * 10000 % presetNum);
-        int hair  = (int) (Math.random() * 10000 % presetNum);
-        NinjaAvatar avatar = new NinjaAvatar(new NinjaAvatarAttributes("Avatar", feet, legs, torso, hair), wm);
+        int feet  = -1;//(int) (Math.random() * 10000 % 0);
+        int legs  = (int) (Math.random() * 10000 % 3);
+        int torso = (int) (Math.random() * 10000 % 5);
+        int hair  = (int) (Math.random() * 10000 % 53); // 8 is missing, test til 16
+        NinjaAvatar avatar = new NinjaAvatar(new NinjaFemaleAvatarAttributes("Avatar", feet, legs, torso, hair), wm);
         //avatar.setUpdateExtension(new DarkstarClient(avatar, true, feet, legs, torso, hair));
         //((DarkstarClient)avatar.getUpdateExtension()).login();
         //NinjaAvatar avatar = new NinjaAvatar(new NinjaFemaleAvatarAttributes("Avatar", true, false), wm);

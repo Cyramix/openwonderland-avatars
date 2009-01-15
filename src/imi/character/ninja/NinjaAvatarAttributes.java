@@ -45,10 +45,10 @@ public class NinjaAvatarAttributes extends CharacterAttributes
         if (bRandomCustomizations)
         {
             int preset        = -1;
-            int numberOfFeet  = 3;
-            int numberOfLegs  = 3;
-            int numberOfTorso = 3;
-            int numberOfHair  = 3;
+            int numberOfFeet  = 4;
+            int numberOfLegs  = 4;
+            int numberOfTorso = 6;
+            int numberOfHair  = 17;
 
             ArrayList<String> load      = new ArrayList<String>();
             ArrayList<SkinnedMeshParams> add       = new ArrayList<SkinnedMeshParams>();
@@ -106,7 +106,7 @@ public class NinjaAvatarAttributes extends CharacterAttributes
             case 1:
             {
                 // Flip flops
-                load.add(new String("assets/models/collada/Clothing/FlipFlopsFeet.dae"));
+                load.add(new String("assets/models/collada/Shoes/FlipFlops_M/FlipFlopsFeet.dae"));
                 add.add(new SkinnedMeshParams("LFootNudeShape", "Feet"));
                 add.add(new SkinnedMeshParams("RFootNudeShape", "Feet"));
                 add.add(new SkinnedMeshParams("LFlipFlopShape", "Feet"));
@@ -118,6 +118,13 @@ public class NinjaAvatarAttributes extends CharacterAttributes
                 // Dress shoes
                 load.add(new String("assets/models/collada/Shoes/DressShoes_M/MaleDressShoes.dae"));
                 add.add(new SkinnedMeshParams("polySurfaceShape3", "Feet"));
+            }
+            break;
+            case 3:
+            {
+                // Cowboy boots
+                load.add(new String("assets/models/collada/Shoes/CowboyBoots_M/CowBoyBoot.dae"));
+                add.add(new SkinnedMeshParams("polySurfaceShape1", "Feet"));
             }
             break;
         }   
@@ -146,13 +153,97 @@ public class NinjaAvatarAttributes extends CharacterAttributes
             case 1:
             {
                 load.add(new String("assets/models/collada/Hair/HairPlaceable.dae"));
-                attachments.add(new AttachmentParams("Hair_ShavedFlatTop", "Head", oreintation));
+                attachments.add(new AttachmentParams("S_pt_right", "Head", oreintation));
             }
             break;
             case 2:
             {
                 load.add(new String("assets/models/collada/Hair/HairPlaceable.dae"));
+                attachments.add(new AttachmentParams("S_pt_left", "Head", oreintation));
+            }
+            break;
+            case 3:
+            {
+                load.add(new String("assets/models/collada/Hair/HairPlaceable.dae"));
+                attachments.add(new AttachmentParams("M_slickedbk", "Head", oreintation));
+            }
+            break;
+            case 4:
+            {
+                load.add(new String("assets/models/collada/Hair/HairPlaceable.dae"));
+                attachments.add(new AttachmentParams("M_pt_Right", "Head", oreintation));
+            }
+            break;
+            case 5:
+            {
+                load.add(new String("assets/models/collada/Hair/HairPlaceable.dae"));
+                attachments.add(new AttachmentParams("M_pt_left", "Head", oreintation));
+            }
+            break;
+            case 6:
+            {
+                load.add(new String("assets/models/collada/Hair/HairPlaceable.dae"));
+                attachments.add(new AttachmentParams("M_center", "Head", oreintation));
+            }
+            break;
+            case 7:
+            {
+                load.add(new String("assets/models/collada/Hair/HairPlaceable.dae"));
+                attachments.add(new AttachmentParams("LPonyTail", "Head", oreintation));
+            }
+            break;
+            case 8:
+            {
+                load.add(new String("assets/models/collada/Hair/HairPlaceable.dae"));
+                attachments.add(new AttachmentParams("Hair_Spiky", "Head", oreintation));
+            }
+            break;
+            case 9:
+            {
+                load.add(new String("assets/models/collada/Hair/HairPlaceable.dae"));
                 attachments.add(new AttachmentParams("Hair_Faux", "Head", oreintation));
+            }
+            break;
+            case 10:
+            {
+                load.add(new String("assets/models/collada/Hair/HairPlaceable.dae"));
+                attachments.add(new AttachmentParams("Hair_Bald", "Head", oreintation));
+            }
+            break;
+            case 11:
+            {
+                load.add(new String("assets/models/collada/Hair/HairPlaceable.dae"));
+                attachments.add(new AttachmentParams("Hair_Balding", "Head", oreintation));
+            }
+            break;
+            case 12:
+            {
+                load.add(new String("assets/models/collada/Hair/HairPlaceable.dae"));
+                attachments.add(new AttachmentParams("Hair_ShavedShort", "Head", oreintation));
+            }
+            break;
+            case 13:
+            {
+                load.add(new String("assets/models/collada/Hair/HairPlaceable.dae"));
+                attachments.add(new AttachmentParams("Hair_Normal", "Head", oreintation));
+            }
+            break;
+            case 14:
+            {
+                load.add(new String("assets/models/collada/Hair/HairPlaceable.dae"));
+                attachments.add(new AttachmentParams("Hair_ShavedFlatTop", "Head", oreintation));
+            }
+            break;
+            case 15:
+            {
+                load.add(new String("assets/models/collada/Hair/HairPlaceable.dae"));
+                attachments.add(new AttachmentParams("Hair_AfAmShortCrew", "Head", oreintation));
+            }
+            break;
+            case 16:
+            {
+                load.add(new String("assets/models/collada/Hair/HairPlaceable.dae"));
+                attachments.add(new AttachmentParams("Hair_AfAmLngCrew", "Head", oreintation));
             }
             break;
         }   
@@ -182,6 +273,13 @@ public class NinjaAvatarAttributes extends CharacterAttributes
                 // Dress pants
                 load.add(new String("assets/models/collada/Pants/DressPants_M/MaleDressPants1.dae"));
                 add.add(new SkinnedMeshParams("Legs_LegsNudeShape", "LowerBody"));
+            }
+            break;
+            case 3:
+            {
+                // Suite pants
+                load.add(new String("assets/models/collada/Pants/SuitSlacks_M/Slacks.dae"));
+                add.add(new SkinnedMeshParams("SuitPantsShape", "LowerBody"));
             }
             break;
         }   
@@ -217,6 +315,27 @@ public class NinjaAvatarAttributes extends CharacterAttributes
                 // Dress shirt
                 load.add(new String("assets/models/collada/Shirts/DressShirt_M/MaleDressShirt.dae"));
                 add.add(new SkinnedMeshParams("DressShirtShape", "UpperBody"));
+            }
+            break;
+            case 3:
+            {
+                // Sweater
+                load.add(new String("assets/models/collada/Shirts/Sweater_M/MaleSweater.dae"));
+                add.add(new SkinnedMeshParams("SweaterMaleShape", "UpperBody"));
+            }
+            break;
+            case 4:
+            {
+                // Dress shirt for suit
+                load.add(new String("assets/models/collada/Shirts/SuitDressShirt_M/SuitDressShirt.dae"));
+                add.add(new SkinnedMeshParams("SuitShirtShape", "UpperBody"));
+            }
+            break;
+            case 5:
+            {
+                // Suit Jacket
+                load.add(new String("assets/models/collada/Shirts/SuitJacket_M/SuitJacket.dae"));
+                add.add(new SkinnedMeshParams("SuitJacketShape", "UpperBody"));
             }
             break;
         }   
