@@ -222,9 +222,11 @@ public class RepositoryAsset extends ProcessorComponent
     {
         // Check the cache for this file
         File cachedFile = m_home.getCacheEquivalent(m_descriptor.getLocation());
+        PScene loadedScene = null;
         if (cachedFile.exists() && m_home.isUsingCache()) // load it
+            loadedScene = loadBinaryPScene(cachedFile);
+        if (loadedScene != null)
         {
-            PScene loadedScene = loadBinaryPScene(cachedFile);
             loadedScene.setWorldManager(m_home.getWorldManager());
             loadedScene.finalizeDeserialization();
             m_data.add(loadedScene);

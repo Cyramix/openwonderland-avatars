@@ -302,12 +302,6 @@ public class InstructionProcessor
             skinnedMesh = (PPolygonSkinnedMesh) mesh;
             // Make an instance
             PPolygonSkinnedMeshInstance skinnedMeshInstance = (PPolygonSkinnedMeshInstance) m_loadingPScene.addMeshInstance(skinnedMesh, new PMatrix());
-            // Debugging / Diagnostic information
-//            logger.log(Level.INFO, "Adding mesh, \"" + skinnedMeshName + "\" to subgroup, \"" + subGroupName + "\"");
-
-            //  Link the SkinnedMesh to the Skeleton.
-            skinnedMeshInstance.setAndLinkSkeletonNode(m_skeleton);
-
             // Add it to the skeleton
             m_skeleton.addToSubGroup(skinnedMeshInstance, subGroupName);
         }
@@ -315,9 +309,11 @@ public class InstructionProcessor
         {
 //            logger.log(Level.INFO, "Adding meshinstance, \"" + skinnedMeshName + "\" to subgroup, \"" + subGroupName + "\"");
             PPolygonSkinnedMeshInstance skinMeshInstance = (PPolygonSkinnedMeshInstance)mesh;
-            skinMeshInstance.setPScene(m_loadingPScene);
-            skinMeshInstance.setAndLinkSkeletonNode(m_skeleton);
-            m_skeleton.addToSubGroup(skinMeshInstance, subGroupName);
+            skinnedMesh = (PPolygonSkinnedMesh) skinMeshInstance.getGeometry();
+            // Make an instance
+            PPolygonSkinnedMeshInstance skinnedMeshInstance = (PPolygonSkinnedMeshInstance) m_loadingPScene.addMeshInstance(skinnedMesh, new PMatrix());
+            // Add it to the skeleton
+            m_skeleton.addToSubGroup(skinnedMeshInstance, subGroupName);
         }
         else
             logger.severe("Node with same name found, but not skinned mesh");
@@ -357,10 +353,6 @@ public class InstructionProcessor
                         PPolygonSkinnedMesh skinnedMesh = (PPolygonSkinnedMesh) mesh;
                         // Make an instance
                         PPolygonSkinnedMeshInstance skinnedMeshInstance = (PPolygonSkinnedMeshInstance) m_loadingPScene.addMeshInstance(skinnedMesh, new PMatrix());
-
-                        //  Link the SkinnedMesh to the Skeleton.
-                        skinnedMeshInstance.setAndLinkSkeletonNode(m_skeleton);
-
                         // Add it to the skeleton
                         m_skeleton.addToSubGroup(skinnedMeshInstance, subGroupName);
                 }
@@ -372,11 +364,11 @@ public class InstructionProcessor
                     PNode current = queue.removeFirst();
                     if (current instanceof PPolygonSkinnedMeshInstance)
                     {
-                        PPolygonSkinnedMeshInstance skinMeshInstance = (PPolygonSkinnedMeshInstance)current;
-                         //  Link the SkinnedMesh to the Skeleton.
-                        skinMeshInstance.setAndLinkSkeletonNode(m_skeleton);
+                        PMatrix transform = new PMatrix(current.getTransform().getLocalMatrix(false));
+                        PPolygonSkinnedMeshInstance skinnedMeshInstance =
+                                (PPolygonSkinnedMeshInstance) m_loadingPScene.addMeshInstance(current, transform);
                         // Add it to the skeleton
-                        m_skeleton.addToSubGroup(skinMeshInstance, subGroupName);
+                        m_skeleton.addToSubGroup(skinnedMeshInstance, subGroupName);
                     }
                     // add all children
                     queue.addAll(current.getChildren());

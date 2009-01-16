@@ -1156,12 +1156,17 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         SkeletonNode newHeadSkeleton = null;
         PNode psceneInstances = ((PScene)asset.getAssetData()).getInstances();
         int numChildren = psceneInstances.getChildrenCount();
+        Iterable<PNode> newSkeletonChildren = null;
         // Known to be a top level child
         for (int i = 0; i < numChildren; ++i)
         {
             PNode current = psceneInstances.getChild(i);
             if (current instanceof SkeletonNode)
-                newHeadSkeleton = (SkeletonNode)current;
+            {
+                newHeadSkeleton = ((SkeletonNode)current);
+                newSkeletonChildren = newHeadSkeleton.getChildren();
+                newHeadSkeleton = newHeadSkeleton.deepCopy();
+            }
         }
         if (newHeadSkeleton == null)
         {
@@ -1177,8 +1182,8 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         m_skeleton.refresh();
         m_skeleton.clearSubGroup("Head");
 
-        Iterable<PNode> list = newHeadSkeleton.getChildren();
-        for (PNode node : list)
+        
+        for (PNode node : newSkeletonChildren)
         {
             if (node instanceof PPolygonSkinnedMesh)
             {

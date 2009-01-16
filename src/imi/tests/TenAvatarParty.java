@@ -83,7 +83,7 @@ public class TenAvatarParty extends DemoBase
         {
             try {
                 long startTime = System.nanoTime();
-                testCharacter = new NinjaAvatar(new NinjaAvatarAttributes("Name", false, false), wm);//new NinjaAvatar(new URL(configFiles[i]), wm);
+                testCharacter = new NinjaAvatar(new NinjaAvatarAttributes("Name", true, false), wm);//new NinjaAvatar(new URL(configFiles[i]), wm);
                 long stopTime = System.nanoTime();
                 float length = (stopTime - startTime) / 1000000000.0f;
                 totalLoadTime += length;

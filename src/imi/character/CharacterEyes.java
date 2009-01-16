@@ -18,8 +18,10 @@
 package imi.character;
 
 import com.jme.math.Vector3f;
+import imi.scene.PNode;
 import imi.scene.polygonmodel.PPolygonModelInstance;
 import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
+import imi.scene.polygonmodel.parts.skinned.SkinnedMeshJoint;
 import imi.scene.polygonmodel.parts.skinned.SkinnedMeshJoint;
 import imi.scene.polygonmodel.skinned.PPolygonSkinnedMeshInstance;
 import java.util.logging.Logger;
@@ -115,7 +117,7 @@ public class CharacterEyes
             return;
 
         if (headJoint == null)
-            headJoint = (SkinnedMeshJoint)characterModelInst.findChild("Head");
+            headJoint = (SkinnedMeshJoint) skeleton.getJoint("Head");
                     
         // Position the target in fornt of the eyes
         Vector3f target = characterModelInst.getTransform().getWorldMatrix(false).getTranslation();
