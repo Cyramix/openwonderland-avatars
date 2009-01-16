@@ -63,6 +63,8 @@ public class InstructionProcessor
     private Repository          m_repository = null;
     /** Logger **/
     protected static final Logger logger = Logger.getLogger(InstructionProcessor.class.getName());
+
+    private boolean m_bUseBinaryFiles = true;
     
     /**
      * The world manager is used to create temporal pscenes for the loading process
@@ -119,6 +121,14 @@ public class InstructionProcessor
         return m_skeleton;
     }
 
+    public void setUseBinaryFiles(boolean bUseBinaryFiles) {
+        m_bUseBinaryFiles = bUseBinaryFiles;
+    }
+
+    public boolean isUsingBinaryFiles() {
+        return m_bUseBinaryFiles;
+    }
+
     /**
      * Execute the provided instruction and recursively traverse the tree executing
      * grouping along the way.
@@ -153,14 +163,14 @@ public class InstructionProcessor
                 case loadAnimation:
                 {
                     URL animationLocation = new URL(instruction.getDataAsString());
-                    if (!m_characterLoader.loadAnimation(m_loadingPScene, m_skeleton, animationLocation, 0))
+                    if (!m_characterLoader.loadAnimation(m_loadingPScene, m_skeleton, animationLocation, 0, m_bUseBinaryFiles))
                         logger.warning("COLLADA configuration ERROR: was not able to LOAD ANIMATION!");
                 }
                 break;
                 case loadFacialAnimation:
                 {
                     URL animationLocation = new URL(instruction.getDataAsString());
-                    if (!m_characterLoader.loadAnimation(m_loadingPScene, m_skeleton, animationLocation, 1))
+                    if (!m_characterLoader.loadAnimation(m_loadingPScene, m_skeleton, animationLocation, 1, m_bUseBinaryFiles))
                         logger.warning("COLLADA configuration ERROR: was not able to LOAD FACIAL ANIMATION!");
                 }
                 break;
