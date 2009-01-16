@@ -3821,8 +3821,12 @@ public class PMatrix implements Serializable
     {
         float fOneMinusFraction = 1.0f - fFraction;
 
-        for (int i=0; i<16; i++)
+        for (int i=0; i<11; i++)
+        {
+            if (a.mat[i] == b.mat[i])
+                continue;
             mat[i] = a.mat[i] * fFraction + b.mat[i] * fOneMinusFraction;
+        }
     }
 
     /**
