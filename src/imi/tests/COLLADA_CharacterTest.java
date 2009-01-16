@@ -89,7 +89,7 @@ public class COLLADA_CharacterTest extends DemoBase
         camState.setMovementRate(0.03f);
         camState.setCameraPosition(new Vector3f(0.0f, 1.8f, -2.0f));
 
-        swapAvatarHead(avatar);
+//        swapAvatarHead(avatar);
         // give me a tree explorer!
         TreeExplorer te = new TreeExplorer();
         SceneEssentials se = new SceneEssentials();
