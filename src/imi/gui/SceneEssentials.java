@@ -636,7 +636,7 @@ public class SceneEssentials {
                 m_currentHiProcessors.clear();
             
             File path = getAbsPath(m_fileModel);
-            String szURL = new String("file://localhost/" + path.getPath());
+            String szURL = new String("file:///" + path.getPath());
 
             try {
                 URL modelURL = new URL(szURL);
@@ -671,7 +671,7 @@ public class SceneEssentials {
                 m_currentHiProcessors.clear();
 
             File path = getAbsPath(m_fileModel);
-            String szURL = new String("file://localhost/" + path.getPath());
+            String szURL = new String("file:///" + path.getPath());
 
             try {
                 URL modelURL = new URL(szURL);
@@ -775,7 +775,7 @@ public class SceneEssentials {
             m_currentPScene.setUseRepository(useRepository);
             
             File path = getAbsPath(m_fileModel);
-            String szURL = new String("file://localhost/" + path.getPath());
+            String szURL = new String("file:///" + path.getPath());
 
             URL modelURL = null;
 
@@ -823,7 +823,7 @@ public class SceneEssentials {
             m_currentPScene.setUseRepository(useRepository);
 
             File path = getAbsPath(m_fileModel);
-            String szURL = new String("file://localhost/" + path.getPath());
+            String szURL = new String("file:///" + path.getPath());
 
             try {
                 URL modelURL = new URL(szURL);
@@ -871,7 +871,7 @@ public class SceneEssentials {
             m_currentPScene.setUseRepository(useRepository);
 
             File path = getAbsPath(animation);
-            String szURL = new String("file://localhost/" + path.getPath());
+            String szURL = new String("file:///" + path.getPath());
 
             URL animURL    = null;
             try {
@@ -1498,8 +1498,8 @@ public class SceneEssentials {
         String szURL = null;
         for (int i = 0; i < colladaList.length; i++) {
             if (colladaList[i].lastIndexOf("Bind") != -1) {
-//                szURL = "file://localhost/" + System.getProperty("user.dir") + "/" + colladaList[i];
-                szURL = "file://localhost/" + absPath + "/" + colladaList[i];
+//                szURL = "file:///" + System.getProperty("user.dir") + "/" + colladaList[i];
+                szURL = "file:///" + absPath + "/" + colladaList[i];
                 break;
             }
         }
@@ -1530,7 +1530,7 @@ public class SceneEssentials {
         String szURL = null;
         for (int i = 0; i < colladaList.length; i++) {
             if (colladaList[i].lastIndexOf("Anim") != -1) {
-                szURL = "file://localhost/" + absPath + "/" + colladaList[i];
+                szURL = "file:///" + absPath + "/" + colladaList[i];
 
                 try {
                     URL animURL = new URL(szURL);

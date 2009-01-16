@@ -40,8 +40,8 @@ public class AnimationSerialization
         logger.info("Creating path URLs...");
         try
         {
-            path = new URL("file://localhost/work/IMI/sunSVN/assets/models/collada/Avatars/Male/Male_Anim_FloorSitting.dae");
-            output = new URL("file://localhost/work/IMI/sunSVN/assets/models/collada/Avatars/Male/Male_Anim_FloorSitting.baf");
+            path = new URL("file:///work/IMI/sunSVN/assets/models/collada/Avatars/Male/Male_Anim_FloorSitting.dae");
+            output = new URL("file:///work/IMI/sunSVN/assets/models/collada/Avatars/Male/Male_Anim_FloorSitting.baf");
         }
         catch (MalformedURLException ex)
         {

@@ -504,7 +504,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         // assumed that the prefix should be the file protocol to the local machine
         // in the current folder.
         if (urlPrefix == null)
-            urlPrefix = new String("file://localhost/" + System.getProperty("user.dir") + "/");
+            urlPrefix = new String("file:///" + System.getProperty("user.dir") + "/");
         // attach the appropriate head
         URL headLocation = null;
         try {

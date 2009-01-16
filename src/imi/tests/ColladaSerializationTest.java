@@ -39,7 +39,7 @@ public class ColladaSerializationTest extends DemoBase
     private static URL colladaFileLocation = null;
     static {
         try {
-            colladaFileLocation = new URL("file://localhost/work/avatars/assets/models/collada/Avatars/Male/Male_Bind.dae");
+            colladaFileLocation = new URL("file:///work/avatars/assets/models/collada/Avatars/Male/Male_Bind.dae");
         } catch (MalformedURLException ex) {
             Logger.getLogger(ColladaSerializationTest.class.getName()).log(Level.SEVERE, null, ex);
         }

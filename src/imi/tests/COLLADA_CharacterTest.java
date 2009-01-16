@@ -101,7 +101,7 @@ public class COLLADA_CharacterTest extends DemoBase
     private void swapAvatarHead(Character avatar)
     {
         URL newHeadLocation = null;
-        String fileProtocol = "file://localhost/" + System.getProperty("user.dir") + "/";
+        String fileProtocol = "file:///" + System.getProperty("user.dir") + "/";
         try {
             newHeadLocation = new URL(fileProtocol + "assets/models/collada/Heads/CaucasianHead/MaleCHead-NS.dae");
 //            newHeadLocation = new URL(fileProtocol + "assets/models/collada/Heads/CaucasianHead/MaleMonkeyHead.dae");

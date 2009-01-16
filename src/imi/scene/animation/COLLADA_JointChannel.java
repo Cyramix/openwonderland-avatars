@@ -48,6 +48,8 @@ public class COLLADA_JointChannel implements PJointChannel, Serializable
     private final PMatrix m_blendBuffer = new PMatrix();
     private final Vector3f m_leftBufferVector = new Vector3f();
     private final Vector3f m_rightBufferVector = new Vector3f();
+
+
     
     //  Constructor land!
     public COLLADA_JointChannel()
@@ -194,14 +196,14 @@ public class COLLADA_JointChannel implements PJointChannel, Serializable
         else if (leftFrame != null && rightFrame != null) // Need to blend between two poses
         {
             interpolationCoefficient = (fTime - leftFrame.getFrameTime()) / (rightFrame.getFrameTime() - leftFrame.getFrameTime());
- 
+
             Quaternion rotationComponent = leftFrame.getValue().getRotationJME();
             rotationComponent.slerp(rotationComponent, rightFrame.getValue().getRotationJME(), interpolationCoefficient);
 
             // grab the translation and lerp it
             leftFrame.getValue().getTranslation(m_leftBufferVector);
             rightFrame.getValue().getTranslation(m_rightBufferVector);
-            
+
             m_leftBufferVector.interpolate(m_rightBufferVector, interpolationCoefficient);
             output.set2(rotationComponent, m_leftBufferVector, 1.0f);
         }

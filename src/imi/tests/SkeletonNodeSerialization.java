@@ -101,7 +101,7 @@ public class SkeletonNodeSerialization
     };
 
     /** URL preamble **/
-    private static String URLPreamble = "file://localhost/" + System.getProperty("user.dir") + "/";
+    private static String URLPreamble = "file:///" + System.getProperty("user.dir") + "/";
     /** Important state for base skeleton creation **/
     static
     {

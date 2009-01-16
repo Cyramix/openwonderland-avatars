@@ -106,7 +106,7 @@ public class COLLADA_ModelTest extends DemoBase
                 Instruction configurationInstruction = new Instruction(Instruction.InstructionType.grouping, new String("Configurating My Avatar!"));
                 configurationInstruction.addChildInstruction(Instruction.InstructionType.setSkeleton, skeleton);
                 try {
-                    configurationInstruction.addChildInstruction(Instruction.InstructionType.loadAnimation, new URL("file://localhost/work/IMI/sunSVN/assets/models/collada/Avatars/Male/Male_Walk.dae"));
+                    configurationInstruction.addChildInstruction(Instruction.InstructionType.loadAnimation, new URL("file:///work/IMI/sunSVN/assets/models/collada/Avatars/Male/Male_Walk.dae"));
                 } catch (MalformedURLException ex) {
                     Logger.getLogger(COLLADA_ModelTest.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -120,7 +120,7 @@ public class COLLADA_ModelTest extends DemoBase
                 Instruction maleBind = new Instruction(Instruction.InstructionType.grouping, new String("Loading the male bind pose"));
                 maleBind.addChildInstruction(Instruction.InstructionType.setSkeleton, null);
                 try {
-                    maleBind.addChildInstruction(Instruction.InstructionType.loadHumanoidAvatarBindPose, new URL("file://localhost/work/IMI/sunSVN/assets/models/collada/Avatars/Male/Male_Bind.dae"));
+                    maleBind.addChildInstruction(Instruction.InstructionType.loadHumanoidAvatarBindPose, new URL("file:///work/IMI/sunSVN/assets/models/collada/Avatars/Male/Male_Bind.dae"));
                 } catch (MalformedURLException ex) {
                     Logger.getLogger(COLLADA_ModelTest.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -136,7 +136,7 @@ public class COLLADA_ModelTest extends DemoBase
         ObjectOutputStream out = null;
         try
         {
-            fos = new FileOutputStream(new URL("file://localhost/work/IMI/sunSVN/assets/models/collada/Avatars/Male/Male_Anim_FloorSitting.baf").getFile());
+            fos = new FileOutputStream(new URL("file:///work/IMI/sunSVN/assets/models/collada/Avatars/Male/Male_Anim_FloorSitting.baf").getFile());
             out = new ObjectOutputStream(fos);
             out.writeObject(serializeMe);
             out.close();

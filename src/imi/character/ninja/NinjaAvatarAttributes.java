@@ -107,6 +107,7 @@ public class NinjaAvatarAttributes extends CharacterAttributes
                 break;
             default:
                 setHeadAttachment("assets/models/collada/Heads/CaucasianHead/MaleCHead.dae");
+//                setHeadAttachment("assets/models/collada/Avatars/Male/Male_Bind.dae");
         }
     }
 
