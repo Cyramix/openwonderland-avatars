@@ -36,11 +36,23 @@ public class JPanel_LegsFeetOption extends javax.swing.JPanel {
 ////////////////////////////////////////////////////////////////////////////////
     private JFrame  m_baseFrame     =   null;
 
-    /** Creates new form JPanel_LegsFeetOption */
+////////////////////////////////////////////////////////////////////////////////
+// CLASS METHODS
+////////////////////////////////////////////////////////////////////////////////
+    /**
+     * Default constructor initializes the GUI components.  Before frame is usable
+     * the parent frame needs to be set and the sliders need to be associated with
+     * the joint/grouping it controls.
+     */
     public JPanel_LegsFeetOption() {
         initComponents();
     }
 
+    /**
+     * Overloaded constructor initializes the GUI components and sets the parent
+     * frame and the slider associations
+     * @param baseFrame
+     */
     public JPanel_LegsFeetOption(JFrame baseFrame) {
         m_baseFrame = baseFrame;
         initComponents();
@@ -288,6 +300,14 @@ public class JPanel_LegsFeetOption extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
+////////////////////////////////////////////////////////////////////////////////
+// MUTATORS
+////////////////////////////////////////////////////////////////////////////////
+
+    public void setParentFrame(JFrame frame) {
+        m_baseFrame = frame;
+    }
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private imi.gui.JPanel_VerticalSliderT LeftFoot_Length;
@@ -324,10 +344,11 @@ public class JPanel_LegsFeetOption extends javax.swing.JPanel {
 // HELPER FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 
-    public void setParentFrame(JFrame frame) {
-        m_baseFrame = frame;
-    }
-
+    /**
+     * Sets the slider's joint associations and parent windows.  The associations
+     * specify which joints the slider controls.  The parent window allows the slider
+     * data to be sent to the switchboard found in the base window.
+     */
     public void setSliderControls() {
         LeftFoot_Length.setObjectRef(GUI_Enums.m_sliderControl.leftfootLength);
         LeftFoot_Thickness.setObjectRef(GUI_Enums.m_sliderControl.leftfootThickness);

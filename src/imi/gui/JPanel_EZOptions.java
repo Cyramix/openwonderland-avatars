@@ -164,7 +164,6 @@ public class JPanel_EZOptions extends javax.swing.JPanel {
             doc.getDocumentElement().normalize();
             System.out.println("Root element of the doc is " + doc.getDocumentElement().getNodeName());
 
-
             NodeList listOfAvatars = doc.getElementsByTagName("avatar");
             int totalAvatars = listOfAvatars.getLength();
             System.out.println("Total no of avatar presets : " + totalAvatars);
@@ -213,10 +212,36 @@ public class JPanel_EZOptions extends javax.swing.JPanel {
 
                     NodeList textHeadList = headElement.getChildNodes();
                     System.out.println("Head loc : " + ((Node) textHeadList.item(0)).getNodeValue().trim());
-                    String[] szHead = new String[] { ((Node) textHeadList.item(0)).getNodeValue().trim() };
-                    if (szHead[0].equals("null"))
-                        szHead = new String[] { null, "rightEyeGeoShape", "leftEyeGeoShape", "UpperTeethShape", "LowerTeethShape", "TongueGeoShape", "HeadGeoShape" };
-                    m_addList.put(0, szHead);
+                    String headSource = ((Node) textHeadList.item(0)).getNodeValue().trim();
+
+                    if (!headSource.equals("null")) {
+                        NodeList countList = avatarElement.getElementsByTagName("headnum");
+                        Element countElement = (Element) countList.item(0);
+
+                        NodeList textCountList = countElement.getChildNodes();
+                        String szCount = ((Node) textCountList.item(0)).getNodeValue().trim();
+                        int iCount = Integer.parseInt(szCount);
+                        ++iCount;
+
+                        NodeList geomList = avatarElement.getElementsByTagName("headgeom");
+                        Element geomElement = (Element) geomList.item(0);
+
+                        NodeList textGeomList = geomElement.getChildNodes();
+                        String[] szMeshes = new String[iCount];
+
+                        for (int i = 0; i < iCount; i ++) {
+                            if (i == 0)
+                                szMeshes[i] = headSource;
+                            else {
+                                szMeshes[i] = ((Node) textGeomList.item(0)).getNodeValue().trim();
+                                if (i < iCount -1) {
+                                    geomElement = (Element) geomList.item(i);
+                                    textGeomList = geomElement.getChildNodes();
+                                }
+                            }
+                        }
+                        m_addList.put(1, szMeshes);
+                    }
 
                     //-------
                     NodeList hairList = avatarElement.getElementsByTagName("hair");
@@ -802,9 +827,6 @@ public class JPanel_EZOptions extends javax.swing.JPanel {
         ArrayList<String>                                   load    = new ArrayList<String>();
         ArrayList<AttachmentParams>                         attach  = new ArrayList<AttachmentParams>();
 
-        // This file contains the mesh information for the basic body parts
-        load.add(m_presetLists.get(selection)[2]);
-
         // Head (Default)
         if (m_presets.get(selection).get(0) != null) {
             if (m_presets.get(selection).get(0)[0] == null) {
@@ -871,13 +893,21 @@ public class JPanel_EZOptions extends javax.swing.JPanel {
             }
         }
 
+        // This file contains the mesh information for the basic body parts
+        if (load.size() == 0)
+            load.add(m_presetLists.get(selection)[2]);
+        else {
+            load.add(getClass().getResource("/imi/character/defaults/Male_Hands.dae").toString());
+            load.add(getClass().getResource("/imi/character/defaults/MaleCHead_Bind.dae").toString());
+        }
+
         attribs.setBaseURL("");
         attribs.setLoadInstructions(load);
         attribs.setAddInstructions(add.toArray(new CharacterAttributes.SkinnedMeshParams[add.size()]));
         attribs.setAttachmentsInstructions(attach.toArray(new AttachmentParams[attach.size()]));
         attribs.setGender(m_gender);
 
-        m_sceneData.loadAvatarDAEURL(true, this, attribs, m_gender);
+        m_sceneData.loadAvatarDAEURL(true, this, null, attribs, m_gender);
 
         while (!m_sceneData.getAvatar().isInitialized() || m_sceneData.getAvatar().getModelInst() == null) {
 

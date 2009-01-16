@@ -347,7 +347,7 @@ public class ServerBrowserDialog extends javax.swing.JDialog {
                     iGender = 1;
                 else
                     iGender = 2;
-                m_sceneData.loadAvatarDAEURL(true, this, null, iGender);
+                m_sceneData.loadAvatarDAEURL(true, this, m_modelInfo[3], null, iGender);
                 break;
             }
             case 1:         // LOAD CLOTHES

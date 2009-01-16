@@ -914,8 +914,7 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
             data = m_sceneData.loadSQLData(query);
         }
 
-        m_Attributes = m_sceneData.createDefaultAttributes(m_gender, data.get(0)[0]);
-        m_sceneData.loadAvatarDAEURL(true, m_Parent, m_Attributes, m_gender);
+        m_sceneData.loadAvatarDAEURL(true, m_Parent, data.get(0)[0], null, m_gender);
 
         jLabel_CurrUpperBody.setText("Default");
         jLabel_CurrLowerBody.setText("Default");

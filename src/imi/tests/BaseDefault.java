@@ -677,6 +677,7 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
 //        tobj.setTargetFocalPoint(new Vector3f(0.0f, 0.0f, 0.0f));
 //        tobj.setTargetNeedsUpdate(true);
 //        m_cameraProcessor.setCameraBehavior(new TumbleObjectCamModel(), tobj);
+        
         //OrbitCameraProcessor eventProcessor = new OrbitCameraProcessor(cameraListener, cameraNode, wm, camera);
         m_cameraProcessor.setRunInRenderer(true);
         

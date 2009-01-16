@@ -53,7 +53,14 @@ public class JPanel_HorizontalSliderS extends javax.swing.JPanel {
     private NumberFormat                        m_format            =   new DecimalFormat("0.00");
     private String                              m_formattedNumber   =   null;
 
-    /** Creates new form JPanel_HorizontalSliderT */
+////////////////////////////////////////////////////////////////////////////////
+// CLASS METHODS
+////////////////////////////////////////////////////////////////////////////////
+    /**
+     * Default constructor initializes GUI components and sets up an event listener
+     * for the JSlider and JTextComponent updates.  Eliminates recursive calls when
+     * one object updates the other object.
+     */
     public JPanel_HorizontalSliderS() {
         initComponents();
 
@@ -77,6 +84,12 @@ public class JPanel_HorizontalSliderS extends javax.swing.JPanel {
         }, AWTEvent.FOCUS_EVENT_MASK);
     }
 
+    /**
+     * Updates the components based on user input.  After the one component is
+     * updated it in turns updates the associated component (ie user controls
+     * slider -> slider updates -> scrollbox updates
+     * @param evt - changeevent for the object
+     */
     public void updateComponents(javax.swing.event.ChangeEvent evt) {
         int     index   = -1;
         float   curVal  = 0.0f;
@@ -220,6 +233,17 @@ public class JPanel_HorizontalSliderS extends javax.swing.JPanel {
 // HELPER FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 
+    /**
+     * Direct access to the JSlider setup values.  Allows the user to set the
+     * minimum and maximum slider values, the tick spacing, wheter or not to show
+     * the ticks, wheter or not to snap to ticks and the slider start position
+     * @param max - integer maximum range
+     * @param min - integer minimum range
+     * @param tickspacing - integer spacing between ticks
+     * @param paintticks - boolean true to show ticks
+     * @param snaptoticks - boolean true for cursor to snap to each tick increment
+     * @param initval - integer  initial start value
+     */
     public void setJSlider(int max, int min, int tickspacing, boolean paintticks, boolean snaptoticks, int initval) {
 
         if (max == 0)
@@ -254,11 +278,24 @@ public class JPanel_HorizontalSliderS extends javax.swing.JPanel {
         jSlider1.setPreferredSize(new java.awt.Dimension(120, 29));
     }
 
+    /**
+     * Direct access to the JSpinner setup values.  Allows the user to set the
+     * minimunm and maximum spinner values, the initial value and the tick increments
+     * @param initvalue - float start value for the spinner
+     * @param minvalue - float minimum range for the spinner
+     * @param maxvalue - float maximum range for the spinner
+     * @param tickstep - float increment per tick
+     */
     public void setJSpinner(float initvalue, float minvalue, float maxvalue, float tickstep) {
         javax.swing.SpinnerNumberModel spinmodel = new javax.swing.SpinnerNumberModel(initvalue, minvalue, maxvalue, tickstep);
         setJSpinner(spinmodel);
     }
-    
+
+    /**
+     * Direct access to the JSpinner setup values.  Allows the user to set the
+     * minimunm and maximum spinner values, the initial value and the tick increments
+     * @param spinnermodel - model for the spinner to use
+     */
     public void setJSpinner(javax.swing.SpinnerModel spinnermodel) {
         jSpinner1.setModel(spinnermodel);
     }

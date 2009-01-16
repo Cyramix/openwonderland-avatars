@@ -19,7 +19,7 @@ package imi.gui;
 
 /**
  *
- * @author  ptruong
+ * @author  Paul Viet Ngueyn Truong (ptruong)
  */
 public class JPanel_ModelRotation extends javax.swing.JPanel {
 ////////////////////////////////////////////////////////////////////////////////
@@ -154,24 +154,36 @@ public class JPanel_ModelRotation extends javax.swing.JPanel {
 // Accessors
 ////////////////////////////////////////////////////////////////////////////////
     public imi.scene.PMatrix getXRotMatrix() { return xRotation; }
+
     public imi.scene.PMatrix getYRotMatrix() { return yRotation; }
+
     public imi.scene.PMatrix getZRotMatrix() { return zRotation; }
+
     public boolean isSpinning() { return bSpin; }
+
     public javax.swing.Timer getSpinTimer() { return refreshTimer; }
     
 ////////////////////////////////////////////////////////////////////////////////
 // Mutators
 ////////////////////////////////////////////////////////////////////////////////
     public void setXRotMatrix(imi.scene.PMatrix xMatrix) { xRotation = xMatrix; }
+
     public void setYRotMatrix(imi.scene.PMatrix yMatrix) { yRotation = yMatrix; }
+
     public void setZRotMatrix(imi.scene.PMatrix zMatrix) { zRotation = zMatrix; }
+
     public void setSpin(boolean spin) { bSpin = spin; }
+
     public void setSpinTimer(javax.swing.Timer spinTime) { refreshTimer = spinTime; }
+
     public void setPScene(imi.scene.PScene pScene) { pscene = pScene; }
+
     public void setModelInst(imi.scene.PNode pNode) { modelInst = pNode; }
+
     public void setPanel(imi.scene.PScene pScene, imi.scene.PNode pNode) {
         pscene = pScene;    modelInst = pNode;
     }
+
     public void resetPanel() { bSpin = false;   jCheckBox_AutoSpinY.setSelected(false); ResetAxes(); }
     
     /** This method is called from within the constructor to
@@ -324,6 +336,10 @@ public class JPanel_ModelRotation extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    /**
+     * Enables/Disables the model from spinning on the Y-Axis
+     * @param evt
+     */
 private void jCheckBox_AutoSpinYItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jCheckBox_AutoSpinYItemStateChanged
     if (evt.getStateChange() == java.awt.event.ItemEvent.SELECTED) {
         bSpin = true;

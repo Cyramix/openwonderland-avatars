@@ -17,13 +17,16 @@
  */
 package imi.gui;
 
+import imi.character.CharacterAttributes;
 import imi.sql.SQLInterface;
 import java.awt.Cursor;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
@@ -44,15 +47,17 @@ public class JPanel_ServerBrowser extends javax.swing.JPanel {
     private Map<Integer, String[]>  m_meshes;
     /** Return Data */
     private String[]                m_modelInfo, m_animInfo, m_meshref;
-    private int                     m_loadType, m_region;
+    private String                  m_region, m_prevAttch;
+    private int                     m_loadType;
     private SceneEssentials         m_sceneData;
-////////////////////////////////////////////////////////////////////////////////
-// CLASS DATA MEMBERS - END
-////////////////////////////////////////////////////////////////////////////////
+
 ////////////////////////////////////////////////////////////////////////////////
 // CLASS METHODS - BEGIN
 ////////////////////////////////////////////////////////////////////////////////
-    /** Creates new form JPanel_ServerBrowser */
+    /**
+     * Default constructor initializes the GUI components and sets up a row
+     * selection listener for the JTable
+     */
     public JPanel_ServerBrowser() {
         initComponents();
 
@@ -73,6 +78,12 @@ public class JPanel_ServerBrowser extends javax.swing.JPanel {
         });
     }
 
+    /**
+     * Initializes the JTable with server side information on the assets stored
+     * and set in the table for preview
+     * @param dataType - integer that represents what type of assets to display
+     * in the table
+     */
     public void initBrowser(int dataType) {
         String query = new String();
         String[] columnNames = {"Name", "Description"};
@@ -127,6 +138,10 @@ public class JPanel_ServerBrowser extends javax.swing.JPanel {
         jButton_Load.setEnabled(false);
     }
 
+    /**
+     * Updates the JTable information displayed based on the combobox filter
+     * that have been selected by the user
+     */
     public void updateBrowser() {
         int selection = jComboBox_Filter.getSelectedIndex();
         String query = new String();
@@ -178,6 +193,10 @@ public class JPanel_ServerBrowser extends javax.swing.JPanel {
         jButton_Load.setEnabled(false);
     }
 
+    /**
+     * Filters the displayable results in the browser window
+     * @param typeFilter - the type of filtering
+     */
     public void filterResults(String typeFilter) {
         ArrayList<String[]> genderFiltered = new ArrayList<String[]>();
 
@@ -216,117 +235,43 @@ public class JPanel_ServerBrowser extends javax.swing.JPanel {
         }
     }
 
+    /**
+     * Retrieves the avatar information from the server that the user has selected
+     * @param selection - index of selection
+     */
     public void getSelectedData(int selection) {
         //int selection = jTable1.getSelectedRow();
         m_modelInfo = m_data.get(selection);
         if (m_loadType == 0) {
-            String query = "SELECT url FROM Animations WHERE avatarid = ";
-            query += m_modelInfo[4].toString();
-            m_anim = loadSQLData(query);
-
-            m_animInfo = new String[m_anim.size()];
-            for(int i = 0; i < m_anim.size(); i++) {
-                m_animInfo[i] = m_anim.get(i)[0].toString();
-            }
-
-            if (m_animInfo.length > 0) {
-                String gender = null;
-                if (m_modelInfo[2].equals("1"))
-                    gender = "\'Male\'";
-                else
-                    gender = "\'Female\'";
-
-                query = "SELECT name, grouping FROM GeometryReferences WHERE tableref = ";
-                query += gender;
-                if (m_meshes != null)
-                    m_meshes.clear();
-                m_meshes = new HashMap<Integer, String[]>();
-                ArrayList<String[]> meshes = loadSQLData(query);
-
-                createMeshSwapList("0", meshes);
-                createMeshSwapList("1", meshes);
-                createMeshSwapList("2", meshes);
-                createMeshSwapList("3", meshes);
-                createMeshSwapList("4", meshes);
-            } else {
-                query = "SELECT name, grouping FROM GeometryReferences WHERE referenceid = ";
-                query += m_modelInfo[4].toString();
-                ArrayList<String[]> ref = loadSQLData(query);
-
-                m_meshref = new String[ref.size()];
-                for(int i = 0; i < ref.size(); i++)
-                    m_meshref[i] = ref.get(i)[0];
-
-                if (ref.get(0)[1].equals("0")) {
-                    m_region = 0;          // Head
-                } else if (ref.get(0)[1].equals("1")) {
-                    m_region = 1;          // Hands
-                } else if (ref.get(0)[1].equals("2")) {
-                    m_region = 2;          // Torso
-                } else if (ref.get(0)[1].equals("3")) {
-                    m_region = 3;          // Legs
-                } else if (ref.get(0)[1].equals("4")) {
-                    m_region = 4;
-                }
-
-                m_animInfo = null;
-            }
-
 
         } else {
             String query = "SELECT name, grouping FROM GeometryReferences WHERE referenceid = ";
             query += m_modelInfo[5].toString();
             ArrayList<String[]> ref = loadSQLData(query);
-
-            if (m_modelInfo[4].equals("0") || m_modelInfo[4].equals("1") || m_modelInfo[4].equals("2"))
-                return;
             
             m_meshref = new String[ref.size()];
             for(int i = 0; i < ref.size(); i++)
                 m_meshref[i] = ref.get(i)[0];
 
-            if (ref.get(0)[1].equals("0")) {
-                m_region = 0;          // Head
-            } else if (ref.get(0)[1].equals("1")) {
-                m_region = 1;          // Hands
-            } else if (ref.get(0)[1].equals("2")) {
-                m_region = 2;          // Torso
-            } else if (ref.get(0)[1].equals("3")) {
-                m_region = 3;          // Legs
-            } else if (ref.get(0)[1].equals("4")) {
-                m_region = 4;
+            if (m_modelInfo[4].equals("0") || m_modelInfo[4].equals("1") || m_modelInfo[4].equals("2")) {
+                m_region = "Head";
+            } else if (m_modelInfo[4].equals("3")) {
+                m_region = "UpperBody";
+            } else if (m_modelInfo[4].equals("5") || m_modelInfo[4].equals("6")) {
+                m_region = "LowerBody";
+            } else if (m_modelInfo[4].equals("10")) {
+                m_region = "Feet";
             }
         }
     }
 
-    public void createMeshSwapList(String region, ArrayList<String[]> meshes) {
-        String[] geometry = null;
-        ArrayList<String> temp = new ArrayList<String>();
-
-        for (int i = 0; i < meshes.size(); i++) {
-            if (meshes.get(i)[1].equals(region)) {
-                temp.add(meshes.get(i)[0].toString());
-            }
-        }
-        geometry = new String[temp.size()];
-        for (int i = 0; i < temp.size(); i++) {
-            geometry[i] = temp.get(i);
-        }
-
-        if (region.equals("0"))
-            m_region = 0;          // Head
-        else if (region.equals("1"))
-            m_region = 1;          // Hands
-        else if (region.equals("2"))
-            m_region = 2;          // Torso
-        else if (region.equals("3"))
-            m_region = 3;          // Legs
-        else if (region.equals("4"))
-            m_region = 4;          // Feet
-
-        m_meshes.put(m_region, geometry);
-    }
-
+    /**
+     * Opens a connection to the mySQL database and retrieves data asked for in
+     * the string query in the form of an ArrayList of String arrays.  When query
+     * is complete the connection is closed.
+     * @param query - string containing a syntax correct query for the database
+     * @return ArrayList of string arrays containing the data requested
+     */
     public ArrayList<String[]> loadSQLData(String query) {
         m_sql = new SQLInterface();
         boolean connected = m_sql.Connect(null, "jdbc:mysql://zeitgeistgames.com:3306/ColladaShop", "ColladaShopper", "ColladaShopperPassword");
@@ -363,21 +308,44 @@ public class JPanel_ServerBrowser extends javax.swing.JPanel {
                     iGender = 1;
                 else
                     iGender = 2;
-                m_sceneData.loadAvatarDAEURL(true, this, null, iGender);
+                if (m_modelInfo[4].equals("1") || m_modelInfo[4].equals("2"))
+                    m_sceneData.loadAvatarDAEURL(true, this, m_modelInfo[3], null, iGender);
+                else
+                    m_sceneData.loadAvatarHeadDAEURL(true, this, m_modelInfo, m_meshref);
                 break;
             }
             case 1:         // LOAD CLOTHES
             {
-                m_sceneData.loadSMeshDAEURL(true, this, m_modelInfo, m_meshref);
+                if (isViewMode())
+                    m_sceneData.loadSMeshDAEURL(true, this, m_modelInfo, m_meshref);
+                else if (m_sceneData.getAvatar() != null) {
+                    if (m_sceneData.getAvatar().isInitialized() && m_sceneData.getAvatar().getModelInst() != null) {
+                        try {
+                            URL location = new URL(m_modelInfo[3]);
+                            m_sceneData.addSMeshDAEURLToModel(location, m_region);
+                        } catch (MalformedURLException ex) {
+                            Logger.getLogger(JPanel_ServerBrowser.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }
+                }
+
                 break;
             }
             case 2:         // LOAD ACCESSORIES
             {
-                m_sceneData.loadMeshDAEURL(true, this, m_modelInfo);
+                if (isViewMode())
+                    m_sceneData.loadMeshDAEURL(true, this, m_modelInfo);
+                else if (m_sceneData.getAvatar() != null) {
+                    if (m_sceneData.getAvatar().isInitialized() || m_sceneData.getAvatar().getModelInst() != null) {
+                        m_sceneData.addMeshDAEURLToModel(m_modelInfo, "Head", m_prevAttch);
+                        m_prevAttch = m_modelInfo[0];
+                    }
+                }
                 break;
             }
             case 3:         // LOAD TEXTURES
             {
+                // TODO: server table needs to be created with all the textures
                 break;
             }
         }
@@ -430,10 +398,7 @@ public class JPanel_ServerBrowser extends javax.swing.JPanel {
     public void setSceneEssentials(SceneEssentials sceneInfo) {
         m_sceneData = sceneInfo;
     }
-    
-////////////////////////////////////////////////////////////////////////////////
-// CLASS METHODS - END
-////////////////////////////////////////////////////////////////////////////////
+
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
@@ -573,6 +538,4 @@ public class JPanel_ServerBrowser extends javax.swing.JPanel {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;
     // End of variables declaration//GEN-END:variables
-
-
 }

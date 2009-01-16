@@ -1036,21 +1036,17 @@ public class SceneEssentials {
      * @param attributes - characterattributes for the avatar containing load paramaters
      * @param gender - 1= male 2= female; specifies which defaults to load.
      */
-    public void loadAvatarDAEURL(boolean useRepository, Component arg0, CharacterAttributes attributes, int gender) {
+    public void loadAvatarDAEURL(boolean useRepository, Component arg0, String modelLocation, CharacterAttributes attributes, int gender) {
         m_currentPScene.setUseRepository(useRepository);
         m_currentPScene.getInstances().removeAllChildren();
 
         CharacterAttributes attribs = null;
         
-        if (attributes != null) {
+        if (attributes != null) {   // assumes bindpose information with the mesh info was already added to the attributes
             attribs = attributes;
-        } else {
-            attribs = new CharacterAttributes("Avatar");
-            attribs.setBaseURL("");
-            attribs.setLoadInstructions(null);
-            attribs.setAddInstructions(null);
-            attribs.setAttachmentsInstructions(null);
-            attribs.setGender(gender);
+        } else {    // requires the bind pose information for mesh information on basic body parts
+            if (modelLocation != null)
+                attribs = createDefaultAttributes(gender, modelLocation);
         }
 
         if (m_avatar != null) {
@@ -1120,7 +1116,7 @@ public class SceneEssentials {
         InstructionProcessor pProcessor = new InstructionProcessor(m_worldManager);
         Instruction pRootInstruction = new Instruction();
         pRootInstruction.addChildInstruction(InstructionType.setSkeleton, m_avatar.getSkeleton());
-        
+
         String[] meshes = m_avatar.getSkeleton().getMeshNamesBySubGroup(subgroup);
         for (int i = 0; i < meshes.length; i++)
             pRootInstruction.addChildInstruction(InstructionType.deleteSkinnedMesh, meshes[i]);
@@ -1129,6 +1125,8 @@ public class SceneEssentials {
                     
         pProcessor.execute(pRootInstruction);
 
+//        removeDuplicateMeshesBySubgroup(subgroup);  // TODO: Should not even need to do this
+        
         m_avatar.setDefaultShaders();
     }
 
@@ -1269,7 +1267,8 @@ public class SceneEssentials {
                     Repository repo = (Repository)m_worldManager.getUserData(Repository.class);
                     m_skeleton.setShaderOnSkinnedMeshes(repo.newShader(VertDeformerWithSpecAndNormalMap.class));
                     m_skeleton.setShaderOnMeshes(repo.newShader(NormalAndSpecularMapShader.class));
-                    ((ProcessorCollectionComponent)m_currentEntity.getComponent(ProcessorCollectionComponent.class)).addProcessor(new SkinnedAnimationProcessor(skel));
+                    if (a != null)
+                        ((ProcessorCollectionComponent)m_currentEntity.getComponent(ProcessorCollectionComponent.class)).addProcessor(new SkinnedAnimationProcessor(skel));
                     m_currentPScene.setDirty(true, true);
                     setCameraOnModel();
                 }
@@ -1577,7 +1576,7 @@ public class SceneEssentials {
      * the type of camnera used in the scene.
      */
     public void setCameraOnModel() {
-        while (m_currentPScene.getAssetWaitingList().size() > 0) {}
+//        while (m_currentPScene.getAssetWaitingList().size() > 0) {}
         PNode node = m_currentPScene.getInstances();
         if (node.getChildrenCount() <= 0)
             return;
@@ -1619,6 +1618,21 @@ public class SceneEssentials {
      */
     public boolean isWindowsOS() {
         return getOS().contains("Windows");
+    }
+
+    public void removeDuplicateMeshesBySubgroup(String subgroup) {
+        if (m_avatar == null)
+            return;
+
+        String[] meshes = m_avatar.getSkeleton().getMeshNamesBySubGroup(subgroup);
+        for (int i = 0; i < meshes.length; i++) {
+            for (int j = i+1; j < meshes.length; j++) {
+                if (meshes[i].equals(meshes[j])) {
+                    m_currentPScene.findAndRemoveChild(meshes[j]);
+                    break;
+                }
+            }
+        }
     }
 
     /**
