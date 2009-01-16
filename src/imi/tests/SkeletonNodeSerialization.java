@@ -125,6 +125,12 @@ public class SkeletonNodeSerialization
                 wm = new WorldManager("TheWorldManager");
                 createSerializedSkeleton(wm, false);
             }
+            else if (args[0].equalsIgnoreCase("-mf"))
+            {
+                wm = new WorldManager("TheWorldManager");
+                createSerializedSkeleton(wm, false);
+                createSerializedSkeleton(wm, true);
+            }
             else
                 printUsage();
             System.exit(0);
@@ -169,6 +175,7 @@ public class SkeletonNodeSerialization
         SkeletonNode skeleton = loader.getSkeletonNode();
         // Now load it with animations using the InstructionProcessor
         InstructionProcessor processor = new InstructionProcessor(wm);
+        processor.setUseBinaryFiles(false); // Reduce complexity
         Instruction animationInstruction = new Instruction(); // Grouping instruction node
         // Load in the skeleton
         animationInstruction.addChildInstruction(Instruction.InstructionType.setSkeleton, skeleton);
