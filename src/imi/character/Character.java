@@ -156,6 +156,14 @@ public abstract class Character extends Entity implements SpatialObject, Animati
     private int                             m_defaultFacePose       = 4;
     private float                           m_defaultFacePoseTiming = 0.1f;
 
+    /** Used for internal requests for assets **/
+    private final RepositoryUser            headInstaller = new RepositoryUser() {
+            @Override
+            public void receiveAsset(SharedAsset assetRecieved) {
+                asset = assetRecieved;
+                m_bWaitingOnAsset = false;
+            }
+    };
     /**
      * Sets up the mtgame entity 
      * @param attributes
@@ -490,13 +498,25 @@ public abstract class Character extends Entity implements SpatialObject, Animati
      * @param attributes The attributes to process
      */
     private void executeAttributes(CharacterAttributes attributes)
-    {   
-        String fileProtocol = attributes.getBaseURL();
+    {
+        String urlPrefix = attributes.getBaseURL();
         // If no base url was provided by the character attributes, then it is
         // assumed that the prefix should be the file protocol to the local machine
         // in the current folder.
-        if (fileProtocol == null)
-            fileProtocol = new String("file://localhost/" + System.getProperty("user.dir") + "/");
+        if (urlPrefix == null)
+            urlPrefix = new String("file://localhost/" + System.getProperty("user.dir") + "/");
+        // attach the appropriate head
+        URL headLocation = null;
+        try {
+            headLocation = new URL(urlPrefix + attributes.getHeadAttachment());
+        }
+        catch (MalformedURLException ex)
+        {
+            logger.severe("Unable to create URL for head attachment, tried to combine \"" +
+                   urlPrefix + "\" and \"" + attributes.getHeadAttachment() + "\"");
+        }
+        if (headLocation != null)
+            installInitialHead(headLocation, "Neck"); // Should I parameterize this?
 
         InstructionProcessor instructionProcessor = new InstructionProcessor(m_wm);
         Instruction attributeRoot = new Instruction();
@@ -506,7 +526,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         List<String> load = attributes.getLoadInstructions();
         if (load != null) {
             for (int i = 0; i < load.size(); i++)
-                attributeRoot.addChildInstruction(InstructionType.loadGeometry, fileProtocol + load.get(i));
+                attributeRoot.addChildInstruction(InstructionType.loadGeometry, urlPrefix + load.get(i));
         }
         // Skinned mesh attachments
         CharacterAttributes.SkinnedMeshParams [] add = attributes.getAddInstructions();
@@ -533,7 +553,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         String [] anims = attributes.getAnimations();
         if (anims != null && anims.length > 0) {
             for (int i = 0; i < anims.length; i++) {
-                attributeRoot.addChildInstruction(InstructionType.loadAnimation, fileProtocol + anims[i]);
+                attributeRoot.addChildInstruction(InstructionType.loadAnimation, urlPrefix + anims[i]);
             }
         }
 
@@ -541,7 +561,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         String [] facialAnims = attributes.getFacialAnimations();
         if (facialAnims != null && facialAnims.length > 0) {
             for (int i = 0; i < facialAnims.length; i++) {
-                attributeRoot.addChildInstruction(InstructionType.loadFacialAnimation, fileProtocol + facialAnims[i]);
+                attributeRoot.addChildInstruction(InstructionType.loadFacialAnimation, urlPrefix + facialAnims[i]);
             }
         }
 
@@ -1044,15 +1064,6 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         m_AnimationProcessor.setEnable(false);
         m_characterProcessor.setEnabled(false);
 
-        // Ready the collada loader!
-        RepositoryUser headInstaller = new RepositoryUser() {
-
-            @Override
-            public void receiveAsset(SharedAsset assetRecieved) {
-                asset = assetRecieved;
-                m_bWaitingOnAsset = false;
-            }
-        };
         AssetDescriptor descriptor = new AssetDescriptor(SharedAssetType.COLLADA, headLocation);
         asset = new SharedAsset(m_pscene.getRepository(), descriptor);
         m_bWaitingOnAsset = true;
@@ -1108,6 +1119,82 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         m_AnimationProcessor.setEnable(true);
         m_characterProcessor.setEnabled(true);
         m_skeleton.setRenderStop(false);
+    }
+
+    /**
+     * m_skeleton and m_pscene must already be initialized.
+     * @param headLocation
+     * @param attachmentJointName
+     * @return true on success, false on failure.
+     */
+    private boolean installInitialHead(URL headLocation, String attachmentJointName)
+    {
+        boolean result = true;
+        // Ready a request for the repository
+        AssetDescriptor descriptor = new AssetDescriptor(SharedAssetType.COLLADA, headLocation);
+        asset = new SharedAsset(m_pscene.getRepository(), descriptor);
+        m_bWaitingOnAsset = true;
+        // Request it!
+        m_pscene.getRepository().loadSharedAsset(asset, headInstaller);
+        while (m_bWaitingOnAsset == true) // wait until loaded
+        {
+            try {
+                Thread.sleep(100);
+            }
+            catch (InterruptedException ex)
+            {
+                logger.severe(ex.getMessage());
+            }
+        }
+        if (asset == null) // Timeout at the repository
+        {
+            logger.severe("Timed out waiting on asset for new head.");
+            result = false;
+            return result; // Abort!
+        }
+        // Locate the new skeleton
+        SkeletonNode newHeadSkeleton = null;
+        PNode psceneInstances = ((PScene)asset.getAssetData()).getInstances();
+        int numChildren = psceneInstances.getChildrenCount();
+        // Known to be a top level child
+        for (int i = 0; i < numChildren; ++i)
+        {
+            PNode current = psceneInstances.getChild(i);
+            if (current instanceof SkeletonNode)
+                newHeadSkeleton = (SkeletonNode)current;
+        }
+        if (newHeadSkeleton == null)
+        {
+            logger.severe("Unable to find skeleton for the new head!");
+            result = false;
+            return result; // abort!
+        }
+        // Cut off the old skeleton at the specified attach point
+        SkinnedMeshJoint parent = (SkinnedMeshJoint)m_skeleton.getSkinnedMeshJoint(attachmentJointName).getParent();
+        parent.removeChild(attachmentJointName);
+        parent.addChild(newHeadSkeleton.getSkinnedMeshJoint(attachmentJointName));
+
+        m_skeleton.refresh();
+        m_skeleton.clearSubGroup("Head");
+
+        Iterable<PNode> list = newHeadSkeleton.getChildren();
+        for (PNode node : list)
+        {
+            if (node instanceof PPolygonSkinnedMesh)
+            {
+                PPolygonSkinnedMesh skinnedMesh = (PPolygonSkinnedMesh) node;
+                // Make an instance
+                PPolygonSkinnedMeshInstance skinnedMeshInstance = (PPolygonSkinnedMeshInstance) m_pscene.addMeshInstance(skinnedMesh, new PMatrix());
+                // Add it to the skeleton
+                m_skeleton.addToSubGroup(skinnedMeshInstance, "Head");
+            }
+        }
+
+        // Relink all of the old meshes and apply their materials
+        for (PPolygonSkinnedMeshInstance meshInst : m_skeleton.getSkinnedMeshInstances())
+            meshInst.setAndLinkSkeletonNode(m_skeleton);
+
+        return result;
     }
 
     /**

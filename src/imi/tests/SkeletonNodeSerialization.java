@@ -21,6 +21,7 @@ import imi.loaders.Instruction;
 import imi.loaders.InstructionProcessor;
 import imi.loaders.collada.Collada;
 import imi.loaders.collada.ColladaLoaderParams;
+import imi.loaders.repository.Repository;
 import imi.scene.PScene;
 import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
 import java.io.File;
@@ -149,7 +150,11 @@ public class SkeletonNodeSerialization
         String[]    animationFiles   = null;
         String[]    facialAnimations = null;
         File        outputFile       = null;
+        Repository  repository       = new Repository(wm, false); // do not load skeletons
 
+        // Add the repository
+        wm.addUserData(Repository.class, repository);
+        
         if (bLoadMale) {
             skeletonLocation = MaleSkeletonLocation;
             animationFiles = MaleAnimationLocations;

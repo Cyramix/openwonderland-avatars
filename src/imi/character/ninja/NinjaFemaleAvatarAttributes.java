@@ -45,9 +45,10 @@ public class NinjaFemaleAvatarAttributes extends CharacterAttributes
         int legs  = (int) (Math.random() * 10000 % 3);  // 1 and 2 problems
         int torso = (int) (Math.random() * 10000 % 5);  // 3 and 3 problems
         int hair  = (int) (Math.random() * 10000 % 53); // 8 is missing, test til 16
+        int head  = (int) (Math.random() * 10000 % 2);
     }
 
-    public NinjaFemaleAvatarAttributes(String name, int feet, int legs, int torso, int hair) 
+    public NinjaFemaleAvatarAttributes(String name, int feet, int legs, int torso, int hair, int head)
     {
         super(name);
         setGender(2);
@@ -56,6 +57,7 @@ public class NinjaFemaleAvatarAttributes extends CharacterAttributes
         ArrayList<SkinnedMeshParams> add        = new ArrayList<SkinnedMeshParams>();
         ArrayList<AttachmentParams> attachments = new ArrayList<AttachmentParams>();
 
+        customizeHead(head);
         customizeFeetPresets(feet,   load, add, attachments);
         customizeLegsPresets(legs,   load, add, attachments);
         customizeTorsoPresets(torso, load, add, attachments);
@@ -65,7 +67,19 @@ public class NinjaFemaleAvatarAttributes extends CharacterAttributes
         setAddInstructions(add.toArray(new SkinnedMeshParams[add.size()]));
         setAttachmentsInstructions(attachments.toArray(new AttachmentParams[attachments.size()]));
     }
-    
+
+    private void customizeHead(int preset)
+    {
+        switch (preset)
+        {
+            case 0:
+                setHeadAttachment("assets/models/collada/Heads/FemaleKlingon/FemaleKlingonHead.dae");
+                break;
+            default:
+                setHeadAttachment("assets/models/collada/Heads/FemaleCaucasian/FemaleCHead.dae");
+        }
+    }
+
     private void customizeFeetPresets(int preset, ArrayList<String> load, ArrayList<SkinnedMeshParams> add, ArrayList<AttachmentParams> attachments)
     {
         switch(preset)

@@ -102,16 +102,21 @@ public class Repository extends Entity
      */
     public Repository(WorldManager wm)
     {
+        this(wm, true);
+    }
+
+    public Repository(WorldManager wm, boolean bLoadSkeletons) {
         super("Asset Repository");
-        
+
         m_worldManager = wm;
-        
+
         wm.addEntity(this);
 
         // Add our collection of processors to the entity
         addComponent(ProcessorCollectionComponent.class, m_processorCollection);
         // Load up the default skeletons
-        loadSkeletons();
+        if (bLoadSkeletons)
+            loadSkeletons();
         // Boot up the cache
         initCache();
         // create the shader factory

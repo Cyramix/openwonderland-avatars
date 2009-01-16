@@ -51,6 +51,8 @@ public class CharacterAttributes
     private SkinnedMeshParams[]     addInstructions = new SkinnedMeshParams[0];
     /** List of meshes to add as attachment nodes on the skeleton **/
     private AttachmentParams[]      attachmentsInstructions = new AttachmentParams[0];
+    /** Specify the head the avatar should begin with **/
+    private String                  headAttachment          = null;
     /** This specifies the gender of the avatar. Its exact meaning is not yet defined **/
     private int                     gender                  = 1;
 
@@ -90,6 +92,14 @@ public class CharacterAttributes
 
     public void setAsset(SharedAsset asset) {
         this.asset = asset;
+    }
+
+    public String getHeadAttachment() {
+        return headAttachment;
+    }
+
+    public void setHeadAttachment(String headLocation) {
+        this.headAttachment = headLocation;
     }
 
     public boolean isUseSimpleStaticModel() {
@@ -217,10 +227,16 @@ public class CharacterAttributes
             result.setName(name);
         else
             result.setName("Seymour Slizzle");
+
         if (baseURL != null)
             result.setBaseURL(baseURL);
         else
             result.setBaseURL(null);
+
+        if (headAttachment != null)
+            result.setHeadAttachment(headAttachment);
+        else
+            result.setHeadAttachment(null);
         
         // Body animations
         ArrayList<String> stringArray = new ArrayList<String>();
@@ -285,6 +301,7 @@ public class CharacterAttributes
 
         this.setName(attributesDOM.getName());
         this.setBaseURL(attributesDOM.getBaseURL());
+        this.setHeadAttachment(attributesDOM.getHeadAttachment());
 
         this.setAnimations((String[]) attributesDOM.getBodyAnimations().toArray(new String[0]));
         this.setFacialAnimations((String[]) attributesDOM.getFacialAnimations().toArray(new String[0]));

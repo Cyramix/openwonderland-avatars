@@ -72,7 +72,7 @@ public class COLLADA_CharacterTest extends DemoBase
 
         // Create avatar
         long startTime = System.nanoTime();
-        NinjaAvatarAttributes attribs = new NinjaAvatarAttributes("WeirdGuy", 2, 3, 5, 10);
+        NinjaAvatarAttributes attribs = new NinjaAvatarAttributes("WeirdGuy", 2, 3, 5, 10, 1);
 //        NinjaAvatarAttributes attribs = new NinjaAvatarAttributes("WeirdGuy", true, false);
         NinjaAvatar avatar = new NinjaAvatar(attribs, wm);
         float time = (float)((System.nanoTime() - startTime) / 1000000000.0f);
@@ -89,6 +89,7 @@ public class COLLADA_CharacterTest extends DemoBase
         camState.setMovementRate(0.03f);
         camState.setCameraPosition(new Vector3f(0.0f, 1.8f, -2.0f));
 
+        swapAvatarHead(avatar);
         // give me a tree explorer!
         TreeExplorer te = new TreeExplorer();
         SceneEssentials se = new SceneEssentials();
@@ -102,8 +103,8 @@ public class COLLADA_CharacterTest extends DemoBase
         URL newHeadLocation = null;
         String fileProtocol = "file://localhost/" + System.getProperty("user.dir") + "/";
         try {
-//            newHeadLocation = new URL(fileProtocol + "assets/models/collada/Heads/CaucasianHead/MaleCHead-NS.dae");
-            newHeadLocation = new URL(fileProtocol + "assets/models/collada/Heads/CaucasianHead/MaleMonkeyHead.dae");
+            newHeadLocation = new URL(fileProtocol + "assets/models/collada/Heads/CaucasianHead/MaleCHead-NS.dae");
+//            newHeadLocation = new URL(fileProtocol + "assets/models/collada/Heads/CaucasianHead/MaleMonkeyHead.dae");
         }
         catch (MalformedURLException ex) {
             logger.severe("Unable to form head URL");

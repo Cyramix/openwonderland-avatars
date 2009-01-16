@@ -74,7 +74,8 @@ public class VerletArmTest  extends DemoBase
         int legs  = (int) (Math.random() * 10000 % 3);
         int torso = (int) (Math.random() * 10000 % 5);
         int hair  = (int) (Math.random() * 10000 % 53); // 8 is missing, test til 16
-        NinjaAvatar avatar = new NinjaAvatar(new NinjaFemaleAvatarAttributes("Avatar", feet, legs, torso, hair), wm);
+        int head  = (int) (Math.random() * 10000 % 2);
+        NinjaAvatar avatar = new NinjaAvatar(new NinjaFemaleAvatarAttributes("Avatar", feet, legs, torso, hair, head), wm);
         //avatar.setUpdateExtension(new DarkstarClient(avatar, true, feet, legs, torso, hair));
         //((DarkstarClient)avatar.getUpdateExtension()).login();
         //NinjaAvatar avatar = new NinjaAvatar(new NinjaFemaleAvatarAttributes("Avatar", true, false), wm);

@@ -19,8 +19,12 @@ package imi.tests;
 
 import com.jme.math.Vector3f;
 import imi.character.ninja.NinjaAvatar;
+import imi.character.ninja.NinjaAvatarAttributes;
+import imi.character.ninja.NinjaSteeringHelm;
+import imi.character.objects.LocationNode;
+import imi.character.objects.ObjectCollection;
+import imi.character.steering.GoTo;
 import imi.gui.TreeExplorer;
-import imi.loaders.repository.Repository;
 import imi.scene.camera.state.FirstPersonCamState;
 import imi.scene.polygonmodel.parts.PMeshMaterial;
 import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
@@ -30,7 +34,6 @@ import imi.scene.shader.programs.ClothingShaderSpecColor;
 import imi.utils.input.NinjaControlScheme;
 import java.io.File;
 import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.jdesktop.mtgame.WorldManager;
@@ -43,7 +46,15 @@ public class SavingAndLoadingTest extends DemoBase
 {
     /** Logger reference **/
     private static final Logger logger = Logger.getLogger(SavingAndLoadingTest.class.getName());
+    /** Tree explorer if needed **/
+    private TreeExplorer te = null;
+    /** Point this to where you want the file to go **/
+    private static File SaveFile = new File("assets/configurations/SavingAndLoadingOutput.xml");
 
+    /**
+     * Construct a new instance!
+     * @param args
+     */
     public SavingAndLoadingTest(String[] args)
     {
         super(args);
@@ -54,21 +65,15 @@ public class SavingAndLoadingTest extends DemoBase
         SavingAndLoadingTest worldTest = new SavingAndLoadingTest(args);
     }
 
-    private TreeExplorer te = null;
+    
     @Override
     protected void createDemoEntities(WorldManager wm)
     {
         // Create ninja input scheme
         NinjaControlScheme control = (NinjaControlScheme)((JSceneEventProcessor)wm.getUserData(JSceneEventProcessor.class)).setDefault(new NinjaControlScheme(null));
-
         // Create testCharacter
         NinjaAvatar testCharacter = null;
-        try {
-//      testCharacter = new NinjaAvatar(new NinjaAvatarAttributes("SavingAndLoadingTestCharacter", true, true), wm);
-            testCharacter = new NinjaAvatar(new URL("file://localhost/work/avatars/assets/configurations/SavingTestOutput.xml"), wm);
-        } catch (MalformedURLException ex) {
-            Logger.getLogger(SavingAndLoadingTest.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        testCharacter = new NinjaAvatar(new NinjaAvatarAttributes("SavingAndLoadingTestCharacter", true, true), wm);
         testCharacter.selectForInput();
         control.getNinjaTeam().add(testCharacter);
         control.getMouseEventsFromCamera();
@@ -89,29 +94,19 @@ public class SavingAndLoadingTest extends DemoBase
             }
         }
 
-        try // last little bit
-        {
-            Thread.sleep(28000);
-        } catch (InterruptedException ex) {
-                logger.log(Level.SEVERE, null, ex);
-        }
 
-
-        // Uncomment to create a save file
-//        customizeCharacter(testCharacter, wm);
-//        testCharacter.saveConfiguration(new File("/work/IMI/sunSVN/assets/configurations/SavingAndLoadingOutput.xml"));
-
-
-        // Uncomment to load a save file
-        Thread.yield();
+        // Customize and save this guy
+        customizeCharacter(testCharacter, wm);
+        testCharacter.saveConfiguration(SaveFile);
+        
         try {
-            testCharacter.loadConfiguration(new URL("file://localhost/work/IMI/sunSVN/assets/configurations/SavingAndLoadingOutput.xml"));
+            // Then create a new avatar with the same configuration
+            NinjaAvatar newAvatar = new NinjaAvatar(SaveFile.toURI().toURL(), wm);
+
+        } catch (MalformedURLException ex) {
+            Logger.getLogger(SavingAndLoadingTest.class.getName()).log(Level.SEVERE, null, ex);
         }
-        catch (Exception ex)
-        {
-            logger.severe("Exception  : " + ex.getMessage());
-            ex.printStackTrace();
-        }
+
         // Uncomment to get a pscene explorer------
 //        te = new TreeExplorer();
 //        SceneEssentials se = new SceneEssentials();
@@ -122,6 +117,17 @@ public class SavingAndLoadingTest extends DemoBase
     }
 
     private void customizeCharacter(NinjaAvatar testCharacter, WorldManager wm) {
+        final LocationNode destination = new LocationNode("AvatarSpotOne",
+                                                new Vector3f(10, 0, 10),
+                                                2.0f,
+                                                wm);
+        ObjectCollection collection = new ObjectCollection("GoalPointHolder", wm);
+        testCharacter.setObjectCollection(collection);
+        collection.addObject(destination);
+        // walk away avatar, just walk away
+        NinjaSteeringHelm steering = (NinjaSteeringHelm)testCharacter.getContext().getSteering();
+        steering.addTaskToTop(new GoTo(destination, testCharacter.getContext()));
+
         // tweak it!
         SkeletonNode skeleton = testCharacter.getSkeleton();
         skeleton.displaceJoint("Head", new Vector3f(0, 0.08f, -0.04f));
@@ -135,11 +141,11 @@ public class SavingAndLoadingTest extends DemoBase
         meshMat.setTexture(new File("/work/avatars/assets/textures/tgatest.tga"), 2); // pattern diffuse
         meshMat.setShader((ClothingShaderSpecColor)repository.newShader(ClothingShaderSpecColor.class));
 
-        // eyeballs
-//        PMeshMaterial meshMat = new PMeshMaterial("eyeballs!");
-//        meshMat.setTexture(new File("/work/avatars/assets/models/collada/Avatars/Male/Blue_Eye.png"), 0); // base diffuse
-//        meshMat.setShader(new EyeballShader(wm));
 
+        PPolygonSkinnedMeshInstance meshInstance = skeleton.getSkinnedMeshInstance("DressShirtShape"); // Dress shirt
+
+        meshInstance.setMaterial(meshMat);
+        meshInstance.applyMaterial();
         Thread.yield();
         try // last little bit
         {
@@ -147,14 +153,6 @@ public class SavingAndLoadingTest extends DemoBase
         } catch (InterruptedException ex) {
                 logger.log(Level.SEVERE, null, ex);
         }
-        PPolygonSkinnedMeshInstance meshInstance = skeleton.getSkinnedMeshInstance("DressShirtShape"); // Dress shirt
-//        PPolygonSkinnedMeshInstance meshInstance = skeleton.getSkinnedMeshInstance("rightEyeGeoShape"); // Eyes
-        meshInstance.setMaterial(meshMat);
-        meshInstance.applyMaterial();
-
-//        meshInstance = skeleton.getSkinnedMeshInstance("leftEyeGeoShape"); // Eyes
-//        meshInstance.setMaterial(meshMat);
-//        meshInstance.setUseGeometryMaterial(false);
 
     }
 }

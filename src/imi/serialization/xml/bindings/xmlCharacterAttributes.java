@@ -63,20 +63,26 @@ import javax.xml.bind.annotation.XmlType;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "CharacterAttributes", propOrder = {
     "name",
+    "gender",
     "baseURL",
+    "headAttachment",
     "bodyAnimations",
     "facialAnimations",
     "loadingInstructions",
     "additionInstructions",
-    "attachments",
-    "gender"
+    "attachments"
+    
 })
 public class xmlCharacterAttributes {
 
     @XmlElement(name = "Name", required = false)
     protected String name;
+    @XmlElement(name = "Gender")
+    protected int gender;
     @XmlElement(name = "BaseURL", required = false)
     protected String baseURL;
+    @XmlElement(name = "HeadAttachment")
+    protected String headAttachment;
     @XmlElement(name = "BodyAnimations")
     protected List<String> bodyAnimations;
     @XmlElement(name = "FacialAnimations")
@@ -87,8 +93,7 @@ public class xmlCharacterAttributes {
     protected List<xmlSkinnedMeshParams> additionInstructions;
     @XmlElement(name = "Attachments")
     protected List<xmlCharacterAttachmentParameters> attachments;
-    @XmlElement(name = "Gender")
-    protected int gender;
+
 
     /**
      * Gets the value of the name property.
@@ -136,6 +141,14 @@ public class xmlCharacterAttributes {
      */
     public void setBaseURL(String value) {
         this.baseURL = value;
+    }
+
+    public String getHeadAttachment() {
+        return headAttachment;
+    }
+
+    public void setHeadAttachment(String value) {
+        headAttachment = value;
     }
 
 

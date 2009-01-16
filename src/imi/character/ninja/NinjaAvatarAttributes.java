@@ -51,11 +51,14 @@ public class NinjaAvatarAttributes extends CharacterAttributes
             int numberOfLegs  = 4;
             int numberOfTorso = 6;
             int numberOfHair  = 17;
+            int numberOfHeads = 2;
 
             ArrayList<String> load      = new ArrayList<String>();
             ArrayList<SkinnedMeshParams> add       = new ArrayList<SkinnedMeshParams>();
             ArrayList<AttachmentParams> attachments = new ArrayList<AttachmentParams>();
 
+            preset = (int) (Math.random() * 1000000 % numberOfHeads);
+            customizeHead(preset);
             preset = (int) (Math.random() * 1000000 % numberOfFeet);
             customizeFeetPresets(preset, load, add, attachments);
             preset = (int) (Math.random() * 1000000 % numberOfLegs);
@@ -78,12 +81,13 @@ public class NinjaAvatarAttributes extends CharacterAttributes
             loadDefaultBindPose();
     }
     
-    public NinjaAvatarAttributes(String name, int feet, int legs, int torso, int hair) 
+    public NinjaAvatarAttributes(String name, int feet, int legs, int torso, int hair, int head)
     {
         ArrayList<String> load                  = new ArrayList<String>();
         ArrayList<SkinnedMeshParams> add        = new ArrayList<SkinnedMeshParams>();
         ArrayList<AttachmentParams> attachments = new ArrayList<AttachmentParams>();
 
+        customizeHead(head);
         customizeFeetPresets(feet,   load, add, attachments);
         customizeLegsPresets(legs,   load, add, attachments);
         customizeTorsoPresets(torso, load, add, attachments);
@@ -92,6 +96,18 @@ public class NinjaAvatarAttributes extends CharacterAttributes
         setLoadInstructions(load);
         setAddInstructions(add.toArray(new SkinnedMeshParams[add.size()]));
         setAttachmentsInstructions(attachments.toArray(new AttachmentParams[attachments.size()]));
+    }
+
+    private void customizeHead(int preset)
+    {
+        switch (preset)
+        {
+            case 0:
+                setHeadAttachment("assets/models/collada/Heads/CaucasianHead/MaleCHead-NS.dae");
+                break;
+            default:
+                setHeadAttachment("assets/models/collada/Heads/CaucasianHead/MaleCHead.dae");
+        }
     }
 
     private void customizeFeetPresets(int preset, ArrayList<String> load, ArrayList<SkinnedMeshParams> add, ArrayList<AttachmentParams> attachments)
@@ -144,15 +160,6 @@ public class NinjaAvatarAttributes extends CharacterAttributes
 
     private void customizeHairPresets(int preset, ArrayList<String> load, ArrayList<SkinnedMeshParams> add, ArrayList<AttachmentParams> attachments)
     {
-        // load the head, eyes, teeth, and tongue
-        load.add(new String("assets/models/collada/Heads/CaucasianHead/MaleCHead.dae"));
-        add.add(new SkinnedMeshParams("rightEyeGeoShape", "Head"));
-        add.add(new SkinnedMeshParams("leftEyeGeoShape", "Head"));
-        add.add(new SkinnedMeshParams("UpperTeethShape", "Head"));
-        add.add(new SkinnedMeshParams("LowerTeethShape", "Head"));
-        add.add(new SkinnedMeshParams("TongueGeoShape", "Head"));
-        add.add(new SkinnedMeshParams("HeadGeoShape", "Head"));
-
         PMatrix oreintation = new PMatrix(new Vector3f(0.0f,(float) Math.toRadians(180), 0.0f), new Vector3f(1.05f, 1.05f, 1.05f), Vector3f.ZERO);
         switch(preset)
         {

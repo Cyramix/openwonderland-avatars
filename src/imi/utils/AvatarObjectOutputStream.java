@@ -53,7 +53,7 @@ public class AvatarObjectOutputStream extends ObjectOutputStream {
         "imi.scene.animation.AnimationCycle",
         "imi.scene.animation.MS3D_JointChannel",
         "imi.scene.animation.AnimationComponent",
-        "imi.scene.animation.VectorKeyFrame",
+        "imi.scene.animation.VectorKeyframe",
         "imi.scene.PMatrix"
 
     };

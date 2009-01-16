@@ -30,13 +30,14 @@
     <xsd:complexType name="CharacterAttributes">
         <xsd:sequence>
             <xsd:element name="Name" type="xsd:string" nillable="true"/>
+            <xsd:element name="Gender" type="xsd:int"/>
             <xsd:element name="BaseURL" type="xsd:string" nillable="true"/>
+            <xsd:element name="HeadAttachment" type="xsd:string"></xsd:element>
             <xsd:element name="BodyAnimations" minOccurs="0" maxOccurs="unbounded" type="xsd:string"/>
             <xsd:element name="FacialAnimations" minOccurs="0" maxOccurs="unbounded" type="xsd:string"/>
             <xsd:element name="LoadingInstructions" minOccurs="0" maxOccurs="unbounded" type="xsd:string"/>
             <xsd:element name="AdditionInstructions" minOccurs="0" maxOccurs="unbounded" type="tns:SkinnedMeshAdditionParams"/>
             <xsd:element name="Attachments" type="tns:CharacterAttachmentParameters" minOccurs="0" maxOccurs="unbounded"/>
-            <xsd:element name="Gender" type="xsd:int"/>
         </xsd:sequence>
     </xsd:complexType>
     <xsd:complexType name="Character">
