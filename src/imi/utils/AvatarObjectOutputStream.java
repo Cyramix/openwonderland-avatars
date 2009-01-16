@@ -15,7 +15,7 @@
  * $Date$
  * $State$
  */
-package org.jdesktop.wonderland.common.comms;
+package imi.utils;
 
 import java.io.IOException;
 import java.io.ObjectOutputStream;
@@ -32,7 +32,7 @@ import java.util.HashMap;
  * 
  * @author paulby
  */
-public class WonderlandObjectOutputStream extends ObjectOutputStream {
+public class AvatarObjectOutputStream extends ObjectOutputStream {
 
     protected static final int UNKNOWN_DESCRIPTOR = Integer.MIN_VALUE;
     protected static int firstID = UNKNOWN_DESCRIPTOR+1;
@@ -43,33 +43,6 @@ public class WonderlandObjectOutputStream extends ObjectOutputStream {
     // don't have JME.  This is prone to typos, so should be replaced
     // by a more automatic system XXX
     private static String[] coreClass = new String[] {
-        // MovableMessage.class.getName(),
-        "org.jdesktop.wonderland.common.cell.messages.MovableMessage",
-        
-        // MovableMessage.ActionType.class.getName(),
-        "org.jdesktop.wonderland.common.cell.messages.MovableMessage$ActionType",
-        
-        // CellMessage.class.getName(),
-        "org.jdesktop.wonderland.common.cell.messages.CellMessage",
-        
-        // MessageID.class.getName(),
-        "org.jdesktop.wonderland.common.messages.MessageID",
-        
-        //Enum.class.getName(),
-        "java.lang.Enum",
-        
-        // Vector3f.class.getName(),
-        "com.jme.math.Vector3f",
-        
-        // Quaternion.class.getName(),
-        "com.jme.math.Quaternion",
-        
-        // Message.class.getName(),
-        "org.jdesktop.wonderland.common.messages.Message",
-        
-        // CellID.class.getName(),
-        "org.jdesktop.wonderland.common.cell.CellID",
-
         "imi.scene.animation.AnimationGroup",
         "javolution.util.FastList",
         "javolution.util.FastCollection",
@@ -89,7 +62,7 @@ public class WonderlandObjectOutputStream extends ObjectOutputStream {
         populateDescToId(descToId);
     }
     
-    public WonderlandObjectOutputStream(OutputStream out) throws IOException {
+    public AvatarObjectOutputStream(OutputStream out) throws IOException {
         super(out);
     }
 
@@ -99,7 +72,7 @@ public class WonderlandObjectOutputStream extends ObjectOutputStream {
         // Now send the users class descriptor
         Integer idObj = descToId.get(desc.getName());
         if (idObj == null) {
-            System.err.println("First classDescriptor for " + desc.getName() + "  " + descToId.size());
+//            System.err.println("First classDescriptor for " + desc.getName() + "  " + descToId.size());
             writeInt(UNKNOWN_DESCRIPTOR);
             writeUTF(desc.forClass().getName());
         } else {

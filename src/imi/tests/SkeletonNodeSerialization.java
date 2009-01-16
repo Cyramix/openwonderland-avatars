@@ -31,8 +31,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.logging.Logger;
 import org.jdesktop.mtgame.WorldManager;
-import org.jdesktop.wonderland.common.comms.WonderlandObjectInputStream;
-import org.jdesktop.wonderland.common.comms.WonderlandObjectOutputStream;
+import imi.utils.AvatarObjectInputStream;
+import imi.utils.AvatarObjectOutputStream;
 
 /**
  * Serialize the skeleton!
@@ -187,11 +187,11 @@ public class SkeletonNodeSerialization
     private void serializeSkeleton(SkeletonNode skeleton, File destination)
     {
         FileOutputStream fos = null;
-        WonderlandObjectOutputStream out = null;
+        AvatarObjectOutputStream out = null;
         try
         {
           fos = new FileOutputStream(destination);
-          out = new WonderlandObjectOutputStream(fos);
+          out = new AvatarObjectOutputStream(fos);
           out.writeObject(skeleton);
           out.close();
         }
@@ -206,11 +206,11 @@ public class SkeletonNodeSerialization
     {
         SkeletonNode result = null;
         FileInputStream fis = null;
-        WonderlandObjectInputStream in = null;
+        AvatarObjectInputStream in = null;
 
         try
         {
-            in = new WonderlandObjectInputStream(location.openStream());
+            in = new AvatarObjectInputStream(location.openStream());
             result = (SkeletonNode)in.readObject();
             in.close();
         }

@@ -63,7 +63,7 @@ import java.net.URLConnection;
 import java.util.logging.Level;
 import javolution.util.FastMap;
 import org.collada.xml_walker.ColladaMaterial;
-import org.jdesktop.wonderland.common.comms.WonderlandObjectOutputStream;
+import imi.utils.AvatarObjectOutputStream;
 
 
 

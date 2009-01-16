@@ -24,8 +24,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.jdesktop.mtgame.ProcessorComponent;
 import org.jdesktop.mtgame.WorldManager;
-import org.jdesktop.wonderland.common.comms.WonderlandObjectInputStream;
-import org.jdesktop.wonderland.common.comms.WonderlandObjectOutputStream;
+import imi.utils.AvatarObjectInputStream;
+import imi.utils.AvatarObjectOutputStream;
 
 /**
  * Tests the performance gains of processing a collada file versus
@@ -109,11 +109,11 @@ public class ColladaSerializationTest extends DemoBase
 
     private void serializePScene(PScene sceneForLoading) {
         FileOutputStream fos = null;
-        WonderlandObjectOutputStream out = null;
+        AvatarObjectOutputStream out = null;
         try
         {
           fos = new FileOutputStream(saveFile);
-          out = new WonderlandObjectOutputStream(fos);
+          out = new AvatarObjectOutputStream(fos);
           out.writeObject(sceneForLoading);
           out.close();
         }
@@ -128,12 +128,12 @@ public class ColladaSerializationTest extends DemoBase
     {
         PScene result = null;
         FileInputStream fis = null;
-        WonderlandObjectInputStream in = null;
+        AvatarObjectInputStream in = null;
 
         try
         {
             fis = new FileInputStream(saveFile);
-            in = new WonderlandObjectInputStream(fis);
+            in = new AvatarObjectInputStream(fis);
             result = (PScene)in.readObject();
             in.close();
         }

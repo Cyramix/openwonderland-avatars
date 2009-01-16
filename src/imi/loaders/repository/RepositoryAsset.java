@@ -21,6 +21,8 @@ import com.jme.image.Texture;
 import com.jme.util.TextureManager;
 import com.jme.util.export.binary.BinaryExporter;
 import com.jme.util.export.binary.BinaryImporter;
+import imi.utils.AvatarObjectInputStream;
+import imi.utils.AvatarObjectOutputStream;
 import imi.loaders.collada.Collada;
 import imi.loaders.ms3d.SkinnedMesh_MS3D_Importer;
 import imi.scene.PScene;
@@ -38,8 +40,6 @@ import java.util.logging.Logger;
 import org.jdesktop.mtgame.ProcessorArmingCollection;
 import org.jdesktop.mtgame.ProcessorComponent;
 import org.jdesktop.mtgame.NewFrameCondition;
-import org.jdesktop.wonderland.common.comms.WonderlandObjectInputStream;
-import org.jdesktop.wonderland.common.comms.WonderlandObjectOutputStream;
 
 /**
  * This class is the internal representation of a loaded piece of data and its
@@ -251,12 +251,12 @@ public class RepositoryAsset extends ProcessorComponent
      */
     private PScene loadBinaryPScene(File location) {
         PScene result = null;
-        WonderlandObjectInputStream in = null;
+        AvatarObjectInputStream in = null;
         FileInputStream fis = null;
         try
         {
             fis = new FileInputStream(location);
-            in = new WonderlandObjectInputStream(fis);
+            in = new AvatarObjectInputStream(fis);
             result = (PScene)in.readObject();
             in.close();
         }
@@ -275,11 +275,11 @@ public class RepositoryAsset extends ProcessorComponent
      */
     private void serializePScene(File destination, PScene sceneToWrite)
     {
-        WonderlandObjectOutputStream out = null;
+        AvatarObjectOutputStream out = null;
         try
         {
           FileOutputStream fos = new FileOutputStream(destination);
-          out = new WonderlandObjectOutputStream(fos);
+          out = new AvatarObjectOutputStream(fos);
           out.writeObject(sceneToWrite);
           out.close();
         }

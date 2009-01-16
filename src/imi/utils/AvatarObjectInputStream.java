@@ -15,7 +15,7 @@
  * $Date$
  * $State$
  */
-package org.jdesktop.wonderland.common.comms;
+package imi.utils;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -31,21 +31,21 @@ import java.util.HashMap;
  * the serialization header. 
  * 
  * @author paulby
- */public class WonderlandObjectInputStream extends ObjectInputStream {
+ */public class AvatarObjectInputStream extends ObjectInputStream {
 
     private static HashMap<Integer, String> idToDesc = new HashMap();
 
     private ClassLoader classLoader;
     
     static {
-        WonderlandObjectOutputStream.populateIdToDesc(idToDesc);        
+        AvatarObjectOutputStream.populateIdToDesc(idToDesc);
     }
     
-    public WonderlandObjectInputStream(InputStream in) throws IOException {
+    public AvatarObjectInputStream(InputStream in) throws IOException {
         this (in, null);
     }
     
-    public WonderlandObjectInputStream(InputStream in, ClassLoader classLoader)
+    public AvatarObjectInputStream(InputStream in, ClassLoader classLoader)
             throws IOException
     {
         super(in);
@@ -86,7 +86,7 @@ import java.util.HashMap;
         int id = readInt();
         Class lookupClass;
         
-        if (id == WonderlandObjectOutputStream.UNKNOWN_DESCRIPTOR) {
+        if (id == AvatarObjectOutputStream.UNKNOWN_DESCRIPTOR) {
             String className = readUTF();
 //            System.err.println("WonderlandInputStream reading NEW_DESC "+className);
             lookupClass = Class.forName(className, true, classLoader);

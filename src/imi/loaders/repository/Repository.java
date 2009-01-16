@@ -33,7 +33,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
 import javolution.util.FastList;
 import org.jdesktop.mtgame.*;
-import org.jdesktop.wonderland.common.comms.WonderlandObjectInputStream;
+import imi.utils.AvatarObjectInputStream;
 
 /**
  * The Repository is used as a mechanism for sharing data across threads and
@@ -311,7 +311,7 @@ public class Repository extends Entity
      * Load the default skeletons.
      */
     private void loadSkeletons() {
-        WonderlandObjectInputStream in = null;
+        AvatarObjectInputStream in = null;
         SkeletonNode MaleSkeleton = null;
         SkeletonNode FemaleSkeleton = null;
         try
@@ -319,16 +319,18 @@ public class Repository extends Entity
             URL maleSkeleton = getClass().getResource("/imi/character/skeleton/Male.bs");
             URL femaleSkeleton = getClass().getResource("/imi/character/skeleton/Female.bs");
             
-            in = new WonderlandObjectInputStream(maleSkeleton.openStream());
+            in = new AvatarObjectInputStream(maleSkeleton.openStream());
             MaleSkeleton = (SkeletonNode)in.readObject();
             in.close();
 
-            in = new WonderlandObjectInputStream(femaleSkeleton.openStream());
+            in = new AvatarObjectInputStream(femaleSkeleton.openStream());
             FemaleSkeleton = (SkeletonNode)in.readObject();
+            in.close();
         }
         catch(Exception ex)
         {
             logger.severe("Uh oh! Error loading skeleton for character: " + ex.getMessage());
+            ex.printStackTrace();
             // do some back up stuff
             MaleSkeleton = null;
             FemaleSkeleton = null;

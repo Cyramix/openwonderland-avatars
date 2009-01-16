@@ -41,8 +41,8 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.jdesktop.wonderland.common.comms.WonderlandObjectInputStream;
-import org.jdesktop.wonderland.common.comms.WonderlandObjectOutputStream;
+import imi.utils.AvatarObjectInputStream;
+import imi.utils.AvatarObjectOutputStream;
 
 
 
@@ -196,12 +196,12 @@ public class CharacterLoader implements RepositoryUser
     {
         AnimationGroup result = null;
         FileInputStream fis = null;
-        WonderlandObjectInputStream in = null;
+        AvatarObjectInputStream in = null;
 
         try
         {
             fis = new FileInputStream(location.getFile());
-            in = new WonderlandObjectInputStream(fis);
+            in = new AvatarObjectInputStream(fis);
             result = (AnimationGroup)in.readObject();
             in.close();
         }
@@ -261,11 +261,11 @@ public class CharacterLoader implements RepositoryUser
         AnimationGroup groupToSerialize = animGroups.get(animGroups.size() - 1);
 
         FileOutputStream fos = null;
-        WonderlandObjectOutputStream out = null;
+        AvatarObjectOutputStream out = null;
         try
         {
             fos = new FileOutputStream(outputFileLocation.getFile());
-            out = new WonderlandObjectOutputStream(fos);
+            out = new AvatarObjectOutputStream(fos);
             out.writeObject(groupToSerialize);
             out.close();
         }

@@ -124,9 +124,20 @@ public class ColladaEnvironment extends Entity
         this.addComponent(RenderComponent.class, rc);
         // set some default rendering behavior
         setDefaultRenderStates();
-        // add ourselves to the world manager
-        m_wm.addEntity(this);
 
+        if (false) {
+            // add ourselves to the world manager
+            m_wm.addEntity(this);
+        }
+
+    }
+
+    /**
+     * Return the PScene for this collada model
+     * @return
+     */
+    public PScene getPScene() {
+        return scene;
     }
 
     /**
