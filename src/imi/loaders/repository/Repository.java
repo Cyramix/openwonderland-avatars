@@ -18,22 +18,18 @@
 package imi.loaders.repository;
 
 import imi.annotations.Debug;
-import imi.loaders.collada.Collada;
 import imi.loaders.repository.SharedAsset.SharedAssetType;
-import imi.scene.PScene;
 import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
 import imi.scene.shader.AbstractShaderProgram;
 import imi.scene.shader.ShaderFactory;
+import imi.utils.AvatarObjectInputStream;
 import imi.utils.MD5HashUtils;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.net.URL;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
 import javolution.util.FastList;
 import org.jdesktop.mtgame.*;
-import imi.utils.AvatarObjectInputStream;
 
 /**
  * The Repository is used as a mechanism for sharing data across threads and
@@ -95,6 +91,7 @@ public class Repository extends Entity
 
     /** Indicates if the repository cache should be used. **/
     private boolean m_bUseCache = true;
+    private boolean m_bLoadGeometry = true;
     
     /**
      * Construct a BRAND NEW REPOSITORY!
@@ -106,6 +103,10 @@ public class Repository extends Entity
     }
 
     public Repository(WorldManager wm, boolean bLoadSkeletons) {
+        this(wm, bLoadSkeletons, true);
+    }
+
+    public Repository(WorldManager wm, boolean bLoadSkeletons, boolean bUseCache) {
         super("Asset Repository");
 
         m_worldManager = wm;
@@ -118,7 +119,9 @@ public class Repository extends Entity
         if (bLoadSkeletons)
             loadSkeletons();
         // Boot up the cache
-        initCache();
+        m_bUseCache = bUseCache;
+        if (m_bUseCache)
+            initCache();
         // create the shader factory
         m_shaderFactory = new ShaderFactory(wm);
     }
@@ -203,6 +206,14 @@ public class Repository extends Entity
             m_processorCollection.addProcessor(slave);
             slave.initialize();
         }
+    }
+
+    public void setLoadGeometry(boolean bLoadGeometry) {
+        m_bLoadGeometry = bLoadGeometry;
+    }
+
+    public boolean isLoadingGeometry() {
+        return m_bLoadGeometry;
     }
 
     /**

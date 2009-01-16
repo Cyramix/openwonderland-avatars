@@ -106,12 +106,13 @@ public class LibraryAnimationsProcessor extends Processor
         
         String jointName        = m_AnimatedItemName;
         SkeletonNode skeleton   = m_colladaRef.getSkeletonNode();
-        PJoint joint            = skeleton.getJoint(jointName);
-        if (joint == null)
-        {
-            logger.severe("Unable to locate joint \"" + jointName +"\" referenced by animation.");
-            return;
-        }
+        // Debugging output
+//        PJoint joint            = skeleton.getJoint(jointName);
+//        if (joint == null)
+//        {
+//            logger.severe("Unable to locate joint \"" + jointName +"\" referenced by animation.");
+//            return;
+//        }
 
         //  The 'input' source contains keyframe times.  1 float per keyframe.
         Source inputSource = getSource(colladaAnimation, "input");

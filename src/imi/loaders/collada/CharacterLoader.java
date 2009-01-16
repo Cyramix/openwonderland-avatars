@@ -23,14 +23,14 @@ import imi.loaders.repository.AssetDescriptor;
 import imi.loaders.repository.Repository;
 import imi.loaders.repository.RepositoryUser;
 import imi.loaders.repository.SharedAsset;
-import imi.scene.PMatrix;
 import imi.scene.PNode;
 import imi.scene.PScene;
-import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
 
 import imi.scene.animation.AnimationComponent;
 import imi.scene.animation.AnimationGroup;
 import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
+import imi.utils.AvatarObjectInputStream;
+import imi.utils.AvatarObjectOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -41,8 +41,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import imi.utils.AvatarObjectInputStream;
-import imi.utils.AvatarObjectOutputStream;
 
 
 
@@ -88,7 +86,7 @@ public class CharacterLoader implements RepositoryUser
     public SkeletonNode loadSkeletonRig(URL rigLocation)
     {
         PScene scene = loadCollada(rigLocation);
-        PNode skeletonRoot = scene.findChild("SkeletonRoot");
+        PNode skeletonRoot = scene.findChild("skeletonRoot");
         return (SkeletonNode)skeletonRoot.getParent();
     }
 
@@ -151,7 +149,6 @@ public class CharacterLoader implements RepositoryUser
             SkeletonNode skeleton = loadSkeletonRig(animationLocation);
             owningSkeleton.getAnimationComponent().getGroups().addAll(skeleton.getAnimationComponent().getGroups());
             // Serialize it for the next round
-            logger.info("Wrote binary file " + binaryLocation.getFile() + ".");
             if (bafCacheURL != null) {
                 try {
                     // Create the directory
@@ -165,6 +162,7 @@ public class CharacterLoader implements RepositoryUser
             }
             if (bUseBinaryFiles)
                 writeAnimationGroupToDisk(binaryLocation, owningSkeleton);
+            result = true;
         }
         // Merge
         if (mergeToGroup >= 0)

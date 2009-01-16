@@ -391,9 +391,7 @@ public class Collada
             ProcessorFactory.createProcessor(this, m_libraryMaterials, null);
         }
 
-        //  Only load the Animations if we should.
-        if (m_bLoadAnimations)
-            ProcessorFactory.createProcessor(this, m_libraryAnimations, null);
+
 
         if (m_bLoadGeometry)
             ProcessorFactory.createProcessor(this, m_libraryNodes, null);
@@ -411,6 +409,10 @@ public class Collada
 
         if (m_bLoadRig)
             processRig();
+        
+        //  Only load the Animations if we should.
+        if (m_bLoadAnimations)
+            ProcessorFactory.createProcessor(this, m_libraryAnimations, null);
 
         if (m_bLoadGeometry && m_bAddSkinnedMeshesToSkeleton)
             attachSkinnedMeshToSkeleton();

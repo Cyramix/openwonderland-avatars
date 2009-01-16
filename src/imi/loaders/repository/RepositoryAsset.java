@@ -21,12 +21,12 @@ import com.jme.image.Texture;
 import com.jme.util.TextureManager;
 import com.jme.util.export.binary.BinaryExporter;
 import com.jme.util.export.binary.BinaryImporter;
-import imi.utils.AvatarObjectInputStream;
 import imi.utils.AvatarObjectOutputStream;
 import imi.loaders.collada.Collada;
 import imi.loaders.ms3d.SkinnedMesh_MS3D_Importer;
 import imi.scene.PScene;
 import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
+import imi.utils.AvatarObjectInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -232,7 +232,10 @@ public class RepositoryAsset extends ProcessorComponent
         else // create it
         {
             Collada loader = new Collada();
-            loader.setLoadFlags(true, true, true); // load everything
+            if (m_home.isLoadingGeometry())
+                loader.setLoadFlags(true, true, true); // load everything
+            else
+                loader.setLoadFlags(true, false, true);
             loader.setMaxNumberOfWeights(4);
             loader.setAddSkinnedMeshesToSkeleton(true);
             PScene loadingScene = new PScene(m_home.getWorldManager());

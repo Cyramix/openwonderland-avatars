@@ -88,7 +88,7 @@ import java.util.HashMap;
         
         if (id == AvatarObjectOutputStream.UNKNOWN_DESCRIPTOR) {
             String className = readUTF();
-            System.err.println("WonderlandInputStream reading NEW_DESC "+className);
+//            System.err.println("AvatarIObjectInputStream reading NEW_DESC "+className);
             lookupClass = Class.forName(className, true, classLoader);
         } else {
             lookupClass = Class.forName(idToDesc.get(id), true, classLoader);

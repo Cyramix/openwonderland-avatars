@@ -24,16 +24,30 @@ import imi.loaders.collada.ColladaLoaderParams;
 import imi.loaders.repository.Repository;
 import imi.scene.PScene;
 import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
+import imi.utils.AvatarObjectInputStream;
+import imi.utils.AvatarObjectOutputStream;
+import java.awt.BorderLayout;
+import java.awt.Canvas;
+import java.awt.FlowLayout;
+import java.awt.GridBagLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.logging.Logger;
 import org.jdesktop.mtgame.WorldManager;
-import imi.utils.AvatarObjectInputStream;
-import imi.utils.AvatarObjectOutputStream;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JPanel;
+import org.jdesktop.mtgame.FrameRateListener;
+import org.jdesktop.mtgame.RenderBuffer;
 
 /**
  * Serialize the skeleton!
@@ -110,12 +124,19 @@ public class SkeletonNodeSerialization
             printUsage();
         else
         {
-            WorldManager wm = null;
+            WorldManager wm = new WorldManager("TheWorldManager");
+            Repository  repository = new Repository(wm, false, false); // do not load skeletons, do not load use cache
+            repository.setLoadGeometry(false);
+            // Add the repository
+//                repository.setLoadGeometry(false);
+            wm.addUserData(Repository.class, repository);
+            wm.getRenderManager().setDesiredFrameRate(60);
+            createUI(wm);
             if (args[0].equalsIgnoreCase("-m"))
             {
                 if (args.length >= 2)
                     MaleOutputFile = new File(args[1]);
-                wm = new WorldManager("TheWorldManager");
+                
                 createSerializedSkeleton(wm, true);
             }
             else if (args[0].equalsIgnoreCase("-f"))
@@ -123,12 +144,10 @@ public class SkeletonNodeSerialization
 
                 if (args.length >= 2)
                     FemaleOutputFile = new File(args[1]);
-                wm = new WorldManager("TheWorldManager");
                 createSerializedSkeleton(wm, false);
             }
             else if (args[0].equalsIgnoreCase("-mf"))
             {
-                wm = new WorldManager("TheWorldManager");
                 createSerializedSkeleton(wm, false);
                 createSerializedSkeleton(wm, true);
             }
@@ -150,10 +169,6 @@ public class SkeletonNodeSerialization
         String[]    animationFiles   = null;
         String[]    facialAnimations = null;
         File        outputFile       = null;
-        Repository  repository       = new Repository(wm, false); // do not load skeletons
-
-        // Add the repository
-        wm.addUserData(Repository.class, repository);
         
         if (bLoadMale) {
             skeletonLocation = MaleSkeletonLocation;
@@ -178,6 +193,7 @@ public class SkeletonNodeSerialization
         Collada loader = new Collada(params);
         loader.load(new PScene(wm), skeletonLocation); // Don't need to hold on to the pscen
         SkeletonNode skeleton = loader.getSkeletonNode();
+        skeleton.refresh();
         // Now load it with animations using the InstructionProcessor
         InstructionProcessor processor = new InstructionProcessor(wm);
         processor.setUseBinaryFiles(false); // Reduce complexity
@@ -217,7 +233,6 @@ public class SkeletonNodeSerialization
     private SkeletonNode deserializeSkeleton(URL location)
     {
         SkeletonNode result = null;
-        FileInputStream fis = null;
         AvatarObjectInputStream in = null;
 
         try
@@ -241,6 +256,94 @@ public class SkeletonNodeSerialization
         System.err.println("-m : Bake the male skeleton");
         System.err.println("-f : Bake the Female skeleton");
         System.err.println("outputfile : Optionally provide a path to output the skeleton to.");
+    }
+
+    /**
+     * Create all of the Swing windows - and the 3D window
+     */
+    private void createUI(WorldManager wm) {
+        SwingFrame frame = new SwingFrame(wm);
+        // center the frame
+        frame.setLocationRelativeTo(null);
+        // show frame with focus
+        frame.canvas.requestFocusInWindow();
+
+        frame.setVisible(true);
+
+        // Add to the wm to set title string later during debugging
+        wm.addUserData(JFrame.class, frame);
+    }
+
+    public class SwingFrame extends JFrame implements FrameRateListener, ActionListener {
+
+        JPanel contentPane;
+        JPanel canvasPanel = new JPanel();
+        JPanel statusPanel = new JPanel();
+        Canvas canvas = null;
+        JLabel fpsLabel = new JLabel("FPS: ");
+        RenderBuffer m_renderBuffer = null;
+
+
+        // Construct the frame
+        public SwingFrame(WorldManager wm) {
+            addWindowListener(new WindowAdapter() {
+
+                @Override
+                public void windowClosing(WindowEvent e) {
+                    dispose();
+                    // TODO: Real cleanup
+                    System.exit(0);
+                }
+            });
+
+            contentPane = (JPanel) this.getContentPane();
+            contentPane.setLayout(new BorderLayout());
+
+            // The Menu Bar
+            JMenuBar menuBar = new JMenuBar();
+
+            // File Menu
+            JMenu fileMenu = new JMenu("File");
+            menuBar.add(fileMenu);
+
+            // Create Menu
+            JMenu createMenu = new JMenu("Create");
+            menuBar.add(createMenu);
+
+            // The Rendering Canvas
+            m_renderBuffer = wm.getRenderManager().createRenderBuffer(RenderBuffer.Target.ONSCREEN, 1, 1);
+            wm.getRenderManager().addRenderBuffer(m_renderBuffer);
+            canvas = m_renderBuffer.getCanvas();
+            canvas.setVisible(true);
+            wm.getRenderManager().setFrameRateListener(this, 100);
+            canvasPanel.setLayout(new GridBagLayout());
+            canvasPanel.add(canvas);
+            contentPane.add(canvasPanel, BorderLayout.CENTER);
+
+            // The status panel
+            statusPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
+            statusPanel.add(fpsLabel);
+            contentPane.add(statusPanel, BorderLayout.SOUTH);
+
+            pack();
+        }
+
+        /**
+         * Listen for frame rate updates
+         */
+        public void currentFramerate(float framerate) {
+            fpsLabel.setText("FPS: " + framerate);
+        }
+
+        public void actionPerformed(ActionEvent e)
+        {
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        public RenderBuffer getRenderBuffer()
+        {
+            return m_renderBuffer;
+        }
     }
 }
 

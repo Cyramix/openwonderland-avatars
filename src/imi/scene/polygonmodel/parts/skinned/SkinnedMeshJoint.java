@@ -46,6 +46,14 @@ public class SkinnedMeshJoint extends PJoint implements Serializable
     /** Package private member for use by the SkeletonNode primarily **/
     transient PMatrix unmodifiedInverseBindPose = new PMatrix();
 
+    /**
+     * Default construction
+     */
+    public SkinnedMeshJoint()
+    {
+        super(new PTransform());
+    }
+
     public SkinnedMeshJoint(PTransform transform) 
     {
         super(transform);
