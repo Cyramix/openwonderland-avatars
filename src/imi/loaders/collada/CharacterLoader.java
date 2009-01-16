@@ -77,6 +77,7 @@ public class CharacterLoader implements RepositoryUser
     {
         repository = repositoryToUse;
     }
+
     /**
      * Load the specified collada file and parse out the skeleton, associate it
      * with the provided PScene, and return the skelton node.
@@ -111,24 +112,32 @@ public class CharacterLoader implements RepositoryUser
      * @param owningSkeleton
      * @param animationLocation
      * @param mergeToGroup
+     * @param bUseBinaryFiles
      * @return True on success, false otherwise
      */
-    public boolean loadAnimation(PScene loadingPScene, SkeletonNode owningSkeleton, URL animationLocation, int mergeToGroup)
+    public boolean loadAnimation(PScene loadingPScene,
+                                SkeletonNode owningSkeleton,
+                                URL animationLocation,
+                                int mergeToGroup,
+                                boolean bUseBinaryFiles)
     {
         boolean result = false;
         // check for binary version
         AnimationGroup newGroup = null;
         URL binaryLocation = null;
-        try
+        if (bUseBinaryFiles)
         {
-            if (bafCacheURL==null)
-                binaryLocation = new URL(animationLocation.toString().substring(0, animationLocation.toString().length() - 3) + "baf");
-            else
-                binaryLocation = new URL(bafCacheURL+animationLocation.getFile().toString().substring(0, animationLocation.getFile().toString().length() - 3) + "baf");
-            newGroup = loadBinaryAnimation(binaryLocation);
-        } catch (Exception ex)
-        {
-            logger.severe(ex.getMessage());
+            try
+            {
+                if (bafCacheURL==null)
+                    binaryLocation = new URL(animationLocation.toString().substring(0, animationLocation.toString().length() - 3) + "baf");
+                else
+                    binaryLocation = new URL(bafCacheURL+animationLocation.getFile().toString().substring(0, animationLocation.getFile().toString().length() - 3) + "baf");
+                newGroup = loadBinaryAnimation(binaryLocation);
+            } catch (Exception ex)
+            {
+                logger.severe(ex.getMessage());
+            }
         }
         if (newGroup != null) // Success!
         {
@@ -154,7 +163,8 @@ public class CharacterLoader implements RepositoryUser
                     Logger.getLogger(CharacterLoader.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
-            writeAnimationGroupToDisk(binaryLocation, owningSkeleton);
+            if (bUseBinaryFiles)
+                writeAnimationGroupToDisk(binaryLocation, owningSkeleton);
         }
         // Merge
         if (mergeToGroup >= 0)
