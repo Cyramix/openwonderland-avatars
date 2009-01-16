@@ -33,6 +33,8 @@ public class NinjaFemaleAvatarAttributes extends CharacterAttributes
 {
     public String[] m_regions = new String[] { "Head", "Hands", "UpperBody", "LowerBody", "Feet", "Hair", "FacialHair", "Hats", "Glasses", "Jackets" };
 
+    private boolean loadedBind = false;
+    
     public NinjaFemaleAvatarAttributes(String name, boolean bRandomCustomizations) 
     {
         super(name);
@@ -54,8 +56,6 @@ public class NinjaFemaleAvatarAttributes extends CharacterAttributes
         ArrayList<SkinnedMeshParams> add        = new ArrayList<SkinnedMeshParams>();
         ArrayList<AttachmentParams> attachments = new ArrayList<AttachmentParams>();
 
-        load.add(new String("assets/models/collada/Avatars/Female/Female_Bind.dae")); // TODO name collision!
-        
         customizeFeetPresets(feet,   load, add, attachments);
         customizeLegsPresets(legs,   load, add, attachments);
         customizeTorsoPresets(torso, load, add, attachments);
@@ -71,20 +71,28 @@ public class NinjaFemaleAvatarAttributes extends CharacterAttributes
         switch(preset)
         {
             default:
+            {
+                if(!loadedBind)
+                {
+                    loadedBind = true;
+                    load.add(new String("assets/models/collada/Avatars/Female/Female_Bind.dae")); 
+                }
                 add.add(new SkinnedMeshParams("ShoesShape",  "Feet"));           
+            }
         }  
     }
 
     private void customizeHairPresets(int preset, ArrayList<String> load, ArrayList<SkinnedMeshParams> add, ArrayList<AttachmentParams> attachments)
     {
         // load the head, eyes, teeth, and tongue
+        load.add(new String("assets/models/collada/Avatars/Female/FemaleCHead.dae"));
         add.add(new SkinnedMeshParams("rightEyeGeoShape", "Head"));
         add.add(new SkinnedMeshParams("leftEyeGeoShape", "Head"));
         add.add(new SkinnedMeshParams("UpperTeethShape", "Head"));
         add.add(new SkinnedMeshParams("LowerTeethShape", "Head"));
         add.add(new SkinnedMeshParams("TongueGeoShape", "Head"));
         add.add(new SkinnedMeshParams("HeadGeoShape", "Head"));
-
+        
         PMatrix oreintation = new PMatrix(new Vector3f(0.0f,(float) Math.toRadians(180), 0.0f), new Vector3f(1.05f, 1.05f, 1.05f), Vector3f.ZERO);
         switch(preset)
         {
@@ -428,7 +436,7 @@ public class NinjaFemaleAvatarAttributes extends CharacterAttributes
                 add.add(new SkinnedMeshParams("LegsNudeShape", "LowerBody"));
             }
             break;
-            case 2:  //  TODO error
+            case 2:  //  TODO error missing mesh?
             {
                 // Shorts
                 load.add(new String("assets/models/collada/Clothes/Female/FemaleShorts.dae"));
@@ -436,13 +444,21 @@ public class NinjaFemaleAvatarAttributes extends CharacterAttributes
             }
             break;
             default:
+            {
+                if(!loadedBind)
+                {
+                    loadedBind = true;
+                    load.add(new String("assets/models/collada/Avatars/Female/Female_Bind.dae")); 
+                }
                 add.add(new SkinnedMeshParams("LegsNudeShape",  "LowerBody"));
+            }
         }   
     }
 
     protected void customizeTorsoPresets(int preset, ArrayList<String> load, ArrayList<SkinnedMeshParams> add, ArrayList<AttachmentParams> attachments)
     {
-        // Add the hands in either way
+        // Add the hands 
+        load.add(new String("assets/models/collada/Avatars/Female/Female_Hands.dae")); 
         add.add(new SkinnedMeshParams("HandsShape",  "Hands"));
 
         switch(preset)
@@ -468,7 +484,7 @@ public class NinjaFemaleAvatarAttributes extends CharacterAttributes
                 add.add(new SkinnedMeshParams("Jacket1Shape", "UpperBody"));
             }
             break;
-            case 3:      //    TODO ?
+            case 3:      //    TODO doesnt show?
             {
                 // Blouse
                 load.add(new String("assets/models/collada/Clothes/Female/FemaleBlouse.dae"));
@@ -483,7 +499,14 @@ public class NinjaFemaleAvatarAttributes extends CharacterAttributes
             }
             break;
             default:
+            {
+                if(!loadedBind)
+                {
+                    loadedBind = true;
+                    load.add(new String("assets/models/collada/Avatars/Female/Female_Bind.dae")); 
+                }
                 add.add(new SkinnedMeshParams("TorsoNudeShape",  "UpperBody"));
+            }
         }   
     }
 
