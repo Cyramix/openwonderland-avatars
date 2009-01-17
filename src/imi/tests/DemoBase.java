@@ -700,12 +700,12 @@ public class DemoBase
         // Skybox
         SkyBox sky = new SkyBox("skybox", 10.0f, 10.0f, 10.0f, wm);
         
-        sky.setTexture(SkyBox.NORTH,   loadSkyboxTexture("assets/textures/skybox/pos_z.bmp")); // north
-        sky.setTexture(SkyBox.EAST,    loadSkyboxTexture("assets/textures/skybox/pos_x.bmp")); // south
-        sky.setTexture(SkyBox.SOUTH,   loadSkyboxTexture("assets/textures/skybox/neg_z.bmp")); // east
-        sky.setTexture(SkyBox.WEST,    loadSkyboxTexture("assets/textures/skybox/neg_x.bmp")); // west
-        sky.setTexture(SkyBox.DOWN,    loadSkyboxTexture("assets/textures/skybox/neg_y.bmp")); // up
-        sky.setTexture(SkyBox.UP,      loadSkyboxTexture("assets/textures/skybox/pos_y.bmp")); // down
+        sky.setTexture(SkyBox.NORTH,   loadSkyboxTexture("assets/textures/skybox/Front.png")); // north
+        sky.setTexture(SkyBox.EAST,    loadSkyboxTexture("assets/textures/skybox/Right.png")); // south
+        sky.setTexture(SkyBox.SOUTH,   loadSkyboxTexture("assets/textures/skybox/Back.png")); // east
+        sky.setTexture(SkyBox.WEST,    loadSkyboxTexture("assets/textures/skybox/Left.png")); // west
+        sky.setTexture(SkyBox.DOWN,    loadSkyboxTexture("assets/textures/skybox/Top.png")); // up
+        sky.setTexture(SkyBox.UP,      loadSkyboxTexture("assets/textures/skybox/Top.png")); // down
         //
         
         RenderComponent sc2 = wm.getRenderManager().createRenderComponent(sky);
