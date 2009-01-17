@@ -271,9 +271,9 @@ public class PMatrixWidget extends javax.swing.JPanel
                 break;
             }
         }
-        rotMatrix.mul(yRotation);
-        rotMatrix.mul(xRotation);
-        rotMatrix.mul(zRotation);
+        rotMatrix.fastMul(yRotation);
+        rotMatrix.fastMul(xRotation);
+        rotMatrix.fastMul(zRotation);
         m_theMatrix.setRotation(rotMatrix.getRotation());
         //refreshComponents();
     }

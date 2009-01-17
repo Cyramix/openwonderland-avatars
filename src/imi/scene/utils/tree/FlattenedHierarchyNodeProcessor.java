@@ -99,7 +99,7 @@ public class FlattenedHierarchyNodeProcessor  implements NodeProcessor
                 if (parent instanceof SkinnedMeshJoint)
                 {
                     PMatrix meshSpace = ((SkinnedMeshJoint)current).getMeshSpace();
-                    meshSpace.mul(((SkinnedMeshJoint)parent).getMeshSpace(), current.getTransform().getLocalMatrix(false));
+                    meshSpace.fastMul(((SkinnedMeshJoint)parent).getMeshSpace(), current.getTransform().getLocalMatrix(false));
                 }
                 else
                     ((SkinnedMeshJoint)current).setMeshSpace(current.getTransform().getLocalMatrix(false));

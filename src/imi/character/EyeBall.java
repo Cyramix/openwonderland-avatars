@@ -82,7 +82,7 @@ public class EyeBall extends PPolygonSkinnedMeshInstance
         
         // Get eye world space
         PMatrix eyeWorld = new PMatrix();
-        eyeWorld.mul(modelWorldRef, matrix);
+        eyeWorld.fastMul(modelWorldRef, matrix);
         
         // Check limits
         Vector3f forwardVec = modelWorldRef.getLocalZ();
@@ -108,7 +108,7 @@ public class EyeBall extends PPolygonSkinnedMeshInstance
                 matrix.set(eyeWorldXForm);
                 matrix.setScale(scale);
 
-                matrix.mul(modelWorldRef.inverse(), matrix);
+                matrix.fastMul(modelWorldRef.inverse(), matrix);
             }
         }
         else

@@ -218,10 +218,10 @@ public class PColladaEffect
         else
             result = new PMeshMaterial(m_effectIdentifier);
         // Colors!
-        result.setEmissive(buildColorRGBA(m_EmissiveColor));
-        result.setAmbient(buildColorRGBA(m_AmbientColor));
-        result.setSpecular(buildColorRGBA(m_SpecularColor));
-        result.setDiffuse(buildColorRGBA(m_DiffuseColor));
+        result.setEmissive(buildColorRGBA(m_EmissiveColor, 0));
+        result.setAmbient(buildColorRGBA(m_AmbientColor, 1));
+        result.setSpecular(buildColorRGBA(m_SpecularColor, 2));
+        result.setDiffuse(buildColorRGBA(m_DiffuseColor, 3));
         
         // Shininess
         result.setShininess(m_shininess);
@@ -314,8 +314,6 @@ public class PColladaEffect
                 break;
         }
 
-        // HACK : Default COLLADA to have no backface culling
-        result.setCullFace(Face.None);
         return result;
     }
 
@@ -493,20 +491,42 @@ public class PColladaEffect
                 return(pNewParamType);
         }
 
-        return(null);
+        return null;
     }
 
     
     
-    private ColorRGBA buildColorRGBA(PColladaColor pColor)
+    private ColorRGBA buildColorRGBA(PColladaColor pColor, int element)
     {
-        ColorRGBA pColorRGBA = null;
+        ColorRGBA result = null;
         if (pColor == null)
-            pColorRGBA = new ColorRGBA();
+        {
+            switch (element)
+            {
+                case 0:
+                    result = ColorRGBA.black;
+                    break;
+                case 1:
+                    result = ColorRGBA.white;
+                    break;
+                case 2:
+                    result = ColorRGBA.black;
+                    break;
+                case 3:
+                    result = ColorRGBA.white;
+                    break;
+            }
+        }
         else
-            pColorRGBA = new ColorRGBA(pColor.Red, pColor.Green, pColor.Blue, pColor.Alpha);
+        {
+            if ((pColor.Red == 1.0f && pColor.Green == 1.0f && pColor.Blue == 1.0f) &&
+                    (element == 0 || element == 2))
+                result = ColorRGBA.black;
+            else
+                result = new ColorRGBA(pColor.Red, pColor.Green, pColor.Blue, pColor.Alpha);
+        }
 
-        return(pColorRGBA);
+        return result;
     }
 
     //  Gets the image filename for the Emissive channel.

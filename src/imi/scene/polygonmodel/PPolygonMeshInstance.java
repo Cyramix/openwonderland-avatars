@@ -211,15 +211,23 @@ public class PPolygonMeshInstance extends PNode implements Serializable
     
     public void setShaderState(GLSLShaderObjectsState shader) 
     {
-        m_shaderState = shader;
+        if (shader == null)
+        {
+            if (m_shaderState != null)
+                m_shaderState.setEnabled(false);
+            m_shaderState = null;
+            m_instance.updateRenderState();
+        }
+        else
+        {
+            m_shaderState = shader;
         
-        if (m_instance == null)
-            m_instance = new SharedMesh(getName(), m_geometry.getGeometry());
+            if (m_instance == null)
+                m_instance = new SharedMesh(getName(), m_geometry.getGeometry());
         
-        m_instance.setRenderState(m_shaderState);
-        m_shaderState.setEnabled(true);
-        
-        // TODO are we missing more stuff???
+            m_instance.setRenderState(m_shaderState);
+            m_shaderState.setEnabled(true);
+        }
         
         setDirty(true, true); // TODO is this needed?
     }
@@ -371,6 +379,9 @@ public class PPolygonMeshInstance extends PNode implements Serializable
         m_instance.setRenderState(m_textureState);
         if (meshMat.getShader() != null)
             meshMat.getShader().applyToMesh(this);
+        else
+            setShaderState(null);
+
     }
     
     public PMeshMaterialCombo getMaterialRef() 

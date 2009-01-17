@@ -1299,10 +1299,10 @@ public abstract class Character extends Entity implements SpatialObject, Animati
                 if (newHeadJoint == null) // Not found in the new skeleton
                     logger.severe("Could not find associated joint in the new skeleton, joint name was " + currentHeadJoint.getName());
                 PMatrix modifierDelta = new PMatrix();
-                modifierDelta.mul( currentHeadJoint.getTransform().getLocalMatrix(false).inverse(),
+                modifierDelta.fastMul( currentHeadJoint.getTransform().getLocalMatrix(false).inverse(),
                             newHeadJoint.getTransform().getLocalMatrix(false));
 
-                currentHeadJoint.getBindPose().mul(modifierDelta);
+                currentHeadJoint.getBindPose().fastMul(modifierDelta);
 //                currentHeadJoint.getBindPose().set(newHeadJoint.getBindPose());
             }
             else

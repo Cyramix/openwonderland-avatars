@@ -314,7 +314,7 @@ public class SkeletonNode extends PNode implements Animated, Serializable
         for (int i = 0; i < indices.length; ++i)
         {
             output[i].set(m_BFTSkeleton.get(indices[i]).getMeshSpace());
-            output[i].mul(m_BFTSkeletonLocalModifiers.get(indices[i]));
+            output[i].fastMul(m_BFTSkeletonLocalModifiers.get(indices[i]));
         }
     }
     
@@ -329,7 +329,7 @@ public class SkeletonNode extends PNode implements Animated, Serializable
     public PMatrix getModifiedJointMatrix(int BFTJointIndex)
     {
         PMatrix result = new PMatrix(m_BFTSkeleton.get(BFTJointIndex).getMeshSpace());
-        result.mul(m_BFTSkeletonLocalModifiers.get(BFTJointIndex));
+        result.fastMul(m_BFTSkeletonLocalModifiers.get(BFTJointIndex));
         return result;
     }
     
@@ -669,9 +669,9 @@ public class SkeletonNode extends PNode implements Animated, Serializable
                         // Multiply chain: ParentMeshSpace * modifiedBindPose * originalInverseBind * AnimatedPose
                         PMatrix meshSpace = curJoint.getMeshSpace();
                         meshSpace.set(((SkinnedMeshJoint)parent).getMeshSpace());
-                        meshSpace.mul(curJoint.getBindPose());
-                        meshSpace.mul(curJoint.unmodifiedInverseBindPose);
-                        meshSpace.mul(curJoint.getTransform().getLocalMatrix(false));
+                        meshSpace.fastMul(curJoint.getBindPose());
+                        meshSpace.fastMul(curJoint.unmodifiedInverseBindPose);
+                        meshSpace.fastMul(curJoint.getTransform().getLocalMatrix(false));
                     }
                     else // First joint in the skeleton; mesh space is local space
                     {
@@ -841,7 +841,7 @@ public class SkeletonNode extends PNode implements Animated, Serializable
             quat.fromAngleAxis(angle, axis);
             PMatrix rotationMatrix = new PMatrix();
             rotationMatrix.setRotation(quat);
-            joint.getBindPose().mul(rotationMatrix);
+            joint.getBindPose().fastMul(rotationMatrix);
         }
         return result;
     }

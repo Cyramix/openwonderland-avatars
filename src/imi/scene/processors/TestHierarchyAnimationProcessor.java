@@ -74,7 +74,7 @@ public class TestHierarchyAnimationProcessor extends ProcessorComponent
     public void compute(ProcessorArmingCollection collection) 
     {
         m_frames++;
-        rotationMatrix.mul(new PMatrix(m_axis.mult(m_angle), Vector3f.UNIT_XYZ, Vector3f.ZERO));
+        rotationMatrix.fastMul(new PMatrix(m_axis.mult(m_angle), Vector3f.UNIT_XYZ, Vector3f.ZERO));
 
         // Simulate the bind pose
         //rotationMatrix.setTranslation(new Vector3f(0, 4, 10));
@@ -88,7 +88,7 @@ public class TestHierarchyAnimationProcessor extends ProcessorComponent
             }
             
             PMatrix localMatrix = m_targetMesh.getTransform().getLocalMatrix(true);
-            localMatrix.mul(bindMatrix,  rotationMatrix);
+            localMatrix.fastMul(bindMatrix,  rotationMatrix);
             
             m_targetMesh.setDirty(true, true);
 

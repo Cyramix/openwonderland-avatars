@@ -354,13 +354,13 @@ public class VerletSkeletonFlatteningManipulator implements SkeletonFlatteningMa
         {
             PMatrix fixRotation = new PMatrix();
             fixRotation.buildRotationZ((float)Math.toRadians(40));
-            matrix.mul(fixRotation);
+            matrix.fastMul(fixRotation);
         }
         else
         {
             PMatrix fixRotation = new PMatrix();
             fixRotation.buildRotationZ((float)Math.toRadians(-40));
-            matrix.mul(fixRotation);   
+            matrix.fastMul(fixRotation);
         }
     }
     

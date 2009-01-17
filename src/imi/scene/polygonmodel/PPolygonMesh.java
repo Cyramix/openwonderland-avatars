@@ -438,7 +438,7 @@ public class PPolygonMesh extends PNode implements Serializable
     public int getPosition(Vector3f pPosition)
     {
         int Index = findPosition(pPosition);
-	if (Index == -1)
+        if (Index == -1)
             Index = addPosition(pPosition);
         else
         {

@@ -141,7 +141,7 @@ public class NinjaController extends CharacterController
             rotation.buildRotationY(rotationSensetivity * desiredDirection.x * deltaTime);
             
             currentRot = body.getTransform().getLocalMatrix(true);
-            currentRot.mul(rotation);
+            currentRot.fastMul(rotation);
             
             bTurning = false;
         }

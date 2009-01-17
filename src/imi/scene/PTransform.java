@@ -134,7 +134,7 @@ public class PTransform implements Serializable
      */
     public void buildWorldMatrix(PMatrix parentWorld)
     {
-        m_world.mul(parentWorld, m_local);
+        m_world.fastMul(parentWorld, m_local);
         m_bDirtyWorldMat = false;
     }
 

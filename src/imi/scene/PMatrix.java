@@ -1062,7 +1062,64 @@ public class PMatrix implements Serializable
 	}
 	dirtyBits = ALL_DIRTY;
     }
-    
+
+    public final void fastMul(PMatrix t1)
+    {
+        float tmp0, tmp1, tmp2, tmp3;
+        float tmp4, tmp5, tmp6, tmp7;
+        float tmp8, tmp9, tmp10, tmp11;
+        float tmp12, tmp13, tmp14, tmp15;
+
+        tmp0 = mat[0]*t1.mat[0] + mat[1]*t1.mat[4] + mat[2]*t1.mat[8] +
+                   mat[3]*t1.mat[12];
+	    tmp1 = mat[0]*t1.mat[1] + mat[1]*t1.mat[5] + mat[2]*t1.mat[9] +
+                   mat[3]*t1.mat[13];
+	    tmp2 = mat[0]*t1.mat[2] + mat[1]*t1.mat[6] + mat[2]*t1.mat[10] +
+                   mat[3]*t1.mat[14];
+	    tmp3 = mat[0]*t1.mat[3] + mat[1]*t1.mat[7] + mat[2]*t1.mat[11] +
+                   mat[3]*t1.mat[15];
+        tmp4 = mat[4]*t1.mat[0] + mat[5]*t1.mat[4] + mat[6]*t1.mat[8] +
+                    mat[7]*t1.mat[12];
+	    tmp5 = mat[4]*t1.mat[1] + mat[5]*t1.mat[5] + mat[6]*t1.mat[9] +
+                    mat[7]*t1.mat[13];
+	    tmp6 = mat[4]*t1.mat[2] + mat[5]*t1.mat[6] + mat[6]*t1.mat[10] +
+                    mat[7]*t1.mat[14];
+	    tmp7 = mat[4]*t1.mat[3] + mat[5]*t1.mat[7] + mat[6]*t1.mat[11] +
+                    mat[7]*t1.mat[15];
+        tmp8 = mat[8]*t1.mat[0] + mat[9]*t1.mat[4] + mat[10]*t1.mat[8] +
+                    mat[11]*t1.mat[12];
+        tmp9 = mat[8]*t1.mat[1] + mat[9]*t1.mat[5] + mat[10]*t1.mat[9] +
+                    mat[11]*t1.mat[13];
+        tmp10 = mat[8]*t1.mat[2] + mat[9]*t1.mat[6] +
+                    mat[10]*t1.mat[10]+ mat[11]*t1.mat[14];
+        tmp11 = mat[8]*t1.mat[3] + mat[9]*t1.mat[7] +
+                    mat[10]*t1.mat[11] + mat[11]*t1.mat[15];
+        tmp12 = mat[12]*t1.mat[0] + mat[13]*t1.mat[4] +
+                    mat[14]*t1.mat[8];
+		tmp13 = mat[12]*t1.mat[1] + mat[13]*t1.mat[5] +
+		            mat[14]*t1.mat[9];
+		tmp14 = mat[12]*t1.mat[2] + mat[13]*t1.mat[6] +
+		           mat[14]*t1.mat[10];
+        tmp15 = mat[12]*t1.mat[3] + mat[13]*t1.mat[7] +
+		            mat[14]*t1.mat[11] + mat[15];
+
+        mat[0] = tmp0;
+        mat[1] = tmp1;
+        mat[2] = tmp2;
+        mat[3] = tmp3;
+        mat[4] = tmp4;
+        mat[5] = tmp5;
+        mat[6] = tmp6;
+        mat[7] = tmp7;
+        mat[8] = tmp8;
+        mat[9] = tmp9;
+        mat[10] = tmp10;
+        mat[11] = tmp11;
+        mat[12] = tmp12;
+		mat[13] = tmp13;
+		mat[14] = tmp14;
+		mat[15] = tmp15;
+    }
     /**
      * Sets the value of this transform to the result of multiplying itself
      * with transform t1 (this = this * t1).
@@ -1187,6 +1244,45 @@ public class PMatrix implements Serializable
 
     }
 
+    public final void fastMul(PMatrix t1, PMatrix t2)
+    {
+        mat[0] = t1.mat[0]*t2.mat[0] + t1.mat[1]*t2.mat[4] +
+		         t1.mat[2]*t2.mat[8] + t1.mat[3]*t2.mat[12];
+		mat[1] = t1.mat[0]*t2.mat[1] + t1.mat[1]*t2.mat[5] +
+		         t1.mat[2]*t2.mat[9] + t1.mat[3]*t2.mat[13];
+		mat[2] = t1.mat[0]*t2.mat[2] + t1.mat[1]*t2.mat[6] +
+		         t1.mat[2]*t2.mat[10] + t1.mat[3]*t2.mat[14];
+		mat[3] = t1.mat[0]*t2.mat[3] + t1.mat[1]*t2.mat[7] +
+		         t1.mat[2]*t2.mat[11] + t1.mat[3]*t2.mat[15];
+		mat[4] = t1.mat[4]*t2.mat[0] + t1.mat[5]*t2.mat[4] +
+		         t1.mat[6]*t2.mat[8] + t1.mat[7]*t2.mat[12];
+		mat[5] = t1.mat[4]*t2.mat[1] + t1.mat[5]*t2.mat[5] +
+		         t1.mat[6]*t2.mat[9] + t1.mat[7]*t2.mat[13];
+		mat[6] = t1.mat[4]*t2.mat[2] + t1.mat[5]*t2.mat[6] +
+		         t1.mat[6]*t2.mat[10] + t1.mat[7]*t2.mat[14];
+		mat[7] = t1.mat[4]*t2.mat[3] + t1.mat[5]*t2.mat[7] +
+		         t1.mat[6]*t2.mat[11] + t1.mat[7]*t2.mat[15];
+		mat[8] = t1.mat[8]*t2.mat[0] + t1.mat[9]*t2.mat[4] +
+		         t1.mat[10]*t2.mat[8] + t1.mat[11]*t2.mat[12];
+		mat[9] = t1.mat[8]*t2.mat[1] + t1.mat[9]*t2.mat[5] +
+		         t1.mat[10]*t2.mat[9] + t1.mat[11]*t2.mat[13];
+		mat[10] = t1.mat[8]*t2.mat[2] + t1.mat[9]*t2.mat[6] +
+		          t1.mat[10]*t2.mat[10] + t1.mat[11]*t2.mat[14];
+		mat[11] = t1.mat[8]*t2.mat[3] + t1.mat[9]*t2.mat[7] +
+		          t1.mat[10]*t2.mat[11] + t1.mat[11]*t2.mat[15];
+        mat[12] = t1.mat[12]*t2.mat[0] + t1.mat[13]*t2.mat[4] +
+			      t1.mat[14]*t2.mat[8];
+        mat[13] = t1.mat[12]*t2.mat[1] + t1.mat[13]*t2.mat[5] +
+                  t1.mat[14]*t2.mat[9];
+        mat[14] = t1.mat[12]*t2.mat[2] + t1.mat[13]*t2.mat[6] +
+                  t1.mat[14]*t2.mat[10];
+        mat[15] = t1.mat[12]*t2.mat[3] + t1.mat[13]*t2.mat[7] +
+                  t1.mat[14]*t2.mat[11] + t1.mat[15];
+//        mat[12] = 0;
+//        mat[13] = 0;
+//        mat[14] = 0;
+//        mat[15] = 1;
+    }
     /**
      * Sets the value of this transform to the result of multiplying transform
      * t1 by transform t2 (this = t1*t2).
@@ -1411,7 +1507,7 @@ public class PMatrix implements Serializable
         PMatrix t3 = new PMatrix();
 	t3.autoNormalize = false;
         t3.invert(t2);
-        this.mul(t1,t3);
+        this.fastMul(t1,t3);
     }
 
     /**
@@ -1424,7 +1520,7 @@ public class PMatrix implements Serializable
 	PMatrix t3 = new PMatrix();
 	t3.autoNormalize = false;
 	t3.transpose(t2);
-	mul(t1, t3);
+	fastMul(t1, t3);
     }
 
 
@@ -1438,7 +1534,7 @@ public class PMatrix implements Serializable
 	PMatrix t3 = new PMatrix();
 	t3.autoNormalize = false;
 	t3.transpose(t1);
-	mul(t3, t2);
+	fastMul(t3, t2);
     }
 
 
@@ -1456,7 +1552,7 @@ public class PMatrix implements Serializable
 	t4.autoNormalize = false;
 	t3.transpose(t1);
 	t4.transpose(t2);
-	mul(t3, t4);
+	fastMul(t3, t4);
     }
     
     /**
@@ -3821,11 +3917,15 @@ public class PMatrix implements Serializable
     {
         float fOneMinusFraction = 1.0f - fFraction;
 
-        for (int i=0; i<11; i++)
+        for (int i=0; i < 12; i++)
         {
             if (a.mat[i] == b.mat[i])
+            {
+                mat[i] = a.mat[i];
                 continue;
-            mat[i] = a.mat[i] * fFraction + b.mat[i] * fOneMinusFraction;
+            }
+            else
+                mat[i] = a.mat[i] * fOneMinusFraction + b.mat[i] * fFraction;
         }
     }
 

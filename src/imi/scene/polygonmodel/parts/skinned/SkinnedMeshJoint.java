@@ -150,7 +150,7 @@ public class SkinnedMeshJoint extends PJoint implements Serializable
             {
                 parentMeshSpace = currentJoint.getParentJoint().getMeshSpace();
                 // Current meshSpace = parentMeshSpace * currentBindPose
-                currentJoint.getMeshSpace().mul(parentMeshSpace, currentJoint.getBindPose());
+                currentJoint.getMeshSpace().fastMul(parentMeshSpace, currentJoint.getBindPose());
                 PMatrix stackAddition = new PMatrix();
                 // invert and add to the stack
                 stackAddition.set(currentJoint.getMeshSpace().inverse());

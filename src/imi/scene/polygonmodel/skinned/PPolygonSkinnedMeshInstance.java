@@ -176,7 +176,7 @@ public class PPolygonSkinnedMeshInstance extends PPolygonMeshInstance implements
             {
                 //postAnimationModifiedMeshSpaceMatrixHook(matrix, influenceIndices[i]);
 
-                m_pose[i].mul(m_InverseBindPose[i]);
+                m_pose[i].fastMul(m_InverseBindPose[i]);
 
                 m_pose[i].getFloatArray(m_matrixFloats);
                 for(int j = 0; j < 16; j++)

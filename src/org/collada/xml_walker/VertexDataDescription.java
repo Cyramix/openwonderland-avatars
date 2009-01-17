@@ -18,12 +18,16 @@
 package org.collada.xml_walker;
 
 
+import com.jme.renderer.ColorRGBA;
 import java.util.ArrayList;
 import org.collada.colladaschema.InputLocalOffset;
 import org.collada.colladaschema.Source;
 
 import com.jme.math.Vector3f;
 import com.jme.math.Vector2f;
+
+
+
 
 
 
@@ -69,19 +73,17 @@ class VertexDataArray
         return(m_Data.length);
     }
 
+
     /**
      * Gets the Vector3f value at the specified index.
-     * 
+     *
      * @param index
      * @return Vector3f
      */
-    public Vector3f getVector3f(int index)
+    public void getVector3f(int index, Vector3f output)
     {
         int elementIndex = index * 3;
-
-        Vector3f value = new Vector3f(m_Data[elementIndex], m_Data[elementIndex+1], m_Data[elementIndex+2]);
-        
-        return(value);
+        output.set(m_Data[elementIndex], m_Data[elementIndex+1], m_Data[elementIndex+2]);
     }
 
     /**
@@ -98,9 +100,13 @@ class VertexDataArray
         
         return(value);
     }
+
+    void getColorRGBA(int i, ColorRGBA color) {
+        int elementIndex = i * 4;
+        color.set(m_Data[elementIndex], m_Data[elementIndex+1], m_Data[elementIndex+2], m_Data[elementIndex+3]);
+    }
     
 }
-
 /**
  * The VectorDataSemantic class represents a Vertex element.  It stores
  * the name of the element and the offset within the data the element occurs.
@@ -205,6 +211,9 @@ class VertexDataSemantic
         return(m_DataArray.getSize() / 3);
     }
 
+    int getColorRGBACount() {
+        return(m_DataArray.getSize() / 4);
+    }
     /**
      * checks to see if the specified index is a valid index.
      * 
@@ -220,13 +229,13 @@ class VertexDataSemantic
 
     /**
      * Gets a Vector3f value.
-     * 
+     *
      * @param index
      * @return Vector3f
      */
-    public Vector3f getVector3f(int index)
+    public void getVector3f(int index, Vector3f output)
     {
-        return(m_DataArray.getVector3f(index));
+        m_DataArray.getVector3f(index, output);
     }
 
 
@@ -265,9 +274,13 @@ class VertexDataSemantic
         return(m_DataArray.getVector2f(index));
     }
 
+    void getColorRGBA(int i, ColorRGBA color) {
+        m_DataArray.getColorRGBA(i, color);
+    }
+
+
+
 }
-
-
 /**
  * The VertexDataDescription class describes the format of a Vertex via
  * multiple VertexDataSemantics.

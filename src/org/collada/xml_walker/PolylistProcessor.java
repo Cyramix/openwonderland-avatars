@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import com.jme.math.Vector3f;
 import com.jme.math.Vector2f;
+import com.jme.renderer.ColorRGBA;
 import org.collada.colladaschema.InputLocalOffset;
 import org.collada.colladaschema.Polylist;
 import org.collada.colladaschema.Vertices;
@@ -50,6 +51,7 @@ public class PolylistProcessor extends Processor
 
     private VertexDataSemantic m_positionSemantic  = null;
     private VertexDataSemantic m_normalSemantic    = null;
+    private VertexDataSemantic m_colorSemantic     = null;
     private VertexDataSemantic[] m_texCoordSemantic  = new VertexDataSemantic[4]; // Support for up to eight textures
 
 
@@ -59,7 +61,9 @@ public class PolylistProcessor extends Processor
     private String m_materialInstanceSymbol = null;
     private PColladaEffect m_effect = null;
 
-
+    /** Work space **/
+    private final Vector3f vecBuffer = new Vector3f();
+    private final ColorRGBA colorBuffer = new ColorRGBA();
 
     //  Constructor.
     public PolylistProcessor(Collada pCollada, Polylist pPolylist, Processor pParent)
@@ -142,6 +146,7 @@ public class PolylistProcessor extends Processor
         int vertexIndex             = 0;
 
         int positionIndex           = -1;
+        int colorIndex              = -1;
         int normalIndex             = -1;
         int texCoord0Index          = -1;
         int texCoord1Index          = -1;
@@ -165,6 +170,9 @@ public class PolylistProcessor extends Processor
         if (m_normalSemantic != null)
             populatePolygonMeshWithNormals(polyMesh);
 
+        if (m_colorSemantic != null)
+            populatePolygonMeshWithColors(polyMesh);
+
         //  Add all the TexCoords to the PolygonMesh.
         if (m_texCoordSemantic != null)
             populatePolygonMeshWithTexCoords(polyMesh);
@@ -184,6 +192,8 @@ public class PolylistProcessor extends Processor
             {
                 if (m_positionSemantic != null)
                     positionIndex = polygonIndices[index + m_positionSemantic.m_Offset];
+                if (m_colorSemantic != null)
+                    colorIndex = polygonIndices[index + m_colorSemantic.m_Offset];
                 if (m_normalSemantic != null)
                     normalIndex = polygonIndices[index + m_normalSemantic.m_Offset];
                 if (m_texCoordSemantic[0] != null)
@@ -242,13 +252,21 @@ public class PolylistProcessor extends Processor
     {
         int a;
         int PositionCount = m_positionSemantic.getVector3fCount();
-        Vector3f pPosition;
 
         for (a=0; a<PositionCount; a++)
         {
-            pPosition = m_positionSemantic.getVector3f(a);
-            
-            pPolygonMesh.addPosition(pPosition);
+            m_positionSemantic.getVector3f(a, vecBuffer);
+            pPolygonMesh.addPosition(vecBuffer);
+        }
+    }
+
+    private void populatePolygonMeshWithColors(PPolygonMesh polyMesh)
+    {
+        int colorCount = m_colorSemantic.getColorRGBACount();
+        for (int i = 0; i < colorCount; i++)
+        {
+            m_colorSemantic.getColorRGBA(i, colorBuffer);
+            polyMesh.addColor(colorBuffer);
         }
     }
 
@@ -256,13 +274,11 @@ public class PolylistProcessor extends Processor
     void populatePolygonMeshWithNormals(PPolygonMesh pPolygonMesh)
     {
         int NormalCount = m_normalSemantic.getVector3fCount();
-        Vector3f pNormal = null;
 
         for (int i = 0; i < NormalCount; i++)
         {
-            pNormal = m_normalSemantic.getVector3f(i);
-            
-            pPolygonMesh.addNormal(pNormal);
+            m_normalSemantic.getVector3f(i, vecBuffer);
+            pPolygonMesh.addNormal(vecBuffer);
         }
     }
 
@@ -363,6 +379,7 @@ public class PolylistProcessor extends Processor
     {
         m_positionSemantic = findVertexDataSemantic("POSITION");
         m_normalSemantic = findVertexDataSemantic("NORMAL");
+        m_colorSemantic = findVertexDataSemantic("COLOR");
 
         // Handle texture coordinates
         int textureSemanticCount = 0;

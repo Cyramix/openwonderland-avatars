@@ -51,7 +51,8 @@ public class COLLADA_MapTest extends DemoBase
 
         pscene.setUseRepository(true);
         
-        ColladaEnvironment ourEnv = new ColladaEnvironment(wm, "assets/models/collada/Environments/BusinessObjectsCenter.dae", "MaldenLabs");
+        ColladaEnvironment ourEnv = new ColladaEnvironment(wm, "assets/models/collada/Environments/Garden/Garden.dae", "Courtyard");
+//        ColladaEnvironment ourEnv = new ColladaEnvironment(wm, "assets/models/collada/Environments/MPK20/MPK20.dae", "Courtyard");
 
     }
     

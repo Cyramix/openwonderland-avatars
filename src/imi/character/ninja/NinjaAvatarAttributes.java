@@ -157,7 +157,7 @@ public class NinjaAvatarAttributes extends CharacterAttributes
 
     private void customizeHairPresets(int preset, ArrayList<String> load, ArrayList<SkinnedMeshParams> add, ArrayList<AttachmentParams> attachments)
     {
-        PMatrix oreintation = new PMatrix(new Vector3f(0.0f,(float) Math.toRadians(180), 0.0f), new Vector3f(1.05f, 1.05f, 1.05f), Vector3f.ZERO);
+        PMatrix oreintation = new PMatrix(new Vector3f(0.0f,(float) Math.toRadians(180), 0.0f), Vector3f.UNIT_XYZ, Vector3f.ZERO);
         switch(preset)
         {
             case 0:

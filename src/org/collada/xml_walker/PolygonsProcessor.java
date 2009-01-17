@@ -17,6 +17,8 @@
  */
 package org.collada.xml_walker;
 
+import com.jme.math.Vector3f;
+import com.jme.renderer.ColorRGBA;
 import imi.loaders.collada.Collada;
 import imi.scene.polygonmodel.PPolygonMesh;
 import imi.scene.polygonmodel.parts.PMeshMaterial;
@@ -47,6 +49,8 @@ public class PolygonsProcessor extends Processor
     private VertexDataSemantic m_positionSemantic  = null;
     /** Convenience reference to the surface normal semantic **/
     private VertexDataSemantic m_normalSemantic    = null;
+    /** Vert colors **/
+    private VertexDataSemantic m_colorSemantic    = null;
     /** Array of references to the texture coordinate semantics**/
     private VertexDataSemantic[] m_texCoordSemantic  = new VertexDataSemantic[4]; // Support for up to eight textures
     /** List of the indices for each polygon **/
@@ -55,6 +59,10 @@ public class PolygonsProcessor extends Processor
     private int m_VertexSize = -1;
     /** Total number of polygons **/
     private int m_polyCount = -1;
+    /** Scratch Space **/
+    private final Vector3f vecBuffer = new Vector3f();
+    private final ColorRGBA colorBuffer = new ColorRGBA();
+
     /**
      * Construct a new instance and process the provided list
      * @param pCollada
@@ -84,6 +92,8 @@ public class PolygonsProcessor extends Processor
 
         processPolygonIndices(polygonsData.getPhsAndPS());
     }
+
+
 
     private void processPolygonIndices(List<JAXBElement<?>> polygonIndicesList)
     {
@@ -125,6 +135,7 @@ public class PolygonsProcessor extends Processor
 
         int positionIndex           = -1;
         int normalIndex             = -1;
+        int colorIndex              = -1;
         int texCoord0Index          = -1;
         int texCoord1Index          = -1;
         int texCoord2Index          = -1;
@@ -143,6 +154,9 @@ public class PolygonsProcessor extends Processor
         //  Add all the Normals to the PolygonMesh.
         if (m_normalSemantic != null)
             populatePolygonMeshWithNormals(polyMesh);
+
+        if (m_colorSemantic != null)
+            populatePolygonMeshWithColors(polyMesh);
 
         //  Add all the TexCoords to the PolygonMesh.
         if (m_texCoordSemantic != null)
@@ -163,6 +177,8 @@ public class PolygonsProcessor extends Processor
                     positionIndex = m_polyIndices.get(polygonIndex).get(indexIntoPrimitiveData + m_positionSemantic.m_Offset).intValue();
                 if (m_normalSemantic != null)
                     normalIndex = m_polyIndices.get(polygonIndex).get(indexIntoPrimitiveData + m_normalSemantic.m_Offset).intValue();
+                if (m_colorSemantic != null)
+                    colorIndex = m_polyIndices.get(polygonIndex).get(indexIntoPrimitiveData + m_colorSemantic.m_Offset).intValue();
                 if (m_texCoordSemantic[0] != null)
                     texCoord0Index = polyMesh.getTexCoord(m_texCoordSemantic[0].getVector2f(m_polyIndices.get(polygonIndex).get(indexIntoPrimitiveData + m_texCoordSemantic[0].m_Offset).intValue()));
                 if (m_texCoordSemantic[1] != null)
@@ -175,11 +191,17 @@ public class PolygonsProcessor extends Processor
                 indexIntoPrimitiveData += m_VertexSize;
 
                 // Dereference the position and normal indices into mesh space
-                positionIndex = polyMesh.getPosition(m_positionSemantic.getVector3f(positionIndex));
-                normalIndex = polyMesh.getPosition(m_normalSemantic.getVector3f(normalIndex));
+                m_positionSemantic.getVector3f(positionIndex, vecBuffer);
+                positionIndex = polyMesh.getPosition(vecBuffer);
+                m_normalSemantic.getVector3f(normalIndex, vecBuffer);
+                normalIndex = polyMesh.getPosition(vecBuffer);
+                m_colorSemantic.getVector3f(colorIndex, vecBuffer);
+                colorBuffer.set(vecBuffer.x, vecBuffer.y, vecBuffer.z, 1.0f);
+                colorIndex = polyMesh.getColor(colorBuffer);
                 //  Add the Vertex to the Polygon
                 pPolygon.addVertex(positionIndex,       //  PositionIndex
                                    normalIndex,         //  NormalIndex
+                                   colorIndex, // Color
                                    texCoord0Index,      //  TexCoord1Index
                                    texCoord1Index,      //  TexCoord2Index
                                    texCoord2Index,      //  TexCoord3Index
@@ -209,21 +231,35 @@ public class PolygonsProcessor extends Processor
         }
     }
 
-
+    private void populatePolygonMeshWithColors(PPolygonMesh polyMesh)
+    {
+        int colorCount = m_colorSemantic.getColorRGBACount();
+        for (int i = 0; i < colorCount; i++)
+        {
+            m_colorSemantic.getColorRGBA(i, colorBuffer);
+            polyMesh.addColor(colorBuffer);
+        }
+    }
 
 
     //  Populates the PolygonMesh with Positions.
     void populatePolygonMeshWithPositions(PPolygonMesh polyMesh)
     {
         for (int i = 0; i < m_positionSemantic.getVector3fCount(); ++i)
-            polyMesh.addPosition(m_positionSemantic.getVector3f(i));
+        {
+            m_positionSemantic.getVector3f(i, vecBuffer);
+            polyMesh.addPosition(vecBuffer);
+        }
     }
 
     //  Populates the PolygonMesh with Normals.
     void populatePolygonMeshWithNormals(PPolygonMesh polyMesh)
     {
         for (int i = 0; i < m_normalSemantic.getVector3fCount(); ++i)
-            polyMesh.addNormal(m_normalSemantic.getVector3f(i));
+        {
+            m_normalSemantic.getVector3f(i, vecBuffer);
+            polyMesh.addNormal(vecBuffer);
+        }
     }
 
     //  Populates the PolygonMesh with TexCoords.
@@ -323,6 +359,7 @@ public class PolygonsProcessor extends Processor
     {
         m_positionSemantic = findVertexDataSemantic("POSITION");
         m_normalSemantic = findVertexDataSemantic("NORMAL");
+        m_colorSemantic = findVertexDataSemantic("COLOR");
 
         // Handle texture coordinates
         int textureSemanticCount = 0;

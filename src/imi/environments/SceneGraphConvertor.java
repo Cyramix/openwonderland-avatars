@@ -19,9 +19,13 @@ package imi.environments;
 
 import com.jme.scene.Node;
 import com.jme.scene.SharedMesh;
+import com.jme.scene.state.CullState.Face;
+import com.jme.scene.state.MaterialState.ColorMaterial;
+import com.jme.scene.state.MaterialState.MaterialFace;
 import imi.scene.PMatrix;
 import imi.scene.PNode;
 import imi.scene.polygonmodel.PPolygonMeshInstance;
+import imi.scene.polygonmodel.parts.PMeshMaterial;
 
 /**
  * This class takes in a root PNode and proceeds to clone and copy the graph
@@ -97,6 +101,14 @@ public class SceneGraphConvertor
     
     private Node processMeshInstance(PPolygonMeshInstance meshInst)
     {
+        PMeshMaterial mat = meshInst.getMaterialRef().getMaterial();
+        mat.setShader(null);
+        meshInst.applyMaterial();
+        while (meshInst.isWaitingOnTextures())
+        {
+            System.out.println("Waiting!");
+            Thread.yield();
+        }
         SharedMesh mesh  = meshInst.getSharedMesh();
         
         // apply transform to a transform node
@@ -105,7 +117,7 @@ public class SceneGraphConvertor
         // attach shared mesh to that transform node and return it
         transformNode.attachChild(mesh);
         
-        // Process chillins
+        // Process children
         for (int i = 0; i < meshInst.getChildrenCount(); i++)
         {
             PNode kid = meshInst.getChild(i);

@@ -26,14 +26,17 @@ import com.jme.scene.state.CullState;
 import com.jme.scene.state.LightState;
 import com.jme.scene.state.MaterialState;
 import com.jme.scene.state.RenderState;
+import com.jme.scene.state.ShadeState;
 import com.jme.scene.state.TextureState;
 import com.jme.scene.state.ZBufferState;
 import imi.loaders.collada.ColladaLoaderParams;
 import imi.loaders.repository.AssetDescriptor;
 import imi.loaders.repository.Repository;
 import imi.loaders.repository.SharedAsset;
+import imi.loaders.repository.SharedAssetPlaceHolder;
 import imi.scene.PMatrix;
 import imi.scene.PScene;
+import imi.scene.polygonmodel.PPolygonModelInstance;
 import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -75,11 +78,20 @@ public class ColladaEnvironment extends Entity
         // TODO !!
         AssetDescriptor descriptor = new AssetDescriptor(SharedAsset.SharedAssetType.COLLADA, relativePath);
         SharedAsset worldAsset = new SharedAsset(repo, descriptor, null);
-        worldAsset.setUserData(new ColladaLoaderParams(false, true, false, false, 0, name, null));
 
         scene = new PScene(m_wm);
-        scene.setUseRepository(false); // Synchronous loading requested
-        scene.addModelInstance(worldAsset, new PMatrix()); // Add it to the scene
+        PPolygonModelInstance modInst = scene.addModelInstance(worldAsset, new PMatrix()); // Add it to the scene
+        while (modInst.getChild(0) instanceof SharedAssetPlaceHolder)
+        {
+            try {
+                Thread.sleep(100);
+            }
+            catch (InterruptedException ex)
+            {
+                // bleh
+            }
+        }
+
         
         SceneGraphConvertor convertor = new SceneGraphConvertor();
         m_jmeRoot = convertor.convert(scene);
@@ -114,8 +126,17 @@ public class ColladaEnvironment extends Entity
 
         scene = new PScene(m_wm);
         scene.setUseRepository(false); // Synchronous loading requested
-        scene.addModelInstance(worldAsset, new PMatrix());
-
+        PPolygonModelInstance modInst = scene.addModelInstance(worldAsset, new PMatrix());
+        while (modInst.getChild(0) instanceof SharedAssetPlaceHolder)
+        {
+            try {
+                Thread.sleep(100);
+            }
+            catch (InterruptedException ex)
+            {
+                // bleh
+            }
+        }
         SceneGraphConvertor convertor = new SceneGraphConvertor();
         m_jmeRoot = convertor.convert(scene);
         //m_jmeRoot = new Node("NodeRoot");
@@ -158,12 +179,12 @@ public class ColladaEnvironment extends Entity
         matState.setEmissive(ColorRGBA.magenta);
         matState.setSpecular(ColorRGBA.magenta);
         matState.setMaterialFace(MaterialState.MaterialFace.FrontAndBack);
-        matState.setColorMaterial(MaterialState.ColorMaterial.None);
+        matState.setColorMaterial(MaterialState.ColorMaterial.AmbientAndDiffuse);
         matState.setEnabled(true);
   
         LightState ls = (LightState) m_wm.getRenderManager().createRendererState(RenderState.RS_LIGHT);
-        ls.setTwoSidedLighting(false);
-        ls.setEnabled(true);
+        ls.setTwoSidedLighting(true);
+        ls.setEnabled(false);
         
         // Cull State
         CullState cs = (CullState) m_wm.getRenderManager().createRendererState(RenderState.RS_CULL);      
@@ -175,7 +196,7 @@ public class ColladaEnvironment extends Entity
         m_jmeRoot.setRenderState(buf);
         m_jmeRoot.setRenderState(cs);
         m_jmeRoot.setRenderState(ls);
-        nullifyColorBuffers();
+//        nullifyColorBuffers();
         visitNodes();
         m_jmeRoot.updateRenderState();
     }
@@ -193,10 +214,18 @@ public class ColladaEnvironment extends Entity
             Spatial current = queue.removeFirst();
             //current.setRenderState(rs);
             
-            if (current instanceof SharedMesh)
+            if (current instanceof SharedMesh || current instanceof TriMesh)
             {
                 MaterialState matState = (MaterialState) (current).getRenderState(RenderState.RS_MATERIAL);
-                matState.setColorMaterial(MaterialState.ColorMaterial.Emissive);
+                matState.setColorMaterial(MaterialState.ColorMaterial.AmbientAndDiffuse);
+                matState.setMaterialFace(MaterialState.MaterialFace.FrontAndBack);
+
+                CullState cull = (CullState)current.getRenderState(RenderState.RS_CULL);
+                cull.setCullFace(CullState.Face.None);
+
+                ShadeState shadeState = (ShadeState) m_wm.getRenderManager().createRendererState(RenderState.RS_SHADE);
+                shadeState.setShadeMode(ShadeState.ShadeMode.Smooth);
+                current.setRenderState(shadeState);
                 
                 TextureState texState = (TextureState) current.getRenderState(RenderState.RS_TEXTURE);
                 if (texState == null) // weirdness

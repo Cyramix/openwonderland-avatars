@@ -121,9 +121,9 @@ public class JPanel_ModelRotation extends javax.swing.JPanel {
                 break;
             }
         }
-        rotMatrix.mul(yRotation);
-        rotMatrix.mul(xRotation);
-        rotMatrix.mul(zRotation);
+        rotMatrix.fastMul(yRotation);
+        rotMatrix.fastMul(xRotation);
+        rotMatrix.fastMul(zRotation);
         
         if (modelInst != null) {
             modelInst.getTransform().getLocalMatrix(true).setRotation(rotMatrix.getRotation());

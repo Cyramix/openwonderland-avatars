@@ -95,7 +95,7 @@ public class PSceneSubmitHelper  implements NodeProcessor
                 if (parent instanceof SkinnedMeshJoint)
                 {
                     PMatrix meshSpace = currentSkinnedMeshJoint.getMeshSpace();
-                    meshSpace.mul(((SkinnedMeshJoint)parent).getMeshSpace(), current.getTransform().getLocalMatrix(false));
+                    meshSpace.fastMul(((SkinnedMeshJoint)parent).getMeshSpace(), current.getTransform().getLocalMatrix(false));
                 }
                 else
                     currentSkinnedMeshJoint.setMeshSpace(current.getTransform().getLocalMatrix(false));

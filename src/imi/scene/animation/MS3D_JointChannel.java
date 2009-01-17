@@ -133,7 +133,7 @@ public class MS3D_JointChannel implements PJointChannel, Serializable
         // apply this to the PJoint transform matrix
         PMatrix delta = new PMatrix(rotationVector, Vector3f.UNIT_XYZ, translationVector);
         jointToAffect.getTransform().getLocalMatrix(true).set(m_targetJointBindPose);
-        jointToAffect.getTransform().getLocalMatrix(true).mul(delta);
+        jointToAffect.getTransform().getLocalMatrix(true).fastMul(delta);
     }
 
     public void calculateBlendedFrame(PJoint jointToAffect, AnimationState state)
@@ -254,7 +254,7 @@ public class MS3D_JointChannel implements PJointChannel, Serializable
         
         // apply to the joint
         jointToAffect.getTransform().getLocalMatrix(true).set(m_targetJointBindPose);
-        jointToAffect.getTransform().getLocalMatrix(true).mul(delta);
+        jointToAffect.getTransform().getLocalMatrix(true).fastMul(delta);
     }
     
     public float calculateDuration()
