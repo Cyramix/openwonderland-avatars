@@ -81,6 +81,8 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
         SkeletonNode        skelnode        = m_sceneData.getAvatar().getSkeleton();
         String              formattedNumber = null;
         if (skelnode == null) { return; }
+
+        // [0] = Left eye joints && [6] = Right eye joints
         SkinnedMeshJoint[]  eyes            = m_skeleton.get(GUI_Enums.m_bodyPart.Eyes);
         Vector3f            ladjust         = new Vector3f();
         Vector3f            radjust         = new Vector3f();
@@ -91,118 +93,142 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
         {
             case lefteyeHPos:
             {
-                for (int i = 0; i < 5; i++) {
-                    Vector3f start = eyes[i].getTransform().getLocalMatrix(false).getTranslation();
-                    Vector3f curr  = new Vector3f(eyes[i].getBindPose().getTranslation());
-                    curr.x = start.x;
-                    if (eyes[i].getName().contains("leftEye")) {
-                        ladjust.x = (actualval / 15);
-                        eyes[i].getBindPose().setTranslation(curr.add(ladjust));
-                    }
-                    else {
-                        ladjust.x = (actualval / 4);
-                        eyes[i].getBindPose().setTranslation(curr.add(ladjust));
-                    }
-                }
-
-                float y = scale.y += actualval * 4;
-                formattedNumber = m_format.format(y);
-                scale.x = Float.valueOf(formattedNumber);
-                eyes[1].getLocalModifierMatrix().setScale(scale);
+                ladjust.x = mod;   ladjust.y = 0.0f;    ladjust.z = 0.0f;
+                skelnode.displaceJoint(eyes[0].getName(), ladjust);
+//                for (int i = 0; i < 5; i++) {
+//                    Vector3f start = eyes[i].getTransform().getLocalMatrix(false).getTranslation();
+//                    Vector3f curr  = new Vector3f(eyes[i].getBindPose().getTranslation());
+//                    curr.x = start.x;
+//                    if (eyes[i].getName().contains("leftEye")) {
+//                        ladjust.x = (actualval / 15);
+//                        eyes[i].getBindPose().setTranslation(curr.add(ladjust));
+//                    }
+//                    else {
+//                        ladjust.x = (actualval / 4);
+//                        eyes[i].getBindPose().setTranslation(curr.add(ladjust));
+//                    }
+//                }
+//
+//                float y = scale.y += actualval * 4;
+//                formattedNumber = m_format.format(y);
+//                scale.x = Float.valueOf(formattedNumber);
+//                eyes[1].getLocalModifierMatrix().setScale(scale);
 
                 break;
             }
             case righteyeHPos:
             {
-                for (int i = 5; i < eyes.length; i++) {
-                    Vector3f start = eyes[i].getTransform().getLocalMatrix(false).getTranslation();
-                    Vector3f curr  = new Vector3f(eyes[i].getBindPose().getTranslation());
-                    curr.x = start.x;
-                    if (eyes[i].getName().contains("rightEye")) {
-                        radjust.x = (actualval / 15);
-                        eyes[i].getBindPose().setTranslation(curr.add(radjust));
-                    }
-                    else {
-                        radjust.x = (actualval / 4);
-                        eyes[i].getBindPose().setTranslation(curr.add(radjust));
-                    }
-                }
-
-                float y = scale.y += actualval * 4;
-                formattedNumber = m_format.format(y);
-                scale.x = Float.valueOf(formattedNumber);
-                eyes[6].getLocalModifierMatrix().setScale(scale);
+                radjust.x = mod;   radjust.y = 0.0f;    ladjust.z = 0.0f;
+                skelnode.displaceJoint(eyes[6].getName(), radjust);
+//                for (int i = 5; i < eyes.length; i++) {
+//                    Vector3f start = eyes[i].getTransform().getLocalMatrix(false).getTranslation();
+//                    Vector3f curr  = new Vector3f(eyes[i].getBindPose().getTranslation());
+//                    curr.x = start.x;
+//                    if (eyes[i].getName().contains("rightEye")) {
+//                        radjust.x = (actualval / 15);
+//                        eyes[i].getBindPose().setTranslation(curr.add(radjust));
+//                    }
+//                    else {
+//                        radjust.x = (actualval / 4);
+//                        eyes[i].getBindPose().setTranslation(curr.add(radjust));
+//                    }
+//                }
+//
+//                float y = scale.y += actualval * 4;
+//                formattedNumber = m_format.format(y);
+//                scale.x = Float.valueOf(formattedNumber);
+//                eyes[6].getLocalModifierMatrix().setScale(scale);
 
                 break;
             }
             case lefteyeVPos:
             {
-                for (int i = 0; i < 5; i++) {
-                    Vector3f start = eyes[i].getTransform().getLocalMatrix(false).getTranslation();
-                    Vector3f curr  = new Vector3f(eyes[i].getBindPose().getTranslation());
-                    curr.y = start.y;
-                    if (eyes[i].getName().contains("leftEye")) {
-                        ladjust.y = (actualval / 15);
-                        eyes[i].getBindPose().setTranslation(curr.add(ladjust));
-                    }
-                    else {
-                        ladjust.y = (actualval / 4);
-                        eyes[i].getBindPose().setTranslation(curr.add(ladjust));
-                    }
-                }
+                ladjust.x = 0.0f;   ladjust.y = mod;    ladjust.z = 0.0f;
+                skelnode.displaceJoint(eyes[0].getName(), ladjust);
+//                for (int i = 0; i < 5; i++) {
+//                    Vector3f start = eyes[i].getTransform().getLocalMatrix(false).getTranslation();
+//                    Vector3f curr  = new Vector3f(eyes[i].getBindPose().getTranslation());
+//                    curr.y = start.y;
+//                    if (eyes[i].getName().contains("leftEye")) {
+//                        ladjust.y = (actualval / 15);
+//                        eyes[i].getBindPose().setTranslation(curr.add(ladjust));
+//                    }
+//                    else {
+//                        ladjust.y = (actualval / 4);
+//                        eyes[i].getBindPose().setTranslation(curr.add(ladjust));
+//                    }
+//                }
 
                 break;
             }
             case righteyeVPos:
             {
-                for (int i = 5; i < eyes.length; i++) {
-                    Vector3f start = eyes[i].getTransform().getLocalMatrix(false).getTranslation();
-                    Vector3f curr  = new Vector3f(eyes[i].getBindPose().getTranslation());
-                    curr.y = start.y;
-                    if (eyes[i].getName().contains("rightEye")) {
-                        radjust.y = (actualval / 15);
-                        eyes[i].getBindPose().setTranslation(curr.add(radjust));
-                    }
-                    else {
-                        radjust.y = (actualval / 4);
-                        eyes[i].getBindPose().setTranslation(curr.add(radjust));
-                    }
-                }
+                radjust.x = 0.0f;   radjust.y = mod;    ladjust.z = 0.0f;
+                skelnode.displaceJoint(eyes[6].getName(), radjust);
+//                for (int i = 5; i < eyes.length; i++) {
+//                    Vector3f start = eyes[i].getTransform().getLocalMatrix(false).getTranslation();
+//                    Vector3f curr  = new Vector3f(eyes[i].getBindPose().getTranslation());
+//                    curr.y = start.y;
+//                    if (eyes[i].getName().contains("rightEye")) {
+//                        radjust.y = (actualval / 15);
+//                        eyes[i].getBindPose().setTranslation(curr.add(radjust));
+//                    }
+//                    else {
+//                        radjust.y = (actualval / 4);
+//                        eyes[i].getBindPose().setTranslation(curr.add(radjust));
+//                    }
+//                }
 
                 break;
             }
             case lefteyeSize:
             {
+                float x = scale.x += actualval * 3;
+                float y = scale.y += actualval * 3;
+                float z = scale.z += actualval * 3;
+                eyes[0].getLocalModifierMatrix().setScale(new Vector3f(x, y, z));
                 break;
             }
             case righteyeSize:
             {
+                float x = scale.x += actualval * 3;
+                float y = scale.y += actualval * 3;
+                float z = scale.z += actualval * 3;
+                eyes[6].getLocalModifierMatrix().setScale(new Vector3f(x, y, z));
                 break;
             }
             case lefteyeWidth:
             {
-                ladjust.x = -mod;
-                skelnode.displaceJoint(eyes[3].getName(), ladjust);
-                System.out.println(ladjust.x);
-
-                float y = scale.y += actualval * 3;
-                formattedNumber = m_format.format(y);
-                scale.x = Float.valueOf(formattedNumber);
-                eyes[0].getLocalModifierMatrix().setScale(scale);
-                eyes[1].getLocalModifierMatrix().setScale(scale);
+                float x = scale.x += actualval * 3;
+                float y = scale.y;
+                float z = scale.z;
+                eyes[0].getLocalModifierMatrix().setScale(new Vector3f(x, y, z));
+//                ladjust.x = -mod;
+//                skelnode.displaceJoint(eyes[3].getName(), ladjust);
+//                System.out.println(ladjust.x);
+//
+//                float y = scale.y += actualval * 3;
+//                formattedNumber = m_format.format(y);
+//                scale.x = Float.valueOf(formattedNumber);
+//                eyes[0].getLocalModifierMatrix().setScale(scale);
+//                eyes[1].getLocalModifierMatrix().setScale(scale);
 
                 break;
             }
             case righteyeWidth:
             {
-                radjust.x = mod;
-                skelnode.displaceJoint(eyes[8].getName(), radjust);
-
-                float y = scale.y += actualval * 3;
-                formattedNumber = m_format.format(y);
-                scale.x = Float.valueOf(formattedNumber);
-                eyes[5].getLocalModifierMatrix().setScale(scale);
-                eyes[6].getLocalModifierMatrix().setScale(scale);
+                float x = scale.x += actualval * 3;
+                float y = scale.y;
+                float z = scale.z;
+                eyes[6].getLocalModifierMatrix().setScale(new Vector3f(x, y, z));
+//                radjust.x = mod;
+//                skelnode.displaceJoint(eyes[8].getName(), radjust);
+//
+//                float y = scale.y += actualval * 3;
+//                formattedNumber = m_format.format(y);
+//                scale.x = Float.valueOf(formattedNumber);
+//                eyes[5].getLocalModifierMatrix().setScale(scale);
+//                eyes[6].getLocalModifierMatrix().setScale(scale);
 
                 break;
             }
@@ -998,8 +1024,8 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
 
         SkeletonNode skeleton   = m_sceneData.getAvatar().getSkeleton();
 
-        String[] szEyes     = new String[] { "leftEye",     "leftEyeLid",       "leftInnerBrow",    "leftOuterBrow",    "leftCheek",
-                                             "rightEye",    "rightEyeLid",      "rightInnerBrow",   "rightOuterBrow",   "rightCheek" };
+        String[] szEyes     = new String[] { "EyeL_Adjust",     "leftEye",     "leftEyeLid",       "leftInnerBrow",    "leftOuterBrow",    "leftCheek",
+                                             "EyeR_Adjust",     "rightEye",    "rightEyeLid",      "rightInnerBrow",   "rightOuterBrow",   "rightCheek" };
 
         SkinnedMeshJoint[]  eyes     = new SkinnedMeshJoint[szEyes.length];
         int                 iSize    = szEyes.length;

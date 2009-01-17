@@ -950,7 +950,7 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
 
         loadingWindow(true);
 
-        m_BasicOptions = new JPanel_BasicOptions();
+        m_BasicOptions = new JPanel_BasicOptions(this);
         m_BasicOptions.setSceneData(m_sceneData);
         m_BasicOptions.avatarCheck();
         m_sceneData.setCurCamProcessor(m_cameraProcessor);
@@ -1280,7 +1280,7 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
         jMenuItem_Accessories.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 runProgressBar(true);
-                m_sceneData.loadMeshDAEFile(true, m_base);
+                m_sceneData.addMeshDAEFile(true, m_base);
                 resetOpenTools();
                 runProgressBar(false);
             }

@@ -337,7 +337,18 @@ public class JPanel_ServerBrowser extends javax.swing.JPanel {
                     m_sceneData.loadMeshDAEURL(true, this, m_modelInfo);
                 else if (m_sceneData.getAvatar() != null) {
                     if (m_sceneData.getAvatar().isInitialized() || m_sceneData.getAvatar().getModelInst() != null) {
-                        m_sceneData.addMeshDAEURLToModel(m_modelInfo, "Head", m_prevAttch);
+
+                        String subgroup = null;
+                        if (m_modelInfo[4].equals("0"))
+                            subgroup = "Hair";
+                        else if (m_modelInfo[4].equals("11"))
+                            subgroup = "FacialHair";
+                        else if (m_modelInfo[4].equals("1"))
+                            subgroup = "Hats";
+                        else if (m_modelInfo[4].equals("2"))
+                            subgroup = "Glasses";
+
+                        m_sceneData.addMeshDAEURLToModel(m_modelInfo, "Head", m_prevAttch, subgroup);
                         m_prevAttch = m_modelInfo[0];
                     }
                 }

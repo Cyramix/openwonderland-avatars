@@ -87,6 +87,15 @@ public class JPanel_HeadOptions extends javax.swing.JPanel {
         jCheckBox_SyncEyeSize = new javax.swing.JCheckBox();
         LeftEye_Size = new imi.gui.JPanel_HorizontalSliderS();
         RightEye_Size = new imi.gui.JPanel_HorizontalSliderS();
+        jPanel_Nose = new javax.swing.JPanel();
+        jPanel_NoseVPos = new javax.swing.JPanel();
+        NoseVPos = new imi.gui.JPanel_VerticalSliderT();
+        jPanel_NoseHPos = new javax.swing.JPanel();
+        NoseHPos = new imi.gui.JPanel_HorizontalSliderT();
+        jPanel_NoseLength = new javax.swing.JPanel();
+        NoseLength = new imi.gui.JPanel_VerticalSliderS();
+        jPanel_NoseSize = new javax.swing.JPanel();
+        NoseSize = new imi.gui.JPanel_HorizontalSliderS();
         jPanel_Mouth = new javax.swing.JPanel();
         jPanel_LipSize = new javax.swing.JPanel();
         jCheckBox_SyncLipSize = new javax.swing.JCheckBox();
@@ -94,6 +103,16 @@ public class JPanel_HeadOptions extends javax.swing.JPanel {
         LowerLip_Size = new imi.gui.JPanel_HorizontalSliderS();
         jPanel_MouthWidth = new javax.swing.JPanel();
         Mouth_Width = new imi.gui.JPanel_HorizontalSliderT();
+        jPanel_Ears = new javax.swing.JPanel();
+        jPanel_EarVPos = new javax.swing.JPanel();
+        LeftEarVPos = new imi.gui.JPanel_VerticalSliderT();
+        RightEarVPos = new imi.gui.JPanel_VerticalSliderT();
+        jPanel_EarHPos = new javax.swing.JPanel();
+        LeftEarHPos = new imi.gui.JPanel_HorizontalSliderT();
+        RightEarHPos = new imi.gui.JPanel_HorizontalSliderT();
+        jPanel_EarSize = new javax.swing.JPanel();
+        LeftEarSize = new imi.gui.JPanel_HorizontalSliderS();
+        RightEarSize = new imi.gui.JPanel_HorizontalSliderS();
         jPanel_Uniform = new javax.swing.JPanel();
         jPanel_HeadWidth = new javax.swing.JPanel();
         Head_Width = new imi.gui.JPanel_HorizontalSliderS();
@@ -241,6 +260,51 @@ public class JPanel_HeadOptions extends javax.swing.JPanel {
 
         jTabbedPane_Head.addTab("Eyes", jPanel_Eyes);
 
+        jPanel_Nose.setLayout(new java.awt.GridBagLayout());
+
+        jPanel_NoseVPos.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Nose Vertical Position", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Lucida Grande", 0, 13), new java.awt.Color(0, 0, 255))); // NOI18N
+        jPanel_NoseVPos.setMinimumSize(new java.awt.Dimension(230, 180));
+        jPanel_NoseVPos.setPreferredSize(new java.awt.Dimension(230, 180));
+        jPanel_NoseVPos.setLayout(new java.awt.GridBagLayout());
+        jPanel_NoseVPos.add(NoseVPos, new java.awt.GridBagConstraints());
+
+        jPanel_Nose.add(jPanel_NoseVPos, new java.awt.GridBagConstraints());
+
+        jPanel_NoseHPos.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Nose Horizontal Position", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Lucida Grande", 0, 13), new java.awt.Color(0, 0, 255))); // NOI18N
+        jPanel_NoseHPos.setMinimumSize(new java.awt.Dimension(230, 115));
+        jPanel_NoseHPos.setPreferredSize(new java.awt.Dimension(230, 115));
+        jPanel_NoseHPos.setLayout(new java.awt.GridBagLayout());
+        jPanel_NoseHPos.add(NoseHPos, new java.awt.GridBagConstraints());
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        jPanel_Nose.add(jPanel_NoseHPos, gridBagConstraints);
+
+        jPanel_NoseLength.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Nose Length", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Lucida Grande", 0, 13), new java.awt.Color(0, 0, 255))); // NOI18N
+        jPanel_NoseLength.setMinimumSize(new java.awt.Dimension(230, 180));
+        jPanel_NoseLength.setPreferredSize(new java.awt.Dimension(230, 180));
+        jPanel_NoseLength.setLayout(new java.awt.GridBagLayout());
+        jPanel_NoseLength.add(NoseLength, new java.awt.GridBagConstraints());
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
+        jPanel_Nose.add(jPanel_NoseLength, gridBagConstraints);
+
+        jPanel_NoseSize.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Nose Size", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Lucida Grande", 0, 13), new java.awt.Color(0, 0, 255))); // NOI18N
+        jPanel_NoseSize.setMinimumSize(new java.awt.Dimension(230, 115));
+        jPanel_NoseSize.setPreferredSize(new java.awt.Dimension(230, 115));
+        jPanel_NoseSize.setLayout(new java.awt.GridBagLayout());
+        jPanel_NoseSize.add(NoseSize, new java.awt.GridBagConstraints());
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 3;
+        jPanel_Nose.add(jPanel_NoseSize, gridBagConstraints);
+
+        jTabbedPane_Head.addTab("Nose", jPanel_Nose);
+
         jPanel_Mouth.setLayout(new java.awt.GridBagLayout());
 
         jPanel_LipSize.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Upper & Lower Lip Size", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Lucida Grande", 0, 13), new java.awt.Color(0, 0, 255))); // NOI18N
@@ -286,6 +350,59 @@ public class JPanel_HeadOptions extends javax.swing.JPanel {
         jPanel_Mouth.add(jPanel_MouthWidth, gridBagConstraints);
 
         jTabbedPane_Head.addTab("Mouth", jPanel_Mouth);
+
+        jPanel_Ears.setLayout(new java.awt.GridBagLayout());
+
+        jPanel_EarVPos.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Left & Right Ear Vertical Position", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Lucida Grande", 0, 13), new java.awt.Color(0, 0, 255))); // NOI18N
+        jPanel_EarVPos.setMinimumSize(new java.awt.Dimension(230, 200));
+        jPanel_EarVPos.setPreferredSize(new java.awt.Dimension(230, 200));
+        jPanel_EarVPos.setLayout(new java.awt.GridBagLayout());
+        jPanel_EarVPos.add(LeftEarVPos, new java.awt.GridBagConstraints());
+        jPanel_EarVPos.add(RightEarVPos, new java.awt.GridBagConstraints());
+
+        jPanel_Ears.add(jPanel_EarVPos, new java.awt.GridBagConstraints());
+
+        jPanel_EarHPos.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Left & Right Ear Spacing", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Lucida Grande", 0, 13), new java.awt.Color(0, 0, 255))); // NOI18N
+        jPanel_EarHPos.setMinimumSize(new java.awt.Dimension(230, 180));
+        jPanel_EarHPos.setOpaque(false);
+        jPanel_EarHPos.setPreferredSize(new java.awt.Dimension(230, 180));
+        jPanel_EarHPos.setLayout(new java.awt.GridBagLayout());
+
+        LeftEarHPos.setMinimumSize(new java.awt.Dimension(110, 57));
+        LeftEarHPos.setPreferredSize(new java.awt.Dimension(110, 57));
+        jPanel_EarHPos.add(LeftEarHPos, new java.awt.GridBagConstraints());
+
+        RightEarHPos.setMinimumSize(new java.awt.Dimension(110, 57));
+        RightEarHPos.setPreferredSize(new java.awt.Dimension(110, 57));
+        jPanel_EarHPos.add(RightEarHPos, new java.awt.GridBagConstraints());
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        jPanel_Ears.add(jPanel_EarHPos, gridBagConstraints);
+
+        jPanel_EarSize.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Left & Right Ear Size", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Lucida Grande", 0, 13), new java.awt.Color(0, 0, 255))); // NOI18N
+        jPanel_EarSize.setMinimumSize(new java.awt.Dimension(230, 180));
+        jPanel_EarSize.setOpaque(false);
+        jPanel_EarSize.setPreferredSize(new java.awt.Dimension(230, 180));
+        jPanel_EarSize.setLayout(new java.awt.GridBagLayout());
+
+        LeftEarSize.setMaximumSize(new java.awt.Dimension(110, 57));
+        LeftEarSize.setMinimumSize(new java.awt.Dimension(110, 57));
+        LeftEarSize.setPreferredSize(new java.awt.Dimension(110, 57));
+        jPanel_EarSize.add(LeftEarSize, new java.awt.GridBagConstraints());
+
+        RightEarSize.setMaximumSize(new java.awt.Dimension(110, 57));
+        RightEarSize.setMinimumSize(new java.awt.Dimension(110, 57));
+        RightEarSize.setPreferredSize(new java.awt.Dimension(110, 57));
+        jPanel_EarSize.add(RightEarSize, new java.awt.GridBagConstraints());
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
+        jPanel_Ears.add(jPanel_EarSize, gridBagConstraints);
+
+        jTabbedPane_Head.addTab("Ears", jPanel_Ears);
 
         jPanel_Uniform.setLayout(new java.awt.GridBagLayout());
 
@@ -340,7 +457,7 @@ public class JPanel_HeadOptions extends javax.swing.JPanel {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(jTabbedPane_Head, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .add(jTabbedPane_Head, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 611, Short.MAX_VALUE)
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -356,12 +473,22 @@ public class JPanel_HeadOptions extends javax.swing.JPanel {
     private imi.gui.JPanel_HorizontalSliderS Head_Depth;
     private imi.gui.JPanel_VerticalSliderS Head_Height;
     private imi.gui.JPanel_HorizontalSliderS Head_Width;
+    private imi.gui.JPanel_HorizontalSliderT LeftEarHPos;
+    private imi.gui.JPanel_HorizontalSliderS LeftEarSize;
+    private imi.gui.JPanel_VerticalSliderT LeftEarVPos;
     private imi.gui.JPanel_HorizontalSliderT LeftEye_HPos;
     private imi.gui.JPanel_HorizontalSliderS LeftEye_Size;
     private imi.gui.JPanel_VerticalSliderT LeftEye_VPos;
     private imi.gui.JPanel_HorizontalSliderS LeftEye_Width;
     private imi.gui.JPanel_HorizontalSliderS LowerLip_Size;
     private imi.gui.JPanel_HorizontalSliderT Mouth_Width;
+    private imi.gui.JPanel_HorizontalSliderT NoseHPos;
+    private imi.gui.JPanel_VerticalSliderS NoseLength;
+    private imi.gui.JPanel_HorizontalSliderS NoseSize;
+    private imi.gui.JPanel_VerticalSliderT NoseVPos;
+    private imi.gui.JPanel_HorizontalSliderT RightEarHPos;
+    private imi.gui.JPanel_HorizontalSliderS RightEarSize;
+    private imi.gui.JPanel_VerticalSliderT RightEarVPos;
     private imi.gui.JPanel_HorizontalSliderT RightEye_HPos;
     private imi.gui.JPanel_HorizontalSliderS RightEye_Size;
     private imi.gui.JPanel_VerticalSliderT RightEye_VPos;
@@ -372,6 +499,10 @@ public class JPanel_HeadOptions extends javax.swing.JPanel {
     private javax.swing.JCheckBox jCheckBox_SyncEyeVPos;
     private javax.swing.JCheckBox jCheckBox_SyncEyeWidth;
     private javax.swing.JCheckBox jCheckBox_SyncLipSize;
+    private javax.swing.JPanel jPanel_EarHPos;
+    private javax.swing.JPanel jPanel_EarSize;
+    private javax.swing.JPanel jPanel_EarVPos;
+    private javax.swing.JPanel jPanel_Ears;
     private javax.swing.JPanel jPanel_EyeHPos;
     private javax.swing.JPanel jPanel_EyeSize;
     private javax.swing.JPanel jPanel_EyeVPos;
@@ -385,6 +516,11 @@ public class JPanel_HeadOptions extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel_LipSize;
     private javax.swing.JPanel jPanel_Mouth;
     private javax.swing.JPanel jPanel_MouthWidth;
+    private javax.swing.JPanel jPanel_Nose;
+    private javax.swing.JPanel jPanel_NoseHPos;
+    private javax.swing.JPanel jPanel_NoseLength;
+    private javax.swing.JPanel jPanel_NoseSize;
+    private javax.swing.JPanel jPanel_NoseVPos;
     private javax.swing.JPanel jPanel_Uniform;
     private javax.swing.JTabbedPane jTabbedPane_Head;
     // End of variables declaration//GEN-END:variables
@@ -413,6 +549,16 @@ public class JPanel_HeadOptions extends javax.swing.JPanel {
         RightEye_VPos.setObjectRef(GUI_Enums.m_sliderControl.righteyeVPos);
         RightEye_Width.setObjectRef(GUI_Enums.m_sliderControl.righteyeWidth);
         UpperLip_Size.setObjectRef(GUI_Enums.m_sliderControl.upperlipSize);
+        LeftEarHPos.setObjectRef(GUI_Enums.m_sliderControl.leftearHPos);
+        LeftEarSize.setObjectRef(GUI_Enums.m_sliderControl.leftearSize);
+        LeftEarVPos.setObjectRef(GUI_Enums.m_sliderControl.leftearVPos);
+        NoseHPos.setObjectRef(GUI_Enums.m_sliderControl.noseHPos);
+        NoseLength.setObjectRef(GUI_Enums.m_sliderControl.noseLength);
+        NoseSize.setObjectRef(GUI_Enums.m_sliderControl.noseSize);
+        NoseVPos.setObjectRef(GUI_Enums.m_sliderControl.noseVPos);
+        RightEarHPos.setObjectRef(GUI_Enums.m_sliderControl.rightearHPos);
+        RightEarSize.setObjectRef(GUI_Enums.m_sliderControl.rightearSize);
+        RightEarVPos.setObjectRef(GUI_Enums.m_sliderControl.rightearVPos);
 
         Head_Depth.setParentFrame(m_baseFrame);
         Head_Height.setParentFrame(m_baseFrame);
@@ -428,5 +574,15 @@ public class JPanel_HeadOptions extends javax.swing.JPanel {
         RightEye_VPos.setParentFrame(m_baseFrame);
         RightEye_Width.setParentFrame(m_baseFrame);
         UpperLip_Size.setParentFrame(m_baseFrame);
+        LeftEarHPos.setParentFrame(m_baseFrame);
+        LeftEarSize.setParentFrame(m_baseFrame);
+        LeftEarVPos.setParentFrame(m_baseFrame);
+        NoseHPos.setParentFrame(m_baseFrame);
+        NoseLength.setParentFrame(m_baseFrame);
+        NoseSize.setParentFrame(m_baseFrame);
+        NoseVPos.setParentFrame(m_baseFrame);
+        RightEarHPos.setParentFrame(m_baseFrame);
+        RightEarSize.setParentFrame(m_baseFrame);
+        RightEarVPos.setParentFrame(m_baseFrame);
     }
 }

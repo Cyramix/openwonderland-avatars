@@ -42,6 +42,7 @@ import imi.scene.shader.effects.MeshColorModulation;
 import imi.scene.shader.programs.ClothingShaderDiffuseAsSpec;
 import imi.scene.shader.programs.ClothingShaderSpecColor;
 import imi.scene.shader.programs.FleshShader;
+import imi.tests.BaseDefault;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Graphics;
@@ -542,7 +543,6 @@ public class JPanel_EZOptions extends javax.swing.JPanel {
                 }
             }
         }
-
     }
 
     /**
@@ -877,31 +877,9 @@ public class JPanel_EZOptions extends javax.swing.JPanel {
             }
         }
 
-        // Non-skinned meshes (ie Hair, hats, glasses, etc...)
-        for (int i = 5; i < 9; i++) {
-            if (m_presets.get(selection).get(i) == null)
-                continue;
-            for (int j = 0; j < m_presets.get(selection).get(i).length; j ++) {
-                if (j == 0) {
-                    load.add(m_presets.get(selection).get(i)[j]);
-                }
-                else {
-                    PMatrix tempSolution;
-                    tempSolution = new PMatrix(new Vector3f(0.0f, (float) Math.toRadians(180), 0.0f), new Vector3f(1.0f, 1.0f, 1.0f), Vector3f.ZERO);
-                    attach.add(new AttachmentParams(m_presets.get(selection).get(i)[j], "Head", tempSolution));
-                }
-            }
-        }
-
         // This file contains the mesh information for the basic body parts
         if (load.size() == 0)
             load.add(m_presetLists.get(selection)[2]);
-        else {
-            if (m_gender == 1) {
-                String hands = "file://localhost/" + System.getProperty("user.dir") + "/assets/models/collada/Avatars/Male/Male_Hands.dae";
-                load.add(hands);
-            }
-        }
 
         attribs.setBaseURL("");
         attribs.setLoadInstructions(load);
@@ -909,19 +887,51 @@ public class JPanel_EZOptions extends javax.swing.JPanel {
         attribs.setAttachmentsInstructions(attach.toArray(new AttachmentParams[attach.size()]));
         attribs.setGender(m_gender);
 
-        m_sceneData.loadAvatarDAEURL(true, this, null, attribs, m_gender);
+        m_sceneData.loadAvatarDAEURL(true, this, null, attribs, m_gender);  // Base attributes must be added before head and accesory attatchmens
 
         while (!m_sceneData.getAvatar().isInitialized() || m_sceneData.getAvatar().getModelInst() == null) {
 
         }
 
-        if (m_presets.get(selection).get(0)[0] != null) {
+        if (m_presets.get(selection).get(0)[0] != null) {   // Head must be installed before attatchmens like hair, hats etc or they will be deleted
             try {
                 URL head = new URL(m_presets.get(selection).get(0)[0]);
                 m_sceneData.getAvatar().installHead(head, "Neck");
             } catch (MalformedURLException ex) {
                 Logger.getLogger(JPanel_EZOptions.class.getName()).log(Level.SEVERE, null, ex);
             }
+        }
+
+        // Non-skinned meshes (ie Hair, hats, glasses, etc...)
+        for (int i = 5; i < 9; i++) {   // After head is installed go through the remaining possible meshes to attatch to the avatar
+            if (m_presets.get(selection).get(i) == null)
+                continue;
+
+            String meshloc = null;
+            for (int j = 0; j < m_presets.get(selection).get(i).length; j ++) {
+                if (j == 0) {
+                    meshloc = m_presets.get(selection).get(i)[j];
+                }
+                else {
+                    String meshName = m_presets.get(selection).get(i)[j];
+                    
+                    String subgroup = null;
+                    if (i == 5)
+                        subgroup = "Hair";
+                    else if (i == 6)
+                        subgroup = "FacialHair";
+                    else if (i == 7)
+                        subgroup = "Hats";
+                    else if (i == 8)
+                        subgroup = "Glasses";
+
+                    m_sceneData.addMeshDAEURLToModel(meshName, meshloc, "Head", null, subgroup);
+                }
+            }
+        }
+
+        if (m_Parent instanceof BaseDefault) {
+            m_sceneData.setCameraOnModel();
         }
     }
 

@@ -38,6 +38,7 @@ public class GUI_Enums {
         leftupperlegThickness,  rightfootLength,        rightfootThickness,     rightlowerlegLength,    rightlowerlegThickness, rightupperlegLength,    rightupperlegThickness,
         headDepth,              headHeight,             headWidth,              leftlegLength,          leftlegScale,           rightlegLength,         rightlegScale,
         leftarmLength,          leftarmScale,           rightarmLength,         rightarmScale,          uniformHeight,          uniformThickness,       torsoLength,
-        torsoThickness
+        torsoThickness,         leftearHPos,            leftearSize,            leftearVPos,            noseHPos,               noseLength,             noseSize,
+        noseVPos,               rightearHPos,           rightearSize,           rightearVPos
     };
 }

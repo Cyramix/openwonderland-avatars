@@ -63,6 +63,16 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
         initComponents();
     }
 
+    /**
+     * Overloaded constructor initializes the GUI Components and sets the parent
+     * for the panel
+     * @param parent
+     */
+    public JPanel_BasicOptions(Component parent) {
+        initComponents();
+        m_Parent = parent;
+    }
+
     ////////////////////////////////////////////////////////////////////////////
     // Inits
     ////////////////////////////////////////////////////////////////////////////
@@ -669,7 +679,7 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
         if (isViewMode)
             m_sceneData.loadMeshDAEURL(true, this, data.get(0));
         else {
-            m_sceneData.addMeshDAEURLToModel(data.get(0), "Head", m_PrevHeadAttachments[0]);
+            m_sceneData.addMeshDAEURLToModel(data.get(0), "Head", m_PrevHeadAttachments[0], "Hair");
         }
 
         m_PrevHeadAttachments[0] = data.get(0)[0];      // Used to keep track of what is on the head to remove
@@ -721,7 +731,7 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
         if (isViewmode)
             m_sceneData.loadMeshDAEURL(true, this, data.get(0));
         else {
-            m_sceneData.addMeshDAEURLToModel(data.get(0), "Head", m_PrevHeadAttachments[1]);
+            m_sceneData.addMeshDAEURLToModel(data.get(0), "Head", m_PrevHeadAttachments[1], "FacialHair");
         }
 
         m_PrevHeadAttachments[1] = data.get(0)[0];
@@ -773,7 +783,7 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
         if (isViewMode)
             m_sceneData.loadMeshDAEURL(true, this, data.get(0));
         else {
-            m_sceneData.addMeshDAEURLToModel(data.get(0), "Head", m_PrevHeadAttachments[2]);
+            m_sceneData.addMeshDAEURLToModel(data.get(0), "Head", m_PrevHeadAttachments[2], "Hats");
         }
 
         m_PrevHeadAttachments[2] = data.get(0)[0];
@@ -825,7 +835,7 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
         if (isViewMode)
             m_sceneData.loadMeshDAEURL(true, this, data.get(0));
         else {
-            m_sceneData.addMeshDAEURLToModel(data.get(0), "Head", m_PrevHeadAttachments[3]);
+            m_sceneData.addMeshDAEURLToModel(data.get(0), "Head", m_PrevHeadAttachments[3], "Glasses");
         }
 
         m_PrevHeadAttachments[3] = data.get(0)[0];
@@ -903,18 +913,36 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
             ((BaseDefault)m_Parent).loadingWindow(true);
 
         String query = new String();
-        ArrayList<String[]> anim, data;
-
+        ArrayList<String[]> data;
+        String head, hands;
         if (m_gender == 1) {
             query = "SELECT url FROM DefaultAvatars WHERE id = 1";
             data = m_sceneData.loadSQLData(query);
+            head = "http://www.zeitgeistgames.com/assets/collada/Avatars/Head/MHead6/MaleCHead_Bind.dae";
+            hands = "http://www.zeitgeistgames.com/assets/collada/Avatars/Male/Male_Hands.dae";
         }
         else {
             query = "SELECT url FROM DefaultAvatars WHERE id = 2";
             data = m_sceneData.loadSQLData(query);
+            head = null;
+            hands = null;
         }
 
-        m_sceneData.loadAvatarDAEURL(true, m_Parent, data.get(0)[0], null, m_gender);
+        CharacterAttributes attribs = m_sceneData.createDefaultAttributes(m_gender, data.get(0)[0], hands);
+        m_sceneData.loadAvatarDAEURL(true, m_Parent, data.get(0)[0], attribs, m_gender);
+        
+        while (!m_sceneData.getAvatar().isInitialized() || m_sceneData.getAvatar().getModelInst() == null) {
+
+        }
+
+        if (head != null) {   // Head must be installed before attatchmens like hair, hats etc or they will be deleted
+            try {
+                URL uhead = new URL(head);
+                m_sceneData.getAvatar().installHead(uhead, "Neck");
+            } catch (MalformedURLException ex) {
+                Logger.getLogger(JPanel_EZOptions.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
 
         jLabel_CurrUpperBody.setText("Default");
         jLabel_CurrLowerBody.setText("Default");

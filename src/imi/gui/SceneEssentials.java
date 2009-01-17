@@ -126,6 +126,7 @@ public class SceneEssentials {
     private int                             m_gender                        = -1;
     private float                           m_visualScale                   = 1.0f;
     private PMatrix                         m_origin                        = new PMatrix();
+    private String[]                        m_prevAttches                   = new String[] { null, null, null, null };
 // Misc
     private SQLInterface                    m_sql;
     private boolean                         m_bdefaultload                  = false;
@@ -715,6 +716,7 @@ public class SceneEssentials {
         if (returnValue == JFileChooser.APPROVE_OPTION) {
             m_fileModel = m_jFileChooser_LoadAvatarDAE.getSelectedFile();
             m_currentPScene.setUseRepository(useRepository);
+            removeallMeshReferencesOnSkeleton();
             if (clear)
                 m_currentPScene.getInstances().removeAllChildren();
 
@@ -737,7 +739,7 @@ public class SceneEssentials {
             }
 
             // Create avatar attribs
-            CharacterAttributes attribs = createDefaultAttributes(m_gender, bindPose.toString());
+            CharacterAttributes attribs = createDefaultAttributes(m_gender, bindPose.toString(), null);
 
             if (m_avatar != null) {
                 m_worldManager.removeEntity(m_avatar);
@@ -745,9 +747,22 @@ public class SceneEssentials {
             }
 
             setAvatar(new NinjaAvatar(attribs, m_worldManager));
-            while(!m_avatar.isInitialized()) {
+            while(!m_avatar.isInitialized() || m_avatar.getModelInst() == null) {
 
             }
+
+            if (m_gender == 1) {
+                String baseFilePath = "file://localhost/" + System.getProperty("user.dir");
+                String completepath = baseFilePath + "/assets/models/collada/Heads/CaucasianHead/MaleCHead.dae";
+
+                try {
+                    URL head = new URL(completepath);
+                    m_avatar.installHead(head, "Neck");
+                } catch (MalformedURLException ex) {
+                    Logger.getLogger(JPanel_EZOptions.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+
             m_avatar.selectForInput();
             m_currentPScene = m_avatar.getPScene();
         }
@@ -840,12 +855,97 @@ public class SceneEssentials {
 
                 pProcessor.execute(pRootInstruction);
 
+                while (m_avatar.getSkeleton().getMeshNamesBySubGroup(subGroup).length <= 0) {
+                    // Wait till the mesh is loaded and in group
+                    try {
+                        Thread.sleep(3000);
+                        Thread.yield();
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(SceneEssentials.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+
+                removeDuplicateMeshesBySubgroup(subGroup);
                 m_avatar.setDefaultShaders();
 
                 return true;
             } catch (MalformedURLException ex) {
                 Logger.getLogger(SceneEssentials.class.getName()).log(Level.SEVERE, null, ex);
             }
+        }
+        return false;
+    }
+
+    /**
+     * Opens a JFileChooser window for the user to select a collada file (*.dae)
+     * of an accessory (non-skinned model) and then subsequently uses a load 
+     * instruction to remove the current clothes at the specified subgroup and 
+     * loads the new accessory
+     * @param useRepository - boolean true to use the repository
+     * @param arg0 - parent component that called this function
+     * @return true if successful
+     */
+    public boolean addMeshDAEFile(boolean useRepository, Component arg0) {
+        if (m_avatar == null) {
+            System.out.println("You have not loaded an avatar yet... Please load one first");
+            return false;
+        }
+
+        int returnValue = m_jFileChooser_LoadColladaModel.showOpenDialog(arg0);
+        if (returnValue == JFileChooser.APPROVE_OPTION) {
+            m_fileModel = m_jFileChooser_LoadColladaModel.getSelectedFile();
+
+            String  subGroup    = null;
+            int     selection   = -1;
+
+            Object[] subgroups = { "Hair", "FacialHair", "Hats", "Glasses" };
+            subGroup = (String)JOptionPane.showInputDialog( new Frame(), "Please select the subgroup to which the meshes will be added",
+                                                            "SPECIFY SUBGROUP TO ADD MESHES IN", JOptionPane.PLAIN_MESSAGE,
+                                                            null, subgroups, "Hair");
+
+            if (subGroup == null || subGroup.length() <= 0)
+                return false;
+            else {
+                if (subGroup.equals("Hair"))
+                    selection = 0;
+                else if (subGroup.equals("FacialHair"))
+                    selection = 1;
+                else if (subGroup.equals("Hats"))
+                    selection = 2;
+                else if (subGroup.equals("Glasses"))
+                    selection = 3;
+            }
+
+            m_currentPScene.setUseRepository(useRepository);
+
+            File path = getAbsPath(m_fileModel);
+            String szURL = new String("file:///" + path.getPath());
+
+            InstructionProcessor pProcessor = new InstructionProcessor(m_worldManager);
+            Instruction pRootInstruction = new Instruction();
+            pRootInstruction.addChildInstruction(InstructionType.setSkeleton, m_avatar.getSkeleton());
+
+            if (m_prevAttches[selection] != null) {
+                PNode mesh = m_avatar.getSkeleton().findChild(m_prevAttches[selection]);
+                if (mesh != null)
+                    m_avatar.getSkeleton().findAndRemoveChild(mesh.getParent());
+            }
+
+            pRootInstruction.addChildInstruction(InstructionType.loadGeometry, szURL);
+
+            PMatrix tempSolution;
+            if (szURL.indexOf("Female") != -1) {
+                tempSolution = new PMatrix();
+                tempSolution.setRotation(new Vector3f(0.0f,(float) Math.toRadians(180), 0.0f));
+            } else
+                tempSolution = new PMatrix(new Vector3f(0.0f,(float) Math.toRadians(180), 0.0f), new Vector3f(1.0f, 1.0f, 1.0f), Vector3f.ZERO);
+
+            pRootInstruction.addAttachmentInstruction( szURL, m_fileModel.getName(), tempSolution );
+            pProcessor.execute(pRootInstruction);
+
+            m_prevAttches[selection] = m_fileModel.getName();
+
+            return true;
         }
         return false;
     }
@@ -918,30 +1018,32 @@ public class SceneEssentials {
      * @param szAvatarModelFile - the collada file containing the animations
      * @return CharacterAttributes
      */
-    public CharacterAttributes createDefaultAttributes(int iGender, String szAvatarModelFile) {
+    public CharacterAttributes createDefaultAttributes(int iGender, String szAvatarModelFile, String szAvatarHandsModelFile) {
 
         // Create avatar attribs
         CharacterAttributes             attribs     = new CharacterAttributes("Avatar");
         ArrayList<String>               load        = new ArrayList<String>();
         ArrayList<SkinnedMeshParams>    add         = new ArrayList<SkinnedMeshParams>();
 
+        String baseFilePath = "file://localhost/" + System.getProperty("user.dir");
+
         switch (iGender)
         {
             case 1:
             {
-                load.add(szAvatarModelFile);    // Load selected male skeleton
-                add.add(attribs.createSkinnedMeshParams("rightEyeGeoShape", "Head"));
-                add.add(attribs.createSkinnedMeshParams("leftEyeGeoShape",  "Head"));
-                add.add(attribs.createSkinnedMeshParams("UpperTeethShape",  "Head"));
-                add.add(attribs.createSkinnedMeshParams("LowerTeethShape",  "Head"));
-                add.add(attribs.createSkinnedMeshParams("TongueGeoShape",   "Head"));
-                add.add(attribs.createSkinnedMeshParams("HeadGeoShape",     "Head"));
-                add.add(attribs.createSkinnedMeshParams("RHandShape",       "Hands"));
-                add.add(attribs.createSkinnedMeshParams("LHandShape",       "Hands"));
+                if (szAvatarModelFile == null)
+                    szAvatarModelFile = baseFilePath + "/assets/models/collada/Avatars/Male/Male_Bind.dae";
+                if (szAvatarHandsModelFile == null)
+                    szAvatarHandsModelFile = baseFilePath + "/assets/models/collada/Avatars/Male/Male_Hands.dae";
+
+                load.add(szAvatarModelFile);    // Load selected male body meshes
                 add.add(attribs.createSkinnedMeshParams("RFootNudeShape",   "Feet"));
                 add.add(attribs.createSkinnedMeshParams("LFootNudeShape",   "Feet"));
                 add.add(attribs.createSkinnedMeshParams("TorsoNudeShape",   "UpperBody"));
                 add.add(attribs.createSkinnedMeshParams("LegsNudeShape",    "LowerBody"));
+                load.add(szAvatarHandsModelFile);   // Load selected hand meshes
+                add.add(attribs.createSkinnedMeshParams("RHandShape",       "Hands"));
+                add.add(attribs.createSkinnedMeshParams("LHandShape",       "Hands"));
                 break;
             }
             case 2:
@@ -1038,6 +1140,7 @@ public class SceneEssentials {
      */
     public void loadAvatarDAEURL(boolean useRepository, Component arg0, String modelLocation, CharacterAttributes attributes, int gender) {
         m_currentPScene.setUseRepository(useRepository);
+        removeallMeshReferencesOnSkeleton();
         m_currentPScene.getInstances().removeAllChildren();
 
         CharacterAttributes attribs = null;
@@ -1046,7 +1149,7 @@ public class SceneEssentials {
             attribs = attributes;
         } else {    // requires the bind pose information for mesh information on basic body parts
             if (modelLocation != null)
-                attribs = createDefaultAttributes(gender, modelLocation);
+                attribs = createDefaultAttributes(gender, modelLocation, null);
         }
 
         if (m_avatar != null) {
@@ -1072,9 +1175,21 @@ public class SceneEssentials {
      *        { 0= meshname, 1= description, 2= male/female, 3= file location, 4= meshtype, 5= table id }
      * @param meshRef - name of meshes contained in the collada file
      */
-    // TODO: write the functionality
     public void loadAvatarHeadDAEURL(boolean useRepository, Component arg0, String[] data, String[] meshRef) {
+        m_currentPScene.setUseRepository(useRepository);
+        m_currentPScene.getInstances().removeAllChildren();
+        if (m_currentHiProcessors != null)
+            m_currentHiProcessors.clear();
 
+        try {
+            URL urlModel = new URL(data[3]);
+            SharedAsset character = new SharedAsset(m_currentPScene.getRepository(), new AssetDescriptor(SharedAssetType.COLLADA, urlModel));
+            character.setUserData(new ColladaLoaderParams(true, true, false, true, false, 4, data[0], null));
+            String[] anim = null;
+            loadInitializer(data[0], character, anim);
+        } catch (MalformedURLException ex) {
+            Logger.getLogger(SceneEssentials.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**
@@ -1125,7 +1240,18 @@ public class SceneEssentials {
                     
         pProcessor.execute(pRootInstruction);
 
-        removeDuplicateMeshesBySubgroup(subgroup);  // TODO: Should not even need to do this
+        while (m_avatar.getSkeleton().getMeshNamesBySubGroup(subgroup).length <= 0) {
+            // Wait till the mesh is loaded and in group
+            try {
+                Thread.sleep(3000);
+                Thread.yield();
+            } catch (InterruptedException ex) {
+                Logger.getLogger(SceneEssentials.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+
+        removeDuplicateMeshesBySubgroup(subgroup);  // This should not be used... it's added only once but there are duplicate meshes
+        m_avatar.setDefaultShaders();
     }
 
     /**
@@ -1136,11 +1262,21 @@ public class SceneEssentials {
      * @param joint2addon - the joint to the new mesh and joint needs to attach on
      * @param prevAttchName - the name of the currently installed mesh to get rid of
      */
-    public void addMeshDAEURLToModel(String[] data, String joint2addon, String prevAttchName) {
+    public void addMeshDAEURLToModel(String[] data, String joint2addon, String prevAttchName, String subGroup) {
         if (m_avatar == null) {
             System.out.println("No avatar has been loaded... please load an avatar first");
             return;
         }
+
+        int selection = -1;
+        if (subGroup.equals("Hair"))
+            selection = 0;
+        else if (subGroup.equals("FacialHair"))
+            selection = 1;
+        else if (subGroup.equals("Hats"))
+            selection = 2;
+        else if (subGroup.equals("Glasses"))
+            selection = 3;
 
         InstructionProcessor pProcessor = new InstructionProcessor(m_worldManager);
         Instruction pRootInstruction = new Instruction();
@@ -1148,7 +1284,8 @@ public class SceneEssentials {
 
         if (prevAttchName != null) {
             PNode mesh = m_avatar.getSkeleton().findChild(prevAttchName);
-            m_avatar.getSkeleton().findAndRemoveChild(mesh.getParent());
+            if (mesh != null)
+                m_avatar.getSkeleton().findAndRemoveChild(mesh.getParent());
         }
 
         String szName = joint2addon;
@@ -1164,6 +1301,59 @@ public class SceneEssentials {
 
         pRootInstruction.addAttachmentInstruction( data[0], szName, tempSolution );
         pProcessor.execute(pRootInstruction);
+
+        m_prevAttches[selection] = data[0];
+    }
+
+    /**
+     * Removes the previous non-skinned mesh (if one was present) and replaces
+     * it with the new mesh(s) specified in the chosen collada file (*.dae).
+     * A joint is created and used to attach the mesh onto the model.
+     * @param meshName - geometry id (name) of mesh in the collada file
+     * @param meshLocation - string location of collada file to load
+     * @param joint2addon - string name of joint to add mesh to
+     * @param prevAttchName - string name of mesh to remove before adding new mesh
+     */
+    public void addMeshDAEURLToModel(String meshName, String meshLocation, String joint2addon, String prevAttchName, String subGroup) {
+        if (m_avatar == null) {
+            System.out.println("No avatar has been loaded... please load an avatar first");
+            return;
+        }
+
+        int selection = -1;
+        if (subGroup.equals("Hair"))
+            selection = 0;
+        else if (subGroup.equals("FacialHair"))
+            selection = 1;
+        else if (subGroup.equals("Hats"))
+            selection = 2;
+        else if (subGroup.equals("Glasses"))
+            selection = 3;
+
+        InstructionProcessor pProcessor = new InstructionProcessor(m_worldManager);
+        Instruction pRootInstruction = new Instruction();
+        pRootInstruction.addChildInstruction(InstructionType.setSkeleton, m_avatar.getSkeleton());
+
+        if (prevAttchName != null) {
+            PNode mesh = m_avatar.getSkeleton().findChild(prevAttchName);
+            m_avatar.getSkeleton().findAndRemoveChild(mesh.getParent());
+        }
+
+        String szName = joint2addon;
+
+        pRootInstruction.addChildInstruction(InstructionType.loadGeometry, meshLocation);
+
+        PMatrix tempSolution;
+        if (meshLocation.indexOf("Female") != -1) {
+            tempSolution = new PMatrix();
+            tempSolution.setRotation(new Vector3f(0.0f,(float) Math.toRadians(180), 0.0f));
+        } else
+            tempSolution = new PMatrix(new Vector3f(0.0f,(float) Math.toRadians(180), 0.0f), new Vector3f(1.0f, 1.0f, 1.0f), Vector3f.ZERO);
+
+        pRootInstruction.addAttachmentInstruction( meshName, szName, tempSolution );
+        pProcessor.execute(pRootInstruction);
+
+        m_prevAttches[selection] = meshName;
     }
 
     /**
@@ -1599,6 +1789,19 @@ public class SceneEssentials {
             Vector3f pos = pmInstance.getBoundingSphere().getCenter();
             pos.z = -2.2f;
             camState.setCameraPosition(pos);
+        }
+    }
+
+    /**
+     * Go through the list of meshes attatched to the avatar and remove them all
+     */
+    public void removeallMeshReferencesOnSkeleton() {
+        for (int i = 0; i < m_prevAttches.length; i++) {
+            if (m_prevAttches[i] != null) {
+                PNode mesh = m_avatar.getSkeleton().findChild(m_prevAttches[i]);
+                if (mesh != null)
+                    m_avatar.getSkeleton().findAndRemoveChild(mesh.getParent());
+            }
         }
     }
 
