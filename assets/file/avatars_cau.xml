@@ -9,15 +9,84 @@
 
 <caucasianAvatars>
 	<avatar>
-		<desc>Caucasian bald male wearing polo, jeans and tennis shoes</desc>
-		<image>http://www.zeitgeistgames.com/assets/images/cau_00.png</image>
+		<desc>Caucasian bald male wearing briefs</desc>
+		<image>http://www.zeitgeistgames.com/assets/images/cau_02.png</image>
 		<bind>http://www.zeitgeistgames.com/assets/collada/Avatars/Male/Male_Bind.dae</bind>
-		<head>null</head>
-		<headnum>0</headnum>
-		<headgeom>null</headgeom>
+		<head>http://www.zeitgeistgames.com/assets/collada/Avatars/Head/MHead6/MaleCHead_Bind.dae</head>
+		<headnum>6</headnum>
+		<headgeom>rightEyeGeoShape</headgeom>
+        <headgeom>leftEyeGeoShape</headgeom>
+        <headgeom>UpperTeethShape</headgeom>
+        <headgeom>LowerTeethShape</headgeom>
+        <headgeom>TongueGeoShape</headgeom>
+        <headgeom>HeadGeoShape</headgeom>
 		<hair>null</hair>
 		<hairnum>0</hairnum>
 		<hairgeom>null</hairgeom>
+		<hands>http://www.zeitgeistgames.com/assets/collada/Avatars/Male/Male_Hands.dae</hands>
+		<handsnum>2</handsnum>
+		<handsgeom>RHandShape</handsgeom>
+		<handsgeom>LHandShape</handsgeom>
+		<shirt>null</shirt>
+		<shirtnum>0</shirtnum>
+		<shirtgeom>null</shirtgeom>
+		<pants>null</pants>
+		<pantsnum>0</pantsnum>
+		<pantsgeom>null</pantsgeom>
+		<shoes>null</shoes>
+		<shoesnum>0</shoesnum>
+		<shoesgeom>null</shoesgeom>
+		<anim>http://www.zeitgeistgames.com/assets/collada/Avatars/Male/Male_Anim_Idle.dae</anim>
+	</avatar>
+	<avatar>
+		<desc>Caucasian male with ponytail wearing briefs</desc>
+		<image>http://www.zeitgeistgames.com/assets/images/cau_03.png</image>
+		<bind>http://www.zeitgeistgames.com/assets/collada/Avatars/Male/Male_Bind.dae</bind>
+		<head>http://www.zeitgeistgames.com/assets/collada/Avatars/Head/MHead6/MaleCHead_Bind.dae</head>
+		<headnum>6</headnum>
+		<headgeom>rightEyeGeoShape</headgeom>
+        <headgeom>leftEyeGeoShape</headgeom>
+        <headgeom>UpperTeethShape</headgeom>
+        <headgeom>LowerTeethShape</headgeom>
+        <headgeom>TongueGeoShape</headgeom>
+        <headgeom>HeadGeoShape</headgeom>
+        <hair>http://www.zeitgeistgames.com/assets/collada/Hair/Male/HairPlaceable.dae</hair>
+		<hairnum>1</hairnum>
+		<hairgeom>LPonyTail</hairgeom>
+		<hands>http://www.zeitgeistgames.com/assets/collada/Avatars/Male/Male_Hands.dae</hands>
+		<handsnum>2</handsnum>
+		<handsgeom>RHandShape</handsgeom>
+		<handsgeom>LHandShape</handsgeom>
+		<shirt>null</shirt>
+		<shirtnum>0</shirtnum>
+		<shirtgeom>null</shirtgeom>
+		<pants>null</pants>
+		<pantsnum>0</pantsnum>
+		<pantsgeom>null</pantsgeom>
+		<shoes>null</shoes>
+		<shoesnum>0</shoesnum>
+		<shoesgeom>null</shoesgeom>
+		<anim>http://www.zeitgeistgames.com/assets/collada/Avatars/Male/Male_Anim_Idle.dae</anim>
+	</avatar>
+	<avatar>
+		<desc>Caucasian bald male wearing polo, jeans and tennis shoes</desc>
+		<image>http://www.zeitgeistgames.com/assets/images/cau_00.png</image>
+		<bind>http://www.zeitgeistgames.com/assets/collada/Avatars/Male/Male_Bind.dae</bind>
+		<head>http://www.zeitgeistgames.com/assets/collada/Avatars/Head/MHead6/MaleCHead_Bind.dae</head>
+		<headnum>6</headnum>
+		<headgeom>rightEyeGeoShape</headgeom>
+        <headgeom>leftEyeGeoShape</headgeom>
+        <headgeom>UpperTeethShape</headgeom>
+        <headgeom>LowerTeethShape</headgeom>
+        <headgeom>TongueGeoShape</headgeom>
+        <headgeom>HeadGeoShape</headgeom>
+		<hair>null</hair>
+		<hairnum>0</hairnum>
+		<hairgeom>null</hairgeom>
+		<hands>http://www.zeitgeistgames.com/assets/collada/Avatars/Male/Male_Hands.dae</hands>
+		<handsnum>2</handsnum>
+		<handsgeom>RHandShape</handsgeom>
+		<handsgeom>LHandShape</handsgeom>
 		<shirt>http://www.zeitgeistgames.com/assets/collada/Clothing/Shirts/PoloShirt_M/MalePolo.dae</shirt>
 		<shirtnum>2</shirtnum>
 		<shirtgeom>PoloShape</shirtgeom>
@@ -34,12 +103,21 @@
 		<desc>Caucasian male wearing t-shirt, shorts and flip-flops</desc>
 		<image>http://www.zeitgeistgames.com/assets/images/cau_01.png</image>
 		<bind>http://www.zeitgeistgames.com/assets/collada/Avatars/Male/Male_Bind.dae</bind>
-		<head>null</head>
-		<headnum>0</headnum>
-		<headgeom>null</headgeom>
+		<head>http://www.zeitgeistgames.com/assets/collada/Avatars/Head/MHead6/MaleCHead_Bind.dae</head>
+		<headnum>6</headnum>
+		<headgeom>rightEyeGeoShape</headgeom>
+        <headgeom>leftEyeGeoShape</headgeom>
+        <headgeom>UpperTeethShape</headgeom>
+        <headgeom>LowerTeethShape</headgeom>
+        <headgeom>TongueGeoShape</headgeom>
+        <headgeom>HeadGeoShape</headgeom>
 		<hair>http://www.zeitgeistgames.com/assets/collada/Hair/Male/HairPlaceable.dae</hair>
 		<hairnum>1</hairnum>
 		<hairgeom>LPonyTail</hairgeom>
+		<hands>http://www.zeitgeistgames.com/assets/collada/Avatars/Male/Male_Hands.dae</hands>
+		<handsnum>2</handsnum>
+		<handsgeom>RHandShape</handsgeom>
+		<handsgeom>LHandShape</handsgeom>
 		<shirt>http://www.zeitgeistgames.com/assets/collada/Clothing/Shirts/TShirt_M/MaleTShirt.dae</shirt>
 		<shirtnum>2</shirtnum>
 		<shirtgeom>PoloShape</shirtgeom>
