@@ -1125,9 +1125,7 @@ public class SceneEssentials {
                     
         pProcessor.execute(pRootInstruction);
 
-//        removeDuplicateMeshesBySubgroup(subgroup);  // TODO: Should not even need to do this
-        
-        m_avatar.setDefaultShaders();
+        removeDuplicateMeshesBySubgroup(subgroup);  // TODO: Should not even need to do this
     }
 
     /**

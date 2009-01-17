@@ -240,7 +240,7 @@ public class JPanel_EZOptions extends javax.swing.JPanel {
                                 }
                             }
                         }
-                        m_addList.put(1, szMeshes);
+                        m_addList.put(0, szMeshes);
                     }
 
                     //-------
@@ -897,8 +897,10 @@ public class JPanel_EZOptions extends javax.swing.JPanel {
         if (load.size() == 0)
             load.add(m_presetLists.get(selection)[2]);
         else {
-            load.add(getClass().getResource("/imi/character/defaults/Male_Hands.dae").toString());
-            load.add(getClass().getResource("/imi/character/defaults/MaleCHead_Bind.dae").toString());
+            if (m_gender == 1) {
+                String hands = "file://localhost/" + System.getProperty("user.dir") + "/assets/models/collada/Avatars/Male/Male_Hands.dae";
+                load.add(hands);
+            }
         }
 
         attribs.setBaseURL("");
