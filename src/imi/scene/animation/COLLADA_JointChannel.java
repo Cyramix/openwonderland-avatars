@@ -54,7 +54,7 @@ public class COLLADA_JointChannel implements PJointChannel, Serializable
     private final Vector3f m_leftBufferVector = new Vector3f();
     private final Vector3f m_rightBufferVector = new Vector3f();
 
-    private final Interpolator m_interpolator = new Interpolator();
+//    private final Interpolator m_interpolator = new Interpolator();
 
 
     
@@ -62,20 +62,20 @@ public class COLLADA_JointChannel implements PJointChannel, Serializable
     public COLLADA_JointChannel()
     {
         // initialization needed?
-        m_interpolator.setStrategy(Interpolator.InterpolationStrategy.ElementInterpolation);
+//        m_interpolator.setStrategy(Interpolator.InterpolationStrategy.ElementInterpolation);
     }
     
     //  Constructor land!
     public COLLADA_JointChannel(String name)
     {
         m_TargetJointName = name;
-        m_interpolator.setStrategy(Interpolator.InterpolationStrategy.ElementInterpolation);
+//        m_interpolator.setStrategy(Interpolator.InterpolationStrategy.ElementInterpolation);
     }
     
     // Copy constructor
     public COLLADA_JointChannel(COLLADA_JointChannel jointAnimation)
     {
-        m_interpolator.setStrategy(Interpolator.InterpolationStrategy.ElementInterpolation);
+//        m_interpolator.setStrategy(Interpolator.InterpolationStrategy.ElementInterpolation);
         setTargetJointName(jointAnimation.getTargetJointName());
         // Copy translation key frames
         for (PMatrixKeyframe frame : jointAnimation.m_KeyFrames)
@@ -206,7 +206,15 @@ public class COLLADA_JointChannel implements PJointChannel, Serializable
         else if (leftFrame != null && rightFrame != null) // Need to blend between two poses
         {
             interpolationCoefficient = (fTime - leftFrame.getFrameTime()) / (rightFrame.getFrameTime() - leftFrame.getFrameTime());
-            m_interpolator.interpolate(interpolationCoefficient, leftFrame.getValue(), rightFrame.getValue(), output);
+            Quaternion rotationComponent = leftFrame.getValue().getRotationJME();
+            rotationComponent.slerp(rotationComponent, rightFrame.getValue().getRotationJME(), interpolationCoefficient);
+
+            // grab the translation and lerp it
+            leftFrame.getValue().getTranslation(m_leftBufferVector);
+            rightFrame.getValue().getTranslation(m_rightBufferVector);
+
+            m_leftBufferVector.interpolate(m_rightBufferVector, interpolationCoefficient);
+            output.set2(rotationComponent, m_leftBufferVector, 1.0f);
         }
         else
             result = false;
@@ -461,7 +469,7 @@ public class COLLADA_JointChannel implements PJointChannel, Serializable
     {
         in.defaultReadObject();
         // Re-allocate all transient objects
-        m_interpolator.setStrategy(Interpolator.InterpolationStrategy.ElementInterpolation);
+//        m_interpolator.setStrategy(Interpolator.InterpolationStrategy.ElementInterpolation);
     }
 }
 
