@@ -20,6 +20,7 @@ package imi.character;
 import com.jme.image.Texture.MinificationFilter;
 import com.jme.light.PointLight;
 import com.jme.math.Quaternion;
+import com.jme.math.Vector2f;
 import com.jme.math.Vector3f;
 import com.jme.renderer.ColorRGBA;
 import com.jme.scene.shape.Sphere;
@@ -140,6 +141,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
     protected PScene                        m_pscene                = null;
     protected JScene                        m_jscene                = null;
     protected PPolygonModelInstance         m_modelInst             = null;
+    protected PPolygonModelInstance         m_shadowModel           = null; // Quad!
     protected SkeletonNode                  m_skeleton              = null;
     protected PPolygonMeshInstance          m_mesh                  = null;
     protected ObjectCollection              m_objectCollection      = null;
@@ -149,9 +151,9 @@ public abstract class Character extends Entity implements SpatialObject, Animati
     protected CharacterEyes                 m_eyes                  = null;
     protected VerletArm                     m_rightArm              = null;
     protected VerletArm                     m_leftArm               = null;
-    private VerletSkeletonFlatteningManipulator m_skeletonManipulator   = null;
-    private boolean                             m_initialized           = false;
-    private Updatable                       m_updateExtension       = null;
+    private   VerletSkeletonFlatteningManipulator m_skeletonManipulator   = null;
+    private   boolean                             m_initialized           = false;
+    private   Updatable                       m_updateExtension       = null;
     
     private int                             m_defaultFacePose       = 4;
     private float                           m_defaultFacePoseTiming = 0.1f;
@@ -225,6 +227,30 @@ public abstract class Character extends Entity implements SpatialObject, Animati
                                     configurationFile.toString() + "! " + ex.getMessage());
         }
         commonConstructionCode(wm, loadedAttributes, true, characterDOM);
+    }
+
+    private void addShadow(SkeletonNode skeleton) {
+        // make shadow
+        Vector3f pointOne =     new Vector3f( 0.5f, 0.01f,  0.5f);
+        Vector3f pointTwo =     new Vector3f(-0.5f, 0.01f,  0.5f);
+        Vector3f pointThree =   new Vector3f(-0.5f, 0.01f, -0.5f);
+        Vector3f pointFour =    new Vector3f( 0.5f, 0.01f, -0.5f);
+        // UV sets
+        Vector2f uvSetOne =     new Vector2f( 0.5f,  0.5f);
+        Vector2f uvSetTwo =     new Vector2f(-0.5f,  0.5f);
+        Vector2f uvSetThree =   new Vector2f(-0.5f, -0.5f);
+        Vector2f uvSetFour =    new Vector2f( 0.5f, -0.5f);
+
+        PMeshMaterial shadowMaterial = new PMeshMaterial("ShadowMaterial");
+        shadowMaterial.setTexture("assets/textures/shadow.png", 0);
+        PPolygonMesh shadowMesh = PMeshUtils.createQuad("ShadowQuad",
+                                                        pointOne, pointTwo, pointThree, pointFour,
+                                                        ColorRGBA.white,
+                                                        uvSetOne, uvSetTwo, uvSetThree, uvSetFour);
+        shadowMesh.setMaterial(shadowMaterial);
+        shadowMesh.setNumberOfTextures(1);
+        m_shadowModel = m_pscene.addModelInstance(shadowMesh, new PMatrix());
+        skeleton.getSkeletonRoot().addChild(m_shadowModel);
     }
 
     private void commonConstructionCode(WorldManager wm, CharacterAttributes attributes, boolean addEntity, xmlCharacter characterDOM)
@@ -396,7 +422,10 @@ public abstract class Character extends Entity implements SpatialObject, Animati
                      meshInst.getName().contains("Hand"))// is it flesh?
                 meshMat.setShader(fleshShader);
             else // assume to be clothing
+            {
+                meshMat.setCullFace(CullState.Face.None);
                 meshMat.setShader(clothingShader);
+            }
             // Apply it!
             meshInst.applyShader();
         }
@@ -623,6 +652,8 @@ public abstract class Character extends Entity implements SpatialObject, Animati
             m_modelInst.addChild(m_skeleton);
             m_pscene.addInstanceNode(m_modelInst);
 
+            // Add shadow
+            addShadow(m_skeleton);
             // Debugging / Diagnostic output
 //            Logger.getLogger(Character.class.getName()).log(Level.INFO, "Model " + m_pscene + "  inst " + m_modelInst);
             m_AnimationProcessor = new CharacterAnimationProcessor(m_modelInst);
@@ -630,7 +661,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
             m_AnimationProcessor.setEnable(false);
             processors.add(m_AnimationProcessor);
         }
-
+        
         m_characterProcessor = new CharacterProcessor(this);
         m_characterProcessor.stop();
         processors.add(m_characterProcessor);

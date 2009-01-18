@@ -974,17 +974,17 @@ public class GLSLShaderProgram implements AbstractShaderProgram, RenderUpdater
             defaultCtor = this.getClass().getConstructor(WorldManager.class);
             vanillaInstance = (GLSLShaderProgram) defaultCtor.newInstance(m_WM);
         } catch (NoSuchMethodException ex) {
-            Logger.getLogger(GLSLShaderProgram.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(GLSLShaderProgram.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
         } catch (SecurityException ex) {
-            Logger.getLogger(GLSLShaderProgram.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(GLSLShaderProgram.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
         } catch (InstantiationException ex) {
-            Logger.getLogger(GLSLShaderProgram.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(GLSLShaderProgram.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
         } catch (IllegalAccessException ex) {
-            Logger.getLogger(GLSLShaderProgram.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(GLSLShaderProgram.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
         } catch (IllegalArgumentException ex) {
-            Logger.getLogger(GLSLShaderProgram.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(GLSLShaderProgram.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
         } catch (InvocationTargetException ex) {
-            Logger.getLogger(GLSLShaderProgram.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(GLSLShaderProgram.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
         }
 
         // TODO : See if there is a less wasteful way to do this

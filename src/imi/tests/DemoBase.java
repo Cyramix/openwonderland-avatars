@@ -36,6 +36,7 @@ import com.jme.scene.state.RenderState;
 import com.jme.scene.state.WireframeState;
 import com.jme.scene.state.ZBufferState;
 import com.jme.util.TextureManager;
+import imi.environments.ColladaEnvironment;
 import imi.loaders.PPolygonTriMeshAssembler;
 import imi.scene.JScene;
 import imi.scene.PJoint;
@@ -150,6 +151,7 @@ public class DemoBase
         createCameraEntity(worldManager);  
         createInputEntity(worldManager); 
         setGlobalLighting(worldManager);
+        createEnvironment(worldManager);
         createDemoEntities(worldManager);
     }
     
@@ -660,6 +662,10 @@ public class DemoBase
         // Add the this input manager to the world manager for future access
         // (to asign a jscenes to drive)
         wm.addUserData(JSceneEventProcessor.class, eventProcessor);
+    }
+
+    private void createEnvironment(WorldManager worldManager) {
+        ColladaEnvironment environment = new ColladaEnvironment(worldManager, "assets/models/collada/Environments/Garden/Garden.dae", "DemoGarden");
     }
 
     private Texture loadSkyboxTexture(String filePath)

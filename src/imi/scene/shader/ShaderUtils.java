@@ -22,6 +22,7 @@ import com.jme.math.Matrix4f;
 import com.jme.scene.state.GLSLShaderObjectsState;
 import imi.scene.shader.dynamic.GLSLDataType;
 import imi.scene.shader.dynamic.GLSLShaderEffect;
+import imi.scene.shader.dynamic.GLSLShaderProgram;
 import imi.scene.shader.effects.AmbientNdotL_Lighting;
 import imi.scene.shader.effects.CalculateToLight_Lighting;
 import imi.scene.shader.effects.GenerateFragLocalNormal;
@@ -304,7 +305,21 @@ public class ShaderUtils
         }
         else // manually generate
         {
+            GLSLShaderProgram program = new GLSLShaderProgram(wm, true);
+            for (String effectName : shaderDOM.getListOfEffects())
+            {
+                try
+                {
+                    Class classz = Class.forName(effectName);
+                    Constructor ctor = classz.getConstructor(WorldManager.class);
+                    program.addEffect((GLSLShaderEffect) ctor.newInstance(wm));
+                }
+                catch (Exception ex)
+                {
 
+                }
+            }
+            result = program;
         }
         return result;
     }

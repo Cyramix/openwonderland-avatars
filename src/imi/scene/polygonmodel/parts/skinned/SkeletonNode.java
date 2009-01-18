@@ -280,6 +280,8 @@ public class SkeletonNode extends PNode implements Animated, Serializable
                 // for each child
                 for (PNode kid : skeletonRoot.getChildren())
                 {
+                    if (!(kid instanceof SkinnedMeshJoint))
+                        continue;
                     m_BFTSkeleton.addAll(kid.generateSkinnedMeshJointReferences());
                     m_BFTSkeletonLocalModifiers.addAll(kid.generateSkinnedMeshLocalModifierReferences());
                     m_jointNames.addAll(kid.generateSkinnedMeshJointNames());
