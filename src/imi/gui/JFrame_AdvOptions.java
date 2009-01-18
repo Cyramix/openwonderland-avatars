@@ -163,7 +163,7 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
             }
             case righteyeVPos:
             {
-                radjust.x = 0.0f;   radjust.y = mod;    ladjust.z = 0.0f;
+                radjust.x = 0.0f;   radjust.y = -mod;    ladjust.z = 0.0f;
                 skelnode.displaceJoint(eyes[6].getName(), radjust);
 //                for (int i = 5; i < eyes.length; i++) {
 //                    Vector3f start = eyes[i].getTransform().getLocalMatrix(false).getTranslation();
@@ -183,52 +183,33 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
             }
             case lefteyeSize:
             {
-                float x = scale.x += actualval * 3;
-                float y = scale.y += actualval * 3;
-                float z = scale.z += actualval * 3;
-                eyes[0].getLocalModifierMatrix().setScale(new Vector3f(x, y, z));
+                scale = eyes[0].getBindPose().getScaleVector();
+                scale.x += mod * 3; scale.y += mod * 3; scale.z += mod * 3;
+                eyes[0].getBindPose().setScale(scale);
+
                 break;
             }
             case righteyeSize:
             {
-                float x = scale.x += actualval * 3;
-                float y = scale.y += actualval * 3;
-                float z = scale.z += actualval * 3;
-                eyes[6].getLocalModifierMatrix().setScale(new Vector3f(x, y, z));
+                scale = eyes[6].getBindPose().getScaleVector();
+                scale.x += mod * 3; scale.y += mod * 3; scale.z += mod * 3;
+                eyes[6].getBindPose().setScale(scale);
+
                 break;
             }
             case lefteyeWidth:
             {
-                float x = scale.x += actualval * 3;
-                float y = scale.y;
-                float z = scale.z;
-                eyes[0].getLocalModifierMatrix().setScale(new Vector3f(x, y, z));
-//                ladjust.x = -mod;
-//                skelnode.displaceJoint(eyes[3].getName(), ladjust);
-//                System.out.println(ladjust.x);
-//
-//                float y = scale.y += actualval * 3;
-//                formattedNumber = m_format.format(y);
-//                scale.x = Float.valueOf(formattedNumber);
-//                eyes[0].getLocalModifierMatrix().setScale(scale);
-//                eyes[1].getLocalModifierMatrix().setScale(scale);
+                scale = eyes[0].getBindPose().getScaleVector();
+                scale.x += mod * 3;
+                eyes[0].getBindPose().setScale(scale);
 
                 break;
             }
             case righteyeWidth:
             {
-                float x = scale.x += actualval * 3;
-                float y = scale.y;
-                float z = scale.z;
-                eyes[6].getLocalModifierMatrix().setScale(new Vector3f(x, y, z));
-//                radjust.x = mod;
-//                skelnode.displaceJoint(eyes[8].getName(), radjust);
-//
-//                float y = scale.y += actualval * 3;
-//                formattedNumber = m_format.format(y);
-//                scale.x = Float.valueOf(formattedNumber);
-//                eyes[5].getLocalModifierMatrix().setScale(scale);
-//                eyes[6].getLocalModifierMatrix().setScale(scale);
+                scale = eyes[6].getBindPose().getScaleVector();
+                scale.x += mod * 3;
+                eyes[6].getBindPose().setScale(scale);
 
                 break;
             }
@@ -265,23 +246,12 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
             }
             case lefthandThickness:
             {
-                for (int i = 0; i < lefthand.length; i++) {
-                    ladjust = new Vector3f(lefthand[i].getLocalModifierMatrix().getScaleVector());
-                    ladjust.x = 1.0f;   ladjust.x += actualval;
-                    ladjust.z = 1.0f;   ladjust.z += actualval;
-                    lefthand[i].getLocalModifierMatrix().setScale(ladjust);
-                }
+                lefthand[0].getBindPose().setScale(1.0f + (actualval * 3));
                 break;
             }
             case righthandThickness:
             {
-                for (int i = 0; i < righthand.length; i++) {
-                    radjust = new Vector3f(righthand[i].getLocalModifierMatrix().getScaleVector());
-                    radjust.x = 1.0f;   radjust.x += actualval;
-                    radjust.z = 1.0f;   radjust.z += actualval;
-                    righthand[i].getLocalModifierMatrix().setScale(radjust);
-                }
-
+                righthand[0].getBindPose().setScale(1.0f + (actualval * 3));
                 break;
             }
         }
@@ -342,20 +312,22 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
             {
                 for (int i = 0; i < leftforearm.length; i++) {
                     ladjust = new Vector3f(leftforearm[i].getLocalModifierMatrix().getScaleVector());
-                    ladjust.x = 1.0f;   ladjust.x += actualval;
-                    ladjust.z = 1.0f;   ladjust.z += actualval;
+                    ladjust.x = 1.0f;   ladjust.x += actualval * 3;
+                    ladjust.z = 1.0f;   ladjust.z += actualval * 3;
                     leftforearm[i].getLocalModifierMatrix().setScale(ladjust);
                 }
+//                leftforearm[0].getBindPose().setScale(1.0f + (actualval * 3));
                 break;
             }
             case rightlowerarmThickness:
             {
                 for (int i = 0; i < rightforearm.length; i++) {
                     radjust = new Vector3f(rightforearm[i].getLocalModifierMatrix().getScaleVector());
-                    radjust.x = 1.0f;   radjust.x += actualval;
-                    radjust.z = 1.0f;   radjust.z += actualval;
+                    radjust.x = 1.0f;   radjust.x += actualval * 3;
+                    radjust.z = 1.0f;   radjust.z += actualval * 3;
                     rightforearm[i].getLocalModifierMatrix().setScale(radjust);
                 }
+//                rightforearm[0].getBindPose().setScale(1.0f + (actualval * 3));
                 break;
             }
         }
@@ -416,8 +388,8 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
             {
                 for (int i = 0; i < leftupperarm.length; i++) {
                     ladjust = new Vector3f(leftupperarm[i].getLocalModifierMatrix().getScaleVector());
-                    ladjust.x = 1.0f;   ladjust.x += actualval;
-                    ladjust.z = 1.0f;   ladjust.z += actualval;
+                    ladjust.x = 1.0f;   ladjust.x += actualval * 3;
+                    ladjust.z = 1.0f;   ladjust.z += actualval * 3;
                     leftupperarm[i].getLocalModifierMatrix().setScale(ladjust);
                 }
                 break;
@@ -426,8 +398,8 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
             {
                 for (int i = 0; i < rightupperarm.length; i++) {
                     radjust = new Vector3f(rightupperarm[i].getLocalModifierMatrix().getScaleVector());
-                    radjust.x = 1.0f;   radjust.x += actualval;
-                    radjust.z = 1.0f;   radjust.z += actualval;
+                    radjust.x = 1.0f;   radjust.x += actualval * 3;
+                    radjust.z = 1.0f;   radjust.z += actualval * 3;
                     rightupperarm[i].getLocalModifierMatrix().setScale(radjust);
                 }
                 break;
@@ -465,22 +437,12 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
             }
             case leftfootThickness:
             {
-                for (int i = 0; i < leftfoot.length; i++) {
-                    ladjust = new Vector3f(leftfoot[i].getLocalModifierMatrix().getScaleVector());
-                    ladjust.x = 1.0f;   ladjust.x += actualval;
-                    ladjust.z = 1.0f;   ladjust.z += actualval;
-                    leftfoot[i].getLocalModifierMatrix().setScale(ladjust);
-                }
+                leftfoot[0].getBindPose().setScale(1.0f + (actualval * 3));
                 break;
             }
             case rightfootThickness:
             {
-                for (int i = 0; i < rightfoot.length; i++) {
-                    radjust = new Vector3f(rightfoot[i].getLocalModifierMatrix().getScaleVector());
-                    radjust.x = 1.0f;   radjust.x += actualval;
-                    radjust.z = 1.0f;   radjust.z += actualval;
-                    rightfoot[i].getLocalModifierMatrix().setScale(radjust);
-                }
+                rightfoot[0].getBindPose().setScale(1.0f + (actualval * 3));
                 break;
             }
         }
@@ -541,8 +503,8 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
             {
                 for (int i = 0; i < leftlowerleg.length; i++) {
                     ladjust = new Vector3f(leftlowerleg[i].getLocalModifierMatrix().getScaleVector());
-                    ladjust.x = 1.0f;   ladjust.x += actualval;
-                    ladjust.z = 1.0f;   ladjust.z += actualval;
+                    ladjust.x = 1.0f;   ladjust.x += actualval * 3;
+                    ladjust.z = 1.0f;   ladjust.z += actualval * 3;
                     leftlowerleg[i].getLocalModifierMatrix().setScale(ladjust);
                 }
                 break;
@@ -551,8 +513,8 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
             {
                 for (int i = 0; i < rightlowerleg.length; i++) {
                     radjust = new Vector3f(rightlowerleg[i].getLocalModifierMatrix().getScaleVector());
-                    radjust.x = 1.0f;   radjust.x += actualval;
-                    radjust.z = 1.0f;   radjust.z += actualval;
+                    radjust.x = 1.0f;   radjust.x += actualval * 3;
+                    radjust.z = 1.0f;   radjust.z += actualval * 3;
                     rightlowerleg[i].getLocalModifierMatrix().setScale(radjust);
                 }
                 break;
@@ -593,8 +555,8 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
             {
                 for (int i = 0; i < leftupperleg.length; i++) {
                     ladjust = new Vector3f(leftupperleg[i].getLocalModifierMatrix().getScaleVector());
-                    ladjust.x = 1.0f;   ladjust.x += actualval;
-                    ladjust.z = 1.0f;   ladjust.z += actualval;
+                    ladjust.x = 1.0f;   ladjust.x += actualval * 3;
+                    ladjust.z = 1.0f;   ladjust.z += actualval * 3;
                     leftupperleg[i].getLocalModifierMatrix().setScale(ladjust);
                 }
                 break;
@@ -603,8 +565,8 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
             {
                 for (int i = 0; i < rightupperleg.length; i++) {
                     radjust = new Vector3f(rightupperleg[i].getLocalModifierMatrix().getScaleVector());
-                    radjust.x = 1.0f;   radjust.x += actualval;
-                    radjust.z = 1.0f;   radjust.z += actualval;
+                    radjust.x = 1.0f;   radjust.x += actualval * 3;
+                    radjust.z = 1.0f;   radjust.z += actualval * 3;
                     rightupperleg[i].getLocalModifierMatrix().setScale(radjust);
                 }
                 break;
@@ -621,7 +583,67 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
      */
     // TODO: write functionality
     private synchronized void adjustChest(GUI_Enums.m_sliderControl type, float mod, float actualval) {
+        SkeletonNode    skelnode    = m_sceneData.getAvatar().getSkeleton();
+        if (skelnode == null) { return; }
 
+        SkinnedMeshJoint[]  shoulders    = new SkinnedMeshJoint[] { m_skeleton.get(GUI_Enums.m_bodyPart.Left_Shoulder)[0],
+                                                                    m_skeleton.get(GUI_Enums.m_bodyPart.Right_Shoulder)[0] };
+        SkinnedMeshJoint[]  chest        = m_skeleton.get(GUI_Enums.m_bodyPart.Torso);
+        Vector3f            adjust       = new Vector3f(0.0f, mod, 0.0f);
+        m_format                         = new DecimalFormat("0.00");
+
+        switch(type)
+        {
+            case torsoLength:
+            {
+                break;
+            }
+            case torsoThickness:
+            {
+                break;
+            }
+            case shoulderBroadness:
+            {
+                break;
+            }
+        }
+    }
+
+    private synchronized void adjustHead(GUI_Enums.m_sliderControl type, float mod, float actualval) {
+        SkeletonNode    skelnode    = m_sceneData.getAvatar().getSkeleton();
+        if (skelnode == null) { return; }
+
+        SkinnedMeshJoint[]  head    = m_skeleton.get(GUI_Enums.m_bodyPart.Head);
+        Vector3f            scale   = head[0].getBindPose().getScaleVector();
+        m_format                    = new DecimalFormat("0.00");
+
+        switch(type)
+        {
+            case headHeight:
+            {
+                scale.y += mod *3;
+                head[0].getBindPose().setScale(scale);
+                break;
+            }
+            case headWidth:
+            {
+                scale.x += mod * 3;
+                head[0].getBindPose().setScale(scale);
+                break;
+            }
+            case headDepth:
+            {
+                scale.z += mod * 3;
+                head[0].getBindPose().setScale(scale);
+                break;
+            }
+            case headUniform:
+            {
+                scale.x += mod *3;  scale.y += mod *3;  scale.z += mod *3;
+                head[0].getBindPose().setScale(scale);
+                break;
+            }
+        }
     }
 
     /**
@@ -1274,17 +1296,37 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
             }
             case headDepth:
             {
-                // TODO: adjustHead(control, mod, actualval);
+                adjustHead(control, mod, actualval);
                 break;
             }
             case headHeight:
             {
-                // TODO: adjustHead(control, mod, actualval);
+                adjustHead(control, mod, actualval);
                 break;
             }
             case headWidth:
             {
-                // TODO: adjustHead(control, mod, actualval);
+                adjustHead(control, mod, actualval);
+                break;
+            }
+            case headUniform:
+            {
+                adjustHead(control, mod, actualval);
+                break;
+            }
+            case torsoLength:
+            {
+                adjustChest(control, mod, actualval);
+                break;
+            }
+            case torsoThickness:
+            {
+                adjustChest(control, mod, actualval);
+                break;
+            }
+            case shoulderBroadness:
+            {
+                adjustChest(control, mod, actualval);
                 break;
             }
         }

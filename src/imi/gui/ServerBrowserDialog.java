@@ -343,11 +343,16 @@ public class ServerBrowserDialog extends javax.swing.JDialog {
             case 0:         // LOAD AVATAR
             {
                 int iGender = -1;
-                if (isMale())
+                String headLocation = null;
+                String handLocation = null;
+                if (isMale()) {
                     iGender = 1;
-                else
+                    headLocation = "http://www.zeitgeistgames.com/assets/collada/Avatars/Head/MHead6/MaleCHead_Bind.dae";
+                    handLocation = "http://www.zeitgeistgames.com/assets/collada/Avatars/Male/Male_Hands.dae";
+                } else {
                     iGender = 2;
-                m_sceneData.loadAvatarDAEURL(true, this, m_modelInfo[3], null, iGender);
+                }
+                m_sceneData.loadAvatarDAEURL(true, this, m_modelInfo[3], headLocation, handLocation, null, iGender);
                 break;
             }
             case 1:         // LOAD CLOTHES

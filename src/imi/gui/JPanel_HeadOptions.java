@@ -121,7 +121,7 @@ public class JPanel_HeadOptions extends javax.swing.JPanel {
         jPanel_HeadDepth = new javax.swing.JPanel();
         Head_Depth = new imi.gui.JPanel_HorizontalSliderS();
         jPanel_HeadUniform = new javax.swing.JPanel();
-        jPanel_HorizontalSliderS1 = new imi.gui.JPanel_HorizontalSliderS();
+        Head_Uniform = new imi.gui.JPanel_HorizontalSliderS();
 
         setMaximumSize(new java.awt.Dimension(270, 600));
         setMinimumSize(new java.awt.Dimension(270, 600));
@@ -440,7 +440,7 @@ public class JPanel_HeadOptions extends javax.swing.JPanel {
         jPanel_HeadUniform.setMinimumSize(new java.awt.Dimension(230, 120));
         jPanel_HeadUniform.setPreferredSize(new java.awt.Dimension(230, 120));
         jPanel_HeadUniform.setLayout(new java.awt.GridBagLayout());
-        jPanel_HeadUniform.add(jPanel_HorizontalSliderS1, new java.awt.GridBagConstraints());
+        jPanel_HeadUniform.add(Head_Uniform, new java.awt.GridBagConstraints());
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -472,6 +472,7 @@ public class JPanel_HeadOptions extends javax.swing.JPanel {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private imi.gui.JPanel_HorizontalSliderS Head_Depth;
     private imi.gui.JPanel_VerticalSliderS Head_Height;
+    private imi.gui.JPanel_HorizontalSliderS Head_Uniform;
     private imi.gui.JPanel_HorizontalSliderS Head_Width;
     private imi.gui.JPanel_HorizontalSliderT LeftEarHPos;
     private imi.gui.JPanel_HorizontalSliderS LeftEarSize;
@@ -512,7 +513,6 @@ public class JPanel_HeadOptions extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel_HeadHeight;
     private javax.swing.JPanel jPanel_HeadUniform;
     private javax.swing.JPanel jPanel_HeadWidth;
-    private imi.gui.JPanel_HorizontalSliderS jPanel_HorizontalSliderS1;
     private javax.swing.JPanel jPanel_LipSize;
     private javax.swing.JPanel jPanel_Mouth;
     private javax.swing.JPanel jPanel_MouthWidth;
@@ -538,6 +538,7 @@ public class JPanel_HeadOptions extends javax.swing.JPanel {
         Head_Depth.setObjectRef(GUI_Enums.m_sliderControl.headDepth);
         Head_Height.setObjectRef(GUI_Enums.m_sliderControl.headHeight);
         Head_Width.setObjectRef(GUI_Enums.m_sliderControl.headWidth);
+        Head_Uniform.setObjectRef(GUI_Enums.m_sliderControl.headUniform);
         LeftEye_HPos.setObjectRef(GUI_Enums.m_sliderControl.lefteyeHPos);
         LeftEye_Size.setObjectRef(GUI_Enums.m_sliderControl.lefteyeSize);
         LeftEye_VPos.setObjectRef(GUI_Enums.m_sliderControl.lefteyeVPos);
@@ -563,6 +564,7 @@ public class JPanel_HeadOptions extends javax.swing.JPanel {
         Head_Depth.setParentFrame(m_baseFrame);
         Head_Height.setParentFrame(m_baseFrame);
         Head_Width.setParentFrame(m_baseFrame);
+        Head_Uniform.setParentFrame(m_baseFrame);
         LeftEye_HPos.setParentFrame(m_baseFrame);
         LeftEye_Size.setParentFrame(m_baseFrame);
         LeftEye_VPos.setParentFrame(m_baseFrame);

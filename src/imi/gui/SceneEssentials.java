@@ -739,7 +739,7 @@ public class SceneEssentials {
             }
 
             // Create avatar attribs
-            CharacterAttributes attribs = createDefaultAttributes(m_gender, bindPose.toString(), null);
+            CharacterAttributes attribs = createDefaultAttributes(m_gender, bindPose.toString(), null, null);
 
             if (m_avatar != null) {
                 m_worldManager.removeEntity(m_avatar);
@@ -1018,7 +1018,7 @@ public class SceneEssentials {
      * @param szAvatarModelFile - the collada file containing the animations
      * @return CharacterAttributes
      */
-    public CharacterAttributes createDefaultAttributes(int iGender, String szAvatarModelFile, String szAvatarHandsModelFile) {
+    public CharacterAttributes createDefaultAttributes(int iGender, String szAvatarModelFile, String szAvatarHeadModelFile, String szAvatarHandsModelFile) {
 
         // Create avatar attribs
         CharacterAttributes             attribs     = new CharacterAttributes("Avatar");
@@ -1035,6 +1035,8 @@ public class SceneEssentials {
                     szAvatarModelFile = baseFilePath + "/assets/models/collada/Avatars/Male/Male_Bind.dae";
                 if (szAvatarHandsModelFile == null)
                     szAvatarHandsModelFile = baseFilePath + "/assets/models/collada/Avatars/Male/Male_Hands.dae";
+                if (szAvatarHeadModelFile == null)
+                    szAvatarHeadModelFile = baseFilePath + "/assets/models/collada/Heads/CaucasianHead/MaleCHead.dae";
 
                 load.add(szAvatarModelFile);    // Load selected male body meshes
                 add.add(attribs.createSkinnedMeshParams("RFootNudeShape",   "Feet"));
@@ -1044,6 +1046,7 @@ public class SceneEssentials {
                 load.add(szAvatarHandsModelFile);   // Load selected hand meshes
                 add.add(attribs.createSkinnedMeshParams("RHandShape",       "Hands"));
                 add.add(attribs.createSkinnedMeshParams("LHandShape",       "Hands"));
+                attribs.setHeadAttachment(szAvatarHeadModelFile);
                 break;
             }
             case 2:
@@ -1138,7 +1141,7 @@ public class SceneEssentials {
      * @param attributes - characterattributes for the avatar containing load paramaters
      * @param gender - 1= male 2= female; specifies which defaults to load.
      */
-    public void loadAvatarDAEURL(boolean useRepository, Component arg0, String modelLocation, CharacterAttributes attributes, int gender) {
+    public void loadAvatarDAEURL(boolean useRepository, Component arg0, String modelLocation, String headLocation, String handLocation, CharacterAttributes attributes, int gender) {
         m_currentPScene.setUseRepository(useRepository);
         removeallMeshReferencesOnSkeleton();
         m_currentPScene.getInstances().removeAllChildren();
@@ -1149,7 +1152,7 @@ public class SceneEssentials {
             attribs = attributes;
         } else {    // requires the bind pose information for mesh information on basic body parts
             if (modelLocation != null)
-                attribs = createDefaultAttributes(gender, modelLocation, null);
+                attribs = createDefaultAttributes(gender, modelLocation, headLocation, handLocation);
         }
 
         if (m_avatar != null) {

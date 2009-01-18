@@ -877,31 +877,6 @@ public class JPanel_EZOptions extends javax.swing.JPanel {
             }
         }
 
-        // This file contains the mesh information for the basic body parts
-        if (load.size() == 0)
-            load.add(m_presetLists.get(selection)[2]);
-
-        attribs.setBaseURL("");
-        attribs.setLoadInstructions(load);
-        attribs.setAddInstructions(add.toArray(new CharacterAttributes.SkinnedMeshParams[add.size()]));
-        attribs.setAttachmentsInstructions(attach.toArray(new AttachmentParams[attach.size()]));
-        attribs.setGender(m_gender);
-
-        m_sceneData.loadAvatarDAEURL(true, this, null, attribs, m_gender);  // Base attributes must be added before head and accesory attatchmens
-
-        while (!m_sceneData.getAvatar().isInitialized() || m_sceneData.getAvatar().getModelInst() == null) {
-
-        }
-
-        if (m_presets.get(selection).get(0)[0] != null) {   // Head must be installed before attatchmens like hair, hats etc or they will be deleted
-            try {
-                URL head = new URL(m_presets.get(selection).get(0)[0]);
-                m_sceneData.getAvatar().installHead(head, "Neck");
-            } catch (MalformedURLException ex) {
-                Logger.getLogger(JPanel_EZOptions.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-
         // Non-skinned meshes (ie Hair, hats, glasses, etc...)
         for (int i = 5; i < 9; i++) {   // After head is installed go through the remaining possible meshes to attatch to the avatar
             if (m_presets.get(selection).get(i) == null)
@@ -914,7 +889,7 @@ public class JPanel_EZOptions extends javax.swing.JPanel {
                 }
                 else {
                     String meshName = m_presets.get(selection).get(i)[j];
-                    
+
                     String subgroup = null;
                     if (i == 5)
                         subgroup = "Hair";
@@ -928,6 +903,23 @@ public class JPanel_EZOptions extends javax.swing.JPanel {
                     m_sceneData.addMeshDAEURLToModel(meshName, meshloc, "Head", null, subgroup);
                 }
             }
+        }
+
+        // This file contains the mesh information for the basic body parts
+        if (load.size() == 0)
+            load.add(m_presetLists.get(selection)[2]);
+
+        attribs.setBaseURL("");
+        attribs.setLoadInstructions(load);
+        attribs.setHeadAttachment(m_presets.get(selection).get(0)[0]);
+        attribs.setAddInstructions(add.toArray(new CharacterAttributes.SkinnedMeshParams[add.size()]));
+        attribs.setAttachmentsInstructions(attach.toArray(new AttachmentParams[attach.size()]));
+        attribs.setGender(m_gender);
+
+        m_sceneData.loadAvatarDAEURL(true, this, null, null, null, attribs, m_gender);  // as long as attributes is fully filled out the other 3 can be null
+
+        while (!m_sceneData.getAvatar().isInitialized() || m_sceneData.getAvatar().getModelInst() == null) {
+
         }
 
         if (m_Parent instanceof BaseDefault) {

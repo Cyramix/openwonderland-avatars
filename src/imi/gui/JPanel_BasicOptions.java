@@ -928,20 +928,10 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
             hands = null;
         }
 
-        CharacterAttributes attribs = m_sceneData.createDefaultAttributes(m_gender, data.get(0)[0], hands);
-        m_sceneData.loadAvatarDAEURL(true, m_Parent, data.get(0)[0], attribs, m_gender);
+        m_sceneData.loadAvatarDAEURL(true, m_Parent, data.get(0)[0], head, hands, null, m_gender);
         
         while (!m_sceneData.getAvatar().isInitialized() || m_sceneData.getAvatar().getModelInst() == null) {
 
-        }
-
-        if (head != null) {   // Head must be installed before attatchmens like hair, hats etc or they will be deleted
-            try {
-                URL uhead = new URL(head);
-                m_sceneData.getAvatar().installHead(uhead, "Neck");
-            } catch (MalformedURLException ex) {
-                Logger.getLogger(JPanel_EZOptions.class.getName()).log(Level.SEVERE, null, ex);
-            }
         }
 
         jLabel_CurrUpperBody.setText("Default");

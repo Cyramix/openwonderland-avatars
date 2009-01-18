@@ -304,12 +304,17 @@ public class JPanel_ServerBrowser extends javax.swing.JPanel {
             case 0:         // LOAD AVATAR
             {
                 int iGender = -1;
-                if (isMale())
+                String headLocation = null;
+                String handLocation = null;
+                if (isMale()) {
                     iGender = 1;
-                else
+                    headLocation = "http://www.zeitgeistgames.com/assets/collada/Avatars/Head/MHead6/MaleCHead_Bind.dae";
+                    handLocation = "http://www.zeitgeistgames.com/assets/collada/Avatars/Male/Male_Hands.dae";
+                } else {
                     iGender = 2;
+                }
                 if (m_modelInfo[4].equals("1") || m_modelInfo[4].equals("2"))
-                    m_sceneData.loadAvatarDAEURL(true, this, m_modelInfo[3], null, iGender);
+                    m_sceneData.loadAvatarDAEURL(true, this, m_modelInfo[3], headLocation, handLocation, null, iGender);
                 else
                     m_sceneData.loadAvatarHeadDAEURL(true, this, m_modelInfo, m_meshref);
                 break;
