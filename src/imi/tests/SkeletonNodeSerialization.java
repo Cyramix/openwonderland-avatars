@@ -59,8 +59,10 @@ public class SkeletonNodeSerialization
 
     private static URL MaleSkeletonLocation = null;
     private static URL FemaleSkeletonLocation = null;
+    
     private static File MaleOutputFile = new File("src/imi/character/skeleton/Male.bs");
     private static File FemaleOutputFile = new File("src/imi/character/skeleton/Female.bs");
+
     /** Relative paths to animation files to load onto the skeletons. **/
     private static String[] FemaleAnimationLocations = {
         "assets/models/collada/Avatars/Female/Female_Anim_Idle.dae",
@@ -71,7 +73,11 @@ public class SkeletonNodeSerialization
         "assets/models/collada/Avatars/Female/Female_Anim_Wave.dae"
     };
     private static String[] FemaleFacialAnimations = {
-
+        "assets/models/collada/Avatars/FemaleFacialAnimation/FemaleSmile.dae",
+        "assets/models/collada/Avatars/FemaleFacialAnimation/FemaleFrown.dae",
+        "assets/models/collada/Avatars/FemaleFacialAnimation/FemaleScorn.dae",
+        "assets/models/collada/Avatars/FemaleFacialAnimation/FemaleDefault.dae",
+        "assets/models/collada/Avatars/FemaleFacialAnimation/FemaleDefault.dae"
     };
     private static String[] MaleAnimationLocations = {
         "assets/models/collada/Avatars/Male/Male_Anim_Bow.dae",

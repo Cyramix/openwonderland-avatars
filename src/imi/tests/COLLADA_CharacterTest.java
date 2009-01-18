@@ -22,6 +22,7 @@ import com.jme.math.Vector3f;
 import imi.character.Character;
 import imi.character.ninja.NinjaAvatar;
 import imi.character.ninja.NinjaAvatarAttributes;
+import imi.character.ninja.NinjaFemaleAvatarAttributes;
 import imi.gui.SceneEssentials;
 import imi.gui.TreeExplorer;
 import imi.scene.PMatrix;
@@ -77,7 +78,7 @@ public class COLLADA_CharacterTest extends DemoBase
         // Create avatar
         long startTime = System.nanoTime();
         NinjaAvatarAttributes attribs = new NinjaAvatarAttributes("WeirdGuy", 2, 3, 5, 10, 1);
-//        NinjaAvatarAttributes attribs = new NinjaAvatarAttributes("WeirdGuy", true, false);
+//        NinjaFemaleAvatarAttributes attribs = new NinjaFemaleAvatarAttributes("WeirdChick", 0, 1, 1, 1, 1);
         NinjaAvatar avatar = new NinjaAvatar(attribs, wm);
         float time = (float)((System.nanoTime() - startTime) / 1000000000.0f);
         System.out.println("Constructing the male took: " + time);

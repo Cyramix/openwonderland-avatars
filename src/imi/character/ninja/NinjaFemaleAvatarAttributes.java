@@ -72,9 +72,6 @@ public class NinjaFemaleAvatarAttributes extends CharacterAttributes
     {
         switch (preset)
         {
-            case 0:
-                setHeadAttachment("assets/models/collada/Heads/FemaleKlingon/FemaleKlingonHead.dae");
-                break;
             default:
                 setHeadAttachment("assets/models/collada/Heads/FemaleCaucasian/FemaleCHead.dae");
         }

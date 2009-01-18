@@ -17,6 +17,8 @@
  */
 package imi.character;
 
+import com.jme.image.Texture.ApplyMode;
+import com.jme.image.Texture.CombinerFunctionAlpha;
 import com.jme.image.Texture.MinificationFilter;
 import com.jme.light.PointLight;
 import com.jme.math.Quaternion;
@@ -231,21 +233,27 @@ public abstract class Character extends Entity implements SpatialObject, Animati
 
     private void addShadow(SkeletonNode skeleton) {
         // make shadow
-        Vector3f pointOne =     new Vector3f( 0.5f, 0.01f,  0.5f);
-        Vector3f pointTwo =     new Vector3f(-0.5f, 0.01f,  0.5f);
-        Vector3f pointThree =   new Vector3f(-0.5f, 0.01f, -0.5f);
-        Vector3f pointFour =    new Vector3f( 0.5f, 0.01f, -0.5f);
+        Vector3f pointOne =     new Vector3f( 0.45f, 0.01f,  0.5f);
+        Vector3f pointTwo =     new Vector3f(-0.45f, 0.01f,  0.5f);
+        Vector3f pointThree =   new Vector3f(-0.45f, 0.01f, -0.5f);
+        Vector3f pointFour =    new Vector3f( 0.45f, 0.01f, -0.5f);
         // UV sets
-        Vector2f uvSetOne =     new Vector2f( 0.5f,  0.5f);
-        Vector2f uvSetTwo =     new Vector2f(-0.5f,  0.5f);
-        Vector2f uvSetThree =   new Vector2f(-0.5f, -0.5f);
-        Vector2f uvSetFour =    new Vector2f( 0.5f, -0.5f);
+        Vector2f uvSetOne =     new Vector2f(0, 0);
+        Vector2f uvSetTwo =     new Vector2f(1, 0);
+        Vector2f uvSetThree =   new Vector2f(1, 1);
+        Vector2f uvSetFour =    new Vector2f(0, 1);
 
         PMeshMaterial shadowMaterial = new PMeshMaterial("ShadowMaterial");
         shadowMaterial.setTexture("assets/textures/shadow.png", 0);
+        shadowMaterial.setAlphaState(PMeshMaterial.AlphaTransparencyType.A_ONE);
+        shadowMaterial.setColorMaterial(ColorMaterial.None);
+
+        TextureMaterialProperties textureProp = shadowMaterial.getTexture(0);
+        textureProp.setAlphaCombineMode(CombinerFunctionAlpha.Modulate);
+        textureProp.setApplyMode(ApplyMode.Replace);
         PPolygonMesh shadowMesh = PMeshUtils.createQuad("ShadowQuad",
                                                         pointOne, pointTwo, pointThree, pointFour,
-                                                        ColorRGBA.white,
+                                                        ColorRGBA.cyan,
                                                         uvSetOne, uvSetTwo, uvSetThree, uvSetFour);
         shadowMesh.setMaterial(shadowMaterial);
         shadowMesh.setNumberOfTextures(1);
