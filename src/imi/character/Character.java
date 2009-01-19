@@ -162,7 +162,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
 
     /** Used for internal requests for assets **/
     private final RepositoryUser            headInstaller = new RepositoryUser() {
-            @Override
+            
             public void receiveAsset(SharedAsset assetRecieved) {
                 asset = assetRecieved;
                 m_bWaitingOnAsset = false;

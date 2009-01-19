@@ -284,7 +284,7 @@ public class CharacterLoader implements RepositoryUser
         }
     }
 
-    @Override
+    
     public void receiveAsset(SharedAsset asset) {
         m_asset = asset;
         m_bWaitingOnAsset = false;

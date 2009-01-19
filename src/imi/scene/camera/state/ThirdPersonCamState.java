@@ -11,8 +11,8 @@
  * except in compliance with the License. A copy of the License is
  * available at http://www.opensource.org/licenses/gpl-license.php.
  *
- * Sun designates this particular file as subject to the "Classpath" 
- * exception as provided by Sun in the License file that accompanied 
+ * Sun designates this particular file as subject to the "Classpath"
+ * exception as provided by Sun in the License file that accompanied
  * this code.
  */
 package imi.scene.camera.state;
@@ -26,14 +26,16 @@ import imi.scene.polygonmodel.PPolygonModelInstance;
  * There is no complex logic in this class, just lots of accessors and mutators.
  * @author Ronald E Dahlgren
  */
-public class TumbleObjectCamState extends CameraState 
+public class ThirdPersonCamState extends CameraState
 {
     /** The camera's transformation matrix **/
-    private final PMatrix camTransform = new PMatrix();
+    private PMatrix camTransform = new PMatrix();
     /** If this is non-null, the camera is moving towards this position **/
     private Vector3f nextPosition = null;
     /** Cached for proper lerping **/
     private Vector3f originalPosition = null;
+    /** An offset for the focal point from the character **/
+    private final Vector3f offsetFromCharacterTransform = new Vector3f();
 
     // User experience configuration below
     /** The amount of movement per second **/
@@ -42,7 +44,7 @@ public class TumbleObjectCamState extends CameraState
     private float scaleRotationX = 0.56f;
     private float scaleRotationY = 0.56f;
     /** Length of transition in seconds **/
-    private float transitionDuration = 1.5f; 
+    private float transitionDuration = 1.5f;
 
     // Cached cursor info
     private int currentMouseX   = -1;
@@ -50,7 +52,7 @@ public class TumbleObjectCamState extends CameraState
     private int lastMouseX      = -1;
     private int lastMouseY      = -1;
 
-    /** Maintain a reference to a PPolygonModelInstance to follow. **/
+    /** Maintain a reference to a PPolygonModelInstance to manipulate. **/
     private PPolygonModelInstance   modelInstance   = null;
     /** This is the place that the camera looks at and zooms towards **/
     private Vector3f                focalPoint      = new Vector3f();
@@ -60,7 +62,7 @@ public class TumbleObjectCamState extends CameraState
     private Vector3f                originalFocalPoint  = null;
     /** Rotation about the Y axis **/
     private float                   rotationY       = 0.0f;
-    
+
     /** State indicators **/
     public final static int ZOOMING_IN  = 1;
     public final static int ZOOMING_OUT = 2;
@@ -75,16 +77,54 @@ public class TumbleObjectCamState extends CameraState
     /** True anytime a new target is set, the camera must lookAt **/
     private boolean newTargetNeedsUpdate = false;
     /** This is the minimum distance squared that is allowed between the camera and its focal point **/
-    private float minimumDistanceSquared = 1.5f;
+    private float minimumDistanceSquared = 2.5f;
+    /** Outer boundary **/
+    private float maximumDistanceSquared = 144;
+    private final Vector3f vectorToCamera = new Vector3f();
+
+    public void getCameraPosition(Vector3f vOut)
+    {
+        camTransform.getTranslation(vOut);
+    }
+
+    public float getMaximumDistanceSquared()
+    {
+        return maximumDistanceSquared;
+    }
+
+    public void getTargetFocalPoint(Vector3f vOut)
+    {
+        vOut.set(focalPoint);
+    }
+
+    public Vector3f getToCamera()
+    {
+        return vectorToCamera;
+    }
+
+    public void getToCamera(Vector3f vOut)
+    {
+        vOut.set(vectorToCamera);
+    }
+
+    public void setToCamera(Vector3f toCam)
+    {
+        vectorToCamera.set(toCam);
+    }
+
+    public void setMaximumDistanceSquared(float maximumDistanceSquared)
+    {
+        this.maximumDistanceSquared = maximumDistanceSquared;
+    }
 
     /**
      * Construct a new state object with the given target. The provided target
      * may be null but a focus point must be manually set if that is the case.
      * @param target
      */
-    public TumbleObjectCamState(PPolygonModelInstance target)
+    public ThirdPersonCamState(PPolygonModelInstance target)
     {
-        setType(CameraStateType.TumbleObject);
+        setType(CameraStateType.ThirdPerson);
         modelInstance = target;
         if (target != null) // Grab the focal point
             setTargetFocalPoint(modelInstance.getTransform().getWorldMatrix(false).getTranslation());
@@ -97,7 +137,7 @@ public class TumbleObjectCamState extends CameraState
      * @param target
      * @param rotationOnYAxis
      */
-    public TumbleObjectCamState(PPolygonModelInstance target, float rotationOnYAxis)
+    public ThirdPersonCamState(PPolygonModelInstance target, float rotationOnYAxis)
     {
         setType(CameraStateType.TumbleObject);
         modelInstance = target;
@@ -157,6 +197,11 @@ public class TumbleObjectCamState extends CameraState
         return modelInstance;
     }
 
+    public void setNeedsRefresh()
+    {
+        newTargetNeedsUpdate = true;
+    }
+
     public void setTargetModelInstance(PPolygonModelInstance modelInstance)
     {
         this.modelInstance = modelInstance;
@@ -183,17 +228,27 @@ public class TumbleObjectCamState extends CameraState
     {
         this.movementRate = movementRate;
     }
-    
+
     public int getMovementState()
     {
         return movementState;
     }
-    
+
     public void setMovementState(int state)
     {
         movementState = state;
     }
 
+    public void getOffsetFromCharacter(Vector3f vOut)
+    {
+        vOut.set(offsetFromCharacterTransform);
+    }
+
+    public void setOffsetFromCharacter(Vector3f offset)
+    {
+        offsetFromCharacterTransform.set(offset);
+    }
+    
     public float getRotationY()
     {
         return rotationY;
@@ -223,22 +278,22 @@ public class TumbleObjectCamState extends CameraState
     {
         this.scaleRotationY = scaleRotationY;
     }
-    
+
     /**
      * Retrieve the transform
-     * @return A *copy* of the current transform
+     * @return A reference to the current transform
      */
     public PMatrix getCameraTransform()
     {
-        return new PMatrix(camTransform);
+        return camTransform;
     }
-    
+
     public void setCameraTransform(PMatrix newTransform)
     {
         camTransform.set(newTransform);
         newTargetNeedsUpdate = true;
     }
-    
+
     public Vector3f getCameraPosition()
     {
         return camTransform.getTranslation();
@@ -248,18 +303,18 @@ public class TumbleObjectCamState extends CameraState
     {
         setCameraPosition(newPosition, true);
     }
-    
+
     public void setCameraPosition(Vector3f newPosition, boolean needsUpdate)
     {
         camTransform.setTranslation(newPosition);
         newTargetNeedsUpdate = needsUpdate;
     }
-    
+
     public boolean needsTargetUpdate()
     {
         return newTargetNeedsUpdate;
     }
-    
+
     public void setTargetNeedsUpdate(boolean needed)
     {
         newTargetNeedsUpdate = needed;

@@ -34,6 +34,7 @@ public abstract class CameraState
         AzimuthAngle,
         FirstPerson,
         TumbleObject,
+        ThirdPerson,
         Default
     
     }

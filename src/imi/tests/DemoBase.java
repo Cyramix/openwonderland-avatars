@@ -725,13 +725,11 @@ public class DemoBase
         
         m_cameraProcessor = new FlexibleCameraProcessor(cameraListener, cameraNode, wm, camera, sky);
         
-        FirstPersonCamState state = new FirstPersonCamState();
-        FirstPersonCamModel model = new FirstPersonCamModel();
-        m_cameraProcessor.setCameraBehavior(model, state);
+        assignCameraType(wm);
+        wm.addUserData(FlexibleCameraProcessor.class, m_cameraProcessor);
+        wm.addUserData(CameraState.class, m_cameraProcessor.getState());
         m_cameraProcessor.setRunInRenderer(true);
         
-        wm.addUserData(CameraState.class, state);
-        wm.addUserData(FlexibleCameraProcessor.class, m_cameraProcessor);
          
         ProcessorCollectionComponent pcc = new ProcessorCollectionComponent();
         pcc.addProcessor(m_cameraProcessor);
@@ -739,6 +737,18 @@ public class DemoBase
         camera.addComponent(ProcessorCollectionComponent.class, pcc);
         
         wm.addEntity(camera);
+    }
+
+    /**
+     * This method should be overridden in order to change the camera used in a
+     * demo / test file. Just call m_cameraProcessor.setCameraBehavior
+     * @return
+     */
+    protected void assignCameraType(WorldManager wm)
+    {
+        FirstPersonCamState state = new FirstPersonCamState();
+        FirstPersonCamModel model = new FirstPersonCamModel();
+        m_cameraProcessor.setCameraBehavior(model, state);        
     }
     
     private Node createCameraGraph(WorldManager wm) {

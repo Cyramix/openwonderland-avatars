@@ -297,7 +297,10 @@ public class PRenderer
         if (TransformHierarchy.getChildrenCount() > 0)
         {
             for (PNode kid : TransformHierarchy.getChildren())
-                drawBones((PJoint)kid);
+            {
+                if (kid instanceof PJoint)
+                    drawBones((PJoint)kid);
+            }
         }
         else
             System.out.println("PRenderer - No TransformHierarchy to draw.");

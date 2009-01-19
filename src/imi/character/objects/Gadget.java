@@ -66,7 +66,7 @@ public class Gadget implements SpatialObject
         sharedAsset = new SharedAsset(null, new AssetDescriptor(SharedAssetType.COLLADA, location));
         AssetInitializer init = new AssetInitializer() {
 
-                @Override
+                
                 public boolean initialize(Object asset) {
                     // Initialize some stuffs
                     return true;
