@@ -15,7 +15,7 @@
  * exception as provided by Sun in the License file that accompanied 
  * this code.
  */
-package imi.character.statemachine;
+package imi.scene;
 /**
  * This interface defines an object that can be "updated"
  * @author Shawn Kendall

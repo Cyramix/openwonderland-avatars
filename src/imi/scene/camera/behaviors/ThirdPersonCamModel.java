@@ -443,8 +443,10 @@ public class ThirdPersonCamModel implements CameraModel, CharacterMotionListener
                 camTransform.getTranslation(vectorBuffer);
                 activeState.getTargetFocalPoint(vectorBufferTwo);
                 vectorBuffer.subtractLocal(vectorBufferTwo);
-                if (vectorBuffer.lengthSquared() > threshold &&
-                        activeState.getNextPosition() == null)
+
+                float lengthSquared = vectorBuffer.lengthSquared();
+                if (activeState.getNextPosition() == null &&
+                   (lengthSquared > threshold || Math.abs(vectorBuffer.normalize().dot(Vector3f.UNIT_Y)) > 0.7))
                 {
                     activeState.getToCamera(vectorBufferTwo);
                     rotation.transformNormal(vectorBufferTwo);

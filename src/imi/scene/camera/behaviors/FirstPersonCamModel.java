@@ -28,7 +28,7 @@ import java.awt.event.MouseEvent;
 
 /**
  * This model provides the expected functionality for a first person driven 
- * camera model. The W,A,S,D keys perform forward, strafe left, backward, and
+ * camera model. The Up, Left, Down, Right keys perform forward, strafe left, backward, and
  * strafe right respectively. The Q and Z keys are used to move up and down.
  * Click and drag the mouse to rotate the camera.
  * @author Ronald E Dahlgren
@@ -120,32 +120,32 @@ public class FirstPersonCamModel implements CameraModel
     
    private void processKeyEvent(KeyEvent ke, FirstPersonCamState state) {
         if (ke.getID() == KeyEvent.KEY_PRESSED) {
-            if (ke.getKeyCode() == KeyEvent.VK_W) {
+            if (ke.getKeyCode() == KeyEvent.VK_UP) {
                 state.setMovementState(FirstPersonCamState.WALKING_FORWARD);
             }
-            if (ke.getKeyCode() == KeyEvent.VK_S) {
+            if (ke.getKeyCode() == KeyEvent.VK_DOWN) {
                 state.setMovementState(FirstPersonCamState.WALKING_BACK);
             }
-            if (ke.getKeyCode() == KeyEvent.VK_A) {
+            if (ke.getKeyCode() == KeyEvent.VK_LEFT) {
                 state.setMovementState(FirstPersonCamState.STRAFE_LEFT);
             }
-            if (ke.getKeyCode() == KeyEvent.VK_D) {
+            if (ke.getKeyCode() == KeyEvent.VK_RIGHT) {
                 state.setMovementState(FirstPersonCamState.STRAFE_RIGHT);
             }
-            if (ke.getKeyCode() == KeyEvent.VK_Q) {
+            if (ke.getKeyCode() == KeyEvent.VK_NUMPAD7) {
                 state.setMovementState(FirstPersonCamState.MOVE_UP);
             }
-            if (ke.getKeyCode() == KeyEvent.VK_Z) {
+            if (ke.getKeyCode() == KeyEvent.VK_NUMPAD9) {
                 state.setMovementState(FirstPersonCamState.MOVE_DOWN);
             }
         }
         if (ke.getID() == KeyEvent.KEY_RELEASED) {
-            if (ke.getKeyCode() == KeyEvent.VK_W ||
-                ke.getKeyCode() == KeyEvent.VK_S ||
-                ke.getKeyCode() == KeyEvent.VK_A ||
-                ke.getKeyCode() == KeyEvent.VK_D ||
-                ke.getKeyCode() == KeyEvent.VK_Q ||
-                ke.getKeyCode() == KeyEvent.VK_Z) {
+            if (ke.getKeyCode() == KeyEvent.VK_UP ||
+                ke.getKeyCode() == KeyEvent.VK_DOWN ||
+                ke.getKeyCode() == KeyEvent.VK_LEFT ||
+                ke.getKeyCode() == KeyEvent.VK_RIGHT ||
+                ke.getKeyCode() == KeyEvent.VK_NUMPAD7 ||
+                ke.getKeyCode() == KeyEvent.VK_NUMPAD9) {
                 state.setMovementState(FirstPersonCamState.STOPPED);
             }
         }
