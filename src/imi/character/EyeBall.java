@@ -76,13 +76,13 @@ public class EyeBall extends PPolygonSkinnedMeshInstance
      * @param matrix The matrix being modified
      * @param jointIndex Joint to modify
      */
-    protected void lookAtTarget(PMatrix matrix)
+    protected void lookAtTarget(PMatrix matrix, float rightEyeHack)
     {
         PMatrix modelWorldRef = modelInst.getTransform().getWorldMatrix(false);
         
         // Get eye world space
         PMatrix eyeWorld = new PMatrix();
-        eyeWorld.fastMul(modelWorldRef, matrix);
+        eyeWorld.mul(modelWorldRef, matrix);
         
         // Check limits
         Vector3f forwardVec = modelWorldRef.getLocalZ();
@@ -108,7 +108,7 @@ public class EyeBall extends PPolygonSkinnedMeshInstance
                 matrix.set(eyeWorldXForm);
                 matrix.setScale(scale);
 
-                matrix.fastMul(modelWorldRef.inverse(), matrix);
+                matrix.mul(modelWorldRef.inverse(), matrix);
             }
         }
         else

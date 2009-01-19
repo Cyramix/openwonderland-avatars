@@ -807,9 +807,8 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         
         if (m_context != null)
             m_context.update(deltaTime);
-        // TODO : Temporary until new blinking code is commited.
-//        if (m_eyes != null)
-//            m_eyes.update(deltaTime);
+        if (m_eyes != null)
+            m_eyes.update(deltaTime);
         if (m_rightArm != null)
             m_rightArm.update(deltaTime);
         if (m_leftArm != null)

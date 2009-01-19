@@ -31,23 +31,23 @@ import imi.scene.polygonmodel.parts.skinned.SkinnedMeshJoint;
  */
 public class VerletSkeletonFlatteningManipulator implements SkeletonFlatteningManipulator
 {
-    private final int rightShoulder = 18; // -0.25008845 (bind pose x values)
-    private final int rightUpperArm = 37; // -0.38327518 // 0.1331867 distance between shoulder and upperArm
-    private final int rightElbow    = 43; // -0.49928188 // 0.2491934 distance between shoulder and elbow
-    private final int rightForeArm  = 46; // -0.5855795  // 0.0862977 distance between elbow and forArm
-    private final int rightWrist    = 48; // -0.73043364 // 0.1448541 distance between the elbow and the wrist
+    private final int rightShoulder = 17;//18; // -0.25008845 (bind pose x values)
+    private final int rightUpperArm = 22;//37; // -0.38327518 // 0.1331867 distance between shoulder and upperArm
+    private final int rightElbow    = 34;//43; // -0.49928188 // 0.2491934 distance between shoulder and elbow
+    private final int rightForeArm  = 50;//46; // -0.5855795  // 0.0862977 distance between elbow and forArm
+    private final int rightWrist    = 55;//48; // -0.73043364 // 0.1448541 distance between the elbow and the wrist
     
     private final int leftShoulder  = 16;
     private final int leftUpperArm  = 21;
-    private final int leftElbow     = 39;
-    private final int leftForeArm   = 44;
-    private final int leftWrist     = 47;
+    private final int leftElbow     = 33;//39;
+    private final int leftForeArm   = 49;//44;
+    private final int leftWrist     = 54;//47;
     
     private final float distanceFromShoulderToUpperArm = 0.1331867f;
     private final float distanceFromElbowToForeArm     = 0.0862977f;
     
-    private final int rightEye      = 36;
-    private final int leftEye       = 35;
+    private final int rightEye      = 48;//36;
+    private final int leftEye       = 40;//35;
     
     protected EyeBall    leftEyeBall   = null;
     protected EyeBall    rightEyeBall  = null;
@@ -73,6 +73,21 @@ public class VerletSkeletonFlatteningManipulator implements SkeletonFlatteningMa
         characterModelInst = modelInstance;
         skeleton = skeletonNode;
         skeleton.setFlatteningHook(this);
+        
+//        int rightShoulderCheck = skeleton.getSkinnedMeshJointIndex("rightArm");
+//        int rightUpperArmCheck = skeleton.getSkinnedMeshJointIndex("rightArmRoll");
+//        int rightElbowCheck    = skeleton.getSkinnedMeshJointIndex("rightForeArm");
+//        int rightForeArmCheck  = skeleton.getSkinnedMeshJointIndex("rightForeArmRoll");
+//        int rightWristCheck    = skeleton.getSkinnedMeshJointIndex("rightHand");
+//
+//        int leftShoulderCheck  = skeleton.getSkinnedMeshJointIndex("leftArm");
+//        int leftUpperArmCheck  = skeleton.getSkinnedMeshJointIndex("leftArmRoll");
+//        int leftElbowCheck     = skeleton.getSkinnedMeshJointIndex("leftForeArm");
+//        int leftForeArmCheck   = skeleton.getSkinnedMeshJointIndex("leftForeArmRoll");
+//        int leftWristCheck     = skeleton.getSkinnedMeshJointIndex("leftHand");
+//
+//        int rightEyeCheck      = skeleton.getSkinnedMeshJointIndex("rightEye");
+//        int leftEyeCheck       = skeleton.getSkinnedMeshJointIndex("leftEye");
     }
     
     public void processSkeletonNode(PNode current) 
@@ -88,11 +103,11 @@ public class VerletSkeletonFlatteningManipulator implements SkeletonFlatteningMa
         {
             case rightEye:
                 if (rightEyeBall != null)
-                    rightEyeBall.lookAtTarget(matrix);
+                    rightEyeBall.lookAtTarget(matrix, -1.0f);
                 break;
             case leftEye:
                 if (leftEyeBall != null)
-                    leftEyeBall.lookAtTarget(matrix);
+                    leftEyeBall.lookAtTarget(matrix, 1.0f);
                 break;
         }
      

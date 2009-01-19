@@ -49,10 +49,10 @@ public class CharacterEyes
     private float                eyesWanderCounter     = 0.0f;
     private int                  eyesWanderIntCounter  = 0;
     
-    private final int leftEyeLid     = 24;
-    private final int rightEyeLid    = 34;
+    private final int leftEyeLid     = 38;//24;
+    private final int rightEyeLid    = 46;//34;
     private float   closedEyeLid     = 0.0f;
-    private final float   closedEyeLidMale    = -0.011f;
+    private final float   closedEyeLidMale    = ((float)Math.PI) * -0.5f;//-0.011f;
     private final float   closedEyeLidFemale  = -0.041f;
     
     private boolean blinkingOn      = true;
@@ -86,6 +86,9 @@ public class CharacterEyes
         this.character = character;
         skeleton = character.getSkeleton();
         characterModelInst = character.getModelInst();
+        
+        //int rightEyeLidCheck = skeleton.getSkinnedMeshJointIndex("rightEyeLid");
+        //int leftEyeLidCheck  = skeleton.getSkinnedMeshJointIndex("leftEyeLid");
         
         PPolygonSkinnedMeshInstance leftEyeMeshInst  = (PPolygonSkinnedMeshInstance) skeleton.findChild("leftEyeGeoShape");
         PPolygonSkinnedMeshInstance rightEyeMeshInst = (PPolygonSkinnedMeshInstance) skeleton.findChild("rightEyeGeoShape");
@@ -179,8 +182,8 @@ public class CharacterEyes
                 if (blinkingTimer > overallTime)
                 {
                     // set the eyed to be fully open
-                    skeleton.getSkinnedMeshJoint(leftEyeLid).getLocalModifierMatrix().setTranslation(Vector3f.ZERO);
-                    skeleton.getSkinnedMeshJoint(rightEyeLid).getLocalModifierMatrix().setTranslation(Vector3f.ZERO);
+                    skeleton.getSkinnedMeshJoint(leftEyeLid).getLocalModifierMatrix().setRotation(Vector3f.ZERO);
+                    skeleton.getSkinnedMeshJoint(rightEyeLid).getLocalModifierMatrix().setRotation(Vector3f.ZERO);
                     blinking    = false;
                     eyesClosed  = false;
                     winkRight   = true;
@@ -189,11 +192,11 @@ public class CharacterEyes
                 else
                 {
                     // transition to open eyes
-                    Vector3f openingEyeLidTrans = new Vector3f(0.0f, closedEyeLid * (overallTime - blinkingTimer) / overallTime, 0.0f);
+                    Vector3f openingEyeLidRot = new Vector3f(closedEyeLid * (overallTime - blinkingTimer) / overallTime, 0.0f, 0.0f);
                     if (winkLeft)
-                        skeleton.getSkinnedMeshJoint(leftEyeLid).getLocalModifierMatrix().setTranslation(openingEyeLidTrans);
+                        skeleton.getSkinnedMeshJoint(leftEyeLid).getLocalModifierMatrix().setRotation(openingEyeLidRot);
                     if (winkRight)
-                        skeleton.getSkinnedMeshJoint(rightEyeLid).getLocalModifierMatrix().setTranslation(openingEyeLidTrans);
+                        skeleton.getSkinnedMeshJoint(rightEyeLid).getLocalModifierMatrix().setRotation(openingEyeLidRot);
                 }
             }
         }
@@ -203,22 +206,22 @@ public class CharacterEyes
             if (blinkingTimer > blinkingCloseTime)
             {
                 // set the eyed to be fully closed
-                Vector3f closedEyeLidTrans = new Vector3f(0.0f, closedEyeLid, 0.0f);
+                Vector3f closedEyeLidRot = new Vector3f(closedEyeLid, 0.0f, 0.0f);
                 if (winkLeft)
-                    skeleton.getSkinnedMeshJoint(leftEyeLid).getLocalModifierMatrix().setTranslation(closedEyeLidTrans);
+                    skeleton.getSkinnedMeshJoint(leftEyeLid).getLocalModifierMatrix().setRotation(closedEyeLidRot);
                 if (winkRight)
-                    skeleton.getSkinnedMeshJoint(rightEyeLid).getLocalModifierMatrix().setTranslation(closedEyeLidTrans);
+                    skeleton.getSkinnedMeshJoint(rightEyeLid).getLocalModifierMatrix().setRotation(closedEyeLidRot);
                 eyesClosed     = true;
                 blinkingTimer = 0.0f;
             }
             else
             {
                 // transition to closed eyes
-                Vector3f closingEyeLidTrans = new Vector3f(0.0f, closedEyeLid * blinkingTimer / blinkingCloseTime, 0.0f);
+                Vector3f closingEyeLidRot = new Vector3f(closedEyeLid * blinkingTimer / blinkingCloseTime, 0.0f, 0.0f);
                 if (winkLeft)
-                    skeleton.getSkinnedMeshJoint(leftEyeLid).getLocalModifierMatrix().setTranslation(closingEyeLidTrans);
+                    skeleton.getSkinnedMeshJoint(leftEyeLid).getLocalModifierMatrix().setRotation(closingEyeLidRot);
                 if (winkRight)
-                    skeleton.getSkinnedMeshJoint(rightEyeLid).getLocalModifierMatrix().setTranslation(closingEyeLidTrans);
+                    skeleton.getSkinnedMeshJoint(rightEyeLid).getLocalModifierMatrix().setRotation(closingEyeLidRot);
             }
         }
     }

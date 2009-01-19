@@ -264,6 +264,10 @@ public class VerletArm
         return particles.get(wrist).getCurrentPosition();
     }
 
+    public Vector3f getWristVelocity() {
+        return particles.get(wrist).getVelocity();
+    }
+    
     public boolean isEnabled() 
     {
         return enabled;

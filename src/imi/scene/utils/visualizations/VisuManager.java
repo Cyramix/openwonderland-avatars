@@ -41,8 +41,10 @@ public class VisuManager extends Entity
     private WorldManager        m_WM        = null;
     /** The root of our jME scene graph **/
     private Node                m_jmeRoot   = null;
-    /** Collection of all the verlet objects we are tracking **/
-    private FastList<PositionVisualization> m_objects = null;
+    /** Collection of all the position objects we are tracking **/
+    private FastList<PositionVisualization> m_positionObjects = null;
+    /** Collection of all the box objects we are tracking **/
+    private FastList<BoxVisualization> m_boxObjects = null;
     /** ProcessorComponent! **/
     private UpdateDriver m_updater = null;
     /** Used for toggling wireframe **/
@@ -81,28 +83,42 @@ public class VisuManager extends Entity
      */
     public void addPositionObject(Vector3f position)
     {
-        if (m_objects == null) // First object, allocate collection space
-            m_objects = new FastList<PositionVisualization>();
+        if (m_positionObjects == null) // First object, allocate collection space
+            m_positionObjects = new FastList<PositionVisualization>();
 
         PositionVisualization visuals = new PositionVisualization(position);
-        m_objects.add(visuals);
+        m_positionObjects.add(visuals);
         m_jmeRoot.attachChild(visuals.objectRoot);
         m_jmeRoot.updateRenderState();
-
     }
 
-    public void addPositionObject(Vector3f position, ColorRGBA color)
+    public void addPositionObject(Vector3f position, ColorRGBA color, float radius) 
     {
-        if (m_objects == null) // First object, allocate collection space
-            m_objects = new FastList<PositionVisualization>();
+        if (m_positionObjects == null) // First object, allocate collection space
+            m_positionObjects = new FastList<PositionVisualization>();
 
-        PositionVisualization visuals = new PositionVisualization(position);
+        PositionVisualization visuals = new PositionVisualization(position, radius);
         visuals.getSphere().setDefaultColor(color);
-        m_objects.add(visuals);
+        m_positionObjects.add(visuals);
         m_jmeRoot.attachChild(visuals.objectRoot);
-        m_jmeRoot.updateRenderState();
+        m_jmeRoot.updateRenderState();  
     }
     
+    public void addBoxObject(Vector3f origin, Vector3f min, Vector3f max, ColorRGBA color) 
+    {
+        if (m_boxObjects == null) // First object, allocate collection space
+            m_boxObjects = new FastList<BoxVisualization>();
+
+        BoxVisualization visuals = new BoxVisualization(origin, min, max, color);
+        m_boxObjects.add(visuals);
+        m_jmeRoot.attachChild(visuals.objectRoot);
+        m_jmeRoot.updateRenderState();  
+    }
+    
+    public boolean removeBoxObject(Vector3f position)
+    {
+        return false; // TODO
+    }
     /**
      * This method removes the specified verlet object from the manager
      * @param verletObject
@@ -111,20 +127,23 @@ public class VisuManager extends Entity
     public boolean removePositionObject(Vector3f position)
     {
         boolean result = false;
-        if (m_objects != null) // Are there any objects?
+        if (m_positionObjects != null) // Are there any objects?
         {
-            int index = m_objects.indexOf(new PositionVisualization(position));
-            if (index != -1) // did we find anything?
-            {
-                m_objects.remove(index);
-                result = true;
-            }
-            else
-                result = false;
-
-            // was this the last one?
-            if (m_objects.size() == 0) // Yes, free the memory
-                m_objects = null;
+            return m_positionObjects.remove(position); // TODO
+            
+            
+//            int index = m_objects.indexOf(new PositionVisualization(position));
+//            if (index != -1) // did we find anything?
+//            {
+//                m_objects.remove(index);
+//                result = true;
+//            }
+//            else
+//                result = false;
+//
+//            // was this the last one?
+//            if (m_objects.size() == 0) // Yes, free the memory
+//                m_objects = null;
         }
         else // no objects to remove
             result = false;
@@ -135,27 +154,34 @@ public class VisuManager extends Entity
     public void clearObjects()
     {
         // begone objects!
-        if (m_objects != null)
-            m_objects.clear();
-        m_objects = null;
+        if (m_positionObjects != null)
+            m_positionObjects.clear();
+        m_positionObjects = null;
+        if (m_boxObjects != null)
+            m_boxObjects.clear();
+        m_boxObjects = null;
         m_jmeRoot.detachAllChildren();
     }
 
     public void update() 
     {
-        if (m_objects == null)
+        if (m_positionObjects == null)
             return;
         
-        for (PositionVisualization obj : m_objects)
-        {
+        for (PositionVisualization obj : m_positionObjects)
             obj.updatePositions();
-        }
+        
+        if (m_boxObjects == null)
+            return;
+        
+        for (BoxVisualization obj : m_boxObjects)
+            obj.updatePositions();
     }
 
     public void setWireframe(boolean bWireframeOn)
     {
-            m_wireframeState.setEnabled(bWireframeOn);
-            m_jmeRoot.updateRenderState();
+        m_wireframeState.setEnabled(bWireframeOn);
+        m_jmeRoot.updateRenderState();
     }
 
     private class UpdateDriver extends ProcessorComponent

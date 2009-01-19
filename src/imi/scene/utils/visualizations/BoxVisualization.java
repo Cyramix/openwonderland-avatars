@@ -20,75 +20,52 @@ package imi.scene.utils.visualizations;
 import com.jme.math.Vector3f;
 import com.jme.renderer.ColorRGBA;
 import com.jme.scene.Node;
-import com.jme.scene.shape.Sphere;
+import com.jme.scene.shape.Box;
 
 /**
- *
+ * quick visu for testing
  * @author Lou Hayt
  */
-public class PositionVisualization 
+public class BoxVisualization 
 {
     /** Root of the object **/
     Node objectRoot = null;
     /** Reference to the overall object's position **/
-    Vector3f objectPosition = null;
+    Vector3f origin = null;
+    Vector3f min = null;
+    Vector3f max = null;
     /** The visualization **/
-    Sphere sphere = null;
+    Box box = null;
 
     /**
      * Construct a new visualization object.
      * @param verletObject
      */
-    public PositionVisualization(Vector3f position)
+    public BoxVisualization(Vector3f origin, Vector3f min, Vector3f max, ColorRGBA color) 
     {
-        objectRoot = new Node(position.toString());
-
-        // grab reference from the verlet object and map it
-        objectPosition = position;
-        objectRoot.setLocalTranslation(objectPosition);
+        objectRoot = new Node("Box visu");
+        this.origin = origin;
+        this.min = min;
+        this.max = max;
+        objectRoot.setLocalTranslation(origin);
         
         // clear out the old
         objectRoot.detachAllChildren();
 
         // add a new sphere
-        sphere = new Sphere("Position sphere", Vector3f.ZERO, 10, 10, 0.5f);
-        sphere.setDefaultColor(ColorRGBA.cyan);
+        box = new Box("Box visu", min, max);
+        box.setDefaultColor(color);
 
         // Attach the sphere to the scene root
-        objectRoot.attachChild(sphere);
+        objectRoot.attachChild(box);
     }
 
-    PositionVisualization(Vector3f position, float radius) 
-    {
-        objectRoot = new Node(position.toString());
-
-        // grab reference from the verlet object and map it
-        objectPosition = position;
-        objectRoot.setLocalTranslation(objectPosition);
-        
-        // clear out the old
-        objectRoot.detachAllChildren();
-
-        // add a new sphere
-        sphere = new Sphere("Position sphere", Vector3f.ZERO, 10, 10, radius);
-        sphere.setDefaultColor(ColorRGBA.cyan);
-
-        // Attach the sphere to the scene root
-        objectRoot.attachChild(sphere);
-    }
-
-    /**
-     * Update all the local translation components of the nodes representing the particles
-     */
     public void updatePositions()
     {
           // Update the position
-          sphere.setLocalTranslation(objectPosition);
+          box.setLocalTranslation(origin);
     }
 
-
-    
-    
     ////////////////////////////////////////////////////////////////////////////
     /// Equality checking is agnostic of all state except the verlet object  ///
     ////////////////////////////////////////////////////////////////////////////
@@ -100,27 +77,28 @@ public class PositionVisualization
         if (getClass() != obj.getClass()) {
             return false;
         }
-        PositionVisualization other = (PositionVisualization)obj;
-        if (objectPosition.equals(other.getObjectPosition()) && sphere.equals(other.getSphere()))
+        BoxVisualization other = (BoxVisualization)obj;
+        if (min.equals(other.getMin()) && max.equals(other.getMax()))
             return true;
         return false;
     }
 
     @Override
     public int hashCode() {
-        int hash = 3;
-        hash = 71 * hash + (this.objectPosition != null ? this.objectPosition.hashCode() : 0);
-        hash = 71 * hash + (this.sphere != null ? this.sphere.hashCode() : 0);
+        int hash = 7;
+        hash = 47 * hash + (this.min != null ? this.min.hashCode() : 0);
+        hash = 47 * hash + (this.max != null ? this.max.hashCode() : 0);
         return hash;
     }
 
-    public Vector3f getObjectPosition() {
-        return objectPosition;
+    public Vector3f getMax() {
+        return max;
     }
 
-    public Sphere getSphere() {
-        return sphere;
+    public Vector3f getMin() {
+        return min;
     }
 
-
+    
+    
 }
