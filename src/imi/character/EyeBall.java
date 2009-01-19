@@ -76,7 +76,7 @@ public class EyeBall extends PPolygonSkinnedMeshInstance
      * @param matrix The matrix being modified
      * @param jointIndex Joint to modify
      */
-    protected void lookAtTarget(PMatrix matrix, float rightEyeHack)
+    protected void lookAtTarget(PMatrix matrix)
     {
         PMatrix modelWorldRef = modelInst.getTransform().getWorldMatrix(false);
         

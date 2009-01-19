@@ -17,6 +17,7 @@
  */
 package imi.character.ninja;
 
+import com.jme.math.Vector3f;
 import imi.character.statemachine.corestates.WalkState;
 import imi.character.statemachine.corestates.TurnState;
 import imi.character.statemachine.corestates.SitState;
@@ -26,7 +27,7 @@ import imi.character.statemachine.corestates.FlyState;
 import imi.character.statemachine.corestates.FallFromSitState;
 import imi.character.statemachine.corestates.ActionState;
 import imi.character.CharacterController;
-import imi.character.steering.FollowPath;
+import imi.character.networking.DarkstarClient;
 import imi.character.steering.GoSit;
 import imi.character.steering.GoTo;
 import imi.character.statemachine.corestates.transitions.FlyToIdle;
@@ -238,21 +239,32 @@ public class NinjaContext extends GameContext
         // GoTo to location - if path is available from the current location
         else if (trigger == TriggerNames.GoTo1.ordinal() && pressed)
         {
+            if (ninja.getUpdateExtension() != null)
+            {
+                Vector3f dir = ninja.getPosition().add(0.0f, 1.8f, 0.0f).subtract(Vector3f.ZERO).normalize();
+                ((DarkstarClient)ninja.getUpdateExtension()).pitchBall(Vector3f.ZERO, dir.mult(0.1f));
+             //   ((DarkstarClient)ninja.getUpdateExtension()).pitchBall(controller.getPosition().add(new Vector3f(-5.0f, 1.8f, 0.0f)), new Vector3f(0.1f, 0.0f, 0.0f));
+            }
            //ninja.getObjectCollection().testLightToggle(); // test
            
            // System.out.println("fix: " + ninja.getPosition());
             
-            AI.clearTasks();
-            GoToNearestLocation();
-            if (location != null)
-                AI.addTaskToBottom(new FollowPath("yellowRoom", location, this));
+//            AI.clearTasks();
+//            GoToNearestLocation();
+//            if (location != null)
+//                AI.addTaskToBottom(new FollowPath("yellowRoom", location, this));
         }
         else if (trigger == TriggerNames.GoTo2.ordinal() && pressed)
         {
-            AI.clearTasks();
-            GoToNearestLocation();
-            if (location != null)
-                AI.addTaskToBottom(new FollowPath("lobbyCenter", location, this));
+            if (ninja.getUpdateExtension() != null)
+            {
+                ((DarkstarClient)ninja.getUpdateExtension()).getServerProxy().startGame(3);
+            }
+            
+//            AI.clearTasks();
+//            GoToNearestLocation();
+//            if (location != null)
+//                AI.addTaskToBottom(new FollowPath("lobbyCenter", location, this));
         }
         else if (trigger == TriggerNames.GoTo3.ordinal() && pressed)
         {

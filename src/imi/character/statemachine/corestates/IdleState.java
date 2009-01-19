@@ -125,10 +125,10 @@ public class IdleState extends GameState
                 SkeletonNode skeleton = context.getSkeleton();
                 if (skeleton != null)
                 {
-                    skeleton.resetJointToBindPose("leftFoot");
-                    skeleton.resetJointToBindPose("leftFootBall");
-                    skeleton.resetJointToBindPose("rightFoot");
-                    skeleton.resetJointToBindPose("rightFootBall");
+//                    skeleton.resetJointToBindPose("leftFoot");
+//                    skeleton.resetJointToBindPose("leftFootBall");
+//                    skeleton.resetJointToBindPose("rightFoot");
+//                    skeleton.resetJointToBindPose("rightFootBall");
                     resetBodyParts = false;
                 }
             }

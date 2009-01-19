@@ -17,6 +17,8 @@
  */
 package imi.character.statemachine;
 
+import imi.scene.Updatable;
+
 
 /**
  * This class is the preferred method of extended the run-time engine.  Extend this class and add it to the

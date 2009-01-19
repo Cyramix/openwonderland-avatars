@@ -157,7 +157,7 @@ public class NinjaAvatarAttributes extends CharacterAttributes
 
     private void customizeHairPresets(int preset, ArrayList<String> load, ArrayList<SkinnedMeshParams> add, ArrayList<AttachmentParams> attachments)
     {
-        PMatrix oreintation = new PMatrix(new Vector3f(0.0f,(float) Math.toRadians(180), 0.0f), Vector3f.UNIT_XYZ, Vector3f.ZERO);
+        PMatrix oreintation = new PMatrix(new Vector3f(0.0f,(float) Math.toRadians(180), 0.0f), new Vector3f(1.05f, 1.05f, 1.05f), Vector3f.ZERO);
         switch(preset)
         {
             case 0:
@@ -298,6 +298,14 @@ public class NinjaAvatarAttributes extends CharacterAttributes
                 add.add(new SkinnedMeshParams("SuitPantsShape", "LowerBody"));
             }
             break;
+            case 4:
+            {
+                // Meso
+                load.add(new String("assets/models/collada/Clothes/Male/Meso/MaleMesoBottom.dae"));
+                add.add(new SkinnedMeshParams("LegsNudeShape", "LowerBody"));
+                add.add(new SkinnedMeshParams("polySurfaceShape6", "LowerBody"));
+            }
+            break;
             default:
             {
                 if(!loadedBind)
@@ -351,9 +359,10 @@ public class NinjaAvatarAttributes extends CharacterAttributes
             break;
             case 4:
             {
-                // Dress shirt for suit
-                load.add(new String("assets/models/collada/Shirts/SuitDressShirt_M/SuitDressShirt.dae"));
-                add.add(new SkinnedMeshParams("SuitShirtShape", "UpperBody"));
+                // Meso
+                load.add(new String("assets/models/collada/Clothes/Male/Meso/MaleMesoTop.dae"));
+                add.add(new SkinnedMeshParams("polySurfaceShape1", "UpperBody"));
+                add.add(new SkinnedMeshParams("polySurfaceShape2", "UpperBody"));
             }
             break;
             case 5:
@@ -361,6 +370,13 @@ public class NinjaAvatarAttributes extends CharacterAttributes
                 // Suit Jacket
                 load.add(new String("assets/models/collada/Shirts/SuitJacket_M/SuitJacket.dae"));
                 add.add(new SkinnedMeshParams("SuitJacketShape", "UpperBody"));
+            }
+            break;
+            case 6:
+            {
+                // Dress shirt for suit
+                load.add(new String("assets/models/collada/Shirts/SuitDressShirt_M/SuitDressShirt.dae"));
+                add.add(new SkinnedMeshParams("SuitShirtShape", "UpperBody"));
             }
             break;
             default:

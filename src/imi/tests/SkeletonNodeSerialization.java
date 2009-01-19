@@ -76,7 +76,6 @@ public class SkeletonNodeSerialization
         "assets/models/collada/Avatars/FemaleFacialAnimation/FemaleSmile.dae",
         "assets/models/collada/Avatars/FemaleFacialAnimation/FemaleFrown.dae",
         "assets/models/collada/Avatars/FemaleFacialAnimation/FemaleScorn.dae",
-        "assets/models/collada/Avatars/FemaleFacialAnimation/FemaleDefault.dae",
         "assets/models/collada/Avatars/FemaleFacialAnimation/FemaleDefault.dae"
     };
     private static String[] MaleAnimationLocations = {
