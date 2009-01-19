@@ -84,7 +84,7 @@ public class ColladaEnvironment extends Entity
         while (modInst.getChild(0) instanceof SharedAssetPlaceHolder)
         {
             try {
-                Thread.sleep(4000);
+                Thread.sleep(4000); // Hack
             }
             catch (InterruptedException ex)
             {

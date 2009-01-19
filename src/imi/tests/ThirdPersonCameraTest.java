@@ -70,8 +70,9 @@ public class ThirdPersonCameraTest extends DemoBase
     {
         ThirdPersonCamState state = new ThirdPersonCamState(null);
         state.setOffsetFromCharacter(new Vector3f(0, 1.8f, 0));
-        state.setCameraPosition(new Vector3f(0, 2.5f, -7));
+        state.setCameraPosition(new Vector3f(0, 3.5f, -7));
         state.setTargetFocalPoint(new Vector3f(0,1.8f,0));
+        state.setToCamera(new Vector3f(0, 2.5f, -4));
         ThirdPersonCamModel model = new ThirdPersonCamModel();
         m_cameraProcessor.setCameraBehavior(model, state);
     }
@@ -90,6 +91,9 @@ public class ThirdPersonCameraTest extends DemoBase
         System.out.println("Constructing the male took: " + time);
 
         avatar.selectForInput();
+        avatar.setBigHeadMode(2.0f);
+        avatar.makeFist(false, true);
+        avatar.makeFist(false, false);
         control.getNinjaTeam().add(avatar);
 
         // Get the mouse evets so the verlet arm can be controlled

@@ -67,6 +67,7 @@ public class ThirdPersonCamState extends CameraState
     public final static int ZOOMING_IN  = 1;
     public final static int ZOOMING_OUT = 2;
     public final static int STOPPED     = 0;
+
     /** Current movement state **/
     private int movementState = STOPPED;
 
@@ -80,16 +81,29 @@ public class ThirdPersonCamState extends CameraState
     private float minimumDistanceSquared = 2.5f;
     /** Outer boundary **/
     private float maximumDistanceSquared = 144;
-    private final Vector3f vectorToCamera = new Vector3f();
+    /** Offset from target after move **/
+    private final Vector3f vectorToCamera = new Vector3f(0,3,-2);
 
     public void getCameraPosition(Vector3f vOut)
     {
         camTransform.getTranslation(vOut);
     }
 
+    public float getDefaultCameraOffset() {
+        throw new UnsupportedOperationException("Not yet implemented");
+    }
+
     public float getMaximumDistanceSquared()
     {
         return maximumDistanceSquared;
+    }
+
+    public void getOriginalFocalPoint(Vector3f vOut) {
+        vOut.set(originalFocalPoint);
+    }
+
+    public void getOriginalPosition(Vector3f vOut) {
+        vOut.set(originalPosition);
     }
 
     public void getTargetFocalPoint(Vector3f vOut)
@@ -333,7 +347,10 @@ public class ThirdPersonCamState extends CameraState
     }
 
     public void setNextPosition(Vector3f nextPosition) {
-        this.nextPosition = nextPosition;
+        if (nextPosition != null)
+            this.nextPosition = new Vector3f(nextPosition);
+        else
+            this.nextPosition = null;
     }
 
     public float getTimeInFocusTransition()

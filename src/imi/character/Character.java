@@ -1646,4 +1646,90 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         m_leftArm               = null;
         m_skeletonManipulator   = null;
     }
+
+    /**
+     * Sets the characters head into bigHead mode.
+     * @param fScale The new head scale, 1.0 for no weird scaling
+     */
+    public void setBigHeadMode(float fScale)
+    {
+        SkinnedMeshJoint joint = getSkeleton().getSkinnedMeshJoint("Head");
+        getSkeleton().displaceJoint("Head", new Vector3f(0, 0.07f * (fScale - 1), 0));
+        joint.getBindPose().setScale(fScale);
+    }
+
+    /**
+     * Make fists with the specified hands
+     * @param rightHand True to have a fist with the right hand
+     * @param leftHand True to have a fist with the left hand
+     */
+    public void makeFist(boolean rightHand, boolean leftHand)
+    {
+        if (rightHand)
+        {
+
+        }
+        else // un-fist
+        {
+            FastList<PNode> queue = new FastList<PNode>();
+            queue.addAll(getSkeleton().getSkinnedMeshJoint("leftHand").getChildren());
+            while (queue.isEmpty() == false)
+            {
+                PNode current = queue.removeFirst();
+                if (!(current instanceof SkinnedMeshJoint))
+                    continue; // Not relevant
+                ((SkinnedMeshJoint)current).resetBindPose();
+                if (current.getChildrenCount() > 0)
+                    queue.addAll(current.getChildren());
+            }
+        }
+        if (leftHand)
+        {
+            PMatrix xRotMat = new PMatrix();
+            Vector3f xRotation = new Vector3f((float)(Math.PI * -0.4), 0.01f, 0);
+            xRotMat.setRotation(xRotation);
+            FastList<PNode> queue = new FastList<PNode>();
+            queue.addAll(getSkeleton().getSkinnedMeshJoint("leftPalm").getChildren());
+            queue.add(getSkeleton().getSkinnedMeshJoint("leftHandThumb2"));
+            while (queue.isEmpty() == false)
+            {
+                PNode current = queue.removeFirst();
+                if (!(current instanceof SkinnedMeshJoint))
+                    continue;
+
+                SkinnedMeshJoint joint = (SkinnedMeshJoint)current;
+                PMatrix bindPose = joint.getBindPose();
+                bindPose.mul(xRotMat);
+                if (current.getChildrenCount() > 0)
+                    queue.addAll(current.getChildren());
+            }
+
+            // Set palm transform
+            float[] matFloats =
+            {
+                0.927f,-0.375f, 0f,         -0.018f,
+                0.366f, 0.907f, -0.208f,    0.024f,
+                0.078f, 0.193f, 0.978f,		0.004f,
+                0,		0,		0,          1
+            };
+
+            getSkeleton().getSkinnedMeshJoint("leftPalm").getBindPose().set(matFloats);
+        }
+        else // un-fist
+        {
+            FastList<PNode> queue = new FastList<PNode>();
+            queue.addAll(getSkeleton().getSkinnedMeshJoint("leftHand").getChildren());
+            while (queue.isEmpty() == false)
+            {
+                PNode current = queue.removeFirst();
+                if (!(current instanceof SkinnedMeshJoint))
+                    continue; // Not relevant
+                ((SkinnedMeshJoint)current).resetBindPose();
+                if (current.getChildrenCount() > 0)
+                    queue.addAll(current.getChildren());
+            }
+        }
+
+    }
+
 }

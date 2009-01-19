@@ -124,6 +124,8 @@ public class ThirdPersonCamModel implements CameraModel, CharacterMotionListener
      */
     private void processMouseWheel(MouseWheelEvent mwe, ThirdPersonCamState camState)
     {
+        if (camState.getNextPosition() == null) // No zooming while animating
+            return;
         // Negative, zoom in; Positive, zoom out
         int clicks = mwe.getWheelRotation() * -1;
 
@@ -250,10 +252,6 @@ public class ThirdPersonCamModel implements CameraModel, CharacterMotionListener
             floats[12] = 0.0f;     floats[13] = 0.0f;      floats[14] = 0.0f;       floats[15] = 1.0f;
 
             camXForm.set(floats);
-
-            camState.getTargetFocalPoint(focalPointBuffer);
-            translation.subtractLocal(focalPointBuffer);
-            camState.setToCamera(translation);
         }
 
         // Grab here, just in case the above lookAt was executed
@@ -304,6 +302,7 @@ public class ThirdPersonCamModel implements CameraModel, CharacterMotionListener
      * @param deltaTime
      * @throws imi.scene.camera.behaviors.WrongStateTypeException
      */
+    @Override
     public void update(CameraState state, float deltaTime) throws WrongStateTypeException
     {
         if (state.getType() != CameraState.CameraStateType.ThirdPerson)
@@ -365,9 +364,12 @@ public class ThirdPersonCamModel implements CameraModel, CharacterMotionListener
     private void updatePositionTransition(ThirdPersonCamState camState, Vector3f nextPosition)
     {
         float s = camState.getTimeInPositionTransition() / camState.getTransitionDuration();
-        Vector3f newPosition = new Vector3f(camState.getOriginalPosition());
-        newPosition.interpolate(nextPosition, s);
-        camState.setCameraPosition(newPosition, true); // lookAt
+        synchronized (vectorBuffer)
+        {
+            camState.getOriginalPosition(vectorBuffer);
+            vectorBuffer.interpolate(nextPosition, s);
+            camState.setCameraPosition(vectorBuffer, true); // lookAt
+        }
     }
 
     /**
@@ -379,9 +381,12 @@ public class ThirdPersonCamModel implements CameraModel, CharacterMotionListener
     private void updateFocusTransition(ThirdPersonCamState camState, Vector3f nextPosition)
     {
         float s = camState.getTimeInFocusTransition() / camState.getTransitionDuration();
-        Vector3f newFocus = new Vector3f(camState.getOriginalFocalPoint());
-        newFocus.interpolate(nextPosition, s);
-        camState.setTargetFocalPoint(newFocus);
+        synchronized (vectorBuffer)
+        {
+            camState.getOriginalFocalPoint(vectorBuffer);
+            vectorBuffer.interpolate(nextPosition, s);
+            camState.setTargetFocalPoint(vectorBuffer);
+        }
     }
 
     /**
@@ -419,54 +424,36 @@ public class ThirdPersonCamModel implements CameraModel, CharacterMotionListener
     private final Vector3f vectorBuffer = new Vector3f();
     private final Vector3f vectorBufferTwo = new Vector3f();
 
-    // CharacterMotionListener imolementation
+    // CharacterMotionListener implementation
     @Override
     public void transformUpdate(Vector3f translation, PMatrix rotation)
     {
-//        final float threshold = 6.0f;
-//        if (activeState != null)
-//        {
-//            activeState.getCameraPosition(vectorBuffer);
-//            vectorBuffer.subtractLocal(translation);
-//            if (vectorBuffer.lengthSquared() > threshold)
-//            {
-//                moveTo(translation, activeState);
-//                activeState.setNeedsRefresh();
-//            }
-//        }
-        final float threshold = 10.0f;
+        final float threshold = 16.0f; // Distance before camera position updates
         if (activeState != null) // Anybody care?
         {
-            Vector3f zAxis = rotation.getLocalZNormalized();
-            vectorBuffer.set(translation);
-            activeState.getOffsetFromCharacter(vectorBuffer);
-            vectorBuffer.addLocal(translation);
-            activeState.setTargetFocalPoint(vectorBuffer);
-
-            activeState.getToCamera(vectorBufferTwo);
-            float lengthOfToCam2D = (float) Math.sqrt(vectorBufferTwo.x * vectorBufferTwo.x +
-                                                    vectorBufferTwo.z * vectorBufferTwo.z);
-
-            
+            // Grab stuff before the synchronization block
             PMatrix camTransform = activeState.getCameraTransform();
-            camTransform.getTranslation(vectorBufferTwo);
-            if (vectorBufferTwo.subtract(translation).lengthSquared() > threshold &&
-                    activeState.getNextPosition() == null)
+            synchronized (vectorBuffer)
             {
-                vectorBuffer.y += vectorBufferTwo.y;
-                vectorBuffer.x += zAxis.x * lengthOfToCam2D;
-                vectorBuffer.z += zAxis.z * lengthOfToCam2D;
-//                camTransform.setTranslation(vectorBuffer);
-                activeState.setTargetNeedsUpdate(true);
-                updateCameraTransform(activeState);
-                moveTo(vectorBuffer, activeState);
-            }
-            else
-            {
-                activeState.setTargetNeedsUpdate(true);
-                updateCameraTransform(activeState);
-            }
+                vectorBuffer.set(translation);
+                activeState.getOffsetFromCharacter(vectorBuffer);
+                vectorBuffer.addLocal(translation);
+                activeState.setTargetFocalPoint(vectorBuffer);
 
+                camTransform.getTranslation(vectorBuffer);
+                activeState.getTargetFocalPoint(vectorBufferTwo);
+                vectorBuffer.subtractLocal(vectorBufferTwo);
+                if (vectorBuffer.lengthSquared() > threshold &&
+                        activeState.getNextPosition() == null)
+                {
+                    activeState.getToCamera(vectorBufferTwo);
+                    rotation.transformNormal(vectorBufferTwo);
+                    vectorBufferTwo.addLocal(translation);
+                    moveTo(vectorBufferTwo, activeState);
+                }
+            }
+            activeState.setTargetNeedsUpdate(true);
+            updateCameraTransform(activeState);
         }
     }
 
