@@ -434,6 +434,7 @@ public class ThirdPersonCamModel implements CameraModel, CharacterMotionListener
 //                activeState.setNeedsRefresh();
 //            }
 //        }
+        final float threshold = 10.0f;
         if (activeState != null) // Anybody care?
         {
             Vector3f zAxis = rotation.getLocalZNormalized();
@@ -442,19 +443,30 @@ public class ThirdPersonCamModel implements CameraModel, CharacterMotionListener
             vectorBuffer.addLocal(translation);
             activeState.setTargetFocalPoint(vectorBuffer);
 
-            PMatrix camTransform = activeState.getCameraTransform();
             activeState.getToCamera(vectorBufferTwo);
             float lengthOfToCam2D = (float) Math.sqrt(vectorBufferTwo.x * vectorBufferTwo.x +
                                                     vectorBufferTwo.z * vectorBufferTwo.z);
 
-            vectorBuffer.y += vectorBufferTwo.y;
-            vectorBuffer.x += zAxis.x * -lengthOfToCam2D;
-            vectorBuffer.z += zAxis.z * -lengthOfToCam2D;
+            
+            PMatrix camTransform = activeState.getCameraTransform();
+            camTransform.getTranslation(vectorBufferTwo);
+            if (vectorBufferTwo.subtract(translation).lengthSquared() > threshold &&
+                    activeState.getNextPosition() == null)
+            {
+                vectorBuffer.y += vectorBufferTwo.y;
+                vectorBuffer.x += zAxis.x * lengthOfToCam2D;
+                vectorBuffer.z += zAxis.z * lengthOfToCam2D;
+//                camTransform.setTranslation(vectorBuffer);
+                activeState.setTargetNeedsUpdate(true);
+                updateCameraTransform(activeState);
+                moveTo(vectorBuffer, activeState);
+            }
+            else
+            {
+                activeState.setTargetNeedsUpdate(true);
+                updateCameraTransform(activeState);
+            }
 
-            camTransform.setTranslation(vectorBuffer);
-
-            activeState.setTargetNeedsUpdate(true);
-            updateCameraTransform(activeState);
         }
     }
 
