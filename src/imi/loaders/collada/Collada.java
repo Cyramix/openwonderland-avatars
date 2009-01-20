@@ -504,13 +504,19 @@ public class Collada
 
     private void attachSkinnedMeshToSkeleton()
     {
-        for (PPolygonSkinnedMesh mesh : m_PolygonSkinnedMeshes)
+        int skinnedMeshCount = m_PolygonSkinnedMeshes.size();
+        if (skinnedMeshCount > 0 && m_skeletonNode != null)
         {
-            m_skeletonNode.addChild(mesh);
-            mesh.linkJointsToSkeletonNode(m_skeletonNode);
-        }
+            PPolygonSkinnedMesh mesh = null;
+            for (int i = 0; i < skinnedMeshCount; ++i)
+            {
+                mesh = m_PolygonSkinnedMeshes.get(i);
+                m_skeletonNode.addChild(mesh);
+                mesh.linkJointsToSkeletonNode(m_skeletonNode);
+            }
 
-        m_skeletonNode.setDirty(true, true);
+            m_skeletonNode.setDirty(true, true);
+        }
     }
 
 
