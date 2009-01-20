@@ -18,6 +18,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
@@ -304,6 +305,7 @@ public class JNagClientGUI2 extends javax.swing.JFrame implements ActionListener
 
         DefaultTableModel table = (DefaultTableModel)jTable_Boards.getModel();
         table.addRow(data);
+        table.fireTableDataChanged();
     }
 
     /**
@@ -340,6 +342,7 @@ public class JNagClientGUI2 extends javax.swing.JFrame implements ActionListener
                 model.setValueAt(Losses, i, 3);
             }
         }
+        model.fireTableDataChanged();
     }
     
     /**
@@ -355,6 +358,7 @@ public class JNagClientGUI2 extends javax.swing.JFrame implements ActionListener
                 model.setValueAt(lives, i, 1);
             }
         }
+        model.fireTableDataChanged();
     }
     
     /**
@@ -370,6 +374,7 @@ public class JNagClientGUI2 extends javax.swing.JFrame implements ActionListener
                 model.setValueAt(wins, i, 2);
             }
         }
+        model.fireTableDataChanged();
     }
     
     /**
@@ -385,6 +390,7 @@ public class JNagClientGUI2 extends javax.swing.JFrame implements ActionListener
                 model.setValueAt(losses, i, 3);
             }
         }
+        model.fireTableDataChanged();
     }
 
     /**
@@ -413,6 +419,7 @@ public class JNagClientGUI2 extends javax.swing.JFrame implements ActionListener
                 model.setValueAt(losses, i, 3);
             }
         }
+        model.fireTableDataChanged();
     }
 
     /**
@@ -421,7 +428,7 @@ public class JNagClientGUI2 extends javax.swing.JFrame implements ActionListener
      * @param playerName
      * @param livesdecrement
      */
-    public void updatePlayerScore(String playerName, int livesdecrement) {
+    public void updatePlayerLives(String playerName, int livesdecrement) {
         DefaultTableModel model = (DefaultTableModel)jTable_Boards.getModel();
         for (int i = 0; i < model.getRowCount(); i++) {
             if (model.getValueAt(i, 0).toString().equals(playerName)) {
@@ -430,6 +437,7 @@ public class JNagClientGUI2 extends javax.swing.JFrame implements ActionListener
                 model.setValueAt(lives, i, 1);
             }
         }
+        model.fireTableDataChanged();
     }
 
     /**
@@ -447,6 +455,7 @@ public class JNagClientGUI2 extends javax.swing.JFrame implements ActionListener
                 model.setValueAt(wins, i, 2);
             }
         }
+        model.fireTableDataChanged();
     }
 
     /**
@@ -464,6 +473,7 @@ public class JNagClientGUI2 extends javax.swing.JFrame implements ActionListener
                 model.setValueAt(losses, i, 3);
             }
         }
+        model.fireTableDataChanged();
     }
 
     /**
@@ -478,8 +488,36 @@ public class JNagClientGUI2 extends javax.swing.JFrame implements ActionListener
                 model.removeRow(i);
             }
         }
+        model.fireTableDataChanged();
     }
 
+
+    /**
+     * Forces the Player boards (table of users) to update due to a change in
+     * one or more of the cells
+     */
+    public void forceTableUpdate(int type) {
+        DefaultTableModel model = (DefaultTableModel)jTable_Boards.getModel();
+        switch(type) {
+            case 1:
+            {
+                model.fireTableDataChanged();
+                break;
+            }
+            case 2:
+            {
+                Vector names = new Vector();
+                for (int i = 0; i < model.getColumnCount(); i++) {
+                    names.add(model.getColumnName(i));
+                }
+                DefaultTableModel NewTable = new DefaultTableModel(model.getDataVector(), names);
+                break;
+            }
+        }
+        
+        
+    }
+    
     /**
      * Custom cell renderer for the JTable to display the lives of the players
      */
@@ -492,32 +530,32 @@ public class JNagClientGUI2 extends javax.swing.JFrame implements ActionListener
                 {
                     case 0:
                     {
-                        loc = new String("file://localhost/" + System.getProperty("user.dir") + "/assets/textures/Lives_0.png");
+                        loc = new String("file://localhost/" + System.getProperty("user.dir") + "/assets/textures/counter_0.png");
                         break;
                     }
                     case 1:
                     {
-                        loc = new String("file://localhost/" + System.getProperty("user.dir") + "/assets/textures/Lives_1.png");
+                        loc = new String("file://localhost/" + System.getProperty("user.dir") + "/assets/textures/counter_1.png");
                         break;
                     }
                     case 2:
                     {
-                        loc = new String("file://localhost/" + System.getProperty("user.dir") + "/assets/textures/Lives_2.png");
+                        loc = new String("file://localhost/" + System.getProperty("user.dir") + "/assets/textures/counter_2.png");
                         break;
                     }
                     case 3:
                     {
-                        loc = new String("file://localhost/" + System.getProperty("user.dir") + "/assets/textures/Lives_3.png");
+                        loc = new String("file://localhost/" + System.getProperty("user.dir") + "/assets/textures/counter_3.png");
                         break;
                     }
                     case 4:
                     {
-                        loc = new String("file://localhost/" + System.getProperty("user.dir") + "/assets/textures/Lives_4.png");
+                        loc = new String("file://localhost/" + System.getProperty("user.dir") + "/assets/textures/counter_4.png");
                         break;
                     }
                     case 5:
                     {
-                        loc = new String("file://localhost/" + System.getProperty("user.dir") + "/assets/textures/Lives_5.png");
+                        loc = new String("file://localhost/" + System.getProperty("user.dir") + "/assets/textures/counter_5.png");
                         break;
                     }
                 }

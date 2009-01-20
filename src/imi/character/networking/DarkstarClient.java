@@ -149,7 +149,7 @@ public class DarkstarClient extends JNagClient implements Updatable
         }
         
         postGUILine("HIT! " + users.get(userID) + " got hit by " + users.get(byUserID) + "'s ball and it hurts his pride!");
-        
+        gui.updatePlayerLives(users.get(userID), 1);
         performAnimation(1, false, false, userID); // shake head
         
         // Set new position and velocity for that ball

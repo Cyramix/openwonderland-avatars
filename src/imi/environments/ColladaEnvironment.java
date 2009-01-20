@@ -81,7 +81,7 @@ public class ColladaEnvironment extends Entity
 
         scene = new PScene(m_wm);
         PPolygonModelInstance modInst = scene.addModelInstance(worldAsset, new PMatrix()); // Add it to the scene
-        while (modInst.getChild(0) instanceof SharedAssetPlaceHolder)
+        while (modInst.getChildrenCount() == 0 || modInst.getChild(0)instanceof SharedAssetPlaceHolder)
         {
             try {
                 Thread.sleep(4000); // Hack
