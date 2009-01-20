@@ -565,32 +565,32 @@ public class JNagClientGUI2 extends javax.swing.JFrame implements ActionListener
                 {
                     case 0:
                     {
-                        loc = new String("file://localhost/" + System.getProperty("user.dir") + "/assets/textures/counter_0.png");
+                        loc = new String("file:///" + System.getProperty("user.dir") + "/assets/textures/counter_0.png");
                         break;
                     }
                     case 1:
                     {
-                        loc = new String("file://localhost/" + System.getProperty("user.dir") + "/assets/textures/counter_1.png");
+                        loc = new String("file:///" + System.getProperty("user.dir") + "/assets/textures/counter_1.png");
                         break;
                     }
                     case 2:
                     {
-                        loc = new String("file://localhost/" + System.getProperty("user.dir") + "/assets/textures/counter_2.png");
+                        loc = new String("file:///" + System.getProperty("user.dir") + "/assets/textures/counter_2.png");
                         break;
                     }
                     case 3:
                     {
-                        loc = new String("file://localhost/" + System.getProperty("user.dir") + "/assets/textures/counter_3.png");
+                        loc = new String("file:///" + System.getProperty("user.dir") + "/assets/textures/counter_3.png");
                         break;
                     }
                     case 4:
                     {
-                        loc = new String("file://localhost/" + System.getProperty("user.dir") + "/assets/textures/counter_4.png");
+                        loc = new String("file:///" + System.getProperty("user.dir") + "/assets/textures/counter_4.png");
                         break;
                     }
                     case 5:
                     {
-                        loc = new String("file://localhost/" + System.getProperty("user.dir") + "/assets/textures/counter_5.png");
+                        loc = new String("file:///" + System.getProperty("user.dir") + "/assets/textures/counter_5.png");
                         break;
                     }
                 }

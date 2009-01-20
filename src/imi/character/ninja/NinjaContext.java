@@ -197,12 +197,16 @@ public class NinjaContext extends GameContext
         {
             ninja.setCameraOnMe();
             ninja.getRightArm().toggleEnabled();
+            if(!ninja.getRightArm().isEnabled())
+                ninja.getRightArm().getParticles().get(2).position(new Vector3f(0.0f, -10000.0f, 0.0f));
         }
         // Toggle manual control over the left arm
         if (trigger == TriggerNames.ToggleLeftArm.ordinal() && pressed)
         {
             ninja.setCameraOnMe();
             ninja.getLeftArm().toggleEnabled();
+            if(!ninja.getLeftArm().isEnabled())
+                ninja.getLeftArm().getParticles().get(2).position(new Vector3f(0.0f, -10000.0f, 0.0f));
         }
         
         // Toggle manual control mode over the left arm

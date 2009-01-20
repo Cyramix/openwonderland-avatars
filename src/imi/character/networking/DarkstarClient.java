@@ -104,8 +104,8 @@ public class DarkstarClient extends JNagClient implements Updatable
         // Test
         vis = new VisuManager(userName, worldManager);
         vis.setWireframe(false);
-        vis.addPositionObject(character.getLeftArm().getWristPosition(), ColorRGBA.magenta, handRadius);
-        vis.addPositionObject(character.getRightArm().getWristPosition(), ColorRGBA.magenta, handRadius);
+//        vis.addPositionObject(character.getLeftArm().getWristPosition(), ColorRGBA.magenta, handRadius);
+//        vis.addPositionObject(character.getRightArm().getWristPosition(), ColorRGBA.magenta, handRadius);
         //vis.addBoxObject(hitBoxPos, hitBoxMin, hitBoxMax, ColorRGBA.lightGray);
         for (int i = 0; i < numberOfBalls; i++)
         {
@@ -179,7 +179,10 @@ public class DarkstarClient extends JNagClient implements Updatable
         
         character.makeFist(true, true);
         if (!character.getRightArm().isEnabled())
+        {
+            character.getContext().triggerReleased(TriggerNames.ToggleRightArm.ordinal());
             character.getContext().triggerPressed(TriggerNames.ToggleRightArm.ordinal());
+        }
         
         ThirdPersonCamState camState = (ThirdPersonCamState)((FlexibleCameraProcessor)worldManager.getUserData(FlexibleCameraProcessor.class)).getState();
         Vector3f toCam = new Vector3f(camState.getToCamera());
@@ -261,9 +264,15 @@ public class DarkstarClient extends JNagClient implements Updatable
         }
         
         if (character.getRightArm().isEnabled())
+        {
+            character.getContext().triggerReleased(TriggerNames.ToggleRightArm.ordinal());
             character.getContext().triggerPressed(TriggerNames.ToggleRightArm.ordinal());
+        }
         if (character.getLeftArm().isEnabled())
+        {
+            character.getContext().triggerReleased(TriggerNames.ToggleLeftArm.ordinal());
             character.getContext().triggerPressed(TriggerNames.ToggleLeftArm.ordinal());
+        }
         
         character.getContext().getState(IdleState.class).setAnimationName("Male_Idle");// normal idle
         for (UserData user : characterData.values())
@@ -724,6 +733,7 @@ public class DarkstarClient extends JNagClient implements Updatable
             {
                 user = new NinjaAvatar(new NinjaAvatarAttributes(playerNames[i], feet[i], legs[i], torso[i], hair[i], 0), worldManager);
                 user.setBigHeadMode(2.0f);
+                user.setBeerBelly(1.17f);
             }
             else
                 user = new NinjaAvatar(new NinjaFemaleAvatarAttributes(playerNames[i], feet[i], legs[i], torso[i], hair[i], 0), worldManager);
@@ -750,6 +760,7 @@ public class DarkstarClient extends JNagClient implements Updatable
         {
             user = new NinjaAvatar(new NinjaAvatarAttributes(playerName, feet, legs, torso, hair, 0), worldManager);
             user.setBigHeadMode(2.0f);
+            user.setBeerBelly(1.17f);
         }
         else
             user = new NinjaAvatar(new NinjaFemaleAvatarAttributes(playerName, feet, legs, torso, hair, 0), worldManager);

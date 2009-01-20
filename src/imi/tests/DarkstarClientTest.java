@@ -97,6 +97,7 @@ public class DarkstarClientTest extends DemoBase
         ((DarkstarClient)avatar.getUpdateExtension()).login();
         
         avatar.setBigHeadMode(2.0f);
+        avatar.setBeerBelly(1.17f);
         avatar.makeFist(false, false);
         
         float x = 2.0f + (float)Math.random() % 5.0f;

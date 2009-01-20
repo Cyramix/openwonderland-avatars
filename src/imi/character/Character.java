@@ -41,10 +41,8 @@ import imi.scene.Updatable;
 import imi.loaders.Instruction;
 import imi.loaders.Instruction.InstructionType;
 import imi.loaders.InstructionProcessor;
-import imi.loaders.PPolygonTriMeshAssembler;
 import imi.loaders.collada.Collada;
 import imi.loaders.repository.AssetDescriptor;
-import imi.loaders.repository.AssetInitializer;
 import imi.loaders.repository.Repository;
 import imi.loaders.repository.RepositoryUser;
 import imi.loaders.repository.SharedAsset;
@@ -80,8 +78,6 @@ import imi.scene.shader.AbstractShaderProgram;
 import imi.scene.shader.NoSuchPropertyException;
 import imi.scene.shader.ShaderProperty;
 import imi.scene.shader.dynamic.GLSLDataType;
-import imi.scene.shader.dynamic.GLSLVertexAttribute;
-import imi.scene.shader.programs.ClothingShaderDiffuseAsSpec;
 import imi.scene.shader.programs.ClothingShaderSpecColor;
 import imi.scene.shader.programs.EyeballShader;
 import imi.scene.shader.programs.FleshShader;
@@ -89,6 +85,7 @@ import imi.scene.shader.programs.SimpleTNLWithAmbient;
 import imi.scene.utils.PMeshUtils;
 import imi.scene.utils.tree.SerializationHelper;
 import imi.scene.utils.tree.TreeTraverser;
+import imi.scene.utils.visualizations.VisuManager;
 import imi.serialization.xml.bindings.xmlCharacter;
 import imi.serialization.xml.bindings.xmlCharacterAttributes;
 import imi.serialization.xml.bindings.xmlJointModification;
@@ -381,6 +378,11 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         m_rightArm.setSkeletonManipulator(m_skeletonManipulator);
         m_leftArm.setSkeletonManipulator(m_skeletonManipulator);
         //m_arm.setPointAtLocation(Vector3f.UNIT_Y.mult(2.0f)); // test pointing, set to null to stop pointing
+        
+        VisuManager vis = new VisuManager("blabla", m_wm);
+        vis.setWireframe(false);float handRadius    = 0.15f;
+        vis.addPositionObject(getLeftArm().getWristPosition(), ColorRGBA.magenta, handRadius);
+        vis.addPositionObject(getRightArm().getWristPosition(), ColorRGBA.magenta, handRadius);
         
         // Associate ourselves with our animation states
         for (AnimationState animState : m_skeleton.getAnimationStates())
