@@ -71,7 +71,7 @@ public class MeshInstancePropertyPanel extends javax.swing.JPanel implements PNo
 
         setMaximumSize(new java.awt.Dimension(670, 345));
         setMinimumSize(new java.awt.Dimension(670, 345));
-        setPreferredSize(new java.awt.Dimension(665, 345));
+        setPreferredSize(new java.awt.Dimension(670, 345));
         setLayout(new java.awt.GridBagLayout());
         add(m_matrixWidget, new java.awt.GridBagConstraints());
         add(m_materialPanel, new java.awt.GridBagConstraints());

@@ -291,6 +291,12 @@ public class JPanel_ServerBrowser extends javax.swing.JPanel {
         return data;
     }
 
+    /**
+     * Loads the specified model based on filters and selections of use.  If
+     * selection is for viewing then only the model is loaded and all other objects
+     * in the scene are cleared.  If loaded for view on avatar, the appropriate
+     * mesh is replaced on the avatar (avatar must be loaded first).
+     */
     public void executeLoad() {
         if (jTable1.getSelectedRow() == -1)
             return;

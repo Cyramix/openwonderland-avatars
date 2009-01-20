@@ -39,6 +39,14 @@ public class JPanel_SimpBodyOptions extends javax.swing.JPanel {
         setSliderControls();
     }
 
+////////////////////////////////////////////////////////////////////////////////
+// Class Methods
+////////////////////////////////////////////////////////////////////////////////
+
+    public void setParentFrame(JFrame frame) {
+        m_baseFrame = frame;
+    }
+
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
@@ -149,10 +157,11 @@ public class JPanel_SimpBodyOptions extends javax.swing.JPanel {
 // HELPER FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 
-    public void setParentFrame(JFrame frame) {
-        m_baseFrame = frame;
-    }
-
+    /**
+     * Sets the slider's joint associations and parent windows.  The associations
+     * specify which joints the slider controls.  The parent window allows the slider
+     * data to be sent to the switchboard found in the base window.
+     */
     public void setSliderControls() {
         AvatarHeight.setObjectRef(GUI_Enums.m_sliderControl.uniformHeight);
         AvatarThickness.setObjectRef(GUI_Enums.m_sliderControl.uniformThickness);
@@ -163,9 +172,5 @@ public class JPanel_SimpBodyOptions extends javax.swing.JPanel {
         AvatarThickness.setParentFrame((JFrame_SimpAdvOptions) m_baseFrame);
         TorsoLength.setParentFrame((JFrame_SimpAdvOptions) m_baseFrame);
         TorsoThickness.setParentFrame((JFrame_SimpAdvOptions) m_baseFrame);
-    }
-
-    public void setConstraints() {
-
     }
 }

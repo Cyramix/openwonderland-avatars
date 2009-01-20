@@ -174,8 +174,6 @@ public class TreePopUpMenu extends MouseAdapter implements ActionListener {
                 public void propertyChange(PropertyChangeEvent arg0) {
                     if(arg0.getPropertyName().equals("RESIZED")) {
                         editor.setSize(((Integer)arg0.getOldValue()).intValue(), ((Integer)arg0.getNewValue()).intValue());
-                    } else if(arg0.getPropertyName().equals("ancestor")) {
-                        editor.setSize(500, 500);
                     }
                 }
             });

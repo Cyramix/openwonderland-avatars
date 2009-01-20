@@ -107,7 +107,7 @@ public class PNodePropertyPanel extends javax.swing.JPanel
         // remove old controls
         JPanel_SpecificControls.removeAll();
         m_nodeToolKit = null;
-        
+
         if (m_targetNode == null) // no target, no toolkit
             return;
         else if (m_targetNode instanceof PJoint) // Only implementation so far
@@ -115,6 +115,7 @@ public class PNodePropertyPanel extends javax.swing.JPanel
             PJointPanel panel = new PJointPanel((PJoint)m_targetNode);
             panel.setSize(new Dimension(panel.getDefaultWidth(), panel.getDefaultHeight()));
             JPanel_SpecificControls.add(panel);
+            JPanel_SpecificControls.setSize(panel.getDefaultWidth(), panel.getDefaultHeight());
             m_nodeToolKit = (PNodeSubtypeToolkit)panel;
             panel.setVisible(true);
         }
@@ -122,8 +123,9 @@ public class PNodePropertyPanel extends javax.swing.JPanel
         {
             MeshInstancePropertyPanel panel = new MeshInstancePropertyPanel((PPolygonMeshInstance)m_targetNode, wm);
             //panel.setWM(wm);
-            panel.setSize(new Dimension(panel.getDefaultWidth(), panel.getDefaultHeight())); 
+            panel.setSize(new Dimension(panel.getDefaultWidth(), panel.getDefaultHeight()));
             JPanel_SpecificControls.add(panel);
+            JPanel_SpecificControls.setSize(panel.getDefaultWidth(), panel.getDefaultHeight());
             m_nodeToolKit = (PNodeSubtypeToolkit)panel;
             panel.setVisible(true);
         }
@@ -133,29 +135,28 @@ public class PNodePropertyPanel extends javax.swing.JPanel
             {
                 // give a matrix widget
                 PMatrixWidget matWidget = new PMatrixWidget(m_targetNode.getTransform().getLocalMatrix(false), "Local Transform");
-                JPanel_SpecificControls.add(matWidget);
-                //matWidget.setLocation(10, 10);
                 matWidget.setSize(245, 375);
                 matWidget.setVisible(true);
+                JPanel_SpecificControls.add(matWidget);
+                JPanel_SpecificControls.setSize(matWidget.getWidth(), matWidget.getHeight());
+                this.firePropertyChange("RESIZED", Integer.valueOf(500), Integer.valueOf(matWidget.getHeight() + 150));
+                return;
             }
+            JPanel_SpecificControls.removeAll();
+            this.firePropertyChange("RESIZED", Integer.valueOf(500), Integer.valueOf(200));
+            return;
         }
 
         if(m_nodeToolKit != null) 
         {
-            int iComponentHeight = JPanel_BaseNodeProperties.getHeight() + m_nodeToolKit.getDefaultHeight();
-            int iComponentWidth  = m_nodeToolKit.getDefaultWidth();
-            //JPanel_SpecificControls.setSize(new Dimension(m_nodeToolKit.getDefaultWidth(), m_nodeToolKit.getDefaultHeight()));
-            JPanel_SpecificControls.setSize(new Dimension(iComponentWidth, iComponentHeight));
+            int iComponentHeight = 150 + JPanel_SpecificControls.getHeight();
+            int iComponentWidth  = JPanel_SpecificControls.getWidth();
+//            JPanel_SpecificControls.setSize(new Dimension(iComponentWidth, iComponentHeight));
             if(iComponentHeight < iHeight)
                 iComponentHeight = iHeight;
             if(iComponentWidth < iWidth)
                 iComponentWidth = iWidth;
-            this.firePropertyChange("RESIZED", iComponentWidth+10, iComponentHeight);
-        } 
-        else 
-        {
-            this.firePropertyChange("RESIZED", Integer.valueOf(500), Integer.valueOf(500));
-            this.repaint();
+            this.firePropertyChange("RESIZED", iComponentWidth, iComponentHeight);
         }
     }
     
@@ -216,7 +217,7 @@ public class PNodePropertyPanel extends javax.swing.JPanel
 
         setMaximumSize(new java.awt.Dimension(2000, 2000));
         setMinimumSize(new java.awt.Dimension(300, 300));
-        setPreferredSize(new java.awt.Dimension(321, 300));
+        setPreferredSize(new java.awt.Dimension(670, 365));
 
         JPanel_BaseNodeProperties.setMinimumSize(new java.awt.Dimension(321, 150));
         JPanel_BaseNodeProperties.setPreferredSize(new java.awt.Dimension(321, 150));

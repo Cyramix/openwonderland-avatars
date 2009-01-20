@@ -17,6 +17,9 @@
  */
 package imi.gui;
 
+////////////////////////////////////////////////////////////////////////////////
+// Imports
+////////////////////////////////////////////////////////////////////////////////
 import imi.scene.PJoint;
 import imi.scene.PNode;
 import imi.scene.PScene;
@@ -39,7 +42,9 @@ import javax.swing.tree.DefaultTreeCellRenderer;
  * @author Paul Viet Nguyen Truong
  */
 public class SceneCellRenderer extends DefaultTreeCellRenderer {
-
+////////////////////////////////////////////////////////////////////////////////
+// CLASS DATA MEMBERS
+////////////////////////////////////////////////////////////////////////////////
     /** Icons for the Nodes */
     Icon pscene     = new ImageIcon("assets/icons/pscene.png");
     Icon pnode_r    = new ImageIcon("assets/icons/pnode.png");
@@ -53,14 +58,32 @@ public class SceneCellRenderer extends DefaultTreeCellRenderer {
     JPanel renderPanel;
     JLabel nodeInfo;
     DefaultTreeCellRenderer defaultRenderer = new DefaultTreeCellRenderer();
-    
+
+////////////////////////////////////////////////////////////////////////////////
+// CLASS METHODS
+////////////////////////////////////////////////////////////////////////////////
+    /**
+     * Default constructor calls the parent's constructor before it executes it's
+     * own initializations.  Sets a panel ad a label as the the cell rendering bg
+     */
     public SceneCellRenderer() {
         super();
         renderPanel = new JPanel(new GridLayout(0, 1));
         nodeInfo = new JLabel("");
         renderPanel.add(nodeInfo);
     }
-    
+
+    /**
+     * Sets a icon to be rendered based on the node being rendered for that cell
+     * @param arg0
+     * @param arg1
+     * @param arg2
+     * @param arg3
+     * @param arg4
+     * @param arg5
+     * @param arg6
+     * @return
+     */
     @Override
     public Component getTreeCellRendererComponent(JTree arg0, Object arg1, boolean arg2, boolean arg3, boolean arg4, int arg5, boolean arg6) {
         super.getTreeCellRendererComponent(arg0, arg1, arg2, arg3, arg4, arg5, arg6);
