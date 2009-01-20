@@ -665,7 +665,8 @@ public class DemoBase
     }
 
     private void createEnvironment(WorldManager worldManager) {
-        ColladaEnvironment environment = new ColladaEnvironment(worldManager, "assets/models/collada/Environments/Garden/Garden.dae", "DemoGarden");
+        ColladaEnvironment environment = new ColladaEnvironment(worldManager, "assets/models/collada/Environments/Arena/Arena.dae", "DemoGarden");
+        worldManager.addUserData(ColladaEnvironment.class, environment);
     }
 
     private Texture loadSkyboxTexture(String filePath)
@@ -696,7 +697,7 @@ public class DemoBase
         // Add the camera
         Entity camera = new Entity("DefaultCamera");
         CameraComponent cc = wm.getRenderManager().createCameraComponent(cameraSG, cameraNode, 
-                width, height, 45.0f, aspect, 0.01f, 1000.0f, true);
+                width, height, 60.0f, aspect, 0.01f, 1000.0f, true);
         
         RenderBuffer renderBuffer = ((SwingFrame)wm.getUserData(JFrame.class)).getRenderBuffer();
         

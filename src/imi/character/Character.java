@@ -1667,6 +1667,13 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         lfeet.getBindPose().setScale(fScale);
     }
 
+
+    public void setBeerBelly(float fSize)
+    {
+        SkinnedMeshJoint bellyJoint = getSkeleton().getSkinnedMeshJoint("Hips");
+        bellyJoint.getLocalModifierMatrix().setScale(fSize);
+    }
+
     /**
      * Make fists with the specified hands
      * @param rightHand True to have a fist with the right hand

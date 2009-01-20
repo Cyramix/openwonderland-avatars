@@ -66,6 +66,8 @@ public class ThirdPersonCamState extends CameraState
     /** State indicators **/
     public final static int ZOOMING_IN  = 1;
     public final static int ZOOMING_OUT = 2;
+    public final static int MOVING_LEFT = 3;
+    public final static int MOVING_RIGHT = 4;
     public final static int STOPPED     = 0;
 
     /** Current movement state **/
@@ -80,7 +82,7 @@ public class ThirdPersonCamState extends CameraState
     /** This is the minimum distance squared that is allowed between the camera and its focal point **/
     private float minimumDistanceSquared = 2.5f;
     /** Outer boundary **/
-    private float maximumDistanceSquared = 144;
+    private float maximumDistanceSquared = 255;
     /** Offset from target after move **/
     private final Vector3f vectorToCamera = new Vector3f(0,3,-2);
 

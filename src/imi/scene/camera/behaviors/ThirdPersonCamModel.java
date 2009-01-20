@@ -38,6 +38,15 @@ public class ThirdPersonCamModel implements CameraModel, CharacterMotionListener
 {
     /** The state that is actively tracking the avatar's motion **/
     private ThirdPersonCamState activeState = null;
+    /** Rotation matrix that is applied while turning, per frame **/
+    private final PMatrix perFrameRotationMatrix = new PMatrix(
+            new Vector3f(0, (float)Math.toRadians(0.01), 0),
+            Vector3f.UNIT_XYZ,
+            Vector3f.ZERO);
+    /** Workspace **/
+    private final Vector3f vectorBuffer    = new Vector3f();
+    private final Vector3f vectorBufferTwo = new Vector3f();
+    private final PMatrix  matrixBuffer    = new PMatrix();
 
     /**
      * Implementation of CameraModel interface. This method determines the
@@ -98,11 +107,8 @@ public class ThirdPersonCamModel implements CameraModel, CharacterMotionListener
                     updateRotations = true;
                 }
 
-                if (me.getID() == MouseEvent.MOUSE_WHEEL)
-                {
-                    // Wheel action, do some zooming business
+                if (me.getID() == MouseEvent.MOUSE_WHEEL) // Wheel action, do some zooming business
                     processMouseWheel((MouseWheelEvent) me,camState);
-                }
             }
             else if (events[i] instanceof KeyEvent) // Process key presses
             {
@@ -124,7 +130,7 @@ public class ThirdPersonCamModel implements CameraModel, CharacterMotionListener
      */
     private void processMouseWheel(MouseWheelEvent mwe, ThirdPersonCamState camState)
     {
-        if (camState.getNextPosition() == null) // No zooming while animating
+        if (camState.getNextPosition() != null) // No zooming while animating
             return;
         // Negative, zoom in; Positive, zoom out
         int clicks = mwe.getWheelRotation() * -1;
@@ -133,7 +139,6 @@ public class ThirdPersonCamModel implements CameraModel, CharacterMotionListener
         zoomVec.multLocal(clicks * 0.05f);
         // Make sure we aren't zooming in too far--
         // Generate a vector from the camera's future position to the focal point and check the length
-        Vector3f currentPosToTarget = camState.getTargetFocalPoint().subtract(camState.getCameraPosition());
         Vector3f futurePosition = camState.getCameraPosition().add(zoomVec);
         Vector3f futurePosToTarget = camState.getTargetFocalPoint().subtract(futurePosition);
         // Dist squared is used to save a square root operation
@@ -141,14 +146,9 @@ public class ThirdPersonCamModel implements CameraModel, CharacterMotionListener
         if (futureToTargetLengthSquared >= camState.getMinimumDistanceSquared() &&
                 futureToTargetLengthSquared <= camState.getMaximumDistanceSquared())
         {
-            futurePosToTarget.normalizeLocal();
-            currentPosToTarget.normalizeLocal();
-            // Determine if tunneling occured.
-            if (futurePosToTarget.dot(currentPosToTarget) > 0)
-            {
-                camState.setCameraPosition(camState.getCameraPosition().add(zoomVec), false); // No turn-to needed, we are moving along the correct vector
-                camState.setTargetNeedsUpdate(true);
-            }
+            // No turn-to needed, we are moving along the correct vector
+            camState.setCameraPosition(camState.getCameraPosition().add(zoomVec), false);
+            camState.setTargetNeedsUpdate(true);
         }
     }
 
@@ -191,20 +191,23 @@ public class ThirdPersonCamModel implements CameraModel, CharacterMotionListener
     private void processKeyEvent(KeyEvent ke, ThirdPersonCamState camState)
     {
         if (ke.getID() == KeyEvent.KEY_PRESSED) {
-            if (ke.getKeyCode() == KeyEvent.VK_UP) {
-                // Start zooming in
+            if (ke.getKeyCode() == KeyEvent.VK_UP)
                 camState.setMovementState(ThirdPersonCamState.ZOOMING_IN);
-            }
-            if (ke.getKeyCode() == KeyEvent.VK_DOWN) {
-                // Start zooming out
+            if (ke.getKeyCode() == KeyEvent.VK_DOWN)
                 camState.setMovementState(ThirdPersonCamState.ZOOMING_OUT);
-            }
+            if (ke.getKeyCode() == KeyEvent.VK_LEFT)
+                camState.setMovementState(ThirdPersonCamState.MOVING_LEFT);
+            if (ke.getKeyCode() == KeyEvent.VK_RIGHT)
+                camState.setMovementState(ThirdPersonCamState.MOVING_RIGHT);
 
         }
 
         if (ke.getID() == KeyEvent.KEY_RELEASED) {
             if (ke.getKeyCode() == KeyEvent.VK_UP ||
-                ke.getKeyCode() == KeyEvent.VK_DOWN)
+                ke.getKeyCode() == KeyEvent.VK_DOWN ||
+                ke.getKeyCode() == KeyEvent.VK_LEFT ||
+                ke.getKeyCode() == KeyEvent.VK_RIGHT
+                )
             {
                 // Stop all movement
                 camState.setMovementState(ThirdPersonCamState.STOPPED);
@@ -225,8 +228,6 @@ public class ThirdPersonCamModel implements CameraModel, CharacterMotionListener
         targetTransform.set(new Vector3f(0,(float) Math.toRadians(camState.getRotationY()), 0), translation, scales);
     }
 
-    private final Vector3f toCamBuffer = new Vector3f();
-    private final Vector3f focalPointBuffer = new Vector3f();
     /**
      * Update the camera matrix based on the contents of the state object
      * @param camState
@@ -236,6 +237,35 @@ public class ThirdPersonCamModel implements CameraModel, CharacterMotionListener
         // Cache necessary data
         PMatrix camXForm = camState.getCameraTransform();
         Vector3f targetPosition = camState.getTargetFocalPoint();
+
+        if (camState.getMovementState() == ThirdPersonCamState.MOVING_LEFT)
+        {
+            camXForm.getTranslation(vectorBuffer);
+            camState.getTargetFocalPoint(vectorBufferTwo);
+            if (vectorBuffer.subtractLocal(vectorBufferTwo).lengthSquared() < camState.getMaximumDistanceSquared())
+            {
+                camXForm.getTranslation(vectorBuffer);
+                camXForm.getLocalX(vectorBufferTwo);
+                vectorBufferTwo.multLocal(camState.getMovementRate());
+                vectorBuffer.addLocal(vectorBufferTwo);
+                camXForm.setTranslation(vectorBuffer);
+                camState.setTargetNeedsUpdate(true);
+            }
+        }
+        else if (camState.getMovementState() == ThirdPersonCamState.MOVING_RIGHT)
+        {
+            camXForm.getTranslation(vectorBuffer);
+            camState.getTargetFocalPoint(vectorBufferTwo);
+            if (vectorBuffer.subtractLocal(vectorBufferTwo).lengthSquared() < camState.getMaximumDistanceSquared())
+            {
+                camXForm.getTranslation(vectorBuffer);
+                camXForm.getLocalX(vectorBufferTwo);
+                vectorBufferTwo.multLocal(-camState.getMovementRate());
+                vectorBuffer.addLocal(vectorBufferTwo);
+                camXForm.setTranslation(vectorBuffer);
+                camState.setTargetNeedsUpdate(true);
+            }
+        }
 
         if (camState.needsTargetUpdate())
         {
@@ -270,7 +300,8 @@ public class ThirdPersonCamModel implements CameraModel, CharacterMotionListener
                     position.addLocal(toTarget.mult(camState.getMovementRate())); // TODO : Make time based ( value * deltaTime )
                 break;
             case ThirdPersonCamState.ZOOMING_OUT: // No long range clamping
-                position.subtractLocal(toTarget.mult(camState.getMovementRate())); // TODO : Make time based ( value * deltaTime )
+                if (distSquared < camState.getMaximumDistanceSquared())
+                    position.subtractLocal(toTarget.mult(camState.getMovementRate())); // TODO : Make time based ( value * deltaTime )
                 break;
             default:
                 break;
@@ -419,9 +450,6 @@ public class ThirdPersonCamModel implements CameraModel, CharacterMotionListener
         camState.setNextFocalPoint(newFocusPoint);
         camState.setOriginalFocalPoint(camState.getTargetFocalPoint());
     }
-
-    private final Vector3f vectorBuffer = new Vector3f();
-    private final Vector3f vectorBufferTwo = new Vector3f();
 
     // CharacterMotionListener implementation
     public void transformUpdate(Vector3f translation, PMatrix rotation)

@@ -201,6 +201,25 @@ public class PMatrix implements Serializable
         set(matrix);
     }
 
+    public void getLocalX(Vector3f vOut)
+    {
+        vOut.x = mat[0];
+        vOut.y = mat[4];
+        vOut.z = mat[8];
+    }
+
+    public void getLocalY(Vector3f vOut) {
+        vOut.x = mat[1];
+        vOut.y = mat[5];
+        vOut.z = mat[9];
+    }
+    
+    public void getLocalZ(Vector3f vOut) {
+        vOut.x = mat[2];
+        vOut.y = mat[6];
+        vOut.z = mat[10];
+    }
+
     /**
      * Sets this transform to the identity matrix.
      */

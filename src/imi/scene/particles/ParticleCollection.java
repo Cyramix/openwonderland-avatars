@@ -22,32 +22,34 @@ import com.jme.image.Texture;
 import com.jme.math.FastMath;
 import com.jme.math.Vector3f;
 import com.jme.renderer.ColorRGBA;
+import com.jme.scene.Node;
+import com.jme.scene.Spatial;
 import com.jme.scene.state.BlendState;
 import com.jme.scene.state.RenderState;
 import com.jme.scene.state.TextureState;
 import com.jme.scene.state.ZBufferState;
 import com.jme.util.TextureManager;
-import com.jme.util.geom.BufferUtils;
+import com.jmex.effects.particles.ParticleController;
 import com.jmex.effects.particles.ParticleFactory;
-import com.jmex.effects.particles.ParticlePoints;
+import com.jmex.effects.particles.ParticleMesh;
 import imi.scene.Updatable;
+import imi.scene.polygonmodel.PPolygonModelInstance;
 import imi.scene.processors.UpdateProcessor;
-import java.nio.FloatBuffer;
-import javax.media.opengl.GL;
 import org.jdesktop.mtgame.Entity;
 import org.jdesktop.mtgame.ProcessorComponent;
 import org.jdesktop.mtgame.RenderComponent;
-import org.jdesktop.mtgame.RenderUpdater;
 import org.jdesktop.mtgame.WorldManager;
 
 /**
  * This class maintains information about a collection of particles.
  * @author Ronald E Dahlgren
  */
-public class ParticleCollection implements RenderUpdater, Updatable
+public class ParticleCollection implements Updatable
 {
     /** The particles being managed **/
-    private ParticlePoints particles = null;
+    public ParticleMesh particles = null; // TODO : Encapsulate
+    /** Their controller **/
+    private ParticleController controller = null;
     /** The Entity with particles attached as children **/
     private Entity entity = null;
     /** Render component we attach to **/
@@ -56,40 +58,45 @@ public class ParticleCollection implements RenderUpdater, Updatable
     private UpdateProcessor updater     = null;
     /** Used to determine wether updates should happen or not **/
     private boolean enabled             = true;
+    /** Position of the emitter **/
+    private PPolygonModelInstance targetModel = null;
 
     /**
      * Construct a new instance with the specified number of particles.
      * @param numberOfParticles
      */
-    public ParticleCollection(int numberOfParticles, WorldManager wm)
+    public ParticleCollection(int numberOfParticles, WorldManager wm, Node parentNode)
     {
-        particles = ParticleFactory.buildPointParticles("particles", numberOfParticles);
+        particles = ParticleFactory.buildParticles("ParticleTest", numberOfParticles);
+        parentNode.attachChild(particles);
+        controller = particles.getParticleController();
         updater = new UpdateProcessor(this);
         particleSetUp();
         createEntity(wm);
         createRenderComponent(wm);
         setDefaultRenderStates(wm);
+    }
 
+    public Spatial getJMENode() {
+        return particles;
     }
 
 
     private void particleSetUp()
     {
         // TODO : Parameterize
-        particles.setPointSize(5);
-        particles.setAntialiased(true);
         particles.setEmissionDirection(new Vector3f(0, 1, 0));
         particles.setOriginOffset(new Vector3f(0, 0, 0));
-        particles.setInitialVelocity(.006f);
-        particles.setStartSize(2.5f);
-        particles.setEndSize(.5f);
-        particles.setMinimumLifeTime(1200f);
+        particles.setInitialVelocity(.005f);
+        particles.setStartSize(0.01f);
+        particles.setEndSize(1.4f);
+        particles.setMinimumLifeTime(100f);
         particles.setMaximumLifeTime(1400f);
         particles.setStartColor(new ColorRGBA(1, 0, 0, 1));
         particles.setEndColor(new ColorRGBA(0, 1, 0, 0));
-        particles.setMaximumAngle(360f * FastMath.DEG_TO_RAD);
-        particles.getParticleController().setControlFlow(true);
+        particles.setMaximumAngle(90f * FastMath.DEG_TO_RAD);
         particles.warmUp(120);
+        controller.setControlFlow(false);
     }
 
     private void createEntity(WorldManager wm)
@@ -100,53 +107,52 @@ public class ParticleCollection implements RenderUpdater, Updatable
 
     private void createRenderComponent(WorldManager wm)
     {
-        renderComponent = wm.getRenderManager().createRenderComponent(particles);
-        entity.addComponent(RenderComponent.class, renderComponent);
+//        renderComponent = wm.getRenderManager().createRenderComponent(particles);
+//        entity.addComponent(RenderComponent.class, renderComponent);
         entity.addComponent(ProcessorComponent.class, updater);
     }
 
     private void setDefaultRenderStates(WorldManager wm)
     {
-        BlendState as1 = (BlendState)wm.getRenderManager().createRendererState(RenderState.RS_BLEND);
-        as1.setBlendEnabled(true);
-        as1.setSourceFunction(BlendState.SourceFunction.SourceAlpha);
-        as1.setDestinationFunction(BlendState.DestinationFunction.One);
-        as1.setEnabled(true);
-        particles.setRenderState(as1);
+        BlendState blendState = (BlendState)wm.getRenderManager().createRendererState(RenderState.RS_BLEND);
+        blendState.setBlendEnabled(true);
+        blendState.setSourceFunction(BlendState.SourceFunction.SourceAlpha);
+        blendState.setDestinationFunction(BlendState.DestinationFunction.One);
+        blendState.setTestEnabled(true);
+        blendState.setTestFunction(BlendState.TestFunction.GreaterThan);
+        blendState.setEnabled(true);
+        particles.setRenderState(blendState);
+
 
         ZBufferState zstate = (ZBufferState)wm.getRenderManager().createRendererState(RenderState.RS_ZBUFFER);
-        zstate.setEnabled(false);
-        particles .setRenderState(zstate);
+        zstate.setEnabled(true);
+        zstate.setWritable(false);
+        zstate.setFunction(ZBufferState.TestFunction.LessThanOrEqualTo);
+        particles.setRenderState(zstate);
 
         particles.setModelBound(new BoundingSphere());
         particles.updateModelBound();
+
         // point sprites are useless without a texture
         TextureState ts = (TextureState)wm.getRenderManager().createRendererState(RenderState.RS_TEXTURE);
         ts.setTexture(TextureManager.loadTexture(ParticleCollection.class.getClassLoader().getResource("jmetest/data/texture/flaresmall.jpg"), Texture.MinificationFilter.BilinearNearestMipMap, Texture.MagnificationFilter.NearestNeighbor));
         ts.setEnabled(true);
         particles.setRenderState(ts);
 
-        FloatBuffer ceoff = BufferUtils.createFloatBuffer(0.0f, 0.00001f, 0.0f, 0.0f);
-        ceoff.rewind();
-        wm.addRenderUpdater(this, ceoff);
-
+        particles.updateRenderState();
 
     }
 
-    public void update(Object arg0) {
-        FloatBuffer ceoff = (FloatBuffer)arg0;
-        GL glDevice = javax.media.opengl.GLContext.getCurrent().getGL();
-        glDevice.glEnable(GL.GL_POINT_SPRITE_ARB);
-        glDevice.glTexEnvi(GL.GL_POINT_SPRITE_ARB, GL.GL_COORD_REPLACE_ARB, 1);
-        glDevice.glPointParameterfvARB(GL.GL_POINT_DISTANCE_ATTENUATION_ARB, ceoff);
-    }
-
+    private final Vector3f vecBuffer = new Vector3f();
     public void update(float deltaTime) {
-        if (false)
+        if (true)
         {
-            float ourTime = deltaTime * 0.00000001f;
-            System.out.println("ourTime : " + ourTime);
-            particles.getController(0).update(ourTime);
+            if (targetModel != null)
+            {
+                targetModel.getTransform().getLocalMatrix(false).getTranslation(vecBuffer);
+                particles.setOriginOffset(vecBuffer);
+            }
+            controller.update(deltaTime);
         }
     }
 
@@ -157,4 +163,13 @@ public class ParticleCollection implements RenderUpdater, Updatable
     public void setEnable(boolean state) {
         enabled = state;
     }
+
+    public PPolygonModelInstance getTargetModel() {
+        return targetModel;
+    }
+
+    public void setTargetModel(PPolygonModelInstance targetModel) {
+        this.targetModel = targetModel;
+    }
+
 }

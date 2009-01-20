@@ -15,19 +15,19 @@
  * exception as provided by Sun in the License file that accompanied
  * this code.
  */
-package imi.tests;
+package imi.tests.cahua;
 
 
 import com.jme.math.Vector3f;
 import imi.character.ninja.NinjaAvatar;
 import imi.character.ninja.NinjaAvatarAttributes;
-import imi.environments.ColladaEnvironment;
 import imi.scene.camera.behaviors.ThirdPersonCamModel;
-import imi.scene.camera.state.CameraState;
 import imi.scene.camera.state.ThirdPersonCamState;
 import imi.scene.particles.ParticleCollection;
 import org.jdesktop.mtgame.WorldManager;
 import imi.scene.processors.JSceneEventProcessor;
+import imi.tests.COLLADA_CharacterTest;
+import imi.tests.DemoBase;
 import imi.utils.input.NinjaControlScheme;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -35,17 +35,17 @@ import java.util.logging.Logger;
 
 
 /**
- * Testing the point sprites!
- * @author Ronald E Dahlgren
+ * My life for the game!
+ * @author IMI
  */
-public class PointSpriteTest extends DemoBase
+public class Cahua extends DemoBase
 {
     /** Logger ref **/
     private static final Logger logger = Logger.getLogger(COLLADA_CharacterTest.class.getName());
+    // Flag for debugging mode
+    private boolean bDebug = false;
 
-    private ParticleCollection particles = null;
-
-    public PointSpriteTest(String[] args)
+    public Cahua(String[] args)
     {
         super(args);
     }
@@ -53,15 +53,31 @@ public class PointSpriteTest extends DemoBase
     public static void main(String[] args)
     {
         Logger.getLogger("com.jme.renderer").setLevel(Level.OFF);
-        PointSpriteTest worldTest = new PointSpriteTest(args);
+        Cahua worldTest = new Cahua(args);
+    }
+
+    @Override
+    protected void assignCameraType(WorldManager wm)
+    {
+        if (!bDebug)
+        {
+            ThirdPersonCamState state = new ThirdPersonCamState(null);
+            state.setOffsetFromCharacter(new Vector3f(0, 1.8f, 0));
+            state.setCameraPosition(new Vector3f(0, 3.5f, -7));
+            state.setTargetFocalPoint(new Vector3f(0,1.8f,0));
+            state.setToCamera(new Vector3f(0, 2.5f, -4));
+            ThirdPersonCamModel model = new ThirdPersonCamModel();
+            m_cameraProcessor.setCameraBehavior(model, state);
+        }
+        else
+        {
+            
+        }
     }
 
     @Override
     protected void createDemoEntities(WorldManager wm)
     {
-        ColladaEnvironment world = (ColladaEnvironment)wm.getUserData(ColladaEnvironment.class);
-        particles = new ParticleCollection(200, wm, world.getJMENode());
-//        world.getJMENode().attachChild(particles.getJMENode());
         // Create ninja input scheme
         NinjaControlScheme control = (NinjaControlScheme)((JSceneEventProcessor)wm.getUserData(JSceneEventProcessor.class)).setDefault(new NinjaControlScheme(null));
 
@@ -70,7 +86,6 @@ public class PointSpriteTest extends DemoBase
         NinjaAvatarAttributes attribs = new NinjaAvatarAttributes("WeirdGuy", 2, 3, 5, 10, 1);
 //        NinjaFemaleAvatarAttributes attribs = new NinjaFemaleAvatarAttributes("WeirdChick", 0, 1, 1, 1, 1);
         NinjaAvatar avatar = new NinjaAvatar(attribs, wm);
-        particles.setTargetModel(avatar.getModelInst());
         float time = (float)((System.nanoTime() - startTime) / 1000000000.0f);
         System.out.println("Constructing the male took: " + time);
 

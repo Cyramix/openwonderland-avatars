@@ -139,18 +139,15 @@ public class ColladaEnvironment extends Entity
         }
         SceneGraphConvertor convertor = new SceneGraphConvertor();
         m_jmeRoot = convertor.convert(scene);
-        //m_jmeRoot = new Node("NodeRoot");
         // Now assign the rendering component
         RenderComponent rc = m_wm.getRenderManager().createRenderComponent(m_jmeRoot);
         this.addComponent(RenderComponent.class, rc);
         // set some default rendering behavior
         setDefaultRenderStates();
+    }
 
-        if (false) {
-            // add ourselves to the world manager
-            m_wm.addEntity(this);
-        }
-
+    public Node getJMENode() {
+        return m_jmeRoot;
     }
 
     /**
@@ -169,7 +166,7 @@ public class ColladaEnvironment extends Entity
         // Z Buffer State
         ZBufferState buf = (ZBufferState) m_wm.getRenderManager().createRendererState(RenderState.RS_ZBUFFER);
         buf.setEnabled(true);
-        buf.setFunction(ZBufferState.TestFunction.LessThanOrEqualTo);
+        buf.setFunction(ZBufferState.TestFunction.GreaterThanOrEqualTo);
         
         // Material State
         MaterialState matState  = null;
