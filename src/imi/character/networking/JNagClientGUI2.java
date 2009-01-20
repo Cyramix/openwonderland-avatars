@@ -484,12 +484,6 @@ public class JNagClientGUI2 extends javax.swing.JFrame implements ActionListener
      * Custom cell renderer for the JTable to display the lives of the players
      */
     public class customImageCellRender extends JLabel implements TableCellRenderer {
-        Icon Lives0 = new ImageIcon("file://localhost/" + System.getProperty("user.dir") + "/assets/textures/Lives_0.png");
-        Icon Lives1 = new ImageIcon("file://localhost/" + System.getProperty("user.dir") + "/assets/textures/Lives_1.png");
-        Icon Lives2 = new ImageIcon("file://localhost/" + System.getProperty("user.dir") + "/assets/textures/Lives_2.png");
-        Icon Lives3 = new ImageIcon("file://localhost/" + System.getProperty("user.dir") + "/assets/textures/Lives_3.png");
-        Icon Lives4 = new ImageIcon("file://localhost/" + System.getProperty("user.dir") + "/assets/textures/Lives_4.png");
-        Icon Lives5 = new ImageIcon("file://localhost/" + System.getProperty("user.dir") + "/assets/textures/Lives_5.png");
 
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
             if (value instanceof Integer) {
