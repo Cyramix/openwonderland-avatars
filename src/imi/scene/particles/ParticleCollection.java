@@ -87,7 +87,7 @@ public class ParticleCollection implements Updatable
         // TODO : Parameterize
         particles.setEmissionDirection(new Vector3f(0, 1, 0));
         particles.setOriginOffset(new Vector3f(0, 0, 0));
-        particles.setInitialVelocity(.005f);
+        particles.setInitialVelocity(0.005f);
         particles.setStartSize(0.01f);
         particles.setEndSize(1.4f);
         particles.setMinimumLifeTime(100f);
@@ -139,14 +139,14 @@ public class ParticleCollection implements Updatable
 
     private final Vector3f vecBuffer = new Vector3f();
     public void update(float deltaTime) {
-        if (true)
+        if (enabled)
         {
             if (targetModel != null)
             {
                 targetModel.getTransform().getLocalMatrix(false).getTranslation(vecBuffer);
                 particles.setOriginOffset(vecBuffer);
             }
-            controller.update(deltaTime);
+            controller.update(deltaTime * 0.1f);
         }
     }
 

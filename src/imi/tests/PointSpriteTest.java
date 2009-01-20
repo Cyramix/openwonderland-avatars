@@ -19,17 +19,14 @@ package imi.tests;
 
 
 import com.jme.math.Vector3f;
+import com.jme.renderer.ColorRGBA;
+import imi.environments.ColladaEnvironment;
 import imi.scene.particles.ParticleCollection;
 import imi.scene.polygonmodel.PPolygonModelInstance;
-import org.jdesktop.mtgame.ProcessorArmingCollection;
 import org.jdesktop.mtgame.WorldManager;
 import imi.tests.cahua.CahuaBall;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javolution.util.FastList;
-import org.jdesktop.mtgame.Entity;
-import org.jdesktop.mtgame.NewFrameCondition;
-import org.jdesktop.mtgame.ProcessorComponent;
 
 
 
@@ -60,18 +57,18 @@ public class PointSpriteTest extends DemoBase
     {
 
 
-//        ColladaEnvironment world = (ColladaEnvironment)wm.getUserData(ColladaEnvironment.class);
-//        particles = new ParticleCollection(40, wm, world.getJMENode());
-//        particles.particles.setOriginOffset(new Vector3f(0, -0.4f, 0));
-//        particles.particles.setInitialVelocity(0.0006f);
-//        particles.particles.setEmissionDirection(Vector3f.UNIT_Y);
-//        particles.particles.setMaximumAngle((float)(Math.toRadians(90)));
-//        particles.particles.setStartMass(0.001f);
-//        particles.particles.setStartColor(ColorRGBA.green);
-//        particles.particles.setStartSize(0.4f);
-//        particles.particles.setEndSize(0.12f);
-//        particles.particles.setEndMass(0.5f);
-//        particles.particles.setEndColor(ColorRGBA.lightGray);
+        ColladaEnvironment world = (ColladaEnvironment)wm.getUserData(ColladaEnvironment.class);
+        particles = new ParticleCollection(40, wm, world.getJMENode());
+        particles.particles.setOriginOffset(new Vector3f(0, -0.4f, 0));
+        particles.particles.setInitialVelocity(0.006f);
+        particles.particles.setEmissionDirection(Vector3f.UNIT_Y);
+        particles.particles.setMaximumAngle((float)(Math.toRadians(90)));
+        particles.particles.setStartMass(0.001f);
+        particles.particles.setStartColor(ColorRGBA.green);
+        particles.particles.setStartSize(0.4f);
+        particles.particles.setEndSize(0.12f);
+        particles.particles.setEndMass(0.5f);
+        particles.particles.setEndColor(ColorRGBA.lightGray);
 //        world.getJMENode().attachChild(particles.getJMENode());
         // Create ninja input scheme
 //        NinjaControlScheme control = (NinjaControlScheme)((JSceneEventProcessor)wm.getUserData(JSceneEventProcessor.class)).setDefault(new NinjaControlScheme(null));
