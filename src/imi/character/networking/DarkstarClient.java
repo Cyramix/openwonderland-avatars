@@ -150,6 +150,7 @@ public class DarkstarClient extends JNagClient implements Updatable
         
         postGUILine("HIT! " + users.get(userID) + " got hit by " + users.get(byUserID) + "'s ball and it hurts his pride!");
         gui.updatePlayerLives(users.get(userID), 1);
+        gui.forceTableUpdate(2);
         performAnimation(1, false, false, userID); // shake head
         
         // Set new position and velocity for that ball
@@ -161,9 +162,11 @@ public class DarkstarClient extends JNagClient implements Updatable
     public void gameStarted(int byUserID, int hitPoints, float posX, float posY, float posZ) 
     {
         postGUILine("Game STARTED! by " + users.get(byUserID) + " and you get " + hitPoints + " hit points, good luck!");
-        for (int i = 0; i < users.size(); i++) {
-            gui.setPlayerStatsInBoards(users.get(byUserID), hitPoints, -1, -1);
+        for (int i = 0; i < gui.userIds.size(); i++) {
+            gui.setPlayerStatsInBoards(users.get(gui.userIds.get(i)), hitPoints, -1, -1);
         }
+        gui.forceTableUpdate(2);
+
         gamePos.set(posX, posY, posZ);
         Vector3f dir = Vector3f.ZERO.subtract(gamePos).normalize();
         PMatrix look = PMathUtils.lookAt(gamePos.subtract(dir), gamePos, Vector3f.UNIT_Y);
@@ -213,16 +216,17 @@ public class DarkstarClient extends JNagClient implements Updatable
         hitPoints = 0;
         postGUILine(users.get(winnerID) + " WINS THE GAME!!!");
         
-        for (int i = 0; i < users.size(); i++) 
+        for (int i = 0; i < gui.userIds.size(); i++)
         {
-//            if (users.get(i) == null)
-//                continue;
+            if (users.get(gui.userIds.get(i)) == null || users.get(winnerID) == null)
+                continue;
             
-            if (users.get(i).equals(users.get(winnerID)))
+            if (users.get(gui.userIds.get(i)).equals(users.get(winnerID)))
                 gui.updatePlayerWins(users.get(winnerID), 1);
             else
-                gui.updatePlayerLosses(users.get(i), 1);
+                gui.updatePlayerLosses(users.get(gui.userIds.get(i)), 1);
         }
+        gui.forceTableUpdate(2);
 
         if (winnerID == ID)
         {
@@ -380,6 +384,7 @@ public class DarkstarClient extends JNagClient implements Updatable
                     {
                         postGUILine("OUCH! You got hit by " + users.get(data.userID) + "'s ball!");
                         hitPoints--;
+                        gui.updatePlayerLives(users.get(data.userID), 1);
                         serverProxy.gotHit(data.userID, i);
                         pos.set(hitBoxPos.add(0.0f, 2.0f + ballRadius, 0.0f));
                         vel.set(0.0f, 0.25f, 0.0f);
@@ -695,11 +700,12 @@ public class DarkstarClient extends JNagClient implements Updatable
             UserData data = new UserData(user, playerIDs[i]);
             characterData.put(playerIDs[i], data);
             user.getController().addCharacterMotionListener(data);
-            gui.addPlayerToBoards(playerNames[i], 3, 0, 0);
+            gui.addPlayerToBoards(playerNames[i], playerIDs[i], 3, 0, 0);
             // Test
             //vis.addPositionObject(data.desiredPosition, ColorRGBA.black);
             //vis.addPositionObject(data.currentPosition, ColorRGBA.white);
         }
+        gui.forceTableUpdate(2);
     }
 
     @Override
@@ -720,7 +726,8 @@ public class DarkstarClient extends JNagClient implements Updatable
         UserData data = new UserData(user, userID);
         characterData.put(userID, data);
         user.getController().addCharacterMotionListener(data);
-        gui.addPlayerToBoards(playerName, 0, 0, 0);
+        gui.addPlayerToBoards(playerName, userID, 0, 0, 0);
+        gui.forceTableUpdate(2);
     }
 
     @Override
@@ -728,6 +735,7 @@ public class DarkstarClient extends JNagClient implements Updatable
     {
         postGUILine("Removing Player with ID: " + userID + " called: " + users.get(userID));
         gui.removePlayerFromBoards(users.get(userID));
+        gui.forceTableUpdate(2);
         users.remove(userID);
 
         characterData.get(userID).user.die();

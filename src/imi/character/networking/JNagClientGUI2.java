@@ -18,6 +18,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -42,6 +43,8 @@ public class JNagClientGUI2 extends javax.swing.JFrame implements ActionListener
 
     /** The using instance for this client. */
     protected final JNagClient client;
+
+    protected ArrayList<Integer> userIds = new ArrayList<Integer>();
 
     /** Creates new form JNagClientGUI2 */
     public JNagClientGUI2(JNagClient client) {
@@ -296,7 +299,7 @@ public class JNagClientGUI2 extends javax.swing.JFrame implements ActionListener
      * @param wins - default wins so far
      * @param losses - default losses so far
      */
-    public void addPlayerToBoards(String playerName, int lives, int wins, int losses) {
+    public void addPlayerToBoards(String playerName, int playerID, int lives, int wins, int losses) {
         Object[] data = new Object[4];
         data[0] = playerName;
         data[1] = lives;
@@ -306,6 +309,7 @@ public class JNagClientGUI2 extends javax.swing.JFrame implements ActionListener
         DefaultTableModel table = (DefaultTableModel)jTable_Boards.getModel();
         table.addRow(data);
         table.fireTableDataChanged();
+        userIds.add(playerID);
     }
 
     /**

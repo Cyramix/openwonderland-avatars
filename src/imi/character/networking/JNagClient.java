@@ -292,7 +292,7 @@ public class JNagClient implements SimpleClientListener, ClientSideUser
         users.put(ID, userName);
         if (gui != null)
             gui.appendOutput(string);
-        gui.addPlayerToBoards(userName, 3, 0, 0);
+        gui.addPlayerToBoards(userName, ID, 3, 0, 0);
     }
 
     public void notifyLogout(boolean graceful) {
