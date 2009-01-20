@@ -212,7 +212,9 @@ public class DarkstarClient extends JNagClient implements Updatable
     {
         hitPoints = 0;
         postGUILine(users.get(winnerID) + " WINS THE GAME!!!");
-        for (int i = 0; i < users.size(); i++) {
+        
+        for (int i = 0; i < users.size(); i++) 
+        {
             if (users.get(i).equals(users.get(winnerID)))
                 gui.setPlayerWins(users.get(winnerID), 1);
             else
