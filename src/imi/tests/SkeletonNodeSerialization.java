@@ -65,12 +65,27 @@ public class SkeletonNodeSerialization
 
     /** Relative paths to animation files to load onto the skeletons. **/
     private static String[] FemaleAnimationLocations = {
+        "assets/models/collada/Avatars/Female/Female_Anim_AnswerCell.dae",
+        "assets/models/collada/Avatars/Female/Female_Anim_Bow.dae",
+        "assets/models/collada/Avatars/Female/Female_Anim_Cell.dae",
+        "assets/models/collada/Avatars/Female/Female_Anim_Cheer.dae",
+        "assets/models/collada/Avatars/Female/Female_Anim_Clap.dae",
+        "assets/models/collada/Avatars/Female/Female_Anim_FallFromSitting.dae",
+        "assets/models/collada/Avatars/Female/Female_Anim_FloorGetup.dae",
+        "assets/models/collada/Avatars/Female/Female_Anim_FloorSitting.dae",
+        "assets/models/collada/Avatars/Female/Female_Anim_Follow.dae",
         "assets/models/collada/Avatars/Female/Female_Anim_Idle.dae",
+        "assets/models/collada/Avatars/Female/Female_Anim_Laugh.dae",
+        "assets/models/collada/Avatars/Female/Female_Anim_No.dae",
+        "assets/models/collada/Avatars/Female/Female_Anim_PublicSpeaking.dae",
+        "assets/models/collada/Avatars/Female/Female_Anim_RaiseHand.dae",
+        "assets/models/collada/Avatars/Female/Female_Anim_RaiseHandIdle.dae",
+        "assets/models/collada/Avatars/Female/Female_Anim_Run.dae",
         "assets/models/collada/Avatars/Female/Female_Anim_Sitting.dae",
         "assets/models/collada/Avatars/Female/Female_Anim_StandtoSit.dae",
         "assets/models/collada/Avatars/Female/Female_Anim_Walk.dae",
-        "assets/models/collada/Avatars/Female/Female_Anim_Run.dae",
-        "assets/models/collada/Avatars/Female/Female_Anim_Wave.dae"
+        "assets/models/collada/Avatars/Female/Female_Anim_Wave.dae",
+        "assets/models/collada/Avatars/Female/Female_Anim_Yes.dae",
     };
 
     private static String[] FemaleFacialAnimations = {
@@ -81,7 +96,10 @@ public class SkeletonNodeSerialization
     };
 
     private static String[] MaleAnimationLocations = {
+        "assets/models/collada/Avatars/Male/Male_Anim_ActiveIdle.dae",
+        "assets/models/collada/Avatars/Male/Male_Anim_AnswerCell.dae",
         "assets/models/collada/Avatars/Male/Male_Anim_Bow.dae",
+        "assets/models/collada/Avatars/Male/Male_Anim_Cell.dae",
         "assets/models/collada/Avatars/Male/Male_Anim_Cheer.dae",
         "assets/models/collada/Avatars/Male/Male_Anim_Clap.dae",
         "assets/models/collada/Avatars/Male/Male_Anim_FallFromSitting.dae",
@@ -91,16 +109,16 @@ public class SkeletonNodeSerialization
         "assets/models/collada/Avatars/Male/Male_Anim_Idle.dae",
         "assets/models/collada/Avatars/Male/Male_Anim_Jump.dae",
         "assets/models/collada/Avatars/Male/Male_Anim_Laugh.dae",
+        "assets/models/collada/Avatars/Male/Male_Anim_No.dae",
+        "assets/models/collada/Avatars/Male/Male_Anim_PublicSpeaking.dae",
         "assets/models/collada/Avatars/Male/Male_Anim_Run.dae",
+        "assets/models/collada/Avatars/Male/Male_Anim_ShakeHands.dae",
         "assets/models/collada/Avatars/Male/Male_Anim_Sitting.dae",
         "assets/models/collada/Avatars/Male/Male_Anim_StandToSit.dae",
+        "assets/models/collada/Avatars/Male/Male_Anim_TakeDamage.dae",
         "assets/models/collada/Avatars/Male/Male_Anim_Walk.dae",
         "assets/models/collada/Avatars/Male/Male_Anim_Wave.dae",
-        "assets/models/collada/Avatars/Male/Male_Anim_No.dae",
         "assets/models/collada/Avatars/Male/Male_Anim_Yes.dae",
-        "assets/models/collada/Avatars/Male/Male_Anim_Cell.dae",
-        "assets/models/collada/Avatars/Male/Male_Anim_ActiveIdle.dae",
-        "assets/models/collada/Avatars/Male/Male_Anim_TakeDamage.dae"
     };
 
     private static String[] MaleFacialAnimationLocations = {

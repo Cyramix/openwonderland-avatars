@@ -40,7 +40,7 @@ public class NinjaAvatarAttributes extends CharacterAttributes
         new ColorRGBA(221.0f / 255.0f,  183.0f / 255.0f, 166.0f / 255.0f, 1),
         new ColorRGBA(203.0f / 255.0f,  142.0f / 255.0f, 114.0f / 255.0f, 1),
         new ColorRGBA(182.0f / 255.0f,  137.0f / 255.0f, 116.0f / 255.0f, 1),
-        new ColorRGBA(0, 1, 1, 1),
+        new ColorRGBA(0, 1, 1, 1), // Just as a joke :)
     };
     private boolean loadedBind = false;
     
