@@ -16,6 +16,10 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
@@ -310,7 +314,7 @@ public class JNagClientGUI2 extends javax.swing.JFrame implements ActionListener
      * @param wins
      * @param losses
      */
-    public void setPlayerInBoards(String playerName, int lives, int wins, int losses) {
+    public void setPlayerStatsInBoards(String playerName, int lives, int wins, int losses) {
         DefaultTableModel model = (DefaultTableModel)jTable_Boards.getModel();
         for (int i = 0; i < model.getRowCount(); i++) {
             if (model.getValueAt(i, 0).toString().equals(playerName)) {
@@ -337,6 +341,51 @@ public class JNagClientGUI2 extends javax.swing.JFrame implements ActionListener
             }
         }
     }
+    
+    /**
+     * Sets the number of lives a player has gotten.  Takes in the exact value
+     * of lives to set for that player.
+     * @param playerName
+     * @param lives
+     */
+    public void setPlayerLives(String playerName, int lives) {
+        DefaultTableModel model = (DefaultTableModel)jTable_Boards.getModel();
+        for (int i = 0; i < model.getRowCount(); i++) {
+            if (model.getValueAt(i, 0).toString().equals(playerName)) {
+                model.setValueAt(lives, i, 1);
+            }
+        }
+    }
+    
+    /**
+     * Set the number of wins a specified player has gotten.  Takes in the exact
+     * value of wins to set for that player
+     * @param playerName
+     * @param wins
+     */
+    public void setPlayerWins(String playerName, int wins) {
+        DefaultTableModel model = (DefaultTableModel)jTable_Boards.getModel();
+        for (int i = 0; i < model.getRowCount(); i++) {
+            if (model.getValueAt(i, 0).toString().equals(playerName)) {
+                model.setValueAt(wins, i, 2);
+            }
+        }
+    }
+    
+    /**
+     * Sets the number of losses a player has gotten.  Takes in the exact value
+     * of losses to set for that player
+     * @param playerName
+     * @param losses
+     */
+    public void setPlayerLosses(String playerName, int losses) {
+        DefaultTableModel model = (DefaultTableModel)jTable_Boards.getModel();
+        for (int i = 0; i < model.getRowCount(); i++) {
+            if (model.getValueAt(i, 0).toString().equals(playerName)) {
+                model.setValueAt(losses, i, 3);
+            }
+        }
+    }
 
     /**
      * Updates the score board by searching for the player name and then updating
@@ -347,7 +396,7 @@ public class JNagClientGUI2 extends javax.swing.JFrame implements ActionListener
      * @param winsincrement - the number of wins to increment
      * @param lossesincrement - the number of losses to increment
      */
-    public void updatePlayerInBoards(String playerName, int livesdeduction, int winsincrement, int lossesincrement) {
+    public void updatePlayerStatsInBoards(String playerName, int livesdeduction, int winsincrement, int lossesincrement) {
         DefaultTableModel model = (DefaultTableModel)jTable_Boards.getModel();
         for (int i = 0; i < model.getRowCount(); i++) {
             if (model.getValueAt(i, 0).toString().equals(playerName)) {
@@ -366,6 +415,62 @@ public class JNagClientGUI2 extends javax.swing.JFrame implements ActionListener
         }
     }
 
+    /**
+     * Updates the specified player's number of remaining lives.  Enter in a
+     * positive value to subtract from the remaining lives
+     * @param playerName
+     * @param livesdecrement
+     */
+    public void updatePlayerScore(String playerName, int livesdecrement) {
+        DefaultTableModel model = (DefaultTableModel)jTable_Boards.getModel();
+        for (int i = 0; i < model.getRowCount(); i++) {
+            if (model.getValueAt(i, 0).toString().equals(playerName)) {
+                int lives   = (Integer)model.getValueAt(i, 1);
+                lives      -= livesdecrement;
+                model.setValueAt(lives, i, 1);
+            }
+        }
+    }
+
+    /**
+     * Updates the specified player's number of wins.  Enter in a positive value
+     * to add to the number of current wins.
+     * @param playerName
+     * @param winsincrement
+     */
+    public void updatePlayerWins(String playerName, int winsincrement) {
+        DefaultTableModel model = (DefaultTableModel)jTable_Boards.getModel();
+        for (int i = 0; i < model.getRowCount(); i++) {
+            if (model.getValueAt(i, 0).toString().equals(playerName)) {
+                int wins    = (Integer)model.getValueAt(i, 2);
+                wins       += winsincrement;
+                model.setValueAt(wins, i, 2);
+            }
+        }
+    }
+
+    /**
+     * Updates the specified player's number of losses.  Enter in a positive value
+     * to add to the number of current losses
+     * @param playerName
+     * @param lossesincrement
+     */
+    public void updatePlayerLosses(String playerName, int lossesincrement) {
+        DefaultTableModel model = (DefaultTableModel)jTable_Boards.getModel();
+        for (int i = 0; i < model.getRowCount(); i++) {
+            if (model.getValueAt(i, 0).toString().equals(playerName)) {
+                int losses  = (Integer)model.getValueAt(i, 3);
+                losses     += lossesincrement;
+                model.setValueAt(losses, i, 3);
+            }
+        }
+    }
+
+    /**
+     * Removes the player specified player from the score boards.  Should only be
+     * called when a user disconnects/logs off
+     * @param playerName
+     */
     public void removePlayerFromBoards(String playerName) {
         DefaultTableModel model = (DefaultTableModel)jTable_Boards.getModel();
         for (int i = 0; i < model.getRowCount(); i++) {
@@ -388,39 +493,47 @@ public class JNagClientGUI2 extends javax.swing.JFrame implements ActionListener
 
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
             if (value instanceof Integer) {
+                String loc = null;
                 switch((Integer)value)
                 {
                     case 0:
                     {
-                        setIcon(Lives0);
+                        loc = new String("file://localhost/" + System.getProperty("user.dir") + "/assets/textures/Lives_0.png");
                         break;
                     }
                     case 1:
                     {
-                        setIcon(Lives1);
+                        loc = new String("file://localhost/" + System.getProperty("user.dir") + "/assets/textures/Lives_1.png");
                         break;
                     }
                     case 2:
                     {
-                        setIcon(Lives2);
+                        loc = new String("file://localhost/" + System.getProperty("user.dir") + "/assets/textures/Lives_2.png");
                         break;
                     }
                     case 3:
                     {
-                        setIcon(Lives3);
+                        loc = new String("file://localhost/" + System.getProperty("user.dir") + "/assets/textures/Lives_3.png");
                         break;
                     }
                     case 4:
                     {
-                        setIcon(Lives4);
+                        loc = new String("file://localhost/" + System.getProperty("user.dir") + "/assets/textures/Lives_4.png");
                         break;
                     }
                     case 5:
                     {
-                        setIcon(Lives5);
+                        loc = new String("file://localhost/" + System.getProperty("user.dir") + "/assets/textures/Lives_5.png");
                         break;
                     }
                 }
+                try {
+                    URL Loc = new URL(loc);
+                    Icon icon = new ImageIcon(Loc);
+                    setIcon(icon);
+                } catch (MalformedURLException ex) {
+                    Logger.getLogger(JNagClientGUI2.class.getName()).log(Level.SEVERE, null, ex);
+                    }
 
                 if (isSelected) {
                     table.setSelectionBackground(new Color(0, 255, 0));

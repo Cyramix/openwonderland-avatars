@@ -161,9 +161,9 @@ public class DarkstarClient extends JNagClient implements Updatable
     public void gameStarted(int byUserID, int hitPoints, float posX, float posY, float posZ) 
     {
         postGUILine("Game STARTED! by " + users.get(byUserID) + " and you get " + hitPoints + " hit points, good luck!");
-//        for (int i = 0; i < users.size(); i++) {
-//            gui.updatePlayerInBoards(userName, -hitPoints, 0, 0);
-//        }
+        for (int i = 0; i < users.size(); i++) {
+            gui.setPlayerStatsInBoards(users.get(byUserID), hitPoints, -1, -1);
+        }
         gamePos.set(posX, posY, posZ);
         Vector3f dir = Vector3f.ZERO.subtract(gamePos).normalize();
         PMatrix look = PMathUtils.lookAt(gamePos.subtract(dir), gamePos, Vector3f.UNIT_Y);
@@ -212,6 +212,13 @@ public class DarkstarClient extends JNagClient implements Updatable
     {
         hitPoints = 0;
         postGUILine(users.get(winnerID) + " WINS THE GAME!!!");
+        for (int i = 0; i < users.size(); i++) {
+            if (users.get(i).equals(users.get(winnerID)))
+                gui.setPlayerWins(users.get(winnerID), 1);
+            else
+                gui.setPlayerLosses(users.get(i), 1);
+        }
+
         if (winnerID == ID)
         {
             postGUILine("YOU WON THE GAME! YOU ARE AWESOME!");
@@ -683,7 +690,7 @@ public class DarkstarClient extends JNagClient implements Updatable
             UserData data = new UserData(user, playerIDs[i]);
             characterData.put(playerIDs[i], data);
             user.getController().addCharacterMotionListener(data);
-            gui.addPlayerToBoards(playerNames[i], 0, 0, 0);
+            gui.addPlayerToBoards(playerNames[i], 3, 0, 0);
             // Test
             //vis.addPositionObject(data.desiredPosition, ColorRGBA.black);
             //vis.addPositionObject(data.currentPosition, ColorRGBA.white);
