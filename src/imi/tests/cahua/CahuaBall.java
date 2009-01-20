@@ -19,6 +19,8 @@ package imi.tests.cahua;
 
 import com.jme.bounding.BoundingSphere;
 import com.jme.image.Texture;
+import com.jme.math.Quaternion;
+import com.jme.math.Vector3f;
 import com.jme.renderer.ColorRGBA;
 import com.jme.renderer.Renderer;
 import com.jme.scene.Node;
@@ -31,6 +33,10 @@ import com.jme.util.TextureManager;
 import imi.environments.ColladaEnvironment;
 import imi.scene.particles.ParticleCollection;
 import imi.scene.polygonmodel.PPolygonModelInstance;
+import org.jdesktop.mtgame.Entity;
+import org.jdesktop.mtgame.NewFrameCondition;
+import org.jdesktop.mtgame.ProcessorArmingCollection;
+import org.jdesktop.mtgame.ProcessorComponent;
 import org.jdesktop.mtgame.WorldManager;
 
 /**
@@ -49,17 +55,48 @@ public class CahuaBall
     private ParticleCollection      particles = null;
     /** Used for creating stuff **/
     private WorldManager            m_wm = null;
+    private float                   m_rotation = 0;
+
+    private Entity processorEntity          = null;
+    private ProcessorComponent processor    = null;
    
-    public CahuaBall(PPolygonModelInstance ballModelInstance, WorldManager wm)
+    public CahuaBall(PPolygonModelInstance ballModelInstance,
+            WorldManager wm,
+            float radius,
+            String textureLocation)
     {
         m_wm = wm;
         ColladaEnvironment environment = (ColladaEnvironment)wm.getUserData(ColladaEnvironment.class);
         environmentNode = environment.getJMENode();
-        jmeNode = new Sphere("CahuaBallSphere", 16, 32, 3);
+        jmeNode = new Sphere("CahuaBallSphere", 16, 32, radius);
         jmeNode.setDefaultColor(ColorRGBA.magenta);
         jmeNode.setLocalTranslation(ballModelInstance.getTransform().getLocalMatrix(false).getTranslation());
         setDefaultRenderStates(jmeNode);
         environmentNode.attachChild(jmeNode);
+
+        processorEntity = new Entity("HI!");
+        processor = new ProcessorComponent() {
+
+            @Override
+            public void compute(ProcessorArmingCollection arg0) {
+                rotate();
+            }
+
+            @Override
+            public void commit(ProcessorArmingCollection arg0) {
+                // Do nothing!
+            }
+
+            @Override
+            public void initialize() {
+                ProcessorArmingCollection collection = new ProcessorArmingCollection(this);
+                collection.addCondition(new NewFrameCondition(this));
+                setArmingCondition(collection);
+            }
+        };
+        processor.setEnabled(true);
+        processorEntity.addComponent(ProcessorComponent.class, processor);
+        wm.addEntity(processorEntity);
 
     }
 
@@ -72,6 +109,27 @@ public class CahuaBall
             default:
                 setDefault(particles);
         }
+    }
+
+    /**
+     * Rotate around the X axis
+     * @param radians
+     */
+    public void rotate() {
+        m_rotation += Math.toRadians(1.75f);
+        if (m_rotation > (float)(Math.PI * 2.0))
+            m_rotation = 0;
+        Quaternion rotate = new Quaternion();
+        rotate.fromAngleAxis( m_rotation , new Vector3f(0,1,0) );
+        jmeNode.setLocalRotation(rotate);
+        jmeNode.updateRenderState();
+    }
+
+    public void setPosition(Vector3f position)
+    {
+        if (particles != null)
+            particles.particles.setOriginOffset(position);
+        jmeNode.setLocalTranslation(position);
     }
 
     private void setDefault(ParticleCollection particles)
@@ -102,7 +160,7 @@ public class CahuaBall
 
         
         TextureState ts = (TextureState)m_wm.getRenderManager().createRendererState(RenderState.RS_TEXTURE);
-        ts.setTexture(TextureManager.loadTexture(ParticleCollection.class.getClassLoader().getResource("jmetest/data/texture/flaresmall.jpg"), Texture.MinificationFilter.BilinearNearestMipMap, Texture.MagnificationFilter.NearestNeighbor));
+        ts.setTexture(TextureManager.loadTexture("assets/textures/bluespark.png", Texture.MinificationFilter.BilinearNearestMipMap, Texture.MagnificationFilter.NearestNeighbor));
         ts.setEnabled(true);
         jmeNode.setRenderState(ts);
         jmeNode.setRenderQueueMode(Renderer.QUEUE_TRANSPARENT);

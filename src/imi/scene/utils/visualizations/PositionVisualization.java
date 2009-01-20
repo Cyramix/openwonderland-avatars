@@ -18,6 +18,7 @@
 package imi.scene.utils.visualizations;
 
 import com.jme.bounding.BoundingSphere;
+import com.jme.image.Texture;
 import com.jme.math.Vector3f;
 import com.jme.renderer.ColorRGBA;
 import com.jme.renderer.Renderer;
@@ -25,7 +26,9 @@ import com.jme.scene.Node;
 import com.jme.scene.shape.Sphere;
 import com.jme.scene.state.BlendState;
 import com.jme.scene.state.RenderState;
+import com.jme.scene.state.TextureState;
 import com.jme.scene.state.ZBufferState;
+import com.jme.util.TextureManager;
 import org.jdesktop.mtgame.WorldManager;
 
 /**
@@ -80,6 +83,7 @@ public class PositionVisualization
         // add a new sphere
         sphere = new Sphere("Position sphere", Vector3f.ZERO, 10, 10, radius);
         sphere.setDefaultColor(ColorRGBA.cyan);
+
         makeTransparent(wm);
         // Attach the sphere to the scene root
         objectRoot.attachChild(sphere);
@@ -106,6 +110,11 @@ public class PositionVisualization
         //sphere.updateModelBound();
         sphere.setRenderQueueMode(Renderer.QUEUE_TRANSPARENT);
         sphere.updateRenderState();
+
+        TextureState ts = (TextureState)wm.getRenderManager().createRendererState(RenderState.RS_TEXTURE);
+        ts.setTexture(TextureManager.loadTexture("assets/textures/glow.png", Texture.MinificationFilter.BilinearNearestMipMap, Texture.MagnificationFilter.NearestNeighbor));
+        ts.setEnabled(true);
+        sphere.setRenderState(ts);
     }
     
 
