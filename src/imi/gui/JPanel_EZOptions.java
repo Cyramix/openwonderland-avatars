@@ -1527,6 +1527,25 @@ public class JPanel_EZOptions extends javax.swing.JPanel {
                 data[i][1] = m_presetLists.get(i)[0];
             }
         }
+//        String Lives0 = new String("file://localhost/" + System.getProperty("user.dir") + "/assets/textures/Lives_0.png");
+//        String Lives1 = new String("file://localhost/" + System.getProperty("user.dir") + "/assets/textures/Lives_1.png");
+//        String Lives2 = new String("file://localhost/" + System.getProperty("user.dir") + "/assets/textures/Lives_2.png");
+//        String Lives3 = new String("file://localhost/" + System.getProperty("user.dir") + "/assets/textures/Lives_3.png");
+//        String Lives4 = new String("file://localhost/" + System.getProperty("user.dir") + "/assets/textures/Lives_4.png");
+//        String Lives5 = new String("file://localhost/" + System.getProperty("user.dir") + "/assets/textures/Lives_5.png");
+//
+//        String[] tex  = new String[] { Lives0, Lives1, Lives2, Lives3, Lives4, Lives5 };
+//
+//        String[][] data = null;
+//        if (m_presetLists != null) {
+//            int size = m_presetLists.size();
+//            data = new String[size][2];
+//
+//            for (int i = 0; i < size; i++) {
+//                data[i][0] = tex[i];
+//                data[i][1] = tex[i];
+//            }
+//        }
         return data;
     }    
 }

@@ -133,7 +133,6 @@ public class ParticleCollection implements RenderUpdater, Updatable
 
     }
 
-    @Override
     public void update(Object arg0) {
         FloatBuffer ceoff = (FloatBuffer)arg0;
         GL glDevice = javax.media.opengl.GLContext.getCurrent().getGL();
@@ -142,7 +141,6 @@ public class ParticleCollection implements RenderUpdater, Updatable
         glDevice.glPointParameterfvARB(GL.GL_POINT_DISTANCE_ATTENUATION_ARB, ceoff);
     }
 
-    @Override
     public void update(float deltaTime) {
         if (false)
         {
@@ -152,12 +150,10 @@ public class ParticleCollection implements RenderUpdater, Updatable
         }
     }
 
-    @Override
     public boolean isEnabled() {
         return enabled;
     }
 
-    @Override
     public void setEnable(boolean state) {
         enabled = state;
     }

@@ -300,24 +300,48 @@ public class JNagClientGUI2 extends javax.swing.JFrame implements ActionListener
     public void addPlayerToBoards(String playerName, int lives, int wins, int losses) {
         Object[] data = new Object[4];
         data[0] = playerName;
-
-        if (lives == -1)
-            data[1] = 5;
-        else
-            data[1] = lives;
-
-        if (wins == -1)
-            data[2] = 0;
-        else
-            data[2] = wins;
-
-        if (losses == -1)
-            data[3] = 0;
-        else
-            data[3] = losses;
+        data[1] = lives;
+        data[2] = wins;
+        data[3] = losses;
 
         DefaultTableModel table = (DefaultTableModel)jTable_Boards.getModel();
         table.addRow(data);
+    }
+
+    /**
+     * Set the player lives, wins and losses to display on the boards.  Takes in
+     * exact value to display.  Ideally should not be used for updating.
+     * @param playerName
+     * @param lives
+     * @param wins
+     * @param losses
+     */
+    public void setPlayerInBoards(String playerName, int lives, int wins, int losses) {
+        DefaultTableModel model = (DefaultTableModel)jTable_Boards.getModel();
+        for (int i = 0; i < model.getRowCount(); i++) {
+            if (model.getValueAt(i, 0).toString().equals(playerName)) {
+                int Lives   = (Integer)model.getValueAt(i, 1);
+                int Wins    = (Integer)model.getValueAt(i, 2);
+                int Losses  = (Integer)model.getValueAt(i, 3);
+
+                if (lives > -1)
+                    Lives   = lives;
+
+                if (wins > -1)
+                    Wins    = wins;
+                else if (Wins < 0)
+                    Wins = 0;
+
+                if (losses > -1)
+                    Losses  = losses;
+                else if (Losses < 0)
+                    Losses = 0;
+
+                model.setValueAt(Lives, i, 1);
+                model.setValueAt(Wins, i, 2);
+                model.setValueAt(Losses, i, 3);
+            }
+        }
     }
 
     /**
@@ -344,6 +368,15 @@ public class JNagClientGUI2 extends javax.swing.JFrame implements ActionListener
                 model.setValueAt(lives, i, 1);
                 model.setValueAt(wins, i, 2);
                 model.setValueAt(losses, i, 3);
+            }
+        }
+    }
+
+    public void removePlayerFromBoards(String playerName) {
+        DefaultTableModel model = (DefaultTableModel)jTable_Boards.getModel();
+        for (int i = 0; i < model.getRowCount(); i++) {
+            if (model.getValueAt(i, 0).toString().equals(playerName)) {
+                model.removeRow(i);
             }
         }
     }

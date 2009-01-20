@@ -302,7 +302,6 @@ public class ThirdPersonCamModel implements CameraModel, CharacterMotionListener
      * @param deltaTime
      * @throws imi.scene.camera.behaviors.WrongStateTypeException
      */
-    @Override
     public void update(CameraState state, float deltaTime) throws WrongStateTypeException
     {
         if (state.getType() != CameraState.CameraStateType.ThirdPerson)
@@ -425,7 +424,6 @@ public class ThirdPersonCamModel implements CameraModel, CharacterMotionListener
     private final Vector3f vectorBufferTwo = new Vector3f();
 
     // CharacterMotionListener implementation
-    @Override
     public void transformUpdate(Vector3f translation, PMatrix rotation)
     {
         final float threshold = 16.0f; // Distance before camera position updates

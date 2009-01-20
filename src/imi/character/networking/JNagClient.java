@@ -77,13 +77,13 @@ public class JNagClient implements SimpleClientListener, ClientSideUser
     private static final Logger logger = Logger.getLogger(JNagClient.class.getName());
     
     /** GUI **/
-    private JNagClientGUI gui = null;
+    protected JNagClientGUI2 gui = null;
     
     public JNagClient() 
     {
         simpleClient = new SimpleClient(this);
         // GUI is on by default
-        gui = new JNagClientGUI(this);
+        gui = new JNagClientGUI2(this);
     }
 
     /**
@@ -292,6 +292,7 @@ public class JNagClient implements SimpleClientListener, ClientSideUser
         users.put(ID, userName);
         if (gui != null)
             gui.appendOutput(string);
+        gui.addPlayerToBoards(userName, 3, 0, 0);
     }
 
     public void notifyLogout(boolean graceful) {
@@ -434,7 +435,7 @@ public class JNagClient implements SimpleClientListener, ClientSideUser
     }
     
     /** GUI may be null **/
-    public JNagClientGUI getGUI()
+    public JNagClientGUI2 getGUI()
     {
         return gui;
     }

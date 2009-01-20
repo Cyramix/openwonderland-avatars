@@ -155,6 +155,9 @@ public class DarkstarClient extends JNagClient implements Updatable
     public void gameStarted(int byUserID, int hitPoints, float posX, float posY, float posZ) 
     {
         postGUILine("Game STARTED! by " + users.get(byUserID) + " and you get " + hitPoints + " hit points, good luck!");
+        for (int i = 0; i < users.size(); i++) {
+            gui.setPlayerInBoards(userName, hitPoints, -1, -1);
+        }
         gamePos.set(posX, posY, posZ);
         Vector3f dir = Vector3f.ZERO.subtract(gamePos).normalize();
         PMatrix look = PMathUtils.lookAt(gamePos.subtract(dir), gamePos, Vector3f.UNIT_Y);
@@ -633,7 +636,7 @@ public class DarkstarClient extends JNagClient implements Updatable
             UserData data = new UserData(user, playerIDs[i]);
             characterData.put(playerIDs[i], data);
             user.getController().addCharacterMotionListener(data);
-            
+            gui.addPlayerToBoards(playerNames[i], -1, -1, -1);
             // Test
             //vis.addPositionObject(data.desiredPosition, ColorRGBA.black);
             //vis.addPositionObject(data.currentPosition, ColorRGBA.white);
@@ -655,12 +658,14 @@ public class DarkstarClient extends JNagClient implements Updatable
         UserData data = new UserData(user, userID);
         characterData.put(userID, data);
         user.getController().addCharacterMotionListener(data);
+        gui.addPlayerToBoards(playerName, -1, -1, -1);
     }
 
     @Override
     public void removePlayer(int userID) 
     {
         postGUILine("Removing Player with ID: " + userID + " called: " + users.get(userID));
+        gui.removePlayerFromBoards(users.get(userID));
         users.remove(userID);
 
         characterData.get(userID).user.die();
