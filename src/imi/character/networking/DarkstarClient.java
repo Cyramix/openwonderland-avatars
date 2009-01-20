@@ -215,10 +215,13 @@ public class DarkstarClient extends JNagClient implements Updatable
         
         for (int i = 0; i < users.size(); i++) 
         {
+//            if (users.get(i) == null)
+//                continue;
+            
             if (users.get(i).equals(users.get(winnerID)))
-                gui.setPlayerWins(users.get(winnerID), 1);
+                gui.updatePlayerWins(users.get(winnerID), 1);
             else
-                gui.setPlayerLosses(users.get(i), 1);
+                gui.updatePlayerLosses(users.get(i), 1);
         }
 
         if (winnerID == ID)

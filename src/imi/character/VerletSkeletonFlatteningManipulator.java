@@ -103,11 +103,11 @@ public class VerletSkeletonFlatteningManipulator implements SkeletonFlatteningMa
         {
             case rightEye:
                 if (rightEyeBall != null)
-                    rightEyeBall.lookAtTarget(matrix);
+                    rightEyeBall.lookAtTarget(matrix, -1.0f);
                 break;
             case leftEye:
                 if (leftEyeBall != null)
-                    leftEyeBall.lookAtTarget(matrix);
+                    leftEyeBall.lookAtTarget(matrix, 1.0f);
                 break;
         }
      
