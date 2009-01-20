@@ -18,13 +18,9 @@
 package imi.tests;
 
 
-import com.jme.math.Vector3f;
 import imi.character.ninja.NinjaAvatar;
 import imi.character.ninja.NinjaAvatarAttributes;
 import imi.environments.ColladaEnvironment;
-import imi.scene.camera.behaviors.ThirdPersonCamModel;
-import imi.scene.camera.state.CameraState;
-import imi.scene.camera.state.ThirdPersonCamState;
 import imi.scene.particles.ParticleCollection;
 import org.jdesktop.mtgame.WorldManager;
 import imi.scene.processors.JSceneEventProcessor;
@@ -41,7 +37,7 @@ import java.util.logging.Logger;
 public class PointSpriteTest extends DemoBase
 {
     /** Logger ref **/
-    private static final Logger logger = Logger.getLogger(COLLADA_CharacterTest.class.getName());
+    //private static final Logger logger = Logger.getLogger(COLLADA_CharacterTest.class.getName());
 
     private ParticleCollection particles = null;
 

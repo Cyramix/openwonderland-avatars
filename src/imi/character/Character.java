@@ -80,6 +80,7 @@ import imi.scene.shader.AbstractShaderProgram;
 import imi.scene.shader.NoSuchPropertyException;
 import imi.scene.shader.ShaderProperty;
 import imi.scene.shader.dynamic.GLSLDataType;
+import imi.scene.shader.dynamic.GLSLVertexAttribute;
 import imi.scene.shader.programs.ClothingShaderDiffuseAsSpec;
 import imi.scene.shader.programs.ClothingShaderSpecColor;
 import imi.scene.shader.programs.EyeballShader;
@@ -398,15 +399,17 @@ public abstract class Character extends Entity implements SpatialObject, Animati
     public void setDefaultShaders()
     {
         Repository repo = (Repository)m_wm.getUserData(Repository.class);
-
+        
         AbstractShaderProgram accessoryShader = repo.newShader(SimpleTNLWithAmbient.class);
         AbstractShaderProgram eyeballShader = repo.newShader(EyeballShader.class);
-        AbstractShaderProgram clothingShader = repo.newShader(ClothingShaderDiffuseAsSpec.class);
-//        AbstractShaderProgram clothingShader = repo.newShader(ClothingShaderSpecColor.class);
+        //AbstractShaderProgram clothingShader = repo.newShader(ClothingShaderDiffuseAsSpec.class);
+        AbstractShaderProgram clothingShader = repo.newShader(ClothingShaderSpecColor.class);
 
+        float[] skinColor = m_attributes.getSkinTone();
+        float[] clothesColor = { 255.0f / 255.0f, 215.0f / 255.0f, 0.0f / 255.0f}; // yellow
         AbstractShaderProgram fleshShader = repo.newShader(FleshShader.class);
-        float[] skinColor = { (230.0f/255.0f), (197.0f/255.0f), (190.0f/255.0f) };
         try {
+            clothingShader.setProperty(new ShaderProperty("specColor", GLSLDataType.GLSL_VEC3, clothesColor));
             fleshShader.setProperty(new ShaderProperty("materialColor", GLSLDataType.GLSL_VEC3, skinColor));
         } catch (NoSuchPropertyException ex) {
             Logger.getLogger(Character.class.getName()).log(Level.SEVERE, null, ex);

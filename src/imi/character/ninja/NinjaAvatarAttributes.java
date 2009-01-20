@@ -96,6 +96,10 @@ public class NinjaAvatarAttributes extends CharacterAttributes
         setLoadInstructions(load);
         setAddInstructions(add.toArray(new SkinnedMeshParams[add.size()]));
         setAttachmentsInstructions(attachments.toArray(new AttachmentParams[attachments.size()]));
+        
+//        setSkinTone(146.0f / 255.0f, 94.0f / 255.0f, 84.0f / 255.0f);
+//        setSkinTone(203.0f / 255.0f, 142.0f / 255.0f, 114.0f / 255.0f);
+        setSkinTone(182.0f / 255.0f, 137.0f / 255.0f, 116.0f / 255.0f);
     }
 
     private void customizeHead(int preset)

@@ -55,6 +55,8 @@ public class CharacterAttributes
     private String                  headAttachment          = null;
     /** This specifies the gender of the avatar. Its exact meaning is not yet defined **/
     private int                     gender                  = 1;
+    /** Skin tone RGB **/
+    private float []                skinTone                = new float [3];
 
     private Map<Integer, String[]>  m_geomref = null;
 
@@ -70,11 +72,19 @@ public class CharacterAttributes
      * @param name
      */
     public CharacterAttributes(String name) {
+        this();
         this.name = name;
     }
 
-    CharacterAttributes(xmlCharacterAttributes attributesDOM)
+    public CharacterAttributes() {
+        skinTone[0] = 230.0f/255.0f;
+        skinTone[1] = 197.0f/255.0f;
+        skinTone[2] = 190.0f/255.0f;
+    }
+    
+    public CharacterAttributes(xmlCharacterAttributes attributesDOM)
     {
+        this();
         applyAttributesDOM(attributesDOM);
     }
 
@@ -336,9 +346,6 @@ public class CharacterAttributes
 
     }
 
-    public CharacterAttributes() {
-    }
-
     public SkinnedMeshParams createSkinnedMeshParams(String meshName, String subGroupName)
     {
         return new SkinnedMeshParams(meshName, subGroupName);
@@ -349,6 +356,16 @@ public class CharacterAttributes
         if (gender == 1)
             return true;
         return false;
+    }
+
+    public float[] getSkinTone() {
+        return skinTone;
+    }
+
+    public void setSkinTone(float r, float g, float b) {
+        skinTone[0] = r;
+        skinTone[1] = g;
+        skinTone[2] = b;
     }
 
     /**
