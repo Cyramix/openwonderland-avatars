@@ -234,10 +234,10 @@ public abstract class Character extends Entity implements SpatialObject, Animati
 
     private void addShadow(SkeletonNode skeleton) {
         // make shadow
-        Vector3f pointOne =     new Vector3f( 0.45f, -0.19f,  0.5f);
-        Vector3f pointTwo =     new Vector3f(-0.45f, -0.19f,  0.5f);
-        Vector3f pointThree =   new Vector3f(-0.45f, -0.19f, -0.5f);
-        Vector3f pointFour =    new Vector3f( 0.45f, -0.19f, -0.5f);
+        Vector3f pointOne =     new Vector3f( 0.45f, -0.01f,  0.5f);
+        Vector3f pointTwo =     new Vector3f(-0.45f, -0.01f,  0.5f);
+        Vector3f pointThree =   new Vector3f(-0.45f, -0.01f, -0.5f);
+        Vector3f pointFour =    new Vector3f( 0.45f, -0.01f, -0.5f);
         // UV sets
         Vector2f uvSetOne =     new Vector2f(0, 0);
         Vector2f uvSetTwo =     new Vector2f(1, 0);
@@ -1664,16 +1664,16 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         SkinnedMeshJoint lhand = getSkeleton().getSkinnedMeshJoint("leftHand");
         lhand.getBindPose().setScale(fScale);
         SkinnedMeshJoint rfeet = getSkeleton().getSkinnedMeshJoint("rightFoot");
-        rfeet.getBindPose().setScale(fScale);
+        rfeet.getBindPose().setScale(1.5f);
         SkinnedMeshJoint lfeet = getSkeleton().getSkinnedMeshJoint("leftFoot");
-        lfeet.getBindPose().setScale(fScale);
+        lfeet.getBindPose().setScale(1.5f);
     }
 
 
     public void setBeerBelly(float fSize)
     {
-        SkinnedMeshJoint bellyJoint = getSkeleton().getSkinnedMeshJoint("Hips");
-        bellyJoint.getLocalModifierMatrix().setScale(fSize);
+//        SkinnedMeshJoint bellyJoint = getSkeleton().getSkinnedMeshJoint("Spine1");
+//        bellyJoint.getLocalModifierMatrix().setScale(fSize);
     }
 
     /**
