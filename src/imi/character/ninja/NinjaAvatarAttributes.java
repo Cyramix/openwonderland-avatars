@@ -365,7 +365,7 @@ public class NinjaAvatarAttributes extends CharacterAttributes
             {
                 // Meso
                 load.add(new String("assets/models/collada/Clothes/Male/Meso/MaleMesoTop.dae"));
-                add.add(new SkinnedMeshParams("polySurfaceShape1", "UpperBody"));
+                add.add(new SkinnedMeshParams("TorsoNudeShape", "UpperBody"));
                 add.add(new SkinnedMeshParams("polySurfaceShape2", "UpperBody"));
             }
             break;

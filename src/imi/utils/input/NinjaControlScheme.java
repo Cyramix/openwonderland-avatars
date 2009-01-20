@@ -147,6 +147,11 @@ public class NinjaControlScheme extends InputScheme
         }
     }
     
+    public void activateMouseMovement()
+    {
+        mouseDown = true;
+    }
+    
     @Override
     public void processEvents(Object[] events) 
     {

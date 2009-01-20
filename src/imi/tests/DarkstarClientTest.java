@@ -97,8 +97,11 @@ public class DarkstarClientTest extends DemoBase
         ((DarkstarClient)avatar.getUpdateExtension()).login();
         
         avatar.setBigHeadMode(2.0f);
-        avatar.makeFist(false, true);
-        //avatar.makeFist(false, false);
+        avatar.makeFist(false, false);
+        
+        float x = 2.0f + (float)Math.random() % 5.0f;
+        float z = 2.0f + (float)Math.random() % 5.0f;
+        avatar.getModelInst().getTransform().getLocalMatrix(true).setTranslation(new Vector3f(x, 0.0f, z));
         
         // Select the avatar for input and set the object collection
         avatar.selectForInput();

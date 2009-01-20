@@ -524,6 +524,9 @@ public class NinjaContext extends GameContext
         
         info = new ActionInfo("Male_Follow");
         genericAnimations.add(info);
+        
+        info = new ActionInfo("Male_TakeDamage");
+        genericAnimations.add(info);
     }
 
     

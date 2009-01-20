@@ -429,7 +429,6 @@ public abstract class Character extends Entity implements SpatialObject, Animati
                 meshMat.setShader(eyeballShader);
             else if (meshInst.getName().contains("Head") ||
                      meshInst.getName().contains("Nude") ||
-                     meshInst.getName().contains("polySurfaceShape1") || // HACK for the meso top
                      meshInst.getName().contains("Arms") ||
                      meshInst.getName().contains("Hand"))// is it flesh?
                 meshMat.setShader(fleshShader);

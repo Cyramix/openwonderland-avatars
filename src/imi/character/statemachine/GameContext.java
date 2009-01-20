@@ -178,7 +178,7 @@ public class GameContext extends NamedUpdatableObject
     {
         return currentState;
     }
-        
+
     @Override
     public void update(float deltaTime)
     {

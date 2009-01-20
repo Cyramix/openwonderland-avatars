@@ -102,8 +102,8 @@ public class PositionVisualization
         zstate.setFunction(ZBufferState.TestFunction.LessThanOrEqualTo);
         sphere.setRenderState(zstate);
 
-        sphere.setModelBound(new BoundingSphere());
-        sphere.updateModelBound();
+        //sphere.setModelBound(new BoundingSphere());
+        //sphere.updateModelBound();
         sphere.setRenderQueueMode(Renderer.QUEUE_TRANSPARENT);
         sphere.updateRenderState();
     }
