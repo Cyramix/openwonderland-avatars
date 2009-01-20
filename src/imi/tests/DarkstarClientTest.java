@@ -39,17 +39,17 @@ public class DarkstarClientTest extends DemoBase
         DarkstarClientTest worldTest = new DarkstarClientTest(args);
     }
 
-//    @Override
-//    protected void assignCameraType(WorldManager wm)
-//    {
-//        ThirdPersonCamState state = new ThirdPersonCamState(null);
-//        state.setOffsetFromCharacter(new Vector3f(0, 1.8f, 0));
-//        state.setCameraPosition(new Vector3f(0, 3.5f, -7));
-//        state.setTargetFocalPoint(new Vector3f(0,1.8f,0));
-//        state.setToCamera(new Vector3f(0, 2.5f, -4));
-//        ThirdPersonCamModel model = new ThirdPersonCamModel();
-//        m_cameraProcessor.setCameraBehavior(model, state);
-//    }
+    @Override
+    protected void assignCameraType(WorldManager wm)
+    {
+        ThirdPersonCamState state = new ThirdPersonCamState(null);
+        state.setOffsetFromCharacter(new Vector3f(0, 1.8f, 0));
+        state.setCameraPosition(new Vector3f(0, 3.5f, -7));
+        state.setTargetFocalPoint(new Vector3f(0,1.8f,0));
+        state.setToCamera(new Vector3f(0, 2.5f, -4));
+        ThirdPersonCamModel model = new ThirdPersonCamModel();
+        m_cameraProcessor.setCameraBehavior(model, state);
+    }
     
     @Override
     protected void createDemoEntities(WorldManager wm) 
@@ -64,10 +64,10 @@ public class DarkstarClientTest extends DemoBase
         //objects.generateChairs(Vector3f.ZERO, 5.0f, 4);
         //control.setObjectCollection(objects);
         
-        // change camera speed and position it
-        FirstPersonCamState camState = (FirstPersonCamState)m_cameraProcessor.getState();
-        camState.setMovementRate(0.03f);
-        camState.setCameraPosition(new Vector3f(0.0f, 1.8f, -2.0f));
+//        // change camera speed and position it
+//        FirstPersonCamState camState = (FirstPersonCamState)m_cameraProcessor.getState();
+//        camState.setMovementRate(0.03f);
+//        camState.setCameraPosition(new Vector3f(0.0f, 1.8f, -2.0f));
         
         boolean male = true;
         NinjaAvatar avatar;
@@ -108,13 +108,13 @@ public class DarkstarClientTest extends DemoBase
         // Get the mouse events to be able to control the arm 
         control.getMouseEventsFromCamera();
         
-//        // Hook the camera up to the avatar
-//        ThirdPersonCamState state = (ThirdPersonCamState)wm.getUserData(CameraState.class);
-//        state.setTargetModelInstance(avatar.getModelInst());
-//
-//        ThirdPersonCamModel camModel = (ThirdPersonCamModel)m_cameraProcessor.getModel();
-//        camModel.setActiveState(state);
-//        avatar.getController().addCharacterMotionListener(camModel);
+        // Hook the camera up to the avatar
+        ThirdPersonCamState state = (ThirdPersonCamState)wm.getUserData(CameraState.class);
+        state.setTargetModelInstance(avatar.getModelInst());
+
+        ThirdPersonCamModel camModel = (ThirdPersonCamModel)m_cameraProcessor.getModel();
+        camModel.setActiveState(state);
+        avatar.getController().addCharacterMotionListener(camModel);
     }
 
 }

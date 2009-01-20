@@ -12,12 +12,16 @@ import com.jme.renderer.ColorRGBA;
 import imi.character.Character;
 import imi.character.ninja.NinjaAvatar;
 import imi.character.ninja.NinjaAvatarAttributes;
+import imi.character.ninja.NinjaContext;
 import imi.character.ninja.NinjaContext.TriggerNames;
 import imi.character.ninja.NinjaFemaleAvatarAttributes;
 import imi.character.statemachine.GameContextListener;
 import imi.character.statemachine.corestates.IdleState;
 import imi.scene.PMatrix;
 import imi.scene.Updatable;
+import imi.scene.camera.behaviors.ThirdPersonCamModel;
+import imi.scene.camera.state.ThirdPersonCamState;
+import imi.scene.processors.FlexibleCameraProcessor;
 import imi.scene.utils.visualizations.VisuManager;
 import imi.utils.PMathUtils;
 import java.net.PasswordAuthentication;
@@ -146,6 +150,8 @@ public class DarkstarClient extends JNagClient implements Updatable
         
         postGUILine("HIT! " + users.get(userID) + " got hit by " + users.get(byUserID) + "'s ball and it hurts his pride!");
         
+        performAnimation(1, false, false, userID); // shake head
+        
         // Set new position and velocity for that ball
         hitter.balls[ballID].set(hit.user.getPosition().add(0.0f, 2.0f + ballRadius, 0.0f));
         hitter.ballsVel[ballID].set(0.0f, 0.25f, 0.0f);
@@ -155,14 +161,24 @@ public class DarkstarClient extends JNagClient implements Updatable
     public void gameStarted(int byUserID, int hitPoints, float posX, float posY, float posZ) 
     {
         postGUILine("Game STARTED! by " + users.get(byUserID) + " and you get " + hitPoints + " hit points, good luck!");
-        for (int i = 0; i < users.size(); i++) {
-            gui.setPlayerInBoards(userName, hitPoints, -1, -1);
-        }
+//        for (int i = 0; i < users.size(); i++) {
+//            gui.updatePlayerInBoards(userName, -hitPoints, 0, 0);
+//        }
         gamePos.set(posX, posY, posZ);
         Vector3f dir = Vector3f.ZERO.subtract(gamePos).normalize();
         PMatrix look = PMathUtils.lookAt(gamePos.subtract(dir), gamePos, Vector3f.UNIT_Y);
         PMatrix local = character.getController().getModelInstance().getTransform().getLocalMatrix(true);
         local.set(look);
+        
+        character.makeFist(true, true);
+        character.getRightArm().setEnabled(true);
+        
+        ThirdPersonCamState camState = (ThirdPersonCamState)((FlexibleCameraProcessor)worldManager.getUserData(FlexibleCameraProcessor.class)).getState();
+        Vector3f toCam = new Vector3f(camState.getToCamera());
+        local.transformNormal(toCam);
+        Vector3f camPos = toCam.add(local.getTranslation());
+        ThirdPersonCamModel camModel = (ThirdPersonCamModel)((FlexibleCameraProcessor)worldManager.getUserData(FlexibleCameraProcessor.class)).getModel();
+        camModel.moveTo(camPos, camState);
         
         this.hitPoints = hitPoints;
         for (int i = 0; i < numberOfBalls; i++)
@@ -170,8 +186,27 @@ public class DarkstarClient extends JNagClient implements Updatable
             balls[i].set(10000.0f, 0.0f, 0.0f);
             ballsVel[i].set(0.0f, 0.0f, 0.0f);
         }
+        
+        performAnimation(7, true, true, 0); // bow
     }
 
+    public void performAnimation(int actionIndex, boolean client, boolean allUsers, int specificUser)
+    {
+        if (client)
+            ((NinjaContext)character.getContext()).performAction(actionIndex);
+        
+        if (allUsers)
+        {
+            for (UserData data : characterData.values())
+                ((NinjaContext)data.user.getContext()).performAction(actionIndex);
+        }
+        else if (characterData.get(specificUser) != null)
+        {
+            Character user = characterData.get(specificUser).user;
+            ((NinjaContext)user.getContext()).performAction(actionIndex);
+        }
+    }
+    
     @Override
     public void gameEnded(int winnerID) 
     {
@@ -182,9 +217,16 @@ public class DarkstarClient extends JNagClient implements Updatable
             postGUILine("YOU WON THE GAME! YOU ARE AWESOME!");
             PMatrix local = character.getController().getModelInstance().getTransform().getLocalMatrix(true);
             local.setTranslation(Vector3f.ZERO);
+            
+            performAnimation(5, true, false, 0); // cheer
+            performAnimation(6, false, true, 0); // clap
         }
         else
+        {
             postGUILine("Better luck next time");
+            performAnimation(6, true, true, 0); // clap
+            performAnimation(5, false, false, winnerID); // cheer
+        }
         for (int i = 0; i < numberOfBalls; i++)
         {
             balls[i].set(10000.0f, 0.0f, 0.0f);
@@ -366,6 +408,7 @@ public class DarkstarClient extends JNagClient implements Updatable
                 // Check for collision
                 if (checkCollisionBallWithHitBox(pos))
                 {       
+                    performAnimation(1, true, false, 0); // shake head
                     postGUILine("OUCH! You got hit by your own ball!");
                     hitPoints--;
                     serverProxy.gotHit(ID, i);
@@ -437,14 +480,15 @@ public class DarkstarClient extends JNagClient implements Updatable
     private void spawnOutside() 
     {
         postGUILine("You are out of the game!");
-        float x = (float)Math.random() % 20 + 10;
-        float z = (float)Math.random() % 20 + 10;
-        if (Math.random() < 0.5f)
-            x *= -1.0f;
-        if (Math.random() < 0.5f)
-            z *= -1.0f;
+        
         PMatrix local = character.getController().getModelInstance().getTransform().getLocalMatrix(true);
-        local.setTranslation(new Vector3f(x, 0.0f, z));
+        Vector3f out = local.getTranslation().subtract(Vector3f.ZERO).normalize();
+        out.multLocal(10.0f);
+        local.setTranslation(out);
+        
+        character.makeFist(false, false);
+        character.getRightArm().setEnabled(false);
+        character.getLeftArm().setEnabled(false);
     }
 
     private boolean checkCollisionBallWithHitBox(Vector3f pos) 
@@ -629,14 +673,17 @@ public class DarkstarClient extends JNagClient implements Updatable
 
             Character user;
             if (male[i])
+            {
                 user = new NinjaAvatar(new NinjaAvatarAttributes(playerNames[i], feet[i], legs[i], torso[i], hair[i], 0), worldManager);
+                user.setBigHeadMode(2.0f);
+            }
             else
                 user = new NinjaAvatar(new NinjaFemaleAvatarAttributes(playerNames[i], feet[i], legs[i], torso[i], hair[i], 0), worldManager);
             
             UserData data = new UserData(user, playerIDs[i]);
             characterData.put(playerIDs[i], data);
             user.getController().addCharacterMotionListener(data);
-            gui.addPlayerToBoards(playerNames[i], -1, -1, -1);
+            gui.addPlayerToBoards(playerNames[i], 0, 0, 0);
             // Test
             //vis.addPositionObject(data.desiredPosition, ColorRGBA.black);
             //vis.addPositionObject(data.currentPosition, ColorRGBA.white);
@@ -651,14 +698,17 @@ public class DarkstarClient extends JNagClient implements Updatable
 
         Character user;
         if (male)
+        {
             user = new NinjaAvatar(new NinjaAvatarAttributes(playerName, feet, legs, torso, hair, 0), worldManager);
+            user.setBigHeadMode(2.0f);
+        }
         else
             user = new NinjaAvatar(new NinjaFemaleAvatarAttributes(playerName, feet, legs, torso, hair, 0), worldManager);
         
         UserData data = new UserData(user, userID);
         characterData.put(userID, data);
         user.getController().addCharacterMotionListener(data);
-        gui.addPlayerToBoards(playerName, -1, -1, -1);
+        gui.addPlayerToBoards(playerName, 0, 0, 0);
     }
 
     @Override

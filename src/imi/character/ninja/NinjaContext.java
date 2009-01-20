@@ -479,6 +479,14 @@ public class NinjaContext extends GameContext
         this.location = location;
     }
 
+    public void performAction(int actionInfoIndex)
+    {
+        ActionState action = (ActionState) gameStates.get(ActionState.class);
+        action.setAnimationSetBoolean(false);
+        genericAnimations.get(actionInfoIndex).apply(action);
+        setCurrentState(action);
+    }
+    
     /** Here we define the animation properties for the various animations
      that are using the ActionState to play out **/
     private void configureDefaultActionStateInfo() {

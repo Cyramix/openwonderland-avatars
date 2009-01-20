@@ -154,7 +154,7 @@ public class JNagClientGUI2 extends javax.swing.JFrame implements ActionListener
         jPanel_Main.setFocusable(false);
 
         jLabel_ConnectivityStatus.setBackground(new java.awt.Color(102, 204, 255));
-        jLabel_ConnectivityStatus.setFont(new java.awt.Font("Lucida Grande", 3, 13)); // NOI18N
+        jLabel_ConnectivityStatus.setFont(new java.awt.Font("Lucida Grande", 3, 13));
         jLabel_ConnectivityStatus.setForeground(new java.awt.Color(0, 0, 255));
         jLabel_ConnectivityStatus.setText("jLabel1");
         jLabel_ConnectivityStatus.setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED));
@@ -176,13 +176,7 @@ public class JNagClientGUI2 extends javax.swing.JFrame implements ActionListener
         jComboBox_Selector.setModel((channelSelectorModel));
         jComboBox_Selector.setMinimumSize(new java.awt.Dimension(140, 27));
         jComboBox_Selector.setPreferredSize(new java.awt.Dimension(140, 27));
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        gridBagConstraints.weightx = 1.0;
-        jPanel_InputPane.add(jComboBox_Selector, gridBagConstraints);
+        jPanel_InputPane.add(jComboBox_Selector, new java.awt.GridBagConstraints());
 
         jTextField_InputWindow.setBackground(new java.awt.Color(153, 153, 255));
         jTextField_InputWindow.setPreferredSize(new java.awt.Dimension(300, 28));

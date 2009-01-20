@@ -58,7 +58,7 @@ public class PositionVisualization
         objectRoot.attachChild(sphere);
     }
 
-    PositionVisualization(Vector3f position, float radius) 
+    public PositionVisualization(Vector3f position, float radius) 
     {
         objectRoot = new Node(position.toString());
 
@@ -76,6 +76,8 @@ public class PositionVisualization
         // Attach the sphere to the scene root
         objectRoot.attachChild(sphere);
     }
+    
+    
 
     /**
      * Update all the local translation components of the nodes representing the particles
