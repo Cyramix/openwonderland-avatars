@@ -384,7 +384,7 @@ public class DarkstarClient extends JNagClient implements Updatable
                     {
                         postGUILine("OUCH! You got hit by " + users.get(data.userID) + "'s ball!");
                         hitPoints--;
-                        gui.updatePlayerLives(users.get(data.userID), 1);
+                        gui.updatePlayerLives(users.get(ID), 1);
                         serverProxy.gotHit(data.userID, i);
                         pos.set(hitBoxPos.add(0.0f, 2.0f + ballRadius, 0.0f));
                         vel.set(0.0f, 0.25f, 0.0f);
