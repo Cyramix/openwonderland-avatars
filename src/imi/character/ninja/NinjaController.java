@@ -195,7 +195,6 @@ public class NinjaController extends CharacterController
         }
 
         notifyTransfromUpdate(position, currentRot);
-        
 //        if (getVelocityScalar() > 1.0f)
 //            window.setTitle("yes");
 //        else

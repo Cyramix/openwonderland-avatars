@@ -18,6 +18,7 @@
 package imi.character.ninja;
 
 import com.jme.math.Vector3f;
+import com.jme.renderer.ColorRGBA;
 import imi.character.AttachmentParams;
 import imi.character.CharacterAttributes;
 import imi.scene.PMatrix;
@@ -33,6 +34,14 @@ public class NinjaAvatarAttributes extends CharacterAttributes
 {
     public String[] m_regions = new String[] { "Head", "Hands", "UpperBody", "LowerBody", "Feet", "Hair", "FacialHair", "Hats", "Glasses", "Jackets" };
 
+
+    private final ColorRGBA[] skinTones = new ColorRGBA[]
+    {
+        new ColorRGBA(221.0f / 255.0f,  183.0f / 255.0f, 166.0f / 255.0f, 1),
+        new ColorRGBA(203.0f / 255.0f,  142.0f / 255.0f, 114.0f / 255.0f, 1),
+        new ColorRGBA(182.0f / 255.0f,  137.0f / 255.0f, 116.0f / 255.0f, 1),
+        new ColorRGBA(0, 1, 1, 1),
+    };
     private boolean loadedBind = false;
     
     /**
@@ -63,6 +72,8 @@ public class NinjaAvatarAttributes extends CharacterAttributes
             customizeFeetPresets(preset, load, add, attachments);
             preset = (int) (Math.random() * 1000000 % numberOfLegs);
             customizeLegsPresets(preset, load, add, attachments);
+            preset = (int) (Math.random() * 1000000 % skinTones.length);
+            setSkinTone(skinTones[preset].r, skinTones[preset].g, skinTones[preset].b);
             if (bForceDressShirt)
                 customizeTorsoPresets(2, load, add, attachments);
             else
@@ -80,8 +91,11 @@ public class NinjaAvatarAttributes extends CharacterAttributes
         else
             loadDefaultBindPose();
     }
-    
     public NinjaAvatarAttributes(String name, int feet, int legs, int torso, int hair, int head)
+    {
+        this(name, feet, legs, torso, hair, head, 0);
+    }
+    public NinjaAvatarAttributes(String name, int feet, int legs, int torso, int hair, int head, int skinTone)
     {
         ArrayList<String> load                  = new ArrayList<String>();
         ArrayList<SkinnedMeshParams> add        = new ArrayList<SkinnedMeshParams>();
@@ -97,9 +111,6 @@ public class NinjaAvatarAttributes extends CharacterAttributes
         setAddInstructions(add.toArray(new SkinnedMeshParams[add.size()]));
         setAttachmentsInstructions(attachments.toArray(new AttachmentParams[attachments.size()]));
         
-//        setSkinTone(146.0f / 255.0f, 94.0f / 255.0f, 84.0f / 255.0f);
-//        setSkinTone(203.0f / 255.0f, 142.0f / 255.0f, 114.0f / 255.0f);
-        setSkinTone(182.0f / 255.0f, 137.0f / 255.0f, 116.0f / 255.0f);
     }
 
     private void customizeHead(int preset)

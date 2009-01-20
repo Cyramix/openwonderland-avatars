@@ -78,7 +78,7 @@ import imi.scene.shader.AbstractShaderProgram;
 import imi.scene.shader.NoSuchPropertyException;
 import imi.scene.shader.ShaderProperty;
 import imi.scene.shader.dynamic.GLSLDataType;
-import imi.scene.shader.programs.ClothingShaderSpecColor;
+import imi.scene.shader.programs.ClothingShaderDiffuseAsSpec;
 import imi.scene.shader.programs.EyeballShader;
 import imi.scene.shader.programs.FleshShader;
 import imi.scene.shader.programs.SimpleTNLWithAmbient;
@@ -151,21 +151,22 @@ public abstract class Character extends Entity implements SpatialObject, Animati
     protected CharacterEyes                 m_eyes                  = null;
     protected VerletArm                     m_rightArm              = null;
     protected VerletArm                     m_leftArm               = null;
+    private   boolean                       m_initialized           = false;
+    private   Updatable                     m_updateExtension       = null;
+    private   int                           m_defaultFacePose       = 4;
+    private   float                         m_defaultFacePoseTiming = 0.1f;
     private   VerletSkeletonFlatteningManipulator m_skeletonManipulator   = null;
-    private   boolean                             m_initialized           = false;
-    private   Updatable                       m_updateExtension       = null;
-    
-    private int                             m_defaultFacePose       = 4;
-    private float                           m_defaultFacePoseTiming = 0.1f;
 
     /** Used for internal requests for assets **/
     private final RepositoryUser            headInstaller = new RepositoryUser() {
             
             public void receiveAsset(SharedAsset assetRecieved) {
+                // Flip some switches
                 asset = assetRecieved;
                 m_bWaitingOnAsset = false;
             }
     };
+
     /**
      * Sets up the mtgame entity 
      * @param attributes
@@ -229,34 +230,41 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         commonConstructionCode(wm, loadedAttributes, true, characterDOM);
     }
 
-    private void addShadow(SkeletonNode skeleton) {
-        // make shadow
-        Vector3f pointOne =     new Vector3f( 0.45f, -0.01f,  0.5f);
-        Vector3f pointTwo =     new Vector3f(-0.45f, -0.01f,  0.5f);
-        Vector3f pointThree =   new Vector3f(-0.45f, -0.01f, -0.5f);
-        Vector3f pointFour =    new Vector3f( 0.45f, -0.01f, -0.5f);
-        // UV sets
-        Vector2f uvSetOne =     new Vector2f(0, 0);
-        Vector2f uvSetTwo =     new Vector2f(1, 0);
-        Vector2f uvSetThree =   new Vector2f(1, 1);
-        Vector2f uvSetFour =    new Vector2f(0, 1);
 
-        PMeshMaterial shadowMaterial = new PMeshMaterial("ShadowMaterial");
-        shadowMaterial.setTexture("assets/textures/shadow.png", 0);
-        shadowMaterial.setAlphaState(PMeshMaterial.AlphaTransparencyType.A_ONE);
-        shadowMaterial.setColorMaterial(ColorMaterial.None);
+    public void addShadow() {
+        if (m_shadowModel == null) // Not parameterized, no sense in remaking shadows
+        {
+            // make shadow, minor offset to avoid Z-fighting with the y=0 plane
+            Vector3f pointOne =     new Vector3f( 0.45f, 0.01f,  0.5f);
+            Vector3f pointTwo =     new Vector3f(-0.45f, 0.01f,  0.5f);
+            Vector3f pointThree =   new Vector3f(-0.45f, 0.01f, -0.5f);
+            Vector3f pointFour =    new Vector3f( 0.45f, 0.01f, -0.5f);
+            // UV sets, standard texturing
+            Vector2f uvSetOne =     new Vector2f(0, 0);
+            Vector2f uvSetTwo =     new Vector2f(1, 0);
+            Vector2f uvSetThree =   new Vector2f(1, 1);
+            Vector2f uvSetFour =    new Vector2f(0, 1);
 
-        TextureMaterialProperties textureProp = shadowMaterial.getTexture(0);
-        textureProp.setAlphaCombineMode(CombinerFunctionAlpha.Modulate);
-        textureProp.setApplyMode(ApplyMode.Replace);
-        PPolygonMesh shadowMesh = PMeshUtils.createQuad("ShadowQuad",
-                                                        pointOne, pointTwo, pointThree, pointFour,
-                                                        ColorRGBA.cyan,
-                                                        uvSetOne, uvSetTwo, uvSetThree, uvSetFour);
-        shadowMesh.setMaterial(shadowMaterial);
-        shadowMesh.setNumberOfTextures(1);
-        m_shadowModel = m_pscene.addModelInstance(shadowMesh, new PMatrix());
-        skeleton.getSkeletonRoot().addChild(m_shadowModel);
+            // Use a transparent material with a blob shadow texture
+            PMeshMaterial shadowMaterial = new PMeshMaterial("ShadowMaterial");
+            shadowMaterial.setTexture("assets/textures/shadow.png", 0);
+            shadowMaterial.setAlphaState(PMeshMaterial.AlphaTransparencyType.A_ONE);
+            shadowMaterial.setColorMaterial(ColorMaterial.None);
+
+            TextureMaterialProperties textureProp = shadowMaterial.getTexture(0);
+            textureProp.setAlphaCombineMode(CombinerFunctionAlpha.Modulate);
+            textureProp.setApplyMode(ApplyMode.Replace);
+            PPolygonMesh shadowMesh = PMeshUtils.createQuad("ShadowQuad",
+                                                            pointOne, pointTwo, pointThree, pointFour,
+                                                            ColorRGBA.cyan,
+                                                            uvSetOne, uvSetTwo, uvSetThree, uvSetFour);
+            shadowMesh.setMaterial(shadowMaterial);
+            shadowMesh.setNumberOfTextures(1);
+            // Add it to the scene
+            m_shadowModel = m_pscene.addModelInstance(shadowMesh, new PMatrix());
+            // Attached to skeleton to get free dirtiness propagation
+            m_skeleton.getSkeletonRoot().addChild(m_shadowModel);
+        }
     }
 
     private void commonConstructionCode(WorldManager wm, CharacterAttributes attributes, boolean addEntity, xmlCharacter characterDOM)
@@ -378,15 +386,19 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         m_rightArm.setSkeletonManipulator(m_skeletonManipulator);
         m_leftArm.setSkeletonManipulator(m_skeletonManipulator);
         //m_arm.setPointAtLocation(Vector3f.UNIT_Y.mult(2.0f)); // test pointing, set to null to stop pointing
-        
-        VisuManager vis = new VisuManager("blabla", m_wm);
-        vis.setWireframe(false);float handRadius    = 0.15f;
-        vis.addPositionObject(getLeftArm().getWristPosition(), ColorRGBA.magenta, handRadius);
-        vis.addPositionObject(getRightArm().getWristPosition(), ColorRGBA.magenta, handRadius);
+
+        // Uncomment for verlet arm particle visualization
+//        VisuManager vis = new VisuManager("Visualizations", m_wm);
+//        vis.setWireframe(false);float handRadius    = 0.15f;
+//        vis.addPositionObject(getLeftArm().getWristPosition(), ColorRGBA.magenta, handRadius);
+//        vis.addPositionObject(getRightArm().getWristPosition(), ColorRGBA.magenta, handRadius);
         
         // Associate ourselves with our animation states
         for (AnimationState animState : m_skeleton.getAnimationStates())
             animState.addListener(this);
+
+        // the shadow!
+        addShadow();
         // Turn on the animation
         m_AnimationProcessor.setEnable(true);
         // Turn on updates
@@ -404,20 +416,15 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         
         AbstractShaderProgram accessoryShader = repo.newShader(SimpleTNLWithAmbient.class);
         AbstractShaderProgram eyeballShader = repo.newShader(EyeballShader.class);
-        //AbstractShaderProgram clothingShader = repo.newShader(ClothingShaderDiffuseAsSpec.class);
-        AbstractShaderProgram clothingShader = repo.newShader(ClothingShaderSpecColor.class);
+        AbstractShaderProgram clothingShader = repo.newShader(ClothingShaderDiffuseAsSpec.class);
 
         float[] skinColor = m_attributes.getSkinTone();
-        float[] clothesColor = { 255.0f / 255.0f, 215.0f / 255.0f, 0.0f / 255.0f}; // yellow
         AbstractShaderProgram fleshShader = repo.newShader(FleshShader.class);
         try {
-            clothingShader.setProperty(new ShaderProperty("specColor", GLSLDataType.GLSL_VEC3, clothesColor));
             fleshShader.setProperty(new ShaderProperty("materialColor", GLSLDataType.GLSL_VEC3, skinColor));
         } catch (NoSuchPropertyException ex) {
             Logger.getLogger(Character.class.getName()).log(Level.SEVERE, null, ex);
         }
-
-
 
         // first the skinned meshes
         Iterable<PPolygonSkinnedMeshInstance> smInstances = m_skeleton.getSkinnedMeshInstances();
@@ -665,8 +672,6 @@ public abstract class Character extends Entity implements SpatialObject, Animati
             m_modelInst.addChild(m_skeleton);
             m_pscene.addInstanceNode(m_modelInst);
 
-            // Add shadow
-            addShadow(m_skeleton);
             // Debugging / Diagnostic output
 //            Logger.getLogger(Character.class.getName()).log(Level.INFO, "Model " + m_pscene + "  inst " + m_modelInst);
             m_AnimationProcessor = new CharacterAnimationProcessor(m_modelInst);

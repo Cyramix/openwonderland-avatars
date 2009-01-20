@@ -125,6 +125,9 @@ public class DemoBase
     private Entity m_jsceneEntity = null; // Maintained for lighting operations
     
     protected FlexibleCameraProcessor m_cameraProcessor = null;
+
+    /** Used to indicate which environment should be loaded **/
+    private String pathToEnv = null;
     
     
     public DemoBase(String[] args) 
@@ -151,7 +154,7 @@ public class DemoBase
         createCameraEntity(worldManager);  
         createInputEntity(worldManager); 
         setGlobalLighting(worldManager);
-        createEnvironment(worldManager);
+        createEnvironment(worldManager, pathToEnv);
         createDemoEntities(worldManager);
     }
     
@@ -664,9 +667,18 @@ public class DemoBase
         wm.addUserData(JSceneEventProcessor.class, eventProcessor);
     }
 
-    private void createEnvironment(WorldManager worldManager) {
-        ColladaEnvironment environment = new ColladaEnvironment(worldManager, "assets/models/collada/Environments/Arena/Arena.dae", "DemoGarden");
-        worldManager.addUserData(ColladaEnvironment.class, environment);
+    /**
+     * If an environment was specified for loading, use it!
+     * @param worldManager
+     * @param relativePath
+     */
+    private void createEnvironment(WorldManager worldManager, String relativePath) 
+    {
+        if (relativePath != null)
+        {
+            ColladaEnvironment environment = new ColladaEnvironment(worldManager, relativePath, "DemoWorld");
+            worldManager.addUserData(ColladaEnvironment.class, environment);
+        }
     }
 
     private Texture loadSkyboxTexture(String filePath)
@@ -793,6 +805,16 @@ public class DemoBase
                 desiredFrameRate = Integer.parseInt(args[i+1]);
                 System.out.println("DesiredFrameRate: " + desiredFrameRate);
                 i++;
+            }
+            else if (args[i].startsWith("-env:"))
+            {
+                String[] environmentArgs = args[i].split(":");
+                if (environmentArgs.length < 2)
+                    pathToEnv = null;
+                else if (environmentArgs[1].equals("none"))
+                    pathToEnv = null;
+                else
+                    pathToEnv = environmentArgs[1];
             }
         }
     }

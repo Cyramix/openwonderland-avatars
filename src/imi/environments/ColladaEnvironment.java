@@ -58,7 +58,7 @@ public class ColladaEnvironment extends Entity
     protected Boolean   m_finishedLoading = Boolean.FALSE;
     /** WorldManager HOOOOOOOO! **/
     protected WorldManager  m_wm = null;
-    /** **/
+    /** The pscene that we use **/
     private PScene scene = null;
 
     /**
@@ -66,7 +66,7 @@ public class ColladaEnvironment extends Entity
      * world manager is used to create a pscene, and once the loading has finished
      * the scene is then initialized.
      * @param wm The world manager; used in PScene construction and referencing the repository
-     * @param relativePath The relative path to the collada file containing the environment
+     * @param path The relative path to the collada file containing the environment
      * @param name The name of the land!
      */
     public ColladaEnvironment(WorldManager wm, String relativePath, String name)
@@ -111,16 +111,16 @@ public class ColladaEnvironment extends Entity
      * world manager is used to create the pscene, and once the loading has finished
      * the scene is then initialized.
      * @param wm The world manager; used in PScene construction and referencing the repository
-     * @param relativePath The relative path to the collada file containing the environment
+     * @param path The path to the collada file containing the environment
      * @param name The name of the land!
      */
-    public ColladaEnvironment(WorldManager wm, URL relativePath, String name)
+    public ColladaEnvironment(WorldManager wm, URL path, String name)
     {
         super(name);
         m_wm = wm;
         // create and load the environment
         Repository repo = (Repository)wm.getUserData(Repository.class);
-        AssetDescriptor descriptor = new AssetDescriptor(SharedAsset.SharedAssetType.COLLADA, relativePath);
+        AssetDescriptor descriptor = new AssetDescriptor(SharedAsset.SharedAssetType.COLLADA, path);
         SharedAsset worldAsset = new SharedAsset(repo, descriptor, null);
         worldAsset.setUserData(new ColladaLoaderParams(false, true, false, false, 0, name, null));
 

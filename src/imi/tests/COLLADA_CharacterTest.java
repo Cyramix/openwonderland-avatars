@@ -77,7 +77,8 @@ public class COLLADA_CharacterTest extends DemoBase
 
         // Create avatar
         long startTime = System.nanoTime();
-        NinjaAvatarAttributes attribs = new NinjaAvatarAttributes("WeirdGuy", 2, 3, 5, 10, 1);
+//        NinjaAvatarAttributes attribs = new NinjaAvatarAttributes("WeirdGuy", 2, 3, 5, 10, 1, 0);
+        NinjaAvatarAttributes attribs = new NinjaAvatarAttributes("WeirdGuy", true, false);
 //        NinjaFemaleAvatarAttributes attribs = new NinjaFemaleAvatarAttributes("WeirdChick", 0, 1, 1, 1, 1);
         NinjaAvatar avatar = new NinjaAvatar(attribs, wm);
         float time = (float)((System.nanoTime() - startTime) / 1000000000.0f);
@@ -94,9 +95,6 @@ public class COLLADA_CharacterTest extends DemoBase
         camState.setMovementRate(0.03f);
         camState.setCameraPosition(new Vector3f(0.0f, 1.8f, -2.0f));
 
-        bigHeadMode(avatar);
-        makeAFist(avatar);
-//        swapAvatarHead(avatar);
         // give me a tree explorer!
         TreeExplorer te = new TreeExplorer();
         SceneEssentials se = new SceneEssentials();
@@ -105,67 +103,5 @@ public class COLLADA_CharacterTest extends DemoBase
         te.setVisible(true);
     }
 
-    private void swapAvatarHead(Character avatar)
-    {
-        URL newHeadLocation = null;
-        String fileProtocol = "file:///" + System.getProperty("user.dir") + "/";
-        try {
-            newHeadLocation = new URL(fileProtocol + "assets/models/collada/Heads/CaucasianHead/MaleCHead-NS.dae");
-//            newHeadLocation = new URL(fileProtocol + "assets/models/collada/Heads/CaucasianHead/MaleMonkeyHead.dae");
-        }
-        catch (MalformedURLException ex) {
-            logger.severe("Unable to form head URL");
-        }
-
-        if (newHeadLocation != null)
-        {
-            avatar.installHead(newHeadLocation, "Neck");
-        }
-    }
-
-    private void bigHeadMode(Character avatar)
-    {
-        SkinnedMeshJoint joint = avatar.getSkeleton().getSkinnedMeshJoint("Head");
-        avatar.getSkeleton().displaceJoint("Head", new Vector3f(0, 0.07f, 0));
-        joint.getBindPose().setScale(2.0f);
-
-        joint = avatar.getSkeleton().getSkinnedMeshJoint("rightHand");
-        joint.getBindPose().setScale(2.0f);
-
-        joint = avatar.getSkeleton().getSkinnedMeshJoint("leftHand");
-        joint.getBindPose().setScale(2.0f);
-    }
-
-    public void makeAFist(Character avatar)
-    {
-        PMatrix xRotMat = new PMatrix();
-        Vector3f xRotation = new Vector3f((float)(Math.PI * -0.4), 0.01f, 0);
-        xRotMat.setRotation(xRotation);
-        FastList<PNode> queue = new FastList<PNode>();
-        queue.addAll(avatar.getSkeleton().getSkinnedMeshJoint("leftPalm").getChildren());
-        queue.add(avatar.getSkeleton().getSkinnedMeshJoint("leftHandThumb2"));
-        while (queue.isEmpty() == false)
-        {
-            PNode current = queue.removeFirst();
-            if (!(current instanceof SkinnedMeshJoint))
-                continue;
-
-            SkinnedMeshJoint joint = (SkinnedMeshJoint)current;
-            PMatrix bindPose = joint.getBindPose();
-            bindPose.mul(xRotMat);
-            if (current.getChildrenCount() > 0)
-                queue.addAll(current.getChildren());
-        }
-
-        // Set palm transform
-        float[] matFloats =
-        {
-            0.927f,-0.375f, 0f,         -0.018f,
-            0.366f, 0.907f, -0.208f,    0.024f,
-            0.078f, 0.193f, 0.978f,		0.004f,
-            0,		0,		0,          1
-        };
-
-        avatar.getSkeleton().getSkinnedMeshJoint("leftPalm").getBindPose().set(matFloats);
-    }
+    
 }

@@ -250,11 +250,9 @@ public class PNode implements Serializable
         {
             try
             {
-//                for (PNode kid : getChildren())
-//                    kid.setDirty(bDirty, true);
                 // GC performance enhancement - prevents Iterator genertion SFK
                 for ( int i = 0; i < m_children.size(); i++ )
-                    m_children.get(i).setDirty(bDirty, true);
+                   m_children.get(i).setDirty(bDirty, true);
             }
             catch (java.util.ConcurrentModificationException exception)
             {
