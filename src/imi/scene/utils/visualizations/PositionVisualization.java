@@ -17,10 +17,16 @@
  */
 package imi.scene.utils.visualizations;
 
+import com.jme.bounding.BoundingSphere;
 import com.jme.math.Vector3f;
 import com.jme.renderer.ColorRGBA;
+import com.jme.renderer.Renderer;
 import com.jme.scene.Node;
 import com.jme.scene.shape.Sphere;
+import com.jme.scene.state.BlendState;
+import com.jme.scene.state.RenderState;
+import com.jme.scene.state.ZBufferState;
+import org.jdesktop.mtgame.WorldManager;
 
 /**
  *
@@ -39,7 +45,7 @@ public class PositionVisualization
      * Construct a new visualization object.
      * @param verletObject
      */
-    public PositionVisualization(Vector3f position)
+    public PositionVisualization(Vector3f position, WorldManager wm)
     {
         objectRoot = new Node(position.toString());
 
@@ -53,14 +59,16 @@ public class PositionVisualization
         // add a new sphere
         sphere = new Sphere("Position sphere", Vector3f.ZERO, 10, 10, 0.5f);
         sphere.setDefaultColor(ColorRGBA.cyan);
+        
+        makeTransparent(wm);
 
         // Attach the sphere to the scene root
         objectRoot.attachChild(sphere);
     }
 
-    public PositionVisualization(Vector3f position, float radius) 
+    public PositionVisualization(Vector3f position, float radius, WorldManager wm)
     {
-        objectRoot = new Node(position.toString());
+        objectRoot = new Node();
 
         // grab reference from the verlet object and map it
         objectPosition = position;
@@ -72,11 +80,33 @@ public class PositionVisualization
         // add a new sphere
         sphere = new Sphere("Position sphere", Vector3f.ZERO, 10, 10, radius);
         sphere.setDefaultColor(ColorRGBA.cyan);
-
+        makeTransparent(wm);
         // Attach the sphere to the scene root
         objectRoot.attachChild(sphere);
     }
-    
+
+    private void makeTransparent(WorldManager wm)
+    {
+        BlendState blendState = (BlendState)wm.getRenderManager().createRendererState(RenderState.RS_BLEND);
+        blendState.setBlendEnabled(true);
+        blendState.setSourceFunction(BlendState.SourceFunction.SourceAlpha);
+        blendState.setDestinationFunction(BlendState.DestinationFunction.One);
+        blendState.setTestEnabled(true);
+        blendState.setTestFunction(BlendState.TestFunction.GreaterThan);
+        blendState.setEnabled(true);
+        sphere.setRenderState(blendState);
+
+        ZBufferState zstate = (ZBufferState)wm.getRenderManager().createRendererState(RenderState.RS_ZBUFFER);
+        zstate.setEnabled(true);
+        zstate.setWritable(false);
+        zstate.setFunction(ZBufferState.TestFunction.LessThanOrEqualTo);
+        sphere.setRenderState(zstate);
+
+        sphere.setModelBound(new BoundingSphere());
+        sphere.updateModelBound();
+        sphere.setRenderQueueMode(Renderer.QUEUE_TRANSPARENT);
+        sphere.updateRenderState();
+    }
     
 
     /**

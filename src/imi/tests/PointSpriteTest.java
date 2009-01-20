@@ -18,13 +18,13 @@
 package imi.tests;
 
 
-import imi.character.ninja.NinjaAvatar;
-import imi.character.ninja.NinjaAvatarAttributes;
+import com.jme.math.Vector3f;
+import com.jme.renderer.ColorRGBA;
 import imi.environments.ColladaEnvironment;
 import imi.scene.particles.ParticleCollection;
+import imi.scene.polygonmodel.PPolygonModelInstance;
 import org.jdesktop.mtgame.WorldManager;
-import imi.scene.processors.JSceneEventProcessor;
-import imi.utils.input.NinjaControlScheme;
+import imi.tests.cahua.CahuaBall;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -56,29 +56,41 @@ public class PointSpriteTest extends DemoBase
     protected void createDemoEntities(WorldManager wm)
     {
         ColladaEnvironment world = (ColladaEnvironment)wm.getUserData(ColladaEnvironment.class);
-        particles = new ParticleCollection(200, wm, world.getJMENode());
+        particles = new ParticleCollection(40, wm, world.getJMENode());
+        particles.particles.setOriginOffset(new Vector3f(0, -0.4f, 0));
+        particles.particles.setInitialVelocity(0.0006f);
+        particles.particles.setEmissionDirection(Vector3f.UNIT_Y);
+        particles.particles.setMaximumAngle((float)(Math.toRadians(90)));
+        particles.particles.setStartMass(0.001f);
+        particles.particles.setStartColor(ColorRGBA.green);
+        particles.particles.setStartSize(0.4f);
+        particles.particles.setEndSize(0.12f);
+        particles.particles.setEndMass(0.5f);
+        particles.particles.setEndColor(ColorRGBA.lightGray);
 //        world.getJMENode().attachChild(particles.getJMENode());
         // Create ninja input scheme
-        NinjaControlScheme control = (NinjaControlScheme)((JSceneEventProcessor)wm.getUserData(JSceneEventProcessor.class)).setDefault(new NinjaControlScheme(null));
+//        NinjaControlScheme control = (NinjaControlScheme)((JSceneEventProcessor)wm.getUserData(JSceneEventProcessor.class)).setDefault(new NinjaControlScheme(null));
 
         // Create avatar
-        long startTime = System.nanoTime();
-        NinjaAvatarAttributes attribs = new NinjaAvatarAttributes("WeirdGuy", 2, 3, 5, 10, 1);
-//        NinjaFemaleAvatarAttributes attribs = new NinjaFemaleAvatarAttributes("WeirdChick", 0, 1, 1, 1, 1);
-        NinjaAvatar avatar = new NinjaAvatar(attribs, wm);
-        particles.setTargetModel(avatar.getModelInst());
-        float time = (float)((System.nanoTime() - startTime) / 1000000000.0f);
-        System.out.println("Constructing the male took: " + time);
+//        long startTime = System.nanoTime();
+//        NinjaAvatarAttributes attribs = new NinjaAvatarAttributes("WeirdGuy", 2, 3, 5, 10, 1);
+////        NinjaFemaleAvatarAttributes attribs = new NinjaFemaleAvatarAttributes("WeirdChick", 0, 1, 1, 1, 1);
+//        NinjaAvatar avatar = new NinjaAvatar(attribs, wm);
+////        particles.setTargetModel(avatar.getModelInst());
+//        float time = (float)((System.nanoTime() - startTime) / 1000000000.0f);
+//        System.out.println("Constructing the male took: " + time);
+//
+//        avatar.selectForInput();
+//        avatar.setBigHeadMode(2.0f);
+//        avatar.makeFist(false, true);
+//        avatar.makeFist(false, false);
+//        control.getNinjaTeam().add(avatar);
+//
+//        // Get the mouse evets so the verlet arm can be controlled
+//        control.getMouseEventsFromCamera();
 
-        avatar.selectForInput();
-        avatar.setBigHeadMode(2.0f);
-        avatar.makeFist(false, true);
-        avatar.makeFist(false, false);
-        control.getNinjaTeam().add(avatar);
-
-        // Get the mouse evets so the verlet arm can be controlled
-        control.getMouseEventsFromCamera();
-
+        // try the transparent ball thing
+        CahuaBall ball = new CahuaBall(new PPolygonModelInstance("heyHey"), wm);
         // Hook the camera up to the avatar
 //        ThirdPersonCamState state = (ThirdPersonCamState)wm.getUserData(CameraState.class);
 //        state.setTargetModelInstance(avatar.getModelInst());

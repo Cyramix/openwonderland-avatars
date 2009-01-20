@@ -86,7 +86,7 @@ public class VisuManager extends Entity
         if (m_positionObjects == null) // First object, allocate collection space
             m_positionObjects = new FastList<PositionVisualization>();
 
-        PositionVisualization visuals = new PositionVisualization(position);
+        PositionVisualization visuals = new PositionVisualization(position, m_WM);
         m_positionObjects.add(visuals);
         m_jmeRoot.attachChild(visuals.objectRoot);
         m_jmeRoot.updateRenderState();
@@ -97,7 +97,7 @@ public class VisuManager extends Entity
         if (m_positionObjects == null) // First object, allocate collection space
             m_positionObjects = new FastList<PositionVisualization>();
 
-        PositionVisualization visuals = new PositionVisualization(position, radius);
+        PositionVisualization visuals = new PositionVisualization(position, radius, m_WM);
         visuals.getSphere().setDefaultColor(color);
         m_positionObjects.add(visuals);
         m_jmeRoot.attachChild(visuals.objectRoot);

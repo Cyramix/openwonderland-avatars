@@ -22,6 +22,7 @@ import com.jme.image.Texture;
 import com.jme.math.FastMath;
 import com.jme.math.Vector3f;
 import com.jme.renderer.ColorRGBA;
+import com.jme.renderer.Renderer;
 import com.jme.scene.Node;
 import com.jme.scene.Spatial;
 import com.jme.scene.state.BlendState;
@@ -65,16 +66,15 @@ public class ParticleCollection implements Updatable
      * Construct a new instance with the specified number of particles.
      * @param numberOfParticles
      */
-    public ParticleCollection(int numberOfParticles, WorldManager wm, Node parentNode)
+    public ParticleCollection(int numberOfParticles, WorldManager wm, Node parent)
     {
         particles = ParticleFactory.buildParticles("ParticleTest", numberOfParticles);
-        parentNode.attachChild(particles);
         controller = particles.getParticleController();
         updater = new UpdateProcessor(this);
         particleSetUp();
         createEntity(wm);
-        createRenderComponent(wm);
         setDefaultRenderStates(wm);
+        parent.attachChild(particles);
     }
 
     public Spatial getJMENode() {
@@ -102,14 +102,8 @@ public class ParticleCollection implements Updatable
     private void createEntity(WorldManager wm)
     {
         entity = new Entity("ParticleEntity");
-        wm.addEntity(entity);
-    }
-
-    private void createRenderComponent(WorldManager wm)
-    {
-//        renderComponent = wm.getRenderManager().createRenderComponent(particles);
-//        entity.addComponent(RenderComponent.class, renderComponent);
         entity.addComponent(ProcessorComponent.class, updater);
+        wm.addEntity(entity);
     }
 
     private void setDefaultRenderStates(WorldManager wm)
@@ -138,7 +132,7 @@ public class ParticleCollection implements Updatable
         ts.setTexture(TextureManager.loadTexture(ParticleCollection.class.getClassLoader().getResource("jmetest/data/texture/flaresmall.jpg"), Texture.MinificationFilter.BilinearNearestMipMap, Texture.MagnificationFilter.NearestNeighbor));
         ts.setEnabled(true);
         particles.setRenderState(ts);
-
+        particles.setRenderQueueMode(Renderer.QUEUE_TRANSPARENT);
         particles.updateRenderState();
 
     }

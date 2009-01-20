@@ -82,7 +82,7 @@ public class ThirdPersonCamState extends CameraState
     /** This is the minimum distance squared that is allowed between the camera and its focal point **/
     private float minimumDistanceSquared = 2.5f;
     /** Outer boundary **/
-    private float maximumDistanceSquared = 255;
+    private float maximumDistanceSquared = 36;
     /** Offset from target after move **/
     private final Vector3f vectorToCamera = new Vector3f(0,3,-2);
 

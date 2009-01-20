@@ -107,8 +107,8 @@ public class ThirdPersonCamModel implements CameraModel, CharacterMotionListener
                     updateRotations = true;
                 }
 
-                if (me.getID() == MouseEvent.MOUSE_WHEEL) // Wheel action, do some zooming business
-                    processMouseWheel((MouseWheelEvent) me,camState);
+//                if (me.getID() == MouseEvent.MOUSE_WHEEL) // Wheel action, do some zooming business
+//                    processMouseWheel((MouseWheelEvent) me,camState);
             }
             else if (events[i] instanceof KeyEvent) // Process key presses
             {

@@ -119,9 +119,9 @@ public class DemoBase
     private int          width              = 800;
     private int          height             = 600;
     private float        aspect             = 800.0f/600.0f;
-
-    private String[]    m_args = null; // Cache command line options for derived classes usage
     
+    private String[]    m_args = null; // Cache command line options for derived classes usage
+
     private Entity m_jsceneEntity = null; // Maintained for lighting operations
     
     protected FlexibleCameraProcessor m_cameraProcessor = null;

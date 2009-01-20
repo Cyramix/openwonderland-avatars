@@ -72,12 +72,14 @@ public class SkeletonNodeSerialization
         "assets/models/collada/Avatars/Female/Female_Anim_Run.dae",
         "assets/models/collada/Avatars/Female/Female_Anim_Wave.dae"
     };
+
     private static String[] FemaleFacialAnimations = {
         "assets/models/collada/Avatars/FemaleFacialAnimation/FemaleSmile.dae",
         "assets/models/collada/Avatars/FemaleFacialAnimation/FemaleFrown.dae",
         "assets/models/collada/Avatars/FemaleFacialAnimation/FemaleScorn.dae",
         "assets/models/collada/Avatars/FemaleFacialAnimation/FemaleDefault.dae"
     };
+
     private static String[] MaleAnimationLocations = {
         "assets/models/collada/Avatars/Male/Male_Anim_Bow.dae",
         "assets/models/collada/Avatars/Male/Male_Anim_Cheer.dae",
@@ -97,7 +99,10 @@ public class SkeletonNodeSerialization
         "assets/models/collada/Avatars/Male/Male_Anim_No.dae",
         "assets/models/collada/Avatars/Male/Male_Anim_Yes.dae",
         "assets/models/collada/Avatars/Male/Male_Anim_Cell.dae",
+        "assets/models/collada/Avatars/Male/Male_Anim_ActiveIdle.dae",
+        "assets/models/collada/Avatars/Male/Male_Anim_TakeDamage.dae"
     };
+
     private static String[] MaleFacialAnimationLocations = {
         "assets/models/collada/Avatars/MaleFacialAnimation/MaleSmile.dae",
         "assets/models/collada/Avatars/MaleFacialAnimation/MaleFrown.dae",
