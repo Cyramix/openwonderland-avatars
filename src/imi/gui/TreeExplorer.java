@@ -23,9 +23,9 @@ import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
 import imi.scene.polygonmodel.skinned.PPolygonSkinnedMeshInstance;
 import imi.scene.utils.tree.ModelInstanceProcessor;
 import imi.scene.utils.tree.TreeTraverser;
+import imi.utils.JTree_DataDumper;
+import java.awt.Component;
 import java.awt.Toolkit;
-import java.util.ArrayList;
-import java.util.HashMap;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -44,6 +44,7 @@ public class TreeExplorer extends javax.swing.JFrame {
     private DefaultTreeModel model = null;
     private TreePopUpMenu popupMenu = new TreePopUpMenu();
     private SceneEssentials sceneData = null;
+    private Component identity  = this;
 
     public void refresh() {
         this.setVisible(false);
@@ -221,6 +222,10 @@ public class TreeExplorer extends javax.swing.JFrame {
         jScrollPane_TreeView = new javax.swing.JScrollPane();
         model = new DefaultTreeModel(topNode);
         jTree_TreeView = new javax.swing.JTree(model);
+        jMenuBar1 = new javax.swing.JMenuBar();
+        jMenu_SaveTreeData = new javax.swing.JMenu();
+        jMenuItem_SaveAll = new javax.swing.JMenuItem();
+        jMenuItem_SaveExpanded = new javax.swing.JMenuItem();
 
         jFormattedTextField1.setText("jFormattedTextField1");
 
@@ -238,6 +243,30 @@ public class TreeExplorer extends javax.swing.JFrame {
         jTree_TreeView.addMouseListener(popupMenu);
         jTree_TreeView.setCellRenderer(new SceneCellRenderer());
 
+        jMenu_SaveTreeData.setText("Save Tree Data");
+
+        jMenuItem_SaveAll.setText("Save All Nodes");
+        jMenuItem_SaveAll.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                JTree_DataDumper dataDumper = new JTree_DataDumper(identity);
+                dataDumper.saveJTreeData(0, jTree_TreeView);
+            }
+        });
+        jMenu_SaveTreeData.add(jMenuItem_SaveAll);
+
+        jMenuItem_SaveExpanded.setText("Save Expanded Nodes");
+        jMenuItem_SaveExpanded.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                JTree_DataDumper dataDumper = new JTree_DataDumper(identity);
+                dataDumper.saveJTreeData(1, jTree_TreeView);
+            }
+        });
+        jMenu_SaveTreeData.add(jMenuItem_SaveExpanded);
+
+        jMenuBar1.add(jMenu_SaveTreeData);
+
+        setJMenuBar(jMenuBar1);
+
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -246,7 +275,7 @@ public class TreeExplorer extends javax.swing.JFrame {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(jScrollPane_TreeView, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 449, Short.MAX_VALUE)
+            .add(jScrollPane_TreeView, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 427, Short.MAX_VALUE)
         );
 
         pack();
@@ -265,6 +294,10 @@ public class TreeExplorer extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JFormattedTextField jFormattedTextField1;
+    private javax.swing.JMenuBar jMenuBar1;
+    private javax.swing.JMenuItem jMenuItem_SaveAll;
+    private javax.swing.JMenuItem jMenuItem_SaveExpanded;
+    private javax.swing.JMenu jMenu_SaveTreeData;
     private javax.swing.JScrollPane jScrollPane_TreeView;
     private javax.swing.JTree jTree_TreeView;
     // End of variables declaration//GEN-END:variables

@@ -7,11 +7,39 @@
         <Property name="text" type="java.lang.String" value="jFormattedTextField1"/>
       </Properties>
     </Component>
+    <Menu class="javax.swing.JMenuBar" name="jMenuBar1">
+      <SubComponents>
+        <Menu class="javax.swing.JMenu" name="jMenu_SaveTreeData">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Save Tree Data"/>
+          </Properties>
+          <SubComponents>
+            <MenuItem class="javax.swing.JMenuItem" name="jMenuItem_SaveAll">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Save All Nodes"/>
+              </Properties>
+              <AuxValues>
+                <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="jMenuItem_SaveAll.addActionListener(new java.awt.event.ActionListener() {&#xa;    public void actionPerformed(java.awt.event.ActionEvent evt) {&#xa;        JTree_DataDumper dataDumper = new JTree_DataDumper(identity);&#xa;        dataDumper.saveJTreeData(0, jTree_TreeView);&#xa;    }&#xa;});"/>
+              </AuxValues>
+            </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="jMenuItem_SaveExpanded">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Save Expanded Nodes"/>
+              </Properties>
+              <AuxValues>
+                <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="jMenuItem_SaveExpanded.addActionListener(new java.awt.event.ActionListener() {&#xa;    public void actionPerformed(java.awt.event.ActionEvent evt) {&#xa;        JTree_DataDumper dataDumper = new JTree_DataDumper(identity);&#xa;        dataDumper.saveJTreeData(1, jTree_TreeView);&#xa;    }&#xa;});"/>
+              </AuxValues>
+            </MenuItem>
+          </SubComponents>
+        </Menu>
+      </SubComponents>
+    </Menu>
   </NonVisualComponents>
   <Properties>
     <Property name="defaultCloseOperation" type="int" value="2"/>
   </Properties>
   <SyntheticProperties>
+    <SyntheticProperty name="menuBar" type="java.lang.String" value="jMenuBar1"/>
     <SyntheticProperty name="formSizePolicy" type="int" value="1"/>
   </SyntheticProperties>
   <AuxValues>
@@ -34,7 +62,7 @@
     </DimensionLayout>
     <DimensionLayout dim="1">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Component id="jScrollPane_TreeView" pref="449" max="32767" attributes="0"/>
+          <Component id="jScrollPane_TreeView" pref="427" max="32767" attributes="0"/>
       </Group>
     </DimensionLayout>
   </Layout>
