@@ -15,7 +15,7 @@
  * exception as provided by Sun in the License file that accompanied
  * this code.
  */
-package imi.tests;
+package imi.utils;
 
 import imi.loaders.Instruction;
 import imi.loaders.InstructionProcessor;
@@ -53,9 +53,9 @@ import org.jdesktop.mtgame.RenderBuffer;
  * Serialize the skeleton!
  * @author Ronald E Dahlgren
  */
-public class SkeletonNodeSerialization
+public class BuildBinarySkeletons
 {
-    private final static Logger logger = Logger.getLogger(SkeletonNodeSerialization.class.getName());
+    private final static Logger logger = Logger.getLogger(BuildBinarySkeletons.class.getName());
 
     private static URL MaleSkeletonLocation = null;
     private static URL FemaleSkeletonLocation = null;
@@ -126,6 +126,16 @@ public class SkeletonNodeSerialization
         "assets/models/collada/Avatars/MaleFacialAnimation/MaleFrown.dae",
         "assets/models/collada/Avatars/MaleFacialAnimation/MaleScorn.dae",
         "assets/models/collada/Avatars/MaleFacialAnimation/MaleDefault.dae",
+        // Plus the phonemes
+        "assets/models/collada/Avatars/MaleFacialAnimation/Phonemes/Male_Pho_AI.dae",
+        "assets/models/collada/Avatars/MaleFacialAnimation/Phonemes/Male_Pho_Cons.dae",
+        "assets/models/collada/Avatars/MaleFacialAnimation/Phonemes/Male_Pho_E.dae",
+        "assets/models/collada/Avatars/MaleFacialAnimation/Phonemes/Male_Pho_FandV.dae",
+        "assets/models/collada/Avatars/MaleFacialAnimation/Phonemes/Male_Pho_L.dae",
+        "assets/models/collada/Avatars/MaleFacialAnimation/Phonemes/Male_Pho_MBP.dae",
+        "assets/models/collada/Avatars/MaleFacialAnimation/Phonemes/Male_Pho_O.dae",
+        "assets/models/collada/Avatars/MaleFacialAnimation/Phonemes/Male_Pho_U.dae",
+        "assets/models/collada/Avatars/MaleFacialAnimation/Phonemes/Male_Pho_WQ.dae",
     };
 
     /** URL preamble **/
@@ -146,7 +156,7 @@ public class SkeletonNodeSerialization
 
     private final int MinimumNumberArgs = 1;
     
-    public SkeletonNodeSerialization(String[] args)
+    public BuildBinarySkeletons(String[] args)
     {
         if (args.length < MinimumNumberArgs)
             printUsage();
@@ -188,7 +198,7 @@ public class SkeletonNodeSerialization
 
     public static void main(String[] args)
     {
-        SkeletonNodeSerialization worldTest = new SkeletonNodeSerialization(args);
+        BuildBinarySkeletons worldTest = new BuildBinarySkeletons(args);
     }
 
     private void createSerializedSkeleton(WorldManager wm, boolean bLoadMale)
