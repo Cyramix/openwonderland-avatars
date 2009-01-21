@@ -543,12 +543,6 @@ public class FemaleAvatarAttributes extends CharacterAttributes
         load.add(new String("assets/models/collada/Avatars/Female/Female_Bind.dae")); // change!
 
         ArrayList<SkinnedMeshParams> add       = new ArrayList<SkinnedMeshParams>();
-        add.add(new SkinnedMeshParams("rightEyeGeoShape", "Head"));
-        add.add(new SkinnedMeshParams("leftEyeGeoShape", "Head"));
-        add.add(new SkinnedMeshParams("UpperTeethShape", "Head"));
-        add.add(new SkinnedMeshParams("LowerTeethShape", "Head"));
-        add.add(new SkinnedMeshParams("TongueGeoShape", "Head"));
-        add.add(new SkinnedMeshParams("HeadGeoShape", "Head"));
         add.add(new SkinnedMeshParams("HandsShape",  "Hands"));
         add.add(new SkinnedMeshParams("ShoesShape",  "Feet"));
         add.add(new SkinnedMeshParams("TorsoNudeShape",  "UpperBody"));

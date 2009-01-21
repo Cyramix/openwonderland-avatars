@@ -17,6 +17,7 @@
  */
 package imi.tests;
 
+import imi.scene.SkyBox;
 import com.jme.bounding.BoundingBox;
 import com.jme.image.Texture;
 import com.jme.light.LightNode;

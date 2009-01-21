@@ -22,7 +22,6 @@ import com.jme.math.Vector3f;
 import imi.character.avatar.Avatar;
 import imi.character.avatar.FemaleAvatarAttributes;
 import imi.character.avatar.MaleAvatarAttributes;
-import imi.character.ninja.NinjaFemaleAvatarAttributes;
 import imi.gui.SceneEssentials;
 import imi.gui.TreeExplorer;
 import imi.scene.PMatrix;

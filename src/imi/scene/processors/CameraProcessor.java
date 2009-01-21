@@ -25,7 +25,7 @@ import com.jme.scene.Node;
 import com.jme.scene.shape.Sphere;
 import com.jme.intersection.TriangleCollisionResults;
 
-import imi.tests.SkyBox;
+import imi.scene.SkyBox;
 import java.awt.event.MouseEvent;
 import java.awt.event.KeyEvent;
 import org.jdesktop.mtgame.processor.AWTEventProcessorComponent;

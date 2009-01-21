@@ -22,7 +22,7 @@ import imi.scene.PMatrix;
 import imi.scene.camera.behaviors.CameraModel;
 import imi.scene.camera.behaviors.WrongStateTypeException;
 import imi.scene.camera.state.CameraState;
-import imi.tests.SkyBox;
+import imi.scene.SkyBox;
 import imi.utils.input.AvatarControlScheme;
 import java.util.logging.Level;
 import java.util.logging.Logger;
