@@ -753,7 +753,7 @@ public class SceneEssentials {
 
             if (m_gender == 1) {
                 String baseFilePath = "file://localhost/" + System.getProperty("user.dir");
-                String completepath = baseFilePath + "/assets/models/collada/Heads/CaucasianHead/MaleCHead.dae";
+                String completepath = baseFilePath + "/assets/models/collada/Heads/MaleHead/MaleCHead.dae";
 
                 try {
                     URL head = new URL(completepath);
@@ -1032,11 +1032,11 @@ public class SceneEssentials {
             case 1:
             {
                 if (szAvatarModelFile == null)
-                    szAvatarModelFile = baseFilePath + "/assets/models/collada/Avatars/Male/Male_Bind.dae";
+                    szAvatarModelFile = baseFilePath + "/assets/models/collada/Avatars/MaleAvatar/Male_Bind.dae";
                 if (szAvatarHandsModelFile == null)
-                    szAvatarHandsModelFile = baseFilePath + "/assets/models/collada/Avatars/Male/Male_Hands.dae";
+                    szAvatarHandsModelFile = baseFilePath + "/assets/models/collada/Avatars/MaleAvatar/Male_Hands.dae";
                 if (szAvatarHeadModelFile == null)
-                    szAvatarHeadModelFile = baseFilePath + "/assets/models/collada/Heads/CaucasianHead/MaleCHead.dae";
+                    szAvatarHeadModelFile = baseFilePath + "/assets/models/collada/Heads/MaleHead/MaleCHead.dae";
 
                 load.add(szAvatarModelFile);    // Load selected male body meshes
                 add.add(attribs.createSkinnedMeshParams("RFootNudeShape",   "Feet"));

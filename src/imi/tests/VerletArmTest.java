@@ -69,7 +69,7 @@ public class VerletArmTest  extends DemoBase
         camState.setMovementRate(0.03f);
         camState.setCameraPosition(new Vector3f(0.0f, 1.8f, -2.0f));
         
-        boolean male = true;
+        boolean male = false;
         Avatar avatar;
         int feet, legs, torso, hair;
         
@@ -86,7 +86,7 @@ public class VerletArmTest  extends DemoBase
         {
             // Create female avatar
             feet  = -1;//(int) (Math.random() * 10000 % 0);
-            legs  = 0;//(int) (Math.random() * 10000 % 3);  // 1 and 2 problems
+            legs  = (int) (Math.random() * 10000 % 2);  // 3 has problems
             torso = (int) (Math.random() * 10000 % 3);  // % 5.... 3 and 4 problems
             hair  = (int) (Math.random() * 10000 % 53); // tested til 15
             avatar = new Avatar(new FemaleAvatarAttributes("Avatar", feet, legs, torso, hair, 0), wm);

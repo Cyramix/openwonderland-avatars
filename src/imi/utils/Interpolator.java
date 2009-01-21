@@ -58,15 +58,16 @@ public class Interpolator implements Serializable
      */
     public void interpolate(float interpolationCoefficient, PMatrix left, PMatrix right, PMatrix result)
     {
-        switch(strategy)
-        {
-            case ComponentInterpolation:
-                componentInterpolation(interpolationCoefficient, left, right, result);
-                break;
-            case ElementInterpolation:
-                result.lerp(left, right, interpolationCoefficient);
-                break;
-        }
+        componentInterpolation(interpolationCoefficient, left, right, result); // fixing shrink bug during sit on ground and cell phone animations
+//        switch(strategy)
+//        {
+//            case ComponentInterpolation:
+//                componentInterpolation(interpolationCoefficient, left, right, result);
+//                break;
+//            case ElementInterpolation:
+//                result.lerp(left, right, interpolationCoefficient);
+//                break;
+//        }
     }
 
     protected void componentInterpolation(float s, PMatrix left, PMatrix right, PMatrix result)
