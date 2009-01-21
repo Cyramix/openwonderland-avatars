@@ -17,7 +17,7 @@
  */
 package imi.character.statemachine.corestates;
 
-import imi.character.ninja.NinjaContext.TriggerNames;
+import imi.character.avatar.AvatarContext.TriggerNames;
 import imi.character.statemachine.GameContext;
 import imi.character.statemachine.GameState;
 import imi.scene.animation.AnimationComponent.PlaybackMode;

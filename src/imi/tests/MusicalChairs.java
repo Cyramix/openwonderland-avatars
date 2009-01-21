@@ -18,8 +18,8 @@
 package imi.tests;
 
 import com.jme.math.Vector3f;
-import imi.character.ninja.NinjaAvatar;
-import imi.character.ninja.NinjaAvatarAttributes;
+import imi.character.avatar.Avatar;
+import imi.character.avatar.MaleAvatarAttributes;
 import imi.character.objects.LocationNode;
 import imi.character.objects.ObjectCollection;
 import imi.scene.processors.JSceneEventProcessor;
@@ -79,7 +79,7 @@ public class MusicalChairs extends DemoBase
         control.setObjectCollection(objects);
         
         // Create avatar
-        NinjaAvatar avatar = new NinjaAvatar(new NinjaAvatarAttributes("Avatar", true, false), wm);
+        Avatar avatar = new Avatar(new MaleAvatarAttributes("Avatar", true), wm);
         avatar.selectForInput();
         control.getNinjaTeam().add(avatar);
         avatar.setObjectCollection(objects);
@@ -110,7 +110,7 @@ public class MusicalChairs extends DemoBase
 
     private void cloneAvatar(NinjaControlScheme control, ObjectCollection objects, WorldManager wm, float xOffset, float yOffset, float zOffset) 
     {   
-        NinjaAvatar avatar = new NinjaAvatar(new NinjaAvatarAttributes("Avatar Clone " + xOffset+yOffset+zOffset, true, false), wm);
+        Avatar avatar = new Avatar(new MaleAvatarAttributes("Avatar Clone " + xOffset+yOffset+zOffset, true), wm);
         avatar.getModelInst().getTransform().getLocalMatrix(true).setTranslation(new Vector3f(xOffset, yOffset, zOffset));
         control.getNinjaTeam().add(avatar);
         avatar.setObjectCollection(objects);

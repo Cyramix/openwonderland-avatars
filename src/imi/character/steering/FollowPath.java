@@ -18,7 +18,7 @@
 package imi.character.steering;
 
 import imi.character.*;
-import imi.character.ninja.NinjaContext;
+import imi.character.avatar.AvatarContext;
 import imi.character.objects.LocationNode;
 import imi.character.objects.SpatialObject;
 import imi.character.statemachine.GameContext;
@@ -89,7 +89,7 @@ public class FollowPath implements Task
         if (con.getDestination() instanceof LocationNode)
         {
             location = (LocationNode)con.getDestination();
-            ((NinjaContext)context).getSteering().addTaskToTop(new GoTo(location, context)); 
+            ((AvatarContext)context).getSteering().addTaskToTop(new GoTo(location, context)); 
         }
     }
 

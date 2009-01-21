@@ -20,8 +20,8 @@ package imi.tests;
 
 import com.jme.math.Vector3f;
 import imi.character.Character;
-import imi.character.ninja.NinjaAvatar;
-import imi.character.ninja.NinjaAvatarAttributes;
+import imi.character.avatar.Avatar;
+import imi.character.avatar.MaleAvatarAttributes;
 import imi.gui.SceneEssentials;
 import imi.gui.TreeExplorer;
 import imi.scene.PMatrix;
@@ -84,9 +84,9 @@ public class ThirdPersonCameraTest extends DemoBase
 
         // Create avatar
         long startTime = System.nanoTime();
-        NinjaAvatarAttributes attribs = new NinjaAvatarAttributes("WeirdGuy", 2, 3, 5, 10, 1);
+        MaleAvatarAttributes attribs = new MaleAvatarAttributes("WeirdGuy", 2, 3, 5, 10, 1);
 //        NinjaFemaleAvatarAttributes attribs = new NinjaFemaleAvatarAttributes("WeirdChick", 0, 1, 1, 1, 1);
-        NinjaAvatar avatar = new NinjaAvatar(attribs, wm);
+        Avatar avatar = new Avatar(attribs, wm);
         float time = (float)((System.nanoTime() - startTime) / 1000000000.0f);
         System.out.println("Constructing the male took: " + time);
 

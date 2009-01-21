@@ -18,8 +18,8 @@
 package imi.character.statemachine.corestates;
 
 import imi.character.CharacterController;
-import imi.character.ninja.NinjaContext;
-import imi.character.ninja.NinjaContext.TriggerNames;
+import imi.character.avatar.AvatarContext;
+import imi.character.avatar.AvatarContext.TriggerNames;
 import imi.character.statemachine.GameContext;
 import imi.character.statemachine.corestates.transitions.RunToWalk;
 
@@ -30,7 +30,7 @@ import imi.character.statemachine.corestates.transitions.RunToWalk;
 public class RunState extends WalkState
 {
     
-    public RunState(NinjaContext master)
+    public RunState(AvatarContext master)
     {
         super(master);
         setName("Run");

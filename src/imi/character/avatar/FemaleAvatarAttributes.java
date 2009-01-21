@@ -15,7 +15,7 @@
  * exception as provided by Sun in the License file that accompanied 
  * this code.
  */
-package imi.character.ninja;
+package imi.character.avatar;
 
 import com.jme.math.Vector3f;
 import imi.character.AttachmentParams;
@@ -29,13 +29,13 @@ import java.util.ArrayList;
  * primary avatar geometry and animations.
  * @author Lou Hayt
  */
-public class NinjaFemaleAvatarAttributes extends CharacterAttributes
+public class FemaleAvatarAttributes extends CharacterAttributes
 {
     public String[] m_regions = new String[] { "Head", "Hands", "UpperBody", "LowerBody", "Feet", "Hair", "FacialHair", "Hats", "Glasses", "Jackets" };
 
     private boolean loadedBind = false;
     
-    public NinjaFemaleAvatarAttributes(String name, boolean bRandomCustomizations) 
+    public FemaleAvatarAttributes(String name, boolean bRandomCustomizations) 
     {
         super(name);
         setGender(2);
@@ -48,7 +48,7 @@ public class NinjaFemaleAvatarAttributes extends CharacterAttributes
         int head  = (int) (Math.random() * 10000 % 2);
     }
 
-    public NinjaFemaleAvatarAttributes(String name, int feet, int legs, int torso, int hair, int head)
+    public FemaleAvatarAttributes(String name, int feet, int legs, int torso, int hair, int head)
     {
         super(name);
         setGender(2);
@@ -155,10 +155,10 @@ public class NinjaFemaleAvatarAttributes extends CharacterAttributes
                 attachments.add(new AttachmentParams("M_PonyTail", "Head", oreintation));
             }
             break;
-            case 8:   // Missing?
+            case 8:   
             {
                 load.add(new String("assets/models/collada/Hair/FemaleHairPlaceable.dae"));
-                attachments.add(new AttachmentParams("Long_W_bangs", "Head", oreintation));
+                attachments.add(new AttachmentParams("Short_PT_Center", "Head", oreintation));
             }
             break;
             case 9:
@@ -421,8 +421,9 @@ public class NinjaFemaleAvatarAttributes extends CharacterAttributes
             break;
             case 52:
             {
+                // Missing?
                 load.add(new String("assets/models/collada/Hair/FemaleHairPlaceable.dae"));
-                attachments.add(new AttachmentParams("Short_PT_Center", "Head", oreintation));
+                attachments.add(new AttachmentParams("Long_W_bangs", "Head", oreintation));
             }
             break;
         }   

@@ -7,9 +7,9 @@ package imi.tests;
 
 import com.jme.math.Vector3f;
 import imi.character.networking.DarkstarClient;
-import imi.character.ninja.NinjaAvatar;
-import imi.character.ninja.NinjaAvatarAttributes;
-import imi.character.ninja.NinjaFemaleAvatarAttributes;
+import imi.character.avatar.Avatar;
+import imi.character.avatar.MaleAvatarAttributes;
+import imi.character.avatar.FemaleAvatarAttributes;
 import imi.character.objects.ObjectCollection;
 import imi.scene.camera.behaviors.ThirdPersonCamModel;
 import imi.scene.camera.state.CameraState;
@@ -70,7 +70,7 @@ public class DarkstarClientTest extends DemoBase
 //        camState.setCameraPosition(new Vector3f(0.0f, 1.8f, -2.0f));
         
         boolean male = true;
-        NinjaAvatar avatar;
+        Avatar avatar;
         int feet, legs, torso, hair;
         
         if (male)
@@ -80,7 +80,7 @@ public class DarkstarClientTest extends DemoBase
             legs  = 4;//(int) (Math.random() * 10000 % 4);
             torso = 4;//(int) (Math.random() * 10000 % 6);
             hair  = -1;//(int) (Math.random() * 10000 % 17);
-            avatar = new NinjaAvatar(new NinjaAvatarAttributes("Avatar", feet, legs, torso, hair, 0), wm);
+            avatar = new Avatar(new MaleAvatarAttributes("Avatar", feet, legs, torso, hair, 0), wm);
         }
         else // female
         {
@@ -89,7 +89,7 @@ public class DarkstarClientTest extends DemoBase
             legs  = 0;//(int) (Math.random() * 10000 % 3);  // 1 and 2 problems
             torso = (int) (Math.random() * 10000 % 3);  // % 5.... 3 and 4 problems
             hair  = (int) (Math.random() * 10000 % 53); // 8 is missing, tested til 16
-            avatar = new NinjaAvatar(new NinjaFemaleAvatarAttributes("Avatar", feet, legs, torso, hair, 0), wm);
+            avatar = new Avatar(new FemaleAvatarAttributes("Avatar", feet, legs, torso, hair, 0), wm);
         }
         
         // Create darkstar client and login

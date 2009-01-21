@@ -15,64 +15,135 @@
  * exception as provided by Sun in the License file that accompanied 
  * this code.
  */
-package imi.character.ninja;
+package imi.character.avatar;
 
-import imi.character.statemachine.corestates.WalkState;
-import imi.character.statemachine.corestates.TurnState;
-import imi.character.statemachine.corestates.SitState;
-import imi.character.statemachine.corestates.SitOnGroundState;
-import imi.character.statemachine.corestates.IdleState;
-import imi.character.statemachine.corestates.FlyState;
-import imi.character.statemachine.corestates.FallFromSitState;
-import imi.character.statemachine.corestates.ActionState;
 import imi.character.CharacterAttributes;
+import imi.character.avatar.AvatarContext.TriggerNames;
+import imi.character.statemachine.GameContext;
+import imi.character.statemachine.corestates.ActionState;
+import imi.character.statemachine.corestates.FallFromSitState;
+import imi.character.statemachine.corestates.FlyState;
+import imi.character.statemachine.corestates.IdleState;
 import imi.character.statemachine.corestates.RunState;
+import imi.character.statemachine.corestates.SitOnGroundState;
+import imi.character.statemachine.corestates.SitState;
+import imi.character.statemachine.corestates.TurnState;
+import imi.character.statemachine.corestates.WalkState;
+import imi.utils.input.InputScheme;
+import imi.scene.processors.JSceneEventProcessor;
+import imi.serialization.xml.bindings.xmlCharacter;
+import imi.utils.input.NinjaControlScheme;
+import java.awt.event.KeyEvent;
 import java.net.URL;
 import org.jdesktop.mtgame.WorldManager;
 
-/**
- * This class provides a ready to use Ninja. 
- * It is designed to work with the NinjaAvatarAttributes class and sets up 
- * animation names for the state machine of the concrete ninja context etc
+/*
+ * Ninja! This class is a concrete Character e.g. 
+ * Things such as input mechanisms and a state machine
+ * layout are provided as a starting point.
+ * 
  * @author Lou Hayt
  */
-public class NinjaAvatar extends Ninja 
+public class Avatar extends imi.character.Character
 {
     /**
-     * Construct a new NinjaAvatar with the provided attributes and world manager.
+     * Construct a new Ninja with the provided attributes and world manager.
      * @param attributes
      * @param wm
      */
-    public NinjaAvatar(CharacterAttributes attributes, WorldManager wm) {
-        this(attributes, wm , true);
+    public Avatar(CharacterAttributes attributes, WorldManager wm)
+    {
+        this(attributes, wm, true);
     }
     /**
-     * Construct a new NinjaAvatar with the provided attributes and world manager.
+     * Construct a new Ninja with the provided attributes and world manager.
      * @param attributes
      * @param wm
      */
-    public NinjaAvatar(CharacterAttributes attributes, WorldManager wm, boolean addEntity)
+    public Avatar(CharacterAttributes attributes, WorldManager wm, boolean addEntity)
     {
         super(attributes, wm, addEntity);
-        
+//        m_context = instantiateContext();       // Initialize m_context
         // For female loading test\demo
-        if (attributes instanceof NinjaFemaleAvatarAttributes)
+        if (attributes instanceof FemaleAvatarAttributes)
             femaleContextSetup();
         else
             maleContextSetup();
     }
 
     /**
-     * Construct a new instance configured with the specified file.
+     * Construct a new instance with the provided configuration file.
      * @param configurationFile
      * @param wm
      */
-    public NinjaAvatar(URL configurationFile, WorldManager wm)
+    public Avatar(URL configurationFile, WorldManager wm)
     {
         super(configurationFile, wm);
         maleContextSetup();
     }
+     
+    protected GameContext instantiateContext() {
+        return new AvatarContext(this);
+    }
 
+    @Override
+    protected void finalizeInitialization(xmlCharacter characterDOM) {
+        m_context = instantiateContext();
+        super.finalizeInitialization(characterDOM);
+    }
+   
+    @Override
+    protected void initKeyBindings() 
+    {   
+        m_keyBindings.put(KeyEvent.VK_SHIFT,        TriggerNames.Movement_Modifier.ordinal());
+        m_keyBindings.put(KeyEvent.VK_A,            TriggerNames.Move_Left.ordinal());
+        m_keyBindings.put(KeyEvent.VK_D,            TriggerNames.Move_Right.ordinal());
+        m_keyBindings.put(KeyEvent.VK_W,            TriggerNames.Move_Forward.ordinal());
+        m_keyBindings.put(KeyEvent.VK_S,            TriggerNames.Move_Back.ordinal());
+        m_keyBindings.put(KeyEvent.VK_CONTROL,      TriggerNames.MiscAction.ordinal());
+        m_keyBindings.put(KeyEvent.VK_2,            TriggerNames.ToggleSteering.ordinal());
+        m_keyBindings.put(KeyEvent.VK_HOME,         TriggerNames.GoSit.ordinal());
+        m_keyBindings.put(KeyEvent.VK_ADD,          TriggerNames.Move_Down.ordinal());
+        m_keyBindings.put(KeyEvent.VK_SUBTRACT,     TriggerNames.Move_Up.ordinal());
+        m_keyBindings.put(KeyEvent.VK_COMMA,        TriggerNames.Reverse.ordinal());
+        m_keyBindings.put(KeyEvent.VK_PERIOD,       TriggerNames.NextAction.ordinal());
+        m_keyBindings.put(KeyEvent.VK_1,            TriggerNames.GoTo1.ordinal());
+        m_keyBindings.put(KeyEvent.VK_ENTER,        TriggerNames.GoTo2.ordinal());
+        m_keyBindings.put(KeyEvent.VK_3,            TriggerNames.GoTo3.ordinal());
+        m_keyBindings.put(KeyEvent.VK_G,            TriggerNames.SitOnGround.ordinal());
+        m_keyBindings.put(KeyEvent.VK_0,            TriggerNames.Smile.ordinal());
+        m_keyBindings.put(KeyEvent.VK_9,            TriggerNames.Frown.ordinal());
+        m_keyBindings.put(KeyEvent.VK_8,            TriggerNames.Scorn.ordinal());
+        m_keyBindings.put(KeyEvent.VK_Q,            TriggerNames.ToggleLeftArm.ordinal());
+        m_keyBindings.put(KeyEvent.VK_E,            TriggerNames.ToggleRightArm.ordinal());
+        m_keyBindings.put(KeyEvent.VK_P,            TriggerNames.Point.ordinal());
+    }
+            
+    /**
+     * This Ninja will be selected for input.
+     */
+    @Override
+    public void selectForInput()
+    {
+        super.selectForInput();
+        
+        InputScheme scheme = ((JSceneEventProcessor)m_wm.getUserData(JSceneEventProcessor.class)).getInputScheme();
+        if (scheme instanceof NinjaControlScheme)
+        {
+            ((NinjaControlScheme)scheme).setNinja(this);
+//            Goal goalPoint = (Goal)m_wm.getUserData(Goal.class);
+//            if (goalPoint != null)
+//            {
+//                ((NinjaContext)m_context).getSteering().setGoalPosition(goalPoint.getTransform().getLocalMatrix(false).getTranslation());
+//                ((NinjaContext)m_context).getSteering().setSittingDirection(goalPoint.getTransform().getLocalMatrix(false).getLocalZ());
+//                ((NinjaContext)m_context).getSteering().setGoal(goalPoint.getGoal());
+//            }
+//            
+////            if (m_wm.getUserData(JFrame.class) != null)
+////                ((DemoBase2)m_wm.getUserData(JFrame.class)).setGUI(m_jscene, m_wm, null, this);
+        }
+    }
+    
     private void maleContextSetup()
     {   
         m_context.getController().setReverseHeading(true);

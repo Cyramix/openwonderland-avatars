@@ -19,8 +19,8 @@ package imi.tests;
 
 
 import com.jme.math.Vector3f;
-import imi.character.ninja.NinjaAvatar;
-import imi.character.ninja.NinjaAvatarAttributes;
+import imi.character.avatar.Avatar;
+import imi.character.avatar.MaleAvatarAttributes;
 import imi.gui.SceneEssentials;
 import imi.gui.TreeExplorer;
 import imi.scene.camera.state.FirstPersonCamState;
@@ -70,9 +70,9 @@ public class CustomizationExample extends DemoBase
         NinjaControlScheme control = (NinjaControlScheme)eventProcessor.setDefault(new NinjaControlScheme(null));
 
         // Create an attributes object describing the avatar
-        NinjaAvatarAttributes attribs = new NinjaAvatarAttributes("WeirdGuy", true, false);
+        MaleAvatarAttributes attribs = new MaleAvatarAttributes("WeirdGuy", true);
 //        NinjaFemaleAvatarAttributes attribs = new NinjaFemaleAvatarAttributes("WeirdChick", 0, 1, 1, 1, 1);
-        NinjaAvatar avatar = new NinjaAvatar(attribs, wm);
+        Avatar avatar = new Avatar(attribs, wm);
         
         avatar.selectForInput();
         control.getNinjaTeam().add(avatar);

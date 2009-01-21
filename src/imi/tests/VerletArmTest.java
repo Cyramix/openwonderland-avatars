@@ -19,9 +19,9 @@ package imi.tests;
 
 import com.jme.math.Vector3f;
 //import imi.character.networking.DarkstarClient;
-import imi.character.ninja.NinjaAvatar;
-import imi.character.ninja.NinjaAvatarAttributes;
-import imi.character.ninja.NinjaFemaleAvatarAttributes;
+import imi.character.avatar.Avatar;
+import imi.character.avatar.MaleAvatarAttributes;
+import imi.character.avatar.FemaleAvatarAttributes;
 import imi.character.objects.ObjectCollection;
 import imi.scene.camera.state.FirstPersonCamState;
 import org.jdesktop.mtgame.WorldManager;
@@ -61,24 +61,40 @@ public class VerletArmTest  extends DemoBase
         NinjaControlScheme control = (NinjaControlScheme)((JSceneEventProcessor)wm.getUserData(JSceneEventProcessor.class)).setDefault(new NinjaControlScheme(null));
         
         // Make a chair and let the control the collection so it can delete it
-        objects.generateChairs(Vector3f.ZERO, 5.0f, 4);
-        control.setObjectCollection(objects);
+        //objects.generateChairs(Vector3f.ZERO, 5.0f, 4);
+        //control.setObjectCollection(objects);
         
-        // change camera speed
+        // change camera speed and position it
         FirstPersonCamState camState = (FirstPersonCamState)m_cameraProcessor.getState();
-        camState.setMovementRate(0.02f);
+        camState.setMovementRate(0.03f);
         camState.setCameraPosition(new Vector3f(0.0f, 1.8f, -2.0f));
         
-        // Create avatar
-        int feet  = -1;//(int) (Math.random() * 10000 % 0);
-        int legs  = (int) (Math.random() * 10000 % 3);
-        int torso = (int) (Math.random() * 10000 % 5);
-        int hair  = (int) (Math.random() * 10000 % 53); // 8 is missing, test til 16
-        int head  = (int) (Math.random() * 10000 % 2);
-        NinjaAvatar avatar = new NinjaAvatar(new NinjaFemaleAvatarAttributes("Avatar", feet, legs, torso, hair, head), wm);
-        //avatar.setUpdateExtension(new DarkstarClient(avatar, true, feet, legs, torso, hair));
-        //((DarkstarClient)avatar.getUpdateExtension()).login();
-        //NinjaAvatar avatar = new NinjaAvatar(new NinjaFemaleAvatarAttributes("Avatar", true, false), wm);
+        boolean male = false;
+        Avatar avatar;
+        int feet, legs, torso, hair;
+        
+        if (male)
+        {
+            // Create male avatar
+            feet  = (int) (Math.random() * 10000 % 4);
+            legs  = (int) (Math.random() * 10000 % 4);
+            torso = (int) (Math.random() * 10000 % 6);
+            hair  = (int) (Math.random() * 10000 % 17);
+            avatar = new Avatar(new MaleAvatarAttributes("Avatar", feet, legs, torso, hair, 0), wm);
+        }
+        else // female
+        {
+            // Create female avatar
+            feet  = -1;//(int) (Math.random() * 10000 % 0);
+            legs  = 0;//(int) (Math.random() * 10000 % 3);  // 1 and 2 problems
+            torso = (int) (Math.random() * 10000 % 3);  // % 5.... 3 and 4 problems
+            hair  = (int) (Math.random() * 10000 % 53); // tested til 15
+            avatar = new Avatar(new FemaleAvatarAttributes("Avatar", feet, legs, torso, hair, 0), wm);
+        }
+        
+        //avatar.setBigHeadMode(2.0f);
+                
+        // Select the avatar for input and set the object collection
         avatar.selectForInput();
         control.getNinjaTeam().add(avatar);
         avatar.setObjectCollection(objects);
@@ -97,7 +113,7 @@ public class VerletArmTest  extends DemoBase
 
     private void cloneAvatar(NinjaControlScheme control, ObjectCollection objects, WorldManager wm, float xOffset, float yOffset, float zOffset) 
     {   
-        NinjaAvatar avatar = new NinjaAvatar(new NinjaAvatarAttributes("Avatar Clone " + xOffset+yOffset+zOffset, true, false), wm);
+        Avatar avatar = new Avatar(new MaleAvatarAttributes("Avatar Clone " + xOffset+yOffset+zOffset, true), wm);
         avatar.getModelInst().getTransform().getLocalMatrix(true).setTranslation(new Vector3f(xOffset, yOffset, zOffset));
         control.getNinjaTeam().add(avatar);
         avatar.setObjectCollection(objects);

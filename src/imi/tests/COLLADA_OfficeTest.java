@@ -18,8 +18,8 @@
 package imi.tests;
 
 import com.jme.math.Vector3f;
-import imi.character.ninja.NinjaAvatar;
-import imi.character.ninja.NinjaAvatarAttributes;
+import imi.character.avatar.Avatar;
+import imi.character.avatar.MaleAvatarAttributes;
 import imi.character.objects.ObjectCollection;
 import imi.environments.ColladaEnvironment;
 import imi.scene.JScene;
@@ -68,7 +68,7 @@ public class COLLADA_OfficeTest extends DemoBase
         ObjectCollection objs = new ObjectCollection("Musical Chairs Game Objects", wm);
         objs.generateChairs(Vector3f.UNIT_Z.mult(15.0f), 15.0f, 3);
         
-        NinjaAvatar ColladaOne = new NinjaAvatar(new NinjaAvatarAttributes("ColladaOne", true, false), wm);
+        Avatar ColladaOne = new Avatar(new MaleAvatarAttributes("ColladaOne", true), wm);
         ColladaOne.setObjectCollection(objs);
         ColladaOne.selectForInput();
         control.getNinjaTeam().add(ColladaOne);

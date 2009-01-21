@@ -10,11 +10,11 @@ import com.jme.math.Quaternion;
 import com.jme.math.Vector3f;
 import com.jme.renderer.ColorRGBA;
 import imi.character.Character;
-import imi.character.ninja.NinjaAvatar;
-import imi.character.ninja.NinjaAvatarAttributes;
-import imi.character.ninja.NinjaContext;
-import imi.character.ninja.NinjaContext.TriggerNames;
-import imi.character.ninja.NinjaFemaleAvatarAttributes;
+import imi.character.avatar.Avatar;
+import imi.character.avatar.MaleAvatarAttributes;
+import imi.character.avatar.AvatarContext;
+import imi.character.avatar.AvatarContext.TriggerNames;
+import imi.character.avatar.FemaleAvatarAttributes;
 import imi.character.statemachine.GameContextListener;
 import imi.character.statemachine.corestates.IdleState;
 import imi.scene.PMatrix;
@@ -210,17 +210,17 @@ public class DarkstarClient extends JNagClient implements Updatable
     public void performAnimation(int actionIndex, boolean client, boolean allUsers, int specificUser)
     {
         if (client)
-            ((NinjaContext)character.getContext()).performAction(actionIndex);
+            ((AvatarContext)character.getContext()).performAction(actionIndex);
         
         if (allUsers)
         {
             for (UserData data : characterData.values())
-                ((NinjaContext)data.user.getContext()).performAction(actionIndex);
+                ((AvatarContext)data.user.getContext()).performAction(actionIndex);
         }
         else if (characterData.get(specificUser) != null)
         {
             Character user = characterData.get(specificUser).user;
-            ((NinjaContext)user.getContext()).performAction(actionIndex);
+            ((AvatarContext)user.getContext()).performAction(actionIndex);
         }
     }
     
@@ -731,12 +731,12 @@ public class DarkstarClient extends JNagClient implements Updatable
             Character user;
             if (male[i])
             {
-                user = new NinjaAvatar(new NinjaAvatarAttributes(playerNames[i], feet[i], legs[i], torso[i], hair[i], 0), worldManager);
+                user = new Avatar(new MaleAvatarAttributes(playerNames[i], feet[i], legs[i], torso[i], hair[i], 0), worldManager);
                 user.setBigHeadMode(2.0f);
                 user.setBeerBelly(1.17f);
             }
             else
-                user = new NinjaAvatar(new NinjaFemaleAvatarAttributes(playerNames[i], feet[i], legs[i], torso[i], hair[i], 0), worldManager);
+                user = new Avatar(new FemaleAvatarAttributes(playerNames[i], feet[i], legs[i], torso[i], hair[i], 0), worldManager);
             
             UserData data = new UserData(user, playerIDs[i]);
             characterData.put(playerIDs[i], data);
@@ -758,12 +758,12 @@ public class DarkstarClient extends JNagClient implements Updatable
         Character user;
         if (male)
         {
-            user = new NinjaAvatar(new NinjaAvatarAttributes(playerName, feet, legs, torso, hair, 0), worldManager);
+            user = new Avatar(new MaleAvatarAttributes(playerName, feet, legs, torso, hair, 0), worldManager);
             user.setBigHeadMode(2.0f);
             user.setBeerBelly(1.17f);
         }
         else
-            user = new NinjaAvatar(new NinjaFemaleAvatarAttributes(playerName, feet, legs, torso, hair, 0), worldManager);
+            user = new Avatar(new FemaleAvatarAttributes(playerName, feet, legs, torso, hair, 0), worldManager);
         
         UserData data = new UserData(user, userID);
         characterData.put(userID, data);

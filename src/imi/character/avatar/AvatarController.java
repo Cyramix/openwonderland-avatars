@@ -15,7 +15,7 @@
  * exception as provided by Sun in the License file that accompanied 
  * this code.
  */
-package imi.character.ninja;
+package imi.character.avatar;
 
 import com.jme.math.Quaternion;
 import com.jme.math.Vector3f;
@@ -33,9 +33,9 @@ import javax.swing.JFrame;
  * 
  * @author Lou Hayt
  */
-public class NinjaController extends CharacterController
+public class AvatarController extends CharacterController
 {
-    private Ninja    ninja               = null;
+    private Avatar    ninja               = null;
     protected boolean  initalized          = false;
     protected PPolygonModelInstance body   = null;
     
@@ -61,7 +61,7 @@ public class NinjaController extends CharacterController
     
     private JFrame window = null; // use this to set title name for debugging info
     
-    public NinjaController(Ninja master)
+    public AvatarController(Avatar master)
     {
         ninja = master;
         
@@ -81,7 +81,7 @@ public class NinjaController extends CharacterController
         }
 
         // Diagnostic / Debug output
-        Logger.getLogger(NinjaController.class.getName()).log(Level.INFO, "GOT BODY " + body);
+        Logger.getLogger(AvatarController.class.getName()).log(Level.INFO, "GOT BODY " + body);
     }
 
     @Override

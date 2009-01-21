@@ -15,7 +15,7 @@
  * exception as provided by Sun in the License file that accompanied 
  * this code.
  */
-package imi.character.ninja;
+package imi.character.avatar;
 
 import com.jme.math.Vector3f;
 import imi.character.statemachine.corestates.WalkState;
@@ -62,11 +62,11 @@ import java.util.Hashtable;
  * This is a game context concrete e.g.
  * @author Lou Hayt
  */
-public class NinjaContext extends GameContext
+public class AvatarContext extends GameContext
 {
-    private Ninja             ninja       = null;
-    private NinjaController   controller  = null;
-    private NinjaSteeringHelm AI    = new NinjaSteeringHelm("Ninja Steering Helm", this);
+    private Avatar             ninja       = null;
+    private AvatarController   controller  = null;
+    private AvatarSteeringHelm AI    = new AvatarSteeringHelm("Ninja Steering Helm", this);
     private LocationNode      location    = null;
     /** Animations that are using the ActionState to play out (such as wave, cheer etc) **/
     private ArrayList<ActionInfo> genericAnimations = new ArrayList<ActionInfo>();
@@ -111,20 +111,20 @@ public class NinjaContext extends GameContext
     @Override
     public void initDefaultActionMap(Hashtable<Integer, Action> actionMap) 
     {
-        actionMap.put(TriggerNames.Move_Left.ordinal(),     new Action(NinjaContext.ActionNames.Movement_X.ordinal(), -0.4f));
-        actionMap.put(TriggerNames.Move_Right.ordinal(),    new Action(NinjaContext.ActionNames.Movement_X.ordinal(), 0.4f));
-        actionMap.put(TriggerNames.Move_Forward.ordinal(),  new Action(NinjaContext.ActionNames.Movement_Z.ordinal(), 0.4f));
-        actionMap.put(TriggerNames.Move_Back.ordinal(),     new Action(NinjaContext.ActionNames.Movement_Z.ordinal(), -0.4f));
-        actionMap.put(TriggerNames.MiscAction.ordinal(),         new Action(NinjaContext.ActionNames.Action.ordinal(), 1.0f));
-        actionMap.put(TriggerNames.Move_Up.ordinal(),       new Action(NinjaContext.ActionNames.Movement_Y.ordinal(), 0.4f));
-        actionMap.put(TriggerNames.Move_Down.ordinal(),     new Action(NinjaContext.ActionNames.Movement_Y.ordinal(), -0.4f));
+        actionMap.put(TriggerNames.Move_Left.ordinal(),     new Action(AvatarContext.ActionNames.Movement_X.ordinal(), -0.4f));
+        actionMap.put(TriggerNames.Move_Right.ordinal(),    new Action(AvatarContext.ActionNames.Movement_X.ordinal(), 0.4f));
+        actionMap.put(TriggerNames.Move_Forward.ordinal(),  new Action(AvatarContext.ActionNames.Movement_Z.ordinal(), 0.4f));
+        actionMap.put(TriggerNames.Move_Back.ordinal(),     new Action(AvatarContext.ActionNames.Movement_Z.ordinal(), -0.4f));
+        actionMap.put(TriggerNames.MiscAction.ordinal(),         new Action(AvatarContext.ActionNames.Action.ordinal(), 1.0f));
+        actionMap.put(TriggerNames.Move_Up.ordinal(),       new Action(AvatarContext.ActionNames.Movement_Y.ordinal(), 0.4f));
+        actionMap.put(TriggerNames.Move_Down.ordinal(),     new Action(AvatarContext.ActionNames.Movement_Y.ordinal(), -0.4f));
     }
          
-    public NinjaContext(Ninja master)
+    public AvatarContext(Avatar master)
     {
         super(master);
         ninja = master;
-        controller = (NinjaController) instantiateController();
+        controller = (AvatarController) instantiateController();
         actions    = new float [ActionNames.values().length];
                 
         // Add states to this context
@@ -372,26 +372,26 @@ public class NinjaContext extends GameContext
         }
     }
     
-    public Ninja getNinja() {
+    public Avatar getNinja() {
         return ninja;
     }
     
-    public void setNinja(Ninja ninja) {
+    public void setNinja(Avatar ninja) {
         this.ninja = ninja;
     }
     
     @Override
-    public NinjaController getController() {
+    public AvatarController getController() {
         return controller;
     }
 
     @Override
     protected CharacterController instantiateController() {
-        return new NinjaController(ninja);
+        return new AvatarController(ninja);
     }
 
     @Override
-    public NinjaSteeringHelm getSteering() {
+    public AvatarSteeringHelm getSteering() {
         return AI;
     }
 

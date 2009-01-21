@@ -18,8 +18,8 @@
 package imi.character.steering;
 
 import imi.character.*;
-import imi.character.ninja.NinjaContext;
-import imi.character.ninja.NinjaContext.TriggerNames;
+import imi.character.avatar.AvatarContext;
+import imi.character.avatar.AvatarContext.TriggerNames;
 import imi.character.objects.SpatialObject;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -38,7 +38,7 @@ public class Walk implements Task
     
     private float turnTime = 0.5f;
     
-    private NinjaContext ninjaContext = null;
+    private AvatarContext ninjaContext = null;
 
     /**
      * Construct a new instance of the walk task
@@ -47,7 +47,7 @@ public class Walk implements Task
      * @param bForward True for forward, false for reverse
      * @param context The context to operate on.
      */
-    public Walk(String description, float time, boolean bForward, NinjaContext context) 
+    public Walk(String description, float time, boolean bForward, AvatarContext context) 
     {
         // Debugging / Diagnostic output
         //Logger.getLogger(Walk.class.getName()).log(Level.INFO, description);

@@ -17,7 +17,7 @@
  */
 package imi.character.statemachine.corestates;
 
-import imi.character.ninja.*;
+import imi.character.avatar.*;
 import com.jme.math.Vector3f;
 import imi.character.CharacterController;
 import imi.character.statemachine.GameContext;
@@ -40,7 +40,7 @@ public class WalkState extends GameState
     protected float exitCounter           = 0.0f;
     private float minimumTimeBeforeTransition = 0.05f; // still needed?
     
-    public WalkState(NinjaContext master)
+    public WalkState(AvatarContext master)
     {
         super(master);
         context = master;
@@ -71,9 +71,9 @@ public class WalkState extends GameState
      
     protected void takeAction(float deltaTime) 
     {
-        float x = context.getActions()[NinjaContext.ActionNames.Movement_X.ordinal()];
+        float x = context.getActions()[AvatarContext.ActionNames.Movement_X.ordinal()];
         //float y = actions[ActionNames.Movement_Y.ordinal()];
-        float z = context.getActions()[NinjaContext.ActionNames.Movement_Z.ordinal()];
+        float z = context.getActions()[AvatarContext.ActionNames.Movement_Z.ordinal()];
         
         CharacterController controller = context.getController();
         

@@ -19,8 +19,8 @@ package imi.utils.input;
 
 import com.jme.math.Vector3f;
 import imi.character.VerletArm;
-import imi.character.ninja.Ninja;
-import imi.character.ninja.NinjaContext.TriggerNames;
+import imi.character.avatar.Avatar;
+import imi.character.avatar.AvatarContext.TriggerNames;
 import imi.character.objects.ObjectCollection;
 import imi.scene.processors.FlexibleCameraProcessor;
 import java.awt.event.KeyEvent;
@@ -36,10 +36,10 @@ public class NinjaControlScheme extends InputScheme
 {
     private boolean bSkeletonMode = false;
   
-    private Ninja   ninja = null;
+    private Avatar   ninja = null;
     
     private int currentNinja = 0;
-    private ArrayList<Ninja> ninjaTeam = new ArrayList<Ninja>();
+    private ArrayList<Avatar> ninjaTeam = new ArrayList<Avatar>();
     
     private   InputState      inputState     = new InputState();
     
@@ -54,7 +54,7 @@ public class NinjaControlScheme extends InputScheme
     
     
     
-    public NinjaControlScheme(Ninja master)
+    public NinjaControlScheme(Avatar master)
     {
         super();
         ninja = master;
@@ -313,11 +313,11 @@ public class NinjaControlScheme extends InputScheme
         }
     }
 
-    public ArrayList<Ninja> getNinjaTeam() {
+    public ArrayList<Avatar> getNinjaTeam() {
         return ninjaTeam;
     }
     
-    public void setNinja(Ninja ninjaMaster)
+    public void setNinja(Avatar ninjaMaster)
     {
         ninja = ninjaMaster;
     }

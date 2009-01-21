@@ -15,7 +15,7 @@
  * exception as provided by Sun in the License file that accompanied 
  * this code.
  */
-package imi.character.ninja;
+package imi.character.avatar;
 
 import imi.character.CharacterSteeringHelm;
 
@@ -23,9 +23,9 @@ import imi.character.CharacterSteeringHelm;
  *
  * @author Lou Hayt
  */
-public class NinjaSteeringHelm extends CharacterSteeringHelm
+public class AvatarSteeringHelm extends CharacterSteeringHelm
 {   
-    public NinjaSteeringHelm(String name, NinjaContext gameContext)
+    public AvatarSteeringHelm(String name, AvatarContext gameContext)
     {
         super(name, gameContext);
     }

@@ -15,7 +15,7 @@
  * exception as provided by Sun in the License file that accompanied 
  * this code.
  */
-package imi.character.ninja;
+package imi.character.avatar;
 
 import com.jme.math.Vector3f;
 import com.jme.renderer.ColorRGBA;
@@ -30,7 +30,7 @@ import java.util.ArrayList;
  * primary avatar geometry and animations.
  * @author Lou Hayt
  */
-public class NinjaAvatarAttributes extends CharacterAttributes
+public class MaleAvatarAttributes extends CharacterAttributes
 {
     public String[] m_regions = new String[] { "Head", "Hands", "UpperBody", "LowerBody", "Feet", "Hair", "FacialHair", "Hats", "Glasses", "Jackets" };
 
@@ -49,7 +49,7 @@ public class NinjaAvatarAttributes extends CharacterAttributes
      * @param name The name of the avatar
      * @param bRandomCustomizations If false, avatar starts in the bind pose, if true then random clothing will be applied
      */
-    public NinjaAvatarAttributes(String name, boolean bRandomCustomizations) 
+    public MaleAvatarAttributes(String name, boolean bRandomCustomizations) 
     {
         // Customizations
         if (bRandomCustomizations)
@@ -90,11 +90,11 @@ public class NinjaAvatarAttributes extends CharacterAttributes
         else
             loadDefaultBindPose();
     }
-    public NinjaAvatarAttributes(String name, int feet, int legs, int torso, int hair, int head)
+    public MaleAvatarAttributes(String name, int feet, int legs, int torso, int hair, int head)
     {
         this(name, feet, legs, torso, hair, head, 0);
     }
-    public NinjaAvatarAttributes(String name, int feet, int legs, int torso, int hair, int head, int skinTone)
+    public MaleAvatarAttributes(String name, int feet, int legs, int torso, int hair, int head, int skinTone)
     {
         ArrayList<String> load                  = new ArrayList<String>();
         ArrayList<SkinnedMeshParams> add        = new ArrayList<SkinnedMeshParams>();
@@ -373,10 +373,9 @@ public class NinjaAvatarAttributes extends CharacterAttributes
             break;
             case 4:
             {
-                // Meso
-                load.add(new String("assets/models/collada/Clothes/Male/Meso/MaleMesoTop.dae"));
-                add.add(new SkinnedMeshParams("TorsoNudeShape", "UpperBody"));
-                add.add(new SkinnedMeshParams("polySurfaceShape2", "UpperBody"));
+                // Dress shirt for suit
+                load.add(new String("assets/models/collada/Shirts/SuitDressShirt_M/SuitDressShirt.dae"));
+                add.add(new SkinnedMeshParams("SuitShirtShape", "UpperBody"));
             }
             break;
             case 5:
@@ -388,9 +387,10 @@ public class NinjaAvatarAttributes extends CharacterAttributes
             break;
             case 6:
             {
-                // Dress shirt for suit
-                load.add(new String("assets/models/collada/Shirts/SuitDressShirt_M/SuitDressShirt.dae"));
-                add.add(new SkinnedMeshParams("SuitShirtShape", "UpperBody"));
+                // Meso
+                load.add(new String("assets/models/collada/Clothes/Male/Meso/MaleMesoTop.dae"));
+                add.add(new SkinnedMeshParams("TorsoNudeShape", "UpperBody"));
+                add.add(new SkinnedMeshParams("polySurfaceShape2", "UpperBody"));
             }
             break;
             default:

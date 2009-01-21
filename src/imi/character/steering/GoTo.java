@@ -19,7 +19,7 @@ package imi.character.steering;
 
 import imi.character.*;
 import com.jme.math.Vector3f;
-import imi.character.ninja.NinjaContext.TriggerNames;
+import imi.character.avatar.AvatarContext.TriggerNames;
 import imi.character.objects.SpatialObject;
 import imi.character.statemachine.GameContext;
 

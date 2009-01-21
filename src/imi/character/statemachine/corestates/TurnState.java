@@ -17,7 +17,7 @@
  */
 package imi.character.statemachine.corestates;
 
-import imi.character.ninja.*;
+import imi.character.avatar.*;
 import com.jme.math.Vector3f;
 import imi.character.CharacterController;
 import imi.character.statemachine.GameContext;
@@ -45,7 +45,7 @@ public class TurnState extends GameState
      * Construct a new turn state instance with the provided context
      * @param master
      */
-    public TurnState(NinjaContext master)
+    public TurnState(AvatarContext master)
     {
         super(master);
         context = master;
@@ -77,9 +77,9 @@ public class TurnState extends GameState
          
     private void takeAction(float deltaTime) 
     {
-        float x = context.getActions()[NinjaContext.ActionNames.Movement_X.ordinal()];
+        float x = context.getActions()[AvatarContext.ActionNames.Movement_X.ordinal()];
         //float y = actions[ActionNames.Movement_Y.ordinal()];
-        float z = context.getActions()[NinjaContext.ActionNames.Movement_Z.ordinal()];
+        float z = context.getActions()[AvatarContext.ActionNames.Movement_Z.ordinal()];
         
         CharacterController controller = context.getController();
         

@@ -17,9 +17,9 @@
  */
 package imi.character.statemachine.corestates;
 
-import imi.character.ninja.*;
+import imi.character.avatar.AvatarContext;
 import imi.character.statemachine.corestates.FallFromSitState;
-import imi.character.ninja.NinjaContext.TriggerNames;
+import imi.character.avatar.AvatarContext.TriggerNames;
 import imi.character.objects.Chair;
 import imi.character.statemachine.GameState;
 import imi.character.statemachine.GameContext;
@@ -57,7 +57,7 @@ public class SitState extends GameState
      * Construct a new sitting state with the provided context as its owner
      * @param master
      */
-    public SitState(NinjaContext master)
+    public SitState(AvatarContext master)
     {
         super(master);
         context = master;

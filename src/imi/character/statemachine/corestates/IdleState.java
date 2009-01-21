@@ -17,7 +17,7 @@
  */
 package imi.character.statemachine.corestates;
 
-import imi.character.ninja.*;
+import imi.character.avatar.*;
 import imi.character.statemachine.GameContext;
 import imi.character.statemachine.GameState;
 import imi.scene.animation.AnimationComponent.PlaybackMode;
@@ -40,7 +40,7 @@ public class IdleState extends GameState
 
     private boolean resetBodyParts = false; // Just feet currently
         
-    public IdleState(NinjaContext master)
+    public IdleState(AvatarContext master)
     {
         super(master);
         context = master;
@@ -66,9 +66,9 @@ public class IdleState extends GameState
 
     private void takeAction(float deltaTime) 
     {
-        float x = context.getActions()[NinjaContext.ActionNames.Movement_X.ordinal()];
-        float y = context.getActions()[NinjaContext.ActionNames.Movement_Y.ordinal()];
-        float z = context.getActions()[NinjaContext.ActionNames.Movement_Z.ordinal()];
+        float x = context.getActions()[AvatarContext.ActionNames.Movement_X.ordinal()];
+        float y = context.getActions()[AvatarContext.ActionNames.Movement_Y.ordinal()];
+        float z = context.getActions()[AvatarContext.ActionNames.Movement_Z.ordinal()];
         
         // Turn
         if (x == 0.0f)

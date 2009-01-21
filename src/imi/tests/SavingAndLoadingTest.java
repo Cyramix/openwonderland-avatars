@@ -18,9 +18,9 @@
 package imi.tests;
 
 import com.jme.math.Vector3f;
-import imi.character.ninja.NinjaAvatar;
-import imi.character.ninja.NinjaAvatarAttributes;
-import imi.character.ninja.NinjaSteeringHelm;
+import imi.character.avatar.Avatar;
+import imi.character.avatar.MaleAvatarAttributes;
+import imi.character.avatar.AvatarSteeringHelm;
 import imi.character.objects.LocationNode;
 import imi.character.objects.ObjectCollection;
 import imi.character.steering.GoTo;
@@ -72,8 +72,8 @@ public class SavingAndLoadingTest extends DemoBase
         // Create ninja input scheme
         NinjaControlScheme control = (NinjaControlScheme)((JSceneEventProcessor)wm.getUserData(JSceneEventProcessor.class)).setDefault(new NinjaControlScheme(null));
         // Create testCharacter
-        NinjaAvatar testCharacter = null;
-        testCharacter = new NinjaAvatar(new NinjaAvatarAttributes("SavingAndLoadingTestCharacter", true, true), wm);
+        Avatar testCharacter = null;
+        testCharacter = new Avatar(new MaleAvatarAttributes("SavingAndLoadingTestCharacter", true), wm);
         testCharacter.selectForInput();
         control.getNinjaTeam().add(testCharacter);
         control.getMouseEventsFromCamera();
@@ -101,7 +101,7 @@ public class SavingAndLoadingTest extends DemoBase
         
         try {
             // Then create a new avatar with the same configuration
-            NinjaAvatar newAvatar = new NinjaAvatar(SaveFile.toURI().toURL(), wm);
+            Avatar newAvatar = new Avatar(SaveFile.toURI().toURL(), wm);
 
         } catch (MalformedURLException ex) {
             Logger.getLogger(SavingAndLoadingTest.class.getName()).log(Level.SEVERE, null, ex);
@@ -116,7 +116,7 @@ public class SavingAndLoadingTest extends DemoBase
 //        te.setVisible(true);
     }
 
-    private void customizeCharacter(NinjaAvatar testCharacter, WorldManager wm) {
+    private void customizeCharacter(Avatar testCharacter, WorldManager wm) {
         final LocationNode destination = new LocationNode("AvatarSpotOne",
                                                 new Vector3f(10, 0, 10),
                                                 2.0f,
@@ -125,7 +125,7 @@ public class SavingAndLoadingTest extends DemoBase
         testCharacter.setObjectCollection(collection);
         collection.addObject(destination);
         // walk away avatar, just walk away
-        NinjaSteeringHelm steering = (NinjaSteeringHelm)testCharacter.getContext().getSteering();
+        AvatarSteeringHelm steering = (AvatarSteeringHelm)testCharacter.getContext().getSteering();
         steering.addTaskToTop(new GoTo(destination, testCharacter.getContext()));
 
         // tweak it!

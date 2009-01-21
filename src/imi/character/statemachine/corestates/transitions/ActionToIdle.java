@@ -17,7 +17,7 @@
  */
 package imi.character.statemachine.corestates.transitions;
 
-import imi.character.ninja.NinjaContext.TriggerNames;
+import imi.character.avatar.AvatarContext.TriggerNames;
 import imi.character.statemachine.GameState;
 import imi.character.statemachine.TransitionObject;
 import imi.character.statemachine.corestates.ActionState;

@@ -32,7 +32,7 @@ import imi.loaders.repository.SharedAsset.SharedAssetType;
 import imi.character.Character;
 import imi.character.CharacterAttributes;
 import imi.character.CharacterAttributes.SkinnedMeshParams;
-import imi.character.ninja.NinjaAvatar;
+import imi.character.avatar.Avatar;
 import imi.loaders.repository.Repository;
 import imi.scene.JScene;
 import imi.scene.PMatrix;
@@ -746,7 +746,7 @@ public class SceneEssentials {
                 setAvatar(null);
             }
 
-            setAvatar(new NinjaAvatar(attribs, m_worldManager));
+            setAvatar(new Avatar(attribs, m_worldManager));
             while(!m_avatar.isInitialized() || m_avatar.getModelInst() == null) {
 
             }
@@ -1160,7 +1160,7 @@ public class SceneEssentials {
             m_avatar = null;
         }
 
-        m_avatar = new NinjaAvatar(attribs, m_worldManager);
+        m_avatar = new Avatar(attribs, m_worldManager);
         while(!m_avatar.isInitialized() || m_avatar.getModelInst() == null) {
 
         }
@@ -1907,7 +1907,7 @@ public class SceneEssentials {
                 File configfile = m_jFileChooser_LoadXML.getSelectedFile();
                 URL configURL   = configfile.toURI().toURL();
                 if (m_avatar == null) {
-                    m_avatar = new NinjaAvatar(configURL, m_worldManager);
+                    m_avatar = new Avatar(configURL, m_worldManager);
                 } else if (m_avatar != null) {
                     m_avatar.loadConfiguration(configURL);
                 }                

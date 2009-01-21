@@ -17,7 +17,7 @@
  */
 package imi.character.statemachine.corestates;
 
-import imi.character.ninja.*;
+import imi.character.avatar.*;
 import com.jme.math.Vector3f;
 import imi.character.CharacterController;
 import imi.character.statemachine.GameContext;
@@ -42,7 +42,7 @@ public class FlyState extends GameState
     private float exitCounter           = 0.0f;
     private float minimumTimeBeforeTransition = 0.18f;
     
-    public FlyState(NinjaContext master)
+    public FlyState(AvatarContext master)
     {
         super(master);
         context = master;
@@ -66,7 +66,7 @@ public class FlyState extends GameState
     {
 //        float x = ninjaContext.getActions()[NinjaContext.ActionNames.Movement_X.ordinal()];
         //float y = actions[ActionNames.Movement_Y.ordinal()];
-        float y = context.getActions()[NinjaContext.ActionNames.Movement_Y.ordinal()];
+        float y = context.getActions()[AvatarContext.ActionNames.Movement_Y.ordinal()];
 
         // Debugging / Diagnostic output
 //        Logger.getLogger(FlyState.class.getName()).log(Level.INFO, "TakeAction " + y);

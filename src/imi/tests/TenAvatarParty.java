@@ -19,8 +19,8 @@ package imi.tests;
 
 import com.jme.math.Vector2f;
 import com.jme.math.Vector3f;
-import imi.character.ninja.NinjaAvatar;
-import imi.character.ninja.NinjaAvatarAttributes;
+import imi.character.avatar.Avatar;
+import imi.character.avatar.MaleAvatarAttributes;
 import imi.scene.PMatrix;
 import imi.scene.camera.state.FirstPersonCamState;
 import imi.scene.processors.JSceneEventProcessor;
@@ -77,13 +77,13 @@ public class TenAvatarParty extends DemoBase
         NinjaControlScheme control = (NinjaControlScheme)((JSceneEventProcessor)wm.getUserData(JSceneEventProcessor.class)).setDefault(new NinjaControlScheme(null));
 
         // Create testCharacter
-        NinjaAvatar testCharacter = null;
+        Avatar testCharacter = null;
         float totalLoadTime = 0.0f;
         for (int i = 0; i < numberOfAvatars; ++i)
         {
             try {
                 long startTime = System.nanoTime();
-                testCharacter = new NinjaAvatar(new NinjaAvatarAttributes("Name", true, false), wm);//new NinjaAvatar(new URL(configFiles[i]), wm);
+                testCharacter = new Avatar(new MaleAvatarAttributes("Name", true), wm);//new NinjaAvatar(new URL(configFiles[i]), wm);
                 long stopTime = System.nanoTime();
                 float length = (stopTime - startTime) / 1000000000.0f;
                 totalLoadTime += length;

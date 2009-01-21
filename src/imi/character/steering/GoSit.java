@@ -19,8 +19,8 @@ package imi.character.steering;
 
 import imi.character.*;
 import com.jme.math.Vector3f;
-import imi.character.ninja.NinjaContext;
-import imi.character.ninja.NinjaContext.TriggerNames;
+import imi.character.avatar.AvatarContext;
+import imi.character.avatar.AvatarContext.TriggerNames;
 import imi.character.statemachine.corestates.SitState;
 import imi.character.objects.Chair;
 import imi.character.objects.SpatialObject;
@@ -38,7 +38,7 @@ public class GoSit implements Task
     String  description  = "Go to the nearest Chair and sit on it";
     String  status = "Chilling";
     
-    private NinjaContext ninjaContext = null;
+    private AvatarContext ninjaContext = null;
     
     private boolean bDone = false;
     
@@ -68,7 +68,7 @@ public class GoSit implements Task
 
     private boolean  bTryAgain         = false;
     
-    public GoSit(Chair chair, NinjaContext context) 
+    public GoSit(Chair chair, AvatarContext context) 
     {
         ninjaContext = context;
         
