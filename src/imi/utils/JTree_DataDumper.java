@@ -11,7 +11,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -78,8 +77,8 @@ public class JTree_DataDumper {
 
         if (node.getChildCount() >= 0) {
             int childIndent = new Integer(indents);
+            childIndent++;
             for (int i = 0; i < node.getChildCount(); i++) {
-                childIndent++;
                 DefaultMutableTreeNode childNode = (DefaultMutableTreeNode)node.getChildAt(i);
                 traverseAllNodes(childNode, childIndent);
             }
@@ -118,8 +117,8 @@ public class JTree_DataDumper {
 
         if (node.getChildCount() >= 0) {
             int childIndents = new Integer(indents);
+            childIndents++;
             for (int i = 0; i < node.getChildCount(); i++) {
-                childIndents++;
                 DefaultMutableTreeNode childNode = (DefaultMutableTreeNode)node.getChildAt(i);
                 TreePath newPath = path.pathByAddingChild(childNode);
                 traverseAllExpandedNodes(tree, newPath, childIndents);
@@ -141,7 +140,7 @@ public class JTree_DataDumper {
         String descriptor = pNode.getName();
         String indents = new String();
         for (int i = 0; i < tabs; i++)
-            indents += " ";
+            indents += "  ";
 
         m_PrintStream.println(indents + "[" + derivedtype + "]  " + descriptor);
     }

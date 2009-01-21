@@ -93,7 +93,7 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
         {
             case lefteyeHPos:
             {
-                ladjust.x = mod;   ladjust.y = 0.0f;    ladjust.z = 0.0f;
+                ladjust.x = mod * -0.05f;   ladjust.y = 0.0f;    ladjust.z = 0.0f;
                 skelnode.displaceJoint(eyes[0].getName(), ladjust);
 //                for (int i = 0; i < 5; i++) {
 //                    Vector3f start = eyes[i].getTransform().getLocalMatrix(false).getTranslation();
@@ -118,7 +118,7 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
             }
             case righteyeHPos:
             {
-                radjust.x = mod;   radjust.y = 0.0f;    ladjust.z = 0.0f;
+                radjust.x = mod * 0.01f;   radjust.y = 0.0f;    ladjust.z = 0.0f;
                 skelnode.displaceJoint(eyes[6].getName(), radjust);
 //                for (int i = 5; i < eyes.length; i++) {
 //                    Vector3f start = eyes[i].getTransform().getLocalMatrix(false).getTranslation();
@@ -143,7 +143,7 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
             }
             case lefteyeVPos:
             {
-                ladjust.x = 0.0f;   ladjust.y = mod;    ladjust.z = 0.0f;
+                ladjust.x = 0.0f;   ladjust.y = mod * 0.01f;    ladjust.z = 0.0f;
                 skelnode.displaceJoint(eyes[0].getName(), ladjust);
 //                for (int i = 0; i < 5; i++) {
 //                    Vector3f start = eyes[i].getTransform().getLocalMatrix(false).getTranslation();
@@ -163,7 +163,7 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
             }
             case righteyeVPos:
             {
-                radjust.x = 0.0f;   radjust.y = -mod;    ladjust.z = 0.0f;
+                radjust.x = 0.0f;   radjust.y = -mod * 0.01f;    ladjust.z = 0.0f;
                 skelnode.displaceJoint(eyes[6].getName(), radjust);
 //                for (int i = 5; i < eyes.length; i++) {
 //                    Vector3f start = eyes[i].getTransform().getLocalMatrix(false).getTranslation();

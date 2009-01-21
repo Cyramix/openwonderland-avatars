@@ -1035,7 +1035,9 @@ private void JButton_IdentityActionPerformed(java.awt.event.ActionEvent evt) {//
     }
 }//GEN-LAST:event_JButton_IdentityActionPerformed
 
-
+public void setWidgetName(String name) {
+    Label_MatrixName.setText(name);
+}
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel AdvancedViewPane;
     private javax.swing.JButton JButton_Identity;

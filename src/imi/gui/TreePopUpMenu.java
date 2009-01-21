@@ -58,6 +58,7 @@ public class TreePopUpMenu extends MouseAdapter implements ActionListener {
         private JPopupMenu menu = null;
         private PNodePropertyPanel editorPanel = null;
         private JFrame editor = null;
+        private JFrame_MatrixExplorer matrixExplorer = null;
     // Scene 
         private SceneEssentials sceneData = null;
     // File IO GUI
@@ -103,6 +104,9 @@ public class TreePopUpMenu extends MouseAdapter implements ActionListener {
             editorPanel.setTargetNode(selection);
             editorPanel.setWorldManager(sceneData.getWM());
             editorPanel.refreshComponents();
+        }
+        if(matrixExplorer != null) {
+            matrixExplorer.setTargetNode(selection);
         }
     }
     
@@ -352,13 +356,28 @@ public class TreePopUpMenu extends MouseAdapter implements ActionListener {
             ((PPolygonModelInstance)copyNode).setRenderStop(false);
         }            
     }
+
+    public void actionMatrixView() {
+        if(currentSelection == null) {
+            JOptionPane.showMessageDialog(new Frame(), "You have not selected a valid node", "WARNING", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        if (currentSelection instanceof PNode) {
+
+            if(matrixExplorer != null)
+                matrixExplorer.dispose();
+
+            matrixExplorer = new JFrame_MatrixExplorer(currentSelection);
+            matrixExplorer.setVisible(true);
+        }
+    }
     
     /**
      * Initializes the GUI components that make up the popup menu
      */
     public void initComponents() {
                 // POPUP MENU GUI
-        menuItems = new String[8];
+        menuItems = new String[9];
         menu = new JPopupMenu();
         
         JMenuItem matrixEditor = new JMenuItem("Node Properties");
@@ -403,6 +422,11 @@ public class TreePopUpMenu extends MouseAdapter implements ActionListener {
         paste.setVisible(false);
         menu.add(paste);
         menuItems[7] = paste.getText();
+
+        JMenuItem MatrixView = new JMenuItem("View Matrices");
+        MatrixView.addActionListener(this);
+        menu.add(MatrixView);
+        menuItems[8] = MatrixView.getText();
         
         // FILE IO GUI
         FileFilter modelFilter = new FileFilter() {
@@ -520,6 +544,11 @@ public class TreePopUpMenu extends MouseAdapter implements ActionListener {
             {
                 actionPaste();
                 menu.getComponent(7).setVisible(false);
+                break;
+            }
+            case 8:
+            {
+                actionMatrixView();
                 break;
             }
         }
