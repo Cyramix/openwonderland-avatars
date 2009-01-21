@@ -63,8 +63,14 @@ public class JFrame_MatrixExplorer extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         getContentPane().setLayout(new java.awt.GridBagLayout());
+
+        WorldMatrix.setName("World Matrix");
         getContentPane().add(WorldMatrix, new java.awt.GridBagConstraints());
+
+        LocalMatrix.setName("Local Matrix");
         getContentPane().add(LocalMatrix, new java.awt.GridBagConstraints());
+
+        LocalModifierMatrix.setName("Local Modifier Matrix");
         getContentPane().add(LocalModifierMatrix, new java.awt.GridBagConstraints());
 
         pack();
@@ -88,9 +94,6 @@ public class JFrame_MatrixExplorer extends javax.swing.JFrame {
     // End of variables declaration//GEN-END:variables
 
     private void setMatrixWidgets(PNode node) {
-        WorldMatrix.setName("World Matrix");
-        LocalMatrix.setName("Local Matrix");
-        LocalModifierMatrix.setName("Local Modifier Matrix");
         
         if (node instanceof PJoint) {
 
@@ -99,9 +102,6 @@ public class JFrame_MatrixExplorer extends javax.swing.JFrame {
             m_LocalMatrix           = node.getTransform().getLocalMatrix(true);
             m_LocalModifierMatrix   = jointNode.getLocalModifierMatrix();
 
-//            WorldMatrix = new PMatrixWidget(m_WorldMatrix, "World Matrix");
-//            LocalMatrix = new PMatrixWidget(m_LocalMatrix, "Local Matrix");
-//            LocalModifierMatrix = new PMatrixWidget(m_LocalModifierMatrix, "Local Modifier Matrix");
             WorldMatrix.setTargetMatrix(m_WorldMatrix);
             LocalMatrix.setTargetMatrix(m_LocalMatrix);
             LocalModifierMatrix.setTargetMatrix(m_LocalModifierMatrix);
@@ -116,8 +116,6 @@ public class JFrame_MatrixExplorer extends javax.swing.JFrame {
             m_LocalMatrix                   = node.getTransform().getLocalMatrix(true);
             m_LocalModifierMatrix           = null;
 
-//            WorldMatrix = new PMatrixWidget(m_WorldMatrix, "World Matrix");
-//            LocalMatrix = new PMatrixWidget(m_LocalMatrix, "Local Matrix");
             WorldMatrix.setTargetMatrix(m_WorldMatrix);
             LocalMatrix.setTargetMatrix(m_LocalMatrix);
 
@@ -131,8 +129,6 @@ public class JFrame_MatrixExplorer extends javax.swing.JFrame {
             m_LocalMatrix           = node.getTransform().getLocalMatrix(true);
             m_LocalModifierMatrix   = null;
 
-//            WorldMatrix = new PMatrixWidget(m_WorldMatrix, "World Matrix");
-//            LocalMatrix = new PMatrixWidget(m_LocalMatrix, "Local Matrix");
             WorldMatrix.setTargetMatrix(m_WorldMatrix);
             LocalMatrix.setTargetMatrix(m_LocalMatrix);
 
