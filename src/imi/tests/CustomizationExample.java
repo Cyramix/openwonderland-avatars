@@ -20,20 +20,20 @@ package imi.tests;
 
 import com.jme.math.Vector3f;
 import imi.character.avatar.Avatar;
+import imi.character.avatar.FemaleAvatarAttributes;
 import imi.character.avatar.MaleAvatarAttributes;
+import imi.character.ninja.NinjaFemaleAvatarAttributes;
 import imi.gui.SceneEssentials;
 import imi.gui.TreeExplorer;
-import imi.scene.camera.state.FirstPersonCamState;
+import imi.scene.PMatrix;
 import org.jdesktop.mtgame.WorldManager;
 import imi.scene.processors.JSceneEventProcessor;
 import imi.utils.input.AvatarControlScheme;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 
 
 /**
- * This test demonstrates how to instantiate an avatar and provide customization
+ * This test demonstrates how to instantiate an maleAvatar and provide customization
  * through a CharacterAttributes object.
  * @see DemoBase For information about the freebies that class provides
  * @author Lou Hayt
@@ -57,10 +57,17 @@ public class CustomizationExample extends DemoBase
      */
     public static void main(String[] args)
     {
+        // Give ourselves a nice environment
+        String[] ourArgs = new String[] { "-env:assets/models/collada/Environments/Garden/Garden.dae" };
         // Construction does all the work
-        CustomizationExample worldTest = new CustomizationExample(args);
+        CustomizationExample test = new CustomizationExample(ourArgs);
     }
 
+    /**
+     * This is the overrride point at which the framework has already been set up.
+     * Entities can be created and added to the provided world manager at this point.
+     * @param wm
+     */
     @Override
     protected void createDemoEntities(WorldManager wm) 
     {
@@ -69,29 +76,39 @@ public class CustomizationExample extends DemoBase
         // Set the input scheme that we intend to use
         AvatarControlScheme control = (AvatarControlScheme)eventProcessor.setDefault(new AvatarControlScheme(null));
 
-        // Create an attributes object describing the avatar
-        MaleAvatarAttributes attribs = new MaleAvatarAttributes("WeirdGuy", true);
-//        avatarFemaleAvatarAttributes attribs = new avatarFemaleAvatarAttributes("WeirdChick", 0, 1, 1, 1, 1);
-        Avatar avatar = new Avatar(attribs, wm);
-        
-        avatar.selectForInput();
-        control.getavatarTeam().add(avatar);
+        // Create an attributes object describing the maleAvatar
+        // We will use random customizations for this one
+        MaleAvatarAttributes maleAttributes = new MaleAvatarAttributes("RobertTheTestGuy", true);
+        // Put him over to the left a bit
+        maleAttributes.setOrigin(new PMatrix(new Vector3f(1, 0, 1)));
+        Avatar maleAvatar = new Avatar(maleAttributes, wm);
+        // Now let's make a female using a specific configuration
+        FemaleAvatarAttributes femaleAttributes = 
+                new FemaleAvatarAttributes("LizTheTestGal",
+                                                 0, // Feet
+                                                 1, // Legs
+                                                 1, // Torso
+                                                 1, // Hair
+                                                 1, // Head
+                                                 3); // Skin
+        // Put her over to the right a bit
+        femaleAttributes.setOrigin(new PMatrix(new Vector3f(-1, 0, 1)));
+        Avatar femaleAvatar = new Avatar(femaleAttributes, wm);
 
-        // Get the mouse evets so the verlet arm can be controlled
+        // Select the male and add them both to the input team (collection of controllable avatars)
+        maleAvatar.selectForInput();
+        control.getAvatarTeam().add(maleAvatar);
+        control.getAvatarTeam().add(femaleAvatar);
+
+        // Hook the control scheme up the the camera in order to receieve input
+        // events. We need this in order to control the Verlet arm ('Q' and 'E' to engage)
         control.getMouseEventsFromCamera();
- 
-        // change camera speed
-        FirstPersonCamState camState = (FirstPersonCamState)m_cameraProcessor.getState();
-        camState.setMovementRate(0.03f);
-        camState.setCameraPosition(new Vector3f(0.0f, 1.8f, -2.0f));
 
-        // give me a tree explorer!
+        // Construct a tree explorer for analyzing the scene graph
         TreeExplorer te = new TreeExplorer();
         SceneEssentials se = new SceneEssentials();
-        se.setSceneData(avatar.getJScene(), avatar.getPScene(), avatar, wm, null);
+        se.setSceneData(maleAvatar.getJScene(), maleAvatar.getPScene(), maleAvatar, wm, null);
         te.setExplorer(se);
         te.setVisible(true);
     }
-
-    
 }

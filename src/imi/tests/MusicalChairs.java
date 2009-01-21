@@ -81,7 +81,7 @@ public class MusicalChairs extends DemoBase
         // Create avatar
         Avatar avatar = new Avatar(new MaleAvatarAttributes("Avatar", true), wm);
         avatar.selectForInput();
-        control.getavatarTeam().add(avatar);
+        control.getAvatarTeam().add(avatar);
         avatar.setObjectCollection(objects);
 
         // Make some more avatars
@@ -94,17 +94,17 @@ public class MusicalChairs extends DemoBase
         
 //        avatarAvatar bigBaby = new avatarAvatar("Big Baby", wm);
 //        bigBaby.getModelInst().getTransform().getLocalMatrix(true).setTranslation(Vector3f.UNIT_Z.mult(-5.0f));
-//        control.getavatarTeam().add(bigBaby);
+//        control.getAvatarTeam().add(bigBaby);
 //        bigBaby.setObjectCollection(objects);
         
 //        avatar shadowBlade = new avatar("Shadow Blade", new PMatrix().setTranslation(Vector3f.UNIT_X.mult(5.0f)), 0.22f, wm);
 //        //shadowBlade.selectForInput();
-//        control.getavatarTeam().add(shadowBlade);
+//        control.getAvatarTeam().add(shadowBlade);
 //        shadowBlade.setObjectCollection(objects);
 
 //        Adam adam = new Adam("Adam", wm);
 //        adam.getModelInst().getTransform().getLocalMatrix(true).setTranslation(Vector3f.UNIT_X.mult(-5.0f));
-//        control.getavatarTeam().add(adam);
+//        control.getAvatarTeam().add(adam);
 //        adam.setObjectCollection(objects);
     }
 
@@ -112,7 +112,7 @@ public class MusicalChairs extends DemoBase
     {   
         Avatar avatar = new Avatar(new MaleAvatarAttributes("Avatar Clone " + xOffset+yOffset+zOffset, true), wm);
         avatar.getModelInst().getTransform().getLocalMatrix(true).setTranslation(new Vector3f(xOffset, yOffset, zOffset));
-        control.getavatarTeam().add(avatar);
+        control.getAvatarTeam().add(avatar);
         avatar.setObjectCollection(objects);
     }
     

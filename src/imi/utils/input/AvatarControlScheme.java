@@ -313,7 +313,7 @@ public class AvatarControlScheme extends InputScheme
         }
     }
 
-    public ArrayList<Avatar> getavatarTeam() {
+    public ArrayList<Avatar> getAvatarTeam() {
         return avatarTeam;
     }
     

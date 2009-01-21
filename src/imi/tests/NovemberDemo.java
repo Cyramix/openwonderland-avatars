@@ -171,7 +171,7 @@ public class NovemberDemo extends DemoBase
         Avatar avatar = new Avatar(new MaleAvatarAttributes("Avatar", true), wm);
         avatar.getModelInst().getTransform().getLocalMatrix(true).setTranslation(lobbyCenter.getPosition());
         avatar.selectForInput();
-        control.getavatarTeam().add(avatar);
+        control.getAvatarTeam().add(avatar);
         avatar.setObjectCollection(objects);
 
         // Get the mouse evets so the verlet arm can be controlled
@@ -194,7 +194,7 @@ public class NovemberDemo extends DemoBase
     {
         Avatar avatar = new Avatar(new MaleAvatarAttributes("Avatar Clone " + xOffset+yOffset+zOffset, true), wm);
         avatar.getModelInst().getTransform().getLocalMatrix(true).setTranslation(new Vector3f(xOffset, yOffset, zOffset).add(origin));
-        control.getavatarTeam().add(avatar);
+        control.getAvatarTeam().add(avatar);
         avatar.setObjectCollection(objects);
     }
 

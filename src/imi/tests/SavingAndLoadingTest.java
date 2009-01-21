@@ -75,7 +75,7 @@ public class SavingAndLoadingTest extends DemoBase
         Avatar testCharacter = null;
         testCharacter = new Avatar(new MaleAvatarAttributes("SavingAndLoadingTestCharacter", true), wm);
         testCharacter.selectForInput();
-        control.getavatarTeam().add(testCharacter);
+        control.getAvatarTeam().add(testCharacter);
         control.getMouseEventsFromCamera();
 
         // change camera speed and position

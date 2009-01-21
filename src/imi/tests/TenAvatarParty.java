@@ -100,7 +100,7 @@ public class TenAvatarParty extends DemoBase
                                         displacements[i].x,
                                         0,
                                         displacements[i].y));
-                control.getavatarTeam().add(testCharacter);
+                control.getAvatarTeam().add(testCharacter);
                 control.getMouseEventsFromCamera();
             }
         }

@@ -71,7 +71,7 @@ public class COLLADA_OfficeTest extends DemoBase
         Avatar ColladaOne = new Avatar(new MaleAvatarAttributes("ColladaOne", true), wm);
         ColladaOne.setObjectCollection(objs);
         ColladaOne.selectForInput();
-        control.getavatarTeam().add(ColladaOne);
+        control.getAvatarTeam().add(ColladaOne);
     }
     
     

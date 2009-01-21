@@ -93,7 +93,7 @@ public class Cahua extends DemoBase
         avatar.setBigHeadMode(2.0f);
         avatar.makeFist(false, true);
         avatar.makeFist(false, false);
-        control.getavatarTeam().add(avatar);
+        control.getAvatarTeam().add(avatar);
 
         // Get the mouse evets so the verlet arm can be controlled
         control.getMouseEventsFromCamera();

@@ -108,34 +108,41 @@ import org.jdesktop.mtgame.RenderBuffer;
  */
 public class DemoBase 
 {
-    /** Logger ref **/
+    /** Logger reference **/
     protected final static Logger logger = Logger.getLogger(DemoBase.class.getName());
 
+    /** Convenience references for derived classes **/
+    /** The WorldManager, only one may exist at a time **/
     protected WorldManager  worldManager    = null;
+    /** Asset repository **/
     protected Repository    repository      = null;
+    /** The jMonkey Engine camera node we use in demos **/
     protected CameraNode    cameraNode      = null;
-    
+
+    /** View port options **/
     private int          desiredFrameRate   = 60;
     private int          width              = 800;
     private int          height             = 600;
     private float        aspect             = 800.0f/600.0f;
-    
-    private String[]    m_args = null; // Cache command line options for derived classes usage
-
-    private Entity m_jsceneEntity = null; // Maintained for lighting operations
-    
+    /** Caches command line parameters for subclass usage **/
+    private String[]    args = null;
+    /** Entity used to create default lighting in case subclasses do not take care of it **/
+    private Entity m_jsceneEntity = null;
+    /** The camera processor **/
     protected FlexibleCameraProcessor m_cameraProcessor = null;
-
     /** Used to indicate which environment should be loaded **/
     private String pathToEnv = null;
     
-    
-    public DemoBase(String[] args) 
+    /**
+     * Construct a brand new instance!
+     * @param args
+     */
+    protected DemoBase(String[] args)
     {
         logger.info("Current Directory: " + System.getProperty("user.dir"));
-        m_args = args;
+        this.args = args;
         worldManager = new WorldManager("DemoWorld");
-        
+        // Handle any arguments passed in
         processArgs(args);
         worldManager.getRenderManager().setDesiredFrameRate(desiredFrameRate);
         
@@ -741,6 +748,7 @@ public class DemoBase
         assignCameraType(wm);
         wm.addUserData(FlexibleCameraProcessor.class, m_cameraProcessor);
         wm.addUserData(CameraState.class, m_cameraProcessor.getState());
+
         m_cameraProcessor.setRunInRenderer(true);
         
          
@@ -760,6 +768,7 @@ public class DemoBase
     protected void assignCameraType(WorldManager wm)
     {
         FirstPersonCamState state = new FirstPersonCamState();
+        state.setCameraPosition(new Vector3f(0, 2.2f, -2));
         FirstPersonCamModel model = new FirstPersonCamModel();
         m_cameraProcessor.setCameraBehavior(model, state);        
     }

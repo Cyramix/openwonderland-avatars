@@ -106,7 +106,7 @@ public class DarkstarClientTest extends DemoBase
         
         // Select the avatar for input and set the object collection
         avatar.selectForInput();
-        control.getavatarTeam().add(avatar);
+        control.getAvatarTeam().add(avatar);
         avatar.setObjectCollection(objects);
         
         // Get the mouse events to be able to control the arm 

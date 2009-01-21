@@ -96,7 +96,7 @@ public class VerletArmTest  extends DemoBase
                 
         // Select the avatar for input and set the object collection
         avatar.selectForInput();
-        control.getavatarTeam().add(avatar);
+        control.getAvatarTeam().add(avatar);
         avatar.setObjectCollection(objects);
         
         // Get the mouse events to be able to control the arm 
@@ -115,7 +115,7 @@ public class VerletArmTest  extends DemoBase
     {   
         Avatar avatar = new Avatar(new MaleAvatarAttributes("Avatar Clone " + xOffset+yOffset+zOffset, true), wm);
         avatar.getModelInst().getTransform().getLocalMatrix(true).setTranslation(new Vector3f(xOffset, yOffset, zOffset));
-        control.getavatarTeam().add(avatar);
+        control.getAvatarTeam().add(avatar);
         avatar.setObjectCollection(objects);
     }
     

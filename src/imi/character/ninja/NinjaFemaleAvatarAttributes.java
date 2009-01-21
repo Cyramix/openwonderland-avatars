@@ -15,7 +15,7 @@
  * exception as provided by Sun in the License file that accompanied 
  * this code.
  */
-package imi.character.avatar;
+package imi.character.ninja;
 
 import com.jme.math.Vector3f;
 import com.jme.renderer.ColorRGBA;
@@ -25,16 +25,16 @@ import imi.scene.PMatrix;
 import java.util.ArrayList;
 
 /**
- * This class represents concrete attribute settings for the avatarAvatar. It is
+ * This class represents concrete attribute settings for the NinjaAvatar. It is
  * basically a well-defined CharacterAttributes starting point for using the
  * primary avatar geometry and animations.
  * @author Lou Hayt
  */
-public class FemaleAvatarAttributes extends CharacterAttributes
+public class NinjaFemaleAvatarAttributes extends CharacterAttributes
 {
     public String[] m_regions = new String[] { "Head", "Hands", "UpperBody", "LowerBody", "Feet", "Hair", "FacialHair", "Hats", "Glasses", "Jackets" };
 
-    /** Collection of skin tone shades**/
+    /** Collection of available default skin-tones **/
     private final ColorRGBA[] skinTones = new ColorRGBA[]
     {
         new ColorRGBA(221.0f / 255.0f,  183.0f / 255.0f, 166.0f / 255.0f, 1),
@@ -44,26 +44,26 @@ public class FemaleAvatarAttributes extends CharacterAttributes
     };
     private boolean loadedBind = false;
     
-    public FemaleAvatarAttributes(String name, boolean bRandomCustomizations) 
+    public NinjaFemaleAvatarAttributes(String name, boolean bRandomCustomizations) 
     {
         super(name);
         setGender(2);
         loadDefaultBind();
-
+        
         int feet  = -1;//(int) (Math.random() * 10000 % 0);
         int legs  = (int) (Math.random() * 10000 % 3);  // 1 and 2 problems
         int torso = (int) (Math.random() * 10000 % 5);  // 3 and 3 problems
         int hair  = (int) (Math.random() * 10000 % 53); // 8 is missing, test til 16
         int head  = (int) (Math.random() * 10000 % 2);
-        int skin  = (int) (Math.random() * 10000 % 2);
+        int skin = (int) (Math.random() * 1000000 % skinTones.length);
         setSkinTone(skinTones[skin].r, skinTones[skin].g, skinTones[skin].b);
     }
 
-    public FemaleAvatarAttributes(String name, int feet, int legs, int torso, int hair, int head)
+    public NinjaFemaleAvatarAttributes(String name, int feet, int legs, int torso, int hair, int head)
     {
         this(name, feet, legs, torso, hair, head, 0);
     }
-    public FemaleAvatarAttributes(String name, int feet, int legs, int torso, int hair, int head, int skin)
+    public NinjaFemaleAvatarAttributes(String name, int feet, int legs, int torso, int hair, int head, int skinTone)
     {
         super(name);
         setGender(2);
@@ -77,8 +77,7 @@ public class FemaleAvatarAttributes extends CharacterAttributes
         customizeLegsPresets(legs,   load, add, attachments);
         customizeTorsoPresets(torso, load, add, attachments);
         customizeHairPresets(hair,   load, add, attachments);
-        setSkinTone(skinTones[skin].r, skinTones[skin].g, skinTones[skin].b);
-
+        setSkinTone(skinTones[skinTone].r, skinTones[skinTone].g, skinTones[skinTone].b);
         setLoadInstructions(load);
         setAddInstructions(add.toArray(new SkinnedMeshParams[add.size()]));
         setAttachmentsInstructions(attachments.toArray(new AttachmentParams[attachments.size()]));
@@ -171,10 +170,10 @@ public class FemaleAvatarAttributes extends CharacterAttributes
                 attachments.add(new AttachmentParams("M_PonyTail", "Head", oreintation));
             }
             break;
-            case 8:   
+            case 8:   // Missing?
             {
                 load.add(new String("assets/models/collada/Hair/FemaleHairPlaceable.dae"));
-                attachments.add(new AttachmentParams("Short_PT_Center", "Head", oreintation));
+                attachments.add(new AttachmentParams("Long_W_bangs", "Head", oreintation));
             }
             break;
             case 9:
@@ -437,9 +436,8 @@ public class FemaleAvatarAttributes extends CharacterAttributes
             break;
             case 52:
             {
-                // Missing?
                 load.add(new String("assets/models/collada/Hair/FemaleHairPlaceable.dae"));
-                attachments.add(new AttachmentParams("Long_W_bangs", "Head", oreintation));
+                attachments.add(new AttachmentParams("Short_PT_Center", "Head", oreintation));
             }
             break;
         }   
