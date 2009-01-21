@@ -56,7 +56,7 @@ public class WalkState extends GameState
     {   
         // Reverse animation if moving backwards
         SkeletonNode skeleton = context.getSkeleton();
-        if (skeleton != null)   // Ninja's skeleton might be null untill loaded
+        if (skeleton != null)   // avatar's skeleton might be null untill loaded
         {        
             CharacterController controller = context.getController();
 
@@ -103,7 +103,7 @@ public class WalkState extends GameState
         
         // Set animation state
         SkeletonNode skeleton = context.getSkeleton();
-        if (skeleton != null)   // Ninja's skeleton might be null until loaded
+        if (skeleton != null)   // avatar's skeleton might be null until loaded
         {        
             // Reverse animation if moving backwards
             CharacterController controller = context.getController();
@@ -138,13 +138,13 @@ public class WalkState extends GameState
 //        if (bHack)
 //        {
 //            // Debug
-//            if (ninjaContext != null && ninjaContext.getSkeleton() != null)
+//            if (avatarContext != null && avatarContext.getSkeleton() != null)
 //            {
-//                int cycleIndex = ninjaContext.getSkeleton().getAnimationGroup().findAnimationCycle(animationName);
-//                float startTime = ninjaContext.getSkeleton().getAnimationGroup().getCycle(cycleIndex).getStartTime();
-//                float endTime = ninjaContext.getSkeleton().getAnimationGroup().getCycle(cycleIndex).getEndTime();
-//                ninjaContext.getSkeleton().getAnimationGroup().getCycle(cycleIndex).setEndTime(endTime - magic);
-//                ninjaContext.getSkeleton().getAnimationGroup().getCycle(cycleIndex).setEndTime(startTime - magic);
+//                int cycleIndex = avatarContext.getSkeleton().getAnimationGroup().findAnimationCycle(animationName);
+//                float startTime = avatarContext.getSkeleton().getAnimationGroup().getCycle(cycleIndex).getStartTime();
+//                float endTime = avatarContext.getSkeleton().getAnimationGroup().getCycle(cycleIndex).getEndTime();
+//                avatarContext.getSkeleton().getAnimationGroup().getCycle(cycleIndex).setEndTime(endTime - magic);
+//                avatarContext.getSkeleton().getAnimationGroup().getCycle(cycleIndex).setEndTime(startTime - magic);
 //                
 //                bHack = false;
 //            }
@@ -155,7 +155,7 @@ public class WalkState extends GameState
     protected void stateExit(GameContext owner)
     {
         super.stateExit(owner);
-        // Ninja's skeleton might be null untill loaded
+        // avatar's skeleton might be null untill loaded
         SkeletonNode skeleton = context.getSkeleton();
         if (skeleton != null)   
         {

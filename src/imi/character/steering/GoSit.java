@@ -38,7 +38,7 @@ public class GoSit implements Task
     String  description  = "Go to the nearest Chair and sit on it";
     String  status = "Chilling";
     
-    private AvatarContext ninjaContext = null;
+    private AvatarContext avatarContext = null;
     
     private boolean bDone = false;
     
@@ -70,7 +70,7 @@ public class GoSit implements Task
     
     public GoSit(Chair chair, AvatarContext context) 
     {
-        ninjaContext = context;
+        avatarContext = context;
         
         goal = chair;
         goalPosition.set(chair.getGoalPosition());
@@ -88,7 +88,7 @@ public class GoSit implements Task
         // If the chair is occupied then try finding another or abort mission
         if (goal != null && goal.isOccupied() || bTryAgain)
         {
-            if (!ninjaContext.GoToNearestChair())
+            if (!avatarContext.GoToNearestChair())
                 System.out.println("Chair is Occupied! I give up! Can't find an empty chair in this damn virtual environment!");
             
             bTryAgain = false;
@@ -102,7 +102,7 @@ public class GoSit implements Task
     public void update(float deltaTime) 
     {
         // Update local variables
-        currentCharacterPosition.set(ninjaContext.getController().getPosition());
+        currentCharacterPosition.set(avatarContext.getController().getPosition());
         currentDistanceFromGoal = goalPosition.distance(currentCharacterPosition);
         
         // Detect looping
@@ -118,13 +118,13 @@ public class GoSit implements Task
     {   
         if (currentDistanceFromGoal <= approvedDistanceFromGoal)
         {
-            ninjaContext.triggerReleased(TriggerNames.Move_Forward.ordinal());
+            avatarContext.triggerReleased(TriggerNames.Move_Forward.ordinal());
             return true;
         }
         
         // Walk forwards
-        ninjaContext.triggerPressed(TriggerNames.Move_Forward.ordinal());
-        ninjaContext.triggerReleased(TriggerNames.Move_Back.ordinal());
+        avatarContext.triggerPressed(TriggerNames.Move_Forward.ordinal());
+        avatarContext.triggerReleased(TriggerNames.Move_Back.ordinal());
 
         // Avoid obstacles or Seek the goal
         if (bAvoidObstacles)
@@ -140,7 +140,7 @@ public class GoSit implements Task
             return false;
         
         // We have reached the goal!
-        ninjaContext.resetTriggersAndActions();
+        avatarContext.resetTriggersAndActions();
         bDoneTurning = false;
         return true;
     }
@@ -149,81 +149,81 @@ public class GoSit implements Task
     {
         // Own the chair if no one else does
         if (goal.getOwner() == null)
-            goal.setOwner(ninjaContext.getNinja());
-        else if (goal.getOwner() != ninjaContext.getNinja())
+            goal.setOwner(avatarContext.getavatar());
+        else if (goal.getOwner() != avatarContext.getavatar())
             bTryAgain = true;
         
         // Pull towards the goal
-        PMatrix local = ninjaContext.getController().getTransform().getLocalMatrix(true);
+        PMatrix local = avatarContext.getController().getTransform().getLocalMatrix(true);
         Vector3f pull = goalPosition.subtract(currentCharacterPosition).normalize().mult(currentDistanceFromGoal * deltaTime * pullTime);
         local.setTranslation(local.getTranslation().add(pull)); 
 
         if (!bDoneTurning)
         {
             status = "turning at goal";
-            //ninjaContext.getController().getWindow().setTitle("Turning to goal orientation");
+            //avatarContext.getController().getWindow().setTitle("Turning to goal orientation");
 
             // We have reached the goal, rotate to sitting direction
-            Vector3f rightVec = ninjaContext.getController().getRightVector();
+            Vector3f rightVec = avatarContext.getController().getRightVector();
             float dot = sittingDirection.dot(rightVec);
             
             if (dot > directionSensitivity)
             {
-                ninjaContext.triggerPressed(TriggerNames.Move_Right.ordinal());
-                ninjaContext.triggerReleased(TriggerNames.Move_Left.ordinal());
+                avatarContext.triggerPressed(TriggerNames.Move_Right.ordinal());
+                avatarContext.triggerReleased(TriggerNames.Move_Left.ordinal());
             }
             else if (dot < -directionSensitivity)
             {
-                ninjaContext.triggerPressed(TriggerNames.Move_Left.ordinal());
-                ninjaContext.triggerReleased(TriggerNames.Move_Right.ordinal()); 
+                avatarContext.triggerPressed(TriggerNames.Move_Left.ordinal());
+                avatarContext.triggerReleased(TriggerNames.Move_Right.ordinal()); 
             }
             else 
             {
                 // Check if inside the front half of space
-                Vector3f fwdVec = ninjaContext.getController().getForwardVector();
+                Vector3f fwdVec = avatarContext.getController().getForwardVector();
                 float frontHalfDot = sittingDirection.dot(fwdVec);
                 if (frontHalfDot > 0.0f)
                 {
                     System.out.println("turning around");
-                    if ( !ninjaContext.getTriggerState().isKeyPressed(TriggerNames.Move_Right.ordinal()) && 
-                         !ninjaContext.getTriggerState().isKeyPressed(TriggerNames.Move_Left.ordinal()) )
-                        ninjaContext.triggerPressed(TriggerNames.Move_Right.ordinal());        
+                    if ( !avatarContext.getTriggerState().isKeyPressed(TriggerNames.Move_Right.ordinal()) && 
+                         !avatarContext.getTriggerState().isKeyPressed(TriggerNames.Move_Left.ordinal()) )
+                        avatarContext.triggerPressed(TriggerNames.Move_Right.ordinal());        
                     return;
                 }
                 
-                ninjaContext.getController().getWindow().setTitle("Pulling towards the goal point");
-                ninjaContext.resetTriggersAndActions();
+                avatarContext.getController().getWindow().setTitle("Pulling towards the goal point");
+                avatarContext.resetTriggersAndActions();
                 bDoneTurning = true;
                 status = "Done turning at goal";
             }
         }
-        else if (currentDistanceFromGoal < 0.01f && !ninjaContext.isTransitioning())
+        else if (currentDistanceFromGoal < 0.01f && !avatarContext.isTransitioning())
         {
-            ninjaContext.getController().getWindow().setTitle("Done");
+            avatarContext.getController().getWindow().setTitle("Done");
 
             // Set position
-            PMatrix localMat = ninjaContext.getController().getTransform().getLocalMatrix(true);
+            PMatrix localMat = avatarContext.getController().getTransform().getLocalMatrix(true);
             localMat.setTranslation(goalPosition);
 
             // Positioned properlly!
             bDone = true;
             //enabledState = false;
-            ninjaContext.resetTriggersAndActions();
+            avatarContext.resetTriggersAndActions();
 
             // Initiate SitState
-            SitState sit = (SitState) ninjaContext.getStateMapping().get(SitState.class);
+            SitState sit = (SitState) avatarContext.getStateMapping().get(SitState.class);
             if (sit != null && sit.toSit(null))
-                ninjaContext.setCurrentState(sit);
+                avatarContext.setCurrentState(sit);
         }
     }
     
     private void seekGoal(float deltaTime)
     {
         status = "seeking goal";
-        ninjaContext.getController().getWindow().setTitle("Seeking Goal");
+        avatarContext.getController().getWindow().setTitle("Seeking Goal");
         
         // Steer towards the goal
-        Vector3f rightVec = ninjaContext.getController().getRightVector();
+        Vector3f rightVec = avatarContext.getController().getRightVector();
         Vector3f desiredVelocity = goalPosition.subtract(currentCharacterPosition);
         desiredVelocity.normalizeLocal();
         float dot = desiredVelocity.dot(rightVec);
@@ -231,7 +231,7 @@ public class GoSit implements Task
         {
              System.out.println("dot ~= 0 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
             // Check if inside the front half of space
-            Vector3f fwdVec = ninjaContext.getController().getForwardVector();
+            Vector3f fwdVec = avatarContext.getController().getForwardVector();
             float frontHalfDot = desiredVelocity.dot(fwdVec);
             if (frontHalfDot > 0.0f)
             {
@@ -242,18 +242,18 @@ public class GoSit implements Task
         }
         if (dot > directionSensitivity)
         {
-            ninjaContext.triggerPressed(TriggerNames.Move_Right.ordinal());
-            ninjaContext.triggerReleased(TriggerNames.Move_Left.ordinal());
+            avatarContext.triggerPressed(TriggerNames.Move_Right.ordinal());
+            avatarContext.triggerReleased(TriggerNames.Move_Left.ordinal());
         }
         else if (dot < -directionSensitivity)
         {
-            ninjaContext.triggerPressed(TriggerNames.Move_Left.ordinal());
-            ninjaContext.triggerReleased(TriggerNames.Move_Right.ordinal()); 
+            avatarContext.triggerPressed(TriggerNames.Move_Left.ordinal());
+            avatarContext.triggerReleased(TriggerNames.Move_Right.ordinal()); 
         }
         else
         {
-            ninjaContext.triggerReleased(TriggerNames.Move_Left.ordinal());
-            ninjaContext.triggerReleased(TriggerNames.Move_Right.ordinal()); 
+            avatarContext.triggerReleased(TriggerNames.Move_Left.ordinal());
+            avatarContext.triggerReleased(TriggerNames.Move_Right.ordinal()); 
 
             precisionCounter++;
             if (precisionCounter > 60)
@@ -261,13 +261,13 @@ public class GoSit implements Task
                 precisionCounter = 0;
                 if (dot > Float.MIN_VALUE)
                 {
-                    ninjaContext.triggerPressed(TriggerNames.Move_Right.ordinal());
-                    ninjaContext.triggerReleased(TriggerNames.Move_Left.ordinal());
+                    avatarContext.triggerPressed(TriggerNames.Move_Right.ordinal());
+                    avatarContext.triggerReleased(TriggerNames.Move_Left.ordinal());
                 }
                 else if (dot < -Float.MIN_VALUE)
                 {
-                    ninjaContext.triggerPressed(TriggerNames.Move_Left.ordinal());
-                    ninjaContext.triggerReleased(TriggerNames.Move_Right.ordinal()); 
+                    avatarContext.triggerPressed(TriggerNames.Move_Left.ordinal());
+                    avatarContext.triggerReleased(TriggerNames.Move_Right.ordinal()); 
                 }
             }
         }
@@ -279,24 +279,24 @@ public class GoSit implements Task
         
         // Is there an imminent obstacle?
         SpatialObject obj = null;
-        if (ninjaContext.getNinja().getObjectCollection() != null)
-            obj = ninjaContext.getNinja().getObjectCollection().findNearestChair(ninjaContext.getNinja(), 2.5f, 0.4f, false); // distance should be scaled by velocity... but at the moment the velocity is pretty constant...
+        if (avatarContext.getavatar().getObjectCollection() != null)
+            obj = avatarContext.getavatar().getObjectCollection().findNearestChair(avatarContext.getavatar(), 2.5f, 0.4f, false); // distance should be scaled by velocity... but at the moment the velocity is pretty constant...
         if (obj != null && obj != goal && currentDistanceFromGoal > 2.0f)
         {
             PSphere obstacleBV = obj.getNearestObstacleSphere(currentCharacterPosition);
-            PSphere characterBV = ninjaContext.getNinja().getBoundingSphere();
-            ninjaContext.getNinja().getModelInst().setDebugSphere(obstacleBV, 0);
-            ninjaContext.getNinja().getModelInst().setDebugSphere(characterBV, 1);
+            PSphere characterBV = avatarContext.getavatar().getBoundingSphere();
+            avatarContext.getavatar().getModelInst().setDebugSphere(obstacleBV, 0);
+            avatarContext.getavatar().getModelInst().setDebugSphere(characterBV, 1);
             if (characterBV.isColliding(obstacleBV) && obstacleBV.getCenter().distance(characterBV.getCenter()) < 2.0f)
             {
                 status = "collided with obstacle";
                 // Initiate walk back if colliding
-                Task walk = (Task) new Walk("Walking away from an obstacle", 1.0f, false, ninjaContext);
-                ninjaContext.getSteering().addTaskToTop(walk);
+                Task walk = (Task) new Walk("Walking away from an obstacle", 1.0f, false, avatarContext);
+                avatarContext.getSteering().addTaskToTop(walk);
                 bNeedToAvoid  = true;
-                ninjaContext.resetTriggersAndActions();
+                avatarContext.resetTriggersAndActions();
 
-                Vector3f rightVec = ninjaContext.getController().getRightVector();
+                Vector3f rightVec = avatarContext.getController().getRightVector();
                 Vector3f directionToObstacle = obstacleBV.getCenter().subtract(currentCharacterPosition);
                 directionToObstacle.normalizeLocal();
                 float dot = directionToObstacle.dot(rightVec);
@@ -304,39 +304,39 @@ public class GoSit implements Task
                 // Turn away
                 if (dot > 0.0f)
                 {
-                    ninjaContext.triggerPressed(TriggerNames.Move_Right.ordinal());
-                    ninjaContext.triggerReleased(TriggerNames.Move_Left.ordinal());
+                    avatarContext.triggerPressed(TriggerNames.Move_Right.ordinal());
+                    avatarContext.triggerReleased(TriggerNames.Move_Left.ordinal());
                 }
                 else
                 {
-                    ninjaContext.triggerPressed(TriggerNames.Move_Left.ordinal());
-                    ninjaContext.triggerReleased(TriggerNames.Move_Right.ordinal());
+                    avatarContext.triggerPressed(TriggerNames.Move_Left.ordinal());
+                    avatarContext.triggerReleased(TriggerNames.Move_Right.ordinal());
                 }
             }
             else
             {
                 status = "avoiding obstacle";
                 // Try to prevent a collision with an obstacle
-                Vector3f rightVec = ninjaContext.getController().getRightVector();
+                Vector3f rightVec = avatarContext.getController().getRightVector();
                 Vector3f directionToObstacle = obstacleBV.getCenter().subtract(currentCharacterPosition);
                 directionToObstacle.normalizeLocal();
                 float dot = directionToObstacle.dot(rightVec);
 
                 if (dot > 0.0f)
                 {
-                    ninjaContext.triggerPressed(TriggerNames.Move_Left.ordinal());
-                    ninjaContext.triggerReleased(TriggerNames.Move_Right.ordinal());
+                    avatarContext.triggerPressed(TriggerNames.Move_Left.ordinal());
+                    avatarContext.triggerReleased(TriggerNames.Move_Right.ordinal());
                 }
                 else
                 {
-                    ninjaContext.triggerPressed(TriggerNames.Move_Right.ordinal());
-                    ninjaContext.triggerReleased(TriggerNames.Move_Left.ordinal());
+                    avatarContext.triggerPressed(TriggerNames.Move_Right.ordinal());
+                    avatarContext.triggerReleased(TriggerNames.Move_Left.ordinal());
                 }
 
-                ninjaContext.triggerPressed(TriggerNames.Move_Forward.ordinal());
-                ninjaContext.triggerReleased(TriggerNames.Move_Back.ordinal());
+                avatarContext.triggerPressed(TriggerNames.Move_Forward.ordinal());
+                avatarContext.triggerReleased(TriggerNames.Move_Back.ordinal());
 
-                ninjaContext.getController().getWindow().setTitle("Avoiding");
+                avatarContext.getController().getWindow().setTitle("Avoiding");
                 bNeedToAvoid = true;
             }
         }
@@ -347,7 +347,7 @@ public class GoSit implements Task
     public void resetSamples()
     {
         System.out.println("samples reset");
-        Vector3f characterPosition = ninjaContext.getController().getPosition();
+        Vector3f characterPosition = avatarContext.getController().getPosition();
         
         // Samples
         sampleAvgPos.set(characterPosition);
@@ -379,9 +379,9 @@ public class GoSit implements Task
                     samplePrevStreak = sampleStreak;
                     sampleStreak = 0;
                     // we are not closer to the goal after sampleTimeFrame secounds... let's try to get out of this loop
-                    //Task walk = (Task) new Walk("Walking away from loop", 0.5f, true, ninjaContext);
-                    //ninjaContext.getSteering().addTaskToTop(walk);
-                    ninjaContext.getController().stop();
+                    //Task walk = (Task) new Walk("Walking away from loop", 0.5f, true, avatarContext);
+                    //avatarContext.getSteering().addTaskToTop(walk);
+                    avatarContext.getController().stop();
 
                     System.out.println("sample tick: stop getting away from the target");
                     status = "loop detected";
@@ -394,7 +394,7 @@ public class GoSit implements Task
                 {
                     System.out.println("fishy sample tick: stop the loop");    
                     System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");    
-                    ninjaContext.getController().stop();
+                    avatarContext.getController().stop();
                 }
                 else
                     System.out.println("sample tick: prev streak " + samplePrevStreak + " current streak " + sampleStreak);

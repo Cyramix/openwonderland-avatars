@@ -70,14 +70,14 @@ public class PointSpriteTest extends DemoBase
         particles.particles.setEndMass(0.5f);
         particles.particles.setEndColor(ColorRGBA.lightGray);
 //        world.getJMENode().attachChild(particles.getJMENode());
-        // Create ninja input scheme
-//        NinjaControlScheme control = (NinjaControlScheme)((JSceneEventProcessor)wm.getUserData(JSceneEventProcessor.class)).setDefault(new NinjaControlScheme(null));
+        // Create avatar input scheme
+//        avatarControlScheme control = (avatarControlScheme)((JSceneEventProcessor)wm.getUserData(JSceneEventProcessor.class)).setDefault(new avatarControlScheme(null));
 
         // Create avatar
 //        long startTime = System.nanoTime();
-//        NinjaAvatarAttributes attribs = new NinjaAvatarAttributes("WeirdGuy", 2, 3, 5, 10, 1);
-////        NinjaFemaleAvatarAttributes attribs = new NinjaFemaleAvatarAttributes("WeirdChick", 0, 1, 1, 1, 1);
-//        NinjaAvatar avatar = new NinjaAvatar(attribs, wm);
+//        avatarAvatarAttributes attribs = new avatarAvatarAttributes("WeirdGuy", 2, 3, 5, 10, 1);
+////        avatarFemaleAvatarAttributes attribs = new avatarFemaleAvatarAttributes("WeirdChick", 0, 1, 1, 1, 1);
+//        avatarAvatar avatar = new avatarAvatar(attribs, wm);
 ////        particles.setTargetModel(avatar.getModelInst());
 //        float time = (float)((System.nanoTime() - startTime) / 1000000000.0f);
 //        System.out.println("Constructing the male took: " + time);
@@ -86,7 +86,7 @@ public class PointSpriteTest extends DemoBase
 //        avatar.setBigHeadMode(2.0f);
 //        avatar.makeFist(false, true);
 //        avatar.makeFist(false, false);
-//        control.getNinjaTeam().add(avatar);
+//        control.getavatarTeam().add(avatar);
 //
 //        // Get the mouse evets so the verlet arm can be controlled
 //        control.getMouseEventsFromCamera();

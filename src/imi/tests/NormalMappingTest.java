@@ -64,12 +64,12 @@ public class NormalMappingTest extends DemoBase
         pscene.setUseRepository(true); 
         // Create the beast
         PPolygonModelInstance modelInst = null;
-        SharedAsset ninja = new SharedAsset(
+        SharedAsset avatar = new SharedAsset(
                 ((Repository)wm.getUserData(Repository.class)),
                 new AssetDescriptor(SharedAsset.SharedAssetType.MS3D_SkinnedMesh,
                 "assets/models/ms3d/beast.ms3d"));
         
-        ninja.setInitializer(new AssetInitializer() {
+        avatar.setInitializer(new AssetInitializer() {
 
             public boolean initialize(Object asset)
             {
@@ -102,7 +102,7 @@ public class NormalMappingTest extends DemoBase
         });
         
         
-        modelInst = pscene.addModelInstance(ninja, new PMatrix(new Vector3f(0,0,10)));
+        modelInst = pscene.addModelInstance(avatar, new PMatrix(new Vector3f(0,0,10)));
         
         
         // add an animation processor

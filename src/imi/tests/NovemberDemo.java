@@ -28,7 +28,7 @@ import imi.scene.camera.state.FirstPersonCamState;
 import imi.scene.processors.JSceneEventProcessor;
 import imi.utils.graph.Connection;
 import imi.utils.graph.Connection.ConnectionDirection;
-import imi.utils.input.NinjaControlScheme;
+import imi.utils.input.AvatarControlScheme;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -162,8 +162,8 @@ public class NovemberDemo extends DemoBase
         objects.generateChairs(lobbyCenter.getPosition(), 7.0f, numberOfAvatars);
         objects.generateChairs(yellowRoom.getPosition(), 7.0f, numberOfAvatars);
 
-         // Create ninja input scheme
-        NinjaControlScheme control = (NinjaControlScheme)((JSceneEventProcessor)wm.getUserData(JSceneEventProcessor.class)).setDefault(new NinjaControlScheme(null));
+         // Create avatar input scheme
+        AvatarControlScheme control = (AvatarControlScheme)((JSceneEventProcessor)wm.getUserData(JSceneEventProcessor.class)).setDefault(new AvatarControlScheme(null));
         control.setCommandEntireTeam(false);
         control.setObjectCollection(objects);
 
@@ -171,7 +171,7 @@ public class NovemberDemo extends DemoBase
         Avatar avatar = new Avatar(new MaleAvatarAttributes("Avatar", true), wm);
         avatar.getModelInst().getTransform().getLocalMatrix(true).setTranslation(lobbyCenter.getPosition());
         avatar.selectForInput();
-        control.getNinjaTeam().add(avatar);
+        control.getavatarTeam().add(avatar);
         avatar.setObjectCollection(objects);
 
         // Get the mouse evets so the verlet arm can be controlled
@@ -190,11 +190,11 @@ public class NovemberDemo extends DemoBase
         fpsState.setCameraPosition(Vector3f.UNIT_Y.mult(2.3f));
     }
 
-    private void cloneAvatar(NinjaControlScheme control, ObjectCollection objects, WorldManager wm, float xOffset, float yOffset, float zOffset, Vector3f origin)
+    private void cloneAvatar(AvatarControlScheme control, ObjectCollection objects, WorldManager wm, float xOffset, float yOffset, float zOffset, Vector3f origin)
     {
         Avatar avatar = new Avatar(new MaleAvatarAttributes("Avatar Clone " + xOffset+yOffset+zOffset, true), wm);
         avatar.getModelInst().getTransform().getLocalMatrix(true).setTranslation(new Vector3f(xOffset, yOffset, zOffset).add(origin));
-        control.getNinjaTeam().add(avatar);
+        control.getavatarTeam().add(avatar);
         avatar.setObjectCollection(objects);
     }
 

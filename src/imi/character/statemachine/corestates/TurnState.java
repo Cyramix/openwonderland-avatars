@@ -25,7 +25,7 @@ import imi.character.statemachine.GameState;
 import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
 
 /**
- * This class represents the turning behavior of a NinjaContext owner.
+ * This class represents the turning behavior of a avatarContext owner.
  * @author Lou
  */
 public class TurnState extends GameState
@@ -63,7 +63,7 @@ public class TurnState extends GameState
         if (context.getCharacter().getAttributes().isUseSimpleStaticModel())
             return true;
         
-        // Ninja's skeleton might be null untill loaded
+        // avatar's skeleton might be null untill loaded
         SkeletonNode skeleton = context.getSkeleton();
         if (skeleton == null)   
             return false;
@@ -83,7 +83,7 @@ public class TurnState extends GameState
         
         CharacterController controller = context.getController();
         
-        // Ninja's skeleton might be null untill loaded
+        // avatar's skeleton might be null untill loaded
         SkeletonNode skeleton = context.getSkeleton();
             
         // Turn
@@ -122,7 +122,7 @@ public class TurnState extends GameState
     protected void stateExit(GameContext owner)
     {
         super.stateExit(owner);
-        // Ninja's skeleton might be null untill loaded
+        // avatar's skeleton might be null untill loaded
         SkeletonNode skeleton = context.getSkeleton();
         
         // Make sure the animation is not set to reverse

@@ -25,7 +25,7 @@ import imi.scene.PMatrix;
 import imi.scene.camera.state.FirstPersonCamState;
 import imi.scene.processors.JSceneEventProcessor;
 import imi.utils.CircleUtil;
-import imi.utils.input.NinjaControlScheme;
+import imi.utils.input.AvatarControlScheme;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.logging.Level;
@@ -73,8 +73,8 @@ public class TenAvatarParty extends DemoBase
         CircleUtil circle = new CircleUtil(numberOfAvatars, 4);
         Vector2f[] displacements = circle.calculatePoints();
 
-        // Create ninja input scheme
-        NinjaControlScheme control = (NinjaControlScheme)((JSceneEventProcessor)wm.getUserData(JSceneEventProcessor.class)).setDefault(new NinjaControlScheme(null));
+        // Create avatar input scheme
+        AvatarControlScheme control = (AvatarControlScheme)((JSceneEventProcessor)wm.getUserData(JSceneEventProcessor.class)).setDefault(new AvatarControlScheme(null));
 
         // Create testCharacter
         Avatar testCharacter = null;
@@ -83,7 +83,7 @@ public class TenAvatarParty extends DemoBase
         {
             try {
                 long startTime = System.nanoTime();
-                testCharacter = new Avatar(new MaleAvatarAttributes("Name", true), wm);//new NinjaAvatar(new URL(configFiles[i]), wm);
+                testCharacter = new Avatar(new MaleAvatarAttributes("Name", true), wm);//new avatarAvatar(new URL(configFiles[i]), wm);
                 long stopTime = System.nanoTime();
                 float length = (stopTime - startTime) / 1000000000.0f;
                 totalLoadTime += length;
@@ -100,7 +100,7 @@ public class TenAvatarParty extends DemoBase
                                         displacements[i].x,
                                         0,
                                         displacements[i].y));
-                control.getNinjaTeam().add(testCharacter);
+                control.getavatarTeam().add(testCharacter);
                 control.getMouseEventsFromCamera();
             }
         }

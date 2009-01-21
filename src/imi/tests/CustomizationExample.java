@@ -26,7 +26,7 @@ import imi.gui.TreeExplorer;
 import imi.scene.camera.state.FirstPersonCamState;
 import org.jdesktop.mtgame.WorldManager;
 import imi.scene.processors.JSceneEventProcessor;
-import imi.utils.input.NinjaControlScheme;
+import imi.utils.input.AvatarControlScheme;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -67,15 +67,15 @@ public class CustomizationExample extends DemoBase
         // The event processor provides the linkage between AWT events and input controls
         JSceneEventProcessor eventProcessor = (JSceneEventProcessor) wm.getUserData(JSceneEventProcessor.class);
         // Set the input scheme that we intend to use
-        NinjaControlScheme control = (NinjaControlScheme)eventProcessor.setDefault(new NinjaControlScheme(null));
+        AvatarControlScheme control = (AvatarControlScheme)eventProcessor.setDefault(new AvatarControlScheme(null));
 
         // Create an attributes object describing the avatar
         MaleAvatarAttributes attribs = new MaleAvatarAttributes("WeirdGuy", true);
-//        NinjaFemaleAvatarAttributes attribs = new NinjaFemaleAvatarAttributes("WeirdChick", 0, 1, 1, 1, 1);
+//        avatarFemaleAvatarAttributes attribs = new avatarFemaleAvatarAttributes("WeirdChick", 0, 1, 1, 1, 1);
         Avatar avatar = new Avatar(attribs, wm);
         
         avatar.selectForInput();
-        control.getNinjaTeam().add(avatar);
+        control.getavatarTeam().add(avatar);
 
         // Get the mouse evets so the verlet arm can be controlled
         control.getMouseEventsFromCamera();

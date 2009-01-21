@@ -36,7 +36,7 @@ import org.jdesktop.mtgame.WorldManager;
 
 
 import imi.scene.processors.JSceneEventProcessor;
-import imi.utils.input.NinjaControlScheme;
+import imi.utils.input.AvatarControlScheme;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.logging.Level;
@@ -79,13 +79,13 @@ public class ThirdPersonCameraTest extends DemoBase
     @Override
     protected void createDemoEntities(WorldManager wm)
     {
-        // Create ninja input scheme
-        NinjaControlScheme control = (NinjaControlScheme)((JSceneEventProcessor)wm.getUserData(JSceneEventProcessor.class)).setDefault(new NinjaControlScheme(null));
+        // Create avatar input scheme
+        AvatarControlScheme control = (AvatarControlScheme)((JSceneEventProcessor)wm.getUserData(JSceneEventProcessor.class)).setDefault(new AvatarControlScheme(null));
 
         // Create avatar
         long startTime = System.nanoTime();
         MaleAvatarAttributes attribs = new MaleAvatarAttributes("WeirdGuy", 2, 3, 5, 10, 1);
-//        NinjaFemaleAvatarAttributes attribs = new NinjaFemaleAvatarAttributes("WeirdChick", 0, 1, 1, 1, 1);
+//        avatarFemaleAvatarAttributes attribs = new avatarFemaleAvatarAttributes("WeirdChick", 0, 1, 1, 1, 1);
         Avatar avatar = new Avatar(attribs, wm);
         float time = (float)((System.nanoTime() - startTime) / 1000000000.0f);
         System.out.println("Constructing the male took: " + time);
@@ -93,7 +93,7 @@ public class ThirdPersonCameraTest extends DemoBase
         avatar.selectForInput();
         avatar.setBigHeadMode(2.0f);
         avatar.setBeerBelly(1.17f);
-        control.getNinjaTeam().add(avatar);
+        control.getavatarTeam().add(avatar);
 
         // Get the mouse evets so the verlet arm can be controlled
         control.getMouseEventsFromCamera();

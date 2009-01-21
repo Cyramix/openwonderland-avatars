@@ -29,13 +29,13 @@ import javax.swing.JFrame;
 
 /**
  *  Concrete e.g. of character controller
- *  Controls the ninja according to internal and external actions
+ *  Controls the avatar according to internal and external actions
  * 
  * @author Lou Hayt
  */
 public class AvatarController extends CharacterController
 {
-    private Avatar    ninja               = null;
+    private Avatar    avatar               = null;
     protected boolean  initalized          = false;
     protected PPolygonModelInstance body   = null;
     
@@ -63,17 +63,17 @@ public class AvatarController extends CharacterController
     
     public AvatarController(Avatar master)
     {
-        ninja = master;
+        avatar = master;
         
         // Set the window to have access for the window title
         // used for displaying debugging info
-        setWindow((JFrame) ninja.getWorldManager().getUserData(JFrame.class));
+        setWindow((JFrame) avatar.getWorldManager().getUserData(JFrame.class));
     }
     
     protected void initialize()
     {
-        // Ninja's mesh might be null untill loaded
-        PPolygonModelInstance model = ninja.getModelInst();
+        // avatar's mesh might be null untill loaded
+        PPolygonModelInstance model = avatar.getModelInst();
         if (model != null)
         {
             body       = model;
@@ -308,7 +308,7 @@ public class AvatarController extends CharacterController
     public Vector3f getPosition()
     {
         // Debugging / Diagnostic information
-//        Logger.getLogger(NinjaController.class.getName()).log(Level.INFO,
+//        Logger.getLogger(avatarController.class.getName()).log(Level.INFO,
 //                "Bodyt "+body.getTransform().getWorldMatrix(false));
         
         if (body != null)

@@ -32,13 +32,13 @@ import imi.character.statemachine.corestates.WalkState;
 import imi.utils.input.InputScheme;
 import imi.scene.processors.JSceneEventProcessor;
 import imi.serialization.xml.bindings.xmlCharacter;
-import imi.utils.input.NinjaControlScheme;
+import imi.utils.input.AvatarControlScheme;
 import java.awt.event.KeyEvent;
 import java.net.URL;
 import org.jdesktop.mtgame.WorldManager;
 
 /*
- * Ninja! This class is a concrete Character e.g. 
+ * avatar! This class is a concrete Character e.g. 
  * Things such as input mechanisms and a state machine
  * layout are provided as a starting point.
  * 
@@ -47,7 +47,7 @@ import org.jdesktop.mtgame.WorldManager;
 public class Avatar extends imi.character.Character
 {
     /**
-     * Construct a new Ninja with the provided attributes and world manager.
+     * Construct a new avatar with the provided attributes and world manager.
      * @param attributes
      * @param wm
      */
@@ -56,7 +56,7 @@ public class Avatar extends imi.character.Character
         this(attributes, wm, true);
     }
     /**
-     * Construct a new Ninja with the provided attributes and world manager.
+     * Construct a new avatar with the provided attributes and world manager.
      * @param attributes
      * @param wm
      */
@@ -120,7 +120,7 @@ public class Avatar extends imi.character.Character
     }
             
     /**
-     * This Ninja will be selected for input.
+     * This avatar will be selected for input.
      */
     @Override
     public void selectForInput()
@@ -128,15 +128,15 @@ public class Avatar extends imi.character.Character
         super.selectForInput();
         
         InputScheme scheme = ((JSceneEventProcessor)m_wm.getUserData(JSceneEventProcessor.class)).getInputScheme();
-        if (scheme instanceof NinjaControlScheme)
+        if (scheme instanceof AvatarControlScheme)
         {
-            ((NinjaControlScheme)scheme).setNinja(this);
+            ((AvatarControlScheme)scheme).setavatar(this);
 //            Goal goalPoint = (Goal)m_wm.getUserData(Goal.class);
 //            if (goalPoint != null)
 //            {
-//                ((NinjaContext)m_context).getSteering().setGoalPosition(goalPoint.getTransform().getLocalMatrix(false).getTranslation());
-//                ((NinjaContext)m_context).getSteering().setSittingDirection(goalPoint.getTransform().getLocalMatrix(false).getLocalZ());
-//                ((NinjaContext)m_context).getSteering().setGoal(goalPoint.getGoal());
+//                ((avatarContext)m_context).getSteering().setGoalPosition(goalPoint.getTransform().getLocalMatrix(false).getTranslation());
+//                ((avatarContext)m_context).getSteering().setSittingDirection(goalPoint.getTransform().getLocalMatrix(false).getLocalZ());
+//                ((avatarContext)m_context).getSteering().setGoal(goalPoint.getGoal());
 //            }
 //            
 ////            if (m_wm.getUserData(JFrame.class) != null)

@@ -63,14 +63,14 @@ public class GUITest extends BaseDefault
 //
 //        final PScene fpscene = pscene;
 //
-//        // Create a SharedAsset with the description of the ninja model file
-//        SharedAsset ninja = new SharedAsset(
+//        // Create a SharedAsset with the description of the avatar model file
+//        SharedAsset avatar = new SharedAsset(
 //                ((Repository)wm.getUserData(Repository.class)),
 //                new AssetDescriptor(SharedAsset.SharedAssetType.MS3D_SkinnedMesh,
-//                new File("assets/models/ms3d/ninja.ms3d")));
+//                new File("assets/models/ms3d/avatar.ms3d")));
 //
 //        // Set up an initializer to excecute once the asset is loaded into the scene
-//        ninja.setInitializer(
+//        avatar.setInitializer(
 //                new AssetInitializer()
 //                {
 //                public boolean initialize(Object asset)
@@ -81,10 +81,10 @@ public class GUITest extends BaseDefault
 //                        skeleton.getAnimationState().setCurrentCycle(0);
 //                        skeleton.getAnimationState().setPauseAnimation(false);
 //                        PPolygonSkinnedMeshInstance target = (PPolygonSkinnedMeshInstance)skeleton.findChild("MS3DSkinnedMesh");
-//                        target.setName("NinjaInstance");
+//                        target.setName("avatarInstance");
 //
 //                        // Create a material to use
-//                        PMeshMaterial material =  new PMeshMaterial("ninja material", "assets/textures/checkerboard2.PNG");
+//                        PMeshMaterial material =  new PMeshMaterial("avatar material", "assets/textures/checkerboard2.PNG");
 //
 //                        material.setShader(new VertexDeformer(fpscene.getWorldManager()));
 //
@@ -100,7 +100,7 @@ public class GUITest extends BaseDefault
 //                });
 //
 //        // Add an instance to the scene
-//        PPolygonModelInstance modelInst = pscene.addModelInstance(ninja, new PMatrix(new Vector3f(0.0f, 0.0f, 5.0f)));
+//        PPolygonModelInstance modelInst = pscene.addModelInstance(avatar, new PMatrix(new Vector3f(0.0f, 0.0f, 5.0f)));
 //
 //        // Add animation processor
 //        processors.add(new SkinnedAnimationProcessor(modelInst));

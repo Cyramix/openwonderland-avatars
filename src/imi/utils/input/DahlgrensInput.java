@@ -164,18 +164,18 @@ public class DahlgrensInput extends InputScheme
             // Animation test
             if (ke.getKeyCode() == KeyEvent.VK_K)
             {
-                PPolygonSkinnedMeshInstance ninja = ((PPolygonSkinnedMeshInstance)(m_jscene.getPScene().getInstances().getChild(0).getChild(0)));
+                PPolygonSkinnedMeshInstance avatar = ((PPolygonSkinnedMeshInstance)(m_jscene.getPScene().getInstances().getChild(0).getChild(0)));
                 // BROKEN --- The animation states are now kept at the skeleton node!
-//                if (ninja.getAnimationState().getCurrentCycle() == 0)
-//                    ninja.transitionTo(5);
+//                if (avatar.getAnimationState().getCurrentCycle() == 0)
+//                    avatar.transitionTo(5);
 //                else
-//                    ninja.transitionTo(0);
+//                    avatar.transitionTo(0);
             }
             
             if (ke.getKeyCode() == KeyEvent.VK_3)
             {
-                PPolygonSkinnedMeshInstance ninja = ((PPolygonSkinnedMeshInstance)(m_jscene.getPScene().getInstances().getChild(0).getChild(0)));
-                PNodePropertyPanel jointWidget = null;//new PNodePropertyPanel(ninja.getTransformHierarchy().getChild(0).findChild("Joint11"));
+                PPolygonSkinnedMeshInstance avatar = ((PPolygonSkinnedMeshInstance)(m_jscene.getPScene().getInstances().getChild(0).getChild(0)));
+                PNodePropertyPanel jointWidget = null;//new PNodePropertyPanel(avatar.getTransformHierarchy().getChild(0).findChild("Joint11"));
                 jointWidget.setVisible(true);
                 // make and show a new JFrame
                 JFrame frame = new JFrame();

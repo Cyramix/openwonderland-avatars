@@ -127,8 +127,8 @@ public class DefaultScheme extends InputScheme
                         
             if (ke.getKeyCode() == KeyEvent.VK_3)
             {
-                PPolygonSkinnedMeshInstance ninja = ((PPolygonSkinnedMeshInstance)(m_jscene.getPScene().getInstances().getChild(0).getChild(0)));
-                PNodePropertyPanel jointWidget = null;//new PNodePropertyPanel(ninja.getTransformHierarchy().getChild(0).findChild("Joint11"));
+                PPolygonSkinnedMeshInstance avatar = ((PPolygonSkinnedMeshInstance)(m_jscene.getPScene().getInstances().getChild(0).getChild(0)));
+                PNodePropertyPanel jointWidget = null;//new PNodePropertyPanel(avatar.getTransformHierarchy().getChild(0).findChild("Joint11"));
                 jointWidget.setVisible(true);
                 // make and show a new JFrame
                 JFrame frame = new JFrame();

@@ -64,7 +64,7 @@ public class FlyState extends GameState
      
     private void takeAction(float deltaTime) 
     {
-//        float x = ninjaContext.getActions()[NinjaContext.ActionNames.Movement_X.ordinal()];
+//        float x = avatarContext.getActions()[avatarContext.ActionNames.Movement_X.ordinal()];
         //float y = actions[ActionNames.Movement_Y.ordinal()];
         float y = context.getActions()[AvatarContext.ActionNames.Movement_Y.ordinal()];
 
@@ -92,7 +92,7 @@ public class FlyState extends GameState
         
         // Set animation state
         SkeletonNode skeleton = context.getSkeleton();
-        if (skeleton != null)   // Ninja's skeleton might be null untill loaded
+        if (skeleton != null)   // avatar's skeleton might be null untill loaded
         {        
             // Reverse animation if moving backwards
             CharacterController controller = context.getController();
@@ -127,7 +127,7 @@ public class FlyState extends GameState
     {
         super.stateExit(owner);
         
-        // Ninja's skeleton might be null untill loaded
+        // avatar's skeleton might be null untill loaded
         SkeletonNode skeleton = context.getSkeleton();
         if (skeleton != null)   
         {

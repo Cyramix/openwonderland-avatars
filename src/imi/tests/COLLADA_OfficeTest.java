@@ -25,7 +25,7 @@ import imi.environments.ColladaEnvironment;
 import imi.scene.JScene;
 import imi.scene.PScene;
 import imi.scene.processors.JSceneEventProcessor;
-import imi.utils.input.NinjaControlScheme;
+import imi.utils.input.AvatarControlScheme;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -61,8 +61,8 @@ public class COLLADA_OfficeTest extends DemoBase
         
         ///////////
         
-        // Create ninja input scheme
-        NinjaControlScheme control = (NinjaControlScheme)((JSceneEventProcessor)wm.getUserData(JSceneEventProcessor.class)).setDefault(new NinjaControlScheme(null));
+        // Create avatar input scheme
+        AvatarControlScheme control = (AvatarControlScheme)((JSceneEventProcessor)wm.getUserData(JSceneEventProcessor.class)).setDefault(new AvatarControlScheme(null));
         
         // Create an object collection for the musical chairs game
         ObjectCollection objs = new ObjectCollection("Musical Chairs Game Objects", wm);
@@ -71,7 +71,7 @@ public class COLLADA_OfficeTest extends DemoBase
         Avatar ColladaOne = new Avatar(new MaleAvatarAttributes("ColladaOne", true), wm);
         ColladaOne.setObjectCollection(objs);
         ColladaOne.selectForInput();
-        control.getNinjaTeam().add(ColladaOne);
+        control.getavatarTeam().add(ColladaOne);
     }
     
     

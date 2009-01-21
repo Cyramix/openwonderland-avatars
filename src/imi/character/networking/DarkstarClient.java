@@ -25,7 +25,7 @@ import imi.scene.processors.FlexibleCameraProcessor;
 import imi.scene.processors.JSceneEventProcessor;
 import imi.scene.utils.visualizations.VisuManager;
 import imi.utils.PMathUtils;
-import imi.utils.input.NinjaControlScheme;
+import imi.utils.input.AvatarControlScheme;
 import java.net.PasswordAuthentication;
 import java.util.HashMap;
 import java.util.Random;
@@ -200,7 +200,7 @@ public class DarkstarClient extends JNagClient implements Updatable
         
         performAnimation(7, true, true, 0); // bow
         
-        NinjaControlScheme control = (NinjaControlScheme)((JSceneEventProcessor)worldManager.getUserData(JSceneEventProcessor.class)).getInputScheme();
+        AvatarControlScheme control = (AvatarControlScheme)((JSceneEventProcessor)worldManager.getUserData(JSceneEventProcessor.class)).getInputScheme();
         control.activateMouseMovement();
         character.getContext().getState(IdleState.class).setAnimationName("Male_IdleXL4000");// active idle
         for (UserData user : characterData.values())
@@ -684,7 +684,7 @@ public class DarkstarClient extends JNagClient implements Updatable
 //            user.getModelInst().getTransform().getLocalMatrix(true).set(look);
 //        }
 //        else
-//            steering.addTaskToBottom(new GoLook(pos, dir, (NinjaContext)context));
+//            steering.addTaskToBottom(new GoLook(pos, dir, (avatarContext)context));
     }
     
     private void updateUserArm(VerletArm arm, Vector3f pos) 
@@ -944,7 +944,7 @@ public class DarkstarClient extends JNagClient implements Updatable
             case 39:
                 player = "Gordon";
             case 40:
-                player = "Ninja";
+                player = "avatar";
             case 41:
                 player = "Sir Bob";
             case 42:

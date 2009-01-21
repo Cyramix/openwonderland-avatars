@@ -38,7 +38,7 @@ public class Walk implements Task
     
     private float turnTime = 0.5f;
     
-    private AvatarContext ninjaContext = null;
+    private AvatarContext avatarContext = null;
 
     /**
      * Construct a new instance of the walk task
@@ -52,7 +52,7 @@ public class Walk implements Task
         // Debugging / Diagnostic output
         //Logger.getLogger(Walk.class.getName()).log(Level.INFO, description);
         
-        ninjaContext = context;
+        avatarContext = context;
         this.description = description;
         timeLength = time;
         this.bForward = bForward;
@@ -71,20 +71,20 @@ public class Walk implements Task
         
         if (bForward)
         {
-            ninjaContext.triggerReleased(TriggerNames.Move_Back.ordinal());
-            ninjaContext.triggerPressed(TriggerNames.Move_Forward.ordinal());      
+            avatarContext.triggerReleased(TriggerNames.Move_Back.ordinal());
+            avatarContext.triggerPressed(TriggerNames.Move_Forward.ordinal());      
         }
         else
         {
-            ninjaContext.triggerReleased(TriggerNames.Move_Forward.ordinal());
-            ninjaContext.triggerPressed(TriggerNames.Move_Back.ordinal());   
+            avatarContext.triggerReleased(TriggerNames.Move_Forward.ordinal());
+            avatarContext.triggerPressed(TriggerNames.Move_Back.ordinal());   
         }
 
         // stop turning hack
         if (timeCounter > turnTime)
         {
-            ninjaContext.triggerReleased(TriggerNames.Move_Right.ordinal());
-            ninjaContext.triggerReleased(TriggerNames.Move_Left.ordinal());
+            avatarContext.triggerReleased(TriggerNames.Move_Right.ordinal());
+            avatarContext.triggerReleased(TriggerNames.Move_Left.ordinal());
         }
 
         // stop walking 
@@ -95,7 +95,7 @@ public class Walk implements Task
             return;
         }
 
-        ninjaContext.getController().getWindow().setTitle("Walking Back");
+        avatarContext.getController().getWindow().setTitle("Walking Back");
     }
 
     /**

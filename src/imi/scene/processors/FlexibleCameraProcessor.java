@@ -23,7 +23,7 @@ import imi.scene.camera.behaviors.CameraModel;
 import imi.scene.camera.behaviors.WrongStateTypeException;
 import imi.scene.camera.state.CameraState;
 import imi.tests.SkyBox;
-import imi.utils.input.NinjaControlScheme;
+import imi.utils.input.AvatarControlScheme;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.jdesktop.mtgame.AWTInputComponent;
@@ -53,7 +53,7 @@ public class FlexibleCameraProcessor extends AWTEventProcessorComponent
     private CameraState m_state = null;
     private CameraModel m_model = null;
     
-    private NinjaControlScheme ninjaControl = null;
+    private AvatarControlScheme avatarControl = null;
 
     // Time
     private double oldTime = 0.0;
@@ -78,9 +78,9 @@ public class FlexibleCameraProcessor extends AWTEventProcessorComponent
         m_armingConditions.addCondition(new NewFrameCondition(this));
     }
     
-    public void setControl(NinjaControlScheme control)
+    public void setControl(AvatarControlScheme control)
     {
-        ninjaControl = control;
+        avatarControl = control;
     }
     
     public void setCameraBehavior(CameraModel newModel, CameraState newState)
@@ -122,8 +122,8 @@ public class FlexibleCameraProcessor extends AWTEventProcessorComponent
             {
                 m_model.update(m_state, (float)deltaTime);
                 Object [] events = getEvents();
-                if (ninjaControl != null)
-                    ninjaControl.processMouseEvents(events);
+                if (avatarControl != null)
+                    avatarControl.processMouseEvents(events);
                 m_model.handleInputEvents(m_state, events);
                 m_model.determineTransform(m_state, m_transform);
             } catch (WrongStateTypeException ex)

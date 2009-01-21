@@ -24,7 +24,7 @@ import imi.scene.PMatrix;
 import java.util.ArrayList;
 
 /**
- * This class represents concrete attribute settings for the NinjaAvatar. It is
+ * This class represents concrete attribute settings for the avatarAvatar. It is
  * basically a well-defined CharacterAttributes starting point for using the
  * primary avatar geometry and animations.
  * @author Lou Hayt

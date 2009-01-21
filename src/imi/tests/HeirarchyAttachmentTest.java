@@ -66,9 +66,9 @@ public class HeirarchyAttachmentTest extends DemoBase
     protected void simpleSceneInit(PScene pscene, WorldManager wm, ArrayList<ProcessorComponent> processors)
     {
         final PScene pscenef = pscene;
-        // load a ninja
-        SharedAsset ninjaAsset = new SharedAsset(pscene.getRepository(),
-                                    new AssetDescriptor(SharedAssetType.MS3D_SkinnedMesh, new File("assets/models/ms3d/ninja.ms3d")),
+        // load a avatar
+        SharedAsset avatarAsset = new SharedAsset(pscene.getRepository(),
+                                    new AssetDescriptor(SharedAssetType.MS3D_SkinnedMesh, new File("assets/models/ms3d/avatar.ms3d")),
                                     new AssetInitializer() {
                                         public boolean initialize(Object asset)
                                         {
@@ -80,18 +80,18 @@ public class HeirarchyAttachmentTest extends DemoBase
                                             return true;
                                         }
                                     });
-       PPolygonModelInstance modelInst = pscene.addModelInstance("NinjaModelInstance", ninjaAsset, new PMatrix(new Vector3f(10,10,10)));
+       PPolygonModelInstance modelInst = pscene.addModelInstance("avatarModelInstance", avatarAsset, new PMatrix(new Vector3f(10,10,10)));
        processors.add(new SkinnedAnimationProcessor(modelInst));
     }
     
     private void initializeModel(SkeletonNode skeleton, PScene pscene)
     {
-        // grab the ninja
+        // grab the avatar
         PPolygonSkinnedMeshInstance target = (PPolygonSkinnedMeshInstance)(skeleton).findChild("MS3DSkinnedMesh");
-        target.setName("NinjaMeshInstance");
+        target.setName("avatarMeshInstance");
         // set vert deformer
         // Create a material to use
-        PMeshMaterial material =  new PMeshMaterial("ninja material", "assets/textures/checkerboard2.PNG");
+        PMeshMaterial material =  new PMeshMaterial("avatar material", "assets/textures/checkerboard2.PNG");
         material.setShader(repository.newShader(VertexDeformer.class));
         // Set the material
         target.setMaterial(material);

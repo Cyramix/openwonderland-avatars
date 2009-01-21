@@ -28,7 +28,7 @@ import org.jdesktop.mtgame.WorldManager;
 
 
 import imi.scene.processors.JSceneEventProcessor;
-import imi.utils.input.NinjaControlScheme;
+import imi.utils.input.AvatarControlScheme;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -57,8 +57,8 @@ public class VerletArmTest  extends DemoBase
         // Create one object collection for all to use (for testing)
         ObjectCollection objects = new ObjectCollection("Character Test Objects", wm);
         
-        // Create ninja input scheme
-        NinjaControlScheme control = (NinjaControlScheme)((JSceneEventProcessor)wm.getUserData(JSceneEventProcessor.class)).setDefault(new NinjaControlScheme(null));
+        // Create avatar input scheme
+        AvatarControlScheme control = (AvatarControlScheme)((JSceneEventProcessor)wm.getUserData(JSceneEventProcessor.class)).setDefault(new AvatarControlScheme(null));
         
         // Make a chair and let the control the collection so it can delete it
         //objects.generateChairs(Vector3f.ZERO, 5.0f, 4);
@@ -69,7 +69,7 @@ public class VerletArmTest  extends DemoBase
         camState.setMovementRate(0.03f);
         camState.setCameraPosition(new Vector3f(0.0f, 1.8f, -2.0f));
         
-        boolean male = false;
+        boolean male = true;
         Avatar avatar;
         int feet, legs, torso, hair;
         
@@ -96,7 +96,7 @@ public class VerletArmTest  extends DemoBase
                 
         // Select the avatar for input and set the object collection
         avatar.selectForInput();
-        control.getNinjaTeam().add(avatar);
+        control.getavatarTeam().add(avatar);
         avatar.setObjectCollection(objects);
         
         // Get the mouse events to be able to control the arm 
@@ -111,11 +111,11 @@ public class VerletArmTest  extends DemoBase
         }
     }
 
-    private void cloneAvatar(NinjaControlScheme control, ObjectCollection objects, WorldManager wm, float xOffset, float yOffset, float zOffset) 
+    private void cloneAvatar(AvatarControlScheme control, ObjectCollection objects, WorldManager wm, float xOffset, float yOffset, float zOffset) 
     {   
         Avatar avatar = new Avatar(new MaleAvatarAttributes("Avatar Clone " + xOffset+yOffset+zOffset, true), wm);
         avatar.getModelInst().getTransform().getLocalMatrix(true).setTranslation(new Vector3f(xOffset, yOffset, zOffset));
-        control.getNinjaTeam().add(avatar);
+        control.getavatarTeam().add(avatar);
         avatar.setObjectCollection(objects);
     }
     

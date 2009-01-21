@@ -16,7 +16,7 @@ import imi.scene.camera.state.CameraState;
 import imi.scene.camera.state.FirstPersonCamState;
 import imi.scene.camera.state.ThirdPersonCamState;
 import imi.scene.processors.JSceneEventProcessor;
-import imi.utils.input.NinjaControlScheme;
+import imi.utils.input.AvatarControlScheme;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.jdesktop.mtgame.WorldManager;
@@ -57,8 +57,8 @@ public class DarkstarClientTest extends DemoBase
         // Create one object collection for all to use (for testing)
         ObjectCollection objects = new ObjectCollection("Character Test Objects", wm);
         
-        // Create ninja input scheme
-        NinjaControlScheme control = (NinjaControlScheme)((JSceneEventProcessor)wm.getUserData(JSceneEventProcessor.class)).setDefault(new NinjaControlScheme(null));
+        // Create avatar input scheme
+        AvatarControlScheme control = (AvatarControlScheme)((JSceneEventProcessor)wm.getUserData(JSceneEventProcessor.class)).setDefault(new AvatarControlScheme(null));
         
         // Make a chair and let the control the collection so it can delete it
         //objects.generateChairs(Vector3f.ZERO, 5.0f, 4);
@@ -106,7 +106,7 @@ public class DarkstarClientTest extends DemoBase
         
         // Select the avatar for input and set the object collection
         avatar.selectForInput();
-        control.getNinjaTeam().add(avatar);
+        control.getavatarTeam().add(avatar);
         avatar.setObjectCollection(objects);
         
         // Get the mouse events to be able to control the arm 

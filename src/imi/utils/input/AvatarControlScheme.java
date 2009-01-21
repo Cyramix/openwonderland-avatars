@@ -32,14 +32,14 @@ import java.util.ArrayList;
  *
  * @author Lou Hayt
  */
-public class NinjaControlScheme extends InputScheme
+public class AvatarControlScheme extends InputScheme
 {
     private boolean bSkeletonMode = false;
   
-    private Avatar   ninja = null;
+    private Avatar   avatar = null;
     
-    private int currentNinja = 0;
-    private ArrayList<Avatar> ninjaTeam = new ArrayList<Avatar>();
+    private int currentavatar = 0;
+    private ArrayList<Avatar> avatarTeam = new ArrayList<Avatar>();
     
     private   InputState      inputState     = new InputState();
     
@@ -54,29 +54,29 @@ public class NinjaControlScheme extends InputScheme
     
     
     
-    public NinjaControlScheme(Avatar master)
+    public AvatarControlScheme(Avatar master)
     {
         super();
-        ninja = master;
+        avatar = master;
     }
     
     public void getMouseEventsFromCamera()
     {
         // Get the hacked mouse events that the camera is stealing from us
-        if (ninja != null)
-            ((FlexibleCameraProcessor)ninja.getWorldManager().getUserData(FlexibleCameraProcessor.class)).setControl(this);
+        if (avatar != null)
+            ((FlexibleCameraProcessor)avatar.getWorldManager().getUserData(FlexibleCameraProcessor.class)).setControl(this);
     }
     
     public void processMouseEvents(Object[] events)
     {
-        if (m_jscene == null || ninja == null)
+        if (m_jscene == null || avatar == null)
             return;
         
         for (int i=0; i<events.length; i++) 
         {
             if (events[i] instanceof MouseEvent)
             {
-                if (ninjaTeam.get(currentNinja).getSkeletonManipulator() != null && ninjaTeam.get(currentNinja).getSkeletonManipulator().isArmsEnabled())
+                if (avatarTeam.get(currentavatar).getSkeletonManipulator() != null && avatarTeam.get(currentavatar).getSkeletonManipulator().isArmsEnabled())
                 {
                     Vector3f offset = new Vector3f();
 
@@ -119,15 +119,15 @@ public class NinjaControlScheme extends InputScheme
                         }
                     }
 
-                    VerletArm rightArm = ninjaTeam.get(currentNinja).getRightArm();
-                    VerletArm leftArm  = ninjaTeam.get(currentNinja).getLeftArm();
+                    VerletArm rightArm = avatarTeam.get(currentavatar).getRightArm();
+                    VerletArm leftArm  = avatarTeam.get(currentavatar).getLeftArm();
 
                     if (rightArm != null)
                     {
                         if (me.getID() == MouseEvent.MOUSE_PRESSED && me.getButton() == MouseEvent.BUTTON2)
                         {
-                            ninjaTeam.get(currentNinja).getContext().triggerPressed(TriggerNames.ToggleRightArmManualDriveReachMode.ordinal());
-                            ninjaTeam.get(currentNinja).getContext().triggerReleased(TriggerNames.ToggleRightArmManualDriveReachMode.ordinal());
+                            avatarTeam.get(currentavatar).getContext().triggerPressed(TriggerNames.ToggleRightArmManualDriveReachMode.ordinal());
+                            avatarTeam.get(currentavatar).getContext().triggerReleased(TriggerNames.ToggleRightArmManualDriveReachMode.ordinal());
                         }
 
                         rightArm.addInputOffset(offset);    
@@ -136,8 +136,8 @@ public class NinjaControlScheme extends InputScheme
                     {
                         if (me.getID() == MouseEvent.MOUSE_PRESSED && me.getButton() == MouseEvent.BUTTON2)
                         {
-                            ninjaTeam.get(currentNinja).getContext().triggerPressed(TriggerNames.ToggleLeftArmManualDriveReachMode.ordinal());
-                            ninjaTeam.get(currentNinja).getContext().triggerReleased(TriggerNames.ToggleLeftArmManualDriveReachMode.ordinal());
+                            avatarTeam.get(currentavatar).getContext().triggerPressed(TriggerNames.ToggleLeftArmManualDriveReachMode.ordinal());
+                            avatarTeam.get(currentavatar).getContext().triggerReleased(TriggerNames.ToggleLeftArmManualDriveReachMode.ordinal());
                         }
 
                         leftArm.addInputOffset(offset);       
@@ -155,7 +155,7 @@ public class NinjaControlScheme extends InputScheme
     @Override
     public void processEvents(Object[] events) 
     {
-        if (m_jscene == null || ninja == null)
+        if (m_jscene == null || avatar == null)
             return;
         
         for (int i=0; i<events.length; i++) 
@@ -178,13 +178,13 @@ public class NinjaControlScheme extends InputScheme
             // Affect character actions
             if(bCommandEntireTeam)
             {
-                for (int i = 0; i < ninjaTeam.size(); i++)
+                for (int i = 0; i < avatarTeam.size(); i++)
                 {
-                    ninjaTeam.get(i).keyReleased(ke.getKeyCode());
+                    avatarTeam.get(i).keyReleased(ke.getKeyCode());
                 }
             }
             else
-                ninja.keyReleased(ke.getKeyCode());
+                avatar.keyReleased(ke.getKeyCode());
         }
         
         if (ke.getID() == KeyEvent.KEY_PRESSED) 
@@ -195,47 +195,47 @@ public class NinjaControlScheme extends InputScheme
             // Affect character actions
             if(bCommandEntireTeam)
             {
-                for (int i = 0; i < ninjaTeam.size(); i++)
+                for (int i = 0; i < avatarTeam.size(); i++)
                 {
-                    ninjaTeam.get(i).keyPressed(ke.getKeyCode());
+                    avatarTeam.get(i).keyPressed(ke.getKeyCode());
                 }
             }
             else
-                ninja.keyPressed(ke.getKeyCode());
+                avatar.keyPressed(ke.getKeyCode());
             
             /////////////////////////////////////////////////////////////
             
-            // Next Ninja
+            // Next avatar
             if (ke.getKeyCode() == KeyEvent.VK_PAGE_UP)
             {   
-                if (!ninjaTeam.isEmpty())
+                if (!avatarTeam.isEmpty())
                 {
-                    currentNinja++;
-                    if (currentNinja > ninjaTeam.size()-1)
-                        currentNinja = 0;
-                    else if (currentNinja < 0)
-                        currentNinja = ninjaTeam.size()-1;
+                    currentavatar++;
+                    if (currentavatar > avatarTeam.size()-1)
+                        currentavatar = 0;
+                    else if (currentavatar < 0)
+                        currentavatar = avatarTeam.size()-1;
                     
-                    ninja = ninjaTeam.get(currentNinja);
-                    ninja.selectForInput();
-                    ninja.initiateFacialAnimation("MaleSmile", 0.5f, 3.0f);
+                    avatar = avatarTeam.get(currentavatar);
+                    avatar.selectForInput();
+                    avatar.initiateFacialAnimation("MaleSmile", 0.5f, 3.0f);
                 }
             }
             
-            // Previouse Ninja
+            // Previouse avatar
             if (ke.getKeyCode() == KeyEvent.VK_PAGE_DOWN)
             {
-                if (!ninjaTeam.isEmpty())
+                if (!avatarTeam.isEmpty())
                 {
-                    currentNinja--;
-                    if (currentNinja > ninjaTeam.size()-1)
-                        currentNinja = 0;
-                    else if (currentNinja < 0)
-                        currentNinja = ninjaTeam.size()-1;
+                    currentavatar--;
+                    if (currentavatar > avatarTeam.size()-1)
+                        currentavatar = 0;
+                    else if (currentavatar < 0)
+                        currentavatar = avatarTeam.size()-1;
                     
-                    ninja = ninjaTeam.get(currentNinja);
-                    ninja.selectForInput();
-                    ninja.initiateFacialAnimation("MaleSmile", 0.5f, 3.0f);
+                    avatar = avatarTeam.get(currentavatar);
+                    avatar.selectForInput();
+                    avatar.initiateFacialAnimation("MaleSmile", 0.5f, 3.0f);
                 }
             }
             
@@ -313,13 +313,13 @@ public class NinjaControlScheme extends InputScheme
         }
     }
 
-    public ArrayList<Avatar> getNinjaTeam() {
-        return ninjaTeam;
+    public ArrayList<Avatar> getavatarTeam() {
+        return avatarTeam;
     }
     
-    public void setNinja(Avatar ninjaMaster)
+    public void setavatar(Avatar avatarMaster)
     {
-        ninja = ninjaMaster;
+        avatar = avatarMaster;
     }
 
     public boolean isCommandEntireTeam() {

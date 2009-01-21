@@ -58,22 +58,22 @@ public class InstancingTest extends DemoBase
     @Override
     protected void createDemoEntities(WorldManager wm) 
     {
-        // On my iMac I can run 25 entities with 2x2 ninjas each
+        // On my iMac I can run 25 entities with 2x2 avatars each
         // without a slow down (on XP)
         for(int i = 0; i < 5; i++)
-            createNinjaArmy(wm, i);      
+            createavatarArmy(wm, i);      
     }
     
-    private void initNinjaArmy(PScene pscene, WorldManager wm, ArrayList<ProcessorComponent> processors, int yLevel) 
+    private void initavatarArmy(PScene pscene, WorldManager wm, ArrayList<ProcessorComponent> processors, int yLevel) 
     {
-        // Create a SharedAsset with the description of the ninja model file
-        SharedAsset ninja = new SharedAsset(
+        // Create a SharedAsset with the description of the avatar model file
+        SharedAsset avatar = new SharedAsset(
                 ((Repository)wm.getUserData(Repository.class)),
                 new AssetDescriptor(SharedAsset.SharedAssetType.MS3D_SkinnedMesh,
-                "assets/models/ms3d/ninja.ms3d"));
+                "assets/models/ms3d/avatar.ms3d"));
         final WorldManager fwm = wm;
         // Set up an initializer to excecute once the asset is loaded into the scene
-        ninja.setInitializer(
+        avatar.setInitializer(
                 new AssetInitializer() 
                 {
                 public boolean initialize(Object asset) 
@@ -83,9 +83,9 @@ public class InstancingTest extends DemoBase
                         SkeletonNode skeleton = (SkeletonNode)asset;
                         skeleton.transitionTo("Kick", false);
                         PPolygonSkinnedMeshInstance target = (PPolygonSkinnedMeshInstance)skeleton.findChild("MS3DSkinnedMesh");
-                        target.setName("NinjaInstance");
+                        target.setName("avatarInstance");
                         // Create a material to use
-                        PMeshMaterial material =  new PMeshMaterial("ninja material", "assets/textures/checkerboard2.PNG");
+                        PMeshMaterial material =  new PMeshMaterial("avatar material", "assets/textures/checkerboard2.PNG");
                         
                         material.setShader(repository.newShader(VertexDeformer.class));
                         // make sure we have geometry before setting the material
@@ -106,7 +106,7 @@ public class InstancingTest extends DemoBase
             for (int j = 0; j < 4; j++)
             {
                 // Add an instance to the scene
-                modelInst = pscene.addModelInstance(ninja, new PMatrix(new Vector3f(i * 10.0f, yOffSet * 10.0f, j * 10.0f)));
+                modelInst = pscene.addModelInstance(avatar, new PMatrix(new Vector3f(i * 10.0f, yOffSet * 10.0f, j * 10.0f)));
                 
                 // Add animation processor
                 processors.add(new SkinnedAnimationProcessor(modelInst));
@@ -114,7 +114,7 @@ public class InstancingTest extends DemoBase
         }
     }
     
-    private void createNinjaArmy(WorldManager wm, int yLevel) 
+    private void createavatarArmy(WorldManager wm, int yLevel) 
     {
         // The procedural scene graph
         PScene pscene = new PScene("PScene test", wm);
@@ -123,7 +123,7 @@ public class InstancingTest extends DemoBase
         ArrayList<ProcessorComponent> processors = new ArrayList<ProcessorComponent>();
         
         // Initialize the scene
-        initNinjaArmy(pscene, wm, processors, yLevel);
+        initavatarArmy(pscene, wm, processors, yLevel);
         
         // The glue between JME and pscene
         JScene jscene = new JScene(pscene);

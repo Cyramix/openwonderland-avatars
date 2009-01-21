@@ -64,9 +64,9 @@ import java.util.Hashtable;
  */
 public class AvatarContext extends GameContext
 {
-    private Avatar             ninja       = null;
+    private Avatar             avatar       = null;
     private AvatarController   controller  = null;
-    private AvatarSteeringHelm AI    = new AvatarSteeringHelm("Ninja Steering Helm", this);
+    private AvatarSteeringHelm AI    = new AvatarSteeringHelm("avatar Steering Helm", this);
     private LocationNode      location    = null;
     /** Animations that are using the ActionState to play out (such as wave, cheer etc) **/
     private ArrayList<ActionInfo> genericAnimations = new ArrayList<ActionInfo>();
@@ -123,7 +123,7 @@ public class AvatarContext extends GameContext
     public AvatarContext(Avatar master)
     {
         super(master);
-        ninja = master;
+        avatar = master;
         controller = (AvatarController) instantiateController();
         actions    = new float [ActionNames.values().length];
                 
@@ -195,42 +195,42 @@ public class AvatarContext extends GameContext
         // Toggle manual control over the right arm
         if (trigger == TriggerNames.ToggleRightArm.ordinal() && pressed)
         {
-            ninja.setCameraOnMe();
-            ninja.getRightArm().toggleEnabled();
-            if(!ninja.getRightArm().isEnabled())
-                ninja.getRightArm().getParticles().get(2).position(new Vector3f(0.0f, -10000.0f, 0.0f));
+            avatar.setCameraOnMe();
+            avatar.getRightArm().toggleEnabled();
+            if(!avatar.getRightArm().isEnabled())
+                avatar.getRightArm().getParticles().get(2).position(new Vector3f(0.0f, -10000.0f, 0.0f));
         }
         // Toggle manual control over the left arm
         if (trigger == TriggerNames.ToggleLeftArm.ordinal() && pressed)
         {
-            ninja.setCameraOnMe();
-            ninja.getLeftArm().toggleEnabled();
-            if(!ninja.getLeftArm().isEnabled())
-                ninja.getLeftArm().getParticles().get(2).position(new Vector3f(0.0f, -10000.0f, 0.0f));
+            avatar.setCameraOnMe();
+            avatar.getLeftArm().toggleEnabled();
+            if(!avatar.getLeftArm().isEnabled())
+                avatar.getLeftArm().getParticles().get(2).position(new Vector3f(0.0f, -10000.0f, 0.0f));
         }
         
         // Toggle manual control mode over the left arm
         if (trigger == TriggerNames.ToggleLeftArmManualDriveReachMode.ordinal() && pressed)
         {
-            ninja.getLeftArm().toggleManualDriveReachUp();
+            avatar.getLeftArm().toggleManualDriveReachUp();
         }
         // Toggle manual control mode over the right arm
         if (trigger == TriggerNames.ToggleRightArmManualDriveReachMode.ordinal() && pressed)
         {
-            ninja.getRightArm().toggleManualDriveReachUp();
+            avatar.getRightArm().toggleManualDriveReachUp();
         }
     
         // Point at the nearest chair
         if (trigger == TriggerNames.Point.ordinal() && pressed)
         {
-            if (ninja.getObjectCollection() == null || ninja.getRightArm() == null)
+            if (avatar.getObjectCollection() == null || avatar.getRightArm() == null)
                 return;
             
-            SpatialObject obj = ninja.getObjectCollection().findNearestChair(ninja, 10000.0f, 1.0f, true);
+            SpatialObject obj = avatar.getObjectCollection().findNearestChair(avatar, 10000.0f, 1.0f, true);
             if (obj == null)
                 return;
             
-            ninja.getRightArm().setPointAtLocation(obj.getPosition());
+            avatar.getRightArm().setPointAtLocation(obj.getPosition());
         }
         
         // Find nearest chair and sit on it
@@ -243,15 +243,15 @@ public class AvatarContext extends GameContext
         // GoTo to location - if path is available from the current location
         else if (trigger == TriggerNames.GoTo1.ordinal() && pressed)
         {
-            if (ninja.getUpdateExtension() != null)
+            if (avatar.getUpdateExtension() != null)
             {
-                Vector3f dir = ninja.getPosition().add(0.0f, 1.8f, 0.0f).subtract(Vector3f.ZERO).normalize();
-                ((DarkstarClient)ninja.getUpdateExtension()).pitchBall(Vector3f.ZERO, dir.mult(0.1f));
-             //   ((DarkstarClient)ninja.getUpdateExtension()).pitchBall(controller.getPosition().add(new Vector3f(-5.0f, 1.8f, 0.0f)), new Vector3f(0.1f, 0.0f, 0.0f));
+                Vector3f dir = avatar.getPosition().add(0.0f, 1.8f, 0.0f).subtract(Vector3f.ZERO).normalize();
+                ((DarkstarClient)avatar.getUpdateExtension()).pitchBall(Vector3f.ZERO, dir.mult(0.1f));
+             //   ((DarkstarClient)avatar.getUpdateExtension()).pitchBall(controller.getPosition().add(new Vector3f(-5.0f, 1.8f, 0.0f)), new Vector3f(0.1f, 0.0f, 0.0f));
             }
-           //ninja.getObjectCollection().testLightToggle(); // test
+           //avatar.getObjectCollection().testLightToggle(); // test
            
-           // System.out.println("fix: " + ninja.getPosition());
+           // System.out.println("fix: " + avatar.getPosition());
             
 //            AI.clearTasks();
 //            GoToNearestLocation();
@@ -260,9 +260,9 @@ public class AvatarContext extends GameContext
         }
         else if (trigger == TriggerNames.GoTo2.ordinal() && pressed)
         {
-            if (ninja.getUpdateExtension() != null)
+            if (avatar.getUpdateExtension() != null)
             {
-                ((DarkstarClient)ninja.getUpdateExtension()).getServerProxy().startGame(3);
+                ((DarkstarClient)avatar.getUpdateExtension()).getServerProxy().startGame(3);
             }
             
 //            AI.clearTasks();
@@ -278,28 +278,28 @@ public class AvatarContext extends GameContext
         
         else if (trigger == TriggerNames.Smile.ordinal() && pressed)
         {
-            if (ninja.getFacialAnimationQ() != null)
+            if (avatar.getFacialAnimationQ() != null)
             {
-                if (ninja.getFacialAnimationQ().calculateTotalRemainingTime() < 1.0f)
-                    ninja.initiateFacialAnimation(1, 1.0f, 1.0f);
+                if (avatar.getFacialAnimationQ().calculateTotalRemainingTime() < 1.0f)
+                    avatar.initiateFacialAnimation(1, 1.0f, 1.0f);
             }
         }   
         
         else if (trigger == TriggerNames.Frown.ordinal() && pressed)
         {
-            if (ninja.getFacialAnimationQ() != null)
+            if (avatar.getFacialAnimationQ() != null)
             {
-                if (ninja.getFacialAnimationQ().calculateTotalRemainingTime() < 1.0f)
-                    ninja.initiateFacialAnimation(2, 3.0f, 1.5f);
+                if (avatar.getFacialAnimationQ().calculateTotalRemainingTime() < 1.0f)
+                    avatar.initiateFacialAnimation(2, 3.0f, 1.5f);
             }
         }   
         
         else if (trigger == TriggerNames.Scorn.ordinal() && pressed)
         {
-            if (ninja.getFacialAnimationQ() != null)
+            if (avatar.getFacialAnimationQ() != null)
             {
-                if (ninja.getFacialAnimationQ().calculateTotalRemainingTime() < 1.0f)
-                    ninja.initiateFacialAnimation(3, 3.0f, 1.5f);
+                if (avatar.getFacialAnimationQ().calculateTotalRemainingTime() < 1.0f)
+                    avatar.initiateFacialAnimation(3, 3.0f, 1.5f);
             }
         }   
                 
@@ -372,12 +372,12 @@ public class AvatarContext extends GameContext
         }
     }
     
-    public Avatar getNinja() {
-        return ninja;
+    public Avatar getavatar() {
+        return avatar;
     }
     
-    public void setNinja(Avatar ninja) {
-        this.ninja = ninja;
+    public void setavatar(Avatar avatar) {
+        this.avatar = avatar;
     }
     
     @Override
@@ -387,7 +387,7 @@ public class AvatarContext extends GameContext
 
     @Override
     protected CharacterController instantiateController() {
-        return new AvatarController(ninja);
+        return new AvatarController(avatar);
     }
 
     @Override
@@ -397,10 +397,10 @@ public class AvatarContext extends GameContext
 
     public void GoToNearestLocation() 
     {   
-        if (ninja.getObjectCollection() == null)
+        if (avatar.getObjectCollection() == null)
             return;
         
-        location = ninja.getObjectCollection().findNearestLocation(ninja, 10000.0f, 1.0f, false);
+        location = avatar.getObjectCollection().findNearestLocation(avatar, 10000.0f, 1.0f, false);
         if (location != null)
         {
             AI.addTaskToTop(new GoTo(location, this));
@@ -416,7 +416,7 @@ public class AvatarContext extends GameContext
 //            steering.setReachedGoal(false);
 //
 //            // Update global goal point
-//            Goal goalPoint = (Goal) ninja.getWorldManager().getUserData(Goal.class);
+//            Goal goalPoint = (Goal) avatar.getWorldManager().getUserData(Goal.class);
 //            if (goalPoint != null)
 //            {
 //                goalPoint.setGoal(location);
@@ -434,10 +434,10 @@ public class AvatarContext extends GameContext
         
     public boolean GoToNearestChair()
     {
-        if (ninja.getObjectCollection() == null)
+        if (avatar.getObjectCollection() == null)
             return false;
 
-        SpatialObject obj = ninja.getObjectCollection().findNearestChair(ninja, 10000.0f, 1.0f, true);
+        SpatialObject obj = avatar.getObjectCollection().findNearestChair(avatar, 10000.0f, 1.0f, true);
         if (obj != null && !((Chair)obj).isOccupied())
         {
             //Vector3f pos = ((Chair)obj).getGoalPosition();
@@ -455,7 +455,7 @@ public class AvatarContext extends GameContext
             //steering.setReachedGoal(false);
 
 //            // Update global goal point
-//            Goal goalPoint = (Goal) ninja.getWorldManager().getUserData(Goal.class);
+//            Goal goalPoint = (Goal) avatar.getWorldManager().getUserData(Goal.class);
 //            if (goalPoint != null)
 //            {
 //                goalPoint.setGoal(obj);

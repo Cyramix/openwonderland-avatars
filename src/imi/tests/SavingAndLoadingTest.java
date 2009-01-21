@@ -31,7 +31,7 @@ import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
 import imi.scene.polygonmodel.skinned.PPolygonSkinnedMeshInstance;
 import imi.scene.processors.JSceneEventProcessor;
 import imi.scene.shader.programs.ClothingShaderSpecColor;
-import imi.utils.input.NinjaControlScheme;
+import imi.utils.input.AvatarControlScheme;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.util.logging.Level;
@@ -69,13 +69,13 @@ public class SavingAndLoadingTest extends DemoBase
     @Override
     protected void createDemoEntities(WorldManager wm)
     {
-        // Create ninja input scheme
-        NinjaControlScheme control = (NinjaControlScheme)((JSceneEventProcessor)wm.getUserData(JSceneEventProcessor.class)).setDefault(new NinjaControlScheme(null));
+        // Create avatar input scheme
+        AvatarControlScheme control = (AvatarControlScheme)((JSceneEventProcessor)wm.getUserData(JSceneEventProcessor.class)).setDefault(new AvatarControlScheme(null));
         // Create testCharacter
         Avatar testCharacter = null;
         testCharacter = new Avatar(new MaleAvatarAttributes("SavingAndLoadingTestCharacter", true), wm);
         testCharacter.selectForInput();
-        control.getNinjaTeam().add(testCharacter);
+        control.getavatarTeam().add(testCharacter);
         control.getMouseEventsFromCamera();
 
         // change camera speed and position

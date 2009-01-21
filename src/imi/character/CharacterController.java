@@ -25,7 +25,7 @@ import java.util.HashSet;
 import javax.swing.JFrame;
 
 /**
- * NinjaController contains most concrete code at this point. This class provides
+ * avatarController contains most concrete code at this point. This class provides
  * a base starting point for implementing character controllers.
  * 
  * @author Lou Hayt

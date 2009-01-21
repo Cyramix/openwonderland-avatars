@@ -25,7 +25,7 @@ import imi.character.objects.ObjectCollection;
 import imi.scene.processors.JSceneEventProcessor;
 import imi.utils.graph.Connection;
 import imi.utils.graph.Connection.ConnectionDirection;
-import imi.utils.input.NinjaControlScheme;
+import imi.utils.input.AvatarControlScheme;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.jdesktop.mtgame.WorldManager;
@@ -73,15 +73,15 @@ public class MusicalChairs extends DemoBase
         chairGame3.addConnection(new Connection("lobbyCenter", chairGame3, chairGame2, ConnectionDirection.OneWay));
         chairGame4.addConnection(new Connection("lobbyCenter", chairGame2, chairGame1, ConnectionDirection.OneWay));
      
-        // Create ninja input scheme
-        NinjaControlScheme control = (NinjaControlScheme)((JSceneEventProcessor)wm.getUserData(JSceneEventProcessor.class)).setDefault(new NinjaControlScheme(null));
+        // Create avatar input scheme
+        AvatarControlScheme control = (AvatarControlScheme)((JSceneEventProcessor)wm.getUserData(JSceneEventProcessor.class)).setDefault(new AvatarControlScheme(null));
         control.setCommandEntireTeam(true);
         control.setObjectCollection(objects);
         
         // Create avatar
         Avatar avatar = new Avatar(new MaleAvatarAttributes("Avatar", true), wm);
         avatar.selectForInput();
-        control.getNinjaTeam().add(avatar);
+        control.getavatarTeam().add(avatar);
         avatar.setObjectCollection(objects);
 
         // Make some more avatars
@@ -92,27 +92,27 @@ public class MusicalChairs extends DemoBase
             zStep += 5.0f;
         }
         
-//        NinjaAvatar bigBaby = new NinjaAvatar("Big Baby", wm);
+//        avatarAvatar bigBaby = new avatarAvatar("Big Baby", wm);
 //        bigBaby.getModelInst().getTransform().getLocalMatrix(true).setTranslation(Vector3f.UNIT_Z.mult(-5.0f));
-//        control.getNinjaTeam().add(bigBaby);
+//        control.getavatarTeam().add(bigBaby);
 //        bigBaby.setObjectCollection(objects);
         
-//        Ninja shadowBlade = new Ninja("Shadow Blade", new PMatrix().setTranslation(Vector3f.UNIT_X.mult(5.0f)), 0.22f, wm);
+//        avatar shadowBlade = new avatar("Shadow Blade", new PMatrix().setTranslation(Vector3f.UNIT_X.mult(5.0f)), 0.22f, wm);
 //        //shadowBlade.selectForInput();
-//        control.getNinjaTeam().add(shadowBlade);
+//        control.getavatarTeam().add(shadowBlade);
 //        shadowBlade.setObjectCollection(objects);
 
 //        Adam adam = new Adam("Adam", wm);
 //        adam.getModelInst().getTransform().getLocalMatrix(true).setTranslation(Vector3f.UNIT_X.mult(-5.0f));
-//        control.getNinjaTeam().add(adam);
+//        control.getavatarTeam().add(adam);
 //        adam.setObjectCollection(objects);
     }
 
-    private void cloneAvatar(NinjaControlScheme control, ObjectCollection objects, WorldManager wm, float xOffset, float yOffset, float zOffset) 
+    private void cloneAvatar(AvatarControlScheme control, ObjectCollection objects, WorldManager wm, float xOffset, float yOffset, float zOffset) 
     {   
         Avatar avatar = new Avatar(new MaleAvatarAttributes("Avatar Clone " + xOffset+yOffset+zOffset, true), wm);
         avatar.getModelInst().getTransform().getLocalMatrix(true).setTranslation(new Vector3f(xOffset, yOffset, zOffset));
-        control.getNinjaTeam().add(avatar);
+        control.getavatarTeam().add(avatar);
         avatar.setObjectCollection(objects);
     }
     
