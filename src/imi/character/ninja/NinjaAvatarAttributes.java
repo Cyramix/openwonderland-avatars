@@ -48,9 +48,8 @@ public class NinjaAvatarAttributes extends CharacterAttributes
      * Construct a new attributes instance.
      * @param name The name of the avatar
      * @param bRandomCustomizations If false, avatar starts in the bind pose, if true then random clothing will be applied
-     * @param bForceDressShirt If true, the dress shirt will be applied (overriding randomizations)
      */
-    public NinjaAvatarAttributes(String name, boolean bRandomCustomizations, boolean bForceDressShirt) 
+    public NinjaAvatarAttributes(String name, boolean bRandomCustomizations) 
     {
         // Customizations
         if (bRandomCustomizations)
@@ -68,19 +67,19 @@ public class NinjaAvatarAttributes extends CharacterAttributes
 
             preset = (int) (Math.random() * 1000000 % numberOfHeads);
             customizeHead(preset);
+            
             preset = (int) (Math.random() * 1000000 % numberOfFeet);
             customizeFeetPresets(preset, load, add, attachments);
+
             preset = (int) (Math.random() * 1000000 % numberOfLegs);
             customizeLegsPresets(preset, load, add, attachments);
+
             preset = (int) (Math.random() * 1000000 % skinTones.length);
             setSkinTone(skinTones[preset].r, skinTones[preset].g, skinTones[preset].b);
-            if (bForceDressShirt)
-                customizeTorsoPresets(2, load, add, attachments);
-            else
-            {
-                preset = (int) (Math.random() * 1000000 % numberOfTorso);
-                customizeTorsoPresets(preset, load, add, attachments);
-            }
+  
+            preset = (int) (Math.random() * 1000000 % numberOfTorso);
+            customizeTorsoPresets(preset, load, add, attachments);
+            
             preset = (int) (Math.random() * 1000000 % numberOfHair);
             customizeHairPresets(preset, load, add, attachments);
 
@@ -172,7 +171,7 @@ public class NinjaAvatarAttributes extends CharacterAttributes
 
     private void customizeHairPresets(int preset, ArrayList<String> load, ArrayList<SkinnedMeshParams> add, ArrayList<AttachmentParams> attachments)
     {
-        PMatrix oreintation = new PMatrix(new Vector3f(0.0f,(float) Math.toRadians(180), 0.0f), new Vector3f(1.05f, 1.05f, 1.05f), Vector3f.ZERO);
+        PMatrix oreintation = new PMatrix();//new Vector3f(0.0f,(float) Math.toRadians(180), 0.0f), new Vector3f(1.05f, 1.05f, 1.05f), Vector3f.ZERO);
         switch(preset)
         {
             case 0:

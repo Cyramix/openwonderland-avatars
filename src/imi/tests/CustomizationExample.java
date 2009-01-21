@@ -19,70 +19,60 @@ package imi.tests;
 
 
 import com.jme.math.Vector3f;
-import imi.character.Character;
 import imi.character.ninja.NinjaAvatar;
 import imi.character.ninja.NinjaAvatarAttributes;
-import imi.character.ninja.NinjaFemaleAvatarAttributes;
 import imi.gui.SceneEssentials;
 import imi.gui.TreeExplorer;
-import imi.scene.PMatrix;
-import imi.scene.PNode;
 import imi.scene.camera.state.FirstPersonCamState;
-import imi.scene.polygonmodel.parts.skinned.SkinnedMeshJoint;
 import org.jdesktop.mtgame.WorldManager;
-
-
 import imi.scene.processors.JSceneEventProcessor;
 import imi.utils.input.NinjaControlScheme;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javolution.util.FastList;
 
 
 
 /**
- *
- * 
- * 
- *  VerletArm has its own test now imi.tests.VerletArmTest
- * 
- *  testing loading heads with different bind pose settings
- * 
- * 
+ * This test demonstrates how to instantiate an avatar and provide customization
+ * through a CharacterAttributes object.
+ * @see DemoBase For information about the freebies that class provides
  * @author Lou Hayt
+ * @author Ronald E Dahlgren
  */
-public class COLLADA_CharacterTest extends DemoBase
+public class CustomizationExample extends DemoBase
 {
-    /** Logger ref **/
-    private static final Logger logger = Logger.getLogger(COLLADA_CharacterTest.class.getName());
-
-    public COLLADA_CharacterTest(String[] args)
+    /**
+     * Construct a new instance. This method must be defined to subclass
+     * DemoBase.
+     * @param args Command-line arguments
+     */
+    public CustomizationExample(String[] args)
     {
         super(args);
     }
 
+    /**
+     * Run this file!
+     * @param args
+     */
     public static void main(String[] args)
     {
-        Logger.getLogger("com.jme.renderer").setLevel(Level.OFF);
-        COLLADA_CharacterTest worldTest = new COLLADA_CharacterTest(args);
+        // Construction does all the work
+        CustomizationExample worldTest = new CustomizationExample(args);
     }
 
     @Override
     protected void createDemoEntities(WorldManager wm) 
-    {   
-        // Create ninja input scheme
-        NinjaControlScheme control = (NinjaControlScheme)((JSceneEventProcessor)wm.getUserData(JSceneEventProcessor.class)).setDefault(new NinjaControlScheme(null));
+    {
+        // The event processor provides the linkage between AWT events and input controls
+        JSceneEventProcessor eventProcessor = (JSceneEventProcessor) wm.getUserData(JSceneEventProcessor.class);
+        // Set the input scheme that we intend to use
+        NinjaControlScheme control = (NinjaControlScheme)eventProcessor.setDefault(new NinjaControlScheme(null));
 
-        // Create avatar
-        long startTime = System.nanoTime();
-//        NinjaAvatarAttributes attribs = new NinjaAvatarAttributes("WeirdGuy", 2, 3, 5, 10, 1, 0);
+        // Create an attributes object describing the avatar
         NinjaAvatarAttributes attribs = new NinjaAvatarAttributes("WeirdGuy", true, false);
 //        NinjaFemaleAvatarAttributes attribs = new NinjaFemaleAvatarAttributes("WeirdChick", 0, 1, 1, 1, 1);
         NinjaAvatar avatar = new NinjaAvatar(attribs, wm);
-        float time = (float)((System.nanoTime() - startTime) / 1000000000.0f);
-        System.out.println("Constructing the male took: " + time);
         
         avatar.selectForInput();
         control.getNinjaTeam().add(avatar);

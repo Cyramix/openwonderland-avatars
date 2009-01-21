@@ -137,12 +137,22 @@ public class PJoint extends PNode implements Serializable
     }
 
     /**
-     * Returns a tansform matrix whos origin
+     * Returns a transform matrix whos origin
      * is the location of the mesh.
-     * @return "mesh space" "world matrix" 
+     * @return "mesh space" "world matrix"
      */
     public PMatrix getMeshSpace() {
         return m_meshSpace;
+    }
+
+    /**
+     * Returns a tansform matrix whos origin
+     * is the location of the mesh.
+     * @param mOut Receive the value of the transform
+     * @return "mesh space" "world matrix"
+     */
+    public void getMeshSpace(PMatrix mOut) {
+        mOut.set(m_meshSpace);
     }
 
     /**

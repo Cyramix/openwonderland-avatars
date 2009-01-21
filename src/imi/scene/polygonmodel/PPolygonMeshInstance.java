@@ -18,7 +18,7 @@
 package imi.scene.polygonmodel;
 
 import com.jme.image.Texture;
-import com.jme.math.Quaternion;
+import com.jme.math.Matrix3f;
 import com.jme.math.Vector3f;
 import com.jme.scene.SharedMesh;
 import com.jme.scene.state.GLSLShaderObjectsState;
@@ -85,7 +85,7 @@ public class PPolygonMeshInstance extends PNode implements Serializable
     /** Used in calculations **/
     private final Vector3f m_translationBufferVector = new Vector3f();
     private final Vector3f m_scaleBufferVector = new Vector3f();
-    private final Quaternion m_rotationBufferQuat = new Quaternion();
+    private final Matrix3f m_rotationBuffer = new Matrix3f();
     /**
      * This constructor copies all the data of the other instance and inserts
      * this instance into the scene graph as a child of the provided parent.
@@ -158,7 +158,12 @@ public class PPolygonMeshInstance extends PNode implements Serializable
         return m_instance;
     }
 
-    // called when we faltten the hierarchy on submitTransform in PScene
+    
+    /**
+     * Return the instance with its transform information updated to reflect the
+     * current position.
+     * @return
+     */
     public SharedMesh updateSharedMesh()
     {
         // TODO push shader data
@@ -166,11 +171,12 @@ public class PPolygonMeshInstance extends PNode implements Serializable
         PMatrix world = getTransform().getWorldMatrix(false);
         world.getTranslation(m_translationBufferVector);
         world.getScale(m_scaleBufferVector);
-        world.getRotation(m_rotationBufferQuat);
+        world.getRotation(m_rotationBuffer);
 
-        m_instance.setLocalRotation(m_rotationBufferQuat);
-        m_instance.setLocalTranslation(m_translationBufferVector);
+        m_instance.setLocalRotation(m_rotationBuffer);
         m_instance.setLocalScale(m_scaleBufferVector);
+        m_instance.setLocalTranslation(m_translationBufferVector);
+        
 
         if (m_instance.getTarget().getIndexBuffer() == null)
             return null;

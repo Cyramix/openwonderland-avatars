@@ -26,7 +26,7 @@ import imi.scene.camera.state.ThirdPersonCamState;
 import imi.scene.particles.ParticleCollection;
 import org.jdesktop.mtgame.WorldManager;
 import imi.scene.processors.JSceneEventProcessor;
-import imi.tests.COLLADA_CharacterTest;
+import imi.tests.CustomizationExample;
 import imi.tests.DemoBase;
 import imi.utils.input.NinjaControlScheme;
 import java.util.logging.Level;
@@ -41,7 +41,7 @@ import java.util.logging.Logger;
 public class Cahua extends DemoBase
 {
     /** Logger ref **/
-    private static final Logger logger = Logger.getLogger(COLLADA_CharacterTest.class.getName());
+    private static final Logger logger = Logger.getLogger(CustomizationExample.class.getName());
     // Flag for debugging mode
     private boolean bDebug = false;
 

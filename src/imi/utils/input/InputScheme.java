@@ -20,7 +20,7 @@ package imi.utils.input;
 import imi.scene.JScene;
 
 /**
- *
+ * Abstract base class for input mapping.
  * @author Lou Hayt
  * @author Ronald Dahlgren
  */

@@ -220,6 +220,19 @@ public class PMatrix implements Serializable
         vOut.z = mat[10];
     }
 
+    public void getRotation(Matrix3f mOut)
+    {
+        mOut.m00 = mat[0];
+        mOut.m01 = mat[1];
+        mOut.m02 = mat[2];
+        mOut.m10 = mat[4];
+        mOut.m11 = mat[5];
+        mOut.m12 = mat[6];
+        mOut.m20 = mat[8];
+        mOut.m21 = mat[9];
+        mOut.m22 = mat[10];
+    }
+
     /**
      * Sets this transform to the identity matrix.
      */
@@ -1015,6 +1028,17 @@ public class PMatrix implements Serializable
                                 mat[8], mat[9], mat[10]);
 
         return(quat);
+    }
+
+    /**
+     * Gets the rotational component of this matrix.
+     * @param qOut
+     */
+    public void getRotationJME(Quaternion qOut)
+    {
+        qOut.fromRotationMatrix(mat[0], mat[1], mat[2],
+                                mat[4], mat[5], mat[6],
+                                mat[8], mat[9], mat[10]);
     }
     
     public Vector4f getRow(int nRowIndex)
@@ -3611,8 +3635,7 @@ public class PMatrix implements Serializable
 	float determinant = affineDeterminant();
 
 	if (determinant == 0.0)
-	    throw new UnsupportedOperationException("invertAffine() PMatrix determinant == 0, can not invert matrix");
-        //throw new SingularMatrixException(J3dI18N.getString("Transform3D1"));
+	    throw new UnsupportedOperationException("invertAffine() PMatrix determinant == 0, cannot invert matrix");
 
 	float s = (mat[0]*mat[0] + mat[1]*mat[1] +
 	            mat[2]*mat[2] + mat[3]*mat[3])*
@@ -3669,8 +3692,7 @@ public class PMatrix implements Serializable
 	// Calculate LU decomposition: Is the matrix singular?
 	if (!luDecomposition(tmp, row_perm)) {
 	    // Matrix has no inverse
-	    throw new UnsupportedOperationException("invertAffine() PMatrix determinant == 0, can not invert matrix");
-            //throw new SingularMatrixException(J3dI18N.getString("Transform3D1"));
+	    throw new UnsupportedOperationException("invertAffine() PMatrix determinant == 0, cannot invert matrix");
 	}
 
 	// Perform back substitution on the identity matrix

@@ -52,7 +52,7 @@ import javolution.util.FastList;
 public class ThirdPersonCameraTest extends DemoBase
 {
     /** Logger ref **/
-    private static final Logger logger = Logger.getLogger(COLLADA_CharacterTest.class.getName());
+    private static final Logger logger = Logger.getLogger(CustomizationExample.class.getName());
 
     public ThirdPersonCameraTest(String[] args)
     {

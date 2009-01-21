@@ -670,7 +670,7 @@ public class SkeletonNode extends PNode implements Animated, Serializable
                         SkinnedMeshJoint curJoint = (SkinnedMeshJoint)current;
                         // Multiply chain: ParentMeshSpace * modifiedBindPose * originalInverseBind * AnimatedPose
                         PMatrix meshSpace = curJoint.getMeshSpace();
-                        meshSpace.set(((SkinnedMeshJoint)parent).getMeshSpace());
+                        ((PJoint)parent).getMeshSpace(meshSpace);
                         meshSpace.fastMul(curJoint.getBindPose());
                         meshSpace.fastMul(curJoint.unmodifiedInverseBindPose);
                         meshSpace.fastMul(curJoint.getTransform().getLocalMatrix(false));
@@ -691,7 +691,10 @@ public class SkeletonNode extends PNode implements Animated, Serializable
             {
                 // ensure we have indices
                 if (((PPolygonMeshInstance)current).getGeometry().getGeometry().getMaxIndex() >= 0) // If no indices, don't attach this mesh.
-                    result.add(((PPolygonMeshInstance)current).updateSharedMesh());
+                {
+                    if (current.getRenderStop() == false)
+                        result.add(((PPolygonMeshInstance)current).updateSharedMesh());
+                }
             }
 
             // special case for the skeleton node (see this method... haha)
@@ -710,8 +713,11 @@ public class SkeletonNode extends PNode implements Animated, Serializable
         // then get skinned mesh meshes
         for (PPolygonSkinnedMeshInstance meshInst : getSkinnedMeshInstances())
         {
-            meshInst.getTransform().buildWorldMatrix(this.getTransform().getWorldMatrix(false));
-            result.add(meshInst.updateSharedMesh());
+            if (meshInst.getRenderStop() == false)
+            {
+                meshInst.getTransform().buildWorldMatrix(this.getTransform().getWorldMatrix(false));
+                result.add(meshInst.updateSharedMesh());
+            }
         }
         return result;
     }
