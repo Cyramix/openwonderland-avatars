@@ -65,77 +65,77 @@ public class BuildBinarySkeletons
 
     /** Relative paths to animation files to load onto the skeletons. **/
     private static String[] FemaleAnimationLocations = {
-        "assets/models/collada/Avatars/Female/Female_Anim_AnswerCell.dae",
-        "assets/models/collada/Avatars/Female/Female_Anim_Bow.dae",
-        "assets/models/collada/Avatars/Female/Female_Anim_Cell.dae",
-        "assets/models/collada/Avatars/Female/Female_Anim_Cheer.dae",
-        "assets/models/collada/Avatars/Female/Female_Anim_Clap.dae",
-        "assets/models/collada/Avatars/Female/Female_Anim_FallFromSitting.dae",
-        "assets/models/collada/Avatars/Female/Female_Anim_FloorGetup.dae",
-        "assets/models/collada/Avatars/Female/Female_Anim_FloorSitting.dae",
-        "assets/models/collada/Avatars/Female/Female_Anim_Follow.dae",
-        "assets/models/collada/Avatars/Female/Female_Anim_Idle.dae",
-        "assets/models/collada/Avatars/Female/Female_Anim_Laugh.dae",
-        "assets/models/collada/Avatars/Female/Female_Anim_No.dae",
-        "assets/models/collada/Avatars/Female/Female_Anim_PublicSpeaking.dae",
-        "assets/models/collada/Avatars/Female/Female_Anim_RaiseHand.dae",
-        "assets/models/collada/Avatars/Female/Female_Anim_RaiseHandIdle.dae",
-        "assets/models/collada/Avatars/Female/Female_Anim_Run.dae",
-        "assets/models/collada/Avatars/Female/Female_Anim_Sitting.dae",
-        "assets/models/collada/Avatars/Female/Female_Anim_StandtoSit.dae",
-        "assets/models/collada/Avatars/Female/Female_Anim_Walk.dae",
-        "assets/models/collada/Avatars/Female/Female_Anim_Wave.dae",
-        "assets/models/collada/Avatars/Female/Female_Anim_Yes.dae",
+        "assets/models/collada/Animations/FemaleBodyAnimations/Female_Anim_AnswerCell.dae",
+        "assets/models/collada/Animations/FemaleBodyAnimations/Female_Anim_Bow.dae",
+        "assets/models/collada/Animations/FemaleBodyAnimations/Female_Anim_Cell.dae",
+        "assets/models/collada/Animations/FemaleBodyAnimations/Female_Anim_Cheer.dae",
+        "assets/models/collada/Animations/FemaleBodyAnimations/Female_Anim_Clap.dae",
+        "assets/models/collada/Animations/FemaleBodyAnimations/Female_Anim_FallFromSitting.dae",
+        "assets/models/collada/Animations/FemaleBodyAnimations/Female_Anim_FloorGetup.dae",
+        "assets/models/collada/Animations/FemaleBodyAnimations/Female_Anim_FloorSitting.dae",
+        "assets/models/collada/Animations/FemaleBodyAnimations/Female_Anim_Follow.dae",
+        "assets/models/collada/Animations/FemaleBodyAnimations/Female_Anim_Idle.dae",
+        "assets/models/collada/Animations/FemaleBodyAnimations/Female_Anim_Laugh.dae",
+        "assets/models/collada/Animations/FemaleBodyAnimations/Female_Anim_No.dae",
+        "assets/models/collada/Animations/FemaleBodyAnimations/Female_Anim_PublicSpeaking.dae",
+        "assets/models/collada/Animations/FemaleBodyAnimations/Female_Anim_RaiseHand.dae",
+        "assets/models/collada/Animations/FemaleBodyAnimations/Female_Anim_RaiseHandIdle.dae",
+        "assets/models/collada/Animations/FemaleBodyAnimations/Female_Anim_Run.dae",
+        "assets/models/collada/Animations/FemaleBodyAnimations/Female_Anim_Sitting.dae",
+        "assets/models/collada/Animations/FemaleBodyAnimations/Female_Anim_StandtoSit.dae",
+        "assets/models/collada/Animations/FemaleBodyAnimations/Female_Anim_Walk.dae",
+        "assets/models/collada/Animations/FemaleBodyAnimations/Female_Anim_Wave.dae",
+        "assets/models/collada/Animations/FemaleBodyAnimations/Female_Anim_Yes.dae",
     };
 
     private static String[] FemaleFacialAnimations = {
-        "assets/models/collada/Avatars/FemaleFacialAnimation/FemaleSmile.dae",
-        "assets/models/collada/Avatars/FemaleFacialAnimation/FemaleFrown.dae",
-        "assets/models/collada/Avatars/FemaleFacialAnimation/FemaleScorn.dae",
-        "assets/models/collada/Avatars/FemaleFacialAnimation/FemaleDefault.dae"
+        "assets/models/collada/Animations/FemaleFacialAnimations/FemaleSmile.dae",
+        "assets/models/collada/Animations/FemaleFacialAnimations/FemaleFrown.dae",
+        "assets/models/collada/Animations/FemaleFacialAnimations/FemaleScorn.dae",
+        "assets/models/collada/Animations/FemaleFacialAnimations/FemaleDefault.dae"
     };
 
     private static String[] MaleAnimationLocations = {
-        "assets/models/collada/Avatars/Male/Male_Anim_ActiveIdle.dae",
-        "assets/models/collada/Avatars/Male/Male_Anim_AnswerCell.dae",
-        "assets/models/collada/Avatars/Male/Male_Anim_Bow.dae",
-        "assets/models/collada/Avatars/Male/Male_Anim_Cell.dae",
-        "assets/models/collada/Avatars/Male/Male_Anim_Cheer.dae",
-        "assets/models/collada/Avatars/Male/Male_Anim_Clap.dae",
-        "assets/models/collada/Avatars/Male/Male_Anim_FallFromSitting.dae",
-        "assets/models/collada/Avatars/Male/Male_Anim_FloorGetup.dae",
-        "assets/models/collada/Avatars/Male/Male_Anim_FloorSitting.dae",
-        "assets/models/collada/Avatars/Male/Male_Anim_Follow.dae",
-        "assets/models/collada/Avatars/Male/Male_Anim_Idle.dae",
-        "assets/models/collada/Avatars/Male/Male_Anim_Jump.dae",
-        "assets/models/collada/Avatars/Male/Male_Anim_Laugh.dae",
-        "assets/models/collada/Avatars/Male/Male_Anim_No.dae",
-        "assets/models/collada/Avatars/Male/Male_Anim_PublicSpeaking.dae",
-        "assets/models/collada/Avatars/Male/Male_Anim_Run.dae",
-        "assets/models/collada/Avatars/Male/Male_Anim_ShakeHands.dae",
-        "assets/models/collada/Avatars/Male/Male_Anim_Sitting.dae",
-        "assets/models/collada/Avatars/Male/Male_Anim_StandToSit.dae",
-        "assets/models/collada/Avatars/Male/Male_Anim_TakeDamage.dae",
-        "assets/models/collada/Avatars/Male/Male_Anim_Walk.dae",
-        "assets/models/collada/Avatars/Male/Male_Anim_Wave.dae",
-        "assets/models/collada/Avatars/Male/Male_Anim_Yes.dae",
+        "assets/models/collada/Animations/MaleBodyAnimations/Male_Anim_ActiveIdle.dae",
+        "assets/models/collada/Animations/MaleBodyAnimations/Male_Anim_AnswerCell.dae",
+        "assets/models/collada/Animations/MaleBodyAnimations/Male_Anim_Bow.dae",
+        "assets/models/collada/Animations/MaleBodyAnimations/Male_Anim_Cell.dae",
+        "assets/models/collada/Animations/MaleBodyAnimations/Male_Anim_Cheer.dae",
+        "assets/models/collada/Animations/MaleBodyAnimations/Male_Anim_Clap.dae",
+        "assets/models/collada/Animations/MaleBodyAnimations/Male_Anim_FallFromSitting.dae",
+        "assets/models/collada/Animations/MaleBodyAnimations/Male_Anim_FloorGetup.dae",
+        "assets/models/collada/Animations/MaleBodyAnimations/Male_Anim_FloorSitting.dae",
+        "assets/models/collada/Animations/MaleBodyAnimations/Male_Anim_Follow.dae",
+        "assets/models/collada/Animations/MaleBodyAnimations/Male_Anim_Idle.dae",
+        "assets/models/collada/Animations/MaleBodyAnimations/Male_Anim_Jump.dae",
+        "assets/models/collada/Animations/MaleBodyAnimations/Male_Anim_Laugh.dae",
+        "assets/models/collada/Animations/MaleBodyAnimations/Male_Anim_No.dae",
+        "assets/models/collada/Animations/MaleBodyAnimations/Male_Anim_PublicSpeaking.dae",
+        "assets/models/collada/Animations/MaleBodyAnimations/Male_Anim_Run.dae",
+        "assets/models/collada/Animations/MaleBodyAnimations/Male_Anim_ShakeHands.dae",
+        "assets/models/collada/Animations/MaleBodyAnimations/Male_Anim_Sitting.dae",
+        "assets/models/collada/Animations/MaleBodyAnimations/Male_Anim_StandToSit.dae",
+        "assets/models/collada/Animations/MaleBodyAnimations/Male_Anim_TakeDamage.dae",
+        "assets/models/collada/Animations/MaleBodyAnimations/Male_Anim_Walk.dae",
+        "assets/models/collada/Animations/MaleBodyAnimations/Male_Anim_Wave.dae",
+        "assets/models/collada/Animations/MaleBodyAnimations/Male_Anim_Yes.dae",
     };
 
     private static String[] MaleFacialAnimationLocations = {
-        "assets/models/collada/Avatars/MaleFacialAnimation/MaleSmile.dae",
-        "assets/models/collada/Avatars/MaleFacialAnimation/MaleFrown.dae",
-        "assets/models/collada/Avatars/MaleFacialAnimation/MaleScorn.dae",
-        "assets/models/collada/Avatars/MaleFacialAnimation/MaleDefault.dae",
+        "assets/models/collada/Animations/MaleFacialAnimations/MaleSmile.dae",
+        "assets/models/collada/Animations/MaleFacialAnimations/MaleFrown.dae",
+        "assets/models/collada/Animations/MaleFacialAnimations/MaleScorn.dae",
+        "assets/models/collada/Animations/MaleFacialAnimations/MaleDefault.dae",
         // Plus the phonemes
-        "assets/models/collada/Avatars/MaleFacialAnimation/Phonemes/Male_Pho_AI.dae",
-        "assets/models/collada/Avatars/MaleFacialAnimation/Phonemes/Male_Pho_Cons.dae",
-        "assets/models/collada/Avatars/MaleFacialAnimation/Phonemes/Male_Pho_E.dae",
-        "assets/models/collada/Avatars/MaleFacialAnimation/Phonemes/Male_Pho_FandV.dae",
-        "assets/models/collada/Avatars/MaleFacialAnimation/Phonemes/Male_Pho_L.dae",
-        "assets/models/collada/Avatars/MaleFacialAnimation/Phonemes/Male_Pho_MBP.dae",
-        "assets/models/collada/Avatars/MaleFacialAnimation/Phonemes/Male_Pho_O.dae",
-        "assets/models/collada/Avatars/MaleFacialAnimation/Phonemes/Male_Pho_U.dae",
-        "assets/models/collada/Avatars/MaleFacialAnimation/Phonemes/Male_Pho_WQ.dae",
+        "assets/models/collada/Animations/MaleFacialAnimations/Phonemes/Male_Pho_AI.dae",
+        "assets/models/collada/Animations/MaleFacialAnimations/Phonemes/Male_Pho_Cons.dae",
+        "assets/models/collada/Animations/MaleFacialAnimations/Phonemes/Male_Pho_E.dae",
+        "assets/models/collada/Animations/MaleFacialAnimations/Phonemes/Male_Pho_FandV.dae",
+        "assets/models/collada/Animations/MaleFacialAnimations/Phonemes/Male_Pho_L.dae",
+        "assets/models/collada/Animations/MaleFacialAnimations/Phonemes/Male_Pho_MBP.dae",
+        "assets/models/collada/Animations/MaleFacialAnimations/Phonemes/Male_Pho_O.dae",
+        "assets/models/collada/Animations/MaleFacialAnimations/Phonemes/Male_Pho_U.dae",
+        "assets/models/collada/Animations/MaleFacialAnimations/Phonemes/Male_Pho_WQ.dae",
     };
 
     /** URL preamble **/
@@ -145,8 +145,8 @@ public class BuildBinarySkeletons
     {
         // URL creation
         try {
-            MaleSkeletonLocation = new URL(URLPreamble + "assets/models/collada/Avatars/Male/Male_Bind.dae");
-            FemaleSkeletonLocation = new URL(URLPreamble + "assets/models/collada/Avatars/Female/Female_Bind.dae");
+            MaleSkeletonLocation = new URL(URLPreamble + "assets/models/collada/Avatars/MaleAvatar/Male_Bind.dae");
+            FemaleSkeletonLocation = new URL(URLPreamble + "assets/models/collada/Avatars/FemaleAvatar/Female_Bind.dae");
         }
         catch (MalformedURLException ex)
         {
