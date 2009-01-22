@@ -23,5 +23,69 @@ package imi.scene.animation;
  */
 public class AnimationCursor
 {
-    public int currentIndex = 0;
+    private int[] indices = null;
+    private int[] transitionIndices = null;
+    private int jointIndex = -1;
+    private int transitionJointIndex = -1;
+
+    public AnimationCursor()
+    {
+        indices = new int[70];
+        transitionIndices = new int[70];
+        makeNegativeOne();
+    }
+
+    public AnimationCursor(int size)
+    {
+        indices = new int[size];
+        transitionIndices = new int[size];
+    }
+    
+    public void makeNegativeOne()
+    {
+        for (int i = 0; i < indices.length; ++i)
+        {
+            indices[i] = -1;
+            transitionIndices[i] = -1;
+        }
+    }
+    
+    public void setJointIndex(int joint, int index)
+    {
+        indices[joint] = index;
+    }
+
+    void setJointIndex(int newJointIndex) {
+        jointIndex = newJointIndex;
+        transitionJointIndex =newJointIndex;
+    }
+
+    public int getCurrentJointPosition()
+    {
+        return indices[jointIndex];
+    }
+
+    public void setCurrentJointPosition(int position)
+    {
+        indices[jointIndex] = position;
+    }
+
+    public void setTransitionJointIndex(int joint, int index)
+    {
+        transitionIndices[joint] = index;
+    }
+
+    void setCurrentTransitionJointIndex(int newJointIndex) {
+        transitionJointIndex = newJointIndex;
+    }
+
+    public int getCurrentTransitionJointPosition()
+    {
+        return transitionIndices[transitionJointIndex];
+    }
+
+    public void setCurrentTransitionJointPosition(int position)
+    {
+        transitionIndices[transitionJointIndex] = position;
+    }
 }

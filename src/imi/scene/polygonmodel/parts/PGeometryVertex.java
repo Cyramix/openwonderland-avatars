@@ -106,12 +106,12 @@ public class PGeometryVertex
         // Try for early outs as much as possible
         if (!m_Position.equals(RHS.m_Position))
             return false;
-        if (m_Diffuse.r != RHS.m_Diffuse.r ||
-                m_Diffuse.g != RHS.m_Diffuse.g ||
-                m_Diffuse.b != RHS.m_Diffuse.b ||
-                m_Diffuse.a != RHS.m_Diffuse.a)
-            return false;
         if (!m_Normal.equals(RHS.m_Normal))
+            return false;
+        if (m_Diffuse.r != RHS.m_Diffuse.r ||
+            m_Diffuse.g != RHS.m_Diffuse.g ||
+            m_Diffuse.b != RHS.m_Diffuse.b ||
+            m_Diffuse.a != RHS.m_Diffuse.a)
             return false;
         
         // Do need to compare tex coords!

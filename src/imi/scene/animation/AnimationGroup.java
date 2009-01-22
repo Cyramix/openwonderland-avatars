@@ -116,6 +116,7 @@ public class AnimationGroup implements Serializable
         if (cycleIndex == -1 || m_cycles.isEmpty())
             return;
 
+
         AnimationCycle cycle = m_cycles.get(cycleIndex);
 
         float fTime = clampCycleTime(cycle, state, true);
@@ -140,11 +141,14 @@ public class AnimationGroup implements Serializable
         }
 
         //  Iterate through all the Joint channels and apply the state to the joint.
+        int jointIndex = 0;
         for (PJointChannel jointChannel : m_JointChannels)
         {
             PJoint joint = animated.getJoint(jointChannel.getTargetJointName());
             if (joint == null)
                 System.out.println("Unable to locate joint " + jointChannel.getTargetJointName());
+
+            state.getCursor().setJointIndex(jointIndex);
 
             if (bTransitioning)
             {
@@ -158,6 +162,7 @@ public class AnimationGroup implements Serializable
                     state.setTimeInTransition(0.0f);
                     state.setReverseAnimation(state.isTransitionReverseAnimation());
                     state.sendMessage(AnimationListener.AnimationMessageType.TransitionComplete);
+                    state.getCursor().makeNegativeOne();
                     return;
                 }
                 else
@@ -167,6 +172,7 @@ public class AnimationGroup implements Serializable
             {
                 jointChannel.calculateFrame(joint, state);
             }
+            jointIndex++;
         }
     }
 
@@ -188,6 +194,7 @@ public class AnimationGroup implements Serializable
         // Variables assigned meaningful values based on bClampForCurrentCycle
         boolean bReverse  = false;
         AnimationComponent.PlaybackMode mode = null;
+
         float fTime = 0.0f;
 
         if (bClampForCurrentCycle == true) // Use current currentCycle info
@@ -223,20 +230,20 @@ public class AnimationGroup implements Serializable
                     else
                         state.setTransitionReverseAnimation(!state.isTransitionReverseAnimation());
                 }
-                state.getCursor().currentIndex = -1;
+                state.getCursor().makeNegativeOne();
             }
             else if (fTime > cycle.getEndTime()) // Reverse right edge, clamp to the right
             {
                 fTime = cycle.getEndTime();
-                state.getCursor().currentIndex = -1;
+                state.getCursor().makeNegativeOne();
             }
         }
-        else
+        else // Not in reverse
         {
             if (fTime < cycle.getStartTime()) // Forward, left edge, clamp to the left
             {
                 fTime = cycle.getStartTime();
-                state.getCursor().currentIndex = -1;
+                state.getCursor().makeNegativeOne();
             }
             else if (fTime > cycle.getEndTime()) // Forward, right edge
             {
@@ -256,7 +263,7 @@ public class AnimationGroup implements Serializable
                     else
                         state.setTransitionReverseAnimation(!state.isTransitionReverseAnimation());
                 }
-                state.getCursor().currentIndex = -1;
+                state.getCursor().makeNegativeOne();
             }
         }
 
