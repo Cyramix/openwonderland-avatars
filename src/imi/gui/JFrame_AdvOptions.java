@@ -25,8 +25,10 @@
 package imi.gui;
 
 import com.jme.math.Vector3f;
+import imi.scene.PNode;
 import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
 import imi.scene.polygonmodel.parts.skinned.SkinnedMeshJoint;
+import imi.scene.polygonmodel.skinned.PPolygonSkinnedMeshInstance;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.HashMap;
@@ -55,7 +57,11 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
      */
     public JFrame_AdvOptions() {
         initComponents();
+        
         HeadOptions.setParentFrame(this);
+        PPolygonSkinnedMeshInstance[] eyes = getEyeBallMeshes();
+        HeadOptions.setEyeMeshInstances(eyes);
+        HeadOptions.setWorldManager(m_sceneData.getWM());
     }
 
     /**
@@ -67,6 +73,12 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
     public JFrame_AdvOptions(SceneEssentials scene) {
         m_sceneData = scene;
         initComponents();
+
+        HeadOptions.setParentFrame(this);
+        PPolygonSkinnedMeshInstance[] eyes = getEyeBallMeshes();
+        HeadOptions.setEyeMeshInstances(eyes);
+        HeadOptions.setWorldManager(m_sceneData.getWM());
+
         createJointCatalog();
     }
 
@@ -757,6 +769,21 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
 // Helper Functions
 ////////////////////////////////////////////////////////////////////////////////
 
+    public PPolygonSkinnedMeshInstance[] getEyeBallMeshes() {
+        PPolygonSkinnedMeshInstance[] eyeballs = null;
+        if (m_sceneData.getAvatar() == null)
+            return eyeballs;
+
+        PNode lefteye = null;   PNode righteye = null;
+        eyeballs    = new PPolygonSkinnedMeshInstance[2];
+        lefteye     = m_sceneData.getAvatar().getModelInst().findChild("leftEyeGeoShape");
+        eyeballs[0] = (PPolygonSkinnedMeshInstance)lefteye;
+        righteye    = m_sceneData.getAvatar().getModelInst().findChild("rightEyeGeoShape");
+        eyeballs[1] = (PPolygonSkinnedMeshInstance)righteye;
+
+        return eyeballs;
+    }
+
     /**
      * Sets up a listing of SkinnedMeshJoints for the hands for quick access
      */
@@ -1060,6 +1087,30 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
             m_skeleton = new HashMap<GUI_Enums.m_bodyPart, SkinnedMeshJoint[]>();
 
         m_skeleton.put(GUI_Enums.m_bodyPart.Eyes, eyes);
+    }
+
+    /**
+     * Sets up a listing of SkinnedMeshJoints for the eyes for quick access
+     */
+    public void catalogEyeBalls() {
+        if (m_sceneData.getAvatar() == null)
+            return;
+
+        SkeletonNode skeleton   = m_sceneData.getAvatar().getSkeleton();
+
+        String[] szEyes     = new String[] { "leftEye",     "rightEye" };
+
+        SkinnedMeshJoint[]  eyes     = new SkinnedMeshJoint[szEyes.length];
+        int                 iSize    = szEyes.length;
+
+        for (int i = 0; i < iSize; i++) {
+            eyes[i]     = (SkinnedMeshJoint) skeleton.findChild(szEyes[i]);
+        }
+
+        if (m_skeleton == null)
+            m_skeleton = new HashMap<GUI_Enums.m_bodyPart, SkinnedMeshJoint[]>();
+
+        m_skeleton.put(GUI_Enums.m_bodyPart.EyeBalls, eyes);
     }
 
     /**

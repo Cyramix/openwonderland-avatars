@@ -39,6 +39,7 @@ import com.jme.scene.state.WireframeState;
 import com.jme.scene.state.ZBufferState;
 import com.jme.util.TextureManager;
 import imi.gui.JFrame_AdvOptions;
+import imi.gui.JFrame_InstrumentationGUI;
 import imi.gui.JFrame_SimpAdvOptions;
 import imi.gui.JPanel_Animations;
 import imi.gui.JPanel_BasicOptions;
@@ -72,6 +73,8 @@ import imi.scene.processors.JSceneEventProcessor;
 import imi.scene.utils.PMeshUtils;
 import imi.utils.FileUtils;
 import imi.utils.PMathUtils;
+import imi.utils.instruments.DefaultInstrumentation;
+import imi.utils.instruments.Instrumentation;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
@@ -164,7 +167,8 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
         createUI(m_worldManager);  
         createTestSpace(m_worldManager);
         createCameraEntity(m_worldManager);  
-        createInputEntity(m_worldManager); 
+        createInputEntity(m_worldManager);
+        createInstrumentation(m_worldManager);
         createDemoEntities(m_worldManager);
         setGlobalLighting(m_worldManager);
         try {
@@ -206,6 +210,8 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
         m_sceneData = new SceneEssentials();
         m_sceneData.setSceneData(jscene, jscene.getPScene(), jsentity, wm, processors);
         m_sceneData.setCurCamProcessor(m_cameraProcessor);
+        JFrame_InstrumentationGUI instrutGUI = new JFrame_InstrumentationGUI(wm);
+        instrutGUI.setVisible(true);
     }
     
     /**
@@ -619,6 +625,10 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
         // Add the this input manager to the world manager for future access
         // (to asign a jscenes to drive)
         wm.addUserData(JSceneEventProcessor.class, eventProcessor);
+    }
+
+    private void createInstrumentation(WorldManager m_worldManager) {
+        Instrumentation instrument = new DefaultInstrumentation(m_worldManager);
     }
 
     private Texture loadSkyboxTexture(String filePath) {

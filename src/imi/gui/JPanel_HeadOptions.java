@@ -24,9 +24,14 @@
 
 package imi.gui;
 
+import imi.loaders.repository.Repository;
+import imi.scene.polygonmodel.parts.PMeshMaterial;
 import imi.scene.polygonmodel.skinned.PPolygonSkinnedMeshInstance;
+import imi.scene.shader.AbstractShaderProgram;
+import imi.scene.shader.programs.EyeballShader;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Image;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.net.MalformedURLException;
@@ -35,14 +40,19 @@ import java.util.Arrays;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.BorderFactory;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JTable;
+import javax.swing.border.Border;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
+import org.jdesktop.mtgame.WorldManager;
 
 /**
  *
@@ -53,9 +63,10 @@ public class JPanel_HeadOptions extends javax.swing.JPanel {
 // CLASS DATA MEMBERS
 ////////////////////////////////////////////////////////////////////////////////
     private JFrame                          m_baseFrame     =   null;
-    private int                             m_colWidth      =   36;
+    private int                             m_colWidth      =   64;
     private File                            m_TextureLoc    =   null;
     private PPolygonSkinnedMeshInstance[]   m_Eyes          =   null;
+    private WorldManager                    m_wm            =   null;
 
 ////////////////////////////////////////////////////////////////////////////////
 // CLASS METHODS
@@ -67,6 +78,10 @@ public class JPanel_HeadOptions extends javax.swing.JPanel {
      */
     public JPanel_HeadOptions() {
         initComponents();
+
+        SelectionListener listener = new SelectionListener(jTable1);
+        jTable1.getSelectionModel().addListSelectionListener(listener);
+        jTable1.getColumnModel().getSelectionModel().addListSelectionListener(listener);
     }
 
     /**
@@ -78,7 +93,10 @@ public class JPanel_HeadOptions extends javax.swing.JPanel {
         m_baseFrame = baseFrame;
         initComponents();
         setSliderControls();
-        m_TextureLoc = new File(System.getProperty("user.dir") + "/assets/textures/eyes/");
+        SelectionListener listener = new SelectionListener(jTable1);
+        jTable1.getSelectionModel().addListSelectionListener(listener);
+        jTable1.getColumnModel().getSelectionModel().addListSelectionListener(listener);
+        m_TextureLoc = new File(System.getProperty("user.dir") + "/assets/models/collada/Heads/EyeTextures");
         setTable();
     }
 
@@ -487,8 +505,17 @@ public class JPanel_HeadOptions extends javax.swing.JPanel {
             new String [] {
                 "     ", "     ", "     ", "     "
             }
-        ));
-        jTable1.setRowHeight(32);
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jTable1.setIntercellSpacing(new java.awt.Dimension(25, 1));
+        jTable1.setRowHeight(60);
         jScrollPane1.setViewportView(jTable1);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -521,6 +548,10 @@ public class JPanel_HeadOptions extends javax.swing.JPanel {
 
     public void setEyeMeshInstances(PPolygonSkinnedMeshInstance[] eyes) {
         m_Eyes = eyes;
+    }
+
+    public void setWorldManager(WorldManager wm) {
+        m_wm = wm;
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -652,7 +683,17 @@ public class JPanel_HeadOptions extends javax.swing.JPanel {
      */
     public Vector formatTableData() {
 
-        File[] textures = m_TextureLoc.listFiles();
+        FilenameFilter images = new FilenameFilter() {
+
+            public boolean accept(File dir, String name) {
+                if (name.toLowerCase().endsWith(".png") || name.toLowerCase().endsWith(".jpg") || name.toLowerCase().endsWith(".jpeg") ||
+                    name.toLowerCase().endsWith(".bmp") || name.toLowerCase().endsWith(".gif") || name.toLowerCase().endsWith(".tga"))
+                    return true;
+                return false;
+            }
+        };
+
+        File[] textures = m_TextureLoc.listFiles(images);
         Vector data = new Vector();
         
         for (int i = 0; i < textures.length; i++) {
@@ -689,21 +730,93 @@ public class JPanel_HeadOptions extends javax.swing.JPanel {
      */
     public class customImageCellRender extends JLabel implements TableCellRenderer {
 
+        private Border m_selectBorder   = null;
+        private Border m_unselectBorder = null;
+        private float  m_resizeFactor   = 0.5f;
+
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
             if (value instanceof File) {
                 try {
                     URL loc = ((File)value).toURI().toURL();
-                    Icon icon = new ImageIcon(loc);
-                    setIcon(icon);
+                    ImageIcon icon = new ImageIcon(loc);
+                    Image image = icon.getImage();
+
+                    int width   = (int)(m_resizeFactor * image.getWidth(null));
+                    int height  = (int)(m_resizeFactor * image.getHeight(null));
+
+                    Image newImage  = image.getScaledInstance(width, height, Image.SCALE_SMOOTH);
+                    ImageIcon newImageIcon = new ImageIcon(newImage);
+
+                    setIcon(newImageIcon);
                 } catch (MalformedURLException ex) {
                     Logger.getLogger(JPanel_HeadOptions.class.getName()).log(Level.SEVERE, null, ex);
                 }
 
                 if (isSelected) {
                     table.setSelectionBackground(new Color(0, 255, 0));
+                    if (m_selectBorder == null) {
+                        m_selectBorder = BorderFactory.createLineBorder(new Color(0, 255, 0), 3);
+                    }
+                    this.setBorder(m_selectBorder);
+                } else {
+                    if (m_unselectBorder == null) {
+                        m_unselectBorder = BorderFactory.createLineBorder(table.getBackground(), 0);
+                    }
+                    this.setBorder(m_unselectBorder);
                 }
             }
             return this;
+        }
+    }
+
+    public class SelectionListener implements ListSelectionListener {
+        JTable table;
+
+        SelectionListener(JTable table) {
+            this.table = table;
+        }
+        public void valueChanged(ListSelectionEvent e) {
+            
+            if (e.getSource() == table.getSelectionModel() && table.getRowSelectionAllowed()) {
+                // Column selection changed
+                int row = table.getSelectedRow();
+                int col = table.getSelectedColumn();
+                setTextureOnEyeball(row, col);
+
+            } else if (e.getSource() == table.getColumnModel().getSelectionModel() && table.getColumnSelectionAllowed() ){
+                // Row selection changed
+                int row = table.getSelectedRow();
+                int col = table.getSelectedColumn();
+                setTextureOnEyeball(row, col);
+                
+            }
+
+            if (e.getValueIsAdjusting()) {
+                return;
+            }
+        }
+    }
+
+    public void setTextureOnEyeball(int row, int col) {
+        if (m_Eyes == null)
+            return;
+
+        // Create a material to use
+        File loc = (File)jTable1.getValueAt(row, col);
+        String szName = loc.getName();
+        try {
+            URL urlFile = loc.toURI().toURL();
+            PMeshMaterial material = new PMeshMaterial(szName + "Material", urlFile);
+            Repository repo = (Repository)m_wm.getUserData(Repository.class);
+            AbstractShaderProgram eyeballShader = repo.newShader(EyeballShader.class);
+
+            for (int i = 0; i < m_Eyes.length; i++) {
+                material.setShader(eyeballShader);
+                m_Eyes[i].setMaterial(material);
+                m_Eyes[i].applyMaterial();
+            }
+        } catch (MalformedURLException ex) {
+            Logger.getLogger(SceneEssentials.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 }

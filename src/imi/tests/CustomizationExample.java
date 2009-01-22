@@ -22,6 +22,7 @@ import com.jme.math.Vector3f;
 import imi.character.avatar.Avatar;
 import imi.character.avatar.FemaleAvatarAttributes;
 import imi.character.avatar.MaleAvatarAttributes;
+import imi.gui.JFrame_InstrumentationGUI;
 import imi.gui.SceneEssentials;
 import imi.gui.TreeExplorer;
 import imi.scene.PMatrix;
@@ -109,5 +110,8 @@ public class CustomizationExample extends DemoBase
         se.setSceneData(maleAvatar.getJScene(), maleAvatar.getPScene(), maleAvatar, wm, null);
         te.setExplorer(se);
         te.setVisible(true);
+        // PVT's TEST
+        JFrame_InstrumentationGUI instrutGUI = new JFrame_InstrumentationGUI(wm);
+        instrutGUI.setVisible(true);
     }
 }
