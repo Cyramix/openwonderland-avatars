@@ -182,24 +182,53 @@ public class COLLADA_JointChannel implements PJointChannel, Serializable
         int numKeyframes = m_KeyFrames.size();
 
         if (currentIndex < 0 || currentIndex >= numKeyframes)
-            currentIndex = 0;
+        {
+            if ((state.isReverseAnimation() && !bTransitionCycle) ||
+                (state.isTransitionReverseAnimation() && bTransitionCycle))
+                currentIndex = m_KeyFrames.size() - 1;
+            else
+                currentIndex = 0;
+        }
 
         ListIterator<PMatrixKeyframe> i = m_KeyFrames.listIterator(currentIndex);
-        while (i.hasNext())
+        if ((state.isReverseAnimation() && !bTransitionCycle) ||
+            (state.isTransitionReverseAnimation() && bTransitionCycle))
         {
-            currentFrame = i.next();
-            if (currentFrame.getFrameTime() <= fTime)
-                leftFrame = currentFrame;
-            else // passed the mark
+            while (i.hasPrevious())
             {
-                rightFrame = currentFrame;
-                if (bTransitionCycle)
-                    state.getCursor().setCurrentTransitionJointIndex(currentIndex - 1);
-                else
-                    state.getCursor().setCurrentJointPosition(currentIndex - 1);
-                break; // finished checking
+                currentFrame = i.previous();
+                if (currentFrame.getFrameTime() >= fTime)
+                    rightFrame = currentFrame;
+                else // passed the mark
+                {
+                    leftFrame = currentFrame;
+                    if (bTransitionCycle)
+                        state.getCursor().setCurrentTransitionJointIndex(currentIndex + 1);
+                    else
+                        state.getCursor().setCurrentJointPosition(currentIndex + 1);
+                    break; // finished checking
+                }
+                currentIndex--;
             }
-            currentIndex++;
+        }
+        else
+        {
+            while (i.hasNext())
+            {
+                currentFrame = i.next();
+                if (currentFrame.getFrameTime() <= fTime)
+                    leftFrame = currentFrame;
+                else // passed the mark
+                {
+                    rightFrame = currentFrame;
+                    if (bTransitionCycle)
+                        state.getCursor().setCurrentTransitionJointIndex(currentIndex - 1);
+                    else
+                        state.getCursor().setCurrentJointPosition(currentIndex - 1);
+                    break; // finished checking
+                }
+                currentIndex++;
+            }
         }
 
 //        for (PMatrixKeyframe frame : m_KeyFrames)

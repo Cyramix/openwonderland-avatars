@@ -25,6 +25,8 @@ public class AnimationCursor
 {
     private int[] indices = null;
     private int[] transitionIndices = null;
+    private int[] negativeOnes = null;
+
     private int jointIndex = -1;
     private int transitionJointIndex = -1;
 
@@ -32,6 +34,9 @@ public class AnimationCursor
     {
         indices = new int[70];
         transitionIndices = new int[70];
+        negativeOnes = new int[70];
+        for (int i = 0; i < negativeOnes.length; i++)
+            negativeOnes[i] = -1;
         makeNegativeOne();
     }
 
@@ -43,11 +48,9 @@ public class AnimationCursor
     
     public void makeNegativeOne()
     {
-        for (int i = 0; i < indices.length; ++i)
-        {
-            indices[i] = -1;
-            transitionIndices[i] = -1;
-        }
+        // src, pos, dest, pos, length
+        System.arraycopy(negativeOnes, 0, indices, 0, negativeOnes.length);
+        System.arraycopy(negativeOnes, 0, transitionIndices, 0, negativeOnes.length);
     }
     
     public void setJointIndex(int joint, int index)
