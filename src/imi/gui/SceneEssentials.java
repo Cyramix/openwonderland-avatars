@@ -751,18 +751,6 @@ public class SceneEssentials {
 
             }
 
-            if (m_gender == 1) {
-                String baseFilePath = "file://localhost/" + System.getProperty("user.dir");
-                String completepath = baseFilePath + "/assets/models/collada/Heads/MaleHead/MaleCHead.dae";
-
-                try {
-                    URL head = new URL(completepath);
-                    m_avatar.installHead(head, "Neck");
-                } catch (MalformedURLException ex) {
-                    Logger.getLogger(JPanel_EZOptions.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-
             m_avatar.selectForInput();
             m_currentPScene = m_avatar.getPScene();
         }
@@ -865,7 +853,7 @@ public class SceneEssentials {
                     }
                 }
 
-                removeDuplicateMeshesBySubgroup(subGroup);
+//                removeDuplicateMeshesBySubgroup(subGroup);
                 m_avatar.setDefaultShaders();
 
                 return true;

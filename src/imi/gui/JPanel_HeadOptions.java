@@ -24,7 +24,25 @@
 
 package imi.gui;
 
+import imi.scene.polygonmodel.skinned.PPolygonSkinnedMeshInstance;
+import java.awt.Color;
+import java.awt.Component;
+import java.io.File;
+import java.io.FilenameFilter;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.Arrays;
+import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableColumn;
 
 /**
  *
@@ -34,7 +52,10 @@ public class JPanel_HeadOptions extends javax.swing.JPanel {
 ////////////////////////////////////////////////////////////////////////////////
 // CLASS DATA MEMBERS
 ////////////////////////////////////////////////////////////////////////////////
-    private JFrame  m_baseFrame     =   null;
+    private JFrame                          m_baseFrame     =   null;
+    private int                             m_colWidth      =   36;
+    private File                            m_TextureLoc    =   null;
+    private PPolygonSkinnedMeshInstance[]   m_Eyes          =   null;
 
 ////////////////////////////////////////////////////////////////////////////////
 // CLASS METHODS
@@ -57,6 +78,8 @@ public class JPanel_HeadOptions extends javax.swing.JPanel {
         m_baseFrame = baseFrame;
         initComponents();
         setSliderControls();
+        m_TextureLoc = new File(System.getProperty("user.dir") + "/assets/textures/eyes/");
+        setTable();
     }
 
     /** This method is called from within the constructor to
@@ -122,6 +145,9 @@ public class JPanel_HeadOptions extends javax.swing.JPanel {
         Head_Depth = new imi.gui.JPanel_HorizontalSliderS();
         jPanel_HeadUniform = new javax.swing.JPanel();
         Head_Uniform = new imi.gui.JPanel_HorizontalSliderS();
+        jPanel_EyeColors = new javax.swing.JPanel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jTable1 = new javax.swing.JTable();
 
         setMaximumSize(new java.awt.Dimension(270, 600));
         setMinimumSize(new java.awt.Dimension(270, 600));
@@ -449,6 +475,30 @@ public class JPanel_HeadOptions extends javax.swing.JPanel {
 
         jTabbedPane_Head.addTab("Uniform", jPanel_Uniform);
 
+        jPanel_EyeColors.setLayout(new java.awt.GridBagLayout());
+
+        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "     ", "     ", "     ", "     "
+            }
+        ));
+        jTable1.setRowHeight(32);
+        jScrollPane1.setViewportView(jTable1);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+        jPanel_EyeColors.add(jScrollPane1, gridBagConstraints);
+
+        jTabbedPane_Head.addTab("Eye Colors", jPanel_EyeColors);
+
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -467,6 +517,10 @@ public class JPanel_HeadOptions extends javax.swing.JPanel {
 
     public void setParentFrame(JFrame frame) {
         m_baseFrame = frame;
+    }
+
+    public void setEyeMeshInstances(PPolygonSkinnedMeshInstance[] eyes) {
+        m_Eyes = eyes;
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -504,6 +558,7 @@ public class JPanel_HeadOptions extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel_EarSize;
     private javax.swing.JPanel jPanel_EarVPos;
     private javax.swing.JPanel jPanel_Ears;
+    private javax.swing.JPanel jPanel_EyeColors;
     private javax.swing.JPanel jPanel_EyeHPos;
     private javax.swing.JPanel jPanel_EyeSize;
     private javax.swing.JPanel jPanel_EyeVPos;
@@ -522,7 +577,9 @@ public class JPanel_HeadOptions extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel_NoseSize;
     private javax.swing.JPanel jPanel_NoseVPos;
     private javax.swing.JPanel jPanel_Uniform;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTabbedPane jTabbedPane_Head;
+    private javax.swing.JTable jTable1;
     // End of variables declaration//GEN-END:variables
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -586,5 +643,67 @@ public class JPanel_HeadOptions extends javax.swing.JPanel {
         RightEarHPos.setParentFrame(m_baseFrame);
         RightEarSize.setParentFrame(m_baseFrame);
         RightEarVPos.setParentFrame(m_baseFrame);
+    }
+
+    /**
+     * Parses the JFile containing the directory location to the eye textures to
+     * be used to set the JTable with the selctions
+     * @return string double array
+     */
+    public Vector formatTableData() {
+
+        File[] textures = m_TextureLoc.listFiles();
+        Vector data = new Vector();
+        
+        for (int i = 0; i < textures.length; i++) {
+            Vector colData = new Vector(Arrays.asList(textures[i]));
+            data.add(colData);
+        }
+
+        return data;
+    }
+
+    /**
+     * Sets the JTable to display the assortment of eye textures
+     */
+    public void setTable() {
+        Vector data = formatTableData();
+        Vector colNames = new Vector();
+        String[] colName  = new String[] { "    " };
+        colNames = new Vector(Arrays.asList(colName));
+
+        DefaultTableModel model = new DefaultTableModel(data, colNames);
+        jTable1.setModel(model);
+
+        for (int i = 0; i < jTable1.getModel().getColumnCount(); i++) {
+            TableColumn col = jTable1.getColumnModel().getColumn(i);
+            col.setCellRenderer(new customImageCellRender());
+            col.setPreferredWidth(m_colWidth);
+        }
+
+        jTable1.setVisible(true);
+    }
+
+    /**
+     * Custom cell renderer for the JTable to display preview images of the avatar
+     */
+    public class customImageCellRender extends JLabel implements TableCellRenderer {
+
+        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+            if (value instanceof File) {
+                try {
+                    URL loc = ((File)value).toURI().toURL();
+                    Icon icon = new ImageIcon(loc);
+                    setIcon(icon);
+                } catch (MalformedURLException ex) {
+                    Logger.getLogger(JPanel_HeadOptions.class.getName()).log(Level.SEVERE, null, ex);
+                }
+
+                if (isSelected) {
+                    table.setSelectionBackground(new Color(0, 255, 0));
+                }
+            }
+            return this;
+        }
     }
 }
