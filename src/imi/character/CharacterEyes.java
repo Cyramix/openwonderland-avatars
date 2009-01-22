@@ -53,7 +53,7 @@ public class CharacterEyes
     private final int rightEyeLid    = 46;//34;
     private float   closedEyeLid     = 0.0f;
     private final float   closedEyeLidMale    = ((float)Math.PI) * -0.5f;//-0.011f;
-    private final float   closedEyeLidFemale  = -0.041f;
+    private final float   closedEyeLidFemale  = ((float)Math.PI) * -0.5f;//-0.041f;
     
     private boolean blinkingOn      = true;
     private float   blinkingTimer   = 0.0f;

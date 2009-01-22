@@ -155,8 +155,8 @@ public class MaleAvatarAttributes extends CharacterAttributes
             case 3:
             {
                 // Cowboy boots
-                load.add(new String("assets/models/collada/Clothing/MaleClothing/CowBoyBoot.dae"));
-                add.add(new SkinnedMeshParams("polySurfaceShape1", "Feet"));
+                load.add(new String("assets/models/collada/Clothing/MaleClothing/CowBoyBoot_CUT.dae"));
+                add.add(new SkinnedMeshParams("CowBoyBootsShape", "Feet"));
             }
             break;
             default:

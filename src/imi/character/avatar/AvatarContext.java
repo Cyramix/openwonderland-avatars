@@ -17,7 +17,6 @@
  */
 package imi.character.avatar;
 
-import com.jme.math.Vector3f;
 import imi.character.statemachine.corestates.WalkState;
 import imi.character.statemachine.corestates.TurnState;
 import imi.character.statemachine.corestates.SitState;
@@ -55,11 +54,12 @@ import imi.character.statemachine.corestates.ActionInfo;
 import imi.character.statemachine.corestates.RunState;
 import imi.character.statemachine.corestates.transitions.RunToWalk;
 import imi.character.statemachine.corestates.transitions.WalkToRun;
+import imi.character.steering.FollowPath;
 import java.util.ArrayList;
 import java.util.Hashtable;
 
 /**
- * This is a game context concrete e.g.
+ * This is a GameContext concrete e.g.
  * @author Lou Hayt
  */
 public class AvatarContext extends GameContext
@@ -197,16 +197,12 @@ public class AvatarContext extends GameContext
         {
             avatar.setCameraOnMe();
             avatar.getRightArm().toggleEnabled();
-            if(!avatar.getRightArm().isEnabled())
-                avatar.getRightArm().getParticles().get(2).position(new Vector3f(0.0f, -10000.0f, 0.0f));
         }
         // Toggle manual control over the left arm
         if (trigger == TriggerNames.ToggleLeftArm.ordinal() && pressed)
         {
             avatar.setCameraOnMe();
             avatar.getLeftArm().toggleEnabled();
-            if(!avatar.getLeftArm().isEnabled())
-                avatar.getLeftArm().getParticles().get(2).position(new Vector3f(0.0f, -10000.0f, 0.0f));
         }
         
         // Toggle manual control mode over the left arm
@@ -243,32 +239,19 @@ public class AvatarContext extends GameContext
         // GoTo to location - if path is available from the current location
         else if (trigger == TriggerNames.GoTo1.ordinal() && pressed)
         {
-            if (avatar.getUpdateExtension() != null)
-            {
-                Vector3f dir = avatar.getPosition().add(0.0f, 1.8f, 0.0f).subtract(Vector3f.ZERO).normalize();
-                ((DarkstarClient)avatar.getUpdateExtension()).pitchBall(Vector3f.ZERO, dir.mult(0.1f));
-             //   ((DarkstarClient)avatar.getUpdateExtension()).pitchBall(controller.getPosition().add(new Vector3f(-5.0f, 1.8f, 0.0f)), new Vector3f(0.1f, 0.0f, 0.0f));
-            }
-           //avatar.getObjectCollection().testLightToggle(); // test
-           
            // System.out.println("fix: " + avatar.getPosition());
             
-//            AI.clearTasks();
-//            GoToNearestLocation();
-//            if (location != null)
-//                AI.addTaskToBottom(new FollowPath("yellowRoom", location, this));
+            AI.clearTasks();
+            GoToNearestLocation();
+            if (location != null)
+                AI.addTaskToBottom(new FollowPath("yellowRoom", location, this));
         }
         else if (trigger == TriggerNames.GoTo2.ordinal() && pressed)
         {
-            if (avatar.getUpdateExtension() != null)
-            {
-                ((DarkstarClient)avatar.getUpdateExtension()).getServerProxy().startGame(3);
-            }
-            
-//            AI.clearTasks();
-//            GoToNearestLocation();
-//            if (location != null)
-//                AI.addTaskToBottom(new FollowPath("lobbyCenter", location, this));
+            AI.clearTasks();
+            GoToNearestLocation();
+            if (location != null)
+                AI.addTaskToBottom(new FollowPath("lobbyCenter", location, this));
         }
         else if (trigger == TriggerNames.GoTo3.ordinal() && pressed)
         {
@@ -303,7 +286,7 @@ public class AvatarContext extends GameContext
             }
         }   
                 
-        // Reverse the animation for the punch state
+        // Reverse the animation for the punch state (for testing)
         else if (trigger == TriggerNames.Reverse.ordinal() && pressed)
         {
             ActionState punch = (ActionState) gameStates.get(ActionState.class);
@@ -321,54 +304,6 @@ public class AvatarContext extends GameContext
                 genericActionIndex = 0;
             
             genericAnimations.get(genericActionIndex).apply(action);
-//            switch (genericActionIndex)
-//            {
-//                case 0:
-//                    action.setAnimationName("Male_Wave");
-//                    break;
-//                case 1:
-//                    action.setAnimationName("Male_Laugh");
-//                    break;
-//                case 2:
-//                    action.setAnimationName("Male_Cheer");
-//                    break;
-//                case 3:
-//                    action.setAnimationName("Male_Clap");
-//                    break;
-//                case 4:
-//                    action.setAnimationName("Male_Bow");
-//                    break;
-//                case 5:
-//                    action.setAnimationName("Male_Follow");
-//                    break;
-//                case 6:
-//                    punch.setAnimationName("Male_Jump");
-//                    break;
-//                case 7:
-//                    punch.setAnimationName("Male_Idle");
-//                    break;
-//                case 8:
-//                    punch.setAnimationName("Male_Run");
-//                    break;
-//                case 9:
-//                    punch.setAnimationName("Male_Walk");
-//                    break;
-//                case 10:
-//                    punch.setAnimationName("Male_StandToSit");
-//                    break;
-//                case 11:
-//                    punch.setAnimationName("Male_Sitting");
-//                    break;
-//                case 12:
-//                    punch.setAnimationName("Male_FallFromSitting");
-//                    break;
-//                case 13:
-//                    punch.setAnimationName("Male_FloorSitting");
-//                    break;
-//                case 14:
-//                    punch.setAnimationName("Male_FloorGetup");
-//                    break;
-//            }
         }
     }
     
@@ -493,44 +428,88 @@ public class AvatarContext extends GameContext
     
     /** Here we define the animation properties for the various animations
      that are using the ActionState to play out **/
-    private void configureDefaultActionStateInfo() {
-        
+    private void configureDefaultActionStateInfo() 
+    {    
         ActionInfo info;
         
         /** Note: There are many more settings possible to set! **/
-        
-        info = new ActionInfo("Male_Wave", "MaleSmile", 1.0f, 2.0f);
-        genericAnimations.add(info);
-        
-        info = new ActionInfo("Male_No");
-        genericAnimations.add(info);
-        
-        info = new ActionInfo("Male_Yes");
-        genericAnimations.add(info);
-        
-        info = new ActionInfo("Male_Cell");
-        info.setRepeat(true);
-        info.setRepeatWillOscilate(true);
-        info.setTransitionDuration(0.5f);
-        genericAnimations.add(info);
-        
-        info = new ActionInfo("Male_Laugh", "MaleSmile", 0.5f, 2.5f);
-        genericAnimations.add(info);
-        
-        info = new ActionInfo("Male_Cheer", "MaleSmile", 0.5f, 3.0f);
-        genericAnimations.add(info);
-        
-        info = new ActionInfo("Male_Clap");
-        genericAnimations.add(info);
-        
-        info = new ActionInfo("Male_Bow");
-        genericAnimations.add(info);
-        
-        info = new ActionInfo("Male_Follow");
-        genericAnimations.add(info);
-        
-        info = new ActionInfo("Male_TakeDamage");
-        genericAnimations.add(info);
+     
+        if (avatar.getAttributes().isMale())
+        {
+            info = new ActionInfo("Male_Wave", "MaleSmile", 1.0f, 2.0f);
+            genericAnimations.add(info);
+
+            info = new ActionInfo("Male_No");
+            genericAnimations.add(info);
+
+            info = new ActionInfo("Male_Yes");
+            genericAnimations.add(info);
+
+            info = new ActionInfo("Male_Cell");
+            info.setRepeat(true);
+            info.setRepeatWillOscilate(true);
+            info.setTransitionDuration(0.5f);
+            genericAnimations.add(info);
+
+            info = new ActionInfo("Male_Laugh", "MaleSmile", 0.5f, 2.5f);
+            genericAnimations.add(info);
+
+            info = new ActionInfo("Male_Cheer", "MaleSmile", 0.5f, 3.0f);
+            genericAnimations.add(info);
+
+            info = new ActionInfo("Male_Clap");
+            genericAnimations.add(info);
+
+            info = new ActionInfo("Male_Bow");
+            genericAnimations.add(info);
+
+            info = new ActionInfo("Male_Follow");
+            genericAnimations.add(info);
+
+            info = new ActionInfo("Male_TakeDamage");
+            genericAnimations.add(info);
+            
+            info = new ActionInfo("Male_PublicSpeaking");
+            genericAnimations.add(info);
+            
+            info = new ActionInfo("Male_ShakeHands");
+            genericAnimations.add(info);
+        }
+        else // female
+        {
+            info = new ActionInfo("Female_Wave", "FemaleC_Smile", 1.0f, 2.0f);
+            genericAnimations.add(info);
+
+            info = new ActionInfo("Female_No");
+            genericAnimations.add(info);
+
+            info = new ActionInfo("Female_Yes");
+            genericAnimations.add(info);
+
+            info = new ActionInfo("Female_Cell");
+            info.setRepeat(true);
+            info.setRepeatWillOscilate(true);
+            info.setTransitionDuration(0.5f);
+            genericAnimations.add(info);
+
+            info = new ActionInfo("Female_Laugh", "FemaleC_Smile", 0.5f, 2.5f);
+            genericAnimations.add(info);
+
+            info = new ActionInfo("Female_Cheer", "FemaleC_Smile", 0.5f, 3.0f);
+            genericAnimations.add(info);
+
+            info = new ActionInfo("Female_Clap");
+            genericAnimations.add(info);
+
+            info = new ActionInfo("Female_Bow");
+            genericAnimations.add(info);
+
+            info = new ActionInfo("Female_Follow");
+            genericAnimations.add(info);
+            
+            info = new ActionInfo("Female_PublicSpeaking");
+            genericAnimations.add(info);
+        }
     }
 
     

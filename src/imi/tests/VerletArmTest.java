@@ -23,6 +23,8 @@ import imi.character.avatar.Avatar;
 import imi.character.avatar.MaleAvatarAttributes;
 import imi.character.avatar.FemaleAvatarAttributes;
 import imi.character.objects.ObjectCollection;
+import imi.gui.SceneEssentials;
+import imi.gui.TreeExplorer;
 import imi.scene.camera.state.FirstPersonCamState;
 import org.jdesktop.mtgame.WorldManager;
 
@@ -69,7 +71,7 @@ public class VerletArmTest  extends DemoBase
         camState.setMovementRate(0.03f);
         camState.setCameraPosition(new Vector3f(0.0f, 1.8f, -2.0f));
         
-        boolean male = false;
+        boolean male = true;
         Avatar avatar;
         int feet, legs, torso, hair;
         
@@ -102,6 +104,13 @@ public class VerletArmTest  extends DemoBase
         // Get the mouse events to be able to control the arm 
         control.getMouseEventsFromCamera();
 
+        // Construct a tree explorer for analyzing the scene graph
+        TreeExplorer te = new TreeExplorer();
+        SceneEssentials se = new SceneEssentials();
+        se.setSceneData(avatar.getJScene(), avatar.getPScene(), avatar, wm, null);
+        te.setExplorer(se);
+        te.setVisible(true);
+        
         // Make some more avatars
         float zStep = 5.0f;
         for (int i = 1; i < numberOfAvatars; i++)

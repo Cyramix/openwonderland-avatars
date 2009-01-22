@@ -29,7 +29,7 @@ dereferenceXRefs=0;cameraXFov=0;cameraYFov=1</comments>
   </library_physics_scenes>
   <library_images>
     <image id="file3" name="file3">
-      <init_from>file:///C:/Documents%20and%20Settings/astahl.SYSTEMS/My%20Documents/maya/projects/IMI/characater/scene/cowboyboot/CowBoyBoot_COLOR.tga</init_from>
+      <init_from>file:///C:/Documents%20and%20Settings/astahl.SYSTEMS/My%20Documents/maya/projects/IMI/characater/scene/cowboyboot/CowBoyBoot_COLOR.png</init_from>
       <extra>
         <technique profile="MAYA">
           <dgnode_type>kFile</dgnode_type>
@@ -38,7 +38,7 @@ dereferenceXRefs=0;cameraXFov=0;cameraYFov=1</comments>
       </extra>
     </image>
     <image id="file1" name="file1">
-      <init_from>file:///C:/Documents%20and%20Settings/astahl.SYSTEMS/My%20Documents/maya/projects/IMI/characater/scene//cowboyboot/CowBoBoot_NORM01.png</init_from>
+      <init_from>file:///C:/Documents%20and%20Settings/astahl.SYSTEMS/My%20Documents/maya/projects/IMI/characater/scene//cowboyboot/CowBoBoot_NORM.png</init_from>
       <extra>
         <technique profile="MAYA">
           <dgnode_type>kFile</dgnode_type>
