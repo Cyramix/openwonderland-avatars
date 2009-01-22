@@ -164,7 +164,7 @@ public class SkeletonModifierTest extends DemoBase
 
         // hook up some control
         DahlgrensInput input = new DahlgrensInput();
-        input.setTarget(modelInst);
+        
         ((JSceneEventProcessor)wm.getUserData(JSceneEventProcessor.class)).setDefault(input);
 
         // Change the camera position

@@ -144,7 +144,7 @@ public class DynamicShaderOnMeshTest extends DemoBase
         
         // hook up some control
         DahlgrensInput input = new DahlgrensInput();
-        input.setTarget(modelInst);
+        
         ((JSceneEventProcessor)wm.getUserData(JSceneEventProcessor.class)).addScheme(input);
         
         // add a reference cube lit with the fixed function pipeline

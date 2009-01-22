@@ -11,19 +11,24 @@
  * except in compliance with the License. A copy of the License is
  * available at http://www.opensource.org/licenses/gpl-license.php.
  *
- * Sun designates this particular file as subject to the "Classpath" 
- * exception as provided by Sun in the License file that accompanied 
+ * Sun designates this particular file as subject to the "Classpath"
+ * exception as provided by Sun in the License file that accompanied
  * this code.
  */
 package imi.utils.input;
 
 import com.jme.math.Vector3f;
-import imi.gui.PNodePropertyPanel;
-import imi.scene.PNode;
-import imi.scene.polygonmodel.skinned.PPolygonSkinnedMeshInstance;
-import java.awt.Dimension;
+import imi.character.VerletArm;
+import imi.character.avatar.Avatar;
+import imi.character.avatar.AvatarContext.TriggerNames;
+import imi.scene.processors.FlexibleCameraProcessor;
 import java.awt.event.KeyEvent;
-import javax.swing.JFrame;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseWheelEvent;
+import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Map;
+import org.jdesktop.mtgame.WorldManager;
 
 /**
  *
@@ -31,111 +36,188 @@ import javax.swing.JFrame;
  */
 public class DahlgrensInput extends InputScheme
 {
- 
-    private boolean m_bSkeletonMode = false;
-    
-    private PNode   m_target = null;
-    
+    private WorldManager wm = null;
+    private boolean bSkeletonMode = false;
+    private Avatar   avatar = null;
+
+    private   InputState      inputState     = new InputState();
+
+    private int currentMouseX = 0;
+    private int currentMouseY = 0;
+    private int lastMouseX    = 0;
+    private int lastMouseY    = 0;
+
+    private boolean mouseDown = false;
+    /** Doesn't need to be runtime dynamic, just cleans the code up a bit **/
+    private final Map<Integer, Method> keyHandler = new HashMap<Integer, Method>();
+
     public DahlgrensInput()
     {
-        super();
     }
-  
-    @Override
-    public void processEvents(Object[] events) 
+    public DahlgrensInput(Avatar target)
     {
-        for (int i=0; i<events.length; i++) 
+        super();
+        avatar = target;
+    }
+
+    public void setWM(WorldManager wm)
+    {
+        this.wm = wm;
+    }
+
+    public void getMouseEventsFromCamera()
+    {
+        // Get the hacked mouse events that the camera is stealing from us
+        if (avatar != null)
+            ((FlexibleCameraProcessor)avatar.getWorldManager().getUserData(FlexibleCameraProcessor.class)).setControl(this);
+    }
+
+    public void processMouseEvents(Object[] events)
+    {
+        if (m_jscene == null || avatar == null)
+            return;
+
+        for (int i=0; i<events.length; i++)
         {
-            if (events[i] instanceof KeyEvent) 
+            if (events[i] instanceof MouseEvent)
+            {
+                if (avatar.getSkeletonManipulator() != null && avatar.getSkeletonManipulator().isArmsEnabled())
+                {
+                    Vector3f offset = new Vector3f();
+
+                    MouseEvent me = (MouseEvent) events[i];
+                    if (me.getID() == MouseEvent.MOUSE_PRESSED && me.getButton() == MouseEvent.BUTTON3)
+                    {
+                        // Mouse pressed, reset initial settings
+                        currentMouseX = me.getX();
+                        currentMouseY = me.getY();
+                        lastMouseX    = me.getX();
+                        lastMouseY    = me.getY();
+                        mouseDown = !mouseDown;
+                    }
+
+                    if (mouseDown)//me.getID() == MouseEvent.MOUSE_DRAGGED)
+                    {
+                        // Set the current
+                        currentMouseX = me.getX();
+                        currentMouseY = me.getY();
+
+                        // Calculate delta
+                        int deltaX = currentMouseX - lastMouseX;
+                        int deltaY = currentMouseY - lastMouseY;
+
+                        // Translate to input offset
+                        offset.x = deltaX * -0.0075f;
+                        offset.z = deltaY * -0.0075f;
+
+                        // Set the last
+                        lastMouseX    = me.getX();
+                        lastMouseY    = me.getY();
+                    }
+
+                    if (me.getID() == MouseEvent.MOUSE_WHEEL)
+                    {
+                        if (me instanceof MouseWheelEvent)
+                        {
+                            int scroll = ((MouseWheelEvent)me).getWheelRotation();
+                            offset.y   = scroll * -0.05f;
+                        }
+                    }
+
+                    VerletArm rightArm = avatar.getRightArm();
+                    VerletArm leftArm  = avatar.getLeftArm();
+
+                    if (rightArm != null)
+                    {
+                        if (me.getID() == MouseEvent.MOUSE_PRESSED && me.getButton() == MouseEvent.BUTTON2)
+                        {
+                            avatar.getContext().triggerPressed(TriggerNames.ToggleRightArmManualDriveReachMode.ordinal());
+                            avatar.getContext().triggerReleased(TriggerNames.ToggleRightArmManualDriveReachMode.ordinal());
+                        }
+
+                        rightArm.addInputOffset(offset);
+                    }
+                    if (leftArm != null)
+                    {
+                        if (me.getID() == MouseEvent.MOUSE_PRESSED && me.getButton() == MouseEvent.BUTTON2)
+                        {
+                            avatar.getContext().triggerPressed(TriggerNames.ToggleLeftArmManualDriveReachMode.ordinal());
+                            avatar.getContext().triggerReleased(TriggerNames.ToggleLeftArmManualDriveReachMode.ordinal());
+                        }
+
+                        leftArm.addInputOffset(offset);
+                    }
+                }
+            }
+        }
+    }
+
+    public void activateMouseMovement()
+    {
+        mouseDown = true;
+    }
+
+    @Override
+    public void processEvents(Object[] events)
+    {
+        if (m_jscene == null || avatar == null)
+            return;
+
+        for (int i=0; i<events.length; i++)
+        {
+            if (events[i] instanceof KeyEvent)
             {
                 KeyEvent ke = (KeyEvent) events[i];
                 processKeyEvent(ke);
             }
         }
     }
-       
-    private void processKeyEvent(KeyEvent ke) 
+
+    private void processKeyEvent(KeyEvent ke)
     {
-        if (m_jscene == null)
-            return;
-        
-        if (ke.getID() == KeyEvent.KEY_PRESSED) 
+        if (ke.getID() == KeyEvent.KEY_RELEASED)
         {
-            // Note: input only affects this JScene
-            
-            // JMonkey Wireframe (on\off)
-            if (ke.getKeyCode() == KeyEvent.VK_T) 
-                m_jscene.toggleWireframe();
-            
-            // JMonkey Lights (on\off)
-            if (ke.getKeyCode() == KeyEvent.VK_L) 
-                m_jscene.toggleLights();
-            
+            // Alter the input state for random reference
+            inputState.keyReleased(ke.getKeyCode());
+            avatar.keyReleased(ke.getKeyCode());
+        }
+
+        if (ke.getID() == KeyEvent.KEY_PRESSED)
+        {
+            // Alter the input state for random reference
+            inputState.keyPressed(ke.getKeyCode());
+            avatar.keyPressed(ke.getKeyCode());
+
+            Method keyMethod = keyHandler.get(ke.getID());
+            if (keyMethod != null)
+            {
+                try {
+                    keyMethod.invoke(this, null);
+                }
+                catch (Exception ex)
+                {
+
+                }
+            }
+
+            /////////////////////////////////////////////
+            /////// "Default" key bindings //////////////
+            /////////////////////////////////////////////
             // Rendering mode (JMonkey, JMonkey and PRenderer, PRenderer)
-            if (ke.getKeyCode() == KeyEvent.VK_R) 
+            if (ke.getKeyCode() == KeyEvent.VK_R)
                 m_jscene.renderToggle();
-            
-            // PRenderer Polygon normals (on\off)
-            if (ke.getKeyCode() == KeyEvent.VK_P) 
-                m_jscene.toggleRenderPolygonNormals();
-            
-            // PRenderer Vertex normals (on\off)
-            if (ke.getKeyCode() == KeyEvent.VK_V) 
-                m_jscene.toggleRenderVertexNormals();
-            
-            // PRenderer Polygon center points (on\off)
-            if (ke.getKeyCode() == KeyEvent.VK_C) 
-                m_jscene.toggleRenderPolygonCenters();
-            
+
             // PRenderer Bounding volumes (off, box, sphere)
-            if (ke.getKeyCode() == KeyEvent.VK_B) 
+            if (ke.getKeyCode() == KeyEvent.VK_B)
                 m_jscene.toggleRenderBoundingVolume();
-            
-            // Flip normals
-            if (ke.getKeyCode() == KeyEvent.VK_F) 
-                m_jscene.flipNormals();
-            
-            // Smooth normals toggle
-            if (ke.getKeyCode() == KeyEvent.VK_N) 
-                m_jscene.toggleSmoothNormals();
-            
-            // Target manipulation
-            if (ke.getKeyCode() == KeyEvent.VK_O)
-            {
-                System.out.println("O Pressed");
-                if (m_target != null && m_target.getTransform() != null)
-                {
-                    Vector3f newTranslation = m_target.getTransform().getLocalMatrix(true).getTranslation();
-                    System.out.print(newTranslation.toString() + " -> ");
-                    newTranslation.addLocal(Vector3f.UNIT_XYZ.mult(2.0f));
-                    m_target.getTransform().getLocalMatrix(true).setTranslation(newTranslation);
-                    System.out.println(m_target.getTransform().getLocalMatrix(false).getTranslation().toString());
-                }
-                m_jscene.getPScene().getInstances().setDirty(true, true);
-            }
-            // Target manipulation
-            if (ke.getKeyCode() == KeyEvent.VK_I)
-            {
-                System.out.println("I Pressed");
-                if (m_target != null && m_target.getTransform() != null)
-                {
-                    Vector3f newTranslation = m_target.getTransform().getLocalMatrix(true).getTranslation();
-                    newTranslation.addLocal(Vector3f.UNIT_XYZ.mult(-2.0f));
-                    m_target.getTransform().getLocalMatrix(true).setTranslation(newTranslation);
-                }
-                m_jscene.getPScene().getInstances().setDirty(true, true);
-            }
-            
+
             // Toggle PRenderer mesh display
             if (ke.getKeyCode() == KeyEvent.VK_M)
-            {
                 m_jscene.toggleRenderPRendererMesh();
-                //m_jscene.loadShaders();
-            }
-            
+
             if (ke.getKeyCode() == KeyEvent.VK_U)
             {
-                if (m_bSkeletonMode == false)
+                if (bSkeletonMode == false)
                 {
                     m_jscene.setRenderInternallyBool(false);
                     // turn the prenderer on, turn off the mesh drawing, turn on jme wireframe
@@ -154,51 +236,17 @@ public class DahlgrensInput extends InputScheme
                     m_jscene.setRenderInternallyBool(false);
                     m_jscene.setRenderBothBool(false);
                     m_jscene.setWireframe(false);
-                    
+
                 }
                 // toggle
-                m_bSkeletonMode = !m_bSkeletonMode;
+                bSkeletonMode = !bSkeletonMode;
+            }
 
-            }
-            
-            // Animation test
-            if (ke.getKeyCode() == KeyEvent.VK_K)
-            {
-                PPolygonSkinnedMeshInstance avatar = ((PPolygonSkinnedMeshInstance)(m_jscene.getPScene().getInstances().getChild(0).getChild(0)));
-                // BROKEN --- The animation states are now kept at the skeleton node!
-//                if (avatar.getAnimationState().getCurrentCycle() == 0)
-//                    avatar.transitionTo(5);
-//                else
-//                    avatar.transitionTo(0);
-            }
-            
-            if (ke.getKeyCode() == KeyEvent.VK_3)
-            {
-                PPolygonSkinnedMeshInstance avatar = ((PPolygonSkinnedMeshInstance)(m_jscene.getPScene().getInstances().getChild(0).getChild(0)));
-                PNodePropertyPanel jointWidget = null;//new PNodePropertyPanel(avatar.getTransformHierarchy().getChild(0).findChild("Joint11"));
-                jointWidget.setVisible(true);
-                // make and show a new JFrame
-                JFrame frame = new JFrame();
-                
-                frame.add(jointWidget);
-                frame.setSize(new Dimension(350, 400));
-                
-                frame.setVisible(true);
-                
-            
-            }
         }
     }
-    
-    public PNode getTarget()
-    {
-        return m_target;
-    }
-    
-    public void setTarget(PNode target)
-    {
-        m_target = target;
-    }
-    
 
+    public void setTargetAvatar(Avatar avatar)
+    {
+        this.avatar = avatar;
+    }
 }

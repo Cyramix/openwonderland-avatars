@@ -29,6 +29,7 @@ import imi.scene.animation.speech.PhonemeChain.Phoneme;
 import org.jdesktop.mtgame.WorldManager;
 import imi.scene.processors.JSceneEventProcessor;
 import imi.utils.input.AvatarControlScheme;
+import imi.utils.input.DahlgrensInput;
 import java.util.ArrayList;
 
 
@@ -75,7 +76,7 @@ public class SpeechTest extends DemoBase
         // The event processor provides the linkage between AWT events and input controls
         JSceneEventProcessor eventProcessor = (JSceneEventProcessor) wm.getUserData(JSceneEventProcessor.class);
         // Set the input scheme that we intend to use
-        AvatarControlScheme control = (AvatarControlScheme)eventProcessor.setDefault(new AvatarControlScheme(null));
+        DahlgrensInput control = (DahlgrensInput)eventProcessor.setDefault(new DahlgrensInput(null));
 
         // Create an attributes object describing the maleAvatar
         // We will use random customizations for this one
@@ -86,7 +87,7 @@ public class SpeechTest extends DemoBase
 
         // Select the male and add them both to the input team (collection of controllable avatars)
         maleAvatar.selectForInput();
-        control.getAvatarTeam().add(maleAvatar);
+        control.setTargetAvatar(maleAvatar);
 
         // Hook the control scheme up the the camera in order to receieve input
         // events. We need this in order to control the Verlet arm ('Q' and 'E' to engage)

@@ -29,6 +29,7 @@ public abstract class InputScheme
     protected JScene m_jscene = null;
 
     abstract public void processEvents(Object[] events);
+    abstract public void processMouseEvents(Object[] events);
 
     public InputScheme(){}
     
@@ -43,5 +44,4 @@ public abstract class InputScheme
         if (jscene != null)
             m_jscene = jscene;
     }
-    
 }

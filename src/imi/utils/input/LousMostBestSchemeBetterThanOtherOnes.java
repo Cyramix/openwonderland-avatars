@@ -49,4 +49,9 @@ public class LousMostBestSchemeBetterThanOtherOnes extends InputScheme
             }
         }
     }
+
+    @Override
+    public void processMouseEvents(Object[] events) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 }

@@ -24,6 +24,7 @@ import imi.scene.camera.behaviors.WrongStateTypeException;
 import imi.scene.camera.state.CameraState;
 import imi.scene.SkyBox;
 import imi.utils.input.AvatarControlScheme;
+import imi.utils.input.InputScheme;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.jdesktop.mtgame.AWTInputComponent;
@@ -53,7 +54,7 @@ public class FlexibleCameraProcessor extends AWTEventProcessorComponent
     private CameraState m_state = null;
     private CameraModel m_model = null;
     
-    private AvatarControlScheme avatarControl = null;
+    private InputScheme avatarControl = null;
 
     // Time
     private double oldTime = 0.0;
@@ -78,7 +79,7 @@ public class FlexibleCameraProcessor extends AWTEventProcessorComponent
         m_armingConditions.addCondition(new NewFrameCondition(this));
     }
     
-    public void setControl(AvatarControlScheme control)
+    public void setControl(InputScheme control)
     {
         avatarControl = control;
     }

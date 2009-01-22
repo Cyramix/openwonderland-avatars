@@ -185,5 +185,10 @@ public class DemoSchemeSigraph extends InputScheme
             m_chairsModel = m_pscene.addModelInstance(chairs, table.getTransform().getWorldMatrix(false));
         }
     }
+
+    @Override
+    public void processMouseEvents(Object[] events) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
     
 }
