@@ -28,8 +28,8 @@ import imi.scene.animation.speech.PhonemeChain;
 import imi.scene.animation.speech.PhonemeChain.Phoneme;
 import org.jdesktop.mtgame.WorldManager;
 import imi.scene.processors.JSceneEventProcessor;
-import imi.utils.input.AvatarControlScheme;
 import imi.utils.input.DahlgrensInput;
+import imi.utils.instruments.Instrumentation;
 import java.util.ArrayList;
 
 
@@ -62,7 +62,7 @@ public class SpeechTest extends DemoBase
         // Give ourselves a nice environment
         String[] ourArgs = new String[] { "-env:assets/models/collada/Environments/Garden/Garden.dae" };
         // Construction does all the work
-        SpeechTest test = new SpeechTest(ourArgs);
+        SpeechTest test = new SpeechTest(args);
     }
 
     /**
@@ -117,5 +117,10 @@ public class SpeechTest extends DemoBase
         series.add(Phoneme.Consonant);
         series.add(Phoneme.U);
         speech.initiateChain(series, 1.0f);
+
+        Instrumentation instruments = (Instrumentation)wm.getUserData(Instrumentation.class);
+        instruments.addInstancedAvatar(Vector3f.ZERO);
+        instruments.addInstancedAvatar(new Vector3f(-1,0,1));
+        instruments.addInstancedAvatar(new Vector3f(1,0,1));
     }
 }

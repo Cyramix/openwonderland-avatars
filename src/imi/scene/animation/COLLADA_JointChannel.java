@@ -83,7 +83,7 @@ public class COLLADA_JointChannel implements PJointChannel, Serializable
     public void calculateFrame(PJoint jointToAffect, AnimationState state)
     {
         if (calculateBlendedMatrix(state.getCurrentCycleTime(), state.getCurrentCycleStartTime(),
-                state.getCurrentCycleEndTime(), m_blendBuffer) == true)
+                state.getCurrentCycleEndTime(), m_blendBuffer, state) == true)
             jointToAffect.getTransform().setLocalMatrix(m_blendBuffer);
         return;
     }
@@ -107,9 +107,9 @@ public class COLLADA_JointChannel implements PJointChannel, Serializable
         float interpolationCoefficient = state.getTimeInTransition() / state.getTransitionDuration();
         
         boolean resultOne = calculateBlendedMatrix(fCurrentCycleTime, state.getCurrentCycleStartTime(),
-                                state.getCurrentCycleEndTime(), m_blendedFrameLeft);
+                                state.getCurrentCycleEndTime(), m_blendedFrameLeft, state);
         boolean resultTwo = calculateBlendedMatrix(fTransitionCycleTime, state.getTransitionCycleStartTime(),
-                state.getTransitionCycleEndTime(), m_blendedFrameRight);
+                state.getTransitionCycleEndTime(), m_blendedFrameRight, state);
         
         PMatrix result = null;
         if (!resultOne && !resultTwo)
@@ -159,24 +159,57 @@ public class COLLADA_JointChannel implements PJointChannel, Serializable
      * @param output This matrix is used to receive the calculation.
      * @return False if there was no relevant calculation.
      */
-    private boolean calculateBlendedMatrix(float fTime, float fLeftBoundaryTime, float fRightBoundaryTime, PMatrix output)
+    private boolean calculateBlendedMatrix(float fTime, float fLeftBoundaryTime, float fRightBoundaryTime, PMatrix output, AnimationState state)
     {
         boolean result = true;
         float interpolationCoefficient = 0.0f;
         // determine what two keyframes to interpolate between for the first pose
         PMatrixKeyframe leftFrame = null;
         PMatrixKeyframe rightFrame = null;
+
+        int currentIndex = state.getCursor().currentIndex;
+        int frameCount = m_KeyFrames.size();
         
-        for (PMatrixKeyframe frame : m_KeyFrames)
+        PMatrixKeyframe currentFrame = null;
+        if (state.isReverseAnimation() == false)
         {
-            if (frame.getFrameTime() <= fTime)
-                leftFrame = frame;
-            else // passed the mark
+            if (currentIndex < 0 || currentIndex > frameCount)
+                currentIndex = 0;
+            for (int i = currentIndex; i < frameCount; ++i)
             {
-                rightFrame = frame;
-                break; // finished checking
+                currentFrame = m_KeyFrames.get(i);
+                if (currentFrame.getFrameTime() <= fTime)
+                {
+                    leftFrame = currentFrame;
+                    state.getCursor().currentIndex = i;
+                }
+                else // passed the mark
+                {
+                    rightFrame = currentFrame;
+                    break; // finished checking
+                }
             }
         }
+        else // reverse
+        {
+            if (currentIndex < 0 || currentIndex > frameCount)
+                currentIndex = frameCount - 1;
+            for (int i = currentIndex; i >= 0; --i)
+            {
+                currentFrame = m_KeyFrames.get(i);
+                if (currentFrame.getFrameTime() >= fTime)
+                {
+                    rightFrame = currentFrame;
+                    state.getCursor().currentIndex = i;
+                }
+                else // passed the mark
+                {
+                    leftFrame = currentFrame;
+                    break; // finished checking
+                }
+            }
+        }
+    
         
         // Bounds checking within the specified cycle
         if (leftFrame != null)

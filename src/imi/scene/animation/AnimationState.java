@@ -58,9 +58,10 @@ public class AnimationState
     
     /** The list of listeners to inform of messages **/
     private transient ArrayList<AnimationListener> m_listeners = null;
-    
+
+    /** **/
+    private transient AnimationCursor m_animCursor = new AnimationCursor();
     /**
-     * 
      * Empty Constructor
      */
     public AnimationState(int id)
@@ -408,5 +409,11 @@ public class AnimationState
     public void setID(int m_ID) {
         this.m_ID = m_ID;
     }
-    
+
+
+    // Package level access
+    AnimationCursor getCursor()
+    {
+        return m_animCursor;
+    }
 }

@@ -223,16 +223,20 @@ public class AnimationGroup implements Serializable
                     else
                         state.setTransitionReverseAnimation(!state.isTransitionReverseAnimation());
                 }
-
+                state.getCursor().currentIndex = -1;
             }
             else if (fTime > cycle.getEndTime()) // Reverse right edge, clamp to the right
+            {
                 fTime = cycle.getEndTime();
+                state.getCursor().currentIndex = -1;
+            }
         }
         else
         {
             if (fTime < cycle.getStartTime()) // Forward, left edge, clamp to the left
             {
                 fTime = cycle.getStartTime();
+                state.getCursor().currentIndex = -1;
             }
             else if (fTime > cycle.getEndTime()) // Forward, right edge
             {
@@ -252,6 +256,7 @@ public class AnimationGroup implements Serializable
                     else
                         state.setTransitionReverseAnimation(!state.isTransitionReverseAnimation());
                 }
+                state.getCursor().currentIndex = -1;
             }
         }
 

@@ -19,6 +19,11 @@ package imi.utils.instruments;
 
 import com.jme.math.Vector3f;
 import imi.character.CharacterAttributes;
+import imi.character.avatar.Avatar;
+import imi.character.avatar.MaleAvatarAttributes;
+import imi.scene.PMatrix;
+import java.util.HashMap;
+import java.util.Map;
 import org.jdesktop.mtgame.WorldManager;
 
 /**
@@ -29,15 +34,31 @@ public class DefaultInstrumentation implements Instrumentation
 {
     /** The manager of the world.  **/
     private WorldManager worldManager = null;
+    /** State mapping **/
+    private Map<InstrumentedSubsystem, Boolean> enabledMapping =
+            new HashMap<InstrumentedSubsystem, Boolean>();
+    /** The default to use for instanced avatars **/
+    private CharacterAttributes defaultInstancedAttributes = null;
 
     public DefaultInstrumentation(WorldManager wm)
     {
         worldManager = wm;
         worldManager.addUserData(Instrumentation.class, this);
+        // create the default attributes
+        defaultInstancedAttributes = new MaleAvatarAttributes("InstanceMan!", 0, 0, 0, 0, 0, 0);
+
+        enabledMapping.put(InstrumentedSubsystem.AnimationSystem, true);
+        enabledMapping.put(InstrumentedSubsystem.PoseTransferToGPU, true);
+        enabledMapping.put(InstrumentedSubsystem.Texturing, true);
+        enabledMapping.put(InstrumentedSubsystem.VertexDeformation, true);
     }
 
     @Override
     public boolean addInstancedAvatar(Vector3f translation) {
+        defaultInstancedAttributes.setOrigin(new PMatrix(translation));
+        Avatar newAvatar = new Avatar(defaultInstancedAttributes, worldManager);
+        if (newAvatar != null)
+            return true;
         return false;
     }
 
@@ -53,12 +74,12 @@ public class DefaultInstrumentation implements Instrumentation
 
     @Override
     public boolean disableSubsytem(InstrumentedSubsystem system) {
-        return false;
+        return true;
     }
 
     @Override
     public boolean enableSubsystem(InstrumentedSubsystem system) {
-        return false;
+        return true;
     }
 
     @Override
@@ -73,6 +94,9 @@ public class DefaultInstrumentation implements Instrumentation
 
     @Override
     public boolean isSubsystemEnabled(InstrumentedSubsystem system) {
+        Boolean result = enabledMapping.get(system);
+        if (result != null)
+            return result;
         return false;
     }
 }

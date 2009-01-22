@@ -192,7 +192,7 @@ public class DahlgrensInput extends InputScheme
             if (keyMethod != null)
             {
                 try {
-                    keyMethod.invoke(this, null);
+                    keyMethod.invoke(this, (Object[])null);
                 }
                 catch (Exception ex)
                 {

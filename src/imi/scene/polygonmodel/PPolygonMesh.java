@@ -106,39 +106,45 @@ public class PPolygonMesh extends PNode implements Serializable
     public PPolygonMesh(PPolygonMesh other) 
     {
         setName(other.getName());
-        setTransform(new PTransform(other.getTransform()));
+        setTransform(other.getTransform());
         
         beginBatch(); // signal that the geometry is currently in flux
-        m_Polygons          = new ArrayList<PPolygon>();
-        setMaterial(other.getMaterialCopy());
+        m_Polygons = other.m_Polygons;//         = new ArrayList<PPolygon>();
+        m_pMaterial = other.m_pMaterial;
+//        setMaterial(other.getMaterialCopy());
 
-        m_BoundingCube      = new PCube();
-        m_BoundingCube.set(other.m_BoundingCube.getMin(), other.m_BoundingCube.getMax());
-        m_BoundingSphere    = new PSphere();
-        m_BoundingSphere.set(other.m_BoundingSphere.getCenter(), other.m_BoundingSphere.getRadius());
+        m_BoundingCube      = other.m_BoundingCube;
+//        m_BoundingCube.set(other.m_BoundingCube.getMin(), other.m_BoundingCube.getMax());
+        m_BoundingSphere    = other.m_BoundingSphere;//new PSphere();
+//        m_BoundingSphere.set(other.m_BoundingSphere.getCenter(), other.m_BoundingSphere.getRadius());
         
         m_bSmoothNormals    = other.m_bSmoothNormals;
         // Positions
-        for (PPolygonPosition pos : other.m_Positions)
-            m_Positions.add(new PPolygonPosition(pos.m_Position));
-        // Normals
-        for (PPolygonNormal norm : other.m_Normals)
-            m_Normals.add(new PPolygonNormal(norm.m_Normal));
-        // Colors
-        for (PPolygonColor color : other.m_Colors)
-            m_Colors.add(new PPolygonColor(color.m_Color));
-        // Texture Coordinates
-        for (PPolygonTexCoord coord : other.m_TexCoords)
-            m_TexCoords.add(new PPolygonTexCoord(coord.m_TexCoord));
+        m_Positions = other.m_Positions;
+        m_Normals = other.m_Normals;
+        m_Colors = other.m_Colors;
+        m_TexCoords = other.m_TexCoords;
+
+//        for (PPolygonPosition pos : other.m_Positions)
+//            m_Positions.add(new PPolygonPosition(pos.m_Position));
+//        // Normals
+//        for (PPolygonNormal norm : other.m_Normals)
+//            m_Normals.add(new PPolygonNormal(norm.m_Normal));
+//        // Colors
+//        for (PPolygonColor color : other.m_Colors)
+//            m_Colors.add(new PPolygonColor(color.m_Color));
+//        // Texture Coordinates
+//        for (PPolygonTexCoord coord : other.m_TexCoords)
+//            m_TexCoords.add(new PPolygonTexCoord(coord.m_TexCoord));
         
         setUniformTexCoords(other.isUniformTexCoords()); // Actually do the copy
         m_NumberOfTextures  = other.getNumberOfTextures();
         // PPolygon copy constructor safely creates a duplicate
-        for (int i = 0; i < other.getPolygonCount(); i++)
-        {
-            m_Polygons.add(new PPolygon(other.getPolygon(i)));
-            m_Polygons.get(i).setPolygonMesh(this); // set the "owning" mesh
-        }
+//        for (int i = 0; i < other.getPolygonCount(); i++)
+//        {
+//            m_Polygons.add(new PPolygon(other.getPolygon(i)));
+//            m_Polygons.get(i).setPolygonMesh(this); // set the "owning" mesh
+//        }
         
         // Great Success!
         endBatch();
