@@ -99,6 +99,8 @@ import imi.scene.camera.state.FirstPersonCamState;
 import imi.scene.processors.CameraProcessor;
 import imi.scene.processors.FlexibleCameraProcessor;
 import imi.scene.processors.JSceneEventProcessor;
+import imi.utils.instruments.DefaultInstrumentation;
+import imi.utils.instruments.Instrumentation;
 import org.jdesktop.mtgame.RenderBuffer;
 
 
@@ -163,6 +165,7 @@ public class DemoBase
         createInputEntity(worldManager); 
         setGlobalLighting(worldManager);
         createEnvironment(worldManager, pathToEnv);
+        createInstrumentation(worldManager);
         createDemoEntities(worldManager);
     }
     
@@ -687,6 +690,10 @@ public class DemoBase
             ColladaEnvironment environment = new ColladaEnvironment(worldManager, relativePath, "DemoWorld");
             worldManager.addUserData(ColladaEnvironment.class, environment);
         }
+    }
+
+    private void createInstrumentation(WorldManager worldManager) {
+        Instrumentation instrument = new DefaultInstrumentation(worldManager);
     }
 
     private Texture loadSkyboxTexture(String filePath)
