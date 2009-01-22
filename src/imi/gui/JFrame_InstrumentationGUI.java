@@ -1,6 +1,19 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+/**
+ * Project Wonderland
+ *
+ * Copyright (c) 2004-2008, Sun Microsystems, Inc., All Rights Reserved
+ *
+ * Redistributions in source code form must reproduce the above
+ * copyright and this condition.
+ *
+ * The contents of this file are subject to the GNU General Public
+ * License, Version 2 (the "License"); you may not use this file
+ * except in compliance with the License. A copy of the License is
+ * available at http://www.opensource.org/licenses/gpl-license.php.
+ *
+ * Sun designates this particular file as subject to the "Classpath"
+ * exception as provided by Sun in the License file that accompanied
+ * this code.
  */
 
 /*
@@ -19,12 +32,11 @@ import imi.utils.instruments.Instrumentation;
 import imi.utils.instruments.Instrumentation.InstrumentedSubsystem;
 import java.util.ArrayList;
 import javax.swing.DefaultListModel;
-import javax.swing.JList;
 import org.jdesktop.mtgame.WorldManager;
 
 /**
  *
- * @author ptruong
+ * @author Paul Viet Ngueyn Truong (ptruong)
  */
 public class JFrame_InstrumentationGUI extends javax.swing.JFrame {
 ////////////////////////////////////////////////////////////////////////////////
@@ -33,23 +45,38 @@ public class JFrame_InstrumentationGUI extends javax.swing.JFrame {
     private WorldManager                    m_worldManager      = null;
     private Instrumentation                 m_instrumentation   = null;
     private ArrayList<CharacterAttributes>  m_attributes        = null;
+    private int                             m_numMaleAttribs    = 10;
+    private int                             m_numFeamleAttribs  = 10;
 
 ////////////////////////////////////////////////////////////////////////////////
 // CLASS METHODS
 ////////////////////////////////////////////////////////////////////////////////
-    /** Creates new form JFrame_InstrumentationGUI */
+    /**
+     * Default constructor only initializes the default GUI components (visuals).
+     * Required manual setting of worldmanager, instrumentation, and method calls
+     * to initAttributesBox(), setLists().  Best not to call this method of
+     * construction.
+     */
     public JFrame_InstrumentationGUI() {
         initComponents();
     }
 
+    /**
+     * Overloaded constructor initializes and sets up the GUI components.  If
+     * more random attributes are required, call method setNumAttributes()
+     * @param wm
+     */
     public JFrame_InstrumentationGUI(WorldManager wm) {
         m_worldManager = wm;
         m_instrumentation = (Instrumentation) wm.getUserData(Instrumentation.class);
         initComponents();
-        initAttributesBox(10, 10);
+        initAttributesBox();
         setLists();
     }
 
+    /**
+     * Adds an instanced avatar at the translation vector set by the user.
+     */
     public void addInstancedAvatar() {
         float x = Float.valueOf(jFormattedTextField_X1.getValue().toString());
         float y = Float.valueOf(jFormattedTextField_Y1.getValue().toString());
@@ -60,6 +87,11 @@ public class JFrame_InstrumentationGUI extends javax.swing.JFrame {
         m_instrumentation.addInstancedAvatar(translation);
     }
 
+    /**
+     * Adds an non-instanced avatar at the translation vector set by the user.
+     * if selection of attribute is set, Avatar will load with that attribute.
+     * @param attributes
+     */
     public void addNonInstancedAvatar(boolean attributes) {
 
         if (attributes) {
@@ -81,6 +113,10 @@ public class JFrame_InstrumentationGUI extends javax.swing.JFrame {
         }
     }
 
+    /**
+     * Enables either the selected instrumentation or all the instrumentation.
+     * @param enableall
+     */
     public void enableInstrumentation(boolean enableall) {
         DefaultListModel Emodel = (DefaultListModel) jList_Enabled.getModel();
         DefaultListModel Dmodel = (DefaultListModel) jList_Disabled.getModel();
@@ -88,9 +124,8 @@ public class JFrame_InstrumentationGUI extends javax.swing.JFrame {
         if (enableall) {
 
             m_instrumentation.enableAllSubsystems();
-
-            for (int i = 0; i < Emodel.getSize(); i++) {
-                Instrumentation.InstrumentedSubsystem instrumentation = (InstrumentedSubsystem) Dmodel.getElementAt(i);
+            while (Dmodel.getSize() > 0) {
+                Instrumentation.InstrumentedSubsystem instrumentation = (InstrumentedSubsystem) Dmodel.getElementAt(0);
                 Dmodel.removeElement(instrumentation);
                 Emodel.addElement(instrumentation);
             }
@@ -108,6 +143,10 @@ public class JFrame_InstrumentationGUI extends javax.swing.JFrame {
         }
     }
 
+    /**
+     * Disables either the selected instrumentation or all the instrumentation
+     * @param disableall
+     */
     public void disableInstrumentaiton(boolean disableall) {
         DefaultListModel Emodel = (DefaultListModel) jList_Enabled.getModel();
         DefaultListModel Dmodel = (DefaultListModel) jList_Disabled.getModel();
@@ -115,9 +154,8 @@ public class JFrame_InstrumentationGUI extends javax.swing.JFrame {
         if (disableall) {
 
             m_instrumentation.disableAllSubsystems();
-
-            for (int i = 0; i < Emodel.getSize(); i++) {
-                Instrumentation.InstrumentedSubsystem instrumentation = (InstrumentedSubsystem) Emodel.getElementAt(i);
+            while (Emodel.getSize() > 0) {
+                Instrumentation.InstrumentedSubsystem instrumentation = (InstrumentedSubsystem) Emodel.getElementAt(0);
                 Emodel.removeElement(instrumentation);
                 Dmodel.addElement(instrumentation);
             }
@@ -468,6 +506,12 @@ public class JFrame_InstrumentationGUI extends javax.swing.JFrame {
         m_instrumentation = inst;
     }
 
+    public void setNumberOfAttributes(int numMaleAttrib, int numFemaleAttrib) {
+        m_numMaleAttribs    = numMaleAttrib;
+        m_numFeamleAttribs  = numFemaleAttrib;
+        initAttributesBox();
+    }
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton_Disable;
     private javax.swing.JButton jButton_DisableAll;
@@ -501,6 +545,13 @@ public class JFrame_InstrumentationGUI extends javax.swing.JFrame {
 // HELPER FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 
+    /**
+     * Randomly generates an avatar attribute based on the gender specified.
+     * Called internally by class when the attribute combobox is initiated
+     * @param iGender
+     * @param appendNumber
+     * @return
+     */
     private CharacterAttributes createAttributes(int iGender, int appendNumber) {
         CharacterAttributes attribs = null;
         switch(iGender)
@@ -519,21 +570,31 @@ public class JFrame_InstrumentationGUI extends javax.swing.JFrame {
 
         return attribs;
     }
-    
-    private void initAttributesBox(int numMaleAttribs, int numFemaleAttribs) {
+
+    /**
+     * Initializes the combobox full of randomly generated attributes.  The number
+     * of attributes is default set to 10 male attributes and 10 female attributes.
+     * Calling the setNumAttributes method will all the setting of the number of male
+     * and the number of female avatars
+     */
+    private void initAttributesBox() {
         m_attributes = new ArrayList<CharacterAttributes>();
 
-        for (int i = 0; i < numMaleAttribs; i++) {
+        for (int i = 0; i < m_numMaleAttribs; i++) {
             m_attributes.add(createAttributes(1, i));
         }
         
-        for (int i = 0; i < numFemaleAttribs; i++) {
+        for (int i = 0; i < m_numFeamleAttribs; i++) {
             m_attributes.add(createAttributes(2, i));
         }
         
         jComboBox_Attributes.setModel(new javax.swing.DefaultComboBoxModel(m_attributes.toArray()));
     }
 
+    /**
+     * When the window is created, calling this method will set the jlist containing
+     * which instrumentations are enabled or disabled.
+     */
     private void setLists() {
         Instrumentation.InstrumentedSubsystem[]          iSubSystem = Instrumentation.InstrumentedSubsystem.values();
         ArrayList<Instrumentation.InstrumentedSubsystem> enabled    = new ArrayList<Instrumentation.InstrumentedSubsystem>();
