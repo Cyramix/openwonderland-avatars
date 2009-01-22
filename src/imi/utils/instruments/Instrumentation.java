@@ -87,4 +87,11 @@ public interface Instrumentation
      * @return True on success, false otherwise
      */
     public boolean disableAllSubsystems();
+
+    /**
+     * Determine whether the specified subsystem is enabled or not.
+     * @param system
+     * @return
+     */
+    public boolean isSubsystemEnabled(InstrumentedSubsystem system);
 }
