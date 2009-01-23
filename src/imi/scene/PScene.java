@@ -213,7 +213,10 @@ public class PScene extends PNode implements RepositoryUser, Serializable
         // Known issue #123
         renderStateHack++;
         if (renderStateHack > 60)
+        {
+            renderStateHack = 0;
             updateJSceneRenderState();
+        }
     }
 
     /**
