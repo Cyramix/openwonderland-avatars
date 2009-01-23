@@ -74,8 +74,13 @@ public class CharacterAnimationProcessor extends ProcessorComponent
     @Override
     public void commit(ProcessorArmingCollection collection) 
     {
-        if (!bEnable || instruments.isSubsystemEnabled(Instrumentation.InstrumentedSubsystem.AnimationSystem) == false)
+        if (!bEnable)
             return;
+        if (instruments.isSubsystemEnabled(Instrumentation.InstrumentedSubsystem.AnimationSystem) == false)
+        {
+            m_modelInst.setDirty(true, true);
+            return;
+        }
 
         double newTime = System.nanoTime() / 1000000000.0;
         deltaTime = (newTime - oldTime);
