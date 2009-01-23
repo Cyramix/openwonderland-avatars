@@ -87,9 +87,13 @@ public class FallFromSitState extends GameState
         bIdleSittingAnimationSet = false;
         bGettingUpAnimationSet   = false;
         
-        // If using the simple sphere model for the avatar the animation
-        // states will never be set
-        if(owner.getCharacter().getAttributes().isUseSimpleStaticModel())
+        // If any of the animations are not found or 
+        // If using the simple sphere\scene model for the avatar the animation
+        // these will never be set so this safry lets us get out of the state
+        if( owner.getCharacter().getAttributes().isUseSimpleStaticModel() || context.getSkeleton() != null && (
+                context.getSkeleton().getAnimationComponent().findCycle(getAnimationName(), 0) == -1 ||
+                context.getSkeleton().getAnimationComponent().findCycle(getIdleSittingAnimationName(), 0) == -1 ||
+                context.getSkeleton().getAnimationComponent().findCycle(getGettingUpAnimationName(), 0) == -1 ))
         {
             bGettingUpAnimationSet   = true;
             bIdleSittingAnimationSet = true;

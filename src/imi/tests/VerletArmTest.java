@@ -63,15 +63,15 @@ public class VerletArmTest  extends DemoBase
         AvatarControlScheme control = (AvatarControlScheme)((JSceneEventProcessor)wm.getUserData(JSceneEventProcessor.class)).setDefault(new AvatarControlScheme(null));
         
         // Make a chair and let the control the collection so it can delete it
-        //objects.generateChairs(Vector3f.ZERO, 5.0f, 4);
-        //control.setObjectCollection(objects);
+        objects.generateChairs(Vector3f.ZERO, 5.0f, 4);
+        control.setObjectCollection(objects);
         
         // change camera speed and position it
         FirstPersonCamState camState = (FirstPersonCamState)m_cameraProcessor.getState();
         camState.setMovementRate(0.03f);
         camState.setCameraPosition(new Vector3f(0.0f, 1.8f, -2.0f));
         
-        boolean male = true;
+        boolean male = false;
         Avatar avatar;
         int feet, legs, torso, hair;
         
@@ -87,13 +87,14 @@ public class VerletArmTest  extends DemoBase
         else // female
         {
             // Create female avatar
-            feet  = -1;//(int) (Math.random() * 10000 % 0);
-            legs  = (int) (Math.random() * 10000 % 2);  // 3 has problems
+            feet  = (int) (Math.random() * 10000 % 2);
+            legs  = (int) (Math.random() * 10000 % 3);
             torso = (int) (Math.random() * 10000 % 3);  // % 5.... 3 and 4 problems
             hair  = (int) (Math.random() * 10000 % 53); // tested til 15
             avatar = new Avatar(new FemaleAvatarAttributes("Avatar", feet, legs, torso, hair, 0), wm);
         }
         
+        //new Avatar(new MaleAvatarAttributes("Avatar", feet, legs, torso, hair, 0), wm);//new Avatar(new MaleAvatarAttributes("Avatar", feet, legs, torso, hair, 0), wm);
         //avatar.setBigHeadMode(2.0f);
                 
         // Select the avatar for input and set the object collection
@@ -104,12 +105,12 @@ public class VerletArmTest  extends DemoBase
         // Get the mouse events to be able to control the arm 
         control.getMouseEventsFromCamera();
 
-        // Construct a tree explorer for analyzing the scene graph
-        TreeExplorer te = new TreeExplorer();
-        SceneEssentials se = new SceneEssentials();
-        se.setSceneData(avatar.getJScene(), avatar.getPScene(), avatar, wm, null);
-        te.setExplorer(se);
-        te.setVisible(true);
+//        // Construct a tree explorer for analyzing the scene graph
+//        TreeExplorer te = new TreeExplorer();
+//        SceneEssentials se = new SceneEssentials();
+//        se.setSceneData(avatar.getJScene(), avatar.getPScene(), avatar, wm, null);
+//        te.setExplorer(se);
+//        te.setVisible(true);
         
         // Make some more avatars
         float zStep = 5.0f;

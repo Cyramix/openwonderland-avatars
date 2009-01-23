@@ -86,6 +86,11 @@ public class BuildBinarySkeletons
         "assets/models/collada/Animations/FemaleBodyAnimations/Female_Anim_Walk.dae",
         "assets/models/collada/Animations/FemaleBodyAnimations/Female_Anim_Wave.dae",
         "assets/models/collada/Animations/FemaleBodyAnimations/Female_Anim_Yes.dae",
+        "assets/models/collada/Animations/FemaleBodyAnimations/Female_Anim_SittingRaiseHand.dae",
+        "assets/models/collada/Animations/FemaleBodyAnimations/Female_Anim_SittingRaiseHandIdle.dae",
+        "assets/models/collada/Animations/FemaleBodyAnimations/Female_Anim_Rotate.dae",
+        "assets/models/collada/Animations/FemaleBodyAnimations/Female_Anim_StrafeLeft.dae",
+        "assets/models/collada/Animations/FemaleBodyAnimations/Female_Anim_StrafeRight.dae",
     };
 
     private static String[] FemaleFacialAnimations = {
@@ -98,8 +103,8 @@ public class BuildBinarySkeletons
     private static String[] MaleAnimationLocations = {
         "assets/models/collada/Animations/MaleBodyAnimations/Male_Anim_ActiveIdle.dae",
         "assets/models/collada/Animations/MaleBodyAnimations/Male_Anim_AnswerCell.dae",
-        "assets/models/collada/Animations/MaleBodyAnimations/Male_Anim_Bow.dae",
         "assets/models/collada/Animations/MaleBodyAnimations/Male_Anim_Cell.dae",
+        "assets/models/collada/Animations/MaleBodyAnimations/Male_Anim_Bow.dae",
         "assets/models/collada/Animations/MaleBodyAnimations/Male_Anim_Cheer.dae",
         "assets/models/collada/Animations/MaleBodyAnimations/Male_Anim_Clap.dae",
         "assets/models/collada/Animations/MaleBodyAnimations/Male_Anim_FallFromSitting.dae",
@@ -110,6 +115,7 @@ public class BuildBinarySkeletons
         "assets/models/collada/Animations/MaleBodyAnimations/Male_Anim_Jump.dae",
         "assets/models/collada/Animations/MaleBodyAnimations/Male_Anim_Laugh.dae",
         "assets/models/collada/Animations/MaleBodyAnimations/Male_Anim_No.dae",
+        "assets/models/collada/Animations/MaleBodyAnimations/Male_Anim_Yes.dae",
         "assets/models/collada/Animations/MaleBodyAnimations/Male_Anim_PublicSpeaking.dae",
         "assets/models/collada/Animations/MaleBodyAnimations/Male_Anim_Run.dae",
         "assets/models/collada/Animations/MaleBodyAnimations/Male_Anim_ShakeHands.dae",
@@ -118,7 +124,13 @@ public class BuildBinarySkeletons
         "assets/models/collada/Animations/MaleBodyAnimations/Male_Anim_TakeDamage.dae",
         "assets/models/collada/Animations/MaleBodyAnimations/Male_Anim_Walk.dae",
         "assets/models/collada/Animations/MaleBodyAnimations/Male_Anim_Wave.dae",
-        "assets/models/collada/Animations/MaleBodyAnimations/Male_Anim_Yes.dae",
+        "assets/models/collada/Animations/MaleBodyAnimations/Male_Anim_RaiseHand.dae",
+        "assets/models/collada/Animations/MaleBodyAnimations/Male_Anim_RaiseHandIdle.dae",
+        "assets/models/collada/Animations/MaleBodyAnimations/Male_Anim_SittingRaiseHand.dae",
+        "assets/models/collada/Animations/MaleBodyAnimations/Male_Anim_SittingRaiseHandIdle.dae",
+        "assets/models/collada/Animations/MaleBodyAnimations/Male_Anim_Rotate.dae",
+        "assets/models/collada/Animations/MaleBodyAnimations/Male_Anim_StrafeLeft.dae",
+        "assets/models/collada/Animations/MaleBodyAnimations/Male_Anim_StrafeRight.dae",
     };
 
     private static String[] MaleFacialAnimationLocations = {

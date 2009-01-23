@@ -47,6 +47,8 @@ public class ActionInfo extends StateInfo
         super.apply(state);
         state.setRepeat(bRepeat);
         state.setRepeatWillOscilate(bRepeatWillOscilate);
+        if (state instanceof CycleActionState)
+            ((CycleActionState)state).setSimpleAction(true);
     }
    
     /** true to keep repeating the body animation */

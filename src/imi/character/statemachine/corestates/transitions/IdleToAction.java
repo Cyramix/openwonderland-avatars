@@ -31,7 +31,7 @@ public class IdleToAction extends TransitionObject
     @Override
     protected boolean testCondition(GameState state) 
     {
-        stateMessageName = "toPunch";
+        stateMessageName = "toAction";
         
         // If the punch action is active
         if (state.getContext().getActions()[ActionNames.Action.ordinal()] == 1.0f)

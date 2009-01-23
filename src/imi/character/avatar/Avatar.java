@@ -21,6 +21,7 @@ import imi.character.CharacterAttributes;
 import imi.character.avatar.AvatarContext.TriggerNames;
 import imi.character.statemachine.GameContext;
 import imi.character.statemachine.corestates.ActionState;
+import imi.character.statemachine.corestates.CycleActionState;
 import imi.character.statemachine.corestates.FallFromSitState;
 import imi.character.statemachine.corestates.FlyState;
 import imi.character.statemachine.corestates.IdleState;
@@ -145,30 +146,83 @@ public class Avatar extends imi.character.Character
     }
     
     private void maleContextSetup()
-    {   
-        m_context.getController().setReverseHeading(true);
+    {
+        commonContextSetup();
+
+        FallFromSitState fall = (FallFromSitState)m_context.getState(FallFromSitState.class);
+        fall.setAnimationName("Male_FallFromSitting");
+        fall.setIdleSittingAnimationName("Male_FloorSitting");
+        fall.setGettingUpAnimationName("Male_FloorGetup");
+        fall.setFacialAnimationName("MaleFrown");
+
+        SitOnGroundState sitGround = (SitOnGroundState)m_context.getState(SitOnGroundState.class);
+        sitGround.setAnimationName("Male_FloorGetup");
+        sitGround.setIdleSittingAnimationName("Male_FloorSitting");
+        sitGround.setGettingUpAnimationName("Male_FloorGetup");
         
+        m_context.getStateMapping().get(IdleState.class).setAnimationName("Male_Idle");
+        m_context.getStateMapping().get(TurnState.class).setAnimationName("Male_Rotate");
+        m_context.getStateMapping().get(WalkState.class).setAnimationName("Male_Walk");
+        m_context.getStateMapping().get(RunState.class).setAnimationName("Male_Run");
+        m_context.getStateMapping().get(SitState.class).setAnimationName("Male_StandToSit");
+        m_context.getStateMapping().get(FlyState.class).setAnimationName("Male_Sitting");
+        ((SitState)m_context.getStateMapping().get(SitState.class)).setIdleSittingAnimationName("Male_Sitting");
+        ((SitState)m_context.getStateMapping().get(SitState.class)).setGettingUpAnimationName("Male_StandToSit");
+    }
+    
+    private void femaleContextSetup()
+    {
+        commonContextSetup();
+
+        FallFromSitState fall = (FallFromSitState)m_context.getState(FallFromSitState.class);
+        fall.setAnimationName("Female_FallFromSitting");
+        fall.setIdleSittingAnimationName("Female_FloorSitting");
+        fall.setGettingUpAnimationName("Female_FloorGetup");
+        fall.setFacialAnimationName("FemaleC_Frown");
+
+        SitOnGroundState sitGround = (SitOnGroundState)m_context.getState(SitOnGroundState.class);
+        sitGround.setAnimationName("Female_FloorGetup");
+        sitGround.setIdleSittingAnimationName("Female_FloorSitting");
+        sitGround.setGettingUpAnimationName("Female_FloorGetup");
+
+
         // Tweak animation names and speeds
-        
+        m_context.getController().setReverseHeading(true);
+        m_context.getStateMapping().get(IdleState.class).setAnimationName("Female_Idle");
+        m_context.getStateMapping().get(TurnState.class).setAnimationName("Female_Rotate");
+        m_context.getStateMapping().get(WalkState.class).setAnimationName("Female_Walk");
+        m_context.getStateMapping().get(RunState.class).setAnimationName("Female_Run");
+        m_context.getStateMapping().get(SitState.class).setAnimationName("Female_StandToSit");
+        m_context.getStateMapping().get(FlyState.class).setAnimationName("Female_Sitting");
+        ((SitState)m_context.getStateMapping().get(SitState.class)).setIdleSittingAnimationName("Female_Sitting");
+        ((SitState)m_context.getStateMapping().get(SitState.class)).setGettingUpAnimationName("Female_StandToSit");
+    }
+
+    private void commonContextSetup()
+    {
+        m_context.getController().setReverseHeading(true);
+
+        // Tweak animation names and speeds
+
         WalkState walk = (WalkState)m_context.getState(WalkState.class);
         walk.setImpulse(15.0f);
         walk.setWalkSpeedMax(2.5f);
         walk.setWalkSpeedFactor(1.3f);
         walk.setMinimumTimeBeforeTransition(0.05f);
         walk.setTransitionDuration(0.1f);
-        
+
         RunState run = (RunState)m_context.getState(RunState.class);
         run.setImpulse(15.0f);
         run.setWalkSpeedMax(1.0f);
         run.setWalkSpeedFactor(1.0f);
         run.setMinimumTimeBeforeTransition(0.5f);
         run.setTransitionDuration(0.3f);
-        
+
         TurnState turn = (TurnState)m_context.getState(TurnState.class);
-        turn.setAnimationSpeed(1.5f);
+        turn.setAnimationSpeed(1.0f);
         turn.setTransitionDuration(0.05f);
         turn.setMinimumTimeBeforeTransition(0.18f);
-        
+
         SitState sit = (SitState)m_context.getState(SitState.class);
         sit.setSittingAnimationTime(0.7f);
         sit.setTransitionDuration(0.05f);
@@ -177,11 +231,8 @@ public class Avatar extends imi.character.Character
         sit.setAnimationSpeed(3.0f);
         sit.setGettingUpAnimationSpeed(4.0f);
         sit.setGettingUpAnimationTime(0.8f);
-        
+
         FallFromSitState fall = (FallFromSitState)m_context.getState(FallFromSitState.class);
-        fall.setAnimationName("Male_FallFromSitting");
-        fall.setIdleSittingAnimationName("Male_FloorSitting");
-        fall.setGettingUpAnimationName("Male_FloorGetup");
         fall.setGettingUpAnimationTime(1.0f);
         fall.setTransitionDuration(0.05f);
         fall.setIdleSittingTransitionDuration(0.5f);
@@ -189,15 +240,11 @@ public class Avatar extends imi.character.Character
         fall.setAnimationSpeed(2.0f);
         fall.setGettingUpAnimationSpeed(2.0f);
         // Frown when entering the state
-        fall.setFacialAnimationName("MaleFrown");
         fall.setFacialAnimationTimeIn(0.75f);
         fall.setFacialAnimationTimeOut(2.0f);
-        
+
         SitOnGroundState sitGround = (SitOnGroundState)m_context.getState(SitOnGroundState.class);
         sitGround.setTransitionReverseAnimation(true);
-        sitGround.setAnimationName("Male_FloorGetup");
-        sitGround.setIdleSittingAnimationName("Male_FloorSitting");
-        sitGround.setGettingUpAnimationName("Male_FloorGetup");
         sitGround.setSittingAnimationTime(0.7f);
         sitGround.setTransitionDuration(1.0f);
         sitGround.setIdleSittingTransitionDuration(0.5f);
@@ -205,63 +252,5 @@ public class Avatar extends imi.character.Character
         sitGround.setAnimationSpeed(1.5f);
         sitGround.setGettingUpAnimationSpeed(2.0f);
         sitGround.setGettingUpAnimationTime(1.0f);
-        
-        
-        m_context.getStateMapping().get(IdleState.class).setAnimationName("Male_Idle");
-        m_context.getStateMapping().get(ActionState.class).setAnimationName("Male_Wave");
-        m_context.getStateMapping().get(TurnState.class).setAnimationName("Male_Idle");
-        m_context.getStateMapping().get(WalkState.class).setAnimationName("Male_Walk");
-        m_context.getStateMapping().get(RunState.class).setAnimationName("Male_Run");
-        m_context.getStateMapping().get(SitState.class).setAnimationName("Male_StandToSit");
-        m_context.getStateMapping().get(FlyState.class).setAnimationName("Male_Sitting");
-        ((SitState)m_context.getStateMapping().get(SitState.class)).setIdleSittingAnimationName("Male_Sitting");
-        ((SitState)m_context.getStateMapping().get(SitState.class)).setGettingUpAnimationName("Male_StandToSit");
-
-        // Make him smile when waving
-        ((ActionState)m_context.getState(ActionState.class)).setFacialAnimationName("MaleSmile");
-
-        // For testing, no transitions
-        if (false)
-        {
-            m_context.getStateMapping().get(IdleState.class).setTransitionDuration(0.0f);
-            m_context.getStateMapping().get(WalkState.class).setTransitionDuration(0.0f);
-            m_context.getStateMapping().get(TurnState.class).setTransitionDuration(0.0f);
-            m_context.getStateMapping().get(SitState.class).setTransitionDuration(0.0f);
-            m_context.getStateMapping().get(ActionState.class).setTransitionDuration(0.0f);
-            m_context.getStateMapping().get(FlyState.class).setTransitionDuration(0.0f);
-            ((SitState)m_context.getStateMapping().get(SitState.class)).setGettingUpTransitionDuration(0.0f);
-            ((SitState)m_context.getStateMapping().get(SitState.class)).setIdleSittingTransitionDuration(0.0f);
-        }
-
-        // For testing
-        //m_context.getStateMapping().get(PunchState.class).setAnimationSpeed(1.0f);
-        if (false)
-        {
-            m_context.getStateMapping().get(IdleState.class).setAnimationName("Male_Walk");
-            m_context.getStateMapping().get(ActionState.class).setAnimationName("Male_Walk");
-            m_context.getStateMapping().get(TurnState.class).setAnimationName("Male_Walk");
-            m_context.getStateMapping().get(WalkState.class).setAnimationName("Male_Walk");
-            m_context.getStateMapping().get(SitState.class).setAnimationName("Male_Walk");
-            m_context.getStateMapping().get(FlyState.class).setAnimationName("Male_Walk");
-            ((SitState)m_context.getStateMapping().get(SitState.class)).setIdleSittingAnimationName("Male_Walk");
-            ((SitState)m_context.getStateMapping().get(SitState.class)).setGettingUpAnimationName("Male_Walk");
-        }
-    }
-    
-    private void femaleContextSetup()
-    {
-        // Tweak animation names and speeds
-        m_context.getController().setReverseHeading(true);
-        m_context.getStateMapping().get(IdleState.class).setAnimationName("Female_Idle");
-        //m_context.getStateMapping().get(PunchState.class).setAnimationName("Female_Wave");
-        m_context.getStateMapping().get(TurnState.class).setAnimationName("Female_Idle");
-        m_context.getStateMapping().get(WalkState.class).setAnimationName("Female_Walk");
-        m_context.getStateMapping().get(SitState.class).setAnimationName("Female_StandToSit");
-        m_context.getStateMapping().get(FlyState.class).setAnimationName("Female_Sitting");
-        ((SitState)m_context.getStateMapping().get(SitState.class)).setIdleSittingAnimationName("Female_Sitting");
-        ((SitState)m_context.getStateMapping().get(SitState.class)).setGettingUpAnimationName("Female_StandToSit");
-
-        // Make him smile when waving
-        //((PunchState)m_context.getState(PunchState.class)).setFacialAnimationName("MaleSmile");
     }
 }

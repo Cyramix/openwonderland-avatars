@@ -33,11 +33,11 @@ public class ActionState extends GameState
     GameContext context = null;
             
     /** true if the animation played at least once since the state was entered */
-    private boolean bPlayedOnce = false;
+    protected boolean bPlayedOnce           = false;
     /** true to keep repeating the animation */
-    private boolean bRepeat     = false;
+    protected boolean bRepeat               = false;
     /** true to have an oscilating repeat, false to have it loop */
-    private boolean bRepeatWillOscilate = false;
+    protected boolean bRepeatWillOscilate   = false;
     
     /**
      * Construct a new instance with the provided context.
@@ -55,7 +55,7 @@ public class ActionState extends GameState
      * @param data - not used
      * @return true if the transition is validated
      */
-    public boolean toPunch(Object data)
+    public boolean toAction(Object data)
     {
         return true;
     }
@@ -80,7 +80,8 @@ public class ActionState extends GameState
         // to exit the state
         if (context.getSkeleton() != null)
         {
-            if (context.getSkeleton().getAnimationComponent().findCycle(getAnimationName(), 0) == -1)
+            if (owner.getCharacter().getAttributes().isUseSimpleStaticModel() ||
+                    context.getSkeleton().getAnimationComponent().findCycle(getAnimationName(), 0) == -1)
                 bPlayedOnce = true;
         }
         

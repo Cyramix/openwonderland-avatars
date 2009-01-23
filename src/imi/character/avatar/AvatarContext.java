@@ -26,7 +26,6 @@ import imi.character.statemachine.corestates.FlyState;
 import imi.character.statemachine.corestates.FallFromSitState;
 import imi.character.statemachine.corestates.ActionState;
 import imi.character.CharacterController;
-import imi.character.networking.DarkstarClient;
 import imi.character.steering.GoSit;
 import imi.character.steering.GoTo;
 import imi.character.statemachine.corestates.transitions.FlyToIdle;
@@ -51,6 +50,8 @@ import imi.character.objects.SpatialObject;
 import imi.character.statemachine.GameContext;
 import imi.character.statemachine.GameState.Action;
 import imi.character.statemachine.corestates.ActionInfo;
+import imi.character.statemachine.corestates.CycleActionInfo;
+import imi.character.statemachine.corestates.CycleActionState;
 import imi.character.statemachine.corestates.RunState;
 import imi.character.statemachine.corestates.transitions.RunToWalk;
 import imi.character.statemachine.corestates.transitions.WalkToRun;
@@ -131,7 +132,7 @@ public class AvatarContext extends GameContext
         gameStates.put(IdleState.class,  new IdleState(this));
         gameStates.put(WalkState.class,  new WalkState(this));
         gameStates.put(TurnState.class,  new TurnState(this));
-        gameStates.put(ActionState.class, new ActionState(this));
+        gameStates.put(CycleActionState.class, new CycleActionState(this));
         gameStates.put(SitState.class,   new SitState(this));
         gameStates.put(FlyState.class,   new FlyState(this));
         gameStates.put(FallFromSitState.class,   new FallFromSitState(this));
@@ -145,7 +146,7 @@ public class AvatarContext extends GameContext
         RegisterStateEntryPoint(gameStates.get(IdleState.class),  "toIdle");
         RegisterStateEntryPoint(gameStates.get(WalkState.class),  "toWalk");
         RegisterStateEntryPoint(gameStates.get(TurnState.class),  "toTurn");
-        RegisterStateEntryPoint(gameStates.get(ActionState.class), "toPunch");
+        RegisterStateEntryPoint(gameStates.get(CycleActionState.class), "toAction");
         RegisterStateEntryPoint(gameStates.get(FlyState.class),   "toFly");
         RegisterStateEntryPoint(gameStates.get(SitOnGroundState.class),   "toSitOnGround");
         RegisterStateEntryPoint(gameStates.get(RunState.class),   "toRun");
@@ -160,9 +161,9 @@ public class AvatarContext extends GameContext
         gameStates.get(TurnState.class).addTransition(new TurnToIdle());
         gameStates.get(TurnState.class).addTransition(new TurnToWalk());
         gameStates.get(TurnState.class).addTransition(new TurnToAction());
-        gameStates.get(ActionState.class).addTransition(new ActionToWalk());
-        gameStates.get(ActionState.class).addTransition(new ActionToTurn());
-        gameStates.get(ActionState.class).addTransition(new ActionToIdle());
+        gameStates.get(CycleActionState.class).addTransition(new ActionToWalk());
+        gameStates.get(CycleActionState.class).addTransition(new ActionToTurn());
+        gameStates.get(CycleActionState.class).addTransition(new ActionToIdle());
         gameStates.get(SitState.class).addTransition(new SitToIdle());
         gameStates.get(FlyState.class).addTransition(new FlyToIdle());
         gameStates.get(IdleState.class).addTransition(new IdleToFly());
@@ -174,7 +175,7 @@ public class AvatarContext extends GameContext
         // Set default info for animations utilizing the ActionState
         configureDefaultActionStateInfo();
         if (!genericAnimations.isEmpty())
-            genericAnimations.get(0).apply((ActionState) gameStates.get(ActionState.class));
+            genericAnimations.get(0).apply((CycleActionState) gameStates.get(CycleActionState.class));
     }
     
     @Override
@@ -239,24 +240,32 @@ public class AvatarContext extends GameContext
         // GoTo to location - if path is available from the current location
         else if (trigger == TriggerNames.GoTo1.ordinal() && pressed)
         {
+//
+//            // Create male avatar
+//            int feet  = (int) (Math.random() * 10000 % 4);
+//            int legs  = (int) (Math.random() * 10000 % 4);
+//            int torso = (int) (Math.random() * 10000 % 6);
+//            int hair  = (int) (Math.random() * 10000 % 17);
+//            new Avatar(new MaleAvatarAttributes("Avatar", feet, legs, torso, hair, 0), avatar.getWorldManager());
+//
            // System.out.println("fix: " + avatar.getPosition());
             
-            AI.clearTasks();
-            GoToNearestLocation();
-            if (location != null)
-                AI.addTaskToBottom(new FollowPath("yellowRoom", location, this));
+//            AI.clearTasks();
+//            GoToNearestLocation();
+//            if (location != null)
+//                AI.addTaskToBottom(new FollowPath("yellowRoom", location, this));
         }
         else if (trigger == TriggerNames.GoTo2.ordinal() && pressed)
         {
-            AI.clearTasks();
-            GoToNearestLocation();
-            if (location != null)
-                AI.addTaskToBottom(new FollowPath("lobbyCenter", location, this));
+//            AI.clearTasks();
+//            GoToNearestLocation();
+//            if (location != null)
+//                AI.addTaskToBottom(new FollowPath("lobbyCenter", location, this));
         }
         else if (trigger == TriggerNames.GoTo3.ordinal() && pressed)
         {
-            AI.clearTasks();
-            GoToNearestChair();
+//            AI.clearTasks();
+//            GoToNearestChair();
         }
         
         else if (trigger == TriggerNames.Smile.ordinal() && pressed)
@@ -289,14 +298,14 @@ public class AvatarContext extends GameContext
         // Reverse the animation for the punch state (for testing)
         else if (trigger == TriggerNames.Reverse.ordinal() && pressed)
         {
-            ActionState punch = (ActionState) gameStates.get(ActionState.class);
+            CycleActionState punch = (CycleActionState) gameStates.get(CycleActionState.class);
             punch.setReverseAnimation(!punch.isReverseAnimation());
         }
         
         // Select the next animation to play for the facial animation test
         else if (trigger == TriggerNames.NextAction.ordinal() && pressed)
         {
-            ActionState action = (ActionState) gameStates.get(ActionState.class);
+            CycleActionState action = (CycleActionState) gameStates.get(CycleActionState.class);
             action.setAnimationSetBoolean(false);
             
             genericActionIndex++;
@@ -420,7 +429,7 @@ public class AvatarContext extends GameContext
 
     public void performAction(int actionInfoIndex)
     {
-        ActionState action = (ActionState) gameStates.get(ActionState.class);
+        CycleActionState action = (CycleActionState) gameStates.get(CycleActionState.class);
         action.setAnimationSetBoolean(false);
         genericAnimations.get(actionInfoIndex).apply(action);
         setCurrentState(action);
@@ -431,6 +440,7 @@ public class AvatarContext extends GameContext
     private void configureDefaultActionStateInfo() 
     {    
         ActionInfo info;
+        CycleActionInfo cycleInfo;
         
         /** Note: There are many more settings possible to set! **/
      
@@ -439,16 +449,18 @@ public class AvatarContext extends GameContext
             info = new ActionInfo("Male_Wave", "MaleSmile", 1.0f, 2.0f);
             genericAnimations.add(info);
 
+            cycleInfo = new CycleActionInfo("Male_AnswerCell", "Male_Cell", "Male_AnswerCell", "MaleSmile", 0.5f, 2.0f);
+            cycleInfo.setExitAnimationReverse(true);
+            genericAnimations.add(cycleInfo);
+
+            cycleInfo = new CycleActionInfo("Male_RaiseHand", "Male_RaiseHandIdle", "Male_RaiseHand");
+            cycleInfo.setExitAnimationReverse(true);
+            genericAnimations.add(cycleInfo);
+            
             info = new ActionInfo("Male_No");
             genericAnimations.add(info);
 
             info = new ActionInfo("Male_Yes");
-            genericAnimations.add(info);
-
-            info = new ActionInfo("Male_Cell");
-            info.setRepeat(true);
-            info.setRepeatWillOscilate(true);
-            info.setTransitionDuration(0.5f);
             genericAnimations.add(info);
 
             info = new ActionInfo("Male_Laugh", "MaleSmile", 0.5f, 2.5f);
@@ -468,10 +480,10 @@ public class AvatarContext extends GameContext
 
             info = new ActionInfo("Male_TakeDamage");
             genericAnimations.add(info);
-            
+
             info = new ActionInfo("Male_PublicSpeaking");
             genericAnimations.add(info);
-            
+
             info = new ActionInfo("Male_ShakeHands");
             genericAnimations.add(info);
         }
@@ -480,16 +492,18 @@ public class AvatarContext extends GameContext
             info = new ActionInfo("Female_Wave", "FemaleC_Smile", 1.0f, 2.0f);
             genericAnimations.add(info);
 
+            cycleInfo = new CycleActionInfo("Female_AnswerCell", "Female_Cell", "Female_AnswerCell", "FemaleC_Smile", 0.5f, 2.0f);
+            cycleInfo.setExitAnimationReverse(true);
+            genericAnimations.add(cycleInfo);
+
+            cycleInfo = new CycleActionInfo("Female_RaiseHand", "Female_RaiseHandIdle", "Female_RaiseHand");
+            cycleInfo.setExitAnimationReverse(true);
+            genericAnimations.add(cycleInfo);
+
             info = new ActionInfo("Female_No");
             genericAnimations.add(info);
 
             info = new ActionInfo("Female_Yes");
-            genericAnimations.add(info);
-
-            info = new ActionInfo("Female_Cell");
-            info.setRepeat(true);
-            info.setRepeatWillOscilate(true);
-            info.setTransitionDuration(0.5f);
             genericAnimations.add(info);
 
             info = new ActionInfo("Female_Laugh", "FemaleC_Smile", 0.5f, 2.5f);

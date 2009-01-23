@@ -274,6 +274,8 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         initKeyBindings();
         // The procedural scene graph
         m_pscene = new PScene(attributes.getName(), m_wm);
+        // Don't render yet
+        m_pscene.setRenderStop(true);
         // The collection of processors for this entity
         ArrayList<ProcessorComponent> processors = new ArrayList<ProcessorComponent>();
         // Initialize the attributes
@@ -403,6 +405,8 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         m_AnimationProcessor.setEnable(true);
         // Turn on updates
         m_characterProcessor.start();
+        m_pscene.setRenderStop(false);
+        m_pscene.updateJSceneRenderState();
         m_modelInst.setRenderStop(false);
         m_initialized = true;
     }

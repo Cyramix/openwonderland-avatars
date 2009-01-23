@@ -98,6 +98,20 @@ public class FemaleAvatarAttributes extends CharacterAttributes
     {
         switch(preset)
         {
+            case 0:
+            {
+                // Closed to dress shoes
+                load.add(new String("assets/models/collada/Clothing/FeamleClothing/Female_ClosedToeDressShoes.dae"));
+                add.add(new SkinnedMeshParams("Female_ClosedToeDressShoes_Female_DressClosedToe_ShoesShape", "Feet"));
+            }
+            break;
+            case 1:
+            {
+                // Converse shoes
+                load.add(new String("assets/models/collada/Clothing/FeamleClothing/Female_ConverseShoes.dae"));
+                add.add(new SkinnedMeshParams("Female_ConverseShoes_Female_ConverseShoeShape", "Feet"));
+            }
+            break;
             default:
             {
                 if(!loadedBind)
@@ -110,8 +124,117 @@ public class FemaleAvatarAttributes extends CharacterAttributes
         }  
     }
 
+    private void customizeLegsPresets(int preset,  ArrayList<String> load, ArrayList<SkinnedMeshParams> add, ArrayList<AttachmentParams> attachments)
+    {
+        switch(preset)
+        {
+            case 0:
+            {
+                // Jeans
+                load.add(new String("assets/models/collada/Clothing/FeamleClothing/FemaleJeansStraight.dae"));
+                add.add(new SkinnedMeshParams("JeansShape", "LowerBody"));
+            }
+            break;
+            case 1:
+            {
+                // Dress pants
+                load.add(new String("assets/models/collada/Clothing/FeamleClothing/FemaleDressPants.dae"));
+                add.add(new SkinnedMeshParams("PantsFemaleShape", "LowerBody"));
+            }
+            break;
+            case 2:
+            {
+                // Shorts
+                load.add(new String("assets/models/collada/Clothing/FeamleClothing/FemaleShorts.dae"));
+                add.add(new SkinnedMeshParams("Legs_NudeShape", "LowerBody"));
+                add.add(new SkinnedMeshParams("ShortsShape", "LowerBody"));
+            }
+            break;
+            default:
+            {
+                if(!loadedBind)
+                {
+                    loadedBind = true;
+                    load.add(new String("assets/models/collada/Avatars/FemaleAvatar/Female_Bind.dae")); 
+                }
+                add.add(new SkinnedMeshParams("LegsNudeShape",  "LowerBody"));
+            }
+        }   
+    }
+
+    protected void customizeTorsoPresets(int preset, ArrayList<String> load, ArrayList<SkinnedMeshParams> add, ArrayList<AttachmentParams> attachments)
+    {
+        // Add the hands 
+        load.add(new String("assets/models/collada/Avatars/FemaleAvatar/Female_Hands.dae")); 
+        add.add(new SkinnedMeshParams("HandsShape",  "Hands"));
+
+        switch(preset)
+        {
+            case 0:
+            {
+                // Dress Shirt
+                load.add(new String("assets/models/collada/Clothing/FeamleClothing/FemaleDressShirt.dae"));
+                add.add(new SkinnedMeshParams("ShirtMeshShape", "UpperBody"));
+            }
+            break;
+            case 1:
+            {
+                // Sweater
+                load.add(new String("assets/models/collada/Clothing/FeamleClothing/FemaleSweaterCrew.dae"));
+                add.add(new SkinnedMeshParams("SweaterShape", "UpperBody"));
+            }
+            break;
+            case 2:
+            {
+                // Jacket
+                load.add(new String("assets/models/collada/Clothing/FeamleClothing/FemaleJacket.dae"));
+                add.add(new SkinnedMeshParams("Jacket1Shape", "UpperBody"));
+            }
+            break;
+            case 3:      //    TODO doesnt show?
+            {
+                // Blouse
+                load.add(new String("assets/models/collada/Clothing/FeamleClothing/FemaleBlouse.dae"));
+                add.add(new SkinnedMeshParams("TShirtShape", "UpperBody"));
+            }
+            break;
+            case 4:
+            {
+                // T Shirt          // has error
+                load.add(new String("assets/models/collada/Clothing/FeamleClothing/FemaleTShirt.dae"));
+                add.add(new SkinnedMeshParams("TShirtShape", "UpperBody"));
+                add.add(new SkinnedMeshParams("ArmsNudeShape", "UpperBody"));
+            }
+            break;
+            default:
+            {
+                if(!loadedBind)
+                {
+                    loadedBind = true;
+                    load.add(new String("assets/models/collada/Avatars/FemaleAvatar/Female_Bind.dae")); 
+                }
+                add.add(new SkinnedMeshParams("TorsoNudeShape",  "UpperBody"));
+            }
+        }   
+    }
+
+    private void loadDefaultBind() {
+        ArrayList<String> load      = new ArrayList<String>();
+        load.add(new String("assets/models/collada/Avatars/FemaleAvatar/Female_Bind.dae")); // change!
+
+        ArrayList<SkinnedMeshParams> add       = new ArrayList<SkinnedMeshParams>();
+        add.add(new SkinnedMeshParams("HandsShape",  "Hands"));
+        add.add(new SkinnedMeshParams("ShoesShape",  "Feet"));
+        add.add(new SkinnedMeshParams("TorsoNudeShape",  "UpperBody"));
+        add.add(new SkinnedMeshParams("LegsNudeShape",  "LowerBody"));
+
+
+        setLoadInstructions(load);
+        setAddInstructions(add.toArray(new SkinnedMeshParams[add.size()]));
+    }
+
     private void customizeHairPresets(int preset, ArrayList<String> load, ArrayList<SkinnedMeshParams> add, ArrayList<AttachmentParams> attachments)
-    {   
+    {
         PMatrix orientation = new PMatrix(new Vector3f(0,0,0), new Vector3f(1, 1.05f, 1.06f), Vector3f.ZERO);
         switch(preset)
         {
@@ -163,7 +286,7 @@ public class FemaleAvatarAttributes extends CharacterAttributes
                 attachments.add(new AttachmentParams("M_PonyTail", "Head", orientation));
             }
             break;
-            case 8:   
+            case 8:
             {
                 load.add(new String("assets/models/collada/Hair/FemaleHair/FemaleHairPlaceable.dae"));
                 attachments.add(new AttachmentParams("Short_PT_Center", "Head", orientation));
@@ -434,113 +557,6 @@ public class FemaleAvatarAttributes extends CharacterAttributes
                 attachments.add(new AttachmentParams("Long_W_bangs", "Head", orientation));
             }
             break;
-        }   
-    }
-
-    private void customizeLegsPresets(int preset,  ArrayList<String> load, ArrayList<SkinnedMeshParams> add, ArrayList<AttachmentParams> attachments)
-    {
-        switch(preset)
-        {
-            case 0:
-            {
-                // Jeans
-                load.add(new String("assets/models/collada/Clothing/FeamleClothing/FemaleJeansStraight.dae"));
-                add.add(new SkinnedMeshParams("JeansShape", "LowerBody"));
-            }
-            break;
-            case 1:
-            {
-                // Dress pants
-                load.add(new String("assets/models/collada/Clothing/FeamleClothing/FemaleDressPants.dae"));
-                add.add(new SkinnedMeshParams("PantsFemaleShape", "LowerBody"));
-            }
-            break;
-            case 2:  //  TODO error missing mesh?
-            {
-                // Shorts
-                load.add(new String("assets/models/collada/Clothing/FeamleClothing/FemaleShorts.dae"));
-                add.add(new SkinnedMeshParams("ShortsShape", "LowerBody"));
-            }
-            break;
-            default:
-            {
-                if(!loadedBind)
-                {
-                    loadedBind = true;
-                    load.add(new String("assets/models/collada/Avatars/FemaleAvatar/Female_Bind.dae")); 
-                }
-                add.add(new SkinnedMeshParams("LegsNudeShape",  "LowerBody"));
-            }
-        }   
-    }
-
-    protected void customizeTorsoPresets(int preset, ArrayList<String> load, ArrayList<SkinnedMeshParams> add, ArrayList<AttachmentParams> attachments)
-    {
-        // Add the hands 
-        load.add(new String("assets/models/collada/Avatars/FemaleAvatar/Female_Hands.dae")); 
-        add.add(new SkinnedMeshParams("HandsShape",  "Hands"));
-
-        switch(preset)
-        {
-            case 0:
-            {
-                // Dress Shirt
-                load.add(new String("assets/models/collada/Clothing/FeamleClothing/FemaleDressShirt.dae"));
-                add.add(new SkinnedMeshParams("ShirtMeshShape", "UpperBody"));
-            }
-            break;
-            case 1:
-            {
-                // Sweater
-                load.add(new String("assets/models/collada/Clothing/FeamleClothing/FemaleSweaterCrew.dae"));
-                add.add(new SkinnedMeshParams("SweaterShape", "UpperBody"));
-            }
-            break;
-            case 2:
-            {
-                // Jacket
-                load.add(new String("assets/models/collada/Clothing/FeamleClothing/FemaleJacket.dae"));
-                add.add(new SkinnedMeshParams("Jacket1Shape", "UpperBody"));
-            }
-            break;
-            case 3:      //    TODO doesnt show?
-            {
-                // Blouse
-                load.add(new String("assets/models/collada/Clothing/FeamleClothing/FemaleBlouse.dae"));
-                add.add(new SkinnedMeshParams("TShirtShape", "UpperBody"));
-            }
-            break;
-            case 4:
-            {
-                // T Shirt            TODO doesnt show?
-                load.add(new String("assets/models/collada/Clothing/FeamleClothing/FemaleTShirt.dae"));
-                add.add(new SkinnedMeshParams("TShirtShape", "UpperBody"));
-            }
-            break;
-            default:
-            {
-                if(!loadedBind)
-                {
-                    loadedBind = true;
-                    load.add(new String("assets/models/collada/Avatars/FemaleAvatar/Female_Bind.dae")); 
-                }
-                add.add(new SkinnedMeshParams("TorsoNudeShape",  "UpperBody"));
-            }
-        }   
-    }
-
-    private void loadDefaultBind() {
-        ArrayList<String> load      = new ArrayList<String>();
-        load.add(new String("assets/models/collada/Avatars/FemaleAvatar/Female_Bind.dae")); // change!
-
-        ArrayList<SkinnedMeshParams> add       = new ArrayList<SkinnedMeshParams>();
-        add.add(new SkinnedMeshParams("HandsShape",  "Hands"));
-        add.add(new SkinnedMeshParams("ShoesShape",  "Feet"));
-        add.add(new SkinnedMeshParams("TorsoNudeShape",  "UpperBody"));
-        add.add(new SkinnedMeshParams("LegsNudeShape",  "LowerBody"));
-
-
-        setLoadInstructions(load);
-        setAddInstructions(add.toArray(new SkinnedMeshParams[add.size()]));
+        }
     }
 }
