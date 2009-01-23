@@ -17,9 +17,6 @@
  */
 package imi.scene.animation;
 
-import com.jme.math.Quaternion;
-import com.jme.math.Vector3f;
-import imi.gui.GUI_Enums.m_sliderControl;
 import imi.scene.PJoint;
 import imi.scene.PMatrix;
 import imi.utils.Interpolator;
@@ -27,8 +24,8 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.ListIterator;
-import javolution.util.FastList;
 
 
 /**
@@ -42,7 +39,7 @@ public class COLLADA_JointChannel implements PJointChannel, Serializable
 {
     private String                      m_TargetJointName = null;
     
-    private final FastList<PMatrixKeyframe>   m_KeyFrames = new FastList<PMatrixKeyframe>();
+    private final ArrayList<PMatrixKeyframe>   m_KeyFrames = new ArrayList<PMatrixKeyframe>();
     
     // Assorted data that is explicitely calculated
     private float                       m_fDuration = 0.0f;
@@ -132,8 +129,8 @@ public class COLLADA_JointChannel implements PJointChannel, Serializable
 
     public float calculateDuration()
     {
-        float fEndTime = m_KeyFrames.getLast().getFrameTime();
-        float fStartTime = m_KeyFrames.getFirst().getFrameTime();
+        float fEndTime = m_KeyFrames.get(m_KeyFrames.size()-1).getFrameTime();
+        float fStartTime = m_KeyFrames.get(1).getFrameTime();
         // Calculate
         m_fDuration = fEndTime - fStartTime;
 
@@ -394,7 +391,7 @@ public class COLLADA_JointChannel implements PJointChannel, Serializable
         float fStartTime = 0.0f;
 
         if (m_KeyFrames.size() > 0)
-            fStartTime = m_KeyFrames.getFirst().getFrameTime();
+            fStartTime = m_KeyFrames.get(1).getFrameTime();
 
         return fStartTime;
     }
@@ -408,7 +405,7 @@ public class COLLADA_JointChannel implements PJointChannel, Serializable
         float fEndTime = 0.0f;
 
         if (m_KeyFrames.size() > 0)
-            fEndTime = m_KeyFrames.getLast().getFrameTime();
+            fEndTime = m_KeyFrames.get(m_KeyFrames.size()-1).getFrameTime();
 
         return fEndTime;
     }
