@@ -1,11 +1,24 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+/**
+ * Project Wonderland
+ *
+ * Copyright (c) 2004-2008, Sun Microsystems, Inc., All Rights Reserved
+ *
+ * Redistributions in source code form must reproduce the above
+ * copyright and this condition.
+ *
+ * The contents of this file are subject to the GNU General Public
+ * License, Version 2 (the "License"); you may not use this file
+ * except in compliance with the License. A copy of the License is
+ * available at http://www.opensource.org/licenses/gpl-license.php.
+ *
+ * Sun designates this particular file as subject to the "Classpath" 
+ * exception as provided by Sun in the License file that accompanied 
+ * this code.
  */
-
 package imi.character.networking;
 
 import client.ClientSideUser;
+import server.ServerSideUser;
 import com.sun.sgs.client.ClientChannel;
 import com.sun.sgs.client.ClientChannelListener;
 import com.sun.sgs.client.simple.SimpleClient;
@@ -22,7 +35,6 @@ import java.util.logging.Logger;
 import net.java.dev.jnag.sgs.client.JnagSession;
 import net.java.dev.jnag.sgs.client.MessageOutputToServerSession;
 import net.java.dev.jnag.sgs.common.MethodLogger;
-import server.ServerSideUser;
 
 /**
  *
@@ -62,7 +74,7 @@ public class JNagClient implements SimpleClientListener, ClientSideUser
     public static final String HOST_PROPERTY = "tutorial.host";
 
     /** The default hostname. */
-    public static final String DEFAULT_HOST = "71.41.116.154";//"localhost";//
+    public static final String DEFAULT_HOST = "localhost";//"71.41.116.154";//
 
     /** The name of the port property. */
     public static final String PORT_PROPERTY = "tutorial.port";
@@ -77,13 +89,13 @@ public class JNagClient implements SimpleClientListener, ClientSideUser
     private static final Logger logger = Logger.getLogger(JNagClient.class.getName());
     
     /** GUI **/
-    protected JNagClientGUI2 gui = null;
+    protected JNagClientGUI gui = null;
     
     public JNagClient() 
     {
         simpleClient = new SimpleClient(this);
         // GUI is on by default
-        gui = new JNagClientGUI2(this);
+        gui = new JNagClientGUI(this);
     }
 
     /**
@@ -292,7 +304,6 @@ public class JNagClient implements SimpleClientListener, ClientSideUser
         users.put(ID, userName);
         if (gui != null)
             gui.appendOutput(string);
-        gui.addPlayerToBoards(userName, ID, 3, 0, 0);
     }
 
     public void notifyLogout(boolean graceful) {
@@ -435,7 +446,7 @@ public class JNagClient implements SimpleClientListener, ClientSideUser
     }
     
     /** GUI may be null **/
-    public JNagClientGUI2 getGUI()
+    public JNagClientGUI getGUI()
     {
         return gui;
     }

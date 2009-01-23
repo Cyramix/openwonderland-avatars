@@ -69,26 +69,26 @@ public class DarkstarClientTest extends DemoBase
 //        camState.setMovementRate(0.03f);
 //        camState.setCameraPosition(new Vector3f(0.0f, 1.8f, -2.0f));
         
-        boolean male = true;
+        boolean male = true; if (Math.random() < 0.25) male = false;
         Avatar avatar;
         int feet, legs, torso, hair;
-        
+
         if (male)
         {
             // Create male avatar
-            feet  = 1;//(int) (Math.random() * 10000 % 4);
-            legs  = 4;//(int) (Math.random() * 10000 % 4);
-            torso = 4;//(int) (Math.random() * 10000 % 6);
-            hair  = -1;//(int) (Math.random() * 10000 % 17);
+            feet  = (int) (Math.random() * 10000 % 4);
+            legs  = (int) (Math.random() * 10000 % 4);
+            torso = (int) (Math.random() * 10000 % 6);
+            hair  = (int) (Math.random() * 10000 % 17);
             avatar = new Avatar(new MaleAvatarAttributes("Avatar", feet, legs, torso, hair, 0), wm);
         }
         else // female
         {
             // Create female avatar
-            feet  = -1;//(int) (Math.random() * 10000 % 0);
-            legs  = 0;//(int) (Math.random() * 10000 % 3);  // 1 and 2 problems
+            feet  = (int) (Math.random() * 10000 % 2);
+            legs  = (int) (Math.random() * 10000 % 3);
             torso = (int) (Math.random() * 10000 % 3);  // % 5.... 3 and 4 problems
-            hair  = (int) (Math.random() * 10000 % 53); // 8 is missing, tested til 16
+            hair  = (int) (Math.random() * 10000 % 53); // tested til 15
             avatar = new Avatar(new FemaleAvatarAttributes("Avatar", feet, legs, torso, hair, 0), wm);
         }
         
@@ -96,12 +96,10 @@ public class DarkstarClientTest extends DemoBase
         avatar.setUpdateExtension(new DarkstarClient(avatar, male, feet, legs, torso, hair));
         ((DarkstarClient)avatar.getUpdateExtension()).login();
         
-        avatar.setBigHeadMode(2.0f);
-        avatar.setBeerBelly(1.17f);
-        avatar.makeFist(false, false);
+        //avatar.setBigHeadMode(2.0f);
         
-        float x = 2.0f + (float)Math.random() % 5.0f;
-        float z = 2.0f + (float)Math.random() % 5.0f;
+        float x = 2.0f + (float)Math.random() % 5.0f; if (Math.random() < 0.5) x*= -1.0f;
+        float z = 2.0f + (float)Math.random() % 5.0f; if (Math.random() < 0.5) z*= -1.0f;
         avatar.getModelInst().getTransform().getLocalMatrix(true).setTranslation(new Vector3f(x, 0.0f, z));
         
         // Select the avatar for input and set the object collection

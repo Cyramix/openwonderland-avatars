@@ -1,14 +1,25 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+/**
+ * Project Wonderland
+ *
+ * Copyright (c) 2004-2008, Sun Microsystems, Inc., All Rights Reserved
+ *
+ * Redistributions in source code form must reproduce the above
+ * copyright and this condition.
+ *
+ * The contents of this file are subject to the GNU General Public
+ * License, Version 2 (the "License"); you may not use this file
+ * except in compliance with the License. A copy of the License is
+ * available at http://www.opensource.org/licenses/gpl-license.php.
+ *
+ * Sun designates this particular file as subject to the "Classpath" 
+ * exception as provided by Sun in the License file that accompanied 
+ * this code.
  */
-
 package imi.character.networking;
 
 import imi.character.*;
 import com.jme.math.Quaternion;
 import com.jme.math.Vector3f;
-import com.jme.renderer.ColorRGBA;
 import imi.character.Character;
 import imi.character.avatar.Avatar;
 import imi.character.avatar.MaleAvatarAttributes;
@@ -19,13 +30,8 @@ import imi.character.statemachine.GameContextListener;
 import imi.character.statemachine.corestates.IdleState;
 import imi.scene.PMatrix;
 import imi.scene.Updatable;
-import imi.scene.camera.behaviors.ThirdPersonCamModel;
-import imi.scene.camera.state.ThirdPersonCamState;
-import imi.scene.processors.FlexibleCameraProcessor;
-import imi.scene.processors.JSceneEventProcessor;
 import imi.scene.utils.visualizations.VisuManager;
 import imi.utils.PMathUtils;
-import imi.utils.input.AvatarControlScheme;
 import java.net.PasswordAuthentication;
 import java.util.HashMap;
 import java.util.Random;
@@ -67,33 +73,6 @@ public class DarkstarClient extends JNagClient implements Updatable
         
     // Test
     VisuManager vis = null;
-    
-    // Balls
-    private float roomSize      = 10.0f;
-    private int ballToPitch     = 0;
-    private int numberOfBalls   = 5;
-    private float handRadius    = 0.15f;
-    private float ballRadius    = 0.5f;
-    private Vector3f[] balls    = new Vector3f[numberOfBalls];
-    private Vector3f[] ballsVel = new Vector3f[numberOfBalls];
-    private Vector3f gravity    = new Vector3f(0.0f, -0.000098f, 0.0f);
-    private Vector3f hitBoxPos  = new Vector3f();
-    private Vector3f hitBoxMin  = new Vector3f(-0.15f, 0.0f, -0.15f);
-    private Vector3f hitBoxMax  = new Vector3f(0.15f, 2.0f, 0.15f);
-    private Vector3f ballMin    = new Vector3f(-ballRadius, -ballRadius, -ballRadius);
-    private Vector3f ballMax    = new Vector3f(ballRadius, ballRadius, ballRadius);
-    private int hitPoints       = 0;
-    private Vector3f gamePos    = new Vector3f();
-    private float pitcherTimer = 0.0f;
-    private float pitchTime    = 3.0f;
-    
-    // Arrays for packet delivery
-    float [] ballBosX = new float[numberOfBalls];
-    float [] ballPosY = new float[numberOfBalls];
-    float [] ballPosZ = new float[numberOfBalls];
-    float [] ballVelX = new float[numberOfBalls];
-    float [] ballVelY = new float[numberOfBalls];
-    float [] ballVelZ = new float[numberOfBalls];
         
     public DarkstarClient(Character character)
     {
@@ -106,13 +85,6 @@ public class DarkstarClient extends JNagClient implements Updatable
         vis.setWireframe(false);
 //        vis.addPositionObject(character.getLeftArm().getWristPosition(), ColorRGBA.magenta, handRadius);
 //        vis.addPositionObject(character.getRightArm().getWristPosition(), ColorRGBA.magenta, handRadius);
-        //vis.addBoxObject(hitBoxPos, hitBoxMin, hitBoxMax, ColorRGBA.lightGray);
-        for (int i = 0; i < numberOfBalls; i++)
-        {
-            balls[i]    = new Vector3f(10000.0f, 0.0f, 0.0f);
-            ballsVel[i] = new Vector3f();
-            vis.addPositionObject(balls[i], ColorRGBA.red, ballRadius);
-        }
     }
 
     public DarkstarClient(Character character, boolean male, int feet, int legs, int torso, int hair) 
@@ -125,88 +97,6 @@ public class DarkstarClient extends JNagClient implements Updatable
         this.hair  = hair;
     }
     
-    public void pitchBall(Vector3f ballPosition, Vector3f ballVelocity)
-    {
-        if (hitPoints <= 0)
-            return;
-        balls[ballToPitch].set(ballPosition);
-        ballsVel[ballToPitch].set(ballVelocity);
-        ballToPitch++;
-        if (ballToPitch >= numberOfBalls)
-            ballToPitch = 0;
-    }
-    
-    @Override
-    public void gotHit(int userID, int byUserID, int ballID) 
-    {
-        UserData hitter = characterData.get(byUserID);
-        UserData hit = characterData.get(byUserID);
-        if (hitter == null)
-        {
-            postGUILine("null gotHit message by userID: " + userID);
-            return;
-        }
-        if (hit == null)
-        {
-            postGUILine("null gotHit message with userID: " + userID);
-            return;
-        }
-        
-        postGUILine("HIT! " + users.get(userID) + " got hit by " + users.get(byUserID) + "'s ball and it hurts his pride!");
-        gui.updatePlayerLives(users.get(userID), 1);
-        gui.forceTableUpdate(2);
-        performAnimation(9, false, false, userID); // damage
-        
-        // Set new position and velocity for that ball
-        hitter.balls[ballID].set(hit.user.getPosition().add(0.0f, 2.0f + ballRadius, 0.0f));
-        hitter.ballsVel[ballID].set(0.0f, 0.25f, 0.0f);
-    }
-
-    @Override
-    public void gameStarted(int byUserID, int hitPoints, float posX, float posY, float posZ) 
-    {
-        postGUILine("Game STARTED! by " + users.get(byUserID) + " and you get " + hitPoints + " hit points, good luck!");
-        for (int i = 0; i < gui.userIds.size(); i++) {
-            gui.setPlayerStatsInBoards(users.get(gui.userIds.get(i)), hitPoints, -1, -1);
-        }
-        gui.forceTableUpdate(2);
-
-        gamePos.set(posX, posY, posZ);
-        Vector3f dir = Vector3f.ZERO.subtract(gamePos).normalize();
-        PMatrix look = PMathUtils.lookAt(gamePos.subtract(dir), gamePos, Vector3f.UNIT_Y);
-        PMatrix local = character.getController().getModelInstance().getTransform().getLocalMatrix(true);
-        local.set(look);
-        
-        character.makeFist(true, true);
-        if (!character.getRightArm().isEnabled())
-        {
-            character.getContext().triggerReleased(TriggerNames.ToggleRightArm.ordinal());
-            character.getContext().triggerPressed(TriggerNames.ToggleRightArm.ordinal());
-        }
-        
-        ThirdPersonCamState camState = (ThirdPersonCamState)((FlexibleCameraProcessor)worldManager.getUserData(FlexibleCameraProcessor.class)).getState();
-        Vector3f toCam = new Vector3f(camState.getToCamera());
-        local.transformNormal(toCam);
-        Vector3f camPos = toCam.add(local.getTranslation());
-        ThirdPersonCamModel camModel = (ThirdPersonCamModel)((FlexibleCameraProcessor)worldManager.getUserData(FlexibleCameraProcessor.class)).getModel();
-        camModel.moveTo(camPos, camState);
-        
-        this.hitPoints = hitPoints;
-        for (int i = 0; i < numberOfBalls; i++)
-        {
-            balls[i].set(10000.0f, 0.0f, 0.0f);
-            ballsVel[i].set(0.0f, 0.0f, 0.0f);
-        }
-        
-        performAnimation(7, true, true, 0); // bow
-        
-        AvatarControlScheme control = (AvatarControlScheme)((JSceneEventProcessor)worldManager.getUserData(JSceneEventProcessor.class)).getInputScheme();
-        control.activateMouseMovement();
-        character.getContext().getState(IdleState.class).setAnimationName("Male_IdleXL4000");// active idle
-        for (UserData user : characterData.values())
-            user.user.getContext().getState(IdleState.class).setAnimationName("Male_IdleXL4000");// active idle
-    }
-
     public void performAnimation(int actionIndex, boolean client, boolean allUsers, int specificUser)
     {
         if (client)
@@ -221,98 +111,6 @@ public class DarkstarClient extends JNagClient implements Updatable
         {
             Character user = characterData.get(specificUser).user;
             ((AvatarContext)user.getContext()).performAction(actionIndex);
-        }
-    }
-    
-    @Override
-    public void gameEnded(int winnerID) 
-    {
-        hitPoints = 0;
-        postGUILine(users.get(winnerID) + " WINS THE GAME!!!");
-        
-        for (int i = 0; i < gui.userIds.size(); i++)
-        {
-            if (users.get(gui.userIds.get(i)) == null || users.get(winnerID) == null)
-                continue;
-            
-            if (users.get(gui.userIds.get(i)).equals(users.get(winnerID)))
-                gui.updatePlayerWins(users.get(winnerID), 1);
-            else
-                gui.updatePlayerLosses(users.get(gui.userIds.get(i)), 1);
-        }
-        gui.forceTableUpdate(2);
-
-        if (winnerID == ID)
-        {
-            postGUILine("YOU WON THE GAME! YOU ARE AWESOME!");
-            PMatrix local = character.getController().getModelInstance().getTransform().getLocalMatrix(true);
-            local.setTranslation(Vector3f.ZERO);
-            
-            performAnimation(5, true, false, 0); // cheer
-            performAnimation(6, false, true, 0); // clap
-        }
-        else
-        {
-            postGUILine("Better luck next time");
-            performAnimation(6, true, true, 0); // clap
-            performAnimation(5, false, false, winnerID); // cheer
-        }
-        for (int i = 0; i < numberOfBalls; i++)
-        {
-            balls[i].set(10000.0f, 0.0f, 0.0f);
-            ballsVel[i].set(0.0f, 0.0f, 0.0f);
-        }
-        
-        if (character.getRightArm().isEnabled())
-        {
-            character.getContext().triggerReleased(TriggerNames.ToggleRightArm.ordinal());
-            character.getContext().triggerPressed(TriggerNames.ToggleRightArm.ordinal());
-        }
-        if (character.getLeftArm().isEnabled())
-        {
-            character.getContext().triggerReleased(TriggerNames.ToggleLeftArm.ordinal());
-            character.getContext().triggerPressed(TriggerNames.ToggleLeftArm.ordinal());
-        }
-        
-        character.getContext().getState(IdleState.class).setAnimationName("Male_Idle");// normal idle
-        for (UserData user : characterData.values())
-            user.user.getContext().getState(IdleState.class).setAnimationName("Male_Idle");// normal idle
-    }
-    
-    @Override
-    public void updateBalls(int userID, float [] posX, float [] posY, float [] posZ, float [] velX, float [] velY, float [] velZ)
-    {
-        UserData data = characterData.get(userID);
-        if (data == null)
-        {
-            postGUILine("null character balls update with ID: " + userID);
-            return;
-        }
-        
-        for (int i = 0; i < numberOfBalls; i++)
-        {
-            data.balls[i].set(posX[i], posY[i], posZ[i]);
-            data.ballsVel[i].set(velX[i], velY[i], velZ[i]);
-        }
-    }
-    
-    @Override
-    public void remoteBallUpdate(int userID, int ballNumber, float x, float y, float z, float velX, float velY, float velZ) 
-    {
-        if (userID == ID)
-        {
-            Vector3f pos = balls[ballNumber];
-            Vector3f vel = ballsVel[ballNumber];
-            pos.set(x, y, z);
-            vel.set(velX, velY, velZ);
-        }
-        else
-        {
-            UserData data = characterData.get(userID);
-            Vector3f pos = data.balls[ballNumber];
-            Vector3f vel = data.ballsVel[ballNumber];
-            pos.set(x, y, z);
-            vel.set(velX, velY, velZ);
         }
     }
     
@@ -358,23 +156,6 @@ public class DarkstarClient extends JNagClient implements Updatable
     {    
         if (connected)
         {
-            // Update hitbox position
-            hitBoxPos.set(character.getPosition());
-            // If you are in the game you can't move
-            if (hitPoints > 0)
-            {
-                PMatrix local = character.getController().getModelInstance().getTransform().getLocalMatrix(true);
-                local.setTranslation(gamePos);
-            }
-            // Pitch balls periodically
-            pitcherTimer += deltaTime;
-            if (pitcherTimer > pitchTime)
-            {
-                pitcherTimer = 0.0f;
-                Vector3f dir = character.getPosition().add(0.0f, 1.8f, 0.0f).subtract(Vector3f.ZERO).normalize();
-                pitchBall(Vector3f.ZERO, dir.mult(0.1f));
-            }
-            
             ////////////////////////////////////////////////////
             // Manage peers (can be on another update thread) //
             ////////////////////////////////////////////////////
@@ -409,87 +190,11 @@ public class DarkstarClient extends JNagClient implements Updatable
                     local.setTranslation(currentPosition.add(pull)); 
                 }
                 
-                // Predict the new position for the remote balls locally
-                for (int i = 0; i < numberOfBalls; i++)
-                {   
-                    Vector3f pos = data.balls[i];
-                    Vector3f vel = data.ballsVel[i].mult(0.999f); // decay so the network updates will push forward instead of backwards
-                    // Accelerate the velocity 
-                    vel.addLocal(gravity);
-                    // Add velocity to the ball's position
-                    pos.addLocal(vel);
-                    
-                    // Check for collision
-                    if (checkCollisionBallWithHitBox(pos))
-                    {
-                        postGUILine("OUCH! You got hit by " + users.get(data.userID) + "'s ball!");
-                        hitPoints--;
-                        gui.updatePlayerLives(users.get(ID), 1);
-                        serverProxy.gotHit(data.userID, i);
-                        pos.set(hitBoxPos.add(0.0f, 2.0f + ballRadius, 0.0f));
-                        vel.set(0.0f, 0.25f, 0.0f);
-                        serverProxy.remoteBallUpdate(data.userID, i, pos.x, pos.y, pos.z, vel.x, vel.y, vel.z);
-                        if (hitPoints <= 0)
-                            spawnOutside();
-                    }
-                    if (checkCollisionBallWithHand(character.getLeftArm(), pos, vel))
-                            serverProxy.remoteBallUpdate(data.userID, i, pos.x, pos.y, pos.z, vel.x, vel.y, vel.z);
-                    if (checkCollisionBallWithHand(character.getRightArm(), pos, vel))
-                            serverProxy.remoteBallUpdate(data.userID, i, pos.x, pos.y, pos.z, vel.x, vel.y, vel.z);
-                }
             }
             
             ////////////////////////////////////////////////////////
             // Send (should be on this character's update thread) //
             ////////////////////////////////////////////////////////
-            
-            // Compute local balls
-            for (int i = 0; i < numberOfBalls; i++)
-            {
-                Vector3f pos = balls[i];
-                Vector3f vel = ballsVel[i];
-
-                // Accelerate the velocity 
-                vel.addLocal(gravity);
-                // Add velocity to the ball's position
-                pos.addLocal(vel);
-
-                // Check collision with the world bounds
-                if (pos.y < 0.0f)
-                    vel.y *= -1.0f;
-                if (pos.x < -roomSize || pos.x > roomSize)
-                    vel.x *= -1.0f;
-                if (pos.z < -roomSize || pos.z > roomSize)
-                    vel.z *= -1.0f;
-
-                // Check for collision
-                if (checkCollisionBallWithHitBox(pos))
-                {       
-                    performAnimation(9, true, false, 0); // damage
-                    postGUILine("OUCH! You got hit by your own ball!");
-                    hitPoints--;
-                    serverProxy.gotHit(ID, i);
-                    pos.set(hitBoxPos.add(0.0f, 2.0f + ballRadius, 0.0f));
-                    vel.set(0.0f, 0.25f, 0.0f);
-                    if (hitPoints <= 0)
-                        spawnOutside();
-                }
-                checkCollisionBallWithHand(character.getLeftArm(), pos, vel);
-                checkCollisionBallWithHand(character.getRightArm(), pos, vel);
-            }
-            
-            // Send the new data to the server
-            for (int i = 0; i < numberOfBalls; i++)
-            {
-                ballBosX[i] = balls[i].x;
-                ballPosY[i] = balls[i].y;
-                ballPosZ[i] = balls[i].z;
-                ballVelX[i] = ballsVel[i].x;
-                ballVelY[i] = ballsVel[i].y;
-                ballVelZ[i] = ballsVel[i].z;
-            }
-            serverProxy.updateBalls(ballBosX, ballPosY, ballPosZ, ballVelX, ballVelY, ballVelZ);
-            
             
                 
             // Updates messages occure at a fixed interval
@@ -532,59 +237,6 @@ public class DarkstarClient extends JNagClient implements Updatable
                 prevDir.set(dir);
             }
         }
-    }
-    
-    private void spawnOutside() 
-    {
-        postGUILine("You are out of the game!");
-        
-        PMatrix local = character.getController().getModelInstance().getTransform().getLocalMatrix(true);
-        Vector3f out = local.getTranslation().subtract(Vector3f.ZERO).normalize();
-        out.multLocal(10.0f);
-        local.setTranslation(out);
-        
-        character.makeFist(false, false);
-        character.getRightArm().setEnabled(false);
-        character.getLeftArm().setEnabled(false);
-    }
-
-    private boolean checkCollisionBallWithHitBox(Vector3f pos) 
-    {
-        Vector3f aMin = pos.add(ballMin);
-        Vector3f aMax = pos.add(ballMax);
-        Vector3f bMin = hitBoxPos.add(hitBoxMin);
-        Vector3f bMax = hitBoxPos.add(hitBoxMax);
-        
-        // check if two Rectangles intersect
-        return (aMax.x > bMin.x && aMin.x < bMax.x &&
-                aMin.y < bMax.y && aMax.y > bMin.y &&
-                aMin.z < bMax.z && aMax.z > bMin.z);
-    }
-
-    private boolean checkCollisionBallWithHand(VerletArm arm, Vector3f pos, Vector3f vel) 
-    {    
-        if (arm == null || !arm.isEnabled())
-            return false;
-        
-        Vector3f handPos = arm.getWristPosition();
-        Vector3f handVel = arm.getWristVelocity();
-
-        float distance = handPos.distance(pos);
-        if (distance < handRadius + ballRadius)
-        {
-            // Calculate the collision normal
-            Vector3f normal = pos.subtract(handPos).normalize();
-            // Project the ball outside of the collision
-            pos.set(pos.add(normal.mult(handRadius + ballRadius - distance)));
-
-            Vector3f ballTransferXVel = normal.mult(normal.dot(handVel) + 0.15f);
-            Vector3f handTransferXvel = normal.mult(normal.dot(vel));
-            Vector3f ballYVel = vel.subtract(handTransferXvel);
-
-            vel.set(ballTransferXVel.add(ballYVel));
-            return true;
-        }
-        return false;
     }
     
     /**
@@ -732,8 +384,7 @@ public class DarkstarClient extends JNagClient implements Updatable
             if (male[i])
             {
                 user = new Avatar(new MaleAvatarAttributes(playerNames[i], feet[i], legs[i], torso[i], hair[i], 0), worldManager);
-                user.setBigHeadMode(2.0f);
-                user.setBeerBelly(1.17f);
+                //user.setBigHeadMode(2.0f);
             }
             else
                 user = new Avatar(new FemaleAvatarAttributes(playerNames[i], feet[i], legs[i], torso[i], hair[i], 0), worldManager);
@@ -741,12 +392,10 @@ public class DarkstarClient extends JNagClient implements Updatable
             UserData data = new UserData(user, playerIDs[i]);
             characterData.put(playerIDs[i], data);
             user.getController().addCharacterMotionListener(data);
-            gui.addPlayerToBoards(playerNames[i], playerIDs[i], 3, 0, 0);
             // Test
             //vis.addPositionObject(data.desiredPosition, ColorRGBA.black);
             //vis.addPositionObject(data.currentPosition, ColorRGBA.white);
         }
-        gui.forceTableUpdate(2);
     }
 
     @Override
@@ -759,8 +408,7 @@ public class DarkstarClient extends JNagClient implements Updatable
         if (male)
         {
             user = new Avatar(new MaleAvatarAttributes(playerName, feet, legs, torso, hair, 0), worldManager);
-            user.setBigHeadMode(2.0f);
-            user.setBeerBelly(1.17f);
+            //user.setBigHeadMode(2.0f);
         }
         else
             user = new Avatar(new FemaleAvatarAttributes(playerName, feet, legs, torso, hair, 0), worldManager);
@@ -768,20 +416,15 @@ public class DarkstarClient extends JNagClient implements Updatable
         UserData data = new UserData(user, userID);
         characterData.put(userID, data);
         user.getController().addCharacterMotionListener(data);
-        gui.addPlayerToBoards(playerName, userID, 0, 0, 0);
-        gui.forceTableUpdate(2);
     }
 
     @Override
     public void removePlayer(int userID) 
     {
         postGUILine("Removing Player with ID: " + userID + " called: " + users.get(userID));
-        gui.removePlayerFromBoards(users.get(userID));
-        gui.forceTableUpdate(2);
         users.remove(userID);
 
         characterData.get(userID).user.die();
-        characterData.get(userID).removeBalls();
         characterData.remove(userID);
     }
     
@@ -820,31 +463,13 @@ public class DarkstarClient extends JNagClient implements Updatable
     //        public Vector3f desiredDirection            = new Vector3f();
     //        public Vector3f desiredRightHandPosition    = new Vector3f();
     //        public Vector3f desiredLeftHandPosition     = new Vector3f();
-        
-        public Vector3f[] balls    = new Vector3f[numberOfBalls];
-        public Vector3f[] ballsVel = new Vector3f[numberOfBalls];
 
         public UserData(Character user, int userID) 
         {
             this.user = user;    
             this.userID = userID;
-            for (int i = 0; i < numberOfBalls; i++)
-            {
-                balls[i]    = new Vector3f(10000.0f, 0.0f, 0.0f);
-                ballsVel[i] = new Vector3f();
-                vis.addPositionObject(balls[i], ColorRGBA.red, ballRadius);
-            }
         }
         
-        public void removeBalls()
-        {
-            for (int i = 0; i < numberOfBalls; i++)
-            {
-                balls[i].set(10000.0f, 0.0f, 0.0f); // hehe
-                vis.removePositionObject(balls[i]);
-            }
-        }
-
         public void transformUpdate(Vector3f translation, PMatrix rotation) 
         {
             // The difference between the incoming position to the currently
