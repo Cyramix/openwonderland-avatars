@@ -18,7 +18,7 @@
 package imi.scene.utils.tree;
 
 import imi.scene.PNode;
-import java.util.LinkedList;
+import java.util.concurrent.LinkedBlockingQueue;
 
 /**
  * This class will traverse the scene graph using the specified traversal
@@ -42,7 +42,7 @@ public class TreeTraverser
      */
     static public void breadthFirst(PNode root, NodeProcessor processor)
     {
-        LinkedList<PNode> list = new LinkedList<PNode>();
+        LinkedBlockingQueue<PNode> list = new LinkedBlockingQueue<PNode>();
         list.add(root);
         
         PNode current = null;

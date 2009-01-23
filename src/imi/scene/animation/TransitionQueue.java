@@ -80,6 +80,7 @@ public class TransitionQueue implements AnimationListener
             m_commandQueue.enqueue(newCommand);
         else if (m_state.getCurrentCycle() == -1)
         {
+            m_state.getCursor().makeNegativeOne();
 //            System.out.println("setting facial pose for the first time:");
 //            System.out.println("      animation " + newCommand.getAnimationIndex() + " reverse is " + newCommand.isReverse());
             
@@ -99,7 +100,7 @@ public class TransitionQueue implements AnimationListener
         {
 //            System.out.println("setting facial pose:");
 //            System.out.println("      animation " + newCommand.getAnimationIndex() + " reverse is " + newCommand.isReverse());
-            
+            m_state.getCursor().makeNegativeOne();
             AnimationCycle newCycle = m_group.getCycle(newCommand.getAnimationIndex());
             m_state.setTransitionCycle(newCommand.getAnimationIndex());
             
@@ -178,6 +179,7 @@ public class TransitionQueue implements AnimationListener
         {   
             if (m_state != null) // Is there a state set for this fellow yet?
             {
+                m_state.getCursor().makeNegativeOne();
                 m_state.setTransitionCycle(nextCommand.getAnimationIndex());
                 m_state.setTransitionDuration(nextCommand.getTransitionLength());
                 m_state.setTransitionReverseAnimation(nextCommand.isReverse());

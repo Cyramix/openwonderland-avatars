@@ -171,8 +171,6 @@ public class COLLADA_JointChannel implements PJointChannel, Serializable
         PMatrixKeyframe rightFrame = null;
         PMatrixKeyframe currentFrame = null;
 
-
-
         int currentIndex = -1;
         if (bTransitionCycle)
             currentIndex = state.getCursor().getCurrentTransitionJointPosition();
@@ -181,11 +179,11 @@ public class COLLADA_JointChannel implements PJointChannel, Serializable
 
         int numKeyframes = m_KeyFrames.size();
 
-        if (currentIndex < 0 || currentIndex >= numKeyframes)
+        if (currentIndex < 0 || currentIndex >= numKeyframes) // Current index valid?
         {
             if ((state.isReverseAnimation() && !bTransitionCycle) ||
                 (state.isTransitionReverseAnimation() && bTransitionCycle))
-                currentIndex = m_KeyFrames.size() - 1;
+                currentIndex = m_KeyFrames.size() - 1; // start at the end
             else
                 currentIndex = 0;
         }
@@ -197,21 +195,21 @@ public class COLLADA_JointChannel implements PJointChannel, Serializable
             while (i.hasPrevious())
             {
                 currentFrame = i.previous();
-                if (currentFrame.getFrameTime() >= fTime)
+                if (currentFrame.getFrameTime() > fTime)
                     rightFrame = currentFrame;
                 else // passed the mark
                 {
                     leftFrame = currentFrame;
                     if (bTransitionCycle)
-                        state.getCursor().setCurrentTransitionJointIndex(currentIndex + 1);
+                        state.getCursor().setCurrentTransitionJointIndex(currentIndex);
                     else
-                        state.getCursor().setCurrentJointPosition(currentIndex + 1);
+                        state.getCursor().setCurrentJointPosition(currentIndex);
                     break; // finished checking
                 }
                 currentIndex--;
             }
         }
-        else
+        else // playing forward
         {
             while (i.hasNext())
             {

@@ -396,6 +396,7 @@ public class AnimationState
      */
     public void sendMessage(AnimationListener.AnimationMessageType message)
     {
+        m_animCursor.makeNegativeOne();
         if (m_listeners == null)
             return;
         for (AnimationListener listener : m_listeners)
