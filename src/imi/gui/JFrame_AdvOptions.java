@@ -90,6 +90,9 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
      * @param actualval - the actual value of modification from the selected slider/scrollbox
      */
     private synchronized void adjustEyes(GUI_Enums.m_sliderControl type, float mod, float actualval) {
+        if (m_sceneData.getAvatar() == null)
+            return;
+
         SkeletonNode        skelnode        = m_sceneData.getAvatar().getSkeleton();
         String              formattedNumber = null;
         if (skelnode == null) { return; }
@@ -236,6 +239,9 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
      * @param actualval - the actual value of modification from the selected slider/scrollbox
      */
     private synchronized void adjustHands(GUI_Enums.m_sliderControl type, float mod, float actualval) {
+        if (m_sceneData.getAvatar() == null)
+            return;
+
         SkeletonNode skelnode           = m_sceneData.getAvatar().getSkeleton();
         if (skelnode == null) { return; }
 
@@ -277,6 +283,9 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
      * @param actualval - the actual value of modification from the selected slider/scrollbox
      */
     private synchronized void adjustForearms(GUI_Enums.m_sliderControl type, float mod, float actualval) {
+        if (m_sceneData.getAvatar() == null)
+            return;
+
         SkeletonNode    skelnode    = m_sceneData.getAvatar().getSkeleton();
         String          formattedNumber = null;
         if (skelnode == null) { return; }
@@ -353,6 +362,9 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
      * @param actualval - the actual value of modification from the selected slider/scrollbox
      */
     private synchronized void adjustUpperarms(GUI_Enums.m_sliderControl type, float mod, float actualval) {
+        if (m_sceneData.getAvatar() == null)
+            return;
+
         SkeletonNode    skelnode        = m_sceneData.getAvatar().getSkeleton();
         String          formattedNumber = null;
         if (skelnode == null) { return; }
@@ -427,6 +439,9 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
      * @param actualval - the actual value of modification from the selected slider/scrollbox
      */
     private synchronized void adjustFeet(GUI_Enums.m_sliderControl type, float mod, float actualval) {
+        if (m_sceneData.getAvatar() == null)
+            return;
+
         SkeletonNode    skelnode    = m_sceneData.getAvatar().getSkeleton();
         if (skelnode == null) { return; }
 
@@ -468,6 +483,9 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
      * @param actualval - the actual value of modification from the selected slider/scrollbox
      */
     private synchronized void adjustCalves(GUI_Enums.m_sliderControl type, float mod, float actualval) {
+        if (m_sceneData.getAvatar() == null)
+            return;
+
         SkeletonNode    skelnode    = m_sceneData.getAvatar().getSkeleton();
         String          formattedNumber = null;
         if (skelnode == null) { return; }
@@ -542,6 +560,9 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
      * @param actualval - the actual value of modification from the selected slider/scrollbox
      */
     private synchronized void adjustThighs(GUI_Enums.m_sliderControl type, float mod, float actualval) {
+        if (m_sceneData.getAvatar() == null)
+            return;
+
         SkeletonNode    skelnode    = m_sceneData.getAvatar().getSkeleton();
         if (skelnode == null) { return; }
 
@@ -595,6 +616,9 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
      */
     // TODO: write functionality
     private synchronized void adjustChest(GUI_Enums.m_sliderControl type, float mod, float actualval) {
+        if (m_sceneData.getAvatar() == null)
+            return;
+
         SkeletonNode    skelnode    = m_sceneData.getAvatar().getSkeleton();
         if (skelnode == null) { return; }
 
@@ -622,6 +646,9 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
     }
 
     private synchronized void adjustHead(GUI_Enums.m_sliderControl type, float mod, float actualval) {
+        if (m_sceneData.getAvatar() == null)
+            return;
+
         SkeletonNode    skelnode    = m_sceneData.getAvatar().getSkeleton();
         if (skelnode == null) { return; }
 
@@ -667,6 +694,8 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
      */
     // TODO: write functionality
     private synchronized void adjustStomach(GUI_Enums.m_sliderControl type, float mod, float actualval) {
+        if (m_sceneData.getAvatar() == null)
+            return;
 
     }
 
@@ -679,6 +708,8 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
      */
     // TODO: write functionality
     private synchronized void adjustGluts(GUI_Enums.m_sliderControl type, float mod, float actualval) {
+        if (m_sceneData.getAvatar() == null)
+            return;
 
     }
 
@@ -691,7 +722,9 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
      */
     // TODO: write functionality
     private synchronized void adjustBody(GUI_Enums.m_sliderControl type, float mod, float actualval) {
-
+        if (m_sceneData.getAvatar() == null)
+            return;
+        
     }
 
     /** This method is called from within the constructor to

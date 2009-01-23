@@ -1039,17 +1039,20 @@ public class SceneEssentials {
             }
             case 2:
             {
+                if (szAvatarModelFile == null)
+                    szAvatarModelFile = baseFilePath + "/assets/models/collada/Avatars/FemaleAvatar/Female_Bind.dae";
+                if (szAvatarHandsModelFile == null)
+                    szAvatarHandsModelFile = baseFilePath + "/assets/models/collada/Avatars/FemaleAvatar/Female_Hands.dae";
+                if (szAvatarHeadModelFile == null)
+                    szAvatarHeadModelFile = baseFilePath + "/assets/models/collada/Heads/FemaleHead/FemaleCHead.dae";
+
                 load.add(szAvatarModelFile);    // Load selected female skeleton
-                add.add(attribs.createSkinnedMeshParams("rightEyeGeoShape", "Head"));
-                add.add(attribs.createSkinnedMeshParams("leftEyeGeoShape",  "Head"));
-                add.add(attribs.createSkinnedMeshParams("UpperTeethShape",  "Head"));
-                add.add(attribs.createSkinnedMeshParams("LowerTeethShape",  "Head"));
-                add.add(attribs.createSkinnedMeshParams("TongueGeoShape",   "Head"));
-                add.add(attribs.createSkinnedMeshParams("HeadGeoShape",     "Head"));
-                add.add(attribs.createSkinnedMeshParams("HandsShape",       "Hands"));
-                add.add(attribs.createSkinnedMeshParams("ShoesShape",       "Feet"));
                 add.add(attribs.createSkinnedMeshParams("TorsoNudeShape",   "UpperBody"));
                 add.add(attribs.createSkinnedMeshParams("LegsNudeShape",    "LowerBody"));
+                add.add(attribs.createSkinnedMeshParams("ShoesShape",       "Feet"));
+                load.add(szAvatarHandsModelFile);   // Load selected female hand meshes
+                add.add(attribs.createSkinnedMeshParams("HandsShape",       "Hands"));
+                attribs.setHeadAttachment(szAvatarHeadModelFile);
                 break;
             }
 

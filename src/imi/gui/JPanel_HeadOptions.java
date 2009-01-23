@@ -36,6 +36,7 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Vector;
 import java.util.logging.Level;
@@ -67,6 +68,7 @@ public class JPanel_HeadOptions extends javax.swing.JPanel {
     private File                            m_TextureLoc    =   null;
     private PPolygonSkinnedMeshInstance[]   m_Eyes          =   null;
     private WorldManager                    m_wm            =   null;
+    private int                             m_numCol        =   1;
 
 ////////////////////////////////////////////////////////////////////////////////
 // CLASS METHODS
@@ -695,10 +697,18 @@ public class JPanel_HeadOptions extends javax.swing.JPanel {
 
         File[] textures = m_TextureLoc.listFiles(images);
         Vector data = new Vector();
-        
-        for (int i = 0; i < textures.length; i++) {
-            Vector colData = new Vector(Arrays.asList(textures[i]));
-            data.add(colData);
+
+        int i = 0;
+        while (i < textures.length) {
+            Vector rowData = new Vector();
+            for (int j = 0; j < m_numCol; j++) {
+                if (i >= textures.length)
+                    break;
+                
+                rowData.add(Arrays.asList(textures[i]));
+                i++;
+            }
+            data.add(rowData);
         }
 
         return data;
@@ -710,7 +720,10 @@ public class JPanel_HeadOptions extends javax.swing.JPanel {
     public void setTable() {
         Vector data = formatTableData();
         Vector colNames = new Vector();
-        String[] colName  = new String[] { "    " };
+        String[] colName  = new String[m_numCol];
+        for (int i = 0; i < m_numCol; i++ ) {
+            colName[i] = "    ";
+        }
         colNames = new Vector(Arrays.asList(colName));
 
         DefaultTableModel model = new DefaultTableModel(data, colNames);
@@ -732,39 +745,46 @@ public class JPanel_HeadOptions extends javax.swing.JPanel {
 
         private Border m_selectBorder   = null;
         private Border m_unselectBorder = null;
-        private float  m_resizeFactor   = 0.5f;
+        private float  m_resizeFactor   = 0.80f;
 
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-            if (value instanceof File) {
-                try {
-                    URL loc = ((File)value).toURI().toURL();
-                    ImageIcon icon = new ImageIcon(loc);
-                    Image image = icon.getImage();
 
-                    int width   = (int)(m_resizeFactor * image.getWidth(null));
-                    int height  = (int)(m_resizeFactor * image.getHeight(null));
+            if (value == null)
+                return this;
 
-                    Image newImage  = image.getScaledInstance(width, height, Image.SCALE_SMOOTH);
-                    ImageIcon newImageIcon = new ImageIcon(newImage);
+            String location = value.toString().substring(1, value.toString().length() - 1);
+            File file = new File(location);
 
-                    setIcon(newImageIcon);
-                } catch (MalformedURLException ex) {
-                    Logger.getLogger(JPanel_HeadOptions.class.getName()).log(Level.SEVERE, null, ex);
-                }
+            try {
+                URL loc = file.toURI().toURL();//((File)value).toURI().toURL();
+                ImageIcon icon = new ImageIcon(loc);
+                Image image = icon.getImage();
 
-                if (isSelected) {
-                    table.setSelectionBackground(new Color(0, 255, 0));
-                    if (m_selectBorder == null) {
-                        m_selectBorder = BorderFactory.createLineBorder(new Color(0, 255, 0), 3);
-                    }
-                    this.setBorder(m_selectBorder);
-                } else {
-                    if (m_unselectBorder == null) {
-                        m_unselectBorder = BorderFactory.createLineBorder(table.getBackground(), 0);
-                    }
-                    this.setBorder(m_unselectBorder);
-                }
+                int width   = (int)(m_resizeFactor * image.getWidth(null));
+                int height  = (int)(m_resizeFactor * image.getHeight(null));
+
+                Image newImage  = image.getScaledInstance(width, height, Image.SCALE_SMOOTH);
+                ImageIcon newImageIcon = new ImageIcon(newImage);
+
+                setIcon(newImageIcon);
+            } catch (MalformedURLException ex) {
+                Logger.getLogger(JPanel_HeadOptions.class.getName()).log(Level.SEVERE, null, ex);
             }
+
+            if (isSelected) {
+                table.setSelectionBackground(new Color(0, 255, 0));
+                if (m_selectBorder == null) {
+                    m_selectBorder = BorderFactory.createLineBorder(new Color(0, 255, 0), 3);
+                }
+
+                this.setBorder(m_selectBorder);
+            } else {
+                if (m_unselectBorder == null) {
+                    m_unselectBorder = BorderFactory.createLineBorder(table.getBackground(), 0);
+                }
+                this.setBorder(m_unselectBorder);
+            }
+
             return this;
         }
     }
@@ -802,7 +822,9 @@ public class JPanel_HeadOptions extends javax.swing.JPanel {
             return;
 
         // Create a material to use
-        File loc = (File)jTable1.getValueAt(row, col);
+        String temp = jTable1.getValueAt(row, col).toString();
+        String location = temp.substring(1, temp.length() - 1);
+        File loc = new File(location);
         String szName = loc.getName();
         try {
             URL urlFile = loc.toURI().toURL();
