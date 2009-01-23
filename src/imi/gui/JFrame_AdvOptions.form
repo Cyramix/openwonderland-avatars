@@ -76,6 +76,18 @@
             </Constraint>
           </Constraints>
         </Component>
+        <Component class="imi.gui.JPanel_SimpBodyOptions" name="SimpleBodyOptions">
+          <AuxValues>
+            <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new imi.gui.JPanel_SimpBodyOptions(this)"/>
+          </AuxValues>
+          <Constraints>
+            <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout$JTabbedPaneConstraintsDescription">
+              <JTabbedPaneConstraints tabName="Body">
+                <Property name="tabTitle" type="java.lang.String" value="Body"/>
+              </JTabbedPaneConstraints>
+            </Constraint>
+          </Constraints>
+        </Component>
       </SubComponents>
     </Container>
   </SubComponents>

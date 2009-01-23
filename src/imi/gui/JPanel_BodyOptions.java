@@ -4,9 +4,9 @@
  */
 
 /*
- * JPanel_SimpBodyOptions.java
+ * JPanel_BodyOptions.java
  *
- * Created on Jan 6, 2009, 10:37:22 AM
+ * Created on Jan 23, 2009, 5:38:37 PM
  */
 
 package imi.gui;
@@ -17,7 +17,7 @@ import javax.swing.JFrame;
  *
  * @author ptruong
  */
-public class JPanel_SimpBodyOptions extends javax.swing.JPanel {
+public class JPanel_BodyOptions extends javax.swing.JPanel {
 ////////////////////////////////////////////////////////////////////////////////
 // CLASS DATA MEMBERS
 ////////////////////////////////////////////////////////////////////////////////
@@ -29,11 +29,11 @@ public class JPanel_SimpBodyOptions extends javax.swing.JPanel {
 ////////////////////////////////////////////////////////////////////////////////
 
     /** Creates new form JPanel_SimpBodyOptions */
-    public JPanel_SimpBodyOptions() {
+    public JPanel_BodyOptions() {
         initComponents();
     }
 
-    public JPanel_SimpBodyOptions(JFrame baseFrame) {
+    public JPanel_BodyOptions(JFrame baseFrame) {
         m_baseFrame = baseFrame;
         initComponents();
         setSliderControls();
@@ -72,14 +72,9 @@ public class JPanel_SimpBodyOptions extends javax.swing.JPanel {
         jPanel_Weight = new javax.swing.JPanel();
         AvatarThickness = new imi.gui.JPanel_HorizontalSliderS();
 
-        setMaximumSize(new java.awt.Dimension(270, 600));
-        setMinimumSize(new java.awt.Dimension(270, 600));
-        setPreferredSize(new java.awt.Dimension(270, 600));
-
         Uniform.setTabPlacement(javax.swing.JTabbedPane.LEFT);
         Uniform.setMaximumSize(new java.awt.Dimension(270, 600));
         Uniform.setMinimumSize(new java.awt.Dimension(270, 600));
-        Uniform.setPreferredSize(new java.awt.Dimension(270, 600));
 
         Torso.setLayout(new java.awt.GridBagLayout());
 
@@ -144,15 +139,17 @@ public class JPanel_SimpBodyOptions extends javax.swing.JPanel {
 
         Uniform.addTab("Uniform", Body);
 
-        org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
-            layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(Uniform, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 270, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 270, Short.MAX_VALUE)
+            .addComponent(Uniform, javax.swing.GroupLayout.PREFERRED_SIZE, 270, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
         layout.setVerticalGroup(
-            layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(Uniform, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 600, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 600, Short.MAX_VALUE)
+            .addComponent(Uniform, javax.swing.GroupLayout.PREFERRED_SIZE, 600, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
     }// </editor-fold>//GEN-END:initComponents
 
