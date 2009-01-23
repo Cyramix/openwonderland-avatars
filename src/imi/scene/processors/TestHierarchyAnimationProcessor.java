@@ -73,6 +73,11 @@ public class TestHierarchyAnimationProcessor extends ProcessorComponent
      */
     public void compute(ProcessorArmingCollection collection) 
     {
+        if (m_angle == 0)
+        {
+            m_targetMesh.setDirty(true, true);
+            return;
+        }
         m_frames++;
         rotationMatrix.fastMul(new PMatrix(m_axis.mult(m_angle), Vector3f.UNIT_XYZ, Vector3f.ZERO));
 

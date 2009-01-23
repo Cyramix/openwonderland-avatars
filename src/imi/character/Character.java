@@ -332,6 +332,9 @@ public abstract class Character extends Entity implements SpatialObject, Animati
 
         // Set animations and custom meshes
         executeAttributes(m_attributes);
+        // Nothing below is relevant in the simple test sphere case
+        if (m_attributes.isUseSimpleStaticModel())
+            return;
 
         // Set position
         if (m_attributes.getOrigin() != null)
@@ -855,7 +858,6 @@ public abstract class Character extends Entity implements SpatialObject, Animati
                 && m_modelInst.getChild(0).getChild(1) instanceof PPolygonSkinnedMeshInstance)
         {
             m_mesh       = (PPolygonSkinnedMeshInstance)m_modelInst.getChild(0).getChild(1);
-            m_skeleton   = (SkeletonNode)m_modelInst.getChild(0);
             m_skeleton.getAnimationState().addListener(this);
             
             m_initialized = true;

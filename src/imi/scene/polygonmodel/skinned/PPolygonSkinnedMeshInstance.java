@@ -11,8 +11,8 @@
  * except in compliance with the License. A copy of the License is
  * available at http://www.opensource.org/licenses/gpl-license.php.
  *
- * Sun designates this particular file as subject to the "Classpath" 
- * exception as provided by Sun in the License file that accompanied 
+ * Sun designates this particular file as subject to the "Classpath"
+ * exception as provided by Sun in the License file that accompanied
  * this code.
  */
 package imi.scene.polygonmodel.skinned;
@@ -36,11 +36,11 @@ import java.io.Serializable;
  * @author Lou Hayt
  */
 public class PPolygonSkinnedMeshInstance extends PPolygonMeshInstance implements Serializable
-{   
+{
     protected PMatrix[]    m_InverseBindPose  = null; // TODO: Caching this may not be desireable
-    
+
     protected SkeletonNode m_skeletonNode    = null;
-    
+
     protected int[]        m_influenceIndices = null;
 
     protected PMatrix[]    m_pose = null;
@@ -57,9 +57,9 @@ public class PPolygonSkinnedMeshInstance extends PPolygonMeshInstance implements
         super(name, geometry, origin, pscene, applyMaterial);
         if (geometry.getInfluenceIndices() != null)
             setInfluenceIndices(geometry.getInfluenceIndices());
-        
+
     }
-    
+
     //  Copy Constructor.
     public PPolygonSkinnedMeshInstance(PPolygonSkinnedMeshInstance meshInstance, PScene pscene, boolean applyMaterial)
     {
@@ -67,8 +67,8 @@ public class PPolygonSkinnedMeshInstance extends PPolygonMeshInstance implements
         if (meshInstance.getInfluenceIndices() != null)
             setInfluenceIndices(meshInstance.getInfluenceIndices());
     }
-    
-        
+
+
     //  Gets the SkeletonNode.
     public SkeletonNode getSkeletonNode()
     {
@@ -78,7 +78,7 @@ public class PPolygonSkinnedMeshInstance extends PPolygonMeshInstance implements
     public void setInverseBindPose(PMatrix[] newInverseBindPose) {
         m_InverseBindPose = newInverseBindPose;
     }
-    
+
     public void setAndLinkSkeletonNode(SkeletonNode skeleton)
     {
         m_skeletonNode = skeleton;
@@ -116,13 +116,13 @@ public class PPolygonSkinnedMeshInstance extends PPolygonMeshInstance implements
             if (!(pNode instanceof PPolygonSkinnedMeshInstance))
                 return(true);
         }
-        
+
         for (int a=0; a<pNode.getChildrenCount(); a++)
         {
             if (containsPolygonMeshInstance(pNode.getChild(a)))
                 return(true);
         }
-        
+
         return(false);
     }
 
@@ -150,7 +150,7 @@ public class PPolygonSkinnedMeshInstance extends PPolygonMeshInstance implements
     }
 
     @Override
-    public SharedMesh updateSharedMesh() 
+    public SharedMesh updateSharedMesh()
     {
         super.updateSharedMesh();
         // The new skinning model has this mesh query its skeleton for
@@ -164,14 +164,14 @@ public class PPolygonSkinnedMeshInstance extends PPolygonMeshInstance implements
 
         if (m_skeletonNode == null)
             return m_instance;
-        
+
         if (m_InverseBindPose == null) // Initialize the bind pose by querying the skeleton for its bind pose
             m_InverseBindPose = m_skeletonNode.getFlattenedInverseBindPose(m_influenceIndices);  // the group's transform is ignored
         // Retrieve the collection of influences in their current pose
         m_skeletonNode.getPose(m_influenceIndices, m_pose);
-        
+
         if (m_shaderState != null) // may not have loaded yet
-        {    
+        {
             // populate the matrix stack
             for (int i = 0; i < m_pose.length && i < m_InverseBindPose.length; i++)
             {
@@ -198,7 +198,7 @@ public class PPolygonSkinnedMeshInstance extends PPolygonMeshInstance implements
             return null;
         return m_instance;
     }
-    
+
 
     // This method tells the skeleton to rebind its mappings
     public void recalculateInverseBindPose()
@@ -207,8 +207,8 @@ public class PPolygonSkinnedMeshInstance extends PPolygonMeshInstance implements
         skeleton.refresh();
         m_InverseBindPose = skeleton.getFlattenedInverseBindPose(((PPolygonSkinnedMesh)m_geometry).getInfluenceIndices());
     }
-    
-    
+
+
     /**
      * Retrieve the BFT indices of the joints in the associated skeleton that
      * deform this mesh instance
@@ -218,7 +218,7 @@ public class PPolygonSkinnedMeshInstance extends PPolygonMeshInstance implements
     {
         return m_influenceIndices;
     }
-    
+
     /**
      * Set the list of influences for this instance. These should be generated
      * by querying the skeleton that owns this instance. The inverse bind pose
@@ -239,7 +239,7 @@ public class PPolygonSkinnedMeshInstance extends PPolygonMeshInstance implements
             m_pose[i] = new PMatrix();
         }
     }
-    
+
     private boolean bDeforming = false;
     private boolean doesShaderContainDeformer()
     {
@@ -250,7 +250,7 @@ public class PPolygonSkinnedMeshInstance extends PPolygonMeshInstance implements
         if (shader == null) // No shader, no deformer!
             return false;
         ShaderProperty[] props = shader.getProperties();
-        
+
         for (ShaderProperty prop : props)
         {
             if (prop.name.equals("pose"))
@@ -262,11 +262,11 @@ public class PPolygonSkinnedMeshInstance extends PPolygonMeshInstance implements
         return false;
     }
 
-//    protected void postAnimationModifiedMeshSpaceMatrixHook(PMatrix matrix, int jointIndex) 
+//    protected void postAnimationModifiedMeshSpaceMatrixHook(PMatrix matrix, int jointIndex)
 //    {
 //        if (m_jointManipulator == null)
 //            return;
-//        
+//
 //        m_jointManipulator.postAnimationModifiedMeshSpaceMatrixHook(matrix, jointIndex);
 //    }
 //
@@ -277,6 +277,6 @@ public class PPolygonSkinnedMeshInstance extends PPolygonMeshInstance implements
 //    public void setJointManipulator(PostAnimationJointManipulator jointManipulator) {
 //        this.m_jointManipulator = jointManipulator;
 //    }
-    
-    
+
+
 }

@@ -652,7 +652,6 @@ public class DemoBase
         mesh.addPolygon(floorPoly);
                 
         mesh.endBatch(); // finished editing geometry; endBatch calls some methods under the hood that are important for proper rendering
-        mesh.setMaterial(new PMeshMaterial()); // Default material
 
         mesh.submit(new PPolygonTriMeshAssembler());
         

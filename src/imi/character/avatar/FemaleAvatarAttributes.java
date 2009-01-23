@@ -275,7 +275,7 @@ public class FemaleAvatarAttributes extends CharacterAttributes
 
     private void customizeHairPresets(int preset, ArrayList<String> load, ArrayList<SkinnedMeshParams> add, ArrayList<AttachmentParams> attachments)
     {
-        PMatrix orientation = new PMatrix(new Vector3f(0,0,0), new Vector3f(1, 1.05f, 1.06f), Vector3f.ZERO);
+        PMatrix orientation = new PMatrix(new Vector3f((float)Math.toRadians(5.05),0,0), Vector3f.UNIT_XYZ, new Vector3f(0,0,0.029f));
         switch(preset)
         {
             case 0:

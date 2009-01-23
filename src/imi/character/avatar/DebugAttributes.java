@@ -11,8 +11,8 @@
  * except in compliance with the License. A copy of the License is
  * available at http://www.opensource.org/licenses/gpl-license.php.
  *
- * Sun designates this particular file as subject to the "Classpath" 
- * exception as provided by Sun in the License file that accompanied 
+ * Sun designates this particular file as subject to the "Classpath"
+ * exception as provided by Sun in the License file that accompanied
  * this code.
  */
 package imi.character.avatar;
@@ -30,7 +30,7 @@ import java.util.ArrayList;
  * primary avatar geometry and animations.
  * @author Lou Hayt
  */
-public class MaleAvatarAttributes extends CharacterAttributes
+public class DebugAttributes extends CharacterAttributes
 {
     public String[] m_regions = new String[] { "Head", "Hands", "UpperBody", "LowerBody", "Feet", "Hair", "FacialHair", "Hats", "Glasses", "Jackets" };
 
@@ -42,77 +42,57 @@ public class MaleAvatarAttributes extends CharacterAttributes
         new ColorRGBA(182.0f / 255.0f,  137.0f / 255.0f, 116.0f / 255.0f, 1),
         new ColorRGBA(0.4f, 0.8f, 0.8f, 1), // Just as a joke :)
     };
-    private boolean loadedBind = false;
-    
+
     /**
      * Construct a new attributes instance.
      * @param name The name of the avatar
      * @param bRandomCustomizations If false, avatar starts in the bind pose, if true then random clothing will be applied
      */
-    public MaleAvatarAttributes(String name, boolean bRandomCustomizations) 
+    public DebugAttributes(String name,
+                        boolean bHands,
+                        boolean bHead,
+                        boolean bFeet,
+                        boolean bTorso,
+                        boolean bLegs,
+                        boolean bHair)
     {
-        // Customizations
-        if (bRandomCustomizations)
-        {
             int preset        = -1;
             int numberOfFeet  = 4;
             int numberOfLegs  = 4;
             int numberOfTorso = 6;
             int numberOfHair  = 17;
             int numberOfHeads = 2;
-            
+
             ArrayList<String> load      = new ArrayList<String>();
             ArrayList<SkinnedMeshParams> add       = new ArrayList<SkinnedMeshParams>();
             ArrayList<AttachmentParams> attachments = new ArrayList<AttachmentParams>();
 
             preset = (int) (Math.random() * 1000000 % numberOfHeads);
-            customizeHead(preset);
-            
+            if (bHead)
+                customizeHead(preset);
+
             preset = (int) (Math.random() * 1000000 % numberOfFeet);
-            customizeFeetPresets(preset, load, add, attachments);
+            if (bFeet)
+                customizeFeetPresets(preset, load, add, attachments);
 
             preset = (int) (Math.random() * 1000000 % numberOfLegs);
-            customizeLegsPresets(preset, load, add, attachments);
+            if (bLegs)
+                customizeLegsPresets(preset, load, add, attachments);
 
             preset = (int) (Math.random() * 1000000 % skinTones.length);
             setSkinTone(skinTones[preset].r, skinTones[preset].g, skinTones[preset].b);
-  
+
             preset = (int) (Math.random() * 1000000 % numberOfTorso);
-            customizeTorsoPresets(preset, load, add, attachments);
-            
+            if (bTorso)
+                customizeTorsoPresets(preset, load, add, attachments);
+
             preset = (int) (Math.random() * 1000000 % numberOfHair);
-            customizeHairPresets(preset, load, add, attachments);
+            if (bHair)
+                customizeHairPresets(preset, load, add, attachments);
 
             setLoadInstructions(load);
             setAddInstructions(add.toArray(new SkinnedMeshParams[add.size()]));
             setAttachmentsInstructions(attachments.toArray(new AttachmentParams[attachments.size()]));
-        }
-        else
-        {
-            customizeHead(0);
-            loadDefaultBindPose();
-        }
-    }
-    public MaleAvatarAttributes(String name, int feet, int legs, int torso, int hair, int head)
-    {
-        this(name, feet, legs, torso, hair, head, 0);
-    }
-    public MaleAvatarAttributes(String name, int feet, int legs, int torso, int hair, int head, int skinTone)
-    {
-        ArrayList<String> load                  = new ArrayList<String>();
-        ArrayList<SkinnedMeshParams> add        = new ArrayList<SkinnedMeshParams>();
-        ArrayList<AttachmentParams> attachments = new ArrayList<AttachmentParams>();
-
-        customizeHead(head);
-        customizeFeetPresets(feet,   load, add, attachments);
-        customizeLegsPresets(legs,   load, add, attachments);
-        customizeTorsoPresets(torso, load, add, attachments);
-        customizeHairPresets(hair,   load, add, attachments);
-
-        setLoadInstructions(load);
-        setAddInstructions(add.toArray(new SkinnedMeshParams[add.size()]));
-        setAttachmentsInstructions(attachments.toArray(new AttachmentParams[attachments.size()]));
-        
     }
 
     private void customizeHead(int preset)
@@ -170,20 +150,16 @@ public class MaleAvatarAttributes extends CharacterAttributes
             break;
             default:
             {
-                if(!loadedBind)
-                {
-                    loadedBind = true;
-                    load.add(new String("assets/models/collada/Avatars/MaleAvatar/Male_Bind.dae"));
-                }
+                load.add(new String("assets/models/collada/Avatars/MaleAvatar/Male_Bind.dae"));
                 add.add(new SkinnedMeshParams("RFootNudeShape",  "Feet"));
                 add.add(new SkinnedMeshParams("LFootNudeShape",  "Feet"));
             }
-        }   
+        }
     }
 
     private void customizeHairPresets(int preset, ArrayList<String> load, ArrayList<SkinnedMeshParams> add, ArrayList<AttachmentParams> attachments)
     {
-        PMatrix orientation = new PMatrix(new Vector3f(0,0,0), Vector3f.UNIT_XYZ, Vector3f.ZERO);
+        PMatrix orientation = new PMatrix(new Vector3f((float)Math.toRadians(10),0,0), new Vector3f(1, 1, 1), Vector3f.ZERO);
         switch(preset)
         {
             case 0:
@@ -206,7 +182,7 @@ public class MaleAvatarAttributes extends CharacterAttributes
             break;
             case 3:
             {
-                load.add(new String("assets/models/collada/Hair/MaleHair/HairPlaceable.dae"));
+                load.add(new String("assets/models/collada/Hair/MaleHair/HairPlaceable.dae")); // <-- could be bad
                 attachments.add(new AttachmentParams("M_slickedbk", "Head", orientation));
             }
             break;
@@ -288,7 +264,7 @@ public class MaleAvatarAttributes extends CharacterAttributes
                 attachments.add(new AttachmentParams("Hair_AfAmLngCrew", "Head", orientation));
             }
             break;
-        }   
+        }
     }
 
     private void customizeLegsPresets(int preset, ArrayList<String> load, ArrayList<SkinnedMeshParams> add, ArrayList<AttachmentParams> attachments)
@@ -334,14 +310,10 @@ public class MaleAvatarAttributes extends CharacterAttributes
             break;
             default:
             {
-                if(!loadedBind)
-                {
-                    loadedBind = true;
-                    load.add(new String("assets/models/collada/Avatars/MaleAvatar/Male_Bind.dae"));
-                }
+                load.add(new String("assets/models/collada/Avatars/MaleAvatar/Male_Bind.dae"));
                 add.add(new SkinnedMeshParams("LegsNudeShape",  "LowerBody"));
             }
-        }   
+        }
     }
 
     protected void customizeTorsoPresets(int preset, ArrayList<String> load, ArrayList<SkinnedMeshParams> add, ArrayList<AttachmentParams> attachments)
@@ -407,32 +379,9 @@ public class MaleAvatarAttributes extends CharacterAttributes
             break;
             default:
             {
-                if(!loadedBind)
-                {
-                    loadedBind = true;
-                    load.add(new String("assets/models/collada/Avatars/MaleAvatar/Male_Bind.dae"));
-                }
+                load.add(new String("assets/models/collada/Avatars/MaleAvatar/Male_Bind.dae"));
                 add.add(new SkinnedMeshParams("TorsoNudeShape",  "UpperBody"));
             }
-        }   
-    }
-
-    protected void loadDefaultBindPose()
-    {
-        ArrayList<String> load      = new ArrayList<String>();
-        load.add(new String("assets/models/collada/Avatars/MaleAvatar/Male_Bind.dae"));
-        loadedBind = true;
-
-        ArrayList<SkinnedMeshParams> add       = new ArrayList<SkinnedMeshParams>();
-        add.add(new SkinnedMeshParams("RHandShape",  "Hands"));
-        add.add(new SkinnedMeshParams("LHandShape",  "Hands"));
-        add.add(new SkinnedMeshParams("RFootNudeShape",  "Feet"));
-        add.add(new SkinnedMeshParams("LFootNudeShape",  "Feet"));
-        add.add(new SkinnedMeshParams("TorsoNudeShape",  "UpperBody"));
-        add.add(new SkinnedMeshParams("LegsNudeShape",  "LowerBody"));
-
-
-        setLoadInstructions(load);
-        setAddInstructions(add.toArray(new SkinnedMeshParams[add.size()]));
+        }
     }
 }

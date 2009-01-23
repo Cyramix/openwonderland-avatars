@@ -128,6 +128,10 @@ public class GLSLShaderProgram implements AbstractShaderProgram, RenderUpdater
         setWorldManager(null);
     }
 
+    public GLSLShaderProgram(WorldManager wm)
+    {
+        this(wm, true);
+    }
     /**
      * Create a new instance
      * @param wm The world manager
@@ -974,7 +978,7 @@ public class GLSLShaderProgram implements AbstractShaderProgram, RenderUpdater
             defaultCtor = this.getClass().getConstructor(WorldManager.class);
             vanillaInstance = (GLSLShaderProgram) defaultCtor.newInstance(m_WM);
         } catch (NoSuchMethodException ex) {
-            Logger.getLogger(GLSLShaderProgram.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
+            // This just means that we are not using a dynamic shader
         } catch (SecurityException ex) {
             Logger.getLogger(GLSLShaderProgram.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
         } catch (InstantiationException ex) {

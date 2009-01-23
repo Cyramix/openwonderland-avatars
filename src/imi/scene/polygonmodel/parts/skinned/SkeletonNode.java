@@ -324,8 +324,8 @@ public class SkeletonNode extends PNode implements Animated, Serializable
         }
     }
     
-    
-    
+
+
     /**
      * This method calculates the joint matrix after 
      * multiplying it with the local modifier (used for things such as body fat)
