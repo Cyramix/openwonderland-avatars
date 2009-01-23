@@ -1174,6 +1174,11 @@ public class PScene extends PNode implements RepositoryUser, Serializable
      */
     public void loadTexture(SharedAsset texture, PPolygonMeshInstance textureInstaller)
     {
+        if (texture == null)
+        {
+            System.out.println("ERROR: loadTexture() SharedAsset texture null");
+            return;
+        }
         // Check localy in the the SharedAsset list
         int index = m_SharedAssets.indexOf(texture);        
         if (-1 == index)

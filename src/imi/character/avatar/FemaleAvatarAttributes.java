@@ -48,16 +48,48 @@ public class FemaleAvatarAttributes extends CharacterAttributes
     {
         super(name);
         setGender(2);
-        customizeHead(0);
-        loadDefaultBind();
+        
+        // Customizations
+        if (bRandomCustomizations)
+        {
+            int preset        = -1;
+            int numberOfFeet  = 3;
+            int numberOfLegs  = 3;
+            int numberOfTorso = 3;
+            int numberOfHair  = 53;
+            int numberOfHeads = 2;
+            
+            ArrayList<String> load      = new ArrayList<String>();
+            ArrayList<SkinnedMeshParams> add       = new ArrayList<SkinnedMeshParams>();
+            ArrayList<AttachmentParams> attachments = new ArrayList<AttachmentParams>();
 
-        int feet  = -1;//(int) (Math.random() * 10000 % 0);
-        int legs  = (int) (Math.random() * 10000 % 3);  // 1 and 2 problems
-        int torso = (int) (Math.random() * 10000 % 5);  // 3 and 3 problems
-        int hair  = (int) (Math.random() * 10000 % 53); // 8 is missing, test til 16
-        int head  = (int) (Math.random() * 10000 % 2);
-        int skin  = (int) (Math.random() * 10000 % 2);
-        setSkinTone(skinTones[skin].r, skinTones[skin].g, skinTones[skin].b);
+            preset = (int) (Math.random() * 1000000 % numberOfHeads);
+            customizeHead(preset);
+            
+            preset = (int) (Math.random() * 1000000 % numberOfFeet);
+            customizeFeetPresets(preset, load, add, attachments);
+
+            preset = (int) (Math.random() * 1000000 % numberOfLegs);
+            customizeLegsPresets(preset, load, add, attachments);
+
+            preset = (int) (Math.random() * 1000000 % skinTones.length);
+            setSkinTone(skinTones[preset].r, skinTones[preset].g, skinTones[preset].b);
+  
+            preset = (int) (Math.random() * 1000000 % numberOfTorso);
+            customizeTorsoPresets(preset, load, add, attachments);
+            
+            preset = (int) (Math.random() * 1000000 % numberOfHair);
+            customizeHairPresets(preset, load, add, attachments);
+
+            setLoadInstructions(load);
+            setAddInstructions(add.toArray(new SkinnedMeshParams[add.size()]));
+            setAttachmentsInstructions(attachments.toArray(new AttachmentParams[attachments.size()]));
+        }
+        else
+        {
+            customizeHead(0);
+            loadDefaultBindPose();
+        }
     }
 
     public FemaleAvatarAttributes(String name, int feet, int legs, int torso, int hair, int head)
@@ -110,6 +142,14 @@ public class FemaleAvatarAttributes extends CharacterAttributes
                 // Converse shoes
                 load.add(new String("assets/models/collada/Clothing/FeamleClothing/Female_ConverseShoes.dae"));
                 add.add(new SkinnedMeshParams("Female_ConverseShoes_Female_ConverseShoeShape", "Feet"));
+            }
+            break;
+            case 2:
+            {
+                // Flip flops
+                load.add(new String("assets/models/collada/Clothing/FeamleClothing/FemaleFlipFlops.dae"));
+                add.add(new SkinnedMeshParams("FlipFlopsFemaleShape", "Feet"));
+                add.add(new SkinnedMeshParams("FemaleFeet_NudeShape", "Feet"));
             }
             break;
             default:
@@ -166,7 +206,7 @@ public class FemaleAvatarAttributes extends CharacterAttributes
     {
         // Add the hands 
         load.add(new String("assets/models/collada/Avatars/FemaleAvatar/Female_Hands.dae")); 
-        add.add(new SkinnedMeshParams("HandsShape",  "Hands"));
+        add.add(new SkinnedMeshParams("Hands_NudeShape",  "Hands"));
 
         switch(preset)
         {
@@ -218,7 +258,7 @@ public class FemaleAvatarAttributes extends CharacterAttributes
         }   
     }
 
-    private void loadDefaultBind() {
+    private void loadDefaultBindPose() {
         ArrayList<String> load      = new ArrayList<String>();
         load.add(new String("assets/models/collada/Avatars/FemaleAvatar/Female_Bind.dae")); // change!
 

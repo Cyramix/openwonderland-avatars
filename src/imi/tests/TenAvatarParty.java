@@ -20,14 +20,13 @@ package imi.tests;
 import com.jme.math.Vector2f;
 import com.jme.math.Vector3f;
 import imi.character.avatar.Avatar;
+import imi.character.avatar.FemaleAvatarAttributes;
 import imi.character.avatar.MaleAvatarAttributes;
 import imi.scene.PMatrix;
 import imi.scene.camera.state.FirstPersonCamState;
 import imi.scene.processors.JSceneEventProcessor;
 import imi.utils.CircleUtil;
 import imi.utils.input.AvatarControlScheme;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.jdesktop.mtgame.WorldManager;
@@ -83,7 +82,10 @@ public class TenAvatarParty extends DemoBase
         {
             try {
                 long startTime = System.nanoTime();
-                testCharacter = new Avatar(new MaleAvatarAttributes("Name", true), wm);//new avatarAvatar(new URL(configFiles[i]), wm);
+                if (Math.random() < 0.5)
+                    testCharacter = new Avatar(new MaleAvatarAttributes("Name", true), wm);//new avatarAvatar(new URL(configFiles[i]), wm);
+                else
+                    testCharacter = new Avatar(new FemaleAvatarAttributes("Name", true), wm);//new avatarAvatar(new URL(configFiles[i]), wm);
                 long stopTime = System.nanoTime();
                 float length = (stopTime - startTime) / 1000000000.0f;
                 totalLoadTime += length;

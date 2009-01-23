@@ -358,6 +358,12 @@ public class Collada
             doLoad(collada);
             result = true;
         } // End while loop
+
+        // If there are no joints in the skeleton we don't need a skeleton
+        // (this is probably a non skinned mesh)
+        if (m_skeletonNode.getSkeletonRoot().getChildrenCount() == 0)
+            m_loadingPScene.getInstances().removeChild(m_skeletonNode);
+
         return result;
     }
 

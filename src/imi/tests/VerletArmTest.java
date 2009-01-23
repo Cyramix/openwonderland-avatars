@@ -87,7 +87,7 @@ public class VerletArmTest  extends DemoBase
         else // female
         {
             // Create female avatar
-            feet  = (int) (Math.random() * 10000 % 2);
+            feet  = (int) (Math.random() * 10000 % 3);
             legs  = (int) (Math.random() * 10000 % 3);
             torso = (int) (Math.random() * 10000 % 3);  // % 5.... 3 and 4 problems
             hair  = (int) (Math.random() * 10000 % 53); // tested til 15

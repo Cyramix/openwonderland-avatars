@@ -192,10 +192,10 @@ public class Avatar extends imi.character.Character
         m_context.getStateMapping().get(TurnState.class).setAnimationName("Female_Rotate");
         m_context.getStateMapping().get(WalkState.class).setAnimationName("Female_Walk");
         m_context.getStateMapping().get(RunState.class).setAnimationName("Female_Run");
-        m_context.getStateMapping().get(SitState.class).setAnimationName("Female_StandToSit");
+        m_context.getStateMapping().get(SitState.class).setAnimationName("Female_StandtoSit");
         m_context.getStateMapping().get(FlyState.class).setAnimationName("Female_Sitting");
         ((SitState)m_context.getStateMapping().get(SitState.class)).setIdleSittingAnimationName("Female_Sitting");
-        ((SitState)m_context.getStateMapping().get(SitState.class)).setGettingUpAnimationName("Female_StandToSit");
+        ((SitState)m_context.getStateMapping().get(SitState.class)).setGettingUpAnimationName("Female_StandtoSit");
     }
 
     private void commonContextSetup()

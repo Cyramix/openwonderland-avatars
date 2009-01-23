@@ -19,6 +19,7 @@ package imi.tests;
 
 import com.jme.math.Vector3f;
 import imi.character.avatar.Avatar;
+import imi.character.avatar.FemaleAvatarAttributes;
 import imi.character.avatar.MaleAvatarAttributes;
 import imi.character.objects.LocationNode;
 import imi.character.objects.ObjectCollection;
@@ -88,32 +89,22 @@ public class MusicalChairs extends DemoBase
         float zStep = 5.0f;
         for (int i = 1; i < numberOfAvatars; i++)
         {
-            cloneAvatar(control, objects, wm, 0.0f, 0.0f, zStep);
+            createAvatar(control, objects, wm, 0.0f, 0.0f, zStep);
             zStep += 5.0f;
         }
-        
-//        avatarAvatar bigBaby = new avatarAvatar("Big Baby", wm);
-//        bigBaby.getModelInst().getTransform().getLocalMatrix(true).setTranslation(Vector3f.UNIT_Z.mult(-5.0f));
-//        control.getAvatarTeam().add(bigBaby);
-//        bigBaby.setObjectCollection(objects);
-        
-//        avatar shadowBlade = new avatar("Shadow Blade", new PMatrix().setTranslation(Vector3f.UNIT_X.mult(5.0f)), 0.22f, wm);
-//        //shadowBlade.selectForInput();
-//        control.getAvatarTeam().add(shadowBlade);
-//        shadowBlade.setObjectCollection(objects);
-
-//        Adam adam = new Adam("Adam", wm);
-//        adam.getModelInst().getTransform().getLocalMatrix(true).setTranslation(Vector3f.UNIT_X.mult(-5.0f));
-//        control.getAvatarTeam().add(adam);
-//        adam.setObjectCollection(objects);
     }
 
-    private void cloneAvatar(AvatarControlScheme control, ObjectCollection objects, WorldManager wm, float xOffset, float yOffset, float zOffset) 
+    private void createAvatar(AvatarControlScheme control, ObjectCollection objects, WorldManager wm, float xOffset, float yOffset, float zOffset)
     {   
-        Avatar avatar = new Avatar(new MaleAvatarAttributes("Avatar Clone " + xOffset+yOffset+zOffset, true), wm);
+        boolean male = true; if (Math.random() < 0.25) male = false;
+        Avatar avatar;
+        if (male)
+            avatar = new Avatar(new MaleAvatarAttributes("Avatar", true), wm);
+        else // female
+            avatar = new Avatar(new FemaleAvatarAttributes("Avatar", true), wm);
+
         avatar.getModelInst().getTransform().getLocalMatrix(true).setTranslation(new Vector3f(xOffset, yOffset, zOffset));
         control.getAvatarTeam().add(avatar);
         avatar.setObjectCollection(objects);
     }
-    
 }

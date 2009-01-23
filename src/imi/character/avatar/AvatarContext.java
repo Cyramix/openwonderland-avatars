@@ -250,22 +250,22 @@ public class AvatarContext extends GameContext
 //
            // System.out.println("fix: " + avatar.getPosition());
             
-//            AI.clearTasks();
-//            GoToNearestLocation();
-//            if (location != null)
-//                AI.addTaskToBottom(new FollowPath("yellowRoom", location, this));
+            AI.clearTasks();
+            GoToNearestLocation();
+            if (location != null)
+                AI.addTaskToBottom(new FollowPath("yellowRoom", location, this));
         }
         else if (trigger == TriggerNames.GoTo2.ordinal() && pressed)
         {
-//            AI.clearTasks();
-//            GoToNearestLocation();
-//            if (location != null)
-//                AI.addTaskToBottom(new FollowPath("lobbyCenter", location, this));
+            AI.clearTasks();
+            GoToNearestLocation();
+            if (location != null)
+                AI.addTaskToBottom(new FollowPath("lobbyCenter", location, this));
         }
         else if (trigger == TriggerNames.GoTo3.ordinal() && pressed)
         {
-//            AI.clearTasks();
-//            GoToNearestChair();
+            AI.clearTasks();
+            GoToNearestChair();
         }
         
         else if (trigger == TriggerNames.Smile.ordinal() && pressed)
@@ -446,10 +446,10 @@ public class AvatarContext extends GameContext
      
         if (avatar.getAttributes().isMale())
         {
-            info = new ActionInfo("Male_Wave", "MaleSmile", 1.0f, 2.0f);
+            info = new ActionInfo("Male_Wave", "MaleSmile4Frame", 1.0f, 2.0f);
             genericAnimations.add(info);
 
-            cycleInfo = new CycleActionInfo("Male_AnswerCell", "Male_Cell", "Male_AnswerCell", "MaleSmile", 0.5f, 2.0f);
+            cycleInfo = new CycleActionInfo("Male_AnswerCell", "Male_Cell", "Male_AnswerCell", "MaleSmile4Frame", 0.5f, 2.0f);
             cycleInfo.setExitAnimationReverse(true);
             genericAnimations.add(cycleInfo);
 
@@ -463,10 +463,10 @@ public class AvatarContext extends GameContext
             info = new ActionInfo("Male_Yes");
             genericAnimations.add(info);
 
-            info = new ActionInfo("Male_Laugh", "MaleSmile", 0.5f, 2.5f);
+            info = new ActionInfo("Male_Laugh", "MaleSmile4Frame", 0.5f, 2.5f);
             genericAnimations.add(info);
 
-            info = new ActionInfo("Male_Cheer", "MaleSmile", 0.5f, 3.0f);
+            info = new ActionInfo("Male_Cheer", "MaleSmile4Frame", 0.5f, 3.0f);
             genericAnimations.add(info);
 
             info = new ActionInfo("Male_Clap");

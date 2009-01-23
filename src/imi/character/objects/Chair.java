@@ -22,6 +22,7 @@ import com.jme.math.Vector3f;
 import com.jme.renderer.ColorRGBA;
 import com.jme.scene.state.MaterialState.ColorMaterial;
 import imi.loaders.PPolygonTriMeshAssembler;
+import imi.loaders.collada.ColladaLoaderParams;
 import imi.loaders.repository.AssetDescriptor;
 import imi.loaders.repository.AssetInitializer;
 import imi.loaders.repository.SharedAsset;
@@ -89,23 +90,23 @@ public class Chair implements SpatialObject
 
                     if (asset instanceof PNode)
                     {
-                        // find ever mesh instance and nullify it's color buffer
-                        FastList<PNode> queue = new FastList<PNode>();
-                        queue.add((PNode)asset);
-                        while (!queue.isEmpty())
-                        {
-                            PNode current = queue.removeFirst();
-                            if (current instanceof PPolygonMeshInstance)
-                            {
-                                PPolygonMeshInstance meshInst = (PPolygonMeshInstance)current;
-                                meshInst.getSharedMesh().getTarget().setColorBuffer(null);
-                                modelInst.removeAllChildren();
-                                modelInst.addChild(current);
-                                break;
-                            }
-                            // add all children
-                            queue.addAll(current.getChildren());
-                        }
+//                        // find ever mesh instance and nullify it's color buffer
+//                        FastList<PNode> queue = new FastList<PNode>();
+//                        queue.add((PNode)asset);
+//                        while (!queue.isEmpty())
+//                        {
+//                            PNode current = queue.removeFirst();
+//                            if (current instanceof PPolygonMeshInstance)
+//                            {
+//                                PPolygonMeshInstance meshInst = (PPolygonMeshInstance)current;
+//                                meshInst.getSharedMesh().getTarget().setColorBuffer(null);
+//                                modelInst.removeAllChildren();
+//                                modelInst.addChild(current);
+//                                break;
+//                            }
+//                            // add all children
+//                            queue.addAll(current.getChildren());
+//                        }
                     }
                     return true;
                 }
@@ -155,7 +156,6 @@ public class Chair implements SpatialObject
     {
         if (sharedAsset != null)
         {
-            //scene.setUseRepository(false);
             sharedAsset.setRepository(scene.getRepository());
             modelInst = scene.addModelInstance("Chair", sharedAsset, initOrigin);
         }

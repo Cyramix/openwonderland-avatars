@@ -23,6 +23,7 @@ import com.jme.util.export.binary.BinaryExporter;
 import com.jme.util.export.binary.BinaryImporter;
 import imi.utils.AvatarObjectOutputStream;
 import imi.loaders.collada.Collada;
+import imi.loaders.collada.ColladaLoaderParams;
 import imi.loaders.ms3d.SkinnedMesh_MS3D_Importer;
 import imi.scene.PScene;
 import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
