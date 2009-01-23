@@ -33,7 +33,6 @@ import imi.loaders.repository.RepositoryUser;
 import imi.loaders.repository.SharedAsset;
 import imi.loaders.repository.SharedAsset.SharedAssetType;
 import imi.loaders.repository.SharedAssetPlaceHolder;
-import imi.scene.animation.AnimationState;
 import imi.scene.polygonmodel.PPolygonMesh;
 import imi.scene.polygonmodel.PPolygonMeshInstance;
 import imi.scene.polygonmodel.PPolygonModelInstance;
@@ -52,6 +51,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import javolution.util.FastList;
+import javolution.util.FastTable;
 import org.jdesktop.mtgame.WorldManager;
 
 /**
@@ -329,8 +329,8 @@ public class PScene extends PNode implements RepositoryUser, Serializable
     {   
         PNode node = processNode(model);
         model.removeAllChildren();
-        FastList<PNode> children = node.getChildren();
-        while (children.isEmpty() == false) 
+        FastTable<PNode> children = node.getChildren();
+        while (children.isEmpty() == false)
             model.addChild(children.get(0)); 
         
         m_Instances.addChild(model);

@@ -23,10 +23,12 @@ import imi.scene.animation.AnimationGroup;
 import imi.scene.animation.AnimationState;
 import imi.scene.polygonmodel.PPolygonModelInstance;
 import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
+import imi.utils.instruments.Instrumentation;
 import java.util.logging.Logger;
 import org.jdesktop.mtgame.NewFrameCondition;
 import org.jdesktop.mtgame.ProcessorArmingCollection;
 import org.jdesktop.mtgame.ProcessorComponent;
+import org.jdesktop.mtgame.WorldManager;
 
 /**
  * This processor handles animating a character. Do to our additive blending
@@ -35,6 +37,7 @@ import org.jdesktop.mtgame.ProcessorComponent;
  */
 public class CharacterAnimationProcessor extends ProcessorComponent
 {
+    private Instrumentation         instruments = null;
     private Animated                m_animated  = null;
     private PPolygonModelInstance   m_modelInst = null;
 
@@ -48,16 +51,18 @@ public class CharacterAnimationProcessor extends ProcessorComponent
      * This constructor receives the skeleton node
      * @param instance
      */
-    public CharacterAnimationProcessor(SkeletonNode skeleton) 
+    public CharacterAnimationProcessor(SkeletonNode skeleton, WorldManager wm)
     {
         m_animated = skeleton;
+        instruments = (Instrumentation)wm.getUserData(Instrumentation.class);
 //        setRunInRenderer(true);
 //        if(skeleton.getParent() instanceof PPolygonModelInstance) 
 //            m_modelInst = (PPolygonModelInstance) skeleton.getParent();
     }
-    public CharacterAnimationProcessor(PPolygonModelInstance modelInst) 
+    public CharacterAnimationProcessor(PPolygonModelInstance modelInst, WorldManager wm)
     {
         m_modelInst = modelInst;
+        instruments = (Instrumentation)wm.getUserData(Instrumentation.class);
     }
 
     @Override
@@ -69,7 +74,7 @@ public class CharacterAnimationProcessor extends ProcessorComponent
     @Override
     public void commit(ProcessorArmingCollection collection) 
     {
-        if (!bEnable)
+        if (!bEnable || instruments.isSubsystemEnabled(Instrumentation.InstrumentedSubsystem.AnimationSystem) == false)
             return;
 
         double newTime = System.nanoTime() / 1000000000.0;

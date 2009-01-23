@@ -42,7 +42,7 @@ import javax.swing.JPopupMenu;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
-import javolution.util.FastList;
+import javolution.util.FastTable;
 
 /**
  * TreePopUpMenu Class
@@ -137,7 +137,7 @@ public class TreePopUpMenu extends MouseAdapter implements ActionListener {
         }
         // Get the new modelinstance by comparing the created instance with those
         // in the PScene
-        FastList<PNode> modelInstances = sceneData.getPScene().getInstances().getChildren();
+        FastTable<PNode> modelInstances = sceneData.getPScene().getInstances().getChildren();
         int i = 0;
         for(i = 0; i < modelInstances.size(); i++) {
             if(((PPolygonModelInstance)modelInstances.get(i)).equals(sceneData.getModelInstance()))

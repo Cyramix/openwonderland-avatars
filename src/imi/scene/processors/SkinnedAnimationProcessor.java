@@ -20,12 +20,13 @@ package imi.scene.processors;
 import imi.scene.PNode;
 import imi.scene.animation.AnimationState;
 import imi.scene.animation.AnimationGroup;
-import imi.scene.animation.TransitionQueue;
 import imi.scene.polygonmodel.PPolygonModelInstance;
 import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
+import imi.utils.instruments.Instrumentation;
 import org.jdesktop.mtgame.ProcessorComponent;
 import org.jdesktop.mtgame.ProcessorArmingCollection;
 import org.jdesktop.mtgame.NewFrameCondition;
+import org.jdesktop.mtgame.WorldManager;
 
 /**
  *
@@ -34,6 +35,7 @@ import org.jdesktop.mtgame.NewFrameCondition;
  */
 public class SkinnedAnimationProcessor extends ProcessorComponent
 {
+    private Instrumentation instruments = null;
     private SkeletonNode m_animated = null;
     private PPolygonModelInstance m_modelInst = null;
 
@@ -44,13 +46,15 @@ public class SkinnedAnimationProcessor extends ProcessorComponent
      * This constructor receives the skeleton node
      * @param instance
      */
-    public SkinnedAnimationProcessor(SkeletonNode skeleton) 
+    public SkinnedAnimationProcessor(SkeletonNode skeleton, WorldManager wm)
     {
         m_animated = skeleton;
+        instruments = (Instrumentation)wm.getUserData(Instrumentation.class);
     }
-    public SkinnedAnimationProcessor(PPolygonModelInstance modelInst) 
+    public SkinnedAnimationProcessor(PPolygonModelInstance modelInst, WorldManager wm)
     {
         m_modelInst = modelInst;
+        instruments = (Instrumentation)wm.getUserData(Instrumentation.class);
     }
 
     @Override
@@ -62,6 +66,8 @@ public class SkinnedAnimationProcessor extends ProcessorComponent
     @Override
     public void commit(ProcessorArmingCollection collection) 
     {
+        if (instruments.isSubsystemEnabled(Instrumentation.InstrumentedSubsystem.AnimationSystem) == false)
+            return;
         double newTime = System.nanoTime() / 1000000000.0;
         deltaTime = (newTime - oldTime);
         oldTime = newTime;

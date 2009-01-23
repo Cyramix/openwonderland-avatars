@@ -26,6 +26,7 @@ import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
 import imi.scene.shader.AbstractShaderProgram;
 import imi.scene.shader.ShaderProperty;
 import imi.scene.utils.PRenderer;
+import imi.utils.instruments.Instrumentation.InstrumentedSubsystem;
 import java.io.Serializable;
 
 
@@ -185,7 +186,11 @@ public class PPolygonSkinnedMeshInstance extends PPolygonMeshInstance implements
                 }
             }
             if (doesShaderContainDeformer() == true)
-                m_shaderState.setUniformMatrix4Array("pose", m_poseFloats, false);
+            {
+                if (m_skeletonNode.getInstruments() == null ||
+                    m_skeletonNode.getInstruments().isSubsystemEnabled(InstrumentedSubsystem.PoseTransferToGPU) == true)
+                    m_shaderState.setUniformMatrix4Array("pose", m_poseFloats, false);
+            }
         }
 
 

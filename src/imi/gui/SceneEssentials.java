@@ -539,7 +539,7 @@ public class SceneEssentials {
                             target.applyMaterial();
 
                             PPolygonModelInstance modInst = ((PPolygonModelInstance)skeleton.getParent());
-                            ((ProcessorCollectionComponent)m_currentEntity.getComponent(ProcessorCollectionComponent.class)).addProcessor(new SkinnedAnimationProcessor(modInst));
+                            ((ProcessorCollectionComponent)m_currentEntity.getComponent(ProcessorCollectionComponent.class)).addProcessor(new SkinnedAnimationProcessor(modInst, m_worldManager));
                         } else {
                             PPolygonMeshInstance target = (PPolygonMeshInstance) asset;
                             // Create a material to use
@@ -596,7 +596,7 @@ public class SceneEssentials {
                             target.applyMaterial();
 
                             PPolygonModelInstance modInst = ((PPolygonModelInstance)skeleton.getParent());
-                            ((ProcessorCollectionComponent)m_currentEntity.getComponent(ProcessorCollectionComponent.class)).addProcessor(new SkinnedAnimationProcessor(modInst));
+                            ((ProcessorCollectionComponent)m_currentEntity.getComponent(ProcessorCollectionComponent.class)).addProcessor(new SkinnedAnimationProcessor(modInst, m_worldManager));
                         } else {
                             PPolygonMeshInstance target = (PPolygonMeshInstance) asset;
                             // Create a material to use
@@ -1532,7 +1532,7 @@ public class SceneEssentials {
                     m_skeleton.setShaderOnSkinnedMeshes(repo.newShader(VertDeformerWithSpecAndNormalMap.class));
                     m_skeleton.setShaderOnMeshes(repo.newShader(NormalAndSpecularMapShader.class));
                     if (a != null)
-                        ((ProcessorCollectionComponent)m_currentEntity.getComponent(ProcessorCollectionComponent.class)).addProcessor(new SkinnedAnimationProcessor(skel));
+                        ((ProcessorCollectionComponent)m_currentEntity.getComponent(ProcessorCollectionComponent.class)).addProcessor(new SkinnedAnimationProcessor(skel, m_worldManager));
                     m_currentPScene.setDirty(true, true);
                     setCameraOnModel();
                 }

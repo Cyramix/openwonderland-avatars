@@ -90,6 +90,7 @@ import imi.serialization.xml.bindings.xmlCharacter;
 import imi.serialization.xml.bindings.xmlCharacterAttributes;
 import imi.serialization.xml.bindings.xmlJointModification;
 import imi.serialization.xml.bindings.xmlMaterial;
+import imi.utils.instruments.Instrumentation;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -401,6 +402,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
 
         // the shadow!
         addShadow();
+        m_skeleton.setInstruments((Instrumentation)m_wm.getUserData(Instrumentation.class));
         // Turn on the animation
         m_AnimationProcessor.setEnable(true);
         // Turn on updates
@@ -678,7 +680,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
 
             // Debugging / Diagnostic output
 //            Logger.getLogger(Character.class.getName()).log(Level.INFO, "Model " + m_pscene + "  inst " + m_modelInst);
-            m_AnimationProcessor = new CharacterAnimationProcessor(m_modelInst);
+            m_AnimationProcessor = new CharacterAnimationProcessor(m_modelInst, m_wm);
             // Start the animation processor disabled until we finish loading
             m_AnimationProcessor.setEnable(false);
             processors.add(m_AnimationProcessor);

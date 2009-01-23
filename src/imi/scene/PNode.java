@@ -32,6 +32,7 @@ import java.util.LinkedList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javolution.util.FastList;
+import javolution.util.FastTable;
 
 
 /**
@@ -50,7 +51,7 @@ public class PNode implements Serializable
     
     private String  m_name  = "MysteryNode!";
     private transient PNode m_parent    = null;
-    private final FastList<PNode>  m_children  = new FastList<PNode>();
+    private final FastTable<PNode>  m_children  = new FastTable<PNode>();
     
     /**  A PNode may or may not have a PTransform. */
     private PTransform  m_transform     = null;
@@ -362,7 +363,7 @@ public class PNode implements Serializable
      * Returns the array of children for this node
      * @return m_children (ArrayList<PNode>)
      */
-    public FastList<PNode> getChildren()
+    public FastTable<PNode> getChildren()
     {
         return m_children;
     }
@@ -607,7 +608,7 @@ public class PNode implements Serializable
     {
         boolean result = false;
         // Grab oldChild's kids
-        FastList<PNode> oldChildren = oldChild.getChildren();
+        FastTable<PNode> oldChildren = oldChild.getChildren();
         // remove the old child
         if (removeChild(oldChild) != null) // not found
             result = true;

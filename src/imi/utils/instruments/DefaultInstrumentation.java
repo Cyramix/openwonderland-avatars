@@ -20,6 +20,7 @@ package imi.utils.instruments;
 import com.jme.math.Vector3f;
 import imi.character.CharacterAttributes;
 import imi.character.avatar.Avatar;
+import imi.character.avatar.FemaleAvatarAttributes;
 import imi.character.avatar.MaleAvatarAttributes;
 import imi.scene.PMatrix;
 import java.util.HashMap;
@@ -64,6 +65,11 @@ public class DefaultInstrumentation implements Instrumentation
 
     @Override
     public boolean addNonInstancedAvatar(Vector3f translation) {
+        FemaleAvatarAttributes female = new FemaleAvatarAttributes("Chica", true);
+        female.setOrigin(new PMatrix(translation));
+        Avatar newAvatar = new Avatar(female, worldManager);
+        if (newAvatar != null)
+            return true;
         return false;
     }
 
@@ -74,12 +80,48 @@ public class DefaultInstrumentation implements Instrumentation
 
     @Override
     public boolean disableSubsytem(InstrumentedSubsystem system) {
-        return true;
+        boolean result = false;
+        switch (system)
+        {
+            case AnimationSystem:
+                result = disableAnimationSystem();
+                break;
+            case PoseTransferToGPU:
+                result  = disablePoseTransfer();
+                break;
+            case Texturing:
+                result = disableTexturing();
+                break;
+            case VertexDeformation:
+                result = disableVertexDeforming();
+                break;
+            default: // Shouldn't get here
+                break;
+        }
+        return result;
     }
 
     @Override
     public boolean enableSubsystem(InstrumentedSubsystem system) {
-        return true;
+        boolean result = false;
+        switch (system)
+        {
+            case AnimationSystem:
+                result = enableAnimationSystem();
+                break;
+            case PoseTransferToGPU:
+                result  = enablePoseTransfer();
+                break;
+            case Texturing:
+                result = enableTexturing();
+                break;
+            case VertexDeformation:
+                result = enableVertexDeforming();
+                break;
+            default: // Shouldn't get here
+                break;
+        }
+        return result;
     }
 
     @Override
@@ -98,5 +140,43 @@ public class DefaultInstrumentation implements Instrumentation
         if (result != null)
             return result;
         return false;
+    }
+
+    private boolean disableAnimationSystem() {
+        enabledMapping.put(InstrumentedSubsystem.AnimationSystem, false);
+        return true;
+    }
+
+    private boolean disablePoseTransfer() {
+        enabledMapping.put(InstrumentedSubsystem.PoseTransferToGPU, false);
+        return true;
+    }
+
+    private boolean disableTexturing() {
+
+        return true;
+    }
+
+    private boolean disableVertexDeforming() {
+
+        return true;
+    }
+
+    private boolean enableAnimationSystem() {
+        enabledMapping.put(InstrumentedSubsystem.AnimationSystem, true);
+        return true;
+    }
+
+    private boolean enablePoseTransfer() {
+        enabledMapping.put(InstrumentedSubsystem.PoseTransferToGPU, true);
+        return true;
+    }
+
+    private boolean enableTexturing() {
+        return true;
+    }
+
+    private boolean enableVertexDeforming() {
+        return true;
     }
 }

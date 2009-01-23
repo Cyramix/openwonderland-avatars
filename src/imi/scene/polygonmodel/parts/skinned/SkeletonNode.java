@@ -35,6 +35,7 @@ import imi.scene.polygonmodel.skinned.PPolygonSkinnedMeshInstance;
 import imi.scene.polygonmodel.parts.skinned.SkinnedMeshJoint;
 import imi.scene.polygonmodel.skinned.PPolygonSkinnedMesh;
 import imi.scene.shader.AbstractShaderProgram;
+import imi.utils.instruments.Instrumentation;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -65,6 +66,7 @@ public class SkeletonNode extends PNode implements Animated, Serializable
 
     /** Speedy map for joint retrieval by name **/
     private transient FastMap<String, SkinnedMeshJoint> m_namesToJoints = new FastMap<String, SkinnedMeshJoint>();
+
     /**
      * This field is marked as transient because the default heirarchies that will
      * be serialized should not have any local modifiers. This will shrink the size
@@ -89,6 +91,8 @@ public class SkeletonNode extends PNode implements Animated, Serializable
     /** Enables a callback during the flatenning of the skeleton hierarchy for 
      *  manipulations that need to have cascading affect down the hierarchy */
     private transient SkeletonFlatteningManipulator m_flatteningHook = null;
+
+    private transient Instrumentation instruments = null;
     
     public SkeletonNode(String name)
     {
@@ -891,6 +895,16 @@ public class SkeletonNode extends PNode implements Animated, Serializable
     {
         for (PPolygonSkinnedMeshInstance meshInst : getSkinnedMeshInstances())
             meshInst.setInverseBindPose(null);
+    }
+
+    public Instrumentation getInstruments()
+    {
+        return instruments;
+    }
+
+    public void setInstruments(Instrumentation instruments)
+    {
+        this.instruments = instruments;
     }
 
     /****************************
