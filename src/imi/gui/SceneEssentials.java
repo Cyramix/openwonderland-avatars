@@ -959,22 +959,53 @@ public class SceneEssentials {
             m_prevAttches[selection] = m_fileModel.getName();
 
             // TEST CODE TO UPDATE ATTRIBUTES FOR MESHES
-            List<String> loadinstructs = m_avatar.getAttributes().getLoadInstructions();
-            AttachmentParams[] attatchments = m_avatar.getAttributes().getAttachmentsInstructions();
-            ArrayList<AttachmentParams> newAttatchments = new ArrayList<AttachmentParams>();
-
             if (m_prevAttches[selection] != null) { // This isn't right... it assumes no attatchments were loaded.
+                List<String> loadinstructs = m_avatar.getAttributes().getLoadInstructions();
+                AttachmentParams[] attatchments = m_avatar.getAttributes().getAttachmentsInstructions();
+                ArrayList<AttachmentParams> newAttatchments = new ArrayList<AttachmentParams>();
+
+            
                 for (int i = 0; i < attatchments.length; i++) {
                     if (attatchments[i].getMeshName().equals(m_prevAttches[selection]))
                         continue;
                     newAttatchments.add(attatchments[i]);
                 }
+
+
+                newAttatchments.add(new AttachmentParams(szURL, "Neck", tempSolution));     // Coded to stuff that goes on head
+
+                m_avatar.getAttributes().setAddInstructions(newAttatchments.toArray(new SkinnedMeshParams[newAttatchments.size()]));
+                loadinstructs.add(szURL);   // TODO: find the loadinstruction to remove
             }
 
-            newAttatchments.add(new AttachmentParams(szURL, "Neck", tempSolution));     // Coded to stuff that goes on head
+            return true;
+        }
+        return false;
+    }
 
-            m_avatar.getAttributes().setAddInstructions(newAttatchments.toArray(new SkinnedMeshParams[newAttatchments.size()]));
-            loadinstructs.add(szURL);   // TODO: find the loadinstruction to remove
+    public boolean addMeshDAEFile(boolean useRepository, Component arg0, String jointName, String meshName) {
+        if (m_avatar == null) {
+            System.out.println("You have not loaded an avatar yet... Please load one first");
+            return false;
+        }
+
+        int returnValue = m_jFileChooser_LoadColladaModel.showOpenDialog(arg0);
+        if (returnValue == JFileChooser.APPROVE_OPTION) {
+            m_fileModel = m_jFileChooser_LoadColladaModel.getSelectedFile();
+            m_currentPScene.setUseRepository(useRepository);
+
+            File path = getAbsPath(m_fileModel);
+            String szURL = new String("file:///" + path.getPath());
+
+            InstructionProcessor pProcessor = new InstructionProcessor(m_worldManager);
+            Instruction pRootInstruction = new Instruction();
+            pRootInstruction.addChildInstruction(InstructionType.setSkeleton, m_avatar.getSkeleton());
+
+            pRootInstruction.addChildInstruction(InstructionType.loadGeometry, szURL);
+            PMatrix tempSolution = new PMatrix();
+
+            pRootInstruction.addAttachmentInstruction( meshName, jointName, tempSolution );
+            pProcessor.execute(pRootInstruction);
 
             return true;
         }
@@ -1094,7 +1125,7 @@ public class SceneEssentials {
                 add.add(attribs.createSkinnedMeshParams("LegsNudeShape",    "LowerBody"));
                 add.add(attribs.createSkinnedMeshParams("ShoesShape",       "Feet"));
                 load.add(szAvatarHandsModelFile);   // Load selected female hand meshes
-                add.add(attribs.createSkinnedMeshParams("HandsShape",       "Hands"));
+                add.add(attribs.createSkinnedMeshParams("Hands_NudeShape",  "Hands"));
                 attribs.setHeadAttachment(szAvatarHeadModelFile);
                 break;
             }
@@ -1361,22 +1392,24 @@ public class SceneEssentials {
         pProcessor.execute(pRootInstruction);
 
         // TEST CODE TO UPDATE ATTRIBUTES FOR MESHES
-        List<String> loadinstructs = m_avatar.getAttributes().getLoadInstructions();
-        AttachmentParams[] attatchments = m_avatar.getAttributes().getAttachmentsInstructions();
-        ArrayList<AttachmentParams> newAttatchments = new ArrayList<AttachmentParams>();
-
         if (m_prevAttches[selection] != null) { // This isn't right... it assumes no attatchments were loaded.
+            List<String> loadinstructs = m_avatar.getAttributes().getLoadInstructions();
+            AttachmentParams[] attatchments = m_avatar.getAttributes().getAttachmentsInstructions();
+            ArrayList<AttachmentParams> newAttatchments = new ArrayList<AttachmentParams>();
+
+        
             for (int i = 0; i < attatchments.length; i++) {
                 if (attatchments[i].getMeshName().equals(m_prevAttches[selection]))
                     continue;
                 newAttatchments.add(attatchments[i]);
             }
+        
+
+            newAttatchments.add(new AttachmentParams(data[0], "Neck", tempSolution));     // Coded to stuff that goes on head
+
+            m_avatar.getAttributes().setAddInstructions(newAttatchments.toArray(new SkinnedMeshParams[newAttatchments.size()]));
+            loadinstructs.add(data[3]);   // TODO: find the loadinstruction to remove
         }
-
-        newAttatchments.add(new AttachmentParams(data[0], "Neck", tempSolution));     // Coded to stuff that goes on head
-
-        m_avatar.getAttributes().setAddInstructions(newAttatchments.toArray(new SkinnedMeshParams[newAttatchments.size()]));
-        loadinstructs.add(data[3]);   // TODO: find the loadinstruction to remove
 
         m_prevAttches[selection] = data[0];
     }

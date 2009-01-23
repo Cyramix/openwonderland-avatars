@@ -110,24 +110,6 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
             {
                 ladjust.x = mod * -0.05f;   ladjust.y = 0.0f;    ladjust.z = 0.0f;
                 skelnode.displaceJoint(eyes[0].getName(), ladjust);
-//                for (int i = 0; i < 5; i++) {
-//                    Vector3f start = eyes[i].getTransform().getLocalMatrix(false).getTranslation();
-//                    Vector3f curr  = new Vector3f(eyes[i].getBindPose().getTranslation());
-//                    curr.x = start.x;
-//                    if (eyes[i].getName().contains("leftEye")) {
-//                        ladjust.x = (actualval / 15);
-//                        eyes[i].getBindPose().setTranslation(curr.add(ladjust));
-//                    }
-//                    else {
-//                        ladjust.x = (actualval / 4);
-//                        eyes[i].getBindPose().setTranslation(curr.add(ladjust));
-//                    }
-//                }
-//
-//                float y = scale.y += actualval * 4;
-//                formattedNumber = m_format.format(y);
-//                scale.x = Float.valueOf(formattedNumber);
-//                eyes[1].getLocalModifierMatrix().setScale(scale);
 
                 break;
             }
@@ -135,24 +117,6 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
             {
                 radjust.x = mod * -0.05f;   radjust.y = 0.0f;    ladjust.z = 0.0f;
                 skelnode.displaceJoint(eyes[6].getName(), radjust);
-//                for (int i = 5; i < eyes.length; i++) {
-//                    Vector3f start = eyes[i].getTransform().getLocalMatrix(false).getTranslation();
-//                    Vector3f curr  = new Vector3f(eyes[i].getBindPose().getTranslation());
-//                    curr.x = start.x;
-//                    if (eyes[i].getName().contains("rightEye")) {
-//                        radjust.x = (actualval / 15);
-//                        eyes[i].getBindPose().setTranslation(curr.add(radjust));
-//                    }
-//                    else {
-//                        radjust.x = (actualval / 4);
-//                        eyes[i].getBindPose().setTranslation(curr.add(radjust));
-//                    }
-//                }
-//
-//                float y = scale.y += actualval * 4;
-//                formattedNumber = m_format.format(y);
-//                scale.x = Float.valueOf(formattedNumber);
-//                eyes[6].getLocalModifierMatrix().setScale(scale);
 
                 break;
             }
@@ -160,19 +124,6 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
             {
                 ladjust.x = 0.0f;   ladjust.y = mod * 0.01f;    ladjust.z = 0.0f;
                 skelnode.displaceJoint(eyes[0].getName(), ladjust);
-//                for (int i = 0; i < 5; i++) {
-//                    Vector3f start = eyes[i].getTransform().getLocalMatrix(false).getTranslation();
-//                    Vector3f curr  = new Vector3f(eyes[i].getBindPose().getTranslation());
-//                    curr.y = start.y;
-//                    if (eyes[i].getName().contains("leftEye")) {
-//                        ladjust.y = (actualval / 15);
-//                        eyes[i].getBindPose().setTranslation(curr.add(ladjust));
-//                    }
-//                    else {
-//                        ladjust.y = (actualval / 4);
-//                        eyes[i].getBindPose().setTranslation(curr.add(ladjust));
-//                    }
-//                }
 
                 break;
             }
@@ -180,19 +131,6 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
             {
                 radjust.x = 0.0f;   radjust.y = mod * 0.01f;    ladjust.z = 0.0f;
                 skelnode.displaceJoint(eyes[6].getName(), radjust);
-//                for (int i = 5; i < eyes.length; i++) {
-//                    Vector3f start = eyes[i].getTransform().getLocalMatrix(false).getTranslation();
-//                    Vector3f curr  = new Vector3f(eyes[i].getBindPose().getTranslation());
-//                    curr.y = start.y;
-//                    if (eyes[i].getName().contains("rightEye")) {
-//                        radjust.y = (actualval / 15);
-//                        eyes[i].getBindPose().setTranslation(curr.add(radjust));
-//                    }
-//                    else {
-//                        radjust.y = (actualval / 4);
-//                        eyes[i].getBindPose().setTranslation(curr.add(radjust));
-//                    }
-//                }
 
                 break;
             }
@@ -331,24 +269,24 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
             }
             case leftlowerarmThickness:
             {
-                for (int i = 0; i < leftforearm.length; i++) {
-                    ladjust = new Vector3f(leftforearm[i].getLocalModifierMatrix().getScaleVector());
-                    ladjust.x = 1.0f;   ladjust.x += actualval * 3;
-                    ladjust.z = 1.0f;   ladjust.z += actualval * 3;
-                    leftforearm[i].getLocalModifierMatrix().setScale(ladjust);
-                }
-//                leftforearm[0].getBindPose().setScale(1.0f + (actualval * 3));
+//                for (int i = 0; i < leftforearm.length; i++) {
+//                    ladjust = new Vector3f(leftforearm[i].getLocalModifierMatrix().getScaleVector());
+//                    ladjust.x = 1.0f;   ladjust.x += actualval * 3;
+//                    ladjust.z = 1.0f;   ladjust.z += actualval * 3;
+//                    leftforearm[i].getLocalModifierMatrix().setScale(ladjust);
+//                }
+                leftforearm[0].getBindPose().setScale(1.0f + (actualval * 3));
                 break;
             }
             case rightlowerarmThickness:
             {
-                for (int i = 0; i < rightforearm.length; i++) {
-                    radjust = new Vector3f(rightforearm[i].getLocalModifierMatrix().getScaleVector());
-                    radjust.x = 1.0f;   radjust.x += actualval * 3;
-                    radjust.z = 1.0f;   radjust.z += actualval * 3;
-                    rightforearm[i].getLocalModifierMatrix().setScale(radjust);
-                }
-//                rightforearm[0].getBindPose().setScale(1.0f + (actualval * 3));
+//                for (int i = 0; i < rightforearm.length; i++) {
+//                    radjust = new Vector3f(rightforearm[i].getLocalModifierMatrix().getScaleVector());
+//                    radjust.x = 1.0f;   radjust.x += actualval * 3;
+//                    radjust.z = 1.0f;   radjust.z += actualval * 3;
+//                    rightforearm[i].getLocalModifierMatrix().setScale(radjust);
+//                }
+                rightforearm[0].getBindPose().setScale(1.0f + (actualval * 3));
                 break;
             }
         }
@@ -410,22 +348,24 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
             }
             case leftupperarmThickness:
             {
-                for (int i = 0; i < leftupperarm.length; i++) {
-                    ladjust = new Vector3f(leftupperarm[i].getLocalModifierMatrix().getScaleVector());
-                    ladjust.x = 1.0f;   ladjust.x += actualval * 3;
-                    ladjust.z = 1.0f;   ladjust.z += actualval * 3;
-                    leftupperarm[i].getLocalModifierMatrix().setScale(ladjust);
-                }
+//                for (int i = 0; i < leftupperarm.length; i++) {
+//                    ladjust = new Vector3f(leftupperarm[i].getLocalModifierMatrix().getScaleVector());
+//                    ladjust.x = 1.0f;   ladjust.x += actualval * 3;
+//                    ladjust.z = 1.0f;   ladjust.z += actualval * 3;
+//                    leftupperarm[i].getLocalModifierMatrix().setScale(ladjust);
+//                }
+                leftupperarm[0].getBindPose().setScale(1.0f + (actualval * 3));
                 break;
             }
             case rightupperarmThickness:
             {
-                for (int i = 0; i < rightupperarm.length; i++) {
-                    radjust = new Vector3f(rightupperarm[i].getLocalModifierMatrix().getScaleVector());
-                    radjust.x = 1.0f;   radjust.x += actualval * 3;
-                    radjust.z = 1.0f;   radjust.z += actualval * 3;
-                    rightupperarm[i].getLocalModifierMatrix().setScale(radjust);
-                }
+//                for (int i = 0; i < rightupperarm.length; i++) {
+//                    radjust = new Vector3f(rightupperarm[i].getLocalModifierMatrix().getScaleVector());
+//                    radjust.x = 1.0f;   radjust.x += actualval * 3;
+//                    radjust.z = 1.0f;   radjust.z += actualval * 3;
+//                    rightupperarm[i].getLocalModifierMatrix().setScale(radjust);
+//                }
+                rightupperarm[0].getBindPose().setScale(1.0f + (actualval * 3));
                 break;
             }
         }
@@ -531,22 +471,24 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
             }
             case leftlowerlegThickness:
             {
-                for (int i = 0; i < leftlowerleg.length; i++) {
-                    ladjust = new Vector3f(leftlowerleg[i].getLocalModifierMatrix().getScaleVector());
-                    ladjust.x = 1.0f;   ladjust.x += actualval * 3;
-                    ladjust.z = 1.0f;   ladjust.z += actualval * 3;
-                    leftlowerleg[i].getLocalModifierMatrix().setScale(ladjust);
-                }
+//                for (int i = 0; i < leftlowerleg.length; i++) {
+//                    ladjust = new Vector3f(leftlowerleg[i].getLocalModifierMatrix().getScaleVector());
+//                    ladjust.x = 1.0f;   ladjust.x += actualval * 3;
+//                    ladjust.z = 1.0f;   ladjust.z += actualval * 3;
+//                    leftlowerleg[i].getLocalModifierMatrix().setScale(ladjust);
+//                }
+                leftlowerleg[0].getBindPose().setScale(1.0f + (actualval * 3));
                 break;
             }
             case rightlowerlegThickness:
             {
-                for (int i = 0; i < rightlowerleg.length; i++) {
-                    radjust = new Vector3f(rightlowerleg[i].getLocalModifierMatrix().getScaleVector());
-                    radjust.x = 1.0f;   radjust.x += actualval * 3;
-                    radjust.z = 1.0f;   radjust.z += actualval * 3;
-                    rightlowerleg[i].getLocalModifierMatrix().setScale(radjust);
-                }
+//                for (int i = 0; i < rightlowerleg.length; i++) {
+//                    radjust = new Vector3f(rightlowerleg[i].getLocalModifierMatrix().getScaleVector());
+//                    radjust.x = 1.0f;   radjust.x += actualval * 3;
+//                    radjust.z = 1.0f;   radjust.z += actualval * 3;
+//                    rightlowerleg[i].getLocalModifierMatrix().setScale(radjust);
+//                }
+                rightlowerleg[0].getBindPose().setScale(1.0f + (actualval * 3));
                 break;
             }
         }
@@ -586,22 +528,24 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
             }
             case leftupperlegThickness:
             {
-                for (int i = 0; i < leftupperleg.length; i++) {
-                    ladjust = new Vector3f(leftupperleg[i].getLocalModifierMatrix().getScaleVector());
-                    ladjust.x = 1.0f;   ladjust.x += actualval * 3;
-                    ladjust.z = 1.0f;   ladjust.z += actualval * 3;
-                    leftupperleg[i].getLocalModifierMatrix().setScale(ladjust);
-                }
+//                for (int i = 0; i < leftupperleg.length; i++) {
+//                    ladjust = new Vector3f(leftupperleg[i].getLocalModifierMatrix().getScaleVector());
+//                    ladjust.x = 1.0f;   ladjust.x += actualval * 3;
+//                    ladjust.z = 1.0f;   ladjust.z += actualval * 3;
+//                    leftupperleg[i].getLocalModifierMatrix().setScale(ladjust);
+//                }
+                leftupperleg[0].getBindPose().setScale(1.0f + (actualval * 3));
                 break;
             }
             case rightupperlegThickness:
             {
-                for (int i = 0; i < rightupperleg.length; i++) {
-                    radjust = new Vector3f(rightupperleg[i].getLocalModifierMatrix().getScaleVector());
-                    radjust.x = 1.0f;   radjust.x += actualval * 3;
-                    radjust.z = 1.0f;   radjust.z += actualval * 3;
-                    rightupperleg[i].getLocalModifierMatrix().setScale(radjust);
-                }
+//                for (int i = 0; i < rightupperleg.length; i++) {
+//                    radjust = new Vector3f(rightupperleg[i].getLocalModifierMatrix().getScaleVector());
+//                    radjust.x = 1.0f;   radjust.x += actualval * 3;
+//                    radjust.z = 1.0f;   radjust.z += actualval * 3;
+//                    rightupperleg[i].getLocalModifierMatrix().setScale(radjust);
+//                }
+                rightupperleg[0].getBindPose().setScale(1.0f + (actualval * 3));
                 break;
             }
         }
@@ -614,7 +558,6 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
      * @param mod - delta modification of the selected slider/scrollbox
      * @param actualval - the actual value of modification from the selected slider/scrollbox
      */
-    // TODO: write functionality
     private synchronized void adjustChest(GUI_Enums.m_sliderControl type, float mod, float actualval) {
         if (m_sceneData.getAvatar() == null)
             return;
@@ -625,26 +568,47 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
         SkinnedMeshJoint[]  shoulders    = new SkinnedMeshJoint[] { m_skeleton.get(GUI_Enums.m_bodyPart.Left_Shoulder)[0],
                                                                     m_skeleton.get(GUI_Enums.m_bodyPart.Right_Shoulder)[0] };
         SkinnedMeshJoint[]  chest        = m_skeleton.get(GUI_Enums.m_bodyPart.Torso);
-        Vector3f            adjust       = new Vector3f(0.0f, mod, 0.0f);
+        Vector3f            adjust       = new Vector3f(mod, 0.0f, 0.0f);
         m_format                         = new DecimalFormat("0.00");
 
         switch(type)
         {
             case torsoLength:
             {
+                Vector3f upAdjust = new Vector3f(0.0f, mod, 0.0f);
+                skelnode.displaceJoint(chest[0].getName(), upAdjust);
                 break;
             }
             case torsoThickness:
             {
+                chest[0].getBindPose().setScale(1.0f + (actualval * 3));
                 break;
             }
             case shoulderBroadness:
+            {
+                skelnode.displaceJoint(shoulders[0].getName(), adjust);
+                skelnode.displaceJoint(shoulders[1].getName(), adjust.mult(-1));
+                break;
+            }
+            case stomachRoundness:
+            {
+                chest[2].getBindPose().setScale(1.0f + (actualval *3));
+                break;
+            }
+            case glutRoundness:
             {
                 break;
             }
         }
     }
 
+    /**
+     * Adjusts the joints catagorized as part of the head.  Adjusts the location
+     * in 3D space and scaling.
+     * @param type - integer represents the type of the chest manipulation
+     * @param mod - delta modification of the seleted slider/scrollbox
+     * @param actualval - the actual value of the modification from the selected slider/scrollbox
+     */
     private synchronized void adjustHead(GUI_Enums.m_sliderControl type, float mod, float actualval) {
         if (m_sceneData.getAvatar() == null)
             return;
@@ -653,7 +617,12 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
         if (skelnode == null) { return; }
 
         SkinnedMeshJoint[]  head    = m_skeleton.get(GUI_Enums.m_bodyPart.Head);
+        SkinnedMeshJoint[]  ears    = m_skeleton.get(GUI_Enums.m_bodyPart.Ears);
+        SkinnedMeshJoint[]  nose    = m_skeleton.get(GUI_Enums.m_bodyPart.Nose);
+
         Vector3f            scale   = head[0].getBindPose().getScaleVector();
+        Vector3f            transY  = new Vector3f(0.0f, mod, 0.0f);
+        Vector3f            transX  = new Vector3f(0.0f, 0.0f, mod);
         m_format                    = new DecimalFormat("0.00");
 
         switch(type)
@@ -682,35 +651,61 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
                 head[0].getBindPose().setScale(scale);
                 break;
             }
+            case leftearHPos:
+            {
+                skelnode.displaceJoint(ears[0].getName(), transX.mult(-1));
+                break;
+            }
+            case leftearSize:
+            {
+                scale.x += mod *3;  scale.y += mod *3;  scale.z += mod *3;
+                ears[0].getBindPose().setScale(scale);
+                break;
+            }
+            case leftearVPos:
+            {
+                skelnode.displaceJoint(ears[0].getName(), transY);
+                break;
+            }
+            case noseHPos:
+            {
+                skelnode.displaceJoint(nose[0].getName(), transX);
+                break;
+            }
+            case noseLength:
+            {
+                scale.z += mod * 3;
+                nose[0].getBindPose().setScale(scale);
+                break;
+            }
+            case noseSize:
+            {
+                scale.x += mod *3;  scale.y += mod *3;  scale.z += mod *3;
+                nose[0].getBindPose().setScale(scale);
+                break;
+            }
+            case noseVPos:
+            {
+                skelnode.displaceJoint(nose[0].getName(), transY);
+                break;
+            }
+            case rightearHPos:
+            {
+                skelnode.displaceJoint(ears[1].getName(), transX);
+                break;
+            }
+            case rightearSize:
+            {
+                scale.x += mod *3;  scale.y += mod *3;  scale.z += mod *3;
+                ears[1].getBindPose().setScale(scale);
+                break;
+            }
+            case rightearVPos:
+            {
+                skelnode.displaceJoint(ears[1].getName(), transY);
+                break;
+            }
         }
-    }
-
-    /**
-     * Adjusts the joints catagorized under stomach.  Adjusts the location in
-     * 3D space and scaling
-     * @param type - integer represents the type of stomach manipulation
-     * @param mod - delta modification of the selected slider/scrollbox
-     * @param actualval - the actual value of modification from the selected slider/scrollbox
-     */
-    // TODO: write functionality
-    private synchronized void adjustStomach(GUI_Enums.m_sliderControl type, float mod, float actualval) {
-        if (m_sceneData.getAvatar() == null)
-            return;
-
-    }
-
-    /**
-     * Adjusts the joints catagorized under butt.  Adjusts the location in
-     * 3D space and scaling
-     * @param type - integer represents the type of butt manipulation
-     * @param mod - delta modification of the selected slider/scrollbox
-     * @param actualval - the actual value of modification from the selected slider/scrollbox
-     */
-    // TODO: write functionality
-    private synchronized void adjustGluts(GUI_Enums.m_sliderControl type, float mod, float actualval) {
-        if (m_sceneData.getAvatar() == null)
-            return;
-
     }
 
     /**
@@ -720,11 +715,76 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
      * @param mod - delta modification of the selected slider/scrollbox
      * @param actualval - the actual value of modification from the selected slider/scrollbox
      */
-    // TODO: write functionality
     private synchronized void adjustBody(GUI_Enums.m_sliderControl type, float mod, float actualval) {
         if (m_sceneData.getAvatar() == null)
             return;
-        
+
+        SkeletonNode    skelnode    = m_sceneData.getAvatar().getSkeleton();
+        if (skelnode == null) { return; }
+
+        Vector3f scale  = skelnode.getTransform().getLocalMatrix(true).getScaleVector();
+
+        switch(type)
+        {
+            case uniformHeight:
+            {
+                scale.y += mod * 3;
+                skelnode.getTransform().getLocalMatrix(true).setScale(scale);
+                break;
+            }
+            case uniformThickness:
+            {
+                scale.x += mod * 3; scale.z += mod * 3;
+                skelnode.getTransform().getLocalMatrix(true).setScale(scale);
+                break;
+            }
+        }
+    }
+
+    /**
+     * Adjust the joints catagorizede as mouth joints.  Adjusts the location in
+     * 3D space and scaling
+     * @param type - integer represents the type of body manipulaation
+     * @param mod - delta modification of the selected slider/scrollbox
+     * @param actualval - the actual value of modification from the selected slider/scrollbox
+     */
+    private synchronized void adjustMouth(GUI_Enums.m_sliderControl type, float mod, float actualval) {
+        if (m_sceneData.getAvatar() == null)
+            return;
+
+        SkeletonNode    skelnode    = m_sceneData.getAvatar().getSkeleton();
+        if (skelnode == null) { return; }
+
+        SkinnedMeshJoint[]  mouth       = m_skeleton.get(GUI_Enums.m_bodyPart.Lips);
+        SkinnedMeshJoint    upperLip    = (SkinnedMeshJoint) skelnode.findChild("UpperLip_Adjust");
+        SkinnedMeshJoint    lowerLip    = (SkinnedMeshJoint) skelnode.findChild("LowerLip_Adjust");
+
+        Vector3f            ladjust     = new Vector3f(-mod, 0.0f, 0.0f);
+        Vector3f            radjust     = new Vector3f(mod, 0.0f, 0.0f);
+
+        switch(type)
+        {
+            case lowerlipSize:
+            {
+                Vector3f scale = mouth[0].getBindPose().getScaleVector();
+                scale.x += mod * 5; scale.z += mod * 5;
+                lowerLip.getBindPose().setScale(scale);
+                break;
+            }
+            case upperlipSize:
+            {
+                Vector3f scale = mouth[2].getBindPose().getScaleVector();
+                scale.x += mod * 5; scale.z += mod * 5;
+                upperLip.getBindPose().setScale(scale);
+                break;
+            }
+            case mouthWidth:
+            {
+                skelnode.displaceJoint(mouth[6].getName(), ladjust);
+                skelnode.displaceJoint(mouth[7].getName(), radjust);
+                break;
+            }
+        }
     }
 
     /** This method is called from within the constructor to
@@ -802,6 +862,10 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
 // Helper Functions
 ////////////////////////////////////////////////////////////////////////////////
 
+    /**
+     * Returns the references to the eyeball meshes for quick access
+     * @return array of PPolygonSkinnedMeshInstances of the two eyeballs
+     */
     public PPolygonSkinnedMeshInstance[] getEyeBallMeshes() {
         PPolygonSkinnedMeshInstance[] eyeballs = null;
         if (m_sceneData.getAvatar() == null)
@@ -1172,6 +1236,54 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
     }
 
     /**
+     * Sets up a listing of SkinnedMeshJoints for the eyes for quick access
+     */
+    public void catalogEars() {
+        if (m_sceneData.getAvatar() == null)
+            return;
+
+        SkeletonNode skeleton   = m_sceneData.getAvatar().getSkeleton();
+
+        String[] szEars     = new String[] { "LeftEar_Adjust", "RightEar_Adjust" };
+
+        SkinnedMeshJoint[]  ears     = new SkinnedMeshJoint[szEars.length];
+        int                 iSize    = szEars.length;
+
+        for (int i = 0; i < iSize; i++) {
+            ears[i]     = (SkinnedMeshJoint) skeleton.findChild(szEars[i]);
+        }
+
+        if (m_skeleton == null)
+            m_skeleton = new HashMap<GUI_Enums.m_bodyPart, SkinnedMeshJoint[]>();
+
+        m_skeleton.put(GUI_Enums.m_bodyPart.Ears, ears);
+    }
+    
+    /**
+     * Sets up a listing of SkinnedMeshJoints for the nose for quick access
+     */
+    public void catalogNose() {
+        if (m_sceneData.getAvatar() == null)
+            return;
+
+        SkeletonNode skeleton   = m_sceneData.getAvatar().getSkeleton();
+
+        String[] szNose     = new String[] { "Nose_Adjust" };
+
+        SkinnedMeshJoint[]  nose     = new SkinnedMeshJoint[szNose.length];
+        int                 iSize    = szNose.length;
+
+        for (int i = 0; i < iSize; i++) {
+            nose[i]     = (SkinnedMeshJoint) skeleton.findChild(szNose[i]);
+        }
+
+        if (m_skeleton == null)
+            m_skeleton = new HashMap<GUI_Enums.m_bodyPart, SkinnedMeshJoint[]>();
+
+        m_skeleton.put(GUI_Enums.m_bodyPart.Nose, nose);
+    }
+
+    /**
      * Creates a complete listing of all the SkinnedMeshJoints for the entire
      * avatar body
      */
@@ -1191,6 +1303,8 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
         catalogNeck();
         catalogEyes();
         catalogLips();
+        catalogEars();
+        catalogNose();
     }
 
     /**
@@ -1245,17 +1359,17 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
             }
             case lowerlipSize:
             {
-                // TODO: adjustMouth(control, mod, actualval);
+                adjustMouth(control, mod, actualval);
                 break;
             }
             case upperlipSize:
             {
-                // TODO: adjustMouth(control, mod, actualval);
+                adjustMouth(control, mod, actualval);
                 break;
             }
             case mouthWidth:
             {
-                // TODO: adjustMouth(control, mod, actualval);
+                adjustMouth(control, mod, actualval);
                 break;
             }
             case lefthandLength:
@@ -1411,6 +1525,76 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
             case shoulderBroadness:
             {
                 adjustChest(control, mod, actualval);
+                break;
+            }
+            case stomachRoundness:
+            {
+                adjustChest(control, mod, actualval);
+                break;
+            }
+            case glutRoundness:
+            {
+                adjustChest(control, mod, actualval);
+                break;
+            }
+            case leftearHPos:
+            {
+                adjustHead(control, mod, actualval);
+                break;
+            }
+            case leftearSize:
+            {
+                adjustHead(control, mod, actualval);
+                break;
+            }
+            case leftearVPos:
+            {
+                adjustHead(control, mod, actualval);
+                break;
+            }
+            case noseHPos:
+            {
+                adjustHead(control, mod, actualval);
+                break;
+            }
+            case noseLength:
+            {
+                adjustHead(control, mod, actualval);
+                break;
+            }
+            case noseSize:
+            {
+                adjustHead(control, mod, actualval);
+                break;
+            }
+            case noseVPos:
+            {
+                adjustHead(control, mod, actualval);
+                break;
+            }
+            case rightearHPos:
+            {
+                adjustHead(control, mod, actualval);
+                break;
+            }
+            case rightearSize:
+            {
+                adjustHead(control, mod, actualval);
+                break;
+            }
+            case rightearVPos:
+            {
+                adjustHead(control, mod, actualval);
+                break;
+            }
+            case uniformHeight:
+            {
+                adjustBody(control, mod, actualval);
+                break;
+            }
+            case uniformThickness:
+            {
+                adjustBody(control, mod, actualval);
                 break;
             }
         }

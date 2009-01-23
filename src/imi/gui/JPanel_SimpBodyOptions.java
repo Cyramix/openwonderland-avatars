@@ -58,16 +58,16 @@ public class JPanel_SimpBodyOptions extends javax.swing.JPanel {
         java.awt.GridBagConstraints gridBagConstraints;
 
         Uniform = new javax.swing.JTabbedPane();
-        Body = new javax.swing.JPanel();
-        jPanel_Height = new javax.swing.JPanel();
-        AvatarHeight = new imi.gui.JPanel_VerticalSliderS();
-        jPanel_Weight = new javax.swing.JPanel();
-        AvatarThickness = new imi.gui.JPanel_HorizontalSliderS();
         Torso = new javax.swing.JPanel();
         jPanel_TorsoLength = new javax.swing.JPanel();
         TorsoLength = new imi.gui.JPanel_VerticalSliderT();
         jPanel_TorsoThickness = new javax.swing.JPanel();
         TorsoThickness = new imi.gui.JPanel_HorizontalSliderS();
+        Body = new javax.swing.JPanel();
+        jPanel_Height = new javax.swing.JPanel();
+        AvatarHeight = new imi.gui.JPanel_VerticalSliderS();
+        jPanel_Weight = new javax.swing.JPanel();
+        AvatarThickness = new imi.gui.JPanel_HorizontalSliderS();
 
         setMaximumSize(new java.awt.Dimension(270, 600));
         setMinimumSize(new java.awt.Dimension(270, 600));
@@ -77,6 +77,29 @@ public class JPanel_SimpBodyOptions extends javax.swing.JPanel {
         Uniform.setMaximumSize(new java.awt.Dimension(270, 600));
         Uniform.setMinimumSize(new java.awt.Dimension(270, 600));
         Uniform.setPreferredSize(new java.awt.Dimension(270, 600));
+
+        Torso.setLayout(new java.awt.GridBagLayout());
+
+        jPanel_TorsoLength.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Torso Length", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Lucida Grande", 0, 13), new java.awt.Color(0, 0, 255))); // NOI18N
+        jPanel_TorsoLength.setMinimumSize(new java.awt.Dimension(230, 230));
+        jPanel_TorsoLength.setPreferredSize(new java.awt.Dimension(230, 230));
+        jPanel_TorsoLength.setLayout(new java.awt.GridBagLayout());
+        jPanel_TorsoLength.add(TorsoLength, new java.awt.GridBagConstraints());
+
+        Torso.add(jPanel_TorsoLength, new java.awt.GridBagConstraints());
+
+        jPanel_TorsoThickness.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Torso Thickness", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Lucida Grande", 0, 13), new java.awt.Color(0, 0, 255))); // NOI18N
+        jPanel_TorsoThickness.setMinimumSize(new java.awt.Dimension(230, 230));
+        jPanel_TorsoThickness.setPreferredSize(new java.awt.Dimension(230, 230));
+        jPanel_TorsoThickness.setLayout(new java.awt.GridBagLayout());
+        jPanel_TorsoThickness.add(TorsoThickness, new java.awt.GridBagConstraints());
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        Torso.add(jPanel_TorsoThickness, gridBagConstraints);
+
+        Uniform.addTab("Torso", Torso);
 
         Body.setLayout(new java.awt.GridBagLayout());
 
@@ -102,29 +125,6 @@ public class JPanel_SimpBodyOptions extends javax.swing.JPanel {
         Body.add(jPanel_Weight, gridBagConstraints);
 
         Uniform.addTab("Uniform", Body);
-
-        Torso.setLayout(new java.awt.GridBagLayout());
-
-        jPanel_TorsoLength.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Torso Length", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Lucida Grande", 0, 13), new java.awt.Color(0, 0, 255))); // NOI18N
-        jPanel_TorsoLength.setMinimumSize(new java.awt.Dimension(230, 230));
-        jPanel_TorsoLength.setPreferredSize(new java.awt.Dimension(230, 230));
-        jPanel_TorsoLength.setLayout(new java.awt.GridBagLayout());
-        jPanel_TorsoLength.add(TorsoLength, new java.awt.GridBagConstraints());
-
-        Torso.add(jPanel_TorsoLength, new java.awt.GridBagConstraints());
-
-        jPanel_TorsoThickness.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Torso Thickness", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Lucida Grande", 0, 13), new java.awt.Color(0, 0, 255))); // NOI18N
-        jPanel_TorsoThickness.setMinimumSize(new java.awt.Dimension(230, 230));
-        jPanel_TorsoThickness.setPreferredSize(new java.awt.Dimension(230, 230));
-        jPanel_TorsoThickness.setLayout(new java.awt.GridBagLayout());
-        jPanel_TorsoThickness.add(TorsoThickness, new java.awt.GridBagConstraints());
-
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 1;
-        Torso.add(jPanel_TorsoThickness, gridBagConstraints);
-
-        Uniform.addTab("Torso", Torso);
 
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
         this.setLayout(layout);

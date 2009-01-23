@@ -244,20 +244,24 @@ public class TreePopUpMenu extends MouseAdapter implements ActionListener {
         modelName = (String)JOptionPane.showInputDialog(new Frame(), "Please input the modelinstance name",
                                                   "ADD A MODELINSTANCE", JOptionPane.YES_NO_CANCEL_OPTION,
                                                   null, null, "NewModel"+modelCount);
+        String meshName = (String)JOptionPane.showInputDialog(new Frame(), "Please input the name of the mesh geometry to add",
+                                                  "REQUIRED GEMOETTRY NAME TO ADD", JOptionPane.YES_NO_CANCEL_OPTION,
+                                                  null, null, "GEOMETRY");
         
         if( (modelName != null) && (modelName.length() > 0)  ) {
-            int retValModel = jFileChooser_LoadModels.showOpenDialog(editor);
-            if (retValModel == JFileChooser.APPROVE_OPTION) {
-                File fileModel = jFileChooser_LoadModels.getSelectedFile();
-                sceneData.setfileModel(fileModel);
-                sceneData.setModelName(modelName);
-                if (fileModel.getName().endsWith(".ms3d")) {
-                    sceneData.loadMS3DFile(0, false, menu);
-                } else {
-                    sceneData.loadMeshDAEFile(true, menu);
-                }
-                addToNode();
-            }
+//            int retValModel = jFileChooser_LoadModels.showOpenDialog(editor);
+//            if (retValModel == JFileChooser.APPROVE_OPTION) {
+//                File fileModel = jFileChooser_LoadModels.getSelectedFile();
+//                sceneData.setfileModel(fileModel);
+//                sceneData.setModelName(modelName);
+//                if (fileModel.getName().endsWith(".ms3d")) {
+//                    sceneData.loadMS3DFile(0, false, menu);
+//                } else {
+//                    sceneData.loadMeshDAEFile(true, menu);
+//                }
+//                addToNode();
+//            }
+            sceneData.addMeshDAEFile(true, menu, currentSelection.getName(), meshName);
             if(modelName.equals("NewModel"+modelCount))
                 modelCount++;
         }

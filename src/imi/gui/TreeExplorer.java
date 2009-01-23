@@ -128,8 +128,8 @@ public class TreeExplorer extends javax.swing.JFrame {
         currentSelection = selectedNode;
         popupMenu.setPropertyPanel(selectedNode, dmtSelectedNode);
         
-//        if(currentSelection instanceof PPolygonSkinnedMeshInstance)
-//            selectGroup();
+        if(currentSelection instanceof PPolygonSkinnedMeshInstance)
+            selectGroup();
     }
     
     /**
@@ -182,6 +182,9 @@ public class TreeExplorer extends javax.swing.JFrame {
     }
     
     public void selectGroup() {
+        if (currentSelection == null)
+            return;
+
         if(currentSelection instanceof PPolygonSkinnedMeshInstance) {
             SkeletonNode skeleton = sceneData.getAvatar().getSkeleton();
             
@@ -196,6 +199,9 @@ public class TreeExplorer extends javax.swing.JFrame {
     }
     
     public void unselectGroup() {
+        if (prevSelection == null)
+            return;
+
         if(prevSelection instanceof PPolygonSkinnedMeshInstance) {
             SkeletonNode skeleton = sceneData.getAvatar().getSkeleton();
             

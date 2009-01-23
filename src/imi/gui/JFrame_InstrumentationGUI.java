@@ -211,7 +211,7 @@ public class JFrame_InstrumentationGUI extends javax.swing.JFrame {
         jScrollPane_Disabled = new javax.swing.JScrollPane();
         jList_Disabled = new javax.swing.JList();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setName("Instrumentation Panel"); // NOI18N
         setResizable(false);
 
@@ -382,7 +382,7 @@ public class JFrame_InstrumentationGUI extends javax.swing.JFrame {
 
         jScrollPane_Enabled.setPreferredSize(new java.awt.Dimension(150, 150));
 
-        jList_Enabled.setFont(new java.awt.Font("Lucida Grande", 0, 10)); // NOI18N
+        jList_Enabled.setFont(new java.awt.Font("Lucida Grande", 0, 10));
         jList_Enabled.setForeground(new java.awt.Color(0, 255, 0));
         jList_Enabled.setModel(new javax.swing.AbstractListModel() {
             String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
@@ -448,7 +448,7 @@ public class JFrame_InstrumentationGUI extends javax.swing.JFrame {
 
         jScrollPane_Disabled.setPreferredSize(new java.awt.Dimension(150, 150));
 
-        jList_Disabled.setFont(new java.awt.Font("Lucida Grande", 0, 10)); // NOI18N
+        jList_Disabled.setFont(new java.awt.Font("Lucida Grande", 0, 10));
         jList_Disabled.setForeground(new java.awt.Color(255, 0, 0));
         jList_Disabled.setModel(new javax.swing.AbstractListModel() {
             String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
@@ -474,7 +474,7 @@ public class JFrame_InstrumentationGUI extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel_MainPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 448, Short.MAX_VALUE)
+            .addComponent(jPanel_MainPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 448, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
