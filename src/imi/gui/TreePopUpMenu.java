@@ -244,10 +244,7 @@ public class TreePopUpMenu extends MouseAdapter implements ActionListener {
         modelName = (String)JOptionPane.showInputDialog(new Frame(), "Please input the modelinstance name",
                                                   "ADD A MODELINSTANCE", JOptionPane.YES_NO_CANCEL_OPTION,
                                                   null, null, "NewModel"+modelCount);
-        String meshName = (String)JOptionPane.showInputDialog(new Frame(), "Please input the name of the mesh geometry to add",
-                                                  "REQUIRED GEMOETTRY NAME TO ADD", JOptionPane.YES_NO_CANCEL_OPTION,
-                                                  null, null, "GEOMETRY");
-        
+                
         if( (modelName != null) && (modelName.length() > 0)  ) {
 //            int retValModel = jFileChooser_LoadModels.showOpenDialog(editor);
 //            if (retValModel == JFileChooser.APPROVE_OPTION) {
@@ -261,7 +258,8 @@ public class TreePopUpMenu extends MouseAdapter implements ActionListener {
 //                }
 //                addToNode();
 //            }
-            sceneData.addMeshDAEFile(true, menu, currentSelection.getName(), meshName);
+
+            sceneData.addMeshDAEFile(true, menu, currentSelection.getName());
             if(modelName.equals("NewModel"+modelCount))
                 modelCount++;
         }

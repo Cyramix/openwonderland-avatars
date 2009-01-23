@@ -983,7 +983,7 @@ public class SceneEssentials {
         return false;
     }
 
-    public boolean addMeshDAEFile(boolean useRepository, Component arg0, String jointName, String meshName) {
+    public boolean addMeshDAEFile(boolean useRepository, Component arg0, String jointName) {
         if (m_avatar == null) {
             System.out.println("You have not loaded an avatar yet... Please load one first");
             return false;
@@ -992,6 +992,11 @@ public class SceneEssentials {
         int returnValue = m_jFileChooser_LoadColladaModel.showOpenDialog(arg0);
         if (returnValue == JFileChooser.APPROVE_OPTION) {
             m_fileModel = m_jFileChooser_LoadColladaModel.getSelectedFile();
+
+            String szmeshName = (String)JOptionPane.showInputDialog(new Frame(), "Please input the name of the Non-skinned mesh geometry to add",
+                                                  "REQUIRED GEMOETTRY NAME TO ADD", JOptionPane.YES_NO_CANCEL_OPTION,
+                                                  null, null, "GEOMETRY");
+
             m_currentPScene.setUseRepository(useRepository);
 
             File path = getAbsPath(m_fileModel);
@@ -1004,7 +1009,7 @@ public class SceneEssentials {
             pRootInstruction.addChildInstruction(InstructionType.loadGeometry, szURL);
             PMatrix tempSolution = new PMatrix();
 
-            pRootInstruction.addAttachmentInstruction( meshName, jointName, tempSolution );
+            pRootInstruction.addAttachmentInstruction( szmeshName, jointName, tempSolution );
             pProcessor.execute(pRootInstruction);
 
             return true;
