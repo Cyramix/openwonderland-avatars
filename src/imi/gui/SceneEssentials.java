@@ -21,6 +21,7 @@ package imi.gui;
 // IMPORTS
 ////////////////////////////////////////////////////////////////////////////////
 import com.jme.math.Vector3f;
+import imi.character.AttachmentParams;
 import imi.loaders.collada.ColladaLoaderParams;
 import imi.loaders.Instruction;
 import imi.loaders.Instruction.InstructionType;
@@ -73,6 +74,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.List;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -790,7 +792,10 @@ public class SceneEssentials {
             } catch (MalformedURLException ex) {
                 Logger.getLogger(SceneEssentials.class.getName()).log(Level.SEVERE, null, ex);
             }
+
+            m_avatar.getAttributes().setHeadAttachment(szURL);
         }
+
         return false;
     }
 
@@ -855,6 +860,26 @@ public class SceneEssentials {
 
 //                removeDuplicateMeshesBySubgroup(subGroup);
                 m_avatar.setDefaultShaders();
+                
+                // TEST CODE TO UPDATE ATTRIBUTES FOR SKINNED MESHES
+                String[] meshesToAdd = m_avatar.getSkeleton().getMeshNamesBySubGroup(subGroup);
+                List<String> loadinstructs = m_avatar.getAttributes().getLoadInstructions();
+                SkinnedMeshParams[] params = m_avatar.getAttributes().getAddInstructions();
+                ArrayList<SkinnedMeshParams> newParams = new ArrayList<SkinnedMeshParams>();
+
+                for (int i = 0; i < params.length; i++) {
+                    for (int j = 0; j < meshestodelete.length; j++) {
+                        if (params[i].meshName.equals(meshestodelete[j]))
+                            continue;
+                        newParams.add(params[i]);
+                    }
+                }
+
+                for (int i = 0; i < meshesToAdd.length; i++)
+                    newParams.add(m_avatar.getAttributes().createSkinnedMeshParams(meshesToAdd[i], subGroup));
+
+                m_avatar.getAttributes().setAddInstructions(newParams.toArray(new SkinnedMeshParams[newParams.size()]));
+                loadinstructs.add(szURL);   // TODO: find the loadinstruction to remove
 
                 return true;
             } catch (MalformedURLException ex) {
@@ -932,6 +957,24 @@ public class SceneEssentials {
             pProcessor.execute(pRootInstruction);
 
             m_prevAttches[selection] = m_fileModel.getName();
+
+            // TEST CODE TO UPDATE ATTRIBUTES FOR MESHES
+            List<String> loadinstructs = m_avatar.getAttributes().getLoadInstructions();
+            AttachmentParams[] attatchments = m_avatar.getAttributes().getAttachmentsInstructions();
+            ArrayList<AttachmentParams> newAttatchments = new ArrayList<AttachmentParams>();
+
+            if (m_prevAttches[selection] != null) { // This isn't right... it assumes no attatchments were loaded.
+                for (int i = 0; i < attatchments.length; i++) {
+                    if (attatchments[i].getMeshName().equals(m_prevAttches[selection]))
+                        continue;
+                    newAttatchments.add(attatchments[i]);
+                }
+            }
+
+            newAttatchments.add(new AttachmentParams(szURL, "Neck", tempSolution));     // Coded to stuff that goes on head
+
+            m_avatar.getAttributes().setAddInstructions(newAttatchments.toArray(new SkinnedMeshParams[newAttatchments.size()]));
+            loadinstructs.add(szURL);   // TODO: find the loadinstruction to remove
 
             return true;
         }
@@ -1204,6 +1247,7 @@ public class SceneEssentials {
         try {
             URL urlHead = new URL(data[3]);
             m_avatar.installHead(urlHead, "Neck");
+            m_avatar.getAttributes().setHeadAttachment(data[3]);
         } catch (MalformedURLException ex) {
             Logger.getLogger(SceneEssentials.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -1246,6 +1290,26 @@ public class SceneEssentials {
 
         removeDuplicateMeshesBySubgroup(subgroup);  // This should not be used... it's added only once but there are duplicate meshes
         m_avatar.setDefaultShaders();
+
+        // TEST CODE TO UPDATE ATTRIBUTES FOR SKINNED MESHES
+        String[] meshesToAdd = m_avatar.getSkeleton().getMeshNamesBySubGroup(subgroup);
+        List<String> loadinstructs = m_avatar.getAttributes().getLoadInstructions();
+        SkinnedMeshParams[] params = m_avatar.getAttributes().getAddInstructions();
+        ArrayList<SkinnedMeshParams> newParams = new ArrayList<SkinnedMeshParams>();
+
+        for (int i = 0; i < params.length; i++) {
+            for (int j = 0; j < meshes.length; j++) {
+                if (params[i].meshName.equals(meshes[j]))
+                    continue;
+                newParams.add(params[i]);
+            }
+        }
+
+        for (int i = 0; i < meshesToAdd.length; i++)
+            newParams.add(m_avatar.getAttributes().createSkinnedMeshParams(meshesToAdd[i], subgroup));
+
+        m_avatar.getAttributes().setAddInstructions(newParams.toArray(new SkinnedMeshParams[newParams.size()]));
+        loadinstructs.add(mesh.toString());   // TODO: find the loadinstruction to remove
     }
 
     /**
@@ -1295,6 +1359,24 @@ public class SceneEssentials {
 
         pRootInstruction.addAttachmentInstruction( data[0], szName, tempSolution );
         pProcessor.execute(pRootInstruction);
+
+        // TEST CODE TO UPDATE ATTRIBUTES FOR MESHES
+        List<String> loadinstructs = m_avatar.getAttributes().getLoadInstructions();
+        AttachmentParams[] attatchments = m_avatar.getAttributes().getAttachmentsInstructions();
+        ArrayList<AttachmentParams> newAttatchments = new ArrayList<AttachmentParams>();
+
+        if (m_prevAttches[selection] != null) { // This isn't right... it assumes no attatchments were loaded.
+            for (int i = 0; i < attatchments.length; i++) {
+                if (attatchments[i].getMeshName().equals(m_prevAttches[selection]))
+                    continue;
+                newAttatchments.add(attatchments[i]);
+            }
+        }
+
+        newAttatchments.add(new AttachmentParams(data[0], "Neck", tempSolution));     // Coded to stuff that goes on head
+
+        m_avatar.getAttributes().setAddInstructions(newAttatchments.toArray(new SkinnedMeshParams[newAttatchments.size()]));
+        loadinstructs.add(data[3]);   // TODO: find the loadinstruction to remove
 
         m_prevAttches[selection] = data[0];
     }
