@@ -78,7 +78,7 @@ public class RepositoryAsset extends ProcessorComponent
     /** The home repository for this asset **/
     private Repository           m_home       = null;
     
-    private final Boolean m_lock = Boolean.TRUE;
+    private Boolean m_lock = Boolean.TRUE;
 
     /** True to enable the neew texture loading code **/
     private boolean bUseTextureImporter = false;
@@ -91,6 +91,8 @@ public class RepositoryAsset extends ProcessorComponent
      */
     public RepositoryAsset(AssetDescriptor description, Object userData, Repository home) 
     {
+        super();
+        setEntity(home);
         m_home          = home;
         m_descriptor    = description;
         m_userData      = userData;
@@ -99,7 +101,7 @@ public class RepositoryAsset extends ProcessorComponent
     /**
      * Load the described asset
      */
-    private void loadSelf() 
+    private void loadSelf()
     {
         synchronized (m_lock)
         {
@@ -113,7 +115,7 @@ public class RepositoryAsset extends ProcessorComponent
             m_data = new LinkedList<Object>();
             switch (m_descriptor.getType())
             {
-                case MS3D_Mesh: 
+                case MS3D_Mesh:
                     if (m_descriptor.getLocation().getPath().endsWith("ms3d"))
                         Logger.getLogger(this.getClass().toString()).log(Level.WARNING, "Non-skinned MS3D currently unsupported");
                     else if (m_descriptor.getLocation().getPath().endsWith("dae")) // collada
@@ -134,7 +136,7 @@ public class RepositoryAsset extends ProcessorComponent
                     break;
                     // Intentional collada fall-throughs
                     // These three cases require special set up to function.
-                    // Separate enumerations are 
+                    // Separate enumerations are
                 case COLLADA:
                     loadCOLLADA();
                     break;
@@ -160,7 +162,7 @@ public class RepositoryAsset extends ProcessorComponent
             setArmingCondition(new ProcessorArmingCollection(this));
         }
     }
-    
+
     private Object getDataReference() 
     {
         // TODO: Implement reference sharing system

@@ -50,6 +50,8 @@ class RepositoryWorker extends ProcessorComponent
             RepositoryAsset repoAsset, ConcurrentHashMap collection,
             long maxQueryTime)
     {
+        super();
+        setEntity(home);
         m_startTime     = System.currentTimeMillis();
         
         m_home          = home;
@@ -157,6 +159,8 @@ class RepositoryWorker extends ProcessorComponent
                 }
             }
         }
+        else
+            ShutDown();
     }
 
     @Override
