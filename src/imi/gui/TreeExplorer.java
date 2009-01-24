@@ -186,6 +186,10 @@ public class TreeExplorer extends javax.swing.JFrame {
             return;
 
         if(currentSelection instanceof PPolygonSkinnedMeshInstance) {
+
+            if (sceneData.getAvatar() == null || !sceneData.getAvatar().isInitialized())
+                return;
+
             SkeletonNode skeleton = sceneData.getAvatar().getSkeleton();
             
             if(skeleton != null) {
@@ -203,6 +207,10 @@ public class TreeExplorer extends javax.swing.JFrame {
             return;
 
         if(prevSelection instanceof PPolygonSkinnedMeshInstance) {
+
+            if (sceneData.getAvatar() == null || !sceneData.getAvatar().isInitialized())
+                return;
+
             SkeletonNode skeleton = sceneData.getAvatar().getSkeleton();
             
             if(skeleton != null) {
