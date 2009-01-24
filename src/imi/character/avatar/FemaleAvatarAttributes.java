@@ -39,8 +39,16 @@ public class FemaleAvatarAttributes extends CharacterAttributes
     {
         new ColorRGBA(221.0f / 255.0f,  183.0f / 255.0f, 166.0f / 255.0f, 1),
         new ColorRGBA(203.0f / 255.0f,  142.0f / 255.0f, 114.0f / 255.0f, 1),
-        new ColorRGBA(182.0f / 255.0f,  137.0f / 255.0f, 116.0f / 255.0f, 1)
-       // new ColorRGBA(0.4f, 0.8f, 0.8f, 1), // Just as a joke :)
+        new ColorRGBA(182.0f / 255.0f,  137.0f / 255.0f, 116.0f / 255.0f, 1),
+        new ColorRGBA( 224 / 255.0f, 163 / 255.0f, 144 / 255.0f, 1),
+        new ColorRGBA( 206 / 255.0f,  153 / 255.0f, 99 / 255.0f, 1),
+        new ColorRGBA( 236 / 255.0f,  153 / 255.0f, 99 / 255.0f, 1),
+        new ColorRGBA( 175 / 255.0f,  128 / 255.0f, 83 / 255.0f, 1),
+        new ColorRGBA( 178 / 255.0f, 123  / 255.0f, 93 / 255.0f, 1),
+        new ColorRGBA( 213 / 255.0f, 186  / 255.0f, 193 / 255.0f, 1),
+        new ColorRGBA( 238 / 255.0f, 160  / 255.0f, 157 / 255.0f, 1),
+        new ColorRGBA( 231 / 255.0f,  216 / 255.0f, 223 / 255.0f, 1),
+        new ColorRGBA( 174 / 255.0f, 112  / 255.0f, 112 / 255.0f, 1),
     };
     /** Collection of eye colors **/
     private final String[] eyeColors = new String[]

@@ -63,7 +63,10 @@ public class TenAvatarParty extends DemoBase
 
     public static void main(String[] args)
     {
-        TenAvatarParty worldTest = new TenAvatarParty(args);
+        // Give ourselves a nice environment
+        String[] ourArgs = new String[] { "-env:assets/models/collada/Environments/Garden/Garden.dae" };
+        // Construction does all the work
+        TenAvatarParty worldTest = new TenAvatarParty(ourArgs);
     }
 
     @Override
@@ -90,7 +93,7 @@ public class TenAvatarParty extends DemoBase
                 float length = (stopTime - startTime) / 1000000000.0f;
                 totalLoadTime += length;
                 System.out.println("Loading avatar " + i + " took " + length + " seconds.");
-                
+
             } catch (Exception ex) {
                 Logger.getLogger(SavingAndLoadingTest.class.getName()).log(Level.SEVERE, null, ex);
             }

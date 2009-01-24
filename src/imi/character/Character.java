@@ -1703,4 +1703,115 @@ public abstract class Character extends Entity implements SpatialObject, Animati
 
     }
 
+    /**
+     * This only remains in order to provide an example of the process.
+     * @param headLocation
+     * @deprecated
+     */
+    @Deprecated
+    public void oldInstallHead(URL headLocation)
+    {
+        // Ready the collada loader!
+        Collada colladaLoader = new Collada();
+        colladaLoader.setLoadFlags(true, true, false);
+
+        colladaLoader.load(new PScene(m_wm), headLocation);
+
+        SkeletonNode newHeadSkeleton = colladaLoader.getSkeletonNode();
+
+        // Remove all the old head stuff from our skeleton
+        PNode pnode = m_skeleton.findChild("rightEyeGeoShape");
+        int[] influences = null;
+        if (pnode != null)
+        {
+            PPolygonSkinnedMeshInstance meshInst = (PPolygonSkinnedMeshInstance)pnode;
+            // cache le influences
+            influences = meshInst.getInfluenceIndices(); // We should not need to do this, but it fixes the problem
+        }
+        m_skeleton.clearSubGroup("Head");
+
+        Iterable<PNode> list = newHeadSkeleton.getChildren();
+        for (PNode node : list)
+        {
+            if (node instanceof PPolygonSkinnedMesh)
+            {
+                PPolygonSkinnedMesh skinnedMesh = (PPolygonSkinnedMesh) node;
+                // Make an instance
+                PPolygonSkinnedMeshInstance skinnedMeshInstance = (PPolygonSkinnedMeshInstance) m_pscene.addMeshInstance(skinnedMesh, new PMatrix());
+
+                //  Link the SkinnedMesh to the Skeleton.
+                skinnedMeshInstance.setAndLinkSkeletonNode(m_skeleton);
+
+                // Add it to the skeleton
+                m_skeleton.addToSubGroup(skinnedMeshInstance, "Head");
+
+            }
+        }
+        // Now fix the skeletal differences
+        generateDeltas(newHeadSkeleton, "Head");
+        // Now reattach the eyes
+        m_eyes = new CharacterEyes(m_attributes.getEyeballTexture(), this, m_wm);
+//        // reassociate this with the verlet thingy
+//        while (m_skeletonManipulator == null)
+//        {
+//            Thread.yield();
+//        }
+        if (m_skeletonManipulator != null)
+        {
+            m_skeletonManipulator.setLeftEyeBall(m_eyes.getLeftEyeBall());
+            m_skeletonManipulator.setRightEyeBall(m_eyes.getRightEyeBall());
+        }
+        // Finally, apply the default shaders
+        setDefaultShaders();
+        pnode = m_skeleton.findChild("rightEyeGeoShape");
+        if (pnode != null)
+        {
+            PPolygonSkinnedMeshInstance meshInst = (PPolygonSkinnedMeshInstance)pnode;
+            // reset influence indices
+            meshInst.setInfluenceIndices(influences);
+        }
+    }
+
+
+    private void generateDeltas(SkeletonNode newSkeleton, String rootJointName)
+    {
+        if (newSkeleton == null || m_skeleton == null)
+        {
+            logger.severe(getName() + " can not install head, got a null skeleton! current one: " + m_skeleton + " new one: " + newSkeleton);
+            return;
+        }
+
+        // Gather the joints and set the new local modifiers
+        SkinnedMeshJoint head = m_skeleton.getSkinnedMeshJoint(rootJointName);
+        LinkedList<PNode> list = new LinkedList<PNode>();
+        list.add(head);
+        PNode current = null;
+        while(!list.isEmpty())
+        {
+            // Grab the next guy
+            current = list.poll();
+            // Process him! If not a skinned mesh joint skip and prune
+            if (current instanceof SkinnedMeshJoint)
+            {
+                SkinnedMeshJoint currentHeadJoint = (SkinnedMeshJoint)current;
+                SkinnedMeshJoint newHeadJoint     = newSkeleton.getSkinnedMeshJoint(currentHeadJoint.getName());
+
+                if (newHeadJoint == null) // Not found in the new skeleton
+                    logger.severe("Could not find associated joint in the new skeleton, joint name was " + currentHeadJoint.getName());
+                PMatrix modifierDelta = new PMatrix();
+                modifierDelta.fastMul( currentHeadJoint.getTransform().getLocalMatrix(false).inverse(),
+                            newHeadJoint.getTransform().getLocalMatrix(false));
+
+                currentHeadJoint.getBindPose().fastMul(modifierDelta);
+//                currentHeadJoint.getBindPose().set(newHeadJoint.getBindPose());
+            }
+            else
+                continue; // Prune (kids are not added to the list)
+            // Add to the list all the kids
+            for (PNode kid : current.getChildren())
+                list.add(kid);
+        }
+    }
+
+
 }
