@@ -971,7 +971,8 @@ public class SceneEssentials {
             } else
                 tempSolution = new PMatrix(new Vector3f(0.0f,(float) Math.toRadians(180), 0.0f), new Vector3f(1.0f, 1.0f, 1.0f), Vector3f.ZERO);
 
-            pRootInstruction.addAttachmentInstruction( szURL, "Head", tempSolution );
+            pRootInstruction.addAttachmentInstruction( szURL, m_fileModel.getName(), tempSolution, "Hair" ); ///////// TODOTODO "Hair" means the hair color will be assigned... don't let it be assigned on sunglasses dude... :D
+            //pRootInstruction.addAttachmentInstruction( szURL, "Head", tempSolution );
             pProcessor.execute(pRootInstruction);
 
             m_prevAttches[selection] = m_fileModel.getName();
@@ -990,7 +991,7 @@ public class SceneEssentials {
                 }
 
 
-                newAttatchments.add(new AttachmentParams(szURL, "Neck", tempSolution));     // Coded to stuff that goes on head
+                newAttatchments.add(new AttachmentParams(szURL, "Neck", tempSolution, "Neck Attachments"));     // Coded to stuff that goes on head
 
                 m_avatar.getAttributes().setAddInstructions(newAttatchments.toArray(new SkinnedMeshParams[newAttatchments.size()]));
                 loadinstructs.add(szURL);   // TODO: find the loadinstruction to remove
@@ -1027,7 +1028,7 @@ public class SceneEssentials {
             pRootInstruction.addChildInstruction(InstructionType.loadGeometry, szURL);
             PMatrix tempSolution = new PMatrix();
 
-            pRootInstruction.addAttachmentInstruction( szmeshName, jointName, tempSolution );
+            pRootInstruction.addAttachmentInstruction( szmeshName, jointName, tempSolution, "Hair" );///// TODOTODO "Hair" means the hair color will be assigned... don't let it be assigned on sunglasses dude... :D
             pProcessor.execute(pRootInstruction);
 
             return true;
@@ -1411,7 +1412,7 @@ public class SceneEssentials {
         } else
             tempSolution = new PMatrix(new Vector3f(0.0f,(float) Math.toRadians(180), 0.0f), new Vector3f(1.0f, 1.0f, 1.0f), Vector3f.ZERO);
 
-        pRootInstruction.addAttachmentInstruction( data[0], szName, tempSolution );
+        pRootInstruction.addAttachmentInstruction( data[0], szName, tempSolution, "Hair" );///// TODOTODO "Hair" means the hair color will be assigned... don't let it be assigned on sunglasses dude... :D
         pProcessor.execute(pRootInstruction);
 
         // TEST CODE TO UPDATE ATTRIBUTES FOR MESHES
@@ -1428,7 +1429,7 @@ public class SceneEssentials {
             }
         
 
-            newAttatchments.add(new AttachmentParams(data[0], "Neck", tempSolution));     // Coded to stuff that goes on head
+            newAttatchments.add(new AttachmentParams(data[0], "Neck", tempSolution, "Neck Attachments"));     // Coded to stuff that goes on head
 
             m_avatar.getAttributes().setAddInstructions(newAttatchments.toArray(new SkinnedMeshParams[newAttatchments.size()]));
             loadinstructs.add(data[3]);   // TODO: find the loadinstruction to remove
@@ -1482,7 +1483,7 @@ public class SceneEssentials {
         } else
             tempSolution = new PMatrix(new Vector3f(0.0f,(float) Math.toRadians(180), 0.0f), new Vector3f(1.0f, 1.0f, 1.0f), Vector3f.ZERO);
 
-        pRootInstruction.addAttachmentInstruction( meshName, szName, tempSolution );
+        pRootInstruction.addAttachmentInstruction( meshName, szName, tempSolution, "Hair" );///// TODOTODO "Hair" means the hair color will be assigned... don't let it be assigned on sunglasses dude... :D
         pProcessor.execute(pRootInstruction);
 
         m_prevAttches[selection] = meshName;

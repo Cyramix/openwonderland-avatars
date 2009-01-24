@@ -72,7 +72,7 @@ public class VerletArmTest  extends DemoBase
         camState.setMovementRate(0.03f);
         camState.setCameraPosition(new Vector3f(0.0f, 1.8f, -2.0f));
         
-        boolean male = false;
+        boolean male = true;
         Avatar avatar;
         int feet, legs, torso, hair;
         
@@ -83,7 +83,7 @@ public class VerletArmTest  extends DemoBase
             legs  = (int) (Math.random() * 10000 % 4);
             torso = (int) (Math.random() * 10000 % 6);
             hair  = (int) (Math.random() * 10000 % 17);
-            avatar = new Avatar(new MaleAvatarAttributes("Avatar", feet, legs, torso, hair, 0), wm);
+            avatar = new Avatar(new MaleAvatarAttributes("Avatar", feet, legs, torso, hair, -1), wm);
         }
         else // female
         {
@@ -92,7 +92,7 @@ public class VerletArmTest  extends DemoBase
             legs  = (int) (Math.random() * 10000 % 3);
             torso = (int) (Math.random() * 10000 % 3);  // % 5.... 3 and 4 problems
             hair  = (int) (Math.random() * 10000 % 53); // tested til 15
-            avatar = new Avatar(new FemaleAvatarAttributes("Avatar", feet, legs, torso, hair, 0), wm);
+            avatar = new Avatar(new FemaleAvatarAttributes("Avatar", feet, legs, torso, hair, -1), wm);
         }
         
         //new Avatar(new MaleAvatarAttributes("Avatar", feet, legs, torso, hair, 0), wm);//new Avatar(new MaleAvatarAttributes("Avatar", feet, legs, torso, hair, 0), wm);

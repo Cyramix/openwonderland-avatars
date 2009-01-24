@@ -165,103 +165,103 @@ public class DebugAttributes extends CharacterAttributes
             case 0:
             {
                 load.add(new String("assets/models/collada/Hair/MaleHair/HairPlaceable.dae"));
-                attachments.add(new AttachmentParams("curly", "Head", orientation));
+                attachments.add(new AttachmentParams("curly", "Head", orientation, "Hair"));
             }
             break;
             case 1:
             {
                 load.add(new String("assets/models/collada/Hair/MaleHair/HairPlaceable.dae"));
-                attachments.add(new AttachmentParams("S_pt_right", "Head", orientation));
+                attachments.add(new AttachmentParams("S_pt_right", "Head", orientation, "Hair"));
             }
             break;
             case 2:
             {
                 load.add(new String("assets/models/collada/Hair/MaleHair/HairPlaceable.dae"));
-                attachments.add(new AttachmentParams("S_pt_left", "Head", orientation));
+                attachments.add(new AttachmentParams("S_pt_left", "Head", orientation, "Hair"));
             }
             break;
             case 3:
             {
                 load.add(new String("assets/models/collada/Hair/MaleHair/HairPlaceable.dae")); // <-- could be bad
-                attachments.add(new AttachmentParams("M_slickedbk", "Head", orientation));
+                attachments.add(new AttachmentParams("M_slickedbk", "Head", orientation, "Hair"));
             }
             break;
             case 4:
             {
                 load.add(new String("assets/models/collada/Hair/MaleHair/HairPlaceable.dae"));
-                attachments.add(new AttachmentParams("M_pt_Right", "Head", orientation));
+                attachments.add(new AttachmentParams("M_pt_Right", "Head", orientation, "Hair"));
             }
             break;
             case 5:
             {
                 load.add(new String("assets/models/collada/Hair/MaleHair/HairPlaceable.dae"));
-                attachments.add(new AttachmentParams("M_pt_left", "Head", orientation));
+                attachments.add(new AttachmentParams("M_pt_left", "Head", orientation, "Hair"));
             }
             break;
             case 6:
             {
                 load.add(new String("assets/models/collada/Hair/MaleHair/HairPlaceable.dae"));
-                attachments.add(new AttachmentParams("M_center", "Head", orientation));
+                attachments.add(new AttachmentParams("M_center", "Head", orientation, "Hair"));
             }
             break;
             case 7:
             {
                 load.add(new String("assets/models/collada/Hair/MaleHair/HairPlaceable.dae"));
-                attachments.add(new AttachmentParams("LPonyTail", "Head", orientation));
+                attachments.add(new AttachmentParams("LPonyTail", "Head", orientation, "Hair"));
             }
             break;
             case 8:
             {
                 load.add(new String("assets/models/collada/Hair/MaleHair/HairPlaceable.dae"));
-                attachments.add(new AttachmentParams("Hair_Spiky", "Head", orientation));
+                attachments.add(new AttachmentParams("Hair_Spiky", "Head", orientation, "Hair"));
             }
             break;
             case 9:
             {
                 load.add(new String("assets/models/collada/Hair/MaleHair/HairPlaceable.dae"));
-                attachments.add(new AttachmentParams("Hair_Faux", "Head", orientation));
+                attachments.add(new AttachmentParams("Hair_Faux", "Head", orientation, "Hair"));
             }
             break;
             case 10:
             {
                 load.add(new String("assets/models/collada/Hair/MaleHair/HairPlaceable.dae"));
-                attachments.add(new AttachmentParams("Hair_Bald", "Head", orientation));
+                attachments.add(new AttachmentParams("Hair_Bald", "Head", orientation, "Hair"));
             }
             break;
             case 11:
             {
                 load.add(new String("assets/models/collada/Hair/MaleHair/HairPlaceable.dae"));
-                attachments.add(new AttachmentParams("Hair_Balding", "Head", orientation));
+                attachments.add(new AttachmentParams("Hair_Balding", "Head", orientation, "Hair"));
             }
             break;
             case 12:
             {
                 load.add(new String("assets/models/collada/Hair/MaleHair/HairPlaceable.dae"));
-                attachments.add(new AttachmentParams("Hair_ShavedShort", "Head", orientation));
+                attachments.add(new AttachmentParams("Hair_ShavedShort", "Head", orientation, "Hair"));
             }
             break;
             case 13:
             {
                 load.add(new String("assets/models/collada/Hair/MaleHair/HairPlaceable.dae"));
-                attachments.add(new AttachmentParams("Hair_Normal", "Head", orientation));
+                attachments.add(new AttachmentParams("Hair_Normal", "Head", orientation, "Hair"));
             }
             break;
             case 14:
             {
                 load.add(new String("assets/models/collada/Hair/MaleHair/HairPlaceable.dae"));
-                attachments.add(new AttachmentParams("Hair_ShavedFlatTop", "Head", orientation));
+                attachments.add(new AttachmentParams("Hair_ShavedFlatTop", "Head", orientation, "Hair"));
             }
             break;
             case 15:
             {
                 load.add(new String("assets/models/collada/Hair/MaleHair/HairPlaceable.dae"));
-                attachments.add(new AttachmentParams("Hair_AfAmShortCrew", "Head", orientation));
+                attachments.add(new AttachmentParams("Hair_AfAmShortCrew", "Head", orientation, "Hair"));
             }
             break;
             case 16:
             {
                 load.add(new String("assets/models/collada/Hair/MaleHair/HairPlaceable.dae"));
-                attachments.add(new AttachmentParams("Hair_AfAmLngCrew", "Head", orientation));
+                attachments.add(new AttachmentParams("Hair_AfAmLngCrew", "Head", orientation, "Hair"));
             }
             break;
         }

@@ -124,14 +124,15 @@ public class Instruction extends PNode
      * @param jointName The name of the joint to attach on
      * @param orientation The transform that should be used for attachment
      */
-    public void addAttachmentInstruction( String meshName, String jointName, PMatrix orientation )
+    public void addAttachmentInstruction( String meshName, String parentJointName, PMatrix orientation, String attachmentJointName )
     {
         Instruction inst = new Instruction(Instruction.InstructionType.addAttachment);
         
-        Object[] array = new Object [3];
+        Object[] array = new Object [4];
         array[0] = meshName;
-        array[1] = jointName;
+        array[1] = parentJointName;
         array[2] = orientation;
+        array[3] = attachmentJointName;
         inst.setData(array);
         
         addChild(inst);

@@ -41,7 +41,6 @@ import imi.scene.Updatable;
 import imi.loaders.Instruction;
 import imi.loaders.Instruction.InstructionType;
 import imi.loaders.InstructionProcessor;
-import imi.loaders.collada.Collada;
 import imi.loaders.repository.AssetDescriptor;
 import imi.loaders.repository.Repository;
 import imi.loaders.repository.RepositoryUser;
@@ -77,15 +76,18 @@ import imi.scene.processors.JSceneEventProcessor;
 import imi.scene.shader.AbstractShaderProgram;
 import imi.scene.shader.NoSuchPropertyException;
 import imi.scene.shader.ShaderProperty;
+import imi.scene.shader.dynamic.GLSLCompileException;
 import imi.scene.shader.dynamic.GLSLDataType;
-import imi.scene.shader.programs.ClothingShaderDiffuseAsSpec;
+import imi.scene.shader.dynamic.GLSLShaderProgram;
+import imi.scene.shader.effects.MeshColorModulation;
+import imi.scene.shader.programs.ClothingShaderSpecColor;
 import imi.scene.shader.programs.EyeballShader;
 import imi.scene.shader.programs.FleshShader;
+import imi.scene.shader.programs.NormalMapShader;
 import imi.scene.shader.programs.SimpleTNLWithAmbient;
 import imi.scene.utils.PMeshUtils;
 import imi.scene.utils.tree.SerializationHelper;
 import imi.scene.utils.tree.TreeTraverser;
-import imi.scene.utils.visualizations.VisuManager;
 import imi.serialization.xml.bindings.xmlCharacter;
 import imi.serialization.xml.bindings.xmlCharacterAttributes;
 import imi.serialization.xml.bindings.xmlJointModification;
@@ -101,7 +103,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -236,10 +237,10 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         if (m_shadowModel == null) // Not parameterized, no sense in remaking shadows
         {
             // make shadow, minor offset to avoid Z-fighting with the y=0 plane
-            Vector3f pointOne =     new Vector3f( 0.45f, 0.01f,  0.5f);
-            Vector3f pointTwo =     new Vector3f(-0.45f, 0.01f,  0.5f);
-            Vector3f pointThree =   new Vector3f(-0.45f, 0.01f, -0.5f);
-            Vector3f pointFour =    new Vector3f( 0.45f, 0.01f, -0.5f);
+            Vector3f pointOne =     new Vector3f( 0.45f, 0.001f,  0.5f);
+            Vector3f pointTwo =     new Vector3f(-0.45f, 0.001f,  0.5f);
+            Vector3f pointThree =   new Vector3f(-0.45f, 0.001f, -0.5f);
+            Vector3f pointFour =    new Vector3f( 0.45f, 0.001f, -0.5f);
             // UV sets, standard texturing
             Vector2f uvSetOne =     new Vector2f(0, 0);
             Vector2f uvSetTwo =     new Vector2f(1, 0);
@@ -425,8 +426,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         
         AbstractShaderProgram accessoryShader = repo.newShader(SimpleTNLWithAmbient.class);
         AbstractShaderProgram eyeballShader = repo.newShader(EyeballShader.class);
-        AbstractShaderProgram clothingShader = repo.newShader(ClothingShaderDiffuseAsSpec.class);
-
+        
         float[] skinColor = m_attributes.getSkinTone();
         AbstractShaderProgram fleshShader = repo.newShader(FleshShader.class);
         try {
@@ -452,6 +452,40 @@ public abstract class Character extends Entity implements SpatialObject, Animati
                 meshMat.setShader(fleshShader);
             else // assume to be clothing
             {
+                AbstractShaderProgram clothingShader = repo.newShader(ClothingShaderSpecColor.class);
+                if (meshInst.getParent().getName().equals("UpperBody"))
+                {
+                    try {
+                        clothingShader.setProperty(new ShaderProperty("baseColor", GLSLDataType.GLSL_VEC3, m_attributes.getShirtColor()));
+                        clothingShader.setProperty(new ShaderProperty("specColor", GLSLDataType.GLSL_VEC3, m_attributes.getShirtSpecColor()));
+                    } catch (NoSuchPropertyException ex) {
+                        Logger.getLogger(Character.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+                else if (meshInst.getParent().getName().equals("LowerBody"))
+                {
+                    try {
+                        clothingShader.setProperty(new ShaderProperty("baseColor", GLSLDataType.GLSL_VEC3, m_attributes.getPantsColor()));
+                        clothingShader.setProperty(new ShaderProperty("specColor", GLSLDataType.GLSL_VEC3, m_attributes.getPantsSpecColor()));
+                    } catch (NoSuchPropertyException ex) {
+                        Logger.getLogger(Character.class.getName()).log(Level.SEVERE, null, ex); }
+                }
+                else if (meshInst.getParent().getName().equals("Feet"))
+                {
+                    try {
+                        clothingShader.setProperty(new ShaderProperty("baseColor", GLSLDataType.GLSL_VEC3, m_attributes.getShoesColor()));
+                        clothingShader.setProperty(new ShaderProperty("specColor", GLSLDataType.GLSL_VEC3, m_attributes.getShoesSpecColor()));
+                    } catch (NoSuchPropertyException ex) {
+                        Logger.getLogger(Character.class.getName()).log(Level.SEVERE, null, ex); }
+                }
+                else    // White is the default
+                {
+                    float[] colorWhite = { 1, 1, 1 };
+                    try {
+                        clothingShader.setProperty(new ShaderProperty("baseColor", GLSLDataType.GLSL_VEC3, colorWhite));
+                    } catch (NoSuchPropertyException ex) {
+                        Logger.getLogger(Character.class.getName()).log(Level.SEVERE, null, ex); }
+                }
                 meshMat.setCullFace(CullState.Face.None);
                 meshMat.setShader(clothingShader);
             }
@@ -471,7 +505,20 @@ public abstract class Character extends Entity implements SpatialObject, Animati
                 PPolygonMeshInstance meshInst = (PPolygonMeshInstance) current;
                 // Grab a copy of the material
                 PMeshMaterial meshMat = meshInst.getMaterialCopy().getMaterial();
-                meshMat.setShader(accessoryShader);
+                if (meshInst.getParent().getName().equals("Hair"))
+                {
+                    GLSLShaderProgram hairShader = (GLSLShaderProgram)repo.newShader(NormalMapShader.class);
+                    hairShader.addEffect(new MeshColorModulation());
+                    try {
+                        hairShader.compile();
+                        hairShader.setProperty(new ShaderProperty("materialColor", GLSLDataType.GLSL_VEC3, m_attributes.getHairColor()));
+                    } catch (Exception ex) {
+                        Logger.getLogger(Character.class.getName()).log(Level.SEVERE, null, ex); }
+                    meshMat.setShader(hairShader);
+                }
+                else
+                    meshMat.setShader(accessoryShader);
+                meshMat.setCullFace(CullState.Face.None);
                 meshInst.applyShader();
             }
             // add all the kids
@@ -603,7 +650,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
                     tempsolution = new PMatrix();
                 else
                     tempsolution = attachments[i].getMatrix();
-                attributeRoot.addAttachmentInstruction( attachments[i].getMeshName(), attachments[i].getJointName(), tempsolution);
+                attributeRoot.addAttachmentInstruction( attachments[i].getMeshName(), attachments[i].getParentJointName(), tempsolution, attachments[i].getAttachmentJointName());
             }
         }
 

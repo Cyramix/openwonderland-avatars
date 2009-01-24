@@ -59,6 +59,17 @@ public class CharacterAttributes
     private int                     gender                  = 1;
     /** Skin tone RGB **/
     private float []                skinTone                = new float [3];
+    /** Hair color RGB **/
+    private float []                hairColor               = new float [3];
+    /** Shirt color RGB **/
+    private float []                shirtColor              = new float [3];
+    private float []                shirtSpecColor          = new float [3];
+    /** Pants color RGB **/
+    private float []                pantsColor              = new float [3];
+    private float []                pantsSpecColor          = new float [3];
+    /** Shoes color RGB **/
+    private float []                shoesColor              = new float [3];
+    private float []                shoesSpecColor          = new float [3];
     /** Eyeball texture **/
     private String                  eyeballTexture          = null;
 
@@ -84,12 +95,55 @@ public class CharacterAttributes
         skinTone[0] = 230.0f/255.0f;
         skinTone[1] = 197.0f/255.0f;
         skinTone[2] = 190.0f/255.0f;
+        for (int i = 0; i < 3; i++)
+        {
+            hairColor[i]      = 1.0f;
+            shirtColor[i]     = 1.0f;
+            shirtSpecColor[i] = 1.0f;
+            pantsColor[i]     = 1.0f;
+            pantsSpecColor[i] = 1.0f;
+            shoesColor[i]     = 1.0f;
+            shoesSpecColor[i] = 1.0f;
+        }
     }
     
     public CharacterAttributes(xmlCharacterAttributes attributesDOM)
     {
         this();
         applyAttributesDOM(attributesDOM);
+    }
+    
+    public void randomizeHairColor()
+    {
+        hairColor[0] = (float)Math.random();
+        hairColor[1] = (float)Math.random();
+        hairColor[2] = (float)Math.random();   
+    }
+    
+    public void randomizeShirtColor()
+    {
+        shirtColor[0] = (float)Math.random();
+        shirtColor[1] = (float)Math.random();
+        shirtColor[2] = (float)Math.random();
+        float chance  = (float)Math.random();;
+        if (chance < 0.2f)
+        {
+            shirtSpecColor[0] = (float)Math.random();
+            shirtSpecColor[1] = (float)Math.random();
+            shirtSpecColor[2] = (float)Math.random();
+        }
+        else if (chance < 0.4f)
+        {
+            shirtSpecColor[0] = shirtColor[0];
+            shirtSpecColor[1] = shirtColor[1];
+            shirtSpecColor[2] = shirtColor[2];
+        }
+        else
+        {
+            shirtSpecColor[0] = 0.0f;
+            shirtSpecColor[1] = 0.0f;
+            shirtSpecColor[2] = 0.0f;   
+        }
     }
 
     public String getName() {
@@ -405,7 +459,68 @@ public class CharacterAttributes
         skinTone[1] = g;
         skinTone[2] = b;
     }
+    
+    public float[] getHairColor() {
+        return hairColor;
+    }
 
+    public void setHairColor(float r, float g, float b) {
+        hairColor[0] = r;
+        hairColor[1] = g;
+        hairColor[2] = b;
+    }
+
+    public float[] getPantsColor() {
+        return pantsColor;
+    }
+
+    public void setPantsColor(float r, float g, float b, float specR, float specG, float specB) {
+        pantsColor[0] = r;
+        pantsColor[1] = g;
+        pantsColor[2] = b;
+        pantsSpecColor[0] = specR;
+        pantsSpecColor[1] = specG;
+        pantsSpecColor[2] = specB;
+    }
+    
+    public float[] getShirtColor() {
+        return shirtColor;
+    }
+
+    public void setShirtColor(float r, float g, float b, float specR, float specG, float specB) {
+        shirtColor[0] = r;
+        shirtColor[1] = g;
+        shirtColor[2] = b;
+        shirtSpecColor[0] = specR;
+        shirtSpecColor[1] = specG;
+        shirtSpecColor[2] = specB;
+    }
+    
+    public float[] getShoesColor() {
+        return shoesColor;
+    }
+
+    public void setShoesColor(float r, float g, float b, float specR, float specG, float specB) {
+        shoesColor[0] = r;
+        shoesColor[1] = g;
+        shoesColor[2] = b;
+        shoesSpecColor[0] = specR;
+        shoesSpecColor[1] = specG;
+        shoesSpecColor[2] = specB;
+    }
+
+    public float[] getPantsSpecColor() {
+        return pantsSpecColor;
+    }
+
+    public float[] getShirtSpecColor() {
+        return shirtSpecColor;
+    }
+
+    public float[] getShoesSpecColor() {
+        return shoesSpecColor;
+    }
+    
     public String getEyeballTexture() {
         return eyeballTexture;
     }

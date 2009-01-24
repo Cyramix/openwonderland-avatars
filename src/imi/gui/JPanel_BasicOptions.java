@@ -1047,7 +1047,7 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
             for (int j = 0; j < geom.length; j ++) {
                 PMatrix tempSolution;
                 tempSolution = new PMatrix(new Vector3f(0.0f, (float) Math.toRadians(180), 0.0f), new Vector3f(1.0f, 1.0f, 1.0f), Vector3f.ZERO);
-                attach.add(new AttachmentParams(geom[j], "Head", tempSolution));
+                attach.add(new AttachmentParams(geom[j], "Head", tempSolution, "Hair")); // TODO!!! anything added with a "Hair" attached mesh will be given the hair shader which means it will be appllied with the hair color modulation... so ... yeah change it for non hair stuff please, thanks man I love you!
             }
             m_Attributes.setFlagForAlteredRegion(region, true);
         }

@@ -31,22 +31,25 @@ public class AttachmentParams
 {
     /** The name of the mesh being attached **/
     private String  meshName   = null;
-    /** The name of the joint having the mesh attached**/
-    private String  jointName  = null;
+    /** The name of the parentJoint having the mesh attached**/
+    private String  parentJointName  = null;
     /** Orientation **/
     private PMatrix matrix     = null;
+    /** The name to give the attachment parentJoint **/
+    private String attachmentJointName = null;
 
     /**
      * Construct a new instance specifying all of the needed information.
      * @param mesh Name of the mesh being attached
-     * @param joint Name of the joint to attach to
+     * @param parentJoint Name of the parentJoint to attach to
      * @param orientation Transform to orient the attachment correctly
      */
-    public AttachmentParams(String mesh, String joint, PMatrix orientation)
+    public AttachmentParams(String mesh, String parentJoint, PMatrix orientation, String attachmentJointName)
     {
         meshName  = mesh;
-        jointName = joint;
+        parentJointName = parentJoint;
         matrix    = orientation;
+        this.attachmentJointName = attachmentJointName;
     }
 
     /**
@@ -59,12 +62,12 @@ public class AttachmentParams
     }
 
 
-    public String getJointName() {
-        return jointName;
+    public String getParentJointName() {
+        return parentJointName;
     }
 
-    public void setJointName(String jointName) {
-        this.jointName = jointName;
+    public void setParentJointName(String jointName) {
+        this.parentJointName = jointName;
     }
     public PMatrix getMatrix() {
         return matrix;
@@ -78,6 +81,15 @@ public class AttachmentParams
     public void setMeshName(String meshName) {
         this.meshName = meshName;
     }
+
+    public String getAttachmentJointName() {
+        return attachmentJointName;
+    }
+
+    public void setAttachmentJointName(String attachmentJointName) {
+        this.attachmentJointName = attachmentJointName;
+    }
+    
     /**
      * Serialize this attachment parameters object
      * @return The DOM representation
@@ -88,7 +100,7 @@ public class AttachmentParams
                 new xmlCharacterAttachmentParameters();
 
         result.setMeshName(meshName);
-        result.setJointToAttachOn(jointName);
+        result.setJointToAttachOn(parentJointName);
         xmlMatrix transform = new xmlMatrix();
         transform.set(matrix);
 
@@ -104,7 +116,7 @@ public class AttachmentParams
         if (paramsDOM == null)
             return;
         setMeshName(paramsDOM.getMeshName());
-        setJointName(paramsDOM.getJointToAttachOn());
+        setParentJointName(paramsDOM.getJointToAttachOn());
         if (paramsDOM.getLocalSpaceTransform() != null)
             setMatrix(paramsDOM.getLocalSpaceTransform().getPMatrix());
     }

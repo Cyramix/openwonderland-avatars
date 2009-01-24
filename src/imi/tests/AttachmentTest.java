@@ -19,7 +19,6 @@ package imi.tests;
 
 import com.jme.math.Vector3f;
 import imi.character.avatar.Avatar;
-import imi.character.avatar.DebugAttributes;
 import imi.character.avatar.FemaleAvatarAttributes;
 import imi.gui.JFrame_InstrumentationGUI;
 import imi.gui.SceneEssentials;
@@ -76,8 +75,8 @@ public class AttachmentTest extends DemoBase
         attachmentInstructionSet.addChildInstruction(Instruction.InstructionType.setSkeleton, attachmentAvatar.getSkeleton());
         String fileProtocol = "file:///" + System.getProperty("user.dir") + "/";
         attachmentInstructionSet.addChildInstruction(Instruction.InstructionType.loadGeometry, fileProtocol + "assets/models/collada/Accessories/accessories.dae");
-        attachmentInstructionSet.addAttachmentInstruction("MaleRoundGlasses", "Neck", new PMatrix(new Vector3f(0, -2, 0)));
-        attachmentInstructionSet.addAttachmentInstruction("MaleRoundGlasses", "Head", new PMatrix(new Vector3f(0, -2, 0)));
+        attachmentInstructionSet.addAttachmentInstruction("MaleRoundGlasses", "Neck", new PMatrix(new Vector3f(0, -2, 0)), "sunglass");
+        attachmentInstructionSet.addAttachmentInstruction("MaleRoundGlasses", "Head", new PMatrix(new Vector3f(0, -2, 0)), "sunglass");
         processor.execute(attachmentInstructionSet);
 
         // Construct a tree explorer for analyzing the scene graph

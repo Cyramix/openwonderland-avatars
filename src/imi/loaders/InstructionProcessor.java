@@ -274,7 +274,7 @@ public class InstructionProcessor
         // bind the mesh up
         mesh.setPScene(m_loadingPScene);
         // Create new joint
-        PJoint newJoint = new PJoint(meshName + " joint", new PTransform((PMatrix)array[2]));
+        PJoint newJoint = new PJoint((String)array[3], new PTransform((PMatrix)array[2]));
         newJoint.addChild(mesh);
         joint.addChild(newJoint);
         
