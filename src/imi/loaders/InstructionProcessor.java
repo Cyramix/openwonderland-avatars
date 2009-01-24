@@ -347,15 +347,15 @@ public class InstructionProcessor
             else
             {
                 // Success loading, now we need to iterate on the meshes and add them all
-                Iterable<PPolygonMesh> list = newScene.getLocalGeometryList();
-                for (PPolygonMesh mesh : list)
-                {
-                        PPolygonSkinnedMesh skinnedMesh = (PPolygonSkinnedMesh) mesh;
-                        // Make an instance
-                        PPolygonSkinnedMeshInstance skinnedMeshInstance = (PPolygonSkinnedMeshInstance) m_loadingPScene.addMeshInstance(skinnedMesh, new PMatrix());
-                        // Add it to the skeleton
-                        m_skeleton.addToSubGroup(skinnedMeshInstance, subGroupName);
-                }
+//                Iterable<PPolygonMesh> list = newScene.getLocalGeometryList();
+//                for (PPolygonMesh mesh : list)
+//                {
+//                        PPolygonSkinnedMesh skinnedMesh = (PPolygonSkinnedMesh) mesh;
+//                        // Make an instance
+//                        PPolygonSkinnedMeshInstance skinnedMeshInstance = (PPolygonSkinnedMeshInstance) m_loadingPScene.addMeshInstance(skinnedMesh, new PMatrix());
+//                        // Add it to the skeleton
+//                        m_skeleton.addToSubGroup(skinnedMeshInstance, subGroupName);
+//                }
                 // iterate through all new scene looking for instances
                 FastList<PNode> queue = new FastList<PNode>();
                 queue.add(newScene.getInstances());
