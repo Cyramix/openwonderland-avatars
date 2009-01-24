@@ -328,6 +328,11 @@ public class CharacterAttributes
             return;
 
         this.setName(attributesDOM.getName());
+        if (attributesDOM.getBaseURL() == null ||
+                attributesDOM.getBaseURL().length() == 0)
+            baseURL = null;
+        else
+            baseURL = attributesDOM.getName();
         this.setBaseURL(attributesDOM.getBaseURL());
         this.setHeadAttachment(attributesDOM.getHeadAttachment());
 
