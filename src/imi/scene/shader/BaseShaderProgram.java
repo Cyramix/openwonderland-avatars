@@ -75,7 +75,7 @@ public abstract class BaseShaderProgram implements RenderUpdater, AbstractShader
 
         m_WM = other.m_WM;
         for (ShaderProperty prop : other.getProperties())
-            m_propertyMap.put(prop.name, prop);
+            m_propertyMap.put(prop.name, new ShaderProperty(prop));
         
         m_bShaderLoaded = other.m_bShaderLoaded;
         m_programName = new String(other.m_programName);
