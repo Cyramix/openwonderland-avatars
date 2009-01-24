@@ -115,7 +115,7 @@ public class EyeBall extends PPolygonSkinnedMeshInstance
         {
             bInCone = false;
         }
-        
+        matrix.normalizeCP();
 //        if (inConeCheck != bInCone)
 //            System.out.println("Now in cone: " + bInCone + "  target: " + target + "   direction: " + directionToTarget);
     }
