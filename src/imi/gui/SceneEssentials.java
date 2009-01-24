@@ -638,15 +638,16 @@ public class SceneEssentials {
             if (m_currentHiProcessors != null)
                 m_currentHiProcessors.clear();
             
-            File path = getAbsPath(m_fileModel);
-            String szURL = new String("file:///" + path.getPath());
+            String protocal = "file:///" + System.getProperty("user.dir") + "/";
+            String path = getRelativePath(m_fileModel);
+            String szURL = protocal + path;
 
             try {
                 URL modelURL = new URL(szURL);
                 SharedAsset colladaAsset = new SharedAsset(m_currentPScene.getRepository(), new AssetDescriptor(SharedAssetType.COLLADA, modelURL));
                 colladaAsset.setUserData(new ColladaLoaderParams(false, true, false, false, 3, m_fileModel.getName(), null));
                 m_modelInst = m_currentPScene.addModelInstance(m_fileModel.getName(), colladaAsset, new PMatrix());
-                //pruneMeshes(m_fileModel.getName(), colladaAsset);
+//                pruneMeshes(m_fileModel.getName(), colladaAsset);
                 return true;
             } catch (MalformedURLException ex) {
                 Logger.getLogger(SceneEssentials.class.getName()).log(Level.SEVERE, null, ex);
@@ -673,8 +674,9 @@ public class SceneEssentials {
             if (m_currentHiProcessors != null)
                 m_currentHiProcessors.clear();
 
-            File path = getAbsPath(m_fileModel);
-            String szURL = new String("file:///" + path.getPath());
+            String protocal = "file:///" + System.getProperty("user.dir") + "/";
+            String path = getRelativePath(m_fileModel);
+            String szURL = protocal + path;
 
             try {
                 URL modelURL = new URL(szURL);
@@ -699,8 +701,30 @@ public class SceneEssentials {
      * @param arg0 - parent component that called this function
      * @return true if succcessful
      */
-    // TODO: load head for viewing w/o the install head function using processors
     public boolean loadAvatarHeadDAEFile(boolean useRepository, Component arg0) {
+        int returnValue = m_jFileChooser_LoadColladaModel.showOpenDialog(arg0);
+        if (returnValue == JFileChooser.APPROVE_OPTION) {
+            m_fileModel = m_jFileChooser_LoadColladaModel.getSelectedFile();
+            m_currentPScene.setUseRepository(useRepository);
+            m_currentPScene.getInstances().removeAllChildren();
+            if (m_currentHiProcessors != null)
+                m_currentHiProcessors.clear();
+
+            String protocal = "file:///" + System.getProperty("user.dir") + "/";
+            String path = getRelativePath(m_fileModel);
+            String szURL = protocal + path;
+
+            try {
+                URL urlModel = new URL(szURL);
+                SharedAsset character = new SharedAsset(m_currentPScene.getRepository(), new AssetDescriptor(SharedAssetType.COLLADA, urlModel));
+                character.setUserData(new ColladaLoaderParams(true, true, false, true, false, 4, m_fileModel.getName(), null));
+                String[] anim = null;
+                loadInitializer(m_fileModel.getName(), character, anim);
+                return true;
+            } catch (MalformedURLException ex) {
+                Logger.getLogger(SceneEssentials.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
         return false;
     }
 
@@ -733,15 +757,8 @@ public class SceneEssentials {
             else
                 m_gender = 1;
 
-
-            final ArrayList<URL> animations = findAnims(m_fileModel);
-            String[] anim = new String[animations.size()];
-            for (int i = 0; i < animations.size(); i++) {
-                anim[i] = animations.get(i).toString();
-            }
-
             // Create avatar attribs
-            CharacterAttributes attribs = createDefaultAttributes(m_gender, bindPose.toString(), null, null);
+            CharacterAttributes attribs = createDefaultAttributes(m_gender, bindPose, null, null);
 
             if (m_avatar != null) {
                 m_worldManager.removeEntity(m_avatar);
@@ -778,22 +795,22 @@ public class SceneEssentials {
             m_fileModel = m_jFileChooser_LoadColladaModel.getSelectedFile();
 
             m_currentPScene.setUseRepository(useRepository);
-            
-            File path = getAbsPath(m_fileModel);
-            String szURL = new String("file:///" + path.getPath());
 
-            URL modelURL = null;
+            String protocal = "file:///" + System.getProperty("user.dir") + "/";
+            String path = getRelativePath(m_fileModel);
+            String szURL = protocal + path;
 
             try {
-                modelURL = new URL(szURL);
-                m_avatar.installHead(modelURL, "Neck");
 
+                URL modelURL = new URL(szURL);
+                m_avatar.installHead(modelURL, "Neck");
                 return true;
+
             } catch (MalformedURLException ex) {
                 Logger.getLogger(SceneEssentials.class.getName()).log(Level.SEVERE, null, ex);
             }
 
-            m_avatar.getAttributes().setHeadAttachment(szURL);
+            m_avatar.getAttributes().setHeadAttachment(path);
         }
 
         return false;
@@ -830,8 +847,7 @@ public class SceneEssentials {
 
             m_currentPScene.setUseRepository(useRepository);
 
-            String protocal = "file:///" + System.getProperty("user.dir");
-            protocal += "/";
+            String protocal = "file:///" + System.getProperty("user.dir") + "/";
             String path     = getRelativePath(m_fileModel);
             String szURL    = protocal + path;
 
@@ -947,8 +963,7 @@ public class SceneEssentials {
 
             m_currentPScene.setUseRepository(useRepository);
 
-            String protocal = "file:///" + System.getProperty("user.dir");
-            protocal += "/";
+            String protocal = "file:///" + System.getProperty("user.dir") + "/";
             String path     = getRelativePath(m_fileModel);
             String szURL    = protocal + path;
 
@@ -1018,8 +1033,9 @@ public class SceneEssentials {
 
             m_currentPScene.setUseRepository(useRepository);
 
-            File path = getAbsPath(m_fileModel);
-            String szURL = new String("file:///" + path.getPath());
+            String protocal = "file:///" + System.getProperty("user.dir") + "/";
+            String path     = getRelativePath(m_fileModel);
+            String szURL    = protocal + path;
 
             InstructionProcessor pProcessor = new InstructionProcessor(m_worldManager);
             Instruction pRootInstruction = new Instruction();
@@ -1056,12 +1072,12 @@ public class SceneEssentials {
             java.io.File animation = m_jFileChooser_LoadAnim.getSelectedFile();
             m_currentPScene.setUseRepository(useRepository);
 
-            File path = getAbsPath(animation);
-            String szURL = new String("file:///" + path.getPath());
+            String protocal = "file:///" + System.getProperty("user.dir") + "/";
+            String path     = getRelativePath(m_fileModel);
+            String szURL    = protocal + path;
 
-            URL animURL    = null;
             try {
-                animURL = new URL(szURL);
+                URL animURL = new URL(szURL);
 
                 InstructionProcessor pProcessor = new InstructionProcessor(m_worldManager);
                 Instruction pRootInstruction = new Instruction();
@@ -1111,7 +1127,7 @@ public class SceneEssentials {
         ArrayList<String>               load        = new ArrayList<String>();
         ArrayList<SkinnedMeshParams>    add         = new ArrayList<SkinnedMeshParams>();
 
-        String baseFilePath = "file:///" + System.getProperty("user.dir");
+        String baseFilePath = "file:///" + System.getProperty("user.dir") + "/";
 
         switch (iGender)
         {
@@ -1343,7 +1359,7 @@ public class SceneEssentials {
             }
         }
 
-        removeDuplicateMeshesBySubgroup(subgroup);  // This should not be used... it's added only once but there are duplicate meshes
+//        removeDuplicateMeshesBySubgroup(subgroup);  // This should not be used... it's added only once but there are duplicate meshes
         m_avatar.setDefaultShaders();
 
         // TEST CODE TO UPDATE ATTRIBUTES FOR SKINNED MESHES
@@ -1823,25 +1839,13 @@ public class SceneEssentials {
         String szfile = file.toString().substring(index +1);
         szfile += "/";
         String[] colladaList = getFileList(file);
-        File abs = getAbsPath(file);
-        String absPath = abs.getPath();
         String szURL = null;
         for (int i = 0; i < colladaList.length; i++) {
             if (colladaList[i].lastIndexOf("Bind") != -1) {
-//                szURL = "file:///" + System.getProperty("user.dir") + "/" + colladaList[i];
-                return szURL = szfile +colladaList[i]; //"file:///" + absPath + "/" + colladaList[i];
-//                break;
+                return szURL = szfile +colladaList[i];
             }
         }
         return szURL;
-//        URL modelURL = null;
-//        try {
-//            modelURL = new URL(szURL);
-//            return modelURL;
-//        } catch (MalformedURLException ex) {
-//            Logger.getLogger(SceneEssentials.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-//        return modelURL;
     }
 
     /**
@@ -1913,6 +1917,7 @@ public class SceneEssentials {
 
         PPolygonModelInstance pmInstance = ((PPolygonModelInstance) node.getChild(0));
         if (m_curCameraProcessor.getState() instanceof TumbleObjectCamState) {
+
             TumbleObjectCamState camState = ((TumbleObjectCamState)m_curCameraProcessor.getState());
             TumbleObjectCamModel camModel = ((TumbleObjectCamModel)m_curCameraProcessor.getModel());
             camState.setTargetModelInstance(pmInstance);
@@ -1923,7 +1928,9 @@ public class SceneEssentials {
             camState.setTargetFocalPoint(pmInstance.getBoundingSphere().getCenter());
             camModel.turnTo(pmInstance.getBoundingSphere().getCenter(), camState);
             camState.setTargetNeedsUpdate(true);
+
         } else if (m_curCameraProcessor.getState() instanceof FirstPersonCamState) {
+
             FirstPersonCamState camState = ((FirstPersonCamState)m_curCameraProcessor.getState());
             FirstPersonCamModel camModel = ((FirstPersonCamModel)m_curCameraProcessor.getModel());
             if (pmInstance.getBoundingSphere() == null)
@@ -1931,6 +1938,7 @@ public class SceneEssentials {
             Vector3f pos = pmInstance.getBoundingSphere().getCenter();
             pos.z = -2.2f;
             camState.setCameraPosition(pos);
+
         }
     }
 
@@ -1963,9 +1971,23 @@ public class SceneEssentials {
         return getOS().contains("Windows");
     }
 
+    /**
+     * Checks the subgroup for duplicates meshes to add and remove the geometry.
+     * @param subgroup
+     */
     public void removeDuplicateMeshesBySubgroup(String subgroup) {
         if (m_avatar == null)
             return;
+
+//        PPolygonSkinnedMeshInstance[] sMeshes = m_avatar.getSkeleton().getMeshesBySubGroup(subgroup);
+//        for (int i = 0; i < sMeshes.length; i++) {
+//            for (int j = i+1; j < sMeshes.length; j++) {
+//                if (sMeshes[i].equals(sMeshes[j])) {
+//                    m_currentPScene.findAndRemoveChild(sMeshes[j]);
+//                    break;
+//                }
+//            }
+//        }
 
         String[] meshes = m_avatar.getSkeleton().getMeshNamesBySubGroup(subgroup);
         for (int i = 0; i < meshes.length; i++) {
@@ -2013,13 +2035,9 @@ public class SceneEssentials {
             // Create a material to use
             int iIndex = m_fileTexture.getName().indexOf(".");
             String szName = m_fileTexture.getName().substring(0, iIndex);
-            File fullpath = getAbsPath(m_fileTexture);
-            String szURL;
-            
-            if (isWindowsOS())
-                szURL= new String("file:\\\\" + fullpath.toString());
-            else
-                szURL= new String("file://" + fullpath.toString());
+            String protocal = "file:///" + System.getProperty("user.dir") + "/";
+            String path     = getRelativePath(m_fileModel);
+            String szURL    = protocal + path;
             
             try {
                 URL urlFile = new URL(szURL);

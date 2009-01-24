@@ -1173,7 +1173,7 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
         jToolBar_Hotkeys.add(jSeparator2);
 
         jButton_ServerBrowser.setBackground(new java.awt.Color(0, 153, 204));
-        jButton_ServerBrowser.setText("Ranodm Male");
+        jButton_ServerBrowser.setText("Random Male");
         jButton_ServerBrowser.setFocusable(false);
         jButton_ServerBrowser.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton_ServerBrowser.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);

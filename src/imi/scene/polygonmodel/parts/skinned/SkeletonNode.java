@@ -442,6 +442,25 @@ public class SkeletonNode extends PNode implements Animated, Serializable
     }
 
     /**
+     * Retireves the meshes in the specified subgroup
+     * @param subGroup
+     * @return PPolygonSkinnedMeshInstance[] of meshes
+     */
+    public PPolygonSkinnedMeshInstance[] getMeshesBySubGroup(String subGroup) {
+        PPolygonSkinnedMeshInstance[] meshes = null;
+        PNode groupNode = getChild(subGroup);
+        if (groupNode == null)
+            return meshes;
+
+        meshes = new PPolygonSkinnedMeshInstance[groupNode.getChildrenCount()];
+        for (int i = 0; i < meshes.length; i++) {
+            meshes[i] = (PPolygonSkinnedMeshInstance) groupNode.getChild(i);
+        }
+
+        return meshes;
+    }
+
+    /**
      * 
      * @param meshName
      * @return
