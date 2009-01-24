@@ -268,13 +268,13 @@
                 <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                   <Color blue="cc" green="99" red="0" type="rgb"/>
                 </Property>
-                <Property name="text" type="java.lang.String" value="Server Browser"/>
+                <Property name="text" type="java.lang.String" value="Ranodm Male"/>
                 <Property name="focusable" type="boolean" value="false"/>
                 <Property name="horizontalTextPosition" type="int" value="0"/>
                 <Property name="verticalTextPosition" type="int" value="3"/>
               </Properties>
               <AuxValues>
-                <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="jButton_ServerBrowser.addActionListener(new java.awt.event.ActionListener() {&#xa;    public void actionPerformed(java.awt.event.ActionEvent evt) {&#xa;        openServerBrowser();&#xa;    }&#xa;});"/>
+                <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="jButton_ServerBrowser.addActionListener(new java.awt.event.ActionListener() {&#xa;    public void actionPerformed(java.awt.event.ActionEvent evt) {&#xa;        //openServerBrowser();&#xa;        createRandomAvatar(1);&#xa;        while (m_sceneData.getAvatar() == null || !m_sceneData.getAvatar().isInitialized()) {&#xa;            &#xa;        }&#xa;        m_sceneData.setCameraOnModel();&#xa;    }&#xa;});"/>
               </AuxValues>
             </Component>
             <Component class="javax.swing.JToolBar$Separator" name="jSeparator3">
@@ -284,13 +284,13 @@
                 <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                   <Color blue="cc" green="66" red="0" type="rgb"/>
                 </Property>
-                <Property name="text" type="java.lang.String" value="Basic Avatar Editor"/>
+                <Property name="text" type="java.lang.String" value="Random Female"/>
                 <Property name="focusable" type="boolean" value="false"/>
                 <Property name="horizontalTextPosition" type="int" value="0"/>
                 <Property name="verticalTextPosition" type="int" value="3"/>
               </Properties>
               <AuxValues>
-                <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="jButton_BasicEditor.addActionListener(new java.awt.event.ActionListener() {&#xa;    public void actionPerformed(java.awt.event.ActionEvent evt) {&#xa;        openBasicEditor();&#xa;    }&#xa;});"/>
+                <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="jButton_BasicEditor.addActionListener(new java.awt.event.ActionListener() {&#xa;    public void actionPerformed(java.awt.event.ActionEvent evt) {&#xa;        //openBasicEditor();&#xa;        createRandomAvatar(2);&#xa;        while (m_sceneData.getAvatar() == null || !m_sceneData.getAvatar().isInitialized()) {&#xa;            &#xa;        }&#xa;        m_sceneData.setCameraOnModel();&#xa;    }&#xa;});"/>
               </AuxValues>
             </Component>
           </SubComponents>

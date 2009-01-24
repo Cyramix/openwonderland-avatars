@@ -727,7 +727,7 @@ public class SceneEssentials {
             else
                 m_currentHiProcessors.clear();
 
-            URL bindPose = findBindPose(m_fileModel);
+            String bindPose = findBindPose(m_fileModel);
             if (bindPose.toString().contains("Female"))
                 m_gender = 2;
             else
@@ -830,8 +830,10 @@ public class SceneEssentials {
 
             m_currentPScene.setUseRepository(useRepository);
 
-            File path = getAbsPath(m_fileModel);
-            String szURL = new String("file:///" + path.getPath());
+            String protocal = "file:///" + System.getProperty("user.dir");
+            protocal += "/";
+            String path     = getRelativePath(m_fileModel);
+            String szURL    = protocal + path;
 
             try {
                 URL modelURL = new URL(szURL);
@@ -863,6 +865,16 @@ public class SceneEssentials {
                 
                 // TEST CODE TO UPDATE ATTRIBUTES FOR SKINNED MESHES
                 String[] meshesToAdd = m_avatar.getSkeleton().getMeshNamesBySubGroup(subGroup);
+                for (int i = 0; i < meshesToAdd.length; i++) {
+                    for (int j = 1; j < meshesToAdd.length; j++) {
+                        if (meshesToAdd[i] == null)
+                            continue;
+
+                        if (meshesToAdd[i].equals(meshesToAdd[j]))
+                            meshesToAdd[j] = null;
+                    }
+                }
+
                 List<String> loadinstructs = m_avatar.getAttributes().getLoadInstructions();
                 SkinnedMeshParams[] params = m_avatar.getAttributes().getAddInstructions();
                 ArrayList<SkinnedMeshParams> newParams = new ArrayList<SkinnedMeshParams>();
@@ -875,11 +887,15 @@ public class SceneEssentials {
                     }
                 }
 
-                for (int i = 0; i < meshesToAdd.length; i++)
+                for (int i = 0; i < meshesToAdd.length; i++) {
+                    if (meshesToAdd[i] == null)
+                        continue;
+                    
                     newParams.add(m_avatar.getAttributes().createSkinnedMeshParams(meshesToAdd[i], subGroup));
+                }
 
                 m_avatar.getAttributes().setAddInstructions(newParams.toArray(new SkinnedMeshParams[newParams.size()]));
-                loadinstructs.add(szURL);   // TODO: find the loadinstruction to remove
+                loadinstructs.add(path);   // TODO: find the loadinstruction to remove
 
                 return true;
             } catch (MalformedURLException ex) {
@@ -931,8 +947,10 @@ public class SceneEssentials {
 
             m_currentPScene.setUseRepository(useRepository);
 
-            File path = getAbsPath(m_fileModel);
-            String szURL = new String("file:///" + path.getPath());
+            String protocal = "file:///" + System.getProperty("user.dir");
+            protocal += "/";
+            String path     = getRelativePath(m_fileModel);
+            String szURL    = protocal + path;
 
             InstructionProcessor pProcessor = new InstructionProcessor(m_worldManager);
             Instruction pRootInstruction = new Instruction();
@@ -953,7 +971,7 @@ public class SceneEssentials {
             } else
                 tempSolution = new PMatrix(new Vector3f(0.0f,(float) Math.toRadians(180), 0.0f), new Vector3f(1.0f, 1.0f, 1.0f), Vector3f.ZERO);
 
-            pRootInstruction.addAttachmentInstruction( szURL, m_fileModel.getName(), tempSolution );
+            pRootInstruction.addAttachmentInstruction( szURL, "Head", tempSolution );
             pProcessor.execute(pRootInstruction);
 
             m_prevAttches[selection] = m_fileModel.getName();
@@ -1092,18 +1110,18 @@ public class SceneEssentials {
         ArrayList<String>               load        = new ArrayList<String>();
         ArrayList<SkinnedMeshParams>    add         = new ArrayList<SkinnedMeshParams>();
 
-        String baseFilePath = "file://localhost/" + System.getProperty("user.dir");
+        String baseFilePath = "file:///" + System.getProperty("user.dir");
 
         switch (iGender)
         {
             case 1:
             {
                 if (szAvatarModelFile == null)
-                    szAvatarModelFile = baseFilePath + "/assets/models/collada/Avatars/MaleAvatar/Male_Bind.dae";
+                    szAvatarModelFile = "assets/models/collada/Avatars/MaleAvatar/Male_Bind.dae";
                 if (szAvatarHandsModelFile == null)
-                    szAvatarHandsModelFile = baseFilePath + "/assets/models/collada/Avatars/MaleAvatar/Male_Hands.dae";
+                    szAvatarHandsModelFile = "assets/models/collada/Avatars/MaleAvatar/Male_Hands.dae";
                 if (szAvatarHeadModelFile == null)
-                    szAvatarHeadModelFile = baseFilePath + "/assets/models/collada/Heads/MaleHead/MaleCHead.dae";
+                    szAvatarHeadModelFile = "assets/models/collada/Heads/MaleHead/MaleCHead.dae";
 
                 load.add(szAvatarModelFile);    // Load selected male body meshes
                 add.add(attribs.createSkinnedMeshParams("RFootNudeShape",   "Feet"));
@@ -1119,11 +1137,11 @@ public class SceneEssentials {
             case 2:
             {
                 if (szAvatarModelFile == null)
-                    szAvatarModelFile = baseFilePath + "/assets/models/collada/Avatars/FemaleAvatar/Female_Bind.dae";
+                    szAvatarModelFile = "assets/models/collada/Avatars/FemaleAvatar/Female_Bind.dae";
                 if (szAvatarHandsModelFile == null)
-                    szAvatarHandsModelFile = baseFilePath + "/assets/models/collada/Avatars/FemaleAvatar/Female_Hands.dae";
+                    szAvatarHandsModelFile = "assets/models/collada/Avatars/FemaleAvatar/Female_Hands.dae";
                 if (szAvatarHeadModelFile == null)
-                    szAvatarHeadModelFile = baseFilePath + "/assets/models/collada/Heads/FemaleHead/FemaleCHead.dae";
+                    szAvatarHeadModelFile = "assets/models/collada/Heads/FemaleHead/FemaleCHead.dae";
 
                 load.add(szAvatarModelFile);    // Load selected female skeleton
                 add.add(attribs.createSkinnedMeshParams("TorsoNudeShape",   "UpperBody"));
@@ -1137,7 +1155,7 @@ public class SceneEssentials {
 
         }
 
-        attribs.setBaseURL("");
+        attribs.setBaseURL(null);
         attribs.setLoadInstructions(load);
         attribs.setAddInstructions(add.toArray(new SkinnedMeshParams[add.size()]));
         attribs.setAttachmentsInstructions(null);
@@ -1718,7 +1736,7 @@ public class SceneEssentials {
         else
             m_currentHiProcessors.clear();
 
-        URL bindPose = findBindPose(data);
+        String bindPose = findBindPose(data);
         final ArrayList<URL> animations = findAnims(data);
         String[] anim = new String[animations.size()];
         for (int i = 0; i < animations.size(); i++) {
@@ -1767,6 +1785,12 @@ public class SceneEssentials {
         return absPath;
     }
 
+    public String getRelativePath(File file) {
+        int indez = file.toString().indexOf(".");
+        String szfile = file.toString().substring(indez +2);
+        return szfile;
+    }
+
     /**
      * Creates and returns an array containing the collada files (*.dae) located
      * in directory specified by the file
@@ -1793,7 +1817,10 @@ public class SceneEssentials {
      * @param file direcotry containing the collada files
      * @return URL to bindpose or null if not found
      */
-    public URL findBindPose(File file) {
+    public String findBindPose(File file) {
+        int index = file.toString().indexOf(".");
+        String szfile = file.toString().substring(index +1);
+        szfile += "/";
         String[] colladaList = getFileList(file);
         File abs = getAbsPath(file);
         String absPath = abs.getPath();
@@ -1801,19 +1828,19 @@ public class SceneEssentials {
         for (int i = 0; i < colladaList.length; i++) {
             if (colladaList[i].lastIndexOf("Bind") != -1) {
 //                szURL = "file:///" + System.getProperty("user.dir") + "/" + colladaList[i];
-                szURL = "file:///" + absPath + "/" + colladaList[i];
-                break;
+                return szURL = szfile +colladaList[i]; //"file:///" + absPath + "/" + colladaList[i];
+//                break;
             }
         }
-
-        URL modelURL = null;
-        try {
-            modelURL = new URL(szURL);
-            return modelURL;
-        } catch (MalformedURLException ex) {
-            Logger.getLogger(SceneEssentials.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return modelURL;
+        return szURL;
+//        URL modelURL = null;
+//        try {
+//            modelURL = new URL(szURL);
+//            return modelURL;
+//        } catch (MalformedURLException ex) {
+//            Logger.getLogger(SceneEssentials.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+//        return modelURL;
     }
 
     /**

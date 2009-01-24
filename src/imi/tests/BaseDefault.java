@@ -38,6 +38,9 @@ import com.jme.scene.state.RenderState;
 import com.jme.scene.state.WireframeState;
 import com.jme.scene.state.ZBufferState;
 import com.jme.util.TextureManager;
+import imi.character.CharacterAttributes;
+import imi.character.avatar.FemaleAvatarAttributes;
+import imi.character.avatar.MaleAvatarAttributes;
 import imi.gui.JFrame_AdvOptions;
 import imi.gui.JFrame_InstrumentationGUI;
 import imi.gui.JFrame_SimpAdvOptions;
@@ -1067,6 +1070,24 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
         }
     }
 
+    public void createRandomAvatar(int gender) {
+        switch(gender)
+        {
+            case 1:
+            {
+                CharacterAttributes male = new MaleAvatarAttributes("MaleAvatar", true);
+                m_sceneData.loadAvatarDAEURL(true, this, null, null, null, male, 1);
+                break;
+            }
+            case 2:
+            {
+                CharacterAttributes female = new FemaleAvatarAttributes("FemaleAvatar", true);
+                m_sceneData.loadAvatarDAEURL(true, this, null, null, null, female, 2);
+                break;
+            }
+        }
+    }
+
 ////////////////////////////////////////////////////////////////////////////////
 // CLASS METHODS - END
 ////////////////////////////////////////////////////////////////////////////////
@@ -1152,26 +1173,36 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
         jToolBar_Hotkeys.add(jSeparator2);
 
         jButton_ServerBrowser.setBackground(new java.awt.Color(0, 153, 204));
-        jButton_ServerBrowser.setText("Server Browser");
+        jButton_ServerBrowser.setText("Ranodm Male");
         jButton_ServerBrowser.setFocusable(false);
         jButton_ServerBrowser.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton_ServerBrowser.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         jButton_ServerBrowser.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                openServerBrowser();
+                //openServerBrowser();
+                createRandomAvatar(1);
+                while (m_sceneData.getAvatar() == null || !m_sceneData.getAvatar().isInitialized()) {
+
+                }
+                m_sceneData.setCameraOnModel();
             }
         });
         jToolBar_Hotkeys.add(jButton_ServerBrowser);
         jToolBar_Hotkeys.add(jSeparator3);
 
         jButton_BasicEditor.setBackground(new java.awt.Color(0, 102, 204));
-        jButton_BasicEditor.setText("Basic Avatar Editor");
+        jButton_BasicEditor.setText("Random Female");
         jButton_BasicEditor.setFocusable(false);
         jButton_BasicEditor.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton_BasicEditor.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         jButton_BasicEditor.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                openBasicEditor();
+                //openBasicEditor();
+                createRandomAvatar(2);
+                while (m_sceneData.getAvatar() == null || !m_sceneData.getAvatar().isInitialized()) {
+
+                }
+                m_sceneData.setCameraOnModel();
             }
         });
         jToolBar_Hotkeys.add(jButton_BasicEditor);
