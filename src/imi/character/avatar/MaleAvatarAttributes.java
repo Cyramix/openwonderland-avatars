@@ -40,8 +40,8 @@ public class MaleAvatarAttributes extends CharacterAttributes
     {
         new ColorRGBA(221.0f / 255.0f,  183.0f / 255.0f, 166.0f / 255.0f, 1),
         new ColorRGBA(203.0f / 255.0f,  142.0f / 255.0f, 114.0f / 255.0f, 1),
-        new ColorRGBA(182.0f / 255.0f,  137.0f / 255.0f, 116.0f / 255.0f, 1),
-        new ColorRGBA(0.4f, 0.8f, 0.8f, 1), // Just as a joke :)
+        new ColorRGBA(182.0f / 255.0f,  137.0f / 255.0f, 116.0f / 255.0f, 1)
+       // new ColorRGBA(0.4f, 0.8f, 0.8f, 1), // Just as a joke :)
     };
     /** Collection of eye colors **/
     private final String[] eyeColors = new String[]
@@ -152,6 +152,19 @@ public class MaleAvatarAttributes extends CharacterAttributes
         setAttachmentsInstructions(attachments.toArray(new AttachmentParams[attachments.size()]));
 
         setSkinTone(skinTones[skinTone].r, skinTones[skinTone].g, skinTones[skinTone].b);
+    }
+    
+    public void randomizeHairColor()
+    {
+//        float r = (float)Math.random();
+//        float g = (float)Math.random();
+//        float b = (float)Math.random();   
+        
+        int preset = (int) (Math.random() * 1000000 % skinTones.length);
+        float r = skinTones[preset].r * (float)Math.random();
+        float g = skinTones[preset].g * (float)Math.random();
+        float b = skinTones[preset].b * (float)Math.random();
+        setHairColor(r, g, b);
     }
 
     private void customizeHead(int preset)

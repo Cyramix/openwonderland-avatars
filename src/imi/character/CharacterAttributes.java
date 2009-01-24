@@ -113,13 +113,6 @@ public class CharacterAttributes
         applyAttributesDOM(attributesDOM);
     }
     
-    public void randomizeHairColor()
-    {
-        hairColor[0] = (float)Math.random();
-        hairColor[1] = (float)Math.random();
-        hairColor[2] = (float)Math.random();   
-    }
-    
     public void randomizeShirtColor()
     {
         shirtColor[0] = (float)Math.random();

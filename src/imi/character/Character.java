@@ -483,6 +483,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
                     float[] colorWhite = { 1, 1, 1 };
                     try {
                         clothingShader.setProperty(new ShaderProperty("baseColor", GLSLDataType.GLSL_VEC3, colorWhite));
+                        clothingShader.setProperty(new ShaderProperty("specColor", GLSLDataType.GLSL_VEC3, colorWhite));
                     } catch (NoSuchPropertyException ex) {
                         Logger.getLogger(Character.class.getName()).log(Level.SEVERE, null, ex); }
                 }
