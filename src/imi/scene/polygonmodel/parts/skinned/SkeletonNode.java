@@ -678,6 +678,8 @@ public class SkeletonNode extends PNode implements Animated, Serializable
                         meshSpace.fastMul(curJoint.getBindPose());
                         meshSpace.fastMul(curJoint.unmodifiedInverseBindPose);
                         meshSpace.fastMul(curJoint.getTransform().getLocalMatrix(false));
+                        current.getTransform().getWorldMatrix(true).set(meshSpace);
+                        current.getTransform().getWorldMatrix(true).fastMul(getTransform().getWorldMatrix(false));
                     }
                     else // First joint in the skeleton; mesh space is local space
                     {
