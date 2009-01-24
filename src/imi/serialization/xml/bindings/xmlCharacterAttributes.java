@@ -70,7 +70,9 @@ import javax.xml.bind.annotation.XmlType;
     "facialAnimations",
     "loadingInstructions",
     "additionInstructions",
-    "attachments"
+    "attachments",
+    "eyeballTexture",
+    "skinTone"
     
 })
 public class xmlCharacterAttributes {
@@ -93,6 +95,10 @@ public class xmlCharacterAttributes {
     protected List<xmlSkinnedMeshParams> additionInstructions;
     @XmlElement(name = "Attachments")
     protected List<xmlCharacterAttachmentParameters> attachments;
+    @XmlElement(name = "EyeballTexture")
+    protected String eyeballTexture;
+    @XmlElement(name = "SkinTone")
+    protected xmlFloatRow skinTone;
 
 
     /**
@@ -106,6 +112,23 @@ public class xmlCharacterAttributes {
     public String getName() {
         return name;
     }
+
+    public String getEyeballTexture() {
+        return eyeballTexture;
+    }
+
+    public void setEyeballTexture(String eyeballTexture) {
+        this.eyeballTexture = eyeballTexture;
+    }
+
+    public xmlFloatRow getSkinTone() {
+        return skinTone;
+    }
+
+    public void setSkinTone(xmlFloatRow skinTone) {
+        this.skinTone = skinTone;
+    }
+
 
     /**
      * Sets the value of the name property.

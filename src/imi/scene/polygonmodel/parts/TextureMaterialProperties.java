@@ -11,8 +11,8 @@
  * except in compliance with the License. A copy of the License is
  * available at http://www.opensource.org/licenses/gpl-license.php.
  *
- * Sun designates this particular file as subject to the "Classpath" 
- * exception as provided by Sun in the License file that accompanied 
+ * Sun designates this particular file as subject to the "Classpath"
+ * exception as provided by Sun in the License file that accompanied
  * this code.
  */
 package imi.scene.polygonmodel.parts;
@@ -54,7 +54,7 @@ public class TextureMaterialProperties implements Serializable
     private float   m_anistotropicValue = 0.0f;
     /** Apply mode **/
     private Texture.ApplyMode   m_applyMode = null;
-    
+
     /**
      * Default constructor, initializes all values to conservative defaults.
      * The image location is left unset, and the texture unit is set to zero.
@@ -63,7 +63,7 @@ public class TextureMaterialProperties implements Serializable
     {
         setDefaultValues();
     }
-    
+
     public TextureMaterialProperties(URL imageLocation)
     {
         setDefaultValues();
@@ -74,7 +74,7 @@ public class TextureMaterialProperties implements Serializable
     {
         applyTextureAttributesDOM(texAttr);
     }
-    
+
     private void setDefaultValues()
     {
         m_textureUnit = 0;
@@ -85,9 +85,9 @@ public class TextureMaterialProperties implements Serializable
         m_magFilter = MagnificationFilter.Bilinear;
         m_applyMode = Texture.ApplyMode.Modulate;
     }
-    
+
     /**
-     * Applies all the configuration to a texture object. The Texture is 
+     * Applies all the configuration to a texture object. The Texture is
      * assumed to have been loaded from the image location specified in
      * this class.
      * @param tex
@@ -109,9 +109,9 @@ public class TextureMaterialProperties implements Serializable
         xmlTextureAttributes result = new xmlTextureAttributes();
         // Location
         if (m_imageLocation != null)
-            result.setURL(m_imageLocation.toString());
+            result.setRelativePath(m_imageLocation.toString().substring(m_imageLocation.toString().lastIndexOf("assets")));
         else
-            result.setURL(null);
+            result.setRelativePath(null);
         // Texture Unit
         result.setTextureUnit(m_textureUnit);
         // Wrap S
@@ -214,12 +214,12 @@ public class TextureMaterialProperties implements Serializable
     {
         m_wrapT = wrapT;
     }
-    
+
     public ApplyMode getApplyMode()
     {
         return m_applyMode;
     }
-    
+
     public void setApplyMode(ApplyMode mode)
     {
         m_applyMode = mode;
@@ -297,8 +297,9 @@ public class TextureMaterialProperties implements Serializable
     private void applyTextureAttributesDOM(xmlTextureAttributes texAttr) {
         try
         {
+            String fileProtocol = "file:///" + System.getProperty("user.dir") + "/";
             // url
-            setImageLocation(new URL(texAttr.getURL()));
+            setImageLocation(new URL(fileProtocol + texAttr.getRelativePath()));
             // textureUnit
             setTextureUnit(texAttr.getTextureUnit());
             // wrapS

@@ -11,8 +11,8 @@
  * except in compliance with the License. A copy of the License is
  * available at http://www.opensource.org/licenses/gpl-license.php.
  *
- * Sun designates this particular file as subject to the "Classpath" 
- * exception as provided by Sun in the License file that accompanied 
+ * Sun designates this particular file as subject to the "Classpath"
+ * exception as provided by Sun in the License file that accompanied
  * this code.
  */
 package imi.scene.polygonmodel.parts;
@@ -77,7 +77,7 @@ public class PMeshMaterial extends PNode implements Serializable
     private AlphaTransparencyType m_alphaState = AlphaTransparencyType.NO_TRANSPARENCY;
     /** Texture properties **/
     private TextureMaterialProperties[] m_textures = new TextureMaterialProperties[8];
-    
+
     /** Shader collection **/
     private AbstractShaderProgram [] m_ShaderArray = new AbstractShaderProgram[1];
     /** Define the interaction between vertex colors and material properties **/
@@ -88,13 +88,13 @@ public class PMeshMaterial extends PNode implements Serializable
     private boolean         m_bWireframeEnabled = false;
     /** Wireframe characteristics follow **/
     private boolean         m_bWireframeAntiAliased = false;
-    private float           m_fWireframeLineWidth   = 1.0f; 
+    private float           m_fWireframeLineWidth   = 1.0f;
     private WireframeState.Face m_wireFace = WireframeState.Face.Front;
-    /** Which sides are affected **/ 
+    /** Which sides are affected **/
     private MaterialFace    m_MaterialFace = MaterialFace.FrontAndBack;
     /** The default**/
     public static final PMeshMaterial DEFAULT_MATERIAL = new PMeshMaterial("Default Material");
-    
+
     /**
      * This default constructor allocates memory for the member variables
      * (no member variable will be null)
@@ -111,13 +111,13 @@ public class PMeshMaterial extends PNode implements Serializable
      * and all other data to default values.
      * @param diffuseColor
      */
-    public PMeshMaterial(ColorRGBA diffuseColor) 
+    public PMeshMaterial(ColorRGBA diffuseColor)
     {
         m_Diffuse  = new ColorRGBA(diffuseColor);
         m_Emissive = new ColorRGBA(0.0f, 0.0f, 0.0f, 0.0f);
         m_Specular = new ColorRGBA(0.0f, 0.0f, 0.0f, 0.0f);
     }
-    
+
     /**
      * This constructor allocates memory for the member variables
      * (no member variable will be null)
@@ -128,7 +128,7 @@ public class PMeshMaterial extends PNode implements Serializable
         this();
         setName(name);
     }
-    
+
     /**
      * Construct a new material instance with the specified name and texture.
      * The string provided for the texture will be converted to a URL internally.
@@ -141,7 +141,7 @@ public class PMeshMaterial extends PNode implements Serializable
     {
         this();
         setName(name);
-        
+
         URL textureLocation = null;
         if (texture0 != null)
         {
@@ -159,7 +159,7 @@ public class PMeshMaterial extends PNode implements Serializable
         }
         m_Diffuse = new ColorRGBA(ColorRGBA.white);
     }
-    
+
     /**
      * Construct a new material with the specified name and texture for texture
      * unit zero.
@@ -188,26 +188,26 @@ public class PMeshMaterial extends PNode implements Serializable
             int shininess, String [] textures, Texture.ApplyMode textureMode)
     {
         setName(name);
-        
+
         m_Diffuse  = new ColorRGBA(1.0f, 0.0f, 1.0f, 0.0f);
         m_Emissive = new ColorRGBA(0.0f, 0.0f, 0.0f, 0.0f);
         m_Specular = new ColorRGBA(0.0f, 0.0f, 0.0f, 0.0f);
-        
+
         setDiffuse(diffuse);
         setAmbient(ambient);
         setEmissive(emissive);
         setSpecular(specular);
-        
+
         setShininess(shininess);
         setTextures(textures);
-        
+
         for (int i = 0; i < 8; i++)
         {
             if (m_textures[i] != null) // set the mode if relevant
                 m_textures[i].setApplyMode(textureMode);
         }
     }
-    
+
     public PMeshMaterial(PMeshMaterial other, boolean bUseOriginalMaterialNumberOfTextures)
     {
         if (other == null)
@@ -215,39 +215,39 @@ public class PMeshMaterial extends PNode implements Serializable
             set(DEFAULT_MATERIAL);
             return;
         }
-        
+
         m_Diffuse   = new ColorRGBA(other.getDiffuse());
         m_Ambient   = new ColorRGBA(other.getAmbient());
-        m_Emissive  = new ColorRGBA(other.getEmissive());  
+        m_Emissive  = new ColorRGBA(other.getEmissive());
         m_Specular  = new ColorRGBA(other.getSpecular());
         m_Shininess = other.getShininess();
-        
+
         for (int i = 0; i < 8; i++)
         {
             if (other.getTexture(i) != null)
                 m_textures[i] = other.getTexture(i);
         }
-        
+
         m_ShaderArray = new AbstractShaderProgram[other.getShaders().length];
         for (int i = 0; i < m_ShaderArray.length; ++i)
         {
             if (other.getShader(i) != null)
                 m_ShaderArray[i] = other.getShader(i);
         }
-        
+
         m_ColorMaterial = other.getColorMaterial();
         m_MaterialFace = other.getMaterialFace();
-        
+
         m_cullFace = other.getCullFace();
         m_bWireframeEnabled = other.isWireframeEnabled();
         m_bWireframeAntiAliased = other.isWireframeAntiAliased();
         m_fWireframeLineWidth = other.getWireframeLineWidth();
         m_wireFace = other.getWireframeFace();
-        
+
         m_alphaState = other.getAlphaState();
         m_TransparencyColor = other.getTransparencyColor();
     }
-    
+
     public PMeshMaterial(PMeshMaterial other)
     {
         this(other, true);
@@ -268,29 +268,29 @@ public class PMeshMaterial extends PNode implements Serializable
     {
         if (otherObject == null)
             return false;
-     
+
         if (this == otherObject)
             return true;
-        
+
         if (otherObject.getClass() != this.getClass())
             return false;
-        
+
         PMeshMaterial other = (PMeshMaterial)otherObject;
-          
-        boolean material = ( 
-                
+
+        boolean material = (
+
                 m_Diffuse.equals(other.getDiffuse())   &&
                 m_Ambient.equals(other.getAmbient())   &&
                 m_Emissive.equals(other.getEmissive()) &&
                 m_Specular.equals(other.getSpecular()) &&
                 m_Shininess == other.getShininess()
-                
+
                 );
-        
+
         boolean modes    = true;
         boolean textures = true;
         boolean shaders  = true;
-        
+
         for (int i = 0; i < 8; i++)
         {
             if (m_textures[i] != null)
@@ -301,7 +301,7 @@ public class PMeshMaterial extends PNode implements Serializable
             else if (other.getTexture(i) != null)
                 textures = false;
         }
-        
+
         for (int i = 0; i < m_ShaderArray.length; ++i)
         {
             if (m_ShaderArray[i] != null)
@@ -312,12 +312,12 @@ public class PMeshMaterial extends PNode implements Serializable
             else if (other.getShader(i) != null)
                 shaders = false;
         }
-        
+
         if (m_ColorMaterial == other.getColorMaterial())
                 modes    = true;
             else
                 modes    = false;
-        
+
         if (m_MaterialFace == other.getMaterialFace())
                 modes    = true;
             else
@@ -326,26 +326,26 @@ public class PMeshMaterial extends PNode implements Serializable
             modes = true;
         else
             modes = false;
-        
+
         boolean wirestates = false;
-        
+
         if (m_wireFace.equals(other.getWireframeFace()))
             wirestates = true;
         else
             wirestates = false;
-        
+
         if (m_fWireframeLineWidth == other.getWireframeLineWidth() && wirestates == true)
             wirestates = true;
         else
             wirestates = false;
         wirestates = wirestates && (m_bWireframeEnabled == other.isWireframeEnabled()) &&
                      (m_bWireframeAntiAliased == other.isWireframeAntiAliased());
-        
+
         return material && textures && modes && shaders && wirestates;
     }
 
     @Override
-    public int hashCode() 
+    public int hashCode()
     {
         int hash = 7;
         hash = 37 * hash + (this.m_Diffuse  != null ? this.m_Diffuse.hashCode()  : 0);
@@ -353,18 +353,18 @@ public class PMeshMaterial extends PNode implements Serializable
         hash = 37 * hash + (this.m_Emissive != null ? this.m_Emissive.hashCode() : 0);
         hash = 37 * hash + (this.m_Specular != null ? this.m_Specular.hashCode() : 0);
         hash = 37 * hash + Float.floatToIntBits(this.m_Shininess);
-        
+
         for (int i = 0; i < m_textures.length; i++)
             hash = 37 * hash + (this.m_textures[i] != null ? this.m_textures[i].hashCode() : 0);
 
         for (int i = 0; i < m_ShaderArray.length; i++)
             hash = 37 * hash + (this.m_ShaderArray[i] != null ? this.m_ShaderArray[i].hashCode() : 0);
-        
+
         hash = 37 * hash + this.m_MaterialFace.ordinal();
         hash = 37 * hash + this.m_ColorMaterial.ordinal();
         return hash;
     }
-    
+
     public void set(PMeshMaterial other)
     {
         setDiffuse(other.getDiffuse());
@@ -378,38 +378,38 @@ public class PMeshMaterial extends PNode implements Serializable
         setMaterialFace(other.getMaterialFace());
         setCullFace(other.getCullFace());
         setWireframeCharacteristics(other.isWireframeEnabled(),
-                                    other.isWireframeAntiAliased(), 
-                                    other.getWireframeLineWidth(), 
+                                    other.isWireframeAntiAliased(),
+                                    other.getWireframeLineWidth(),
                                     other.getWireframeFace());
         setAlphaState(other.getAlphaState());
         setTransparencyColor(other.getTransparencyColor());
     }
 
-    public void setDiffuse(ColorRGBA diffuse) 
+    public void setDiffuse(ColorRGBA diffuse)
     {
         if (diffuse != null)
             m_Diffuse.set(diffuse);
     }
-    
-    public void setAmbient(ColorRGBA ambient) 
+
+    public void setAmbient(ColorRGBA ambient)
     {
         if (ambient != null)
             m_Ambient.set(ambient);
     }
 
-    public void setEmissive(ColorRGBA emissive) 
+    public void setEmissive(ColorRGBA emissive)
     {
         if (emissive != null)
             m_Emissive.set(emissive);
     }
 
-    public void setSpecular(ColorRGBA specular) 
+    public void setSpecular(ColorRGBA specular)
     {
         if (specular != null)
             m_Specular.set(specular);
     }
 
-    public void setTextures(TextureMaterialProperties[] textures) 
+    public void setTextures(TextureMaterialProperties[] textures)
     {
         int i = 0;
         if (textures != null)
@@ -426,7 +426,7 @@ public class PMeshMaterial extends PNode implements Serializable
             m_textures[i] = null;
         }
     }
-    
+
     public void setTextures(URL[] textureLocations)
     {
         int i = 0;
@@ -447,18 +447,18 @@ public class PMeshMaterial extends PNode implements Serializable
             m_textures[i] = null;
         }
     }
-    
+
     /**
-     * Intrinsicly turn the provided non-null strings into URLs, and barring 
+     * Intrinsicly turn the provided non-null strings into URLs, and barring
      * failure of that create a new TextureMaterialProperties object representing
      * that texture.
      * @param textures
      */
-    public void setTextures(String[] textures) 
+    public void setTextures(String[] textures)
     {
         int i = 0;
         URL textureLocation = null;
-        
+
         if (textures != null)
         {
             for (i = 0; i < textures.length; i++)
@@ -474,7 +474,7 @@ public class PMeshMaterial extends PNode implements Serializable
                     {
                         Logger.getLogger(PMeshMaterial.class.getName()).log(Level.SEVERE, null, ex);
                     }
-                    
+
                     if (textureLocation != null)
                     {
                         m_textures[i] = new TextureMaterialProperties(textureLocation);
@@ -489,14 +489,14 @@ public class PMeshMaterial extends PNode implements Serializable
             m_textures[i] = null;
         }
     }
-    
+
     public void setTexture(TextureMaterialProperties texture, int index)
     {
         if (index < 0 || index > 7)
             return;
         m_textures[index] = texture;
     }
-    
+
     /**
      * Set the file name of a texture in a specific index.
      * Note : remember to set the number of texture for the mesh!
@@ -521,7 +521,7 @@ public class PMeshMaterial extends PNode implements Serializable
             m_textures[index].setTextureUnit(index);
         }
     }
-    
+
     public void setTexture(File fileName, int index)
     {
         if (index < 0 || index > 7 || fileName == null)
@@ -540,7 +540,7 @@ public class PMeshMaterial extends PNode implements Serializable
             m_textures[index].setTextureUnit(index);
         }
     }
-    
+
     public void setTexture(URL location, int index)
     {
         if (index < 0 || index > 7)
@@ -563,36 +563,36 @@ public class PMeshMaterial extends PNode implements Serializable
             m_Shininess = shininess;
     }
 
-    public ColorRGBA getDiffuse() 
+    public ColorRGBA getDiffuse()
     {
         return m_Diffuse;
     }
-    
-    public ColorRGBA getAmbient() 
+
+    public ColorRGBA getAmbient()
     {
         return m_Ambient;
     }
 
-    public ColorRGBA getEmissive() 
+    public ColorRGBA getEmissive()
     {
         return m_Emissive;
     }
 
-    public ColorRGBA getSpecular() 
+    public ColorRGBA getSpecular()
     {
         return m_Specular;
     }
-    
+
     public int getShininess()
     {
         return m_Shininess;
     }
 
-    public TextureMaterialProperties[] getTextures() 
+    public TextureMaterialProperties[] getTextures()
     {
         return m_textures;
     }
-    
+
     public TextureMaterialProperties getTexture(int index)
     {
         return m_textures[index];
@@ -604,13 +604,13 @@ public class PMeshMaterial extends PNode implements Serializable
         return m_MaterialFace;
     }
 
-    
+
     public void setMaterialFace(MaterialFace matFace)
     {
         m_MaterialFace = matFace;
     }
 
-    
+
     public ColorMaterial getColorMaterial()
     {
         return m_ColorMaterial;
@@ -626,12 +626,12 @@ public class PMeshMaterial extends PNode implements Serializable
     {
         return m_ShaderArray;
     }
-    
+
     public AbstractShaderProgram getShader(int index)
     {
         return m_ShaderArray[index];
     }
-    
+
     public AbstractShaderProgram getShader()
     {
         return m_ShaderArray[0];
@@ -643,12 +643,12 @@ public class PMeshMaterial extends PNode implements Serializable
         for (int i = 0; i < shaders.length; ++i)
             m_ShaderArray[i] = shaders[i];
     }
-    
+
     public void setShader(AbstractShaderProgram shader, int index)
     {
         m_ShaderArray[index] = shader;
     }
-    
+
     public void setShader(AbstractShaderProgram shader)
     {
         m_ShaderArray[0] = shader;
@@ -658,22 +658,22 @@ public class PMeshMaterial extends PNode implements Serializable
     {
         return m_cullFace;
     }
-    
+
     public void setCullFace(CullState.Face cullFace)
     {
         m_cullFace = cullFace;
     }
-    
+
     public boolean isWireframeEnabled()
     {
         return m_bWireframeEnabled;
     }
-    
+
     public void setWireframeEnabled(boolean bWireframe)
     {
         m_bWireframeEnabled = bWireframe;
     }
-    
+
     public void setWireframeCharacteristics(boolean enabled,
             boolean antiAliased, float fWireWidth,
             WireframeState.Face face)
@@ -683,23 +683,23 @@ public class PMeshMaterial extends PNode implements Serializable
         m_fWireframeLineWidth = fWireWidth;
         m_wireFace = face;
     }
-    
+
     public boolean isWireframeAntiAliased()
     {
         return m_bWireframeAntiAliased;
     }
-    
+
     public float getWireframeLineWidth()
     {
         return m_fWireframeLineWidth;
     }
-    
+
     public WireframeState.Face getWireframeFace()
     {
         return m_wireFace;
     }
     /**
-     * Determine how many texture units are needed. 
+     * Determine how many texture units are needed.
      * @return Number used
      */
     public int getNumberOfRelevantTextures()
@@ -732,7 +732,7 @@ public class PMeshMaterial extends PNode implements Serializable
     {
         m_TransparencyColor = transparencyColor;
     }
-    
+
     private void applyMaterialDOM(xmlMaterial xmlMat, WorldManager wm)
     {
         int counter = 0;

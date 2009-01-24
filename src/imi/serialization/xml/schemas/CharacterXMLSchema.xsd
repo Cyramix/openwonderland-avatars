@@ -38,6 +38,8 @@
             <xsd:element name="LoadingInstructions" minOccurs="0" maxOccurs="unbounded" type="xsd:string"/>
             <xsd:element name="AdditionInstructions" minOccurs="0" maxOccurs="unbounded" type="tns:SkinnedMeshAdditionParams"/>
             <xsd:element name="Attachments" type="tns:CharacterAttachmentParameters" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="EyeballTexture" type="xsd:string" minOccurs="0"></xsd:element>
+            <xsd:element name="SkinTone" type="tns:FloatRow"></xsd:element>
         </xsd:sequence>
     </xsd:complexType>
     <xsd:complexType name="Character">
@@ -68,7 +70,7 @@
     </xsd:complexType>
     <xsd:complexType name="TextureAttributes">
         <xsd:sequence>
-            <xsd:element name="URL" type="xsd:string"/>
+            <xsd:element name="RelativePath" type="xsd:string"/>
             <xsd:element name="TextureUnit" type="xsd:int"/>
             <xsd:element name="WrapS" type="xsd:string"/>
             <xsd:element name="WrapT" type="xsd:string"/>

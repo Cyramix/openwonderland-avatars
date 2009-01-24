@@ -22,6 +22,7 @@ import imi.scene.PMatrix;
 import imi.scene.PScene;
 import imi.serialization.xml.bindings.xmlCharacterAttachmentParameters;
 import imi.serialization.xml.bindings.xmlCharacterAttributes;
+import imi.serialization.xml.bindings.xmlFloatRow;
 import imi.serialization.xml.bindings.xmlSkinnedMeshParams;
 import java.net.URL;
 import java.util.ArrayList;
@@ -299,6 +300,20 @@ public class CharacterAttributes
 
         // save the sex integer
         result.setGender(gender);
+        // eye color
+        result.setEyeballTexture(eyeballTexture);
+        // skin tone
+        if (skinTone != null)
+        {
+            xmlFloatRow skin = new xmlFloatRow();
+            skin.setX(skinTone[0]);
+            skin.setY(skinTone[1]);
+            skin.setZ(skinTone[2]);
+            result.setSkinTone(skin);
+        }
+        else
+            result.setSkinTone(null);
+
         // Finished
         return result;
     }
@@ -346,6 +361,21 @@ public class CharacterAttributes
             }
             this.setAddInstructions(paramArray);
         }
+        // Eyeball texture
+        eyeballTexture = attributesDOM.getEyeballTexture();
+
+        // Skintone
+        xmlFloatRow skin = attributesDOM.getSkinTone();
+        if (skin != null)
+        {
+            skinTone = new float[3];
+            skinTone[0] = skin.getX();
+            skinTone[1] = skin.getY();
+            skinTone[2] = skin.getZ();
+        }
+        else
+            skinTone = null;
+
 
     }
 

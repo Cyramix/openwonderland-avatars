@@ -43,7 +43,7 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "TextureAttributes", propOrder = {
-    "url",
+    "relativePath",
     "textureUnit",
     "wrapS",
     "wrapT",
@@ -55,8 +55,8 @@ import javax.xml.bind.annotation.XmlType;
 })
 public class xmlTextureAttributes {
 
-    @XmlElement(name = "URL", required = true)
-    protected String url;
+    @XmlElement(name = "RelativePath", required = true)
+    protected String relativePath;
     @XmlElement(name = "TextureUnit")
     protected int textureUnit;
     @XmlElement(name = "WrapS", required = true)
@@ -82,8 +82,8 @@ public class xmlTextureAttributes {
      *     {@link String }
      *     
      */
-    public String getURL() {
-        return url;
+    public String getRelativePath() {
+        return relativePath;
     }
 
     /**
@@ -94,8 +94,8 @@ public class xmlTextureAttributes {
      *     {@link String }
      *     
      */
-    public void setURL(String value) {
-        this.url = value;
+    public void setRelativePath(String value) {
+        this.relativePath = value;
     }
 
     /**

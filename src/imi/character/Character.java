@@ -600,7 +600,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
                 // TODO: HACK for hair matrix... need to get this fixed its not outputing into config file
                 PMatrix tempsolution = null;
                 if (attachments[i].getMatrix() == null)
-                    tempsolution = new PMatrix(new Vector3f(0.0f, (float) Math.toRadians(180), 0.0f), new Vector3f(1.0f, 1.0f, 1.0f), Vector3f.ZERO);
+                    tempsolution = new PMatrix();
                 else
                     tempsolution = attachments[i].getMatrix();
                 attributeRoot.addAttachmentInstruction( attachments[i].getMeshName(), attachments[i].getJointName(), tempsolution);

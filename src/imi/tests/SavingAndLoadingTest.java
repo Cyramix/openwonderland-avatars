@@ -49,7 +49,7 @@ public class SavingAndLoadingTest extends DemoBase
     /** Tree explorer if needed **/
     private TreeExplorer te = null;
     /** Point this to where you want the file to go **/
-    private static File SaveFile = new File("assets/configurations/SavingAndLoadingOutput.xml");
+    private static File SaveFile = new File("assets/configurations/FemaleApe.xml");
 
     /**
      * Construct a new instance!
@@ -73,7 +73,7 @@ public class SavingAndLoadingTest extends DemoBase
         AvatarControlScheme control = (AvatarControlScheme)((JSceneEventProcessor)wm.getUserData(JSceneEventProcessor.class)).setDefault(new AvatarControlScheme(null));
         // Create testCharacter
         Avatar testCharacter = null;
-        testCharacter = new Avatar(new MaleAvatarAttributes("SavingAndLoadingTestCharacter", true), wm);
+        testCharacter = new Avatar(new MaleAvatarAttributes("SavingAndLoadingTestCharacter", 0, 0, 0, 0, 0, 3, 24), wm);
         testCharacter.selectForInput();
         control.getAvatarTeam().add(testCharacter);
         control.getMouseEventsFromCamera();
@@ -142,8 +142,7 @@ public class SavingAndLoadingTest extends DemoBase
         meshMat.setShader((ClothingShaderSpecColor)repository.newShader(ClothingShaderSpecColor.class));
 
 
-        PPolygonSkinnedMeshInstance meshInstance = skeleton.getSkinnedMeshInstance("DressShirtShape"); // Dress shirt
-
+        PPolygonSkinnedMeshInstance meshInstance = skeleton.getSkinnedMeshInstance("PoloShape"); // Dress shirt
         meshInstance.setMaterial(meshMat);
         meshInstance.applyMaterial();
         Thread.yield();

@@ -150,7 +150,8 @@ public class MaleAvatarAttributes extends CharacterAttributes
         setLoadInstructions(load);
         setAddInstructions(add.toArray(new SkinnedMeshParams[add.size()]));
         setAttachmentsInstructions(attachments.toArray(new AttachmentParams[attachments.size()]));
-        
+
+        setSkinTone(skinTones[skinTone].r, skinTones[skinTone].g, skinTones[skinTone].b);
     }
 
     private void customizeHead(int preset)

@@ -153,12 +153,10 @@ public class DefaultInstrumentation implements Instrumentation
     }
 
     private boolean disableTexturing() {
-
         return true;
     }
 
     private boolean disableVertexDeforming() {
-
         return true;
     }
 
