@@ -51,6 +51,8 @@ import org.jdesktop.mtgame.WorldManager;
  */
 public class ShaderUtils 
 {
+    /** Logger ref **/
+    private static final Logger logger = Logger.getLogger(ShaderUtils.class.getName());
     /** This string is used to indicate the package that contains premade programs **/
     public static final String  ShaderProgramPackage = new String("imi.scene.shader.programs");
     
@@ -299,7 +301,7 @@ public class ShaderUtils
             }
             catch (Exception ex)
             {
-
+                logger.log(Level.SEVERE, "Error recreating default shader:", ex);
             }
 
         }
@@ -310,14 +312,21 @@ public class ShaderUtils
             {
                 try
                 {
-                    Class classz = Class.forName(effectName);
-                    Constructor ctor = classz.getConstructor(WorldManager.class);
-                    program.addEffect((GLSLShaderEffect) ctor.newInstance(wm));
+                    Class classz = Class.forName("imi.scene.shader.effects." + effectName);
+                    Constructor ctor = classz.getConstructor();
+                    program.addEffect((GLSLShaderEffect) ctor.newInstance());
                 }
                 catch (Exception ex)
                 {
-
+                    logger.log(Level.SEVERE, "Error creating shader effect!", ex);
                 }
+            }
+            try {
+                program.compile();
+            }
+            catch (Exception ex)
+            {
+                logger.log(Level.SEVERE, "Error compiling shader!", ex);
             }
             result = program;
         }
