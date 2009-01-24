@@ -177,6 +177,11 @@ public class SkinnedMeshJoint extends PJoint implements Serializable
         m_bindPoseTransform = unmodifiedInverseBindPose.inverse();
     }
 
+    public void reset() {
+        resetBindPose();
+        getTransform().getLocalMatrix(true).set(m_bindPoseTransform);
+    }
+
     public void setToBindPose()
     {
         getTransform().getLocalMatrix(true).set(m_bindPoseTransform);

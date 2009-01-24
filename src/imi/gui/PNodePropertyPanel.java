@@ -20,6 +20,7 @@ package imi.gui;
 import imi.scene.PJoint;
 import imi.scene.PNode;
 import imi.scene.polygonmodel.PPolygonMeshInstance;
+import imi.scene.polygonmodel.parts.skinned.SkinnedMeshJoint;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -108,6 +109,9 @@ public class PNodePropertyPanel extends javax.swing.JPanel
         JPanel_SpecificControls.removeAll();
         m_nodeToolKit = null;
 
+        if (m_targetNode != null)
+            setResetButton();
+
         if (m_targetNode == null) // no target, no toolkit
             return;
         else if (m_targetNode instanceof PJoint) // Only implementation so far
@@ -183,6 +187,32 @@ public class PNodePropertyPanel extends javax.swing.JPanel
         return m_targetNode;
     }
 
+    /**
+     * Resets the skinned mesh joint matrix
+     */
+    public void resetSMJoint() {
+        if (m_targetNode instanceof SkinnedMeshJoint) {
+            ((SkinnedMeshJoint)m_targetNode).reset();
+        }
+    }
+
+    /**
+     * Checks if the target node is skinned mesh joint and enables or disables
+     * the reset button accordingly.
+     */
+    public void setResetButton() {
+        if (m_targetNode == null)
+            return;
+        
+        if (m_targetNode instanceof SkinnedMeshJoint) {
+            jButton1.setEnabled(true);
+            jButton1.setVisible(true);
+        } else {
+            jButton1.setEnabled(false);
+            jButton1.setVisible(false);
+        }
+    }
+
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
@@ -213,6 +243,7 @@ public class PNodePropertyPanel extends javax.swing.JPanel
         jToolBar7 = new javax.swing.JToolBar();
         jLabel5 = new javax.swing.JLabel();
         JLabel_NodeType = new javax.swing.JLabel();
+        jButton1 = new javax.swing.JButton();
         JPanel_SpecificControls = new javax.swing.JPanel();
 
         setMaximumSize(new java.awt.Dimension(2000, 2000));
@@ -220,7 +251,7 @@ public class PNodePropertyPanel extends javax.swing.JPanel
         setPreferredSize(new java.awt.Dimension(670, 365));
 
         JPanel_BaseNodeProperties.setMinimumSize(new java.awt.Dimension(321, 150));
-        JPanel_BaseNodeProperties.setPreferredSize(new java.awt.Dimension(321, 150));
+        JPanel_BaseNodeProperties.setPreferredSize(new java.awt.Dimension(420, 150));
         JPanel_BaseNodeProperties.setLayout(new java.awt.GridBagLayout());
 
         jToolBar1.setFloatable(false);
@@ -376,6 +407,17 @@ public class PNodePropertyPanel extends javax.swing.JPanel
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         JPanel_BaseNodeProperties.add(jToolBar7, gridBagConstraints);
 
+        jButton1.setText("RESET SMJoint");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                resetSMJoint();
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 3;
+        JPanel_BaseNodeProperties.add(jButton1, gridBagConstraints);
+
         JPanel_SpecificControls.setMinimumSize(new java.awt.Dimension(321, 150));
         JPanel_SpecificControls.setPreferredSize(new java.awt.Dimension(670, 365));
 
@@ -429,6 +471,7 @@ private void JCheckBox_RenderStopActionPerformed(java.awt.event.ActionEvent evt)
     private javax.swing.JPanel JPanel_BaseNodeProperties;
     private javax.swing.JPanel JPanel_SpecificControls;
     private javax.swing.JTextField JTextField_NodeName;
+    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;

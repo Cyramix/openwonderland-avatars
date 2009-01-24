@@ -2017,11 +2017,11 @@ public class SceneEssentials {
             try {
                 File configfile = m_jFileChooser_LoadXML.getSelectedFile();
                 URL configURL   = configfile.toURI().toURL();
-                if (m_avatar == null) {
+//                if (m_avatar == null) {
                     m_avatar = new Avatar(configURL, m_worldManager);
-                } else if (m_avatar != null) {
-                    m_avatar.loadConfiguration(configURL);
-                }                
+//                } else if (m_avatar != null) {
+//                    m_avatar.loadConfiguration(configURL);
+//                }
             } catch (MalformedURLException ex) {
                 Logger.getLogger(SceneEssentials.class.getName()).log(Level.SEVERE, null, ex);
             }
