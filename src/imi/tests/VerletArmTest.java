@@ -23,6 +23,7 @@ import imi.character.avatar.Avatar;
 import imi.character.avatar.MaleAvatarAttributes;
 import imi.character.avatar.FemaleAvatarAttributes;
 import imi.character.objects.ObjectCollection;
+import imi.gui.JFrame_InstrumentationGUI;
 import imi.gui.SceneEssentials;
 import imi.gui.TreeExplorer;
 import imi.scene.camera.state.FirstPersonCamState;
@@ -105,12 +106,16 @@ public class VerletArmTest  extends DemoBase
         // Get the mouse events to be able to control the arm 
         control.getMouseEventsFromCamera();
 
-//        // Construct a tree explorer for analyzing the scene graph
-//        TreeExplorer te = new TreeExplorer();
-//        SceneEssentials se = new SceneEssentials();
-//        se.setSceneData(avatar.getJScene(), avatar.getPScene(), avatar, wm, null);
-//        te.setExplorer(se);
-//        te.setVisible(true);
+        // Construct a tree explorer for analyzing the scene graph
+        TreeExplorer te = new TreeExplorer();
+        SceneEssentials se = new SceneEssentials();
+        se.setSceneData(avatar.getJScene(), avatar.getPScene(), avatar, wm, null);
+        te.setExplorer(se);
+        te.setVisible(true);
+
+//        JFrame_InstrumentationGUI instruments = new JFrame_InstrumentationGUI(wm);
+//        instruments.setVisible(true);
+
         
         // Make some more avatars
         float zStep = 5.0f;

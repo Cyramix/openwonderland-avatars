@@ -18,12 +18,11 @@
 package imi.character;
 
 import com.jme.math.Vector3f;
-import imi.scene.PNode;
 import imi.scene.polygonmodel.PPolygonModelInstance;
 import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
 import imi.scene.polygonmodel.parts.skinned.SkinnedMeshJoint;
-import imi.scene.polygonmodel.parts.skinned.SkinnedMeshJoint;
 import imi.scene.polygonmodel.skinned.PPolygonSkinnedMeshInstance;
+import java.net.URL;
 import java.util.logging.Logger;
 import org.jdesktop.mtgame.WorldManager;
 
@@ -70,7 +69,7 @@ public class CharacterEyes
     private boolean winkRight = true;
     private boolean winkLeft  = true;
     
-    public CharacterEyes(Character character, WorldManager wm)
+    public CharacterEyes(String eyeballTexture, Character character, WorldManager wm)
     {
         if (character == null)
         {
@@ -106,8 +105,8 @@ public class CharacterEyes
         leftEyeBall.setOtherEye(rightEyeBall);
         rightEyeBall.setOtherEye(leftEyeBall);
 
-        leftEyeBall.applyShader(wm);
-        rightEyeBall.applyShader(wm);
+        leftEyeBall.applyEyeBallMaterial(eyeballTexture, wm);
+        rightEyeBall.applyEyeBallMaterial(eyeballTexture, wm);
     }
 
     /**

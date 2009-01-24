@@ -23,6 +23,7 @@ import imi.scene.PScene;
 import imi.serialization.xml.bindings.xmlCharacterAttachmentParameters;
 import imi.serialization.xml.bindings.xmlCharacterAttributes;
 import imi.serialization.xml.bindings.xmlSkinnedMeshParams;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -57,6 +58,8 @@ public class CharacterAttributes
     private int                     gender                  = 1;
     /** Skin tone RGB **/
     private float []                skinTone                = new float [3];
+    /** Eyeball texture **/
+    private String                  eyeballTexture          = null;
 
     private Map<Integer, String[]>  m_geomref = null;
 
@@ -366,6 +369,14 @@ public class CharacterAttributes
         skinTone[0] = r;
         skinTone[1] = g;
         skinTone[2] = b;
+    }
+
+    public String getEyeballTexture() {
+        return eyeballTexture;
+    }
+
+    public void setEyeballTexture(String eyeballTexture) {
+        this.eyeballTexture = eyeballTexture;
     }
 
     /**

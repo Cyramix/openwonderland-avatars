@@ -42,6 +42,35 @@ public class FemaleAvatarAttributes extends CharacterAttributes
         new ColorRGBA(182.0f / 255.0f,  137.0f / 255.0f, 116.0f / 255.0f, 1),
         new ColorRGBA(0.4f, 0.8f, 0.8f, 1), // Just as a joke :)
     };
+    /** Collection of eye colors **/
+    private final String[] eyeColors = new String[]
+    {
+        "assets/models/collada/Heads/EyeTextures/Blue_Eye.png",
+        "assets/models/collada/Heads/EyeTextures/Brown2_Eye.png", // dark brown
+        "assets/models/collada/Heads/EyeTextures/Brown_Eye.png",
+        "assets/models/collada/Heads/EyeTextures/Green_Eye.png",
+        "assets/models/collada/Heads/EyeTextures/eyeColor01.png", // blue and orange in the middle
+        "assets/models/collada/Heads/EyeTextures/eyeColor02.png", // light blue, slight orange specs
+        "assets/models/collada/Heads/EyeTextures/eyeColor03.png", // green and yellow
+        "assets/models/collada/Heads/EyeTextures/eyeColor04.png", // light blue with yellow ring
+        "assets/models/collada/Heads/EyeTextures/eyeColor05.png", // light purple
+        "assets/models/collada/Heads/EyeTextures/eyeColor06.png", // light aqua with slight orange middle
+        "assets/models/collada/Heads/EyeTextures/eyeColor07.png", // dark orange brown
+        "assets/models/collada/Heads/EyeTextures/eyeColor08.png", // green small pupil
+        "assets/models/collada/Heads/EyeTextures/eyeColor09.png", // dotted orange yellowish
+        "assets/models/collada/Heads/EyeTextures/eyeColor10.png", // dotted green orange
+        "assets/models/collada/Heads/EyeTextures/eyeColor11.png", // fire orange big pupil
+        "assets/models/collada/Heads/EyeTextures/eyeColor12.png", // dark aqua brown middle
+        "assets/models/collada/Heads/EyeTextures/eyeColor13.png", // sea blue
+        "assets/models/collada/Heads/EyeTextures/eyeColor14.png", // light blue orange middle
+        "assets/models/collada/Heads/EyeTextures/eyeColor15.png", // dark blue orange middle
+        "assets/models/collada/Heads/EyeTextures/eyeColor16.png", // fire orange yellow
+        "assets/models/collada/Heads/EyeTextures/eyeColor17.png", // yellow brown
+        "assets/models/collada/Heads/EyeTextures/eyeColor18.png", // light blue and brown middle
+        "assets/models/collada/Heads/EyeTextures/eyeColor19.png", // darl blue brown
+        "assets/models/collada/Heads/EyeTextures/eyeColor20.png", // bright blue with middle brown
+        "assets/models/collada/Heads/EyeTextures/eyeColor21.png"  // snake
+    };
     private boolean loadedBind = false;
     
     public FemaleAvatarAttributes(String name, boolean bRandomCustomizations) 
@@ -74,7 +103,10 @@ public class FemaleAvatarAttributes extends CharacterAttributes
 
             preset = (int) (Math.random() * 1000000 % skinTones.length);
             setSkinTone(skinTones[preset].r, skinTones[preset].g, skinTones[preset].b);
-  
+
+            preset = (int) (Math.random() * 1000000 % eyeColors.length);
+            setEyeballTexture(eyeColors[preset]);
+
             preset = (int) (Math.random() * 1000000 % numberOfTorso);
             customizeTorsoPresets(preset, load, add, attachments);
             
@@ -94,9 +126,13 @@ public class FemaleAvatarAttributes extends CharacterAttributes
 
     public FemaleAvatarAttributes(String name, int feet, int legs, int torso, int hair, int head)
     {
-        this(name, feet, legs, torso, hair, head, 0);
+        this(name, feet, legs, torso, hair, head, 0, 0);
     }
     public FemaleAvatarAttributes(String name, int feet, int legs, int torso, int hair, int head, int skin)
+    {
+        this(name, feet, legs, torso, hair, head, skin, 0);
+    }
+    public FemaleAvatarAttributes(String name, int feet, int legs, int torso, int hair, int head, int skin, int eyeColor)
     {
         super(name);
         setGender(2);
@@ -111,6 +147,7 @@ public class FemaleAvatarAttributes extends CharacterAttributes
         customizeTorsoPresets(torso, load, add, attachments);
         customizeHairPresets(hair,   load, add, attachments);
         setSkinTone(skinTones[skin].r, skinTones[skin].g, skinTones[skin].b);
+        setEyeballTexture(eyeColors[eyeColor]);
 
         setLoadInstructions(load);
         setAddInstructions(add.toArray(new SkinnedMeshParams[add.size()]));

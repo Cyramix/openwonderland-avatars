@@ -20,11 +20,11 @@ package imi.character;
 import com.jme.image.Texture.MinificationFilter;
 import com.jme.math.Vector3f;
 import imi.scene.PMatrix;
-import imi.scene.PScene;
 import imi.scene.polygonmodel.PPolygonModelInstance;
 import imi.scene.polygonmodel.parts.PMeshMaterial;
 import imi.scene.polygonmodel.skinned.PPolygonSkinnedMeshInstance;
 import imi.utils.PMathUtils;
+import java.net.URL;
 import org.jdesktop.mtgame.WorldManager;
 
 /**
@@ -146,11 +146,13 @@ public class EyeBall extends PPolygonSkinnedMeshInstance
      * instance.
      * @param wm
      */
-    void applyShader(WorldManager wm) {
+    void applyEyeBallMaterial(String texture, WorldManager wm) {
         // change textures to not use mip maps... leads to freaky eyeballs
         PMeshMaterial myMaterial = getMaterialRef().getMaterial();
+        if (texture != null)
+            myMaterial.setTexture(texture, 0);
         myMaterial.getTexture(0).setMinFilter(MinificationFilter.BilinearNoMipMaps);
-        
+
 //        GLSLShaderProgram shader = new VertDeformerWithSpecAndNormalMap(wm);
 //        shader.addEffect(new MeshColorModulation());
 //
