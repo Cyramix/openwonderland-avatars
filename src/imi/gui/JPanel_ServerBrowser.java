@@ -359,7 +359,7 @@ public class JPanel_ServerBrowser extends javax.swing.JPanel {
                         else if (m_modelInfo[4].equals("2"))
                             subgroup = "Glasses";
 
-                        m_sceneData.addMeshDAEURLToModel(m_modelInfo, "Head", m_prevAttch, subgroup);
+                        m_sceneData.addMeshDAEURLToModel(m_modelInfo, "Head", subgroup);
                         m_prevAttch = m_modelInfo[0];
                     }
                 }

@@ -9,6 +9,9 @@
     <Component class="javax.swing.ButtonGroup" name="buttonGroup_Colors">
     </Component>
     <Component class="javax.swing.JColorChooser" name="jColorChooser1">
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_InitCodePre" type="java.lang.String" value="jColorChooser1.getSelectionModel().addChangeListener(this);"/>
+      </AuxValues>
     </Component>
   </NonVisualComponents>
   <Properties>

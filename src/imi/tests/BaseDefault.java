@@ -42,6 +42,7 @@ import imi.character.CharacterAttributes;
 import imi.character.avatar.FemaleAvatarAttributes;
 import imi.character.avatar.MaleAvatarAttributes;
 import imi.gui.JFrame_AdvOptions;
+import imi.gui.JFrame_ColorSelector;
 import imi.gui.JFrame_InstrumentationGUI;
 import imi.gui.JFrame_SimpAdvOptions;
 import imi.gui.JPanel_Animations;
@@ -131,6 +132,7 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
     protected JPanel_ServerBrowser      m_ServerBrowser     = null;
     protected JPanel_BasicOptions       m_BasicOptions      = null;
     protected JPanel_EZOptions          m_EZOptions         = null;
+    protected JFrame_ColorSelector      m_ColorSelector     = null;
     protected FlexibleCameraProcessor   m_cameraProcessor   = null;
     protected URL                       m_presetCaucasian   = null;
     protected Dimension                 m_DefaultSize       = new Dimension(m_width, 700);
@@ -1028,6 +1030,20 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
         loadingWindow(false);
     }
 
+    public void openColorSelector() {
+        if (m_ColorSelector != null) {
+            if (m_ColorSelector.isVisible()) {
+                m_ColorSelector.dispose();
+                return;
+            }
+        }
+
+        m_ColorSelector = new JFrame_ColorSelector();
+        m_ColorSelector.setScene(m_sceneData);
+        m_ColorSelector.pack();
+        m_ColorSelector.setVisible(true);
+    }
+
     public void resetOpenTools() {
         if (m_AdvOptions != null) {
             if (m_AdvOptions.isVisible()) {
@@ -1130,7 +1146,7 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
         jMenuItem_AvatarEditor = new javax.swing.JMenuItem();
         jMenuItem_NodeExplorer = new javax.swing.JMenuItem();
         jMenuItem_AnimationViewer = new javax.swing.JMenuItem();
-        jMenuItem_ShaderCreator = new javax.swing.JMenuItem();
+        jMenuItem_ColorSelector = new javax.swing.JMenuItem();
         jMenu_Help = new javax.swing.JMenu();
         jMenuItem_About = new javax.swing.JMenuItem();
 
@@ -1403,8 +1419,15 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
         jMenuItem_AnimationViewer.setText("Animation Viewer");
         jMenu_Tools.add(jMenuItem_AnimationViewer);
 
-        jMenuItem_ShaderCreator.setText("Shader Creator");
-        jMenu_Tools.add(jMenuItem_ShaderCreator);
+        jMenuItem_ColorSelector.setText("Color Selector");
+        jMenuItem_ColorSelector.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                runProgressBar(true);
+                openColorSelector();
+                runProgressBar(false);
+            }
+        });
+        jMenu_Tools.add(jMenuItem_ColorSelector);
 
         jMenuBar_MainMenu.add(jMenu_Tools);
 
@@ -1455,12 +1478,12 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
     private javax.swing.JMenuItem jMenuItem_Avatar;
     private javax.swing.JMenuItem jMenuItem_AvatarEditor;
     private javax.swing.JMenuItem jMenuItem_Clothes;
+    private javax.swing.JMenuItem jMenuItem_ColorSelector;
     private javax.swing.JMenuItem jMenuItem_Heads;
     private javax.swing.JMenuItem jMenuItem_LoadTextureFile;
     private javax.swing.JMenuItem jMenuItem_LoadXMLFile;
     private javax.swing.JMenuItem jMenuItem_NodeExplorer;
     private javax.swing.JMenuItem jMenuItem_SaveXMLFile;
-    private javax.swing.JMenuItem jMenuItem_ShaderCreator;
     private javax.swing.JMenu jMenu_File;
     private javax.swing.JMenu jMenu_Help;
     private javax.swing.JMenu jMenu_LoadModels;

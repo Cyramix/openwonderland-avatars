@@ -140,10 +140,13 @@
                 <AuxValue name="JavaCodeGenerator_InitCodePre" type="java.lang.String" value="jMenuItem_AnimationViewer.addActionListener(new java.awt.event.ActionListener() {&#xa;    public void actionPerformed(java.awt.event.ActionEvent evt) {&#xa;        runProgressBar(true);&#xa;        openAnimationViewer();&#xa;        runProgressBar(false);&#xa;    }&#xa;});"/>
               </AuxValues>
             </MenuItem>
-            <MenuItem class="javax.swing.JMenuItem" name="jMenuItem_ShaderCreator">
+            <MenuItem class="javax.swing.JMenuItem" name="jMenuItem_ColorSelector">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Shader Creator"/>
+                <Property name="text" type="java.lang.String" value="Color Selector"/>
               </Properties>
+              <AuxValues>
+                <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="jMenuItem_ColorSelector.addActionListener(new java.awt.event.ActionListener() {&#xa;    public void actionPerformed(java.awt.event.ActionEvent evt) {&#xa;        runProgressBar(true);&#xa;        openColorSelector();&#xa;        runProgressBar(false);&#xa;    }&#xa;});"/>
+              </AuxValues>
             </MenuItem>
           </SubComponents>
         </Menu>

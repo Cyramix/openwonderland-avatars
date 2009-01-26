@@ -804,13 +804,12 @@ public class SceneEssentials {
 
                 URL modelURL = new URL(szURL);
                 m_avatar.installHead(modelURL, "Neck");
+                m_avatar.getAttributes().setHeadAttachment(path);
                 return true;
 
             } catch (MalformedURLException ex) {
                 Logger.getLogger(SceneEssentials.class.getName()).log(Level.SEVERE, null, ex);
             }
-
-            m_avatar.getAttributes().setHeadAttachment(path);
         }
 
         return false;
@@ -876,7 +875,6 @@ public class SceneEssentials {
                     }
                 }
 
-//                removeDuplicateMeshesBySubgroup(subGroup);
                 m_avatar.setDefaultShaders();
                 
                 // TEST CODE TO UPDATE ATTRIBUTES FOR SKINNED MESHES
@@ -941,6 +939,8 @@ public class SceneEssentials {
             m_fileModel = m_jFileChooser_LoadColladaModel.getSelectedFile();
 
             String  subGroup    = null;
+            String  parentJoint = null;
+            String  meshName    = null;
             int     selection   = -1;
 
             Object[] subgroups = { "Hair", "FacialHair", "Hats", "Glasses" };
@@ -948,18 +948,14 @@ public class SceneEssentials {
                                                             "SPECIFY SUBGROUP TO ADD MESHES IN", JOptionPane.PLAIN_MESSAGE,
                                                             null, subgroups, "Hair");
 
-            if (subGroup == null || subGroup.length() <= 0)
-                return false;
-            else {
-                if (subGroup.equals("Hair"))
-                    selection = 0;
-                else if (subGroup.equals("FacialHair"))
-                    selection = 1;
-                else if (subGroup.equals("Hats"))
-                    selection = 2;
-                else if (subGroup.equals("Glasses"))
-                    selection = 3;
-            }
+            Object[] joints = { "Head", "Neck" };
+            parentJoint = (String)JOptionPane.showInputDialog( new Frame(), "Please select the joint to which the meshes will be added",
+                                                            "SPECIFY JOINT TO ADD MESH ON", JOptionPane.PLAIN_MESSAGE,
+                                                            null, joints, "Head");
+
+            meshName = (String)JOptionPane.showInputDialog( new Frame(), "Please specify the name of the mesh to be added",
+                                                            "SPECIFY THE NAME OF THE MESH", JOptionPane.PLAIN_MESSAGE,
+                                                            null, null, "Hair");
 
             m_currentPScene.setUseRepository(useRepository);
 
@@ -971,81 +967,43 @@ public class SceneEssentials {
             Instruction pRootInstruction = new Instruction();
             pRootInstruction.addChildInstruction(InstructionType.setSkeleton, m_avatar.getSkeleton());
 
-            if (m_prevAttches[selection] != null) {
-                PNode mesh = m_avatar.getSkeleton().findChild(m_prevAttches[selection]);
-                if (mesh != null)
-                    m_avatar.getSkeleton().findAndRemoveChild(mesh.getParent());
-            }
+            PNode mesh = m_avatar.getSkeleton().findChild(parentJoint);
+            ArrayList<PNode> meshesToDelete = new ArrayList<PNode>();
+            for (int i = 0; i < mesh.getChildrenCount(); i++)
+                meshesToDelete.add(mesh.getChild(i));
+
+            if (mesh != null)
+                m_avatar.getSkeleton().findAndRemoveChild(subGroup);
 
             pRootInstruction.addChildInstruction(InstructionType.loadGeometry, szURL);
 
-            PMatrix tempSolution;
-            if (szURL.indexOf("Female") != -1) {
-                tempSolution = new PMatrix();
-                tempSolution.setRotation(new Vector3f(0.0f,(float) Math.toRadians(180), 0.0f));
-            } else
-                tempSolution = new PMatrix(new Vector3f(0.0f,(float) Math.toRadians(180), 0.0f), new Vector3f(1.0f, 1.0f, 1.0f), Vector3f.ZERO);
-
-            pRootInstruction.addAttachmentInstruction( szURL, m_fileModel.getName(), tempSolution, "Hair" ); ///////// TODOTODO "Hair" means the hair color will be assigned... don't let it be assigned on sunglasses dude... :D
-            //pRootInstruction.addAttachmentInstruction( szURL, "Head", tempSolution );
+            PMatrix tempSolution = new PMatrix();
+            pRootInstruction.addAttachmentInstruction( meshName, parentJoint, tempSolution, subGroup );
             pProcessor.execute(pRootInstruction);
 
-            m_prevAttches[selection] = m_fileModel.getName();
-
             // TEST CODE TO UPDATE ATTRIBUTES FOR MESHES
-            if (m_prevAttches[selection] != null) { // This isn't right... it assumes no attatchments were loaded.
-                List<String> loadinstructs = m_avatar.getAttributes().getLoadInstructions();
-                AttachmentParams[] attatchments = m_avatar.getAttributes().getAttachmentsInstructions();
-                ArrayList<AttachmentParams> newAttatchments = new ArrayList<AttachmentParams>();
+            List<String> loadinstructs = m_avatar.getAttributes().getLoadInstructions();
+            AttachmentParams[] attatchments = m_avatar.getAttributes().getAttachmentsInstructions();
+            ArrayList<AttachmentParams> newAttatchments = new ArrayList<AttachmentParams>();
 
-            
-                for (int i = 0; i < attatchments.length; i++) {
-                    if (attatchments[i].getMeshName().equals(m_prevAttches[selection]))
+
+            for (int i = 0; i < attatchments.length; i++) {
+                if (meshesToDelete.size() <= 0) {
+                    newAttatchments.add(attatchments[i]);
+                    continue;
+                }
+
+                for (int j = 0; j < meshesToDelete.size(); j++) {
+                    if (attatchments[i].getMeshName().equals(meshesToDelete.get(j).getName()))
                         continue;
                     newAttatchments.add(attatchments[i]);
                 }
-
-
-                newAttatchments.add(new AttachmentParams(szURL, "Neck", tempSolution, "Neck Attachments"));     // Coded to stuff that goes on head
-
-                m_avatar.getAttributes().setAddInstructions(newAttatchments.toArray(new SkinnedMeshParams[newAttatchments.size()]));
-                loadinstructs.add(szURL);   // TODO: find the loadinstruction to remove
             }
 
-            return true;
-        }
-        return false;
-    }
+            newAttatchments.add(new AttachmentParams(meshName, parentJoint, tempSolution, subGroup));
 
-    public boolean addMeshDAEFile(boolean useRepository, Component arg0, String jointName) {
-        if (m_avatar == null) {
-            System.out.println("You have not loaded an avatar yet... Please load one first");
-            return false;
-        }
-
-        int returnValue = m_jFileChooser_LoadColladaModel.showOpenDialog(arg0);
-        if (returnValue == JFileChooser.APPROVE_OPTION) {
-            m_fileModel = m_jFileChooser_LoadColladaModel.getSelectedFile();
-
-            String szmeshName = (String)JOptionPane.showInputDialog(new Frame(), "Please input the name of the Non-skinned mesh geometry to add",
-                                                  "REQUIRED GEMOETTRY NAME TO ADD", JOptionPane.YES_NO_CANCEL_OPTION,
-                                                  null, null, "GEOMETRY");
-
-            m_currentPScene.setUseRepository(useRepository);
-
-            String protocal = "file:///" + System.getProperty("user.dir") + "/";
-            String path     = getRelativePath(m_fileModel);
-            String szURL    = protocal + path;
-
-            InstructionProcessor pProcessor = new InstructionProcessor(m_worldManager);
-            Instruction pRootInstruction = new Instruction();
-            pRootInstruction.addChildInstruction(InstructionType.setSkeleton, m_avatar.getSkeleton());
-
-            pRootInstruction.addChildInstruction(InstructionType.loadGeometry, szURL);
-            PMatrix tempSolution = new PMatrix();
-
-            pRootInstruction.addAttachmentInstruction( szmeshName, jointName, tempSolution, "Hair" );///// TODOTODO "Hair" means the hair color will be assigned... don't let it be assigned on sunglasses dude... :D
-            pProcessor.execute(pRootInstruction);
+            m_avatar.getAttributes().setAddInstructions(newAttatchments.toArray(new SkinnedMeshParams[newAttatchments.size()]));
+            loadinstructs.add(szURL);   // TODO: find the loadinstruction to remove
 
             return true;
         }
@@ -1359,7 +1317,6 @@ public class SceneEssentials {
             }
         }
 
-//        removeDuplicateMeshesBySubgroup(subgroup);  // This should not be used... it's added only once but there are duplicate meshes
         m_avatar.setDefaultShaders();
 
         // TEST CODE TO UPDATE ATTRIBUTES FOR SKINNED MESHES
@@ -1391,67 +1348,54 @@ public class SceneEssentials {
      * @param joint2addon - the joint to the new mesh and joint needs to attach on
      * @param prevAttchName - the name of the currently installed mesh to get rid of
      */
-    public void addMeshDAEURLToModel(String[] data, String joint2addon, String prevAttchName, String subGroup) {
+    public void addMeshDAEURLToModel(String[] data, String joint2addon, String subGroup) {
         if (m_avatar == null) {
             System.out.println("No avatar has been loaded... please load an avatar first");
             return;
         }
 
-        int selection = -1;
-        if (subGroup.equals("Hair"))
-            selection = 0;
-        else if (subGroup.equals("FacialHair"))
-            selection = 1;
-        else if (subGroup.equals("Hats"))
-            selection = 2;
-        else if (subGroup.equals("Glasses"))
-            selection = 3;
-
         InstructionProcessor pProcessor = new InstructionProcessor(m_worldManager);
         Instruction pRootInstruction = new Instruction();
         pRootInstruction.addChildInstruction(InstructionType.setSkeleton, m_avatar.getSkeleton());
 
-        if (prevAttchName != null) {
-            PNode mesh = m_avatar.getSkeleton().findChild(prevAttchName);
-            if (mesh != null)
-                m_avatar.getSkeleton().findAndRemoveChild(mesh.getParent());
-        }
+        PNode joint = m_avatar.getSkeleton().findChild(subGroup);
+        ArrayList<PNode> meshesToDelete = new ArrayList<PNode>();
+        for (int i = 0; i < joint.getChildrenCount(); i++)
+            meshesToDelete.add(joint.getChild(i));
 
-        String szName = joint2addon;
+        if (joint != null)
+            m_avatar.getSkeleton().findAndRemoveChild(joint);
 
         pRootInstruction.addChildInstruction(InstructionType.loadGeometry, data[3]);
         
-        PMatrix tempSolution;
-        if (data[3].indexOf("Female") != -1) {
-            tempSolution = new PMatrix();
-            tempSolution.setRotation(new Vector3f(0.0f,(float) Math.toRadians(180), 0.0f));
-        } else
-            tempSolution = new PMatrix(new Vector3f(0.0f,(float) Math.toRadians(180), 0.0f), new Vector3f(1.0f, 1.0f, 1.0f), Vector3f.ZERO);
+        PMatrix tempSolution = new PMatrix();
 
-        pRootInstruction.addAttachmentInstruction( data[0], szName, tempSolution, "Hair" );///// TODOTODO "Hair" means the hair color will be assigned... don't let it be assigned on sunglasses dude... :D
+        pRootInstruction.addAttachmentInstruction( data[0], joint2addon, tempSolution, subGroup );
         pProcessor.execute(pRootInstruction);
 
         // TEST CODE TO UPDATE ATTRIBUTES FOR MESHES
-        if (m_prevAttches[selection] != null) { // This isn't right... it assumes no attatchments were loaded.
-            List<String> loadinstructs = m_avatar.getAttributes().getLoadInstructions();
-            AttachmentParams[] attatchments = m_avatar.getAttributes().getAttachmentsInstructions();
-            ArrayList<AttachmentParams> newAttatchments = new ArrayList<AttachmentParams>();
+        List<String> loadinstructs = m_avatar.getAttributes().getLoadInstructions();
+        AttachmentParams[] attatchments = m_avatar.getAttributes().getAttachmentsInstructions();
+        ArrayList<AttachmentParams> newAttatchments = new ArrayList<AttachmentParams>();
 
-        
-            for (int i = 0; i < attatchments.length; i++) {
-                if (attatchments[i].getMeshName().equals(m_prevAttches[selection]))
+
+        for (int i = 0; i < attatchments.length; i++) {
+            if (meshesToDelete.size() <= 0) {
+                newAttatchments.add(attatchments[i]);
+                continue;
+            }
+
+            for (int j = 0; j < meshesToDelete.size(); j++) {
+                if (attatchments[i].getMeshName().equals(meshesToDelete.get(j).getName()))
                     continue;
                 newAttatchments.add(attatchments[i]);
             }
-        
-
-            newAttatchments.add(new AttachmentParams(data[0], "Neck", tempSolution, "Neck Attachments"));     // Coded to stuff that goes on head
-
-            m_avatar.getAttributes().setAddInstructions(newAttatchments.toArray(new SkinnedMeshParams[newAttatchments.size()]));
-            loadinstructs.add(data[3]);   // TODO: find the loadinstruction to remove
         }
 
-        m_prevAttches[selection] = data[0];
+        newAttatchments.add(new AttachmentParams(data[0], joint2addon, tempSolution, subGroup));
+
+        m_avatar.getAttributes().setAddInstructions(newAttatchments.toArray(new SkinnedMeshParams[newAttatchments.size()]));
+        loadinstructs.add(data[3]);   // TODO: find the loadinstruction to remove
     }
 
     /**
@@ -1463,46 +1407,54 @@ public class SceneEssentials {
      * @param joint2addon - string name of joint to add mesh to
      * @param prevAttchName - string name of mesh to remove before adding new mesh
      */
-    public void addMeshDAEURLToModel(String meshName, String meshLocation, String joint2addon, String prevAttchName, String subGroup) {
+    public void addMeshDAEURLToModel(String meshName, String meshLocation, String joint2addon, String subGroup) {
         if (m_avatar == null) {
             System.out.println("No avatar has been loaded... please load an avatar first");
             return;
         }
 
-        int selection = -1;
-        if (subGroup.equals("Hair"))
-            selection = 0;
-        else if (subGroup.equals("FacialHair"))
-            selection = 1;
-        else if (subGroup.equals("Hats"))
-            selection = 2;
-        else if (subGroup.equals("Glasses"))
-            selection = 3;
-
         InstructionProcessor pProcessor = new InstructionProcessor(m_worldManager);
         Instruction pRootInstruction = new Instruction();
         pRootInstruction.addChildInstruction(InstructionType.setSkeleton, m_avatar.getSkeleton());
 
-        if (prevAttchName != null) {
-            PNode mesh = m_avatar.getSkeleton().findChild(prevAttchName);
-            m_avatar.getSkeleton().findAndRemoveChild(mesh.getParent());
-        }
+        PNode mesh = m_avatar.getSkeleton().findChild(subGroup);
+        ArrayList<PNode> meshesToDelete = new ArrayList<PNode>();
+        for (int i = 0; i < mesh.getChildrenCount(); i++)
+            meshesToDelete.add(mesh.getChild(i));
 
-        String szName = joint2addon;
+        if (mesh != null)
+            m_avatar.getSkeleton().findAndRemoveChild(subGroup);
 
         pRootInstruction.addChildInstruction(InstructionType.loadGeometry, meshLocation);
 
-        PMatrix tempSolution;
-        if (meshLocation.indexOf("Female") != -1) {
-            tempSolution = new PMatrix();
-            tempSolution.setRotation(new Vector3f(0.0f,(float) Math.toRadians(180), 0.0f));
-        } else
-            tempSolution = new PMatrix(new Vector3f(0.0f,(float) Math.toRadians(180), 0.0f), new Vector3f(1.0f, 1.0f, 1.0f), Vector3f.ZERO);
+        PMatrix tempSolution = new PMatrix();
 
-        pRootInstruction.addAttachmentInstruction( meshName, szName, tempSolution, "Hair" );///// TODOTODO "Hair" means the hair color will be assigned... don't let it be assigned on sunglasses dude... :D
+        pRootInstruction.addAttachmentInstruction( meshName, joint2addon, tempSolution, subGroup );
         pProcessor.execute(pRootInstruction);
 
-        m_prevAttches[selection] = meshName;
+        // TEST CODE TO UPDATE ATTRIBUTES FOR MESHES
+        List<String> loadinstructs = m_avatar.getAttributes().getLoadInstructions();
+        AttachmentParams[] attatchments = m_avatar.getAttributes().getAttachmentsInstructions();
+        ArrayList<AttachmentParams> newAttatchments = new ArrayList<AttachmentParams>();
+
+
+        for (int i = 0; i < attatchments.length; i++) {
+            if (meshesToDelete.size() <= 0) {
+                newAttatchments.add(attatchments[i]);
+                continue;
+            }
+
+            for (int j = 0; j < meshesToDelete.size(); j++) {
+                if (attatchments[i].getMeshName().equals(meshesToDelete.get(j).getName()))
+                    continue;
+                newAttatchments.add(attatchments[i]);
+            }
+        }
+
+        newAttatchments.add(new AttachmentParams(meshName, joint2addon, tempSolution, subGroup));
+
+        m_avatar.getAttributes().setAddInstructions(newAttatchments.toArray(new SkinnedMeshParams[newAttatchments.size()]));
+        loadinstructs.add(meshLocation);   // TODO: find the loadinstruction to remove
     }
 
     /**

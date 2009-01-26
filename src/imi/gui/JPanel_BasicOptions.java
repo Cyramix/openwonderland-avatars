@@ -679,7 +679,7 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
         if (isViewMode)
             m_sceneData.loadMeshDAEURL(true, this, data.get(0));
         else {
-            m_sceneData.addMeshDAEURLToModel(data.get(0), "Head", m_PrevHeadAttachments[0], "Hair");
+            m_sceneData.addMeshDAEURLToModel(data.get(0), "Head", "Hair");
         }
 
         m_PrevHeadAttachments[0] = data.get(0)[0];      // Used to keep track of what is on the head to remove
@@ -731,7 +731,7 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
         if (isViewmode)
             m_sceneData.loadMeshDAEURL(true, this, data.get(0));
         else {
-            m_sceneData.addMeshDAEURLToModel(data.get(0), "Head", m_PrevHeadAttachments[1], "FacialHair");
+            m_sceneData.addMeshDAEURLToModel(data.get(0), "Head", "FacialHair");
         }
 
         m_PrevHeadAttachments[1] = data.get(0)[0];
@@ -783,7 +783,7 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
         if (isViewMode)
             m_sceneData.loadMeshDAEURL(true, this, data.get(0));
         else {
-            m_sceneData.addMeshDAEURLToModel(data.get(0), "Head", m_PrevHeadAttachments[2], "Hats");
+            m_sceneData.addMeshDAEURLToModel(data.get(0), "Head", "Hats");
         }
 
         m_PrevHeadAttachments[2] = data.get(0)[0];
@@ -835,7 +835,7 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
         if (isViewMode)
             m_sceneData.loadMeshDAEURL(true, this, data.get(0));
         else {
-            m_sceneData.addMeshDAEURLToModel(data.get(0), "Head", m_PrevHeadAttachments[3], "Glasses");
+            m_sceneData.addMeshDAEURLToModel(data.get(0), "Head", "Glasses");
         }
 
         m_PrevHeadAttachments[3] = data.get(0)[0];

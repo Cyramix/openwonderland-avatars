@@ -63,6 +63,8 @@ import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.ListSelectionModel;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
@@ -81,7 +83,7 @@ import org.xml.sax.SAXParseException;
  *
  * @author Paul Viet Ngueyn Truong (ptruong)
  */
-public class JPanel_EZOptions extends javax.swing.JPanel {
+public class JPanel_EZOptions extends javax.swing.JPanel implements ChangeListener {
 ////////////////////////////////////////////////////////////////////////////////
 // Class Data Members
 ////////////////////////////////////////////////////////////////////////////////
@@ -122,6 +124,7 @@ public class JPanel_EZOptions extends javax.swing.JPanel {
                 }
             }
         });
+        
     }
 
     /**
@@ -761,8 +764,9 @@ public class JPanel_EZOptions extends javax.swing.JPanel {
             System.out.println("SEVER EXCEPTION: " + ex.getMessage());
         }
 
-        meshInst.setMaterial(material);
-        meshInst.applyMaterial();
+        meshInst.applyShader();
+//        meshInst.setMaterial(material);
+//        meshInst.applyMaterial();
     }
 
     /**
@@ -900,7 +904,7 @@ public class JPanel_EZOptions extends javax.swing.JPanel {
                     else if (i == 8)
                         subgroup = "Glasses";
 
-                    m_sceneData.addMeshDAEURLToModel(meshName, meshloc, "Head", null, subgroup);
+                    m_sceneData.addMeshDAEURLToModel(meshName, meshloc, "Head", subgroup);
                 }
             }
         }
@@ -992,6 +996,8 @@ public class JPanel_EZOptions extends javax.swing.JPanel {
         jPanel_PantsColor = new javax.swing.JPanel();
         jPanel_ShoesColor = new javax.swing.JPanel();
         jButton_Load = new javax.swing.JButton();
+
+        jColorChooser1.getSelectionModel().addChangeListener(this);
 
         setMinimumSize(new java.awt.Dimension(320, 480));
         setPreferredSize(new java.awt.Dimension(320, 480));
@@ -1547,5 +1553,11 @@ public class JPanel_EZOptions extends javax.swing.JPanel {
 //            }
 //        }
         return data;
-    }    
+    }
+
+    public void stateChanged(ChangeEvent e) {
+        Color newColor = jColorChooser1.getColor();
+        selectColor(m_selectedRow);
+        setShaderColors();
+    }
 }
