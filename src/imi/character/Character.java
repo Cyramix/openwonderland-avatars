@@ -78,6 +78,7 @@ import imi.scene.shader.AbstractShaderProgram;
 import imi.scene.shader.NoSuchPropertyException;
 import imi.scene.shader.ShaderProperty;
 import imi.scene.shader.dynamic.GLSLDataType;
+import imi.scene.shader.dynamic.GLSLShaderEffect;
 import imi.scene.shader.dynamic.GLSLShaderProgram;
 import imi.scene.shader.effects.MeshColorModulation;
 import imi.scene.shader.programs.ClothingShaderSpecColor;
@@ -510,7 +511,9 @@ public abstract class Character extends Entity implements SpatialObject, Animati
                 if (meshInst.getParent().getName().equals("Hair"))
                 {   
                     GLSLShaderProgram hairShader = (GLSLShaderProgram)repo.newShader(NormalMapShader.class);
-                    hairShader.addEffect(new MeshColorModulation());
+                    GLSLShaderEffect effect = new MeshColorModulation();
+                    if (!hairShader.containsEffect(effect))
+                        hairShader.addEffect(effect);
                     try {
                         hairShader.compile();
                         hairShader.setProperty(new ShaderProperty("materialColor", GLSLDataType.GLSL_VEC3, m_attributes.getHairColor()));

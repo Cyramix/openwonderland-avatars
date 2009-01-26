@@ -43,7 +43,9 @@ public class MusicalChairs extends DemoBase
     
     public static void main(String[] args) {
         Logger.getLogger("com.jme.renderer").setLevel(Level.OFF);
-        MusicalChairs worldTest = new MusicalChairs(args);
+        // Give ourselves a nice environment
+        String[] ourArgs = new String[] { "-env:assets/models/collada/Environments/Garden/Garden.dae" };
+        MusicalChairs worldTest = new MusicalChairs(ourArgs);
     }
     
     @Override
