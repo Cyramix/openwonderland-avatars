@@ -76,7 +76,7 @@ public class CharacterAnimationProcessor extends ProcessorComponent
     {
         if (!bEnable)
             return;
-        if (instruments.isSubsystemEnabled(Instrumentation.InstrumentedSubsystem.AnimationSystem) == false)
+        if (instruments!=null && instruments.isSubsystemEnabled(Instrumentation.InstrumentedSubsystem.AnimationSystem) == false)
         {
             m_modelInst.setDirty(true, true);
             return;
