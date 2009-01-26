@@ -93,7 +93,7 @@ public class FemaleAvatarAttributes extends CharacterAttributes
             int numberOfFeet  = 3;
             int numberOfLegs  = 3;
             int numberOfTorso = 3;
-            int numberOfHair  = 53;
+            int numberOfHair  = 49;
             int numberOfHeads = 2;
             
             ArrayList<String> load      = new ArrayList<String>();
@@ -290,9 +290,9 @@ public class FemaleAvatarAttributes extends CharacterAttributes
                 add.add(new SkinnedMeshParams("Jacket1Shape", "UpperBody"));
             }
             break;
-            case 3:      //    TODO doesnt show?
+            case 3:      
             {
-                // Blouse
+                // Blouse         // has error
                 load.add(new String("assets/models/collada/Clothing/FeamleClothing/FemaleBlouse.dae"));
                 add.add(new SkinnedMeshParams("TShirtShape", "UpperBody"));
             }
@@ -503,19 +503,19 @@ public class FemaleAvatarAttributes extends CharacterAttributes
             case 27:
             {
                 load.add(new String("assets/models/collada/Hair/FemaleHair/FemaleHairPlaceable.dae"));
-                attachments.add(new AttachmentParams("Med_Pt_Center", "Head", orientation, "Hair"));
+                attachments.add(new AttachmentParams("Med_pt_Center", "Head", orientation, "Hair"));
             }
             break;
             case 28:
             {
                 load.add(new String("assets/models/collada/Hair/FemaleHair/FemaleHairPlaceable.dae"));
-                attachments.add(new AttachmentParams("Med_Pt_R", "Head", orientation, "Hair"));
+                attachments.add(new AttachmentParams("Med_pt_R", "Head", orientation, "Hair"));
             }
             break;
             case 29:
             {
                 load.add(new String("assets/models/collada/Hair/FemaleHair/FemaleHairPlaceable.dae"));
-                attachments.add(new AttachmentParams("Med_Pt_Left", "Head", orientation, "Hair"));
+                attachments.add(new AttachmentParams("Med_pt_Left", "Head", orientation, "Hair"));
             }
             break;
             case 30:
@@ -551,110 +551,113 @@ public class FemaleAvatarAttributes extends CharacterAttributes
             case 35:
             {
                 load.add(new String("assets/models/collada/Hair/FemaleHair/FemaleHairPlaceable.dae"));
-                attachments.add(new AttachmentParams("Med_African_pt_L", "Head", orientation, "Hair"));
+                attachments.add(new AttachmentParams("MedDredzz", "Head", orientation, "Hair"));
             }
             break;
             case 36:
             {
                 load.add(new String("assets/models/collada/Hair/FemaleHair/FemaleHairPlaceable.dae"));
-                attachments.add(new AttachmentParams("Med_African_pt_R", "Head", orientation, "Hair"));
+                attachments.add(new AttachmentParams("Short_African_LBang", "Head", orientation, "Hair"));
             }
             break;
             case 37:
             {
                 load.add(new String("assets/models/collada/Hair/FemaleHair/FemaleHairPlaceable.dae"));
-                attachments.add(new AttachmentParams("Med_AfriicanPT_Center", "Head", orientation, "Hair"));
+                attachments.add(new AttachmentParams("Short_African_Messy", "Head", orientation, "Hair"));
             }
             break;
             case 38:
             {
                 load.add(new String("assets/models/collada/Hair/FemaleHair/FemaleHairPlaceable.dae"));
-                attachments.add(new AttachmentParams("MedDredzz", "Head", orientation, "Hair"));
+                attachments.add(new AttachmentParams("Short_African_pt_R", "Head", orientation, "Hair"));
             }
             break;
             case 39:
             {
                 load.add(new String("assets/models/collada/Hair/FemaleHair/FemaleHairPlaceable.dae"));
-                attachments.add(new AttachmentParams("Short_African_LBang", "Head", orientation, "Hair"));
+                attachments.add(new AttachmentParams("Short_African_pt_L", "Head", orientation, "Hair"));
             }
             break;
             case 40:
             {
                 load.add(new String("assets/models/collada/Hair/FemaleHair/FemaleHairPlaceable.dae"));
-                attachments.add(new AttachmentParams("Short_African_Messy", "Head", orientation, "Hair"));
+                attachments.add(new AttachmentParams("ShortAfrican_BoB", "Head", orientation, "Hair"));
             }
             break;
             case 41:
             {
                 load.add(new String("assets/models/collada/Hair/FemaleHair/FemaleHairPlaceable.dae"));
-                attachments.add(new AttachmentParams("Short_African_pt_R", "Head", orientation, "Hair"));
+                attachments.add(new AttachmentParams("ShortDredzz", "Head", orientation, "Hair"));
             }
             break;
             case 42:
             {
                 load.add(new String("assets/models/collada/Hair/FemaleHair/FemaleHairPlaceable.dae"));
-                attachments.add(new AttachmentParams("Short_African_pt_L", "Head", orientation, "Hair"));
+                attachments.add(new AttachmentParams("Short_Messy", "Head", orientation, "Hair"));
             }
             break;
             case 43:
             {
                 load.add(new String("assets/models/collada/Hair/FemaleHair/FemaleHairPlaceable.dae"));
-                attachments.add(new AttachmentParams("Short_AfricanPT_Center", "Head", orientation, "Hair"));
+                attachments.add(new AttachmentParams("Short_Long_Bang", "Head", orientation, "Hair"));
             }
             break;
             case 44:
             {
                 load.add(new String("assets/models/collada/Hair/FemaleHair/FemaleHairPlaceable.dae"));
-                attachments.add(new AttachmentParams("ShortAfrican_BoB", "Head", orientation, "Hair"));
+                attachments.add(new AttachmentParams("Short_Spikey", "Head", orientation, "Hair"));
             }
             break;
             case 45:
             {
                 load.add(new String("assets/models/collada/Hair/FemaleHair/FemaleHairPlaceable.dae"));
-                attachments.add(new AttachmentParams("ShortDredzz", "Head", orientation, "Hair"));
+                attachments.add(new AttachmentParams("Short_BOB", "Head", orientation, "Hair"));
             }
             break;
             case 46:
             {
                 load.add(new String("assets/models/collada/Hair/FemaleHair/FemaleHairPlaceable.dae"));
-                attachments.add(new AttachmentParams("Short_Messy", "Head", orientation, "Hair"));
+                attachments.add(new AttachmentParams("Short_PT_R", "Head", orientation, "Hair"));
             }
             break;
             case 47:
             {
                 load.add(new String("assets/models/collada/Hair/FemaleHair/FemaleHairPlaceable.dae"));
-                attachments.add(new AttachmentParams("Short_Long_Bang", "Head", orientation, "Hair"));
+                attachments.add(new AttachmentParams("Short_PT_L", "Head", orientation, "Hair"));
             }
             break;
             case 48:
             {
                 load.add(new String("assets/models/collada/Hair/FemaleHair/FemaleHairPlaceable.dae"));
-                attachments.add(new AttachmentParams("Short_Spikey", "Head", orientation, "Hair"));
+                attachments.add(new AttachmentParams("Long_W_bangs", "Head", orientation, "Hair"));
             }
             break;
             case 49:
             {
+                // Missing?
                 load.add(new String("assets/models/collada/Hair/FemaleHair/FemaleHairPlaceable.dae"));
-                attachments.add(new AttachmentParams("Short_BOB", "Head", orientation, "Hair"));
+                attachments.add(new AttachmentParams("short_AfricanPT_CenterShape", "Head", orientation, "Hair"));
             }
             break;
             case 50:
             {
+                // Missing?
                 load.add(new String("assets/models/collada/Hair/FemaleHair/FemaleHairPlaceable.dae"));
-                attachments.add(new AttachmentParams("Short_PT_R", "Head", orientation, "Hair"));
+                attachments.add(new AttachmentParams("Med_African_pt_L", "Head", orientation, "Hair"));
             }
             break;
             case 51:
             {
+                // Missing?
                 load.add(new String("assets/models/collada/Hair/FemaleHair/FemaleHairPlaceable.dae"));
-                attachments.add(new AttachmentParams("Short_PT_L", "Head", orientation, "Hair"));
+                attachments.add(new AttachmentParams("Med_African_Pt_RShape", "Head", orientation, "Hair"));
             }
             break;
             case 52:
             {
                 // Missing?
                 load.add(new String("assets/models/collada/Hair/FemaleHair/FemaleHairPlaceable.dae"));
-                attachments.add(new AttachmentParams("Long_W_bangs", "Head", orientation, "Hair"));
+                attachments.add(new AttachmentParams("Med_AfricanPT_CenterShape", "Head", orientation, "Hair"));
             }
             break;
         }

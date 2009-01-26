@@ -74,8 +74,6 @@ public class VerletArmTest  extends DemoBase
         
         objects.getGUI();
         
-        if (true)
-            return;
         boolean male = false;
         Avatar avatar;
         int feet, legs, torso, hair;
@@ -95,8 +93,10 @@ public class VerletArmTest  extends DemoBase
             feet  = (int) (Math.random() * 10000 % 3);
             legs  = (int) (Math.random() * 10000 % 3);
             torso = (int) (Math.random() * 10000 % 3);  // % 5.... 3 and 4 problems
-            hair  = (int) (Math.random() * 10000 % 53); // tested til 15
+            hair  = (int) (Math.random() * 10000 % 49); 
             avatar = new Avatar(new FemaleAvatarAttributes("Avatar", feet, legs, torso, hair, -1), wm);
+            
+           
         }
         
         //new Avatar(new MaleAvatarAttributes("Avatar", feet, legs, torso, hair, 0), wm);//new Avatar(new MaleAvatarAttributes("Avatar", feet, legs, torso, hair, 0), wm);
@@ -125,15 +125,17 @@ public class VerletArmTest  extends DemoBase
         float zStep = 5.0f;
         for (int i = 1; i < numberOfAvatars; i++)
         {
-            cloneAvatar(control, objects, wm, 0.0f, 0.0f, zStep);
+            hair++;
+            cloneAvatar(control, objects, wm, 0.0f, 0.0f, zStep, hair);
             zStep += 5.0f;
         }
         
     }
 
-    private void cloneAvatar(AvatarControlScheme control, ObjectCollection objects, WorldManager wm, float xOffset, float yOffset, float zOffset) 
+    private void cloneAvatar(AvatarControlScheme control, ObjectCollection objects, WorldManager wm, float xOffset, float yOffset, float zOffset, int hair) 
     {   
-        Avatar avatar = new Avatar(new MaleAvatarAttributes("Avatar Clone " + xOffset+yOffset+zOffset, true), wm);
+        //Avatar avatar = new Avatar(new MaleAvatarAttributes("Avatar Clone " + xOffset+yOffset+zOffset, true), wm);
+        Avatar avatar = new Avatar(new FemaleAvatarAttributes("Avatar Clone " + xOffset+yOffset+zOffset, -1, -1, -1, hair, -1), wm);
         avatar.getModelInst().getTransform().getLocalMatrix(true).setTranslation(new Vector3f(xOffset, yOffset, zOffset));
         control.getAvatarTeam().add(avatar);
         avatar.setObjectCollection(objects);
