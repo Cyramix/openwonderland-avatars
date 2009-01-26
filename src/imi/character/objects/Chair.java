@@ -280,5 +280,13 @@ public class Chair implements SpatialObject
     public void setDesiredDistanceFromOtherChairs(float desiredDistanceFromOtherChairs) {
         this.desiredDistanceFromOtherChairs = desiredDistanceFromOtherChairs;
     }
+
+    public void destroy() 
+    {
+        setOwner(null);
+        setOccupied(true);
+        objectCollection.getObjects().remove(this);
+        objectCollection.getPScene().removeModelInstance(this.getModelInst());
+    }
     
 }

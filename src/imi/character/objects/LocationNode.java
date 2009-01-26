@@ -176,5 +176,9 @@ public class LocationNode extends GraphNode implements SpatialObject
         
         connections.add(con);
     }
+
+    public void destroy() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
     
 }

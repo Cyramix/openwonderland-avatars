@@ -424,7 +424,7 @@ public class DarkstarClient extends JNagClient implements Updatable
         postGUILine("Removing Player with ID: " + userID + " called: " + users.get(userID));
         users.remove(userID);
 
-        characterData.get(userID).user.die();
+        characterData.get(userID).user.destroy();
         characterData.remove(userID);
     }
     

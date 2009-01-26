@@ -17,6 +17,7 @@
  */
 package imi.character.objects;
 
+import imi.character.objects.console.ObjectCollectionGUI;
 import com.jme.light.PointLight;
 import com.jme.math.Vector3f;
 import com.jme.renderer.ColorRGBA;
@@ -48,6 +49,7 @@ public class ObjectCollection extends Entity
     protected WorldManager    worldManager   = null;
     protected PScene          pscene         = null;
     protected JScene          jscene         = null;
+    protected ObjectCollectionGUI gui        = null;
     
     // Test
     Gadget lightSwitch = null;
@@ -236,6 +238,10 @@ public class ObjectCollection extends Entity
             }
         }
         return false;
+    }
+
+    public PScene getPScene() {
+        return pscene;
     }
     
     // The chair's bounding volumes are not correct until finished loading, this method is still good on load time.
@@ -491,7 +497,7 @@ public class ObjectCollection extends Entity
             }
         }
     }
-
+    
     /**
      * Add another chair to the object collection
      */
@@ -558,4 +564,19 @@ public class ObjectCollection extends Entity
         jscene.setRenderState(ls);
     }
 
+    public ArrayList<SpatialObject> getObjects() {
+        return objects;
+    }
+
+    public WorldManager getWorldManager() {
+        return worldManager;
+    }
+
+    public ObjectCollectionGUI getGUI()
+    {
+        if (gui == null)
+            gui = new ObjectCollectionGUI(this, worldManager);
+        return gui;
+    }
+    
 }

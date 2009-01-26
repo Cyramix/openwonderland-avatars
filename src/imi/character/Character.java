@@ -1572,7 +1572,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         this.m_updateExtension = updateExtension;
     }
 
-    public void die() {
+    public void destroy() {
         if (m_wm == null)
             return;
         

@@ -160,4 +160,8 @@ public class Gadget implements SpatialObject
         return modelInst.getTransform().getWorldMatrix(false).getLocalZ();
     }
 
+    public void destroy() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
 }

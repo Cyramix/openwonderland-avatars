@@ -1261,7 +1261,7 @@ public class SceneEssentials {
         }
 
         if (m_avatar != null) {
-            m_avatar.die();
+            m_avatar.destroy();
             m_avatar = null;
         }
 

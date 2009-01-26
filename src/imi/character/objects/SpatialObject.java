@@ -28,6 +28,9 @@ import imi.scene.polygonmodel.PPolygonModelInstance;
  */
 public interface SpatialObject 
 {
+    /** remove and shut down **/
+    public void destroy();
+    
     /**
      * Returns the model instance of the object
      * @return

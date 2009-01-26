@@ -72,6 +72,10 @@ public class VerletArmTest  extends DemoBase
         camState.setMovementRate(0.03f);
         camState.setCameraPosition(new Vector3f(0.0f, 1.8f, -2.0f));
         
+        objects.getGUI();
+        
+        if (true)
+            return;
         boolean male = false;
         Avatar avatar;
         int feet, legs, torso, hair;
@@ -124,6 +128,7 @@ public class VerletArmTest  extends DemoBase
             cloneAvatar(control, objects, wm, 0.0f, 0.0f, zStep);
             zStep += 5.0f;
         }
+        
     }
 
     private void cloneAvatar(AvatarControlScheme control, ObjectCollection objects, WorldManager wm, float xOffset, float yOffset, float zOffset) 
