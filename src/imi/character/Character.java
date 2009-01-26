@@ -506,9 +506,9 @@ public abstract class Character extends Entity implements SpatialObject, Animati
             {
                 PPolygonMeshInstance meshInst = (PPolygonMeshInstance) current;
                 // Grab a copy of the material
-                PMeshMaterial meshMat = meshInst.getMaterialCopy().getMaterial();
+                PMeshMaterial meshMat = meshInst.getMaterialRef().getMaterial();
                 if (meshInst.getParent().getName().equals("Hair"))
-                {
+                {   
                     GLSLShaderProgram hairShader = (GLSLShaderProgram)repo.newShader(NormalMapShader.class);
                     hairShader.addEffect(new MeshColorModulation());
                     try {
