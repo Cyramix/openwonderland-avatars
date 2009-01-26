@@ -330,6 +330,8 @@ public class Repository extends Entity
         AvatarObjectInputStream in = null;
         SkeletonNode MaleSkeleton = null;
         SkeletonNode FemaleSkeleton = null;
+        SkeletonNode MaleHeadSkeleton = null;
+        SkeletonNode FemaleHeadSkeleton = null;
         try
         {
             URL maleSkeleton = getClass().getResource("/imi/character/skeleton/Male.bs");

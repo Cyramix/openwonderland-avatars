@@ -268,7 +268,7 @@ public class JFrame_ColorSelector extends javax.swing.JFrame implements ChangeLi
      */
     public void setSkinnedMeshColor(PPolygonMeshInstance meshInst, float[] fColorArray) {
         // assign a texture to the mesh instance
-        PMeshMaterial material = meshInst.getMaterialRef().getMaterial();
+        PMeshMaterial material = meshInst.getMaterialRef();
         AbstractShaderProgram shader = material.getShader();
 
         try {
@@ -295,7 +295,7 @@ public class JFrame_ColorSelector extends javax.swing.JFrame implements ChangeLi
      */
     public void setMeshColor(PPolygonMeshInstance meshInst, float[] fColorArray) {
         // assign a texture to the mesh instance
-        PMeshMaterial material = meshInst.getMaterialRef().getMaterial();
+        PMeshMaterial material = meshInst.getMaterialRef();
         GLSLShaderProgram shader = (GLSLShaderProgram)material.getShader();
         Repository repo = (Repository)m_sceneData.getWM().getUserData(Repository.class);
         AbstractShaderProgram accessoryShader = repo.newShader(SimpleTNLWithAmbient.class);

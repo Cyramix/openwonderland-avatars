@@ -395,7 +395,7 @@ private void jButton_LoadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-
                 imi.scene.polygonmodel.skinned.PPolygonSkinnedMeshInstance inst = (imi.scene.polygonmodel.skinned.PPolygonSkinnedMeshInstance) instance;
                 Class temp = getClass().getClassLoader().loadClass(shaderPackage + "."+jComboBox_ShaderClasses.getSelectedItem().toString());
                 java.lang.reflect.Constructor[] construct = temp.getConstructors();
-                imi.scene.polygonmodel.parts.PMeshMaterial meshMat = inst.getMaterialRef().getMaterial();
+                imi.scene.polygonmodel.parts.PMeshMaterial meshMat = inst.getMaterialRef();
                 try {
                     for(int i = 0; i < construct.length; i++) {
                             imi.scene.shader.AbstractShaderProgram aShader = (imi.scene.shader.AbstractShaderProgram) construct[i].newInstance(wm);
@@ -429,7 +429,7 @@ private void jButton_LoadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-
                 imi.scene.polygonmodel.PPolygonMeshInstance inst = (imi.scene.polygonmodel.PPolygonMeshInstance) instance;
                 Class temp = getClass().getClassLoader().loadClass("imi.scene.shader.effects."+jComboBox_ShaderClasses.getSelectedItem().toString());
                 java.lang.reflect.Constructor[] construct = temp.getConstructors();
-                imi.scene.polygonmodel.parts.PMeshMaterial meshMat = inst.getMaterialRef().getMaterial();
+                imi.scene.polygonmodel.parts.PMeshMaterial meshMat = inst.getMaterialRef();
                 try {
                     for(int i = 0; i < construct.length; i++) {
                             imi.scene.shader.AbstractShaderProgram aShader = (imi.scene.shader.AbstractShaderProgram) construct[i].newInstance(wm);

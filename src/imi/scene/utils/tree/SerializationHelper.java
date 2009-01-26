@@ -120,7 +120,7 @@ public class SerializationHelper implements NodeProcessor
 
     private void processMeshInstance(PPolygonMeshInstance meshInst) {
         // process the material
-        PMeshMaterial meshMaterial = meshInst.getMaterialRef().getMaterial();
+        PMeshMaterial meshMaterial = meshInst.getMaterialRef();
         xmlMaterial xmlMat = new xmlMaterial();
         // Target mesh name
         xmlMat.setTargetMeshName(meshInst.getName());

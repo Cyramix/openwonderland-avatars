@@ -101,7 +101,7 @@ public class SceneGraphConvertor
     
     private Node processMeshInstance(PPolygonMeshInstance meshInst)
     {
-        PMeshMaterial mat = meshInst.getMaterialRef().getMaterial();
+        PMeshMaterial mat = meshInst.getMaterialRef();
         mat.setShader(null);
         meshInst.applyMaterial();
         while (meshInst.isWaitingOnTextures())

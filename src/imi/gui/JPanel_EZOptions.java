@@ -747,7 +747,7 @@ public class JPanel_EZOptions extends javax.swing.JPanel implements ChangeListen
      */
     public void setMeshColor(PPolygonMeshInstance meshInst, float[] fColorArray) {
         // assign a texture to the mesh instance
-        PMeshMaterial material = meshInst.getMaterialRef().getMaterial();
+        PMeshMaterial material = meshInst.getMaterialRef();
         AbstractShaderProgram shader = material.getShader();
 
         try {
@@ -778,7 +778,7 @@ public class JPanel_EZOptions extends javax.swing.JPanel implements ChangeListen
      */
     @Deprecated
     public void setMeshColor(PPolygonMeshInstance meshInst, AbstractShaderProgram shader, float[] fColorArray) {
-        PMeshMaterial material = meshInst.getMaterialRef().getMaterial();
+        PMeshMaterial material = meshInst.getMaterialRef();
         try {
             // Setting the new color property onto the model here
             if (shader instanceof FleshShader)
@@ -801,7 +801,7 @@ public class JPanel_EZOptions extends javax.swing.JPanel implements ChangeListen
     @Deprecated
     public AbstractShaderProgram createMeshShader(PPolygonMeshInstance meshInst) {
         // assign a texture to the mesh instance
-        PMeshMaterial material = meshInst.getMaterialRef().getMaterial();
+        PMeshMaterial material = meshInst.getMaterialRef();
         GLSLShaderProgram shader = (GLSLShaderProgram) material.getShader();
 
         MeshColorModulation meshModulator = new MeshColorModulation();

@@ -76,7 +76,7 @@ public class MeshInstancePropertyPanel extends javax.swing.JPanel implements PNo
         add(m_matrixWidget, new java.awt.GridBagConstraints());
         add(m_materialPanel, new java.awt.GridBagConstraints());
         m_materialPanel.setOwningMesh(m_meshInst);
-        m_materialPanel.setTargetMaterial(m_meshInst.getMaterialRef().getMaterial());
+        m_materialPanel.setTargetMaterial(m_meshInst.getMaterialRef());
     }// </editor-fold>//GEN-END:initComponents
 
 
@@ -91,7 +91,7 @@ public class MeshInstancePropertyPanel extends javax.swing.JPanel implements PNo
         // update the matrix widget
         m_matrixWidget.setTargetMatrix(m_meshInst.getTransform().getLocalMatrix(true));
         // update the material widget
-        m_materialPanel.setTargetMaterial(m_meshInst.getMaterialRef().getMaterial());
+        m_materialPanel.setTargetMaterial(m_meshInst.getMaterialRef());
         m_materialPanel.setOwningMesh(m_meshInst);
     }
 

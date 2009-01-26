@@ -17,6 +17,7 @@
  */
 package imi.scene.shader.programs;
 
+import imi.scene.shader.AbstractShaderProgram;
 import imi.scene.shader.NoSuchPropertyException;
 import imi.scene.shader.ShaderProperty;
 import imi.scene.shader.dynamic.GLSLCompileException;
@@ -60,6 +61,12 @@ public class FleshShader extends GLSLShaderProgram implements Serializable
     {
         this(wm, fAmbientPower, specularExponent, 1.0f);
     }
+
+
+    protected FleshShader(FleshShader other) {
+        super(other);
+    }
+
     public FleshShader(WorldManager wm,
                                         float fAmbientPower,
                                         float specularExponent,
@@ -111,4 +118,11 @@ public class FleshShader extends GLSLShaderProgram implements Serializable
         }
     }
 
+
+    @Override
+    public AbstractShaderProgram duplicate()
+    {
+        FleshShader result = new FleshShader(this);
+        return result;
+    }
 }

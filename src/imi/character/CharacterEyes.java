@@ -48,8 +48,8 @@ public class CharacterEyes
     private float                eyesWanderCounter     = 0.0f;
     private int                  eyesWanderIntCounter  = 0;
     
-    private final int leftEyeLid     = 38;//24;
-    private final int rightEyeLid    = 46;//34;
+    private final int leftEyeLid     = 37;//24;
+    private final int rightEyeLid    = 45;//34;
     private float   closedEyeLid     = 0.0f;
     private final float   closedEyeLidMale    = ((float)Math.PI) * -0.5f;//-0.011f;
     private final float   closedEyeLidFemale  = ((float)Math.PI) * -0.5f;//-0.041f;
@@ -86,8 +86,8 @@ public class CharacterEyes
         skeleton = character.getSkeleton();
         characterModelInst = character.getModelInst();
         
-        //int rightEyeLidCheck = skeleton.getSkinnedMeshJointIndex("rightEyeLid");
-        //int leftEyeLidCheck  = skeleton.getSkinnedMeshJointIndex("leftEyeLid");
+//        int rightEyeLidCheck = skeleton.getSkinnedMeshJointIndex("rightEyeLid");
+//        int leftEyeLidCheck  = skeleton.getSkinnedMeshJointIndex("leftEyeLid");
         
         PPolygonSkinnedMeshInstance leftEyeMeshInst  = (PPolygonSkinnedMeshInstance) skeleton.findChild("leftEyeGeoShape");
         PPolygonSkinnedMeshInstance rightEyeMeshInst = (PPolygonSkinnedMeshInstance) skeleton.findChild("rightEyeGeoShape");

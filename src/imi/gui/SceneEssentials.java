@@ -803,7 +803,7 @@ public class SceneEssentials {
             try {
 
                 URL modelURL = new URL(szURL);
-                m_avatar.installHead(modelURL, "Neck");
+                m_avatar.installHead(modelURL);
                 m_avatar.getAttributes().setHeadAttachment(path);
                 return true;
 
@@ -1275,7 +1275,7 @@ public class SceneEssentials {
 
         try {
             URL urlHead = new URL(data[3]);
-            m_avatar.installHead(urlHead, "Neck");
+            m_avatar.installHead(urlHead);
             m_avatar.getAttributes().setHeadAttachment(data[3]);
         } catch (MalformedURLException ex) {
             Logger.getLogger(SceneEssentials.class.getName()).log(Level.SEVERE, null, ex);

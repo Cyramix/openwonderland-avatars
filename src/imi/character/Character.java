@@ -441,7 +441,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         Iterable<PPolygonSkinnedMeshInstance> smInstances = m_skeleton.getSkinnedMeshInstances();
         for (PPolygonSkinnedMeshInstance meshInst : smInstances)
         {
-            PMeshMaterial meshMat = meshInst.getMaterialRef().getMaterial();
+            PMeshMaterial meshMat = meshInst.getMaterialRef();
             // is this an eyeball? (also used for tongue and teeth)
             if (meshInst.getName().contains("EyeGeoShape") ||
                 meshInst.getName().contains("Tongue")      ||
@@ -507,7 +507,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
             {
                 PPolygonMeshInstance meshInst = (PPolygonMeshInstance) current;
                 // Grab a copy of the material
-                PMeshMaterial meshMat = meshInst.getMaterialRef().getMaterial();
+                PMeshMaterial meshMat = meshInst.getMaterialRef();
                 if (meshInst.getParent().getName().equals("Hair"))
                 {   
                     GLSLShaderProgram hairShader = (GLSLShaderProgram)repo.newShader(NormalMapShader.class);
@@ -534,6 +534,56 @@ public abstract class Character extends Entity implements SpatialObject, Animati
     }
 
     /**
+     * Load a head file and return the skeleton of the new head.
+     * @param headLocation Location of the head to load
+     * @param children Will be filled with the children of the new skeleton
+     * @return New head skeleton with attachments
+     */
+    private SkeletonNode loadHeadFile(URL headLocation, List<PNode>children)
+    {
+        SkeletonNode result = null;
+        // Ready a request for the repository
+        AssetDescriptor descriptor = new AssetDescriptor(SharedAssetType.COLLADA, headLocation);
+        asset = new SharedAsset(m_pscene.getRepository(), descriptor);
+        m_bWaitingOnAsset = true;
+        // Request it!
+        m_pscene.getRepository().loadSharedAsset(asset, headInstaller);
+        while (m_bWaitingOnAsset == true) // wait until loaded
+        {
+            try {
+                Thread.sleep(100);
+            }
+            catch (InterruptedException ex)
+            {
+                logger.severe(ex.getMessage());
+            }
+        }
+        if (asset == null) // Timeout at the repository
+            logger.severe("Timed out waiting on asset for new head.");
+        else
+        {
+            // Locate the new skeleton
+            PNode psceneInstances = ((PScene)asset.getAssetData()).getInstances();
+            int numChildren = psceneInstances.getChildrenCount();
+            // Known to be a top level child
+            for (int i = 0; i < numChildren; ++i)
+            {
+                PNode current = psceneInstances.getChild(i);
+                if (current instanceof SkeletonNode)
+                {
+                    result = ((SkeletonNode)current);
+                    children.addAll(result.getChildren());
+                    result = result.deepCopy();
+                    break;
+                }
+            }
+        }
+        if (result == null)
+            logger.severe("Unable to find skeleton for the new head!");
+        return result;
+    }
+
+    /**
      * A subset of the functionality in setDefaultShaders
      */
     private void setDefaultHeadShaders()
@@ -542,7 +592,14 @@ public abstract class Character extends Entity implements SpatialObject, Animati
 
         AbstractShaderProgram eyeballShader = repo.newShader(EyeballShader.class);
         AbstractShaderProgram fleshShader = repo.newShader(FleshShader.class);
-        float[] skinColor = { (230.0f/255.0f), (197.0f/255.0f), (190.0f/255.0f) };
+        float[] skinColor = m_attributes.getSkinTone();
+        if (skinColor == null)
+        {
+           skinColor = new float [3];
+           skinColor[0] = (230.0f/255.0f);
+           skinColor[1] = (197.0f/255.0f);
+           skinColor[2] = (190.0f/255.0f);
+        }
         try {
             fleshShader.setProperty(new ShaderProperty("materialColor", GLSLDataType.GLSL_VEC3, skinColor));
         } catch (NoSuchPropertyException ex) {
@@ -553,7 +610,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         Iterable<PPolygonSkinnedMeshInstance> smInstances = m_skeleton.retrieveSkinnedMeshes("Head");
         for (PPolygonSkinnedMeshInstance meshInst : smInstances)
         {
-            PMeshMaterial meshMat = meshInst.getMaterialRef().getMaterial();
+            PMeshMaterial meshMat = meshInst.getMaterialRef();
             // is this an eyeball? (also used for tongue and teeth)
             if (meshInst.getName().contains("EyeGeoShape"))
             {
@@ -626,7 +683,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
                    urlPrefix + "\" and \"" + attributes.getHeadAttachment() + "\"");
         }
         if (headLocation != null)
-            installInitialHead(headLocation, "Neck"); // Should I parameterize this?
+            installHeadConfiguration(headLocation); // Should I parameterize this?
 
         InstructionProcessor instructionProcessor = new InstructionProcessor(m_wm);
         Instruction attributeRoot = new Instruction();
@@ -1166,69 +1223,69 @@ public abstract class Character extends Entity implements SpatialObject, Animati
      * @param headLocation Where the collada file is located.
      * @param attachmentJointName The joint to attach on.
      */
-    public void installHead(URL headLocation, String attachmentJointName)
-    {
-        // Stop all of our processing.
-        m_skeleton.setRenderStop(true);
-        m_AnimationProcessor.setEnable(false);
-        m_characterProcessor.setEnabled(false);
-
-        AssetDescriptor descriptor = new AssetDescriptor(SharedAssetType.COLLADA, headLocation);
-        asset = new SharedAsset(m_pscene.getRepository(), descriptor);
-        m_bWaitingOnAsset = true;
-        m_pscene.getRepository().loadSharedAsset(asset, headInstaller);
-        while (m_bWaitingOnAsset == true)
-        {
-            try {
-                Thread.sleep(100);
-            }
-            catch (InterruptedException ex)
-            {
-                logger.severe(ex.getMessage());
-            }
-        }
-        PScene newHeadPScene = (PScene)asset.getAssetData();
-        SkeletonNode newHeadSkeleton = (SkeletonNode)newHeadPScene.findChild("skeletonRoot").getParent();
-
-        // Cut off the old skeleton at the specified attach point
-        SkinnedMeshJoint parent = (SkinnedMeshJoint)m_skeleton.getSkinnedMeshJoint(attachmentJointName).getParent();
-        parent.removeChild(attachmentJointName);
-        parent.addChild(newHeadSkeleton.getSkinnedMeshJoint(attachmentJointName));
-
-        m_skeleton.refresh();
-        m_skeleton.clearSubGroup("Head");
-        m_eyes = null;
-
-        Iterable<PNode> list = newHeadSkeleton.getChildren();
-        for (PNode node : list)
-        {
-            if (node instanceof PPolygonSkinnedMesh)
-            {
-                PPolygonSkinnedMesh skinnedMesh = (PPolygonSkinnedMesh) node;
-                // Make an instance
-                PPolygonSkinnedMeshInstance skinnedMeshInstance = (PPolygonSkinnedMeshInstance) m_pscene.addMeshInstance(skinnedMesh, new PMatrix());
-                // Add it to the skeleton
-                m_skeleton.addToSubGroup(skinnedMeshInstance, "Head");
-            }
-        }
-        
-        m_eyes = new CharacterEyes(m_attributes.getEyeballTexture(), this, m_wm);
-        m_skeletonManipulator.setLeftEyeBall(m_eyes.leftEyeBall);
-        m_skeletonManipulator.setRightEyeBall(m_eyes.rightEyeBall);
-        // Apply the correct shaders to them
-        setDefaultHeadShaders();
-        // Relink all of the old meshes and apply their materials
-        for (PPolygonSkinnedMeshInstance meshInst : m_skeleton.getSkinnedMeshInstances())
-        {
-            meshInst.setAndLinkSkeletonNode(m_skeleton);
-            meshInst.applyMaterial();
-        }
-
-        // Re-enable all the processors that affect us.
-        m_AnimationProcessor.setEnable(true);
-        m_characterProcessor.setEnabled(true);
-        m_skeleton.setRenderStop(false);
-    }
+//    public void installHead(URL headLocation, String attachmentJointName)
+//    {
+//        // Stop all of our processing.
+//        m_skeleton.setRenderStop(true);
+//        m_AnimationProcessor.setEnable(false);
+//        m_characterProcessor.setEnabled(false);
+//
+//        AssetDescriptor descriptor = new AssetDescriptor(SharedAssetType.COLLADA, headLocation);
+//        asset = new SharedAsset(m_pscene.getRepository(), descriptor);
+//        m_bWaitingOnAsset = true;
+//        m_pscene.getRepository().loadSharedAsset(asset, headInstaller);
+//        while (m_bWaitingOnAsset == true)
+//        {
+//            try {
+//                Thread.sleep(100);
+//            }
+//            catch (InterruptedException ex)
+//            {
+//                logger.severe(ex.getMessage());
+//            }
+//        }
+//        PScene newHeadPScene = (PScene)asset.getAssetData();
+//        SkeletonNode newHeadSkeleton = (SkeletonNode)newHeadPScene.findChild("skeletonRoot").getParent();
+//
+//        // Cut off the old skeleton at the specified attach point
+//        SkinnedMeshJoint parent = (SkinnedMeshJoint)m_skeleton.getSkinnedMeshJoint(attachmentJointName).getParent();
+//        parent.removeChild(attachmentJointName);
+//        parent.addChild(newHeadSkeleton.getSkinnedMeshJoint(attachmentJointName));
+//
+//        m_skeleton.refresh();
+//        m_skeleton.clearSubGroup("Head");
+//        m_eyes = null;
+//
+//        Iterable<PNode> list = newHeadSkeleton.getChildren();
+//        for (PNode node : list)
+//        {
+//            if (node instanceof PPolygonSkinnedMesh)
+//            {
+//                PPolygonSkinnedMesh skinnedMesh = (PPolygonSkinnedMesh) node;
+//                // Make an instance
+//                PPolygonSkinnedMeshInstance skinnedMeshInstance = (PPolygonSkinnedMeshInstance) m_pscene.addMeshInstance(skinnedMesh, new PMatrix());
+//                // Add it to the skeleton
+//                m_skeleton.addToSubGroup(skinnedMeshInstance, "Head");
+//            }
+//        }
+//
+//        m_eyes = new CharacterEyes(m_attributes.getEyeballTexture(), this, m_wm);
+//        m_skeletonManipulator.setLeftEyeBall(m_eyes.leftEyeBall);
+//        m_skeletonManipulator.setRightEyeBall(m_eyes.rightEyeBall);
+//        // Apply the correct shaders to them
+//        setDefaultHeadShaders();
+//        // Relink all of the old meshes and apply their materials
+//        for (PPolygonSkinnedMeshInstance meshInst : m_skeleton.getSkinnedMeshInstances())
+//        {
+//            meshInst.setAndLinkSkeletonNode(m_skeleton);
+//            meshInst.applyMaterial();
+//        }
+//
+//        // Re-enable all the processors that affect us.
+//        m_AnimationProcessor.setEnable(true);
+//        m_characterProcessor.setEnabled(true);
+//        m_skeleton.setRenderStop(false);
+//    }
 
     /**
      * m_skeleton and m_pscene must already be initialized.
@@ -1236,80 +1293,38 @@ public abstract class Character extends Entity implements SpatialObject, Animati
      * @param attachmentJointName
      * @return true on success, false on failure.
      */
-    private boolean installInitialHead(URL headLocation, String attachmentJointName)
-    {
-        boolean result = true;
-        // Ready a request for the repository
-        AssetDescriptor descriptor = new AssetDescriptor(SharedAssetType.COLLADA, headLocation);
-        asset = new SharedAsset(m_pscene.getRepository(), descriptor);
-        m_bWaitingOnAsset = true;
-        // Request it!
-        m_pscene.getRepository().loadSharedAsset(asset, headInstaller);
-        while (m_bWaitingOnAsset == true) // wait until loaded
-        {
-            try {
-                Thread.sleep(100);
-            }
-            catch (InterruptedException ex)
-            {
-                logger.severe(ex.getMessage());
-            }
-        }
-        if (asset == null) // Timeout at the repository
-        {
-            logger.severe("Timed out waiting on asset for new head.");
-            result = false;
-            return result; // Abort!
-        }
-        // Locate the new skeleton
-        SkeletonNode newHeadSkeleton = null;
-        PNode psceneInstances = ((PScene)asset.getAssetData()).getInstances();
-        int numChildren = psceneInstances.getChildrenCount();
-        Iterable<PNode> newSkeletonChildren = null;
-        // Known to be a top level child
-        for (int i = 0; i < numChildren; ++i)
-        {
-            PNode current = psceneInstances.getChild(i);
-            if (current instanceof SkeletonNode)
-            {
-                newHeadSkeleton = ((SkeletonNode)current);
-                newSkeletonChildren = newHeadSkeleton.getChildren();
-                newHeadSkeleton = newHeadSkeleton.deepCopy();
-            }
-        }
-        if (newHeadSkeleton == null)
-        {
-            logger.severe("Unable to find skeleton for the new head!");
-            result = false;
-            return result; // abort!
-        }
-        // Cut off the old skeleton at the specified attach point
-        SkinnedMeshJoint parent = (SkinnedMeshJoint)m_skeleton.getSkinnedMeshJoint(attachmentJointName).getParent();
-        parent.removeChild(attachmentJointName);
-        parent.addChild(newHeadSkeleton.getSkinnedMeshJoint(attachmentJointName));
-
-        m_skeleton.refresh();
-        m_skeleton.clearSubGroup("Head");
-
-        
-        for (PNode node : newSkeletonChildren)
-        {
-            if (node instanceof PPolygonSkinnedMesh)
-            {
-                PPolygonSkinnedMesh skinnedMesh = (PPolygonSkinnedMesh) node;
-                // Make an instance
-                PPolygonSkinnedMeshInstance skinnedMeshInstance = (PPolygonSkinnedMeshInstance) m_pscene.addMeshInstance(skinnedMesh, new PMatrix());
-                // Add it to the skeleton
-                m_skeleton.addToSubGroup(skinnedMeshInstance, "Head");
-            }
-        }
-
-        // Relink all of the old meshes and apply their materials
-        for (PPolygonSkinnedMeshInstance meshInst : m_skeleton.getSkinnedMeshInstances())
-            meshInst.setAndLinkSkeletonNode(m_skeleton);
-
-        return result;
-    }
+//    private boolean installInitialHead(URL headLocation, String attachmentJointName)
+//    {
+//        boolean result = true;
+//        List<PNode> newSkeletonChildren = new ArrayList<PNode>();
+//        SkeletonNode newHeadSkeleton = loadHeadFile(headLocation, newSkeletonChildren);
+//        // Cut off the old skeleton at the specified attach point
+//        SkinnedMeshJoint parent = (SkinnedMeshJoint)m_skeleton.getSkinnedMeshJoint(attachmentJointName).getParent();
+//        parent.removeChild(attachmentJointName);
+//        parent.addChild(newHeadSkeleton.getSkinnedMeshJoint(attachmentJointName));
+//
+//        m_skeleton.refresh();
+//        m_skeleton.clearSubGroup("Head");
+//        // When freshly loaded via collada loader, the skinned meshes are not
+//        // divided into subgroups yet.
+//        for (PNode node : newSkeletonChildren)
+//        {
+//            if (node instanceof PPolygonSkinnedMesh)
+//            {
+//                PPolygonSkinnedMesh skinnedMesh = (PPolygonSkinnedMesh) node;
+//                // Make an instance
+//                PPolygonSkinnedMeshInstance skinnedMeshInstance = (PPolygonSkinnedMeshInstance) m_pscene.addMeshInstance(skinnedMesh, new PMatrix());
+//                // Add it to the skeleton
+//                m_skeleton.addToSubGroup(skinnedMeshInstance, "Head");
+//            }
+//        }
+//
+//        // Relink all of the old meshes and apply their materials
+//        for (PPolygonSkinnedMeshInstance meshInst : m_skeleton.getSkinnedMeshInstances())
+//            meshInst.setAndLinkSkeletonNode(m_skeleton);
+//
+//        return result;
+//    }
 
     /**
      * Save the current avatar configuration to the specified location. This
@@ -1707,35 +1722,45 @@ public abstract class Character extends Entity implements SpatialObject, Animati
 
     }
 
-    /**
-     * This only remains in order to provide an example of the process.
-     * @param headLocation
-     * @deprecated
-     */
-    @Deprecated
-    public void oldInstallHead(URL headLocation)
+    public void installHead(URL headLocation)
     {
-        // Ready the collada loader!
-        Collada colladaLoader = new Collada();
-        colladaLoader.setLoadFlags(true, true, false);
-
-        colladaLoader.load(new PScene(m_wm), headLocation);
-
-        SkeletonNode newHeadSkeleton = colladaLoader.getSkeletonNode();
-
-        // Remove all the old head stuff from our skeleton
-        PNode pnode = m_skeleton.findChild("rightEyeGeoShape");
-        int[] influences = null;
-        if (pnode != null)
+        installHeadConfiguration(headLocation);
+        // hook the eyeballs and such back up
+        m_eyes = new CharacterEyes(m_attributes.getEyeballTexture(), this, m_wm);
+        m_skeletonManipulator.setLeftEyeBall(m_eyes.leftEyeBall);
+        m_skeletonManipulator.setRightEyeBall(m_eyes.rightEyeBall);
+        // Relink all of the old meshes and apply their materials
+        for (PPolygonSkinnedMeshInstance meshInst : m_skeleton.getMeshesBySubGroup("Head"))
         {
-            PPolygonSkinnedMeshInstance meshInst = (PPolygonSkinnedMeshInstance)pnode;
-            // cache le influences
-            influences = meshInst.getInfluenceIndices(); // We should not need to do this, but it fixes the problem
+            if (meshInst.getName().contains("EyeGeoShape"))
+            {
+                System.out.println("Setting material on " + meshInst.getName());
+                System.out.println("Shader is " + meshInst.getMaterialRef().getShader().getProgramName() + " : " +
+                        meshInst.getMaterialRef().getShader().getProgramDescription());
+            }
+            meshInst.setAndLinkSkeletonNode(m_skeleton);
+            meshInst.applyMaterial();
         }
+    }
+    /**
+     * This method provides a way to install a head that is a derivative of the
+     * base skeleton. Skeleton Deltas are generated and applied.
+     * @param headLocation The location of a file with a head to load.
+     */
+    protected void installHeadConfiguration(URL headLocation)
+    {
+        // Stop all of our processing.
+        m_skeleton.setRenderStop(true);
+        m_AnimationProcessor.setEnable(false);
+        m_characterProcessor.setEnabled(false);
+
+        List<PNode> newSkeletonChildren = new ArrayList<PNode>();
+        SkeletonNode newHeadSkeleton = loadHeadFile(headLocation, newSkeletonChildren);
+        // Get rid of all the old stuff
         m_skeleton.clearSubGroup("Head");
 
-        Iterable<PNode> list = newHeadSkeleton.getChildren();
-        for (PNode node : list)
+        // Process the associated geometry and attach it to ourselves
+        for (PNode node : newSkeletonChildren)
         {
             if (node instanceof PPolygonSkinnedMesh)
             {
@@ -1748,32 +1773,24 @@ public abstract class Character extends Entity implements SpatialObject, Animati
 
                 // Add it to the skeleton
                 m_skeleton.addToSubGroup(skinnedMeshInstance, "Head");
-
             }
         }
-        // Now fix the skeletal differences
-        generateDeltas(newHeadSkeleton, "Head");
-        // Now reattach the eyes
-        m_eyes = new CharacterEyes(m_attributes.getEyeballTexture(), this, m_wm);
-//        // reassociate this with the verlet thingy
-//        while (m_skeletonManipulator == null)
-//        {
-//            Thread.yield();
-//        }
-        if (m_skeletonManipulator != null)
-        {
-            m_skeletonManipulator.setLeftEyeBall(m_eyes.getLeftEyeBall());
-            m_skeletonManipulator.setRightEyeBall(m_eyes.getRightEyeBall());
-        }
+        // Now fix the skeletal differences from the Neck through the heirarchy
+        generateDeltas(newHeadSkeleton, "Neck");
+
         // Finally, apply the default shaders
-        setDefaultShaders();
-        pnode = m_skeleton.findChild("rightEyeGeoShape");
-        if (pnode != null)
+        setDefaultHeadShaders();
+        // Relink all of the old meshes and apply their materials
+        for (PPolygonSkinnedMeshInstance meshInst : m_skeleton.getMeshesBySubGroup("Head"))
         {
-            PPolygonSkinnedMeshInstance meshInst = (PPolygonSkinnedMeshInstance)pnode;
-            // reset influence indices
-            meshInst.setInfluenceIndices(influences);
+            meshInst.setAndLinkSkeletonNode(m_skeleton);
+            meshInst.applyMaterial();
         }
+
+        // Re-enable all the processors that affect us.
+        m_AnimationProcessor.setEnable(true);
+        m_characterProcessor.setEnabled(true);
+        m_skeleton.setRenderStop(false);
     }
 
 
@@ -1786,9 +1803,9 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         }
 
         // Gather the joints and set the new local modifiers
-        SkinnedMeshJoint head = m_skeleton.getSkinnedMeshJoint(rootJointName);
+        SkinnedMeshJoint attachmentJoint = m_skeleton.getSkinnedMeshJoint(rootJointName);
         LinkedList<PNode> list = new LinkedList<PNode>();
-        list.add(head);
+        list.add(attachmentJoint);
         PNode current = null;
         while(!list.isEmpty())
         {
@@ -1803,11 +1820,14 @@ public abstract class Character extends Entity implements SpatialObject, Animati
                 if (newHeadJoint == null) // Not found in the new skeleton
                     logger.severe("Could not find associated joint in the new skeleton, joint name was " + currentHeadJoint.getName());
                 PMatrix modifierDelta = new PMatrix();
-                modifierDelta.fastMul( currentHeadJoint.getTransform().getLocalMatrix(false).inverse(),
-                            newHeadJoint.getTransform().getLocalMatrix(false));
-
+                modifierDelta.fastMul( 
+                            newHeadJoint.getBindPose().inverse(),
+                            currentHeadJoint.getBindPose()
+                            );
+                
+                currentHeadJoint.getBindPose().set(newHeadJoint.getBindPose());
                 currentHeadJoint.getBindPose().fastMul(modifierDelta);
-//                currentHeadJoint.getBindPose().set(newHeadJoint.getBindPose());
+
             }
             else
                 continue; // Prune (kids are not added to the list)

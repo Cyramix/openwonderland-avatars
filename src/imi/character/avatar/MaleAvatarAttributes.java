@@ -180,13 +180,16 @@ public class MaleAvatarAttributes extends CharacterAttributes
         switch (preset)
         {
 //            case 0:
-//                setHeadAttachment("assets/models/collada/Heads/MaleHead/asiaHead.dae");
+//                setHeadAttachment("assets/models/collada/Heads/MaleHead/MaleCHead.dae");
 //                break;
 //            case 1:
 //                setHeadAttachment("assets/models/collada/Heads/MaleHead/blackHead.dae");
 //                break;
 //            case 2:
 //                setHeadAttachment("assets/models/collada/Heads/MaleHead/midAgeGuy.dae");
+//                break;
+//            case 3:
+//                setHeadAttachment("assets/models/collada/Heads/MaleHead/asiaHead.dae");
 //                break;
             default:
                 setHeadAttachment("assets/models/collada/Heads/MaleHead/MaleCHead.dae");

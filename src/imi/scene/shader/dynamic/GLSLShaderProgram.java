@@ -148,7 +148,7 @@ public class GLSLShaderProgram implements AbstractShaderProgram, RenderUpdater
      * and the source strings.
      * @param other The program to copy
      */
-    private GLSLShaderProgram(GLSLShaderProgram other)
+    protected GLSLShaderProgram(GLSLShaderProgram other)
     {
         m_effects.addAll(other.getEffects());
         m_bUseDefaultInitializers = other.isUsingDefaultInitializers();

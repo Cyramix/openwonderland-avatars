@@ -533,7 +533,7 @@ public class SkeletonNode extends PNode implements Animated, Serializable
         {
             for (PPolygonSkinnedMeshInstance meshInst : getSkinnedMeshInstances())
             {
-                    PMeshMaterial mat = meshInst.getMaterialRef().getMaterial();
+                    PMeshMaterial mat = meshInst.getMaterialRef();
                     mat.setShader(shader);
                     meshInst.applyShader();
             }
@@ -575,7 +575,7 @@ public class SkeletonNode extends PNode implements Animated, Serializable
             {
                 PPolygonMeshInstance meshInst = (PPolygonMeshInstance)kid;
 
-                PMeshMaterial mat = meshInst.getMaterialRef().getMaterial();
+                PMeshMaterial mat = meshInst.getMaterialRef();
                 mat.setShader(shader);
                 meshInst.applyShader();
             }

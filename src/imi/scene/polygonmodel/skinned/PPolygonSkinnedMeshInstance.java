@@ -63,7 +63,7 @@ public class PPolygonSkinnedMeshInstance extends PPolygonMeshInstance implements
     //  Copy Constructor.
     public PPolygonSkinnedMeshInstance(PPolygonSkinnedMeshInstance meshInstance, PScene pscene, boolean applyMaterial)
     {
-        super(meshInstance.getName(), meshInstance.getGeometry(), meshInstance.getTransform().getLocalMatrix(false), pscene, applyMaterial);
+        super(meshInstance, applyMaterial);
         if (meshInstance.getInfluenceIndices() != null)
             setInfluenceIndices(meshInstance.getInfluenceIndices());
     }
@@ -245,7 +245,7 @@ public class PPolygonSkinnedMeshInstance extends PPolygonMeshInstance implements
     {
         if (bDeforming)
             return true;
-        AbstractShaderProgram shader = getMaterialRef().getMaterial().getShader();
+        AbstractShaderProgram shader = getMaterialRef().getShader();
 
         if (shader == null) // No shader, no deformer!
             return false;
@@ -261,22 +261,4 @@ public class PPolygonSkinnedMeshInstance extends PPolygonMeshInstance implements
         }
         return false;
     }
-
-//    protected void postAnimationModifiedMeshSpaceMatrixHook(PMatrix matrix, int jointIndex)
-//    {
-//        if (m_jointManipulator == null)
-//            return;
-//
-//        m_jointManipulator.postAnimationModifiedMeshSpaceMatrixHook(matrix, jointIndex);
-//    }
-//
-//    public PostAnimationJointManipulator getJointManipulator() {
-//        return m_jointManipulator;
-//    }
-//
-//    public void setJointManipulator(PostAnimationJointManipulator jointManipulator) {
-//        this.m_jointManipulator = jointManipulator;
-//    }
-
-
 }

@@ -32,7 +32,6 @@ import imi.scene.PNode;
 import imi.scene.PScene;
 import imi.scene.PTransform;
 import imi.scene.polygonmodel.parts.PMeshMaterial;
-import imi.scene.polygonmodel.parts.PMeshMaterialCombo;
 import imi.scene.polygonmodel.parts.PMeshMaterialStates;
 import imi.scene.polygonmodel.parts.TextureMaterialProperties;
 import imi.scene.shader.AbstractShaderProgram;
@@ -76,7 +75,7 @@ public class PPolygonMeshInstance extends PNode implements Serializable
 //    protected MaterialState             m_matState          = null;
     
     /** Material **/
-    protected PMeshMaterialCombo  m_material        = null;
+    protected PMeshMaterial  m_material             = null;
     /** Use geometry material or not **/
     protected boolean  m_bUseGeometryMaterial       = true; 
     /** convenient state wrapper **/
@@ -104,7 +103,7 @@ public class PPolygonMeshInstance extends PNode implements Serializable
 
         m_instance = new SharedMesh(getName(), m_geometry.getGeometry());
 
-        m_material = new PMeshMaterialCombo(m_geometry.getMaterialCopy(), null);
+        m_material = new PMeshMaterial(m_geometry.getMaterialCopy());
 //        applyMaterial();
     }
 
@@ -132,12 +131,26 @@ public class PPolygonMeshInstance extends PNode implements Serializable
 
             m_instance = new SharedMesh(getName(), m_geometry.getGeometry());
 
-            m_material = new PMeshMaterialCombo(m_geometry.getMaterialCopy(), null);
+            m_material = new PMeshMaterial(m_geometry.getMaterialCopy());
             m_instance.setTextureCoords(m_geometry.getGeometry().getTextureCoords(0));
             setUniformTexCoords(m_geometry.isUniformTexCoords());
             if (bApplyMaterial == true)
                 applyMaterial();
         }
+    }
+    public PPolygonMeshInstance(PPolygonMeshInstance other, boolean bApplyMaterial)
+    {
+        super(other.getName(), null, null, new PTransform(other.getTransform()));
+        m_PScene = other.m_PScene;
+        initializeStates(m_PScene);
+        m_geometry = other.m_geometry;
+        m_instance = new SharedMesh(other.getName(), m_geometry.getGeometry());
+        m_material = new PMeshMaterial(other.m_material);
+        m_instance.setTextureCoords(m_geometry.getGeometry().getTextureCoords(0));
+        setUniformTexCoords(m_geometry.isUniformTexCoords());
+
+        if (bApplyMaterial)
+            applyMaterial();
     }
    
     
@@ -256,12 +269,11 @@ public class PPolygonMeshInstance extends PNode implements Serializable
         
         // find the texture unit (multi texture support)
         int texUnit = -1;
-        PMeshMaterial meshMat = m_material.getMaterial();
         for (int i = 0; i < m_geometry.getNumberOfTextures(); i++)
         {
-            if (meshMat.getTexture(i) != null)
+            if (m_material.getTexture(i) != null)
             {
-                if (meshMat.getTexture(i).getImageLocation().equals(path))
+                if (m_material.getTexture(i).getImageLocation().equals(path))
                 {
                     texUnit = i;
                     break;
@@ -295,20 +307,13 @@ public class PPolygonMeshInstance extends PNode implements Serializable
         m_bUseGeometryMaterial = bUseGeometryMaterial;
     }
 
-    public void setMaterial(PMeshMaterialCombo material) 
+    public void setMaterial(PMeshMaterial material) 
     {
         m_material = material;
         // No longer using the geometry's material
         m_bUseGeometryMaterial = false;
     }
     
-    public void setMaterial(PMeshMaterial material) 
-    {
-        m_material = new PMeshMaterialCombo(material, null);
-        // No longer using the geometry's material
-        m_bUseGeometryMaterial = false;
-    }
-
     public void applyShader()
     {
         applyShader(0);
@@ -321,11 +326,11 @@ public class PPolygonMeshInstance extends PNode implements Serializable
             logger.severe("Cannot apply shaders without a material!");
             return; // Abort
         }
-        PMeshMaterial meshMat = m_material.getMaterial();
-        if (meshMat.getShader(index) != null)
-            meshMat.getShader(index).applyToMesh(this);
+        
+        if (m_material.getShader(index) != null)
+            m_material.getShader(index).applyToMesh(this);
         else
-            logger.severe("Requested shader was null! (index was " + index + ", shader array length was " + meshMat.getShaders().length);
+            logger.severe("Requested shader was null! (index was " + index + ", shader array length was " + m_material.getShaders().length);
     }
     
     public void applyMaterial()
@@ -336,21 +341,21 @@ public class PPolygonMeshInstance extends PNode implements Serializable
         if (m_material == null) // We better be using the geometry's material
         {
             if (m_bUseGeometryMaterial == true)
-                m_material = new PMeshMaterialCombo(m_geometry.getMaterialRef(), null);
+                m_material = new PMeshMaterial(m_geometry.getMaterialRef());
             else // cant do too much now
                 return;
         }
-        PMeshMaterial meshMat = m_material.getMaterial();
-        m_pmaterialStates.configureStates(meshMat);
+        
+        m_pmaterialStates.configureStates(m_material);
         m_pmaterialStates.applyToGeometry(m_instance);
         
         // Textures
         m_textureState.setEnabled(true);
         // determine number of needed textures
-        int numNeeded = meshMat.getNumberOfRelevantTextures();
+        int numNeeded = m_material.getNumberOfRelevantTextures();
         TextureMaterialProperties[] texProps = new TextureMaterialProperties[numNeeded];
         for (int i = 0; i < numNeeded; ++i)
-            texProps[i] = meshMat.getTexture(i);
+            texProps[i] = m_material.getTexture(i);
         
         setTextureInstaller(new TextureInstaller(texProps, m_textureState));
         // Debugging / Diagnostic outpout
@@ -367,14 +372,14 @@ public class PPolygonMeshInstance extends PNode implements Serializable
         boolean bNeedToUseTextureInstaller = false;
         for (int i = 0; i < m_geometry.getNumberOfTextures(); i++)
         {
-            if (meshMat.getTexture(i) != null)
+            if (m_material.getTexture(i) != null)
             {
                 bNeedToUseTextureInstaller = true;
 //                if (m_PScene.isUseRepository() == true)
 //                {
                     // Send SharedAsset request to the PScene
                     SharedAsset texture = new SharedAsset(m_PScene.getRepository(),
-                            new AssetDescriptor(SharedAssetType.Texture, meshMat.getTexture(i).getImageLocation()));
+                            new AssetDescriptor(SharedAssetType.Texture, m_material.getTexture(i).getImageLocation()));
                     m_PScene.loadTexture(texture, this);
 //                }
 //                else // Not using the repository, no sharing!
@@ -384,21 +389,21 @@ public class PPolygonMeshInstance extends PNode implements Serializable
         if (!bNeedToUseTextureInstaller || m_PScene.isUseRepository() == false)
             setTextureInstaller(null);
         m_instance.setRenderState(m_textureState);
-        if (meshMat.getShader() != null)
-            meshMat.getShader().applyToMesh(this);
+        if (m_material.getShader() != null)
+            m_material.getShader().applyToMesh(this);
         else
             setShaderState(null);
 
     }
     
-    public PMeshMaterialCombo getMaterialRef() 
+    public PMeshMaterial getMaterialRef() 
     {
         return m_material;
     }
     
-    public PMeshMaterialCombo getMaterialCopy() 
+    public PMeshMaterial getMaterialCopy() 
     {
-        return new PMeshMaterialCombo(m_material);
+        return new PMeshMaterial(m_material);
     }
     
     public PPolygonMesh getGeometry()

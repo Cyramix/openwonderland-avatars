@@ -181,7 +181,7 @@ public class DemoSchemeSigraph extends InputScheme
         if (numberOfStools != 0)
         {
             PPolygonModel chairs = PModelUtils.createChairsAroundATable("BusinessStools", 15, 1, 3, 4, numberOfStools);
-            chairs.setMaterial(table.getMaterialCopy().getMaterial(), 1);
+            chairs.setMaterial(table.getMaterialCopy(), 1);
             m_chairsModel = m_pscene.addModelInstance(chairs, table.getTransform().getWorldMatrix(false));
         }
     }
