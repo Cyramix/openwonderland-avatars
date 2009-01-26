@@ -58,6 +58,7 @@ import imi.character.statemachine.corestates.transitions.WalkToRun;
 import imi.character.steering.FollowPath;
 import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.Iterator;
 
 /**
  * This is a GameContext concrete e.g.
@@ -433,6 +434,10 @@ public class AvatarContext extends GameContext
         action.setAnimationSetBoolean(false);
         genericAnimations.get(actionInfoIndex).apply(action);
         setCurrentState(action);
+    }
+
+    protected Iterable<ActionInfo> getGenericAnimations() {
+        return genericAnimations;
     }
     
     /** Here we define the animation properties for the various animations
