@@ -115,7 +115,7 @@ public class SpecularMapping_Lighting extends GLSLShaderEffect
          * vec3 camVector = normalize(ToCamera);
          * vec3 reflection = normalize(reflect(lightVector , normal));
          * vec4 specular = (gl_LightSource[0].specular * pow(max(dot(reflection, camVector),0.0), SpecularPower));
-         * specular *= ceil(nxDir);
+         * specular *= nxDir;
          * specColor *=  specular;
          * finalFragColor += specColor
          */

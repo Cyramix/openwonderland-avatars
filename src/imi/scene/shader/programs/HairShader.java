@@ -58,6 +58,7 @@ public class HairShader extends BaseShaderProgram implements AbstractShaderProgr
         "       position *= TBNMatrix;" +
         "}"
     );
+
     private static final String FragmentSource = new String(
         "varying vec3 ToLight;" +
         "varying vec3 position;" +
@@ -83,7 +84,7 @@ public class HairShader extends BaseShaderProgram implements AbstractShaderProgr
         "       float RDotV = dot(normalize((reflect(-lightVector, normal))), normalize(vec3(-position)));" +
         "       vec4 specular = vec4(specColor, 1.0);" +
         "       specular *= gl_LightSource[0].specular * pow(max(0.0, RDotV), SpecularExponent);" +
-        "    	gl_FragColor = color + (specular * SpecularComponent);" +
+        "    	gl_FragColor = color + (specular * SpecularComponent * nxDir);" +
         "}"
     );
     /**

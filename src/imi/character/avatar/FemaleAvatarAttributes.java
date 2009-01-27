@@ -270,7 +270,7 @@ public class FemaleAvatarAttributes extends CharacterAttributes
                     loadedBind = true;
                     load.add(new String("assets/models/collada/Avatars/FemaleAvatar/Female_Bind.dae")); 
                 }
-                add.add(new SkinnedMeshParams("LegsNudeShape",  "LowerBody"));
+                add.add(new SkinnedMeshParams("Legs_NudeShape",  "LowerBody"));
             }
         }   
     }
@@ -309,17 +309,10 @@ public class FemaleAvatarAttributes extends CharacterAttributes
             {
                 // Blouse         // has error
                 load.add(new String("assets/models/collada/Clothing/FeamleClothing/FemaleBlouse.dae"));
-                add.add(new SkinnedMeshParams("TShirtShape", "UpperBody"));
+                add.add(new SkinnedMeshParams("TShirt1Shape", "UpperBody"));
+                add.add(new SkinnedMeshParams("Arms_NudeShape", "UpperBody"));
             }
-            break;
-            case 4:
-            {
-                // T Shirt          // has error
-                load.add(new String("assets/models/collada/Clothing/FeamleClothing/FemaleTShirt.dae"));
-                add.add(new SkinnedMeshParams("TShirtShape", "UpperBody"));
-                add.add(new SkinnedMeshParams("ArmsNudeShape", "UpperBody"));
-            }
-            break;
+            break; // RED - Yanked T-Shirt on Chad's direction
             default:
             {
                 if(!loadedBind)
@@ -327,7 +320,7 @@ public class FemaleAvatarAttributes extends CharacterAttributes
                     loadedBind = true;
                     load.add(new String("assets/models/collada/Avatars/FemaleAvatar/Female_Bind.dae")); 
                 }
-                add.add(new SkinnedMeshParams("TorsoNudeShape",  "UpperBody"));
+                add.add(new SkinnedMeshParams("Torso_NudeShape",  "UpperBody"));
             }
         }   
     }
