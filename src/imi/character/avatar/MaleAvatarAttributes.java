@@ -153,13 +153,14 @@ public class MaleAvatarAttributes extends CharacterAttributes
         customizeLegsPresets(legs,   load, add, attachments);
         customizeTorsoPresets(torso, load, add, attachments);
         customizeHairPresets(hair,   load, add, attachments);
-
-        setEyeballTexture(eyeColors[eyeColor]);
+        
         setLoadInstructions(load);
         setAddInstructions(add.toArray(new SkinnedMeshParams[add.size()]));
         setAttachmentsInstructions(attachments.toArray(new AttachmentParams[attachments.size()]));
-
-        setSkinTone(skinTones[skinTone].r, skinTones[skinTone].g, skinTones[skinTone].b);
+        if (eyeColor < eyeColors.length)
+            setEyeballTexture(eyeColors[eyeColor]);
+        if (skinTone < skinTones.length)
+            setSkinTone(skinTones[skinTone].r, skinTones[skinTone].g, skinTones[skinTone].b);
     }
     
     public void randomizeHairColor()

@@ -154,12 +154,15 @@ public class FemaleAvatarAttributes extends CharacterAttributes
         customizeLegsPresets(legs,   load, add, attachments);
         customizeTorsoPresets(torso, load, add, attachments);
         customizeHairPresets(hair,   load, add, attachments);
-        setSkinTone(skinTones[skin].r, skinTones[skin].g, skinTones[skin].b);
-        setEyeballTexture(eyeColors[eyeColor]);
-
+        
         setLoadInstructions(load);
         setAddInstructions(add.toArray(new SkinnedMeshParams[add.size()]));
         setAttachmentsInstructions(attachments.toArray(new AttachmentParams[attachments.size()]));
+        
+        if (eyeColor < eyeColors.length)
+            setEyeballTexture(eyeColors[eyeColor]);
+        if (skin < skinTones.length)
+            setSkinTone(skinTones[skin].r, skinTones[skin].g, skinTones[skin].b);
     }
 
     public void randomizeHairColor()

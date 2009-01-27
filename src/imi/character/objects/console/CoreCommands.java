@@ -127,11 +127,15 @@ public class CoreCommands implements ConsoleCommand
             Vector3f pos = new Vector3f();
             String name;
             try {
+                boolean male = true;
                 name = args[0];
                 genderString = args[1];
-                if (genderString.equals("f"))
+                if (genderString.startsWith("f"))
+                {
+                    male = false;
                     genderString = "female";
-                else if (!genderString.equals("female"))
+                }
+                else
                     genderString = "male";
                 pos.set(Float.parseFloat(args[2]), Float.parseFloat(args[3]), Float.parseFloat(args[4]));
                 gui.appendOutput("creating " + genderString + " avatar named: " + name + " at: " + pos.toString()); 
@@ -149,12 +153,44 @@ public class CoreCommands implements ConsoleCommand
                     else
                         dir = new Vector3f(Float.parseFloat(args[5]), Float.parseFloat(args[6]), Float.parseFloat(args[7]));
                 } catch (Exception ex) { }
-
-                Avatar newAvatar;
-                if (genderString.equals("female"))
-                    newAvatar = new Avatar(new FemaleAvatarAttributes(name, true), wm);    
+                int index = 8;
+                if (selectForInput)
+                    index++;
+                
+                int [] presets = new int[7];
+                if (male)
+                {
+                    presets[0] = (int) (Math.random() * 10000 % 4);
+                    presets[1] = (int) (Math.random() * 10000 % 4);
+                    presets[2] = (int) (Math.random() * 10000 % 6);
+                    presets[3] = (int) (Math.random() * 10000 % 17);
+                    presets[4] = (int) (Math.random() * 10000 % 4);
+                    presets[5] = (int) (Math.random() * 10000 % 13);
+                    presets[6] = (int) (Math.random() * 10000 % 26);
+                }
                 else
-                    newAvatar = new Avatar(new MaleAvatarAttributes(name, true), wm);    
+                {
+                    presets[0] = (int) (Math.random() * 10000 % 3);
+                    presets[1] = (int) (Math.random() * 10000 % 3);
+                    presets[2] = (int) (Math.random() * 10000 % 3);
+                    presets[3] = (int) (Math.random() * 10000 % 49);
+                    presets[4] = (int) (Math.random() * 10000 % 4);
+                    presets[5] = (int) (Math.random() * 10000 % 13);
+                    presets[6] = (int) (Math.random() * 10000 % 26);
+                }
+                for (int i = 0; i < 7; i++)
+                {
+                    try {
+                        presets[i] = Integer.parseInt(args[index]);
+                        index++;
+                    } catch (Exception ex) { }
+                }
+                
+                Avatar newAvatar;
+                if (male)
+                    newAvatar = new Avatar(new MaleAvatarAttributes(name, presets[0], presets[1], presets[2], presets[3], presets[4], presets[5], presets[6]), wm);    
+                else
+                    newAvatar = new Avatar(new FemaleAvatarAttributes(name, presets[0], presets[1], presets[2], presets[3], presets[4], presets[5], presets[6]), wm);    
                 
                 if (selectForInput)
                 {
@@ -197,6 +233,7 @@ public class CoreCommands implements ConsoleCommand
                 done = true;
                 gui.appendOutput("removing Object #" + index);
                 obj.destroy();
+                objs.getObjects().remove(obj);
             }
             else
                 gui.appendOutput("can not find Object #" + index);
@@ -211,6 +248,7 @@ public class CoreCommands implements ConsoleCommand
                 {
                     gui.appendOutput("removing Object #" + index);
                     obj.destroy();
+                    objs.getObjects().remove(obj);
                 }
                 else
                     gui.appendOutput("can not find Object #" + index);

@@ -74,7 +74,7 @@ public class VerletArmTest  extends DemoBase
         
         objects.getGUI();
         
-        boolean male = false;
+        boolean male = true;
         Avatar avatar;
         int feet, legs, torso, hair;
         
@@ -122,13 +122,13 @@ public class VerletArmTest  extends DemoBase
 
         
         // Make some more avatars
-        float zStep = 5.0f;
-        for (int i = 1; i < numberOfAvatars; i++)
-        {
-            hair++;
-            cloneAvatar(control, objects, wm, 0.0f, 0.0f, zStep, hair);
-            zStep += 5.0f;
-        }
+//        float zStep = 5.0f;
+//        for (int i = 1; i < numberOfAvatars; i++)
+//        {
+//            hair++;
+//            cloneAvatar(control, objects, wm, 0.0f, 0.0f, zStep, hair);
+//            zStep += 5.0f;
+//        }
         
     }
 
