@@ -746,11 +746,6 @@ public class SceneEssentials {
             if (clear)
                 m_currentPScene.getInstances().removeAllChildren();
 
-            if (m_currentHiProcessors == null)
-                m_currentHiProcessors = new ArrayList<ProcessorComponent>();
-            else
-                m_currentHiProcessors.clear();
-
             String bindPose = findBindPose(m_fileModel);
             if (bindPose.toString().contains("Female"))
                 m_gender = 2;
@@ -1812,7 +1807,7 @@ public class SceneEssentials {
      */
     public String findBindPose(File file) {
         int index = file.toString().indexOf(".");
-        String szfile = file.toString().substring(index +1);
+        String szfile = file.toString().substring(index +2);
         szfile += "/";
         String[] colladaList = getFileList(file);
         String szURL = null;
