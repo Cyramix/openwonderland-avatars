@@ -41,7 +41,6 @@ import imi.scene.Updatable;
 import imi.loaders.Instruction;
 import imi.loaders.Instruction.InstructionType;
 import imi.loaders.InstructionProcessor;
-import imi.loaders.collada.Collada;
 import imi.loaders.repository.AssetDescriptor;
 import imi.loaders.repository.Repository;
 import imi.loaders.repository.RepositoryUser;
@@ -78,13 +77,10 @@ import imi.scene.shader.AbstractShaderProgram;
 import imi.scene.shader.NoSuchPropertyException;
 import imi.scene.shader.ShaderProperty;
 import imi.scene.shader.dynamic.GLSLDataType;
-import imi.scene.shader.dynamic.GLSLShaderEffect;
-import imi.scene.shader.dynamic.GLSLShaderProgram;
-import imi.scene.shader.effects.MeshColorModulation;
 import imi.scene.shader.programs.ClothingShaderSpecColor;
 import imi.scene.shader.programs.EyeballShader;
 import imi.scene.shader.programs.FleshShader;
-import imi.scene.shader.programs.NormalMapShader;
+import imi.scene.shader.programs.HairShader;
 import imi.scene.shader.programs.SimpleTNLWithAmbient;
 import imi.scene.utils.PMeshUtils;
 import imi.scene.utils.tree.SerializationHelper;
@@ -509,17 +505,25 @@ public abstract class Character extends Entity implements SpatialObject, Animati
                 // Grab a copy of the material
                 PMeshMaterial meshMat = meshInst.getMaterialRef();
                 if (meshInst.getParent().getName().equals("Hair"))
-                {   
-                    GLSLShaderProgram hairShader = (GLSLShaderProgram)repo.newShader(NormalMapShader.class);
-                    GLSLShaderEffect effect = new MeshColorModulation();
-                    if (!hairShader.containsEffect(effect))
-                        hairShader.addEffect(effect);
+                {
+                    AbstractShaderProgram hairShader = repo.newShader(HairShader.class);
                     try {
-                        hairShader.compile();
                         hairShader.setProperty(new ShaderProperty("materialColor", GLSLDataType.GLSL_VEC3, m_attributes.getHairColor()));
-                    } catch (Exception ex) {
-                        Logger.getLogger(Character.class.getName()).log(Level.SEVERE, null, ex); }
+                    } catch (NoSuchPropertyException ex) {
+                        Logger.getLogger(Character.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                     meshMat.setShader(hairShader);
+
+//                    GLSLShaderProgram hairShader = (GLSLShaderProgram)repo.newShader(NormalMapShader.class);
+//                    GLSLShaderEffect effect = new MeshColorModulation();
+//                    if (!hairShader.containsEffect(effect))
+//                        hairShader.addEffect(effect);
+//                    try {
+//                        hairShader.compile();
+//                        hairShader.setProperty(new ShaderProperty("materialColor", GLSLDataType.GLSL_VEC3, m_attributes.getHairColor()));
+//                    } catch (Exception ex) {
+//                        Logger.getLogger(Character.class.getName()).log(Level.SEVERE, null, ex); }
+//                    meshMat.setShader(hairShader);
                 }
                 else
                     meshMat.setShader(accessoryShader);

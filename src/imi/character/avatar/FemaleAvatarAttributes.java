@@ -182,18 +182,18 @@ public class FemaleAvatarAttributes extends CharacterAttributes
     {
         switch (preset)
         {
-//            case 0:
-//                setHeadAttachment("assets/models/collada/Heads/FemaleHead/FemaleCHead.dae");
-//                break;
-//            case 1:
-//                setHeadAttachment("assets/models/collada/Heads/FemaleHead/FemaleAsianHead.dae");
-//                break;
-//            case 2:
-//                setHeadAttachment("assets/models/collada/Heads/FemaleHead/FemaleAAHead.dae");
-//                break;
-//            case 3:
-//                setHeadAttachment("assets/models/collada/Heads/FemaleHead/FemaleHispanicHead.dae");
-//                break;
+            case 0:
+                setHeadAttachment("assets/models/collada/Heads/FemaleHead/FemaleCHead.dae");
+                break;
+            case 1:
+                setHeadAttachment("assets/models/collada/Heads/FemaleHead/FemaleAsianHead.dae");
+                break;
+            case 2:
+                setHeadAttachment("assets/models/collada/Heads/FemaleHead/FemaleAAHead.dae");
+                break;
+            case 3:
+                setHeadAttachment("assets/models/collada/Heads/FemaleHead/FemaleHispanicHead.dae");
+                break;
             default:
                 setHeadAttachment("assets/models/collada/Heads/FemaleHead/FemaleCHead.dae");
         }

@@ -131,6 +131,7 @@ public class ParticleCollection implements Updatable
         TextureState ts = (TextureState)wm.getRenderManager().createRendererState(RenderState.RS_TEXTURE);
         ts.setTexture(TextureManager.loadTexture(ParticleCollection.class.getClassLoader().getResource("jmetest/data/texture/flaresmall.jpg"), Texture.MinificationFilter.BilinearNearestMipMap, Texture.MagnificationFilter.NearestNeighbor));
         ts.setEnabled(true);
+
         particles.setRenderState(ts);
         particles.setRenderQueueMode(Renderer.QUEUE_TRANSPARENT);
         particles.updateRenderState();
