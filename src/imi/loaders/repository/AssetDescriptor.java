@@ -56,7 +56,7 @@ public class AssetDescriptor implements Serializable
     /**
      * Construct a new instance. The conversion from string to URL should be
      * avoided if possible, as it causes a performance hit as well as throwing
-     * possible exceptions
+     * possible exceptions. Path is relative to users home dir
      * @param type The type of asset this is
      * @param relativeFilePath A relative file path. This is internally converted
      * to a file URL with the current working directory glued to the front. Keep
@@ -64,9 +64,33 @@ public class AssetDescriptor implements Serializable
      */
     public AssetDescriptor(SharedAssetType type, String relativeFilePath)
     {
-        m_type = type;
+        this(type, relativeFilePath, false);
+    }
 
-        URL newURL = FileUtils.convertRelativePathToFileURL(relativeFilePath);
+    /**
+     * Construct a new instance. The conversion from string to URL should be
+     * avoided if possible, as it causes a performance hit as well as throwing
+     * possible exceptions
+     * @param type The type of asset this is
+     * @param relativeFilePath A relative file path. This is internally converted
+     * to a file URL with the current working directory glued to the front. Keep
+     * this in mind to avoid <code>exception</code>al situations.
+     * @param isAbsolutePath is the path absolute, or relative to users home dir
+     */
+    public AssetDescriptor(SharedAssetType type, String relativeFilePath, boolean isAbsolutePath)
+    {
+        m_type = type;
+        URL newURL=null;
+
+        if (isAbsolutePath)
+            try {
+                newURL = new URL(relativeFilePath);
+            } catch (MalformedURLException ex) {
+                Logger.getLogger(AssetDescriptor.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        else {
+            newURL = FileUtils.convertRelativePathToFileURL(relativeFilePath);
+        }
 
         if (newURL != null)
             m_URLList.add(newURL);

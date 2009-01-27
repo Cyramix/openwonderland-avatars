@@ -325,13 +325,18 @@ public class RepositoryAsset extends ProcessorComponent
 
         if (result == null) // Load non-binary form
         {
-            result = TextureManager.loadTexture(loc,
-                                            Texture.MinificationFilter.Trilinear,
-                                            Texture.MagnificationFilter.Bilinear);
-            result.setWrap(Texture.WrapAxis.S, Texture.WrapMode.Repeat);
-            result.setWrap(Texture.WrapAxis.T, Texture.WrapMode.Repeat);
-            if (bUseTextureImporter)
-                writeBinaryTexture(binaryLocation, result);
+            try {
+                result = TextureManager.loadTexture(loc,
+                                                Texture.MinificationFilter.Trilinear,
+                                                Texture.MagnificationFilter.Bilinear);
+                result.setWrap(Texture.WrapAxis.S, Texture.WrapMode.Repeat);
+                result.setWrap(Texture.WrapAxis.T, Texture.WrapMode.Repeat);
+                if (bUseTextureImporter)
+                    writeBinaryTexture(binaryLocation, result);
+            } catch(Exception ex) {
+                logger.warning("Unable to load texture "+loc.toExternalForm()+"  because "+ex.getMessage());
+
+            }
         }
 
         if (result != null)

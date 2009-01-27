@@ -421,9 +421,9 @@ public class DemoBase
         // Now we make a new material that features some multi-texturing action
         geometryMaterial = new PMeshMaterial();
         geometryMaterial.setDiffuse(new ColorRGBA(1.0f, 1.0f, 1.0f, 0.0f));
-        geometryMaterial.setTexture("assets/textures/checkerboard.png", 0);
-        geometryMaterial.setTexture("assets/textures/largecheckerboard.PNG", 1);
-        geometryMaterial.setTexture("assets/textures/dwarf2.jpg", 2);
+        geometryMaterial.setTexture("assets/textures/checkerboard.png", 0, null);
+        geometryMaterial.setTexture("assets/textures/largecheckerboard.PNG", 1, null);
+        geometryMaterial.setTexture("assets/textures/dwarf2.jpg", 2, null);
         
         // Make the feet meshes - Now with sweet multitextured shoes!
         PPolygonMesh rightFootMesh = PMeshUtils.createBox("Foot", Vector3f.ZERO, 0.33f * scale, 0.35f * scale, 0.8f * scale, ColorRGBA.red); // vert color = red

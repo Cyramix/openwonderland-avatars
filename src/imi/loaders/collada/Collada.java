@@ -300,6 +300,7 @@ public class Collada
      * @return
      */
     public boolean load(PScene loadingPScene, URL colladaFile) {
+        System.err.println("--------------- load "+colladaFile.toExternalForm());
         boolean result = false;
         m_fileLocation = colladaFile;
         m_loadingPScene = loadingPScene;
@@ -361,7 +362,7 @@ public class Collada
 
         // If there are no joints in the skeleton we don't need a skeleton
         // (this is probably a non skinned mesh)
-        if (m_skeletonNode.getSkeletonRoot().getChildrenCount() == 0)
+        if (m_skeletonNode==null || m_skeletonNode.getSkeletonRoot()==null || m_skeletonNode.getSkeletonRoot().getChildrenCount() == 0)
             m_loadingPScene.getInstances().removeChild(m_skeletonNode);
 
         return result;

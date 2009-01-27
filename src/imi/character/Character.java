@@ -251,7 +251,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
 
             // Use a transparent material with a blob shadow texture
             PMeshMaterial shadowMaterial = new PMeshMaterial("ShadowMaterial");
-            shadowMaterial.setTexture("assets/textures/shadow.png", 0);
+            shadowMaterial.setTexture("assets/textures/shadow.png", 0, m_attributes.getBaseURL());
             shadowMaterial.setAlphaState(PMeshMaterial.AlphaTransparencyType.A_ONE);
             shadowMaterial.setColorMaterial(ColorMaterial.None);
 
@@ -797,7 +797,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
             m_AnimationProcessor.setEnable(false);
             processors.add(m_AnimationProcessor);
         }
-        
+
         m_characterProcessor = new CharacterProcessor(this);
         m_characterProcessor.stop();
         processors.add(m_characterProcessor);

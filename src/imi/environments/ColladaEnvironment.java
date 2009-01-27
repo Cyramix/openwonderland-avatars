@@ -71,12 +71,26 @@ public class ColladaEnvironment extends Entity
      */
     public ColladaEnvironment(WorldManager wm, String relativePath, String name)
     {
+        this(wm, relativePath, name, false);
+
+    }
+    /**
+     * Primary constructor. This initializes and loads the environment. The provided
+     * world manager is used to create a pscene, and once the loading has finished
+     * the scene is then initialized.
+     * @param wm The world manager; used in PScene construction and referencing the repository
+     * @param relativePath The relative path to the collada file containing the environment
+     * @param name The name of the land!
+     * @param baseURL the base url for the assets
+     */
+    public ColladaEnvironment(WorldManager wm, String relativePath, String name, boolean isAbsolutePath)
+    {
         super(name);
         m_wm = wm;
         // create and load the environment
         Repository repo = (Repository)wm.getUserData(Repository.class);
         // TODO !!
-        AssetDescriptor descriptor = new AssetDescriptor(SharedAsset.SharedAssetType.COLLADA, relativePath);
+        AssetDescriptor descriptor = new AssetDescriptor(SharedAsset.SharedAssetType.COLLADA, relativePath, isAbsolutePath);
         SharedAsset worldAsset = new SharedAsset(repo, descriptor, null);
 
         scene = new PScene(m_wm);

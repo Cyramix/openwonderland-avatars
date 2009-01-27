@@ -503,14 +503,18 @@ public class PMeshMaterial extends PNode implements Serializable
      * @param fileName  -   the file name of the texture file
      * @param index     -   if you don't use multitexturing simply use 0 (can not be higher than 7)
      */
-    public void setTexture(String fileName, int index)
+    public void setTexture(String fileName, int index, String baseURL)
     {
         if (index < 0 || index > 7 || fileName == null)
             return;
         URL textureLocation = null;
         try
         {
-            textureLocation = new File(fileName).toURI().toURL();
+            if (baseURL==null) {
+                textureLocation = new File(fileName).toURI().toURL();
+            } else {
+                textureLocation = new URL(baseURL+fileName);
+            }
         } catch (MalformedURLException ex)
         {
             Logger.getLogger(PMeshMaterial.class.getName()).log(Level.SEVERE, null, ex);

@@ -150,7 +150,7 @@ public class EyeBall extends PPolygonSkinnedMeshInstance
         // change textures to not use mip maps... leads to freaky eyeballs
         PMeshMaterial myMaterial = getMaterialRef();
         if (texture != null)
-            myMaterial.setTexture(texture, 0);
+            myMaterial.setTexture(texture, 0, character.m_attributes.getBaseURL());
         myMaterial.getTexture(0).setMinFilter(MinificationFilter.BilinearNoMipMaps);
 
 //        GLSLShaderProgram shader = new VertDeformerWithSpecAndNormalMap(wm);

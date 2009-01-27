@@ -391,6 +391,7 @@ public class Repository extends Entity
     {
         String urlString = file.toString();
         String hashFileName = MD5HashUtils.getStringFromHash(urlString.getBytes());
+        System.out.println("******** getCacheEquivalent for file "+file.toExternalForm()+"  "+new File(cacheFolder, hashFileName).getAbsolutePath());
         return new File(cacheFolder, hashFileName);
     }
 

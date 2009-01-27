@@ -122,7 +122,7 @@ public class DynamicShaderOnMeshTest extends DemoBase
         ((SkeletonNode)modelInst.findChild("MyTestSkeleton")).refresh();
         // make a new texture to slap on one of the instances
         mat = new PMeshMaterial("NewTexture");
-        mat.setTexture("assets/textures/checkerboard2.PNG", 0);
+        mat.setTexture("assets/textures/checkerboard2.PNG", 0,  null);
         //mat.setTexture("assets/textures/tgatest.tga", 0);
         mat.setShader(shader); // use the second shader we generated
         
