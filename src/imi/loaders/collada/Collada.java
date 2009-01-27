@@ -300,7 +300,6 @@ public class Collada
      * @return
      */
     public boolean load(PScene loadingPScene, URL colladaFile) {
-        System.err.println("--------------- load "+colladaFile.toExternalForm());
         boolean result = false;
         m_fileLocation = colladaFile;
         m_loadingPScene = loadingPScene;
