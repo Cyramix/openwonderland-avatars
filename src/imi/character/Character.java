@@ -608,6 +608,8 @@ public abstract class Character extends Entity implements SpatialObject, Animati
 
         // first the skinned meshes
         Iterable<PPolygonSkinnedMeshInstance> smInstances = m_skeleton.retrieveSkinnedMeshes("Head");
+        if (smInstances == null) // no subgroup found
+            logger.warning("No subgroups found during head installation");
         for (PPolygonSkinnedMeshInstance meshInst : smInstances)
         {
             PMeshMaterial meshMat = meshInst.getMaterialRef();

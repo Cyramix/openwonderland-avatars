@@ -122,10 +122,16 @@ public class LibraryControllersProcessor extends Processor
         for (String boneName : pSkinJoints.getNameArray().getValues())
         {
             PColladaNode colladaJointNode = m_colladaRef.findJoint(boneName);
-            String jointName = colladaJointNode.getName();
-            skinnedMesh.addJointName(jointName);
-            for (PPolygonSkinnedMesh skinKid : skinnedChildren)
-                skinKid.addJointName(jointName);
+            if (colladaJointNode != null)
+            {
+                String jointName = colladaJointNode.getName();
+                skinnedMesh.addJointName(jointName);
+                for (PPolygonSkinnedMesh skinKid : skinnedChildren)
+                    skinKid.addJointName(jointName);
+            }
+            else {
+                System.out.println("Joint not found: " + boneName);
+            }
         }
 
 

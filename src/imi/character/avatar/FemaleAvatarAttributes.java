@@ -182,6 +182,18 @@ public class FemaleAvatarAttributes extends CharacterAttributes
     {
         switch (preset)
         {
+//            case 0:
+//                setHeadAttachment("assets/models/collada/Heads/FemaleHead/FemaleCHead.dae");
+//                break;
+//            case 1:
+//                setHeadAttachment("assets/models/collada/Heads/FemaleHead/FemaleAsianHead.dae");
+//                break;
+//            case 2:
+//                setHeadAttachment("assets/models/collada/Heads/FemaleHead/FemaleAAHead.dae");
+//                break;
+//            case 3:
+//                setHeadAttachment("assets/models/collada/Heads/FemaleHead/FemaleHispanicHead.dae");
+//                break;
             default:
                 setHeadAttachment("assets/models/collada/Heads/FemaleHead/FemaleCHead.dae");
         }
@@ -325,10 +337,10 @@ public class FemaleAvatarAttributes extends CharacterAttributes
         load.add(new String("assets/models/collada/Avatars/FemaleAvatar/Female_Bind.dae")); // change!
 
         ArrayList<SkinnedMeshParams> add       = new ArrayList<SkinnedMeshParams>();
-        add.add(new SkinnedMeshParams("HandsShape",  "Hands"));
-        add.add(new SkinnedMeshParams("ShoesShape",  "Feet"));
-        add.add(new SkinnedMeshParams("TorsoNudeShape",  "UpperBody"));
-        add.add(new SkinnedMeshParams("LegsNudeShape",  "LowerBody"));
+        add.add(new SkinnedMeshParams("Hands_NudeShape",  "Hands"));
+        add.add(new SkinnedMeshParams("FemaleFeet_NudeShape",  "Feet"));
+        add.add(new SkinnedMeshParams("Torso_NudeShape",  "UpperBody"));
+        add.add(new SkinnedMeshParams("Legs_NudeShape",  "LowerBody"));
 
 
         setLoadInstructions(load);
