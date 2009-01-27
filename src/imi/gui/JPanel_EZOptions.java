@@ -99,6 +99,7 @@ public class JPanel_EZOptions extends javax.swing.JPanel implements ChangeListen
     Component                           m_Parent;
     boolean[]                           m_Colors            = new boolean[] { false, false, false, false, false, false, false };
     int                                 m_gender            = 1;
+    String                              m_baseURL           = "http://www.zeitgeistgames.com/";
 
 ////////////////////////////////////////////////////////////////////////////////
 // Class Methods
@@ -913,7 +914,7 @@ public class JPanel_EZOptions extends javax.swing.JPanel implements ChangeListen
         if (load.size() == 0)
             load.add(m_presetLists.get(selection)[2]);
 
-        attribs.setBaseURL("");
+        attribs.setBaseURL(m_baseURL);
         attribs.setLoadInstructions(load);
         attribs.setHeadAttachment(m_presets.get(selection).get(0)[0]);
         attribs.setAddInstructions(add.toArray(new CharacterAttributes.SkinnedMeshParams[add.size()]));
@@ -1533,25 +1534,6 @@ public class JPanel_EZOptions extends javax.swing.JPanel implements ChangeListen
                 data[i][1] = m_presetLists.get(i)[0];
             }
         }
-//        String Lives0 = new String("file://localhost/" + System.getProperty("user.dir") + "/assets/textures/Lives_0.png");
-//        String Lives1 = new String("file://localhost/" + System.getProperty("user.dir") + "/assets/textures/Lives_1.png");
-//        String Lives2 = new String("file://localhost/" + System.getProperty("user.dir") + "/assets/textures/Lives_2.png");
-//        String Lives3 = new String("file://localhost/" + System.getProperty("user.dir") + "/assets/textures/Lives_3.png");
-//        String Lives4 = new String("file://localhost/" + System.getProperty("user.dir") + "/assets/textures/Lives_4.png");
-//        String Lives5 = new String("file://localhost/" + System.getProperty("user.dir") + "/assets/textures/Lives_5.png");
-//
-//        String[] tex  = new String[] { Lives0, Lives1, Lives2, Lives3, Lives4, Lives5 };
-//
-//        String[][] data = null;
-//        if (m_presetLists != null) {
-//            int size = m_presetLists.size();
-//            data = new String[size][2];
-//
-//            for (int i = 0; i < size; i++) {
-//                data[i][0] = tex[i];
-//                data[i][1] = tex[i];
-//            }
-//        }
         return data;
     }
 

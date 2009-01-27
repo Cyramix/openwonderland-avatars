@@ -1283,6 +1283,30 @@ public class SceneEssentials {
     }
 
     /**
+     * Removes the current head installed on the avatar and swaps it out with the
+     * selected head model collada file (*.dae).  Method will return out if there
+     * is no avatar loaded in the current scene.
+     * @param useRepository - boolean true to use the repository
+     * @param arg0 - component parent containing information about the model
+     * @param data - string array containing information about the model
+     *        { 0= meshname, 1= description, 2= male/female, 3= file location, 4= meshtype, 5= table id }
+     */
+    public void addAvatarHeadDAEURL(boolean useRepository, Component arg0, String url, String relativePath) {
+        if (m_avatar == null) {
+            System.out.println("You have not loaded an avatar yet... Please load one first");
+            return;
+        }
+
+        try {
+            URL urlHead = new URL(url);
+            m_avatar.installHead(urlHead);
+            m_avatar.getAttributes().setHeadAttachment(relativePath);
+        } catch (MalformedURLException ex) {
+            Logger.getLogger(SceneEssentials.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    /**
      * Removes the meshes loaded in the specified subgroup and loads the new collada
      * file (*.dae) mesh data into that subgroup.  Method will return out if there
      * is no avatar loaded in the current scene.

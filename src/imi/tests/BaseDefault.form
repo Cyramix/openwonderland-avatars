@@ -32,6 +32,9 @@
               <Properties>
                 <Property name="text" type="java.lang.String" value="Load Model"/>
               </Properties>
+              <AuxValues>
+                <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="jMenu_LoadModels.getPopupMenu().setLightWeightPopupEnabled(false);"/>
+              </AuxValues>
               <SubComponents>
                 <MenuItem class="javax.swing.JMenuItem" name="jMenuItem_Avatar">
                   <Properties>
@@ -46,7 +49,7 @@
                     <Property name="text" type="java.lang.String" value="Heads"/>
                   </Properties>
                   <AuxValues>
-                    <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="jMenuItem_Heads.addActionListener(new java.awt.event.ActionListener() {&#xa;    public void actionPerformed(java.awt.event.ActionEvent evt) {&#xa;        loadingWindow(true);&#xa;        runProgressBar(true);&#xa;        m_sceneData.addAvatarHeadDAEFile(true, m_base);&#xa;        //m_sceneData.setCameraOnModel();&#xa;        resetOpenTools();&#xa;        runProgressBar(false);&#xa;        loadingWindow(false);&#xa;    }&#xa;});"/>
+                    <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="jMenuItem_Heads.addActionListener(new java.awt.event.ActionListener() {&#xa;    public void actionPerformed(java.awt.event.ActionEvent evt) {&#xa;        loadingWindow(true);&#xa;        runProgressBar(true);&#xa;        m_sceneData.addAvatarHeadDAEFile(true, m_base);&#xa;        resetOpenTools();&#xa;        runProgressBar(false);&#xa;        loadingWindow(false);&#xa;    }&#xa;});"/>
                   </AuxValues>
                 </MenuItem>
                 <MenuItem class="javax.swing.JMenuItem" name="jMenuItem_Clothes">
@@ -63,6 +66,40 @@
                   </Properties>
                   <AuxValues>
                     <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="jMenuItem_Accessories.addActionListener(new java.awt.event.ActionListener() {&#xa;    public void actionPerformed(java.awt.event.ActionEvent evt) {&#xa;        runProgressBar(true);&#xa;        m_sceneData.addMeshDAEFile(true, m_base);&#xa;        resetOpenTools();&#xa;        runProgressBar(false);&#xa;    }&#xa;});"/>
+                  </AuxValues>
+                </MenuItem>
+              </SubComponents>
+            </Menu>
+            <Menu class="javax.swing.JMenu" name="jMenu_ViewModels">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="View Model"/>
+              </Properties>
+              <AuxValues>
+                <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="jMenu_ViewModels.getPopupMenu().setLightWeightPopupEnabled(false);"/>
+              </AuxValues>
+              <SubComponents>
+                <MenuItem class="javax.swing.JMenuItem" name="jMenuItem_LoadHead">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="Head"/>
+                  </Properties>
+                  <AuxValues>
+                    <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="jMenuItem_LoadHead.addActionListener(new java.awt.event.ActionListener() {&#xa;    public void actionPerformed(java.awt.event.ActionEvent evt) {&#xa;        loadingWindow(true);&#xa;        runProgressBar(true);&#xa;        m_sceneData.loadAvatarHeadDAEFile(true, m_base);&#xa;        resetOpenTools();&#xa;        runProgressBar(false);&#xa;        loadingWindow(false);&#xa;    }&#xa;});"/>
+                  </AuxValues>
+                </MenuItem>
+                <MenuItem class="javax.swing.JMenuItem" name="jMenuItem_LoadClothes">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="Clothes"/>
+                  </Properties>
+                  <AuxValues>
+                    <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="jMenuItem_LoadClothes.addActionListener(new java.awt.event.ActionListener() {&#xa;    public void actionPerformed(java.awt.event.ActionEvent evt) {&#xa;        loadingWindow(true);&#xa;        runProgressBar(true);&#xa;        m_sceneData.loadSMeshDAEFile(true, m_base);&#xa;        resetOpenTools();&#xa;        runProgressBar(false);&#xa;        loadingWindow(false);&#xa;    }&#xa;});"/>
+                  </AuxValues>
+                </MenuItem>
+                <MenuItem class="javax.swing.JMenuItem" name="jMenuItem_LoadAcces">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="Accessories"/>
+                  </Properties>
+                  <AuxValues>
+                    <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="jMenuItem_LoadAcces.addActionListener(new java.awt.event.ActionListener() {&#xa;    public void actionPerformed(java.awt.event.ActionEvent evt) {&#xa;        loadingWindow(true);&#xa;        runProgressBar(true);&#xa;        m_sceneData.loadMeshDAEFile(true, m_base);&#xa;        resetOpenTools();&#xa;        runProgressBar(false);&#xa;        loadingWindow(false);&#xa;    }&#xa;});"/>
                   </AuxValues>
                 </MenuItem>
               </SubComponents>
@@ -88,9 +125,6 @@
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jMenuItem_LoadXMLFileActionPerformed"/>
               </Events>
-              <AuxValues>
-                <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="jMenuItem_LoadXMLFile.addActionListener(new java.awt.event.ActionListener() {&#xa;    public void actionPerformed(java.awt.event.ActionEvent evt) {&#xa;        //fileIOPanel1.loadConfigFile();&#xa;    }&#xa;});"/>
-              </AuxValues>
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="jMenuItem_SaveXMLFile">
               <Properties>
@@ -102,9 +136,6 @@
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jMenuItem_SaveXMLFileActionPerformed"/>
               </Events>
-              <AuxValues>
-                <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="jMenuItem_SaveXMLFile.addActionListener(new java.awt.event.ActionListener() {&#xa;    public void actionPerformed(java.awt.event.ActionEvent evt) {&#xa;        //fileIOPanel1.saveConfigFile();&#xa;    }&#xa;});"/>
-              </AuxValues>
             </MenuItem>
           </SubComponents>
         </Menu>
@@ -146,6 +177,14 @@
               </Properties>
               <AuxValues>
                 <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="jMenuItem_ColorSelector.addActionListener(new java.awt.event.ActionListener() {&#xa;    public void actionPerformed(java.awt.event.ActionEvent evt) {&#xa;        runProgressBar(true);&#xa;        openColorSelector();&#xa;        runProgressBar(false);&#xa;    }&#xa;});"/>
+              </AuxValues>
+            </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="jMenuItem1">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Head Selector"/>
+              </Properties>
+              <AuxValues>
+                <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="jMenuItem1.addActionListener(new java.awt.event.ActionListener() {&#xa;    public void actionPerformed(java.awt.event.ActionEvent evt) {&#xa;        runProgressBar(true);&#xa;        openHeadSelector();&#xa;        runProgressBar(false);&#xa;    }&#xa;});"/>
               </AuxValues>
             </MenuItem>
           </SubComponents>
