@@ -99,7 +99,7 @@ public class ClothingShaderDiffuseAsSpec extends BaseShaderProgram implements Ab
         "	    color.a = 1.0;" +
         "       float RDotV = dot(normalize((reflect(-lightVector, normal))), normalize(vec3(-position)));" +
         "       vec4 specular = texColor * gl_LightSource[0].specular * pow(max(0.0, RDotV), SpecularExponent);" +
-        "    	gl_FragColor = color + (specular * SpecularComponent);" +
+        "    	gl_FragColor = color + (specular * SpecularComponent * nxDir);" +
         "}"
     );
     /**

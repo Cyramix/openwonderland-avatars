@@ -23,7 +23,6 @@ import imi.scene.shader.dynamic.GLSLShaderEffect;
 import imi.scene.shader.dynamic.GLSLShaderUniform;
 import imi.scene.shader.dynamic.GLSLShaderVariable;
 import imi.scene.shader.dynamic.GLSLShaderVarying;
-import imi.scene.shader.dynamic.GLSLVertexAttribute;
 import java.util.ArrayList;
 
 /**
