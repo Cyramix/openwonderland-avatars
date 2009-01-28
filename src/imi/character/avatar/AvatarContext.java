@@ -24,10 +24,7 @@ import imi.character.statemachine.corestates.SitOnGroundState;
 import imi.character.statemachine.corestates.IdleState;
 import imi.character.statemachine.corestates.FlyState;
 import imi.character.statemachine.corestates.FallFromSitState;
-import imi.character.statemachine.corestates.ActionState;
 import imi.character.CharacterController;
-import imi.character.steering.GoSit;
-import imi.character.steering.GoTo;
 import imi.character.statemachine.corestates.transitions.FlyToIdle;
 import imi.character.statemachine.corestates.transitions.IdleToFly;
 import imi.character.statemachine.corestates.transitions.IdleToAction;
@@ -56,9 +53,10 @@ import imi.character.statemachine.corestates.RunState;
 import imi.character.statemachine.corestates.transitions.RunToWalk;
 import imi.character.statemachine.corestates.transitions.WalkToRun;
 import imi.character.steering.FollowPath;
+import imi.character.steering.GoSit;
+import imi.character.steering.GoTo;
 import java.util.ArrayList;
 import java.util.Hashtable;
-import java.util.Iterator;
 
 /**
  * This is a GameContext concrete e.g.
@@ -241,14 +239,6 @@ public class AvatarContext extends GameContext
         // GoTo to location - if path is available from the current location
         else if (trigger == TriggerNames.GoTo1.ordinal() && pressed)
         {
-//
-//            // Create male avatar
-//            int feet  = (int) (Math.random() * 10000 % 4);
-//            int legs  = (int) (Math.random() * 10000 % 4);
-//            int torso = (int) (Math.random() * 10000 % 6);
-//            int hair  = (int) (Math.random() * 10000 % 17);
-//            new Avatar(new MaleAvatarAttributes("Avatar", feet, legs, torso, hair, 0), avatar.getWorldManager());
-//
            // System.out.println("fix: " + avatar.getPosition());
             
             AI.clearTasks();
@@ -348,32 +338,8 @@ public class AvatarContext extends GameContext
         location = avatar.getObjectCollection().findNearestLocation(avatar, 10000.0f, 1.0f, false);
         if (location != null)
         {
-            AI.addTaskToTop(new GoTo(location, this));
-            
-            ///steering.addTaskToTop(new )
-//            Vector3f pos = location.getPosition();
-//            Vector3f direction = location.getForwardVector();
-//            steering.setGoalPosition(pos);
-//            steering.setSittingDirection(direction);
-//            steering.setGoal(location);
-//            // GoTo and sit there
+            AI.addTaskToTop(new GoTo(location.getPosition(), this));
             AI.setEnable(true);
-//            steering.setReachedGoal(false);
-//
-//            // Update global goal point
-//            Goal goalPoint = (Goal) avatar.getWorldManager().getUserData(Goal.class);
-//            if (goalPoint != null)
-//            {
-//                goalPoint.setGoal(location);
-//                PMatrix goal = new PMatrix(pos); 
-//                goal.lookAt(pos, pos.add(direction), Vector3f.UNIT_Y);
-//                goal.invert();
-//                goalPoint.getTransform().setLocalMatrix(goal);
-//                goalPoint.getTransform().getLocalMatrix(true).setScale(1.0f);
-//                PScene GPScene = goalPoint.getPScene();
-//                GPScene.setDirty(true, true);
-//                GPScene.submitTransforms();
-//            }
         }
     }
         
@@ -385,35 +351,9 @@ public class AvatarContext extends GameContext
         SpatialObject obj = avatar.getObjectCollection().findNearestChair(avatar, 10000.0f, 1.0f, true);
         if (obj != null && !((Chair)obj).isOccupied())
         {
-            //Vector3f pos = ((Chair)obj).getGoalPosition();
-            //Vector3f direction = ((Chair)obj).getGoalForwardVector();
-            
             GoSit task = new GoSit((Chair)obj, this);
             AI.addTaskToTop(task);
-            
-//            steering.setGoalPosition(pos);
-//            steering.setSittingDirection(direction);
-//            steering.setGoal(obj);
-            
-            // GoTo and sit there
             AI.setEnable(true);
-            //steering.setReachedGoal(false);
-
-//            // Update global goal point
-//            Goal goalPoint = (Goal) avatar.getWorldManager().getUserData(Goal.class);
-//            if (goalPoint != null)
-//            {
-//                goalPoint.setGoal(obj);
-//                PMatrix goal = new PMatrix(pos); 
-//                goal.lookAt(pos, pos.add(direction), Vector3f.UNIT_Y);
-//                goal.invert();
-//                goalPoint.getTransform().setLocalMatrix(goal);
-//                goalPoint.getTransform().getLocalMatrix(true).setScale(1.0f);
-//                PScene GPScene = goalPoint.getPScene();
-//                GPScene.setDirty(true, true);
-//                GPScene.submitTransforms();
-//            }
-            
             return true;
         }
         

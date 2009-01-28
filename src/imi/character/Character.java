@@ -502,28 +502,17 @@ public abstract class Character extends Entity implements SpatialObject, Animati
             if (current instanceof PPolygonMeshInstance)
             {
                 PPolygonMeshInstance meshInst = (PPolygonMeshInstance) current;
-                // Grab a copy of the material
                 PMeshMaterial meshMat = meshInst.getMaterialRef();
                 if (meshInst.getParent().getName().equals("Hair"))
                 {
                     AbstractShaderProgram hairShader = repo.newShader(HairShader.class);
                     try {
                         hairShader.setProperty(new ShaderProperty("materialColor", GLSLDataType.GLSL_VEC3, m_attributes.getHairColor()));
+                        hairShader.setProperty(new ShaderProperty("specColor", GLSLDataType.GLSL_VEC3, m_attributes.getHairColor()));
                     } catch (NoSuchPropertyException ex) {
                         Logger.getLogger(Character.class.getName()).log(Level.SEVERE, null, ex);
                     }
                     meshMat.setShader(hairShader);
-
-//                    GLSLShaderProgram hairShader = (GLSLShaderProgram)repo.newShader(NormalMapShader.class);
-//                    GLSLShaderEffect effect = new MeshColorModulation();
-//                    if (!hairShader.containsEffect(effect))
-//                        hairShader.addEffect(effect);
-//                    try {
-//                        hairShader.compile();
-//                        hairShader.setProperty(new ShaderProperty("materialColor", GLSLDataType.GLSL_VEC3, m_attributes.getHairColor()));
-//                    } catch (Exception ex) {
-//                        Logger.getLogger(Character.class.getName()).log(Level.SEVERE, null, ex); }
-//                    meshMat.setShader(hairShader);
                 }
                 else
                     meshMat.setShader(accessoryShader);

@@ -18,7 +18,6 @@
 package imi.character.steering;
 
 import imi.character.*;
-import imi.character.avatar.AvatarContext;
 import imi.character.objects.LocationNode;
 import imi.character.objects.SpatialObject;
 import imi.character.statemachine.GameContext;
@@ -36,8 +35,9 @@ public class FollowPath implements Task
     private String  status = "Chilling";
     
     private String path = null;
-    
     private LocationNode location = null;
+    
+    private GoTo go = null;
     
     private boolean bDone = false;
 
@@ -55,6 +55,7 @@ public class FollowPath implements Task
         {
             path = pathName;
             location = node;
+            go = new GoTo(node.getPosition(), context);
         }
     }
 
@@ -78,18 +79,24 @@ public class FollowPath implements Task
 
     public void update(float deltaTime) 
     {
-        Connection con = location.findSourceConnection(path);
-        if (con == null)
+        if (go.verify())
+            go.update(deltaTime);
+        else
         {
-            status = "was no able to find connection";
-            bDone = true;
-            return;
-        }
-        
-        if (con.getDestination() instanceof LocationNode)
-        {
-            location = (LocationNode)con.getDestination();
-            ((AvatarContext)context).getSteering().addTaskToTop(new GoTo(location, context)); 
+            Connection con = location.findSourceConnection(path);
+            if (con == null)
+            {
+                status = "was not able to find connection";
+                bDone = true;
+                return;
+            }
+
+            if (con.getDestination() instanceof LocationNode)
+            {
+                location = (LocationNode)con.getDestination();
+                go.reset(location.getPosition());
+                //((AvatarContext)context).getSteering().addTaskToTop(new GoTo2(location.getPosition(), context));  old way
+            }
         }
     }
 
@@ -98,7 +105,7 @@ public class FollowPath implements Task
     }
 
     /**
-     * Has this task has no singular goal, null will always be returned.
+     * This task has no singular goal, null will always be returned.
      * @return null
      */
     public SpatialObject getGoal() {

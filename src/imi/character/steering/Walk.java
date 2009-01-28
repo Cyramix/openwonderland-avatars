@@ -21,8 +21,6 @@ import imi.character.*;
 import imi.character.avatar.AvatarContext;
 import imi.character.avatar.AvatarContext.TriggerNames;
 import imi.character.objects.SpatialObject;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *  Walk forward or backwards for a set amount of time
@@ -95,7 +93,7 @@ public class Walk implements Task
             return;
         }
 
-        avatarContext.getController().getWindow().setTitle("Walking Back");
+        //avatarContext.getController().getWindow().setTitle("Walking Back");
     }
 
     /**

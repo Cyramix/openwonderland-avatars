@@ -461,6 +461,10 @@ public class MaleAvatarAttributes extends CharacterAttributes
                 // Suit Jacket
                 load.add(new String("assets/models/collada/Clothing/MaleClothing/SuitJacket.dae"));
                 add.add(new SkinnedMeshParams("SuitJacketShape", "UpperBody"));
+                // Put something under that jacket!
+                // Dress shirt for suit
+                load.add(new String("assets/models/collada/Clothing/MaleClothing/SuitDressShirt.dae"));
+                add.add(new SkinnedMeshParams("SuitShirtShape", "UpperBody"));
             }
             break;
             case 6:

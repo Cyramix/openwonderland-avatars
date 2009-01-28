@@ -118,6 +118,11 @@ public class ObjectCollectionGUI implements ActionListener
         if (!processed)
             appendOutput("unknown command");
     }
+
+    public void show() 
+    {
+        frame.setVisible(true);
+    }
     
     private void chatChannel(String channelName, String text)
     {

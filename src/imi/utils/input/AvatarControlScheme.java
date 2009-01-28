@@ -253,7 +253,8 @@ public class AvatarControlScheme extends InputScheme
             {
                 if(objects != null)
                 {
-                    objects.addRandomChair();
+                    objects.getGUI().show();
+                    //objects.addRandomChair();
                 }
             }
             
