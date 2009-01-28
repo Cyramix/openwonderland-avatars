@@ -669,7 +669,7 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
         // Add the camera
         Entity camera = new Entity("DefaultCamera");
         CameraComponent cc = wm.getRenderManager().createCameraComponent(cameraSG, m_cameraNode, 
-                m_width, m_height, 45.0f, m_aspect, 0.1f, 1000.0f, true);
+                m_width, m_height, 20.0f, m_aspect, 0.03f, 1000.0f, true);
         m_renderBuffer.setCameraComponent(cc);
         camera.addComponent(CameraComponent.class, cc);
         
@@ -1125,6 +1125,29 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
         }
     }
 
+    public void setCameraBehavior(int cameratype) {
+        switch(cameratype)
+        {
+            case 0:     // FPS Camera
+            {
+                TumbleObjectCamState tobj = new TumbleObjectCamState(null);
+                tobj.setTargetFocalPoint(new Vector3f(0.0f, 0.0f, 0.0f));
+                tobj.setTargetNeedsUpdate(true);
+                m_cameraProcessor.setCameraBehavior(new TumbleObjectCamModel(), tobj);
+                break;
+            }
+            case 1:     // Tumble Camera
+            {
+                FirstPersonCamState state = new FirstPersonCamState();
+                FirstPersonCamModel model = new FirstPersonCamModel();
+                m_cameraProcessor.setCameraBehavior(model, state);
+                break;
+            }
+        }
+
+        repositionCamera(1);
+    }
+
 ////////////////////////////////////////////////////////////////////////////////
 // CLASS METHODS - END
 ////////////////////////////////////////////////////////////////////////////////
@@ -1138,6 +1161,7 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
     private void initComponents() {
         java.awt.GridBagConstraints gridBagConstraints;
 
+        buttonGroup1 = new javax.swing.ButtonGroup();
         jPanel_MainPanel = new javax.swing.JPanel();
         jToolBar_Hotkeys = new javax.swing.JToolBar();
         jButton_EZoptions = new javax.swing.JButton();
@@ -1157,7 +1181,9 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
         jRadioButton_Top = new javax.swing.JRadioButton();
         jRadioButton_Mid = new javax.swing.JRadioButton();
         jRadioButton_Bottom = new javax.swing.JRadioButton();
+        jToolBar_Camera = new javax.swing.JToolBar();
         jComboBox1 = new javax.swing.JComboBox();
+        jComboBox_CameraTypes = new javax.swing.JComboBox();
         jMenuBar_MainMenu = new javax.swing.JMenuBar();
         jMenu_File = new javax.swing.JMenu();
         jMenu_LoadModels = new javax.swing.JMenu();
@@ -1312,7 +1338,7 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 3;
+        gridBagConstraints.gridy = 4;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         jPanel_MainPanel.add(jPanel_ProgressBar, gridBagConstraints);
 
@@ -1322,6 +1348,7 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
         jToolBar_Views.setMinimumSize(new java.awt.Dimension(400, 27));
         jToolBar_Views.setPreferredSize(new java.awt.Dimension(400, 27));
 
+        buttonGroup1.add(jRadioButton_Top);
         jRadioButton_Top.setText("Focus Top");
         jRadioButton_Top.setFocusable(false);
         jRadioButton_Top.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -1332,6 +1359,7 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
         });
         jToolBar_Views.add(jRadioButton_Top);
 
+        buttonGroup1.add(jRadioButton_Mid);
         jRadioButton_Mid.setSelected(true);
         jRadioButton_Mid.setText("Focus Mid");
         jRadioButton_Mid.setFocusable(false);
@@ -1343,6 +1371,7 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
         });
         jToolBar_Views.add(jRadioButton_Mid);
 
+        buttonGroup1.add(jRadioButton_Bottom);
         jRadioButton_Bottom.setText("Focus Bottom");
         jRadioButton_Bottom.setFocusable(false);
         jRadioButton_Bottom.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -1353,10 +1382,21 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
         });
         jToolBar_Views.add(jRadioButton_Bottom);
 
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        jPanel_MainPanel.add(jToolBar_Views, gridBagConstraints);
+
+        jToolBar_Camera.setFloatable(false);
+        jToolBar_Camera.setRollover(true);
+        jToolBar_Camera.setMinimumSize(new java.awt.Dimension(400, 27));
+        jToolBar_Camera.setPreferredSize(new java.awt.Dimension(400, 27));
+
         jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Cam Pos -Z", "Cam Pos +Z", "Cam Pos -X", "Cam Pos +X" }));
         jComboBox1.setMaximumSize(new java.awt.Dimension(220, 27));
-        jComboBox1.setMinimumSize(new java.awt.Dimension(50, 27));
-        jComboBox1.setPreferredSize(new java.awt.Dimension(50, 27));
+        jComboBox1.setMinimumSize(new java.awt.Dimension(200, 27));
+        jComboBox1.setPreferredSize(new java.awt.Dimension(200, 27));
         jComboBox1.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
                 if (evt.getStateChange() == java.awt.event.ItemEvent.SELECTED)
@@ -1364,13 +1404,22 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
             }
         });
         jComboBox1.setSelectedIndex(0);
-        jToolBar_Views.add(jComboBox1);
+        jToolBar_Camera.add(jComboBox1);
+
+        jComboBox_CameraTypes.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Tumble Camera", "FPS Camera" }));
+        jComboBox_CameraTypes.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                if (evt.getStateChange() == java.awt.event.ItemEvent.SELECTED)
+                setCameraBehavior(jComboBox_CameraTypes.getSelectedIndex());
+            }
+        });
+        jToolBar_Camera.add(jComboBox_CameraTypes);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 2;
+        gridBagConstraints.gridy = 3;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        jPanel_MainPanel.add(jToolBar_Views, gridBagConstraints);
+        jPanel_MainPanel.add(jToolBar_Camera, gridBagConstraints);
 
         jMenuBar_MainMenu.setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED));
         jMenuBar_MainMenu.setMaximumSize(new java.awt.Dimension(999999, 25));
@@ -1444,8 +1493,11 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 loadingWindow(true);
                 runProgressBar(true);
+
                 m_sceneData.loadAvatarHeadDAEFile(true, m_base);
+                repositionCamera(1);
                 resetOpenTools();
+
                 runProgressBar(false);
                 loadingWindow(false);
             }
@@ -1457,8 +1509,11 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 loadingWindow(true);
                 runProgressBar(true);
+
                 m_sceneData.loadSMeshDAEFile(true, m_base);
+                repositionCamera(1);
                 resetOpenTools();
+
                 runProgressBar(false);
                 loadingWindow(false);
             }
@@ -1470,8 +1525,11 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 loadingWindow(true);
                 runProgressBar(true);
+
                 m_sceneData.loadMeshDAEFile(true, m_base);
+                repositionCamera(1);
                 resetOpenTools();
+
                 runProgressBar(false);
                 loadingWindow(false);
             }
@@ -1597,12 +1655,14 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
     }//GEN-LAST:event_jMenuItem_SaveXMLFileActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.ButtonGroup buttonGroup1;
     private java.awt.Canvas canvas_SceneRenderWindow;
     private javax.swing.JButton jButton_BasicEditor;
     private javax.swing.JButton jButton_EZoptions;
     private javax.swing.JButton jButton_IntermediateOptions;
     private javax.swing.JButton jButton_ServerBrowser;
     private javax.swing.JComboBox jComboBox1;
+    private javax.swing.JComboBox jComboBox_CameraTypes;
     private javax.swing.JLabel jLabel_FPSCounter;
     private javax.swing.JLabel jLabel_LoadingText;
     private javax.swing.JMenuBar jMenuBar_MainMenu;
@@ -1637,6 +1697,7 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
     private javax.swing.JToolBar.Separator jSeparator1;
     private javax.swing.JToolBar.Separator jSeparator2;
     private javax.swing.JToolBar.Separator jSeparator3;
+    private javax.swing.JToolBar jToolBar_Camera;
     private javax.swing.JToolBar jToolBar_Hotkeys;
     private javax.swing.JToolBar jToolBar_Views;
     // End of variables declaration//GEN-END:variables
@@ -1739,10 +1800,11 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
         m_camPos = new Vector3f(m_focalPt);
 
         if (type == 2) {
-            if (m_prevPerspective == 0 || m_prevPerspective == 1)
+            if (m_prevPerspective == 0 || m_prevPerspective == 1) {
                 m_offset = oldPos.z * -1;
-            else if (m_prevPerspective == 2 || m_prevPerspective == 3)
+            } else if (m_prevPerspective == 2 || m_prevPerspective == 3) {
                 m_offset = oldPos.x * -1;
+            }
         }
 
         switch(iPerspective)
