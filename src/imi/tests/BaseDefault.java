@@ -1126,20 +1126,29 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
     }
 
     public void setCameraBehavior(int cameratype) {
+        Vector3f prevPos = null;
+        if (m_cameraProcessor.getState() instanceof TumbleObjectCamState)
+            prevPos = ((TumbleObjectCamState)m_cameraProcessor.getState()).getCameraPosition();
+        else if (m_cameraProcessor.getState() instanceof FirstPersonCamState)
+            prevPos = ((FirstPersonCamState)m_cameraProcessor.getState()).getPosition();
+
         switch(cameratype)
         {
-            case 0:     // FPS Camera
+            case 0:     // Tumble Camera
             {
+                toggleTumbleCamControls(true);
                 TumbleObjectCamState tobj = new TumbleObjectCamState(null);
                 tobj.setTargetFocalPoint(new Vector3f(0.0f, 0.0f, 0.0f));
                 tobj.setTargetNeedsUpdate(true);
                 m_cameraProcessor.setCameraBehavior(new TumbleObjectCamModel(), tobj);
                 break;
             }
-            case 1:     // Tumble Camera
+            case 1:     // FPS Camera
             {
+                toggleTumbleCamControls(false);
                 FirstPersonCamState state = new FirstPersonCamState();
                 FirstPersonCamModel model = new FirstPersonCamModel();
+                state.setPosition(prevPos);
                 m_cameraProcessor.setCameraBehavior(model, state);
                 break;
             }
@@ -1844,5 +1853,12 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
             iFocal = 2;
 
         return iFocal;
+    }
+
+    public void toggleTumbleCamControls(boolean onoff) {
+        jToolBar_Views.setEnabled(onoff);
+        jToolBar_Views.setVisible(onoff);
+        jComboBox1.setEnabled(onoff);
+        jComboBox1.setVisible(onoff);
     }
 }
