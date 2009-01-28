@@ -60,12 +60,15 @@ import imi.scene.PMatrix;
 import imi.scene.PNode;
 import imi.scene.PScene;
 import imi.scene.PTransform;
+import imi.scene.camera.behaviors.CameraModel;
 import imi.scene.camera.behaviors.FirstPersonCamModel;
 import imi.scene.camera.behaviors.TumbleObjectCamModel;
+import imi.scene.camera.state.CameraState;
 import imi.scene.camera.state.FirstPersonCamState;
 import imi.scene.camera.state.TumbleObjectCamState;
 import imi.scene.polygonmodel.PPolygonMesh;
 import imi.scene.polygonmodel.PPolygonModel;
+import imi.scene.polygonmodel.PPolygonModelInstance;
 import imi.scene.polygonmodel.parts.PMeshMaterial;
 import imi.scene.polygonmodel.parts.polygon.PPolygon;
 import imi.scene.polygonmodel.parts.skinned.PBoneIndices;
@@ -140,6 +143,10 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
     protected Dimension                 m_DefaultSize       = new Dimension(m_width, 700);
     protected Dimension                 m_OpenSize          = new Dimension(500, 675);
     protected JDialog                   m_LoadWindow        = null;
+    protected float                     m_offset            = 3.2f;
+    protected Vector3f                  m_camPos            = new Vector3f(0.0f, 0.0f, 0.0f);
+    protected Vector3f                  m_focalPt           = new Vector3f(0.0f, 0.0f, 0.0f);
+    protected int                       m_prevPerspective   = -1;
 
 ////////////////////////////////////////////////////////////////////////////////
 // CLASS DATA MEMBERS - END
@@ -687,14 +694,14 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
         AWTInputComponent cameraListener = (AWTInputComponent)wm.getInputManager().createInputComponent(canvas_SceneRenderWindow, eventMask);
         m_cameraProcessor = new FlexibleCameraProcessor(cameraListener, cameraSG, wm, camera, sky);
         
-        FirstPersonCamState state = new FirstPersonCamState();
-        FirstPersonCamModel model = new FirstPersonCamModel();
-        m_cameraProcessor.setCameraBehavior(model, state);
+//        FirstPersonCamState state = new FirstPersonCamState();
+//        FirstPersonCamModel model = new FirstPersonCamModel();
+//        m_cameraProcessor.setCameraBehavior(model, state);
 
-//        TumbleObjectCamState tobj = new TumbleObjectCamState(null);
-//        tobj.setTargetFocalPoint(new Vector3f(0.0f, 0.0f, 0.0f));
-//        tobj.setTargetNeedsUpdate(true);
-//        m_cameraProcessor.setCameraBehavior(new TumbleObjectCamModel(), tobj);
+        TumbleObjectCamState tobj = new TumbleObjectCamState(null);
+        tobj.setTargetFocalPoint(new Vector3f(0.0f, 0.0f, 0.0f));
+        tobj.setTargetNeedsUpdate(true);
+        m_cameraProcessor.setCameraBehavior(new TumbleObjectCamModel(), tobj);
         
         //OrbitCameraProcessor eventProcessor = new OrbitCameraProcessor(cameraListener, cameraNode, wm, camera);
         m_cameraProcessor.setRunInRenderer(true);
@@ -1146,6 +1153,11 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
         jProgressBar_Progress = new javax.swing.JProgressBar();
         jLabel_LoadingText = new javax.swing.JLabel();
         jLabel_FPSCounter = new javax.swing.JLabel();
+        jToolBar_Views = new javax.swing.JToolBar();
+        jRadioButton_Top = new javax.swing.JRadioButton();
+        jRadioButton_Mid = new javax.swing.JRadioButton();
+        jRadioButton_Bottom = new javax.swing.JRadioButton();
+        jComboBox1 = new javax.swing.JComboBox();
         jMenuBar_MainMenu = new javax.swing.JMenuBar();
         jMenu_File = new javax.swing.JMenu();
         jMenu_LoadModels = new javax.swing.JMenu();
@@ -1300,9 +1312,65 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 2;
+        gridBagConstraints.gridy = 3;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         jPanel_MainPanel.add(jPanel_ProgressBar, gridBagConstraints);
+
+        jToolBar_Views.setFloatable(false);
+        jToolBar_Views.setRollover(true);
+        jToolBar_Views.setMaximumSize(new java.awt.Dimension(512, 26));
+        jToolBar_Views.setMinimumSize(new java.awt.Dimension(400, 27));
+        jToolBar_Views.setPreferredSize(new java.awt.Dimension(400, 27));
+
+        jRadioButton_Top.setText("Focus Top");
+        jRadioButton_Top.setFocusable(false);
+        jRadioButton_Top.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jRadioButton_Top.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                repositionCamera(1);
+            }
+        });
+        jToolBar_Views.add(jRadioButton_Top);
+
+        jRadioButton_Mid.setSelected(true);
+        jRadioButton_Mid.setText("Focus Mid");
+        jRadioButton_Mid.setFocusable(false);
+        jRadioButton_Mid.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jRadioButton_Mid.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                repositionCamera(1);
+            }
+        });
+        jToolBar_Views.add(jRadioButton_Mid);
+
+        jRadioButton_Bottom.setText("Focus Bottom");
+        jRadioButton_Bottom.setFocusable(false);
+        jRadioButton_Bottom.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jRadioButton_Bottom.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                repositionCamera(1);
+            }
+        });
+        jToolBar_Views.add(jRadioButton_Bottom);
+
+        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Cam Pos -Z", "Cam Pos +Z", "Cam Pos -X", "Cam Pos +X" }));
+        jComboBox1.setMaximumSize(new java.awt.Dimension(220, 27));
+        jComboBox1.setMinimumSize(new java.awt.Dimension(50, 27));
+        jComboBox1.setPreferredSize(new java.awt.Dimension(50, 27));
+        jComboBox1.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                if (evt.getStateChange() == java.awt.event.ItemEvent.SELECTED)
+                repositionCamera(2);
+            }
+        });
+        jComboBox1.setSelectedIndex(0);
+        jToolBar_Views.add(jComboBox1);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        jPanel_MainPanel.add(jToolBar_Views, gridBagConstraints);
 
         jMenuBar_MainMenu.setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED));
         jMenuBar_MainMenu.setMaximumSize(new java.awt.Dimension(999999, 25));
@@ -1320,9 +1388,11 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 loadingWindow(true);
                 runProgressBar(true);
+
                 m_sceneData.loadAvatarDAEFile(true, true, m_base);
-                m_sceneData.setCameraOnModel();
+                repositionCamera(1);
                 resetOpenTools();
+
                 runProgressBar(false);
                 loadingWindow(false);
             }
@@ -1532,6 +1602,7 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
     private javax.swing.JButton jButton_EZoptions;
     private javax.swing.JButton jButton_IntermediateOptions;
     private javax.swing.JButton jButton_ServerBrowser;
+    private javax.swing.JComboBox jComboBox1;
     private javax.swing.JLabel jLabel_FPSCounter;
     private javax.swing.JLabel jLabel_LoadingText;
     private javax.swing.JMenuBar jMenuBar_MainMenu;
@@ -1560,10 +1631,14 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
     private javax.swing.JPanel jPanel_MainPanel;
     private javax.swing.JPanel jPanel_ProgressBar;
     private javax.swing.JProgressBar jProgressBar_Progress;
+    private javax.swing.JRadioButton jRadioButton_Bottom;
+    private javax.swing.JRadioButton jRadioButton_Mid;
+    private javax.swing.JRadioButton jRadioButton_Top;
     private javax.swing.JToolBar.Separator jSeparator1;
     private javax.swing.JToolBar.Separator jSeparator2;
     private javax.swing.JToolBar.Separator jSeparator3;
     private javax.swing.JToolBar jToolBar_Hotkeys;
+    private javax.swing.JToolBar jToolBar_Views;
     // End of variables declaration//GEN-END:variables
 
     public String getOS() {
@@ -1572,5 +1647,140 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
     
     public boolean isWindowsOS() {
         return getOS().contains("Windows");
+    }
+
+    public void resetCameraRotY() {
+        CameraState cam = m_cameraProcessor.getState();
+        TumbleObjectCamState toCamState = (TumbleObjectCamState)cam;
+        toCamState.setRotationY(0);
+    }
+
+    public void repositionCamera(int type) {
+        runProgressBar(true);
+
+        PNode node = m_sceneData.getPScene().getInstances();
+        PPolygonModelInstance ppmodel = null;
+
+        if (node != null && node.getChildrenCount() > 0)
+            ppmodel = ((PPolygonModelInstance)node.getChild(0));
+        else {
+            runProgressBar(false);
+            return;
+        }
+
+        if (m_cameraProcessor.getState() instanceof TumbleObjectCamState) {
+
+            TumbleObjectCamState camState = ((TumbleObjectCamState)m_cameraProcessor.getState());
+            TumbleObjectCamModel camModel = ((TumbleObjectCamModel)m_cameraProcessor.getModel());
+            camState.setTargetModelInstance(ppmodel);
+            camState.setCameraPosition(m_camPos);
+
+            if (ppmodel.getBoundingSphere() == null)
+                ppmodel.calculateBoundingSphere();
+//            camState.setTargetFocalPoint(ppmodel.getBoundingSphere().getCenter());
+//            camModel.turnTo(ppmodel.getBoundingSphere().getCenter(), camState);
+            calculateCamPosNFoc(ppmodel, type);
+            camModel.turnTo(m_focalPt, camState);
+            camModel.moveTo(m_camPos, camState);
+            camState.setTargetNeedsUpdate(true);
+
+        } else if (m_cameraProcessor.getState() instanceof FirstPersonCamState) {
+
+            FirstPersonCamState camState = ((FirstPersonCamState)m_cameraProcessor.getState());
+            FirstPersonCamModel camModel = ((FirstPersonCamModel)m_cameraProcessor.getModel());
+            if (ppmodel.getBoundingSphere() == null)
+                ppmodel.calculateBoundingSphere();
+            calculateCamPosNFoc(ppmodel, type);
+            Vector3f pos = new Vector3f(m_focalPt);
+            pos.z *= 1.8;
+            camState.setCameraPosition(pos);
+
+        }
+        runProgressBar(false);
+    }
+
+    public void calculateCamPosNFoc(PPolygonModelInstance pmodel, int type) {
+        int iPerspective = jComboBox1.getSelectedIndex();
+        Vector3f oldPos = m_cameraProcessor.getTransform().getTranslation();
+        if (oldPos.equals(Vector3f.ZERO))
+            oldPos = new Vector3f(0.0f, 0.0f, -5.0f);
+
+        if (iPerspective == 0 || iPerspective == 1)
+            m_offset = oldPos.z;
+        else if (iPerspective == 2 || iPerspective == 3)
+            m_offset = oldPos.x;
+
+        int iFocalPt = getFocalPoint();
+        PJoint joint = null;
+
+        switch(iFocalPt)
+        {
+            case 0:
+            {
+                joint = ((PJoint)pmodel.findChild("Head"));
+                if (joint == null)
+                    return;
+                m_focalPt = joint.getTransform().getWorldMatrix(false).getTranslation();
+                break;
+            }
+            case 1:
+            {
+                if (pmodel.getBoundingSphere() == null)
+                    pmodel.calculateBoundingSphere();
+                m_focalPt = pmodel.getBoundingSphere().getCenter();
+                break;
+            }
+            case 2:
+            {
+                m_focalPt = new Vector3f(0.0f, 0.0f, 0.0f);
+                break;
+            }
+        }
+        m_camPos = new Vector3f(m_focalPt);
+
+        if (type == 2) {
+            if (m_prevPerspective == 0 || m_prevPerspective == 1)
+                m_offset = oldPos.z * -1;
+            else if (m_prevPerspective == 2 || m_prevPerspective == 3)
+                m_offset = oldPos.x * -1;
+        }
+
+        switch(iPerspective)
+        {
+            case 0:     // Forward (Facing Z+)
+            {
+                m_camPos.z = m_offset;
+                break;
+            }
+            case 1:     // Backward (Facing Z-)
+            {
+                m_camPos.z = m_offset;
+                break;
+            }
+            case 2:     // Left (Facing X-)
+            {
+                m_camPos.x = m_offset;
+                break;
+            }
+            case 3:     // Right (Facing X+)
+            {
+                m_camPos.x = m_offset;
+                break;
+            }
+        }
+
+        m_prevPerspective = iPerspective;
+    }
+
+    public int getFocalPoint() {
+        int iFocal = 0;
+        if (jRadioButton_Top.isSelected())
+            iFocal = 0;
+        else if(jRadioButton_Mid.isSelected())
+            iFocal = 1;
+        else if(jRadioButton_Bottom.isSelected())
+            iFocal = 2;
+
+        return iFocal;
     }
 }

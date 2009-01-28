@@ -1122,7 +1122,6 @@ public class SceneEssentials {
                 attribs.setHeadAttachment(szAvatarHeadModelFile);
                 break;
             }
-
         }
 
         attribs.setBaseURL(null);
