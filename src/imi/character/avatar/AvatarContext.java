@@ -52,6 +52,7 @@ import imi.character.statemachine.corestates.CycleActionState;
 import imi.character.statemachine.corestates.RunState;
 import imi.character.statemachine.corestates.transitions.RunToWalk;
 import imi.character.statemachine.corestates.transitions.WalkToRun;
+import imi.character.steering.FollowBakedPath;
 import imi.character.steering.FollowPath;
 import imi.character.steering.GoSit;
 import imi.character.steering.GoTo;
@@ -244,14 +245,14 @@ public class AvatarContext extends GameContext
             AI.clearTasks();
             GoToNearestLocation();
             if (location != null)
-                AI.addTaskToBottom(new FollowPath("yellowRoom", location, this));
+                AI.addTaskToBottom(new FollowBakedPath("yellowRoom", location, this));
         }
         else if (trigger == TriggerNames.GoTo2.ordinal() && pressed)
         {
             AI.clearTasks();
             GoToNearestLocation();
             if (location != null)
-                AI.addTaskToBottom(new FollowPath("lobbyCenter", location, this));
+                AI.addTaskToBottom(new FollowBakedPath("lobbyCenter", location, this));
         }
         else if (trigger == TriggerNames.GoTo3.ordinal() && pressed)
         {
@@ -330,10 +331,10 @@ public class AvatarContext extends GameContext
         return AI;
     }
 
-    public void GoToNearestLocation() 
+    public LocationNode GoToNearestLocation() 
     {   
         if (avatar.getObjectCollection() == null)
-            return;
+            return null;
         
         location = avatar.getObjectCollection().findNearestLocation(avatar, 10000.0f, 1.0f, false);
         if (location != null)
@@ -341,6 +342,7 @@ public class AvatarContext extends GameContext
             AI.addTaskToTop(new GoTo(location.getPosition(), this));
             AI.setEnable(true);
         }
+        return location;
     }
         
     public boolean GoToNearestChair()

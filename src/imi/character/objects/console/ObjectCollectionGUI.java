@@ -38,7 +38,7 @@ import org.jdesktop.mtgame.WorldManager;
  *
  * @author Lou Hayt
  */
-public class ObjectCollectionGUI implements ActionListener
+public class ObjectCollectionGUI implements ActionListener, TextOut
 {
     /** The frame for the GUI */
     protected JFrame frame;
@@ -230,5 +230,9 @@ public class ObjectCollectionGUI implements ActionListener
     public void setEnableInput(boolean enable)
     {
         inputPanel.setEnabled(enable);
+    }
+
+    public void textOut(String text) {
+        appendOutput(text);
     }
 }

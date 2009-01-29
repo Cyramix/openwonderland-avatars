@@ -17,11 +17,13 @@
  */
 package imi.character.avatar;
 
+import com.jme.math.Vector3f;
 import imi.character.CharacterAttributes;
+import imi.character.CharacterSteeringHelm;
 import imi.character.avatar.AvatarContext.TriggerNames;
+import imi.character.objects.LocationNode;
+import imi.character.objects.ObjectCollection;
 import imi.character.statemachine.GameContext;
-import imi.character.statemachine.corestates.ActionState;
-import imi.character.statemachine.corestates.CycleActionState;
 import imi.character.statemachine.corestates.FallFromSitState;
 import imi.character.statemachine.corestates.FlyState;
 import imi.character.statemachine.corestates.IdleState;
@@ -30,6 +32,9 @@ import imi.character.statemachine.corestates.SitOnGroundState;
 import imi.character.statemachine.corestates.SitState;
 import imi.character.statemachine.corestates.TurnState;
 import imi.character.statemachine.corestates.WalkState;
+import imi.character.steering.FollowBakedPath;
+import imi.character.steering.FollowPath;
+import imi.character.steering.GoTo;
 import imi.utils.input.InputScheme;
 import imi.scene.processors.JSceneEventProcessor;
 import imi.serialization.xml.bindings.xmlCharacter;
@@ -82,7 +87,7 @@ public class Avatar extends imi.character.Character
         super(configurationFile, wm);
         maleContextSetup();
     }
-     
+
     protected GameContext instantiateContext() {
         return new AvatarContext(this);
     }
@@ -121,6 +126,58 @@ public class Avatar extends imi.character.Character
     }
             
     /**
+     * initiate a go to steering task
+     * @param pos
+     * @param dir - may be null
+     */
+    public void goTo(Vector3f pos, Vector3f dir)
+    {
+        CharacterSteeringHelm steering = m_context.getSteering();
+        steering.clearTasks();
+        steering.setEnable(true);
+        steering.addTaskToTop(new GoTo(pos, dir, m_context));
+    }
+
+    /**
+     * Follow a pre baked path
+     * @param pathName
+     */
+    public void followBakedPath(String pathName)
+    {
+        CharacterSteeringHelm steering = m_context.getSteering();
+        steering.clearTasks();
+        steering.setEnable(true);
+        AvatarContext ac = ((AvatarContext)m_context);
+        LocationNode location = ac.GoToNearestLocation();
+        if (location != null)
+            steering.addTaskToBottom(new FollowBakedPath(pathName, location, m_context));
+    }
+    
+    public void findPath(String locationName) 
+    {
+        CharacterSteeringHelm steering = m_context.getSteering();
+        steering.clearTasks();
+        steering.setEnable(true);
+        AvatarContext ac = ((AvatarContext)m_context);
+        ObjectCollection objs = ac.getavatar().getObjectCollection();
+        LocationNode source = objs.findNearestLocation(this, 10000.0f, 1.0f, false);
+        if (source != null)
+            steering.addTaskToBottom(new FollowPath(objs.findPath(source, locationName), m_context));
+    }
+     
+    
+    /**
+     * Stop in place and clear steering tasks
+     */
+    public void stop()
+    {
+        m_context.getController().stop();
+        m_context.getSteering().clearTasks();
+    }
+    
+    
+    
+    /**
      * This avatar will be selected for input.
      */
     @Override
@@ -130,19 +187,7 @@ public class Avatar extends imi.character.Character
         
         InputScheme scheme = ((JSceneEventProcessor)m_wm.getUserData(JSceneEventProcessor.class)).getInputScheme();
         if (scheme instanceof AvatarControlScheme)
-        {
             ((AvatarControlScheme)scheme).setavatar(this);
-//            Goal goalPoint = (Goal)m_wm.getUserData(Goal.class);
-//            if (goalPoint != null)
-//            {
-//                ((avatarContext)m_context).getSteering().setGoalPosition(goalPoint.getTransform().getLocalMatrix(false).getTranslation());
-//                ((avatarContext)m_context).getSteering().setSittingDirection(goalPoint.getTransform().getLocalMatrix(false).getLocalZ());
-//                ((avatarContext)m_context).getSteering().setGoal(goalPoint.getGoal());
-//            }
-//            
-////            if (m_wm.getUserData(JFrame.class) != null)
-////                ((DemoBase2)m_wm.getUserData(JFrame.class)).setGUI(m_jscene, m_wm, null, this);
-        }
     }
     
     private void maleContextSetup()

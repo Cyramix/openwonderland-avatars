@@ -19,10 +19,12 @@ package imi.character.objects.console;
 
 import com.jme.math.Vector3f;
 import imi.character.avatar.Avatar;
+import imi.character.avatar.AvatarContext;
 import imi.character.avatar.FemaleAvatarAttributes;
 import imi.character.avatar.MaleAvatarAttributes;
 import imi.character.objects.ObjectCollection;
 import imi.character.objects.SpatialObject;
+import imi.character.steering.GoTo;
 import imi.scene.PMatrix;
 import imi.scene.processors.JSceneEventProcessor;
 import imi.utils.PMathUtils;
@@ -55,14 +57,192 @@ public class CoreCommands implements ConsoleCommand
             processed = createCommands(text);
         else if (text.startsWith("remove"))
             processed = removeCommands(text);
-        else if (text.startsWith("do"))
-            processed = doCommands(text);
         else if (text.startsWith("place"))
             processed = placeCommands(text); 
         else if (text.startsWith("select"))
             processed = selectCommands(text); 
+        else
+            processed = defaultCommands(text);
         
         return processed;
+    }
+    
+    public boolean defaultCommands(String text) 
+    {
+        // stop
+        if (text.startsWith("stop"))
+        {
+            if (text.startsWith("stopAll") || text.startsWith("stopall"))
+            {
+                gui.appendOutput("stop all avatars");
+                for (SpatialObject obj : objs.getObjects())
+                {
+                    if (obj instanceof Avatar)
+                        ((Avatar)obj).stop();
+                }
+            }
+            else
+            {
+                Avatar avatar = getSelectedAvatar();
+                gui.appendOutput(avatar.getName() + " stop");
+                avatar.stop();
+            }
+            return true;
+        }
+        // go
+        else if (text.startsWith("go"))
+        {
+            String command = text.substring(2);
+            if (command.startsWith("to"))
+            {
+                // goto (avatarID:) int (position:) float float float <heading:> float float float
+                String string = command.substring(2);
+                String [] args = gui.parseArguments(string);
+                if (args[0].equals(""))
+                    args = gui.parseArguments(string.substring(1));
+                int id = -1;
+                Vector3f pos = new Vector3f();
+                Vector3f dir = null;
+                boolean fail = false;
+                try {
+                    id = Integer.parseInt(args[0]);
+                    pos.set(Float.parseFloat(args[1]), Float.parseFloat(args[2]), Float.parseFloat(args[3]));
+                } catch (Exception ex) {
+                    fail = true;
+                }
+                try {
+                    dir = new Vector3f(Float.parseFloat(args[4]), Float.parseFloat(args[5]), Float.parseFloat(args[6]));
+                } catch (Exception ex) { }
+                if (!fail)
+                {
+                    Avatar avatar = objs.getAvatar(id);
+                    if (avatar != null)
+                    {
+                        avatar.goTo(pos, dir);
+                        gui.appendOutput("avatar " + id + " goto " + pos + " heading: " + dir);
+                    }
+                    else
+                        gui.appendOutput("Syntax error, (required), <optional>\ngoto (avatarID) (position) <heading>");
+                }
+                else
+                    gui.appendOutput("Syntax error, (required), <optional>\ngoto (avatarID) (position) <heading>");
+                return true;
+            }
+            else
+            {
+                // go (position:) float float float <heading:> float float float
+                String [] args = gui.parseArguments(command);
+                if (args[0].equals(""))
+                    args = gui.parseArguments(command.substring(1));
+                Vector3f pos = new Vector3f();
+                Vector3f dir = null;
+                boolean fail = false;
+                try {
+                    pos.set(Float.parseFloat(args[0]), Float.parseFloat(args[1]), Float.parseFloat(args[2]));
+                } catch (Exception ex) {
+                    fail = true;
+                }
+                try {
+                    dir = new Vector3f(Float.parseFloat(args[3]), Float.parseFloat(args[4]), Float.parseFloat(args[5]));
+                } catch (Exception ex) { }
+                if (!fail)
+                {
+                    Avatar avatar = getSelectedAvatar();
+                    avatar.goTo(pos, dir);
+                    gui.appendOutput("avatar " + avatar.getName() + " goto " + pos + " heading: " + dir);
+                }
+                else
+                    gui.appendOutput("Syntax error, (required), <optional>\ngo (position) <heading>");
+                return true;
+            }
+        }
+        // follow
+        else if (text.startsWith("follow"))
+        {
+            String command = text.substring(6);
+            // follow (avatarID:) int (pathName:) string
+            String [] args = gui.parseArguments(command);
+            if (args[0].equals(""))
+                args = gui.parseArguments(command.substring(1));
+            String pathName = null;
+            Avatar avatar = null;
+            try {
+                int avatarID = Integer.parseInt(args[0]);
+                pathName = args[1];
+                avatar = objs.getAvatar(avatarID);
+            } 
+            catch (Exception ex) 
+            { 
+                pathName = args[0];
+                avatar   = getSelectedAvatar();
+            }
+            if (avatar != null)
+            {
+                avatar.followBakedPath(pathName);
+                gui.appendOutput(avatar.getName() + " follow path " + pathName);
+            }
+            else
+                gui.appendOutput("Syntax error, (required), <optional>\nfollow (avatarID) int (pathName) string");
+            return true;
+        }
+        // find
+        else if (text.startsWith("find"))
+        {
+            // find <avatarID:> int (locationName:) string
+            String command = text.substring(4);
+            String [] args = gui.parseArguments(command);
+            if (args[0].equals(""))
+                args = gui.parseArguments(command.substring(1));
+            Avatar avatar       = null;
+            String locationName = null;
+            try {
+                int id = Integer.parseInt(args[0]);
+                avatar = objs.getAvatar(id);
+                locationName = args[1];
+            } 
+            catch (Exception ex) {
+                avatar = getSelectedAvatar();
+                locationName = args[0];
+            }
+            if (avatar != null)
+            {
+                gui.appendOutput(avatar.getName() + " will find the path to: " + locationName);
+                avatar.findPath(locationName);
+            }
+            else
+                gui.appendOutput("syntax error, (required), <optional>\nfind <avatarID> (pathName)");
+            return true;
+        }
+        // look
+        else if (text.startsWith("look"))
+        {
+            // look <avatarID:> int (heading:) float float float
+            String command = text.substring(4);
+            String [] args = gui.parseArguments(command);
+            if (args[0].equals(""))
+                args = gui.parseArguments(command.substring(1));
+            Avatar avatar       = null;
+            Vector3f dir = null;
+            try {
+                int id = Integer.parseInt(args[0]);
+                avatar = objs.getAvatar(id);
+                dir = new Vector3f(Float.parseFloat(args[1]), Float.parseFloat(args[2]), Float.parseFloat(args[3]));
+            } 
+            catch (Exception ex) {
+                avatar = getSelectedAvatar();
+                dir = new Vector3f(Float.parseFloat(args[0]), Float.parseFloat(args[1]), Float.parseFloat(args[2]));
+            }
+            if (avatar != null && dir != null)
+            {
+                gui.appendOutput(avatar.getName() + " will look towards: " + dir);
+                avatar.goTo(avatar.getPosition(), dir);
+            }
+            else
+                gui.appendOutput("syntax error, (required), <optional>\nlook <avatarID> (heading)");
+            return true;
+        }
+        
+        return false;
     }
     
     public boolean listCommands(String text) 
@@ -298,6 +478,14 @@ public class CoreCommands implements ConsoleCommand
         return false;
     }
 
+    public Avatar getSelectedAvatar()
+    {
+        // The event processor provides the linkage between AWT events and input controls
+        JSceneEventProcessor eventProcessor = (JSceneEventProcessor) wm.getUserData(JSceneEventProcessor.class);
+        AvatarControlScheme control = (AvatarControlScheme)eventProcessor.getInputScheme();
+        return control.getCurrentlySelectedAvatar();
+    }
+    
     public String getPrefix() {
         return ""; // these are the core commands...
     }

@@ -23,6 +23,6 @@ package imi.character.statemachine;
  */
 public interface Named
 {
-    public void setName(String name_);   
+    public void setName(String name);   
     public String getName();
 }

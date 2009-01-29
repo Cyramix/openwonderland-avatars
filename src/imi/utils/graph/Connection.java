@@ -17,79 +17,12 @@
  */
 package imi.utils.graph;
 
+import org.jgrapht.graph.DefaultEdge;
+
 /**
  *
  * @author Lou Hayt
  */
-public class Connection 
+public class Connection extends DefaultEdge
 {
-    private String      name        = null;
-    private GraphNode   source      = null;
-    private GraphNode   destination = null;
-    private ConnectionDirection direction = ConnectionDirection.BothWays;
-    
-    public enum ConnectionDirection
-    {
-        OneWay,
-        Reverse,
-        BothWays,
-    }
-    
-    public Connection(String name, GraphNode sourceNode, GraphNode destinationNode, ConnectionDirection connectionDirection)
-    {
-        this(sourceNode, destinationNode, connectionDirection);
-        this.name = name;
-    }
-    
-    /**
-     * The connection will be added to the graph nodes.
-     * @param sourceNode
-     * @param destinationNode
-     * @param connectionDirection
-     */
-    public Connection(GraphNode sourceNode, GraphNode destinationNode, ConnectionDirection connectionDirection)
-    {
-        if (connectionDirection == null || destinationNode == null || sourceNode == null)
-            throw new NullPointerException("null pointer in graph node Connection constructor!");
-        
-        source      = sourceNode;
-        destination = destinationNode;
-        direction   = connectionDirection;
-        source.addConnection(this);
-        destination.addConnection(this);
-    }
-
-    public GraphNode getDestination() {
-        return destination;
-    }
-
-    public void setDestination(GraphNode destination) {
-        this.destination = destination;
-    }
-
-    public ConnectionDirection getDirection() {
-        return direction;
-    }
-
-    public void setDirection(ConnectionDirection direction) {
-        this.direction = direction;
-    }
-
-    public GraphNode getSource() {
-        return source;
-    }
-
-    public void setSource(GraphNode source) {
-        this.source = source;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-    
-    
 }

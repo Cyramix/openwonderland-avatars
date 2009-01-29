@@ -27,9 +27,18 @@ import com.jme.scene.state.MaterialState;
 import com.jme.scene.state.RenderState;
 import com.jme.scene.state.WireframeState;
 import com.jme.scene.state.ZBufferState;
+import imi.character.avatar.Avatar;
 import imi.scene.JScene;
 import imi.scene.PScene;
+import imi.scene.utils.visualizations.VisuManager;
+import imi.utils.graph.Connection;
+import imi.utils.graph.GraphNode;
+import imi.utils.graph.JGraph;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Hashtable;
+import java.util.List;
+import java.util.Set;
 import org.jdesktop.mtgame.Entity;
 import org.jdesktop.mtgame.ProcessorCollectionComponent;
 import org.jdesktop.mtgame.ProcessorComponent;
@@ -46,12 +55,19 @@ public class ObjectCollection extends Entity
     /** Collection of objects :) **/
     protected ArrayList<SpatialObject> objects = new ArrayList<SpatialObject>();
     
+    /** JGraph of locations :) **/
+    protected JGraph locations = new JGraph();
+    /** Map of location names to location objects **/
+    protected Hashtable<String, LocationNode> locationNames = new Hashtable<String, LocationNode>();
+    
     protected WorldManager    worldManager   = null;
     protected PScene          pscene         = null;
     protected JScene          jscene         = null;
+    
+    /** Command line console :) **/
     protected ObjectCollectionGUI gui        = null;
     
-    // Test
+    // Test :)
     Gadget lightSwitch = null;
 
     /**
@@ -97,6 +113,159 @@ public class ObjectCollection extends Entity
         worldManager.addEntity(this);  
     }
 
+    /////////////////////////  JGraph integration ///////////////////////////////////
+    
+    /**
+     * For internal use
+     */
+    public JGraph getLocationGraph() {
+        return locations;
+    }
+    
+    public Collection<LocationNode> getLocations(){
+        return locationNames.values();
+    }
+    
+    public void createLocation(String name, Vector3f position, float radius){
+        new LocationNode(name, position, radius, this);
+    }
+    
+    /** Called from LocationNode's constructor **/
+    void addLocation(LocationNode location)
+    {
+        if (!locations.containsVertex(location))
+        {
+            locations.addVertex(location);
+            locationNames.put(location.getName(), location);
+            objects.add(location);
+        }
+    }
+    
+    public void removeLocation(String name) {
+        removeLocation(getLocation(name));
+    }
+    public void removeLocation(LocationNode location) {
+        if (location == null)
+            return;
+        locations.removeVertex(location);
+        locationNames.remove(location.getName());
+        objects.remove(location);
+    }
+    
+    public LocationNode getLocation(String name)
+    {
+        LocationNode location = locationNames.get(name);
+        if (locations.containsVertex(location))
+            return location;
+        else
+            return null;
+    }
+    
+    public Connection createConnection(LocationNode source, LocationNode destination){
+        return locations.addEdge(source, destination);
+    }
+    
+    public Connection createConnection(String source, String destination){
+        return createConnection(locationNames.get(source), locationNames.get(destination));
+    }
+    
+    public ArrayList<LocationNode> findPath(LocationNode source, String destination)
+    {
+        LocationNode destNode = locationNames.get(destination);
+        if (source.equals(destNode))
+            return null;
+        ArrayList<LocationNode> path = new ArrayList<LocationNode>();
+        LocationNode find = findConnection(source, destination, false);
+        if (find != null)
+        {
+            path.add(find);
+            return path;
+        }
+        try{
+            List<Connection> list = org.jgrapht.alg.BellmanFordShortestPath.findPathBetween(locations, source, destNode);
+            for (Connection con : list)
+                path.add((LocationNode) getConnectionDestination(con));
+        }
+        catch (Exception ex) {}
+        return path;
+    }
+    
+    public LocationNode findConnection(LocationNode source, String targetName, boolean allowBaked) 
+    {
+        Set<Connection> cons = locations.outgoingEdgesOf(source);
+        for (Connection con : cons)
+        {
+            GraphNode node = locations.getEdgeTarget(con);
+            if (node instanceof LocationNode)
+            {
+                // If we find a connected location node then great
+                LocationNode LNode = (LocationNode)node;
+                if (LNode.getName().equals(targetName))
+                    return LNode;
+            }
+        }
+        // If we don't we try checking the baked connections
+        if (allowBaked)
+            return source.getBakedConnection(targetName);
+        return null;
+    }
+    
+    public Connection getConnection(String sourceName, String destinationName) {
+        return locations.getEdge(locationNames.get(sourceName), locationNames.get(destinationName));
+    }
+    
+    public Connection getConnection(LocationNode source, LocationNode destination) {
+        return locations.getEdge(source, destination);
+    }            
+    
+    public boolean removeConnection(Connection con) {
+        return locations.removeEdge(con);
+    }
+    
+    public GraphNode getConnectionSource(Connection con){
+        return locations.getEdgeSource(con);
+    }
+    public GraphNode getConnectionDestination(Connection con){
+        return locations.getEdgeTarget(con);
+    }
+    public double getConnectionWeight(Connection con){
+        return locations.getEdgeWeight(con);
+    }
+    
+    public Avatar getAvatar(int objectID)
+    {
+        SpatialObject obj = objects.get(objectID);
+        if (obj != null && obj instanceof Avatar)
+            return (Avatar)obj;
+        return null;
+           
+    }
+    
+    public void createTestPath()
+    {
+        float step = 3.0f;
+        float radius = 1.0f;
+        LocationNode loc1 = new LocationNode("loc1", Vector3f.ZERO, radius, this);
+        LocationNode loc2 = new LocationNode("loc2", Vector3f.UNIT_X.mult(step),  radius, this);
+        LocationNode loc3 = new LocationNode("loc3", new Vector3f(step, 0.0f, step),  radius, this);
+        LocationNode loc4 = new LocationNode("loc4", Vector3f.UNIT_Z.mult(step),  radius, this);
+        
+        // quick ugly visu for test
+        ArrayList<Vector3f> origin = new ArrayList<Vector3f>();
+        ArrayList<Vector3f> point = new ArrayList<Vector3f>();
+        
+        // Create graph paths
+        createConnection(loc1, loc2); origin.add(loc1.getPosition()); point.add(loc2.getPosition());
+        createConnection(loc2, loc3); origin.add(loc2.getPosition()); point.add(loc3.getPosition());
+        createConnection(loc3, loc4); origin.add(loc3.getPosition()); point.add(loc4.getPosition());
+        createConnection(loc4, loc1); origin.add(loc4.getPosition()); point.add(loc1.getPosition());
+        
+        VisuManager vis = new VisuManager("path connections visu", worldManager);
+        vis.addLineObject(origin, point, ColorRGBA.brown, 5.0f);
+    }
+    
+    /////////////////////////////////////////////////////////////////////////
+    
     /**
      * Add an object to the collection.
      * @param obj
@@ -482,7 +651,7 @@ public class ObjectCollection extends Entity
     /**
      * Removes a chair from the object collection.
      */
-    public void removeChair()
+    public void removeAChair()
     {    
         for (SpatialObject check : objects)
         {
@@ -504,7 +673,8 @@ public class ObjectCollection extends Entity
     public void addRandomChair() 
     {
         // What are these magic numbers?
-        Vector3f center = new Vector3f(3.905138f, 0.0f, 18.265793f);
+        //Vector3f center = new Vector3f(3.905138f, 0.0f, 18.265793f);
+        Vector3f center = Vector3f.ZERO;
        
         generateChairs(center, 7.0f, 1);
     }

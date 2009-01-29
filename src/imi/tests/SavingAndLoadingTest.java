@@ -117,16 +117,16 @@ public class SavingAndLoadingTest extends DemoBase
     }
 
     private void customizeCharacter(Avatar testCharacter, WorldManager wm) {
-        final LocationNode destination = new LocationNode("AvatarSpotOne",
-                                                new Vector3f(10, 0, 10),
-                                                2.0f,
-                                                wm);
+//        final LocationNode destination = new LocationNode("AvatarSpotOne",
+//                                                new Vector3f(10, 0, 10),
+//                                                2.0f,
+//                                                wm);
         ObjectCollection collection = new ObjectCollection("GoalPointHolder", wm);
         testCharacter.setObjectCollection(collection);
-        collection.addObject(destination);
+        //collection.addObject(destination);
         // walk away avatar, just walk away
         AvatarSteeringHelm steering = (AvatarSteeringHelm)testCharacter.getContext().getSteering();
-        steering.addTaskToTop(new GoTo(destination, testCharacter.getContext()));
+        //steering.addTaskToTop(new GoTo(destination, testCharacter.getContext()));
 
         // tweak it!
         SkeletonNode skeleton = testCharacter.getSkeleton();

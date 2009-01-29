@@ -95,6 +95,7 @@ public class CharacterSteeringHelm extends NamedUpdatableObject
      */
     public void clearTasks()
     {
+        context.resetTriggersAndActions();
         taskList.clear();
     }
 

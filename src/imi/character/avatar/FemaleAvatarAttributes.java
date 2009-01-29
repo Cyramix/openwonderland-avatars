@@ -92,7 +92,7 @@ public class FemaleAvatarAttributes extends CharacterAttributes
             int preset        = -1;
             int numberOfFeet  = 3;
             int numberOfLegs  = 3;
-            int numberOfTorso = 3;
+            int numberOfTorso = 4;
             int numberOfHair  = 49;
             int numberOfHeads = 2;
             
@@ -307,7 +307,7 @@ public class FemaleAvatarAttributes extends CharacterAttributes
             break;
             case 3:      
             {
-                // Blouse         // has error
+                // Blouse       
                 load.add(new String("assets/models/collada/Clothing/FeamleClothing/FemaleBlouse.dae"));
                 add.add(new SkinnedMeshParams("TShirt1Shape", "UpperBody"));
                 add.add(new SkinnedMeshParams("Arms_NudeShape", "UpperBody"));

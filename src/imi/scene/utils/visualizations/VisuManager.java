@@ -23,6 +23,7 @@ import com.jme.scene.Node;
 import com.jme.scene.state.RenderState;
 import com.jme.scene.state.WireframeState;
 import com.jme.scene.state.ZBufferState;
+import java.util.ArrayList;
 import javolution.util.FastList;
 import org.jdesktop.mtgame.Entity;
 import org.jdesktop.mtgame.NewFrameCondition;
@@ -45,6 +46,8 @@ public class VisuManager extends Entity
     private FastList<PositionVisualization> m_positionObjects = null;
     /** Collection of all the box objects we are tracking **/
     private FastList<BoxVisualization> m_boxObjects = null;
+    /** Collection of all the line objects we are tracking **/
+    private FastList<LineVisualization> m_lineObjects = null;
     /** ProcessorComponent! **/
     private UpdateDriver m_updater = null;
     /** Used for toggling wireframe **/
@@ -115,6 +118,17 @@ public class VisuManager extends Entity
         m_jmeRoot.updateRenderState();  
     }
     
+    public void addLineObject(ArrayList<Vector3f> origin, ArrayList<Vector3f> point, ColorRGBA color, float width) 
+    {
+        if (m_lineObjects == null) // First object, allocate collection space
+            m_lineObjects = new FastList<LineVisualization>();
+
+        LineVisualization visuals = new LineVisualization(origin, point, color, width);
+        m_lineObjects.add(visuals);
+        m_jmeRoot.attachChild(visuals.objectRoot);
+        m_jmeRoot.updateRenderState();  
+    }
+    
     public boolean removeBoxObject(Vector3f position)
     {
         return false; // TODO
@@ -159,7 +173,11 @@ public class VisuManager extends Entity
         m_positionObjects = null;
         if (m_boxObjects != null)
             m_boxObjects.clear();
+        if (m_lineObjects != null)
+            m_lineObjects.clear();
         m_boxObjects = null;
+        m_lineObjects = null;
+        m_positionObjects = null;
         m_jmeRoot.detachAllChildren();
     }
 

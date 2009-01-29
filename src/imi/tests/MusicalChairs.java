@@ -25,7 +25,6 @@ import imi.character.objects.LocationNode;
 import imi.character.objects.ObjectCollection;
 import imi.scene.processors.JSceneEventProcessor;
 import imi.utils.graph.Connection;
-import imi.utils.graph.Connection.ConnectionDirection;
 import imi.utils.input.AvatarControlScheme;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -53,28 +52,34 @@ public class MusicalChairs extends DemoBase
     {   
         int numberOfAvatars = 5;
         float block = 2.0f * numberOfAvatars;
-        float halfBlock = 1.0f * numberOfAvatars;
+        float halfBlock = 0.5f * numberOfAvatars;
         
         // Create one object collection for all to use (for testing)
         ObjectCollection objects = new ObjectCollection("Musical Chairs Objects", wm);
         objects.generateChairs(new Vector3f(halfBlock, 0.0f, halfBlock), halfBlock, numberOfAvatars-1);
-        
+       
         // Create locations for the game
-        LocationNode chairGame1 = new LocationNode("Location 1", Vector3f.ZERO, halfBlock, wm, objects);
-        LocationNode chairGame2 = new LocationNode("Location 2", Vector3f.UNIT_X.mult(block),  halfBlock, wm, objects);
-        LocationNode chairGame3 = new LocationNode("Location 3", new Vector3f(block, 0.0f, block),  halfBlock, wm, objects);
-        LocationNode chairGame4 = new LocationNode("Location 4", Vector3f.UNIT_Z.mult(block),  halfBlock, wm, objects);
+        LocationNode chairGame1 = new LocationNode("Location 1", Vector3f.ZERO, halfBlock, objects);
+        LocationNode chairGame2 = new LocationNode("Location 2", Vector3f.UNIT_X.mult(block),  halfBlock, objects);
+        LocationNode chairGame3 = new LocationNode("Location 3", new Vector3f(block, 0.0f, block),  halfBlock, objects);
+        LocationNode chairGame4 = new LocationNode("Location 4", Vector3f.UNIT_Z.mult(block),  halfBlock, objects);
         
-        // Create paths
-        chairGame1.addConnection(new Connection("yellowRoom", chairGame1, chairGame2, ConnectionDirection.OneWay));
-        chairGame2.addConnection(new Connection("yellowRoom", chairGame2, chairGame3, ConnectionDirection.OneWay));
-        chairGame3.addConnection(new Connection("yellowRoom", chairGame3, chairGame4, ConnectionDirection.OneWay));
-        chairGame4.addConnection(new Connection("yellowRoom", chairGame4, chairGame1, ConnectionDirection.OneWay));
+        // Create graph paths
+//        objects.createConnection(chairGame1, chairGame2);
+//        objects.createConnection(chairGame2, chairGame3);
+//        objects.createConnection(chairGame3, chairGame4);
+//        objects.createConnection(chairGame4, chairGame1);
         
-        chairGame1.addConnection(new Connection("lobbyCenter", chairGame1, chairGame4, ConnectionDirection.OneWay));
-        chairGame2.addConnection(new Connection("lobbyCenter", chairGame4, chairGame3, ConnectionDirection.OneWay));
-        chairGame3.addConnection(new Connection("lobbyCenter", chairGame3, chairGame2, ConnectionDirection.OneWay));
-        chairGame4.addConnection(new Connection("lobbyCenter", chairGame2, chairGame1, ConnectionDirection.OneWay));
+        // Create baked paths
+        chairGame1.addBakedConnection("yellowRoom", chairGame2);
+        chairGame2.addBakedConnection("yellowRoom", chairGame3);
+        chairGame3.addBakedConnection("yellowRoom", chairGame4);
+        chairGame4.addBakedConnection("yellowRoom", chairGame1);
+        
+        chairGame1.addBakedConnection("lobbyCenter", chairGame4);
+        chairGame4.addBakedConnection("lobbyCenter", chairGame3);
+        chairGame3.addBakedConnection("lobbyCenter", chairGame2);
+        chairGame2.addBakedConnection("lobbyCenter", chairGame1);
      
         // Create avatar input scheme
         AvatarControlScheme control = (AvatarControlScheme)((JSceneEventProcessor)wm.getUserData(JSceneEventProcessor.class)).setDefault(new AvatarControlScheme(null));

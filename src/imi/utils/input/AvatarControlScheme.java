@@ -147,6 +147,11 @@ public class AvatarControlScheme extends InputScheme
         }
     }
     
+    public Avatar getCurrentlySelectedAvatar()
+    {
+        return avatarTeam.get(currentavatar);
+    }
+    
     public void activateMouseMovement()
     {
         mouseDown = true;
@@ -244,7 +249,7 @@ public class AvatarControlScheme extends InputScheme
             {
                 if(objects != null)
                 {
-                    objects.removeChair();
+                    objects.removeAChair();
                 }
             }
             

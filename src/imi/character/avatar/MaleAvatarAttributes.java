@@ -379,7 +379,7 @@ public class MaleAvatarAttributes extends CharacterAttributes
             {
                 // Dress pants
                 load.add(new String("assets/models/collada/Clothing/MaleClothing/MaleDressPants1.dae"));
-                add.add(new SkinnedMeshParams("Legs_LegsNudeShape", "LowerBody"));
+                add.add(new SkinnedMeshParams("MaleDressPantsShape", "LowerBody"));
             }
             break;
             case 3:

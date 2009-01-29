@@ -15,25 +15,12 @@
  * exception as provided by Sun in the License file that accompanied 
  * this code.
  */
-package imi.utils.graph;
-
-import java.util.HashMap;
+package imi.character.objects.console;
 
 /**
- *
+ * Used to display text on a gui screen
  * @author Lou Hayt
  */
-public class GraphNode 
-{
-    private HashMap<Class, Object> values        = new HashMap<Class, Object>();
-    
-    public void setValue(Class valueClass, Object valueObject)
-    {
-        values.put(valueClass, valueObject);
-    }
-    
-    public Object getValue(Class valueClass)
-    {
-        return values.get(valueClass);
-    }
+public interface TextOut {
+    public void textOut(String text);
 }

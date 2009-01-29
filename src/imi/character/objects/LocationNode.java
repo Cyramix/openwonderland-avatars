@@ -21,10 +21,8 @@ import com.jme.math.Quaternion;
 import com.jme.math.Vector3f;
 import imi.scene.boundingvolumes.PSphere;
 import imi.scene.polygonmodel.PPolygonModelInstance;
-import imi.utils.graph.Connection;
 import imi.utils.graph.GraphNode;
-import java.util.ArrayList;
-import org.jdesktop.mtgame.WorldManager;
+import java.util.Hashtable;
 
 /**
  * This class represents a node (used in avatar path following) at a given location.
@@ -40,23 +38,8 @@ public class LocationNode extends GraphNode implements SpatialObject
     /** A collection of objects at this location (chairs in a classroom for instance) **/
     private ObjectCollection    objects  = null;
     private boolean             occupied = false;
-
-    /**
-     * Construct a new location node with the provided name at the specified
-     * position with the given radius.
-     * @param name
-     * @param position
-     * @param radius
-     * @param wm
-     */
-    public LocationNode(String name, Vector3f position, float radius, WorldManager wm)
-    {
-        this.name = name;
-        bv        = new PSphere(position, radius);
-        objects   = new ObjectCollection(name, wm);
-        objects.addObject(this);
-    }
-
+    private Hashtable<String, LocationNode> bakedConnections = new Hashtable<String, LocationNode>();
+   
     /**
      * Construct a new location node with the provided information.
      * @param name
@@ -65,22 +48,31 @@ public class LocationNode extends GraphNode implements SpatialObject
      * @param wm
      * @param objectCollection
      */
-    public LocationNode(String name, Vector3f position, float radius, WorldManager wm, ObjectCollection objectCollection)
+    public LocationNode(String name, Vector3f position, float radius, ObjectCollection objectCollection)
     {
         this.name = name;
         bv        = new PSphere(position, radius);
-        objects   = objectCollection;
-        objects.addObject(this);
+        setObjectCollection(objectCollection);
+    }
+    
+    /** Finds a location node with that name from the graph or the baked connections **/
+    public LocationNode findConnection(String name)
+    {
+        return objects.findConnection(this, name, true);
     }
 
-    public Connection findSourceConnection(String connectionName) 
+    public LocationNode getBakedConnection(String targetName) {
+        return bakedConnections.get(targetName);
+    }
+    
+    public void addBakedConnection(String destinationName, LocationNode node)
     {
-        for (Connection con : connections)
-        {
-            if (con.getName().equals(connectionName) && con.getSource() == this)
-                return con;
-        }
-        return null;
+        bakedConnections.put(destinationName, node);
+    }
+    
+    public void removeBakedConnection(String name)
+    {
+        bakedConnections.remove(name);
     }
     
     public PPolygonModelInstance getModelInst() {
@@ -95,8 +87,11 @@ public class LocationNode extends GraphNode implements SpatialObject
         return null;
     }
 
-    public void setObjectCollection(ObjectCollection objs) {
+    public void setObjectCollection(ObjectCollection objs) 
+    {
         objects = objs; 
+        if (objects != null)
+            objects.addLocation(this);
     }
 
     public ObjectCollection getObjectCollection()
@@ -109,7 +104,10 @@ public class LocationNode extends GraphNode implements SpatialObject
      * @param numberOfChairs
      */
     public void generateChairs(int numberOfChairs) {
-        objects.generateChairs(bv.getCenter(), bv.getRadius(), numberOfChairs);
+        if (objects != null)
+            objects.generateChairs(bv.getCenter(), bv.getRadius(), numberOfChairs);
+        else
+            System.out.println("ERROR: LocationNode generateChairs() null object collection");
     }
     
     public Vector3f getPosition() {
@@ -160,25 +158,11 @@ public class LocationNode extends GraphNode implements SpatialObject
         return false;
     }
     
-    /**
-     * The connection's name is the name of the path, there can be only one
-     * connection for a single path.
-     * @param con
-     */
-    @Override
-    public void addConnection(Connection con)
+    public void destroy() 
     {
-        for (Connection c : connections)
-        {
-            if (c == con || c.getName().equals(con.getName()))
-                return;
-        }
-        
-        connections.add(con);
+        if (objects != null)
+            objects.removeLocation(this);
     }
 
-    public void destroy() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
     
 }

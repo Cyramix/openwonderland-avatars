@@ -21,38 +21,40 @@ import imi.character.*;
 import imi.character.objects.LocationNode;
 import imi.character.objects.SpatialObject;
 import imi.character.statemachine.GameContext;
-import java.util.ArrayList;
 
 /**
  * This task performs path following along location nodes.
  * @author Lou Hayt
  */
-public class FollowPath implements Task
+public class FollowBakedPath implements Task
 {
     private GameContext context = null;
     
     private String  description  = "Follow a path";
     private String  status = "Chilling";
     
-    private int pathIndex = 0;
-    private ArrayList<LocationNode> path = null;
+    private String path = null;
+    private LocationNode location = null;
     
     private GoTo go = null;
     
     private boolean bDone = false;
 
     /**
-     * Follow a path of nodes 
-     * @param path
+     * Construct a new instance using the provided path name, location node,
+     * and game context
+     * @param pathName
+     * @param node
      * @param context
      */
-    public FollowPath(ArrayList<LocationNode> path, GameContext context) 
+    public FollowBakedPath(String pathName, LocationNode node, GameContext context) 
     {
         this.context = context;
         if (context != null)
         {
-            this.path = path;
-            go = new GoTo(path.get(pathIndex).getPosition(), context);
+            path = pathName;
+            location = node;
+            go = new GoTo(node.getPosition(), context);
         }
     }
 
@@ -62,10 +64,10 @@ public class FollowPath implements Task
      */
     public boolean verify() 
     {
-        if (path == null || bDone)
+        if (path == null || location == null || bDone)
             return false;
         
-        if (path.get(pathIndex).getName().equals(path))
+        if (location.getName().equals(path))
         {
             status = "arrived to destination";
             return false;
@@ -80,17 +82,15 @@ public class FollowPath implements Task
             go.update(deltaTime);
         else
         {
-            pathIndex++;
-            if (pathIndex >= path.size())
+            LocationNode destination = location.findConnection(path);
+            if (destination == null)
             {
+                status = "was not able to find connection";
                 bDone = true;
                 return;
             }
-
-            if (path.get(pathIndex) instanceof LocationNode)
-            {
-                go.reset(path.get(pathIndex).getPosition());
-            }
+            location = destination;
+            go.reset(location.getPosition());
         }
     }
 
