@@ -1066,6 +1066,15 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
     }
 
     public void resetOpenTools() {
+        while (m_sceneData.getPScene().getAssetWaitingList().size() > 0) {
+            try {
+                Thread.sleep(3000);
+                Thread.yield();
+            } catch (InterruptedException ex) {
+                Logger.getLogger(SceneEssentials.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+
         if (m_AdvOptions != null) {
             if (m_AdvOptions.isVisible()) {
                 m_AdvOptions.dispose();
@@ -1084,6 +1093,20 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
             if (m_AnimationViewer.isVisible()) {
                 m_AnimationViewer.dispose();
                 openAnimationViewer();
+            }
+        }
+
+        if (m_HeadSelector != null) {
+            if (m_HeadSelector.isVisible()) {
+                m_HeadSelector.dispose();
+                openHeadSelector();
+            }
+        }
+        
+        if (m_ColorSelector != null) {
+            if (m_HeadSelector.isVisible()) {
+                m_HeadSelector.dispose();
+                openHeadSelector();
             }
         }
     }
@@ -1138,7 +1161,7 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
             {
                 toggleTumbleCamControls(true);
                 TumbleObjectCamState tobj = new TumbleObjectCamState(null);
-                tobj.setTargetFocalPoint(new Vector3f(0.0f, 0.0f, 0.0f));
+                tobj.setTargetFocalPoint(prevPos);
                 tobj.setTargetNeedsUpdate(true);
                 m_cameraProcessor.setCameraBehavior(new TumbleObjectCamModel(), tobj);
                 break;
@@ -1266,6 +1289,7 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
                 while (m_sceneData.getAvatar() == null || !m_sceneData.getAvatar().isInitialized()) {
 
                 }
+                resetOpenTools();
                 m_sceneData.setCameraOnModel();
             }
         });
@@ -1284,6 +1308,7 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
                 while (m_sceneData.getAvatar() == null || !m_sceneData.getAvatar().isInitialized()) {
 
                 }
+                resetOpenTools();
                 m_sceneData.setCameraOnModel();
             }
         });
@@ -1462,8 +1487,10 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 loadingWindow(true);
                 runProgressBar(true);
+
                 m_sceneData.addAvatarHeadDAEFile(true, m_base);
                 resetOpenTools();
+
                 runProgressBar(false);
                 loadingWindow(false);
             }
@@ -1474,8 +1501,10 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
         jMenuItem_Clothes.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 runProgressBar(true);
+
                 m_sceneData.addSMeshDAEFile(true, m_base);
                 resetOpenTools();
+
                 runProgressBar(false);
             }
         });
@@ -1485,8 +1514,10 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
         jMenuItem_Accessories.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 runProgressBar(true);
+
                 m_sceneData.addMeshDAEFile(true, m_base);
                 resetOpenTools();
+
                 runProgressBar(false);
             }
         });
@@ -1504,7 +1535,7 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
                 runProgressBar(true);
 
                 m_sceneData.loadAvatarHeadDAEFile(true, m_base);
-                repositionCamera(1);
+                //repositionCamera(1);
                 resetOpenTools();
 
                 runProgressBar(false);
@@ -1520,7 +1551,7 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
                 runProgressBar(true);
 
                 m_sceneData.loadSMeshDAEFile(true, m_base);
-                repositionCamera(1);
+                //repositionCamera(1);
                 resetOpenTools();
 
                 runProgressBar(false);
@@ -1536,7 +1567,7 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
                 runProgressBar(true);
 
                 m_sceneData.loadMeshDAEFile(true, m_base);
-                repositionCamera(1);
+                //repositionCamera(1);
                 resetOpenTools();
 
                 runProgressBar(false);

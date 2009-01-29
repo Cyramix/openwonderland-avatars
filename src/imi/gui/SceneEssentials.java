@@ -997,7 +997,7 @@ public class SceneEssentials {
 
             newAttatchments.add(new AttachmentParams(meshName, parentJoint, tempSolution, subGroup));
 
-            m_avatar.getAttributes().setAddInstructions(newAttatchments.toArray(new SkinnedMeshParams[newAttatchments.size()]));
+            m_avatar.getAttributes().setAttachmentsInstructions(newAttatchments.toArray(new AttachmentParams[newAttatchments.size()]));
             loadinstructs.add(szURL);   // TODO: find the loadinstruction to remove
 
             return true;
@@ -1412,7 +1412,7 @@ public class SceneEssentials {
 
         newAttatchments.add(new AttachmentParams(data[0], joint2addon, tempSolution, subGroup));
 
-        m_avatar.getAttributes().setAddInstructions(newAttatchments.toArray(new SkinnedMeshParams[newAttatchments.size()]));
+        m_avatar.getAttributes().setAttachmentsInstructions(newAttatchments.toArray(new AttachmentParams[newAttatchments.size()]));
         loadinstructs.add(data[3]);   // TODO: find the loadinstruction to remove
     }
 
@@ -1470,8 +1470,7 @@ public class SceneEssentials {
         }
 
         newAttatchments.add(new AttachmentParams(meshName, joint2addon, tempSolution, subGroup));
-
-        m_avatar.getAttributes().setAddInstructions(newAttatchments.toArray(new SkinnedMeshParams[newAttatchments.size()]));
+        m_avatar.getAttributes().setAttachmentsInstructions(newAttatchments.toArray(new AttachmentParams[newAttatchments.size()]));
         loadinstructs.add(meshLocation);   // TODO: find the loadinstruction to remove
     }
 

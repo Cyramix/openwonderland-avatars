@@ -51,7 +51,7 @@
                     <Property name="text" type="java.lang.String" value="Heads"/>
                   </Properties>
                   <AuxValues>
-                    <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="jMenuItem_Heads.addActionListener(new java.awt.event.ActionListener() {&#xa;    public void actionPerformed(java.awt.event.ActionEvent evt) {&#xa;        loadingWindow(true);&#xa;        runProgressBar(true);&#xa;        m_sceneData.addAvatarHeadDAEFile(true, m_base);&#xa;        resetOpenTools();&#xa;        runProgressBar(false);&#xa;        loadingWindow(false);&#xa;    }&#xa;});"/>
+                    <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="jMenuItem_Heads.addActionListener(new java.awt.event.ActionListener() {&#xa;    public void actionPerformed(java.awt.event.ActionEvent evt) {&#xa;        loadingWindow(true);&#xa;        runProgressBar(true);&#xa;        &#xa;        m_sceneData.addAvatarHeadDAEFile(true, m_base);&#xa;        resetOpenTools();&#xa;        &#xa;        runProgressBar(false);&#xa;        loadingWindow(false);&#xa;    }&#xa;});"/>
                   </AuxValues>
                 </MenuItem>
                 <MenuItem class="javax.swing.JMenuItem" name="jMenuItem_Clothes">
@@ -59,7 +59,7 @@
                     <Property name="text" type="java.lang.String" value="Clothes"/>
                   </Properties>
                   <AuxValues>
-                    <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="jMenuItem_Clothes.addActionListener(new java.awt.event.ActionListener() {&#xa;    public void actionPerformed(java.awt.event.ActionEvent evt) {&#xa;        runProgressBar(true);&#xa;        m_sceneData.addSMeshDAEFile(true, m_base);&#xa;        resetOpenTools();&#xa;        runProgressBar(false);&#xa;    }&#xa;});"/>
+                    <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="jMenuItem_Clothes.addActionListener(new java.awt.event.ActionListener() {&#xa;    public void actionPerformed(java.awt.event.ActionEvent evt) {&#xa;        runProgressBar(true);&#xa;        &#xa;        m_sceneData.addSMeshDAEFile(true, m_base);&#xa;        resetOpenTools();&#xa;        &#xa;        runProgressBar(false);&#xa;    }&#xa;});"/>
                   </AuxValues>
                 </MenuItem>
                 <MenuItem class="javax.swing.JMenuItem" name="jMenuItem_Accessories">
@@ -67,7 +67,7 @@
                     <Property name="text" type="java.lang.String" value="Accessories"/>
                   </Properties>
                   <AuxValues>
-                    <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="jMenuItem_Accessories.addActionListener(new java.awt.event.ActionListener() {&#xa;    public void actionPerformed(java.awt.event.ActionEvent evt) {&#xa;        runProgressBar(true);&#xa;        m_sceneData.addMeshDAEFile(true, m_base);&#xa;        resetOpenTools();&#xa;        runProgressBar(false);&#xa;    }&#xa;});"/>
+                    <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="jMenuItem_Accessories.addActionListener(new java.awt.event.ActionListener() {&#xa;    public void actionPerformed(java.awt.event.ActionEvent evt) {&#xa;        runProgressBar(true);&#xa;        &#xa;        m_sceneData.addMeshDAEFile(true, m_base);&#xa;        resetOpenTools();&#xa;        &#xa;        runProgressBar(false);&#xa;    }&#xa;});"/>
                   </AuxValues>
                 </MenuItem>
               </SubComponents>
@@ -85,7 +85,7 @@
                     <Property name="text" type="java.lang.String" value="Head"/>
                   </Properties>
                   <AuxValues>
-                    <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="jMenuItem_LoadHead.addActionListener(new java.awt.event.ActionListener() {&#xa;    public void actionPerformed(java.awt.event.ActionEvent evt) {&#xa;        loadingWindow(true);&#xa;        runProgressBar(true);&#xa;        &#xa;        m_sceneData.loadAvatarHeadDAEFile(true, m_base);&#xa;        repositionCamera(1);&#xa;        resetOpenTools();&#xa;        &#xa;        runProgressBar(false);&#xa;        loadingWindow(false);&#xa;    }&#xa;});"/>
+                    <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="jMenuItem_LoadHead.addActionListener(new java.awt.event.ActionListener() {&#xa;    public void actionPerformed(java.awt.event.ActionEvent evt) {&#xa;        loadingWindow(true);&#xa;        runProgressBar(true);&#xa;        &#xa;        m_sceneData.loadAvatarHeadDAEFile(true, m_base);&#xa;        //repositionCamera(1);&#xa;        resetOpenTools();&#xa;        &#xa;        runProgressBar(false);&#xa;        loadingWindow(false);&#xa;    }&#xa;});"/>
                   </AuxValues>
                 </MenuItem>
                 <MenuItem class="javax.swing.JMenuItem" name="jMenuItem_LoadClothes">
@@ -93,7 +93,7 @@
                     <Property name="text" type="java.lang.String" value="Clothes"/>
                   </Properties>
                   <AuxValues>
-                    <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="jMenuItem_LoadClothes.addActionListener(new java.awt.event.ActionListener() {&#xa;    public void actionPerformed(java.awt.event.ActionEvent evt) {&#xa;        loadingWindow(true);&#xa;        runProgressBar(true);&#xa;        &#xa;        m_sceneData.loadSMeshDAEFile(true, m_base);&#xa;        repositionCamera(1);&#xa;        resetOpenTools();&#xa;        &#xa;        runProgressBar(false);&#xa;        loadingWindow(false);&#xa;    }&#xa;});"/>
+                    <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="jMenuItem_LoadClothes.addActionListener(new java.awt.event.ActionListener() {&#xa;    public void actionPerformed(java.awt.event.ActionEvent evt) {&#xa;        loadingWindow(true);&#xa;        runProgressBar(true);&#xa;        &#xa;        m_sceneData.loadSMeshDAEFile(true, m_base);&#xa;        //repositionCamera(1);&#xa;        resetOpenTools();&#xa;        &#xa;        runProgressBar(false);&#xa;        loadingWindow(false);&#xa;    }&#xa;});"/>
                   </AuxValues>
                 </MenuItem>
                 <MenuItem class="javax.swing.JMenuItem" name="jMenuItem_LoadAcces">
@@ -101,7 +101,7 @@
                     <Property name="text" type="java.lang.String" value="Accessories"/>
                   </Properties>
                   <AuxValues>
-                    <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="jMenuItem_LoadAcces.addActionListener(new java.awt.event.ActionListener() {&#xa;    public void actionPerformed(java.awt.event.ActionEvent evt) {&#xa;        loadingWindow(true);&#xa;        runProgressBar(true);&#xa;        &#xa;        m_sceneData.loadMeshDAEFile(true, m_base);&#xa;        repositionCamera(1);&#xa;        resetOpenTools();&#xa;        &#xa;        runProgressBar(false);&#xa;        loadingWindow(false);&#xa;    }&#xa;});"/>
+                    <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="jMenuItem_LoadAcces.addActionListener(new java.awt.event.ActionListener() {&#xa;    public void actionPerformed(java.awt.event.ActionEvent evt) {&#xa;        loadingWindow(true);&#xa;        runProgressBar(true);&#xa;        &#xa;        m_sceneData.loadMeshDAEFile(true, m_base);&#xa;        //repositionCamera(1);&#xa;        resetOpenTools();&#xa;        &#xa;        runProgressBar(false);&#xa;        loadingWindow(false);&#xa;    }&#xa;});"/>
                   </AuxValues>
                 </MenuItem>
               </SubComponents>
@@ -318,7 +318,7 @@
                 <Property name="verticalTextPosition" type="int" value="3"/>
               </Properties>
               <AuxValues>
-                <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="jButton_ServerBrowser.addActionListener(new java.awt.event.ActionListener() {&#xa;    public void actionPerformed(java.awt.event.ActionEvent evt) {&#xa;        //openServerBrowser();&#xa;        createRandomAvatar(1);&#xa;        while (m_sceneData.getAvatar() == null || !m_sceneData.getAvatar().isInitialized()) {&#xa;            &#xa;        }&#xa;        m_sceneData.setCameraOnModel();&#xa;    }&#xa;});"/>
+                <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="jButton_ServerBrowser.addActionListener(new java.awt.event.ActionListener() {&#xa;    public void actionPerformed(java.awt.event.ActionEvent evt) {&#xa;        //openServerBrowser();&#xa;        createRandomAvatar(1);&#xa;        while (m_sceneData.getAvatar() == null || !m_sceneData.getAvatar().isInitialized()) {&#xa;            &#xa;        }&#xa;        resetOpenTools();&#xa;        m_sceneData.setCameraOnModel();&#xa;    }&#xa;});"/>
               </AuxValues>
             </Component>
             <Component class="javax.swing.JToolBar$Separator" name="jSeparator3">
@@ -334,7 +334,7 @@
                 <Property name="verticalTextPosition" type="int" value="3"/>
               </Properties>
               <AuxValues>
-                <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="jButton_BasicEditor.addActionListener(new java.awt.event.ActionListener() {&#xa;    public void actionPerformed(java.awt.event.ActionEvent evt) {&#xa;        //openBasicEditor();&#xa;        createRandomAvatar(2);&#xa;        while (m_sceneData.getAvatar() == null || !m_sceneData.getAvatar().isInitialized()) {&#xa;            &#xa;        }&#xa;        m_sceneData.setCameraOnModel();&#xa;    }&#xa;});"/>
+                <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="jButton_BasicEditor.addActionListener(new java.awt.event.ActionListener() {&#xa;    public void actionPerformed(java.awt.event.ActionEvent evt) {&#xa;        //openBasicEditor();&#xa;        createRandomAvatar(2);&#xa;        while (m_sceneData.getAvatar() == null || !m_sceneData.getAvatar().isInitialized()) {&#xa;            &#xa;        }&#xa;        resetOpenTools();&#xa;        m_sceneData.setCameraOnModel();&#xa;    }&#xa;});"/>
               </AuxValues>
             </Component>
           </SubComponents>

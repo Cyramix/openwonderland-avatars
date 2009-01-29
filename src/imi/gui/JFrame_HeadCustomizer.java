@@ -19,8 +19,11 @@ import imi.scene.shader.programs.EyeballShader;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Image;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.io.FilenameFilter;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -57,6 +60,7 @@ public class JFrame_HeadCustomizer extends javax.swing.JFrame {
     private File                            m_HairDir       = null;
     private Vector                          m_HeadModels    = null;
     private Vector                          m_HairModels    = null;
+    private Vector                          m_MeshNames     = null;
 
 ////////////////////////////////////////////////////////////////////////////////
 // Class Methods
@@ -124,6 +128,7 @@ public class JFrame_HeadCustomizer extends javax.swing.JFrame {
         setTable(jTable_HairStyles, m_HairDir);
         setListenersOnTables();
         getHeads();
+        getHair();
     }
 
     /**
@@ -136,6 +141,7 @@ public class JFrame_HeadCustomizer extends javax.swing.JFrame {
         if (m_Eyes == null)
             return;
 
+        m_sceneData.getPScene().setRenderStop(true);
         // Create a material to use
         String temp = jTable_Eyes.getValueAt(row, col).toString();
         String location = temp.substring(1, temp.length() - 1);
@@ -155,6 +161,7 @@ public class JFrame_HeadCustomizer extends javax.swing.JFrame {
         } catch (MalformedURLException ex) {
             Logger.getLogger(SceneEssentials.class.getName()).log(Level.SEVERE, null, ex);
         }
+        m_sceneData.getPScene().setRenderStop(false);
     }
 
     /**
@@ -171,6 +178,7 @@ public class JFrame_HeadCustomizer extends javax.swing.JFrame {
         if (m_sceneData.getAvatar() == null || !m_sceneData.getAvatar().isInitialized())
             return;
 
+        m_sceneData.getPScene().setRenderStop(true);
         String protocol = "file:///";
         String temp     = ((Vector)m_HeadModels.get(row)).get(col).toString();
         String location = temp.substring(1, temp.length() - 1);
@@ -180,6 +188,8 @@ public class JFrame_HeadCustomizer extends javax.swing.JFrame {
         String relPath  = tempFile.toString().substring(index + 1);
 
         m_sceneData.addAvatarHeadDAEURL(true, this, url, relPath);
+
+        m_sceneData.getPScene().setRenderStop(false);
     }
 
     /**
@@ -190,7 +200,23 @@ public class JFrame_HeadCustomizer extends javax.swing.JFrame {
      * @param col - the selected column
      */
     public void addHair(int row, int col) {
+        if (m_sceneData == null)
+            return;
 
+        if (m_sceneData.getAvatar() == null || !m_sceneData.getAvatar().isInitialized())
+            return;
+
+        Vector data     = (Vector) m_MeshNames.get(row);
+
+        m_sceneData.getPScene().setRenderStop(true);
+        String protocol = "file:///";
+        String temp     = data.get(1).toString();
+        File tempfile   = new File(temp);
+        String url      = protocol + temp;
+        int index       = data.get(1).toString().indexOf(".");
+        String relPath  = data.get(1).toString().substring(index + 1);
+
+        m_sceneData.addMeshDAEURLToModel(data.get(0).toString(), url, "Head", "Hair");
     }
 
     /** This method is called from within the constructor to
@@ -559,22 +585,24 @@ public class JFrame_HeadCustomizer extends javax.swing.JFrame {
                 // Column selection changed
                 int row = table.getSelectedRow();
                 int col = table.getSelectedColumn();
-                if (type == 0)
+                if (type == 0) {
                     setTextureOnEyeball(row, col);
-                else if (type == 1)
+                } else if (type == 1) {
                     addHead(row, col);
-                else if (type == 2)
+                    findEyes();
+                } else if (type == 2)
                     addHair(row, col);
 
             } else if (e.getSource() == table.getColumnModel().getSelectionModel() && table.getColumnSelectionAllowed() ){
                 // Row selection changed
                 int row = table.getSelectedRow();
                 int col = table.getSelectedColumn();
-                if (type == 0)
+                if (type == 0) {
                     setTextureOnEyeball(row, col);
-                else if (type == 1)
+                } else if (type == 1) {
                     addHead(row, col);
-                else if (type == 2)
+                    findEyes();
+                } else if (type == 2)
                     addHair(row, col);
             }
 
@@ -663,5 +691,84 @@ public class JFrame_HeadCustomizer extends javax.swing.JFrame {
 
     public void getHair() {
 
+        FilenameFilter asset = new FilenameFilter() {
+
+            public boolean accept(File dir, String name) {
+                if (name.toLowerCase().endsWith(".dae"))
+                    return true;
+                return false;
+            }
+        };
+
+        FilenameFilter meshes = new FilenameFilter() {
+
+            public boolean accept(File dir, String name) {
+                if (name.toLowerCase().endsWith(".txt"))
+                    return true;
+                return false;
+            }
+        };
+
+        int indes       = m_HairDir.getPath().lastIndexOf("/");
+        String newPath  = m_HairDir.getPath().substring(0, indes);
+        File newFile    = new File(newPath);
+        File[] textures = newFile.listFiles(asset);
+        File[] meshData = newFile.listFiles(meshes);
+
+        if (textures == null || meshData == null)   // Missing collada file and datafile
+            return;
+
+        if (textures.length != meshData.length) // Missing a file should be 1:1
+            return;
+
+        for (int i = 0; i < meshData.length; i++) {
+            readInMeshNames(meshData[i], textures[i]);
+        }
+
+        m_HairModels = new Vector();
+
+        int i = 0;
+        while (i < textures.length) {
+            Vector rowData = new Vector();
+            for (int j = 0; j < m_numCol; j++) {
+                if (i >= textures.length)
+                    break;
+
+                rowData.add(Arrays.asList(textures[i]));
+                i++;
+            }
+            while (rowData.size() < m_numCol) {
+                rowData.add(null);
+            }
+            m_HairModels.add(rowData);
+        }
+    }
+
+    public void readInMeshNames(File meshNames, File actualFile) {
+        if (m_MeshNames == null) {
+            m_MeshNames = new Vector();
+        }
+
+        try {
+
+            BufferedReader input = new BufferedReader(new FileReader(meshNames));
+            try {
+                String meshName = null; //not declared within while loop
+                /**
+                 * Reads till new lint but won't  contain new line and returns null
+                 * when there is nothing else to read.
+                 */
+                while ((meshName = input.readLine()) != null) {
+                    Vector meshInfo = new Vector();
+                    meshInfo.add(meshName);
+                    meshInfo.add(actualFile);
+                    m_MeshNames.add(meshInfo);
+                }
+            } finally {
+                input.close();
+            }
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
     }
 }
