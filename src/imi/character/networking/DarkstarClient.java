@@ -490,106 +490,157 @@ public class DarkstarClient extends JNagClient implements Updatable
         {
             case 0:
                 player = "Scrafy";
+                break;
             case 1:
                 player = "Co co";
+                break;
             case 2:
                 player = "Berta";
+                break;
             case 3:
                 player = "Mika";
+                break;
             case 4:
                 player = "Potter";
+                break;
             case 5:
                 player = "La Capitan";
+                break;
             case 6:
                 player = "Munchy";
+                break;
             case 7:
                 player = "Poo";
+                break;
             case 8:
                 player = "Fritz";
+                break;
             case 9:
                 player = "Bongo";
+                break;
             case 10:
                 player = "Bozo";
+                break;
             case 11:
                 player = "Goofy";
+                break;
             case 12:
                 player = "Lilo";
+                break;
             case 13:
                 player = "Sacha";
+                break;
             case 14:
                 player = "Lightning";
+                break;
             case 15:
                 player = "Thunder";
+                break;
             case 16:
                 player = "Super Person";
+                break;
             case 17:
                 player = "Dirty Monkey";
+                break;
             case 18:
                 player = "Holmes";
+                break;
             case 19:
                 player = "McBowser";
+                break;
             case 20:
                 player = "Dr. You";
+                break;
             case 21:
                 player = "GuitarMan15";
+                break;
             case 22:
                 player = "Drummer";
+                break;
             case 23:
                 player = "JazzMan";
+                break;
             case 24:
                 player = "DemoBoy";
+                break;
             case 25:
                 player = "CodeMaster";
+                break;
             case 26:
                 player = "N00b";
+                break;
             case 27:
                 player = "Mr. Pro";
+                break;
             case 28:
                 player = "Number 28";
+                break;
             case 29:
                 player = "Bitman";
+                break;
             case 30:
                 player = "p4wn ur4zz";
+                break;
             case 31:
                 player = "l33t";
+                break;
             case 32:
                 player = "RastaDude";
+                break;
             case 33:
                 player = "WhyMe";
+                break;
             case 34:
                 player = "WhyHim";
+                break;
             case 35:
                 player = "WhyThem";
+                break;
             case 36:
                 player = "Lou";
+                break;
             case 37:
                 player = "Supreme Commander";
+                break;
             case 38:
                 player = "Master Chief";
+                break;
             case 39:
                 player = "Gordon";
+                break;
             case 40:
                 player = "avatar";
+                break;
             case 41:
                 player = "Sir Bob";
+                break;
             case 42:
                 player = "Peach";
+                break;
             case 43:
                 player = "Dan";
+                break;
             case 44:
                 player = "Bela";
+                break;
             case 45:
                 player = "GuyBrush";
+                break;
             case 46:
                 player = "TomatoFace";
+                break;
             case 47:
                 player = "Perkings";
+                break;
             case 48:
                 player = "Ceaser";
+                break;
             case 49:
                 player = "Fishy the fish";
+                break;
             case 50:
                 player = "Boogieman";
+                break;
             default:
                 player = "guest-" + new Random().nextInt(1000);
         }

@@ -17,12 +17,12 @@
  */
 package imi.utils.graph;
 
-import org.jgrapht.graph.DefaultEdge;
+//import org.jgrapht.graph.DefaultEdge;
 
 /**
  *
  * @author Lou Hayt
  */
-public class Connection extends DefaultEdge
+public class Connection// extends DefaultEdge
 {
 }

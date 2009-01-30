@@ -470,10 +470,6 @@ public class CoreCommands implements ConsoleCommand
         return false;
     }
     
-    public boolean doCommands(String text) {
-        return false;
-    }
-
     public boolean placeCommands(String text) {
         return false;
     }

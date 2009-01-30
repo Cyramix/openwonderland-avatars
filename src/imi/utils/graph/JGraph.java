@@ -17,27 +17,27 @@
  */
 package imi.utils.graph;
 
-import org.jgrapht.DirectedGraph;
-import org.jgrapht.graph.DefaultListenableGraph;
-import org.jgrapht.graph.DirectedMultigraph;
+//import org.jgrapht.DirectedGraph;
+//import org.jgrapht.graph.DefaultListenableGraph;
+//import org.jgrapht.graph.DirectedMultigraph;
 
 /**
  * Listenable Directed Multigraph using GraphNode and Connection 
  * as vertex and edge classes respectivly.
  * @author Lou Hayt
  */
-public class JGraph extends DefaultListenableGraph<GraphNode, Connection> implements DirectedGraph<GraphNode, Connection>
+public class JGraph //extends DefaultListenableGraph<GraphNode, Connection> implements DirectedGraph<GraphNode, Connection>
 {
     private static final long serialVersionUID = 1L;
 
     public JGraph()
     {
-        super(new DirectedMultigraph<GraphNode, Connection>(Connection.class));
+        //super(new DirectedMultigraph<GraphNode, Connection>(Connection.class));
     }
     
-    public JGraph(Class<Connection> edgeClass)
-    {
-        super(new DirectedMultigraph<GraphNode, Connection>(edgeClass));
-    }
+//    public JGraph(Class<Connection> edgeClass)
+//    {
+//        super(new DirectedMultigraph<GraphNode, Connection>(edgeClass));
+//    }
     
 }

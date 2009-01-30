@@ -278,6 +278,7 @@ public class GoTo implements Task
                     //Task walk = (Task) new Walk("Walking away from loop", 0.5f, true, avatarContext);
                     //avatarContext.getSteering().addTaskToTop(walk);
                     context.getController().stop();
+                    bDoneFacingGoal = false;
 
                     System.out.println("sample tick: stop getting away from the target");
                     status = "loop detected";
@@ -290,6 +291,7 @@ public class GoTo implements Task
                 {
                     System.out.println("fishy sample tick: stop the loop");    
                     context.getController().stop();
+                    bDoneFacingGoal = false;
                 }
                 else
                     System.out.println("sample tick: prev streak " + samplePrevStreak + " current streak " + sampleStreak);

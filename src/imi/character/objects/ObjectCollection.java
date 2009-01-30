@@ -133,9 +133,9 @@ public class ObjectCollection extends Entity
     /** Called from LocationNode's constructor **/
     void addLocation(LocationNode location)
     {
-        if (!locations.containsVertex(location))
+        //if (!locations.containsVertex(location))
         {
-            locations.addVertex(location);
+            //locations.addVertex(location);
             locationNames.put(location.getName(), location);
             objects.add(location);
         }
@@ -147,7 +147,7 @@ public class ObjectCollection extends Entity
     public void removeLocation(LocationNode location) {
         if (location == null)
             return;
-        locations.removeVertex(location);
+        //locations.removeVertex(location);
         locationNames.remove(location.getName());
         objects.remove(location);
     }
@@ -155,14 +155,14 @@ public class ObjectCollection extends Entity
     public LocationNode getLocation(String name)
     {
         LocationNode location = locationNames.get(name);
-        if (locations.containsVertex(location))
+        //if (locations.containsVertex(location))
             return location;
-        else
-            return null;
+//        else
+//            return null;
     }
     
     public Connection createConnection(LocationNode source, LocationNode destination){
-        return locations.addEdge(source, destination);
+        return null;//locations.addEdge(source, destination);
     }
     
     public Connection createConnection(String source, String destination){
@@ -171,66 +171,67 @@ public class ObjectCollection extends Entity
     
     public ArrayList<LocationNode> findPath(LocationNode source, String destination)
     {
-        LocationNode destNode = locationNames.get(destination);
-        if (source.equals(destNode))
-            return null;
-        ArrayList<LocationNode> path = new ArrayList<LocationNode>();
-        LocationNode find = findConnection(source, destination, false);
-        if (find != null)
-        {
-            path.add(find);
-            return path;
-        }
-        try{
-            List<Connection> list = org.jgrapht.alg.BellmanFordShortestPath.findPathBetween(locations, source, destNode);
-            for (Connection con : list)
-                path.add((LocationNode) getConnectionDestination(con));
-        }
-        catch (Exception ex) {}
-        return path;
+        return null;
+//        LocationNode destNode = locationNames.get(destination);
+//        if (source.equals(destNode))
+//            return null;
+//        ArrayList<LocationNode> path = new ArrayList<LocationNode>();
+//        LocationNode find = findConnection(source, destination, false);
+//        if (find != null)
+//        {
+//            path.add(find);
+//            return path;
+//        }
+//        try{
+//            List<Connection> list = org.jgrapht.alg.BellmanFordShortestPath.findPathBetween(locations, source, destNode);
+//            for (Connection con : list)
+//                path.add((LocationNode) getConnectionDestination(con));
+//        }
+//        catch (Exception ex) {}
+//        return path;
     }
     
     public LocationNode findConnection(LocationNode source, String targetName, boolean allowBaked) 
     {
-        Set<Connection> cons = locations.outgoingEdgesOf(source);
-        for (Connection con : cons)
-        {
-            GraphNode node = locations.getEdgeTarget(con);
-            if (node instanceof LocationNode)
-            {
-                // If we find a connected location node then great
-                LocationNode LNode = (LocationNode)node;
-                if (LNode.getName().equals(targetName))
-                    return LNode;
-            }
-        }
+//        Set<Connection> cons = locations.outgoingEdgesOf(source);
+//        for (Connection con : cons)
+//        {
+//            GraphNode node = locations.getEdgeTarget(con);
+//            if (node instanceof LocationNode)
+//            {
+//                // If we find a connected location node then great
+//                LocationNode LNode = (LocationNode)node;
+//                if (LNode.getName().equals(targetName))
+//                    return LNode;
+//            }
+//        }
         // If we don't we try checking the baked connections
         if (allowBaked)
             return source.getBakedConnection(targetName);
         return null;
     }
     
-    public Connection getConnection(String sourceName, String destinationName) {
-        return locations.getEdge(locationNames.get(sourceName), locationNames.get(destinationName));
-    }
-    
-    public Connection getConnection(LocationNode source, LocationNode destination) {
-        return locations.getEdge(source, destination);
-    }            
-    
-    public boolean removeConnection(Connection con) {
-        return locations.removeEdge(con);
-    }
-    
-    public GraphNode getConnectionSource(Connection con){
-        return locations.getEdgeSource(con);
-    }
-    public GraphNode getConnectionDestination(Connection con){
-        return locations.getEdgeTarget(con);
-    }
-    public double getConnectionWeight(Connection con){
-        return locations.getEdgeWeight(con);
-    }
+//    public Connection getConnection(String sourceName, String destinationName) {
+//        return locations.getEdge(locationNames.get(sourceName), locationNames.get(destinationName));
+//    }
+//    
+//    public Connection getConnection(LocationNode source, LocationNode destination) {
+//        return locations.getEdge(source, destination);
+//    }            
+//    
+//    public boolean removeConnection(Connection con) {
+//        return locations.removeEdge(con);
+//    }
+//    
+//    public GraphNode getConnectionSource(Connection con){
+//        return locations.getEdgeSource(con);
+//    }
+//    public GraphNode getConnectionDestination(Connection con){
+//        return locations.getEdgeTarget(con);
+//    }
+//    public double getConnectionWeight(Connection con){
+//        return locations.getEdgeWeight(con);
+//    }
     
     public Avatar getAvatar(int objectID)
     {
