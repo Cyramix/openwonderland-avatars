@@ -276,6 +276,10 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         m_pscene = new PScene(attributes.getName(), m_wm);
         // Don't render yet
         m_pscene.setRenderStop(true);
+        // The glue between JME and pscene
+        m_jscene = new JScene(m_pscene);
+        // Use default render states (unless that method is overriden)
+        setRenderStates();
         // The collection of processors for this entity
         ArrayList<ProcessorComponent> processors = new ArrayList<ProcessorComponent>();
         // Initialize the attributes
@@ -284,10 +288,6 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         applyAttributes();
         // Initialize the scene, this adds the skeleton to the scene graph
         initScene(processors);
-        // The glue between JME and pscene
-        m_jscene = new JScene(m_pscene);
-        // Use default render states (unless that method is overriden)
-        setRenderStates();
         // Create a scene component and set the root to our jscene
         RenderComponent rc = m_wm.getRenderManager().createRenderComponent(m_jscene);
         // Add the scene component with our jscene to the entity
