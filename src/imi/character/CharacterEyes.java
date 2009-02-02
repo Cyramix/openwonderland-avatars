@@ -22,42 +22,56 @@ import imi.scene.polygonmodel.PPolygonModelInstance;
 import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
 import imi.scene.polygonmodel.parts.skinned.SkinnedMeshJoint;
 import imi.scene.polygonmodel.skinned.PPolygonSkinnedMeshInstance;
-import java.net.URL;
 import java.util.logging.Logger;
 import org.jdesktop.mtgame.WorldManager;
 
 /**
- *
+ * This class performs eyeball related behavior and handles general eyeball
+ * management.
  * @author Lou Hayt
  */
 public class CharacterEyes 
 {
+    /** Logger ref **/
     private static final Logger logger = Logger.getLogger(CharacterEyes.class.getName());
 
-
+    /** The owner of these eyes **/
     private Character             character            = null;
+    /** Skeleton of the above **/
     private SkeletonNode          skeleton             = null;
+    /** Model instance of the above above **/
     private PPolygonModelInstance characterModelInst   = null;
+    /** Reference to the head joint **/
     private SkinnedMeshJoint      headJoint            = null;
-    
+    /** The eyes! **/
     protected EyeBall            leftEyeBall           = null;
     protected EyeBall            rightEyeBall          = null;
-    
+    /** True if eyes should randomly wander (looks more lifelike) **/
     private boolean              eyesWander            = true;
+    /** Used as a buffer for wandering calculations **/
     private Vector3f             eyesWanderOffset      = new Vector3f();
+    /** Used to track how long it has been since the last wandering target **/
     private float                eyesWanderCounter     = 0.0f;
+    /** Count the number of wander targets for blinking algo **/
     private int                  eyesWanderIntCounter  = 0;
-    
+
+    /** These are Breadth-First indices to the left and right eyelid joints **/
     private final int leftEyeLid     = 37;//24;
     private final int rightEyeLid    = 45;//34;
+    /** Track how long the eyelids have been closed **/
     private float   closedEyeLid     = 0.0f;
+    /** Rotational angles for closing the eyes **/
     private final float   closedEyeLidMale    = ((float)Math.PI) * -0.5f;//-0.011f;
     private final float   closedEyeLidFemale  = ((float)Math.PI) * -0.5f;//-0.041f;
-    
+    /** True to enable blinking **/
     private boolean blinkingOn      = true;
+    /** How long has blinking been occuring? **/
     private float   blinkingTimer   = 0.0f;
+    /** true during the act of blinking **/
     private boolean blinking        = false;
+    /** True if the eyes are closed **/
     private boolean eyesClosed      = false;
+    /** True to keep them closed **/
     private boolean keepEyesClosed  = false;
     /** How long will it take to close the eyes **/
     private float blinkingCloseTime = 0.2f;
@@ -65,10 +79,16 @@ public class CharacterEyes
     private float blinkingShutTime  = 0.05f;
     /** How long will it take to open the eyes **/
     private float blinkingOpenTime  = 0.4f;
-    
+    /** Individual eye closing controls **/
     private boolean winkRight = true;
     private boolean winkLeft  = true;
-    
+
+    /**
+     * Construct a new set of peepers with the specified characteristics.
+     * @param eyeballTexture Relative path of the eyeball texture to use
+     * @param character The owner of the eyeballs
+     * @param wm The world manager!
+     */
     public CharacterEyes(String eyeballTexture, Character character, WorldManager wm)
     {
         if (character == null)

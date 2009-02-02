@@ -135,38 +135,47 @@ public abstract class Character extends Entity implements SpatialObject, Animati
      * <KeyID, TriggerID>
      */
     protected Hashtable<Integer, Integer>   m_keyBindings           = new Hashtable<Integer, Integer>();
+    /** Context for the character's states**/
     protected GameContext                   m_context               = null;
+    /** Various configuration attributes **/
     protected CharacterAttributes           m_attributes            = null;
+    /** Mapping of different contexts **/
     protected HashMap<String, GameContext>  m_registry              = new HashMap<String, GameContext>();
+    /** WM ref**/
     protected WorldManager                  m_wm                    = null;
+    /** The root of the PNode's for the character's scene graph **/
     protected PScene                        m_pscene                = null;
+    /** The bridge from PScenes to jME **/
     protected JScene                        m_jscene                = null;
+    /** The model instance for the avatar **/
     protected PPolygonModelInstance         m_modelInst             = null;
+    /** The model instance for the shadow quad **/
     protected PPolygonModelInstance         m_shadowModel           = null; // Quad!
+    /** Skeleton that our skin is attached to **/
     protected SkeletonNode                  m_skeleton              = null;
+    /** Reference to the mesh in a simple sphere scenario **/
     protected PPolygonMeshInstance          m_mesh                  = null;
+    /** Collection of objects that this character is associated with **/
     protected ObjectCollection              m_objectCollection      = null;
+    /** Performs animation on the character **/
     protected CharacterAnimationProcessor   m_AnimationProcessor    = null;
+    /** Provides update() calls to the character **/
     protected CharacterProcessor            m_characterProcessor    = null;
+    /** Animation queue for facial animations. Used to chain expressions. **/
     protected TransitionQueue               m_facialAnimationQ      = null;
+    /** The eyes! **/
     protected CharacterEyes                 m_eyes                  = null;
+    /** The arms! **/
     protected VerletArm                     m_rightArm              = null;
     protected VerletArm                     m_leftArm               = null;
+    /** True once initialization has completely finished (including asset loading) **/
     private   boolean                       m_initialized           = false;
+    /** Expansion slot for updatable things **/
     private   Updatable                     m_updateExtension       = null;
-    private   int                           m_defaultFacePose       = 4; // index of the 'default' facial animation
+    /** index of the 'default' facial animation **/
+    private   int                           m_defaultFacePose       = 4;
     private   float                         m_defaultFacePoseTiming = 0.1f;
     private   VerletSkeletonFlatteningManipulator m_skeletonManipulator   = null;
-
-    /** Used for internal requests for assets **/
-    private final RepositoryUser            headInstaller = new RepositoryUser() {
-        @Override
-        public void receiveAsset(SharedAsset assetRecieved) {
-            // Flip some switches
-            asset = assetRecieved;
-            m_bWaitingOnAsset = false;
-        }
-    };
 
     /**
      * Sets up the mtgame entity 
@@ -539,6 +548,18 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         }
     }
 
+    /** Used for head loading **/
+    private boolean m_bWaitingOnAsset = false;
+    private SharedAsset asset = null;
+    /** Used for internal requests for assets **/
+    private final RepositoryUser            headInstaller = new RepositoryUser() {
+        @Override
+        public void receiveAsset(SharedAsset assetRecieved) {
+            // Flip some switches
+            asset = assetRecieved;
+            m_bWaitingOnAsset = false;
+        }
+    };
     /**
      * Load a head file and return the skeleton of the new head.
      * @param headLocation Location of the head to load
@@ -1223,115 +1244,6 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         return m_initialized;
     }
 
-    private boolean m_bWaitingOnAsset = false;
-    private SharedAsset asset = null;
-    /**
-     * Change out the head (including head skeleton) that the avatar is using.
-     * @param headLocation Where the collada file is located.
-     * @param attachmentJointName The joint to attach on.
-     */
-//    public void installHead(URL headLocation, String attachmentJointName)
-//    {
-//        // Stop all of our processing.
-//        m_skeleton.setRenderStop(true);
-//        m_AnimationProcessor.setEnable(false);
-//        m_characterProcessor.setEnabled(false);
-//
-//        AssetDescriptor descriptor = new AssetDescriptor(SharedAssetType.COLLADA, headLocation);
-//        asset = new SharedAsset(m_pscene.getRepository(), descriptor);
-//        m_bWaitingOnAsset = true;
-//        m_pscene.getRepository().loadSharedAsset(asset, headInstaller);
-//        while (m_bWaitingOnAsset == true)
-//        {
-//            try {
-//                Thread.sleep(100);
-//            }
-//            catch (InterruptedException ex)
-//            {
-//                logger.severe(ex.getMessage());
-//            }
-//        }
-//        PScene newHeadPScene = (PScene)asset.getAssetData();
-//        SkeletonNode newHeadSkeleton = (SkeletonNode)newHeadPScene.findChild("skeletonRoot").getParent();
-//
-//        // Cut off the old skeleton at the specified attach point
-//        SkinnedMeshJoint parent = (SkinnedMeshJoint)m_skeleton.getSkinnedMeshJoint(attachmentJointName).getParent();
-//        parent.removeChild(attachmentJointName);
-//        parent.addChild(newHeadSkeleton.getSkinnedMeshJoint(attachmentJointName));
-//
-//        m_skeleton.refresh();
-//        m_skeleton.clearSubGroup("Head");
-//        m_eyes = null;
-//
-//        Iterable<PNode> list = newHeadSkeleton.getChildren();
-//        for (PNode node : list)
-//        {
-//            if (node instanceof PPolygonSkinnedMesh)
-//            {
-//                PPolygonSkinnedMesh skinnedMesh = (PPolygonSkinnedMesh) node;
-//                // Make an instance
-//                PPolygonSkinnedMeshInstance skinnedMeshInstance = (PPolygonSkinnedMeshInstance) m_pscene.addMeshInstance(skinnedMesh, new PMatrix());
-//                // Add it to the skeleton
-//                m_skeleton.addToSubGroup(skinnedMeshInstance, "Head");
-//            }
-//        }
-//
-//        m_eyes = new CharacterEyes(m_attributes.getEyeballTexture(), this, m_wm);
-//        m_skeletonManipulator.setLeftEyeBall(m_eyes.leftEyeBall);
-//        m_skeletonManipulator.setRightEyeBall(m_eyes.rightEyeBall);
-//        // Apply the correct shaders to them
-//        setDefaultHeadShaders();
-//        // Relink all of the old meshes and apply their materials
-//        for (PPolygonSkinnedMeshInstance meshInst : m_skeleton.getSkinnedMeshInstances())
-//        {
-//            meshInst.setAndLinkSkeletonNode(m_skeleton);
-//            meshInst.applyMaterial();
-//        }
-//
-//        // Re-enable all the processors that affect us.
-//        m_AnimationProcessor.setEnable(true);
-//        m_characterProcessor.setEnabled(true);
-//        m_skeleton.setRenderStop(false);
-//    }
-
-    /**
-     * m_skeleton and m_pscene must already be initialized.
-     * @param headLocation
-     * @param attachmentJointName
-     * @return true on success, false on failure.
-     */
-//    private boolean installInitialHead(URL headLocation, String attachmentJointName)
-//    {
-//        boolean result = true;
-//        List<PNode> newSkeletonChildren = new ArrayList<PNode>();
-//        SkeletonNode newHeadSkeleton = loadHeadFile(headLocation, newSkeletonChildren);
-//        // Cut off the old skeleton at the specified attach point
-//        SkinnedMeshJoint parent = (SkinnedMeshJoint)m_skeleton.getSkinnedMeshJoint(attachmentJointName).getParent();
-//        parent.removeChild(attachmentJointName);
-//        parent.addChild(newHeadSkeleton.getSkinnedMeshJoint(attachmentJointName));
-//
-//        m_skeleton.refresh();
-//        m_skeleton.clearSubGroup("Head");
-//        // When freshly loaded via collada loader, the skinned meshes are not
-//        // divided into subgroups yet.
-//        for (PNode node : newSkeletonChildren)
-//        {
-//            if (node instanceof PPolygonSkinnedMesh)
-//            {
-//                PPolygonSkinnedMesh skinnedMesh = (PPolygonSkinnedMesh) node;
-//                // Make an instance
-//                PPolygonSkinnedMeshInstance skinnedMeshInstance = (PPolygonSkinnedMeshInstance) m_pscene.addMeshInstance(skinnedMesh, new PMatrix());
-//                // Add it to the skeleton
-//                m_skeleton.addToSubGroup(skinnedMeshInstance, "Head");
-//            }
-//        }
-//
-//        // Relink all of the old meshes and apply their materials
-//        for (PPolygonSkinnedMeshInstance meshInst : m_skeleton.getSkinnedMeshInstances())
-//            meshInst.setAndLinkSkeletonNode(m_skeleton);
-//
-//        return result;
-//    }
 
     /**
      * Save the current avatar configuration to the specified location. This
@@ -1378,82 +1290,6 @@ public abstract class Character extends Entity implements SpatialObject, Animati
             logger.log(Level.SEVERE, "Failed to open OutputStream to " +
                                     location.toString() + "! " + ex.getMessage());
         }
-    }
-    
-    /**
-     * Load the configuration file at the specified location and apply it to this
-     * character instance.
-     * @param location
-     */
-    public void loadConfiguration(URL location)
-    {
-        // Turn off character processor and animation processor
-        boolean oldState = m_AnimationProcessor.isEnable();
-        m_AnimationProcessor.setEnable(false);
-        m_characterProcessor.stop();
-
-        try {
-            final JAXBContext context = JAXBContext.newInstance("imi.serialization.xml.bindings");
-            final Unmarshaller m = context.createUnmarshaller();
-
-            InputStream is = location.openConnection().getInputStream();
-
-            Object characterObj = m.unmarshal( is );
-            if (characterObj instanceof xmlCharacter)
-            {
-                applyCharacterDOM((xmlCharacter)characterObj);
-            }
-            else
-            {
-                logger.log(Level.SEVERE,
-                        "JAXB somehow parsed the file and made some other object: " + characterObj.toString());
-            }
-
-        }
-        catch (JAXBException ex) {
-            logger.log(Level.SEVERE, "Failed to parse the file! " + ex.getMessage());
-            logger.log(Level.SEVERE, ex.getErrorCode() + " : " + ex.getLocalizedMessage() + " : " + ex.toString());
-            ex.printStackTrace();
-
-        }
-        catch (IOException ex) {
-            logger.log(Level.SEVERE, "Failed to open InputStream to " +
-                                    location.toString() + "! " + ex.getMessage());
-        }
-
-        // restart processors
-        m_AnimationProcessor.setEnable(oldState);
-        m_characterProcessor.start();
-    }
-
-    /**
-     * Apply the data with to this character instance
-     * @param characterDOM
-     */
-    private void applyCharacterDOM(xmlCharacter characterDOM)
-    {
-        // The Attribute loading section is not functional currently,
-        // skeleton and local modifiers can be saved and loaded.
-        xmlCharacterAttributes xmlAttributes = characterDOM.getAttributes();
-
-        if (m_attributes!=null) {
-            m_attributes.applyAttributesDOM(xmlAttributes);
-            //loadAttributes(m_attributes); TODO
-        } else {
-            CharacterAttributes attributes = new CharacterAttributes(xmlAttributes);
-
-            // Apply the loaded attributes
-            //loadAttributes(attributes); TODO
-        }
-
-        // Material properties
-        applyMaterialProperties(characterDOM);
-
-        // Skeletal modifications
-        applySkeletalModifications(characterDOM);
-
-        // assign to controller as well
-        m_context.getController().setModelInstance(m_modelInst);
     }
 
     /**
@@ -1597,10 +1433,12 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         this.m_updateExtension = updateExtension;
     }
 
+    /**
+     * Release all resources
+     */
     public void destroy() {
         if (m_wm == null)
             return;
-        
 
         ProcessorCollectionComponent pcc = (ProcessorCollectionComponent) getComponent(ProcessorCollectionComponent.class);
         pcc.removeAllProcessors();
@@ -1648,12 +1486,6 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         lfeet.getBindPose().setScale(1.5f);
     }
 
-
-    public void setBeerBelly(float fSize)
-    {
-//        SkinnedMeshJoint bellyJoint = getSkeleton().getSkinnedMeshJoint("Spine1");
-//        bellyJoint.getLocalModifierMatrix().setScale(fSize);
-    }
 
     /**
      * Make fists with the specified hands
@@ -1739,12 +1571,6 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         // Relink all of the old meshes and apply their materials
         for (PPolygonSkinnedMeshInstance meshInst : m_skeleton.getMeshesBySubGroup("Head"))
         {
-            if (meshInst.getName().contains("EyeGeoShape"))
-            {
-                System.out.println("Setting material on " + meshInst.getName());
-                System.out.println("Shader is " + meshInst.getMaterialRef().getShader().getProgramName() + " : " +
-                        meshInst.getMaterialRef().getShader().getProgramDescription());
-            }
             meshInst.setAndLinkSkeletonNode(m_skeleton);
             meshInst.applyMaterial();
         }
@@ -1843,6 +1669,4 @@ public abstract class Character extends Entity implements SpatialObject, Animati
                 list.add(kid);
         }
     }
-
-
 }

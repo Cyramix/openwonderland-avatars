@@ -91,6 +91,9 @@ public class CharacterAttributes
         this.name = name;
     }
 
+    /**
+     * Construct a new instance with some default values
+     */
     public CharacterAttributes() {
         skinTone[0] = 230.0f/255.0f;
         skinTone[1] = 197.0f/255.0f;
@@ -106,13 +109,20 @@ public class CharacterAttributes
             shoesSpecColor[i] = 1.0f;
         }
     }
-    
+
+    /**
+     * Construct a new instance reflecting the provided DOM
+     * @param attributesDOM
+     */
     public CharacterAttributes(xmlCharacterAttributes attributesDOM)
     {
         this();
         applyAttributesDOM(attributesDOM);
     }
-    
+
+    /**
+     * Make the shirt color random
+     */
     public void randomizeShirtColor()
     {
         shirtColor[0] = (float)Math.random();
@@ -431,6 +441,12 @@ public class CharacterAttributes
 
     }
 
+    /**
+     * Factory method for creating SkinnedMeshParams objects
+     * @param meshName The mesh to attach
+     * @param subGroupName Which subgroup it is destined for on the skeleton.
+     * @return
+     */
     public SkinnedMeshParams createSkinnedMeshParams(String meshName, String subGroupName)
     {
         return new SkinnedMeshParams(meshName, subGroupName);
@@ -530,17 +546,29 @@ public class CharacterAttributes
         public String meshName = null;
         public String subGroupName = null;
 
+        /**
+         * Construct a new instance reflecting the provided DOM
+         * @param paramsDOM
+         */
         public SkinnedMeshParams(xmlSkinnedMeshParams paramsDOM)
         {
             meshName = paramsDOM.getSkinnedMeshName();
             subGroupName = paramsDOM.getSubGroupName();
         }
 
+        /**
+         * Construct an empty instance
+         */
         public SkinnedMeshParams()
         {
             // Do nothing!
         }
-        
+
+        /**
+         * Construct a new instance with the provided data
+         * @param meshName Mesh to attach
+         * @param subGroupName Subgroup to attach to
+         */
         public SkinnedMeshParams(String meshName, String subGroupName)
         {
             set(meshName, subGroupName);
@@ -552,6 +580,10 @@ public class CharacterAttributes
             this.subGroupName = subGroupName;
         }
 
+        /**
+         * Create the DOM representation of this object
+         * @return
+         */
         private xmlSkinnedMeshParams generateParamsDOM() {
             xmlSkinnedMeshParams result = new xmlSkinnedMeshParams();
             result.setSkinnedMeshName(meshName);

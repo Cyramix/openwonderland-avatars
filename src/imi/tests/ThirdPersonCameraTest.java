@@ -92,7 +92,6 @@ public class ThirdPersonCameraTest extends DemoBase
 
         avatar.selectForInput();
         avatar.setBigHeadMode(2.0f);
-        avatar.setBeerBelly(1.17f);
         control.getAvatarTeam().add(avatar);
 
         // Get the mouse evets so the verlet arm can be controlled

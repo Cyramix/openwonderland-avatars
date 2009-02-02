@@ -32,10 +32,13 @@ import javax.swing.JFrame;
  */
 public abstract class CharacterController
 {
+    /** True to use 'reversed' headings **/
     protected boolean  bReverseHeading     = false;
+    /** Cache the last orientation **/
     private PMatrix previousOrientation = new PMatrix();
+    /** Cache the last translation **/
     private Vector3f previousTranslation = new Vector3f();
-
+    /** List of listeners **/
     private HashSet<CharacterMotionListener> listeners = null;
 
     /**
