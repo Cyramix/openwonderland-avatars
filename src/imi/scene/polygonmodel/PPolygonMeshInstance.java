@@ -132,8 +132,7 @@ public class PPolygonMeshInstance extends PNode implements Serializable
             m_instance = new SharedMesh(getName(), m_geometry.getGeometry());
 
             m_material = new PMeshMaterial(m_geometry.getMaterialCopy());
-            m_instance.setTextureCoords(m_geometry.getGeometry().getTextureCoords(0));
-            setUniformTexCoords(m_geometry.isUniformTexCoords());
+            
             if (bApplyMaterial == true)
                 applyMaterial();
         }
@@ -146,8 +145,6 @@ public class PPolygonMeshInstance extends PNode implements Serializable
         m_geometry = other.m_geometry;
         m_instance = new SharedMesh(other.getName(), m_geometry.getGeometry());
         m_material = new PMeshMaterial(other.m_material);
-        m_instance.setTextureCoords(m_geometry.getGeometry().getTextureCoords(0));
-        setUniformTexCoords(m_geometry.isUniformTexCoords());
 
         if (bApplyMaterial)
             applyMaterial();
@@ -447,21 +444,6 @@ public class PPolygonMeshInstance extends PNode implements Serializable
 //        logger.severe("-----------this is " + this);
 //        Thread.dumpStack();
         return m_textureInstaller;
-    }
-
-    private void setUniformTexCoords(boolean uniformTexCoords)
-    {
-        
-        m_bUniformTexCoords = uniformTexCoords;
-        if (m_bUniformTexCoords == true)
-        {
-            // Copy texture coordinates to the set number of units
-            for (int i = 0; i < m_geometry.getNumberOfTextures(); i++)
-            {
-                m_instance.copyTextureCoordinates(0, i, 1.0f);
-            }
-        }
-    
     }
     
     public boolean isWaitingOnTextures()

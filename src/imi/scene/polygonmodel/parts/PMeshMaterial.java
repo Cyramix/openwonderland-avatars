@@ -62,13 +62,13 @@ public class PMeshMaterial extends PNode implements Serializable
         A_ONE
     }
     /** Diffuse material color **/
-    private ColorRGBA  m_Diffuse   = null;
+    private ColorRGBA  m_Diffuse   = ColorRGBA.white;
     /** Ambient material color **/
     private ColorRGBA  m_Ambient   = defaultAmbient;
     /** Emissive material color **/
-    private ColorRGBA  m_Emissive  = null;
+    private ColorRGBA  m_Emissive  = ColorRGBA.black;
     /** Specular material color **/
-    private ColorRGBA  m_Specular  = null;
+    private ColorRGBA  m_Specular  = ColorRGBA.white;
     /** Transparency Color **/
     private ColorRGBA  m_TransparencyColor = null;
     /** Shininess value **/

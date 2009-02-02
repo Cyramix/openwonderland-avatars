@@ -513,6 +513,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
                         Logger.getLogger(Character.class.getName()).log(Level.SEVERE, null, ex);
                     }
                     meshMat.setShader(hairShader);
+                    meshMat.setCullFace(CullState.Face.None); // Double sided hair
                 }
                 else
                     meshMat.setShader(accessoryShader);

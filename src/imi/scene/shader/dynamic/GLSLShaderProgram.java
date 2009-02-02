@@ -17,7 +17,6 @@
  */
 package imi.scene.shader.dynamic;
 
-import com.jme.scene.lod.VETMesh.VertexAttribute;
 import com.jme.scene.state.GLSLShaderObjectsState;
 import com.jme.scene.state.RenderState;
 import imi.scene.polygonmodel.PPolygonMeshInstance;
@@ -818,12 +817,13 @@ public class GLSLShaderProgram implements AbstractShaderProgram, RenderUpdater
                 GLSLVertexAttribute vertAttribute = (GLSLVertexAttribute)iter.next();
                 if (vertAttribute == GLSLDefaultVariables.BoneIndices)
                 {
+
                     shaderState.setAttributePointer(
                             GLSLDefaultVariables.BoneIndices.getName(), // The name, referenced in the shader code
                             4,                                          // Total size of the data
                             false,                                      // "Normalized"
                             0,                                          // The "stride" (between entries)
-                            ((PPolygonSkinnedMesh)meshInst.getGeometry()).getBoneIndexBuffer()); // The actual data
+                            meshInst.getGeometry().getGeometry().getBinormalBuffer()); // The actual data
                 }
                 else if (vertAttribute == GLSLDefaultVariables.Tangents)
                 {
