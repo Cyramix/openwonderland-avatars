@@ -574,7 +574,6 @@ public class JFrame_HeadCustomizer extends javax.swing.JFrame {
     /**
      * Custom selection listener for selecting objects from the table
      */
-
     public class SelectionListener implements ListSelectionListener {
         JTable  table;
         int     type;
@@ -656,6 +655,10 @@ public class JFrame_HeadCustomizer extends javax.swing.JFrame {
         }
     }
 
+    /**
+     * Creates a vector of the available heads in the heads directory to use as
+     * reference when selecting heads to load in realtime using the heads table
+     */
     public void getHeads() {
 
         FilenameFilter asset = new FilenameFilter() {
@@ -694,6 +697,10 @@ public class JFrame_HeadCustomizer extends javax.swing.JFrame {
         }
     }
 
+    /**
+     * Creates a vector of the available hair names and files to use when the
+     * add hair method is called.
+     */
     public void getHair() {
 
         FilenameFilter asset = new FilenameFilter() {
@@ -749,6 +756,11 @@ public class JFrame_HeadCustomizer extends javax.swing.JFrame {
         }
     }
 
+    /**
+     * Reads in the name of the meshes for the hair from an external file.
+     * @param meshNames - file location for the mesh names data
+     * @param actualFile - the actual collada file to associate with the file.
+     */
     public void readInMeshNames(File meshNames, File actualFile) {
         if (m_MeshNames == null) {
             m_MeshNames = new Vector();
