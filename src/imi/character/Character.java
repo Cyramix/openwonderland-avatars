@@ -122,6 +122,7 @@ import org.jdesktop.mtgame.WorldManager;
  * This class represents the high level avatar. It provides methods for performing
  * tasks that are character related.
  * @author Lou Hayt
+ * @author Ronald E Dahlgren
  */
 public abstract class Character extends Entity implements SpatialObject, AnimationListener
 {
@@ -153,18 +154,18 @@ public abstract class Character extends Entity implements SpatialObject, Animati
     protected VerletArm                     m_leftArm               = null;
     private   boolean                       m_initialized           = false;
     private   Updatable                     m_updateExtension       = null;
-    private   int                           m_defaultFacePose       = 4;
+    private   int                           m_defaultFacePose       = 4; // index of the 'default' facial animation
     private   float                         m_defaultFacePoseTiming = 0.1f;
     private   VerletSkeletonFlatteningManipulator m_skeletonManipulator   = null;
 
     /** Used for internal requests for assets **/
     private final RepositoryUser            headInstaller = new RepositoryUser() {
-            
-            public void receiveAsset(SharedAsset assetRecieved) {
-                // Flip some switches
-                asset = assetRecieved;
-                m_bWaitingOnAsset = false;
-            }
+        @Override
+        public void receiveAsset(SharedAsset assetRecieved) {
+            // Flip some switches
+            asset = assetRecieved;
+            m_bWaitingOnAsset = false;
+        }
     };
 
     /**
@@ -231,6 +232,9 @@ public abstract class Character extends Entity implements SpatialObject, Animati
     }
 
 
+    /**
+     * Create a shadow for this character if one is not already present
+     */
     public void addShadow() {
         if (m_shadowModel == null) // Not parameterized, no sense in remaking shadows
         {
@@ -267,6 +271,13 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         }
     }
 
+    /**
+     * Construction code that is common to all construction paths.
+     * @param wm WorldManager
+     * @param attributes attributes to use for initialization
+     * @param addEntity True if the entity should be added to the WorldManager
+     * @param characterDOM If non-null, use this to do additional setup
+     */
     private void commonConstructionCode(WorldManager wm, CharacterAttributes attributes, boolean addEntity, xmlCharacter characterDOM)
     {
         m_wm = wm;
@@ -491,6 +502,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
             // Apply it!
             meshInst.applyShader();
         }
+
         // then the attachments
         PNode skeletonRoot = m_skeleton.getSkeletonRoot();
         FastList<PNode> queue = new FastList<PNode>();
@@ -730,16 +742,6 @@ public abstract class Character extends Entity implements SpatialObject, Animati
 
         // Execute the instruction tree
         instructionProcessor.execute(attributeRoot);
-    }
-
-
-    /**
-     * Interpret and apply the provided attributes and modify this character.
-     * @param attributes
-     */
-    @Deprecated
-    public void loadAttributes(CharacterAttributes attributes) {
-
     }
 
     /**
@@ -1020,9 +1022,13 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         // Go to default face pose
         m_facialAnimationQ.addTransition(new TransitionCommand(m_defaultFacePose, m_defaultFacePoseTiming, PlaybackMode.PlayOnce, false));
     }
-    
+
+    /**
+     * Sets the camera on this character.
+     */
     public void setCameraOnMe() 
     {
+        // TODO !
         //m_wm.getUserData(arg0);
     }
     
@@ -1039,6 +1045,10 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         objs.addObject(this);
     }
 
+    /**
+     * Retrieve the object collection this character is associated with.
+     * @return
+     */
     public ObjectCollection getObjectCollection() {
         return m_objectCollection;
     }
@@ -1170,6 +1180,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         return null;
     }
     
+    @Override
     public void receiveAnimationMessage(AnimationMessageType message, int stateID)
     {
         if (m_context != null)
@@ -1427,12 +1438,12 @@ public abstract class Character extends Entity implements SpatialObject, Animati
 
         if (m_attributes!=null) {
             m_attributes.applyAttributesDOM(xmlAttributes);
-            loadAttributes(m_attributes);
+            //loadAttributes(m_attributes); TODO
         } else {
             CharacterAttributes attributes = new CharacterAttributes(xmlAttributes);
 
             // Apply the loaded attributes
-            loadAttributes(attributes);
+            //loadAttributes(attributes); TODO
         }
 
         // Material properties

@@ -23,7 +23,7 @@ import imi.serialization.xml.bindings.xmlMatrix;
 
 /**
  * This class specifies the necessary information for attaching a mesh to a
- * particular joiny in a skeleton. A transform is provided in order to orient
+ * particular joint in a skeleton. A transform is provided in order to orient
  * the attached mesh in the desired fashion.
  * @author Lou Hayt
  */

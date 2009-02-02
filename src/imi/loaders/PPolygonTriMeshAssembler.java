@@ -360,6 +360,7 @@ public class PPolygonTriMeshAssembler
         // Set skin data in PPolygonSkinnedMesh
         Mesh.setSkinningData(null, BufferUtils.createFloatBuffer(boneIndexArray));
 
+
         // Positions, normals and colors are an easy copy
         Vector3f[]  positions      = VertBuffer.getPositionArray();
         Vector3f[]  normals        = VertBuffer.getNormalArray();
@@ -380,6 +381,7 @@ public class PPolygonTriMeshAssembler
         // Rebuild the triMesh with the new data
         triMesh.reconstruct(positionBuffer, normalBuffer, BufferUtils.createFloatBuffer(weightArray), texCoordBuffer, indexBuffer);
         triMesh.setTangentBuffer(tangentBuffer);
+        triMesh.setBinormalBuffer(Mesh.getBoneIndexBuffer());
     }
 
 }

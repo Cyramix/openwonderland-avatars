@@ -33,6 +33,7 @@ import com.jme.math.Vector2f;
 import com.jme.math.Vector3f;
 import com.jme.renderer.ColorRGBA;
 import com.jme.scene.TriMesh;
+import com.jme.scene.VBOInfo;
 import imi.loaders.PPolygonTriMeshAssembler;
 import imi.loaders.repository.SharedAsset;
 import imi.scene.PTransform;
@@ -148,7 +149,7 @@ public class PPolygonMesh extends PNode implements Serializable
         
         // Great Success!
         endBatch();
-        
+        useVBO();
     }
 
     /**
@@ -160,6 +161,7 @@ public class PPolygonMesh extends PNode implements Serializable
         setName("Untitled");
         setTransform(new PTransform());
         m_Polygons = new ArrayList<PPolygon>();
+        useVBO();
     }
     
     /**
@@ -172,17 +174,7 @@ public class PPolygonMesh extends PNode implements Serializable
         setName(name);
         setTransform(new PTransform());
         m_Polygons = new ArrayList<PPolygon>();
-    }
-
-    /**
-     * TODO : Implement this method
-     * Saves this geometry to a file
-     * @return the path to the file
-     */
-    public String createProceduralGeometryFile() 
-    {
-        // TODO : command pattern
-        throw new UnsupportedOperationException("Not yet implemented");
+        useVBO();
     }
     
     /**
@@ -1425,6 +1417,22 @@ public class PPolygonMesh extends PNode implements Serializable
     }
 
     /**
+     * Convenience method for setting up the vertex buffer object associated with
+     * this mesh.
+     */
+    private void useVBO()
+    {
+        // DAHLGREN : In development.
+//        if (m_Geometry == null)
+//            logger.warning("Cannot make null geometry use VBOs!");
+//        else
+//        {
+//            VBOInfo info = new VBOInfo(true);
+//            info.resizeTextureIds(8);
+//            m_Geometry.setVBOInfo(info);
+//        }
+    }
+    /**
      * Retrievs the shared asset reference for this PPolygonMesh. This is only
      * used in tracking what file (if any) this mesh originated from. This is
      * used to help facilitate instancing
@@ -1516,7 +1524,7 @@ public class PPolygonMesh extends PNode implements Serializable
         m_bDebugInfo = false;
         m_bSubmitGeometry = true;
         setDirty(true, false);
-        
+        useVBO();
     }
 
 }
