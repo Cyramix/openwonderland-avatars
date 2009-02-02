@@ -973,6 +973,13 @@ public class SceneEssentials {
             pRootInstruction.addChildInstruction(InstructionType.loadGeometry, szURL);
 
             PMatrix tempSolution = new PMatrix();
+
+            if (szURL.toLowerCase().contains("female")) {
+                tempSolution = new PMatrix(new Vector3f((float)Math.toRadians(10),0,0), Vector3f.UNIT_XYZ, new Vector3f(0.0f, 0.0f, 0.03f));
+            } else if (szURL.toLowerCase().contains("male")) {
+                tempSolution = new PMatrix(new Vector3f((float)Math.toRadians(10),0,0), Vector3f.UNIT_XYZ, Vector3f.ZERO);
+            }
+
             pRootInstruction.addAttachmentInstruction( meshName, parentJoint, tempSolution, subGroup );
             pProcessor.execute(pRootInstruction);
 
@@ -1388,6 +1395,12 @@ public class SceneEssentials {
         
         PMatrix tempSolution = new PMatrix();
 
+        if (data[3].toLowerCase().contains("female")) {
+            tempSolution = new PMatrix(new Vector3f((float)Math.toRadians(10),0,0), Vector3f.UNIT_XYZ, new Vector3f(0.0f, 0.0f, 0.03f));
+        } else if (data[3].toLowerCase().contains("male")) {
+            tempSolution = new PMatrix(new Vector3f((float)Math.toRadians(10),0,0), Vector3f.UNIT_XYZ, Vector3f.ZERO);
+        }
+
         pRootInstruction.addAttachmentInstruction( data[0], joint2addon, tempSolution, subGroup );
         pProcessor.execute(pRootInstruction);
 
@@ -1437,8 +1450,11 @@ public class SceneEssentials {
 
         PNode mesh = m_avatar.getSkeleton().findChild(subGroup);
         ArrayList<PNode> meshesToDelete = new ArrayList<PNode>();
-        for (int i = 0; i < mesh.getChildrenCount(); i++)
-            meshesToDelete.add(mesh.getChild(i));
+
+        if (mesh.getChildrenCount() > 0) {
+            for (int i = 0; i < mesh.getChildrenCount(); i++)
+                meshesToDelete.add(mesh.getChild(i));
+        }
 
         if (mesh != null)
             m_avatar.getSkeleton().findAndRemoveChild(subGroup);
@@ -1446,6 +1462,12 @@ public class SceneEssentials {
         pRootInstruction.addChildInstruction(InstructionType.loadGeometry, meshLocation);
 
         PMatrix tempSolution = new PMatrix();
+
+        if (meshLocation.toLowerCase().contains("female")) {
+            tempSolution = new PMatrix(new Vector3f((float)Math.toRadians(10),0,0), Vector3f.UNIT_XYZ, new Vector3f(0.0f, 0.0f, 0.03f));
+        } else if (meshLocation.toLowerCase().contains("male")) {
+            tempSolution = new PMatrix(new Vector3f((float)Math.toRadians(10),0,0), Vector3f.UNIT_XYZ, Vector3f.ZERO);
+        }
 
         pRootInstruction.addAttachmentInstruction( meshName, joint2addon, tempSolution, subGroup );
         pProcessor.execute(pRootInstruction);

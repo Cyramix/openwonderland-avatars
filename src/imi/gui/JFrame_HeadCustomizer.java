@@ -58,6 +58,9 @@ public class JFrame_HeadCustomizer extends javax.swing.JFrame {
     private File                            m_HeadsDir      = null;
     private File                            m_EyesDir       = null;
     private File                            m_HairDir       = null;
+    private String                          m_HeadsRelPath  = null;
+    private String                          m_EyesRelPath   = null;
+    private String                          m_HairRelPath   = null;
     private Vector                          m_HeadModels    = null;
     private Vector                          m_HairModels    = null;
     private Vector                          m_MeshNames     = null;
@@ -182,10 +185,12 @@ public class JFrame_HeadCustomizer extends javax.swing.JFrame {
         String protocol = "file:///";
         String temp     = ((Vector)m_HeadModels.get(row)).get(col).toString();
         String location = temp.substring(1, temp.length() - 1);
-        File tempFile   = new File(location);
         String url      = protocol + location;
-        int index       = tempFile.toString().indexOf(".");
-        String relPath  = tempFile.toString().substring(index + 1);
+        int nameindex   = location.lastIndexOf("/");
+        String filename = location.toString().substring(nameindex);
+        int pathindex   = m_HeadsRelPath.lastIndexOf("/");
+        String path     = m_HeadsRelPath.substring(0, pathindex);
+        String relPath  = path + filename;
 
         m_sceneData.addAvatarHeadDAEURL(true, this, url, relPath);
 
@@ -211,10 +216,7 @@ public class JFrame_HeadCustomizer extends javax.swing.JFrame {
         m_sceneData.getPScene().setRenderStop(true);
         String protocol = "file:///";
         String temp     = data.get(1).toString();
-        File tempfile   = new File(temp);
         String url      = protocol + temp;
-        int index       = data.get(1).toString().indexOf(".");
-        String relPath  = data.get(1).toString().substring(index + 1);
 
         m_sceneData.addMeshDAEURLToModel(data.get(0).toString(), url, "Head", "Hair");
     }
@@ -416,6 +418,9 @@ public class JFrame_HeadCustomizer extends javax.swing.JFrame {
     }
 
     public void setDirectories(String headRelPath, String hairRelPath, String eyesPath) {
+        m_HeadsRelPath  = headRelPath;
+        m_HairRelPath   = hairRelPath;
+        m_EyesRelPath   = eyesPath;
         setHeadsDirectory(headRelPath);
         setHairDirectory(hairRelPath);
         setEyesDirectory(eyesPath);
