@@ -84,44 +84,18 @@ public class Chair implements SpatialObject
             initOrigin.lookAt(position, position.add(heading), Vector3f.UNIT_Y);
             initOrigin.invert();
             
+            //final Chair me = this;
+            
             sharedAsset = new SharedAsset(null, new AssetDescriptor(SharedAssetType.COLLADA, modelFile));
             AssetInitializer init = new AssetInitializer() {
                 public boolean initialize(Object asset) {
                     
-                    while(objectCollection == null)
-                        Thread.yield();
-                    while(modelInst == null)
-                        Thread.yield();
+                    //System.out.println("init chair " + me);
                     
-//                    try {Thread.sleep(50000);
-//                    } catch (InterruptedException ex) {
-//                        Logger.getLogger(Chair.class.getName()).log(Level.SEVERE, null, ex);}
+                    // TODO need a way to identify the chair to be more selective
+                    if(objectCollection != null)
+                        objectCollection.applyMaterials();
                     
-                    
-                    //System.out.println("init chair " + modelInst);
-                    
-                    
-                    // Apply material to all meshes
-                    FastList<PNode> queue = new FastList<PNode>();
-                    queue.addAll(modelInst.getChildren());
-                    while (queue.isEmpty() == false)
-                    {
-                        PNode current = queue.removeFirst();
-                        if (current instanceof PPolygonMeshInstance)
-                        {
-                            PPolygonMeshInstance meshInst = (PPolygonMeshInstance) current;
-                            //System.out.println("applying material on " + meshInst);
-                            meshInst.applyMaterial();
-                        }
-                        // add all the kids
-                        queue.addAll(current.getChildren());
-                    }
-                    
-                    //objectCollection.getPScene().setDirty(true, true);
-                    //objectCollection.getPScene().buildFlattenedHierarchy();
-                    objectCollection.getPScene().submitTransformsAndGeometry();
-                    objectCollection.getJScene().updateRenderState();
-
                     return true;
                 }
             };

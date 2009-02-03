@@ -413,6 +413,37 @@ public class ObjectCollection extends Entity
     public PScene getPScene() {
         return pscene;
     }
+
+    /**
+     * Applies materials to meshes loaded into the scene
+     */
+    public void applyMaterials() 
+    {
+        for (SpatialObject check : objects)
+        {
+            if (check instanceof Chair)
+            {   
+                // Apply material to all meshes
+                FastList<PNode> queue = new FastList<PNode>();
+                queue.addAll(((Chair)check).getModelInst().getChildren());
+                while (queue.isEmpty() == false)
+                {
+                    PNode current = queue.removeFirst();
+                    if (current instanceof PPolygonMeshInstance)
+                    {
+                        PPolygonMeshInstance meshInst = (PPolygonMeshInstance) current;
+                        //System.out.println("applying material on " + meshInst);
+                        meshInst.applyMaterial();
+                    }
+                    // add all the kids
+                    queue.addAll(current.getChildren());
+                }
+            }
+        }
+        
+        pscene.submitTransformsAndGeometry();
+        jscene.updateRenderState();
+    }
     
     // The chair's bounding volumes are not correct until finished loading, this method is still good on load time.
     private boolean isCloseToOtherChairs(Chair newChair) 
@@ -653,42 +684,18 @@ public class ObjectCollection extends Entity
      * Removes a chair from the object collection.
      */
     public void removeAChair()
-    {
-        
-        
-        
+    {   
         for (SpatialObject check : objects)
         {
             if (check instanceof Chair)
             {
-                FastList<PNode> queue = new FastList<PNode>();
-                queue.addAll(((Chair)check).getModelInst().getChildren());
-                while (queue.isEmpty() == false)
-                {
-                    PNode current = queue.removeFirst();
-                    if (current instanceof PPolygonMeshInstance)
-                    {
-                        PPolygonMeshInstance meshInst = (PPolygonMeshInstance) current;
-                        meshInst.applyMaterial();
-                    }
-                    // add all the kids
-                    queue.addAll(current.getChildren());
-                }
+                ((Chair)check).setOwner(null);
+                ((Chair)check).setOccupied(true);
+                objects.remove(check);
+                pscene.removeModelInstance(check.getModelInst());
+                return;
             }
         }
-        jscene.updateRenderState();
-        
-//        for (SpatialObject check : objects)
-//        {
-//            if (check instanceof Chair)
-//            {
-//                ((Chair)check).setOwner(null);
-//                ((Chair)check).setOccupied(true);
-//                objects.remove(check);
-//                pscene.removeModelInstance(check.getModelInst());
-//                return;
-//            }
-//        }
     }
     
     /**
