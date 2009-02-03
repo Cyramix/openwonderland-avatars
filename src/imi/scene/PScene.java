@@ -1041,7 +1041,7 @@ public class PScene extends PNode implements RepositoryUser, Serializable
     private PPolygonSkinnedMeshInstance buildSkinnedMeshInstance(PPolygonSkinnedMesh mesh, PMatrix parentWorldMatrix) 
     {
         // Initialize the meshAsset instance
-        PPolygonSkinnedMeshInstance meshInst  = new PPolygonSkinnedMeshInstance(mesh.getName(), mesh, mesh.getTransform().getLocalMatrix(false), this, true);
+        PPolygonSkinnedMeshInstance meshInst  = new PPolygonSkinnedMeshInstance(mesh.getName(), mesh, mesh.getTransform().getLocalMatrix(false), this, false);
         
         meshInst.getTransform().buildWorldMatrix(parentWorldMatrix);
         //meshInst.setTransformHierarchy(mesh.getBindPoseTransformHierarchy());
@@ -1060,7 +1060,7 @@ public class PScene extends PNode implements RepositoryUser, Serializable
     private PPolygonMeshInstance buildMeshInstance(PPolygonMesh mesh, PMatrix parentWorldMatrix)
     {
         // Initialize the meshAsset instance
-        PPolygonMeshInstance meshInst  = new PPolygonMeshInstance(mesh.getName(), mesh, mesh.getTransform().getLocalMatrix(false), this, true);
+        PPolygonMeshInstance meshInst  = new PPolygonMeshInstance(mesh.getName(), mesh, mesh.getTransform().getLocalMatrix(false), this, false);
         meshInst.getTransform().buildWorldMatrix(parentWorldMatrix);
         
         return meshInst;

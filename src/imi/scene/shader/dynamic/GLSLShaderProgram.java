@@ -904,7 +904,11 @@ public class GLSLShaderProgram implements AbstractShaderProgram, RenderUpdater
         }
 
         if (timeWaiting >= timeOut)
+        {
             logger.severe("Timed out before the Render thread gave me a shader state.");
+            // Where did this come from?
+            Thread.dumpStack();
+        }
     }
     
     /**
