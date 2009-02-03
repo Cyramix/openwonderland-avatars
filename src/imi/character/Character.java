@@ -405,6 +405,24 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         // Apply the material on everything that was just loaded.
         for (PPolygonSkinnedMeshInstance meshInstance : m_skeleton.getSkinnedMeshInstances())
             meshInstance.applyMaterial();
+        // then the attachments
+        PNode skeletonRoot = m_skeleton.getSkeletonRoot();
+        FastList<PNode> queue = new FastList<PNode>();
+        queue.addAll(skeletonRoot.getChildren());
+        while (queue.isEmpty() == false)
+        {
+            // process
+            PNode current = queue.removeFirst();
+            if (current instanceof PPolygonMeshInstance)
+            {
+                PPolygonMeshInstance meshInst = (PPolygonMeshInstance) current;
+                meshInst.applyMaterial();
+            }
+            // add all the kids
+            if (current instanceof PJoint ||
+                current instanceof PPolygonMeshInstance)
+                queue.addAll(current.getChildren());
+        }
 
         // New verlet skeleton manipulator
         m_skeletonManipulator = new VerletSkeletonFlatteningManipulator(m_leftArm, m_rightArm, m_eyes.getLeftEyeBall(), m_eyes.getRightEyeBall(), m_skeleton, m_modelInst);
