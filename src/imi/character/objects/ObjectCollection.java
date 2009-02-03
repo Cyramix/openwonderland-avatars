@@ -29,16 +29,16 @@ import com.jme.scene.state.WireframeState;
 import com.jme.scene.state.ZBufferState;
 import imi.character.avatar.Avatar;
 import imi.scene.JScene;
+import imi.scene.PNode;
 import imi.scene.PScene;
+import imi.scene.polygonmodel.PPolygonMeshInstance;
 import imi.scene.utils.visualizations.VisuManager;
 import imi.utils.graph.Connection;
-import imi.utils.graph.GraphNode;
 import imi.utils.graph.JGraph;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Hashtable;
-import java.util.List;
-import java.util.Set;
+import javolution.util.FastList;
 import org.jdesktop.mtgame.Entity;
 import org.jdesktop.mtgame.ProcessorCollectionComponent;
 import org.jdesktop.mtgame.ProcessorComponent;
@@ -322,8 +322,8 @@ public class ObjectCollection extends Entity
             
             //Chair newChair = new Chair(randomPosition, randomSittingDirection, null); // renders as a sphere
             Chair newChair = new Chair(randomPosition, randomSittingDirection, "assets/models/collada/Objects/Chairs/ConfChair1.dae");
-            newChair.setInScene(pscene);
             newChair.setObjectCollection(this);
+            newChair.setInScene(pscene);
             
             int attemptsCounter = 0;
             while(isCloseToOtherChairs(newChair) && attemptsCounter < 1000)
@@ -653,19 +653,42 @@ public class ObjectCollection extends Entity
      * Removes a chair from the object collection.
      */
     public void removeAChair()
-    {    
+    {
+        
+        
+        
         for (SpatialObject check : objects)
         {
             if (check instanceof Chair)
             {
-                ((Chair)check).setOwner(null);
-                ((Chair)check).setOccupied(true);
-                objects.remove(check);
-                pscene.removeModelInstance(check.getModelInst());
-                
-                return;
+                FastList<PNode> queue = new FastList<PNode>();
+                queue.addAll(((Chair)check).getModelInst().getChildren());
+                while (queue.isEmpty() == false)
+                {
+                    PNode current = queue.removeFirst();
+                    if (current instanceof PPolygonMeshInstance)
+                    {
+                        PPolygonMeshInstance meshInst = (PPolygonMeshInstance) current;
+                        meshInst.applyMaterial();
+                    }
+                    // add all the kids
+                    queue.addAll(current.getChildren());
+                }
             }
         }
+        jscene.updateRenderState();
+        
+//        for (SpatialObject check : objects)
+//        {
+//            if (check instanceof Chair)
+//            {
+//                ((Chair)check).setOwner(null);
+//                ((Chair)check).setOccupied(true);
+//                objects.remove(check);
+//                pscene.removeModelInstance(check.getModelInst());
+//                return;
+//            }
+//        }
     }
     
     /**

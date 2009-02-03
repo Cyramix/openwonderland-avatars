@@ -22,7 +22,6 @@ import com.jme.math.Vector3f;
 import com.jme.renderer.ColorRGBA;
 import com.jme.scene.state.MaterialState.ColorMaterial;
 import imi.loaders.PPolygonTriMeshAssembler;
-import imi.loaders.collada.ColladaLoaderParams;
 import imi.loaders.repository.AssetDescriptor;
 import imi.loaders.repository.AssetInitializer;
 import imi.loaders.repository.SharedAsset;
@@ -35,8 +34,9 @@ import imi.scene.polygonmodel.PPolygonMesh;
 import imi.scene.polygonmodel.PPolygonMeshInstance;
 import imi.scene.polygonmodel.PPolygonModelInstance;
 import imi.scene.polygonmodel.parts.PMeshMaterial;
-import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
 import imi.scene.utils.PMeshUtils;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javolution.util.FastList;
 
 /**
@@ -83,31 +83,45 @@ public class Chair implements SpatialObject
             initOrigin = new PMatrix();
             initOrigin.lookAt(position, position.add(heading), Vector3f.UNIT_Y);
             initOrigin.invert();
-            // TODO!
+            
             sharedAsset = new SharedAsset(null, new AssetDescriptor(SharedAssetType.COLLADA, modelFile));
             AssetInitializer init = new AssetInitializer() {
                 public boolean initialize(Object asset) {
-
-                    if (asset instanceof PNode)
+                    
+                    while(objectCollection == null)
+                        Thread.yield();
+                    while(modelInst == null)
+                        Thread.yield();
+                    
+//                    try {Thread.sleep(50000);
+//                    } catch (InterruptedException ex) {
+//                        Logger.getLogger(Chair.class.getName()).log(Level.SEVERE, null, ex);}
+                    
+                    
+                    //System.out.println("init chair " + modelInst);
+                    
+                    
+                    // Apply material to all meshes
+                    FastList<PNode> queue = new FastList<PNode>();
+                    queue.addAll(modelInst.getChildren());
+                    while (queue.isEmpty() == false)
                     {
-//                        // find ever mesh instance and nullify it's color buffer
-//                        FastList<PNode> queue = new FastList<PNode>();
-//                        queue.add((PNode)asset);
-//                        while (!queue.isEmpty())
-//                        {
-//                            PNode current = queue.removeFirst();
-//                            if (current instanceof PPolygonMeshInstance)
-//                            {
-//                                PPolygonMeshInstance meshInst = (PPolygonMeshInstance)current;
-//                                meshInst.getSharedMesh().getTarget().setColorBuffer(null);
-//                                modelInst.removeAllChildren();
-//                                modelInst.addChild(current);
-//                                break;
-//                            }
-//                            // add all children
-//                            queue.addAll(current.getChildren());
-//                        }
+                        PNode current = queue.removeFirst();
+                        if (current instanceof PPolygonMeshInstance)
+                        {
+                            PPolygonMeshInstance meshInst = (PPolygonMeshInstance) current;
+                            //System.out.println("applying material on " + meshInst);
+                            meshInst.applyMaterial();
+                        }
+                        // add all the kids
+                        queue.addAll(current.getChildren());
                     }
+                    
+                    //objectCollection.getPScene().setDirty(true, true);
+                    //objectCollection.getPScene().buildFlattenedHierarchy();
+                    objectCollection.getPScene().submitTransformsAndGeometry();
+                    objectCollection.getJScene().updateRenderState();
+
                     return true;
                 }
             };
