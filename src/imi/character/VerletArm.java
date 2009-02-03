@@ -33,26 +33,25 @@ public class VerletArm
 {
     /** true for right hand and false for left hand **/
     private boolean right = true;
-    
     /** The owning instance **/
     private PPolygonModelInstance characterModelInst = null;
     /** Reference to the joint where the arm attaches **/
     private SkinnedMeshJoint shoulderJoint  = null;
-
     /** List of verlet particles that make this arm **/
     private ArrayList<VerletParticle>  particles    = new ArrayList<VerletParticle>();
     /** List of constraints applied to the verlet particles **/
     private ArrayList<StickConstraint> constraints  = new ArrayList<StickConstraint>();
-    
-    private Vector3f gravity = new Vector3f(0.0f, -9.8f * 2.0f, 0.0f); // gravity is increaced for a "better look"
+    /** Gravity vector this particle system uses **/
+    private Vector3f gravity = new Vector3f(0.0f, -9.8f * 2.0f, 0.0f); // gravity is increased for a "better look"
     /** Used to simulate energy lost due to friction, drag, etc **/
     private float velocityDampener = 0.8f;
     /** Switch the behavior on and off **/
     private boolean enabled = false;
+    /** Hook to modify the skeleton **/
     private VerletSkeletonFlatteningManipulator skeletonManipulator = null;
-    
+    /** Used to track input movement **/
     private Vector3f currentInputOffset = new Vector3f();
-    
+    /** Maximum  distance to allow the hand to travel **/
     private float maxReach = 0.4834519f + 0.0075f;
     /** Enumerations for clarity **/
     public static final int shoulder  = 0;
@@ -63,7 +62,7 @@ public class VerletArm
     /** Used as a pointing target for the arm, null disables pointing **/
     private Vector3f pointAtLocation = null;
 
-    // Updates occure at a fixed interval
+    /** Updates occur at a fixed interval **/
     private float    armTimer         = 0.0f;
     private float    armTimeTick      = 1.0f / 60.0f;
     
@@ -90,8 +89,8 @@ public class VerletArm
     }
 
     /**
-     * Update the simulation
-     * @param deltaTime
+     * Update the simulation.
+     * @param deltaTime The timestep
      */
     public void update(float deltaTime) 
     {
@@ -206,7 +205,10 @@ public class VerletArm
             }
         }
     }
-    
+
+    /**
+     * Put the arm back into its starting position for verlet manipulation
+     */
     public void resetArm()
     {
         pointAtLocation = null;
@@ -221,7 +223,10 @@ public class VerletArm
         particles.get(wrist).dislocate(modelWorld.getLocalZ().mult(0.25f));
         particles.get(wrist).dislocate(Vector3f.UNIT_Y.mult(0.25f));
     }
-    
+
+    /**
+     * Makes the arm point at the pointAtLocation
+     */
     private void pointAt()
     {
         float wristDistanceFromShoulder = 0.475f;
@@ -230,6 +235,10 @@ public class VerletArm
         particles.get(wrist).position(shoulderPosition.add(directionFromShoulderToWrist.mult(wristDistanceFromShoulder)));
     }
 
+    /**
+     * Retrieve the position being pointed at.
+     * @return
+     */
     public Vector3f getPointAtLocation() {
         return pointAtLocation;
     }
@@ -308,7 +317,7 @@ public class VerletArm
     }
 
     /**
-     * If not reach up the arm will reach forward
+     * True if the arm is reaching upward (rather than forward)
      * @return
      */
     public boolean isManualDriveReachUp() {
@@ -324,7 +333,10 @@ public class VerletArm
         if (skeletonManipulator != null)
             skeletonManipulator.setManualDriveReachUp(manualDriveReachUp);
     }
-    
+
+    /**
+     * Change the arm's input response from reaching upward to reaching forward
+     */
     public void toggleManualDriveReachUp(){
         manualDriveReachUp = !manualDriveReachUp;
         if (skeletonManipulator != null)
@@ -340,12 +352,13 @@ public class VerletArm
     {
         /** The mass of this particular particle **/
         private float       mass                = 1.0f;
-
+        /** The current position of this particle **/
         private Vector3f    currentPosition     = new Vector3f();
+        /** History **/
         private Vector3f    previousPosition    = new Vector3f();
         /** Used during the update process to concatenate forces into one net-force vector**/
         private Vector3f    forceAccumulator    = new Vector3f();
-        
+        /** Used in calculations **/
         private Vector3f    integrationHelper   = new Vector3f();
         /** Determines if this particle is fixed or not **/
         private boolean     moveable            = true;
@@ -377,7 +390,11 @@ public class VerletArm
         {
             return currentPosition.subtract(previousPosition);
         }
-        
+
+        /**
+         * Multiply the velocity by the provided scale.
+         * @param scalar Scale the velocity by this.
+         */
         public void scaleVelocity(float scalar)
         {
             Vector3f reverseVelocity    =   previousPosition.subtract(currentPosition);
@@ -508,8 +525,11 @@ public class VerletArm
      */
     public class StickConstraint
     {
-        private int	particle1;
-        private int	particle2;
+        /** Connection point one (index) **/
+        private int     particle1;
+        /** Connection point two (index) **/
+        private int     particle2;
+        /** Desired distance between the particles **/
         private float   fRestDistance;
 
         /**

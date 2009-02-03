@@ -28,22 +28,30 @@ import java.util.logging.Logger;
 import javax.swing.JFrame;
 
 /**
- *  Concrete e.g. of character controller
+ *  Concrete character controller.
  *  Controls the avatar according to internal and external actions
  * 
  * @author Lou Hayt
  */
 public class AvatarController extends CharacterController
 {
+    /** The avatar being controller **/
     private Avatar    avatar               = null;
+    /** True if initialization has completed **/
     protected boolean  initalized          = false;
+    /** That which is controlled **/
     protected PPolygonModelInstance body   = null;
-    
-    private float    rotationSensetivity = -10.0f;
+    /** Used to scale rotation **/
+    private float    rotationSensitivity = -10.0f; // Why negative?
+    /** matrix used for applying rotations **/
     private PMatrix  rotation            = new PMatrix();
+    /** true if the avatar is currently turning **/
     private boolean  bTurning            = false;
+    /** Direction the avatar would like to face **/
     private Vector3f desiredDirection    = new Vector3f();
+    /** Movement vector **/
     private Vector3f velocity            = new Vector3f();
+    /** Derivative of the above with respect to time **/
     private Vector3f acceleration        = new Vector3f();
     private float    fwdAcceleration     = 0.0f; // fwdAcceleration towards the current direction
     private float    maxAcceleration     = 10.0f;
@@ -60,19 +68,26 @@ public class AvatarController extends CharacterController
     private PMatrix currentRot = new PMatrix();
     
     private JFrame window = null; // use this to set title name for debugging info
-    
-    public AvatarController(Avatar master)
+
+    /**
+     * Construct a new avatar controller
+     * @param theAvatar avatar to control
+     */
+    public AvatarController(Avatar theAvatar)
     {
-        avatar = master;
+        avatar = theAvatar;
         
         // Set the window to have access for the window title
         // used for displaying debugging info
         setWindow((JFrame) avatar.getWorldManager().getUserData(JFrame.class));
     }
-    
+
+    /**
+     * try to grab the body
+     */
     protected void initialize()
     {
-        // avatar's mesh might be null untill loaded
+        // avatar's mesh might be null until loaded
         PPolygonModelInstance model = avatar.getModelInst();
         if (model != null)
         {
@@ -84,6 +99,9 @@ public class AvatarController extends CharacterController
         Logger.getLogger(AvatarController.class.getName()).log(Level.INFO, "GOT BODY " + body);
     }
 
+    /**
+     * Stop the avatar
+     */
     @Override
     public void stop() 
     {
@@ -91,14 +109,22 @@ public class AvatarController extends CharacterController
         acceleration.set(Vector3f.ZERO);
         velocity.set(Vector3f.ZERO);
     }
-    
+
+    /**
+     * Accelerate the avatar with the provided force
+     * @param force
+     */
     public void accelerate(float force) 
     {
         fwdAcceleration += force / mass;
         if (fwdAcceleration > maxAcceleration)
             fwdAcceleration = maxAcceleration;
     }
-    
+
+    /**
+     * Accelerate the avatar with the provided force vector
+     * @param force
+     */
     public void accelerate(Vector3f force) 
     {
         acceleration.addLocal(force.divide(mass));
@@ -106,6 +132,10 @@ public class AvatarController extends CharacterController
 //            fwdAcceleration = maxAcceleration;
     }
 
+    /**
+     * Set the velocity to the provided scalar velocity
+     * @param vel
+     */
     public void setVelocity(float vel)
     {
         Vector3f currentDirection = body.getTransform().getWorldMatrix(false).getLocalZ();
@@ -121,12 +151,20 @@ public class AvatarController extends CharacterController
 //        return currentDirection.dot(velocity);
     }
 
+    /**
+     * Turn to face the provided direction
+     * @param direction
+     */
     public void turnTo(Vector3f direction) 
     {
         desiredDirection = direction;
         bTurning         = true;
     }
 
+    /**
+     * Update the controller
+     * @param deltaTime The timestep
+     */
     public void update(float deltaTime) 
     {
         if (!initalized)
@@ -138,7 +176,7 @@ public class AvatarController extends CharacterController
         // Turn
         if (bTurning)
         {
-            rotation.buildRotationY(rotationSensetivity * desiredDirection.x * deltaTime);
+            rotation.buildRotationY(rotationSensitivity * desiredDirection.x * deltaTime);
             
             currentRot = body.getTransform().getLocalMatrix(true);
             currentRot.fastMul(rotation);
@@ -201,7 +239,11 @@ public class AvatarController extends CharacterController
 //            window.setTitle("no");
         //window.setTitle("acc: " + (int)fwdAcceleration + " vel: " + (int)velocity.x + " " + (int)velocity.y + " " + (int)velocity.z);
     }
-    
+
+    /**
+     * true if the avatar being controlled is currently moving forward.
+     * @return
+     */
     public boolean isMovingForward() {
         Vector3f currentDirection = body.getTransform().getWorldMatrix(false).getLocalZ();
         float dot = currentDirection.dot(velocity);
@@ -220,7 +262,7 @@ public class AvatarController extends CharacterController
         this.window = window;
     }
 
-    public float getFowardAcceleration() {
+    public float getForwardAcceleration() {
         return fwdAcceleration;
     }
 
@@ -259,11 +301,11 @@ public class AvatarController extends CharacterController
     }
 
     public float getRotationSensetivity() {
-        return rotationSensetivity;
+        return rotationSensitivity;
     }
 
     public void setRotationSensetivity(float rotationSensetivity) {
-        this.rotationSensetivity = rotationSensetivity;
+        this.rotationSensitivity = rotationSensetivity;
     }
 
     public float getVelocityDamp() {

@@ -44,7 +44,7 @@ import java.net.URL;
 import org.jdesktop.mtgame.WorldManager;
 
 /*
- * avatar! This class is a concrete Character e.g. 
+ * Avatar! This class is a concrete Character e.g.
  * Things such as input mechanisms and a state machine
  * layout are provided as a starting point.
  * 

@@ -34,7 +34,7 @@ public class WalkToIdle extends TransitionObject
         if (controller == null)
             return false;
         
-        if (controller.getFowardAcceleration() == 0.0f)
+        if (controller.getForwardAcceleration() == 0.0f)
         {    
             stateMessageName = "toIdle";
             return state.getContext().excecuteTransition(this);

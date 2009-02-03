@@ -25,17 +25,17 @@ import imi.scene.PMatrix;
 import java.util.ArrayList;
 
 /**
- * This class represents concrete attribute settings for the avatarAvatar. It is
- * basically a well-defined CharacterAttributes starting point for using the
- * primary avatar geometry and animations.
- * @author Lou Hayt
+ * This attributes class is used for testing purposes. It allows for easy
+ * construction of a male avatar with various parts turned on and off.
+ * @author Ronald E Dahlgren
  */
 public class DebugAttributes extends CharacterAttributes
 {
-    public String[] m_regions = new String[] { "Head", "Hands", "UpperBody", "LowerBody", "Feet", "Hair", "FacialHair", "Hats", "Glasses", "Jackets" };
+    /** SkeletonNode groups used by the Character class **/
+    public static final String[] m_regions = new String[] { "Head", "Hands", "UpperBody", "LowerBody", "Feet", "Hair", "FacialHair", "Hats", "Glasses", "Jackets" };
 
     /** Collection of skin tone shades**/
-    private final ColorRGBA[] skinTones = new ColorRGBA[]
+    private static final ColorRGBA[] skinTones = new ColorRGBA[]
     {
         new ColorRGBA(221.0f / 255.0f,  183.0f / 255.0f, 166.0f / 255.0f, 1),
         new ColorRGBA(203.0f / 255.0f,  142.0f / 255.0f, 114.0f / 255.0f, 1),
@@ -44,9 +44,16 @@ public class DebugAttributes extends CharacterAttributes
     };
 
     /**
-     * Construct a new attributes instance.
-     * @param name The name of the avatar
-     * @param bRandomCustomizations If false, avatar starts in the bind pose, if true then random clothing will be applied
+     * Constrcut a new avatar with random parts. If any of the provided booleans
+     * are false, that particular area is not loaded. This allows for loading
+     * an avatar with only hands, or just feet and a head for instance.
+     * @param name
+     * @param bHands
+     * @param bHead
+     * @param bFeet
+     * @param bTorso
+     * @param bLegs
+     * @param bHair
      */
     public DebugAttributes(String name,
                         boolean bHands,
@@ -95,6 +102,10 @@ public class DebugAttributes extends CharacterAttributes
             setAttachmentsInstructions(attachments.toArray(new AttachmentParams[attachments.size()]));
     }
 
+    /**
+     * Set the head to one determined by the provided integer
+     * @param preset
+     */
     private void customizeHead(int preset)
     {
         switch (preset)
@@ -113,6 +124,13 @@ public class DebugAttributes extends CharacterAttributes
         }
     }
 
+    /**
+     * Set the feet to a set determined by the provided integer
+     * @param preset
+     * @param load
+     * @param add
+     * @param attachments
+     */
     private void customizeFeetPresets(int preset, ArrayList<String> load, ArrayList<SkinnedMeshParams> add, ArrayList<AttachmentParams> attachments)
     {
         switch(preset)
@@ -157,6 +175,13 @@ public class DebugAttributes extends CharacterAttributes
         }
     }
 
+    /**
+     * Set the hair to one determined by the provided integer
+     * @param preset
+     * @param load
+     * @param add
+     * @param attachments
+     */
     private void customizeHairPresets(int preset, ArrayList<String> load, ArrayList<SkinnedMeshParams> add, ArrayList<AttachmentParams> attachments)
     {
         PMatrix orientation = new PMatrix(new Vector3f((float)Math.toRadians(10),0,0), new Vector3f(1, 1, 1), Vector3f.ZERO);
@@ -267,6 +292,13 @@ public class DebugAttributes extends CharacterAttributes
         }
     }
 
+    /**
+     * Set the legs to a set determined by the provided integer
+     * @param preset
+     * @param load
+     * @param add
+     * @param attachments
+     */
     private void customizeLegsPresets(int preset, ArrayList<String> load, ArrayList<SkinnedMeshParams> add, ArrayList<AttachmentParams> attachments)
     {
         switch(preset)
@@ -316,6 +348,13 @@ public class DebugAttributes extends CharacterAttributes
         }
     }
 
+    /**
+     * Set the torso to one determined by the provided integer
+     * @param preset
+     * @param load
+     * @param add
+     * @param attachments
+     */
     protected void customizeTorsoPresets(int preset, ArrayList<String> load, ArrayList<SkinnedMeshParams> add, ArrayList<AttachmentParams> attachments)
     {
         // Add the hands in either way

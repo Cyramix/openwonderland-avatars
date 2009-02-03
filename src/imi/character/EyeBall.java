@@ -24,7 +24,6 @@ import imi.scene.polygonmodel.PPolygonModelInstance;
 import imi.scene.polygonmodel.parts.PMeshMaterial;
 import imi.scene.polygonmodel.skinned.PPolygonSkinnedMeshInstance;
 import imi.utils.PMathUtils;
-import java.net.URL;
 import org.jdesktop.mtgame.WorldManager;
 
 /**
@@ -52,8 +51,9 @@ public class EyeBall extends PPolygonSkinnedMeshInstance
      * horizontally than they do vertically.
      **/
     private float yScale    = 2.0f;
-    
+    /** True when the target is within a certain angular range **/
     private boolean bInCone = false;
+    /** Reference to the other side **/
     private EyeBall otherEye = null;
     
     /**
@@ -135,7 +135,11 @@ public class EyeBall extends PPolygonSkinnedMeshInstance
     public void setOtherEye(EyeBall otherOne) {
         otherEye = otherOne;
     }
-    
+
+    /**
+     * True if the target is within a certain angular distance of the eye
+     * @return
+     */
     public boolean isInCone()
     {
         return bInCone;
@@ -153,28 +157,6 @@ public class EyeBall extends PPolygonSkinnedMeshInstance
             myMaterial.setTexture(texture, 0, character.m_attributes.getBaseURL());
         myMaterial.getTexture(0).setMinFilter(MinificationFilter.BilinearNoMipMaps);
 
-//        GLSLShaderProgram shader = new VertDeformerWithSpecAndNormalMap(wm);
-//        shader.addEffect(new MeshColorModulation());
-//
-//        try {
-//            shader.compile();
-//            float[] matColor = new float[3];
-//            matColor[0] = 0.4f;
-//            matColor[1] = 1.0f;
-//            matColor[2] = 0.4f;
-//            shader.setProperty(new ShaderProperty("ambientPower", GLSLDataType.GLSL_FLOAT, Float.valueOf(0.45f)));
-//            shader.setProperty(new ShaderProperty("DiffuseMapIndex", GLSLDataType.GLSL_SAMPLER2D, Integer.valueOf(0)));
-//            shader.setProperty(new ShaderProperty("NormalMapIndex", GLSLDataType.GLSL_SAMPLER2D, Integer.valueOf(0)));
-//            shader.setProperty(new ShaderProperty("SpecularMapIndex", GLSLDataType.GLSL_SAMPLER2D, Integer.valueOf(0)));
-//            shader.setProperty(new ShaderProperty("specularExponent", GLSLDataType.GLSL_FLOAT, Float.valueOf(32.0f)));
-//            shader.setProperty(new ShaderProperty("materialColor", GLSLDataType.GLSL_VEC3, matColor));
-//        } catch (GLSLCompileException ex) {
-//            Logger.getLogger(EyeBall.class.getName()).log(Level.SEVERE, null, ex);
-//        } catch (NoSuchPropertyException ex) {
-//            Logger.getLogger(EyeBall.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-//
-//        myMaterial.setShader(shader);
         applyMaterial();
     }
 }

@@ -20,16 +20,44 @@ package imi.character;
 import imi.character.objects.SpatialObject;
 
 /**
- *
+ * This interface represents an individual task for the controller to handle.
  * @author Lou Hayt
  */
 public interface Task 
 {
+    /**
+     * Return a human-readable string describing this task
+     * @return
+     */
     public String getDescription();
+
+    /**
+     * Return a human-readable string describing the current status of the task.
+     * @return
+     */
     public String getStatus();
 
+    /**
+     * Verifies that the task is still valid (not timed out, still has good
+     * data, etc)
+     * @return true if valid, false otherwise.
+     */
     public boolean verify();
+
+    /**
+     * Drive the update of this task
+     * @param deltaTime The timestep
+     */
     public void update(float deltaTime);
+
+    /**
+     * This method informs the task that it is now on hold.
+     */
     public void onHold();
+
+    /**
+     * Retrieve the goal of this task (if applicable)
+     * @return
+     */
     public SpatialObject getGoal();
 }

@@ -33,10 +33,11 @@ import java.util.ArrayList;
  */
 public class MaleAvatarAttributes extends CharacterAttributes
 {
-    public String[] m_regions = new String[] { "Head", "Hands", "UpperBody", "LowerBody", "Feet", "Hair", "FacialHair", "Hats", "Glasses", "Jackets" };
+    /** Convenience reference of the SkeletonNode groups the Character class uses.**/
+    public static final String[] m_regions = new String[] { "Head", "Hands", "UpperBody", "LowerBody", "Feet", "Hair", "FacialHair", "Hats", "Glasses", "Jackets" };
 
     /** Collection of skin tone shades**/
-    private final ColorRGBA[] skinTones = new ColorRGBA[]
+    private static final ColorRGBA[] skinTones = new ColorRGBA[]
     {
         new ColorRGBA(221.0f / 255.0f,  183.0f / 255.0f, 166.0f / 255.0f, 1),
         new ColorRGBA(203.0f / 255.0f,  142.0f / 255.0f, 114.0f / 255.0f, 1),
@@ -51,8 +52,9 @@ public class MaleAvatarAttributes extends CharacterAttributes
         new ColorRGBA( 231 / 255.0f,  216 / 255.0f, 223 / 255.0f, 1),
         new ColorRGBA( 174 / 255.0f, 112  / 255.0f, 112 / 255.0f, 1),
     };
+
     /** Collection of eye colors **/
-    private final String[] eyeColors = new String[]
+    private static final String[] eyeColors = new String[]
     {
         "assets/models/collada/Heads/EyeTextures/Blue_Eye.png",
         "assets/models/collada/Heads/EyeTextures/Brown2_Eye.png", // dark brown
@@ -78,8 +80,10 @@ public class MaleAvatarAttributes extends CharacterAttributes
         "assets/models/collada/Heads/EyeTextures/eyeColor18.png", // light blue and brown middle
         "assets/models/collada/Heads/EyeTextures/eyeColor19.png", // darl blue brown
         "assets/models/collada/Heads/EyeTextures/eyeColor20.png", // bright blue with middle brown
-        "assets/models/collada/Heads/EyeTextures/eyeColor21.png"  // snake
+        "assets/models/collada/Heads/EyeTextures/eyeColor21.png"  // snakes!
     };
+
+    /** Used to indicate that the bind pose file has already been added to the load instructions **/
     private boolean loadedBind = false;
     
     /**
@@ -134,14 +138,49 @@ public class MaleAvatarAttributes extends CharacterAttributes
             loadDefaultBindPose();
         }
     }
+
+    /**
+     * Construct a new attributes object with the specified characteristics.
+     * Skin and eyecolor are set to defaults (caucasian and blue, respectively)
+     * @param name
+     * @param feet
+     * @param legs
+     * @param torso
+     * @param hair
+     * @param head
+     */
     public MaleAvatarAttributes(String name, int feet, int legs, int torso, int hair, int head)
     {
         this(name, feet, legs, torso, hair, head, 0, 0);
     }
+
+    /**
+     * Construct a new attributes object with the specified characteristics.
+     * Eyecolor defaults to blue.
+     * @param name
+     * @param feet
+     * @param legs
+     * @param torso
+     * @param hair
+     * @param head
+     * @param skinTone
+     */
     public MaleAvatarAttributes(String name, int feet, int legs, int torso, int hair, int head, int skinTone)
     {
         this(name, feet, legs, torso, hair, head, skinTone, 0);
     }
+
+    /**
+     * Explicitely construct a new instance.
+     * @param name
+     * @param feet
+     * @param legs
+     * @param torso
+     * @param hair
+     * @param head
+     * @param skinTone
+     * @param eyeColor
+     */
     public MaleAvatarAttributes(String name, int feet, int legs, int torso, int hair, int head, int skinTone, int eyeColor)
     {
         ArrayList<String> load                  = new ArrayList<String>();
@@ -162,13 +201,12 @@ public class MaleAvatarAttributes extends CharacterAttributes
         if (skinTone < skinTones.length)
             setSkinTone(skinTones[skinTone].r, skinTones[skinTone].g, skinTones[skinTone].b);
     }
-    
+
+    /**
+     * Sets a random hair color
+     */
     public void randomizeHairColor()
     {
-//        float r = (float)Math.random();
-//        float g = (float)Math.random();
-//        float b = (float)Math.random();   
-        
         int preset = (int) (Math.random() * 1000000 % skinTones.length);
         float r = skinTones[preset].r * (float)Math.random();
         float g = skinTones[preset].g * (float)Math.random();
@@ -176,6 +214,10 @@ public class MaleAvatarAttributes extends CharacterAttributes
         setHairColor(r, g, b);
     }
 
+    /**
+     * Set the head to one determined by the provided integer
+     * @param preset
+     */
     private void customizeHead(int preset)
     {
         switch (preset)
@@ -197,6 +239,13 @@ public class MaleAvatarAttributes extends CharacterAttributes
         }
     }
 
+    /**
+     * Set the feet to a pair determined bythe provided integer
+     * @param preset
+     * @param load
+     * @param add
+     * @param attachments
+     */
     private void customizeFeetPresets(int preset, ArrayList<String> load, ArrayList<SkinnedMeshParams> add, ArrayList<AttachmentParams> attachments)
     {
         switch(preset)
@@ -245,6 +294,13 @@ public class MaleAvatarAttributes extends CharacterAttributes
         }   
     }
 
+    /**
+     * Set the hair to one determined by the provided integer.
+     * @param preset
+     * @param load
+     * @param add
+     * @param attachments
+     */
     private void customizeHairPresets(int preset, ArrayList<String> load, ArrayList<SkinnedMeshParams> add, ArrayList<AttachmentParams> attachments)
     {
         randomizeHairColor();
@@ -356,6 +412,13 @@ public class MaleAvatarAttributes extends CharacterAttributes
         }   
     }
 
+    /**
+     * Set the legs to one determined by the provided integer.
+     * @param preset
+     * @param load
+     * @param add
+     * @param attachments
+     */
     private void customizeLegsPresets(int preset, ArrayList<String> load, ArrayList<SkinnedMeshParams> add, ArrayList<AttachmentParams> attachments)
     {
         switch(preset)
@@ -409,6 +472,13 @@ public class MaleAvatarAttributes extends CharacterAttributes
         }   
     }
 
+    /**
+     * Set the torso to one determined by the provided integer
+     * @param preset
+     * @param load
+     * @param add
+     * @param attachments
+     */
     protected void customizeTorsoPresets(int preset, ArrayList<String> load, ArrayList<SkinnedMeshParams> add, ArrayList<AttachmentParams> attachments)
     {
         randomizeShirtColor();
@@ -487,6 +557,9 @@ public class MaleAvatarAttributes extends CharacterAttributes
         }   
     }
 
+    /**
+     * Load up all of the defaults for the male avatar
+     */
     protected void loadDefaultBindPose()
     {
         ArrayList<String> load      = new ArrayList<String>();

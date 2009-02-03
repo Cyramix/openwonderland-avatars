@@ -175,7 +175,7 @@ public abstract class CharacterController
     }
 
     /** Override to implement optional functionalllity **/        
-    public float getFowardAcceleration() {
+    public float getForwardAcceleration() {
         return 0.0f;
     }
 

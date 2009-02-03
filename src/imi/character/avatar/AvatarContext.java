@@ -60,19 +60,27 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 
 /**
- * This is a GameContext concrete e.g.
+ * This is a concrete GameContext.
  * @author Lou Hayt
  */
 public class AvatarContext extends GameContext
 {
+    /** The relevant avatar **/
     private Avatar             avatar       = null;
+    /** Controller for the above **/
     private AvatarController   controller  = null;
+    /** The steering controller for the avatar **/
     private AvatarSteeringHelm AI    = new AvatarSteeringHelm("avatar Steering Helm", this);
+    /** Current location node, if any. **/
     private LocationNode      location    = null;
     /** Animations that are using the ActionState to play out (such as wave, cheer etc) **/
     private ArrayList<ActionInfo> genericAnimations = new ArrayList<ActionInfo>();
+    /** Used for cycling through action animations **/
     private int genericActionIndex = 0;
-    
+
+    /**
+     * The names of the triggers.
+     */
     public static enum TriggerNames
     {
         Movement_Modifier,
@@ -100,7 +108,10 @@ public class AvatarContext extends GameContext
         Frown,
         Scorn,
     }
-    
+
+    /**
+     * The names of the actions.
+     */
     public static enum ActionNames
     {
         Movement_X,
@@ -108,23 +119,15 @@ public class AvatarContext extends GameContext
         Movement_Z,
         Action,
     }
-    
-    @Override
-    public void initDefaultActionMap(Hashtable<Integer, Action> actionMap) 
+
+    /**
+     * Construct a new instance with the provided avatar
+     * @param theAvatar
+     */
+    public AvatarContext(Avatar theAvatar)
     {
-        actionMap.put(TriggerNames.Move_Left.ordinal(),     new Action(AvatarContext.ActionNames.Movement_X.ordinal(), -0.4f));
-        actionMap.put(TriggerNames.Move_Right.ordinal(),    new Action(AvatarContext.ActionNames.Movement_X.ordinal(), 0.4f));
-        actionMap.put(TriggerNames.Move_Forward.ordinal(),  new Action(AvatarContext.ActionNames.Movement_Z.ordinal(), 0.4f));
-        actionMap.put(TriggerNames.Move_Back.ordinal(),     new Action(AvatarContext.ActionNames.Movement_Z.ordinal(), -0.4f));
-        actionMap.put(TriggerNames.MiscAction.ordinal(),         new Action(AvatarContext.ActionNames.Action.ordinal(), 1.0f));
-        actionMap.put(TriggerNames.Move_Up.ordinal(),       new Action(AvatarContext.ActionNames.Movement_Y.ordinal(), 0.4f));
-        actionMap.put(TriggerNames.Move_Down.ordinal(),     new Action(AvatarContext.ActionNames.Movement_Y.ordinal(), -0.4f));
-    }
-         
-    public AvatarContext(Avatar master)
-    {
-        super(master);
-        avatar = master;
+        super(theAvatar);
+        avatar = theAvatar;
         controller = (AvatarController) instantiateController();
         actions    = new float [ActionNames.values().length];
                 
@@ -177,7 +180,28 @@ public class AvatarContext extends GameContext
         if (!genericAnimations.isEmpty())
             genericAnimations.get(0).apply((CycleActionState) gameStates.get(CycleActionState.class));
     }
-    
+
+
+    /**
+     * Performs the default mapping of actions to triggers
+     * @param actionMap
+     */
+    @Override
+    public void initDefaultActionMap(Hashtable<Integer, Action> actionMap)
+    {
+        actionMap.put(TriggerNames.Move_Left.ordinal(),     new Action(AvatarContext.ActionNames.Movement_X.ordinal(), -0.4f));
+        actionMap.put(TriggerNames.Move_Right.ordinal(),    new Action(AvatarContext.ActionNames.Movement_X.ordinal(), 0.4f));
+        actionMap.put(TriggerNames.Move_Forward.ordinal(),  new Action(AvatarContext.ActionNames.Movement_Z.ordinal(), 0.4f));
+        actionMap.put(TriggerNames.Move_Back.ordinal(),     new Action(AvatarContext.ActionNames.Movement_Z.ordinal(), -0.4f));
+        actionMap.put(TriggerNames.MiscAction.ordinal(),         new Action(AvatarContext.ActionNames.Action.ordinal(), 1.0f));
+        actionMap.put(TriggerNames.Move_Up.ordinal(),       new Action(AvatarContext.ActionNames.Movement_Y.ordinal(), 0.4f));
+        actionMap.put(TriggerNames.Move_Down.ordinal(),     new Action(AvatarContext.ActionNames.Movement_Y.ordinal(), -0.4f));
+    }
+
+    /**
+     * Update the context
+     * @param deltaTime The timestep
+     */
     @Override
     public void update(float deltaTime)
     {
@@ -185,7 +209,12 @@ public class AvatarContext extends GameContext
         AI.update(deltaTime);
         controller.update(deltaTime);
     }
-        
+
+    /**
+     * Received when the state of a trigger changes
+     * @param trigger
+     * @param pressed
+     */
     @Override
     protected void triggerAlert(int trigger, boolean pressed)
     {
@@ -331,6 +360,10 @@ public class AvatarContext extends GameContext
         return AI;
     }
 
+    /**
+     * Find the nearest location node and direct the avatar to go there.
+     * @return The nearest location node, or null if none are found
+     */
     public LocationNode GoToNearestLocation() 
     {   
         if (avatar.getObjectCollection() == null)
@@ -344,7 +377,11 @@ public class AvatarContext extends GameContext
         }
         return location;
     }
-        
+
+    /**
+     * Find the nearest unoccupied chair and direct the avatar to go to it.
+     * @return True if an unoccupied chair was found, false otherwise
+     */
     public boolean GoToNearestChair()
     {
         if (avatar.getObjectCollection() == null)
@@ -370,6 +407,10 @@ public class AvatarContext extends GameContext
         this.location = location;
     }
 
+    /**
+     * Perform the action associated with the provided index.
+     * @param actionInfoIndex
+     */
     public void performAction(int actionInfoIndex)
     {
         CycleActionState action = (CycleActionState) gameStates.get(CycleActionState.class);
@@ -377,7 +418,7 @@ public class AvatarContext extends GameContext
         genericAnimations.get(actionInfoIndex).apply(action);
         setCurrentState(action);
     }
-
+    
     protected Iterable<ActionInfo> getGenericAnimations() {
         return genericAnimations;
     }
