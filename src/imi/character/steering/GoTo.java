@@ -280,7 +280,7 @@ public class GoTo implements Task
                     context.getController().stop();
                     bDoneFacingGoal = false;
 
-                    System.out.println("sample tick: stop getting away from the target");
+                    //System.out.println("sample tick: stop getting away from the target");
                     status = "loop detected";
                     result = true;
                 }
@@ -289,12 +289,12 @@ public class GoTo implements Task
             {
                 if (samplePrevStreak > 0 && sampleStreak > 0)
                 {
-                    System.out.println("fishy sample tick: stop the loop");    
+                    //System.out.println("fishy sample tick: stop the loop");    
                     context.getController().stop();
                     bDoneFacingGoal = false;
                 }
-                else
-                    System.out.println("sample tick: prev streak " + samplePrevStreak + " current streak " + sampleStreak);
+//                else
+//                    System.out.println("sample tick: prev streak " + samplePrevStreak + " current streak " + sampleStreak);
                 
                 samplePrevStreak = sampleStreak;
                 sampleStreak = 0;
@@ -310,7 +310,7 @@ public class GoTo implements Task
     
     public void resetSamples()
     {
-        System.out.println("samples reset");
+        //System.out.println("samples reset");
         Vector3f characterPosition = context.getController().getPosition();
         
         // Samples

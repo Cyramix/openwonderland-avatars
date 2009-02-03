@@ -401,6 +401,8 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         //                            visual.addVerletObject(m_arm);
         //                            visual.setWireframe(true);
 
+        // the shadow!
+        addShadow();
         
         // Apply the material on everything that was just loaded.
         for (PPolygonSkinnedMeshInstance meshInstance : m_skeleton.getSkinnedMeshInstances())
@@ -420,7 +422,8 @@ public abstract class Character extends Entity implements SpatialObject, Animati
             }
             // add all the kids
             if (current instanceof PJoint ||
-                current instanceof PPolygonMeshInstance)
+                current instanceof PPolygonMeshInstance ||
+                current instanceof PPolygonModelInstance)
                 queue.addAll(current.getChildren());
         }
 
@@ -440,8 +443,6 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         for (AnimationState animState : m_skeleton.getAnimationStates())
             animState.addListener(this);
 
-        // the shadow!
-        addShadow();
         m_skeleton.setInstruments((Instrumentation)m_wm.getUserData(Instrumentation.class));
         // Turn on the animation
         m_AnimationProcessor.setEnable(true);

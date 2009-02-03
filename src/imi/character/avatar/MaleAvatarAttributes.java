@@ -266,7 +266,7 @@ public class MaleAvatarAttributes extends CharacterAttributes
             case 2:
             {
                 load.add(new String("assets/models/collada/Hair/MaleHair/HairPlaceable.dae"));
-                attachments.add(new AttachmentParams("S_pt_left", "Head", orientation, "Hair"));
+                attachments.add(new AttachmentParams("S_Pt_left", "Head", orientation, "Hair"));
             }
             break;
             case 3:

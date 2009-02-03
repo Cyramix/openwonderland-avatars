@@ -260,7 +260,8 @@ public class PPolygonMeshInstance extends PNode implements Serializable
         
         if (getTextureInstaller() == null)
         {
-            logger.severe("Why is the texture installer null? "+path.toString()+"  "+this);
+            // Texture installer is set in apply material and that happens later
+            //logger.severe("Why is the texture installer null? "+path.toString()+"  "+this);
             return;   
         }
         
