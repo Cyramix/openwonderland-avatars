@@ -186,7 +186,7 @@ public class FemaleAvatarAttributes extends CharacterAttributes
                 setHeadAttachment("assets/models/collada/Heads/FemaleHead/FemaleCHead.dae");
                 break;
             case 1:
-                setHeadAttachment("assets/models/collada/Heads/FemaleHead/FemaleAsianHead.dae");
+                setHeadAttachment("assets/models/collada/Heads/FemaleHead/AsianFemaleHead.dae");
                 break;
             case 2:
                 setHeadAttachment("assets/models/collada/Heads/FemaleHead/FemaleAAHead.dae");

@@ -82,10 +82,6 @@ public class PScene extends PNode implements RepositoryUser, Serializable
     private transient WorldManager                m_WorldManager      = null;
     private transient PPolygonTriMeshAssembler    m_TriMeshAssembler  = null;
     
-    private int renderStateHack = 0;
-
-    // SFK 01-10-09
-    public static boolean jHack = true;
     /**
      * Constructor
      * @param wm
@@ -192,7 +188,6 @@ public class PScene extends PNode implements RepositoryUser, Serializable
         List<Spatial> kids = m_JScene.getChildren();
         
         // Nuke the m_JScene
-        if ( jHack )
         if (kids == null)
         {
             Node dead = new Node("kill me"); // kids = new... will not work :(
@@ -209,24 +204,6 @@ public class PScene extends PNode implements RepositoryUser, Serializable
         kids.addAll(helper.getSharedMeshes());
 
         m_Instances.setDirty(false, false);
-
-        // Known issue #123
-        renderStateHack++;
-        if (renderStateHack > 60)
-        {
-            renderStateHack = 0;
-            updateJSceneRenderState();
-        }
-    }
-
-    /**
-     * Updates the JME render state.
-     * Call once done with render state changes.
-     */
-    public void updateJSceneRenderState()
-    {
-        if (m_JScene != null)
-            m_JScene.updateRenderState();
     }
 
     /**
@@ -716,7 +693,6 @@ public class PScene extends PNode implements RepositoryUser, Serializable
                     asset.getInitializer().initialize(newInstance);   
             }
         }
-        updateJSceneRenderState();
     }
         
     /**

@@ -391,6 +391,7 @@ public class PPolygonMeshInstance extends PNode implements Serializable
         else
             setShaderState(null);
 
+        m_instance.updateRenderState();
     }
     
     public PMeshMaterial getMaterialRef() 
