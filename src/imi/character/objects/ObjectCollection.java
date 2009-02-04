@@ -414,37 +414,6 @@ public class ObjectCollection extends Entity
         return pscene;
     }
 
-    /**
-     * Applies materials to meshes loaded into the scene
-     */
-    public void applyMaterials() 
-    {
-        for (SpatialObject check : objects)
-        {
-            if (check instanceof Chair)
-            {   
-                // Apply material to all meshes
-                FastList<PNode> queue = new FastList<PNode>();
-                queue.addAll(((Chair)check).getModelInst().getChildren());
-                while (queue.isEmpty() == false)
-                {
-                    PNode current = queue.removeFirst();
-                    if (current instanceof PPolygonMeshInstance)
-                    {
-                        PPolygonMeshInstance meshInst = (PPolygonMeshInstance) current;
-                        //System.out.println("applying material on " + meshInst);
-                        meshInst.applyMaterial();
-                    }
-                    // add all the kids
-                    queue.addAll(current.getChildren());
-                }
-            }
-        }
-        
-        pscene.submitTransformsAndGeometry();
-        jscene.updateRenderState();
-    }
-    
     // The chair's bounding volumes are not correct until finished loading, this method is still good on load time.
     private boolean isCloseToOtherChairs(Chair newChair) 
     {

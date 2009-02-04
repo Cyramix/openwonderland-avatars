@@ -90,11 +90,32 @@ public class Chair implements SpatialObject
             AssetInitializer init = new AssetInitializer() {
                 public boolean initialize(Object asset) {
                     
-                    //System.out.println("init chair " + me);
+                    //System.out.println("init chair " + me); // watch for "freeloaders"
                     
-                    // TODO need a way to identify the chair to be more selective
-                    if(objectCollection != null)
-                        objectCollection.applyMaterials();
+                    if (!(asset instanceof PPolygonModelInstance))
+                        return false;
+                    
+                    // Apply material to all meshes
+                    FastList<PNode> queue = new FastList<PNode>();
+                    queue.addAll(((PPolygonModelInstance)asset).getChildren());
+                    while (queue.isEmpty() == false)
+                    {
+                        PNode current = queue.removeFirst();
+                        if (current instanceof PPolygonMeshInstance)
+                        {
+                            PPolygonMeshInstance meshInst = (PPolygonMeshInstance) current;
+                            //System.out.println("applying material on " + meshInst);
+                            meshInst.applyMaterial();
+                        }
+                        // add all the kids
+                        queue.addAll(current.getChildren());
+                    }
+                    
+                    if (objectCollection == null)
+                        return false;
+                    
+                    objectCollection.getPScene().submitTransformsAndGeometry();
+                    objectCollection.getJScene().updateRenderState();
                     
                     return true;
                 }
