@@ -801,7 +801,10 @@ public class GLSLShaderProgram implements AbstractShaderProgram, RenderUpdater
     public synchronized boolean applyToMesh(PPolygonMeshInstance meshInst)
     {
         if (m_WM == null) // No world manager!
+        {
+            logger.severe("Cannot apply a shader without a world manager!");
             return false;
+        }
         
         GLSLShaderObjectsState shaderState = 
                 (GLSLShaderObjectsState) m_WM.getRenderManager().createRendererState(RenderState.RS_GLSL_SHADER_OBJECTS);
@@ -824,18 +827,15 @@ public class GLSLShaderProgram implements AbstractShaderProgram, RenderUpdater
     {
         GLSLShaderObjectsState shaderState = (GLSLShaderObjectsState) obj;
         shaderState.load(getVertexProgramSource().toString(), getFragmentProgramSource().toString());
+        shaderState.apply();
+
+        JOGLShaderObjectsState joglShader = (JOGLShaderObjectsState)shaderState;
         // Need to bind attributes in some cases
         if (m_vertAttributes.contains(GLSLDefaultVariables.BoneIndices))
         {
-            shaderState.setShaderDataLogic(new GLSLShaderDataLogic() {
-                @Override
-                public void applyData(GLSLShaderObjectsState shader, Geometry geom) {
-                    JOGLShaderObjectsState joglShader = (JOGLShaderObjectsState)shader;
-                    final GL gl = GLU.getCurrentGL();
-                    gl.glEnableVertexAttribArray(1);
-                    gl.glBindAttribLocation(joglShader.getProgramIdentifier(), 1, "boneIndices");
-                }
-            });
+            final GL gl = GLU.getCurrentGL();
+            gl.glEnableVertexAttribArray(1);
+            gl.glBindAttribLocation(joglShader.getProgramIdentifier(), 1, "boneIndices");
         }
         // done
         m_bShaderLoaded = true;

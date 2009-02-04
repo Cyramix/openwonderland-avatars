@@ -38,30 +38,36 @@ import java.util.Random;
 import org.jdesktop.mtgame.WorldManager;
 
 /**
- *
+ * This class represents an individual client connected to the darkstar server.
  * @author Lou Hayt
  */
 public class DarkstarClient extends JNagClient implements Updatable
 {
     /** user ID to CharacterData map (for the current game room) */
     protected HashMap<Integer, UserData> characterData = new HashMap<Integer, UserData>();
-    
+    /** The avatar representation **/
     protected Character    character = null;
+    /** Used for creating avatar attribute objects **/
     protected WorldManager worldManager = null;
         
-    // Updates messages occure at a fixed interval
+    /** Updates messages occure at a fixed interval **/
     private float    clientTimer         = 0.0f;
     private float    clientUpdateTick    = 1.0f / 30.0f;
+
+    /** History for smoothing **/
     private Vector3f prevPos = new Vector3f();
     private Vector3f prevDir = new Vector3f(0.0f, 0.0f, -1.0f);
-    
+
+    /** Assorted pieces for smoothing **/
     private float positionPullStrength          = 0.01f;
     private float positionMinDistanceForPull    = 0.1f;
     private float positionMaxDistanceForPull    = 3.0f;
-    
+
+    /** Smoothing for verlet hands **/
     private float handPullStrength          = 0.1f;
     private float handMaxDistanceForPull    = 1.0f;
-    
+
+    /** **/
     private boolean male = true;
     private int feet  = -1;
     private int legs  = -1;

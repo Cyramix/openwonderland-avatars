@@ -40,7 +40,6 @@ public class NormalMapShader extends GLSLShaderProgram implements Serializable
 {
     // The following two strings are the default source code for this effect
     private static final String VertexSource = new String(
-        "attribute vec3 tangent;" +
         "varying vec3 VNormal;" +
         "varying vec3 ToLight;" +
         "vec4 Position;" +
@@ -50,8 +49,8 @@ public class NormalMapShader extends GLSLShaderProgram implements Serializable
         "        Position = gl_Vertex;" +
         "        gl_TexCoord[0] = gl_MultiTexCoord0;" +
         "        ToLight = (gl_ModelViewMatrixInverse * (gl_LightSource[0].position - gl_Vertex)).xyz;" +
-        "        vec3 binormal = normalize(cross(tangent, gl_Normal));" +
-        "        mat3 TBNMatrix = mat3(tangent, binormal, gl_Normal);" +
+        "        vec3 binormal = normalize(cross(gl_SecondaryColor.rgb, gl_Normal));" +
+        "        mat3 TBNMatrix = mat3(gl_SecondaryColor.rgb, binormal, gl_Normal);" +
         "        ToLight *= TBNMatrix;" +
         "        gl_Position = gl_ModelViewProjectionMatrix * Position;" +
         "}"

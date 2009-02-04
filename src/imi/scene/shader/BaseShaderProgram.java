@@ -143,18 +143,15 @@ public abstract class BaseShaderProgram implements RenderUpdater, AbstractShader
     {
         try {
             GLSLShaderObjectsState shaderState = (GLSLShaderObjectsState) obj;
-
             shaderState.load(m_shaderSource[0], m_shaderSource[1]);
+            shaderState.apply();
+            
+            JOGLShaderObjectsState joglShader = (JOGLShaderObjectsState)shaderState;
             if (m_needBoneIndices)
             {
-                shaderState.setShaderDataLogic(new GLSLShaderDataLogic() {
-                    public void applyData(GLSLShaderObjectsState shader, Geometry geom) {
-                        JOGLShaderObjectsState joglShader = (JOGLShaderObjectsState)shader;
-                        final GL gl = GLU.getCurrentGL();
-                        gl.glEnableVertexAttribArray(1);
-                        gl.glBindAttribLocation(joglShader.getProgramIdentifier(), 1, "boneIndices");
-                    }
-                });
+                final GL gl = GLU.getCurrentGL();
+                gl.glEnableVertexAttribArray(1);
+                gl.glBindAttribLocation(joglShader.getProgramIdentifier(), 1, "boneIndices");
             }
             // done
             m_bShaderLoaded = true;
