@@ -73,7 +73,6 @@ public class VertDeformerWithNormalMapping extends GLSLShaderProgram implements 
         try
         {
             this.compile();
-            m_vertAttributes.add(GLSLDefaultVariables.Tangents);
             this.synchronizePropertyObjects();
             // or removed
             // Set the ambient power and the diffuse map texture unit

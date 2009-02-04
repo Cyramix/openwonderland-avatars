@@ -11,8 +11,8 @@
  * except in compliance with the License. A copy of the License is
  * available at http://www.opensource.org/licenses/gpl-license.php.
  *
- * Sun designates this particular file as subject to the "Classpath" 
- * exception as provided by Sun in the License file that accompanied 
+ * Sun designates this particular file as subject to the "Classpath"
+ * exception as provided by Sun in the License file that accompanied
  * this code.
  */
 package imi.character.objects;
@@ -54,19 +54,19 @@ public class ObjectCollection extends Entity
 {
     /** Collection of objects :) **/
     protected ArrayList<SpatialObject> objects = new ArrayList<SpatialObject>();
-    
+
     /** JGraph of locations :) **/
     protected JGraph locations = new JGraph();
     /** Map of location names to location objects **/
     protected Hashtable<String, LocationNode> locationNames = new Hashtable<String, LocationNode>();
-    
+
     protected WorldManager    worldManager   = null;
     protected PScene          pscene         = null;
     protected JScene          jscene         = null;
-    
+
     /** Command line console :) **/
     protected ObjectCollectionGUI gui        = null;
-    
+
     // Test :)
     Gadget lightSwitch = null;
 
@@ -79,57 +79,57 @@ public class ObjectCollection extends Entity
     {
         super(name);
         worldManager = wm;
-        
+
         // The procedural scene graph
         pscene = new PScene(name, worldManager);
-        
+
         // The collection of processors for this entity
         ArrayList<ProcessorComponent> processors = new ArrayList<ProcessorComponent>();
-        
+
         // Initialize the scene
         //initScene(processors);
-        
+
         // The glue between JME and pscene
         jscene = new JScene(pscene);
-        
+
         // Use default render states (unless that method is overriden)
         setRenderStates();
-        
+
         // Create a scene component and set the root to our jscene
         RenderComponent rc = worldManager.getRenderManager().createRenderComponent(jscene);
-        
+
         // Add the scene component with our jscene to the entity
         addComponent(RenderComponent.class, rc);
-        
+
         // Add our processors to a collection component
         ProcessorCollectionComponent processorCollection = new ProcessorCollectionComponent();
         for (int i = 0; i < processors.size(); i++)
             processorCollection.addProcessor(processors.get(i));
-        
+
         // Add the processor collection component to the entity
         addComponent(ProcessorCollectionComponent.class, processorCollection);
-        
+
         // Add the entity to the world manager
-        worldManager.addEntity(this);  
+        worldManager.addEntity(this);
     }
 
     /////////////////////////  JGraph integration ///////////////////////////////////
-    
+
     /**
      * For internal use
      */
     public JGraph getLocationGraph() {
         return locations;
     }
-    
+
     public Collection<LocationNode> getLocations(){
         return locationNames.values();
     }
-    
+
     public void createLocation(String name, Vector3f position, float radius){
         new LocationNode(name, position, radius, this);
     }
-    
+
     /** Called from LocationNode's constructor **/
     void addLocation(LocationNode location)
     {
@@ -140,7 +140,7 @@ public class ObjectCollection extends Entity
             objects.add(location);
         }
     }
-    
+
     public void removeLocation(String name) {
         removeLocation(getLocation(name));
     }
@@ -151,7 +151,7 @@ public class ObjectCollection extends Entity
         locationNames.remove(location.getName());
         objects.remove(location);
     }
-    
+
     public LocationNode getLocation(String name)
     {
         LocationNode location = locationNames.get(name);
@@ -160,15 +160,15 @@ public class ObjectCollection extends Entity
 //        else
 //            return null;
     }
-    
+
     public Connection createConnection(LocationNode source, LocationNode destination){
         return null;//locations.addEdge(source, destination);
     }
-    
+
     public Connection createConnection(String source, String destination){
         return createConnection(locationNames.get(source), locationNames.get(destination));
     }
-    
+
     public ArrayList<LocationNode> findPath(LocationNode source, String destination)
     {
         return null;
@@ -190,8 +190,8 @@ public class ObjectCollection extends Entity
 //        catch (Exception ex) {}
 //        return path;
     }
-    
-    public LocationNode findConnection(LocationNode source, String targetName, boolean allowBaked) 
+
+    public LocationNode findConnection(LocationNode source, String targetName, boolean allowBaked)
     {
 //        Set<Connection> cons = locations.outgoingEdgesOf(source);
 //        for (Connection con : cons)
@@ -210,19 +210,19 @@ public class ObjectCollection extends Entity
             return source.getBakedConnection(targetName);
         return null;
     }
-    
+
 //    public Connection getConnection(String sourceName, String destinationName) {
 //        return locations.getEdge(locationNames.get(sourceName), locationNames.get(destinationName));
 //    }
-//    
+//
 //    public Connection getConnection(LocationNode source, LocationNode destination) {
 //        return locations.getEdge(source, destination);
-//    }            
-//    
+//    }
+//
 //    public boolean removeConnection(Connection con) {
 //        return locations.removeEdge(con);
 //    }
-//    
+//
 //    public GraphNode getConnectionSource(Connection con){
 //        return locations.getEdgeSource(con);
 //    }
@@ -232,16 +232,16 @@ public class ObjectCollection extends Entity
 //    public double getConnectionWeight(Connection con){
 //        return locations.getEdgeWeight(con);
 //    }
-    
+
     public Avatar getAvatar(int objectID)
     {
         SpatialObject obj = objects.get(objectID);
         if (obj != null && obj instanceof Avatar)
             return (Avatar)obj;
         return null;
-           
+
     }
-    
+
     public void createTestPath()
     {
         float step = 3.0f;
@@ -250,40 +250,40 @@ public class ObjectCollection extends Entity
         LocationNode loc2 = new LocationNode("loc2", Vector3f.UNIT_X.mult(step),  radius, this);
         LocationNode loc3 = new LocationNode("loc3", new Vector3f(step, 0.0f, step),  radius, this);
         LocationNode loc4 = new LocationNode("loc4", Vector3f.UNIT_Z.mult(step),  radius, this);
-        
+
         // quick ugly visu for test
         ArrayList<Vector3f> origin = new ArrayList<Vector3f>();
         ArrayList<Vector3f> point = new ArrayList<Vector3f>();
-        
+
         // Create graph paths
         createConnection(loc1, loc2); origin.add(loc1.getPosition()); point.add(loc2.getPosition());
         createConnection(loc2, loc3); origin.add(loc2.getPosition()); point.add(loc3.getPosition());
         createConnection(loc3, loc4); origin.add(loc3.getPosition()); point.add(loc4.getPosition());
         createConnection(loc4, loc1); origin.add(loc4.getPosition()); point.add(loc1.getPosition());
-        
+
         VisuManager vis = new VisuManager("path connections visu", worldManager);
         vis.addLineObject(origin, point, ColorRGBA.brown, 5.0f);
     }
-    
+
     /////////////////////////////////////////////////////////////////////////
-    
+
     /**
      * Add an object to the collection.
      * @param obj
      */
-    public void addObject(SpatialObject obj) 
+    public void addObject(SpatialObject obj)
     {
         if (objects.contains(obj))
             return;
         objects.add(obj);
     }
-    
+
     // TODO
     public void offsetPositionOfAllObjects(Vector3f offset)
     {
 //        for(SpatialObject obj : objects)
 //        {
-//            
+//
 //        }
     }
 
@@ -294,11 +294,11 @@ public class ObjectCollection extends Entity
      * @param maxRadius
      * @param numberOfChairs
      */
-    public void generateChairs(Vector3f center, float maxRadius, int numberOfChairs) 
+    public void generateChairs(Vector3f center, float maxRadius, int numberOfChairs)
     {
         if (numberOfChairs <= 0)
             return;
-        
+
         for (int i = 0; i < numberOfChairs; i++)
         {
             float randomX = (float) Math.random();
@@ -308,7 +308,7 @@ public class ObjectCollection extends Entity
             if (Math.random() > 0.5)
                 randomZ *= -1.0f;
             Vector3f randomDirection = new Vector3f(randomX, 0.0f, randomZ).normalize();
-            
+
             randomX = (float) Math.random();
             if (Math.random() > 0.5)
                 randomX *= -1.0f;
@@ -316,20 +316,20 @@ public class ObjectCollection extends Entity
             if (Math.random() > 0.5)
                 randomZ *= -1.0f;
             Vector3f randomSittingDirection = new Vector3f(randomX, 0.0f, randomZ).normalize();
-            
+
             float randomDistance     = (float)Math.random() * maxRadius;
             Vector3f randomPosition  = center.add(randomDirection.mult(randomDistance));
-            
+
             //Chair newChair = new Chair(randomPosition, randomSittingDirection, null); // renders as a sphere
             Chair newChair = new Chair(randomPosition, randomSittingDirection, "assets/models/collada/Objects/Chairs/ConfChair1.dae");
             newChair.setObjectCollection(this);
             newChair.setInScene(pscene);
-            
+
             int attemptsCounter = 0;
             while(isCloseToOtherChairs(newChair) && attemptsCounter < 1000)
             {
                 attemptsCounter++;
-                
+
                 randomX = (float) Math.random();
                 if (Math.random() > 0.5)
                     randomX *= -1.0f;
@@ -345,51 +345,51 @@ public class ObjectCollection extends Entity
 //                if (Math.random() > 0.5)
 //                    randomZ *= -1.0f;
 //                randomSittingDirection = new Vector3f(randomX, 0.0f, randomZ).normalize();
-                
+
                 randomDistance  = (float)Math.random() * maxRadius;
                 randomPosition  = center.add(randomDirection.mult(randomDistance));
-                
+
                 newChair.setPosition(randomPosition);
                 newChair.getModelInst().buildFlattenedHierarchy();
-                
+
                 if (attemptsCounter == 100)
                     System.out.println("ObjectCollection - generateChairs() - after 100 attempts was not able to find an empty space for this chair");
             }
         }
-        
+
         // Make sure no funny stuff
         pscene.setDirty(true, true);
         pscene.buildFlattenedHierarchy();
         pscene.submitTransformsAndGeometry();
-        
+
         // Dispaly PRenderer
         //jscene.setRenderInternallyBool(true);
-        
-        /////////  TEest   TEest   TEest   TEest   TEest   TEest   TEest   TEest 
-//        
+
+        /////////  TEest   TEest   TEest   TEest   TEest   TEest   TEest   TEest
+//
 //        lightSwitch = new Gadget(new Vector3f(2.0f, 1.5f, 0.0f), Vector3f.UNIT_Z, "assets/models/collada/Objects/Interface/InterfaceSlider.dae");
 //        lightSwitch.setInScene(pscene);
 //        lightSwitch.setObjectCollection(this);
 //        lightSwitch.getModelInst().calculateBoundingSphere();
-//        
+//
 //        lightSwitch.translateSubMesh(Vector3f.UNIT_X, "Slider");
-//        
+//
 //        pscene.setDirty(true, true);
 //        pscene.buildFlattenedHierarchy();
 //        pscene.submitTransformsAndGeometry();
-//        
+//
 //        Gadget lighDimmer = new Gadget(new Vector3f(3.0f, 1.5f, 0.0f), Vector3f.UNIT_Z, "assets/models/collada/Objects/Interface/InterfaceKnobPlate.dae");
 //        lighDimmer.setInScene(pscene);
 //        lighDimmer.setObjectCollection(this);
 //        lighDimmer.getModelInst().calculateBoundingSphere();
     }
-    
+
     public void testLightToggle()
     {
         //lightSwitch.translateSubMesh(Vector3f.UNIT_X, "Slider");
         //lightSwitch.setRotationSubMesh(new Vector3f((float)Math.toRadians(0.0f),(float)Math.toRadians(0.0f), (float)Math.toRadians(0.0f)), "Slider");
     }
-    
+
     /**
      * Check to see if the object is currently intersecting
      * another object in the collection according to their
@@ -397,7 +397,7 @@ public class ObjectCollection extends Entity
      * @param obj
      * @return
      */
-    public boolean isColliding(SpatialObject obj) 
+    public boolean isColliding(SpatialObject obj)
     {
         for (SpatialObject check : objects)
         {
@@ -415,7 +415,7 @@ public class ObjectCollection extends Entity
     }
 
     // The chair's bounding volumes are not correct until finished loading, this method is still good on load time.
-    private boolean isCloseToOtherChairs(Chair newChair) 
+    private boolean isCloseToOtherChairs(Chair newChair)
     {
         for (SpatialObject check : objects)
         {
@@ -433,13 +433,13 @@ public class ObjectCollection extends Entity
         }
         return false;
     }
-    
+
     /**
      * Finds the nearest object within range, the searcCone should be between
      * 0.0f and 1.0f, if 1.0f it is not considered, otherwise it will be used
      * in a dot product with the right vector of the object to determind
      * if within area of interest (in front of the object).
-     * @param obj   
+     * @param obj
      * @param consideredRange
      * @param searchCone 0.1f means only consider objects that are directly infront
      * @return
@@ -448,7 +448,7 @@ public class ObjectCollection extends Entity
     {
         if (obj == null)
             return null;
-        
+
         SpatialObject nearest = null;
         float nearestObjDistance = 0.0f;
         for (SpatialObject check : objects)
@@ -459,7 +459,7 @@ public class ObjectCollection extends Entity
                 float range = obj.getPosition().distance(check.getPosition());
                 if(range > consideredRange)
                     continue;
-        
+
                 // First found element
                 if (nearest == null)
                 {
@@ -467,7 +467,7 @@ public class ObjectCollection extends Entity
                     nearestObjDistance = range;
                     continue;
                 }
-                
+
                 // Check if inside the search cone
                 if (searchCone < 1.0f)
                 {
@@ -475,12 +475,12 @@ public class ObjectCollection extends Entity
                     Vector3f forwardVec = obj.getForwardVector();
                     Vector3f directionToTarget = check.getPosition().subtract(obj.getPosition());
                     directionToTarget.normalizeLocal();
-                    
+
                     // Check if inside the front half of space
                     float dot = directionToTarget.dot(forwardVec);
                     if (dot > 0.0f)
                         continue;
-                    
+
                     dot = directionToTarget.dot(rightVec);
                     if (dot < searchCone && dot > -searchCone)
                     {
@@ -496,13 +496,13 @@ public class ObjectCollection extends Entity
                     nearest  = check;
                     nearestObjDistance = range;
                 }
-                 
+
             }
         }
-        
+
         return nearest;
     }
-    
+
     /**
      * Retrieve the nearest chair given the specified constraints
      * @param obj The object looking for a chair
@@ -515,7 +515,7 @@ public class ObjectCollection extends Entity
     {
         if (obj == null)
             return null;
-        
+
         SpatialObject nearest = null;
         float nearestObjDistance = 0.0f;
         for (SpatialObject check : objects)
@@ -525,12 +525,12 @@ public class ObjectCollection extends Entity
                 // Check if occupided
                 if (((Chair)check).isOccupied(occupiedMatters))
                     continue;
-                
+
                 // Check range
                 float range = obj.getPosition().distance(check.getPosition());
                 if(range > consideredRange)
                     continue;
-        
+
                 // First found element
                 if (nearest == null)
                 {
@@ -538,7 +538,7 @@ public class ObjectCollection extends Entity
                     nearestObjDistance = range;
                     continue;
                 }
-                
+
                 // Check if inside the search cone
                 if (searchCone < 1.0f)
                 {
@@ -546,12 +546,12 @@ public class ObjectCollection extends Entity
                     Vector3f forwardVec = obj.getForwardVector();
                     Vector3f directionToTarget = ((Chair)check).getGoalPosition().subtract(obj.getPosition());
                     directionToTarget.normalizeLocal();
-                    
+
                     // Check if inside the front half of space
                     float dot = directionToTarget.dot(forwardVec);
                     if (dot > 0.0f)
                         continue;
-                    
+
                     dot = directionToTarget.dot(rightVec);
                     if (dot < searchCone && dot > -searchCone)
                     {
@@ -567,10 +567,10 @@ public class ObjectCollection extends Entity
                     nearest  = check;
                     nearestObjDistance = range;
                 }
-                 
+
             }
         }
-        
+
         return nearest;
     }
 
@@ -586,7 +586,7 @@ public class ObjectCollection extends Entity
     {
         if (obj == null)
             return null;
-        
+
         SpatialObject nearest = null;
         float nearestObjDistance = 0.0f;
         for (SpatialObject check : objects)
@@ -596,12 +596,12 @@ public class ObjectCollection extends Entity
                 // Check if occupided
                 if (((LocationNode)check).isOccupied(occupiedMatters))
                     continue;
-                
+
                 // Check range
                 float range = obj.getPosition().distance(check.getPosition());
                 if(range > consideredRange)
                     continue;
-        
+
                 // First found element
                 if (nearest == null)
                 {
@@ -609,7 +609,7 @@ public class ObjectCollection extends Entity
                     nearestObjDistance = range;
                     continue;
                 }
-                
+
                 // Check if inside the search cone
                 if (searchCone < 1.0f)
                 {
@@ -617,12 +617,12 @@ public class ObjectCollection extends Entity
                     Vector3f forwardVec = obj.getForwardVector();
                     Vector3f directionToTarget = check.getPosition().subtract(obj.getPosition());
                     directionToTarget.normalizeLocal();
-                    
+
                     // Check if inside the front half of space
                     float dot = directionToTarget.dot(forwardVec);
                     if (dot > 0.0f)
                         continue;
-                    
+
                     dot = directionToTarget.dot(rightVec);
                     if (dot < searchCone && dot > -searchCone)
                     {
@@ -638,13 +638,13 @@ public class ObjectCollection extends Entity
                     nearest  = check;
                     nearestObjDistance = range;
                 }
-                 
+
             }
         }
-        
+
         return (LocationNode)nearest;
     }
-    
+
     public JScene getJScene() {
         return jscene;
     }
@@ -653,7 +653,7 @@ public class ObjectCollection extends Entity
      * Removes a chair from the object collection.
      */
     public void removeAChair()
-    {   
+    {
         for (SpatialObject check : objects)
         {
             if (check instanceof Chair)
@@ -666,16 +666,16 @@ public class ObjectCollection extends Entity
             }
         }
     }
-    
+
     /**
      * Add another chair to the object collection
      */
-    public void addRandomChair() 
+    public void addRandomChair()
     {
         // What are these magic numbers?
         //Vector3f center = new Vector3f(3.905138f, 0.0f, 18.265793f);
         Vector3f center = Vector3f.ZERO;
-       
+
         generateChairs(center, 7.0f, 1);
     }
 
@@ -684,18 +684,18 @@ public class ObjectCollection extends Entity
      * Called in the constructor, override this method to set your own
      * non-default render states.
      */
-    public void setRenderStates() 
+    public void setRenderStates()
     {
         // Z Buffer State
         ZBufferState buf = (ZBufferState) worldManager.getRenderManager().createRendererState(RenderState.RS_ZBUFFER);
         buf.setEnabled(true);
         buf.setFunction(ZBufferState.TestFunction.LessThanOrEqualTo);
-        
+
         // Material State
         MaterialState matState  = null;
         matState = (MaterialState) worldManager.getRenderManager().createRendererState(RenderState.RS_MATERIAL);
         matState.setDiffuse(ColorRGBA.white);
-        
+
         // Light state
 //        Vector3f lightDir = new Vector3f(0.0f, -1.0f, 0.0f);
 //        DirectionalLight dr = new DirectionalLight();
@@ -716,16 +716,16 @@ public class ObjectCollection extends Entity
         LightState ls = (LightState) worldManager.getRenderManager().createRendererState(RenderState.RS_LIGHT);
         ls.setEnabled(true);
         ls.attach(light);
-        
+
         // Cull State
-        CullState cs = (CullState) worldManager.getRenderManager().createRendererState(RenderState.RS_CULL);      
+        CullState cs = (CullState) worldManager.getRenderManager().createRendererState(RenderState.RS_CULL);
         cs.setCullFace(CullState.Face.Back);
         cs.setEnabled(true);
-        
+
         // Wireframe State
         WireframeState ws = (WireframeState) worldManager.getRenderManager().createRendererState(RenderState.RS_WIREFRAME);
         ws.setEnabled(false);
-        
+
         // Push 'em down the pipe
         jscene.setRenderState(matState);
         jscene.setRenderState(buf);
@@ -748,5 +748,5 @@ public class ObjectCollection extends Entity
             gui = new ObjectCollectionGUI(this, worldManager);
         return gui;
     }
-    
+
 }

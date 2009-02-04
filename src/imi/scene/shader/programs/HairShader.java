@@ -42,7 +42,6 @@ public class HairShader extends BaseShaderProgram implements AbstractShaderProgr
     private static final Logger logger = Logger.getLogger(ClothingShaderSpecColor.class.getName());
     // The following two strings are the default source code for this effect
     private static final String VertexSource = new String(
-        "attribute vec3 tangent;" +
         "varying vec3 ToLight; " +
         "varying vec3 position;" +
         "void main(void)" +
@@ -50,8 +49,8 @@ public class HairShader extends BaseShaderProgram implements AbstractShaderProgr
         "    	gl_TexCoord[0] = gl_MultiTexCoord0; " +
         "    	position = gl_Vertex.xyz;" +
         "    	gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;" +
-        " 	    vec3 binormal = normalize(cross(tangent, gl_Normal));" +
-        "	    mat3 TBNMatrix = mat3(tangent, binormal, gl_Normal); " +
+        " 	    vec3 binormal = normalize(cross(gl_SecondaryColor.rgb, gl_Normal));" +
+        "	    mat3 TBNMatrix = mat3(gl_SecondaryColor.rgb, binormal, gl_Normal); " +
         "  	    ToLight = (gl_ModelViewMatrixInverse * gl_LightSource[0].position).xyz - position;" +
         "  	    ToLight *= TBNMatrix;  " +
         "       position = (gl_ModelViewMatrix * gl_Vertex).xyz;" +
@@ -157,12 +156,12 @@ public class HairShader extends BaseShaderProgram implements AbstractShaderProgr
         // apply uniforms
         ShaderUtils.assignProperties(m_propertyMap.values(), shaderState);
 
-        shaderState.setAttributePointer(
-                    GLSLDefaultVariables.Tangents.getName(),// The name, referenced in the shader code
-                    3,                                      // Total size of the data
-                    false,                                  // "Normalized"
-                    0,                                      // The "stride" (between entries)
-                    meshInst.getGeometry().getGeometry().getTangentBuffer()); // The actual data
+//        shaderState.setAttributePointer(
+//                    GLSLDefaultVariables.Tangents.getName(),// The name, referenced in the shader code
+//                    3,                                      // Total size of the data
+//                    false,                                  // "Normalized"
+//                    0,                                      // The "stride" (between entries)
+//                    meshInst.getGeometry().getGeometry().getTangentBuffer()); // The actual data
 
         meshInst.setShaderState(shaderState);
         m_bShaderLoaded = false;

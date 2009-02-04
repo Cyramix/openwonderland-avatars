@@ -17,8 +17,11 @@
  */
 package imi.scene.shader;
 
+import com.jme.scene.Geometry;
 import imi.scene.shader.programs.*;
+import com.jme.scene.state.GLSLShaderDataLogic;
 import com.jme.scene.state.GLSLShaderObjectsState;
+import com.jme.scene.state.jogl.JOGLShaderObjectsState;
 import imi.scene.polygonmodel.PPolygonMeshInstance;
 import imi.utils.FileUtils;
 import java.io.Serializable;
@@ -29,6 +32,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.media.opengl.GL;
+import javax.media.opengl.glu.GLU;
 import org.jdesktop.mtgame.RenderUpdater;
 import org.jdesktop.mtgame.WorldManager;
 
@@ -53,6 +58,8 @@ public abstract class BaseShaderProgram implements RenderUpdater, AbstractShader
     private String    m_programName = null;
     /** The description of what this program does **/
     private String    m_programDescription = null;
+    /** Boolean to indicate that the boneIndices attribute is used **/
+    protected boolean m_needBoneIndices = false;
     
     /**
      * Construct a new instance
@@ -138,6 +145,17 @@ public abstract class BaseShaderProgram implements RenderUpdater, AbstractShader
             GLSLShaderObjectsState shaderState = (GLSLShaderObjectsState) obj;
 
             shaderState.load(m_shaderSource[0], m_shaderSource[1]);
+            if (m_needBoneIndices)
+            {
+                shaderState.setShaderDataLogic(new GLSLShaderDataLogic() {
+                    public void applyData(GLSLShaderObjectsState shader, Geometry geom) {
+                        JOGLShaderObjectsState joglShader = (JOGLShaderObjectsState)shader;
+                        final GL gl = GLU.getCurrentGL();
+                        gl.glEnableVertexAttribArray(1);
+                        gl.glBindAttribLocation(joglShader.getProgramIdentifier(), 1, "boneIndices");
+                    }
+                });
+            }
             // done
             m_bShaderLoaded = true;
         } catch(Exception e) {

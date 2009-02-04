@@ -131,7 +131,6 @@ public class NormalMapShader extends GLSLShaderProgram implements Serializable
         {
             // Since this is a well-defined effect initially, we can just set
             // the source string and only require a compile if effects are added
-            m_vertAttributes.add(GLSLDefaultVariables.Tangents);
             this.synchronizePropertyObjects();
             // or removed
             setSourceStrings(VertexSource, FragmentSource);

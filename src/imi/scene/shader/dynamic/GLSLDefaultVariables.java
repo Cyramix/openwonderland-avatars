@@ -75,14 +75,6 @@ public class GLSLDefaultVariables
      */
     public static final GLSLVertexAttribute BoneIndices = 
             new GLSLVertexAttribute("boneIndices", GLSLDataType.GLSL_VEC4);
-    /**
-     * The tangent vertex attribute is computed for all models by default, and 
-     * represents texture space tangent vectors. This is primarily used for
-     * building the Tangent, Binormal, Normal matrix to facilitate various
-     * texture mapping effects.
-     */
-    public static final GLSLVertexAttribute Tangents = 
-            new GLSLVertexAttribute("tangent", GLSLDataType.GLSL_VEC3);
     
     //////////////////////////////////////////////////////////////////////////
     //  GLOBALS - This section contains global variables used throughout    //

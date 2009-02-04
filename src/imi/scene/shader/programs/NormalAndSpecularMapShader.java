@@ -76,7 +76,6 @@ public class NormalAndSpecularMapShader extends GLSLShaderProgram implements Ser
         try
         {
             this.compile();
-            m_vertAttributes.add(GLSLDefaultVariables.Tangents);
             this.synchronizePropertyObjects();
             // Set the ambient power and the diffuse map texture unit
             setProperty(new ShaderProperty("ambientPower", GLSLDataType.GLSL_FLOAT, Float.valueOf(fAmbientPower)));

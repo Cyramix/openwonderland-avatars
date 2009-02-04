@@ -57,9 +57,6 @@ class DeformFragmentNormal_Lighting extends GLSLShaderEffect
         m_fragmentGlobals[0] = GLSLDefaultVariables.FragmentLocalNormal;
 
         // declare dependencies, modifications, and initializations
-        m_vertAttributes = new GLSLVertexAttribute[1];
-        m_vertAttributes[0] = GLSLDefaultVariables.Tangents;
-
         m_FragmentDependencies = new ArrayList<GLSLShaderVariable>();
         m_FragmentDependencies.add(new GLSLShaderVarying("poseBlend0", GLSLDataType.GLSL_VEC3));
         m_FragmentDependencies.add(new GLSLShaderVarying("poseBlend1", GLSLDataType.GLSL_VEC3));

@@ -11,8 +11,8 @@
  * except in compliance with the License. A copy of the License is
  * available at http://www.opensource.org/licenses/gpl-license.php.
  *
- * Sun designates this particular file as subject to the "Classpath" 
- * exception as provided by Sun in the License file that accompanied 
+ * Sun designates this particular file as subject to the "Classpath"
+ * exception as provided by Sun in the License file that accompanied
  * this code.
  */
 package imi.character;
@@ -55,7 +55,7 @@ public class EyeBall extends PPolygonSkinnedMeshInstance
     private boolean bInCone = false;
     /** Reference to the other side **/
     private EyeBall otherEye = null;
-    
+
     /**
      * Construct a new eyeball using the provided mesh as the eye mesh, the model
      * instance provided is the eyeball's owner, and the pscene containing both.
@@ -66,7 +66,7 @@ public class EyeBall extends PPolygonSkinnedMeshInstance
     public EyeBall(PPolygonSkinnedMeshInstance meshInstance, Character character)
     {
         super(meshInstance, character.getPScene(), false); // Material will be applied later
-        setAndLinkSkeletonNode(character.getSkeleton()); 
+        setAndLinkSkeletonNode(character.getSkeleton());
         this.modelInst = character.getModelInst();
         this.character = character;
     }
@@ -79,11 +79,11 @@ public class EyeBall extends PPolygonSkinnedMeshInstance
     protected void lookAtTarget(PMatrix matrix)
     {
         PMatrix modelWorldRef = modelInst.getTransform().getWorldMatrix(false);
-        
+
         // Get eye world space
         PMatrix eyeWorld = new PMatrix();
         eyeWorld.mul(modelWorldRef, matrix);
-        
+
         // Check limits
         Vector3f forwardVec = modelWorldRef.getLocalZ();
         Vector3f directionToTarget = target.subtract(eyeWorld.getTranslation());
@@ -91,7 +91,7 @@ public class EyeBall extends PPolygonSkinnedMeshInstance
         directionToTarget.normalizeLocal();
 
         //boolean inConeCheck = bInCone;
-        
+
         // Check if inside the cone
         float dot = directionToTarget.dot(forwardVec);
         if (dot > limitCone)

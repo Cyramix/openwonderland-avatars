@@ -17,10 +17,12 @@
  */
 package imi.scene.shader.dynamic;
 
+import com.jme.scene.Geometry;
+import com.jme.scene.state.GLSLShaderDataLogic;
 import com.jme.scene.state.GLSLShaderObjectsState;
 import com.jme.scene.state.RenderState;
+import com.jme.scene.state.jogl.JOGLShaderObjectsState;
 import imi.scene.polygonmodel.PPolygonMeshInstance;
-import imi.scene.polygonmodel.skinned.PPolygonSkinnedMesh;
 import imi.scene.shader.AbstractShaderProgram;
 import imi.scene.shader.NoSuchPropertyException;
 import imi.scene.shader.ShaderProperty;
@@ -38,6 +40,8 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.media.opengl.GL;
+import javax.media.opengl.glu.GLU;
 import javolution.util.FastSet;
 import org.jdesktop.mtgame.RenderUpdater;
 import org.jdesktop.mtgame.WorldManager;
@@ -806,36 +810,7 @@ public class GLSLShaderProgram implements AbstractShaderProgram, RenderUpdater
         blockUntilLoaded(shaderState);
         // apply uniforms
         ShaderUtils.assignProperties(m_propertyMap.values(), shaderState);
-        // setup vertex attributes
-        // this section is a bit hackish... 
-        if (m_vertAttributes.size() > 0)
-        {
-            // explicitely hard-coded checks for well-defined vertex attributes
-            // This section may be ugly for a while
-            for (Iterator iter = m_vertAttributes.iterator(); iter.hasNext(); )
-            {
-                GLSLVertexAttribute vertAttribute = (GLSLVertexAttribute)iter.next();
-                if (vertAttribute == GLSLDefaultVariables.BoneIndices)
-                {
-
-                    shaderState.setAttributePointer(
-                            GLSLDefaultVariables.BoneIndices.getName(), // The name, referenced in the shader code
-                            4,                                          // Total size of the data
-                            false,                                      // "Normalized"
-                            0,                                          // The "stride" (between entries)
-                            meshInst.getGeometry().getGeometry().getBinormalBuffer()); // The actual data
-                }
-                else if (vertAttribute == GLSLDefaultVariables.Tangents)
-                {
-                    shaderState.setAttributePointer(
-                                GLSLDefaultVariables.Tangents.getName(),// The name, referenced in the shader code
-                                3,                                      // Total size of the data
-                                false,                                  // "Normalized"
-                                0,                                      // The "stride" (between entries)
-                                meshInst.getGeometry().getGeometry().getTangentBuffer()); // The actual data 
-                }
-            }
-        }
+        
         meshInst.setShaderState(shaderState);
         m_bShaderLoaded = false;
         return true;
@@ -849,6 +824,19 @@ public class GLSLShaderProgram implements AbstractShaderProgram, RenderUpdater
     {
         GLSLShaderObjectsState shaderState = (GLSLShaderObjectsState) obj;
         shaderState.load(getVertexProgramSource().toString(), getFragmentProgramSource().toString());
+        // Need to bind attributes in some cases
+        if (m_vertAttributes.contains(GLSLDefaultVariables.BoneIndices))
+        {
+            shaderState.setShaderDataLogic(new GLSLShaderDataLogic() {
+                @Override
+                public void applyData(GLSLShaderObjectsState shader, Geometry geom) {
+                    JOGLShaderObjectsState joglShader = (JOGLShaderObjectsState)shader;
+                    final GL gl = GLU.getCurrentGL();
+                    gl.glEnableVertexAttribArray(1);
+                    gl.glBindAttribLocation(joglShader.getProgramIdentifier(), 1, "boneIndices");
+                }
+            });
+        }
         // done
         m_bShaderLoaded = true;
     }

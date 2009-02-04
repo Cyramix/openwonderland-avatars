@@ -11,8 +11,8 @@
  * except in compliance with the License. A copy of the License is
  * available at http://www.opensource.org/licenses/gpl-license.php.
  *
- * Sun designates this particular file as subject to the "Classpath" 
- * exception as provided by Sun in the License file that accompanied 
+ * Sun designates this particular file as subject to the "Classpath"
+ * exception as provided by Sun in the License file that accompanied
  * this code.
  */
 package imi.tests;
@@ -39,53 +39,53 @@ public class MusicalChairs extends DemoBase
     public MusicalChairs(String[] args){
         super(args);
     }
-    
+
     public static void main(String[] args) {
         Logger.getLogger("com.jme.renderer").setLevel(Level.OFF);
         // Give ourselves a nice environment
         String[] ourArgs = new String[] { "-env:assets/models/collada/Environments/Garden/Garden.dae" };
         MusicalChairs worldTest = new MusicalChairs(ourArgs);
     }
-    
+
     @Override
-    protected void createDemoEntities(WorldManager wm) 
-    {   
+    protected void createDemoEntities(WorldManager wm)
+    {
         int numberOfAvatars = 5;
         float block = 2.0f * numberOfAvatars;
         float halfBlock = 0.5f * numberOfAvatars;
-        
+
         // Create one object collection for all to use (for testing)
         ObjectCollection objects = new ObjectCollection("Musical Chairs Objects", wm);
         objects.generateChairs(new Vector3f(halfBlock, 0.0f, halfBlock), halfBlock, numberOfAvatars-1);
-       
+
         // Create locations for the game
         LocationNode chairGame1 = new LocationNode("Location 1", Vector3f.ZERO, halfBlock, objects);
         LocationNode chairGame2 = new LocationNode("Location 2", Vector3f.UNIT_X.mult(block),  halfBlock, objects);
         LocationNode chairGame3 = new LocationNode("Location 3", new Vector3f(block, 0.0f, block),  halfBlock, objects);
         LocationNode chairGame4 = new LocationNode("Location 4", Vector3f.UNIT_Z.mult(block),  halfBlock, objects);
-        
+
         // Create graph paths
 //        objects.createConnection(chairGame1, chairGame2);
 //        objects.createConnection(chairGame2, chairGame3);
 //        objects.createConnection(chairGame3, chairGame4);
 //        objects.createConnection(chairGame4, chairGame1);
-        
+
         // Create baked paths
         chairGame1.addBakedConnection("yellowRoom", chairGame2);
         chairGame2.addBakedConnection("yellowRoom", chairGame3);
         chairGame3.addBakedConnection("yellowRoom", chairGame4);
         chairGame4.addBakedConnection("yellowRoom", chairGame1);
-        
+
         chairGame1.addBakedConnection("lobbyCenter", chairGame4);
         chairGame4.addBakedConnection("lobbyCenter", chairGame3);
         chairGame3.addBakedConnection("lobbyCenter", chairGame2);
         chairGame2.addBakedConnection("lobbyCenter", chairGame1);
-     
+
         // Create avatar input scheme
         AvatarControlScheme control = (AvatarControlScheme)((JSceneEventProcessor)wm.getUserData(JSceneEventProcessor.class)).setDefault(new AvatarControlScheme(null));
         control.setCommandEntireTeam(true);
         control.setObjectCollection(objects);
-        
+
         // Create avatar
         Avatar avatar = new Avatar(new MaleAvatarAttributes("Avatar", true), wm);
         avatar.selectForInput();
@@ -102,7 +102,7 @@ public class MusicalChairs extends DemoBase
     }
 
     private void createAvatar(AvatarControlScheme control, ObjectCollection objects, WorldManager wm, float xOffset, float yOffset, float zOffset)
-    {   
+    {
         boolean male = true; if (Math.random() < 0.25) male = false;
         Avatar avatar;
         if (male)

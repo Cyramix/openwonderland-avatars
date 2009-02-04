@@ -149,12 +149,12 @@ public class EyeballShader extends BaseShaderProgram implements AbstractShaderPr
         // apply uniforms
         ShaderUtils.assignProperties(m_propertyMap.values(), shaderState);
 
-        shaderState.setAttributePointer(
-                GLSLDefaultVariables.BoneIndices.getName(), // The name, referenced in the shader code
-                4,                                          // Total size of the data
-                false,                                      // "Normalized"
-                0,                                          // The "stride" (between entries)
-                ((PPolygonSkinnedMesh)meshInst.getGeometry()).getBoneIndexBuffer()); // The actual data
+//        shaderState.setAttributePointer(
+//                GLSLDefaultVariables.BoneIndices.getName(), // The name, referenced in the shader code
+//                4,                                          // Total size of the data
+//                false,                                      // "Normalized"
+//                0,                                          // The "stride" (between entries)
+//                ((PPolygonSkinnedMesh)meshInst.getGeometry()).getBoneIndexBuffer()); // The actual data
 
         meshInst.setShaderState(shaderState);
         m_bShaderLoaded = false;

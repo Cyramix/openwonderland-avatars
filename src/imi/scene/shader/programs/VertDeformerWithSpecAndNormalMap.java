@@ -87,7 +87,6 @@ public class VertDeformerWithSpecAndNormalMap extends GLSLShaderProgram implemen
         try
         {
             this.compile();
-            m_vertAttributes.add(GLSLDefaultVariables.Tangents);
             this.synchronizePropertyObjects();
             // Set some defaults
             setProperty(new ShaderProperty("ambientPower", GLSLDataType.GLSL_FLOAT, Float.valueOf(fAmbientPower)));

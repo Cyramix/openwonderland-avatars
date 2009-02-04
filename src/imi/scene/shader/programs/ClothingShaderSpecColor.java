@@ -44,14 +44,13 @@ public class ClothingShaderSpecColor extends BaseShaderProgram implements Abstra
     // The following two strings are the default source code for this effect
     private static final String VertexSource = new String(
         "attribute vec4 boneIndices;" +
-        "attribute vec3 tangent;" +
         "uniform mat4 pose[55];" +
         "varying vec3 ToLight; " +
         "varying vec3 position;" +
         "void main(void)" +
         "{" +
         "    	gl_TexCoord[0] = gl_MultiTexCoord0; " +
-        "    	vec3 weight = vec4(gl_Color).rgb;" +
+        "    	vec3 weight = gl_Color.rgb;" +
         "    	float weight4 = 1.0 - ( weight.x + weight.y + weight.z);" +
         "    	mat4 poseBlend = (  (pose[int(boneIndices.x)]) * weight.x + " +
         "                            (pose[int(boneIndices.y)]) * weight.y + " +
@@ -65,15 +64,16 @@ public class ClothingShaderSpecColor extends BaseShaderProgram implements Abstra
         "    	Normal.y = dot (gl_Normal, poseBlend[1].xyz);" +
         "    	Normal.z = dot (gl_Normal, poseBlend[2].xyz);" +
         "	    vec3 TangentVec;" +
-        "	    TangentVec.x = dot (tangent, poseBlend[0].xyz);" +
-        "    	TangentVec.y = dot (tangent, poseBlend[1].xyz);" +
-        "    	TangentVec.z = dot (tangent, poseBlend[2].xyz);" +
+        "	    TangentVec.x = dot (gl_SecondaryColor.rgb, poseBlend[0].xyz);" +
+        "    	TangentVec.y = dot (gl_SecondaryColor.rgb, poseBlend[1].xyz);" +
+        "    	TangentVec.z = dot (gl_SecondaryColor.rgb, poseBlend[2].xyz);" +
         " 	    vec3 binormal = normalize(cross(TangentVec, Normal));" +
         "	    mat3 TBNMatrix = mat3(TangentVec, binormal, Normal); " +
         "  	    ToLight = (gl_ModelViewMatrixInverse * gl_LightSource[0].position).xyz - position;" +
         "  	    ToLight *= TBNMatrix;  " +
         "       position = (gl_ModelViewMatrix * gl_Vertex).xyz;" +
         "       position *= TBNMatrix;" +
+//        "       ToLight = boneIndices.xyz;" + // Instrumentation
         "}"
     );
     private static final String FragmentSource = new String(
@@ -102,6 +102,7 @@ public class ClothingShaderSpecColor extends BaseShaderProgram implements Abstra
         "       vec4 specular = vec4(specColor, 1.0);" +
         "       specular *= gl_LightSource[0].specular * pow(max(0.0, RDotV), SpecularExponent);" +
         "    	gl_FragColor = color + (specular * SpecularComponent * nxDir);" +
+//        "       gl_FragColor = vec4(normalize(ToLight), 1);" + // Instrumentation
         "}"
     );
     /**
@@ -176,20 +177,20 @@ public class ClothingShaderSpecColor extends BaseShaderProgram implements Abstra
         // apply uniforms
         ShaderUtils.assignProperties(m_propertyMap.values(), shaderState);
 
-        shaderState.setAttributePointer(
-                GLSLDefaultVariables.BoneIndices.getName(), // The name, referenced in the shader code
-                4,                                          // Total size of the data
-                false,                                      // "Normalized"
-                0,                                          // The "stride" (between entries)
-                ((PPolygonSkinnedMesh)meshInst.getGeometry()).getBoneIndexBuffer()); // The actual data
-
-        shaderState.setAttributePointer(
-                    GLSLDefaultVariables.Tangents.getName(),// The name, referenced in the shader code
-                    3,                                      // Total size of the data
-                    false,                                  // "Normalized"
-                    0,                                      // The "stride" (between entries)
-                    meshInst.getGeometry().getGeometry().getTangentBuffer()); // The actual data
-        
+//        shaderState.setAttributePointer(
+//                GLSLDefaultVariables.BoneIndices.getName(), // The name, referenced in the shader code
+//                4,                                          // Total size of the data
+//                false,                                      // "Normalized"
+//                0,                                          // The "stride" (between entries)
+//                ((PPolygonSkinnedMesh)meshInst.getGeometry()).getBoneIndexBuffer()); // The actual data
+//
+//        shaderState.setAttributePointer(
+//                    GLSLDefaultVariables.Tangents.getName(),// The name, referenced in the shader code
+//                    3,                                      // Total size of the data
+//                    false,                                  // "Normalized"
+//                    0,                                      // The "stride" (between entries)
+//                    meshInst.getGeometry().getGeometry().getTangentBuffer()); // The actual data
+//
         meshInst.setShaderState(shaderState);
         m_bShaderLoaded = false;
         return true;

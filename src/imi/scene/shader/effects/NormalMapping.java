@@ -71,9 +71,6 @@ public class NormalMapping extends GLSLShaderEffect
         m_fragmentUniforms[0] = GLSLDefaultVariables.NormalMap;
         
         // declare dependencies, modifications, and initializations
-        m_vertAttributes = new GLSLVertexAttribute[1];
-        m_vertAttributes[0] = GLSLDefaultVariables.Tangents;
-        
         m_VertexDependencies = new ArrayList<GLSLShaderVariable>();
         m_VertexDependencies.add(GLSLDefaultVariables.ToLight);
         
@@ -106,8 +103,8 @@ public class NormalMapping extends GLSLShaderEffect
     private void createVertexLogic()
     {
         StringBuilder vertexLogic = new StringBuilder();
-        vertexLogic.append("vec3 binormal = normalize(cross(" + m_vertAttributes[0].getName() + ", " + m_varying[0].getName() + "));" + NL);
-        vertexLogic.append(m_vertexGlobals[0].getName() + " = mat3(" + m_vertAttributes[0].getName() + ", binormal, " + m_varying[0].getName() + ");" + NL);
+        vertexLogic.append("vec3 binormal = normalize(cross(gl_SecondaryColor.rgb, " + m_varying[0].getName() + "));" + NL);
+        vertexLogic.append(m_vertexGlobals[0].getName() + " = mat3(gl_SecondaryColor.rgb, binormal, " + m_varying[0].getName() + ");" + NL);
         // transform the ToLight vector
         vertexLogic.append(m_VertexModifications.get(0).getName() + " *= " + m_vertexGlobals[0].getName() + ";" + NL);
         m_vertexLogic = vertexLogic.toString();
