@@ -789,7 +789,7 @@ public class SceneEssentials {
         if (returnValue == JFileChooser.APPROVE_OPTION) {
             m_fileModel = m_jFileChooser_LoadColladaModel.getSelectedFile();
 
-            m_currentPScene.getInstances().setRenderStop(true);
+//            m_currentPScene.getInstances().setRenderStop(true);
             m_currentPScene.setUseRepository(useRepository);
 
             String protocal = "file:///" + System.getProperty("user.dir") + "/";
@@ -798,7 +798,7 @@ public class SceneEssentials {
 
             try {
 
-                URL modelURL = new URL(szURL);
+                URL modelURL = m_fileModel.toURI().toURL();
                 m_avatar.installHead(modelURL);
                 m_avatar.getAttributes().setHeadAttachment(path);
                 return true;
@@ -818,7 +818,7 @@ public class SceneEssentials {
             }
         }
 
-        m_currentPScene.getInstances().setRenderStop(false);
+//        m_currentPScene.getInstances().setRenderStop(false);
 
         return false;
     }
@@ -860,7 +860,7 @@ public class SceneEssentials {
             String szURL    = protocal + path;
 
             try {
-                URL modelURL = new URL(szURL);
+                URL modelURL = m_fileModel.toURI().toURL();
 
                 InstructionProcessor pProcessor = new InstructionProcessor(m_worldManager);
                 Instruction pRootInstruction = new Instruction();
@@ -990,7 +990,7 @@ public class SceneEssentials {
             if (mesh != null)
                 m_avatar.getSkeleton().findAndRemoveChild(subGroup);
 
-            pRootInstruction.addChildInstruction(InstructionType.loadGeometry, szURL);
+            pRootInstruction.addChildInstruction(InstructionType.loadGeometry, m_fileModel.getAbsolutePath());
 
             PMatrix tempSolution = new PMatrix();
 
@@ -1924,8 +1924,16 @@ public class SceneEssentials {
     }
 
     public String getRelativePath(File file) {
-        int indez = file.toString().indexOf(".");
-        String szfile = file.toString().substring(indez +2);
+        String userDir = System.getProperty("user.dir");
+        String szfile = file.toString().substring(userDir.length());
+
+        int index = szfile.indexOf("/");
+        szfile = szfile.substring(index + 1);
+        int indez = szfile.indexOf(".");
+
+        if (indez == 0)
+            szfile = szfile.substring(2);
+
         return szfile;
     }
 
