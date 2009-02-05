@@ -672,7 +672,7 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
                 m_width, m_height, 20.0f, m_aspect, 0.03f, 1000.0f, true);
         m_renderBuffer.setCameraComponent(cc);
         camera.addComponent(CameraComponent.class, cc);
-        
+
         //////////////////////////////////////////////////////////////////////
         // Skybox
         SkyBox sky = new SkyBox("skybox", 10.0f, 10.0f, 10.0f, wm);
@@ -699,6 +699,7 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
 //        m_cameraProcessor.setCameraBehavior(model, state);
 
         TumbleObjectCamState tobj = new TumbleObjectCamState(null);
+        tobj.setCameraPosition(new Vector3f(0.0f, 0.0f, 3.2f));
         tobj.setTargetFocalPoint(new Vector3f(0.0f, 0.0f, 0.0f));
         tobj.setTargetNeedsUpdate(true);
         m_cameraProcessor.setCameraBehavior(new TumbleObjectCamModel(), tobj);
@@ -1150,8 +1151,10 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
 
     public void setCameraBehavior(int cameratype) {
         Vector3f prevPos = null;
-        if (m_cameraProcessor.getState() instanceof TumbleObjectCamState)
+
+        if (m_cameraProcessor.getState() instanceof TumbleObjectCamState) {
             prevPos = ((TumbleObjectCamState)m_cameraProcessor.getState()).getCameraPosition();
+        }
         else if (m_cameraProcessor.getState() instanceof FirstPersonCamState)
             prevPos = ((FirstPersonCamState)m_cameraProcessor.getState()).getPosition();
 
@@ -1161,7 +1164,8 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
             {
                 toggleTumbleCamControls(true);
                 TumbleObjectCamState tobj = new TumbleObjectCamState(null);
-                tobj.setTargetFocalPoint(prevPos);
+                tobj.setCameraPosition(prevPos);
+                tobj.setTargetFocalPoint(m_focalPt);
                 tobj.setTargetNeedsUpdate(true);
                 m_cameraProcessor.setCameraBehavior(new TumbleObjectCamModel(), tobj);
                 break;
@@ -1169,15 +1173,12 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
             case 1:     // FPS Camera
             {
                 toggleTumbleCamControls(false);
-                FirstPersonCamState state = new FirstPersonCamState();
+                FirstPersonCamState state = new FirstPersonCamState(prevPos);
                 FirstPersonCamModel model = new FirstPersonCamModel();
-                state.setPosition(prevPos);
                 m_cameraProcessor.setCameraBehavior(model, state);
                 break;
             }
         }
-
-        repositionCamera(1);
     }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1774,12 +1775,10 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
             TumbleObjectCamState camState = ((TumbleObjectCamState)m_cameraProcessor.getState());
             TumbleObjectCamModel camModel = ((TumbleObjectCamModel)m_cameraProcessor.getModel());
             camState.setTargetModelInstance(ppmodel);
-            camState.setCameraPosition(m_camPos);
 
             if (ppmodel.getBoundingSphere() == null)
                 ppmodel.calculateBoundingSphere();
-//            camState.setTargetFocalPoint(ppmodel.getBoundingSphere().getCenter());
-//            camModel.turnTo(ppmodel.getBoundingSphere().getCenter(), camState);
+
             calculateCamPosNFoc(ppmodel, type);
             camModel.turnTo(m_focalPt, camState);
             camModel.moveTo(m_camPos, camState);
@@ -1789,12 +1788,12 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
 
             FirstPersonCamState camState = ((FirstPersonCamState)m_cameraProcessor.getState());
             FirstPersonCamModel camModel = ((FirstPersonCamModel)m_cameraProcessor.getModel());
+
             if (ppmodel.getBoundingSphere() == null)
                 ppmodel.calculateBoundingSphere();
+
             calculateCamPosNFoc(ppmodel, type);
-            Vector3f pos = new Vector3f(m_focalPt);
-            pos.z *= 1.8;
-            camState.setCameraPosition(pos);
+            camState.setCameraPosition(m_camPos);
 
         }
         runProgressBar(false);

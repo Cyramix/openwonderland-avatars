@@ -789,6 +789,7 @@ public class SceneEssentials {
         if (returnValue == JFileChooser.APPROVE_OPTION) {
             m_fileModel = m_jFileChooser_LoadColladaModel.getSelectedFile();
 
+            m_currentPScene.getInstances().setRenderStop(true);
             m_currentPScene.setUseRepository(useRepository);
 
             String protocal = "file:///" + System.getProperty("user.dir") + "/";
@@ -806,6 +807,18 @@ public class SceneEssentials {
                 Logger.getLogger(SceneEssentials.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
+
+        while (m_avatar.getSkeleton().getMeshNamesBySubGroup(m_regions[0]).length <= 0) {
+            // Wait till the mesh is loaded and in group
+            try {
+                Thread.sleep(3000);
+                Thread.yield();
+            } catch (InterruptedException ex) {
+                Logger.getLogger(SceneEssentials.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+
+        m_currentPScene.getInstances().setRenderStop(false);
 
         return false;
     }
@@ -839,6 +852,7 @@ public class SceneEssentials {
             if (subGroup == null || subGroup.length() <= 0)
                 return false;
 
+            m_currentPScene.getInstances().setRenderStop(true);
             m_currentPScene.setUseRepository(useRepository);
 
             String protocal = "file:///" + System.getProperty("user.dir") + "/";
@@ -872,6 +886,7 @@ public class SceneEssentials {
 
                 m_avatar.setDefaultShaders();
                 m_avatar.applyMaterials();
+                m_currentPScene.getInstances().setRenderStop(false);
                 
                 // TEST CODE TO UPDATE ATTRIBUTES FOR SKINNED MESHES
                 String[] meshesToAdd = m_avatar.getSkeleton().getMeshNamesBySubGroup(subGroup);
@@ -953,6 +968,7 @@ public class SceneEssentials {
                                                             "SPECIFY THE NAME OF THE MESH", JOptionPane.PLAIN_MESSAGE,
                                                             null, null, "Hair");
 
+            m_currentPScene.getInstances().setRenderStop(true);
             m_currentPScene.setUseRepository(useRepository);
 
             String protocal = "file:///" + System.getProperty("user.dir") + "/";
@@ -1010,6 +1026,20 @@ public class SceneEssentials {
 
             m_avatar.getAttributes().setAttachmentsInstructions(newAttatchments.toArray(new AttachmentParams[newAttatchments.size()]));
             loadinstructs.add(szURL);   // TODO: find the loadinstruction to remove
+
+            while (m_avatar.getSkeleton().findChild(meshName) == null) {
+                // Wait till the mesh is loaded
+                try {
+                    Thread.sleep(3000);
+                    Thread.yield();
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(SceneEssentials.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+
+            m_avatar.setDefaultShaders();
+            m_avatar.applyMaterials();
+            m_currentPScene.getInstances().setRenderStop(false);
 
             return true;
         }
@@ -1414,6 +1444,7 @@ public class SceneEssentials {
         }
 
         m_avatar.setDefaultShaders();
+        m_avatar.applyMaterials();
 
         // TEST CODE TO UPDATE ATTRIBUTES FOR SKINNED MESHES
         String[] meshesToAdd = m_avatar.getSkeleton().getMeshNamesBySubGroup(subgroup);
@@ -1498,6 +1529,19 @@ public class SceneEssentials {
 
         m_avatar.getAttributes().setAttachmentsInstructions(newAttatchments.toArray(new AttachmentParams[newAttatchments.size()]));
         loadinstructs.add(data[3]);   // TODO: find the loadinstruction to remove
+
+        while (m_avatar.getSkeleton().findChild(data[0]) == null) {
+            // Wait till the mesh is loaded
+            try {
+                Thread.sleep(3000);
+                Thread.yield();
+            } catch (InterruptedException ex) {
+                Logger.getLogger(SceneEssentials.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+
+        m_avatar.setDefaultShaders();
+        m_avatar.applyMaterials();
     }
 
     /**
@@ -1515,6 +1559,7 @@ public class SceneEssentials {
             return;
         }
 
+        m_currentPScene.getInstances().setRenderStop(true);
         InstructionProcessor pProcessor = new InstructionProcessor(m_worldManager);
         Instruction pRootInstruction = new Instruction();
         pRootInstruction.addChildInstruction(InstructionType.setSkeleton, m_avatar.getSkeleton());
@@ -1565,6 +1610,20 @@ public class SceneEssentials {
         newAttatchments.add(new AttachmentParams(meshName, joint2addon, tempSolution, subGroup));
         m_avatar.getAttributes().setAttachmentsInstructions(newAttatchments.toArray(new AttachmentParams[newAttatchments.size()]));
         loadinstructs.add(meshLocation);   // TODO: find the loadinstruction to remove
+
+        while (m_avatar.getSkeleton().findChild(meshName) == null) {
+            // Wait till the mesh is loaded
+            try {
+                Thread.sleep(3000);
+                Thread.yield();
+            } catch (InterruptedException ex) {
+                Logger.getLogger(SceneEssentials.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+
+        m_avatar.setDefaultShaders();
+        m_avatar.applyMaterials();
+        m_currentPScene.getInstances().setRenderStop(false);
     }
 
     /**

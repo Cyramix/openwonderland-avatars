@@ -286,6 +286,7 @@ public class JFrame_ColorSelector extends javax.swing.JFrame implements ChangeLi
         }
 
         meshInst.applyShader();
+        meshInst.applyMaterial();
     }
 
     /**
@@ -296,15 +297,15 @@ public class JFrame_ColorSelector extends javax.swing.JFrame implements ChangeLi
     public void setMeshColor(PPolygonMeshInstance meshInst, float[] fColorArray) {
         // assign a texture to the mesh instance
         PMeshMaterial material = meshInst.getMaterialRef();
-        GLSLShaderProgram shader = (GLSLShaderProgram)material.getShader();
+        AbstractShaderProgram shader = material.getShader();
         Repository repo = (Repository)m_sceneData.getWM().getUserData(Repository.class);
         AbstractShaderProgram accessoryShader = repo.newShader(SimpleTNLWithAmbient.class);
         
         if (meshInst.getParent().getName().toLowerCase().contains("hair"))
         {
-            shader.addEffect(new MeshColorModulation());
             try {
                 shader.setProperty(new ShaderProperty("materialColor", GLSLDataType.GLSL_VEC3, fColorArray));
+                shader.setProperty(new ShaderProperty("specColor", GLSLDataType.GLSL_VEC3, fColorArray));
             } catch (Exception ex) {
                 Logger.getLogger(Character.class.getName()).log(Level.SEVERE, null, ex); }
         } else {
@@ -313,6 +314,7 @@ public class JFrame_ColorSelector extends javax.swing.JFrame implements ChangeLi
         
         material.setCullFace(CullState.Face.None);
         meshInst.applyShader();
+        meshInst.applyMaterial();
     }
 
 ////////////////////////////////////////////////////////////////////////////////

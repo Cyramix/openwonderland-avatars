@@ -409,6 +409,9 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
         }
 
         if (isViewMode) {
+            String relpath  = data.get(0)[3];
+            String fullpath = m_protocol + relpath;
+            data.get(0)[3]  = fullpath;
             m_sceneData.loadAvatarHeadDAEURL(true, this, data.get(0), meshes);
         }
         else {
@@ -463,6 +466,9 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
         }
 
         if (isViewMode) {
+            String relpath  = data.get(0)[3];
+            String fullpath = m_protocol + relpath;
+            data.get(0)[3]  = fullpath;
             m_sceneData.loadAvatarHeadDAEURL(true, this, data.get(0), meshes);
         }
         else {
@@ -516,8 +522,12 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
             meshes[i] = meshref.get(i)[0];
         }
 
-        if (isViewMode)
+        if (isViewMode) {
+            String relpath  = data.get(0)[3];
+            String fullpath = m_protocol + relpath;
+            data.get(0)[3]  = fullpath;
             m_sceneData.loadSMeshDAEURL(true, this, data.get(0), meshes);
+        }
         else {
             try {
                 URL upperbody = new URL(m_protocol + data.get(0)[3]);
@@ -571,8 +581,12 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
             meshes[i] = meshref.get(i)[0];
         }
 
-        if (isViewMode)
+        if (isViewMode) {
+            String relpath  = data.get(0)[3];
+            String fullpath = m_protocol + relpath;
+            data.get(0)[3]  = fullpath;
             m_sceneData.loadSMeshDAEURL(true, this, data.get(0), meshes);
+        }
         else {
             try {
                 URL lowerbody = new URL(m_protocol + data.get(0)[3]);
@@ -626,8 +640,12 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
             meshes[i] = meshref.get(i)[0];
         }
 
-        if (isViewMode)
+        if (isViewMode) {
+            String relpath  = data.get(0)[3];
+            String fullpath = m_protocol + relpath;
+            data.get(0)[3]  = fullpath;
             m_sceneData.loadSMeshDAEURL(true, this, data.get(0), meshes);
+        }
         else {
             try {
                 URL shoes = new URL(m_protocol + data.get(0)[3]);

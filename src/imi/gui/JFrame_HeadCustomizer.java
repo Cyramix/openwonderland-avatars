@@ -144,7 +144,7 @@ public class JFrame_HeadCustomizer extends javax.swing.JFrame {
         if (m_Eyes == null)
             return;
 
-        m_sceneData.getPScene().setRenderStop(true);
+//        m_sceneData.getPScene().getInstances().setRenderStop(true);
         // Create a material to use
         String temp = jTable_Eyes.getValueAt(row, col).toString();
         String location = temp.substring(1, temp.length() - 1);
@@ -164,7 +164,7 @@ public class JFrame_HeadCustomizer extends javax.swing.JFrame {
         } catch (MalformedURLException ex) {
             Logger.getLogger(SceneEssentials.class.getName()).log(Level.SEVERE, null, ex);
         }
-        m_sceneData.getPScene().setRenderStop(false);
+//        m_sceneData.getPScene().getInstances().setRenderStop(false);
     }
 
     /**
@@ -181,7 +181,7 @@ public class JFrame_HeadCustomizer extends javax.swing.JFrame {
         if (m_sceneData.getAvatar() == null || !m_sceneData.getAvatar().isInitialized())
             return;
 
-        m_sceneData.getPScene().setRenderStop(true);
+        m_sceneData.getPScene().getInstances().setRenderStop(true);
         String protocol = "file:///";
         String temp     = ((Vector)m_HeadModels.get(row)).get(col).toString();
         String location = temp.substring(1, temp.length() - 1);
@@ -193,8 +193,7 @@ public class JFrame_HeadCustomizer extends javax.swing.JFrame {
         String relPath  = path + filename;
 
         m_sceneData.addAvatarHeadDAEURL(true, this, url, relPath);
-
-        m_sceneData.getPScene().setRenderStop(false);
+        m_sceneData.getPScene().getInstances().setRenderStop(false);
     }
 
     /**
@@ -213,12 +212,13 @@ public class JFrame_HeadCustomizer extends javax.swing.JFrame {
 
         Vector data     = (Vector) m_MeshNames.get(row);
 
-        m_sceneData.getPScene().setRenderStop(true);
+        m_sceneData.getPScene().getInstances().setRenderStop(true);
         String protocol = "file:///";
         String temp     = data.get(1).toString();
         String url      = protocol + temp;
 
         m_sceneData.addMeshDAEURLToModel(data.get(0).toString(), url, "Head", "Hair");
+        m_sceneData.getPScene().getInstances().setRenderStop(false);
     }
 
     /** This method is called from within the constructor to
