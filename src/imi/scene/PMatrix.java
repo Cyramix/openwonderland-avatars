@@ -22,7 +22,6 @@ import com.jme.math.Matrix4f;
 import com.jme.math.Quaternion;
 import com.jme.math.Vector3f;
 import java.io.Serializable;
-import org.lwjgl.util.vector.Vector4f;
 
 /**
  * The most awesome matrix class ever.
@@ -1041,18 +1040,6 @@ public class PMatrix implements Serializable
                                 mat[8], mat[9], mat[10]);
     }
     
-    public Vector4f getRow(int nRowIndex)
-    {
-        assert(nRowIndex >= 0 && nRowIndex <= 3) : "Row index requested is out of bounds!"; // Bounds checking
-        Vector4f result = new Vector4f(
-                                        mat[(nRowIndex * 4)],
-                                        mat[(nRowIndex * 4) + 1],
-                                        mat[(nRowIndex * 4) + 2],
-                                        mat[(nRowIndex * 4) + 3]
-                                        );
-        return result;
-    }
-    
     /**
      * Places the quaternion equivalent of the normalized rotational
      * component of this transform into the quaternion parameter.
@@ -1589,55 +1576,13 @@ public class PMatrix implements Serializable
      * @param t2  the transform on the right hand side of the multiplication
      */
     public final void mulTransposeBoth(PMatrix t1, PMatrix t2) {
-	PMatrix t3 = new PMatrix();
-	PMatrix t4 = new PMatrix();
-	t3.autoNormalize = false;
-	t4.autoNormalize = false;
-	t3.transpose(t1);
-	t4.transpose(t2);
-	fastMul(t3, t4);
-    }
-    
-    /**
-     * Transform the vector vec using this transform and place the
-     * result into vecOut.
-     * @param vec  the double precision vector to be transformed
-     * @param vecOut  the vector into which the transformed values are placed
-     */
-    public final void transform(Vector4f vec, Vector4f vecOut) {
-
-	if (vec != vecOut) {
-	    vecOut.x = (mat[0]*vec.x + mat[1]*vec.y
-			+ mat[2]*vec.z + mat[3]*vec.w);
-	    vecOut.y = (mat[4]*vec.x + mat[5]*vec.y
-			+ mat[6]*vec.z + mat[7]*vec.w);
-	    vecOut.z = (mat[8]*vec.x + mat[9]*vec.y
-			+ mat[10]*vec.z + mat[11]*vec.w);
-	    vecOut.w = (mat[12]*vec.x + mat[13]*vec.y
-			+ mat[14]*vec.z + mat[15]*vec.w);
-	} else {
-	    transform(vec);
-	}
-    }
-
-
-    /**
-     * Transform the vector vec using this Transform and place the
-     * result back into vec.
-     * @param vec  the double precision vector to be transformed
-     */
-    public final void transform(Vector4f vec) {
-	float x = (mat[0]*vec.x + mat[1]*vec.y
-		    + mat[2]*vec.z + mat[3]*vec.w);
-	float y = (mat[4]*vec.x + mat[5]*vec.y
-		    + mat[6]*vec.z + mat[7]*vec.w);
-	float z = (mat[8]*vec.x + mat[9]*vec.y
-		    + mat[10]*vec.z + mat[11]*vec.w);
-	vec.w = (mat[12]*vec.x + mat[13]*vec.y
-		 + mat[14]*vec.z + mat[15]*vec.w);
-	vec.x = x;
-	vec.y = y;
-	vec.z = z;
+        PMatrix t3 = new PMatrix();
+        PMatrix t4 = new PMatrix();
+        t3.autoNormalize = false;
+        t4.autoNormalize = false;
+        t3.transpose(t1);
+        t4.transpose(t2);
+        fastMul(t3, t4);
     }
     
     
@@ -2015,6 +1960,7 @@ public class PMatrix implements Serializable
         hash = 11 * hash + (this.mat != null ? this.mat.hashCode() : 0);
         return hash;
     }
+
     
     /**
      * Helping function that specifies the position and orientation of a
@@ -2024,22 +1970,7 @@ public class PMatrix implements Serializable
      * @param center a point in the virtual world where the eye is looking
      * @param up an up vector specifying the frustum's up direction
      */
-    public void lookAt(Vector3f eye, Vector3f center, Vector3f up) 
-    {
-        Vector4f eye4 = new Vector4f(eye.x, eye.y, eye.z, 1.0f);
-        Vector4f center4 = new Vector4f(center.x, center.y, center.z, 1.0f);
-        lookAt(eye4, center4, up);
-    }
-    
-    /**
-     * Helping function that specifies the position and orientation of a
-     * view matrix. The inverse of this transform can be used to control
-     * the ViewPlatform object within the scene graph.
-     * @param eye the location of the eye
-     * @param center a point in the virtual world where the eye is looking
-     * @param up an up vector specifying the frustum's up direction
-     */
-    public void lookAt(Vector4f eye, Vector4f center, Vector3f up) {
+    public void lookAt(Vector3f eye, Vector3f center, Vector3f up) {
         float forwardx,forwardy,forwardz,invMag;
         float upx,upy,upz;
         float sidex,sidey,sidez;

@@ -26,7 +26,6 @@
 package imi.serialization.xml.bindings;
 
 import com.jme.math.Vector3f;
-//import javax.vecmath.Vector4f;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;

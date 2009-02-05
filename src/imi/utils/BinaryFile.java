@@ -21,11 +21,11 @@ package imi.utils;
 import java.io.BufferedInputStream;
 import com.jme.math.Vector2f;
 import com.jme.math.Vector3f;
+import com.jme.renderer.ColorRGBA;
 import java.io.IOException;
 import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.lwjgl.util.vector.Vector4f;
 
 
 /**
@@ -263,15 +263,15 @@ public class BinaryFile
         return(Value);
     }
     
-    public Vector4f readVector4f()
+    public ColorRGBA readColorRGBA()
     {
-        Vector4f Value = new Vector4f();
+        ColorRGBA Value = new ColorRGBA();
         try
         {
-            Value.x = readFloat();
-            Value.y = readFloat();
-            Value.z = readFloat();
-            Value.w = readFloat();
+            Value.r = readFloat();
+            Value.g = readFloat();
+            Value.b = readFloat();
+            Value.a = readFloat();
         }
         catch (Exception e)
         {

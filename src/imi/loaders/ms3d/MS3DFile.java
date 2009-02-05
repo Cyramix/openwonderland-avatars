@@ -23,9 +23,9 @@ import java.util.ArrayList;
 import com.jme.math.Vector3f;
 import com.jme.math.Matrix4f;
 import com.jme.math.Quaternion;
+import com.jme.renderer.ColorRGBA;
 import imi.utils.BinaryFile;
 import java.net.URL;
-import org.lwjgl.util.vector.Vector4f;
 
 
 /**
@@ -84,10 +84,10 @@ class MS3D_GROUP
 class MS3D_MATERIAL
 {
     String              Name;
-    Vector4f            Ambient;			//
-    Vector4f            Diffuse;			//
-    Vector4f            Specular;			//
-    Vector4f            Emissive;			//
+    ColorRGBA            Ambient;			//
+    ColorRGBA            Diffuse;			//
+    ColorRGBA            Specular;			//
+    ColorRGBA            Emissive;			//
     float               Shininess;			//  0.0f - 128.0f
     float               Transparency;		//  0.0f - 1.0f
     int                 Mode;				//  0, 1, 2 is unused now
@@ -337,10 +337,10 @@ class MS3D_EDGE
             pMaterial = new MS3D_MATERIAL();
 
             pMaterial.Name = Stream.readString(32);
-            pMaterial.Ambient = Stream.readVector4f();
-            pMaterial.Diffuse = Stream.readVector4f();
-            pMaterial.Specular = Stream.readVector4f();
-            pMaterial.Emissive = Stream.readVector4f();
+            pMaterial.Ambient = Stream.readColorRGBA();
+            pMaterial.Diffuse = Stream.readColorRGBA();
+            pMaterial.Specular = Stream.readColorRGBA();
+            pMaterial.Emissive = Stream.readColorRGBA();
             pMaterial.Shininess = Stream.readFloat();
             pMaterial.Transparency = Stream.readFloat();
             pMaterial.Mode = Stream.readChar();
@@ -486,10 +486,10 @@ class MS3D_EDGE
 
             System.out.println("   Material[" + i + "]:");
             System.out.println("      Name:  '" + pMaterial.Name + "'");
-            System.out.println("      Ambient:       (" + pMaterial.Ambient.x + ", " + pMaterial.Ambient.y + ", " + pMaterial.Ambient.z + ", " + pMaterial.Ambient.w + ")");
-            System.out.println("      Diffuse:       (" + pMaterial.Diffuse.x + ", " + pMaterial.Diffuse.y + ", " + pMaterial.Diffuse.z + ", " + pMaterial.Diffuse.w + ")");
-            System.out.println("      Specular:      (" + pMaterial.Specular.x + ", " + pMaterial.Specular.y + ", " + pMaterial.Specular.z + ", " + pMaterial.Specular.w + ")");
-            System.out.println("      Emissive:      (" + pMaterial.Emissive.x + ", " + pMaterial.Emissive.y + ", " + pMaterial.Emissive.z + ", " + pMaterial.Emissive.w + ")");
+            System.out.println("      Ambient:       (" + pMaterial.Ambient.r + ", " + pMaterial.Ambient.g + ", " + pMaterial.Ambient.b + ", " + pMaterial.Ambient.a + ")");
+            System.out.println("      Diffuse:       (" + pMaterial.Diffuse.r + ", " + pMaterial.Diffuse.g + ", " + pMaterial.Diffuse.b + ", " + pMaterial.Diffuse.a + ")");
+            System.out.println("      Specular:      (" + pMaterial.Specular.r + ", " + pMaterial.Specular.g + ", " + pMaterial.Specular.b + ", " + pMaterial.Specular.a + ")");
+            System.out.println("      Emissive:      (" + pMaterial.Emissive.r + ", " + pMaterial.Emissive.g + ", " + pMaterial.Emissive.b + ", " + pMaterial.Emissive.a + ")");
             System.out.println("      Shininess:     " + pMaterial.Shininess);
             System.out.println("      Transparency:  " + pMaterial.Transparency);
             System.out.println("      Mode:          " + pMaterial.Mode);
