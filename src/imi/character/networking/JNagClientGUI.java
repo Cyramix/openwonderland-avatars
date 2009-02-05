@@ -115,6 +115,15 @@ public class JNagClientGUI implements ActionListener
         }
     }
     
+    public void leftChannel(String channelName) 
+    {
+  //      String current = (String)channelSelectorModel.getSelectedItem();
+        appendOutput("Leaving channel " + channelName);
+        channelSelectorModel.removeElement(channelName);
+//        int index = channelSelectorModel.getIndexOf(current);
+//        channelSelector.setSelectedIndex(index);
+    }
+    
     public void joinedChannel(ClientChannel channel) 
     {
         String channelName = channel.getName();

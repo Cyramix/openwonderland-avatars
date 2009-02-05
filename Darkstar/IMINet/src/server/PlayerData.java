@@ -32,10 +32,13 @@ public class PlayerData implements Serializable, ManagedObject
     private boolean rightArmEnabled = false;;
     private boolean leftArmEnabled  = false;;
     private boolean male = true;
-    private int feet  = -1;
-    private int legs  = -1;
-    private int torso = -1;
-    private int hair  = -1;
+    private int feet     = -1;
+    private int legs     = -1;
+    private int torso    = -1;
+    private int hair     = -1;
+    private int head     = -1;
+    private int skinTone = -1;
+    private int eyeColor = -1;
     
     private boolean playingGame = false;
     private int hitPoints = 0;
@@ -201,13 +204,16 @@ public class PlayerData implements Serializable, ManagedObject
         return rightArmEnabled;
     }
     
-    public void setAvatarInfo(boolean male, int feet, int legs, int torso, int hair)
+    public void setAvatarInfo(boolean male, int feet, int legs, int torso, int hair, int head, int skinTone, int eyeColor)
     {
         this.male  = male;
         this.feet  = feet;
         this.legs  = legs;
         this.torso = torso;
         this.hair  = hair;
+        this.head  = head;
+        this.skinTone  = skinTone;
+        this.eyeColor  = eyeColor;
     }
 
     public boolean isMale() {
@@ -228,6 +234,18 @@ public class PlayerData implements Serializable, ManagedObject
 
     public int getTorso() {
         return torso;
+    }
+
+    public int getHead() {
+        return head;
+    }
+
+    public int getSkinTone() {
+        return skinTone;
+    }
+    
+    public int getEyeColor() {
+        return eyeColor;
     }
 
     public boolean isPlayingGame() {

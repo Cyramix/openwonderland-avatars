@@ -37,7 +37,7 @@ import net.java.dev.jnag.sgs.app.MessageOutputToClientSession;
 import net.java.dev.jnag.sgs.common.MethodLogger;
 
 /**
- * Represents a player in the {@link SwordWorld} example MUD.
+ * Represents a user 
  */
 public class WorldPlayer extends WorldObject implements ClientSessionListener, ServerSideUser
 {
@@ -74,7 +74,7 @@ public class WorldPlayer extends WorldObject implements ClientSessionListener, S
      * @param session which session to find or create a player for
      * @return a player for the given session
      */
-    public static WorldPlayer loggedIn(ClientSession session) 
+    public static WorldPlayer loggedIn(ClientSession session, int userID) 
     {   
         String playerBinding = PLAYER_BIND_PREFIX + session.getName();
 
@@ -86,7 +86,7 @@ public class WorldPlayer extends WorldObject implements ClientSessionListener, S
             player = (WorldPlayer) dataMgr.getBinding(playerBinding);
         } catch (NameNotBoundException ex) {
             // this is a new player
-            player = new WorldPlayer(playerBinding, session);
+            player = new WorldPlayer(playerBinding, session, userID);
             logger.log(Level.INFO, "New player created: {0}", player);
             dataMgr.setBinding(playerBinding, player);
         }
@@ -100,18 +100,19 @@ public class WorldPlayer extends WorldObject implements ClientSessionListener, S
      *
      * @param name the name of this player
      */
-    protected WorldPlayer(String name, ClientSession session) 
+    protected WorldPlayer(String name, ClientSession session, int userID) 
     {
-        super(name, "Seeker of Truth");
-    }
-    
-    protected void setupJNagSession(ClientSession session, Channel channel, int ID)
-    {
+        super(name, "a friendly chap");
+        
         // Create the player data object
         DataManager dataManager = AppContext.getDataManager();
         dataManager.markForUpdate(this);
-        playerDataRef = dataManager.createReference(new PlayerData(ID, getName()));
-        
+        playerDataRef = dataManager.createReference(new PlayerData(userID, getName()));
+    }
+    
+    protected void setupJNagSession(ClientSession session, Channel channel)
+    {   
+        releaseJNagSession();
         // Create the jnag session and initialize its output.
         jnagSession = new JnagSession();
         jnagSession.setMethodLogger(new MethodLogger()); // Enable the log.
@@ -127,8 +128,9 @@ public class WorldPlayer extends WorldObject implements ClientSessionListener, S
         clientSideUserRef = AppContext.getDataManager().createReference(clientSideUserProxy);  
         
         // jnag proxy methods
-        clientSideUserProxy.notifyLogin(ID, getName());
-        clientSideUserProxy.notifyMessageOfTheDay("Welcome to the server.");
+        clientSideUserProxy.notifyLogin(playerDataRef.get().getID(), getName());
+        if (getRoom() != null)
+            clientSideUserProxy.notifyMessageOfTheDay(getRoom().getDescription());
     }
     
     /**
@@ -178,10 +180,6 @@ public class WorldPlayer extends WorldObject implements ClientSessionListener, S
         room.addPlayer(this);
         setRoom(room);
     }
-
-    public void receivedRoomMessage(ByteBuffer message)
-    {
-    }
     
     /** {@inheritDoc} */
     public void receivedMessage(ByteBuffer message) 
@@ -210,11 +208,23 @@ public class WorldPlayer extends WorldObject implements ClientSessionListener, S
 //        }
     }
 
-    /** {@inheritDoc} */
     public void disconnected(boolean graceful) 
     {    
         clientSideUserRef.get().notifyLogout(graceful);
-                 
+        releaseJNagSession();
+        
+        // None jnag preccessing
+        getRoom().removePlayer(this, true);
+        setSession(null);
+        setRoom(null);
+        logger.log(Level.INFO, "Disconnected: {0}", this);
+    }
+    
+    public void releaseJNagSession()
+    {
+        if (jnagSession == null)
+            return;
+        
         // Delete the serverSideUserImpl object from the data store.
         jnagSession.removeFromLocalInterface(this);
 
@@ -225,15 +235,28 @@ public class WorldPlayer extends WorldObject implements ClientSessionListener, S
 
         // Delete the managed objects owned by the implementation of the jnag session.
         jnagSession.releaseManagedObjects();
-        
-        // None jnag preccessing
-        
-        getRoom().removePlayer(this);
-        setSession(null);
-        setRoom(null);
-        logger.log(Level.INFO, "Disconnected: {0}", this);
     }
 
+    public void enterWorld(String worldName)
+    {
+        WorldRoom room = getRoom();
+        if (room != null)
+        {
+            if (room.getWorld().getRoom(worldName).getName().equals(room.getName()))
+                return;
+            getRoom().removePlayer(this, false);
+            enter(room.getWorld().getRoom(worldName));
+            getRoom().sendAddPlayer(this);
+        }
+    }
+    
+    public void requestWorldList()
+    {
+        WorldRoom room = getRoom();
+        if (room != null)   
+            clientSideUserRef.get().recieveWorldList(room.getWorld().getWorldNames());
+    }
+    
     /**
      * Returns the room this player is currently in, or {@code null} if
      * this player is not in a room.
@@ -328,6 +351,9 @@ public class WorldPlayer extends WorldObject implements ClientSessionListener, S
     {
         // Do nothing, whisper back
         clientSideUserRef.get().whisper(string);
+        
+        
+        //
     }
 
     public void updatePosition(float posX, float posY, float posZ, float dirX, float dirY, float dirZ) 
@@ -365,8 +391,8 @@ public class WorldPlayer extends WorldObject implements ClientSessionListener, S
         getRoom().sendTrigger(this, pressed, trigger);
     }
 
-    public void setAvatarInfo(boolean male, int feet, int legs, int torso, int hair) {
-        playerDataRef.getForUpdate().setAvatarInfo(male, feet, legs, torso, hair);
+    public void setAvatarInfo(boolean male, int feet, int legs, int torso, int hair, int head, int skinTone, int eyeColor) {
+        playerDataRef.getForUpdate().setAvatarInfo(male, feet, legs, torso, hair, head, skinTone, eyeColor);
         getRoom().sendAddPlayer(this);
     }
 }

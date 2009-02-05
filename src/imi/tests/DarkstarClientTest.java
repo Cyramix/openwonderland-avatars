@@ -83,29 +83,35 @@ public class DarkstarClientTest extends DemoBase
         
         boolean male = true; if (Math.random() < 0.25) male = false;
         Avatar avatar;
-        int feet, legs, torso, hair;
+        int feet, legs, torso, hair, head, skinTone, eyeColor;
 
         if (male)
         {
             // Create male avatar
-            feet  = (int) (Math.random() * 10000 % 4);
-            legs  = (int) (Math.random() * 10000 % 4);
-            torso = (int) (Math.random() * 10000 % 6);
-            hair  = (int) (Math.random() * 10000 % 17);
-            avatar = new Avatar(new MaleAvatarAttributes("Avatar", feet, legs, torso, hair, 0), wm);
+            feet      = (int) (Math.random() * 10000 % 4);
+            legs      = (int) (Math.random() * 10000 % 4);
+            torso     = (int) (Math.random() * 10000 % 6);
+            hair      = (int) (Math.random() * 10000 % 17);
+            head      = 0;//(int) (Math.random() * 10000 % 4);
+            skinTone  = (int) (Math.random() * 10000 % 12);
+            eyeColor  = (int) (Math.random() * 10000 % 25);
+            avatar = new Avatar(new MaleAvatarAttributes("Avatar", feet, legs, torso, hair, head, skinTone, eyeColor), wm);
         }
         else // female
         {
             // Create female avatar
-            feet  = (int) (Math.random() * 10000 % 2);
-            legs  = (int) (Math.random() * 10000 % 3);
-            torso = (int) (Math.random() * 10000 % 3);  // % 5.... 3 and 4 problems
-            hair  = (int) (Math.random() * 10000 % 53); // tested til 15
-            avatar = new Avatar(new FemaleAvatarAttributes("Avatar", feet, legs, torso, hair, 0), wm);
+            feet      = (int) (Math.random() * 10000 % 3);
+            legs      = (int) (Math.random() * 10000 % 3);
+            torso     = (int) (Math.random() * 10000 % 4); 
+            hair      = (int) (Math.random() * 10000 % 49);
+            head      = 0;//(int) (Math.random() * 10000 % 4);
+            skinTone  = (int) (Math.random() * 10000 % 12);
+            eyeColor  = (int) (Math.random() * 10000 % 25); 
+            avatar = new Avatar(new FemaleAvatarAttributes("Avatar", feet, legs, torso, hair, head, skinTone, eyeColor), wm);
         }
         
         // Create darkstar client and login
-        avatar.setUpdateExtension(new DarkstarClient(avatar, male, feet, legs, torso, hair));
+        avatar.setUpdateExtension(new DarkstarClient(avatar, male, feet, legs, torso, hair, head, skinTone, eyeColor));
         ((DarkstarClient)avatar.getUpdateExtension()).login();
         
         //avatar.setBigHeadMode(2.0f);

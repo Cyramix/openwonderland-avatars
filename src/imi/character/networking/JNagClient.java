@@ -30,6 +30,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Random;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Logger;
 import net.java.dev.jnag.sgs.client.JnagSession;
@@ -55,7 +56,7 @@ public class JNagClient implements SimpleClientListener, ClientSideUser
     protected int ID = -1;
     
     /** user name ID to name map (for the current room) */
-    protected HashMap<Integer, String> users = new HashMap<Integer, String>();
+    protected ConcurrentHashMap<Integer, String> users = new ConcurrentHashMap<Integer, String>();
     
     /** Map that associates a channel name with a {@link ClientChannel}. */
     protected final Map<String, ClientChannel> channelsByName =
@@ -184,11 +185,12 @@ public class JNagClient implements SimpleClientListener, ClientSideUser
     }
     
     public void statusLeftChannel(ClientChannel channel) {
-        String string = "Removed from channel " + channel.getName();
+        String name = channel.getName();
+        String string = "Removed from channel " + name;
         logger.info(string);
-        channelsByName.remove(channel.getName());
+        channelsByName.remove(name);
         if (gui != null)
-            gui.appendOutput(string);
+            gui.leftChannel(name);
     }
     
     /**
@@ -244,10 +246,33 @@ public class JNagClient implements SimpleClientListener, ClientSideUser
     }
 
     public void whisper(String message) {
-        String string = "Whisper: " + message;
-        logger.info(string);
-        if (gui != null)
-            gui.appendOutput(string);
+        
+        if (!consoleCommand(message))
+        {
+            String string = "Whisper: " + message;
+            logger.info(string);
+            if (gui != null)
+                gui.appendOutput(string);
+        }
+    }
+
+    public boolean consoleCommand(String message) 
+    {    
+        if (message.startsWith("list"))
+        {
+            serverProxy.requestWorldList();
+            return true;
+        }
+        else if (message.startsWith("join"))
+        {
+            if (message.substring(4).startsWith(" "))
+                message = message.substring(5);
+            else
+                message = message.substring(4);
+            serverProxy.enterWorld(message);
+            return true;
+        }
+        return false;
     }
     
     public void updatePosition(int userID, float posX, float posY, float posZ, float dirX, float dirY, float dirZ) {
@@ -269,7 +294,21 @@ public class JNagClient implements SimpleClientListener, ClientSideUser
             gui.appendOutput(string);
     }
     
-    public void listPlayers(int [] playerIDs, String [] playerNames, boolean [] male, int [] feet, int [] legs, int [] torso, int [] hair) {
+    public void recieveWorldList(String [] worldNames)
+    {
+        String string = "Recieving the list of worlds: ";
+        gui.appendOutput(string);
+        logger.info(string);
+        if (gui != null)
+        {
+            for (String name : worldNames)
+                gui.appendOutput(name);
+            gui.appendOutput("-=-");
+        }
+    }
+    
+    public void listPlayers(int [] playerIDs, String [] playerNames, boolean [] male, int [] feet, int [] legs, int [] torso, int [] hair, int [] head, int [] skinTone, int [] eyeColor) 
+    {
         String string;
         for(int i = 0; i < playerIDs.length; i++)
         {
@@ -281,7 +320,8 @@ public class JNagClient implements SimpleClientListener, ClientSideUser
         }
     }
 
-    public void addPlayer(int userID, String playerName, boolean male, int feet, int legs, int torso, int hair) {
+    public void addPlayer(int userID, String playerName, boolean male, int feet, int legs, int torso, int hair, int head, int skinTone, int eyeColor) 
+    {
         String string = "Adding Player with ID: " + userID + " called: " + playerName + " feet: " + feet + " legs: " + legs + " torso: " + torso + " hair: " + hair + " male: " + male;
         logger.info(string);
         users.put(userID, playerName);
@@ -298,7 +338,7 @@ public class JNagClient implements SimpleClientListener, ClientSideUser
     }
     
     public void notifyLogin(int ID, String userName) {
-        String string = "Notified login with ID: " + ID + " and user name: " + userName;
+        String string = "Joining with ID: " + ID + " and user name: " + userName;
         logger.info(string);
         this.ID = ID;
         users.put(ID, userName);

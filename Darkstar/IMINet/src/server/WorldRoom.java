@@ -33,11 +33,9 @@ import com.sun.sgs.app.Channel;
 import com.sun.sgs.app.ChannelManager;
 import com.sun.sgs.app.DataManager;
 import com.sun.sgs.app.Delivery;
-import com.sun.sgs.app.ManagedObject;
 import com.sun.sgs.app.ManagedReference;
 import com.sun.sgs.app.Task;
 import com.sun.sgs.app.TaskManager;
-import java.io.Serializable;
 
 /**
  * Represents a room in the {@link SwordWorld} example MUD.
@@ -55,7 +53,7 @@ public class WorldRoom extends WorldObject implements Task
     public static final int DELAY_MS = 5000;
     /** The time to wait before repeating the update scheduled task. */
     public static final int PERIOD_MS = 50;
-    
+
     /** The set of items in this room. */
     private final Set<ManagedReference<WorldObject>> items =
         new HashSet<ManagedReference<WorldObject>>();
@@ -67,11 +65,12 @@ public class WorldRoom extends WorldObject implements Task
     /** The {@link Channel}. */
     private ManagedReference<Channel> channel = null;
     
-    private int IDSeed = 0;
+    /** data for the game **/
+    ManagedReference<GameData> gameDataRef = null;
     
-    // data for the game
-    //ManagedReference<GameData> gameDataRef = null;
-    
+    /** server world **/
+    ManagedReference<ServerWorld> worldRef = null;
+        
     /**
      * Creates a new room with the given name and description, initially
      * empty of items and players.
@@ -79,14 +78,15 @@ public class WorldRoom extends WorldObject implements Task
      * @param name the name of this room
      * @param description a description of this room
      */
-    public WorldRoom(String name, String description) 
+    public WorldRoom(String name, String description, ServerWorld world) 
     {
         super(name, description);
         
         // Create the game data object
         DataManager dataManager = AppContext.getDataManager();
         dataManager.markForUpdate(this);
-        //gameDataRef = dataManager.createReference(new GameData());
+        worldRef    = dataManager.createReference(world);
+        gameDataRef = dataManager.createReference(new GameData());
         
         // Schedule the update task
         TaskManager taskManager = AppContext.getTaskManager();
@@ -182,9 +182,8 @@ public class WorldRoom extends WorldObject implements Task
      * @return {@code true} if the player was added to the room
      */
     public boolean addPlayer(WorldPlayer player) {
-        IDSeed++;
         logger.log(Level.INFO, "{0} enters {1} with ID {2}",
-            new Object[] { player, this, IDSeed });
+            new Object[] { player, this, player.getPlayerData().getID() });
 
         DataManager dataManager = AppContext.getDataManager();
         dataManager.markForUpdate(this);
@@ -192,7 +191,7 @@ public class WorldRoom extends WorldObject implements Task
         // Add player to the room channel
         channel.getForUpdate().join(player.getSession());
         // Setup the jnag session for the new player
-        player.setupJNagSession(player.getSession(), channel.get(), IDSeed); 
+        player.setupJNagSession(player.getSession(), channel.get()); 
         // Send a message to the new player with all the current ones
         sendPlayerList(player);
         // Add the player to the room and be done
@@ -205,17 +204,17 @@ public class WorldRoom extends WorldObject implements Task
         PlayerData data = player.getPlayerData();
         List<WorldPlayer> others = getPlayersExcluding (player);
         for(WorldPlayer other : others)
-            other.getClientSideUser().addPlayer(data.getID(), data.getName(), data.isMale(), data.getFeet(), data.getLegs(), data.getTorso(), data.getHair());
+            other.getClientSideUser().addPlayer(data.getID(), data.getName(), data.isMale(), data.getFeet(), data.getLegs(), data.getTorso(), data.getHair(), data.getHead(), data.getSkinTone(), data.getEyeColor());
     }
     
     /**
-     * Removes a player from this room.
+     * Removes a player from this room and the server world.
      * The player will leave the room's channel.
      *
      * @param player the player to remove
      * @return {@code true} if the player was in the room
      */
-    public boolean removePlayer(WorldPlayer player) 
+    public boolean removePlayer(WorldPlayer player, boolean disconnected) 
     {
         logger.log(Level.INFO, "{0} leaves {1}",
             new Object[] { player, this });
@@ -230,9 +229,26 @@ public class WorldRoom extends WorldObject implements Task
         List<WorldPlayer> others = getPlayersExcluding (player); 
         for(WorldPlayer other : others)
             other.getClientSideUser().removePlayer(data.getID());
-        return players.remove(dataManager.createReference(player));
+        
+        if (disconnected)
+            worldRef.get().userDisconnected(player);
+        
+        boolean removed = players.remove(dataManager.createReference(player));
+        
+        if (players.isEmpty())
+            roomIsNowEmpty();
+        
+        return removed;
     }
 
+    protected void roomIsNowEmpty() {
+        logger.info("Room is now empty: " + getName());
+        // By default if this is not the lobby remove it 
+        ServerWorld world = worldRef.get();
+        if ( !(world.getLobby().getName().equals(getName())) )
+            world.removeWorldRoom(this);
+    }
+    
     /**
      * Returns a description of what the given player sees in this room.
      *
@@ -264,6 +280,13 @@ public class WorldRoom extends WorldObject implements Task
         }
 
         return output.toString();
+    }
+
+    protected ServerWorld getWorld() {
+        if (worldRef == null)
+            return null;
+
+        return worldRef.get();
     }
 
     /**
@@ -327,14 +350,11 @@ public class WorldRoom extends WorldObject implements Task
     {
         if (players.isEmpty())
             return;
-        ArrayList<PlayerData> playerList = new ArrayList<PlayerData>();
         
-        for (ManagedReference<WorldPlayer> playerRef : players) 
-        {
-            WorldPlayer other = playerRef.get();
-            if (! player.equals(other))
-                playerList.add(other.getPlayerData());
-        }
+        ArrayList<PlayerData> playerList = new ArrayList<PlayerData>();
+        List<WorldPlayer> otherList = getPlayersExcluding(player);
+        for (WorldPlayer other : otherList) 
+            playerList.add(other.getPlayerData());    
         
         int i = 0;
         int size = playerList.size();
@@ -345,6 +365,9 @@ public class WorldRoom extends WorldObject implements Task
         int     [] legs     = new int[size];
         int     [] torso    = new int[size];
         int     [] hair     = new int[size];
+        int     [] head     = new int[size];
+        int     [] skinTone     = new int[size];
+        int     [] eyeColor     = new int[size];
         for (PlayerData p : playerList)
         {
             ids[i]   = p.getID();
@@ -354,9 +377,12 @@ public class WorldRoom extends WorldObject implements Task
             legs[i]  = p.getLegs();
             torso[i] = p.getTorso();
             hair[i]  = p.getHair();
+            head[i]  = p.getHead();
+            skinTone[i]  = p.getSkinTone();
+            eyeColor[i]  = p.getEyeColor();
             i++;
         }
-        player.getClientSideUser().listPlayers(ids, names, male, feet, legs, torso, hair);
+        player.getClientSideUser().listPlayers(ids, names, male, feet, legs, torso, hair, head, skinTone, eyeColor);
     }
     
     public class Vector3

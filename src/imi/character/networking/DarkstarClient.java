@@ -35,6 +35,7 @@ import imi.utils.PMathUtils;
 import java.net.PasswordAuthentication;
 import java.util.HashMap;
 import java.util.Random;
+import java.util.Set;
 import org.jdesktop.mtgame.WorldManager;
 
 /**
@@ -73,6 +74,9 @@ public class DarkstarClient extends JNagClient implements Updatable
     private int legs  = -1;
     private int torso = -1;
     private int hair  = -1;
+    private int head  = -1;
+    private int skinTone  = -1;
+    private int eyeColor  = -1;
     
     private String userName = null;
     private String password = null;
@@ -93,7 +97,7 @@ public class DarkstarClient extends JNagClient implements Updatable
 //        vis.addPositionObject(character.getRightArm().getWristPosition(), ColorRGBA.magenta, handRadius);
     }
 
-    public DarkstarClient(Character character, boolean male, int feet, int legs, int torso, int hair) 
+    public DarkstarClient(Character character, boolean male, int feet, int legs, int torso, int hair, int head, int skinTone, int eyeColor) 
     {
         this(character);
         this.male  = male;
@@ -101,6 +105,9 @@ public class DarkstarClient extends JNagClient implements Updatable
         this.legs  = legs;
         this.torso = torso;
         this.hair  = hair;
+        this.head  = head;
+        this.skinTone  = skinTone;
+        this.eyeColor  = eyeColor;
     }
     
     public void performAnimation(int actionIndex, boolean client, boolean allUsers, int specificUser)
@@ -149,7 +156,7 @@ public class DarkstarClient extends JNagClient implements Updatable
     public void loggedIn() 
     {
         super.loggedIn();
-        serverProxy.setAvatarInfo(male, feet, legs, torso, hair);
+        serverProxy.setAvatarInfo(male, feet, legs, torso, hair, head, skinTone, eyeColor);
     }
     
     /**
@@ -377,23 +384,53 @@ public class DarkstarClient extends JNagClient implements Updatable
                 user.getContext().triggerReleased(trigger);
         }
     }
-
+    
     @Override
-    public void listPlayers(int [] playerIDs, String [] playerNames, boolean [] male, int [] feet, int [] legs, int [] torso, int [] hair) 
+    public void notifyLogin(int ID, String userName) {
+        super.notifyLogin(ID, userName);
+        if (users.isEmpty())
+            return;
+        // Remove all current players if there are any
+        Set<Integer> currentUserIDs = users.keySet();
+        for (Integer playerID : currentUserIDs)
+        {
+            users.remove(playerID);
+            if (characterData.get(playerID) != null)
+                characterData.get(playerID).user.destroy();
+            characterData.remove(playerID);
+        }   
+    }
+    
+    @Override
+    public void listPlayers(int [] playerIDs, String [] playerNames, boolean [] male, int [] feet, int [] legs, int [] torso, int [] hair, int [] head, int [] skinTone, int [] eyeColor) 
     {
+        if (!users.isEmpty())
+        {
+            // Remove all current players if there are any
+            Set<Integer> currentUserIDs = users.keySet();
+            for (Integer playerID : currentUserIDs)
+            {
+                users.remove(playerID);
+                if (characterData.get(playerID) != null)
+                    characterData.get(playerID).user.destroy();
+                characterData.remove(playerID);
+            }
+        }
+        
+        // Add the new players
         for(int i = 0; i < playerIDs.length; i++)
         {
-            postGUILine("Listing Player with ID: " + playerIDs[i] + " called: " + playerNames[i] + " feet: " + feet[i] + " legs: " + legs[i] + " torso: " + torso[i] + " hair: " + hair[i] + " male: " + male[i]);
+            postGUILine("Listing Player with ID: " + playerIDs[i] + " called: " + playerNames[i] + " feet: " + feet[i] + " legs: " + legs[i] + " torso: " + torso[i] + " hair: " + hair[i] + " head: " + head[i] + " skin: " + skinTone[i] + " eyes: " + eyeColor[i] + " male: " + male[i]);
             users.put(playerIDs[i], playerNames[i]);
 
             Character user;
             if (male[i])
             {
-                user = new Avatar(new MaleAvatarAttributes(playerNames[i], feet[i], legs[i], torso[i], hair[i], 0), worldManager);
+                user = new Avatar(new MaleAvatarAttributes(playerNames[i], feet[i], legs[i], torso[i], hair[i], head[i], skinTone[i], eyeColor[i]), worldManager);
                 //user.setBigHeadMode(2.0f);
             }
             else
-                user = new Avatar(new FemaleAvatarAttributes(playerNames[i], feet[i], legs[i], torso[i], hair[i], 0), worldManager);
+                user = new Avatar(new FemaleAvatarAttributes(playerNames[i], feet[i], legs[i], torso[i], hair[i], head[i], skinTone[i], eyeColor[i]), worldManager);
             
             UserData data = new UserData(user, playerIDs[i]);
             characterData.put(playerIDs[i], data);
@@ -405,19 +442,19 @@ public class DarkstarClient extends JNagClient implements Updatable
     }
 
     @Override
-    public void addPlayer(int userID, String playerName, boolean male, int feet, int legs, int torso, int hair) 
+    public void addPlayer(int userID, String playerName, boolean male, int feet, int legs, int torso, int hair, int head, int skinTone, int eyeColor) 
     {
-        postGUILine("Adding Player with ID: " + userID + " called: " + playerName + " feet: " + feet + " legs: " + legs + " torso: " + torso + " hair: " + hair + " male: " + male);
+        postGUILine("Adding Player with ID: " + userID + " called: " + playerName + " feet: " + feet + " legs: " + legs + " torso: " + torso + " hair: " + hair + " head: " + head + " skin: " + skinTone + " eyes: " + eyeColor + " male: " + male);
         users.put(userID, playerName);
 
         Character user;
         if (male)
         {
-            user = new Avatar(new MaleAvatarAttributes(playerName, feet, legs, torso, hair, 0), worldManager);
+            user = new Avatar(new MaleAvatarAttributes(playerName, feet, legs, torso, hair, head, skinTone, eyeColor), worldManager);
             //user.setBigHeadMode(2.0f);
         }
         else
-            user = new Avatar(new FemaleAvatarAttributes(playerName, feet, legs, torso, hair, 0), worldManager);
+            user = new Avatar(new FemaleAvatarAttributes(playerName, feet, legs, torso, hair, head, skinTone, eyeColor), worldManager);
         
         UserData data = new UserData(user, userID);
         characterData.put(userID, data);
@@ -429,8 +466,10 @@ public class DarkstarClient extends JNagClient implements Updatable
     {
         postGUILine("Removing Player with ID: " + userID + " called: " + users.get(userID));
         users.remove(userID);
-
-        characterData.get(userID).user.destroy();
+        if (characterData.get(userID) != null)
+            characterData.get(userID).user.destroy();
+        else
+            System.out.println("Darkstar client: was not able to remove player with ID: " + userID);
         characterData.remove(userID);
     }
     
