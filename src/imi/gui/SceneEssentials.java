@@ -871,6 +871,7 @@ public class SceneEssentials {
                 }
 
                 m_avatar.setDefaultShaders();
+                m_avatar.applyMaterials();
                 
                 // TEST CODE TO UPDATE ATTRIBUTES FOR SKINNED MESHES
                 String[] meshesToAdd = m_avatar.getSkeleton().getMeshNamesBySubGroup(subGroup);

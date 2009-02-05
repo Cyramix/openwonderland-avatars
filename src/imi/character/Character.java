@@ -281,6 +281,34 @@ public abstract class Character extends Entity implements SpatialObject, Animati
     }
 
     /**
+     * Finds every mesh associated with this avatar and applies its material.
+     */
+    public void applyMaterials()
+    {
+        // Skinned
+        for (PPolygonSkinnedMeshInstance meshInst : m_skeleton.getSkinnedMeshInstances())
+            meshInst.applyMaterial();
+        // Nonskinned
+        PNode skeletonRoot = m_skeleton.getSkeletonRoot();
+        FastList<PNode> queue = new FastList<PNode>();
+        queue.addAll(skeletonRoot.getChildren());
+        while (queue.isEmpty() == false)
+        {
+            // process
+            PNode current = queue.removeFirst();
+            if (current instanceof PPolygonMeshInstance)
+            {
+                PPolygonMeshInstance meshInst = (PPolygonMeshInstance) current;
+                meshInst.applyMaterial();
+            }
+            // add all the kids
+            if (current instanceof PJoint ||
+                current instanceof PPolygonMeshInstance)
+                queue.addAll(current.getChildren());
+        }
+    }
+
+    /**
      * Construction code that is common to all construction paths.
      * @param wm WorldManager
      * @param attributes attributes to use for initialization
