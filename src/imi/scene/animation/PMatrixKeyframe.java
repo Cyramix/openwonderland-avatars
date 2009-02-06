@@ -18,6 +18,9 @@
 package imi.scene.animation;
 
 import imi.scene.PMatrix;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
 /**
@@ -26,8 +29,8 @@ import java.io.Serializable;
  */
 public class PMatrixKeyframe implements KeyFrameInterface, Serializable
 {
-          float       m_fTime = 0.0f;
-    final PMatrix     m_Value = new PMatrix();
+    float           m_fTime = 0.0f;
+    transient PMatrix   m_Value = new PMatrix();
 
     //  Constructor.
     public PMatrixKeyframe(float time, PMatrix value)
@@ -76,4 +79,26 @@ public class PMatrixKeyframe implements KeyFrameInterface, Serializable
             return false;
     }
 
+    private void writeObject(ObjectOutputStream stream) throws IOException {
+        stream.defaultWriteObject();
+        float[] matrix = new float[16];
+        m_Value.getFloatArray(matrix);
+        for (int i = 0; i < 12; ++i)
+            stream.writeFloat(matrix[i]);
+    }
+
+    private void readObject(ObjectInputStream stream) throws IOException, ClassNotFoundException
+    {
+        stream.defaultReadObject();
+        float[] matrix = new float[16];
+        for (int i = 0; i < 12; ++i)
+            matrix[i] = stream.readFloat();
+
+        matrix[12] = 0;
+        matrix[13] = 0;
+        matrix[14] = 0;
+        matrix[15] = 1;
+        
+        m_Value = new PMatrix(matrix);
+    }
 }
