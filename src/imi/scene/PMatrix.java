@@ -21,6 +21,9 @@ import com.jme.math.Matrix3f;
 import com.jme.math.Matrix4f;
 import com.jme.math.Quaternion;
 import com.jme.math.Vector3f;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
 /**
@@ -31,18 +34,11 @@ import java.io.Serializable;
  */
 public class PMatrix implements Serializable
 {
-    private float[] mat  = new float[16];
-    
+    /*******************
+        Class variables
+    *******************/
     static public PMatrix IDENTITY = new PMatrix();
-    
-    private float[] rot    = null;
-    private float[] scales = null;
-    
-    private boolean autoNormalize = false;	// Don't auto normalize by default
-    
-    // Unknown until lazy classification is done
-    private int type = 0;
-    
+
     // Dirty bit for classification, this is used
     // for classify()
     private static final int AFFINE_BIT     = 0x01;
@@ -67,13 +63,12 @@ public class PMatrix implements Serializable
                                                   SVD_BIT;
     private static final int ALL_DIRTY = CLASSIFY_ALL_DIRTY | ROTSCALESVD_DIRTY;
 
-    private int dirtyBits;
     private static final float EPS = (float) 1.110223024E-16;
 
     private static final float EPSILON = (float) 1.0e-10;
     private static final float EPSILON_ABSOLUTE = (float) 1.0e-5;
     private static final float EPSILON_RELATIVE = (float) 1.0e-4;
-    
+
     /**
      * A zero matrix.
      */
@@ -84,8 +79,7 @@ public class PMatrix implements Serializable
     */
     private static final int IDENTITY_TYPE = 0x02;
 
-
-   /**
+    /**
     * A Uniform scale matrix with no translation or other
     * off-diagonal components.
     */
@@ -145,6 +139,19 @@ public class PMatrix implements Serializable
      * expose to the user.
      */
     private static final int ORTHO = 0x40000000;
+
+
+    /*********************
+       Instance variables
+    *********************/
+    private float[] mat                 = new float[16];
+    private transient float[] rot       = null;
+    private transient float[] scales    = null;
+    private transient boolean autoNormalize       = false;	// Don't auto normalize by default
+    // Unknown until lazy classification is done
+    private transient int type  = 0;
+    private transient int dirtyBits;
+
 
     public PMatrix() 
     {
@@ -3962,7 +3969,7 @@ public class PMatrix implements Serializable
         mat[15] = 1.0f;
     }
 
-        public static void Matrix4fToPMatrix(Matrix4f matrix4f, PMatrix sourceMatrix)
+    public static void Matrix4fToPMatrix(Matrix4f matrix4f, PMatrix sourceMatrix)
     {
         float []matrixFloats = sourceMatrix.mat;
 
@@ -3986,6 +3993,18 @@ public class PMatrix implements Serializable
         matrixFloats[14] = matrix4f.m32;
         matrixFloats[15] = matrix4f.m33;
     }
+    
+    private void writeObject(ObjectOutputStream stream) throws IOException
+    {
+        stream.defaultWriteObject();
+    }
 
+    private void readObject(ObjectInputStream stream) throws IOException, ClassNotFoundException
+    {
+        stream.defaultReadObject();
+        dirtyBits = ALL_DIRTY; // To recompute scales and rotation values.
+        autoNormalize = false;
+        type = 0;
+    }
 
 }
