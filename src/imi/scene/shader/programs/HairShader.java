@@ -83,7 +83,7 @@ public class HairShader extends BaseShaderProgram implements AbstractShaderProgr
         "       float RDotV = dot(normalize((reflect(-lightVector, normal))), normalize(vec3(-position)));" +
         "       vec4 specular = vec4(specColor, 1.0);" +
         "       specular *= gl_LightSource[0].specular * pow(max(0.0, RDotV), SpecularExponent);" +
-        "    	gl_FragColor = color + (specular * SpecularComponent * nxDir);" +
+        "    	gl_FragColor = color + (specular * SpecularComponent);" +
         "}"
     );
     /**
@@ -92,7 +92,7 @@ public class HairShader extends BaseShaderProgram implements AbstractShaderProgr
      */
     public HairShader(WorldManager wm)
     {
-        this(wm, 0.2f);
+        this(wm, 0.38f);
     }
 
     protected HairShader(HairShader other)
@@ -108,12 +108,23 @@ public class HairShader extends BaseShaderProgram implements AbstractShaderProgr
      */
     public HairShader(WorldManager wm, float fAmbientPower)
     {
+        this(wm, fAmbientPower, 0.6f, 2.4f);
+    }
+
+    /**
+     * Construct a new instance!
+     * @param wm
+     * @param fAmbientPower
+     * @param fSpecularContribution
+     * @param fSpecularExponent
+     */
+    public HairShader(WorldManager wm, float fAmbientPower, float fSpecularContribution, float fSpecularExponent)
+    {
         super(wm, VertexSource, FragmentSource);
         setProgramName(this.getClass().getSimpleName());
         setProgramDescription(new String(
-                "The clothing shader. It allows for multitexturing to facilitate " +
-                "the concept of a base and a pattern diffuse map for the clothing. " +
-                "Furthermore, both of these maps may be modulated by a specified color."
+                "The hair shader. Performs basic normal mapping with a specular" +
+                "effect. A specular color may be set."
                 ));
 
         float[] whiteColor = new float[] {1, 1, 1 };
@@ -124,9 +135,9 @@ public class HairShader extends BaseShaderProgram implements AbstractShaderProgr
             m_propertyMap.put("ambientPower",           new ShaderProperty("ambientPower",
                                 GLSLDataType.GLSL_FLOAT, Float.valueOf(fAmbientPower)));
             m_propertyMap.put("SpecularComponent",    new ShaderProperty("SpecularComponent",
-                                GLSLDataType.GLSL_FLOAT, Float.valueOf(0.24f)));
+                                GLSLDataType.GLSL_FLOAT, Float.valueOf(fSpecularContribution)));
             m_propertyMap.put("SpecularExponent",    new ShaderProperty("SpecularExponent",
-                                GLSLDataType.GLSL_FLOAT, Float.valueOf(1.8f)));
+                                GLSLDataType.GLSL_FLOAT, Float.valueOf(fSpecularExponent)));
             m_propertyMap.put("BaseDiffuseMapIndex",    new ShaderProperty("BaseDiffuseMapIndex",
                                 GLSLDataType.GLSL_SAMPLER2D, Integer.valueOf(0)));
             m_propertyMap.put("NormalMapIndex",         new ShaderProperty("NormalMapIndex",

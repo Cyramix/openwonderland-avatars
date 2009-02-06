@@ -101,7 +101,7 @@ public class ClothingShaderSpecColor extends BaseShaderProgram implements Abstra
         "       float RDotV = dot(normalize((reflect(-lightVector, normal))), normalize(vec3(-position)));" +
         "       vec4 specular = vec4(specColor, 1.0);" +
         "       specular *= gl_LightSource[0].specular * pow(max(0.0, RDotV), SpecularExponent);" +
-        "    	gl_FragColor = color + (specular * SpecularComponent * nxDir);" +
+        "    	gl_FragColor = color + (specular * SpecularComponent);" + // * nxDir);" +
 //        "       gl_FragColor = vec4(normalize(ToLight), 1);" + // Instrumentation
         "}"
     );
@@ -177,20 +177,6 @@ public class ClothingShaderSpecColor extends BaseShaderProgram implements Abstra
         // apply uniforms
         ShaderUtils.assignProperties(m_propertyMap.values(), shaderState);
 
-//        shaderState.setAttributePointer(
-//                GLSLDefaultVariables.BoneIndices.getName(), // The name, referenced in the shader code
-//                4,                                          // Total size of the data
-//                false,                                      // "Normalized"
-//                0,                                          // The "stride" (between entries)
-//                ((PPolygonSkinnedMesh)meshInst.getGeometry()).getBoneIndexBuffer()); // The actual data
-//
-//        shaderState.setAttributePointer(
-//                    GLSLDefaultVariables.Tangents.getName(),// The name, referenced in the shader code
-//                    3,                                      // Total size of the data
-//                    false,                                  // "Normalized"
-//                    0,                                      // The "stride" (between entries)
-//                    meshInst.getGeometry().getGeometry().getTangentBuffer()); // The actual data
-//
         meshInst.setShaderState(shaderState);
         m_bShaderLoaded = false;
         return true;

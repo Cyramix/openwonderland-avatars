@@ -114,7 +114,6 @@ public class SpecularMapping_Lighting extends GLSLShaderEffect
          * vec3 camVector = normalize(ToCamera);
          * vec3 reflection = normalize(reflect(lightVector , normal));
          * vec4 specular = (gl_LightSource[0].specular * pow(max(dot(reflection, camVector),0.0), SpecularPower));
-         * specular *= nxDir;
          * specColor *=  specular;
          * finalFragColor += specColor
          */
@@ -122,7 +121,6 @@ public class SpecularMapping_Lighting extends GLSLShaderEffect
         fragmentLogic.append("vec3 lightVec  = " + m_varying[1].normalize() + ";" + NL);
         fragmentLogic.append("vec3 reflectionVector = normalize(reflect(lightVec, " + m_FragmentDependencies.get(0).getName() + "));" + NL);
         fragmentLogic.append("vec4 specularComponent = gl_LightSource[0].specular * pow(max(dot(reflectionVector, camVector), 0.0), " + m_fragmentUniforms[1].getName() + ");" + NL);
-        fragmentLogic.append("specularComponent *= ceil(" + m_FragmentDependencies.get(1).getName() + ");" + NL);
         fragmentLogic.append("specularComponent *= texture2D(" + m_fragmentUniforms[0].getName() + ", gl_TexCoord[0].st);" + NL);
         fragmentLogic.append(m_FragmentModifications.get(0).getName() + " += (specularComponent * " + m_fragmentUniforms[2].getName() + ");" + NL);
         m_fragmentLogic = fragmentLogic.toString();

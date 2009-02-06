@@ -98,7 +98,7 @@ public class ClothingShaderDiffuseAsSpec extends BaseShaderProgram implements Ab
         "	    color.a = 1.0;" +
         "       float RDotV = dot(normalize((reflect(-lightVector, normal))), normalize(vec3(-position)));" +
         "       vec4 specular = texColor * gl_LightSource[0].specular * pow(max(0.0, RDotV), SpecularExponent);" +
-        "    	gl_FragColor = color + (specular * SpecularComponent * nxDir);" +
+        "    	gl_FragColor = color + (specular * SpecularComponent);" + // * nxDir);" +
         "}"
     );
     /**
@@ -107,7 +107,7 @@ public class ClothingShaderDiffuseAsSpec extends BaseShaderProgram implements Ab
      */
     public ClothingShaderDiffuseAsSpec(WorldManager wm)
     {
-        this(wm, 0.2f);
+        this(wm, 0.35f);
     }
 
     protected ClothingShaderDiffuseAsSpec(ClothingShaderDiffuseAsSpec other)
@@ -138,7 +138,7 @@ public class ClothingShaderDiffuseAsSpec extends BaseShaderProgram implements Ab
             m_propertyMap.put("ambientPower",           new ShaderProperty("ambientPower",
                                 GLSLDataType.GLSL_FLOAT, Float.valueOf(fAmbientPower)));
             m_propertyMap.put("SpecularComponent",    new ShaderProperty("SpecularComponent",
-                                GLSLDataType.GLSL_FLOAT, Float.valueOf(0.54f)));
+                                GLSLDataType.GLSL_FLOAT, Float.valueOf(0.44f)));
             m_propertyMap.put("SpecularExponent",    new ShaderProperty("SpecularExponent",
                                 GLSLDataType.GLSL_FLOAT, Float.valueOf(1.8f)));
             m_propertyMap.put("BaseDiffuseMapIndex",    new ShaderProperty("BaseDiffuseMapIndex",
@@ -169,20 +169,6 @@ public class ClothingShaderDiffuseAsSpec extends BaseShaderProgram implements Ab
         blockUntilLoaded(shaderState);
         // apply uniforms
         ShaderUtils.assignProperties(m_propertyMap.values(), shaderState);
-
-//        shaderState.setAttributePointer(
-//                GLSLDefaultVariables.BoneIndices.getName(), // The name, referenced in the shader code
-//                4,                                          // Total size of the data
-//                false,                                      // "Normalized"
-//                0,                                          // The "stride" (between entries)
-//                ((PPolygonSkinnedMesh)meshInst.getGeometry()).getBoneIndexBuffer()); // The actual data
-//
-//        shaderState.setAttributePointer(
-//                    GLSLDefaultVariables.Tangents.getName(),// The name, referenced in the shader code
-//                    3,                                      // Total size of the data
-//                    false,                                  // "Normalized"
-//                    0,                                      // The "stride" (between entries)
-//                    meshInst.getGeometry().getGeometry().getTangentBuffer()); // The actual data
 
         meshInst.setShaderState(shaderState);
         m_bShaderLoaded = false;

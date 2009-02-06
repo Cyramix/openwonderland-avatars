@@ -830,12 +830,13 @@ public class GLSLShaderProgram implements AbstractShaderProgram, RenderUpdater
         shaderState.apply();
 
         JOGLShaderObjectsState joglShader = (JOGLShaderObjectsState)shaderState;
+
         // Need to bind attributes in some cases
-        if (m_vertAttributes.contains(GLSLDefaultVariables.BoneIndices))
+        if (m_vertAttributes.contains(GLSLDefaultVariables.BoneIndices) && joglShader.getProgramIdentifier() > 0)
         {
             final GL gl = GLU.getCurrentGL();
             gl.glEnableVertexAttribArray(1);
-            gl.glBindAttribLocation(joglShader.getProgramIdentifier(), 1, "boneIndices");
+            gl.glBindAttribLocation(joglShader.getProgramIdentifier(), 1, "boneIndices"); // alias attribute with index one as boneIndices
         }
         // done
         m_bShaderLoaded = true;
