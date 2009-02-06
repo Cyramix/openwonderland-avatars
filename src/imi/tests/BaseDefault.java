@@ -852,7 +852,7 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
 
         loadingWindow(true);
 
-        m_AdvOptions = new JFrame_AdvOptions(m_sceneData);
+        m_AdvOptions = new JFrame_AdvOptions(m_sceneData, true);
         m_AdvOptions.setVisible(true);
 
         loadingWindow(false);

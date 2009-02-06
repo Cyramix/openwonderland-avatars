@@ -45,6 +45,7 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
     private Map<GUI_Enums.m_bodyPart, SkinnedMeshJoint[]>   m_skeleton;
     private SceneEssentials                                 m_sceneData;
     private NumberFormat                                    m_format;
+    private boolean                                         m_bEyeTextures;
 
 ////////////////////////////////////////////////////////////////////////////////
 // Class Methods
@@ -70,8 +71,10 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
      * loaded avatar
      * @param scene - reference to the main window's scene information
      */
-    public JFrame_AdvOptions(SceneEssentials scene) {
+    public JFrame_AdvOptions(SceneEssentials scene, boolean displayEyeTextures) {
         m_sceneData = scene;
+        m_bEyeTextures = displayEyeTextures;
+        
         initComponents();
 
         HeadOptions.setParentFrame(this);
@@ -835,7 +838,7 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
     private void initComponents() {
 
         jTabbedPane_Options = new javax.swing.JTabbedPane();
-        HeadOptions = new imi.gui.JPanel_HeadOptions(this);
+        HeadOptions = new imi.gui.JPanel_HeadOptions(this, m_bEyeTextures);
         ArmsHandsOptions = new imi.gui.JPanel_ArmsHandsOption(this);
         LegsFeetOptions = new imi.gui.JPanel_LegsFeetOption(this);
         SimpleBodyOptions = new imi.gui.JPanel_SimpBodyOptions(this);

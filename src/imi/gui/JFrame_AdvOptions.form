@@ -42,7 +42,7 @@
       <SubComponents>
         <Component class="imi.gui.JPanel_HeadOptions" name="HeadOptions">
           <AuxValues>
-            <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new imi.gui.JPanel_HeadOptions(this)"/>
+            <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new imi.gui.JPanel_HeadOptions(this, m_bEyeTextures)"/>
           </AuxValues>
           <Constraints>
             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout$JTabbedPaneConstraintsDescription">

@@ -102,6 +102,23 @@ public class JPanel_HeadOptions extends javax.swing.JPanel {
         setTable();
     }
 
+    /**
+     * Overloaded constructor initializes the GUI components and sets the parent
+     * frame and the slider associations
+     * @param baseFrame
+     */
+    public JPanel_HeadOptions(JFrame baseFrame, boolean eyeTextures) {
+        m_baseFrame = baseFrame;
+        initComponents();
+        setSliderControls();
+        SelectionListener listener = new SelectionListener(jTable1);
+        jTable1.getSelectionModel().addListSelectionListener(listener);
+        jTable1.getColumnModel().getSelectionModel().addListSelectionListener(listener);
+        m_TextureLoc = new File(System.getProperty("user.dir") + "/assets/models/collada/Heads/EyeTextures");
+        if (eyeTextures)
+            setTable();
+    }
+
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
