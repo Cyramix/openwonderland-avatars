@@ -728,8 +728,14 @@ public class SkeletonNode extends PNode implements Animated, Serializable
             }
 
             // add all the kids
-            for (PNode kid : current.getChildren())
-                queue.add(kid);
+//            for (PNode kid : current.getChildren())
+//                queue.add(kid);
+            // optimized for GC
+            int index;
+            for (index = 0; index < current.getChildren().size(); index++)
+            {
+                queue.add(current.getChildren().get(index));
+            }
 
         }
 
