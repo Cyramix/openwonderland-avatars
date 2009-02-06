@@ -185,13 +185,14 @@ public class COLLADA_JointChannel implements PJointChannel, Serializable
                 currentIndex = 0;
         }
 
-        ListIterator<PMatrixKeyframe> i = m_KeyFrames.listIterator(currentIndex);
+        // GC optimization, removed Iterator usage
+        //ListIterator<PMatrixKeyframe> i = m_KeyFrames.listIterator(currentIndex);
         if ((state.isReverseAnimation() && !bTransitionCycle) ||
             (state.isTransitionReverseAnimation() && bTransitionCycle))
         {
-            while (i.hasPrevious())
+            while (currentIndex > 0)
             {
-                currentFrame = i.previous();
+                currentFrame = m_KeyFrames.get(currentIndex-1);
                 if (currentFrame.getFrameTime() > fTime)
                     rightFrame = currentFrame;
                 else // passed the mark
@@ -208,9 +209,9 @@ public class COLLADA_JointChannel implements PJointChannel, Serializable
         }
         else // playing forward
         {
-            while (i.hasNext())
+            while (currentIndex < m_KeyFrames.size()-1)
             {
-                currentFrame = i.next();
+                currentFrame = m_KeyFrames.get(currentIndex+1);
                 if (currentFrame.getFrameTime() <= fTime)
                     leftFrame = currentFrame;
                 else // passed the mark
