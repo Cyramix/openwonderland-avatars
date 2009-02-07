@@ -44,7 +44,17 @@ public class PGeometryVertexBuffer {
     public int addVertex(PGeometryVertex newVert)
     {
         // Is the vert present?
-        int index = m_Vertices.indexOf(newVert);
+        //int index = m_Vertices.indexOf(newVert);
+        // micro optimization
+        int index = -1;
+        int ii = 0;
+        int size = m_Vertices.size();
+        float z = newVert.m_Position.z;
+        for ( ii = 0; ii < size; ii++ )
+        {
+            if ( m_Vertices.get(ii).m_Position.z == z && m_Vertices.get(ii).equals(newVert) )
+                    index = ii;
+        }
         if (index < 0)
         {
             m_Vertices.add(newVert);
