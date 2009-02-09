@@ -810,7 +810,7 @@ public class GLSLShaderProgram implements AbstractShaderProgram, RenderUpdater
                 (GLSLShaderObjectsState) m_WM.getRenderManager().createRendererState(RenderState.RS_GLSL_SHADER_OBJECTS);
         
         m_bShaderLoaded = false;
-        blockUntilLoaded(shaderState);
+        loadAndCompileShader(shaderState);
         // apply uniforms
         ShaderUtils.assignProperties(m_propertyMap.values(), shaderState);
         
@@ -876,28 +876,28 @@ public class GLSLShaderProgram implements AbstractShaderProgram, RenderUpdater
     /**
      * Utility method to block until the shader object is successfully loaded
      */
-    private void blockUntilLoaded(GLSLShaderObjectsState shaderObject)
+    private void loadAndCompileShader(GLSLShaderObjectsState shaderObject)
     {
         m_WM.addRenderUpdater(this, shaderObject);
-        float timeWaiting = 0.0f;
-        while (m_bShaderLoaded == false && timeWaiting < timeOut)
-        {
-            try
-            {
-                Thread.sleep(333);
-            } catch (InterruptedException ex)
-            {
-                Logger.getLogger(SimpleTNLShader.class.getName()).log(Level.SEVERE, "Sleeping beauty was interrupted", ex);
-            }
-            timeWaiting += 0.3f;
-        }
-
-        if (timeWaiting >= timeOut)
-        {
-            logger.severe("Timed out before the Render thread gave me a shader state.");
-            // Where did this come from?
-            Thread.dumpStack();
-        }
+//        float timeWaiting = 0.0f;
+//        while (m_bShaderLoaded == false && timeWaiting < timeOut)
+//        {
+//            try
+//            {
+//                Thread.sleep(333);
+//            } catch (InterruptedException ex)
+//            {
+//                Logger.getLogger(SimpleTNLShader.class.getName()).log(Level.SEVERE, "Sleeping beauty was interrupted", ex);
+//            }
+//            timeWaiting += 0.3f;
+//        }
+//
+//        if (timeWaiting >= timeOut)
+//        {
+//            logger.severe("Timed out before the Render thread gave me a shader state.");
+//            // Where did this come from?
+//            Thread.dumpStack();
+//        }
     }
     
     /**

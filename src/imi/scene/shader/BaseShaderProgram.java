@@ -107,19 +107,19 @@ public abstract class BaseShaderProgram implements RenderUpdater, AbstractShader
      * This method should be called in order to block until the shade is 
      * successfully loaded.
      */
-    protected final void blockUntilLoaded(GLSLShaderObjectsState shaderState)
+    protected final void loadAndCompileShader(GLSLShaderObjectsState shaderState)
     {
         m_WM.addRenderUpdater(this, shaderState);
-        while (m_bShaderLoaded == false)
-        {
-            try
-            {
-                Thread.sleep(100);
-            } catch (InterruptedException ex)
-            {
-                Logger.getLogger(SimpleTNLShader.class.getName()).log(Level.SEVERE, "Sleeping beauty was interrupted", ex);
-            }
-        }
+//        while (m_bShaderLoaded == false)
+//        {
+//            try
+//            {
+//                Thread.sleep(100);
+//            } catch (InterruptedException ex)
+//            {
+//                Logger.getLogger(SimpleTNLShader.class.getName()).log(Level.SEVERE, "Sleeping beauty was interrupted", ex);
+//            }
+//        }
     }
     
     /**

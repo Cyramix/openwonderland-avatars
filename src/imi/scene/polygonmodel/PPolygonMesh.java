@@ -1427,7 +1427,6 @@ public class PPolygonMesh extends PNode implements Serializable
         else
         {
             VBOInfo info = new VBOInfo(true);
-            info.resizeTextureIds(8);
             m_Geometry.setVBOInfo(info);
         }
     }

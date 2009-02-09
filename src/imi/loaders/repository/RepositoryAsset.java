@@ -329,9 +329,12 @@ public class RepositoryAsset extends ProcessorComponent
         if (result == null) // Load non-binary form
         {
             try {
+                long startTime = System.nanoTime();
                 result = TextureManager.loadTexture(loc,
                                                 Texture.MinificationFilter.Trilinear,
                                                 Texture.MagnificationFilter.Bilinear);
+                long endTime = System.nanoTime();
+                System.out.println("Loading texture " + loc.getFile() + " took " +(float)((endTime - startTime) / 1000000000.0f)+ " seconds.");
                 result.setWrap(Texture.WrapAxis.S, Texture.WrapMode.Repeat);
                 result.setWrap(Texture.WrapAxis.T, Texture.WrapMode.Repeat);
                 if (bUseTextureImporter)

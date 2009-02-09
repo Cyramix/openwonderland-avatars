@@ -45,6 +45,7 @@ class RepositoryWorker extends ProcessorComponent
     
     boolean             m_bLive         = true;
     boolean             m_bAssetSent    = false;
+    boolean             m_bWorking      = false;
     
     public RepositoryWorker(Repository home, SharedAsset asset, RepositoryUser user,
             RepositoryAsset repoAsset, ConcurrentHashMap collection,
@@ -91,32 +92,35 @@ class RepositoryWorker extends ProcessorComponent
             return; // Done
         }
         
-        synchronized (m_home.getWorkOrders())
+
+        // Look for more work
+        WorkOrder statementOfWork = m_home.popWorkOrder();
+
+        // Check if we have work to do
+        if (statementOfWork != null)
         {
-            // Look for more work
-            WorkOrder statementOfWork = m_home.popWorkOrder();
+            // Create the repository asset to load itself
+            m_home.createRepositoryAsset(statementOfWork);
 
-            // Check if we have work to do
-            if (statementOfWork != null)
-            {
-                // Create the repository asset to load itself
-                m_home.createRepositoryAsset(statementOfWork);
-
-                // Wait for it to load
-                reset(statementOfWork);
-            }
-            else
-            {
-                // Rest in peace
-                m_bLive = false;
-                m_home.removeProcessor(this);
-            }   
+            // Wait for it to load
+            reset(statementOfWork);
         }
+        else
+        {
+            // Rest in peace
+            m_bLive = false;
+            m_home.removeProcessor(this);
+        }
+        
     }
     
     @Override
     public void compute(ProcessorArmingCollection collection) 
     {
+        if (m_bWorking)
+            return;
+        m_bWorking = true;
+
         // the worker class will call loadData() on repoAsset until it returns true and then call receiveAsset() and shutdown()
         // if loadData() returns false continuesly for a maxQueryTime amount of time then repoAsset will be removed from collection and receiveAsset() will return null.. and then shutdown.
         if (m_bLive) // this boolean might not be needed
@@ -161,6 +165,7 @@ class RepositoryWorker extends ProcessorComponent
         }
         else
             ShutDown();
+        m_bWorking = false;
     }
 
     @Override

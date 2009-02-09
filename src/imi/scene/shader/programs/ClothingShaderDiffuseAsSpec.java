@@ -166,7 +166,7 @@ public class ClothingShaderDiffuseAsSpec extends BaseShaderProgram implements Ab
                 (GLSLShaderObjectsState) m_WM.getRenderManager().createRendererState(RenderState.RS_GLSL_SHADER_OBJECTS);
 
         m_bShaderLoaded = false;
-        blockUntilLoaded(shaderState);
+        loadAndCompileShader(shaderState);
         // apply uniforms
         ShaderUtils.assignProperties(m_propertyMap.values(), shaderState);
 
