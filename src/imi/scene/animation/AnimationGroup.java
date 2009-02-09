@@ -59,9 +59,6 @@ public class AnimationGroup implements Serializable
     {
         if (name != null)
             m_name = name;
-        // Debug info
-        System.out.println("AnimationGroup created.");
-        Thread.dumpStack();
     }
 
     /**

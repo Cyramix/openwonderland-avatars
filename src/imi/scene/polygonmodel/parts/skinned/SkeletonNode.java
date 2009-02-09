@@ -104,14 +104,15 @@ public class SkeletonNode extends PNode implements Animated, Serializable
     /**
      * This constructor recreates the skeleton node. No attached
      * meshes are copied over, only the name and transform are copied.
+     * The animation component reference is also copied.
      * @param other
      */
     public SkeletonNode(SkeletonNode other)
     {
         super(other.getName(), new PTransform(other.getTransform()));
-        // copy over animation stuff 
+        // copy over the animation stuff
         m_animationComponent = new AnimationComponent(other.getAnimationComponent());
-        
+        // States should be copied
         for (AnimationState animState : other.m_animationStates)
             m_animationStates.add(new AnimationState(animState));
         

@@ -716,11 +716,13 @@ public abstract class Character extends Entity implements SpatialObject, Animati
             return; // Nothing else to be done here
 
         // eat the skeleton
+        long startTime = System.nanoTime();
         if (m_attributes.isMale())
            m_skeleton = m_pscene.getRepository().getSkeleton("MaleSkeleton");//loadSkeleton(maleSkeleton);
         else
            m_skeleton = m_pscene.getRepository().getSkeleton("FemaleSkeleton");//loadSkeleton(femaleSkeleton);
-        
+        long endTime = System.nanoTime();
+        System.out.println("Loading skeleton took " + (float)((endTime - startTime) / 1000000000.0f) + " seconds.");
         if (m_skeleton == null) // problem
         {
             logger.severe("Unable to load skeleton. Aborting applyAttributes.");
