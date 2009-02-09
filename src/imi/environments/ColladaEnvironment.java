@@ -142,15 +142,8 @@ public class ColladaEnvironment extends Entity
         scene.setUseRepository(false); // Synchronous loading requested
         PPolygonModelInstance modInst = scene.addModelInstance(worldAsset, new PMatrix());
         while (modInst.getChild(0) instanceof SharedAssetPlaceHolder)
-        {
-            try {
-                Thread.sleep(4000);
-            }
-            catch (InterruptedException ex)
-            {
-                // bleh
-            }
-        }
+            Thread.yield();
+
         SceneGraphConvertor convertor = new SceneGraphConvertor();
         m_jmeRoot = convertor.convert(scene);
         // Now assign the rendering component
