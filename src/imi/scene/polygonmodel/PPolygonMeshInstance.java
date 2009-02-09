@@ -22,11 +22,8 @@ import com.jme.math.Matrix3f;
 import com.jme.math.Vector3f;
 import com.jme.scene.SharedMesh;
 import com.jme.scene.state.GLSLShaderObjectsState;
-import com.jme.scene.state.RenderState;
 import com.jme.scene.state.TextureState;
-import imi.loaders.repository.AssetDescriptor;
-import imi.loaders.repository.SharedAsset;
-import imi.loaders.repository.SharedAsset.SharedAssetType;
+import com.jme.util.TextureManager;
 import imi.scene.PMatrix;
 import imi.scene.PNode;
 import imi.scene.PScene;
@@ -34,8 +31,6 @@ import imi.scene.PTransform;
 import imi.scene.polygonmodel.parts.PMeshMaterial;
 import imi.scene.polygonmodel.parts.PMeshMaterialStates;
 import imi.scene.polygonmodel.parts.TextureMaterialProperties;
-import imi.scene.shader.AbstractShaderProgram;
-import imi.scene.shader.dynamic.GLSLShaderProgram;
 import imi.scene.utils.PRenderer;
 import imi.scene.utils.TextureInstaller;
 import java.io.IOException;
@@ -69,7 +64,6 @@ public class PPolygonMeshInstance extends PNode implements Serializable
     
     // Textures
     protected transient TextureInstaller          m_textureInstaller  = null; // Needs to know how many texture units will be used
-    protected transient TextureState              m_textureState      = null;
     
 //    // JMonkey\LWJGL MaterialState
 //    protected MaterialState             m_matState          = null;
@@ -79,7 +73,7 @@ public class PPolygonMeshInstance extends PNode implements Serializable
     /** Use geometry material or not **/
     protected boolean  m_bUseGeometryMaterial       = true; 
     /** convenient state wrapper **/
-    protected transient PMeshMaterialStates m_pmaterialStates = null;
+    protected transient PMeshMaterialStates m_materialStates = null;
 
     /** Used in calculations **/
     private final Vector3f m_translationBufferVector = new Vector3f();
@@ -158,9 +152,7 @@ public class PPolygonMeshInstance extends PNode implements Serializable
      */
     private void initializeStates(PScene pscene)
     {
-        m_textureState = (TextureState) pscene.getWorldManager().getRenderManager().createRendererState(RenderState.RS_TEXTURE);
-        m_pmaterialStates = new PMeshMaterialStates(pscene.getWorldManager().getRenderManager());
-        //m_matState = (MaterialState) pscene.getWorldManager().getRenderManager().createRendererState(RenderState.RS_MATERIAL);
+        m_materialStates = new PMeshMaterialStates(pscene.getWorldManager().getRenderManager());
     }
     
     public SharedMesh getSharedMesh()
@@ -192,15 +184,6 @@ public class PPolygonMeshInstance extends PNode implements Serializable
         if (m_instance.getTarget().getIndexBuffer() == null)
             return null;
         return m_instance;
-    }
-    
-    /**
-     * Use with caution!
-     * @return m_textureState
-     */
-    public TextureState getTextureState()
-    {
-        return m_textureState;
     }
     
     @Override
@@ -360,49 +343,19 @@ public class PPolygonMeshInstance extends PNode implements Serializable
                 return;
         }
         
-        m_pmaterialStates.configureStates(m_material);
-        m_pmaterialStates.applyToGeometry(m_instance);
-        
-        // Textures
-        m_textureState.setEnabled(true);
-        // determine number of needed textures
-        int numNeeded = m_material.getNumberOfRelevantTextures();
-        TextureMaterialProperties[] texProps = new TextureMaterialProperties[numNeeded];
-        for (int i = 0; i < numNeeded; ++i)
-            texProps[i] = m_material.getTexture(i);
-        
-        setTextureInstaller(new TextureInstaller(texProps, m_textureState));
-        // Debugging / Diagnostic outpout
-//        logger.info("[-----------------START------------------]");
-//        Thread.dumpStack();
-//        logger.info("[" + this + " - " + getName() + "]");
-//        logger.info("[Textures being loaded are: ]");
-//        for (int i = 0; i < numNeeded; ++i)
-//            logger.info(texProps[i].getImageLocation().toString());
-//        logger.info("[-----------------END------------------]");
+        m_materialStates.configureStates(m_material);
 
-        // TODO add functionality and data to this instance if we want 
-        // to handle textures differently than the geometry
-        boolean bNeedToUseTextureInstaller = false;
-        for (int i = 0; i < m_geometry.getNumberOfTextures(); i++)
+        int numNeeded = m_material.getNumberOfRelevantTextures();
+
+        for (int i = 0; i < numNeeded; ++i)
         {
-            if (m_material.getTexture(i) != null)
-            {
-                bNeedToUseTextureInstaller = true;
-//                if (m_PScene.isUseRepository() == true)
-//                {
-                    // Send SharedAsset request to the PScene
-                    SharedAsset texture = new SharedAsset(m_PScene.getRepository(),
-                            new AssetDescriptor(SharedAssetType.Texture, m_material.getTexture(i).getImageLocation()));
-                    m_PScene.loadTexture(texture, this);
-//                }
-//                else // Not using the repository, no sharing!
-//                    m_textureState.setTexture(  m_PScene.loadTexture(meshMat.getTexture(i).getImageLocation()), i);
-            }
+            TextureMaterialProperties texProps = m_material.getTexture(i);
+            m_materialStates.setTexture(texProps.loadTexture(), i);
         }
-        if (!bNeedToUseTextureInstaller || m_PScene.isUseRepository() == false)
-            setTextureInstaller(null);
-        m_instance.setRenderState(m_textureState);
+
+
+        m_materialStates.applyToGeometry(m_instance);
+        
         if (m_material.getShader() != null)
             m_material.getShader().applyToMesh(this);
         else

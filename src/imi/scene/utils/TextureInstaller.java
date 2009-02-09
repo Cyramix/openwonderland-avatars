@@ -83,7 +83,7 @@ public class TextureInstaller
      * @param nTextureUnit Which texture unit should this occupy
      * @return the TextureState if complete, null otherwise
      */
-    public TextureState installTexture(Texture tex, int nTextureUnit)
+    public synchronized TextureState installTexture(Texture tex, int nTextureUnit)
     {
         // Install it
         m_Textures[nTextureUnit] = tex;

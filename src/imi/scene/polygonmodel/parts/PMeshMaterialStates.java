@@ -17,7 +17,7 @@
  */
 package imi.scene.polygonmodel.parts;
 
-import com.jme.bounding.BoundingSphere;
+import com.jme.image.Texture;
 import com.jme.renderer.Renderer;
 import com.jme.scene.SharedMesh;
 import com.jme.scene.state.BlendState;
@@ -25,8 +25,13 @@ import com.jme.scene.state.CullState;
 import com.jme.scene.state.LightState;
 import com.jme.scene.state.MaterialState;
 import com.jme.scene.state.RenderState;
+import com.jme.scene.state.TextureState;
 import com.jme.scene.state.WireframeState;
 import com.jme.scene.state.ZBufferState;
+import imi.loaders.repository.AssetDescriptor;
+import imi.loaders.repository.SharedAsset;
+import imi.loaders.repository.SharedAsset.SharedAssetType;
+import imi.scene.utils.TextureInstaller;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.jdesktop.mtgame.RenderManager;
@@ -40,7 +45,7 @@ import org.jdesktop.mtgame.RenderManager;
 public class PMeshMaterialStates 
 {
     private CullState       m_cullState         = null;
-    //private TextureState    m_textureState      = null; <-- disabled until time for testing is available
+    private TextureState    m_textureState      = null; //<-- disabled until time for testing is available
     private MaterialState   m_materialState     = null;
     private WireframeState  m_wireframeState    = null;
     private BlendState      m_blendState        = null;
@@ -70,7 +75,7 @@ public class PMeshMaterialStates
         boolean retVal = true;
         
         m_cullState = (CullState)rm.createRendererState(RenderState.RS_CULL);
-        //m_textureState = (TextureState)rm.createRendererState(RenderState.RS_TEXTURE);
+        m_textureState = (TextureState)rm.createRendererState(RenderState.RS_TEXTURE);
         m_materialState = (MaterialState)rm.createRendererState(RenderState.RS_MATERIAL);
         m_wireframeState = (WireframeState)rm.createRendererState(RenderState.RS_WIREFRAME);
         m_blendState = (BlendState)rm.createRendererState(RenderState.RS_BLEND);
@@ -142,9 +147,19 @@ public class PMeshMaterialStates
                 jmeMesh.setRenderQueueMode(Renderer.QUEUE_OPAQUE);
             }
         }
+        // texture
+        if (m_textureState != null)
+        {
+            m_textureState.setEnabled(true);
+            jmeMesh.setRenderState(m_textureState);
+        }
         jmeMesh.updateRenderState();
     }
-    
+
+    public void setTexture(Texture texture, int unit)
+    {
+        m_textureState.setTexture(texture, unit);
+    }
     /**
      * Use the provided material to configure the states
      * @param material
@@ -201,8 +216,5 @@ public class PMeshMaterialStates
             m_blendState.setTestEnabled(true);
             m_blendState.setTestFunction(BlendState.TestFunction.GreaterThan);
         }
-        
-        
-        
     }
 }

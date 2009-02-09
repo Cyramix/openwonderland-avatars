@@ -23,6 +23,7 @@ import com.jme.image.Texture.CombinerFunctionAlpha;
 import com.jme.image.Texture.MagnificationFilter;
 import com.jme.image.Texture.MinificationFilter;
 import com.jme.image.Texture.WrapMode;
+import com.jme.util.TextureManager;
 import imi.serialization.xml.bindings.xmlTextureAttributes;
 import java.io.Serializable;
 import java.net.URL;
@@ -73,6 +74,12 @@ public class TextureMaterialProperties implements Serializable
     public TextureMaterialProperties(xmlTextureAttributes texAttr)
     {
         applyTextureAttributesDOM(texAttr);
+    }
+
+    public Texture loadTexture() {
+        Texture result = TextureManager.loadTexture(m_imageLocation);
+        apply(result);
+        return result;
     }
 
     private void setDefaultValues()
