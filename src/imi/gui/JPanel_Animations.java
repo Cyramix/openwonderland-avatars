@@ -104,7 +104,7 @@ public class JPanel_Animations extends javax.swing.JPanel {
                     jSlider_Animations.setEnabled(false);
                 }
 
-                if (skeleton.getAnimationComponent().getGroups().size() > 1) {
+                if (skeleton.getAnimationComponent().getGroupCount() > 1) {
                     if (skeleton.getAnimationGroup(1) != null) {
 
                         int iNumAnimations = skeleton.getAnimationGroup(1).getCycleCount();

@@ -29,6 +29,7 @@ import java.net.URL;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
 import javolution.util.FastList;
+import javolution.util.FastTable;
 import org.jdesktop.mtgame.*;
 
 /**
@@ -41,6 +42,7 @@ public class Repository extends Entity
 {
     /** Some package private references for convience and centricity **/
     static String bafCacheURL = System.getProperty("BafCacheDir", null);
+
     /** Path to the cache folder **/
     static File cacheFolder = new File(System.getProperty("user.dir") + "/cache/");
 
@@ -82,12 +84,9 @@ public class Repository extends Entity
     /** PScene Collection **/
     private final ConcurrentHashMap<AssetDescriptor, RepositoryAsset> m_PScenes =
             new ConcurrentHashMap<AssetDescriptor, RepositoryAsset>();
-    
-    // And potentially...
-    // processors (AI, animations, etc)
-    // code
 
-    public final FastList<SkeletonNode> m_Skeletons = new FastList<SkeletonNode>();
+    /** Skeleton Collection **/
+    public final FastTable<SkeletonNode> m_Skeletons = new FastTable<SkeletonNode>();
 
     /** Indicates if the repository cache should be used. **/
     private boolean m_bUseCache = true;
@@ -99,29 +98,35 @@ public class Repository extends Entity
      */
     public Repository(WorldManager wm)
     {
-        this(wm, true);
+        this(wm, true, true);
     }
 
-    public Repository(WorldManager wm, boolean bLoadSkeletons) {
-        this(wm, bLoadSkeletons, true);
-    }
-
-    public Repository(WorldManager wm, boolean bLoadSkeletons, boolean bUseCache) {
+    /**
+     * Construct a new repository.
+     * @param wm The world manager
+     * @param bLoadSkeletons True to load prototype skeletons
+     * @param bUseCache True to use caching (project/cache dir)
+     */
+    public Repository(WorldManager wm, boolean bLoadSkeletons, boolean bUseCache)
+    {
         super("Asset Repository");
-
+        // Catch wm ref
         m_worldManager = wm;
-
+        // Add ourselves as an entity to be managed
         wm.addEntity(this);
 
         // Add our collection of processors to the entity
         addComponent(ProcessorCollectionComponent.class, m_processorCollection);
+
         // Load up the default skeletons
         if (bLoadSkeletons)
             loadSkeletons();
+
         // Boot up the cache
         m_bUseCache = bUseCache;
         if (m_bUseCache)
             initCache();
+
         // create the shader factory
         m_shaderFactory = new ShaderFactory(wm);
     }
@@ -165,7 +170,7 @@ public class Repository extends Entity
 
         // If we already have it in the collection we will get it now
         repoAsset = collection.get(asset.getDescriptor());
-        if (repoAsset == null)
+        if (repoAsset == null) // Not there, need to make an asset for it
         {
             if (m_numberOfLoadRequests <= m_maxConcurrentLoadRequests)
             {
@@ -173,7 +178,7 @@ public class Repository extends Entity
                 // If we don't already have it in the collection we will add it now
                 repoAsset = new RepositoryAsset(asset.getDescriptor(), asset.getUserData(), this);
                 
-                // The new repository asset will loaditself, incerement the counter
+                // The new repository asset will loaditself, increment the counter
                 m_numberOfLoadRequests++;
 
                 collection.put(asset.getDescriptor(), repoAsset);

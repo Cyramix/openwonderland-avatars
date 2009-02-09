@@ -113,7 +113,7 @@ public class CharacterAnimationProcessor extends ProcessorComponent
         // Current groups in use: 0 - full body animations, 1 - face only animations
         AnimationState state = null;
         AnimationGroup group = null;
-        int numberOfGroups = m_animated.getAnimationComponent().getGroups().size();
+        int numberOfGroups = m_animated.getAnimationComponent().getGroupCount();
         for (int i = 0; i < numberOfGroups; i++)
         {
             state = m_animated.getAnimationState(i);

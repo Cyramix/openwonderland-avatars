@@ -627,7 +627,8 @@ public class SkeletonNode extends PNode implements Animated, Serializable
     public AnimationGroup getAnimationGroup(int index)
     {
         try {
-        return m_animationComponent.getGroups().get(index);}
+            return m_animationComponent.getGroup(index);
+        }
         catch (IndexOutOfBoundsException ex){
             logger.log(Level.SEVERE, null, ex);
         }
@@ -953,7 +954,7 @@ public class SkeletonNode extends PNode implements Animated, Serializable
         // Remap the joint refs
         mapSkinnedMeshJointIndices();
         // Now create a new animation state for each group read in
-        for (int i = 0; i < m_animationComponent.getGroups().size(); i++)
+        for (int i = 0; i < m_animationComponent.getGroupCount(); i++)
             m_animationStates.add(new AnimationState(i));
     }
 }

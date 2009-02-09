@@ -78,7 +78,7 @@ public class LibraryAnimationsProcessor extends Processor
             System.out.println("   Animation:  '" + animationLibrary.getId() + "'");
 
             //  Add the AnimationLoop to the SkeletonNode.
-            m_colladaRef.getSkeletonNode().getAnimationComponent().getGroups().add(newGroup);
+            m_colladaRef.getSkeletonNode().getAnimationComponent().addGroup(newGroup);
         }
     }
 

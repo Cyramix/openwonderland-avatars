@@ -395,7 +395,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
             facialAnimationState.setCurrentCyclePlaybackMode(PlaybackMode.PlayOnce);
             facialAnimationState.setAnimationSpeed(0.1f);
         }
-        if (m_skeleton.getAnimationComponent().getGroups().size() > 1)
+        if (m_skeleton.getAnimationComponent().getGroupCount() > 1)
         {
             m_facialAnimationQ = new TransitionQueue(m_skeleton, 1);
             // Go to default face pose
@@ -729,7 +729,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         else
         {
             // synch up animation states with groups
-            while (m_skeleton.getAnimationComponent().getGroups().size() < m_skeleton.getAnimationStateCount())
+            while (m_skeleton.getAnimationComponent().getGroupCount() < m_skeleton.getAnimationStateCount())
                 m_skeleton.addAnimationState(new AnimationState(m_skeleton.getAnimationStateCount()));
         }
     }
@@ -1053,8 +1053,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         if (m_facialAnimationQ == null)
         {
             AnimationComponent ac = m_skeleton.getAnimationComponent();
-            List<AnimationGroup> groups = ac.getGroups();
-            if (groups.size() > 1)
+            if (ac.getGroupCount() > 1)
                 m_facialAnimationQ = new TransitionQueue(m_skeleton, 1);
             else
                 return;   
@@ -1074,7 +1073,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
     {
         if (m_facialAnimationQ == null)
         {
-            if (m_skeleton.getAnimationComponent().getGroups().size() > 1)   
+            if (m_skeleton.getAnimationComponent().getGroupCount() > 1)
                 m_facialAnimationQ = new TransitionQueue(m_skeleton, 1);
             else
                 return;   
@@ -1258,7 +1257,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
     {
         if (m_facialAnimationQ == null)
         {
-            if (m_skeleton.getAnimationComponent().getGroups().size() > 1)   
+            if (m_skeleton.getAnimationComponent().getGroupCount() > 1)
                 m_facialAnimationQ = new TransitionQueue(m_skeleton, 1);
         }
         return m_facialAnimationQ;

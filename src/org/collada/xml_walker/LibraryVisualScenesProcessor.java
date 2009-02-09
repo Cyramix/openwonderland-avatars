@@ -76,9 +76,9 @@ public class LibraryVisualScenesProcessor extends Processor
         {
             if (skeleton.getAnimationComponent() != null &&
                 skeleton.getAnimationComponent().getGroups() != null &&
-                skeleton.getAnimationComponent().getGroups().size() > 0)
+                skeleton.getAnimationComponent().getGroupCount() > 0)
             {
-                AnimationGroup lastGroup = skeleton.getAnimationComponent().getGroups().get(skeleton.getAnimationComponent().getGroups().size()-1);
+                AnimationGroup lastGroup = skeleton.getAnimationComponent().getLastGroup();
                 AnimationCycle animCycle = lastGroup.getCycle(0);
             
                 animCycle.setName(name);

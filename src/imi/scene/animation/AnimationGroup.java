@@ -52,11 +52,24 @@ public class AnimationGroup implements Serializable
     private final float             m_fTimePadding  = 10.0f;
 
     /**
+     * Constructor
+     * @param name
+     */
+    public AnimationGroup(String name)
+    {
+        if (name != null)
+            m_name = name;
+        // Debug info
+        System.out.println("AnimationGroup created.");
+        Thread.dumpStack();
+    }
+
+    /**
      * Empty Constructor
      */
     public AnimationGroup()
     {
-
+        this((String)null);
     }
 
     /**
@@ -65,8 +78,7 @@ public class AnimationGroup implements Serializable
      */
     public AnimationGroup(AnimationGroup other)
     {
-        if (other.m_name != null)
-            m_name = new String(other.m_name);
+        this(other.m_name);
 
         m_JointChannels.clear();
         for (PJointChannel jointChannel : other.m_JointChannels)
@@ -80,15 +92,7 @@ public class AnimationGroup implements Serializable
 
     }
 
-    /**
-     * Constructor
-     * @param name
-     */
-    public AnimationGroup(String name)
-    {
-        if (name != null)
-            m_name = name;
-    }
+
 
     /**
      * Generates the current "pose" solutions based on state input.

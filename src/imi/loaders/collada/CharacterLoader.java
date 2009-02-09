@@ -144,17 +144,17 @@ public class CharacterLoader implements RepositoryUser
         {
             // Debugging output
             logger.fine("Loaded binary file " + binaryLocation.getFile() + ".");
-            owningSkeleton.getAnimationComponent().getGroups().add(newGroup);
+            owningSkeleton.getAnimationComponent().addGroup(newGroup);
             result = true;
         }
         else // otherwise use the collada loader
         {
             SkeletonNode skeleton = loadSkeletonRig(animationLocation);
-            newGroup = skeleton.getAnimationGroup(skeleton.getAnimationComponent().getGroups().size() - 1);
+            newGroup = skeleton.getAnimationGroup(skeleton.getAnimationComponent().getGroupCount() - 1);
             // remove every other frame in this group
             for (PJointChannel channel : newGroup.getChannels())
                 channel.timeBasedReduction(reductionFactor);//channel.fractionalReduction(reductionFactor);
-            owningSkeleton.getAnimationComponent().getGroups().add(newGroup);
+            owningSkeleton.getAnimationComponent().addGroup(newGroup);
             // Serialize it for the next round
             if (bafCacheURL != null) {
                 try {
@@ -250,15 +250,15 @@ public class CharacterLoader implements RepositoryUser
         AnimationComponent animationComponent = skeletonNode.getAnimationComponent();
         
         //  Append to the end of the AnimationGroup.
-        if (animationComponent.getGroups().size() > groupIndex)
+        if (animationComponent.getGroupCount() > groupIndex)
         {
-            AnimationGroup group = animationComponent.getGroups().get(groupIndex);
-            AnimationGroup lastGroup = animationComponent.getGroups().get(animationComponent.getGroups().size() - 1);
+            AnimationGroup group = animationComponent.getGroup(groupIndex);
+            AnimationGroup lastGroup = animationComponent.getGroup(animationComponent.getGroupCount() - 1);
             
             if (group != lastGroup)
             {
                 group.appendAnimationGroup(lastGroup);
-                animationComponent.getGroups().remove(lastGroup);
+                animationComponent.removeGroup(lastGroup);
             }
         }
         else
@@ -272,8 +272,7 @@ public class CharacterLoader implements RepositoryUser
      */
     private void writeAnimationGroupToDisk(URL outputFileLocation, SkeletonNode owningSkeleton)
     {
-        ArrayList<AnimationGroup> animGroups = owningSkeleton.getAnimationComponent().getGroups();
-        AnimationGroup groupToSerialize = animGroups.get(animGroups.size() - 1);
+        AnimationGroup groupToSerialize = owningSkeleton.getAnimationComponent().getLastGroup();
 
         FileOutputStream fos = null;
         AvatarObjectOutputStream out = null;

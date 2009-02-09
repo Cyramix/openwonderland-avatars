@@ -1090,7 +1090,7 @@ public class SceneEssentials {
                 facialAnimationState.setCurrentCyclePlaybackMode(PlaybackMode.PlayOnce);
                 facialAnimationState.setAnimationSpeed(0.1f);
                 m_avatar.getSkeleton().addAnimationState(facialAnimationState);
-                if (m_avatar.getSkeleton().getAnimationComponent().getGroups().size() > 1)
+                if (m_avatar.getSkeleton().getAnimationComponent().getGroupCount() > 1)
                 {
                     if (m_avatar.getSkeleton().getAnimationGroup(1).getCycleCount() > 1)
                         m_avatar.setDefaultFacePose(1);

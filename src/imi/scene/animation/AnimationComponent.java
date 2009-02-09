@@ -19,7 +19,7 @@ package imi.scene.animation;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import javolution.util.FastList;
+import java.util.List;
 
 /**
  * This class encapsulates animation functionality. It is used to 
@@ -164,11 +164,67 @@ public class AnimationComponent implements Serializable
         else
             return null;
     }
+
+    /**
+     * Return the last group in this component, or null if there are no groups
+     * loaded.
+     * @return
+     */
+    public AnimationGroup getLastGroup()
+    {
+        if (m_AnimationGroups.size() > 0)
+            return m_AnimationGroups.get(m_AnimationGroups.size() - 1);
+        else
+            return null;
+    }
+
+    /**
+     * Retreives the specified animation group, or null if out of bounds
+     * @return m_AnimationGroups.get(0)
+     */
+    public AnimationGroup getGroup(int index)
+    {
+        if (m_AnimationGroups.size() > index)
+            return m_AnimationGroups.get(index);
+        else
+            return null;
+    }
+
+    /**
+     * Retrieve the number of animation groups currently loaded.
+     * @return
+     */
+    public int getGroupCount()
+    {
+        return m_AnimationGroups.size();
+    }
+
+    /**
+     * Append the provided group to the end of the collection of animation
+     * groups.
+     * @param groupToAdd
+     * @return index of the newly added group
+     */
+    public int addGroup(AnimationGroup groupToAdd)
+    {
+        m_AnimationGroups.add(groupToAdd);
+        return m_AnimationGroups.size() - 1;
+    }
+
+    /**
+     * Remove the provided group from the collection
+     * @param groupToRemove
+     * @return True if found, false otherwise
+     */
+    public boolean removeGroup(AnimationGroup groupToRemove)
+    {
+        return m_AnimationGroups.remove(groupToRemove);
+    }
     
     /**
      * @return the list of animation groups
      */
-    public ArrayList<AnimationGroup> getGroups()
+    public Iterable<AnimationGroup> getGroups()
     {
         return m_AnimationGroups;
     }

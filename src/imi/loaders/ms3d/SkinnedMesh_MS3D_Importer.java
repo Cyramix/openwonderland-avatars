@@ -215,7 +215,7 @@ public class SkinnedMesh_MS3D_Importer
         // Regenerate skeleton mappings (see implementation for details)
         m_skeleton.refresh();
         
-        m_skeleton.getAnimationComponent().getGroups().add(pAnimationGroup);
+        m_skeleton.getAnimationComponent().addGroup(pAnimationGroup);
         // split the animation loop into cycles
         MS3DAnimationMetaData animationFile = new MS3DAnimationMetaData(m_animationMeta);
         
