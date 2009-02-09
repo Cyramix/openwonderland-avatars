@@ -254,14 +254,14 @@ public class PPolygonMeshInstance extends PNode implements Serializable
         //System.out.println("Received " + path.toString());
         if (tex == null)
         {
-            logger.severe("Why is the texture null? Location is " + path.toString());
+            logger.severe("Texture null - Location is " + path.toString());
             return;
         }
         
         if (getTextureInstaller() == null)
         {
             // Texture installer is set in apply material and that happens later
-            //logger.severe("Why is the texture installer null? "+path.toString()+"  "+this);
+            //logger.severe("Texture installer is null - "+path.toString()+"  "+this);
             return;   
         }
         
@@ -286,7 +286,23 @@ public class PPolygonMeshInstance extends PNode implements Serializable
             {
                 getSharedMesh().setRenderState(ts);
                 setTextureInstaller(null);
+                //logger.fine("Texture installed from " + path.toString() + " to " + getParent().getName());
+                System.out.println("Texture installed from " + path.toString() + " to " + getName());
+                if (getParent() != null)
+                    System.out.println("Parent name: " + getParent().getName());
             }
+            else
+            {
+                System.out.println("Texture install FAILED " + path.toString() + " to " + getName());
+                if (getParent() != null)
+                    System.out.println("Parent name: " + getParent().getName());
+            }
+        }
+        else
+        {
+            System.out.println("Texture install FAILED MISERBLY " + path.toString() + " to " + getName());
+            if (getParent() != null)
+                System.out.println("Parent name: " + getParent().getName());
         }
     }
 

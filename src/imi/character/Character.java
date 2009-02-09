@@ -623,13 +623,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         m_pscene.getRepository().loadSharedAsset(asset, headInstaller);
         while (m_bWaitingOnAsset == true) // wait until loaded
         {
-            try {
-                Thread.sleep(100);
-            }
-            catch (InterruptedException ex)
-            {
-                logger.severe(ex.getMessage());
-            }
+            Thread.yield();
         }
         if (asset == null) // Timeout at the repository
             logger.severe("Timed out waiting on asset for new head.");
@@ -992,8 +986,8 @@ public abstract class Character extends Entity implements SpatialObject, Animati
      */
     public void update(float deltaTime)
     {
-        if (!m_initialized)
-            setMeshAndSkeletonRefs();
+//        if (!m_initialized)
+//            setMeshAndSkeletonRefs();
         
         if (m_attributes.isUseSimpleStaticModel())
             m_modelInst.setDirty(true, true);

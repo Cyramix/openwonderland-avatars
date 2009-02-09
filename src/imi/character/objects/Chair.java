@@ -92,12 +92,9 @@ public class Chair implements SpatialObject
                     
                     //System.out.println("init chair " + me); // watch for "freeloaders"
                     
-                    if (!(asset instanceof PPolygonModelInstance))
-                        return false;
-                    
                     // Apply material to all meshes
                     FastList<PNode> queue = new FastList<PNode>();
-                    queue.addAll(((PPolygonModelInstance)asset).getChildren());
+                    queue.addAll(((PNode)asset).getChildren());
                     while (queue.isEmpty() == false)
                     {
                         PNode current = queue.removeFirst();
@@ -165,6 +162,7 @@ public class Chair implements SpatialObject
     {
         if (sharedAsset != null)
         {
+            //scene.setUseRepository(false);
             sharedAsset.setRepository(scene.getRepository());
             modelInst = scene.addModelInstance("Chair", sharedAsset, initOrigin);
         }
