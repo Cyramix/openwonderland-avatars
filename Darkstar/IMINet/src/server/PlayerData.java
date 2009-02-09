@@ -40,6 +40,7 @@ public class PlayerData implements Serializable, ManagedObject
     private int skinTone = -1;
     private int eyeColor = -1;
     
+    // Basic Game Data (more can be defined in a player extension)
     private boolean playingGame = false;
     private int hitPoints = 0;
     

@@ -18,7 +18,7 @@
 package imi.tests;
 
 import com.jme.math.Vector3f;
-import imi.character.networking.DarkstarClient;
+import imi.character.networking.CharacterClient;
 import imi.character.avatar.Avatar;
 import imi.character.avatar.MaleAvatarAttributes;
 import imi.character.avatar.FemaleAvatarAttributes;
@@ -95,7 +95,7 @@ public class DarkstarClientTest extends DemoBase
             head      = 0;//(int) (Math.random() * 10000 % 4);
             skinTone  = (int) (Math.random() * 10000 % 12);
             eyeColor  = (int) (Math.random() * 10000 % 25);
-            avatar = new Avatar(new MaleAvatarAttributes("Avatar", feet, legs, torso, hair, head, skinTone, eyeColor), wm);
+            avatar = new Avatar(new MaleAvatarAttributes("Avatar", feet, legs, torso, hair, head, skinTone, eyeColor, false), wm);
         }
         else // female
         {
@@ -107,12 +107,12 @@ public class DarkstarClientTest extends DemoBase
             head      = 0;//(int) (Math.random() * 10000 % 4);
             skinTone  = (int) (Math.random() * 10000 % 12);
             eyeColor  = (int) (Math.random() * 10000 % 25); 
-            avatar = new Avatar(new FemaleAvatarAttributes("Avatar", feet, legs, torso, hair, head, skinTone, eyeColor), wm);
+            avatar = new Avatar(new FemaleAvatarAttributes("Avatar", feet, legs, torso, hair, head, skinTone, eyeColor, false), wm);
         }
         
         // Create darkstar client and login
-        avatar.setUpdateExtension(new DarkstarClient(avatar, male, feet, legs, torso, hair, head, skinTone, eyeColor));
-        ((DarkstarClient)avatar.getUpdateExtension()).login();
+        avatar.setUpdateExtension(new CharacterClient(avatar, male, feet, legs, torso, hair, head, skinTone, eyeColor));
+        ((CharacterClient)avatar.getUpdateExtension()).login();
         
         //avatar.setBigHeadMode(2.0f);
         

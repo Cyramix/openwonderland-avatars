@@ -138,6 +138,8 @@ public class ServerWorld implements Serializable, AppListener
         WorldRoom room;
         try {
             room = (WorldRoom) dataMgr.getBinding(roomBinding);
+            if (!roomRef.contains(dataMgr.createReference(room)))
+                roomRef.add(dataMgr.createReference(room));    
         } catch (NameNotBoundException ex) {
             // this is a new room
             dataMgr.markForUpdate(this);

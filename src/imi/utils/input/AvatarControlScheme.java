@@ -253,8 +253,8 @@ public class AvatarControlScheme extends InputScheme
                 }
             }
             
-            // Add a chair to the object collection
-            if (ke.getKeyCode() == KeyEvent.VK_BACK_SLASH) 
+            // Pop up the console \ chat
+            if (ke.getKeyCode() == KeyEvent.VK_BACK_SLASH || ke.getKeyCode() == KeyEvent.VK_BACK_QUOTE) 
             {
                 if(objects != null)
                 {

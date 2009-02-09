@@ -138,14 +138,6 @@ public class WorldRoom extends WorldObject implements Task
         }
     }
 
-//    public void sendHandGesture(WorldPlayer player, boolean right, int gestureID) 
-//    {
-//        PlayerData data = player.getPlayerData();
-//        List<WorldPlayer> others = getPlayersExcluding(player);
-//        for (WorldPlayer other : others)
-//            other.getClientSideUser().setHandGesture(data.getID(), right, gestureID);
-//    }
-
     public void sendTrigger(WorldPlayer player, boolean pressed, int trigger) 
     {    
         PlayerData data = player.getPlayerData();
@@ -289,6 +281,19 @@ public class WorldRoom extends WorldObject implements Task
         return worldRef.get();
     }
 
+    public GameData getGameData() {
+        if (gameDataRef == null)
+            return null;
+        return gameDataRef.get();
+    }
+    
+    public void setGameData(GameData custom)
+    {
+        DataManager dataManager = AppContext.getDataManager();
+        dataManager.markForUpdate(this);
+        gameDataRef = dataManager.createReference(custom);
+    }
+
     /**
      * Appends the names of the {@code SwordWorldObject}s in the list
      * to the builder, separated by commas, with an "and" before the final
@@ -328,7 +333,7 @@ public class WorldRoom extends WorldObject implements Task
      * @param player the player to exclude
      * @return the list of players
      */
-    private List<WorldPlayer>
+    public List<WorldPlayer>
             getPlayersExcluding(WorldPlayer player)
     {
         if (players.isEmpty())
@@ -344,6 +349,22 @@ public class WorldRoom extends WorldObject implements Task
         }
 
         return Collections.unmodifiableList(otherPlayers);
+    }
+    
+    public List<WorldPlayer> getPlayers()
+    {
+        if (players.isEmpty())
+            return Collections.emptyList();   
+        
+        ArrayList<WorldPlayer> playerList = new ArrayList<WorldPlayer>(players.size());
+        for (ManagedReference<WorldPlayer> playerRef : players) 
+        {
+            WorldPlayer other = playerRef.get();
+            playerList.add(other);
+        }
+
+        return Collections.unmodifiableList(playerList);
+        
     }
     
     private void sendPlayerList(WorldPlayer player) 
@@ -383,65 +404,6 @@ public class WorldRoom extends WorldObject implements Task
             i++;
         }
         player.getClientSideUser().listPlayers(ids, names, male, feet, legs, torso, hair, head, skinTone, eyeColor);
-    }
-    
-    public class Vector3
-    {
-        public float x = 0.0f;
-        public float y = 0.0f;
-        public float z = 0.0f;
-
-        public Vector3() {}
-        public Vector3(float x, float y, float z)
-        {
-            this.x = x;
-            this.y = y;
-            this.z = z;
-        }
-    }
-    
-    public class CircleUtil 
-    {
-        private int     m_points = 0;
-        private float   m_radius = 0.0f;
-        Vector3 []      m_circle = null;
-
-        public CircleUtil(int points, float radius)
-        {
-            m_points = points;
-            m_radius = radius;
-        }
-
-        public Vector3 [] calculatePoints()
-        {
-            m_circle = new Vector3 [m_points];
-
-            double angleStep = Math.PI * 2 / m_points;
-            double theta = 0.0f;
-
-            for (int i = 0; i < m_points; i++)
-            {
-                m_circle[i] = new Vector3();
-                m_circle[i].x = (float)Math.cos(theta) * -1.0f * m_radius;
-                m_circle[i].z = (float)Math.sin(theta) * m_radius;
-
-                theta += angleStep;
-            }
-
-            return m_circle;
-        }
-
-        public Vector3 [] getCircleRef()
-        {
-            return m_circle;
-        }
-
-        public Vector3 getPoint(int index)
-        {
-            if (m_circle != null)
-                return m_circle[index];
-            return null;
-        }
     }
     
 }

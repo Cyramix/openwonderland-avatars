@@ -64,6 +64,9 @@ public class WorldPlayer extends WorldObject implements ClientSessionListener, S
     private JnagSession                      jnagSession       = null;
     private ManagedReference<ClientSideUser> clientSideUserRef = null;
 
+    /** The extension may implement a JNag interface **/
+    protected ManagedReference<WorldPlayerExtension> serverExtensionRef = null;
+    
     // data to keep for each player
     ManagedReference<PlayerData> playerDataRef = null;
     
@@ -173,12 +176,32 @@ public class WorldPlayer extends WorldObject implements ClientSessionListener, S
      *
      * @param room the room for this player to enter
      */
-    public void enter(WorldRoom room) {
+    public void enter(WorldRoom room) 
+    {
         logger.log(Level.INFO, "{0} enters {1}",
-            new Object[] { this, room }
-        );
-        room.addPlayer(this);
+            new Object[] { this, room } );
         setRoom(room);
+        // Deal with a possible extension
+        DataManager dataMngr = AppContext.getDataManager();
+        dataMngr.markForUpdate(this);
+        if (serverExtensionRef != null)
+        {
+            WorldPlayerExtension ext = serverExtensionRef.get();
+            ext.releaseJNagSession();
+            dataMngr.removeObject(ext);
+            serverExtensionRef = null;
+        }
+        if (room.getName().contains("cahua") || room.getName().contains("Cahua"))
+        {
+            WorldPlayerExtension ext = new CahuaPlayerExtention(jnagSession, this);
+            serverExtensionRef = dataMngr.createReference(ext);
+        }
+    }
+    
+    public WorldPlayerExtension getExtension() {
+        if (serverExtensionRef == null)
+            return null;
+        return serverExtensionRef.get();
     }
     
     /** {@inheritDoc} */
@@ -233,6 +256,9 @@ public class WorldPlayer extends WorldObject implements ClientSessionListener, S
         jnagSession.removeFromRemoteInterface(clientSideUserProxy);
         AppContext.getDataManager().removeObject(clientSideUserProxy);
 
+        if (serverExtensionRef != null)
+            serverExtensionRef.get().releaseJNagSession();
+        
         // Delete the managed objects owned by the implementation of the jnag session.
         jnagSession.releaseManagedObjects();
     }
@@ -284,16 +310,17 @@ public class WorldPlayer extends WorldObject implements ClientSessionListener, S
      * <p>
      * @param room the room this player should be in, or {@code null}
      */
-    protected void setRoom(WorldRoom room) {
+    protected void setRoom(WorldRoom room) 
+    {
         DataManager dataManager = AppContext.getDataManager();
         dataManager.markForUpdate(this);
-
-        if (room == null) {
+        if (room == null) 
+        {
             currentRoomRef = null;
             return;
         }
-
         currentRoomRef = dataManager.createReference(room);
+        room.addPlayer(this);
     }
 
     /** {@inheritDoc} */

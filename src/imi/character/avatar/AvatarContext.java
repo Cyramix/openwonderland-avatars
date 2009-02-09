@@ -25,6 +25,8 @@ import imi.character.statemachine.corestates.IdleState;
 import imi.character.statemachine.corestates.FlyState;
 import imi.character.statemachine.corestates.FallFromSitState;
 import imi.character.CharacterController;
+import imi.character.networking.CahuaClientExtention;
+import imi.character.networking.CharacterClient;
 import imi.character.statemachine.corestates.transitions.FlyToIdle;
 import imi.character.statemachine.corestates.transitions.IdleToFly;
 import imi.character.statemachine.corestates.transitions.IdleToAction;
@@ -47,15 +49,16 @@ import imi.character.objects.SpatialObject;
 import imi.character.statemachine.GameContext;
 import imi.character.statemachine.GameState.Action;
 import imi.character.statemachine.corestates.ActionInfo;
+import imi.character.statemachine.corestates.ActionState;
 import imi.character.statemachine.corestates.CycleActionInfo;
 import imi.character.statemachine.corestates.CycleActionState;
 import imi.character.statemachine.corestates.RunState;
 import imi.character.statemachine.corestates.transitions.RunToWalk;
 import imi.character.statemachine.corestates.transitions.WalkToRun;
 import imi.character.steering.FollowBakedPath;
-import imi.character.steering.FollowPath;
 import imi.character.steering.GoSit;
 import imi.character.steering.GoTo;
+import imi.scene.Updatable;
 import java.util.ArrayList;
 import java.util.Hashtable;
 
@@ -218,6 +221,10 @@ public class AvatarContext extends GameContext
     @Override
     protected void triggerAlert(int trigger, boolean pressed)
     {
+        // Force the action if the action button is pressed
+        if (trigger == TriggerNames.MiscAction.ordinal() && pressed)
+            setCurrentState((ActionState) gameStates.get(CycleActionState.class));
+        
         // Toggle automatic steering behavior towards the current goal
         if (trigger == TriggerNames.ToggleSteering.ordinal() && pressed)
             AI.toggleEnable();
@@ -264,6 +271,18 @@ public class AvatarContext extends GameContext
         {
             AI.clearTasks();
             GoToNearestChair();
+            
+            // Safely attempt to start a multiplayer game
+            if (avatar.getUpdateExtension() != null)
+            {
+                Updatable up = avatar.getUpdateExtension();
+                if (up instanceof CharacterClient && ((CharacterClient)up).getExtension() != null)
+                {
+                    CharacterClient client = ((CharacterClient)up);
+                    if (client.getExtension() instanceof CahuaClientExtention)
+                        ((CahuaClientExtention)client.getExtension()).startGame(3);
+                }
+            }
         }
         
         // GoTo to location - if path is available from the current location

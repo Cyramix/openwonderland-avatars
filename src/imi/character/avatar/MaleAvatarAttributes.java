@@ -170,6 +170,10 @@ public class MaleAvatarAttributes extends CharacterAttributes
         this(name, feet, legs, torso, hair, head, skinTone, 0);
     }
 
+    public MaleAvatarAttributes(String name, int feet, int legs, int torso, int hair, int head, int skinTone, int eyeColor)
+    {
+        this(name, feet, legs, torso, hair, head, skinTone, eyeColor, true);
+    }
     /**
      * Explicitely construct a new instance.
      * @param name
@@ -181,8 +185,14 @@ public class MaleAvatarAttributes extends CharacterAttributes
      * @param skinTone
      * @param eyeColor
      */
-    public MaleAvatarAttributes(String name, int feet, int legs, int torso, int hair, int head, int skinTone, int eyeColor)
+    public MaleAvatarAttributes(String name, int feet, int legs, int torso, int hair, int head, int skinTone, int eyeColor, boolean randomizeColors)
     {
+        if (randomizeColors)
+        {
+            randomizeHairColor();
+            randomizeShirtColor();
+        }
+        
         ArrayList<String> load                  = new ArrayList<String>();
         ArrayList<SkinnedMeshParams> add        = new ArrayList<SkinnedMeshParams>();
         ArrayList<AttachmentParams> attachments = new ArrayList<AttachmentParams>();
@@ -304,7 +314,6 @@ public class MaleAvatarAttributes extends CharacterAttributes
      */
     private void customizeHairPresets(int preset, ArrayList<String> load, ArrayList<SkinnedMeshParams> add, ArrayList<AttachmentParams> attachments)
     {
-        randomizeHairColor();
         PMatrix orientation = new PMatrix(new Vector3f((float)Math.toRadians(10),0,0), Vector3f.UNIT_XYZ, Vector3f.ZERO);
         switch(preset)
         {
@@ -482,7 +491,6 @@ public class MaleAvatarAttributes extends CharacterAttributes
      */
     protected void customizeTorsoPresets(int preset, ArrayList<String> load, ArrayList<SkinnedMeshParams> add, ArrayList<AttachmentParams> attachments)
     {
-        randomizeShirtColor();
         // Add the hands in either way
         load.add(new String("assets/models/collada/Avatars/MaleAvatar/Male_Hands.dae")); // change!
         add.add(new SkinnedMeshParams("RHandShape",  m_regions[1]));

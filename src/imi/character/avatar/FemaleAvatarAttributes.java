@@ -172,6 +172,12 @@ public class FemaleAvatarAttributes extends CharacterAttributes
         this(name, feet, legs, torso, hair, head, skin, 0);
     }
 
+    
+    public FemaleAvatarAttributes(String name, int feet, int legs, int torso, int hair, int head, int skin, int eyeColor)
+    {
+        this(name, feet, legs, torso, hair, head, skin, eyeColor, true);
+    }
+    
     /**
      * Excplicitely construct a new instance.
      * @param name
@@ -183,10 +189,16 @@ public class FemaleAvatarAttributes extends CharacterAttributes
      * @param skin
      * @param eyeColor
      */
-    public FemaleAvatarAttributes(String name, int feet, int legs, int torso, int hair, int head, int skin, int eyeColor)
+    public FemaleAvatarAttributes(String name, int feet, int legs, int torso, int hair, int head, int skin, int eyeColor, boolean randomizeColors)
     {
         super(name);
         setGender(2);
+        
+        if (randomizeColors)
+        {
+            randomizeHairColor();
+            randomizeShirtColor();
+        }
         
         ArrayList<String> load                  = new ArrayList<String>();
         ArrayList<SkinnedMeshParams> add        = new ArrayList<SkinnedMeshParams>();
@@ -345,7 +357,6 @@ public class FemaleAvatarAttributes extends CharacterAttributes
      */
     protected void customizeTorsoPresets(int preset, ArrayList<String> load, ArrayList<SkinnedMeshParams> add, ArrayList<AttachmentParams> attachments)
     {
-        randomizeShirtColor();
         // Add the hands 
         load.add(new String("assets/models/collada/Avatars/FemaleAvatar/Female_Hands.dae")); 
         add.add(new SkinnedMeshParams("Hands_NudeShape",  "Hands"));
@@ -420,7 +431,6 @@ public class FemaleAvatarAttributes extends CharacterAttributes
      */
     private void customizeHairPresets(int preset, ArrayList<String> load, ArrayList<SkinnedMeshParams> add, ArrayList<AttachmentParams> attachments)
     {
-        randomizeHairColor();
         PMatrix orientation = new PMatrix(new Vector3f((float)Math.toRadians(7.0),0,0), Vector3f.UNIT_XYZ, new Vector3f(0,0.0f,0.03f));
         switch(preset)
         {
