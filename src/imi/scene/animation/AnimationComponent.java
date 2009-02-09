@@ -159,8 +159,6 @@ public class AnimationComponent implements Serializable
      */
     public AnimationGroup getGroup()
     {
-//        if (m_AnimationGroups.size() > 1)
-//            return m_AnimationGroups.get(1); // wtf is this
         if (m_AnimationGroups.size() > 0)
             return m_AnimationGroups.get(0);
         else

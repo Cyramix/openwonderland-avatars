@@ -24,8 +24,8 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.ListIterator;
+import javolution.util.FastList;
+import javolution.util.FastTable;
 
 
 /**
@@ -39,7 +39,7 @@ public class COLLADA_JointChannel implements PJointChannel, Serializable
 {
     private String                      m_TargetJointName = null;
     
-    private final ArrayList<PMatrixKeyframe>   m_KeyFrames = new ArrayList<PMatrixKeyframe>();
+    private final FastTable<PMatrixKeyframe>   m_KeyFrames = new FastTable<PMatrixKeyframe>();
     
     // Assorted data that is explicitely calculated
     private float                       m_fDuration = 0.0f;
@@ -511,6 +511,49 @@ public class COLLADA_JointChannel implements PJointChannel, Serializable
         in.defaultReadObject();
         // Re-allocate all transient objects
         m_interpolator.setStrategy(Interpolator.InterpolationStrategy.ElementInterpolation);
+    }
+
+    @Override
+    public void fractionalReduction(int ratio) {
+        FastList<PMatrixKeyframe> removals = new FastList();
+        if (m_KeyFrames.size() < ratio * 3)
+            return; // Too small to bother
+        for (int i = 0; i < m_KeyFrames.size(); ++i)
+        {
+            if (i == 0 || i == m_KeyFrames.size() - 1 || i % ratio == 0)
+                continue;
+            else
+                removals.add(m_KeyFrames.get(i));
+        }
+        // Now remove all of those
+        for (PMatrixKeyframe frame : removals)
+            m_KeyFrames.remove(frame);
+    }
+
+    @Override
+    public void timeBasedReduction(int newSampleFPS) {
+        float spacing = 1.0f / (float)newSampleFPS;
+
+        FastList<PMatrixKeyframe> removals = new FastList();
+
+        float lastTime = 0.0f;
+        PMatrixKeyframe firstFrame = m_KeyFrames.getFirst();
+        PMatrixKeyframe lastFrame = m_KeyFrames.getLast();
+        for (PMatrixKeyframe frame : m_KeyFrames)
+        {
+            if (    frame == firstFrame ||
+                    frame == lastFrame  ||
+                    frame.getFrameTime() - lastTime >= spacing)
+            {
+                lastTime = frame.getFrameTime();
+                continue;
+            }
+            else
+                removals.add(frame);
+        }
+        // Now remove all of those
+        for (PMatrixKeyframe frame : removals)
+            m_KeyFrames.remove(frame);
     }
 }
 

@@ -79,7 +79,7 @@ public class RepositoryAsset extends ProcessorComponent
     /** The home repository for this asset **/
     private Repository           m_home       = null;
     
-    private Boolean m_lock = Boolean.TRUE;
+    private Boolean m_lock = Boolean.FALSE;
 
     /** True to enable the neew texture loading code **/
     private boolean bUseTextureImporter = false;
@@ -104,64 +104,67 @@ public class RepositoryAsset extends ProcessorComponent
      */
     private void loadSelf()
     {
-        synchronized (m_lock)
+        if (m_lock)
+            return;
+        if (m_data != null && m_data.size() > 0)
+            return;
+
+        m_lock = true;
+
+        if (m_data != null && m_data.isEmpty()) // weirdness
+            m_data = null;
+
+        // allocate data storage
+        m_data = new LinkedList<Object>();
+        switch (m_descriptor.getType())
         {
-            // First, has loading already occured?
-            if (m_data != null && m_data.size() > 0)
-                return;
-            else if (m_data != null && m_data.isEmpty()) // weirdness
-                m_data = null;
-
-            // allocate data storage
-            m_data = new LinkedList<Object>();
-            switch (m_descriptor.getType())
-            {
-                case MS3D_Mesh:
-                    if (m_descriptor.getLocation().getPath().endsWith("ms3d"))
-                        Logger.getLogger(this.getClass().toString()).log(Level.WARNING, "Non-skinned MS3D currently unsupported");
-                    else if (m_descriptor.getLocation().getPath().endsWith("dae")) // collada
-                        Logger.getLogger(this.getClass().toString()).log(Level.WARNING, "Collada asset requested as type Mesh, ignoring...");
-                    break;
-                case MS3D_SkinnedMesh:
-                    {
-                        if (m_descriptor.getLocation().getPath().endsWith("ms3d"))
-                        {
-                             SkeletonNode skeleton = new SkeletonNode(m_descriptor.getLocation().getFile() + " skeleton");
-                             SkinnedMesh_MS3D_Importer importer = new SkinnedMesh_MS3D_Importer();
-                             importer.load(skeleton , m_descriptor.getLocation());
-                             m_data.add(skeleton);
-                        }
-                        else if (m_descriptor.getLocation().getPath().endsWith("dae")) // collada
-                            Logger.getLogger(this.getClass().toString()).log(Level.WARNING, "Collada asset requested as type SkinnedMesh, ignoring...");
-                    }
-                    break;
-                    // Intentional collada fall-throughs
-                    // These three cases require special set up to function.
-                    // Separate enumerations are
-                case COLLADA:
-                    loadCOLLADA();
-                    break;
-                case Model:
+            case MS3D_Mesh:
+                if (m_descriptor.getLocation().getPath().endsWith("ms3d"))
+                    logger.log(Level.WARNING, "Non-skinned MS3D currently unsupported");
+                else if (m_descriptor.getLocation().getPath().endsWith("dae")) // collada
+                    logger.log(Level.WARNING, "Collada asset requested as type Mesh, ignoring...");
+                break;
+            case MS3D_SkinnedMesh:
                 {
-                    // This will load models that are a composit of meshes and skinned meshes (potentially in a hierarchy of joints)
-
-                    // Load and parse a pscene
+                    if (m_descriptor.getLocation().getPath().endsWith("ms3d"))
+                    {
+                         SkeletonNode skeleton = new SkeletonNode(m_descriptor.getLocation().getFile() + " skeleton");
+                         SkinnedMesh_MS3D_Importer importer = new SkinnedMesh_MS3D_Importer();
+                         importer.load(skeleton , m_descriptor.getLocation());
+                         m_data.add(skeleton);
+                    }
+                    else if (m_descriptor.getLocation().getPath().endsWith("dae")) // collada
+                        logger.log(Level.WARNING, "Collada asset requested as type SkinnedMesh, ignoring...");
                 }
                 break;
-                case Texture:
-                    loadTexture();
-                    break;
-            }
-            // first, if the size of data is still zero, there is a problem
-            if (m_data != null && m_data.size() <= 0)
+                // Intentional collada fall-throughs
+                // These three cases require special set up to function.
+                // Separate enumerations are
+            case COLLADA:
+                loadCOLLADA();
+                break;
+            case Model:
             {
-                m_data = null;
-                return;
+                // This will load models that are a composit of meshes and skinned meshes (potentially in a hierarchy of joints)
+
+                // Load and parse a pscene
             }
+            break;
+            case Texture:
+                loadTexture();
+                break;
+        }
+        // first, if the size of data is still zero, there is a problem
+        if (m_data != null && m_data.size() <= 0)
+            m_data = null;
+        else
+        {
             // finished loading, remove ourselves from the update pool
             m_home.removeProcessor(this);
             setArmingCondition(new ProcessorArmingCollection(this));
+            m_lock = false;
         }
+        
     }
 
     private Object getDataReference() 

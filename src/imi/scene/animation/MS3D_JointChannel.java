@@ -505,6 +505,16 @@ public class MS3D_JointChannel implements PJointChannel, Serializable
     public String toString() {
         return new String("Target: " + m_targetJointName + ", Duration: " + m_fDuration);
     }
+
+    @Override
+    public void fractionalReduction(int ratio) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public void timeBasedReduction(int newSampleFPS) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 }
 
 

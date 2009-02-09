@@ -22,41 +22,25 @@ import com.jme.math.Vector3f;
 import imi.character.avatar.Avatar;
 import imi.character.avatar.FemaleAvatarAttributes;
 import imi.character.avatar.MaleAvatarAttributes;
+import imi.character.objects.ObjectCollection;
 import imi.scene.PMatrix;
 import imi.scene.camera.state.FirstPersonCamState;
 import imi.scene.processors.JSceneEventProcessor;
 import imi.utils.CircleUtil;
 import imi.utils.input.AvatarControlScheme;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.jdesktop.mtgame.WorldManager;
 
 /**
  * Provide a demonstration of the different avatar configurations
  * @author Ronald E Dahlgren
  */
-public class TenAvatarParty extends DemoBase
+public class AvatarParty extends DemoBase
 {
-    private static final Logger     logger = Logger.getLogger(TenAvatarParty.class.getName());
-
+    /** Number of avatars to load **/
     private static final Integer    numberOfAvatars = Integer.valueOf(10);
-    private static final String[]   configFiles     = new String[numberOfAvatars];
 
-    static {
-        String fileProtocol = "file://localhost" + System.getProperty("user.dir") + "/";
-        configFiles[ 0] = fileProtocol + "assets/configurations/SavingTestOutput.xml";
-        configFiles[ 1] = fileProtocol + "assets/configurations/SavingTestOutput.xml";
-        configFiles[ 2] = fileProtocol + "assets/configurations/SavingTestOutput.xml";
-        configFiles[ 3] = fileProtocol + "assets/configurations/SavingTestOutput.xml";
-        configFiles[ 4] = fileProtocol + "assets/configurations/SavingTestOutput.xml";
-        configFiles[ 5] = fileProtocol + "assets/configurations/SavingTestOutput.xml";
-        configFiles[ 6] = fileProtocol + "assets/configurations/SavingTestOutput.xml";
-        configFiles[ 7] = fileProtocol + "assets/configurations/SavingTestOutput.xml";
-//        configFiles[ 8] = fileProtocol + "assets/configurations/SavingTestOutput.xml";
-//        configFiles[ 9] = fileProtocol + "assets/configurations/SavingTestOutput.xml";
-    }
-
-    public TenAvatarParty(String[] args)
+    public AvatarParty(String[] args)
     {
         super(args);
     }
@@ -66,54 +50,64 @@ public class TenAvatarParty extends DemoBase
         // Give ourselves a nice environment
         String[] ourArgs = new String[] { "-env:assets/models/collada/Environments/Garden/Garden.dae" };
         // Construction does all the work
-        TenAvatarParty worldTest = new TenAvatarParty(ourArgs);
+        AvatarParty worldTest = new AvatarParty(ourArgs);
     }
 
     @Override
     protected void createDemoEntities(WorldManager wm)
     {
+        // Tweak the camera a bit
+        FirstPersonCamState camState = (FirstPersonCamState)m_cameraProcessor.getState();
+        camState.setMovementRate(0.1f);
+        camState.setCameraPosition(new Vector3f(0.0f, 1.8f, -2.0f));
+
+        // Use CircleUtil to generate a list of points for our avatars to stand
         CircleUtil circle = new CircleUtil(numberOfAvatars, 4);
-        Vector2f[] displacements = circle.calculatePoints();
+        Vector2f[] displacements = circle.calculatePoints(); // grab that list
 
-        // Create avatar input scheme
+        // Create avatar input scheme and an object collection to use
         AvatarControlScheme control = (AvatarControlScheme)((JSceneEventProcessor)wm.getUserData(JSceneEventProcessor.class)).setDefault(new AvatarControlScheme(null));
+        ObjectCollection ourCollection = new ObjectCollection("AvatarCollection", wm);
+        control.setObjectCollection(ourCollection);
 
-        // Create testCharacter
+
+        // Create test characters
         Avatar testCharacter = null;
-        float totalLoadTime = 0.0f;
+        float totalLoadTime = 0.0f; // Gather some metrics
         for (int i = 0; i < numberOfAvatars; ++i)
         {
             try {
-                long startTime = System.nanoTime();
+                long startTime = System.nanoTime(); // time it
+
                 if (Math.random() < 0.5)
                     testCharacter = new Avatar(new MaleAvatarAttributes("Name", true), wm);//new avatarAvatar(new URL(configFiles[i]), wm);
                 else
                     testCharacter = new Avatar(new FemaleAvatarAttributes("Name", true), wm);//new avatarAvatar(new URL(configFiles[i]), wm);
+                // Calculate and dump some metrics
                 long stopTime = System.nanoTime();
                 float length = (stopTime - startTime) / 1000000000.0f;
                 totalLoadTime += length;
-                System.out.println("Loading avatar " + i + " took " + length + " seconds.");
+                System.out.println("Loading avatar " + i + " took " + length + " seconds."); // Info!
 
             } catch (Exception ex) {
-                Logger.getLogger(SavingAndLoadingTest.class.getName()).log(Level.SEVERE, null, ex);
+                logger.log(Level.SEVERE, null, ex);
             }
+            // If we successfully created this avatar, do some addition configuration
             if (testCharacter != null)
             {
                 testCharacter.selectForInput();
+                ourCollection.addObject(testCharacter); // Add to the object collection
+                // Move to the proper location
                 PMatrix localXForm = testCharacter.getModelInst().getTransform().getLocalMatrix(true);
                 localXForm.setTranslation(new Vector3f(
                                         displacements[i].x,
                                         0,
                                         displacements[i].y));
                 control.getAvatarTeam().add(testCharacter);
-                control.getMouseEventsFromCamera();
+                control.getMouseEventsFromCamera(); // Necessary for driving the Verlet arms
             }
         }
-        System.out.println("Took " + totalLoadTime + " seconds overall to load the avatars.");
-
-        // Tweak the camera a bit
-        FirstPersonCamState camState = (FirstPersonCamState)m_cameraProcessor.getState();
-        camState.setMovementRate(0.1f);
-        camState.setCameraPosition(new Vector3f(0.0f, 1.8f, -2.0f));
+        
+        System.out.println("Took " + totalLoadTime + " seconds overall to load the avatars."); // Info!
     }
 }

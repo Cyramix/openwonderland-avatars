@@ -101,7 +101,7 @@ public class ClothingShaderSpecColor extends BaseShaderProgram implements Abstra
         "       float RDotV = dot(normalize((reflect(-lightVector, normal))), normalize(vec3(-position)));" +
         "       vec4 specular = vec4(specColor, 1.0);" +
         "       specular *= gl_LightSource[0].specular * pow(max(0.0, RDotV), SpecularExponent);" +
-        "    	gl_FragColor = color + (specular * SpecularComponent);" + // * nxDir);" +
+        "    	gl_FragColor = color + (specular * SpecularComponent * nxDir);" +
 //        "       gl_FragColor = vec4(normalize(ToLight), 1);" + // Instrumentation
         "}"
     );

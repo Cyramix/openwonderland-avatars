@@ -28,6 +28,7 @@ import imi.scene.PScene;
 
 import imi.scene.animation.AnimationComponent;
 import imi.scene.animation.AnimationGroup;
+import imi.scene.animation.PJointChannel;
 import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
 import imi.utils.AvatarObjectInputStream;
 import imi.utils.AvatarObjectOutputStream;
@@ -111,13 +112,15 @@ public class CharacterLoader implements RepositoryUser
      * @param animationLocation
      * @param mergeToGroup
      * @param bUseBinaryFiles
+     * @param reductionFactor 1 for no reduction, >1 for reduction in keyframe density.
      * @return True on success, false otherwise
      */
     public boolean loadAnimation(PScene loadingPScene,
                                 SkeletonNode owningSkeleton,
                                 URL animationLocation,
                                 int mergeToGroup,
-                                boolean bUseBinaryFiles)
+                                boolean bUseBinaryFiles,
+                                int reductionFactor)
     {
         boolean result = false;
         // check for binary version
@@ -147,7 +150,11 @@ public class CharacterLoader implements RepositoryUser
         else // otherwise use the collada loader
         {
             SkeletonNode skeleton = loadSkeletonRig(animationLocation);
-            owningSkeleton.getAnimationComponent().getGroups().addAll(skeleton.getAnimationComponent().getGroups());
+            newGroup = skeleton.getAnimationGroup(skeleton.getAnimationComponent().getGroups().size() - 1);
+            // remove every other frame in this group
+            for (PJointChannel channel : newGroup.getChannels())
+                channel.timeBasedReduction(reductionFactor);//channel.fractionalReduction(reductionFactor);
+            owningSkeleton.getAnimationComponent().getGroups().add(newGroup);
             // Serialize it for the next round
             if (bafCacheURL != null) {
                 try {

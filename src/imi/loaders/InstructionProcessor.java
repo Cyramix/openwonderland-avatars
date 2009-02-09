@@ -163,14 +163,14 @@ public class InstructionProcessor
                 case loadAnimation:
                 {
                     URL animationLocation = new URL(instruction.getDataAsString());
-                    if (!m_characterLoader.loadAnimation(m_loadingPScene, m_skeleton, animationLocation, 0, m_bUseBinaryFiles))
+                    if (!m_characterLoader.loadAnimation(m_loadingPScene, m_skeleton, animationLocation, 0, m_bUseBinaryFiles, 60))
                         logger.warning("COLLADA configuration ERROR: was not able to LOAD ANIMATION!");
                 }
                 break;
                 case loadFacialAnimation:
                 {
                     URL animationLocation = new URL(instruction.getDataAsString());
-                    if (!m_characterLoader.loadAnimation(m_loadingPScene, m_skeleton, animationLocation, 1, m_bUseBinaryFiles))
+                    if (!m_characterLoader.loadAnimation(m_loadingPScene, m_skeleton, animationLocation, 1, m_bUseBinaryFiles, 60))
                         logger.warning("COLLADA configuration ERROR: was not able to LOAD FACIAL ANIMATION!");
                 }
                 break;
