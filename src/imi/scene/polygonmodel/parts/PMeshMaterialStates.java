@@ -28,10 +28,6 @@ import com.jme.scene.state.RenderState;
 import com.jme.scene.state.TextureState;
 import com.jme.scene.state.WireframeState;
 import com.jme.scene.state.ZBufferState;
-import imi.loaders.repository.AssetDescriptor;
-import imi.loaders.repository.SharedAsset;
-import imi.loaders.repository.SharedAsset.SharedAssetType;
-import imi.scene.utils.TextureInstaller;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.jdesktop.mtgame.RenderManager;
@@ -45,7 +41,7 @@ import org.jdesktop.mtgame.RenderManager;
 public class PMeshMaterialStates 
 {
     private CullState       m_cullState         = null;
-    private TextureState    m_textureState      = null; //<-- disabled until time for testing is available
+    private TextureState    m_textureState      = null; 
     private MaterialState   m_materialState     = null;
     private WireframeState  m_wireframeState    = null;
     private BlendState      m_blendState        = null;

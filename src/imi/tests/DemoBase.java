@@ -598,7 +598,7 @@ public class DemoBase
                 skinnedVertArray[boneIndex][i].m_ColorIndex       = mesh.getColor(ColorRGBA.red); // Change at will =)
                 skinnedVertArray[boneIndex][i].m_TexCoordIndex[0] = mesh.getTexCoord(textureCoordinates[i]); // Generate proper texture coordinates
                 // Which bones influence this vert, these are sorted by precedence (also the second two weights are zero, so the last two indices are irrelevant
-                skinnedVertArray[boneIndex][i].m_BoneIndicesIndex = mesh.getBoneIndices( new PBoneIndices(boneIndex, PMathUtils.clamp(boneIndex+1, bones.length - 1), 0, 0) );
+                skinnedVertArray[boneIndex][i].m_BoneIndicesIndex = mesh.addBoneIndices( new PBoneIndices(boneIndex, PMathUtils.clamp(boneIndex+1, bones.length - 1), 0, 0) );
                 // allocate weighting appropriately
                 if (i < 4) // bottom layer
                     skinnedVertArray[boneIndex][i].m_BoneWeightIndex  = mesh.getBoneWeights(new Vector3f(1.0f, 0.0f, 0.0f)); // all influence goes on this bone

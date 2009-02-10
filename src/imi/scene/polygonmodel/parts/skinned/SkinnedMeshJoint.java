@@ -38,8 +38,6 @@ import javolution.util.FastList;
  */
 public class SkinnedMeshJoint extends PJoint implements Serializable
 {
-    /** The name! **/
-    public String   m_ParentJointName   = "Skinned Mesh Joint";
     /** The bind transform **/
     private PMatrix m_bindPoseTransform = null;
 
@@ -89,8 +87,6 @@ public class SkinnedMeshJoint extends PJoint implements Serializable
      */
     public SkinnedMeshJoint(SkinnedMeshJoint other) {
         super(other);
-        // Copy parent joint name and the bind pose transform
-        m_ParentJointName = other.m_ParentJointName;
         if (other.m_bindPoseTransform != null)
             this.m_bindPoseTransform = new PMatrix(other.m_bindPoseTransform);
         this.unmodifiedInverseBindPose.set(other.unmodifiedInverseBindPose);
@@ -102,7 +98,6 @@ public class SkinnedMeshJoint extends PJoint implements Serializable
                     Vector3f rotation)
     {
         setName(jointName);
-        m_ParentJointName = parentJointName;
         
         getTransform().getLocalMatrix(true).set(rotation, translation, Vector3f.UNIT_XYZ);
 
@@ -113,14 +108,6 @@ public class SkinnedMeshJoint extends PJoint implements Serializable
         return m_bindPoseTransform;
     }
 
-    //  Set the ParentJointName.
-    public void setParentJointName(String parentJointName)
-    {
-        m_ParentJointName = parentJointName;
-    }
-
-
-    
     //  Gets the parent joint.
     public SkinnedMeshJoint getParentJoint()
     {

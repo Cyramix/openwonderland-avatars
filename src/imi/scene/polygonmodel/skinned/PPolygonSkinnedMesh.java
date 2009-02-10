@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
 import java.io.Serializable;
 import java.util.List;
+import javolution.util.FastTable;
 
 
 
@@ -44,22 +45,17 @@ public class PPolygonSkinnedMesh extends PPolygonMesh implements Serializable
 {   
     // Skinning loaded data (no duplicates), these fields are nulled after reconstruction of the mesh when setSkinningData() is called.
     // indexed by polygons, weight of 4 influence from the indexed materices\bones
-    private final ArrayList<Vector3f>     m_BoneWeights   	  = new ArrayList<Vector3f>();
+    private final FastTable<Vector3f>     m_boneWeights   	  = new FastTable<Vector3f>();
     // indexed by polygons, 4 indices of bones in the flatened matrix stack
-    private final ArrayList<PBoneIndices> m_PBoneIndices  	  = new ArrayList<PBoneIndices>();
+    private final FastTable<PBoneIndices> m_boneIndices  	  = new FastTable<PBoneIndices>();
 
     // Skinning final data (calculated in PPolygonTriMeshAssembler)
     private transient FloatBuffer       		m_WeightBuffer        = null;    // per vertex, weight of 4 influence from the indexed materices\bones
     private transient FloatBuffer       		m_BoneIndexBuffer     = null;    // per vertex, 4 indices of bones in the flatened matrix stack
 
-    private ArrayList<String>   	m_JointNames          = new ArrayList<String>();
+    private FastTable<String>   	m_JointNames          = new FastTable<String>();
     private int[]             		m_influenceIndices    = null;
 
-    //private AnimationComponent m_Animation = new AnimationComponent();
-    
-    //private ArrayList<SkinnedMeshJoint> m_animationJointMapping = new ArrayList<SkinnedMeshJoint>();
-
-    
 	//  Constructor.
 	public PPolygonSkinnedMesh()
     {
@@ -96,20 +92,20 @@ public class PPolygonSkinnedMesh extends PPolygonMesh implements Serializable
         // Copy skinning stuffs
         if (mesh instanceof PPolygonSkinnedMesh)
         {
-            ArrayList<Vector3f> otherWeights = ((PPolygonSkinnedMesh)mesh).getBoneWeightArray();
-            ArrayList<PBoneIndices> otherIndices = ((PPolygonSkinnedMesh)mesh).getBoneIndexArray();
+            Iterable<Vector3f> otherWeights = ((PPolygonSkinnedMesh)mesh).getBoneWeightArray();
+            Iterable<PBoneIndices> otherIndices = ((PPolygonSkinnedMesh)mesh).getBoneIndexArray();
             // now copy them over onto ourselves
             // weights
-            m_BoneWeights.clear();
+            m_boneWeights.clear();
             for (Vector3f vec : otherWeights)
-                m_BoneWeights.add(new Vector3f(vec));
+                m_boneWeights.add(new Vector3f(vec));
             // Indices
-            m_PBoneIndices.clear();
+            m_boneIndices.clear();
             for (PBoneIndices bones : otherIndices)
-                m_PBoneIndices.add(new PBoneIndices(bones));
+                m_boneIndices.add(new PBoneIndices(bones));
         }
         
-        m_Polygons  = new ArrayList<PPolygon>();
+        m_Polygons  = new FastTable<PPolygon>();
         
         for (int i = 0; i < mesh.getPolygonCount(); i++)
         {
@@ -156,7 +152,7 @@ public class PPolygonSkinnedMesh extends PPolygonMesh implements Serializable
     /**
      * This method retrieves the influence index at the specified position
      * in this mesh's list of influences.
-     * @param index Index into this meshes list of influences
+     * @param index indexe into this meshes list of influences
      * @return The influence index at the specified position, or -1 on failure
      */
     public int getInfluenceIndex(int index)
@@ -195,73 +191,72 @@ public class PPolygonSkinnedMesh extends PPolygonMesh implements Serializable
         else
             return m_influenceIndices.length;
     }
-    
-    public int getBoneIndices(PBoneIndices PBoneIndices)
+
+    /**
+     * Add a new set of bone indices. Return the index.
+     * @param boneIndices
+     * @return
+     */
+    public int addBoneIndices(PBoneIndices boneIndices)
     {
-        int Index = findBoneIndices(PBoneIndices);
-	if (Index == -1)
+        int index = findBoneIndices(boneIndices);
+        if (index == -1)
         {
-            m_PBoneIndices.add(PBoneIndices);
-            Index = m_PBoneIndices.size() - 1;
+            m_boneIndices.add(boneIndices);
+            index = m_boneIndices.size() - 1;
         }
 
-        return(Index);
+        return(index);
     }
     
-    //  Finds the index of the BoneIndices.
-    public int findBoneIndices(PBoneIndices pBoneIndices)
+    /**
+     * Determine the index of the provided bone indices object.
+     * @param boneIndices
+     * @return index, or -1 if not found.
+     */
+    public int findBoneIndices(PBoneIndices boneIndices)
     {
-        for (int i = 0; i < m_PBoneIndices.size(); i++)
-	{
-//            if (m_PBoneIndices.get(i).hashCode() == pBoneIndices.hashCode())
-            if (pBoneIndices.equals(m_PBoneIndices.get(i)))
-                return i;
-        }
-
-        return(-1);
+        return m_boneIndices.indexOf(boneIndices);
     }
     
     public int getBoneWeights(Vector3f boneWeights)
     {
-        int Index = findBoneWeights(boneWeights);
-	if (Index == -1)
+        int index = findBoneWeights(boneWeights);
+        if (index == -1)
         {
-            m_BoneWeights.add(boneWeights);
-            Index = m_BoneWeights.size() - 1;
+            m_boneWeights.add(boneWeights);
+            index = m_boneWeights.size() - 1;
         }
 
-        return(Index);
+        return(index);
     }
     
-    //  Finds the index of the PolygonMeshPosition.
+    /**
+     * Determine the index of the provided boneweights.
+     * @param boneWeights
+     * @return
+     */
     public int findBoneWeights(Vector3f boneWeights)
     {
-        for (int i = 0; i < m_BoneWeights.size(); i++)
-	{
-//            if (m_BoneWeights.get(i).hashCode() == boneWeights.hashCode())
-            if (boneWeights.equals(m_BoneWeights.get(i)))
-                return i;
-        }
-
-        return(-1);
+        return m_boneWeights.indexOf(boneWeights);
     }
     
     /**
      * Retrieves a reference to the backing ArrayList
-     * @return m_BoneWeights (ArrayList<Vector3f>)
+     * @return m_boneWeights (ArrayList<Vector3f>)
      */
-    public ArrayList<Vector3f> getBoneWeightArray()
+    public Iterable<Vector3f> getBoneWeightArray()
     {
-        return m_BoneWeights;
+        return m_boneWeights;
     }
     
     /**
      * Retrieves a reference to the backing ArrayList
-     * @return m_PBoneIndices (ArrayList(PBoneIndices>)
+     * @return m_boneIndices (ArrayList(PBoneIndices>)
      */
-    public ArrayList<PBoneIndices> getBoneIndexArray()
+    public Iterable<PBoneIndices> getBoneIndexArray()
     {
-        return m_PBoneIndices;
+        return m_boneIndices;
     }
     
     /**
@@ -275,34 +270,6 @@ public class PPolygonSkinnedMesh extends PPolygonMesh implements Serializable
         m_BoneIndexBuffer   = boneIndexArray;
     }
     
-//    public ArrayList<SkinnedMeshJoint> getAnimationJointMapping()
-//    {
-//        return m_animationJointMapping;
-//    }
-//    
-//    public void buildAnimationJointMapping(SkeletonNode owningSkeleton) 
-//    {
-//        if (!m_animationJointMapping.isEmpty())
-//            return;
-//        
-//        AnimationGroup animGroup = m_Animation.getGroup(); // If every bone is mentioned this should be fine
-//        
-//        for (int i = 0; i < animGroup.getChannels().size(); ++i)
-//        {
-//            String name = animGroup.getChannels().get(i).getTargetJointName();
-//            m_animationJointMapping.add( (SkinnedMeshJoint) owningSkeleton.getSkinnedMeshJoint(name) );
-//        }   
-//    }
-//
-//    public AnimationComponent getAnimationComponent() {
-//        return m_Animation;
-//    }
-//    
-//    // Defaults to group 0
-//    public AnimationGroup getAnimationGroup() {
-//        return m_Animation.getGroup();
-//    }
-    
     public FloatBuffer getBoneIndexBuffer() 
     {
         return m_BoneIndexBuffer;
@@ -312,88 +279,6 @@ public class PPolygonSkinnedMesh extends PPolygonMesh implements Serializable
     {
         return m_WeightBuffer;
     }
-    
-    @Override
-    public void submit(PPolygonTriMeshAssembler assembler) 
-    {
-        super.submit(assembler);
-    }
-    
-    @Override
-    public boolean equals(Object obj) 
-    {
-        return super.equals(obj);
-    }
-
-    @Override
-    public int hashCode() 
-    {
-        return super.hashCode();
-    }
-    
-    @Override
-    public void addPolygon(PPolygon pPolygon) 
-    {
-        if (pPolygon == null)
-        {
-            logger.info("PPolygonSkinnedMesh does not accept null PPolygons");
-            return;
-        }
-        
-        PPolygonVertexIndices vert = pPolygon.getVertex(0);
-        
-        if (vert == null)
-        {
-            logger.info("PPolygonSkinnedMesh does not accept empty PPolygons");
-            return;
-        }
-        
-        if (!(vert instanceof PPolygonSkinnedVertexIndices))
-        {
-            logger.info("PPolygonSkinnedMesh does not accept PPolygons that uses non-skinned verts");
-            return;
-        }
-
-        // You made the cut!
-        super.addPolygon(pPolygon);
-    }
-
-    @Override
-    public void addPolygon(int[] pPositionIndices, int[] pTexCoordIndices, int VertexCount) 
-    {
-        //super.addPolygon(pPositionIndices, pTexCoordIndices, VertexCount);
-        logger.info("PPolygonSkinnedMesh does not use this method");
-    }
-
-    @Override
-    public void addQuad(int Position1Index, int Position2Index, int Position3Index, int Position4Index, int ColorIndex, int TexCoord1Index, int TexCoord2Index, int TexCoord3Index, int TexCoord4Index) 
-    {
-        //super.addQuad(Position1Index, Position2Index, Position3Index, Position4Index, ColorIndex, TexCoord1Index, TexCoord2Index, TexCoord3Index, TexCoord4Index);
-        logger.info("PPolygonSkinnedMesh does not use this method");
-    }
-
-    @Override
-    public void addTriangle(int Position1Index, int Position2Index, int Position3Index, int ColorIndex, int TexCoord1Index, int TexCoord2Index, int TexCoord3Index) 
-    {
-        //super.addTriangle(Position1Index, Position2Index, Position3Index, ColorIndex, TexCoord1Index, TexCoord2Index, TexCoord3Index);
-        logger.info("PPolygonSkinnedMesh does not use this method");
-    }
-     
-    @Override
-    public void combinePolygonMesh(PPolygonMesh other, boolean bKeepOriginalMaterial) 
-    {
-        //super.combinePolygonMesh(other, bKeepOriginalMaterial);
-        logger.info("PPolygonSkinnedMesh does not use this method");
-    }
-     
-    @Override
-    public PPolygon createPolygon() 
-    {
-        logger.info("PPolygonSkinnedMesh does not use this method");
-        return null;//super.createPolygon();
-    }
-
-
 
 	//  Adds a JointName.
     public void addJointName(String jointName)
@@ -414,7 +299,11 @@ public class PPolygonSkinnedMesh extends PPolygonMesh implements Serializable
     }
 
 
-    //  Builds the array of bone influences.
+    /**
+     * Use the internal collection of joint names to build influence indices
+     * for the provided SkeletonNode.
+     * @param skeleton
+     */
     public void linkJointsToSkeletonNode(SkeletonNode skeleton)
     {
         int index = 0;
@@ -424,7 +313,7 @@ public class PPolygonSkinnedMesh extends PPolygonMesh implements Serializable
             int BFTIndex = skeleton.getSkinnedMeshJointIndex(jointName);
             if (BFTIndex == -1) // not found!
             {
-                logger.severe("Joint not found for influence #" + index + ", name: " + jointName);
+                logger.info("Joint not found for influence #" + index + ", name: " + jointName);
                 continue;
             }
             else
@@ -437,6 +326,68 @@ public class PPolygonSkinnedMesh extends PPolygonMesh implements Serializable
 
     public Iterable<String> getJointNames() {
         return m_JointNames;
+    }
+
+    @Override
+    public void addPolygon(PPolygon pPolygon)
+    {
+        if (pPolygon == null)
+        {
+            logger.info("PPolygonSkinnedMesh does not accept null PPolygons");
+            return;
+        }
+
+        PPolygonVertexIndices vert = pPolygon.getVertex(0);
+
+        if (vert == null)
+        {
+            logger.info("PPolygonSkinnedMesh does not accept empty PPolygons");
+            return;
+        }
+
+        if (!(vert instanceof PPolygonSkinnedVertexIndices))
+        {
+            logger.info("PPolygonSkinnedMesh does not accept PPolygons that uses non-skinned verts");
+            return;
+        }
+
+        // You made the cut!
+        super.addPolygon(pPolygon);
+    }
+
+    @Override
+    public void addPolygon(int[] pPositionIndices, int[] pTexCoordIndices, int VertexCount)
+    {
+        //super.addPolygon(pPositionIndices, pTexCoordIndices, VertexCount);
+        logger.info("PPolygonSkinnedMesh does not use this method");
+    }
+
+    @Override
+    public void addQuad(int Position1Index, int Position2Index, int Position3Index, int Position4Index, int ColorIndex, int TexCoord1Index, int TexCoord2Index, int TexCoord3Index, int TexCoord4Index)
+    {
+        //super.addQuad(Position1Index, Position2Index, Position3Index, Position4Index, ColorIndex, TexCoord1Index, TexCoord2Index, TexCoord3Index, TexCoord4Index);
+        logger.info("PPolygonSkinnedMesh does not use this method");
+    }
+
+    @Override
+    public void addTriangle(int Position1Index, int Position2Index, int Position3Index, int ColorIndex, int TexCoord1Index, int TexCoord2Index, int TexCoord3Index)
+    {
+        //super.addTriangle(Position1Index, Position2Index, Position3Index, ColorIndex, TexCoord1Index, TexCoord2Index, TexCoord3Index);
+        logger.info("PPolygonSkinnedMesh does not use this method");
+    }
+
+    @Override
+    public void combinePolygonMesh(PPolygonMesh other, boolean bKeepOriginalMaterial)
+    {
+        //super.combinePolygonMesh(other, bKeepOriginalMaterial);
+        logger.info("PPolygonSkinnedMesh does not use this method");
+    }
+
+    @Override
+    public PPolygon createPolygon()
+    {
+        logger.info("PPolygonSkinnedMesh does not use this method");
+        return null;//super.createPolygon();
     }
 
 }

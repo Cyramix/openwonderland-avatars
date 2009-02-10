@@ -57,21 +57,16 @@ public class PNode implements Serializable
     private PTransform  m_transform     = null;
     
     /**  if true this node and its children will not be rendered. */
-    private boolean     m_bRenderStop   = false;
+    private transient boolean     m_bRenderStop   = false;
     
     /** if true an update is required - meaning the JMonkey equivilent of this node is out of date */
-    private boolean     m_bDirty        = true;
+    private transient boolean     m_bDirty        = true;
     
     /** external references counter */
     private int m_referenceCount = 0;
     
-    static
-    {
-       logger.setLevel(Level.SEVERE); 
-    }
-    
     /**
-     * Empty constructor, insures m_children will not be null.
+     * Construct a new instance
      */
     public PNode()
     {
@@ -867,6 +862,7 @@ public class PNode implements Serializable
         // Tell all the children that I am their parent
         for (PNode kid : m_children)
             kid.m_parent = this;
+        m_bDirty = true;
     }
 }
 

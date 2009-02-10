@@ -228,7 +228,7 @@ public class LibraryControllersProcessor extends Processor
             //  Convert to Vector3f.
             toWeights(boneSkinWeights, weightVec);
 
-            int boneIndiceIndex = skinnedMesh.getBoneIndices(boneIndices);
+            int boneIndiceIndex = skinnedMesh.addBoneIndices(boneIndices);
             int boneWeightIndex = skinnedMesh.getBoneWeights(weightVec);
 
             assignSkinningIndicesToVertex(skinnedMesh, counter, boneIndiceIndex, boneWeightIndex);

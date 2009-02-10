@@ -42,6 +42,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
 import javolution.util.FastList;
+import javolution.util.FastTable;
 
 /**
  * The PPolygonMesh class is <code>PNode</code> derived type that represents
@@ -62,25 +63,25 @@ public class PPolygonMesh extends PNode implements Serializable
     /**
      * <code>PMeshMaterial</code> is a reference to the Material common to all <code>PPolygon</code>s in this mesh.
      */
-    private PMeshMaterial                   m_pMaterial         = null;
+    private PMeshMaterial   m_pMaterial         = null;
 
     //  Eventually we will choose one shape to serve as the bounding volume.
-    private PCube                           m_BoundingCube      = new PCube();
-    private PSphere                         m_BoundingSphere    = new PSphere();
+    private transient PCube     m_BoundingCube      = new PCube();
+    private transient PSphere   m_BoundingSphere    = new PSphere();
 
     // Used to toggle smooth normal mode
-    private boolean                         m_bSmoothNormals    = false;
+    private boolean m_bSmoothNormals    = false;
 
     // The list of polygons for this mesh. The polygons in this list have
     // vertices that index into the following arrays
-    protected ArrayList<PPolygon>           m_Polygons          = null;
+    protected FastTable<PPolygon>           m_Polygons          = null;
 
     // The data members below are the master lists of the components
     // referenced by the vertices of the PPolygons contained herein.
-    protected ArrayList<PPolygonPosition>     m_Positions         = new ArrayList<PPolygonPosition>();
-    protected ArrayList<PPolygonNormal>       m_Normals           = new ArrayList<PPolygonNormal>();
-    protected ArrayList<PPolygonColor>        m_Colors            = new ArrayList<PPolygonColor>();
-    protected ArrayList<PPolygonTexCoord>     m_TexCoords         = new ArrayList<PPolygonTexCoord>();
+    protected FastTable<PPolygonPosition>     m_Positions         = new FastTable<PPolygonPosition>();
+    protected FastTable<PPolygonNormal>       m_Normals           = new FastTable<PPolygonNormal>();
+    protected FastTable<PPolygonColor>        m_Colors            = new FastTable<PPolygonColor>();
+    protected FastTable<PPolygonTexCoord>     m_TexCoords         = new FastTable<PPolygonTexCoord>();
 
     private boolean                         m_bUnifromTexCoords = false;    //  if true all textures will get index copy of texture number 0 TexCoords
     private int                             m_NumberOfTextures  = 1;        //  index multi textured mesh will have more than one texture
@@ -110,15 +111,11 @@ public class PPolygonMesh extends PNode implements Serializable
         setTransform(other.getTransform());
         
         beginBatch(); // signal that the geometry is currently in flux
-        m_Polygons = other.m_Polygons;//         = new ArrayList<PPolygon>();
+        m_Polygons = other.m_Polygons;
         m_pMaterial = other.m_pMaterial;
-//        setMaterial(other.getMaterialCopy());
 
         m_BoundingCube      = other.m_BoundingCube;
-//        m_BoundingCube.set(other.m_BoundingCube.getMin(), other.m_BoundingCube.getMax());
-        m_BoundingSphere    = other.m_BoundingSphere;//new PSphere();
-//        m_BoundingSphere.set(other.m_BoundingSphere.getCenter(), other.m_BoundingSphere.getRadius());
-        
+        m_BoundingSphere    = other.m_BoundingSphere;
         m_bSmoothNormals    = other.m_bSmoothNormals;
         // Positions
         m_Positions = other.m_Positions;
@@ -126,26 +123,8 @@ public class PPolygonMesh extends PNode implements Serializable
         m_Colors = other.m_Colors;
         m_TexCoords = other.m_TexCoords;
 
-//        for (PPolygonPosition pos : other.m_Positions)
-//            m_Positions.add(new PPolygonPosition(pos.m_Position));
-//        // Normals
-//        for (PPolygonNormal norm : other.m_Normals)
-//            m_Normals.add(new PPolygonNormal(norm.m_Normal));
-//        // Colors
-//        for (PPolygonColor color : other.m_Colors)
-//            m_Colors.add(new PPolygonColor(color.m_Color));
-//        // Texture Coordinates
-//        for (PPolygonTexCoord coord : other.m_TexCoords)
-//            m_TexCoords.add(new PPolygonTexCoord(coord.m_TexCoord));
-        
         setUniformTexCoords(other.isUniformTexCoords()); // Actually do the copy
         m_NumberOfTextures  = other.getNumberOfTextures();
-        // PPolygon copy constructor safely creates a duplicate
-//        for (int i = 0; i < other.getPolygonCount(); i++)
-//        {
-//            m_Polygons.add(new PPolygon(other.getPolygon(i)));
-//            m_Polygons.get(i).setPolygonMesh(this); // set the "owning" mesh
-//        }
         
         // Great Success!
         endBatch();
@@ -160,7 +139,7 @@ public class PPolygonMesh extends PNode implements Serializable
     {
         setName("Untitled");
         setTransform(new PTransform());
-        m_Polygons = new ArrayList<PPolygon>();
+        m_Polygons = new FastTable<PPolygon>();
         useVBO();
     }
     
@@ -173,7 +152,7 @@ public class PPolygonMesh extends PNode implements Serializable
     {
         setName(name);
         setTransform(new PTransform());
-        m_Polygons = new ArrayList<PPolygon>();
+        m_Polygons = new FastTable<PPolygon>();
         useVBO();
     }
     
@@ -1208,7 +1187,7 @@ public class PPolygonMesh extends PNode implements Serializable
      */
     public void calculateBoundingBox()
     {
-	m_BoundingCube.clear();
+        m_BoundingCube.clear();
 
         if (getPositionCount() == 0)
             return;
@@ -1314,7 +1293,7 @@ public class PPolygonMesh extends PNode implements Serializable
      * Provides access to the internal collection via direct reference
      * @return The collection
      */
-    public ArrayList<PPolygonPosition> getPositionsRef()
+    public FastTable<PPolygonPosition> getPositionsRef()
     {
         return m_Positions;
     }
@@ -1323,7 +1302,7 @@ public class PPolygonMesh extends PNode implements Serializable
      * Provides access to the internal collection via direct reference
      * @return The collection
      */
-    public ArrayList<PPolygonNormal> getNormalsRef()
+    public FastTable<PPolygonNormal> getNormalsRef()
     {
         return m_Normals;
     }
@@ -1332,7 +1311,7 @@ public class PPolygonMesh extends PNode implements Serializable
      * Provides access to the internal collection via direct reference
      * @return The collection
      */
-    public ArrayList<PPolygonColor> getColorsRef()
+    public FastTable<PPolygonColor> getColorsRef()
     {
         return m_Colors;
     }
@@ -1341,7 +1320,7 @@ public class PPolygonMesh extends PNode implements Serializable
      * Provides access to the internal collection via direct reference
      * @return The collection
      */
-    public ArrayList<PPolygonTexCoord> getTexCoordsRef()
+    public FastTable<PPolygonTexCoord> getTexCoordsRef()
     {
         return m_TexCoords;
     }
@@ -1521,6 +1500,8 @@ public class PPolygonMesh extends PNode implements Serializable
         m_bInBatch = false;
         m_bDebugInfo = false;
         m_bSubmitGeometry = true;
+        m_BoundingCube = new PCube();
+        m_BoundingSphere = new PSphere();
         setDirty(true, false);
         useVBO();
     }

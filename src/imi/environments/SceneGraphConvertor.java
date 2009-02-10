@@ -104,11 +104,6 @@ public class SceneGraphConvertor
         PMeshMaterial mat = meshInst.getMaterialRef();
         mat.setShader(null);
         meshInst.applyMaterial();
-        while (meshInst.isWaitingOnTextures())
-        {
-            System.out.println("Waiting!");
-            Thread.yield();
-        }
         SharedMesh mesh  = meshInst.getSharedMesh();
         
         // apply transform to a transform node

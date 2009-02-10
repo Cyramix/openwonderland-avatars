@@ -25,7 +25,6 @@ import imi.scene.shader.BaseShaderProgram;
 import imi.scene.shader.ShaderProperty;
 import imi.scene.shader.ShaderUtils;
 import imi.scene.shader.dynamic.GLSLDataType;
-import imi.scene.shader.dynamic.GLSLDefaultVariables;
 import imi.serialization.xml.bindings.xmlShaderProgram;
 import java.io.Serializable;
 import java.util.logging.Level;
@@ -81,7 +80,7 @@ public class HairShader extends BaseShaderProgram implements AbstractShaderProgr
         "	    color = clamp(color, 0.0, 1.0);" +
         "	    color.a = 1.0;" +
         "       float RDotV = dot(normalize((reflect(-lightVector, normal))), normalize(vec3(-position)));" +
-        "       vec4 specular = vec4(specColor, 1.0);" +
+        "       vec4 specular = diffuse;" + // vec4(specColor, 1);
         "       specular *= gl_LightSource[0].specular * pow(max(0.0, RDotV), SpecularExponent);" +
         "    	gl_FragColor = color + (specular * SpecularComponent);" +
         "}"
@@ -108,7 +107,7 @@ public class HairShader extends BaseShaderProgram implements AbstractShaderProgr
      */
     public HairShader(WorldManager wm, float fAmbientPower)
     {
-        this(wm, fAmbientPower, 0.6f, 2.4f);
+        this(wm, fAmbientPower, 0.5f, 3.4f);
     }
 
     /**
@@ -128,7 +127,7 @@ public class HairShader extends BaseShaderProgram implements AbstractShaderProgr
                 ));
 
         float[] whiteColor = new float[] {1, 1, 1 };
-        float[] specColor = new float[] {1, 1, 1 };
+        float[] specColor = new float[] {150 / 255.0f, 75 / 255.0f, 0 };
         try
         {
             // Put the properties into the property map

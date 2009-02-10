@@ -181,7 +181,7 @@ public class SkinnedMesh_MS3D_Importer
             // Because the joint's "mRelative" matrix does not contain translation data...
             pJoint.getTransform().getLocalMatrix(true).setTranslation(fileJoint.JointPosition.mult(scale));
             // add this newly finsihed joint to the skeleton we are building
-            m_skeleton.addSkinnedMeshJoint(pJoint.m_ParentJointName, pJoint); 
+            m_skeleton.addSkinnedMeshJoint(fileJoint.ParentName, pJoint);
             // Gather animation data
             pJointChannel = new MS3D_JointChannel(pJoint.getName());
             //  Process all the rotation keyframes.
@@ -290,15 +290,15 @@ public class SkinnedMesh_MS3D_Importer
             // Set the influence indices to an index relevant for this mesh, rather than the
             // entire skeleton. We perform rigid skinned weighting because all of the MS3D
             // source data we have encountered is rigidly skinned.
-            targetVertex1Indices.m_BoneIndicesIndex = pSkinnedMesh.getBoneIndices(
+            targetVertex1Indices.m_BoneIndicesIndex = pSkinnedMesh.addBoneIndices(
                     new PBoneIndices(indexOne, 0, 0, 0));
             targetVertex1Indices.m_BoneWeightIndex  = pSkinnedMesh.getBoneWeights(new Vector3f(1.0f, 0.0f, 0.0f));
 
-            targetVertex2Indices.m_BoneIndicesIndex = pSkinnedMesh.getBoneIndices(
+            targetVertex2Indices.m_BoneIndicesIndex = pSkinnedMesh.addBoneIndices(
                     new PBoneIndices(indexTwo, 0, 0, 0));
             targetVertex2Indices.m_BoneWeightIndex  = pSkinnedMesh.getBoneWeights(new Vector3f(1.0f, 0.0f, 0.0f));
 
-            targetVertex3Indices.m_BoneIndicesIndex = pSkinnedMesh.getBoneIndices(
+            targetVertex3Indices.m_BoneIndicesIndex = pSkinnedMesh.addBoneIndices(
                     new PBoneIndices(indexThree, 0, 0, 0));
             targetVertex3Indices.m_BoneWeightIndex  = pSkinnedMesh.getBoneWeights(new Vector3f(1.0f, 0.0f, 0.0f));
 

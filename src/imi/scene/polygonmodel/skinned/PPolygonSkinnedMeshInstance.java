@@ -27,29 +27,30 @@ import imi.scene.shader.AbstractShaderProgram;
 import imi.scene.shader.ShaderProperty;
 import imi.scene.utils.PRenderer;
 import imi.utils.instruments.Instrumentation.InstrumentedSubsystem;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
 
 /**
- *
+ * This class represents an instance of a skinned mesh.
  * @author Ronald Dahlgren
  * @author Lou Hayt
  */
 public class PPolygonSkinnedMeshInstance extends PPolygonMeshInstance implements Serializable
 {
-    protected PMatrix[]    m_InverseBindPose  = null; // TODO: Caching this may not be desireable
+    protected transient PMatrix[]   m_InverseBindPose  = null; // TODO: Caching this may not be desireable
 
     protected SkeletonNode m_skeletonNode    = null;
 
-    protected int[]        m_influenceIndices = null;
+    protected transient int[]        m_influenceIndices = null;
 
-    protected PMatrix[]    m_pose = null;
+    protected transient PMatrix[]    m_pose = null;
 
 
-    private final float[] m_matrixFloats = new float[16];
-    private float[] m_poseFloats = null;
-
-    //private PostAnimationJointManipulator m_jointManipulator = null;
+    private transient float[] m_matrixFloats = new float[16];
+    private transient float[] m_poseFloats = null;
 
     //  Constructor.
     public PPolygonSkinnedMeshInstance(String name, PPolygonSkinnedMesh geometry, PMatrix origin, PScene pscene, boolean applyMaterial)
@@ -63,7 +64,7 @@ public class PPolygonSkinnedMeshInstance extends PPolygonMeshInstance implements
     //  Copy Constructor.
     public PPolygonSkinnedMeshInstance(PPolygonSkinnedMeshInstance meshInstance, PScene pscene, boolean applyMaterial)
     {
-        super(meshInstance, applyMaterial);
+        super(meshInstance, pscene, applyMaterial);
         if (meshInstance.getInfluenceIndices() != null)
             setInfluenceIndices(meshInstance.getInfluenceIndices());
     }
@@ -138,7 +139,7 @@ public class PPolygonSkinnedMeshInstance extends PPolygonMeshInstance implements
             jointIndex = m_skeletonNode.getSkinnedMeshJointIndex(jointName);
             if (jointIndex == -1) // Not found!
             {
-                logger.severe("Joint not found for influence #" + counter + ", name: " + jointName + " - Skipping...");
+                logger.info("Joint not found for influence #" + counter + ", name: " + jointName + " - Skipping...");
                 continue;
             }
             else
@@ -260,5 +261,22 @@ public class PPolygonSkinnedMeshInstance extends PPolygonMeshInstance implements
             }
         }
         return false;
+    }
+
+    // setInfluenceIndices
+    /****************************
+     * SERIALIZATION ASSISTANCE *
+     ****************************/
+    private void writeObject(ObjectOutputStream out) throws IOException
+    {
+        out.defaultWriteObject();
+    }
+
+    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException
+    {
+        in.defaultReadObject();
+        if (m_geometry != null && m_skeletonNode != null)
+            linkJointsToSkeletonNode();
+        m_matrixFloats = new float[16];
     }
 }

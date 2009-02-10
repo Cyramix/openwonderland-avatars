@@ -35,6 +35,7 @@ import imi.utils.PMathUtils;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -245,8 +246,8 @@ public class PPolygonTriMeshAssembler
         ColorRGBA[] weightArray     = new ColorRGBA[Mesh.getTessalatedVertexCount()]; // per vertex, weight of 4 influence from the indexed materices\bones
         float[]     boneIndexArray  = new float[Mesh.getTessalatedVertexCount() * 4]; // per vertex, 4 indices of bones in the flatened matrix stack
         
-        ArrayList<Vector3f> sourceWeightArrayList = Mesh.getBoneWeightArray();
-        ArrayList<PBoneIndices> sourceIndexArrayList = Mesh.getBoneIndexArray();
+        List<Vector3f> sourceWeightArrayList = (List)Mesh.getBoneWeightArray();
+        List<PBoneIndices> sourceIndexArrayList = (List)Mesh.getBoneIndexArray();
         
         PGeometryVertex Vert = null;
         // Loop through each polygon, and build appropriate verts for it

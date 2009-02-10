@@ -18,7 +18,6 @@
 package imi.scene.polygonmodel.parts.polygon;
 
 import imi.scene.polygonmodel.parts.*;
-import java.util.ArrayList;
 import com.jme.math.Vector3f;
 import com.jme.math.Vector2f;
 import com.jme.renderer.ColorRGBA;
@@ -26,6 +25,7 @@ import imi.scene.polygonmodel.PPolygonMesh;
 import imi.scene.polygonmodel.parts.skinned.PPolygonSkinnedVertexIndices;
 import imi.utils.PMathUtils;
 import java.io.Serializable;
+import javolution.util.FastTable;
 
 public class PPolygon implements Serializable
 {
@@ -33,18 +33,15 @@ public class PPolygon implements Serializable
      * If vertex colors are not given this default color will be used.
      */
     static private   ColorRGBA      m_DefaultColor  = new ColorRGBA(0.0f, 1.0f, 0.0f, 1.0f);
-    
     private          PPolygonMesh   m_pPolygonMesh  = null;
-
     private          Vector3f       m_Normal        = new Vector3f();
     private          Vector3f       m_Center        = new Vector3f();
 
-    private ArrayList<PPolygonVertexIndices> m_Vertices = null;
+    private FastTable<PPolygonVertexIndices> m_Vertices = new FastTable();
 
     //  Constructor.
     public PPolygon()
     {
-        m_Vertices = new ArrayList<PPolygonVertexIndices>();
     }
     
     public PPolygon(PPolygon RHS)
@@ -54,7 +51,6 @@ public class PPolygon implements Serializable
     
     public void set(PPolygon RHS)
     {
-        m_Vertices = new ArrayList<PPolygonVertexIndices>();
         m_Normal   = new Vector3f(RHS.m_Normal);
         m_Center   = new Vector3f(RHS.m_Center);
         // Copy all the vertices
@@ -69,8 +65,7 @@ public class PPolygon implements Serializable
             set(RHS);
             return;
         }
-        
-        m_Vertices = new ArrayList<PPolygonVertexIndices>();
+
         m_Normal   = new Vector3f(RHS.m_Normal);
         m_Center   = new Vector3f(RHS.m_Center);
         // Copy all the vertices
@@ -80,7 +75,6 @@ public class PPolygon implements Serializable
 
     public PPolygon(PPolygonMesh pPolygonMesh)
     {
-        m_Vertices = new ArrayList<PPolygonVertexIndices>();
         setPolygonMesh(pPolygonMesh);
     }
     
@@ -159,7 +153,7 @@ public class PPolygon implements Serializable
         return(false);
     }
 
-    public ArrayList<PPolygonVertexIndices> getVertexCollection()
+    public FastTable<PPolygonVertexIndices> getVertexCollection()
     {
         return m_Vertices;
     }

@@ -17,13 +17,10 @@
  */
 package imi.scene.polygonmodel;
 
-import com.jme.image.Texture;
 import com.jme.math.Matrix3f;
 import com.jme.math.Vector3f;
 import com.jme.scene.SharedMesh;
 import com.jme.scene.state.GLSLShaderObjectsState;
-import com.jme.scene.state.TextureState;
-import com.jme.util.TextureManager;
 import imi.scene.PMatrix;
 import imi.scene.PNode;
 import imi.scene.PScene;
@@ -37,7 +34,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
-import java.net.URL;
 
 /**
  * This class contains a jME SharedMesh with a target TriMesh belonging to
@@ -50,7 +46,7 @@ import java.net.URL;
 public class PPolygonMeshInstance extends PNode implements Serializable
 {
     // The owning PScene
-    protected PScene              m_PScene    = null;
+    protected transient PScene              m_PScene    = null;
     // JMonkey instance object
     protected transient SharedMesh          m_instance  = null;
     
@@ -61,13 +57,7 @@ public class PPolygonMeshInstance extends PNode implements Serializable
     
     // Shader state. This must be allocated carefully (on render thread presumably)
     protected transient GLSLShaderObjectsState    m_shaderState       = null;
-    
-    // Textures
-    protected transient TextureInstaller          m_textureInstaller  = null; // Needs to know how many texture units will be used
-    
-//    // JMonkey\LWJGL MaterialState
-//    protected MaterialState             m_matState          = null;
-    
+
     /** Material **/
     protected PMeshMaterial  m_material             = null;
     /** Use geometry material or not **/
@@ -76,9 +66,9 @@ public class PPolygonMeshInstance extends PNode implements Serializable
     protected transient PMeshMaterialStates m_materialStates = null;
 
     /** Used in calculations **/
-    private final Vector3f m_translationBufferVector = new Vector3f();
-    private final Vector3f m_scaleBufferVector = new Vector3f();
-    private final Matrix3f m_rotationBuffer = new Matrix3f();
+    private transient Vector3f m_translationBufferVector    = new Vector3f();
+    private transient Vector3f m_scaleBufferVector          = new Vector3f();
+    private transient Matrix3f m_rotationBuffer             = new Matrix3f();
     /**
      * This constructor copies all the data of the other instance and inserts
      * this instance into the scene graph as a child of the provided parent.
@@ -131,10 +121,10 @@ public class PPolygonMeshInstance extends PNode implements Serializable
                 applyMaterial();
         }
     }
-    public PPolygonMeshInstance(PPolygonMeshInstance other, boolean bApplyMaterial)
+    public PPolygonMeshInstance(PPolygonMeshInstance other, PScene pscene, boolean bApplyMaterial)
     {
         super(other.getName(), null, null, new PTransform(other.getTransform()));
-        m_PScene = other.m_PScene;
+        m_PScene = pscene;
         initializeStates(m_PScene);
         m_geometry = other.m_geometry;
         m_instance = new SharedMesh(other.getName(), m_geometry.getGeometry());
@@ -335,37 +325,6 @@ public class PPolygonMeshInstance extends PNode implements Serializable
     {
         return super.isDirty() || m_geometry.isDirty();
     }
-
-    // Used for instrumentation
-    private void setTextureInstaller(TextureInstaller textureInstaller) {
-        m_textureInstaller = textureInstaller;
-//        if (textureInstaller == null)
-//        {
-//            System.err.println("NULLIFYING the texture installer");
-//            System.err.println("My name is " + getName());
-//            Thread.dumpStack();
-//
-//        }
-        // Debugging / Diagnostic output
-//        logger.severe("-----------Setting texture installer to " + textureInstaller);
-//        logger.severe("-----------this is " + this);
-//        Thread.dumpStack();
-    }
-
-    private TextureInstaller getTextureInstaller() {
-        // Debugging / Diagnostic output
-//        logger.severe("-----------Retrieving texture installer...");
-//        logger.severe("-----------this is " + this);
-//        Thread.dumpStack();
-        return m_textureInstaller;
-    }
-    
-    public boolean isWaitingOnTextures()
-    {
-        if (getTextureInstaller() != null)
-            return getTextureInstaller().isComplete();
-        return false;
-    }
     
     /**
      * Set the target pscene used for loading textures, etc
@@ -388,5 +347,8 @@ public class PPolygonMeshInstance extends PNode implements Serializable
     {
         in.defaultReadObject();
         m_instance = new SharedMesh(getName(), getGeometry().getGeometry());
+        m_translationBufferVector = new Vector3f();
+        m_scaleBufferVector = new Vector3f();
+        m_rotationBuffer = new Matrix3f();
     }
 }

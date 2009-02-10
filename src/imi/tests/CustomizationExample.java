@@ -11,8 +11,8 @@
  * except in compliance with the License. A copy of the License is
  * available at http://www.opensource.org/licenses/gpl-license.php.
  *
- * Sun designates this particular file as subject to the "Classpath" 
- * exception as provided by Sun in the License file that accompanied 
+ * Sun designates this particular file as subject to the "Classpath"
+ * exception as provided by Sun in the License file that accompanied
  * this code.
  */
 package imi.tests;
@@ -69,7 +69,7 @@ public class CustomizationExample extends DemoBase
      * @param wm
      */
     @Override
-    protected void createDemoEntities(WorldManager wm) 
+    protected void createDemoEntities(WorldManager wm)
     {
         // The event processor provides the linkage between AWT events and input controls
         JSceneEventProcessor eventProcessor = (JSceneEventProcessor) wm.getUserData(JSceneEventProcessor.class);
@@ -83,7 +83,7 @@ public class CustomizationExample extends DemoBase
         maleAttributes.setOrigin(new PMatrix(new Vector3f(1, 0, 1)));
         Avatar maleAvatar = new Avatar(maleAttributes, wm);
         // Now let's make a female using a specific configuration
-        FemaleAvatarAttributes femaleAttributes = 
+        FemaleAvatarAttributes femaleAttributes =
                 new FemaleAvatarAttributes("LizTheTestGal",
                                                  0, // Feet
                                                  1, // Legs

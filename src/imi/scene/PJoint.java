@@ -17,6 +17,9 @@
  */
 package imi.scene;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 
@@ -33,14 +36,14 @@ public class PJoint extends PNode implements Serializable
 {
     /** Mesh space's origin is the location of the mesh,
      *  this is a "world matrix" in "mesh space". */
-    private PMatrix         m_meshSpace     = new PMatrix();
+    private transient PMatrix         m_meshSpace = new PMatrix();
     
     /** Indicated whenever this joint is selected */
-    private boolean         m_bSelected     = false;
+    private transient boolean         m_bSelected     = false;
     
     /** The local modifier matirx is used for effects that do not
      * cascade down the hierarchy, for e.g. body fat */
-    private final PMatrix   m_localModifier = new PMatrix();
+    private transient PMatrix   m_localModifier = new PMatrix();
 	
     /**
      * Empty constructor, for low level coding.
@@ -182,5 +185,35 @@ public class PJoint extends PNode implements Serializable
     public void setLocalModifierMatrix(PMatrix mat)
     {
         m_localModifier.set(mat);
+    }
+
+
+    /****************************
+     * SERIALIZATION ASSISTANCE *
+     ****************************/
+    private void writeObject(ObjectOutputStream out) throws IOException
+    {
+        out.defaultWriteObject();
+        float[] matrix = new float[16];
+        m_localModifier.getFloatArray(matrix);
+        for (int i = 0; i < 12; ++i)
+            out.writeFloat(matrix[i]);
+    }
+
+    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException
+    {
+        in.defaultReadObject();
+        m_meshSpace = new PMatrix();
+
+        float[] matrix = new float[16];
+        for (int i = 0; i < 12; ++i)
+            matrix[i] = in.readFloat();
+
+        matrix[12] = 0;
+        matrix[13] = 0;
+        matrix[14] = 0;
+        matrix[15] = 1;
+
+        m_localModifier = new PMatrix(matrix);
     }
 }

@@ -34,8 +34,8 @@ import java.io.Serializable;
  */
 public class PTransform implements Serializable
 {
-    private final PMatrix     m_local = new PMatrix();
-    private final PMatrix     m_world = new PMatrix();
+    private transient PMatrix     m_local = new PMatrix();
+    private transient PMatrix     m_world = new PMatrix();
     
     /** if false the world matrix needs to be recalculated */
     protected transient boolean   m_bDirtyWorldMat      = true;
@@ -227,11 +227,29 @@ public class PTransform implements Serializable
     private void writeObject(ObjectOutputStream out) throws IOException
     {
         out.defaultWriteObject();
+        // just write the top three rows of the local matrix
+        float[] matrix = new float[16];
+        m_local.getFloatArray(matrix);
+        for (int i = 0; i < 12; ++i)
+            out.writeFloat(matrix[i]);
+
     }
 
     private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException
     {
         in.defaultReadObject();
-        m_bDirtyWorldMat = false;
+
+        float[] matrix = new float[16];
+        for (int i = 0; i < 12; ++i)
+            matrix[i] = in.readFloat();
+
+        matrix[12] = 0;
+        matrix[13] = 0;
+        matrix[14] = 0;
+        matrix[15] = 1;
+
+        m_local = new PMatrix(matrix);
+        m_world = new PMatrix();
+        m_bDirtyWorldMat = true;
     }
 }
