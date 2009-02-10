@@ -410,6 +410,7 @@ public class FemaleAvatarAttributes extends CharacterAttributes
     private void loadDefaultBindPose() {
         ArrayList<String> load      = new ArrayList<String>();
         load.add(new String("assets/models/collada/Avatars/FemaleAvatar/Female_Bind.dae")); // change!
+        load.add(new String("assets/models/collada/Avatars/FemaleAvatar/Female_Hands.dae"));
 
         ArrayList<SkinnedMeshParams> add       = new ArrayList<SkinnedMeshParams>();
         add.add(new SkinnedMeshParams("Hands_NudeShape",  "Hands"));
