@@ -635,20 +635,8 @@ public class PScene extends PNode implements RepositoryUser, Serializable
         m_SharedAssets.add(asset);
         // replace the placeholder and keep the kids from both
         PNode parent = placeHolder.getParent();
-        if (parent == null) // The placeholder should have a target
-        {
-            // Switch by type
-            switch(asset.getDescriptor().getType())
-            {
-                case Texture:
-                {
-                    // Use texture installer
-                    PPolygonMeshInstance target = placeHolder.getTarget();
-                    target.installTexture((Texture)asset.getAssetData(), asset.getDescriptor().getLocation());
-                }
-                break;
-            }
-        }
+        if (parent == null) 
+            logger.info("Deprecated \"target\" usage.");
         else if (asset.getAssetData() instanceof PScene)
         {
             PScene otherScene = ((PScene)asset.getAssetData());
@@ -1135,66 +1123,6 @@ public class PScene extends PNode implements RepositoryUser, Serializable
         }
         else
             return (Texture)m_SharedAssets.get(index).getAssetData();
-    }
-    
-    /**
-     * This method loads the specified texture into it's corresponding texture 
-     * unit in textureInstaller. The texture is an asset that is shared
-     * localy and across threads via the repository.
-     * 
-     * Note : this method is called implicitly as a result of setting a material
-     * with textures on a meshAsset. (when m_bUseRepository is true)
-     * 
-     * @param texture
-     * @param textureInstaller
-     */
-    public void loadTexture(SharedAsset texture, PPolygonMeshInstance textureInstaller)
-    {
-        if (texture == null)
-        {
-            System.out.println("ERROR: loadTexture() SharedAsset texture null");
-            return;
-        }
-        // Check localy in the the SharedAsset list
-        int index = m_SharedAssets.indexOf(texture);        
-        if (-1 == index)
-        {
-            // we do NOT already have a local reference
-            SharedAssetPlaceHolder placeHolder =  new SharedAssetPlaceHolder(texture.getDescriptor().getType().toString() +
-                    texture.getDescriptor().getLocation().getPath().toString(),
-                    texture.getDescriptor(), textureInstaller);
-            // Can this placeholder be a freeloader?
-            // Check to see if there is someone in the waiting list with the same descriptor...
-            // if there is we will jump aboard as a freeloader
-            boolean freeloader = false;
-            synchronized(m_SharedAssetWaitingList)
-            {
-                for (SharedAssetPlaceHolder holder : m_SharedAssetWaitingList)
-                {
-                    if (holder.getDescriptor().hashCode() == placeHolder.getDescriptor().hashCode())
-                    {
-                        // if there is someone in the waiting list with the same descriptor we are added as freeloaders
-                        holder.addFreeloader(placeHolder);
-                        freeloader = true;
-                        break;
-                    }
-                }
-            }
-
-            if (!freeloader)
-            {
-                // add a placeholder to the waiting list
-                m_SharedAssetWaitingList.add(placeHolder);
-                // send request to the repository
-                getRepository().loadSharedAsset(texture, this);
-            }
-        }
-        else
-        {
-            // we already have a local reference
-            SharedAsset sharedTexture = m_SharedAssets.get(index);
-            textureInstaller.installTexture((Texture)sharedTexture.getAssetData(), sharedTexture.getDescriptor().getLocation());
-        }
     }
     
     /**

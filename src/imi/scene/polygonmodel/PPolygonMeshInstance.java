@@ -231,63 +231,6 @@ public class PPolygonMeshInstance extends PNode implements Serializable
         
         setDirty(true, true); // TODO is this needed?
     }
-    
-    public synchronized void installTexture(Texture tex, URL path)
-    {
-        //System.out.println("Received " + path.toString());
-        if (tex == null)
-        {
-            logger.severe("Texture null - Location is " + path.toString());
-            return;
-        }
-        
-        if (getTextureInstaller() == null)
-        {
-            // Texture installer is set in apply material and that happens later
-            //logger.severe("Texture installer is null - "+path.toString()+"  "+this);
-            return;   
-        }
-        
-        // find the texture unit (multi texture support)
-        int texUnit = -1;
-        for (int i = 0; i < m_geometry.getNumberOfTextures(); i++)
-        {
-            if (m_material.getTexture(i) != null)
-            {
-                if (m_material.getTexture(i).getImageLocation().equals(path))
-                {
-                    texUnit = i;
-                    break;
-                }
-            }
-        }
-        // did we find the texture?
-        if (texUnit != -1)
-        {
-            TextureState ts = getTextureInstaller().installTexture(tex, texUnit);
-            if (ts != null)
-            {
-                getSharedMesh().setRenderState(ts);
-                setTextureInstaller(null);
-                //logger.fine("Texture installed from " + path.toString() + " to " + getParent().getName());
-                System.out.println("Texture installed from " + path.toString() + " to " + getName());
-                if (getParent() != null)
-                    System.out.println("Parent name: " + getParent().getName());
-            }
-            else
-            {
-                System.out.println("Texture install FAILED " + path.toString() + " to " + getName());
-                if (getParent() != null)
-                    System.out.println("Parent name: " + getParent().getName());
-            }
-        }
-        else
-        {
-            System.out.println("Texture install FAILED MISERBLY " + path.toString() + " to " + getName());
-            if (getParent() != null)
-                System.out.println("Parent name: " + getParent().getName());
-        }
-    }
 
     public boolean isUseGeometryMaterial() 
     {
