@@ -19,7 +19,6 @@ package imi.scene.animation;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * This class encapsulates animation functionality. It is used to 
@@ -51,29 +50,7 @@ public class AnimationComponent implements Serializable
     {
         
     }
-    
-    /**
-     * Copy Constructor
-     * @param other The one to copy
-     */
-    public AnimationComponent(AnimationComponent other)
-    {
-        for (AnimationGroup group : other.m_AnimationGroups)
-            m_AnimationGroups.add(new AnimationGroup(group));
-    }
-    
-    /**
-     * Initiate a transition to an animation cycle by index
-     * The animation group is defaulted to index 0
-     * @param cycleIndex - cycle to transition to
-     * @param state      - the state of the instance to animate
-     * @return false if the transition is already happening or not possible
-     */
-    public boolean transitionTo(int cycleIndex, AnimationState state, boolean bReverse) 
-    {
-        return transitionTo(cycleIndex, state, 0, bReverse);
-    }
-    
+
     /**
      * Initiate a transition to an animation cycle by index
      * @param cycleIndex - cycle to transition to
@@ -94,11 +71,9 @@ public class AnimationComponent implements Serializable
         state.setTransitionCycle(cycleIndex);
         state.setTransitionReverseAnimation(bReverse);
         if(bReverse)
-            state.setTransitionCycleTime(m_AnimationGroups.get(animationGroupIndex).getCycle(cycleIndex).getEndTime());
+            state.setTransitionCycleTime(m_AnimationGroups.get(animationGroupIndex).getCycle(cycleIndex).getDuration());
         else
-            state.setTransitionCycleTime(m_AnimationGroups.get(animationGroupIndex).getCycle(cycleIndex).getStartTime());
-        state.setTransitionCycleStartTime(m_AnimationGroups.get(animationGroupIndex).getCycle(cycleIndex).getStartTime());
-        state.setTransitionCycleEndTime(m_AnimationGroups.get(animationGroupIndex).getCycle(cycleIndex).getEndTime());
+            state.setTransitionCycleTime(0);
         
         return true;
     }
@@ -129,7 +104,7 @@ public class AnimationComponent implements Serializable
         if (index == -1)
             return false;
         
-        return transitionTo(index, state, bReverse);
+        return transitionTo(index, state, animationGroupIndex, bReverse);
     }
 
     /**

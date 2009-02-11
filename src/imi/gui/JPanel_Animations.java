@@ -192,13 +192,14 @@ public class JPanel_Animations extends javax.swing.JPanel {
                     elapsedTimeMil = elapsedTimeSec = elapsedTimeMin = 0.0f;
 
                     // Get Time in the current animation cycle
-                    cycleTimeMil = skeleton.getAnimationState().getCurrentCycleTime() * 1000F;
                     cycleTimeSec = skeleton.getAnimationState().getCurrentCycleTime();
-                    cycleTimeMin = skeleton.getAnimationState().getCurrentCycleTime() / 60F;
+                    cycleTimeMil = cycleTimeSec * 1000F;
+                    cycleTimeMin = cycleTimeSec / 60F;
+
                     if(!m_bStopped) {
-                        elapsedTimeMil = (skeleton.getAnimationState().getCurrentCycleTime() - skeleton.getAnimationGroup().getCycle(curIndex).getStartTime()) * 1000F;
-                        elapsedTimeSec = skeleton.getAnimationState().getCurrentCycleTime() - skeleton.getAnimationGroup().getCycle(curIndex).getStartTime();
-                        elapsedTimeMin = (skeleton.getAnimationState().getCurrentCycleTime() - skeleton.getAnimationGroup().getCycle(curIndex).getStartTime()) / 60F;
+                        elapsedTimeSec = skeleton.getAnimationState().getCurrentCycleTime();
+                        elapsedTimeMil = elapsedTimeSec * 1000F;
+                        elapsedTimeMin = elapsedTimeSec / 60F;
                     }                
                     Integer minutes = 0;    Integer seconds = 0;    Integer millisec = 0;
                     String time = null;
@@ -254,8 +255,7 @@ public class JPanel_Animations extends javax.swing.JPanel {
                     {
                         if(m_bStopped) {
                             skeleton.getAnimationState().setCurrentCycle(jComboBox_BodyAnimations.getSelectedIndex());
-                            float time = skeleton.getAnimationGroup().getCycle(skeleton.getAnimationState().getCurrentCycle()).getStartTime();
-                            skeleton.getAnimationState().setCurrentCycleTime(time);
+                            skeleton.getAnimationState().setCurrentCycleTime(0);
                             m_bStopped = false;
                         }
                         skeleton.getAnimationState().setPauseAnimation(false);

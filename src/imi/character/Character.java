@@ -171,7 +171,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
     /** Expansion slot for updatable things **/
     private   Updatable                     m_updateExtension       = null;
     /** index of the 'default' facial animation **/
-    private   int                           m_defaultFacePose       = 4;
+    private   int                           m_defaultFacePose       = 3; // No more 'playAll' cycle
     private   float                         m_defaultFacePoseTiming = 0.1f;
     private   VerletSkeletonFlatteningManipulator m_skeletonManipulator   = null;
 

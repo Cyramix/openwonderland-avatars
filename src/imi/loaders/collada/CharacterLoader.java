@@ -28,7 +28,7 @@ import imi.scene.PScene;
 
 import imi.scene.animation.AnimationComponent;
 import imi.scene.animation.AnimationGroup;
-import imi.scene.animation.PJointChannel;
+import imi.scene.animation.channel.PJointChannel;
 import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
 import imi.utils.AvatarObjectInputStream;
 import imi.utils.AvatarObjectOutputStream;
@@ -151,9 +151,7 @@ public class CharacterLoader implements RepositoryUser
         {
             SkeletonNode skeleton = loadSkeletonRig(animationLocation);
             newGroup = skeleton.getAnimationGroup(skeleton.getAnimationComponent().getGroupCount() - 1);
-            // remove every other frame in this group
-            for (PJointChannel channel : newGroup.getChannels())
-                channel.timeBasedReduction(reductionFactor);//channel.fractionalReduction(reductionFactor);
+
             owningSkeleton.getAnimationComponent().addGroup(newGroup);
             // Serialize it for the next round
             if (bafCacheURL != null) {
@@ -257,7 +255,7 @@ public class CharacterLoader implements RepositoryUser
             
             if (group != lastGroup)
             {
-                group.appendAnimationGroup(lastGroup);
+                group.addCycle(lastGroup.getCycle(0));
                 animationComponent.removeGroup(lastGroup);
             }
         }

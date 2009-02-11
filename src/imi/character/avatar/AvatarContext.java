@@ -313,7 +313,7 @@ public class AvatarContext extends GameContext
             if (avatar.getFacialAnimationQ() != null)
             {
                 if (avatar.getFacialAnimationQ().calculateTotalRemainingTime() < 1.0f)
-                    avatar.initiateFacialAnimation(1, 1.0f, 1.0f);
+                    avatar.initiateFacialAnimation(0, 1.0f, 1.0f);
             }
         }   
         
@@ -322,7 +322,7 @@ public class AvatarContext extends GameContext
             if (avatar.getFacialAnimationQ() != null)
             {
                 if (avatar.getFacialAnimationQ().calculateTotalRemainingTime() < 1.0f)
-                    avatar.initiateFacialAnimation(2, 3.0f, 1.5f);
+                    avatar.initiateFacialAnimation(1, 3.0f, 1.5f);
             }
         }   
         
@@ -331,7 +331,7 @@ public class AvatarContext extends GameContext
             if (avatar.getFacialAnimationQ() != null)
             {
                 if (avatar.getFacialAnimationQ().calculateTotalRemainingTime() < 1.0f)
-                    avatar.initiateFacialAnimation(3, 3.0f, 1.5f);
+                    avatar.initiateFacialAnimation(2, 3.0f, 1.5f);
             }
         }   
                 

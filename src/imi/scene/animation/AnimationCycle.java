@@ -17,7 +17,13 @@
  */
 package imi.scene.animation;
 
+import imi.scene.animation.channel.PJointChannel;
+import imi.scene.PJoint;
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.Serializable;
+import java.util.logging.Logger;
+import javolution.util.FastTable;
 
 /**
  * Defines an animation cycle within an animation group
@@ -27,10 +33,15 @@ import java.io.Serializable;
  */
 public class AnimationCycle implements Serializable
 {
+    /** Logger ref **/
+    private static final Logger logger = Logger.getLogger(AnimationCycle.class.getName());
+    /** The name of the cycle **/
     private String   m_name       = "Untitled Cycle";
-    private float    m_fStartTime = 0.0f;
-    private float    m_fEndTime   = 0.0f;
-    
+    /** For every joint we have a channel that contains all of the frames for that joint during the animation duration */
+    private final FastTable<PJointChannel> m_JointChannels = new FastTable<PJointChannel>();
+    /** Cached duration of this cycle **/
+    private transient float fDuration = 0.0f;
+
     /**
      * Empty Constructor
      */
@@ -39,55 +50,65 @@ public class AnimationCycle implements Serializable
         
     }
     
-    public AnimationCycle(AnimationCycle other)
-    {
-        m_name = new String(other.m_name);
-        m_fStartTime = other.m_fStartTime;
-        m_fEndTime = other.m_fEndTime;
-    }
-    
     /**
-     * The start and end time define the animation cycle within the animation group,
-     * the name can be used to refer to the animation later.
+     * Create a new animation cycle with the given name.
      * @param name
-     * @param startTime
-     * @param endTime
      */
-    public AnimationCycle(String name, float startTime, float endTime)
+    public AnimationCycle(String name)
     {
         if (name != null)
             m_name = name;
-        
-        m_fStartTime = startTime;
-        m_fEndTime   = endTime;
     }
 
     /**
-     * @return the time (in relation to the animation group) at the end of the animation
+     * Calculate the pose for the provided animated entity using the provided state
+     * @param state
+     * @param animated
      */
-    public float getEndTime() {
-        return m_fEndTime;
+    void calculateFrame(AnimationState state, Animated animated)
+    {
+        //  Iterate through all the Joint channels and apply the state to the joint.
+        int jointIndex = 0;
+        for (PJointChannel jointChannel : m_JointChannels)
+        {
+            PJoint joint = animated.getJoint(jointChannel.getTargetJointName());
+            if (joint != null)
+            {
+                state.getCursor().setJointIndex(jointIndex);
+                jointChannel.calculateFrame(joint, state);
+                jointIndex++;
+            }
+            else
+                logger.warning("Unable to locate joint " + jointChannel.getTargetJointName());
+        }
     }
 
-    /**
-     * @param fEndTime - the time (in relation to the animation group) at the end of the animation
-     */
-    public void setEndTime(float fEndTime) {
-        m_fEndTime = fEndTime;
-    }
 
     /**
-     * @return the time (in relation to the animation group) at the start of the animation
+     * Calculate the pose for the transition cycle of the provided animated entity
+     * with the provided state. This is then blended with the joints' current
+     * transform. If the joints were already in the current cycle's pose, then
+     * calling this method will perform the transition blending.
+     * @param state
+     * @param animated
      */
-    public float getStartTime() {
-        return m_fStartTime;
-    }
-
-    /**
-     * @param fStartTime the time (in relation to the animation group) at the start of the animation
-     */
-    public void setStartTime(float fStartTime) {
-        m_fStartTime = fStartTime;
+    void applyTransitionPose(AnimationState state, Animated animated)
+    {
+        float lerpCoefficient = state.getTimeInTransition() / state.getTransitionDuration();
+        //  Iterate through all the Joint channels and apply the state to the joint.
+        int jointIndex = 0;
+        for (PJointChannel jointChannel : m_JointChannels)
+        {
+            PJoint joint = animated.getJoint(jointChannel.getTargetJointName());
+            if (joint != null)
+            {
+                state.getCursor().setCurrentTransitionJointIndex(jointIndex);
+                jointChannel.applyTransitionPose(joint, state, lerpCoefficient);
+                jointIndex++;
+            }
+            else
+                logger.warning("Unable to locate joint " + jointChannel.getTargetJointName());
+        }
     }
 
     /**
@@ -104,10 +125,41 @@ public class AnimationCycle implements Serializable
         m_name = name;
     }
 
+    /**
+     * Retrieve the duration of this animation cycle
+     * @return
+     */
+    public float getDuration()
+    {
+        return fDuration;
+    }
+
+    /**
+     * Recalculate the duration. This should be called after modifying the
+     * joint channels.
+     * @return
+     */
+    public float recalculateDuration()
+    {
+        fDuration = 0.0f;
+        for (PJointChannel channel : m_JointChannels)
+            fDuration = Math.max(fDuration, channel.getEndTime());
+        return fDuration;
+    }
+
+    /**
+     * Add the provided joint channel to the internal collection.
+     * @param newChannel
+     */
+    public void addJointChannel(PJointChannel newChannel)
+    {
+        m_JointChannels.add(newChannel);
+    }
+
     @Override
     public String toString()
     {
-        return new String (m_name + ": " + m_fStartTime + " - " + m_fEndTime);
+        return m_name;
     }
 
     @Override
@@ -126,14 +178,6 @@ public class AnimationCycle implements Serializable
         {
             return false;
         }
-        if (this.m_fStartTime != other.m_fStartTime)
-        {
-            return false;
-        }
-        if (this.m_fEndTime != other.m_fEndTime)
-        {
-            return false;
-        }
         return true;
     }
 
@@ -142,10 +186,19 @@ public class AnimationCycle implements Serializable
     {
         int hash = 5;
         hash = 29 * hash + (this.m_name != null ? this.m_name.hashCode() : 0);
-        hash = 29 * hash + Float.floatToIntBits(this.m_fStartTime);
-        hash = 29 * hash + Float.floatToIntBits(this.m_fEndTime);
         return hash;
     }
 
-
+    /**
+     * Serialization helper
+     * @param in
+     * @throws java.io.IOException
+     * @throws java.lang.ClassNotFoundException
+     */
+    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException
+    {
+        in.defaultReadObject();
+        // calculate duration
+        recalculateDuration();
+    }
 }

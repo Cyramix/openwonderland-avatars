@@ -38,7 +38,7 @@ import org.jdesktop.mtgame.WorldManager;
 public class AvatarParty extends DemoBase
 {
     /** Number of avatars to load **/
-    private static final Integer    numberOfAvatars = Integer.valueOf(10);
+    private static final Integer    numberOfAvatars = Integer.valueOf(30);
 
     public AvatarParty(String[] args)
     {

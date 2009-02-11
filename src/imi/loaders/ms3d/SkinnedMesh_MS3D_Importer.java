@@ -28,7 +28,7 @@ import imi.scene.PTransform;
 import imi.scene.animation.AnimationCycle;
 import imi.scene.polygonmodel.skinned.PPolygonSkinnedMesh;
 import imi.scene.animation.AnimationGroup;
-import imi.scene.animation.MS3D_JointChannel;
+import imi.scene.animation.channel.Vector_JointChannel;
 import imi.scene.polygonmodel.parts.skinned.SkinnedMeshJoint;
 import imi.scene.polygonmodel.parts.skinned.PBoneIndices;
 import imi.scene.polygonmodel.parts.polygon.PPolygon;
@@ -159,9 +159,10 @@ public class SkinnedMesh_MS3D_Importer
 
         MS3DJointIndexToName = new HashMap<Integer, String>();
 
-        AnimationGroup pAnimationGroup = new AnimationGroup();
-        
-        MS3D_JointChannel pJointChannel = null;
+        AnimationGroup animationGroup = new AnimationGroup();
+        AnimationCycle newCycle = new AnimationCycle("Unnamed");
+        animationGroup.addCycle(newCycle);
+        Vector_JointChannel pJointChannel = null;
 
         for (int currentJointIndex=0; currentJointIndex < jointCount; currentJointIndex++) // For each joint
         {
@@ -183,7 +184,7 @@ public class SkinnedMesh_MS3D_Importer
             // add this newly finsihed joint to the skeleton we are building
             m_skeleton.addSkinnedMeshJoint(fileJoint.ParentName, pJoint);
             // Gather animation data
-            pJointChannel = new MS3D_JointChannel(pJoint.getName());
+            pJointChannel = new Vector_JointChannel(pJoint.getName());
             //  Process all the rotation keyframes.
             if (fileJoint.NumKeyFramesRot > 0)
             {
@@ -209,13 +210,13 @@ public class SkinnedMesh_MS3D_Importer
             pJointChannel.setBindPose(pJoint.getTransform().getLocalMatrix(false));
 
             //  Add the BoneAnimation.
-            pAnimationGroup.getChannels().add(pJointChannel);
+            newCycle.addJointChannel(pJointChannel);
         }
         
         // Regenerate skeleton mappings (see implementation for details)
         m_skeleton.refresh();
         
-        m_skeleton.getAnimationComponent().addGroup(pAnimationGroup);
+        m_skeleton.getAnimationComponent().addGroup(animationGroup);
         // split the animation loop into cycles
         MS3DAnimationMetaData animationFile = new MS3DAnimationMetaData(m_animationMeta);
         
@@ -224,8 +225,6 @@ public class SkinnedMesh_MS3D_Importer
         
         for (int i = 0; i < cycleArray.length; ++i)
             group.addCycle(cycleArray[i]);
-        
-        m_skeleton.getAnimationComponent().getGroup().calculateDuration();
         
         
         ///////////////////////////////////////////////////////////////////

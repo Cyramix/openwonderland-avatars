@@ -89,9 +89,9 @@ public class TransitionQueue implements AnimationListener
             m_state.setCurrentCycle(newCommand.getAnimationIndex());
             
             if (newCommand.isReverse())
-                m_state.setCurrentCycleTime(newCycle.getEndTime());
+                m_state.setCurrentCycleTime(newCycle.getDuration());
             else
-                m_state.setCurrentCycleTime(newCycle.getStartTime());
+                m_state.setCurrentCycleTime(0);
 
             m_state.setReverseAnimation(newCommand.isReverse());
             m_state.setCurrentCyclePlaybackMode(newCommand.getPlaybackMode());
@@ -105,9 +105,9 @@ public class TransitionQueue implements AnimationListener
             m_state.setTransitionCycle(newCommand.getAnimationIndex());
             
             if (newCommand.isReverse())
-                m_state.setTransitionCycleTime(newCycle.getEndTime());
+                m_state.setTransitionCycleTime(newCycle.getDuration());
             else
-                m_state.setTransitionCycleTime(newCycle.getStartTime());
+                m_state.setTransitionCycleTime(0);
 
             m_state.setTransitionDuration(newCommand.getTransitionLength());
             m_state.setTransitionReverseAnimation(newCommand.isReverse());
@@ -193,9 +193,9 @@ public class TransitionQueue implements AnimationListener
                     return;
                 }
                 if (nextCommand.isReverse())
-                    m_state.setTransitionCycleTime(newCycle.getEndTime());
+                    m_state.setTransitionCycleTime(newCycle.getDuration());
                 else
-                    m_state.setTransitionCycleTime(newCycle.getStartTime());
+                    m_state.setTransitionCycleTime(0);
             }
             else
                 Logger.getLogger(this.getClass().toString()).log(Level.FINE, "Animated target had no animation state!");

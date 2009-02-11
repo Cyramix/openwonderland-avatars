@@ -77,10 +77,7 @@ public class MS3DAnimationMetaData
                 // name is now index 0
                 currentCycle.setName(new String(fields[0]));
                 
-                // get start time (index 1)
-                currentCycle.setStartTime(Float.parseFloat(fields[1].split("=")[1]));
-                // get end time (index 2)
-                currentCycle.setEndTime(Float.parseFloat(fields[2].split("=")[1]));
+
                 // add this description in
                 m_AnimLoopCycles.add(currentCycle);
             }
@@ -92,11 +89,7 @@ public class MS3DAnimationMetaData
             Logger.getLogger(MS3DAnimationMetaData.class.getName()).log(Level.SEVERE, "Unable to open" + m_metaDataLocation.toString());
             bLoaded = false;
         }
-        
-        if (bLoaded)
-            m_AnimLoopCycles.addFirst(new AnimationCycle("Play All", m_AnimLoopCycles.get(0).getStartTime(), m_AnimLoopCycles.getLast().getEndTime()));
-        else
-            m_AnimLoopCycles.addFirst(new AnimationCycle("Play All", 0.0f, 10.0f)); // if no animation file was found set the play all animation on 10 secounds
+
     }
 
     /**

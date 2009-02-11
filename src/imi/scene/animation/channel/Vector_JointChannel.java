@@ -1,0 +1,354 @@
+/**
+ * Project Wonderland
+ *
+ * Copyright (c) 2004-2008, Sun Microsystems, Inc., All Rights Reserved
+ *
+ * Redistributions in source code form must reproduce the above
+ * copyright and this condition.
+ *
+ * The contents of this file are subject to the GNU General Public
+ * License, Version 2 (the "License"); you may not use this file
+ * except in compliance with the License. A copy of the License is
+ * available at http://www.opensource.org/licenses/gpl-license.php.
+ *
+ * Sun designates this particular file as subject to the "Classpath" 
+ * exception as provided by Sun in the License file that accompanied 
+ * this code.
+ */
+package imi.scene.animation.channel;
+
+import imi.scene.animation.*;
+import imi.scene.animation.channel.PJointChannel;
+import imi.scene.animation.keyframe.KeyframeInterface;
+import imi.scene.animation.keyframe.VectorKeyframe;
+import com.jme.math.Vector3f;
+import imi.scene.PJoint;
+import imi.scene.PMatrix;
+import java.io.Serializable;
+import javolution.util.FastList;
+
+/**
+ * Concrete channel implementation for milkshape animation data.
+ * 
+ * This class implements the PJointChannel interface. It is used for processing
+ * milkshape animation data (Vector3f channels for rotation and translation)
+ * 
+ * @author Ronald E Dahlgren
+ * @author Lou Hayt
+ */
+public class Vector_JointChannel implements PJointChannel, Serializable
+{
+    private PMatrix                     m_targetJointBindPose    = null; // The bind pose for this joint
+    private String                      m_targetJointName        = null; // The joint that is being manipulated
+    
+    private FastList<VectorKeyframe>    m_TranslationKeyframes   = new FastList<VectorKeyframe>();
+    private FastList<VectorKeyframe>    m_RotationKeyframes      = new FastList<VectorKeyframe>();
+    
+    // Assorted data that is explicitely calculated
+    private float                       m_fDuration              = 0.0f;
+    private float                       m_fAverageFrameStep      = 0.0f;
+
+
+    
+    //  Constructor land!
+    public Vector_JointChannel(String targetBone)
+    {
+        m_targetJointName = new String(targetBone);
+    }
+    
+    // Copy constructor
+    public Vector_JointChannel(Vector_JointChannel jointAnimation)
+    {
+        if (jointAnimation.m_targetJointBindPose != null)
+            m_targetJointBindPose = new PMatrix(jointAnimation.m_targetJointBindPose);
+        
+        m_targetJointName = new String(jointAnimation.getTargetJointName());
+        
+        // Copy translation key frames
+        for (VectorKeyframe frame : jointAnimation.m_TranslationKeyframes)
+            m_TranslationKeyframes.add(new VectorKeyframe(frame));
+        
+        // copy rotational key frames
+        for (VectorKeyframe frame : jointAnimation.m_RotationKeyframes)
+            m_RotationKeyframes.add(new VectorKeyframe(frame));
+        // Copy timing info
+        m_fDuration = jointAnimation.m_fDuration;
+        m_fAverageFrameStep = jointAnimation.m_fAverageFrameStep;
+    }
+
+    public void calculateFrame(PJoint jointToAffect, AnimationState state)
+    {
+        // do we even have animation data?
+        if (m_TranslationKeyframes.size() == 0 || m_RotationKeyframes.size() == 0)
+            return; // Do nothing
+        
+        // Extract relevant data
+        float fTime = state.getCurrentCycleTime();
+        
+        // determine what two keyframes to interpolate between for translation
+        VectorKeyframe currentFrame = m_TranslationKeyframes.getFirst();
+        VectorKeyframe nextFrame    = m_TranslationKeyframes.getFirst();
+        float s = 0.0f; // this determines how far in we should interpolate
+        
+        for (VectorKeyframe frame : m_TranslationKeyframes)
+        {
+            if (frame.getFrameTime() < fTime)
+                currentFrame = frame;
+            else // passed the mark
+            {
+                nextFrame = frame;
+                break; // finished checking
+            }
+        }
+        // determine s
+        s = (fTime - currentFrame.getFrameTime()) / (nextFrame.getFrameTime() - currentFrame.getFrameTime());
+        // lerp and determine final translation vector
+        Vector3f translationVector = new Vector3f();
+        
+        if (currentFrame != nextFrame)
+            translationVector.interpolate(currentFrame.getValue(), nextFrame.getValue(), s);
+        else
+            translationVector.set(nextFrame.getValue());
+        
+        // do the same for rotation
+        currentFrame = m_RotationKeyframes.getFirst();
+        nextFrame    = m_RotationKeyframes.getFirst();
+        for (VectorKeyframe frame : m_RotationKeyframes)
+        {
+            if (frame.getFrameTime() < fTime)
+                currentFrame = frame;
+            else // passed the mark
+            {
+                nextFrame = frame;
+                break; // finished checking
+            }
+        }
+        
+        // determine s
+        s = (fTime - currentFrame.getFrameTime()) / (nextFrame.getFrameTime() - currentFrame.getFrameTime());
+        // lerp and determine final translation vector
+        Vector3f rotationVector = new Vector3f();
+        
+        if (currentFrame != nextFrame)
+            rotationVector.interpolate(currentFrame.getValue(), nextFrame.getValue(), s);
+        else
+            rotationVector.set(nextFrame.getValue());
+        
+        // apply this to the PJoint transform matrix
+        PMatrix delta = new PMatrix(rotationVector, Vector3f.UNIT_XYZ, translationVector);
+        jointToAffect.getTransform().getLocalMatrix(true).set(m_targetJointBindPose);
+        jointToAffect.getTransform().getLocalMatrix(true).fastMul(delta);
+    }
+
+   
+    public float calculateDuration()
+    {
+        // check out the start times and the end times
+        float fStartTime = Math.min(m_TranslationKeyframes.getFirst().getFrameTime(), m_RotationKeyframes.getFirst().getFrameTime());
+        float fEndTime = Math.max(m_TranslationKeyframes.getLast().getFrameTime(), m_RotationKeyframes.getLast().getFrameTime());
+        // Calculate
+        m_fDuration = fEndTime - fStartTime;
+        // Return
+        return m_fDuration;
+        
+    }
+
+    public float calculateAverageStepTime()
+    {
+        // in case it hasn't been done...
+        calculateDuration();
+        // divide duration by the number of frames for each
+        float fAvgTransTime = m_fDuration / ((float)m_TranslationKeyframes.size());
+        float fAvgRotTime = m_fDuration / ((float)m_RotationKeyframes.size());
+        // Calculate it
+        m_fAverageFrameStep = (fAvgRotTime + fAvgTransTime) * 0.5f;
+        // Return it!
+        return m_fAverageFrameStep;
+    }
+
+    /**
+     * Gets and returns the average step time.
+     * @return float
+     */
+    public float getAverageStepTime()
+    {
+        return m_fAverageFrameStep;
+    }
+
+    public String getTargetJointName()
+    {
+        return m_targetJointName;
+    }
+
+    public void setBindPose(PMatrix bindPoseTransform)
+    {
+        m_targetJointBindPose = bindPoseTransform;
+    }
+
+    //  Adds a TranslationKeyframe.
+    public void addTranslationKeyframe(float fTime, Vector3f Value)
+    {
+        // maintain chronological ordering
+        int index = 0;
+        for (; index < m_TranslationKeyframes.size(); ++index)
+            if (m_TranslationKeyframes.get(index).getFrameTime() > fTime)
+                break;
+        // now index points to the first frame after this time
+        m_TranslationKeyframes.add(index, new VectorKeyframe(fTime, Value));
+    }
+
+    //  Gets the number of TranslationKeyframes.
+    public int getTranslationKeyframeCount()
+    {
+        return(m_TranslationKeyframes.size());
+    }
+
+    //  Gets the TranslationKeyframe at the specified index.
+    public VectorKeyframe getTranslationKeyframe(int Index)
+    {
+        return(m_TranslationKeyframes.get(Index));
+    }
+
+    //  Adds a RotationKeyframe.
+    public void addRotationKeyframe(float fTime, Vector3f Value)
+    {                // maintain chronological ordering
+        int index = 0;
+        for (; index < m_RotationKeyframes.size(); ++index)
+            if (m_RotationKeyframes.get(index).getFrameTime() > fTime)
+                break;
+        // now index points to the first frame after this time
+        m_RotationKeyframes.add(index, new VectorKeyframe(fTime, Value));
+    }
+
+    //  Gets the number of RotationKeyframes.
+    public int getRotationKeyframeCount()
+    {
+        return(m_RotationKeyframes.size());
+    }
+
+    //  Gets the RotationKeyframe at the specified index.
+    public VectorKeyframe getRotationKeyframe(int Index)
+    {
+        return(m_RotationKeyframes.get(Index));
+    }
+
+
+    /**
+     * Dumps the JointChannel.
+     */
+    @Override
+    public void dump(String spacing)
+    {
+        int a;
+        VectorKeyframe pKeyframe;
+
+        System.out.println(spacing + "PPolygonSkinnedMeshJointAnimation:");
+
+        System.out.println(spacing + "   TranslationKeyframes:  " + getTranslationKeyframeCount());
+        for (a=0; a<getTranslationKeyframeCount(); a++)
+        {
+            pKeyframe = getTranslationKeyframe(a);
+            System.out.print(spacing + "      Keyframe Time=" + pKeyframe.getFrameTime());
+            System.out.println(", Value=(" + pKeyframe.getValue().x + ", " + pKeyframe.getValue().y + ", " + pKeyframe.getValue().z + ")");
+        }
+
+        System.out.println(spacing + "   RotationKeyframes:  " + getRotationKeyframeCount());
+        for (a=0; a<getRotationKeyframeCount(); a++)
+        {
+            pKeyframe = getRotationKeyframe(a);
+            System.out.print(spacing + "      Keyframe Time=" + pKeyframe.getFrameTime());
+            System.out.println(", Value=(" + pKeyframe.getValue().x + ", " + pKeyframe.getValue().y + ", " + pKeyframe.getValue().z + ")");
+        }
+    }
+
+    /**
+     * Clears the JointChannel.
+     */
+    @Override
+    public void clear()
+    {
+        m_targetJointBindPose    = null;
+        m_targetJointName        = null;
+    
+        m_TranslationKeyframes.clear();
+        m_RotationKeyframes.clear();
+    
+        m_fDuration              = 0.0f;
+        m_fAverageFrameStep      = 0.0f;
+    }
+
+    /**
+     * Returns the endtime of the JointChannel.
+     * @return float
+     */
+    @Override
+    public float getEndTime()
+    {
+        float fEndTime = 0.0f;
+
+        if (m_TranslationKeyframes.size() == 0 && m_RotationKeyframes.size() == 0)
+            fEndTime = 0.0f;
+        else if (m_TranslationKeyframes.size() > 0 && m_RotationKeyframes.size() == 0)
+            fEndTime = m_TranslationKeyframes.getLast().getFrameTime();
+        else if (m_TranslationKeyframes.size() == 0 && m_RotationKeyframes.size() > 0)
+            fEndTime = m_RotationKeyframes.getLast().getFrameTime();
+        else
+            fEndTime = Math.max(m_TranslationKeyframes.getLast().getFrameTime(), m_RotationKeyframes.getLast().getFrameTime());
+
+        return fEndTime;
+    }
+    
+    /**
+     * Adjusts all the keyframe times.
+     * @param fAmount The amount to adjust each keyframe time by.
+     */
+    @Override
+    public void adjustKeyframeTimes(float fAmount)
+    {
+        int a;
+        VectorKeyframe pKeyframe;
+
+        for (a=0; a<getTranslationKeyframeCount(); a++)
+        {
+            pKeyframe = getTranslationKeyframe(a);
+
+            pKeyframe.setFrameTime(pKeyframe.getFrameTime() + fAmount);
+        }
+
+        for (a=0; a<getRotationKeyframeCount(); a++)
+        {
+            pKeyframe = getRotationKeyframe(a);
+
+            pKeyframe.setFrameTime(pKeyframe.getFrameTime() + fAmount);
+        }
+    }
+
+    @Override
+    public String toString() {
+        return new String("Target: " + m_targetJointName + ", Duration: " + m_fDuration);
+    }
+
+    @Override
+    public void fractionalReduction(int ratio) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public void timeBasedReduction(int newSampleFPS) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public void closeChannel() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public void applyTransitionPose(PJoint joint, AnimationState state, float lerpCoefficient) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+}
+
+
+
+

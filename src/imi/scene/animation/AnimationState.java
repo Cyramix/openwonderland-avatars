@@ -17,6 +17,7 @@
  */
 package imi.scene.animation;
 
+import imi.scene.animation.channel.AnimationCursor;
 import imi.scene.animation.AnimationComponent.PlaybackMode;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -34,20 +35,16 @@ public class AnimationState
     // Current cycle information
     private int     m_CurrentCycle              = 0;
     private float   m_CurrentCycleTime          = 0.0f;
-    private float   m_CurrentCycleStartTime     = 0.0f;
-    private float   m_CurrentCycleEndTime       = 0.0f;
     /** Describes the playback mode of the current animation cycle **/
     private AnimationComponent.PlaybackMode m_currentCycleMode = AnimationComponent.PlaybackMode.Loop;
     
     // Transition cycle information
     private int     m_TransitionCycle           = -1;
     private float   m_TransitionCycleTime       = 0.0f; // goes from start to end of the trainsition animation
-    private float   m_TransitionCycleStartTime  = 0.0f;
-    private float   m_TransitionCycleEndTime    = 0.0f;
     private float   m_TransitionDuration        = 0.5f; // how long the transition will last
     private float   m_TimeInTransition          = 0.0f; // goes 0.0f to trainsition duration
     /** Describes the playback mode of the transitioning animation cycle **/
-    private AnimationComponent.PlaybackMode m_transitionCycleMode = AnimationComponent.PlaybackMode.PlayOnce;
+    private AnimationComponent.PlaybackMode m_transitionCycleMode = AnimationComponent.PlaybackMode.Loop;
     
     private float   m_AnimationSpeed            = 1.0f; // 1.0f
     
@@ -76,14 +73,10 @@ public class AnimationState
         // Current cycle information
         m_CurrentCycle = other.m_CurrentCycle;
         m_CurrentCycleTime = other.m_CurrentCycleTime;
-        m_CurrentCycleStartTime = other.m_CurrentCycleStartTime;
-        m_CurrentCycleEndTime = other.m_CurrentCycleEndTime;
         
         // Transition cycle information 
         m_TransitionCycle = other.m_TransitionCycle;
         m_TransitionCycleTime = other.m_TransitionCycleTime;
-        m_TransitionCycleStartTime = other.m_TransitionCycleStartTime;
-        m_TransitionCycleEndTime = other.m_TransitionCycleEndTime;
         m_TransitionDuration = other.m_TransitionDuration;
         m_TimeInTransition = other.m_TimeInTransition;
         
@@ -273,38 +266,6 @@ public class AnimationState
         return true;
     }
     
-    public float getCurrentCycleEndTime() {
-        return m_CurrentCycleEndTime;
-    }
-
-    public void setCurrentCycleEndTime(float CurrentCycleEndTime) {
-        this.m_CurrentCycleEndTime = CurrentCycleEndTime;
-    }
-
-    public float getCurrentCycleStartTime() {
-        return m_CurrentCycleStartTime;
-    }
-
-    public void setCurrentCycleStartTime(float CurrentCycleStartTime) {
-        this.m_CurrentCycleStartTime = CurrentCycleStartTime;
-    }
-
-    public float getTransitionCycleEndTime() {
-        return m_TransitionCycleEndTime;
-    }
-
-    public void setTransitionCycleEndTime(float TransitionCycleEndTime) {
-        this.m_TransitionCycleEndTime = TransitionCycleEndTime;
-    }
-
-    public float getTransitionCycleStartTime() {
-        return m_TransitionCycleStartTime;
-    }
-
-    public void setTransitionCycleStartTime(float TransitionCycleStartTime) {
-        this.m_TransitionCycleStartTime = TransitionCycleStartTime;
-    }
-
     public boolean isTransitionReverseAnimation() {
         return m_bTransitionReverseAnimation;
     }
@@ -410,10 +371,8 @@ public class AnimationState
     public void setID(int m_ID) {
         this.m_ID = m_ID;
     }
-
-
-    // Package level access
-    AnimationCursor getCursor()
+    
+    public AnimationCursor getCursor()
     {
         return m_animCursor;
     }

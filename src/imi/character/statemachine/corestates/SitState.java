@@ -266,7 +266,7 @@ public class SitState extends GameState
         if (context.getSkeleton() != null)
         {
             int index = context.getSkeleton().getAnimationGroup().findAnimationCycleIndex(getAnimationName());
-            float duration = context.getSkeleton().getAnimationGroup().getCycle(index).getEndTime() - context.getSkeleton().getAnimationGroup().getCycle(index).getStartTime();
+            float duration = context.getSkeleton().getAnimationGroup().getCycle(index).getDuration();
             this.sittingAnimationTime = duration / getAnimationSpeed();   
             System.out.println("ddddddddddddddddddddddddddddddddddddddddddd       " +  this.sittingAnimationTime);
         }

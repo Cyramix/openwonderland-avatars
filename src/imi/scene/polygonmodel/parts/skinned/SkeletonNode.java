@@ -111,7 +111,7 @@ public class SkeletonNode extends PNode implements Animated, Serializable
     {
         super(other.getName(), new PTransform(other.getTransform()));
         // copy over the animation stuff
-        m_animationComponent = new AnimationComponent(other.getAnimationComponent());
+        m_animationComponent = other.getAnimationComponent();
         // States should be copied
         for (AnimationState animState : other.m_animationStates)
             m_animationStates.add(new AnimationState(animState));

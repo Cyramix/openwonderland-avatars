@@ -17,10 +17,9 @@
  */
 package imi.scene.animation;
 
-import imi.scene.PJoint;
 import java.io.Serializable;
 import java.util.logging.Logger;
-import javolution.util.FastList;
+import javolution.util.FastTable;
 
 
 
@@ -36,20 +35,13 @@ import javolution.util.FastList;
  */
 public class AnimationGroup implements Serializable
 {
+    /** Logger ref **/
+    private static final Logger logger = Logger.getLogger(AnimationGroup.class.getName());
     /** The name of this animation group */
     private String                  m_name          = null;
 
-    /** For every joint we have a channel that contains all of the frames for that joint during the animation duration */
-    private final FastList<PJointChannel> m_JointChannels = new FastList<PJointChannel>();
-
     /** Contains the animation cycles that are defined for this animation group */
-    private final FastList<AnimationCycle> m_cycles       = new FastList<AnimationCycle>();
-
-    /** The overall duration of the entire animation in this group */
-    private float                   m_Duration      = 0.0f;
-
-    /** Used for seperatoin when appending groups */
-    private final float             m_fTimePadding  = 10.0f;
+    private final FastTable<AnimationCycle> m_cycles       = new FastTable<AnimationCycle>();
 
     /**
      * Constructor
@@ -66,30 +58,34 @@ public class AnimationGroup implements Serializable
      */
     public AnimationGroup()
     {
-        this((String)null);
     }
+
 
     /**
-     * Copy constructor
-     * @param other
+     * Generates the current pose solution based on the specified state
+     * of the animated thing.
+     * @param animated That which is animated
+     * @param animationStateIndex The animationStateIndex of the animation state to use for solving
      */
-    public AnimationGroup(AnimationGroup other)
+    private void calculateFrame(AnimationState state, Animated animated)
     {
-        this(other.m_name);
+        if (state.isPauseAnimation())
+            return;
 
-        m_JointChannels.clear();
-        for (PJointChannel jointChannel : other.m_JointChannels)
-            m_JointChannels.add(jointChannel.copy());
+        int cycleIndex = state.getCurrentCycle();
+        if (cycleIndex == -1 || m_cycles.isEmpty())
+            return;
 
-        m_cycles.clear();
-        for (AnimationCycle cycle : other.m_cycles)
-            m_cycles.add(new AnimationCycle(cycle));
+        AnimationCycle cycle = m_cycles.get(cycleIndex);
+        clampCycleTime(state);
 
-        m_Duration = other.m_Duration;
-
+        // determine if a transition has happened
+        int result = checkForTransitions(state);
+        if (result == 1) // Transitioning
+            calculateBlendedFrame(state, animated);
+        else if (result == 0) // Not transitioning
+            cycle.calculateFrame(state, animated);
     }
-
-
 
     /**
      * Generates the current "pose" solutions based on state input.
@@ -101,82 +97,10 @@ public class AnimationGroup implements Serializable
     }
 
     /**
-     * Generates the current pose solution based on the specified state
-     * of the animated thing.
-     * @param animated That which is animated
-     * @param animationStateIndex The animationStateIndex of the animation state to use for solving
+     * Calculates the frame for the provided animated thing.
+     * @param animated
+     * @param animationStateIndex
      */
-    private void calculateFrame(AnimationState state, Animated animated)
-    {
-        // This was changed in order to support calculating frames on
-        // multiple animation groups within a single animated thing
-        if (state.isPauseAnimation())
-            return;
-
-        int cycleIndex = state.getCurrentCycle();
-        if (cycleIndex == -1 || m_cycles.isEmpty())
-            return;
-
-
-        AnimationCycle cycle = m_cycles.get(cycleIndex);
-
-        float fTime = clampCycleTime(cycle, state, true);
-        state.setCurrentCycleTime(fTime);
-        state.setCurrentCycleStartTime(cycle.getStartTime());
-        state.setCurrentCycleEndTime(cycle.getEndTime());
-
-        boolean bTransitioning = false;
-        if (state.getTransitionCycle() != -1)
-        {
-            bTransitioning = true;
-
-
-            AnimationCycle transitionCycle = m_cycles.get(state.getTransitionCycle());
-
-            float fTransitionTime = clampCycleTime(transitionCycle, state, false);
-
-            state.setTransitionCycleTime(fTransitionTime);
-
-            state.setTransitionCycleStartTime(transitionCycle.getStartTime());
-            state.setTransitionCycleEndTime(transitionCycle.getEndTime());
-        }
-
-        //  Iterate through all the Joint channels and apply the state to the joint.
-        int jointIndex = 0;
-        for (PJointChannel jointChannel : m_JointChannels)
-        {
-            PJoint joint = animated.getJoint(jointChannel.getTargetJointName());
-            if (joint == null)
-                System.out.println("Unable to locate joint " + jointChannel.getTargetJointName());
-
-            state.getCursor().setJointIndex(jointIndex);
-
-            if (bTransitioning)
-            {
-                // finished transitioning?
-                if (state.getTimeInTransition() >= state.getTransitionDuration())
-                {
-                    // do the switcheroo
-                    state.setCurrentCycle(state.getTransitionCycle());
-                    state.setTransitionCycle(-1);
-                    state.setCurrentCycleTime(state.getTransitionCycleTime());
-                    state.setTimeInTransition(0.0f);
-                    state.setReverseAnimation(state.isTransitionReverseAnimation());
-                    state.sendMessage(AnimationListener.AnimationMessageType.TransitionComplete);
-                    state.getCursor().makeNegativeOne();
-                    return;
-                }
-                else
-                    jointChannel.calculateBlendedFrame(joint, state);
-            }
-            else
-            {
-                jointChannel.calculateFrame(joint, state);
-            }
-            jointIndex++;
-        }
-    }
-
     public synchronized void calculateFrame(Animated animated, int animationStateIndex)
     {
         AnimationState state = animated.getAnimationState(animationStateIndex);
@@ -184,130 +108,20 @@ public class AnimationGroup implements Serializable
     }
 
     /**
-     * Clamps the currentCycle time intelligently based on the provided state.
-     * @param currentCycle
+     * Calculates a pose solution as the interpolation of the current and the
+     * transitioning cycle solutions.
      * @param state
-     * @param bClampForCurrentCycle
-     * @return
      */
-    private float clampCycleTime(AnimationCycle cycle, AnimationState state, boolean bClampForCurrentCycle)
+    private void calculateBlendedFrame(AnimationState state, Animated animated)
     {
-        // Variables assigned meaningful values based on bClampForCurrentCycle
-        boolean bReverse  = false;
-        AnimationComponent.PlaybackMode mode = null;
-
-        float fTime = 0.0f;
-
-        if (bClampForCurrentCycle == true) // Use current currentCycle info
-        {
-            bReverse = state.isReverseAnimation();
-            mode = state.getCurrentCyclePlaybackMode();
-            fTime = state.getCurrentCycleTime();
-        }
-        else // For transition currentCycle
-        {
-            bReverse = state.isTransitionReverseAnimation();
-            mode = state.getTransitionPlaybackMode();
-            fTime = state.getTransitionCycleTime();
-        }
-
-        if (bReverse)
-        {
-            if (fTime < cycle.getStartTime()) // Reverse left edge
-            {
-                if (mode == AnimationComponent.PlaybackMode.Loop)
-                    fTime = cycle.getEndTime() - Float.MIN_VALUE;
-                else if (mode == AnimationComponent.PlaybackMode.PlayOnce)
-                {
-                    fTime = cycle.getStartTime();
-                    state.sendMessage(AnimationListener.AnimationMessageType.PlayOnceComplete);
-                }
-                else if (mode == AnimationComponent.PlaybackMode.Oscillate)
-                {
-                    fTime = cycle.getStartTime() + Float.MIN_VALUE;
-                    // Reverse the currentCycle!
-                    if (bClampForCurrentCycle)
-                        state.setReverseAnimation(!state.isReverseAnimation());
-                    else
-                        state.setTransitionReverseAnimation(!state.isTransitionReverseAnimation());
-                }
-                state.getCursor().makeNegativeOne();
-            }
-            else if (fTime > cycle.getEndTime()) // Reverse right edge, clamp to the right
-            {
-                fTime = cycle.getEndTime();
-                state.getCursor().makeNegativeOne();
-            }
-        }
-        else // Not in reverse
-        {
-            if (fTime < cycle.getStartTime()) // Forward, left edge, clamp to the left
-            {
-                fTime = cycle.getStartTime();
-                state.getCursor().makeNegativeOne();
-            }
-            else if (fTime > cycle.getEndTime()) // Forward, right edge
-            {
-                if (mode == AnimationComponent.PlaybackMode.Loop)
-                    fTime = cycle.getStartTime() + Float.MIN_VALUE;
-                else if (mode == AnimationComponent.PlaybackMode.PlayOnce)
-                {
-                    fTime = cycle.getEndTime();
-                    state.sendMessage(AnimationListener.AnimationMessageType.PlayOnceComplete);
-                }
-                else if (mode == AnimationComponent.PlaybackMode.Oscillate)
-                {
-                    fTime = cycle.getEndTime() - Float.MIN_VALUE;
-                    // Reverse the currentCycle!
-                    if (bClampForCurrentCycle)
-                        state.setReverseAnimation(!state.isReverseAnimation());
-                    else
-                        state.setTransitionReverseAnimation(!state.isTransitionReverseAnimation());
-                }
-                state.getCursor().makeNegativeOne();
-            }
-        }
-
-        return fTime;
+        AnimationCycle cycle = m_cycles.get(state.getCurrentCycle());
+        AnimationCycle transitionCycle = m_cycles.get(state.getTransitionCycle());
+        // Calculate frame as usual with the current cycle
+        cycle.calculateFrame(state, animated);
+        // now blend this to the transition cycle
+        transitionCycle.applyTransitionPose(state, animated);
     }
-
-    /**
-     * Calculates the duration of the entire animation data stored in this group
-     */
-    public void calculateDuration()
-    {
-        for (PJointChannel channel : m_JointChannels)
-            m_Duration = Math.max(m_Duration, channel.calculateDuration());
-    }
-
-    /**
-     * @return the duration of the entire animation data stored in this group
-     */
-    public float getDuration()
-    {
-        return m_Duration;
-    }
-
-    /**
-     * @return the channels for all the joints (channels contain all the frames for a particular joint)
-     */
-    public FastList<PJointChannel> getChannels()
-    {
-        return m_JointChannels;
-    }
-
-    /**
-     * @return the channel targeting the specified joint.
-     */
-    public PJointChannel findChannel(String targetJointName)
-    {
-        for (PJointChannel channel : m_JointChannels)
-            if (targetJointName.equals(channel.getTargetJointName()))
-                return channel;
-        return null;
-    }
-
-
+    
     /**
      * Find an animation currentCycle by name
      * @param cycleName or -1 if not found
@@ -362,150 +176,13 @@ public class AnimationGroup implements Serializable
     public void addCycle(AnimationCycle cycle)
     {
         m_cycles.add(cycle);
-        for (PJointChannel channel : m_JointChannels)
-            channel.closeCycle(cycle);
-    }
-
-    /**
-     * Creates a default currentCycle for the AnimationGroup. Also clears any cycles
-     * that are already stored.
-     */
-    public void createDefaultCycle()
-    {
-        calculateDuration();
-
-        AnimationCycle pAnimationCycle = new AnimationCycle("default", getStartTime(), m_Duration);
-        m_cycles.clear();
-        m_cycles.add(pAnimationCycle);
-    }
-
-    /**
-     * Updates the default currentCycle.
-     */
-    public void updateDefaultCycle()
-    {
-        calculateDuration();
-
-        m_cycles.getFirst().setStartTime(0.0f);
-        m_cycles.getFirst().setEndTime(calculateLastFrameTime());
-    }
-
-
-    /**
-     * Trims all the JointChannels.
-     * @param fMaxTime The max keyframe time that should remain in the JointChannel.
-     */
-    public void trim(float fMaxTime)
-    {
-        for (PJointChannel channel : m_JointChannels)
-            channel.trim(fMaxTime);
-    }
-
-    private Iterable<AnimationCycle> getCycles() {
-        return m_cycles;
-    }
-
-
-    private float getStartTime()
-    {
-        float fStartTime = Float.MAX_VALUE;
-
-        for (PJointChannel channel : m_JointChannels)
-            fStartTime = Math.min(fStartTime, channel.getStartTime());
-
-        return fStartTime;
-    }
-
-    private float calculateLastFrameTime()
-    {
-        float fEndTime = 0.0f;
-        float fLocalEndTime = 0.0f;
-
-        for (PJointChannel channel : m_JointChannels)
-        {
-            fLocalEndTime = channel.getEndTime();
-
-            if (fLocalEndTime > fEndTime)
-                fEndTime = fLocalEndTime;
-        }
-
-        return fEndTime;
-    }
-
-        //  Appends an AnimationGroup to the end of this AnimationGroup.
-    public void appendAnimationGroup(AnimationGroup otherAnimationGroup)
-    {
-        PJointChannel pOriginalJointChannel = null;
-
-        // grab the first animation currentCycle from this group
-        AnimationCycle firstAnimationCycle = this.getCycle(0);
-
-        //  Create duplicate of first Cycle if we only have one.
-        if (this.getCycleCount() == 1)
-        {
-            //  Create a new AnimationCycle= copying the existing (only other) currentCycle
-            AnimationCycle newAnimationCycle = new AnimationCycle(firstAnimationCycle);
-            addCycle(newAnimationCycle);
-
-            firstAnimationCycle.setName("All Cycles");
-        }
-
-        // find the time of the last keyframe in this animation group
-        float fEndOfInitialKeyframes = calculateLastFrameTime() + m_fTimePadding;
-
-        // Iterate through every currentCycle from the new group
-        for (AnimationCycle currentCycle : otherAnimationGroup.getCycles())
-        {
-            currentCycle.setStartTime(currentCycle.getStartTime() + (fEndOfInitialKeyframes));
-            currentCycle.setEndTime(currentCycle.getEndTime() + (fEndOfInitialKeyframes));
-
-            this.addCycle(currentCycle);
-        }
-
-        for (PJointChannel channel : otherAnimationGroup.getChannels())
-        {
-            // Did this joint already have a channel in out group?
-            pOriginalJointChannel = findChannel(channel.getTargetJointName());
-
-            if (pOriginalJointChannel != null)
-            {
-                pOriginalJointChannel.append(channel, fEndOfInitialKeyframes);
-                for (AnimationCycle cycle : m_cycles)
-                    pOriginalJointChannel.closeCycle(cycle);
-            }
-            else
-                addJointChannel(otherAnimationGroup, channel, fEndOfInitialKeyframes);
-        }
-
-        updateDefaultCycle(); // calls calculateDuration()
-
-        otherAnimationGroup.clear();
     }
 
     //  Clears the AnimationGroup.
     public void clear()
     {
-        m_name = "";
-        m_JointChannels.clear();
+        m_name = null;
         m_cycles.clear();
-        m_Duration = 0.0f;
-    }
-
-    public void addJointChannel(AnimationGroup animationGroup, PJointChannel jointChannel, float fStartTime)
-    {
-        //  Adjust all the keyframes in 'jointChannel' by 'fStartTime'.
-        // That is, shift all start times to the right such that they are added to the end of the group
-        jointChannel.adjustKeyframeTimes(fStartTime);
-
-        //  Remove the JointChannel from the AnimationGroup we're moving it from.
-        animationGroup.getChannels().remove(jointChannel);
-
-        // Close all existing cycles
-        for (AnimationCycle cycle : m_cycles)
-            jointChannel.closeCycle(cycle);
-
-        //  Add the JointChannel to this AnimationGroup.
-        m_JointChannels.add(jointChannel);
     }
 
     @Override
@@ -516,61 +193,125 @@ public class AnimationGroup implements Serializable
         sb.append("Cycles:\n");
         for (AnimationCycle cycle : m_cycles)
             sb.append(cycle.toString() + "\n");
-        sb.append("JointChannels:\n");
-        for (PJointChannel channel : m_JointChannels)
-            sb.append(channel.toString() + "\n");
         return sb.toString();
     }
 
-    @Override
-    public boolean equals(Object obj)
+    /**
+     * Check for transitions. The return value indicates whether the calculateBlendedFrame
+     * method should be used rather than calculateFrame
+     * @param state
+     * @return 1 to transition, 0 to not transition, 2 on completion of a transition
+     */
+    private int checkForTransitions(AnimationState state)
     {
-        if (obj == null)
+        int result = 0;
+        if (state.getTransitionCycle() != -1)
         {
-            return false;
+            // finished transitioning?
+            if (state.getTimeInTransition() >= state.getTransitionDuration())
+            {
+                // do the switcheroo
+                state.setCurrentCycle(state.getTransitionCycle());
+                state.setTransitionCycle(-1);
+                state.setCurrentCycleTime(state.getTransitionCycleTime());
+                state.setTimeInTransition(0.0f);
+                state.setReverseAnimation(state.isTransitionReverseAnimation());
+                state.sendMessage(AnimationListener.AnimationMessageType.TransitionComplete);
+                state.getCursor().makeNegativeOne();
+                result = 2;
+            }
+            else
+                result = 1;
         }
-        if (getClass() != obj.getClass())
-        {
-            return false;
-        }
-        final AnimationGroup other = (AnimationGroup) obj;
-        if ((this.m_name == null) ? (other.m_name != null) : !this.m_name.equals(other.m_name))
-        {
-            return false;
-        }
-        if (this.m_JointChannels != other.m_JointChannels && (this.m_JointChannels == null || !this.m_JointChannels.equals(other.m_JointChannels)))
-        {
-            return false;
-        }
-        if (this.m_cycles != other.m_cycles && (this.m_cycles == null || !this.m_cycles.equals(other.m_cycles)))
-        {
-            return false;
-        }
-        if (this.m_Duration != other.m_Duration)
-        {
-            return false;
-        }
-        if (this.m_fTimePadding != other.m_fTimePadding)
-        {
-            return false;
-        }
-        return true;
+        return result;
     }
 
-    @Override
-    public int hashCode()
+    /**
+     * Clamps the cycle times within the specified range; fires off messages
+     * if applicable.
+     * @param state
+     */
+    private void clampCycleTime(AnimationState state)
     {
-        int hash = 7;
-        hash = 11 * hash + (this.m_name != null ? this.m_name.hashCode() : 0);
-        hash = 11 * hash + (this.m_JointChannels != null ? this.m_JointChannels.hashCode() : 0);
-        hash = 11 * hash + (this.m_cycles != null ? this.m_cycles.hashCode() : 0);
-        hash = 11 * hash + Float.floatToIntBits(this.m_Duration);
-        hash = 11 * hash + Float.floatToIntBits(this.m_fTimePadding);
-        return hash;
+        // Current cycle time first
+        float fCurrentCycleTime = state.getCurrentCycleTime();
+        AnimationCycle currentCycle = m_cycles.get(state.getCurrentCycle());
+        // Outside the bounds?
+        if (fCurrentCycleTime < 0 || fCurrentCycleTime > currentCycle.getDuration())
+        {
+            state.getCursor().makeNegativeOne();
+            state.setCurrentCycleTime(0);
+            AnimationComponent.PlaybackMode mode = state.getCurrentCyclePlaybackMode();
+            switch (mode)
+            {
+                case Loop:
+                    if (state.isReverseAnimation() && fCurrentCycleTime < 0)
+                        state.setCurrentCycleTime(currentCycle.getDuration());
+                    else if (!state.isReverseAnimation() && fCurrentCycleTime > currentCycle.getDuration())
+                        state.setCurrentCycleTime(0.0f);
+                    break;
+                case Oscillate:
+                    if (state.isReverseAnimation() && fCurrentCycleTime < 0)
+                        state.setCurrentCycleTime(0.0f);
+                    else if (!state.isReverseAnimation())
+                        state.setCurrentCycleTime(currentCycle.getDuration());
+                    // Flip the direction
+                    state.setReverseAnimation(!state.isReverseAnimation());
+                    break;
+                case PlayOnce:
+                    if (state.isReverseAnimation() && fCurrentCycleTime < 0)
+                        state.setCurrentCycleTime(0.0f);
+                    else if (!state.isReverseAnimation())
+                        state.setCurrentCycleTime(currentCycle.getDuration());
+                    // Let the listeners know
+                    state.sendMessage(AnimationListener.AnimationMessageType.PlayOnceComplete);
+                    break;
+                default:
+                    logger.warning("Unknown playback mode encountered. Mode was " + mode);
+            }
+        }
+
+        // Now for transition cycle (if applicable)
+        if (state.getTransitionCycle() != -1) // transitioning
+        {
+            float fTransitionCycleTime = state.getTransitionCycleTime();
+
+            AnimationCycle transitionCycle = m_cycles.get(state.getTransitionCycle());
+
+            if (fTransitionCycleTime < 0 || fTransitionCycleTime > transitionCycle.getDuration())
+            {
+                AnimationComponent.PlaybackMode mode = state.getTransitionPlaybackMode();
+                switch (mode)
+                {
+                    case Loop:
+                        if (state.isTransitionReverseAnimation() && fTransitionCycleTime < 0)
+                            state.setTransitionCycleTime(transitionCycle.getDuration());
+                        else if (!state.isTransitionReverseAnimation())
+                            state.setTransitionCycleTime(0.0f);
+                        break;
+                    case Oscillate:
+                        if (state.isTransitionReverseAnimation() && fTransitionCycleTime < 0)
+                            state.setTransitionCycleTime(0.0f);
+                        else if (!state.isTransitionReverseAnimation())
+                            state.setTransitionCycleTime(transitionCycle.getDuration());
+                        // Flip the direction
+                        state.setTransitionReverseAnimation(!state.isTransitionReverseAnimation());
+                        break;
+                    case PlayOnce:
+                        if (state.isTransitionReverseAnimation() && fTransitionCycleTime < 0)
+                            state.setTransitionCycleTime(0.0f);
+                        else if (!state.isTransitionReverseAnimation())
+                            state.setTransitionCycleTime(transitionCycle.getDuration());
+                        // Let the listeners know
+//                        state.sendMessage(AnimationListener.AnimationMessageType.PlayOnceComplete);
+                        break;
+                    default:
+                        logger.warning("Unknown playback mode encountered. Mode was " + mode);
+                }
+            }
+        }
+
     }
-
-    
-
 }
 
 

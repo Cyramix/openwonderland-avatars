@@ -61,9 +61,9 @@ public class WalkState extends GameState
             CharacterController controller = context.getController();
 
             if (controller.isMovingForward())
-                setTransitionReverseAnimation(true);
-            else
                 setTransitionReverseAnimation(false);
+            else
+                setTransitionReverseAnimation(true);
         }
                 
         return true;

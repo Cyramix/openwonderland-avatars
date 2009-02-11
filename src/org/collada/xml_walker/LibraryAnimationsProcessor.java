@@ -22,10 +22,11 @@ import org.collada.colladaschema.LibraryAnimations;
 
 import imi.loaders.collada.Collada;
 import imi.scene.animation.AnimationGroup;
-import imi.scene.animation.COLLADA_JointChannel;
+import imi.scene.animation.channel.PMatrix_JointChannel;
 import imi.scene.PMatrix;
 import imi.scene.PJoint;
 
+import imi.scene.animation.AnimationCycle;
 import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
 import org.collada.colladaschema.Animation;
 import org.collada.colladaschema.Source;
@@ -67,13 +68,12 @@ public class LibraryAnimationsProcessor extends Processor
         if (animationLibrary.getAnimations().size() > 0)
         {
             AnimationGroup newGroup = new AnimationGroup();
+            AnimationCycle newCycle = new AnimationCycle(m_colladaRef.getName());
+            newGroup.addCycle(newCycle);
 
             for (Animation anim : animationLibrary.getAnimations())
                 processAnimation(anim, newGroup);
-
-            newGroup.calculateDuration();
-            newGroup.createDefaultCycle();
-
+            // close the cycle
             newGroup.getCycle(0).setName(m_colladaRef.getName());
             System.out.println("   Animation:  '" + animationLibrary.getId() + "'");
 
@@ -93,7 +93,7 @@ public class LibraryAnimationsProcessor extends Processor
     {
         float fKeyframeTime = 0.0f;
         PMatrix matrixBuffer = new PMatrix();
-        COLLADA_JointChannel colladaJointChannel = null;
+        PMatrix_JointChannel colladaJointChannel = null;
 
 
         m_AnimatedItemID = colladaAnimation.getId();
@@ -139,7 +139,7 @@ public class LibraryAnimationsProcessor extends Processor
         }
                 
         //  Create the JointChannel.
-        colladaJointChannel = new COLLADA_JointChannel(m_AnimatedItemName);
+        colladaJointChannel = new PMatrix_JointChannel(m_AnimatedItemName);
 
 
         //  Create all the MatrixKeyframes.
@@ -152,9 +152,9 @@ public class LibraryAnimationsProcessor extends Processor
         }
 
         colladaJointChannel.calculateDuration();
-
+        colladaJointChannel.closeChannel();
         //  Add the JointAnimation to the AnimationLoop.
-        animationGroup.getChannels().add(colladaJointChannel);
+        animationGroup.getCycle(0).addJointChannel(colladaJointChannel);
     }
 
     /**

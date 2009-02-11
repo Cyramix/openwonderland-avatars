@@ -44,7 +44,7 @@ import imi.scene.polygonmodel.skinned.PPolygonSkinnedMesh;
 import imi.scene.PMatrix;
 import imi.scene.PNode;
 import imi.scene.animation.AnimationGroup;
-import imi.scene.animation.COLLADA_JointChannel;
+import imi.scene.animation.channel.PMatrix_JointChannel;
 
 
 
