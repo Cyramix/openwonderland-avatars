@@ -71,15 +71,20 @@ public class TextureMaterialProperties implements Serializable
         setImageLocation(imageLocation);
     }
 
-    public TextureMaterialProperties(xmlTextureAttributes texAttr)
+    public TextureMaterialProperties(xmlTextureAttributes texAttr, String baseURL)
     {
-        applyTextureAttributesDOM(texAttr);
+        applyTextureAttributesDOM(texAttr, baseURL);
     }
 
     public Texture loadTexture() {
-        Texture result = TextureManager.loadTexture(m_imageLocation);
-        apply(result);
-        return result;
+        try {
+            Texture result = TextureManager.loadTexture(m_imageLocation);
+            apply(result);
+            return result;
+        } catch(Exception e) {
+            Logger.getAnonymousLogger().warning("Error Loading Texture"+m_imageLocation);
+        }
+        return null;
     }
 
     private void setDefaultValues()
@@ -301,10 +306,14 @@ public class TextureMaterialProperties implements Serializable
     }
 
 
-    private void applyTextureAttributesDOM(xmlTextureAttributes texAttr) {
+    private void applyTextureAttributesDOM(xmlTextureAttributes texAttr, String baseURL) {
         try
         {
-            String fileProtocol = "file:///" + System.getProperty("user.dir") + "/";
+
+            String fileProtocol = baseURL;
+            if (baseURL==null)
+                fileProtocol = "file:///" + System.getProperty("user.dir") + "/";
+            
             // url
             setImageLocation(new URL(fileProtocol + texAttr.getRelativePath()));
             // textureUnit

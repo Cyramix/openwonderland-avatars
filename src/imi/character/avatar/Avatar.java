@@ -88,6 +88,12 @@ public class Avatar extends imi.character.Character
         maleContextSetup();
     }
 
+    public Avatar(URL configurationFile, WorldManager wm, String baseURL)
+    {
+        super(configurationFile, wm, baseURL);
+        maleContextSetup();
+    }
+
     protected GameContext instantiateContext() {
         return new AvatarContext(this);
     }

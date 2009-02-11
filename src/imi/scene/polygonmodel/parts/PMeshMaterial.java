@@ -254,9 +254,9 @@ public class PMeshMaterial extends PNode implements Serializable
     }
 
 
-    public PMeshMaterial(xmlMaterial xmlMat, WorldManager wm) {
+    public PMeshMaterial(xmlMaterial xmlMat, WorldManager wm, String baseURL) {
         this();
-        applyMaterialDOM(xmlMat, wm);
+        applyMaterialDOM(xmlMat, wm, baseURL);
     }
     /**
      * Don't use this function, use the hashcode comparison ;)
@@ -737,13 +737,13 @@ public class PMeshMaterial extends PNode implements Serializable
         m_TransparencyColor = transparencyColor;
     }
 
-    private void applyMaterialDOM(xmlMaterial xmlMat, WorldManager wm)
+    private void applyMaterialDOM(xmlMaterial xmlMat, WorldManager wm, String baseURL)
     {
         int counter = 0;
         // First, the texture materials!
         for (xmlTextureAttributes texAttr : xmlMat.getTextures())
         {
-            m_textures[counter] = new TextureMaterialProperties(texAttr);
+            m_textures[counter] = new TextureMaterialProperties(texAttr, baseURL);
             counter++;
         }
         // diffuseColor

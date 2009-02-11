@@ -244,6 +244,7 @@ public class AvatarController extends CharacterController
      * true if the avatar being controlled is currently moving forward.
      * @return
      */
+    @Override
     public boolean isMovingForward() {
         Vector3f currentDirection = body.getTransform().getWorldMatrix(false).getLocalZ();
         float dot = currentDirection.dot(velocity);

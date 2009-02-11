@@ -205,7 +205,11 @@ public abstract class Character extends Entity implements SpatialObject, Animati
      * @param configurationFile
      * @param wm
      */
-    public Character(URL configurationFile, WorldManager wm)
+    public Character(URL configurationFile, WorldManager wm) {
+        this(configurationFile, wm, null);
+    }
+
+    public Character(URL configurationFile, WorldManager wm, String baseURL)
     {
         super("InterimEntityName");
         xmlCharacter characterDOM = null;
@@ -222,6 +226,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
             {
                 characterDOM = (xmlCharacter)characterObj;
                 xmlCharacterAttributes xmlAttributes = characterDOM.getAttributes();
+                xmlAttributes.setBaseURL(baseURL);
                 loadedAttributes = new CharacterAttributes(xmlAttributes);
             }
             else
@@ -1376,7 +1381,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
     private void applyMaterialProperties(xmlCharacter characterDOM) {
         for (xmlMaterial xmlMat : characterDOM.getMaterials())
         {
-            PMeshMaterial meshMat = new PMeshMaterial(xmlMat, m_wm);
+            PMeshMaterial meshMat = new PMeshMaterial(xmlMat, m_wm, m_attributes.getBaseURL());
             String targetMeshName = xmlMat.getTargetMeshName();
             // find the mesh it belongs to
             PPolygonMeshInstance meshInst = getSkeleton().getSkinnedMeshInstance(targetMeshName);
