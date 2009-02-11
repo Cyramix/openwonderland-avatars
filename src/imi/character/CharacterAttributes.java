@@ -385,6 +385,7 @@ public class CharacterAttributes
             return;
 
         this.setName(attributesDOM.getName());
+        this.setGender(attributesDOM.getGender());
         if (attributesDOM.getBaseURL() == null ||
                 attributesDOM.getBaseURL().length() == 0)
             baseURL = null;

@@ -43,7 +43,7 @@
                     <Property name="text" type="java.lang.String" value="Avatar"/>
                   </Properties>
                   <AuxValues>
-                    <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="jMenuItem_Avatar.addActionListener(new java.awt.event.ActionListener() {&#xa;    public void actionPerformed(java.awt.event.ActionEvent evt) {&#xa;        loadingWindow(true);&#xa;        runProgressBar(true);&#xa;        &#xa;        m_sceneData.loadAvatarDAEFile(true, true, m_base);&#xa;        repositionCamera(1);&#xa;        resetOpenTools();&#xa;        &#xa;        runProgressBar(false);&#xa;        loadingWindow(false);&#xa;    }&#xa;});"/>
+                    <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="jMenuItem_Avatar.addActionListener(new java.awt.event.ActionListener() {&#xa;    public void actionPerformed(java.awt.event.ActionEvent evt) {&#xa;        loadingWindow(true);&#xa;        runProgressBar(true);&#xa;        &#xa;        m_sceneData.loadAvatarDAEFile(true, true, m_base);&#xa;        resetOpenTools();&#xa;        &#xa;        runProgressBar(false);&#xa;        loadingWindow(false);&#xa;    }&#xa;});"/>
                   </AuxValues>
                 </MenuItem>
                 <MenuItem class="javax.swing.JMenuItem" name="jMenuItem_Heads">
@@ -540,7 +540,7 @@
             <Component class="javax.swing.JComboBox" name="jComboBox1">
               <Properties>
                 <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-                  <Connection code="new javax.swing.DefaultComboBoxModel(new String[] { &quot;Cam Pos -Z&quot;, &quot;Cam Pos +Z&quot;, &quot;Cam Pos -X&quot;, &quot;Cam Pos +X&quot; })" type="code"/>
+                  <Connection code="new javax.swing.DefaultComboBoxModel(new String[] { &quot;Cam Pos +Z&quot;, &quot;Cam Pos -Z&quot;, &quot;Cam Pos +X&quot;, &quot;Cam Pos -X&quot; })" type="code"/>
                 </Property>
                 <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                   <Dimension value="[220, 27]"/>

@@ -209,7 +209,7 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
         pointLight.setEnabled(true);
         // attach it to the LightNode
         lightNode.setLight(pointLight);
-        lightNode.setLocalTranslation(0.0f, 50.0f, 50.0f);
+        lightNode.setLocalTranslation(0.0f, 50.0f, -50.0f);
         // add it to the render manager
         wm.getRenderManager().addLight(lightNode);
     }
@@ -701,7 +701,7 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
         TumbleObjectCamState tobj = new TumbleObjectCamState(null);
         tobj.setCameraPosition(new Vector3f(0.0f, 0.0f, 3.2f));
         tobj.setTargetFocalPoint(new Vector3f(0.0f, 0.0f, 0.0f));
-        tobj.setTargetNeedsUpdate(true);
+//        tobj.setTargetNeedsUpdate(true);
         m_cameraProcessor.setCameraBehavior(new TumbleObjectCamModel(), tobj);
         
         //OrbitCameraProcessor eventProcessor = new OrbitCameraProcessor(cameraListener, cameraNode, wm, camera);
@@ -1166,7 +1166,7 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
                 TumbleObjectCamState tobj = new TumbleObjectCamState(null);
                 tobj.setCameraPosition(prevPos);
                 tobj.setTargetFocalPoint(m_focalPt);
-                tobj.setTargetNeedsUpdate(true);
+//                tobj.setTargetNeedsUpdate(true);
                 m_cameraProcessor.setCameraBehavior(new TumbleObjectCamModel(), tobj);
                 break;
             }
@@ -1428,7 +1428,7 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
         jToolBar_Camera.setMinimumSize(new java.awt.Dimension(400, 27));
         jToolBar_Camera.setPreferredSize(new java.awt.Dimension(400, 27));
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Cam Pos -Z", "Cam Pos +Z", "Cam Pos -X", "Cam Pos +X" }));
+        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Cam Pos +Z", "Cam Pos -Z", "Cam Pos +X", "Cam Pos -X" }));
         jComboBox1.setMaximumSize(new java.awt.Dimension(220, 27));
         jComboBox1.setMinimumSize(new java.awt.Dimension(200, 27));
         jComboBox1.setPreferredSize(new java.awt.Dimension(200, 27));
@@ -1474,7 +1474,6 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
                 runProgressBar(true);
 
                 m_sceneData.loadAvatarDAEFile(true, true, m_base);
-                repositionCamera(1);
                 resetOpenTools();
 
                 runProgressBar(false);
@@ -1780,8 +1779,10 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
                 ppmodel.calculateBoundingSphere();
 
             calculateCamPosNFoc(ppmodel, type);
-            camModel.turnTo(m_focalPt, camState);
-            camModel.moveTo(m_camPos, camState);
+            camState.setCameraPosition(m_camPos);
+            camState.setTargetFocalPoint(m_focalPt);
+//            camModel.turnTo(m_focalPt, camState);
+//            camModel.moveTo(m_camPos, camState);
             camState.setTargetNeedsUpdate(true);
 
         } else if (m_cameraProcessor.getState() instanceof FirstPersonCamState) {
@@ -1848,22 +1849,22 @@ public class BaseDefault extends javax.swing.JFrame implements FrameRateListener
 
         switch(iPerspective)
         {
-            case 0:     // Forward (Facing Z+)
+            case 0:     // Forward (Facing Z-)
             {
                 m_camPos.z = m_offset;
                 break;
             }
-            case 1:     // Backward (Facing Z-)
+            case 1:     // Backward (Facing Z+)
             {
                 m_camPos.z = m_offset;
                 break;
             }
-            case 2:     // Left (Facing X-)
+            case 2:     // Left (Facing X+)
             {
                 m_camPos.x = m_offset;
                 break;
             }
-            case 3:     // Right (Facing X+)
+            case 3:     // Right (Facing X-)
             {
                 m_camPos.x = m_offset;
                 break;

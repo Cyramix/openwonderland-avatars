@@ -118,7 +118,7 @@ public class SceneEssentials {
     private File                            m_fileModel                     = null;
     private File                            m_fileTexture                   = null;
 // Camera information
-    private Vector3f                        m_camPos                        = new Vector3f(0.0f, 1.5f, -3.2f);
+    private Vector3f                        m_camPos                        = new Vector3f(0.0f, 1.5f, 3.2f);
     private FlexibleCameraProcessor         m_curCameraProcessor            = null;
 // Model information
     private String                          m_modelName                     = null;
@@ -2056,7 +2056,7 @@ public class SceneEssentials {
                 pmInstance.calculateBoundingSphere();
             camState.setTargetFocalPoint(pmInstance.getBoundingSphere().getCenter());
             camModel.turnTo(pmInstance.getBoundingSphere().getCenter(), camState);
-            camState.setTargetNeedsUpdate(true);
+//            camState.setTargetNeedsUpdate(true);
 
         } else if (m_curCameraProcessor.getState() instanceof FirstPersonCamState) {
 
@@ -2065,7 +2065,7 @@ public class SceneEssentials {
             if (pmInstance.getBoundingSphere() == null)
                 pmInstance.calculateBoundingSphere();
             Vector3f pos = pmInstance.getBoundingSphere().getCenter();
-            pos.z = -2.2f;
+            pos.z = 3.2f;
             camState.setCameraPosition(pos);
 
         }

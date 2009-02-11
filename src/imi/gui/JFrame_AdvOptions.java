@@ -125,14 +125,14 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
             }
             case lefteyeVPos:
             {
-                ladjust.x = 0.0f;   ladjust.y = mod * 0.01f;    ladjust.z = 0.0f;
+                ladjust.x = 0.0f;   ladjust.y = mod * 0.05f;    ladjust.z = 0.0f;
                 skelnode.displaceJoint(eyes[0].getName(), ladjust);
 
                 break;
             }
             case righteyeVPos:
             {
-                radjust.x = 0.0f;   radjust.y = mod * 0.01f;    ladjust.z = 0.0f;
+                radjust.x = 0.0f;   radjust.y = mod * 0.05f;    ladjust.z = 0.0f;
                 skelnode.displaceJoint(eyes[6].getName(), radjust);
 
                 break;
