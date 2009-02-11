@@ -83,22 +83,22 @@ public class CustomizationExample extends DemoBase
         maleAttributes.setOrigin(new PMatrix(new Vector3f(1, 0, 1)));
         Avatar maleAvatar = new Avatar(maleAttributes, wm);
         // Now let's make a female using a specific configuration
-//        FemaleAvatarAttributes femaleAttributes =
-//                new FemaleAvatarAttributes("LizTheTestGal",
-//                                                 0, // Feet
-//                                                 1, // Legs
-//                                                 1, // Torso
-//                                                 1, // Hair
-//                                                 1, // Head
-//                                                 3); // Skin
+        FemaleAvatarAttributes femaleAttributes =
+                new FemaleAvatarAttributes("LizTheTestGal",
+                                                 0, // Feet
+                                                 1, // Legs
+                                                 1, // Torso
+                                                 1, // Hair
+                                                 1, // Head
+                                                 3); // Skin
         // Put her over to the right a bit
-//        femaleAttributes.setOrigin(new PMatrix(new Vector3f(-1, 0, 1)));
-//        Avatar femaleAvatar = new Avatar(femaleAttributes, wm);
+        femaleAttributes.setOrigin(new PMatrix(new Vector3f(-1, 0, 1)));
+        Avatar femaleAvatar = new Avatar(femaleAttributes, wm);
 
         // Select the male and add them both to the input team (collection of controllable avatars)
         maleAvatar.selectForInput();
         control.getAvatarTeam().add(maleAvatar);
-//        control.getAvatarTeam().add(femaleAvatar);
+        control.getAvatarTeam().add(femaleAvatar);
 
         // Hook the control scheme up the the camera in order to receieve input
         // events. We need this in order to control the Verlet arm ('Q' and 'E' to engage)
