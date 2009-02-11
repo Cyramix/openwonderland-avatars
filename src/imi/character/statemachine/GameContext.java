@@ -356,11 +356,6 @@ public class GameContext extends NamedUpdatableObject
         return m_triggerState;
     }
         
-    public PPolygonMeshInstance getMesh()
-    {
-        return character.getMesh();
-    }
-        
     public SkeletonNode getSkeleton() 
     {
         return character.getSkeleton();

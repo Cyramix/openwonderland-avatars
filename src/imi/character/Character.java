@@ -153,8 +153,6 @@ public abstract class Character extends Entity implements SpatialObject, Animati
     protected PPolygonModelInstance         m_shadowModel           = null; // Quad!
     /** Skeleton that our skin is attached to **/
     protected SkeletonNode                  m_skeleton              = null;
-    /** Reference to the mesh in a simple sphere scenario **/
-    protected PPolygonMeshInstance          m_mesh                  = null;
     /** Collection of objects that this character is associated with **/
     protected ObjectCollection              m_objectCollection      = null;
     /** Performs animation on the character **/
@@ -379,15 +377,16 @@ public abstract class Character extends Entity implements SpatialObject, Animati
      */
     protected void finalizeInitialization(xmlCharacter characterDOM)
     {
-        while (setMeshAndSkeletonRefs() == false) // Bind up skeleton reference, etc
+        while (isLoaded() == false) // Bind up skeleton reference, etc
             Thread.yield();
 
-        // Set animations and custom meshes
-        executeAttributes(m_attributes);
         // Nothing below is relevant in the simple test sphere case
         if (m_attributes.isUseSimpleStaticModel())
             return;
 
+        // Set animations and custom meshes
+        executeAttributes(m_attributes);
+        
         // Set position
         if (m_attributes.getOrigin() != null)
             m_modelInst.getTransform().setLocalMatrix(m_attributes.getOrigin());
@@ -1011,30 +1010,28 @@ public abstract class Character extends Entity implements SpatialObject, Animati
     }
     
     /**
-     * Sets the mesh and skeleton references after load time
+     * If the model instance doesn't have kids then it is not loaded yet,
+     * also checking if the first kid is a place holder.
+     * If the first kid is not a SkeletonNode then this character
+     * is using a simple scene for debugging visualization.
      */
-    private boolean setMeshAndSkeletonRefs()
+    private boolean isLoaded()
     {
         // safety against place holders
         if (m_modelInst.getChildrenCount() <= 0 || m_modelInst.getChild(0) instanceof SharedAssetPlaceHolder)
             return false;
         
-        if (m_modelInst.getChild(0).getChildrenCount() == 0 && m_modelInst.getChild(0) instanceof PPolygonMeshInstance)
+        // Simple sphere model case
+        if (!(m_modelInst.getChild(0) instanceof SkeletonNode))
         {
-            // Simple sphere model case
-            m_mesh       = (PPolygonMeshInstance)m_modelInst.getChild(0);
             m_skeleton   = null;
+            m_jscene.updateRenderState();
+            m_characterProcessor.start();
+            m_pscene.setRenderStop(false);
+            m_modelInst.setRenderStop(false);
             m_initialized = true;
         }
-        else if (m_modelInst.getChild(0) instanceof SkeletonNode
-                && m_modelInst.getChild(0).getChildrenCount() >= 2
-                && m_modelInst.getChild(0).getChild(1) instanceof PPolygonSkinnedMeshInstance)
-        {
-            m_mesh       = (PPolygonSkinnedMeshInstance)m_modelInst.getChild(0).getChild(1);
-            m_skeleton.getAnimationState().addListener(this);
-            
-            m_initialized = true;
-        }
+        
         return true;
     }
 
@@ -1140,10 +1137,6 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         if(m_skeleton != null)
             return m_skeleton.getAnimationState().isTransitioning();
         return false;
-    }
-    
-    public PPolygonMeshInstance getMesh() {
-        return m_mesh;
     }
     
     public SkeletonNode getSkeleton() {
@@ -1499,7 +1492,6 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         m_registry              = null;
         m_modelInst             = null;
         m_skeleton              = null;
-        m_mesh                  = null;
         m_objectCollection      = null;
         m_AnimationProcessor    = null;
         m_characterProcessor    = null;
