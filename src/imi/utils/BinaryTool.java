@@ -21,11 +21,11 @@ import imi.loaders.Instruction;
 import imi.loaders.InstructionProcessor;
 import imi.loaders.collada.Collada;
 import imi.loaders.collada.ColladaLoaderParams;
+import imi.loaders.repository.AssetDescriptor;
 import imi.loaders.repository.Repository;
+import imi.loaders.repository.SharedAsset;
 import imi.scene.PScene;
 import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
-import imi.utils.AvatarObjectInputStream;
-import imi.utils.AvatarObjectOutputStream;
 import java.awt.BorderLayout;
 import java.awt.Canvas;
 import java.awt.FlowLayout;
@@ -36,6 +36,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -46,20 +47,32 @@ import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JPanel;
+import javolution.util.FastList;
 import org.jdesktop.mtgame.FrameRateListener;
 import org.jdesktop.mtgame.RenderBuffer;
 
+
 /**
- * Serialize the skeleton!
+ * This class is used to generate various binary files. The following command
+ * line arguments are used:
+ * -m : load the male binary skeleton
+ * -f : load the female binary skeleton
+ * -skellyOut : Specify a directory to output the skeleton files
+ * -buildCache : regenerate the complete binary cache
+ * -assetRoot : specify a non-standard asset root folder
  * @author Ronald E Dahlgren
  */
-public class BuildBinarySkeletons
+public class BinaryTool
 {
-    private final static Logger logger = Logger.getLogger(BuildBinarySkeletons.class.getName());
+    /** Logger ref**/
+    private final static Logger logger = Logger.getLogger(BinaryTool.class.getName());
 
+    /** The male bind pose location **/
     private static URL MaleSkeletonLocation = null;
+    /** The female bind pose location **/
     private static URL FemaleSkeletonLocation = null;
-    
+
+    /** Destination for completed skeletons **/
     private static File MaleOutputFile = new File("src/imi/character/skeleton/Male.bs");
     private static File FemaleOutputFile = new File("src/imi/character/skeleton/Female.bs");
 
@@ -138,7 +151,6 @@ public class BuildBinarySkeletons
         "assets/models/collada/Animations/MaleFacialAnimations/MaleFrown.dae",
         "assets/models/collada/Animations/MaleFacialAnimations/MaleScorn.dae",
         "assets/models/collada/Animations/MaleFacialAnimations/MaleDefault.dae",
-        // Plus the phonemes
         "assets/models/collada/Animations/MaleFacialAnimations/Phonemes/Male_Pho_AI.dae",
         "assets/models/collada/Animations/MaleFacialAnimations/Phonemes/Male_Pho_Cons.dae",
         "assets/models/collada/Animations/MaleFacialAnimations/Phonemes/Male_Pho_E.dae",
@@ -166,53 +178,118 @@ public class BuildBinarySkeletons
         }
     }
 
-    private final int MinimumNumberArgs = 1;
-    
-    public BuildBinarySkeletons(String[] args)
+    /** Loading flags **/
+    private boolean m_bLoadMale = false;
+    private boolean m_bLoadFemale = false;
+    private boolean m_bBuildCache = false;
+    /** Root of the asset hierarchy **/
+    private File    m_assetRoot = new File("assets/");
+    /** Repository ref **/
+    private Repository repository = null;
+
+    /**
+     * Create and run the tool.
+     * @param args
+     */
+    public BinaryTool(String[] args)
     {
-        if (args.length < MinimumNumberArgs)
-            printUsage();
-        else
+        WorldManager wm = new WorldManager("TheWorldManager");
+        // create a repository to use
+        repository = new Repository(wm, false, false); // do not load skeletons, do not load use cache
+        repository.setLoadGeometry(false);
+        // Add the repository
+        wm.addUserData(Repository.class, repository);
+        wm.getRenderManager().setDesiredFrameRate(60);
+        createUI(wm);
+        processArgs(args);
+
+        if (m_bLoadMale)
+            createSerializedSkeleton(wm, true);
+        if (m_bLoadFemale)
+            createSerializedSkeleton(wm, false);
+        if (m_bBuildCache)
         {
-            WorldManager wm = new WorldManager("TheWorldManager");
-            Repository  repository = new Repository(wm, false, false); // do not load skeletons, do not load use cache
-            repository.setLoadGeometry(false);
-            // Add the repository
-//                repository.setLoadGeometry(false);
-            wm.addUserData(Repository.class, repository);
-            wm.getRenderManager().setDesiredFrameRate(60);
-            createUI(wm);
-            if (args[0].equalsIgnoreCase("-m"))
-            {
-                if (args.length >= 2)
-                    MaleOutputFile = new File(args[1]);
-                
-                createSerializedSkeleton(wm, true);
-            }
-            else if (args[0].equalsIgnoreCase("-f"))
-            {
-
-                if (args.length >= 2)
-                    FemaleOutputFile = new File(args[1]);
-                createSerializedSkeleton(wm, false);
-            }
-            else if (args[0].equalsIgnoreCase("-mf"))
-            {
-                createSerializedSkeleton(wm, false);
-                createSerializedSkeleton(wm, true);
-            }
-            else
-                printUsage();
-            System.exit(0);
+            // Behave like a normal repository
+            repository.setUseCache(true);
+            repository.setLoadGeometry(true);
+            repository.clearCache();
+            repository.initCache();
+            loadAllFiles(m_assetRoot);
         }
-
+        System.exit(0);
     }
 
+    /**
+     * Run the tool
+     * @param args
+     */
     public static void main(String[] args)
     {
-        BuildBinarySkeletons worldTest = new BuildBinarySkeletons(args);
+        BinaryTool worldTest = new BinaryTool(args);
     }
 
+    /**
+     * Traverse the asset hierarchy and cache all the encountered collada files
+     * @param docRoot
+     */
+    private void loadAllFiles(File docRoot)
+    {
+        // Make a file filter to use
+        FilenameFilter filter = new FilenameFilter() {
+            @Override
+            public boolean accept(File dir, String name) {
+                File fileVersion = new File(dir, name);
+                if (name.endsWith(".dae"))
+                    return true;
+                else if (fileVersion.isDirectory() && !fileVersion.getName().equalsIgnoreCase("animations"))
+                    return true;
+                else
+                    return false;
+            }
+        };
+        // Scratch references
+        File current = null;
+        File[] fileList = null;
+
+        // Our queue!
+        FastList<File> queue = new FastList<File>();
+        queue.add(docRoot);
+        while (!queue.isEmpty())
+        {
+            current = queue.removeFirst();
+            if (current.isFile())
+            {
+                logger.info("Processing " + current.getName());
+                loadColladaFile(current);
+            }
+            else if (current.isDirectory())
+            {
+                fileList = current.listFiles(filter);
+                for (File file : fileList)
+                    queue.add(file);
+            }
+        }
+    }
+
+    /**
+     * Load the specified collada file
+     * @param fileToLoad
+     */
+    private void loadColladaFile(File fileToLoad)
+    {
+        if (repository != null)
+        {
+            AssetDescriptor asset = new AssetDescriptor(SharedAsset.SharedAssetType.COLLADA, fileToLoad);
+            SharedAsset assetToLoad = new SharedAsset(repository, asset);
+            repository.cacheAsset(assetToLoad);
+        }
+    }
+
+    /**
+     * Generate a serialized skeleton
+     * @param wm The manager of the world.
+     * @param bLoadMale True to load the male skeleton, false for the female.
+     */
     private void createSerializedSkeleton(WorldManager wm, boolean bLoadMale)
     {
         URL         skeletonLocation = null;
@@ -262,6 +339,42 @@ public class BuildBinarySkeletons
         serializeSkeleton(skeleton, outputFile);
     }
 
+    /**
+     * Process the command line arguments.
+     * @param args
+     */
+    private void processArgs(String[] args) {
+        if (args.length == 0)
+            printUsage();
+        for (int i = 0; i < args.length; ++i)
+        {
+            if (args[i].equalsIgnoreCase("-m"))
+                m_bLoadMale = true;
+            else if (args[i].equalsIgnoreCase("-f"))
+                m_bLoadFemale = true;
+            else if (args[i].equalsIgnoreCase("-mf"))
+                m_bLoadFemale = m_bLoadMale = true;
+            else if (args[i].equalsIgnoreCase("-buildCache"))
+                m_bBuildCache = true;
+            else if (args[i].equalsIgnoreCase("-skellyRoot"))
+            {
+                String destinationFolder = args[++i];
+                MaleOutputFile = new File(destinationFolder, "Male.bs");
+                FemaleOutputFile = new File(destinationFolder, "Female.bs");
+            }
+            else if (args[i].equalsIgnoreCase("-assetRoot"))
+            {
+                String assetRootFolder = args[++i];
+                m_assetRoot = new File(assetRootFolder);
+            }
+        }
+    }
+
+    /**
+     * Serialize the provided skeleton to the specified destination
+     * @param skeleton
+     * @param destination
+     */
     private void serializeSkeleton(SkeletonNode skeleton, File destination)
     {
         FileOutputStream fos = null;
@@ -280,32 +393,17 @@ public class BuildBinarySkeletons
         }
     }
 
-    private SkeletonNode deserializeSkeleton(URL location)
-    {
-        SkeletonNode result = null;
-        AvatarObjectInputStream in = null;
-
-        try
-        {
-            in = new AvatarObjectInputStream(location.openStream());
-            result = (SkeletonNode)in.readObject();
-            in.close();
-        }
-        catch(Exception ex)
-        {
-            logger.severe("Uh oh! " + ex.getMessage());
-            ex.printStackTrace();
-        }
-
-        return result;
-    }
-
+    /**
+     * Show the usage of this utility
+     */
     private void printUsage()
     {
-        System.err.println("Usage: <command> (-m | -f) <outputfile>");
+        System.err.println("Usage: <command> (-m | -f) -o outputfile");
         System.err.println("-m : Bake the male skeleton");
         System.err.println("-f : Bake the Female skeleton");
-        System.err.println("outputfile : Optionally provide a path to output the skeleton to.");
+        System.err.println("-skellyOut : Specify output folder for skeletons");
+        System.err.println("-buildCache : regenerate the compete cache ");
+        System.err.println("-assetRoot : Specify root folder for asset digestion");
     }
 
     /**

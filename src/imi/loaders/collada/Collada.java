@@ -1135,7 +1135,7 @@ public class Collada
 
         meshInstance = (PPolygonMeshInstance)m_loadingPScene.addMeshInstance(meshName, asset);
 
-        if (colladaNode != null)
+        if (colladaNode != null && colladaNode.getMatrix() != null)
             meshInstance.getTransform().getLocalMatrix(true).set(colladaNode.getMatrix());
 
         if (colladaNode != null)

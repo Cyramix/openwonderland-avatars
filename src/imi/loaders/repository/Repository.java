@@ -371,7 +371,7 @@ public class Repository extends Entity
     /**
      * Get the cache directory ready.
      */
-    private void initCache()
+    public void initCache()
     {
         // Determine if the directory exists. If not, create it.
         if (cacheFolder.exists() == false)
@@ -386,6 +386,26 @@ public class Repository extends Entity
     }
 
     /**
+     * Clears the cache folder
+     */
+    public void clearCache()
+    {
+        logger.warning("Clearing cache folder: " + cacheFolder);
+        File[] cacheFiles = cacheFolder.listFiles();
+        for (File file : cacheFiles)
+            file.delete();
+    }
+
+    CacheUser user = new CacheUser();
+    public synchronized void cacheAsset(SharedAsset asset)
+    {
+        user.loaded = false;
+        loadSharedAsset(asset, user);
+        while (!user.loaded)
+            Thread.yield();
+    }
+
+    /**
      * Provides a file object referencing the location that a cached copy of "file"
      * will occupy if it exists.
      * @param file
@@ -394,8 +414,14 @@ public class Repository extends Entity
     File getCacheEquivalent(URL file)
     {
         String urlString = file.toString();
+        urlString = urlString.substring(urlString.indexOf(":") + 1);
+        while (urlString.startsWith("/"))
+            urlString = urlString.substring(1);
+
         String hashFileName = MD5HashUtils.getStringFromHash(urlString.getBytes());
-        System.out.println("******** getCacheEquivalent for file "+file.toExternalForm()+"  "+new File(cacheFolder, hashFileName).getAbsolutePath());
+        System.out.println("******** getCacheEquivalent for file " +
+                file.toExternalForm() + "  " +
+                new File(cacheFolder, hashFileName).getAbsolutePath());
         return new File(cacheFolder, hashFileName);
     }
 
@@ -489,5 +515,16 @@ public class Repository extends Entity
     WorldManager getWorldManager() 
     {
         return m_worldManager;
+    }
+
+    class CacheUser implements RepositoryUser
+    {
+        public boolean loaded = false;
+        @Override
+        public void receiveAsset(SharedAsset asset) {
+            logger.info("Cached asset " + asset.getDescriptor().getLocation().getFile());
+            loaded = true;
+        }
+
     }
 }

@@ -247,7 +247,16 @@ public class RepositoryAsset extends ProcessorComponent
             loader.setMaxNumberOfWeights(4);
             loader.setAddSkinnedMeshesToSkeleton(true);
             PScene loadingScene = new PScene(m_home.getWorldManager());
-            loader.load(loadingScene, m_descriptor.getLocation());
+            try {
+                loader.load(loadingScene, m_descriptor.getLocation());
+            }
+            catch (Exception ex)
+            {
+                logger.severe("Loading " + m_descriptor.getLocation().getFile() + " threw " + ex.getClass().getSimpleName());
+                logger.severe(ex.getMessage());
+                ex.printStackTrace();
+            }
+            
             // now we have the pscene prepared, write it to the cache location
             if (m_home.isUsingCache())
                 serializePScene(cachedFile, loadingScene);
