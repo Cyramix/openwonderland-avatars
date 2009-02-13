@@ -1604,12 +1604,6 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         m_eyes = new CharacterEyes(m_attributes.getEyeballTexture(), this, m_wm);
         m_skeletonManipulator.setLeftEyeBall(m_eyes.leftEyeBall);
         m_skeletonManipulator.setRightEyeBall(m_eyes.rightEyeBall);
-        // Relink all of the old meshes and apply their materials
-        for (PPolygonSkinnedMeshInstance meshInst : m_skeleton.getMeshesBySubGroup("Head"))
-        {
-            meshInst.setAndLinkSkeletonNode(m_skeleton);
-            meshInst.applyMaterial();
-        }
     }
     /**
      * This method provides a way to install a head that is a derivative of the
@@ -1649,12 +1643,6 @@ public abstract class Character extends Entity implements SpatialObject, Animati
 
         // Finally, apply the default shaders
         setDefaultHeadShaders();
-        // Relink all of the old meshes and apply their materials
-        for (PPolygonSkinnedMeshInstance meshInst : m_skeleton.getMeshesBySubGroup("Head"))
-        {
-            meshInst.setAndLinkSkeletonNode(m_skeleton);
-            meshInst.applyMaterial();
-        }
 
         // Re-enable all the processors that affect us.
         m_AnimationProcessor.setEnable(true);

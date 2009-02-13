@@ -112,42 +112,7 @@ public class PScene extends PNode implements RepositoryUser, Serializable
      */
     public void finalizeDeserialization()
     {
-        for (PPolygonMesh mesh : m_LocalGeometry)
-        {
-            mesh.setDirty(true, false);
-            mesh.setSubmitGeometry(true);
-            mesh.submit(m_TriMeshAssembler);
-            mesh.setSubmitGeometry(false);
-        }
-        // also look for meshes dangling out in the scene graph
-        FastList<PNode> queue = new FastList<PNode>();
-        PNode current = null;
-        queue.add(m_Instances);
 
-        while (queue.isEmpty() == false)
-        {
-            current = queue.removeFirst();
-
-            if (current instanceof PPolygonMesh)
-            {
-                PPolygonMesh mesh = (PPolygonMesh)current;
-                mesh.setDirty(true, false);
-                mesh.setSubmitGeometry(true);
-                mesh.submit(m_TriMeshAssembler);
-                mesh.setSubmitGeometry(false);
-            }
-            else if (current instanceof PPolygonMeshInstance)
-            {
-                PPolygonMeshInstance meshInst = (PPolygonMeshInstance)current;
-                PPolygonMesh mesh = meshInst.getGeometry();
-                mesh.submit(m_TriMeshAssembler);
-                mesh.setSubmitGeometry(false);
-            }
-            // add all the kids
-            if (current.getChildren() != null)
-                queue.addAll(current.getChildren());
-
-        }
     }
 
     public PPolygonTriMeshAssembler getTriMeshAssembler() {
@@ -1010,7 +975,7 @@ public class PScene extends PNode implements RepositoryUser, Serializable
     private PPolygonSkinnedMeshInstance buildSkinnedMeshInstance(PPolygonSkinnedMeshInstance meshInstance, PMatrix parentWorldMatrix)
     {
         // Initialize the meshAsset instance
-        PPolygonSkinnedMeshInstance meshInst  = new PPolygonSkinnedMeshInstance(meshInstance, this, true);
+        PPolygonSkinnedMeshInstance meshInst  = new PPolygonSkinnedMeshInstance(meshInstance, this, false);
 
         meshInst.getTransform().buildWorldMatrix(parentWorldMatrix);
         //meshInst.setTransformHierarchy(mesh.getBindPoseTransformHierarchy());

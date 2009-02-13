@@ -392,8 +392,11 @@ public class Repository extends Entity
     {
         logger.warning("Clearing cache folder: " + cacheFolder);
         File[] cacheFiles = cacheFolder.listFiles();
-        for (File file : cacheFiles)
-            file.delete();
+        if (cacheFiles != null)
+        {
+            for (File file : cacheFiles)
+                file.delete();
+        }
     }
 
     CacheUser user = new CacheUser();

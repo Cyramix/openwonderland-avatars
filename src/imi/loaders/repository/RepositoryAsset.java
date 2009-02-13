@@ -283,7 +283,11 @@ public class RepositoryAsset extends ProcessorComponent
         catch(Exception ex)
         {
             if (!(ex instanceof FileNotFoundException))
-                logger.severe(ex.getMessage());
+            {
+                logger.severe("Caught a " + ex.getClass().getSimpleName() + ": " +
+                        ex.getMessage() + " : " + ex.getCause());
+                ex.printStackTrace();
+            }
         }
         return result;
     }

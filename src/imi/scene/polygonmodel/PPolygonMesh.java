@@ -55,7 +55,7 @@ import javolution.util.FastTable;
  */
 public class PPolygonMesh extends PNode implements Serializable
 {
-    private transient TriMesh   m_Geometry          = new TriMesh("geometry"); // jME geometry
+    private TriMesh   m_Geometry          = new TriMesh("geometry"); // jME geometry
     
     /** A reference to the shared asset for this geometry, if null then the geometry was made procedurally */
     private transient SharedAsset                     m_SharedAsset       = null;
@@ -1495,11 +1495,10 @@ public class PPolygonMesh extends PNode implements Serializable
     {
         in.defaultReadObject();
         // Re-allocate all transient objects
-        m_Geometry = new TriMesh(this.getName());
         m_SharedAsset = null;
         m_bInBatch = false;
         m_bDebugInfo = false;
-        m_bSubmitGeometry = true;
+        m_bSubmitGeometry = false;
         m_BoundingCube = new PCube();
         m_BoundingSphere = new PSphere();
         setDirty(true, false);
