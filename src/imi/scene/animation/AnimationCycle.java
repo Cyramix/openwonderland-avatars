@@ -19,6 +19,8 @@ package imi.scene.animation;
 
 import imi.scene.animation.channel.PJointChannel;
 import imi.scene.PJoint;
+import imi.scene.animation.channel.ChannelOptimizer;
+import imi.scene.animation.channel.OneDOF_JointChannel;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
@@ -154,6 +156,47 @@ public class AnimationCycle implements Serializable
     public void addJointChannel(PJointChannel newChannel)
     {
         m_JointChannels.add(newChannel);
+    }
+
+    /**
+     * This method optimizes all the internal joint channels. The provided
+     * float should be a value between 0 and 1, with 1 representing lossless
+     * quality and 0 representing maximum optimization and compression.
+     * @param quality
+     */
+    public void optimizeChannels(float quality)
+    {
+        ChannelOptimizer optimizer = new ChannelOptimizer();
+        if (quality < 0 || quality > 1)
+            return;
+        for (int i = 0; i < m_JointChannels.size(); ++i)
+        {
+            PJointChannel channel = m_JointChannels.get(i);
+            channel = optimizer.optimize(channel, quality);
+            System.out.println("Got a " + channel.getClass().getSimpleName() +
+                    " for " + channel.getTargetJointName() + " in " + m_name);
+            if (channel instanceof OneDOF_JointChannel)
+            {
+                int axis = ((OneDOF_JointChannel)channel).getAxis();
+                System.out.print("Axis is ");
+                switch (axis)
+                {
+                    case 0:
+                        System.out.println("X");
+                        break;
+                    case 1:
+                        System.out.println("Y");
+                        break;
+                    case 2:
+                        System.out.println("Z");
+                        break;
+                    default:
+                        System.out.println("UNK");
+                        break;
+                }
+            }
+            m_JointChannels.set(i, channel);
+        }
     }
 
     @Override

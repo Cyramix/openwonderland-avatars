@@ -17,6 +17,7 @@
  */
 package imi.utils;
 
+import com.jme.math.Matrix3f;
 import com.jme.math.Quaternion;
 import com.jme.math.Vector3f;
 import imi.scene.PMatrix;
@@ -34,6 +35,7 @@ public class Interpolator implements Serializable
         ComponentInterpolation, // Slow
         ElementInterpolation, // Fast, possibly inaccurate
     }
+
     /** Internal state **/
     protected InterpolationStrategy strategy = InterpolationStrategy.ComponentInterpolation;
     /** Work space **/
@@ -81,6 +83,8 @@ public class Interpolator implements Serializable
         m_leftBufferVector.interpolate(m_rightBufferVector, s);
         result.set2(rotationComponent, m_leftBufferVector, 1.0f);
     }
+
+
     public InterpolationStrategy getStrategy() {
         return strategy;
     }
@@ -89,5 +93,25 @@ public class Interpolator implements Serializable
         this.strategy = strategy;
     }
 
+    /**
+     * Interpolate the components of the two provided matrices using the provided
+     * interpolation coefficient (0.0-1.0) and store the result in the output
+     * matrix. The output matrix may also be either of the two provided for blending.
+     * @param left
+     * @param right
+     * @param s
+     * @param output
+     */
+    public static void elementInterpolation(Matrix3f left, Matrix3f right, float s, Matrix3f output)
+    {
+        for (int i = 0; i < 3; ++i)
+            for (int j = 0; j < 3; ++j)
+                output.set(i, j, left.get(i, j) * (1 - s) + right.get(i, j) * s);
+    }
+
+
+    public static void elementInterpolation(PMatrix left, PMatrix right, float lerpCoefficient, PMatrix output) {
+        output.lerp(left, right, lerpCoefficient);
+    }
 
 }

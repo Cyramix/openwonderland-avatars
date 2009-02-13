@@ -60,6 +60,10 @@ public class AnimationGroup implements Serializable
     {
     }
 
+    public Iterable<AnimationCycle> getCycles() {
+        return m_cycles;
+    }
+
 
     /**
      * Generates the current pose solution based on the specified state

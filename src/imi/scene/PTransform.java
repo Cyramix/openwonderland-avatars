@@ -174,6 +174,10 @@ public class PTransform implements Serializable
         return m_local;
     }
 
+    public void setLocalMatrix(float[] matrixFloats) {
+        m_local.set(matrixFloats);
+    }
+
     /**
      * Set the local matrix of this transformation.
      * @param local
@@ -209,6 +213,10 @@ public class PTransform implements Serializable
         Matrix3f matrix = new Matrix3f();
         m_world.getMatrixRotationScale(matrix);
         return matrix;
+    }
+
+    public void setLocalMatrix(Matrix3f blendBuffer, Vector3f translationVector) {
+        m_local.set(blendBuffer, translationVector, 1.0f);
     }
 
     /**

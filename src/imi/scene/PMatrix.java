@@ -621,8 +621,7 @@ public class PMatrix implements Serializable
         mat[13] = 0.0f;
         mat[14] = 0.0f;
         mat[15] = 1.0f;
-
-        // Issue 253: set all dirty bits if input is infinity or NaN
+        
         if (isInfOrNaN(euler)) {
             dirtyBits = ALL_DIRTY;
             return;

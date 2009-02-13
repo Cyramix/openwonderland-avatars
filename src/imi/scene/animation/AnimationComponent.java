@@ -30,6 +30,7 @@ import java.util.ArrayList;
  */
 public class AnimationComponent implements Serializable
 {
+
     /**
      * This enumeration serves to describe the playback mode of an animation clip.
      */
@@ -203,5 +204,4 @@ public class AnimationComponent implements Serializable
     {
         return m_AnimationGroups;
     }
-    
 }

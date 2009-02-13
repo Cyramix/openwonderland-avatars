@@ -18,9 +18,7 @@
 package imi.scene.animation.channel;
 
 import imi.scene.animation.*;
-import imi.scene.animation.keyframe.KeyframeInterface;
 import imi.scene.PJoint;
-import java.io.Serializable;
 
 /**
  * This represents all of the animation frames a joint can go through.
@@ -80,26 +78,10 @@ public interface PJointChannel
     public String getTargetJointName(); 
 
     /**
-     * Dumps the JointChannel.
-     */
-    public void dump(String spacing);
-
-    /**
-     * Clears the JointChannel.
-     */
-    public void clear();
-
-    /**
      * Returns the end time of the JointChannel.
      * @return float
      */
     public float getEndTime();
-
-    /**
-     * Adjusts all the keyframe times.
-     * @param fAmount The amount to adjust each keyframe time by.
-     */
-    public void adjustKeyframeTimes(float fAmount);
 
     /**
      * Duplicate the first keyframe and place it at the end with the same

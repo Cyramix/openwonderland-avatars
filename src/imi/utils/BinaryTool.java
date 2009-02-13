@@ -25,6 +25,8 @@ import imi.loaders.repository.AssetDescriptor;
 import imi.loaders.repository.Repository;
 import imi.loaders.repository.SharedAsset;
 import imi.scene.PScene;
+import imi.scene.animation.AnimationCycle;
+import imi.scene.animation.AnimationGroup;
 import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
 import java.awt.BorderLayout;
 import java.awt.Canvas;
@@ -60,6 +62,7 @@ import org.jdesktop.mtgame.RenderBuffer;
  * -skellyOut : Specify a directory to output the skeleton files
  * -buildCache : regenerate the complete binary cache
  * -assetRoot : specify a non-standard asset root folder
+ * -animQuality : specify a quality coefficient for animation compression (normalized float)
  * @author Ronald E Dahlgren
  */
 public class BinaryTool
@@ -186,6 +189,8 @@ public class BinaryTool
     private File    m_assetRoot = new File("assets/");
     /** Repository ref **/
     private Repository repository = null;
+    /** used to specify the quality of animations after optimization **/
+    private float animationQuality = 1.0f;
 
     /**
      * Create and run the tool.
@@ -335,6 +340,10 @@ public class BinaryTool
             animationInstruction.addChildInstruction(Instruction.InstructionType.loadFacialAnimation, URLPreamble + filePath);
         // Execute it
         processor.execute(animationInstruction);
+        // optimize all of those cycles
+        for (AnimationGroup group : skeleton.getAnimationComponent().getGroups())
+            for (AnimationCycle cycle : group.getCycles())
+                cycle.optimizeChannels(animationQuality);
         // now our skeleton is loaded with animation data, time to write it out
         serializeSkeleton(skeleton, outputFile);
     }
@@ -366,6 +375,10 @@ public class BinaryTool
             {
                 String assetRootFolder = args[++i];
                 m_assetRoot = new File(assetRootFolder);
+            }
+            else if (args[i].equalsIgnoreCase("-animQuality"))
+            {
+                animationQuality = Float.parseFloat(args[++i]);
             }
         }
     }
@@ -404,6 +417,7 @@ public class BinaryTool
         System.err.println("-skellyOut : Specify output folder for skeletons");
         System.err.println("-buildCache : regenerate the compete cache ");
         System.err.println("-assetRoot : Specify root folder for asset digestion");
+        System.err.println("-animQuality : specify a (normalized) float for animation optimizations. ");
     }
 
     /**

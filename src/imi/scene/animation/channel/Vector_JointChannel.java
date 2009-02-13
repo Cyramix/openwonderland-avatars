@@ -18,9 +18,6 @@
 package imi.scene.animation.channel;
 
 import imi.scene.animation.*;
-import imi.scene.animation.channel.PJointChannel;
-import imi.scene.animation.keyframe.KeyframeInterface;
-import imi.scene.animation.keyframe.VectorKeyframe;
 import com.jme.math.Vector3f;
 import imi.scene.PJoint;
 import imi.scene.PMatrix;
@@ -92,7 +89,7 @@ public class Vector_JointChannel implements PJointChannel, Serializable
         
         for (VectorKeyframe frame : m_TranslationKeyframes)
         {
-            if (frame.getFrameTime() < fTime)
+            if (frame.time < fTime)
                 currentFrame = frame;
             else // passed the mark
             {
@@ -101,21 +98,21 @@ public class Vector_JointChannel implements PJointChannel, Serializable
             }
         }
         // determine s
-        s = (fTime - currentFrame.getFrameTime()) / (nextFrame.getFrameTime() - currentFrame.getFrameTime());
+        s = (fTime - currentFrame.time) / (nextFrame.time - currentFrame.time);
         // lerp and determine final translation vector
         Vector3f translationVector = new Vector3f();
         
         if (currentFrame != nextFrame)
-            translationVector.interpolate(currentFrame.getValue(), nextFrame.getValue(), s);
+            translationVector.interpolate(currentFrame.value, nextFrame.value, s);
         else
-            translationVector.set(nextFrame.getValue());
+            translationVector.set(nextFrame.value);
         
         // do the same for rotation
         currentFrame = m_RotationKeyframes.getFirst();
         nextFrame    = m_RotationKeyframes.getFirst();
         for (VectorKeyframe frame : m_RotationKeyframes)
         {
-            if (frame.getFrameTime() < fTime)
+            if (frame.time < fTime)
                 currentFrame = frame;
             else // passed the mark
             {
@@ -125,14 +122,14 @@ public class Vector_JointChannel implements PJointChannel, Serializable
         }
         
         // determine s
-        s = (fTime - currentFrame.getFrameTime()) / (nextFrame.getFrameTime() - currentFrame.getFrameTime());
+        s = (fTime - currentFrame.time) / (nextFrame.time - currentFrame.time);
         // lerp and determine final translation vector
         Vector3f rotationVector = new Vector3f();
         
         if (currentFrame != nextFrame)
-            rotationVector.interpolate(currentFrame.getValue(), nextFrame.getValue(), s);
+            rotationVector.interpolate(currentFrame.value, nextFrame.value, s);
         else
-            rotationVector.set(nextFrame.getValue());
+            rotationVector.set(nextFrame.value);
         
         // apply this to the PJoint transform matrix
         PMatrix delta = new PMatrix(rotationVector, Vector3f.UNIT_XYZ, translationVector);
@@ -144,8 +141,8 @@ public class Vector_JointChannel implements PJointChannel, Serializable
     public float calculateDuration()
     {
         // check out the start times and the end times
-        float fStartTime = Math.min(m_TranslationKeyframes.getFirst().getFrameTime(), m_RotationKeyframes.getFirst().getFrameTime());
-        float fEndTime = Math.max(m_TranslationKeyframes.getLast().getFrameTime(), m_RotationKeyframes.getLast().getFrameTime());
+        float fStartTime = Math.min(m_TranslationKeyframes.getFirst().time, m_RotationKeyframes.getFirst().time);
+        float fEndTime = Math.max(m_TranslationKeyframes.getLast().time, m_RotationKeyframes.getLast().time);
         // Calculate
         m_fDuration = fEndTime - fStartTime;
         // Return
@@ -191,7 +188,7 @@ public class Vector_JointChannel implements PJointChannel, Serializable
         // maintain chronological ordering
         int index = 0;
         for (; index < m_TranslationKeyframes.size(); ++index)
-            if (m_TranslationKeyframes.get(index).getFrameTime() > fTime)
+            if (m_TranslationKeyframes.get(index).time > fTime)
                 break;
         // now index points to the first frame after this time
         m_TranslationKeyframes.add(index, new VectorKeyframe(fTime, Value));
@@ -214,7 +211,7 @@ public class Vector_JointChannel implements PJointChannel, Serializable
     {                // maintain chronological ordering
         int index = 0;
         for (; index < m_RotationKeyframes.size(); ++index)
-            if (m_RotationKeyframes.get(index).getFrameTime() > fTime)
+            if (m_RotationKeyframes.get(index).time > fTime)
                 break;
         // now index points to the first frame after this time
         m_RotationKeyframes.add(index, new VectorKeyframe(fTime, Value));
@@ -232,51 +229,6 @@ public class Vector_JointChannel implements PJointChannel, Serializable
         return(m_RotationKeyframes.get(Index));
     }
 
-
-    /**
-     * Dumps the JointChannel.
-     */
-    @Override
-    public void dump(String spacing)
-    {
-        int a;
-        VectorKeyframe pKeyframe;
-
-        System.out.println(spacing + "PPolygonSkinnedMeshJointAnimation:");
-
-        System.out.println(spacing + "   TranslationKeyframes:  " + getTranslationKeyframeCount());
-        for (a=0; a<getTranslationKeyframeCount(); a++)
-        {
-            pKeyframe = getTranslationKeyframe(a);
-            System.out.print(spacing + "      Keyframe Time=" + pKeyframe.getFrameTime());
-            System.out.println(", Value=(" + pKeyframe.getValue().x + ", " + pKeyframe.getValue().y + ", " + pKeyframe.getValue().z + ")");
-        }
-
-        System.out.println(spacing + "   RotationKeyframes:  " + getRotationKeyframeCount());
-        for (a=0; a<getRotationKeyframeCount(); a++)
-        {
-            pKeyframe = getRotationKeyframe(a);
-            System.out.print(spacing + "      Keyframe Time=" + pKeyframe.getFrameTime());
-            System.out.println(", Value=(" + pKeyframe.getValue().x + ", " + pKeyframe.getValue().y + ", " + pKeyframe.getValue().z + ")");
-        }
-    }
-
-    /**
-     * Clears the JointChannel.
-     */
-    @Override
-    public void clear()
-    {
-        m_targetJointBindPose    = null;
-        m_targetJointName        = null;
-    
-        m_TranslationKeyframes.clear();
-        m_RotationKeyframes.clear();
-    
-        m_fDuration              = 0.0f;
-        m_fAverageFrameStep      = 0.0f;
-    }
-
     /**
      * Returns the endtime of the JointChannel.
      * @return float
@@ -289,38 +241,13 @@ public class Vector_JointChannel implements PJointChannel, Serializable
         if (m_TranslationKeyframes.size() == 0 && m_RotationKeyframes.size() == 0)
             fEndTime = 0.0f;
         else if (m_TranslationKeyframes.size() > 0 && m_RotationKeyframes.size() == 0)
-            fEndTime = m_TranslationKeyframes.getLast().getFrameTime();
+            fEndTime = m_TranslationKeyframes.getLast().time;
         else if (m_TranslationKeyframes.size() == 0 && m_RotationKeyframes.size() > 0)
-            fEndTime = m_RotationKeyframes.getLast().getFrameTime();
+            fEndTime = m_RotationKeyframes.getLast().time;
         else
-            fEndTime = Math.max(m_TranslationKeyframes.getLast().getFrameTime(), m_RotationKeyframes.getLast().getFrameTime());
+            fEndTime = Math.max(m_TranslationKeyframes.getLast().time, m_RotationKeyframes.getLast().time);
 
         return fEndTime;
-    }
-    
-    /**
-     * Adjusts all the keyframe times.
-     * @param fAmount The amount to adjust each keyframe time by.
-     */
-    @Override
-    public void adjustKeyframeTimes(float fAmount)
-    {
-        int a;
-        VectorKeyframe pKeyframe;
-
-        for (a=0; a<getTranslationKeyframeCount(); a++)
-        {
-            pKeyframe = getTranslationKeyframe(a);
-
-            pKeyframe.setFrameTime(pKeyframe.getFrameTime() + fAmount);
-        }
-
-        for (a=0; a<getRotationKeyframeCount(); a++)
-        {
-            pKeyframe = getRotationKeyframe(a);
-
-            pKeyframe.setFrameTime(pKeyframe.getFrameTime() + fAmount);
-        }
     }
 
     @Override
@@ -346,6 +273,25 @@ public class Vector_JointChannel implements PJointChannel, Serializable
     @Override
     public void applyTransitionPose(PJoint joint, AnimationState state, float lerpCoefficient) {
         throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    protected class VectorKeyframe implements Serializable
+    {
+        float    time = 0.0f;
+        Vector3f value = new Vector3f();
+
+        //  Constructor.
+        public VectorKeyframe(float time, Vector3f value)
+        {
+            this.time = time;
+            this.value.set(value);
+        }
+
+        public VectorKeyframe(VectorKeyframe frame)
+        {
+            time = frame.time;
+            value.set(frame.value);
+        }
     }
 }
 

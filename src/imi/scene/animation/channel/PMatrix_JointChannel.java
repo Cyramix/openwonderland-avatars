@@ -19,8 +19,6 @@ package imi.scene.animation.channel;
 
 import imi.scene.animation.*;
 import imi.scene.animation.channel.PJointChannel;
-import imi.scene.animation.keyframe.PMatrixKeyframe;
-import imi.scene.animation.keyframe.KeyframeInterface;
 import imi.scene.PJoint;
 import imi.scene.PMatrix;
 import imi.utils.Interpolator;
@@ -44,7 +42,7 @@ public class PMatrix_JointChannel implements PJointChannel, Serializable
     /** name of the joint this channel affects**/
     private String  m_TargetJointName = null;
     /** Keyframes for this channel's animation **/
-    private final   FastTable<PMatrixKeyframe>    m_KeyFrames = new FastTable<PMatrixKeyframe>();
+    final   FastTable<PMatrixKeyframe>    m_KeyFrames = new FastTable<PMatrixKeyframe>();
     
     // Assorted data that is explicitely calculated
     private float   m_fDuration = 0.0f;
@@ -89,14 +87,13 @@ public class PMatrix_JointChannel implements PJointChannel, Serializable
     {
         if (calculateBlendedMatrix(state.getCurrentCycleTime(), m_blendBuffer, state, false) == true)
             jointToAffect.getTransform().setLocalMatrix(m_blendBuffer);
-        return;
     }
 
     @Override
     public float calculateDuration()
     {
-        float fEndTime = m_KeyFrames.get(m_KeyFrames.size()-1).getFrameTime();
-        float fStartTime = m_KeyFrames.get(1).getFrameTime();
+        float fEndTime = m_KeyFrames.get(m_KeyFrames.size()-1).time;
+        float fStartTime = m_KeyFrames.get(1).time;
         // Calculate
         m_fDuration = fEndTime - fStartTime;
 
@@ -106,7 +103,7 @@ public class PMatrix_JointChannel implements PJointChannel, Serializable
         }
         else
         {
-            float fSecondKeyframeTime = m_KeyFrames.get(1).getFrameTime();
+            float fSecondKeyframeTime = m_KeyFrames.get(1).time;
             m_fDuration += fSecondKeyframeTime;
         }
         
@@ -129,9 +126,10 @@ public class PMatrix_JointChannel implements PJointChannel, Serializable
         float interpolationCoefficient = 0.0f;
 
         // determine what two keyframes to interpolate between
-        KeyframeInterface leftFrame = null;
-        KeyframeInterface rightFrame = null;
-        KeyframeInterface currentFrame = null;
+        PMatrixKeyframe leftFrame = null;
+        PMatrixKeyframe rightFrame = null;
+        PMatrixKeyframe currentFrame = null;
+
         // Get cursor
         int currentIndex = -1;
         if (bTransitionCycle)
@@ -156,7 +154,7 @@ public class PMatrix_JointChannel implements PJointChannel, Serializable
             while (currentIndex > 0)
             {
                 currentFrame = m_KeyFrames.get(currentIndex);
-                if (currentFrame.getFrameTime() > fTime)
+                if (currentFrame.time > fTime)
                     rightFrame = currentFrame;
                 else // passed the mark
                 {
@@ -180,7 +178,7 @@ public class PMatrix_JointChannel implements PJointChannel, Serializable
             while (currentIndex < numKeyframes-1)
             {
                 currentFrame = m_KeyFrames.get(currentIndex);
-                if (currentFrame.getFrameTime() <= fTime)
+                if (currentFrame.time <= fTime)
                     leftFrame = currentFrame;
                 else // passed the mark
                 {
@@ -198,11 +196,11 @@ public class PMatrix_JointChannel implements PJointChannel, Serializable
         if (leftFrame != null && rightFrame != null) // Need to blend between two poses
         {
             if (!overTheEdgeInReverse)
-                interpolationCoefficient = (fTime - leftFrame.getFrameTime()) / (rightFrame.getFrameTime() - leftFrame.getFrameTime());
+                interpolationCoefficient = (fTime - leftFrame.time) / (rightFrame.time - leftFrame.time);
             else
-                interpolationCoefficient = (fTime - leftFrame.getFrameTime()) / m_fAverageFrameStep;
-            leftFrame.valueAsPMatrix(leftSideBuffer);
-            rightFrame.valueAsPMatrix(rightSideBuffer);
+                interpolationCoefficient = (fTime - leftFrame.time) / m_fAverageFrameStep;
+            leftSideBuffer.set(leftFrame.value);
+            rightSideBuffer.set(rightFrame.value);
             m_interpolator.interpolate(interpolationCoefficient, leftSideBuffer, rightSideBuffer, output);
         }
         else
@@ -244,7 +242,7 @@ public class PMatrix_JointChannel implements PJointChannel, Serializable
         // maintain chronological ordering
         int index = 0;
         for (; index < m_KeyFrames.size(); ++index)
-            if (m_KeyFrames.get(index).getFrameTime() > keyframe.getFrameTime())
+            if (m_KeyFrames.get(index).time > keyframe.time)
                 break;
         // now index points to the first frame after this time
         m_KeyFrames.add(index, keyframe);
@@ -278,28 +276,6 @@ public class PMatrix_JointChannel implements PJointChannel, Serializable
         return(m_fAverageFrameStep);
     }
 
-
-    /**
-     * Dumps the JointChannel.
-     */
-    public void dump(String spacing)
-    {
-        System.out.println("   JointChannel=" + m_TargetJointName + ", Duration=" + m_fDuration);
-    }
-
-    /**
-     * Clears the JointChannel.
-     */
-    public void clear()
-    {
-        m_TargetJointName = null;
-    
-        m_KeyFrames.clear();
-
-        m_fDuration = 0.0f;
-        m_fAverageFrameStep = 0.0f;
-    }
-
     /**
      * Returns the endtime of the JointChannel.
      * @return float
@@ -308,18 +284,8 @@ public class PMatrix_JointChannel implements PJointChannel, Serializable
     {
         float fEndTime = 0.0f;
         if (m_KeyFrames.size() > 0)
-            fEndTime = m_KeyFrames.get(m_KeyFrames.size()-1).getFrameTime();
+            fEndTime = m_KeyFrames.get(m_KeyFrames.size()-1).time;
         return fEndTime;
-    }
-
-    /**
-     * Adjusts all the keyframe times.
-     * @param fAmount The amount to adjust each keyframe time by.
-     */
-    public void adjustKeyframeTimes(float fAmount)
-    {
-        for (KeyframeInterface keyFrame : m_KeyFrames)
-            keyFrame.adjustTime(fAmount);
     }
 
     @Override
@@ -330,7 +296,7 @@ public class PMatrix_JointChannel implements PJointChannel, Serializable
 
     @Override
     public void fractionalReduction(int ratio) {
-        FastList<KeyframeInterface> removals = new FastList();
+        FastList<PMatrixKeyframe> removals = new FastList();
         if (m_KeyFrames.size() < ratio * 3)
             return; // Too small to bother
         for (int i = 0; i < m_KeyFrames.size(); ++i)
@@ -341,7 +307,7 @@ public class PMatrix_JointChannel implements PJointChannel, Serializable
                 removals.add(m_KeyFrames.get(i));
         }
         // Now remove all of those
-        for (KeyframeInterface frame : removals)
+        for (PMatrixKeyframe frame : removals)
             m_KeyFrames.remove(frame);
     }
 
@@ -349,25 +315,25 @@ public class PMatrix_JointChannel implements PJointChannel, Serializable
     public void timeBasedReduction(int newSampleFPS) {
         float spacing = 1.0f / (float)newSampleFPS;
 
-        FastList<KeyframeInterface> removals = new FastList();
+        FastList<PMatrixKeyframe> removals = new FastList();
 
         float lastTime = 0.0f;
-        KeyframeInterface firstFrame = m_KeyFrames.getFirst();
-        KeyframeInterface lastFrame = m_KeyFrames.getLast();
-        for (KeyframeInterface frame : m_KeyFrames)
+        PMatrixKeyframe firstFrame = m_KeyFrames.getFirst();
+        PMatrixKeyframe lastFrame = m_KeyFrames.getLast();
+        for (PMatrixKeyframe frame : m_KeyFrames)
         {
             if (    frame == firstFrame ||
                     frame == lastFrame  ||
-                    frame.getFrameTime() - lastTime >= spacing)
+                    frame.time - lastTime >= spacing)
             {
-                lastTime = frame.getFrameTime();
+                lastTime = frame.time;
                 continue;
             }
             else
                 removals.add(frame);
         }
         // Now remove all of those
-        for (KeyframeInterface frame : removals)
+        for (PMatrixKeyframe frame : removals)
             m_KeyFrames.remove(frame);
     }
 
@@ -377,7 +343,7 @@ public class PMatrix_JointChannel implements PJointChannel, Serializable
     public void closeChannel()
     {
         calculateAverageStepTime();
-        m_KeyFrames.getLast().valueAsPMatrix(m_blendBuffer);
+        m_blendBuffer.set(m_KeyFrames.getLast().value);
         PMatrixKeyframe newFrame = new PMatrixKeyframe(m_fDuration + m_fAverageFrameStep, m_blendBuffer);
         m_KeyFrames.add(newFrame);
         calculateAverageStepTime();
@@ -415,6 +381,44 @@ public class PMatrix_JointChannel implements PJointChannel, Serializable
         rightSideBuffer = new PMatrix();
         m_blendBuffer = new PMatrix();
     }
+
+    protected class PMatrixKeyframe implements Serializable
+    {
+        public float               time = 0.0f;
+        public transient PMatrix   value = new PMatrix();
+
+        // Convenience constructor
+        public PMatrixKeyframe(float time, PMatrix value)
+        {
+            this.time = time;
+            this.value.set(value);
+        }
+
+        private void writeObject(ObjectOutputStream stream) throws IOException {
+            stream.defaultWriteObject();
+            float[] matrix = new float[16];
+            value.getFloatArray(matrix);
+            for (int i = 0; i < 12; ++i)
+                stream.writeFloat(matrix[i]);
+        }
+
+        private void readObject(ObjectInputStream stream) throws IOException, ClassNotFoundException
+        {
+            stream.defaultReadObject();
+            float[] matrix = new float[16];
+            for (int i = 0; i < 12; ++i)
+                matrix[i] = stream.readFloat();
+
+            matrix[12] = 0;
+            matrix[13] = 0;
+            matrix[14] = 0;
+            matrix[15] = 1;
+
+            value = new PMatrix(matrix);
+        }
+
+    }
+
 }
 
 
