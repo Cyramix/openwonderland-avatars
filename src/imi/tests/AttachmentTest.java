@@ -34,16 +34,25 @@ import imi.utils.instruments.Instrumentation;
 import org.jdesktop.mtgame.WorldManager;
 
 /**
- * Test attachments
+ * Test attaching meshes to the avatar's skeleton
  * @author Ronald E Dahlgren
  */
 public class AttachmentTest extends DemoBase
 {
-    
+
+    /**
+     * Run the test!
+     * @param args
+     */
     public static void main(String[] args)
     {
         AttachmentTest myTest = new AttachmentTest(args);
     }
+
+    /**
+     * Construct and run
+     * @param args
+     */
     public AttachmentTest(String[] args)
     {
         super(args);
@@ -52,32 +61,41 @@ public class AttachmentTest extends DemoBase
     @Override
     protected void createDemoEntities(WorldManager wm) {
 
-        // Change camera speed
+        // Change camera position
         FirstPersonCamState camState = (FirstPersonCamState) wm.getUserData(CameraState.class);
-        camState.setMovementRate(0.01f);
+        camState.setCameraPosition(new Vector3f(0,1.5f,-2));
         // The event processor provides the linkage between AWT events and input controls
         JSceneEventProcessor eventProcessor = (JSceneEventProcessor) wm.getUserData(JSceneEventProcessor.class);
         // Set the input scheme that we intend to use
         AvatarControlScheme control = (AvatarControlScheme)eventProcessor.setDefault(new AvatarControlScheme(null));
 
-        Instrumentation instruments2 = (Instrumentation)wm.getUserData(Instrumentation.class);
-        instruments2.disableSubsytem(Instrumentation.InstrumentedSubsystem.AnimationSystem);
-
-//        DebugAttributes attributes = new DebugAttributes("Debugger!", false, true, false, false, false, true);
-        FemaleAvatarAttributes attributes = new FemaleAvatarAttributes("chica", true);
+        // Create an avatar to test on
+        FemaleAvatarAttributes attributes = new FemaleAvatarAttributes("AttachmentGirl", true);
         Avatar attachmentAvatar = new Avatar(attributes, wm);
-        attachmentAvatar.selectForInput();
+        // Hook up the avatar to the control scheme
         control.setavatar(attachmentAvatar);
+        attachmentAvatar.selectForInput();
 
-        // Attach something to the Spine2
+        // Create the instructions needed for loading and attaching a mesh
         InstructionProcessor processor = new InstructionProcessor(wm);
         Instruction attachmentInstructionSet = new Instruction();
+        // Set the skeleton to our avatar's skeleton
         attachmentInstructionSet.addChildInstruction(Instruction.InstructionType.setSkeleton, attachmentAvatar.getSkeleton());
         String fileProtocol = "file:///" + System.getProperty("user.dir") + "/";
-        attachmentInstructionSet.addChildInstruction(Instruction.InstructionType.loadGeometry, fileProtocol + "assets/models/collada/Accessories/accessories.dae");
-        attachmentInstructionSet.addAttachmentInstruction("MaleRoundGlasses", "Neck", new PMatrix(new Vector3f(0, -2, 0)), "sunglass");
-        attachmentInstructionSet.addAttachmentInstruction("MaleRoundGlasses", "Head", new PMatrix(new Vector3f(0, -2, 0)), "sunglass");
+        // Load this file
+        attachmentInstructionSet.addChildInstruction(Instruction.InstructionType.loadGeometry,
+                fileProtocol + "assets/models/collada/Objects/Interface/InterfaceKnobPlate.dae");
+        // Attach something
+        attachmentInstructionSet.addAttachmentInstruction("BackPlate1", // Name of geometry in the file
+                                                        "Head", // Joint to attach to
+                                                        new PMatrix(new Vector3f(0, 0, 0.1f)), // Attachment transform
+                                                        "plateJoint"); // name for the attachment joint (this is created by this instruction)
+        // Do all that stuff!
         processor.execute(attachmentInstructionSet);
+        // refresh the materials on our avatar (this will apply the material
+        // to the newly loaded geometry). This can also be done to the mesh
+        // specifically
+        attachmentAvatar.applyMaterials();
 
         // Construct a tree explorer for analyzing the scene graph
         TreeExplorer te = new TreeExplorer();
@@ -85,10 +103,6 @@ public class AttachmentTest extends DemoBase
         se.setSceneData(attachmentAvatar.getJScene(), attachmentAvatar.getPScene(), attachmentAvatar, wm, null);
         te.setExplorer(se);
         te.setVisible(true);
-
-        JFrame_InstrumentationGUI instruments = new JFrame_InstrumentationGUI(wm);
-        instruments.setVisible(true);
-
     }
 
 }
