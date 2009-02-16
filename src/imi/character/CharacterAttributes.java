@@ -17,6 +17,7 @@
  */
 package imi.character;
 
+import com.jme.math.Vector3f;
 import imi.loaders.repository.SharedAsset;
 import imi.scene.PMatrix;
 import imi.scene.PScene;
@@ -79,7 +80,7 @@ public class CharacterAttributes
 
     // For simple static geometry replacement
     private boolean useSimpleStaticModel    = false; 
-    private PMatrix origin                  = null; 
+    private PMatrix origin                  = new PMatrix(new Vector3f(0,(float)Math.PI,0), Vector3f.UNIT_XYZ, Vector3f.ZERO);
     private PScene  simpleScene             = null;
 
     /**
