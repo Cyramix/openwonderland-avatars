@@ -31,17 +31,28 @@ import java.util.logging.Logger;
 import org.jdesktop.mtgame.WorldManager;
 
 /**
- *
+ * This class demonstrates some rudimentary avatar behaviors.
+ * After loading, press '1' to have the avatars begin walking around the chairs.
+ * Pressing '2' will cause the avatars to switch directions.
+ * Pressing '3' stops the music :)
+ * Pressing 'Backspace' will cause a random chair to be removed.
  * @author Lou
  */
 public class MusicalChairs extends DemoBase
 {
+    /**
+     * Construct and run the test.
+     * @param args
+     */
     public MusicalChairs(String[] args){
         super(args);
     }
 
+    /**
+     * Run the test!
+     * @param args
+     */
     public static void main(String[] args) {
-        Logger.getLogger("com.jme.renderer").setLevel(Level.OFF);
         // Give ourselves a nice environment
         String[] ourArgs = new String[] { "-env:assets/models/collada/Environments/Garden/Garden.dae" };
         MusicalChairs worldTest = new MusicalChairs(ourArgs);

@@ -28,7 +28,7 @@ import org.jdesktop.mtgame.WorldManager;
  * Console commands:
  * (required) <optional>
  * 
- * list listAvatars listChairs listLocations
+ * list, listAvatars, listChairs, listLocations
  * remove (ID)
  * selectAvatar (ID)
  * createAvatar (name) (gender) (position: xyz) <select> <direction: xyz>

@@ -45,6 +45,10 @@ public class AvatarParty extends DemoBase
         super(args);
     }
 
+    /**
+     * Run the test!
+     * @param args
+     */
     public static void main(String[] args)
     {
         // Give ourselves a nice environment

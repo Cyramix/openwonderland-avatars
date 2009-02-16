@@ -18,18 +18,14 @@
 package imi.tests;
 
 
-import com.jme.math.Vector3f;
 import imi.character.avatar.Avatar;
 import imi.character.avatar.MaleAvatarAttributes;
-import imi.gui.SceneEssentials;
-import imi.gui.TreeExplorer;
-import imi.scene.PMatrix;
+import imi.character.statemachine.GameContext;
 import imi.scene.animation.speech.PhonemeChain;
 import imi.scene.animation.speech.PhonemeChain.Phoneme;
 import org.jdesktop.mtgame.WorldManager;
 import imi.scene.processors.JSceneEventProcessor;
 import imi.utils.input.DahlgrensInput;
-import imi.utils.instruments.Instrumentation;
 import java.util.ArrayList;
 
 
@@ -79,48 +75,32 @@ public class SpeechTest extends DemoBase
         DahlgrensInput control = (DahlgrensInput)eventProcessor.setDefault(new DahlgrensInput(null));
 
         // Create an attributes object describing the maleAvatar
-        // We will use random customizations for this one
+        // We will use random customizations 
         MaleAvatarAttributes maleAttributes = new MaleAvatarAttributes("RobertTheTestGuy", true);
-        // Put him over to the left a bit
-        maleAttributes.setOrigin(new PMatrix(new Vector3f(1, 0, 1)));
         Avatar maleAvatar = new Avatar(maleAttributes, wm);
-
-        // Select the male and add them both to the input team (collection of controllable avatars)
-        maleAvatar.selectForInput();
+        // control him
         control.setTargetAvatar(maleAvatar);
 
-        // Hook the control scheme up the the camera in order to receieve input
-        // events. We need this in order to control the Verlet arm ('Q' and 'E' to engage)
-        control.getMouseEventsFromCamera();
-
-        // Construct a tree explorer for analyzing the scene graph
-        TreeExplorer te = new TreeExplorer();
-        SceneEssentials se = new SceneEssentials();
-        se.setSceneData(maleAvatar.getJScene(), maleAvatar.getPScene(), maleAvatar, wm, null);
-        te.setExplorer(se);
-        te.setVisible(true);
-
-        try {
-            Thread.sleep(5000);
-        }
-        catch (InterruptedException ex)
-        {
-
-        }
+        // Wait for loading to finish
+        while(maleAvatar.isInitialized() == false)
+            Thread.yield();
+        
         // Speech stuff
         PhonemeChain speech = new PhonemeChain(maleAvatar);
         ArrayList<Phoneme> series = new ArrayList<Phoneme>();
-        series.add(Phoneme.AI);
+        series.add(Phoneme.Consonant);
+        series.add(Phoneme.E);
         series.add(Phoneme.Consonant);
         series.add(Phoneme.FandV);
-        series.add(Phoneme.O);
-        series.add(Phoneme.Consonant);
         series.add(Phoneme.U);
+        series.add(Phoneme.Consonant);
+        series.add(Phoneme.AI);
+        series.add(Phoneme.Consonant);
+        
         speech.initiateChain(series, 1.0f);
-
-        Instrumentation instruments = (Instrumentation)wm.getUserData(Instrumentation.class);
-        instruments.addInstancedAvatar(Vector3f.ZERO);
-        instruments.addInstancedAvatar(new Vector3f(-1,0,1));
-        instruments.addInstancedAvatar(new Vector3f(1,0,1));
+        // Disable the game context so that we can drive the animations
+        maleAvatar.getContext().setEnable(false);
+        // Speak publicly
+        maleAvatar.getSkeleton().transitionTo("Male_PublicSpeaking", false);
     }
 }

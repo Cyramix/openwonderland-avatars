@@ -372,6 +372,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
 
     /**
      * Wrap up the initialization process.
+     * @param characterDOM
      * @param character
      * @param attributes
      */

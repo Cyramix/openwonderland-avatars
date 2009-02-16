@@ -182,6 +182,8 @@ public class GameContext extends NamedUpdatableObject
     @Override
     public void update(float deltaTime)
     {
+        if (!enabledState)
+            return;
         if (!initalized)
             initialize();
         

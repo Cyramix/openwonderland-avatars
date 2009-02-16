@@ -20,10 +20,7 @@ package imi.tests;
 import com.jme.math.Vector3f;
 import imi.character.avatar.Avatar;
 import imi.character.avatar.MaleAvatarAttributes;
-import imi.character.avatar.AvatarSteeringHelm;
-import imi.character.objects.LocationNode;
-import imi.character.objects.ObjectCollection;
-import imi.character.steering.GoTo;
+import imi.gui.SceneEssentials;
 import imi.gui.TreeExplorer;
 import imi.scene.camera.state.FirstPersonCamState;
 import imi.scene.polygonmodel.parts.PMeshMaterial;
@@ -49,7 +46,7 @@ public class SavingAndLoadingTest extends DemoBase
     /** Tree explorer if needed **/
     private TreeExplorer te = null;
     /** Point this to where you want the file to go **/
-    private static File SaveFile = new File("assets/configurations/FemaleApe.xml");
+    private static File SaveFile = new File("assets/configurations/SavingTest.xml");
 
     /**
      * Construct a new instance!
@@ -60,6 +57,10 @@ public class SavingAndLoadingTest extends DemoBase
         super(args);
     }
 
+    /**
+     * Run the test!
+     * @param args
+     */
     public static void main(String[] args)
     {
         SavingAndLoadingTest worldTest = new SavingAndLoadingTest(args);
@@ -85,14 +86,7 @@ public class SavingAndLoadingTest extends DemoBase
 
         // Wait for the testCharacter to load
         while (!testCharacter.isInitialized())
-        {
-            try
-            {
-                Thread.sleep(12000);
-            } catch (InterruptedException ex) {
-                    logger.log(Level.SEVERE, null, ex);
-            }
-        }
+            Thread.yield();
 
 
         // Customize and save this guy
@@ -102,56 +96,30 @@ public class SavingAndLoadingTest extends DemoBase
         try {
             // Then create a new avatar with the same configuration
             Avatar newAvatar = new Avatar(SaveFile.toURI().toURL(), wm);
+            newAvatar.applyMaterials();
 
         } catch (MalformedURLException ex) {
-            Logger.getLogger(SavingAndLoadingTest.class.getName()).log(Level.SEVERE, null, ex);
+            logger.severe("Unable to create URL to configuration file.");
         }
-
-        // Uncomment to get a pscene explorer------
-//        te = new TreeExplorer();
-//        SceneEssentials se = new SceneEssentials();
-//        se.setPScene(testCharacter.getPScene());
-//        se.setWM(wm);
-//        te.setExplorer(se);
-//        te.setVisible(true);
     }
 
     private void customizeCharacter(Avatar testCharacter, WorldManager wm) {
-//        final LocationNode destination = new LocationNode("AvatarSpotOne",
-//                                                new Vector3f(10, 0, 10),
-//                                                2.0f,
-//                                                wm);
-        ObjectCollection collection = new ObjectCollection("GoalPointHolder", wm);
-        testCharacter.setObjectCollection(collection);
-        //collection.addObject(destination);
-        // walk away avatar, just walk away
-        AvatarSteeringHelm steering = (AvatarSteeringHelm)testCharacter.getContext().getSteering();
-        //steering.addTaskToTop(new GoTo(destination, testCharacter.getContext()));
-
         // tweak it!
         SkeletonNode skeleton = testCharacter.getSkeleton();
         skeleton.displaceJoint("Head", new Vector3f(0, 0.08f, -0.04f));
         skeleton.displaceJoint("rightEye", new Vector3f(0, 0, -0.018f));
         skeleton.displaceJoint("leftEye", new Vector3f(0, 0, -0.018f));
 
-        // Clothing
+        // Clothing material mods
         PMeshMaterial meshMat = new PMeshMaterial("Clothing");
-        meshMat.setTexture(new File("/work/avatars/assets/textures/checkerboard2.PNG"), 0); // base diffuse
-        meshMat.setTexture(new File("/work/avatars/assets/textures/normal.jpg"), 1); // normal map
-        meshMat.setTexture(new File("/work/avatars/assets/textures/tgatest.tga"), 2); // pattern diffuse
+        meshMat.setTexture(new File("assets/textures/checkerboard2.PNG"), 0); // base diffuse
+        meshMat.setTexture(new File("assets/textures/normal.jpg"), 1); // normal map
+        meshMat.setTexture(new File("assets/textures/tgatest.tga"), 2); // pattern diffuse
         meshMat.setShader((ClothingShaderSpecColor)repository.newShader(ClothingShaderSpecColor.class));
 
-
+        // Grab the shirt and put the new material on it
         PPolygonSkinnedMeshInstance meshInstance = skeleton.getSkinnedMeshInstance("PoloShape"); // Dress shirt
         meshInstance.setMaterial(meshMat);
         meshInstance.applyMaterial();
-        Thread.yield();
-        try // last little bit
-        {
-            Thread.sleep(8000);
-        } catch (InterruptedException ex) {
-                logger.log(Level.SEVERE, null, ex);
-        }
-
     }
 }
