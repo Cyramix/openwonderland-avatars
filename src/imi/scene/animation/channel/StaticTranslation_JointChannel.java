@@ -16,7 +16,6 @@
  * this code.
  */
 package imi.scene.animation.channel;
-
 import com.jme.math.Matrix3f;
 import com.jme.math.Vector3f;
 import imi.scene.PJoint;
@@ -27,6 +26,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import javolution.util.FastList;
 import javolution.util.FastTable;
 
 /**
@@ -83,7 +83,7 @@ public class StaticTranslation_JointChannel implements PJointChannel, Serializab
 
     @Override
     public void calculateFrame(PJoint jointToAffect, AnimationState state) {
-        if (calculateBlendedMatrix(state.getCurrentCycleTime(), blendBuffer, state, false) == true)
+        if (calculateBlendedRotation(state.getCurrentCycleTime(), blendBuffer, state, false) == true)
             jointToAffect.getTransform().setLocalMatrix(blendBuffer, translationVector);
     }
 
@@ -101,12 +101,50 @@ public class StaticTranslation_JointChannel implements PJointChannel, Serializab
 
     @Override
     public void fractionalReduction(int ratio) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        FastList<RotationKeyframe> removals = new FastList();
+        int numFrames = keyframes.size();
+        if (numFrames < ratio * 3)
+            return; // Too small to bother
+        for (int i = 0; i < numFrames; ++i)
+        {
+            if (i == 0 || i == numFrames - 1 || i % ratio == 0)
+                continue;
+            else
+                removals.add(keyframes.get(i));
+        }
+        // Now remove all of those
+        for (RotationKeyframe frame : removals)
+            keyframes.remove(frame);
+        // Refresh metrics
+        calculateAverageStepTime();
     }
 
     @Override
     public void timeBasedReduction(int newSampleFPS) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        float spacing = 1.0f / (float)newSampleFPS;
+
+        FastList<RotationKeyframe> removals = new FastList();
+
+        float lastTime = 0.0f;
+        RotationKeyframe firstFrame = keyframes.getFirst();
+        RotationKeyframe lastFrame = keyframes.getLast();
+        for (RotationKeyframe frame : keyframes)
+        {
+            if (    frame == firstFrame ||
+                    frame == lastFrame  ||
+                    frame.time - lastTime >= spacing)
+            {
+                lastTime = frame.time;
+                continue;
+            }
+            else
+                removals.add(frame);
+        }
+        // Now remove all of those
+        for (RotationKeyframe frame : removals)
+            keyframes.remove(frame);
+        // refresh metrics
+        calculateAverageStepTime();
     }
 
     @Override
@@ -134,7 +172,7 @@ public class StaticTranslation_JointChannel implements PJointChannel, Serializab
 
     @Override
     public void applyTransitionPose(PJoint joint, AnimationState state, float lerpCoefficient) {
-        if (calculateBlendedMatrix(state.getTransitionCycleTime(), blendBuffer, state, true))
+        if (calculateBlendedRotation(state.getTransitionCycleTime(), blendBuffer, state, true))
         {
             transitionBuffer.setRotation(blendBuffer);
             transitionBuffer.setTranslation(translationVector);
@@ -151,7 +189,7 @@ public class StaticTranslation_JointChannel implements PJointChannel, Serializab
      * @param output This matrix is used to receive the calculation.
      * @return 
      */
-    private boolean calculateBlendedMatrix(float fTime, Matrix3f output, AnimationState state,
+    private boolean calculateBlendedRotation(float fTime, Matrix3f output, AnimationState state,
             boolean bTransitionCycle)
     {
         boolean bReverse = (bTransitionCycle && state.isTransitionReverseAnimation()) ||
@@ -159,8 +197,7 @@ public class StaticTranslation_JointChannel implements PJointChannel, Serializab
         float lerpValue = detectFrames(fTime, bTransitionCycle, bReverse, state.getCursor());
         if (lerpValue >= 0 && lerpValue < 1)
         {
-            Interpolator.elementInterpolation(resultBuffer[0].rotation, resultBuffer[1].rotation,
-                                                lerpValue, output);
+            Interpolator.elementInterpolation(resultBuffer[0].rotation, resultBuffer[1].rotation, lerpValue, output);
             return true;
         }
         else return false;
@@ -175,7 +212,7 @@ public class StaticTranslation_JointChannel implements PJointChannel, Serializab
                                 boolean reverse, AnimationCursor cursor)
     {
         float result = -1;
-        boolean overTheEdgeInReverse = false;
+        boolean overTheEdge = false;
 
         // determine what two keyframes to interpolate between
         RotationKeyframe leftFrame = null;
@@ -218,7 +255,7 @@ public class StaticTranslation_JointChannel implements PJointChannel, Serializab
             }
             if (rightFrame == null)
             {
-                overTheEdgeInReverse = true;
+                overTheEdge = true;
                 rightFrame = keyframes.getLast();
             }
         }
@@ -240,14 +277,20 @@ public class StaticTranslation_JointChannel implements PJointChannel, Serializab
                 }
                 currentIndex++;
             }
+            if (leftFrame != null && rightFrame == null)
+            {
+                overTheEdge = true;
+                rightFrame = keyframes.getFirst();
+            }
         }
 
         if (leftFrame != null && rightFrame != null) // Need to blend between two poses
         {
-            if (!overTheEdgeInReverse)
-                result = (fTime - leftFrame.time) / (rightFrame.time - leftFrame.time);
-            else
+            if (overTheEdge)
                 result = (fTime - leftFrame.time) / averageTimestep;
+            else
+                result = (fTime - leftFrame.time) / (rightFrame.time - leftFrame.time);
+                
             resultBuffer[0] = leftFrame;
             resultBuffer[1] = rightFrame;
 
@@ -296,7 +339,7 @@ public class StaticTranslation_JointChannel implements PJointChannel, Serializab
         {
             out.defaultWriteObject();
             for (int i = 0; i < 3; ++i)
-                for (int j = 0; j < 3; ++j)
+                for (int j = 0; j < 3; j++)
                     out.writeFloat(rotation.get(i, j));
         }
 
@@ -305,7 +348,7 @@ public class StaticTranslation_JointChannel implements PJointChannel, Serializab
             in.defaultReadObject();
             rotation = new Matrix3f();
             for (int i = 0; i < 3; ++i)
-                for (int j = 0; j < 3; ++j)
+                for (int j = 0; j < 3; j++)
                     rotation.set(i, j, in.readFloat());
         }
     }

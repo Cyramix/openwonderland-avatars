@@ -18,6 +18,7 @@
 package imi.scene.animation.channel;
 
 import com.jme.math.Matrix3f;
+import com.jme.math.Quaternion;
 import com.jme.math.Vector3f;
 
 /**
@@ -38,6 +39,9 @@ public class ChannelOptimizer
     private boolean bConstantAngle_Z = false;
     /** Calculation scratch space **/
     private final Matrix3f matrix3fBuffer = new Matrix3f();
+    private final Quaternion rotationBuffer = new Quaternion();
+    /** Quality indicator **/
+    private float quality = 1.0f;
 
     public ChannelOptimizer()
     {
@@ -53,6 +57,7 @@ public class ChannelOptimizer
      * @return
      */
     public PJointChannel optimize(PJointChannel channel, float quality) {
+        this.quality = quality;
         if (channel instanceof PMatrix_JointChannel)
             return optimizeMatrixChannel((PMatrix_JointChannel)channel);
         else
@@ -115,22 +120,27 @@ public class ChannelOptimizer
 
     private PJointChannel createChannel(PMatrix_JointChannel channel)
     {
+        PJointChannel result = null;
         // categorize
         if (bStaticTranslation)
         {
             Vector3f translation = channel.m_KeyFrames.getFirst().value.getTranslation();
             // TODO : Fix bug with the single DOF channel.
 //            if (bConstantAxis_X)
-//                return createSingleDOFChannel(channel, 0, translation);
+//                result = createSingleDOFChannel(channel, 0, translation);
 //            if (bConstantAxis_Y)
-//                return createSingleDOFChannel(channel, 1, translation);
+//                result = createSingleDOFChannel(channel, 1, translation);
 //            if (bConstantAxis_Z)
-//                return createSingleDOFChannel(channel, 2, translation);
+//                result = createSingleDOFChannel(channel, 2, translation);
             // Not a dof, but with static translation
-            return createStaticTranslationChannel(channel, translation);
+            result = createStaticTranslationChannel(channel, translation);
         }
-        else
-            return channel;
+        else // No compression techniques to use
+            result = channel;
+
+        result.fractionalReduction((int)(1/quality));
+
+        return result;
     }
 
 

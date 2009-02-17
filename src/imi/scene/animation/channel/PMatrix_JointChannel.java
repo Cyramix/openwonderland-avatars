@@ -122,7 +122,7 @@ public class PMatrix_JointChannel implements PJointChannel, Serializable
             boolean bTransitionCycle)
     {
         boolean result = true;
-        boolean overTheEdgeInReverse = false;
+        boolean overTheEdge = false;
         float interpolationCoefficient = 0.0f;
 
         // determine what two keyframes to interpolate between
@@ -138,7 +138,7 @@ public class PMatrix_JointChannel implements PJointChannel, Serializable
             currentIndex = state.getCursor().getCurrentJointPosition();
 
         int numKeyframes = m_KeyFrames.size();
-        if (currentIndex < 0 || currentIndex >= numKeyframes) // Current index valid?
+        if (currentIndex < 0 || currentIndex >= numKeyframes - 1) // Current index valid?
         {
             if ((state.isReverseAnimation() && !bTransitionCycle) ||
                 (state.isTransitionReverseAnimation() && bTransitionCycle))
@@ -169,7 +169,7 @@ public class PMatrix_JointChannel implements PJointChannel, Serializable
             }
             if (rightFrame == null)
             {
-                overTheEdgeInReverse = true;
+                overTheEdge = true;
                 rightFrame = m_KeyFrames.getLast();
             }
         }
@@ -191,14 +191,20 @@ public class PMatrix_JointChannel implements PJointChannel, Serializable
                 }
                 currentIndex++;
             }
+            if (leftFrame != null && rightFrame == null)
+            {
+                rightFrame = m_KeyFrames.getFirst();
+                overTheEdge = true;
+            }
         }
 
         if (leftFrame != null && rightFrame != null) // Need to blend between two poses
         {
-            if (!overTheEdgeInReverse)
-                interpolationCoefficient = (fTime - leftFrame.time) / (rightFrame.time - leftFrame.time);
-            else
+            if (overTheEdge)
                 interpolationCoefficient = (fTime - leftFrame.time) / m_fAverageFrameStep;
+            else
+                interpolationCoefficient = (fTime - leftFrame.time) / (rightFrame.time - leftFrame.time);
+                
             leftSideBuffer.set(leftFrame.value);
             rightSideBuffer.set(rightFrame.value);
             m_interpolator.interpolate(interpolationCoefficient, leftSideBuffer, rightSideBuffer, output);
@@ -297,11 +303,12 @@ public class PMatrix_JointChannel implements PJointChannel, Serializable
     @Override
     public void fractionalReduction(int ratio) {
         FastList<PMatrixKeyframe> removals = new FastList();
-        if (m_KeyFrames.size() < ratio * 3)
+        int numFrames = m_KeyFrames.size();
+        if (numFrames < ratio * 3)
             return; // Too small to bother
-        for (int i = 0; i < m_KeyFrames.size(); ++i)
+        for (int i = 0; i < numFrames; ++i)
         {
-            if (i == 0 || i == m_KeyFrames.size() - 1 || i % ratio == 0)
+            if (i == 0 || i == numFrames - 1 || i % ratio == 0)
                 continue;
             else
                 removals.add(m_KeyFrames.get(i));

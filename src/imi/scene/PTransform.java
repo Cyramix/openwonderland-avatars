@@ -215,8 +215,12 @@ public class PTransform implements Serializable
         return matrix;
     }
 
-    public void setLocalMatrix(Matrix3f blendBuffer, Vector3f translationVector) {
-        m_local.set(blendBuffer, translationVector, 1.0f);
+    public void setLocalMatrix(Matrix3f rotation, Vector3f translationVector) {
+        m_local.set(rotation, translationVector, 1.0f);
+    }
+
+    public void setLocalMatrix(Quaternion rotation, Vector3f translationVector) {
+        m_local.set(rotation, translationVector, 1.0f);
     }
 
     /**
