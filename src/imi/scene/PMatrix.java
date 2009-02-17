@@ -239,6 +239,12 @@ public class PMatrix implements Serializable
         mOut.m22 = mat[10];
     }
 
+    public void normalizeAxes() {
+        setLocalX(getLocalXNormalized());
+        setLocalY(getLocalYNormalized());
+        setLocalZ(getLocalZNormalized());
+    }
+
     /**
      * Sets this transform to the identity matrix.
      */

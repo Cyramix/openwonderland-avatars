@@ -172,12 +172,21 @@ public class StaticTranslation_JointChannel implements PJointChannel, Serializab
 
     @Override
     public void applyTransitionPose(PJoint joint, AnimationState state, float lerpCoefficient) {
-        if (calculateBlendedRotation(state.getTransitionCycleTime(), blendBuffer, state, true))
+        if (lerpCoefficient > 0.01f)
         {
-            transitionBuffer.setRotation(blendBuffer);
-            transitionBuffer.setTranslation(translationVector);
-            Interpolator.elementInterpolation(joint.getTransform().getLocalMatrix(true),
-                    transitionBuffer, lerpCoefficient, joint.getTransform().getLocalMatrix(true));
+            if (calculateBlendedRotation(state.getTransitionCycleTime(), blendBuffer, state, true))
+            {
+                if (lerpCoefficient > 0.9f)
+                    joint.getTransform().getLocalMatrix(true).setRotation(blendBuffer);
+                else
+                {
+                    transitionBuffer.setRotation(blendBuffer);
+                    transitionBuffer.setTranslation(translationVector);
+                    Interpolator.elementInterpolation(joint.getTransform().getLocalMatrix(true),
+                            transitionBuffer, lerpCoefficient, joint.getTransform().getLocalMatrix(true));
+                    joint.getTransform().getLocalMatrix(true).normalizeAxes();
+                }
+            }
         }
     }
 
@@ -212,6 +221,7 @@ public class StaticTranslation_JointChannel implements PJointChannel, Serializab
                                 boolean reverse, AnimationCursor cursor)
     {
         float result = -1;
+        float relativeTime = 0;
         boolean overTheEdge = false;
 
         // determine what two keyframes to interpolate between
@@ -226,7 +236,7 @@ public class StaticTranslation_JointChannel implements PJointChannel, Serializab
             currentIndex = cursor.getCurrentJointPosition();
 
         int numKeyframes = keyframes.size();
-        if (currentIndex < 0 || currentIndex >= numKeyframes) // Current index valid?
+        if (currentIndex < 0 || currentIndex >= numKeyframes - 1) // Current index valid?
         {
             if (reverse)
                 currentIndex = numKeyframes - 1; // start at the end
@@ -253,11 +263,14 @@ public class StaticTranslation_JointChannel implements PJointChannel, Serializab
                 }
                 currentIndex--;
             }
-            if (rightFrame == null)
+            if (leftFrame == null)
             {
                 overTheEdge = true;
-                rightFrame = keyframes.getLast();
+                leftFrame = keyframes.getLast();
+                relativeTime = fTime;
             }
+            else
+                relativeTime = fTime - leftFrame.time;
         }
         else // playing forward
         {
@@ -282,15 +295,22 @@ public class StaticTranslation_JointChannel implements PJointChannel, Serializab
                 overTheEdge = true;
                 rightFrame = keyframes.getFirst();
             }
+            else if (leftFrame != null)
+                relativeTime = fTime - leftFrame.time;
         }
 
         if (leftFrame != null && rightFrame != null) // Need to blend between two poses
         {
             if (overTheEdge)
-                result = (fTime - leftFrame.time) / averageTimestep;
+            {
+                result = relativeTime / averageTimestep;
+//                if (targetJointName.equals("rightHand"))
+//                    System.out.println("Over the edge, avgTimeStep: " + averageTimestep + " lerp: " + result + " time: " + fTime);
+            }
             else
-                result = (fTime - leftFrame.time) / (rightFrame.time - leftFrame.time);
-                
+                result = relativeTime / (rightFrame.time - leftFrame.time);
+
+
             resultBuffer[0] = leftFrame;
             resultBuffer[1] = rightFrame;
 

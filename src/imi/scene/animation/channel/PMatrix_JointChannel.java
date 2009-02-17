@@ -124,6 +124,7 @@ public class PMatrix_JointChannel implements PJointChannel, Serializable
         boolean result = true;
         boolean overTheEdge = false;
         float interpolationCoefficient = 0.0f;
+        float relativeTime = 0;
 
         // determine what two keyframes to interpolate between
         PMatrixKeyframe leftFrame = null;
@@ -167,11 +168,14 @@ public class PMatrix_JointChannel implements PJointChannel, Serializable
                 }
                 currentIndex--;
             }
-            if (rightFrame == null)
+            if (leftFrame == null)
             {
                 overTheEdge = true;
-                rightFrame = m_KeyFrames.getLast();
+                leftFrame = m_KeyFrames.getLast();
+                relativeTime = fTime;
             }
+            else
+                relativeTime = fTime - leftFrame.time;
         }
         else // playing forward
         {
@@ -195,15 +199,18 @@ public class PMatrix_JointChannel implements PJointChannel, Serializable
             {
                 rightFrame = m_KeyFrames.getFirst();
                 overTheEdge = true;
+                relativeTime = fTime - leftFrame.time;
             }
+            else if (leftFrame != null)
+                relativeTime = fTime - leftFrame.time;
         }
 
         if (leftFrame != null && rightFrame != null) // Need to blend between two poses
         {
             if (overTheEdge)
-                interpolationCoefficient = (fTime - leftFrame.time) / m_fAverageFrameStep;
+                interpolationCoefficient = relativeTime / m_fAverageFrameStep;
             else
-                interpolationCoefficient = (fTime - leftFrame.time) / (rightFrame.time - leftFrame.time);
+                interpolationCoefficient = relativeTime / (rightFrame.time - leftFrame.time);
                 
             leftSideBuffer.set(leftFrame.value);
             rightSideBuffer.set(rightFrame.value);
@@ -359,13 +366,23 @@ public class PMatrix_JointChannel implements PJointChannel, Serializable
     @Override
     public void applyTransitionPose(PJoint joint, AnimationState state, float lerpCoefficient)
     {
-        if (calculateBlendedMatrix(state.getTransitionCycleTime(), rightSideBuffer, state, true))
+        if (lerpCoefficient > 0.01f)
         {
-            leftSideBuffer.set(joint.getTransform().getLocalMatrix(false));
-            m_interpolator.interpolate(lerpCoefficient,
-                    leftSideBuffer, rightSideBuffer,
-                    joint.getTransform().getLocalMatrix(true));
+            if (calculateBlendedMatrix(state.getTransitionCycleTime(), rightSideBuffer, state, true))
+            {
+                if (lerpCoefficient > 0.9f)
+                    joint.getTransform().setLocalMatrix(rightSideBuffer);
+                else
+                {
+                    leftSideBuffer.set(joint.getTransform().getLocalMatrix(false));
+                    m_interpolator.interpolate(lerpCoefficient,
+                            leftSideBuffer, rightSideBuffer,
+                            joint.getTransform().getLocalMatrix(true));
+                    joint.getTransform().getLocalMatrix(true).normalizeAxes();
+                }
+            }
         }
+
     }
 
     /****************************
