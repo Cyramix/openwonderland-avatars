@@ -43,11 +43,11 @@ import org.jdesktop.mtgame.*;
  */
 public class Repository extends Entity
 {
-    /** Some package private references for convience and centricity **/
+    /** Some package private references for convenience and centricity **/
     static String bafCacheURL = System.getProperty("BafCacheDir", null);
 
     /** Path to the cache folder **/
-    static File cacheFolder = new File(System.getProperty("user.dir") + "/cache/");
+    static File cacheFolder = new File(System.getProperty("user.home") + "/WonderlandAvatarCache/");
 
     /** Logger ref **/
     private static final Logger logger = Logger.getLogger(Repository.class.getName());
