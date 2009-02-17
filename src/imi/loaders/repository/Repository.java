@@ -17,6 +17,7 @@
  */
 package imi.loaders.repository;
 
+import com.jme.util.TextureManager;
 import imi.annotations.Debug;
 import imi.loaders.repository.SharedAsset.SharedAssetType;
 import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
@@ -25,8 +26,10 @@ import imi.scene.shader.ShaderFactory;
 import imi.utils.AvatarObjectInputStream;
 import imi.utils.MD5HashUtils;
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import javolution.util.FastList;
 import javolution.util.FastTable;
@@ -129,6 +132,12 @@ public class Repository extends Entity
 
         // create the shader factory
         m_shaderFactory = new ShaderFactory(wm);
+        try {
+            // prime the texture manager
+            TextureManager.readCache(new File("assets/textures/textures.bin"));
+        } catch (IOException ex) {
+            Logger.getLogger(Repository.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**
