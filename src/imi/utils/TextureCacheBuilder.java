@@ -67,8 +67,10 @@ public class TextureCacheBuilder
         
         try {
             Texture.DEFAULT_STORE_TEXTURE = true;
-            loadAllFiles(assetRootFile);
-            TextureManager.writeCache(out);
+            if (loadAllFiles(assetRootFile))
+                TextureManager.writeCache(out);
+            else
+                logger.severe("Too many textures! (Current limit is 256)");
         } catch (IOException ex) {
             Logger.getLogger(TextureCacheBuilder.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -78,8 +80,9 @@ public class TextureCacheBuilder
      * Traverse the asset hierarchy and cache all the encountered collada files
      * @param docRoot
      */
-    private static void loadAllFiles(File docRoot) throws MalformedURLException
+    private static boolean loadAllFiles(File docRoot) throws MalformedURLException
     {
+        boolean returnValue = true;
         // Make a file filter to use
         FilenameFilter filter = new FilenameFilter() {
             @Override
@@ -99,7 +102,8 @@ public class TextureCacheBuilder
         // Scratch references
         File current = null;
         File[] fileList = null;
-
+        // Count how many entries we have (there is currently a limitation
+        int numberOfEntries = 0;
         // Our queue!
         FastList<File> queue = new FastList<File>();
         queue.add(docRoot);
@@ -110,6 +114,12 @@ public class TextureCacheBuilder
             {
                 System.out.println("Processing " + current.getName());
                 TextureManager.loadTexture(current.toURI().toURL());
+                numberOfEntries++;
+                if (numberOfEntries > 256) // This breaks the current jME BinaryImporter
+                {
+                    returnValue = false;
+                    break;
+                }
             }
             else if (current.isDirectory())
             {
@@ -118,6 +128,7 @@ public class TextureCacheBuilder
                     queue.add(file);
             }
         }
+        return returnValue;
     }
 
 }
