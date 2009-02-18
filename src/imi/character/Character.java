@@ -715,10 +715,14 @@ public abstract class Character extends Entity implements SpatialObject, Animati
             return; // Nothing else to be done here
 
         // eat the skeleton ;)
-        if (m_attributes.isMale())
-           m_skeleton = m_pscene.getRepository().getSkeleton("MaleSkeleton");//loadSkeleton(maleSkeleton);
-        else
-           m_skeleton = m_pscene.getRepository().getSkeleton("FemaleSkeleton");//loadSkeleton(femaleSkeleton);
+        if (m_attributes.isMale()) {
+           m_skeleton = m_pscene.getRepository().getSkeleton("MaleSkeleton");
+//           loadSkeleton(maleSkeleton);
+        }
+        else {
+           m_skeleton = m_pscene.getRepository().getSkeleton("FemaleSkeleton");
+//           loadSkeleton(femaleSkeleton);
+        }
 
         if (m_skeleton == null) // problem
         {
