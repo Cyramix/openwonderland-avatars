@@ -413,6 +413,10 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
             String fullpath = m_protocol + relpath;
             data.get(0)[3]  = fullpath;
             m_sceneData.loadAvatarHeadDAEURL(true, this, data.get(0), meshes);
+
+            if (m_Parent instanceof AvatarCreatorDemo) {
+                ((AvatarCreatorDemo)m_Parent).repositionCamera(1);
+            }
         }
         else {
             String relpath  = data.get(0)[3];
@@ -470,6 +474,10 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
             String fullpath = m_protocol + relpath;
             data.get(0)[3]  = fullpath;
             m_sceneData.loadAvatarHeadDAEURL(true, this, data.get(0), meshes);
+
+            if (m_Parent instanceof AvatarCreatorDemo) {
+                ((AvatarCreatorDemo)m_Parent).repositionCamera(1);
+            }
         }
         else {
             String relpath  = data.get(0)[3];
@@ -527,6 +535,10 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
             String fullpath = m_protocol + relpath;
             data.get(0)[3]  = fullpath;
             m_sceneData.loadSMeshDAEURL(true, this, data.get(0), meshes);
+
+            if (m_Parent instanceof AvatarCreatorDemo) {
+                ((AvatarCreatorDemo)m_Parent).repositionCamera(1);
+            }
         }
         else {
             try {
@@ -586,6 +598,10 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
             String fullpath = m_protocol + relpath;
             data.get(0)[3]  = fullpath;
             m_sceneData.loadSMeshDAEURL(true, this, data.get(0), meshes);
+
+            if (m_Parent instanceof AvatarCreatorDemo) {
+                ((AvatarCreatorDemo)m_Parent).repositionCamera(1);
+            }
         }
         else {
             try {
@@ -645,6 +661,10 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
             String fullpath = m_protocol + relpath;
             data.get(0)[3]  = fullpath;
             m_sceneData.loadSMeshDAEURL(true, this, data.get(0), meshes);
+
+            if (m_Parent instanceof AvatarCreatorDemo) {
+                ((AvatarCreatorDemo)m_Parent).repositionCamera(1);
+            }
         }
         else {
             try {
@@ -699,10 +719,15 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
             meshes[i] = meshref.get(i)[0];
         }
 
-        if (isViewMode)
+        if (isViewMode) {
+            data.get(0)[3] = (m_protocol + data.get(0)[3]);
             m_sceneData.loadMeshDAEURL(true, this, data.get(0));
-        else {
 
+            if (m_Parent instanceof AvatarCreatorDemo) {
+                ((AvatarCreatorDemo)m_Parent).repositionCamera(1);
+            }
+        } else {
+            data.get(0)[3] = (m_protocol + data.get(0)[3]);
             m_sceneData.addMeshDAEURLToModel(data.get(0), "Head", "Hair");
         }
 
@@ -752,9 +777,15 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
             meshes[i] = meshref.get(i)[0];
         }
 
-        if (isViewmode)
+        if (isViewmode) {
+            data.get(0)[3] = (m_protocol + data.get(0)[3]);
             m_sceneData.loadMeshDAEURL(true, this, data.get(0));
-        else {
+
+            if (m_Parent instanceof AvatarCreatorDemo) {
+                ((AvatarCreatorDemo)m_Parent).repositionCamera(1);
+            }
+        } else {
+            data.get(0)[3] = (m_protocol + data.get(0)[3]);
             m_sceneData.addMeshDAEURLToModel(data.get(0), "Head", "FacialHair");
         }
 
@@ -804,9 +835,15 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
             meshes[i] = meshref.get(i)[0];
         }
 
-        if (isViewMode)
+        if (isViewMode) {
+            data.get(0)[3] = (m_protocol + data.get(0)[3]);
             m_sceneData.loadMeshDAEURL(true, this, data.get(0));
-        else {
+
+            if (m_Parent instanceof AvatarCreatorDemo) {
+                ((AvatarCreatorDemo)m_Parent).repositionCamera(1);
+            }
+        } else {
+            data.get(0)[3] = (m_protocol + data.get(0)[3]);
             m_sceneData.addMeshDAEURLToModel(data.get(0), "Head", "Hats");
         }
 
@@ -856,9 +893,15 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
             meshes[i] = meshref.get(i)[0];
         }
 
-        if (isViewMode)
+        if (isViewMode) {
+            data.get(0)[3] = (m_protocol + data.get(0)[3]);
             m_sceneData.loadMeshDAEURL(true, this, data.get(0));
-        else {
+
+            if (m_Parent instanceof AvatarCreatorDemo) {
+                ((AvatarCreatorDemo)m_Parent).repositionCamera(1);
+            }
+        } else {
+            data.get(0)[3] = (m_protocol + data.get(0)[3]);
             m_sceneData.addMeshDAEURLToModel(data.get(0), "Head", "Glasses");
         }
 
@@ -967,7 +1010,7 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
         jButton_Female.setEnabled(true);
 
         if (m_Parent instanceof AvatarCreatorDemo) {
-            m_sceneData.setCameraOnModel();
+            ((AvatarCreatorDemo)m_Parent).repositionCamera(1);
             ((AvatarCreatorDemo)m_Parent).loadingWindow(false);
         }
     }
@@ -1214,7 +1257,7 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
                 maleAvatarMode();
             }
         });
-        jButton_Male.setFont(new java.awt.Font("Lucida Grande", 0, 10));
+        jButton_Male.setFont(new java.awt.Font("Lucida Grande", 0, 10)); // NOI18N
         jButton_Male.setText("Male Avatar");
         jButton_Male.setMaximumSize(new java.awt.Dimension(100, 25));
         jButton_Male.setMinimumSize(new java.awt.Dimension(100, 25));
@@ -1230,8 +1273,9 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
                 viewMode();
             }
         });
-        jButton_ModelViewer.setFont(new java.awt.Font("Lucida Grande", 0, 10));
+        jButton_ModelViewer.setFont(new java.awt.Font("Lucida Grande", 0, 10)); // NOI18N
         jButton_ModelViewer.setText("Model View");
+        jButton_ModelViewer.setEnabled(false);
         jButton_ModelViewer.setMaximumSize(new java.awt.Dimension(100, 25));
         jButton_ModelViewer.setMinimumSize(new java.awt.Dimension(100, 25));
         jButton_ModelViewer.setPreferredSize(new java.awt.Dimension(100, 25));

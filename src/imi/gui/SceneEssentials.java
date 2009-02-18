@@ -801,6 +801,8 @@ public class SceneEssentials {
                 URL modelURL = m_fileModel.toURI().toURL();
                 m_avatar.installHead(modelURL);
                 m_avatar.getAttributes().setHeadAttachment(path);
+                m_avatar.setDefaultShaders();
+                m_avatar.applyMaterials();
                 return true;
 
             } catch (MalformedURLException ex) {
@@ -1379,6 +1381,8 @@ public class SceneEssentials {
             URL urlHead = new URL(data);
             m_avatar.installHead(urlHead);
             m_avatar.getAttributes().setHeadAttachment(data);
+            m_avatar.setDefaultShaders();
+            m_avatar.applyMaterials();
         } catch (MalformedURLException ex) {
             Logger.getLogger(SceneEssentials.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -1403,6 +1407,8 @@ public class SceneEssentials {
             URL urlHead = new URL(url);
             m_avatar.installHead(urlHead);
             m_avatar.getAttributes().setHeadAttachment(relativePath);
+            m_avatar.setDefaultShaders();
+            m_avatar.applyMaterials();
         } catch (MalformedURLException ex) {
             Logger.getLogger(SceneEssentials.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -1487,11 +1493,11 @@ public class SceneEssentials {
 
         PNode joint = m_avatar.getSkeleton().findChild(subGroup);
         ArrayList<PNode> meshesToDelete = new ArrayList<PNode>();
-        for (int i = 0; i < joint.getChildrenCount(); i++)
-            meshesToDelete.add(joint.getChild(i));
-
-        if (joint != null)
+        if (joint != null) {
+            for (int i = 0; i < joint.getChildrenCount(); i++)
+                meshesToDelete.add(joint.getChild(i));
             m_avatar.getSkeleton().findAndRemoveChild(joint);
+        }
 
         pRootInstruction.addChildInstruction(InstructionType.loadGeometry, data[3]);
         
@@ -1511,17 +1517,19 @@ public class SceneEssentials {
         AttachmentParams[] attatchments = m_avatar.getAttributes().getAttachmentsInstructions();
         ArrayList<AttachmentParams> newAttatchments = new ArrayList<AttachmentParams>();
 
+        if (attatchments != null) {
 
-        for (int i = 0; i < attatchments.length; i++) {
-            if (meshesToDelete.size() <= 0) {
-                newAttatchments.add(attatchments[i]);
-                continue;
-            }
-
-            for (int j = 0; j < meshesToDelete.size(); j++) {
-                if (attatchments[i].getMeshName().equals(meshesToDelete.get(j).getName()))
+            for (int i = 0; i < attatchments.length; i++) {
+                if (meshesToDelete.size() <= 0) {
+                    newAttatchments.add(attatchments[i]);
                     continue;
-                newAttatchments.add(attatchments[i]);
+                }
+
+                for (int j = 0; j < meshesToDelete.size(); j++) {
+                    if (attatchments[i].getMeshName().equals(meshesToDelete.get(j).getName()))
+                        continue;
+                    newAttatchments.add(attatchments[i]);
+                }
             }
         }
 
@@ -1570,10 +1578,8 @@ public class SceneEssentials {
         if (mesh.getChildrenCount() > 0) {
             for (int i = 0; i < mesh.getChildrenCount(); i++)
                 meshesToDelete.add(mesh.getChild(i));
-        }
-
-        if (mesh != null)
             m_avatar.getSkeleton().findAndRemoveChild(subGroup);
+        }
 
         pRootInstruction.addChildInstruction(InstructionType.loadGeometry, meshLocation);
 
