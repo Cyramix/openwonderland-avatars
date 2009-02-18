@@ -23,7 +23,7 @@ import com.jme.math.Vector3f;
 import imi.character.AttachmentParams;
 import imi.character.CharacterAttributes;
 import imi.scene.PMatrix;
-import imi.tests.BaseDefault;
+import imi.tests.AvatarCreatorDemo;
 import java.awt.Component;
 import java.awt.Cursor;
 import java.net.MalformedURLException;
@@ -933,8 +933,8 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
         jButton_Male.setEnabled(false);
         jButton_Female.setEnabled(false);
 
-        if (m_Parent instanceof BaseDefault)
-            ((BaseDefault)m_Parent).loadingWindow(true);
+        if (m_Parent instanceof AvatarCreatorDemo)
+            ((AvatarCreatorDemo)m_Parent).loadingWindow(true);
 
         String query = new String();
         ArrayList<String[]> data;
@@ -966,9 +966,9 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
         jButton_Male.setEnabled(true);
         jButton_Female.setEnabled(true);
 
-        if (m_Parent instanceof BaseDefault) {
+        if (m_Parent instanceof AvatarCreatorDemo) {
             m_sceneData.setCameraOnModel();
-            ((BaseDefault)m_Parent).loadingWindow(false);
+            ((AvatarCreatorDemo)m_Parent).loadingWindow(false);
         }
     }
 

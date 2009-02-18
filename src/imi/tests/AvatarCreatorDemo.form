@@ -318,7 +318,7 @@
                 <Property name="verticalTextPosition" type="int" value="3"/>
               </Properties>
               <AuxValues>
-                <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="jButton_ServerBrowser.addActionListener(new java.awt.event.ActionListener() {&#xa;    public void actionPerformed(java.awt.event.ActionEvent evt) {&#xa;        //openServerBrowser();&#xa;        createRandomAvatar(1);&#xa;        while (m_sceneData.getAvatar() == null || !m_sceneData.getAvatar().isInitialized()) {&#xa;            &#xa;        }&#xa;        resetOpenTools();&#xa;        m_sceneData.setCameraOnModel();&#xa;    }&#xa;});"/>
+                <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="jButton_ServerBrowser.addActionListener(new java.awt.event.ActionListener() {&#xa;    public void actionPerformed(java.awt.event.ActionEvent evt) {&#xa;        loadingWindow(true);&#xa;        createRandomAvatar(1);&#xa;        while (m_sceneData.getAvatar() == null || !m_sceneData.getAvatar().isInitialized()) {&#xa;            &#xa;        }&#xa;        resetOpenTools();&#xa;        repositionCamera(1);&#xa;        loadingWindow(false);&#xa;    }&#xa;});"/>
               </AuxValues>
             </Component>
             <Component class="javax.swing.JToolBar$Separator" name="jSeparator3">
@@ -334,7 +334,7 @@
                 <Property name="verticalTextPosition" type="int" value="3"/>
               </Properties>
               <AuxValues>
-                <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="jButton_BasicEditor.addActionListener(new java.awt.event.ActionListener() {&#xa;    public void actionPerformed(java.awt.event.ActionEvent evt) {&#xa;        //openBasicEditor();&#xa;        createRandomAvatar(2);&#xa;        while (m_sceneData.getAvatar() == null || !m_sceneData.getAvatar().isInitialized()) {&#xa;            &#xa;        }&#xa;        resetOpenTools();&#xa;        m_sceneData.setCameraOnModel();&#xa;    }&#xa;});"/>
+                <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="jButton_BasicEditor.addActionListener(new java.awt.event.ActionListener() {&#xa;    public void actionPerformed(java.awt.event.ActionEvent evt) {&#xa;        loadingWindow(true);&#xa;        createRandomAvatar(2);&#xa;        while (m_sceneData.getAvatar() == null || !m_sceneData.getAvatar().isInitialized()) {&#xa;            &#xa;        }&#xa;        resetOpenTools();&#xa;        repositionCamera(1);&#xa;        loadingWindow(false);&#xa;    }&#xa;});"/>
               </AuxValues>
             </Component>
           </SubComponents>

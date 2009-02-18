@@ -42,7 +42,7 @@ import imi.scene.shader.effects.MeshColorModulation;
 import imi.scene.shader.programs.ClothingShaderDiffuseAsSpec;
 import imi.scene.shader.programs.ClothingShaderSpecColor;
 import imi.scene.shader.programs.FleshShader;
-import imi.tests.BaseDefault;
+import imi.tests.AvatarCreatorDemo;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Graphics;
@@ -927,7 +927,7 @@ public class JPanel_EZOptions extends javax.swing.JPanel implements ChangeListen
 
         }
 
-        if (m_Parent instanceof BaseDefault) {
+        if (m_Parent instanceof AvatarCreatorDemo) {
             m_sceneData.setCameraOnModel();
         }
     }

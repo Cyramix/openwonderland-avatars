@@ -220,7 +220,8 @@ public class InstructionProcessor
             }
         }
         catch (MalformedURLException ex){
-            logger.log(Level.SEVERE, null, ex); }
+            logger.log(Level.SEVERE, null, ex);
+        }
         // Recurse!
         for (PNode kid : instruction.getChildren())
         {
