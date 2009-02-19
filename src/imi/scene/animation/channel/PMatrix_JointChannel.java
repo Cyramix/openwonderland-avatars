@@ -172,7 +172,10 @@ public class PMatrix_JointChannel implements PJointChannel, Serializable
             {
                 overTheEdge = true;
                 leftFrame = m_KeyFrames.getLast();
-                interpolationCoefficient = fTime / rightFrame.time;
+                if (rightFrame != null)
+                    interpolationCoefficient = fTime / rightFrame.time;
+                else
+                    interpolationCoefficient = 0;
             }
             else
                 relativeTime = fTime - leftFrame.time;
