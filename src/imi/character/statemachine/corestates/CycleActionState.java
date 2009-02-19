@@ -126,22 +126,24 @@ public class CycleActionState extends ActionState
     @Override
     public void notifyAnimationMessage(AnimationMessageType message)
     {
-        if (gameContext.getSkeleton().getAnimationState().getCurrentCyclePlaybackMode() == PlaybackMode.Loop)
-            System.out.println("loop " + message);
+//        int c = gameContext.getSkeleton().getAnimationState().getCurrentCycle();
+//        System.out.println("cycle " + gameContext.getSkeleton().getAnimationGroup().getCycle(c).getName() + " " + c);
+////        if (gameContext.getSkeleton().getAnimationState().getCurrentCyclePlaybackMode() == PlaybackMode.Loop)
+////            System.out.println("loop " + message);
+//
+//        if (message == AnimationMessageType.TransitionComplete)
+//        {
+//            if (false)
+//            {
+//                if (bRepeatWillOscilate)
+//                    gameContext.getSkeleton().getAnimationState().setCurrentCyclePlaybackMode(PlaybackMode.Oscillate);
+//                else
+//                    gameContext.getSkeleton().getAnimationState().setCurrentCyclePlaybackMode(PlaybackMode.Loop);
+//            }
+//            else
+//                gameContext.getSkeleton().getAnimationState().setCurrentCyclePlaybackMode(PlaybackMode.PlayOnce);
 
-        if (message == AnimationMessageType.TransitionComplete)
-        {
-            if (false)
-            {
-                if (bRepeatWillOscilate)
-                    gameContext.getSkeleton().getAnimationState().setCurrentCyclePlaybackMode(PlaybackMode.Oscillate);
-                else
-                    gameContext.getSkeleton().getAnimationState().setCurrentCyclePlaybackMode(PlaybackMode.Loop);
-            }
-            else
-                gameContext.getSkeleton().getAnimationState().setCurrentCyclePlaybackMode(PlaybackMode.PlayOnce);
-        }
-        else if (message == AnimationMessageType.PlayOnceComplete)
+        if (message == AnimationMessageType.PlayOnceComplete)
         {
             bPlayedOnce = true;
         }
@@ -156,6 +158,7 @@ public class CycleActionState extends ActionState
             skeleton.getAnimationState().setTransitionDuration(cycleTransitionDuration);
             skeleton.getAnimationState().setAnimationSpeed(cycleAnimationSpeed);
             skeleton.getAnimationState().setReverseAnimation(false);
+            skeleton.getAnimationState().setCycleMode(PlaybackMode.Loop);
             bCycleAnimationSet = skeleton.transitionTo(cycleAnimationName, false);
             setAnimationSetBoolean(true);
         }
@@ -169,6 +172,7 @@ public class CycleActionState extends ActionState
         {
             skeleton.getAnimationState().setTransitionDuration(exitTransitionDuration);
             skeleton.getAnimationState().setAnimationSpeed(exitAnimationSpeed);
+            skeleton.getAnimationState().setCycleMode(PlaybackMode.PlayOnce);
             bExitAnimationSet = skeleton.transitionTo(exitAnimationName, bExitAnimationReverse);
             setAnimationSetBoolean(true);
         }

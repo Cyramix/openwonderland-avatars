@@ -39,7 +39,7 @@ public class StateInfo
     /** True to transition in reverse into the body animation **/
     private boolean     bTransitionReverseAnimation = false;
     /** Sets when the transition into the body animation completes **/
-    private AnimationComponent.PlaybackMode cycleMode = AnimationComponent.PlaybackMode.Loop;
+    private AnimationComponent.PlaybackMode cycleMode = AnimationComponent.PlaybackMode.PlayOnce;
     
     /** The facial animation will play when entering the state if not null **/
     private String facialAnimationName      = null;

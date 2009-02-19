@@ -458,8 +458,10 @@ public class AvatarContext extends GameContext
             genericAnimations.add(info);
 
             cycleInfo = new CycleActionInfo("Male_AnswerCell", "Male_Cell", "Male_AnswerCell", "MaleSmile4Frame", 0.5f, 2.0f);
-            cycleInfo.setCycleMode(PlaybackMode.PlayOnce);
+            //cycleInfo.setCycleMode(PlaybackMode.PlayOnce);
             cycleInfo.setExitAnimationReverse(true);
+            //cycleInfo.setTransitionDuration(5.0f);
+            //cycleInfo.setCycleTransitionDuration(0.0f);
             genericAnimations.add(cycleInfo);
 
             cycleInfo = new CycleActionInfo("Male_RaiseHand", "Male_RaiseHandIdle", "Male_RaiseHand");

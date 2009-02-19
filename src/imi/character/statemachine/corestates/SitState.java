@@ -62,6 +62,7 @@ public class SitState extends GameState
         super(master);
         context = master;
         setName("Sit");
+        setCycleMode(PlaybackMode.PlayOnce);
     }
     
     /**
@@ -202,6 +203,7 @@ public class SitState extends GameState
             skeleton.getAnimationState().setTransitionDuration(idleSittingTransitionDuration);
             skeleton.getAnimationState().setAnimationSpeed(idleSittingAnimationSpeed);
             skeleton.getAnimationState().setReverseAnimation(false);
+            skeleton.getAnimationState().setCycleMode(PlaybackMode.Loop);
             bIdleSittingAnimationSet = skeleton.transitionTo(idleSittingAnimationName, false);
             setAnimationSetBoolean(true);
         }
@@ -219,6 +221,7 @@ public class SitState extends GameState
         {
             skeleton.getAnimationState().setTransitionDuration(gettingUpTransitionDuration);
             skeleton.getAnimationState().setAnimationSpeed(gettingUpAnimationSpeed);
+            skeleton.getAnimationState().setCycleMode(PlaybackMode.PlayOnce);
             bGettingUpAnimationSet = skeleton.transitionTo(gettingUpAnimationName, true);
             // If sitting down and getting up is the same animation transitionTo will return false
             // when trying to get up immediatly after deciding to sit down... so
@@ -307,13 +310,13 @@ public class SitState extends GameState
     @Override
     public void notifyAnimationMessage(AnimationMessageType message) {
         
-        if (message == AnimationMessageType.TransitionComplete)
-        {
-            if (bGettingUp || !bIdleSittingAnimationSet)
-                gameContext.getSkeleton().getAnimationState().setCurrentCyclePlaybackMode(PlaybackMode.PlayOnce);
-            else
-                gameContext.getSkeleton().getAnimationState().setCurrentCyclePlaybackMode(PlaybackMode.Loop);
-        }
+//        if (message == AnimationMessageType.TransitionComplete)
+//        {
+//            if (bGettingUp || !bIdleSittingAnimationSet)
+//                gameContext.getSkeleton().getAnimationState().setCurrentCyclePlaybackMode(PlaybackMode.PlayOnce);
+//            else
+//                gameContext.getSkeleton().getAnimationState().setCurrentCyclePlaybackMode(PlaybackMode.Loop);
+//        }
     }
     
 }

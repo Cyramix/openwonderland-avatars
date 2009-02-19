@@ -104,15 +104,15 @@ public class ActionState extends GameState
     {
         if (message == AnimationMessageType.TransitionComplete)
         {
-            if (bRepeat)
-            {
-                if (bRepeatWillOscilate)
-                    gameContext.getSkeleton().getAnimationState().setCurrentCyclePlaybackMode(PlaybackMode.Oscillate);
-                else
-                    gameContext.getSkeleton().getAnimationState().setCurrentCyclePlaybackMode(PlaybackMode.Loop);
-            }
-            else
-                gameContext.getSkeleton().getAnimationState().setCurrentCyclePlaybackMode(PlaybackMode.PlayOnce);
+//            if (bRepeat)
+//            {
+//                if (bRepeatWillOscilate)
+//                    gameContext.getSkeleton().getAnimationState().setCurrentCyclePlaybackMode(PlaybackMode.Oscillate);
+//                else
+//                    gameContext.getSkeleton().getAnimationState().setCurrentCyclePlaybackMode(PlaybackMode.Loop);
+//            }
+//            else
+//                gameContext.getSkeleton().getAnimationState().setCurrentCyclePlaybackMode(PlaybackMode.PlayOnce);
         }
         else if (message == AnimationMessageType.PlayOnceComplete)
         {

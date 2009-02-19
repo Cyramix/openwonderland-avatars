@@ -397,7 +397,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         {
             AnimationState facialAnimationState = m_skeleton.getAnimationState(1);
             facialAnimationState.setCurrentCycle(-1);
-            facialAnimationState.setCurrentCyclePlaybackMode(PlaybackMode.PlayOnce);
+            facialAnimationState.setCycleMode(PlaybackMode.PlayOnce);
             facialAnimationState.setAnimationSpeed(0.1f);
         }
         if (m_skeleton.getAnimationComponent().getGroupCount() > 1)

@@ -17,6 +17,8 @@
  */
 package imi.character.statemachine.corestates;
 
+import imi.scene.animation.AnimationComponent.PlaybackMode;
+
 /**
  *
  * @author Lou Hayt

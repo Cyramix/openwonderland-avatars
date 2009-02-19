@@ -48,7 +48,7 @@ public class GameState extends NamedUpdatableObject
     /** Length of time to transition **/
     private float       transitionDuration  = 0.2f;
     private boolean     bTransitionReverseAnimation = false;
-    /** **/
+    /** The cycle mode to be applied after transion **/
     private AnimationComponent.PlaybackMode cycleMode = AnimationComponent.PlaybackMode.Loop;
     /** Indicates when the appropriate animation has been set **/
     private boolean bAnimationSet = false;
@@ -313,11 +313,6 @@ public class GameState extends NamedUpdatableObject
     }
 
     public void notifyAnimationMessage(AnimationMessageType message) {
-        
-        if (message == AnimationMessageType.TransitionComplete)
-        {
-            gameContext.getSkeleton().getAnimationState().setCurrentCyclePlaybackMode(PlaybackMode.Loop);
-        }
     }
 
     public PlaybackMode getCycleMode() {
