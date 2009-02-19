@@ -1657,7 +1657,7 @@ public class SceneEssentials {
                     }
 
                 }
-                setCameraOnModel();
+//                setCameraOnModel();
                 return true;
             }
         };
@@ -1678,7 +1678,7 @@ public class SceneEssentials {
                 }
 
             }
-            setCameraOnModel();
+//            setCameraOnModel();
         }
     }
 
@@ -1734,7 +1734,7 @@ public class SceneEssentials {
                     if (a != null)
                         ((ProcessorCollectionComponent)m_currentEntity.getComponent(ProcessorCollectionComponent.class)).addProcessor(new SkinnedAnimationProcessor(skel, m_worldManager));
                     m_currentPScene.setDirty(true, true);
-                    setCameraOnModel();
+//                    setCameraOnModel();
                 }
                 return true;
             }

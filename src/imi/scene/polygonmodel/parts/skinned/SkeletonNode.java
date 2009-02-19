@@ -537,6 +537,7 @@ public class SkeletonNode extends PNode implements Animated, Serializable
                     PMeshMaterial mat = meshInst.getMaterialRef();
                     mat.setShader(shader);
                     meshInst.applyShader();
+                    meshInst.applyMaterial();
             }
             result = true;
         }
@@ -569,7 +570,6 @@ public class SkeletonNode extends PNode implements Animated, Serializable
             if (kid instanceof PPolygonMesh && !(kid instanceof PPolygonSkinnedMesh))
             {
                 PPolygonMesh mesh = (PPolygonMesh)kid;
-
                 mesh.getMaterialRef().setShader(shader);
             }
             else if (kid instanceof PPolygonMeshInstance && !(kid instanceof PPolygonSkinnedMeshInstance))
@@ -579,6 +579,7 @@ public class SkeletonNode extends PNode implements Animated, Serializable
                 PMeshMaterial mat = meshInst.getMaterialRef();
                 mat.setShader(shader);
                 meshInst.applyShader();
+                meshInst.applyMaterial();
             }
             for (int i = 0; i < kid.getChildrenCount(); ++i)
                 queue.add(kid.getChild(i));
