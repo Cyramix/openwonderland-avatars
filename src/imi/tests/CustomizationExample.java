@@ -103,15 +103,5 @@ public class CustomizationExample extends DemoBase
         // Hook the control scheme up the the camera in order to receieve input
         // events. We need this in order to control the Verlet arm ('Q' and 'E' to engage)
         control.getMouseEventsFromCamera();
-
-        // Construct a tree explorer for analyzing the scene graph
-        TreeExplorer te = new TreeExplorer();
-        SceneEssentials se = new SceneEssentials();
-        se.setSceneData(maleAvatar.getJScene(), maleAvatar.getPScene(), maleAvatar, wm, null);
-        te.setExplorer(se);
-        te.setVisible(true);
-        // PVT's TEST
-        JFrame_InstrumentationGUI instrutGUI = new JFrame_InstrumentationGUI(wm);
-        instrutGUI.setVisible(true);
     }
 }
