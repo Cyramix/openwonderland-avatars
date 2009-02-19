@@ -190,7 +190,7 @@ public class BinaryTool
     /** Repository ref **/
     private Repository repository = null;
     /** used to specify the quality of animations after optimization **/
-    private float animationQuality = 0.5f;
+    private float animationQuality = 0.35f;
 
     /**
      * Create and run the tool.
@@ -341,9 +341,8 @@ public class BinaryTool
         // Execute it
         processor.execute(animationInstruction);
         // optimize all of those cycles
-        for (AnimationGroup group : skeleton.getAnimationComponent().getGroups())
-            for (AnimationCycle cycle : group.getCycles())
-                cycle.optimizeChannels(animationQuality);
+        for (AnimationCycle cycle : skeleton.getAnimationGroup(0).getCycles())
+            cycle.optimizeChannels(animationQuality);
         // now our skeleton is loaded with animation data, time to write it out
         serializeSkeleton(skeleton, outputFile);
     }

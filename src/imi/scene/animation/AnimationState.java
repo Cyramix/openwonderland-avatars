@@ -19,7 +19,6 @@ package imi.scene.animation;
 
 import imi.scene.animation.channel.AnimationCursor;
 import imi.scene.animation.AnimationComponent.PlaybackMode;
-import java.io.Serializable;
 import java.util.ArrayList;
 
 /**

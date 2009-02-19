@@ -152,7 +152,6 @@ public class LibraryAnimationsProcessor extends Processor
         }
 
         colladaJointChannel.calculateDuration();
-        colladaJointChannel.closeChannel();
         //  Add the JointAnimation to the AnimationLoop.
         animationGroup.getCycle(0).addJointChannel(colladaJointChannel);
     }

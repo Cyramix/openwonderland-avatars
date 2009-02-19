@@ -51,21 +51,6 @@ public interface PJointChannel
     public float calculateAverageStepTime();
 
     /**
-     * This method reduces the number of keyframes such that only one in
-     * <code>ratio</code> remain. The first and last keyframes will be retained,
-     * as well as ensuring that some minimum number of keyframes remains
-     * to ensure visually correct functionality.
-     * @param ratio
-     */
-    public void fractionalReduction(int ratio);
-
-    /**
-     * Reduce the density of keyframes
-     * @param newSampleFPS
-     */
-    public void timeBasedReduction(int newSampleFPS);
-
-    /**
      * Gets and returns the average step time.
      * @return float
      */
@@ -82,12 +67,6 @@ public interface PJointChannel
      * @return float
      */
     public float getEndTime();
-
-    /**
-     * Duplicate the first keyframe and place it at the end with the same
-     * average step between frames.
-     */
-    public void closeChannel();
 
     /**
      * Applies the pose for this transition.

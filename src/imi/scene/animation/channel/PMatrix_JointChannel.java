@@ -172,7 +172,7 @@ public class PMatrix_JointChannel implements PJointChannel, Serializable
             {
                 overTheEdge = true;
                 leftFrame = m_KeyFrames.getLast();
-                relativeTime = fTime;
+                interpolationCoefficient = fTime / rightFrame.time;
             }
             else
                 relativeTime = fTime - leftFrame.time;
@@ -188,18 +188,21 @@ public class PMatrix_JointChannel implements PJointChannel, Serializable
                 {
                     rightFrame = currentFrame;
                     if (bTransitionCycle)
-                        state.getCursor().setCurrentTransitionJointIndex(currentIndex - 1);
+                        state.getCursor().setCurrentTransitionJointIndex(currentIndex - 2);
                     else
-                        state.getCursor().setCurrentJointPosition(currentIndex - 1);
+                        state.getCursor().setCurrentJointPosition(currentIndex - 2);
                     break; // finished checking
                 }
                 currentIndex++;
             }
-            if (leftFrame != null && rightFrame == null)
+            if (rightFrame == null)
             {
                 rightFrame = m_KeyFrames.getFirst();
                 overTheEdge = true;
-                relativeTime = fTime - leftFrame.time;
+                if (leftFrame != null)
+                    interpolationCoefficient = (fTime - leftFrame.time) / (m_fDuration + m_fAverageFrameStep - leftFrame.time);
+                else
+                    return false;
             }
             else if (leftFrame != null)
                 relativeTime = fTime - leftFrame.time;
@@ -207,9 +210,7 @@ public class PMatrix_JointChannel implements PJointChannel, Serializable
 
         if (leftFrame != null && rightFrame != null) // Need to blend between two poses
         {
-            if (overTheEdge)
-                interpolationCoefficient = relativeTime / m_fAverageFrameStep;
-            else
+            if (!overTheEdge)
                 interpolationCoefficient = relativeTime / (rightFrame.time - leftFrame.time);
                 
             leftSideBuffer.set(leftFrame.value);
@@ -283,11 +284,6 @@ public class PMatrix_JointChannel implements PJointChannel, Serializable
     {
         return(m_fDuration);
     }
-    
-    public float getAverageFrameStep()
-    {
-        return(m_fAverageFrameStep);
-    }
 
     /**
      * Returns the endtime of the JointChannel.
@@ -307,7 +303,10 @@ public class PMatrix_JointChannel implements PJointChannel, Serializable
     }
 
 
-    @Override
+    /**
+     * This method reduces the density of keyframes to one in <code>ratio</code>.
+     * @param ratio
+     */
     public void fractionalReduction(int ratio) {
         FastList<PMatrixKeyframe> removals = new FastList();
         int numFrames = m_KeyFrames.size();
@@ -325,7 +324,11 @@ public class PMatrix_JointChannel implements PJointChannel, Serializable
             m_KeyFrames.remove(frame);
     }
 
-    @Override
+    /**
+     * This method reduces keyframe density to no greater than the specified
+     * number of frames per second (FPS)
+     * @param newSampleFPS
+     */
     public void timeBasedReduction(int newSampleFPS) {
         float spacing = 1.0f / (float)newSampleFPS;
 
@@ -351,18 +354,6 @@ public class PMatrix_JointChannel implements PJointChannel, Serializable
             m_KeyFrames.remove(frame);
     }
 
-    /**
-     * Close the channel!
-     */
-    public void closeChannel()
-    {
-        calculateAverageStepTime();
-        m_blendBuffer.set(m_KeyFrames.getLast().value);
-        PMatrixKeyframe newFrame = new PMatrixKeyframe(m_fDuration + m_fAverageFrameStep, m_blendBuffer);
-        m_KeyFrames.add(newFrame);
-        calculateAverageStepTime();
-    }
-
     @Override
     public void applyTransitionPose(PJoint joint, AnimationState state, float lerpCoefficient)
     {
@@ -370,7 +361,7 @@ public class PMatrix_JointChannel implements PJointChannel, Serializable
         {
             if (calculateBlendedMatrix(state.getTransitionCycleTime(), rightSideBuffer, state, true))
             {
-                if (lerpCoefficient > 0.9f)
+                if (lerpCoefficient > 0.99f)
                     joint.getTransform().setLocalMatrix(rightSideBuffer);
                 else
                 {
@@ -404,6 +395,7 @@ public class PMatrix_JointChannel implements PJointChannel, Serializable
         leftSideBuffer = new PMatrix();
         rightSideBuffer = new PMatrix();
         m_blendBuffer = new PMatrix();
+        calculateAverageStepTime();
     }
 
     protected class PMatrixKeyframe implements Serializable

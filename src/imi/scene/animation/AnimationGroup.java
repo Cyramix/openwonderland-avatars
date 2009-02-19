@@ -240,18 +240,18 @@ public class AnimationGroup implements Serializable
         // Current cycle time first
         float fCurrentCycleTime = state.getCurrentCycleTime();
         AnimationCycle currentCycle = m_cycles.get(state.getCurrentCycle());
+
         // Outside the bounds?
         if (fCurrentCycleTime < 0 || fCurrentCycleTime > currentCycle.getDuration())
         {
             state.getCursor().makeNegativeOne();
-            state.setCurrentCycleTime(0);
             AnimationComponent.PlaybackMode mode = state.getCurrentCyclePlaybackMode();
             switch (mode)
             {
                 case Loop:
                     if (state.isReverseAnimation() && fCurrentCycleTime < 0)
                         state.setCurrentCycleTime(currentCycle.getDuration());
-                    else if (!state.isReverseAnimation() && fCurrentCycleTime > currentCycle.getDuration())
+                    else if (!state.isReverseAnimation() && fCurrentCycleTime > (currentCycle.getDuration() + currentCycle.getAverageTimeStep()))
                         state.setCurrentCycleTime(0.0f);
                     break;
                 case Oscillate:

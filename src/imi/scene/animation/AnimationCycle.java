@@ -20,7 +20,6 @@ package imi.scene.animation;
 import imi.scene.animation.channel.PJointChannel;
 import imi.scene.PJoint;
 import imi.scene.animation.channel.ChannelOptimizer;
-import imi.scene.animation.channel.OneDOF_JointChannel;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
@@ -173,28 +172,8 @@ public class AnimationCycle implements Serializable
         {
             PJointChannel channel = m_JointChannels.get(i);
             channel = optimizer.optimize(channel, quality);
-            System.out.println("Got a " + channel.getClass().getSimpleName() +
-                    " for " + channel.getTargetJointName() + " in " + m_name);
-            if (channel instanceof OneDOF_JointChannel)
-            {
-                int axis = ((OneDOF_JointChannel)channel).getAxis();
-                System.out.print("Axis is ");
-                switch (axis)
-                {
-                    case 0:
-                        System.out.println("X");
-                        break;
-                    case 1:
-                        System.out.println("Y");
-                        break;
-                    case 2:
-                        System.out.println("Z");
-                        break;
-                    default:
-                        System.out.println("UNK");
-                        break;
-                }
-            }
+            logger.info("Got a " + channel.getClass().getSimpleName() +
+                    " for " + channel.getTargetJointName() + " in " + m_name + ": " + channel.toString());
             m_JointChannels.set(i, channel);
         }
     }
@@ -230,6 +209,11 @@ public class AnimationCycle implements Serializable
         int hash = 5;
         hash = 29 * hash + (this.m_name != null ? this.m_name.hashCode() : 0);
         return hash;
+    }
+
+    float getAverageTimeStep()
+    {
+        return m_JointChannels.getFirst().getAverageStepTime();
     }
 
     /**

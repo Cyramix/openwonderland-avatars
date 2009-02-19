@@ -22,13 +22,13 @@ import com.jme.math.Vector3f;
 import imi.character.avatar.Avatar;
 import imi.character.avatar.FemaleAvatarAttributes;
 import imi.character.avatar.MaleAvatarAttributes;
-import imi.gui.JFrame_InstrumentationGUI;
+import imi.gui.JPanel_Animations;
 import imi.gui.SceneEssentials;
-import imi.gui.TreeExplorer;
 import imi.scene.PMatrix;
 import org.jdesktop.mtgame.WorldManager;
 import imi.scene.processors.JSceneEventProcessor;
 import imi.utils.input.AvatarControlScheme;
+import javax.swing.JFrame;
 
 
 
@@ -93,15 +93,27 @@ public class CustomizationExample extends DemoBase
                                                  3); // Skin
         // Put her over to the right a bit
         femaleAttributes.setOrigin(new PMatrix(new Vector3f(-1, 0, 1)));
-        Avatar femaleAvatar = new Avatar(femaleAttributes, wm);
+//        Avatar femaleAvatar = new Avatar(femaleAttributes, wm);
 
         // Select the male and add them both to the input team (collection of controllable avatars)
         maleAvatar.selectForInput();
         control.getAvatarTeam().add(maleAvatar);
-        control.getAvatarTeam().add(femaleAvatar);
+//        control.getAvatarTeam().add(femaleAvatar);
 
         // Hook the control scheme up the the camera in order to receieve input
         // events. We need this in order to control the Verlet arm ('Q' and 'E' to engage)
         control.getMouseEventsFromCamera();
+
+        SceneEssentials scenecrap = new SceneEssentials();
+        scenecrap.setSceneData(maleAvatar.getJScene(), maleAvatar.getPScene(), repository, wm, null);
+        scenecrap.setAvatar(maleAvatar);
+        JFrame frame = new JFrame();
+        JPanel_Animations animPanel = new JPanel_Animations();
+        animPanel.setPanel(scenecrap);
+        animPanel.startTimer();
+        animPanel.setVisible(true);
+        frame.add(animPanel);
+        frame.pack();
+        frame.setVisible(true);
     }
 }

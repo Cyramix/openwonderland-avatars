@@ -17,9 +17,10 @@
  */
 package imi.scene.animation.channel;
 
-import com.jme.math.Matrix3f;
-import com.jme.math.Quaternion;
 import com.jme.math.Vector3f;
+import imi.scene.PMatrix;
+import java.util.BitSet;
+import java.util.logging.Logger;
 
 /**
  * This class is responsible for optimizing joint channels.
@@ -27,19 +28,10 @@ import com.jme.math.Vector3f;
  */
 public class ChannelOptimizer
 {
-    /** True if the translation does not change **/
-    private boolean bStaticTranslation = false;
-    /** DOF indicators **/
-    private boolean bConstantAxis_X = false;
-    private boolean bConstantAxis_Y = false;
-    private boolean bConstantAxis_Z = false;
-    /** static angle checks **/
-    private boolean bConstantAngle_X = false;
-    private boolean bConstantAngle_Y = false;
-    private boolean bConstantAngle_Z = false;
-    /** Calculation scratch space **/
-    private final Matrix3f matrix3fBuffer = new Matrix3f();
-    private final Quaternion rotationBuffer = new Quaternion();
+    /** Logger ref **/
+    private static final Logger logger = Logger.getLogger(ChannelOptimizer.class.getName());
+    /** State indication**/
+    private final BitSet indicationBits = new BitSet(8);
     /** Quality indicator **/
     private float quality = 1.0f;
 
@@ -52,155 +44,76 @@ public class ChannelOptimizer
      * Optimizes the provided channel using the provided quality guidelines. The
      * quality float should be a normalized value with 1.0 representing lossless
      * techniques only and 0.0 representing maximum compression and optimization.
+     * The provided channel MAY BE MODIFIED as part of the optimization process.
      * @param channel
      * @param quality
      * @return
      */
     public PJointChannel optimize(PJointChannel channel, float quality) {
         this.quality = quality;
+        indicationBits.clear();
         if (channel instanceof PMatrix_JointChannel)
             return optimizeMatrixChannel((PMatrix_JointChannel)channel);
         else
             return channel;
     }
 
+    private void fillChannelWithKeyframes(PMatrix_JointChannel channel, OptimizedChannel result)
+    {
+        int index = 0;
+        for (PMatrix_JointChannel.PMatrixKeyframe keyframe : channel.m_KeyFrames)
+        {
+            if (index == 0 && keyframe.time > 0)
+                logger.warning("First keyframe was not at time zero, was at " + keyframe.time +", I will fix it.");
+            result.addKeyframe(keyframe.time, keyframe.value);
+            index++;
+        }
+    }
+
     private PJointChannel optimizeMatrixChannel(PMatrix_JointChannel channel)
     {
         PJointChannel result = null;
-        float[] matrixFloats = new float[16];
+        // first, do some frame reduction
+        if (quality < 0.99f)
+            channel.timeBasedReduction((int) (60 * quality)); // New FPS is a function of the base 60 FPS
         // Determine properties of the channel
-        bStaticTranslation = true;
-        bConstantAxis_X = true;
-        bConstantAxis_Y = true;
-        bConstantAxis_Z = true;
-        bConstantAngle_X = true;
-        bConstantAngle_Y = true;
-        bConstantAngle_Z = true;
+        indicationBits.set(OptimizedChannel.CONSTANT_TRANSLATION);
+        indicationBits.set(OptimizedChannel.CONSTANT_X_AXIS);
+        indicationBits.set(OptimizedChannel.CONSTANT_Y_AXIS);
+        indicationBits.set(OptimizedChannel.CONSTANT_Z_AXIS);
 
         // Grab some defaults to compare against
-        channel.m_KeyFrames.getFirst().value.getFloatArray(matrixFloats);
-        Vector3f translationVec = channel.m_KeyFrames.getFirst().value.getTranslation();
-        float xAngle = (float)Math.acos(matrixFloats[5]);
-        float yAngle = (float)Math.acos(matrixFloats[0]);
-        float zAngle = yAngle;
+        PMatrix firstTransform = channel.m_KeyFrames.getFirst().value;
+        Vector3f translationVec = firstTransform.getTranslation();
+        Vector3f initialxAxis = firstTransform.getLocalX();
+        Vector3f initialyAxis = firstTransform.getLocalY();
+        Vector3f initialzAxis = firstTransform.getLocalZ();
 
         for (PMatrix_JointChannel.PMatrixKeyframe keyframe : channel.m_KeyFrames)
         {
-            keyframe.value.getFloatArray(matrixFloats);
             if (keyframe.value.getTranslation().equals(translationVec) == false)// difference
-                bStaticTranslation = false;
+                indicationBits.clear(OptimizedChannel.CONSTANT_TRANSLATION);
 
-            // x axis dof
-            if (matrixFloats[1] > 0.02 || matrixFloats[2] > 0.02 ||
-                matrixFloats[4] > 0.02 || matrixFloats[8] > 0.02 ||
-                unreasonableCosOrSinValues(matrixFloats, 0))
-                bConstantAxis_X = false;
-            // y axis dof
-            if (matrixFloats[1] > 0.02 || matrixFloats[6] > 0.02 ||
-                matrixFloats[4] > 0.02 || matrixFloats[9] > 0.02||
-                unreasonableCosOrSinValues(matrixFloats, 1))
-                bConstantAxis_Y = false;
-            // z axis dof
-            if (matrixFloats[2] > 0.02 || matrixFloats[8] > 0.02 ||
-                matrixFloats[6] > 0.02 || matrixFloats[9] > 0.02||
-                unreasonableCosOrSinValues(matrixFloats, 2))
-                bConstantAxis_Z = false;
-            // look for static angles
-            if ((float)Math.acos(matrixFloats[5]) != xAngle)
-                bConstantAngle_X = false;
-            if ((float)Math.acos(matrixFloats[0]) != yAngle)
-                bConstantAngle_Y = false;
-            if ((float)Math.acos(matrixFloats[0]) != zAngle)
-                bConstantAngle_Z = false;
+            // x axis
+            if (initialxAxis.equals(keyframe.value.getLocalX()) == false)
+                indicationBits.clear(OptimizedChannel.CONSTANT_X_AXIS);
+            // y axis
+            if (initialyAxis.equals(keyframe.value.getLocalY()) == false)
+                indicationBits.clear(OptimizedChannel.CONSTANT_Y_AXIS);
+            // z axis
+            if (initialzAxis.equals(keyframe.value.getLocalZ()) == false)
+                indicationBits.clear(OptimizedChannel.CONSTANT_Z_AXIS);
 
         }
 
-        return createChannel(channel);
-    }
-
-    private PJointChannel createChannel(PMatrix_JointChannel channel)
-    {
-        PJointChannel result = null;
         // categorize
-        if (bStaticTranslation)
+        if (indicationBits.isEmpty() == false)
         {
-            Vector3f translation = channel.m_KeyFrames.getFirst().value.getTranslation();
-            // TODO : Fix bug with the single DOF channel.
-//            if (bConstantAxis_X)
-//                result = createSingleDOFChannel(channel, 0, translation);
-//            if (bConstantAxis_Y)
-//                result = createSingleDOFChannel(channel, 1, translation);
-//            if (bConstantAxis_Z)
-//                result = createSingleDOFChannel(channel, 2, translation);
-            // Not a dof, but with static translation
-            result = createStaticTranslationChannel(channel, translation);
+            result = new OptimizedChannel(channel.getTargetJointName(), indicationBits, firstTransform, channel.m_KeyFrames.size());
+            fillChannelWithKeyframes(channel,(OptimizedChannel) result);
         }
         else // No compression techniques to use
             result = channel;
-
-        result.fractionalReduction((int)(1/quality));
-
-        return result;
-    }
-
-
-
-    private OneDOF_JointChannel createSingleDOFChannel(PMatrix_JointChannel channel, int axis, Vector3f translation) {
-        OneDOF_JointChannel result = new OneDOF_JointChannel(channel.getTargetJointName(), axis);
-        result.setTranslationVector(translation);
-        float[] matrixFloats  = new float[16];
-        for (PMatrix_JointChannel.PMatrixKeyframe keyframe : channel.m_KeyFrames)
-        {
-            keyframe.value.getFloatArray(matrixFloats);
-            switch (axis)
-            {
-                case 0:
-                    result.addKeyframe(keyframe.time, (float)Math.acos(matrixFloats[5]));
-                    break;
-                case 1:
-                    result.addKeyframe(keyframe.time, (float)Math.acos(matrixFloats[0]));
-                    break;
-                case 2:
-                    result.addKeyframe(keyframe.time, (float)Math.acos(matrixFloats[0]));
-                    break;
-                default:
-                    break;
-            }
-        }
-        return result;
-    }
-
-    private StaticTranslation_JointChannel createStaticTranslationChannel(PMatrix_JointChannel channel, Vector3f translation)
-    {
-        StaticTranslation_JointChannel result = new StaticTranslation_JointChannel(channel.getTargetJointName());
-        result.setTranslationVector(translation);
-        for (PMatrix_JointChannel.PMatrixKeyframe keyframe : channel.m_KeyFrames)
-        {
-            keyframe.value.getRotation(matrix3fBuffer);
-            result.addKeyframe(keyframe.time, matrix3fBuffer);
-        }
-        return result;
-    }
-
-    private boolean unreasonableCosOrSinValues(float[] matrixFloats, int axis) {
-        boolean result = false;
-        switch (axis)
-        {
-            case 0: // x
-                if (matrixFloats[5] > 1 || matrixFloats[6] > 1 || matrixFloats[9] > 1 || matrixFloats[10] > 1)
-                    result = false;
-                break;
-            case 1: // y
-                if (matrixFloats[0] > 1 || matrixFloats[2] > 1 || matrixFloats[8] > 1 || matrixFloats[10] > 1)
-                    result = false;
-                break;
-            case 2: // z
-                if (matrixFloats[0] > 1 || matrixFloats[1] > 1 || matrixFloats[4] > 1 || matrixFloats[5] > 1)
-                    result = false;
-                break;
-            default:
-                break;
-        }
         return result;
     }
 }

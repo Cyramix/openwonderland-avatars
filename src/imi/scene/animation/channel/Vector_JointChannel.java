@@ -256,21 +256,6 @@ public class Vector_JointChannel implements PJointChannel, Serializable
     }
 
     @Override
-    public void fractionalReduction(int ratio) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public void timeBasedReduction(int newSampleFPS) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public void closeChannel() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
     public void applyTransitionPose(PJoint joint, AnimationState state, float lerpCoefficient) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
