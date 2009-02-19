@@ -19,6 +19,8 @@ package imi.character.statemachine.corestates;
 
 import imi.character.avatar.AvatarContext.TriggerNames;
 import imi.character.statemachine.GameContext;
+import imi.scene.animation.AnimationComponent.PlaybackMode;
+import imi.scene.animation.AnimationListener.AnimationMessageType;
 import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
 
 /**
@@ -92,20 +94,18 @@ public class CycleActionState extends ActionState
 
         if (!isAnimationSet())
             setAnimation();
-        
+
         if (bExiting)
         {
             if (!bExitAnimationSet)
             {
-                setExitAnimation();
                 bPlayedOnce = false;
-                bRepeat     = false;
+                setExitAnimation();
             }
         }
         else if (bPlayedOnce && isAnimationSet() && !bCycleAnimationSet)
         {
             setCycleAnimation();
-            bRepeat = true;
         }
 
         // Allow an exit
@@ -121,6 +121,30 @@ public class CycleActionState extends ActionState
         // Check for possible transitions
         if (bExitAnimationSet && bPlayedOnce && !context.isTransitioning())
             transitionCheck();
+    }
+
+    @Override
+    public void notifyAnimationMessage(AnimationMessageType message)
+    {
+        if (gameContext.getSkeleton().getAnimationState().getCurrentCyclePlaybackMode() == PlaybackMode.Loop)
+            System.out.println("loop " + message);
+
+        if (message == AnimationMessageType.TransitionComplete)
+        {
+            if (false)
+            {
+                if (bRepeatWillOscilate)
+                    gameContext.getSkeleton().getAnimationState().setCurrentCyclePlaybackMode(PlaybackMode.Oscillate);
+                else
+                    gameContext.getSkeleton().getAnimationState().setCurrentCyclePlaybackMode(PlaybackMode.Loop);
+            }
+            else
+                gameContext.getSkeleton().getAnimationState().setCurrentCyclePlaybackMode(PlaybackMode.PlayOnce);
+        }
+        else if (message == AnimationMessageType.PlayOnceComplete)
+        {
+            bPlayedOnce = true;
+        }
     }
 
     private void setCycleAnimation() 

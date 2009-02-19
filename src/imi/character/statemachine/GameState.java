@@ -50,7 +50,7 @@ public class GameState extends NamedUpdatableObject
     private boolean     bTransitionReverseAnimation = false;
     
     private AnimationComponent.PlaybackMode cycleMode = AnimationComponent.PlaybackMode.Loop; // set when a transition is complete
-    private AnimationComponent.PlaybackMode transitionCycleMode = AnimationComponent.PlaybackMode.Loop; // still needed?
+    private AnimationComponent.PlaybackMode transitionCycleMode = AnimationComponent.PlaybackMode.Loop; 
     /** Indicates when the appropriate animation has been set **/
     private boolean bAnimationSet = false;
     
@@ -175,6 +175,8 @@ public class GameState extends NamedUpdatableObject
             skeleton.getAnimationState().setTransitionDuration(transitionDuration);
             skeleton.getAnimationState().setAnimationSpeed(animationSpeed);
             skeleton.getAnimationState().setReverseAnimation(bReverseAnimation);
+            skeleton.getAnimationState().setCurrentCyclePlaybackMode(cycleMode);
+            skeleton.getAnimationState().setTransitionPlaybackMode(transitionCycleMode);
             bAnimationSet = skeleton.transitionTo(animationName, bTransitionReverseAnimation);
         }
     }
