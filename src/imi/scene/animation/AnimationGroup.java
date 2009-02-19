@@ -220,6 +220,7 @@ public class AnimationGroup implements Serializable
                 state.setCurrentCycleTime(state.getTransitionCycleTime());
                 state.setTimeInTransition(0.0f);
                 state.setReverseAnimation(state.isTransitionReverseAnimation());
+                state.setCurrentCyclePlaybackMode(state.getTransitionPlaybackMode());
                 state.sendMessage(AnimationListener.AnimationMessageType.TransitionComplete);
                 state.getCursor().makeNegativeOne();
                 result = 2;
