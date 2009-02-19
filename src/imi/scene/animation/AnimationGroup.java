@@ -220,7 +220,7 @@ public class AnimationGroup implements Serializable
                 state.setCurrentCycleTime(state.getTransitionCycleTime());
                 state.setTimeInTransition(0.0f);
                 state.setReverseAnimation(state.isTransitionReverseAnimation());
-                state.setCurrentCyclePlaybackMode(state.getTransitionPlaybackMode());
+                state.setCurrentCyclePlaybackMode(state.getCycleMode());
                 state.sendMessage(AnimationListener.AnimationMessageType.TransitionComplete);
                 state.getCursor().makeNegativeOne();
                 result = 2;
@@ -285,7 +285,7 @@ public class AnimationGroup implements Serializable
 
             if (fTransitionCycleTime < 0 || fTransitionCycleTime > transitionCycle.getDuration())
             {
-                AnimationComponent.PlaybackMode mode = state.getTransitionPlaybackMode();
+                AnimationComponent.PlaybackMode mode = state.getCycleMode();
                 switch (mode)
                 {
                     case Loop:

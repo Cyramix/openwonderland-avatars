@@ -111,7 +111,7 @@ public class TransitionQueue implements AnimationListener
 
             m_state.setTransitionDuration(newCommand.getTransitionLength());
             m_state.setTransitionReverseAnimation(newCommand.isReverse());
-            m_state.setTransitionPlaybackMode(newCommand.getPlaybackMode());
+            m_state.setCycleMode(newCommand.getPlaybackMode());
             m_state.setTimeInTransition(0.0f);
         }
     }
@@ -183,7 +183,7 @@ public class TransitionQueue implements AnimationListener
                 m_state.setTransitionCycle(nextCommand.getAnimationIndex());
                 m_state.setTransitionDuration(nextCommand.getTransitionLength());
                 m_state.setTransitionReverseAnimation(nextCommand.isReverse());
-                m_state.setTransitionPlaybackMode(nextCommand.getPlaybackMode());
+                m_state.setCycleMode(nextCommand.getPlaybackMode());
                 m_state.setTimeInTransition(0.0f);
                 
                 AnimationCycle newCycle = m_group.getCycle(nextCommand.getAnimationIndex());

@@ -47,7 +47,6 @@ public class IdleState extends GameState
         
         setName("Idle");
         setAnimationName("Idle");
-        setTransitionCycleMode(PlaybackMode.PlayOnce);
         setTransitionDuration(0.1f);
     }
     

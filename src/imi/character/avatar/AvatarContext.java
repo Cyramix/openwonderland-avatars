@@ -458,6 +458,7 @@ public class AvatarContext extends GameContext
             genericAnimations.add(info);
 
             cycleInfo = new CycleActionInfo("Male_AnswerCell", "Male_Cell", "Male_AnswerCell", "MaleSmile4Frame", 0.5f, 2.0f);
+            cycleInfo.setCycleMode(PlaybackMode.PlayOnce);
             cycleInfo.setExitAnimationReverse(true);
             genericAnimations.add(cycleInfo);
 
@@ -502,7 +503,6 @@ public class AvatarContext extends GameContext
 
             cycleInfo = new CycleActionInfo("Female_AnswerCell", "Female_Cell", "Female_AnswerCell", "FemaleC_Smile", 0.5f, 2.0f);
             cycleInfo.setCycleMode(PlaybackMode.PlayOnce);
-            cycleInfo.setTransitionCycleMode(PlaybackMode.PlayOnce);
             cycleInfo.setExitAnimationReverse(true);
             genericAnimations.add(cycleInfo);
 

@@ -48,9 +48,8 @@ public class GameState extends NamedUpdatableObject
     /** Length of time to transition **/
     private float       transitionDuration  = 0.2f;
     private boolean     bTransitionReverseAnimation = false;
-    
-    private AnimationComponent.PlaybackMode cycleMode = AnimationComponent.PlaybackMode.Loop; // set when a transition is complete
-    private AnimationComponent.PlaybackMode transitionCycleMode = AnimationComponent.PlaybackMode.Loop; 
+    /** **/
+    private AnimationComponent.PlaybackMode cycleMode = AnimationComponent.PlaybackMode.Loop;
     /** Indicates when the appropriate animation has been set **/
     private boolean bAnimationSet = false;
     
@@ -175,8 +174,7 @@ public class GameState extends NamedUpdatableObject
             skeleton.getAnimationState().setTransitionDuration(transitionDuration);
             skeleton.getAnimationState().setAnimationSpeed(animationSpeed);
             skeleton.getAnimationState().setReverseAnimation(bReverseAnimation);
-            skeleton.getAnimationState().setCurrentCyclePlaybackMode(cycleMode);
-            skeleton.getAnimationState().setTransitionPlaybackMode(transitionCycleMode);
+            skeleton.getAnimationState().setCycleMode(cycleMode);
             bAnimationSet = skeleton.transitionTo(animationName, bTransitionReverseAnimation);
         }
     }
@@ -264,14 +262,6 @@ public class GameState extends NamedUpdatableObject
         this.bAnimationSet = bAnimationSet;
     }
 
-    public PlaybackMode getCycleMode() {
-        return cycleMode;
-    }
-
-    public void setCycleMode(PlaybackMode cycleMode) {
-        this.cycleMode = cycleMode;
-    }
-    
     public GameContext getContext()
     {
         return gameContext;
@@ -330,12 +320,12 @@ public class GameState extends NamedUpdatableObject
         }
     }
 
-    public PlaybackMode getTransitionCycleMode() {
-        return transitionCycleMode;
+    public PlaybackMode getCycleMode() {
+        return cycleMode;
     }
 
-    public void setTransitionCycleMode(PlaybackMode transitionCycleMode) {
-        this.transitionCycleMode = transitionCycleMode;
+    public void setCycleMode(PlaybackMode cycleMode) {
+        this.cycleMode = cycleMode;
     }
     
     /**

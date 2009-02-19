@@ -43,7 +43,7 @@ public class AnimationState
     private float   m_TransitionDuration        = 0.5f; // how long the transition will last
     private float   m_TimeInTransition          = 0.0f; // goes 0.0f to trainsition duration
     /** Describes the playback mode of the transitioning animation cycle **/
-    private AnimationComponent.PlaybackMode m_transitionCycleMode = AnimationComponent.PlaybackMode.Loop;
+    private AnimationComponent.PlaybackMode m_cycleMode = AnimationComponent.PlaybackMode.Loop;
     
     private float   m_AnimationSpeed            = 1.0f; // 1.0f
     
@@ -273,14 +273,14 @@ public class AnimationState
         this.m_bTransitionReverseAnimation = bTransitionReverseAnimation;
     }
 
-    public PlaybackMode getTransitionPlaybackMode()
+    public PlaybackMode getCycleMode()
     {
-        return m_transitionCycleMode;
+        return m_cycleMode;
     }
     
-    public void setTransitionPlaybackMode(PlaybackMode playbackMode)
+    public void setCycleMode(PlaybackMode playbackMode)
     {
-        m_transitionCycleMode = playbackMode;
+        m_cycleMode = playbackMode;
     }
     
     public PlaybackMode getCurrentCyclePlaybackMode()

@@ -40,8 +40,6 @@ public class StateInfo
     private boolean     bTransitionReverseAnimation = false;
     /** Sets when the transition into the body animation completes **/
     private AnimationComponent.PlaybackMode cycleMode = AnimationComponent.PlaybackMode.Loop;
-    /** Sets when the transition into the body animation completes **/
-    private AnimationComponent.PlaybackMode transitionCycleMode = AnimationComponent.PlaybackMode.Loop;
     
     /** The facial animation will play when entering the state if not null **/
     private String facialAnimationName      = null;
@@ -72,7 +70,6 @@ public class StateInfo
         state.setTransitionDuration(transitionDuration);
         state.setTransitionReverseAnimation(bTransitionReverseAnimation);
         state.setCycleMode(cycleMode);
-        state.setTransitionCycleMode(transitionCycleMode);
         state.setFacialAnimationName(facialAnimationName);
         state.setFacialAnimationTimeIn(facialAnimationTimeIn);
         state.setFacialAnimationTimeOut(facialAnimationTimeOut);
@@ -128,16 +125,6 @@ public class StateInfo
         this.cycleMode = cycleMode;
     }
 
-    /** Cycle mode for the transition **/
-    public PlaybackMode getTransitionCycleMode() {
-        return transitionCycleMode;
-    }
-
-    /** Cycle mode for the transition **/
-    public void setTransitionCycleMode(PlaybackMode transitionCycleMode) {
-        this.transitionCycleMode = transitionCycleMode;
-    }
-    
     /** The facial animation will play when entering the state if not null **/
     public String getFacialAnimationName() {
         return facialAnimationName;
