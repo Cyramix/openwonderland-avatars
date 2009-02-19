@@ -59,6 +59,7 @@ import imi.character.steering.FollowBakedPath;
 import imi.character.steering.GoSit;
 import imi.character.steering.GoTo;
 import imi.scene.Updatable;
+import imi.scene.animation.AnimationComponent.PlaybackMode;
 import java.util.ArrayList;
 import java.util.Hashtable;
 
@@ -500,6 +501,8 @@ public class AvatarContext extends GameContext
             genericAnimations.add(info);
 
             cycleInfo = new CycleActionInfo("Female_AnswerCell", "Female_Cell", "Female_AnswerCell", "FemaleC_Smile", 0.5f, 2.0f);
+            cycleInfo.setCycleMode(PlaybackMode.PlayOnce);
+            cycleInfo.setTransitionCycleMode(PlaybackMode.PlayOnce);
             cycleInfo.setExitAnimationReverse(true);
             genericAnimations.add(cycleInfo);
 
