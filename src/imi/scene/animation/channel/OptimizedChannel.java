@@ -34,7 +34,7 @@ import java.util.BitSet;
  */
 public class OptimizedChannel implements PJointChannel, Serializable
 {
-    /** The unchanging translation vector for all key frames **/
+    /** The unchanging basis for all key frames **/
     protected final float[]     matrixSkeleton = new float[16];
 
     /** Indication of state **/
@@ -42,21 +42,15 @@ public class OptimizedChannel implements PJointChannel, Serializable
     static final int CONSTANT_X_AXIS = 1;
     static final int CONSTANT_Y_AXIS = 2;
     static final int CONSTANT_Z_AXIS = 3;
-    
-
     protected final BitSet stateBits = new BitSet(8);
-
     /** The name of the joint we affect **/
     protected String    targetJointName = null;
-
     /** Keyframe data **/
     protected float[] data = new float[0];
     /** Determine keyframe size **/
     protected int floatsPerFrame = 0;
-
     /** Cached duration **/
     protected transient float duration = 0;
-
     /** Cached average timestep **/
     protected transient float averageTimestep = 0;
 
@@ -237,13 +231,7 @@ public class OptimizedChannel implements PJointChannel, Serializable
                 }
                 currentIndex--;
             }
-            if (leftFrame == -1)
-            {
-                overTheEdge = true;
-                leftFrame = numKeyframes - 1;
-                result = fTime / getFrameTime(rightFrame);
-            }
-            else
+            if (leftFrame != -1)
                 relativeTime = fTime - getFrameTime(leftFrame);
         }
         else // playing forward
@@ -263,14 +251,13 @@ public class OptimizedChannel implements PJointChannel, Serializable
                 }
                 currentIndex++;
             }
-            if (rightFrame == -1)
+
+            if (rightFrame == -1) // At the end
             {
                 rightFrame = 0;
                 overTheEdge = true;
                 if (leftFrame != -1)
-                    result = (fTime - getFrameTime(leftFrame)) / (duration + averageTimestep - getFrameTime(leftFrame));
-                else
-                    result = -1;
+                    result = (fTime - duration) / (duration + averageTimestep - getFrameTime(leftFrame));
             }
             else if (leftFrame != -1)
                 relativeTime = fTime - getFrameTime(leftFrame);

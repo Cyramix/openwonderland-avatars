@@ -349,7 +349,10 @@ public class Repository extends Entity
         {
             URL maleSkeleton = getClass().getResource("/imi/character/skeleton/Male.bs");
             URL femaleSkeleton = getClass().getResource("/imi/character/skeleton/Female.bs");
-            
+            // Debug Skeletons
+//            URL maleSkeleton = getClass().getResource("/imi/character/skeleton/MaleDebug.bs");
+//            URL femaleSkeleton = getClass().getResource("/imi/character/skeleton/FemaleDebug.bs");
+
             in = new AvatarObjectInputStream(maleSkeleton.openStream());
             MaleSkeleton = (SkeletonNode)in.readObject();
             in.close();

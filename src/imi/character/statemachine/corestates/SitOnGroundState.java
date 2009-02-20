@@ -135,11 +135,6 @@ public class SitOnGroundState extends GameState
                     transitionCheck();   
             }
         }
-        else
-        {
-            if (counter > sittingAnimationTime && !bIdleSittingAnimationSet)
-                setIdleAnimation();   
-        }
     }
 
     /**
@@ -246,18 +241,20 @@ public class SitOnGroundState extends GameState
     }
 
     public void setSittingAnimationTime(float sittingAnimationTime) {
-        this.sittingAnimationTime = sittingAnimationTime;
+//        this.sittingAnimationTime = sittingAnimationTime;
     }
     
     @Override
     public void notifyAnimationMessage(AnimationMessageType message) {
-        
-//        if (message == AnimationMessageType.TransitionComplete)
-//        {
-//            if (bGettingUp || !bIdleSittingAnimationSet)
-//                gameContext.getSkeleton().getAnimationState().setCurrentCyclePlaybackMode(PlaybackMode.PlayOnce);
-//            else
-//                gameContext.getSkeleton().getAnimationState().setCurrentCyclePlaybackMode(PlaybackMode.Loop);
-//        }
+        if (message == AnimationMessageType.PlayOnceComplete)
+            if (!bIdleSittingAnimationSet)
+                setIdleAnimation();
+        if (message == AnimationMessageType.TransitionComplete)
+        {
+            if (bGettingUp || !bIdleSittingAnimationSet)
+                gameContext.getSkeleton().getAnimationState().setCurrentCyclePlaybackMode(PlaybackMode.PlayOnce);
+            else
+                gameContext.getSkeleton().getAnimationState().setCurrentCyclePlaybackMode(PlaybackMode.Loop);
+        }
     }
 }

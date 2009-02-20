@@ -92,21 +92,7 @@ public class PMatrix_JointChannel implements PJointChannel, Serializable
     @Override
     public float calculateDuration()
     {
-        float fEndTime = m_KeyFrames.get(m_KeyFrames.size()-1).time;
-        float fStartTime = m_KeyFrames.get(1).time;
-        // Calculate
-        m_fDuration = fEndTime - fStartTime;
-
-        if (fStartTime > 0.0f)
-        {
-            m_fDuration += fStartTime;
-        }
-        else
-        {
-            float fSecondKeyframeTime = m_KeyFrames.get(1).time;
-            m_fDuration += fSecondKeyframeTime;
-        }
-        
+        m_fDuration = m_KeyFrames.getLast().time;
         // Return
         return m_fDuration;
     }
@@ -123,7 +109,7 @@ public class PMatrix_JointChannel implements PJointChannel, Serializable
     {
         boolean result = true;
         boolean overTheEdge = false;
-        float interpolationCoefficient = 0.0f;
+        float interpolationCoefficient = -10.0f;
         float relativeTime = 0;
 
         // determine what two keyframes to interpolate between
@@ -161,23 +147,14 @@ public class PMatrix_JointChannel implements PJointChannel, Serializable
                 {
                     leftFrame = currentFrame;
                     if (bTransitionCycle)
-                        state.getCursor().setCurrentTransitionJointIndex(currentIndex + 1);
+                        state.getCursor().setCurrentTransitionJointIndex(currentIndex + 2);
                     else
-                        state.getCursor().setCurrentJointPosition(currentIndex + 1);
+                        state.getCursor().setCurrentJointPosition(currentIndex + 2);
                     break; // finished checking
                 }
                 currentIndex--;
             }
-            if (leftFrame == null)
-            {
-                overTheEdge = true;
-                leftFrame = m_KeyFrames.getLast();
-                if (rightFrame != null)
-                    interpolationCoefficient = fTime / rightFrame.time;
-                else
-                    interpolationCoefficient = 0;
-            }
-            else
+            if (leftFrame != null)
                 relativeTime = fTime - leftFrame.time;
         }
         else // playing forward
@@ -198,14 +175,13 @@ public class PMatrix_JointChannel implements PJointChannel, Serializable
                 }
                 currentIndex++;
             }
-            if (rightFrame == null)
+
+            if (rightFrame == null) // At the end
             {
-                rightFrame = m_KeyFrames.getFirst();
+                rightFrame = m_KeyFrames.getLast();
                 overTheEdge = true;
                 if (leftFrame != null)
-                    interpolationCoefficient = (fTime - leftFrame.time) / (m_fDuration + m_fAverageFrameStep - leftFrame.time);
-                else
-                    return false;
+                    interpolationCoefficient = (fTime - m_fDuration) / (m_fDuration + m_fAverageFrameStep - leftFrame.time);
             }
             else if (leftFrame != null)
                 relativeTime = fTime - leftFrame.time;
@@ -360,23 +336,17 @@ public class PMatrix_JointChannel implements PJointChannel, Serializable
     @Override
     public void applyTransitionPose(PJoint joint, AnimationState state, float lerpCoefficient)
     {
-        if (lerpCoefficient > 0.01f)
+        if (lerpCoefficient >= 0 && lerpCoefficient <= 1)
         {
             if (calculateBlendedMatrix(state.getTransitionCycleTime(), rightSideBuffer, state, true))
             {
-                if (lerpCoefficient > 0.99f)
-                    joint.getTransform().setLocalMatrix(rightSideBuffer);
-                else
-                {
-                    leftSideBuffer.set(joint.getTransform().getLocalMatrix(false));
-                    m_interpolator.interpolate(lerpCoefficient,
-                            leftSideBuffer, rightSideBuffer,
-                            joint.getTransform().getLocalMatrix(true));
-                    joint.getTransform().getLocalMatrix(true).normalizeAxes();
-                }
+                leftSideBuffer.set(joint.getTransform().getLocalMatrix(false));
+                m_interpolator.interpolate(lerpCoefficient,
+                        leftSideBuffer, rightSideBuffer,
+                        joint.getTransform().getLocalMatrix(true));
+                joint.getTransform().getLocalMatrix(true).normalizeAxes();
             }
         }
-
     }
 
     /****************************

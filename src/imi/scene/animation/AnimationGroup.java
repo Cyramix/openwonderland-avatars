@@ -17,6 +17,7 @@
  */
 package imi.scene.animation;
 
+import com.jmex.model.collada.schema.cylinderType;
 import java.io.Serializable;
 import java.util.logging.Logger;
 import javolution.util.FastTable;
@@ -258,15 +259,15 @@ public class AnimationGroup implements Serializable
                 case Oscillate:
                     if (state.isReverseAnimation() && fCurrentCycleTime < 0)
                         state.setCurrentCycleTime(0.0f);
-                    else if (!state.isReverseAnimation())
+                    else if (!state.isReverseAnimation() && fCurrentCycleTime > currentCycle.getDuration())
                         state.setCurrentCycleTime(currentCycle.getDuration());
                     // Flip the direction
                     state.setReverseAnimation(!state.isReverseAnimation());
                     break;
                 case PlayOnce:
                     if (state.isReverseAnimation() && fCurrentCycleTime < 0)
-                        state.setCurrentCycleTime(0.0f);
-                    else if (!state.isReverseAnimation())
+                        state.setCurrentCycleTime(0);
+                    else if (!state.isReverseAnimation() && fCurrentCycleTime > currentCycle.getDuration())
                         state.setCurrentCycleTime(currentCycle.getDuration());
                     // Let the listeners know
                     state.sendMessage(AnimationListener.AnimationMessageType.PlayOnceComplete);
@@ -291,13 +292,13 @@ public class AnimationGroup implements Serializable
                     case Loop:
                         if (state.isTransitionReverseAnimation() && fTransitionCycleTime < 0)
                             state.setTransitionCycleTime(transitionCycle.getDuration());
-                        else if (!state.isTransitionReverseAnimation())
+                        else if (!state.isTransitionReverseAnimation() && fTransitionCycleTime > (transitionCycle.getDuration() + transitionCycle.getAverageTimeStep()))
                             state.setTransitionCycleTime(0.0f);
                         break;
                     case Oscillate:
                         if (state.isTransitionReverseAnimation() && fTransitionCycleTime < 0)
                             state.setTransitionCycleTime(0.0f);
-                        else if (!state.isTransitionReverseAnimation())
+                        else if (!state.isTransitionReverseAnimation() && fTransitionCycleTime > transitionCycle.getDuration())
                             state.setTransitionCycleTime(transitionCycle.getDuration());
                         // Flip the direction
                         state.setTransitionReverseAnimation(!state.isTransitionReverseAnimation());
@@ -305,10 +306,8 @@ public class AnimationGroup implements Serializable
                     case PlayOnce:
                         if (state.isTransitionReverseAnimation() && fTransitionCycleTime < 0)
                             state.setTransitionCycleTime(0.0f);
-                        else if (!state.isTransitionReverseAnimation())
+                        else if (!state.isTransitionReverseAnimation() && fTransitionCycleTime > transitionCycle.getDuration())
                             state.setTransitionCycleTime(transitionCycle.getDuration());
-                        // Let the listeners know
-//                        state.sendMessage(AnimationListener.AnimationMessageType.PlayOnceComplete);
                         break;
                     default:
                         logger.warning("Unknown playback mode encountered. Mode was " + mode);
