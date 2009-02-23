@@ -53,6 +53,8 @@ public class OptimizedChannel implements PJointChannel, Serializable
     protected transient float duration = 0;
     /** Cached average timestep **/
     protected transient float averageTimestep = 0;
+    /** Cached number of frames **/
+    protected transient int numberOfFrames = 0;
 
     /**
      * Construct a new optimized joint channel
@@ -140,7 +142,7 @@ public class OptimizedChannel implements PJointChannel, Serializable
     public void calculateFrame(PJoint jointToAffect, AnimationState state) {
         float lerpValue = detectFrames(state.getCurrentCycleTime(), false,
                 state.isReverseAnimation(), state.getCursor());
-        if (lerpValue >= 0 && lerpValue <= 1)
+        if (lerpValue >= 0 && lerpValue <= 1) // Sane lerp value?
         {
             float oneMinusLerp = (1-lerpValue);
             leftResult++; // discount time
@@ -204,11 +206,11 @@ public class OptimizedChannel implements PJointChannel, Serializable
         else
             currentIndex = cursor.getCurrentJointPosition();
 
-        int numKeyframes = data.length / floatsPerFrame;
-        if (currentIndex < 0 || currentIndex >= numKeyframes) // Current index valid?
+        
+        if (currentIndex == -1) // Current index valid?
         {
             if (reverse)
-                currentIndex = numKeyframes - 1; // start at the end
+                currentIndex = numberOfFrames - 1; // start at the end
             else
                 currentIndex = 0;
         }
@@ -236,7 +238,7 @@ public class OptimizedChannel implements PJointChannel, Serializable
         }
         else // playing forward
         {
-            while (currentIndex < numKeyframes-1)
+            while (currentIndex < numberOfFrames-1)
             {
                 if (getFrameTime(currentIndex) <= fTime)
                     leftFrame = currentIndex;
@@ -276,6 +278,7 @@ public class OptimizedChannel implements PJointChannel, Serializable
 
     @Override
     public float calculateDuration() {
+        numberOfFrames = data.length / floatsPerFrame;
         duration = getFrameTime((data.length / floatsPerFrame) - 1);
         return duration;
     }
@@ -380,5 +383,6 @@ public class OptimizedChannel implements PJointChannel, Serializable
         rightResult = -1;
         otherFloatBuffer = new float[16];
         calculateAverageStepTime();
+        numberOfFrames = data.length / floatsPerFrame;
     }
 }

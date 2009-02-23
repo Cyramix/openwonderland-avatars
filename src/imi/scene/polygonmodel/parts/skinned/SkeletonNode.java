@@ -32,7 +32,6 @@ import imi.scene.polygonmodel.PPolygonMesh;
 import imi.scene.polygonmodel.PPolygonMeshInstance;
 import imi.scene.polygonmodel.parts.PMeshMaterial;
 import imi.scene.polygonmodel.skinned.PPolygonSkinnedMeshInstance;
-import imi.scene.polygonmodel.parts.skinned.SkinnedMeshJoint;
 import imi.scene.polygonmodel.skinned.PPolygonSkinnedMesh;
 import imi.scene.shader.AbstractShaderProgram;
 import imi.utils.instruments.Instrumentation;
@@ -658,12 +657,12 @@ public class SkeletonNode extends PNode implements Animated, Serializable
         return m_BFTSkeleton.size();
     }
 
-    public List<SharedMesh> collectSharedMeshes()
+    private transient PTransform transformBuffer = new PTransform();
+    private transient FastList<PNode> queue = new FastList<PNode>();
+    public void collectSharedMeshes(FastList<SharedMesh> result)
     {
-        ArrayList<SharedMesh> result = new ArrayList<SharedMesh>();
 
-        // first thing, traverse and flatten the skeleton, collecting sharedmeshes along the way
-        FastList<PNode> queue = new FastList<PNode>();
+        queue.clear();
         queue.add(getSkeletonRoot());
         while (queue.isEmpty() == false)
         {
@@ -673,7 +672,7 @@ public class SkeletonNode extends PNode implements Animated, Serializable
             // Get the parent's world matrix
             PTransform parentTransform = null;
             if (parent == null || parent.getTransform() == null)
-                parentTransform = new PTransform();
+                parentTransform = transformBuffer;
             else
                 parentTransform = parent.getTransform();
 
@@ -726,7 +725,7 @@ public class SkeletonNode extends PNode implements Animated, Serializable
             // special case for the skeleton node (see this method... haha)
             if (current instanceof SkeletonNode)
             {
-                result.addAll(((SkeletonNode)current).collectSharedMeshes());
+                ((SkeletonNode)current).collectSharedMeshes(result);
                 continue;
             }
 
@@ -751,7 +750,6 @@ public class SkeletonNode extends PNode implements Animated, Serializable
                 result.add(meshInst.updateSharedMesh());
             }
         }
-        return result;
     }
 
     /**
@@ -953,10 +951,12 @@ public class SkeletonNode extends PNode implements Animated, Serializable
         m_namesToJoints = new FastMap<String, SkinnedMeshJoint>();
         m_BFTSkeletonLocalModifiers = new ArrayList<PMatrix>();
         m_animationStates = new ArrayList<AnimationState>();
+        transformBuffer = new PTransform();
         // Remap the joint refs
         mapSkinnedMeshJointIndices();
         // Now create a new animation state for each group read in
         for (int i = 0; i < m_animationComponent.getGroupCount(); i++)
             m_animationStates.add(new AnimationState(i));
+        queue = new FastList<PNode>();
     }
 }
