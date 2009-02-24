@@ -3,18 +3,20 @@
  * and open the template in the editor.
  */
 
-package imi.character.networking;
+package imi.networking;
 
 import client.ClientSideCahuaUser;
 import com.jme.math.Vector3f;
 import com.jme.renderer.ColorRGBA;
+import imi.character.Character;
 import imi.character.VerletArm;
-import imi.character.networking.CharacterClient.UserData;
+import imi.networking.CharacterClientExtension.CharacterDataExtension;
+import imi.networking.Client.ClientAvatar;
+import imi.networking.Client.UserData;
 import imi.scene.PMatrix;
 import imi.scene.utils.visualizations.VisuManager;
 import imi.utils.PMathUtils;
 import java.util.Collection;
-import java.util.HashMap;
 import net.java.dev.jnag.sgs.client.JnagSession;
 import server.ServerSideCahuaUser;
 
@@ -24,12 +26,12 @@ import server.ServerSideCahuaUser;
  */
 public class CahuaClientExtention extends ClientExtension implements ClientSideCahuaUser
 {
-    private CharacterClient      masterClient = null;
+    private Client              masterClient = null;
     private JnagSession         jnagSession  = null;
     private ServerSideCahuaUser serverProxy  = null;
-
+    private CharacterClientExtension   characterClientExtension = null;
+    
     private imi.character.Character    character = null;
-    private HashMap<Integer, UserData> characterData = null;
     private ClientGUI   gui                       = null;
     
     private VisuManager vis = null;
@@ -59,23 +61,23 @@ public class CahuaClientExtention extends ClientExtension implements ClientSideC
     float [] ballVelY = new float[numberOfBalls];
     float [] ballVelZ = new float[numberOfBalls];
     
-    public CahuaClientExtention(JnagSession jnagSession, CharacterClient masterClient) 
+    public CahuaClientExtention(JnagSession jnagSession, Client masterClient, CharacterClientExtension characterClientExtension) 
     {
+        this.characterClientExtension = characterClientExtension;
         this.masterClient = masterClient;
         this.jnagSession  = jnagSession;
         
         serverProxy = jnagSession.addToRemoteInterface(ServerSideCahuaUser.class);
         jnagSession.addToLocalInterface(this);
         
-        character     = masterClient.getCharacter();
-        characterData = masterClient.getUserData();
+        character     = characterClientExtension.getCharacter();
         gui           = masterClient.getGUI();
         
         // Initialize cahua user data extensions
-        vis = new VisuManager("cahua visualization", masterClient.getWorldManager());
-        Collection<UserData> dataCollection = characterData.values();
+        vis = new VisuManager("cahua visualization", characterClientExtension.getWorldManager());
+        Collection<UserData> dataCollection = masterClient.getUsers().values();
         for (UserData data : dataCollection)
-            data.setExtension(new DataExtension());
+            data.extension.put(CahuaDataExtension.class ,new CahuaDataExtension());
         
         // Initialize balls
         for (int i = 0; i < numberOfBalls; i++)
@@ -90,13 +92,29 @@ public class CahuaClientExtention extends ClientExtension implements ClientSideC
         vis.addPositionObject(character.getRightArm().getWristPosition(), ColorRGBA.magenta, handRadius);
         vis.addBoxObject(hitBoxPos, hitBoxMin, hitBoxMax, ColorRGBA.lightGray);
     }
-    
+
     @Override
     public void releaseJNagSession()
     {
         jnagSession.removeFromRemoteInterface(serverProxy);
         jnagSession.removeFromLocalInterface(this);
         vis.clearObjects();
+        
+        Collection<UserData> dataCollection = masterClient.getUsers().values();
+        for (UserData data : dataCollection)
+        {
+            CahuaDataExtension dataExt = ((CahuaDataExtension)data.getExtension(CahuaDataExtension.class));
+            if (dataExt != null)
+            {
+                dataExt.clean();
+                data.extension.remove(CahuaDataExtension.class);
+            }
+        }
+    }
+    
+    @Override
+    void notifyLogin(String roomName)  {   
+        
     }
     
     public void startGame(int lives)
@@ -127,6 +145,9 @@ public class CahuaClientExtention extends ClientExtension implements ClientSideC
             local.setTranslation(gamePos);
         }
         
+        if (!updateTick)
+            return;
+        
         // Pitch balls
         pitcherTimer += deltaTime;
         if (pitcherTimer > 3.0f)
@@ -136,23 +157,23 @@ public class CahuaClientExtention extends ClientExtension implements ClientSideC
             pitchBall(Vector3f.ZERO, dir.mult(0.1f));
         }
         
-        for (UserData data : characterData.values())
+        Collection<UserData> dataCollection = masterClient.getUsers().values();
+        for (UserData data : dataCollection)
         {
-            if (!data.user.isInitialized() || data.user.getController().getModelInstance() == null)
+            CharacterDataExtension dataExt = characterClientExtension.getUserData(data);
+            if (dataExt == null)
+                continue;
+            Character user = dataExt.character;
+            if (user == null || !user.isInitialized() || user.getController().getModelInstance() == null)
                 continue;
 
             // Predict the new position for the remote balls locally
+            CahuaDataExtension ext = getUserData(data);
             for (int i = 0; i < numberOfBalls; i++)
             {   
-                DataExtension ext = (DataExtension)data.getExtension();
-                
-                if (ext == null)
-                    return;
-                
                 if (ext.balls[i] == null)
                         return;
                         
-                
                 Vector3f pos = ext.balls[i];
                 Vector3f vel = ext.ballsVel[i].mult(0.999f); // decay so the network updates will push forward instead of backwards
                 // Accelerate the velocity 
@@ -177,66 +198,68 @@ public class CahuaClientExtention extends ClientExtension implements ClientSideC
                 if (checkCollisionBallWithHand(character.getRightArm(), pos, vel))
                         serverProxy.remoteBallUpdate(data.userID, i, pos.x, pos.y, pos.z, vel.x, vel.y, vel.z);
             }
-            
-            // Compute local balls
+        }
+        
+        // Compute local balls
+        for (int i = 0; i < numberOfBalls; i++)
+        {
+            Vector3f pos = balls[i];
+            Vector3f vel = ballsVel[i];
+
+            // Accelerate the velocity 
+            vel.addLocal(gravity);
+            // Add velocity to the ball's position
+            pos.addLocal(vel);
+
+            // Check collision with the world bounds
+            if (pos.y < 0.0f)
+                vel.y *= -1.0f;
+            if (pos.x < -roomSize || pos.x > roomSize)
+                vel.x *= -1.0f;
+            if (pos.z < -roomSize || pos.z > roomSize)
+                vel.z *= -1.0f;
+
+            // Check for collision
+            if (checkCollisionBallWithHitBox(pos))
+            {       
+                gui.appendOutput("OUCH! You got hit by your own ball!");
+                hitPoints--;
+                serverProxy.gotHit(masterClient.getID(), i);
+                pos.set(hitBoxPos.add(0.0f, 2.0f + ballRadius, 0.0f));
+                vel.set(0.0f, 0.25f, 0.0f);
+                if (hitPoints <= 0)
+                    spawnOutside();
+            }
+            checkCollisionBallWithHand(character.getLeftArm(), pos, vel);
+            checkCollisionBallWithHand(character.getRightArm(), pos, vel);
+        }
+        
+        if (updateTick)
+        {
+            // Prepare the update for the server
             for (int i = 0; i < numberOfBalls; i++)
             {
-                Vector3f pos = balls[i];
-                Vector3f vel = ballsVel[i];
-
-                // Accelerate the velocity 
-                vel.addLocal(gravity);
-                // Add velocity to the ball's position
-                pos.addLocal(vel);
-
-                // Check collision with the world bounds
-                if (pos.y < 0.0f)
-                    vel.y *= -1.0f;
-                if (pos.x < -roomSize || pos.x > roomSize)
-                    vel.x *= -1.0f;
-                if (pos.z < -roomSize || pos.z > roomSize)
-                    vel.z *= -1.0f;
-
-                // Check for collision
-                if (checkCollisionBallWithHitBox(pos))
-                {       
-                    gui.appendOutput("OUCH! You got hit by your own ball!");
-                    hitPoints--;
-                    serverProxy.gotHit(masterClient.getID(), i);
-                    pos.set(hitBoxPos.add(0.0f, 2.0f + ballRadius, 0.0f));
-                    vel.set(0.0f, 0.25f, 0.0f);
-                    if (hitPoints <= 0)
-                        spawnOutside();
-                }
-                checkCollisionBallWithHand(character.getLeftArm(), pos, vel);
-                checkCollisionBallWithHand(character.getRightArm(), pos, vel);
+                ballBosX[i] = balls[i].x;
+                ballPosY[i] = balls[i].y;
+                ballPosZ[i] = balls[i].z;
+                ballVelX[i] = ballsVel[i].x;
+                ballVelY[i] = ballsVel[i].y;
+                ballVelZ[i] = ballsVel[i].z;
             }
-            
-            if (updateTick)
-            {
-                // Prepare the update for the server
-                for (int i = 0; i < numberOfBalls; i++)
-                {
-                    ballBosX[i] = balls[i].x;
-                    ballPosY[i] = balls[i].y;
-                    ballPosZ[i] = balls[i].z;
-                    ballVelX[i] = ballsVel[i].x;
-                    ballVelY[i] = ballsVel[i].y;
-                    ballVelZ[i] = ballsVel[i].z;
-                }
-                serverProxy.updateBalls(ballBosX, ballPosY, ballPosZ, ballVelX, ballVelY, ballVelZ);
-            }
+            //serverProxy.updateBalls(ballBosX, ballPosY, ballPosZ, ballVelX, ballVelY, ballVelZ);
         }
-    
     }
 
     public void updateBalls(int userID, float[] x, float[] y, float[] z, float[] velX, float[] velY, float[] velZ) 
     {
-        UserData data = characterData.get(userID);
+        UserData data = masterClient.getUserData(userID);
         if (data == null)
+        {
             gui.appendOutput("null character balls update with ID: " + userID);
+            return;
+        }
         
-        DataExtension ext = (DataExtension) data.getExtension();
+        CahuaDataExtension ext = getUserData(data);
         for (int i = 0; i < numberOfBalls; i++)
         {
             ext.balls[i].set(x[i], y[i], z[i]);
@@ -255,8 +278,8 @@ public class CahuaClientExtention extends ClientExtension implements ClientSideC
         }
         else
         {
-            UserData data = characterData.get(userID);
-            DataExtension ext = (DataExtension)data.getExtension();
+            UserData data = masterClient.getUserData(userID);
+            CahuaDataExtension ext = getUserData(data);
             Vector3f pos = ext.balls[ballNumber];
             Vector3f vel = ext.ballsVel[ballNumber];
             pos.set(x, y, z);
@@ -266,18 +289,21 @@ public class CahuaClientExtention extends ClientExtension implements ClientSideC
 
     public void gotHit(int userID, int byUserID, int ballID) 
     {
-        UserData hitter = characterData.get(byUserID);
-        UserData hit = characterData.get(byUserID);
-        if (hitter == null)
-            gui.appendOutput("null gotHit message by userID: " + userID);
-        if (hit == null)
-            gui.appendOutput("null gotHit message with userID: " + userID);
-        
+        UserData hitter = masterClient.getUserData(byUserID);
+        UserData hit = masterClient.getUserData(userID);
+        if (hitter == null || hit == null)
+        {
+            if (hitter == null)
+                gui.appendOutput("null gotHit message by userID: " + byUserID);
+            if (hit == null)
+                gui.appendOutput("null gotHit message with userID: " + userID);
+            return;
+        }
         gui.appendOutput("HIT! " + masterClient.getUserName(userID) + " got hit by " + masterClient.getUserName(byUserID) + "'s ball and it hurts his pride!");
         
         // Set new position and velocity for that ball
-        DataExtension ext = ((DataExtension)hitter.getExtension());
-        ext.balls[ballID].set(hit.user.getPosition().add(0.0f, 2.0f + ballRadius, 0.0f));
+        CahuaDataExtension ext = getUserData(hitter);
+        ext.balls[ballID].set(characterClientExtension.getUserData(hit).character.getPosition().add(0.0f, 2.0f + ballRadius, 0.0f));
         ext.ballsVel[ballID].set(0.0f, 0.25f, 0.0f); 
     }
 
@@ -370,17 +396,24 @@ public class CahuaClientExtention extends ClientExtension implements ClientSideC
     }
     
     @Override
-    public void userAdded(UserData data)
-    {
-        data.setExtension(new DataExtension());
+    UserDataExtension getNewUserDataExtension() {
+        return new CahuaDataExtension();
     }
-
-    public class DataExtension extends UserDataExtension
+    
+    public CahuaDataExtension getUserData(int userID) {
+        return (CahuaDataExtension)masterClient.getUserData(userID).getExtension(CahuaDataExtension.class);
+    }
+        
+    public CahuaDataExtension getUserData(UserData data) {
+        return (CahuaDataExtension)data.getExtension(CahuaDataExtension.class);
+    }
+    
+    public class CahuaDataExtension implements UserDataExtension
     {
         public Vector3f[] balls    = new Vector3f[numberOfBalls];
         public Vector3f[] ballsVel = new Vector3f[numberOfBalls];
         
-        public DataExtension()
+        public CahuaDataExtension()
         {
             for (int i = 0; i < numberOfBalls; i++)
             {
@@ -390,20 +423,16 @@ public class CahuaClientExtention extends ClientExtension implements ClientSideC
             }
         }
         
-        @Override
-        public void removed()
+        public void added(UserData data, ClientAvatar clientAvatar) {
+        }
+        
+        public void clean()
         {
             for (int i = 0; i < numberOfBalls; i++)
             {
                 balls[i].set(10000.0f, 0.0f, 0.0f); // hehe
                 vis.removePositionObject(balls[i]); // TODO
             }
-        }
-        
-        @Override
-        public void trigger(boolean pressed, int trigger) 
-        {
-            
         }
     }
 }

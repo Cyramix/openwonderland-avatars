@@ -25,8 +25,8 @@ import imi.character.statemachine.corestates.IdleState;
 import imi.character.statemachine.corestates.FlyState;
 import imi.character.statemachine.corestates.FallFromSitState;
 import imi.character.CharacterController;
-import imi.character.networking.CahuaClientExtention;
-import imi.character.networking.CharacterClient;
+import imi.networking.CahuaClientExtention;
+import imi.networking.Client;
 import imi.character.statemachine.corestates.transitions.FlyToIdle;
 import imi.character.statemachine.corestates.transitions.IdleToFly;
 import imi.character.statemachine.corestates.transitions.IdleToAction;
@@ -277,11 +277,10 @@ public class AvatarContext extends GameContext
             if (avatar.getUpdateExtension() != null)
             {
                 Updatable up = avatar.getUpdateExtension();
-                if (up instanceof CharacterClient && ((CharacterClient)up).getExtension() != null)
+                if (up instanceof Client && ((Client)up).getExtension(CahuaClientExtention.class) != null)
                 {
-                    CharacterClient client = ((CharacterClient)up);
-                    if (client.getExtension() instanceof CahuaClientExtention)
-                        ((CahuaClientExtention)client.getExtension()).startGame(3);
+                    CahuaClientExtention cahua = (CahuaClientExtention)((Client)up).getExtension(CahuaClientExtention.class);
+                    cahua.startGame(3);
                 }
             }
         }

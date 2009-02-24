@@ -15,6 +15,7 @@ import java.io.Serializable;
 public class PlayerData implements Serializable, ManagedObject
 {
     private String name = "nameless";
+    private String info = null;
     
     private int ID;
     private float posX;
@@ -57,6 +58,14 @@ public class PlayerData implements Serializable, ManagedObject
         this.name = name;
     }
     
+    public void setInfo(String info) {
+        this.info = info;
+    }
+    
+    public String getInfo() {
+        return info;
+    }
+            
     public void updatePosition(float posX, float posY, float posZ, float dirX, float dirY, float dirZ) 
     {
         this.posX = posX;

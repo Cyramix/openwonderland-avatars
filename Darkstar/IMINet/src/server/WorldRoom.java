@@ -102,7 +102,7 @@ public class WorldRoom extends WorldObject implements Task
     }
     
     /**
-     * Our "update" scheduled task 
+     * Our periodic "update" scheduled task 
      * @throws java.lang.Exception
      */
     public void run() throws Exception 
@@ -112,8 +112,6 @@ public class WorldRoom extends WorldObject implements Task
     
     public void sendUpdate()
     {
-        boolean right = false;
-        boolean left  = false;
         // Send each player data update to all other players
         WorldPlayer player = null;
         for(ManagedReference<WorldPlayer> worldPlayer : players)
@@ -123,29 +121,13 @@ public class WorldRoom extends WorldObject implements Task
             List<WorldPlayer> others = getPlayersExcluding(player);
             for (WorldPlayer other : others)
             {
-                right = data.isRightArmEnabled();
-                left  = data.isLeftArmEnabled();
-                if (right && left)
-                    other.getClientSideUser().updatePositionAndArms(data.getID(), data.getPosX(), data.getPosY(), data.getPosZ(), data.getDirX(), data.getDirY(), data.getDirZ(), data.getRightArmX(), data.getRightArmY(), data.getRightArmZ(), data.getLeftArmX(), data.getLeftArmY(), data.getLeftArmZ());
-                else if (right)
-                    other.getClientSideUser().updatePositionAndArm(data.getID(), data.getPosX(), data.getPosY(), data.getPosZ(), data.getDirX(), data.getDirY(), data.getDirZ(), true, data.getRightArmX(), data.getRightArmY(), data.getRightArmZ());
-                else if (left)
-                    other.getClientSideUser().updatePositionAndArm(data.getID(), data.getPosX(), data.getPosY(), data.getPosZ(), data.getDirX(), data.getDirY(), data.getDirZ(), false, data.getLeftArmX(), data.getLeftArmY(), data.getLeftArmZ());
-                else
-                    other.getClientSideUser().updatePosition(data.getID(), data.getPosX(), data.getPosY(), data.getPosZ(), data.getDirX(), data.getDirY(), data.getDirZ());
-                    
+                // Each extension is getting to send an update 
+                for (ManagedReference<WorldPlayerExtension> ext : other.getExtension().values())
+                    ext.get().updateTick(data);
             }
         }
     }
 
-    public void sendTrigger(WorldPlayer player, boolean pressed, int trigger) 
-    {    
-        PlayerData data = player.getPlayerData();
-        List<WorldPlayer> others = getPlayersExcluding(player);
-        for (WorldPlayer other : others)
-            other.getClientSideUser().trigger(data.getID(), pressed, trigger);
-    }
-    
     /**
      * Adds an item to this room.
      * 
@@ -173,7 +155,8 @@ public class WorldRoom extends WorldObject implements Task
      * @param player the player to add
      * @return {@code true} if the player was added to the room
      */
-    public boolean addPlayer(WorldPlayer player) {
+    public boolean addPlayer(WorldPlayer player) 
+    {
         logger.log(Level.INFO, "{0} enters {1} with ID {2}",
             new Object[] { player, this, player.getPlayerData().getID() });
 
@@ -182,12 +165,10 @@ public class WorldRoom extends WorldObject implements Task
 
         // Add player to the room channel
         channel.getForUpdate().join(player.getSession());
-        // Setup the jnag session for the new player
-        player.setupJNagSession(player.getSession(), channel.get()); 
-        // Send a message to the new player with all the current ones
-        sendPlayerList(player);
-        // Add the player to the room and be done
-        return players.add(dataManager.createReference(player));
+        // Add the player to the room players list
+        boolean result = players.add(dataManager.createReference(player));
+        // onces setInfo() is recieved the sendAddPlayer() will be called
+        return result;
     }
 
     public void sendAddPlayer(WorldPlayer player)
@@ -221,6 +202,9 @@ public class WorldRoom extends WorldObject implements Task
         List<WorldPlayer> others = getPlayersExcluding (player); 
         for(WorldPlayer other : others)
             other.getClientSideUser().removePlayer(data.getID());
+        // Let the extentions know about the removal
+        for(ManagedReference<WorldPlayerExtension> ext : player.getExtension().values())
+            ext.get().playerRemoved(player);
         
         if (disconnected)
             worldRef.get().userDisconnected(player);
@@ -367,7 +351,7 @@ public class WorldRoom extends WorldObject implements Task
         
     }
     
-    private void sendPlayerList(WorldPlayer player) 
+    public void sendPlayerList(WorldPlayer player) 
     {
         if (players.isEmpty())
             return;

@@ -18,14 +18,15 @@
 package imi.tests;
 
 import com.jme.math.Vector3f;
-import imi.character.networking.CharacterClient;
+import imi.networking.CharacterClientExtension;
 import imi.character.avatar.Avatar;
 import imi.character.avatar.MaleAvatarAttributes;
 import imi.character.avatar.FemaleAvatarAttributes;
+import imi.networking.Client;
+import imi.networking.Client.ClientAvatar;
 import imi.character.objects.ObjectCollection;
 import imi.scene.camera.behaviors.ThirdPersonCamModel;
 import imi.scene.camera.state.CameraState;
-import imi.scene.camera.state.FirstPersonCamState;
 import imi.scene.camera.state.ThirdPersonCamState;
 import imi.scene.processors.JSceneEventProcessor;
 import imi.utils.input.AvatarControlScheme;
@@ -111,8 +112,8 @@ public class DarkstarClientTest extends DemoBase
         }
         
         // Create darkstar client and login
-        avatar.setUpdateExtension(new CharacterClient(avatar, male, feet, legs, torso, hair, head, skinTone, eyeColor));
-        ((CharacterClient)avatar.getUpdateExtension()).login();
+        avatar.setUpdateExtension(new Client(avatar, male, feet, legs, torso, hair, head, skinTone, eyeColor));
+        ((Client)avatar.getUpdateExtension()).login();
         
         //avatar.setBigHeadMode(2.0f);
         

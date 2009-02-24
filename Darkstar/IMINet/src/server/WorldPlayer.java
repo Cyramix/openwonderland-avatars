@@ -19,6 +19,7 @@
 
 package server;
 
+import client.ClientSideCharacterUser;
 import client.ClientSideUser;
 import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
@@ -26,15 +27,16 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.sun.sgs.app.AppContext;
-import com.sun.sgs.app.Channel;
 import com.sun.sgs.app.ClientSession;
 import com.sun.sgs.app.ClientSessionListener;
 import com.sun.sgs.app.DataManager;
 import com.sun.sgs.app.ManagedReference;
 import com.sun.sgs.app.NameNotBoundException;
+import com.sun.sgs.app.util.ScalableHashMap;
+import java.util.Collection;
+import java.util.List;
 import net.java.dev.jnag.sgs.app.JnagSession;
 import net.java.dev.jnag.sgs.app.MessageOutputToClientSession;
-import net.java.dev.jnag.sgs.common.MethodLogger;
 
 /**
  * Represents a user 
@@ -64,8 +66,8 @@ public class WorldPlayer extends WorldObject implements ClientSessionListener, S
     private JnagSession                      jnagSession       = null;
     private ManagedReference<ClientSideUser> clientSideUserRef = null;
 
-    /** The extension may implement a JNag interface **/
-    protected ManagedReference<WorldPlayerExtension> serverExtensionRef = null;
+    /** Extension may implement a JNag interface **/     
+    private ManagedReference<ScalableHashMap<Class, ManagedReference<WorldPlayerExtension>>> serverExtensionRef = null;
     
     // data to keep for each player
     ManagedReference<PlayerData> playerDataRef = null;
@@ -111,31 +113,42 @@ public class WorldPlayer extends WorldObject implements ClientSessionListener, S
         DataManager dataManager = AppContext.getDataManager();
         dataManager.markForUpdate(this);
         playerDataRef = dataManager.createReference(new PlayerData(userID, getName()));
+        serverExtensionRef = dataManager.createReference(new ScalableHashMap<Class, ManagedReference<WorldPlayerExtension>>());
     }
     
-    protected void setupJNagSession(ClientSession session, Channel channel)
+    protected void setupJNagSession(String roomName)
     {   
         releaseJNagSession();
+        DataManager dataMngr = AppContext.getDataManager();
+        dataMngr.markForUpdate(this);
         // Create the jnag session and initialize its output.
         jnagSession = new JnagSession();
-        jnagSession.setMethodLogger(new MethodLogger()); // Enable the log.
         //jnagSession.setSessionOutput(new MessageOutputToChannel(session, channel));
         //jnagSession.setSessionOutput(new MessageOutputToChannel(channel));
-        jnagSession.setSessionOutput(new MessageOutputToClientSession(session));
+        jnagSession.setSessionOutput(new MessageOutputToClientSession(currentSessionRef.get()));
 
         // Declare that we will receive the calls of the client.
         jnagSession.addToLocalInterface(this);
 
         // Create a proxy to encode the method calls to the object on the client.
         ClientSideUser clientSideUserProxy = jnagSession.addToRemoteInterface(ClientSideUser.class);
-        clientSideUserRef = AppContext.getDataManager().createReference(clientSideUserProxy);  
+        clientSideUserRef = dataMngr.createReference(clientSideUserProxy);  
         
-        // jnag proxy methods
-        clientSideUserProxy.notifyLogin(playerDataRef.get().getID(), getName());
-        if (getRoom() != null)
-            clientSideUserProxy.notifyMessageOfTheDay(getRoom().getDescription());
+        // Deal with possible extensions
+        if (roomName.contains("cahua") || roomName.contains("Cahua"))
+        {
+            WorldPlayerExtension ext = new CharacterPlayerExtension(jnagSession, this);
+            serverExtensionRef.getForUpdate().put(ext.getClass(), dataMngr.createReference(ext));
+            ext = new CahuaPlayerExtension(jnagSession, this);
+            serverExtensionRef.getForUpdate().put(ext.getClass(), dataMngr.createReference(ext));
+        }
+        else // default
+        {
+            WorldPlayerExtension ext = new CharacterPlayerExtension(jnagSession, this);
+            serverExtensionRef.getForUpdate().put(ext.getClass(), dataMngr.createReference(ext));
+        }
     }
-    
+        
     /**
      * Returns the session for this listener.
      * 
@@ -170,37 +183,32 @@ public class WorldPlayer extends WorldObject implements ClientSessionListener, S
             "Set session for {0} to {1}",
             new Object[] { this, session });
     }
-
-    /**
-     * Handles a player entering a room.
-     *
-     * @param room the room for this player to enter
-     */
-    public void enter(WorldRoom room) 
+    
+    public void clearExtensions()
     {
-        logger.log(Level.INFO, "{0} enters {1}",
-            new Object[] { this, room } );
-        setRoom(room);
-        // Deal with a possible extension
         DataManager dataMngr = AppContext.getDataManager();
-        dataMngr.markForUpdate(this);
-        if (serverExtensionRef != null)
+        Collection<ManagedReference<WorldPlayerExtension>> extensions = serverExtensionRef.getForUpdate().values();
+        if (!extensions.isEmpty())
         {
-            WorldPlayerExtension ext = serverExtensionRef.get();
-            ext.releaseJNagSession();
-            dataMngr.removeObject(ext);
-            serverExtensionRef = null;
-        }
-        if (room.getName().contains("cahua") || room.getName().contains("Cahua"))
-        {
-            WorldPlayerExtension ext = new CahuaPlayerExtention(jnagSession, this);
-            serverExtensionRef = dataMngr.createReference(ext);
+            for (ManagedReference<WorldPlayerExtension> px : extensions)
+            {
+                WorldPlayerExtension wpx = px.get();
+                wpx.releaseJNagSession();
+                dataMngr.removeObject(wpx);   
+            }
+            serverExtensionRef.getForUpdate().clear();
         }
     }
     
-    public WorldPlayerExtension getExtension() {
-        if (serverExtensionRef == null)
+    public WorldPlayerExtension getExtension(Class extensionClass)
+    {
+        ManagedReference<WorldPlayerExtension> mngExt = serverExtensionRef.get().get(extensionClass);
+        if (mngExt == null)
             return null;
+        return mngExt.get();
+    }
+    
+    public ScalableHashMap<Class, ManagedReference<WorldPlayerExtension>> getExtension() {
         return serverExtensionRef.get();
     }
     
@@ -243,24 +251,36 @@ public class WorldPlayer extends WorldObject implements ClientSessionListener, S
         logger.log(Level.INFO, "Disconnected: {0}", this);
     }
     
+    public void setClientInfo(String info)
+    {
+        playerDataRef.getForUpdate().setInfo(info);
+        getRoom().sendAddPlayer(this);
+    }
+    
+    public JnagSession getJnagSession() {
+        return jnagSession;
+    }
+        
     public void releaseJNagSession()
     {
         if (jnagSession == null)
             return;
         
+        // Release extension interfaces
+        clearExtensions();
+        
         // Delete the serverSideUserImpl object from the data store.
         jnagSession.removeFromLocalInterface(this);
 
         // Delete the clientSideUserProxy object from the data store.
+        DataManager dataMngr = AppContext.getDataManager();
         ClientSideUser clientSideUserProxy = clientSideUserRef.get();
         jnagSession.removeFromRemoteInterface(clientSideUserProxy);
-        AppContext.getDataManager().removeObject(clientSideUserProxy);
-
-        if (serverExtensionRef != null)
-            serverExtensionRef.get().releaseJNagSession();
+        dataMngr.removeObject(clientSideUserProxy);
         
         // Delete the managed objects owned by the implementation of the jnag session.
         jnagSession.releaseManagedObjects();
+        jnagSession = null;
     }
 
     public void enterWorld(String worldName)
@@ -268,11 +288,11 @@ public class WorldPlayer extends WorldObject implements ClientSessionListener, S
         WorldRoom room = getRoom();
         if (room != null)
         {
-            if (room.getWorld().getRoom(worldName).getName().equals(room.getName()))
+            WorldRoom newRoom = room.getWorld().getRoom(worldName);
+            if (newRoom.getName().equals(room.getName()))
                 return;
-            getRoom().removePlayer(this, false);
-            enter(room.getWorld().getRoom(worldName));
-            getRoom().sendAddPlayer(this);
+            room.removePlayer(this, false);
+            enter(newRoom);
         }
     }
     
@@ -305,22 +325,43 @@ public class WorldPlayer extends WorldObject implements ClientSessionListener, S
     }
 
     /**
+     * Handles a player entering a room.
+     *
+     * @param room the room for this player to enter
+     */
+    public void enter(WorldRoom room) 
+    {
+        logger.log(Level.INFO, "{0} enters {1}",
+            new Object[] { this, room } );
+        setRoom(room);
+    }
+    
+    /**
      * Sets the room this player is currently in.  If the room given
      * is null, marks the player as not in any room.
-     * <p>
      * @param room the room this player should be in, or {@code null}
      */
     protected void setRoom(WorldRoom room) 
     {
-        DataManager dataManager = AppContext.getDataManager();
-        dataManager.markForUpdate(this);
         if (room == null) 
         {
             currentRoomRef = null;
             return;
         }
+        DataManager dataManager = AppContext.getDataManager();
+        dataManager.markForUpdate(this);
+        // Set room reference
         currentRoomRef = dataManager.createReference(room);
+        // Setup the jnag session for the new room
+        setupJNagSession(room.getName()); 
+        // Send the player list (this will clean all players from the previous room)
+        room.sendPlayerList(this);
+        // Add the player to the room's channel and player list (means he will start getting update messages about other players etc)
         room.addPlayer(this);
+        // jnag proxy methods to notify about the new room, this will trigger a setInfo() message that will initiate a call to sendAddPlayer()
+        clientSideUserRef.get().notifyLogin(playerDataRef.get().getID(), getName(), room.getName());
+        // message of the day
+        clientSideUserRef.get().notifyMessageOfTheDay(getRoom().getDescription());
     }
 
     /** {@inheritDoc} */
@@ -379,47 +420,21 @@ public class WorldPlayer extends WorldObject implements ClientSessionListener, S
         // Do nothing, whisper back
         clientSideUserRef.get().whisper(string);
         
-        
-        //
-    }
-
-    public void updatePosition(float posX, float posY, float posZ, float dirX, float dirY, float dirZ) 
-    {
-        playerDataRef.getForUpdate().updatePosition(posX, posY, posZ, dirX, dirY, dirZ);
-    }
-
-    public void updatePositionAndArm(float posX, float posY, float posZ, float dirX, float dirY, float dirZ, boolean right, float x, float y, float z) {
-        PlayerData data = playerDataRef.getForUpdate();
-        data.updatePosition(posX, posY, posZ, dirX, dirY, dirZ);
-        data.updateArm(right, x, y, z);
-    }
-
-    public void updatePositionAndArms(float posX, float posY, float posZ, float dirX, float dirY, float dirZ, float rx, float ry, float rz, float lx, float ly, float lz) {
-        PlayerData data = playerDataRef.getForUpdate();
-        data.updatePosition(posX, posY, posZ, dirX, dirY, dirZ);
-        data.updateArm(true, rx, ry, rz);
-        data.updateArm(false, lx, ly, lz);
-    }
-    /**
-     * Required to throtel arm update messages
-     * @param right  - true for the right arm, false for the left one
-     * @param enable - true to enable, false to disable
-     */
-    public void enableArm(boolean right, boolean enable) {
-        playerDataRef.getForUpdate().enableArm(right, enable);
-    }
-    
-//    // should be a trigger
-//    public void setHandGesture(boolean right, int gestureID) {
-//        getRoom().sendHandGesture(this, right, gestureID);
-//    }
-
-    public void trigger(boolean pressed, int trigger) {
-        getRoom().sendTrigger(this, pressed, trigger);
-    }
-
-    public void setAvatarInfo(boolean male, int feet, int legs, int torso, int hair, int head, int skinTone, int eyeColor) {
-        playerDataRef.getForUpdate().setAvatarInfo(male, feet, legs, torso, hair, head, skinTone, eyeColor);
-        getRoom().sendAddPlayer(this);
+        if (string.equals("dump"))
+        {
+            StringBuilder sb = new StringBuilder("-*-");
+            sb.append("Begin dump for " + getName() + " at " + getRoom().getName());
+            sb.append("Players in his room:");
+            List<WorldPlayer> list = getRoom().getPlayers();
+            for (WorldPlayer player : list)
+            {
+                sb.append(player.getName());
+                Collection<ManagedReference<WorldPlayerExtension>> exts = player.getExtension().values();
+                for(ManagedReference<WorldPlayerExtension> ext : exts)
+                    sb.append(" " + ext.get().getClass());
+            }
+            sb.append("-*-");
+            clientSideUserRef.get().whisper(sb.toString());
+        }
     }
 }

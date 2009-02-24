@@ -15,14 +15,18 @@
  * exception as provided by Sun in the License file that accompanied 
  * this code.
  */
-package imi.character.networking;
+package imi.networking;
+
+import net.java.dev.jnag.sgs.common.Remote;
 
 /**
  *
  * @author Lou Hayt
  */
-public abstract class UserDataExtension 
+public abstract class ClientExtension implements Remote
 {
-    public void removed() {}
-    public void trigger(boolean pressed, int trigger) {}
+    abstract void releaseJNagSession();
+    abstract UserDataExtension getNewUserDataExtension();
+    void notifyLogin(String roomName) {}
+    public void update(float deltaTime, boolean sendTick)  {}
 }

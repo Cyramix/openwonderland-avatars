@@ -15,7 +15,7 @@
  * exception as provided by Sun in the License file that accompanied 
  * this code.
  */
-package imi.character.networking;
+package imi.networking;
 
 import com.sun.sgs.client.ClientChannel;
 import java.awt.BorderLayout;

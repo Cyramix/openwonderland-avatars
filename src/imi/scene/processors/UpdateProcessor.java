@@ -46,11 +46,6 @@ public class UpdateProcessor extends ProcessorComponent
 
     @Override
     public void compute(ProcessorArmingCollection collection) {
-
-    }
-
-    @Override
-    public void commit(ProcessorArmingCollection collection) {
             if (!synchronizer)
             {
                 synchronizer = true;
@@ -62,6 +57,10 @@ public class UpdateProcessor extends ProcessorComponent
                 target.update((float)deltaTime);
                 synchronizer = false;
             }
+    }
+
+    @Override
+    public void commit(ProcessorArmingCollection collection) {
     }
 
     @Override

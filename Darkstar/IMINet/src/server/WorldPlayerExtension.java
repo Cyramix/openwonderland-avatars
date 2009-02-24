@@ -18,6 +18,7 @@ public abstract class WorldPlayerExtension implements Serializable, ManagedObjec
     public abstract void releaseJNagSession();
     public abstract Remote getClientProxy();
     
+    public void updateTick(PlayerData data) {}
     public void trigger(boolean pressed, int trigger) {}
-    public void playerRemoved(WorldPlayer player) {}
+    public void playerRemoved(WorldPlayer player) {} 
 }
