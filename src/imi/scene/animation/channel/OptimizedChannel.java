@@ -142,11 +142,11 @@ public class OptimizedChannel implements PJointChannel, Serializable
     public void calculateFrame(PJoint jointToAffect, AnimationState state) {
         float lerpValue = detectFrames(state.getCurrentCycleTime(), false,
                 state.isReverseAnimation(), state.getCursor());
-        if (lerpValue >= 0 && lerpValue <= 1) // Sane lerp value?
+        if (lerpValue != -10) // Sane lerp value?
         {
             float oneMinusLerp = (1-lerpValue);
-            leftResult++; // discount time
-            rightResult++; // ditto
+            ++leftResult; // discount time
+            ++rightResult; // ditto
             // Process
             if (!stateBits.get(CONSTANT_TRANSLATION))
             {
@@ -191,88 +191,89 @@ public class OptimizedChannel implements PJointChannel, Serializable
     private float detectFrames( float fTime, boolean bTransitionCycle,
                                 boolean reverse, AnimationCursor cursor)
     {
-        float result = -1;
-        boolean overTheEdge = false;
+        float result = -10; // Result is the lerp value, -10 is my safe 'bad value'
 
-        // determine what two keyframes to interpolate between
-        int leftFrame = -1;
-        int rightFrame = -1;
-
-        float relativeTime = 0;
-        // Get cursor
+        // Use these two numbers as indicies for the frames to blend
+        leftResult = -1;
+        rightResult = -1;
+        // Get cursor to optimize the keyframe search
         int currentIndex = -1;
-        if (bTransitionCycle)
+        if (bTransitionCycle) // If we are detecting the frames for a transition cycle, use its cursor
             currentIndex = cursor.getCurrentTransitionJointPosition();
         else
             currentIndex = cursor.getCurrentJointPosition();
 
-        
-        if (currentIndex == -1) // Current index valid?
+        // determine the validity of the index
+        if (currentIndex < 0 || currentIndex >= numberOfFrames || numberOfFrames < 3) 
         {
             if (reverse)
                 currentIndex = numberOfFrames - 1; // start at the end
             else
-                currentIndex = 0;
+                currentIndex = 0; // start at the beginning
         }
 
-        // GC optimization, removed Iterator usage
+        
         if (reverse)
         { // In reverse, iterate backwards
-            while (currentIndex > 0)
+            while (currentIndex >= 0)
             {
-                if (getFrameTime(currentIndex) > fTime)
-                    rightFrame = currentIndex;
-                else // passed the mark
+                if (getFrameTime(currentIndex) <= fTime) // passed the mark, this frame will be the one blended from
                 {
-                    leftFrame = currentIndex;
+                    leftResult = currentIndex;
+                    rightResult = currentIndex + 1;
                     if (bTransitionCycle)
-                        cursor.setCurrentTransitionJointIndex(currentIndex + 1);
+                        cursor.setCurrentTransitionJointPosition(rightResult);
                     else
-                        cursor.setCurrentJointPosition(currentIndex + 1);
+                        cursor.setCurrentJointPosition(rightResult);
                     break; // finished checking
                 }
                 currentIndex--;
             }
-            if (leftFrame != -1)
-                relativeTime = fTime - getFrameTime(leftFrame);
+
+            // if the time value was too high, then use the first frame
+            if (rightResult == numberOfFrames || rightResult == -1) 
+            {
+                rightResult = 0;
+                if (leftResult != -1) // Ensure validity before use
+                    result = (fTime - getFrameTime(leftResult)) / averageTimestep;
+            }
+            else if (leftResult != -1)
+                result = (fTime - getFrameTime(leftResult)) / (getFrameTime(rightResult) - getFrameTime(leftResult));
         }
         else // playing forward
         {
-            while (currentIndex < numberOfFrames-1)
+            while (currentIndex < numberOfFrames)
             {
-                if (getFrameTime(currentIndex) <= fTime)
-                    leftFrame = currentIndex;
-                else // passed the mark
+                // If this frame has a greater time value, then it is the right side
+                // and the previous frame is the left side
+                if (getFrameTime(currentIndex) > fTime)
                 {
-                    rightFrame = currentIndex;
+                    rightResult = currentIndex;
+                    leftResult = currentIndex - 1;
                     if (bTransitionCycle)
-                        cursor.setCurrentTransitionJointIndex(currentIndex - 2);
+                        cursor.setCurrentTransitionJointPosition(leftResult);
                     else
-                        cursor.setCurrentJointPosition(currentIndex - 2);
+                        cursor.setCurrentJointPosition(leftResult);
                     break; // finished checking
                 }
                 currentIndex++;
             }
 
-            if (rightFrame == -1) // At the end
+            // If over the right edge, blend towards the first frame
+            if (rightResult == -1) 
             {
-                rightFrame = 0;
-                overTheEdge = true;
-                if (leftFrame != -1)
-                    result = (fTime - duration) / (duration + averageTimestep - getFrameTime(leftFrame));
+                rightResult = 0;
+                if (leftResult != -1)
+                    result = (fTime - duration) / (duration + averageTimestep - getFrameTime(leftResult));
             }
-            else if (leftFrame != -1)
-                relativeTime = fTime - getFrameTime(leftFrame);
+            else if (leftResult != 1)
+                result = (fTime - getFrameTime(leftResult)) / (getFrameTime(rightResult) - getFrameTime(leftResult));
         }
 
-        if (leftFrame != -1 && rightFrame != -1) // Need to blend between two poses
-        {
-            if (!overTheEdge)
-                result = relativeTime / (getFrameTime(rightFrame) - getFrameTime(leftFrame));
-            leftResult = leftFrame * floatsPerFrame;
-            rightResult = rightFrame * floatsPerFrame;
+        // Scale indices so that they index into the data array now
+        leftResult *= floatsPerFrame;
+        rightResult *= floatsPerFrame;
 
-        }
         return result;
     }
 

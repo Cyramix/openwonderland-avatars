@@ -172,8 +172,6 @@ public class AnimationCycle implements Serializable
         {
             PJointChannel channel = m_JointChannels.get(i);
             channel = optimizer.optimize(channel, quality);
-            logger.info("Got a " + channel.getClass().getSimpleName() +
-                    " for " + channel.getTargetJointName() + " in " + m_name + ": " + channel.toString());
             m_JointChannels.set(i, channel);
         }
     }

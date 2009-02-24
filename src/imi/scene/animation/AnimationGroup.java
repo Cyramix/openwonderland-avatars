@@ -16,8 +16,6 @@
  * this code.
  */
 package imi.scene.animation;
-
-import com.jmex.model.collada.schema.cylinderType;
 import java.io.Serializable;
 import java.util.logging.Logger;
 import javolution.util.FastTable;
@@ -252,7 +250,7 @@ public class AnimationGroup implements Serializable
             {
                 case Loop:
                     if (state.isReverseAnimation() && fCurrentCycleTime < 0)
-                        state.setCurrentCycleTime(currentCycle.getDuration());
+                        state.setCurrentCycleTime(currentCycle.getDuration() + currentCycle.getAverageTimeStep());
                     else if (!state.isReverseAnimation() && fCurrentCycleTime > (currentCycle.getDuration() + currentCycle.getAverageTimeStep()))
                         state.setCurrentCycleTime(0.0f);
                     break;
@@ -286,12 +284,13 @@ public class AnimationGroup implements Serializable
 
             if (fTransitionCycleTime < 0 || fTransitionCycleTime > transitionCycle.getDuration())
             {
+                state.getCursor().makeNegativeOne();
                 AnimationComponent.PlaybackMode mode = state.getCycleMode();
                 switch (mode)
                 {
                     case Loop:
                         if (state.isTransitionReverseAnimation() && fTransitionCycleTime < 0)
-                            state.setTransitionCycleTime(transitionCycle.getDuration());
+                            state.setTransitionCycleTime(transitionCycle.getDuration() + transitionCycle.getAverageTimeStep());
                         else if (!state.isTransitionReverseAnimation() && fTransitionCycleTime > (transitionCycle.getDuration() + transitionCycle.getAverageTimeStep()))
                             state.setTransitionCycleTime(0.0f);
                         break;

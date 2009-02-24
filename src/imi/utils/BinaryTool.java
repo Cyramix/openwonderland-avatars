@@ -190,7 +190,7 @@ public class BinaryTool
     /** Repository ref **/
     private Repository repository = null;
     /** used to specify the quality of animations after optimization **/
-    private float animationQuality = 0.5f;
+    private float animationQuality = 0.9f;
 
     /**
      * Create and run the tool.

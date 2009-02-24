@@ -21,9 +21,12 @@ import com.jme.math.Vector3f;
 import imi.scene.PMatrix;
 import java.util.BitSet;
 import java.util.logging.Logger;
+import javolution.util.FastList;
+
 
 /**
- * This class is responsible for optimizing joint channels.
+ * This class is responsible for optimizing joint channels. It is provided with
+ * a PMatrix joint channel and returns an optimized form.
  * @author Ronald E Dahlgren
  */
 public class ChannelOptimizer
@@ -35,6 +38,9 @@ public class ChannelOptimizer
     /** Quality indicator **/
     private float quality = 1.0f;
 
+    /**
+     * Construct a new instance
+     */
     public ChannelOptimizer()
     {
 
@@ -55,18 +61,10 @@ public class ChannelOptimizer
         if (channel instanceof PMatrix_JointChannel)
             return optimizeMatrixChannel((PMatrix_JointChannel)channel);
         else
-            return channel;
-    }
-
-    private void fillChannelWithKeyframes(PMatrix_JointChannel channel, OptimizedChannel result)
-    {
-        int index = 0;
-        for (PMatrix_JointChannel.PMatrixKeyframe keyframe : channel.m_KeyFrames)
         {
-            if (index == 0 && keyframe.time > 0)
-                logger.warning("First keyframe was not at time zero, was at " + keyframe.time +", I will fix it.");
-            result.addKeyframe(keyframe.time, keyframe.value);
-            index++;
+            logger.warning("There is currently no support for optimizing " +
+                    "channels of type \"" + channel.getClass().getName() + "\"");
+            return channel;
         }
     }
 
@@ -74,8 +72,10 @@ public class ChannelOptimizer
     {
         PJointChannel result = null;
         // first, do some frame reduction
-        if (quality < 0.99f)
-            channel.timeBasedReduction((int) (60 * quality)); // New FPS is a function of the base 60 FPS
+        int initialFrameCount = channel.m_KeyFrames.size();
+        smartKeyframeReduction(channel);
+        if ((initialFrameCount - channel.m_KeyFrames.size()) > 20)
+            logger.info("Keyframes reduced: " + (initialFrameCount - channel.m_KeyFrames.size()));
         // Determine properties of the channel
         indicationBits.set(OptimizedChannel.CONSTANT_TRANSLATION);
         indicationBits.set(OptimizedChannel.CONSTANT_X_AXIS);
@@ -115,5 +115,93 @@ public class ChannelOptimizer
         else // No compression techniques to use
             result = channel;
         return result;
+    }
+
+    /**
+     * This method uses the "quality" data member as an error threshold when
+     * dropping keyframes.
+     * @param channel The channel to be slimmed down.
+     */
+    private void smartKeyframeReduction(PMatrix_JointChannel channel)
+    {
+        float maxFrameError = 0.00004f;
+        // Collection for assembling removals
+        FastList<PMatrix_JointChannel.PMatrixKeyframe> removals = new FastList();
+        int frameCount = channel.m_KeyFrames.size();
+        if (frameCount < 3) // Give me something to work with!
+            return;
+
+        int leftIndex = 0;
+        int rightIndex = 2;
+        int currentIndex = 1;
+
+        PMatrix_JointChannel.PMatrixKeyframe left = null;
+        PMatrix_JointChannel.PMatrixKeyframe right = null;
+        PMatrix_JointChannel.PMatrixKeyframe current = null;
+        PMatrix lerpBuffer = new PMatrix();
+
+        while(rightIndex < frameCount)
+        {
+            float lerpFactor = 0;
+            // grab the left frame
+            left = channel.m_KeyFrames.get(leftIndex);
+            // grab the right frame
+            right = channel.m_KeyFrames.get(rightIndex++);
+            // Grab the 'current' frame
+            current = channel.m_KeyFrames.get(currentIndex);
+            // determine interpolation coefficient
+            lerpFactor = (current.time - left.time) / (right.time - left.time);
+            lerpBuffer.lerp(left.value, right.value, lerpFactor);
+            float variance = computePMatrixVariance(lerpBuffer, current.value);
+            if (variance <= maxFrameError)
+            {
+                // Drop the frame
+                removals.add(channel.m_KeyFrames.get(currentIndex));
+                // look at simulating the next keyframe
+                currentIndex++;
+            }
+            else
+            {
+                // Next
+                leftIndex++;
+                currentIndex++;
+            }
+        }
+        // Now remove all of the marked frames
+        for (PMatrix_JointChannel.PMatrixKeyframe keyframe : removals)
+            channel.m_KeyFrames.remove(keyframe);
+        // let the channel know some things have changed
+        channel.calculateAverageStepTime(); // Also calculates the duration
+    }
+
+    private void fillChannelWithKeyframes(PMatrix_JointChannel channel, OptimizedChannel result)
+    {
+        int index = 0;
+        for (PMatrix_JointChannel.PMatrixKeyframe keyframe : channel.m_KeyFrames)
+        {
+            if (index == 0 && keyframe.time > 0)
+                logger.fine("First keyframe was not at time zero, was at " + keyframe.time +", I will fix it.");
+            result.addKeyframe(keyframe.time, keyframe.value);
+            index++;
+        }
+    }
+
+    /**
+     * Compute and return the variance from the left to the right
+     * @param left
+     * @param right
+     * @return The variance from the left to the right matrix.
+     */
+    private float computePMatrixVariance(PMatrix left, PMatrix right)
+    {
+        float[] leftFloats = new float[16];
+        left.getFloatArray(leftFloats);
+        float[] rightFloats = new float[16];
+        right.getFloatArray(rightFloats);
+
+        float variance = 0; // This will be the sum of all member-wise variance
+        for (int i = 0; i < 12; ++i)
+            variance += Math.abs(rightFloats[i] - leftFloats[i]);
+        return variance;
     }
 }

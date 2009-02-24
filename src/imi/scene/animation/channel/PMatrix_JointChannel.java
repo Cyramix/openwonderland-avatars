@@ -49,8 +49,6 @@ public class PMatrix_JointChannel implements PJointChannel, Serializable
     private float   m_fAverageFrameStep = 0.0f;
 
     /** Buffer variables to cut down on object creation **/
-    private transient PMatrix m_blendedFrameLeft = new PMatrix();
-    private transient PMatrix m_blendedFrameRight = new PMatrix();
     private transient PMatrix m_blendBuffer = new PMatrix();
     private transient PMatrix leftSideBuffer = new PMatrix();
     private transient PMatrix rightSideBuffer = new PMatrix();
@@ -363,8 +361,6 @@ public class PMatrix_JointChannel implements PJointChannel, Serializable
         // Re-allocate all transient objects
         m_interpolator = new Interpolator();
         m_interpolator.setStrategy(Interpolator.InterpolationStrategy.ElementInterpolation);
-        m_blendedFrameLeft = new PMatrix();
-        m_blendedFrameRight = new PMatrix();
         leftSideBuffer = new PMatrix();
         rightSideBuffer = new PMatrix();
         m_blendBuffer = new PMatrix();
