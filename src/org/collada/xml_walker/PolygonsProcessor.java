@@ -191,13 +191,28 @@ public class PolygonsProcessor extends Processor
                 indexIntoPrimitiveData += m_VertexSize;
 
                 // Dereference the position and normal indices into mesh space
-                m_positionSemantic.getVector3f(positionIndex, vecBuffer);
-                positionIndex = polyMesh.getPosition(vecBuffer);
-                m_normalSemantic.getVector3f(normalIndex, vecBuffer);
-                normalIndex = polyMesh.getPosition(vecBuffer);
-                m_colorSemantic.getVector3f(colorIndex, vecBuffer);
-                colorBuffer.set(vecBuffer.x, vecBuffer.y, vecBuffer.z, 1.0f);
-                colorIndex = polyMesh.getColor(colorBuffer);
+                if (m_positionSemantic != null)
+                {
+                    m_positionSemantic.getVector3f(positionIndex, vecBuffer);
+                    positionIndex = polyMesh.getPosition(vecBuffer);
+                }
+                else
+                    positionIndex = -1;
+                if (m_normalSemantic != null)
+                {
+                    m_normalSemantic.getVector3f(normalIndex, vecBuffer);
+                    normalIndex = polyMesh.getPosition(vecBuffer);
+                }
+                else
+                    normalIndex = -1;
+                if (m_colorSemantic != null)
+                {
+                    m_colorSemantic.getVector3f(colorIndex, vecBuffer);
+                    colorBuffer.set(vecBuffer.x, vecBuffer.y, vecBuffer.z, 1.0f);
+                    colorIndex = polyMesh.getColor(colorBuffer);
+                }
+                else
+                    colorIndex = -1;
                 //  Add the Vertex to the Polygon
                 pPolygon.addVertex(positionIndex,       //  PositionIndex
                                    normalIndex,         //  NormalIndex
