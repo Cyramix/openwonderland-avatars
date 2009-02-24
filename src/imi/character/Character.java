@@ -689,7 +689,8 @@ public abstract class Character extends Entity implements SpatialObject, Animati
             if (meshInst.getName().contains("EyeGeoShape"))
             {
                 meshMat.setShader(eyeballShader);
-                meshMat.getTexture(0).setMinFilter(MinificationFilter.BilinearNoMipMaps);
+                if (meshMat.getTexture(0) != null)
+                    meshMat.getTexture(0).setMinFilter(MinificationFilter.BilinearNoMipMaps);
             }
             else if (meshInst.getName().contains("Tongue") || meshInst.getName().contains("Teeth"))
                 meshMat.setShader(eyeballShader);
