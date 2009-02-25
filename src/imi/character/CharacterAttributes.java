@@ -78,6 +78,7 @@ public class CharacterAttributes
 
     private boolean[]               m_areMeshesAltered      = new boolean[] { false, false, false, false, false, false, false, false, false, false };
 
+    private boolean                 m_bPhongLightingForSkin = false;
     // For simple static geometry replacement
     private boolean useSimpleStaticModel    = false; 
     private PMatrix origin                  = new PMatrix(new Vector3f(0,(float)Math.PI,0), Vector3f.UNIT_XYZ, Vector3f.ZERO);
@@ -540,6 +541,19 @@ public class CharacterAttributes
         this.eyeballTexture = eyeballTexture;
     }
 
+    /**
+     * If false, normal maps will be used, otherwise use the phong model.
+     * @param usePhong
+     */
+    public void setUsePhongLighting(boolean usePhong)
+    {
+        m_bPhongLightingForSkin = usePhong;
+    }
+
+    public boolean isUsingPhongLighting()
+    {
+        return m_bPhongLightingForSkin;
+    }
     /**
      * This class wraps up the data needed to attach a skinned mesh
      */

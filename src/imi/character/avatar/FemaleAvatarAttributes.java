@@ -50,6 +50,7 @@ public class FemaleAvatarAttributes extends CharacterAttributes
         new ColorRGBA( 238 / 255.0f, 160  / 255.0f, 157 / 255.0f, 1),
         new ColorRGBA( 231 / 255.0f,  216 / 255.0f, 223 / 255.0f, 1),
         new ColorRGBA( 174 / 255.0f, 112  / 255.0f, 112 / 255.0f, 1),
+        new ColorRGBA(1, 1, 1, 1),
     };
     /** Collection of eye colors **/
     private static final String[] eyeColors = new String[]

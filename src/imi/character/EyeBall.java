@@ -71,6 +71,7 @@ public class EyeBall extends PPolygonSkinnedMeshInstance
         this.character = character;
     }
 
+    private final Vector3f translationStorage = new Vector3f();
     /**
      * Performs the eyeball lookAt behavior.
      * @param matrix The matrix being modified
@@ -78,6 +79,7 @@ public class EyeBall extends PPolygonSkinnedMeshInstance
      */
     protected void lookAtTarget(PMatrix matrix)
     {
+        matrix.getTranslation(translationStorage);
         PMatrix modelWorldRef = modelInst.getTransform().getWorldMatrix(false);
 
         // Get eye world space
@@ -107,8 +109,8 @@ public class EyeBall extends PPolygonSkinnedMeshInstance
                         Vector3f.UNIT_Y);
                 matrix.set(eyeWorldXForm);
                 matrix.setScale(scale);
-
                 matrix.mul(modelWorldRef.inverse(), matrix);
+                matrix.setTranslation(translationStorage);
             }
         }
         else

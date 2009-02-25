@@ -81,6 +81,7 @@ import imi.scene.shader.programs.ClothingShaderSpecColor;
 import imi.scene.shader.programs.EyeballShader;
 import imi.scene.shader.programs.FleshShader;
 import imi.scene.shader.programs.HairShader;
+import imi.scene.shader.programs.PhongFleshShader;
 import imi.scene.shader.programs.SimpleTNLWithAmbient;
 import imi.scene.utils.PMeshUtils;
 import imi.scene.utils.tree.SerializationHelper;
@@ -497,7 +498,11 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         AbstractShaderProgram eyeballShader = repo.newShader(EyeballShader.class);
         
         float[] skinColor = m_attributes.getSkinTone();
-        AbstractShaderProgram fleshShader = repo.newShader(FleshShader.class);
+        AbstractShaderProgram fleshShader = null;
+        if (m_attributes.isUsingPhongLighting())
+            fleshShader = repo.newShader(PhongFleshShader.class);
+        else
+            fleshShader = repo.newShader(FleshShader.class);
         try {
             fleshShader.setProperty(new ShaderProperty("materialColor", GLSLDataType.GLSL_VEC3, skinColor));
         } catch (NoSuchPropertyException ex) {
@@ -663,7 +668,12 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         Repository repo = (Repository)m_wm.getUserData(Repository.class);
 
         AbstractShaderProgram eyeballShader = repo.newShader(EyeballShader.class);
-        AbstractShaderProgram fleshShader = repo.newShader(FleshShader.class);
+
+        AbstractShaderProgram fleshShader = null;
+        if (m_attributes.isUsingPhongLighting())
+            fleshShader = repo.newShader(PhongFleshShader.class);
+        else
+            fleshShader = repo.newShader(FleshShader.class);
         float[] skinColor = m_attributes.getSkinTone();
         if (skinColor == null)
         {
@@ -1682,14 +1692,8 @@ public abstract class Character extends Entity implements SpatialObject, Animati
 
                 if (newHeadJoint == null) // Not found in the new skeleton
                     logger.severe("Could not find associated joint in the new skeleton, joint name was " + currentHeadJoint.getName());
-                PMatrix modifierDelta = new PMatrix();
-                modifierDelta.fastMul( 
-                            newHeadJoint.getBindPose().inverse(),
-                            currentHeadJoint.getBindPose()
-                            );
-                
                 currentHeadJoint.getBindPose().set(newHeadJoint.getBindPose());
-                currentHeadJoint.getBindPose().fastMul(modifierDelta);
+
 
             }
             else

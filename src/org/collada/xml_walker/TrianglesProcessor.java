@@ -100,8 +100,13 @@ public class TrianglesProcessor extends Processor
         {
             m_InstanceMaterialSymbol = trianglesData.getMaterial();
             PColladaMaterialInstance materialInstance = m_colladaRef.findColladaMaterialInstanceBySymbol(m_InstanceMaterialSymbol);
-            ColladaMaterial material = m_colladaRef.findColladaMaterialByIdentifier(materialInstance.getTargetMaterialURL());
-            m_effect = m_colladaRef.findColladaEffectByIdentifier(material.getInstanceEffectTargetURL());
+            ColladaMaterial material = null;
+            if (materialInstance != null)
+                material = m_colladaRef.findColladaMaterialByIdentifier(materialInstance.getTargetMaterialURL());
+            else
+                logger.warning("Unable to lcoate material with symbol " + m_InstanceMaterialSymbol);
+            if (material != null)
+                m_effect = m_colladaRef.findColladaEffectByIdentifier(material.getInstanceEffectTargetURL());
         }
     }
 
