@@ -2198,6 +2198,10 @@ public class SceneEssentials {
             try {
                 File configfile = m_jFileChooser_LoadXML.getSelectedFile();
                 URL configURL   = configfile.toURI().toURL();
+                if (m_avatar != null) {
+                    m_avatar.destroy();
+                    setAvatar(null);
+                }
 //                if (m_avatar == null) {
                     m_avatar = new Avatar(configURL, m_worldManager);
 //                } else if (m_avatar != null) {

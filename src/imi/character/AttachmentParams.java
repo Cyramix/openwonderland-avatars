@@ -103,7 +103,8 @@ public class AttachmentParams
         result.setJointToAttachOn(parentJointName);
         xmlMatrix transform = new xmlMatrix();
         transform.set(matrix);
-
+        result.setLocalSpaceTransform(transform);
+        
         return result;
     }
 
