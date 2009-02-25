@@ -271,21 +271,21 @@ public class FemaleAvatarAttributes extends CharacterAttributes
             case 0:
             {
                 // Closed to dress shoes
-                load.add(new String("assets/models/collada/Clothing/FeamleClothing/Female_ClosedToeDressShoes.dae"));
+                load.add(new String("assets/models/collada/Clothing/FemaleClothing/Female_ClosedToeDressShoes.dae"));
                 add.add(new SkinnedMeshParams("Female_ClosedToeDressShoes_Female_DressClosedToe_ShoesShape", "Feet"));
             }
             break;
             case 1:
             {
                 // Converse shoes
-                load.add(new String("assets/models/collada/Clothing/FeamleClothing/Female_ConverseShoes.dae"));
+                load.add(new String("assets/models/collada/Clothing/FemaleClothing/Female_ConverseShoes.dae"));
                 add.add(new SkinnedMeshParams("Female_ConverseShoes_Female_ConverseShoeShape", "Feet"));
             }
             break;
             case 2:
             {
                 // Flip flops
-                load.add(new String("assets/models/collada/Clothing/FeamleClothing/FemaleFlipFlops.dae"));
+                load.add(new String("assets/models/collada/Clothing/FemaleClothing/FemaleFlipFlops.dae"));
                 add.add(new SkinnedMeshParams("FlipFlopsFemaleShape", "Feet"));
                 add.add(new SkinnedMeshParams("FemaleFeet_NudeShape", "Feet"));
             }
@@ -317,21 +317,21 @@ public class FemaleAvatarAttributes extends CharacterAttributes
             case 0:
             {
                 // Jeans
-                load.add(new String("assets/models/collada/Clothing/FeamleClothing/FemaleJeansStraight.dae"));
+                load.add(new String("assets/models/collada/Clothing/FemaleClothing/FemaleJeansStraight.dae"));
                 add.add(new SkinnedMeshParams("JeansShape", "LowerBody"));
             }
             break;
             case 1:
             {
                 // Dress pants
-                load.add(new String("assets/models/collada/Clothing/FeamleClothing/FemaleDressPants.dae"));
+                load.add(new String("assets/models/collada/Clothing/FemaleClothing/FemaleDressPants.dae"));
                 add.add(new SkinnedMeshParams("PantsFemaleShape", "LowerBody"));
             }
             break;
             case 2:
             {
                 // Shorts
-                load.add(new String("assets/models/collada/Clothing/FeamleClothing/FemaleShorts.dae"));
+                load.add(new String("assets/models/collada/Clothing/FemaleClothing/FemaleShorts.dae"));
                 add.add(new SkinnedMeshParams("Legs_NudeShape", "LowerBody"));
                 add.add(new SkinnedMeshParams("ShortsShape", "LowerBody"));
             }
@@ -366,28 +366,28 @@ public class FemaleAvatarAttributes extends CharacterAttributes
             case 0:
             {
                 // Dress Shirt
-                load.add(new String("assets/models/collada/Clothing/FeamleClothing/FemaleDressShirt.dae"));
+                load.add(new String("assets/models/collada/Clothing/FemaleClothing/FemaleDressShirt.dae"));
                 add.add(new SkinnedMeshParams("ShirtMeshShape", "UpperBody"));
             }
             break;
             case 1:
             {
                 // Sweater
-                load.add(new String("assets/models/collada/Clothing/FeamleClothing/FemaleSweaterCrew.dae"));
+                load.add(new String("assets/models/collada/Clothing/FemaleClothing/FemaleSweaterCrew.dae"));
                 add.add(new SkinnedMeshParams("SweaterShape", "UpperBody"));
             }
             break;
             case 2:
             {
                 // Jacket
-                load.add(new String("assets/models/collada/Clothing/FeamleClothing/FemaleJacket.dae"));
+                load.add(new String("assets/models/collada/Clothing/FemaleClothing/FemaleJacket.dae"));
                 add.add(new SkinnedMeshParams("Jacket1Shape", "UpperBody"));
             }
             break;
             case 3:      
             {
                 // Blouse       
-                load.add(new String("assets/models/collada/Clothing/FeamleClothing/FemaleBlouse.dae"));
+                load.add(new String("assets/models/collada/Clothing/FemaleClothing/FemaleBlouse.dae"));
                 add.add(new SkinnedMeshParams("TShirt1Shape", "UpperBody"));
                 add.add(new SkinnedMeshParams("Arms_NudeShape", "UpperBody"));
             }

@@ -33,7 +33,11 @@ import java.awt.Graphics2D;
 import java.awt.GridBagLayout;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.ImageIcon;
 import javax.swing.JApplet;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -390,8 +394,10 @@ public class AppletTest extends JApplet implements FrameRateListener {
     private Texture loadSkyboxTexture(String filePath) {
         Texture monkeyTexture = null;
 
-        Image image = getImage(getCodeBase(), filePath);
-        System.out.println(getCodeBase().toString() + filePath);
+//        ImageIcon icon  = new ImageIcon(AppletTest.class.getResource("imilogo.png"));
+//        Image image     = icon.getImage();
+        Image image = getImage(getDocumentBase(), filePath);
+        System.out.println(getDocumentBase().toString() + filePath);
         monkeyTexture = TextureManager.loadTexture(image, Texture.MinificationFilter.NearestNeighborNoMipMaps, Texture.MagnificationFilter.NearestNeighbor, false);
 
         if (monkeyTexture != null) {
@@ -415,8 +421,9 @@ public class AppletTest extends JApplet implements FrameRateListener {
         int             iHeight;
         
         public CustomCanvas() {
-            image = getImage(getCodeBase(), "assets/textures/imilogo.png");
-            System.out.println("Width: " + image.getWidth(this));
+            ImageIcon icon  = new ImageIcon(AppletTest.class.getResource("imilogo.png"));
+            image           = icon.getImage();
+            System.out.println("Image Width: " + image.getWidth(this) + "\tImage Height: " + image.getHeight(this));
 
             if (image.getWidth(this) < 0) {
                 iWidth  = 600;
@@ -427,6 +434,9 @@ public class AppletTest extends JApplet implements FrameRateListener {
             }
 
             bImage = new BufferedImage(iWidth, iHeight, BufferedImage.TYPE_INT_RGB);
+            Graphics graphics = bImage.createGraphics();
+            graphics.drawImage(image, 0, 0, this);
+            graphics.dispose();
         }
         
         @Override

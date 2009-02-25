@@ -46,7 +46,7 @@ public class JFrame_InstrumentationGUI extends javax.swing.JFrame {
     private Instrumentation                 m_instrumentation   = null;
     private ArrayList<CharacterAttributes>  m_attributes        = null;
     private int                             m_numMaleAttribs    = 10;
-    private int                             m_numFeamleAttribs  = 10;
+    private int                             m_numFemaleAttribs  = 10;
 
 ////////////////////////////////////////////////////////////////////////////////
 // CLASS METHODS
@@ -508,7 +508,7 @@ public class JFrame_InstrumentationGUI extends javax.swing.JFrame {
 
     public void setNumberOfAttributes(int numMaleAttrib, int numFemaleAttrib) {
         m_numMaleAttribs    = numMaleAttrib;
-        m_numFeamleAttribs  = numFemaleAttrib;
+        m_numFemaleAttribs  = numFemaleAttrib;
         initAttributesBox();
     }
 
@@ -584,7 +584,7 @@ public class JFrame_InstrumentationGUI extends javax.swing.JFrame {
             m_attributes.add(createAttributes(1, i));
         }
         
-        for (int i = 0; i < m_numFeamleAttribs; i++) {
+        for (int i = 0; i < m_numFemaleAttribs; i++) {
             m_attributes.add(createAttributes(2, i));
         }
         
