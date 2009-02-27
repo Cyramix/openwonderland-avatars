@@ -108,6 +108,14 @@ public class PPolygon implements Serializable
         return(m_pPolygonMesh);
     }
 
+    public void setColor(ColorRGBA color) {
+        m_DefaultColor.set(color);
+    }
+
+    public void setNormal(Vector3f normal) {
+        m_Normal.set(normal);
+    }
+
     //  Sets the PolygonMesh.
     public void setPolygonMesh(PPolygonMesh pPolygonMesh)
     {

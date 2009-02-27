@@ -24,7 +24,7 @@ public class PSphere implements Serializable
 {
     private Vector3f m_Center = new Vector3f();
     private float m_fRadius = 0.0f;
-
+    
     //  Constructor.
     public PSphere()
     {
@@ -82,7 +82,21 @@ public class PSphere implements Serializable
         return false;
     }
     
-
+    public boolean isColliding(PSphere check, Vector3f projection) 
+    {
+        projection.set(check.getCenter().subtract(m_Center));
+        float distance = projection.lengthSquared();
+        float sumRadi = m_fRadius + check.getRadius();
+        if ( (sumRadi * sumRadi) < distance )
+            return false;
+        
+        distance = (float)Math.sqrt((float)distance);
+        float delta = sumRadi - Math.abs(distance);
+        projection.normalizeLocal();
+        projection.multLocal(delta);
+        return true;
+    }
+    
     public void dump(String spacing, String name)
     {
         System.out.println(spacing + name + ":");

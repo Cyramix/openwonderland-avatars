@@ -269,7 +269,7 @@ public class DemoBase
         // Must be a PointLight to function
         PointLight pointLight = new PointLight();
         pointLight.setDiffuse(new ColorRGBA(1.0f, 1.0f, 1.0f, 1.0f));
-        pointLight.setAmbient(new ColorRGBA(1.0f, 1.0f, 1.0f, 1.0f));
+        pointLight.setAmbient(new ColorRGBA(0.5f, 0.5f, 0.5f, 1.0f));
         pointLight.setEnabled(true);
         // attach it to the LightNode
         lightNode.setLight(pointLight);
@@ -737,8 +737,8 @@ public class DemoBase
         sky.setTexture(SkyBox.EAST,    loadSkyboxTexture("assets/textures/skybox/Right.png")); // south
         sky.setTexture(SkyBox.SOUTH,   loadSkyboxTexture("assets/textures/skybox/Back.png")); // east
         sky.setTexture(SkyBox.WEST,    loadSkyboxTexture("assets/textures/skybox/Left.png")); // west
-        sky.setTexture(SkyBox.DOWN,    loadSkyboxTexture("assets/textures/skybox/Top.png")); // up
-        sky.setTexture(SkyBox.UP,      loadSkyboxTexture("assets/textures/skybox/Top.png")); // down
+        sky.setTexture(SkyBox.DOWN,    loadSkyboxTexture("assets/textures/skybox/neg_y.bmp")); // down
+        sky.setTexture(SkyBox.UP,      loadSkyboxTexture("assets/textures/skybox/Top.png")); // up
         //
 
         RenderComponent sc2 = wm.getRenderManager().createRenderComponent(sky);

@@ -86,8 +86,11 @@ public class PPolygonMeshInstance extends PNode implements Serializable
         m_geometry.adjustReferenceCount(1);
 
         m_instance = new SharedMesh(getName(), m_geometry.getGeometry());
-
-        m_material = new PMeshMaterial(m_geometry.getMaterialCopy());
+        
+        if (pPolygonMeshInstance.isUseGeometryMaterial() == false)
+            m_material = pPolygonMeshInstance.getMaterialCopy();
+        else
+            m_material = pPolygonMeshInstance.getGeometry().getMaterialCopy();
 //        applyMaterial();
     }
 

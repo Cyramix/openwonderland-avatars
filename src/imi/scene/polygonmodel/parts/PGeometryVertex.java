@@ -21,9 +21,8 @@ package imi.scene.polygonmodel.parts;
 import com.jme.math.Vector3f;
 import com.jme.math.Vector2f;
 import com.jme.renderer.ColorRGBA;
-
-
-
+import imi.scene.polygonmodel.PPolygonMesh;
+import imi.scene.polygonmodel.parts.polygon.PPolygonVertexIndices;
 
 public class PGeometryVertex
 {
@@ -34,13 +33,26 @@ public class PGeometryVertex
     public ColorRGBA            m_Specular      = new ColorRGBA();
     public Vector2f []          m_TexCoords     = new Vector2f[8];
 
-
-
     //  Constructor.
     public PGeometryVertex()
     {
         for (int a=0; a<8; a++)
             m_TexCoords[a] = new Vector2f();
+    }
+    
+    /**
+     * Deep copy
+     * @param other
+     */
+    public PGeometryVertex(PGeometryVertex other)
+    {
+        m_Position.set(other.m_Position);
+        m_Normal.set(other.m_Normal);
+        m_Tangent.set(other.m_Tangent);
+        m_Diffuse.set(other.m_Diffuse);
+        m_Specular.set(other.m_Specular);
+        for (int a=0; a<8; a++)
+            m_TexCoords[a] = new Vector2f(other.m_TexCoords[a]);
     }
     
      /**
@@ -73,7 +85,24 @@ public class PGeometryVertex
         m_TexCoords = TexCoords;
     }
 
-
+    /**
+     * Adds the data of this vertex to the mesh and returns the indices,
+     * the indices can be used to construct a polygon to add to the mesh.
+     * @param mesh
+     * @return
+     */
+    public PPolygonVertexIndices populateMesh(PPolygonMesh mesh) 
+    {
+        PPolygonVertexIndices indices = new PPolygonVertexIndices();
+        indices.m_PositionIndex = mesh.getPosition(m_Position);
+        indices.m_NormalIndex   = mesh.getNormal(m_Normal);
+        // Tangent can be calculated later
+        indices.m_ColorIndex    = mesh.getColor(m_Diffuse);
+        // Specular where art thou? *looking*
+        for (int i = 0; i < 8; i++)
+            indices.m_TexCoordIndex[i] = mesh.getTexCoord(m_TexCoords[i]);
+        return indices;
+    }
 
     //  Clears the Vertice.
     public void clear()
@@ -146,7 +175,7 @@ public class PGeometryVertex
         hash = 37 * hash + (this.m_TexCoords != null ? this.m_TexCoords.hashCode() : 0);
         return hash;
     }
-    
+
      @Override
     public String toString()
     {

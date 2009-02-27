@@ -36,6 +36,7 @@ import imi.loaders.repository.SharedAssetPlaceHolder;
 import imi.scene.polygonmodel.PPolygonMesh;
 import imi.scene.polygonmodel.PPolygonMeshInstance;
 import imi.scene.polygonmodel.PPolygonModelInstance;
+import imi.scene.polygonmodel.parts.PMeshMaterial;
 import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
 import imi.scene.polygonmodel.skinned.PPolygonSkinnedMesh;
 import imi.scene.polygonmodel.skinned.PPolygonSkinnedMeshInstance;
@@ -429,7 +430,7 @@ public class PScene extends PNode implements RepositoryUser, Serializable
         PPolygonMesh geometry = m_LocalGeometry.get(index);
         
         // Initialize the meshAsset instance
-        PPolygonMeshInstance meshInst  = buildMeshInstance(geometry, mesh.getTransform().getLocalMatrix(false));
+        PPolygonMeshInstance meshInst  = buildMeshInstance(geometry, mesh.getTransform().getLocalMatrix(false), null);
         meshInst.setName(mesh.getName());
         // Must use the transform of the passed in geometry, not the (potentially) found duplicate
         meshInst.getTransform().getLocalMatrix(true).set(mesh.getTransform().getLocalMatrix(false));
@@ -493,7 +494,7 @@ public class PScene extends PNode implements RepositoryUser, Serializable
         if (originalMeshInstance instanceof PPolygonSkinnedMeshInstance)
             newMeshInst = buildSkinnedMeshInstance((PPolygonSkinnedMeshInstance)originalMeshInstance, parentWorldMat);
         else
-            newMeshInst = buildMeshInstance(geometry, parentWorldMat);
+            newMeshInst = buildMeshInstance(geometry, parentWorldMat, originalMeshInstance.getMaterialRef());
 
         newMeshInst.setName(originalMeshInstance.getName());
         // Must use the transform of the passed in geometry, not the (potentially) found duplicate
@@ -636,7 +637,7 @@ public class PScene extends PNode implements RepositoryUser, Serializable
             }
             else if (asset.getAssetData() instanceof PPolygonMesh)
             {
-                PPolygonMeshInstance newInstance = buildMeshInstance((PPolygonMesh)asset.getAssetData(), parent.getTransform().getWorldMatrix(false));
+                PPolygonMeshInstance newInstance = buildMeshInstance((PPolygonMesh)asset.getAssetData(), parent.getTransform().getWorldMatrix(false), null);
                 newInstance.setName(placeHolder.getName());
                 parent.replaceChild(placeHolder, newInstance, true);
                 parent.buildFlattenedHierarchy();
@@ -940,7 +941,7 @@ public class PScene extends PNode implements RepositoryUser, Serializable
             // MS3D_Mesh case (very similar to skinned)
             else if (loadedModel.getAssetData() instanceof PPolygonMesh)
             {
-                PPolygonMeshInstance newInstance = buildMeshInstance((PPolygonMesh)loadedModel.getAssetData(), new PMatrix());                
+                PPolygonMeshInstance newInstance = buildMeshInstance((PPolygonMesh)loadedModel.getAssetData(), new PMatrix(), null);
                 result = newInstance;
             }   
             // ColldaScene case
@@ -1010,10 +1011,12 @@ public class PScene extends PNode implements RepositoryUser, Serializable
      * @param parentWorldMatrix
      * @return
      */
-    private PPolygonMeshInstance buildMeshInstance(PPolygonMesh mesh, PMatrix parentWorldMatrix)
+    private PPolygonMeshInstance buildMeshInstance(PPolygonMesh mesh, PMatrix parentWorldMatrix, PMeshMaterial materialRef)
     {
         // Initialize the meshAsset instance
         PPolygonMeshInstance meshInst  = new PPolygonMeshInstance(mesh.getName(), mesh, mesh.getTransform().getLocalMatrix(false), this, false);
+        if (materialRef != null)
+            meshInst.setMaterial(new PMeshMaterial(materialRef));
         meshInst.getTransform().buildWorldMatrix(parentWorldMatrix);
         
         return meshInst;
