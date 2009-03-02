@@ -158,7 +158,7 @@ public class EyeBall extends PPolygonSkinnedMeshInstance
         if (texture != null)
             myMaterial.setTexture(texture, 0, character.m_attributes.getBaseURL());
         myMaterial.getTexture(0).setMinFilter(MinificationFilter.BilinearNoMipMaps);
-
+        
         applyMaterial();
     }
 }

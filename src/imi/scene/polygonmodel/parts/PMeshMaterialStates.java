@@ -125,7 +125,7 @@ public class PMeshMaterialStates
                             "Transparency Used but no light state available!");
                 
                 m_bufferState.setEnabled(true);
-                m_bufferState.setWritable(false);
+                m_bufferState.setWritable(true);
                 m_bufferState.setFunction(ZBufferState.TestFunction.LessThanOrEqualTo);
                 jmeMesh.setRenderState(m_bufferState);
                 jmeMesh.setRenderQueueMode(Renderer.QUEUE_TRANSPARENT);
@@ -151,7 +151,7 @@ public class PMeshMaterialStates
         }
         jmeMesh.updateRenderState();
     }
-
+    
     public void setTexture(Texture texture, int unit)
     {
         m_textureState.setTexture(texture, unit);

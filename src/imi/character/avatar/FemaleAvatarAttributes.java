@@ -50,7 +50,7 @@ public class FemaleAvatarAttributes extends CharacterAttributes
         new ColorRGBA( 238 / 255.0f, 160  / 255.0f, 157 / 255.0f, 1),
         new ColorRGBA( 231 / 255.0f,  216 / 255.0f, 223 / 255.0f, 1),
         new ColorRGBA( 174 / 255.0f, 112  / 255.0f, 112 / 255.0f, 1),
-        new ColorRGBA(1, 1, 1, 1),
+        new ColorRGBA(1, 1, 1, 1), // White, for testing
     };
     /** Collection of eye colors **/
     private static final String[] eyeColors = new String[]
@@ -79,7 +79,9 @@ public class FemaleAvatarAttributes extends CharacterAttributes
         "assets/models/collada/Heads/EyeTextures/eyeColor18.png", // light blue and brown middle
         "assets/models/collada/Heads/EyeTextures/eyeColor19.png", // darl blue brown
         "assets/models/collada/Heads/EyeTextures/eyeColor20.png", // bright blue with middle brown
-        "assets/models/collada/Heads/EyeTextures/eyeColor21.png"  // snake
+        "assets/models/collada/Heads/EyeTextures/eyeColor21.png", // snake
+        "assets/models/collada/Heads/EyeTextures/New_eye_hi.png", // new eyeball from ze artisté
+
     };
 
     /** Used to indicate that the bind pose file has already been added to the
@@ -252,6 +254,12 @@ public class FemaleAvatarAttributes extends CharacterAttributes
                 break;
             case 3:
                 setHeadAttachment("assets/models/collada/Heads/FemaleHead/FemaleHispanicHead.dae");
+                break;
+            case 4:
+                setHeadAttachment("assets/models/collada/Heads/FemaleHead/FemaleHi.dae");
+                break;
+            case 5:
+                setHeadAttachment("assets/models/collada/Heads/FemaleHead/FemaleHi2.dae");
                 break;
             default:
                 setHeadAttachment("assets/models/collada/Heads/FemaleHead/FemaleCHead.dae");

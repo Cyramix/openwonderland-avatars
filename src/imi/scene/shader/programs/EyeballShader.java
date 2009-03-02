@@ -26,7 +26,6 @@ import imi.scene.shader.BaseShaderProgram;
 import imi.scene.shader.ShaderProperty;
 import imi.scene.shader.ShaderUtils;
 import imi.scene.shader.dynamic.GLSLDataType;
-import imi.scene.shader.dynamic.GLSLDefaultVariables;
 import imi.serialization.xml.bindings.xmlShaderProgram;
 import java.io.Serializable;
 import java.util.logging.Level;
@@ -92,13 +91,13 @@ public class EyeballShader extends BaseShaderProgram implements AbstractShaderPr
 
     public EyeballShader(WorldManager wm)
     {
-        this(wm, 0.4f, 32.0f);
+        this(wm, 0.3f, 64.0f);
     }
 
     public EyeballShader(WorldManager wm,
                          float fAmbientPower)
     {
-        this(wm, fAmbientPower, 32.0f);
+        this(wm, fAmbientPower, 64.0f);
     }
 
     protected EyeballShader(EyeballShader other) {
@@ -122,9 +121,9 @@ public class EyeballShader extends BaseShaderProgram implements AbstractShaderPr
             m_propertyMap.put("ambientPower",           new ShaderProperty("ambientPower",
                                 GLSLDataType.GLSL_FLOAT, Float.valueOf(fAmbientPower)));
             m_propertyMap.put("SpecularComponent",    new ShaderProperty("SpecularComponent",
-                                GLSLDataType.GLSL_FLOAT, Float.valueOf(1.0f)));
+                                GLSLDataType.GLSL_FLOAT, Float.valueOf(1.2f)));
             m_propertyMap.put("SpecularExponent",    new ShaderProperty("SpecularExponent",
-                                GLSLDataType.GLSL_FLOAT, Float.valueOf(32.0f)));
+                                GLSLDataType.GLSL_FLOAT, Float.valueOf(specularExponent)));
             m_propertyMap.put("BaseDiffuseMapIndex",    new ShaderProperty("BaseDiffuseMapIndex",
                                 GLSLDataType.GLSL_SAMPLER2D, Integer.valueOf(0)));
             // Vertex deformer default

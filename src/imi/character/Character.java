@@ -11,8 +11,8 @@
  * except in compliance with the License. A copy of the License is
  * available at http://www.opensource.org/licenses/gpl-license.php.
  *
- * Sun designates this particular file as subject to the "Classpath" 
- * exception as provided by Sun in the License file that accompanied 
+ * Sun designates this particular file as subject to the "Classpath"
+ * exception as provided by Sun in the License file that accompanied
  * this code.
  */
 package imi.character;
@@ -177,7 +177,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
     private   VerletSkeletonFlatteningManipulator m_skeletonManipulator   = null;
 
     /**
-     * Sets up the mtgame entity 
+     * Sets up the mtgame entity
      * @param attributes
      * @param wm
      */
@@ -358,10 +358,10 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         // Finish the initialization
         finalizeInitialization(characterDOM); // If not null, we are loading a configuration
     }
-     
+
     /**
      * Instantiate the GameContext for this xmlCharacter
-     * 
+     *
      * @return
      */
     protected abstract GameContext instantiateContext();
@@ -388,7 +388,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
 
         // Set animations and custom meshes
         executeAttributes(m_attributes);
-        
+
         // Set position
         if (m_attributes.getOrigin() != null)
             m_modelInst.getTransform().setLocalMatrix(m_attributes.getOrigin());
@@ -412,7 +412,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
 
         // Hook up eyeballs
         m_eyes = new CharacterEyes(m_attributes.getEyeballTexture(), this, m_wm);
-        
+
         // Apply remaining customizations
         if (characterDOM != null)
         {
@@ -437,7 +437,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
 
         // the shadow!
         addShadow();
-        
+
         // Apply the material on everything that was just loaded.
         for (PPolygonSkinnedMeshInstance meshInstance : m_skeleton.getSkinnedMeshInstances())
             meshInstance.applyMaterial();
@@ -472,7 +472,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
 //        vis.setWireframe(false);float handRadius    = 0.15f;
 //        vis.addPositionObject(getLeftArm().getWristPosition(), ColorRGBA.magenta, handRadius);
 //        vis.addPositionObject(getRightArm().getWristPosition(), ColorRGBA.magenta, handRadius);
-        
+
         // Associate ourselves with our animation states
         for (AnimationState animState : m_skeleton.getAnimationStates())
             animState.addListener(this);
@@ -493,10 +493,10 @@ public abstract class Character extends Entity implements SpatialObject, Animati
     public void setDefaultShaders()
     {
         Repository repo = (Repository)m_wm.getUserData(Repository.class);
-        
+
         AbstractShaderProgram accessoryShader = repo.newShader(SimpleTNLWithAmbient.class);
         AbstractShaderProgram eyeballShader = repo.newShader(EyeballShader.class);
-        
+
         float[] skinColor = m_attributes.getSkinTone();
         AbstractShaderProgram fleshShader = null;
         if (m_attributes.isUsingPhongLighting())
@@ -747,7 +747,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
                 m_skeleton.addAnimationState(new AnimationState(m_skeleton.getAnimationStateCount()));
         }
     }
-    
+
     /**
      * This method applies all the commands of the CharacterAttributes object.
      * Things such as animation files to load, geometry to remove or add, etc.
@@ -826,7 +826,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
     }
 
     /**
-     * Loads the model and sets processors 
+     * Loads the model and sets processors
      * @param processors
      */
     protected void initScene(ArrayList<ProcessorComponent> processors)
@@ -881,7 +881,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         m_characterProcessor.stop();
         processors.add(m_characterProcessor);
     }
-    
+
     /**
      * This method will atempt a context transition
      * @param transition
@@ -892,10 +892,10 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         GameContext context = m_registry.get(transition.getContextMessageName());
         if (context == null)
             return false;
-        
+
         Class contextClass = context.getClass();
         Method method = null;
-        
+
         try {
             method = contextClass.getMethod(transition.getContextMessageName(), Object.class);
         } catch (NoSuchMethodException ex) {
@@ -903,11 +903,11 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         } catch (SecurityException ex) {
             logger.log(Level.SEVERE, null, ex);
         }
-        
+
         if (method != null)
         {
             Object bool = null;
-            
+
             try {
                 bool = method.invoke(context, transition.getContextMessageArgs());
             } catch (IllegalAccessException ex) {
@@ -917,7 +917,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
             } catch (InvocationTargetException ex) {
                 logger.log(Level.SEVERE, null, ex);
             }
-            
+
             if (bool instanceof Boolean)
             {
                 if ( ((Boolean)bool).booleanValue() )
@@ -928,15 +928,15 @@ public abstract class Character extends Entity implements SpatialObject, Animati
                     {
                         m_context.setCurrentState(null); // calls the stateExit()
                         m_context = context;
-                        return true; 
-                    }               
+                        return true;
+                    }
                 }
             }
         }
-        
+
         return false;
     }
-    
+
     /**
      * A context may register multiple entry points
      * @param context       -   the context to register
@@ -946,18 +946,18 @@ public abstract class Character extends Entity implements SpatialObject, Animati
     {
         m_registry.put(methodName, context);
     }
-    
+
     /**
      * Called in the constructor, override this method to set your own
      * non-default render states.
      */
-    public void setRenderStates() 
+    public void setRenderStates()
     {
         // Z Buffer State
         ZBufferState buf = (ZBufferState) m_wm.getRenderManager().createRendererState(RenderState.RS_ZBUFFER);
         buf.setEnabled(true);
         buf.setFunction(ZBufferState.TestFunction.LessThanOrEqualTo);
-        
+
         // Material State
         MaterialState matState  = null;
         matState = (MaterialState) m_wm.getRenderManager().createRendererState(RenderState.RS_MATERIAL);
@@ -972,16 +972,16 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         LightState ls = (LightState) m_wm.getRenderManager().createRendererState(RenderState.RS_LIGHT);
         ls.setEnabled(true);
         ls.attach(light);
-        
+
         // Cull State
-        CullState cs = (CullState) m_wm.getRenderManager().createRendererState(RenderState.RS_CULL);      
+        CullState cs = (CullState) m_wm.getRenderManager().createRendererState(RenderState.RS_CULL);
         cs.setCullFace(CullState.Face.Back);
         cs.setEnabled(true);
-        
+
         // Wireframe State
         WireframeState ws = (WireframeState) m_wm.getRenderManager().createRendererState(RenderState.RS_WIREFRAME);
         ws.setEnabled(false);
-        
+
         // Push 'em down the pipe
         m_jscene.setRenderState(matState);
         m_jscene.setRenderState(buf);
@@ -989,7 +989,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         m_jscene.setRenderState(ws);
         m_jscene.setRenderState(ls);
     }
-    
+
     /**
      * This entity's jscene will be set in the IMI input manager
      * as the selected one.
@@ -997,9 +997,9 @@ public abstract class Character extends Entity implements SpatialObject, Animati
     public void selectForInput()
     {
         // Set this jscene to be the "selected" one for IMI input handling
-        ((JSceneEventProcessor)m_wm.getUserData(JSceneEventProcessor.class)).setJScene(m_jscene); 
+        ((JSceneEventProcessor)m_wm.getUserData(JSceneEventProcessor.class)).setJScene(m_jscene);
     }
-    
+
     /**
      * Called each frame; used to drive the character's assorted time-based functionality.
      * @param deltaTime
@@ -1008,10 +1008,10 @@ public abstract class Character extends Entity implements SpatialObject, Animati
     {
 //        if (!m_initialized)
 //            setMeshAndSkeletonRefs();
-        
+
         if (m_attributes.isUseSimpleStaticModel())
             m_modelInst.setDirty(true, true);
-        
+
         if (m_context != null)
             m_context.update(deltaTime);
         if (m_eyes != null)
@@ -1020,11 +1020,11 @@ public abstract class Character extends Entity implements SpatialObject, Animati
             m_rightArm.update(deltaTime);
         if (m_leftArm != null)
             m_leftArm.update(deltaTime);
-        
+
         if (m_updateExtension != null)
             m_updateExtension.update(deltaTime);
     }
-    
+
     /**
      * If the model instance doesn't have kids then it is not loaded yet,
      * also checking if the first kid is a place holder.
@@ -1036,7 +1036,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         // safety against place holders
         if (m_modelInst.getChildrenCount() <= 0 || m_modelInst.getChild(0) instanceof SharedAssetPlaceHolder)
             return false;
-        
+
         // Simple sphere model case
         if (!(m_modelInst.getChild(0) instanceof SkeletonNode))
         {
@@ -1047,7 +1047,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
             m_modelInst.setRenderStop(false);
             m_initialized = true;
         }
-        
+
         return true;
     }
 
@@ -1058,7 +1058,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
      * @param fTimeIn How long should to transition into the animation take
      * @param fTimeOut How long the transition out of the animation takes
      */
-    public void initiateFacialAnimation(String cycleName, float fTimeIn, float fTimeOut) 
+    public void initiateFacialAnimation(String cycleName, float fTimeIn, float fTimeOut)
     {
         if (m_skeleton == null) // Not ready to handle facial animations yet
             return;
@@ -1068,7 +1068,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
             if (ac.getGroupCount() > 1)
                 m_facialAnimationQ = new TransitionQueue(m_skeleton, 1);
             else
-                return;   
+                return;
         }
         int cycle = m_skeleton.getAnimationGroup(1).findAnimationCycleIndex(cycleName);
         if (cycle != -1)
@@ -1088,15 +1088,15 @@ public abstract class Character extends Entity implements SpatialObject, Animati
             if (m_skeleton.getAnimationComponent().getGroupCount() > 1)
                 m_facialAnimationQ = new TransitionQueue(m_skeleton, 1);
             else
-                return;   
+                return;
         }
-        
+
         // Return from default face pose if current
         m_facialAnimationQ.addTransition(new TransitionCommand(m_defaultFacePose, m_defaultFacePoseTiming, PlaybackMode.PlayOnce, true));
-        
+
         m_facialAnimationQ.addTransition(new TransitionCommand(cycleIndex, fTimeIn, PlaybackMode.PlayOnce, false));
         m_facialAnimationQ.addTransition(new TransitionCommand(cycleIndex, fTimeOut, PlaybackMode.PlayOnce, true));
-        
+
         // Go to default face pose
         m_facialAnimationQ.addTransition(new TransitionCommand(m_defaultFacePose, m_defaultFacePoseTiming, PlaybackMode.PlayOnce, false));
     }
@@ -1104,12 +1104,12 @@ public abstract class Character extends Entity implements SpatialObject, Animati
     /**
      * Sets the camera on this character.
      */
-    public void setCameraOnMe() 
+    public void setCameraOnMe()
     {
         // TODO !
         //m_wm.getUserData(arg0);
     }
-    
+
     /**
      * Adds this character to an object collection,
      * the collection will be used to receive obstacles to avoid
@@ -1117,7 +1117,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
      * sit on for e.g.
      * @param objs
      */
-    public void setObjectCollection(ObjectCollection objs) 
+    public void setObjectCollection(ObjectCollection objs)
     {
         m_objectCollection = objs;
         objs.addObject(this);
@@ -1135,7 +1135,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
      * Return a new PSphere that is built around the model instances bounding sphere.
      * @return The sphere
      */
-    public PSphere getBoundingSphere() 
+    public PSphere getBoundingSphere()
     {
         if (m_modelInst.getBoundingSphere() == null)
             m_modelInst.calculateBoundingSphere();
@@ -1143,7 +1143,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         result.setCenter(m_modelInst.getTransform().getWorldMatrix(false).getTranslation().add(result.getCenter()));
         return result;
     }
-        
+
     /**
      * Returns true if currently transitioning between animation cycles
      * @return
@@ -1154,29 +1154,29 @@ public abstract class Character extends Entity implements SpatialObject, Animati
             return m_skeleton.getAnimationState().isTransitioning();
         return false;
     }
-    
+
     public SkeletonNode getSkeleton() {
-        return m_skeleton;   
+        return m_skeleton;
     }
-    
+
     public void keyPressed(int key)
     {
-        Integer trigger = m_keyBindings.get(key); 
+        Integer trigger = m_keyBindings.get(key);
         if (trigger == null)
             return;
-        
+
         m_context.triggerPressed(trigger);
     }
-        
+
     public void keyReleased(int key)
     {
-        Integer trigger = m_keyBindings.get(key); 
+        Integer trigger = m_keyBindings.get(key);
         if (trigger == null)
             return;
-        
+
         m_context.triggerReleased(trigger);
     }
-    
+
     public CharacterAttributes getAttributes() {
         return m_attributes;
     }
@@ -1188,7 +1188,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
     public GameContext getContext() {
         return m_context;
     }
-    
+
     public CharacterController getController() {
         return m_context.getController();
     }
@@ -1228,15 +1228,15 @@ public abstract class Character extends Entity implements SpatialObject, Animati
     public void setModelInst(PPolygonModelInstance modelInst) {
         this.m_modelInst = modelInst;
     }
-    
+
     public Hashtable<Integer, Integer> getKeyBindings() {
         return m_keyBindings;
     }
-    
+
     public Vector3f getPosition() {
         return m_context.getController().getPosition();
     }
-    
+
     public Quaternion getQuaternion() {
         return m_context.getController().getQuaternion();
     }
@@ -1244,16 +1244,16 @@ public abstract class Character extends Entity implements SpatialObject, Animati
     public Vector3f getRightVector() {
         return m_context.getController().getRightVector();
     }
-    
+
     public Vector3f getForwardVector() {
         return m_context.getController().getForwardVector();
     }
-    
+
     public PSphere getNearestObstacleSphere(Vector3f myPosition)
     {
         return null;
     }
-    
+
     @Override
     public void receiveAnimationMessage(AnimationMessageType message, int stateID)
     {
@@ -1261,7 +1261,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
             m_context.notifyAnimationMessage(message, stateID);
     }
 
-    public TransitionQueue getFacialAnimationQ() 
+    public TransitionQueue getFacialAnimationQ()
     {
         if (m_facialAnimationQ == null)
         {
@@ -1278,15 +1278,15 @@ public abstract class Character extends Entity implements SpatialObject, Animati
     public VerletArm getRightArm() {
         return m_rightArm;
     }
-    
+
     public VerletArm getLeftArm() {
         return m_leftArm;
     }
-    
+
     public VerletSkeletonFlatteningManipulator getSkeletonManipulator() {
         return m_skeletonManipulator;
     }
-    
+
     /**
      * Will return true if the character is loaded and has a valid skeleton
      * and meshes
@@ -1527,7 +1527,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         SkinnedMeshJoint joint = getSkeleton().getSkinnedMeshJoint("Head");
         getSkeleton().displaceJoint("Head", new Vector3f(0, 0.07f * (fScale - 1), 0));
         joint.getBindPose().setScale(fScale);
-        
+
         SkinnedMeshJoint rhand = getSkeleton().getSkinnedMeshJoint("rightHand");
         rhand.getBindPose().setScale(fScale);
         SkinnedMeshJoint lhand = getSkeleton().getSkinnedMeshJoint("leftHand");

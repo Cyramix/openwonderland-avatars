@@ -32,7 +32,6 @@ import com.jme.scene.state.CullState;
 import com.jme.scene.state.LightState;
 import com.jme.scene.state.MaterialState;
 import com.jme.scene.state.MaterialState.ColorMaterial;
-import com.jme.scene.state.MaterialState.MaterialFace;
 import com.jme.scene.state.RenderState;
 import com.jme.scene.state.WireframeState;
 import com.jme.scene.state.ZBufferState;
@@ -74,9 +73,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
 import javax.swing.JPanel;
-import javax.swing.JToggleButton;
 import org.jdesktop.mtgame.FrameRateListener;
 import org.jdesktop.mtgame.WorldManager;
 import org.jdesktop.mtgame.CameraComponent;
@@ -96,7 +93,6 @@ import imi.scene.PScene;
 import imi.scene.camera.behaviors.FirstPersonCamModel;
 import imi.scene.camera.state.CameraState;
 import imi.scene.camera.state.FirstPersonCamState;
-import imi.scene.processors.CameraProcessor;
 import imi.scene.processors.FlexibleCameraProcessor;
 import imi.scene.processors.JSceneEventProcessor;
 import imi.utils.instruments.DefaultInstrumentation;
@@ -723,7 +719,7 @@ public class DemoBase
         // Add the camera
         Entity camera = new Entity("DefaultCamera");
         CameraComponent cc = wm.getRenderManager().createCameraComponent(cameraSG, cameraNode,
-                width, height, 60.0f, aspect, 0.01f, 1000.0f, true);
+                width, height, 35.0f, aspect, 0.01f, 1000.0f, true);
 
         RenderBuffer renderBuffer = ((SwingFrame)wm.getUserData(JFrame.class)).getRenderBuffer();
 

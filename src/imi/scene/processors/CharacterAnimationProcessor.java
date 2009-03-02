@@ -11,8 +11,8 @@
  * except in compliance with the License. A copy of the License is
  * available at http://www.opensource.org/licenses/gpl-license.php.
  *
- * Sun designates this particular file as subject to the "Classpath" 
- * exception as provided by Sun in the License file that accompanied 
+ * Sun designates this particular file as subject to the "Classpath"
+ * exception as provided by Sun in the License file that accompanied
  * this code.
  */
 package imi.scene.processors;
@@ -43,7 +43,7 @@ public class CharacterAnimationProcessor extends ProcessorComponent
 
     private double oldTime = 0.0f;
     private double deltaTime = 0.0f;
-    
+
     private boolean bEnable = true;
     private boolean synchronizer = false;
 
@@ -56,7 +56,7 @@ public class CharacterAnimationProcessor extends ProcessorComponent
         m_animated = skeleton;
         instruments = (Instrumentation)wm.getUserData(Instrumentation.class);
 //        setRunInRenderer(true);
-//        if(skeleton.getParent() instanceof PPolygonModelInstance) 
+//        if(skeleton.getParent() instanceof PPolygonModelInstance)
 //            m_modelInst = (PPolygonModelInstance) skeleton.getParent();
     }
     public CharacterAnimationProcessor(PPolygonModelInstance modelInst, WorldManager wm)
@@ -72,7 +72,7 @@ public class CharacterAnimationProcessor extends ProcessorComponent
     }
 
     @Override
-    public void commit(ProcessorArmingCollection collection) 
+    public void commit(ProcessorArmingCollection collection)
     {
         if (!bEnable)
             return;
@@ -131,12 +131,12 @@ public class CharacterAnimationProcessor extends ProcessorComponent
                 group.calculateFrame(m_animated, i);
             }
         }
-        
+
         m_animated.setDirty(true, true);
     }
 
     @Override
-    public void initialize() 
+    public void initialize()
     {
         setArmingCondition(new NewFrameCondition(this));
     }
@@ -148,5 +148,5 @@ public class CharacterAnimationProcessor extends ProcessorComponent
     public void setEnable(boolean bEnable) {
         this.bEnable = bEnable;
     }
-    
+
 }

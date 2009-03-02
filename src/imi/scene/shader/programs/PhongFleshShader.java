@@ -45,20 +45,20 @@ public class PhongFleshShader extends GLSLShaderProgram implements Serializable
 
     public PhongFleshShader(WorldManager wm)
     {
-        this(wm, 0.35f, 3.25f, 1.0f);
+        this(wm, 0.45f, 4.25f, 1.2f);
     }
 
     public PhongFleshShader(WorldManager wm,
                                             float fAmbientPower)
     {
-        this(wm, fAmbientPower, 3.25f, 1.0f);
+        this(wm, fAmbientPower, 4.25f, 1.2f);
     }
 
     public PhongFleshShader(WorldManager wm,
                                         float fAmbientPower,
                                         float specularExponent)
     {
-        this(wm, fAmbientPower, specularExponent, 1.0f);
+        this(wm, fAmbientPower, specularExponent, 1.2f);
     }
 
 

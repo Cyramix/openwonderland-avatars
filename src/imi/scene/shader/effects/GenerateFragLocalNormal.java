@@ -65,7 +65,7 @@ public class GenerateFragLocalNormal extends GLSLShaderEffect
     private void createFragmentLogic()
     {
         StringBuilder fragmentLogic = new StringBuilder();
-        fragmentLogic.append(m_fragmentGlobals[0].getName() + " = " + m_varying[0].getName() + ";" + NL);
+        fragmentLogic.append(m_fragmentGlobals[0].getName() + " = normalize(" + m_varying[0].getName() + ");" + NL);
         m_fragmentLogic = fragmentLogic.toString();
     }
 }

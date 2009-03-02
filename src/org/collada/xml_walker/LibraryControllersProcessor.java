@@ -152,7 +152,7 @@ public class LibraryControllersProcessor extends Processor
 
 
         //  Read in all the SkinWeights.
-        Source pSkinWeights = findSkinSourceElement(skin, "skin-weights");
+        Source pSkinWeights = findSkinSourceElement(skin, "eights");
         valueList = pSkinWeights.getFloatArray().getValues();
         float[] skinWeights = new float[valueList.size()];
         counter = 0;

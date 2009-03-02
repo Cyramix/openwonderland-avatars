@@ -499,8 +499,10 @@ public class TrianglesProcessor extends Processor
         for (int i = 0; i < m_VertexDataSemantics.size(); i++)
         {
             semantic = m_VertexDataSemantics.get(i);
-
-            if (semantic.m_Name.equals("TEXCOORD"))
+            String name = semantic.m_Name;
+            if (name == null)
+                name = semantic.m_DataName;
+            if (name != null && name.equals("TEXCOORD"))
                 m_texCoordSemanticArray[textureSemanticCount++] = semantic;
         }        
     }

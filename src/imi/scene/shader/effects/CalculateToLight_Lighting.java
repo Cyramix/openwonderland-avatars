@@ -64,10 +64,8 @@ public class CalculateToLight_Lighting extends GLSLShaderEffect
     private void createVertexLogic()
     {
         m_vertexLogic = new String(
-                m_varying[0].getName() + " = (gl_ModelViewMatrixInverse * (gl_LightSource[" +
-                "0" +
-                "].position - " + m_vertexGlobals[0].getName() + ")).xyz;" + NL
-                //"].position).xyz - " + GLSLDefaultVariables.Position.getName() + ".xyz;" + NL
+                m_varying[0].getName() + " = normalize(vec3((gl_ModelViewMatrixInverse * gl_LightSource[0].position) - "
+                + m_vertexGlobals[0].getName() + "));" + NL
                 );
     }
 }

@@ -51,6 +51,7 @@ public class MaleAvatarAttributes extends CharacterAttributes
         new ColorRGBA( 238 / 255.0f, 160  / 255.0f, 157 / 255.0f, 1),
         new ColorRGBA( 231 / 255.0f,  216 / 255.0f, 223 / 255.0f, 1),
         new ColorRGBA( 174 / 255.0f, 112  / 255.0f, 112 / 255.0f, 1),
+        new ColorRGBA(1, 1, 1, 1), // Whitey, for testing
     };
 
     /** Collection of eye colors **/
@@ -244,6 +245,9 @@ public class MaleAvatarAttributes extends CharacterAttributes
                 break;
             case 3:
                 setHeadAttachment("assets/models/collada/Heads/MaleHead/MaleAsianHead.dae");
+                break;
+            case 4:
+                setHeadAttachment("assets/models/collada/Heads/MaleHead/FaceGenMaleHi.dae");
                 break;
             default:
                 setHeadAttachment("assets/models/collada/Heads/MaleHead/MaleCHead.dae");
