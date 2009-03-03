@@ -210,11 +210,10 @@ public class PPolygonTriMeshAssembler
                 triMesh.setTextureCoords(textureCoordinates.get(0), i);
         }
         else
-        {
             triMesh.setTextureCoords(textureCoordinates);
-            for (int i = 1; i < Mesh.getNumberOfTextures(); ++i)
-                triMesh.copyTextureCoordinates(0, i, 1.0f);
-        }
+
+        if (triMesh.getVBOInfo() != null)
+            triMesh.getVBOInfo().resizeTextureIds(textureCoordinates.size());
     }
     
     /**

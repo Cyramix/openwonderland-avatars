@@ -323,8 +323,6 @@ public class PMeshUtils
                              DiffuseIndex,
                              TexCoord4Index, TexCoord3Index, TexCoord2Index, TexCoord1Index);
 
-        pPolygonMesh.setSmoothNormals(false);
-
         //  End the Batch.
         pPolygonMesh.endBatch();
 

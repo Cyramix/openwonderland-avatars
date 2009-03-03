@@ -11,8 +11,8 @@
  * except in compliance with the License. A copy of the License is
  * available at http://www.opensource.org/licenses/gpl-license.php.
  *
- * Sun designates this particular file as subject to the "Classpath" 
- * exception as provided by Sun in the License file that accompanied 
+ * Sun designates this particular file as subject to the "Classpath"
+ * exception as provided by Sun in the License file that accompanied
  * this code.
  */
 package imi.scene.shader.programs;
@@ -55,7 +55,7 @@ public class NormalMapShader extends GLSLShaderProgram implements Serializable
         "        gl_Position = gl_ModelViewProjectionMatrix * Position;" +
         "}"
     );
-    
+
     private static final String FragmentSource = new String(
         "varying vec3 VNormal;" +
         "varying vec3 ToLight;" +
@@ -95,7 +95,7 @@ public class NormalMapShader extends GLSLShaderProgram implements Serializable
         "        finalColor.a = 1.0;" +
         "}"
     );
-    
+
     /**
      * Constructs a new instance defaulting to use 20% ambient contribution
      * @param wm
@@ -104,7 +104,7 @@ public class NormalMapShader extends GLSLShaderProgram implements Serializable
     {
         this(wm, 0.2f);
     }
-    
+
     /**
      * Construct a new instance with the specified ambient power
      * @param wm
@@ -125,7 +125,7 @@ public class NormalMapShader extends GLSLShaderProgram implements Serializable
         addEffect(new CalculateToLight_Lighting()); // Determine the vector to the light source (gl_LightSource[0])
         addEffect(new NormalMapping());
         addEffect(new AmbientNdotL_Lighting()); // Calculate N * L and modulate the final color by it, mixing in a ratio of ambient
-        
+
         try
         {
             // Since this is a well-defined effect initially, we can just set
