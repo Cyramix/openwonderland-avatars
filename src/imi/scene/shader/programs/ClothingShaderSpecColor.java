@@ -94,7 +94,6 @@ public class ClothingShaderSpecColor extends BaseShaderProgram implements Abstra
         "	    vec3 lightVector = normalize(ToLight);" +
         "  	    float nxDir = max(0.0, dot(normal, lightVector));" +
         "       texColor *= vec4(baseColor, 1);" +
-        "       texColor *= texture2D(OverlayMapIndex, gl_TexCoord[0].st);" +
         "  	    vec4 diffuse = texColor * (gl_LightSource[0].diffuse * nxDir);" +
         "	    vec4 color = diffuse * (1.0 - ambientPower) + texColor * ambientPower;" +
         "	    color = clamp(color, 0.0, 1.0);" +

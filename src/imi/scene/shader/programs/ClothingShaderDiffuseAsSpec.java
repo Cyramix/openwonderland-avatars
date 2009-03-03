@@ -50,7 +50,6 @@ public class ClothingShaderDiffuseAsSpec extends BaseShaderProgram implements Ab
         "void main(void)" +
         "{" +
         "    	gl_TexCoord[0] = gl_MultiTexCoord0; " +
-        "    	gl_TexCoord[1] = gl_MultiTexCoord1; " +
         "    	vec3 weight = gl_Color.rgb;" +
         "    	float weight4 = 1.0 - ( weight.x + weight.y + weight.z);" +
         "    	mat4 poseBlend = (  (pose[int(boneIndices.x)]) * weight.x + " +
