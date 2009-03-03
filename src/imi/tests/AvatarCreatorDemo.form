@@ -189,6 +189,14 @@
                 <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="jMenuItem1.addActionListener(new java.awt.event.ActionListener() {&#xa;    public void actionPerformed(java.awt.event.ActionEvent evt) {&#xa;        runProgressBar(true);&#xa;        openHeadSelector();&#xa;        runProgressBar(false);&#xa;    }&#xa;});"/>
               </AuxValues>
             </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="jMenuItem_TexShadEditor">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Texture &amp; Shader Editor"/>
+              </Properties>
+              <AuxValues>
+                <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="jMenuItem_TexShadEditor.addActionListener(new java.awt.event.ActionListener() {&#xa;    public void actionPerformed(java.awt.event.ActionEvent evt) {&#xa;        runProgressBar(true);&#xa;        openTexShadEditor();&#xa;        runProgressBar(false);&#xa;    }&#xa;});"/>
+              </AuxValues>
+            </MenuItem>
           </SubComponents>
         </Menu>
         <Menu class="javax.swing.JMenu" name="jMenu_Help">

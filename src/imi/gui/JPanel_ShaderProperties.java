@@ -63,8 +63,17 @@ public class JPanel_ShaderProperties extends javax.swing.JPanel
     private final ArrayList<AbstractShaderProgram> m_defaultShaders = new ArrayList<AbstractShaderProgram>(8);
     
     /**
+     * Default Constructor does nothing...
+     * DO NOT USE THIS!!
+     */
+    public JPanel_ShaderProperties() {
+
+    }
+
+    /**
      * Construct a new shader property panel!
      * @param shader The shader to operate on
+     * @param wm the worldmanager
      */
     public JPanel_ShaderProperties(AbstractShaderProgram shader, WorldManager wm) 
     {
@@ -98,19 +107,24 @@ public class JPanel_ShaderProperties extends javax.swing.JPanel
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
+        java.awt.GridBagConstraints gridBagConstraints;
 
-        jTabbedPane1 = new javax.swing.JTabbedPane();
         jToolBar1 = new javax.swing.JToolBar();
         JLabel_Defaults = new javax.swing.JLabel();
         JComboBox_DefaultShaderPrograms = new javax.swing.JComboBox();
         JButton_LoadDefaultShader = new javax.swing.JButton();
+        jTabbedPane1 = new javax.swing.JTabbedPane();
 
-        setMaximumSize(new java.awt.Dimension(420, 311));
-        setMinimumSize(new java.awt.Dimension(420, 311));
-        setPreferredSize(new java.awt.Dimension(420, 311));
+        setMaximumSize(new java.awt.Dimension(380, 200));
+        setMinimumSize(new java.awt.Dimension(0, 0));
+        setPreferredSize(new java.awt.Dimension(380, 200));
+        setLayout(new java.awt.GridBagLayout());
 
         jToolBar1.setFloatable(false);
         jToolBar1.setRollover(true);
+        jToolBar1.setMaximumSize(new java.awt.Dimension(380, 27));
+        jToolBar1.setMinimumSize(new java.awt.Dimension(0, 0));
+        jToolBar1.setPreferredSize(new java.awt.Dimension(150, 27));
 
         JLabel_Defaults.setText("Defaults:");
         jToolBar1.add(JLabel_Defaults);
@@ -119,9 +133,12 @@ public class JPanel_ShaderProperties extends javax.swing.JPanel
         for (int i = 0; i < m_defaultShaders.size(); ++i)
         labels[i] = m_defaultShaders.get(i).getClass().getSimpleName();
         JComboBox_DefaultShaderPrograms.setModel(new DefaultComboBoxModel(labels));
+        JComboBox_DefaultShaderPrograms.setMinimumSize(new java.awt.Dimension(0, 0));
+        JComboBox_DefaultShaderPrograms.setPreferredSize(new java.awt.Dimension(47, 25));
         jToolBar1.add(JComboBox_DefaultShaderPrograms);
 
         JButton_LoadDefaultShader.setText("Load");
+        JButton_LoadDefaultShader.setMinimumSize(new java.awt.Dimension(0, 0));
         JButton_LoadDefaultShader.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 loadSelectedDefaultShader(evt);
@@ -129,21 +146,24 @@ public class JPanel_ShaderProperties extends javax.swing.JPanel
         });
         jToolBar1.add(JButton_LoadDefaultShader);
 
-        org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
-        this.setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(jToolBar1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 400, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-            .add(jTabbedPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 400, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(layout.createSequentialGroup()
-                .add(jToolBar1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 27, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .add(0, 0, 0)
-                .add(jTabbedPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 264, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .add(20, 20, 20))
-        );
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.SOUTH;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+        add(jToolBar1, gridBagConstraints);
+
+        jTabbedPane1.setPreferredSize(new java.awt.Dimension(380, 90));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.SOUTH;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+        add(jTabbedPane1, gridBagConstraints);
     }// </editor-fold>//GEN-END:initComponents
 
 private void loadSelectedDefaultShader(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loadSelectedDefaultShader
@@ -168,6 +188,7 @@ private void loadSelectedDefaultShader(java.awt.event.ActionEvent evt) {//GEN-FI
             if (m_propertyTable == null)
             {
                 m_propertyTable = new ShaderPropertyTable(m_shader);
+                m_propertyTable.setSize(380, 125);
                 m_propertyTable.setVisible(true);
                 jTabbedPane1.add("Properties", m_propertyTable);
             }

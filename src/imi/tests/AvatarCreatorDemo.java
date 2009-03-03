@@ -44,13 +44,13 @@ import imi.character.avatar.MaleAvatarAttributes;
 import imi.gui.JFrame_AdvOptions;
 import imi.gui.JFrame_ColorSelector;
 import imi.gui.JFrame_HeadCustomizer;
-import imi.gui.JFrame_InstrumentationGUI;
 import imi.gui.JFrame_SimpAdvOptions;
 import imi.gui.JPanel_Animations;
 import imi.gui.JPanel_BasicOptions;
 import imi.gui.JPanel_EZOptions;
 import imi.gui.JPanel_ServerBrowser;
 import imi.gui.SceneEssentials;
+import imi.gui.TextureCreator;
 import imi.gui.TreeExplorer;
 import imi.loaders.PPolygonTriMeshAssembler;
 import imi.loaders.repository.Repository;
@@ -136,6 +136,7 @@ public class AvatarCreatorDemo extends javax.swing.JFrame implements FrameRateLi
     protected JPanel_EZOptions          m_EZOptions         = null;
     protected JFrame_ColorSelector      m_ColorSelector     = null;
     protected JFrame_HeadCustomizer     m_HeadSelector      = null;
+    protected TextureCreator            m_TexShadEditor     = null;
     protected JDialog                   m_LoadWindow        = null;
 
     protected URL                       m_presetCaucasian   = null;
@@ -490,6 +491,18 @@ public class AvatarCreatorDemo extends javax.swing.JFrame implements FrameRateLi
 
         m_HeadSelector = new JFrame_HeadCustomizer(m_sceneData, null, null, null, null);
         m_HeadSelector.setVisible(true);
+    }
+
+    public void openTexShadEditor() {
+        if (m_TexShadEditor != null) {
+            if (m_TexShadEditor.isVisible()) {
+                m_TexShadEditor.dispose();
+                return;
+            }
+        }
+
+        m_TexShadEditor = new TextureCreator(m_sceneData);
+        m_TexShadEditor.setVisible(true);
     }
 
     /**
@@ -1207,6 +1220,7 @@ public class AvatarCreatorDemo extends javax.swing.JFrame implements FrameRateLi
         jMenuItem_AnimationViewer = new javax.swing.JMenuItem();
         jMenuItem_ColorSelector = new javax.swing.JMenuItem();
         jMenuItem1 = new javax.swing.JMenuItem();
+        jMenuItem_TexShadEditor = new javax.swing.JMenuItem();
         jMenu_Help = new javax.swing.JMenu();
         jMenuItem_About = new javax.swing.JMenuItem();
 
@@ -1632,6 +1646,16 @@ public class AvatarCreatorDemo extends javax.swing.JFrame implements FrameRateLi
         });
         jMenu_Tools.add(jMenuItem1);
 
+        jMenuItem_TexShadEditor.setText("Texture & Shader Editor");
+        jMenuItem_TexShadEditor.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                runProgressBar(true);
+                openTexShadEditor();
+                runProgressBar(false);
+            }
+        });
+        jMenu_Tools.add(jMenuItem_TexShadEditor);
+
         jMenuBar_MainMenu.add(jMenu_Tools);
 
         jMenu_Help.setText("Help");
@@ -1694,6 +1718,7 @@ public class AvatarCreatorDemo extends javax.swing.JFrame implements FrameRateLi
     private javax.swing.JMenuItem jMenuItem_LoadXMLFile;
     private javax.swing.JMenuItem jMenuItem_NodeExplorer;
     private javax.swing.JMenuItem jMenuItem_SaveXMLFile;
+    private javax.swing.JMenuItem jMenuItem_TexShadEditor;
     private javax.swing.JMenu jMenu_File;
     private javax.swing.JMenu jMenu_Help;
     private javax.swing.JMenu jMenu_LoadModels;

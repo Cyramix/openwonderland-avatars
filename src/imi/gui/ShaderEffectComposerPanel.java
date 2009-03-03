@@ -67,6 +67,7 @@ public class ShaderEffectComposerPanel extends javax.swing.JPanel
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
+        java.awt.GridBagConstraints gridBagConstraints;
 
         JDialog_ChooseEffect = new javax.swing.JDialog();
         jScrollPane2 = new javax.swing.JScrollPane();
@@ -76,14 +77,17 @@ public class ShaderEffectComposerPanel extends javax.swing.JPanel
         JFrame_SourceCode = new javax.swing.JFrame();
         jScrollPane3 = new javax.swing.JScrollPane();
         JTextPane_SourceCode = new javax.swing.JTextPane();
+        jPanel_Effects = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         JList_EffectList = new javax.swing.JList();
+        jPanel_EffectControls = new javax.swing.JPanel();
         JButton_MoveUp = new javax.swing.JButton();
+        JButton_RemoveEffect = new javax.swing.JButton();
         JButton_MoveDown = new javax.swing.JButton();
         JButton_AddEffect = new javax.swing.JButton();
-        JButton_RemoveEffect = new javax.swing.JButton();
-        JButton_Compile = new javax.swing.JButton();
         jSeparator1 = new javax.swing.JSeparator();
+        jPanel_CompileControls = new javax.swing.JPanel();
+        JButton_Compile = new javax.swing.JButton();
         JButton_ViewSource = new javax.swing.JButton();
         JToggle_UseDefaultInitializers = new javax.swing.JToggleButton();
 
@@ -152,9 +156,22 @@ public class ShaderEffectComposerPanel extends javax.swing.JPanel
             .add(jScrollPane3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 336, Short.MAX_VALUE)
         );
 
+        setPreferredSize(new java.awt.Dimension(380, 150));
+        setLayout(new java.awt.GridBagLayout());
+
+        jPanel_Effects.setLayout(new java.awt.GridBagLayout());
+
         JList_EffectList.setModel(new DefaultListModel());
         JList_EffectList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         jScrollPane1.setViewportView(JList_EffectList);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+        jPanel_Effects.add(jScrollPane1, gridBagConstraints);
+
+        jPanel_EffectControls.setLayout(new java.awt.GridBagLayout());
 
         JButton_MoveUp.setText("MoveUp");
         JButton_MoveUp.addActionListener(new java.awt.event.ActionListener() {
@@ -162,21 +179,11 @@ public class ShaderEffectComposerPanel extends javax.swing.JPanel
                 moveSelectedItemUp(evt);
             }
         });
-
-        JButton_MoveDown.setText("MoveDown");
-        JButton_MoveDown.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                moveSelectedItemDown(evt);
-            }
-        });
-
-        JButton_AddEffect.setForeground(new java.awt.Color(0, 128, 0));
-        JButton_AddEffect.setText("Add");
-        JButton_AddEffect.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                addEffectToList(evt);
-            }
-        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+        jPanel_EffectControls.add(JButton_MoveUp, gridBagConstraints);
 
         JButton_RemoveEffect.setForeground(new java.awt.Color(128, 0, 0));
         JButton_RemoveEffect.setText("Remove");
@@ -185,6 +192,58 @@ public class ShaderEffectComposerPanel extends javax.swing.JPanel
                 removeSelectedEffect(evt);
             }
         });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+        jPanel_EffectControls.add(JButton_RemoveEffect, gridBagConstraints);
+
+        JButton_MoveDown.setText("MoveDown");
+        JButton_MoveDown.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                moveSelectedItemDown(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+        jPanel_EffectControls.add(JButton_MoveDown, gridBagConstraints);
+
+        JButton_AddEffect.setForeground(new java.awt.Color(0, 128, 0));
+        JButton_AddEffect.setText("Add");
+        JButton_AddEffect.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addEffectToList(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 3;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+        jPanel_EffectControls.add(JButton_AddEffect, gridBagConstraints);
+
+        jPanel_Effects.add(jPanel_EffectControls, new java.awt.GridBagConstraints());
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+        add(jPanel_Effects, gridBagConstraints);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 1.0;
+        add(jSeparator1, gridBagConstraints);
+
+        jPanel_CompileControls.setLayout(new java.awt.GridBagLayout());
 
         JButton_Compile.setText("COMPILE");
         JButton_Compile.addActionListener(new java.awt.event.ActionListener() {
@@ -192,6 +251,10 @@ public class ShaderEffectComposerPanel extends javax.swing.JPanel
                 compileInitiated(evt);
             }
         });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 1.0;
+        jPanel_CompileControls.add(JButton_Compile, gridBagConstraints);
 
         JButton_ViewSource.setText("ViewSource");
         JButton_ViewSource.addActionListener(new java.awt.event.ActionListener() {
@@ -199,6 +262,10 @@ public class ShaderEffectComposerPanel extends javax.swing.JPanel
                 showSourceCode(evt);
             }
         });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 1.0;
+        jPanel_CompileControls.add(JButton_ViewSource, gridBagConstraints);
 
         JToggle_UseDefaultInitializers.setFont(new java.awt.Font("Lucida Grande", 0, 10)); // NOI18N
         JToggle_UseDefaultInitializers.setText("Default Initializers");
@@ -207,54 +274,18 @@ public class ShaderEffectComposerPanel extends javax.swing.JPanel
                 defaultInitializerToggled(evt);
             }
         });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 1.0;
+        jPanel_CompileControls.add(JToggle_UseDefaultInitializers, gridBagConstraints);
 
-        org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
-        this.setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(layout.createSequentialGroup()
-                .addContainerGap()
-                .add(jScrollPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 195, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .add(18, 18, 18)
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
-                    .add(JButton_MoveDown, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .add(JButton_MoveUp, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .add(JButton_AddEffect, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .add(JButton_RemoveEffect, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(65, Short.MAX_VALUE))
-            .add(org.jdesktop.layout.GroupLayout.TRAILING, jSeparator1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 411, Short.MAX_VALUE)
-            .add(layout.createSequentialGroup()
-                .addContainerGap()
-                .add(JButton_Compile)
-                .add(18, 18, 18)
-                .add(JToggle_UseDefaultInitializers)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 10, Short.MAX_VALUE)
-                .add(JButton_ViewSource)
-                .addContainerGap())
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(layout.createSequentialGroup()
-                .addContainerGap()
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING, false)
-                    .add(org.jdesktop.layout.GroupLayout.LEADING, jScrollPane1, 0, 0, Short.MAX_VALUE)
-                    .add(org.jdesktop.layout.GroupLayout.LEADING, layout.createSequentialGroup()
-                        .add(JButton_MoveUp)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(JButton_MoveDown)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(JButton_AddEffect)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(JButton_RemoveEffect)))
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jSeparator1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 10, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                    .add(JButton_Compile)
-                    .add(JButton_ViewSource)
-                    .add(JToggle_UseDefaultInitializers))
-                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+        add(jPanel_CompileControls, gridBagConstraints);
     }// </editor-fold>//GEN-END:initComponents
 
 private void moveSelectedItemUp(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_moveSelectedItemUp
@@ -414,6 +445,9 @@ public GLSLShaderProgram getShader()
     private javax.swing.JList JList_EffectList;
     private javax.swing.JTextPane JTextPane_SourceCode;
     private javax.swing.JToggleButton JToggle_UseDefaultInitializers;
+    private javax.swing.JPanel jPanel_CompileControls;
+    private javax.swing.JPanel jPanel_EffectControls;
+    private javax.swing.JPanel jPanel_Effects;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
