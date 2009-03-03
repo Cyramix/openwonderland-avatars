@@ -499,6 +499,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
 
         float[] skinColor = m_attributes.getSkinTone();
         AbstractShaderProgram fleshShader = null;
+        
         if (m_attributes.isUsingPhongLighting())
             fleshShader = repo.newShader(PhongFleshShader.class);
         else
@@ -712,8 +713,8 @@ public abstract class Character extends Entity implements SpatialObject, Animati
     }
 
     /**
-     * This method applies the m_attributes member. It simply wraps calls to
-     * loadSkeleton and executeAttributes
+     * This method applies the m_attributes member. It simply wraps
+     * loadSkeleton 
      */
     private void applyAttributes()
     {

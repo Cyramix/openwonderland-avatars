@@ -81,6 +81,7 @@ public class ClothingShaderSpecColor extends BaseShaderProgram implements Abstra
         "varying vec3 position;" +
         "uniform sampler2D   BaseDiffuseMapIndex;" +
         "uniform sampler2D   NormalMapIndex;" +
+        "uniform sampler2D   OverlayMapIndex;" +
         "uniform vec3 baseColor;" +
         "uniform vec3 specColor;" +
         "uniform float SpecularComponent;" +
@@ -94,6 +95,7 @@ public class ClothingShaderSpecColor extends BaseShaderProgram implements Abstra
         "	    vec3 lightVector = normalize(ToLight);" +
         "  	    float nxDir = max(0.0, dot(normal, lightVector));" +
         "       texColor *= vec4(baseColor, 1);" +
+        "       texColor *= texture2D(OverlayMapIndex, gl_TexCoord[0].st);" +
         "  	    vec4 diffuse = texColor * (gl_LightSource[0].diffuse * nxDir);" +
         "	    vec4 color = diffuse * (1.0 - ambientPower) + texColor * ambientPower;" +
         "	    color = clamp(color, 0.0, 1.0);" +
@@ -150,6 +152,8 @@ public class ClothingShaderSpecColor extends BaseShaderProgram implements Abstra
                                 GLSLDataType.GLSL_SAMPLER2D, Integer.valueOf(0)));
             m_propertyMap.put("NormalMapIndex",         new ShaderProperty("NormalMapIndex",
                                 GLSLDataType.GLSL_SAMPLER2D, Integer.valueOf(1)));
+            m_propertyMap.put("OverlayMapIndex",    new ShaderProperty("OverlayMapIndex",
+                                GLSLDataType.GLSL_SAMPLER2D, Integer.valueOf(2)));
             m_propertyMap.put("baseColor",              new ShaderProperty("baseColor",
                                 GLSLDataType.GLSL_VEC3, whiteColor));
             m_propertyMap.put("specColor",           new ShaderProperty("specColor",

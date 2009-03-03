@@ -147,7 +147,7 @@ public class ClothingShaderDiffuseAsSpec extends BaseShaderProgram implements Ab
                                 GLSLDataType.GLSL_SAMPLER2D, Integer.valueOf(0)));
             m_propertyMap.put("NormalMapIndex",         new ShaderProperty("NormalMapIndex",
                                 GLSLDataType.GLSL_SAMPLER2D, Integer.valueOf(1)));
-            m_propertyMap.put("BaseDiffuseMapIndex",    new ShaderProperty("PatternDiffuseMapIndex",
+            m_propertyMap.put("OverlayMapIndex",    new ShaderProperty("OverlayMapIndex",
                                 GLSLDataType.GLSL_SAMPLER2D, Integer.valueOf(2)));
             m_propertyMap.put("baseColor",              new ShaderProperty("baseColor",
                                 GLSLDataType.GLSL_VEC3, whiteColor));
