@@ -50,6 +50,7 @@ public class ClothingShaderDiffuseAsSpec extends BaseShaderProgram implements Ab
         "void main(void)" +
         "{" +
         "    	gl_TexCoord[0] = gl_MultiTexCoord0; " +
+        "    	gl_TexCoord[1] = gl_MultiTexCoord1; " +
         "    	vec3 weight = gl_Color.rgb;" +
         "    	float weight4 = 1.0 - ( weight.x + weight.y + weight.z);" +
         "    	mat4 poseBlend = (  (pose[int(boneIndices.x)]) * weight.x + " +
@@ -80,7 +81,6 @@ public class ClothingShaderDiffuseAsSpec extends BaseShaderProgram implements Ab
         "varying vec3 position;" +
         "uniform sampler2D   BaseDiffuseMapIndex;" +
         "uniform sampler2D   NormalMapIndex;" +
-        "uniform sampler2D   PatternDiffuseMapIndex;" +
         "uniform vec3 baseColor;" +
         "uniform float SpecularComponent;" +
         "uniform float SpecularExponent;" +
@@ -93,7 +93,6 @@ public class ClothingShaderDiffuseAsSpec extends BaseShaderProgram implements Ab
         "	    vec3 lightVector = normalize(ToLight);" +
         "  	    float nxDir = max(0.0, dot(normal, lightVector));" +
         "       texColor *= vec4(baseColor, 1);" +
-        "       texColor *= texture2D(PatternDiffuseMapIndex, gl_TexCoord[0].st);" +
         "  	    vec4 diffuse = texColor * (gl_LightSource[0].diffuse * nxDir);" +
         "	    vec4 color = diffuse * (1.0 - ambientPower) + texColor * ambientPower;" +
         "	    color = clamp(color, 0.0, 1.0);" +
@@ -146,8 +145,6 @@ public class ClothingShaderDiffuseAsSpec extends BaseShaderProgram implements Ab
             m_propertyMap.put("BaseDiffuseMapIndex",    new ShaderProperty("BaseDiffuseMapIndex",
                                 GLSLDataType.GLSL_SAMPLER2D, Integer.valueOf(0)));
             m_propertyMap.put("NormalMapIndex",         new ShaderProperty("NormalMapIndex",
-                                GLSLDataType.GLSL_SAMPLER2D, Integer.valueOf(1)));
-            m_propertyMap.put("OverlayMapIndex",    new ShaderProperty("OverlayMapIndex",
                                 GLSLDataType.GLSL_SAMPLER2D, Integer.valueOf(2)));
             m_propertyMap.put("baseColor",              new ShaderProperty("baseColor",
                                 GLSLDataType.GLSL_VEC3, whiteColor));
