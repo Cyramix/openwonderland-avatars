@@ -70,6 +70,19 @@ public class LayerPanel extends javax.swing.JPanel {
         }
     }
 
+    public void saveNAddTexture() {
+        File save = new File("new_texture.png");
+        jFileChooser_SaveTexture.setSelectedFile(save);
+
+        int returnValue = jFileChooser_SaveTexture.showSaveDialog(this);
+        if (returnValue == javax.swing.JFileChooser.APPROVE_OPTION) {
+            save = jFileChooser_SaveTexture.getSelectedFile();
+            String extension = save.getName().substring(save.getName().lastIndexOf(".") + 1);
+            ImageLibraryExt.save(m_parent.getBlendImagePanel().getFinalImage().m_curImage, save, extension);
+            m_parent.addNewlyCreatedLayer(save);
+        }
+    }
+
     public void loadTexture(int loadType) {
         int returnValue = jFileChooser_TextureSelector.showOpenDialog(this);
         if (returnValue == javax.swing.JFileChooser.APPROVE_OPTION) {
@@ -116,6 +129,7 @@ public class LayerPanel extends javax.swing.JPanel {
         AddBlendLayer = new javax.swing.JButton();
         RemoveBlendLayer = new javax.swing.JButton();
         SaveBlendImage = new javax.swing.JButton();
+        jButton_SaveNAdd = new javax.swing.JButton();
 
         jFileChooser_TextureSelector.setDialogTitle("Load Texture");
 
@@ -212,6 +226,21 @@ public class LayerPanel extends javax.swing.JPanel {
         gridBagConstraints.weighty = 1.0;
         ButtonPanel.add(SaveBlendImage, gridBagConstraints);
 
+        jButton_SaveNAdd.setText("Save & Add Blend Image To Material");
+        jButton_SaveNAdd.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                saveNAddTexture();
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+        ButtonPanel.add(jButton_SaveNAdd, gridBagConstraints);
+
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
@@ -228,6 +257,7 @@ public class LayerPanel extends javax.swing.JPanel {
     private javax.swing.JButton LoadBaseImage;
     private javax.swing.JButton RemoveBlendLayer;
     private javax.swing.JButton SaveBlendImage;
+    private javax.swing.JButton jButton_SaveNAdd;
     private javax.swing.JFileChooser jFileChooser_SaveTexture;
     private javax.swing.JFileChooser jFileChooser_TextureSelector;
     private javax.swing.JScrollPane jScrollPane1;
@@ -369,8 +399,10 @@ public class LayerPanel extends javax.swing.JPanel {
             bRenderables.add(createBaseBlend(baseSize));
             m_parent.addBlendLayer("BlendBase");
         } else if (bRenderables.size() == 1) {
+            bRenderables.set(0, createBaseBlend(baseSize));
             renderables.add(bRenderables.get(0));
         } else if (finalImage != null) {
+            bRenderables.set(0, createBaseBlend(baseSize));
             renderables.add(finalImage);
         }
 

@@ -13,6 +13,7 @@ package imi.gui;
 
 import imi.imaging.ImageData;
 import java.awt.Dimension;
+import java.io.File;
 import java.util.ArrayList;
 
 /**
@@ -245,6 +246,10 @@ public class TextureCreator extends javax.swing.JFrame {
 
     public void removeBlendLayer(int layerIndex) {
         BlendImageView.getRenderables().remove(layerIndex);
+    }
+
+    public void addNewlyCreatedLayer(File newTexture) {
+        m_materialProperties.addNewlyCreatedTextureToList(newTexture);
     }
 
     public int getSelectedLayerIndex() {

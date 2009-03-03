@@ -122,7 +122,7 @@ public class JPanel_ShaderProperties extends javax.swing.JPanel
 
         jToolBar1.setFloatable(false);
         jToolBar1.setRollover(true);
-        jToolBar1.setMaximumSize(new java.awt.Dimension(380, 27));
+        jToolBar1.setMaximumSize(new java.awt.Dimension(380, 30));
         jToolBar1.setMinimumSize(new java.awt.Dimension(0, 0));
         jToolBar1.setPreferredSize(new java.awt.Dimension(150, 27));
 

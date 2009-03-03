@@ -476,8 +476,7 @@ public class JPanel_MaterialProperties extends javax.swing.JPanel {
         populateListModel();
     }
 
-    public void populateListModel()
-    {
+    public void populateListModel() {
         m_mesh = null;
         if (jComboBox_Meshes.getSelectedIndex() != -1)
             m_mesh = (PPolygonMeshInstance) jComboBox_Meshes.getSelectedItem();
@@ -515,8 +514,7 @@ public class JPanel_MaterialProperties extends javax.swing.JPanel {
         populateListModel();
     }
 
-    private void initShaderPanel()
-    {
+    private void initShaderPanel() {
         // add shader stuff in
         if (m_mesh != null)
         {
@@ -534,8 +532,7 @@ public class JPanel_MaterialProperties extends javax.swing.JPanel {
     }
 
     //Swap two elements in the list.
-    private void swap(int a, int b, DefaultListModel listModel)
-    {
+    private void swap(int a, int b, DefaultListModel listModel) {
         String aString  = (String)listModel.getElementAt(a);
         String bString  = (String)listModel.getElementAt(b);
         String aPre     = aString.substring(0, aString.indexOf(" "));
@@ -556,6 +553,19 @@ public class JPanel_MaterialProperties extends javax.swing.JPanel {
         listModel.set(b, aObject);
         m_textureLocations.set(a, bFile);
         m_textureLocations.set(b, aFile);
+    }
+
+    public void addNewlyCreatedTextureToList(File newTexture) {
+        int index = ((DefaultListModel)jList_Textures.getModel()).size();
+        String texName = new String("["+ index + "]  " + newTexture.getName());
+
+        try {
+            m_textureLocations.add(newTexture.toURI().toURL());
+        } catch (MalformedURLException ex) {
+            Logger.getLogger(this.getClass().toString()).log(Level.SEVERE, ex.getMessage());
+        }
+
+        ((DefaultListModel)jList_Textures.getModel()).addElement(texName);
     }
 
 ////////////////////////////////////////////////////////////////////////////////
