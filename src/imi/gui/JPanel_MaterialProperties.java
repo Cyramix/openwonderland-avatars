@@ -34,6 +34,7 @@ import javax.swing.JList;
 import javax.swing.ListCellRenderer;
 import javax.swing.border.Border;
 import javax.swing.filechooser.FileFilter;
+import org.jdesktop.mtgame.WorldManager;
 
 
 /**
@@ -47,6 +48,7 @@ public class JPanel_MaterialProperties extends javax.swing.JPanel {
 
     private ArrayList<URL>                  m_textureLocations  = new ArrayList<URL>();
     private SceneEssentials                 m_sceneData         = null;
+    private WorldManager                    m_wm                = null;
     private PPolygonMeshInstance            m_mesh              = null; // The mesh that owns the material
     private PMeshMaterial                   m_mat               = null; // The data model
     private JPanel_ShaderProperties         m_shaderPropPanel   = null;
@@ -61,12 +63,16 @@ public class JPanel_MaterialProperties extends javax.swing.JPanel {
      */
     public JPanel_MaterialProperties() {
         initComponents();
-        initMeshList();
-        initShaderPanel();
     }
 
+    /**
+     * Overloaded constructor used for the Texture Creator
+     * @param sceneData
+     * @param parent
+     */
     public JPanel_MaterialProperties(SceneEssentials sceneData, TextureCreator parent) {
         m_sceneData = sceneData;
+        m_wm        = sceneData.getWM();
         m_parent    = parent;
         initComponents();
         initMeshList();
@@ -241,6 +247,10 @@ public class JPanel_MaterialProperties extends javax.swing.JPanel {
         m_mat = meshMaterial;
     }
 
+    public void setWorldManager(WorldManager wm) {
+        m_wm = wm;
+    }
+    
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
@@ -476,6 +486,32 @@ public class JPanel_MaterialProperties extends javax.swing.JPanel {
         populateListModel();
     }
 
+    public void initTextureList(PPolygonMeshInstance mesh) {
+
+        if (mesh == null)
+            return;
+
+        m_mesh  = mesh;
+        m_mat   = mesh.getMaterialRef();
+
+        ((DefaultListModel)jList_Textures.getModel()).removeAllElements();
+        if(!m_textureLocations.isEmpty())
+            m_textureLocations.clear();
+
+        String texName;
+        DefaultListModel newModel = new DefaultListModel();
+        for (int i = 0; i < m_mesh.getGeometry().getNumberOfTextures(); ++i)
+        {
+            if (m_mat.getTexture(i) != null) {
+                texName = new String("["+ i + "] " + m_mat.getTexture(i).getImageLocation());
+                m_textureLocations.add(m_mat.getTexture(i).getImageLocation());
+                newModel.addElement(texName);
+            }
+        }
+
+        jList_Textures.setModel(newModel);
+    }
+
     public void populateListModel() {
         m_mesh = null;
         if (jComboBox_Meshes.getSelectedIndex() != -1)
@@ -514,7 +550,7 @@ public class JPanel_MaterialProperties extends javax.swing.JPanel {
         populateListModel();
     }
 
-    private void initShaderPanel() {
+    public void initShaderPanel() {
         // add shader stuff in
         if (m_mesh != null)
         {
@@ -522,7 +558,7 @@ public class JPanel_MaterialProperties extends javax.swing.JPanel {
             {
                 if (m_shaderPropPanel == null)
                 {
-                    m_shaderPropPanel = new JPanel_ShaderProperties(m_mesh.getMaterialRef().getShader(), m_sceneData.getWM());
+                    m_shaderPropPanel = new JPanel_ShaderProperties(m_mesh.getMaterialRef().getShader(), m_wm);
                     m_shaderPropPanel.setSize(380, 280);
                     MaterialProperties.addTab("Shader Properties", m_shaderPropPanel);
                 }
@@ -566,6 +602,11 @@ public class JPanel_MaterialProperties extends javax.swing.JPanel {
         }
 
         ((DefaultListModel)jList_Textures.getModel()).addElement(texName);
+    }
+
+    public void setComboBoxAvailablity(boolean onOff) {
+        jComboBox_Meshes.setEnabled(onOff);
+        jComboBox_Meshes.setVisible(onOff);
     }
 
 ////////////////////////////////////////////////////////////////////////////////

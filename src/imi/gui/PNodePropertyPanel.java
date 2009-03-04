@@ -153,7 +153,7 @@ public class PNodePropertyPanel extends javax.swing.JPanel
 
         if(m_nodeToolKit != null) 
         {
-            int iComponentHeight = 150 + JPanel_SpecificControls.getHeight();
+            int iComponentHeight = 180 + JPanel_SpecificControls.getHeight();
             int iComponentWidth  = JPanel_SpecificControls.getWidth();
 //            JPanel_SpecificControls.setSize(new Dimension(iComponentWidth, iComponentHeight));
             if(iComponentHeight < iHeight)
@@ -248,7 +248,8 @@ public class PNodePropertyPanel extends javax.swing.JPanel
 
         setMaximumSize(new java.awt.Dimension(2000, 2000));
         setMinimumSize(new java.awt.Dimension(300, 300));
-        setPreferredSize(new java.awt.Dimension(670, 365));
+        setPreferredSize(new java.awt.Dimension(400, 300));
+        setLayout(new java.awt.GridBagLayout());
 
         JPanel_BaseNodeProperties.setMinimumSize(new java.awt.Dimension(321, 150));
         JPanel_BaseNodeProperties.setPreferredSize(new java.awt.Dimension(420, 150));
@@ -418,6 +419,12 @@ public class PNodePropertyPanel extends javax.swing.JPanel
         gridBagConstraints.gridy = 3;
         JPanel_BaseNodeProperties.add(jButton1, gridBagConstraints);
 
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+        add(JPanel_BaseNodeProperties, gridBagConstraints);
+
         JPanel_SpecificControls.setMinimumSize(new java.awt.Dimension(321, 150));
         JPanel_SpecificControls.setPreferredSize(new java.awt.Dimension(670, 365));
 
@@ -425,26 +432,21 @@ public class PNodePropertyPanel extends javax.swing.JPanel
         JPanel_SpecificControls.setLayout(JPanel_SpecificControlsLayout);
         JPanel_SpecificControlsLayout.setHorizontalGroup(
             JPanel_SpecificControlsLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 670, Short.MAX_VALUE)
+            .add(0, 400, Short.MAX_VALUE)
         );
         JPanel_SpecificControlsLayout.setVerticalGroup(
             JPanel_SpecificControlsLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 365, Short.MAX_VALUE)
+            .add(0, 150, Short.MAX_VALUE)
         );
 
-        org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
-        this.setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(JPanel_BaseNodeProperties, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-            .add(JPanel_SpecificControls, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(layout.createSequentialGroup()
-                .add(JPanel_BaseNodeProperties, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .add(JPanel_SpecificControls, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-        );
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+        add(JPanel_SpecificControls, gridBagConstraints);
     }// </editor-fold>//GEN-END:initComponents
 
 private void JTextField_NodeNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JTextField_NodeNameActionPerformed

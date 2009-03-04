@@ -66,7 +66,8 @@ public class LayerPanel extends javax.swing.JPanel {
         if (returnValue == javax.swing.JFileChooser.APPROVE_OPTION) {
             save = jFileChooser_SaveTexture.getSelectedFile();
             String extension = save.getName().substring(save.getName().lastIndexOf(".") + 1);
-            ImageLibraryExt.save(m_parent.getBlendImagePanel().getFinalImage().m_curImage, save, extension);
+//            ImageLibraryExt.save(m_parent.getBlendImagePanel().getFinalImage().m_curImage, save, extension);
+            ImageLibraryExt.save(m_parent.getFinalImagePanel().getFinalImage().m_curImage, save, extension);
         }
     }
 
@@ -78,7 +79,8 @@ public class LayerPanel extends javax.swing.JPanel {
         if (returnValue == javax.swing.JFileChooser.APPROVE_OPTION) {
             save = jFileChooser_SaveTexture.getSelectedFile();
             String extension = save.getName().substring(save.getName().lastIndexOf(".") + 1);
-            ImageLibraryExt.save(m_parent.getBlendImagePanel().getFinalImage().m_curImage, save, extension);
+//            ImageLibraryExt.save(m_parent.getBlendImagePanel().getFinalImage().m_curImage, save, extension);
+            ImageLibraryExt.save(m_parent.getFinalImagePanel().getFinalImage().m_curImage, save, extension);
             m_parent.addNewlyCreatedLayer(save);
         }
     }

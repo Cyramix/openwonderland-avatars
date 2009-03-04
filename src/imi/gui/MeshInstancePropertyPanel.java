@@ -65,23 +65,33 @@ public class MeshInstancePropertyPanel extends javax.swing.JPanel implements PNo
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
+        java.awt.GridBagConstraints gridBagConstraints;
 
         m_matrixWidget = new imi.gui.PMatrixWidget();
-        m_materialPanel = new PMeshMaterialPanel(m_wm);
+        m_materialPanel = new imi.gui.JPanel_MaterialProperties();
 
         setMaximumSize(new java.awt.Dimension(670, 345));
         setMinimumSize(new java.awt.Dimension(670, 345));
         setPreferredSize(new java.awt.Dimension(670, 345));
         setLayout(new java.awt.GridBagLayout());
-        add(m_matrixWidget, new java.awt.GridBagConstraints());
-        add(m_materialPanel, new java.awt.GridBagConstraints());
-        m_materialPanel.setOwningMesh(m_meshInst);
-        m_materialPanel.setTargetMaterial(m_meshInst.getMaterialRef());
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+        add(m_matrixWidget, gridBagConstraints);
+
+        m_materialPanel.setWorldManager(m_wm);
+        m_materialPanel.setComboBoxAvailablity(false);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+        add(m_materialPanel, gridBagConstraints);
     }// </editor-fold>//GEN-END:initComponents
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private imi.gui.PMeshMaterialPanel m_materialPanel;
+    private imi.gui.JPanel_MaterialProperties m_materialPanel;
     private imi.gui.PMatrixWidget m_matrixWidget;
     // End of variables declaration//GEN-END:variables
 
@@ -91,8 +101,8 @@ public class MeshInstancePropertyPanel extends javax.swing.JPanel implements PNo
         // update the matrix widget
         m_matrixWidget.setTargetMatrix(m_meshInst.getTransform().getLocalMatrix(true));
         // update the material widget
-        m_materialPanel.setTargetMaterial(m_meshInst.getMaterialRef());
-        m_materialPanel.setOwningMesh(m_meshInst);
+        m_materialPanel.initTextureList(m_meshInst);
+        m_materialPanel.initShaderPanel();
     }
 
     public PNode getTarget()

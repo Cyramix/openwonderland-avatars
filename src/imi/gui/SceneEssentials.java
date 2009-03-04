@@ -2204,6 +2204,7 @@ public class SceneEssentials {
                 }
 //                if (m_avatar == null) {
                     m_avatar = new Avatar(configURL, m_worldManager);
+                    m_currentPScene = m_avatar.getPScene();
 //                } else if (m_avatar != null) {
 //                    m_avatar.loadConfiguration(configURL);
 //                }
