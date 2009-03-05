@@ -236,7 +236,7 @@ public class ColladaEnvironment extends Entity
                 {
                     // Debugging / Diagnostic output
                     Logger.getLogger(ColladaEnvironment.class.getName()).log(Level.SEVERE,
-                            "Weirdness has occured on line 139, ColladaEnvironment.java - BUG FIX TEAM, ATTACK!");
+                            "Weirdness has occured on line " + Thread.currentThread().getStackTrace()[2].getLineNumber() + ", ColladaEnvironment.java - BUG FIX TEAM, ATTACK!");
                 }
             }
             
