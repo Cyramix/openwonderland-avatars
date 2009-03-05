@@ -236,7 +236,11 @@ public class ColladaEnvironment extends Entity
                 {
                     // Debugging / Diagnostic output
                     Logger.getLogger(ColladaEnvironment.class.getName()).log(Level.SEVERE,
-                            "Weirdness has occured on line " + Thread.currentThread().getStackTrace()[2].getLineNumber() + ", ColladaEnvironment.java - BUG FIX TEAM, ATTACK!");
+                            "Weirdness has occured on line " + Thread.currentThread().getStackTrace()[2].getLineNumber() + ", ColladaEnvironment.java - BUG FIX TEAM, ATTACK!" +
+                            "\n\n" +
+                            "More specifically, a SharedMesh or TriMesh was encountered without a TextureState. This likely means that a piece of " +
+                            "geometry was loaded without a texture. While this is not a critical error, it may indicate some failure in the process " +
+                            "that led you here to the ColladaEnvironment.");
                 }
             }
             
