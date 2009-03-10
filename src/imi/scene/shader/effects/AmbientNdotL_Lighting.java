@@ -100,6 +100,7 @@ public class AmbientNdotL_Lighting extends GLSLShaderEffect
     private void createFragmentLogic()
     {
         StringBuilder fragmentLogic = new StringBuilder();
+        fragmentLogic.append("float alpha = " + m_fragmentGlobals[1].getName() + ".a;" + NL);
         // normalize ToLight and VNormal
         fragmentLogic.append("vec3 lightVec  = " + m_varying[0].normalize() + ";" + NL);
         //fragmentLogic.append("vec3 normalVec = " + m_varying[1].normalize() + ";" + NL); <-- this is necessary but currently problematic
@@ -111,8 +112,7 @@ public class AmbientNdotL_Lighting extends GLSLShaderEffect
         fragmentLogic.append("afterLighting *= (1.0 - " + m_fragmentUniforms[0].getName() + ");" + NL);
         fragmentLogic.append(m_fragmentGlobals[1].getName() + " = " + m_fragmentGlobals[1].getName() + " * " + m_fragmentUniforms[0].getName() + ";" + NL);
         fragmentLogic.append(m_fragmentGlobals[1].getName() + " += afterLighting;" + NL);
-        fragmentLogic.append(m_fragmentGlobals[1].getName() + ".a = 1.0;" + NL);
-        
+        fragmentLogic.append(m_fragmentGlobals[1].getName() + ".a = alpha;" + NL);
         m_fragmentLogic = fragmentLogic.toString();
     }
 }

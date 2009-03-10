@@ -90,12 +90,14 @@ public class SimpleNdotL_Lighting extends GLSLShaderEffect
     {
         StringBuilder fragmentLogic = new StringBuilder();
         // normalize ToLight and VNormal
+        fragmentLogic.append("float alpha = " + m_fragmentGlobals[1].getName() + ".a;" + NL);
         fragmentLogic.append("vec3 lightVec  = " + m_varying[0].normalize() + ";" + NL);
         //fragmentLogic.append("vec3 normalVec = " + m_varying[1].normalize() + ";" + NL); <---- this is needed
         // calculate NdotL 
         fragmentLogic.append(m_fragmentGlobals[0].getName() + " = max(dot(" + m_fragmentGlobals[2].getName() + ", lightVec.xyz), 0.0);" + NL);
         // modify final frag color
-        fragmentLogic.append(m_fragmentGlobals[1].getName() + " = clamp(" + m_fragmentGlobals[1].getName() + " * " + m_fragmentGlobals[0].getName() + ", 0.0, 1.0);" + NL);        
+        fragmentLogic.append(m_fragmentGlobals[1].getName() + " = clamp(" + m_fragmentGlobals[1].getName() + " * " + m_fragmentGlobals[0].getName() + ", 0.0, 1.0);" + NL);
+        fragmentLogic.append(m_fragmentGlobals[1].getName() + ".a = alpha;" + NL);
         m_fragmentLogic = fragmentLogic.toString();
     }
 }

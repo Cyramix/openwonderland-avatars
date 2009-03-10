@@ -301,10 +301,10 @@ public class PColladaEffect
         // transparency
         switch (m_nTransparencyMode)
         {
-//            case 0:
-//                result.setAlphaState(PMeshMaterial.AlphaTransparencyType.RGB_ZERO);
-//                result.setTransparencyColor(m_TransparentColor.toColorRGBA());
-//                break;
+            case 0:
+                result.setAlphaState(PMeshMaterial.AlphaTransparencyType.RGB_ZERO);
+                result.setTransparencyColor(m_TransparentColor.toColorRGBA());
+                break;
             case 1:
                 result.setAlphaState(PMeshMaterial.AlphaTransparencyType.A_ONE);
                 result.setTransparencyColor(m_TransparentColor.toColorRGBA());
@@ -421,13 +421,9 @@ public class PColladaEffect
         else // could be no transparency or using default behavior
         {
             if (transparency != null)
-            {
                 m_nTransparencyMode = 1; // A_ONE
-            }
             else // No transparency
-            {
                 m_nTransparencyMode = -1;
-            }
         }
         
         if (m_nTransparencyMode >= 0) // some kind of transparency

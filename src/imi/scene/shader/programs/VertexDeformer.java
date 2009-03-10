@@ -107,13 +107,14 @@ public class VertexDeformer extends GLSLShaderProgram implements Serializable
         "}" +
         "void AmbientNdotL_Lighting()" +
         "{" +
+        "        float alpha = finalColor.a;" +
         "        vec3 lightVec  = normalize(ToLight);" +
         "        NdotL = clamp(dot(VNormal, lightVec), 0.0, 1.0);" +
         "        vec4 afterLighting = finalColor * NdotL;" +
         "        afterLighting *= (1.0 - ambientPower);" +
         "        finalColor = finalColor * ambientPower;" +
         "        finalColor += afterLighting;" +
-        "        finalColor.a = 1.0;" +
+        "        finalColor.a = alpha;" +
         "}"
     );
     /**
