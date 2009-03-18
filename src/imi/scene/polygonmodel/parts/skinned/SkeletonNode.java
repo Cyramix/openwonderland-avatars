@@ -697,7 +697,7 @@ public class SkeletonNode extends PNode implements Animated, Serializable
                         PMatrix meshSpace = curJoint.getMeshSpace();
                         ((PJoint)parent).getMeshSpace(meshSpace);
                         meshSpace.fastMul(curJoint.getBindPose());
-                        meshSpace.fastMul(curJoint.unmodifiedInverseBindPose);
+                        meshSpace.fastMul(curJoint.getUnmodifiedBindPose());
                         meshSpace.fastMul(curJoint.getTransform().getLocalMatrix(false));
                     }
                     else // First joint in the skeleton; mesh space is local space
@@ -753,11 +753,57 @@ public class SkeletonNode extends PNode implements Animated, Serializable
     }
 
     /**
+     * This method applies a configuration to this skeleton. The provided indices
+     * are used to indicate which joints from <code>configSkeleton</code> should
+     * be used to modify this skeleton. This assumes that the config skeleton and
+     * the original skeleton have the same skeletal structure.
+     * @param configSkeleton The configuration.
+     * @param BFTIndices The breadth-first traversal indices of the joints to configure.
+     */
+    public void applyConfiguration(SkeletonNode configSkeleton, Iterable<Integer> BFTIndices)
+    {
+        SkinnedMeshJoint originalJoint = null;
+        SkinnedMeshJoint configJoint = null;
+
+        for (Integer index : BFTIndices)
+        {
+            originalJoint = getSkinnedMeshJoint(index);
+            configJoint = configSkeleton.getSkinnedMeshJoint(index);
+            // Copy over the goodies
+            originalJoint.getBindPose().set(configJoint.getBindPose());
+        }
+    }
+
+    /**
+     * This method applies a configuration to this skeleton. The provided list
+     * of joint names is used to determine which joints from <code>configSkeleton</code>
+     * should be used to modify the original. This method is slower
+     * than <code>applyConfiguration</code>, but does not require that the
+     * skeletons have the same structure.
+     * @param configSkeleton
+     * @param jointNames
+     */
+    public void applyConfigurationByNames(SkeletonNode configSkeleton, Iterable<String> jointNames)
+    {
+        SkinnedMeshJoint originalJoint = null;
+        SkinnedMeshJoint configJoint = null;
+
+        for (String jointName : jointNames)
+        {
+            originalJoint = getSkinnedMeshJoint(jointName);
+            configJoint = getSkinnedMeshJoint(jointName);
+            // Copy it over
+            originalJoint.getBindPose().set(configJoint.getBindPose());
+        }
+    }
+    
+    /**
      * This method is used to generate skeleton modifiers as deltas from the
      * provided base skeleton and assign the initial base skeleton data as the
      * transform for each joint.
      * @param baseSkeleton 
      */
+    @Deprecated
     public void remapSkeleton(SkeletonNode baseSkeleton)
     {
         // Gather the joints and set the new local modifiers
@@ -775,7 +821,7 @@ public class SkeletonNode extends PNode implements Animated, Serializable
                 SkinnedMeshJoint ourJoint = (SkinnedMeshJoint)current;
                 SkinnedMeshJoint baseJoint = baseSkeleton.getSkinnedMeshJoint(ourJoint.getName());
 
-                ourJoint.unmodifiedInverseBindPose.set(baseJoint.getBindPose().inverse());
+                ourJoint.getUnmodifiedBindPose().set(baseJoint.getBindPose().inverse());
                 // "prime the pump"
                 ourJoint.getTransform().setLocalMatrix(baseJoint.getBindPose());
             }

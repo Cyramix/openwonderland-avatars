@@ -42,7 +42,7 @@ public class SkinnedMeshJoint extends PJoint implements Serializable
     private PMatrix m_bindPoseTransform = null;
 
     /** Package private member for use by the SkeletonNode primarily **/
-    transient PMatrix unmodifiedInverseBindPose = new PMatrix();
+    private transient PMatrix unmodifiedInverseBindPose = new PMatrix();
     /** The flattened matrix **/
     transient PMatrix flattenedMatrix = new PMatrix();
 
@@ -159,6 +159,11 @@ public class SkinnedMeshJoint extends PJoint implements Serializable
         return result;
     }
 
+    public PMatrix getUnmodifiedBindPose()
+    {
+        return unmodifiedInverseBindPose;
+    }
+    
     public void resetBindPose()
     {
         m_bindPoseTransform = unmodifiedInverseBindPose.inverse();

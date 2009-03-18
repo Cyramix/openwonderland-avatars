@@ -40,7 +40,7 @@ import java.io.Serializable;
  */
 public class PPolygonSkinnedMeshInstance extends PPolygonMeshInstance implements Serializable
 {
-    protected transient PMatrix[]   m_InverseBindPose  = null; // TODO: Caching this may not be desireable
+    protected PMatrix[]   m_InverseBindPose  = null; // TODO: Caching this may not be desireable
 
     protected SkeletonNode m_skeletonNode    = null;
 
