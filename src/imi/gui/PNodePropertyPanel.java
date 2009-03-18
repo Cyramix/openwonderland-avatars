@@ -273,7 +273,9 @@ public class PNodePropertyPanel extends javax.swing.JPanel
         jToolBar1.add(JTextField_NodeName);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.weightx = 1.0;
         JPanel_BaseNodeProperties.add(jToolBar1, gridBagConstraints);
 
         jToolBar2.setFloatable(false);
@@ -297,6 +299,7 @@ public class PNodePropertyPanel extends javax.swing.JPanel
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 0;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         JPanel_BaseNodeProperties.add(jToolBar2, gridBagConstraints);
 
@@ -317,7 +320,9 @@ public class PNodePropertyPanel extends javax.swing.JPanel
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.weightx = 1.0;
         JPanel_BaseNodeProperties.add(jToolBar3, gridBagConstraints);
 
         jToolBar4.setFloatable(false);
@@ -343,6 +348,7 @@ public class PNodePropertyPanel extends javax.swing.JPanel
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 1;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         JPanel_BaseNodeProperties.add(jToolBar4, gridBagConstraints);
 
@@ -365,7 +371,9 @@ public class PNodePropertyPanel extends javax.swing.JPanel
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.weightx = 1.0;
         JPanel_BaseNodeProperties.add(jToolBar5, gridBagConstraints);
 
         jToolBar6.setFloatable(false);
@@ -384,7 +392,9 @@ public class PNodePropertyPanel extends javax.swing.JPanel
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 3;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.weightx = 1.0;
         JPanel_BaseNodeProperties.add(jToolBar6, gridBagConstraints);
 
         jToolBar7.setFloatable(false);
@@ -405,9 +415,12 @@ public class PNodePropertyPanel extends javax.swing.JPanel
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 4;
         gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.weightx = 1.0;
         JPanel_BaseNodeProperties.add(jToolBar7, gridBagConstraints);
 
+        jButton1.setFont(new java.awt.Font("Lucida Grande", 0, 10)); // NOI18N
         jButton1.setText("RESET SMJoint");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -415,14 +428,15 @@ public class PNodePropertyPanel extends javax.swing.JPanel
             }
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 3;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         JPanel_BaseNodeProperties.add(jButton1, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
         gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.weighty = 1.0;
         add(JPanel_BaseNodeProperties, gridBagConstraints);
 
         JPanel_SpecificControls.setMinimumSize(new java.awt.Dimension(321, 150));

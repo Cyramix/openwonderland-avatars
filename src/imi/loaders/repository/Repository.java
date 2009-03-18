@@ -135,6 +135,8 @@ public class Repository extends Entity
         try {
             // prime the texture manager
             TextureManager.readCache(new File("assets/textures/textures.bin"));
+//            URL cacheloc = getClass().getResource("/textures/textures.bin");
+//            TextureManager.readCache(getCacheEquivalent(cacheloc));
         } catch (IOException ex) {
             Logger.getLogger(Repository.class.getName()).log(Level.SEVERE, null, ex);
         }

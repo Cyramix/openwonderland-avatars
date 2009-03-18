@@ -151,6 +151,7 @@ public class ColladaEnvironment extends Entity
         this.addComponent(RenderComponent.class, rc);
         // set some default rendering behavior
         setDefaultRenderStates();
+        m_wm.addEntity(this);
     }
 
     public Node getJMENode() {

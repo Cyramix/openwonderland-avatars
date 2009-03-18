@@ -97,7 +97,7 @@ public class FemaleAvatarAttributes extends CharacterAttributes
     {
         super(name);
         setGender(2);
-        
+        setUsePhongLighting(true);
         // Customizations
         if (bRandomCustomizations)
         {
@@ -265,7 +265,8 @@ public class FemaleAvatarAttributes extends CharacterAttributes
                 setHeadAttachment("assets/models/collada/Heads/FemaleHead/FG_FemaleHead01.dae");
                 break;
             case 7:
-                setHeadAttachment("assets/models/collada/Heads/FemaleHead/FG_FemaleLowPoly_01.dae");              break;
+                setHeadAttachment("assets/models/collada/Heads/FemaleHead/FG_FemaleLowPoly_01.dae");
+                break;
             default:
                 setHeadAttachment("assets/models/collada/Heads/FemaleHead/FemaleCHead.dae");
         }

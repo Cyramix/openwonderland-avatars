@@ -94,6 +94,7 @@ public class MaleAvatarAttributes extends CharacterAttributes
      */
     public MaleAvatarAttributes(String name, boolean bRandomCustomizations) 
     {
+        setUsePhongLighting(true);
         // Customizations
         if (bRandomCustomizations)
         {
