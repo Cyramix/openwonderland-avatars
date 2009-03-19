@@ -108,6 +108,7 @@ public class CharacterEyes
         
 //        int rightEyeLidCheck = skeleton.getSkinnedMeshJointIndex("rightEyeLid");
 //        int leftEyeLidCheck  = skeleton.getSkinnedMeshJointIndex("leftEyeLid");
+//        System.out.println(rightEyeLidCheck + " and the left one is " + leftEyeLidCheck);
         
         PPolygonSkinnedMeshInstance leftEyeMeshInst  = (PPolygonSkinnedMeshInstance) skeleton.findChild("leftEyeGeoShape");
         PPolygonSkinnedMeshInstance rightEyeMeshInst = (PPolygonSkinnedMeshInstance) skeleton.findChild("rightEyeGeoShape");

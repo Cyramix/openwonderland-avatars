@@ -11,8 +11,8 @@
  * except in compliance with the License. A copy of the License is
  * available at http://www.opensource.org/licenses/gpl-license.php.
  *
- * Sun designates this particular file as subject to the "Classpath" 
- * exception as provided by Sun in the License file that accompanied 
+ * Sun designates this particular file as subject to the "Classpath"
+ * exception as provided by Sun in the License file that accompanied
  * this code.
  */
 package imi.character;
@@ -36,7 +36,7 @@ import java.util.Map;
  * substitutions, the bind pose, and other information.
  * @author Lou Hayt
  */
-public class CharacterAttributes 
+public class CharacterAttributes
 {
     /** Name of the character **/
     private String                  name                    = "nameless";
@@ -80,7 +80,7 @@ public class CharacterAttributes
 
     private boolean                 m_bPhongLightingForSkin = false;
     // For simple static geometry replacement
-    private boolean useSimpleStaticModel    = false; 
+    private boolean useSimpleStaticModel    = false;
     private PMatrix origin                  = new PMatrix(new Vector3f(0,(float)Math.PI,0), Vector3f.UNIT_XYZ, Vector3f.ZERO);
     private PScene  simpleScene             = null;
 
@@ -147,7 +147,7 @@ public class CharacterAttributes
         {
             shirtSpecColor[0] = 0.0f;
             shirtSpecColor[1] = 0.0f;
-            shirtSpecColor[2] = 0.0f;   
+            shirtSpecColor[2] = 0.0f;
         }
     }
 
@@ -247,7 +247,7 @@ public class CharacterAttributes
     public void setAttachmentsInstructions(AttachmentParams[] attachmentsInstructions) {
         this.attachmentsInstructions = attachmentsInstructions;
     }
-    
+
     PScene getSimpleScene() {
         return simpleScene;
     }
@@ -275,15 +275,15 @@ public class CharacterAttributes
     public Map<Integer, String[]> getGeomRef() {
         return m_geomref;
     }
-    
+
     public String[] getGeomRefByRegion(int region) {
         return m_geomref.get(region);
     }
-    
+
     public void setGeomRef(Map<Integer, String[]> geom) {
         m_geomref = geom;
     }
-    
+
     public void setGeomRefByRegion(int region, String[] geomlist) {
         m_geomref.put(region, geomlist);
     }
@@ -310,7 +310,7 @@ public class CharacterAttributes
             result.setHeadAttachment(headAttachment);
         else
             result.setHeadAttachment(null);
-        
+
         // Body animations
         ArrayList<String> stringArray = new ArrayList<String>();
         if (animations != null)
@@ -321,7 +321,7 @@ public class CharacterAttributes
         }
         else
             result.setBodyAnimations(null);
-            
+
         // facial animations
         if (facialAnimations != null)
         {
@@ -347,7 +347,7 @@ public class CharacterAttributes
         }
         else
             result.setAdditionInstructions(null);
-        
+
         // load up all the attachment params
         if (attachmentsInstructions != null)
         {
@@ -455,7 +455,7 @@ public class CharacterAttributes
         return new SkinnedMeshParams(meshName, subGroupName);
     }
 
-    public boolean isMale() 
+    public boolean isMale()
     {
         if (gender == 1)
             return true;
@@ -471,7 +471,7 @@ public class CharacterAttributes
         skinTone[1] = g;
         skinTone[2] = b;
     }
-    
+
     public float[] getHairColor() {
         return hairColor;
     }
@@ -494,7 +494,7 @@ public class CharacterAttributes
         pantsSpecColor[1] = specG;
         pantsSpecColor[2] = specB;
     }
-    
+
     public float[] getShirtColor() {
         return shirtColor;
     }
@@ -507,7 +507,7 @@ public class CharacterAttributes
         shirtSpecColor[1] = specG;
         shirtSpecColor[2] = specB;
     }
-    
+
     public float[] getShoesColor() {
         return shoesColor;
     }
@@ -532,7 +532,7 @@ public class CharacterAttributes
     public float[] getShoesSpecColor() {
         return shoesSpecColor;
     }
-    
+
     public String getEyeballTexture() {
         return eyeballTexture;
     }

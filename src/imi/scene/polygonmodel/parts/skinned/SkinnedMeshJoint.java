@@ -43,8 +43,6 @@ public class SkinnedMeshJoint extends PJoint implements Serializable
 
     /** Package private member for use by the SkeletonNode primarily **/
     private transient PMatrix unmodifiedInverseBindPose = new PMatrix();
-    /** The flattened matrix **/
-    transient PMatrix flattenedMatrix = new PMatrix();
 
     /**
      * Default construction
@@ -159,7 +157,7 @@ public class SkinnedMeshJoint extends PJoint implements Serializable
         return result;
     }
 
-    public PMatrix getUnmodifiedBindPose()
+    public PMatrix getUnmodifiedInverseBindPose()
     {
         return unmodifiedInverseBindPose;
     }
@@ -177,6 +175,17 @@ public class SkinnedMeshJoint extends PJoint implements Serializable
     public void setToBindPose()
     {
         getTransform().getLocalMatrix(true).set(m_bindPoseTransform);
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder result = new StringBuilder();
+        result.append("Local: " + getTransform().getLocalMatrix(false).toString() + "\n");
+        result.append("World: " + getTransform().getWorldMatrix(false).toString() + "\n");
+        result.append("Bind: " + m_bindPoseTransform.toString() + "\n");
+        result.append("LocalModifier: " + getLocalModifierMatrix().toString() + "\n");
+        result.append("MeshSpace: " + getMeshSpace().toString() + "\n");
+        return result.toString();
     }
 
     /****************************

@@ -232,6 +232,69 @@ public class SkeletonNode extends PNode implements Animated, Serializable
     }
     
     /**
+     * This method will collect all of the BFT indices for skinned mesh joints
+     * from the specified root downward. These indices are returned in the provided
+     * array list.
+     * @param rootJointName
+     * @param BFTIndices
+     */
+    public void getSkinnedMeshJointIndices(String rootJointName, ArrayList<Integer> BFTIndices)
+    {
+        if (rootJointName == null || BFTIndices == null)
+            logger.severe("Cannot handle null parameters.");
+        else
+        {
+            SkinnedMeshJoint rootJoint = getSkinnedMeshJoint(rootJointName);
+            SkinnedMeshJoint currentJoint = null;
+
+            FastList<SkinnedMeshJoint> jointQueue = new FastList<SkinnedMeshJoint>();
+            jointQueue.add(rootJoint);
+            while (!jointQueue.isEmpty())
+            {
+                currentJoint = jointQueue.removeFirst();
+                BFTIndices.add(getSkinnedMeshJointIndex(currentJoint.getName()));
+                // Add all the SMJ children
+                if (currentJoint.getChildrenCount() > 0)
+                    for (PNode childJoint : currentJoint.getChildren())
+                        if (childJoint instanceof SkinnedMeshJoint)
+                            jointQueue.add((SkinnedMeshJoint)childJoint);
+            }
+        }
+    }
+    
+    
+    /**
+     * This method will collect all of the BFT indices for skinned mesh joints
+     * from the specified root downward. These indices are returned in the provided
+     * array list.
+     * @param rootJointName
+     * @param BFTIndices
+     */
+    public void getSkinnedMeshJointNames(String rootJointName, ArrayList<String> jointNames)
+    {
+        if (rootJointName == null || jointNames == null)
+            logger.severe("Cannot handle null parameters.");
+        else
+        {
+            SkinnedMeshJoint rootJoint = getSkinnedMeshJoint(rootJointName);
+            SkinnedMeshJoint currentJoint = null;
+
+            FastList<SkinnedMeshJoint> jointQueue = new FastList<SkinnedMeshJoint>();
+            jointQueue.add(rootJoint);
+            while (!jointQueue.isEmpty())
+            {
+                currentJoint = jointQueue.removeFirst();
+                jointNames.add(currentJoint.getName());
+                // Add all the SMJ children
+                if (currentJoint.getChildrenCount() > 0)
+                    for (PNode childJoint : currentJoint.getChildren())
+                        if (childJoint instanceof SkinnedMeshJoint)
+                            jointQueue.add((SkinnedMeshJoint)childJoint);
+            }
+        }
+    }
+
+    /**
      *  This method adds the specified joint to the skeleton. If a parent name
      * is supplied, that joint will attempt to be located before adding the new
      * joint. If the parent joint is not found, then the joint is added to the 
@@ -697,7 +760,7 @@ public class SkeletonNode extends PNode implements Animated, Serializable
                         PMatrix meshSpace = curJoint.getMeshSpace();
                         ((PJoint)parent).getMeshSpace(meshSpace);
                         meshSpace.fastMul(curJoint.getBindPose());
-                        meshSpace.fastMul(curJoint.getUnmodifiedBindPose());
+                        meshSpace.fastMul(curJoint.getUnmodifiedInverseBindPose());
                         meshSpace.fastMul(curJoint.getTransform().getLocalMatrix(false));
                     }
                     else // First joint in the skeleton; mesh space is local space
@@ -772,6 +835,8 @@ public class SkeletonNode extends PNode implements Animated, Serializable
             // Copy over the goodies
             originalJoint.getBindPose().set(configJoint.getBindPose());
         }
+
+        refresh();
     }
 
     /**
@@ -791,10 +856,12 @@ public class SkeletonNode extends PNode implements Animated, Serializable
         for (String jointName : jointNames)
         {
             originalJoint = getSkinnedMeshJoint(jointName);
-            configJoint = getSkinnedMeshJoint(jointName);
+            configJoint = configSkeleton.getSkinnedMeshJoint(jointName);
             // Copy it over
             originalJoint.getBindPose().set(configJoint.getBindPose());
         }
+
+        refresh();
     }
     
     /**
@@ -821,7 +888,7 @@ public class SkeletonNode extends PNode implements Animated, Serializable
                 SkinnedMeshJoint ourJoint = (SkinnedMeshJoint)current;
                 SkinnedMeshJoint baseJoint = baseSkeleton.getSkinnedMeshJoint(ourJoint.getName());
 
-                ourJoint.getUnmodifiedBindPose().set(baseJoint.getBindPose().inverse());
+                ourJoint.getUnmodifiedInverseBindPose().set(baseJoint.getBindPose().inverse());
                 // "prime the pump"
                 ourJoint.getTransform().setLocalMatrix(baseJoint.getBindPose());
             }

@@ -605,13 +605,18 @@ public class PNode implements Serializable
         // Grab oldChild's kids
         FastTable<PNode> oldChildren = oldChild.getChildren();
         // remove the old child
-        if (removeChild(oldChild) != null) // not found
+
+        int oldChildIndex = m_children.indexOf(oldChild);
+        if (oldChildIndex != -1) // not found
+        {
             result = true;
-        // add our new one
-        addChild(newChild);
-        // coalesce the children if necessary
-        if (bKeepOldGrandkids == true)
-            newChild.getChildren().addAll(oldChildren);
+            // add our new one
+            m_children.set(oldChildIndex, newChild);
+            newChild.setParent(this);
+            // coalesce the children if necessary
+            if (bKeepOldGrandkids == true)
+                newChild.getChildren().addAll(oldChildren);
+        }
         // Dassit!
         return result;
         

@@ -66,6 +66,7 @@ import imi.scene.polygonmodel.PPolygonMeshInstance;
 import imi.scene.polygonmodel.PPolygonModelInstance;
 import imi.scene.polygonmodel.parts.PMeshMaterial;
 import imi.scene.polygonmodel.parts.TextureMaterialProperties;
+import imi.scene.polygonmodel.parts.polygon.PPolygonPosition;
 import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
 import imi.scene.polygonmodel.parts.skinned.SkinnedMeshJoint;
 import imi.scene.polygonmodel.skinned.PPolygonSkinnedMesh;
@@ -1635,9 +1636,15 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         m_characterProcessor.setEnabled(false);
 
         List<PNode> newSkeletonChildren = new ArrayList<PNode>();
-        SkeletonNode newHeadSkeleton = loadHeadFile(headLocation, newSkeletonChildren);
+        SkeletonNode newHeadSkeleton = loadHeadFile
+                (headLocation, newSkeletonChildren);
         // Get rid of all the old stuff
         m_skeleton.clearSubGroup("Head");
+
+//         Now fix the skeletal differences from the Neck through the heirarchy
+        ArrayList<Integer> BFTIndices = new ArrayList<Integer>();
+        m_skeleton.getSkinnedMeshJointIndices("Neck", BFTIndices);
+        m_skeleton.applyConfiguration(newHeadSkeleton, BFTIndices);
 
         // Process the associated geometry and attach it to ourselves
         for (PNode node : newSkeletonChildren)
@@ -1647,7 +1654,6 @@ public abstract class Character extends Entity implements SpatialObject, Animati
                 PPolygonSkinnedMesh skinnedMesh = (PPolygonSkinnedMesh) node;
                 // Make an instance
                 PPolygonSkinnedMeshInstance skinnedMeshInstance = (PPolygonSkinnedMeshInstance) m_pscene.addMeshInstance(skinnedMesh, new PMatrix());
-
                 //  Link the SkinnedMesh to the Skeleton.
                 skinnedMeshInstance.setAndLinkSkeletonNode(m_skeleton);
 
@@ -1655,8 +1661,6 @@ public abstract class Character extends Entity implements SpatialObject, Animati
                 m_skeleton.addToSubGroup(skinnedMeshInstance, "Head");
             }
         }
-        // Now fix the skeletal differences from the Neck through the heirarchy
-        generateDeltas(newHeadSkeleton, "Neck");
 
         // Finally, apply the default shaders
         setDefaultHeadShaders();
@@ -1668,6 +1672,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
     }
 
 
+    @Deprecated
     private void generateDeltas(SkeletonNode newSkeleton, String rootJointName)
     {
         if (newSkeleton == null || m_skeleton == null)
