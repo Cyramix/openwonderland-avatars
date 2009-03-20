@@ -81,7 +81,11 @@ public class LibraryControllersProcessor extends Processor
         String meshName = skin.getSource();
         if (meshName.startsWith("#")) // Indicates a URL
             meshName = meshName.substring(1);
-
+        // HACK HACK HACK HACK HACK
+        if (meshName.contains(":")) // scoped ID, just hack around it
+        {
+            meshName = meshName.substring(meshName.lastIndexOf(":") + 1);
+        }
 
         float[] floatBuffer =  new float[16]; // Used for filling the PMatrix below
         PMatrix matrixBuffer = new PMatrix();
@@ -94,6 +98,8 @@ public class LibraryControllersProcessor extends Processor
         //  Create the PolygonSkinnedMesh.
         //  Will have to convert the PolygonMesh to a PolygonSkinnedMesh.
         PPolygonMesh polyMesh = m_colladaRef.findPolygonMesh(meshName); // Could potentially be many
+        if (polyMesh == null)
+            System.out.println("Polymesh is not found, name is " + meshName);
         PPolygonSkinnedMesh skinnedMesh = new PPolygonSkinnedMesh(polyMesh);
         ArrayList<PPolygonSkinnedMesh> skinnedChildren = new ArrayList<PPolygonSkinnedMesh>();
         // handle any children
