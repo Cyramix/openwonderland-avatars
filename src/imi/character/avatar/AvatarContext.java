@@ -312,8 +312,8 @@ public class AvatarContext extends GameContext
         {
             if (avatar.getFacialAnimationQ() != null)
             {
-                if (avatar.getFacialAnimationQ().calculateTotalRemainingTime() < 1.0f)
-                    avatar.initiateFacialAnimation(0, 1.0f, 1.0f);
+                if (avatar.getFacialAnimationQ().getNumberOfRemainingExpressions() < 4)
+                    avatar.initiateFacialAnimation(0, 0.2f, 1.0f);
             }
         }   
         
@@ -321,8 +321,8 @@ public class AvatarContext extends GameContext
         {
             if (avatar.getFacialAnimationQ() != null)
             {
-                if (avatar.getFacialAnimationQ().calculateTotalRemainingTime() < 1.0f)
-                    avatar.initiateFacialAnimation(1, 3.0f, 1.5f);
+                if (avatar.getFacialAnimationQ().getNumberOfRemainingExpressions() < 4)
+                    avatar.initiateFacialAnimation(1, 0.2f, 1.5f);
             }
         }   
         
@@ -330,8 +330,8 @@ public class AvatarContext extends GameContext
         {
             if (avatar.getFacialAnimationQ() != null)
             {
-                if (avatar.getFacialAnimationQ().calculateTotalRemainingTime() < 1.0f)
-                    avatar.initiateFacialAnimation(2, 3.0f, 1.5f);
+                if (avatar.getFacialAnimationQ().getNumberOfRemainingExpressions() < 4)
+                    avatar.initiateFacialAnimation(2, 0.2f, 1.5f);
             }
         }   
                 
@@ -339,7 +339,7 @@ public class AvatarContext extends GameContext
         else if (trigger == TriggerNames.Reverse.ordinal() && pressed)
         {
             CycleActionState punch = (CycleActionState) gameStates.get(CycleActionState.class);
-            punch.setReverseAnimation(!punch.isReverseAnimation());
+            punch.setTransitionReverseAnimation(!punch.isTransitionReverseAnimation());
         }
         
         // Select the next animation to play for the facial animation test
@@ -453,7 +453,7 @@ public class AvatarContext extends GameContext
      
         if (avatar.getAttributes().isMale())
         {
-            info = new ActionInfo("Male_Wave", "MaleSmile4Frame", 1.0f, 2.0f);
+            info = new ActionInfo("Male_Wave", "MaleSmile4Frame", 0.3f, 2.0f);
             genericAnimations.add(info);
 
             cycleInfo = new CycleActionInfo("Male_AnswerCell", "Male_Cell", "Male_AnswerCell", "MaleSmile4Frame", 0.5f, 2.0f);
@@ -472,10 +472,10 @@ public class AvatarContext extends GameContext
             info = new ActionInfo("Male_Yes");
             genericAnimations.add(info);
 
-            info = new ActionInfo("Male_Laugh", "MaleSmile4Frame", 0.5f, 2.5f);
+            info = new ActionInfo("Male_Laugh", "MaleSmile4Frame", 0.3f, 2.5f);
             genericAnimations.add(info);
 
-            info = new ActionInfo("Male_Cheer", "MaleSmile4Frame", 0.5f, 3.0f);
+            info = new ActionInfo("Male_Cheer", "MaleSmile4Frame", 0.3f, 3.0f);
             genericAnimations.add(info);
 
             info = new ActionInfo("Male_Clap");
@@ -498,7 +498,7 @@ public class AvatarContext extends GameContext
         }
         else // female
         {
-            info = new ActionInfo("Female_Wave", "FemaleC_Smile", 1.0f, 2.0f);
+            info = new ActionInfo("Female_Wave", "FemaleC_Smile", 0.3f, 2.0f);
             genericAnimations.add(info);
 
             cycleInfo = new CycleActionInfo("Female_AnswerCell", "Female_Cell", "Female_AnswerCell", "FemaleC_Smile", 0.5f, 2.0f);
@@ -516,10 +516,10 @@ public class AvatarContext extends GameContext
             info = new ActionInfo("Female_Yes");
             genericAnimations.add(info);
 
-            info = new ActionInfo("Female_Laugh", "FemaleC_Smile", 0.5f, 2.5f);
+            info = new ActionInfo("Female_Laugh", "FemaleC_Smile", 0.3f, 2.5f);
             genericAnimations.add(info);
 
-            info = new ActionInfo("Female_Cheer", "FemaleC_Smile", 0.5f, 3.0f);
+            info = new ActionInfo("Female_Cheer", "FemaleC_Smile", 0.3f, 3.0f);
             genericAnimations.add(info);
 
             info = new ActionInfo("Female_Clap");

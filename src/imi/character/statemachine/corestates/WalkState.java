@@ -20,6 +20,7 @@ package imi.character.statemachine.corestates;
 import imi.character.avatar.*;
 import com.jme.math.Vector3f;
 import imi.character.CharacterController;
+import imi.character.avatar.AvatarContext.TriggerNames;
 import imi.character.statemachine.GameContext;
 import imi.character.statemachine.GameState;
 import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
@@ -60,10 +61,10 @@ public class WalkState extends GameState
         {        
             CharacterController controller = context.getController();
 
-            if (controller.isMovingForward())
-                setTransitionReverseAnimation(false);
-            else
+            if (context.getTriggerState().isKeyPressed(TriggerNames.Move_Back.ordinal()))
                 setTransitionReverseAnimation(true);
+            else
+                setTransitionReverseAnimation(false);
         }
                 
         return true;
@@ -108,7 +109,7 @@ public class WalkState extends GameState
             // Reverse animation if moving backwards
             CharacterController controller = context.getController();
             
-            if (controller.isMovingForward())
+            if (!controller.isMovingForward())
                 skeleton.getAnimationState().setReverseAnimation(true);
             else
                 skeleton.getAnimationState().setReverseAnimation(false);
@@ -155,13 +156,6 @@ public class WalkState extends GameState
     protected void stateExit(GameContext owner)
     {
         super.stateExit(owner);
-        // avatar's skeleton might be null untill loaded
-        SkeletonNode skeleton = context.getSkeleton();
-        if (skeleton != null)   
-        {
-            // Clean up... make sure the animation is not on reverse
-            skeleton.getAnimationState().setReverseAnimation(false);
-        }
     }
         
     public void setImpulse(float amount)

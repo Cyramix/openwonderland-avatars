@@ -36,7 +36,7 @@ public class WalkToRun extends TransitionObject
         if (state.getContext().getTriggerState().isKeyPressed(TriggerNames.Movement_Modifier.ordinal()))
         {
             CharacterController controller = state.getContext().getController();
-            if (!controller.isMovingForward())
+            if (controller.isMovingForward())
                 return state.getContext().excecuteTransition(this);
         }
         

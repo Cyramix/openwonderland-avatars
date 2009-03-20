@@ -32,8 +32,6 @@ public class StateInfo
     private String      animationName       = null;
     /** Body animation speed **/
     private float       animationSpeed      = 1.0f;
-    /** True to reverse the body animation **/
-    private boolean     bReverseAnimation   = false;
     /** Length of time to transition into the body animation **/
     private float       transitionDuration  = 0.2f;
     /** True to transition in reverse into the body animation **/
@@ -43,11 +41,10 @@ public class StateInfo
     
     /** The facial animation will play when entering the state if not null **/
     private String facialAnimationName      = null;
-    /** The length of time the facial animation will play into the facial pose **/
-    private float  facialAnimationTimeIn    = 1.0f;
-    /** The length of time the facial animation will play out of the facial pose
-        and back to the bind (and then to the default) **/
-    private float  facialAnimationTimeOut   = 2.0f;
+    /** How long the facial transitions should take **/
+    private float  facialAnimationTransitionTime    = 0.4f;
+    /** How long the expression should be held **/
+    private float  facialAnimationExpressionTime   = 2.0f;
 
     /** Constructor with body animation only **/
     public StateInfo(String bodyAnimationName) {
@@ -55,24 +52,23 @@ public class StateInfo
     }
     
     /** Constructor with body animation and facial animation **/
-    public StateInfo(String bodyAnimationName, String facialAnimationName, float facialAnimationTimeIn, float facialAnimationTimeOut) {
+    public StateInfo(String bodyAnimationName, String facialAnimationName, float facialAnimationTransitionLength, float facialAnimationHoldTime) {
         this.animationName          = bodyAnimationName;
         this.facialAnimationName    = facialAnimationName;
-        this.facialAnimationTimeIn  = facialAnimationTimeIn;
-        this.facialAnimationTimeOut = facialAnimationTimeOut;
+        this.facialAnimationTransitionTime  = facialAnimationTransitionLength;
+        this.facialAnimationExpressionTime = facialAnimationHoldTime;
     }
     
     /** Apply this configuration on that state **/
     public void apply(GameState state) {
         state.setAnimationName(animationName);
         state.setAnimationSpeed(animationSpeed);
-        state.setReverseAnimation(bReverseAnimation);
         state.setTransitionDuration(transitionDuration);
         state.setTransitionReverseAnimation(bTransitionReverseAnimation);
         state.setCycleMode(cycleMode);
         state.setFacialAnimationName(facialAnimationName);
-        state.setFacialAnimationTimeIn(facialAnimationTimeIn);
-        state.setFacialAnimationTimeOut(facialAnimationTimeOut);
+        state.setFacialAnimationTransitionTime(facialAnimationTransitionTime);
+        state.setFacialAnimationExpressionHoldTime(facialAnimationExpressionTime);
     }
     
     /** Name of the body animation **/
@@ -93,16 +89,6 @@ public class StateInfo
     /** Body animation speed **/
     public void setAnimationSpeed(float animationSpeed) {
         this.animationSpeed = animationSpeed;
-    }
-    
-    /** True to reverse the body animation **/
-    public boolean isReverseAnimation() {
-        return bReverseAnimation;
-    }
-    
-    /** True to reverse the body animation **/
-    public void setReverseAnimation(boolean bReverseAnimation) {
-        this.bReverseAnimation = bReverseAnimation;
     }
     
     /** True to transition in reverse into the body animation **/
@@ -133,28 +119,6 @@ public class StateInfo
     /** The facial animation will play when entering the state if not null **/
     public void setFacialAnimationName(String facialAnimationName) {
         this.facialAnimationName = facialAnimationName;
-    }
-    
-    /** The length of time the facial animation will play into the facial pose **/
-    public float getFacialAnimationTimeIn() {
-        return facialAnimationTimeIn;
-    }
-    
-    /** The length of time the facial animation will play into the facial pose **/
-    public void setFacialAnimationTimeIn(float facialAnimationTimeIn) {
-        this.facialAnimationTimeIn = facialAnimationTimeIn;
-    }
-    
-    /** The length of time the facial animation will play out of the facial pose
-        and back to the bind (and then to the default) **/
-    public float getFacialAnimationTimeOut() {
-        return facialAnimationTimeOut;
-    }
-    
-    /** The length of time the facial animation will play out of the facial pose
-        and back to the bind (and then to the default) **/
-    public void setFacialAnimationTimeOut(float facialAnimationTimeOut) {
-        this.facialAnimationTimeOut = facialAnimationTimeOut;
     }
     
     /** Length of time to transition into the body animation **/

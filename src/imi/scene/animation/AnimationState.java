@@ -366,10 +366,6 @@ public class AnimationState
     public int getID() {
         return m_ID;
     }
-
-    public void setID(int m_ID) {
-        this.m_ID = m_ID;
-    }
     
     public AnimationCursor getCursor()
     {

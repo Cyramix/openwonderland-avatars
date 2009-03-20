@@ -248,10 +248,10 @@ public class AvatarController extends CharacterController
     public boolean isMovingForward() {
         Vector3f currentDirection = body.getTransform().getWorldMatrix(false).getLocalZ();
         float dot = currentDirection.dot(velocity);
-        if (dot >= 0.0f)
-            return true;
-        else
+        if (dot >= 0.0f) // Z is flipped!
             return false;
+        else
+            return true;
     }
     
     @Override

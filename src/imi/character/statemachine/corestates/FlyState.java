@@ -97,7 +97,7 @@ public class FlyState extends GameState
             // Reverse animation if moving backwards
             CharacterController controller = context.getController();
             
-            if (controller.isMovingForward())
+            if (!controller.isMovingForward())
                 skeleton.getAnimationState().setReverseAnimation(true);
             else
                 skeleton.getAnimationState().setReverseAnimation(false);

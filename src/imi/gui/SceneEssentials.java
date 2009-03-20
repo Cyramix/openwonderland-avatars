@@ -41,8 +41,6 @@ import imi.scene.PNode;
 import imi.scene.PScene;
 import imi.scene.animation.AnimationComponent.PlaybackMode;
 import imi.scene.animation.AnimationState;
-import imi.scene.animation.TransitionCommand;
-import imi.scene.animation.TransitionQueue;
 import imi.scene.camera.behaviors.FirstPersonCamModel;
 import imi.scene.camera.behaviors.TumbleObjectCamModel;
 import imi.scene.camera.state.FirstPersonCamState;
@@ -1092,17 +1090,7 @@ public class SceneEssentials {
                 facialAnimationState.setCurrentCyclePlaybackMode(PlaybackMode.PlayOnce);
                 facialAnimationState.setAnimationSpeed(0.1f);
                 m_avatar.getSkeleton().addAnimationState(facialAnimationState);
-                if (m_avatar.getSkeleton().getAnimationComponent().getGroupCount() > 1)
-                {
-                    if (m_avatar.getSkeleton().getAnimationGroup(1).getCycleCount() > 1)
-                        m_avatar.setDefaultFacePose(1);
-                    else
-                        m_avatar.setDefaultFacePose(0);
-
-                    TransitionQueue facialAnimQ = m_avatar.getFacialAnimationQ();
-                    // Go to default face pose
-                    facialAnimQ.addTransition(new TransitionCommand(m_avatar.getDefaultFacePose(), m_avatar.getDefaultFacePoseTiming(), PlaybackMode.PlayOnce, false));
-                }
+                m_avatar.initiateFacialAnimation(0, 0.2f, 1.0f);
             } catch (MalformedURLException ex) {
                 Logger.getLogger(SceneEssentials.class.getName()).log(Level.SEVERE, null, ex);
             }

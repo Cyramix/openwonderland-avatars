@@ -44,7 +44,6 @@ public class GameState extends NamedUpdatableObject
     protected String    animationName       = null;
     /** Default playback speed for any animations used by this state **/
     protected float     animationSpeed      = 1.0f;
-    private boolean     bReverseAnimation   = false;
     /** Length of time to transition **/
     private float       transitionDuration  = 0.2f;
     private boolean     bTransitionReverseAnimation = false;
@@ -55,8 +54,8 @@ public class GameState extends NamedUpdatableObject
     
     /** The facial animation will play when entering the state if not null **/
     private String facialAnimationName    = null;
-    private float  facialAnimationTimeIn  = 1.0f;
-    private float  facialAnimationTimeOut = 2.0f;
+    private float  facialAnimationTransitionTime  = 0.3f;
+    private float  facialAnimationExpressionHoldTime = 2.5f;
     
     /** Logger convenience method **/
     protected final static Logger logger = Logger.getLogger(GameState.class.getName());
@@ -173,7 +172,6 @@ public class GameState extends NamedUpdatableObject
         {
             skeleton.getAnimationState().setTransitionDuration(transitionDuration);
             skeleton.getAnimationState().setAnimationSpeed(animationSpeed);
-            skeleton.getAnimationState().setReverseAnimation(bReverseAnimation);
             skeleton.getAnimationState().setCycleMode(cycleMode);
             bAnimationSet = skeleton.transitionTo(animationName, bTransitionReverseAnimation);
         }
@@ -205,7 +203,7 @@ public class GameState extends NamedUpdatableObject
 //            gameContext.getController().getWindow().setTitle(getName() + " Reverse: " + bReverseAnimation + " " + getAnimationName());
         
         if (facialAnimationName != null)
-             gameContext.getCharacter().initiateFacialAnimation(facialAnimationName, facialAnimationTimeIn, facialAnimationTimeOut);
+             gameContext.getCharacter().initiateFacialAnimation(facialAnimationName, facialAnimationTransitionTime, facialAnimationExpressionHoldTime);
         
         bAnimationSet = false;
         
@@ -275,35 +273,6 @@ public class GameState extends NamedUpdatableObject
         this.transitionDuration = transitionDuration;
     }
 
-    public boolean isReverseAnimation() {
-        return bReverseAnimation;
-    }
-
-    /**
-     * Although internal state is changed to reflect the parameter, it may not
-     * be applied to the animation if the SkeletonNode has not yet been set with
-     * the associated GameContext instance.
-     * @param reverseAnimation
-     * @return True if the animation system was notified, false otherwise
-     */
-    public boolean setReverseAnimation(boolean reverseAnimation)
-    {
-        boolean result = false;
-        // Character's skeleton might be null untill loaded
-        SkeletonNode skeleton = gameContext.getSkeleton();
-        if (skeleton != null)
-        {
-            result = true;
-            // Set reverse
-            if (reverseAnimation)
-                skeleton.getAnimationState().setReverseAnimation(true);
-            else
-                skeleton.getAnimationState().setReverseAnimation(false);
-        }
-        bReverseAnimation = reverseAnimation;
-        return result;
-    }
-
     public boolean isTransitionReverseAnimation() {
         return bTransitionReverseAnimation;
     }
@@ -346,8 +315,8 @@ public class GameState extends NamedUpdatableObject
      * is not null.
      * @return
      */
-    public float getFacialAnimationTimeIn() {
-        return facialAnimationTimeIn;
+    public float getFacialAnimationTransitionTime() {
+        return facialAnimationTransitionTime;
     }
 
     /**
@@ -356,8 +325,8 @@ public class GameState extends NamedUpdatableObject
      * is not null.
      * @return
      */
-    public void setFacialAnimationTimeIn(float facialAnimationTimeIn) {
-        this.facialAnimationTimeIn = facialAnimationTimeIn;
+    public void setFacialAnimationTransitionTime(float facialAnimationTransition) {
+        this.facialAnimationTransitionTime = facialAnimationTransition;
     }
 
     /**
@@ -366,8 +335,8 @@ public class GameState extends NamedUpdatableObject
      * is not null.
      * @return
      */
-    public float getFacialAnimationTimeOut() {
-        return facialAnimationTimeOut;
+    public float getFacialAnimationExpressionHoldTime() {
+        return facialAnimationExpressionHoldTime;
     }
 
     /**
@@ -376,7 +345,7 @@ public class GameState extends NamedUpdatableObject
      * is not null.
      * @return
      */
-    public void setFacialAnimationTimeOut(float facialAnimationTimeOut) {
-        this.facialAnimationTimeOut = facialAnimationTimeOut;
+    public void setFacialAnimationExpressionHoldTime(float facialAnimationTime) {
+        this.facialAnimationExpressionHoldTime = facialAnimationTime;
     }
 }

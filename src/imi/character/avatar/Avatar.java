@@ -291,8 +291,8 @@ public class Avatar extends imi.character.Character
         fall.setAnimationSpeed(2.0f);
         fall.setGettingUpAnimationSpeed(2.0f);
         // Frown when entering the state
-        fall.setFacialAnimationTimeIn(0.75f);
-        fall.setFacialAnimationTimeOut(2.0f);
+        fall.setFacialAnimationTransitionTime(0.75f);
+        fall.setFacialAnimationExpressionHoldTime(2.0f);
 
         SitOnGroundState sitGround = (SitOnGroundState)m_context.getState(SitOnGroundState.class);
         sitGround.setTransitionReverseAnimation(true);

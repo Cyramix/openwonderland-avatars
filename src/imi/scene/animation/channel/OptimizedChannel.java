@@ -196,6 +196,7 @@ public class OptimizedChannel implements PJointChannel, Serializable
         // Use these two numbers as indicies for the frames to blend
         leftResult = -1;
         rightResult = -1;
+
         // Get cursor to optimize the keyframe search
         int currentIndex = -1;
         if (bTransitionCycle) // If we are detecting the frames for a transition cycle, use its cursor
@@ -266,7 +267,7 @@ public class OptimizedChannel implements PJointChannel, Serializable
                 if (leftResult != -1)
                     result = (fTime - duration) / (duration + averageTimestep - getFrameTime(leftResult));
             }
-            else if (leftResult != 1)
+            else if (leftResult != -1)
                 result = (fTime - getFrameTime(leftResult)) / (getFrameTime(rightResult) - getFrameTime(leftResult));
         }
 

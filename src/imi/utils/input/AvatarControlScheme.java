@@ -223,7 +223,7 @@ public class AvatarControlScheme extends InputScheme
                     
                     avatar = avatarTeam.get(currentavatar);
                     avatar.selectForInput();
-                    avatar.initiateFacialAnimation("MaleSmile", 0.5f, 3.0f);
+                    avatar.initiateFacialAnimation("MaleSmile", 0.25f, 3.0f);
                 }
             }
             
@@ -240,7 +240,7 @@ public class AvatarControlScheme extends InputScheme
                     
                     avatar = avatarTeam.get(currentavatar);
                     avatar.selectForInput();
-                    avatar.initiateFacialAnimation("MaleSmile", 0.5f, 3.0f);
+                    avatar.initiateFacialAnimation("MaleSmile", 0.25f, 3.0f);
                 }
             }
             

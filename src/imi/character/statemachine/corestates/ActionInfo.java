@@ -38,8 +38,8 @@ public class ActionInfo extends StateInfo
     }
     
     /** Constructor with body animation and facial animation **/
-    public ActionInfo(String bodyAnimationName, String facialAnimationName, float facialAnimationTimeIn, float facialAnimationTimeOut) {
-        super(bodyAnimationName, facialAnimationName, facialAnimationTimeIn, facialAnimationTimeOut);
+    public ActionInfo(String bodyAnimationName, String facialAnimationName, float facialAnimationTransitionTime, float facialAnimationHoldtime) {
+        super(bodyAnimationName, facialAnimationName, facialAnimationTransitionTime, facialAnimationHoldtime);
     }
     
     /** Apply this configuration on that state **/

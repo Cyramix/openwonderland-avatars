@@ -100,7 +100,7 @@ public class FallFromSitState extends GameState
             bIdleSittingAnimationSet = true;
         }
         
-        setReverseAnimation(false);
+        setTransitionReverseAnimation(false); // Play this animation forward
         
         // Stop the character
         context.getController().stop();

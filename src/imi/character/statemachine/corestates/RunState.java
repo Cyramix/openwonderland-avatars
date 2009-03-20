@@ -51,7 +51,7 @@ public class RunState extends WalkState
         super.update(deltaTime);
         
         CharacterController controller = context.getController();
-        if (controller.isMovingForward())
+        if (!controller.isMovingForward())
         {
             context.getTriggerState().keyReleased(TriggerNames.Movement_Modifier.ordinal());
             transition(RunToWalk.class);

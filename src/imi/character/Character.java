@@ -33,6 +33,7 @@ import com.jme.scene.state.MaterialState.ColorMaterial;
 import com.jme.scene.state.RenderState;
 import com.jme.scene.state.WireframeState;
 import com.jme.scene.state.ZBufferState;
+import imi.character.FacialAnimationController;
 import imi.character.objects.ObjectCollection;
 import imi.character.objects.SpatialObject;
 import imi.character.statemachine.GameContext;
@@ -54,19 +55,15 @@ import imi.scene.PNode;
 import imi.scene.PScene;
 import imi.scene.animation.AnimationComponent;
 import imi.scene.animation.AnimationComponent.PlaybackMode;
-import imi.scene.animation.AnimationGroup;
 import imi.scene.animation.AnimationListener;
 import imi.scene.animation.AnimationListener.AnimationMessageType;
 import imi.scene.animation.AnimationState;
-import imi.scene.animation.TransitionCommand;
-import imi.scene.animation.TransitionQueue;
 import imi.scene.boundingvolumes.PSphere;
 import imi.scene.polygonmodel.PPolygonMesh;
 import imi.scene.polygonmodel.PPolygonMeshInstance;
 import imi.scene.polygonmodel.PPolygonModelInstance;
 import imi.scene.polygonmodel.parts.PMeshMaterial;
 import imi.scene.polygonmodel.parts.TextureMaterialProperties;
-import imi.scene.polygonmodel.parts.polygon.PPolygonPosition;
 import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
 import imi.scene.polygonmodel.parts.skinned.SkinnedMeshJoint;
 import imi.scene.polygonmodel.skinned.PPolygonSkinnedMesh;
@@ -162,7 +159,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
     /** Provides update() calls to the character **/
     protected CharacterProcessor            m_characterProcessor    = null;
     /** Animation queue for facial animations. Used to chain expressions. **/
-    protected TransitionQueue               m_facialAnimationQ      = null;
+    protected FacialAnimationController     m_facialAnimations      = null;
     /** The eyes! **/
     protected CharacterEyes                 m_eyes                  = null;
     /** The arms! **/
@@ -400,15 +397,19 @@ public abstract class Character extends Entity implements SpatialObject, Animati
             AnimationState facialAnimationState = m_skeleton.getAnimationState(1);
             facialAnimationState.setCurrentCycle(-1);
             facialAnimationState.setCycleMode(PlaybackMode.PlayOnce);
-            facialAnimationState.setAnimationSpeed(0.1f);
+            facialAnimationState.setAnimationSpeed(0.1f); // <-- slow playback speed, anim duration is way short bro
         }
         if (m_skeleton.getAnimationComponent().getGroupCount() > 1)
         {
-            m_facialAnimationQ = new TransitionQueue(m_skeleton, 1);
+            m_facialAnimations = new FacialAnimationController(this, 1);
             // Go to default face pose
-            m_facialAnimationQ.addTransition(new TransitionCommand(m_defaultFacePose, m_defaultFacePoseTiming, PlaybackMode.PlayOnce, false));
+            m_skeleton.getAnimationState(1).setAnimationSpeed(0.24f);
+            m_skeleton.getAnimationState(1).setCurrentCycle(m_defaultFacePose);
+            m_skeleton.getAnimationState(1).setCurrentCycleTime(0);
+            m_skeleton.getAnimationState(1).setCycleMode(PlaybackMode.PlayOnce);
+
             // Smile when comming in
-            initiateFacialAnimation(1, 0.75f, 0.75f);
+            initiateFacialAnimation(1, 0.4f, 2.75f);
         }
 
         // Hook up eyeballs
@@ -520,7 +521,11 @@ public abstract class Character extends Entity implements SpatialObject, Animati
             if (meshInst.getName().contains("EyeGeoShape") ||
                 meshInst.getName().contains("Tongue")      ||
                 meshInst.getName().contains("Teeth"))
+            {
+                if (meshMat.getTexture(0) != null)
+                    meshMat.getTexture(0).setMinFilter(MinificationFilter.BilinearNoMipMaps);
                 meshMat.setShader(eyeballShader);
+            }
             else if (meshInst.getName().contains("Head") ||
                      meshInst.getName().contains("Nude") ||
                      meshInst.getName().contains("Arms") ||
@@ -705,7 +710,11 @@ public abstract class Character extends Entity implements SpatialObject, Animati
                     meshMat.getTexture(0).setMinFilter(MinificationFilter.BilinearNoMipMaps);
             }
             else if (meshInst.getName().contains("Tongue") || meshInst.getName().contains("Teeth"))
+            {
+                if (meshMat.getTexture(0) != null)
+                    meshMat.getTexture(0).setMinFilter(MinificationFilter.BilinearNoMipMaps);
                 meshMat.setShader(eyeballShader);
+            }
             else
                 meshMat.setShader(fleshShader);
             // Apply it!
@@ -1013,7 +1022,8 @@ public abstract class Character extends Entity implements SpatialObject, Animati
 
         if (m_attributes.isUseSimpleStaticModel())
             m_modelInst.setDirty(true, true);
-
+        if (m_facialAnimations != null)
+            m_facialAnimations.update(deltaTime);
         if (m_context != null)
             m_context.update(deltaTime);
         if (m_eyes != null)
@@ -1057,51 +1067,47 @@ public abstract class Character extends Entity implements SpatialObject, Animati
      * Use this convenience method to animate a facial expression for a short
      * amount of time.
      * @param cycleName The name of the facial animation cycle to play
-     * @param fTimeIn How long should to transition into the animation take
-     * @param fTimeOut How long the transition out of the animation takes
+     * @param fTransitionTime How long should the transition take
+     * @param fExpressionDuration How long the pose should be held
      */
-    public void initiateFacialAnimation(String cycleName, float fTimeIn, float fTimeOut)
+    public void initiateFacialAnimation(String cycleName, float fTransitionTime, float fExpressionDuration)
     {
         if (m_skeleton == null) // Not ready to handle facial animations yet
             return;
-        if (m_facialAnimationQ == null)
+        if (m_facialAnimations == null)
         {
             AnimationComponent ac = m_skeleton.getAnimationComponent();
             if (ac.getGroupCount() > 1)
-                m_facialAnimationQ = new TransitionQueue(m_skeleton, 1);
+                m_facialAnimations = new FacialAnimationController(this, 1);
             else
                 return;
         }
         int cycle = m_skeleton.getAnimationGroup(1).findAnimationCycleIndex(cycleName);
         if (cycle != -1)
-            initiateFacialAnimation(cycle, fTimeIn, fTimeOut);
+            initiateFacialAnimation(cycle, fTransitionTime, fExpressionDuration);
     }
 
     /**
      * Convenience method for playing facial animations.
      * @param cycleIndex The index of the desired facial animation cycle
-     * @param fTimeIn Transition-to time.
-     * @param fTimeOut Transition-out time.
+     * @param fTransitionTime How long should the transition take
+     * @param fExpressionDuration How long the pose should be held
      */
-    public void initiateFacialAnimation(int cycleIndex, float fTimeIn, float fTimeOut)
+    public void initiateFacialAnimation(int cycleIndex, float fTransitionTime, float fExpressionDuration)
     {
-        if (m_facialAnimationQ == null)
+        if (m_facialAnimations == null)
         {
             if (m_skeleton.getAnimationComponent().getGroupCount() > 1)
-                m_facialAnimationQ = new TransitionQueue(m_skeleton, 1);
+                m_facialAnimations = new FacialAnimationController(this, 1);
             else
                 return;
         }
-
-        // Return from default face pose if current
-        m_facialAnimationQ.addTransition(new TransitionCommand(m_defaultFacePose, m_defaultFacePoseTiming, PlaybackMode.PlayOnce, true));
-
-        m_facialAnimationQ.addTransition(new TransitionCommand(cycleIndex, fTimeIn, PlaybackMode.PlayOnce, false));
-        m_facialAnimationQ.addTransition(new TransitionCommand(cycleIndex, fTimeOut, PlaybackMode.PlayOnce, true));
-
-        // Go to default face pose
-        m_facialAnimationQ.addTransition(new TransitionCommand(m_defaultFacePose, m_defaultFacePoseTiming, PlaybackMode.PlayOnce, false));
-    }
+        m_facialAnimations.queueFacialAnimation(fTransitionTime, // Time in
+                                                fTransitionTime, // Time out
+                                                fExpressionDuration, // Hold time
+                                                cycleIndex, // Cycle to play
+                                                PlaybackMode.PlayOnce); // Play mode
+     }
 
     /**
      * Sets the camera on this character.
@@ -1261,16 +1267,17 @@ public abstract class Character extends Entity implements SpatialObject, Animati
     {
         if (m_context != null)
             m_context.notifyAnimationMessage(message, stateID);
+
     }
 
-    public TransitionQueue getFacialAnimationQ()
+    public FacialAnimationController getFacialAnimationQ()
     {
-        if (m_facialAnimationQ == null)
+        if (m_facialAnimations == null)
         {
             if (m_skeleton.getAnimationComponent().getGroupCount() > 1)
-                m_facialAnimationQ = new TransitionQueue(m_skeleton, 1);
+                m_facialAnimations = new FacialAnimationController(this, 1);
         }
-        return m_facialAnimationQ;
+        return m_facialAnimations;
     }
 
     public CharacterEyes getEyes() {
@@ -1513,7 +1520,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         m_objectCollection      = null;
         m_AnimationProcessor    = null;
         m_characterProcessor    = null;
-        m_facialAnimationQ      = null;
+        m_facialAnimations      = null;
         m_eyes                  = null;
         m_rightArm              = null;
         m_leftArm               = null;

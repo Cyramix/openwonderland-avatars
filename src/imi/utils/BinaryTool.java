@@ -343,6 +343,8 @@ public class BinaryTool
         // optimize all of those cycles
         for (AnimationCycle cycle : skeleton.getAnimationGroup(0).getCycles())
             cycle.optimizeChannels(animationQuality);
+        for (AnimationCycle cycle : skeleton.getAnimationGroup(1).getCycles())
+            cycle.optimizeChannels(animationQuality);
         // now our skeleton is loaded with animation data, time to write it out
         serializeSkeleton(skeleton, outputFile);
     }

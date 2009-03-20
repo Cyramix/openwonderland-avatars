@@ -83,7 +83,7 @@ public class PMatrix_JointChannel implements PJointChannel, Serializable
      */
     public void calculateFrame(PJoint jointToAffect, AnimationState state)
     {
-        if (calculateBlendedMatrix(state.getCurrentCycleTime(), m_blendBuffer, state, false) == true)
+        if (calculateBlendedMatrix(state.getCurrentCycleTime(), m_blendBuffer, state, false))
             jointToAffect.getTransform().setLocalMatrix(m_blendBuffer);
     }
 

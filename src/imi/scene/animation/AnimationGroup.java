@@ -78,7 +78,7 @@ public class AnimationGroup implements Serializable
         int cycleIndex = state.getCurrentCycle();
         if (cycleIndex == -1 || m_cycles.isEmpty())
             return;
-
+        
         AnimationCycle cycle = m_cycles.get(cycleIndex);
         clampCycleTime(state);
 

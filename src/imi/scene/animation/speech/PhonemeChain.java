@@ -19,14 +19,12 @@ package imi.scene.animation.speech;
 
 import imi.character.Character;
 import imi.scene.animation.AnimationComponent;
-import imi.scene.animation.AnimationComponent.PlaybackMode;
-import imi.scene.animation.TransitionCommand;
-import imi.scene.animation.TransitionQueue;
 import java.util.HashMap;
 import java.util.Map;
 
 /**
- * This class handles giving a character a chain of phoneme commands.
+ * This class handles giving a character a chain of phoneme commands. Still in
+ * development.
  * @author Ronald E Dahlgren
  */
 public class PhonemeChain
@@ -49,8 +47,6 @@ public class PhonemeChain
     private Map<Phoneme, Integer> phonemeToAnimationIndex = new HashMap<Phoneme, Integer>();
     /** The avatar that will be speaking  **/
     private Character speaker = null;
-    /** The animation queue for facial animations **/
-    private TransitionQueue facialAnimations = null;
 
     /**
      * Construct a new PhonemeChain with the specified speaker as a target.
@@ -59,7 +55,6 @@ public class PhonemeChain
     public PhonemeChain(Character speaker)
     {
         this.speaker = speaker;
-        facialAnimations = speaker.getFacialAnimationQ();
         AnimationComponent animationComponent = speaker.getSkeleton().getAnimationComponent();
 
         // Set up mapping of animation names to indices
@@ -78,6 +73,7 @@ public class PhonemeChain
         else
         {
             // No female phonemes yet
+            
         }
     }
 
@@ -87,13 +83,10 @@ public class PhonemeChain
      */
     public void initiateChain(Iterable<Phoneme> phonemes, float delayBetweenElements)
     {
-        TransitionCommand nextCommand = null;
         for (Phoneme phoneme : phonemes)
         {
-            nextCommand = new TransitionCommand(phonemeToAnimationIndex.get(phoneme),
-                                                delayBetweenElements,
-                                                PlaybackMode.Loop);
-            facialAnimations.addTransition(nextCommand);
+            if (speaker != null)
+                speaker.initiateFacialAnimation(phonemeToAnimationIndex.get(phoneme), 0.05f, 0.7f);
         }
     }
 }
