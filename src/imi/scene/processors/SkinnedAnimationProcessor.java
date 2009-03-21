@@ -111,5 +111,15 @@ public class SkinnedAnimationProcessor extends ProcessorComponent
     public void initialize() 
     {
         setArmingCondition(new NewFrameCondition(this));
-    }    
+    }
+
+    @Override
+    public void compute() {
+
+    }
+
+    @Override
+    public void commit() {
+
+    }
 }

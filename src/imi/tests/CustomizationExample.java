@@ -89,8 +89,8 @@ public class CustomizationExample extends DemoBase
                                                  1, // Legs
                                                  1, // Torso
                                                  1, // Hair
-                                                 1, // Head
-                                                 3); // Skin
+                                                 6, // Head
+                                                 12); // Skin
         // Put her over to the right a bit
         femaleAttributes.setOrigin(new PMatrix(new Vector3f(-1, 0, 1)));
         Avatar femaleAvatar = new Avatar(femaleAttributes, wm);

@@ -19,25 +19,22 @@
 package imi.tests;
 
 import com.jme.bounding.BoundingBox;
-import com.jme.bounding.BoundingSphere;
 import com.jme.image.Texture;
 import com.jme.image.Texture2D;
 import com.jme.light.LightNode;
 import com.jme.light.PointLight;
 import com.jme.math.Vector3f;
 import com.jme.renderer.ColorRGBA;
-import com.jme.renderer.Renderer;
 import com.jme.renderer.TextureRenderer;
 import com.jme.scene.CameraNode;
 import com.jme.scene.Node;
-import com.jme.scene.shape.Box;
-import com.jme.scene.shape.Quad;
 import com.jme.scene.state.MaterialState;
 import com.jme.scene.state.RenderState;
-import com.jme.scene.state.TextureState;
 import com.jme.scene.state.ZBufferState;
 import com.jme.util.TextureManager;
 import imi.applet.AppletTest;
+import imi.character.avatar.Avatar;
+import imi.character.avatar.FemaleAvatarAttributes;
 import imi.environments.ColladaEnvironment;
 import imi.loaders.repository.Repository;
 import imi.scene.JScene;
@@ -46,11 +43,10 @@ import imi.scene.SkyBox;
 import imi.scene.camera.behaviors.FirstPersonCamModel;
 import imi.scene.camera.state.CameraState;
 import imi.scene.camera.state.FirstPersonCamState;
-
 import imi.scene.processors.FlexibleCameraProcessor;
-import imi.scene.processors.JMEBoxUpdateProcessor;
 import imi.scene.processors.JSceneAWTEventProcessor;
 import imi.scene.processors.JSceneEventProcessor;
+import imi.utils.input.AvatarControlScheme;
 import java.awt.Canvas;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
@@ -58,52 +54,44 @@ import java.awt.GridBagLayout;
 import java.awt.image.BufferedImage;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Timer;
 import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import org.jdesktop.mtgame.AWTInputComponent;
 import org.jdesktop.mtgame.BufferUpdater;
-
 import org.jdesktop.mtgame.CameraComponent;
 import org.jdesktop.mtgame.Entity;
 import org.jdesktop.mtgame.FrameRateListener;
 import org.jdesktop.mtgame.InputManager;
-import org.jdesktop.mtgame.NewFrameCondition;
-import org.jdesktop.mtgame.ProcessorArmingCollection;
 import org.jdesktop.mtgame.ProcessorCollectionComponent;
 import org.jdesktop.mtgame.ProcessorComponent;
 import org.jdesktop.mtgame.RenderBuffer;
 import org.jdesktop.mtgame.RenderComponent;
 import org.jdesktop.mtgame.RenderUpdater;
 import org.jdesktop.mtgame.WorldManager;
-import org.jdesktop.mtgame.processor.RotationProcessor;
 
 /**
- * Demo using the BufferUpdater class to initialize the world after the render
- * buffer / canvas is ready to proceed.  Highlights the tech of rendering to a
- * texture.  Center cube texture consists of a blend of its own texture with the
- * texture of another cube spinning in a differnt direction with a differnt texture
- * in a different scene (not visible).  Adjacent cubes is rendering a viewport
- * containing that cube aand anything else in the view onto its own sides.
+ * Base project that uses the BufferUpdater which makes sure the ogl window is
+ * ready before continuing with the creation of the world.  This base creates an
+ * FPS Camera, skybox and simple environment.
  * @author Paul Viet Nguyen Truong (ptruong)
  */
-public class TestRenderToTexturePort extends JFrame implements FrameRateListener {
+public class MTGameBase extends JFrame implements FrameRateListener {
 ////////////////////////////////////////////////////////////////////////////////
 // Class Data Members
 ////////////////////////////////////////////////////////////////////////////////
-    
+
     protected WorldManager              m_worldManager      = null;
     protected CameraNode                m_cameraNode        = null;
     protected CameraComponent           m_cameraComponent   = null;
     protected FlexibleCameraProcessor   m_cameraProcessor   = null;
-    
+
     protected int                       m_desiredFrameRate  = 60;
     protected int                       m_width             = 600;
     protected int                       m_height            = 400;
     protected float                     m_aspect            = 600.0f/400.0f;
-    
+
     protected Boolean                   m_loadSkybox        = Boolean.TRUE;
     protected final static Logger       m_logger            = Logger.getLogger(TestRenderToTexturePort.class.getName());
 
@@ -116,7 +104,7 @@ public class TestRenderToTexturePort extends JFrame implements FrameRateListener
 // Class Methods
 ////////////////////////////////////////////////////////////////////////////////
 
-    public TestRenderToTexturePort(String[] args) {
+    public MTGameBase(String[] args) {
         initWorldManager(100, 60, true, true);
         processArgs(m_ourArgs);
 
@@ -129,10 +117,10 @@ public class TestRenderToTexturePort extends JFrame implements FrameRateListener
      * @param args
      */
     public static void main(String[] args) {
-        TestRenderToTexturePort test = new TestRenderToTexturePort(args);
+        MTGameBase test = new MTGameBase(args);
     }
 
-    public void createUI(WorldManager worldManager) {
+    protected void createUI(WorldManager worldManager) {
         m_mainDisplay = new CustomDisplay(worldManager);
         m_mainDisplay.canvas.requestFocusInWindow();
         m_mainDisplay.setVisible(true);
@@ -143,7 +131,7 @@ public class TestRenderToTexturePort extends JFrame implements FrameRateListener
         worldManager.addUserData(JFrame.class, this);
     }
 
-    public void createTestSpace(WorldManager worldManager) {
+    protected void createTestSpace(WorldManager worldManager) {
         ColorRGBA color = new ColorRGBA();
         Vector3f center = new Vector3f();
 
@@ -157,7 +145,7 @@ public class TestRenderToTexturePort extends JFrame implements FrameRateListener
         createSpace("Center", center, null, color, worldManager);
     }
 
-    public void createCameraEntity(WorldManager worldManager) {
+    protected void createCameraEntity(WorldManager worldManager) {
         Node cameraSG = createCameraGraph(worldManager);
 
         Entity camera       = new Entity("DefaultCamera");
@@ -188,7 +176,7 @@ public class TestRenderToTexturePort extends JFrame implements FrameRateListener
         worldManager.addEntity(camera);
     }
 
-    public void createInputEntity(WorldManager worldManager) {
+    protected void createInputEntity(WorldManager worldManager) {
         // Create input entity
         Entity InputEntity = new Entity("Input Entity");
         // Create event listener
@@ -205,7 +193,7 @@ public class TestRenderToTexturePort extends JFrame implements FrameRateListener
         worldManager.addUserData(JSceneEventProcessor.class, eventProcessor);
     }
 
-    public void setGlobalLighting(WorldManager worldManager) {
+    protected void setGlobalLighting(WorldManager worldManager) {
         // Lighting Configuration
         LightNode lightNode = new LightNode("Dis is me light node man!");
 
@@ -223,14 +211,14 @@ public class TestRenderToTexturePort extends JFrame implements FrameRateListener
         worldManager.getRenderManager().addLight(lightNode);
     }
 
-    private void createEnvironment(WorldManager worldManager, URL path) {
+    protected void createEnvironment(WorldManager worldManager, URL path) {
         if (path != null) {
             ColladaEnvironment environment = new ColladaEnvironment(worldManager, path, "TheWorld");
             worldManager.addUserData(ColladaEnvironment.class, environment);
         }
     }
 
-    public void createDemoEntities(WorldManager worldManager) {
+    protected void createDemoEntities(WorldManager worldManager) {
         // The procedural scene graph
         PScene pscene = new PScene("PScene test", worldManager);
 
@@ -246,15 +234,12 @@ public class TestRenderToTexturePort extends JFrame implements FrameRateListener
         // Create entity
         Entity JSEntity = new Entity("Entity for a graph test");
 
-        // Initialize the scene
-        simpleSceneInit(jscene, worldManager, JSEntity, processors);
-
         // Create a scene component and set the root to our jscene
         RenderComponent sc = worldManager.getRenderManager().createRenderComponent(jscene);
 
         // Add the scene component with our jscene to the entity
         JSEntity.addComponent(RenderComponent.class, sc);
-        
+
         // Add our two processors to a collection component
         ProcessorCollectionComponent processorCollection = new ProcessorCollectionComponent();
         for (int i = 0; i < processors.size(); i++)
@@ -265,34 +250,35 @@ public class TestRenderToTexturePort extends JFrame implements FrameRateListener
 
         // Add the entity to the world manager
         worldManager.addEntity(JSEntity);
+
+        // Initialize the scene
+        simpleSceneInit(jscene, worldManager, JSEntity, processors);
     }
 
     protected void simpleSceneInit(JScene jScene, WorldManager worldManager, Entity jsEntity, ArrayList<ProcessorComponent> processors) {
-        createRenderToTextureTest1(worldManager, new Vector3f( 0.0f,  0.0f,  0.0f));
+        // Add whatever you want to make here
+        JSceneEventProcessor eventProcessor = (JSceneEventProcessor) worldManager.getUserData(JSceneEventProcessor.class);
+        AvatarControlScheme control = (AvatarControlScheme)eventProcessor.setDefault(new AvatarControlScheme(null));
 
-        createRenderToTextureTest2(worldManager, new Vector3f(-3.0f, -3.0f, -3.0f));
-        createRenderToTextureTest2(worldManager, new Vector3f(-3.0f,  3.0f, -3.0f));
-        createRenderToTextureTest2(worldManager, new Vector3f( 3.0f, -3.0f,  3.0f));
-        createRenderToTextureTest2(worldManager, new Vector3f( 3.0f,  3.0f,  3.0f));
+        FemaleAvatarAttributes  femaleAttribs   = new FemaleAvatarAttributes("RandomFemale", true);
+        Avatar randomFemale = new Avatar(femaleAttribs, worldManager);
 
-        createRenderToTextureTest2(worldManager, new Vector3f( 0.0f, -3.0f,  3.0f));
-        createRenderToTextureTest2(worldManager, new Vector3f( 0.0f,  3.0f,  3.0f));
-        createRenderToTextureTest2(worldManager, new Vector3f( 0.0f, -3.0f, -3.0f));
-        createRenderToTextureTest2(worldManager, new Vector3f( 0.0f,  3.0f, -3.0f));
+        randomFemale.selectForInput();
+        control.getAvatarTeam().add(randomFemale);
     }
 
 ////////////////////////////////////////////////////////////////////////////////
 // Helper Functions
 ////////////////////////////////////////////////////////////////////////////////
 
-    public void initWorldManager(int freq, int frameRate, boolean loadSkeletons, boolean useCache) {
+    private void initWorldManager(int freq, int frameRate, boolean loadSkeletons, boolean useCache) {
         m_worldManager = new WorldManager("TheManagerOfTheWorld");
         m_worldManager.getRenderManager().setFrameRateListener(this, freq);
         m_worldManager.getRenderManager().setDesiredFrameRate(frameRate);
         m_worldManager.addUserData(Repository.class, new Repository(m_worldManager, loadSkeletons, useCache));
     }
 
-    public void createSpace(String name, Vector3f center, ZBufferState buf, ColorRGBA color, WorldManager wm) {
+    private void createSpace(String name, Vector3f center, ZBufferState buf, ColorRGBA color, WorldManager wm) {
         MaterialState matState = null;
         ProcessorCollectionComponent pcc = new ProcessorCollectionComponent();
         Node node = new Node();
@@ -351,211 +337,6 @@ public class TestRenderToTexturePort extends JFrame implements FrameRateListener
             monkeyTexture.setMagnificationFilter(Texture.MagnificationFilter.Bilinear);
         }
         return monkeyTexture;
-    }
-
-    private void createOrthoObjects() {
-        Node orthoQuad = new Node();
-        Quad quadGeo = new Quad("Ortho", 40, 30);
-        Entity e = new Entity("Ortho ");
-
-        orthoQuad.attachChild(quadGeo);
-        orthoQuad.setLocalTranslation(0.0f, 0.0f, -50.0f);
-
-        RenderBuffer rb = m_worldManager.getRenderManager().createRenderBuffer(RenderBuffer.Target.TEXTURE_2D, m_width, m_height);
-        CameraNode cn = new CameraNode("MyCamera", null);
-        Node cameraSG = new Node();
-        cameraSG.attachChild(cn);
-        cameraSG.setLocalTranslation(0.0f, 10.0f, -50.0f);
-
-        CameraComponent cc = m_worldManager.getRenderManager().createCameraComponent(cameraSG, cn,
-                m_width, m_height, 45.0f, m_aspect, 1.0f, 1000.0f, true);
-        rb.setCameraComponent(cc);
-        m_worldManager.getRenderManager().addRenderBuffer(rb);
-        e.addComponent(CameraComponent.class, cc);
-
-        ZBufferState buf = m_worldManager.getRenderManager().createZBufferState();
-        buf.setEnabled(true);
-        buf.setFunction(ZBufferState.TestFunction.LessThanOrEqualTo);
-        orthoQuad.setRenderState(buf);
-
-        TextureState ts = m_worldManager.getRenderManager().createTextureState();
-        ts.setEnabled(true);
-        ts.setTexture(rb.getTexture(), 0);
-        quadGeo.setRenderState(ts);
-
-        RenderComponent orthoRC = m_worldManager.getRenderManager().createRenderComponent(orthoQuad);
-        orthoRC.setOrtho(false);
-        orthoRC.setLightingEnabled(false);
-        e.addComponent(RenderComponent.class, orthoRC);
-
-        m_worldManager.addEntity(e);
-    }
-
-    private void createRenderToTextureTest1(WorldManager worldManager, Vector3f cubePos) {
-        this.setTitle("TestRenderTOTexturePort");
-
-        // Setup our params for the depth buffer
-        ZBufferState buf = worldManager.getRenderManager().createZBufferState();
-        buf.setEnabled(true);
-        buf.setFunction(ZBufferState.TestFunction.LessThanOrEqualTo);
-
-        // Setup dimensions for a box
-        Vector3f max = new Vector3f(1.0f, 1.0f, 1.0f);
-        Vector3f min = new Vector3f(-1.0f, -1.0f, -1.0f);
-
-        // Make the real world box -- you'll see this spinning around..  woo...
-        Box realBox = new Box("Box", min, max);
-        realBox.setModelBound(new BoundingSphere());
-        realBox.updateModelBound();
-        realBox.setLocalTranslation(cubePos);
-
-        //FIX ME: if the box is put into a queue the texture rendering has to be done before the scene rendering!
-        //realBox.setRenderQueueMode(Renderer.QUEUE_OPAQUE);
-        Node realScene = new Node("Real node");
-        realScene.attachChild(realBox);
-        realScene.setRenderState(buf);
-
-        // Make a monkey box -- some geometry that will be rendered onto a flat texture.
-        // First, we'd like the box to be bigger, so...
-        min.multLocal(12);
-        max.multLocal(12);
-        Box monkeyBox = new Box("Fake Monkey Box", min, max);
-        monkeyBox.setModelBound(new BoundingSphere());
-        monkeyBox.updateModelBound();
-        monkeyBox.setLocalTranslation(new Vector3f(0, 0, 0));
-
-        // add the monkey box to a node.  This node is a root node, not part of the "real world" tree.
-        Node fakeScene = new Node("Fake node");
-        fakeScene.setRenderQueueMode(Renderer.QUEUE_SKIP);
-        fakeScene.attachChild(monkeyBox);
-        fakeScene.setRenderState(buf);
-
-        // Lets add a monkey texture to the geometry we are going to rendertotexture...
-        TextureState ts = worldManager.getRenderManager().createTextureState();
-        ts.setEnabled(true);
-        Texture tex = TextureManager.loadTexture(
-                getClass().getResource("/jmetest/data/images/Monkey.jpg"),
-                Texture.MinificationFilter.Trilinear,
-                Texture.MagnificationFilter.Bilinear);
-        ts.setTexture(tex);
-        fakeScene.setRenderState(ts);
-
-        // Ok, now lets create the Texture object that our monkey cube will be rendered to.
-        TextureRenderer tRenderer = worldManager.getRenderManager().createTextureRenderer(512, 512, TextureRenderer.Target.Texture2D);
-        tRenderer.setBackgroundColor(new ColorRGBA(.667f, .667f, .851f, 1f));
-        Texture2D fakeTex = new Texture2D();
-        fakeTex.setWrap(Texture.WrapMode.Clamp);
-        if (tRenderer.isSupported()) {
-            tRenderer.setupTexture(fakeTex);
-            tRenderer.getCamera().setLocation(new Vector3f(0, 0, 75f));
-        } else {
-            m_logger.severe("Render to texture not supported!");
-        }
-
-        // Now add that texture to the "real" cube.
-        ts = worldManager.getRenderManager().createTextureState();
-        ts.setEnabled(true);
-        ts.setTexture(fakeTex, 0);
-
-        // Heck, while we're at it, why not add another texture to blend with.
-        Texture tex2 = TextureManager.loadTexture(
-                getClass().getResource("/jmetest/data/texture/dirt.jpg"),
-                Texture.MinificationFilter.Trilinear,
-                Texture.MagnificationFilter.Bilinear);
-        ts.setTexture(tex2, 1);
-        realScene.setRenderState(ts);
-
-        // Since we have 2 textures, the geometry needs to know how to split up the coords for the second state.
-        realBox.copyTextureCoordinates(0, 1, 1.0f);
-
-        realScene.updateGeometricState(0.0f, true);
-        realScene.updateRenderState();
-        fakeScene.updateGeometricState(0.0f, true);
-        fakeScene.updateRenderState();
-
-        JMEBoxUpdateProcessor bup   = new JMEBoxUpdateProcessor(realBox, monkeyBox, fakeScene, tRenderer, fakeTex);
-        bup.setRunInRenderer(true);
-        TextureRendererUpdater ru   = new TextureRendererUpdater(tRenderer, fakeScene, fakeTex);
-
-        Entity e                = new Entity("realBox");
-        RenderComponent rc      = worldManager.getRenderManager().createRenderComponent(realScene);
-        e.addComponent(RenderComponent.class, rc);
-        e.addComponent(JMEBoxUpdateProcessor.class, bup);
-        worldManager.addEntity(e);
-
-//        Entity e2                = new Entity("fakeBox");
-//        RenderComponent rc2      = worldManager.getRenderManager().createRenderComponent(fakeScene);
-//        e2.addComponent(RenderComponent.class, rc2);
-//        worldManager.addEntity(e2);
-
-        worldManager.addRenderUpdater(ru, worldManager);
-    }
-
-    private void createRenderToTextureTest2(WorldManager worldManager, Vector3f cubePos) {
-        this.setTitle("TestRenderTOTexturePort");
-        Entity e    = new Entity("realBox");
-
-        // Setup our params for the depth buffer
-        ZBufferState buf = worldManager.getRenderManager().createZBufferState();
-        buf.setEnabled(true);
-        buf.setFunction(ZBufferState.TestFunction.LessThanOrEqualTo);
-
-        // Setup dimensions for a box
-        Vector3f max = new Vector3f(1.0f, 1.0f, 1.0f);
-        Vector3f min = new Vector3f(-1.0f, -1.0f, -1.0f);
-
-        // Make the real world box -- you'll see this spinning around..  woo...
-        Box realBox = new Box("Box", min, max);
-        realBox.setModelBound(new BoundingSphere());
-        realBox.updateModelBound();
-        realBox.setLocalTranslation(cubePos);
-
-        //FIX ME: if the box is put into a queue the texture rendering has to be done before the scene rendering!
-        //realBox.setRenderQueueMode(Renderer.QUEUE_OPAQUE);
-        Node realScene = new Node("Real node");
-        realScene.attachChild(realBox);
-        realScene.setRenderState(buf);
-
-        RenderBuffer rb = worldManager.getRenderManager().createRenderBuffer(RenderBuffer.Target.TEXTURE_2D, m_width, m_height);
-        CameraNode cn = new CameraNode("MyCamera", null);
-        Node cameraSG = new Node();
-        cameraSG.attachChild(cn);
-        cameraSG.setLocalTranslation(0.0f, 0.0f, -5.0f);
-
-        CameraComponent cc = worldManager.getRenderManager().createCameraComponent(cameraSG, cn,
-                m_width, m_height, 45.0f, m_aspect, 1.0f, 1000.0f, true);
-        rb.setCameraComponent(cc);
-        worldManager.getRenderManager().addRenderBuffer(rb);
-        e.addComponent(CameraComponent.class, cc);
-
-        TextureState ts = worldManager.getRenderManager().createTextureState();
-        ts.setEnabled(true);
-        ts.setTexture(rb.getTexture(), 0);
-        realScene.setRenderState(ts);
-
-        // Heck, while we're at it, why not add another texture to blend with.
-        Texture tex2 = TextureManager.loadTexture(
-                getClass().getResource("/jmetest/data/texture/dirt.jpg"),
-                Texture.MinificationFilter.Trilinear,
-                Texture.MagnificationFilter.Bilinear);
-        ts.setTexture(tex2, 1);
-        realScene.setRenderState(ts);
-
-        // Since we have 2 textures, the geometry needs to know how to split up the coords for the second state.
-        realBox.copyTextureCoordinates(0, 1, 1.0f);
-
-        realScene.updateGeometricState(0.0f, true);
-        realScene.updateRenderState();
-
-        RotationProcessor rp = new RotationProcessor("Cube Rotator", worldManager, realScene, (float) (0.5f * Math.PI / 180.0f));
-        rp.setRunInRenderer(true);
-
-        RenderComponent rc      = worldManager.getRenderManager().createRenderComponent(realScene);
-        rc.setOrtho(false);
-        rc.setLightingEnabled(false);
-        e.addComponent(RenderComponent.class, rc);
-        e.addComponent(ProcessorComponent.class, rp);
-        worldManager.addEntity(e);
     }
 
     private void processArgs(String[] args) {

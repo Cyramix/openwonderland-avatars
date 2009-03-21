@@ -49,7 +49,8 @@ public class CharacterAnimationProcessor extends ProcessorComponent
 
     /**
      * This constructor receives the skeleton node
-     * @param instance
+     * @param skeleton
+     * @param wm
      */
     public CharacterAnimationProcessor(SkeletonNode skeleton, WorldManager wm)
     {
@@ -147,6 +148,16 @@ public class CharacterAnimationProcessor extends ProcessorComponent
 
     public void setEnable(boolean bEnable) {
         this.bEnable = bEnable;
+    }
+
+    @Override
+    public void compute() {
+
+    }
+
+    @Override
+    public void commit() {
+
     }
 
 }

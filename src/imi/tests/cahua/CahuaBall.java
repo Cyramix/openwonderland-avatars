@@ -93,6 +93,16 @@ public class CahuaBall
                 collection.addCondition(new NewFrameCondition(this));
                 setArmingCondition(collection);
             }
+
+            @Override
+            public void compute() {
+
+            }
+
+            @Override
+            public void commit() {
+                
+            }
         };
         processor.setEnabled(true);
         processorEntity.addComponent(ProcessorComponent.class, processor);

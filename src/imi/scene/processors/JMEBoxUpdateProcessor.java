@@ -112,4 +112,14 @@ public class JMEBoxUpdateProcessor extends ProcessorComponent {
     public void renderMe() {
         m_Renderer.render(m_fakeNode, m_fakeTex);
     }
+
+    @Override
+    public void compute() {
+
+    }
+
+    @Override
+    public void commit() {
+
+    }
 }

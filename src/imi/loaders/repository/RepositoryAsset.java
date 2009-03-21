@@ -201,6 +201,10 @@ public class RepositoryAsset extends ProcessorComponent
         loadSelf();         
     }
 
+    public void compute() {
+        loadSelf();
+    }
+
     
     /**
      * ProcessorComponent overload.
@@ -400,6 +404,11 @@ public class RepositoryAsset extends ProcessorComponent
                 logger.warning(ex.getMessage());
             }
         }
+    }
+
+    @Override
+    public void commit() {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
 

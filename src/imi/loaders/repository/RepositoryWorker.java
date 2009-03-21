@@ -168,6 +168,58 @@ class RepositoryWorker extends ProcessorComponent
         m_bWorking = false;
     }
 
+    public void compute() {
+        if (m_bWorking)
+            return;
+        m_bWorking = true;
+
+        // the worker class will call loadData() on repoAsset until it returns true and then call receiveAsset() and shutdown()
+        // if loadData() returns false continuesly for a maxQueryTime amount of time then repoAsset will be removed from collection and receiveAsset() will return null.. and then shutdown.
+        if (m_bLive) // this boolean might not be needed
+        {
+            if (m_repoAsset.loadData(m_asset)) // Success!
+            {
+                // If this asset is a geometry we will set the shared asset for it so it can save to a configuration file later
+                if (m_asset.getAssetData() instanceof PPolygonMesh)
+                    ((PPolygonMesh)m_asset.getAssetData()).setSharedAsset(m_asset);
+                assert(m_asset.getAssetData() != null);
+                if (!m_bAssetSent)
+                {
+                    m_bAssetSent = true;
+                    m_user.receiveAsset(m_asset);
+                    ShutDown();
+                }
+            }
+            else
+            {
+                // Not loaded, has the timeout expired?
+                if ((System.currentTimeMillis() - m_startTime) > m_maxQueryTime)
+                {
+                    // remove this RepositoryAsset from the collection.
+                    m_collection.remove(m_asset.getDescriptor());
+                    assert(m_asset.getAssetData() == null);
+                    if (!m_bAssetSent)
+                    {
+                        m_bAssetSent = true;
+                        m_user.receiveAsset(m_asset); // the asset is returned with null data
+                        ShutDown();
+                    }
+                }
+                try
+                {
+                    Thread.sleep(100); // wait a second
+                }
+                catch (InterruptedException ex)
+                {
+                    Logger.getLogger(RepositoryWorker.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        }
+        else
+            ShutDown();
+        m_bWorking = false;
+    }
+
     @Override
     public void commit(ProcessorArmingCollection collection) {
         // Nothing to commit
@@ -179,7 +231,12 @@ class RepositoryWorker extends ProcessorComponent
         ProcessorArmingCollection collection = new ProcessorArmingCollection(this);  
         collection.addCondition(new NewFrameCondition(this)); 
         setArmingCondition(collection); 
-    } 
+    }
+
+    @Override
+    public void commit() {
+
+    }
 
 
 }

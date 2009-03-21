@@ -1067,11 +1067,11 @@ public class SceneEssentials {
             m_currentPScene.setUseRepository(useRepository);
 
             String protocal = "file:///" + System.getProperty("user.dir") + "/";
-            String path     = getRelativePath(m_fileModel);
+            String path     = getRelativePath(animation);
             String szURL    = protocal + path;
 
             try {
-                URL animURL = new URL(szURL);
+                URL animURL = animation.toURI().toURL();
 
                 InstructionProcessor pProcessor = new InstructionProcessor(m_worldManager);
                 Instruction pRootInstruction = new Instruction();

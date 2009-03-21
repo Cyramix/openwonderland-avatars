@@ -225,5 +225,15 @@ public class VisuManager extends Entity
             setArmingCondition(collection);
         }
 
+        @Override
+        public void compute() {
+
+        }
+
+        @Override
+        public void commit() {
+
+        }
+
     }
 }

@@ -108,4 +108,14 @@ public class TestHierarchyAnimationProcessor extends ProcessorComponent
         // Updating taken care of on our side
         //m_wm.addToUpdateList(m_targetMesh);
     }
+
+    @Override
+    public void compute() {
+
+    }
+
+    @Override
+    public void commit() {
+
+    }
 }

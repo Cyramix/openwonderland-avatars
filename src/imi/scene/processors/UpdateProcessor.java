@@ -69,4 +69,14 @@ public class UpdateProcessor extends ProcessorComponent
         collection.addCondition(new NewFrameCondition(this));
         setArmingCondition(collection);
     }
+
+    @Override
+    public void compute() {
+
+    }
+
+    @Override
+    public void commit() {
+
+    }
 }

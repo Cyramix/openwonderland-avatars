@@ -97,6 +97,8 @@ import imi.scene.processors.FlexibleCameraProcessor;
 import imi.scene.processors.JSceneEventProcessor;
 import imi.utils.instruments.DefaultInstrumentation;
 import imi.utils.instruments.Instrumentation;
+import java.net.URL;
+import java.util.Timer;
 import org.jdesktop.mtgame.RenderBuffer;
 
 
@@ -119,10 +121,11 @@ public class DemoBase
     protected CameraNode    cameraNode      = null;
 
     /** View port options **/
-    private int          desiredFrameRate   = 60;
-    private int          width              = 800;
-    private int          height             = 600;
-    private float        aspect             = 800.0f/600.0f;
+    protected int          desiredFrameRate   = 60;
+    protected int          width              = 800;
+    protected int          height             = 600;
+    protected float        aspect             = 800.0f/600.0f;
+    
     /** Caches command line parameters for subclass usage **/
     private String[]    args = null;
     /** Entity used to create default lighting in case subclasses do not take care of it **/
@@ -693,14 +696,18 @@ public class DemoBase
 
     private Texture loadSkyboxTexture(String filePath)
     {
+//        Texture monkeyTexture = null;
+//        try
+//        {
+//            monkeyTexture = TextureManager.loadTexture(new File(FileUtils.rootPath, filePath).toURI().toURL(), Texture.MinificationFilter.NearestNeighborNoMipMaps, Texture.MagnificationFilter.NearestNeighbor);
+//        } catch (MalformedURLException ex)
+//        {
+//            Logger.getLogger(DemoBase.class.getName()).log(Level.SEVERE, null, ex);
+//        }
         Texture monkeyTexture = null;
-        try
-        {
-            monkeyTexture = TextureManager.loadTexture(new File(FileUtils.rootPath, filePath).toURI().toURL(), Texture.MinificationFilter.NearestNeighborNoMipMaps, Texture.MagnificationFilter.NearestNeighbor);
-        } catch (MalformedURLException ex)
-        {
-            Logger.getLogger(DemoBase.class.getName()).log(Level.SEVERE, null, ex);
-        }
+
+        URL imageLocation   = getClass().getResource(filePath);
+        monkeyTexture = TextureManager.loadTexture(imageLocation, Texture.MinificationFilter.NearestNeighborNoMipMaps, Texture.MagnificationFilter.NearestNeighbor);
 
         if (monkeyTexture != null)
         {
@@ -729,12 +736,18 @@ public class DemoBase
         // Skybox
         SkyBox sky = new SkyBox("skybox", 10.0f, 10.0f, 10.0f, wm);
 
-        sky.setTexture(SkyBox.NORTH,   loadSkyboxTexture("assets/textures/skybox/Front.png")); // north
-        sky.setTexture(SkyBox.EAST,    loadSkyboxTexture("assets/textures/skybox/Right.png")); // south
-        sky.setTexture(SkyBox.SOUTH,   loadSkyboxTexture("assets/textures/skybox/Back.png")); // east
-        sky.setTexture(SkyBox.WEST,    loadSkyboxTexture("assets/textures/skybox/Left.png")); // west
-        sky.setTexture(SkyBox.DOWN,    loadSkyboxTexture("assets/textures/skybox/neg_y.bmp")); // down
-        sky.setTexture(SkyBox.UP,      loadSkyboxTexture("assets/textures/skybox/Top.png")); // up
+//        sky.setTexture(SkyBox.NORTH,   loadSkyboxTexture("assets/textures/skybox/Front.png")); // north
+//        sky.setTexture(SkyBox.EAST,    loadSkyboxTexture("assets/textures/skybox/Right.png")); // south
+//        sky.setTexture(SkyBox.SOUTH,   loadSkyboxTexture("assets/textures/skybox/Back.png")); // east
+//        sky.setTexture(SkyBox.WEST,    loadSkyboxTexture("assets/textures/skybox/Left.png")); // west
+//        sky.setTexture(SkyBox.DOWN,    loadSkyboxTexture("assets/textures/skybox/neg_y.bmp")); // down
+//        sky.setTexture(SkyBox.UP,      loadSkyboxTexture("assets/textures/skybox/Top.png")); // up
+        sky.setTexture(SkyBox.NORTH, loadSkyboxTexture("/textures/skybox/Front.png"));  // +Z side
+        sky.setTexture(SkyBox.EAST, loadSkyboxTexture("/textures/skybox/Right.png"));   // -X side
+        sky.setTexture(SkyBox.SOUTH, loadSkyboxTexture("/textures/skybox/Back.png"));   // -Z side
+        sky.setTexture(SkyBox.WEST, loadSkyboxTexture("/textures/skybox/Left.png"));    // +X side
+        sky.setTexture(SkyBox.DOWN, loadSkyboxTexture("/textures/skybox/default.png")); // -Y Side
+        sky.setTexture(SkyBox.UP, loadSkyboxTexture("/textures/skybox/Top.png"));       // +Y side
         //
 
         RenderComponent sc2 = wm.getRenderManager().createRenderComponent(sky);
@@ -771,7 +784,7 @@ public class DemoBase
     protected void assignCameraType(WorldManager wm)
     {
         FirstPersonCamState state = new FirstPersonCamState();
-        state.setCameraPosition(new Vector3f(0, 2.2f, -2));
+        state.setCameraPosition(new Vector3f(0, 2.2f, -6));
         FirstPersonCamModel model = new FirstPersonCamModel();
         m_cameraProcessor.setCameraBehavior(model, state);
     }

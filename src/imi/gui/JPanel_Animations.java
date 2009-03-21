@@ -118,6 +118,12 @@ public class JPanel_Animations extends javax.swing.JPanel {
                         jComboBox_FacialAnimations.setEnabled(true);
                         jComboBox_FacialAnimations.setModel(new javax.swing.DefaultComboBoxModel(szAnimations));
                         jComboBox_FacialAnimations.setSelectedIndex(iCurrentAnim);
+                    } else {
+                        String[] szAnimations = new String[1];
+                        szAnimations[0] = "No Animations";
+                        jComboBox_FacialAnimations.setModel(new javax.swing.DefaultComboBoxModel(szAnimations));
+                        jComboBox_FacialAnimations.setEnabled(false);
+                        jComboBox_FacialAnimations.setSelectedIndex(0);
                     }
                 } else {
                     String[] szAnimations = new String[1];
@@ -145,8 +151,11 @@ public class JPanel_Animations extends javax.swing.JPanel {
             szAnimations[0] = "No Animations";
             jComboBox_BodyAnimations.setModel(new javax.swing.DefaultComboBoxModel(szAnimations));
             jComboBox_BodyAnimations.setEnabled(false);
+            jComboBox_FacialAnimations.setModel(new javax.swing.DefaultComboBoxModel(szAnimations));
+            jComboBox_FacialAnimations.setEnabled(false);
             jSlider_Animations.setEnabled(false);
             jComboBox_BodyAnimations.setSelectedIndex(0);
+            jComboBox_FacialAnimations.setSelectedIndex(0);
         }
     }
     

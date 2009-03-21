@@ -83,4 +83,14 @@ public class MorphAnimationProcessor extends ProcessorComponent {
         // TODO : am I missing something? - everything is done in compute()
         worldManager.addToUpdateList(target);
     }
+
+    @Override
+    public void compute() {
+
+    }
+
+    @Override
+    public void commit() {
+
+    }
 }
