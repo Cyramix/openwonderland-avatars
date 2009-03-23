@@ -81,12 +81,12 @@ public class CharacterProcessor extends ProcessorComponent
         enabled = true;
     }
 
-    @Override
+    
     public void compute() {
 
     }
 
-    @Override
+    
     public void commit() {
 
     }

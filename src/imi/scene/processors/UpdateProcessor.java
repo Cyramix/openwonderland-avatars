@@ -70,12 +70,12 @@ public class UpdateProcessor extends ProcessorComponent
         setArmingCondition(collection);
     }
 
-    @Override
+    
     public void compute() {
 
     }
 
-    @Override
+    
     public void commit() {
 
     }

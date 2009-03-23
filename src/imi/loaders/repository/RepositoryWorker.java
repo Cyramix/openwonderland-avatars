@@ -225,7 +225,6 @@ class RepositoryWorker extends ProcessorComponent
         // Nothing to commit
     }
 
-    @Override
     public void initialize() 
     { 
         ProcessorArmingCollection collection = new ProcessorArmingCollection(this);  
@@ -233,7 +232,6 @@ class RepositoryWorker extends ProcessorComponent
         setArmingCondition(collection); 
     }
 
-    @Override
     public void commit() {
 
     }

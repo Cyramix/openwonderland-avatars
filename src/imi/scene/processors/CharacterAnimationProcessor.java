@@ -150,12 +150,12 @@ public class CharacterAnimationProcessor extends ProcessorComponent
         this.bEnable = bEnable;
     }
 
-    @Override
+    
     public void compute() {
 
     }
 
-    @Override
+    
     public void commit() {
 
     }
