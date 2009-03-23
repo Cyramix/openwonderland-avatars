@@ -27,6 +27,7 @@ import imi.scene.shader.programs.EyeballShader;
 import imi.scene.shader.programs.FleshShader;
 import imi.scene.shader.programs.NormalAndSpecularMapShader;
 import imi.scene.shader.programs.NormalMapShader;
+import imi.scene.shader.programs.PhongFleshShader;
 import imi.scene.shader.programs.SimpleTNLShader;
 import imi.scene.shader.programs.SimpleTNLWithAmbient;
 import imi.scene.shader.programs.VertDeformerWithSpecAndNormalMap;
@@ -93,6 +94,7 @@ public class JPanel_ShaderProperties extends javax.swing.JPanel
         m_defaultShaders.add(new EyeballShader(wm));
         m_defaultShaders.add(new ClothingShaderSpecColor(wm));
         m_defaultShaders.add(new FleshShader(wm));
+        m_defaultShaders.add(new PhongFleshShader(wm));
         m_defaultShaders.add(new ClothingShaderDiffuseAsSpec(wm));
         initComponents(); // <-- do not trust netbeans auto-code garbage!
         loadPropertyTable();
