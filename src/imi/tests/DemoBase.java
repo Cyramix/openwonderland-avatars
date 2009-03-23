@@ -107,8 +107,11 @@ import org.jdesktop.mtgame.RenderBuffer;
  *
  * Demo Base - Do not use this file! Copy Demo.java for your own test file...
  */
-public class DemoBase
-{
+public class DemoBase {
+////////////////////////////////////////////////////////////////////////////////
+// Class Data Members
+////////////////////////////////////////////////////////////////////////////////
+
     /** Logger reference **/
     protected final static Logger logger = Logger.getLogger(DemoBase.class.getName());
 
@@ -135,12 +138,22 @@ public class DemoBase
     /** Used to indicate which environment should be loaded **/
     private String pathToEnv = null;
 
+    protected String[] m_skyboxAssets = new String[] { "assets/textures/skybox/Front.png",
+                                                       "assets/textures/skybox/Right.png",
+                                                       "assets/textures/skybox/Back.png",
+                                                       "assets/textures/skybox/Left.png",
+                                                       "assets/textures/skybox/default.png",
+                                                       "assets/textures/skybox/Top.png" };
+
+////////////////////////////////////////////////////////////////////////////////
+// Class Methods
+////////////////////////////////////////////////////////////////////////////////
+
     /**
      * Construct a brand new instance!
      * @param args
      */
-    protected DemoBase(String[] args)
-    {
+    protected DemoBase(String[] args) {
         logger.info("Current Directory: " + System.getProperty("user.dir"));
         this.args = args;
         worldManager = new WorldManager("DemoWorld");
@@ -168,18 +181,125 @@ public class DemoBase
         createDemoEntities(worldManager);
     }
 
-    // Override this for simple tests that only require a single scene
-    // that do not need to set up the enity for fancy shmancy stuff
-    protected void simpleSceneInit(PScene pscene, WorldManager wm, ArrayList<ProcessorComponent> processors)
-    {
-        //PPolygonModelInstance modelInst = pscene.addModelInstance(createArticulatedModel(1.3f, 1.0f, 2.0f, 10.0f, 3.0f, new PMatrix()), new PMatrix());
+    /**
+     * @param args the command line arguments
+     */
+    public static void main(String[] args) {
+        DemoBase worldTest = new DemoBase(args);
     }
 
+    /**
+     * Create all of the Swing windows - and the 3D window
+     */
+    protected void createUI(WorldManager wm) {
+        SwingFrame frame = new SwingFrame(wm);
+        // center the frame
+        frame.setLocationRelativeTo(null);
+        // show frame with focus
+        frame.canvas.requestFocusInWindow();
 
-    // Override this if you wish to have multiple entities or if you wish
-    // to setup your entity for fancy shmanciness
-    protected void createDemoEntities(WorldManager wm)
-    {
+        frame.setVisible(true);
+
+        // Add to the wm to set title string later during debugging
+        wm.addUserData(JFrame.class, frame);
+    }
+
+    protected void createTestSpace(WorldManager wm) {
+        ColorRGBA color = new ColorRGBA();
+        Vector3f center = new Vector3f();
+
+        ZBufferState buf = (ZBufferState) wm.getRenderManager().createRendererState(RenderState.RS_ZBUFFER);
+        buf.setEnabled(true);
+        buf.setFunction(ZBufferState.TestFunction.LessThanOrEqualTo);
+
+        // First create the geometry
+        center.x = 0.0f; center.y = 25.0f; center.z = 0.0f;
+        color.r = 0.0f; color.g = 0.0f; color.b = 1.0f; color.a = 1.0f;
+        createSpace("Center", center, buf, color, wm);
+    }
+
+    protected void createCameraEntity(WorldManager wm) {
+        Node cameraSG = createCameraGraph(wm);
+
+        // Add the camera
+        Entity camera = new Entity("DefaultCamera");
+        CameraComponent cc = wm.getRenderManager().createCameraComponent(cameraSG, cameraNode, width, height, 35.0f, aspect, 0.01f, 1000.0f, true);
+        RenderBuffer renderBuffer = ((SwingFrame)wm.getUserData(JFrame.class)).getRenderBuffer();
+        camera.addComponent(CameraComponent.class, cc);
+        renderBuffer.setCameraComponent(cc);
+
+        // Skybox
+        SkyBox sky = createSkyBox(camera);
+
+        // Create the input listener and process for the camera
+        int eventMask = InputManager.KEY_EVENTS | InputManager.MOUSE_EVENTS;
+        Canvas canvas = renderBuffer.getCanvas();
+        AWTInputComponent cameraListener = (AWTInputComponent)wm.getInputManager().createInputComponent(canvas, eventMask);
+
+        m_cameraProcessor = new FlexibleCameraProcessor(cameraListener, cameraNode, wm, camera, sky);
+
+        assignCameraType(wm);
+        wm.addUserData(FlexibleCameraProcessor.class, m_cameraProcessor);
+        wm.addUserData(CameraState.class, m_cameraProcessor.getState());
+
+        m_cameraProcessor.setRunInRenderer(true);
+
+
+        ProcessorCollectionComponent pcc = new ProcessorCollectionComponent();
+        pcc.addProcessor(m_cameraProcessor);
+        //pcc.addProcessor(selector);
+        camera.addComponent(ProcessorCollectionComponent.class, pcc);
+
+        wm.addEntity(camera);
+    }
+
+    protected void createInputEntity(WorldManager wm) {
+        // Create input entity
+        Entity InputEntity = new Entity("Input Entity");
+        // Create event listener
+        Canvas canvas = ((SwingFrame)wm.getUserData(JFrame.class)).getRenderBuffer().getCanvas();
+        AWTInputComponent eventListener = (AWTInputComponent)worldManager.getInputManager().createInputComponent(canvas, InputManager.KEY_EVENTS);
+        // Create event processor
+        JSceneAWTEventProcessor eventProcessor  = new JSceneAWTEventProcessor(eventListener, null, InputEntity);
+        // Add the processor component to the entity
+        InputEntity.addComponent(ProcessorComponent.class, eventProcessor);
+        InputEntity.addComponent(AWTInputComponent.class, eventListener);
+        // Add the entity to the world manager
+        wm.addEntity(InputEntity);
+        // Add the this input manager to the world manager for future access
+        // (to asign a jscenes to drive)
+        wm.addUserData(JSceneEventProcessor.class, eventProcessor);
+    }
+
+    protected void setGlobalLighting(WorldManager wm) {
+        // Lighting Configuration
+        LightNode lightNode = new LightNode("Dis is me light node man!");
+        // Must be a PointLight to function
+        PointLight pointLight = new PointLight();
+        pointLight.setDiffuse(new ColorRGBA(1.0f, 1.0f, 1.0f, 1.0f));
+        pointLight.setAmbient(new ColorRGBA(0.5f, 0.5f, 0.5f, 1.0f));
+        pointLight.setEnabled(true);
+        // attach it to the LightNode
+        lightNode.setLight(pointLight);
+
+        lightNode.setLocalTranslation(10.0f, 15.0f, -5.0f);
+        // add it to the render manager
+        wm.getRenderManager().addLight(lightNode);
+    }
+
+    protected void createEnvironment(WorldManager worldManager, String relativePath) {
+        if (relativePath != null)
+        {
+            ColladaEnvironment environment = new ColladaEnvironment(worldManager, relativePath, "DemoWorld");
+            worldManager.addUserData(ColladaEnvironment.class, environment);
+        }
+    }
+
+    protected void createInstrumentation(WorldManager worldManager) {
+        Instrumentation instrument = new DefaultInstrumentation(worldManager);
+    }
+
+    protected void createDemoEntities(WorldManager wm) {
         // The procedural scene graph
         PScene pscene = new PScene("PScene test", wm);
 
@@ -220,13 +340,22 @@ public class DemoBase
         setDefaultRenderStates(jscene, wm);
     }
 
+    // Override this for simple tests that only require a single scene
+    // that do not need to set up the enity for fancy shmancy stuff
+    protected void simpleSceneInit(PScene pscene, WorldManager wm, ArrayList<ProcessorComponent> processors) {
+        //PPolygonModelInstance modelInst = pscene.addModelInstance(createArticulatedModel(1.3f, 1.0f, 2.0f, 10.0f, 3.0f, new PMatrix()), new PMatrix());
+    }
+
+////////////////////////////////////////////////////////////////////////////////
+// Helper Functions
+////////////////////////////////////////////////////////////////////////////////
+
     /**
      * Sets up several default render states including the lighting
      * @param jscene
      * @param wm
      */
-    public void setDefaultRenderStates(JScene jscene, WorldManager wm)
-    {
+    public void setDefaultRenderStates(JScene jscene, WorldManager wm) {
         // Z Buffer State
         ZBufferState buf = (ZBufferState) wm.getRenderManager().createRendererState(RenderState.RS_ZBUFFER);
         buf.setEnabled(true);
@@ -261,25 +390,7 @@ public class DemoBase
         jscene.updateRenderState();
     }
 
-    protected void setGlobalLighting(WorldManager wm)
-    {
-        // Lighting Configuration
-        LightNode lightNode = new LightNode("Dis is me light node man!");
-        // Must be a PointLight to function
-        PointLight pointLight = new PointLight();
-        pointLight.setDiffuse(new ColorRGBA(1.0f, 1.0f, 1.0f, 1.0f));
-        pointLight.setAmbient(new ColorRGBA(0.5f, 0.5f, 0.5f, 1.0f));
-        pointLight.setEnabled(true);
-        // attach it to the LightNode
-        lightNode.setLight(pointLight);
-
-        lightNode.setLocalTranslation(10.0f, 15.0f, -5.0f);
-        // add it to the render manager
-        wm.getRenderManager().addLight(lightNode);
-    }
-
-   public void createSpace(String name, Vector3f center, ZBufferState buf,
-            ColorRGBA color, WorldManager wm) {
+    public void createSpace(String name, Vector3f center, ZBufferState buf, ColorRGBA color, WorldManager wm) {
         MaterialState matState = null;
 
         ProcessorCollectionComponent pcc = new ProcessorCollectionComponent();
@@ -315,8 +426,7 @@ public class DemoBase
         wm.addEntity(e);
     }
 
-    private void createCube(Vector3f center, float xoff, float yoff, float zoff,
-            ProcessorCollectionComponent pcc, Node parent, WorldManager wm) {
+    private void createCube(Vector3f center, float xoff, float yoff, float zoff, ProcessorCollectionComponent pcc, Node parent, WorldManager wm) {
         Vector3f cubeCenter = new Vector3f();
         Vector3f c = new Vector3f();
 
@@ -444,8 +554,7 @@ public class DemoBase
         return resultModel;
     }
 
-    public PPolygonModel createSphereModel(float radius, ColorRGBA color, PMatrix origin)
-    {
+    public PPolygonModel createSphereModel(float radius, ColorRGBA color, PMatrix origin) {
         PPolygonModel resultModel = new PPolygonModel("Sphere Model");
         resultModel.getTransform().setLocalMatrix(origin);
 
@@ -463,8 +572,7 @@ public class DemoBase
         return resultModel;
     }
 
-    public PPolygonModelInstance createSphereEntity(float radius, ColorRGBA color, PMatrix origin, WorldManager wm)
-    {
+    public PPolygonModelInstance createSphereEntity(float radius, ColorRGBA color, PMatrix origin, WorldManager wm) {
         // The procedural scene graph
         PScene pscene = new PScene("Sphere PScene", wm);
 
@@ -519,8 +627,7 @@ public class DemoBase
      * @param floorWidth The width (and depth) of floors
      * @return The completed skeleton!
      */
-    public PPolygonSkinnedMesh createSkinnedModel(int numberOfLevels, float floorHeight, float floorWidth, Vector3f modelSpaceOffset, String name)
-    {
+    public PPolygonSkinnedMesh createSkinnedModel(int numberOfLevels, float floorHeight, float floorWidth, Vector3f modelSpaceOffset, String name) {
         // increment to account for the roof
         numberOfLevels++;
 
@@ -657,57 +764,39 @@ public class DemoBase
         return mesh;
     }
 
-    public void createInputEntity(WorldManager wm)
-    {
-        // Create input entity
-        Entity InputEntity = new Entity("Input Entity");
-        // Create event listener
-        Canvas canvas = ((SwingFrame)wm.getUserData(JFrame.class)).getRenderBuffer().getCanvas();
-        AWTInputComponent eventListener = (AWTInputComponent)worldManager.getInputManager().createInputComponent(canvas, InputManager.KEY_EVENTS);
-        // Create event processor
-        JSceneAWTEventProcessor eventProcessor  = new JSceneAWTEventProcessor(eventListener, null, InputEntity);
-        // Add the processor component to the entity
-        InputEntity.addComponent(ProcessorComponent.class, eventProcessor);
-        InputEntity.addComponent(AWTInputComponent.class, eventListener);
-        // Add the entity to the world manager
-        wm.addEntity(InputEntity);
-        // Add the this input manager to the world manager for future access
-        // (to asign a jscenes to drive)
-        wm.addUserData(JSceneEventProcessor.class, eventProcessor);
+    private Node createCameraGraph(WorldManager wm) {
+        Node cameraSG = new Node("MyCamera SG");
+        cameraNode = new CameraNode("MyCamera", null);
+        cameraSG.attachChild(cameraNode);
+
+        return (cameraSG);
     }
 
-    /**
-     * If an environment was specified for loading, use it!
-     * @param worldManager
-     * @param relativePath
-     */
-    private void createEnvironment(WorldManager worldManager, String relativePath)
-    {
-        if (relativePath != null)
-        {
-            ColladaEnvironment environment = new ColladaEnvironment(worldManager, relativePath, "DemoWorld");
-            worldManager.addUserData(ColladaEnvironment.class, environment);
-        }
+    protected SkyBox createSkyBox(Entity camera) {
+        SkyBox sky = new SkyBox("skybox", 10.0f, 10.0f, 10.0f, worldManager);
+        sky.setTexture(SkyBox.NORTH,    loadSkyboxTexture(m_skyboxAssets[0]));  // +Z side
+        sky.setTexture(SkyBox.EAST,     loadSkyboxTexture(m_skyboxAssets[1]));  // -X side
+        sky.setTexture(SkyBox.SOUTH,    loadSkyboxTexture(m_skyboxAssets[2]));  // -Z side
+        sky.setTexture(SkyBox.WEST,     loadSkyboxTexture(m_skyboxAssets[3]));  // +X side
+        sky.setTexture(SkyBox.DOWN,     loadSkyboxTexture(m_skyboxAssets[4]));  // -Y Side
+        sky.setTexture(SkyBox.UP,       loadSkyboxTexture(m_skyboxAssets[5]));  // +Y side
+
+        RenderComponent sc2 = worldManager.getRenderManager().createRenderComponent(sky);
+        camera.addComponent(RenderComponent.class, sc2);
+
+        return sky;
     }
 
-    private void createInstrumentation(WorldManager worldManager) {
-        Instrumentation instrument = new DefaultInstrumentation(worldManager);
-    }
-
-    private Texture loadSkyboxTexture(String filePath)
-    {
-//        Texture monkeyTexture = null;
-//        try
-//        {
-//            monkeyTexture = TextureManager.loadTexture(new File(FileUtils.rootPath, filePath).toURI().toURL(), Texture.MinificationFilter.NearestNeighborNoMipMaps, Texture.MagnificationFilter.NearestNeighbor);
-//        } catch (MalformedURLException ex)
-//        {
-//            Logger.getLogger(DemoBase.class.getName()).log(Level.SEVERE, null, ex);
-//        }
+    protected Texture loadSkyboxTexture(String filePath) {
         Texture monkeyTexture = null;
-
-        URL imageLocation   = getClass().getResource(filePath);
-        monkeyTexture = TextureManager.loadTexture(imageLocation, Texture.MinificationFilter.NearestNeighborNoMipMaps, Texture.MagnificationFilter.NearestNeighbor);
+        try
+        {
+            monkeyTexture = TextureManager.loadTexture(new File(FileUtils.rootPath, filePath).toURI().toURL(), Texture.MinificationFilter.NearestNeighborNoMipMaps, Texture.MagnificationFilter.NearestNeighbor);
+        } catch (MalformedURLException ex)
+        {
+            URL imageLocation   = getClass().getResource(filePath);
+            monkeyTexture = TextureManager.loadTexture(imageLocation, Texture.MinificationFilter.NearestNeighborNoMipMaps, Texture.MagnificationFilter.NearestNeighbor);
+        }
 
         if (monkeyTexture != null)
         {
@@ -719,112 +808,17 @@ public class DemoBase
         return monkeyTexture;
     }
 
-
-    private void createCameraEntity(WorldManager wm) {
-        Node cameraSG = createCameraGraph(wm);
-
-        // Add the camera
-        Entity camera = new Entity("DefaultCamera");
-        CameraComponent cc = wm.getRenderManager().createCameraComponent(cameraSG, cameraNode,
-                width, height, 35.0f, aspect, 0.01f, 1000.0f, true);
-
-        RenderBuffer renderBuffer = ((SwingFrame)wm.getUserData(JFrame.class)).getRenderBuffer();
-
-        camera.addComponent(CameraComponent.class, cc);
-        renderBuffer.setCameraComponent(cc);
-        //////////////////////////////////////////////////////////////////////
-        // Skybox
-        SkyBox sky = new SkyBox("skybox", 10.0f, 10.0f, 10.0f, wm);
-
-//        sky.setTexture(SkyBox.NORTH,   loadSkyboxTexture("assets/textures/skybox/Front.png")); // north
-//        sky.setTexture(SkyBox.EAST,    loadSkyboxTexture("assets/textures/skybox/Right.png")); // south
-//        sky.setTexture(SkyBox.SOUTH,   loadSkyboxTexture("assets/textures/skybox/Back.png")); // east
-//        sky.setTexture(SkyBox.WEST,    loadSkyboxTexture("assets/textures/skybox/Left.png")); // west
-//        sky.setTexture(SkyBox.DOWN,    loadSkyboxTexture("assets/textures/skybox/neg_y.bmp")); // down
-//        sky.setTexture(SkyBox.UP,      loadSkyboxTexture("assets/textures/skybox/Top.png")); // up
-        sky.setTexture(SkyBox.NORTH, loadSkyboxTexture("/textures/skybox/Front.png"));  // +Z side
-        sky.setTexture(SkyBox.EAST, loadSkyboxTexture("/textures/skybox/Right.png"));   // -X side
-        sky.setTexture(SkyBox.SOUTH, loadSkyboxTexture("/textures/skybox/Back.png"));   // -Z side
-        sky.setTexture(SkyBox.WEST, loadSkyboxTexture("/textures/skybox/Left.png"));    // +X side
-        sky.setTexture(SkyBox.DOWN, loadSkyboxTexture("/textures/skybox/default.png")); // -Y Side
-        sky.setTexture(SkyBox.UP, loadSkyboxTexture("/textures/skybox/Top.png"));       // +Y side
-        //
-
-        RenderComponent sc2 = wm.getRenderManager().createRenderComponent(sky);
-        camera.addComponent(RenderComponent.class, sc2);
-        //////////////////////////////////////////////////////////////////////
-
-        // Create the input listener and process for the camera
-        int eventMask = InputManager.KEY_EVENTS | InputManager.MOUSE_EVENTS;
-        Canvas canvas = renderBuffer.getCanvas();
-        AWTInputComponent cameraListener = (AWTInputComponent)wm.getInputManager().createInputComponent(canvas, eventMask);
-
-        m_cameraProcessor = new FlexibleCameraProcessor(cameraListener, cameraNode, wm, camera, sky);
-
-        assignCameraType(wm);
-        wm.addUserData(FlexibleCameraProcessor.class, m_cameraProcessor);
-        wm.addUserData(CameraState.class, m_cameraProcessor.getState());
-
-        m_cameraProcessor.setRunInRenderer(true);
-
-
-        ProcessorCollectionComponent pcc = new ProcessorCollectionComponent();
-        pcc.addProcessor(m_cameraProcessor);
-        //pcc.addProcessor(selector);
-        camera.addComponent(ProcessorCollectionComponent.class, pcc);
-
-        wm.addEntity(camera);
-    }
-
-    /**
-     * This method should be overridden in order to change the camera used in a
-     * demo / test file. Just call m_cameraProcessor.setCameraBehavior
-     * @return
-     */
-    protected void assignCameraType(WorldManager wm)
-    {
+    protected void assignCameraType(WorldManager wm) {
         FirstPersonCamState state = new FirstPersonCamState();
         state.setCameraPosition(new Vector3f(0, 2.2f, -6));
         FirstPersonCamModel model = new FirstPersonCamModel();
         m_cameraProcessor.setCameraBehavior(model, state);
     }
 
-    private Node createCameraGraph(WorldManager wm) {
-        Node cameraSG = new Node("MyCamera SG");
-        cameraNode = new CameraNode("MyCamera", null);
-        cameraSG.attachChild(cameraNode);
-
-        return (cameraSG);
-    }
-
-    private void createTestSpace(WorldManager wm)
-    {
-        ColorRGBA color = new ColorRGBA();
-        Vector3f center = new Vector3f();
-
-        ZBufferState buf = (ZBufferState) wm.getRenderManager().createRendererState(RenderState.RS_ZBUFFER);
-        buf.setEnabled(true);
-        buf.setFunction(ZBufferState.TestFunction.LessThanOrEqualTo);
-
-        // First create the geometry
-        center.x = 0.0f; center.y = 25.0f; center.z = 0.0f;
-        color.r = 0.0f; color.g = 0.0f; color.b = 1.0f; color.a = 1.0f;
-        createSpace("Center", center, buf, color, wm);
-    }
-
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String[] args)
-    {
-        DemoBase worldTest = new DemoBase(args);
-    }
-
     /**
      * Process any command line args
      */
-    private void processArgs(String[] args)
-    {
+    private void processArgs(String[] args) {
         for (int i=0; i<args.length;i++) {
             if (args[i].equals("-fps")) {
                 desiredFrameRate = Integer.parseInt(args[i+1]);
@@ -842,22 +836,6 @@ public class DemoBase
                     pathToEnv = environmentArgs[1];
             }
         }
-    }
-
-    /**
-     * Create all of the Swing windows - and the 3D window
-     */
-    private void createUI(WorldManager wm) {
-        SwingFrame frame = new SwingFrame(wm);
-        // center the frame
-        frame.setLocationRelativeTo(null);
-        // show frame with focus
-        frame.canvas.requestFocusInWindow();
-
-        frame.setVisible(true);
-
-        // Add to the wm to set title string later during debugging
-        wm.addUserData(JFrame.class, frame);
     }
 
     public class SwingFrame extends JFrame implements FrameRateListener, ActionListener {
