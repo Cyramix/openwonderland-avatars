@@ -18,12 +18,15 @@
 
 package imi.tests;
 
+import com.jme.bounding.BoundingBox;
 import com.jme.bounding.BoundingSphere;
 import com.jme.image.Texture;
 import com.jme.math.Vector3f;
 import com.jme.scene.Node;
+import com.jme.scene.TexCoords;
 import com.jme.scene.shape.Box;
 import com.jme.scene.shape.Torus;
+import com.jme.scene.state.MaterialState;
 import com.jme.scene.state.TextureState;
 import com.jme.scene.state.ZBufferState;
 import com.jme.util.TextureManager;
@@ -37,9 +40,11 @@ import imi.scene.SkyBox;
 import imi.scene.processors.JSceneEventProcessor;
 import imi.utils.input.AvatarControlScheme;
 import java.net.URL;
+import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import java.util.Vector;
 import org.jdesktop.mtgame.Entity;
+import org.jdesktop.mtgame.ProcessorCollectionComponent;
 import org.jdesktop.mtgame.ProcessorComponent;
 import org.jdesktop.mtgame.RenderComponent;
 import org.jdesktop.mtgame.WorldManager;
@@ -77,25 +82,25 @@ public class RenderToTexturePortals extends DemoBase {
     }
 
     protected SkyBox createSkyBox(Entity camera) {
-        m_skyboxAssets = new String[] { "/textures/skybox/Front.png",
-                                        "/textures/skybox/Right.png",
-                                        "/textures/skybox/Back.png",
-                                        "/textures/skybox/Left.png",
-                                        "/textures/skybox/default.png",
-                                        "/textures/skybox/Top.png" };
+//        m_skyboxAssets = new String[] { "/textures/skybox/Front.png",
+//                                        "/textures/skybox/Right.png",
+//                                        "/textures/skybox/Back.png",
+//                                        "/textures/skybox/Left.png",
+//                                        "/textures/skybox/default.png",
+//                                        "/textures/skybox/Top.png" };
+//
+//        SkyBox sky = new SkyBox("skybox", 10.0f, 10.0f, 10.0f, worldManager);
+//        sky.setTexture(SkyBox.NORTH,    loadSkyboxTexture(m_skyboxAssets[0]));  // +Z side
+//        sky.setTexture(SkyBox.EAST,     loadSkyboxTexture(m_skyboxAssets[1]));  // -X side
+//        sky.setTexture(SkyBox.SOUTH,    loadSkyboxTexture(m_skyboxAssets[2]));  // -Z side
+//        sky.setTexture(SkyBox.WEST,     loadSkyboxTexture(m_skyboxAssets[3]));  // +X side
+//        sky.setTexture(SkyBox.DOWN,     loadSkyboxTexture(m_skyboxAssets[4]));  // -Y Side
+//        sky.setTexture(SkyBox.UP,       loadSkyboxTexture(m_skyboxAssets[5]));  // +Y side
+//
+//        RenderComponent sc2 = worldManager.getRenderManager().createRenderComponent(sky);
+//        camera.addComponent(RenderComponent.class, sc2);
 
-        SkyBox sky = new SkyBox("skybox", 10.0f, 10.0f, 10.0f, worldManager);
-        sky.setTexture(SkyBox.NORTH,    loadSkyboxTexture(m_skyboxAssets[0]));  // +Z side
-        sky.setTexture(SkyBox.EAST,     loadSkyboxTexture(m_skyboxAssets[1]));  // -X side
-        sky.setTexture(SkyBox.SOUTH,    loadSkyboxTexture(m_skyboxAssets[2]));  // -Z side
-        sky.setTexture(SkyBox.WEST,     loadSkyboxTexture(m_skyboxAssets[3]));  // +X side
-        sky.setTexture(SkyBox.DOWN,     loadSkyboxTexture(m_skyboxAssets[4]));  // -Y Side
-        sky.setTexture(SkyBox.UP,       loadSkyboxTexture(m_skyboxAssets[5]));  // +Y side
-
-        RenderComponent sc2 = worldManager.getRenderManager().createRenderComponent(sky);
-        camera.addComponent(RenderComponent.class, sc2);
-
-        return sky;
+        return null;
     }
 
     protected void simpleSceneInit(PScene pscene, WorldManager wm, ArrayList<ProcessorComponent> processors) {
@@ -134,19 +139,24 @@ public class RenderToTexturePortals extends DemoBase {
 
         ////////////////////////////////////////////////////////////////////////
         // Create portals
-        PMatrix portal1 = new PMatrix(m_portalPositions.get(0));
-        PMatrix portal2 = new PMatrix(m_portalPositions.get(1));
+
+        PMatrix rotY    = new PMatrix();
+        rotY.buildRotationY((float) (Math.toRadians(180)));
+//        PMatrix portal1 = new PMatrix(m_portalPositions.get(0));
+//        PMatrix portal2 = new PMatrix(m_portalPositions.get(1));
         PMatrix portal3 = new PMatrix(m_portalPositions.get(2));
+        portal3.mul(rotY);
         PMatrix portal4 = new PMatrix(m_portalPositions.get(3));
 
         IMI_PortalsManager pm   = new IMI_PortalsManager("PortalsMaster", width, height);
         pm.setCollisionSystem(worldManager);
+        pm.setSkyBox(m_skyBox);
 
-        pm.createPortal("Portal1", portal1, new Vector3f(3*0.8f, 3*0.6f, 0.1f), buf, m_portalPositions.get(1), worldManager);
-        pm.createPortal("Portal2", portal2, new Vector3f(3*0.8f, 3*0.6f, 0.1f), buf, m_portalPositions.get(0), worldManager);
+//        pm.createPortal("Portal1", portal1, new Vector3f(3*0.8f, 3*0.6f, 0.1f), buf, m_portalPositions.get(1), worldManager);
+//        pm.createPortal("Portal2", portal2, new Vector3f(3*0.8f, 3*0.6f, 0.1f), buf, m_portalPositions.get(0), worldManager);
 
-        pm.createPortal("Portal3", portal3, new Vector3f(3*0.8f, 3*0.6f, 0.1f), buf, m_portalPositions.get(3), worldManager);
-        pm.createPortal("Portal4", portal4, new Vector3f(3*0.8f, 3*0.6f, 0.1f), buf, m_portalPositions.get(2), worldManager);
+        pm.createPortal("Portal3", portal3, new Vector3f(6*0.8f, 6*0.6f, 0.1f), buf, m_portalPositions.get(3), worldManager, null);
+        pm.createPortal("Portal4", portal4, new Vector3f(6*0.8f, 6*0.6f, 0.1f), buf, m_portalPositions.get(2), worldManager, rotY.getRotation());
     }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -263,12 +273,13 @@ public class RenderToTexturePortals extends DemoBase {
         box = new Box("box4", min, max);
         box.setLocalTranslation(new Vector3f(-8, 0.5f, -1));
         box.setRenderState(ts);
+        cubesN.attachChild(box);
 
         box = new Box("box5", min, max);
         box.setLocalTranslation(new Vector3f(-8, 0.5f, 1));
         box.setRenderState(ts);
-        
         cubesN.attachChild(box);
+
         cubesN.setRenderState(buf);
         cubesN.setLocalTranslation(position);
 

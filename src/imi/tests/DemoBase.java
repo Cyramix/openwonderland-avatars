@@ -135,8 +135,11 @@ public class DemoBase {
     private Entity m_jsceneEntity = null;
     /** The camera processor **/
     protected FlexibleCameraProcessor m_cameraProcessor = null;
+    protected AWTInputComponent m_cameraListener = null;
     /** Used to indicate which environment should be loaded **/
     private String pathToEnv = null;
+
+    protected SkyBox   m_skyBox = null;
 
     protected String[] m_skyboxAssets = new String[] { "assets/textures/skybox/Front.png",
                                                        "assets/textures/skybox/Right.png",
@@ -205,17 +208,17 @@ public class DemoBase {
     }
 
     protected void createTestSpace(WorldManager wm) {
-        ColorRGBA color = new ColorRGBA();
-        Vector3f center = new Vector3f();
-
-        ZBufferState buf = (ZBufferState) wm.getRenderManager().createRendererState(RenderState.RS_ZBUFFER);
-        buf.setEnabled(true);
-        buf.setFunction(ZBufferState.TestFunction.LessThanOrEqualTo);
-
-        // First create the geometry
-        center.x = 0.0f; center.y = 25.0f; center.z = 0.0f;
-        color.r = 0.0f; color.g = 0.0f; color.b = 1.0f; color.a = 1.0f;
-        createSpace("Center", center, buf, color, wm);
+//        ColorRGBA color = new ColorRGBA();
+//        Vector3f center = new Vector3f();
+//
+//        ZBufferState buf = (ZBufferState) wm.getRenderManager().createRendererState(RenderState.RS_ZBUFFER);
+//        buf.setEnabled(true);
+//        buf.setFunction(ZBufferState.TestFunction.LessThanOrEqualTo);
+//
+//        // First create the geometry
+//        center.x = 0.0f; center.y = 25.0f; center.z = 0.0f;
+//        color.r = 0.0f; color.g = 0.0f; color.b = 1.0f; color.a = 1.0f;
+//        createSpace("Center", center, buf, color, wm);
     }
 
     protected void createCameraEntity(WorldManager wm) {
@@ -229,14 +232,14 @@ public class DemoBase {
         renderBuffer.setCameraComponent(cc);
 
         // Skybox
-        SkyBox sky = createSkyBox(camera);
+        m_skyBox = createSkyBox(camera);
 
         // Create the input listener and process for the camera
         int eventMask = InputManager.KEY_EVENTS | InputManager.MOUSE_EVENTS;
         Canvas canvas = renderBuffer.getCanvas();
-        AWTInputComponent cameraListener = (AWTInputComponent)wm.getInputManager().createInputComponent(canvas, eventMask);
+        m_cameraListener = (AWTInputComponent)wm.getInputManager().createInputComponent(canvas, eventMask);
 
-        m_cameraProcessor = new FlexibleCameraProcessor(cameraListener, cameraNode, wm, camera, sky);
+        m_cameraProcessor = new FlexibleCameraProcessor(m_cameraListener, cameraNode, wm, camera, m_skyBox);
 
         assignCameraType(wm);
         wm.addUserData(FlexibleCameraProcessor.class, m_cameraProcessor);
@@ -391,58 +394,58 @@ public class DemoBase {
     }
 
     public void createSpace(String name, Vector3f center, ZBufferState buf, ColorRGBA color, WorldManager wm) {
-        MaterialState matState = null;
-
-        ProcessorCollectionComponent pcc = new ProcessorCollectionComponent();
-
-        // Create the root for the space
-        Node node = new Node();
-
-        // Now the walls
-        Box box = new Box(name + "Box", center, 500.0f, 500.0f, 500.0f);
-        node.attachChild(box);
-
-        // Now some rotating cubes - all confined within the space (not entities)
-        createCube(center, -250.0f, 150.0f,  250.0f, pcc, node, wm);
-        createCube(center,  250.0f, 150.0f,  250.0f, pcc, node, wm);
-        createCube(center,  250.0f, 150.0f, -250.0f, pcc, node, wm);
-        createCube(center, -250.0f, 150.0f, -250.0f, pcc, node, wm);
-
-        // Add bounds and state for the whole space
-        BoundingBox bbox = new BoundingBox(center, 500.0f, 500.0f, 500.0f);
-        node.setModelBound(bbox);
-        node.setRenderState(buf);
-        matState = (MaterialState) wm.getRenderManager().createRendererState(RenderState.RS_MATERIAL);
-        matState.setDiffuse(color);
-        node.setRenderState(matState);
-
-        // Create a scene component for it
-        RenderComponent sc = wm.getRenderManager().createRenderComponent(node);
-
-        // Finally, create the space and add it.
-        Entity e = new Entity(name + "Space");
-        e.addComponent(ProcessorCollectionComponent.class, pcc);
-        e.addComponent(RenderComponent.class, sc);
-        wm.addEntity(e);
+//        MaterialState matState = null;
+//
+//        ProcessorCollectionComponent pcc = new ProcessorCollectionComponent();
+//
+//        // Create the root for the space
+//        Node node = new Node();
+//
+//        // Now the walls
+//        Box box = new Box(name + "Box", center, 500.0f, 500.0f, 500.0f);
+//        node.attachChild(box);
+//
+//        // Now some rotating cubes - all confined within the space (not entities)
+//        createCube(center, -250.0f, 150.0f,  250.0f, pcc, node, wm);
+//        createCube(center,  250.0f, 150.0f,  250.0f, pcc, node, wm);
+//        createCube(center,  250.0f, 150.0f, -250.0f, pcc, node, wm);
+//        createCube(center, -250.0f, 150.0f, -250.0f, pcc, node, wm);
+//
+//        // Add bounds and state for the whole space
+//        BoundingBox bbox = new BoundingBox(center, 500.0f, 500.0f, 500.0f);
+//        node.setModelBound(bbox);
+//        node.setRenderState(buf);
+//        matState = (MaterialState) wm.getRenderManager().createRendererState(RenderState.RS_MATERIAL);
+//        matState.setDiffuse(color);
+//        node.setRenderState(matState);
+//
+//        // Create a scene component for it
+//        RenderComponent sc = wm.getRenderManager().createRenderComponent(node);
+//
+//        // Finally, create the space and add it.
+//        Entity e = new Entity(name + "Space");
+//        e.addComponent(ProcessorCollectionComponent.class, pcc);
+//        e.addComponent(RenderComponent.class, sc);
+//        wm.addEntity(e);
     }
 
     private void createCube(Vector3f center, float xoff, float yoff, float zoff, ProcessorCollectionComponent pcc, Node parent, WorldManager wm) {
-        Vector3f cubeCenter = new Vector3f();
-        Vector3f c = new Vector3f();
-
-        cubeCenter.x = center.x + xoff;
-        cubeCenter.y = center.y + yoff;
-        cubeCenter.z = center.z + zoff;
-        Box cube = new Box("Space Cube", c, 5.0f, 5.0f, 5.0f);
-        Node cubeNode = new Node();
-        cubeNode.setLocalTranslation(cubeCenter);
-        cubeNode.attachChild(cube);
-        parent.attachChild(cubeNode);
-
-        RotationProcessor rp = new RotationProcessor("Cube Rotator", wm, cubeNode,
-                (float) (6.0f * Math.PI / 180.0f));
-        //rp.setRunInRenderer(true);
-        pcc.addProcessor(rp);
+//        Vector3f cubeCenter = new Vector3f();
+//        Vector3f c = new Vector3f();
+//
+//        cubeCenter.x = center.x + xoff;
+//        cubeCenter.y = center.y + yoff;
+//        cubeCenter.z = center.z + zoff;
+//        Box cube = new Box("Space Cube", c, 5.0f, 5.0f, 5.0f);
+//        Node cubeNode = new Node();
+//        cubeNode.setLocalTranslation(cubeCenter);
+//        cubeNode.attachChild(cube);
+//        parent.attachChild(cubeNode);
+//
+//        RotationProcessor rp = new RotationProcessor("Cube Rotator", wm, cubeNode,
+//                (float) (6.0f * Math.PI / 180.0f));
+//        //rp.setRunInRenderer(true);
+//        pcc.addProcessor(rp);
     }
     /**
      * Generates a procedurally created articulated model. This model is made of geometric primitives, so don't

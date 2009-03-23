@@ -6,18 +6,39 @@
 package imi.portals;
 
 import com.jme.bounding.BoundingBox;
+import com.jme.image.Texture;
+import com.jme.math.Quaternion;
 import com.jme.math.Vector3f;
 import com.jme.scene.CameraNode;
 import com.jme.scene.Node;
-import com.jme.scene.shape.Box;
+import com.jme.scene.shape.Quad;
+import com.jme.scene.state.CullState;
+import com.jme.scene.state.CullState.Face;
+import com.jme.scene.state.RenderState;
 import com.jme.scene.state.TextureState;
 import com.jme.scene.state.ZBufferState;
+import com.jme.util.TextureManager;
 import imi.scene.PMatrix;
+import imi.scene.SkyBox;
+import imi.scene.camera.behaviors.FirstPersonCamModel;
+import imi.scene.camera.state.CameraState;
+import imi.scene.camera.state.FirstPersonCamState;
+import imi.scene.processors.FlexibleCameraProcessor;
+import imi.tests.DemoBase.SwingFrame;
+import imi.utils.FileUtils;
+import java.awt.Canvas;
+import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
+import javax.swing.JFrame;
+import org.jdesktop.mtgame.AWTInputComponent;
 import org.jdesktop.mtgame.CameraComponent;
 import org.jdesktop.mtgame.CollisionComponent;
 import org.jdesktop.mtgame.Entity;
+import org.jdesktop.mtgame.InputManager;
 import org.jdesktop.mtgame.JMECollisionComponent;
 import org.jdesktop.mtgame.JMECollisionSystem;
+import org.jdesktop.mtgame.ProcessorCollectionComponent;
 import org.jdesktop.mtgame.RenderBuffer;
 import org.jdesktop.mtgame.RenderComponent;
 import org.jdesktop.mtgame.WorldManager;
@@ -32,6 +53,7 @@ public class IMI_Portals extends Entity {
 ////////////////////////////////////////////////////////////////////////////////
 
     private Node                m_portal            = null;
+    private CameraNode          cameraNode          = null;
 
 ////////////////////////////////////////////////////////////////////////////////
 // Class Methods
@@ -42,14 +64,22 @@ public class IMI_Portals extends Entity {
     }
 
     public void createPortal(String portalName, PMatrix transform, Vector3f portalDimensions, ZBufferState zBufferState,
-           Vector3f portalViewPosition, WorldManager worldManager, int camWidth, int camHeight) {
-           
-        Box portal = createPortalGeometry(portalName, transform, portalDimensions, zBufferState);
-        createCameraComponent(worldManager, camWidth, camHeight, portalViewPosition);
+           Vector3f portalViewPosition, WorldManager worldManager, int camWidth, int camHeight, Quaternion rotation) {
+
+        CullState cs = (CullState) worldManager.getRenderManager().createRendererState(RenderState.RS_CULL);
+        cs.setCullFace(CullState.Face.Back);
+        cs.setEnabled(true);
+
+        Quad portal = createPortalGeometry(portalName, transform, portalDimensions, zBufferState);
+//        TextureState ts = createCameraEntity(worldManager, camWidth, camHeight, portalViewPosition);
+        createCameraComponent(worldManager, camWidth, camHeight, portalViewPosition, rotation);
         TextureState ts = createRenderToTexture(worldManager);
         portal.setRenderState(ts);
+        portal.setRenderState(cs);
+        
         m_portal = new Node(portalName);
         m_portal.attachChild(portal);
+        m_portal.setRenderState(cs);
 
         RenderComponent rc  = worldManager.getRenderManager().createRenderComponent(m_portal);
         rc.setOrtho(false);
@@ -57,23 +87,27 @@ public class IMI_Portals extends Entity {
         addComponent(RenderComponent.class, rc);
     }
     
-    public Box createPortalGeometry(String portalName, PMatrix transform, Vector3f portalDimensions, ZBufferState zBufferState) {
-        Box portal  = new Box(portalName, new Vector3f(), portalDimensions.x, portalDimensions.y, portalDimensions.z);
+    public Quad createPortalGeometry(String portalName, PMatrix transform, Vector3f portalDimensions, ZBufferState zBufferState) {
+        Quad portal  = new Quad(portalName, portalDimensions.x, portalDimensions.y);
         portal.setLocalTranslation(transform.getTranslation());
         portal.setLocalRotation(transform.getRotationJME());
         portal.setLocalScale(transform.getScaleVector());
+
         portal.setRenderState(zBufferState);
         portal.setModelBound(new BoundingBox());
+
         return portal;
     }
 
-    public void createCameraComponent(WorldManager worldManager, int camWidth, int camHeight, Vector3f cameraPosition) {
+    public void createCameraComponent(WorldManager worldManager, int camWidth, int camHeight, Vector3f cameraPosition, Quaternion rotation) {
         CameraNode cn = new CameraNode(getName() + "Cam", null);
         Node cameraSG = new Node();
         cameraSG.attachChild(cn);
         cameraSG.setLocalTranslation(cameraPosition);
+        if (rotation != null)
+            cameraSG.setLocalRotation(rotation);
         CameraComponent cc = worldManager.getRenderManager().createCameraComponent(cameraSG, cn,
-                camWidth, camHeight, 45.0f, camWidth/camHeight, 1.0f, 1000.0f, false);
+                camWidth, camHeight, 45.0f, camWidth/camHeight, 0.01f, 100000.0f, false);
         addComponent(CameraComponent.class, cc);
     }
 
@@ -95,5 +129,110 @@ public class IMI_Portals extends Entity {
     public void createCollisionComponent(JMECollisionSystem collisionSystem) {
         JMECollisionComponent cc = collisionSystem.createCollisionComponent(m_portal);
         addComponent(CollisionComponent.class, cc);
+    }
+
+    protected TextureState createCameraEntity(WorldManager wm, int camWidth, int camHeight, Vector3f cameraPosition) {
+        // Add the camera
+        Entity camera = new Entity("DefaultCamera");
+        CameraNode cn = new CameraNode(getName() + "Cam", null);
+        Node cameraSG = new Node();
+        cameraSG.attachChild(cn);
+        cameraSG.setLocalTranslation(cameraPosition);
+        CameraComponent cc = wm.getRenderManager().createCameraComponent(cameraSG, cn,
+                camWidth, camHeight, 45.0f, camWidth/camHeight, 1.0f, 1000.0f, false);
+
+        int width   = cc.getViewportWidth();
+        int height  = cc.getViewportHeight();
+
+        RenderBuffer rb = wm.getRenderManager().createRenderBuffer(RenderBuffer.Target.TEXTURE_2D, width, height);
+        rb.setCameraComponent(cc);
+        wm.getRenderManager().addRenderBuffer(rb);
+
+        TextureState ts = wm.getRenderManager().createTextureState();
+        ts.setEnabled(true);
+        ts.setTexture(rb.getTexture(), 0);
+
+        // Skybox
+        SkyBox skyBox = createSkyBox(camera, wm);
+
+        // Create the input listener and process for the camera
+        int eventMask = InputManager.KEY_EVENTS | InputManager.MOUSE_EVENTS;
+        Canvas canvas = rb.getCanvas();
+        AWTInputComponent cameraListener = (AWTInputComponent)wm.getInputManager().createInputComponent(canvas, eventMask);
+
+        FlexibleCameraProcessor cameraProcessor = new FlexibleCameraProcessor(cameraListener, cameraNode, wm, camera, null);
+
+        assignCameraType(wm, cameraProcessor);
+        wm.addUserData(FlexibleCameraProcessor.class, cameraProcessor);
+        wm.addUserData(CameraState.class, cameraProcessor.getState());
+        cameraProcessor.setRunInRenderer(true);
+        camera.addComponent(FlexibleCameraProcessor.class, cameraProcessor);
+
+        wm.addEntity(camera);
+        addComponent(CameraComponent.class, cc);
+        return ts;
+    }
+
+
+    private Node createCameraGraph(WorldManager wm) {
+        Node cameraSG = new Node("MyCamera SG");
+        cameraNode = new CameraNode("MyCamera", null);
+        cameraSG.attachChild(cameraNode);
+
+        return (cameraSG);
+    }
+
+    protected SkyBox createSkyBox(Entity camera, WorldManager worldManager) {
+        String [] skyboxAssets = new String[] { "/textures/skybox/Front.png",
+                                        "/textures/skybox/Right.png",
+                                        "/textures/skybox/Back.png",
+                                        "/textures/skybox/Left.png",
+                                        "/textures/skybox/default.png",
+                                        "/textures/skybox/Top.png" };
+
+        SkyBox sky = new SkyBox("skybox", 10.0f, 10.0f, 10.0f, worldManager);
+        sky.setTexture(SkyBox.NORTH,    loadSkyboxTexture(skyboxAssets[0]));  // +Z side
+        sky.setTexture(SkyBox.EAST,     loadSkyboxTexture(skyboxAssets[1]));  // -X side
+        sky.setTexture(SkyBox.SOUTH,    loadSkyboxTexture(skyboxAssets[2]));  // -Z side
+        sky.setTexture(SkyBox.WEST,     loadSkyboxTexture(skyboxAssets[3]));  // +X side
+        sky.setTexture(SkyBox.DOWN,     loadSkyboxTexture(skyboxAssets[4]));  // -Y Side
+        sky.setTexture(SkyBox.UP,       loadSkyboxTexture(skyboxAssets[5]));  // +Y side
+
+        RenderComponent sc2 = worldManager.getRenderManager().createRenderComponent(sky);
+        camera.addComponent(RenderComponent.class, sc2);
+
+        return sky;
+    }
+
+    protected Texture loadSkyboxTexture(String filePath) {
+        Texture monkeyTexture = null;
+        if (filePath.contains("assets")) {
+            try
+            {
+                monkeyTexture = TextureManager.loadTexture(new File(FileUtils.rootPath, filePath).toURI().toURL(), Texture.MinificationFilter.NearestNeighborNoMipMaps, Texture.MagnificationFilter.NearestNeighbor);
+            } catch (MalformedURLException ex)
+            {
+                System.out.println(ex.getMessage());
+            }
+        } else {
+            URL imageLocation   = getClass().getResource(filePath);
+            monkeyTexture = TextureManager.loadTexture(imageLocation, Texture.MinificationFilter.NearestNeighborNoMipMaps, Texture.MagnificationFilter.NearestNeighbor);
+        }
+
+        if (monkeyTexture != null)
+        {
+            monkeyTexture.setWrap(Texture.WrapAxis.S, Texture.WrapMode.EdgeClamp);
+            monkeyTexture.setWrap(Texture.WrapAxis.T, Texture.WrapMode.EdgeClamp);
+            monkeyTexture.setMinificationFilter(Texture.MinificationFilter.Trilinear);
+            monkeyTexture.setMagnificationFilter(Texture.MagnificationFilter.Bilinear);
+        }
+        return monkeyTexture;
+    }
+
+    protected void assignCameraType(WorldManager wm, FlexibleCameraProcessor cameraProcessor) {
+        FirstPersonCamState state = new FirstPersonCamState();
+        state.setCameraPosition(new Vector3f(0, 2.2f, -6));
+        FirstPersonCamModel model = new FirstPersonCamModel();
+        cameraProcessor.setCameraBehavior(model, state);
     }
 }

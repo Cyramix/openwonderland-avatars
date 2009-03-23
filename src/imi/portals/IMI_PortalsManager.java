@@ -5,10 +5,12 @@
 
 package imi.portals;
 
+import com.jme.math.Quaternion;
 import com.jme.math.Vector3f;
 import com.jme.scene.Node;
 import com.jme.scene.state.ZBufferState;
 import imi.scene.PMatrix;
+import imi.scene.SkyBox;
 import java.util.ArrayList;
 import org.jdesktop.mtgame.Entity;
 import org.jdesktop.mtgame.JMECollisionSystem;
@@ -25,6 +27,7 @@ public class IMI_PortalsManager {
     private int                 m_viewportHeight    = 600;
     private ArrayList<Entity>   m_portals           = new ArrayList<Entity>();
     private JMECollisionSystem  m_collisionSystem   = null;
+    private SkyBox              m_skyBox            = null;
 
     public IMI_PortalsManager(String name, int width, int height) {
         m_name              = name;
@@ -33,10 +36,10 @@ public class IMI_PortalsManager {
     }
 
     public void createPortal(String portalName, PMatrix transform, Vector3f portalDimensions, ZBufferState zBufferState,
-           Vector3f portalViewPosition, WorldManager worldManager) {
+           Vector3f portalViewPosition, WorldManager worldManager, Quaternion rotation) {
 
         IMI_Portals portal = new IMI_Portals(portalName);
-        portal.createPortal(portalName, transform, portalDimensions, zBufferState, portalViewPosition, worldManager, m_viewportWidth, m_viewportHeight);
+        portal.createPortal(portalName, transform, portalDimensions, zBufferState, portalViewPosition, worldManager, m_viewportWidth, m_viewportHeight, rotation);
         m_portals.add(portal);
         worldManager.addEntity(portal);
 
@@ -48,5 +51,9 @@ public class IMI_PortalsManager {
 
     public void setCollisionSystem(WorldManager worldManager) {
         m_collisionSystem = (JMECollisionSystem)worldManager.getCollisionManager().loadCollisionSystem(JMECollisionSystem.class);
+    }
+
+    public void setSkyBox(SkyBox skyBox) {
+        m_skyBox = skyBox;
     }
 }
