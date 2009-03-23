@@ -9,6 +9,7 @@ import com.jme.bounding.BoundingBox;
 import com.jme.image.Texture;
 import com.jme.math.Quaternion;
 import com.jme.math.Vector3f;
+import com.jme.renderer.ColorRGBA;
 import com.jme.scene.CameraNode;
 import com.jme.scene.Node;
 import com.jme.scene.shape.Quad;
@@ -54,6 +55,7 @@ public class IMI_Portals extends Entity {
 
     private Node                m_portal            = null;
     private CameraNode          cameraNode          = null;
+    private ColorRGBA           m_clearColor        = new ColorRGBA(135.0f/255.0f, 206.0f/255.0f, 250.0f/255.0f, 1.0f);
 
 ////////////////////////////////////////////////////////////////////////////////
 // Class Methods
@@ -117,6 +119,7 @@ public class IMI_Portals extends Entity {
         int height  = cc.getViewportHeight();
 
         RenderBuffer rb = worldManager.getRenderManager().createRenderBuffer(RenderBuffer.Target.TEXTURE_2D, width, height);
+        rb.setBackgroundColor(m_clearColor);
         rb.setCameraComponent(cc);
         worldManager.getRenderManager().addRenderBuffer(rb);
 

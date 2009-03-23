@@ -147,6 +147,8 @@ public class DemoBase {
                                                        "assets/textures/skybox/Left.png",
                                                        "assets/textures/skybox/default.png",
                                                        "assets/textures/skybox/Top.png" };
+    
+    private ColorRGBA m_clearColor = new ColorRGBA(135.0f/255.0f, 206.0f/255.0f, 250.0f/255.0f, 1.0f);
 
 ////////////////////////////////////////////////////////////////////////////////
 // Class Methods
@@ -228,6 +230,9 @@ public class DemoBase {
         Entity camera = new Entity("DefaultCamera");
         CameraComponent cc = wm.getRenderManager().createCameraComponent(cameraSG, cameraNode, width, height, 35.0f, aspect, 0.01f, 1000.0f, true);
         RenderBuffer renderBuffer = ((SwingFrame)wm.getUserData(JFrame.class)).getRenderBuffer();
+        renderBuffer.setBackgroundColor(m_clearColor);
+
+        
         camera.addComponent(CameraComponent.class, cc);
         renderBuffer.setCameraComponent(cc);
 
