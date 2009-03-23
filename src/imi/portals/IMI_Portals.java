@@ -5,6 +5,8 @@
 
 package imi.portals;
 
+import com.jme.bounding.BoundingBox;
+import com.jme.bounding.BoundingSphere;
 import com.jme.math.Vector3f;
 import com.jme.scene.CameraNode;
 import com.jme.scene.Node;
@@ -13,7 +15,10 @@ import com.jme.scene.state.TextureState;
 import com.jme.scene.state.ZBufferState;
 import imi.scene.PMatrix;
 import org.jdesktop.mtgame.CameraComponent;
+import org.jdesktop.mtgame.CollisionComponent;
 import org.jdesktop.mtgame.Entity;
+import org.jdesktop.mtgame.JMECollisionComponent;
+import org.jdesktop.mtgame.JMECollisionSystem;
 import org.jdesktop.mtgame.RenderBuffer;
 import org.jdesktop.mtgame.RenderComponent;
 import org.jdesktop.mtgame.WorldManager;
@@ -27,7 +32,7 @@ public class IMI_Portals extends Entity {
 // Class Data Members
 ////////////////////////////////////////////////////////////////////////////////
 
-    private Node    m_portal    = null;
+    private Node                m_portal            = null;
 
 ////////////////////////////////////////////////////////////////////////////////
 // Class Methods
@@ -59,6 +64,7 @@ public class IMI_Portals extends Entity {
         portal.setLocalRotation(transform.getRotationJME());
         portal.setLocalScale(transform.getScaleVector());
         portal.setRenderState(zBufferState);
+        portal.setModelBound(new BoundingBox());
         return portal;
     }
 
@@ -85,5 +91,10 @@ public class IMI_Portals extends Entity {
         ts.setEnabled(true);
         ts.setTexture(rb.getTexture(), 0);
         return ts;
+    }
+
+    public void createCollisionComponent(JMECollisionSystem collisionSystem) {
+        JMECollisionComponent cc = collisionSystem.createCollisionComponent(m_portal);
+        addComponent(CollisionComponent.class, cc);
     }
 }

@@ -118,6 +118,8 @@ public class RenderToTexturePortals extends DemoBase {
         PMatrix portal4 = new PMatrix(m_portalPositions.get(3));
 
         IMI_PortalsManager pm   = new IMI_PortalsManager("PortalsMaster", width, height);
+        pm.setCollisionSystem(worldManager);
+
         pm.createPortal("Portal1", portal1, new Vector3f(3*0.8f, 3*0.6f, 0.1f), buf, m_portalPositions.get(1), worldManager);
         pm.createPortal("Portal2", portal2, new Vector3f(3*0.8f, 3*0.6f, 0.1f), buf, m_portalPositions.get(0), worldManager);
 

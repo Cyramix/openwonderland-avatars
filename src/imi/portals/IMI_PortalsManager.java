@@ -11,6 +11,7 @@ import com.jme.scene.state.ZBufferState;
 import imi.scene.PMatrix;
 import java.util.ArrayList;
 import org.jdesktop.mtgame.Entity;
+import org.jdesktop.mtgame.JMECollisionSystem;
 import org.jdesktop.mtgame.WorldManager;
 
 /**
@@ -23,6 +24,7 @@ public class IMI_PortalsManager {
     private int                 m_viewportWidth     = 800;
     private int                 m_viewportHeight    = 600;
     private ArrayList<Entity>   m_portals           = new ArrayList<Entity>();
+    private JMECollisionSystem  m_collisionSystem   = null;
 
     public IMI_PortalsManager(String name, int width, int height) {
         m_name              = name;
@@ -37,5 +39,14 @@ public class IMI_PortalsManager {
         portal.createPortal(portalName, transform, portalDimensions, zBufferState, portalViewPosition, worldManager, m_viewportWidth, m_viewportHeight);
         m_portals.add(portal);
         worldManager.addEntity(portal);
+
+        if (m_collisionSystem != null) {
+            portal.createCollisionComponent(m_collisionSystem);
+        }
+
+    }
+
+    public void setCollisionSystem(WorldManager worldManager) {
+        m_collisionSystem = (JMECollisionSystem)worldManager.getCollisionManager().loadCollisionSystem(JMECollisionSystem.class);
     }
 }
