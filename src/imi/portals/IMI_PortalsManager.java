@@ -36,10 +36,10 @@ public class IMI_PortalsManager {
     }
 
     public void createPortal(String portalName, PMatrix transform, Vector3f portalDimensions, ZBufferState zBufferState,
-           Vector3f portalViewPosition, WorldManager worldManager, Quaternion rotation) {
+           Vector3f portalViewPosition, WorldManager worldManager, Quaternion rotation, int offset) {
 
         IMI_Portals portal = new IMI_Portals(portalName);
-        portal.createPortal(portalName, transform, portalDimensions, zBufferState, portalViewPosition, worldManager, m_viewportWidth, m_viewportHeight, rotation);
+        portal.createPortal(portalName, transform, portalDimensions, zBufferState, portalViewPosition, worldManager, m_viewportWidth, m_viewportHeight, rotation, offset);
         m_portals.add(portal);
         worldManager.addEntity(portal);
 

@@ -12,6 +12,7 @@ import com.jme.math.Vector3f;
 import com.jme.renderer.ColorRGBA;
 import com.jme.scene.CameraNode;
 import com.jme.scene.Node;
+import com.jme.scene.shape.Box;
 import com.jme.scene.shape.Quad;
 import com.jme.scene.state.CullState;
 import com.jme.scene.state.CullState.Face;
@@ -55,7 +56,7 @@ public class IMI_Portals extends Entity {
 
     private Node                m_portal            = null;
     private CameraNode          cameraNode          = null;
-    private ColorRGBA           m_clearColor        = new ColorRGBA(135.0f/255.0f, 206.0f/255.0f, 250.0f/255.0f, 1.0f);
+    private ColorRGBA           m_clearColor        = new ColorRGBA(173.0f/255.0f, 195.0f/255.0f, 205.0f/255.0f, 1.0f);
 
 ////////////////////////////////////////////////////////////////////////////////
 // Class Methods
@@ -66,22 +67,16 @@ public class IMI_Portals extends Entity {
     }
 
     public void createPortal(String portalName, PMatrix transform, Vector3f portalDimensions, ZBufferState zBufferState,
-           Vector3f portalViewPosition, WorldManager worldManager, int camWidth, int camHeight, Quaternion rotation) {
+           Vector3f portalViewPosition, WorldManager worldManager, int camWidth, int camHeight, Quaternion rotation, int offset) {
 
-        CullState cs = (CullState) worldManager.getRenderManager().createRendererState(RenderState.RS_CULL);
-        cs.setCullFace(CullState.Face.Back);
-        cs.setEnabled(true);
-
-        Quad portal = createPortalGeometry(portalName, transform, portalDimensions, zBufferState);
+        Node portal = createPortalGeometry(portalName, transform, portalDimensions, zBufferState, worldManager, offset);
 //        TextureState ts = createCameraEntity(worldManager, camWidth, camHeight, portalViewPosition);
         createCameraComponent(worldManager, camWidth, camHeight, portalViewPosition, rotation);
         TextureState ts = createRenderToTexture(worldManager);
         portal.setRenderState(ts);
-        portal.setRenderState(cs);
         
         m_portal = new Node(portalName);
         m_portal.attachChild(portal);
-        m_portal.setRenderState(cs);
 
         RenderComponent rc  = worldManager.getRenderManager().createRenderComponent(m_portal);
         rc.setOrtho(false);
@@ -89,16 +84,53 @@ public class IMI_Portals extends Entity {
         addComponent(RenderComponent.class, rc);
     }
     
-    public Quad createPortalGeometry(String portalName, PMatrix transform, Vector3f portalDimensions, ZBufferState zBufferState) {
+    public Node createPortalGeometry(String portalName, PMatrix transform, Vector3f portalDimensions, ZBufferState zBufferState, WorldManager wm, int offset) {
+        Node portalObject = new Node(portalName + "Group");
+        Box  portalFrame  = null;
+        Vector3f center   = null;
+
+        CullState cs = (CullState) wm.getRenderManager().createRendererState(RenderState.RS_CULL);
+        cs.setCullFace(CullState.Face.Back);
+        cs.setEnabled(true);
+
         Quad portal  = new Quad(portalName, portalDimensions.x, portalDimensions.y);
         portal.setLocalTranslation(transform.getTranslation());
         portal.setLocalRotation(transform.getRotationJME());
         portal.setLocalScale(transform.getScaleVector());
-
-        portal.setRenderState(zBufferState);
+        portal.setRenderState(cs);
         portal.setModelBound(new BoundingBox());
+        portalObject.attachChild(portal);
 
-        return portal;
+        TextureState ts = wm.getRenderManager().createTextureState();
+        Texture t0 = TextureManager.loadTexture(
+                getClass().getResource("/jmetest/data/texture/dirt.jpg"),
+                Texture.MinificationFilter.Trilinear,
+                Texture.MagnificationFilter.Bilinear);
+        t0.setWrap(Texture.WrapMode.Repeat);
+        ts.setTexture(t0);
+
+        center      = transform.getTranslation().add(new Vector3f((portalDimensions.x/2), 0.0f, 1.3f * offset));
+        portalFrame = new Box("rightSide", center, 0.3f, 2.0f, 2.0f);
+        portalFrame.setRenderState(ts);
+        portalObject.attachChild(portalFrame);
+
+        center      = transform.getTranslation().add(new Vector3f(-(portalDimensions.x/2), 0.0f, 1.3f * offset));
+        portalFrame = new Box("lefttSide", center, 0.3f, 2.0f, 2.0f);
+        portalFrame.setRenderState(ts);
+        portalObject.attachChild(portalFrame);
+
+        center      = transform.getTranslation().add(new Vector3f(0.0f, (portalDimensions.y/2)+0.35f, 1.3f * offset));
+        portalFrame = new Box("topSide", center, 2.9f, 0.3f, 2.0f);
+        portalFrame.setRenderState(ts);
+        portalObject.attachChild(portalFrame);
+
+        center      = transform.getTranslation().add(new Vector3f(0.0f, 0.0f, 3.0f * offset));
+        portalFrame = new Box("backSide", center, 2.3f, 2.0f, 0.3f);
+        portalFrame.setRenderState(ts);
+        portalObject.attachChild(portalFrame);
+
+        portalObject.setRenderState(zBufferState);
+        return portalObject;
     }
 
     public void createCameraComponent(WorldManager worldManager, int camWidth, int camHeight, Vector3f cameraPosition, Quaternion rotation) {
