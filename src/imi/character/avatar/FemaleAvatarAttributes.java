@@ -106,7 +106,7 @@ public class FemaleAvatarAttributes extends CharacterAttributes
             int numberOfLegs  = 3;
             int numberOfTorso = 4;
             int numberOfHair  = 49;
-            int numberOfHeads = 2;
+            int numberOfHeads = 10;
             
             ArrayList<String> load      = new ArrayList<String>();
             ArrayList<SkinnedMeshParams> add       = new ArrayList<SkinnedMeshParams>();
@@ -266,6 +266,9 @@ public class FemaleAvatarAttributes extends CharacterAttributes
                 break;
             case 7:
                 setHeadAttachment("assets/models/collada/Heads/FemaleHead/FG_FemaleLowPoly_01.dae");
+                break;
+            case 8:
+                setHeadAttachment("assets/models/collada/Heads/FemaleHead/FG_Female_AF_Head02.dae");
                 break;
             default:
                 setHeadAttachment("assets/models/collada/Heads/FemaleHead/FemaleCHead.dae");

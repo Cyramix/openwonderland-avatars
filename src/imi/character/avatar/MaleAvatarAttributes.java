@@ -103,7 +103,7 @@ public class MaleAvatarAttributes extends CharacterAttributes
             int numberOfLegs  = 4;
             int numberOfTorso = 6;
             int numberOfHair  = 17;
-            int numberOfHeads = 2;
+            int numberOfHeads = 6;
             
             ArrayList<String> load      = new ArrayList<String>();
             ArrayList<SkinnedMeshParams> add       = new ArrayList<SkinnedMeshParams>();
