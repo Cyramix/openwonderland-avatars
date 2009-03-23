@@ -519,19 +519,20 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         for (PPolygonSkinnedMeshInstance meshInst : smInstances)
         {
             PMeshMaterial meshMat = meshInst.getMaterialRef();
+            String tempName = meshInst.getName().toLowerCase();
             // is this an eyeball? (also used for tongue and teeth)
-            if (meshInst.getName().contains("EyeGeoShape") ||
-                meshInst.getName().contains("Tongue")      ||
-                meshInst.getName().contains("Teeth"))
+            if (tempName.contains("eyegeoshape") ||
+                tempName.contains("tongue")      ||
+                tempName.contains("teeth"))
             {
                 if (meshMat.getTexture(0) != null)
                     meshMat.getTexture(0).setMinFilter(MinificationFilter.BilinearNoMipMaps);
                 meshMat.setShader(eyeballShader);
             }
-            else if (meshInst.getName().contains("Head") ||
-                     meshInst.getName().contains("Nude") ||
-                     meshInst.getName().contains("Arms") ||
-                     meshInst.getName().contains("Hand"))// is it flesh?
+            else if (tempName.contains("head") ||
+                     tempName.contains("nude") ||
+                     tempName.contains("arms") ||
+                     tempName.contains("hand"))// is it flesh?
                 meshMat.setShader(fleshShader);
             else // assume to be clothing
             {
@@ -704,14 +705,16 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         for (PPolygonSkinnedMeshInstance meshInst : smInstances)
         {
             PMeshMaterial meshMat = meshInst.getMaterialRef();
+            String tempName = meshInst.getName().toLowerCase();
+
             // is this an eyeball? (also used for tongue and teeth)
-            if (meshInst.getName().contains("EyeGeoShape"))
+            if (tempName.contains("eyegeoshape"))
             {
                 meshMat.setShader(eyeballShader);
                 if (meshMat.getTexture(0) != null)
                     meshMat.getTexture(0).setMinFilter(MinificationFilter.BilinearNoMipMaps);
             }
-            else if (meshInst.getName().contains("Tongue") || meshInst.getName().contains("Teeth"))
+            else if (tempName.contains("tongue") || tempName.contains("teeth"))
             {
                 if (meshMat.getTexture(0) != null)
                     meshMat.getTexture(0).setMinFilter(MinificationFilter.BilinearNoMipMaps);

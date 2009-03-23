@@ -253,6 +253,9 @@ public class MaleAvatarAttributes extends CharacterAttributes
             case 5:
                 setHeadAttachment("assets/models/collada/Heads/MaleHead/FG_MaleLowPoly_01.dae");
                 break;
+            case 6:
+                setHeadAttachment("assets/models/collada/Heads/MaleHead/midAgeHead.dae");
+                break;
             default:
                 setHeadAttachment("assets/models/collada/Heads/MaleHead/MaleCHead.dae");
         }

@@ -33,6 +33,7 @@ import imi.environments.ColladaEnvironment;
 import imi.portals.IMI_PortalsManager;
 import imi.scene.PMatrix;
 import imi.scene.PScene;
+import imi.scene.SkyBox;
 import imi.scene.processors.JSceneEventProcessor;
 import imi.utils.input.AvatarControlScheme;
 import java.net.URL;
@@ -75,7 +76,28 @@ public class RenderToTexturePortals extends DemoBase {
         worldManager.addUserData(ColladaEnvironment.class, environment);
     }
 
-    @Override
+    protected SkyBox createSkyBox(Entity camera) {
+        m_skyboxAssets = new String[] { "/textures/skybox/Front.png",
+                                        "/textures/skybox/Right.png",
+                                        "/textures/skybox/Back.png",
+                                        "/textures/skybox/Left.png",
+                                        "/textures/skybox/default.png",
+                                        "/textures/skybox/Top.png" };
+
+        SkyBox sky = new SkyBox("skybox", 10.0f, 10.0f, 10.0f, worldManager);
+        sky.setTexture(SkyBox.NORTH,    loadSkyboxTexture(m_skyboxAssets[0]));  // +Z side
+        sky.setTexture(SkyBox.EAST,     loadSkyboxTexture(m_skyboxAssets[1]));  // -X side
+        sky.setTexture(SkyBox.SOUTH,    loadSkyboxTexture(m_skyboxAssets[2]));  // -Z side
+        sky.setTexture(SkyBox.WEST,     loadSkyboxTexture(m_skyboxAssets[3]));  // +X side
+        sky.setTexture(SkyBox.DOWN,     loadSkyboxTexture(m_skyboxAssets[4]));  // -Y Side
+        sky.setTexture(SkyBox.UP,       loadSkyboxTexture(m_skyboxAssets[5]));  // +Y side
+
+        RenderComponent sc2 = worldManager.getRenderManager().createRenderComponent(sky);
+        camera.addComponent(RenderComponent.class, sc2);
+
+        return sky;
+    }
+
     protected void simpleSceneInit(PScene pscene, WorldManager wm, ArrayList<ProcessorComponent> processors) {
         m_portalPositions   = new Vector<Vector3f>();
         m_cubeTextures      = new Vector<String>();

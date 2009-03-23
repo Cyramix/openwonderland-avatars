@@ -78,7 +78,14 @@ public class CustomizationExample extends DemoBase
 
         // Create an attributes object describing the maleAvatar
         // We will use random customizations for this one
-        MaleAvatarAttributes maleAttributes = new MaleAvatarAttributes("RobertTheTestGuy", true);
+        MaleAvatarAttributes maleAttributes = new MaleAvatarAttributes("RobertTheTestGuy", 
+                                                                                0,  // Feet
+                                                                                0,  // Legs
+                                                                                0,  // Torso
+                                                                                0,  // Hair
+                                                                                1,  // Head
+                                                                                1); // Skin
+        maleAttributes.setUsePhongLighting(true);
         // Put him over to the left a bit
         maleAttributes.setOrigin(new PMatrix(new Vector3f(1, 0, 1)));
         Avatar maleAvatar = new Avatar(maleAttributes, wm);
@@ -91,6 +98,7 @@ public class CustomizationExample extends DemoBase
                                                  1, // Hair
                                                  6, // Head
                                                  12); // Skin
+        femaleAttributes.setUsePhongLighting(true);
         // Put her over to the right a bit
         femaleAttributes.setOrigin(new PMatrix(new Vector3f(-1, 0, 1)));
         Avatar femaleAvatar = new Avatar(femaleAttributes, wm);
