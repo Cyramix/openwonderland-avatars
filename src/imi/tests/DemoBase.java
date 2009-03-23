@@ -789,11 +789,15 @@ public class DemoBase {
 
     protected Texture loadSkyboxTexture(String filePath) {
         Texture monkeyTexture = null;
-        try
-        {
-            monkeyTexture = TextureManager.loadTexture(new File(FileUtils.rootPath, filePath).toURI().toURL(), Texture.MinificationFilter.NearestNeighborNoMipMaps, Texture.MagnificationFilter.NearestNeighbor);
-        } catch (MalformedURLException ex)
-        {
+        if (filePath.contains("assets")) {
+            try
+            {
+                monkeyTexture = TextureManager.loadTexture(new File(FileUtils.rootPath, filePath).toURI().toURL(), Texture.MinificationFilter.NearestNeighborNoMipMaps, Texture.MagnificationFilter.NearestNeighbor);
+            } catch (MalformedURLException ex)
+            {
+                System.out.println(ex.getMessage());
+            }
+        } else {
             URL imageLocation   = getClass().getResource(filePath);
             monkeyTexture = TextureManager.loadTexture(imageLocation, Texture.MinificationFilter.NearestNeighborNoMipMaps, Texture.MagnificationFilter.NearestNeighbor);
         }
