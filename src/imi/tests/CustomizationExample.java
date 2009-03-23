@@ -83,7 +83,7 @@ public class CustomizationExample extends DemoBase
                                                                                 0,  // Legs
                                                                                 0,  // Torso
                                                                                 0,  // Hair
-                                                                                1,  // Head
+                                                                                7,  // Head
                                                                                 1); // Skin
         maleAttributes.setUsePhongLighting(true);
         // Put him over to the left a bit
