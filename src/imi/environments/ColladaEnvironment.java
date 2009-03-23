@@ -72,6 +72,7 @@ public class ColladaEnvironment extends Entity
     public ColladaEnvironment(WorldManager wm, String relativePath, String name)
     {
         this(wm, relativePath, name, false);
+        int i = 0;
 
     }
     /**
