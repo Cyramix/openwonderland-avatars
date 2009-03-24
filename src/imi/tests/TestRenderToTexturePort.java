@@ -37,7 +37,6 @@ import com.jme.scene.state.RenderState;
 import com.jme.scene.state.TextureState;
 import com.jme.scene.state.ZBufferState;
 import com.jme.util.TextureManager;
-import imi.applet.AppletTest;
 import imi.environments.ColladaEnvironment;
 import imi.loaders.repository.Repository;
 import imi.scene.JScene;
@@ -341,7 +340,7 @@ public class TestRenderToTexturePort extends JFrame implements FrameRateListener
     private Texture loadSkyboxTexture(String filePath) {
         Texture monkeyTexture = null;
 
-        URL imageLocation   = AppletTest.class.getResource(filePath);
+        URL imageLocation   = getClass().getResource(filePath);
         monkeyTexture = TextureManager.loadTexture(imageLocation, Texture.MinificationFilter.NearestNeighborNoMipMaps, Texture.MagnificationFilter.NearestNeighbor);
 
         if (monkeyTexture != null) {
