@@ -119,7 +119,7 @@ public class LibraryAnimationsProcessor extends Processor
         Source inputSource = getSource(colladaAnimation, "input");
         if (inputSource != null)
         {
-            if (inputSource.getId().endsWith("transform-input"))
+            if (inputSource.getId().endsWith("-input"))
             {
                 m_transformInputSource = inputSource;
                 m_KeyframeCount = inputSource.getFloatArray().getValues().size();
@@ -132,7 +132,7 @@ public class LibraryAnimationsProcessor extends Processor
         Source outputSource = getSource(colladaAnimation, "output");
         if (outputSource != null)
         {
-            if (outputSource.getId().endsWith("transform-output"))
+            if (outputSource.getId().endsWith("-output"))
                 m_transformOutputSource = outputSource;
             else
                 logger.warning("Unrecognized output source.");
