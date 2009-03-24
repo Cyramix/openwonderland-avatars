@@ -84,6 +84,9 @@ public class CharacterAttributes
     private PMatrix origin                  = new PMatrix(new Vector3f(0,(float)Math.PI,0), Vector3f.UNIT_XYZ, Vector3f.ZERO);
     private PScene  simpleScene             = null;
 
+    /** HACK: This boolean controls whether the facial animation should **/
+    private boolean animateFace = true;
+
     /**
      * Construct a new instance with the provided name
      * @param name
@@ -554,6 +557,16 @@ public class CharacterAttributes
     {
         return m_bPhongLightingForSkin;
     }
+
+    public boolean isAnimatingFace() {
+        return animateFace;
+    }
+
+    public void setAnimateFace(boolean animateFace) {
+        this.animateFace = animateFace;
+    }
+
+
     /**
      * This class wraps up the data needed to attach a skinned mesh
      */

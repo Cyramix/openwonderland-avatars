@@ -286,7 +286,10 @@ public class PPolygonMeshInstance extends PNode implements Serializable
         for (int i = 0; i < numNeeded; ++i)
         {
             TextureMaterialProperties texProps = m_material.getTexture(i);
-            m_materialStates.setTexture(texProps.loadTexture(), i);
+            if (texProps != null)
+                m_materialStates.setTexture(texProps.loadTexture(), i);
+            else
+                logger.warning("Null texture property found in material for index " + i + " mesh name is " + getName());
         }
 
 

@@ -480,6 +480,8 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         // Associate ourselves with our animation states
         for (AnimationState animState : m_skeleton.getAnimationStates())
             animState.addListener(this);
+        
+        m_AnimationProcessor.setAnimateFace(m_attributes.isAnimatingFace());
 
         m_skeleton.setInstruments((Instrumentation)m_wm.getUserData(Instrumentation.class));
         // Turn on the animation

@@ -46,6 +46,8 @@ public class CharacterAnimationProcessor extends ProcessorComponent
 
     private boolean bEnable = true;
     private boolean synchronizer = false;
+    /** HACK: Control facial animation **/
+    private boolean animateFace = true;
 
     /**
      * This constructor receives the skeleton node
@@ -115,6 +117,8 @@ public class CharacterAnimationProcessor extends ProcessorComponent
         AnimationState state = null;
         AnimationGroup group = null;
         int numberOfGroups = m_animated.getAnimationComponent().getGroupCount();
+        if (!animateFace)
+            numberOfGroups = 1; // Ignore the face group
         for (int i = 0; i < numberOfGroups; i++)
         {
             state = m_animated.getAnimationState(i);
@@ -149,6 +153,15 @@ public class CharacterAnimationProcessor extends ProcessorComponent
     public void setEnable(boolean bEnable) {
         this.bEnable = bEnable;
     }
+
+    public boolean isAnimateFace() {
+        return animateFace;
+    }
+
+    public void setAnimateFace(boolean animateFace) {
+        this.animateFace = animateFace;
+    }
+
 
     
     public void compute() {
