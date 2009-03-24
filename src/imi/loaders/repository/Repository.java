@@ -25,6 +25,7 @@ import imi.scene.shader.AbstractShaderProgram;
 import imi.scene.shader.ShaderFactory;
 import imi.utils.AvatarObjectInputStream;
 import imi.utils.MD5HashUtils;
+import java.awt.Dimension;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -35,6 +36,8 @@ import java.net.URL;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JFrame;
+import javax.swing.JProgressBar;
 import javolution.util.FastList;
 import javolution.util.FastTable;
 import org.jdesktop.mtgame.*;
@@ -346,14 +349,25 @@ public class Repository extends Entity
 
     private void grabTextureCacheFileFromInternet(File textureCacheFile) {
         URL textureCacheLocation = null;
+        JFrame frame = new JFrame("Downloading Texture Cache");
+        JProgressBar progressBar = new JProgressBar(0, 36700160);
+        progressBar.setPreferredSize(new Dimension(300, 50));
+        frame.add(progressBar);
+        frame.pack();
+        frame.setVisible(true);
         try {
             textureCacheLocation = new URL("http://www.zeitgeistgames.com/assets/textures/textures.bin");
             FileOutputStream fos = new FileOutputStream(textureCacheFile);
             BufferedInputStream bis = new BufferedInputStream(textureCacheLocation.openStream());
             byte[] byteBuffer = new byte[65536];
             int bytesRead = 0;
+            int totalRead = 0;
             while ((bytesRead = bis.read(byteBuffer)) != -1)
+            {
+                totalRead += bytesRead;
                 fos.write(byteBuffer, 0, bytesRead);
+                progressBar.setValue(totalRead);
+            }
             // Now the file is created! Make sure it exists
             if (textureCacheFile.exists() == false)
                 logger.severe("Downloaded the file, but still couldn't create the cache version!");
@@ -369,6 +383,10 @@ public class Repository extends Entity
         catch (IOException ex)
         {
             logger.severe("An IOException! OH NOOOOOO. " + ex.getMessage());
+        }
+        finally
+        {
+            frame.setVisible(false);
         }
     }
 
