@@ -27,14 +27,23 @@ import imi.gui.JFrame_InstrumentationGUI;
 import imi.gui.JPanel_Animations;
 import imi.gui.SceneEssentials;
 import imi.gui.TreeExplorer;
+import imi.loaders.Instruction;
+import imi.loaders.InstructionProcessor;
 import imi.scene.PMatrix;
 import imi.scene.animation.AnimationComponent.PlaybackMode;
 import imi.scene.animation.AnimationState;
 import imi.scene.camera.state.CameraState;
 import imi.scene.camera.state.FirstPersonCamState;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.jdesktop.mtgame.WorldManager;
 import imi.scene.processors.JSceneEventProcessor;
 import imi.utils.input.AvatarControlScheme;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.InputStreamReader;
+import java.net.MalformedURLException;
+import java.net.URL;
 import javax.swing.JFrame;
 
 
@@ -139,10 +148,31 @@ public class CustomizationExample extends DemoBase
         TreeExplorer te = new TreeExplorer();
         te.setExplorer(scene);
         te.setVisible(true);
+    }
 
-        JFrame_InstrumentationGUI instruments = new JFrame_InstrumentationGUI(wm);
-        instruments.setVisible(true);
+    private void attachSkinnedHair(Avatar target, URL geometryLocation)
+    {
+        // load the skinned mesh
+        InstructionProcessor processor = new InstructionProcessor(worldManager);
+        Instruction rootInstruction = new Instruction();
+        rootInstruction.addInstruction(new Instruction(Instruction.InstructionType.setSkeleton, target.getSkeleton()));
+        rootInstruction.addLoadGeometryToSubgroupInstruction(geometryLocation, "Head");
+        processor.execute(rootInstruction);
 
+        target.setDefaultShaders();
+        target.applyMaterials();
+    }
+
+    private void waitUntilAvatarIsInitialized(Avatar avatar)
+    {
+        try {
+            while (avatar.isInitialized() == false)
+                Thread.sleep(300);
+        }
+        catch (InterruptedException ex)
+        {
+            System.out.println("Interrupted whilst sleeping!");
+        }
     }
 
     private void useAvatarAnimationSystem(Avatar avatar)
