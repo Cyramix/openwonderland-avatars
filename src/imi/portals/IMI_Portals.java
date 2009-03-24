@@ -112,26 +112,34 @@ public class IMI_Portals extends Entity {
         ts.setTexture(t0);
 
         center      = transform.getTranslation().add(new Vector3f((portalDimensions.x/2), 0.0f, 1.3f * offset));
-//        portalFrame = new Box("rightSide", center, 0.3f, 2.0f, 2.0f);
         portalFrame = new Box("rightSide", center, portalDimensions.z, portalDimensions.y/2, portalDimensions.x/3);
+        portalFrame.setModelBound(new BoundingBox());
+        portalFrame.updateModelBound();
+        portalFrame.updateModelBound();
         portalFrame.setRenderState(ts);
         portalObject.attachChild(portalFrame);
 
         center      = transform.getTranslation().add(new Vector3f(-(portalDimensions.x/2), 0.0f, 1.3f * offset));
-//        portalFrame = new Box("lefttSide", center, 0.3f, 2.0f, 2.0f);
         portalFrame = new Box("leftSide", center, portalDimensions.z, portalDimensions.y/2, portalDimensions.x/3);
+        portalFrame.setModelBound(new BoundingBox());
+        portalFrame.updateModelBound();
+        portalFrame.updateModelBound();
         portalFrame.setRenderState(ts);
         portalObject.attachChild(portalFrame);
 
         center      = transform.getTranslation().add(new Vector3f(0.0f, (portalDimensions.y/1.9f), 1.3f * offset));
-//        portalFrame = new Box("topSide", center, 2.9f, 0.3f, 2.0f);
         portalFrame = new Box("topSide", center, portalDimensions.x/1.9f, portalDimensions.z, portalDimensions.y/2.2f);
+        portalFrame.setModelBound(new BoundingBox());
+        portalFrame.updateModelBound();
+        portalFrame.updateModelBound();
         portalFrame.setRenderState(ts);
         portalObject.attachChild(portalFrame);
 
         center      = transform.getTranslation().add(new Vector3f(0.0f, 0.0f, 3.4f * offset));
-//        portalFrame = new Box("backSide", center, 2.3f, 2.0f, 0.3f);
         portalFrame = new Box("backSide", center, portalDimensions.x/2, portalDimensions.y/2, portalDimensions.z/2);
+        portalFrame.setModelBound(new BoundingBox());
+        portalFrame.updateModelBound();
+        portalFrame.updateModelBound();
         portalFrame.setRenderState(ts);
         portalObject.attachChild(portalFrame);
 
