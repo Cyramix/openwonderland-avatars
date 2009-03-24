@@ -129,7 +129,7 @@ public class RenderToTexturePortals extends DemoBase {
 
         ////////////////////////////////////////////////////////////////////////
         // Create avatar
-        //createAvatarForInput(worldManager, pscene);
+        createAvatarForInput(worldManager, pscene);
 
         ////////////////////////////////////////////////////////////////////////
         // Create Zbuffer state for portals
@@ -155,8 +155,8 @@ public class RenderToTexturePortals extends DemoBase {
 //        pm.createPortal("Portal1", portal1, new Vector3f(3*0.8f, 3*0.6f, 0.1f), buf, m_portalPositions.get(1), worldManager);
 //        pm.createPortal("Portal2", portal2, new Vector3f(3*0.8f, 3*0.6f, 0.1f), buf, m_portalPositions.get(0), worldManager);
 
-        pm.createPortal("Portal3", portal3, new Vector3f(8*0.8f, 8*0.6f, 0.2f), buf, m_portalPositions.get(3), worldManager, null, 1);
-        pm.createPortal("Portal4", portal4, new Vector3f(8*0.8f, 8*0.6f, 0.2f), buf, m_portalPositions.get(2), worldManager, rotY.getRotation(), -1);
+        pm.createPortal("Portal3", portal3, new Vector3f(8*0.8f, 8*0.6f, 0.2f), buf, m_portalPositions.get(3).add(0.0f, -0.2f, -4.1f), worldManager, null, 1);
+        pm.createPortal("Portal4", portal4, new Vector3f(8*0.8f, 8*0.6f, 0.2f), buf, m_portalPositions.get(2).add(0.0f, -0.2f,  4.1f), worldManager, rotY.getRotation(), -1);
     }
 
 ////////////////////////////////////////////////////////////////////////////////

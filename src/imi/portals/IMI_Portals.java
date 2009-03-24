@@ -155,7 +155,7 @@ public class IMI_Portals extends Entity {
         if (rotation != null)
             cameraSG.setLocalRotation(rotation);
         CameraComponent cc = worldManager.getRenderManager().createCameraComponent(cameraSG, cn,
-                camWidth, camHeight, 45.0f, camWidth/camHeight, 0.01f, 100000.0f, false);
+                camWidth, camHeight, 45.0f, camWidth/camHeight, 4.1f, 1000.0f, false);
         addComponent(CameraComponent.class, cc);
     }
 
