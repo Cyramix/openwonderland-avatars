@@ -25,8 +25,12 @@ import imi.scene.shader.AbstractShaderProgram;
 import imi.scene.shader.ShaderFactory;
 import imi.utils.AvatarObjectInputStream;
 import imi.utils.MD5HashUtils;
+import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
@@ -132,11 +136,13 @@ public class Repository extends Entity
 
         // create the shader factory
         m_shaderFactory = new ShaderFactory(wm);
+        // Load up the texture cache.
         try {
             // prime the texture manager
-            TextureManager.readCache(new File("assets/textures/textures.bin"));
-//            URL cacheloc = getClass().getResource("/textures/textures.bin");
-//            TextureManager.readCache(getCacheEquivalent(cacheloc));
+            File textureCacheFile = new File(cacheFolder, "textures.bin");
+            if (textureCacheFile.exists() == false) // no? then grab it from the net
+                grabTextureCacheFileFromInternet(textureCacheFile);
+            TextureManager.readCache(textureCacheFile);
         } catch (IOException ex) {
             Logger.getLogger(Repository.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -336,6 +342,34 @@ public class Repository extends Entity
         
         // Update the work order
         statementOfWork.m_repoAsset = repoAsset;
+    }
+
+    private void grabTextureCacheFileFromInternet(File textureCacheFile) {
+        URL textureCacheLocation = null;
+        try {
+            textureCacheLocation = new URL("http://www.zeitgeistgames.com/assets/textures/textures.bin");
+            FileOutputStream fos = new FileOutputStream(textureCacheFile);
+            BufferedInputStream bis = new BufferedInputStream(textureCacheLocation.openStream());
+            byte[] byteBuffer = new byte[65536];
+            int bytesRead = 0;
+            while ((bytesRead = bis.read(byteBuffer)) != -1)
+                fos.write(byteBuffer, 0, bytesRead);
+            // Now the file is created! Make sure it exists
+            if (textureCacheFile.exists() == false)
+                logger.severe("Downloaded the file, but still couldn't create the cache version!");
+        }
+        catch (MalformedURLException ex)
+        {
+            logger.severe("The URL to the binary texture cache was WRONG! " + ex.getMessage());
+        }
+        catch (FileNotFoundException ex)
+        {
+            logger.severe("The file to be written wasn't found or something. " + ex.getMessage());
+        }
+        catch (IOException ex)
+        {
+            logger.severe("An IOException! OH NOOOOOO. " + ex.getMessage());
+        }
     }
 
 
