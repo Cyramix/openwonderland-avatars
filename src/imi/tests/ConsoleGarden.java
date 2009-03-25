@@ -19,7 +19,11 @@ package imi.tests;
 
 import com.jme.math.Vector3f;
 import imi.character.objects.ObjectCollection;
+import imi.scene.PMatrix;
+import imi.scene.camera.CameraPositionManager;
+import imi.scene.camera.behaviors.WrongStateTypeException;
 import imi.scene.camera.state.FirstPersonCamState;
+import imi.scene.processors.FlexibleCameraProcessor;
 import imi.scene.processors.JSceneEventProcessor;
 import imi.utils.input.AvatarControlScheme;
 import org.jdesktop.mtgame.WorldManager;
@@ -81,7 +85,40 @@ public class ConsoleGarden extends DemoBase
 
 //        JFrame_InstrumentationGUI instruments = new JFrame_InstrumentationGUI(wm);
 //        instruments.setVisible(true);
-        
+        addCameraTestStates((FlexibleCameraProcessor)wm.getUserData(FlexibleCameraProcessor.class));
+
+    }
+
+    private void addCameraTestStates(FlexibleCameraProcessor camProcessor)
+    {
+        Vector3f position = new Vector3f(-6, 1.1f, 0.0f);
+        FirstPersonCamState stateOne = new FirstPersonCamState(position);
+        position.set(-3, 1.2f, 0.0f);
+        FirstPersonCamState stateTwo = new FirstPersonCamState(position);
+        position.set(0, 1.3f, 0.0f);
+        FirstPersonCamState stateThree = new FirstPersonCamState(position);
+        position.set(3, 1.5f, 0.0f);
+        FirstPersonCamState stateFour = new FirstPersonCamState(position);
+
+        camProcessor.clearStateCollection();
+        try
+        {
+            camProcessor.addState(stateOne);
+            camProcessor.addState(stateTwo);
+            camProcessor.addState(stateThree);
+            camProcessor.addState(stateFour);
+        }
+        catch (WrongStateTypeException ex)
+        {
+            // This should never happen
+            System.out.println("What?!");
+        }
+
+        // create a couple of camera positions
+        CameraPositionManager.instance().addCameraPosition(new PMatrix(), "Origin");
+        CameraPositionManager.instance().addCameraPosition(new PMatrix(new Vector3f(0, 0, 3.14159f), Vector3f.UNIT_XYZ, new Vector3f(1, 5, 0)), "Not Origin");
+
+
     }
 
 }

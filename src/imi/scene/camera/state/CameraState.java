@@ -18,6 +18,7 @@
 package imi.scene.camera.state;
 
 import com.jme.math.Vector3f;
+import imi.scene.PMatrix;
 
 /**
  * The basis for Camera states
@@ -66,4 +67,10 @@ public abstract class CameraState
      * @param position
      */
     protected abstract void setCameraPosition(Vector3f position);
+
+    /**
+     * Set the camera's transform
+     * @param transform
+     */
+    protected abstract void setCameraTransform(PMatrix transform);
 }

@@ -20,6 +20,7 @@ package imi.scene.camera.state;
 import com.jme.math.Matrix3f;
 import com.jme.math.Quaternion;
 import com.jme.math.Vector3f;
+import imi.scene.PMatrix;
 
 /**
  * This class encapsulates all the state needed for first person camera
@@ -301,6 +302,13 @@ public class FirstPersonCamState extends CameraState
     public void setYDir(Vector3f yDir)
     {
         this.yDir = yDir;
+    }
+
+    @Override
+    protected void setCameraTransform(PMatrix transform)
+    {
+        setCameraPosition(transform.getTranslation());
+        setQuaternion(transform.getRotationJME());
     }
     
     

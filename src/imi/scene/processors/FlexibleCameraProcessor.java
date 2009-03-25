@@ -321,4 +321,9 @@ public class FlexibleCameraProcessor extends AWTEventProcessorComponent
             }
         }
     }
+
+    public void setCameraPosition(String name)
+    {
+        CameraState state = m_stateCollection.get(currentStateIndex);
+    }
 }

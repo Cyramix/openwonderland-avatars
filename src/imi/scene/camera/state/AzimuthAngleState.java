@@ -18,6 +18,7 @@
 package imi.scene.camera.state;
 
 import com.jme.math.Vector3f;
+import imi.scene.PMatrix;
 
 /**
  * This class provides all the state information needed by a 
@@ -127,5 +128,10 @@ public class AzimuthAngleState extends CameraState
     public void setCameraPosition(Vector3f position)
     {
        // Do nothing!
+    }
+
+    public void setCameraTransform(PMatrix transform)
+    {
+        // TODO
     }
 }
