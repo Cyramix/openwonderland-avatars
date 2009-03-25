@@ -25,6 +25,7 @@ import imi.scene.camera.state.CameraState;
 import imi.scene.SkyBox;
 import imi.utils.input.AvatarControlScheme;
 import imi.utils.input.InputScheme;
+import java.awt.event.KeyEvent;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javolution.util.FastTable;
@@ -108,16 +109,21 @@ public class FlexibleCameraProcessor extends AWTEventProcessorComponent
         deltaTime = (newTime - oldTime);
         oldTime = newTime;
 
-        if (m_model != null && !m_stateCollection.isEmpty())
+        if (m_model != null)
         {
             try
             {
-                m_model.update(m_stateCollection.get(currentStateIndex), (float)deltaTime);
                 Object [] events = getEvents();
+                checkForStateChangeEvents(events);
                 if (avatarControl != null)
                     avatarControl.processMouseEvents(events);
-                m_model.handleInputEvents(m_stateCollection.get(currentStateIndex), events);
-                m_model.determineTransform(m_stateCollection.get(currentStateIndex), m_transform);
+
+                if (m_stateCollection.isEmpty() == false && currentStateIndex >= 0)
+                {
+                    m_model.update(m_stateCollection.get(currentStateIndex), (float)deltaTime);
+                    m_model.handleInputEvents(m_stateCollection.get(currentStateIndex), events);
+                    m_model.determineTransform(m_stateCollection.get(currentStateIndex), m_transform);
+                }
             } catch (WrongStateTypeException ex)
             {
                 Logger.getLogger(FlexibleCameraProcessor.class.getName()).log(Level.SEVERE, null, ex);
@@ -291,5 +297,28 @@ public class FlexibleCameraProcessor extends AWTEventProcessorComponent
     public PMatrix getTransform()
     {
         return m_transform;
+    }
+
+    private void checkForStateChangeEvents(Object[] events)
+    {
+        for (Object obj : events)
+        {
+            if (obj instanceof KeyEvent)
+            {
+                KeyEvent ke = (KeyEvent)obj;
+                if (ke.getID() != KeyEvent.KEY_RELEASED)
+                    continue; // Only interested in key up events
+                if (ke.getKeyCode() == KeyEvent.VK_C)
+                {
+                    previousState();
+                    break;
+                }
+                else if (ke.getKeyCode() == KeyEvent.VK_V)
+                {
+                    nextState();
+                    break;
+                }
+            }
+        }
     }
 }
