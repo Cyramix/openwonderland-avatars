@@ -496,4 +496,10 @@ public class ThirdPersonCamModel implements CameraModel, CharacterMotionListener
         this.activeState = activeState;
     }
 
+
+    @Override
+    public CameraState.CameraStateType getRequiredStateType() {
+        return CameraState.CameraStateType.ThirdPerson;
+    }
+
 }

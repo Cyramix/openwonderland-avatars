@@ -115,4 +115,11 @@ public class AzimuthAngleModel implements CameraModel
             throw new WrongStateTypeException("Wrong state type");
         // Do nothing;
     }
+
+    @Override
+    public CameraState.CameraStateType getRequiredStateType() {
+        return CameraState.CameraStateType.AzimuthAngle;
+    }
+
+
 }

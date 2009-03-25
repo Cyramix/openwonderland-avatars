@@ -27,6 +27,7 @@ import imi.utils.input.AvatarControlScheme;
 import imi.utils.input.InputScheme;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javolution.util.FastTable;
 import org.jdesktop.mtgame.AWTInputComponent;
 import org.jdesktop.mtgame.AwtEventCondition;
 import org.jdesktop.mtgame.Entity;
@@ -36,40 +37,55 @@ import org.jdesktop.mtgame.WorldManager;
 import org.jdesktop.mtgame.processor.AWTEventProcessorComponent;
 
 /**
- *
+ * This processor allows for manipulation of a camera node with
+ * multiple states or models.
  * @author Ronald E Dahlgren
  */
 public class FlexibleCameraProcessor extends AWTEventProcessorComponent
 {
+    /** Transform that this process manipulates **/
     private PMatrix m_transform = new PMatrix();
-    
-    private Node    m_jmeNode   = null;
+
+    /** The camera node to manipulate **/
+    private Node    m_jmeCameraNode   = null;
+    /** The skybox (must follow the camera) **/
     private Node    m_skyNode   = null;
     
     private WorldManager m_WM   = null;
     
     private ProcessorArmingCollection m_armingConditions = null;
     
-    // camera behavior specifics
-    private CameraState m_state = null;
+    /** Collection of states for use with the current model **/
+    private final FastTable<CameraState> m_stateCollection = new FastTable<CameraState>();
+    /** Cursor to indicate the current state **/
+    private Integer currentStateIndex = 0;
+    /** Behavior model currently in use **/
     private CameraModel m_model = null;
-    
+    /** Control system **/
     private InputScheme avatarControl = null;
 
-    // Time
+    /** Used for calculating delta time values **/
     private double oldTime = 0.0;
     private double deltaTime = 0.0;
     
     /**
-     * The default constructor
+     * Constructs a new flexible camera processor with the provided goodies.
+     * @param listener This component receives input events from AWT
+     * @param cameraNode The camera node to drive around
+     * @param wm The world manager
+     * @param myEntity The entity that this processor will associate itself with
+     * @param skyboxNode The skybox, will be a child of the camera node.
      */
-    public FlexibleCameraProcessor(AWTInputComponent listener, Node cameraNode,
-            WorldManager wm, Entity myEntity, SkyBox skyboxNode) {
-        
+    public FlexibleCameraProcessor(AWTInputComponent listener,
+                                                Node cameraNode,
+                                                WorldManager wm,
+                                                Entity myEntity,
+                                                SkyBox skyboxNode)
+    {
         super(listener);
         setEntity(myEntity);
         
-        m_jmeNode = cameraNode;
+        m_jmeCameraNode = cameraNode;
         m_WM = wm;
         
         m_skyNode = skyboxNode;
@@ -78,36 +94,11 @@ public class FlexibleCameraProcessor extends AWTEventProcessorComponent
         m_armingConditions.addCondition(new AwtEventCondition(this));
         m_armingConditions.addCondition(new NewFrameCondition(this));
     }
-    
-    public void setControl(InputScheme control)
-    {
-        avatarControl = control;
-    }
-    
-    public void setCameraBehavior(CameraModel newModel, CameraState newState)
-    {
-        m_model = newModel;
-        m_state = newState;
-    }
 
-    public CameraModel getModel()
+    @Override
+    public void initialize()
     {
-        return m_model;
-    }
-    
-    public CameraState getState()
-    {
-        return m_state;
-    }
-    
-    public void setState(CameraState stateToMatchModel)
-    {
-        m_state = stateToMatchModel;
-    }
-
-    public PMatrix getTransform()
-    {
-        return m_transform;
+        setArmingCondition(m_armingConditions);
     }
     
     @Override
@@ -117,42 +108,188 @@ public class FlexibleCameraProcessor extends AWTEventProcessorComponent
         deltaTime = (newTime - oldTime);
         oldTime = newTime;
 
-        if (m_model != null && m_state != null)
+        if (m_model != null && !m_stateCollection.isEmpty())
         {
             try
             {
-                m_model.update(m_state, (float)deltaTime);
+                m_model.update(m_stateCollection.get(currentStateIndex), (float)deltaTime);
                 Object [] events = getEvents();
                 if (avatarControl != null)
                     avatarControl.processMouseEvents(events);
-                m_model.handleInputEvents(m_state, events);
-                m_model.determineTransform(m_state, m_transform);
+                m_model.handleInputEvents(m_stateCollection.get(currentStateIndex), events);
+                m_model.determineTransform(m_stateCollection.get(currentStateIndex), m_transform);
             } catch (WrongStateTypeException ex)
             {
                 Logger.getLogger(FlexibleCameraProcessor.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        
-        //m_lastFrameTime = fCurrentTime;
     }
 
     @Override
     public void commit(ProcessorArmingCollection arg0)
     {
-        m_jmeNode.setLocalRotation(m_transform.getRotation());
-        m_jmeNode.setLocalTranslation(m_transform.getTranslation());
+        m_jmeCameraNode.setLocalRotation(m_transform.getRotation());
+        m_jmeCameraNode.setLocalTranslation(m_transform.getTranslation());
         
         if (m_skyNode != null)
         {
             m_skyNode.setLocalTranslation(m_transform.getTranslation());
             m_WM.addToUpdateList(m_skyNode);
         }
-        m_WM.addToUpdateList(m_jmeNode);
+        m_WM.addToUpdateList(m_jmeCameraNode);
+    }
+    
+    /**
+     * Set the current state to the next state in the collection, this method
+     * will roll over to the first state if already at the end.
+     */
+    public void nextState()
+    {
+        currentStateIndex++;
+        currentStateIndex %= m_stateCollection.size();
     }
 
-    @Override
-    public void initialize()
+    /**
+     * This method will set the current state to the previous state in the
+     * collection. It will roll over to the last state if the current state
+     * is the first state.
+     */
+    public void previousState()
     {
-        setArmingCondition(m_armingConditions);
+        currentStateIndex--;
+        if (currentStateIndex < 0)
+            currentStateIndex = m_stateCollection.size() - 1;
+    }
+
+    /**
+     * Make the current state the one indicated by the provided index, if
+     * it is valid.
+     * @param index
+     */
+    public void setCurrentState(int index)
+    {
+        if (index < 0 || index >= m_stateCollection.size())
+            return;
+        else
+            currentStateIndex = index;
+    }
+    
+    /////////////////////////////////////////////////////////////////
+    ///////////// Standard Collection Encapsulation /////////////////
+    /////////////////////////////////////////////////////////////////
+    /**
+     * Retrieve the camera state in the collection at the specified index.
+     * @param index
+     * @return The state, or null if the index is invalid
+     */
+    public CameraState getState(int index)
+    {
+        if (index < 0 || index >= m_stateCollection.size())
+            return null;
+        else
+            return m_stateCollection.get(index);
+    }
+
+    /**
+     * Add the provided state to the collection of available states for this
+     * model.
+     * @param state The state to add
+     * @return The index of the state in the collection
+     * @throws imi.scene.camera.behaviors.WrongStateTypeException
+     */
+    public int addState(CameraState state) throws WrongStateTypeException
+    {
+        if (m_model.getRequiredStateType() != state.getType())
+            throw new WrongStateTypeException("Wrong state type provided for add.");
+        m_stateCollection.add(state);
+        return m_stateCollection.size() - 1;
+    }
+
+    /**
+     * Clear the internal collection of camera states.
+     */
+    public void clearStateCollection()
+    {
+        m_stateCollection.clear();
+        currentStateIndex = -1;
+    }
+
+    /**
+     * Set the state at the specified index to the provided state. If the index
+     * is not valid for the current collection of states, no assignment is made.
+     * If the state type is not correct for the current model, a WrongStateTypeException
+     * is throw.
+     * @param index The index to set
+     * @param state The new state (Must be compatible with the current behavior model!)
+     * @throws imi.scene.camera.behaviors.WrongStateTypeException
+     */
+    public void setState(int index, CameraState state) throws WrongStateTypeException
+    {
+        if (index < 0 || index > m_stateCollection.size())
+            return;
+        if (state.getType() != m_model.getRequiredStateType())
+            throw new WrongStateTypeException("Incorrect state type provided");
+        // Otherwise, we can actually set the state.
+        m_stateCollection.set(index, state);
+    }
+
+    ////////////////////////////////////////////////////////////
+    ////////// DUNGEON - Getters, Setters, Etc /////////////////
+    ////////////////////////////////////////////////////////////
+
+    /**
+     * Set the control scheme
+     * @param control
+     */
+    public void setControl(InputScheme control)
+    {
+        avatarControl = control;
+    }
+
+    /**
+     * Sets the model and default state for the camera processor. This method
+     * will also clear out the existing list of states. This is because it should
+     * not be assumed that the old states are compatible with the new model
+     * @param newModel The new behavior model to use
+     * @param newState The new state to use
+     */
+    public void setCameraBehavior(CameraModel newModel, CameraState newState)
+    {
+        m_model = newModel;
+        clearStateCollection();
+        m_stateCollection.add(newState);
+        currentStateIndex = 0;
+    }
+
+    /**
+     * Retrieve the current behavior model
+     * @return
+     */
+    public CameraModel getModel()
+    {
+        return m_model;
+    }
+
+    /**
+     * Retrieve the current camera state.
+     * @return
+     */
+    public CameraState getState()
+    {
+        return m_stateCollection.get(currentStateIndex);
+    }
+
+    /**
+     * Set the current camera state
+     * @param stateToMatchModel
+     */
+    public void setState(CameraState stateToMatchModel)
+    {
+        m_stateCollection.set(currentStateIndex, stateToMatchModel);
+    }
+
+    public PMatrix getTransform()
+    {
+        return m_transform;
     }
 }

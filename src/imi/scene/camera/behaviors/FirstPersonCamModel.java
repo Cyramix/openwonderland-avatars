@@ -208,4 +208,9 @@ public class FirstPersonCamModel implements CameraModel
         // Do nothing;
     }
 
+
+    @Override
+    public CameraState.CameraStateType getRequiredStateType() {
+        return CameraState.CameraStateType.FirstPerson;
+    }
 }

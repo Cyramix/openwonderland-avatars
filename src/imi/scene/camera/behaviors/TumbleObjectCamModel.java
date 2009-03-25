@@ -397,4 +397,10 @@ public class TumbleObjectCamModel implements CameraModel
         camState.setNextFocalPoint(newFocusPoint);
         camState.setOriginalFocalPoint(camState.getTargetFocalPoint());
     }
+
+
+    @Override
+    public CameraState.CameraStateType getRequiredStateType() {
+        return CameraState.CameraStateType.TumbleObject;
+    }
 }

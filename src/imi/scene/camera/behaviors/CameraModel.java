@@ -53,4 +53,11 @@ public interface CameraModel
      * @param deltaTime
      */
     public void update(CameraState state, float deltaTime) throws WrongStateTypeException;
+
+
+    /**
+     * Return the type of state that is required for this model.
+     * @return
+     */
+    public CameraState.CameraStateType getRequiredStateType();
 }
