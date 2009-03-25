@@ -72,5 +72,5 @@ public abstract class CameraState
      * Set the camera's transform
      * @param transform
      */
-    protected abstract void setCameraTransform(PMatrix transform);
+    public abstract void setCameraTransform(PMatrix transform);
 }

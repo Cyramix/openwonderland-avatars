@@ -23,6 +23,7 @@ import imi.scene.camera.behaviors.CameraModel;
 import imi.scene.camera.behaviors.WrongStateTypeException;
 import imi.scene.camera.state.CameraState;
 import imi.scene.SkyBox;
+import imi.scene.camera.CameraPositionManager;
 import imi.utils.input.AvatarControlScheme;
 import imi.utils.input.InputScheme;
 import java.awt.event.KeyEvent;
@@ -321,9 +322,11 @@ public class FlexibleCameraProcessor extends AWTEventProcessorComponent
             }
         }
     }
-
     public void setCameraPosition(String name)
     {
         CameraState state = m_stateCollection.get(currentStateIndex);
+        PMatrix transformBuffer = new PMatrix();
+        CameraPositionManager.instance().getCameraTransform(name, transformBuffer);
+        state.setCameraTransform(transformBuffer);
     }
 }

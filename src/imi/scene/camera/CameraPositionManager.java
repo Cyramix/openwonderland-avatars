@@ -76,16 +76,21 @@ public class CameraPositionManager
      * Retrieve the transform of the requestion camera transform. If the index
      * is invalid, the rotationOutput matrix will not be altered.
      * @param index
-     * @param rotationOutput
+     * @param output
      * @return True on success, false otherwise
      */
-    public boolean getCameraTransform(int index, PMatrix rotationOutput)
+    public boolean getCameraTransform(int index, PMatrix output)
     {
         if (index < 0 || index >= camPositions.size())
             return false;
         else
-            rotationOutput.set(camPositions.get(index).transform);
+            output.set(camPositions.get(index).transform);
         return true;
+    }
+
+    public boolean getCameraTransform(String name, PMatrix output)
+    {
+        return getCameraTransform(getCameraPositionIndex(name), output);
     }
     
     public int getCameraPositionIndex(String name)

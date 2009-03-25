@@ -305,10 +305,16 @@ public class FirstPersonCamState extends CameraState
     }
 
     @Override
-    protected void setCameraTransform(PMatrix transform)
+    public void setCameraTransform(PMatrix transform)
     {
         setCameraPosition(transform.getTranslation());
-        setQuaternion(transform.getRotationJME());
+        Quaternion rot = transform.getRotationJME();
+        setQuaternion(rot);
+        float[] angles = rot.toAngles(null);
+        System.out.println("Rotation angles are " + angles[0] + ", " + angles[1] + ", " + angles[2]);
+        setRotationX((float)Math.toDegrees(angles[0]));
+        setRotationY((float)Math.toDegrees(angles[1]));
+
     }
     
     
