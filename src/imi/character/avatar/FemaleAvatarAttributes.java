@@ -775,6 +775,11 @@ public class FemaleAvatarAttributes extends CharacterAttributes
                 attachments.add(new AttachmentParams("Med_AfricanPT_CenterShape", "Head", orientation, "Hair"));
             }
             break;
+            case 53: // SPECIAL SKINNED HAIR
+            {
+                load.add("assets/models/collada/Hair/FemaleHair/FemaleFGHair.dae");
+                add.add(new SkinnedMeshParams("HairAShape1", "Head"));
+            }
         }
     }
 }

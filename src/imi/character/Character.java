@@ -79,8 +79,10 @@ import imi.scene.shader.programs.ClothingShaderSpecColor;
 import imi.scene.shader.programs.EyeballShader;
 import imi.scene.shader.programs.FleshShader;
 import imi.scene.shader.programs.HairShader;
+import imi.scene.shader.programs.NormalAndSpecularMapShader;
 import imi.scene.shader.programs.PhongFleshShader;
 import imi.scene.shader.programs.SimpleTNLWithAmbient;
+import imi.scene.shader.programs.VertDeformerWithSpecAndNormalMap;
 import imi.scene.utils.PMeshUtils;
 import imi.scene.utils.tree.SerializationHelper;
 import imi.scene.utils.tree.TreeTraverser;
@@ -502,6 +504,8 @@ public abstract class Character extends Entity implements SpatialObject, Animati
 
         AbstractShaderProgram accessoryShader = repo.newShader(SimpleTNLWithAmbient.class);
         AbstractShaderProgram eyeballShader = repo.newShader(EyeballShader.class);
+        // HACK
+        AbstractShaderProgram specialHairShader = repo.newShader(VertDeformerWithSpecAndNormalMap.class);
 
         float[] skinColor = m_attributes.getSkinTone();
         AbstractShaderProgram fleshShader = null;
@@ -536,6 +540,22 @@ public abstract class Character extends Entity implements SpatialObject, Animati
                      tempName.contains("arms") ||
                      tempName.contains("hand"))// is it flesh?
                 meshMat.setShader(fleshShader);
+            else if (tempName.equals("hairashape1")) // HACK
+            {
+                try {
+                    URL normalMapLocation = new URL("http://www.zeitgeistgames.com/assets/models/collada/Hair/FemaleHair/HairBrownHLBase_N.png");
+                    meshMat.setTexture(meshMat.getTexture(0), 2);
+                    meshMat.setTexture(normalMapLocation, 1);
+                    meshMat.getTexture(1).loadTexture();
+                    // Change the textures, because we know they load incorrectly.
+                    meshMat.setShader(specialHairShader);
+                    meshMat.setCullFace(CullState.Face.None);
+                }
+                catch (MalformedURLException ex)
+                {
+                    // yeah yeah
+                }
+            }
             else // assume to be clothing
             {
                 AbstractShaderProgram clothingShader = repo.newShader(ClothingShaderSpecColor.class);
