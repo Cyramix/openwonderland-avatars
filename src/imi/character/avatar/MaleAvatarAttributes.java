@@ -52,6 +52,7 @@ public class MaleAvatarAttributes extends CharacterAttributes
         new ColorRGBA( 231 / 255.0f,  216 / 255.0f, 223 / 255.0f, 1),
         new ColorRGBA( 174 / 255.0f, 112  / 255.0f, 112 / 255.0f, 1),
         new ColorRGBA(1, 1, 1, 1), // Whitey, for testing
+        new ColorRGBA(0.7137255f, 0.5372549f, 0.45490196f, 1)
     };
 
     /** Collection of eye colors **/
@@ -235,29 +236,17 @@ public class MaleAvatarAttributes extends CharacterAttributes
         switch (preset)
         {
             case 0:
-                setHeadAttachment("assets/models/collada/Heads/MaleHead/MaleCHead.dae");
+                setHeadAttachment("assets/models/collada/Avatars/MaleAvatar/Male_Bind.dae");
                 break;
             case 1:
                 setHeadAttachment("assets/models/collada/Heads/MaleHead/blackHead.dae");
                 break;
-
-            case 2:
-                setHeadAttachment("assets/models/collada/Heads/MaleHead/midAgeGuy.dae");
-                break;
+                // Case three removed until middle aged head is functional once more
             case 3:
-                setHeadAttachment("assets/models/collada/Heads/MaleHead/MaleAsianHead.dae");
+                setHeadAttachment("assets/models/collada/Heads/MaleHead/AsianHeadMale.dae");
                 break;
             case 4:
                 setHeadAttachment("assets/models/collada/Heads/MaleHead/FaceGenMaleHi.dae");
-                break;
-            case 5:
-                setHeadAttachment("assets/models/collada/Heads/MaleHead/FG_MaleLowPoly_01.dae");
-                break;
-            case 6:
-                setHeadAttachment("assets/models/collada/Heads/MaleHead/midAgeHead.dae");
-                break;
-            case 7:
-                setHeadAttachment("assets/models/collada/Heads/MaleHead/asiaHead_V4.dae");
                 break;
             default:
                 setHeadAttachment("assets/models/collada/Heads/MaleHead/MaleCHead.dae");
