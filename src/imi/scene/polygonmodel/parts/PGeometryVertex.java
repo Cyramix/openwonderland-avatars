@@ -104,6 +104,14 @@ public class PGeometryVertex
         return indices;
     }
 
+    public static Vector2f[] getNewInitializedTextureCoordsArray()
+    {
+        Vector2f[] texCoords = new Vector2f[8];
+        for (int a=1; a<8; a++)
+            texCoords[a] = new Vector2f();
+        return texCoords;
+    }
+    
     //  Clears the Vertice.
     public void clear()
     {

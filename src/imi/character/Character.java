@@ -33,7 +33,6 @@ import com.jme.scene.state.MaterialState.ColorMaterial;
 import com.jme.scene.state.RenderState;
 import com.jme.scene.state.WireframeState;
 import com.jme.scene.state.ZBufferState;
-import imi.character.FacialAnimationController;
 import imi.character.objects.ObjectCollection;
 import imi.character.objects.SpatialObject;
 import imi.character.statemachine.GameContext;
@@ -79,7 +78,6 @@ import imi.scene.shader.programs.ClothingShaderSpecColor;
 import imi.scene.shader.programs.EyeballShader;
 import imi.scene.shader.programs.FleshShader;
 import imi.scene.shader.programs.HairShader;
-import imi.scene.shader.programs.NormalAndSpecularMapShader;
 import imi.scene.shader.programs.PhongFleshShader;
 import imi.scene.shader.programs.SimpleTNLWithAmbient;
 import imi.scene.shader.programs.VertDeformerWithSpecAndNormalMap;
@@ -171,6 +169,8 @@ public abstract class Character extends Entity implements SpatialObject, Animati
     private   boolean                       m_initialized           = false;
     /** Expansion slot for updatable things **/
     private   Updatable                     m_updateExtension       = null;
+    /** Expansion slot for initialization **/
+    private   InitializationInterface       m_initialization        = null;
     /** index of the 'default' facial animation **/
     private   int                           m_defaultFacePose       = 3; // No more 'playAll' cycle
     private   float                         m_defaultFacePoseTiming = 0.1f;
@@ -484,6 +484,10 @@ public abstract class Character extends Entity implements SpatialObject, Animati
             animState.addListener(this);
         
         m_AnimationProcessor.setAnimateFace(m_attributes.isAnimatingFace());
+        
+        // Initialization extension
+        if (m_initialization != null)
+            m_initialization.initialize(this);
 
         m_skeleton.setInstruments((Instrumentation)m_wm.getUserData(Instrumentation.class));
         // Turn on the animation
@@ -492,9 +496,10 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         m_characterProcessor.start();
         m_pscene.setRenderStop(false);
         m_modelInst.setRenderStop(false);
+
         m_initialized = true;
     }
-
+    
     /**
      * Sets shaders on the parts according to the defaults.
      */
@@ -650,6 +655,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
             m_bWaitingOnAsset = false;
         }
     };
+
     /**
      * Load a head file and return the skeleton of the new head.
      * @param headLocation Location of the head to load
@@ -762,6 +768,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
             logger.warning("No attributes, aborting applyAttributes.");
             return;
         }
+        m_initialization = m_attributes.getInitializationObject();
         if (m_attributes.isUseSimpleStaticModel() == true)
             return; // Nothing else to be done here
 
@@ -1083,9 +1090,15 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         {
             m_skeleton   = null;
             m_jscene.updateRenderState();
+            
+            // Initialization extension
+            if (m_initialization != null)
+                m_initialization.initialize(this);
+            
             m_characterProcessor.start();
             m_pscene.setRenderStop(false);
             m_modelInst.setRenderStop(false);
+
             m_initialized = true;
         }
 

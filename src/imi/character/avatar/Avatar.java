@@ -117,6 +117,8 @@ public class Avatar extends imi.character.Character
         m_keyBindings.put(KeyEvent.VK_HOME,         TriggerNames.GoSit.ordinal());
         m_keyBindings.put(KeyEvent.VK_ADD,          TriggerNames.Move_Down.ordinal());
         m_keyBindings.put(KeyEvent.VK_SUBTRACT,     TriggerNames.Move_Up.ordinal());
+        m_keyBindings.put(KeyEvent.VK_EQUALS,       TriggerNames.Move_Down.ordinal());
+        m_keyBindings.put(KeyEvent.VK_MINUS,        TriggerNames.Move_Up.ordinal());
         m_keyBindings.put(KeyEvent.VK_COMMA,        TriggerNames.Reverse.ordinal());
         m_keyBindings.put(KeyEvent.VK_PERIOD,       TriggerNames.NextAction.ordinal());
         m_keyBindings.put(KeyEvent.VK_1,            TriggerNames.GoTo1.ordinal());

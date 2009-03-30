@@ -120,13 +120,19 @@ public class FlyState extends GameState
         super.stateEnter(owner);
         
         exitCounter   = 0.0f;
+
+        // Kill gravity while flying
+        ((AvatarController)context.getController()).setGravity(new Vector3f());
     }
     
     @Override
     protected void stateExit(GameContext owner)
     {
         super.stateExit(owner);
-        
+
+        // Restore gravity after flying
+        ((AvatarController)context.getController()).setGravity(new Vector3f(0.0f, 0.098f, 0.0f));
+
         // avatar's skeleton might be null untill loaded
         SkeletonNode skeleton = context.getSkeleton();
         if (skeleton != null)   

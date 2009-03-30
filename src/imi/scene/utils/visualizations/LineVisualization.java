@@ -23,6 +23,7 @@ import com.jme.renderer.ColorRGBA;
 import com.jme.scene.Node;
 import com.jme.util.geom.BufferUtils;
 import java.util.ArrayList;
+import javolution.util.FastTable;
 
 /**
  *
@@ -44,21 +45,40 @@ public class LineVisualization
      */
     public LineVisualization(ArrayList<Vector3f> origin, ArrayList<Vector3f> point, ColorRGBA color, float width) 
     {
-        objectRoot = new Node("Line visu");
         this.origin = origin;
-        this.point = point;
+        this.point  = point;
+        initialize(color, width);
+    }
+    
+    public LineVisualization(FastTable<Vector3f> path, ColorRGBA color, float width) 
+    {
+        this.origin = new ArrayList<Vector3f>();
+        this.point  = new ArrayList<Vector3f>();
+        for (int i = 1; i < path.size(); i++)
+        {
+            origin.add(path.get(i-1));
+            point.add(path.get(i));
+        }
+        initialize(color, width);
+    }
+
+    public void initialize(ColorRGBA color, float width)
+    {
+        objectRoot = new Node("Line visu");
         objectRoot.setLocalTranslation(Vector3f.ZERO);
         
         // clear out the old
         objectRoot.detachAllChildren();
-        
+        System.out.println();
         // quick and ugly
         int index = 0;
         Vector3f [] linePoint = new Vector3f [origin.size()+point.size()];
         for (int i = 0; i < origin.size(); i++)
         {
-            linePoint[index] = origin.get(i); index++;
-            linePoint[index] = point.get(i);  index++;
+            linePoint[index] = origin.get(i);
+            index++;
+            linePoint[index] = point.get(i);
+            index++;
         }
         line = new Line("Line visu", linePoint, null, null, null);
         line.reconstruct(BufferUtils.createFloatBuffer( linePoint  ), null, null, null);
@@ -70,7 +90,7 @@ public class LineVisualization
         // Attach the sphere to the scene root
         objectRoot.attachChild(line);
     }
-
+    
     public void updatePositions()
     {
     }

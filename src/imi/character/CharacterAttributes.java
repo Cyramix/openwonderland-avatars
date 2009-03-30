@@ -25,7 +25,6 @@ import imi.serialization.xml.bindings.xmlCharacterAttachmentParameters;
 import imi.serialization.xml.bindings.xmlCharacterAttributes;
 import imi.serialization.xml.bindings.xmlFloatRow;
 import imi.serialization.xml.bindings.xmlSkinnedMeshParams;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -73,6 +72,9 @@ public class CharacterAttributes
     private float []                shoesSpecColor          = new float [3];
     /** Eyeball texture **/
     private String                  eyeballTexture          = null;
+
+    /** Initialization extension **/
+    private InitializationInterface initializationObject    = null;
 
     private Map<Integer, String[]>  m_geomref = null;
 
@@ -251,7 +253,15 @@ public class CharacterAttributes
         this.attachmentsInstructions = attachmentsInstructions;
     }
 
-    PScene getSimpleScene() {
+    public InitializationInterface getInitializationObject() {
+        return initializationObject;
+    }
+
+    public void setInitializationObject(InitializationInterface initializationObject) {
+        this.initializationObject = initializationObject;
+    }
+
+    public PScene getSimpleScene() {
         return simpleScene;
     }
 

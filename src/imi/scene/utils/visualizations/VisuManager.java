@@ -25,6 +25,7 @@ import com.jme.scene.state.WireframeState;
 import com.jme.scene.state.ZBufferState;
 import java.util.ArrayList;
 import javolution.util.FastList;
+import javolution.util.FastTable;
 import org.jdesktop.mtgame.Entity;
 import org.jdesktop.mtgame.NewFrameCondition;
 import org.jdesktop.mtgame.ProcessorArmingCollection;
@@ -124,6 +125,17 @@ public class VisuManager extends Entity
             m_lineObjects = new FastList<LineVisualization>();
 
         LineVisualization visuals = new LineVisualization(origin, point, color, width);
+        m_lineObjects.add(visuals);
+        m_jmeRoot.attachChild(visuals.objectRoot);
+        m_jmeRoot.updateRenderState();  
+    }
+    
+    public void addLineObject(FastTable<Vector3f> path, ColorRGBA color, float width) 
+    {
+        if (m_lineObjects == null) // First object, allocate collection space
+            m_lineObjects = new FastList<LineVisualization>();
+
+        LineVisualization visuals = new LineVisualization(path, color, width);
         m_lineObjects.add(visuals);
         m_jmeRoot.attachChild(visuals.objectRoot);
         m_jmeRoot.updateRenderState();  

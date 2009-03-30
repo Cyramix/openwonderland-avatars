@@ -30,7 +30,7 @@ import javax.swing.JFrame;
  * 
  * @author Lou Hayt
  */
-public abstract class CharacterController
+public abstract class CharacterController implements CollisionListener
 {
     /** True to use 'reversed' headings **/
     protected boolean  bReverseHeading     = false;
@@ -185,5 +185,9 @@ public abstract class CharacterController
 
     /** Override to implement optional functionalllity **/ 
     public void setMaxVelocity(float max) {
-    }    
+    } 
+    
+    /** Override - zero out gravity acceleration etc **/
+    public void colliding(Vector3f projection) {
+    }
 }

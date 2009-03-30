@@ -62,6 +62,10 @@ public class AvatarController extends CharacterController
     private float    accelerationDamp    = 0.5f; // 1.0f - accelerationDamp = intuitive value
     private float    dampCounter         = 0.0f;
     private float    dampTick            = 1.0f / 60.0f;
+    
+    /** gravity **/
+    private Vector3f gravity             = new Vector3f();//new Vector3f(0.0f, 0.098f, 0.0f);
+    private Vector3f gravityAcc          = new Vector3f();
 
     private boolean  bSlide              = false; // if false velocity and heading will be alligned
 
@@ -194,6 +198,8 @@ public class AvatarController extends CharacterController
         }
         velocity.addLocal(currentDirection.mult(fwdAcceleration * (-deltaTime)));
         velocity.addLocal(acceleration);
+        gravityAcc.addLocal(gravity);
+        velocity.addLocal(gravityAcc);
         if (velocity.x > maxVelocity)
             velocity.x = maxVelocity;
         if (velocity.y > maxVelocity)
@@ -240,6 +246,27 @@ public class AvatarController extends CharacterController
         //window.setTitle("acc: " + (int)fwdAcceleration + " vel: " + (int)velocity.x + " " + (int)velocity.y + " " + (int)velocity.z);
     }
 
+    @Override
+    public void colliding(Vector3f projection) {
+        gravityAcc.zero();
+    }
+
+    public Vector3f getGravity() {
+        return gravity;
+    }
+
+    public void setGravity(Vector3f gravity) {
+        this.gravity = gravity;
+    }
+
+    public Vector3f getGravityAcc() {
+        return gravityAcc;
+    }
+
+    public void setGravityAcc(Vector3f gravityAcc) {
+        this.gravityAcc = gravityAcc;
+    }
+    
     /**
      * true if the avatar being controlled is currently moving forward.
      * @return

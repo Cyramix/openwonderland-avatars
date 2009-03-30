@@ -92,7 +92,7 @@ public class MTGameBase extends JFrame implements FrameRateListener {
     protected float                     m_aspect            = 600.0f/400.0f;
 
     protected Boolean                   m_loadSkybox        = Boolean.TRUE;
-    protected final static Logger       m_logger            = Logger.getLogger(TestRenderToTexturePort.class.getName());
+    protected final static Logger       m_logger            = Logger.getLogger(MTGameBase.class.getName());
 
     protected CustomDisplay             m_mainDisplay       = null;
     protected BufferedImage             bImage              = null;
