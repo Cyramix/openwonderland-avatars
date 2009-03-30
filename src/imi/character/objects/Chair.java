@@ -103,6 +103,8 @@ public class Chair implements SpatialObject
                             PPolygonMeshInstance meshInst = (PPolygonMeshInstance) current;
                             //System.out.println("applying material on " + meshInst);
                             meshInst.applyMaterial();
+
+                            meshInst.getSharedMesh().updateModelBound();
                         }
                         // add all the kids
                         queue.addAll(current.getChildren());

@@ -120,6 +120,7 @@ public class GoSit implements Task
                 go.reset(goalPosition, goalDirection);
                 go.setAvoidObstacles(false);
                 go.setApprovedDistanceFromGoal(goal.getBoundingSphere().getRadius() * 0.5f);
+                System.out.println("GoSit() goal bounding volume radius: " + goal.getBoundingSphere().getRadius());
                 
                 // Own the chair if no one else does, otherwise try another
                 if (goal.getOwner() == null)
