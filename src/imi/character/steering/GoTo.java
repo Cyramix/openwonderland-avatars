@@ -21,6 +21,7 @@ import com.jme.math.Vector3f;
 import imi.character.Task;
 import imi.character.avatar.AvatarContext;
 import imi.character.avatar.AvatarContext.TriggerNames;
+import imi.character.objects.Chair;
 import imi.character.objects.SpatialObject;
 import imi.character.statemachine.GameContext;
 import imi.scene.boundingvolumes.PSphere;
@@ -160,7 +161,7 @@ public class GoTo implements Task
         imi.character.Character avatar = context.getCharacter();
         SpatialObject obj = null;
         if (avatar.getObjectCollection() != null)
-            obj = avatar.getObjectCollection().findNearestChair(avatar, 2.5f, 0.4f, false); // distance should be scaled by velocity... but at the moment the velocity is pretty constant...
+            obj = avatar.getObjectCollection().findNearestObjectOfType(Chair.class, avatar, 2.5f, 0.4f, false); // distance should be scaled by velocity... but at the moment the velocity is pretty constant...
         if (obj != null && obj != goal && currentDistanceFromGoal > 2.0f)
         {
             bNeedToAvoid = true;

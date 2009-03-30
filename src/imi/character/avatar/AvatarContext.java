@@ -259,11 +259,11 @@ public class AvatarContext extends GameContext
         {
             if (avatar.getObjectCollection() == null || avatar.getRightArm() == null)
                 return;
-            
-            SpatialObject obj = avatar.getObjectCollection().findNearestChair(avatar, 10000.0f, 1.0f, true);
+
+            SpatialObject obj = avatar.getObjectCollection().findNearestObjectOfType(Chair.class, avatar, 10000.0f, 1.0f, true);
             if (obj == null)
                 return;
-            
+
             avatar.getRightArm().setPointAtLocation(obj.getPosition());
         }
         
@@ -388,7 +388,7 @@ public class AvatarContext extends GameContext
         if (avatar.getObjectCollection() == null)
             return null;
         
-        location = avatar.getObjectCollection().findNearestLocation(avatar, 10000.0f, 1.0f, false);
+        location = (LocationNode)avatar.getObjectCollection().findNearestObjectOfType(LocationNode.class, avatar, 10000.0f, 1.0f, false);
         if (location != null)
         {
             AI.addTaskToTop(new GoTo(location.getPosition(), this));
@@ -406,7 +406,7 @@ public class AvatarContext extends GameContext
         if (avatar.getObjectCollection() == null)
             return false;
 
-        SpatialObject obj = avatar.getObjectCollection().findNearestChair(avatar, 10000.0f, 1.0f, true);
+        SpatialObject obj = avatar.getObjectCollection().findNearestObjectOfType(Chair.class, avatar, 10000.0f, 1.0f, true);
         if (obj != null && !((Chair)obj).isOccupied())
         {
             GoSit task = new GoSit((Chair)obj, this);
@@ -414,7 +414,6 @@ public class AvatarContext extends GameContext
             AI.setEnable(true);
             return true;
         }
-        
         return false;
     }
 

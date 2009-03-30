@@ -148,10 +148,15 @@ public class Chair implements SpatialObject
      * obstacles while sing steering behaviors and to be found to sit on.
      * @param objs
      */
-    public void setObjectCollection(ObjectCollection objs) 
+    public void setObjectCollection(ObjectCollectionBase objs)
     {
-        objectCollection = objs;
-        objs.addObject(this);
+        if (objs instanceof ObjectCollection)
+        {
+            objectCollection = (ObjectCollection)objs;
+            objs.addObject(this);
+        }
+        else
+            System.out.println("Error: chair recieved a none compatible object collection");
     }
 
     /**
@@ -292,7 +297,7 @@ public class Chair implements SpatialObject
     {
         setOwner(null);
         setOccupied(true);
-        objectCollection.getObjects().remove(this);
+        objectCollection.removeObject(this);
         objectCollection.getPScene().removeModelInstance(this.getModelInst());
     }
     

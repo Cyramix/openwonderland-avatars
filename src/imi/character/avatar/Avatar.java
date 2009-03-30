@@ -22,7 +22,7 @@ import imi.character.CharacterAttributes;
 import imi.character.CharacterSteeringHelm;
 import imi.character.avatar.AvatarContext.TriggerNames;
 import imi.character.objects.LocationNode;
-import imi.character.objects.ObjectCollection;
+import imi.character.objects.ObjectCollectionBase;
 import imi.character.statemachine.GameContext;
 import imi.character.statemachine.corestates.FallFromSitState;
 import imi.character.statemachine.corestates.FlyState;
@@ -167,8 +167,8 @@ public class Avatar extends imi.character.Character
         steering.clearTasks();
         steering.setEnable(true);
         AvatarContext ac = ((AvatarContext)m_context);
-        ObjectCollection objs = ac.getavatar().getObjectCollection();
-        LocationNode source = objs.findNearestLocation(this, 10000.0f, 1.0f, false);
+        ObjectCollectionBase objs = ac.getavatar().getObjectCollection();
+        LocationNode source = (LocationNode)objs.findNearestObjectOfType(LocationNode.class, this, 10000.0f, 1.0f, false);
         if (source != null)
             steering.addTaskToBottom(new FollowPath(objs.findPath(source, locationName), m_context));
     }

@@ -23,6 +23,6 @@ package imi.utils.graph;
  *
  * @author Lou Hayt
  */
-public class Connection// extends DefaultEdge
+public interface Connection// extends DefaultEdge
 {
 }

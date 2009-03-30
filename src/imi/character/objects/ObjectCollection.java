@@ -29,17 +29,12 @@ import com.jme.scene.state.WireframeState;
 import com.jme.scene.state.ZBufferState;
 import imi.character.avatar.Avatar;
 import imi.scene.JScene;
-import imi.scene.PNode;
 import imi.scene.PScene;
-import imi.scene.polygonmodel.PPolygonMeshInstance;
 import imi.scene.utils.visualizations.VisuManager;
 import imi.utils.graph.Connection;
-import imi.utils.graph.JGraph;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Hashtable;
-import javolution.util.FastList;
-import org.jdesktop.mtgame.Entity;
 import org.jdesktop.mtgame.ProcessorCollectionComponent;
 import org.jdesktop.mtgame.ProcessorComponent;
 import org.jdesktop.mtgame.RenderComponent;
@@ -50,13 +45,13 @@ import org.jdesktop.mtgame.WorldManager;
  * spatial object management system.
  * @author Lou Hayt
  */
-public class ObjectCollection extends Entity
+public class ObjectCollection extends ObjectCollectionBase
 {
     /** Collection of objects :) **/
     protected ArrayList<SpatialObject> objects = new ArrayList<SpatialObject>();
 
     /** JGraph of locations :) **/
-    protected JGraph locations = new JGraph();
+    //protected JGraph locations = new JGraph();
     /** Map of location names to location objects **/
     protected Hashtable<String, LocationNode> locationNames = new Hashtable<String, LocationNode>();
 
@@ -118,9 +113,9 @@ public class ObjectCollection extends Entity
     /**
      * For internal use
      */
-    public JGraph getLocationGraph() {
-        return locations;
-    }
+//    public JGraph getLocationGraph() {
+//        return locations;
+//    }
 
     public Collection<LocationNode> getLocations(){
         return locationNames.values();
@@ -131,7 +126,8 @@ public class ObjectCollection extends Entity
     }
 
     /** Called from LocationNode's constructor **/
-    void addLocation(LocationNode location)
+    @Override
+    public void addLocation(LocationNode location)
     {
         //if (!locations.containsVertex(location))
         {
@@ -144,12 +140,20 @@ public class ObjectCollection extends Entity
     public void removeLocation(String name) {
         removeLocation(getLocation(name));
     }
+    @Override
     public void removeLocation(LocationNode location) {
         if (location == null)
             return;
         //locations.removeVertex(location);
         locationNames.remove(location.getName());
         objects.remove(location);
+    }
+
+    @Override
+    public void removeObject(SpatialObject obj) {
+        if (obj == null)
+            return;
+        objects.remove(obj);
     }
 
     public LocationNode getLocation(String name)
@@ -169,6 +173,7 @@ public class ObjectCollection extends Entity
         return createConnection(locationNames.get(source), locationNames.get(destination));
     }
 
+    @Override
     public ArrayList<LocationNode> findPath(LocationNode source, String destination)
     {
         return null;
@@ -191,6 +196,7 @@ public class ObjectCollection extends Entity
 //        return path;
     }
 
+    @Override
     public LocationNode findConnection(LocationNode source, String targetName, boolean allowBaked)
     {
 //        Set<Connection> cons = locations.outgoingEdgesOf(source);
@@ -271,6 +277,7 @@ public class ObjectCollection extends Entity
      * Add an object to the collection.
      * @param obj
      */
+    @Override
     public void addObject(SpatialObject obj)
     {
         if (objects.contains(obj))
@@ -432,6 +439,19 @@ public class ObjectCollection extends Entity
             }
         }
         return false;
+    }
+
+    @Override
+    public SpatialObject findNearestObjectOfType(Class type, SpatialObject obj, float consideredRange, float searchCone, boolean occupiedMatters)
+    {
+        // TODO - actual implemintation :D
+        if (type.equals(LocationNode.class))
+            return findNearestLocation(obj, consideredRange, searchCone, occupiedMatters);
+        else if (type.equals(Chair.class))
+            return findNearestChair(obj, consideredRange, searchCone, occupiedMatters);
+        else if (type.equals(SpatialObject.class))
+            return findNearestObject(obj, consideredRange, searchCone, occupiedMatters);
+        return null;
     }
 
     /**

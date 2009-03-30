@@ -33,7 +33,7 @@ import com.jme.scene.state.MaterialState.ColorMaterial;
 import com.jme.scene.state.RenderState;
 import com.jme.scene.state.WireframeState;
 import com.jme.scene.state.ZBufferState;
-import imi.character.objects.ObjectCollection;
+import imi.character.objects.ObjectCollectionBase;
 import imi.character.objects.SpatialObject;
 import imi.character.statemachine.GameContext;
 import imi.character.statemachine.TransitionObject;
@@ -153,7 +153,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
     /** Skeleton that our skin is attached to **/
     protected SkeletonNode                  m_skeleton              = null;
     /** Collection of objects that this character is associated with **/
-    protected ObjectCollection              m_objectCollection      = null;
+    protected ObjectCollectionBase          m_objectCollection      = null;
     /** Performs animation on the character **/
     protected CharacterAnimationProcessor   m_AnimationProcessor    = null;
     /** Provides update() calls to the character **/
@@ -1167,7 +1167,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
      * sit on for e.g.
      * @param objs
      */
-    public void setObjectCollection(ObjectCollection objs)
+    public void setObjectCollection(ObjectCollectionBase objs)
     {
         m_objectCollection = objs;
         objs.addObject(this);
@@ -1177,7 +1177,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
      * Retrieve the object collection this character is associated with.
      * @return
      */
-    public ObjectCollection getObjectCollection() {
+    public ObjectCollectionBase getObjectCollection() {
         return m_objectCollection;
     }
 

@@ -32,6 +32,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.concurrent.ConcurrentHashMap;
@@ -503,11 +504,7 @@ public class Repository extends Entity
         // If the URL points to a local file, check the last modified time
         if (file.getProtocol().equalsIgnoreCase("file"))
         {
-            try {
-                localFile = new File(file.toURI());
-            } catch (URISyntaxException ex) {
-                Logger.getLogger(Repository.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            localFile = new File(file.getFile());
         }
         String urlString = file.toString();
         int assetsIndex = urlString.indexOf("assets/");

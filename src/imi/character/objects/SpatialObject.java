@@ -53,7 +53,7 @@ public interface SpatialObject
      * and sets the object collection for the object.
      * @param objs
      */
-    public void setObjectCollection(ObjectCollection objs);
+    public void setObjectCollection(ObjectCollectionBase objs);
     
     /**
      * Gets the position of the model instance

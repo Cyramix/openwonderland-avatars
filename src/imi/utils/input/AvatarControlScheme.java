@@ -22,14 +22,13 @@ import imi.character.VerletArm;
 import imi.character.avatar.Avatar;
 import imi.character.avatar.AvatarContext.TriggerNames;
 import imi.character.objects.ObjectCollection;
+import imi.character.objects.ObjectCollectionBase;
 import imi.scene.processors.FlexibleCameraProcessor;
 import imi.tests.AvatarInspectionDemo;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
-import javolution.util.FastMap;
 
 /**
  *
@@ -47,7 +46,7 @@ public class AvatarControlScheme extends InputScheme
     private   InputState      inputState     = new InputState();
     
     private boolean bCommandEntireTeam = false;
-    private ObjectCollection objects = null;
+    private ObjectCollectionBase objects = null;
     
     private int currentMouseX = 0;
     private int currentMouseY = 0;
@@ -255,18 +254,18 @@ public class AvatarControlScheme extends InputScheme
             // Remove a chair from the object collection
             if (ke.getKeyCode() == KeyEvent.VK_BACK_SPACE) 
             {
-                if(objects != null)
+                if(objects != null && objects instanceof ObjectCollection)
                 {
-                    objects.removeAChair();
+                    ((ObjectCollection)objects).removeAChair();
                 }
             }
             
             // Pop up the console \ chat
             if (ke.getKeyCode() == KeyEvent.VK_BACK_SLASH || ke.getKeyCode() == KeyEvent.VK_BACK_QUOTE) 
             {
-                if(objects != null)
+                if(objects != null && objects instanceof ObjectCollection)
                 {
-                    objects.getGUI().show();
+                    ((ObjectCollection)objects).getGUI().show();
                     //objects.addRandomChair();
                 }
             }
@@ -344,7 +343,7 @@ public class AvatarControlScheme extends InputScheme
         this.bCommandEntireTeam = bCommandEntireTeam;
     }
     
-    public void setObjectCollection(ObjectCollection objectCollection) {
+    public void setObjectCollection(ObjectCollectionBase objectCollection) {
         objects = objectCollection;
     }
     

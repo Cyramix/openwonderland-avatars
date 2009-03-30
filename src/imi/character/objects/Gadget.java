@@ -79,10 +79,15 @@ public class Gadget implements SpatialObject
      * Adds this object to an object collection
      * @param objs
      */
-    public void setObjectCollection(ObjectCollection objs) 
+    public void setObjectCollection(ObjectCollectionBase objs)
     {
-        objectCollection = objs;
-        objs.addObject(this);
+        if (objs instanceof ObjectCollection)
+        {
+            objectCollection = (ObjectCollection)objs;
+            objs.addObject(this);
+        }
+        else
+            System.out.println("Error: gadget recieved a none compatible object collection");
     }
 
     /**

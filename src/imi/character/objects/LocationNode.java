@@ -36,7 +36,7 @@ public class LocationNode extends GraphNode implements SpatialObject
     private PSphere             bv       = null;
     private Vector3f            forward  = Vector3f.UNIT_Z.mult(-1.0f);
     /** A collection of objects at this location (chairs in a classroom for instance) **/
-    private ObjectCollection    objects  = null;
+    private ObjectCollectionBase objects  = null;
     private boolean             occupied = false;
     private Hashtable<String, LocationNode> bakedConnections = new Hashtable<String, LocationNode>();
    
@@ -48,7 +48,7 @@ public class LocationNode extends GraphNode implements SpatialObject
      * @param wm
      * @param objectCollection
      */
-    public LocationNode(String name, Vector3f position, float radius, ObjectCollection objectCollection)
+    public LocationNode(String name, Vector3f position, float radius, ObjectCollectionBase objectCollection)
     {
         this.name = name;
         bv        = new PSphere(position, radius);
@@ -87,14 +87,14 @@ public class LocationNode extends GraphNode implements SpatialObject
         return null;
     }
 
-    public void setObjectCollection(ObjectCollection objs) 
+    public void setObjectCollection(ObjectCollectionBase objs)
     {
         objects = objs; 
         if (objects != null)
             objects.addLocation(this);
     }
 
-    public ObjectCollection getObjectCollection()
+    public ObjectCollectionBase getObjectCollection()
     {
         return objects;
     }
@@ -104,10 +104,10 @@ public class LocationNode extends GraphNode implements SpatialObject
      * @param numberOfChairs
      */
     public void generateChairs(int numberOfChairs) {
-        if (objects != null)
-            objects.generateChairs(bv.getCenter(), bv.getRadius(), numberOfChairs);
+        if (objects != null && objects instanceof ObjectCollection)
+            ((ObjectCollection)objects).generateChairs(bv.getCenter(), bv.getRadius(), numberOfChairs);
         else
-            System.out.println("ERROR: LocationNode generateChairs() null object collection");
+            System.out.println("ERROR: LocationNode generateChairs() failed");
     }
     
     public Vector3f getPosition() {
