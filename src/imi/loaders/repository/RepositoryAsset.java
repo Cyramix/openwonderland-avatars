@@ -233,9 +233,11 @@ public class RepositoryAsset extends ProcessorComponent
         // Check the cache for this file
         File cachedFile = m_home.getCacheEquivalent(m_descriptor.getLocation());
         PScene loadedScene = null;
-        if (cachedFile.exists() && m_home.isUsingCache()) // load it
+
+        if (cachedFile.exists() && m_home.isUsingCache()) // load it from cache
             loadedScene = loadBinaryPScene(cachedFile);
-        if (loadedScene != null)
+
+        if (loadedScene != null) // Did we succeed?
         {
             loadedScene.setWorldManager(m_home.getWorldManager());
             loadedScene.finalizeDeserialization();
@@ -248,8 +250,10 @@ public class RepositoryAsset extends ProcessorComponent
                 loader.setLoadFlags(true, true, true); // load everything
             else
                 loader.setLoadFlags(true, false, true);
+
             loader.setMaxNumberOfWeights(4);
             loader.setAddSkinnedMeshesToSkeleton(true);
+
             PScene loadingScene = new PScene(m_home.getWorldManager());
             try {
                 loader.load(loadingScene, m_descriptor.getLocation());

@@ -67,10 +67,10 @@ public class TextureCacheBuilder
         
         try {
             Texture.DEFAULT_STORE_TEXTURE = true;
-            if (loadAllFiles(assetRootFile))
-                TextureManager.writeCache(out);
+            if (!loadAllFiles(assetRootFile))
+                System.out.println("Error! More than 256 textures!");
             else
-                logger.severe("Too many textures! (Current limit is 256)");
+                TextureManager.writeCache(out);
         } catch (IOException ex) {
             Logger.getLogger(TextureCacheBuilder.class.getName()).log(Level.SEVERE, null, ex);
         }

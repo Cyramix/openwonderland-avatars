@@ -35,7 +35,6 @@ import java.awt.event.MouseEvent;
  */
 public class FirstPersonCamModel implements CameraModel
 {
-
     public void determineTransform(CameraState state, PMatrix transform) throws WrongStateTypeException
     {
         if (state.getType() != CameraState.CameraStateType.FirstPerson)
@@ -120,6 +119,14 @@ public class FirstPersonCamModel implements CameraModel
     
    private void processKeyEvent(KeyEvent ke, FirstPersonCamState state) {
         if (ke.getID() == KeyEvent.KEY_PRESSED) {
+            if (ke.isShiftDown())
+                state.setShiftDown(true);
+            else
+                state.setShiftDown(false);
+            if (ke.isControlDown())
+                state.setControlDown(true);
+            else
+                state.setControlDown(false);
             if (ke.getKeyCode() == KeyEvent.VK_UP) {
                 state.setMovementState(FirstPersonCamState.WALKING_FORWARD);
             }
@@ -155,6 +162,10 @@ public class FirstPersonCamModel implements CameraModel
     {
         Vector3f position = camState.getPosition();
         float walkInc = camState.getMovementRate();
+        if (camState.isShiftDown())
+            walkInc *= 2.0f;
+        else if (camState.isControlDown())
+            walkInc /= 2.0f;
         Vector3f rotatedFwdDirection = camState.getRotatedFwdDirection();
         Vector3f rotatedSideDirection = camState.getRotatedSideDirection();
         

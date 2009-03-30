@@ -49,6 +49,12 @@ public class FirstPersonCamState extends CameraState
     public static final int STRAFE_RIGHT = 4;
     public static final int MOVE_UP = 5;
     public static final int MOVE_DOWN = 6;
+
+
+    /** Keyboard state indicators **/
+    private boolean shiftDown = false;
+    private boolean controlDown = false;
+
     // The current movementState
     private int movementState = STOPPED;
     // Current position
@@ -153,6 +159,23 @@ public class FirstPersonCamState extends CameraState
     {
         this.currentMouseY = currentMouseY;
     }
+
+    public boolean isControlDown() {
+        return controlDown;
+    }
+
+    public void setControlDown(boolean controlDown) {
+        this.controlDown = controlDown;
+    }
+
+    public boolean isShiftDown() {
+        return shiftDown;
+    }
+
+    public void setShiftDown(boolean shiftDown) {
+        this.shiftDown = shiftDown;
+    }
+
 
     public Matrix3f getDirectionRotation()
     {

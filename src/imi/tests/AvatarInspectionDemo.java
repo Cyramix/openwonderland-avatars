@@ -18,7 +18,6 @@
 package imi.tests;
 
 import imi.scene.SkyBox;
-import com.jme.bounding.BoundingBox;
 import com.jme.image.Texture;
 import com.jme.light.LightNode;
 import com.jme.light.PointLight;
@@ -27,7 +26,6 @@ import com.jme.math.Vector3f;
 import com.jme.renderer.ColorRGBA;
 import com.jme.scene.CameraNode;
 import com.jme.scene.Node;
-import com.jme.scene.shape.Box;
 import com.jme.scene.state.CullState;
 import com.jme.scene.state.LightState;
 import com.jme.scene.state.MaterialState;
@@ -36,7 +34,12 @@ import com.jme.scene.state.RenderState;
 import com.jme.scene.state.WireframeState;
 import com.jme.scene.state.ZBufferState;
 import com.jme.util.TextureManager;
+import imi.character.avatar.Avatar;
+import imi.character.avatar.FemaleAvatarAttributes;
+import imi.character.avatar.MaleAvatarAttributes;
 import imi.environments.ColladaEnvironment;
+import imi.gui.SceneEssentials;
+import imi.gui.TreeExplorer;
 import imi.loaders.PPolygonTriMeshAssembler;
 import imi.scene.JScene;
 import imi.scene.PJoint;
@@ -84,21 +87,22 @@ import org.jdesktop.mtgame.RenderComponent;
 //import mtgame.tests.sigraph.SkyBox;
 import org.jdesktop.mtgame.AWTInputComponent;
 import org.jdesktop.mtgame.InputManager;
-import org.jdesktop.mtgame.processor.RotationProcessor;
 import imi.loaders.repository.SharedAsset;
 import imi.loaders.repository.AssetDescriptor;
 import imi.loaders.repository.Repository;
 import imi.loaders.repository.SharedAsset.SharedAssetType;
 import imi.scene.PScene;
 import imi.scene.camera.behaviors.FirstPersonCamModel;
+import imi.scene.camera.behaviors.TumbleObjectCamModel;
 import imi.scene.camera.state.CameraState;
 import imi.scene.camera.state.FirstPersonCamState;
+import imi.scene.camera.state.TumbleObjectCamState;
 import imi.scene.processors.FlexibleCameraProcessor;
 import imi.scene.processors.JSceneEventProcessor;
+import imi.utils.input.AvatarControlScheme;
 import imi.utils.instruments.DefaultInstrumentation;
 import imi.utils.instruments.Instrumentation;
 import java.net.URL;
-import java.util.Timer;
 import org.jdesktop.mtgame.RenderBuffer;
 
 
@@ -107,7 +111,7 @@ import org.jdesktop.mtgame.RenderBuffer;
  *
  * Demo Base - Do not use this file! Copy Demo.java for your own test file...
  */
-public class DemoBase {
+public class AvatarInspectionDemo {
 ////////////////////////////////////////////////////////////////////////////////
 // Class Data Members
 ////////////////////////////////////////////////////////////////////////////////
@@ -128,7 +132,7 @@ public class DemoBase {
     protected int          width              = 800;
     protected int          height             = 600;
     protected float        aspect             = 800.0f/600.0f;
-    
+
     /** Caches command line parameters for subclass usage **/
     private String[]    args = null;
     /** Entity used to create default lighting in case subclasses do not take care of it **/
@@ -147,7 +151,7 @@ public class DemoBase {
                                                        "assets/textures/skybox/Left.png",
                                                        "assets/textures/skybox/default.png",
                                                        "assets/textures/skybox/Top.png" };
-    
+
     private ColorRGBA m_clearColor = new ColorRGBA(173.0f/255.0f, 195.0f/255.0f, 205.0f/255.0f, 1.0f);
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -158,7 +162,7 @@ public class DemoBase {
      * Construct a brand new instance!
      * @param args
      */
-    protected DemoBase(String[] args) {
+    protected AvatarInspectionDemo(String[] args) {
         logger.info("Current Directory: " + System.getProperty("user.dir"));
         this.args = args;
         worldManager = new WorldManager("DemoWorld");
@@ -174,47 +178,24 @@ public class DemoBase {
         Logger.getLogger("com.jme.scene.state.jogl.shader").setLevel(Level.OFF);
 
         // add the repository
-        System.out.print("Building Repository...");
         repository = new Repository(worldManager);
-        Thread.yield();
-        System.out.println("done.");
         worldManager.addUserData(Repository.class, repository);
-
-        System.out.print("Creating UI...");
         createUI(worldManager);
-        System.out.println("done.");
-        Thread.yield();
-        System.out.print("Creating Test space...");
         createTestSpace(worldManager);
-        System.out.println("done.");
-        Thread.yield();
-        System.out.print("Creating CameraEntity...");
         createCameraEntity(worldManager);
-        System.out.println("done.");
-        Thread.yield();
-        System.out.print("Creating InputEntity...");
         createInputEntity(worldManager);
-        System.out.println("done.");
-        Thread.yield();
-        System.out.print("Creating GlobalLighting...");
         setGlobalLighting(worldManager);
-        System.out.println("done.");
-        System.out.print("Creating CreatingEnvironment...");
         createEnvironment(worldManager, pathToEnv);
-        System.out.println("done.");
-        System.out.print("Creating Instrumentation...");
         createInstrumentation(worldManager);
-        System.out.println("done.");
-        System.out.print("Creating DemoEntities...");
         createDemoEntities(worldManager);
-        System.out.println("done.");
     }
 
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        DemoBase worldTest = new DemoBase(args);
+        String[] ourArgs = new String[] { "-env:assets/models/collada/Environments/Arena/Arena.dae" };
+        AvatarInspectionDemo worldTest = new AvatarInspectionDemo(ourArgs);
     }
 
     /**
@@ -252,19 +233,11 @@ public class DemoBase {
 
         // Add the camera
         Entity camera = new Entity("DefaultCamera");
-
-        CameraComponent cc = wm.getRenderManager().createCameraComponent(cameraSG,
-                cameraNode,
-                width, height,
-                35.0f, // Field of view
-                aspect, // Aspect ratio
-                0.01f, // Near clip
-                1000.0f, // far clip
-                true);
+        CameraComponent cc = wm.getRenderManager().createCameraComponent(cameraSG, cameraNode, width, height, 35.0f, aspect, 0.01f, 1000.0f, true);
         RenderBuffer renderBuffer = ((SwingFrame)wm.getUserData(JFrame.class)).getRenderBuffer();
         renderBuffer.setBackgroundColor(m_clearColor);
 
-        
+
         camera.addComponent(CameraComponent.class, cc);
         renderBuffer.setCameraComponent(cc);
 
@@ -339,46 +312,7 @@ public class DemoBase {
         Instrumentation instrument = new DefaultInstrumentation(worldManager);
     }
 
-    protected void createDemoEntities(WorldManager wm) {
-        // The procedural scene graph
-        PScene pscene = new PScene("PScene test", wm);
-
-        // The collection of processors for this entity
-        ArrayList<ProcessorComponent> processors = new ArrayList<ProcessorComponent>();
-
-        // The glue between JME and pscene
-        JScene jscene = new JScene(pscene);
-
-        // Initialize the scene
-        simpleSceneInit(pscene, wm, processors);
-
-        // Set this jscene to be the "selected" one for IMI input handling
-        ((JSceneEventProcessor)wm.getUserData(JSceneEventProcessor.class)).setJScene(jscene);
-
-        // Create entity
-        m_jsceneEntity = new Entity("Entity for a graph test");
-
-        // Create a scene component and set the root to our jscene
-        RenderComponent sc = wm.getRenderManager().createRenderComponent(jscene);
-        sc.setLightingEnabled(true);
-        // Add the scene component with our jscene to the entity
-        m_jsceneEntity.addComponent(RenderComponent.class, sc);
-
-        // Add our two processors to a collection component
-        ProcessorCollectionComponent processorCollection = new ProcessorCollectionComponent();
-        for (int i = 0; i < processors.size(); i++)
-            processorCollection.addProcessor(processors.get(i));
-
-        // Add the processor collection component to the entity
-        m_jsceneEntity.addComponent(ProcessorCollectionComponent.class, processorCollection);
-
-        // Add the entity to the world manager
-        wm.addEntity(m_jsceneEntity);
-
-
-        // Use default render states
-        setDefaultRenderStates(jscene, wm);
-    }
+    
 
     // Override this for simple tests that only require a single scene
     // that do not need to set up the enity for fancy shmancy stuff
@@ -756,6 +690,7 @@ public class DemoBase {
         // use the vertices and build the skin
         for (int boneIndex = 0; boneIndex < bones.length - 1; boneIndex++) // for each bone
         {
+            Texture.DEFAULT_STORE_TEXTURE = true;
             // create a quad
             for (int i = 0; i < 4; i++)
             {
@@ -881,6 +816,186 @@ public class DemoBase {
             }
         }
     }
+
+
+
+
+
+        private Vector3f[] avatarPositions = null;
+
+    private int currentAvatar = 0;
+    private TumbleObjectCamState state = null;
+    private TumbleObjectCamModel model = null;
+    private Avatar[] avatars = null;
+    /**
+     * This is the overrride point at which the framework has already been set up.
+     * Entities can be created and added to the provided world manager at this point.
+     * @param wm
+     */
+
+    protected void createDemoEntities(WorldManager wm)
+    {
+        avatars = new Avatar[4];
+        avatarPositions = new Vector3f[]
+        {
+            new Vector3f(-3, 1.7f, 1),
+            new Vector3f(-1, 1.7f, 1),
+            new Vector3f(1, 1.7f, 1),
+            new Vector3f(3, 1.7f, 1),
+        };
+        // The event processor provides the linkage between AWT events and input controls
+        JSceneEventProcessor eventProcessor = (JSceneEventProcessor) wm.getUserData(JSceneEventProcessor.class);
+        // Set the input scheme that we intend to use
+        AvatarControlScheme control = (AvatarControlScheme)eventProcessor.setDefault(new AvatarControlScheme(null));
+
+        // Create our avatars
+        Avatar robert = createRobert(wm, new Vector3f(-3, 0, 3));
+        avatars[0] = robert;
+        Avatar angela = createAngela(wm, new Vector3f(-1, 0, 3));
+        avatars[1] = angela;
+        Avatar liz = createLiz(wm, new Vector3f(1, 0, 3));
+        avatars[2] = liz;
+        Avatar fred = createFred(wm, new Vector3f(3, 0, 3));
+        avatars[3] = fred;
+
+        // Set up the tumble cam
+        model = new TumbleObjectCamModel();
+        state = new TumbleObjectCamState(robert.getModelInst());
+        state.setCameraPosition(new Vector3f(0, 1.7f, 0));
+
+        FlexibleCameraProcessor camProcessor = (FlexibleCameraProcessor)wm.getUserData(FlexibleCameraProcessor.class);
+        camProcessor.setCameraBehavior(model, state);
+
+
+        // Make them available for input
+        control.getAvatarTeam().add(robert);
+        control.getAvatarTeam().add(angela);
+        control.getAvatarTeam().add(liz);
+        control.getAvatarTeam().add(fred);
+        robert.selectForInput();
+
+        // Hook the control scheme up the the camera in order to receieve input
+        // events. We need this in order to control the Verlet arm ('Q' and 'E' to engage)
+        control.getMouseEventsFromCamera();
+        control.hookObject = this;
+
+       SceneEssentials se = new SceneEssentials();
+        se.setSceneData(angela.getJScene(), angela.getPScene(), repository, wm, null);
+        se.setAvatar(angela);
+
+        TreeExplorer te = new TreeExplorer();
+        te.setExplorer(se);
+        te.setVisible(true);
+    }
+
+    public void nextTarget()
+    {
+        currentAvatar++;
+        currentAvatar %= 4;
+        model.turnTo(avatarPositions[currentAvatar], state);
+        model.moveTo(avatarPositions[currentAvatar].add(new Vector3f(0, 0, -2)), state);
+        state.setTargetModelInstance(avatars[currentAvatar].getModelInst());
+    }
+
+    public void prevTarget()
+    {
+        currentAvatar--;
+        if (currentAvatar < 0)
+            currentAvatar = 3;
+        model.turnTo(avatarPositions[currentAvatar], state);
+        model.moveTo(avatarPositions[currentAvatar].add(new Vector3f(0, 0, -2)), state);
+        state.setTargetModelInstance(avatars[currentAvatar].getModelInst());
+    }
+
+    private Avatar createRobert(WorldManager wm, Vector3f position)
+    {
+        MaleAvatarAttributes attributes = new MaleAvatarAttributes("Robert",
+                                                                        0, // Feet
+                                                                        0, // Legs
+                                                                        2, // Torso
+                                                                        -1, // Hair = bald
+                                                                        4, // Head
+                                                                        12, // Skin
+                                                                        0); // Eye color
+        attributes.setUsePhongLighting(true);
+        // Put him over to the left a bit
+        attributes.setOrigin(new PMatrix(new Vector3f(0,3.14f,0), Vector3f.UNIT_XYZ, position));
+        Avatar maleAvatar = new Avatar(attributes, wm);
+
+        return maleAvatar;
+    }
+
+    private Avatar createFred(WorldManager wm, Vector3f position)
+    {
+        MaleAvatarAttributes attributes = new MaleAvatarAttributes("Fred",
+                                                                        0, // Feet
+                                                                        0, // Legs
+                                                                        2, // Torso
+                                                                        -1, // Hair
+                                                                        1, // Head
+                                                                        12, // Skin
+                                                                        0); // Eye color
+        attributes.setUsePhongLighting(true);
+
+        attributes.setOrigin(new PMatrix(new Vector3f(0,3.14f,0), Vector3f.UNIT_XYZ, position));
+        Avatar maleAvatar = new Avatar(attributes, wm);
+
+        return maleAvatar;
+    }
+
+    private Avatar createAngela(WorldManager wm, Vector3f position)
+    {
+        FemaleAvatarAttributes attributes  =
+                new FemaleAvatarAttributes("Angela",
+                                                 1, // Feet
+                                                 1, // Legs
+                                                 2, // Torso
+                                                 -1, // Hair
+                                                 8, // Head
+                                                 12, // Skin
+                                                 25); // Eye color
+        attributes.setUsePhongLighting(true);
+
+        attributes.setOrigin(new PMatrix(new Vector3f(0,3.14f,0), Vector3f.UNIT_XYZ, position));
+        Avatar femaleAvatar = new Avatar(attributes, wm);
+
+        return femaleAvatar;
+    }
+
+    private Avatar createLiz(WorldManager wm, Vector3f position)
+    {
+        // Now let's make a female using a specific configuration
+        FemaleAvatarAttributes attributes =
+                new FemaleAvatarAttributes("LizTheTestGal",
+                                                 1, // Feet
+                                                 1, // Legs
+                                                 2, // Torso
+                                                 53, // Hair
+                                                 6, // Head
+                                                 12, // Skin
+                                                 25); // Eye color
+        attributes.setUsePhongLighting(true);
+
+        attributes.setOrigin(new PMatrix(new Vector3f(0,3.14f,0), Vector3f.UNIT_XYZ, position));
+        Avatar femaleAvatar = new Avatar(attributes, wm);
+        waitUntilAvatarIsInitialized(femaleAvatar);
+        femaleAvatar.setDefaultShaders();
+        femaleAvatar.applyMaterials();
+        return femaleAvatar;
+    }
+
+    private void waitUntilAvatarIsInitialized(Avatar avatar)
+    {
+        try {
+            while (avatar.isInitialized() == false)
+                Thread.sleep(300);
+        }
+        catch (InterruptedException ex)
+        {
+            System.out.println("Interrupted whilst sleeping!");
+        }
+    }
+
 
     public class SwingFrame extends JFrame implements FrameRateListener, ActionListener {
 

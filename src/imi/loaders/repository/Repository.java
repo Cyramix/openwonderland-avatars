@@ -32,6 +32,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
@@ -101,6 +102,7 @@ public class Repository extends Entity
     /** Indicates if the repository cache should be used. **/
     private boolean m_bUseCache = true;
     private boolean m_bLoadGeometry = true;
+
     
     /**
      * Construct a BRAND NEW REPOSITORY!
@@ -139,15 +141,34 @@ public class Repository extends Entity
 
         // create the shader factory
         m_shaderFactory = new ShaderFactory(wm);
-        // Load up the texture cache.
-        try {
+
+        loadTextureCache();
+    }
+    
+    private void loadTextureCache()
+    {
+        if (m_bUseCache)
+        {
+            final File textureCacheFile = new File(cacheFolder, "textures.bin");
             // prime the texture manager
-            File textureCacheFile = new File(cacheFolder, "textures.bin");
             if (textureCacheFile.exists() == false) // no? then grab it from the net
                 grabTextureCacheFileFromInternet(textureCacheFile);
-            TextureManager.readCache(textureCacheFile);
-        } catch (IOException ex) {
-            Logger.getLogger(Repository.class.getName()).log(Level.SEVERE, null, ex);
+            
+            Runnable cacheLoader = new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        TextureManager.readCache(textureCacheFile);
+                    }
+                    catch (IOException ex)
+                    {
+
+                    }
+                }
+            };  
+            
+            Thread cacheLoadingThread = new Thread(cacheLoader);
+            cacheLoadingThread.start();
         }
     }
 
@@ -477,16 +498,39 @@ public class Repository extends Entity
      */
     File getCacheEquivalent(URL file)
     {
+        File localFile = null; // If a local version exists.
+
+        // If the URL points to a local file, check the last modified time
+        if (file.getProtocol().equalsIgnoreCase("file"))
+        {
+            try {
+                localFile = new File(file.toURI());
+            } catch (URISyntaxException ex) {
+                Logger.getLogger(Repository.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
         String urlString = file.toString();
-        urlString = urlString.substring(urlString.indexOf(":") + 1);
-        while (urlString.startsWith("/"))
-            urlString = urlString.substring(1);
+        int assetsIndex = urlString.indexOf("assets/");
+        
+        if (assetsIndex != 1) // If found, truncate
+            urlString = urlString.substring(assetsIndex + 7);
 
         String hashFileName = MD5HashUtils.getStringFromHash(urlString.getBytes());
-        System.out.println("******** getCacheEquivalent for file " +
-                file.toExternalForm() + "  " +
-                new File(cacheFolder, hashFileName).getAbsolutePath());
-        return new File(cacheFolder, hashFileName);
+        File result = new File(cacheFolder, hashFileName);
+
+        // Informational / Debugging output
+//        System.out.println("******** getCacheEquivalent for file " +
+//                file.toExternalForm() + "  " +
+//                result.getAbsolutePath());
+
+        if (localFile != null)
+        {
+            // Determine which one is newer, if the cache version is older,
+            // then we will delete it.
+            if (localFile.lastModified() > result.lastModified())
+                result.delete();
+        }
+        return result;
     }
 
     /**

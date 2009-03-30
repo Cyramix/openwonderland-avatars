@@ -23,10 +23,13 @@ import imi.character.avatar.Avatar;
 import imi.character.avatar.AvatarContext.TriggerNames;
 import imi.character.objects.ObjectCollection;
 import imi.scene.processors.FlexibleCameraProcessor;
+import imi.tests.AvatarInspectionDemo;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
+import javolution.util.FastMap;
 
 /**
  *
@@ -52,8 +55,9 @@ public class AvatarControlScheme extends InputScheme
     private int lastMouseY    = 0;
     private boolean mouseDown = false;
     
-    
-    
+    // HACK LAND
+    public AvatarInspectionDemo hookObject = null;
+
     public AvatarControlScheme(Avatar master)
     {
         super();
@@ -194,6 +198,10 @@ public class AvatarControlScheme extends InputScheme
         
         if (ke.getID() == KeyEvent.KEY_PRESSED) 
         {
+            if (ke.getKeyCode() == KeyEvent.VK_EQUALS)
+                hookObject.nextTarget();
+            else if (ke.getKeyCode() == KeyEvent.VK_MINUS)
+                hookObject.prevTarget();
             // Alter the input state for random reference
             inputState.keyPressed(ke.getKeyCode());
             

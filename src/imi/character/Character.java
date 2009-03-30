@@ -508,14 +508,15 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         AbstractShaderProgram specialHairShader = repo.newShader(VertDeformerWithSpecAndNormalMap.class);
 
         float[] skinColor = m_attributes.getSkinTone();
-        AbstractShaderProgram fleshShader = null;
+        AbstractShaderProgram fleshShader = repo.newShader(FleshShader.class);
+        AbstractShaderProgram headShader = null;
         
         if (m_attributes.isUsingPhongLighting())
-            fleshShader = repo.newShader(PhongFleshShader.class);
+            headShader = repo.newShader(PhongFleshShader.class);
         else
-            fleshShader = repo.newShader(FleshShader.class);
+            headShader = repo.newShader(FleshShader.class);
         try {
-            fleshShader.setProperty(new ShaderProperty("materialColor", GLSLDataType.GLSL_VEC3, skinColor));
+            headShader.setProperty(new ShaderProperty("materialColor", GLSLDataType.GLSL_VEC3, skinColor));
         } catch (NoSuchPropertyException ex) {
             Logger.getLogger(Character.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -535,11 +536,12 @@ public abstract class Character extends Entity implements SpatialObject, Animati
                     meshMat.getTexture(0).setMinFilter(MinificationFilter.BilinearNoMipMaps);
                 meshMat.setShader(eyeballShader);
             }
-            else if (tempName.contains("head") ||
-                     tempName.contains("nude") ||
+            else if (tempName.contains("nude") ||
                      tempName.contains("arms") ||
                      tempName.contains("hand"))// is it flesh?
                 meshMat.setShader(fleshShader);
+            else if (tempName.contains("head"))
+                meshMat.setShader(headShader);
             else if (tempName.equals("hairashape1")) // HACK
             {
                 try {
