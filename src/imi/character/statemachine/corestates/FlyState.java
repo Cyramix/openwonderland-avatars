@@ -41,6 +41,8 @@ public class FlyState extends GameState
     
     private float exitCounter           = 0.0f;
     private float minimumTimeBeforeTransition = 0.18f;
+
+    private boolean restoreGravity      = false;
     
     public FlyState(AvatarContext master)
     {
@@ -130,8 +132,11 @@ public class FlyState extends GameState
     {
         super.stateExit(owner);
 
-        // Restore gravity after flying
-        ((AvatarController)context.getController()).setGravity(new Vector3f(0.0f, 0.098f, 0.0f));
+        if (restoreGravity)
+        {
+            // Restore gravity after flying
+            ((AvatarController)context.getController()).setGravity(new Vector3f(0.0f, 0.098f, 0.0f));
+        }
 
         // avatar's skeleton might be null untill loaded
         SkeletonNode skeleton = context.getSkeleton();
@@ -154,5 +159,12 @@ public class FlyState extends GameState
     public void setWalkSpeedMax(float walkSpeedMax) {
         this.walkSpeedMax = walkSpeedMax;
     }
-    
+
+    public boolean isRestoreGravity() {
+        return restoreGravity;
+    }
+
+    public void setRestoreGravity(boolean restoreGravity) {
+        this.restoreGravity = restoreGravity;
+    }
 }
