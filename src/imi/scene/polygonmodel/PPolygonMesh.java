@@ -1499,8 +1499,11 @@ public class PPolygonMesh extends PNode implements Serializable
         m_bInBatch = false;
         m_bDebugInfo = false;
         m_bSubmitGeometry = false;
+
         m_BoundingCube = new PCube();
         m_BoundingSphere = new PSphere();
+        calculateBoundingBox();
+        calculateBoundingSphere();
         setDirty(true, false);
         useVBO();
     }
