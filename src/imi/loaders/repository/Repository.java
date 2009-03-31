@@ -19,12 +19,13 @@ package imi.loaders.repository;
 
 import com.jme.util.TextureManager;
 import imi.annotations.Debug;
+import imi.cache.CacheBehavior;
+import imi.cache.DefaultAvatarCache;
 import imi.loaders.repository.SharedAsset.SharedAssetType;
 import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
 import imi.scene.shader.AbstractShaderProgram;
 import imi.scene.shader.ShaderFactory;
 import imi.utils.AvatarObjectInputStream;
-import imi.utils.MD5HashUtils;
 import java.awt.Dimension;
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -36,7 +37,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.JProgressBar;
@@ -66,6 +66,9 @@ public class Repository extends Entity
 
     /** Shader producing entity **/
     private ShaderFactory m_shaderFactory = null;
+
+    /** Caching object **/
+    CacheBehavior m_cache = null;
 
     /** All our processors **/
     private final ProcessorCollectionComponent m_processorCollection = new ProcessorCollectionComponent();
@@ -100,8 +103,7 @@ public class Repository extends Entity
     /** Skeleton Collection **/
     public final FastTable<SkeletonNode> m_Skeletons = new FastTable<SkeletonNode>();
 
-    /** Indicates if the repository cache should be used. **/
-    private boolean m_bUseCache = true;
+    
     private boolean m_bLoadGeometry = true;
 
     
@@ -111,7 +113,7 @@ public class Repository extends Entity
      */
     public Repository(WorldManager wm)
     {
-        this(wm, true, true);
+        this(wm, true, new DefaultAvatarCache(cacheFolder));
     }
 
     /**
@@ -120,7 +122,7 @@ public class Repository extends Entity
      * @param bLoadSkeletons True to load prototype skeletons
      * @param bUseCache True to use caching (project/cache dir)
      */
-    public Repository(WorldManager wm, boolean bLoadSkeletons, boolean bUseCache)
+    public Repository(WorldManager wm, boolean bLoadSkeletons, CacheBehavior cache)
     {
         super("Asset Repository");
         // Catch wm ref
@@ -136,8 +138,8 @@ public class Repository extends Entity
             loadSkeletons();
 
         // Boot up the cache
-        m_bUseCache = bUseCache;
-        if (m_bUseCache)
+        m_cache = cache;
+        if (m_cache != null)
             initCache();
 
         // create the shader factory
@@ -145,10 +147,14 @@ public class Repository extends Entity
 
         loadTextureCache();
     }
+
+    public File getCacheFolder() {
+        return cacheFolder;
+    }
     
     private void loadTextureCache()
     {
-        if (m_bUseCache)
+        if (m_cache != null)
         {
             final File textureCacheFile = new File(cacheFolder, "textures.bin");
             // prime the texture manager
@@ -465,6 +471,9 @@ public class Repository extends Entity
         if (cacheFolder.exists() == false)
             if (cacheFolder.mkdir() == false) // error
                 logger.severe("Cache is unavailable!");
+        // Now boot up the cache object
+        if (m_cache != null)
+            m_cache.initialize(null);
 
     }
 
@@ -473,13 +482,8 @@ public class Repository extends Entity
      */
     public void clearCache()
     {
-        logger.warning("Clearing cache folder: " + cacheFolder);
-        File[] cacheFiles = cacheFolder.listFiles();
-        if (cacheFiles != null)
-        {
-            for (File file : cacheFiles)
-                file.delete();
-        }
+        if (m_cache != null)
+            m_cache.clearCache();
     }
 
     CacheUser user = new CacheUser();
@@ -491,61 +495,6 @@ public class Repository extends Entity
             Thread.yield();
     }
 
-    /**
-     * Provides a file object referencing the location that a cached copy of "file"
-     * will occupy if it exists.
-     * @param file
-     * @return
-     */
-    File getCacheEquivalent(URL file)
-    {
-        File localFile = null; // If a local version exists.
-
-        // If the URL points to a local file, check the last modified time
-        if (file.getProtocol().equalsIgnoreCase("file"))
-        {
-            localFile = new File(file.getFile());
-        }
-        String urlString = file.toString();
-        int assetsIndex = urlString.indexOf("assets/");
-        
-        if (assetsIndex != 1) // If found, truncate
-            urlString = urlString.substring(assetsIndex + 7);
-
-        String hashFileName = MD5HashUtils.getStringFromHash(urlString.getBytes());
-        File result = new File(cacheFolder, hashFileName);
-
-        // Informational / Debugging output
-//        System.out.println("******** getCacheEquivalent for file " +
-//                file.toExternalForm() + "  " +
-//                result.getAbsolutePath());
-
-        if (localFile != null)
-        {
-            // Determine which one is newer, if the cache version is older,
-            // then we will delete it.
-            if (localFile.lastModified() > result.lastModified())
-                result.delete();
-        }
-        return result;
-    }
-
-    /**
-     * Is this repository using the cache?
-     * @return
-     */
-    public boolean isUsingCache()
-    {
-        return m_bUseCache;
-    }
-    /**
-     * True to enable usage of the cache.
-     * @param bUseCache
-     */
-    public void setUseCache(boolean bUseCache)
-    {
-        m_bUseCache = bUseCache;
-    }
     /**
      * Retrieve the skeleton with the specified name.
      * @param name

@@ -23,17 +23,15 @@ import com.jme.util.export.binary.BinaryExporter;
 import com.jme.util.export.binary.BinaryImporter;
 import imi.utils.AvatarObjectOutputStream;
 import imi.loaders.collada.Collada;
-import imi.loaders.collada.ColladaLoaderParams;
 import imi.loaders.ms3d.SkinnedMesh_MS3D_Importer;
 import imi.scene.PScene;
 import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
 import imi.utils.AvatarObjectInputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URL;
 import java.util.LinkedList;
 import java.util.logging.Level;
@@ -231,11 +229,9 @@ public class RepositoryAsset extends ProcessorComponent
     private void loadCOLLADA()
     {
         // Check the cache for this file
-        File cachedFile = m_home.getCacheEquivalent(m_descriptor.getLocation());
         PScene loadedScene = null;
-
-        if (cachedFile.exists() && m_home.isUsingCache()) // load it from cache
-            loadedScene = loadBinaryPScene(cachedFile);
+        if (m_home.m_cache.isFileCached(m_descriptor.getLocation()))
+            loadedScene = loadBinaryPScene(m_home.m_cache.getStreamToResource(m_descriptor.getLocation()));
 
         if (loadedScene != null) // Did we succeed?
         {
@@ -266,8 +262,7 @@ public class RepositoryAsset extends ProcessorComponent
             }
             
             // now we have the pscene prepared, write it to the cache location
-            if (m_home.isUsingCache())
-                serializePScene(cachedFile, loadingScene);
+            serializePScene(m_home.m_cache.getStreamForWriting(m_descriptor.getLocation()), loadingScene);
             m_data.add(loadingScene);
         }
     }
@@ -277,14 +272,12 @@ public class RepositoryAsset extends ProcessorComponent
      * @param binaryLocation Location to load
      * @return The reconstituted PScene, or null on failure.
      */
-    private PScene loadBinaryPScene(File location) {
+    private PScene loadBinaryPScene(InputStream stream) {
         PScene result = null;
         AvatarObjectInputStream in = null;
-        FileInputStream fis = null;
         try
         {
-            fis = new FileInputStream(location);
-            in = new AvatarObjectInputStream(fis);
+            in = new AvatarObjectInputStream(stream);
             result = (PScene)in.readObject();
             in.close();
         }
@@ -305,13 +298,12 @@ public class RepositoryAsset extends ProcessorComponent
      * @param destination
      * @param sceneToWrite
      */
-    private void serializePScene(File destination, PScene sceneToWrite)
+    private void serializePScene(OutputStream destination, PScene sceneToWrite)
     {
         AvatarObjectOutputStream out = null;
         try
         {
-          FileOutputStream fos = new FileOutputStream(destination);
-          out = new AvatarObjectOutputStream(fos);
+          out = new AvatarObjectOutputStream(destination);
           out.writeObject(sceneToWrite);
           out.close();
         }

@@ -274,7 +274,7 @@ public class MTGameBase extends JFrame implements FrameRateListener {
         m_worldManager = new WorldManager("TheManagerOfTheWorld");
         m_worldManager.getRenderManager().setFrameRateListener(this, freq);
         m_worldManager.getRenderManager().setDesiredFrameRate(frameRate);
-        m_worldManager.addUserData(Repository.class, new Repository(m_worldManager, loadSkeletons, useCache));
+        m_worldManager.addUserData(Repository.class, new Repository(m_worldManager));
     }
 
     private void createSpace(String name, Vector3f center, ZBufferState buf, ColorRGBA color, WorldManager wm) {

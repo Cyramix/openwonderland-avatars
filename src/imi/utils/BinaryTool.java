@@ -17,6 +17,7 @@
  */
 package imi.utils;
 
+import imi.cache.DefaultAvatarCache;
 import imi.loaders.Instruction;
 import imi.loaders.InstructionProcessor;
 import imi.loaders.collada.Collada;
@@ -200,7 +201,7 @@ public class BinaryTool
     {
         WorldManager wm = new WorldManager("TheWorldManager");
         // create a repository to use
-        repository = new Repository(wm, false, false); // do not load skeletons, do not load use cache
+        repository = new Repository(wm, false, null); // do not load skeletons, do not load use cache
         repository.setLoadGeometry(false);
         // Add the repository
         wm.addUserData(Repository.class, repository);
@@ -215,10 +216,9 @@ public class BinaryTool
         if (m_bBuildCache)
         {
             // Behave like a normal repository
-            repository.setUseCache(true);
-            repository.setLoadGeometry(true);
             repository.clearCache();
             repository.initCache();
+            repository.setLoadGeometry(true);
             loadAllFiles(m_assetRoot);
         }
         System.exit(0);

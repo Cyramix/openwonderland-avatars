@@ -25,7 +25,11 @@ import com.jme.image.Texture.MinificationFilter;
 import com.jme.image.Texture.WrapMode;
 import com.jme.util.TextureManager;
 import imi.serialization.xml.bindings.xmlTextureAttributes;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -337,6 +341,35 @@ public class TextureMaterialProperties implements Serializable
         {
             Logger.getLogger(TextureMaterialProperties.class.getName()).log(Level.SEVERE,
                     "Error applying DOM! - " + ex.getMessage());
+        }
+    }
+
+    // Serialization helpers
+    private void writeObject(ObjectOutputStream out) throws IOException {
+        out.defaultWriteObject();
+    }
+
+    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+        in.defaultReadObject();
+        // HACK
+        // May need to remap file URLs to point locally
+        if (m_imageLocation.getProtocol().equalsIgnoreCase("file"))
+        {
+            String fileProtocol = "file:///" + System.getProperty("user.dir") + "/";
+            String relativePath = m_imageLocation.toString();
+            int assetsIndex = relativePath.indexOf("assets/");
+            if (assetsIndex != -1)
+                relativePath = relativePath.substring(assetsIndex);
+
+            URL localURL = null;
+            try {
+                localURL = new URL(fileProtocol + relativePath);
+            }
+            catch (MalformedURLException ex)
+            {
+
+            }
+            m_imageLocation = localURL;
         }
     }
 }
