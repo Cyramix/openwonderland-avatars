@@ -139,10 +139,10 @@ public class FirstPersonCamModel implements CameraModel
             if (ke.getKeyCode() == KeyEvent.VK_RIGHT) {
                 state.setMovementState(FirstPersonCamState.STRAFE_RIGHT);
             }
-            if (ke.getKeyCode() == KeyEvent.VK_NUMPAD7) {
+            if (ke.getKeyCode() == KeyEvent.VK_NUMPAD7 || ke.getKeyCode() == KeyEvent.VK_CLOSE_BRACKET) {
                 state.setMovementState(FirstPersonCamState.MOVE_UP);
             }
-            if (ke.getKeyCode() == KeyEvent.VK_NUMPAD9) {
+            if (ke.getKeyCode() == KeyEvent.VK_NUMPAD9 || ke.getKeyCode() == KeyEvent.VK_OPEN_BRACKET) {
                 state.setMovementState(FirstPersonCamState.MOVE_DOWN);
             }
         }
@@ -152,7 +152,9 @@ public class FirstPersonCamModel implements CameraModel
                 ke.getKeyCode() == KeyEvent.VK_LEFT ||
                 ke.getKeyCode() == KeyEvent.VK_RIGHT ||
                 ke.getKeyCode() == KeyEvent.VK_NUMPAD7 ||
-                ke.getKeyCode() == KeyEvent.VK_NUMPAD9) {
+                ke.getKeyCode() == KeyEvent.VK_NUMPAD9 ||
+                ke.getKeyCode() == KeyEvent.VK_OPEN_BRACKET ||
+                ke.getKeyCode() == KeyEvent.VK_CLOSE_BRACKET) {
                 state.setMovementState(FirstPersonCamState.STOPPED);
             }
         }

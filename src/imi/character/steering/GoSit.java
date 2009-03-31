@@ -49,7 +49,7 @@ public class GoSit implements Task
     
     private float       currentDistanceFromGoal  = 0.0f;
     private Vector3f    currentCharacterPosition = new Vector3f();
-    private Vector3f    goalPosition = new Vector3f();
+    private Vector3f    goalPosition  = new Vector3f();
     private Vector3f    goalDirection = new Vector3f();
     
     private float pullPower = 5.0f;
@@ -120,7 +120,8 @@ public class GoSit implements Task
                 go.reset(goalPosition, goalDirection);
                 go.setAvoidObstacles(false);
                 go.setApprovedDistanceFromGoal(goal.getBoundingSphere().getRadius() * 0.5f);
-                System.out.println("GoSit() goal bounding volume radius: " + goal.getBoundingSphere().getRadius());
+//                System.out.println("GoSit() goal bounding volume radius: " + goal.getBoundingSphere().getRadius());
+//                System.out.println("GoSit() goal bounding volume center: " + goal.getBoundingSphere().getCenter());
                 
                 // Own the chair if no one else does, otherwise try another
                 if (goal.getOwner() == null)

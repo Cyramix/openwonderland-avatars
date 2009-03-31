@@ -17,6 +17,7 @@
  */
 package imi.character.objects;
 
+import com.jme.bounding.BoundingSphere;
 import com.jme.math.Quaternion;
 import com.jme.math.Vector3f;
 import com.jme.renderer.ColorRGBA;
@@ -35,8 +36,6 @@ import imi.scene.polygonmodel.PPolygonMeshInstance;
 import imi.scene.polygonmodel.PPolygonModelInstance;
 import imi.scene.polygonmodel.parts.PMeshMaterial;
 import imi.scene.utils.PMeshUtils;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javolution.util.FastList;
 
 /**
@@ -90,7 +89,8 @@ public class Chair implements SpatialObject
             AssetInitializer init = new AssetInitializer() {
                 public boolean initialize(Object asset) {
                     
-                    //System.out.println("init chair " + me); // watch for "freeloaders"
+//                    System.out.println("init chair " + me); // watch for "freeloaders"
+//                    System.out.println(asset);
                     
                     // Apply material to all meshes
                     FastList<PNode> queue = new FastList<PNode>();
@@ -104,16 +104,24 @@ public class Chair implements SpatialObject
                             //System.out.println("applying material on " + meshInst);
                             meshInst.applyMaterial();
 
-                            meshInst.getSharedMesh().updateModelBound();
+                            //meshInst.getGeometry().calculateBoundingSphere();
+//                            meshInst.getSharedMesh().setModelBound(new BoundingSphere());
+//                            meshInst.getSharedMesh().updateModelBound();
+                            
+//                            if (((BoundingSphere)meshInst.getSharedMesh().getModelBound()).getRadius() == 0.0f)
+//                                continue; // for a breakpoint..
                         }
                         // add all the kids
                         queue.addAll(current.getChildren());
                     }
+
+                    //modelInst.calculateBoundingSphere();
                     
                     if (objectCollection == null)
                         return false;
                     
                     objectCollection.getPScene().submitTransformsAndGeometry();
+                    //objectCollection.getJScene().updateWorldBound();
                     objectCollection.getJScene().updateRenderState();
                     
                     return true;

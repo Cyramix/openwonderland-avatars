@@ -327,7 +327,7 @@ public class PPolygonMesh extends PNode implements Serializable
      */
     public void endBatch(boolean bCalculatePolygonVertexNormals)
     {
-	m_bInBatch = false;
+        m_bInBatch = false;
 
         if (bCalculatePolygonVertexNormals)
         {
@@ -338,11 +338,11 @@ public class PPolygonMesh extends PNode implements Serializable
         //  Calculate edge count
         calculateEdgeCountAndTessalatedVertexCount();
         
-	//  Calculate the BoundingBox.
-	calculateBoundingBox();
+        //  Calculate the BoundingBox.
+        calculateBoundingBox();
 
-	//  Calculate the BoundingSphere.
-	calculateBoundingSphere();
+        //  Calculate the BoundingSphere.
+        calculateBoundingSphere();
     }
 
 
