@@ -230,7 +230,7 @@ public class RepositoryAsset extends ProcessorComponent
     {
         // Check the cache for this file
         PScene loadedScene = null;
-        if (m_home.m_cache.isFileCached(m_descriptor.getLocation()))
+        if (m_home.m_cache != null && m_home.m_cache.isFileCached(m_descriptor.getLocation()))
             loadedScene = loadBinaryPScene(m_home.m_cache.getStreamToResource(m_descriptor.getLocation()));
 
         if (loadedScene != null) // Did we succeed?
