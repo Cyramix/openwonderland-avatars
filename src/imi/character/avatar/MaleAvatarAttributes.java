@@ -320,11 +320,11 @@ public class MaleAvatarAttributes extends CharacterAttributes
      */
     private void customizeHairPresets(int preset, ArrayList<String> load, ArrayList<SkinnedMeshParams> add, ArrayList<AttachmentParams> attachments)
     {
-        load.add(new String("assets/models/collada/Hair/Hair01.dae"));
-        attachments.add(new AttachmentParams("Hair0Shape1", "Head", new PMatrix(), "Hair"));
-
-        if (true)
-            return;
+//        load.add(new String("assets/models/collada/Hair/Hair01.dae"));
+//        attachments.add(new AttachmentParams("Hair0Shape1", "Head", new PMatrix(), "Hair"));
+//
+//        if (true)
+//            return;
 
         PMatrix orientation = new PMatrix(new Vector3f((float)Math.toRadians(10),0,0), Vector3f.UNIT_XYZ, Vector3f.ZERO);
         switch(preset)
