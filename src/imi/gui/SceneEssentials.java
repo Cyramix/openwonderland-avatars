@@ -715,7 +715,7 @@ public class SceneEssentials {
             try {
                 URL urlModel = new URL(szURL);
                 SharedAsset character = new SharedAsset(m_currentPScene.getRepository(), new AssetDescriptor(SharedAssetType.COLLADA, urlModel));
-                character.setUserData(new ColladaLoaderParams(true, true, false, true, false, 4, m_fileModel.getName(), null));
+                character.setUserData(new ColladaLoaderParams(true, true, false, false, 4, m_fileModel.getName(), null));
                 String[] anim = null;
                 loadInitializer(m_fileModel.getName(), character, anim);
                 return true;
@@ -1278,7 +1278,7 @@ public class SceneEssentials {
         try {
             URL urlModel = new URL(data[3]);
             SharedAsset character = new SharedAsset(m_currentPScene.getRepository(), new AssetDescriptor(SharedAssetType.COLLADA, urlModel));
-            character.setUserData(new ColladaLoaderParams(true, true, false, true, false, 4, data[0], null));
+            character.setUserData(new ColladaLoaderParams(true, true, false, false, 4, data[0], null));
             String[] anim = null;
             loadInitializer(data[0], character, anim);
         } catch (MalformedURLException ex) {
@@ -1342,7 +1342,7 @@ public class SceneEssentials {
         try {
             URL urlModel = new URL(data[3]);
             SharedAsset character = new SharedAsset(m_currentPScene.getRepository(), new AssetDescriptor(SharedAssetType.COLLADA, urlModel));
-            character.setUserData(new ColladaLoaderParams(true, true, false, true, false, 4, data[0], null));
+            character.setUserData(new ColladaLoaderParams(true, true, false, false, 4, data[0], null));
             String[] anim = null;
             loadInitializer(data[0], character, anim);
         } catch (MalformedURLException ex) {

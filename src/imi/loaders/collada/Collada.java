@@ -146,7 +146,6 @@ public class Collada
     private boolean m_bLoadAnimations               = false;
     private boolean m_bAddSkinnedMeshesToSkeleton   = true;
     private boolean m_bPrintStats                   = false;
-    private boolean m_bUseCache                     = true;
 
     /**
      * Default construction
@@ -1309,7 +1308,6 @@ public class Collada
             setLoadRig(params.isLoadingSkeleton());
             setLoadGeometry(params.isLoadingGeometry());
             setLoadAnimations(params.isLoadingAnimations());
-            m_bUseCache = params.isUsingCache();
             setPrintStats(params.isShowingDebugInfo());
             m_MaxNumberOfWeights = params.getMaxInfluences();
         }
@@ -1319,17 +1317,6 @@ public class Collada
     public URL getFileLocation()
     {
         return m_fileLocation;
-    }
-
-
-    public boolean isUsingCache()
-    {
-        return m_bUseCache;
-    }
-
-    public void setUseCache(boolean bUseCache)
-    {
-        m_bUseCache = bUseCache;
     }
 }
 

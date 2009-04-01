@@ -22,7 +22,6 @@ import com.jme.renderer.ColorRGBA;
 import imi.character.AttachmentParams;
 import imi.character.CharacterAttributes;
 import imi.scene.PMatrix;
-import java.net.URL;
 import java.util.ArrayList;
 
 /**
@@ -85,6 +84,15 @@ public class MaleAvatarAttributes extends CharacterAttributes
         "assets/models/collada/Heads/EyeTextures/eyeColor21.png"  // snakes!
     };
 
+    /** number of preset features **/
+    public static final int numberOfFeet  = 4;
+    public static final int numberOfLegs  = 4;
+    public static final int numberOfTorso = 6;
+    public static final int numberOfHair  = 17;
+    public static final int numberOfHeads = 6;
+    public static final int numberOfSkinTones = skinTones.length;
+    public static final int numberOfEyeColors = eyeColors.length;
+
     /** Used to indicate that the bind pose file has already been added to the load instructions **/
     private boolean loadedBind = false;
     
@@ -100,11 +108,6 @@ public class MaleAvatarAttributes extends CharacterAttributes
         if (bRandomCustomizations)
         {
             int preset        = -1;
-            int numberOfFeet  = 4;
-            int numberOfLegs  = 4;
-            int numberOfTorso = 6;
-            int numberOfHair  = 17;
-            int numberOfHeads = 6;
             
             ArrayList<String> load      = new ArrayList<String>();
             ArrayList<SkinnedMeshParams> add       = new ArrayList<SkinnedMeshParams>();
@@ -317,6 +320,12 @@ public class MaleAvatarAttributes extends CharacterAttributes
      */
     private void customizeHairPresets(int preset, ArrayList<String> load, ArrayList<SkinnedMeshParams> add, ArrayList<AttachmentParams> attachments)
     {
+        load.add(new String("assets/models/collada/Hair/Hair01.dae"));
+        attachments.add(new AttachmentParams("Hair0Shape1", "Head", new PMatrix(), "Hair"));
+
+        if (true)
+            return;
+
         PMatrix orientation = new PMatrix(new Vector3f((float)Math.toRadians(10),0,0), Vector3f.UNIT_XYZ, Vector3f.ZERO);
         switch(preset)
         {

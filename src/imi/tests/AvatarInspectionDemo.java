@@ -877,7 +877,7 @@ public class AvatarInspectionDemo {
         // Hook the control scheme up the the camera in order to receieve input
         // events. We need this in order to control the Verlet arm ('Q' and 'E' to engage)
         control.getMouseEventsFromCamera();
-        control.hookObject = this;
+        //control.hookObject = this;
 
        SceneEssentials se = new SceneEssentials();
         se.setSceneData(angela.getJScene(), angela.getPScene(), repository, wm, null);

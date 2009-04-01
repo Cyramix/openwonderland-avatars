@@ -77,7 +77,7 @@ public class VerletArmTest  extends DemoBase
         objects.getGUI(); 
         //objects.createTestPath();
         
-        boolean male = false;
+        boolean male = true;
         Avatar avatar = null;
         int feet, legs, torso, hair;
 
@@ -88,7 +88,7 @@ public class VerletArmTest  extends DemoBase
             legs  = (int) (Math.random() * 10000 % 4); // 1 
             torso = (int) (Math.random() * 10000 % 6); // 1
             hair  = (int) (Math.random() * 10000 % 17);
-            avatar = new Avatar(new MaleAvatarAttributes("Avatar", feet, legs, torso, hair, -1), wm);
+            avatar = new Avatar(new MaleAvatarAttributes("Avatar", feet, legs, torso, hair, 4), wm);
         }
         else // female
         {

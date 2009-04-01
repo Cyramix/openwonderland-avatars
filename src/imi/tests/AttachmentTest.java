@@ -73,7 +73,7 @@ public class AttachmentTest extends DemoBase
         FemaleAvatarAttributes attributes = new FemaleAvatarAttributes("AttachmentGirl", true);
         Avatar attachmentAvatar = new Avatar(attributes, wm);
         // Hook up the avatar to the control scheme
-        control.setavatar(attachmentAvatar);
+        control.setAvatar(attachmentAvatar);
         attachmentAvatar.selectForInput();
 
         // Create the instructions needed for loading and attaching a mesh

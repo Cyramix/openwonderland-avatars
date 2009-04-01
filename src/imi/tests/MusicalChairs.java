@@ -61,13 +61,14 @@ public class MusicalChairs extends DemoBase
     @Override
     protected void createDemoEntities(WorldManager wm)
     {
-        int numberOfAvatars = 5;
+        int numberOfAvatars = 2;
         float block = 2.0f * numberOfAvatars;
         float halfBlock = 0.5f * numberOfAvatars;
+        int numChairs = numberOfAvatars-1;
 
         // Create one object collection for all to use (for testing)
         ObjectCollection objects = new ObjectCollection("Musical Chairs Objects", wm);
-        objects.generateChairs(new Vector3f(halfBlock, 0.0f, halfBlock), halfBlock, numberOfAvatars-1);
+        objects.generateChairs(new Vector3f(halfBlock, 0.0f, halfBlock), halfBlock, numChairs);
 
         // Create locations for the game
         LocationNode chairGame1 = new LocationNode("Location 1", Vector3f.ZERO, halfBlock, objects);
@@ -110,6 +111,8 @@ public class MusicalChairs extends DemoBase
             createAvatar(control, objects, wm, 0.0f, 0.0f, zStep);
             zStep += 5.0f;
         }
+
+        objects.boundingVolumeTest();
     }
 
     private void createAvatar(AvatarControlScheme control, ObjectCollection objects, WorldManager wm, float xOffset, float yOffset, float zOffset)

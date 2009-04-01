@@ -84,6 +84,15 @@ public class FemaleAvatarAttributes extends CharacterAttributes
 
     };
 
+    /** Number of preset features **/
+    public static final int numberOfFeet  = 3;
+    public static final int numberOfLegs  = 3;
+    public static final int numberOfTorso = 4;
+    public static final int numberOfHair  = 49;
+    public static final int numberOfHeads = 10;
+    public static final int numberOfSkinTones = skinTones.length;
+    public static final int numberOfEyeColors = eyeColors.length;
+
     /** Used to indicate that the bind pose file has already been added to the
      load instructions **/
     private boolean loadedBind = false;
@@ -102,11 +111,6 @@ public class FemaleAvatarAttributes extends CharacterAttributes
         if (bRandomCustomizations)
         {
             int preset        = -1;
-            int numberOfFeet  = 3;
-            int numberOfLegs  = 3;
-            int numberOfTorso = 4;
-            int numberOfHair  = 49;
-            int numberOfHeads = 10;
             
             ArrayList<String> load      = new ArrayList<String>();
             ArrayList<SkinnedMeshParams> add       = new ArrayList<SkinnedMeshParams>();

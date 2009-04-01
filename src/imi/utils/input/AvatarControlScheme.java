@@ -24,17 +24,20 @@ import imi.character.avatar.AvatarContext.TriggerNames;
 import imi.character.objects.ObjectCollection;
 import imi.character.objects.ObjectCollectionBase;
 import imi.scene.processors.FlexibleCameraProcessor;
+import imi.scene.processors.RenderThreadProcessor;
 import imi.tests.AvatarInspectionDemo;
+import imi.tests.DemoBase;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 import java.util.ArrayList;
+import org.jdesktop.mtgame.WorldManager;
 
 /**
  *
  * @author Lou Hayt
  */
-public class AvatarControlScheme extends InputScheme
+public class AvatarControlScheme extends InputScheme implements AvatarControls
 {
     private boolean bSkeletonMode = false;
   
@@ -53,9 +56,6 @@ public class AvatarControlScheme extends InputScheme
     private int lastMouseX    = 0;
     private int lastMouseY    = 0;
     private boolean mouseDown = false;
-    
-    // HACK LAND
-    public AvatarInspectionDemo hookObject = null;
 
     public AvatarControlScheme(Avatar master)
     {
@@ -197,10 +197,6 @@ public class AvatarControlScheme extends InputScheme
         
         if (ke.getID() == KeyEvent.KEY_PRESSED) 
         {
-            if (ke.getKeyCode() == KeyEvent.VK_EQUALS)
-                hookObject.nextTarget();
-            else if (ke.getKeyCode() == KeyEvent.VK_MINUS)
-                hookObject.prevTarget();
             // Alter the input state for random reference
             inputState.keyPressed(ke.getKeyCode());
             
@@ -259,7 +255,15 @@ public class AvatarControlScheme extends InputScheme
                     ((ObjectCollection)objects).removeAChair();
                 }
             }
-            
+
+            if (ke.getKeyCode() == KeyEvent.VK_N)
+            {
+                WorldManager wm = DemoBase.getWM();
+                FlexibleCameraProcessor p = (FlexibleCameraProcessor) wm.getUserData(FlexibleCameraProcessor.class);
+                if (p != null)
+                    p.takeSnap();
+            }
+
             // Pop up the console \ chat
             if (ke.getKeyCode() == KeyEvent.VK_BACK_SLASH || ke.getKeyCode() == KeyEvent.VK_BACK_QUOTE) 
             {
@@ -330,7 +334,7 @@ public class AvatarControlScheme extends InputScheme
         return avatarTeam;
     }
     
-    public void setavatar(Avatar avatarMaster)
+    public void setAvatar(Avatar avatarMaster)
     {
         avatar = avatarMaster;
     }

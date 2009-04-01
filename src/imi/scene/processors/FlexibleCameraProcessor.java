@@ -24,11 +24,13 @@ import imi.scene.camera.behaviors.WrongStateTypeException;
 import imi.scene.camera.state.CameraState;
 import imi.scene.SkyBox;
 import imi.scene.camera.CameraPositionManager;
-import imi.utils.input.AvatarControlScheme;
 import imi.utils.input.InputScheme;
 import java.awt.event.KeyEvent;
+import java.io.File;
+import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.media.opengl.GLException;
 import javolution.util.FastTable;
 import org.jdesktop.mtgame.AWTInputComponent;
 import org.jdesktop.mtgame.AwtEventCondition;
@@ -70,6 +72,9 @@ public class FlexibleCameraProcessor extends AWTEventProcessorComponent
     private double oldTime = 0.0;
     private double deltaTime = 0.0;
     
+    /** for snap shots **/
+    private boolean takeSnap = false;
+    
     /**
      * Constructs a new flexible camera processor with the provided goodies.
      * @param listener This component receives input events from AWT
@@ -86,6 +91,7 @@ public class FlexibleCameraProcessor extends AWTEventProcessorComponent
     {
         super(listener);
         setEntity(myEntity);
+        setRunInRenderer(true);
         
         m_jmeCameraNode = cameraNode;
         m_WM = wm;
@@ -144,6 +150,22 @@ public class FlexibleCameraProcessor extends AWTEventProcessorComponent
             m_WM.addToUpdateList(m_skyNode);
         }
         m_WM.addToUpdateList(m_jmeCameraNode);
+
+
+        if (takeSnap)
+        {
+            takeSnap = false;
+
+            System.out.println("Taking screen shot");
+            try {
+                com.sun.opengl.util.Screenshot.writeToFile(new File("screenShots/pic.jpg"), 800, 600);
+            } catch (IOException ex) {
+                Logger.getLogger(FlexibleCameraProcessor.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (GLException ex) {
+                Logger.getLogger(FlexibleCameraProcessor.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            System.out.println("Done taking screen shot");
+        }
     }
     
     /**
@@ -180,7 +202,12 @@ public class FlexibleCameraProcessor extends AWTEventProcessorComponent
         else
             currentStateIndex = index;
     }
-    
+
+    public void takeSnap() {
+        if (!takeSnap)
+            takeSnap = true;
+    }
+
     /////////////////////////////////////////////////////////////////
     ///////////// Standard Collection Encapsulation /////////////////
     /////////////////////////////////////////////////////////////////

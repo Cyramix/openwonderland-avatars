@@ -38,7 +38,7 @@ import imi.character.steering.GoTo;
 import imi.utils.input.InputScheme;
 import imi.scene.processors.JSceneEventProcessor;
 import imi.serialization.xml.bindings.xmlCharacter;
-import imi.utils.input.AvatarControlScheme;
+import imi.utils.input.AvatarControls;
 import java.awt.event.KeyEvent;
 import java.net.URL;
 import org.jdesktop.mtgame.WorldManager;
@@ -194,8 +194,8 @@ public class Avatar extends imi.character.Character
         super.selectForInput();
         
         InputScheme scheme = ((JSceneEventProcessor)m_wm.getUserData(JSceneEventProcessor.class)).getInputScheme();
-        if (scheme instanceof AvatarControlScheme)
-            ((AvatarControlScheme)scheme).setavatar(this);
+        if (scheme instanceof AvatarControls)
+            ((AvatarControls)scheme).setAvatar(this);
     }
     
     private void maleContextSetup()

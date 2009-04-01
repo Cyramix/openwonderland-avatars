@@ -317,8 +317,7 @@ public class BinaryTool
 
         // Create parameters for the collada loader we will use
         ColladaLoaderParams params = new ColladaLoaderParams(true, false, // load skeleton, load geometry
-                                                            false,  false, // load animations, use cache
-                                                            false, // show debug output
+                                                            false,  false, // show debug output
                                                             4, // max influences per-vertex
                                                             "Skeleton", // 'name'
                                                             null); // existing skeleton (if applicable)
