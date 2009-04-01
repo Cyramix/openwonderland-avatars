@@ -262,7 +262,9 @@ public class RepositoryAsset extends ProcessorComponent
             }
             
             // now we have the pscene prepared, write it to the cache location
-            serializePScene(m_home.m_cache.getStreamForWriting(m_descriptor.getLocation()), loadingScene);
+            // if the cache is being used.
+            if (m_home.m_cache != null)
+                serializePScene(m_home.m_cache.getStreamForWriting(m_descriptor.getLocation()), loadingScene);
             m_data.add(loadingScene);
         }
     }
