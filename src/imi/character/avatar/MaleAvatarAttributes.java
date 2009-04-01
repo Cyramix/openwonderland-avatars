@@ -236,7 +236,7 @@ public class MaleAvatarAttributes extends CharacterAttributes
         switch (preset)
         {
             case 0:
-                setHeadAttachment("assets/models/collada/Avatars/MaleAvatar/Male_Bind.dae");
+                setHeadAttachment("assets/models/collada/Heads/MaleHead/MaleCHead.dae");
                 break;
             case 1:
                 setHeadAttachment("assets/models/collada/Heads/MaleHead/blackHead.dae");
@@ -254,7 +254,7 @@ public class MaleAvatarAttributes extends CharacterAttributes
     }
 
     /**
-     * Set the feet to a pair determined bythe provided integer
+     * Set the feet to a pair determined by the provided integer
      * @param preset
      * @param load
      * @param add
