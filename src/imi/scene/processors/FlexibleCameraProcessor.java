@@ -141,7 +141,9 @@ public class FlexibleCameraProcessor extends AWTEventProcessorComponent
                     int end   = name.indexOf(".");
                     String number = name.substring(start, end);
                     //System.out.println("The number is: " + number);
-                    int n = Integer.parseInt(number);
+                    int n = 0;
+                    if (start != end)
+                        n = Integer.parseInt(number);
                     if (picNum < n)
                         picNum = n+1;
                 }
