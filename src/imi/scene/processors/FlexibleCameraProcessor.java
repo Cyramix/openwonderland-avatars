@@ -74,6 +74,7 @@ public class FlexibleCameraProcessor extends AWTEventProcessorComponent
     private double deltaTime = 0.0;
     
     /** for snap shots **/
+    private int picNum = 0;
     private boolean takeSnap = false;
     private final RenderUpdater screenShotter = new RenderUpdater() {
 
@@ -83,15 +84,18 @@ public class FlexibleCameraProcessor extends AWTEventProcessorComponent
             {
                 takeSnap = false;
 
-                System.out.println("Taking screen shot");
+                File file = new File("screenShots/pic" + picNum + ".jpg");
+                System.out.println("Taking screen shot " + file.getName());
                 try {
-                    com.sun.opengl.util.Screenshot.writeToFile(new File("screenShots/pic.jpg"), 800, 600);
+                    if (file.mkdirs() || file.exists())
+                        com.sun.opengl.util.Screenshot.writeToFile(file, 800, 600);
                 } catch (IOException ex) {
                     Logger.getLogger(FlexibleCameraProcessor.class.getName()).log(Level.SEVERE, null, ex);
                 } catch (GLException ex) {
                     Logger.getLogger(FlexibleCameraProcessor.class.getName()).log(Level.SEVERE, null, ex);
                 }
-                System.out.println("Done taking screen shot");
+                picNum++;
+                System.out.println("Done taking screen shot " + file.getPath());
             }
         }
     };
@@ -122,6 +126,16 @@ public class FlexibleCameraProcessor extends AWTEventProcessorComponent
         m_armingConditions = new ProcessorArmingCollection(this);
         m_armingConditions.addCondition(new AwtEventCondition(this));
         m_armingConditions.addCondition(new NewFrameCondition(this));
+
+        // Set the picNum for snap shots
+        File picDir = new File("screenShots/");
+        if (picDir.mkdirs() || picDir.exists())
+        {
+            File [] files = picDir.listFiles();
+            for(File f : files)
+                if (f.getName().startsWith("pic"))
+                    picNum++;
+        }
     }
 
     @Override
