@@ -238,6 +238,7 @@ public class AvatarController extends CharacterController
                 velocity.multLocal(velocityDamp);
         }
 
+        avatar.getJScene().setExternalKidsRootPosition(position);
         notifyTransfromUpdate(position, currentRot);
 //        if (getVelocityScalar() > 1.0f)
 //            window.setTitle("yes");

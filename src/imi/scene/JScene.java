@@ -17,6 +17,7 @@
  */
 package imi.scene;
 
+import com.jme.math.Vector3f;
 import com.jme.renderer.Renderer;
 import com.jme.scene.Node;
 import com.jme.scene.state.LightState;
@@ -38,7 +39,9 @@ public class JScene extends Node {
     private boolean     m_bRenderInternally = false;    //  if false JMonkey's rendering will be used
     private boolean     m_bRenderBoth       = false;    //  true when both JMonkey and PRenderer are used
     private PRenderer   m_PRenderer         = null;     //  for diagnostic internal rendering
-
+    private Node        m_externalJmeKidsRoot = new Node("external Kids");
+    private Vector3f    m_ExternalKidsRootPosition = new Vector3f(); // applied by the PScene
+    
     /**
      * Empty constructor, does nothing.
      */
@@ -64,6 +67,17 @@ public class JScene extends Node {
         m_PRenderer = internalRenderer;
     }
 
+    public Node getExternalKidsRoot() {
+        return m_externalJmeKidsRoot;
+    }
+
+    public Vector3f getExternalKidsRootPosition() {
+        return m_ExternalKidsRootPosition;
+    }
+
+    public void setExternalKidsRootPosition(Vector3f externalKidsRootPosition) {
+        this.m_ExternalKidsRootPosition.set(externalKidsRootPosition);
+    }
 
     /**
      * Set the scene, a scene may contain model instances of

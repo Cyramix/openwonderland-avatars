@@ -156,7 +156,7 @@ public class PScene extends PNode implements RepositoryUser, Serializable
         // Nuke the m_JScene
         if (kids == null)
         {
-            Node dead = new Node("kill me"); // kids = new... will not work :(
+            Node dead = new Node("kill me"); // kids = new... will not work
             m_JScene.attachChild(dead);
             m_JScene.detachChild(dead);
             kids = m_JScene.getChildren();
@@ -168,6 +168,11 @@ public class PScene extends PNode implements RepositoryUser, Serializable
         PSceneSubmitHelper helper = new PSceneSubmitHelper();
         TreeTraverser.breadthFirst(m_Instances, helper);
         kids.addAll(helper.getSharedMeshes());
+
+        // Add external kids
+        Node externalKids = m_JScene.getExternalKidsRoot();
+        externalKids.setLocalTranslation(m_JScene.getExternalKidsRootPosition());
+        kids.add(externalKids);
 
         m_Instances.setDirty(false, false);
     }
