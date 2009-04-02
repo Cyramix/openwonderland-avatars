@@ -172,6 +172,7 @@ public class PScene extends PNode implements RepositoryUser, Serializable
         // Add external kids
         Node externalKids = m_JScene.getExternalKidsRoot();
         externalKids.setLocalTranslation(m_JScene.getExternalKidsRootPosition());
+        externalKids.updateWorldData(0.0f);
         kids.add(externalKids);
 
         m_Instances.setDirty(false, false);
@@ -867,7 +868,8 @@ public class PScene extends PNode implements RepositoryUser, Serializable
         PPolygonModelInstance modelInstance    = new PPolygonModelInstance(name, origin);
      
         // Load the asset
-        addMeshInstance(name, modelAsset, modelInstance);
+        if (modelAsset != null)
+            addMeshInstance(name, modelAsset, modelInstance);
         
         // Add the modelAsset instance to this PScene
         setDirty(true, true);
@@ -961,7 +963,8 @@ public class PScene extends PNode implements RepositoryUser, Serializable
                 {
                     m_SharedAssets.add(sa);
                 }
-                result = newInstance.getChild(0);
+                if (newInstance.getChildrenCount() > 0)
+                    result = newInstance.getChild(0);
             }
             else if (loadedModel.getAssetData() instanceof SkeletonNode)
             {

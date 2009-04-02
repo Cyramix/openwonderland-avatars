@@ -382,7 +382,13 @@ public abstract class Character extends Entity implements SpatialObject, Animati
     protected void finalizeInitialization(xmlCharacter characterDOM)
     {
         while (isLoaded() == false) // Bind up skeleton reference, etc
-            Thread.yield();
+        {
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(Character.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
 
         // Nothing below is relevant in the simple test sphere case
         if (m_attributes.isUseSimpleStaticModel())
@@ -878,32 +884,15 @@ public abstract class Character extends Entity implements SpatialObject, Animati
      */
     protected void initScene(ArrayList<ProcessorComponent> processors)
     {
-
-        if(m_attributes.isUseSimpleStaticModel()) // Using the sphere simplification
+        if(m_attributes.isUseSimpleStaticModel())
         {
-            if (m_attributes.getSimpleScene() == null) {
-
-                float radius = 1.0f;
-                ColorRGBA color = new ColorRGBA(ColorRGBA.randomColor());
-                SharedAsset modelAsset = new SharedAsset(m_pscene.getRepository(), new AssetDescriptor(SharedAssetType.MS3D_Mesh, ""));
-                PMeshMaterial geometryMaterial = new PMeshMaterial();
-                geometryMaterial.setColorMaterial(ColorMaterial.Diffuse); // Make the vert colors affect diffuse coloring
-                geometryMaterial.setDiffuse(ColorRGBA.white);
-                try {
-                    geometryMaterial.setTexture(new TextureMaterialProperties(new File("assets/textures/SmileFace.jpg").toURI().toURL()), 0);
-                } catch (MalformedURLException ex) {
-                    logger.log(Level.SEVERE, null, ex);
-                }
-                PPolygonMesh sphereMesh = PMeshUtils.createSphere("Character Sphere", Vector3f.ZERO, radius, 25, 25, color);
-                Sphere s = new Sphere("Character Sphere", Vector3f.ZERO, 25, 25, radius);
-                sphereMesh.getGeometry().reconstruct(s.getVertexBuffer(), s.getNormalBuffer(), s.getColorBuffer(), s.getTextureCoords(0), s.getIndexBuffer());
-                sphereMesh.setMaterial(geometryMaterial);
-
-
-                sphereMesh.setSubmitGeometry(false);
-                modelAsset.setAssetData(sphereMesh);
-                m_modelInst = m_pscene.addModelInstance("Character", modelAsset, m_attributes.getOrigin());
-            } else {
+            if (m_attributes.getSimpleScene() == null)
+            {
+                m_modelInst = m_pscene.addModelInstance("Character", null, m_attributes.getOrigin());
+                m_modelInst.addChild(new PNode("not a place holder"));
+            } 
+            else
+            {
                 SharedAsset modelAsset = new SharedAsset(m_pscene.getRepository(), new AssetDescriptor(SharedAssetType.MS3D_Mesh, ""));
                 modelAsset.setAssetData(m_attributes.getSimpleScene());
                 m_modelInst = m_pscene.addModelInstance("Character", modelAsset, m_attributes.getOrigin());
@@ -1026,14 +1015,14 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         cs.setEnabled(true);
 
         // Wireframe State
-        WireframeState ws = (WireframeState) m_wm.getRenderManager().createRendererState(RenderState.RS_WIREFRAME);
-        ws.setEnabled(false);
+//        WireframeState ws = (WireframeState) m_wm.getRenderManager().createRendererState(RenderState.RS_WIREFRAME);
+//        ws.setEnabled(false);
 
         // Push 'em down the pipe
         m_jscene.setRenderState(matState);
         m_jscene.setRenderState(buf);
         m_jscene.setRenderState(cs);
-        m_jscene.setRenderState(ws);
+        //m_jscene.setRenderState(ws);
         m_jscene.setRenderState(ls);
     }
 

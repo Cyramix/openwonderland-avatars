@@ -234,24 +234,28 @@ public class AvatarContext extends GameContext
         if (trigger == TriggerNames.ToggleRightArm.ordinal() && pressed)
         {
             avatar.setCameraOnMe();
-            avatar.getRightArm().toggleEnabled();
+            if (avatar.getRightArm() != null)
+                avatar.getRightArm().toggleEnabled();
         }
         // Toggle manual control over the left arm
         if (trigger == TriggerNames.ToggleLeftArm.ordinal() && pressed)
         {
             avatar.setCameraOnMe();
-            avatar.getLeftArm().toggleEnabled();
+            if (avatar.getLeftArm() != null)
+                avatar.getLeftArm().toggleEnabled();
         }
         
         // Toggle manual control mode over the left arm
         if (trigger == TriggerNames.ToggleLeftArmManualDriveReachMode.ordinal() && pressed)
         {
-            avatar.getLeftArm().toggleManualDriveReachUp();
+            if (avatar.getLeftArm() != null)
+                avatar.getLeftArm().toggleManualDriveReachUp();
         }
         // Toggle manual control mode over the right arm
         if (trigger == TriggerNames.ToggleRightArmManualDriveReachMode.ordinal() && pressed)
         {
-            avatar.getRightArm().toggleManualDriveReachUp();
+            if (avatar.getRightArm() != null)
+                avatar.getRightArm().toggleManualDriveReachUp();
         }
     
         // Point at the nearest chair

@@ -98,8 +98,8 @@ public class PMeshMaterialStates
             jmeMesh.setRenderState(m_cullState);
         if (m_materialState != null)
             jmeMesh.setRenderState(m_materialState);
-        if (m_wireframeState != null)
-            jmeMesh.setRenderState(m_wireframeState);
+//        if (m_wireframeState != null)
+//            jmeMesh.setRenderState(m_wireframeState);
         if (m_blendState != null)
         {
             jmeMesh.setRenderState(m_blendState);
