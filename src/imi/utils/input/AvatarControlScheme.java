@@ -24,7 +24,6 @@ import imi.character.avatar.AvatarContext.TriggerNames;
 import imi.character.objects.ObjectCollection;
 import imi.character.objects.ObjectCollectionBase;
 import imi.scene.processors.FlexibleCameraProcessor;
-import imi.scene.processors.RenderThreadProcessor;
 import imi.tests.AvatarInspectionDemo;
 import imi.tests.DemoBase;
 import java.awt.event.KeyEvent;

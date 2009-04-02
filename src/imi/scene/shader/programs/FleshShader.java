@@ -46,13 +46,13 @@ public class FleshShader extends GLSLShaderProgram implements Serializable
 
     public FleshShader(WorldManager wm)
     {
-        this(wm, 0.35f, 3.25f, 1.0f);
+        this(wm, 0.35f, 8, 1.0f);
     }
 
     public FleshShader(WorldManager wm,
                                             float fAmbientPower)
     {
-        this(wm, fAmbientPower, 3.25f, 1.0f);
+        this(wm, fAmbientPower, 8, 1.0f);
     }
 
     public FleshShader(WorldManager wm,

@@ -112,7 +112,7 @@ public class MusicalChairs extends DemoBase
             zStep += 5.0f;
         }
 
-        objects.boundingVolumeTest();
+//        objects.boundingVolumeTest();
     }
 
     private void createAvatar(AvatarControlScheme control, ObjectCollection objects, WorldManager wm, float xOffset, float yOffset, float zOffset)

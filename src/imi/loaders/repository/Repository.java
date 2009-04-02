@@ -37,6 +37,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.JProgressBar;
@@ -145,6 +146,7 @@ public class Repository extends Entity
         // create the shader factory
         m_shaderFactory = new ShaderFactory(wm);
 
+        // Load the texture cache
         loadTextureCache();
     }
 
@@ -154,28 +156,20 @@ public class Repository extends Entity
     
     private void loadTextureCache()
     {
+        // Texture caching is disabled until some other things are changed.
+        if (true)
+            return;
         if (m_cache != null)
         {
             final File textureCacheFile = new File(cacheFolder, "textures.bin");
             // prime the texture manager
             if (textureCacheFile.exists() == false) // no? then grab it from the net
                 grabTextureCacheFileFromInternet(textureCacheFile);
-            
-            Runnable cacheLoader = new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        TextureManager.readCache(textureCacheFile);
-                    }
-                    catch (IOException ex)
-                    {
-
-                    }
-                }
-            };  
-            
-            Thread cacheLoadingThread = new Thread(cacheLoader);
-            cacheLoadingThread.start();
+            try {
+                TextureManager.readCache(textureCacheFile);
+            } catch (IOException ex) {
+                Logger.getLogger(Repository.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }
 
