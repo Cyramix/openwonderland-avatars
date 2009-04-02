@@ -133,8 +133,19 @@ public class FlexibleCameraProcessor extends AWTEventProcessorComponent
         {
             File [] files = picDir.listFiles();
             for(File f : files)
+            {
                 if (f.getName().startsWith("pic"))
-                    picNum++;
+                {
+                    String name = f.getName();
+                    int start = name.indexOf("pic") + 3;
+                    int end   = name.indexOf(".");
+                    String number = name.substring(start, end);
+                    System.out.println("The number is: " + number);
+                    int n = Integer.parseInt(number);
+                    if (picNum < n)
+                        picNum = n+1;
+                }
+            }
         }
     }
 
