@@ -37,6 +37,7 @@ import org.jdesktop.mtgame.AwtEventCondition;
 import org.jdesktop.mtgame.Entity;
 import org.jdesktop.mtgame.NewFrameCondition;
 import org.jdesktop.mtgame.ProcessorArmingCollection;
+import org.jdesktop.mtgame.RenderUpdater;
 import org.jdesktop.mtgame.WorldManager;
 import org.jdesktop.mtgame.processor.AWTEventProcessorComponent;
 
@@ -74,6 +75,26 @@ public class FlexibleCameraProcessor extends AWTEventProcessorComponent
     
     /** for snap shots **/
     private boolean takeSnap = false;
+    private final RenderUpdater screenShotter = new RenderUpdater() {
+
+        @Override
+        public void update(Object arg0) {
+            if (takeSnap)
+            {
+                takeSnap = false;
+
+                System.out.println("Taking screen shot");
+                try {
+                    com.sun.opengl.util.Screenshot.writeToFile(new File("screenShots/pic.jpg"), 800, 600);
+                } catch (IOException ex) {
+                    Logger.getLogger(FlexibleCameraProcessor.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (GLException ex) {
+                    Logger.getLogger(FlexibleCameraProcessor.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                System.out.println("Done taking screen shot");
+            }
+        }
+    };
     
     /**
      * Constructs a new flexible camera processor with the provided goodies.
@@ -136,6 +157,9 @@ public class FlexibleCameraProcessor extends AWTEventProcessorComponent
                 Logger.getLogger(FlexibleCameraProcessor.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
+
+        if (takeSnap)
+            m_WM.addRenderUpdater(screenShotter, null);
     }
 
     @Override
@@ -152,20 +176,7 @@ public class FlexibleCameraProcessor extends AWTEventProcessorComponent
         m_WM.addToUpdateList(m_jmeCameraNode);
 
 
-        if (takeSnap)
-        {
-            takeSnap = false;
 
-            System.out.println("Taking screen shot");
-            try {
-                com.sun.opengl.util.Screenshot.writeToFile(new File("screenShots/pic.jpg"), 800, 600);
-            } catch (IOException ex) {
-                Logger.getLogger(FlexibleCameraProcessor.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (GLException ex) {
-                Logger.getLogger(FlexibleCameraProcessor.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            System.out.println("Done taking screen shot");
-        }
     }
     
     /**
