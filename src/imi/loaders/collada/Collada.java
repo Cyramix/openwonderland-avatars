@@ -16,6 +16,7 @@
  * this code.
  */
 package imi.loaders.collada;
+
 import imi.loaders.repository.AssetDescriptor;
 import imi.loaders.repository.SharedAsset;
 import java.util.ArrayList;
@@ -54,8 +55,6 @@ import imi.scene.polygonmodel.parts.skinned.SkinnedMeshJoint;
 import imi.scene.PJoint;
 import imi.scene.utils.tree.PPolygonMeshAssemblingProcessor;
 import imi.scene.utils.tree.TreeTraverser;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -63,7 +62,6 @@ import java.net.URLConnection;
 import java.util.logging.Level;
 import javolution.util.FastMap;
 import org.collada.xml_walker.ColladaMaterial;
-import imi.utils.AvatarObjectOutputStream;
 
 
 

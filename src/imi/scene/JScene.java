@@ -23,6 +23,7 @@ import com.jme.scene.Node;
 import com.jme.scene.state.LightState;
 import com.jme.scene.state.RenderState;
 import com.jme.scene.state.WireframeState;
+import com.jme.util.geom.Debugger;
 import imi.scene.utils.PRenderer;
 
 /**
@@ -355,7 +356,6 @@ public class JScene extends Node {
      */
     private void drawScene(Renderer r) {
         m_PScene.submitTransformsAndGeometry();
-
         super.draw(r);
     }
 }

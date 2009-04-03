@@ -86,7 +86,7 @@ public class CharacterAttributes
     private PMatrix origin                  = new PMatrix(new Vector3f(0,(float)Math.PI,0), Vector3f.UNIT_XYZ, Vector3f.ZERO);
     private PScene  simpleScene             = null;
 
-    /** HACK: This boolean controls whether the facial animation should **/
+    /** This boolean controls whether the facial animation will setup **/
     private boolean animateFace = true;
 
     /**

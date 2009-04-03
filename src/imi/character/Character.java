@@ -1000,14 +1000,14 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         matState.setDiffuse(ColorRGBA.white);
 
         // SET lighting
-        PointLight light = new PointLight();
-        light.setDiffuse(new ColorRGBA(1.0f, 1.0f, 1.0f, 1.0f));
-        light.setAmbient(new ColorRGBA(1.0f, 1.0f, 1.0f, 1.0f));
-        light.setLocation(new Vector3f(-1000, 0, 0)); // not affecting anything
-        light.setEnabled(true);
+//        PointLight light = new PointLight();
+//        light.setDiffuse(new ColorRGBA(1.0f, 1.0f, 1.0f, 1.0f));
+//        light.setAmbient(new ColorRGBA(1.0f, 1.0f, 1.0f, 1.0f));
+//        light.setLocation(new Vector3f(-1000, 0, 0)); // not affecting anything
+//        light.setEnabled(true);
         LightState ls = (LightState) m_wm.getRenderManager().createRendererState(RenderState.RS_LIGHT);
         ls.setEnabled(true);
-        ls.attach(light);
+       // ls.attach(light);
 
         // Cull State
         CullState cs = (CullState) m_wm.getRenderManager().createRendererState(RenderState.RS_CULL);
@@ -1015,14 +1015,14 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         cs.setEnabled(true);
 
         // Wireframe State
-//        WireframeState ws = (WireframeState) m_wm.getRenderManager().createRendererState(RenderState.RS_WIREFRAME);
-//        ws.setEnabled(false);
+        WireframeState ws = (WireframeState) m_wm.getRenderManager().createRendererState(RenderState.RS_WIREFRAME);
+        ws.setEnabled(false);
 
         // Push 'em down the pipe
         m_jscene.setRenderState(matState);
         m_jscene.setRenderState(buf);
         m_jscene.setRenderState(cs);
-        //m_jscene.setRenderState(ws);
+        m_jscene.setRenderState(ws);
         m_jscene.setRenderState(ls);
     }
 

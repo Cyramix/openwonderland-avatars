@@ -46,7 +46,7 @@ public class CharacterAnimationProcessor extends ProcessorComponent
 
     private boolean bEnable = true;
     private boolean synchronizer = false;
-    /** HACK: Control facial animation **/
+    /** Enable control facial animation **/
     private boolean animateFace = true;
 
     /**
