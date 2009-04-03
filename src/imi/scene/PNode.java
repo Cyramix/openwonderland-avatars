@@ -431,6 +431,28 @@ public class PNode implements Serializable
     }
     
     /**
+     * Find all the PNodes that share the provided name and put them in a sack.
+     * This sack is then conveniently returned to you! Do NOT call this method in
+     * a performance critical section; it uses recursion and object creation
+     * throughout.
+     * @param name The name to match
+     * @return Collection of PNodes.
+     */
+    public ArrayList<PNode> findChildren(String name)
+    {
+       ArrayList<PNode> resultCollection = new ArrayList<PNode>();
+       if (name == null)
+           return resultCollection;
+
+       if (name.equals(getName()))
+           resultCollection.add(this);
+
+       for (PNode kid : m_children)
+           resultCollection.addAll(kid.findChildren(name));
+
+       return resultCollection;
+    }
+    /**
      * Remove an immediate child by index
      * @param index
      * @return child (PNode)
