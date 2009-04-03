@@ -989,16 +989,13 @@ public class SceneEssentials {
 
             if (mesh != null)
                 m_avatar.getSkeleton().findAndRemoveChild(subGroup);
-
-            pRootInstruction.addChildInstruction(InstructionType.loadGeometry, m_fileModel.getAbsolutePath());
+            try {
+                pRootInstruction.addChildInstruction(InstructionType.loadGeometry, m_fileModel.toURI().toURL());
+            } catch (MalformedURLException ex) {
+                Logger.getLogger(SceneEssentials.class.getName()).log(Level.SEVERE, null, ex);
+            }
 
             PMatrix tempSolution = new PMatrix();
-
-            if (szURL.toLowerCase().contains("female")) {
-                tempSolution = new PMatrix(new Vector3f((float)Math.toRadians(10),0,0), Vector3f.UNIT_XYZ, new Vector3f(0.0f, 0.0f, 0.03f));
-            } else if (szURL.toLowerCase().contains("male")) {
-                tempSolution = new PMatrix(new Vector3f((float)Math.toRadians(10),0,0), Vector3f.UNIT_XYZ, Vector3f.ZERO);
-            }
 
             pRootInstruction.addAttachmentInstruction( meshName, parentJoint, tempSolution, subGroup );
             pProcessor.execute(pRootInstruction);
@@ -1009,16 +1006,18 @@ public class SceneEssentials {
             ArrayList<AttachmentParams> newAttatchments = new ArrayList<AttachmentParams>();
 
 
-            for (int i = 0; i < attatchments.length; i++) {
-                if (meshesToDelete.size() <= 0) {
-                    newAttatchments.add(attatchments[i]);
-                    continue;
-                }
-
-                for (int j = 0; j < meshesToDelete.size(); j++) {
-                    if (attatchments[i].getMeshName().equals(meshesToDelete.get(j).getName()))
+            if (attatchments != null) {
+                for (int i = 0; i < attatchments.length; i++) {
+                    if (meshesToDelete.size() <= 0) {
+                        newAttatchments.add(attatchments[i]);
                         continue;
-                    newAttatchments.add(attatchments[i]);
+                    }
+
+                    for (int j = 0; j < meshesToDelete.size(); j++) {
+                        if (attatchments[i].getMeshName().equals(meshesToDelete.get(j).getName()))
+                            continue;
+                        newAttatchments.add(attatchments[i]);
+                    }
                 }
             }
 
