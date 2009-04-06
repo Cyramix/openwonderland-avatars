@@ -259,7 +259,7 @@ public class TreePopUpMenu extends MouseAdapter implements ActionListener {
 //                addToNode();
 //            }
 
-            sceneData.addMeshDAEFile(true, menu);
+            sceneData.loadMeshDAEFile(true, menu, currentSelection);
             if(modelName.equals("NewModel"+modelCount))
                 modelCount++;
         }

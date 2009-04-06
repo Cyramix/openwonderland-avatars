@@ -48,7 +48,7 @@ public class CharacterAttributes
     /** List of facial animations to load **/
     private String[]                facialAnimations        = new String[0];
     /** List of mesh names to be loaded **/
-    private List<String>            loadInstructions        = new ArrayList<String>();
+    private List<String[]>            loadInstructions      = new ArrayList<String[]>();
     /** List of skinned meshes to be added to the skeleton **/
     private SkinnedMeshParams[]     addInstructions = new SkinnedMeshParams[0];
     /** List of meshes to add as attachment nodes on the skeleton **/
@@ -237,16 +237,74 @@ public class CharacterAttributes
         this.addInstructions = addInstructions;
     }
 
-    public List<String> getLoadInstructions() {
+    public List<String[]> getLoadInstructions() {
         return loadInstructions;
     }
 
-    public void setLoadInstructions(List<String> loadInstructions) {
+    public void setLoadInstructions(List<String[]> loadInstructions) {
         this.loadInstructions = loadInstructions;
+    }
+
+    public List<String[]> getLoadInstructionsBySubGroup(String subGroup) {
+        List<String[]> list = new ArrayList<String[]>();
+        for (int i = 0; i < loadInstructions.size(); i++) {
+            if (loadInstructions.get(i)[1].equalsIgnoreCase(subGroup))
+                list.add(loadInstructions.get(i));
+        }
+        return list;
+    }
+
+    public boolean deleteLoadInstructionsBySubGroup(String subGroup) {
+        int initialSize = new Integer(loadInstructions.size());
+        int finalSize   = 0;
+
+        for (int i = 0; i < loadInstructions.size(); i ++) {
+            if (loadInstructions.get(i)[1].equalsIgnoreCase(subGroup))
+                loadInstructions.remove(i);
+        }
+        finalSize   = loadInstructions.size();
+
+        if (initialSize > finalSize)
+            return true;
+        else
+            return false;
     }
 
     public AttachmentParams[] getAttachmentsInstructions() {
         return attachmentsInstructions;
+    }
+
+    public AttachmentParams[] getAttachmentInstructionsBySubGroup(String subGroup) {
+        List<AttachmentParams> attatch  = new ArrayList<AttachmentParams>();
+        for (int i = 0; i < this.attachmentsInstructions.length; i++) {
+            if (this.attachmentsInstructions[i].getAttachmentJointName().equalsIgnoreCase(subGroup))
+                attatch.add(this.attachmentsInstructions[i]);
+        }
+        AttachmentParams[] attachparams = null;
+        attatch.toArray(attachparams);
+        return attachparams;
+    }
+
+    public boolean deleteAttachmentInstructionsBySubGroup(String subGroup) {
+        List<AttachmentParams> newAttatchmentInstructions  = new ArrayList<AttachmentParams>();
+
+        for (int i = 0; i < attachmentsInstructions.length; i++) {
+            if (attachmentsInstructions[i].getAttachmentJointName().equalsIgnoreCase(subGroup))
+                continue;
+            else
+                newAttatchmentInstructions.add(attachmentsInstructions[i]);
+        }
+
+        AttachmentParams[] attachparams = null;
+        newAttatchmentInstructions.toArray(attachparams);
+
+        if (attachparams.length < attachmentsInstructions.length) {
+            attachmentsInstructions = null;
+            attachmentsInstructions = new AttachmentParams[attachparams.length];
+            attachmentsInstructions = attachparams;
+            return true;
+        } else
+            return false;
     }
 
     public void setAttachmentsInstructions(AttachmentParams[] attachmentsInstructions) {
@@ -411,7 +469,7 @@ public class CharacterAttributes
 
         this.setAnimations((String[]) attributesDOM.getBodyAnimations().toArray(new String[0]));
         this.setFacialAnimations((String[]) attributesDOM.getFacialAnimations().toArray(new String[0]));
-        List<String> list = attributesDOM.getLoadingInstructions();
+        List<String[]> list = attributesDOM.getLoadingInstructions();
 
         this.setLoadInstructions(list);
 

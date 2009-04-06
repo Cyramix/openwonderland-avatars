@@ -90,7 +90,7 @@ public class xmlCharacterAttributes {
     @XmlElement(name = "FacialAnimations")
     protected List<String> facialAnimations;
     @XmlElement(name = "LoadingInstructions")
-    protected List<String> loadingInstructions;
+    protected List<String[]> loadingInstructions;
     @XmlElement(name = "AdditionInstructions")
     protected List<xmlSkinnedMeshParams> additionInstructions;
     @XmlElement(name = "Attachments")
@@ -309,9 +309,9 @@ public class xmlCharacterAttributes {
      * 
      * 
      */
-    public List<String> getLoadingInstructions() {
+    public List<String[]> getLoadingInstructions() {
         if (loadingInstructions == null) {
-            loadingInstructions = new ArrayList<String>();
+            loadingInstructions = new ArrayList<String[]>();
         }
         return this.loadingInstructions;
     }
@@ -323,14 +323,14 @@ public class xmlCharacterAttributes {
         else return loadingInstructions.size();
     }
 
-    public void setLoadingInstructions(List<String> instructionList) {
+    public void setLoadingInstructions(List<String[]> instructionList) {
         loadingInstructions = instructionList;
     }
 
-    public void addLoadingInstruction(String instructionString)
+    public void addLoadingInstruction(String[] instructionString)
     {
         if (loadingInstructions == null)
-            loadingInstructions = new ArrayList<String>();
+            loadingInstructions = new ArrayList<String[]>();
         loadingInstructions.add(instructionString);
     }
 

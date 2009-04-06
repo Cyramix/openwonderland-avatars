@@ -655,6 +655,30 @@ public class SceneEssentials {
         return false;
     }
 
+    public boolean loadMeshDAEFile(boolean useRepository, Component arg0, PNode attatchNode) {
+        int returnValue = m_jFileChooser_LoadColladaModel.showOpenDialog(arg0);
+        if (returnValue == JFileChooser.APPROVE_OPTION) {
+            m_fileModel = m_jFileChooser_LoadColladaModel.getSelectedFile();
+            m_currentPScene.setUseRepository(useRepository);
+
+            String protocal = "file:///" + System.getProperty("user.dir") + "/";
+            String path = getRelativePath(m_fileModel);
+            String szURL = protocal + path;
+
+            try {
+                URL modelURL = new URL(szURL);
+                SharedAsset colladaAsset = new SharedAsset(m_currentPScene.getRepository(), new AssetDescriptor(SharedAssetType.COLLADA, modelURL));
+                colladaAsset.setUserData(new ColladaLoaderParams(false, true, false, false, 3, m_fileModel.getName(), null));
+                attatchNode.addChild(m_currentPScene.addModelInstance(m_fileModel.getName(), colladaAsset, new PMatrix()));
+                return true;
+            } catch (MalformedURLException ex) {
+                Logger.getLogger(SceneEssentials.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            return false;
+        }
+        return false;
+    }
+
     /**
      * Opens a JFileChooser window for the user to select a collada file (*.dae)
      * of a skinned model and then subsequently creates a shared asset to
@@ -866,6 +890,7 @@ public class SceneEssentials {
                 Instruction pRootInstruction = new Instruction();
                 pRootInstruction.addChildInstruction(InstructionType.setSkeleton, m_avatar.getSkeleton());
 
+                m_avatar.getAttributes().deleteLoadInstructionsBySubGroup(subGroup);
                 String[] meshestodelete = m_avatar.getSkeleton().getMeshNamesBySubGroup(subGroup);
                 for (int i = 0; i < meshestodelete.length; i++)
                     pRootInstruction.addChildInstruction(InstructionType.deleteSkinnedMesh, meshestodelete[i]);
@@ -900,7 +925,7 @@ public class SceneEssentials {
                     }
                 }
 
-                List<String> loadinstructs = m_avatar.getAttributes().getLoadInstructions();
+                List<String[]> loadinstructs = m_avatar.getAttributes().getLoadInstructions();
                 SkinnedMeshParams[] params = m_avatar.getAttributes().getAddInstructions();
                 ArrayList<SkinnedMeshParams> newParams = new ArrayList<SkinnedMeshParams>();
 
@@ -920,7 +945,10 @@ public class SceneEssentials {
                 }
 
                 m_avatar.getAttributes().setAddInstructions(newParams.toArray(new SkinnedMeshParams[newParams.size()]));
-                loadinstructs.add(path);   // TODO: find the loadinstruction to remove
+                String[] szload   = new String[2];
+                szload[0]   = path;
+                szload[1]   = subGroup;
+                loadinstructs.add(szload);
 
                 return true;
             } catch (MalformedURLException ex) {
@@ -979,6 +1007,9 @@ public class SceneEssentials {
             Instruction pRootInstruction = new Instruction();
             pRootInstruction.addChildInstruction(InstructionType.setSkeleton, m_avatar.getSkeleton());
 
+            m_avatar.getAttributes().deleteLoadInstructionsBySubGroup(subGroup);
+            m_avatar.getAttributes().deleteAttachmentInstructionsBySubGroup(subGroup);
+
             PNode mesh = m_avatar.getSkeleton().findChild(parentJoint);
             ArrayList<PNode> meshesToDelete = new ArrayList<PNode>();
 
@@ -1001,7 +1032,7 @@ public class SceneEssentials {
             pProcessor.execute(pRootInstruction);
 
             // TEST CODE TO UPDATE ATTRIBUTES FOR MESHES
-            List<String> loadinstructs = m_avatar.getAttributes().getLoadInstructions();
+            List<String[]> loadinstructs = m_avatar.getAttributes().getLoadInstructions();
             AttachmentParams[] attatchments = m_avatar.getAttributes().getAttachmentsInstructions();
             ArrayList<AttachmentParams> newAttatchments = new ArrayList<AttachmentParams>();
 
@@ -1024,7 +1055,10 @@ public class SceneEssentials {
             newAttatchments.add(new AttachmentParams(meshName, parentJoint, tempSolution, subGroup));
 
             m_avatar.getAttributes().setAttachmentsInstructions(newAttatchments.toArray(new AttachmentParams[newAttatchments.size()]));
-            loadinstructs.add(szURL);   // TODO: find the loadinstruction to remove
+            String[] szload   = new String[2];
+            szload[0]   = path;
+            szload[1]   = subGroup;
+            loadinstructs.add(szload);
 
             while (m_avatar.getSkeleton().findChild(meshName) == null) {
                 // Wait till the mesh is loaded
@@ -1107,10 +1141,12 @@ public class SceneEssentials {
 
         // Create avatar attribs
         CharacterAttributes             attribs     = new CharacterAttributes("Avatar");
-        ArrayList<String>               load        = new ArrayList<String>();
+        ArrayList<String[]>             load        = new ArrayList<String[]>();
         ArrayList<SkinnedMeshParams>    add         = new ArrayList<SkinnedMeshParams>();
 
         String baseFilePath = "file:///" + System.getProperty("user.dir") + "/";
+        String[] szBind     = new String[2];
+        String[] szHands    = new String[2];
 
         switch (iGender)
         {
@@ -1123,12 +1159,17 @@ public class SceneEssentials {
                 if (szAvatarHeadModelFile == null)
                     szAvatarHeadModelFile = "assets/models/collada/Heads/MaleHead/MaleCHead.dae";
 
-                load.add(szAvatarModelFile);    // Load selected male body meshes
+                szBind[0]   = szAvatarModelFile;
+                szBind[1]   = new String("Bind");
+                szHands[0]  = szAvatarHandsModelFile;
+                szHands[1]  = new String("Hands");
+
+                load.add(szBind);    // Load selected male body meshes
                 add.add(attribs.createSkinnedMeshParams("RFootNudeShape",   "Feet"));
                 add.add(attribs.createSkinnedMeshParams("LFootNudeShape",   "Feet"));
                 add.add(attribs.createSkinnedMeshParams("TorsoNudeShape",   "UpperBody"));
                 add.add(attribs.createSkinnedMeshParams("LegsNudeShape",    "LowerBody"));
-                load.add(szAvatarHandsModelFile);   // Load selected hand meshes
+                load.add(szHands);   // Load selected hand meshes
                 add.add(attribs.createSkinnedMeshParams("RHandShape",       "Hands"));
                 add.add(attribs.createSkinnedMeshParams("LHandShape",       "Hands"));
                 attribs.setHeadAttachment(szAvatarHeadModelFile);
@@ -1143,11 +1184,16 @@ public class SceneEssentials {
                 if (szAvatarHeadModelFile == null)
                     szAvatarHeadModelFile = "assets/models/collada/Heads/FemaleHead/FemaleCHead.dae";
 
-                load.add(szAvatarModelFile);    // Load selected female skeleton
+                szBind[0]   = szAvatarModelFile;
+                szBind[1]   = new String("Bind");
+                szHands[0]  = szAvatarHandsModelFile;
+                szHands[1]  = new String("Hands");
+
+                load.add(szBind);    // Load selected female skeleton
                 add.add(attribs.createSkinnedMeshParams("Torso_NudeShape",      "UpperBody"));
                 add.add(attribs.createSkinnedMeshParams("Legs_NudeShape",       "LowerBody"));
                 add.add(attribs.createSkinnedMeshParams("FemaleFeet_NudeShape", "Feet"));
-                load.add(szAvatarHandsModelFile);   // Load selected female hand meshes
+                load.add(szHands);   // Load selected female hand meshes
                 add.add(attribs.createSkinnedMeshParams("Hands_NudeShape",  "Hands"));
                 attribs.setHeadAttachment(szAvatarHeadModelFile);
                 break;
@@ -1174,10 +1220,12 @@ public class SceneEssentials {
 
         // Create avatar attribs
         CharacterAttributes             attribs     = new CharacterAttributes("Avatar");
-        ArrayList<String>               load        = new ArrayList<String>();
+        ArrayList<String[]>             load        = new ArrayList<String[]>();
         ArrayList<SkinnedMeshParams>    add         = new ArrayList<SkinnedMeshParams>();
 
         String baseFilePath = "file:///" + System.getProperty("user.dir") + "/";
+        String[] szBind     = new String[2];
+        String[] szHands    = new String[2];
 
         switch (iGender)
         {
@@ -1190,12 +1238,17 @@ public class SceneEssentials {
                 if (szAvatarHeadModelFile == null)
                     szAvatarHeadModelFile = "assets/models/collada/Heads/MaleHead/MaleCHead.dae";
 
-                load.add(szAvatarModelFile);    // Load selected male body meshes
+                szBind[0]   = szAvatarModelFile;
+                szBind[1]   = new String("Bind");
+                szHands[0]  = szAvatarHandsModelFile;
+                szHands[1]  = new String("Hands");
+
+                load.add(szBind);    // Load selected male body meshes
                 add.add(attribs.createSkinnedMeshParams("RFootNudeShape",   "Feet"));
                 add.add(attribs.createSkinnedMeshParams("LFootNudeShape",   "Feet"));
                 add.add(attribs.createSkinnedMeshParams("TorsoNudeShape",   "UpperBody"));
                 add.add(attribs.createSkinnedMeshParams("LegsNudeShape",    "LowerBody"));
-                load.add(szAvatarHandsModelFile);   // Load selected hand meshes
+                load.add(szHands);   // Load selected hand meshes
                 add.add(attribs.createSkinnedMeshParams("RHandShape",       "Hands"));
                 add.add(attribs.createSkinnedMeshParams("LHandShape",       "Hands"));
                 attribs.setHeadAttachment(szAvatarHeadModelFile);
@@ -1210,11 +1263,16 @@ public class SceneEssentials {
                 if (szAvatarHeadModelFile == null)
                     szAvatarHeadModelFile = "assets/models/collada/Heads/FemaleHead/FemaleCHead.dae";
 
-                load.add(szAvatarModelFile);    // Load selected female skeleton
+                szBind[0]   = szAvatarModelFile;
+                szBind[1]   = new String("Bind");
+                szHands[0]  = szAvatarHandsModelFile;
+                szHands[1]  = new String("Hands");
+
+                load.add(szBind);    // Load selected female skeleton
                 add.add(attribs.createSkinnedMeshParams("Torso_NudeShape",      "UpperBody"));
                 add.add(attribs.createSkinnedMeshParams("Legs_NudeShape",       "LowerBody"));
                 add.add(attribs.createSkinnedMeshParams("FemaleFeet_NudeShape", "Feet"));
-                load.add(szAvatarHandsModelFile);   // Load selected female hand meshes
+                load.add(szHands);   // Load selected female hand meshes
                 add.add(attribs.createSkinnedMeshParams("Hands_NudeShape",  "Hands"));
                 attribs.setHeadAttachment(szAvatarHeadModelFile);
                 break;
@@ -1418,6 +1476,7 @@ public class SceneEssentials {
         Instruction pRootInstruction = new Instruction();
         pRootInstruction.addChildInstruction(InstructionType.setSkeleton, m_avatar.getSkeleton());
 
+        m_avatar.getAttributes().deleteLoadInstructionsBySubGroup(subgroup);
         String[] meshes = m_avatar.getSkeleton().getMeshNamesBySubGroup(subgroup);
         for (int i = 0; i < meshes.length; i++)
             pRootInstruction.addChildInstruction(InstructionType.deleteSkinnedMesh, meshes[i]);
@@ -1441,7 +1500,7 @@ public class SceneEssentials {
 
         // TEST CODE TO UPDATE ATTRIBUTES FOR SKINNED MESHES
         String[] meshesToAdd = m_avatar.getSkeleton().getMeshNamesBySubGroup(subgroup);
-        List<String> loadinstructs = m_avatar.getAttributes().getLoadInstructions();
+        List<String[]> loadinstructs = m_avatar.getAttributes().getLoadInstructions();
         SkinnedMeshParams[] params = m_avatar.getAttributes().getAddInstructions();
         ArrayList<SkinnedMeshParams> newParams = new ArrayList<SkinnedMeshParams>();
 
@@ -1457,7 +1516,10 @@ public class SceneEssentials {
             newParams.add(m_avatar.getAttributes().createSkinnedMeshParams(meshesToAdd[i], subgroup));
 
         m_avatar.getAttributes().setAddInstructions(newParams.toArray(new SkinnedMeshParams[newParams.size()]));
-        loadinstructs.add(mesh.toString());   // TODO: find the loadinstruction to remove
+        String[] szload = new String[2];
+        szload[0]   = mesh.toString();
+        szload[1]   = subgroup;
+        loadinstructs.add(szload);
     }
 
     /**
@@ -1478,6 +1540,9 @@ public class SceneEssentials {
         Instruction pRootInstruction = new Instruction();
         pRootInstruction.addChildInstruction(InstructionType.setSkeleton, m_avatar.getSkeleton());
 
+        m_avatar.getAttributes().deleteLoadInstructionsBySubGroup(subGroup);
+        m_avatar.getAttributes().deleteAttachmentInstructionsBySubGroup(subGroup);
+
         PNode joint = m_avatar.getSkeleton().findChild(subGroup);
         ArrayList<PNode> meshesToDelete = new ArrayList<PNode>();
         if (joint != null) {
@@ -1490,17 +1555,17 @@ public class SceneEssentials {
         
         PMatrix tempSolution = new PMatrix();
 
-        if (data[3].toLowerCase().contains("female")) {
-            tempSolution = new PMatrix(new Vector3f((float)Math.toRadians(10),0,0), Vector3f.UNIT_XYZ, new Vector3f(0.0f, 0.0f, 0.03f));
-        } else if (data[3].toLowerCase().contains("male")) {
-            tempSolution = new PMatrix(new Vector3f((float)Math.toRadians(10),0,0), Vector3f.UNIT_XYZ, Vector3f.ZERO);
-        }
+//        if (data[3].toLowerCase().contains("female")) {
+//            tempSolution = new PMatrix(new Vector3f((float)Math.toRadians(10),0,0), Vector3f.UNIT_XYZ, new Vector3f(0.0f, 0.0f, 0.03f));
+//        } else if (data[3].toLowerCase().contains("male")) {
+//            tempSolution = new PMatrix(new Vector3f((float)Math.toRadians(10),0,0), Vector3f.UNIT_XYZ, Vector3f.ZERO);
+//        }
 
         pRootInstruction.addAttachmentInstruction( data[0], joint2addon, tempSolution, subGroup );
         pProcessor.execute(pRootInstruction);
 
         // TEST CODE TO UPDATE ATTRIBUTES FOR MESHES
-        List<String> loadinstructs = m_avatar.getAttributes().getLoadInstructions();
+        List<String[]> loadinstructs = m_avatar.getAttributes().getLoadInstructions();
         AttachmentParams[] attatchments = m_avatar.getAttributes().getAttachmentsInstructions();
         ArrayList<AttachmentParams> newAttatchments = new ArrayList<AttachmentParams>();
 
@@ -1523,7 +1588,10 @@ public class SceneEssentials {
         newAttatchments.add(new AttachmentParams(data[0], joint2addon, tempSolution, subGroup));
 
         m_avatar.getAttributes().setAttachmentsInstructions(newAttatchments.toArray(new AttachmentParams[newAttatchments.size()]));
-        loadinstructs.add(data[3]);   // TODO: find the loadinstruction to remove
+        String[] szload = new String[2];
+        szload[0]   = data[3];
+        szload[1]   = subGroup;
+        loadinstructs.add(szload);
 
         while (m_avatar.getSkeleton().findChild(data[0]) == null) {
             // Wait till the mesh is loaded
@@ -1546,7 +1614,7 @@ public class SceneEssentials {
      * @param meshName - geometry id (name) of mesh in the collada file
      * @param meshLocation - string location of collada file to load
      * @param joint2addon - string name of joint to add mesh to
-     * @param prevAttchName - string name of mesh to remove before adding new mesh
+     * @param subGroup
      */
     public void addMeshDAEURLToModel(String meshName, String meshLocation, String joint2addon, String subGroup) {
         if (m_avatar == null) {
@@ -1558,6 +1626,9 @@ public class SceneEssentials {
         InstructionProcessor pProcessor = new InstructionProcessor(m_worldManager);
         Instruction pRootInstruction = new Instruction();
         pRootInstruction.addChildInstruction(InstructionType.setSkeleton, m_avatar.getSkeleton());
+
+        m_avatar.getAttributes().deleteLoadInstructionsBySubGroup(subGroup);
+        m_avatar.getAttributes().deleteAttachmentInstructionsBySubGroup(subGroup);
 
         PNode mesh = m_avatar.getSkeleton().findChild(subGroup);
         ArrayList<PNode> meshesToDelete = new ArrayList<PNode>();
@@ -1572,17 +1643,17 @@ public class SceneEssentials {
 
         PMatrix tempSolution = new PMatrix();
 
-        if (meshLocation.toLowerCase().contains("female")) {
-            tempSolution = new PMatrix(new Vector3f((float)Math.toRadians(10),0,0), Vector3f.UNIT_XYZ, new Vector3f(0.0f, 0.0f, 0.03f));
-        } else if (meshLocation.toLowerCase().contains("male")) {
-            tempSolution = new PMatrix(new Vector3f((float)Math.toRadians(10),0,0), Vector3f.UNIT_XYZ, Vector3f.ZERO);
-        }
+//        if (meshLocation.toLowerCase().contains("female")) {
+//            tempSolution = new PMatrix(new Vector3f((float)Math.toRadians(10),0,0), Vector3f.UNIT_XYZ, new Vector3f(0.0f, 0.0f, 0.03f));
+//        } else if (meshLocation.toLowerCase().contains("male")) {
+//            tempSolution = new PMatrix(new Vector3f((float)Math.toRadians(10),0,0), Vector3f.UNIT_XYZ, Vector3f.ZERO);
+//        }
 
         pRootInstruction.addAttachmentInstruction( meshName, joint2addon, tempSolution, subGroup );
         pProcessor.execute(pRootInstruction);
 
         // TEST CODE TO UPDATE ATTRIBUTES FOR MESHES
-        List<String> loadinstructs = m_avatar.getAttributes().getLoadInstructions();
+        List<String[]> loadinstructs = m_avatar.getAttributes().getLoadInstructions();
         AttachmentParams[] attatchments = m_avatar.getAttributes().getAttachmentsInstructions();
         ArrayList<AttachmentParams> newAttatchments = new ArrayList<AttachmentParams>();
 
@@ -1602,7 +1673,10 @@ public class SceneEssentials {
 
         newAttatchments.add(new AttachmentParams(meshName, joint2addon, tempSolution, subGroup));
         m_avatar.getAttributes().setAttachmentsInstructions(newAttatchments.toArray(new AttachmentParams[newAttatchments.size()]));
-        loadinstructs.add(meshLocation);   // TODO: find the loadinstruction to remove
+        String[] szload = new String[2];
+        szload[0]   = meshLocation;
+        szload[1]   = subGroup;
+        loadinstructs.add(szload);
 
         while (m_avatar.getSkeleton().findChild(meshName) == null) {
             // Wait till the mesh is loaded

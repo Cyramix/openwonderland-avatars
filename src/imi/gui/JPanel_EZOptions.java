@@ -778,8 +778,9 @@ public class JPanel_EZOptions extends javax.swing.JPanel implements ChangeListen
         // Create avatar attribs
         CharacterAttributes                                 attribs = new CharacterAttributes("Avatar");
         ArrayList<CharacterAttributes.SkinnedMeshParams>    add     = new ArrayList<CharacterAttributes.SkinnedMeshParams>();
-        ArrayList<String>                                   load    = new ArrayList<String>();
+        ArrayList<String[]>                                 load    = new ArrayList<String[]>();
         ArrayList<AttachmentParams>                         attach  = new ArrayList<AttachmentParams>();
+        String[]                                            szLoad  = new String[2];
 
         // Head (Default)
         if (m_presets.get(selection).get(0) != null) {
@@ -793,8 +794,11 @@ public class JPanel_EZOptions extends javax.swing.JPanel implements ChangeListen
 
         // Hands
         if (m_presets.get(selection).get(1) != null) {
-            if (m_presets.get(selection).get(1)[0] != null)
-                load.add(m_presets.get(selection).get(1)[0]);
+            if (m_presets.get(selection).get(1)[0] != null) {
+                szLoad[0]   = m_presets.get(selection).get(1)[0];
+                szLoad[1]   = new String("Hands");
+                load.add(szLoad);
+            }
             for (int i = 1; i < m_presets.get(selection).get(1).length; i++) {
                 CharacterAttributes.SkinnedMeshParams param = attribs.createSkinnedMeshParams(m_presets.get(selection).get(1)[i], m_sceneData.m_regions[1]);
                 add.add(param);
@@ -803,8 +807,11 @@ public class JPanel_EZOptions extends javax.swing.JPanel implements ChangeListen
 
         // UpperBody
         if (m_presets.get(selection).get(2) != null) {
-            if (m_presets.get(selection).get(2)[0] != null)
-                load.add(m_presets.get(selection).get(2)[0]);
+            if (m_presets.get(selection).get(2)[0] != null) {
+                szLoad[0]   = m_presets.get(selection).get(2)[0];
+                szLoad[1]   = new String("UpperBody");
+                load.add(szLoad);
+            }
             for (int i = 1; i < m_presets.get(selection).get(2).length; i++) {
                 CharacterAttributes.SkinnedMeshParams param = attribs.createSkinnedMeshParams(m_presets.get(selection).get(2)[i], m_sceneData.m_regions[2]);
                 add.add(param);
@@ -813,8 +820,11 @@ public class JPanel_EZOptions extends javax.swing.JPanel implements ChangeListen
 
         // LowerBody
         if (m_presets.get(selection).get(3) != null) {
-            if (m_presets.get(selection).get(3)[0] != null)
-                load.add(m_presets.get(selection).get(3)[0]);
+            if (m_presets.get(selection).get(3)[0] != null) {
+                szLoad[0]   = m_presets.get(selection).get(3)[0];
+                szLoad[1]   = new String("LowerBody");
+                load.add(szLoad);
+            }
             for (int i = 1; i < m_presets.get(selection).get(3).length; i++) {
                 CharacterAttributes.SkinnedMeshParams param = attribs.createSkinnedMeshParams(m_presets.get(selection).get(3)[i], m_sceneData.m_regions[3]);
                 add.add(param);
@@ -823,8 +833,11 @@ public class JPanel_EZOptions extends javax.swing.JPanel implements ChangeListen
 
         // Feet
         if (m_presets.get(selection).get(4) != null) {
-            if (m_presets.get(selection).get(4)[0] != null)
-                load.add(m_presets.get(selection).get(4)[0]);
+            if (m_presets.get(selection).get(4)[0] != null) {
+                szLoad[0]   = m_presets.get(selection).get(4)[0];
+                szLoad[1]   = new String("Feet");
+                load.add(szLoad);
+            }
             for (int i = 1; i < m_presets.get(selection).get(4).length; i++) {
                 CharacterAttributes.SkinnedMeshParams param = attribs.createSkinnedMeshParams(m_presets.get(selection).get(4)[i], m_sceneData.m_regions[4]);
                 add.add(param);
@@ -840,7 +853,7 @@ public class JPanel_EZOptions extends javax.swing.JPanel implements ChangeListen
             for (int j = 0; j < m_presets.get(selection).get(i).length; j ++) {
                 if (j == 0) {
                     meshloc = m_presets.get(selection).get(i)[j];
-                    load.add(meshloc);
+                    szLoad[0]   = meshloc;
                 }
                 else {
                     String meshName = m_presets.get(selection).get(i)[j];
@@ -855,6 +868,8 @@ public class JPanel_EZOptions extends javax.swing.JPanel implements ChangeListen
                     else if (i == 8)
                         subgroup = "Glasses";
 
+                    szLoad[1]   = subgroup;
+
                     PMatrix tempSolution = new PMatrix();
 
                     if (meshloc.toLowerCase().contains("female")) {
@@ -864,12 +879,16 @@ public class JPanel_EZOptions extends javax.swing.JPanel implements ChangeListen
                     }
                     attach.add(new AttachmentParams(meshName, "Head", tempSolution, subgroup));
                 }
+                load.add(szLoad);
             }
         }
 
         // This file contains the mesh information for the basic body parts
-        if (load.size() <= 1)
-            load.add(m_presetLists.get(selection)[2]);
+        if (load.size() <= 1) {
+            szLoad[0]   = m_presetLists.get(selection)[2];
+            szLoad[1]   = new String("Bind");
+            load.add(szLoad);
+        }
 
         attribs.setBaseURL(m_baseURL);
         attribs.setLoadInstructions(load);

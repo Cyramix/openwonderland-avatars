@@ -1097,8 +1097,11 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
         ArrayList<String> delete                                = new ArrayList<String>();
         ArrayList<AttachmentParams> attach                      = new ArrayList<AttachmentParams>();
 
-        List<String> load = new ArrayList<String>();
-        load.add(data.get(0)[3]);
+        List<String[]> load = new ArrayList<String[]>();
+        String[] szload = new String[2];
+        szload[0]   = data.get(0)[3];
+        szload[1]   = new String("Bind");
+        load.add(szload);
 
         if (region < 5) {
             if (m_meshes.get(region) != null) {

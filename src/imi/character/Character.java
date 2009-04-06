@@ -832,10 +832,10 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         // Set the skeleton to our skeleton
         attributeRoot.addChildInstruction(InstructionType.setSkeleton, m_skeleton);
         // Load up any geometry requested by the provided attributes object
-        List<String> load = attributes.getLoadInstructions();
+        List<String[]> load = attributes.getLoadInstructions();
         if (load != null) {
             for (int i = 0; i < load.size(); i++)
-                attributeRoot.addChildInstruction(InstructionType.loadGeometry, urlPrefix + load.get(i));
+                attributeRoot.addChildInstruction(InstructionType.loadGeometry, urlPrefix + load.get(i)[0]);
         }
         // Skinned mesh attachments
         CharacterAttributes.SkinnedMeshParams [] add = attributes.getAddInstructions();
