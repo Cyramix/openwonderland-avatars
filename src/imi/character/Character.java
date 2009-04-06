@@ -89,9 +89,12 @@ import imi.serialization.xml.bindings.xmlCharacterAttributes;
 import imi.serialization.xml.bindings.xmlJointModification;
 import imi.serialization.xml.bindings.xmlMaterial;
 import imi.utils.instruments.Instrumentation;
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
@@ -1360,18 +1363,12 @@ public abstract class Character extends Entity implements SpatialObject, Animati
     public void saveConfiguration(File location)
     {
         try {
-            final JAXBContext context = JAXBContext.newInstance("imi.serialization.xml.bindings");
-            final Marshaller m = context.createMarshaller();
-            // Pretty files please
-            m.setProperty("jaxb.formatted.output", Boolean.TRUE);
-
             if (location.exists() == true && location.canWrite() == false)
                 throw new IOException("Request file (" + location.toString() + ") is not writeable.");
             else if (location.exists() == false)
                 location.createNewFile();
 
-            xmlCharacter characterDom = generateCharacterDOM();
-            m.marshal( characterDom, location);
+            saveConfiguration(new BufferedOutputStream(new FileOutputStream(location)));
         }
         catch (JAXBException ex) {
             logger.log(Level.SEVERE, "Failed to write save file! " + ex.getMessage());
@@ -1383,6 +1380,21 @@ public abstract class Character extends Entity implements SpatialObject, Animati
             logger.log(Level.SEVERE, "Failed to open OutputStream to " +
                                     location.toString() + "! " + ex.getMessage());
         }
+    }
+
+    /**
+     * Save the characters configuration to the supplied output stream
+     *
+     * @param out OutputStream to save data to
+     */
+    public void saveConfiguration(OutputStream out) throws JAXBException {
+        final JAXBContext context = JAXBContext.newInstance("imi.serialization.xml.bindings");
+        final Marshaller m = context.createMarshaller();
+        // Pretty files please
+        m.setProperty("jaxb.formatted.output", Boolean.TRUE);
+
+        xmlCharacter characterDom = generateCharacterDOM();
+        m.marshal( characterDom, out);
     }
 
     /**
