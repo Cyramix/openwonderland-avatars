@@ -127,7 +127,7 @@ public class CustomizationExample extends DemoBase
         // Select the male and add them both to the input team (collection of controllable avatars)
         maleAvatar.selectForInput();
         control.getAvatarTeam().add(maleAvatar);
-        control.getAvatarTeam().add(femaleAvatar);
+//        control.getAvatarTeam().add(femaleAvatar);
         femaleAvatar.selectForInput();
 
         // Hook the control scheme up the the camera in order to receieve input
