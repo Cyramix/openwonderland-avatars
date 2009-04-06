@@ -233,7 +233,48 @@ public class CharacterAttributes
         return addInstructions;
     }
 
+    public SkinnedMeshParams[] getAddInstructionsBySubGroup(String subGroup) {
+        List<SkinnedMeshParams> list = new ArrayList<SkinnedMeshParams>();
+        for (int i = 0; i < addInstructions.length; i++) {
+            if (addInstructions[i].subGroupName.equalsIgnoreCase(subGroup))
+                list.add(addInstructions[i]);
+        }
+
+        SkinnedMeshParams[] params = new SkinnedMeshParams[list.size()];
+        list.toArray(params);
+        return params;
+    }
+
+    public boolean deleteAddInstructionsBySubGroup(String subGroup) {
+        List<SkinnedMeshParams> newAttatchmentInstructions  = new ArrayList<SkinnedMeshParams>();
+        if (addInstructions == null || addInstructions.length == 0)
+            return false;
+
+        for (int i = 0; i < addInstructions.length; i++) {
+            if (addInstructions[i].subGroupName.equalsIgnoreCase(subGroup))
+                continue;
+            else
+                newAttatchmentInstructions.add(addInstructions[i]);
+        }
+
+        SkinnedMeshParams[] attachparams = new SkinnedMeshParams[newAttatchmentInstructions.size()];
+        newAttatchmentInstructions.toArray(attachparams);
+
+        if (attachparams.length < addInstructions.length) {
+            addInstructions = null;
+            addInstructions = new SkinnedMeshParams[attachparams.length];
+            addInstructions = attachparams;
+            return true;
+        } else
+            return false;
+    }
+
     public void setAddInstructions(SkinnedMeshParams[] addInstructions) {
+        if (this.addInstructions != null) {
+            this.addInstructions = null;
+            this.addInstructions = new SkinnedMeshParams[0];
+        }
+        
         this.addInstructions = addInstructions;
     }
 
@@ -283,14 +324,14 @@ public class CharacterAttributes
             if (this.attachmentsInstructions[i].getAttachmentJointName().equalsIgnoreCase(subGroup))
                 attatch.add(this.attachmentsInstructions[i]);
         }
-        AttachmentParams[] attachparams = null;
+        AttachmentParams[] attachparams = new AttachmentParams[attatch.size()];
         attatch.toArray(attachparams);
         return attachparams;
     }
 
     public boolean deleteAttachmentInstructionsBySubGroup(String subGroup) {
         List<AttachmentParams> newAttatchmentInstructions  = new ArrayList<AttachmentParams>();
-        if (attachmentsInstructions == null)
+        if (attachmentsInstructions == null || attachmentsInstructions.length == 0)
             return false;
 
         for (int i = 0; i < attachmentsInstructions.length; i++) {
@@ -300,7 +341,7 @@ public class CharacterAttributes
                 newAttatchmentInstructions.add(attachmentsInstructions[i]);
         }
 
-        AttachmentParams[] attachparams = null;
+        AttachmentParams[] attachparams = new AttachmentParams[newAttatchmentInstructions.size()];
         newAttatchmentInstructions.toArray(attachparams);
 
         if (attachparams.length < attachmentsInstructions.length) {

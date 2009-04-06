@@ -891,6 +891,8 @@ public class SceneEssentials {
                 pRootInstruction.addChildInstruction(InstructionType.setSkeleton, m_avatar.getSkeleton());
 
                 m_avatar.getAttributes().deleteLoadInstructionsBySubGroup(subGroup);
+                m_avatar.getAttributes().deleteAddInstructionsBySubGroup(subGroup);
+
                 String[] meshestodelete = m_avatar.getSkeleton().getMeshNamesBySubGroup(subGroup);
                 for (int i = 0; i < meshestodelete.length; i++)
                     pRootInstruction.addChildInstruction(InstructionType.deleteSkinnedMesh, meshestodelete[i]);
@@ -915,36 +917,54 @@ public class SceneEssentials {
                 
                 // TEST CODE TO UPDATE ATTRIBUTES FOR SKINNED MESHES
                 String[] meshesToAdd = m_avatar.getSkeleton().getMeshNamesBySubGroup(subGroup);
+                SkinnedMeshParams[] smparams    = new SkinnedMeshParams[meshesToAdd.length];
+                SkinnedMeshParams[] current     = m_avatar.getAttributes().getAddInstructions();
                 for (int i = 0; i < meshesToAdd.length; i++) {
-                    for (int j = 1; j < meshesToAdd.length; j++) {
-                        if (meshesToAdd[i] == null)
-                            continue;
-
-                        if (meshesToAdd[i].equals(meshesToAdd[j]))
-                            meshesToAdd[j] = null;
-                    }
+                    smparams[i] = m_avatar.getAttributes().createSkinnedMeshParams(meshesToAdd[i], subGroup);
                 }
+                List<SkinnedMeshParams> smParams  = new ArrayList<SkinnedMeshParams>();
+                for (int i = 0; i < current.length; i++) {
+                    smParams.add(current[i]);
+                }
+
+                for (int i = 0; i < smparams.length; i++) {
+                    smParams.add(smparams[i]);
+                }
+
+                SkinnedMeshParams[] newparams   = new SkinnedMeshParams[smParams.size()];
+                smParams.toArray(newparams);
+                m_avatar.getAttributes().setAddInstructions(newparams);
+//                for (int i = 0; i < meshesToAdd.length; i++) {
+//                    for (int j = 1; j < meshesToAdd.length; j++) {
+//                        if (meshesToAdd[i] == null)
+//                            continue;
+//
+//                        if (meshesToAdd[i].equals(meshesToAdd[j]))
+//                            meshesToAdd[j] = null;
+//                    }
+//                }
 
                 List<String[]> loadinstructs = m_avatar.getAttributes().getLoadInstructions();
-                SkinnedMeshParams[] params = m_avatar.getAttributes().getAddInstructions();
-                ArrayList<SkinnedMeshParams> newParams = new ArrayList<SkinnedMeshParams>();
+//                SkinnedMeshParams[] params = m_avatar.getAttributes().getAddInstructions();
+//                ArrayList<SkinnedMeshParams> newParams = new ArrayList<SkinnedMeshParams>();
+//
+//                for (int i = 0; i < params.length; i++) {
+//                    for (int j = 0; j < meshestodelete.length; j++) {
+//                        if (params[i].meshName.equals(meshestodelete[j]))
+//                            continue;
+//                        newParams.add(params[i]);
+//                    }
+//                }
+//
+//                for (int i = 0; i < meshesToAdd.length; i++) {
+//                    if (meshesToAdd[i] == null)
+//                        continue;
+//
+//                    newParams.add(m_avatar.getAttributes().createSkinnedMeshParams(meshesToAdd[i], subGroup));
+//                }
+//
+//                m_avatar.getAttributes().setAddInstructions(newParams.toArray(new SkinnedMeshParams[newParams.size()]));
 
-                for (int i = 0; i < params.length; i++) {
-                    for (int j = 0; j < meshestodelete.length; j++) {
-                        if (params[i].meshName.equals(meshestodelete[j]))
-                            continue;
-                        newParams.add(params[i]);
-                    }
-                }
-
-                for (int i = 0; i < meshesToAdd.length; i++) {
-                    if (meshesToAdd[i] == null)
-                        continue;
-                    
-                    newParams.add(m_avatar.getAttributes().createSkinnedMeshParams(meshesToAdd[i], subGroup));
-                }
-
-                m_avatar.getAttributes().setAddInstructions(newParams.toArray(new SkinnedMeshParams[newParams.size()]));
                 String[] szload   = new String[2];
                 szload[0]   = path;
                 szload[1]   = subGroup;
@@ -1477,6 +1497,8 @@ public class SceneEssentials {
         pRootInstruction.addChildInstruction(InstructionType.setSkeleton, m_avatar.getSkeleton());
 
         m_avatar.getAttributes().deleteLoadInstructionsBySubGroup(subgroup);
+        m_avatar.getAttributes().deleteAddInstructionsBySubGroup(subgroup);
+
         String[] meshes = m_avatar.getSkeleton().getMeshNamesBySubGroup(subgroup);
         for (int i = 0; i < meshes.length; i++)
             pRootInstruction.addChildInstruction(InstructionType.deleteSkinnedMesh, meshes[i]);
@@ -1500,22 +1522,41 @@ public class SceneEssentials {
 
         // TEST CODE TO UPDATE ATTRIBUTES FOR SKINNED MESHES
         String[] meshesToAdd = m_avatar.getSkeleton().getMeshNamesBySubGroup(subgroup);
-        List<String[]> loadinstructs = m_avatar.getAttributes().getLoadInstructions();
-        SkinnedMeshParams[] params = m_avatar.getAttributes().getAddInstructions();
-        ArrayList<SkinnedMeshParams> newParams = new ArrayList<SkinnedMeshParams>();
-
-        for (int i = 0; i < params.length; i++) {
-            for (int j = 0; j < meshes.length; j++) {
-                if (params[i].meshName.equals(meshes[j]))
-                    continue;
-                newParams.add(params[i]);
-            }
+        SkinnedMeshParams[] smparams    = new SkinnedMeshParams[meshesToAdd.length];
+        SkinnedMeshParams[] current     = m_avatar.getAttributes().getAddInstructions();
+        for (int i = 0; i < meshesToAdd.length; i++) {
+            smparams[i] = m_avatar.getAttributes().createSkinnedMeshParams(meshesToAdd[i], subgroup);
+        }
+        List<SkinnedMeshParams> smParams  = new ArrayList<SkinnedMeshParams>();
+        for (int i = 0; i < current.length; i++) {
+            smParams.add(current[i]);
         }
 
-        for (int i = 0; i < meshesToAdd.length; i++)
-            newParams.add(m_avatar.getAttributes().createSkinnedMeshParams(meshesToAdd[i], subgroup));
+        for (int i = 0; i < smparams.length; i++) {
+            smParams.add(smparams[i]);
+        }
 
-        m_avatar.getAttributes().setAddInstructions(newParams.toArray(new SkinnedMeshParams[newParams.size()]));
+        SkinnedMeshParams[] newparams   = new SkinnedMeshParams[smParams.size()];
+        smParams.toArray(newparams);
+        m_avatar.getAttributes().setAddInstructions(newparams);
+
+        List<String[]> loadinstructs = m_avatar.getAttributes().getLoadInstructions();
+//        SkinnedMeshParams[] params = m_avatar.getAttributes().getAddInstructions();
+//        ArrayList<SkinnedMeshParams> newParams = new ArrayList<SkinnedMeshParams>();
+//
+//        for (int i = 0; i < params.length; i++) {
+//            for (int j = 0; j < meshes.length; j++) {
+//                if (params[i].meshName.equals(meshes[j]))
+//                    continue;
+//                newParams.add(params[i]);
+//            }
+//        }
+//
+//        for (int i = 0; i < meshesToAdd.length; i++)
+//            newParams.add(m_avatar.getAttributes().createSkinnedMeshParams(meshesToAdd[i], subgroup));
+//
+//        m_avatar.getAttributes().setAddInstructions(newParams.toArray(new SkinnedMeshParams[newParams.size()]));
+
         String[] szload = new String[2];
         szload[0]   = mesh.toString();
         szload[1]   = subgroup;
@@ -2287,6 +2328,7 @@ public class SceneEssentials {
         if (retVal == JFileChooser.APPROVE_OPTION) {
             saveFile = m_jFileChooser_SaveXML.getSelectedFile();
             if (m_avatar != null) {
+                m_avatar.getAttributes().deleteLoadInstructionsBySubGroup("Bind");
                 m_avatar.saveConfiguration(saveFile);
             }
         }
