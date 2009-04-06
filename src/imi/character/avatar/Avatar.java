@@ -85,13 +85,19 @@ public class Avatar extends imi.character.Character
     public Avatar(URL configurationFile, WorldManager wm)
     {
         super(configurationFile, wm);
-        maleContextSetup();
+        if (m_attributes.isMale())
+            maleContextSetup();
+        else
+            femaleContextSetup();
     }
 
     public Avatar(URL configurationFile, WorldManager wm, String baseURL)
     {
         super(configurationFile, wm, baseURL);
-        maleContextSetup();
+        if (m_attributes.isMale())
+            maleContextSetup();
+        else
+            femaleContextSetup();
     }
 
     protected GameContext instantiateContext() {
