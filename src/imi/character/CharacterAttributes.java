@@ -258,6 +258,9 @@ public class CharacterAttributes
         int initialSize = new Integer(loadInstructions.size());
         int finalSize   = 0;
 
+        if (loadInstructions == null)
+            return false;
+
         for (int i = 0; i < loadInstructions.size(); i ++) {
             if (loadInstructions.get(i)[1].equalsIgnoreCase(subGroup))
                 loadInstructions.remove(i);
@@ -287,6 +290,8 @@ public class CharacterAttributes
 
     public boolean deleteAttachmentInstructionsBySubGroup(String subGroup) {
         List<AttachmentParams> newAttatchmentInstructions  = new ArrayList<AttachmentParams>();
+        if (attachmentsInstructions == null)
+            return false;
 
         for (int i = 0; i < attachmentsInstructions.length; i++) {
             if (attachmentsInstructions[i].getAttachmentJointName().equalsIgnoreCase(subGroup))
