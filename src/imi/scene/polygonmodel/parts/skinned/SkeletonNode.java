@@ -474,7 +474,7 @@ public class SkeletonNode extends PNode implements Animated, Serializable
      */
     public void addToSubGroup(PPolygonSkinnedMeshInstance meshInstance, String subGroup)
     {
-        PNode groupNode = getChild(subGroup);
+        PNode groupNode = getChildIgnoreCase(subGroup);
         if (groupNode == null)
         {
             groupNode = new PNode(subGroup);
@@ -492,7 +492,7 @@ public class SkeletonNode extends PNode implements Animated, Serializable
      */
     public String[] getMeshNamesBySubGroup(String subGroup) {
         String[] meshes = null;
-        PNode groupNode = getChild(subGroup);
+        PNode groupNode = getChildIgnoreCase(subGroup);
         if (groupNode == null)
             return meshes;
 
@@ -511,7 +511,7 @@ public class SkeletonNode extends PNode implements Animated, Serializable
      */
     public PPolygonSkinnedMeshInstance[] getMeshesBySubGroup(String subGroup) {
         PPolygonSkinnedMeshInstance[] meshes = null;
-        PNode groupNode = getChild(subGroup);
+        PNode groupNode = getChildIgnoreCase(subGroup);
         if (groupNode == null)
             return meshes;
 
@@ -575,7 +575,7 @@ public class SkeletonNode extends PNode implements Animated, Serializable
     public boolean clearSubGroup(String subGroupName)
     {
         boolean result = false;
-        PNode groupNode = getChild(subGroupName);
+        PNode groupNode = getChildIgnoreCase(subGroupName);
         if (groupNode != null)
         {
             groupNode.removeAllChildren();
@@ -1028,15 +1028,6 @@ public class SkeletonNode extends PNode implements Animated, Serializable
             joint.setToBindPose();
         }
         return result;
-    }
-
-    /**
-     * Reset the skeleton to its bind pose.
-     */
-    public void resetSkeletonToBindPose()
-    {
-        for (SkinnedMeshJoint joint : m_BFTSkeleton)
-            joint.setToBindPose();
     }
 
 

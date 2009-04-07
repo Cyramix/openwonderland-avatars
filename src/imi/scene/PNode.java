@@ -394,7 +394,7 @@ public class PNode implements Serializable
      */
     public PNode getChild(String name)
     {
-        if (name == null) 
+        if (name == null)
             return null;
 
         for (PNode kid : m_children)
@@ -404,6 +404,26 @@ public class PNode implements Serializable
         }
         return null;
     }
+
+    /**
+     * Get an immediate child by name ignoring case on the name.
+     * @param name
+     * @return child (PNode)
+     */
+    public PNode getChildIgnoreCase(String name)
+    {
+        if (name == null)
+            return null;
+
+        for (PNode kid : m_children)
+        {
+            if (name.equalsIgnoreCase(kid.getName()))
+                return kid;
+        }
+        return null;
+    }
+
+
     
     /**
      * Find child by name.

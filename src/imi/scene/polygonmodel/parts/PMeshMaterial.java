@@ -643,9 +643,14 @@ public class PMeshMaterial extends PNode implements Serializable
 
     public void setShaders(AbstractShaderProgram[] shaders)
     {
-        m_ShaderArray = new AbstractShaderProgram[shaders.length];
-        for (int i = 0; i < shaders.length; ++i)
-            m_ShaderArray[i] = shaders[i];
+        if (shaders == null)
+            m_ShaderArray = new AbstractShaderProgram[1];
+        else
+        {
+            m_ShaderArray = new AbstractShaderProgram[shaders.length];
+            for (int i = 0; i < shaders.length; ++i)
+                m_ShaderArray[i] = shaders[i];
+        }
     }
 
     public void setShader(AbstractShaderProgram shader, int index)

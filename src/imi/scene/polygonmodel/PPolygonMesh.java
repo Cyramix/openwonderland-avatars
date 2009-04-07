@@ -74,7 +74,7 @@ public class PPolygonMesh extends PNode implements Serializable
 
     // The list of polygons for this mesh. The polygons in this list have
     // vertices that index into the following arrays
-    protected FastTable<PPolygon>           m_Polygons          = null;
+    protected FastTable<PPolygon>           m_Polygons          = new FastTable<PPolygon>();
 
     // The data members below are the master lists of the components
     // referenced by the vertices of the PPolygons contained herein.
@@ -114,7 +114,11 @@ public class PPolygonMesh extends PNode implements Serializable
 
         // polygons
         for (PPolygon poly : other.m_Polygons)
-            m_Polygons.add(new PPolygon(poly));
+        {
+            PPolygon newPoly = new PPolygon(poly);
+            newPoly.setPolygonMesh(this);
+            m_Polygons.add(newPoly);
+        }
         
         m_pMaterial = new PMeshMaterial(other.m_pMaterial);
 

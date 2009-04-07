@@ -1678,15 +1678,14 @@ public class PMeshUtils
 
     /**
      * This method is used to convert a skinned mesh into a non-skinned mesh
-     * that can be used as an attachment. The skeleton provided will be in the
-     * bind pose when this method returns. Also, the animation states will be
+     * that can be used as an attachment. The animation states will be
      * set to pause during this method and set to play on completion.
      * @param owningSkeleton
      * @param skinnedGeometry
      * @param jointToAttachTo
      * @return
      */
-    public PPolygonMesh unskinMesh(SkeletonNode owningSkeleton,
+    public static PPolygonMesh unskinMesh(SkeletonNode owningSkeleton,
                                     PPolygonSkinnedMesh skinnedGeometry,
                                     SkinnedMeshJoint jointToAttachTo)
     {
@@ -1695,25 +1694,25 @@ public class PMeshUtils
         for (AnimationState state : owningSkeleton.getAnimationStates())
             state.setPauseAnimation(true);
 
-        // Reset the skeleton to the bind pose
-        owningSkeleton.resetSkeletonToBindPose();
-
         // Flatten the skeleton hierarchy
         owningSkeleton.buildFlattenedSkinnedMeshJointHierarchy();
         // Get the mesh space transform of the attach joint and invert it
-        PMatrix inverseMeshSpace = owningSkeleton.getSkinnedMeshJoint(jointToAttachTo.getName()).getMeshSpace().inverse();
+        int jointindex = owningSkeleton.getSkinnedMeshJointIndex(jointToAttachTo);
+        PMatrix inverseBindPose = owningSkeleton.getFlattenedInverseBindPose(new int[] { jointindex })[0];
         // Construct a poly mesh out of the skinned mesh
         result = new PPolygonMesh(skinnedGeometry);
         // transform all verts / normals by the inverse transform
         // Verts
         for (PPolygonPosition pos : result.getPositionsRef())
-            inverseMeshSpace.transformPoint(pos.m_Position);
+            inverseBindPose.transformPoint(pos.m_Position);
         // Normals
         for (PPolygonNormal norm : result.getNormalsRef())
-            inverseMeshSpace.transformNormal(norm.m_Normal);
+            inverseBindPose.transformNormal(norm.m_Normal);
+        
+        result.endBatch(); // This will recalculate the bounds
         // reconstruct the result
         result.submit(new PPolygonTriMeshAssembler());
-        result.endBatch(); // This will recalculate the bounds
+
         // Unpause animation
         for (AnimationState state : owningSkeleton.getAnimationStates())
             state.setPauseAnimation(false);

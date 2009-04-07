@@ -402,8 +402,8 @@ public class PPolygon implements Serializable
     //  Gets the Vertice at the specified index.
     public void getVertex(int Index, PGeometryVertex pVertice)
     {
-	if (pVertice == null)
-            return;
+        if (pVertice == null)
+                return;
         
         PPolygonVertexIndices pPolygonVertice = (PPolygonVertexIndices)m_Vertices.get(Index);
 
