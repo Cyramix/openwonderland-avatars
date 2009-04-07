@@ -23,7 +23,6 @@ import com.jme.math.Vector3f;
 import imi.character.avatar.Avatar;
 import imi.character.avatar.FemaleAvatarAttributes;
 import imi.character.avatar.MaleAvatarAttributes;
-import imi.gui.JFrame_InstrumentationGUI;
 import imi.gui.JPanel_Animations;
 import imi.gui.SceneEssentials;
 import imi.gui.TreeExplorer;
@@ -34,15 +33,9 @@ import imi.scene.animation.AnimationComponent.PlaybackMode;
 import imi.scene.animation.AnimationState;
 import imi.scene.camera.state.CameraState;
 import imi.scene.camera.state.FirstPersonCamState;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.jdesktop.mtgame.WorldManager;
 import imi.scene.processors.JSceneEventProcessor;
 import imi.utils.input.AvatarControlScheme;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.InputStreamReader;
-import java.net.MalformedURLException;
 import java.net.URL;
 import javax.swing.JFrame;
 
@@ -106,48 +99,48 @@ public class CustomizationExample extends DemoBase
                                                                         12, // Skin
                                                                         0); // Eye color
         maleAttributes.setUsePhongLighting(true);
-        // Put him over to the left a bit
+//        // Put him over to the left a bit
         maleAttributes.setOrigin(new PMatrix(new Vector3f(0,3.14f,0), Vector3f.UNIT_XYZ, Vector3f.ZERO));
         Avatar maleAvatar = new Avatar(maleAttributes, wm);
         // Now let's make a female using a specific configuration
-        FemaleAvatarAttributes femaleAttributes =
-                new FemaleAvatarAttributes("LizTheTestGal",
-                                                 0, // Feet
-                                                 2, // Legs
-                                                 2, // Torso
-                                                 -1, // Hair = bald
-                                                 8, // Head
-                                                 12, // Skin
-                                                 25); // Eye color
-        femaleAttributes.setUsePhongLighting(true);
+//        FemaleAvatarAttributes femaleAttributes =
+//                new FemaleAvatarAttributes("LizTheTestGal",
+//                                                 0, // Feet
+//                                                 2, // Legs
+//                                                 2, // Torso
+//                                                 -1, // Hair = bald
+//                                                 8, // Head
+//                                                 12, // Skin
+//                                                 25); // Eye color
+//        femaleAttributes.setUsePhongLighting(true);
 //        // Put her over to the right a bit
-        femaleAttributes.setOrigin(new PMatrix(new Vector3f(-1, 0, 1)));
-        Avatar femaleAvatar = new Avatar(femaleAttributes, wm);
+//        femaleAttributes.setOrigin(new PMatrix(new Vector3f(-1, 0, 1)));
+//        Avatar femaleAvatar = new Avatar(femaleAttributes, wm);
 
         // Select the male and add them both to the input team (collection of controllable avatars)
-        maleAvatar.selectForInput();
-        control.getAvatarTeam().add(maleAvatar);
+//        maleAvatar.selectForInput();
+//        control.getAvatarTeam().add(maleAvatar);
 //        control.getAvatarTeam().add(femaleAvatar);
-        femaleAvatar.selectForInput();
+//        femaleAvatar.selectForInput();
 
         // Hook the control scheme up the the camera in order to receieve input
         // events. We need this in order to control the Verlet arm ('Q' and 'E' to engage)
         control.getMouseEventsFromCamera();
 
-        SceneEssentials scene = new SceneEssentials();
-        scene.setAvatar(femaleAvatar);
-        scene.setSceneData(femaleAvatar.getJScene(), femaleAvatar.getPScene(), repository, wm, null);
-
-        JPanel_Animations anim = new JPanel_Animations();
-        anim.setPanel(scene);
-        JFrame newFrame = new JFrame();
-        newFrame.add(anim);
-        newFrame.pack();
-        newFrame.setVisible(true);
-
-        TreeExplorer te = new TreeExplorer();
-        te.setExplorer(scene);
-        te.setVisible(true);
+//        SceneEssentials scene = new SceneEssentials();
+//        scene.setAvatar(femaleAvatar);
+//        scene.setSceneData(femaleAvatar.getJScene(), femaleAvatar.getPScene(), repository, wm, null);
+//
+//        JPanel_Animations anim = new JPanel_Animations();
+//        anim.setPanel(scene);
+//        JFrame newFrame = new JFrame();
+//        newFrame.add(anim);
+//        newFrame.pack();
+//        newFrame.setVisible(true);
+//
+//        TreeExplorer te = new TreeExplorer();
+//        te.setExplorer(scene);
+//        te.setVisible(true);
     }
 
     private void attachSkinnedHair(Avatar target, URL geometryLocation)

@@ -65,6 +65,7 @@ public class DefaultAvatarCache implements CacheBehavior
         {
             try {
                 result = new FileInputStream(cacheFile);
+                System.out.println("Found and loaded a cache file for " + location.toString());
             }
             catch (FileNotFoundException ex)
             {

@@ -312,7 +312,9 @@ public class MaleAvatarAttributes extends CharacterAttributes
             }
         }
         szFeet[1]   = new String("Feet");
-        load.add(szFeet);
+
+        if (szFeet[0] != null)
+            load.add(szFeet);
     }
 
     /**
@@ -439,7 +441,8 @@ public class MaleAvatarAttributes extends CharacterAttributes
             break;
         }
         szHair[1]   = new String("Hair");
-        load.add(szHair);
+        if (szHair[0] != null)
+            load.add(szHair);
     }
 
     /**
@@ -503,7 +506,9 @@ public class MaleAvatarAttributes extends CharacterAttributes
             }
         }
         szLegs[1]   = new String("LowerBody");
-        load.add(szLegs);
+
+        if (szLegs[0] != null)
+            load.add(szLegs);
     }
 
     /**
@@ -596,7 +601,9 @@ public class MaleAvatarAttributes extends CharacterAttributes
             }
         }
         szTorso[1]  = new String("UpperBody");
-        load.add(szTorso);
+
+        if (szTorso[0] != null)
+            load.add(szTorso);
     }
 
     /**

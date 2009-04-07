@@ -326,7 +326,9 @@ public class FemaleAvatarAttributes extends CharacterAttributes
         }
 
         szFeet[1]   = new String("Feet");
-        load.add(szFeet);
+
+        if (szFeet[0] != null)
+            load.add(szFeet);
     }
 
 
@@ -376,7 +378,9 @@ public class FemaleAvatarAttributes extends CharacterAttributes
             }
         }
         szLegs[1]   = new String("LowerBody");
-        load.add(szLegs);
+
+        if (szLegs[0] != null)
+            load.add(szLegs);
     }
 
     /**
@@ -391,7 +395,7 @@ public class FemaleAvatarAttributes extends CharacterAttributes
         // Add the hands
         String[] szHands  = new String[2];
         szHands[0]  = new String("assets/models/collada/Avatars/FemaleAvatar/Female_Hands.dae");
-        szHands[0]  = new String("Hands");
+        szHands[1]  = new String("Hands");
         load.add(szHands);
         add.add(new SkinnedMeshParams("Hands_NudeShape",  "Hands"));
 
@@ -439,7 +443,8 @@ public class FemaleAvatarAttributes extends CharacterAttributes
             }
         }
         szTorso[1]  = new String("UpperBody");
-        load.add(szTorso);
+        if (szTorso[0] != null)
+            load.add(szTorso);
     }
 
     /**
@@ -479,7 +484,7 @@ public class FemaleAvatarAttributes extends CharacterAttributes
     {
         String[] szHair   = new String[2];
 
-        PMatrix orientation = new PMatrix(new Vector3f((float)Math.toRadians(7.0),0,0), Vector3f.UNIT_XYZ, new Vector3f(0,0.0f,0.03f));
+        PMatrix orientation = new PMatrix();
         switch(preset)
         {
             case 0:
@@ -809,9 +814,15 @@ public class FemaleAvatarAttributes extends CharacterAttributes
                 szHair[0]   = new String("assets/models/collada/Hair/FemaleHair/FemaleFGHair.dae");
                 add.add(new SkinnedMeshParams("HairAShape1", "Head"));
             }
+            break;
+            default:
+                szHair[0]   = new String("assets/models/collada/Hair/FemaleHair/FemaleM_Pigtails.dae");
+                attachments.add(new AttachmentParams("M_PigTails", "HairAttach", orientation, "Hair"));
+                break;
         }
 
         szHair[1]   = new String("Hair");
-        load.add(szHair);
+        if (szHair[0] != null)
+            load.add(szHair);
     }
 }
