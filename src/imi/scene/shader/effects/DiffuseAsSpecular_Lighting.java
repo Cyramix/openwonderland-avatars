@@ -103,12 +103,19 @@ public class DiffuseAsSpecular_Lighting extends GLSLShaderEffect
     {
         StringBuilder fragmentLogic = new StringBuilder();
 
-        fragmentLogic.append("vec3 camVector = normalize(" + m_varying[0].getName() + ");" + NL);
-        fragmentLogic.append("vec3 lightVec  = " + m_varying[1].normalize() + ";" + NL);
-        fragmentLogic.append("vec3 reflectionVector = normalize(reflect(lightVec, " + m_FragmentDependencies.get(0).getName() + "));" + NL);
-        fragmentLogic.append("vec4 specularComponent = gl_LightSource[0].specular * pow(max(dot(reflectionVector, camVector), 0.0), " + m_fragmentUniforms[1].getName() + ");" + NL);
-        fragmentLogic.append("specularComponent *= texture2D(" + m_fragmentUniforms[2].getName() + ", gl_TexCoord[0].st);" + NL);
-        fragmentLogic.append(m_FragmentModifications.get(0).getName() + " += (specularComponent * " + m_fragmentUniforms[1].getName() + ");" + NL);
+        fragmentLogic.append("float NdotHV;");
+        fragmentLogic.append("vec4 diffuseColor = texture2D(" + m_fragmentUniforms[2].getName() + ", gl_TexCoord[0].st);" + NL);
+        fragmentLogic.append("if (NdotL > 0.0) {" +
+                " NdotHV = max(dot(" + m_FragmentDependencies.get(0).getName() + ", gl_LightSource[0].halfVector.xyz), 0.0);" + NL +
+                " vec4 specularComponent = diffuseColor * gl_LightSource[0].specular *" + NL +
+                "       pow(NdotHV, " + m_fragmentUniforms[0].getName() +");" + NL +
+                "};" + NL);
+//        fragmentLogic.append("vec3 camVector = normalize(" + m_varying[0].getName() + ");" + NL);
+//        fragmentLogic.append("vec3 lightVec  = " + m_varying[1].normalize() + ";" + NL);
+//        fragmentLogic.append("vec3 reflectionVector = normalize(reflect(lightVec, " + m_FragmentDependencies.get(0).getName() + "));" + NL);
+//        fragmentLogic.append("vec4 specularComponent = gl_LightSource[0].specular * pow(max(dot(reflectionVector, camVector), 0.0), " + m_fragmentUniforms[1].getName() + ");" + NL);
+//        fragmentLogic.append("specularComponent *= texture2D(" + m_fragmentUniforms[2].getName() + ", gl_TexCoord[0].st);" + NL);
+//        fragmentLogic.append(m_FragmentModifications.get(0).getName() + " += (specularComponent * " + m_fragmentUniforms[1].getName() + ");" + NL);
         m_fragmentLogic = fragmentLogic.toString();
     }
 }

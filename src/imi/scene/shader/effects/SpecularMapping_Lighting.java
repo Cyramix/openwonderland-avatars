@@ -110,19 +110,35 @@ public class SpecularMapping_Lighting extends GLSLShaderEffect
     {
         StringBuilder fragmentLogic = new StringBuilder();
         /**
-         * vec4 specColor     = texture2D(SpecularMapIndex, gl_TexCoord[0].st);
-         * vec3 camVector = normalize(ToCamera);
-         * vec3 reflection = normalize(reflect(lightVector , normal));
-         * vec4 specular = (gl_LightSource[0].specular * pow(max(dot(reflection, camVector),0.0), SpecularPower));
-         * specColor *=  specular;
-         * finalFragColor += specColor
-         */
-        fragmentLogic.append("vec3 camVector = normalize(" + m_varying[0].getName() + ");" + NL);
-        fragmentLogic.append("vec3 lightVec  = " + m_varying[1].normalize() + ";" + NL);
-        fragmentLogic.append("vec3 reflectionVector = normalize(reflect(lightVec, " + m_FragmentDependencies.get(0).getName() + "));" + NL);
-        fragmentLogic.append("vec4 specularComponent = gl_LightSource[0].specular * pow(max(dot(reflectionVector, camVector), 0.0), " + m_fragmentUniforms[1].getName() + ");" + NL);
-        fragmentLogic.append("specularComponent *= texture2D(" + m_fragmentUniforms[0].getName() + ", gl_TexCoord[0].st);" + NL);
-        fragmentLogic.append(m_FragmentModifications.get(0).getName() + " += (specularComponent * " + m_fragmentUniforms[2].getName() + ");" + NL);
+        // compute the specular term if NdotL is  larger than zero
+        if (NdotL > 0.0) {
+
+            // normalize the half-vector, and then compute the
+            // cosine (dot product) with the normal
+            NdotHV = max(dot(normal, gl_LightSource[0].halfVector.xyz),0.0);
+            specular = gl_FrontMaterial.specular * gl_LightSource[0].specular *
+                    pow(NdotHV,gl_FrontMaterial.shininess);
+        } */
+        fragmentLogic.append("float NdotHV;");
+        fragmentLogic.append("if (NdotL > 0.0) {" +
+                " NdotHV = max(dot(" + m_FragmentDependencies.get(0).getName() + ", gl_LightSource[0].halfVector.xyz), 0.0);" + NL +
+                " vec4 specularComponent = gl_FrontMaterial.specular * gl_LightSource[0].specular *" + NL +
+                "       pow(NdotHV, gl_FrontMaterial.shininess);" + NL +
+                "};" + NL);
+//        /**
+//         * vec4 specColor     = texture2D(SpecularMapIndex, gl_TexCoord[0].st);
+//         * vec3 camVector = normalize(ToCamera);
+//         * vec3 reflection = normalize(reflect(lightVector , normal));
+//         * vec4 specular = (gl_LightSource[0].specular * pow(max(dot(reflection, camVector),0.0), SpecularPower));
+//         * specColor *=  specular;
+//         * finalFragColor += specColor
+//         */
+//        fragmentLogic.append("vec3 camVector = normalize(" + m_varying[0].getName() + ");" + NL);
+//        fragmentLogic.append("vec3 lightVec  = " + m_varying[1].normalize() + ";" + NL);
+//        fragmentLogic.append("vec3 reflectionVector = normalize(reflect(lightVec, " + m_FragmentDependencies.get(0).getName() + "));" + NL);
+//        fragmentLogic.append("vec4 specularComponent = gl_LightSource[0].specular * pow(max(dot(reflectionVector, camVector), 0.0), " + m_fragmentUniforms[1].getName() + ");" + NL);
+//        fragmentLogic.append("specularComponent *= texture2D(" + m_fragmentUniforms[0].getName() + ", gl_TexCoord[0].st);" + NL);
+//        fragmentLogic.append(m_FragmentModifications.get(0).getName() + " += (specularComponent * " + m_fragmentUniforms[2].getName() + ");" + NL);
         m_fragmentLogic = fragmentLogic.toString();
     }
 }
