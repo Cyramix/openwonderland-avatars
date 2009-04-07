@@ -108,6 +108,11 @@ public class ObjectCollection extends ObjectCollectionBase
         worldManager.addEntity(this);
     }
 
+    public void boundingVolumeTest()
+    {
+       // for (S)
+    }
+
     /////////////////////////  JGraph integration ///////////////////////////////////
 
     /**
@@ -262,10 +267,10 @@ public class ObjectCollection extends ObjectCollectionBase
         ArrayList<Vector3f> point = new ArrayList<Vector3f>();
 
         // Create graph paths
-        createConnection(loc1, loc2); origin.add(loc1.getPosition()); point.add(loc2.getPosition());
-        createConnection(loc2, loc3); origin.add(loc2.getPosition()); point.add(loc3.getPosition());
-        createConnection(loc3, loc4); origin.add(loc3.getPosition()); point.add(loc4.getPosition());
-        createConnection(loc4, loc1); origin.add(loc4.getPosition()); point.add(loc1.getPosition());
+        createConnection(loc1, loc2); origin.add(loc1.getPositionRef()); point.add(loc2.getPositionRef());
+        createConnection(loc2, loc3); origin.add(loc2.getPositionRef()); point.add(loc3.getPositionRef());
+        createConnection(loc3, loc4); origin.add(loc3.getPositionRef()); point.add(loc4.getPositionRef());
+        createConnection(loc4, loc1); origin.add(loc4.getPositionRef()); point.add(loc1.getPositionRef());
 
         VisuManager vis = new VisuManager("path connections visu", worldManager);
         vis.addLineObject(origin, point, ColorRGBA.brown, 5.0f);
@@ -431,8 +436,8 @@ public class ObjectCollection extends ObjectCollectionBase
             Chair chair = (Chair)check;
             if (chair != newChair)
             {
-                Vector3f chairPos    = chair.getPosition();
-                Vector3f newChairPos = newChair.getPosition();
+                Vector3f chairPos    = chair.getPositionRef();
+                Vector3f newChairPos = newChair.getPositionRef();
                 float desiredDistance = chair.getDesiredDistanceFromOtherChairs() + newChair.getDesiredDistanceFromOtherChairs();
                 if (chairPos.distanceSquared(newChairPos) < desiredDistance * desiredDistance)
                     return true;
@@ -476,7 +481,7 @@ public class ObjectCollection extends ObjectCollectionBase
             if (check != obj)
             {
                 // Check range
-                float range = obj.getPosition().distance(check.getPosition());
+                float range = obj.getPositionRef().distance(check.getPositionRef());
                 if(range > consideredRange)
                     continue;
 
@@ -493,7 +498,7 @@ public class ObjectCollection extends ObjectCollectionBase
                 {
                     Vector3f rightVec = obj.getRightVector();
                     Vector3f forwardVec = obj.getForwardVector();
-                    Vector3f directionToTarget = check.getPosition().subtract(obj.getPosition());
+                    Vector3f directionToTarget = check.getPositionRef().subtract(obj.getPositionRef());
                     directionToTarget.normalizeLocal();
 
                     // Check if inside the front half of space
@@ -547,7 +552,7 @@ public class ObjectCollection extends ObjectCollectionBase
                     continue;
 
                 // Check range
-                float range = obj.getPosition().distance(check.getPosition());
+                float range = obj.getPositionRef().distance(check.getPositionRef());
                 if(range > consideredRange)
                     continue;
 
@@ -564,7 +569,7 @@ public class ObjectCollection extends ObjectCollectionBase
                 {
                     Vector3f rightVec = obj.getRightVector();
                     Vector3f forwardVec = obj.getForwardVector();
-                    Vector3f directionToTarget = ((Chair)check).getGoalPosition().subtract(obj.getPosition());
+                    Vector3f directionToTarget = ((Chair)check).getGoalPosition().subtract(obj.getPositionRef());
                     directionToTarget.normalizeLocal();
 
                     // Check if inside the front half of space
@@ -618,7 +623,7 @@ public class ObjectCollection extends ObjectCollectionBase
                     continue;
 
                 // Check range
-                float range = obj.getPosition().distance(check.getPosition());
+                float range = obj.getPositionRef().distance(check.getPositionRef());
                 if(range > consideredRange)
                     continue;
 
@@ -635,7 +640,7 @@ public class ObjectCollection extends ObjectCollectionBase
                 {
                     Vector3f rightVec = obj.getRightVector();
                     Vector3f forwardVec = obj.getForwardVector();
-                    Vector3f directionToTarget = check.getPosition().subtract(obj.getPosition());
+                    Vector3f directionToTarget = check.getPositionRef().subtract(obj.getPositionRef());
                     directionToTarget.normalizeLocal();
 
                     // Check if inside the front half of space

@@ -235,7 +235,7 @@ public class CoreCommands implements ConsoleCommand
             if (avatar != null && dir != null)
             {
                 gui.appendOutput(avatar.getName() + " will look towards: " + dir);
-                avatar.goTo(avatar.getPosition(), dir);
+                avatar.goTo(avatar.getPositionRef(), dir);
             }
             else
                 gui.appendOutput("syntax error, (required), <optional>\nlook <avatarID> (heading)");

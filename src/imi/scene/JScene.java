@@ -164,6 +164,13 @@ public class JScene extends Node {
             wireframeState.setEnabled(on);
             updateRenderState();
         }
+        else
+        {
+            wireframeState = (WireframeState) m_PScene.getWorldManager().getRenderManager().createRendererState(RenderState.RS_WIREFRAME);
+            wireframeState.setEnabled(true);
+            setRenderState(wireframeState);
+            updateRenderState();
+        }
     }
 
     /**
@@ -195,6 +202,13 @@ public class JScene extends Node {
         if (wireframeState != null) 
         {
             wireframeState.setEnabled(!wireframeState.isEnabled());
+            updateRenderState();
+        }
+        else
+        {
+            wireframeState = (WireframeState) m_PScene.getWorldManager().getRenderManager().createRendererState(RenderState.RS_WIREFRAME);
+            wireframeState.setEnabled(true);
+            setRenderState(wireframeState);
             updateRenderState();
         }
     }

@@ -149,8 +149,8 @@ public class Gadget implements SpatialObject
         return null;
     }
 
-    public Vector3f getPosition() {
-        return modelInst.getTransform().getWorldMatrix(false).getTranslation();
+    public Vector3f getPositionRef() {
+        return modelInst.getTransform().getWorldMatrix(true).getTranslation();
     }
 
     public Quaternion getQuaternion() {

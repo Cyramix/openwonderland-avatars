@@ -41,10 +41,15 @@ public class PSphere implements Serializable
         m_Center.set(other.m_Center);
         m_fRadius = other.m_fRadius;
     }
-    
-    public Vector3f getCenter()
+
+    public Vector3f getCenterRef()
     {
         return m_Center;
+    }
+
+    public void getCenter(Vector3f center)
+    {
+        center.set(m_Center);
     }
     
     public float getRadius()
@@ -59,7 +64,7 @@ public class PSphere implements Serializable
     }
 
     public void setCenter(Vector3f Center) {
-        this.m_Center = Center;
+        this.m_Center.set(Center);
     }
 
     public void setRadius(float Radius) {
@@ -75,7 +80,7 @@ public class PSphere implements Serializable
     
     public boolean isColliding(PSphere check) 
     {
-        float distanceSqr = m_Center.distanceSquared(check.getCenter());
+        float distanceSqr = m_Center.distanceSquared(check.getCenterRef());
         float sumRadi = m_fRadius + check.getRadius();
         if ( distanceSqr < (sumRadi * sumRadi) )
             return true;
@@ -84,7 +89,7 @@ public class PSphere implements Serializable
     
     public boolean isColliding(PSphere check, Vector3f projection) 
     {
-        projection.set(check.getCenter().subtract(m_Center));
+        projection.set(check.getCenterRef().subtract(m_Center));
         float distance = projection.lengthSquared();
         float sumRadi = m_fRadius + check.getRadius();
         if ( (sumRadi * sumRadi) < distance )
@@ -96,7 +101,12 @@ public class PSphere implements Serializable
         projection.multLocal(delta);
         return true;
     }
-    
+
+    @Override
+    public String toString() {
+        return "PSphere center: " + m_Center + " radius: " + m_fRadius + " " + super.toString();
+    }
+
     public void dump(String spacing, String name)
     {
         System.out.println(spacing + name + ":");

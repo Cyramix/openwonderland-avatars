@@ -137,7 +137,7 @@ public class CahuaClientExtention extends ClientExtension implements ClientSideC
     public void update(float deltaTime, boolean updateTick)
     {
         // Update hitbox position
-        hitBoxPos.set(character.getPosition());
+        hitBoxPos.set(character.getPositionRef());
         // If you are in the game you can't move
         if (hitPoints > 0)
         {
@@ -153,7 +153,7 @@ public class CahuaClientExtention extends ClientExtension implements ClientSideC
         if (pitcherTimer > 3.0f)
         {
             pitcherTimer = 0.0f;
-            Vector3f dir = character.getPosition().add(0.0f, 1.8f, 0.0f).subtract(Vector3f.ZERO).normalize();
+            Vector3f dir = character.getPositionRef().add(0.0f, 1.8f, 0.0f).subtract(Vector3f.ZERO).normalize();
             pitchBall(Vector3f.ZERO, dir.mult(0.1f));
         }
         
@@ -303,7 +303,7 @@ public class CahuaClientExtention extends ClientExtension implements ClientSideC
         
         // Set new position and velocity for that ball
         CahuaDataExtension ext = getUserData(hitter);
-        ext.balls[ballID].set(characterClientExtension.getUserData(hit).character.getPosition().add(0.0f, 2.0f + ballRadius, 0.0f));
+        ext.balls[ballID].set(characterClientExtension.getUserData(hit).character.getPositionRef().add(0.0f, 2.0f + ballRadius, 0.0f));
         ext.ballsVel[ballID].set(0.0f, 0.25f, 0.0f); 
     }
 

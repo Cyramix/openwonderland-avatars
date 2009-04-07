@@ -119,7 +119,7 @@ public class PPolygonMesh extends PNode implements Serializable
         m_pMaterial = new PMeshMaterial(other.m_pMaterial);
 
         m_BoundingCube.set(other.m_BoundingCube.getMin(), other.m_BoundingCube.getMax());
-        m_BoundingSphere.set(other.m_BoundingSphere.getCenter(), other.m_BoundingSphere.getRadius());
+        m_BoundingSphere.set(other.m_BoundingSphere.getCenterRef(), other.m_BoundingSphere.getRadius());
         m_bSmoothNormals    = other.m_bSmoothNormals;
         
         // Vert data

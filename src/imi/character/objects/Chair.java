@@ -196,9 +196,9 @@ public class Chair implements SpatialObject
         modelInst.setDirty(true, true);
     }
     
-    public Vector3f getPosition()
+    public Vector3f getPositionRef()
     {
-        return modelInst.getTransform().getWorldMatrix(false).getTranslation();
+        return modelInst.getTransform().getWorldMatrix(true).getTranslation();
     }
     
     public Vector3f getGoalPosition()
@@ -258,7 +258,7 @@ public class Chair implements SpatialObject
         if (modelInst.getBoundingSphere() == null)
             modelInst.calculateBoundingSphere();
         PSphere result = new PSphere(modelInst.getBoundingSphere());
-        result.setCenter(modelInst.getTransform().getWorldMatrix(false).getTranslation().add(result.getCenter()));
+        result.setCenter(modelInst.getTransform().getWorldMatrix(false).getTranslation().add(result.getCenterRef()));
         return result;
     }
 

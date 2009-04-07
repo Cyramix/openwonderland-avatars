@@ -178,13 +178,13 @@ public class GoTo implements Task
                 context.getSteering().addTaskToTop(walk);
                 context.resetTriggersAndActions();
 
-                Vector3f directionToObstacle = obstacleBV.getCenter().subtract(currentCharacterPosition).normalize();
+                Vector3f directionToObstacle = obstacleBV.getCenterRef().subtract(currentCharacterPosition).normalize();
                 turnToDir(directionToObstacle);
             }
             else
             {
                 // Turn away to prevent collision
-                Vector3f directionToObstacle = obstacleBV.getCenter().subtract(currentCharacterPosition).normalize();
+                Vector3f directionToObstacle = obstacleBV.getCenterRef().subtract(currentCharacterPosition).normalize();
                 Vector3f desiredVelocity = goalPosition.subtract(currentCharacterPosition).normalize();
                 Vector3f direction = directionToObstacle.negate().add(desiredVelocity.mult(2.0f)).mult(0.3333333333f);
                 turnToDir(direction);
@@ -338,7 +338,7 @@ public class GoTo implements Task
     
     public void reset(SpatialObject goal) 
     {
-        reset(goal.getPosition(), goal.getForwardVector());
+        reset(goal.getPositionRef(), goal.getForwardVector());
         this.goal = goal;
         if (goal.getBoundingSphere() != null)
             approvedDistanceFromGoal = goal.getBoundingSphere().getRadius() * 0.5f;

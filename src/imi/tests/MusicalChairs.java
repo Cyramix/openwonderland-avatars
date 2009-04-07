@@ -97,7 +97,8 @@ public class MusicalChairs extends DemoBase
         AvatarControlScheme control = (AvatarControlScheme)((JSceneEventProcessor)wm.getUserData(JSceneEventProcessor.class)).setDefault(new AvatarControlScheme(null));
         control.setCommandEntireTeam(true);
         control.setObjectCollection(objects);
-
+//if (true)
+//    return;
         // Create avatar
         Avatar avatar = new Avatar(new MaleAvatarAttributes("Avatar", true), wm);
         avatar.selectForInput();

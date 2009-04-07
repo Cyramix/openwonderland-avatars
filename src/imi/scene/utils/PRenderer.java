@@ -625,7 +625,7 @@ public class PRenderer
         Vector3f		BottomPoint2        = new Vector3f();
         
         float                   fRadius             = sphere.getRadius();
-        Vector3f                Center              = sphere.getCenter();
+        Vector3f                Center              = sphere.getCenterRef();
         
         HashSet<PLine>          Positions           = new HashSet();
         //int                     PositionIndex       = 0;

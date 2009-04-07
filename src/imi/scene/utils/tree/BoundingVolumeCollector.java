@@ -43,7 +43,7 @@ public class BoundingVolumeCollector implements NodeProcessor
         if (currentNode instanceof PPolygonMeshInstance)
         {
             PPolygonMeshInstance meshInst = (PPolygonMeshInstance)currentNode;
-            PSphere sphere = new PSphere(meshInst.getTransform().getLocalMatrix(false).getTranslation().add(meshInst.getGeometry().getBoundingSphere().getCenter()),
+            PSphere sphere = new PSphere(meshInst.getTransform().getLocalMatrix(false).getTranslation().add(meshInst.getGeometry().getBoundingSphere().getCenterRef()),
                                          meshInst.getGeometry().getBoundingSphere().getRadius());
             //sphere.set(meshInst.getTransform().getLocalMatrix(false).getTranslation().add(sphere.getCenter()), sphere.getRadius());
             spheres.add(sphere);

@@ -52,7 +52,7 @@ public class FollowPath implements Task
         if (context != null)
         {
             this.path = path;
-            go = new GoTo(path.get(pathIndex).getPosition(), context);
+            go = new GoTo(path.get(pathIndex).getPositionRef(), context);
         }
     }
 
@@ -89,7 +89,7 @@ public class FollowPath implements Task
 
             if (path.get(pathIndex) instanceof LocationNode)
             {
-                go.reset(path.get(pathIndex).getPosition());
+                go.reset(path.get(pathIndex).getPositionRef());
             }
         }
     }

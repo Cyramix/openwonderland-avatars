@@ -54,7 +54,7 @@ public class FollowBakedPath implements Task
         {
             path = pathName;
             location = node;
-            go = new GoTo(node.getPosition(), context);
+            go = new GoTo(node.getPositionRef(), context);
         }
     }
 
@@ -90,7 +90,7 @@ public class FollowBakedPath implements Task
                 return;
             }
             location = destination;
-            go.reset(location.getPosition());
+            go.reset(location.getPositionRef());
         }
     }
 

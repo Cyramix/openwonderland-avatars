@@ -1182,7 +1182,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         if (m_modelInst.getBoundingSphere() == null)
             m_modelInst.calculateBoundingSphere();
         PSphere result = new PSphere(m_modelInst.getBoundingSphere());
-        result.setCenter(m_modelInst.getTransform().getWorldMatrix(false).getTranslation().add(result.getCenter()));
+        result.setCenter(m_modelInst.getTransform().getWorldMatrix(false).getTranslation().add(result.getCenterRef()));
         return result;
     }
 
@@ -1275,7 +1275,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         return m_keyBindings;
     }
 
-    public Vector3f getPosition() {
+    public Vector3f getPositionRef() {
         return m_context.getController().getPosition();
     }
 

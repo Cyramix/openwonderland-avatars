@@ -1932,7 +1932,7 @@ public class AvatarCreatorDemo extends javax.swing.JFrame implements FrameRateLi
                     joint = ((PJoint)pmodel.findChild("Hips"));
                     m_focalPt = joint.getTransform().getWorldMatrix(false).getTranslation();
                 } else {
-                    m_focalPt = pmodel.getBoundingSphere().getCenter();
+                    m_focalPt = pmodel.getBoundingSphere().getCenterRef();
                 }
                 break;
             }

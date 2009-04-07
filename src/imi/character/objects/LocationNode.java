@@ -105,14 +105,14 @@ public class LocationNode extends GraphNode implements SpatialObject
      */
     public void generateChairs(int numberOfChairs) {
         if (objects != null && objects instanceof ObjectCollection)
-            ((ObjectCollection)objects).generateChairs(bv.getCenter(), bv.getRadius(), numberOfChairs);
+            ((ObjectCollection)objects).generateChairs(bv.getCenterRef(), bv.getRadius(), numberOfChairs);
         else
             System.out.println("ERROR: LocationNode generateChairs() failed");
     }
     
-    public Vector3f getPosition() {
+    public Vector3f getPositionRef() {
         if (bv != null)
-            return bv.getCenter();
+            return bv.getCenterRef();
         return null;
     }
 

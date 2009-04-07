@@ -2162,8 +2162,8 @@ public class SceneEssentials {
 
             if (pmInstance.getBoundingSphere() == null)
                 pmInstance.calculateBoundingSphere();
-            camState.setTargetFocalPoint(pmInstance.getBoundingSphere().getCenter());
-            camModel.turnTo(pmInstance.getBoundingSphere().getCenter(), camState);
+            camState.setTargetFocalPoint(pmInstance.getBoundingSphere().getCenterRef());
+            camModel.turnTo(pmInstance.getBoundingSphere().getCenterRef(), camState);
 //            camState.setTargetNeedsUpdate(true);
 
         } else if (m_curCameraProcessor.getState() instanceof FirstPersonCamState) {
@@ -2172,7 +2172,7 @@ public class SceneEssentials {
             FirstPersonCamModel camModel = ((FirstPersonCamModel)m_curCameraProcessor.getModel());
             if (pmInstance.getBoundingSphere() == null)
                 pmInstance.calculateBoundingSphere();
-            Vector3f pos = pmInstance.getBoundingSphere().getCenter();
+            Vector3f pos = pmInstance.getBoundingSphere().getCenterRef();
             pos.z = 3.2f;
             camState.setCameraPosition(pos);
 

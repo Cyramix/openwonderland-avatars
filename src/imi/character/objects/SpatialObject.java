@@ -59,7 +59,7 @@ public interface SpatialObject
      * Gets the position of the model instance
      * @return
      */
-    public Vector3f getPosition();
+    public Vector3f getPositionRef();
     
     /**
      * Gets the right vector of the model instance

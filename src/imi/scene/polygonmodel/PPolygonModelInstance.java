@@ -141,7 +141,7 @@ public class PPolygonModelInstance extends PNode implements Serializable
         int centers = 0;
         for (PSphere sphere : spheres)
         {
-            boundingSphereCenter = boundingSphereCenter.add(sphere.getCenter());
+            boundingSphereCenter = boundingSphereCenter.add(sphere.getCenterRef());
             centers++;
         }
         
@@ -151,7 +151,7 @@ public class PPolygonModelInstance extends PNode implements Serializable
         for (PSphere sphere : spheres)
         {
             // Calculate the distance between two points.
-            flocalBoundingSphereRadius = boundingSphereCenter.distance(sphere.getCenter());
+            flocalBoundingSphereRadius = boundingSphereCenter.distance(sphere.getCenterRef());
             flocalBoundingSphereRadius += sphere.getRadius();
             
             if (flocalBoundingSphereRadius > fBoundingSphereRadius)

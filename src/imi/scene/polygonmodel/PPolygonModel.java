@@ -267,7 +267,7 @@ public class PPolygonModel extends PNode implements Serializable
                 continue;
             
             pPolygonMesh = (PPolygonMesh)getChild(i);
-            boundingSphereCenter = boundingSphereCenter.add(pPolygonMesh.getBoundingSphere().getCenter());
+            boundingSphereCenter = boundingSphereCenter.add(pPolygonMesh.getBoundingSphere().getCenterRef());
             centers++;
         }
         
@@ -282,7 +282,7 @@ public class PPolygonModel extends PNode implements Serializable
             pPolygonMesh = (PPolygonMesh)getChild(i);
             
             // Calculate the distance between two points.
-            flocalBoundingSphereRadius = boundingSphereCenter.distance(pPolygonMesh.getBoundingSphere().getCenter());
+            flocalBoundingSphereRadius = boundingSphereCenter.distance(pPolygonMesh.getBoundingSphere().getCenterRef());
             flocalBoundingSphereRadius += pPolygonMesh.getBoundingSphere().getRadius();
             
             if (flocalBoundingSphereRadius > fBoundingSphereRadius)
@@ -315,7 +315,7 @@ public class PPolygonModel extends PNode implements Serializable
     public void setBoundingSphere(PSphere pBoundingSphere)
     {
         if (pBoundingSphere != null)
-            m_BoundingSphere.set(pBoundingSphere.getCenter(), pBoundingSphere.getRadius());
+            m_BoundingSphere.set(pBoundingSphere.getCenterRef(), pBoundingSphere.getRadius());
     }
     
     /**

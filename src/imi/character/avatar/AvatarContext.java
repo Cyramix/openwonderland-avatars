@@ -268,7 +268,7 @@ public class AvatarContext extends GameContext
             if (obj == null)
                 return;
 
-            avatar.getRightArm().setPointAtLocation(obj.getPosition());
+            avatar.getRightArm().setPointAtLocation(obj.getPositionRef());
         }
         
         // Find nearest chair and sit on it
@@ -395,7 +395,7 @@ public class AvatarContext extends GameContext
         location = (LocationNode)avatar.getObjectCollection().findNearestObjectOfType(LocationNode.class, avatar, 10000.0f, 1.0f, false);
         if (location != null)
         {
-            AI.addTaskToTop(new GoTo(location.getPosition(), this));
+            AI.addTaskToTop(new GoTo(location.getPositionRef(), this));
             AI.setEnable(true);
         }
         return location;
