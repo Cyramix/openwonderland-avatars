@@ -24,6 +24,7 @@ import com.jme.image.Texture.MagnificationFilter;
 import com.jme.image.Texture.MinificationFilter;
 import com.jme.image.Texture.WrapMode;
 import com.jme.util.TextureManager;
+import imi.loaders.repository.Repository;
 import imi.serialization.xml.bindings.xmlTextureAttributes;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -80,9 +81,14 @@ public class TextureMaterialProperties implements Serializable
         applyTextureAttributesDOM(texAttr, baseURL);
     }
 
-    public Texture loadTexture() {
+    /**
+     * Load the texture via the specified repository
+     * @param repository
+     * @return
+     */
+    public Texture loadTexture(Repository repository) {
         try {
-            Texture result = TextureManager.loadTexture(m_imageLocation);
+            Texture result = repository.loadTexture(m_imageLocation);
             apply(result);
             return result;
         } catch(Exception e) {

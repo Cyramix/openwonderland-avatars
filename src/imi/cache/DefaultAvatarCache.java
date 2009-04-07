@@ -5,7 +5,8 @@
 
 package imi.cache;
 
-import imi.loaders.repository.Repository;
+import com.jme.image.Texture;
+import com.jme.util.TextureManager;
 import imi.utils.MD5HashUtils;
 import java.io.File;
 import java.io.FileInputStream;
@@ -15,7 +16,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -91,6 +91,12 @@ public class DefaultAvatarCache implements CacheBehavior
             }
         }
         return result;
+    }
+
+    @Override
+    public Texture loadTexture(URL location)
+    {
+        return TextureManager.loadTexture(location);
     }
 
     @Override

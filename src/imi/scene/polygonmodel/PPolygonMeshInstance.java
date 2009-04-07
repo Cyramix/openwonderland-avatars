@@ -283,14 +283,19 @@ public class PPolygonMeshInstance extends PNode implements Serializable
 
         int numNeeded = m_material.getNumberOfRelevantTextures();
 
-        for (int i = 0; i < numNeeded; ++i)
+        if (m_PScene != null)
         {
-            TextureMaterialProperties texProps = m_material.getTexture(i);
-            if (texProps != null)
-                m_materialStates.setTexture(texProps.loadTexture(), i);
-            else
-                logger.warning("Null texture property found in material for index " + i + " mesh name is " + getName());
+            for (int i = 0; i < numNeeded; ++i)
+            {
+                TextureMaterialProperties texProps = m_material.getTexture(i);
+                if (texProps != null)
+                    m_materialStates.setTexture(texProps.loadTexture(m_PScene.getRepository()), i);
+                else
+                    logger.warning("Null texture property found in material for index " + i + " mesh name is " + getName());
+            }
         }
+        else
+            logger.warning("Unable to load textures due to a null PScene reference.");
 
 
         m_materialStates.applyToGeometry(m_instance);

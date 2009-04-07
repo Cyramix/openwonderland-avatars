@@ -17,6 +17,7 @@
  */
 package imi.cache;
 
+import com.jme.image.Texture;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
@@ -61,6 +62,13 @@ public interface CacheBehavior
      * @return
      */
     public OutputStream getStreamForWriting(URL location);
+
+    /**
+     * Requests the specified texture.
+     * @param location The requested texture
+     * @return
+     */
+    public Texture loadTexture(URL location);
 
     /**
      * This method removes all residue from the cache.

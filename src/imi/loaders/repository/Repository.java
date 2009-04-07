@@ -17,6 +17,7 @@
  */
 package imi.loaders.repository;
 
+import com.jme.image.Texture;
 import com.jme.util.TextureManager;
 import imi.annotations.Debug;
 import imi.cache.CacheBehavior;
@@ -33,8 +34,6 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
@@ -253,6 +252,19 @@ public class Repository extends Entity
             m_processorCollection.addProcessor(slave);
             slave.initialize();
         }
+    }
+
+    /**
+     * Load the specified texture.
+     * @param location
+     * @return
+     */
+    public Texture loadTexture(URL location)
+    {
+        if (m_cache != null)
+            return m_cache.loadTexture(location);
+        else
+            return TextureManager.loadTexture(location);
     }
 
     public void setLoadGeometry(boolean bLoadGeometry) {

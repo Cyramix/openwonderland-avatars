@@ -562,7 +562,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
                     URL normalMapLocation = new URL("http://www.zeitgeistgames.com/assets/models/collada/Hair/FemaleHair/HairBrownHLBase_N.png");
                     meshMat.setTexture(meshMat.getTexture(0), 2);
                     meshMat.setTexture(normalMapLocation, 1);
-                    meshMat.getTexture(1).loadTexture();
+                    meshMat.getTexture(1).loadTexture(m_pscene.getRepository());
                     // Change the textures, because we know they load incorrectly.
                     meshMat.setShader(specialHairShader);
                     meshMat.setCullFace(CullState.Face.None);

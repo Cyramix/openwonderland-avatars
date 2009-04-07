@@ -57,7 +57,7 @@ public class TextureCacheBuilder
         if (assetRoot != null)
             assetRootFile = new File(assetRoot);
         else
-            assetRootFile = new File("assets/models/collada/Clothing");
+            assetRootFile = new File("assets/models/collada/Avatars");
         
         File out = null;
         if (outputFile != null)
@@ -67,10 +67,16 @@ public class TextureCacheBuilder
         
         try {
             Texture.DEFAULT_STORE_TEXTURE = true;
-            if (!loadAllFiles(assetRootFile))
-                System.out.println("Error! More than 256 textures!");
-            else
-                TextureManager.writeCache(out);
+
+            loadAllFiles(assetRootFile);
+            assetRootFile = new File("assets/models/collada/Clothing");
+            loadAllFiles(assetRootFile);
+            assetRootFile = new File("assets/models/collada/Heads");
+            loadAllFiles(assetRootFile);
+            
+            System.out.println("Writing the cache out to " + out.toString());
+            TextureManager.writeCache(out);
+            
         } catch (IOException ex) {
             Logger.getLogger(TextureCacheBuilder.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -102,8 +108,6 @@ public class TextureCacheBuilder
         // Scratch references
         File current = null;
         File[] fileList = null;
-        // Count how many entries we have (there is currently a limitation
-        int numberOfEntries = 0;
         // Our queue!
         FastList<File> queue = new FastList<File>();
         queue.add(docRoot);
@@ -114,12 +118,6 @@ public class TextureCacheBuilder
             {
                 System.out.println("Processing " + current.getName());
                 TextureManager.loadTexture(current.toURI().toURL());
-                numberOfEntries++;
-                if (numberOfEntries > 256) // This breaks the current jME BinaryImporter
-                {
-                    returnValue = false;
-                    break;
-                }
             }
             else if (current.isDirectory())
             {
@@ -128,6 +126,7 @@ public class TextureCacheBuilder
                     queue.add(file);
             }
         }
+        System.out.println("Completed processing textures.");
         return returnValue;
     }
 
