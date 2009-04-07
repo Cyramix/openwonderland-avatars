@@ -33,7 +33,7 @@ import javax.swing.JFrame;
 public abstract class CharacterController implements CollisionListener
 {
     /** True to use 'reversed' headings **/
-    protected boolean  bReverseHeading     = false;
+    protected boolean  bReverseHeading     = true;
     /** Cache the last orientation **/
     private PMatrix previousOrientation = new PMatrix();
     /** Cache the last translation **/

@@ -111,17 +111,27 @@ public class PPolygonMesh extends PNode implements Serializable
         setTransform(other.getTransform());
         
         beginBatch(); // signal that the geometry is currently in flux
-        m_Polygons = other.m_Polygons;
-        m_pMaterial = other.m_pMaterial;
 
-        m_BoundingCube      = other.m_BoundingCube;
-        m_BoundingSphere    = other.m_BoundingSphere;
+        // polygons
+        for (PPolygon poly : other.m_Polygons)
+            m_Polygons.add(new PPolygon(poly));
+        
+        m_pMaterial = new PMeshMaterial(other.m_pMaterial);
+
+        m_BoundingCube.set(other.m_BoundingCube.getMin(), other.m_BoundingCube.getMax());
+        m_BoundingSphere.set(other.m_BoundingSphere.getCenter(), other.m_BoundingSphere.getRadius());
         m_bSmoothNormals    = other.m_bSmoothNormals;
-        // Positions
-        m_Positions = other.m_Positions;
-        m_Normals = other.m_Normals;
-        m_Colors = other.m_Colors;
-        m_TexCoords = other.m_TexCoords;
+        
+        // Vert data
+        for (PPolygonPosition pos : other.m_Positions)
+            m_Positions.add(new PPolygonPosition(pos.m_Position));
+        for (PPolygonNormal norm : other.m_Normals)
+            m_Normals.add(new PPolygonNormal(norm.m_Normal));
+        for (PPolygonColor color : other.m_Colors)
+            m_Colors.add(new PPolygonColor(color.m_Color));
+        for (PPolygonTexCoord tex : other.m_TexCoords)
+            m_TexCoords.add(new PPolygonTexCoord(tex.m_TexCoord));
+        
 
         setUniformTexCoords(other.isUniformTexCoords()); // Actually do the copy
         m_NumberOfTextures  = other.getNumberOfTextures();

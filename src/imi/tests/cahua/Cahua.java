@@ -23,7 +23,6 @@ import imi.character.avatar.Avatar;
 import imi.character.avatar.MaleAvatarAttributes;
 import imi.scene.camera.behaviors.ThirdPersonCamModel;
 import imi.scene.camera.state.ThirdPersonCamState;
-import imi.scene.particles.ParticleCollection;
 import org.jdesktop.mtgame.WorldManager;
 import imi.scene.processors.JSceneEventProcessor;
 import imi.tests.CustomizationExample;

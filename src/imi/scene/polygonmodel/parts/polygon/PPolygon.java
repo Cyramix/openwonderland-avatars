@@ -51,9 +51,10 @@ public class PPolygon implements Serializable
     
     public void set(PPolygon RHS)
     {
-        m_Normal   = new Vector3f(RHS.m_Normal);
-        m_Center   = new Vector3f(RHS.m_Center);
+        m_Normal.set(RHS.m_Normal);
+        m_Center.set(RHS.m_Center);
         // Copy all the vertices
+        m_Vertices.clear();
         for (PPolygonVertexIndices vert : RHS.m_Vertices)
             m_Vertices.add(new PPolygonVertexIndices(vert));   
     }

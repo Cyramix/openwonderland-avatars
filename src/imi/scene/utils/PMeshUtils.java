@@ -21,14 +21,19 @@ import imi.utils.PMathUtils;
 import com.jme.math.Vector2f;
 import com.jme.math.Vector3f;
 import com.jme.renderer.ColorRGBA;
-import com.jme.util.geom.BufferUtils;
 import imi.loaders.PGeometryVertexBuffer;
+import imi.loaders.PPolygonTriMeshAssembler;
+import imi.scene.PMatrix;
+import imi.scene.animation.AnimationState;
 import imi.scene.polygonmodel.PPolygonMesh;
 import imi.scene.polygonmodel.parts.PGeometryTriangle;
 import imi.scene.polygonmodel.parts.PGeometryVertex;
 import imi.scene.polygonmodel.parts.polygon.PPolygon;
+import imi.scene.polygonmodel.parts.polygon.PPolygonNormal;
 import imi.scene.polygonmodel.parts.polygon.PPolygonPosition;
 import imi.scene.polygonmodel.parts.polygon.PPolygonVertexIndices;
+import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
+import imi.scene.polygonmodel.parts.skinned.SkinnedMeshJoint;
 import imi.scene.polygonmodel.skinned.PPolygonSkinnedMesh;
 import java.util.ArrayList;
 
@@ -1669,6 +1674,52 @@ public class PMeshUtils
         pPolygonMesh.flipNormals(); // TODO need a fix!
         
         return(pPolygonMesh);
+    }
+
+    /**
+     * This method is used to convert a skinned mesh into a non-skinned mesh
+     * that can be used as an attachment. The skeleton provided will be in the
+     * bind pose when this method returns. Also, the animation states will be
+     * set to pause during this method and set to play on completion.
+     * @param owningSkeleton
+     * @param skinnedGeometry
+     * @param jointToAttachTo
+     * @return
+     */
+    public PPolygonMesh unskinMesh(SkeletonNode owningSkeleton,
+                                    PPolygonSkinnedMesh skinnedGeometry,
+                                    SkinnedMeshJoint jointToAttachTo)
+    {
+        PPolygonMesh result = null;
+        // Pause the animation
+        for (AnimationState state : owningSkeleton.getAnimationStates())
+            state.setPauseAnimation(true);
+
+        // Reset the skeleton to the bind pose
+        owningSkeleton.resetSkeletonToBindPose();
+
+        // Flatten the skeleton hierarchy
+        owningSkeleton.buildFlattenedSkinnedMeshJointHierarchy();
+        // Get the mesh space transform of the attach joint and invert it
+        PMatrix inverseMeshSpace = owningSkeleton.getSkinnedMeshJoint(jointToAttachTo.getName()).getMeshSpace().inverse();
+        // Construct a poly mesh out of the skinned mesh
+        result = new PPolygonMesh(skinnedGeometry);
+        // transform all verts / normals by the inverse transform
+        // Verts
+        for (PPolygonPosition pos : result.getPositionsRef())
+            inverseMeshSpace.transformPoint(pos.m_Position);
+        // Normals
+        for (PPolygonNormal norm : result.getNormalsRef())
+            inverseMeshSpace.transformNormal(norm.m_Normal);
+        // reconstruct the result
+        result.submit(new PPolygonTriMeshAssembler());
+        result.endBatch(); // This will recalculate the bounds
+        // Unpause animation
+        for (AnimationState state : owningSkeleton.getAnimationStates())
+            state.setPauseAnimation(false);
+
+        // Dassit
+        return result;
     }
 
 }

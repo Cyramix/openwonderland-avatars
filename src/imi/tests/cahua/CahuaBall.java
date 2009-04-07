@@ -123,7 +123,6 @@ public class CahuaBall
 
     /**
      * Rotate around the X axis
-     * @param radians
      */
     public void rotate() {
         m_rotation += Math.toRadians(1.75f);

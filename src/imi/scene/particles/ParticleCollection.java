@@ -57,7 +57,7 @@ public class ParticleCollection implements Updatable
     private RenderComponent renderComponent = null;
     /** Updater **/
     private UpdateProcessor updater     = null;
-    /** Used to determine wether updates should happen or not **/
+    /** Used to determine whether updates should happen or not **/
     private boolean enabled             = true;
     /** Position of the emitter **/
     private PPolygonModelInstance targetModel = null;

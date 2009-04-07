@@ -1030,6 +1030,16 @@ public class SkeletonNode extends PNode implements Animated, Serializable
         return result;
     }
 
+    /**
+     * Reset the skeleton to its bind pose.
+     */
+    public void resetSkeletonToBindPose()
+    {
+        for (SkinnedMeshJoint joint : m_BFTSkeleton)
+            joint.setToBindPose();
+    }
+
+
     public void invalidateCachedBindPoses()
     {
         for (PPolygonSkinnedMeshInstance meshInst : getSkinnedMeshInstances())
