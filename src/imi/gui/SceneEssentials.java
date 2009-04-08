@@ -1178,7 +1178,7 @@ public class SceneEssentials {
                 if (szAvatarHandsModelFile == null)
                     szAvatarHandsModelFile = "assets/models/collada/Avatars/MaleAvatar/Male_Hands.dae";
                 if (szAvatarHeadModelFile == null)
-                    szAvatarHeadModelFile = "assets/models/collada/Heads/MaleHead/maleFGHead.bin";
+                    szAvatarHeadModelFile = "assets/models/collada/Heads/MaleHead/MaleCHead.dae";
 
                 szBind[0]   = szAvatarModelFile;
                 szBind[1]   = new String("Bind");
@@ -1203,7 +1203,7 @@ public class SceneEssentials {
                 if (szAvatarHandsModelFile == null)
                     szAvatarHandsModelFile = "assets/models/collada/Avatars/FemaleAvatar/Female_Hands.dae";
                 if (szAvatarHeadModelFile == null)
-                    szAvatarHeadModelFile = "assets/models/collada/Heads/FemaleHead/FemaleCHead.bin";
+                    szAvatarHeadModelFile = "assets/models/collada/Heads/FemaleHead/FemaleCHead.dae";
 
                 szBind[0]   = szAvatarModelFile;
                 szBind[1]   = new String("Bind");
@@ -1257,7 +1257,7 @@ public class SceneEssentials {
                 if (szAvatarHandsModelFile == null)
                     szAvatarHandsModelFile = "assets/models/collada/Avatars/MaleAvatar/Male_Hands.dae";
                 if (szAvatarHeadModelFile == null)
-                    szAvatarHeadModelFile = "assets/models/collada/Heads/MaleHead/maleFGHead.bin";
+                    szAvatarHeadModelFile = "assets/models/collada/Heads/MaleHead/MaleCHead.dae";
 
                 szBind[0]   = szAvatarModelFile;
                 szBind[1]   = new String("Bind");
@@ -1282,7 +1282,7 @@ public class SceneEssentials {
                 if (szAvatarHandsModelFile == null)
                     szAvatarHandsModelFile = "assets/models/collada/Avatars/FemaleAvatar/Female_Hands.dae";
                 if (szAvatarHeadModelFile == null)
-                    szAvatarHeadModelFile = "assets/models/collada/Heads/FemaleHead/FemaleCHead.bin";
+                    szAvatarHeadModelFile = "assets/models/collada/Heads/FemaleHead/FemaleCHead.dae";
 
                 szBind[0]   = szAvatarModelFile;
                 szBind[1]   = new String("Bind");

@@ -426,7 +426,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
             m_skeleton.getAnimationState(1).setCycleMode(PlaybackMode.PlayOnce);
 
             // Smile when comming in
-            initiateFacialAnimation(1, 0.4f, 2.75f);
+            //initiateFacialAnimation(1, 0.4f, 2.75f);
         }
 
         // Hook up eyeballs
@@ -1682,50 +1682,58 @@ public abstract class Character extends Entity implements SpatialObject, Animati
      * base skeleton. Skeleton Deltas are generated and applied.
      * @param headLocation The location of a file with a head to load.
      */
-//    protected void installHeadConfiguration(URL headLocation)
-//    {
-//        // Stop all of our processing.
-//        m_skeleton.setRenderStop(true);
-//        m_AnimationProcessor.setEnable(false);
-//        m_characterProcessor.setEnabled(false);
-//
-//        List<PNode> newSkeletonChildren = new ArrayList<PNode>();
-//        SkeletonNode newHeadSkeleton = loadHeadFile
-//                (headLocation, newSkeletonChildren);
-//        // Get rid of all the old stuff
-//        m_skeleton.clearSubGroup("Head");
-//
-////         Now fix the skeletal differences from the Neck through the heirarchy
-//        ArrayList<Integer> BFTIndices = new ArrayList<Integer>();
-//        m_skeleton.getSkinnedMeshJointIndices("Neck", BFTIndices);
-//        m_skeleton.applyConfiguration(newHeadSkeleton, BFTIndices);
-//
-//        // Process the associated geometry and attach it to ourselves
-//        for (PNode node : newSkeletonChildren)
-//        {
-//            if (node instanceof PPolygonSkinnedMesh)
-//            {
-//                PPolygonSkinnedMesh skinnedMesh = (PPolygonSkinnedMesh) node;
-//                // Make an instance
-//                PPolygonSkinnedMeshInstance skinnedMeshInstance = (PPolygonSkinnedMeshInstance) m_pscene.addMeshInstance(skinnedMesh, new PMatrix());
-//                //  Link the SkinnedMesh to the Skeleton.
-//                skinnedMeshInstance.setAndLinkSkeletonNode(m_skeleton);
-//
-//                // Add it to the skeleton
-//                m_skeleton.addToSubGroup(skinnedMeshInstance, "Head");
-//            }
-//        }
-//
-//        // Finally, apply the default shaders
-//        setDefaultHeadShaders();
-//
-//        // Re-enable all the processors that affect us.
-//        m_AnimationProcessor.setEnable(true);
-//        m_characterProcessor.setEnabled(true);
-//        m_skeleton.setRenderStop(false);
-//    }
-
     protected void installHeadConfiguration(URL headLocation)
+    {
+        if (checkBinaryFileExtension(headLocation)) {
+            installBinaryHeadConfiguration(headLocation);
+            return;
+        }
+
+        // Stop all of our processing.
+        m_skeleton.setRenderStop(true);
+        m_AnimationProcessor.setEnable(false);
+        m_characterProcessor.setEnabled(false);
+
+        List<PNode> newSkeletonChildren = new ArrayList<PNode>();
+        SkeletonNode newHeadSkeleton = loadHeadFile
+                (headLocation, newSkeletonChildren);
+        // Get rid of all the old stuff
+        m_skeleton.clearSubGroup("Head");
+
+        // Now fix the skeletal differences from the Neck through the heirarchy
+        ArrayList<Integer> BFTIndices = new ArrayList<Integer>();
+        m_skeleton.getSkinnedMeshJointIndices("Neck", BFTIndices);
+        m_skeleton.applyConfiguration(newHeadSkeleton, BFTIndices);
+
+        // Process the associated geometry and attach it to ourselves
+        for (PNode node : newSkeletonChildren)
+        {
+            if (node instanceof PPolygonSkinnedMesh)
+            {
+                PPolygonSkinnedMesh skinnedMesh = (PPolygonSkinnedMesh) node;
+                // Make an instance
+                PPolygonSkinnedMeshInstance skinnedMeshInstance = (PPolygonSkinnedMeshInstance) m_pscene.addMeshInstance(skinnedMesh, new PMatrix());
+                //  Link the SkinnedMesh to the Skeleton.
+                skinnedMeshInstance.setAndLinkSkeletonNode(m_skeleton);
+
+                // Add it to the skeleton
+                m_skeleton.addToSubGroup(skinnedMeshInstance, "Head");
+            }
+        }
+
+        while (m_skeleton.getAnimationComponent().getGroupCount() < m_skeleton.getAnimationStateCount())
+            m_skeleton.addAnimationState(new AnimationState(m_skeleton.getAnimationStateCount()));
+        
+        // Finally, apply the default shaders
+        setDefaultHeadShaders();
+
+        // Re-enable all the processors that affect us.
+        m_AnimationProcessor.setEnable(true);
+        m_characterProcessor.setEnabled(true);
+        m_skeleton.setRenderStop(false);
+    }
+
+    protected void installBinaryHeadConfiguration(URL headLocation)
     {
         // Stop all of our processing.
         m_skeleton.setRenderStop(true);
@@ -1735,7 +1743,6 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         SkeletonNode newHeadSkeleton = m_binaryExporter.processBinaryData(headLocation);
         attatchHeadSkeleton(m_skeleton, newHeadSkeleton, m_pscene, m_wm);
         setDefaultHeadShaders();
-        //getFacialAnimationQ();
 
         // Re-enable all the processors that affect us.
         m_AnimationProcessor.setEnable(true);
@@ -1770,6 +1777,15 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         // synch up animation states with groups
         while (bodySkeleton.getAnimationComponent().getGroupCount() < bodySkeleton.getAnimationStateCount())
             bodySkeleton.addAnimationState(new AnimationState(bodySkeleton.getAnimationStateCount()));
+    }
+
+    private boolean checkBinaryFileExtension(URL fileLocation) {
+
+        int index  = fileLocation.toString().lastIndexOf(".");
+        String ext = fileLocation.toString().substring(index);
+        if (ext.toLowerCase().contains("bin"))
+            return true;
+        return false;
     }
 
     @Deprecated
