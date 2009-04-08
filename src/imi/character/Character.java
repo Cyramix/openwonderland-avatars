@@ -1751,7 +1751,8 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         bodySkeleton.clearSubGroup("Head");
         bodySkeleton.getAnimationGroup(1).clear();
 
-        originalJoint.replaceChild(originalJoint, copyJoint, false);
+
+        originalJoint.getParent().replaceChild(originalJoint, copyJoint, false);
         bodySkeleton.refresh();
 
         PPolygonSkinnedMeshInstance skinnedMeshInstance = null;

@@ -14,7 +14,6 @@ import imi.loaders.repository.Repository;
 import imi.scene.PMatrix;
 import imi.scene.PScene;
 import imi.scene.animation.AnimationCycle;
-import imi.scene.animation.AnimationGroup;
 import imi.scene.animation.AnimationState;
 import imi.scene.polygonmodel.parts.PMeshMaterial;
 import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
@@ -196,7 +195,7 @@ public class BinaryExporter {
         bodySkeleton.clearSubGroup("Head");
         bodySkeleton.getAnimationGroup(1).clear();
         
-        originalJoint.replaceChild(originalJoint, copyJoint, false);
+        originalJoint.getParent().replaceChild(originalJoint, copyJoint, false);
         bodySkeleton.refresh();
 
         PPolygonSkinnedMeshInstance skinnedMeshInstance = null;
