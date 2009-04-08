@@ -26,6 +26,7 @@ import imi.loaders.repository.SharedAsset.SharedAssetType;
 import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
 import imi.scene.shader.AbstractShaderProgram;
 import imi.scene.shader.ShaderFactory;
+import imi.scene.shader.programs.FleshShader;
 import imi.utils.AvatarObjectInputStream;
 import java.awt.Dimension;
 import java.io.BufferedInputStream;
@@ -152,7 +153,7 @@ public class Repository extends Entity
     public File getCacheFolder() {
         return cacheFolder;
     }
-    
+
     private void loadTextureCache()
     {
         // Texture caching is disabled until some other things are changed.

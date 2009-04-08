@@ -20,12 +20,10 @@ package imi.character;
 import com.jme.image.Texture.ApplyMode;
 import com.jme.image.Texture.CombinerFunctionAlpha;
 import com.jme.image.Texture.MinificationFilter;
-import com.jme.light.PointLight;
 import com.jme.math.Quaternion;
 import com.jme.math.Vector2f;
 import com.jme.math.Vector3f;
 import com.jme.renderer.ColorRGBA;
-import com.jme.scene.shape.Sphere;
 import com.jme.scene.state.CullState;
 import com.jme.scene.state.LightState;
 import com.jme.scene.state.MaterialState;
@@ -54,6 +52,7 @@ import imi.scene.PNode;
 import imi.scene.PScene;
 import imi.scene.animation.AnimationComponent;
 import imi.scene.animation.AnimationComponent.PlaybackMode;
+import imi.scene.animation.AnimationCycle;
 import imi.scene.animation.AnimationListener;
 import imi.scene.animation.AnimationListener.AnimationMessageType;
 import imi.scene.animation.AnimationState;
@@ -88,10 +87,13 @@ import imi.serialization.xml.bindings.xmlCharacter;
 import imi.serialization.xml.bindings.xmlCharacterAttributes;
 import imi.serialization.xml.bindings.xmlJointModification;
 import imi.serialization.xml.bindings.xmlMaterial;
+import imi.utils.BinaryExporter;
 import imi.utils.instruments.Instrumentation;
 import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileFilter;
 import java.io.FileOutputStream;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -175,9 +177,11 @@ public abstract class Character extends Entity implements SpatialObject, Animati
     /** Expansion slot for initialization **/
     private   InitializationInterface       m_initialization        = null;
     /** index of the 'default' facial animation **/
-    private   int                           m_defaultFacePose       = 3; // No more 'playAll' cycle
+    private   int                           m_defaultFacePose       = 0; // No more 'playAll' cycle
     private   float                         m_defaultFacePoseTiming = 0.1f;
     private   VerletSkeletonFlatteningManipulator m_skeletonManipulator   = null;
+
+    protected BinaryExporter                m_binaryExporter        = new BinaryExporter();
 
     /**
      * Sets up the mtgame entity
@@ -791,17 +795,17 @@ public abstract class Character extends Entity implements SpatialObject, Animati
 //           loadSkeleton(femaleSkeleton);
         }
 
-        if (m_skeleton == null) // problem
-        {
-            logger.severe("Unable to load skeleton. Aborting applyAttributes.");
-            return;
-        }
-        else
-        {
-            // synch up animation states with groups
-            while (m_skeleton.getAnimationComponent().getGroupCount() < m_skeleton.getAnimationStateCount())
-                m_skeleton.addAnimationState(new AnimationState(m_skeleton.getAnimationStateCount()));
-        }
+//        if (m_skeleton == null) // problem
+//        {
+//            logger.severe("Unable to load skeleton. Aborting applyAttributes.");
+//            return;
+//        }
+//        else
+//        {
+//            // synch up animation states with groups
+//            while (m_skeleton.getAnimationComponent().getGroupCount() < m_skeleton.getAnimationStateCount())
+//                m_skeleton.addAnimationState(new AnimationState(m_skeleton.getAnimationStateCount()));
+//        }
     }
 
     /**
@@ -1678,6 +1682,49 @@ public abstract class Character extends Entity implements SpatialObject, Animati
      * base skeleton. Skeleton Deltas are generated and applied.
      * @param headLocation The location of a file with a head to load.
      */
+//    protected void installHeadConfiguration(URL headLocation)
+//    {
+//        // Stop all of our processing.
+//        m_skeleton.setRenderStop(true);
+//        m_AnimationProcessor.setEnable(false);
+//        m_characterProcessor.setEnabled(false);
+//
+//        List<PNode> newSkeletonChildren = new ArrayList<PNode>();
+//        SkeletonNode newHeadSkeleton = loadHeadFile
+//                (headLocation, newSkeletonChildren);
+//        // Get rid of all the old stuff
+//        m_skeleton.clearSubGroup("Head");
+//
+////         Now fix the skeletal differences from the Neck through the heirarchy
+//        ArrayList<Integer> BFTIndices = new ArrayList<Integer>();
+//        m_skeleton.getSkinnedMeshJointIndices("Neck", BFTIndices);
+//        m_skeleton.applyConfiguration(newHeadSkeleton, BFTIndices);
+//
+//        // Process the associated geometry and attach it to ourselves
+//        for (PNode node : newSkeletonChildren)
+//        {
+//            if (node instanceof PPolygonSkinnedMesh)
+//            {
+//                PPolygonSkinnedMesh skinnedMesh = (PPolygonSkinnedMesh) node;
+//                // Make an instance
+//                PPolygonSkinnedMeshInstance skinnedMeshInstance = (PPolygonSkinnedMeshInstance) m_pscene.addMeshInstance(skinnedMesh, new PMatrix());
+//                //  Link the SkinnedMesh to the Skeleton.
+//                skinnedMeshInstance.setAndLinkSkeletonNode(m_skeleton);
+//
+//                // Add it to the skeleton
+//                m_skeleton.addToSubGroup(skinnedMeshInstance, "Head");
+//            }
+//        }
+//
+//        // Finally, apply the default shaders
+//        setDefaultHeadShaders();
+//
+//        // Re-enable all the processors that affect us.
+//        m_AnimationProcessor.setEnable(true);
+//        m_characterProcessor.setEnabled(true);
+//        m_skeleton.setRenderStop(false);
+//    }
+
     protected void installHeadConfiguration(URL headLocation)
     {
         // Stop all of our processing.
@@ -1685,35 +1732,10 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         m_AnimationProcessor.setEnable(false);
         m_characterProcessor.setEnabled(false);
 
-        List<PNode> newSkeletonChildren = new ArrayList<PNode>();
-        SkeletonNode newHeadSkeleton = loadHeadFile
-                (headLocation, newSkeletonChildren);
-        // Get rid of all the old stuff
-        m_skeleton.clearSubGroup("Head");
-
-//         Now fix the skeletal differences from the Neck through the heirarchy
-        ArrayList<Integer> BFTIndices = new ArrayList<Integer>();
-        m_skeleton.getSkinnedMeshJointIndices("Neck", BFTIndices);
-        m_skeleton.applyConfiguration(newHeadSkeleton, BFTIndices);
-
-        // Process the associated geometry and attach it to ourselves
-        for (PNode node : newSkeletonChildren)
-        {
-            if (node instanceof PPolygonSkinnedMesh)
-            {
-                PPolygonSkinnedMesh skinnedMesh = (PPolygonSkinnedMesh) node;
-                // Make an instance
-                PPolygonSkinnedMeshInstance skinnedMeshInstance = (PPolygonSkinnedMeshInstance) m_pscene.addMeshInstance(skinnedMesh, new PMatrix());
-                //  Link the SkinnedMesh to the Skeleton.
-                skinnedMeshInstance.setAndLinkSkeletonNode(m_skeleton);
-
-                // Add it to the skeleton
-                m_skeleton.addToSubGroup(skinnedMeshInstance, "Head");
-            }
-        }
-
-        // Finally, apply the default shaders
+        SkeletonNode newHeadSkeleton = m_binaryExporter.processBinaryData(headLocation);
+        attatchHeadSkeleton(m_skeleton, newHeadSkeleton, m_pscene, m_wm);
         setDefaultHeadShaders();
+        //getFacialAnimationQ();
 
         // Re-enable all the processors that affect us.
         m_AnimationProcessor.setEnable(true);
@@ -1721,6 +1743,33 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         m_skeleton.setRenderStop(false);
     }
 
+    private void attatchHeadSkeleton(SkeletonNode bodySkeleton, SkeletonNode headSkeleton, PScene pscene, WorldManager wm) {
+        List<PPolygonSkinnedMesh> skinnedMeshList                   = headSkeleton.getAllSkinnedMeshes();
+        SkinnedMeshJoint copyJoint                                  = headSkeleton.getSkinnedMeshJoint("Neck");
+
+        SkinnedMeshJoint originalJoint                              = bodySkeleton.getSkinnedMeshJoint("Neck");
+        bodySkeleton.clearSubGroup("Head");
+        bodySkeleton.getAnimationGroup(1).clear();
+
+        originalJoint.replaceChild(originalJoint, copyJoint, false);
+        bodySkeleton.refresh();
+
+        PPolygonSkinnedMeshInstance skinnedMeshInstance = null;
+
+        for (int i = 0; i < skinnedMeshList.size(); i++) {
+            skinnedMeshInstance = (PPolygonSkinnedMeshInstance) pscene.addMeshInstance(skinnedMeshList.get(i), new PMatrix());
+            bodySkeleton.addToSubGroup(skinnedMeshInstance, "Head");
+        }
+
+        for (int i = 0; i < headSkeleton.getAnimationGroupCount(); i++) {
+            for (AnimationCycle cycle : headSkeleton.getAnimationGroup(i).getCycles())
+                bodySkeleton.getAnimationGroup(1).addCycle(cycle);
+        }
+
+        // synch up animation states with groups
+        while (bodySkeleton.getAnimationComponent().getGroupCount() < bodySkeleton.getAnimationStateCount())
+            bodySkeleton.addAnimationState(new AnimationState(bodySkeleton.getAnimationStateCount()));
+    }
 
     @Deprecated
     private void generateDeltas(SkeletonNode newSkeleton, String rootJointName)

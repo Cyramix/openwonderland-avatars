@@ -523,6 +523,16 @@ public class SkeletonNode extends PNode implements Animated, Serializable
         return meshes;
     }
 
+    public List<PPolygonSkinnedMesh> getAllSkinnedMeshes() {
+        List<PPolygonSkinnedMesh> list = new LinkedList<PPolygonSkinnedMesh>();
+        for (PNode kid : getChildren()) {
+            if (kid instanceof PPolygonSkinnedMesh) {
+                list.add((PPolygonSkinnedMesh)kid);
+            }
+        }
+        return list;
+    }
+
     /**
      * 
      * @param meshName
@@ -686,7 +696,8 @@ public class SkeletonNode extends PNode implements Animated, Serializable
     
     /**
      * Retrieve an animation group
-     * @return AnimationGroup at index i 
+     * @param index
+     * @return AnimationGroup at index i
      */
     public AnimationGroup getAnimationGroup(int index)
     {
@@ -697,6 +708,10 @@ public class SkeletonNode extends PNode implements Animated, Serializable
             logger.log(Level.SEVERE, null, ex);
         }
         return null;
+    }
+
+    public int getAnimationGroupCount() {
+        return m_animationComponent.getGroupCount();
     }
     
     public boolean transitionTo(String cycleName, boolean bReverse)

@@ -258,8 +258,7 @@ public class CharacterLoader implements RepositoryUser
                 group.addCycle(lastGroup.getCycle(0));
                 animationComponent.removeGroup(lastGroup);
             }
-        }
-        else
+        } else
             logger.severe("The animation where loaded in the wrong order, facial animation must be loaded last");
     }
 

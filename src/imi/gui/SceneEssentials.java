@@ -287,14 +287,15 @@ public class SceneEssentials {
                     return true;
                 }
 
-                if (f.getName().toLowerCase().endsWith(".dae")) {
+                if (f.getName().toLowerCase().endsWith(".dae") ||
+                    f.getName().toLowerCase().endsWith(".bin")) {
                     return true;
                 }
                 return false;
             }
             @Override
             public String getDescription() {
-                String szDescription = new String("Collada (*.dae)");
+                String szDescription = new String("Collada (*.dae) or Binary (*.bin)");
                 return szDescription;
             }
         };
@@ -1177,7 +1178,7 @@ public class SceneEssentials {
                 if (szAvatarHandsModelFile == null)
                     szAvatarHandsModelFile = "assets/models/collada/Avatars/MaleAvatar/Male_Hands.dae";
                 if (szAvatarHeadModelFile == null)
-                    szAvatarHeadModelFile = "assets/models/collada/Heads/MaleHead/MaleCHead.dae";
+                    szAvatarHeadModelFile = "assets/models/collada/Heads/MaleHead/maleFGHead.bin";
 
                 szBind[0]   = szAvatarModelFile;
                 szBind[1]   = new String("Bind");
@@ -1202,7 +1203,7 @@ public class SceneEssentials {
                 if (szAvatarHandsModelFile == null)
                     szAvatarHandsModelFile = "assets/models/collada/Avatars/FemaleAvatar/Female_Hands.dae";
                 if (szAvatarHeadModelFile == null)
-                    szAvatarHeadModelFile = "assets/models/collada/Heads/FemaleHead/FemaleCHead.dae";
+                    szAvatarHeadModelFile = "assets/models/collada/Heads/FemaleHead/FemaleCHead.bin";
 
                 szBind[0]   = szAvatarModelFile;
                 szBind[1]   = new String("Bind");
@@ -1256,7 +1257,7 @@ public class SceneEssentials {
                 if (szAvatarHandsModelFile == null)
                     szAvatarHandsModelFile = "assets/models/collada/Avatars/MaleAvatar/Male_Hands.dae";
                 if (szAvatarHeadModelFile == null)
-                    szAvatarHeadModelFile = "assets/models/collada/Heads/MaleHead/MaleCHead.dae";
+                    szAvatarHeadModelFile = "assets/models/collada/Heads/MaleHead/maleFGHead.bin";
 
                 szBind[0]   = szAvatarModelFile;
                 szBind[1]   = new String("Bind");
@@ -1281,7 +1282,7 @@ public class SceneEssentials {
                 if (szAvatarHandsModelFile == null)
                     szAvatarHandsModelFile = "assets/models/collada/Avatars/FemaleAvatar/Female_Hands.dae";
                 if (szAvatarHeadModelFile == null)
-                    szAvatarHeadModelFile = "assets/models/collada/Heads/FemaleHead/FemaleCHead.dae";
+                    szAvatarHeadModelFile = "assets/models/collada/Heads/FemaleHead/FemaleCHead.bin";
 
                 szBind[0]   = szAvatarModelFile;
                 szBind[1]   = new String("Bind");
