@@ -616,7 +616,7 @@ public class JPanel_Animations extends javax.swing.JPanel {
             imi.scene.PNode node = ((imi.scene.PNode)instance.findChild("skeletonRoot"));
             imi.scene.polygonmodel.parts.skinned.SkeletonNode skeleton = ((imi.scene.polygonmodel.parts.skinned.SkeletonNode)node.getParent());
             skeleton.getAnimationState(1).setPauseAnimation(false);
-//            m_sceneInfo.getAvatar().initiateFacialAnimation(jComboBox_FacialAnimations.getSelectedItem().toString(), 0.75f, 0.75f);
+            m_sceneInfo.getAvatar().initiateFacialAnimation(jComboBox_FacialAnimations.getSelectedItem().toString(), 0.2f, 1.5f);
         }
     }//GEN-LAST:event_jComboBox_FacialAnimationsActionPerformed
 
