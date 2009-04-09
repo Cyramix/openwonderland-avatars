@@ -75,10 +75,14 @@ public class BinaryExporter {
 
     public BinaryExporter(URL skeletonLoc, ArrayList<String> bodyAnimations, ArrayList<String> facialAnimations, File outputLoc, String urlBase) {
         m_skeletonLocation  = skeletonLoc;
-        if (bodyAnimations != null)
+        if (bodyAnimations != null) {
+            m_bodyAnimationFiles = new String[bodyAnimations.size()];
             bodyAnimations.toArray(m_bodyAnimationFiles);
-        if (facialAnimations != null)
+        }
+        if (facialAnimations != null) {
+            m_facialAnimationFiles = new String[facialAnimations.size()];
             facialAnimations.toArray(m_facialAnimationFiles);
+        }
 
         m_outputFile        = outputLoc;
         m_URLBase           = urlBase;
@@ -110,10 +114,14 @@ public class BinaryExporter {
         } catch (MalformedURLException ex) {
             Logger.getLogger(BinaryExporter.class.getName()).log(Level.SEVERE, null, ex);
         }
-        if (bodyAnimations != null)
+        if (bodyAnimations != null) {
+            m_bodyAnimationFiles = new String[bodyAnimations.size()];
             bodyAnimations.toArray(m_bodyAnimationFiles);
-        if (facialAnimations != null)
+        }
+        if (facialAnimations != null) {
+            m_facialAnimationFiles = new String[facialAnimations.size()];
             facialAnimations.toArray(m_facialAnimationFiles);
+        }
         m_outputFile    = outputLoc;
         m_URLBase       = urlBase;
     }
