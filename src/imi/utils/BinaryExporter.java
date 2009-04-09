@@ -14,6 +14,7 @@ import imi.loaders.repository.Repository;
 import imi.scene.PMatrix;
 import imi.scene.PScene;
 import imi.scene.animation.AnimationCycle;
+import imi.scene.animation.AnimationGroup;
 import imi.scene.animation.AnimationState;
 import imi.scene.polygonmodel.parts.PMeshMaterial;
 import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
@@ -74,8 +75,11 @@ public class BinaryExporter {
 
     public BinaryExporter(URL skeletonLoc, ArrayList<String> bodyAnimations, ArrayList<String> facialAnimations, File outputLoc, String urlBase) {
         m_skeletonLocation  = skeletonLoc;
-        bodyAnimations.toArray(m_bodyAnimationFiles);
-        facialAnimations.toArray(m_facialAnimationFiles);
+        if (bodyAnimations != null)
+            bodyAnimations.toArray(m_bodyAnimationFiles);
+        if (facialAnimations != null)
+            facialAnimations.toArray(m_facialAnimationFiles);
+
         m_outputFile        = outputLoc;
         m_URLBase           = urlBase;
     }
@@ -106,8 +110,10 @@ public class BinaryExporter {
         } catch (MalformedURLException ex) {
             Logger.getLogger(BinaryExporter.class.getName()).log(Level.SEVERE, null, ex);
         }
-        bodyAnimations.toArray(m_bodyAnimationFiles);
-        facialAnimations.toArray(m_facialAnimationFiles);
+        if (bodyAnimations != null)
+            bodyAnimations.toArray(m_bodyAnimationFiles);
+        if (facialAnimations != null)
+            facialAnimations.toArray(m_facialAnimationFiles);
         m_outputFile    = outputLoc;
         m_URLBase       = urlBase;
     }
@@ -134,8 +140,11 @@ public class BinaryExporter {
         animationInstruction.addChildInstruction(Instruction.InstructionType.setSkeleton, m_currentSkeleton);    // Set the m_currentSkeleton we just got
 
         // Set animation instructions
-        setInstructions(animationInstruction, Instruction.InstructionType.loadAnimation, m_bodyAnimationFiles);         // setting body animations
-        setInstructions(animationInstruction, Instruction.InstructionType.loadFacialAnimation, m_facialAnimationFiles); // Setting facial animations
+        if (m_bodyAnimationFiles != null)
+            setInstructions(animationInstruction, Instruction.InstructionType.loadAnimation, m_bodyAnimationFiles);         // setting body animations
+        if (m_facialAnimationFiles != null)
+            setInstructions(animationInstruction, Instruction.InstructionType.loadFacialAnimation, m_facialAnimationFiles); // Setting facial animations
+
         processor.execute(animationInstruction);    // execute the processes
 
         // Optimize all of the cycles
@@ -145,6 +154,16 @@ public class BinaryExporter {
         }
 
         // The real serializtion write out
+        serializeIT(m_currentSkeleton, m_outputFile);
+    }
+
+    public void serializeBinaryHead(SkeletonNode skeleton) {
+        skeleton.clearSubGroup("UpperBody");
+        skeleton.clearSubGroup("Hair");
+
+        AnimationGroup bodyAnims    = skeleton.getAnimationGroup(0);
+        skeleton.getAnimationComponent().removeGroup(bodyAnims);
+
         serializeIT(m_currentSkeleton, m_outputFile);
     }
 

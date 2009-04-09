@@ -812,7 +812,6 @@ public class SceneEssentials {
         if (returnValue == JFileChooser.APPROVE_OPTION) {
             m_fileModel = m_jFileChooser_LoadColladaModel.getSelectedFile();
 
-//            m_currentPScene.getInstances().setRenderStop(true);
             m_currentPScene.setUseRepository(useRepository);
 
             String protocal = "file:///" + System.getProperty("user.dir") + "/";
@@ -832,18 +831,6 @@ public class SceneEssentials {
                 Logger.getLogger(SceneEssentials.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-
-        while (m_avatar.getSkeleton().getMeshNamesBySubGroup(m_regions[0]).length <= 0) {
-            // Wait till the mesh is loaded and in group
-            try {
-                Thread.sleep(3000);
-                Thread.yield();
-            } catch (InterruptedException ex) {
-                Logger.getLogger(SceneEssentials.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-
-//        m_currentPScene.getInstances().setRenderStop(false);
 
         return false;
     }
