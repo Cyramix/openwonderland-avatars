@@ -129,7 +129,7 @@ public class TumbleObjectCamModel implements CameraModel
         // Generate a vector from the camera's future position to the focal point and check the length
         Vector3f toTarget = camState.getTargetFocalPoint().subtract(camState.getCameraPosition().add(zoomVec));
         // Dist squared is used to save a square root operation
-        if (toTarget.lengthSquared() >= camState.getMinimumDistanceSquared())
+        if (toTarget.lengthSquared() >= camState.getMinimumDistanceSquared() && toTarget.lengthSquared() <= camState.getMaximumDistanceSquared())
             camState.setCameraPosition(camState.getCameraPosition().add(zoomVec), false); // No turn-to needed, we are moving along the correct vector
     }
 

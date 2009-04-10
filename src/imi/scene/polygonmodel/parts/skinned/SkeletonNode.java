@@ -1030,6 +1030,15 @@ public class SkeletonNode extends PNode implements Animated, Serializable
     }
 
     /**
+     * Reset every skinned mesh joint's local transform to it's current bind pose
+     */
+    public void resetAllJointsToBindPose() {
+        for (SkinnedMeshJoint skinnedMeshJoint : m_BFTSkeleton) {
+            skinnedMeshJoint.setToBindPose();
+        }
+    }
+
+    /**
      * Reset the joint's local transform to it's current bind pose.
      * @param jointName
      */

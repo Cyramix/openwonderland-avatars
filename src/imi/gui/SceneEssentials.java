@@ -835,6 +835,39 @@ public class SceneEssentials {
         return false;
     }
 
+    public boolean addAvatarHeadDAEFileN(boolean useRepository, Component arg0) {
+        if (m_avatar == null) {
+            System.out.println("You have not loaded an avatar yet... Please load one first");
+            return false;
+        }
+
+        int returnValue = m_jFileChooser_LoadColladaModel.showOpenDialog(arg0);
+        if (returnValue == JFileChooser.APPROVE_OPTION) {
+            m_fileModel = m_jFileChooser_LoadColladaModel.getSelectedFile();
+
+            m_currentPScene.setUseRepository(useRepository);
+
+            String protocal = "file:///" + System.getProperty("user.dir") + "/";
+            String path = getRelativePath(m_fileModel);
+            String szURL = protocal + path;
+
+            try {
+
+                URL modelURL = m_fileModel.toURI().toURL();
+                m_avatar.installHeadN(modelURL);
+                m_avatar.getAttributes().setHeadAttachment(path);
+                m_avatar.setDefaultShaders();
+                m_avatar.applyMaterials();
+                return true;
+
+            } catch (MalformedURLException ex) {
+                Logger.getLogger(SceneEssentials.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+
+        return false;
+    }
+
     /**
      * Opens a JFileChooser window for the user to select a collada file (*.dae)
      * of an clothing (skinned model) and then subsequently uses a load instruction
@@ -1441,6 +1474,23 @@ public class SceneEssentials {
         }
     }
 
+    public void addAvatarHeadDAEURLN(boolean useRepository, Component arg0, String data) {
+        if (m_avatar == null) {
+            System.out.println("You have not loaded an avatar yet... Please load one first");
+            return;
+        }
+
+        try {
+            URL urlHead = new URL(data);
+            m_avatar.installHeadN(urlHead);
+            m_avatar.getAttributes().setHeadAttachment(data);
+            m_avatar.setDefaultShaders();
+            m_avatar.applyMaterials();
+        } catch (MalformedURLException ex) {
+            Logger.getLogger(SceneEssentials.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
     /**
      * Removes the current head installed on the avatar and swaps it out with the
      * selected head model collada file (*.dae).  Method will return out if there
@@ -1459,6 +1509,23 @@ public class SceneEssentials {
         try {
             URL urlHead = new URL(url);
             m_avatar.installHead(urlHead);
+            m_avatar.getAttributes().setHeadAttachment(relativePath);
+            m_avatar.setDefaultShaders();
+            m_avatar.applyMaterials();
+        } catch (MalformedURLException ex) {
+            Logger.getLogger(SceneEssentials.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public void addAvatarHeadDAEURLN(boolean useRepository, Component arg0, String url, String relativePath) {
+        if (m_avatar == null) {
+            System.out.println("You have not loaded an avatar yet... Please load one first");
+            return;
+        }
+
+        try {
+            URL urlHead = new URL(url);
+            m_avatar.installHeadN(urlHead);
             m_avatar.getAttributes().setHeadAttachment(relativePath);
             m_avatar.setDefaultShaders();
             m_avatar.applyMaterials();

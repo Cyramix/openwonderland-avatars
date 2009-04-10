@@ -172,7 +172,7 @@ public class BinaryExporter {
         AnimationGroup bodyAnims    = skeleton.getAnimationGroup(0);
         skeleton.getAnimationComponent().removeGroup(bodyAnims);
 
-        serializeIT(m_currentSkeleton, m_outputFile);
+        serializeIT(skeleton, m_outputFile);
     }
 
     public SkeletonNode processBinaryData(String relativePath) {

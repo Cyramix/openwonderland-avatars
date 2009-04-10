@@ -76,6 +76,7 @@ public class TumbleObjectCamState extends CameraState
     private boolean newTargetNeedsUpdate = false;
     /** This is the minimum distance squared that is allowed between the camera and its focal point **/
     private float minimumDistanceSquared = 1.5f;
+    private float maximumDistanceSquared = 10.0f;
 
     /**
      * Construct a new state object with the given target. The provided target
@@ -333,5 +334,13 @@ public class TumbleObjectCamState extends CameraState
 
     public void setMinimumDistanceSquared(float minimumDistanceSquared) {
         this.minimumDistanceSquared = minimumDistanceSquared;
+    }
+
+    public float getMaximumDistanceSquared() {
+        return maximumDistanceSquared;
+    }
+
+    public void setMaximumDistanceSquared(float minimumDistanceSquared) {
+        this.maximumDistanceSquared = minimumDistanceSquared;
     }
 }

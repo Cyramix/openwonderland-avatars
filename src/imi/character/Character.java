@@ -39,6 +39,8 @@ import imi.scene.Updatable;
 import imi.loaders.Instruction;
 import imi.loaders.Instruction.InstructionType;
 import imi.loaders.InstructionProcessor;
+import imi.loaders.collada.Collada;
+import imi.loaders.collada.ColladaLoaderParams;
 import imi.loaders.repository.AssetDescriptor;
 import imi.loaders.repository.Repository;
 import imi.loaders.repository.RepositoryUser;
@@ -53,6 +55,7 @@ import imi.scene.PScene;
 import imi.scene.animation.AnimationComponent;
 import imi.scene.animation.AnimationComponent.PlaybackMode;
 import imi.scene.animation.AnimationCycle;
+import imi.scene.animation.AnimationGroup;
 import imi.scene.animation.AnimationListener;
 import imi.scene.animation.AnimationListener.AnimationMessageType;
 import imi.scene.animation.AnimationState;
@@ -831,8 +834,12 @@ public abstract class Character extends Entity implements SpatialObject, Animati
             logger.severe("Unable to create URL for head attachment, tried to combine \"" +
                    urlPrefix + "\" and \"" + attributes.getHeadAttachment() + "\"");
         }
-        if (headLocation != null)
-            installHeadConfiguration(headLocation); // Should I parameterize this?
+
+        // TEMP
+        if (headLocation != null) {
+            installHeadConfigurationN(headLocation);
+            //installHeadConfiguration(headLocation); // Should I parameterize this?
+        }
 
         InstructionProcessor instructionProcessor = new InstructionProcessor(m_wm);
         Instruction attributeRoot = new Instruction();
@@ -1677,6 +1684,82 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         m_skeletonManipulator.setLeftEyeBall(m_eyes.leftEyeBall);
         m_skeletonManipulator.setRightEyeBall(m_eyes.rightEyeBall);
     }
+
+    /**
+     * NEW HEAD INSTALL SETUP... Chops off head and does a straight replace w/o
+     * any modifications.  Kills any facial animations in the binary body skeleton.
+     * Adds all the SkinnedMeshInstances into the the headsubgroup onto the
+     * complete skeleton.
+     * @param headLocation
+     */
+    public void installHeadN(URL headLocation) {
+
+        installHeadConfigurationN(headLocation);
+        // hook the eyeballs and such back up
+        m_eyes = new CharacterEyes(m_attributes.getEyeballTexture(), this, m_wm);
+        m_skeletonManipulator.setLeftEyeBall(m_eyes.leftEyeBall);
+        m_skeletonManipulator.setRightEyeBall(m_eyes.rightEyeBall);
+    }
+
+    protected void installHeadConfigurationN(URL headLocation) {
+
+        if (checkBinaryFileExtension(headLocation)) {
+            installBinaryHeadConfiguration(headLocation);
+            return;
+        }
+
+        // Stop all of our processing.
+        m_skeleton.setRenderStop(true);
+        m_AnimationProcessor.setEnable(false);
+        m_characterProcessor.setEnabled(false);
+
+                // Create parameters for the collada loader we will use
+        ColladaLoaderParams params  = new ColladaLoaderParams(true,     true,   // load skeleton,   load geometry
+                                                              false,    false,  // load animations, show debug info
+                                                              4,                // max influences per-vertex
+                                                              "HeadSkeleton",   // 'name'
+                                                              null);            // existing skeleton (if applicable)
+
+        int begin   = headLocation.toString().lastIndexOf(File.separatorChar);
+        int end     = headLocation.toString().lastIndexOf(".");
+        String name = headLocation.toString().substring(begin, end);
+
+        // Load the skeleton
+        Collada loader = new Collada(params);
+        loader.load(new PScene(m_wm), headLocation);
+        SkeletonNode newHeadSkeleton = loader.getSkeletonNode();
+        newHeadSkeleton.setName(name);
+
+        // Chop of the head and put it on our body with no modifications
+        m_skeleton.clearSubGroup("Head");
+
+        // Kills any facial animations that may be baked into the binary body skel
+        AnimationGroup facial = m_skeleton.getAnimationGroup(1);
+        if (facial != null)
+            m_skeleton.getAnimationComponent().removeGroup(facial);
+
+        SkinnedMeshJoint copyJoint  = newHeadSkeleton.getSkinnedMeshJoint("Neck");
+        SkinnedMeshJoint origJoint  = m_skeleton.getSkinnedMeshJoint("Neck");
+        origJoint.getParent().replaceChild(origJoint, copyJoint, false);
+        m_skeleton.refresh();
+        
+        // Get all the SkinnedMeshInstances & place it in the head subgroup
+        PPolygonSkinnedMeshInstance skinnedMeshInstance = null;
+        List<PPolygonSkinnedMesh> skinnedMeshList = newHeadSkeleton.getAllSkinnedMeshes();
+        for (int i = 0; i < skinnedMeshList.size(); i++) {
+            skinnedMeshInstance = (PPolygonSkinnedMeshInstance) m_pscene.addMeshInstance(skinnedMeshList.get(i), new PMatrix());
+            m_skeleton.addToSubGroup(skinnedMeshInstance, "Head");
+        }
+
+        // Finally, apply the default shaders
+        setDefaultHeadShaders();
+
+        // Re-enable all the processors that affect us.
+        m_AnimationProcessor.setEnable(true);
+        m_characterProcessor.setEnabled(true);
+        m_skeleton.setRenderStop(false);
+    }
+
     /**
      * This method provides a way to install a head that is a derivative of the
      * base skeleton. Skeleton Deltas are generated and applied.
@@ -1721,8 +1804,8 @@ public abstract class Character extends Entity implements SpatialObject, Animati
             }
         }
 
-        while (m_skeleton.getAnimationComponent().getGroupCount() < m_skeleton.getAnimationStateCount())
-            m_skeleton.addAnimationState(new AnimationState(m_skeleton.getAnimationStateCount()));
+//        while (m_skeleton.getAnimationComponent().getGroupCount() < m_skeleton.getAnimationStateCount())
+//            m_skeleton.addAnimationState(new AnimationState(m_skeleton.getAnimationStateCount()));
         
         // Finally, apply the default shaders
         setDefaultHeadShaders();
