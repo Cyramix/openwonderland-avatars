@@ -163,6 +163,15 @@ public class AnimationGroup implements Serializable
         return m_cycles.get(index);
     }
 
+    public int getCycleIndex(String cycleName) {
+        int index = 0;
+        for (index = 0; index < m_cycles.size(); index++) {
+            if (m_cycles.get(index).getName().toLowerCase().contains(cycleName))
+                break;
+        }
+        return index;
+    }
+
     /**
      * Gets the last animation currentCycle.
      * @return m_cycles[animationStateIndex] (animation at said animationStateIndex)
@@ -181,6 +190,19 @@ public class AnimationGroup implements Serializable
         m_cycles.add(cycle);
     }
 
+    public void removeCycle(AnimationCycle cycle) {
+        m_cycles.remove(cycle);
+    }
+
+    public void removeCycle(int cycleIndex) {
+        m_cycles.remove(cycleIndex);
+    }
+
+    public void removeCycle(String cycleName) {
+        int index = getCycleIndex(cycleName);
+        m_cycles.remove(index);
+    }
+    
     //  Clears the AnimationGroup.
     public void clear()
     {

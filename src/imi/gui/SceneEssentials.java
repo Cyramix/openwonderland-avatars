@@ -1164,7 +1164,7 @@ public class SceneEssentials {
                 facialAnimationState.setCurrentCyclePlaybackMode(PlaybackMode.PlayOnce);
                 facialAnimationState.setAnimationSpeed(0.1f);
                 m_avatar.getSkeleton().addAnimationState(facialAnimationState);
-                m_avatar.initiateFacialAnimation(0, 0.2f, 1.0f);
+                m_avatar.initiateFacialAnimation(0, 0.75f, 1.5f);
             } catch (MalformedURLException ex) {
                 Logger.getLogger(SceneEssentials.class.getName()).log(Level.SEVERE, null, ex);
             }
