@@ -200,7 +200,10 @@ public class AnimationGroup implements Serializable
 
     public void removeCycle(String cycleName) {
         int index = getCycleIndex(cycleName);
-        m_cycles.remove(index);
+        if (index != -1)
+            m_cycles.remove(index);
+        else
+            logger.warning("\"" + cycleName + "\" is not a valid animation cycle in this group");
     }
     
     //  Clears the AnimationGroup.
