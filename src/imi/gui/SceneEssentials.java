@@ -1189,12 +1189,12 @@ public class SceneEssentials {
                 pProcessor.execute(pRootInstruction);
                 
                 // Facial animation state is designated to id (and index) 1
-                AnimationState facialAnimationState = new AnimationState(1);
-                facialAnimationState.setCurrentCycle(-1);
-                facialAnimationState.setCurrentCyclePlaybackMode(PlaybackMode.PlayOnce);
-                facialAnimationState.setAnimationSpeed(0.1f);
-                m_avatar.getSkeleton().addAnimationState(facialAnimationState);
-                m_avatar.initiateFacialAnimation(0, 0.75f, 1.5f);
+//                AnimationState facialAnimationState = new AnimationState(1);
+//                facialAnimationState.setCurrentCycle(-1);
+//                facialAnimationState.setCurrentCyclePlaybackMode(PlaybackMode.PlayOnce);
+//                facialAnimationState.setAnimationSpeed(0.1f);
+//                m_avatar.getSkeleton().addAnimationState(facialAnimationState);
+//                m_avatar.initiateFacialAnimation(0, 0.75f, 1.5f);
             } catch (MalformedURLException ex) {
                 Logger.getLogger(SceneEssentials.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -1224,12 +1224,12 @@ public class SceneEssentials {
             pProcessor.execute(pRootInstruction);
 
             // Facial animation state is designated to id (and index) 1
-            AnimationState facialAnimationState = new AnimationState(1);
-            facialAnimationState.setCurrentCycle(-1);
-            facialAnimationState.setCurrentCyclePlaybackMode(PlaybackMode.PlayOnce);
-            facialAnimationState.setAnimationSpeed(0.1f);
-            m_avatar.getSkeleton().addAnimationState(facialAnimationState);
-            m_avatar.initiateFacialAnimation(0, 0.75f, 1.5f);
+//            AnimationState facialAnimationState = new AnimationState(1);
+//            facialAnimationState.setCurrentCycle(-1);
+//            facialAnimationState.setCurrentCyclePlaybackMode(PlaybackMode.PlayOnce);
+//            facialAnimationState.setAnimationSpeed(0.1f);
+//            m_avatar.getSkeleton().addAnimationState(facialAnimationState);
+//            m_avatar.initiateFacialAnimation(0, 0.75f, 1.5f);
         } catch (MalformedURLException ex) {
             Logger.getLogger(SceneEssentials.class.getName()).log(Level.SEVERE, null, ex);
         }
