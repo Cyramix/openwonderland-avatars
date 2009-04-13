@@ -125,12 +125,18 @@ public class TumbleObjectCamModel implements CameraModel
 
         Vector3f zoomVec = new Vector3f(camState.getCameraTransform().getLocalZNormalized());
         zoomVec.multLocal(clicks * 0.05f);
-        // Make sure we aren't zooming in too far--
+
         // Generate a vector from the camera's future position to the focal point and check the length
-        Vector3f toTarget = camState.getTargetFocalPoint().subtract(camState.getCameraPosition().add(zoomVec));
+        Vector3f newPos = camState.getCameraPosition().add(zoomVec);
+        Vector3f newPosToTarget = camState.getTargetFocalPoint().subtract(newPos);
+
+
+        if (newPosToTarget.dot(camState.getCameraTransform().getLocalZNormalized()) < 0) // Antagonist (tunneling occured)
+            return;
         // Dist squared is used to save a square root operation
-        if (toTarget.lengthSquared() >= camState.getMinimumDistanceSquared() && toTarget.lengthSquared() <= camState.getMaximumDistanceSquared())
-            camState.setCameraPosition(camState.getCameraPosition().add(zoomVec), false); // No turn-to needed, we are moving along the correct vector
+        if (newPosToTarget.lengthSquared() >= camState.getMinimumDistanceSquared()
+           && newPosToTarget.lengthSquared() <= camState.getMaximumDistanceSquared())
+            camState.setCameraPosition(newPos, false); // No turn-to needed, we are moving along the correct vector
     }
 
     /**
