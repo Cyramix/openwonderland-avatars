@@ -1011,6 +1011,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         // Material State
         MaterialState matState  = null;
         matState = (MaterialState) m_wm.getRenderManager().createRendererState(RenderState.RS_MATERIAL);
+        matState.setColorMaterial(ColorMaterial.Diffuse);
         matState.setDiffuse(ColorRGBA.white);
 
         // SET lighting

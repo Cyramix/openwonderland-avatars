@@ -868,6 +868,36 @@ public class SceneEssentials {
         return false;
     }
 
+    public boolean addAvatarHeadDAEFileN(File theFile, boolean useRepository, Component arg0) {
+        if (m_avatar == null) {
+            System.out.println("You have not loaded an avatar yet... Please load one first");
+            return false;
+        }
+
+        m_fileModel = theFile;
+
+        m_currentPScene.setUseRepository(useRepository);
+
+        String protocal = "file:///" + System.getProperty("user.dir") + "/";
+        String path = getRelativePath(m_fileModel);
+        String szURL = protocal + path;
+
+        try {
+
+            URL modelURL = m_fileModel.toURI().toURL();
+            m_avatar.installHeadN(modelURL);
+            m_avatar.getAttributes().setHeadAttachment(path);
+            m_avatar.setDefaultShaders();
+            m_avatar.applyMaterials();
+            return true;
+
+        } catch (MalformedURLException ex) {
+            Logger.getLogger(SceneEssentials.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return false;
+    }
+
     /**
      * Opens a JFileChooser window for the user to select a collada file (*.dae)
      * of an clothing (skinned model) and then subsequently uses a load instruction
@@ -1168,6 +1198,40 @@ public class SceneEssentials {
             } catch (MalformedURLException ex) {
                 Logger.getLogger(SceneEssentials.class.getName()).log(Level.SEVERE, null, ex);
             }
+        }
+    }
+
+    public void loadDAEFacialAnimation(File theAnim, boolean useRepository, Component arg0) {
+        if (m_avatar == null) {   // check to make sure you have a skinned meshed model loaded before adding animations
+            System.out.println("Please have an avatar loaded before you continue loading animations");
+            return;
+        }
+
+        m_currentPScene.setUseRepository(useRepository);
+
+        String protocal = "file:///" + System.getProperty("user.dir") + "/";
+        String path     = getRelativePath(theAnim);
+        String szURL    = protocal + path;
+
+        try {
+            URL animURL = theAnim.toURI().toURL();
+
+            InstructionProcessor pProcessor = new InstructionProcessor(m_worldManager);
+            Instruction pRootInstruction = new Instruction();
+            pRootInstruction.addChildInstruction(InstructionType.setSkeleton, m_avatar.getSkeleton());
+
+            pRootInstruction.addChildInstruction(InstructionType.loadFacialAnimation, animURL);
+            pProcessor.execute(pRootInstruction);
+
+            // Facial animation state is designated to id (and index) 1
+            AnimationState facialAnimationState = new AnimationState(1);
+            facialAnimationState.setCurrentCycle(-1);
+            facialAnimationState.setCurrentCyclePlaybackMode(PlaybackMode.PlayOnce);
+            facialAnimationState.setAnimationSpeed(0.1f);
+            m_avatar.getSkeleton().addAnimationState(facialAnimationState);
+            m_avatar.initiateFacialAnimation(0, 0.75f, 1.5f);
+        } catch (MalformedURLException ex) {
+            Logger.getLogger(SceneEssentials.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
