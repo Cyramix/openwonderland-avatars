@@ -825,6 +825,8 @@ public class AvatarCreatorDemo extends javax.swing.JFrame implements FrameRateLi
                 TumbleObjectCamModel model = new TumbleObjectCamModel();
                 state.setCameraPosition(new Vector3f(0.0f, 0.0f, -3.2f));
                 state.setTargetFocalPoint(new Vector3f(0.0f, 0.0f, 0.0f));
+                state.setMinimumDistanceSquared(0.05f);
+                state.setMaximumDistanceSquared(8.0f);
                 m_cameraProcessor.setCameraBehavior(model, state);
                 break;
             }
@@ -1810,9 +1812,9 @@ public class AvatarCreatorDemo extends javax.swing.JFrame implements FrameRateLi
         }
 
         if (m_ColorSelector != null) {
-            if (m_HeadSelector.isVisible()) {
-                m_HeadSelector.dispose();
-                openHeadSelector();
+            if (m_ColorSelector.isVisible()) {
+                m_ColorSelector.dispose();
+                openColorSelector();
             }
         }
     }
