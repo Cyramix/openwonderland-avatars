@@ -259,7 +259,7 @@ public class CharacterLoader implements RepositoryUser
                 animationComponent.removeGroup(lastGroup);
             }
         } else
-            logger.severe("The animation where loaded in the wrong order, facial animation must be loaded last");
+            logger.severe("The animation were loaded in the wrong order, facial animation must be loaded last");
     }
 
     /**

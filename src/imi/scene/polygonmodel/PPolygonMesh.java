@@ -83,7 +83,7 @@ public class PPolygonMesh extends PNode implements Serializable
     protected FastTable<PPolygonColor>        m_Colors            = new FastTable<PPolygonColor>();
     protected FastTable<PPolygonTexCoord>     m_TexCoords         = new FastTable<PPolygonTexCoord>();
 
-    private boolean                         m_bUnifromTexCoords = false;    //  if true all textures will get index copy of texture number 0 TexCoords
+    private boolean                         m_bUniformTexCoords = false;    //  if true all textures will get index copy of texture number 0 TexCoords
     private int                             m_NumberOfTextures  = 1;        //  index multi textured mesh will have more than one texture
    
     // Edge / Vert counting
@@ -919,7 +919,7 @@ public class PPolygonMesh extends PNode implements Serializable
      */
     public boolean isUniformTexCoords() 
     {
-        return m_bUnifromTexCoords;
+        return m_bUniformTexCoords;
     }
 
     /**
@@ -932,8 +932,8 @@ public class PPolygonMesh extends PNode implements Serializable
      */
     public void setUniformTexCoords(boolean bUnifromTexCoords) 
     {
-        m_bUnifromTexCoords = bUnifromTexCoords;
-        if (m_bUnifromTexCoords == true)
+        m_bUniformTexCoords = bUnifromTexCoords;
+        if (m_bUniformTexCoords == true)
         {
             // Copy texture coordinates to the set number of units
             for (int i = 0; i < m_NumberOfTextures; i++)
@@ -1478,7 +1478,7 @@ public class PPolygonMesh extends PNode implements Serializable
         if (this.m_TexCoords != other.m_TexCoords && (this.m_TexCoords == null || !this.m_TexCoords.equals(other.m_TexCoords))) {
             return false;
         }
-        if (this.m_bUnifromTexCoords != other.m_bUnifromTexCoords) {
+        if (this.m_bUniformTexCoords != other.m_bUniformTexCoords) {
             return false;
         }
         if (this.m_NumberOfTextures != other.m_NumberOfTextures) {
@@ -1499,7 +1499,7 @@ public class PPolygonMesh extends PNode implements Serializable
         hash = 73 * hash + (this.m_Normals != null ? this.m_Normals.hashCode() : 0);
         hash = 73 * hash + (this.m_Colors != null ? this.m_Colors.hashCode() : 0);
         hash = 73 * hash + (this.m_TexCoords != null ? this.m_TexCoords.hashCode() : 0);
-        hash = 73 * hash + (this.m_bUnifromTexCoords ? 1 : 0);
+        hash = 73 * hash + (this.m_bUniformTexCoords ? 1 : 0);
         hash = 73 * hash + this.m_NumberOfTextures;
         hash = 73 * hash + (this.m_Polygons != null ? this.m_Polygons.hashCode() : 0);
         return hash;

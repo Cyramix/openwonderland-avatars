@@ -72,7 +72,8 @@ import javax.xml.bind.annotation.XmlType;
     "additionInstructions",
     "attachments",
     "eyeballTexture",
-    "skinTone"
+    "skinTone",
+    "animateFace"
     
 })
 public class xmlCharacterAttributes {
@@ -99,6 +100,8 @@ public class xmlCharacterAttributes {
     protected String eyeballTexture;
     @XmlElement(name = "SkinTone")
     protected xmlFloatRow skinTone;
+    @XmlElement(name = "AnimateFace")
+    protected boolean animateFace;
 
 
     /**
@@ -463,4 +466,14 @@ public class xmlCharacterAttributes {
     {
         this.gender = gender;
     }
+
+    public boolean isAnimateFace() {
+        return animateFace;
+    }
+
+    public void setAnimateFace(boolean animateFace) {
+        this.animateFace = animateFace;
+    }
+
+
 }

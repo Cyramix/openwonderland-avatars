@@ -490,6 +490,8 @@ public class CharacterAttributes
         else
             result.setSkinTone(null);
 
+        result.setAnimateFace(animateFace);
+
         // Finished
         return result;
     }
@@ -558,6 +560,7 @@ public class CharacterAttributes
         else
             skinTone = null;
 
+        this.animateFace = attributesDOM.isAnimateFace();
 
     }
 
