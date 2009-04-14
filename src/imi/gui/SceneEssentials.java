@@ -2446,9 +2446,17 @@ public class SceneEssentials {
         int retVal = m_jFileChooser_SaveXML.showSaveDialog(arg0);
         if (retVal == JFileChooser.APPROVE_OPTION) {
             saveFile = m_jFileChooser_SaveXML.getSelectedFile();
+            final File file = saveFile;
             if (m_avatar != null) {
                 m_avatar.getAttributes().deleteLoadInstructionsBySubGroup("Bind");
-                m_avatar.saveConfiguration(saveFile);
+                Runnable runSave    = new Runnable() {
+
+                    public void run() {
+                        m_avatar.saveConfiguration(file);
+                    }
+                };
+                Thread saveThread = new Thread(runSave);
+                saveThread.start();
             }
         }
     }

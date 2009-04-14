@@ -166,7 +166,7 @@ public class AnimationGroup implements Serializable
     public int getCycleIndex(String cycleName) {
         int index = 0;
         for (index = 0; index < m_cycles.size(); index++) {
-            if (m_cycles.get(index).getName().toLowerCase().contains(cycleName))
+            if (m_cycles.get(index).getName().contains(cycleName))
                 break;
         }
         return index;

@@ -94,9 +94,7 @@ import imi.utils.BinaryExporter;
 import imi.utils.instruments.Instrumentation;
 import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileFilter;
 import java.io.FileOutputStream;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -1867,7 +1865,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
 
         int index  = fileLocation.toString().lastIndexOf(".");
         String ext = fileLocation.toString().substring(index);
-        if (ext.toLowerCase().contains("bin"))
+        if (ext.toLowerCase().contains("bin") || ext.toLowerCase().contains("bhf"))
             return true;
         return false;
     }
