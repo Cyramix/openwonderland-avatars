@@ -62,6 +62,7 @@ import java.awt.Frame;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
@@ -82,6 +83,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileFilter;
+import javax.xml.bind.JAXBException;
 import org.jdesktop.mtgame.Entity;
 import org.jdesktop.mtgame.ProcessorCollectionComponent;
 import org.jdesktop.mtgame.ProcessorComponent;
@@ -2452,7 +2454,15 @@ public class SceneEssentials {
                 Runnable runSave    = new Runnable() {
 
                     public void run() {
-                        m_avatar.saveConfiguration(file);
+                        try {
+                            m_avatar.saveConfiguration(new FileOutputStream(file));
+
+                        } catch (FileNotFoundException ex) {
+                            Logger.getLogger(SceneEssentials.class.getName()).log(Level.SEVERE, null, ex);
+                        } catch (JAXBException ex) {
+                                Logger.getLogger(SceneEssentials.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                        //m_avatar.saveConfiguration(file);
                         System.out.println("SAVING COMPLETE...");
                     }
                 };

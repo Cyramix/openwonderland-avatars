@@ -1370,6 +1370,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
      * location.
      * @param location
      */
+    @Deprecated
     public void saveConfiguration(File location)
     {
         try {
