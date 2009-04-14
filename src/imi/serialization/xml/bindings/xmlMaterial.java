@@ -61,7 +61,8 @@ import javax.xml.bind.annotation.XmlType;
     "shininess",
     "colorMaterial",
     "cullFace",
-    "name"
+    "name",
+    "alphaState"
 })
 public class xmlMaterial {
 
@@ -89,6 +90,8 @@ public class xmlMaterial {
     protected String name;
     @XmlAttribute(name = "TargetMeshName")
     protected String targetMeshName;
+    @XmlAttribute(name = "AlphaState")
+    protected Integer alphaState;
 
     /**
      * Gets the value of the textures property.
@@ -124,6 +127,15 @@ public class xmlMaterial {
         getTextures().add(textureAttributes);
     }
 
+    public Integer getAlphaState()
+    {
+        return alphaState;
+    }
+
+    public void setAlphaState(Integer value)
+    {
+        alphaState = value;
+    }
     /**
      * Gets the value of the diffuseColor property.
      * 

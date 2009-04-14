@@ -47,7 +47,7 @@
         <xsd:sequence>
             <xsd:element name="Attributes" type="tns:CharacterAttributes"/>
             <xsd:element name="SkeletonDetails" minOccurs="0" maxOccurs="unbounded" type="tns:JointModification"/>
-            <xsd:element name="Materials" maxOccurs="unbounded" type="tns:Material" minOccurs="0"/>
+            <xsd:element name="Material" minOccurs="0" maxOccurs="unbounded" type="tns:Material"/>
         </xsd:sequence>
     </xsd:complexType>
     <xsd:complexType name="JointModification">
@@ -84,6 +84,8 @@
     </xsd:complexType>
     <xsd:complexType name="Material">
         <xsd:sequence>
+            <xsd:element name="MaterialName" type="xsd:string"/>
+            <xsd:element name="AlphaState" type="xsd:integer"></xsd:element>
             <xsd:element name="Textures" maxOccurs="8" type="tns:TextureAttributes"/>
             <xsd:element name="DiffuseColor" type="tns:ColorRGBA" minOccurs="0"/>
             <xsd:element name="AmbientColor" type="tns:ColorRGBA" minOccurs="0"/>
@@ -94,7 +96,6 @@
             <xsd:element name="Shininess" type="xsd:int"/>
             <xsd:element name="ColorMaterial" type="xsd:string"/>
             <xsd:element name="CullFace" type="xsd:string"/>
-            <xsd:element name="MaterialName" type="xsd:string"/>
         </xsd:sequence>
         <xsd:attribute name="TargetMeshName" type="xsd:string"/>
     </xsd:complexType>

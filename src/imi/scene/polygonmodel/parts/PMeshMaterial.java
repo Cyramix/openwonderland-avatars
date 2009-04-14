@@ -785,6 +785,13 @@ public class PMeshMaterial extends PNode implements Serializable
         setCullFace(Face.valueOf(xmlMat.getCullFace()));
         // name
         setName(xmlMat.getName());
+
+        if (xmlMat.getAlphaState() == 0)
+            setAlphaState(AlphaTransparencyType.NO_TRANSPARENCY);
+        else if (xmlMat.getAlphaState() == 1)
+            setAlphaState(AlphaTransparencyType.A_ONE);
+        else
+            setAlphaState(AlphaTransparencyType.RGB_ZERO);
     }
 
     /**

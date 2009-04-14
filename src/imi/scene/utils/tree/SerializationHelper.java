@@ -175,6 +175,13 @@ public class SerializationHelper implements NodeProcessor
         xmlMat.setCullFace(meshMaterial.getCullFace());
         // Name
         xmlMat.setName(meshMaterial.getName());
+        // Alpha state
+        if (meshMaterial.getAlphaState() == PMeshMaterial.AlphaTransparencyType.NO_TRANSPARENCY)
+            xmlMat.setAlphaState(0);
+        else if (meshMaterial.getAlphaState() == PMeshMaterial.AlphaTransparencyType.A_ONE)
+            xmlMat.setAlphaState(1);
+        else
+            xmlMat.setAlphaState(2);
         materials.add(xmlMat);
     }
 
