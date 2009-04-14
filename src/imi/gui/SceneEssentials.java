@@ -2453,6 +2453,7 @@ public class SceneEssentials {
 
                     public void run() {
                         m_avatar.saveConfiguration(file);
+                        System.out.println("SAVING COMPLETE...");
                     }
                 };
                 Thread saveThread = new Thread(runSave);
