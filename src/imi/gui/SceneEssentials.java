@@ -813,7 +813,11 @@ public class SceneEssentials {
         int returnValue = m_jFileChooser_LoadColladaModel.showOpenDialog(arg0);
         if (returnValue == JFileChooser.APPROVE_OPTION) {
             m_fileModel = m_jFileChooser_LoadColladaModel.getSelectedFile();
-
+            
+            Object[] subgroups = { "No Normal Map", "Normal Mapped" };
+            String subGroup = (String)JOptionPane.showInputDialog( new Frame(), "Is the head using a normal map... Choose from dropdown???",
+                                                            "IS THE HEAD USING A NORMAL MAP", JOptionPane.PLAIN_MESSAGE,
+                                                            null, subgroups, subgroups[0]);
             m_currentPScene.setUseRepository(useRepository);
 
             String protocal = "file:///" + System.getProperty("user.dir") + "/";
@@ -823,6 +827,11 @@ public class SceneEssentials {
             try {
 
                 URL modelURL = m_fileModel.toURI().toURL();
+                if (subGroup.contains((CharSequence) subgroups[0]))
+                    m_avatar.getAttributes().setUsePhongLighting(true);
+                else
+                    m_avatar.getAttributes().setUsePhongLighting(false);
+
                 m_avatar.installHead(modelURL);
                 m_avatar.getAttributes().setHeadAttachment(path);
                 m_avatar.setDefaultShaders();
