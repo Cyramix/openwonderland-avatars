@@ -106,6 +106,8 @@ public class MeshProcessor extends Processor
                 //  Otherwise, assign the created PolygonMesh as a child of the root PolygonMesh.
                 else
                 {
+                    // Give it a unique name
+                    polyMesh.setName(m_rootPolyMesh.getName() + "subMesh" + polyMesh.hashCode());
                     m_rootPolyMesh.addChild(polyMesh);
                 }
             }
