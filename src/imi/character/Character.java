@@ -821,7 +821,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         // assumed that the prefix should be the file protocol to the local machine
         // in the current folder.
         if (urlPrefix == null || urlPrefix.length() == 0)
-            urlPrefix = new String("file:///" + System.getProperty("user.dir") + "/");
+            urlPrefix = new String("file:///" + System.getProperty("user.dir") + File.separatorChar);
         // attach the appropriate head
         URL headLocation = null;
         try {
@@ -843,11 +843,17 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         Instruction attributeRoot = new Instruction();
         // Set the skeleton to our skeleton
         attributeRoot.addChildInstruction(InstructionType.setSkeleton, m_skeleton);
+
         // Load up any geometry requested by the provided attributes object
         List<String[]> load = attributes.getLoadInstructions();
         if (load != null) {
-            for (int i = 0; i < load.size(); i++)
-                attributeRoot.addChildInstruction(InstructionType.loadGeometry, urlPrefix + load.get(i)[0]);
+            for (int i = 0; i < load.size(); i++) {
+                if (checkURLPath(urlPrefix + load.get(i)[0]))
+                    attributeRoot.addChildInstruction(InstructionType.loadGeometry, urlPrefix + load.get(i)[0]);
+                else
+                    attributeRoot.addChildInstruction(InstructionType.loadGeometry, checkResourcePath(load.get(i)[0]));
+            }
+
         }
         // Skinned mesh attachments
         CharacterAttributes.SkinnedMeshParams [] add = attributes.getAddInstructions();
@@ -874,7 +880,10 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         String [] anims = attributes.getAnimations();
         if (anims != null && anims.length > 0) {
             for (int i = 0; i < anims.length; i++) {
-                attributeRoot.addChildInstruction(InstructionType.loadAnimation, urlPrefix + anims[i]);
+                if (checkURLPath(urlPrefix + anims[i]))
+                    attributeRoot.addChildInstruction(InstructionType.loadAnimation, urlPrefix + anims[i]);
+                else
+                    attributeRoot.addChildInstruction(InstructionType.loadAnimation, checkResourcePath(anims[i]));
             }
         }
 
@@ -882,12 +891,37 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         String [] facialAnims = attributes.getFacialAnimations();
         if (facialAnims != null && facialAnims.length > 0) {
             for (int i = 0; i < facialAnims.length; i++) {
-                attributeRoot.addChildInstruction(InstructionType.loadFacialAnimation, urlPrefix + facialAnims[i]);
+                if (checkURLPath(urlPrefix + facialAnims[i]))
+                    attributeRoot.addChildInstruction(InstructionType.loadFacialAnimation, urlPrefix + facialAnims[i]);
+                else
+                    attributeRoot.addChildInstruction(InstructionType.loadFacialAnimation, checkResourcePath(facialAnims[i]));
             }
         }
 
         // Execute the instruction tree
         instructionProcessor.execute(attributeRoot);
+    }
+
+    private boolean checkURLPath(String path) {
+        try {
+            URL urlPath     = new URL(path);
+            InputStream is  = urlPath.openStream();
+            is.close();
+            return true;
+        } catch (MalformedURLException ex) {
+            return false;
+        } catch (IOException ex) {
+            return false;
+        }
+    }
+
+    private String checkResourcePath(String path) {
+        String szResource   = null;
+        URL resourcePath    = getClass().getResource(File.separatorChar + path);
+        if (resourcePath != null) {
+            return resourcePath.toString();
+        }
+        return szResource;
     }
 
     /**

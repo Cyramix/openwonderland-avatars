@@ -996,36 +996,8 @@ public class SceneEssentials {
                 SkinnedMeshParams[] newparams   = new SkinnedMeshParams[smParams.size()];
                 smParams.toArray(newparams);
                 m_avatar.getAttributes().setAddInstructions(newparams);
-//                for (int i = 0; i < meshesToAdd.length; i++) {
-//                    for (int j = 1; j < meshesToAdd.length; j++) {
-//                        if (meshesToAdd[i] == null)
-//                            continue;
-//
-//                        if (meshesToAdd[i].equals(meshesToAdd[j]))
-//                            meshesToAdd[j] = null;
-//                    }
-//                }
 
                 List<String[]> loadinstructs = m_avatar.getAttributes().getLoadInstructions();
-//                SkinnedMeshParams[] params = m_avatar.getAttributes().getAddInstructions();
-//                ArrayList<SkinnedMeshParams> newParams = new ArrayList<SkinnedMeshParams>();
-//
-//                for (int i = 0; i < params.length; i++) {
-//                    for (int j = 0; j < meshestodelete.length; j++) {
-//                        if (params[i].meshName.equals(meshestodelete[j]))
-//                            continue;
-//                        newParams.add(params[i]);
-//                    }
-//                }
-//
-//                for (int i = 0; i < meshesToAdd.length; i++) {
-//                    if (meshesToAdd[i] == null)
-//                        continue;
-//
-//                    newParams.add(m_avatar.getAttributes().createSkinnedMeshParams(meshesToAdd[i], subGroup));
-//                }
-//
-//                m_avatar.getAttributes().setAddInstructions(newParams.toArray(new SkinnedMeshParams[newParams.size()]));
 
                 String[] szload   = new String[2];
                 szload[0]   = path;
