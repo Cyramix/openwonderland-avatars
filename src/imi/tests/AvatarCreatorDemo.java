@@ -826,7 +826,7 @@ public class AvatarCreatorDemo extends javax.swing.JFrame implements FrameRateLi
                 state.setCameraPosition(new Vector3f(0.0f, 0.0f, -3.2f));
                 state.setTargetFocalPoint(new Vector3f(0.0f, 0.0f, 0.0f));
                 state.setMinimumDistanceSquared(0.05f);
-                state.setMaximumDistanceSquared(8.0f);
+                state.setMaximumDistanceSquared(25.0f);
                 m_cameraProcessor.setCameraBehavior(model, state);
                 break;
             }
