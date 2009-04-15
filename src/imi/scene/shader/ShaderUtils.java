@@ -20,6 +20,7 @@ package imi.scene.shader;
 import com.jme.math.Matrix3f;
 import com.jme.math.Matrix4f;
 import com.jme.scene.state.GLSLShaderObjectsState;
+import imi.loaders.repository.Repository;
 import imi.scene.shader.dynamic.GLSLDataType;
 import imi.scene.shader.dynamic.GLSLShaderEffect;
 import imi.scene.shader.dynamic.GLSLShaderProgram;
@@ -293,11 +294,11 @@ public class ShaderUtils
         // Could be a regular shader class
         if (shaderDOM.getDefaultProgramName() != null) // Easy case
         {
+            Repository repo = (Repository)wm.getUserData(Repository.class);
             try
             {
                 Class classz = Class.forName(shaderDOM.getDefaultProgramName());
-                Constructor ctor = classz.getConstructor(WorldManager.class);
-                result = (AbstractShaderProgram) ctor.newInstance(wm);
+                result = repo.newShader(classz);
             }
             catch (Exception ex)
             {

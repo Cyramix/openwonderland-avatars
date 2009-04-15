@@ -213,10 +213,10 @@ public abstract class Character extends Entity implements SpatialObject, Animati
      * @param wm
      */
     public Character(URL configurationFile, WorldManager wm) {
-        this(configurationFile, wm, null);
+        this(configurationFile, wm, null, new PMatrix());
     }
 
-    public Character(URL configurationFile, WorldManager wm, String baseURL)
+    public Character(URL configurationFile, WorldManager wm, String baseURL, PMatrix transform)
     {
         super("InterimEntityName");
         xmlCharacter characterDOM = null;
@@ -235,6 +235,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
                 xmlCharacterAttributes xmlAttributes = characterDOM.getAttributes();
                 xmlAttributes.setBaseURL(baseURL);
                 loadedAttributes = new CharacterAttributes(xmlAttributes);
+                loadedAttributes.setOrigin(transform);
             }
             else
                 logger.log(Level.SEVERE, "JAXB somehow parsed the file and made some other object: " + characterObj.toString());
@@ -272,9 +273,8 @@ public abstract class Character extends Entity implements SpatialObject, Animati
 
             // Use a transparent material with a blob shadow texture
             PMeshMaterial shadowMaterial = new PMeshMaterial("ShadowMaterial");
-            URL path = getClass().getResource("/textures/shadow.png");
+            URL path = getClass().getClassLoader().getResource("imi/character/shadow.png");
             shadowMaterial.setTexture(path, 0);
-//            shadowMaterial.setTexture("assets/textures/shadow.png", 0, m_attributes.getBaseURL());
             shadowMaterial.setAlphaState(PMeshMaterial.AlphaTransparencyType.A_ONE);
             shadowMaterial.setColorMaterial(ColorMaterial.None);
 

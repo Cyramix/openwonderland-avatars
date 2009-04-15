@@ -35,6 +35,7 @@ import imi.character.statemachine.corestates.WalkState;
 import imi.character.steering.FollowBakedPath;
 import imi.character.steering.FollowPath;
 import imi.character.steering.GoTo;
+import imi.scene.PMatrix;
 import imi.utils.input.InputScheme;
 import imi.scene.processors.JSceneEventProcessor;
 import imi.serialization.xml.bindings.xmlCharacter;
@@ -91,9 +92,9 @@ public class Avatar extends imi.character.Character
             femaleContextSetup();
     }
 
-    public Avatar(URL configurationFile, WorldManager wm, String baseURL)
+    public Avatar(URL configurationFile, WorldManager wm, String baseURL, PMatrix transform)
     {
-        super(configurationFile, wm, baseURL);
+        super(configurationFile, wm, baseURL, transform);
         if (m_attributes.isMale())
             maleContextSetup();
         else
