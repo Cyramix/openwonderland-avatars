@@ -131,7 +131,13 @@ public class TextureMaterialProperties implements Serializable
         xmlTextureAttributes result = new xmlTextureAttributes();
         // Location
         if (m_imageLocation != null)
-            result.setRelativePath(m_imageLocation.toString().substring(m_imageLocation.toString().lastIndexOf("assets")));
+        {
+            int lastIndexOfAssets = m_imageLocation.toString().lastIndexOf("assets");
+            if (lastIndexOfAssets != -1)
+                result.setRelativePath(m_imageLocation.toString().substring(lastIndexOfAssets));
+            else
+                result.setRelativePath(m_imageLocation.getFile());
+        }
         else
             result.setRelativePath(null);
         // Texture Unit
