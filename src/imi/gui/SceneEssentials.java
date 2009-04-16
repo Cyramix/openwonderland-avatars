@@ -39,8 +39,6 @@ import imi.scene.JScene;
 import imi.scene.PMatrix;
 import imi.scene.PNode;
 import imi.scene.PScene;
-import imi.scene.animation.AnimationComponent.PlaybackMode;
-import imi.scene.animation.AnimationState;
 import imi.scene.camera.behaviors.FirstPersonCamModel;
 import imi.scene.camera.behaviors.TumbleObjectCamModel;
 import imi.scene.camera.state.FirstPersonCamState;
@@ -117,6 +115,7 @@ public class SceneEssentials {
     private File                            m_fileXML                       = null;
     private File                            m_fileModel                     = null;
     private File                            m_fileTexture                   = null;
+    private File                            m_animations                    = null;
 // Camera information
     private Vector3f                        m_camPos                        = new Vector3f(0.0f, 1.5f, 3.2f);
     private FlexibleCameraProcessor         m_curCameraProcessor            = null;
@@ -160,6 +159,8 @@ public class SceneEssentials {
     public File getFileModel() { return m_fileModel; }
 
     public File getFileTexture() { return m_fileTexture; }
+
+    public File getAnimFile() { return m_animations; }
 
     public PPolygonModelInstance getModelInstance() { return m_modelInst; }
 
@@ -1150,15 +1151,15 @@ public class SceneEssentials {
 
         int returnValue = m_jFileChooser_LoadAnim.showOpenDialog(arg0);
         if (returnValue == JFileChooser.APPROVE_OPTION) {
-            java.io.File animation = m_jFileChooser_LoadAnim.getSelectedFile();
+            m_animations = m_jFileChooser_LoadAnim.getSelectedFile();
             m_currentPScene.setUseRepository(useRepository);
 
             String protocal = "file:///" + System.getProperty("user.dir") + "/";
-            String path     = getRelativePath(animation);
+            String path     = getRelativePath(m_animations);
             String szURL    = protocal + path;
 
             try {
-                URL animURL = animation.toURI().toURL();
+                URL animURL = m_animations.toURI().toURL();
 
                 InstructionProcessor pProcessor = new InstructionProcessor(m_worldManager);
                 Instruction pRootInstruction = new Instruction();

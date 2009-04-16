@@ -21,8 +21,7 @@ package imi.tests;
 
 import com.jme.math.Vector3f;
 import imi.character.avatar.Avatar;
-import imi.character.avatar.FemaleAvatarAttributes;
-import imi.character.avatar.MaleAvatarAttributes;
+import imi.gui.JFrame_InstrumentationGUI;
 import imi.gui.JPanel_Animations;
 import imi.gui.SceneEssentials;
 import imi.gui.TreeExplorer;
@@ -36,6 +35,8 @@ import imi.scene.camera.state.FirstPersonCamState;
 import org.jdesktop.mtgame.WorldManager;
 import imi.scene.processors.JSceneEventProcessor;
 import imi.utils.input.AvatarControlScheme;
+import java.io.File;
+import java.net.MalformedURLException;
 import java.net.URL;
 import javax.swing.JFrame;
 
@@ -87,60 +88,69 @@ public class CustomizationExample extends DemoBase
 
         // Slow the camera down
         FirstPersonCamState camState = (FirstPersonCamState) wm.getUserData(CameraState.class);
-        camState.setMovementRate(0.01f);
-        // Create an attributes object describing the avatar
-        // We will use random customizations for this one
-        MaleAvatarAttributes maleAttributes = new MaleAvatarAttributes("RobertTheTestGuy",
-                                                                        0, // Feet
-                                                                        0, // Legs
-                                                                        2, // Torso
-                                                                        -1, // Hair = bald
-                                                                        6, // Head
-                                                                        12, // Skin
-                                                                        0); // Eye color
-        maleAttributes.setUsePhongLighting(true);
-//        // Put him over to the left a bit
-        maleAttributes.setOrigin(new PMatrix(new Vector3f(0,3.14f,0), Vector3f.UNIT_XYZ, Vector3f.ZERO));
-        Avatar maleAvatar = new Avatar(maleAttributes, wm);
-        // Now let's make a female using a specific configuration
-//        FemaleAvatarAttributes femaleAttributes =
-//                new FemaleAvatarAttributes("LizTheTestGal",
-//                                                 0, // Feet
-//                                                 2, // Legs
-//                                                 2, // Torso
-//                                                 -1, // Hair = bald
-//                                                 8, // Head
-//                                                 12, // Skin
-//                                                 25); // Eye color
-//        femaleAttributes.setUsePhongLighting(true);
-//        // Put her over to the right a bit
-//        femaleAttributes.setOrigin(new PMatrix(new Vector3f(-1, 0, 1)));
-//        Avatar femaleAvatar = new Avatar(femaleAttributes, wm);
+        camState.setMovementRate(0.03f);
+        try
+        {
+            loadConfigFiles(control);
+        }
+        catch (MalformedURLException ex)
+        {
 
-        // Select the male and add them both to the input team (collection of controllable avatars)
-//        maleAvatar.selectForInput();
-//        control.getAvatarTeam().add(maleAvatar);
-//        control.getAvatarTeam().add(femaleAvatar);
-//        femaleAvatar.selectForInput();
-
+        }
         // Hook the control scheme up the the camera in order to receieve input
         // events. We need this in order to control the Verlet arm ('Q' and 'E' to engage)
         control.getMouseEventsFromCamera();
+    }
 
-//        SceneEssentials scene = new SceneEssentials();
-//        scene.setAvatar(femaleAvatar);
-//        scene.setSceneData(femaleAvatar.getJScene(), femaleAvatar.getPScene(), repository, wm, null);
-//
-//        JPanel_Animations anim = new JPanel_Animations();
-//        anim.setPanel(scene);
-//        JFrame newFrame = new JFrame();
-//        newFrame.add(anim);
-//        newFrame.pack();
-//        newFrame.setVisible(true);
-//
-//        TreeExplorer te = new TreeExplorer();
-//        te.setExplorer(scene);
-//        te.setVisible(true);
+    private void loadConfigFiles(AvatarControlScheme controller) throws MalformedURLException
+    {
+        String base = "file:///" + System.getProperty("user.dir") + File.separatorChar;
+        URL[] configFiles = new URL[] {
+            new URL(base + "assets/configurations/FemaleD_CA_00.xml"),
+            new URL(base + "assets/configurations/FemaleD_AZ_00.xml"),
+            new URL(base + "assets/configurations/MaleFG_AA_00.xml"),
+            new URL(base + "assets/configurations/MaleFG_AA_01.xml"),
+            new URL(base + "assets/configurations/FemaleFG_CA_00.xml"),
+            new URL(base + "assets/configurations/FemaleFG_AA_00.xml"),
+            new URL(base + "assets/configurations/MaleFG_CA_00.xml"),
+            new URL(base + "assets/configurations/MaleFG_CA_01.xml"),
+            new URL(base + "assets/configurations/MaleFG_CA_02.xml"),
+            new URL(base + "assets/configurations/MaleD_CA_00.xml"),
+        };
+        Vector3f translationVec = new Vector3f(4, 0, 4);
+        PMatrix xform = new PMatrix(new Vector3f(0, 3.14159f, 0), Vector3f.UNIT_XYZ, translationVec);
+        Avatar avatar = null;
+        for (URL configFile : configFiles)
+        {
+            avatar = new Avatar(configFile, worldManager, null, xform);
+            avatar.selectForInput();
+            controller.getAvatarTeam().add(avatar);
+            translationVec.x -= 1;
+            xform.setTranslation(translationVec);
+        }
+        showInstruments(avatar, worldManager);
+    }
+
+    private void showInstruments(Avatar targetAvatar, WorldManager wm)
+    {
+        // "scene" data
+        SceneEssentials scene = new SceneEssentials();
+        scene.setAvatar(targetAvatar);
+        scene.setSceneData(targetAvatar.getJScene(), targetAvatar.getPScene(), repository, wm, null);
+        // Animation panel
+        JPanel_Animations anim = new JPanel_Animations();
+        anim.setPanel(scene);
+        JFrame newFrame = new JFrame();
+        newFrame.add(anim);
+        newFrame.pack();
+        newFrame.setVisible(true);
+        // Node explorer
+        TreeExplorer te = new TreeExplorer();
+        te.setExplorer(scene);
+        te.setVisible(true);
+        // Instrumentation controller
+        JFrame_InstrumentationGUI instruments = new JFrame_InstrumentationGUI(wm);
+        instruments.setVisible(true);
     }
 
     private void attachSkinnedHair(Avatar target, URL geometryLocation)

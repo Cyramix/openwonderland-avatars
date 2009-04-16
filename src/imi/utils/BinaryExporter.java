@@ -163,6 +163,7 @@ public class BinaryExporter {
 
         // The real serializtion write out
         serializeIT(m_currentSkeleton, m_outputFile);
+        System.out.println("Binary export complete");
     }
 
     public void serializeBinaryHead(SkeletonNode skeleton) {
