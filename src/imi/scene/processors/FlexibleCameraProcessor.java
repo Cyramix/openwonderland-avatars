@@ -17,6 +17,7 @@
  */
 package imi.scene.processors;
 
+import com.jme.scene.CameraNode;
 import com.jme.scene.Node;
 import imi.scene.PMatrix;
 import imi.scene.camera.behaviors.CameraModel;

@@ -20,6 +20,7 @@ package imi.character;
 import com.jme.image.Texture.MinificationFilter;
 import com.jme.math.Vector3f;
 import imi.scene.PMatrix;
+import imi.scene.PNode;
 import imi.scene.polygonmodel.PPolygonModelInstance;
 import imi.scene.polygonmodel.parts.PMeshMaterial;
 import imi.scene.polygonmodel.skinned.PPolygonSkinnedMeshInstance;
@@ -27,6 +28,9 @@ import imi.utils.PMathUtils;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.net.URL;
 import org.jdesktop.mtgame.WorldManager;
@@ -39,10 +43,10 @@ import org.jdesktop.mtgame.WorldManager;
  * @author Ronald E. Dahlgren
  * @author Shawn Kendall
  */
-public class EyeBall extends PPolygonSkinnedMeshInstance
+public class EyeBall extends PPolygonSkinnedMeshInstance implements Serializable
 {
     /** The Character who owns this eyeball **/
-    private Character character = null;
+    private transient Character character = null;
     /** The Model Instance that owns this eyeball **/
     private PPolygonModelInstance modelInst  = null;
     /** World space coordinates of the view target **/
@@ -193,5 +197,17 @@ public class EyeBall extends PPolygonSkinnedMeshInstance
             return resourcePath;
         }
         return resourcePath;
+    }
+
+    /****************************
+     * SERIALIZATION ASSISTANCE *
+     ****************************/
+    private void writeObject(ObjectOutputStream out) throws IOException {
+        out.defaultWriteObject();
+    }
+
+    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+        in.defaultReadObject();
+
     }
 }

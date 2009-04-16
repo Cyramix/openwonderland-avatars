@@ -49,7 +49,7 @@ public abstract class BaseShaderProgram implements RenderUpdater, AbstractShader
     /** These files point to the vertex and fragment source respectively **/
     protected String []       m_shaderSource = new String [2];
     /** The world manager is needed in order to create render states **/
-    protected WorldManager  m_WM          = null; 
+    protected transient WorldManager  m_WM          = null;
     /** Map the relationships between property names and property objects **/
     protected Map<String,ShaderProperty> m_propertyMap  = new HashMap<String,ShaderProperty>();
     /** Used to indicate that the shader state object has finsihed loading**/

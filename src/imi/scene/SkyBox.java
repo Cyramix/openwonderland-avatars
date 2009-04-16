@@ -24,11 +24,9 @@ import com.jme.math.Vector3f;
 import com.jme.renderer.Renderer;
 import com.jme.scene.Node;
 import com.jme.scene.shape.Quad;
-import com.jme.scene.state.LightState;
 import com.jme.scene.state.RenderState;
 import com.jme.scene.state.TextureState;
 import com.jme.scene.state.ZBufferState;
-import com.jme.system.DisplaySystem;
 import com.jme.system.JmeException;
 import org.jdesktop.mtgame.WorldManager;
 

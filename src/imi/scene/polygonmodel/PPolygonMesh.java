@@ -25,7 +25,6 @@ import imi.scene.polygonmodel.parts.polygon.PPolygonTexCoord;
 import imi.scene.polygonmodel.parts.polygon.PPolygonPosition;
 import imi.scene.boundingvolumes.PSphere;
 import imi.scene.boundingvolumes.PCube;
-import java.util.ArrayList;
 import imi.scene.PNode;
 import imi.scene.polygonmodel.parts.*;
 import imi.scene.utils.*;
