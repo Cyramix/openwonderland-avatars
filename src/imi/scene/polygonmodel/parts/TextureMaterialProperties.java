@@ -23,7 +23,6 @@ import com.jme.image.Texture.CombinerFunctionAlpha;
 import com.jme.image.Texture.MagnificationFilter;
 import com.jme.image.Texture.MinificationFilter;
 import com.jme.image.Texture.WrapMode;
-import com.jme.util.TextureManager;
 import imi.loaders.repository.Repository;
 import imi.serialization.xml.bindings.xmlTextureAttributes;
 import java.io.IOException;

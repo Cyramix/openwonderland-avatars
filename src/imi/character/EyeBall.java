@@ -24,6 +24,11 @@ import imi.scene.polygonmodel.PPolygonModelInstance;
 import imi.scene.polygonmodel.parts.PMeshMaterial;
 import imi.scene.polygonmodel.skinned.PPolygonSkinnedMeshInstance;
 import imi.utils.PMathUtils;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
 import org.jdesktop.mtgame.WorldManager;
 
 /**
@@ -155,10 +160,38 @@ public class EyeBall extends PPolygonSkinnedMeshInstance
     void applyEyeBallMaterial(String texture, WorldManager wm) {
         // change textures to not use mip maps... leads to freaky eyeballs
         PMeshMaterial myMaterial = getMaterialRef();
-        if (texture != null)
-            myMaterial.setTexture(texture, 0, character.m_attributes.getBaseURL());
+        if (texture != null) {
+            if (checkURLPath(character.m_attributes.getBaseURL() + texture))
+                myMaterial.setTexture(texture, 0, character.m_attributes.getBaseURL());
+            else {
+                URL path = checkResourcePath(texture);
+                if (path != null)
+                    myMaterial.setTexture(path, 0);
+            }
+        }
         myMaterial.getTexture(0).setMinFilter(MinificationFilter.BilinearNoMipMaps);
         
         applyMaterial();
+    }
+
+    private boolean checkURLPath(String path) {
+        try {
+            URL urlPath     = new URL(path);
+            InputStream is  = urlPath.openStream();
+            is.close();
+            return true;
+        } catch (MalformedURLException ex) {
+            return false;
+        } catch (IOException ex) {
+            return false;
+        }
+    }
+
+    private URL checkResourcePath(String path) {
+        URL resourcePath    = getClass().getResource(File.separatorChar + path);
+        if (resourcePath != null) {
+            return resourcePath;
+        }
+        return resourcePath;
     }
 }
