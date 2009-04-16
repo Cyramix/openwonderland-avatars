@@ -1490,7 +1490,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
             PMeshMaterial meshMat = new PMeshMaterial(xmlMat, m_wm, m_attributes.getBaseURL());
             String targetMeshName = xmlMat.getTargetMeshName();
             // find the mesh it belongs to
-            PPolygonMeshInstance meshInst = getSkeleton().getSkinnedMeshInstance(targetMeshName);
+            PPolygonMeshInstance meshInst = (PPolygonMeshInstance)getSkeleton().findChild(targetMeshName);
             if (meshInst != null)
             {
                 // Sweet! Apply the material
