@@ -45,7 +45,7 @@
             <JointToAttachOn>Head</JointToAttachOn>
             <LocalSpaceTransform>
                 <RowOne>
-                    <X>-1.0</X>
+                    <X>1.0</X>
                     <Y>0.0</Y>
                     <Z>0.0</Z>
                     <W>0.0</W>
@@ -59,8 +59,8 @@
                 <RowThree>
                     <X>0.0</X>
                     <Y>0.0</Y>
-                    <Z>-1.0</Z>
-                    <W>-0.026</W>
+                    <Z>1.0</Z>
+                    <W>0.026</W>
                 </RowThree>
                 <RowFour>
                     <X>0.0</X>
