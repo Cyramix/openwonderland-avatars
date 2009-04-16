@@ -181,7 +181,7 @@ public class HairShader extends BaseShaderProgram implements AbstractShaderProgr
     @Override
     public xmlShaderProgram generateShaderProgramDOM() {
         xmlShaderProgram result = new xmlShaderProgram();
-        result.setDefaultProgramName(ClothingShaderSpecColor.class.getName());
+        result.setDefaultProgramName(HairShader.class.getName());
         return result;
     }
 
