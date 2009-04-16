@@ -214,7 +214,7 @@ private void loadSelectedDefaultShader(java.awt.event.ActionEvent evt) {//GEN-FI
         if (m_shader instanceof GLSLShaderProgram)
             m_effectComposer.setShaderProgram((GLSLShaderProgram)m_shader);
         else
-            m_effectComposer.setShaderProgram(new GLSLShaderProgram());
+            m_effectComposer.setShaderProgram(new GLSLShaderProgram(m_wm));
     }
     
     public void setShader(AbstractShaderProgram shader)

@@ -35,7 +35,7 @@ import javax.swing.ListSelectionModel;
 public class ShaderEffectComposerPanel extends javax.swing.JPanel 
 {
     /** The program to operate on **/
-    private GLSLShaderProgram   m_shader = new GLSLShaderProgram();
+    private GLSLShaderProgram   m_shader = null;
     /** This flag indicates that a compile is needed **/
     private boolean             m_bNeedsCompile = false;
     /** Convenience reference for notifying of compile **/

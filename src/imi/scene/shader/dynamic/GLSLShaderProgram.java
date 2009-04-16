@@ -786,6 +786,8 @@ public class GLSLShaderProgram implements AbstractShaderProgram, RenderUpdater
      */
     public void setWorldManager(WorldManager wm)
     {
+        if (wm == null)
+            throw new IllegalArgumentException("The shader must have a valid worldmanager!");
         m_WM = wm;
     }
     ////////////////////////////////////////////////////////////////////////////
