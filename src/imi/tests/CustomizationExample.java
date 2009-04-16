@@ -35,7 +35,6 @@ import imi.scene.camera.state.FirstPersonCamState;
 import org.jdesktop.mtgame.WorldManager;
 import imi.scene.processors.JSceneEventProcessor;
 import imi.utils.input.AvatarControlScheme;
-import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import javax.swing.JFrame;
@@ -104,18 +103,16 @@ public class CustomizationExample extends DemoBase
 
     private void loadConfigFiles(AvatarControlScheme controller) throws MalformedURLException
     {
-        String base = "file:///" + System.getProperty("user.dir") + File.separatorChar;
         URL[] configFiles = new URL[] {
-            new URL(base + "assets/configurations/FemaleD_CA_00.xml"),
-            new URL(base + "assets/configurations/FemaleD_AZ_00.xml"),
-            new URL(base + "assets/configurations/MaleFG_AA_00.xml"),
-            new URL(base + "assets/configurations/MaleFG_AA_01.xml"),
-            new URL(base + "assets/configurations/FemaleFG_CA_00.xml"),
-            new URL(base + "assets/configurations/FemaleFG_AA_00.xml"),
-            new URL(base + "assets/configurations/MaleFG_CA_00.xml"),
-            new URL(base + "assets/configurations/MaleFG_CA_01.xml"),
-            new URL(base + "assets/configurations/MaleFG_CA_02.xml"),
-            new URL(base + "assets/configurations/MaleD_CA_00.xml"),
+            new URL("file:///work/avatars/assets/configurations/FemaleD_CA_00.xml"),
+            new URL("file:///work/avatars/assets/configurations/FemaleD_AZ_00.xml"),
+            new URL("file:///work/avatars/assets/configurations/MaleFG_AA_00.xml"),
+            new URL("file:///work/avatars/assets/configurations/MaleFG_AA_01.xml"),
+            new URL("file:///work/avatars/assets/configurations/FemaleFG_CA_00.xml"),
+            new URL("file:///work/avatars/assets/configurations/MaleFG_CA_00.xml"),
+            new URL("file:///work/avatars/assets/configurations/MaleFG_CA_01.xml"),
+            new URL("file:///work/avatars/assets/configurations/MaleFG_CA_02.xml"),
+            new URL("file:///work/avatars/assets/configurations/MaleD_CA_00.xml"),
         };
         Vector3f translationVec = new Vector3f(4, 0, 4);
         PMatrix xform = new PMatrix(new Vector3f(0, 3.14159f, 0), Vector3f.UNIT_XYZ, translationVec);
