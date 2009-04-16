@@ -291,7 +291,8 @@ public class SceneEssentials {
                 }
 
                 if (f.getName().toLowerCase().endsWith(".dae") ||
-                    f.getName().toLowerCase().endsWith(".bin")) {
+                    f.getName().toLowerCase().endsWith(".bin") ||
+                    f.getName().toLowerCase().endsWith(".bhf")) {
                     return true;
                 }
                 return false;
