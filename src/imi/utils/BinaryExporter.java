@@ -46,6 +46,7 @@ import org.jdesktop.mtgame.WorldManager;
  * @author Paul Viet Nguyen Truong & Ronald E Dahlgren
  */
 public class BinaryExporter {
+    private static final Logger logger = Logger.getLogger(BinaryExporter.class.getName());
 ////////////////////////////////////////////////////////////////////////////////
 // Class Data Members
 ////////////////////////////////////////////////////////////////////////////////
@@ -216,7 +217,7 @@ public class BinaryExporter {
     }
 
     public void attatchHeadSkeleton(SkeletonNode bodySkeleton, SkeletonNode headSkeleton, PScene pscene, WorldManager wm) {
-        List<PPolygonSkinnedMesh> skinnedMeshList                   = headSkeleton.getAllSkinnedMeshes();
+        List<PPolygonSkinnedMeshInstance> skinnedMeshList           = headSkeleton.getSkinnedMeshInstances();
         SkinnedMeshJoint copyJoint                                  = headSkeleton.getSkinnedMeshJoint("Neck");
 
         SkinnedMeshJoint originalJoint                              = bodySkeleton.getSkinnedMeshJoint("Neck");
@@ -226,12 +227,11 @@ public class BinaryExporter {
         originalJoint.getParent().replaceChild(originalJoint, copyJoint, false);
         bodySkeleton.refresh();
 
-        PPolygonSkinnedMeshInstance skinnedMeshInstance = null;
+        if (skinnedMeshList.size() == 0)
+            logger.warning("No skinned mesh instances found in skeleton. Do you have meshes instead?");
 
-        for (int i = 0; i < skinnedMeshList.size(); i++) {
-            skinnedMeshInstance = (PPolygonSkinnedMeshInstance) pscene.addMeshInstance(skinnedMeshList.get(i), new PMatrix());
-            bodySkeleton.addToSubGroup(skinnedMeshInstance, "Head");
-        }
+        for (PPolygonSkinnedMeshInstance meshInst : skinnedMeshList)
+            bodySkeleton.addToSubGroup(meshInst, "Head");
 
         for (int i = 0; i < headSkeleton.getAnimationGroupCount(); i++) {
             for (AnimationCycle cycle : headSkeleton.getAnimationGroup(i).getCycles())

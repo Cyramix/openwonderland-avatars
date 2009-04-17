@@ -433,6 +433,10 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         // Hook up eyeballs
         m_eyes = new CharacterEyes(m_attributes.getEyeballTexture(), this, m_wm);
 
+        // At this point, all meshes have been loaded. We should now ensure that
+        // all of the child meshinstances have material states.
+        initializeMeshInstanceMaterialStates();
+
         // Apply remaining customizations
         if (characterDOM != null)
         {
@@ -669,6 +673,35 @@ public abstract class Character extends Entity implements SpatialObject, Animati
             m_bWaitingOnAsset = false;
         }
     };
+
+    private void initializeMeshInstanceMaterialStates() {
+        if (m_pscene == null)
+        {
+            logger.severe("Cannot initialize material states with a null pscene!");
+            return;
+        }
+
+        FastList<PNode> queue = new FastList<PNode>();
+        PPolygonMeshInstance meshInst = null;
+        PNode current = null;
+        queue.add(m_pscene);
+        // traverse!
+        while (queue.isEmpty() == false)
+        {
+            current = queue.removeFirst();
+            // Process
+            if (current instanceof PPolygonMeshInstance)
+            {
+                meshInst = (PPolygonMeshInstance) current;
+                meshInst.setPScene(m_pscene);
+                meshInst.initializeStates(m_pscene);
+            }
+            // Add the kids
+            if (current.getChildrenCount() > 0)
+                for (PNode kid : current.getChildren())
+                    queue.add(kid);
+        }
+    }
 
     /**
      * Load a head file and return the skeleton of the new head.
@@ -1496,6 +1529,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
                 // Sweet! Apply the material
                 meshInst.setMaterial(meshMat);
                 meshInst.applyMaterial();
+                meshInst.getGeometry().setSubmitGeometry(true);
             }
             else
             {
@@ -1778,12 +1812,11 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         m_skeleton.refresh();
         
         // Get all the SkinnedMeshInstances & place it in the head subgroup
-        PPolygonSkinnedMeshInstance skinnedMeshInstance = null;
-        List<PPolygonSkinnedMesh> skinnedMeshList = newHeadSkeleton.getAllSkinnedMeshes();
-        for (int i = 0; i < skinnedMeshList.size(); i++) {
-            skinnedMeshInstance = (PPolygonSkinnedMeshInstance) m_pscene.addMeshInstance(skinnedMeshList.get(i), new PMatrix());
-            m_skeleton.addToSubGroup(skinnedMeshInstance, "Head");
-        }
+        List<PPolygonSkinnedMeshInstance> skinnedMeshList = newHeadSkeleton.getSkinnedMeshInstances();
+        if (skinnedMeshList.size() == 0)
+            logger.warning("No skinned mesh instances found in skeleton. Do you have meshes instead?");
+        for (PPolygonSkinnedMeshInstance meshInst : skinnedMeshList)
+            m_skeleton.addToSubGroup(meshInst, "Head");
 
         // Finally, apply the default shaders
         setDefaultHeadShaders();
@@ -1868,7 +1901,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
     }
 
     private void attatchHeadSkeleton(SkeletonNode bodySkeleton, SkeletonNode headSkeleton, PScene pscene, WorldManager wm) {
-        List<PPolygonSkinnedMesh> skinnedMeshList                   = headSkeleton.getAllSkinnedMeshes();
+        List<PPolygonSkinnedMeshInstance> skinnedMeshList           = headSkeleton.getSkinnedMeshInstances();
         SkinnedMeshJoint copyJoint                                  = headSkeleton.getSkinnedMeshJoint("Neck");
 
         SkinnedMeshJoint originalJoint                              = bodySkeleton.getSkinnedMeshJoint("Neck");
@@ -1880,12 +1913,11 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         originalJoint.getParent().replaceChild(originalJoint, copyJoint, false);
         bodySkeleton.refresh();
 
-        PPolygonSkinnedMeshInstance skinnedMeshInstance = null;
+        if (skinnedMeshList.size() == 0)
+            logger.warning("No skinned mesh instances found in skeleton. Do you have meshes instead?");
 
-        for (int i = 0; i < skinnedMeshList.size(); i++) {
-            skinnedMeshInstance = (PPolygonSkinnedMeshInstance) pscene.addMeshInstance(skinnedMeshList.get(i), new PMatrix());
-            bodySkeleton.addToSubGroup(skinnedMeshInstance, "Head");
-        }
+        for (PPolygonSkinnedMeshInstance meshInst : skinnedMeshList)
+            bodySkeleton.addToSubGroup(meshInst, "Head");
 
         if (bodySkeleton.getAnimationComponent().getGroupCount() > 1) {
             for (int i = 0; i < headSkeleton.getAnimationGroupCount(); i++) {

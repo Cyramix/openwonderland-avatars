@@ -76,12 +76,28 @@ public class PPolygonSkinnedMeshInstance extends PPolygonMeshInstance implements
         return(m_skeletonNode);
     }
 
+    /**
+     * Assigns the provided matrix array as the cached InverseBindPose for this
+     * mesh. Only the reference is copied, so be careful when modifying the collection
+     * after assignment.
+     * @param newInverseBindPose
+     */
     public void setInverseBindPose(PMatrix[] newInverseBindPose) {
         m_InverseBindPose = newInverseBindPose;
     }
 
+    /**
+     * This method assigns the provided skeleton node as the skeleton this skinned
+     * mesh instance will be attached to. The provided skeleton must not be null
+     * and should be fully initialized.
+     * @param skeleton
+     * @throws IllegalArgumentException If skeleton == null.
+     */
     public void setAndLinkSkeletonNode(SkeletonNode skeleton)
     {
+        if (skeleton == null)
+            throw new IllegalArgumentException("Skeleton provided to the Skinned" +
+                    "MeshInstance must not be null.");
         m_skeletonNode = skeleton;
         linkJointsToSkeletonNode();
     }
@@ -127,6 +143,12 @@ public class PPolygonSkinnedMeshInstance extends PPolygonMeshInstance implements
         return(false);
     }
 
+    /**
+     * This method builds the influence indices for this mesh instance by querying
+     * the skeleton node for the BFT index of each joint listed as an influence.
+     * For success, this method requires that a fully initialized skeleton node
+     * be available.
+     */
     private void linkJointsToSkeletonNode()
     {
         int jointIndex = -1;
@@ -275,8 +297,7 @@ public class PPolygonSkinnedMeshInstance extends PPolygonMeshInstance implements
     private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException
     {
         in.defaultReadObject();
-        if (m_geometry != null && m_skeletonNode != null)
-            linkJointsToSkeletonNode();
+        // Skeleton node parent will call setAndLinkSkeletonNode.
         m_matrixFloats = new float[16];
     }
 }

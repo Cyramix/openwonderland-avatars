@@ -1096,5 +1096,9 @@ public class SkeletonNode extends PNode implements Animated, Serializable
         for (int i = 0; i < m_animationComponent.getGroupCount(); i++)
             m_animationStates.add(new AnimationState(i));
         queue = new FastList<PNode>();
+        // Now iterate through all the attached skinned mesh instances and
+        // assign the skeleton node
+        for (PPolygonSkinnedMeshInstance meshInst : getSkinnedMeshInstances())
+            meshInst.setAndLinkSkeletonNode(this);
     }
 }

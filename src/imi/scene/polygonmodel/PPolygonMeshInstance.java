@@ -139,13 +139,15 @@ public class PPolygonMeshInstance extends PNode implements Serializable
    
     
     /**
-     * Initialize the material and texture state objects for this mesh.
-     * This is relies on grabbing the render manager from the world manager.
+     * Initialize the material and texture state objects for this mesh if it has
+     * not already been done. This is relies on grabbing the render manager
+     * from the world manager via the provided PScene.
      * @param pscene A pscene with a world manager reference
      */
-    private void initializeStates(PScene pscene)
+    public void initializeStates(PScene pscene)
     {
-        m_materialStates = new PMeshMaterialStates(pscene.getWorldManager().getRenderManager());
+        if (m_materialStates == null)
+            m_materialStates = new PMeshMaterialStates(pscene.getWorldManager().getRenderManager());
     }
     
     public SharedMesh getSharedMesh()
@@ -265,7 +267,12 @@ public class PPolygonMeshInstance extends PNode implements Serializable
         else
             logger.severe("Requested shader was null! (index was " + index + ", shader array length was " + m_material.getShaders().length);
     }
-    
+
+    /**
+     * This method applies the material the this mesh instance. It requires that a
+     * material exist (or it's geometry have a valid material) as well as a material
+     * states collection.
+     */
     public void applyMaterial()
     {
         // Debugging / Diagnostic output
