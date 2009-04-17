@@ -202,7 +202,7 @@ public class ColladaEnvironment extends Entity
         m_jmeRoot.setRenderState(buf);
         m_jmeRoot.setRenderState(cs);
         m_jmeRoot.setRenderState(ls);
-//        nullifyColorBuffers();
+        nullifyColorBuffers();
         visitNodes();
         m_jmeRoot.updateRenderState();
     }
@@ -222,6 +222,13 @@ public class ColladaEnvironment extends Entity
             
             if (current instanceof SharedMesh || current instanceof TriMesh)
             {
+                // Are there any indices?
+                TriMesh trimesh = (TriMesh)current;
+                if (trimesh.getIndexBuffer() == null || trimesh.getIndexBuffer().capacity() == 0)
+                {
+                    current.getParent().detachChild(current);
+                    continue;
+                }
                 MaterialState matState = (MaterialState) (current).getRenderState(RenderState.RS_MATERIAL);
                 matState.setColorMaterial(MaterialState.ColorMaterial.AmbientAndDiffuse);
                 matState.setMaterialFace(MaterialState.MaterialFace.FrontAndBack);
