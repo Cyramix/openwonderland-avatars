@@ -107,7 +107,7 @@ public class HairShader extends BaseShaderProgram implements AbstractShaderProgr
      */
     public HairShader(WorldManager wm, float fAmbientPower)
     {
-        this(wm, fAmbientPower, 0.5f, 3.4f);
+        this(wm, fAmbientPower, 0.8f, 3.4f);
     }
 
     /**

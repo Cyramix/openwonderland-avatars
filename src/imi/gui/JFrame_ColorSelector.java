@@ -24,10 +24,10 @@ import imi.scene.shader.NoSuchPropertyException;
 import imi.scene.shader.ShaderProperty;
 import imi.scene.shader.dynamic.GLSLDataType;
 import imi.scene.shader.dynamic.GLSLShaderProgram;
-import imi.scene.shader.effects.MeshColorModulation;
 import imi.scene.shader.programs.ClothingShaderDiffuseAsSpec;
 import imi.scene.shader.programs.ClothingShaderSpecColor;
 import imi.scene.shader.programs.FleshShader;
+import imi.scene.shader.programs.HairShader;
 import imi.scene.shader.programs.SimpleTNLWithAmbient;
 import java.awt.Color;
 import java.util.List;
@@ -78,6 +78,9 @@ public class JFrame_ColorSelector extends javax.swing.JFrame implements ChangeLi
             return;
 
         PNode node = m_sceneData.getAvatar().getSkeleton().findChild("Hair");
+        if (node == null)
+            node = m_sceneData.getAvatar().getSkeleton().findChild("MysteryNode!");
+        
         PPolygonMeshInstance hair = null;
         if (node != null)
             hair = (PPolygonMeshInstance) node.getChild(0);
@@ -297,15 +300,16 @@ public class JFrame_ColorSelector extends javax.swing.JFrame implements ChangeLi
     public void setMeshColor(PPolygonMeshInstance meshInst, float[] fColorArray) {
         // assign a texture to the mesh instance
         PMeshMaterial material = meshInst.getMaterialRef();
-        AbstractShaderProgram shader = material.getShader();
         Repository repo = (Repository)m_sceneData.getWM().getUserData(Repository.class);
-        AbstractShaderProgram accessoryShader = repo.newShader(SimpleTNLWithAmbient.class);
+        AbstractShaderProgram accessoryShader   = repo.newShader(SimpleTNLWithAmbient.class);
+        AbstractShaderProgram hairShader        = repo.newShader(HairShader.class);
         
-        if (meshInst.getParent().getName().toLowerCase().contains("hair"))
+        if (meshInst.getParent().getName().toLowerCase().contains("hair") || meshInst.getParent().getName().toLowerCase().contains("mysterynode!"))
         {
             try {
-                shader.setProperty(new ShaderProperty("materialColor", GLSLDataType.GLSL_VEC3, fColorArray));
-                shader.setProperty(new ShaderProperty("specColor", GLSLDataType.GLSL_VEC3, fColorArray));
+                hairShader.setProperty(new ShaderProperty("materialColor", GLSLDataType.GLSL_VEC3, fColorArray));
+                hairShader.setProperty(new ShaderProperty("specColor", GLSLDataType.GLSL_VEC3, fColorArray));
+                material.setShader(hairShader);
             } catch (Exception ex) {
                 Logger.getLogger(Character.class.getName()).log(Level.SEVERE, null, ex); }
         } else {

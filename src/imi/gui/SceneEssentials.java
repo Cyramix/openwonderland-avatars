@@ -867,6 +867,7 @@ public class SceneEssentials {
             try {
 
                 URL modelURL = m_fileModel.toURI().toURL();
+
                 m_avatar.installHeadN(modelURL);
                 m_avatar.getAttributes().setHeadAttachment(path);
                 m_avatar.setDefaultShaders();

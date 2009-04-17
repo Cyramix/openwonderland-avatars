@@ -1873,8 +1873,9 @@ public abstract class Character extends Entity implements SpatialObject, Animati
 
         SkinnedMeshJoint originalJoint                              = bodySkeleton.getSkinnedMeshJoint("Neck");
         bodySkeleton.clearSubGroup("Head");
-        bodySkeleton.getAnimationGroup(1).clear();
 
+        if (bodySkeleton.getAnimationGroup(1) != null)
+            bodySkeleton.getAnimationGroup(1).clear();
 
         originalJoint.getParent().replaceChild(originalJoint, copyJoint, false);
         bodySkeleton.refresh();
@@ -1886,9 +1887,18 @@ public abstract class Character extends Entity implements SpatialObject, Animati
             bodySkeleton.addToSubGroup(skinnedMeshInstance, "Head");
         }
 
-        for (int i = 0; i < headSkeleton.getAnimationGroupCount(); i++) {
-            for (AnimationCycle cycle : headSkeleton.getAnimationGroup(i).getCycles())
-                bodySkeleton.getAnimationGroup(1).addCycle(cycle);
+        if (bodySkeleton.getAnimationComponent().getGroupCount() > 1) {
+            for (int i = 0; i < headSkeleton.getAnimationGroupCount(); i++) {
+                for (AnimationCycle cycle : headSkeleton.getAnimationGroup(i).getCycles())
+                    bodySkeleton.getAnimationGroup(1).addCycle(cycle);
+            }
+        } else {
+            AnimationGroup facialAnims = new AnimationGroup("FacialAnimations");
+            for (int i = 0; i < headSkeleton.getAnimationGroupCount(); i++) {
+                for (AnimationCycle cycle : headSkeleton.getAnimationGroup(i).getCycles())
+                    facialAnims.addCycle(cycle);
+            }
+            bodySkeleton.getAnimationComponent().addGroup(facialAnims);
         }
 
         // synch up animation states with groups

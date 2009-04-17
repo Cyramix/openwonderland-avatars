@@ -1477,7 +1477,7 @@ public class AvatarCreatorDemo extends javax.swing.JFrame implements FrameRateLi
                 loadingWindow(true);
                 runProgressBar(true);
 
-                m_sceneData.addAvatarHeadDAEFile(true, m_base);
+                m_sceneData.addAvatarHeadDAEFileN(true, m_base);
                 resetOpenTools();
 
                 runProgressBar(false);

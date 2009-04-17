@@ -18,7 +18,6 @@
 package imi.tests;
 
 import imi.scene.SkyBox;
-import com.jme.bounding.BoundingBox;
 import com.jme.image.Texture;
 import com.jme.light.LightNode;
 import com.jme.light.PointLight;
@@ -27,7 +26,6 @@ import com.jme.math.Vector3f;
 import com.jme.renderer.ColorRGBA;
 import com.jme.scene.CameraNode;
 import com.jme.scene.Node;
-import com.jme.scene.shape.Box;
 import com.jme.scene.state.CullState;
 import com.jme.scene.state.LightState;
 import com.jme.scene.state.MaterialState;
@@ -84,7 +82,6 @@ import org.jdesktop.mtgame.RenderComponent;
 //import mtgame.tests.sigraph.SkyBox;
 import org.jdesktop.mtgame.AWTInputComponent;
 import org.jdesktop.mtgame.InputManager;
-import org.jdesktop.mtgame.processor.RotationProcessor;
 import imi.loaders.repository.SharedAsset;
 import imi.loaders.repository.AssetDescriptor;
 import imi.loaders.repository.Repository;
@@ -98,7 +95,6 @@ import imi.scene.processors.JSceneEventProcessor;
 import imi.utils.instruments.DefaultInstrumentation;
 import imi.utils.instruments.Instrumentation;
 import java.net.URL;
-import java.util.Timer;
 import org.jdesktop.mtgame.RenderBuffer;
 
 
@@ -125,9 +121,9 @@ public class DemoBase {
 
     /** View port options **/
     protected int          desiredFrameRate   = 60;
-    protected int          width              = 800;
-    protected int          height             = 600;
-    protected float        aspect             = 800.0f/600.0f;
+    protected int          width              = 1920;
+    protected int          height             = 1080;
+    protected float        aspect             = 1920.0f/1080.0f;
     
     /** Caches command line parameters for subclass usage **/
     private String[]    args = null;
