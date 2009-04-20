@@ -1779,10 +1779,12 @@ public class SceneEssentials {
         PNode mesh = m_avatar.getSkeleton().findChild(subGroup);
         ArrayList<PNode> meshesToDelete = new ArrayList<PNode>();
 
-        if (mesh.getChildrenCount() > 0) {
-            for (int i = 0; i < mesh.getChildrenCount(); i++)
-                meshesToDelete.add(mesh.getChild(i));
-            m_avatar.getSkeleton().findAndRemoveChild(subGroup);
+        if (mesh != null) {
+            if (mesh.getChildrenCount() > 0) {
+                for (int i = 0; i < mesh.getChildrenCount(); i++)
+                    meshesToDelete.add(mesh.getChild(i));
+                m_avatar.getSkeleton().findAndRemoveChild(subGroup);
+            }
         }
 
         pRootInstruction.addChildInstruction(InstructionType.loadGeometry, meshLocation);

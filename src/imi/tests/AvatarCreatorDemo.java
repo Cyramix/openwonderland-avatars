@@ -122,9 +122,9 @@ public class AvatarCreatorDemo extends javax.swing.JFrame implements FrameRateLi
     protected RenderBuffer              m_renderBuffer      = null;
 
     protected int                       m_desiredFrameRate  = 60;
-    protected int                       m_width             = 400;
-    protected int                       m_height            = 600;
-    protected float                     m_aspect            = 400.0f/600.0f;
+    protected int                       m_width             = 1024;
+    protected int                       m_height            = 768;
+    protected float                     m_aspect            = 1024.0f/768.0f;
         
     protected Component                 m_base              = this;
     protected JFrame_AdvOptions         m_AdvOptions        = null;
@@ -140,8 +140,8 @@ public class AvatarCreatorDemo extends javax.swing.JFrame implements FrameRateLi
     protected JDialog                   m_LoadWindow        = null;
 
     protected URL                       m_presetCaucasian   = null;
-    protected Dimension                 m_DefaultSize       = new Dimension(m_width, 700);
-    protected Dimension                 m_OpenSize          = new Dimension(500, 675);
+    protected Dimension                 m_DefaultSize       = new Dimension(m_width, 800);
+    protected Dimension                 m_OpenSize          = new Dimension(960, 800);
 
     protected float                     m_offset            = 3.2f;
     protected Vector3f                  m_camPos            = new Vector3f(0.0f, 0.0f, 0.0f);
@@ -204,7 +204,7 @@ public class AvatarCreatorDemo extends javax.swing.JFrame implements FrameRateLi
             Logger.getLogger(AvatarCreatorDemo.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        this.setSize(m_DefaultSize);
+        //this.setSize(m_DefaultSize);
         runProgressBar(false);
     }
 
@@ -541,7 +541,7 @@ public class AvatarCreatorDemo extends javax.swing.JFrame implements FrameRateLi
 
         m_LoadWindow = new JDialog(this, "Loading", false);
 
-        m_LoadWindow.setSize(150, 1);
+        //m_LoadWindow.setSize(150, 1);
     }
 
     /**
@@ -1228,7 +1228,6 @@ public class AvatarCreatorDemo extends javax.swing.JFrame implements FrameRateLi
         jMenuItem_About = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setResizable(false);
 
         jPanel_MainPanel.setMinimumSize(new java.awt.Dimension(400, 674));
         jPanel_MainPanel.setPreferredSize(new java.awt.Dimension(400, 674));
@@ -1308,7 +1307,6 @@ public class AvatarCreatorDemo extends javax.swing.JFrame implements FrameRateLi
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        gridBagConstraints.weightx = 1.0;
         jPanel_MainPanel.add(jToolBar_Hotkeys, gridBagConstraints);
 
         jPanel_DisplayWindow.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
@@ -1327,6 +1325,7 @@ public class AvatarCreatorDemo extends javax.swing.JFrame implements FrameRateLi
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.weighty = 1.0;

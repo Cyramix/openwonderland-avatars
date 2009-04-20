@@ -121,9 +121,9 @@ public class DemoBase {
 
     /** View port options **/
     protected int          desiredFrameRate   = 60;
-    protected int          width              = 1920;
-    protected int          height             = 1080;
-    protected float        aspect             = 1920.0f/1080.0f;
+    protected int          width              = 800;
+    protected int          height             = 600;
+    protected float        aspect             = 800.0f/600.0f;
     
     /** Caches command line parameters for subclass usage **/
     private String[]    args = null;
