@@ -166,13 +166,14 @@ public class BinaryExporter {
     }
 
     public void serializeBinaryHead(SkeletonNode skeleton) {
-        skeleton.clearSubGroup("UpperBody");
-        skeleton.clearSubGroup("Hair");
+        SkeletonNode copy = skeleton.deepCopy();
+        copy.clearSubGroup("UpperBody");
+        copy.clearSubGroup("Hair");
 
-        AnimationGroup bodyAnims    = skeleton.getAnimationGroup(0);
-        skeleton.getAnimationComponent().removeGroup(bodyAnims);
+        AnimationGroup bodyAnims    = copy.getAnimationGroup(0);
+        copy.getAnimationComponent().removeGroup(bodyAnims);
 
-        serializeIT(skeleton, m_outputFile);
+        serializeIT(copy, m_outputFile);
         System.out.println("Binary Export complete");
     }
 
