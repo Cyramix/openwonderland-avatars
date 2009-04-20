@@ -933,7 +933,7 @@ public class SceneEssentials {
 
             String subGroup     = null;
 
-            Object[] subgroups = { m_regions[0], m_regions[1], m_regions[2], m_regions[3], m_regions[4] };
+            Object[] subgroups = { m_regions[0], m_regions[1], m_regions[2], m_regions[3], m_regions[4], m_regions[9] };
             subGroup = (String)JOptionPane.showInputDialog( new Frame(), "Please select the subgroup to which the meshes will be added",
                                                             "SPECIFY SUBGROUP TO ADD MESHES IN", JOptionPane.PLAIN_MESSAGE,
                                                             null, subgroups, m_regions[0]);
@@ -955,12 +955,14 @@ public class SceneEssentials {
                 Instruction pRootInstruction = new Instruction();
                 pRootInstruction.addChildInstruction(InstructionType.setSkeleton, m_avatar.getSkeleton());
 
-                m_avatar.getAttributes().deleteLoadInstructionsBySubGroup(subGroup);
-                m_avatar.getAttributes().deleteAddInstructionsBySubGroup(subGroup);
-
-                String[] meshestodelete = m_avatar.getSkeleton().getMeshNamesBySubGroup(subGroup);
-                for (int i = 0; i < meshestodelete.length; i++)
-                    pRootInstruction.addChildInstruction(InstructionType.deleteSkinnedMesh, meshestodelete[i]);
+                if (!subGroup.equals(m_regions[9])) {
+                    m_avatar.getAttributes().deleteLoadInstructionsBySubGroup(subGroup);
+                    m_avatar.getAttributes().deleteAddInstructionsBySubGroup(subGroup);
+                    String[] meshestodelete = m_avatar.getSkeleton().getMeshNamesBySubGroup(subGroup);
+                    for (int i = 0; i < meshestodelete.length; i++)
+                        pRootInstruction.addChildInstruction(InstructionType.deleteSkinnedMesh, meshestodelete[i]);
+                } else
+                    subGroup = m_regions[2];
 
                 pRootInstruction.addLoadGeometryToSubgroupInstruction(modelURL, subGroup);
 

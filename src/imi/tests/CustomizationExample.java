@@ -21,6 +21,8 @@ package imi.tests;
 
 import com.jme.math.Vector3f;
 import imi.character.avatar.Avatar;
+import imi.character.objects.LocationNode;
+import imi.character.objects.ObjectCollection;
 import imi.gui.JFrame_InstrumentationGUI;
 import imi.gui.JPanel_Animations;
 import imi.gui.SceneEssentials;
@@ -35,6 +37,7 @@ import imi.scene.camera.state.FirstPersonCamState;
 import org.jdesktop.mtgame.WorldManager;
 import imi.scene.processors.JSceneEventProcessor;
 import imi.utils.input.AvatarControlScheme;
+import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import javax.swing.JFrame;
@@ -67,7 +70,7 @@ public class CustomizationExample extends DemoBase
     public static void main(String[] args)
     {
         // Give ourselves a nice environment
-        String[] ourArgs = new String[] { "-env:assets/models/collada/Environments/Arena/Arena.dae" };
+        String[] ourArgs = new String[] { "-env:assets/models/collada/Environments/BizObj/BusinessObjectsCenter.dae" };
         // Construction does all the work
         CustomizationExample test = new CustomizationExample(ourArgs);
     }
@@ -90,7 +93,7 @@ public class CustomizationExample extends DemoBase
         camState.setMovementRate(0.03f);
         try
         {
-            loadConfigFiles(control);
+            loadConfigFiles(control, setUpNavigationNodes(control));
         }
         catch (MalformedURLException ex)
         {
@@ -101,31 +104,64 @@ public class CustomizationExample extends DemoBase
         control.getMouseEventsFromCamera();
     }
 
-    private void loadConfigFiles(AvatarControlScheme controller) throws MalformedURLException
+    private void loadConfigFiles(AvatarControlScheme controller, ObjectCollection collection) throws MalformedURLException
     {
+        String base = "file:///" + System.getProperty("user.dir") + File.separatorChar;
         URL[] configFiles = new URL[] {
-            new URL("file:///work/avatars/assets/configurations/FemaleD_CA_00.xml"),
-            new URL("file:///work/avatars/assets/configurations/FemaleD_AZ_00.xml"),
-            new URL("file:///work/avatars/assets/configurations/MaleFG_AA_00.xml"),
-            new URL("file:///work/avatars/assets/configurations/MaleFG_AA_01.xml"),
-            new URL("file:///work/avatars/assets/configurations/FemaleFG_CA_00.xml"),
-            new URL("file:///work/avatars/assets/configurations/MaleFG_CA_00.xml"),
-            new URL("file:///work/avatars/assets/configurations/MaleFG_CA_01.xml"),
-            new URL("file:///work/avatars/assets/configurations/MaleFG_CA_02.xml"),
-            new URL("file:///work/avatars/assets/configurations/MaleD_CA_00.xml"),
+//            new URL(base + "assets/configurations/FemaleD_CA_00.xml"),
+//            new URL(base + "assets/configurations/FemaleD_AZ_00.xml"),
+//            new URL(base + "assets/configurations/FemaleFG_CA_00.xml"),
+//            new URL(base + "assets/configurations/FemaleFG_AA_01.xml"),
+            new URL(base + "assets/configurations/MaleFG_AA_00_white.xml"),
+            new URL(base + "assets/configurations/MaleFG_AA_01_white.xml"),
+            new URL(base + "assets/configurations/MaleFG_CA_00_white.xml"),
+            new URL(base + "assets/configurations/MaleFG_CA_01_white.xml"),
+            new URL(base + "assets/configurations/MaleFG_CA_02_white.xml"),
+//            new URL(base + "assets/configurations/MaleFG_CA_03.xml"),
+//            new URL(base + "assets/configurations/MaleFG_CA_04.xml"),
+//            new URL(base + "assets/configurations/FemaleFG_AA_02.xml"),
+//            new URL(base + "assets/configurations/MaleD_CA_01_bin.xml"),
         };
-        Vector3f translationVec = new Vector3f(4, 0, 4);
-        PMatrix xform = new PMatrix(new Vector3f(0, 3.14159f, 0), Vector3f.UNIT_XYZ, translationVec);
+        Vector3f translationVec = new Vector3f(4, 0, -4);
+        PMatrix xform = new PMatrix(new Vector3f(0, 3.34f, 0), Vector3f.UNIT_XYZ, translationVec);
         Avatar avatar = null;
+
         for (URL configFile : configFiles)
         {
             avatar = new Avatar(configFile, worldManager, null, xform);
+            avatar.setObjectCollection(collection);
             avatar.selectForInput();
             controller.getAvatarTeam().add(avatar);
             translationVec.x -= 1;
             xform.setTranslation(translationVec);
         }
+
         showInstruments(avatar, worldManager);
+    }
+
+    private ObjectCollection setUpNavigationNodes(AvatarControlScheme controller)
+    {
+        ObjectCollection objects = new ObjectCollection("Objest!", worldManager);
+        float block = 10.0f;
+        float halfBlock = 5f;
+        // Create locations for the game
+        LocationNode chairGame1 = new LocationNode("Location 1", Vector3f.ZERO, halfBlock, objects);
+        LocationNode chairGame2 = new LocationNode("Location 2", Vector3f.UNIT_X.mult(block), halfBlock, objects);
+        LocationNode chairGame3 = new LocationNode("Location 3", new Vector3f(block, 0.0f, block), halfBlock, objects);
+        LocationNode chairGame4 = new LocationNode("Location 4", Vector3f.UNIT_Z.mult(block), halfBlock, objects);
+        // Create baked paths
+        chairGame1.addBakedConnection("yellowRoom", chairGame2);
+        chairGame2.addBakedConnection("yellowRoom", chairGame3);
+        chairGame3.addBakedConnection("yellowRoom", chairGame4);
+        chairGame4.addBakedConnection("yellowRoom", chairGame1);
+        chairGame1.addBakedConnection("lobbyCenter", chairGame4);
+        chairGame4.addBakedConnection("lobbyCenter", chairGame3);
+        chairGame3.addBakedConnection("lobbyCenter", chairGame2);
+        chairGame2.addBakedConnection("lobbyCenter", chairGame1);
+        // Create avatar input scheme
+        controller.setCommandEntireTeam(true);
+        controller.setObjectCollection(objects);
+        return objects;
     }
 
     private void showInstruments(Avatar targetAvatar, WorldManager wm)

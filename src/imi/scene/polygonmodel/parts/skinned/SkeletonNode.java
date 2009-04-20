@@ -26,6 +26,7 @@ import imi.scene.PNode;
 import imi.scene.PTransform;
 import imi.scene.animation.Animated;
 import imi.scene.animation.AnimationComponent;
+import imi.scene.animation.AnimationCycle;
 import imi.scene.animation.AnimationGroup;
 import imi.scene.animation.AnimationState;
 import imi.scene.polygonmodel.PPolygonMesh;
@@ -110,7 +111,15 @@ public class SkeletonNode extends PNode implements Animated, Serializable
     {
         super(other.getName(), new PTransform(other.getTransform()));
         // copy over the animation stuff
-        m_animationComponent = other.getAnimationComponent();
+        m_animationComponent = new AnimationComponent();
+        for (int i = 0; i < other.getAnimationComponent().getGroupCount(); i++) {
+            AnimationGroup group = new AnimationGroup("Group" + i);
+            for (int j = 0; j < other.getAnimationComponent().getGroup(i).getCycleCount(); j++) {
+                AnimationCycle cycle = other.getAnimationComponent().getGroup(i).getCycle(j);
+                group.addCycle(cycle);
+            }
+            m_animationComponent.addGroup(group);
+        }
         // States should be copied
         for (AnimationState animState : other.m_animationStates)
             m_animationStates.add(new AnimationState(animState));
@@ -131,6 +140,7 @@ public class SkeletonNode extends PNode implements Animated, Serializable
         // must use a depth first traversal here in order for this to make any sense
         for (PNode kid : getSkeletonRoot().getChildren())
             skeletonRoot.addChild(deepCopyRecurse(kid));
+
         result.refresh();
         return result;
     }
@@ -150,7 +160,6 @@ public class SkeletonNode extends PNode implements Animated, Serializable
         return result;
 
     }
-
 
     
     public AnimationComponent getAnimationComponent()
