@@ -238,6 +238,11 @@ public class AvatarController extends CharacterController
                 velocity.multLocal(velocityDamp);
         }
 
+//        System.out.println("acceleration " + acceleration);
+//        System.out.println("gravityAcc " + gravityAcc);
+//        System.out.println("velocity " + velocity);
+//        System.out.println("");
+        
         avatar.getJScene().setExternalKidsRootPosition(position);
         notifyTransfromUpdate(position, currentRot);
 //        if (getVelocityScalar() > 1.0f)
@@ -265,7 +270,7 @@ public class AvatarController extends CharacterController
     }
 
     public void setGravityAcc(Vector3f gravityAcc) {
-        this.gravityAcc = gravityAcc;
+        this.gravityAcc.set(gravityAcc);
     }
     
     /**

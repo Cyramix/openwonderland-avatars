@@ -54,6 +54,7 @@ import imi.character.statemachine.corestates.CycleActionInfo;
 import imi.character.statemachine.corestates.CycleActionState;
 import imi.character.statemachine.corestates.RunState;
 import imi.character.statemachine.corestates.transitions.RunToWalk;
+import imi.character.statemachine.corestates.transitions.WalkToFly;
 import imi.character.statemachine.corestates.transitions.WalkToRun;
 import imi.character.steering.FollowBakedPath;
 import imi.character.steering.GoSit;
@@ -165,6 +166,7 @@ public class AvatarContext extends GameContext
         gameStates.get(WalkState.class).addTransition(new WalkToIdle());
         gameStates.get(WalkState.class).addTransition(new WalkToAction());
         gameStates.get(WalkState.class).addTransition(new WalkToRun());
+        gameStates.get(WalkState.class).addTransition(new WalkToFly());
         gameStates.get(TurnState.class).addTransition(new TurnToIdle());
         gameStates.get(TurnState.class).addTransition(new TurnToWalk());
         gameStates.get(TurnState.class).addTransition(new TurnToAction());

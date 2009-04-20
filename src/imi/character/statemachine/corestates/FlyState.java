@@ -66,19 +66,33 @@ public class FlyState extends GameState
      
     private void takeAction(float deltaTime) 
     {
-//        float x = avatarContext.getActions()[avatarContext.ActionNames.Movement_X.ordinal()];
-        //float y = actions[ActionNames.Movement_Y.ordinal()];
+        float x = context.getActions()[AvatarContext.ActionNames.Movement_X.ordinal()];
         float y = context.getActions()[AvatarContext.ActionNames.Movement_Y.ordinal()];
+        float z = context.getActions()[AvatarContext.ActionNames.Movement_Z.ordinal()];
 
         // Debugging / Diagnostic output
 //        Logger.getLogger(FlyState.class.getName()).log(Level.INFO, "TakeAction " + y);
 
-        CharacterController controller = context.getController();
+        AvatarController controller = (AvatarController)context.getController();
         
         // Move Up
         if (y != 0.0f)
         {
             controller.accelerate(Vector3f.UNIT_Y.mult(y * impulse));
+            controller.setGravityAcc(Vector3f.ZERO);
+        }
+
+        // Turn
+        if (x != 0.0f)
+        {
+            Vector3f direction = new Vector3f(x, 0.0f, z);
+            controller.turnTo(direction);
+        }
+
+        // Move Forward
+        if (z != 0.0f)
+        {
+            controller.accelerate(z * impulse);
         }
     }
     
