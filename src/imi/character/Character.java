@@ -1813,8 +1813,18 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         
         // Get all the SkinnedMeshInstances & place it in the head subgroup
         List<PPolygonSkinnedMeshInstance> skinnedMeshList = newHeadSkeleton.getSkinnedMeshInstances();
-        if (skinnedMeshList.size() == 0)
+        if (skinnedMeshList.size() == 0) {
             logger.warning("No skinned mesh instances found in skeleton. Do you have meshes instead?");
+            List<PPolygonSkinnedMesh> ppsmList = newHeadSkeleton.getAllSkinnedMeshes();
+            if (ppsmList != null || ppsmList.size() > 0) {
+                for (PPolygonSkinnedMesh pPolygonSkinnedMesh : ppsmList) {
+                    PPolygonSkinnedMeshInstance meshInst = (PPolygonSkinnedMeshInstance) m_pscene.addMeshInstance(pPolygonSkinnedMesh, new PMatrix());
+                    //meshInst.setAndLinkSkeletonNode(m_skeleton);
+                    m_skeleton.addToSubGroup(meshInst, "Head");
+                }
+            }
+        }
+
         for (PPolygonSkinnedMeshInstance meshInst : skinnedMeshList)
             m_skeleton.addToSubGroup(meshInst, "Head");
 

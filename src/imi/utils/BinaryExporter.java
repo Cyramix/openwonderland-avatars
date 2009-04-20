@@ -11,7 +11,6 @@ import imi.loaders.InstructionProcessor;
 import imi.loaders.collada.Collada;
 import imi.loaders.collada.ColladaLoaderParams;
 import imi.loaders.repository.Repository;
-import imi.scene.PMatrix;
 import imi.scene.PScene;
 import imi.scene.animation.AnimationCycle;
 import imi.scene.animation.AnimationGroup;
@@ -19,7 +18,6 @@ import imi.scene.animation.AnimationState;
 import imi.scene.polygonmodel.parts.PMeshMaterial;
 import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
 import imi.scene.polygonmodel.parts.skinned.SkinnedMeshJoint;
-import imi.scene.polygonmodel.skinned.PPolygonSkinnedMesh;
 import imi.scene.polygonmodel.skinned.PPolygonSkinnedMeshInstance;
 import imi.scene.shader.AbstractShaderProgram;
 import imi.scene.shader.NoSuchPropertyException;
@@ -175,6 +173,7 @@ public class BinaryExporter {
         skeleton.getAnimationComponent().removeGroup(bodyAnims);
 
         serializeIT(skeleton, m_outputFile);
+        System.out.println("Binary Export complete");
     }
 
     public SkeletonNode processBinaryData(String relativePath) {
