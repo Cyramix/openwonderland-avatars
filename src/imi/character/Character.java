@@ -674,7 +674,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         }
     };
 
-    private void initializeMeshInstanceMaterialStates() {
+    public void initializeMeshInstanceMaterialStates() {
         if (m_pscene == null)
         {
             logger.severe("Cannot initialize material states with a null pscene!");
@@ -750,7 +750,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
     /**
      * A subset of the functionality in setDefaultShaders
      */
-    private void setDefaultHeadShaders()
+    public void setDefaultHeadShaders()
     {
         Repository repo = (Repository)m_wm.getUserData(Repository.class);
 

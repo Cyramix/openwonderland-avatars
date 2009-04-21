@@ -165,8 +165,8 @@ public class BinaryExporter {
         System.out.println("Binary export complete");
     }
 
-    public void serializeBinaryHead(SkeletonNode skeleton) {
-        SkeletonNode copy = skeleton.deepCopy();
+    public void serializeBinaryHead(SkeletonNode skeleton, WorldManager wm) {
+        SkeletonNode copy = skeleton.deepCopy(new PScene(wm));
         copy.clearSubGroup("UpperBody");
         copy.clearSubGroup("Hair");
 

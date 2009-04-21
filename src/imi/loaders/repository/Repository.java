@@ -23,10 +23,10 @@ import imi.annotations.Debug;
 import imi.cache.CacheBehavior;
 import imi.cache.DefaultAvatarCache;
 import imi.loaders.repository.SharedAsset.SharedAssetType;
+import imi.scene.PScene;
 import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
 import imi.scene.shader.AbstractShaderProgram;
 import imi.scene.shader.ShaderFactory;
-import imi.scene.shader.programs.FleshShader;
 import imi.utils.AvatarObjectInputStream;
 import java.awt.Dimension;
 import java.io.BufferedInputStream;
@@ -511,7 +511,7 @@ public class Repository extends Entity
     {
         for (SkeletonNode skeleton : m_Skeletons)
             if (name.equals(skeleton.getName()))
-                return skeleton.deepCopy();
+                return skeleton.deepCopy(new PScene(m_worldManager));
         return null;
     }
 

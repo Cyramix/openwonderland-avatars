@@ -209,7 +209,10 @@ public class SceneEssentials {
 
     public void setDefaultLoad(boolean load) { m_bdefaultload = load; }
 
-    public void setAvatar(Character c) { m_avatar = c; }
+    public void setAvatar(Character c) {
+        m_avatar = c;
+        m_currentPScene = c.getPScene();
+    }
 
     public void setGender(int sex) { m_gender = sex; }
 
@@ -836,6 +839,8 @@ public class SceneEssentials {
 
                 m_avatar.installHead(modelURL);
                 m_avatar.getAttributes().setHeadAttachment(path);
+                m_avatar.initializeMeshInstanceMaterialStates();
+
                 m_avatar.setDefaultShaders();
                 m_avatar.applyMaterials();
                 return true;
@@ -870,6 +875,8 @@ public class SceneEssentials {
 
                 m_avatar.installHeadN(modelURL);
                 m_avatar.getAttributes().setHeadAttachment(path);
+                m_avatar.initializeMeshInstanceMaterialStates();
+
                 m_avatar.setDefaultShaders();
                 m_avatar.applyMaterials();
                 return true;
@@ -899,8 +906,11 @@ public class SceneEssentials {
         try {
 
             URL modelURL = m_fileModel.toURI().toURL();
+            
             m_avatar.installHeadN(modelURL);
             m_avatar.getAttributes().setHeadAttachment(path);
+            m_avatar.initializeMeshInstanceMaterialStates();
+
             m_avatar.setDefaultShaders();
             m_avatar.applyMaterials();
             return true;
@@ -994,8 +1004,18 @@ public class SceneEssentials {
                     smParams.add(current[i]);
                 }
 
+                for(int i = 0; i < smparams.length; i++) {
+                    for (int j = 0; j < current.length; j++) {
+                        if (smparams[i].meshName.equals(current[j].meshName) && smparams[i].subGroupName.equals(current[j].subGroupName)) {
+                            smparams[i] = null;
+                            break;
+                        }
+                    }
+                }
+
                 for (int i = 0; i < smparams.length; i++) {
-                    smParams.add(smparams[i]);
+                    if (smparams[i] != null)
+                        smParams.add(smparams[i]);
                 }
 
                 SkinnedMeshParams[] newparams   = new SkinnedMeshParams[smParams.size()];
@@ -2370,7 +2390,7 @@ public class SceneEssentials {
     /**
      * Replaces the texture of the currently selected model
      * TODO: Allow support for textures on multiple meshes.
-     * @param modInst (PPolygonModelInstance)
+     * @param meshInst
      * @param arg0 (Component)
      */
     public void loadTexture(imi.scene.PNode meshInst, Component arg0) {
@@ -2411,11 +2431,11 @@ public class SceneEssentials {
                 URL configURL   = configfile.toURI().toURL();
                 if (m_avatar != null) {
                     m_avatar.destroy();
-                    setAvatar(null);
                 }
 //                if (m_avatar == null) {
                     m_avatar = new Avatar(configURL, m_worldManager);
                     m_currentPScene = m_avatar.getPScene();
+                    m_avatar.getSkeleton().resetAllJointsToBindPose();
 //                } else if (m_avatar != null) {
 //                    m_avatar.loadConfiguration(configURL);
 //                }

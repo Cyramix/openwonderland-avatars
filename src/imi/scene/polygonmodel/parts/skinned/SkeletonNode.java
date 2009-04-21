@@ -23,6 +23,7 @@ import com.jme.scene.SharedMesh;
 import imi.scene.PJoint;
 import imi.scene.PMatrix;
 import imi.scene.PNode;
+import imi.scene.PScene;
 import imi.scene.PTransform;
 import imi.scene.animation.Animated;
 import imi.scene.animation.AnimationComponent;
@@ -145,6 +146,36 @@ public class SkeletonNode extends PNode implements Animated, Serializable
         return result;
     }
 
+    public SkeletonNode deepCopy(PScene pscene) {
+        SkeletonNode result = new SkeletonNode(this);
+        // Copy all the children
+        PNode skeletonRoot = new PNode(this.getSkeletonRoot());
+        result.setSkeletonRoot(skeletonRoot);
+        // Now copy the skeleton children over
+        // must use a depth first traversal here in order for this to make any sense
+        for (PNode kid : getSkeletonRoot().getChildren())
+            skeletonRoot.addChild(deepCopyRecurse(kid));
+
+        String[] subgroups = new String[] { "Head", "Hands",    "UpperBody",    "LowerBody",
+                                            "Feet", "Hair",     "FacialHair",   "Hats",
+                                            "Glasses" };
+
+        for (int i = 0; i < subgroups.length; i++) {
+            PPolygonSkinnedMeshInstance[] meshes =  getMeshesBySubGroup(subgroups[i]);
+            if (meshes == null || meshes.length <= 0)
+                continue;
+            
+            for (int j = 0; j < meshes.length; j++) {
+                PPolygonSkinnedMeshInstance mesh = new PPolygonSkinnedMeshInstance(meshes[j], pscene, true);
+                mesh.setAndLinkSkeletonNode(result);
+                result.addToSubGroup(mesh, subgroups[i]);
+            }
+        }
+
+        result.refresh();
+        return result;
+    }
+
     private SkinnedMeshJoint deepCopyRecurse(PNode current)
     {
         // process current
@@ -158,7 +189,6 @@ public class SkeletonNode extends PNode implements Animated, Serializable
                 result.addChild(deepCopyRecurse(kid));
         }
         return result;
-
     }
 
     
