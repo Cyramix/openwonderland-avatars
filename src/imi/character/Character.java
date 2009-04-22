@@ -1383,7 +1383,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
 
     public FacialAnimationController getFacialAnimationQ()
     {
-        if (m_facialAnimations == null)
+        if (m_facialAnimations == null && m_skeleton != null)
         {
             if (m_skeleton.getAnimationComponent().getGroupCount() > 1)
                 m_facialAnimations = new FacialAnimationController(this, 1);

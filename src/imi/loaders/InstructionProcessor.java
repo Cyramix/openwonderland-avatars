@@ -32,11 +32,10 @@ import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
 import imi.scene.polygonmodel.skinned.PPolygonSkinnedMesh;
 import imi.scene.polygonmodel.skinned.PPolygonSkinnedMeshInstance;
 import imi.scene.polygonmodel.parts.skinned.SkinnedMeshJoint;
+import imi.scene.utils.PMeshUtils;
 import imi.scene.utils.PModelUtils;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Iterator;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javolution.util.FastList;
@@ -243,26 +242,6 @@ public class InstructionProcessor
             return false;
         }
 
-        // Extract the mesh name and find it in the loading pscene
-        String meshName = (String)array[0];
-        PNode node = m_loadingPScene.findChild(meshName);
-        PPolygonMeshInstance mesh = null;
-        // Verify that we have the right thing
-        if (node instanceof PPolygonMeshInstance)
-            mesh = (PPolygonMeshInstance)node;
-        else if (node == null)
-        {
-            logger.severe("Specified attachment was not found in the loading pscene!");
-            return false;
-        }
-        else // Not null,. but has the same name as the mesh we want
-        {
-            logger.severe("Found a node with the right name, but it was not a mesh instance!");
-            return false;
-        }
-        // Get rid of any residual transform information
-        mesh.getTransform().setLocalMatrix(new PMatrix());
-        
         // Find the joint
         String jointName = (String)array[1];
         SkinnedMeshJoint joint = m_skeleton.getSkinnedMeshJoint(jointName);
@@ -272,8 +251,27 @@ public class InstructionProcessor
             return false;
         }
 
-        // bind the mesh up
-        mesh.setPScene(m_loadingPScene);
+        // Extract the mesh name and find it in the loading pscene
+        String meshName = (String)array[0];
+        PNode node = m_loadingPScene.findChild(meshName);
+        PPolygonMeshInstance mesh = null;
+        // Verify that we have the right thing
+        if (node instanceof PPolygonSkinnedMeshInstance)
+        {
+            PPolygonMesh unskined = PMeshUtils.unskinMesh(m_skeleton,(PPolygonSkinnedMesh) mesh.getGeometry(), joint);
+            mesh = new PPolygonMeshInstance(meshName, unskined, new PMatrix(), m_loadingPScene, false);
+        }
+        else if (node == null)
+        {
+            logger.severe("Specified attachment was not found in the loading pscene!");
+            return false;
+        }
+        else // Not null, has the right name but wrong class type
+        {
+            logger.severe("Found a node with the right name, but it was not a mesh instance!");
+            return false;
+        }
+        
         // Create new joint
         PJoint newJoint = new PJoint((String)array[3], new PTransform((PMatrix)array[2]));
         newJoint.addChild(mesh);
