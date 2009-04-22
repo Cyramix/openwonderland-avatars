@@ -158,7 +158,7 @@ public class MTGameBase extends JFrame implements FrameRateListener {
 
         int eventMask = InputManager.KEY_EVENTS | InputManager.MOUSE_EVENTS;
         AWTInputComponent cameraListener = (AWTInputComponent)worldManager.getInputManager().createInputComponent(m_mainDisplay.canvas, eventMask);
-        m_cameraProcessor = new FlexibleCameraProcessor(cameraListener, m_cameraNode, worldManager, camera, sky);
+        m_cameraProcessor = new FlexibleCameraProcessor(cameraListener, m_cameraNode, worldManager, camera, sky, m_width, m_height);
         FirstPersonCamState state = new FirstPersonCamState();
         state.setCameraPosition(new Vector3f(0, 2.2f, -2));
         FirstPersonCamModel model = new FirstPersonCamModel();

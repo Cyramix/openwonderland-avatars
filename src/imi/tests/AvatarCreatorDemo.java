@@ -578,7 +578,7 @@ public class AvatarCreatorDemo extends javax.swing.JFrame implements FrameRateLi
         SkyBox sky                          = createSkyBox(wm, camera);
         int eventMask                       = InputManager.KEY_EVENTS | InputManager.MOUSE_EVENTS;
         AWTInputComponent cameraListener    = (AWTInputComponent)wm.getInputManager().createInputComponent(canvas_SceneRenderWindow, eventMask);
-        m_cameraProcessor                   = new FlexibleCameraProcessor(cameraListener, cameraSG, wm, camera, sky);
+        m_cameraProcessor                   = new FlexibleCameraProcessor(cameraListener, cameraSG, wm, camera, sky, m_width, m_height);
         setCameraType(1);   // (0) FPS Camera, (1) Tumble Camera
 
         m_cameraProcessor.setRunInRenderer(true);

@@ -279,7 +279,7 @@ public class EmptyMTGame
         Canvas canvas = renderBuffer.getCanvas();
         AWTInputComponent cameraListener = (AWTInputComponent)wm.getInputManager().createInputComponent(canvas, eventMask);
 
-        m_cameraProcessor = new FlexibleCameraProcessor(cameraListener, cameraNode, wm, camera, sky);
+        m_cameraProcessor = new FlexibleCameraProcessor(cameraListener, cameraNode, wm, camera, sky, width, height);
 
         assignCameraType(wm);
         wm.addUserData(FlexibleCameraProcessor.class, m_cameraProcessor);

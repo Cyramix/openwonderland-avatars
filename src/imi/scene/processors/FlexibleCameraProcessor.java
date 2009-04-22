@@ -17,7 +17,9 @@
  */
 package imi.scene.processors;
 
-import com.jme.scene.CameraNode;
+import com.jme.math.Vector2f;
+import com.jme.math.Vector3f;
+import com.jme.renderer.Camera;
 import com.jme.scene.Node;
 import imi.scene.PMatrix;
 import imi.scene.camera.behaviors.CameraModel;
@@ -35,6 +37,7 @@ import javax.media.opengl.GLException;
 import javolution.util.FastTable;
 import org.jdesktop.mtgame.AWTInputComponent;
 import org.jdesktop.mtgame.AwtEventCondition;
+import org.jdesktop.mtgame.CameraComponent;
 import org.jdesktop.mtgame.Entity;
 import org.jdesktop.mtgame.NewFrameCondition;
 import org.jdesktop.mtgame.ProcessorArmingCollection;
@@ -69,6 +72,9 @@ public class FlexibleCameraProcessor extends AWTEventProcessorComponent
     private CameraModel m_model = null;
     /** Control system **/
     private InputScheme avatarControl = null;
+    /** Window width and height **/
+    private int windowWidth  = 0;
+    private int windowHeight = 0;
 
     /** Used for calculating delta time values **/
     private double oldTime = 0.0;
@@ -113,16 +119,19 @@ public class FlexibleCameraProcessor extends AWTEventProcessorComponent
                                                 Node cameraNode,
                                                 WorldManager wm,
                                                 Entity myEntity,
-                                                SkyBox skyboxNode)
+                                                SkyBox skyboxNode,
+                                                int width,
+                                                int height)
     {
         super(listener);
         setEntity(myEntity);
         setRunInRenderer(true);
-        
+
+        windowWidth     = width;
+        windowHeight    = height;
         m_jmeCameraNode = cameraNode;
-        m_WM = wm;
-        
-        m_skyNode = skyboxNode;
+        m_WM            = wm;
+        m_skyNode       = skyboxNode;
         
         m_armingConditions = new ProcessorArmingCollection(this);
         m_armingConditions.addCondition(new AwtEventCondition(this));
@@ -394,5 +403,48 @@ public class FlexibleCameraProcessor extends AWTEventProcessorComponent
         PMatrix transformBuffer = new PMatrix();
         CameraPositionManager.instance().getCameraTransform(name, transformBuffer);
         state.setCameraTransform(transformBuffer);
+    }
+    public void getCameraPosition(Vector3f output)
+    {
+        //CameraPositionManager.instance().getCameraPosition(currentStateIndex, output); doesn't work
+
+        CameraState state = m_stateCollection.get(currentStateIndex);
+        PMatrix mat = new PMatrix();
+        try {
+            m_model.determineTransform(state, mat);
+        } catch (WrongStateTypeException ex) {
+            Logger.getLogger(FlexibleCameraProcessor.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        output.set(mat.getTranslation());
+    }
+
+    protected Camera getCamera()
+    {
+        CameraComponent cc = (CameraComponent) getEntity().getComponent(CameraComponent.class);
+        if (cc != null)
+            return cc.getCameraNode().getCamera();
+        return null;
+    }
+
+    public int getWindowWidth() {
+        return windowWidth;
+    }
+
+    public int getWindowHeight() {
+        return windowHeight;
+    }
+
+    public void getWorldSpaceRay(int mouseX, int mouseY, Vector3f origin, Vector3f direction)
+    {
+        Camera camera = getCamera();
+
+        Vector2f sc = new Vector2f(mouseX, windowHeight - mouseY);
+        camera.getWorldCoordinates(sc, 0.0f, origin);
+        camera.getWorldCoordinates(sc, 1.0f, direction);
+        direction.set(direction.subtract(origin));
+        direction.normalizeLocal();
+
+        System.out.println("Ray starts at: " + origin.x + ", " + origin.y + ", " + origin.z);
+        System.out.println("And has direction: " + direction.x + ", " + direction.y + ", " + direction.z);
     }
 }

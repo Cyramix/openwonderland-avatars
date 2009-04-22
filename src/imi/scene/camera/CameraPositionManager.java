@@ -17,6 +17,7 @@
  */
 package imi.scene.camera;
 
+import com.jme.math.Vector3f;
 import imi.scene.PMatrix;
 import javolution.util.FastList;
 
@@ -91,6 +92,14 @@ public class CameraPositionManager
     public boolean getCameraTransform(String name, PMatrix output)
     {
         return getCameraTransform(getCameraPositionIndex(name), output);
+    }
+
+    public void getCameraPosition(int index, Vector3f output)
+    {
+        if (index < 0 || index >= camPositions.size())
+            return;
+        else
+            output.set(camPositions.get(index).transform.getTranslation());
     }
     
     public int getCameraPositionIndex(String name)

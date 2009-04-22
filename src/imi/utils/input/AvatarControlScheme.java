@@ -145,6 +145,17 @@ public class AvatarControlScheme extends InputScheme implements AvatarControls
                         leftArm.addInputOffset(offset);       
                     }
                 }
+                
+                // Picking (under construction)
+                if (avatar != null)
+                {
+                    MouseEvent me = (MouseEvent) events[i];
+                    if (me.getID() == MouseEvent.MOUSE_PRESSED && me.getButton() == MouseEvent.BUTTON3)
+                    {
+                        FlexibleCameraProcessor fcp = (FlexibleCameraProcessor)avatar.getWorldManager().getUserData(FlexibleCameraProcessor.class);
+                        //System.out.println("Right Click: mouse cursor ray is shot into the virtual space");
+                    }
+                }
             }
         }
     }

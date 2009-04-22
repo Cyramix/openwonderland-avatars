@@ -249,7 +249,7 @@ public class AvatarInspectionDemo {
         Canvas canvas = renderBuffer.getCanvas();
         m_cameraListener = (AWTInputComponent)wm.getInputManager().createInputComponent(canvas, eventMask);
 
-        m_cameraProcessor = new FlexibleCameraProcessor(m_cameraListener, cameraNode, wm, camera, m_skyBox);
+        m_cameraProcessor = new FlexibleCameraProcessor(m_cameraListener, cameraNode, wm, camera, m_skyBox, width, height);
 
         assignCameraType(wm);
         wm.addUserData(FlexibleCameraProcessor.class, m_cameraProcessor);
