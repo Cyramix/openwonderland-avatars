@@ -3,7 +3,7 @@
     <Attributes>
         <Name>FemaleAvatar</Name>
         <Gender>2</Gender>
-        <HeadAttachment>assets/models/collada/Heads/FemaleHead/FemaleCHead.dae</HeadAttachment>
+        <HeadAttachment>assets/models/collada/Heads/FemaleHead/femaleCHead.bhf</HeadAttachment>
         <LoadingInstructions>
             <item>assets/models/collada/Clothing/FemaleClothing/FemaleFlipFlops.dae</item>
             <item>Feet</item>
@@ -3716,7 +3716,7 @@
     </Materials>
     <Materials TargetMeshName="Layered_pt_L" AlphaState="0" Name="MysteryNode!">
         <Textures>
-            <RelativePath>assets/models/collada/Hair/FemaleHair/HairBaseBlack.png</RelativePath>
+            <RelativePath>assets/models/collada/Hair/FemaleHair/HairBaseBrown.png</RelativePath>
             <TextureUnit>0</TextureUnit>
             <WrapS>Repeat</WrapS>
             <WrapT>Repeat</WrapT>
@@ -3743,7 +3743,7 @@
         <SpecularColor alpha="1.0" blue="0.5" green="0.5" red="0.5"/>
         <Shaders>
             <Program>
-                <DefaultProgramName>imi.scene.shader.programs.ClothingShaderSpecColor</DefaultProgramName>
+                <DefaultProgramName>imi.scene.shader.programs.HairShader</DefaultProgramName>
             </Program>
             <Properties PropertyName="SpecularComponent">
                 <Type>GLSL_FLOAT</Type>

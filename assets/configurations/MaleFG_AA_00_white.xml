@@ -3102,7 +3102,7 @@
             </Properties>
             <Properties PropertyName="materialColor">
                 <Type>GLSL_VEC3</Type>
-                <Value> 0.9019608 0.77254903 0.74509805</Value>
+                <Value> 1.0 1.0 1.0</Value>
             </Properties>
             <Properties PropertyName="DiffuseMapIndex">
                 <Type>GLSL_SAMPLER2D</Type>
