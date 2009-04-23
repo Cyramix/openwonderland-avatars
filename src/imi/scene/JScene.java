@@ -167,7 +167,7 @@ public class JScene extends Node {
         else
         {
             wireframeState = (WireframeState) m_PScene.getWorldManager().getRenderManager().createRendererState(RenderState.RS_WIREFRAME);
-            wireframeState.setEnabled(true);
+            wireframeState.setEnabled(on);
             setRenderState(wireframeState);
             updateRenderState();
         }
