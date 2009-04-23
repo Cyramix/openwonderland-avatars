@@ -107,6 +107,7 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.Semaphore;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.xml.bind.JAXBContext;
@@ -182,6 +183,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
     private   float                         m_defaultFacePoseTiming = 0.1f;
     private   VerletSkeletonFlatteningManipulator m_skeletonManipulator   = null;
 
+    private Semaphore countingSemaphore = new Semaphore(0);
     protected BinaryExporter                m_binaryExporter        = new BinaryExporter();
 
     /**
@@ -670,7 +672,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         public void receiveAsset(SharedAsset assetRecieved) {
             // Flip some switches
             asset = assetRecieved;
-            m_bWaitingOnAsset = false;
+            countingSemaphore.release();
         }
     };
 
@@ -718,9 +720,11 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         m_bWaitingOnAsset = true;
         // Request it!
         m_pscene.getRepository().loadSharedAsset(asset, headInstaller);
-        while (m_bWaitingOnAsset == true) // wait until loaded
-        {
-            Thread.yield();
+        // Wait for it to load
+        try {
+            countingSemaphore.acquire();
+        } catch (InterruptedException ex) {
+            Logger.getLogger(Character.class.getName()).log(Level.SEVERE, null, ex);
         }
         if (asset == null) // Timeout at the repository
             logger.severe("Timed out waiting on asset for new head.");
@@ -1629,7 +1633,8 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         // Something needs to wait until this is finished
         m_characterProcessor.setEnabled(false);
         m_characterProcessor.stop();
-        m_AnimationProcessor.setEnable(false);
+        if (m_AnimationProcessor!=null)
+            m_AnimationProcessor.setEnable(false);
 
         m_wm.removeEntity(this);
 
