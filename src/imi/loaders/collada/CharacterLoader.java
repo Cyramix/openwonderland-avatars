@@ -28,7 +28,6 @@ import imi.scene.PScene;
 
 import imi.scene.animation.AnimationComponent;
 import imi.scene.animation.AnimationGroup;
-import imi.scene.animation.channel.PJointChannel;
 import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
 import imi.utils.AvatarObjectInputStream;
 import imi.utils.AvatarObjectOutputStream;
@@ -39,7 +38,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.ArrayList;
+import java.util.concurrent.Semaphore;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -65,7 +64,7 @@ public class CharacterLoader implements RepositoryUser
     private Repository repository = null;
 
     /** Used to indicate status of requested assets **/
-    private boolean m_bWaitingOnAsset = false;
+    private Semaphore m_bWaitingOnAsset = new Semaphore(0);
     private SharedAsset m_asset = null;
 
     /**
@@ -175,27 +174,18 @@ public class CharacterLoader implements RepositoryUser
         return result;
     }
 
-    private void blockUntilAssetLoads() {
-        while (m_bWaitingOnAsset == true)
-        {
-            try {
-                Thread.sleep(100);
-            }
-            catch (InterruptedException ex)
-            {
-                logger.severe("I didnt want to wake up yet..." + ex.getMessage());
-            }
-        }
-    }
-
     private PScene loadCollada(URL location)
     {
         m_asset = new SharedAsset(repository, new AssetDescriptor(
                 SharedAsset.SharedAssetType.COLLADA, location));
 
-        m_bWaitingOnAsset = true;
         repository.loadSharedAsset(m_asset, this);
-        blockUntilAssetLoads();
+        try {
+            // Wait for asset to load
+            m_bWaitingOnAsset.acquire();
+        } catch (InterruptedException ex) {
+            Logger.getLogger(CharacterLoader.class.getName()).log(Level.SEVERE, null, ex);
+        }
 
         return (PScene)m_asset.getAssetData();
     }
@@ -290,7 +280,7 @@ public class CharacterLoader implements RepositoryUser
     
     public void receiveAsset(SharedAsset asset) {
         m_asset = asset;
-        m_bWaitingOnAsset = false;
+        m_bWaitingOnAsset.release();
     }
 
 }
