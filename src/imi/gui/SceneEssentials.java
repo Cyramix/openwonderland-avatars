@@ -643,13 +643,14 @@ public class SceneEssentials {
             m_currentPScene.getInstances().removeAllChildren();
             if (m_currentHiProcessors != null)
                 m_currentHiProcessors.clear();
-            
-            String protocal = "file:///" + System.getProperty("user.dir") + "/";
-            String path = getRelativePath(m_fileModel);
+
+            String base = System.getProperty("user.dir");
+            String protocal = "file:///" + base + File.separatorChar;
+            String path = getRelativePath(new File(base), m_fileModel);
             String szURL = protocal + path;
 
             try {
-                URL modelURL = new URL(szURL);
+                URL modelURL = m_fileModel.toURI().toURL();
                 SharedAsset colladaAsset = new SharedAsset(m_currentPScene.getRepository(), new AssetDescriptor(SharedAssetType.COLLADA, modelURL));
                 colladaAsset.setUserData(new ColladaLoaderParams(false, true, false, false, 3, m_fileModel.getName(), null));
                 m_modelInst = m_currentPScene.addModelInstance(m_fileModel.getName(), colladaAsset, new PMatrix());
@@ -669,8 +670,9 @@ public class SceneEssentials {
             m_fileModel = m_jFileChooser_LoadColladaModel.getSelectedFile();
             m_currentPScene.setUseRepository(useRepository);
 
-            String protocal = "file:///" + System.getProperty("user.dir") + "/";
-            String path = getRelativePath(m_fileModel);
+            String base = System.getProperty("user.dir");
+            String protocal = "file:///" + base + File.separatorChar;
+            String path = getRelativePath(new File(base), m_fileModel);
             String szURL = protocal + path;
 
             try {
@@ -704,8 +706,9 @@ public class SceneEssentials {
             if (m_currentHiProcessors != null)
                 m_currentHiProcessors.clear();
 
-            String protocal = "file:///" + System.getProperty("user.dir") + "/";
-            String path = getRelativePath(m_fileModel);
+            String base = System.getProperty("user.dir");
+            String protocal = "file:///" + base + File.separatorChar;
+            String path = getRelativePath(new File(base), m_fileModel);
             String szURL = protocal + path;
 
             try {
@@ -740,8 +743,9 @@ public class SceneEssentials {
             if (m_currentHiProcessors != null)
                 m_currentHiProcessors.clear();
 
-            String protocal = "file:///" + System.getProperty("user.dir") + "/";
-            String path = getRelativePath(m_fileModel);
+            String base = System.getProperty("user.dir");
+            String protocal = "file:///" + base + File.separatorChar;
+            String path = getRelativePath(new File(base), m_fileModel);
             String szURL = protocal + path;
 
             try {
@@ -825,8 +829,9 @@ public class SceneEssentials {
                                                             null, subgroups, subgroups[0]);
             m_currentPScene.setUseRepository(useRepository);
 
-            String protocal = "file:///" + System.getProperty("user.dir") + "/";
-            String path = getRelativePath(m_fileModel);
+            String base = System.getProperty("user.dir");
+            String protocal = "file:///" + base + File.separatorChar;
+            String path = getRelativePath(new File(base), m_fileModel);
             String szURL = protocal + path;
 
             try {
@@ -865,8 +870,9 @@ public class SceneEssentials {
 
             m_currentPScene.setUseRepository(useRepository);
 
-            String protocal = "file:///" + System.getProperty("user.dir") + "/";
-            String path = getRelativePath(m_fileModel);
+            String base = System.getProperty("user.dir");
+            String protocal = "file:///" + base + File.separatorChar;
+            String path = getRelativePath(new File(base), m_fileModel);
             String szURL = protocal + path;
 
             try {
@@ -899,8 +905,9 @@ public class SceneEssentials {
 
         m_currentPScene.setUseRepository(useRepository);
 
-        String protocal = "file:///" + System.getProperty("user.dir") + "/";
-        String path = getRelativePath(m_fileModel);
+        String base = System.getProperty("user.dir");
+        String protocal = "file:///" + base + File.separatorChar;
+        String path = getRelativePath(new File(base), m_fileModel);
         String szURL = protocal + path;
 
         try {
@@ -954,8 +961,9 @@ public class SceneEssentials {
             m_currentPScene.getInstances().setRenderStop(true);
             m_currentPScene.setUseRepository(useRepository);
 
-            String protocal = "file:///" + System.getProperty("user.dir") + "/";
-            String path     = getRelativePath(m_fileModel);
+            String base = System.getProperty("user.dir");
+            String protocal = "file:///" + base + File.separatorChar;
+            String path     = getRelativePath(new File(base), m_fileModel);
             String szURL    = protocal + path;
 
             try {
@@ -1078,8 +1086,9 @@ public class SceneEssentials {
             m_currentPScene.getInstances().setRenderStop(true);
             m_currentPScene.setUseRepository(useRepository);
 
-            String protocal = "file:///" + System.getProperty("user.dir") + "/";
-            String path     = getRelativePath(m_fileModel);
+            String base = System.getProperty("user.dir");
+            String protocal = "file:///" + base + File.separatorChar;
+            String path     = getRelativePath(new File(base), m_fileModel);
             String szURL    = protocal + path;
 
             InstructionProcessor pProcessor = new InstructionProcessor(m_worldManager);
@@ -1178,8 +1187,9 @@ public class SceneEssentials {
             m_animations = m_jFileChooser_LoadAnim.getSelectedFile();
             m_currentPScene.setUseRepository(useRepository);
 
-            String protocal = "file:///" + System.getProperty("user.dir") + "/";
-            String path     = getRelativePath(m_animations);
+            String base = System.getProperty("user.dir");
+            String protocal = "file:///" + base + File.separatorChar;
+            String path     = getRelativePath(new File(base), m_animations);
             String szURL    = protocal + path;
 
             try {
@@ -1217,8 +1227,9 @@ public class SceneEssentials {
 
         m_currentPScene.setUseRepository(useRepository);
 
-        String protocal = "file:///" + System.getProperty("user.dir") + "/";
-        String path     = getRelativePath(theAnim);
+        String base = System.getProperty("user.dir");
+        String protocal = "file:///" + base + File.separatorChar;
+        String path     = getRelativePath(new File(base), theAnim);
         String szURL    = protocal + path;
 
         try {
@@ -2160,18 +2171,64 @@ public class SceneEssentials {
         return absPath;
     }
 
-    public String getRelativePath(File file) {
-        String userDir = System.getProperty("user.dir");
-        String szfile = file.toString().substring(userDir.length());
+    public List getPathList(File file) {
+        List list = new ArrayList();
+        File copy;
+        try {
+            copy = file.getCanonicalFile();
+            while (copy != null) {
+                list.add(copy.getName());
+                copy = copy.getParentFile();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            list = null;
+        }
+        return list;
+    }
 
-        int index = szfile.indexOf("/");
-        szfile = szfile.substring(index + 1);
-        int indez = szfile.indexOf(".");
+    public String matchPathLists(List r, List f) {
+        int i;
+        int j;
+        String s;
+        // start at the beginning of the lists
+        // iterate while both lists are equal
+        s = "";
+        i = r.size() - 1;
+        j = f.size() - 1;
 
-        if (indez == 0)
-            szfile = szfile.substring(2);
+        // first eliminate common root
+        while ((i >= 0) && (j >= 0) && (r.get(i).equals(f.get(j)))) {
+            i--;
+            j--;
+        }
 
-        return szfile;
+        // for each remaining level in the home path, add a ..
+        for (; i >= 0; i--) {
+            s += ".." + File.separator;
+        }
+
+        // for each level in the file path, add the path
+        for (; j >= 1; j--) {
+            s += f.get(j) + File.separator;
+        }
+
+        // file name
+        s += f.get(j);
+        return s;
+    }
+
+    public String getRelativePath(File home, File f) {
+        File r;
+        List homelist;
+        List filelist;
+        String s;
+
+        homelist = getPathList(home);
+        filelist = getPathList(f);
+        s = matchPathLists(homelist, filelist);
+
+        return s;
     }
 
     /**
@@ -2399,10 +2456,11 @@ public class SceneEssentials {
             m_fileTexture = m_jFileChooser_LoadAssets.getSelectedFile();
 
             // Create a material to use
-            int iIndex = m_fileTexture.getName().indexOf(".");
-            String szName = m_fileTexture.getName().substring(0, iIndex);
-            String protocal = "file:///" + System.getProperty("user.dir") + "/";
-            String path     = getRelativePath(m_fileModel);
+            int iIndex      = m_fileTexture.getName().indexOf(".");
+            String szName   = m_fileTexture.getName().substring(0, iIndex);
+            String base     = System.getProperty("user.dir");
+            String protocal = "file:///" + base + File.separatorChar;
+            String path     = getRelativePath(new File(base), m_fileModel);
             String szURL    = protocal + path;
             
             try {
