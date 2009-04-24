@@ -123,7 +123,7 @@ public class SceneEssentials {
     private String                          m_modelName                     = null;
     private PPolygonModelInstance           m_modelInst                     = null;
     private SkeletonNode                    m_skeleton                      = null;
-    private Character                       m_avatar                        = null;
+    private Avatar                          m_avatar                        = null;
     private int                             m_gender                        = -1;
     private float                           m_visualScale                   = 1.0f;
     private PMatrix                         m_origin                        = new PMatrix();
@@ -209,7 +209,7 @@ public class SceneEssentials {
 
     public void setDefaultLoad(boolean load) { m_bdefaultload = load; }
 
-    public void setAvatar(Character c) {
+    public void setAvatar(Avatar c) {
         m_avatar = c;
         m_currentPScene = c.getPScene();
     }
@@ -805,6 +805,26 @@ public class SceneEssentials {
         return false;
     }
 
+    public boolean loadAvatar(CharacterAttributes attributes, boolean clear, boolean useRepository, Component arg0) {
+        m_currentPScene.setUseRepository(useRepository);
+        removeallMeshReferencesOnSkeleton();
+        if (clear)
+            m_currentPScene.getInstances().removeAllChildren();
+
+        if (m_avatar != null) {
+            m_avatar.destroy();
+            setAvatar(null);
+        }
+
+        setAvatar(new Avatar(attributes, m_worldManager));
+        while(!m_avatar.isInitialized() || m_avatar.getModelInst() == null) {
+
+        }
+
+        m_avatar.selectForInput();
+        m_currentPScene = m_avatar.getPScene();
+        return true;
+    }
     /**
      * Opens a JFileChooser window for the user to select a collada file (*.dae)
      * of an avatar head (skinned model) and then subsequently uses a load instruction
