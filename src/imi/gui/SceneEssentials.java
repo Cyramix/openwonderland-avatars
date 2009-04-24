@@ -170,7 +170,7 @@ public class SceneEssentials {
 
     public boolean isDefaultLoad() { return m_bdefaultload; }
 
-    public Character getAvatar() { return m_avatar; }
+    public Avatar getAvatar() { return m_avatar; }
 
     public int getGender() { return m_gender; }
 
