@@ -23,6 +23,7 @@ import imi.annotations.Debug;
 import imi.cache.CacheBehavior;
 import imi.cache.DefaultAvatarCache;
 import imi.loaders.repository.SharedAsset.SharedAssetType;
+import imi.scene.polygonmodel.PPolygonMesh;
 import imi.scene.PScene;
 import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
 import imi.scene.shader.AbstractShaderProgram;
@@ -37,6 +38,8 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFrame;
@@ -57,7 +60,7 @@ public class Repository extends Entity
     static String bafCacheURL = System.getProperty("BafCacheDir", null);
 
     /** Path to the cache folder **/
-    static File cacheFolder = new File(System.getProperty("user.home") + "/WonderlandAvatarCache/");
+    private static File cacheFolder = new File(System.getProperty("user.home") + "/WonderlandAvatarCache/");
 
     /** Logger ref **/
     private static final Logger logger = Logger.getLogger(Repository.class.getName());
@@ -76,11 +79,8 @@ public class Repository extends Entity
     
     // The maximum number of load requests that can handled at a time
     private long m_numberOfLoadRequests      = 0l;
-    private long m_maxConcurrentLoadRequests = 35l;
+    private int m_maxConcurrentLoadRequests = 35;
     private static long m_maxQueryTime  = 2000000000l; // Lengthy timeout for testing purposes
-
-    /** Collection of work requests for RepositoryWorkers to process **/
-    private final FastList<WorkOrder> m_workOrders = new FastList<WorkOrder>();
 
     /************************
      *  Asset Collections   *
@@ -104,14 +104,21 @@ public class Repository extends Entity
     /** Skeleton Collection **/
     public final FastTable<SkeletonNode> m_Skeletons = new FastTable<SkeletonNode>();
 
-    
+    /** Indicates if the repository cache should be used. **/
+//    private boolean m_bUseCache = false;
     private boolean m_bLoadGeometry = true;
 
-    
+    // Executor service for loading assets
+    private ExecutorService loaderService = Executors.newFixedThreadPool(m_maxConcurrentLoadRequests);
+
     /**
      * Construct a BRAND NEW REPOSITORY!
      * @param wm
      */
+    public Repository(WorldManager wm, CacheBehavior cache) {
+        this(wm, true, cache);
+    }
+
     public Repository(WorldManager wm)
     {
         this(wm, true, new DefaultAvatarCache(cacheFolder));
@@ -214,44 +221,11 @@ public class Repository extends Entity
         repoAsset = collection.get(asset.getDescriptor());
         if (repoAsset == null) // Not there, need to make an asset for it
         {
-            if (m_numberOfLoadRequests <= m_maxConcurrentLoadRequests)
-            {
-                // We did not exceed the maxium number of workers so we can process this request now
-                // If we don't already have it in the collection we will add it now
-                repoAsset = new RepositoryAsset(asset.getDescriptor(), asset.getUserData(), this);
-                
-                // The new repository asset will loaditself, increment the counter
-                m_numberOfLoadRequests++;
-
-                collection.put(asset.getDescriptor(), repoAsset);
-
-                // Add the repository asset as a processor so it will load itself
-                m_processorCollection.addProcessor(repoAsset); 
-                repoAsset.initialize(); // now safe  to initialize
-            }
-            else
-            {
-                // We exceeded the maximum number of workers, 
-                // we will delay this request and issue a pending work order.
-                // This work order will be picked up by one of the currently 
-                // bussy workers on its shutdown()
-                m_workOrders.add(new WorkOrder(asset, user, null, collection, m_maxQueryTime));
-                return; // Get out of here!
-            }
-        }   
-        
-        if (repoAsset.loadData(asset)) // success?
-        {
-            assert(asset.getAssetData() != null);
-            user.receiveAsset(asset); // we call back the user after loading the data into the asset
-        }
-        else
-        {   
-            // create a worker that will setup the SharedAsset and notify the user when the repo asset finished loading itself
-            // Add a new processor (worker) to process this request
-            RepositoryWorker slave = new RepositoryWorker(this, asset, user, repoAsset, collection, m_maxQueryTime); // TODO maxQueryTime according to source location and type
-            m_processorCollection.addProcessor(slave);
-            slave.initialize();
+//            System.err.println("Loading asset "+asset.getDescriptor());
+            loaderService.execute(new WorkOrder(asset, user, collection, m_maxQueryTime));
+        } else {
+//            System.err.println("Sharing asset "+asset.getDescriptor());
+            repoAsset.shareAsset(user, asset);
         }
     }
 
@@ -329,57 +303,6 @@ public class Repository extends Entity
 
     long getNumberOfLoadRequests() {
         return m_numberOfLoadRequests;
-    }
-
-    void adjustNumberOfLoadRequests(long workersModifierNumber) {
-        m_numberOfLoadRequests += workersModifierNumber;
-    }
-
-    // Used to throtel the repository
-    void setMaxConcurrentLoadRequests(long maxConcurrentWorkers) {
-        m_maxConcurrentLoadRequests = maxConcurrentWorkers;
-    }
-    
-    FastList<WorkOrder> getWorkOrders()
-    {
-        return m_workOrders;
-    }
-    
-    WorkOrder popWorkOrder()
-    {
-        WorkOrder statementOfWork = null;
-        
-        synchronized (m_workOrders)
-        {
-            if (!m_workOrders.isEmpty())
-                statementOfWork = m_workOrders.removeFirst();
-        }
-        
-        return statementOfWork;
-    }
-
-    /**
-     * Create and bind a repository asset from the provided statement of work.
-     * @param statementOfWork
-     */
-    void createRepositoryAsset(WorkOrder statementOfWork) 
-    {
-        // We did not exceed the maxium number of workers so we can process this request now
-        // If we don't already have it in the collection we will add it now
-        RepositoryAsset repoAsset = new RepositoryAsset(statementOfWork.m_asset.getDescriptor(), statementOfWork.m_asset.getUserData(), this);
-
-        // The new repository asset will loaditself, inceremnt the counter
-        m_numberOfLoadRequests++;
-
-        // we are not sharing shaders yet...
-        getCollection(statementOfWork.m_asset.getDescriptor().getType()).put(statementOfWork.m_asset.getDescriptor(), repoAsset);
-
-        // Add the repository asset as a processor so it will load itself
-        m_processorCollection.addProcessor(repoAsset);
-        repoAsset.initialize();
-        
-        // Update the work order
-        statementOfWork.m_repoAsset = repoAsset;
     }
 
     private void grabTextureCacheFileFromInternet(File textureCacheFile) {
@@ -525,30 +448,40 @@ public class Repository extends Entity
         m_Skeletons.add(skeleton.deepCopy());
     }
     
-    protected class WorkOrder
+    protected class WorkOrder implements Runnable
     {
-        private long    m_timeStamp    = System.currentTimeMillis();
-        
         SharedAsset     m_asset        = null;
         RepositoryUser  m_user         = null;
         RepositoryAsset m_repoAsset    = null;
-        ConcurrentHashMap<AssetDescriptor, RepositoryAsset> m_collection = null;
         long            m_maxQueryTime = Repository.m_maxQueryTime;
 
-        public WorkOrder(SharedAsset asset, RepositoryUser user, RepositoryAsset repoAsset, ConcurrentHashMap<AssetDescriptor, RepositoryAsset> collection, long maxQueryTime) 
+        public WorkOrder(SharedAsset asset, RepositoryUser user, ConcurrentHashMap<AssetDescriptor, RepositoryAsset> collection, long maxQueryTime)
         {
             m_asset         = asset;
             m_user          = user;
-            m_repoAsset     = repoAsset;
-            m_collection    = collection;
             m_maxQueryTime  = maxQueryTime;
+
+            m_repoAsset = new RepositoryAsset(m_asset.getDescriptor(), m_asset.getUserData(), Repository.this);
+            collection.put(m_asset.getDescriptor(), m_repoAsset);
         }
-        
-        public long getTimeStamp()
-        {
-            return m_timeStamp;
+
+        public void run() {
+            // TODO watchdog timer
+
+            m_repoAsset.loadSelf();
+
+
+            System.err.println("Loading "+m_repoAsset);
+            System.err.println("Putting in SharedAsset "+m_asset);
+
+            m_repoAsset.shareAsset(m_user, m_asset);
+            
+            if (m_asset.getAssetData() instanceof PPolygonMesh)
+                ((PPolygonMesh)m_asset.getAssetData()).setSharedAsset(m_asset);
+            assert(m_asset.getAssetData() != null);
         }
     }
+
     
     @Debug
     public ConcurrentHashMap<AssetDescriptor, RepositoryAsset> getGeometryCollection()

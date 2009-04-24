@@ -36,9 +36,6 @@ import java.net.URL;
 import java.util.LinkedList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.jdesktop.mtgame.ProcessorArmingCollection;
-import org.jdesktop.mtgame.ProcessorComponent;
-import org.jdesktop.mtgame.NewFrameCondition;
 
 /**
  * This class is the internal representation of a loaded piece of data and its
@@ -47,7 +44,7 @@ import org.jdesktop.mtgame.NewFrameCondition;
  * @author Ronald E Dahlgren
  * @author Lou Hayt
  */
-public class RepositoryAsset extends ProcessorComponent
+public class RepositoryAsset
 {
     /** Logger ref **/
     static final Logger logger = Logger.getLogger(RepositoryAsset.class.getName());
@@ -77,10 +74,11 @@ public class RepositoryAsset extends ProcessorComponent
     /** The home repository for this asset **/
     private Repository           m_home       = null;
     
-    private Boolean m_lock = Boolean.FALSE;
-
     /** True to enable the neew texture loading code **/
     private boolean bUseTextureImporter = false;
+
+    private LinkedList<PendingUsers> pendingUserShares = null;
+    private boolean loadComplete = true;
 
     /**
      * Construct a new instance
@@ -91,7 +89,6 @@ public class RepositoryAsset extends ProcessorComponent
     public RepositoryAsset(AssetDescriptor description, Object userData, Repository home) 
     {
         super();
-        setEntity(home);
         m_home          = home;
         m_descriptor    = description;
         m_userData      = userData;
@@ -100,14 +97,10 @@ public class RepositoryAsset extends ProcessorComponent
     /**
      * Load the described asset
      */
-    private void loadSelf()
+    void loadSelf()
     {
-        if (m_lock)
-            return;
         if (m_data != null && m_data.size() > 0)
             return;
-
-        m_lock = true;
 
         if (m_data != null && m_data.isEmpty()) // weirdness
             m_data = null;
@@ -158,11 +151,37 @@ public class RepositoryAsset extends ProcessorComponent
         else
         {
             // finished loading, remove ourselves from the update pool
-            m_home.removeProcessor(this);
-            setArmingCondition(new ProcessorArmingCollection(this));
-            m_lock = false;
         }
         
+        synchronized(this) {
+            loadComplete = true;
+
+            // Now notify any users on the pendingShares list
+            if (pendingUserShares!=null) {
+                for(PendingUsers u : pendingUserShares) {
+                    u.asset.setAssetData(getDataReference());
+                    u.user.receiveAsset(u.asset);
+                }
+            }
+        }
+    }
+
+    /**
+     * Share the contents of this asset with the specified asset and notify
+     * the user that the asset is ready
+     * @param asset
+     */
+    void shareAsset(RepositoryUser user, SharedAsset asset) {
+        synchronized(this) {
+            if (!loadComplete) {
+                if (pendingUserShares==null)
+                    pendingUserShares = new LinkedList();
+                pendingUserShares.add(new PendingUsers(user, asset));
+            } else {
+                asset.setAssetData(getDataReference());
+                user.receiveAsset(asset);
+            }
+        }
     }
 
     private Object getDataReference() 
@@ -172,58 +191,10 @@ public class RepositoryAsset extends ProcessorComponent
         return m_data.get(0);
     }
     
-    public boolean loadData(SharedAsset asset)
-    {
-        if (m_data != null && !m_data.isEmpty())
-        {
-            asset.setAssetData(getDataReference());
-            return true;
-        }
-        
-        return false; // didn't finish loading in loadSelf()
-    }
-    
     public int decrementReferenceCount()
     {
         // The repository should manage the case of references <= 0
         return --m_referenceCount;
-    }
-
-    /**
-     * ProcessorComponent overload.
-     * @param collection
-     */
-    @Override
-    public void compute(ProcessorArmingCollection collection)
-    {
-        loadSelf();         
-    }
-
-    public void compute() {
-        loadSelf();
-    }
-
-    
-    /**
-     * ProcessorComponent overload.
-     * @param collection
-     */
-    @Override
-    public void commit(ProcessorArmingCollection collection) 
-    {
-
-    }
-
-    
-    /**
-     * ProcessorComponent overload.
-     */
-    @Override
-    public void initialize() 
-    {
-        ProcessorArmingCollection collection = new ProcessorArmingCollection(this);
-        collection.addCondition(new NewFrameCondition(this));
-        setArmingCondition(collection); 
     }
 
     private void loadCOLLADA()
@@ -405,9 +376,13 @@ public class RepositoryAsset extends ProcessorComponent
     }
 
     
-    public void commit() {
-        throw new UnsupportedOperationException("Not supported yet.");
+    class PendingUsers {
+        RepositoryUser user;
+        SharedAsset asset;
+
+        public PendingUsers(RepositoryUser user, SharedAsset asset) {
+            this.user = user;
+            this.asset = asset;
+        }
     }
-
-
 }
