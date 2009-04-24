@@ -23,7 +23,6 @@ import com.jme.scene.Node;
 import com.jme.scene.state.LightState;
 import com.jme.scene.state.RenderState;
 import com.jme.scene.state.WireframeState;
-import com.jme.util.geom.Debugger;
 import imi.scene.utils.PRenderer;
 
 /**
@@ -146,16 +145,6 @@ public class JScene extends Node {
         return m_bRenderInternally;
     }
 
-    public void setRenderPRendererMesh(boolean on) {
-        if (m_PRenderer != null)
-            m_PRenderer.setRenderPRendererMesh(on);
-        else
-        {
-            m_PRenderer = new PRenderer();
-            m_PRenderer.setRenderPRendererMesh(on);
-        }
-    }
-
     public void setWireframe(boolean on) 
     {
         WireframeState wireframeState = (WireframeState) getRenderState(RenderState.RS_WIREFRAME);
@@ -185,16 +174,6 @@ public class JScene extends Node {
     }
 
     /**
-     * Will toggle rendering of the green wireframes of meshes
-     * in this jscene on\off
-     */
-    public void toggleRenderPRendererMesh() 
-    {
-        if (m_PRenderer != null)
-            m_PRenderer.toggleRenderPRendererMesh();
-    }
-
-    /**
      * Will toggle wireframe for the JME renderer on elements of this scene
      */
     public void toggleWireframe() {
@@ -214,17 +193,6 @@ public class JScene extends Node {
     }
 
     /**
-     * Toggle rendering for polygon normals (in the center of every polygon)
-     * for the internal rendering of this scene.
-     * Internal rendering is used to visualize pscene elements,
-     * it is using JME lines and points to do so.
-     */
-    public void toggleRenderPolygonNormals() {
-        if (m_PRenderer != null)
-            m_PRenderer.renderPolygonNormals(!m_PRenderer.getRenderPolygonNormals());
-    }
-
-    /**
      * Toggle rendering for vertex normals (on evert vertex)
      * for the internal rendering of this scene.
      * Internal rendering is used to visualize pscene elements,
@@ -241,10 +209,10 @@ public class JScene extends Node {
      * Internal rendering is used to visualize pscene elements,
      * it is using JME lines and points to do so.
      */
-    public void toggleRenderPolygonCenters() {
-        if (m_PRenderer != null)
-            m_PRenderer.renderPolygonCenters(!m_PRenderer.getRenderPolygonCenters());
-    }
+//    public void toggleRenderPolygonCenters() {
+//        if (m_PRenderer != null)
+//            m_PRenderer.renderPolygonCenters(!m_PRenderer.getRenderPolygonCenters());
+//    }
 
     /**
      * Toggle rendering of bounding volumes 
@@ -255,7 +223,7 @@ public class JScene extends Node {
      */    
     public void toggleRenderBoundingVolume() {
         if (m_PRenderer != null) {
-            m_PRenderer.renderBoundingVolumeToggle();
+            m_PRenderer.renderBoundingSphere(!m_PRenderer.getRenderBoundingSphere());
         }
     }
 

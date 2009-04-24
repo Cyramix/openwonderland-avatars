@@ -187,10 +187,10 @@ public class PPolygonMeshInstance extends PNode implements Serializable
         if (m_geometry != null)
         {
             // Set world origin
-            PMatrix origin       = getTransform().getWorldMatrix(false);
-            renderer.setOrigin(origin);
+            //PMatrix origin       = getTransform().getWorldMatrix(false);
+            //renderer.setOrigin(origin);
             
-            // Draw geometry
+            // Draw geometry (currently only used to draw skeletons for skinned meshes)
             m_geometry.draw(renderer);
         }
                 

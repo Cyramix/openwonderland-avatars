@@ -1268,6 +1268,18 @@ public abstract class Character extends Entity implements SpatialObject, Animati
     }
 
     /**
+     * Sets the sphere data that is built around the model instances bounding sphere.
+     * @param output
+     */
+    public void getBoundingSphere(PSphere output)
+    {
+        if (m_modelInst.getBoundingSphere() == null)
+            m_modelInst.calculateBoundingSphere();
+        output.setRadius(m_modelInst.getBoundingSphere().getRadius());
+        output.setCenter(m_modelInst.getTransform().getWorldMatrix(false).getTranslation().add(m_modelInst.getBoundingSphere().getCenterRef()));
+    }
+
+    /**
      * Returns true if currently transitioning between animation cycles
      * @return
      */
@@ -1793,7 +1805,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
                                                               "HeadSkeleton",   // 'name'
                                                               null);            // existing skeleton (if applicable)
 
-        int begin   = headLocation.toString().lastIndexOf(File.separatorChar);
+        int begin   = headLocation.toString().lastIndexOf("/");
         int end     = headLocation.toString().lastIndexOf(".");
         String name = headLocation.toString().substring(begin, end);
 

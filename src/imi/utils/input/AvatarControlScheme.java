@@ -305,7 +305,7 @@ public class AvatarControlScheme extends InputScheme implements AvatarControls
             // Toggle PRenderer mesh display
             if (ke.getKeyCode() == KeyEvent.VK_M)
             {
-                m_jscene.toggleRenderPRendererMesh();
+                //m_jscene.toggleRenderPRendererMesh();
                 //m_jscene.loadShaders();
             }
             
@@ -316,7 +316,7 @@ public class AvatarControlScheme extends InputScheme implements AvatarControls
                     m_jscene.setRenderInternallyBool(false);
                     // turn the prenderer on, turn off the mesh drawing, turn on jme wireframe
                     // This will create the PRenderer if it does not exist
-                    m_jscene.setRenderPRendererMesh(false);
+                    //m_jscene.setRenderPRendererMesh(false);
                     m_jscene.setRenderBool(true);
                     m_jscene.setRenderInternallyBool(true);
                     m_jscene.setRenderBothBool(true);
@@ -325,7 +325,7 @@ public class AvatarControlScheme extends InputScheme implements AvatarControls
                 else
                 {
                     // reset to solid jme only
-                    m_jscene.setRenderPRendererMesh(true);
+                    //m_jscene.setRenderPRendererMesh(true);
                     m_jscene.setRenderBool(true);
                     m_jscene.setRenderInternallyBool(false);
                     m_jscene.setRenderBothBool(false);

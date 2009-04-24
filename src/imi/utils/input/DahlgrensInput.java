@@ -212,8 +212,8 @@ public class DahlgrensInput extends InputScheme
                 m_jscene.toggleRenderBoundingVolume();
 
             // Toggle PRenderer mesh display
-            if (ke.getKeyCode() == KeyEvent.VK_M)
-                m_jscene.toggleRenderPRendererMesh();
+//            if (ke.getKeyCode() == KeyEvent.VK_M)
+//                m_jscene.toggleRenderPRendererMesh();
 
             if (ke.getKeyCode() == KeyEvent.VK_U)
             {
@@ -222,7 +222,7 @@ public class DahlgrensInput extends InputScheme
                     m_jscene.setRenderInternallyBool(false);
                     // turn the prenderer on, turn off the mesh drawing, turn on jme wireframe
                     // This will create the PRenderer if it does not exist
-                    m_jscene.setRenderPRendererMesh(false);
+                    //m_jscene.setRenderPRendererMesh(false);
                     m_jscene.setRenderBool(true);
                     m_jscene.setRenderInternallyBool(true);
                     m_jscene.setRenderBothBool(true);
@@ -231,7 +231,7 @@ public class DahlgrensInput extends InputScheme
                 else
                 {
                     // reset to solid jme only
-                    m_jscene.setRenderPRendererMesh(true);
+                    //m_jscene.setRenderPRendererMesh(true);
                     m_jscene.setRenderBool(true);
                     m_jscene.setRenderInternallyBool(false);
                     m_jscene.setRenderBothBool(false);

@@ -66,17 +66,17 @@ public class DefaultScheme extends InputScheme
             if (ke.getKeyCode() == KeyEvent.VK_R) 
                 m_jscene.renderToggle();
             
-            // PRenderer Polygon normals (on\off)
-            if (ke.getKeyCode() == KeyEvent.VK_P) 
-                m_jscene.toggleRenderPolygonNormals();
+//            // PRenderer Polygon normals (on\off)
+//            if (ke.getKeyCode() == KeyEvent.VK_P)
+//                m_jscene.toggleRenderPolygonNormals();
             
             // PRenderer Vertex normals (on\off)
             if (ke.getKeyCode() == KeyEvent.VK_V) 
                 m_jscene.toggleRenderVertexNormals();
             
             // PRenderer Polygon center points (on\off)
-            if (ke.getKeyCode() == KeyEvent.VK_C) 
-                m_jscene.toggleRenderPolygonCenters();
+//            if (ke.getKeyCode() == KeyEvent.VK_C)
+//                m_jscene.toggleRenderPolygonCenters();
             
             // PRenderer Bounding volumes (off, box, sphere)
             if (ke.getKeyCode() == KeyEvent.VK_B) 
@@ -93,7 +93,7 @@ public class DefaultScheme extends InputScheme
             // Toggle PRenderer mesh display
             if (ke.getKeyCode() == KeyEvent.VK_M)
             {
-                m_jscene.toggleRenderPRendererMesh();
+                //m_jscene.toggleRenderPRendererMesh();
                 //m_jscene.loadShaders();
             }
             
@@ -104,7 +104,7 @@ public class DefaultScheme extends InputScheme
                     m_jscene.setRenderInternallyBool(false);
                     // turn the prenderer on, turn off the mesh drawing, turn on jme wireframe
                     // This will create the PRenderer if it does not exist
-                    m_jscene.setRenderPRendererMesh(false);
+                    //m_jscene.setRenderPRendererMesh(false);
                     m_jscene.setRenderBool(true);
                     m_jscene.setRenderInternallyBool(true);
                     m_jscene.setRenderBothBool(true);
@@ -113,7 +113,7 @@ public class DefaultScheme extends InputScheme
                 else
                 {
                     // reset to solid jme only
-                    m_jscene.setRenderPRendererMesh(true);
+                    //m_jscene.setRenderPRendererMesh(true);
                     m_jscene.setRenderBool(true);
                     m_jscene.setRenderInternallyBool(false);
                     m_jscene.setRenderBothBool(false);

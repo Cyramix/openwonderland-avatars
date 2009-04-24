@@ -106,8 +106,8 @@ public class PPolygonSkinnedMeshInstance extends PPolygonMeshInstance implements
     public void draw(PRenderer renderer) {
         if (m_geometry != null) {
             // Set world origin
-            PMatrix origin = getTransform().getWorldMatrix(false);
-            renderer.setOrigin(origin);
+//            PMatrix origin = getTransform().getWorldMatrix(false);
+//            renderer.setOrigin(origin);
 
             // Draw geometry if it is ready
             if (m_skeletonNode != null)
