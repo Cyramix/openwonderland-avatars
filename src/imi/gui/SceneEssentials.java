@@ -30,7 +30,6 @@ import imi.loaders.repository.AssetDescriptor;
 import imi.loaders.repository.AssetInitializer;
 import imi.loaders.repository.SharedAsset;
 import imi.loaders.repository.SharedAsset.SharedAssetType;
-import imi.character.Character;
 import imi.character.CharacterAttributes;
 import imi.character.CharacterAttributes.SkinnedMeshParams;
 import imi.character.avatar.Avatar;
