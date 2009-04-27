@@ -128,6 +128,11 @@ public class InstructionProcessor
         return m_bUseBinaryFiles;
     }
 
+    public PScene getLoadingPScene()
+    {
+        return m_loadingPScene;
+    }
+
     /**
      * Execute the provided instruction and recursively traverse the tree executing
      * grouping along the way.
@@ -258,6 +263,7 @@ public class InstructionProcessor
         // Verify that we have the right thing
         if (node instanceof PPolygonSkinnedMeshInstance)
         {
+            mesh = (PPolygonSkinnedMeshInstance)node;
             PPolygonMesh unskined = PMeshUtils.unskinMesh(m_skeleton,(PPolygonSkinnedMesh) mesh.getGeometry(), joint);
             mesh = new PPolygonMeshInstance(meshName, unskined, new PMatrix(), m_loadingPScene, false);
         }
