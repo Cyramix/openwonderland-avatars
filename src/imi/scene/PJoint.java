@@ -127,6 +127,18 @@ public class PJoint extends PNode implements Serializable
     {
         m_bSelected = false;
     }
+
+    /**
+     * Selected joints will be visualized in the internal renderer (PRenderer)
+     * with yellow spheres.
+     * 
+     * Selection also has context with the GUI for manipulation of the joint
+     * @param select
+     */
+    public void select(boolean select)
+    {
+        m_bSelected = select;
+    }
     
     /**
      * Selected joints will be visualized in the internal renderer (PRenderer)

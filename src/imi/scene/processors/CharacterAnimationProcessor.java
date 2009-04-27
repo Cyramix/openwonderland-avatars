@@ -44,7 +44,6 @@ public class CharacterAnimationProcessor extends ProcessorComponent
     private double oldTime = 0.0f;
     private double deltaTime = 0.0f;
 
-    private boolean bEnable = true;
     private boolean synchronizer = false;
     /** Enable control facial animation **/
     private boolean animateFace = true;
@@ -77,7 +76,7 @@ public class CharacterAnimationProcessor extends ProcessorComponent
     @Override
     public void commit(ProcessorArmingCollection collection)
     {
-        if (!bEnable)
+        if (!isEnabled())
             return;
         if (instruments!=null && instruments.isSubsystemEnabled(Instrumentation.InstrumentedSubsystem.AnimationSystem) == false)
         {
@@ -144,14 +143,6 @@ public class CharacterAnimationProcessor extends ProcessorComponent
     public void initialize()
     {
         setArmingCondition(new NewFrameCondition(this));
-    }
-
-    public boolean isEnable() {
-        return bEnable;
-    }
-
-    public void setEnable(boolean bEnable) {
-        this.bEnable = bEnable;
     }
 
     public boolean isAnimateFace() {

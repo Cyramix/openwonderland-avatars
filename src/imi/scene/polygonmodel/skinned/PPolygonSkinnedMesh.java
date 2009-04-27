@@ -19,8 +19,7 @@ package imi.scene.polygonmodel.skinned;
 
 import imi.scene.polygonmodel.*;
 import com.jme.math.Vector3f;
-import imi.loaders.PPolygonTriMeshAssembler;
-import imi.scene.PNode;
+import imi.scene.PMatrix;
 import imi.scene.PTransform;
 import imi.scene.polygonmodel.parts.skinned.PBoneIndices;
 import imi.scene.polygonmodel.parts.polygon.PPolygon;
@@ -28,7 +27,6 @@ import imi.scene.polygonmodel.parts.skinned.PPolygonSkinnedVertexIndices;
 import imi.scene.polygonmodel.parts.polygon.PPolygonVertexIndices;
 import imi.scene.utils.PRenderer;
 import java.nio.FloatBuffer;
-import java.util.ArrayList;
 import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
 import java.io.Serializable;
 import java.util.List;
@@ -116,12 +114,6 @@ public class PPolygonSkinnedMesh extends PPolygonMesh implements Serializable
         // Great Success!
         endBatch(false);
     }
-    
-    public void draw(PRenderer renderer, PNode TransformHierarchy)
-    {
-        renderer.drawPPolygonSkinnedMesh(this, TransformHierarchy);
-    }
-    
     
     public int[] getInfluenceIndices()
     {

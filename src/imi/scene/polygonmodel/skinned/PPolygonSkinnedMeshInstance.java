@@ -17,6 +17,7 @@
  */
 package imi.scene.polygonmodel.skinned;
 
+import com.jme.math.Vector3f;
 import com.jme.scene.SharedMesh;
 import imi.scene.PMatrix;
 import imi.scene.PNode;
@@ -103,22 +104,37 @@ public class PPolygonSkinnedMeshInstance extends PPolygonMeshInstance implements
     }
 
     @Override
-    public void draw(PRenderer renderer) {
-        if (m_geometry != null) {
+    public void draw(PRenderer renderer) 
+    {
+        if (m_geometry != null && collidable)
+        {
             // Set world origin
-//            PMatrix origin = getTransform().getWorldMatrix(false);
-//            renderer.setOrigin(origin);
+             PMatrix origin = getTransform().getWorldMatrix(false);
+//            PMatrix origin = new PMatrix();
+//            origin.setTranslation(getAproxMeshPosition());
+            renderer.setOrigin(origin);
 
-            // Draw geometry if it is ready
-            if (m_skeletonNode != null)
-                ((PPolygonSkinnedMesh) m_geometry).draw(renderer, m_skeletonNode.getSkeletonRoot());
+            // Draw bounding volumes
+            m_geometry.draw(renderer);
         }
-
 
         // TODO is this needed? .... draw mesh kids - mesh that belongs to a model...
         for (int i = 0; i < getChildrenCount(); i++) {
             getChild(i).drawAll(renderer);
         }
+    }
+
+    /** experimental :D **/
+    private Vector3f getAproxMeshPosition()
+    {
+        Vector3f pos = new Vector3f();
+        for (int i = 0; i < m_influenceIndices.length; i++)
+        {
+            pos.addLocal(m_skeletonNode.getSkinnedMeshJoint(m_influenceIndices[i]).getTransform().getWorldMatrix(false).getTranslation());
+            pos.subtractLocal(m_skeletonNode.getSkinnedMeshJoint(m_influenceIndices[i]).getBindPose().getTranslation());
+        }
+        pos.multLocal(1.0f / (float)m_influenceIndices.length);
+        return pos;
     }
 
     /**

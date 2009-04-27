@@ -34,6 +34,23 @@ public class PCube implements Serializable
     {
         
     }
+
+    public PCube(Vector3f min, Vector3f max) {
+        m_MinCorner.set(min);
+        m_MaxCorner.set(max);
+    }
+
+    public PCube(PCube cube) {
+        m_MinCorner.set(cube.getMin());
+        m_MaxCorner.set(cube.getMax());
+    }
+
+    public PCube(PCube cube, Vector3f offset) {
+        m_MinCorner.set(cube.getMin());
+        m_MinCorner.addLocal(offset);
+        m_MaxCorner.set(cube.getMax());
+        m_MaxCorner.addLocal(offset);
+    }
     
     public Vector3f getMin()
     {
@@ -71,7 +88,7 @@ public class PCube implements Serializable
     public Vector3f getCenter()
     {
         Vector3f center = m_MaxCorner.add(m_MinCorner);
-        return center.divide(2.0f);
+        return center.mult(0.5f);
     }
     
     //  Clears the Cube.

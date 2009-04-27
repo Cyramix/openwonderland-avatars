@@ -55,7 +55,7 @@ public class CharacterAttributes
     private AttachmentParams[]      attachmentsInstructions = new AttachmentParams[0];
     /** Specify the head the avatar should begin with **/
     private String                  headAttachment          = null;
-    /** This specifies the gender of the avatar. Its exact meaning is not yet defined **/
+    /** This specifies the gender of the avatar. 1 == male, 2 == female **/
     private int                     gender                  = 1;
     /** Skin tone RGB **/
     private float []                skinTone                = new float [3];
@@ -86,8 +86,11 @@ public class CharacterAttributes
     private PMatrix origin                  = new PMatrix(new Vector3f(0,(float)Math.PI,0), Vector3f.UNIT_XYZ, Vector3f.ZERO);
     private PScene  simpleScene             = null;
 
-    /** This boolean controls whether the facial animation will setup **/
+    /** Whether the facial animation will setup **/
     private boolean animateFace = true;
+
+    /** Whether the animation processor starts enabled **/
+    private boolean animateBody = true;
 
     /**
      * Construct a new instance with the provided name
@@ -683,6 +686,13 @@ public class CharacterAttributes
         this.animateFace = animateFace;
     }
 
+    public boolean isAnimateBody() {
+        return animateBody;
+    }
+
+    public void setAnimateBody(boolean animateBody) {
+        this.animateBody = animateBody;
+    }
 
     /**
      * This class wraps up the data needed to attach a skinned mesh

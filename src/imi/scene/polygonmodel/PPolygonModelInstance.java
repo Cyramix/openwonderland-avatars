@@ -21,10 +21,12 @@ import com.jme.math.Vector3f;
 import imi.scene.PMatrix;
 import imi.scene.PNode;
 import imi.scene.PTransform;
+import imi.scene.boundingvolumes.PCube;
 import imi.scene.boundingvolumes.PSphere;
 import imi.scene.utils.PRenderer;
 import imi.scene.utils.tree.BoundingVolumeCollector;
 import imi.scene.utils.tree.TreeTraverser;
+import imi.utils.PMathUtils;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
@@ -128,34 +130,35 @@ public class PPolygonModelInstance extends PNode implements Serializable
      */
     public void calculateBoundingSphere()
     {
-        Vector3f        boundingSphereCenter = new Vector3f(Vector3f.ZERO);
+        Vector3f        boundingSphereCenter = new Vector3f();
         float           fBoundingSphereRadius = 0.0f;
-        float           flocalBoundingSphereRadius = 0.0f;
+        float           fLocalBoundingSphereRadius = 0.0f;
         
         // Collect spheres
         BoundingVolumeCollector processor = new BoundingVolumeCollector();
         TreeTraverser.breadthFirst(this, processor);
         ArrayList<PSphere> spheres = processor.getSpheres();
+        ArrayList<PCube> cubes     = processor.getCubes();
         
-        // Calculate the overallcenter of the BoundingSphere.
-        int centers = 0;
-        for (PSphere sphere : spheres)
+        // Calculate the overallcenter of the BoundingSphere (approximated).
+        Vector3f min = new Vector3f();
+        Vector3f max = new Vector3f();
+        for (PCube cube : cubes)
         {
-            boundingSphereCenter = boundingSphereCenter.add(sphere.getCenterRef());
-            centers++;
+            PMathUtils.min(min, cube.getMin());
+            PMathUtils.max(max, cube.getMax());
         }
-        
-        boundingSphereCenter = boundingSphereCenter.divide((float)centers);
+        boundingSphereCenter = new PCube(min, max).getCenter();
         
         // Calculate the overall radius of the BoundingSphere
         for (PSphere sphere : spheres)
         {
             // Calculate the distance between two points.
-            flocalBoundingSphereRadius = boundingSphereCenter.distance(sphere.getCenterRef());
-            flocalBoundingSphereRadius += sphere.getRadius();
+            fLocalBoundingSphereRadius = boundingSphereCenter.distance(sphere.getCenterRef());
+            fLocalBoundingSphereRadius += sphere.getRadius();
             
-            if (flocalBoundingSphereRadius > fBoundingSphereRadius)
-                fBoundingSphereRadius = flocalBoundingSphereRadius;
+            if (fLocalBoundingSphereRadius > fBoundingSphereRadius)
+                fBoundingSphereRadius = fLocalBoundingSphereRadius;
         }
         
         m_boundingSphere = new PSphere(boundingSphereCenter, fBoundingSphereRadius);

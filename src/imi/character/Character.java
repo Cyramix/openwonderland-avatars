@@ -157,7 +157,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
     /** The model instance for the avatar **/
     protected PPolygonModelInstance         m_modelInst             = null;
     /** The model instance for the shadow quad **/
-    protected PPolygonModelInstance         m_shadowModel           = null; // Quad!
+    protected PPolygonMeshInstance          m_shadowMesh           = null; // Quad!
     /** Skeleton that our skin is attached to **/
     protected SkeletonNode                  m_skeleton              = null;
     /** Collection of objects that this character is associated with **/
@@ -261,7 +261,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
      * Create a shadow for this character if one is not already present
      */
     public void addShadow() {
-        if (m_shadowModel == null) // Not parameterized, no sense in remaking shadows
+        if (m_shadowMesh == null) // Not parameterized, no sense in remaking shadows
         {
             // make shadow, minor offset to avoid Z-fighting with the y=0 plane
             Vector3f pointOne =     new Vector3f( 0.45f, 0.001f,  0.5f);
@@ -291,9 +291,10 @@ public abstract class Character extends Entity implements SpatialObject, Animati
             shadowMesh.setMaterial(shadowMaterial);
             shadowMesh.setNumberOfTextures(1);
             // Add it to the scene
-            m_shadowModel = m_pscene.addModelInstance(shadowMesh, new PMatrix());
+            m_shadowMesh = m_pscene.addMeshInstance(shadowMesh, new PMatrix());
+            m_shadowMesh.setCollidable(false);
             // Attached to skeleton to get free dirtiness propagation
-            m_skeleton.getSkeletonRoot().addChild(m_shadowModel);
+            m_skeleton.getSkeletonRoot().addChild(m_shadowMesh);
         }
     }
 
@@ -512,7 +513,8 @@ public abstract class Character extends Entity implements SpatialObject, Animati
 
         m_skeleton.setInstruments((Instrumentation)m_wm.getUserData(Instrumentation.class));
         // Turn on the animation
-        m_AnimationProcessor.setEnable(true);
+        if (m_attributes.isAnimateBody())
+            m_AnimationProcessor.setEnabled(true);
         // Turn on updates
         m_characterProcessor.start();
         m_pscene.setRenderStop(false);
@@ -993,7 +995,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
 //            Logger.getLogger(Character.class.getName()).log(Level.INFO, "Model " + m_pscene + "  inst " + m_modelInst);
             m_AnimationProcessor = new CharacterAnimationProcessor(m_modelInst, m_wm);
             // Start the animation processor disabled until we finish loading
-            m_AnimationProcessor.setEnable(false);
+            m_AnimationProcessor.setEnabled(false);
             processors.add(m_AnimationProcessor);
         }
 
@@ -1647,7 +1649,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         m_characterProcessor.setEnabled(false);
         m_characterProcessor.stop();
         if (m_AnimationProcessor!=null)
-            m_AnimationProcessor.setEnable(false);
+            m_AnimationProcessor.setEnabled(false);
 
         m_wm.removeEntity(this);
 
@@ -1796,7 +1798,9 @@ public abstract class Character extends Entity implements SpatialObject, Animati
 
         // Stop all of our processing.
         m_skeleton.setRenderStop(true);
-        m_AnimationProcessor.setEnable(false);
+        boolean animProcEnabled = m_AnimationProcessor.isEnabled();
+        boolean charProcEnabled = m_characterProcessor.isEnabled();
+        m_AnimationProcessor.setEnabled(false);
         m_characterProcessor.setEnabled(false);
 
                 // Create parameters for the collada loader we will use
@@ -1856,8 +1860,8 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         setDefaultHeadShaders();
 
         // Re-enable all the processors that affect us.
-        m_AnimationProcessor.setEnable(true);
-        m_characterProcessor.setEnabled(true);
+        m_AnimationProcessor.setEnabled(animProcEnabled);
+        m_characterProcessor.setEnabled(charProcEnabled);
         m_skeleton.setRenderStop(false);
     }
 
@@ -1875,7 +1879,9 @@ public abstract class Character extends Entity implements SpatialObject, Animati
 
         // Stop all of our processing.
         m_skeleton.setRenderStop(true);
-        m_AnimationProcessor.setEnable(false);
+        boolean animProcEnabled = m_AnimationProcessor.isEnabled();
+        boolean charProcEnabled = m_characterProcessor.isEnabled();
+        m_AnimationProcessor.setEnabled(false);
         m_characterProcessor.setEnabled(false);
 
         List<PNode> newSkeletonChildren = new ArrayList<PNode>();
@@ -1912,8 +1918,8 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         setDefaultHeadShaders();
 
         // Re-enable all the processors that affect us.
-        m_AnimationProcessor.setEnable(true);
-        m_characterProcessor.setEnabled(true);
+        m_AnimationProcessor.setEnabled(animProcEnabled);
+        m_characterProcessor.setEnabled(charProcEnabled);
         m_skeleton.setRenderStop(false);
     }
 
@@ -1921,7 +1927,9 @@ public abstract class Character extends Entity implements SpatialObject, Animati
     {
         // Stop all of our processing.
         m_skeleton.setRenderStop(true);
-        m_AnimationProcessor.setEnable(false);
+        boolean animProcEnabled = m_AnimationProcessor.isEnabled();
+        boolean charProcEnabled = m_characterProcessor.isEnabled();
+        m_AnimationProcessor.setEnabled(false);
         m_characterProcessor.setEnabled(false);
 
         SkeletonNode newHeadSkeleton = m_binaryExporter.processBinaryData(headLocation);
@@ -1930,8 +1938,8 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         initializeMeshInstanceMaterialStates();
 
         // Re-enable all the processors that affect us.
-        m_AnimationProcessor.setEnable(true);
-        m_characterProcessor.setEnabled(true);
+        m_AnimationProcessor.setEnabled(animProcEnabled);
+        m_characterProcessor.setEnabled(charProcEnabled);
         m_skeleton.setRenderStop(false);
     }
 

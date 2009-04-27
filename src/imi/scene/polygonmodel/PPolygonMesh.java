@@ -1247,7 +1247,6 @@ public class PPolygonMesh extends PNode implements Serializable
         for (int i = 0; i < getPositionCount(); i++)
         {
             pPosition   = getPosition(i);
-//            Center      = Center.add(pPosition.m_Position);
             pPosition.m_Position.add(Center, Center);
         }
         

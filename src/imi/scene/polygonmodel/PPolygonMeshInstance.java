@@ -69,6 +69,10 @@ public class PPolygonMeshInstance extends PNode implements Serializable
     private transient Vector3f m_translationBufferVector    = new Vector3f();
     private transient Vector3f m_scaleBufferVector          = new Vector3f();
     private transient Matrix3f m_rotationBuffer             = new Matrix3f();
+
+    /** Is it a collidable mesh? **/
+    protected boolean collidable = true;
+
     /**
      * This constructor copies all the data of the other instance and inserts
      * this instance into the scene graph as a child of the provided parent.
@@ -184,13 +188,13 @@ public class PPolygonMeshInstance extends PNode implements Serializable
     @Override
     public void draw(PRenderer renderer)
     {
-        if (m_geometry != null)
+        if (m_geometry != null && collidable)
         {
             // Set world origin
-            //PMatrix origin       = getTransform().getWorldMatrix(false);
-            //renderer.setOrigin(origin);
+            PMatrix origin       = getTransform().getWorldMatrix(false);
+            renderer.setOrigin(origin);
             
-            // Draw geometry (currently only used to draw skeletons for skinned meshes)
+            // Draw bounding volume
             m_geometry.draw(renderer);
         }
                 
@@ -351,6 +355,14 @@ public class PPolygonMeshInstance extends PNode implements Serializable
     public void setPScene(PScene pscene)
     {
         m_PScene = pscene;
+    }
+
+    public boolean isCollidable() {
+        return collidable;
+    }
+
+    public void setCollidable(boolean collidable) {
+        this.collidable = collidable;
     }
 
       /****************************

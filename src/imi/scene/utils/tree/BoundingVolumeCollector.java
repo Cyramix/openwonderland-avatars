@@ -17,6 +17,7 @@
  */
 package imi.scene.utils.tree;
 
+import com.jme.math.Vector3f;
 import imi.scene.PNode;
 import imi.scene.boundingvolumes.PCube;
 import imi.scene.boundingvolumes.PSphere;
@@ -32,8 +33,10 @@ public class BoundingVolumeCollector implements NodeProcessor
 {
     // Accumulate herein!
     private ArrayList<PSphere> spheres = new ArrayList<PSphere>();
-    private ArrayList<PCube> cubes = new ArrayList<PCube>();
-    
+    private ArrayList<PCube>   cubes   = new ArrayList<PCube>();
+
+    private Vector3f translation = new Vector3f();
+
     public BoundingVolumeCollector()
     {
     }
@@ -43,12 +46,17 @@ public class BoundingVolumeCollector implements NodeProcessor
         if (currentNode instanceof PPolygonMeshInstance)
         {
             PPolygonMeshInstance meshInst = (PPolygonMeshInstance)currentNode;
-            PSphere sphere = new PSphere(meshInst.getTransform().getLocalMatrix(false).getTranslation().add(meshInst.getGeometry().getBoundingSphere().getCenterRef()),
-                                         meshInst.getGeometry().getBoundingSphere().getRadius());
-            //sphere.set(meshInst.getTransform().getLocalMatrix(false).getTranslation().add(sphere.getCenter()), sphere.getRadius());
-            spheres.add(sphere);
-            //spheres.add(meshInst.getGeometry().getBoundingSphere());
-            cubes.add(meshInst.getGeometry().getBoundingCube());
+            if (meshInst.isCollidable())
+            {
+                meshInst.getTransform().getLocalMatrix(false).getTranslation(translation);
+
+                PSphere sphere = new PSphere(translation.add(meshInst.getGeometry().getBoundingSphere().getCenterRef()),
+                                             meshInst.getGeometry().getBoundingSphere().getRadius());
+                spheres.add(sphere);
+
+                PCube cube = new PCube(meshInst.getGeometry().getBoundingCube(), translation);
+                cubes.add(cube);
+            }
         }
         
         return true;

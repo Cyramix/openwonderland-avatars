@@ -36,6 +36,7 @@ import imi.scene.polygonmodel.parts.PMeshMaterial;
 import imi.scene.polygonmodel.skinned.PPolygonSkinnedMeshInstance;
 import imi.scene.polygonmodel.skinned.PPolygonSkinnedMesh;
 import imi.scene.shader.AbstractShaderProgram;
+import imi.scene.utils.PRenderer;
 import imi.utils.instruments.Instrumentation;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -191,7 +192,13 @@ public class SkeletonNode extends PNode implements Animated, Serializable
         return result;
     }
 
-    
+    @Override
+    public void draw(PRenderer renderer)
+    {
+        // Draw skeleton
+        renderer.drawSkeleton(getSkeletonRoot());
+    }
+
     public AnimationComponent getAnimationComponent()
     {
         return m_animationComponent;

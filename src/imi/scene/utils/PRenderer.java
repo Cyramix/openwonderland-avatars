@@ -186,47 +186,25 @@ public class PRenderer
         m_Origin.set(origin);
     }
     
-    public void drawPPolygonModel(PPolygonModel model)
+    public void drawSkeleton(PNode skeletonRoot)
     {
-        drawPPolygonModel_Wireframe(model);
-    }
-    
-    public void drawPPolygonMesh(PPolygonMesh mesh)
-    {
-        drawPPolygonMesh_Wireframe(mesh);
-    }
-    
-    public void drawPPolygonSkinnedMesh(PPolygonSkinnedMesh mesh, PNode TransformHierarchy)
-    {
-        drawPPolygonMesh_Wireframe(mesh, TransformHierarchy);
-    }
-    
-    public void drawPPolygonModel_Wireframe(PPolygonModel model)
-    {
-
-    }
-    
-    public void drawPPolygonMesh_Wireframe(PPolygonSkinnedMesh mesh, PNode TransformHierarchy)
-    {
-        drawPPolygonMesh_Wireframe(mesh);
-        if (TransformHierarchy.getChildrenCount() > 0)
+        if (skeletonRoot.getChildrenCount() > 0)
         {
-            for (PNode kid : TransformHierarchy.getChildren())
+            for (PNode kid : skeletonRoot.getChildren())
             {
                 if (kid instanceof PJoint)
                     drawBones((PJoint)kid); //  Draw skeleton
             }
         }
         else
-            System.out.println("PRenderer - No TransformHierarchy to draw.");
+            System.out.println("PRenderer - No skeletonRoot to draw.");
     }
     
-    public void drawPPolygonMesh_Wireframe(PPolygonMesh mesh)
+    public void drawPPolygonMesh(PPolygonMesh mesh)
     {
         if (m_bRenderBoundingSphere)
         {
-            // TODO set in place
-            jmeSphere.setCenter(mesh.getBoundingSphere().getCenterRef());
+            jmeSphere.setCenter(mesh.getBoundingSphere().getCenterRef().add(m_Origin.getTranslation()));
             jmeSphere.setRadius(mesh.getBoundingSphere().getRadius());
             DebuggerVisualization.drawBounds(jmeSphere, m_Renderer);
         }
@@ -831,28 +809,25 @@ public class PRenderer
                     current.setDirty(false, false);
                 }
 
-                // Add this bone to the skeleton to draw at present()
-                if (parent instanceof PJoint)
-                    addToSkeleton(currentTransform.getWorldMatrix(false), parentTransform.getWorldMatrix(false));
-                else
-                    addToSkeleton(currentTransform.getWorldMatrix(false), null);
-                
+                boolean currentSelected = false;
                 // Draw selected bones
                 if (current instanceof PJoint)
                 {
                     PJoint selected = (PJoint)current;
                     if (selected.isSelected())
                     {
-                        // TODO set up properly...
+                        currentSelected = true;
                         jmeSphere.setCenter(currentTransform.getWorldMatrix(false).getTranslation());
                         jmeSphere.setRadius(0.05f);
                         DebuggerVisualization.drawBounds(jmeSphere, m_Renderer);
-//
-//                        tempSphere.set(currentTransform.getWorldMatrix(false).getTranslation(), 0.05f);
-
-                        //drawSphere(boneSelectionSphere, 3, 3, true); TODO
                     }
                 }
+
+                // Add this bone to the skeleton to draw at present()
+                if (parent instanceof PJoint)
+                    addToSkeleton(currentTransform.getWorldMatrix(false), parentTransform.getWorldMatrix(false), currentSelected);
+                else
+                    addToSkeleton(currentTransform.getWorldMatrix(false), null, currentSelected);
             }
             
             // Add to the list all the kids
@@ -861,7 +836,7 @@ public class PRenderer
         }
     }
     
-    private void addToSkeleton(PMatrix bone, PMatrix parentWorldMatrix)
+    private void addToSkeleton(PMatrix bone, PMatrix parentWorldMatrix, boolean selected)
     {   
         Vector3f point1   = null;
         Vector3f point2   = null;
@@ -881,10 +856,14 @@ public class PRenderer
             //m_Origin.transformPoint(position);
             m_SkeletonBones.add(position);
         }
-        
+
+        float triadScalar = 0.1f;
+        if (selected)
+            triadScalar *= 3.0f;
+
         // add X axis
         point1   = bone.getTranslation();
-        point2   = bone.getTranslation().add(bone.getLocalX().mult(0.1f));
+        point2   = bone.getTranslation().add(bone.getLocalX().mult(triadScalar));
         
         position = new Vector3f(point1);
         //m_Origin.transformPoint(position);
@@ -895,7 +874,7 @@ public class PRenderer
         m_SkeletonX.add(position);
         
         // add Y axis
-        point2   = bone.getTranslation().add(bone.getLocalY().mult(0.1f));
+        point2   = bone.getTranslation().add(bone.getLocalY().mult(triadScalar));
         
         position = new Vector3f(point1);
         //m_Origin.transformPoint(position);
@@ -906,7 +885,7 @@ public class PRenderer
         m_SkeletonY.add(position);
         
         // add Z axis
-        point2   = bone.getTranslation().add(bone.getLocalZ().mult(0.1f));
+        point2   = bone.getTranslation().add(bone.getLocalZ().mult(triadScalar));
         
         position = new Vector3f(point1);
         //m_Origin.transformPoint(position);

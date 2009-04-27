@@ -80,7 +80,7 @@ public class PPolygonModel extends PNode implements Serializable
 //            renderer.setOrigin(rotation, translation, scale);
 //        }
                 
-        renderer.drawPPolygonModel(this);
+        //renderer.drawPPolygonModel(this);
     }
     
     /**

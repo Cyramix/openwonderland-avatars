@@ -197,6 +197,7 @@ public class PScene extends PNode implements RepositoryUser, Serializable
      */
     public void internalRender(PRenderer renderer)
     {
+        // Draw rest
         drawAll(renderer);
     }
     
