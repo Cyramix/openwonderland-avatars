@@ -25,6 +25,7 @@ import imi.scene.PJoint;
 import imi.loaders.PPolygonTriMeshAssembler;
 import imi.loaders.collada.Collada;
 import imi.loaders.collada.ColladaLoaderParams;
+import imi.loaders.collada.ColladaLoadingException;
 import imi.loaders.ms3d.SkinnedMesh_MS3D_Importer;
 import imi.loaders.repository.AssetDescriptor;
 import imi.loaders.repository.AssetInitializer;
@@ -792,7 +793,13 @@ public class PScene extends PNode implements RepositoryUser, Serializable
                     PScene colladaScene = new PScene("COLLADA : " + 
                             meshAsset.getDescriptor().getLocation().getFile(), m_WorldManager);
                     //colladaScene.setUseRepository(true);
-                    colladaLoader.load(colladaScene, meshAsset.getDescriptor().getLocation());
+                    try {
+                        colladaLoader.load(colladaScene, meshAsset.getDescriptor().getLocation());
+                    }
+                    catch (ColladaLoadingException ex)
+                    {
+                        logger.severe(ex.getMessage());
+                    }
                         
                     meshAsset.setAssetData(colladaScene);
                 }

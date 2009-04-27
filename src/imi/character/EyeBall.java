@@ -80,7 +80,8 @@ public class EyeBall extends PPolygonSkinnedMeshInstance implements Serializable
         this.character = character;
     }
 
-    private final Vector3f translationStorage = new Vector3f();
+    private transient Vector3f translationStorage = new Vector3f();
+    
     /**
      * Performs the eyeball lookAt behavior.
      * @param matrix The matrix being modified
@@ -89,6 +90,9 @@ public class EyeBall extends PPolygonSkinnedMeshInstance implements Serializable
     protected void lookAtTarget(PMatrix matrix)
     {
         matrix.getTranslation(translationStorage);
+        
+        float scale = matrix.getLocalX().length();
+
         PMatrix modelWorldRef = modelInst.getTransform().getWorldMatrix(false);
 
         // Get eye world space
@@ -101,8 +105,6 @@ public class EyeBall extends PPolygonSkinnedMeshInstance implements Serializable
         directionToTarget.y *= yScale;
         directionToTarget.normalizeLocal();
 
-        //boolean inConeCheck = bInCone;
-
         // Check if inside the cone
         float dot = directionToTarget.dot(forwardVec);
         if (dot > limitCone)
@@ -111,13 +113,11 @@ public class EyeBall extends PPolygonSkinnedMeshInstance implements Serializable
             if (otherEye.isInCone())
             {
                 // Perform lookAt to target
-                Vector3f scale = matrix.getScaleVector();
                 PMatrix eyeWorldXForm = PMathUtils.lookAt(
                         target,
                         eyeWorld.getTranslation(),
                         Vector3f.UNIT_Y);
                 matrix.set(eyeWorldXForm);
-                matrix.setScale(scale);
                 matrix.mul(modelWorldRef.inverse(), matrix);
                 matrix.setTranslation(translationStorage);
             }
@@ -126,9 +126,10 @@ public class EyeBall extends PPolygonSkinnedMeshInstance implements Serializable
         {
             bInCone = false;
         }
+
         matrix.normalizeCP();
-//        if (inConeCheck != bInCone)
-//            System.out.println("Now in cone: " + bInCone + "  target: " + target + "   direction: " + directionToTarget);
+        // Kind of hacky, but hey, it works!
+        matrix.setScale(scale);
     }
 
     public Vector3f getTarget() {
@@ -208,6 +209,6 @@ public class EyeBall extends PPolygonSkinnedMeshInstance implements Serializable
 
     private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
         in.defaultReadObject();
-
+        translationStorage = new Vector3f();
     }
 }

@@ -296,7 +296,7 @@ public class Collada
      * @param colladaFile
      * @return
      */
-    public boolean load(PScene loadingPScene, URL colladaFile) {
+    public boolean load(PScene loadingPScene, URL colladaFile) throws ColladaLoadingException {
         boolean result = false;
         m_fileLocation = colladaFile;
         m_loadingPScene = loadingPScene;
@@ -368,8 +368,11 @@ public class Collada
      * Perform the actual processing
      * @param collada
      */
-    private void doLoad(COLLADA collada)
+    private void doLoad(COLLADA collada) throws ColladaLoadingException
     {
+        // verify bakeTransforms was armed
+        if (!usingBakeTransforms())
+            throw new ColladaLoadingException("");
         m_Libraries = collada.getLibraryLightsAndLibraryGeometriesAndLibraryAnimationClips();
 
         m_libraryCameras       = getInstanceOfLibraryCameras();
@@ -1315,6 +1318,11 @@ public class Collada
     public URL getFileLocation()
     {
         return m_fileLocation;
+    }
+
+    private boolean usingBakeTransforms() {
+        // todo
+        return true;
     }
 }
 

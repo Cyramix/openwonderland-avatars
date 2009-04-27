@@ -10,6 +10,7 @@ import imi.loaders.Instruction;
 import imi.loaders.InstructionProcessor;
 import imi.loaders.collada.Collada;
 import imi.loaders.collada.ColladaLoaderParams;
+import imi.loaders.collada.ColladaLoadingException;
 import imi.loaders.repository.Repository;
 import imi.scene.PScene;
 import imi.scene.animation.AnimationCycle;
@@ -136,7 +137,13 @@ public class BinaryExporter {
 
         // Load the skeleton
         Collada loader              = new Collada(params);
-        loader.load(new PScene(wm), m_skeletonLocation);
+        try {
+            loader.load(new PScene(wm), m_skeletonLocation);
+        }
+        catch (ColladaLoadingException ex)
+        {
+            logger.severe(ex.getMessage());
+        }
         m_currentSkeleton           = loader.getSkeletonNode();
         m_currentSkeleton.setName(m_outputFile.getName());
 

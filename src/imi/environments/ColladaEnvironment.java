@@ -202,7 +202,7 @@ public class ColladaEnvironment extends Entity
         m_jmeRoot.setRenderState(buf);
         m_jmeRoot.setRenderState(cs);
         m_jmeRoot.setRenderState(ls);
-//        nullifyColorBuffers();
+        nullifyColorBuffers();
         visitNodes();
         m_jmeRoot.updateRenderState();
     }

@@ -22,6 +22,7 @@ import imi.loaders.Instruction;
 import imi.loaders.InstructionProcessor;
 import imi.loaders.collada.Collada;
 import imi.loaders.collada.ColladaLoaderParams;
+import imi.loaders.collada.ColladaLoadingException;
 import imi.loaders.repository.AssetDescriptor;
 import imi.loaders.repository.Repository;
 import imi.loaders.repository.SharedAsset;
@@ -322,7 +323,14 @@ public class BinaryTool
                                                             "Skeleton", // 'name'
                                                             null); // existing skeleton (if applicable)
         Collada loader = new Collada(params);
-        loader.load(new PScene(wm), skeletonLocation); // Don't need to hold on to the pscen
+        try {
+            loader.load(new PScene(wm), skeletonLocation); // Don't need to hold on to the pscen
+        }
+        catch (ColladaLoadingException ex)
+        {
+            logger.severe(ex.getMessage());
+        }
+
         SkeletonNode skeleton = loader.getSkeletonNode();
         skeleton.refresh();
         // Now load it with animations using the InstructionProcessor

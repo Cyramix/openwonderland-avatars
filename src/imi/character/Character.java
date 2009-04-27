@@ -41,6 +41,7 @@ import imi.loaders.Instruction.InstructionType;
 import imi.loaders.InstructionProcessor;
 import imi.loaders.collada.Collada;
 import imi.loaders.collada.ColladaLoaderParams;
+import imi.loaders.collada.ColladaLoadingException;
 import imi.loaders.repository.AssetDescriptor;
 import imi.loaders.repository.Repository;
 import imi.loaders.repository.RepositoryUser;
@@ -782,7 +783,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         // first the skinned meshes
         Iterable<PPolygonSkinnedMeshInstance> smInstances = m_skeleton.retrieveSkinnedMeshes("Head");
         if (smInstances == null) // no subgroup found
-            logger.warning("No \"Head\" meshes found during head installation");
+            logger.warning("No \"Head\" meshes found during head installation. I will now die with a NPE");
         for (PPolygonSkinnedMeshInstance meshInst : smInstances)
         {
             PMeshMaterial meshMat = meshInst.getMaterialRef();
@@ -1811,7 +1812,13 @@ public abstract class Character extends Entity implements SpatialObject, Animati
 
         // Load the skeleton
         Collada loader = new Collada(params);
-        loader.load(new PScene(m_wm), headLocation);
+        try {
+            loader.load(new PScene(m_wm), headLocation);
+        }
+        catch (ColladaLoadingException ex)
+        {
+            logger.severe(ex.getMessage());
+        }
         SkeletonNode newHeadSkeleton = loader.getSkeletonNode();
         newHeadSkeleton.setName(name);
 
@@ -1920,6 +1927,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         SkeletonNode newHeadSkeleton = m_binaryExporter.processBinaryData(headLocation);
         attatchHeadSkeleton(m_skeleton, newHeadSkeleton, m_pscene, m_wm);
         setDefaultHeadShaders();
+        initializeMeshInstanceMaterialStates();
 
         // Re-enable all the processors that affect us.
         m_AnimationProcessor.setEnable(true);

@@ -50,26 +50,26 @@ import javolution.util.FastTable;
  */
 public class TreePopUpMenu extends MouseAdapter implements ActionListener {
     // Class Data Members
-        private String[] menuItems = null;
-        private DefaultTreeModel treeModel = null;
-        private DefaultMutableTreeNode selectedDMT = null;
-        private PNode currentSelection = null;
+    private String[] menuItems = null;
+    private DefaultTreeModel treeModel = null;
+    private DefaultMutableTreeNode selectedDMT = null;
+    private PNode currentSelection = null;
     // Popup Menu GUI
-        private JPopupMenu menu = null;
-        private PNodePropertyPanel editorPanel = null;
-        private JFrame editor = null;
-        private JFrame_MatrixExplorer matrixExplorer = null;
-    // Scene 
-        private SceneEssentials sceneData = null;
+    private JPopupMenu menu = null;
+    private PNodePropertyPanel editorPanel = null;
+    private JFrame editor = null;
+    private JFrame_MatrixExplorer matrixExplorer = null;
+    // Scene
+    private SceneEssentials sceneData = null;
     // File IO GUI
-        private JFileChooser jFileChooser_LoadModels = null;
-        private PPolygonModelInstance modelInst = null;
-        private String jointName = "NewJoint";
-        private String modelName = "NewModel";
-        private static int jointCount = 1;
-        private static int modelCount = 1;
+    private JFileChooser jFileChooser_LoadModels = null;
+    private PPolygonModelInstance modelInst = null;
+    private String jointName = "NewJoint";
+    private String modelName = "NewModel";
+    private static int jointCount = 1;
+    private static int modelCount = 1;
     // Copy Information
-        private PNode copyNode = null;
+    private PNode copyNode = null;
     
     /**
      * Sets the selected node in the tree

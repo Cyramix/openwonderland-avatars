@@ -722,13 +722,6 @@ public class AvatarCreatorDemo extends javax.swing.JFrame implements FrameRateLi
         // Now the walls
         Box box = new Box(name + "Box", center, 500.0f, 500.0f, 500.0f);
         node.attachChild(box);
-
-        // Now some rotating cubes - all confined within the space (not entities)
-        createCube(center, -250.0f, 150.0f,  250.0f, pcc, node, wm);
-        createCube(center,  250.0f, 150.0f,  250.0f, pcc, node, wm);
-        createCube(center,  250.0f, 150.0f, -250.0f, pcc, node, wm);
-        createCube(center, -250.0f, 150.0f, -250.0f, pcc, node, wm);
-
         // Add bounds and state for the whole space
         BoundingBox bbox = new BoundingBox(center, 500.0f, 500.0f, 500.0f);
         node.setModelBound(bbox);
@@ -745,25 +738,6 @@ public class AvatarCreatorDemo extends javax.swing.JFrame implements FrameRateLi
         e.addComponent(ProcessorCollectionComponent.class, pcc);
         e.addComponent(RenderComponent.class, sc);
         wm.addEntity(e);
-    }
-    
-    private void createCube(Vector3f center, float xoff, float yoff, float zoff, ProcessorCollectionComponent pcc, Node parent, WorldManager wm) {
-
-        Vector3f cubeCenter = new Vector3f();
-        Vector3f c = new Vector3f();
-
-        cubeCenter.x = center.x + xoff;
-        cubeCenter.y = center.y + yoff;
-        cubeCenter.z = center.z + zoff;
-        Box cube = new Box("Space Cube", c, 5.0f, 5.0f, 5.0f);
-        Node cubeNode = new Node();
-        cubeNode.setLocalTranslation(cubeCenter);
-        cubeNode.attachChild(cube);
-        parent.attachChild(cubeNode);
-
-        RotationProcessor rp = new RotationProcessor("Cube Rotator", wm, cubeNode, (float) (6.0f * Math.PI / 180.0f));
-
-        pcc.addProcessor(rp);
     }
     
     private Node createCameraGraph(WorldManager wm) {
