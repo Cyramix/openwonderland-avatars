@@ -210,7 +210,8 @@ public class SceneEssentials {
 
     public void setAvatar(Avatar c) {
         m_avatar = c;
-        m_currentPScene = c.getPScene();
+        if (c != null)
+            m_currentPScene = c.getPScene();
     }
 
     public void setGender(int sex) { m_gender = sex; }

@@ -219,8 +219,17 @@ public class SkeletonNode extends PNode implements Animated, Serializable
     public void refresh()
     {
         mapSkinnedMeshJointIndices();
+        linkJointsToSkeletonNode();
     }
-    
+
+    private void linkJointsToSkeletonNode()
+    {
+        ArrayList<PPolygonSkinnedMeshInstance> ppsmInstList = this.getSkinnedMeshInstances();
+        for (int i = 0; i < ppsmInstList.size(); i++) {
+            ppsmInstList.get(i).setAndLinkSkeletonNode(this);
+        }
+    }
+
     /**
      * This method should be called to indicate to the skeleton node
      * where the skeleton it is wrapping begins. This node will have

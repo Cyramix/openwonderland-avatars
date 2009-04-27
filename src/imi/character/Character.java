@@ -1847,14 +1847,16 @@ public abstract class Character extends Entity implements SpatialObject, Animati
             if (ppsmList != null || ppsmList.size() > 0) {
                 for (PPolygonSkinnedMesh pPolygonSkinnedMesh : ppsmList) {
                     PPolygonSkinnedMeshInstance meshInst = (PPolygonSkinnedMeshInstance) m_pscene.addMeshInstance(pPolygonSkinnedMesh, new PMatrix());
-                    //meshInst.setAndLinkSkeletonNode(m_skeleton);
+                    meshInst.setAndLinkSkeletonNode(m_skeleton);
                     m_skeleton.addToSubGroup(meshInst, "Head");
                 }
             }
         }
 
-        for (PPolygonSkinnedMeshInstance meshInst : skinnedMeshList)
+        for (PPolygonSkinnedMeshInstance meshInst : skinnedMeshList) {
+            meshInst.setAndLinkSkeletonNode(m_skeleton);
             m_skeleton.addToSubGroup(meshInst, "Head");
+        }
 
         // Finally, apply the default shaders
         setDefaultHeadShaders();
