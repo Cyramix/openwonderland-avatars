@@ -83,6 +83,7 @@ public class FlexibleCameraProcessor extends AWTEventProcessorComponent
     /** for snap shots **/
     private int picNum = 0;
     private boolean takeSnap = false;
+    private static File screenShotFolder = new File(System.getProperty("user.home") + "/ScreenShots/");
     private final RenderUpdater screenShotter = new RenderUpdater() {
 
         @Override
@@ -91,7 +92,7 @@ public class FlexibleCameraProcessor extends AWTEventProcessorComponent
             {
                 takeSnap = false;
 
-                File file = new File("screenShots/pic" + picNum + ".jpg");
+                File file = new File(screenShotFolder, "pic" + picNum + ".jpg");
                 System.out.println("Taking screen shot " + file.getName());
                 try {
                     if (file.mkdirs() || file.exists())
