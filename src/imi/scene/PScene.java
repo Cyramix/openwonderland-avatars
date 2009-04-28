@@ -1177,4 +1177,14 @@ public class PScene extends PNode implements RepositoryUser, Serializable
         m_TriMeshAssembler = new PPolygonTriMeshAssembler();
 
     }
+
+    /**
+     * This method clears out all the locally cached geometry references.
+     * Use with caution.
+     */
+    public void clearLocalCache()
+    {
+        m_SharedAssets.clear();
+        m_LocalGeometry.clear();
+    }
 }
