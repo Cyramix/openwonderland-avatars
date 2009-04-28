@@ -543,8 +543,10 @@ public abstract class Character extends Entity implements SpatialObject, Animati
             headShader = repo.newShader(PhongFleshShader.class);
         else
             headShader = repo.newShader(FleshShader.class);
+        // Set the skin color
         try {
             headShader.setProperty(new ShaderProperty("materialColor", GLSLDataType.GLSL_VEC3, skinColor));
+            fleshShader.setProperty(new ShaderProperty("materialColor", GLSLDataType.GLSL_VEC3, skinColor));
         } catch (NoSuchPropertyException ex) {
             Logger.getLogger(Character.class.getName()).log(Level.SEVERE, null, ex);
         }
