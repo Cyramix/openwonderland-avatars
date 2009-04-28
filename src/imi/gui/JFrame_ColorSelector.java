@@ -23,7 +23,6 @@ import imi.scene.shader.AbstractShaderProgram;
 import imi.scene.shader.NoSuchPropertyException;
 import imi.scene.shader.ShaderProperty;
 import imi.scene.shader.dynamic.GLSLDataType;
-import imi.scene.shader.dynamic.GLSLShaderProgram;
 import imi.scene.shader.programs.ClothingShaderDiffuseAsSpec;
 import imi.scene.shader.programs.ClothingShaderSpecColor;
 import imi.scene.shader.programs.FleshShader;
@@ -57,6 +56,8 @@ public class JFrame_ColorSelector extends javax.swing.JFrame implements ChangeLi
      */
     public JFrame_ColorSelector() {
         initComponents();
+        setTitle("Color Selector");
+        jToggleButton_FacialHairColor.setEnabled(false);
     }
 
     /**
@@ -67,6 +68,8 @@ public class JFrame_ColorSelector extends javax.swing.JFrame implements ChangeLi
     public JFrame_ColorSelector(SceneEssentials scene) {
         m_sceneData = scene;
         initComponents();
+        setTitle("Color Selector");
+        jToggleButton_FacialHairColor.setEnabled(false);
     }
 
     /**

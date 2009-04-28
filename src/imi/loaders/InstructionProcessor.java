@@ -266,6 +266,9 @@ public class InstructionProcessor
             mesh = (PPolygonSkinnedMeshInstance)node;
             PPolygonMesh unskined = PMeshUtils.unskinMesh(m_skeleton,(PPolygonSkinnedMesh) mesh.getGeometry(), joint);
             mesh = new PPolygonMeshInstance(meshName, unskined, new PMatrix(), m_loadingPScene, false);
+        } else if (node instanceof PPolygonMeshInstance)
+        {
+            mesh = (PPolygonMeshInstance) node;
         }
         else if (node == null)
         {
