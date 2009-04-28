@@ -37,9 +37,16 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Collection;
+import java.util.List;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFrame;
@@ -81,6 +88,12 @@ public class Repository extends Entity
     private long m_numberOfLoadRequests      = 0l;
     private int m_maxConcurrentLoadRequests = 35;
     private static long m_maxQueryTime  = 2000000000l; // Lengthy timeout for testing purposes
+
+    /********************************
+     * Generic Thread Pool!
+     *******************************/
+    private int genericThreadPool = 8;
+    private final ExecutorService genericThreadService = Executors.newFixedThreadPool(genericThreadPool);
 
     /************************
      *  Asset Collections   *
@@ -446,6 +459,15 @@ public class Repository extends Entity
     public void addSkeleton(SkeletonNode skeleton)
     {
         m_Skeletons.add(skeleton.deepCopy());
+    }
+
+    /**
+     * Submit a runnable to execute asynchronously.
+     * @param work
+     */
+    public void submitWork(Runnable work)
+    {
+        genericThreadService.execute(work);
     }
     
     protected class WorkOrder implements Runnable
