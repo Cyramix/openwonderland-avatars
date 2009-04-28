@@ -57,10 +57,12 @@ import imi.scene.utils.tree.PPolygonMeshAssemblingProcessor;
 import imi.scene.utils.tree.TreeTraverser;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.IllegalArgumentException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.logging.Level;
 import javolution.util.FastMap;
+import org.collada.colladaschema.Asset.Contributor;
 import org.collada.xml_walker.ColladaMaterial;
 
 
@@ -371,8 +373,9 @@ public class Collada
     private void doLoad(COLLADA collada) throws ColladaLoadingException
     {
         // verify bakeTransforms was armed
-        if (!usingBakeTransforms())
-            throw new ColladaLoadingException("");
+        if (!isUsingBakeTransforms(collada))
+            throw new ColladaLoadingException("COLLADA files exported with Feeling Software's ColladaMaya " +
+                    "exporter must be exported with the bakeTransforms option enabled.");
         m_Libraries = collada.getLibraryLightsAndLibraryGeometriesAndLibraryAnimationClips();
 
         m_libraryCameras       = getInstanceOfLibraryCameras();
@@ -1320,9 +1323,30 @@ public class Collada
         return m_fileLocation;
     }
 
-    private boolean usingBakeTransforms() {
-        // todo
-        return true;
+    private boolean isUsingBakeTransforms(COLLADA collada) {
+        boolean result = true;
+        if (collada == null)
+            throw new IllegalArgumentException("Must have a valid COLLADA document");
+        List<Contributor> contributors = collada.getAsset().getContributors();
+        if (contributors != null && contributors.size() > 0)
+        {
+            Contributor contributorZero = contributors.get(0);
+            if (contributorZero != null)
+            {
+                String commentsString = contributorZero.getComments();
+                int indexOfBakeTransforms = commentsString.indexOf("bakeTransforms=");
+                // move index forward
+                indexOfBakeTransforms += 15;
+                Integer oneOrZero = Integer.parseInt(commentsString.substring(indexOfBakeTransforms, indexOfBakeTransforms+1));
+                if (oneOrZero != 1)
+                    result = false;
+            }
+            else
+                logger.warning("Contributor Zero was null....");
+        }
+        else
+            logger.warning("No contributors for for this asset.");
+        return result;
     }
 }
 
