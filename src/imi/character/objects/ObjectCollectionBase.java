@@ -60,4 +60,6 @@ public class ObjectCollectionBase extends Entity
         return null;
     }
 
+    public void hackRefresh() {  }
+
 }

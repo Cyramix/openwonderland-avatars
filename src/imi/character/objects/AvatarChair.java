@@ -43,14 +43,14 @@ import javolution.util.FastList;
  * that are important to avatars and allows for sitting at a specified orientation.
  * @author Lou Hayt
  */
-public class Chair implements SpatialObject
+public class AvatarChair implements ChairObject
 {
     /** This is the shared asset that the chair uses. **/
     private SharedAsset sharedAsset = null;
     /** The model instance for the chair. **/
     protected PPolygonModelInstance modelInst   = null;
     /** The collection that this chai belongs to. **/
-    protected ObjectCollection objectCollection = null;
+    protected ObjectCollectionBase objectCollection = null;
     
     private SpatialObject owner = null;
     /** True if the chair has someone or something sitting in it. **/
@@ -72,7 +72,7 @@ public class Chair implements SpatialObject
      * @param heading
      * @param modelFile
      */
-    public Chair(Vector3f position, Vector3f heading, String modelFile)
+    public AvatarChair(Vector3f position, Vector3f heading, String modelFile)
     {
         if (modelFile != null && modelFile.endsWith(".dae"))
         {
@@ -119,10 +119,11 @@ public class Chair implements SpatialObject
                     
                     if (objectCollection == null)
                         return false;
-                    
-                    objectCollection.getPScene().submitTransformsAndGeometry();
-                    //objectCollection.getJScene().updateWorldBound();
-                    objectCollection.getJScene().updateRenderState();
+
+                    objectCollection.hackRefresh();
+                    //objectCollection.getPScene().submitTransformsAndGeometry();
+                    ////objectCollection.getJScene().updateWorldBound();
+                    //objectCollection.getJScene().updateRenderState();
                     
                     return true;
                 }
@@ -160,13 +161,13 @@ public class Chair implements SpatialObject
      */
     public void setObjectCollection(ObjectCollectionBase objs)
     {
-        if (objs instanceof ObjectCollection)
-        {
-            objectCollection = (ObjectCollection)objs;
+//        if (objs instanceof ObjectCollection)
+//        {
+            objectCollection = objs;
             objs.addObject(this);
-        }
-        else
-            System.out.println("Error: chair recieved a none compatible object collection");
+//        }
+//        else
+//            System.out.println("Error: chair recieved a none compatible object collection");
     }
 
     /**
@@ -201,7 +202,7 @@ public class Chair implements SpatialObject
         return modelInst.getTransform().getWorldMatrix(true).getTranslation();
     }
     
-    public Vector3f getGoalPosition()
+    public Vector3f getTargetPositionRef()
     {
 //        Vector3f goalOffset = modelInst.getChild(1).getTransform().getWorldMatrix(false).getLocalZ().mult(sittingDistance);
 //        return modelInst.getTransform().getWorldMatrix(false).getTranslation().add(goalOffset);
@@ -209,7 +210,7 @@ public class Chair implements SpatialObject
         PPolygonMeshInstance mesh = (PPolygonMeshInstance) modelInst.getChild(0);
         Vector3f result = mesh.getTransform().getWorldMatrix(false).getTranslation();
                 
-        return result.add(getGoalForwardVector().mult(goalForwardOffset));
+        return result.add(getTargetForwardVector().mult(goalForwardOffset));
         
     }
     
@@ -223,7 +224,7 @@ public class Chair implements SpatialObject
         return modelInst.getTransform().getWorldMatrix(false).getLocalZ();
     }
     
-    public Vector3f getGoalForwardVector()
+    public Vector3f getTargetForwardVector()
     {
          Vector3f normal = modelInst.getTransform().getWorldMatrix(false).getLocalZ();
         
@@ -308,7 +309,6 @@ public class Chair implements SpatialObject
         setOwner(null);
         setOccupied(true);
         objectCollection.removeObject(this);
-        objectCollection.getPScene().removeModelInstance(this.getModelInst());
     }
     
 }

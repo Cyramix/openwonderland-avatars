@@ -46,6 +46,11 @@ public class TreeExplorer extends javax.swing.JFrame {
     private SceneEssentials sceneData = null;
     private Component identity  = this;
 
+    TreeExplorer(SceneEssentials aThis) {
+        this();
+        setExplorer(aThis);
+    }
+
     public void refresh() {
         this.setVisible(false);
         this.setVisible(true);

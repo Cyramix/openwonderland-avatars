@@ -17,10 +17,19 @@
  */
 package imi.scene.utils;
 
+import com.jme.image.Texture;
+import com.jme.scene.TriMesh;
 import imi.utils.PMathUtils;
 import com.jme.math.Vector2f;
 import com.jme.math.Vector3f;
 import com.jme.renderer.ColorRGBA;
+import com.jme.scene.SharedMesh;
+import com.jme.scene.Spatial;
+import com.jme.scene.state.CullState;
+import com.jme.scene.state.MaterialState;
+import com.jme.scene.state.RenderState;
+import com.jme.scene.state.TextureState;
+import com.jme.util.TextureManager;
 import imi.loaders.PGeometryVertexBuffer;
 import imi.loaders.PPolygonTriMeshAssembler;
 import imi.scene.PMatrix;
@@ -35,7 +44,13 @@ import imi.scene.polygonmodel.parts.polygon.PPolygonVertexIndices;
 import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
 import imi.scene.polygonmodel.parts.skinned.SkinnedMeshJoint;
 import imi.scene.polygonmodel.skinned.PPolygonSkinnedMesh;
+import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.jdesktop.mtgame.WorldManager;
 
 public class PMeshUtils 
 {
@@ -1674,6 +1689,63 @@ public class PMeshUtils
         pPolygonMesh.flipNormals(); // TODO need a fix!
         
         return(pPolygonMesh);
+    }
+
+    public static void textureMesh(Spatial mesh, String localPath, WorldManager wm)
+    {
+        if (mesh instanceof SharedMesh || mesh instanceof TriMesh)
+        {
+            MaterialState matState = (MaterialState) (mesh).getRenderState(RenderState.RS_MATERIAL);
+            if (matState == null)
+                matState = (MaterialState) wm.getRenderManager().createRendererState(RenderState.RS_MATERIAL);
+            matState.setColorMaterial(MaterialState.ColorMaterial.AmbientAndDiffuse);
+            matState.setMaterialFace(MaterialState.MaterialFace.Front);
+
+//            CullState cull = (CullState)mesh.getRenderState(RenderState.RS_CULL);
+//            if (cull == null)
+//                cull = (CullState) wm.getRenderManager().createRendererState(RenderState.RS_CULL);
+//            cull.setCullFace(CullState.Face.Back);
+
+            TextureState texState = (TextureState) mesh.getRenderState(RenderState.RS_TEXTURE);
+            if (texState == null)
+            {
+                texState = (TextureState) wm.getRenderManager().createRendererState(RenderState.RS_TEXTURE);
+                Texture base   = null;
+                //Texture detail = null;
+                URL path       = null;
+                String texLoc  = null;
+                try {
+                    ////////////////////////////////////////////////////////
+                    texLoc  = localPath;
+                    path    = PMeshUtils.class.getResource(texLoc);
+                    if (path != null)
+                        base = TextureManager.loadTexture(path);
+                    else
+                        base   = TextureManager.loadTexture(new File(texLoc).toURI().toURL());
+                    ////////////////////////////////////////////////////////
+//                    texLoc  = detailTexture;
+//                    path    = PMeshUtils.class.getResource(texLoc);
+//                    if (path != null)
+//                        detail = TextureManager.loadTexture(path);
+//                    else
+//                        detail = TextureManager.loadTexture(new File(texLoc).toURI().toURL());
+                    ////////////////////////////////////////////////////////
+                } catch (MalformedURLException ex) {
+                    Logger.getLogger(PMeshUtils.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                base.setApply(Texture.ApplyMode.Modulate);
+                base.setWrap(Texture.WrapAxis.S, Texture.WrapMode.Repeat);
+                base.setWrap(Texture.WrapAxis.T, Texture.WrapMode.Repeat);
+                base.setMinificationFilter(Texture.MinificationFilter.Trilinear);
+//                detail.setApply(Texture.ApplyMode.Modulate);
+//                detail.setWrap(Texture.WrapAxis.S, Texture.WrapMode.Repeat);
+//                detail.setWrap(Texture.WrapAxis.T, Texture.WrapMode.Repeat);
+//                detail.setMinificationFilter(Texture.MinificationFilter.Trilinear);
+                texState.setTexture(base, 0);
+                //texState.setTexture(detail, 1);
+                mesh.setRenderState(texState);
+            }
+        }
     }
 
     /**

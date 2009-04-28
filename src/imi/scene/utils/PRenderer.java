@@ -819,6 +819,7 @@ public class PRenderer
                         currentSelected = true;
                         jmeSphere.setCenter(currentTransform.getWorldMatrix(false).getTranslation());
                         jmeSphere.setRadius(0.05f);
+                        //DebuggerVisualization.setBoundsColor(ColorRGBA.blue); doesn't workie...
                         DebuggerVisualization.drawBounds(jmeSphere, m_Renderer);
                     }
                 }

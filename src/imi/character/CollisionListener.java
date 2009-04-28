@@ -18,6 +18,7 @@
 package imi.character;
 
 import com.jme.math.Vector3f;
+import javolution.util.FastTable;
 
 /**
  *
@@ -26,4 +27,5 @@ import com.jme.math.Vector3f;
 public interface CollisionListener
 {
     public void colliding(Vector3f projection);
+    public void picked(Class source, Object messageData, Vector3f origin, Vector3f direction, FastTable<Vector3f> hitList);
 }

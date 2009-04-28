@@ -140,7 +140,12 @@ public class SceneEssentials {
 ////////////////////////////////////////////////////////////////////////////////
     public SceneEssentials() {
         initFileChooser();
-    }    
+    }
+
+    public SceneEssentials(Avatar avatar) {
+        this();
+        setAvatar(avatar);
+    }
     
     // Accessors
     public JScene getJScene() { return m_currentJScene; }
@@ -211,7 +216,10 @@ public class SceneEssentials {
     public void setAvatar(Avatar c) {
         m_avatar = c;
         if (c != null)
+        {
             m_currentPScene = c.getPScene();
+            setSceneData(c.getJScene(), c.getPScene(), c, c.getWorldManager(), null);
+        }
     }
 
     public void setGender(int sex) { m_gender = sex; }
@@ -2556,5 +2564,10 @@ public class SceneEssentials {
                 saveThread.start();
             }
         }
+    }
+
+    public void makeTreeExplorer() {
+        TreeExplorer te = new TreeExplorer(this);
+        te.setVisible(true);
     }
 }

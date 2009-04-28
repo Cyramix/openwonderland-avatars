@@ -28,7 +28,7 @@ import java.util.Hashtable;
  * This class represents a node (used in avatar path following) at a given location.
  * @author Lou Hayt
  */
-public class LocationNode extends GraphNode implements SpatialObject
+public class LocationNode extends GraphNode implements TargetObject
 {
     /** The name of this location **/
     private String              name     = null;
@@ -109,7 +109,23 @@ public class LocationNode extends GraphNode implements SpatialObject
         else
             System.out.println("ERROR: LocationNode generateChairs() failed");
     }
-    
+
+    public Vector3f getTargetPositionRef() {
+        return getPositionRef();
+    }
+
+    public Vector3f getTargetForwardVector() {
+        return new Vector3f(forward);
+    }
+
+    public SpatialObject getOwner() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void setOwner(SpatialObject object) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
     public Vector3f getPositionRef() {
         if (bv != null)
             return bv.getCenterRef();
@@ -127,6 +143,10 @@ public class LocationNode extends GraphNode implements SpatialObject
     }
 
     public Vector3f getForwardVector() {
+        return new Vector3f(forward);
+    }
+
+    public Vector3f getForwardVectorRef() {
         return forward;
     }
     

@@ -19,12 +19,10 @@ package imi.character.objects.console;
 
 import com.jme.math.Vector3f;
 import imi.character.avatar.Avatar;
-import imi.character.avatar.AvatarContext;
 import imi.character.avatar.FemaleAvatarAttributes;
 import imi.character.avatar.MaleAvatarAttributes;
 import imi.character.objects.ObjectCollection;
 import imi.character.objects.SpatialObject;
-import imi.character.steering.GoTo;
 import imi.scene.PMatrix;
 import imi.scene.processors.JSceneEventProcessor;
 import imi.utils.PMathUtils;
@@ -265,7 +263,7 @@ public class CoreCommands implements ConsoleCommand
             gui.appendOutput("Chair List:");
             for (SpatialObject obj : objs.getObjects()) 
             {
-                if (obj instanceof imi.character.objects.Chair)
+                if (obj instanceof imi.character.objects.ChairObject)
                     gui.appendOutput(index + ": " + obj.getClass().toString());
                 index++; 
             }      

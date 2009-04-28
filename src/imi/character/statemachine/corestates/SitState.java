@@ -18,9 +18,8 @@
 package imi.character.statemachine.corestates;
 
 import imi.character.avatar.AvatarContext;
-import imi.character.statemachine.corestates.FallFromSitState;
 import imi.character.avatar.AvatarContext.TriggerNames;
-import imi.character.objects.Chair;
+import imi.character.objects.ChairObject;
 import imi.character.statemachine.GameState;
 import imi.character.statemachine.GameContext;
 import imi.scene.animation.AnimationComponent.PlaybackMode;
@@ -36,7 +35,7 @@ public class SitState extends GameState
     /** The owning context **/
     GameContext context = null;
     /** The chair we will be sitting in **/
-    Chair chair = null;
+    ChairObject chair = null;
     
     private float   counter = 0.0f;
     private float   sittingAnimationTime = 0.7f;
@@ -73,9 +72,9 @@ public class SitState extends GameState
     public boolean toSit(Object data)
     {
         // is the chair occupied?
-        if (context.getSteering().getGoal() instanceof Chair)
+        if (context.getSteering().getGoal() instanceof ChairObject)
         {
-            chair = (Chair)context.getSteering().getGoal();
+            chair = (ChairObject)context.getSteering().getGoal();
             if (chair.isOccupied())
                 return false;
         }
@@ -124,9 +123,9 @@ public class SitState extends GameState
         context.getController().stop();
         
         // Set the chair to occupied
-        if (context.getSteering().getGoal() instanceof Chair)
+        if (context.getSteering().getGoal() instanceof ChairObject)
         {
-            chair = (Chair)context.getSteering().getGoal();
+            chair = (ChairObject)context.getSteering().getGoal();
             chair.setOwner(context.getCharacter());
             chair.setOccupied(true);
         }

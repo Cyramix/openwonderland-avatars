@@ -225,7 +225,7 @@ public class Avatar extends imi.character.Character
         m_context.getStateMapping().get(WalkState.class).setAnimationName("Male_Walk");
         m_context.getStateMapping().get(RunState.class).setAnimationName("Male_Run");
         m_context.getStateMapping().get(SitState.class).setAnimationName("Male_StandToSit");
-        m_context.getStateMapping().get(FlyState.class).setAnimationName("Male_Sitting");
+        m_context.getStateMapping().get(FlyState.class).setAnimationName("Male_Cheer");
         ((SitState)m_context.getStateMapping().get(SitState.class)).setIdleSittingAnimationName("Male_Sitting");
         ((SitState)m_context.getStateMapping().get(SitState.class)).setGettingUpAnimationName("Male_StandToSit");
     }
@@ -253,7 +253,7 @@ public class Avatar extends imi.character.Character
         m_context.getStateMapping().get(WalkState.class).setAnimationName("Female_Walk");
         m_context.getStateMapping().get(RunState.class).setAnimationName("Female_Run");
         m_context.getStateMapping().get(SitState.class).setAnimationName("Female_StandtoSit");
-        m_context.getStateMapping().get(FlyState.class).setAnimationName("Female_Sitting");
+        m_context.getStateMapping().get(FlyState.class).setAnimationName("Female_Cheer");
         ((SitState)m_context.getStateMapping().get(SitState.class)).setIdleSittingAnimationName("Female_Sitting");
         ((SitState)m_context.getStateMapping().get(SitState.class)).setGettingUpAnimationName("Female_StandtoSit");
     }

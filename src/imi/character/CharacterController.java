@@ -23,6 +23,7 @@ import imi.scene.PMatrix;
 import imi.scene.polygonmodel.PPolygonModelInstance;
 import java.util.HashSet;
 import javax.swing.JFrame;
+import javolution.util.FastTable;
 
 /**
  * avatarController contains most concrete code at this point. This class provides
@@ -189,5 +190,9 @@ public abstract class CharacterController implements CollisionListener
     
     /** Override - zero out gravity acceleration etc **/
     public void colliding(Vector3f projection) {
+    }
+
+    /** Override - consume message **/
+    public void picked(Class source, Object messageData, Vector3f origin, Vector3f direction, FastTable<Vector3f> hitList) {
     }
 }

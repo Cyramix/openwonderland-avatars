@@ -21,7 +21,7 @@ import com.jme.math.Vector3f;
 import imi.character.Task;
 import imi.character.avatar.AvatarContext;
 import imi.character.avatar.AvatarContext.TriggerNames;
-import imi.character.objects.Chair;
+import imi.character.objects.ChairObject;
 import imi.character.objects.SpatialObject;
 import imi.character.statemachine.corestates.SitState;
 import imi.scene.PMatrix;
@@ -40,7 +40,7 @@ public class GoSit implements Task
     
     private AvatarContext context = null;
     
-    private Chair goal = null;
+    private ChairObject goal = null;
     private boolean bDone = false;
     private boolean  bTryAgain = false;
     
@@ -54,12 +54,12 @@ public class GoSit implements Task
     
     private float pullPower = 5.0f;
     
-    public GoSit(Chair chair, AvatarContext context) 
+    public GoSit(ChairObject chair, AvatarContext context)
     {
         this.context = context;
         this.goal = chair;
-        goalPosition.set(goal.getGoalPosition());
-        goalDirection.set(goal.getGoalForwardVector());
+        goalPosition.set(goal.getTargetPositionRef());
+        goalDirection.set(goal.getTargetForwardVector());
         go = new GoTo(goalPosition, context);
         go.setGoal(goal);
         go.setAvoidObstacles(true);

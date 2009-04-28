@@ -199,8 +199,10 @@ public class JScene extends Node {
      * it is using JME lines and points to do so.
      */
     public void toggleRenderVertexNormals() {
-        if (m_PRenderer != null)
-            m_PRenderer.renderVertexNormals(!m_PRenderer.getRenderVertexNormals());
+        if (m_PRenderer == null)
+            m_PRenderer = new PRenderer();
+
+        m_PRenderer.renderVertexNormals(!m_PRenderer.getRenderVertexNormals());
     }
 
     /**
@@ -222,9 +224,10 @@ public class JScene extends Node {
      * it is using JME lines and points to do so.
      */    
     public void toggleRenderBoundingVolume() {
-        if (m_PRenderer != null) {
-            m_PRenderer.renderBoundingSphere(!m_PRenderer.getRenderBoundingSphere());
-        }
+        if (m_PRenderer == null)
+            m_PRenderer = new PRenderer();
+
+        m_PRenderer.renderBoundingSphere(!m_PRenderer.getRenderBoundingSphere());
     }
 
     /**

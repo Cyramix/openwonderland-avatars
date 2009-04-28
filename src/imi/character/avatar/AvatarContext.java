@@ -43,7 +43,7 @@ import imi.character.statemachine.corestates.transitions.TurnToAction;
 import imi.character.statemachine.corestates.transitions.TurnToWalk;
 import imi.character.statemachine.corestates.transitions.WalkToIdle;
 import imi.character.statemachine.corestates.transitions.WalkToAction;
-import imi.character.objects.Chair;
+import imi.character.objects.ChairObject;
 import imi.character.objects.LocationNode;
 import imi.character.objects.SpatialObject;
 import imi.character.statemachine.GameContext;
@@ -266,7 +266,7 @@ public class AvatarContext extends GameContext
             if (avatar.getObjectCollection() == null || avatar.getRightArm() == null)
                 return;
 
-            SpatialObject obj = avatar.getObjectCollection().findNearestObjectOfType(Chair.class, avatar, 10000.0f, 1.0f, true);
+            SpatialObject obj = avatar.getObjectCollection().findNearestObjectOfType(ChairObject.class, avatar, 10000.0f, 1.0f, true);
             if (obj == null)
                 return;
 
@@ -412,10 +412,10 @@ public class AvatarContext extends GameContext
         if (avatar.getObjectCollection() == null)
             return false;
 
-        SpatialObject obj = avatar.getObjectCollection().findNearestObjectOfType(Chair.class, avatar, 10000.0f, 1.0f, true);
-        if (obj != null && !((Chair)obj).isOccupied())
+        SpatialObject obj = avatar.getObjectCollection().findNearestObjectOfType(ChairObject.class, avatar, 10000.0f, 1.0f, true);
+        if (obj != null && !((ChairObject)obj).isOccupied())
         {
-            GoSit task = new GoSit((Chair)obj, this);
+            GoSit task = new GoSit((ChairObject)obj, this);
             AI.addTaskToTop(task);
             AI.setEnable(true);
             return true;

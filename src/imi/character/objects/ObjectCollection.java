@@ -113,6 +113,13 @@ public class ObjectCollection extends ObjectCollectionBase
        // for (S)
     }
 
+    @Override
+    public void hackRefresh()
+    {
+        getPScene().submitTransformsAndGeometry();
+        getJScene().updateRenderState();
+    }
+
     /////////////////////////  JGraph integration ///////////////////////////////////
 
     /**
@@ -158,6 +165,7 @@ public class ObjectCollection extends ObjectCollectionBase
     public void removeObject(SpatialObject obj) {
         if (obj == null)
             return;
+        getPScene().removeModelInstance(obj.getModelInst());
         objects.remove(obj);
     }
 
@@ -333,7 +341,7 @@ public class ObjectCollection extends ObjectCollectionBase
             Vector3f randomPosition  = center.add(randomDirection.mult(randomDistance));
 
             //Chair newChair = new Chair(randomPosition, randomSittingDirection, null); // renders as a sphere
-            Chair newChair = new Chair(randomPosition, randomSittingDirection, "assets/models/collada/Objects/Chairs/ConfChair1.dae");
+            AvatarChair newChair = new AvatarChair(randomPosition, randomSittingDirection, "assets/models/collada/Objects/Chairs/ConfChair1.dae");
             newChair.setObjectCollection(this);
             newChair.setInScene(pscene);
 
@@ -427,13 +435,13 @@ public class ObjectCollection extends ObjectCollectionBase
     }
 
     // The chair's bounding volumes are not correct until finished loading, this method is still good on load time.
-    private boolean isCloseToOtherChairs(Chair newChair)
+    private boolean isCloseToOtherChairs(ChairObject newChair)
     {
         for (SpatialObject check : objects)
         {
-            if (!(check instanceof Chair))
+            if (!(check instanceof ChairObject))
                 continue;
-            Chair chair = (Chair)check;
+            ChairObject chair = (ChairObject)check;
             if (chair != newChair)
             {
                 Vector3f chairPos    = chair.getPositionRef();
@@ -452,7 +460,7 @@ public class ObjectCollection extends ObjectCollectionBase
         // TODO - actual implemintation :D
         if (type.equals(LocationNode.class))
             return findNearestLocation(obj, consideredRange, searchCone, occupiedMatters);
-        else if (type.equals(Chair.class))
+        else if (type.equals(ChairObject.class))
             return findNearestChair(obj, consideredRange, searchCone, occupiedMatters);
         else if (type.equals(SpatialObject.class))
             return findNearestObject(obj, consideredRange, searchCone, occupiedMatters);
@@ -545,10 +553,13 @@ public class ObjectCollection extends ObjectCollectionBase
         float nearestObjDistance = 0.0f;
         for (SpatialObject check : objects)
         {
-            if (check != obj && check instanceof Chair)
+            if (check != obj && check instanceof ChairObject)
             {
                 // Check if occupided
-                if (((Chair)check).isOccupied(occupiedMatters))
+                boolean oc = ((ChairObject)check).isOccupied();
+                if (!occupiedMatters)
+                    oc = false;
+                if (oc)
                     continue;
 
                 // Check range
@@ -569,7 +580,7 @@ public class ObjectCollection extends ObjectCollectionBase
                 {
                     Vector3f rightVec = obj.getRightVector();
                     Vector3f forwardVec = obj.getForwardVector();
-                    Vector3f directionToTarget = ((Chair)check).getGoalPosition().subtract(obj.getPositionRef());
+                    Vector3f directionToTarget = ((ChairObject)check).getTargetPositionRef().subtract(obj.getPositionRef());
                     directionToTarget.normalizeLocal();
 
                     // Check if inside the front half of space
@@ -681,10 +692,10 @@ public class ObjectCollection extends ObjectCollectionBase
     {
         for (SpatialObject check : objects)
         {
-            if (check instanceof Chair)
+            if (check instanceof ChairObject)
             {
-                ((Chair)check).setOwner(null);
-                ((Chair)check).setOccupied(true);
+                ((ChairObject)check).setOwner(null);
+                ((ChairObject)check).setOccupied(true);
                 objects.remove(check);
                 pscene.removeModelInstance(check.getModelInst());
                 return;
