@@ -25,11 +25,11 @@ import imi.scene.polygonmodel.PPolygonMeshInstance;
  * @author ptruong
  */
 public class MeshInstanceSearchProcessor implements NodeProcessor {
-    java.util.Vector<PNode> meshInstances = null;
+    java.util.Vector<PPolygonMeshInstance> meshInstances = null;
 
-    public void setProcessor() { meshInstances = new java.util.Vector<PNode>(); }
+    public void setProcessor() { meshInstances = new java.util.Vector<PPolygonMeshInstance>(); }
     
-    public java.util.Vector<PNode> getNodeMeshInstances() { return meshInstances; }
+    public java.util.Vector<PPolygonMeshInstance> getNodeMeshInstances() { return meshInstances; }
     
     public java.util.Vector<PPolygonMeshInstance> getMeshInstances() {
         java.util.Vector<PPolygonMeshInstance> meshInst = new java.util.Vector<PPolygonMeshInstance>();
@@ -41,7 +41,7 @@ public class MeshInstanceSearchProcessor implements NodeProcessor {
     
     public boolean processNode(PNode currentNode) {
         if(currentNode instanceof PPolygonMeshInstance)
-            meshInstances.add(currentNode);
+            meshInstances.add((PPolygonMeshInstance)currentNode);
         return true;
     }
 

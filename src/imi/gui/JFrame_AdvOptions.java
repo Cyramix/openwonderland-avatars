@@ -58,7 +58,8 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
      */
     public JFrame_AdvOptions() {
         initComponents();
-        
+
+        this.setTitle("Avatar Joint Manipulator");
         HeadOptions.setParentFrame(this);
         PPolygonSkinnedMeshInstance[] eyes = getEyeBallMeshes();
         HeadOptions.setEyeMeshInstances(eyes);
@@ -77,6 +78,7 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
         
         initComponents();
 
+        this.setTitle("Avatar Joint Manipulator");
         HeadOptions.setParentFrame(this);
         PPolygonSkinnedMeshInstance[] eyes = getEyeBallMeshes();
         HeadOptions.setEyeMeshInstances(eyes);

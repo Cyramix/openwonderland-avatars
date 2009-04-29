@@ -21,7 +21,6 @@ import com.jme.image.Texture;
 import com.jme.scene.Node;
 import com.jme.scene.Spatial;
 import com.jme.util.TextureManager;
-import imi.scene.PJoint;
 import imi.loaders.PPolygonTriMeshAssembler;
 import imi.loaders.collada.Collada;
 import imi.loaders.collada.ColladaLoaderParams;
