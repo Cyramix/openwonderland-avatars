@@ -115,7 +115,7 @@ public class AvatarChair implements ChairObject
                         queue.addAll(current.getChildren());
                     }
 
-                    //modelInst.calculateBoundingSphere();
+                    modelInst.calculateBoundingSphere();
                     
                     if (objectCollection == null)
                         return false;

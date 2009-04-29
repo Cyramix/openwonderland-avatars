@@ -625,8 +625,8 @@ public class PScene extends PNode implements RepositoryUser, Serializable
             while(newInstance.getChildrenCount() > 0)
                 parent.addChild(newInstance.getChild(0));
              
-             if (asset.getInitializer() != null)
-                 asset.getInitializer().initialize(parent); 
+             if (placeHolder.getInitializer() != null)
+                 placeHolder.getInitializer().initialize(parent);
         }
         else // A mesh or a skinned mesh
         {
@@ -639,8 +639,8 @@ public class PScene extends PNode implements RepositoryUser, Serializable
                 parent.replaceChild(placeHolder, skeleton, true);
                 
                 // Initialize this asset now that it is loaded
-                if (asset.getInitializer() != null)
-                    asset.getInitializer().initialize(skeleton);   
+                if (placeHolder.getInitializer() != null)
+                    placeHolder.getInitializer().initialize(skeleton);
             }
             else if (asset.getAssetData() instanceof PPolygonMesh)
             {
@@ -650,8 +650,8 @@ public class PScene extends PNode implements RepositoryUser, Serializable
                 parent.buildFlattenedHierarchy();
                 
                 // Initialize this asset now that it is loaded
-                if (asset.getInitializer() != null)
-                    asset.getInitializer().initialize(newInstance);   
+                if (placeHolder.getInitializer() != null)
+                    placeHolder.getInitializer().initialize(newInstance);
             }
         }
     }
@@ -747,7 +747,7 @@ public class PScene extends PNode implements RepositoryUser, Serializable
                 if (meshAsset.getDescriptor().equals(asset.getDescriptor()))
                 {
                     // We have this asset! Share...
-                    meshAsset = asset;
+                    meshAsset.setAssetData(asset.getAssetData());
                     foundSharedAsset = true;
                     break;
                 }
@@ -904,7 +904,7 @@ public class PScene extends PNode implements RepositoryUser, Serializable
         if (-1 == index && asset.getAssetData() == null)
         { 
             // Create the placeholder instance for the modelAsset
-            SharedAssetPlaceHolder assetInstance = new SharedAssetPlaceHolder("SharedAssetPlaceHolder instance", asset.getDescriptor());
+            SharedAssetPlaceHolder assetInstance = new SharedAssetPlaceHolder("SharedAssetPlaceHolder instance", asset.getDescriptor(), null, asset.getInitializer());
             result = assetInstance;
 
             // Can this placeholder be a freeloader?
@@ -1123,7 +1123,7 @@ public class PScene extends PNode implements RepositoryUser, Serializable
             m_SharedAssetWaitingList.add(new SharedAssetPlaceHolder(shaderPair.getDescriptor().getType().toString() + 
                     shaderPair.getDescriptor().getLocation().getPath().toString() + " - " +
                     shaderPair.getDescriptor().getLocation(1).getPath().toString(),
-                    shaderPair.getDescriptor(), shaderInstaller));
+                    shaderPair.getDescriptor(), shaderInstaller, shaderPair.getInitializer()));
             // send request to the repository
             getRepository().loadSharedAsset(shaderPair, this);
         }

@@ -17,13 +17,14 @@
  */
 package imi.character;
 
+import imi.collision.CollisionListener;
 import com.jme.math.Quaternion;
 import com.jme.math.Vector3f;
+import imi.collision.PickingResults;
 import imi.scene.PMatrix;
 import imi.scene.polygonmodel.PPolygonModelInstance;
 import java.util.HashSet;
 import javax.swing.JFrame;
-import javolution.util.FastTable;
 
 /**
  * avatarController contains most concrete code at this point. This class provides
@@ -193,6 +194,6 @@ public abstract class CharacterController implements CollisionListener
     }
 
     /** Override - consume message **/
-    public void picked(Class source, Object messageData, Vector3f origin, Vector3f direction, FastTable<Vector3f> hitList) {
+    public void picked(Class source, Object messageData, Vector3f origin, Vector3f direction, PickingResults results) {
     }
 }

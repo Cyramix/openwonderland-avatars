@@ -15,10 +15,9 @@
  * exception as provided by Sun in the License file that accompanied
  * this code.
  */
-package imi.character;
+package imi.collision;
 
 import com.jme.math.Vector3f;
-import javolution.util.FastTable;
 
 /**
  *
@@ -27,5 +26,5 @@ import javolution.util.FastTable;
 public interface CollisionListener
 {
     public void colliding(Vector3f projection);
-    public void picked(Class source, Object messageData, Vector3f origin, Vector3f direction, FastTable<Vector3f> hitList);
+    public void picked(Class source, Object messageData, Vector3f origin, Vector3f direction, PickingResults results);
 }

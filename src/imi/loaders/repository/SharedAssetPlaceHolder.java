@@ -34,18 +34,8 @@ public class SharedAssetPlaceHolder extends PNode
     private FastList<SharedAssetPlaceHolder>    m_freeloaders       = new FastList<SharedAssetPlaceHolder>();
     // A placeholder without a parent will use this target to install the received asset.
     // For instance, textures are not nodes but node affectors, so they need a target
-    private PPolygonMeshInstance                m_target        = null; 
-    
-    /**
-     * Construct a new instance
-     * @param name The name that will be transfered to the actual asset if applicable
-     * @param description 
-     */
-    public SharedAssetPlaceHolder(String name, AssetDescriptor description)
-    {
-        super(name);
-        m_assetDescriptor = description;
-    }
+    private PPolygonMeshInstance                m_target        = null;
+    private AssetInitializer                    m_assetInitializer = null;
     
     /**
      * Construct a new instance
@@ -53,11 +43,12 @@ public class SharedAssetPlaceHolder extends PNode
      * @param description
      * @param target The mesh instance that will be modified by this asset
      */
-    public SharedAssetPlaceHolder(String name, AssetDescriptor description, PPolygonMeshInstance target)
+    public SharedAssetPlaceHolder(String name, AssetDescriptor description, PPolygonMeshInstance target, AssetInitializer init)
     {
         super(name);
         m_assetDescriptor = description;
         m_target = target;
+        m_assetInitializer = init;
     }
 
     /**
@@ -94,6 +85,10 @@ public class SharedAssetPlaceHolder extends PNode
     public AssetDescriptor getDescriptor()
     {
         return m_assetDescriptor;
+    }
+
+    public AssetInitializer getInitializer() {
+        return m_assetInitializer;
     }
     
     public PPolygonMeshInstance getTarget()
