@@ -39,6 +39,7 @@ import javax.swing.JFrame;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
+import javax.swing.SwingUtilities;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
@@ -471,7 +472,7 @@ public class TreePopUpMenu extends MouseAdapter implements ActionListener {
     
     @Override
     public void mousePressed(MouseEvent e) {
-        displayMenu(e);
+        
     }
     
     @Override
@@ -488,6 +489,8 @@ public class TreePopUpMenu extends MouseAdapter implements ActionListener {
         if(e.isPopupTrigger()) {
             menu.show(e.getComponent(), e.getX(), e.getY());
         }
+        if (e.getClickCount() == 2 && SwingUtilities.isLeftMouseButton(e))
+            actionNodeProperties();
     }
     
     /**
