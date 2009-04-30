@@ -478,8 +478,8 @@ public class JPanel_HeadOptions extends javax.swing.JPanel {
         jPanel_Uniform.add(jPanel_HeadWidth, new java.awt.GridBagConstraints());
 
         jPanel_HeadHeight.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Head Height Scale", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Lucida Grande", 0, 13), new java.awt.Color(0, 0, 255))); // NOI18N
-        jPanel_HeadHeight.setMinimumSize(new java.awt.Dimension(230, 200));
-        jPanel_HeadHeight.setPreferredSize(new java.awt.Dimension(230, 120));
+        jPanel_HeadHeight.setMinimumSize(new java.awt.Dimension(230, 180));
+        jPanel_HeadHeight.setPreferredSize(new java.awt.Dimension(230, 180));
         jPanel_HeadHeight.setLayout(new java.awt.GridBagLayout());
         jPanel_HeadHeight.add(Head_Height, new java.awt.GridBagConstraints());
 

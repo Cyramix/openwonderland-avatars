@@ -486,7 +486,7 @@ public class TreePopUpMenu extends MouseAdapter implements ActionListener {
      * @param e (MouseEvent)
      */
     public void displayMenu(MouseEvent e) {
-        if(e.isPopupTrigger()) {
+        if(e.getClickCount() == 1 && SwingUtilities.isRightMouseButton(e)) {
             menu.show(e.getComponent(), e.getX(), e.getY());
         }
         if (e.getClickCount() == 2 && SwingUtilities.isLeftMouseButton(e))
