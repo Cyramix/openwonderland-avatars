@@ -17,7 +17,6 @@
  */
 package imi.character.avatar;
 
-import com.jme.math.Vector3f;
 import com.jme.renderer.ColorRGBA;
 import imi.character.AttachmentParams;
 import imi.character.CharacterAttributes;
@@ -248,34 +247,40 @@ public class FemaleAvatarAttributes extends CharacterAttributes
         switch (preset)
         {
             case 0:
-                setHeadAttachment("assets/models/collada/Heads/FemaleHead/FemaleCHead.dae");
+                setHeadAttachment("assets/models/collada/Heads/FemaleHead/FemaleCHead.bhf");
                 break;
             case 1:
-                setHeadAttachment("assets/models/collada/Heads/FemaleHead/AsianFemaleHead.dae");
+                setHeadAttachment("assets/models/collada/Heads/FemaleHead/AsianFemaleHead.bhf");
                 break;
             case 2:
-                setHeadAttachment("assets/models/collada/Heads/FemaleHead/FemaleAAHead.dae");
+                setHeadAttachment("assets/models/collada/Heads/FemaleHead/FemaleAAHead.bhf");
                 break;
             case 3:
-                setHeadAttachment("assets/models/collada/Heads/FemaleHead/FemaleHispanicHead.dae");
+                setHeadAttachment("assets/models/collada/Heads/FemaleHead/FemaleHi.bhf");
                 break;
             case 4:
-                setHeadAttachment("assets/models/collada/Heads/FemaleHead/FemaleHi.dae");
+                setHeadAttachment("assets/models/collada/Heads/FemaleHead/FemaleHi2.bhf");
                 break;
             case 5:
-                setHeadAttachment("assets/models/collada/Heads/FemaleHead/FemaleHi2.dae");
+                setHeadAttachment("assets/models/collada/Heads/FemaleHead/FemaleHispanicHead.bhf");
                 break;
             case 6:
-                setHeadAttachment("assets/models/collada/Heads/FemaleHead/FG_FemaleHead01.dae");
+                setHeadAttachment("assets/models/collada/Heads/FemaleHead/FG_Female_AF_Head02.bhf");
                 break;
             case 7:
-                setHeadAttachment("assets/models/collada/Heads/FemaleHead/FG_FemaleLowPoly_01.dae");
+                setHeadAttachment("assets/models/collada/Heads/FemaleHead/FG_Female01HighPoly.bhf");
                 break;
             case 8:
-                setHeadAttachment("assets/models/collada/Heads/FemaleHead/FG_Female_AF_Head02.dae");
+                setHeadAttachment("assets/models/collada/Heads/FemaleHead/FG_Female02HighPoly.bhf");
+                break;
+            case 9:
+                setHeadAttachment("assets/models/collada/Heads/FemaleHead/FG_FemaleHead01.bhf");
+                break;
+            case 10:
+                setHeadAttachment("assets/models/collada/Heads/FemaleHead/FG_FemaleLowPoly_01.bhf");
                 break;
             default:
-                setHeadAttachment("assets/models/collada/Heads/FemaleHead/FemaleCHead.dae");
+                setHeadAttachment("assets/models/collada/Heads/FemaleHead/FemaleCHead.bhf");
         }
     }
 
@@ -463,10 +468,10 @@ public class FemaleAvatarAttributes extends CharacterAttributes
         load.add(szHand);
 
         ArrayList<SkinnedMeshParams> add       = new ArrayList<SkinnedMeshParams>();
-        add.add(new SkinnedMeshParams("Hands_NudeShape",  "Hands"));
-        add.add(new SkinnedMeshParams("FemaleFeet_NudeShape",  "Feet"));
-        add.add(new SkinnedMeshParams("Torso_NudeShape",  "UpperBody"));
-        add.add(new SkinnedMeshParams("Legs_NudeShape",  "LowerBody"));
+        add.add(new SkinnedMeshParams("Hands_NudeShape",        "Hands"));
+        add.add(new SkinnedMeshParams("FemaleFeet_NudeShape",   "Feet"));
+        add.add(new SkinnedMeshParams("Torso_NudeShape",        "UpperBody"));
+        add.add(new SkinnedMeshParams("Legs_NudeShape",         "LowerBody"));
 
 
         setLoadInstructions(load);
@@ -489,324 +494,176 @@ public class FemaleAvatarAttributes extends CharacterAttributes
         {
             case 0:
             {
-                szHair[0]   = new String("assets/models/collada/Hair/FemaleHair/FemaleHairPlaceable.dae");
-                attachments.add(new AttachmentParams("L_PigTails", "Head", orientation, "Hair"));
+                szHair[0]   = new String("assets/models/collada/Hair/FemaleHair/FG_Female01DefaultHair.dae");
+                attachments.add(new AttachmentParams("M_PigTailsShape", "Head", orientation, "Hair"));
             }
             break;
             case 1:
             {
-                szHair[0]   = new String("assets/models/collada/Hair/FemaleHair/FemaleHairPlaceable.dae");
-                attachments.add(new AttachmentParams("M_PigTails", "Head", orientation, "Hair"));
+                szHair[0]   = new String("assets/models/collada/Hair/FemaleHair/FG_Female01DefaultHair.dae");
+                attachments.add(new AttachmentParams("CulyPigTailzShape", "Head", orientation, "Hair"));
             }
             break;
             case 2:
             {
-                szHair[0]   = new String("assets/models/collada/Hair/FemaleHair/FemaleHairPlaceable.dae");
-                attachments.add(new AttachmentParams("CulyPigTailz", "Head", orientation, "Hair"));
+                szHair[0]   = new String("assets/models/collada/Hair/FemaleHair/FG_Female01DefaultHair.dae");
+                attachments.add(new AttachmentParams("L_BunShape", "Head", orientation, "Hair"));
             }
             break;
             case 3:
             {
-                szHair[0]   = new String("assets/models/collada/Hair/FemaleHair/FemaleHairPlaceable.dae");
-                attachments.add(new AttachmentParams("L_Bun", "Head", orientation, "Hair"));
+                szHair[0]   = new String("assets/models/collada/Hair/FemaleHair/FG_Female01DefaultHair.dae");
+                attachments.add(new AttachmentParams("M_BunShape", "Head", orientation, "Hair"));
             }
             break;
             case 4:
             {
-                szHair[0]   = new String("assets/models/collada/Hair/FemaleHair/FemaleHairPlaceable.dae");
-                attachments.add(new AttachmentParams("M_Bun", "Head", orientation, "Hair"));
+                szHair[0]   = new String("assets/models/collada/Hair/FemaleHair/FG_Female01DefaultHair.dae");
+                attachments.add(new AttachmentParams("CurlyPonyTailShape", "Head", orientation, "Hair"));
             }
             break;
             case 5:
             {
-                szHair[0]   = new String("assets/models/collada/Hair/FemaleHair/FemaleHairPlaceable.dae");
-                attachments.add(new AttachmentParams("CurlyPonyTail", "Head", orientation, "Hair"));
+                szHair[0]   = new String("assets/models/collada/Hair/FemaleHair/FG_Female01DefaultHair.dae");
+                attachments.add(new AttachmentParams("L_PonyTailShape", "Head", orientation, "Hair"));
             }
             break;
             case 6:
             {
-                szHair[0]   = new String("assets/models/collada/Hair/FemaleHair/FemaleHairPlaceable.dae");
-                attachments.add(new AttachmentParams("L_PonyTail", "Head", orientation, "Hair"));
+                szHair[0]   = new String("assets/models/collada/Hair/FemaleHair/FG_Female01DefaultHair.dae");
+                attachments.add(new AttachmentParams("M_PonyTailShape", "Head", orientation, "Hair"));
             }
             break;
             case 7:
             {
-                szHair[0]   = new String("assets/models/collada/Hair/FemaleHair/FemaleHairPlaceable.dae");
-                attachments.add(new AttachmentParams("M_PonyTail", "Head", orientation, "Hair"));
+                szHair[0]   = new String("assets/models/collada/Hair/FemaleHair/FG_Female01DefaultHair.dae");
+                attachments.add(new AttachmentParams("Long_W_bangsShape", "Head", orientation, "Hair"));
             }
             break;
             case 8:
             {
-                szHair[0]   = new String("assets/models/collada/Hair/FemaleHair/FemaleHairPlaceable.dae");
-                attachments.add(new AttachmentParams("Short_PT_Center", "Head", orientation, "Hair"));
+                szHair[0]   = new String("assets/models/collada/Hair/FemaleHair/FG_Female01DefaultHair.dae");
+                attachments.add(new AttachmentParams("Layered_bangShape", "Head", orientation, "Hair"));
             }
             break;
             case 9:
             {
-                szHair[0]   = new String("assets/models/collada/Hair/FemaleHair/FemaleHairPlaceable.dae");
-                attachments.add(new AttachmentParams("Long_pt_L", "Head", orientation, "Hair"));
+                szHair[0]   = new String("assets/models/collada/Hair/FemaleHair/FG_Female01DefaultHair.dae");
+                attachments.add(new AttachmentParams("Layered_pt_LShape", "Head", orientation, "Hair"));
             }
             break;
             case 10:
             {
-                szHair[0]   = new String("assets/models/collada/Hair/FemaleHair/FemaleHairPlaceable.dae");
-                attachments.add(new AttachmentParams("Long_pt_R", "Head", orientation, "Hair"));
+                szHair[0]   = new String("assets/models/collada/Hair/FemaleHair/FG_Female01DefaultHair.dae");
+                attachments.add(new AttachmentParams("Layered_pt_RShape", "Head", orientation, "Hair"));
             }
             break;
             case 11:
             {
-                szHair[0]   = new String("assets/models/collada/Hair/FemaleHair/FemaleHairPlaceable.dae");
-                attachments.add(new AttachmentParams("Long_pt_center", "Head", orientation, "Hair"));
+                szHair[0]   = new String("assets/models/collada/Hair/FemaleHair/FG_Female01DefaultHair.dae");
+                attachments.add(new AttachmentParams("Layered_pt_centerShape", "Head", orientation, "Hair"));
             }
             break;
             case 12:
             {
-                szHair[0]   = new String("assets/models/collada/Hair/FemaleHair/FemaleHairPlaceable.dae");
-                attachments.add(new AttachmentParams("Layered_bang", "Head", orientation, "Hair"));
+                szHair[0]   = new String("assets/models/collada/Hair/FemaleHair/FG_Female01DefaultHair.dae");
+                attachments.add(new AttachmentParams("Curly_bangsShape", "Head", orientation, "Hair"));
             }
             break;
             case 13:
             {
-                szHair[0]   = new String("assets/models/collada/Hair/FemaleHair/FemaleHairPlaceable.dae");
-                attachments.add(new AttachmentParams("Layered_pt_L", "Head", orientation, "Hair"));
+                szHair[0]   = new String("assets/models/collada/Hair/FemaleHair/FG_Female01DefaultHair.dae");
+                attachments.add(new AttachmentParams("Culry_pt_RightShape", "Head", orientation, "Hair"));
             }
             break;
             case 14:
             {
-                szHair[0]   = new String("assets/models/collada/Hair/FemaleHair/FemaleHairPlaceable.dae");
-                attachments.add(new AttachmentParams("Layered_pt_R", "Head", orientation, "Hair"));
+                szHair[0]   = new String("assets/models/collada/Hair/FemaleHair/FG_Female01DefaultHair.dae");
+                attachments.add(new AttachmentParams("Culry_pt_LeftShape", "Head", orientation, "Hair"));
             }
             break;
             case 15:
             {
-                szHair[0]   = new String("assets/models/collada/Hair/FemaleHair/FemaleHairPlaceable.dae");
-                attachments.add(new AttachmentParams("Layered_pt_center", "Head", orientation, "Hair"));
+                szHair[0]   = new String("assets/models/collada/Hair/FemaleHair/FG_Female01DefaultHair.dae");
+                attachments.add(new AttachmentParams("Curly_Mid_PtShape", "Head", orientation, "Hair"));
             }
             break;
             case 16:
             {
-                szHair[0]   = new String("assets/models/collada/Hair/FemaleHair/FemaleHairPlaceable.dae");
-                attachments.add(new AttachmentParams("Curly_bangs", "Head", orientation, "Hair"));
+                szHair[0]   = new String("assets/models/collada/Hair/FemaleHair/FG_Female01DefaultHair.dae");
+                attachments.add(new AttachmentParams("Long_DredzShape", "Head", orientation, "Hair"));
             }
             break;
             case 17:
             {
-                szHair[0]   = new String("assets/models/collada/Hair/FemaleHair/FemaleHairPlaceable.dae");
-                attachments.add(new AttachmentParams("Curly_pt_Right", "Head", orientation, "Hair"));
+                szHair[0]   = new String("assets/models/collada/Hair/FemaleHair/FG_Female01DefaultHair.dae");
+                attachments.add(new AttachmentParams("Med_Pt_BangzShape", "Head", orientation, "Hair"));
             }
             break;
             case 18:
             {
-                szHair[0]   = new String("assets/models/collada/Hair/FemaleHair/FemaleHairPlaceable.dae");
-                attachments.add(new AttachmentParams("Curly_pt_Left", "Head", orientation, "Hair"));
+                szHair[0]   = new String("assets/models/collada/Hair/FemaleHair/FG_Female01DefaultHair.dae");
+                attachments.add(new AttachmentParams("Med_pt_CenterShape", "Head", orientation, "Hair"));
             }
             break;
             case 19:
             {
-                szHair[0]   = new String("assets/models/collada/Hair/FemaleHair/FemaleHairPlaceable.dae");
-                attachments.add(new AttachmentParams("Curly_Mid_Pt", "Head", orientation, "Hair"));
+                szHair[0]   = new String("assets/models/collada/Hair/FemaleHair/FG_Female01DefaultHair.dae");
+                attachments.add(new AttachmentParams("Med_Curly_BangzShape", "Head", orientation, "Hair"));
             }
             break;
             case 20:
             {
-                szHair[0]   = new String("assets/models/collada/Hair/FemaleHair/FemaleHairPlaceable.dae");
-                attachments.add(new AttachmentParams("African_pt_right", "Head", orientation, "Hair"));
+                szHair[0]   = new String("assets/models/collada/Hair/FemaleHair/FG_Female01DefaultHair.dae");
+                attachments.add(new AttachmentParams("Med_AfricanWBangzShape", "Head", orientation, "Hair"));
             }
             break;
             case 21:
             {
-                szHair[0]   = new String("assets/models/collada/Hair/FemaleHair/FemaleHairPlaceable.dae");
-                attachments.add(new AttachmentParams("African_pt_left", "Head", orientation, "Hair"));
+                szHair[0]   = new String("assets/models/collada/Hair/FemaleHair/FG_Female01DefaultHair.dae");
+                attachments.add(new AttachmentParams("Med_African_Pt_RShape", "Head", orientation, "Hair"));
             }
             break;
             case 22:
             {
-                szHair[0]   = new String("assets/models/collada/Hair/FemaleHair/FemaleHairPlaceable.dae");
-                attachments.add(new AttachmentParams("African_PT_Center", "Head", orientation, "Hair"));
+                szHair[0]   = new String("assets/models/collada/Hair/FemaleHair/FG_Female01DefaultHair.dae");
+                attachments.add(new AttachmentParams("Med_AfricanPT_CenterShape", "Head", orientation, "Hair"));
             }
             break;
             case 23:
             {
-                szHair[0]   = new String("assets/models/collada/Hair/FemaleHair/FemaleHairPlaceable.dae");
-                attachments.add(new AttachmentParams("African_Bangs", "Head", orientation, "Hair"));
+                szHair[0]   = new String("assets/models/collada/Hair/FemaleHair/FG_Female01DefaultHair.dae");
+                attachments.add(new AttachmentParams("Med_African_Pt_LShape", "Head", orientation, "Hair"));
             }
             break;
             case 24:
             {
-                szHair[0]   = new String("assets/models/collada/Hair/FemaleHair/FemaleHairPlaceable.dae");
-                attachments.add(new AttachmentParams("Long_Dredz", "Head", orientation, "Hair"));
+                szHair[0]   = new String("assets/models/collada/Hair/FemaleHair/FG_Female01DefaultHair.dae");
+                attachments.add(new AttachmentParams("Short_African_MessyShape", "Head", orientation, "Hair"));
             }
             break;
             case 25:
             {
-                szHair[0]   = new String("assets/models/collada/Hair/FemaleHair/FemaleHairPlaceable.dae");
-                attachments.add(new AttachmentParams("Med_Bangs", "Head", orientation, "Hair"));
+                szHair[0]   = new String("assets/models/collada/Hair/FemaleHair/FG_Female01DefaultHair.dae");
+                attachments.add(new AttachmentParams("short_AfricanPT_CenterShape", "Head", orientation, "Hair"));
             }
             break;
             case 26:
             {
-                szHair[0]   = new String("assets/models/collada/Hair/FemaleHair/FemaleHairPlaceable.dae");
-                attachments.add(new AttachmentParams("Med_Pt_Bangz", "Head", orientation, "Hair"));
+                szHair[0]   = new String("assets/models/collada/Hair/FemaleHair/FG_Female01DefaultHair.dae");
+                attachments.add(new AttachmentParams("Short_PT_RShape", "Head", orientation, "Hair"));
             }
             break;
             case 27:
             {
-                szHair[0]   = new String("assets/models/collada/Hair/FemaleHair/FemaleHairPlaceable.dae");
-                attachments.add(new AttachmentParams("Med_pt_Center", "Head", orientation, "Hair"));
+                szHair[0]   = new String("assets/models/collada/Hair/FemaleHair/FG_Female01DefaultHair.dae");
+                attachments.add(new AttachmentParams("Short_PT_LShape", "Head", orientation, "Hair"));
             }
             break;
             case 28:
             {
-                szHair[0]   = new String("assets/models/collada/Hair/FemaleHair/FemaleHairPlaceable.dae");
-                attachments.add(new AttachmentParams("Med_pt_R", "Head", orientation, "Hair"));
-            }
-            break;
-            case 29:
-            {
-                szHair[0]   = new String("assets/models/collada/Hair/FemaleHair/FemaleHairPlaceable.dae");
-                attachments.add(new AttachmentParams("Med_pt_Left", "Head", orientation, "Hair"));
-            }
-            break;
-            case 30:
-            {
-                szHair[0]   = new String("assets/models/collada/Hair/FemaleHair/FemaleHairPlaceable.dae");
-                attachments.add(new AttachmentParams("Med_Curly_Bangz", "Head", orientation, "Hair"));
-            }
-            break;
-            case 31:
-            {
-                szHair[0]   = new String("assets/models/collada/Hair/FemaleHair/FemaleHairPlaceable.dae");
-                attachments.add(new AttachmentParams("Med_Curly_L", "Head", orientation, "Hair"));
-            }
-            break;
-            case 32:
-            {
-                szHair[0]   = new String("assets/models/collada/Hair/FemaleHair/FemaleHairPlaceable.dae");
-                attachments.add(new AttachmentParams("Med_Curly_RT", "Head", orientation, "Hair"));
-            }
-            break;
-            case 33:
-            {
-                szHair[0]   = new String("assets/models/collada/Hair/FemaleHair/FemaleHairPlaceable.dae");
-                attachments.add(new AttachmentParams("Med_Curly_Center", "Head", orientation, "Hair"));
-            }
-            break;
-            case 34:
-            {
-                szHair[0]   = new String("assets/models/collada/Hair/FemaleHair/FemaleHairPlaceable.dae");
-                attachments.add(new AttachmentParams("Med_AfricanWBangz", "Head", orientation, "Hair"));
-            }
-            break;
-            case 35:
-            {
-                szHair[0]   = new String("assets/models/collada/Hair/FemaleHair/FemaleHairPlaceable.dae");
-                attachments.add(new AttachmentParams("MedDredzz", "Head", orientation, "Hair"));
-            }
-            break;
-            case 36:
-            {
-                szHair[0]   = new String("assets/models/collada/Hair/FemaleHair/FemaleHairPlaceable.dae");
-                attachments.add(new AttachmentParams("Short_African_LBang", "Head", orientation, "Hair"));
-            }
-            break;
-            case 37:
-            {
-                szHair[0]   = new String("assets/models/collada/Hair/FemaleHair/FemaleHairPlaceable.dae");
-                attachments.add(new AttachmentParams("Short_African_Messy", "Head", orientation, "Hair"));
-            }
-            break;
-            case 38:
-            {
-                szHair[0]   = new String("assets/models/collada/Hair/FemaleHair/FemaleHairPlaceable.dae");
-                attachments.add(new AttachmentParams("Short_African_pt_R", "Head", orientation, "Hair"));
-            }
-            break;
-            case 39:
-            {
-                szHair[0]   = new String("assets/models/collada/Hair/FemaleHair/FemaleHairPlaceable.dae");
-                attachments.add(new AttachmentParams("Short_African_pt_L", "Head", orientation, "Hair"));
-            }
-            break;
-            case 40:
-            {
-                szHair[0]   = new String("assets/models/collada/Hair/FemaleHair/FemaleHairPlaceable.dae");
-                attachments.add(new AttachmentParams("ShortAfrican_BoB", "Head", orientation, "Hair"));
-            }
-            break;
-            case 41:
-            {
-                szHair[0]   = new String("assets/models/collada/Hair/FemaleHair/FemaleHairPlaceable.dae");
-                attachments.add(new AttachmentParams("ShortDredzz", "Head", orientation, "Hair"));
-            }
-            break;
-            case 42:
-            {
-                szHair[0]   = new String("assets/models/collada/Hair/FemaleHair/FemaleHairPlaceable.dae");
-                attachments.add(new AttachmentParams("Short_Messy", "Head", orientation, "Hair"));
-            }
-            break;
-            case 43:
-            {
-                szHair[0]   = new String("assets/models/collada/Hair/FemaleHair/FemaleHairPlaceable.dae");
-                attachments.add(new AttachmentParams("Short_Long_Bang", "Head", orientation, "Hair"));
-            }
-            break;
-            case 44:
-            {
-                szHair[0]   = new String("assets/models/collada/Hair/FemaleHair/FemaleHairPlaceable.dae");
-                attachments.add(new AttachmentParams("Short_Spikey", "Head", orientation, "Hair"));
-            }
-            break;
-            case 45:
-            {
-                szHair[0]   = new String("assets/models/collada/Hair/FemaleHair/FemaleHairPlaceable.dae");
-                attachments.add(new AttachmentParams("Short_BOB", "Head", orientation, "Hair"));
-            }
-            break;
-            case 46:
-            {
-                szHair[0]   = new String("assets/models/collada/Hair/FemaleHair/FemaleHairPlaceable.dae");
-                attachments.add(new AttachmentParams("Short_PT_R", "Head", orientation, "Hair"));
-            }
-            break;
-            case 47:
-            {
-                szHair[0]   = new String("assets/models/collada/Hair/FemaleHair/FemaleHairPlaceable.dae");
-                attachments.add(new AttachmentParams("Short_PT_L", "Head", orientation, "Hair"));
-            }
-            break;
-            case 48:
-            {
-                szHair[0]   = new String("assets/models/collada/Hair/FemaleHair/FemaleHairPlaceable.dae");
-                attachments.add(new AttachmentParams("Long_W_bangs", "Head", orientation, "Hair"));
-            }
-            break;
-            case 49:
-            {
-                // Missing?
-                szHair[0]   = new String("assets/models/collada/Hair/FemaleHair/FemaleHairPlaceable.dae");
-                attachments.add(new AttachmentParams("short_AfricanPT_CenterShape", "Head", orientation, "Hair"));
-            }
-            break;
-            case 50:
-            {
-                // Missing?
-                szHair[0]   = new String("assets/models/collada/Hair/FemaleHair/FemaleHairPlaceable.dae");
-                attachments.add(new AttachmentParams("Med_African_pt_L", "Head", orientation, "Hair"));
-            }
-            break;
-            case 51:
-            {
-                // Missing?
-                szHair[0]   = new String("assets/models/collada/Hair/FemaleHair/FemaleHairPlaceable.dae");
-                attachments.add(new AttachmentParams("Med_African_Pt_RShape", "Head", orientation, "Hair"));
-            }
-            break;
-            case 52:
-            {
-                // Missing?
-                szHair[0]   = new String("assets/models/collada/Hair/FemaleHair/FemaleHairPlaceable.dae");
-                attachments.add(new AttachmentParams("Med_AfricanPT_CenterShape", "Head", orientation, "Hair"));
+                szHair[0]   = new String("assets/models/collada/Hair/FemaleHair/FG_Female01DefaultHair.dae");
+                attachments.add(new AttachmentParams("Short_PT_CenterShape", "Head", orientation, "Hair"));
             }
             break;
             case 53: // SPECIAL SKINNED HAIR
@@ -815,10 +672,7 @@ public class FemaleAvatarAttributes extends CharacterAttributes
                 add.add(new SkinnedMeshParams("HairAShape1", "Head"));
             }
             break;
-            default:
-                szHair[0]   = new String("assets/models/collada/Hair/FemaleHair/FemaleM_Pigtails.dae");
-                attachments.add(new AttachmentParams("M_PigTails", "HairAttach", orientation, "Hair"));
-                break;
+
         }
 
         szHair[1]   = new String("Hair");

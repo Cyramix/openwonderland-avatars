@@ -239,20 +239,28 @@ public class MaleAvatarAttributes extends CharacterAttributes
         switch (preset)
         {
             case 0:
-                setHeadAttachment("assets/models/collada/Heads/MaleHead/MaleCHead.dae");
+                setHeadAttachment("assets/models/collada/Heads/MaleHead/MaleCHead.bhf");
                 break;
             case 1:
-                setHeadAttachment("assets/models/collada/Heads/MaleHead/blackHead.dae");
+                setHeadAttachment("assets/models/collada/Heads/MaleHead/blackHead.bhf");
                 break;
-                // Case three removed until middle aged head is functional once more
+            case 2:
+                setHeadAttachment("assets/models/collada/Heads/MaleHead/FaceGenMaleHi.bhf");
+                break;
             case 3:
-                setHeadAttachment("assets/models/collada/Heads/MaleHead/AsianHeadMale.dae");
+                setHeadAttachment("assets/models/collada/Heads/MaleHead/FG_Male02MedPoly.bhf");
                 break;
             case 4:
-                setHeadAttachment("assets/models/collada/Heads/MaleHead/FaceGenMaleHi.dae");
+                setHeadAttachment("assets/models/collada/Heads/MaleHead/FG_MaleHead02Medium.bhf");
+                break;
+            case 5:
+                setHeadAttachment("assets/models/collada/Heads/MaleHead/FG_MaleLowPoly_01.bhf");
+                break;
+            case 6:
+                setHeadAttachment("assets/models/collada/Heads/MaleHead/FG_Obama_HeadMedPoly.bhf");
                 break;
             default:
-                setHeadAttachment("assets/models/collada/Heads/MaleHead/MaleCHead.dae");
+                setHeadAttachment("assets/models/collada/Heads/MaleHead/MaleCHead.bhf");
         }
     }
 
@@ -339,106 +347,95 @@ public class MaleAvatarAttributes extends CharacterAttributes
         {
             case 0:
             {
-                szHair[0]   = new String("assets/models/collada/Hair/MaleHair/HairPlaceable.dae");
-                attachments.add(new AttachmentParams("curly", "Head", orientation, "Hair"));
+                szHair[0]   = new String("assets/models/collada/Hair/MaleHair/FG_Male01HairDefaults.dae");
+                attachments.add(new AttachmentParams("Male_PonyTailShape", "Head", orientation, "Hair"));
             }
             break;
             case 1:
             {
-                szHair[0]   = new String("assets/models/collada/Hair/MaleHair/HairPlaceable.dae");
-                attachments.add(new AttachmentParams("S_pt_right", "Head", orientation, "Hair"));
+                szHair[0]   = new String("assets/models/collada/Hair/MaleHair/FG_Male01HairDefaults.dae");
+                attachments.add(new AttachmentParams("Male_ChinLengthPartLeftShape", "Head", orientation, "Hair"));
             }
             break;
             case 2:
             {
-                szHair[0]   = new String("assets/models/collada/Hair/MaleHair/HairPlaceable.dae");
-                attachments.add(new AttachmentParams("S_Pt_left", "Head", orientation, "Hair"));
+                szHair[0]   = new String("assets/models/collada/Hair/MaleHair/FG_Male01HairDefaults.dae");
+                attachments.add(new AttachmentParams("Male_SlickedBackShape", "Head", orientation, "Hair"));
             }
             break;
             case 3:
             {
-                szHair[0]   = new String("assets/models/collada/Hair/MaleHair/HairPlaceable.dae");
-                attachments.add(new AttachmentParams("M_slickedbk", "Head", orientation, "Hair"));
+                szHair[0]   = new String("assets/models/collada/Hair/MaleHair/FG_Male01HairDefaults.dae");
+                attachments.add(new AttachmentParams("Male_PartLeftShape", "Head", orientation, "Hair"));
             }
             break;
             case 4:
             {
-                szHair[0]   = new String("assets/models/collada/Hair/MaleHair/HairPlaceable.dae");
-                attachments.add(new AttachmentParams("M_pt_Right", "Head", orientation, "Hair"));
+                szHair[0]   = new String("assets/models/collada/Hair/MaleHair/FG_Male01HairDefaults.dae");
+                attachments.add(new AttachmentParams("Male_ShortMessyShape", "Head", orientation, "Hair"));
             }
             break;
             case 5:
             {
-                szHair[0]   = new String("assets/models/collada/Hair/MaleHair/HairPlaceable.dae");
-                attachments.add(new AttachmentParams("M_pt_left", "Head", orientation, "Hair"));
+                szHair[0]   = new String("assets/models/collada/Hair/MaleHair/FG_Male01HairDefaults.dae");
+                attachments.add(new AttachmentParams("Male_FlatTopShape", "Head", orientation, "Hair"));
             }
             break;
             case 6:
             {
-                szHair[0]   = new String("assets/models/collada/Hair/MaleHair/HairPlaceable.dae");
-                attachments.add(new AttachmentParams("M_center", "Head", orientation, "Hair"));
+                szHair[0]   = new String("assets/models/collada/Hair/MaleHair/FG_Male01HairDefaults.dae");
+                attachments.add(new AttachmentParams("Male_ShortTopUpShape", "Head", orientation, "Hair"));
             }
             break;
             case 7:
             {
-                szHair[0]   = new String("assets/models/collada/Hair/MaleHair/HairPlaceable.dae");
-                attachments.add(new AttachmentParams("LPonyTail", "Head", orientation, "Hair"));
+                szHair[0]   = new String("assets/models/collada/Hair/MaleHair/FG_Male01HairDefaults.dae");
+                attachments.add(new AttachmentParams("Male_ShortBasicShape", "Head", orientation, "Hair"));
             }
             break;
             case 8:
             {
-                szHair[0]   = new String("assets/models/collada/Hair/MaleHair/HairPlaceable.dae");
-                attachments.add(new AttachmentParams("Hair_Spiky", "Head", orientation, "Hair"));
+                szHair[0]   = new String("assets/models/collada/Hair/MaleHair/FG_Male01HairDefaults.dae");
+                attachments.add(new AttachmentParams("Male_ShortRecedShape", "Head", orientation, "Hair"));
             }
             break;
             case 9:
             {
-                szHair[0]   = new String("assets/models/collada/Hair/MaleHair/HairPlaceable.dae");
-                attachments.add(new AttachmentParams("Hair_Faux", "Head", orientation, "Hair"));
+                szHair[0]   = new String("assets/models/collada/Hair/MaleHair/FG_Male01HairDefaults.dae");
+                attachments.add(new AttachmentParams("Male_Balding1Shape", "Head", orientation, "Hair"));
             }
             break;
             case 10:
             {
-                szHair[0]   = new String("assets/models/collada/Hair/MaleHair/HairPlaceable.dae");
-                attachments.add(new AttachmentParams("Hair_Bald", "Head", orientation, "Hair"));
+                szHair[0]   = new String("assets/models/collada/Hair/MaleHair/FG_Male01HairDefaults.dae");
+                attachments.add(new AttachmentParams("Male_BaldPiccardShape", "Head", orientation, "Hair"));
             }
             break;
             case 11:
             {
-                szHair[0]   = new String("assets/models/collada/Hair/MaleHair/HairPlaceable.dae");
-                attachments.add(new AttachmentParams("Hair_Balding", "Head", orientation, "Hair"));
+                szHair[0]   = new String("assets/models/collada/Hair/MaleHair/FG_Male01HairDefaults.dae");
+                attachments.add(new AttachmentParams("Male_SuperFauxHawkShape", "Head", orientation, "Hair"));
             }
             break;
             case 12:
             {
-                szHair[0]   = new String("assets/models/collada/Hair/MaleHair/HairPlaceable.dae");
-                attachments.add(new AttachmentParams("Hair_ShavedShort", "Head", orientation, "Hair"));
+                szHair[0]   = new String("assets/models/collada/Hair/MaleHair/FG_Male01HairDefaults.dae");
+                attachments.add(new AttachmentParams("Male_SpikeyShape", "Head", orientation, "Hair"));
             }
             break;
             case 13:
             {
-                szHair[0]   = new String("assets/models/collada/Hair/MaleHair/HairPlaceable.dae");
-                attachments.add(new AttachmentParams("Hair_Normal", "Head", orientation, "Hair"));
+                szHair[0]   = new String("assets/models/collada/Hair/MaleHair/FG_Male01HairDefaults.dae");
+                attachments.add(new AttachmentParams("Male_ChinLengthPartRightShape", "Head", orientation, "Hair"));
             }
             break;
             case 14:
             {
-                szHair[0]   = new String("assets/models/collada/Hair/MaleHair/HairPlaceable.dae");
-                attachments.add(new AttachmentParams("Hair_ShavedFlatTop", "Head", orientation, "Hair"));
+                szHair[0]   = new String("assets/models/collada/Hair/MaleHair/FG_Male01HairDefaults.dae");
+                attachments.add(new AttachmentParams("Male_PartRightShape", "Head", orientation, "Hair"));
             }
             break;
-            case 15:
-            {
-                szHair[0]   = new String("assets/models/collada/Hair/MaleHair/HairPlaceable.dae");
-                attachments.add(new AttachmentParams("Hair_AfAmShortCrew", "Head", orientation, "Hair"));
-            }
-            break;
-            case 16:
-            {
-                szHair[0]   = new String("assets/models/collada/Hair/MaleHair/HairPlaceable.dae");
-                attachments.add(new AttachmentParams("Hair_AfAmLngCrew", "Head", orientation, "Hair"));
-            }
-            break;
+
         }
         szHair[1]   = new String("Hair");
         if (szHair[0] != null)
@@ -619,11 +616,11 @@ public class MaleAvatarAttributes extends CharacterAttributes
         loadedBind = true;
 
         ArrayList<SkinnedMeshParams> add       = new ArrayList<SkinnedMeshParams>();
-        add.add(new SkinnedMeshParams("RHandShape",  "Hands"));
-        add.add(new SkinnedMeshParams("LHandShape",  "Hands"));
-        add.add(new SkinnedMeshParams("RFootNudeShape",  "Feet"));
-        add.add(new SkinnedMeshParams("LFootNudeShape",  "Feet"));
-        add.add(new SkinnedMeshParams("TorsoNudeShape",  "UpperBody"));
+        add.add(new SkinnedMeshParams("RHandShape",     "Hands"));
+        add.add(new SkinnedMeshParams("LHandShape",     "Hands"));
+        add.add(new SkinnedMeshParams("RFootNudeShape", "Feet"));
+        add.add(new SkinnedMeshParams("LFootNudeShape", "Feet"));
+        add.add(new SkinnedMeshParams("TorsoNudeShape", "UpperBody"));
         add.add(new SkinnedMeshParams("LegsNudeShape",  "LowerBody"));
 
 
