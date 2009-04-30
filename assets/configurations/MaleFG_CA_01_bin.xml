@@ -3,7 +3,7 @@
     <Attributes>
         <Name>Avatar</Name>
         <Gender>1</Gender>
-        <HeadAttachment>assets/models/collada/Heads/MaleHead/FG_MaleLowPoly_01.dae</HeadAttachment>
+        <HeadAttachment>assets/models/collada/Heads/MaleHead/FG_MaleLowPoly_01.bhf</HeadAttachment>
         <LoadingInstructions>
             <item>assets/models/collada/Avatars/MaleAvatar/Male_Hands.dae</item>
             <item>Hands</item>
@@ -46,7 +46,7 @@
             <Z>0.74509805</Z>
             <W>0.0</W>
         </SkinTone>
-        <AnimateFace>true</AnimateFace>
+        <AnimateFace>false</AnimateFace>
     </Attributes>
     <SkeletonDetails>
         <TargetJointName>Hips</TargetJointName>
@@ -2916,7 +2916,7 @@
             </Properties>
             <Properties PropertyName="materialColor">
                 <Type>GLSL_VEC3</Type>
-                <Value> 0.9019608 0.77254903 0.74509805</Value>
+                <Value> 1.0 1.0 1.0</Value>
             </Properties>
             <Properties PropertyName="DiffuseMapIndex">
                 <Type>GLSL_SAMPLER2D</Type>
