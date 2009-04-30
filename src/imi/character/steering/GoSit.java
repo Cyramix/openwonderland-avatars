@@ -73,7 +73,7 @@ public class GoSit implements Task
         // If the chair is occupied then try finding another or abort mission
         if ( (goal != null && goal.isOccupied() && goal.getOwner() != context.getCharacter()) || bTryAgain)
         {
-            if (!context.GoToNearestChair())
+            if (!context.goToNearestChair())
                 System.out.println("Chair is Occupied! I give up! Can't find an empty chair in this damn virtual environment!");
             else
                 System.out.println("Chair is Occupied! I WILL find another one!");

@@ -17,6 +17,8 @@
  */
 package imi.character.avatar;
 
+import com.jme.math.Vector3f;
+import imi.character.objects.ObjectCollectionBase;
 import imi.character.statemachine.corestates.WalkState;
 import imi.character.statemachine.corestates.TurnState;
 import imi.character.statemachine.corestates.SitState;
@@ -46,6 +48,7 @@ import imi.character.statemachine.corestates.transitions.WalkToAction;
 import imi.character.objects.ChairObject;
 import imi.character.objects.LocationNode;
 import imi.character.objects.SpatialObject;
+import imi.character.objects.TargetObject;
 import imi.character.statemachine.GameContext;
 import imi.character.statemachine.GameState.Action;
 import imi.character.statemachine.corestates.ActionInfo;
@@ -61,6 +64,8 @@ import imi.character.steering.GoSit;
 import imi.character.steering.GoTo;
 import imi.scene.Updatable;
 import imi.scene.animation.AnimationComponent.PlaybackMode;
+import imi.scene.boundingvolumes.PSphere;
+import imi.scene.polygonmodel.PPolygonModelInstance;
 import java.util.ArrayList;
 import java.util.Hashtable;
 
@@ -277,7 +282,7 @@ public class AvatarContext extends GameContext
         else if (trigger == TriggerNames.GoSit.ordinal() && pressed)
         {
             AI.clearTasks();
-            GoToNearestChair();
+            goToNearestChair();
             
             // Safely attempt to start a multiplayer game
             if (avatar.getUpdateExtension() != null)
@@ -297,21 +302,21 @@ public class AvatarContext extends GameContext
            // System.out.println("fix: " + avatar.getPosition());
             
             AI.clearTasks();
-            GoToNearestLocation();
+            goToNearestLocation();
             if (location != null)
                 AI.addTaskToBottom(new FollowBakedPath("yellowRoom", location, this));
         }
         else if (trigger == TriggerNames.GoTo2.ordinal() && pressed)
         {
             AI.clearTasks();
-            GoToNearestLocation();
+            goToNearestLocation();
             if (location != null)
                 AI.addTaskToBottom(new FollowBakedPath("lobbyCenter", location, this));
         }
         else if (trigger == TriggerNames.GoTo3.ordinal() && pressed)
         {
             AI.clearTasks();
-            GoToNearestChair();
+            goToNearestChair();
         }
         
         else if (trigger == TriggerNames.Smile.ordinal() && pressed)
@@ -389,7 +394,7 @@ public class AvatarContext extends GameContext
      * Find the nearest location node and direct the avatar to go there.
      * @return The nearest location node, or null if none are found
      */
-    public LocationNode GoToNearestLocation() 
+    public LocationNode goToNearestLocation()
     {   
         if (avatar.getObjectCollection() == null)
             return null;
@@ -407,7 +412,7 @@ public class AvatarContext extends GameContext
      * Find the nearest unoccupied chair and direct the avatar to go to it.
      * @return True if an unoccupied chair was found, false otherwise
      */
-    public boolean GoToNearestChair()
+    public boolean goToNearestChair()
     {
         if (avatar.getObjectCollection() == null)
             return false;
@@ -416,6 +421,42 @@ public class AvatarContext extends GameContext
         if (obj != null && !((ChairObject)obj).isOccupied())
         {
             GoSit task = new GoSit((ChairObject)obj, this);
+            AI.addTaskToTop(task);
+            AI.setEnable(true);
+            return true;
+        }
+        return false;
+    }
+
+    public boolean goToTarget(TargetObject target, boolean occupiedMatters, boolean abandonCurrentTasks)
+    {
+        if (abandonCurrentTasks)
+            AI.clearTasks();
+
+        if (avatar.getObjectCollection() == null)
+            return false;
+
+        if (target != null && !target.isOccupied(occupiedMatters))
+        {
+            GoTo task = new GoTo(target, this);
+            AI.addTaskToTop(task);
+            AI.setEnable(true);
+            return true;
+        }
+        return false;
+    }
+
+    public boolean goSitOnChair(ChairObject chair, boolean occupiedMatters, boolean abandonCurrentTasks)
+    {
+        if (abandonCurrentTasks)
+            AI.clearTasks();
+
+        if (avatar.getObjectCollection() == null)
+            return false;
+
+        if (chair != null && !chair.isOccupied(occupiedMatters))
+        {
+            GoSit task = new GoSit(chair, this);
             AI.addTaskToTop(task);
             AI.setEnable(true);
             return true;

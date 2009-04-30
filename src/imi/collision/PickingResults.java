@@ -17,26 +17,50 @@
  */
 package imi.collision;
 
-import com.jme.bounding.BoundingSphere;
-import com.jme.math.Vector3f;
-import imi.scene.PJoint;
 import javolution.util.FastTable;
 
 /**
  *
  * @author Lou Hayt
  */
-public interface PickingResults
+public class PickingResults
 {
-    public void addPickedTriangle(Vector3f v0, Vector3f v1, Vector3f v2, Vector3f loc);
-    public void addPickedSphere(BoundingSphere jmeSphere);
-    public void addPickedJoint(PJoint joint);
+    // TODO - need a collection that supports insertion sort
+    // (by distance from the origin)
+    private FastTable<PickResult> results = new FastTable<PickResult>();
 
-    public FastTable<Vector3f> getPickedTriangles();
-    public FastTable<Vector3f> getPickedTriangleLocations();
-    public FastTable<PJoint>   getPickedJoints();
+    PickResult closestPick = null;
 
-    public void getPickedSphere(BoundingSphere jmeSphere);
-    public BoundingSphere getPickedSphere();
-    public FastTable<BoundingSphere> getPickedSpheres();
+    public void addPickResult(PickResult pickResult) {
+        results.add(pickResult);
+    }
+
+    public PickResult getPickResult(int index) {
+        return results.get(index);
+    }
+
+    public int getPickingResultsCount() {
+        return results.size();
+    }
+
+    // TODO utilize insertion sort
+    public PickResult getClosest()
+    {
+        if (results.isEmpty())
+            return null;
+        if (closestPick != null)
+            return closestPick;
+        closestPick  = results.getFirst();
+        float      closestrange = results.getFirst().getClosestRange();
+        for (PickResult pr : results)
+        {
+            float pickRange = pr.getClosestRange();
+            if (pickRange < closestrange)
+            {
+                closestrange = pickRange;
+                closestPick  = pr;
+            }
+        }
+        return closestPick;
+    }
 }

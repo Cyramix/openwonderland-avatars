@@ -445,7 +445,7 @@ public class FlexibleCameraProcessor extends AWTEventProcessorComponent
         direction.set(direction.subtract(origin));
         direction.normalizeLocal();
 
-        System.out.println("Ray starts at: " + origin.x + ", " + origin.y + ", " + origin.z);
-        System.out.println("And has direction: " + direction.x + ", " + direction.y + ", " + direction.z);
+//        System.out.println("Ray starts at: " + origin.x + ", " + origin.y + ", " + origin.z);
+//        System.out.println("And has direction: " + direction.x + ", " + direction.y + ", " + direction.z);
     }
 }

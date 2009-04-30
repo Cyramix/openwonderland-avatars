@@ -17,12 +17,13 @@ public interface TargetObject extends SpatialObject
     public Vector3f getTargetForwardVector();
 
 //    public int getTargetCount();
-//    public Vector3f getTargetPosition(int index);
+//    public Vector3f getTargetPositionRef(int index);
 //    public Vector3f getTargetForwardVector(int index);
 
     public SpatialObject getOwner();
     public void setOwner(SpatialObject object);
 
     public boolean isOccupied();
+    public boolean isOccupied(boolean occupiedMatters);
     public void setOccupied(boolean isOccupied);
 }

@@ -163,7 +163,7 @@ public class Avatar extends imi.character.Character
         steering.clearTasks();
         steering.setEnable(true);
         AvatarContext ac = ((AvatarContext)m_context);
-        LocationNode location = ac.GoToNearestLocation();
+        LocationNode location = ac.goToNearestLocation();
         if (location != null)
             steering.addTaskToBottom(new FollowBakedPath(pathName, location, m_context));
     }

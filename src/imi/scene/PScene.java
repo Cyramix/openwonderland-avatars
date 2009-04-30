@@ -978,14 +978,29 @@ public class PScene extends PNode implements RepositoryUser, Serializable
                 SkeletonNode newSkeleton = (SkeletonNode) processNode((SkeletonNode)loadedModel.getAssetData());
                 result = newSkeleton;
             }
-            // Call initialization code
-            AssetInitializer init = asset.getInitializer();
-            // This will cause problems because the asset has not been "installed" yet
-            if (init != null)
-                init.initialize(result);
+            getRepository().submitWork(new InitWork(asset.getInitializer(), result));
         }
         
         return result;
+    }
+    
+    class InitWork implements Runnable
+    {
+        AssetInitializer init = null;
+        PNode node = null;
+
+        public InitWork(AssetInitializer initializer, PNode result)
+        {
+            init = initializer;
+            node = result;
+        }
+
+        public void run()
+        {
+            // Call initialization code
+            if (init != null)
+                init.initialize(node);
+        }
     }
 
     private PPolygonSkinnedMeshInstance buildSkinnedMeshInstance(PPolygonSkinnedMeshInstance meshInstance, PMatrix parentWorldMatrix)
