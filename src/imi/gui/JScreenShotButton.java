@@ -39,8 +39,8 @@ public class JScreenShotButton extends JButton implements ActionListener
         camProcessor = camera;
         this.setActionCommand("screenSnap");
         this.addActionListener(this);
-        this.setIcon(new ImageIcon(this.getClass().getClassLoader().getResource("imi/gui/CameraIcon.png")));
-        this.setPressedIcon(new ImageIcon(this.getClass().getClassLoader().getResource("imi/gui/CameraIconPressed.png")));
+        this.setIcon(new ImageIcon(this.getClass().getClassLoader().getResource("imi/gui/camera.png")));
+        this.setPressedIcon(new ImageIcon(this.getClass().getClassLoader().getResource("imi/gui/cameraDown.png")));
     }
 
     @Override
