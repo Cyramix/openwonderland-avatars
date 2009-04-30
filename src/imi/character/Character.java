@@ -187,6 +187,16 @@ public abstract class Character extends Entity implements SpatialObject, Animati
     private Semaphore countingSemaphore = new Semaphore(0);
     protected BinaryExporter                m_binaryExporter        = new BinaryExporter();
 
+    private static JAXBContext context;
+
+    static {
+        try {
+            context = JAXBContext.newInstance("imi.serialization.xml.bindings", Character.class.getClassLoader());
+        } catch (JAXBException ex) {
+            Logger.getLogger(Character.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
     /**
      * Sets up the mtgame entity
      * @param attributes
@@ -226,7 +236,6 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         CharacterAttributes loadedAttributes = null;
 
         try {
-            final JAXBContext context = JAXBContext.newInstance("imi.serialization.xml.bindings");
             final Unmarshaller m = context.createUnmarshaller();
 
             InputStream is = configurationFile.openConnection().getInputStream();
@@ -890,10 +899,13 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         List<String[]> load = attributes.getLoadInstructions();
         if (load != null) {
             for (int i = 0; i < load.size(); i++) {
-                if (checkURLPath(urlPrefix + load.get(i)[0]))
-                    attributeRoot.addChildInstruction(InstructionType.loadGeometry, urlPrefix + load.get(i)[0]);
-                else
-                    attributeRoot.addChildInstruction(InstructionType.loadGeometry, checkResourcePath(load.get(i)[0]));
+                String[] attr = load.get(i);
+                if (attr.length>0) {
+                    if (checkURLPath(urlPrefix + load.get(i)[0]))
+                        attributeRoot.addChildInstruction(InstructionType.loadGeometry, urlPrefix + attr[0]);
+                    else
+                        attributeRoot.addChildInstruction(InstructionType.loadGeometry, checkResourcePath(attr[0]));
+                }
             }
 
         }
@@ -1487,7 +1499,6 @@ public abstract class Character extends Entity implements SpatialObject, Animati
      * @param out OutputStream to save data to
      */
     public void saveConfiguration(OutputStream out) throws JAXBException {
-        final JAXBContext context = JAXBContext.newInstance("imi.serialization.xml.bindings");
         final Marshaller m = context.createMarshaller();
         // Pretty files please
         m.setProperty("jaxb.formatted.output", Boolean.TRUE);
@@ -1812,9 +1823,11 @@ public abstract class Character extends Entity implements SpatialObject, Animati
                                                               "HeadSkeleton",   // 'name'
                                                               null);            // existing skeleton (if applicable)
 
-        int begin   = headLocation.toString().lastIndexOf("/");
-        int end     = headLocation.toString().lastIndexOf(".");
-        String name = headLocation.toString().substring(begin, end);
+        String tmp = headLocation.getPath();
+        int begin   = tmp.lastIndexOf('/');
+        int end     = tmp.lastIndexOf(".");
+        String name = tmp.substring(begin+1, end);
+
 
         // Load the skeleton
         Collada loader = new Collada(params);
