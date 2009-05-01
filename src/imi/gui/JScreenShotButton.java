@@ -32,6 +32,19 @@ public class JScreenShotButton extends JButton implements ActionListener
     /** The camera for screen shotting **/
     private FlexibleCameraProcessor camProcessor = null;
 
+    /**
+     * Default constructor used to create the button before a camera processor is
+     * ready.  You will be required to set the cameraprocessor once it is available
+     * through the setCamProcessor mutator or it will not work.
+     */
+    public JScreenShotButton() {
+        super();
+        this.setActionCommand("screenSnap");
+        this.addActionListener(this);
+        this.setIcon(new ImageIcon(this.getClass().getClassLoader().getResource("imi/gui/CameraIcon.png")));
+        this.setPressedIcon(new ImageIcon(this.getClass().getClassLoader().getResource("imi/gui/CameraIconPressed.png")));
+    }
+
     public JScreenShotButton(FlexibleCameraProcessor camera) {
         super();
         if (camera == null)
@@ -43,6 +56,12 @@ public class JScreenShotButton extends JButton implements ActionListener
         this.setPressedIcon(new ImageIcon(this.getClass().getClassLoader().getResource("imi/gui/cameraDown.png")));
     }
 
+    public void setCamProcessor(FlexibleCameraProcessor cameraProc) {
+        if (cameraProc == null)
+            throw new ExceptionInInitializerError("Must have a valid camera for screen shotting");
+        camProcessor    = cameraProc;
+    }
+
     @Override
     public void actionPerformed(ActionEvent arg0) {
         if (arg0.getSource() == this && arg0.getActionCommand().equals("screenSnap"))
@@ -51,6 +70,11 @@ public class JScreenShotButton extends JButton implements ActionListener
 
     private void screenShot()
     {
+        if (camProcessor == null) {
+            System.out.println("No valid camera processer has been set");
+            return;
+        }
+
         camProcessor.takeSnap();
     }
 
