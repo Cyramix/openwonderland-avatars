@@ -74,6 +74,14 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
         m_Parent = parent;
     }
 
+    /**
+     * Set the base URL from which assets are loaded
+     * @param baseURL
+     */
+    public void setBaseURL(String baseURL) {
+        this.m_protocol = baseURL;
+    }
+
     ////////////////////////////////////////////////////////////////////////////
     // Inits
     ////////////////////////////////////////////////////////////////////////////
