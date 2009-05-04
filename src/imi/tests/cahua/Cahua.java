@@ -27,7 +27,7 @@ import org.jdesktop.mtgame.WorldManager;
 import imi.scene.processors.JSceneEventProcessor;
 import imi.tests.CustomizationExample;
 import imi.tests.DemoBase;
-import imi.utils.input.AvatarControlScheme;
+import imi.utils.input.DemoAvatarControlScheme;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -78,7 +78,7 @@ public class Cahua extends DemoBase
     protected void createDemoEntities(WorldManager wm)
     {
         // Create avatar input scheme
-        AvatarControlScheme control = (AvatarControlScheme)((JSceneEventProcessor)wm.getUserData(JSceneEventProcessor.class)).setDefault(new AvatarControlScheme(null));
+        DemoAvatarControlScheme control = (DemoAvatarControlScheme)((JSceneEventProcessor)wm.getUserData(JSceneEventProcessor.class)).setDefault(new DemoAvatarControlScheme(null));
 
         // Create avatar
         long startTime = System.nanoTime();

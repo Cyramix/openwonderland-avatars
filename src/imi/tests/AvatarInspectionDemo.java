@@ -99,7 +99,7 @@ import imi.scene.camera.state.FirstPersonCamState;
 import imi.scene.camera.state.TumbleObjectCamState;
 import imi.scene.processors.FlexibleCameraProcessor;
 import imi.scene.processors.JSceneEventProcessor;
-import imi.utils.input.AvatarControlScheme;
+import imi.utils.input.DemoAvatarControlScheme;
 import imi.utils.instruments.DefaultInstrumentation;
 import imi.utils.instruments.Instrumentation;
 import java.net.URL;
@@ -846,7 +846,7 @@ public class AvatarInspectionDemo {
         // The event processor provides the linkage between AWT events and input controls
         JSceneEventProcessor eventProcessor = (JSceneEventProcessor) wm.getUserData(JSceneEventProcessor.class);
         // Set the input scheme that we intend to use
-        AvatarControlScheme control = (AvatarControlScheme)eventProcessor.setDefault(new AvatarControlScheme(null));
+        DemoAvatarControlScheme control = (DemoAvatarControlScheme)eventProcessor.setDefault(new DemoAvatarControlScheme(null));
 
         // Create our avatars
         Avatar robert = createRobert(wm, new Vector3f(-3, 0, 3));

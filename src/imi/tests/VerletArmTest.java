@@ -32,7 +32,7 @@ import org.jdesktop.mtgame.WorldManager;
 
 
 import imi.scene.processors.JSceneEventProcessor;
-import imi.utils.input.AvatarControlScheme;
+import imi.utils.input.DemoAvatarControlScheme;
 import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -63,7 +63,7 @@ public class VerletArmTest  extends DemoBase
         ObjectCollection objects = new ObjectCollection("Character Test Objects", wm);
         
         // Create avatar input scheme
-        AvatarControlScheme control = (AvatarControlScheme)((JSceneEventProcessor)wm.getUserData(JSceneEventProcessor.class)).setDefault(new AvatarControlScheme(null));
+        DemoAvatarControlScheme control = (DemoAvatarControlScheme)((JSceneEventProcessor)wm.getUserData(JSceneEventProcessor.class)).setDefault(new DemoAvatarControlScheme(null));
         
         // Make a chair and let the control the collection so it can delete it
         objects.generateChairs(Vector3f.ZERO, 5.0f, 4);
@@ -143,7 +143,7 @@ public class VerletArmTest  extends DemoBase
         
     }
 
-    private void cloneAvatar(AvatarControlScheme control, ObjectCollection objects, WorldManager wm, float xOffset, float yOffset, float zOffset, int torso) 
+    private void cloneAvatar(DemoAvatarControlScheme control, ObjectCollection objects, WorldManager wm, float xOffset, float yOffset, float zOffset, int torso)
     {   
         //Avatar avatar = new Avatar(new MaleAvatarAttributes("Avatar Clone " + xOffset+yOffset+zOffset, true), wm);
         Avatar avatar = new Avatar(new MaleAvatarAttributes("Avatar Clone " + xOffset+yOffset+zOffset, -1, -1, torso, -1, -1), wm);

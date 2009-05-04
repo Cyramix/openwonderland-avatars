@@ -45,7 +45,7 @@ import imi.scene.camera.state.FirstPersonCamState;
 import imi.scene.processors.FlexibleCameraProcessor;
 import imi.scene.processors.JSceneAWTEventProcessor;
 import imi.scene.processors.JSceneEventProcessor;
-import imi.utils.input.AvatarControlScheme;
+import imi.utils.input.DemoAvatarControlScheme;
 import java.awt.Canvas;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
@@ -257,7 +257,7 @@ public class MTGameBase extends JFrame implements FrameRateListener {
     protected void simpleSceneInit(JScene jScene, WorldManager worldManager, Entity jsEntity, ArrayList<ProcessorComponent> processors) {
         // Add whatever you want to make here
         JSceneEventProcessor eventProcessor = (JSceneEventProcessor) worldManager.getUserData(JSceneEventProcessor.class);
-        AvatarControlScheme control = (AvatarControlScheme)eventProcessor.setDefault(new AvatarControlScheme(null));
+        DemoAvatarControlScheme control = (DemoAvatarControlScheme)eventProcessor.setDefault(new DemoAvatarControlScheme(null));
 
         FemaleAvatarAttributes  femaleAttribs   = new FemaleAvatarAttributes("RandomFemale", true);
         Avatar randomFemale = new Avatar(femaleAttribs, worldManager);

@@ -26,7 +26,7 @@ import imi.character.objects.SpatialObject;
 import imi.scene.PMatrix;
 import imi.scene.processors.JSceneEventProcessor;
 import imi.utils.PMathUtils;
-import imi.utils.input.AvatarControlScheme;
+import imi.utils.input.DemoAvatarControlScheme;
 import org.jdesktop.mtgame.WorldManager;
 
 /**
@@ -381,7 +381,7 @@ public class CoreCommands implements ConsoleCommand
 
                 // The event processor provides the linkage between AWT events and input controls
                 JSceneEventProcessor eventProcessor = (JSceneEventProcessor) wm.getUserData(JSceneEventProcessor.class);
-                AvatarControlScheme control = (AvatarControlScheme)eventProcessor.getInputScheme();
+                DemoAvatarControlScheme control = (DemoAvatarControlScheme)eventProcessor.getInputScheme();
                 control.getAvatarTeam().add(newAvatar);
                 newAvatar.setObjectCollection(objs);
             } catch (Exception ex) 
@@ -476,7 +476,7 @@ public class CoreCommands implements ConsoleCommand
     {
         // The event processor provides the linkage between AWT events and input controls
         JSceneEventProcessor eventProcessor = (JSceneEventProcessor) wm.getUserData(JSceneEventProcessor.class);
-        AvatarControlScheme control = (AvatarControlScheme)eventProcessor.getInputScheme();
+        DemoAvatarControlScheme control = (DemoAvatarControlScheme)eventProcessor.getInputScheme();
         return control.getCurrentlySelectedAvatar();
     }
     

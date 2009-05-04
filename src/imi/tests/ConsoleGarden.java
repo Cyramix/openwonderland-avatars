@@ -25,7 +25,7 @@ import imi.scene.camera.behaviors.WrongStateTypeException;
 import imi.scene.camera.state.FirstPersonCamState;
 import imi.scene.processors.FlexibleCameraProcessor;
 import imi.scene.processors.JSceneEventProcessor;
-import imi.utils.input.AvatarControlScheme;
+import imi.utils.input.DemoAvatarControlScheme;
 import org.jdesktop.mtgame.WorldManager;
 
 /**
@@ -60,7 +60,7 @@ public class ConsoleGarden extends DemoBase
         ObjectCollection objects = new ObjectCollection("Objects", wm);
         
         // Create avatar input scheme
-        AvatarControlScheme control = (AvatarControlScheme)((JSceneEventProcessor)wm.getUserData(JSceneEventProcessor.class)).setDefault(new AvatarControlScheme(null));
+        DemoAvatarControlScheme control = (DemoAvatarControlScheme)((JSceneEventProcessor)wm.getUserData(JSceneEventProcessor.class)).setDefault(new DemoAvatarControlScheme(null));
         
         // Make a chair and let the control the collection so it can delete it
         objects.generateChairs(Vector3f.ZERO, 5.0f, 4);

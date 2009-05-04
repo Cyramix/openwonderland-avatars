@@ -25,7 +25,7 @@ import imi.character.objects.LocationNode;
 import imi.character.objects.ObjectCollection;
 import imi.scene.processors.JSceneEventProcessor;
 import imi.utils.graph.Connection;
-import imi.utils.input.AvatarControlScheme;
+import imi.utils.input.DemoAvatarControlScheme;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.jdesktop.mtgame.WorldManager;
@@ -94,7 +94,7 @@ public class MusicalChairs extends DemoBase
         chairGame2.addBakedConnection("lobbyCenter", chairGame1);
 
         // Create avatar input scheme
-        AvatarControlScheme control = (AvatarControlScheme)((JSceneEventProcessor)wm.getUserData(JSceneEventProcessor.class)).setDefault(new AvatarControlScheme(null));
+        DemoAvatarControlScheme control = (DemoAvatarControlScheme)((JSceneEventProcessor)wm.getUserData(JSceneEventProcessor.class)).setDefault(new DemoAvatarControlScheme(null));
         control.setCommandEntireTeam(true);
         control.setObjectCollection(objects);
 //if (true)
@@ -116,7 +116,7 @@ public class MusicalChairs extends DemoBase
 //        objects.boundingVolumeTest();
     }
 
-    private void createAvatar(AvatarControlScheme control, ObjectCollection objects, WorldManager wm, float xOffset, float yOffset, float zOffset)
+    private void createAvatar(DemoAvatarControlScheme control, ObjectCollection objects, WorldManager wm, float xOffset, float yOffset, float zOffset)
     {
         boolean male = true; if (Math.random() < 0.25) male = false;
         Avatar avatar;

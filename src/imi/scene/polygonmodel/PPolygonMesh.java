@@ -1413,13 +1413,13 @@ public class PPolygonMesh extends PNode implements Serializable
      */
     private void useVBO()
     {
-        if (m_Geometry == null)
-            logger.warning("Cannot make null geometry use VBOs!");
-        else
-        {
-            VBOInfo info = new VBOInfo(true);
-            m_Geometry.setVBOInfo(info);
-        }
+//        if (m_Geometry == null)
+//            logger.warning("Cannot make null geometry use VBOs!");
+//        else
+//        {
+//            VBOInfo info = new VBOInfo(true);
+//            m_Geometry.setVBOInfo(info);
+//        }
     }
     /**
      * Retrievs the shared asset reference for this PPolygonMesh. This is only

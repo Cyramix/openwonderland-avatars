@@ -29,7 +29,7 @@ import imi.scene.PMatrix;
 import imi.scene.camera.state.CameraState;
 import imi.scene.camera.state.FirstPersonCamState;
 import imi.scene.processors.JSceneEventProcessor;
-import imi.utils.input.AvatarControlScheme;
+import imi.utils.input.DemoAvatarControlScheme;
 import imi.utils.instruments.Instrumentation;
 import org.jdesktop.mtgame.WorldManager;
 
@@ -67,7 +67,7 @@ public class AttachmentTest extends DemoBase
         // The event processor provides the linkage between AWT events and input controls
         JSceneEventProcessor eventProcessor = (JSceneEventProcessor) wm.getUserData(JSceneEventProcessor.class);
         // Set the input scheme that we intend to use
-        AvatarControlScheme control = (AvatarControlScheme)eventProcessor.setDefault(new AvatarControlScheme(null));
+        DemoAvatarControlScheme control = (DemoAvatarControlScheme)eventProcessor.setDefault(new DemoAvatarControlScheme(null));
 
         // Create an avatar to test on
         FemaleAvatarAttributes attributes = new FemaleAvatarAttributes("AttachmentGirl", true);

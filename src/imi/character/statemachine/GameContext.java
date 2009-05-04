@@ -229,7 +229,6 @@ public class GameContext extends NamedUpdatableObject
             {
                 actions[action.action] += action.modifier;
                 triggerAlert(trigger, true);
-                //System.out.println(action.action + " pressed: " + m_actions[action.action]);
                 notifyTrigger(true, trigger);
             }
             m_triggerState.keyPressed(trigger);
@@ -262,7 +261,6 @@ public class GameContext extends NamedUpdatableObject
             {
                 actions[action.action] -= action.modifier;
                 triggerAlert(trigger, false);
-                //System.out.println(action.action + " released: " + m_actions[action.action]);
                 notifyTrigger(false, trigger);
             }
             m_triggerState.keyReleased(trigger);
@@ -278,7 +276,7 @@ public class GameContext extends NamedUpdatableObject
     private void notifyTrigger(boolean pressed, int trigger) {
         if (listeners==null)
             return;
-        
+
         CharacterController controller = getController();
         
         synchronized(listeners) {

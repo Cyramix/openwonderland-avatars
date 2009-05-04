@@ -36,7 +36,7 @@ import imi.scene.camera.state.CameraState;
 import imi.scene.camera.state.FirstPersonCamState;
 import org.jdesktop.mtgame.WorldManager;
 import imi.scene.processors.JSceneEventProcessor;
-import imi.utils.input.AvatarControlScheme;
+import imi.utils.input.DemoAvatarControlScheme;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -86,7 +86,7 @@ public class CustomizationExample extends DemoBase
         // The event processor provides the linkage between AWT events and input controls
         JSceneEventProcessor eventProcessor = (JSceneEventProcessor) wm.getUserData(JSceneEventProcessor.class);
         // Set the input scheme that we intend to use
-        AvatarControlScheme control = (AvatarControlScheme)eventProcessor.setDefault(new AvatarControlScheme(null));
+        DemoAvatarControlScheme control = (DemoAvatarControlScheme)eventProcessor.setDefault(new DemoAvatarControlScheme(null));
 
         // Slow the camera down
         FirstPersonCamState camState = (FirstPersonCamState) wm.getUserData(CameraState.class);
@@ -104,7 +104,7 @@ public class CustomizationExample extends DemoBase
         control.getMouseEventsFromCamera();
     }
 
-    private void loadConfigFiles(AvatarControlScheme controller, ObjectCollection collection) throws MalformedURLException
+    private void loadConfigFiles(DemoAvatarControlScheme controller, ObjectCollection collection) throws MalformedURLException
     {
         String base = "file:///" + System.getProperty("user.dir") + File.separatorChar;
         URL[] configFiles = new URL[] {
@@ -139,7 +139,7 @@ public class CustomizationExample extends DemoBase
         showInstruments(avatar, worldManager);
     }
 
-    private ObjectCollection setUpNavigationNodes(AvatarControlScheme controller)
+    private ObjectCollection setUpNavigationNodes(DemoAvatarControlScheme controller)
     {
         ObjectCollection objects = new ObjectCollection("Objest!", worldManager);
         float block = 10.0f;

@@ -41,7 +41,7 @@ public abstract class CharacterController implements CollisionListener
     /** Cache the last translation **/
     private Vector3f previousTranslation = new Vector3f();
     /** List of listeners **/
-    private HashSet<CharacterMotionListener> listeners = null;
+    private HashSet<CharacterMotionListener> listeners = new HashSet();
 
     /**
      * Override to implement stopping functionality
@@ -99,8 +99,6 @@ public abstract class CharacterController implements CollisionListener
      * @param listener to be added
      */
     public void addCharacterMotionListener(CharacterMotionListener listener) {
-        if (listeners == null)
-            listeners = new HashSet();
         synchronized(listeners) {
             listeners.add(listener);
         }
@@ -113,10 +111,8 @@ public abstract class CharacterController implements CollisionListener
      * @param listener to be removed
      */
     public void removeCharacterMotionListener(CharacterMotionListener listener) {
-        if (listener!=null) {
-            synchronized(listeners) {
-                listeners.remove(listener);
-            }
+        synchronized(listeners) {
+            listeners.remove(listener);
         }
     }
 
@@ -126,7 +122,7 @@ public abstract class CharacterController implements CollisionListener
      * @param orientation
      */
     protected void notifyTransfromUpdate(Vector3f translation, PMatrix orientation) {
-        if (listeners==null)
+        if (listeners.size()==0)
             return;
 
         if (previousTranslation.equals(translation) &&

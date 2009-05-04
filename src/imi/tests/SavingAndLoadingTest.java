@@ -28,7 +28,7 @@ import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
 import imi.scene.polygonmodel.skinned.PPolygonSkinnedMeshInstance;
 import imi.scene.processors.JSceneEventProcessor;
 import imi.scene.shader.programs.ClothingShaderSpecColor;
-import imi.utils.input.AvatarControlScheme;
+import imi.utils.input.DemoAvatarControlScheme;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.util.logging.Level;
@@ -71,7 +71,7 @@ public class SavingAndLoadingTest extends DemoBase
     protected void createDemoEntities(WorldManager wm)
     {
         // Create avatar input scheme
-        AvatarControlScheme control = (AvatarControlScheme)((JSceneEventProcessor)wm.getUserData(JSceneEventProcessor.class)).setDefault(new AvatarControlScheme(null));
+        DemoAvatarControlScheme control = (DemoAvatarControlScheme)((JSceneEventProcessor)wm.getUserData(JSceneEventProcessor.class)).setDefault(new DemoAvatarControlScheme(null));
         // Create testCharacter
         Avatar testCharacter = null;
         testCharacter = new Avatar(new MaleAvatarAttributes("SavingAndLoadingTestCharacter", 0, 0, 0, 0, 0, 3, 24), wm);

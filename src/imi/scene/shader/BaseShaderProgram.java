@@ -147,10 +147,10 @@ public abstract class BaseShaderProgram implements RenderUpdater, AbstractShader
             shaderState.apply();
             
             JOGLShaderObjectsState joglShader = (JOGLShaderObjectsState)shaderState;
-            if (m_needBoneIndices)
+            if (m_propertyMap.containsKey("pose"))
             {
                 final GL gl = GLU.getCurrentGL();
-                gl.glEnableVertexAttribArray(1);
+                joglShader.setHasAttributes(true);
                 gl.glBindAttribLocation(joglShader.getProgramIdentifier(), 1, "boneIndices");
             }
             // done

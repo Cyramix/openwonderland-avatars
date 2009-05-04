@@ -17,6 +17,7 @@
  */
 package imi.scene;
 
+import com.jme.math.Quaternion;
 import com.jme.math.Vector3f;
 import com.jme.renderer.Renderer;
 import com.jme.scene.Node;
@@ -41,7 +42,7 @@ public class JScene extends Node {
     private PRenderer   m_PRenderer         = null;     //  for diagnostic internal rendering
     private Node        m_externalJmeKidsRoot = new Node("external Kids");
     private Vector3f    m_ExternalKidsRootPosition = new Vector3f(); // applied by the PScene
-    
+    private Quaternion  m_ExternalKidsRootRotation = new Quaternion();
     /**
      * Empty constructor, does nothing.
      */
@@ -75,8 +76,15 @@ public class JScene extends Node {
         return m_ExternalKidsRootPosition;
     }
 
-    public void setExternalKidsRootPosition(Vector3f externalKidsRootPosition) {
+    public Quaternion getExternalKidsRootRotation() {
+        return m_ExternalKidsRootRotation;
+    }
+
+    public void setExternalKidsRootPosition(Vector3f externalKidsRootPosition, Quaternion externalKidsRootRotation) {
         this.m_ExternalKidsRootPosition.set(externalKidsRootPosition);
+        this.m_ExternalKidsRootRotation.set(externalKidsRootRotation);
+        m_externalJmeKidsRoot.setLocalTranslation(externalKidsRootPosition);
+        m_externalJmeKidsRoot.setLocalRotation(externalKidsRootRotation);
     }
 
     /**

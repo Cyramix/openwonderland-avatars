@@ -1222,6 +1222,11 @@ public class AvatarCreatorDemo extends javax.swing.JFrame implements FrameRateLi
                 openEZOptions();
             }
         });
+        jButton_EZoptions.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton_EZoptionsActionPerformed(evt);
+            }
+        });
         jToolBar_Hotkeys.add(jButton_EZoptions);
         jToolBar_Hotkeys.add(jSeparator1);
 
@@ -1233,6 +1238,11 @@ public class AvatarCreatorDemo extends javax.swing.JFrame implements FrameRateLi
         jButton_IntermediateOptions.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 openBasicOptions();
+            }
+        });
+        jButton_IntermediateOptions.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton_IntermediateOptionsActionPerformed(evt);
             }
         });
         jToolBar_Hotkeys.add(jButton_IntermediateOptions);
@@ -1665,6 +1675,14 @@ public class AvatarCreatorDemo extends javax.swing.JFrame implements FrameRateLi
     private void jMenuItem_SaveXMLFileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem_SaveXMLFileActionPerformed
         m_sceneData.saveAvatarSaveFile(this);
     }//GEN-LAST:event_jMenuItem_SaveXMLFileActionPerformed
+
+    private void jButton_EZoptionsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_EZoptionsActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton_EZoptionsActionPerformed
+
+    private void jButton_IntermediateOptionsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_IntermediateOptionsActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton_IntermediateOptionsActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup buttonGroup1;

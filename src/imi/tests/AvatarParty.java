@@ -27,7 +27,7 @@ import imi.scene.PMatrix;
 import imi.scene.camera.state.FirstPersonCamState;
 import imi.scene.processors.JSceneEventProcessor;
 import imi.utils.CircleUtil;
-import imi.utils.input.AvatarControlScheme;
+import imi.utils.input.DemoAvatarControlScheme;
 import java.util.logging.Level;
 import org.jdesktop.mtgame.WorldManager;
 
@@ -70,7 +70,7 @@ public class AvatarParty extends DemoBase
         Vector2f[] displacements = circle.calculatePoints(); // grab that list
 
         // Create avatar input scheme and an object collection to use
-        AvatarControlScheme control = (AvatarControlScheme)((JSceneEventProcessor)wm.getUserData(JSceneEventProcessor.class)).setDefault(new AvatarControlScheme(null));
+        DemoAvatarControlScheme control = (DemoAvatarControlScheme)((JSceneEventProcessor)wm.getUserData(JSceneEventProcessor.class)).setDefault(new DemoAvatarControlScheme(null));
         ObjectCollection ourCollection = new ObjectCollection("AvatarCollection", wm);
         control.setObjectCollection(ourCollection);
 

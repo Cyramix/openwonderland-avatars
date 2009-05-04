@@ -38,17 +38,14 @@ import org.jdesktop.mtgame.WorldManager;
  */
 public class AvatarControlScheme extends InputScheme implements AvatarControls
 {
-    private boolean bSkeletonMode = false;
-  
-    private Avatar   avatar = null;
+    protected Avatar   avatar = null;
     
-    private int currentavatar = 0;
-    private ArrayList<Avatar> avatarTeam = new ArrayList<Avatar>();
+    protected int currentavatar = 0;
+    protected ArrayList<Avatar> avatarTeam = new ArrayList<Avatar>();
     
-    private   InputState      inputState     = new InputState();
+    protected   InputState      inputState     = new InputState();
     
     private boolean bCommandEntireTeam = false;
-    private ObjectCollectionBase objects = null;
     
     private int currentMouseX = 0;
     private int currentMouseY = 0;
@@ -60,13 +57,6 @@ public class AvatarControlScheme extends InputScheme implements AvatarControls
     {
         super();
         avatar = master;
-    }
-    
-    public void getMouseEventsFromCamera()
-    {
-        // Get the hacked mouse events that the camera is stealing from us
-        if (avatar != null)
-            ((FlexibleCameraProcessor)avatar.getWorldManager().getUserData(FlexibleCameraProcessor.class)).setControl(this);
     }
     
     public void processMouseEvents(Object[] events)
@@ -186,7 +176,7 @@ public class AvatarControlScheme extends InputScheme implements AvatarControls
         }
     }
     
-    private void processKeyEvent(KeyEvent ke) 
+    protected void processKeyEvent(KeyEvent ke)
     {
         if (ke.getID() == KeyEvent.KEY_RELEASED) 
         {
@@ -221,122 +211,6 @@ public class AvatarControlScheme extends InputScheme implements AvatarControls
             else
                 avatar.keyPressed(ke.getKeyCode());
             
-            /////////////////////////////////////////////////////////////
-            
-            // Next avatar
-            if (ke.getKeyCode() == KeyEvent.VK_PAGE_UP)
-            {   
-                if (!avatarTeam.isEmpty())
-                {
-                    currentavatar++;
-                    if (currentavatar > avatarTeam.size()-1)
-                        currentavatar = 0;
-                    else if (currentavatar < 0)
-                        currentavatar = avatarTeam.size()-1;
-                    
-                    avatar = avatarTeam.get(currentavatar);
-                    avatar.selectForInput();
-                    avatar.initiateFacialAnimation("MaleSmile", 0.25f, 3.0f);
-                }
-            }
-            
-            // Previouse avatar
-            if (ke.getKeyCode() == KeyEvent.VK_PAGE_DOWN)
-            {
-                if (!avatarTeam.isEmpty())
-                {
-                    currentavatar--;
-                    if (currentavatar > avatarTeam.size()-1)
-                        currentavatar = 0;
-                    else if (currentavatar < 0)
-                        currentavatar = avatarTeam.size()-1;
-                    
-                    avatar = avatarTeam.get(currentavatar);
-                    avatar.selectForInput();
-                    avatar.initiateFacialAnimation("MaleSmile", 0.25f, 3.0f);
-                }
-            }
-            
-            // Remove a chair from the object collection
-            if (ke.getKeyCode() == KeyEvent.VK_BACK_SPACE) 
-            {
-                if(objects != null && objects instanceof ObjectCollection)
-                {
-                    ((ObjectCollection)objects).removeAChair();
-                }
-            }
-
-            if (ke.getKeyCode() == KeyEvent.VK_N)
-            {
-                WorldManager wm = DemoBase.getWM();
-                FlexibleCameraProcessor p = (FlexibleCameraProcessor) wm.getUserData(FlexibleCameraProcessor.class);
-                if (p != null)
-                    p.takeSnap();
-            }
-
-            // Pop up the console \ chat
-            if (ke.getKeyCode() == KeyEvent.VK_BACK_SLASH || ke.getKeyCode() == KeyEvent.VK_BACK_QUOTE) 
-            {
-                if(objects != null && objects instanceof ObjectCollection)
-                {
-                    ((ObjectCollection)objects).getGUI().show();
-                    //objects.addRandomChair();
-                }
-            }
-            
-            // Note: input only affects this JScene
-            
-            // JMonkey Wireframe (on\off)
-            if (ke.getKeyCode() == KeyEvent.VK_T) 
-                m_jscene.toggleWireframe();
-            
-            // JMonkey Lights (on\off)
-            if (ke.getKeyCode() == KeyEvent.VK_L) 
-                m_jscene.toggleLights();
-            
-            // Rendering mode (JMonkey, JMonkey and PRenderer, PRenderer)
-            if (ke.getKeyCode() == KeyEvent.VK_R) 
-                m_jscene.renderToggle();
-    
-            // PRenderer Bounding volumes (off, box, sphere)
-            if (ke.getKeyCode() == KeyEvent.VK_B) 
-                m_jscene.toggleRenderBoundingVolume();
-            
-            // Toggle PRenderer mesh display
-            if (ke.getKeyCode() == KeyEvent.VK_M)
-            {
-                //m_jscene.toggleRenderPRendererMesh();
-                //m_jscene.loadShaders();
-            }
-            
-            if (ke.getKeyCode() == KeyEvent.VK_U)
-            {
-                if (bSkeletonMode == false)
-                {
-                    m_jscene.setRenderInternallyBool(false);
-                    // turn the prenderer on, turn off the mesh drawing, turn on jme wireframe
-                    // This will create the PRenderer if it does not exist
-                    //m_jscene.setRenderPRendererMesh(false);
-                    m_jscene.setRenderBool(true);
-                    m_jscene.setRenderInternallyBool(true);
-                    m_jscene.setRenderBothBool(true);
-                    m_jscene.setWireframe(true);
-                }
-                else
-                {
-                    // reset to solid jme only
-                    //m_jscene.setRenderPRendererMesh(true);
-                    m_jscene.setRenderBool(true);
-                    m_jscene.setRenderInternallyBool(false);
-                    m_jscene.setRenderBothBool(false);
-                    m_jscene.setWireframe(false);
-                    
-                }
-                // toggle
-                bSkeletonMode = !bSkeletonMode;
-
-            }
-            
         }
     }
 
@@ -357,8 +231,5 @@ public class AvatarControlScheme extends InputScheme implements AvatarControls
         this.bCommandEntireTeam = bCommandEntireTeam;
     }
     
-    public void setObjectCollection(ObjectCollectionBase objectCollection) {
-        objects = objectCollection;
-    }
-    
+  
 }
