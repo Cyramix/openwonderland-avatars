@@ -1314,7 +1314,6 @@ public abstract class Character extends Entity implements SpatialObject, Animati
     public void keyPressed(int key)
     {
         Integer trigger = m_keyBindings.get(key);
-        System.err.println("KEY PRESSED "+trigger);
         if (trigger == null)
             return;
 

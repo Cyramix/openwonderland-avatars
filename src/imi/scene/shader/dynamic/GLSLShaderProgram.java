@@ -837,7 +837,7 @@ public class GLSLShaderProgram implements AbstractShaderProgram, RenderUpdater
         if (m_vertAttributes.contains(GLSLDefaultVariables.BoneIndices) && joglShader.getProgramIdentifier() > 0)
         {
             final GL gl = GLU.getCurrentGL();
-            gl.glEnableVertexAttribArray(1);
+            joglShader.setHasAttributes(true);
             gl.glBindAttribLocation(joglShader.getProgramIdentifier(), 1, "boneIndices"); // alias attribute with index one as boneIndices
         }
         // done
