@@ -197,7 +197,7 @@ public class GameState extends NamedUpdatableObject
     {
         // Debugging / Diagnostic Output
         if (logger.isLoggable(Level.FINE))
-            logger.fine(getName() + " Enter");
+            logger.fine(getName() + " Enter, animation:"+getAnimationName());
         
 //        if (gameContext.getController().getWindow() != null)
 //            gameContext.getController().getWindow().setTitle(getName() + " Reverse: " + bReverseAnimation + " " + getAnimationName());
