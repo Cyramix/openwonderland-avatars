@@ -89,11 +89,11 @@ public class Collada
         // Attempt to create the context and unmarshaller for JAXB
         try
         {
-            jaxbContext = javax.xml.bind.JAXBContext.newInstance("org.collada.colladaschema");
-            unmarshaller = jaxbContext.createUnmarshaller();
+            jaxbContext = javax.xml.bind.JAXBContext.newInstance("org.collada.colladaschema", Collada.class.getClassLoader());
         }
         catch (JAXBException ex)
         {
+//            ex.printStackTrace();
             logger.log(Level.SEVERE, "Problem initializing JAXB Context and / or unmarshaller! -- " + ex.getMessage());
         }
     }
@@ -319,6 +319,7 @@ public class Collada
                 conn = colladaFile.openConnection();
                 in = conn.getInputStream();
                 synchronized(contextLock) {
+                    unmarshaller = jaxbContext.createUnmarshaller();
                     collada = (org.collada.colladaschema.COLLADA) unmarshaller.unmarshal(in);
                 }
                 retry = 0; // No retry necessary
