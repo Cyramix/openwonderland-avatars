@@ -282,7 +282,7 @@ public class PPolygonMeshInstance extends PNode implements Serializable
         // Debugging / Diagnostic output
 //        logger.info("applying material, I am " + getName() + " here is the call stack:");
 //        Thread.dumpStack();
-        System.out.println(this.getName() + " Material Loading");
+//        System.out.println(this.getName() + " Material Loading");
         if (m_material == null) // We better be using the geometry's material
         {
             if (m_bUseGeometryMaterial == true)

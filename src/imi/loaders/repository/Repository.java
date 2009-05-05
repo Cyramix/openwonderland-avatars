@@ -249,7 +249,7 @@ public class Repository extends Entity
      */
     public Texture loadTexture(URL location)
     {
-        System.out.println(location.toString());
+//        System.out.println(location.toString());
         if (m_cache != null)
             return m_cache.loadTexture(location);
         else
