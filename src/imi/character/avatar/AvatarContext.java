@@ -418,9 +418,9 @@ public class AvatarContext extends GameContext
             return false;
 
         SpatialObject obj = avatar.getObjectCollection().findNearestObjectOfType(ChairObject.class, avatar, 10000.0f, 1.0f, true);
-        if (obj != null && !((ChairObject)obj).isOccupied())
+        if (obj != null && !((TargetObject)obj).isOccupied())
         {
-            GoSit task = new GoSit((ChairObject)obj, this);
+            GoSit task = new GoSit((TargetObject)obj, this);
             AI.addTaskToTop(task);
             AI.setEnable(true);
             return true;
@@ -446,7 +446,7 @@ public class AvatarContext extends GameContext
         return false;
     }
 
-    public boolean goSitOnChair(ChairObject chair, boolean occupiedMatters, boolean abandonCurrentTasks)
+    public boolean goSitOnChair(TargetObject chair, boolean occupiedMatters, boolean abandonCurrentTasks)
     {
         if (abandonCurrentTasks)
             AI.clearTasks();

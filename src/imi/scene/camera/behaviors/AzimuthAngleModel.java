@@ -23,6 +23,7 @@ import imi.scene.camera.state.AzimuthAngleState;
 import imi.scene.camera.state.CameraState;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
+import javax.swing.SwingUtilities;
 
 /**
  * This camera model provides an azimuth and angle model to determine a 
@@ -72,14 +73,20 @@ public class AzimuthAngleModel implements CameraModel
             if (events[i] instanceof MouseEvent)
             {
                 MouseEvent me = (MouseEvent) events[i];
-                if (me.getID() == MouseEvent.MOUSE_PRESSED)
+                boolean result = me.getID() == MouseEvent.MOUSE_PRESSED;
+                if (state.isRightMouseButtonOnly())
+                    result = result && SwingUtilities.isRightMouseButton(me);
+                if ( result )
                 {
                     m_currentX = me.getX();
                     m_currentY = me.getY();
                     m_lastMouseX = m_currentX;
                     m_lastMouseY = m_currentY;
                 }
-                if (me.getID() == MouseEvent.MOUSE_DRAGGED) 
+                result = me.getID() == MouseEvent.MOUSE_DRAGGED;
+                if (state.isRightMouseButtonOnly())
+                    result = result && SwingUtilities.isRightMouseButton(me);
+                if ( result )
                 {
                     m_currentX = me.getX();
                     m_currentY = me.getY();

@@ -22,10 +22,10 @@ import imi.character.CharacterMotionListener;
 import imi.scene.PMatrix;
 import imi.scene.camera.state.CameraState;
 import imi.scene.camera.state.ThirdPersonCamState;
-import imi.scene.camera.state.ThirdPersonCamState;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
+import javax.swing.SwingUtilities;
 
 /**
  * This model performs object tumbling. The camera is locked at a certain perspective
@@ -91,7 +91,10 @@ public class ThirdPersonCamModel implements CameraModel, CharacterMotionListener
             if (events[i] instanceof MouseEvent)
             {
                 MouseEvent me = (MouseEvent) events[i];
-                if (me.getID() == MouseEvent.MOUSE_PRESSED)
+                boolean result = me.getID() == MouseEvent.MOUSE_PRESSED;
+                if (state.isRightMouseButtonOnly())
+                    result = result && SwingUtilities.isRightMouseButton(me);
+                if ( result )
                 {
                     // Mouse pressed, reset initial settings
                     camState.setCurrentMouseX(me.getX());
@@ -100,7 +103,10 @@ public class ThirdPersonCamModel implements CameraModel, CharacterMotionListener
                     camState.setLastMouseY(me.getY());
                 }
 
-                if (me.getID() == MouseEvent.MOUSE_DRAGGED)
+                result = me.getID() == MouseEvent.MOUSE_DRAGGED;
+                if (state.isRightMouseButtonOnly())
+                    result = result && SwingUtilities.isRightMouseButton(me);
+                if ( result )
                 {
                     // Mouse dragged, handle model rotation
                     processRotations(me, camState);

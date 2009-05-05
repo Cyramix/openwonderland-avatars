@@ -23,6 +23,7 @@ import imi.character.avatar.AvatarContext;
 import imi.character.avatar.AvatarContext.TriggerNames;
 import imi.character.objects.ChairObject;
 import imi.character.objects.SpatialObject;
+import imi.character.objects.TargetObject;
 import imi.character.statemachine.corestates.SitState;
 import imi.scene.PMatrix;
 import imi.utils.PMathUtils;
@@ -40,7 +41,7 @@ public class GoSit implements Task
     
     private AvatarContext context = null;
     
-    private ChairObject goal = null;
+    private TargetObject goal = null;
     private boolean bDone = false;
     private boolean  bTryAgain = false;
     
@@ -54,7 +55,7 @@ public class GoSit implements Task
     
     private float pullPower = 5.0f;
     
-    public GoSit(ChairObject chair, AvatarContext context)
+    public GoSit(TargetObject chair, AvatarContext context)
     {
         this.context = context;
         this.goal = chair;

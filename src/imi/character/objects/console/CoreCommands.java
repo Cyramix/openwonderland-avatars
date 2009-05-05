@@ -21,7 +21,7 @@ import com.jme.math.Vector3f;
 import imi.character.avatar.Avatar;
 import imi.character.avatar.FemaleAvatarAttributes;
 import imi.character.avatar.MaleAvatarAttributes;
-import imi.character.objects.ObjectCollection;
+import imi.character.objects.AvatarObjectCollection;
 import imi.character.objects.SpatialObject;
 import imi.scene.PMatrix;
 import imi.scene.processors.JSceneEventProcessor;
@@ -35,11 +35,11 @@ import org.jdesktop.mtgame.WorldManager;
  */
 public class CoreCommands implements ConsoleCommand
 {
-    private ObjectCollection objs;
+    private AvatarObjectCollection objs;
     private WorldManager wm;
     private ObjectCollectionGUI gui;
             
-    CoreCommands(ObjectCollectionGUI gui, ObjectCollection objs, WorldManager wm) 
+    CoreCommands(ObjectCollectionGUI gui, AvatarObjectCollection objs, WorldManager wm)
     {
         this.gui = gui;
         this.objs = objs;

@@ -21,8 +21,8 @@ package imi.tests;
 
 import com.jme.math.Vector3f;
 import imi.character.avatar.Avatar;
+import imi.character.objects.AvatarObjectCollection;
 import imi.character.objects.LocationNode;
-import imi.character.objects.ObjectCollection;
 import imi.gui.JFrame_InstrumentationGUI;
 import imi.gui.JPanel_Animations;
 import imi.gui.SceneEssentials;
@@ -104,7 +104,7 @@ public class CustomizationExample extends DemoBase
         control.getMouseEventsFromCamera();
     }
 
-    private void loadConfigFiles(DemoAvatarControlScheme controller, ObjectCollection collection) throws MalformedURLException
+    private void loadConfigFiles(DemoAvatarControlScheme controller, AvatarObjectCollection collection) throws MalformedURLException
     {
         String base = "file:///" + System.getProperty("user.dir") + File.separatorChar;
         URL[] configFiles = new URL[] {
@@ -139,9 +139,9 @@ public class CustomizationExample extends DemoBase
         showInstruments(avatar, worldManager);
     }
 
-    private ObjectCollection setUpNavigationNodes(DemoAvatarControlScheme controller)
+    private AvatarObjectCollection setUpNavigationNodes(DemoAvatarControlScheme controller)
     {
-        ObjectCollection objects = new ObjectCollection("Objest!", worldManager);
+        AvatarObjectCollection objects = new AvatarObjectCollection("Objest!", worldManager);
         float block = 10.0f;
         float halfBlock = 5f;
         // Create locations for the game

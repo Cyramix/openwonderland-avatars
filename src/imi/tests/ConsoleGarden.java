@@ -18,7 +18,7 @@
 package imi.tests;
 
 import com.jme.math.Vector3f;
-import imi.character.objects.ObjectCollection;
+import imi.character.objects.AvatarObjectCollection;
 import imi.scene.PMatrix;
 import imi.scene.camera.CameraPositionManager;
 import imi.scene.camera.behaviors.WrongStateTypeException;
@@ -57,7 +57,7 @@ public class ConsoleGarden extends DemoBase
     protected void createDemoEntities(WorldManager wm) 
     {   
         // Create one object collection for all to use (for testing)
-        ObjectCollection objects = new ObjectCollection("Objects", wm);
+        AvatarObjectCollection objects = new AvatarObjectCollection("Objects", wm);
         
         // Create avatar input scheme
         DemoAvatarControlScheme control = (DemoAvatarControlScheme)((JSceneEventProcessor)wm.getUserData(JSceneEventProcessor.class)).setDefault(new DemoAvatarControlScheme(null));

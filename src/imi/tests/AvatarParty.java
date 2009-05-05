@@ -22,7 +22,7 @@ import com.jme.math.Vector3f;
 import imi.character.avatar.Avatar;
 import imi.character.avatar.FemaleAvatarAttributes;
 import imi.character.avatar.MaleAvatarAttributes;
-import imi.character.objects.ObjectCollection;
+import imi.character.objects.AvatarObjectCollection;
 import imi.scene.PMatrix;
 import imi.scene.camera.state.FirstPersonCamState;
 import imi.scene.processors.JSceneEventProcessor;
@@ -71,7 +71,7 @@ public class AvatarParty extends DemoBase
 
         // Create avatar input scheme and an object collection to use
         DemoAvatarControlScheme control = (DemoAvatarControlScheme)((JSceneEventProcessor)wm.getUserData(JSceneEventProcessor.class)).setDefault(new DemoAvatarControlScheme(null));
-        ObjectCollection ourCollection = new ObjectCollection("AvatarCollection", wm);
+        AvatarObjectCollection ourCollection = new AvatarObjectCollection("AvatarCollection", wm);
         control.setObjectCollection(ourCollection);
 
 

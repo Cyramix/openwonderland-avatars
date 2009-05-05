@@ -17,6 +17,8 @@
  */
 package imi.character.objects;
 
+import imi.scene.JScene;
+import imi.scene.PScene;
 import java.util.ArrayList;
 import org.jdesktop.mtgame.Entity;
 
@@ -59,6 +61,9 @@ public class ObjectCollectionBase extends Entity
     public SpatialObject findNearestObjectOfType(Class type, SpatialObject obj, float consideredRange, float searchCone, boolean occupiedMatters) {
         return null;
     }
+
+    public JScene getJScene() { return null; }
+    public PScene getPScene() { return null; }
 
     public void hackRefresh() {  }
 

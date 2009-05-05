@@ -296,7 +296,7 @@ public class AvatarChair implements ChairObject
         return owner;
     }
 
-    public float getDesiredDistanceFromOtherChairs() {
+    public float getDesiredDistanceFromOtherTargets() {
         return desiredDistanceFromOtherChairs;
     }
 

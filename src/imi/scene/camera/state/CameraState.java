@@ -27,6 +27,19 @@ import imi.scene.PMatrix;
 public abstract class CameraState 
 {
     /**
+     * True to move the camera only if the right mouse button is pressed
+     */
+    private boolean rightMouseButtonOnly = false;
+    
+    public boolean isRightMouseButtonOnly() {
+        return rightMouseButtonOnly;
+    }
+
+    public void setRightMouseButtonOnly(boolean rightMouseButtonOnly) {
+        this.rightMouseButtonOnly = rightMouseButtonOnly;
+    }
+
+    /**
      * This enumeration is used to specify which type of state
      * a 
      */

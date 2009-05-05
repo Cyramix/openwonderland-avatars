@@ -8,10 +8,8 @@ package imi.character.objects;
 
 
 /**
- *
  * @author Lou Hayt
  */
 public interface ChairObject extends TargetObject
 {
-    public float getDesiredDistanceFromOtherChairs();
 }

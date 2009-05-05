@@ -17,6 +17,7 @@
  */
 package imi.character.objects;
 
+import com.jme.bounding.BoundingSphere;
 import com.jme.math.Vector3f;
 import imi.scene.boundingvolumes.PSphere;
 import imi.scene.polygonmodel.PPolygonModelInstance;
@@ -32,8 +33,11 @@ public interface SpatialObject
     
     /**
      * Returns the model instance of the object
+     * @deprecated the character class will keep it but the SpatialObject
+     * interface will not.
      * @return
      */
+    @Deprecated 
     public PPolygonModelInstance getModelInst();
     
     /**

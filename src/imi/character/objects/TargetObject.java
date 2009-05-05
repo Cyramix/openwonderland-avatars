@@ -13,10 +13,14 @@ import com.jme.math.Vector3f;
  */
 public interface TargetObject extends SpatialObject
 {
+    public float getDesiredDistanceFromOtherTargets();
+
+    //public Vector3f getTargetPosition();
     public Vector3f getTargetPositionRef();
     public Vector3f getTargetForwardVector();
 
 //    public int getTargetCount();
+//    public Vector3f getTargetPosition(int index);
 //    public Vector3f getTargetPositionRef(int index);
 //    public Vector3f getTargetForwardVector(int index);
 

@@ -104,8 +104,8 @@ public class LocationNode extends GraphNode implements TargetObject
      * @param numberOfChairs
      */
     public void generateChairs(int numberOfChairs) {
-        if (objects != null && objects instanceof ObjectCollection)
-            ((ObjectCollection)objects).generateChairs(bv.getCenterRef(), bv.getRadius(), numberOfChairs);
+        if (objects != null && objects instanceof AvatarObjectCollection)
+            ((AvatarObjectCollection)objects).generateChairs(bv.getCenterRef(), bv.getRadius(), numberOfChairs);
         else
             System.out.println("ERROR: LocationNode generateChairs() failed");
     }
@@ -182,6 +182,10 @@ public class LocationNode extends GraphNode implements TargetObject
     {
         if (objects != null)
             objects.removeLocation(this);
+    }
+
+    public float getDesiredDistanceFromOtherTargets() {
+        return 0.0f;
     }
 
     

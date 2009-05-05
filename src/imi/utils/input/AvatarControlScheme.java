@@ -21,16 +21,11 @@ import com.jme.math.Vector3f;
 import imi.character.VerletArm;
 import imi.character.avatar.Avatar;
 import imi.character.avatar.AvatarContext.TriggerNames;
-import imi.character.objects.ObjectCollection;
-import imi.character.objects.ObjectCollectionBase;
 import imi.scene.processors.FlexibleCameraProcessor;
-import imi.tests.AvatarInspectionDemo;
-import imi.tests.DemoBase;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 import java.util.ArrayList;
-import org.jdesktop.mtgame.WorldManager;
 
 /**
  *

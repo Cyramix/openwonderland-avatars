@@ -62,7 +62,7 @@ public class ObjectCollectionGUI implements ActionListener, TextOut
     protected DefaultComboBoxModel channelSelectorModel;
     
     /** The owning collection **/
-    protected ObjectCollection objs = null;
+    protected AvatarObjectCollection objs = null;
     
     /** The world manager **/
     protected WorldManager    wm   = null;
@@ -71,7 +71,7 @@ public class ObjectCollectionGUI implements ActionListener, TextOut
     protected ConsoleCommand coreCommands = null;
     protected Hashtable<String, ConsoleCommand> additionalCommands = new Hashtable<String, ConsoleCommand>();
     
-    public ObjectCollectionGUI(ObjectCollection master, WorldManager worldManager)
+    public ObjectCollectionGUI(AvatarObjectCollection master, WorldManager worldManager)
     {
         super();
         this.objs = master;

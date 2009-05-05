@@ -22,12 +22,9 @@ import imi.character.avatar.Avatar;
 import imi.character.avatar.FemaleAvatarAttributes;
 import imi.character.avatar.MaleAvatarAttributes;
 import imi.character.objects.LocationNode;
-import imi.character.objects.ObjectCollection;
+import imi.character.objects.AvatarObjectCollection;
 import imi.scene.processors.JSceneEventProcessor;
-import imi.utils.graph.Connection;
 import imi.utils.input.DemoAvatarControlScheme;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.jdesktop.mtgame.WorldManager;
 
 /**
@@ -67,7 +64,7 @@ public class MusicalChairs extends DemoBase
         int numChairs = numberOfAvatars-1;
 
         // Create one object collection for all to use (for testing)
-        ObjectCollection objects = new ObjectCollection("Musical Chairs Objects", wm);
+        AvatarObjectCollection objects = new AvatarObjectCollection("Musical Chairs Objects", wm);
         objects.generateChairs(new Vector3f(halfBlock, 0.0f, halfBlock), halfBlock, numChairs);
 
         // Create locations for the game
@@ -116,7 +113,7 @@ public class MusicalChairs extends DemoBase
 //        objects.boundingVolumeTest();
     }
 
-    private void createAvatar(DemoAvatarControlScheme control, ObjectCollection objects, WorldManager wm, float xOffset, float yOffset, float zOffset)
+    private void createAvatar(DemoAvatarControlScheme control, AvatarObjectCollection objects, WorldManager wm, float xOffset, float yOffset, float zOffset)
     {
         boolean male = true; if (Math.random() < 0.25) male = false;
         Avatar avatar;

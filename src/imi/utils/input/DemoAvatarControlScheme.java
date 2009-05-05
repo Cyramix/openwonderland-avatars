@@ -17,19 +17,12 @@
  */
 package imi.utils.input;
 
-import com.jme.math.Vector3f;
-import imi.character.VerletArm;
 import imi.character.avatar.Avatar;
-import imi.character.avatar.AvatarContext.TriggerNames;
-import imi.character.objects.ObjectCollection;
+import imi.character.objects.AvatarObjectCollection;
 import imi.character.objects.ObjectCollectionBase;
 import imi.scene.processors.FlexibleCameraProcessor;
-import imi.tests.AvatarInspectionDemo;
 import imi.tests.DemoBase;
 import java.awt.event.KeyEvent;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseWheelEvent;
-import java.util.ArrayList;
 import org.jdesktop.mtgame.WorldManager;
 
 /**
@@ -102,9 +95,9 @@ public class DemoAvatarControlScheme extends AvatarControlScheme
             // Remove a chair from the object collection
             if (ke.getKeyCode() == KeyEvent.VK_BACK_SPACE) 
             {
-                if(objects != null && objects instanceof ObjectCollection)
+                if(objects != null && objects instanceof AvatarObjectCollection)
                 {
-                    ((ObjectCollection)objects).removeAChair();
+                    ((AvatarObjectCollection)objects).removeAChair();
                 }
             }
 
@@ -119,9 +112,9 @@ public class DemoAvatarControlScheme extends AvatarControlScheme
             // Pop up the console \ chat
             if (ke.getKeyCode() == KeyEvent.VK_BACK_SLASH || ke.getKeyCode() == KeyEvent.VK_BACK_QUOTE) 
             {
-                if(objects != null && objects instanceof ObjectCollection)
+                if(objects != null && objects instanceof AvatarObjectCollection)
                 {
-                    ((ObjectCollection)objects).getGUI().show();
+                    ((AvatarObjectCollection)objects).getGUI().show();
                     //objects.addRandomChair();
                 }
             }

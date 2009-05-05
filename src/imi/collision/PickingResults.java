@@ -63,4 +63,10 @@ public class PickingResults
         }
         return closestPick;
     }
+
+    public void clear()
+    {
+        results.clear();
+        closestPick = null;
+    }
 }

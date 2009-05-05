@@ -22,18 +22,13 @@ import com.jme.math.Vector3f;
 import imi.character.avatar.Avatar;
 import imi.character.avatar.MaleAvatarAttributes;
 import imi.character.avatar.FemaleAvatarAttributes;
-import imi.character.objects.ObjectCollection;
-import imi.gui.JFrame_InstrumentationGUI;
-import imi.gui.SceneEssentials;
-import imi.gui.TreeExplorer;
+import imi.character.objects.AvatarObjectCollection;
 import imi.scene.camera.state.FirstPersonCamState;
-import java.net.MalformedURLException;
 import org.jdesktop.mtgame.WorldManager;
 
 
 import imi.scene.processors.JSceneEventProcessor;
 import imi.utils.input.DemoAvatarControlScheme;
-import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -60,7 +55,7 @@ public class VerletArmTest  extends DemoBase
         int numberOfAvatars = 1;
         
         // Create one object collection for all to use (for testing)
-        ObjectCollection objects = new ObjectCollection("Character Test Objects", wm);
+        AvatarObjectCollection objects = new AvatarObjectCollection("Character Test Objects", wm);
         
         // Create avatar input scheme
         DemoAvatarControlScheme control = (DemoAvatarControlScheme)((JSceneEventProcessor)wm.getUserData(JSceneEventProcessor.class)).setDefault(new DemoAvatarControlScheme(null));
@@ -143,7 +138,7 @@ public class VerletArmTest  extends DemoBase
         
     }
 
-    private void cloneAvatar(DemoAvatarControlScheme control, ObjectCollection objects, WorldManager wm, float xOffset, float yOffset, float zOffset, int torso)
+    private void cloneAvatar(DemoAvatarControlScheme control, AvatarObjectCollection objects, WorldManager wm, float xOffset, float yOffset, float zOffset, int torso)
     {   
         //Avatar avatar = new Avatar(new MaleAvatarAttributes("Avatar Clone " + xOffset+yOffset+zOffset, true), wm);
         Avatar avatar = new Avatar(new MaleAvatarAttributes("Avatar Clone " + xOffset+yOffset+zOffset, -1, -1, torso, -1, -1), wm);

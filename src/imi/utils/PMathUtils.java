@@ -31,6 +31,18 @@ public class PMathUtils
 
     /** A value to multiply a radian value by, to convert it to degrees. */
     public static final float RAD_TO_DEG = 180.0f / (float)Math.PI;
+
+    public static Vector3f generateRandomNormalizedVector()
+    {
+        return new Vector3f(RandomFloatInRange(-1.0f, 1.0f), RandomFloatInRange(-1.0f, 1.0f), RandomFloatInRange(-1.0f, 1.0f)).normalizeLocal();
+    }
+    
+    public static Vector3f generateRandomNormalizedVectorXZOnly() 
+    {
+        float x = RandomFloatInRange(-1.0f, 1.0f);
+        float z = RandomFloatInRange(-1.0f, 1.0f);
+        return new Vector3f(x, 0.0f, z).normalizeLocal();
+    }
     
     static public void min(Vector3f result, Vector3f a, Vector3f b)
     {

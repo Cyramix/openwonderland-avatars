@@ -45,7 +45,7 @@ import org.jdesktop.mtgame.WorldManager;
  * spatial object management system.
  * @author Lou Hayt
  */
-public class ObjectCollection extends ObjectCollectionBase
+public class AvatarObjectCollection extends ObjectCollectionBase
 {
     /** Collection of objects :) **/
     protected ArrayList<SpatialObject> objects = new ArrayList<SpatialObject>();
@@ -70,7 +70,7 @@ public class ObjectCollection extends ObjectCollectionBase
      * @param name
      * @param wm
      */
-    public ObjectCollection(String name, WorldManager wm)
+    public AvatarObjectCollection(String name, WorldManager wm)
     {
         super(name);
         worldManager = wm;
@@ -435,18 +435,18 @@ public class ObjectCollection extends ObjectCollectionBase
     }
 
     // The chair's bounding volumes are not correct until finished loading, this method is still good on load time.
-    private boolean isCloseToOtherChairs(ChairObject newChair)
+    private boolean isCloseToOtherChairs(TargetObject newChair)
     {
         for (SpatialObject check : objects)
         {
             if (!(check instanceof ChairObject))
                 continue;
-            ChairObject chair = (ChairObject)check;
+            TargetObject chair = (TargetObject)check;
             if (chair != newChair)
             {
                 Vector3f chairPos    = chair.getPositionRef();
                 Vector3f newChairPos = newChair.getPositionRef();
-                float desiredDistance = chair.getDesiredDistanceFromOtherChairs() + newChair.getDesiredDistanceFromOtherChairs();
+                float desiredDistance = chair.getDesiredDistanceFromOtherTargets() + newChair.getDesiredDistanceFromOtherTargets();
                 if (chairPos.distanceSquared(newChairPos) < desiredDistance * desiredDistance)
                     return true;
             }
@@ -556,7 +556,7 @@ public class ObjectCollection extends ObjectCollectionBase
             if (check != obj && check instanceof ChairObject)
             {
                 // Check if occupided
-                boolean oc = ((ChairObject)check).isOccupied();
+                boolean oc = ((TargetObject)check).isOccupied();
                 if (!occupiedMatters)
                     oc = false;
                 if (oc)
@@ -580,7 +580,7 @@ public class ObjectCollection extends ObjectCollectionBase
                 {
                     Vector3f rightVec = obj.getRightVector();
                     Vector3f forwardVec = obj.getForwardVector();
-                    Vector3f directionToTarget = ((ChairObject)check).getTargetPositionRef().subtract(obj.getPositionRef());
+                    Vector3f directionToTarget = ((TargetObject)check).getTargetPositionRef().subtract(obj.getPositionRef());
                     directionToTarget.normalizeLocal();
 
                     // Check if inside the front half of space
@@ -681,6 +681,7 @@ public class ObjectCollection extends ObjectCollectionBase
         return (LocationNode)nearest;
     }
 
+    @Override
     public JScene getJScene() {
         return jscene;
     }
@@ -694,8 +695,8 @@ public class ObjectCollection extends ObjectCollectionBase
         {
             if (check instanceof ChairObject)
             {
-                ((ChairObject)check).setOwner(null);
-                ((ChairObject)check).setOccupied(true);
+                ((TargetObject)check).setOwner(null);
+                ((TargetObject)check).setOccupied(true);
                 objects.remove(check);
                 pscene.removeModelInstance(check.getModelInst());
                 return;

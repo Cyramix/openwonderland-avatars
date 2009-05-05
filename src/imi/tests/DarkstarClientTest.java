@@ -24,7 +24,7 @@ import imi.character.avatar.MaleAvatarAttributes;
 import imi.character.avatar.FemaleAvatarAttributes;
 import imi.networking.Client;
 import imi.networking.Client.ClientAvatar;
-import imi.character.objects.ObjectCollection;
+import imi.character.objects.AvatarObjectCollection;
 import imi.scene.camera.behaviors.ThirdPersonCamModel;
 import imi.scene.camera.state.CameraState;
 import imi.scene.camera.state.ThirdPersonCamState;
@@ -68,7 +68,7 @@ public class DarkstarClientTest extends DemoBase
     protected void createDemoEntities(WorldManager wm) 
     {   
         // Create one object collection for all to use (for testing)
-        ObjectCollection objects = new ObjectCollection("Character Test Objects", wm);
+        AvatarObjectCollection objects = new AvatarObjectCollection("Character Test Objects", wm);
         
         // Create avatar input scheme
         DemoAvatarControlScheme control = (DemoAvatarControlScheme)((JSceneEventProcessor)wm.getUserData(JSceneEventProcessor.class)).setDefault(new DemoAvatarControlScheme(null));

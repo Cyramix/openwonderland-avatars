@@ -20,6 +20,7 @@ package imi.character.statemachine.corestates;
 import imi.character.avatar.AvatarContext;
 import imi.character.avatar.AvatarContext.TriggerNames;
 import imi.character.objects.ChairObject;
+import imi.character.objects.TargetObject;
 import imi.character.statemachine.GameState;
 import imi.character.statemachine.GameContext;
 import imi.scene.animation.AnimationComponent.PlaybackMode;
@@ -35,7 +36,7 @@ public class SitState extends GameState
     /** The owning context **/
     GameContext context = null;
     /** The chair we will be sitting in **/
-    ChairObject chair = null;
+    TargetObject chair = null;
     
     private float   counter = 0.0f;
     private float   sittingAnimationTime = 0.7f;
@@ -74,7 +75,7 @@ public class SitState extends GameState
         // is the chair occupied?
         if (context.getSteering().getGoal() instanceof ChairObject)
         {
-            chair = (ChairObject)context.getSteering().getGoal();
+            chair = (TargetObject)context.getSteering().getGoal();
             if (chair.isOccupied())
                 return false;
         }
@@ -125,7 +126,7 @@ public class SitState extends GameState
         // Set the chair to occupied
         if (context.getSteering().getGoal() instanceof ChairObject)
         {
-            chair = (ChairObject)context.getSteering().getGoal();
+            chair = (TargetObject)context.getSteering().getGoal();
             chair.setOwner(context.getCharacter());
             chair.setOccupied(true);
         }

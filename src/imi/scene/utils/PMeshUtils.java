@@ -1691,63 +1691,6 @@ public class PMeshUtils
         return(pPolygonMesh);
     }
 
-    public static void textureMesh(Spatial mesh, String localPath, WorldManager wm)
-    {
-        if (mesh instanceof SharedMesh || mesh instanceof TriMesh)
-        {
-            MaterialState matState = (MaterialState) (mesh).getRenderState(RenderState.RS_MATERIAL);
-            if (matState == null)
-                matState = (MaterialState) wm.getRenderManager().createRendererState(RenderState.RS_MATERIAL);
-            matState.setColorMaterial(MaterialState.ColorMaterial.AmbientAndDiffuse);
-            matState.setMaterialFace(MaterialState.MaterialFace.Front);
-
-//            CullState cull = (CullState)mesh.getRenderState(RenderState.RS_CULL);
-//            if (cull == null)
-//                cull = (CullState) wm.getRenderManager().createRendererState(RenderState.RS_CULL);
-//            cull.setCullFace(CullState.Face.Back);
-
-            TextureState texState = (TextureState) mesh.getRenderState(RenderState.RS_TEXTURE);
-            if (texState == null)
-            {
-                texState = (TextureState) wm.getRenderManager().createRendererState(RenderState.RS_TEXTURE);
-                Texture base   = null;
-                //Texture detail = null;
-                URL path       = null;
-                String texLoc  = null;
-                try {
-                    ////////////////////////////////////////////////////////
-                    texLoc  = localPath;
-                    path    = PMeshUtils.class.getResource(texLoc);
-                    if (path != null)
-                        base = TextureManager.loadTexture(path);
-                    else
-                        base   = TextureManager.loadTexture(new File(texLoc).toURI().toURL());
-                    ////////////////////////////////////////////////////////
-//                    texLoc  = detailTexture;
-//                    path    = PMeshUtils.class.getResource(texLoc);
-//                    if (path != null)
-//                        detail = TextureManager.loadTexture(path);
-//                    else
-//                        detail = TextureManager.loadTexture(new File(texLoc).toURI().toURL());
-                    ////////////////////////////////////////////////////////
-                } catch (MalformedURLException ex) {
-                    Logger.getLogger(PMeshUtils.class.getName()).log(Level.SEVERE, null, ex);
-                }
-                base.setApply(Texture.ApplyMode.Modulate);
-                base.setWrap(Texture.WrapAxis.S, Texture.WrapMode.Repeat);
-                base.setWrap(Texture.WrapAxis.T, Texture.WrapMode.Repeat);
-                base.setMinificationFilter(Texture.MinificationFilter.Trilinear);
-//                detail.setApply(Texture.ApplyMode.Modulate);
-//                detail.setWrap(Texture.WrapAxis.S, Texture.WrapMode.Repeat);
-//                detail.setWrap(Texture.WrapAxis.T, Texture.WrapMode.Repeat);
-//                detail.setMinificationFilter(Texture.MinificationFilter.Trilinear);
-                texState.setTexture(base, 0);
-                //texState.setTexture(detail, 1);
-                mesh.setRenderState(texState);
-            }
-        }
-    }
-
     /**
      * This method is used to convert a skinned mesh into a non-skinned mesh
      * that can be used as an attachment. The animation states will be

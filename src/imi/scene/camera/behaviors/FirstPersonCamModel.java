@@ -25,6 +25,7 @@ import imi.scene.camera.state.CameraState;
 import imi.scene.camera.state.FirstPersonCamState;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
+import javax.swing.SwingUtilities;
 
 /**
  * This model provides the expected functionality for a first person driven 
@@ -57,8 +58,11 @@ public class FirstPersonCamModel implements CameraModel
             if (events[i] instanceof MouseEvent)
             {
                 MouseEvent me = (MouseEvent) events[i];
-                if (me.getID() == MouseEvent.MOUSE_PRESSED )
-                        //&& me.getButton() == MouseEvent.BUTTON1)
+
+                boolean result = me.getID() == MouseEvent.MOUSE_PRESSED;
+                if (state.isRightMouseButtonOnly())
+                    result = result && SwingUtilities.isRightMouseButton(me);
+                if ( result )
                 {
                     // Mouse pressed, reset initial settings
                     camState.setCurrentMouseX(me.getX());
@@ -66,9 +70,11 @@ public class FirstPersonCamModel implements CameraModel
                     camState.setLastMouseX(me.getX());
                     camState.setLastMouseY(me.getY());
                 }
-                
-                if (me.getID() == MouseEvent.MOUSE_DRAGGED ){
-                        //&& me.getButton() == MouseEvent.BUTTON1) {
+                result = me.getID() == MouseEvent.MOUSE_DRAGGED;
+                if (state.isRightMouseButtonOnly())
+                    result = result && SwingUtilities.isRightMouseButton(me);
+                if ( result )
+                {
                     processRotations(me, camState);
                     updateRotations = true;
                 }
@@ -213,7 +219,7 @@ public class FirstPersonCamModel implements CameraModel
         quat.fromAngles(camState.getRotationX() * (float)Math.PI/180.0f, camState.getRotationY() * (float)Math.PI/180.0f, 0.0f);
     }
 
-
+    
     public void update(CameraState state, float deltaTime) throws WrongStateTypeException
     {
         if (state.getType() != CameraState.CameraStateType.FirstPerson)

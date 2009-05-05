@@ -41,7 +41,7 @@ import java.net.URL;
 public class Gadget implements SpatialObject
 {
     /** The object collection that this gadget belongs to. **/
-    ObjectCollection      objectCollection = null;
+    AvatarObjectCollection      objectCollection = null;
     /** The model instance for this gadget's geometry **/
     PPolygonModelInstance modelInst        = null;
     /** The origin of this gadget **/
@@ -81,9 +81,9 @@ public class Gadget implements SpatialObject
      */
     public void setObjectCollection(ObjectCollectionBase objs)
     {
-        if (objs instanceof ObjectCollection)
+        if (objs instanceof AvatarObjectCollection)
         {
-            objectCollection = (ObjectCollection)objs;
+            objectCollection = (AvatarObjectCollection)objs;
             objs.addObject(this);
         }
         else
