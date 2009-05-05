@@ -338,10 +338,12 @@ public class CharacterAttributes
             return false;
 
         for (int i = 0; i < attachmentsInstructions.length; i++) {
-            if (attachmentsInstructions[i].getAttachmentJointName().equalsIgnoreCase(subGroup))
-                continue;
-            else
-                newAttatchmentInstructions.add(attachmentsInstructions[i]);
+            if (attachmentsInstructions[i].getAttachmentJointName() != null) {
+                if (attachmentsInstructions[i].getAttachmentJointName().equalsIgnoreCase(subGroup))
+                    continue;
+                else
+                    newAttatchmentInstructions.add(attachmentsInstructions[i]);
+            }
         }
 
         AttachmentParams[] attachparams = new AttachmentParams[newAttatchmentInstructions.size()];
