@@ -26,6 +26,7 @@ import com.jme.image.Texture.WrapMode;
 import imi.loaders.repository.Repository;
 import imi.serialization.xml.bindings.xmlTextureAttributes;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
@@ -372,14 +373,30 @@ public class TextureMaterialProperties implements Serializable
             if (assetsIndex != -1)
                 relativePath = relativePath.substring(assetsIndex);
 
+            boolean verified = false;
             URL localURL = null;
             try {
-                localURL = new URL(fileProtocol + relativePath);
+                localURL            = new URL(fileProtocol + relativePath);
+                InputStream stream  = localURL.openStream();
+                stream.close();
+                verified            = true;
+            } catch (MalformedURLException ex) {
+                verified = false;
+            } catch (IOException ex) {
+                verified = false;
             }
-            catch (MalformedURLException ex)
-            {
 
+            if (!verified) {
+                try {
+                    localURL            = new URL("http://zeitgeistgames.com/" + relativePath);
+                    InputStream stream  = localURL.openStream();
+                    stream.close();
+                    verified            = true;
+                } catch (MalformedURLException ex) {
+                    verified = false;
+                }
             }
+            
             m_imageLocation = localURL;
         }
     }
