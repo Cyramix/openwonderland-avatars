@@ -34,7 +34,7 @@ import org.jdesktop.mtgame.WorldManager;
  */
 public class LightFixingDeity extends Entity
 {
-    private final long FIX_THE_LIGHTS = 0xDEADBEEF;
+    public static final long FIX_THE_LIGHTS = 0xDEADBEEF;
     /** Root of our jME stuffs **/
     private Node root = null;
 
@@ -54,7 +54,6 @@ public class LightFixingDeity extends Entity
             @Override
             public void compute(ProcessorArmingCollection arg0) {
                 root.attachChild(box); // Dont ask why this works...
-                fwm.removeEntity(this.getEntity()); // Finished our job, time to leave
             }
 
             @Override
