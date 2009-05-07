@@ -91,10 +91,7 @@ public class ThirdPersonCamModel implements CameraModel, CharacterMotionListener
             if (events[i] instanceof MouseEvent)
             {
                 MouseEvent me = (MouseEvent) events[i];
-                boolean result = me.getID() == MouseEvent.MOUSE_PRESSED;
-                if (state.isRightMouseButtonOnly())
-                    result = result && SwingUtilities.isRightMouseButton(me);
-                if ( result )
+                if ( state.isLook(me, MouseEvent.MOUSE_PRESSED) )
                 {
                     // Mouse pressed, reset initial settings
                     camState.setCurrentMouseX(me.getX());
@@ -103,10 +100,7 @@ public class ThirdPersonCamModel implements CameraModel, CharacterMotionListener
                     camState.setLastMouseY(me.getY());
                 }
 
-                result = me.getID() == MouseEvent.MOUSE_DRAGGED;
-                if (state.isRightMouseButtonOnly())
-                    result = result && SwingUtilities.isRightMouseButton(me);
-                if ( result )
+                if ( state.isLook(me, MouseEvent.MOUSE_DRAGGED) )
                 {
                     // Mouse dragged, handle model rotation
                     processRotations(me, camState);

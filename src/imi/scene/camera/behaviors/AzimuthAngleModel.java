@@ -73,20 +73,14 @@ public class AzimuthAngleModel implements CameraModel
             if (events[i] instanceof MouseEvent)
             {
                 MouseEvent me = (MouseEvent) events[i];
-                boolean result = me.getID() == MouseEvent.MOUSE_PRESSED;
-                if (state.isRightMouseButtonOnly())
-                    result = result && SwingUtilities.isRightMouseButton(me);
-                if ( result )
+                if ( state.isLook(me, MouseEvent.MOUSE_PRESSED) )
                 {
                     m_currentX = me.getX();
                     m_currentY = me.getY();
                     m_lastMouseX = m_currentX;
                     m_lastMouseY = m_currentY;
                 }
-                result = me.getID() == MouseEvent.MOUSE_DRAGGED;
-                if (state.isRightMouseButtonOnly())
-                    result = result && SwingUtilities.isRightMouseButton(me);
-                if ( result )
+                if ( state.isLook(me, MouseEvent.MOUSE_DRAGGED) )
                 {
                     m_currentX = me.getX();
                     m_currentY = me.getY();

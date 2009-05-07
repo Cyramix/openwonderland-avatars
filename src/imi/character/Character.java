@@ -273,10 +273,10 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         if (m_shadowMesh == null) // Not parameterized, no sense in remaking shadows
         {
             // make shadow, minor offset to avoid Z-fighting with the y=0 plane
-            Vector3f pointOne =     new Vector3f( 0.45f, 0.001f,  0.5f);
-            Vector3f pointTwo =     new Vector3f(-0.45f, 0.001f,  0.5f);
-            Vector3f pointThree =   new Vector3f(-0.45f, 0.001f, -0.5f);
-            Vector3f pointFour =    new Vector3f( 0.45f, 0.001f, -0.5f);
+            Vector3f pointOne =     new Vector3f( 0.45f, 0.01f,  0.5f);
+            Vector3f pointTwo =     new Vector3f(-0.45f, 0.01f,  0.5f);
+            Vector3f pointThree =   new Vector3f(-0.45f, 0.01f, -0.5f);
+            Vector3f pointFour =    new Vector3f( 0.45f, 0.01f, -0.5f);
             // UV sets, standard texturing
             Vector2f uvSetOne =     new Vector2f(0, 0);
             Vector2f uvSetTwo =     new Vector2f(1, 0);

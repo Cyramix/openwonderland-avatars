@@ -19,6 +19,8 @@ package imi.scene.camera.state;
 
 import com.jme.math.Vector3f;
 import imi.scene.PMatrix;
+import java.awt.event.MouseEvent;
+import javax.swing.SwingUtilities;
 
 /**
  * The basis for Camera states
@@ -27,16 +29,30 @@ import imi.scene.PMatrix;
 public abstract class CameraState 
 {
     /**
-     * True to move the camera only if the right mouse button is pressed
+     * True to move the camera if the right mouse button is pressed
      */
-    private boolean rightMouseButtonOnly = false;
+    private boolean rightMouseButtonLook  = false;
+    private boolean middleMouseButtonLook = false;
     
-    public boolean isRightMouseButtonOnly() {
-        return rightMouseButtonOnly;
+    public void setRightMouseButtonLook(boolean rightMouseButtonLook) {
+        this.rightMouseButtonLook = rightMouseButtonLook;
     }
 
-    public void setRightMouseButtonOnly(boolean rightMouseButtonOnly) {
-        this.rightMouseButtonOnly = rightMouseButtonOnly;
+    public void setMiddleMouseButtonLook(boolean middleMouseButtonLook) {
+        this.middleMouseButtonLook = middleMouseButtonLook;
+    }
+
+    public boolean isLook(MouseEvent me, int event)
+    {
+        if (me.getID() != event)
+            return false;
+        if (rightMouseButtonLook && SwingUtilities.isRightMouseButton(me))
+            return true;
+        if (middleMouseButtonLook && SwingUtilities.isMiddleMouseButton(me))
+            return true;
+        if (rightMouseButtonLook || middleMouseButtonLook)
+            return false;
+        return true;
     }
 
     /**
