@@ -56,8 +56,8 @@ public class CharacterEyes
     private int                  eyesWanderIntCounter  = 0;
 
     /** These are Breadth-First indices to the left and right eyelid joints **/
-    private final int leftEyeLid     = 37;//24;
-    private final int rightEyeLid    = 45;//34;
+    private int leftEyeLid     = 37;//24;
+    private int rightEyeLid    = 45;//34;
     /** Track how long the eyelids have been closed **/
     private float   closedEyeLid     = 0.0f;
     /** Rotational angles for closing the eyes **/
@@ -106,8 +106,8 @@ public class CharacterEyes
         skeleton = character.getSkeleton();
         characterModelInst = character.getModelInst();
         
-//        int rightEyeLidCheck = skeleton.getSkinnedMeshJointIndex("rightEyeLid");
-//        int leftEyeLidCheck  = skeleton.getSkinnedMeshJointIndex("leftEyeLid");
+        rightEyeLid = skeleton.getSkinnedMeshJointIndex("rightEyeLid");
+        leftEyeLid  = skeleton.getSkinnedMeshJointIndex("leftEyeLid");
 //        System.out.println(rightEyeLidCheck + " and the left one is " + leftEyeLidCheck);
         
         PPolygonSkinnedMeshInstance leftEyeMeshInst  = (PPolygonSkinnedMeshInstance) skeleton.findChild("leftEyeGeoShape");
