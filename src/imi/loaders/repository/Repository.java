@@ -493,10 +493,6 @@ public class Repository extends Entity
 
             m_repoAsset.loadSelf();
 
-
-            System.err.println("Loading "+m_repoAsset);
-            System.err.println("Putting in SharedAsset "+m_asset);
-
             m_repoAsset.shareAsset(m_user, m_asset);
             
             if (m_asset.getAssetData() instanceof PPolygonMesh)
