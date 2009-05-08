@@ -173,9 +173,14 @@ public class InstructionProcessor
                 break;
                 case loadFacialAnimation:
                 {
-                    URL animationLocation = new URL(instruction.getDataAsString());
-                    if (!m_characterLoader.loadAnimation(m_loadingPScene, m_skeleton, animationLocation, 1, m_bUseBinaryFiles, 60))
-                        logger.warning("COLLADA configuration ERROR: was not able to LOAD FACIAL ANIMATION!");
+                    if (m_skeleton == null)
+                        logger.severe("Cannot load facial animations without a skeleton!");
+                    else
+                    {
+                        URL animationLocation = new URL(instruction.getDataAsString());
+                        if (!m_characterLoader.loadAnimation(m_loadingPScene, m_skeleton, animationLocation, 1, m_bUseBinaryFiles, 60))
+                            logger.warning("COLLADA configuration ERROR: was not able to LOAD FACIAL ANIMATION!");
+                    }
                 }
                 break;
                 case loadHumanoidAvatarBindPose:
