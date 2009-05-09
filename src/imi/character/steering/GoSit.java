@@ -135,13 +135,22 @@ public class GoSit implements Task
             }
         }
     }
-    
+
+    // RED : Added to reduce object creation
+    /** Used with math utils to avoid object creation **/
+    private PMathUtils.MathUtilsContext mathContext = PMathUtils.getContext();
     private void done()
     {
         bDone = true;
         
         PMatrix localMat = context.getController().getTransform().getLocalMatrix(true);
-        PMatrix look = PMathUtils.lookAt(goalPosition.add(goalDirection.mult(-1.0f)), goalPosition, Vector3f.UNIT_Y);
+        PMatrix look = new PMatrix();
+        // RED : Added to reduce object creation
+        PMathUtils.lookAt(goalPosition.add(goalDirection.mult(-1.0f)),
+                            goalPosition,
+                            Vector3f.UNIT_Y,
+                            look,
+                            mathContext);
         localMat.set(look);
         
         // Initiate SitState

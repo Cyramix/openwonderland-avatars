@@ -38,6 +38,9 @@ public class CoreCommands implements ConsoleCommand
     private AvatarObjectCollection objs;
     private WorldManager wm;
     private ObjectCollectionGUI gui;
+    // RED : Added to reduce object creation
+    /** Used with the math utils to avoid object creation **/
+    private PMathUtils.MathUtilsContext mathContext = PMathUtils.getContext();
             
     CoreCommands(ObjectCollectionGUI gui, AvatarObjectCollection objs, WorldManager wm)
     {
@@ -376,7 +379,9 @@ public class CoreCommands implements ConsoleCommand
                     gui.appendOutput("selected " + name);
                 }
                 
-                PMatrix look = PMathUtils.lookAt(pos.add(dir), pos, Vector3f.UNIT_Y);
+                PMatrix look = new PMatrix();
+                // RED : Added to reduce object creation
+                PMathUtils.lookAt(pos.add(dir), pos, Vector3f.UNIT_Y, look, mathContext);
                 newAvatar.getModelInst().getTransform().getLocalMatrix(true).set(look);
 
                 // The event processor provides the linkage between AWT events and input controls

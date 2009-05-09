@@ -88,45 +88,102 @@ public class PMathUtils
             return value;
     }
 
-    public static PMatrix lookAt(Vector3f target, Vector3f eyePosition, Vector3f worldUp)
+    /**
+     * Perform a look at with the given value/
+     * @param target Target to look at
+     * @param eyePosition Position of the observer
+     * @param worldUp The world's up vector
+     * @param resultOut Output
+     * @param context context to operate within
+     */
+    public static void lookAt(Vector3f target, Vector3f eyePosition, Vector3f worldUp, PMatrix resultOut, MathUtilsContext context)
     {
-        PMatrix result = null;
-        // perform lookat to focal point
-        Vector3f forward = eyePosition.subtract(target).normalize();
-        Vector3f right = worldUp.cross(forward).normalize();
-        Vector3f realUp = forward.cross(right).normalize();
-        Vector3f translation = (eyePosition);
-        // load it up manually
-        float[] floats = new float[16];
-        floats[ 0] = right.x;  floats[ 1] = realUp.x;  floats[ 2] = forward.x;  floats[ 3] = translation.x;
-        floats[ 4] = right.y;  floats[ 5] = realUp.y;  floats[ 6] = forward.y;  floats[ 7] = translation.y;
-        floats[ 8] = right.z;  floats[ 9] = realUp.z;  floats[10] = forward.z;  floats[11] = translation.z;
-        floats[12] = 0.0f;     floats[13] = 0.0f;      floats[14] = 0.0f;       floats[15] = 1.0f;
 
-        result = new PMatrix(floats);
-        return result;
-    }
-    
-    public static PMatrix lookAt(Vector3f target, Vector3f eyePosition, Vector3f worldUp, float yOffset)
-    {
-        PMatrix result = null;
+
+
+
+//        // load it up manually
+//        float[] floats = new float[16];
+//        floats[ 0] = right.x;  floats[ 1] = realUp.x;  floats[ 2] = forward.x;  floats[ 3] = translation.x;
+//        floats[ 4] = right.y;  floats[ 5] = realUp.y;  floats[ 6] = forward.y;  floats[ 7] = translation.y;
+//        floats[ 8] = right.z;  floats[ 9] = realUp.z;  floats[10] = forward.z;  floats[11] = translation.z;
+//        floats[12] = 0.0f;     floats[13] = 0.0f;      floats[14] = 0.0f;       floats[15] = 1.0f;
+//
+//        result = new PMatrix(floats);
+//        resultOut.set(result);
         // perform lookat to focal point
-        Vector3f forward = eyePosition.subtract(target).normalize();
-        forward.y += yOffset;
+        Vector3f forward = context.vectorOne;
+        Vector3f right = context.vectorTwo;
+        Vector3f realUp = context.vectorThree;
+        Vector3f translation = context.vectorFour;
+        // Calculate the forward as normalize(eye - target)
+        //        Vector3f forward = eyePosition.subtract(target).normalize();
+        forward.set(eyePosition);
+        forward.subtractLocal(target);
         forward.normalizeLocal();
-        
-        Vector3f right = worldUp.cross(forward).normalize();
-        Vector3f realUp = forward.cross(right).normalize();
-        Vector3f translation = (eyePosition);
-        // load it up manually
-        float[] floats = new float[16];
-        floats[ 0] = right.x;  floats[ 1] = realUp.x;  floats[ 2] = forward.x;  floats[ 3] = translation.x;
-        floats[ 4] = right.y;  floats[ 5] = realUp.y;  floats[ 6] = forward.y;  floats[ 7] = translation.y;
-        floats[ 8] = right.z;  floats[ 9] = realUp.z;  floats[10] = forward.z;  floats[11] = translation.z;
-        floats[12] = 0.0f;     floats[13] = 0.0f;      floats[14] = 0.0f;       floats[15] = 1.0f;
+        // Calculate the right vector
+        //        Vector3f right = worldUp.cross(forward).normalize();
+        right.set(worldUp);
+        right.crossLocal(forward); // y cross z = x
+        right.normalizeLocal();
+        // Calculate the up vector
+        //        Vector3f realUp = forward.cross(right).normalize();
+        realUp.set(forward);
+        realUp.crossLocal(right); // z cross x = y
+        realUp.normalizeLocal();
+        // Grab the translation
+        //        Vector3f translation = (eyePosition);
+        translation.set(eyePosition);
 
-        result = new PMatrix(floats);
-        return result;
+        // Set it in the result
+        float[] matrixFloats = context.floatArray;
+        matrixFloats[0] = right.x; matrixFloats[1] = realUp.x; matrixFloats[2] = forward.x; matrixFloats[3] = translation.x;
+        matrixFloats[4] = right.y; matrixFloats[5] = realUp.y; matrixFloats[6] = forward.y; matrixFloats[7] = translation.y;
+        matrixFloats[8] = right.z; matrixFloats[9] = realUp.z; matrixFloats[10] =forward.z; matrixFloats[11] =translation.z;
+        matrixFloats[12] = 0; matrixFloats[13] = 0; matrixFloats[14] = 0; matrixFloats[15] = 1;
+        resultOut.set(matrixFloats);
+    }
+
+    /**
+     * Perform a look at
+     * @param target Target to look at
+     * @param eyePosition The observer's position
+     * @param worldUp The up axis of the world
+     * @param yOffset Added to the forward vector
+     * @param resultOut Calculation output
+     * @param context Context to execute within
+     */
+    public static void lookAt(Vector3f target, Vector3f eyePosition, Vector3f worldUp, float yOffset, PMatrix resultOut, MathUtilsContext context)
+    {
+        // perform lookat to focal point
+        Vector3f forward = context.vectorOne;
+        Vector3f right = context.vectorTwo;
+        Vector3f realUp = context.vectorThree;
+        Vector3f translation = context.vectorFour;
+        // Calculate the forward as normalize(eye - target)
+        forward.set(target);
+        forward.y += yOffset; // Account for the offset
+        forward.subtractLocal(eyePosition);
+        forward.normalizeLocal();
+        // Calculate the right vector
+        right.set(worldUp);
+        right.crossLocal(forward); // y cross z = x
+        right.normalizeLocal();
+        // Calculate the up vector
+        realUp.set(forward);
+        realUp.crossLocal(right);
+        realUp.normalizeLocal();
+        // Grab the translation
+        translation.set(eyePosition);
+
+        // Set it in the result
+        float[] matrixFloats = context.floatArray;
+        matrixFloats[0] = right.x; matrixFloats[1] = realUp.x; matrixFloats[2] = forward.x; matrixFloats[3] = translation.x;
+        matrixFloats[4] = right.y; matrixFloats[5] = realUp.y; matrixFloats[6] = forward.y; matrixFloats[7] = translation.y;
+        matrixFloats[8] = right.z; matrixFloats[9] = realUp.z; matrixFloats[10] =forward.z; matrixFloats[11] =translation.z;
+        matrixFloats[12] = 0; matrixFloats[13] = 0; matrixFloats[14] = 0; matrixFloats[15] = 1;
+        resultOut.set(matrixFloats);
+
     }
     
     /**
@@ -239,6 +296,43 @@ public class PMathUtils
         pResult.x = a.x + (b.x - a.x) * fT;
         pResult.y = a.y + (b.y - a.y) * fT;        
         pResult.z = a.z + (b.z - a.z) * fT;        
+    }
+    
+    /**
+     * Retrieve a new context for use with the math utils.
+     * @return
+     */
+    static public MathUtilsContext getContext()
+    {
+        return new MathUtilsContext();
+    }
+
+    /**
+     * This class encapsulates the scratch space variables needed for calculations
+     * within the math utils.
+     */
+    public static class MathUtilsContext
+    {
+        float[] floatArray = new float[16];
+        Vector3f vectorOne = new Vector3f();
+        Vector3f vectorTwo = new Vector3f();
+        Vector3f vectorThree = new Vector3f();
+        Vector3f vectorFour = new Vector3f();
+
+        MathUtilsContext()
+        {
+
+        }
+
+        void reset()
+        {
+            for (int i = 0; i < 16; ++i)
+                floatArray[i] = 0;
+            vectorOne.set(Vector3f.ZERO);
+            vectorTwo.set(Vector3f.ZERO);
+            vectorThree.set(Vector3f.ZERO);
+            vectorFour.set(Vector3f.ZERO);
+        }
     }
 
 }

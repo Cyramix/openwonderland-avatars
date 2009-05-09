@@ -289,7 +289,9 @@ public class CharacterClientExtension extends ClientExtension implements ClientS
             updateUserArm(user.getLeftArm(),  new Vector3f(lx, ly, lz));
         }   
     }
-    
+
+    // RED : Added to reduce object creation
+    private PMathUtils.MathUtilsContext mathContext = PMathUtils.getContext();
     private void updateUserPosition(Character user, Vector3f pos, Vector3f dir) 
     {
         // If the user is being steered by AI, do not mess it up
@@ -303,7 +305,9 @@ public class CharacterClientExtension extends ClientExtension implements ClientS
         float currentDistance = currentPosition.distance(pos); 
         if ( currentDistance < positionMaxDistanceForPull ) 
             pos.set(currentPosition);
-        PMatrix look = PMathUtils.lookAt(pos.add(dir), pos, Vector3f.UNIT_Y);
+        // RED : Added to reduce object creation
+        PMatrix look = new PMatrix();
+        PMathUtils.lookAt(pos.add(dir), pos, Vector3f.UNIT_Y, look, mathContext);
         user.getModelInst().getTransform().getLocalMatrix(true).set(look);
         
 //        GameContext context = user.getContext();

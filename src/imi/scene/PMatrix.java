@@ -980,7 +980,34 @@ public class PMatrix implements Serializable
 	trans.y = (float)mat[7];
 	trans.z = (float)mat[11];
     }
-    
+
+    /**
+     * Retrieve the X component of the translation vector (4th column)
+     * @return
+     */
+    public final float getTranslationX()
+    {
+        return (float)mat[3];
+    }
+
+    /**
+     * Retrieve the Y component of the translation vector (4th column)
+     * @return
+     */
+    public final float getTranslationY()
+    {
+        return (float)mat[7];
+    }
+
+    /**
+     * Retrieve the Z component of the translation vector (4th column)
+     * @return
+     */
+    public final float getTranslationZ()
+    {
+        return (float)mat[11];
+    }
+
     public Vector3f getLocalX() 
     {
         Vector3f result = new Vector3f(mat[0], mat[4], mat[8]);

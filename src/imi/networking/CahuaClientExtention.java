@@ -306,13 +306,16 @@ public class CahuaClientExtention extends ClientExtension implements ClientSideC
         ext.balls[ballID].set(characterClientExtension.getUserData(hit).character.getPositionRef().add(0.0f, 2.0f + ballRadius, 0.0f));
         ext.ballsVel[ballID].set(0.0f, 0.25f, 0.0f); 
     }
-
+    // RED : Added to reduce object creation
+    private PMathUtils.MathUtilsContext mathContext = PMathUtils.getContext();
     public void gameStarted(int byUserID, int hitPoints, float posX, float posY, float posZ) 
     {
         gui.appendOutput("Game STARTED! by " + masterClient.getUserName(byUserID) + " and you get " + hitPoints + " hit points, good luck!");
         gamePos.set(posX, posY, posZ);
         Vector3f dir = Vector3f.ZERO.subtract(gamePos).normalize();
-        PMatrix look = PMathUtils.lookAt(gamePos.subtract(dir), gamePos, Vector3f.UNIT_Y);
+        // RED : Added to reduce object creation
+        PMatrix look = new PMatrix();
+        PMathUtils.lookAt(gamePos.subtract(dir), gamePos, Vector3f.UNIT_Y, look, mathContext);
         PMatrix local = character.getController().getModelInstance().getTransform().getLocalMatrix(true);
         local.set(look);
         

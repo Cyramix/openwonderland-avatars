@@ -64,6 +64,8 @@ public class EyeBall extends PPolygonSkinnedMeshInstance implements Serializable
     private boolean bInCone = false;
     /** Reference to the other side **/
     private EyeBall otherEye = null;
+    /** Math utils execution context **/
+    private transient PMathUtils.MathUtilsContext mathContext = PMathUtils.getContext();
 
     /**
      * Construct a new eyeball using the provided mesh as the eye mesh, the model
@@ -81,7 +83,10 @@ public class EyeBall extends PPolygonSkinnedMeshInstance implements Serializable
     }
 
     private transient Vector3f translationStorage = new Vector3f();
-    
+    private transient Vector3f forwardVec = new Vector3f();
+    private transient Vector3f directionToTarget = new Vector3f();
+    private transient PMatrix eyeWorldMatrix = new PMatrix();
+
     /**
      * Performs the eyeball lookAt behavior.
      * @param matrix The matrix being modified
@@ -89,43 +94,52 @@ public class EyeBall extends PPolygonSkinnedMeshInstance implements Serializable
      */
     protected void lookAtTarget(PMatrix matrix)
     {
+        // RED : Modified to reduce object creation
+        // grab the scale
+        matrix.getLocalX(translationStorage);
+        float scale = translationStorage.length();
+
+        // cache the translation to reset it later
         matrix.getTranslation(translationStorage);
         
-        float scale = matrix.getLocalX().length();
-
         PMatrix modelWorldRef = modelInst.getTransform().getWorldMatrix(false);
 
         // Get eye world space
-        PMatrix eyeWorld = new PMatrix();
-        eyeWorld.mul(modelWorldRef, matrix);
+        eyeWorldMatrix.mul(modelWorldRef, matrix);
 
         // Check limits
-        Vector3f forwardVec = modelWorldRef.getLocalZ();
-        Vector3f directionToTarget = target.subtract(eyeWorld.getTranslation());
+        modelWorldRef.getLocalZ(forwardVec);
+        directionToTarget.set(target);
+        directionToTarget.x -= eyeWorldMatrix.getTranslationX();
+        directionToTarget.y -= eyeWorldMatrix.getTranslationY();
+        directionToTarget.z -= eyeWorldMatrix.getTranslationZ();
+
+        
         directionToTarget.y *= yScale;
         directionToTarget.normalizeLocal();
 
         // Check if inside the cone
         float dot = directionToTarget.dot(forwardVec);
+        // recycle 'directionToTarget' for eyeposition
+        eyeWorldMatrix.getTranslation(directionToTarget);
         if (dot > limitCone)
         {
             bInCone = true;
             if (otherEye.isInCone())
             {
                 // Perform lookAt to target
-                PMatrix eyeWorldXForm = PMathUtils.lookAt(
+                PMathUtils.lookAt(
                         target,
-                        eyeWorld.getTranslation(),
-                        Vector3f.UNIT_Y);
-                matrix.set(eyeWorldXForm);
+                        directionToTarget,
+                        Vector3f.UNIT_Y,
+                        matrix,
+                        mathContext);
                 matrix.mul(modelWorldRef.inverse(), matrix);
                 matrix.setTranslation(translationStorage);
             }
         }
         else
-        {
             bInCone = false;
-        }
 
         matrix.normalizeCP();
         // Kind of hacky, but hey, it works!
@@ -210,5 +224,9 @@ public class EyeBall extends PPolygonSkinnedMeshInstance implements Serializable
     private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
         in.defaultReadObject();
         translationStorage = new Vector3f();
+        eyeWorldMatrix = new PMatrix();
+        forwardVec = new Vector3f();
+        directionToTarget = new Vector3f();
+        mathContext = PMathUtils.getContext();
     }
 }
