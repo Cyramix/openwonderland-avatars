@@ -18,6 +18,7 @@
 package imi.gui;
 
 import imi.gui.table.ShaderPropertyTable;
+import imi.loaders.repository.Repository;
 import imi.scene.shader.AbstractShaderProgram;
 import imi.scene.shader.ShaderProperty;
 import imi.scene.shader.dynamic.GLSLShaderProgram;
@@ -78,6 +79,10 @@ public class JPanel_ShaderProperties extends javax.swing.JPanel
      */
     public JPanel_ShaderProperties(AbstractShaderProgram shader, WorldManager wm) 
     {
+        // Grab a repository reference
+        Repository repo = (Repository) wm.getUserData(Repository.class);
+        if (repo == null)
+            throw new ExceptionInInitializerError("No repository found in the world manager!");
         m_shader = shader;
         m_wm = wm;
         // add in default shaders
@@ -85,17 +90,17 @@ public class JPanel_ShaderProperties extends javax.swing.JPanel
         // The system could be modified to handle this dynamically using
         // SimpleClassPackageExplorer, unfortunately it does not support
         // sealed jars
-        m_defaultShaders.add(new NormalAndSpecularMapShader(wm));
-        m_defaultShaders.add(new NormalMapShader(wm));
-        m_defaultShaders.add(new SimpleTNLShader(wm));
-        m_defaultShaders.add(new SimpleTNLWithAmbient(wm));
-        m_defaultShaders.add(new VertDeformerWithSpecAndNormalMap(wm));
-        m_defaultShaders.add(new VertexDeformer(wm));
-        m_defaultShaders.add(new EyeballShader(wm));
-        m_defaultShaders.add(new ClothingShaderSpecColor(wm));
-        m_defaultShaders.add(new FleshShader(wm));
-        m_defaultShaders.add(new PhongFleshShader(wm));
-        m_defaultShaders.add(new ClothingShaderDiffuseAsSpec(wm));
+        m_defaultShaders.add(repo.newShader(NormalAndSpecularMapShader.class));
+        m_defaultShaders.add(repo.newShader(NormalMapShader.class));
+        m_defaultShaders.add(repo.newShader(SimpleTNLShader.class));
+        m_defaultShaders.add(repo.newShader(SimpleTNLWithAmbient.class));
+        m_defaultShaders.add(repo.newShader(VertDeformerWithSpecAndNormalMap.class));
+        m_defaultShaders.add(repo.newShader(VertexDeformer.class));
+        m_defaultShaders.add(repo.newShader(EyeballShader.class));
+        m_defaultShaders.add(repo.newShader(ClothingShaderSpecColor.class));
+        m_defaultShaders.add(repo.newShader(FleshShader.class));
+        m_defaultShaders.add(repo.newShader(PhongFleshShader.class));
+        m_defaultShaders.add(repo.newShader(ClothingShaderDiffuseAsSpec.class));
         initComponents(); // <-- do not trust netbeans auto-code garbage!
         loadPropertyTable();
         populatePanel();
