@@ -265,6 +265,11 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         commonConstructionCode(wm, loadedAttributes, true, characterDOM);
     }
 
+    public void setEnableShadow(boolean enable)
+    {
+        if (m_shadowMesh != null)
+            m_shadowMesh.setRenderStop(!enable);
+    }
 
     /**
      * Create a shadow for this character if one is not already present
@@ -1031,11 +1036,11 @@ public abstract class Character extends Entity implements SpatialObject, Animati
      */
     public boolean  excecuteContextTransition(TransitionObject transition)
     {
-        GameContext context = m_registry.get(transition.getContextMessageName());
-        if (context == null)
+        GameContext contextT = m_registry.get(transition.getContextMessageName());
+        if (contextT == null)
             return false;
 
-        Class contextClass = context.getClass();
+        Class contextClass = contextT.getClass();
         Method method = null;
 
         try {
@@ -1051,7 +1056,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
             Object bool = null;
 
             try {
-                bool = method.invoke(context, transition.getContextMessageArgs());
+                bool = method.invoke(contextT, transition.getContextMessageArgs());
             } catch (IllegalAccessException ex) {
                 logger.log(Level.SEVERE, null, ex);
             } catch (IllegalArgumentException ex) {
@@ -1066,10 +1071,10 @@ public abstract class Character extends Entity implements SpatialObject, Animati
                 {
                     // Context transition validated! Switch context if the state
                     // transition is validated as well
-                    if (context.excecuteTransition(transition))
+                    if (contextT.excecuteTransition(transition))
                     {
                         m_context.setCurrentState(null); // calls the stateExit()
-                        m_context = context;
+                        m_context = contextT;
                         return true;
                     }
                 }

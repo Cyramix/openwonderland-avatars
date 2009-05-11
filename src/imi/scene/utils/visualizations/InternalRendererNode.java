@@ -21,6 +21,8 @@ import javolution.util.FastTable;
  */
 public class InternalRendererNode extends Node
 {
+    boolean enabled = true;
+
     // World origin
     float originScale = 1.0f;
 
@@ -75,6 +77,9 @@ public class InternalRendererNode extends Node
     @Override
     public void draw(Renderer r)
     {
+        if (!enabled)
+            return;
+
         // Draw world origin
         DebuggerVisualization.drawOrigin(r, originScale);
 
@@ -241,6 +246,14 @@ public class InternalRendererNode extends Node
 
     public FastTable<Vector3f> getPositionMarkers() {
         return positionMarkers;
+    }
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
     }
 
 }
