@@ -341,7 +341,7 @@ public class GoTo implements Task
         reset(goal.getPositionRef(), goal.getForwardVector());
         this.goal = goal;
         if (goal.getBoundingSphere() != null)
-            approvedDistanceFromGoal = goal.getBoundingSphere().getRadius() * 0.5f;
+            approvedDistanceFromGoal = goal.getBoundingSphere().getRadius();
     }
 
     public float getApprovedDistanceFromGoal() {

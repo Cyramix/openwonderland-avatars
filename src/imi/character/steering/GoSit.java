@@ -54,7 +54,9 @@ public class GoSit implements Task
     private Vector3f    goalDirection = new Vector3f();
     
     private float pullPower = 5.0f;
-    
+
+    private float approvedDistanceFromGoal = 1.0f;
+
     public GoSit(TargetObject chair, AvatarContext context)
     {
         this.context = context;
@@ -63,7 +65,6 @@ public class GoSit implements Task
         goalDirection.set(goal.getTargetForwardVector());
         go = new GoTo(goalPosition, context);
         go.setGoal(goal);
-        go.setAvoidObstacles(true);
     }
     
     public boolean verify() 
@@ -120,7 +121,8 @@ public class GoSit implements Task
                 triggerRelease(TriggerNames.Move_Forward.ordinal());
                 go.reset(goalPosition, goalDirection);
                 go.setAvoidObstacles(false);
-                go.setApprovedDistanceFromGoal(goal.getBoundingSphere().getRadius() * 0.5f);
+                go.setApprovedDistanceFromGoal(approvedDistanceFromGoal);
+                //go.setApprovedDistanceFromGoal(goal.getBoundingSphere().getRadius());
 //                System.out.println("GoSit() goal bounding volume radius: " + goal.getBoundingSphere().getRadius());
 //                System.out.println("GoSit() goal bounding volume center: " + goal.getBoundingSphere().getCenter());
                 
@@ -180,6 +182,14 @@ public class GoSit implements Task
 
     public SpatialObject getGoal() {
         return goal;
+    }
+
+    public float getApprovedDistanceFromGoal() {
+        return approvedDistanceFromGoal;
+    }
+
+    public void setApprovedDistanceFromGoal(float approvedDistanceFromGoal) {
+        this.approvedDistanceFromGoal = approvedDistanceFromGoal;
     }
 
 }
