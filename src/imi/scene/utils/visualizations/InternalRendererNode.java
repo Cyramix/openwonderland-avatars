@@ -24,6 +24,10 @@ public class InternalRendererNode extends Node
     // World origin
     float originScale = 1.0f;
 
+    // Orange position markers
+    BoundingSphere positionMarkerSphere = new BoundingSphere(0.25f, new Vector3f());
+    FastTable<Vector3f>       positionMarkers   = new FastTable<Vector3f>();
+
     // Red marker sphere
     int redSphereOn = 0;
     BoundingSphere redSphere = new BoundingSphere();
@@ -58,6 +62,15 @@ public class InternalRendererNode extends Node
     FastTable<Vector3f> cyanLines     = new FastTable<Vector3f>();
     int pinkLinesOn = 0;
     FastTable<Vector3f> pinkLines    = new FastTable<Vector3f>();
+
+    FastTable<Vector3f> gridLines    = new FastTable<Vector3f>();
+    ColorRGBA gridLinesColor = ColorRGBA.green;
+    float gridLinesWidth = 2.0f;
+
+    FastTable<Vector3f> customLines    = new FastTable<Vector3f>();
+    ColorRGBA customLinesStartColor = ColorRGBA.red;
+    ColorRGBA customLinesEndColor = ColorRGBA.pink;
+    float customLinesWidth = 5.0f;
 
     @Override
     public void draw(Renderer r)
@@ -109,6 +122,20 @@ public class InternalRendererNode extends Node
                 DebuggerVisualization.drawLines(cyanLines, r, 4.0f, ColorRGBA.cyan, ColorRGBA.cyan);
         }
 
+        if (!customLines.isEmpty())
+            DebuggerVisualization.drawLines(customLines, r, customLinesWidth, customLinesStartColor, customLinesEndColor);
+
+        if (!gridLines.isEmpty())
+            DebuggerVisualization.drawLines(gridLines, r, gridLinesWidth, gridLinesColor, gridLinesColor);
+
+        // Draw orange marker spheres
+        DebuggerVisualization.setBoundsColor(ColorRGBA.orange);
+        for (Vector3f mark : positionMarkers)
+        {
+            positionMarkerSphere.setCenter(mark);
+            DebuggerVisualization.drawBoundingSphere(positionMarkerSphere, r);
+        }
+
         // Draw red marker sphere
         if (redSphereOn > 0)
         {
@@ -155,8 +182,65 @@ public class InternalRendererNode extends Node
         return cyanLines;
     }
 
+    public FastTable<Vector3f> getCustomLines() {
+        return customLines;
+    }
+
+    public ColorRGBA getCustomLinesEndColor() {
+        return customLinesEndColor;
+    }
+
+    public void setCustomLinesEndColor(ColorRGBA customLinesEndColor) {
+        this.customLinesEndColor = customLinesEndColor;
+    }
+
+    public ColorRGBA getCustomLinesStartColor() {
+        return customLinesStartColor;
+    }
+
+    public void setCustomLinesStartColor(ColorRGBA customLinesStartColor) {
+        this.customLinesStartColor = customLinesStartColor;
+    }
+
+    public float getCustomLinesWidth() {
+        return customLinesWidth;
+    }
+
+    public void setCustomLinesWidth(float customLinesWidth) {
+        this.customLinesWidth = customLinesWidth;
+    }
+    
     public FastTable<Vector3f> getPinkLines() {
         pinkLinesOn = 20;
         return pinkLines;
     }
+
+    public FastTable<Vector3f> getGridLines() {
+        return gridLines;
+    }
+
+    public ColorRGBA getGridLinesColor() {
+        return gridLinesColor;
+    }
+
+    public void setGridLinesColor(ColorRGBA gridLinesColor) {
+        this.gridLinesColor = gridLinesColor;
+    }
+
+    public float getGridLinesWidth() {
+        return gridLinesWidth;
+    }
+
+    public void setGridLinesWidth(float gridLinesWidth) {
+        this.gridLinesWidth = gridLinesWidth;
+    }
+
+    public BoundingSphere getPositionMarkerSphere() {
+        return positionMarkerSphere;
+    }
+
+    public FastTable<Vector3f> getPositionMarkers() {
+        return positionMarkers;
+    }
+
 }

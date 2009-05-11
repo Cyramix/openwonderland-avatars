@@ -20,6 +20,7 @@ package imi.character.statemachine;
 import imi.character.CharacterController;
 import imi.character.CharacterSteeringHelm;
 import imi.character.statemachine.GameState.Action;
+import imi.character.statemachine.corestates.IdleState;
 import imi.scene.animation.AnimationListener.AnimationMessageType;
 import imi.scene.polygonmodel.PPolygonMeshInstance;
 import java.lang.reflect.InvocationTargetException;
@@ -157,6 +158,18 @@ public class GameContext extends NamedUpdatableObject
     public void notifyAnimationMessage(AnimationMessageType message, int stateID) {
         if (currentState != null && stateID == 0)
             currentState.notifyAnimationMessage(message);
+    }
+
+    /**
+     * Exit current state and enter the one who's type is provided if it is found
+     * @param type
+     */
+    public void setCurrentStateByType(Class type)
+    {
+        GameState state = getState(type);
+        if (state == null)
+            return;
+        setCurrentState(getState(type));
     }
     
     /**
