@@ -482,9 +482,6 @@ public abstract class Character extends Entity implements SpatialObject, Animati
 
         // Apply the material on everything that was just loaded.
         for (PPolygonSkinnedMeshInstance meshInstance : m_skeleton.getSkinnedMeshInstances()) {
-            if (meshInstance.getName().toLowerCase().contains("tongue")) {  // African american tongues kill the head texture
-                continue;
-            }
             meshInstance.applyMaterial();
         }
 
