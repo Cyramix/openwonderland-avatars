@@ -189,7 +189,8 @@ public class EyeBall extends PPolygonSkinnedMeshInstance implements Serializable
             }
         }
         myMaterial.getTexture(0).setMinFilter(MinificationFilter.BilinearNoMipMaps);
-        
+        myMaterial.setAlphaState(PMeshMaterial.AlphaTransparencyType.NO_TRANSPARENCY);
+       
         applyMaterial();
     }
 
