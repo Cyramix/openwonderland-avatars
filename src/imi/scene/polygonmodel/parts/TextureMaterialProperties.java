@@ -53,7 +53,9 @@ public class TextureMaterialProperties implements Serializable
     /** Alpha combine mode **/
     private Texture.CombinerFunctionAlpha   m_alphaCombineMode = null;
     /** Mip mapping **/
-    private Texture.MinificationFilter      m_minFilter = null;
+//    private Texture.MinificationFilter      m_minFilter = null;
+    // HACK - Dahlgren: added to cope with mip mapping bug (black textures)
+    private Texture.MinificationFilter      m_minFilter = Texture.MinificationFilter.Trilinear;
     /** Mag mapping **/
     private Texture.MagnificationFilter     m_magFilter = null;
     /** Anisotropic filtering **/
@@ -119,7 +121,8 @@ public class TextureMaterialProperties implements Serializable
         tex.setWrap(Texture.WrapAxis.S, m_wrapS);
         tex.setWrap(Texture.WrapAxis.T, m_wrapT);
         tex.setCombineFuncAlpha(m_alphaCombineMode);
-        tex.setMinificationFilter(m_minFilter);
+        // HACK - Dahlgren: added to cope with mip mapping bug (black textures)
+//        tex.setMinificationFilter(m_minFilter);
         tex.setMagnificationFilter(m_magFilter);
         tex.setAnisotropicFilterPercent(m_anistotropicValue);
         tex.setApply(m_applyMode);
