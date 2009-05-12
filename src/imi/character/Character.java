@@ -481,9 +481,8 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         addShadow();
 
         // Apply the material on everything that was just loaded.
-        for (PPolygonSkinnedMeshInstance meshInstance : m_skeleton.getSkinnedMeshInstances()) {
+        for (PPolygonSkinnedMeshInstance meshInstance : m_skeleton.getSkinnedMeshInstances())
             meshInstance.applyMaterial();
-        }
 
 
         // then the attachments
@@ -537,6 +536,8 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         m_pscene.setRenderStop(false);
         m_modelInst.setRenderStop(false);
 
+        // blink if you can hear me
+        m_eyes.blink();
         m_initialized = true;
     }
     
