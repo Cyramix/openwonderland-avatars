@@ -541,6 +541,73 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         m_initialized = true;
     }
 
+//    public void setClothesColors(ColorRGBA topColor, ColorRGBA topSpecColor, ColorRGBA bottomColor, ColorRGBA bottomSpecColor, ColorRGBA shoesColor, ColorRGBA shoesSpecColor)
+//    {
+//        Repository repo = (Repository)m_wm.getUserData(Repository.class);
+//
+//        // first the skinned meshes
+//        Iterable<PPolygonSkinnedMeshInstance> smInstances = m_skeleton.getSkinnedMeshInstances();
+//        for (PPolygonSkinnedMeshInstance meshInst : smInstances)
+//        {
+//            PMeshMaterial meshMat = meshInst.getMaterialRef();
+//            String tempName = meshInst.getName().toLowerCase();
+//            if (tempName.contains("eyegeoshape") ||
+//                tempName.contains("tongue")      ||
+//                tempName.contains("teeth"))
+//            {}
+//            else if (tempName.contains("nude") ||
+//                     tempName.contains("arms") ||
+//                     tempName.contains("hand"))
+//            {}
+//            else if (tempName.contains("head"))
+//            {}
+//            else if (tempName.equals("hairashape1")) // HACK
+//            {}
+//            else // assume to be clothing
+//            {
+//                AbstractShaderProgram clothingShader = repo.newShader(ClothingShaderSpecColor.class);
+//                if (meshInst.getParent().getName().equals("UpperBody"))
+//                {
+//                    try {
+//                        clothingShader.setProperty(new ShaderProperty("baseColor", GLSLDataType.GLSL_VEC3, new float [] {topColor.r, topColor.g, topColor.b}));
+//                        clothingShader.setProperty(new ShaderProperty("specColor", GLSLDataType.GLSL_VEC3, new float [] {topSpecColor.r, topSpecColor.g, topSpecColor.b}));
+//                    } catch (NoSuchPropertyException ex) {
+//                        Logger.getLogger(Character.class.getName()).log(Level.SEVERE, null, ex);
+//                    }
+//                }
+//                else if (meshInst.getParent().getName().equals("LowerBody"))
+//                {
+//                    try {
+//                        clothingShader.setProperty(new ShaderProperty("baseColor", GLSLDataType.GLSL_VEC3, new float [] {bottomColor.r, bottomColor.g, bottomColor.b}));
+//                        clothingShader.setProperty(new ShaderProperty("specColor", GLSLDataType.GLSL_VEC3, new float [] {bottomSpecColor.r, bottomSpecColor.g, bottomSpecColor.b}));
+//                    } catch (NoSuchPropertyException ex) {
+//                        Logger.getLogger(Character.class.getName()).log(Level.SEVERE, null, ex); }
+//                }
+//                else if (meshInst.getParent().getName().equals("Feet"))
+//                {
+//                    try {
+//                        clothingShader.setProperty(new ShaderProperty("baseColor", GLSLDataType.GLSL_VEC3, new float [] {shoesColor.r, shoesColor.g, shoesColor.b}));
+//                        clothingShader.setProperty(new ShaderProperty("specColor", GLSLDataType.GLSL_VEC3, new float [] {shoesSpecColor.r, shoesSpecColor.g, shoesSpecColor.b}));
+//                    } catch (NoSuchPropertyException ex) {
+//                        Logger.getLogger(Character.class.getName()).log(Level.SEVERE, null, ex); }
+//                }
+//                else    // White is the default
+//                {
+//                    float[] colorWhite = { 1, 1, 1 };
+//                    try {
+//                        clothingShader.setProperty(new ShaderProperty("baseColor", GLSLDataType.GLSL_VEC3, colorWhite));
+//                        clothingShader.setProperty(new ShaderProperty("specColor", GLSLDataType.GLSL_VEC3, colorWhite));
+//                    } catch (NoSuchPropertyException ex) {
+//                        Logger.getLogger(Character.class.getName()).log(Level.SEVERE, null, ex); }
+//                }
+//                meshMat.setCullFace(CullState.Face.None);
+//                meshMat.setShader(clothingShader);
+//            }
+//            // Apply it!
+//            meshInst.applyShader();
+//        }
+//    }
+    
     public void setSkinTone(ColorRGBA skinColor)
     {
         float[] skinColorFloats = new float[] { skinColor.r, skinColor.g, skinColor.b };
@@ -1729,17 +1796,20 @@ public abstract class Character extends Entity implements SpatialObject, Animati
     public void setBigHeadMode(float fScale)
     {
         SkinnedMeshJoint joint = getSkeleton().getSkinnedMeshJoint("Head");
-        getSkeleton().displaceJoint("Head", new Vector3f(0, 0.07f * (fScale - 1), 0));
-        joint.getBindPose().setScale(fScale);
+        getSkeleton().setJointPosition("Head", new Vector3f(0.0f, 0.11902f + 0.07f * (fScale - 1), 0.0f));
 
+        joint.getBindPose().setScale(fScale);
         SkinnedMeshJoint rhand = getSkeleton().getSkinnedMeshJoint("rightHand");
         rhand.getBindPose().setScale(fScale);
         SkinnedMeshJoint lhand = getSkeleton().getSkinnedMeshJoint("leftHand");
         lhand.getBindPose().setScale(fScale);
         SkinnedMeshJoint rfeet = getSkeleton().getSkinnedMeshJoint("rightFoot");
-        rfeet.getBindPose().setScale(1.5f);
+        rfeet.getBindPose().setScale(fScale);
         SkinnedMeshJoint lfeet = getSkeleton().getSkinnedMeshJoint("leftFoot");
-        lfeet.getBindPose().setScale(1.5f);
+        lfeet.getBindPose().setScale(fScale);
+
+        joint = getSkeleton().getSkinnedMeshJoint("Hips");
+        getSkeleton().setJointPosition("Hips", new Vector3f(0.0f, 1.10598f + 0.09f * (fScale - 1), 0.0f));
     }
 
 

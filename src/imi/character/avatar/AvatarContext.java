@@ -17,8 +17,6 @@
  */
 package imi.character.avatar;
 
-import com.jme.math.Vector3f;
-import imi.character.objects.ObjectCollectionBase;
 import imi.character.statemachine.corestates.WalkState;
 import imi.character.statemachine.corestates.TurnState;
 import imi.character.statemachine.corestates.SitState;
@@ -64,10 +62,8 @@ import imi.character.steering.GoSit;
 import imi.character.steering.GoTo;
 import imi.scene.Updatable;
 import imi.scene.animation.AnimationComponent.PlaybackMode;
-import imi.scene.boundingvolumes.PSphere;
-import imi.scene.polygonmodel.PPolygonModelInstance;
-import java.util.ArrayList;
 import java.util.Hashtable;
+import javolution.util.FastTable;
 
 /**
  * This is a concrete GameContext.
@@ -84,7 +80,7 @@ public class AvatarContext extends GameContext
     /** Current location node, if any. **/
     private LocationNode      location    = null;
     /** Animations that are using the ActionState to play out (such as wave, cheer etc) **/
-    private ArrayList<ActionInfo> genericAnimations = new ArrayList<ActionInfo>();
+    private FastTable<ActionInfo> genericAnimations = new FastTable<ActionInfo>();
     /** Used for cycling through action animations **/
     private int genericActionIndex = 0;
 
@@ -479,12 +475,11 @@ public class AvatarContext extends GameContext
     public void performAction(int actionInfoIndex)
     {
         CycleActionState action = (CycleActionState) gameStates.get(CycleActionState.class);
-        action.setAnimationSetBoolean(false);
         genericAnimations.get(actionInfoIndex).apply(action);
         setCurrentState(action);
     }
     
-    protected Iterable<ActionInfo> getGenericAnimations() {
+    public FastTable<ActionInfo> getGenericAnimations() {
         return genericAnimations;
     }
     

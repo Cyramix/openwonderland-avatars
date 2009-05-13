@@ -61,6 +61,7 @@ public class StateInfo
     
     /** Apply this configuration on that state **/
     public void apply(GameState state) {
+        state.setAnimationSetBoolean(false);
         state.setAnimationName(animationName);
         state.setAnimationSpeed(animationSpeed);
         state.setTransitionDuration(transitionDuration);
