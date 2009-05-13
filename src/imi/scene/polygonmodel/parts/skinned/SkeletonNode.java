@@ -835,8 +835,11 @@ public class SkeletonNode extends PNode implements Animated, Serializable
                     }
                     else // First joint in the skeleton; mesh space is local space
                     {
-                        // This may fail in some circumstances where the root joint is modified and animated.
-                        ((SkinnedMeshJoint)current).setMeshSpace(current.getTransform().getLocalMatrix(false));
+                        SkinnedMeshJoint curJoint = (SkinnedMeshJoint)current;
+                        PMatrix meshSpace = curJoint.getMeshSpace();
+                        meshSpace.set(curJoint.getBindPose());
+                        meshSpace.fastMul(curJoint.getUnmodifiedInverseBindPose());
+                        meshSpace.fastMul(curJoint.getTransform().getLocalMatrix(false));
                     }
                 }
             }
@@ -849,10 +852,8 @@ public class SkeletonNode extends PNode implements Animated, Serializable
             {
                 // ensure we have indices
                 if (((PPolygonMeshInstance)current).getGeometry().getGeometry().getMaxIndex() >= 0) // If no indices, don't attach this mesh.
-                {
                     if (current.getRenderStop() == false)
                         result.add(((PPolygonMeshInstance)current).updateSharedMesh());
-                }
             }
 
             // special case for the skeleton node (see this method... haha)
@@ -868,9 +869,7 @@ public class SkeletonNode extends PNode implements Animated, Serializable
             // optimized for GC
             int index;
             for (index = 0; index < current.getChildren().size(); index++)
-            {
                 queue.add(current.getChildren().get(index));
-            }
 
         }
 
