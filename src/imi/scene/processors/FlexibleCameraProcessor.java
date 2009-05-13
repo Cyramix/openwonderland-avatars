@@ -120,7 +120,7 @@ public class FlexibleCameraProcessor extends AWTEventProcessorComponent
                                                 Node cameraNode,
                                                 WorldManager wm,
                                                 Entity myEntity,
-                                                SkyBox skyboxNode,
+                                                Node skyboxNode,
                                                 int width,
                                                 int height)
     {
