@@ -540,6 +540,47 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         m_eyes.blink();
         m_initialized = true;
     }
+
+    public void setSkinTone(ColorRGBA skinColor)
+    {
+        float[] skinColorFloats = new float[] { skinColor.r, skinColor.g, skinColor.b };
+        // grab a reference to the head shader
+        AbstractShaderProgram headShader = null;
+        for (PPolygonSkinnedMeshInstance meshInst : m_skeleton.getMeshesBySubGroup("Head"))
+        {
+            String lowerCaseName = meshInst.getName().toLowerCase();
+            if (lowerCaseName.contains("head"))
+            {
+                headShader = meshInst.getMaterialRef().getShader();
+                break;
+            }
+        }
+
+        // grab a reference to the flesh shaders
+        AbstractShaderProgram fleshShader = null;
+        for (PPolygonSkinnedMeshInstance meshInst : m_skeleton.getSkinnedMeshInstances())
+        {
+            String lowerCaseName = meshInst.getName().toLowerCase();
+            if ( lowerCaseName.contains("nude") ||
+                 lowerCaseName.contains("arms") ||
+                 lowerCaseName.contains("hand"))// is it flesh?
+            {
+                fleshShader = meshInst.getMaterialRef().getShader();
+                break;
+            }
+        }
+
+        // Set their material color to the one provided
+        try {
+            if (headShader != null)
+                headShader.setProperty(new ShaderProperty("materialColor", GLSLDataType.GLSL_VEC3, skinColorFloats));
+            if (fleshShader != null)
+                fleshShader.setProperty(new ShaderProperty("materialColor", GLSLDataType.GLSL_VEC3, skinColorFloats));
+        } catch (NoSuchPropertyException ex) {
+            logger.severe(ex.getMessage());
+        }
+        applyMaterials();
+    }
     
     /**
      * Sets shaders on the parts according to the defaults.
@@ -566,7 +607,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
             headShader.setProperty(new ShaderProperty("materialColor", GLSLDataType.GLSL_VEC3, skinColor));
             fleshShader.setProperty(new ShaderProperty("materialColor", GLSLDataType.GLSL_VEC3, skinColor));
         } catch (NoSuchPropertyException ex) {
-            Logger.getLogger(Character.class.getName()).log(Level.SEVERE, null, ex);
+            logger.severe(ex.getMessage());
         }
 
         // first the skinned meshes
@@ -1532,24 +1573,14 @@ public abstract class Character extends Entity implements SpatialObject, Animati
                 if (targetJoint != null)
                 {
                     // Apply customizations
-                    PMatrix mat = null;
                     if (jMod.getLocalModifierMatrix() != null)
-                    {
-                        mat = jMod.getLocalModifierMatrix().getPMatrix();
-                        targetJoint.setLocalModifierMatrix(mat);
-                    }
-
+                        jMod.getLocalModifierMatrix().getPMatrix(targetJoint.getLocalModifierMatrix());
                     if (jMod.getBindPoseMatrix() != null)
-                    {
-                        mat = jMod.getBindPoseMatrix().getPMatrix();
-                        targetJoint.getBindPose().set(mat);
-                    }
+                        jMod.getBindPoseMatrix().getPMatrix(targetJoint.getBindPose());
                 }
                 else
-                {
                     logger.log(Level.WARNING,
                             "Target joint not found for modifier: " + jMod.getTargetJointName());
-                }
             }
         }
     }
