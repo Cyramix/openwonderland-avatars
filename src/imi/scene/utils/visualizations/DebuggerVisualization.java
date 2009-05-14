@@ -102,7 +102,21 @@ public final class DebuggerVisualization {
             boundingCapsule.setRenderState(boundsWireState);
             boundingCapsule.setRenderState(boundsZState);
             boundingCapsule.updateRenderState();
+
+            if (!boundingSphereWireframeOn)
+                setBoundingSphereWireframeOn(false);
         }
+    }
+
+    static boolean boundingSphereWireframeOn = true;
+
+    public static void setBoundingSphereWireframeOn(boolean on)
+    {
+        boundingSphereWireframeOn = on;
+        WireframeState state = (WireframeState) boundingSphere.getRenderState(RenderState.StateType.Wireframe);
+        if (state != null)
+            state.setEnabled(on);
+        boundingSphere.updateRenderState();
     }
     
     /**
