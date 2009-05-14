@@ -22,10 +22,10 @@ import imi.character.CharacterMotionListener;
 import imi.scene.PMatrix;
 import imi.scene.camera.state.CameraState;
 import imi.scene.camera.state.ThirdPersonCamState;
+import imi.utils.PMathUtils;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
-import javax.swing.SwingUtilities;
 
 /**
  * This model performs object tumbling. The camera is locked at a certain perspective
@@ -228,6 +228,8 @@ public class ThirdPersonCamModel implements CameraModel, CharacterMotionListener
         targetTransform.set(new Vector3f(0,(float) Math.toRadians(camState.getRotationY()), 0), translation, scales);
     }
 
+    PMathUtils.MathUtilsContext mathContext = PMathUtils.getContext();
+
     /**
      * Update the camera matrix based on the contents of the state object
      * @param camState
@@ -269,10 +271,14 @@ public class ThirdPersonCamModel implements CameraModel, CharacterMotionListener
 
         if (camState.needsTargetUpdate())
         {
+//            Vector3f p = camXForm.getTranslation();
+//            PMathUtils.lookAt(targetPosition, camState.getCameraPosition(), Vector3f.UNIT_Y, camXForm, mathContext);
+//            camXForm.setTranslation(p);
+
             // perform lookat to focal point
-            Vector3f forward = targetPosition.subtract(camState.getCameraPosition());
-            Vector3f right = Vector3f.UNIT_Y.cross(forward);
-            Vector3f realUp = forward.cross(right);
+            Vector3f forward = targetPosition.subtract(camState.getCameraPosition()).normalize();
+            Vector3f right = Vector3f.UNIT_Y.cross(forward).normalize();
+            Vector3f realUp = forward.cross(right).normalize();
             Vector3f translation = (camState.getCameraPosition());
             // load it up manually
             float[] floats = new float[16];

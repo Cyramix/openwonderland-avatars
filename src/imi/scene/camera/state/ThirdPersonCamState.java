@@ -155,7 +155,7 @@ public class ThirdPersonCamState extends CameraState
      */
     public ThirdPersonCamState(PPolygonModelInstance target, float rotationOnYAxis)
     {
-        setType(CameraStateType.TumbleObject);
+        setType(CameraStateType.ThirdPerson);
         modelInstance = target;
         if (modelInstance != null)
             setTargetFocalPoint(modelInstance.getTransform().getWorldMatrix(false).getTranslation());

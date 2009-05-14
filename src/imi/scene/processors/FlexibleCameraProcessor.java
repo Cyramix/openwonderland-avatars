@@ -79,7 +79,7 @@ public class FlexibleCameraProcessor extends AWTEventProcessorComponent
     /** Used for calculating delta time values **/
     private double oldTime = 0.0;
     private double deltaTime = 0.0;
-    
+
     /** for snap shots **/
     private int picNum = 0;
     private boolean takeSnap = false;
@@ -212,9 +212,6 @@ public class FlexibleCameraProcessor extends AWTEventProcessorComponent
             m_WM.addToUpdateList(m_skyNode);
         }
         m_WM.addToUpdateList(m_jmeCameraNode);
-
-
-
     }
     
     /**
