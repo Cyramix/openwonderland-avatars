@@ -1344,6 +1344,8 @@ public abstract class Character extends Entity implements SpatialObject, Animati
      */
     public void initiateFacialAnimation(int cycleIndex, float fTransitionTime, float fExpressionDuration)
     {
+        System.out.println("Initiating a facial animation! Cycle index is " + cycleIndex + ", transition time is " + fTransitionTime +
+                ", expression duration is " + fExpressionDuration);
         if (m_facialAnimations == null)
         {
             if (m_skeleton.getAnimationComponent().getGroupCount() > 1)

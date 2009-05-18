@@ -21,11 +21,13 @@ import imi.scene.SkyBox;
 import com.jme.image.Texture;
 import com.jme.light.LightNode;
 import com.jme.light.PointLight;
+import com.jme.math.Quaternion;
 import com.jme.math.Vector2f;
 import com.jme.math.Vector3f;
 import com.jme.renderer.ColorRGBA;
 import com.jme.scene.CameraNode;
 import com.jme.scene.Node;
+import com.jme.scene.shape.Cylinder;
 import com.jme.scene.state.CullState;
 import com.jme.scene.state.LightState;
 import com.jme.scene.state.MaterialState;
@@ -95,6 +97,7 @@ import imi.scene.processors.JSceneEventProcessor;
 import imi.utils.instruments.DefaultInstrumentation;
 import imi.utils.instruments.Instrumentation;
 import java.net.URL;
+import org.jdesktop.mtgame.OnscreenRenderBuffer;
 import org.jdesktop.mtgame.RenderBuffer;
 
 
@@ -135,7 +138,7 @@ public class DemoBase {
     /** Used to indicate which environment should be loaded **/
     private String pathToEnv = null;
 
-    protected SkyBox   m_skyBox = null;
+    protected Node   m_skyBox = null;
 
     protected String[] m_skyboxAssets = new String[] { "assets/textures/skybox/Front.png",
                                                        "assets/textures/skybox/Right.png",
@@ -272,7 +275,11 @@ public class DemoBase {
 
         // Create the input listener and process for the camera
         int eventMask = InputManager.KEY_EVENTS | InputManager.MOUSE_EVENTS;
-        Canvas canvas = renderBuffer.getCanvas();
+        Canvas canvas = null;
+        if (renderBuffer instanceof OnscreenRenderBuffer)
+            canvas = ((OnscreenRenderBuffer)renderBuffer).getCanvas();
+        else
+            throw new ExceptionInInitializerError("Not using an onscreen render buffer!");
         m_cameraListener = (AWTInputComponent)wm.getInputManager().createInputComponent(canvas, eventMask);
 
         m_cameraProcessor = new FlexibleCameraProcessor(m_cameraListener, cameraNode, wm, camera, m_skyBox, width, height);
@@ -811,19 +818,23 @@ public class DemoBase {
         return (cameraSG);
     }
 
-    protected SkyBox createSkyBox(Entity camera) {
-        SkyBox sky = new SkyBox("skybox", 10.0f, 10.0f, 10.0f, worldManager);
-        sky.setTexture(SkyBox.NORTH,    loadSkyboxTexture(m_skyboxAssets[0]));  // +Z side
-        sky.setTexture(SkyBox.EAST,     loadSkyboxTexture(m_skyboxAssets[1]));  // -X side
-        sky.setTexture(SkyBox.SOUTH,    loadSkyboxTexture(m_skyboxAssets[2]));  // -Z side
-        sky.setTexture(SkyBox.WEST,     loadSkyboxTexture(m_skyboxAssets[3]));  // +X side
-        sky.setTexture(SkyBox.DOWN,     loadSkyboxTexture(m_skyboxAssets[4]));  // -Y Side
-        sky.setTexture(SkyBox.UP,       loadSkyboxTexture(m_skyboxAssets[5]));  // +Y side
+    protected Node createSkyBox(Entity camera) {
+        Node skyNode = new Node();
+        Cylinder sky = new Cylinder("SkyCylinder", 10, 10, 20, 20, true, true);
+        sky.setLocalRotation(new Quaternion(new float[] {3.14159f / 2.0f, 0, 0}));
+        skyNode.attachChild(sky);
+//        SkyBox sky = new SkyBox("skybox", 10.0f, 10.0f, 10.0f, worldManager);
+//        sky.setTexture(SkyBox.NORTH,    loadSkyboxTexture(m_skyboxAssets[0]));  // +Z side
+//        sky.setTexture(SkyBox.EAST,     loadSkyboxTexture(m_skyboxAssets[1]));  // -X side
+//        sky.setTexture(SkyBox.SOUTH,    loadSkyboxTexture(m_skyboxAssets[2]));  // -Z side
+//        sky.setTexture(SkyBox.WEST,     loadSkyboxTexture(m_skyboxAssets[3]));  // +X side
+//        sky.setTexture(SkyBox.DOWN,     loadSkyboxTexture(m_skyboxAssets[4]));  // -Y Side
+//        sky.setTexture(SkyBox.UP,       loadSkyboxTexture(m_skyboxAssets[5]));  // +Y side
 
-        RenderComponent sc2 = worldManager.getRenderManager().createRenderComponent(sky);
+        RenderComponent sc2 = worldManager.getRenderManager().createRenderComponent(skyNode);
         camera.addComponent(RenderComponent.class, sc2);
+        return skyNode;
 
-        return sky;
     }
 
     protected Texture loadSkyboxTexture(String filePath) {
@@ -888,7 +899,7 @@ public class DemoBase {
         JPanel statusPanel = new JPanel();
         Canvas canvas = null;
         JLabel fpsLabel = new JLabel("FPS: ");
-        RenderBuffer m_renderBuffer = null;
+        OnscreenRenderBuffer m_renderBuffer = null;
 
 
         // Construct the frame
@@ -918,7 +929,7 @@ public class DemoBase {
             menuBar.add(createMenu);
 
             // The Rendering Canvas
-            m_renderBuffer = wm.getRenderManager().createRenderBuffer(RenderBuffer.Target.ONSCREEN, width, height);
+            m_renderBuffer = (OnscreenRenderBuffer) wm.getRenderManager().createRenderBuffer(RenderBuffer.Target.ONSCREEN, width, height);
             wm.getRenderManager().addRenderBuffer(m_renderBuffer);
             canvas = m_renderBuffer.getCanvas();
             canvas.setVisible(true);
@@ -947,7 +958,7 @@ public class DemoBase {
             throw new UnsupportedOperationException("Not supported yet.");
         }
 
-        public RenderBuffer getRenderBuffer()
+        public OnscreenRenderBuffer getRenderBuffer()
         {
             return m_renderBuffer;
         }

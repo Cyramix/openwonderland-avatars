@@ -25,7 +25,6 @@ import imi.scene.PMatrix;
 import imi.scene.camera.behaviors.CameraModel;
 import imi.scene.camera.behaviors.WrongStateTypeException;
 import imi.scene.camera.state.CameraState;
-import imi.scene.SkyBox;
 import imi.scene.camera.CameraPositionManager;
 import imi.utils.input.InputScheme;
 import java.awt.event.KeyEvent;
@@ -247,6 +246,15 @@ public class FlexibleCameraProcessor extends AWTEventProcessorComponent
             return;
         else
             currentStateIndex = index;
+    }
+
+    public void setSkyNode(Node skyNode) {
+        m_skyNode = skyNode;
+        if (skyNode != null)
+        {
+            m_skyNode.setLocalTranslation(m_transform.getTranslation());
+            m_WM.addToUpdateList(m_skyNode);
+        }
     }
 
     public void takeSnap() {

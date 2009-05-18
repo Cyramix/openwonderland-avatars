@@ -102,6 +102,7 @@ import org.jdesktop.mtgame.ProcessorComponent;
 import org.jdesktop.mtgame.RenderComponent;
 import org.jdesktop.mtgame.AWTInputComponent;
 import org.jdesktop.mtgame.InputManager;
+import org.jdesktop.mtgame.OnscreenRenderBuffer;
 import org.jdesktop.mtgame.RenderBuffer;
 import org.jdesktop.mtgame.processor.RotationProcessor;
 
@@ -119,7 +120,7 @@ public class AvatarCreatorDemo extends javax.swing.JFrame implements FrameRateLi
     protected SceneEssentials           m_sceneData         = null;
     protected CameraNode                m_cameraNode        = null;
     protected FlexibleCameraProcessor   m_cameraProcessor   = null;
-    protected RenderBuffer              m_renderBuffer      = null;
+    protected OnscreenRenderBuffer      m_renderBuffer      = null;
 
     protected int                       m_desiredFrameRate  = 60;
     protected int                       m_width             = 1024;
@@ -1129,7 +1130,7 @@ public class AvatarCreatorDemo extends javax.swing.JFrame implements FrameRateLi
     private void setFrame(WorldManager wm) {
 
         // The Rendering Canvas
-        m_renderBuffer = wm.getRenderManager().createRenderBuffer(RenderBuffer.Target.ONSCREEN, m_width, m_height);
+        m_renderBuffer = (OnscreenRenderBuffer) wm.getRenderManager().createRenderBuffer(RenderBuffer.Target.ONSCREEN, m_width, m_height);
         wm.getRenderManager().addRenderBuffer(m_renderBuffer);
         canvas_SceneRenderWindow = m_renderBuffer.getCanvas();
         wm.getRenderManager().setFrameRateListener(this, 100);
