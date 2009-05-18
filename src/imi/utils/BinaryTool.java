@@ -53,7 +53,6 @@ import javax.swing.JMenuBar;
 import javax.swing.JPanel;
 import javolution.util.FastList;
 import org.jdesktop.mtgame.FrameRateListener;
-import org.jdesktop.mtgame.OnscreenRenderBuffer;
 import org.jdesktop.mtgame.RenderBuffer;
 
 
@@ -452,7 +451,7 @@ public class BinaryTool
         JPanel statusPanel = new JPanel();
         Canvas canvas = null;
         JLabel fpsLabel = new JLabel("FPS: ");
-        OnscreenRenderBuffer m_renderBuffer = null;
+        RenderBuffer m_renderBuffer = null;
 
 
         // Construct the frame
@@ -482,7 +481,7 @@ public class BinaryTool
             menuBar.add(createMenu);
 
             // The Rendering Canvas
-            m_renderBuffer = (OnscreenRenderBuffer) wm.getRenderManager().createRenderBuffer(RenderBuffer.Target.ONSCREEN, 1, 1);
+            m_renderBuffer = wm.getRenderManager().createRenderBuffer(RenderBuffer.Target.ONSCREEN, 1, 1);
             wm.getRenderManager().addRenderBuffer(m_renderBuffer);
             canvas = m_renderBuffer.getCanvas();
             canvas.setVisible(true);
@@ -511,7 +510,7 @@ public class BinaryTool
             throw new UnsupportedOperationException("Not supported yet.");
         }
 
-        public OnscreenRenderBuffer getRenderBuffer()
+        public RenderBuffer getRenderBuffer()
         {
             return m_renderBuffer;
         }

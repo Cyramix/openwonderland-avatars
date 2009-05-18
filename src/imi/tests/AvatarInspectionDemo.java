@@ -103,7 +103,6 @@ import imi.utils.input.DemoAvatarControlScheme;
 import imi.utils.instruments.DefaultInstrumentation;
 import imi.utils.instruments.Instrumentation;
 import java.net.URL;
-import org.jdesktop.mtgame.OnscreenRenderBuffer;
 import org.jdesktop.mtgame.RenderBuffer;
 
 
@@ -235,7 +234,7 @@ public class AvatarInspectionDemo {
         // Add the camera
         Entity camera = new Entity("DefaultCamera");
         CameraComponent cc = wm.getRenderManager().createCameraComponent(cameraSG, cameraNode, width, height, 35.0f, aspect, 0.01f, 1000.0f, true);
-        OnscreenRenderBuffer renderBuffer = ((SwingFrame)wm.getUserData(JFrame.class)).getRenderBuffer();
+        RenderBuffer renderBuffer = ((SwingFrame)wm.getUserData(JFrame.class)).getRenderBuffer();
         renderBuffer.setBackgroundColor(m_clearColor);
 
 
@@ -1005,7 +1004,7 @@ public class AvatarInspectionDemo {
         JPanel statusPanel = new JPanel();
         Canvas canvas = null;
         JLabel fpsLabel = new JLabel("FPS: ");
-        OnscreenRenderBuffer m_renderBuffer = null;
+        RenderBuffer m_renderBuffer = null;
 
 
         // Construct the frame
@@ -1035,7 +1034,7 @@ public class AvatarInspectionDemo {
             menuBar.add(createMenu);
 
             // The Rendering Canvas
-            m_renderBuffer = (OnscreenRenderBuffer) wm.getRenderManager().createRenderBuffer(RenderBuffer.Target.ONSCREEN, width, height);
+            m_renderBuffer = wm.getRenderManager().createRenderBuffer(RenderBuffer.Target.ONSCREEN, width, height);
             wm.getRenderManager().addRenderBuffer(m_renderBuffer);
             canvas = m_renderBuffer.getCanvas();
             canvas.setVisible(true);
@@ -1064,7 +1063,7 @@ public class AvatarInspectionDemo {
             throw new UnsupportedOperationException("Not supported yet.");
         }
 
-        public OnscreenRenderBuffer getRenderBuffer()
+        public RenderBuffer getRenderBuffer()
         {
             return m_renderBuffer;
         }

@@ -65,6 +65,17 @@ public class LightFixingDeity extends Entity
             public void initialize() {
                 this.setArmingCondition(new PostEventCondition(this, new long[] { FIX_THE_LIGHTS }));
             }
+
+            @Override
+            public void compute() {
+                root.attachChild(box); // Dont ask why this works...
+                fwm.removeEntity(this.getEntity()); // Finished our job, time to leave
+            }
+
+            @Override
+            public void commit() {
+
+            }
         };
         this.addComponent(RenderComponent.class, rc);
         this.addComponent(ProcessorComponent.class, pc);
