@@ -134,4 +134,9 @@ public class AzimuthAngleState extends CameraState
     {
         // TODO
     }
+
+    @Override
+    public PMatrix getCameraTransform() {
+        return null; // TODO
+    }
 }

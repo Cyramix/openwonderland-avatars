@@ -339,6 +339,13 @@ public class FirstPersonCamState extends CameraState
         setRotationY((float)Math.toDegrees(angles[1]));
 
     }
+
+    @Override
+    public PMatrix getCameraTransform() {
+        PMatrix trans = new PMatrix(positionVec);
+        trans.setRotation(quaternion);
+        return trans;
+    }
     
     
     

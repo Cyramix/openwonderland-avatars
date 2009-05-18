@@ -63,7 +63,6 @@ import org.jdesktop.mtgame.CameraComponent;
 import org.jdesktop.mtgame.Entity;
 import org.jdesktop.mtgame.FrameRateListener;
 import org.jdesktop.mtgame.InputManager;
-import org.jdesktop.mtgame.OnscreenRenderBuffer;
 import org.jdesktop.mtgame.ProcessorCollectionComponent;
 import org.jdesktop.mtgame.ProcessorComponent;
 import org.jdesktop.mtgame.RenderBuffer;
@@ -382,12 +381,10 @@ public class MTGameBase extends JFrame implements FrameRateListener {
         JPanel          fpsPanel        = new JPanel();
         Canvas          canvas          = null;
         JLabel          fpsLabel        = new JLabel("FPS: ");
-        
+        RenderBuffer    renderBuffer    = null;
         boolean         first           = true;
         int             m_width         = 800;
         int             m_height        = 600;
-
-        OnscreenRenderBuffer    renderBuffer    = null;
 
         public CustomDisplay(WorldManager wm, int width, int height) {
             m_width = width;
@@ -410,7 +407,7 @@ public class MTGameBase extends JFrame implements FrameRateListener {
             setLayout(new GridBagLayout());
 
             // The rendering canvas
-            renderBuffer = (OnscreenRenderBuffer) wm.getRenderManager().createRenderBuffer(RenderBuffer.Target.ONSCREEN, m_width, m_height);
+            renderBuffer = wm.getRenderManager().createRenderBuffer(RenderBuffer.Target.ONSCREEN, m_width, m_height);
             wm.getRenderManager().addRenderBuffer(renderBuffer);
             canvas = renderBuffer.getCanvas();
             renderBuffer.setBufferUpdater(this);
@@ -445,7 +442,7 @@ public class MTGameBase extends JFrame implements FrameRateListener {
             setLayout(new GridBagLayout());
 
             // The rendering canvas
-            renderBuffer = (OnscreenRenderBuffer) wm.getRenderManager().createRenderBuffer(RenderBuffer.Target.ONSCREEN, m_width, m_height);
+            renderBuffer = wm.getRenderManager().createRenderBuffer(RenderBuffer.Target.ONSCREEN, m_width, m_height);
             wm.getRenderManager().addRenderBuffer(renderBuffer);
             canvas = renderBuffer.getCanvas();
             renderBuffer.setBufferUpdater(this);

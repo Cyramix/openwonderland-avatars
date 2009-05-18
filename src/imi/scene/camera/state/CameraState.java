@@ -102,4 +102,10 @@ public abstract class CameraState
      * @param transform
      */
     public abstract void setCameraTransform(PMatrix transform);
+
+    /**
+     * Get the camera's transform
+     * @return
+     */
+    public abstract PMatrix getCameraTransform();
 }

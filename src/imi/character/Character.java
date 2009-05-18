@@ -228,6 +228,17 @@ public abstract class Character extends Entity implements SpatialObject, Animati
     public Character(URL configurationFile, WorldManager wm) {
         this(configurationFile, wm, null, new PMatrix());
     }
+    
+    /**
+     * Construct a new character using the specified configuration file and world
+     * manager.
+     * @param configurationFile
+     * @param wm
+     * @param transform
+     */
+    public Character(URL configurationFile, WorldManager wm, PMatrix transform) {
+        this(configurationFile, wm, null, transform);
+    }
 
     public Character(URL configurationFile, WorldManager wm, String baseURL, PMatrix transform)
     {
@@ -1344,8 +1355,6 @@ public abstract class Character extends Entity implements SpatialObject, Animati
      */
     public void initiateFacialAnimation(int cycleIndex, float fTransitionTime, float fExpressionDuration)
     {
-        System.out.println("Initiating a facial animation! Cycle index is " + cycleIndex + ", transition time is " + fTransitionTime +
-                ", expression duration is " + fExpressionDuration);
         if (m_facialAnimations == null)
         {
             if (m_skeleton.getAnimationComponent().getGroupCount() > 1)

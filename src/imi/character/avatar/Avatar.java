@@ -82,6 +82,21 @@ public class Avatar extends imi.character.Character
      * Construct a new instance with the provided configuration file.
      * @param configurationFile
      * @param wm
+     * @param transform
+     */
+    public Avatar(URL configurationFile, WorldManager wm, PMatrix transform)
+    {
+        super(configurationFile, wm, null, transform);
+        if (m_attributes.isMale())
+            maleContextSetup();
+        else
+            femaleContextSetup();
+    }
+
+    /**
+     * Construct a new instance with the provided configuration file.
+     * @param configurationFile
+     * @param wm
      */
     public Avatar(URL configurationFile, WorldManager wm)
     {
