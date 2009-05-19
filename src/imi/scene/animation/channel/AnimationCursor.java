@@ -23,6 +23,7 @@ package imi.scene.animation.channel;
  */
 public class AnimationCursor
 {
+    private static final int DefaultIndexSize = 128;
     private int[] indices = null;
     private int[] transitionIndices = null;
     private int[] negativeOnes = null;
@@ -32,10 +33,10 @@ public class AnimationCursor
 
     public AnimationCursor()
     {
-        indices = new int[70];
-        transitionIndices = new int[70];
-        negativeOnes = new int[70];
-        for (int i = 0; i < negativeOnes.length; i++)
+        indices = new int[DefaultIndexSize];
+        transitionIndices = new int[DefaultIndexSize];
+        negativeOnes = new int[DefaultIndexSize];
+        for (int i = 0; i < DefaultIndexSize; i++)
             negativeOnes[i] = -1;
         makeNegativeOne();
     }

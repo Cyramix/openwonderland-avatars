@@ -125,6 +125,8 @@ public class CharacterLoader implements RepositoryUser
         // check for binary version
         AnimationGroup newGroup = null;
         URL binaryLocation = null;
+
+        // Try to load the binary version if that was specified
         if (bUseBinaryFiles)
         {
             try
@@ -139,37 +141,48 @@ public class CharacterLoader implements RepositoryUser
                 logger.severe(ex.getMessage());
             }
         }
-        if (newGroup != null) // Success!
+
+        if (newGroup != null) // Success loading from binary file?
         {
             // Debugging output
-            logger.fine("Loaded binary file " + binaryLocation.getFile() + ".");
+            logger.info("Loaded binary file " + binaryLocation.getFile() + ".");
             owningSkeleton.getAnimationComponent().addGroup(newGroup);
             result = true;
         }
         else // otherwise use the collada loader
         {
             SkeletonNode skeleton = loadSkeletonRig(animationLocation);
-            newGroup = skeleton.getAnimationGroup(skeleton.getAnimationComponent().getGroupCount() - 1);
-
-            owningSkeleton.getAnimationComponent().addGroup(newGroup);
-            // Serialize it for the next round
-            if (bafCacheURL != null) {
-                try {
-                    // Create the directory
-                    File f = new File(binaryLocation.toURI());
-                    File dir = f.getParentFile();
-                    if (!dir.exists())
-                        dir.mkdirs();
-                } catch (URISyntaxException ex) {
-                    Logger.getLogger(CharacterLoader.class.getName()).log(Level.SEVERE, null, ex);
+            // skeleton may not have loaded any animations
+            if (skeleton.getAnimationComponent().getGroupCount() > 0)
+            {
+                newGroup = skeleton.getAnimationGroup(skeleton.getAnimationComponent().getGroupCount() - 1);
+                owningSkeleton.getAnimationComponent().addGroup(newGroup);
+                // Serialize it for the next round
+                if (bafCacheURL != null) {
+                    try {
+                        // Create the directory
+                        File f = new File(binaryLocation.toURI());
+                        File dir = f.getParentFile();
+                        if (!dir.exists())
+                            dir.mkdirs();
+                    } catch (URISyntaxException ex) {
+                        Logger.getLogger(CharacterLoader.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                 }
+                if (bUseBinaryFiles)
+                    writeAnimationGroupToDisk(binaryLocation, owningSkeleton);
+                result = true;
             }
-            if (bUseBinaryFiles)
-                writeAnimationGroupToDisk(binaryLocation, owningSkeleton);
-            result = true;
+            else
+            {
+                logger.severe("Unable to load animation from " + animationLocation.toString());
+                newGroup = null;
+                result = false; // failure
+            }
         }
+
         // Merge
-        if (mergeToGroup >= 0)
+        if (mergeToGroup >= 0 && newGroup != null)
             mergeLastToAnimationGroup(owningSkeleton, mergeToGroup);
         return result;
     }

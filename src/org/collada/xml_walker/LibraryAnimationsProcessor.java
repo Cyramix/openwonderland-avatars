@@ -75,7 +75,8 @@ public class LibraryAnimationsProcessor extends Processor
                 processAnimation(anim, newGroup);
             // close the cycle
             newGroup.getCycle(0).setName(m_colladaRef.getName());
-            System.out.println("   Animation:  '" + animationLibrary.getId() + "'");
+            System.out.println("   Animation:  '" + m_colladaRef.getName() + "'");
+            newGroup.getCycle(0).recalculateDuration();
 
             //  Add the AnimationLoop to the SkeletonNode.
             m_colladaRef.getSkeletonNode().getAnimationComponent().addGroup(newGroup);

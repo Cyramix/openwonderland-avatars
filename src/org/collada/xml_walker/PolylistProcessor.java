@@ -388,7 +388,7 @@ public class PolylistProcessor extends Processor
         {
             semantic = m_VertexDataSemantics.get(i);
 
-            if (semantic.m_Name.equals("TEXCOORD"))
+            if (semantic.m_Name != null && semantic.m_Name.equals("TEXCOORD"))
                 m_texCoordSemantic[textureSemanticCount++] = semantic;
         }
     }
