@@ -41,7 +41,7 @@ public class LightFixingDeity extends Entity
     /** Pandora's Hack Box **/
     private final Box box = new Box("Magical Box of Hacks!", Vector3f.ZERO, Vector3f.ZERO);
 
-    public LightFixingDeity(WorldManager wm)
+    private LightFixingDeity(WorldManager wm)
     {
         super("Lucifer"); // The light bringer!
         root = new Node("Magical Light Node");
@@ -65,21 +65,15 @@ public class LightFixingDeity extends Entity
             public void initialize() {
                 this.setArmingCondition(new PostEventCondition(this, new long[] { FIX_THE_LIGHTS }));
             }
-
-            @Override
-            public void compute() {
-                root.attachChild(box); // Dont ask why this works...
-                fwm.removeEntity(this.getEntity()); // Finished our job, time to leave
-            }
-
-            @Override
-            public void commit() {
-
-            }
         };
         this.addComponent(RenderComponent.class, rc);
         this.addComponent(ProcessorComponent.class, pc);
-        wm.addEntity(this);
+    }
+
+    public static void fixTheLights(WorldManager wm)
+    {
+        LightFixingDeity lfd = new LightFixingDeity(wm);
+        wm.addEntity(lfd);
         wm.postEvent(FIX_THE_LIGHTS);
     }
 }

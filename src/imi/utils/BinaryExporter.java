@@ -209,7 +209,7 @@ public class BinaryExporter {
     public SkeletonNode processBinaryData(URL resourcePath) {
         ObjectInputStream inStream  = null;
         SkeletonNode skeleton       = null;
-
+        System.out.println("Loading head: " + resourcePath.toString());
         try {
             inStream = new AvatarObjectInputStream(resourcePath.openStream());
             skeleton = (SkeletonNode) inStream.readObject();

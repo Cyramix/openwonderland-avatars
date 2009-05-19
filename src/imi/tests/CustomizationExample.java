@@ -20,7 +20,9 @@ package imi.tests;
 
 
 import com.jme.math.Vector3f;
+import com.jme.renderer.ColorRGBA;
 import imi.character.avatar.Avatar;
+import imi.character.avatar.MaleAvatarAttributes;
 import imi.character.objects.AvatarObjectCollection;
 import imi.character.objects.LocationNode;
 import imi.gui.JFrame_InstrumentationGUI;
@@ -70,7 +72,7 @@ public class CustomizationExample extends DemoBase
     public static void main(String[] args)
     {
         // Give ourselves a nice environment
-        String[] ourArgs = new String[] { "-env:assets/models/collada/Environments/BizObj/BusinessObjectsCenter.dae" };
+        String[] ourArgs = new String[] {  };
         // Construction does all the work
         CustomizationExample test = new CustomizationExample(ourArgs);
     }
@@ -112,11 +114,11 @@ public class CustomizationExample extends DemoBase
 //            new URL(base + "assets/configurations/FemaleD_AZ_00.xml"),
 //            new URL(base + "assets/configurations/FemaleFG_CA_00.xml"),
 //            new URL(base + "assets/configurations/FemaleFG_AA_01.xml"),
-            new URL(base + "assets/configurations/MaleFG_AA_00_white.xml"),
-            new URL(base + "assets/configurations/MaleFG_AA_01_white.xml"),
-            new URL(base + "assets/configurations/MaleFG_CA_00_white.xml"),
-            new URL(base + "assets/configurations/MaleFG_CA_01_white.xml"),
-            new URL(base + "assets/configurations/MaleFG_CA_02_white.xml"),
+//            new URL(base + "assets/configurations/MaleFG_AA_00_white.xml"),
+//            new URL(base + "assets/configurations/MaleFG_AA_01_white.xml"),
+//            new URL(base + "assets/configurations/MaleFG_CA_00_white.xml"),
+//            new URL(base + "assets/configurations/MaleFG_CA_01_white.xml"),
+//            new URL(base + "assets/configurations/MaleFG_CA_02_white.xml"),
 //            new URL(base + "assets/configurations/MaleFG_CA_03.xml"),
 //            new URL(base + "assets/configurations/MaleFG_CA_04.xml"),
 //            new URL(base + "assets/configurations/FemaleFG_AA_02.xml"),
@@ -124,17 +126,26 @@ public class CustomizationExample extends DemoBase
         };
         Vector3f translationVec = new Vector3f(4, 0, -4);
         PMatrix xform = new PMatrix(new Vector3f(0, 3.34f, 0), Vector3f.UNIT_XYZ, translationVec);
-        Avatar avatar = null;
+        Avatar avatar = new Avatar(new MaleAvatarAttributes("hey folks", false), worldManager);
 
-        for (URL configFile : configFiles)
-        {
-            avatar = new Avatar(configFile, worldManager, null, xform);
+//        for (URL configFile : configFiles)
+//        {
+//            avatar = new Avatar(configFile, worldManager, null, xform);
             avatar.setObjectCollection(collection);
             avatar.selectForInput();
             controller.getAvatarTeam().add(avatar);
-            translationVec.x -= 1;
-            xform.setTranslation(translationVec);
+//            translationVec.x -= 1;
+//            xform.setTranslation(translationVec);
+//        }
+
+        try {
+            Thread.sleep(4000);
         }
+        catch (InterruptedException ex)
+        {
+
+        }
+        avatar.setSkinTone(new ColorRGBA().magenta);
 
         showInstruments(avatar, worldManager);
     }

@@ -59,6 +59,7 @@ import org.jdesktop.mtgame.CameraComponent;
 import org.jdesktop.mtgame.Entity;
 import org.jdesktop.mtgame.FrameRateListener;
 import org.jdesktop.mtgame.InputManager;
+import org.jdesktop.mtgame.OnscreenRenderBuffer;
 import org.jdesktop.mtgame.ProcessorCollectionComponent;
 import org.jdesktop.mtgame.ProcessorComponent;
 import org.jdesktop.mtgame.RenderBuffer;
@@ -253,7 +254,7 @@ public class EmptyMTGame
         CameraComponent cc = wm.getRenderManager().createCameraComponent(cameraSG, cameraNode,
                 width, height, 60.0f, aspect, 0.01f, 1000.0f, true);
 
-        RenderBuffer renderBuffer = ((SwingFrame)wm.getUserData(JFrame.class)).getRenderBuffer();
+        OnscreenRenderBuffer renderBuffer = (OnscreenRenderBuffer) ((SwingFrame)wm.getUserData(JFrame.class)).getRenderBuffer();
 
         camera.addComponent(CameraComponent.class, cc);
         renderBuffer.setCameraComponent(cc);
@@ -341,7 +342,7 @@ public class EmptyMTGame
         JPanel statusPanel = new JPanel();
         Canvas canvas = null;
         JLabel fpsLabel = new JLabel("FPS: ");
-        RenderBuffer m_renderBuffer = null;
+        OnscreenRenderBuffer m_renderBuffer = null;
 
 
         // Construct the frame
@@ -371,7 +372,7 @@ public class EmptyMTGame
             menuBar.add(createMenu);
 
             // The Rendering Canvas
-            m_renderBuffer = wm.getRenderManager().createRenderBuffer(RenderBuffer.Target.ONSCREEN, width, height);
+            m_renderBuffer = (OnscreenRenderBuffer) wm.getRenderManager().createRenderBuffer(RenderBuffer.Target.ONSCREEN, width, height);
             wm.getRenderManager().addRenderBuffer(m_renderBuffer);
             canvas = m_renderBuffer.getCanvas();
             canvas.setVisible(true);
@@ -400,7 +401,7 @@ public class EmptyMTGame
             throw new UnsupportedOperationException("Not supported yet.");
         }
 
-        public RenderBuffer getRenderBuffer()
+        public OnscreenRenderBuffer getRenderBuffer()
         {
             return m_renderBuffer;
         }
