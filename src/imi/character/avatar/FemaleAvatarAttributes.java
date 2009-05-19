@@ -256,27 +256,21 @@ public class FemaleAvatarAttributes extends CharacterAttributes
                 setHeadAttachment("assets/models/collada/Heads/FemaleHead/FemaleAAHead.bhf");
                 break;
             case 3:
-                setHeadAttachment("assets/models/collada/Heads/FemaleHead/FemaleHi.bhf");
-                break;
-            case 4:
-                setHeadAttachment("assets/models/collada/Heads/FemaleHead/FemaleHi2.bhf");
-                break;
-            case 5:
                 setHeadAttachment("assets/models/collada/Heads/FemaleHead/FemaleHispanicHead.bhf");
                 break;
-            case 6:
+            case 4:
                 setHeadAttachment("assets/models/collada/Heads/FemaleHead/FG_Female_AF_Head02.bhf");
                 break;
-            case 7:
+            case 5:
                 setHeadAttachment("assets/models/collada/Heads/FemaleHead/FG_Female01HighPoly.bhf");
                 break;
-            case 8:
+            case 6:
                 setHeadAttachment("assets/models/collada/Heads/FemaleHead/FG_Female02HighPoly.bhf");
                 break;
-            case 9:
+            case 7:
                 setHeadAttachment("assets/models/collada/Heads/FemaleHead/FG_FemaleHead01.bhf");
                 break;
-            case 10:
+            case 8:
                 setHeadAttachment("assets/models/collada/Heads/FemaleHead/FG_FemaleLowPoly_01.bhf");
                 break;
             default:

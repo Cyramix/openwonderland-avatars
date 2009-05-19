@@ -259,6 +259,9 @@ public class MaleAvatarAttributes extends CharacterAttributes
             case 6:
                 setHeadAttachment("assets/models/collada/Heads/MaleHead/FG_Obama_HeadMedPoly.bhf");
                 break;
+            case 7:
+                setHeadAttachment("assets/models/collada/Heads/MaleHead/AsianHeadMale.bhf");
+                break;
             default:
                 setHeadAttachment("assets/models/collada/Heads/MaleHead/MaleCHead.bhf");
         }
