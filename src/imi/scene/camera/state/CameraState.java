@@ -28,11 +28,9 @@ import javax.swing.SwingUtilities;
  */
 public abstract class CameraState 
 {
-    /**
-     * True to move the camera if the right mouse button is pressed
-     */
     private boolean rightMouseButtonLook  = false;
     private boolean middleMouseButtonLook = false;
+    private boolean shiftPressedLook      = false;
     
     public void setRightMouseButtonLook(boolean rightMouseButtonLook) {
         this.rightMouseButtonLook = rightMouseButtonLook;
@@ -42,9 +40,15 @@ public abstract class CameraState
         this.middleMouseButtonLook = middleMouseButtonLook;
     }
 
+    public void setShiftPressedLook(boolean shiftPressedLook) {
+        this.shiftPressedLook = shiftPressedLook;
+    }
+
     public boolean isLook(MouseEvent me, int event)
     {
         if (me.getID() != event)
+            return false;
+        if (shiftPressedLook && !me.isShiftDown())
             return false;
         if (rightMouseButtonLook && SwingUtilities.isRightMouseButton(me))
             return true;

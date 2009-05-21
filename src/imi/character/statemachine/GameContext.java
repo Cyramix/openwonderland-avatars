@@ -45,7 +45,7 @@ public class GameContext extends NamedUpdatableObject
     /** The character owning this context **/
     private imi.character.Character character = null;
     /** The currently active state **/
-    public GameState currentState = null;
+    protected GameState currentState = null;
     /** Map of game state types to instances of that type **/
     protected final HashMap<Class, GameState> gameStates = new HashMap<Class, GameState>();
     /** Map of entry point method names to gamestate instances **/

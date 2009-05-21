@@ -63,6 +63,7 @@ import imi.character.steering.GoTo;
 import imi.scene.Updatable;
 import imi.scene.animation.AnimationComponent.PlaybackMode;
 import java.util.Hashtable;
+import javolution.util.FastList;
 import javolution.util.FastTable;
 
 /**
@@ -81,6 +82,8 @@ public class AvatarContext extends GameContext
     private LocationNode      location    = null;
     /** Animations that are using the ActionState to play out (such as wave, cheer etc) **/
     private FastTable<ActionInfo> genericAnimations = new FastTable<ActionInfo>();
+    /** Used to queue up several generic animations **/
+    private FastList<Integer> genericAnimationsQueue = new FastList<Integer>();
     /** Used for cycling through action animations **/
     private int genericActionIndex = 0;
 
@@ -215,6 +218,11 @@ public class AvatarContext extends GameContext
         super.update(deltaTime);
         AI.update(deltaTime);
         controller.update(deltaTime);
+        if ( !(currentState instanceof CycleActionState) && !genericAnimationsQueue.isEmpty() )
+        {
+            performAction(genericAnimationsQueue.removeFirst());
+            System.out.println("pop from queue");
+        }
     }
 
     /**
@@ -474,9 +482,19 @@ public class AvatarContext extends GameContext
      */
     public void performAction(int actionInfoIndex)
     {
-        CycleActionState action = (CycleActionState) gameStates.get(CycleActionState.class);
-        genericAnimations.get(actionInfoIndex).apply(action);
-        setCurrentState(action);
+        if (currentState instanceof CycleActionState)
+        {
+            // que it up
+            genericAnimationsQueue.add(actionInfoIndex);
+            System.out.println("queu up action " + actionInfoIndex);
+        }
+        else
+        {
+            System.out.println("perform action " + actionInfoIndex);
+            CycleActionState action = (CycleActionState) gameStates.get(CycleActionState.class);
+            genericAnimations.get(actionInfoIndex).apply(action);
+            setCurrentState(action);
+        }
     }
     
     public FastTable<ActionInfo> getGenericAnimations() {
