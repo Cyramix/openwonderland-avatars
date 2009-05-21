@@ -24,6 +24,7 @@ import com.jme.math.Quaternion;
 import com.jme.math.Vector2f;
 import com.jme.math.Vector3f;
 import com.jme.renderer.ColorRGBA;
+import com.jme.scene.Node;
 import com.jme.scene.state.CullState;
 import com.jme.scene.state.LightState;
 import com.jme.scene.state.MaterialState;
@@ -31,6 +32,7 @@ import com.jme.scene.state.MaterialState.ColorMaterial;
 import com.jme.scene.state.RenderState;
 import com.jme.scene.state.WireframeState;
 import com.jme.scene.state.ZBufferState;
+import com.jme.scene.shape.Box;
 import imi.character.objects.ObjectCollectionBase;
 import imi.character.objects.SpatialObject;
 import imi.character.statemachine.GameContext;
@@ -120,6 +122,7 @@ import org.jdesktop.mtgame.Entity;
 import org.jdesktop.mtgame.ProcessorCollectionComponent;
 import org.jdesktop.mtgame.ProcessorComponent;
 import org.jdesktop.mtgame.RenderComponent;
+import org.jdesktop.mtgame.RenderManager;
 import org.jdesktop.mtgame.WorldManager;
 
 
@@ -549,6 +552,8 @@ public abstract class Character extends Entity implements SpatialObject, Animati
 
         // blink if you can hear me
         m_eyes.blink();
+        // This is required to inherit the renderstates (light specifically) from the render manager
+        m_wm.addToUpdateList(m_jscene);
         m_initialized = true;
     }
 
@@ -1896,6 +1901,51 @@ public abstract class Character extends Entity implements SpatialObject, Animati
             }
         }
 
+    }
+
+    /**
+     * Call this method to attach a light gray untextured jME cube to the avatar.
+     * This is useful for debugging lighting errors, among other things.
+     */
+    private void attachDebuggingJMECube()
+    {
+        Box newBox = new Box("box", Vector3f.UNIT_XYZ.negate().mult(0.1f), Vector3f.UNIT_XYZ.mult(0.1f));
+        Node boxNode = new Node();
+        boxNode.attachChild(newBox);
+        boxNode.setName("BoxNode");
+        boxNode.setLocalTranslation(0, 2.0f, 0);
+        RenderManager rm = m_wm.getRenderManager();
+        // Z Buffer State
+        ZBufferState buf = (ZBufferState) rm.createRendererState(RenderState.RS_ZBUFFER);
+        buf.setEnabled(true);
+        buf.setFunction(ZBufferState.TestFunction.LessThanOrEqualTo);
+
+        // Material State
+        MaterialState matState  = null;
+        matState = (MaterialState) rm.createRendererState(RenderState.RS_MATERIAL);
+        matState.setAmbient(ColorRGBA.lightGray);
+        matState.setDiffuse(ColorRGBA.lightGray);
+        matState.setEmissive(ColorRGBA.black);
+        matState.setSpecular(ColorRGBA.black);
+        matState.setMaterialFace(MaterialState.MaterialFace.FrontAndBack);
+        matState.setColorMaterial(MaterialState.ColorMaterial.Diffuse);
+        matState.setEnabled(true);
+
+        LightState ls = (LightState) rm.createRendererState(RenderState.RS_LIGHT);
+        ls.setTwoSidedLighting(false);
+        ls.setEnabled(true);
+        
+        // Cull State
+        CullState cs = (CullState) rm.createRendererState(RenderState.RS_CULL);
+        cs.setCullFace(CullState.Face.Back);
+        cs.setEnabled(true);
+
+        boxNode.setRenderState(buf);
+        boxNode.setRenderState(ls);
+        boxNode.setRenderState(matState);
+        boxNode.updateRenderState();
+        
+        m_jscene.getExternalKidsRoot().attachChild(boxNode);
     }
 
     public void installHead(URL headLocation)
