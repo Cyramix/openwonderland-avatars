@@ -115,11 +115,11 @@ public class WalkState extends GameState
                 skeleton.getAnimationState().setReverseAnimation(false);
             
             // Set animation speed
-            float velocity = context.getController().getVelocityScalar();
-            float speed    = velocity * walkSpeedFactor;
-            if (speed > walkSpeedMax)
-                speed = walkSpeedMax;
-            skeleton.getAnimationState().setAnimationSpeed(speed);
+//            float velocity = context.getController().getVelocityScalar();
+//            float speed    = velocity * walkSpeedFactor;
+//            if (speed > walkSpeedMax)
+//                speed = walkSpeedMax;
+//            skeleton.getAnimationState().setAnimationSpeed(speed);
         }
         
         if (exitCounter > minimumTimeBeforeTransition)

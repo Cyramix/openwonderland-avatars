@@ -20,6 +20,7 @@ package imi.character.avatar;
 import com.jme.math.Vector3f;
 import imi.character.CharacterAttributes;
 import imi.character.CharacterSteeringHelm;
+import imi.character.InitializationInterface;
 import imi.character.avatar.AvatarContext.TriggerNames;
 import imi.character.objects.LocationNode;
 import imi.character.objects.ObjectCollectionBase;
@@ -76,6 +77,15 @@ public class Avatar extends imi.character.Character
             femaleContextSetup();
         else
             maleContextSetup();
+    }
+
+    public Avatar(URL configurationFile, WorldManager wm, PMatrix transform, InitializationInterface initializer)
+    {
+        super(configurationFile, wm, null, transform, initializer);
+        if (m_attributes.isMale())
+            maleContextSetup();
+        else
+            femaleContextSetup();
     }
 
     /**
@@ -285,6 +295,7 @@ public class Avatar extends imi.character.Character
         walk.setWalkSpeedFactor(1.3f);
         walk.setMinimumTimeBeforeTransition(0.05f);
         walk.setTransitionDuration(0.1f);
+        walk.setAnimationSpeed(1.6f);
 
         RunState run = (RunState)m_context.getState(RunState.class);
         run.setImpulse(15.0f);

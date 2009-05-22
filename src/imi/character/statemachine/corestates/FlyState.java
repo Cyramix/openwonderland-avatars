@@ -44,6 +44,8 @@ public class FlyState extends GameState
 
     private boolean restoreGravity       = false;
     private boolean restoreGravityToggle = false;
+
+    private Vector3f gravity = new Vector3f();
     
     public FlyState(AvatarContext master)
     {
@@ -139,7 +141,8 @@ public class FlyState extends GameState
         exitCounter   = 0.0f;
 
         // Kill gravity while flying
-        ((AvatarController)context.getController()).setGravity(new Vector3f());
+        gravity.set(((AvatarController)context.getController()).getGravity());
+        ((AvatarController)context.getController()).setGravity(Vector3f.ZERO);
     }
     
     @Override
@@ -150,7 +153,7 @@ public class FlyState extends GameState
         if (restoreGravity)
         {
             // Restore gravity after flying
-            ((AvatarController)context.getController()).setGravity(new Vector3f(0.0f, 0.098f, 0.0f));
+            ((AvatarController)context.getController()).setGravity(gravity);
         }
         
         if (restoreGravityToggle)

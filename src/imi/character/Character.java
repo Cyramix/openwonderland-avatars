@@ -243,7 +243,11 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         this(configurationFile, wm, null, transform);
     }
 
-    public Character(URL configurationFile, WorldManager wm, String baseURL, PMatrix transform)
+    public Character(URL configurationFile, WorldManager wm, String baseURL, PMatrix transform) {
+        this(configurationFile, wm, baseURL, transform, null);
+    }
+
+    public Character(URL configurationFile, WorldManager wm, String baseURL, PMatrix transform, InitializationInterface initializer)
     {
         super("InterimEntityName");
         xmlCharacter characterDOM = null;
@@ -276,6 +280,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
             logger.log(Level.SEVERE, "Failed to open InputStream to " +
                                     configurationFile.toString() + "! " + ex.getMessage());
         }
+        loadedAttributes.setInitializationObject(initializer);
         commonConstructionCode(wm, loadedAttributes, true, characterDOM);
     }
 

@@ -42,7 +42,7 @@ public class RunState extends WalkState
         super.stateEnter(owner);
         
         owner.getController().setMaxAcceleration(5.0f);
-        owner.getController().setMaxVelocity(800.0f);
+        owner.getController().setMaxVelocity(20.0f);
     }
     
     @Override

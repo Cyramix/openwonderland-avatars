@@ -262,7 +262,7 @@ public class AvatarController extends CharacterController
     }
 
     public void setGravity(Vector3f gravity) {
-        this.gravity = gravity;
+        this.gravity.set(gravity);
     }
 
     public Vector3f getGravityAcc() {
