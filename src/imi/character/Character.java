@@ -398,7 +398,6 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         // Add the processor collection component to the entity
         addComponent(ProcessorCollectionComponent.class, processorCollection);
 
-        // Start the rendering
         if (addEntity) // Add the entity to the world manager
             wm.addEntity(this);
 
@@ -426,12 +425,12 @@ public abstract class Character extends Entity implements SpatialObject, Animati
      */
     protected void finalizeInitialization(xmlCharacter characterDOM)
     {
-        while (isLoaded() == false) // Bind up skeleton reference, etc
+        while (isLoaded() == false) // Bind up skeleton reference
         {
             try {
                 Thread.sleep(100);
             } catch (InterruptedException ex) {
-                Logger.getLogger(Character.class.getName()).log(Level.SEVERE, null, ex);
+                logger.warning("Interrupted while waiting on isLoaded()");
             }
         }
 
@@ -462,13 +461,11 @@ public abstract class Character extends Entity implements SpatialObject, Animati
             m_skeleton.getAnimationState(1).setCurrentCycle(m_defaultFacePose);
             m_skeleton.getAnimationState(1).setCurrentCycleTime(0);
             m_skeleton.getAnimationState(1).setCycleMode(PlaybackMode.PlayOnce);
-
-            // Smile when comming in
-            //initiateFacialAnimation(1, 0.4f, 2.75f);
         }
 
-        // Hook up eyeballs
-        m_eyes = new CharacterEyes(m_attributes.getEyeballTexture(), this, m_wm);
+        // Hook up eyeballs, if eyeballs exist
+        if (!(m_attributes instanceof UnimeshCharacterAttributes))
+            m_eyes = new CharacterEyes(m_attributes.getEyeballTexture(), this, m_wm);
 
         // At this point, all meshes have been loaded. We should now ensure that
         // all of the child meshinstances have material states.
@@ -525,7 +522,16 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         }
 
         // New verlet skeleton manipulator
-        m_skeletonManipulator = new VerletSkeletonFlatteningManipulator(m_leftArm, m_rightArm, m_eyes.getLeftEyeBall(), m_eyes.getRightEyeBall(), m_skeleton, m_modelInst);
+        EyeBall leftEye = null;
+        EyeBall rightEye = null;
+        if (m_eyes != null)
+        {
+            leftEye = m_eyes.leftEyeBall;
+            rightEye = m_eyes.rightEyeBall;
+        }
+        m_skeletonManipulator = new VerletSkeletonFlatteningManipulator(m_leftArm, m_rightArm,
+                                                                        leftEye, rightEye,
+                                                                        m_skeleton, m_modelInst);
         m_rightArm.setSkeletonManipulator(m_skeletonManipulator);
         m_leftArm.setSkeletonManipulator(m_skeletonManipulator);
         //m_arm.setPointAtLocation(Vector3f.UNIT_Y.mult(2.0f)); // test pointing, set to null to stop pointing
@@ -556,7 +562,8 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         m_modelInst.setRenderStop(false);
 
         // blink if you can hear me
-        m_eyes.blink();
+        if (m_eyes != null)
+            m_eyes.blink();
         // This is required to inherit the renderstates (light specifically) from the render manager
         m_wm.addToUpdateList(m_jscene);
         m_initialized = true;
@@ -961,8 +968,9 @@ public abstract class Character extends Entity implements SpatialObject, Animati
     }
 
     /**
-     * This method applies the m_attributes member. It simply wraps
-     * loadSkeleton 
+     * This method performs the skeleton loading based on the attributes isMale
+     * method. It also assigns the initialization object from the attributes if
+     * one is present.
      */
     private void applyAttributes()
     {
@@ -971,31 +979,17 @@ public abstract class Character extends Entity implements SpatialObject, Animati
             logger.warning("No attributes, aborting applyAttributes.");
             return;
         }
+        // Grab the initialization object if one is present
         m_initialization = m_attributes.getInitializationObject();
+
         if (m_attributes.isUseSimpleStaticModel() == true)
             return; // Nothing else to be done here
 
         // eat the skeleton ;)
-        if (m_attributes.isMale()) {
+        if (m_attributes.isMale()) 
            m_skeleton = m_pscene.getRepository().getSkeleton("MaleSkeleton");
-//           loadSkeleton(maleSkeleton);
-        }
-        else {
+        else 
            m_skeleton = m_pscene.getRepository().getSkeleton("FemaleSkeleton");
-//           loadSkeleton(femaleSkeleton);
-        }
-
-//        if (m_skeleton == null) // problem
-//        {
-//            logger.severe("Unable to load skeleton. Aborting applyAttributes.");
-//            return;
-//        }
-//        else
-//        {
-//            // synch up animation states with groups
-//            while (m_skeleton.getAnimationComponent().getGroupCount() < m_skeleton.getAnimationStateCount())
-//                m_skeleton.addAnimationState(new AnimationState(m_skeleton.getAnimationStateCount()));
-//        }
     }
 
     /**
@@ -1011,10 +1005,17 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         // in the current folder.
         if (urlPrefix == null || urlPrefix.length() == 0)
             urlPrefix = new String("file:///" + System.getProperty("user.dir") + File.separatorChar);
+
+        InstructionProcessor instructionProcessor = new InstructionProcessor(m_wm);
+        Instruction attributeRoot = new Instruction();
+        // Set the skeleton to our skeleton
+        attributeRoot.addChildInstruction(InstructionType.setSkeleton, m_skeleton);
+
         // attach the appropriate head
         URL headLocation = null;
         try {
-            headLocation = new URL(urlPrefix + attributes.getHeadAttachment());
+            if (attributes.getHeadAttachment() != null)
+                headLocation = new URL(urlPrefix + attributes.getHeadAttachment());
         }
         catch (MalformedURLException ex)
         {
@@ -1027,11 +1028,6 @@ public abstract class Character extends Entity implements SpatialObject, Animati
             installHeadConfigurationN(headLocation);
             //installHeadConfiguration(headLocation); // Should I parameterize this?
         }
-
-        InstructionProcessor instructionProcessor = new InstructionProcessor(m_wm);
-        Instruction attributeRoot = new Instruction();
-        // Set the skeleton to our skeleton
-        attributeRoot.addChildInstruction(InstructionType.setSkeleton, m_skeleton);
 
         // Load up any geometry requested by the provided attributes object
         List<String[]> load = attributes.getLoadInstructions();
@@ -1117,12 +1113,14 @@ public abstract class Character extends Entity implements SpatialObject, Animati
     }
 
     /**
-     * Loads the model and sets processors
+     * Loads the model if using a simple static model and sets processors for the
+     * character. This method also creates a <code>PPolygonModelInstance</code>
+     * to place the skeleton and other child nodes under.
      * @param processors
      */
     protected void initScene(ArrayList<ProcessorComponent> processors)
     {
-        if(m_attributes.isUseSimpleStaticModel())
+        if (m_attributes.isUseSimpleStaticModel())
         {
             if (m_attributes.getSimpleScene() == null)
             {
@@ -1136,11 +1134,11 @@ public abstract class Character extends Entity implements SpatialObject, Animati
                 m_modelInst = m_pscene.addModelInstance("Character", modelAsset, m_attributes.getOrigin());
             }
         }
-        else // Otherwise use the specified collada model
+        else // Otherwise create the appropriate heirarchy
         {
             m_modelInst = new PPolygonModelInstance(m_attributes.getName());
-            m_modelInst.setRenderStop(true);
-            m_modelInst.addChild(m_skeleton);
+            m_modelInst.setRenderStop(true); // don't start rendering until we finish
+            m_modelInst.addChild(m_skeleton); // Skeleton is for our model instance
             m_pscene.addInstanceNode(m_modelInst);
 
             // Debugging / Diagnostic output
@@ -1150,7 +1148,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
             m_AnimationProcessor.setEnabled(false);
             processors.add(m_AnimationProcessor);
         }
-
+        // Used for updates, etc.
         m_characterProcessor = new CharacterProcessor(this);
         m_characterProcessor.stop();
         processors.add(m_characterProcessor);
@@ -1238,15 +1236,9 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         matState.setColorMaterial(ColorMaterial.Diffuse);
         matState.setDiffuse(ColorRGBA.white);
 
-        // SET lighting
-//        PointLight light = new PointLight();
-//        light.setDiffuse(new ColorRGBA(1.0f, 1.0f, 1.0f, 1.0f));
-//        light.setAmbient(new ColorRGBA(1.0f, 1.0f, 1.0f, 1.0f));
-//        light.setLocation(new Vector3f(-1000, 0, 0)); // not affecting anything
-//        light.setEnabled(true);
+        // Light state
         LightState ls = (LightState) m_wm.getRenderManager().createRendererState(RenderState.RS_LIGHT);
         ls.setEnabled(true);
-       // ls.attach(light);
 
         // Cull State
         CullState cs = (CullState) m_wm.getRenderManager().createRendererState(RenderState.RS_CULL);

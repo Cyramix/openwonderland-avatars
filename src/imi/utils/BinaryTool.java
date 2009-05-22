@@ -230,7 +230,7 @@ public class BinaryTool
      */
     public static void main(String[] args)
     {
-        BinaryTool worldTest = new BinaryTool(args);
+        BinaryTool worldTest = new BinaryTool(new String[] { "-mf" });
     }
 
     /**
@@ -323,13 +323,12 @@ public class BinaryTool
                                                             null); // existing skeleton (if applicable)
         Collada loader = new Collada(params);
         try {
-            loader.load(new PScene(wm), skeletonLocation); // Don't need to hold on to the pscen
+            loader.load(new PScene(wm), skeletonLocation); // Don't need to hold on to the pscene
         }
         catch (ColladaLoadingException ex)
         {
             logger.severe(ex.getMessage());
         }
-
         SkeletonNode skeleton = loader.getSkeletonNode();
         skeleton.refresh();
         // Now load it with animations using the InstructionProcessor

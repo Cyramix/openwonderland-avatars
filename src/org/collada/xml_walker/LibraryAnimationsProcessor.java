@@ -112,7 +112,7 @@ public class LibraryAnimationsProcessor extends Processor
         if (joint == null)
         {
             // Why is this coming up now?
-//            logger.warning("Unable to locate joint \"" + jointName +"\" referenced by animation.");
+            logger.warning("Unable to locate joint \"" + jointName +"\" referenced by animation.");
             return;
         }
 
@@ -147,14 +147,17 @@ public class LibraryAnimationsProcessor extends Processor
         for (int i = 0; i < m_KeyframeCount; i++)
         {
             fKeyframeTime = getKeyframeTime(i);
-            getKeyframeMatrix(i, matrixBuffer);
 
-            colladaJointChannel.addKeyframe(fKeyframeTime, matrixBuffer);
+            if (getKeyframeMatrix(i, matrixBuffer) == false)
+                logger.severe("Unable to add keyframe #" + i + " at time: " + fKeyframeTime);
+            else
+                colladaJointChannel.addKeyframe(fKeyframeTime, matrixBuffer);
         }
 
         colladaJointChannel.calculateDuration();
         //  Add the JointAnimation to the AnimationLoop.
         animationGroup.getCycle(0).addJointChannel(colladaJointChannel);
+        
     }
 
     /**
@@ -232,7 +235,7 @@ public class LibraryAnimationsProcessor extends Processor
 
         //  Sanity check.
         if (FloatIndex < 0 || FloatIndex+16 > m_transformOutputSource.getFloatArray().getValues().size())
-            return(false);
+            return false;
 
         float [] matrixFloats = new float[16];
 
@@ -242,7 +245,7 @@ public class LibraryAnimationsProcessor extends Processor
         // Load it into the output matrix
         matrixOut.set(matrixFloats);
 
-        return(true);
+        return true;
     }
 
 }

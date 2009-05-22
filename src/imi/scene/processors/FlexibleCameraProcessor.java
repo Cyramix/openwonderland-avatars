@@ -258,6 +258,10 @@ public class FlexibleCameraProcessor extends AWTEventProcessorComponent
         System.out.println(getState().getCameraTransform());
     }
 
+    public void setSkyNode(Node skyNode)
+    {
+        this.m_skyNode = skyNode;
+    }
     /////////////////////////////////////////////////////////////////
     ///////////// Standard Collection Encapsulation /////////////////
     /////////////////////////////////////////////////////////////////

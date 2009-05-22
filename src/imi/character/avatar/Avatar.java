@@ -73,10 +73,10 @@ public class Avatar extends imi.character.Character
         super(attributes, wm, addEntity);
 //        m_context = instantiateContext();       // Initialize m_context
         // For female loading test\demo
-        if (attributes instanceof FemaleAvatarAttributes)
-            femaleContextSetup();
-        else
+        if (attributes.isMale())
             maleContextSetup();
+        else
+            femaleContextSetup();
     }
 
     public Avatar(URL configurationFile, WorldManager wm, PMatrix transform, InitializationInterface initializer)
