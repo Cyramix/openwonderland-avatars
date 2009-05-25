@@ -78,7 +78,7 @@ public class RepositoryAsset
     private boolean bUseTextureImporter = false;
 
     private LinkedList<PendingUsers> pendingUserShares = null;
-    private boolean loadComplete = true;
+    private boolean loadComplete = false;
 
     /**
      * Construct a new instance
@@ -99,7 +99,7 @@ public class RepositoryAsset
      */
     void loadSelf()
     {
-        if (m_data != null && m_data.size() > 0)
+        if (m_data != null && m_data.size() > 0) // already loaded.
             return;
 
         if (m_data != null && m_data.isEmpty()) // weirdness
@@ -145,8 +145,8 @@ public class RepositoryAsset
                 loadTexture();
                 break;
         }
-        // first, if the size of data is still zero, there is a problem
-        if (m_data != null && m_data.size() <= 0)
+        // if the size of data is still zero or the collection is null, there is a problem
+        if (m_data == null  || m_data.size() <= 0)
             m_data = null;
         else
         {
