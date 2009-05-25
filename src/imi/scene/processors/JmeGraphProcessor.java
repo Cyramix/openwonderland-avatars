@@ -32,6 +32,10 @@ public class JmeGraphProcessor extends ProcessorComponent
             commands.add(new GraphCommand(spat, false, node));
     }
 
+    public boolean isEmpty() {
+        return commands.isEmpty();
+    }
+
     @Override
     public void compute(ProcessorArmingCollection arg0) {
     }
