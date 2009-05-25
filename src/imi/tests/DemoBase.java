@@ -136,7 +136,7 @@ public class DemoBase {
     /** Used to indicate which environment should be loaded **/
     private String pathToEnv = null;
 
-    protected SkyBox   m_skyBox = null;
+    protected Node   m_skyBox = null;
 
     protected String[] m_skyboxAssets = new String[] { "assets/textures/skybox/Front.png",
                                                        "assets/textures/skybox/Right.png",
@@ -812,7 +812,7 @@ public class DemoBase {
         return (cameraSG);
     }
 
-    protected SkyBox createSkyBox(Entity camera) {
+    protected Node createSkyBox(Entity camera) {
         SkyBox sky = new SkyBox("skybox", 10.0f, 10.0f, 10.0f, worldManager);
         sky.setTexture(SkyBox.NORTH,    loadSkyboxTexture(m_skyboxAssets[0]));  // +Z side
         sky.setTexture(SkyBox.EAST,     loadSkyboxTexture(m_skyboxAssets[1]));  // -X side

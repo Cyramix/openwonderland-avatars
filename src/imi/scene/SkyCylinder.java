@@ -19,6 +19,7 @@ package imi.scene;
 
 import com.jme.bounding.BoundingBox;
 import com.jme.image.Texture;
+import com.jme.math.Quaternion;
 import com.jme.renderer.Renderer;
 import com.jme.scene.Node;
 import com.jme.scene.shape.Cylinder;
@@ -52,7 +53,7 @@ public class SkyCylinder extends Node
      * @param zExtent
      *            The z size of the skybox in both directions from the center.
      */
-    public SkyCylinder(String name, float xExtent, float yExtent, float zExtent, WorldManager wm) {
+    public SkyCylinder(String name, WorldManager wm) {
         super(name);
         m_wm = wm;
         initialize();
@@ -70,6 +71,7 @@ public class SkyCylinder extends Node
         // Initialize the texture state
         ts.setTexture(texture, 0);
         ts.setEnabled(true);
+        skyCylinder.setRenderState(ts);
         // get an update
         m_wm.addToUpdateList(skyCylinder);
     }
@@ -78,20 +80,21 @@ public class SkyCylinder extends Node
     private void initialize() {
 
         // make the sky geometry
-        skyCylinder = new Cylinder("Sky", 32, 16, 20, 30, true, true);
+        skyCylinder = new Cylinder("Sky", 32, 16, 10, 30, true, true);
+        skyCylinder.setLocalRotation(new Quaternion(new float[] {3.14159f * -0.5f, 0, 0}));
 
         // We don't want the light to effect our skybox
-        setLightCombineMode(LightCombineMode.Off);
-        setTextureCombineMode(TextureCombineMode.Replace);
+        skyCylinder.setLightCombineMode(LightCombineMode.Off);
+        skyCylinder.setTextureCombineMode(TextureCombineMode.Replace);
 
         ZBufferState zbuff = (ZBufferState)m_wm.getRenderManager().createRendererState(StateType.ZBuffer);
         zbuff.setWritable(false);
         zbuff.setEnabled(true);
         zbuff.setFunction(ZBufferState.TestFunction.LessThanOrEqualTo);
-        setRenderState(zbuff);
+        skyCylinder.setRenderState(zbuff);
 
         // We don't want it making our skybox disapear, so force view
-        setCullHint(CullHint.Never);
+        skyCylinder.setCullHint(CullHint.Never);
 
         // Make sure texture is only what is set.
         skyCylinder.setTextureCombineMode(TextureCombineMode.Replace);
