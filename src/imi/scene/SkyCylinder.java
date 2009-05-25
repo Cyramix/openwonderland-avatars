@@ -80,7 +80,7 @@ public class SkyCylinder extends Node
     private void initialize() {
 
         // make the sky geometry
-        skyCylinder = new Cylinder("Sky", 32, 16, 10, 30, true, true);
+        skyCylinder = new Cylinder("Sky", 32, 16, 5,5, false, true);
         skyCylinder.setLocalRotation(new Quaternion(new float[] {3.14159f * -0.5f, 0, 0}));
 
         // We don't want the light to effect our skybox

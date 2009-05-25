@@ -24,11 +24,11 @@ package imi.character;
  * The initialize() will be called once the character is done loading.
  * 
  * It is possible to use multiple initializers under a single initializer
- * object to be passed to the CharactaerAttributes, to have them all excecute.
+ * object to be passed to the CharacterAttributes, to have them all excecute.
  * 
  * @author Lou Hayt
  */
-public interface InitializationInterface
+public interface CharacterInitializationInterface
 {
     public void initialize(Character character);
 }

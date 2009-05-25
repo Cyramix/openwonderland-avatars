@@ -74,7 +74,7 @@ public class CharacterAttributes
     private String                  eyeballTexture          = null;
 
     /** Initialization extension **/
-    private InitializationInterface initializationObject    = null;
+    private CharacterInitializationInterface initializationObject    = null;
 
     private Map<Integer, String[]>  m_geomref = null;
 
@@ -362,11 +362,11 @@ public class CharacterAttributes
         this.attachmentsInstructions = attachmentsInstructions;
     }
 
-    public InitializationInterface getInitializationObject() {
+    public CharacterInitializationInterface getInitializationObject() {
         return initializationObject;
     }
 
-    public void setInitializationObject(InitializationInterface initializationObject) {
+    public void setInitializationObject(CharacterInitializationInterface initializationObject) {
         this.initializationObject = initializationObject;
     }
 

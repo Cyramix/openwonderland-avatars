@@ -790,6 +790,11 @@ public class SkeletonNode extends PNode implements Animated, Serializable
         return m_BFTSkeleton.size();
     }
 
+    public Iterable<SkinnedMeshJoint> getSkinnedMeshJoints()
+    {
+        return m_BFTSkeleton;
+    }
+
     private transient PTransform transformBuffer = new PTransform();
     private transient FastList<PNode> queue = new FastList<PNode>();
     public void collectSharedMeshes(FastList<SharedMesh> result)

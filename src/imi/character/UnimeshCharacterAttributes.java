@@ -17,6 +17,9 @@
  */
 package imi.character;
 
+import imi.scene.PMatrix;
+import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
+import imi.scene.polygonmodel.parts.skinned.SkinnedMeshJoint;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +33,7 @@ public class UnimeshCharacterAttributes extends CharacterAttributes
 {
     private static final Logger logger = Logger.getLogger(UnimeshCharacterAttributes.class.getName());
     private static final String UnimeshGeometryName = "H_DDS_LowResShape";
+
     public enum Sex {
         Male,
         Female,
@@ -43,6 +47,8 @@ public class UnimeshCharacterAttributes extends CharacterAttributes
     protected Sex sex                   = Sex.Indeterminate;
     /** Used for configuring the skeleton properly **/
     private UnimeshInitializer    initializer = new UnimeshInitializer();
+    /** The skeleton that the file provided for us. **/
+    protected SkeletonNode modifiedSkeleton = null;
 
     /**
      * Construct attributes for a new unimesh avatar!
@@ -103,8 +109,9 @@ public class UnimeshCharacterAttributes extends CharacterAttributes
      * @return
      */
     @Override
-    public InitializationInterface getInitializationObject() {
-        return initializer.customInitializer;
+    public CharacterInitializationInterface getInitializationObject() {
+        return super.getInitializationObject();
+//        return initializer.customInitializer;
     }
 
     /**
@@ -112,7 +119,7 @@ public class UnimeshCharacterAttributes extends CharacterAttributes
      * @param initializationObject
      */
     @Override
-    public void setInitializationObject(InitializationInterface initializationObject) {
+    public void setInitializationObject(CharacterInitializationInterface initializationObject) {
         initializer.customInitializer = initializationObject;
     }
 
@@ -141,10 +148,10 @@ public class UnimeshCharacterAttributes extends CharacterAttributes
     }
 
 
-    private class UnimeshInitializer implements InitializationInterface
+    private class UnimeshInitializer implements CharacterInitializationInterface
     {
         /** Provide a slot for user requested initialization **/
-        InitializationInterface customInitializer = null;
+        CharacterInitializationInterface customInitializer = null;
 
         @Override
         public void initialize(Character character) {
@@ -163,6 +170,29 @@ public class UnimeshCharacterAttributes extends CharacterAttributes
         // in the current folder.
         if (urlPrefix == null || urlPrefix.length() == 0)
             urlPrefix = new String("file:///" + System.getProperty("user.dir") + File.separatorChar);
-        // TODO :
+        SkeletonNode characterSkeleton = character.getSkeleton();
+        if (modifiedSkeleton != null)
+        {
+            for (SkinnedMeshJoint smj : modifiedSkeleton.getSkinnedMeshJoints())
+            {
+                SkinnedMeshJoint originalJoint = characterSkeleton.getSkinnedMeshJoint(smj.getName());
+                if (originalJoint == null)
+                    logger.warning("Could not find a matching joint for " + smj.getName());
+                else
+                {
+                    logger.info("Modifying joint: " + smj.getName());
+                    originalJoint.getBindPose().set(smj.getBindPose());
+//                    originalJoint.getUnmodifiedInverseBindPose().set(smj.getBindPose().inverse());
+//                    // "prime the pump"
+//                    originalJoint.getTransform().setLocalMatrix(smj.getBindPose());
+                }
+            }
+            // refresh the skeleton
+            // go through each mesh and nullify the cached inverse bind pose reference
+            characterSkeleton.invalidateCachedBindPoses();
+            characterSkeleton.refresh();
+        }
+        else
+            logger.warning("No skeleton was found to customize the unimesh against!");
     }
 }

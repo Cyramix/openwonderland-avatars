@@ -181,7 +181,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
     /** Expansion slot for updatable things **/
     private   Updatable                     m_updateExtension       = null;
     /** Expansion slot for initialization **/
-    private   InitializationInterface       m_initialization        = null;
+    private   CharacterInitializationInterface       m_initialization        = null;
     /** index of the 'default' facial animation **/
     private   int                           m_defaultFacePose       = 0; // No more 'playAll' cycle
     private   float                         m_defaultFacePoseTiming = 0.1f;
@@ -247,7 +247,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         this(configurationFile, wm, baseURL, transform, null);
     }
 
-    public Character(URL configurationFile, WorldManager wm, String baseURL, PMatrix transform, InitializationInterface initializer)
+    public Character(URL configurationFile, WorldManager wm, String baseURL, PMatrix transform, CharacterInitializationInterface initializer)
     {
         super("InterimEntityName");
         xmlCharacter characterDOM = null;
@@ -478,6 +478,12 @@ public abstract class Character extends Entity implements SpatialObject, Animati
             applyMaterialProperties(characterDOM);
             // Skeletal modifications
             applySkeletalModifications(characterDOM);
+        }
+        else if (m_attributes instanceof UnimeshCharacterAttributes)
+        {
+            Repository repo = (Repository)m_wm.getUserData(Repository.class);
+            PPolygonSkinnedMeshInstance smi = m_skeleton.getMeshesBySubGroup("FullBody")[0];
+            smi.getMaterialRef().setShader(repo.newShader(FleshShader.class));
         }
         else
             setDefaultShaders();
@@ -1087,7 +1093,30 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         }
 
         // Execute the instruction tree
-        instructionProcessor.execute(attributeRoot);
+        instructionProcessor.execute(attributeRoot, false);
+        if (attributes instanceof UnimeshCharacterAttributes)
+        {
+            UnimeshCharacterAttributes uniAttribs = (UnimeshCharacterAttributes)attributes;
+            // find the skeleton node from the loading pscene
+            FastList<PNode> queue = new FastList<PNode>();
+            queue.add(instructionProcessor.getLoadingPScene().getInstances());
+
+            PNode current = null;
+            SkeletonNode skelly = null;
+            while (!queue.isEmpty())
+            {
+                current = queue.removeFirst();
+                if (current instanceof SkeletonNode) // found it!
+                {
+                    skelly = (SkeletonNode)current;
+                    break;
+                }
+                // add all children
+                if (current.getChildrenCount() > 0)
+                    queue.addAll(current.getChildren());
+            }
+            uniAttribs.modifiedSkeleton = skelly;
+        }
     }
 
     private boolean checkURLPath(String path) {
@@ -1311,7 +1340,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
             m_skeleton   = null;
             m_jscene.updateRenderState();
             
-            // Initialization extension
+            // Initialization extension, special spot for the simple model case
             if (m_initialization != null)
                 m_initialization.initialize(this);
             

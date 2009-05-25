@@ -20,7 +20,7 @@ package imi.character.avatar;
 import com.jme.math.Vector3f;
 import imi.character.CharacterAttributes;
 import imi.character.CharacterSteeringHelm;
-import imi.character.InitializationInterface;
+import imi.character.CharacterInitializationInterface;
 import imi.character.avatar.AvatarContext.TriggerNames;
 import imi.character.objects.LocationNode;
 import imi.character.objects.ObjectCollectionBase;
@@ -79,7 +79,7 @@ public class Avatar extends imi.character.Character
             femaleContextSetup();
     }
 
-    public Avatar(URL configurationFile, WorldManager wm, PMatrix transform, InitializationInterface initializer)
+    public Avatar(URL configurationFile, WorldManager wm, PMatrix transform, CharacterInitializationInterface initializer)
     {
         super(configurationFile, wm, null, transform, initializer);
         if (m_attributes.isMale())

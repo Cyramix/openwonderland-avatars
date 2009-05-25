@@ -23,27 +23,27 @@ import javolution.util.FastTable;
  *
  * @author Lou Hayt
  */
-public class CharacterInitializer implements InitializationInterface
+public class CharacterInitializerGroup implements CharacterInitializationInterface
 {
-    public FastTable<InitializationInterface> initers = new FastTable<InitializationInterface>();
+    public FastTable<CharacterInitializationInterface> initers = new FastTable<CharacterInitializationInterface>();
 
-    public CharacterInitializer() {}
-    public CharacterInitializer(InitializationInterface... initializers) 
+    public CharacterInitializerGroup() {}
+    public CharacterInitializerGroup(CharacterInitializationInterface... initializers)
     {
         initers.addAll(initers);
     }
-    public CharacterInitializer(InitializationInterface initializer) 
+    public CharacterInitializerGroup(CharacterInitializationInterface initializer)
     {
         initers.add(initializer);
     }
 
-    public void addInitializer(InitializationInterface initializer)
+    public void addInitializer(CharacterInitializationInterface initializer)
     {
         initers.add(initializer);
     }
 
     public void initialize(Character character) {
-        for(InitializationInterface i : initers)
+        for(CharacterInitializationInterface i : initers)
             i.initialize(character);
     }
 
