@@ -139,10 +139,9 @@ public class FlexibleCameraProcessor extends AWTEventProcessorComponent
         m_armingConditions.addCondition(new NewFrameCondition(this));
 
         // Set the picNum for snap shots
-        File picDir = new File("screenShots/");
-        if (picDir.mkdirs() || picDir.exists())
+        if (screenShotFolder.mkdirs() || screenShotFolder.exists())
         {
-            File [] files = picDir.listFiles();
+            File [] files = screenShotFolder.listFiles();
             for(File f : files)
             {
                 if (f.getName().startsWith("pic"))
@@ -252,6 +251,7 @@ public class FlexibleCameraProcessor extends AWTEventProcessorComponent
     public void takeSnap() {
         if (!takeSnap)
             takeSnap = true;
+        dumpTransform();
     }
 
     public void dumpTransform() {
