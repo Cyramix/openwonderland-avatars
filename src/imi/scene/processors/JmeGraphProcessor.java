@@ -41,6 +41,11 @@ public class JmeGraphProcessor extends ProcessorComponent
         while(!commands.isEmpty())
         {
             GraphCommand gc = commands.removeFirst();
+            if (gc == null)
+            {
+                System.out.println("recieved null command");
+                return;
+            }
             if (gc.attach)
                 gc.node.attachChild(gc.spat);
             else
