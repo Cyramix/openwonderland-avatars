@@ -20,13 +20,13 @@ public class JmeGraphProcessor extends ProcessorComponent
 {
     FastList<GraphCommand> commands = new FastList<GraphCommand>();
 
-    public void attach(Spatial spat, Node node)
+    public synchronized void attach(Spatial spat, Node node)
     {
         if (spat != null && node != null)
             commands.add(new GraphCommand(spat, true, node));
     }
     
-    public void detach(Spatial spat, Node node)
+    public synchronized void detach(Spatial spat, Node node)
     {
         if (spat != null && node != null)
             commands.add(new GraphCommand(spat, false, node));
@@ -41,7 +41,8 @@ public class JmeGraphProcessor extends ProcessorComponent
     }
 
     @Override
-    public void commit(ProcessorArmingCollection arg0) {
+    public synchronized void commit(ProcessorArmingCollection arg0)
+    {
         while(!commands.isEmpty())
         {
             GraphCommand gc = commands.removeFirst();
