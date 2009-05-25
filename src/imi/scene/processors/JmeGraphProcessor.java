@@ -11,6 +11,7 @@ import javolution.util.FastList;
 import org.jdesktop.mtgame.NewFrameCondition;
 import org.jdesktop.mtgame.ProcessorArmingCollection;
 import org.jdesktop.mtgame.ProcessorComponent;
+import org.jdesktop.mtgame.WorldManager;
 
 /**
  *
@@ -18,7 +19,14 @@ import org.jdesktop.mtgame.ProcessorComponent;
  */
 public class JmeGraphProcessor extends ProcessorComponent
 {
+    private WorldManager wm = null;
     FastList<GraphCommand> commands = new FastList<GraphCommand>();
+
+    public JmeGraphProcessor(WorldManager wm)
+    {
+        super();
+        this.wm = wm;
+    }
 
     public synchronized void attach(Spatial spat, Node node)
     {
@@ -52,7 +60,11 @@ public class JmeGraphProcessor extends ProcessorComponent
                 return;
             }
             if (gc.attach)
+            {
                 gc.node.attachChild(gc.spat);
+                wm.addToUpdateList(gc.node); // need to inherit the states (lighting!)
+
+            }
             else
                 gc.node.detachChild(gc.spat);
         }

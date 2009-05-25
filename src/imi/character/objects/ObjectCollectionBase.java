@@ -22,6 +22,7 @@ import imi.scene.PScene;
 import imi.scene.processors.JmeGraphProcessor;
 import java.util.ArrayList;
 import org.jdesktop.mtgame.Entity;
+import org.jdesktop.mtgame.WorldManager;
 
 /**
  *
@@ -30,11 +31,12 @@ import org.jdesktop.mtgame.Entity;
 public class ObjectCollectionBase extends Entity
 {
     // JME graph attach\detach goes through there (due to multi threading safeness)
-    protected JmeGraphProcessor jmeGraphProc = new JmeGraphProcessor();
+    protected JmeGraphProcessor jmeGraphProc = null;
 
-    public ObjectCollectionBase(String name)
+    public ObjectCollectionBase(String name, WorldManager wm)
     {
         super(name);
+        jmeGraphProc = new JmeGraphProcessor(wm);
     }
 
     public void addObject(SpatialObject obj) {

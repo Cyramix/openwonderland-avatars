@@ -72,7 +72,7 @@ public class AvatarObjectCollection extends ObjectCollectionBase
      */
     public AvatarObjectCollection(String name, WorldManager wm)
     {
-        super(name);
+        super(name, wm);
         worldManager = wm;
 
         // The procedural scene graph
