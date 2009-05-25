@@ -19,6 +19,7 @@ package imi.character.objects;
 
 import imi.scene.JScene;
 import imi.scene.PScene;
+import imi.scene.processors.JmeGraphProcessor;
 import java.util.ArrayList;
 import org.jdesktop.mtgame.Entity;
 
@@ -28,6 +29,8 @@ import org.jdesktop.mtgame.Entity;
  */
 public class ObjectCollectionBase extends Entity
 {
+    // JME graph attach\detach goes through there (due to multi threading safeness)
+    protected JmeGraphProcessor jmeGraphProc = new JmeGraphProcessor();
 
     public ObjectCollectionBase(String name)
     {
@@ -62,6 +65,9 @@ public class ObjectCollectionBase extends Entity
         return null;
     }
 
+    public JmeGraphProcessor getJmeGraphProc() {
+        return jmeGraphProc;
+    }
     public JScene getJScene() { return null; }
     public PScene getPScene() { return null; }
 

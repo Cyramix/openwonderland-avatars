@@ -80,7 +80,8 @@ public class AvatarObjectCollection extends ObjectCollectionBase
 
         // The collection of processors for this entity
         ArrayList<ProcessorComponent> processors = new ArrayList<ProcessorComponent>();
-
+        processors.add(jmeGraphProc);
+        
         // Initialize the scene
         //initScene(processors);
 
