@@ -490,8 +490,8 @@ public class Repository extends Entity
 
         public void run() {
             // TODO watchdog timer
-
-            m_repoAsset.loadSelf();
+            while (!m_repoAsset.isComplete())
+                m_repoAsset.loadSelf();
 
             m_repoAsset.shareAsset(m_user, m_asset);
             

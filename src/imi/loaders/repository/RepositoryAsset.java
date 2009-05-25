@@ -151,16 +151,15 @@ public class RepositoryAsset
         else
         {
             // finished loading, remove ourselves from the update pool
-        }
-        
-        synchronized(this) {
-            loadComplete = true;
+            synchronized(this) {
+                loadComplete = true;
 
-            // Now notify any users on the pendingShares list
-            if (pendingUserShares!=null) {
-                for(PendingUsers u : pendingUserShares) {
-                    u.asset.setAssetData(getDataReference());
-                    u.user.receiveAsset(u.asset);
+                // Now notify any users on the pendingShares list
+                if (pendingUserShares!=null) {
+                    for(PendingUsers u : pendingUserShares) {
+                        u.asset.setAssetData(getDataReference());
+                        u.user.receiveAsset(u.asset);
+                    }
                 }
             }
         }
@@ -182,6 +181,15 @@ public class RepositoryAsset
                 user.receiveAsset(asset);
             }
         }
+    }
+
+    /**
+     * Check to see if the asset has been loaded.
+     * @return
+     */
+    public boolean isComplete()
+    {
+        return loadComplete;
     }
 
     private Object getDataReference() 
