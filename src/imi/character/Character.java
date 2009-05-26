@@ -93,7 +93,7 @@ import imi.serialization.xml.bindings.xmlCharacter;
 import imi.serialization.xml.bindings.xmlCharacterAttributes;
 import imi.serialization.xml.bindings.xmlJointModification;
 import imi.serialization.xml.bindings.xmlMaterial;
-import imi.utils.BinaryExporter;
+import imi.utils.BinaryExporterImporter;
 import imi.utils.instruments.Instrumentation;
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -188,7 +188,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
     private   VerletSkeletonFlatteningManipulator m_skeletonManipulator   = null;
 
     private Semaphore countingSemaphore = new Semaphore(0);
-    protected BinaryExporter                m_binaryExporter        = new BinaryExporter();
+    protected BinaryExporterImporter                m_binaryExporter        = new BinaryExporterImporter();
 
     private static JAXBContext context;
 

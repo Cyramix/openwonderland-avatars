@@ -92,6 +92,7 @@ public abstract class BaseShaderProgram implements RenderUpdater, AbstractShader
         m_bShaderLoaded = other.m_bShaderLoaded;
         m_programName = new String(other.m_programName);
         m_programDescription = new String(other.m_programDescription);
+        shaderState = (GLSLShaderObjectsState)m_WM.getRenderManager().createRendererState(StateType.GLSLShaderObjects);
         // apply this to our shader state
         loadAndCompileShader();
     }
