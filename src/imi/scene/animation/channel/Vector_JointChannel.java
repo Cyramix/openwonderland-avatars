@@ -263,7 +263,7 @@ public class Vector_JointChannel implements PJointChannel, Serializable
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    protected class VectorKeyframe implements Serializable
+    protected static class VectorKeyframe implements Serializable
     {
         /** Serialization version number **/
         private static final long serialVersionUID = 1l;

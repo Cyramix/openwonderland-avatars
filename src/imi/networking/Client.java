@@ -321,11 +321,12 @@ public class Client implements SimpleClientListener, ClientSideUser, Updatable
     
     public void recieveWorldList(String [] worldNames)
     {
-        String string = "Recieving the list of worlds: ";
-        gui.appendOutput(string);
+        String string = "Receiving the list of worlds: ";
+        
         logger.info(string);
         if (gui != null)
         {
+            gui.appendOutput(string);
             for (String name : worldNames)
                 gui.appendOutput(name);
             gui.appendOutput("-=-");

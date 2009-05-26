@@ -31,6 +31,8 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -46,6 +48,7 @@ public class TextureMaterialProperties implements Serializable
     /** Serialization version number **/
     private static final long serialVersionUID = 1l;
 
+    private static final Logger logger = Logger.getLogger(TextureMaterialProperties.class.getName());
     /** The location of the image **/
     private URL     m_imageLocation = null;
     /** Which texture unit is this texture destined for? **/
@@ -272,7 +275,19 @@ public class TextureMaterialProperties implements Serializable
             return false;
         }
         final TextureMaterialProperties other = (TextureMaterialProperties) obj;
-        if (this.m_imageLocation != other.m_imageLocation && (this.m_imageLocation == null || !this.m_imageLocation.equals(other.m_imageLocation)))
+        URI myURI = null;
+        URI theirURI = null;
+        try {
+            myURI = m_imageLocation.toURI();
+            theirURI = other.m_imageLocation.toURI();
+        }
+        catch (URISyntaxException ex)
+        {
+            // d'oh
+            logger.severe("Couldn't make URI's out of these bloody URLs!");
+        }
+        
+        if (myURI != theirURI && (myURI == null || !myURI.equals(theirURI)))
         {
             return false;
         }
@@ -314,8 +329,17 @@ public class TextureMaterialProperties implements Serializable
     @Override
     public int hashCode()
     {
+        URI myURI = null;
+        try {
+            myURI = m_imageLocation.toURI();
+        }
+        catch (URISyntaxException ex)
+        {
+            // d'oh
+            logger.severe("Couldn't make URI's out of these bloody URLs!");
+        }
         int hash = 7;
-        hash = 17 * hash + (this.m_imageLocation != null ? this.m_imageLocation.hashCode() : 0);
+        hash = 17 * hash + (myURI != null ? myURI.hashCode() : 0);
         hash = 17 * hash + this.m_textureUnit;
         hash = 17 * hash + (this.m_wrapS != null ? this.m_wrapS.hashCode() : 0);
         hash = 17 * hash + (this.m_wrapT != null ? this.m_wrapT.hashCode() : 0);

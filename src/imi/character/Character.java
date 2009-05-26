@@ -963,29 +963,32 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         // first the skinned meshes
         Iterable<PPolygonSkinnedMeshInstance> smInstances = m_skeleton.retrieveSkinnedMeshes("Head");
         if (smInstances == null) // no subgroup found
-            logger.warning("No \"Head\" meshes found during head installation. I will now die with a NPE");
-        for (PPolygonSkinnedMeshInstance meshInst : smInstances)
+            logger.severe("No \"Head\" meshes found during head installation!");
+        else
         {
-            PMeshMaterial meshMat = meshInst.getMaterialRef();
-            String tempName = meshInst.getName().toLowerCase();
+            for (PPolygonSkinnedMeshInstance meshInst : smInstances)
+            {
+                PMeshMaterial meshMat = meshInst.getMaterialRef();
+                String tempName = meshInst.getName().toLowerCase();
 
-            // is this an eyeball? (also used for tongue and teeth)
-            if (tempName.contains("eyegeoshape"))
-            {
-                meshMat.setShader(eyeballShader.duplicate());
-                if (meshMat.getTexture(0) != null)
-                    meshMat.getTexture(0).setMinFilter(MinificationFilter.BilinearNoMipMaps);
+                // is this an eyeball? (also used for tongue and teeth)
+                if (tempName.contains("eyegeoshape"))
+                {
+                    meshMat.setShader(eyeballShader.duplicate());
+                    if (meshMat.getTexture(0) != null)
+                        meshMat.getTexture(0).setMinFilter(MinificationFilter.BilinearNoMipMaps);
+                }
+                else if (tempName.contains("tongue") || tempName.contains("teeth"))
+                {
+                    if (meshMat.getTexture(0) != null)
+                        meshMat.getTexture(0).setMinFilter(MinificationFilter.BilinearNoMipMaps);
+                    meshMat.setShader(eyeballShader.duplicate());
+                }
+                else
+                    meshMat.setShader(fleshShader.duplicate());
+                // Apply it!
+                meshInst.applyShader();
             }
-            else if (tempName.contains("tongue") || tempName.contains("teeth"))
-            {
-                if (meshMat.getTexture(0) != null)
-                    meshMat.getTexture(0).setMinFilter(MinificationFilter.BilinearNoMipMaps);
-                meshMat.setShader(eyeballShader.duplicate());
-            }
-            else
-                meshMat.setShader(fleshShader.duplicate());
-            // Apply it!
-            meshInst.applyShader();
         }
     }
 
@@ -1026,7 +1029,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         // assumed that the prefix should be the file protocol to the local machine
         // in the current folder.
         if (urlPrefix == null || urlPrefix.length() == 0)
-            urlPrefix = new String("file:///" + System.getProperty("user.dir") + File.separatorChar);
+            urlPrefix = "file:///" + System.getProperty("user.dir") + File.separatorChar;
 
         InstructionProcessor instructionProcessor = new InstructionProcessor(m_wm);
         Instruction attributeRoot = new Instruction();

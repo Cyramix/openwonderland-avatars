@@ -89,7 +89,7 @@ public class SkinnedAnimationProcessor extends ProcessorComponent
             if (m_animated == null)
                 return;
         }
-        else if (m_animated == null && m_modelInst == null)
+        else if (m_animated == null)
             return;
 
         // Slightly hardcoded section follows. Avert your eyes!

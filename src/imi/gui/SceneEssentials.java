@@ -532,6 +532,7 @@ public class SceneEssentials {
                 newAsset.setInitializer(
                 new AssetInitializer() {                                        // WARNING: problem with not being ready when the model is ready
                     public boolean initialize(Object asset) {
+                        boolean result = false;
                         if (asset != null && asset instanceof SkeletonNode) {
                             // RED - 01/14/09
                             Repository repo = (Repository)m_worldManager.getUserData(Repository.class);
@@ -554,7 +555,8 @@ public class SceneEssentials {
 
                             PPolygonModelInstance modInst = ((PPolygonModelInstance)skeleton.getParent());
                             ((ProcessorCollectionComponent)m_currentEntity.getComponent(ProcessorCollectionComponent.class)).addProcessor(new SkinnedAnimationProcessor(modInst, m_worldManager));
-                        } else {
+                            result = true;
+                        } else if (asset != null) {
                             PPolygonMeshInstance target = (PPolygonMeshInstance) asset;
                             // Create a material to use
                             int iIndex = m_fileTexture.getName().indexOf(".");
@@ -566,9 +568,10 @@ public class SceneEssentials {
                             // Set the material
                             target.setMaterial(material);
                             target.applyMaterial();
+                            result = true;
                         }
                         m_currentPScene.setDirty(true, true);
-                        return true;
+                        return result;
                     }
                 });                
                 m_modelInst = m_currentPScene.addModelInstance(m_modelName, newAsset, new PMatrix());
@@ -589,6 +592,7 @@ public class SceneEssentials {
                 newAsset.setInitializer(
                 new AssetInitializer() {                                        // WARNING: problem with not being ready when the model is ready
                     public boolean initialize(Object asset) {
+                        boolean result = false;
                         if (asset != null && asset instanceof SkeletonNode) {
                             // RED - 01/14/09
                             Repository repo = (Repository) m_worldManager.getUserData(Repository.class);
@@ -611,7 +615,8 @@ public class SceneEssentials {
 
                             PPolygonModelInstance modInst = ((PPolygonModelInstance)skeleton.getParent());
                             ((ProcessorCollectionComponent)m_currentEntity.getComponent(ProcessorCollectionComponent.class)).addProcessor(new SkinnedAnimationProcessor(modInst, m_worldManager));
-                        } else {
+                            result = true;
+                        } else if (asset != null) {
                             PPolygonMeshInstance target = (PPolygonMeshInstance) asset;
                             // Create a material to use
                             int iIndex = m_fileTexture.getName().indexOf(".");
@@ -623,9 +628,10 @@ public class SceneEssentials {
                             // Set the material
                             target.setMaterial(material);
                             target.applyMaterial();
+                            result = true;
                         }
                         m_currentPScene.setDirty(true, true);
-                        return true;
+                        return result;
                     }
                 });                
                 m_modelInst = m_currentPScene.addModelInstance(m_modelName, newAsset, new PMatrix());
@@ -1129,13 +1135,12 @@ public class SceneEssentials {
             PNode mesh = m_avatar.getSkeleton().findChild(parentJoint);
             ArrayList<PNode> meshesToDelete = new ArrayList<PNode>();
 
-            if (mesh.getChildrenCount() > 0) {
+            if (mesh!= null && mesh.getChildrenCount() > 0) {
                 for (int i = 0; i < mesh.getChildrenCount(); i++)
                     meshesToDelete.add(mesh.getChild(i));
             }
 
-            if (mesh != null)
-                m_avatar.getSkeleton().findAndRemoveChild(subGroup);
+            m_avatar.getSkeleton().findAndRemoveChild(subGroup);
             try {
                 pRootInstruction.addChildInstruction(InstructionType.loadGeometry, m_fileModel.toURI().toURL());
             } catch (MalformedURLException ex) {
@@ -2549,12 +2554,16 @@ public class SceneEssentials {
 
                     public void run() {
                         try {
-                            m_avatar.saveConfiguration(new FileOutputStream(file));
+                            FileOutputStream fos = new FileOutputStream(file);
+                            m_avatar.saveConfiguration(fos);
+                            fos.close();
 
                         } catch (FileNotFoundException ex) {
                             Logger.getLogger(SceneEssentials.class.getName()).log(Level.SEVERE, null, ex);
                         } catch (JAXBException ex) {
-                                Logger.getLogger(SceneEssentials.class.getName()).log(Level.SEVERE, null, ex);
+                            Logger.getLogger(SceneEssentials.class.getName()).log(Level.SEVERE, null, ex);
+                        } catch (IOException ex) {
+                            Logger.getLogger(SceneEssentials.class.getName()).log(Level.SEVERE, null, ex);
                         }
                         //m_avatar.saveConfiguration(file);
                         System.out.println("SAVING COMPLETE...");

@@ -93,16 +93,6 @@ public class CahuaBall
                 collection.addCondition(new NewFrameCondition(this));
                 setArmingCondition(collection);
             }
-
-            
-            public void compute() {
-
-            }
-
-            
-            public void commit() {
-                
-            }
         };
         processor.setEnabled(true);
         processorEntity.addComponent(ProcessorComponent.class, processor);
@@ -174,5 +164,10 @@ public class CahuaBall
         jmeNode.setRenderState(ts);
         jmeNode.setRenderQueueMode(Renderer.QUEUE_TRANSPARENT);
         jmeNode.updateRenderState();
+    }
+
+    public void setBallModel(PPolygonModelInstance ball)
+    {
+        ballModel = ball;
     }
 }

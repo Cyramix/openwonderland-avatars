@@ -229,7 +229,7 @@ public class PMeshMaterialPanel extends javax.swing.JPanel
             for(i = 0; i < textureLocations.size(); i++) {
                 String relativepath = textureLocations.get(i).getPath();
                 int index = relativepath.lastIndexOf("assets");
-                relativepath.substring(index);
+                relativepath = relativepath.substring(index);
                 m_mat.setTexture(new File(relativepath), i);
             }
             m_mesh.setMaterial(m_mat);

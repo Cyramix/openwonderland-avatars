@@ -99,19 +99,17 @@ public class LibraryControllersProcessor extends Processor
         //  Will have to convert the PolygonMesh to a PolygonSkinnedMesh.
         PPolygonMesh polyMesh = m_colladaRef.findPolygonMesh(meshName); // Could potentially be many
         if (polyMesh == null)
-            System.out.println("Polymesh is not found, name is " + meshName);
+        {
+            logger.severe("Polymesh is not found, name is " + meshName);
+            return;
+        }
+
         PPolygonSkinnedMesh skinnedMesh = new PPolygonSkinnedMesh(polyMesh);
         ArrayList<PPolygonSkinnedMesh> skinnedChildren = new ArrayList<PPolygonSkinnedMesh>();
         // handle any children
         for (PNode kid : polyMesh.getChildren())
             if (kid instanceof PPolygonMesh)
                 skinnedChildren.add(new PPolygonSkinnedMesh((PPolygonMesh)kid));
-        // Debugging / Diagnostic Output
-//        logger.info("SkinnedParent : " + skinnedMesh.getName());
-//        logger.info("SkinnedChildren : " + skinnedChildren.size());
-//        for (PPolygonSkinnedMesh mesh : skinnedChildren)
-//            logger.info("-Mesh " + mesh.getName()+ ", # influences: " + mesh.getNumberOfInfluences());
-
         //  Read in the BindMatrix and convert it into a pmatrix
         int counter = 0;
         for (Double d : skin.getBindShapeMatrix())
@@ -342,6 +340,32 @@ public class LibraryControllersProcessor extends Processor
                 return(-1);
             return(0);
         }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (obj == null) {
+                return false;
+            }
+            if (getClass() != obj.getClass()) {
+                return false;
+            }
+            final BoneSkinWeight other = (BoneSkinWeight) obj;
+            if (this.m_BoneIndex != other.m_BoneIndex) {
+                return false;
+            }
+            if (this.m_fWeight != other.m_fWeight) {
+                return false;
+            }
+            return true;
+        }
+
+        @Override
+        public int hashCode() {
+            int hash = 3;
+            return hash;
+        }
+
+
     }
 
 }

@@ -299,11 +299,11 @@ public class CharacterAttributes
     }
 
     public boolean deleteLoadInstructionsBySubGroup(String subGroup) {
-        int initialSize = new Integer(loadInstructions.size());
-        int finalSize   = 0;
-
         if (loadInstructions == null)
             return false;
+
+        int initialSize = loadInstructions.size();
+        int finalSize   = 0;
 
         for (int i = 0; i < loadInstructions.size(); i ++) {
             if (loadInstructions.get(i)[1].equalsIgnoreCase(subGroup))

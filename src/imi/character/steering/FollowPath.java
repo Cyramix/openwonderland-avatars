@@ -65,7 +65,7 @@ public class FollowPath implements Task
         if (path == null || bDone)
             return false;
         
-        if (path.get(pathIndex).getName().equals(path))
+        if (path.get(pathIndex).getName().equals(path)) // TODO : <-- what is this supposed to be checking against?
         {
             status = "arrived to destination";
             return false;

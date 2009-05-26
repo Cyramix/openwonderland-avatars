@@ -210,6 +210,9 @@ public class Repository extends Entity
      */
     public synchronized void loadSharedAsset(SharedAsset asset, RepositoryUser user)
     {
+        if (asset == null)
+            logger.severe("Asset requested was null!");
+        
         RepositoryAsset repoAsset = null;
         ConcurrentHashMap<AssetDescriptor, RepositoryAsset> collection = getCollection(asset.getDescriptor().getType());
 
@@ -217,8 +220,6 @@ public class Repository extends Entity
         boolean failure = true;
         if (collection == null) // Collection not found?!
             logger.severe("Unable to get correct collection for " + asset.getDescriptor().toString());
-        else if (asset == null)
-            logger.severe("Asset requested was null!");
         else if (asset.getDescriptor() == null)
             logger.severe("Asset descriptor was null!");
         else
@@ -343,6 +344,8 @@ public class Repository extends Entity
             // Now the file is created! Make sure it exists
             if (textureCacheFile.exists() == false)
                 logger.severe("Downloaded the file, but still couldn't create the cache version!");
+            fos.close();
+            bis.close();
         }
         catch (MalformedURLException ex)
         {

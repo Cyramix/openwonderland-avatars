@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.util.Arrays;
 
 /**
  * The most awesome matrix class ever.
@@ -1999,7 +2000,7 @@ public class PMatrix implements Serializable
     @Override
     public int hashCode() {
         int hash = 5;
-        hash = 11 * hash + (this.mat != null ? this.mat.hashCode() : 0);
+        hash = 11 * hash + (this.mat != null ? Arrays.hashCode(mat) : 0);
         return hash;
     }
 

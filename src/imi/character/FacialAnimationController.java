@@ -87,7 +87,7 @@ public class FacialAnimationController
         synchronized(commandQueue)
         {
             commandQueue.add(command);
-            result = commandQueue.indexOf(commandQueue);
+            result = commandQueue.size();
         }
         return result;
     }

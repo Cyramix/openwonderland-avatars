@@ -124,22 +124,6 @@ public class DefaultScheme extends InputScheme
                 m_bSkeletonMode = !m_bSkeletonMode;
 
             }
-                        
-            if (ke.getKeyCode() == KeyEvent.VK_3)
-            {
-                PPolygonSkinnedMeshInstance avatar = ((PPolygonSkinnedMeshInstance)(m_jscene.getPScene().getInstances().getChild(0).getChild(0)));
-                PNodePropertyPanel jointWidget = null;//new PNodePropertyPanel(avatar.getTransformHierarchy().getChild(0).findChild("Joint11"));
-                jointWidget.setVisible(true);
-                // make and show a new JFrame
-                JFrame frame = new JFrame();
-                
-                frame.add(jointWidget);
-                frame.setSize(new Dimension(350, 400));
-                
-                frame.setVisible(true);
-                
-            
-            }
         }
     }
 

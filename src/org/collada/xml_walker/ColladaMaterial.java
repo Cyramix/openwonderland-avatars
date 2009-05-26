@@ -49,7 +49,7 @@ public class ColladaMaterial
         m_instanceEffect = instanceEffect;
         if (extras != null)
         {
-            extras = new ArrayList<Extra>();
+            m_extra = new ArrayList<Extra>();
             for (Extra extra : extras)
                 m_extra.add(extra);
         }

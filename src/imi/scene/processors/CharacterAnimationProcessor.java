@@ -78,9 +78,11 @@ public class CharacterAnimationProcessor extends ProcessorComponent
     {
         if (!isEnabled())
             return;
-        if (instruments!=null && instruments.isSubsystemEnabled(Instrumentation.InstrumentedSubsystem.AnimationSystem) == false)
+        if (instruments != null &&
+            instruments.isSubsystemEnabled(Instrumentation.InstrumentedSubsystem.AnimationSystem) == false)
         {
-            m_modelInst.setDirty(true, true);
+            if (m_modelInst != null)
+                m_modelInst.setDirty(true, true);
             return;
         }
 
@@ -106,7 +108,7 @@ public class CharacterAnimationProcessor extends ProcessorComponent
             if (m_animated == null)
                 return;
         }
-        else if (m_animated == null && m_modelInst == null)
+        else if (m_animated == null)
             return;
 
         // Assuming a one to one relationship between groups and states,

@@ -278,7 +278,7 @@ public class PColladaEffect
             if (bNormalMapped && bSpecularMapped)
             {
                 // WORLD MANAGER STRIKES AGAIN!
-                if (m_pCollada != null && m_pCollada.getPScene() != null)
+                if (m_pCollada.getPScene() != null)
                     result.setShader(repo.newShader(NormalAndSpecularMapShader.class));
                 else
                     Logger.getLogger(this.getClass().toString()).log(Level.SEVERE, "Unable to retrieve worldmanager, shaders unset. PColladaMaterial.java : 217");
@@ -286,7 +286,7 @@ public class PColladaEffect
             else if (bNormalMapped)
             {
                 // WORLD MANAGER STRIKES AGAIN!
-                if (m_pCollada != null && m_pCollada.getPScene() != null) // BEWARE THE HARDCODED NUMBER BELOW!
+                if (m_pCollada.getPScene() != null) // BEWARE THE HARDCODED NUMBER BELOW!
                     result.setShader(repo.newShader(NormalMapShader.class));
                 else
                     Logger.getLogger(this.getClass().toString()).log(Level.SEVERE, "Unable to retrieve worldmanager, shaders unset. PColladaMaterial.java : 217");

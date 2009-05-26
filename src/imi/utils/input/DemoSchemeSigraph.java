@@ -82,7 +82,8 @@ public class DemoSchemeSigraph extends InputScheme
                 driver = table;
             else if (driverID+1 <= numberOfStools)
                 driver = (PPolygonMeshInstance)m_chairsModel.getChild(driverID);
-                
+            else // no driver, abort
+                return;
             Vector3f pos = new Vector3f(driver.getTransform().getLocalMatrix(false).getTranslation());
             float scalar = 0.5f;
             

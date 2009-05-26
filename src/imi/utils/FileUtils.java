@@ -52,7 +52,7 @@ public class FileUtils
         if (lastDirectoryDividerIndex != -1)
             shortFilename = fullFilename.substring(lastDirectoryDividerIndex+1, fullFilename.length());
         else
-            shortFilename = new String(shortFilename);
+            shortFilename = new String(fullFilename);
 
         return(shortFilename);
     }

@@ -353,30 +353,31 @@ public class BinaryExporterImporter {
 
         Iterable<PPolygonSkinnedMeshInstance> smInstances = skeleton.retrieveSkinnedMeshes("Head");
         if (smInstances == null) // no subgroup found
-            m_logger.warning("No subgroups found during head installation");
+            m_logger.warning("No \"Head\" meshes found!");
+        else
+        {
+            for (PPolygonSkinnedMeshInstance meshInst : smInstances) {
 
-        for (PPolygonSkinnedMeshInstance meshInst : smInstances) {
+                PMeshMaterial meshMat = meshInst.getMaterialRef();
+                String tempName = meshInst.getName().toLowerCase();
 
-            PMeshMaterial meshMat = meshInst.getMaterialRef();
-            String tempName = meshInst.getName().toLowerCase();
-
-            // is this an eyeball? (also used for tongue and teeth)
-            if (tempName.contains("eyegeoshape")) {
-                meshMat.setShader(repo.newShader(EyeballShader.class));
-                if (meshMat.getTexture(0) != null)
-                    meshMat.getTexture(0).setMinFilter(MinificationFilter.BilinearNoMipMaps);
-            } else if (tempName.contains("tongue") || tempName.contains("teeth")) {
-                if (meshMat.getTexture(0) != null)
-                    meshMat.getTexture(0).setMinFilter(MinificationFilter.BilinearNoMipMaps);
-                meshMat.setShader(repo.newShader(EyeballShader.class));
-            } else {
-                meshMat.setShader(repo.newShader(fleshShader));
+                // is this an eyeball? (also used for tongue and teeth)
+                if (tempName.contains("eyegeoshape")) {
+                    meshMat.setShader(repo.newShader(EyeballShader.class));
+                    if (meshMat.getTexture(0) != null)
+                        meshMat.getTexture(0).setMinFilter(MinificationFilter.BilinearNoMipMaps);
+                } else if (tempName.contains("tongue") || tempName.contains("teeth")) {
+                    if (meshMat.getTexture(0) != null)
+                        meshMat.getTexture(0).setMinFilter(MinificationFilter.BilinearNoMipMaps);
+                    meshMat.setShader(repo.newShader(EyeballShader.class));
+                } else {
+                    meshMat.setShader(repo.newShader(fleshShader));
+                }
+                // Apply it!
+                meshInst.applyShader();
+                meshInst.applyMaterial();
             }
-            // Apply it!
-            meshInst.applyShader();
-            meshInst.applyMaterial();
         }
-
     }
 
     private void setInstructions(Instruction instruction, Instruction.InstructionType type, String[] resources) {

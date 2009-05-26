@@ -463,7 +463,7 @@ public class PPolygon implements Serializable
 
         PPolygonPosition pPosition = m_pPolygonMesh.getPosition(pVertice.m_PositionIndex);
 
-	pVerticePosition = pPosition.m_Position;
+        pVerticePosition.set(pPosition.m_Position);
     }
 
     //  Gets the normal of the vertice at the specified index.
@@ -475,7 +475,7 @@ public class PPolygon implements Serializable
 
         PPolygonNormal pNormal = m_pPolygonMesh.getNormal(pVertice.m_NormalIndex);
 
-        pVerticeNormal = pNormal.m_Normal;
+        pVerticeNormal.set(pNormal.m_Normal);
     }
 
     @Override

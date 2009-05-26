@@ -406,9 +406,6 @@ public class JFrame_SimpAdvOptions extends javax.swing.JFrame {
         return m_skeleton;
     }
 
-    public SkinnedMeshJoint[] getSkeletonJointsBySection(int section) {
-        return m_skeleton.get(section);
-    }
 
 ////////////////////////////////////////////////////////////////////////////////
 // MUTATORS
