@@ -26,6 +26,9 @@ import java.io.Serializable;
 
 public class PCube implements Serializable
 {
+    /** Serialization version number **/
+    private static final long serialVersionUID = 1l;
+
     private Vector3f m_MinCorner = new Vector3f(Vector3f.ZERO);
     private Vector3f m_MaxCorner = new Vector3f(Vector3f.ZERO);
 

@@ -38,6 +38,9 @@ import org.jdesktop.mtgame.WorldManager;
  */
 public class EyeballShader extends BaseShaderProgram implements AbstractShaderProgram, Serializable
 {
+    /** Serialization version number **/
+    private static final long serialVersionUID = 1l;
+
     // The following two strings are the default source code for this effect
     private static final String VertexSource = new String(
         "attribute vec4 boneIndices;" +
@@ -133,31 +136,6 @@ public class EyeballShader extends BaseShaderProgram implements AbstractShaderPr
         {
             Logger.getLogger(this.getClass().toString()).log(Level.SEVERE, "Caught " + e.getClass().getName() + ": " + e.getMessage());
         }
-    }
-
-    @Override
-    public boolean applyToMesh(PPolygonMeshInstance meshInst) {
-        if (m_WM == null) // No world manager!
-            return false;
-
-        GLSLShaderObjectsState shaderState =
-                (GLSLShaderObjectsState) m_WM.getRenderManager().createRendererState(RenderState.RS_GLSL_SHADER_OBJECTS);
-
-        m_bShaderLoaded = false;
-        loadAndCompileShader(shaderState);
-        // apply uniforms
-        ShaderUtils.assignProperties(m_propertyMap.values(), shaderState);
-
-//        shaderState.setAttributePointer(
-//                GLSLDefaultVariables.BoneIndices.getName(), // The name, referenced in the shader code
-//                4,                                          // Total size of the data
-//                false,                                      // "Normalized"
-//                0,                                          // The "stride" (between entries)
-//                ((PPolygonSkinnedMesh)meshInst.getGeometry()).getBoneIndexBuffer()); // The actual data
-
-        meshInst.setShaderState(shaderState);
-        m_bShaderLoaded = false;
-        return true;
     }
 
     public xmlShaderProgram generateShaderProgramDOM() {

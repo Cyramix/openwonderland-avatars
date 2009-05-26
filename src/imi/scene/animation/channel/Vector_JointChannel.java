@@ -35,6 +35,9 @@ import javolution.util.FastList;
  */
 public class Vector_JointChannel implements PJointChannel, Serializable
 {
+    /** Serialization version number **/
+    private static final long serialVersionUID = 1l;
+
     private PMatrix                     m_targetJointBindPose    = null; // The bind pose for this joint
     private String                      m_targetJointName        = null; // The joint that is being manipulated
     
@@ -262,6 +265,9 @@ public class Vector_JointChannel implements PJointChannel, Serializable
 
     protected class VectorKeyframe implements Serializable
     {
+        /** Serialization version number **/
+        private static final long serialVersionUID = 1l;
+
         float    time = 0.0f;
         Vector3f value = new Vector3f();
 

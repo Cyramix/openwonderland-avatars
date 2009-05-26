@@ -39,6 +39,9 @@ import java.util.LinkedList;
  */
 public class PPolygonModelInstance extends PNode implements Serializable
 {
+    /** Serialization version number **/
+    private static final long serialVersionUID = 1l;
+
     private PSphere   m_boundingSphere = null; // The overall bounding sphere
     
     private transient PSphere [] debugSpheres = new PSphere[2];

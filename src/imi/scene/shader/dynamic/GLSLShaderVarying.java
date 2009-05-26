@@ -28,6 +28,9 @@ import java.io.Serializable;
  */
 public class GLSLShaderVarying extends GLSLShaderVariable implements Serializable
 {
+    /** Serialization version number **/
+    private static final long serialVersionUID = 1l;
+
     /**
      * Construct a new instance with the specified name and type
      * @param name

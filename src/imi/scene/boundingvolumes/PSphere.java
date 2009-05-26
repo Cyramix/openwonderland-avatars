@@ -22,6 +22,9 @@ import java.io.Serializable;
 
 public class PSphere implements Serializable
 {
+    /** Serialization version number **/
+    private static final long serialVersionUID = 1l;
+
     private Vector3f m_Center = new Vector3f();
     private float m_fRadius = 0.0f;
     

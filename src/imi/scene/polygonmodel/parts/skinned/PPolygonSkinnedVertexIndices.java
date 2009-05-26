@@ -27,6 +27,9 @@ import java.io.Serializable;
  */
 public class PPolygonSkinnedVertexIndices  extends PPolygonVertexIndices implements Serializable
 {
+    /** Serialization version number **/
+    private static final long serialVersionUID = 1l;
+
     public int          m_BoneWeightIndex;  // Index into the parent mesh's bone weight collection
     public int          m_BoneIndicesIndex; // Index into the parent mesh's bone indices collection
     

@@ -48,6 +48,9 @@ import java.util.ArrayList;
  */
 public class GLSLShaderEffect implements Serializable
 {
+    /** Serialization version number **/
+    private static final long serialVersionUID = 1l;
+
     /** This is a convenience reference to the ShaderNewLine string **/
     protected static String         NL = GLSLDefaultVariables.ShaderNewline;
     

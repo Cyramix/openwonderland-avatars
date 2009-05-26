@@ -37,6 +37,9 @@ import org.jdesktop.mtgame.WorldManager;
  */
 public class SimpleTNLWithAmbient extends GLSLShaderProgram implements Serializable
 {
+    /** Serialization version number **/
+    private static final long serialVersionUID = 1l;
+
     /**
      * Constructs a new instance defaulting to use 35% ambient contribution
      * @param wm

@@ -29,6 +29,9 @@ import java.io.Serializable;
  */
 public class ShaderProperty implements Serializable
 {
+    /** Serialization version number **/
+    private static final long serialVersionUID = 1l;
+
     /**
      * This is the name of the property as referenced in the shader code
      */

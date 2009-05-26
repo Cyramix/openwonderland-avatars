@@ -43,6 +43,9 @@ import org.jdesktop.mtgame.WorldManager;
  */
 public class FleshShader extends GLSLShaderProgram implements Serializable
 {
+    /** Serialization version number **/
+    private static final long serialVersionUID = 1l;
+    
 
     public FleshShader(WorldManager wm)
     {

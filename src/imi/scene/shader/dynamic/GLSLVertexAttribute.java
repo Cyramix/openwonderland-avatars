@@ -26,6 +26,9 @@ import java.io.Serializable;
  */
 public class GLSLVertexAttribute extends GLSLShaderVariable implements Serializable
 {
+    /** Serialization version number **/
+    private static final long serialVersionUID = 1l;
+
     /**
      * Construct a new GLSLVertexAttribute instance with the specified
      * name and data type

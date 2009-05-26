@@ -34,6 +34,9 @@ import java.io.Serializable;
  */
 public class PTransform implements Serializable
 {
+    /** Serialization version number **/
+    private static final long serialVersionUID = 1l;
+
     private transient PMatrix     m_local = new PMatrix();
     private transient PMatrix     m_world = new PMatrix();
     

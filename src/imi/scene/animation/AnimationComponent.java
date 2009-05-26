@@ -30,6 +30,9 @@ import java.util.ArrayList;
  */
 public class AnimationComponent implements Serializable
 {
+    /** Serialization version number **/
+    private static final long serialVersionUID = 1l;
+    
 
     /**
      * This enumeration serves to describe the playback mode of an animation clip.

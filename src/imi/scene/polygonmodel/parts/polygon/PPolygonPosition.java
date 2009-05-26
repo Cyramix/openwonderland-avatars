@@ -22,6 +22,9 @@ import java.io.Serializable;
 
 public class PPolygonPosition implements Serializable
 {
+    /** Serialization version number **/
+    private static final long serialVersionUID = 1l;
+
     public Vector3f	m_Position = new Vector3f();
     public int m_ReferenceCount = 0;
 

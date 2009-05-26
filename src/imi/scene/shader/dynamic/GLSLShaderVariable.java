@@ -27,6 +27,9 @@ import java.io.Serializable;
  */
 public class GLSLShaderVariable implements Serializable
 {
+    /** Serialization version number **/
+    private static final long serialVersionUID = 1l;
+
     /**
      * Convenience reference to the shader new line string
      */

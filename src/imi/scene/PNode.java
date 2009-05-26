@@ -47,6 +47,9 @@ import javolution.util.FastTable;
  */
 public class PNode implements Serializable
 {
+    /** Serialization version number **/
+    private static final long serialVersionUID = 1l;
+
     protected static final Logger logger = Logger.getLogger(PNode.class.getName());
     
     private String  m_name  = "MysteryNode!";

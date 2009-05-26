@@ -60,6 +60,9 @@ import javolution.util.FastMap;
  */
 public class SkeletonNode extends PNode implements Animated, Serializable
 {
+    /** Serialization version number **/
+    private static final long serialVersionUID = 1l;
+
     // This is an array list with references to each skinned mesh joint's
     // world matrix in the order of a breadth first traversal
     private transient ArrayList<SkinnedMeshJoint> m_BFTSkeleton = new ArrayList<SkinnedMeshJoint>();

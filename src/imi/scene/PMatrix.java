@@ -34,6 +34,9 @@ import java.io.Serializable;
  */
 public class PMatrix implements Serializable
 {
+    /** Serialization version number **/
+    private static final long serialVersionUID = 1l;
+    
     /*******************
         Class variables
     *******************/

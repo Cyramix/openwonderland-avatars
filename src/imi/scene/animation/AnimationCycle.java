@@ -34,6 +34,9 @@ import javolution.util.FastTable;
  */
 public class AnimationCycle implements Serializable
 {
+    /** Serialization version number **/
+    private static final long serialVersionUID = 1l;
+    
     /** Logger ref **/
     private static final Logger logger = Logger.getLogger(AnimationCycle.class.getName());
     /** The name of the cycle **/

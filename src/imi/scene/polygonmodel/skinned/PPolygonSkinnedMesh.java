@@ -40,7 +40,10 @@ import javolution.util.FastTable;
  * @author Lou Hayt
  */
 public class PPolygonSkinnedMesh extends PPolygonMesh implements Serializable
-{   
+{
+    /** Serialization version number **/
+    private static final long serialVersionUID = 1l;
+
     // Skinning loaded data (no duplicates), these fields are nulled after reconstruction of the mesh when setSkinningData() is called.
     // indexed by polygons, weight of 4 influence from the indexed materices\bones
     private final FastTable<Vector3f>     m_boneWeights   	  = new FastTable<Vector3f>();

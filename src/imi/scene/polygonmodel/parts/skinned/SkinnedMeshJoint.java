@@ -38,6 +38,9 @@ import javolution.util.FastList;
  */
 public class SkinnedMeshJoint extends PJoint implements Serializable
 {
+    /** Serialization version number **/
+    private static final long serialVersionUID = 1l;
+
     /** The bind transform **/
     private PMatrix m_bindPoseTransform = null;
 

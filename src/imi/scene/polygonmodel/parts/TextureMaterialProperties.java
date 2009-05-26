@@ -43,6 +43,9 @@ import java.util.logging.Logger;
  */
 public class TextureMaterialProperties implements Serializable
 {
+    /** Serialization version number **/
+    private static final long serialVersionUID = 1l;
+
     /** The location of the image **/
     private URL     m_imageLocation = null;
     /** Which texture unit is this texture destined for? **/

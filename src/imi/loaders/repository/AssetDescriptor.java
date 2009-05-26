@@ -36,6 +36,9 @@ import javolution.util.FastList;
  */
 public class AssetDescriptor implements Serializable
 {
+    /** Serialization version number **/
+    private static final long serialVersionUID = 1l;
+
     /** Type indicator **/
     private SharedAssetType m_type  = SharedAssetType.Unknown;
     /** Collection of locations **/

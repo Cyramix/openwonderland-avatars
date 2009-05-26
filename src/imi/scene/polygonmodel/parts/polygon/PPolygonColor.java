@@ -25,6 +25,9 @@ import java.io.Serializable;
 
 public class PPolygonColor implements Serializable
 {
+    /** Serialization version number **/
+    private static final long serialVersionUID = 1l;
+
     public ColorRGBA	m_Color = new ColorRGBA();
     public int          m_ReferenceCount = 0;
 

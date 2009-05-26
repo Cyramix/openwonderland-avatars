@@ -29,6 +29,9 @@ import java.io.Serializable;
  */
 public class Interpolator implements Serializable
 {
+    /** Serialization version number **/
+    private static final long serialVersionUID = 1l;
+
     /** Used to specify what internal strategy should be used for interpolation **/
     public enum InterpolationStrategy
     {

@@ -23,6 +23,9 @@ import java.io.Serializable;
 
 public class PPolygonNormal implements Serializable
 {
+    /** Serialization version number **/
+    private static final long serialVersionUID = 1l;
+
     public Vector3f	m_Normal = new Vector3f();
     public int m_ReferenceCount = 0;
 

@@ -52,6 +52,9 @@ import org.jdesktop.mtgame.WorldManager;
  */
 public class PMeshMaterial extends PNode implements Serializable
 {
+    /** Serialization version number **/
+    private static final long serialVersionUID = 1l;
+
     private static final ColorRGBA defaultAmbient = new ColorRGBA(0.30f, 0.30f, 0.30f, 1.0f);
 
     /** Alpha transparency enumeration **/

@@ -34,6 +34,9 @@ import java.util.ArrayList;
  */
 public class PJoint extends PNode implements Serializable
 {
+    /** Serialization version number **/
+    private static final long serialVersionUID = 1l;
+
     /** Mesh space's origin is the location of the mesh,
      *  this is a "world matrix" in "mesh space". */
     private transient PMatrix         m_meshSpace = new PMatrix();

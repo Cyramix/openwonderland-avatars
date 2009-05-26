@@ -66,6 +66,9 @@ import org.jdesktop.mtgame.WorldManager;
  */
 public class PScene extends PNode implements RepositoryUser, Serializable
 {
+    /** Serialization version number **/
+    private static final long serialVersionUID = 1l;
+
     // Non-Shared Geometry
     private FastList<PPolygonMesh> m_LocalGeometry = new FastList<PPolygonMesh>();
     

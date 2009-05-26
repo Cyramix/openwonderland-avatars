@@ -34,6 +34,9 @@ import java.util.BitSet;
  */
 public class OptimizedChannel implements PJointChannel, Serializable
 {
+    /** Serialization version number **/
+    private static final long serialVersionUID = 1l;
+
     /** The unchanging basis for all key frames **/
     protected final float[]     matrixSkeleton = new float[16];
 

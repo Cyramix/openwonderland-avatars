@@ -29,6 +29,9 @@ import javolution.util.FastTable;
 
 public class PPolygon implements Serializable
 {
+    /** Serialization version number **/
+    private static final long serialVersionUID = 1l;
+
     /**
      * If vertex colors are not given this default color will be used.
      */

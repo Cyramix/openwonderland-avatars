@@ -30,6 +30,9 @@ import java.io.Serializable;
  */
 public class GLSLShaderUniform extends GLSLShaderVariable implements Serializable
 {
+    /** Serialization version number **/
+    private static final long serialVersionUID = 1l;
+
     /**
      * Construct a brand new instance of a GLSLShaderUniform
      * @param name The in-code name of this variable

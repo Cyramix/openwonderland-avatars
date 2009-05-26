@@ -17,8 +17,6 @@
  */
 package imi.scene.shader.dynamic;
 
-import com.jme.scene.Geometry;
-import com.jme.scene.state.GLSLShaderDataLogic;
 import com.jme.scene.state.GLSLShaderObjectsState;
 import com.jme.scene.state.RenderState;
 import com.jme.scene.state.jogl.JOGLShaderObjectsState;
@@ -28,9 +26,10 @@ import imi.scene.shader.NoSuchPropertyException;
 import imi.scene.shader.ShaderProperty;
 import imi.scene.shader.ShaderUtils;
 import imi.scene.shader.dynamic.GLSLDefaultVariables.Locality;
-import imi.scene.shader.programs.SimpleTNLShader;
 import imi.serialization.xml.bindings.xmlShaderProgram;
 import imi.utils.StringStack;
+import java.io.IOException;
+import java.io.Serializable;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -54,8 +53,11 @@ import org.jdesktop.mtgame.WorldManager;
  * heavy development and should be considered as volatile.
  * @author Ronald E Dahlgren
  */
-public class GLSLShaderProgram implements AbstractShaderProgram, RenderUpdater
+public class GLSLShaderProgram implements AbstractShaderProgram, RenderUpdater, Serializable
 {
+    /** Serialization version number **/
+    private static final long serialVersionUID = 1l;
+
     /** logger ref **/
     private static final Logger logger = Logger.getLogger(GLSLShaderProgram.class.getName());
     /**
@@ -92,8 +94,6 @@ public class GLSLShaderProgram implements AbstractShaderProgram, RenderUpdater
     // this container caches results of part of the compilation process
     protected final FastSet<GLSLVertexAttribute> m_vertAttributes = new FastSet<GLSLVertexAttribute>();
     
-    // TODO: Enhance dependency tracking functionality to include who the dependee is
-    
     /**
      * Determines whether or not the program will attempt to resolve unsatisfied
      * dependencies using default initialization strings (defined in 
@@ -116,20 +116,14 @@ public class GLSLShaderProgram implements AbstractShaderProgram, RenderUpdater
      * Used to create render states as well as adding instances onto the render
      * thread.
      */
-    protected transient WorldManager  m_WM            = null;
+    protected transient WorldManager  m_WM = null;
+    /** Render state that will be applied to meshes **/
+    private transient GLSLShaderObjectsState shaderState = null;
     
     /**
      * Mapping of property names to their instances
      */
     protected Map<String,ShaderProperty> m_propertyMap  = new HashMap<String,ShaderProperty>();
-    
-    /**
-     * Construct a brand new instance not using default initializers
-     */
-    public GLSLShaderProgram()
-    {
-        setWorldManager(null);
-    }
 
     public GLSLShaderProgram(WorldManager wm)
     {
@@ -143,6 +137,7 @@ public class GLSLShaderProgram implements AbstractShaderProgram, RenderUpdater
     public GLSLShaderProgram(WorldManager wm, boolean useDefaultInitializers)
     {
         setWorldManager(wm);
+        shaderState = (GLSLShaderObjectsState) m_WM.getRenderManager().createRendererState(RenderState.StateType.GLSLShaderObjects);
         m_bUseDefaultInitializers = useDefaultInitializers;
     }
 
@@ -158,7 +153,9 @@ public class GLSLShaderProgram implements AbstractShaderProgram, RenderUpdater
         m_bShaderLoaded = other.m_bShaderLoaded;
         m_VertexProgramSource = new StringBuilder(other.m_VertexProgramSource);
         m_FragmentProgramSource = new StringBuilder(other.m_FragmentProgramSource);
-        m_WM = other.m_WM;
+        setWorldManager(other.m_WM);
+
+        shaderState = (GLSLShaderObjectsState) m_WM.getRenderManager().createRendererState(RenderState.StateType.GLSLShaderObjects);
 
         for (ShaderProperty prop : other.getProperties())
             m_propertyMap.put(prop.name, new ShaderProperty(prop));
@@ -168,6 +165,9 @@ public class GLSLShaderProgram implements AbstractShaderProgram, RenderUpdater
 
         m_programName = new String(other.m_programName);
         m_programDescription = new String(other.m_programDescription);
+
+        // Update our shader state to reflect this.
+        loadAndCompileShader();
 
     }
     
@@ -193,6 +193,8 @@ public class GLSLShaderProgram implements AbstractShaderProgram, RenderUpdater
         formatSourceStrings();
         
         synchronizePropertyObjects();
+        // Update our shader objects state to reflect this
+        loadAndCompileShader();
         
         // free buffers
         m_initializationBuffer = null;
@@ -800,6 +802,7 @@ public class GLSLShaderProgram implements AbstractShaderProgram, RenderUpdater
      * @param inst The mesh instance to apply to.
      * @return True on success, false otherwise.
      */
+    @Override
     public synchronized boolean applyToMesh(PPolygonMeshInstance meshInst)
     {
         if (m_WM == null) // No world manager!
@@ -807,17 +810,12 @@ public class GLSLShaderProgram implements AbstractShaderProgram, RenderUpdater
             logger.severe("Cannot apply a shader without a world manager!");
             return false;
         }
-        
-        GLSLShaderObjectsState shaderState = 
-                (GLSLShaderObjectsState) m_WM.getRenderManager().createRendererState(RenderState.RS_GLSL_SHADER_OBJECTS);
-        
-        m_bShaderLoaded = false;
-        loadAndCompileShader(shaderState);
+
         // apply uniforms
         ShaderUtils.assignProperties(m_propertyMap.values(), shaderState);
         
         meshInst.setShaderState(shaderState);
-        m_bShaderLoaded = false;
+        
         return true;
     }
 
@@ -827,7 +825,7 @@ public class GLSLShaderProgram implements AbstractShaderProgram, RenderUpdater
      */
     public void update(Object obj)
     {
-        GLSLShaderObjectsState shaderState = (GLSLShaderObjectsState) obj;
+        // obj was an alias for our shaderState member variable.
         shaderState.load(getVertexProgramSource().toString(), getFragmentProgramSource().toString());
         shaderState.apply();
 
@@ -876,30 +874,11 @@ public class GLSLShaderProgram implements AbstractShaderProgram, RenderUpdater
     }
     
     /**
-     * Utility method to block until the shader object is successfully loaded
+     * Utility method to load the shader state
      */
-    private void loadAndCompileShader(GLSLShaderObjectsState shaderObject)
+    private void loadAndCompileShader()
     {
-        m_WM.addRenderUpdater(this, shaderObject);
-//        float timeWaiting = 0.0f;
-//        while (m_bShaderLoaded == false && timeWaiting < timeOut)
-//        {
-//            try
-//            {
-//                Thread.sleep(333);
-//            } catch (InterruptedException ex)
-//            {
-//                Logger.getLogger(SimpleTNLShader.class.getName()).log(Level.SEVERE, "Sleeping beauty was interrupted", ex);
-//            }
-//            timeWaiting += 0.3f;
-//        }
-//
-//        if (timeWaiting >= timeOut)
-//        {
-//            logger.severe("Timed out before the Render thread gave me a shader state.");
-//            // Where did this come from?
-//            Thread.dumpStack();
-//        }
+        m_WM.addRenderUpdater(this, shaderState);
     }
     
     /**
@@ -1053,4 +1032,17 @@ public class GLSLShaderProgram implements AbstractShaderProgram, RenderUpdater
         GLSLShaderProgram result = new GLSLShaderProgram(this);
         return result;
     }
+
+    //////// SERIALIZATION HELPERS /////////////
+    private void writeObject(java.io.ObjectOutputStream out) throws IOException
+    {
+        out.defaultWriteObject();
+    }
+
+    private void readObject(java.io.ObjectInputStream in) throws IOException,
+                                                        ClassNotFoundException
+    {
+        in.defaultReadObject();
+    }
+
 }

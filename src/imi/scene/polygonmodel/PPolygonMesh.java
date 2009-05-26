@@ -54,6 +54,9 @@ import javolution.util.FastTable;
  */
 public class PPolygonMesh extends PNode implements Serializable
 {
+    /** Serialization version number **/
+    private static final long serialVersionUID = 1l;
+
     private TriMesh   m_Geometry          = new TriMesh("geometry"); // jME geometry
     
     /** A reference to the shared asset for this geometry, if null then the geometry was made procedurally */

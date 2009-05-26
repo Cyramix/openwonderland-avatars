@@ -38,6 +38,9 @@ import org.jdesktop.mtgame.WorldManager;
  */
 public class NormalAndSpecularMapShader extends GLSLShaderProgram implements Serializable
 {
+    /** Serialization version number **/
+    private static final long serialVersionUID = 1l;
+
     /**
      * Constructs a new instance defaulting to use 20% ambient contribution
      * @param wm

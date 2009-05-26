@@ -45,6 +45,9 @@ import java.io.Serializable;
  */
 public class PPolygonMeshInstance extends PNode implements Serializable
 {
+    /** Serialization version number **/
+    private static final long serialVersionUID = 1l;
+
     // The owning PScene
     protected transient PScene              m_PScene    = null;
     // JMonkey instance object

@@ -46,6 +46,9 @@ import javolution.util.FastList;
  */
 public class PPolygonModel extends PNode implements Serializable
 {
+    /** Serialization version number **/
+    private static final long serialVersionUID = 1l;
+
     private PCube                       m_BoundingCube      = new PCube();
     private PSphere                     m_BoundingSphere    = new PSphere();
 

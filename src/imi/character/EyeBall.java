@@ -45,6 +45,8 @@ import org.jdesktop.mtgame.WorldManager;
  */
 public class EyeBall extends PPolygonSkinnedMeshInstance implements Serializable
 {
+    /** Serialization version number **/
+    private static final long serialVersionUID = 1l;
     /** The Character who owns this eyeball **/
     private transient Character character = null;
     /** The Model Instance that owns this eyeball **/

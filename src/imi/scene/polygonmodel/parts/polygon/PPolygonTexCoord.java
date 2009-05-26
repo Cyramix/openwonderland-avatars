@@ -24,6 +24,9 @@ import java.io.Serializable;
 
 public class PPolygonTexCoord implements Serializable
 {
+    /** Serialization version number **/
+    private static final long serialVersionUID = 1l;
+
     public Vector2f	m_TexCoord = new Vector2f();
     public int m_ReferenceCount = 0;
 

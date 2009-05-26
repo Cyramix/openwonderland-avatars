@@ -17,13 +17,13 @@
  */
 package imi.scene.shader;
 
-import com.jme.scene.Geometry;
 import imi.scene.shader.programs.*;
-import com.jme.scene.state.GLSLShaderDataLogic;
 import com.jme.scene.state.GLSLShaderObjectsState;
+import com.jme.scene.state.RenderState.StateType;
 import com.jme.scene.state.jogl.JOGLShaderObjectsState;
 import imi.scene.polygonmodel.PPolygonMeshInstance;
 import imi.utils.FileUtils;
+import java.io.IOException;
 import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -46,10 +46,15 @@ import org.jdesktop.mtgame.WorldManager;
  */
 public abstract class BaseShaderProgram implements RenderUpdater, AbstractShaderProgram, Serializable
 {
+    /** Serialization version number **/
+    private static final long serialVersionUID = 1l;
+
     /** These files point to the vertex and fragment source respectively **/
     protected String []       m_shaderSource = new String [2];
     /** The world manager is needed in order to create render states **/
     protected transient WorldManager  m_WM          = null;
+    /** The shader state for this object **/
+    private transient GLSLShaderObjectsState shaderState = null;
     /** Map the relationships between property names and property objects **/
     protected Map<String,ShaderProperty> m_propertyMap  = new HashMap<String,ShaderProperty>();
     /** Used to indicate that the shader state object has finsihed loading**/
@@ -69,10 +74,10 @@ public abstract class BaseShaderProgram implements RenderUpdater, AbstractShader
      */
     protected BaseShaderProgram(WorldManager wm, String vertexShader, String fragmentShader)
     { 
-        m_WM = wm; 
+        setWorldManager(wm);
         m_shaderSource[0] = vertexShader;
         m_shaderSource[1] = fragmentShader;
-        
+        shaderState = (GLSLShaderObjectsState)m_WM.getRenderManager().createRendererState(StateType.GLSLShaderObjects);
     }
 
     protected BaseShaderProgram(BaseShaderProgram other)
@@ -80,13 +85,15 @@ public abstract class BaseShaderProgram implements RenderUpdater, AbstractShader
         m_shaderSource[0] = new String(other.m_shaderSource[0]);
         m_shaderSource[1] = new String(other.m_shaderSource[1]);
 
-        m_WM = other.m_WM;
+        setWorldManager(other.m_WM);
         for (ShaderProperty prop : other.getProperties())
             m_propertyMap.put(prop.name, new ShaderProperty(prop));
         
         m_bShaderLoaded = other.m_bShaderLoaded;
         m_programName = new String(other.m_programName);
         m_programDescription = new String(other.m_programDescription);
+        // apply this to our shader state
+        loadAndCompileShader();
     }
     
     /**
@@ -101,27 +108,34 @@ public abstract class BaseShaderProgram implements RenderUpdater, AbstractShader
      * @param meshInst The mesh instance to apply the shader state on
      * @return true if "success"
      */
-    public abstract boolean applyToMesh(PPolygonMeshInstance meshInst);
+    public boolean applyToMesh(PPolygonMeshInstance meshInst)
+    {
+        if (m_WM == null) // No world manager!
+            return false;
+
+        // apply uniforms
+        ShaderUtils.assignProperties(m_propertyMap.values(), shaderState);
+
+        meshInst.setShaderState(shaderState);
+        m_bShaderLoaded = false;
+        return true;
+    }
     
     /**
      * This method should be called in order to block until the shade is 
      * successfully loaded.
      */
-    protected final void loadAndCompileShader(GLSLShaderObjectsState shaderState)
+    protected final void loadAndCompileShader()
     {
         m_WM.addRenderUpdater(this, shaderState);
-//        while (m_bShaderLoaded == false)
-//        {
-//            try
-//            {
-//                Thread.sleep(100);
-//            } catch (InterruptedException ex)
-//            {
-//                Logger.getLogger(SimpleTNLShader.class.getName()).log(Level.SEVERE, "Sleeping beauty was interrupted", ex);
-//            }
-//        }
     }
-    
+
+    public final void setWorldManager(WorldManager wm)
+    {
+        if (wm == null)
+            throw new IllegalArgumentException("Must provide a valid WorldManager!");
+        m_WM = wm;
+    }
     /**
      * This method assigns all the properties in the map to the passed in
      * GLSLSHaderObjectsState
@@ -139,25 +153,22 @@ public abstract class BaseShaderProgram implements RenderUpdater, AbstractShader
      * be called from this method.
      * @param obj
      */
+    @Override
     public final void update(Object obj)
     {
-        try {
-            GLSLShaderObjectsState shaderState = (GLSLShaderObjectsState) obj;
-            shaderState.load(m_shaderSource[0], m_shaderSource[1]);
-            shaderState.apply();
-            
-            JOGLShaderObjectsState joglShader = (JOGLShaderObjectsState)shaderState;
-            if (m_propertyMap.containsKey("pose"))
-            {
-                final GL gl = GLU.getCurrentGL();
-                joglShader.setHasAttributes(true);
-                gl.glBindAttribLocation(joglShader.getProgramIdentifier(), 1, "boneIndices");
-            }
-            // done
-            m_bShaderLoaded = true;
-        } catch(Exception e) {
-            Logger.getAnonymousLogger().log(Level.WARNING, "Failed to load shader ",e);
+        // obj is an alias for our shaderState member
+        shaderState.load(m_shaderSource[0], m_shaderSource[1]);
+        shaderState.apply();
+
+        JOGLShaderObjectsState joglShader = (JOGLShaderObjectsState)shaderState;
+        if (m_propertyMap.containsKey("pose"))
+        {
+            final GL gl = GLU.getCurrentGL();
+            joglShader.setHasAttributes(true);
+            gl.glBindAttribLocation(joglShader.getProgramIdentifier(), 1, "boneIndices");
         }
+        // done
+        m_bShaderLoaded = true;
     }
     
     /**
@@ -238,4 +249,17 @@ public abstract class BaseShaderProgram implements RenderUpdater, AbstractShader
             return null;
         }
     }
+    
+    //////// SERIALIZATION HELPERS /////////////
+    private void writeObject(java.io.ObjectOutputStream out) throws IOException
+    {
+        out.defaultWriteObject();
+    }
+
+    private void readObject(java.io.ObjectInputStream in) throws IOException,
+                                                        ClassNotFoundException
+    {
+        in.defaultReadObject();
+    }
+
 }

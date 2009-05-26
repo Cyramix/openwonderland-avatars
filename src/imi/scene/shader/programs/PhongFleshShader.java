@@ -42,6 +42,9 @@ import org.jdesktop.mtgame.WorldManager;
  */
 public class PhongFleshShader extends GLSLShaderProgram implements Serializable
 {
+    /** Serialization version number **/
+    private static final long serialVersionUID = 1l;
+
 
     public PhongFleshShader(WorldManager wm)
     {

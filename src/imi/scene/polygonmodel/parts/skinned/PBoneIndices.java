@@ -25,6 +25,9 @@ import java.io.Serializable;
  */
 public class PBoneIndices implements Serializable
 {
+    /** Serialization version number **/
+    private static final long serialVersionUID = 1l;
+
     /** The actual data **/
     public int [] index = new int[4];
 

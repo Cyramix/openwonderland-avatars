@@ -39,6 +39,9 @@ import javolution.util.FastTable;
  */
 public class PMatrix_JointChannel implements PJointChannel, Serializable
 {
+    /** Serialization version number **/
+    private static final long serialVersionUID = 1l;
+
     /** name of the joint this channel affects**/
     private String  m_TargetJointName = null;
     /** Keyframes for this channel's animation **/
@@ -369,6 +372,9 @@ public class PMatrix_JointChannel implements PJointChannel, Serializable
 
     protected class PMatrixKeyframe implements Serializable
     {
+        /** Serialization version number **/
+        private static final long serialVersionUID = 1l;
+
         public float               time = 0.0f;
         public transient PMatrix   value = new PMatrix();
 

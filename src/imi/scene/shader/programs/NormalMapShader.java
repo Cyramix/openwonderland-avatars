@@ -38,6 +38,9 @@ import org.jdesktop.mtgame.WorldManager;
  */
 public class NormalMapShader extends GLSLShaderProgram implements Serializable
 {
+    /** Serialization version number **/
+    private static final long serialVersionUID = 1l;
+
     // The following two strings are the default source code for this effect
     private static final String VertexSource = new String(
         "varying vec3 VNormal;" +

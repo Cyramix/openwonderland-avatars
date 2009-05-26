@@ -29,7 +29,8 @@ import java.io.Serializable;
  */
 public interface AbstractShaderProgram extends Serializable
 {
-/**
+
+    /**
      * This method should be implemented by subclasses to generate a 
      * GLSLShaderObjectsState instance, set the appropriate uniforms and vertex 
      * attributes for the shader, and set the shader state on the target mesh.

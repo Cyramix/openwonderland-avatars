@@ -40,6 +40,9 @@ import org.jdesktop.mtgame.WorldManager;
  */
 public class ClothingShaderDiffuseAsSpec extends BaseShaderProgram implements AbstractShaderProgram, Serializable
 {
+    /** Serialization version number **/
+    private static final long serialVersionUID = 1l;
+
     private static final Logger logger = Logger.getLogger(ClothingShaderSpecColor.class.getName());
     // The following two strings are the default source code for this effect
     private static final String VertexSource = new String(
@@ -154,25 +157,6 @@ public class ClothingShaderDiffuseAsSpec extends BaseShaderProgram implements Ab
         {
             Logger.getLogger(this.getClass().toString()).log(Level.SEVERE, "Caught " + e.getClass().getName() + ": " + e.getMessage());
         }
-    }
-
-    @Override
-    public boolean applyToMesh(PPolygonMeshInstance meshInst) {
-
-        if (m_WM == null) // No world manager!
-            return false;
-
-        GLSLShaderObjectsState shaderState =
-                (GLSLShaderObjectsState) m_WM.getRenderManager().createRendererState(RenderState.RS_GLSL_SHADER_OBJECTS);
-
-        m_bShaderLoaded = false;
-        loadAndCompileShader(shaderState);
-        // apply uniforms
-        ShaderUtils.assignProperties(m_propertyMap.values(), shaderState);
-
-        meshInst.setShaderState(shaderState);
-        m_bShaderLoaded = false;
-        return true;
     }
 
     public xmlShaderProgram generateShaderProgramDOM() {

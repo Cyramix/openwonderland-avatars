@@ -37,6 +37,9 @@ import org.jdesktop.mtgame.WorldManager;
  */
 public class SimpleTNLShader extends GLSLShaderProgram implements Serializable
 {
+    /** Serialization version number **/
+    private static final long serialVersionUID = 1l;
+
     /**
      * Construct a brand new instance!
      * @param wm
