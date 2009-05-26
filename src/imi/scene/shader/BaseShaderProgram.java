@@ -49,6 +49,7 @@ public abstract class BaseShaderProgram implements RenderUpdater, AbstractShader
     /** Serialization version number **/
     private static final long serialVersionUID = 1l;
 
+    private static final Logger logger = Logger.getLogger(BaseShaderProgram.class.getName());
     /** These files point to the vertex and fragment source respectively **/
     protected String []       m_shaderSource = new String [2];
     /** The world manager is needed in order to create render states **/
@@ -112,7 +113,12 @@ public abstract class BaseShaderProgram implements RenderUpdater, AbstractShader
     public boolean applyToMesh(PPolygonMeshInstance meshInst)
     {
         if (m_WM == null) // No world manager!
+        {
+
+            logger.severe("Cannot apply a shader without a world manager! " +
+                    "Mesh in question was " + meshInst.getName());
             return false;
+        }
 
         // apply uniforms
         ShaderUtils.assignProperties(m_propertyMap.values(), shaderState);
@@ -136,16 +142,6 @@ public abstract class BaseShaderProgram implements RenderUpdater, AbstractShader
         if (wm == null)
             throw new IllegalArgumentException("Must provide a valid WorldManager!");
         m_WM = wm;
-    }
-    /**
-     * This method assigns all the properties in the map to the passed in
-     * GLSLSHaderObjectsState
-     * @param shaderState
-     */
-    protected final void setProperties(GLSLShaderObjectsState shaderState)
-    {
-        Collection<ShaderProperty> props = m_propertyMap.values();
-        ShaderUtils.assignProperties(props, shaderState);
     }
     
     /**

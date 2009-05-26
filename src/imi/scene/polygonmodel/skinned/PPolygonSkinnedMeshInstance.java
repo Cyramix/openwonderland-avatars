@@ -214,6 +214,7 @@ public class PPolygonSkinnedMeshInstance extends PPolygonMeshInstance implements
 
         if (m_shaderState != null) // may not have loaded yet
         {
+
             // populate the matrix stack
             for (int i = 0; i < m_pose.length && i < m_InverseBindPose.length; i++)
             {

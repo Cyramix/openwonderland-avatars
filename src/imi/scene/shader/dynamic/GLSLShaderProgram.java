@@ -807,13 +807,13 @@ public class GLSLShaderProgram implements AbstractShaderProgram, RenderUpdater, 
     {
         if (m_WM == null) // No world manager!
         {
-            logger.severe("Cannot apply a shader without a world manager!");
+            logger.severe("Cannot apply a shader without a world manager! " +
+                    "Mesh in question was " + meshInst.getName());
             return false;
         }
 
         // apply uniforms
         ShaderUtils.assignProperties(m_propertyMap.values(), shaderState);
-        
         meshInst.setShaderState(shaderState);
         
         return true;

@@ -850,7 +850,7 @@ public class JPanel_HeadOptions extends javax.swing.JPanel {
             AbstractShaderProgram eyeballShader = repo.newShader(EyeballShader.class);
 
             for (int i = 0; i < m_Eyes.length; i++) {
-                material.setShader(eyeballShader);
+                material.setShader(eyeballShader.duplicate());
                 m_Eyes[i].setMaterial(material);
                 m_Eyes[i].applyMaterial();
             }

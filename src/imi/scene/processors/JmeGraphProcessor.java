@@ -62,6 +62,7 @@ public class JmeGraphProcessor extends ProcessorComponent
             if (gc.attach)
             {
                 gc.node.attachChild(gc.spat);
+                wm.addToUpdateList(gc.node);
                 wm.addToUpdateList(gc.spat); // need to inherit the states (lighting!)
 
             }

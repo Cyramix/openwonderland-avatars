@@ -74,10 +74,7 @@ public class ShaderFactory
                     ex.printStackTrace();
                 }
             }
-            else // We already have a prototype to clone
-            {
-                result = result.duplicate(); // Don't want to send back the original
-            }
+            result = result.duplicate(); // Don't want to send back the original
         }
         else // Wrong type of class
             logger.severe("ShaderFactory cannot construct class \"" + shaderType.getName() + "\"");

@@ -44,13 +44,13 @@ import org.jdesktop.mtgame.WorldManager;
  *
  * @author Paul Viet Nguyen Truong & Ronald E Dahlgren
  */
-public class BinaryExporterImporter {
-    private static final Logger logger = Logger.getLogger(BinaryExporterImporter.class.getName());
+public class BinaryExporter {
+    private static final Logger logger = Logger.getLogger(BinaryExporter.class.getName());
 ////////////////////////////////////////////////////////////////////////////////
 // Class Data Members
 ////////////////////////////////////////////////////////////////////////////////
 
-    private Logger      m_logger                = Logger.getLogger(BinaryExporterImporter.class.getName());
+    private Logger      m_logger                = Logger.getLogger(BinaryExporter.class.getName());
 
     private URL         m_skeletonLocation      = null;
     private String[]    m_bodyAnimationFiles    = null;
@@ -69,11 +69,11 @@ public class BinaryExporterImporter {
      * Default constructor does NOTHING.  If you use this then use the mutators
      * to set all the member variables before you serialize the data.
      */
-    public BinaryExporterImporter() {
+    public BinaryExporter() {
 
     }
 
-    public BinaryExporterImporter(URL skeletonLoc, ArrayList<String> bodyAnimations, ArrayList<String> facialAnimations, File outputLoc, String urlBase) {
+    public BinaryExporter(URL skeletonLoc, ArrayList<String> bodyAnimations, ArrayList<String> facialAnimations, File outputLoc, String urlBase) {
         m_skeletonLocation  = skeletonLoc;
         if (bodyAnimations != null) {
             m_bodyAnimationFiles = new String[bodyAnimations.size()];
@@ -88,7 +88,7 @@ public class BinaryExporterImporter {
         m_URLBase           = urlBase;
     }
 
-    public BinaryExporterImporter(URL skeletonLoc, String[] bodyAnimations, String[] facialAnimations, File outputLoc, String urlBase) {
+    public BinaryExporter(URL skeletonLoc, String[] bodyAnimations, String[] facialAnimations, File outputLoc, String urlBase) {
         m_skeletonLocation      = skeletonLoc;
         m_bodyAnimationFiles    = bodyAnimations;
         m_facialAnimationFiles  = facialAnimations;
@@ -96,11 +96,11 @@ public class BinaryExporterImporter {
         m_URLBase               = urlBase;
     }
 
-    public BinaryExporterImporter(String relativeSkelPath, String[] bodyAnimations, String[] facialAnimations, File outputLoc, String urlBase) {
+    public BinaryExporter(String relativeSkelPath, String[] bodyAnimations, String[] facialAnimations, File outputLoc, String urlBase) {
         try {
             m_skeletonLocation = new URL(urlBase + relativeSkelPath);
         } catch (MalformedURLException ex) {
-            Logger.getLogger(BinaryExporterImporter.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(BinaryExporter.class.getName()).log(Level.SEVERE, null, ex);
         }
         m_bodyAnimationFiles    = bodyAnimations;
         m_facialAnimationFiles  = facialAnimations;
@@ -108,11 +108,11 @@ public class BinaryExporterImporter {
         m_URLBase               = urlBase;
     }
 
-    public BinaryExporterImporter(String relativeSkelPath, ArrayList<String> bodyAnimations, ArrayList<String> facialAnimations, File outputLoc, String urlBase) {
+    public BinaryExporter(String relativeSkelPath, ArrayList<String> bodyAnimations, ArrayList<String> facialAnimations, File outputLoc, String urlBase) {
         try {
             m_skeletonLocation = new URL(urlBase + relativeSkelPath);
         } catch (MalformedURLException ex) {
-            Logger.getLogger(BinaryExporterImporter.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(BinaryExporter.class.getName()).log(Level.SEVERE, null, ex);
         }
         if (bodyAnimations != null) {
             m_bodyAnimationFiles = new String[bodyAnimations.size()];
@@ -209,14 +209,13 @@ public class BinaryExporterImporter {
     public SkeletonNode processBinaryData(URL resourcePath) {
         ObjectInputStream inStream  = null;
         SkeletonNode skeleton       = null;
-
         try {
             inStream = new AvatarObjectInputStream(resourcePath.openStream());
             skeleton = (SkeletonNode) inStream.readObject();
             inStream.close();
 
         } catch (Exception ex) {
-            m_logger.severe("Error loading binary file: " + ex.getMessage());
+            m_logger.severe("Error loading binary file (" + resourcePath + "): " + ex.getMessage());
             ex.printStackTrace();
         }
 
@@ -335,18 +334,19 @@ public class BinaryExporterImporter {
 
     public void setDefaultHeadShaders(WorldManager wm, SkeletonNode skeleton, float[] skinColor, int shaderType) {
         Repository repo = (Repository) wm.getUserData(Repository.class);
-        Class fleshShader   = null;
+        
+        Class fleshShaderType = null;
 
         switch(shaderType)
         {
             case 0:
             {
-                fleshShader = FleshShader.class;
+                fleshShaderType = FleshShader.class;
                 break;
             }
             case 1:
             {
-                fleshShader = PhongFleshShader.class;
+                fleshShaderType = PhongFleshShader.class;
                 break;
             }
         }
@@ -370,7 +370,7 @@ public class BinaryExporterImporter {
                     meshMat.getTexture(0).setMinFilter(MinificationFilter.BilinearNoMipMaps);
                 meshMat.setShader(repo.newShader(EyeballShader.class));
             } else {
-                meshMat.setShader(repo.newShader(fleshShader));
+                meshMat.setShader(repo.newShader(fleshShaderType));
             }
             // Apply it!
             meshInst.applyShader();

@@ -231,6 +231,6 @@ private void loadSelectedDefaultShader(java.awt.event.ActionEvent evt) {//GEN-FI
     
     public AbstractShaderProgram getShader()
     {
-        return m_shader;
+        return m_shader.duplicate();
     }
 }

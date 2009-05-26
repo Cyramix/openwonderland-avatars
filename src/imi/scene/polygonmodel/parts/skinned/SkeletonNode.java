@@ -665,7 +665,7 @@ public class SkeletonNode extends PNode implements Animated, Serializable
             for (PPolygonSkinnedMeshInstance meshInst : getSkinnedMeshInstances())
             {
                     PMeshMaterial mat = meshInst.getMaterialRef();
-                    mat.setShader(shader);
+                    mat.setShader(shader.duplicate());
                     meshInst.applyShader();
                     meshInst.applyMaterial();
             }
@@ -700,14 +700,14 @@ public class SkeletonNode extends PNode implements Animated, Serializable
             if (kid instanceof PPolygonMesh && !(kid instanceof PPolygonSkinnedMesh))
             {
                 PPolygonMesh mesh = (PPolygonMesh)kid;
-                mesh.getMaterialRef().setShader(shader);
+                mesh.getMaterialRef().setShader(shader.duplicate());
             }
             else if (kid instanceof PPolygonMeshInstance && !(kid instanceof PPolygonSkinnedMeshInstance))
             {
                 PPolygonMeshInstance meshInst = (PPolygonMeshInstance)kid;
 
                 PMeshMaterial mat = meshInst.getMaterialRef();
-                mat.setShader(shader);
+                mat.setShader(shader.duplicate());
                 meshInst.applyShader();
                 meshInst.applyMaterial();
             }

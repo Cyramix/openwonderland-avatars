@@ -690,13 +690,13 @@ public abstract class Character extends Entity implements SpatialObject, Animati
     {
         Repository repo = (Repository)m_wm.getUserData(Repository.class);
 
-        AbstractShaderProgram accessoryShader   = repo.newShader(SimpleTNLWithAmbient.class);
-        AbstractShaderProgram eyeballShader     = repo.newShader(EyeballShader.class);
-        // HACK
-        AbstractShaderProgram specialHairShader = repo.newShader(VertDeformerWithSpecAndNormalMap.class);
+        AbstractShaderProgram accessoryShader   = null;
+        AbstractShaderProgram eyeballShader     = null;
+        // HACK : Used for the one hair we have that is a skinned mesh.
+        AbstractShaderProgram specialHairShader = null;
 
         float[] skinColor = m_attributes.getSkinTone();
-        AbstractShaderProgram fleshShader       = repo.newShader(FleshShader.class);
+        AbstractShaderProgram fleshShader       = null;
         AbstractShaderProgram headShader        = null;
         
         if (m_attributes.isUsingPhongLighting())
@@ -706,7 +706,6 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         // Set the skin color
         try {
             headShader.setProperty(new ShaderProperty("materialColor", GLSLDataType.GLSL_VEC3, skinColor));
-            fleshShader.setProperty(new ShaderProperty("materialColor", GLSLDataType.GLSL_VEC3, skinColor));
         } catch (NoSuchPropertyException ex) {
             logger.severe(ex.getMessage());
         }
@@ -715,9 +714,9 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         Iterable<PPolygonSkinnedMeshInstance> smInstances = m_skeleton.getSkinnedMeshInstances();
         for (PPolygonSkinnedMeshInstance meshInst : smInstances)
         {
-            eyeballShader     = repo.newShader(EyeballShader.class);
+            
             specialHairShader = repo.newShader(VertDeformerWithSpecAndNormalMap.class);
-            fleshShader       = repo.newShader(FleshShader.class);
+            
 
             PMeshMaterial meshMat = meshInst.getMaterialRef();
             String tempName = meshInst.getName().toLowerCase();
@@ -728,12 +727,22 @@ public abstract class Character extends Entity implements SpatialObject, Animati
             {
                 if (meshMat.getTexture(0) != null)
                     meshMat.getTexture(0).setMinFilter(MinificationFilter.BilinearNoMipMaps);
+                eyeballShader     = repo.newShader(EyeballShader.class);
                 meshMat.setShader(eyeballShader);
             }
             else if (tempName.contains("nude") ||
                      tempName.contains("arms") ||
                      tempName.contains("hand"))// is it flesh?
+            {
+                fleshShader       = repo.newShader(FleshShader.class);
+                // Set the skin color
+                try {
+                    fleshShader.setProperty(new ShaderProperty("materialColor", GLSLDataType.GLSL_VEC3, skinColor));
+                } catch (NoSuchPropertyException ex) {
+                    logger.severe(ex.getMessage());
+                }
                 meshMat.setShader(fleshShader);
+            }
             else if (tempName.contains("head"))
                 meshMat.setShader(headShader);
             else if (tempName.equals("hairashape1")) // HACK
@@ -744,6 +753,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
                     meshMat.setTexture(normalMapLocation, 1);
                     meshMat.getTexture(1).loadTexture(m_pscene.getRepository());
                     // Change the textures, because we know they load incorrectly.
+                    specialHairShader = repo.newShader(VertDeformerWithSpecAndNormalMap.class);
                     meshMat.setShader(specialHairShader);
                     meshMat.setCullFace(CullState.Face.None);
                 }
@@ -804,6 +814,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         {
             // process
             accessoryShader   = repo.newShader(SimpleTNLWithAmbient.class);
+
             PNode current = queue.removeFirst();
             if (current instanceof PPolygonMeshInstance)
             {
@@ -961,7 +972,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
             // is this an eyeball? (also used for tongue and teeth)
             if (tempName.contains("eyegeoshape"))
             {
-                meshMat.setShader(eyeballShader);
+                meshMat.setShader(eyeballShader.duplicate());
                 if (meshMat.getTexture(0) != null)
                     meshMat.getTexture(0).setMinFilter(MinificationFilter.BilinearNoMipMaps);
             }
@@ -969,10 +980,10 @@ public abstract class Character extends Entity implements SpatialObject, Animati
             {
                 if (meshMat.getTexture(0) != null)
                     meshMat.getTexture(0).setMinFilter(MinificationFilter.BilinearNoMipMaps);
-                meshMat.setShader(eyeballShader);
+                meshMat.setShader(eyeballShader.duplicate());
             }
             else
-                meshMat.setShader(fleshShader);
+                meshMat.setShader(fleshShader.duplicate());
             // Apply it!
             meshInst.applyShader();
         }
