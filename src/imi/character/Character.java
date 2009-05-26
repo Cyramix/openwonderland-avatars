@@ -690,14 +690,14 @@ public abstract class Character extends Entity implements SpatialObject, Animati
     {
         Repository repo = (Repository)m_wm.getUserData(Repository.class);
 
-        AbstractShaderProgram accessoryShader = repo.newShader(SimpleTNLWithAmbient.class);
-        AbstractShaderProgram eyeballShader = repo.newShader(EyeballShader.class);
+        AbstractShaderProgram accessoryShader   = repo.newShader(SimpleTNLWithAmbient.class);
+        AbstractShaderProgram eyeballShader     = repo.newShader(EyeballShader.class);
         // HACK
         AbstractShaderProgram specialHairShader = repo.newShader(VertDeformerWithSpecAndNormalMap.class);
 
         float[] skinColor = m_attributes.getSkinTone();
-        AbstractShaderProgram fleshShader = repo.newShader(FleshShader.class);
-        AbstractShaderProgram headShader = null;
+        AbstractShaderProgram fleshShader       = repo.newShader(FleshShader.class);
+        AbstractShaderProgram headShader        = null;
         
         if (m_attributes.isUsingPhongLighting())
             headShader = repo.newShader(PhongFleshShader.class);
@@ -715,6 +715,10 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         Iterable<PPolygonSkinnedMeshInstance> smInstances = m_skeleton.getSkinnedMeshInstances();
         for (PPolygonSkinnedMeshInstance meshInst : smInstances)
         {
+            eyeballShader     = repo.newShader(EyeballShader.class);
+            specialHairShader = repo.newShader(VertDeformerWithSpecAndNormalMap.class);
+            fleshShader       = repo.newShader(FleshShader.class);
+
             PMeshMaterial meshMat = meshInst.getMaterialRef();
             String tempName = meshInst.getName().toLowerCase();
             // is this an eyeball? (also used for tongue and teeth)
@@ -799,6 +803,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         while (queue.isEmpty() == false)
         {
             // process
+            accessoryShader   = repo.newShader(SimpleTNLWithAmbient.class);
             PNode current = queue.removeFirst();
             if (current instanceof PPolygonMeshInstance)
             {
