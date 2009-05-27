@@ -69,6 +69,7 @@ public abstract class CameraState
         FirstPerson,
         TumbleObject,
         ThirdPerson,
+        Chase,
         Default
     
     }

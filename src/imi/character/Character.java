@@ -1357,7 +1357,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         if (!(m_modelInst.getChild(0) instanceof SkeletonNode))
         {
             m_skeleton   = null;
-            m_jscene.updateRenderState();
+            m_pscene.getWorldManager().addToUpdateList(m_jscene);
             
             // Initialization extension, special spot for the simple model case
             if (m_initialization != null)

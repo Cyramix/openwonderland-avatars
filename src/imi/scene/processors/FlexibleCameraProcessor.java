@@ -85,7 +85,6 @@ public class FlexibleCameraProcessor extends AWTEventProcessorComponent
     private boolean takeSnap = false;
     private static File screenShotFolder = new File(System.getProperty("user.home") + "/ScreenShots/");
     private final RenderUpdater screenShotter = new RenderUpdater() {
-
         @Override
         public void update(Object arg0) {
             if (takeSnap)
@@ -185,8 +184,8 @@ public class FlexibleCameraProcessor extends AWTEventProcessorComponent
 
                 if (m_stateCollection.isEmpty() == false && currentStateIndex >= 0)
                 {
-                    m_model.update(m_stateCollection.get(currentStateIndex), (float)deltaTime);
                     m_model.handleInputEvents(m_stateCollection.get(currentStateIndex), events);
+                    m_model.update(m_stateCollection.get(currentStateIndex), (float)deltaTime);
                     m_model.determineTransform(m_stateCollection.get(currentStateIndex), m_transform);
                 }
             } catch (WrongStateTypeException ex)
