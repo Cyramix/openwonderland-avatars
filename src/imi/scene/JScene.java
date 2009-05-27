@@ -349,6 +349,7 @@ public class JScene extends Node {
      */
     private void drawScene(Renderer r) {
         m_PScene.submitTransformsAndGeometry();
+        updateRenderState();
         super.draw(r);
     }
 }

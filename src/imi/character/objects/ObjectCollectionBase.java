@@ -73,6 +73,4 @@ public class ObjectCollectionBase extends Entity
     public JScene getJScene() { return null; }
     public PScene getPScene() { return null; }
 
-    public void hackRefresh() {  }
-
 }

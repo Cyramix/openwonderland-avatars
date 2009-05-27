@@ -113,13 +113,13 @@ public class AvatarObjectCollection extends ObjectCollectionBase
     {
        // for (S)
     }
-
-    @Override
-    public void hackRefresh()
-    {
-        getPScene().submitTransformsAndGeometry();
-        getJScene().updateRenderState();
-    }
+//
+//    @Override
+//    public void hackRefresh()
+//    {
+//        getPScene().submitTransformsAndGeometry();
+//        getJScene().updateRenderState();
+//    }
 
     /////////////////////////  JGraph integration ///////////////////////////////////
 

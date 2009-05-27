@@ -120,7 +120,7 @@ public class AvatarChair implements ChairObject
                     if (objectCollection == null)
                         return false;
 
-                    objectCollection.hackRefresh();
+                    
                     //objectCollection.getPScene().submitTransformsAndGeometry();
                     ////objectCollection.getJScene().updateWorldBound();
                     //objectCollection.getJScene().updateRenderState();
