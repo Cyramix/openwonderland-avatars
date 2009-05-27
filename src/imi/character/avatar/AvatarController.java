@@ -20,6 +20,7 @@ package imi.character.avatar;
 import com.jme.math.Quaternion;
 import com.jme.math.Vector3f;
 import imi.character.CharacterController;
+import imi.collision.TransformUpdateManager;
 import imi.scene.PMatrix;
 import imi.scene.PTransform;
 import imi.scene.polygonmodel.PPolygonModelInstance;
@@ -182,13 +183,13 @@ public class AvatarController extends CharacterController
         {
             rotation.buildRotationY(rotationSensitivity * desiredDirection.x * deltaTime);
             
-            currentRot = body.getTransform().getLocalMatrix(true);
+            currentRot.set(body.getTransform().getLocalMatrix(true));
             currentRot.fastMul(rotation);
             
             bTurning = false;
         }
         else
-            currentRot = body.getTransform().getLocalMatrix(true);
+            currentRot.set(body.getTransform().getLocalMatrix(true));
         
         // Accelerate
         Vector3f currentDirection = body.getTransform().getWorldMatrix(false).getLocalZ();
@@ -219,7 +220,6 @@ public class AvatarController extends CharacterController
             position.addLocal(velocity.mult(-deltaTime));
         else
             position.addLocal(velocity.mult(deltaTime));
-        body.getTransform().getLocalMatrix(true).setTranslation(position);
         
         // Dampen
         dampCounter += deltaTime;
@@ -238,18 +238,24 @@ public class AvatarController extends CharacterController
                 velocity.multLocal(velocityDamp);
         }
 
-//        System.out.println("acceleration " + acceleration);
-//        System.out.println("gravityAcc " + gravityAcc);
-//        System.out.println("velocity " + velocity);
-//        System.out.println("");
-        
-        avatar.getJScene().setExternalKidsRootPosition(position, currentRot.getRotationJME());
-        notifyTransfromUpdate(position, currentRot);
-//        if (getVelocityScalar() > 1.0f)
-//            window.setTitle("yes");
-//        else
-//            window.setTitle("no");
-        //window.setTitle("acc: " + (int)fwdAcceleration + " vel: " + (int)velocity.x + " " + (int)velocity.y + " " + (int)velocity.z);
+        TransformUpdateManager transformUpdateManager = (TransformUpdateManager) avatar.getWorldManager().getUserData(TransformUpdateManager.class);
+        if(transformUpdateManager != null)
+        {
+            transformUpdateManager.transformUpdate(this, body.getTransform().getLocalMatrix(true), position, currentRot);
+        }
+        else
+        {
+            currentRot.setTranslation(position);
+            body.getTransform().getLocalMatrix(true).set(currentRot);
+            notifyTransfromUpdate(position, currentRot);
+        }
+    }
+
+    @Override
+    public void notifyTransfromUpdate(Vector3f translation, PMatrix orientation)
+    {
+        avatar.getJScene().setExternalKidsRootPosition(translation, orientation.getRotationJME());
+        super.notifyTransfromUpdate(translation, orientation);
     }
 
     @Override

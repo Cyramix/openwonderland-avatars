@@ -121,7 +121,8 @@ public abstract class CharacterController implements CollisionListener
      * @param location
      * @param orientation
      */
-    protected void notifyTransfromUpdate(Vector3f translation, PMatrix orientation) {
+    public void notifyTransfromUpdate(Vector3f translation, PMatrix orientation)
+    {
         if (listeners.size()==0)
             return;
 
