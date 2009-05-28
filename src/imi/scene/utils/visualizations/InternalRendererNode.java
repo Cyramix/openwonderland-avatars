@@ -79,7 +79,7 @@ public class InternalRendererNode extends Node
     {
         if (!enabled)
             return;
-
+        updateRenderState();
         // Draw world origin
         DebuggerVisualization.drawOrigin(r, originScale);
 

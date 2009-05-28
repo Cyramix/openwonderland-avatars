@@ -7,6 +7,7 @@ package imi.scene.utils.visualizations;
 
 import com.jme.math.Vector3f;
 import com.jme.renderer.ColorRGBA;
+import com.jme.renderer.Renderer;
 import com.jme.scene.Spatial;
 import com.jme.scene.state.CullState;
 import com.jme.scene.state.LightState;
@@ -41,9 +42,6 @@ public class InternalRendererEntity extends Entity
         // The JME root with the magical rendering capabilities
         root = new InternalRendererNode();
 
-        // Use default render states (unless that method is overriden)
-        setRenderStates(wm);
-
         // Create a scene component and set the root to our jscene
         RenderComponent rc = wm.getRenderManager().createRenderComponent(root);
 
@@ -63,6 +61,11 @@ public class InternalRendererEntity extends Entity
 
         // Add the entity to the world manager
         wm.addEntity(this);
+
+
+        // Use default render states (unless that method is overriden)
+        setRenderStates(wm);
+        wm.addToUpdateList(root);
     }
 
     public void addBBSpatial(Spatial s) {
@@ -167,26 +170,26 @@ public class InternalRendererEntity extends Entity
     private void setRenderStates(WorldManager worldManager)
     {
         // Z Buffer State
-        ZBufferState buf = (ZBufferState) worldManager.getRenderManager().createRendererState(RenderState.RS_ZBUFFER);
+        ZBufferState buf = (ZBufferState) worldManager.getRenderManager().createRendererState(RenderState.StateType.ZBuffer);
         buf.setEnabled(true);
         buf.setFunction(ZBufferState.TestFunction.LessThanOrEqualTo);
 
         // Material State
         MaterialState matState  = null;
-        matState = (MaterialState) worldManager.getRenderManager().createRendererState(RenderState.RS_MATERIAL);
+        matState = (MaterialState) worldManager.getRenderManager().createRendererState(RenderState.StateType.Material);
         matState.setDiffuse(ColorRGBA.white);
 
         // Light state
-        LightState ls = (LightState) worldManager.getRenderManager().createRendererState(RenderState.RS_LIGHT);
+        LightState ls = (LightState) worldManager.getRenderManager().createRendererState(RenderState.StateType.Light);
         ls.setEnabled(true);
 
         // Cull State
-        CullState cs = (CullState) worldManager.getRenderManager().createRendererState(RenderState.RS_CULL);
+        CullState cs = (CullState) worldManager.getRenderManager().createRendererState(RenderState.StateType.Cull);
         cs.setCullFace(CullState.Face.Back);
         cs.setEnabled(true);
 
         // Wireframe State
-        WireframeState ws = (WireframeState) worldManager.getRenderManager().createRendererState(RenderState.RS_WIREFRAME);
+        WireframeState ws = (WireframeState) worldManager.getRenderManager().createRendererState(RenderState.StateType.Wireframe);
         ws.setEnabled(false);
 
         // Push 'em down the pipe
@@ -195,6 +198,7 @@ public class InternalRendererEntity extends Entity
         root.setRenderState(cs);
         root.setRenderState(ws);
         root.setRenderState(ls);
+        root.setRenderQueueMode(Renderer.QUEUE_SKIP);
     }
 
 }

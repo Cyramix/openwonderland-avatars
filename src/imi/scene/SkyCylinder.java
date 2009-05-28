@@ -50,6 +50,11 @@ public class SkyCylinder extends Node
     private Disk     skyTop         = null;
     private Disk     skyBottom      = null;
 
+    /** Magic numbers needed until the debug renderer can play nice with the skybox **/
+    private float cylinderRadius = 50;
+    private float cylinderHeight = 50;
+
+
      /**
      * Creates a new skybox. The size of the skybox and name is specified here.
      * By default, no textures are set.
@@ -109,16 +114,16 @@ public class SkyCylinder extends Node
 
         // make the sky geometry
         // body
-        skyCylinder = new Cylinder("Sky", 32, 16, 5,5, false, true);
+        skyCylinder = new Cylinder("Sky", 32, 16, cylinderRadius, cylinderHeight, false, true);
         skyCylinder.setLocalRotation(new Quaternion(new float[] {3.14159f * -0.5f, 0, 0}));
         // top
-        skyTop = new Disk("SkyTop", 8, 16, 5);
+        skyTop = new Disk("SkyTop", 8, 16, cylinderRadius);
         skyTop.setLocalRotation(new Quaternion(new float[] {3.14159f * 0.5f, 0, 0}));
-        skyTop.setLocalTranslation(0, 2.5f, 0);
+        skyTop.setLocalTranslation(0, cylinderHeight * 0.5f, 0);
         // bottom
-        skyBottom = new Disk("SkyTop", 8, 16, 5);
+        skyBottom = new Disk("SkyTop", 8, 16, cylinderRadius);
         skyBottom.setLocalRotation(new Quaternion(new float[] {3.14159f * -0.5f, 0, 0}));
-        skyBottom.setLocalTranslation(0, -2.5f, 0);
+        skyBottom.setLocalTranslation(0, cylinderHeight * -0.5f, 0);
 
         setRenderStates(skyTop);
         setRenderStates(skyBottom);
@@ -144,11 +149,9 @@ public class SkyCylinder extends Node
         ZBufferState zbuff = (ZBufferState)m_wm.getRenderManager().createRendererState(StateType.ZBuffer);
         zbuff.setWritable(false);
         zbuff.setEnabled(true);
-        zbuff.setFunction(ZBufferState.TestFunction.LessThanOrEqualTo);
+        zbuff.setFunction(ZBufferState.TestFunction.LessThan);
         target.setRenderState(zbuff);
 
-        // We don't want it making our skybox disapear, so force view
-        target.setCullHint(CullHint.Never);
 
         // Make sure texture is only what is set.
         target.setTextureCombineMode(TextureCombineMode.Replace);

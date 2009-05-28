@@ -73,7 +73,7 @@ public class FileUtils
     }
 
     //  Returns a string containing the directory path of the file.
-    public static final String getDirectoryPath(String fullFilename)
+    public static String getDirectoryPath(String fullFilename)
     {
         if (fullFilename == null)
             return("");
@@ -90,7 +90,7 @@ public class FileUtils
 
 
     //  Builds of list of filenames in the specified directory.
-    public static final ArrayList getAllChildFilenames(String baseDirectory)
+    public static ArrayList getAllChildFilenames(String baseDirectory)
     {
         File rootDirectory = new File(baseDirectory);
 
@@ -110,7 +110,7 @@ public class FileUtils
     }
 
     //  Builds of list of directories in the specified directory.
-    public static final ArrayList getAllChildDirectories(String baseDirectory)
+    public static ArrayList getAllChildDirectories(String baseDirectory)
     {
         File rootDirectory = new File(baseDirectory);
 
@@ -130,7 +130,7 @@ public class FileUtils
     }
     
     //  Attempts to find a file in a directory and it's sub directories.
-    public static final String findFile(String baseDirectory, String shortFilename)
+    public static String findFile(String baseDirectory, String shortFilename)
     {
         String fullFilename = baseDirectory + File.separator + shortFilename;
         File physicalFile = new File(fullFilename);
@@ -157,7 +157,7 @@ public class FileUtils
     }
     
     //  Attempts to find the Texture file.
-    public static final String findTextureFile(String shortTextureFilename)
+    public static String findTextureFile(String shortTextureFilename)
     {
         String fullFilename = FileUtils.findFile("assets/", shortTextureFilename);
         if (fullFilename.length() == 0)
