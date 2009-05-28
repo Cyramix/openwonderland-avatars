@@ -41,7 +41,7 @@ public abstract class CharacterController implements CollisionListener
     /** Cache the last translation **/
     private Vector3f previousTranslation = new Vector3f();
     /** List of listeners **/
-    private HashSet<CharacterMotionListener> listeners = new HashSet();
+    private final HashSet<CharacterMotionListener> listeners = new HashSet();
 
     /**
      * Override to implement stopping functionality

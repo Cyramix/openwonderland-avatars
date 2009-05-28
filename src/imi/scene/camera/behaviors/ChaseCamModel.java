@@ -26,8 +26,6 @@ import imi.scene.camera.state.CameraState.CameraStateType;
 import imi.scene.camera.state.ChaseCamState;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -45,7 +43,6 @@ public class ChaseCamModel implements CameraModel, CharacterMotionListener
     Vector3f force = new Vector3f();
     Vector3f lookAtHelper = new Vector3f();
     Vector3f lookAtHelperTwo = new Vector3f();
-
     Vector3f lookAtVelocity = new Vector3f();
 
     int zoom = 0;
@@ -58,7 +55,7 @@ public class ChaseCamModel implements CameraModel, CharacterMotionListener
     {
         activeState.getTransformedAndPositionedDesiredPositionOffset(desiredCameraPosition);
         activeState.getTransformedAndPositionedLookAtOffset(lookAtPosition);
-
+        // Zoom
         desiredCameraPositionZoomModifier.set(lookAtPosition.subtract(desiredCameraPosition));
         desiredCameraPositionZoomModifier.normalizeLocal();
         desiredCameraPositionZoomModifier.multLocal(0.75f * zoom);
@@ -115,11 +112,14 @@ public class ChaseCamModel implements CameraModel, CharacterMotionListener
             throw new WrongStateTypeException("Wrong state type");
         activeState = (ChaseCamState)state;
 
-        if (false)
+        if (false) // "Hard Attach"
         {
             Reset(state);
             return;
         }
+
+        // Update timed effects
+        activeState.update(deltaTime);
 
         // Calculate desired camera properties in world space
         lookAtHelper.set(lookAtPosition);
@@ -192,11 +192,7 @@ public class ChaseCamModel implements CameraModel, CharacterMotionListener
         if (/*activeState.getCameraTransform().getTranslation().distanceSquared(translation) > 2500.0f ||*/ firstTransformUpdate)
         {
             firstTransformUpdate = false;
-            try {
-                Reset(activeState);
-            } catch (WrongStateTypeException ex) {
-                Logger.getLogger(ChaseCamModel.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            Reset(activeState);
         }
     }
 

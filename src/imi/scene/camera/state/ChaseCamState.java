@@ -35,7 +35,7 @@ public class ChaseCamState extends CameraState
     PMatrix  chaseOrientation = new PMatrix();
 
     // Settings
-    Vector3f desiredPositionOffset = new Vector3f();
+    Vector3f desiredPositionOffset   = new Vector3f();
     Vector3f lookAtOffset = new Vector3f();
 
     /// Physics coefficient which controls the influence of the camera's position
@@ -55,11 +55,59 @@ public class ChaseCamState extends CameraState
     float lookAtDamping  = 2.0f;
     float lookAtMass     = 1.0f;
 
+    // Timed Effects
+    Vector3f scratch = new Vector3f();
+
+    Vector3f desiredPositionOffsetModifier = new Vector3f();
+    float desiredPositionModifierTimeCounter = 0.0f;
+    float desiredPositionModifierTimeLength  = 0.0f;
+
+    float desiredPositionStiffnessScalar = 1.0f;;
+    float desiredPositionStiffnessTimeCounter = 0.0f;
+    float desiredPositionStiffnessTimeLength  = 0.0f;
+
+    float lookAtStiffnessScalar = 1.0f;;
+    float lookAtStiffnessTimeCounter = 0.0f;
+    float lookAtStiffnessTimeLength  = 0.0f;
+
     public ChaseCamState(Vector3f desiredPositionOffset, Vector3f lookAtOffset)
     {
         setType(CameraStateType.Chase);
         this.desiredPositionOffset.set(desiredPositionOffset);
         this.lookAtOffset.set(lookAtOffset);
+    }
+
+    /**
+     * Local space to the chase target
+     */
+    public boolean startDesiredPositionModifierEffect(Vector3f desiredPositionModifier, float howLongInSeconds)
+    {
+        desiredPositionModifierTimeCounter = 0.0f;
+        desiredPositionModifierTimeLength = howLongInSeconds;
+        this.desiredPositionOffsetModifier.set(desiredPositionModifier);
+        return true;
+    }
+
+    public boolean startDesiredPositionStiffnessEffect(float tempStiffnessScalar, float howLongInSeconds)
+    {
+        desiredPositionStiffnessTimeCounter = 0.0f;
+        desiredPositionStiffnessTimeLength  = howLongInSeconds;
+        desiredPositionStiffnessScalar = tempStiffnessScalar;
+        return true;
+    }
+
+    public boolean startLookAtStiffnessEffect(float tempStiffnessScalar, float howLongInSeconds)
+    {
+        lookAtStiffnessTimeCounter = 0.0f;
+        lookAtStiffnessTimeLength  = howLongInSeconds;
+        lookAtStiffnessScalar = tempStiffnessScalar;
+        return true;
+    }
+
+    public void update(float deltaTime) {
+        desiredPositionModifierTimeCounter += deltaTime;
+        desiredPositionStiffnessTimeCounter += deltaTime;
+        lookAtStiffnessTimeCounter += deltaTime;
     }
 
     public void setChasePosition(Vector3f position) {
@@ -82,8 +130,14 @@ public class ChaseCamState extends CameraState
         return desiredPositionOffset;
     }
 
-    public void getTransformedAndPositionedDesiredPositionOffset(Vector3f out) {
+    public void getTransformedAndPositionedDesiredPositionOffset(Vector3f out)
+    {
         chaseOrientation.transformNormal(desiredPositionOffset, out);
+        if (desiredPositionModifierTimeCounter < desiredPositionModifierTimeLength)
+        {
+            chaseOrientation.transformNormal(desiredPositionOffsetModifier, scratch);
+            out.addLocal(scratch);
+        }
         out.addLocal(chasePosition);
     }
 
@@ -128,7 +182,10 @@ public class ChaseCamState extends CameraState
         this.mass = mass;
     }
 
-    public float getStiffness() {
+    public float getStiffness()
+    {
+        if (desiredPositionStiffnessTimeCounter < desiredPositionStiffnessTimeLength)
+            return stiffness * desiredPositionStiffnessScalar;
         return stiffness;
     }
 
@@ -153,6 +210,8 @@ public class ChaseCamState extends CameraState
     }
 
     public float getLookAtStiffnes() {
+        if (lookAtStiffnessTimeCounter < lookAtStiffnessTimeLength)
+            return lookAtStiffnes * lookAtStiffnessScalar;
         return lookAtStiffnes;
     }
 
@@ -172,6 +231,7 @@ public class ChaseCamState extends CameraState
 
     public void setCameraTransform(float[] floats) {
         transform.set(floats);
+        transform.normalize();
     }
 
     @Override

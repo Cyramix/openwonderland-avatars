@@ -22,7 +22,7 @@ package imi.scene.camera.behaviors;
  * correct type.
  * @author Ronald E Dahlgren
  */
-public class WrongStateTypeException extends Exception 
+public class WrongStateTypeException extends RuntimeException
 {
     public WrongStateTypeException(String details)
     {
