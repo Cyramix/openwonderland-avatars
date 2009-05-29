@@ -653,7 +653,12 @@ public abstract class Character extends Entity implements SpatialObject, Animati
             if (lowerCaseName.contains("head"))
             {
                 headShader = meshInst.getMaterialRef().getShader();
-                break;
+                try {
+                    headShader.setProperty(new ShaderProperty("materialColor", GLSLDataType.GLSL_VEC3, skinColorFloats));
+                } catch (NoSuchPropertyException ex)
+                {
+                    logger.warning("No skin tone property for this mesh: " + meshInst.getName());
+                }
             }
         }
 
@@ -667,19 +672,15 @@ public abstract class Character extends Entity implements SpatialObject, Animati
                  lowerCaseName.contains("hand"))// is it flesh?
             {
                 fleshShader = meshInst.getMaterialRef().getShader();
-                break;
+                try {
+                    fleshShader.setProperty(new ShaderProperty("materialColor", GLSLDataType.GLSL_VEC3, skinColorFloats));
+                } catch (NoSuchPropertyException ex)
+                {
+                    logger.warning("No skin tone property for this mesh: " + meshInst.getName());
+                }
             }
         }
 
-        // Set their material color to the one provided
-        try {
-            if (headShader != null)
-                headShader.setProperty(new ShaderProperty("materialColor", GLSLDataType.GLSL_VEC3, skinColorFloats));
-            if (fleshShader != null)
-                fleshShader.setProperty(new ShaderProperty("materialColor", GLSLDataType.GLSL_VEC3, skinColorFloats));
-        } catch (NoSuchPropertyException ex) {
-            logger.severe(ex.getMessage());
-        }
         applyMaterials();
     }
     

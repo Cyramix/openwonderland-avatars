@@ -184,7 +184,13 @@ public final class DebuggerVisualization {
 
     public static void drawBoundingSphere(BoundingSphere sphere, Renderer r) {
         renderStatesSetup(r);
-        boundingSphere.getCenter().set(sphere.getCenter());
+        // TODO TODO TODO TODO TODO
+        // This method can occasionally get null from sphere.getCenter!!!
+        Vector3f sphereCenter = sphere.getCenter();
+        if (sphereCenter != null)
+            boundingSphere.getCenter().set(sphereCenter);
+        else
+            boundingSphere.getCenter().set(new Vector3f());
         boundingSphere.updateGeometry(boundingSphere.getCenter(), 10, 10, sphere
                 .getRadius()); // pass back bs center to prevent accidently
         // data access.
