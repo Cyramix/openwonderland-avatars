@@ -75,6 +75,12 @@ public class AvatarController extends CharacterController
     private JFrame window = null; // use this to set title name for debugging info
 
     /**
+     * If true, the TransformUpdateManager will be used to try and synch transform updates.
+     * This is primarily needed when the collision system is operating on the avatar.
+     **/
+    private boolean bUseTransformUpdateManager = true;
+
+    /**
      * Construct a new avatar controller
      * @param theAvatar avatar to control
      */
@@ -239,7 +245,7 @@ public class AvatarController extends CharacterController
         }
 
         TransformUpdateManager transformUpdateManager = (TransformUpdateManager) avatar.getWorldManager().getUserData(TransformUpdateManager.class);
-        if(transformUpdateManager != null)
+        if(bUseTransformUpdateManager && transformUpdateManager != null)
         {
             transformUpdateManager.transformUpdate(this, body.getTransform().getLocalMatrix(true), position, currentRot);
         }
@@ -432,5 +438,19 @@ public class AvatarController extends CharacterController
     @Override
     public void setModelInstance(PPolygonModelInstance newModelInstance) {
         body = newModelInstance;
+    }
+
+    /**
+     * Arm / Disarm the transform update manager.
+     * @param bUseIt
+     */
+    public void setUseTransformUpdateManager(boolean bUseIt)
+    {
+        bUseTransformUpdateManager = bUseIt;
+    }
+
+    public boolean isUsingTransformUpdateManager()
+    {
+        return bUseTransformUpdateManager;
     }
 }
