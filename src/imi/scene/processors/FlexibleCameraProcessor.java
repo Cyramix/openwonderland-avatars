@@ -22,6 +22,7 @@ import com.jme.math.Vector2f;
 import com.jme.math.Vector3f;
 import com.jme.renderer.Camera;
 import com.jme.scene.Node;
+import imi.collision.TransformUpdateManager;
 import imi.scene.PMatrix;
 import imi.scene.camera.behaviors.CameraModel;
 import imi.scene.camera.behaviors.WrongStateTypeException;
@@ -135,7 +136,7 @@ public class FlexibleCameraProcessor extends AWTEventProcessorComponent
         m_skyNode       = skyboxNode;
         
         m_armingConditions = new ProcessorArmingCollection(this);
-        m_armingConditions.addCondition(new AwtEventCondition(this));
+        //m_armingConditions.addCondition(new AwtEventCondition(this));
         m_armingConditions.addCondition(new NewFrameCondition(this));
 
         // Set the picNum for snap shots
@@ -172,6 +173,13 @@ public class FlexibleCameraProcessor extends AWTEventProcessorComponent
     @Override
     public void compute(ProcessorArmingCollection arg0)
     {
+        computeCode();
+        if (takeSnap)
+            m_WM.addRenderUpdater(screenShotter, null);
+    }
+
+    public void computeCode()
+    {
         double newTime = System.nanoTime() / 1000000000.0;
         deltaTime = (newTime - oldTime);
         oldTime = newTime;
@@ -187,6 +195,7 @@ public class FlexibleCameraProcessor extends AWTEventProcessorComponent
 
                 if (m_stateCollection.isEmpty() == false && currentStateIndex >= 0)
                 {
+                    triggerUpdates((float)deltaTime);
                     m_model.handleInputEvents(m_stateCollection.get(currentStateIndex), events);
                     m_model.update(m_stateCollection.get(currentStateIndex), (float)deltaTime);
                     m_model.determineTransform(m_stateCollection.get(currentStateIndex), m_transform);
@@ -198,9 +207,6 @@ public class FlexibleCameraProcessor extends AWTEventProcessorComponent
                 Logger.getLogger(FlexibleCameraProcessor.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-
-        if (takeSnap)
-            m_WM.addRenderUpdater(screenShotter, null);
     }
 
     @Override
@@ -222,7 +228,9 @@ public class FlexibleCameraProcessor extends AWTEventProcessorComponent
             m_skyNode.setLocalTranslation(m_transform.getTranslation());
             m_WM.addToUpdateList(m_skyNode);
         }
-        m_WM.addToUpdateList(m_jmeCameraNode);
+        m_jmeCameraNode.updateGeometricState((float) deltaTime, true);
+        m_jmeCameraNode.updateRenderState();
+        //m_WM.addToUpdateList(m_jmeCameraNode);
     }
     
     /**
@@ -464,5 +472,12 @@ public class FlexibleCameraProcessor extends AWTEventProcessorComponent
 
 //        System.out.println("Ray starts at: " + origin.x + ", " + origin.y + ", " + origin.z);
 //        System.out.println("And has direction: " + direction.x + ", " + direction.y + ", " + direction.z);
+    }
+
+    private void triggerUpdates(float deltaTime)
+    {
+        TransformUpdateManager tum = (TransformUpdateManager) m_WM.getUserData(TransformUpdateManager.class);
+        if (tum != null)
+            tum.update(deltaTime);
     }
 }

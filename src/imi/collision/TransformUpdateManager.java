@@ -28,5 +28,7 @@ import imi.scene.PMatrix;
  */
 public interface TransformUpdateManager
 {
+    public void update(float deltaTime);
     public void transformUpdate(CharacterController characterController, PMatrix transform, Vector3f newPosition, PMatrix newOrientation);
+    
 }

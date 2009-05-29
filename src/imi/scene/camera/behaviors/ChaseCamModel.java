@@ -189,10 +189,9 @@ public class ChaseCamModel implements CameraModel, CharacterMotionListener
         activeState.getCameraPosition(lookAtHelper);
         Vector3f forward = lookAtPosition.subtract(lookAtHelper).normalize();
         q.lookAt(forward, Vector3f.UNIT_Y);
-        PMatrix m = new PMatrix();
+        PMatrix m = activeState.getCameraTransform();
         m.setRotation(q);
         m.setTranslation(lookAtHelper);
-        activeState.setCameraTransform(m);
     }
 
     public void getRotation(Quaternion rot)
@@ -205,7 +204,8 @@ public class ChaseCamModel implements CameraModel, CharacterMotionListener
         if (state.getType() != CameraState.CameraStateType.Chase)
             throw new WrongStateTypeException("Wrong state type");
         activeState = (ChaseCamState)state;
-        transform.set(activeState.getCameraTransform());
+   //     transform.set(activeState.getCameraTransform());
+        transform.set2(q, activeState.getCameraTransform().getTranslation(), 1.0f);
     }
 
     public CameraStateType getRequiredStateType() {
