@@ -25,6 +25,7 @@ public class InternalRendererNode extends Node
 
     // World origin
     float originScale = 1.0f;
+    boolean drawOrigin = false;
 
     // Orange position markers
     BoundingSphere positionMarkerSphere = new BoundingSphere(0.25f, new Vector3f());
@@ -80,8 +81,10 @@ public class InternalRendererNode extends Node
         if (!enabled)
             return;
         updateRenderState();
+
         // Draw world origin
-        DebuggerVisualization.drawOrigin(r, originScale);
+        if (drawOrigin)
+            DebuggerVisualization.drawOrigin(r, originScale);
 
         // Draw jme bounding volumes
         DebuggerVisualization.setBoundsColor(ColorRGBA.orange);
@@ -246,6 +249,14 @@ public class InternalRendererNode extends Node
 
     public FastTable<Vector3f> getPositionMarkers() {
         return positionMarkers;
+    }
+
+    public boolean isDrawOrigin() {
+        return drawOrigin;
+    }
+
+    public void setDrawOrigin(boolean drawOrigin) {
+        this.drawOrigin = drawOrigin;
     }
 
     public boolean isEnabled() {

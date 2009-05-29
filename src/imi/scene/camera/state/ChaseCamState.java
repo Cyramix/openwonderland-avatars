@@ -35,6 +35,7 @@ public class ChaseCamState extends CameraState
     PMatrix  chaseOrientation = new PMatrix();
 
     // Settings
+    boolean zoomEnabled = true;
     Vector3f desiredPositionOffset   = new Vector3f();
     Vector3f lookAtOffset = new Vector3f();
 
@@ -54,6 +55,11 @@ public class ChaseCamState extends CameraState
     float lookAtStiffnes = 5.0f;
     float lookAtDamping  = 2.0f;
     float lookAtMass     = 1.0f;
+    boolean lookAtSpringEnabled = true;
+    float lookAtLinearTimeCounter = 0.0f;
+    float lookAtLinearTimeLength = 100.0f;
+
+    boolean hardAttachMode = false;
 
     // Timed Effects
     Vector3f scratch = new Vector3f();
@@ -75,6 +81,39 @@ public class ChaseCamState extends CameraState
         setType(CameraStateType.Chase);
         this.desiredPositionOffset.set(desiredPositionOffset);
         this.lookAtOffset.set(lookAtOffset);
+    }
+
+    public void getChasePosition(Vector3f out) {
+        out.set(chasePosition);
+    }
+
+    public boolean getHardAttachMode() {
+        return hardAttachMode;
+    }
+
+    public void setHardAttachMode(boolean hardAttachMode) {
+        this.hardAttachMode = hardAttachMode;
+    }
+
+    public void setLookAtSpringEnabled(boolean enabled) {
+        lookAtSpringEnabled = enabled;
+        lookAtLinearTimeCounter = 0.0f;
+    }
+
+    public boolean isLookAtSpringEnabled() {
+        return lookAtSpringEnabled;
+    }
+
+    public float getLookAtLinearTimeCounter() {
+        return lookAtLinearTimeCounter;
+    }
+
+    public float getLookAtLinearTimeLength() {
+        return lookAtLinearTimeLength;
+    }
+
+    public void setLookAtLinearTimeLength(float lookAtLinearTimeLength) {
+        this.lookAtLinearTimeLength = lookAtLinearTimeLength;
     }
 
     /**
@@ -108,6 +147,7 @@ public class ChaseCamState extends CameraState
         desiredPositionModifierTimeCounter += deltaTime;
         desiredPositionStiffnessTimeCounter += deltaTime;
         lookAtStiffnessTimeCounter += deltaTime;
+        lookAtLinearTimeCounter += deltaTime;
     }
 
     public void setChasePosition(Vector3f position) {
@@ -232,6 +272,14 @@ public class ChaseCamState extends CameraState
     public void setCameraTransform(float[] floats) {
         transform.set(floats);
         transform.normalize();
+    }
+
+    public boolean isZoomEnabled() {
+        return zoomEnabled;
+    }
+
+    public void setZoomEnabled(boolean zoomEnabled) {
+        this.zoomEnabled = zoomEnabled;
     }
 
     @Override

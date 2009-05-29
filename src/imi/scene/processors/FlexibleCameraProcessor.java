@@ -17,6 +17,7 @@
  */
 package imi.scene.processors;
 
+import com.jme.math.Quaternion;
 import com.jme.math.Vector2f;
 import com.jme.math.Vector3f;
 import com.jme.renderer.Camera;
@@ -25,8 +26,8 @@ import imi.scene.PMatrix;
 import imi.scene.camera.behaviors.CameraModel;
 import imi.scene.camera.behaviors.WrongStateTypeException;
 import imi.scene.camera.state.CameraState;
-import imi.scene.SkyBox;
 import imi.scene.camera.CameraPositionManager;
+import imi.scene.camera.behaviors.ChaseCamModel;
 import imi.utils.input.InputScheme;
 import java.awt.event.KeyEvent;
 import java.io.File;
@@ -165,7 +166,9 @@ public class FlexibleCameraProcessor extends AWTEventProcessorComponent
     {
         setArmingCondition(m_armingConditions);
     }
-    
+
+    Quaternion rot = new Quaternion();
+
     @Override
     public void compute(ProcessorArmingCollection arg0)
     {
@@ -187,6 +190,8 @@ public class FlexibleCameraProcessor extends AWTEventProcessorComponent
                     m_model.handleInputEvents(m_stateCollection.get(currentStateIndex), events);
                     m_model.update(m_stateCollection.get(currentStateIndex), (float)deltaTime);
                     m_model.determineTransform(m_stateCollection.get(currentStateIndex), m_transform);
+                    if (m_model instanceof ChaseCamModel)
+                        ((ChaseCamModel)m_model).getRotation(rot);
                 }
             } catch (WrongStateTypeException ex)
             {
@@ -201,8 +206,16 @@ public class FlexibleCameraProcessor extends AWTEventProcessorComponent
     @Override
     public void commit(ProcessorArmingCollection arg0)
     {
-        m_jmeCameraNode.setLocalRotation(m_transform.getRotation());
-        m_jmeCameraNode.setLocalTranslation(m_transform.getTranslation());
+        if (m_model instanceof ChaseCamModel)
+        {
+            m_jmeCameraNode.setLocalRotation(rot);
+            m_jmeCameraNode.setLocalTranslation(m_transform.getTranslation());
+        }
+        else
+        {
+            m_jmeCameraNode.setLocalRotation(m_transform.getRotation());
+            m_jmeCameraNode.setLocalTranslation(m_transform.getTranslation());
+        }
         
         if (m_skyNode != null)
         {

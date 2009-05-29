@@ -18,6 +18,7 @@
 
 package imi.scene.camera.behaviors;
 
+import com.jme.math.Quaternion;
 import com.jme.math.Vector3f;
 import imi.character.CharacterMotionListener;
 import imi.scene.PMatrix;
@@ -56,10 +57,13 @@ public class ChaseCamModel implements CameraModel, CharacterMotionListener
         activeState.getTransformedAndPositionedDesiredPositionOffset(desiredCameraPosition);
         activeState.getTransformedAndPositionedLookAtOffset(lookAtPosition);
         // Zoom
-        desiredCameraPositionZoomModifier.set(lookAtPosition.subtract(desiredCameraPosition));
-        desiredCameraPositionZoomModifier.normalizeLocal();
-        desiredCameraPositionZoomModifier.multLocal(0.75f * zoom);
-        desiredCameraPosition.addLocal(desiredCameraPositionZoomModifier);
+        if (activeState.isZoomEnabled())
+        {
+            desiredCameraPositionZoomModifier.set(lookAtPosition.subtract(desiredCameraPosition));
+            desiredCameraPositionZoomModifier.normalizeLocal();
+            desiredCameraPositionZoomModifier.multLocal(0.75f * zoom);
+            desiredCameraPosition.addLocal(desiredCameraPositionZoomModifier);
+        }
     }
 
     public void Reset(CameraState state) throws WrongStateTypeException
@@ -112,7 +116,7 @@ public class ChaseCamModel implements CameraModel, CharacterMotionListener
             throw new WrongStateTypeException("Wrong state type");
         activeState = (ChaseCamState)state;
 
-        if (false) // "Hard Attach"
+        if (activeState.getHardAttachMode())
         {
             Reset(state);
             return;
@@ -136,35 +140,64 @@ public class ChaseCamModel implements CameraModel, CharacterMotionListener
         // Apply velocity
         activeState.addToCameraPosition(velocity.mult(deltaTime));
 
-        // Smooth look at position ( a secound spring )
-        lookAtHelperTwo.set(lookAtHelper);
-        // Calculate spring force
-        lookAtHelper.subtractLocal(lookAtPosition);
-        lookAtHelper.multLocal(-activeState.getLookAtStiffnes());
-        lookAtHelper.subtractLocal(lookAtVelocity.mult(activeState.getLookAtDamping()));
-        // Apply acceleration
-        lookAtHelper.divideLocal(activeState.getLookAtMass());
-        lookAtVelocity.addLocal(lookAtHelper.mult(deltaTime));
-        // Apply velocity
-        lookAtPosition.set(lookAtHelperTwo.add(lookAtVelocity.mult(deltaTime)));
+        if (activeState.isLookAtSpringEnabled())
+        {
+            // Smooth look at position ( a secound spring )
+            lookAtHelperTwo.set(lookAtHelper);
+            // Calculate spring force
+            lookAtHelper.subtractLocal(lookAtPosition);
+            lookAtHelper.multLocal(-activeState.getLookAtStiffnes());
+            lookAtHelper.subtractLocal(lookAtVelocity.mult(activeState.getLookAtDamping()));
+            // Apply acceleration
+            lookAtHelper.divideLocal(activeState.getLookAtMass());
+            lookAtVelocity.addLocal(lookAtHelper.mult(deltaTime));
+            // Apply velocity
+            lookAtPosition.set(lookAtHelperTwo.add(lookAtVelocity.mult(deltaTime)));
+        }
+        else // Linear
+        {
+//            lookAtHelper   = current
+//            lookAtPosition = desired
+//            System.out.println("current " + lookAtHelper);
+//            System.out.println("desired " + lookAtPosition);
+//            System.out.println(activeState.getLookAtLinearTimeCounter() + "  /  " + activeState.getLookAtLinearTimeLength());
+            float s = activeState.getLookAtLinearTimeCounter() / activeState.getLookAtLinearTimeLength();
+            lookAtHelper.interpolate(lookAtPosition, s);
+            lookAtPosition.set(lookAtHelper);
+            //System.out.println("look at is set: " + lookAtPosition + " at " + s);
+        }
 
         lookAt();
     }
 
+    Quaternion q = new Quaternion();
     private void lookAt()
     {
+//        activeState.getCameraPosition(lookAtHelper);
+//        Vector3f forward = lookAtPosition.subtract(lookAtHelper).normalize();
+//        Vector3f right   = Vector3f.UNIT_Y.cross(forward).normalize();
+//        Vector3f realUp  =  forward.cross(right).normalize();
+//        // load it up manually
+//        float[] floats = new float[16];
+//        floats[ 0] = right.x;  floats[ 1] = realUp.x;  floats[ 2] = forward.x;  floats[ 3] = lookAtHelper.x;
+//        floats[ 4] = right.y;  floats[ 5] = realUp.y;  floats[ 6] = forward.y;  floats[ 7] = lookAtHelper.y;
+//        floats[ 8] = right.z;  floats[ 9] = realUp.z;  floats[10] = forward.z;  floats[11] = lookAtHelper.z;
+//        floats[12] = 0.0f;     floats[13] = 0.0f;      floats[14] = 0.0f;       floats[15] = 1.0f;
+//
+//        activeState.setCameraTransform(floats);
+
         activeState.getCameraPosition(lookAtHelper);
         Vector3f forward = lookAtPosition.subtract(lookAtHelper).normalize();
-        Vector3f right   = Vector3f.UNIT_Y.cross(forward).normalize();
-        Vector3f realUp  =  forward.cross(right).normalize();
-        // load it up manually
-        float[] floats = new float[16];
-        floats[ 0] = right.x;  floats[ 1] = realUp.x;  floats[ 2] = forward.x;  floats[ 3] = lookAtHelper.x;
-        floats[ 4] = right.y;  floats[ 5] = realUp.y;  floats[ 6] = forward.y;  floats[ 7] = lookAtHelper.y;
-        floats[ 8] = right.z;  floats[ 9] = realUp.z;  floats[10] = forward.z;  floats[11] = lookAtHelper.z;
-        floats[12] = 0.0f;     floats[13] = 0.0f;      floats[14] = 0.0f;       floats[15] = 1.0f;
+        q.lookAt(forward, Vector3f.UNIT_Y);
+        PMatrix m = new PMatrix();
+        m.setRotation(q);
+        m.setTranslation(lookAtHelper);
+        activeState.setCameraTransform(m);
+    }
 
-        activeState.setCameraTransform(floats);
+    public void getRotation(Quaternion rot)
+    {
+        rot.set(q);
     }
 
     public void determineTransform(CameraState state, PMatrix transform) throws WrongStateTypeException 
@@ -188,12 +221,12 @@ public class ChaseCamModel implements CameraModel, CharacterMotionListener
         activeState.setChasePosition(translation);
         activeState.setChaseOrientation(rotation);
 
-        // Safety check
-        if (/*activeState.getCameraTransform().getTranslation().distanceSquared(translation) > 2500.0f ||*/ firstTransformUpdate)
-        {
-            firstTransformUpdate = false;
-            Reset(activeState);
-        }
+//        // Safety check
+//        if (/*activeState.getCameraTransform().getTranslation().distanceSquared(translation) > 2500.0f ||*/ firstTransformUpdate)
+//        {
+//            firstTransformUpdate = false;
+//            Reset(activeState);
+//        }
     }
 
 }
