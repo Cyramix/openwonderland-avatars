@@ -56,7 +56,7 @@ public class InternalRendererNode extends Node
     // Path
 
     // Spheres, Boxes, Lines
-    FastTable<BoundingSphere> spehres = new FastTable<BoundingSphere>();
+    FastTable<BoundingSphere> spheres = new FastTable<BoundingSphere>();
     FastTable<BoundingBox>    boxes   = new FastTable<BoundingBox>();
     FastTable<Vector3f>       lines   = new FastTable<Vector3f>();
     int userLinesOn = 0;
@@ -80,6 +80,9 @@ public class InternalRendererNode extends Node
     {
         if (!enabled)
             return;
+        // Dahlgren : Removed for-each syntax. Since this is called every frame,
+        // this was generating a ton of iterators.
+        int i = 0;
         updateRenderState();
 
         // Draw world origin
@@ -88,30 +91,45 @@ public class InternalRendererNode extends Node
 
         // Draw jme bounding volumes
         DebuggerVisualization.setBoundsColor(ColorRGBA.orange);
-        for (Spatial spatial : jmeBB)
+        for (i = 0; i < jmeBB.size(); ++i)
+        {
+            Spatial spatial = jmeBB.get(i);
             DebuggerVisualization.drawBounds(spatial, r);
+        }
 
         // Draw spheres
         DebuggerVisualization.setBoundsColor(ColorRGBA.blue);
-        for (BoundingSphere sphere : spehres)
+        for (i = 0; i < spheres.size(); ++i)
+        {
+            BoundingSphere sphere = spheres.get(i);
             DebuggerVisualization.drawBoundingSphere(sphere, r);
+        }
 
         // Draw boxes
         DebuggerVisualization.setBoundsColor(ColorRGBA.blue);
-        for (BoundingBox box : boxes)
+        for (i = 0; i < boxes.size(); ++i)
+        {
+            BoundingBox box = boxes.get(i);
             DebuggerVisualization.drawBoundingBox(box, r);
+        }
 
         // Draw jme normals renderables
-        for (Spatial spatial : jmeN)
+        for (i = 0; i < jmeN.size(); ++i)
+        {
+            Spatial spatial = jmeN.get(i);
             DebuggerVisualization.drawNormals(spatial, r);
+        }
 
         // Draw lines
         if (userLinesOn > 0)
         {
             userLinesOn--;
             lines.clear();
-            for (FastTable<Vector3f> userLine : userLines)
+            for (i = 0; i < userLines.size(); ++i)
+            {
+                FastTable<Vector3f> userLine = userLines.get(i);
                 lines.addAll(userLine);
+            }
             if (!lines.isEmpty())
                 DebuggerVisualization.drawLines(lines, r, 3.0f, ColorRGBA.yellow, ColorRGBA.yellow);
         }
@@ -138,8 +156,9 @@ public class InternalRendererNode extends Node
 
         // Draw orange marker spheres
         DebuggerVisualization.setBoundsColor(ColorRGBA.orange);
-        for (Vector3f mark : positionMarkers)
+        for (i = 0; i <  positionMarkers.size(); ++i)
         {
+            Vector3f mark = positionMarkers.get(i);
             positionMarkerSphere.setCenter(mark);
             DebuggerVisualization.drawBoundingSphere(positionMarkerSphere, r);
         }
@@ -175,7 +194,7 @@ public class InternalRendererNode extends Node
         return boxes;
     }
     public FastTable<BoundingSphere> getSpheres() {
-        return spehres;
+        return spheres;
     }
     /** Add and remove FastTable<Vector3f> - each represents a line (potentially with multiple segments)
      *  Calling this method makes the lines visible for 100 frames

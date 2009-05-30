@@ -21,6 +21,7 @@ import com.jme.math.Matrix3f;
 import com.jme.math.Quaternion;
 import com.jme.math.Vector3f;
 import imi.scene.PMatrix;
+import java.awt.event.KeyEvent;
 
 /**
  * This class encapsulates all the state needed for first person camera
@@ -54,6 +55,14 @@ public class FirstPersonCamState extends CameraState
     /** Keyboard state indicators **/
     private boolean shiftDown = false;
     private boolean controlDown = false;
+
+    /** Virtual Key codes for movement **/
+    private int forwardKeyCode = KeyEvent.VK_UP;
+    private int leftKeyCode = KeyEvent.VK_LEFT;
+    private int rightKeyCode = KeyEvent.VK_RIGHT;
+    private int backwardKeyCode = KeyEvent.VK_DOWN;
+    private int ascendKeyCode = KeyEvent.VK_OPEN_BRACKET;
+    private int descendKeyCode = KeyEvent.VK_CLOSE_BRACKET;
 
     // The current movementState
     private int movementState = STOPPED;
@@ -325,6 +334,90 @@ public class FirstPersonCamState extends CameraState
     public void setYDir(Vector3f yDir)
     {
         this.yDir = yDir;
+    }
+
+    public int getAscendKeyCode() {
+        return ascendKeyCode;
+    }
+
+    public void setAscendKeyCode(int ascendKeyCode) {
+        this.ascendKeyCode = ascendKeyCode;
+    }
+
+    public int getBackwardKeyCode() {
+        return backwardKeyCode;
+    }
+
+    public void setBackwardKeyCode(int backwardKeyCode) {
+        this.backwardKeyCode = backwardKeyCode;
+    }
+
+    public int getDescendKeyCode() {
+        return descendKeyCode;
+    }
+
+    public void setDescendKeyCode(int descendKeyCode) {
+        this.descendKeyCode = descendKeyCode;
+    }
+
+    public int getForwardKeyCode() {
+        return forwardKeyCode;
+    }
+
+    public void setForwardKeyCode(int forwardKeyCode) {
+        this.forwardKeyCode = forwardKeyCode;
+    }
+
+    public int getLeftKeyCode() {
+        return leftKeyCode;
+    }
+
+    public void setLeftKeyCode(int leftKeyCode) {
+        this.leftKeyCode = leftKeyCode;
+    }
+
+    public int getRightKeyCode() {
+        return rightKeyCode;
+    }
+
+    public void setRightKeyCode(int rightKeyCode) {
+        this.rightKeyCode = rightKeyCode;
+    }
+    
+    ////////////////////////////////////////////////////////
+    //////// Behavior hooks for FirstPersonCamModel ////////
+    ////////////////////////////////////////////////////////
+    public boolean shouldMoveForward(KeyEvent ke) {
+        return (ke.getKeyCode() == forwardKeyCode);
+    }
+    
+    public boolean shouldMoveBackward(KeyEvent ke) {
+        return (ke.getKeyCode() == backwardKeyCode);
+    }
+    
+    public boolean shouldMoveLeft(KeyEvent ke) {
+        return (ke.getKeyCode() == leftKeyCode);
+    }
+    
+    public boolean shouldMoveRight(KeyEvent ke) {
+        return (ke.getKeyCode() == rightKeyCode);
+    }
+    
+    public boolean shouldAscend(KeyEvent ke) {
+        return (ke.getKeyCode() == ascendKeyCode);
+    }
+    
+    public boolean shouldDescend(KeyEvent ke) {
+        return (ke.getKeyCode() == descendKeyCode);
+    }
+
+    public boolean isMovementKey(KeyEvent ke) {
+        return (ke.getKeyCode() == forwardKeyCode ||
+                ke.getKeyCode() == backwardKeyCode ||
+                ke.getKeyCode() == leftKeyCode ||
+                ke.getKeyCode() == rightKeyCode ||
+                ke.getKeyCode() == ascendKeyCode ||
+                ke.getKeyCode() == descendKeyCode);
     }
 
     @Override

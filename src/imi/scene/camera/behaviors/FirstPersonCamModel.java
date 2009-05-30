@@ -127,37 +127,23 @@ public class FirstPersonCamModel implements CameraModel
                 state.setControlDown(true);
             else
                 state.setControlDown(false);
-            if (ke.getKeyCode() == KeyEvent.VK_UP) {
+            
+            if (state.shouldMoveForward(ke))
                 state.setMovementState(FirstPersonCamState.WALKING_FORWARD);
-            }
-            if (ke.getKeyCode() == KeyEvent.VK_DOWN) {
+            if (state.shouldMoveBackward(ke))
                 state.setMovementState(FirstPersonCamState.WALKING_BACK);
-            }
-            if (ke.getKeyCode() == KeyEvent.VK_LEFT) {
+            if (state.shouldMoveLeft(ke))
                 state.setMovementState(FirstPersonCamState.STRAFE_LEFT);
-            }
-            if (ke.getKeyCode() == KeyEvent.VK_RIGHT) {
+            if (state.shouldMoveRight(ke))
                 state.setMovementState(FirstPersonCamState.STRAFE_RIGHT);
-            }
-            if (ke.getKeyCode() == KeyEvent.VK_NUMPAD7 || ke.getKeyCode() == KeyEvent.VK_CLOSE_BRACKET) {
+            if (state.shouldAscend(ke))
                 state.setMovementState(FirstPersonCamState.MOVE_UP);
-            }
-            if (ke.getKeyCode() == KeyEvent.VK_NUMPAD9 || ke.getKeyCode() == KeyEvent.VK_OPEN_BRACKET) {
+            if (state.shouldDescend(ke))
                 state.setMovementState(FirstPersonCamState.MOVE_DOWN);
-            }
         }
-        if (ke.getID() == KeyEvent.KEY_RELEASED) {
-            if (ke.getKeyCode() == KeyEvent.VK_UP ||
-                ke.getKeyCode() == KeyEvent.VK_DOWN ||
-                ke.getKeyCode() == KeyEvent.VK_LEFT ||
-                ke.getKeyCode() == KeyEvent.VK_RIGHT ||
-                ke.getKeyCode() == KeyEvent.VK_NUMPAD7 ||
-                ke.getKeyCode() == KeyEvent.VK_NUMPAD9 ||
-                ke.getKeyCode() == KeyEvent.VK_OPEN_BRACKET ||
-                ke.getKeyCode() == KeyEvent.VK_CLOSE_BRACKET) {
+        if (ke.getID() == KeyEvent.KEY_RELEASED)
+            if (state.isMovementKey(ke))
                 state.setMovementState(FirstPersonCamState.STOPPED);
-            }
-        }
     }
 
     private void updatePosition(FirstPersonCamState camState)
