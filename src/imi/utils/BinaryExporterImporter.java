@@ -216,7 +216,7 @@ public class BinaryExporterImporter {
             inStream.close();
 
         } catch (Exception ex) {
-            m_logger.severe("Error loading binary file: " + ex.getMessage());
+            m_logger.severe("Error loading binary file: " + ex.getMessage()+"  "+resourcePath.toExternalForm());
             ex.printStackTrace();
         }
 
