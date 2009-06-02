@@ -75,6 +75,12 @@ public class InternalRendererNode extends Node
     ColorRGBA customLinesEndColor = ColorRGBA.pink;
     float customLinesWidth = 5.0f;
 
+    FastTable<Vector3f> offsetLines    = new FastTable<Vector3f>();
+    Vector3f offsetForOffsetLines = new Vector3f(0.0f, 1.0f, 0.0f);
+    ColorRGBA offsetLinesStartColor = ColorRGBA.green;
+    ColorRGBA offsetLinesEndColor = ColorRGBA.green;
+    float offsetLinesWidth = 5.0f;
+
     @Override
     public void draw(Renderer r)
     {
@@ -134,14 +140,14 @@ public class InternalRendererNode extends Node
                 DebuggerVisualization.drawLines(lines, r, 3.0f, ColorRGBA.yellow, ColorRGBA.yellow);
         }
 
-        if (pinkLinesOn > 0)
+        if (pinkLinesOn > 0 || pinkLinesOn < 0)
         {
             pinkLinesOn--;
             if (!pinkLines.isEmpty())
                 DebuggerVisualization.drawLines(pinkLines, r, 5.0f, ColorRGBA.pink, ColorRGBA.pink);
         }
 
-        if (cyanLinesOn > 0)
+        if (cyanLinesOn > 0 || cyanLinesOn < 0)
         {
             cyanLinesOn--;
             if (!cyanLines.isEmpty())
@@ -150,6 +156,16 @@ public class InternalRendererNode extends Node
 
         if (!customLines.isEmpty())
             DebuggerVisualization.drawLines(customLines, r, customLinesWidth, customLinesStartColor, customLinesEndColor);
+
+        if (!offsetLines.isEmpty())
+        {
+            for (i = 0; i < offsetLines.size(); i++)
+            {
+                if (i % 2 == 1)
+                    offsetLines.get(i).set(offsetLines.get(i-1).add(offsetForOffsetLines));
+            }
+            DebuggerVisualization.drawLines(offsetLines, r, offsetLinesWidth, offsetLinesStartColor, offsetLinesEndColor);
+        }
 
         if (!gridLines.isEmpty())
             DebuggerVisualization.drawLines(gridLines, r, gridLinesWidth, gridLinesColor, gridLinesColor);
@@ -164,7 +180,7 @@ public class InternalRendererNode extends Node
         }
 
         // Draw red marker sphere
-        if (redSphereOn > 0)
+        if (redSphereOn > 0 || redSphereOn < 0)
         {
             DebuggerVisualization.setBoundsColor(ColorRGBA.red);
             DebuggerVisualization.drawBoundingSphere(redSphere, r);
@@ -172,10 +188,41 @@ public class InternalRendererNode extends Node
         }
     }
 
+    public void setOffsetForOffsetLines(Vector3f offset) {
+        offsetForOffsetLines = offset;
+    }
+
+    public void setRedSphereOff() {
+        redSphereOn = 0;
+    }
+
+    /**
+     * -1 to keep it on
+     */
+    public void setRedSphereOff(int framesDelay) {
+        redSphereOn = framesDelay;
+    }
+
+    /**
+     * -1 to keep it on
+     */
+    public void setRedSphere(PSphere red, int framesOn) {
+        setRedSphere(red);
+        redSphereOn = framesOn;
+    }
+
     public void setRedSphere(PSphere red) {
         redSphere.setCenter(red.getCenterRef());
         redSphere.setRadius(red.getRadius());
         redSphereOn = 20;
+    }
+
+    /**
+     * -1 to keep it on
+     */
+    public void setRedSphere(BoundingSphere red, int framesOn) {
+        setRedSphere(red);
+        redSphereOn = framesOn;
     }
 
     public void setRedSphere(BoundingSphere red) {
@@ -204,6 +251,28 @@ public class InternalRendererNode extends Node
         return userLines;
     }
 
+    public void setCyanLinesOff() {
+        cyanLinesOn = 0;
+    }
+
+    /**
+     * -1 to keep it on
+     */
+    public void setCyanLinesOff(int framesDelay) {
+        cyanLinesOn = framesDelay;
+    }
+
+    public void setPinkLinesOff() {
+        pinkLinesOn = 0;
+    }
+
+    /**
+     * -1 to keep it on
+     */
+    public void setPinkLinesOff(int framesDelay) {
+        pinkLinesOn = framesDelay;
+    }
+
     public FastTable<Vector3f> getCyanLines() {
         cyanLinesOn = 20;
         return cyanLines;
@@ -211,6 +280,19 @@ public class InternalRendererNode extends Node
 
     public FastTable<Vector3f> getCustomLines() {
         return customLines;
+    }
+
+    public FastTable<Vector3f> getOffsetLines() {
+        return offsetLines;
+    }
+
+    public void setOffsetLinesColor(ColorRGBA start, ColorRGBA end) {
+        offsetLinesEndColor = end;
+        offsetLinesStartColor = start;
+    }
+
+    public void setOffsetLinesWidth(float width) {
+        offsetLinesWidth = width;
     }
 
     public ColorRGBA getCustomLinesEndColor() {

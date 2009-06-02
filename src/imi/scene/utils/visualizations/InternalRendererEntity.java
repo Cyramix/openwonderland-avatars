@@ -97,6 +97,10 @@ public class InternalRendererEntity extends Entity
         root.getJmeN().remove(s);
     }
 
+    public void setOriginVisible(boolean b) {
+        root.setDrawOrigin(b);
+    }
+
     public void setRedSphere(PSphere sphereCheck) {
         root.setRedSphere(sphereCheck);
     }
