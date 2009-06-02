@@ -50,8 +50,8 @@ public class MaleAvatarAttributes extends CharacterAttributes
         new ColorRGBA( 238 / 255.0f, 160  / 255.0f, 157 / 255.0f, 1),
         new ColorRGBA( 231 / 255.0f,  216 / 255.0f, 223 / 255.0f, 1),
         new ColorRGBA( 174 / 255.0f, 112  / 255.0f, 112 / 255.0f, 1),
-        new ColorRGBA(1, 1, 1, 1), // Whitey, for testing
-        new ColorRGBA(0.7137255f, 0.5372549f, 0.45490196f, 1)
+   //     new ColorRGBA(1, 1, 1, 1), // Whitey, for testing
+   //     new ColorRGBA(0.7137255f, 0.5372549f, 0.45490196f, 1)
     };
 
     /** Collection of eye colors **/
@@ -81,7 +81,7 @@ public class MaleAvatarAttributes extends CharacterAttributes
         "assets/models/collada/Heads/EyeTextures/eyeColor18.png", // light blue and brown middle
         "assets/models/collada/Heads/EyeTextures/eyeColor19.png", // darl blue brown
         "assets/models/collada/Heads/EyeTextures/eyeColor20.png", // bright blue with middle brown
-        "assets/models/collada/Heads/EyeTextures/eyeColor21.png"  // snakes!
+       // "assets/models/collada/Heads/EyeTextures/eyeColor21.png"  // snakes!
     };
 
     /** number of preset features **/
