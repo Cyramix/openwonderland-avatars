@@ -41,6 +41,7 @@ import imi.scene.Updatable;
 import imi.loaders.Instruction;
 import imi.loaders.Instruction.InstructionType;
 import imi.loaders.InstructionProcessor;
+import imi.loaders.PPolygonTriMeshAssembler;
 import imi.loaders.collada.Collada;
 import imi.loaders.collada.ColladaLoaderParams;
 import imi.loaders.collada.ColladaLoadingException;
@@ -474,6 +475,8 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         // Apply remaining customizations
         if (characterDOM != null)
         {
+            // HACK HACK
+            setDefaultShaders();
             // Materials
             applyMaterialProperties(characterDOM);
             // Skeletal modifications
@@ -837,6 +840,16 @@ public abstract class Character extends Entity implements SpatialObject, Animati
                     meshMat.setShader(accessoryShader);
                 meshMat.setCullFace(CullState.Face.None);
                 meshInst.applyShader();
+                // HACK HACK HACK
+                meshInst.getGeometry().setSmoothNormals(true);
+                meshInst.getGeometry().submit(new PPolygonTriMeshAssembler());
+            }
+            else if (current instanceof PPolygonMesh) // HACK HACK HACK
+            {
+                PPolygonMesh mesh = (PPolygonMesh)current;
+                // HACK HACK HACK
+                mesh.setSmoothNormals(true);
+                mesh.submit(new PPolygonTriMeshAssembler());
             }
             // add all the kids
             if (current instanceof PJoint ||
