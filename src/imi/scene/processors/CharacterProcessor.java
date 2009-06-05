@@ -29,7 +29,7 @@ public class CharacterProcessor extends ProcessorComponent
 {
     private double oldTime = 0.0;
     private boolean synchronizer = false;
-    private Boolean enabled = true;
+    private boolean enabled = true;
     private imi.character.Character character = null;
 
     /**
@@ -48,7 +48,7 @@ public class CharacterProcessor extends ProcessorComponent
 
     @Override
     public void commit(ProcessorArmingCollection collection) {
-        synchronized(enabled)
+        synchronized(this)
         {
             if (!enabled)
                 return;
@@ -73,12 +73,16 @@ public class CharacterProcessor extends ProcessorComponent
 
     public void stop()
     {
-        enabled = false;
+        synchronized(this) {
+            enabled = false;
+        }
     }
 
     public void start()
     {
-        enabled = true;
+        synchronized(this) {
+            enabled = true;
+        }
     }
 
     
