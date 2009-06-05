@@ -54,7 +54,13 @@ import imi.character.statemachine.corestates.ActionState;
 import imi.character.statemachine.corestates.CycleActionInfo;
 import imi.character.statemachine.corestates.CycleActionState;
 import imi.character.statemachine.corestates.RunState;
+import imi.character.statemachine.corestates.StrafeState;
+import imi.character.statemachine.corestates.transitions.ActionToStrafe;
+import imi.character.statemachine.corestates.transitions.IdleToStrafe;
 import imi.character.statemachine.corestates.transitions.RunToWalk;
+import imi.character.statemachine.corestates.transitions.StrafeToAction;
+import imi.character.statemachine.corestates.transitions.StrafeToIdle;
+import imi.character.statemachine.corestates.transitions.TurnToStrafe;
 import imi.character.statemachine.corestates.transitions.WalkToFly;
 import imi.character.statemachine.corestates.transitions.WalkToRun;
 import imi.character.steering.FollowBakedPath;
@@ -116,6 +122,8 @@ public class AvatarContext extends GameContext
         Smile,
         Frown,
         Scorn,
+        Move_Strafe_Left,
+        Move_Strafe_Right,
     }
 
     /**
@@ -123,6 +131,7 @@ public class AvatarContext extends GameContext
      */
     public static enum ActionNames
     {
+        Movement_Rotate_Y,
         Movement_X,
         Movement_Y,
         Movement_Z,
@@ -143,6 +152,7 @@ public class AvatarContext extends GameContext
         // Add states to this context
         gameStates.put(IdleState.class,  new IdleState(this));
         gameStates.put(WalkState.class,  new WalkState(this));
+        gameStates.put(StrafeState.class,  new StrafeState(this));
         gameStates.put(TurnState.class,  new TurnState(this));
         gameStates.put(CycleActionState.class, new CycleActionState(this));
         gameStates.put(SitState.class,   new SitState(this));
@@ -157,6 +167,7 @@ public class AvatarContext extends GameContext
         // Register validation methods (entry points)
         RegisterStateEntryPoint(gameStates.get(IdleState.class),  "toIdle");
         RegisterStateEntryPoint(gameStates.get(WalkState.class),  "toWalk");
+        RegisterStateEntryPoint(gameStates.get(StrafeState.class),  "toSideStep");
         RegisterStateEntryPoint(gameStates.get(TurnState.class),  "toTurn");
         RegisterStateEntryPoint(gameStates.get(CycleActionState.class), "toAction");
         RegisterStateEntryPoint(gameStates.get(FlyState.class),   "toFly");
@@ -166,7 +177,10 @@ public class AvatarContext extends GameContext
         // Add transitions (exit points)
         gameStates.get(IdleState.class).addTransition(new IdleToTurn());
         gameStates.get(IdleState.class).addTransition(new IdleToWalk());
+        gameStates.get(IdleState.class).addTransition(new IdleToStrafe());
         gameStates.get(IdleState.class).addTransition(new IdleToAction());
+        gameStates.get(IdleState.class).addTransition(new IdleToFly());
+        gameStates.get(IdleState.class).addTransition(new IdleToSitOnGround());
         gameStates.get(WalkState.class).addTransition(new WalkToIdle());
         gameStates.get(WalkState.class).addTransition(new WalkToAction());
         gameStates.get(WalkState.class).addTransition(new WalkToRun());
@@ -174,16 +188,18 @@ public class AvatarContext extends GameContext
         gameStates.get(TurnState.class).addTransition(new TurnToIdle());
         gameStates.get(TurnState.class).addTransition(new TurnToWalk());
         gameStates.get(TurnState.class).addTransition(new TurnToAction());
+        gameStates.get(TurnState.class).addTransition(new TurnToStrafe());
         gameStates.get(CycleActionState.class).addTransition(new ActionToWalk());
         gameStates.get(CycleActionState.class).addTransition(new ActionToTurn());
         gameStates.get(CycleActionState.class).addTransition(new ActionToIdle());
+        gameStates.get(CycleActionState.class).addTransition(new ActionToStrafe());
         gameStates.get(SitState.class).addTransition(new SitToIdle());
         gameStates.get(FlyState.class).addTransition(new FlyToIdle());
-        gameStates.get(IdleState.class).addTransition(new IdleToFly());
-        gameStates.get(IdleState.class).addTransition(new IdleToSitOnGround());
         gameStates.get(FallFromSitState.class).addTransition(new SitOnGroundToIdle());
         gameStates.get(SitOnGroundState.class).addTransition(new SitOnGroundToIdle());
         gameStates.get(RunState.class).addTransition(new RunToWalk());
+        gameStates.get(StrafeState.class).addTransition(new StrafeToIdle());
+        gameStates.get(StrafeState.class).addTransition(new StrafeToAction());
         
         // Set default info for animations utilizing the ActionState
         configureDefaultActionStateInfo();
@@ -199,8 +215,10 @@ public class AvatarContext extends GameContext
     @Override
     public void initDefaultActionMap(Hashtable<Integer, Action> actionMap)
     {
-        actionMap.put(TriggerNames.Move_Left.ordinal(),     new Action(AvatarContext.ActionNames.Movement_X.ordinal(), -0.2f));
-        actionMap.put(TriggerNames.Move_Right.ordinal(),    new Action(AvatarContext.ActionNames.Movement_X.ordinal(), 0.2f));
+        actionMap.put(TriggerNames.Move_Left.ordinal(),     new Action(AvatarContext.ActionNames.Movement_Rotate_Y.ordinal(), -0.2f));
+        actionMap.put(TriggerNames.Move_Right.ordinal(),    new Action(AvatarContext.ActionNames.Movement_Rotate_Y.ordinal(), 0.2f));
+        actionMap.put(TriggerNames.Move_Strafe_Left.ordinal(),  new Action(AvatarContext.ActionNames.Movement_X.ordinal(), -0.4f));
+        actionMap.put(TriggerNames.Move_Strafe_Right.ordinal(), new Action(AvatarContext.ActionNames.Movement_X.ordinal(), 0.4f));
         actionMap.put(TriggerNames.Move_Forward.ordinal(),  new Action(AvatarContext.ActionNames.Movement_Z.ordinal(), 0.4f));
         actionMap.put(TriggerNames.Move_Back.ordinal(),     new Action(AvatarContext.ActionNames.Movement_Z.ordinal(), -0.4f));
         actionMap.put(TriggerNames.MiscAction.ordinal(),         new Action(AvatarContext.ActionNames.Action.ordinal(), 1.0f));
@@ -221,7 +239,7 @@ public class AvatarContext extends GameContext
         if ( !(currentState instanceof CycleActionState) && !genericAnimationsQueue.isEmpty() )
         {
             performAction(genericAnimationsQueue.removeFirst());
-            System.out.println("pop from queue");
+            System.out.println("[AvatarContext.update()] pop from queue");
         }
     }
 

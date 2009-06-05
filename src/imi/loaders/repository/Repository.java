@@ -295,7 +295,7 @@ public class Repository extends Entity
      * @param collectionType
      * @return
      */
-    public ConcurrentHashMap<AssetDescriptor, RepositoryAsset> getCollection(SharedAssetType collectionType)
+    ConcurrentHashMap<AssetDescriptor, RepositoryAsset> getCollection(SharedAssetType collectionType)
     {
         switch (collectionType)
         {
@@ -505,23 +505,23 @@ public class Repository extends Entity
     }
 
     
-    @Debug
-    public ConcurrentHashMap<AssetDescriptor, RepositoryAsset> getGeometryCollection()
-    {
-        return m_Geometry;
-    }
-    
-    @Debug
-    public ConcurrentHashMap<AssetDescriptor, RepositoryAsset> getTexturesCollection()
-    {
-        return m_Textures;
-    }
-    
-    @Debug
-    public ConcurrentHashMap<AssetDescriptor, RepositoryAsset> getAnimationCollection()
-    {
-        return m_Animations;
-    }
+//    @Debug
+//    public ConcurrentHashMap<AssetDescriptor, RepositoryAsset> getGeometryCollection()
+//    {
+//        return m_Geometry;
+//    }
+//
+//    @Debug
+//    public ConcurrentHashMap<AssetDescriptor, RepositoryAsset> getTexturesCollection()
+//    {
+//        return m_Textures;
+//    }
+//
+//    @Debug
+//    public ConcurrentHashMap<AssetDescriptor, RepositoryAsset> getAnimationCollection()
+//    {
+//        return m_Animations;
+//    }
     
     /**
      * This method is only exposed for PScene construction. It is liable to change

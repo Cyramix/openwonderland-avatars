@@ -248,7 +248,11 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         this(configurationFile, wm, baseURL, transform, null);
     }
 
-    public Character(URL configurationFile, WorldManager wm, String baseURL, PMatrix transform, CharacterInitializationInterface initializer)
+    public Character(URL configurationFile, WorldManager wm, String baseURL, PMatrix transform, CharacterInitializationInterface initializer) {
+        this(configurationFile, wm, baseURL, transform, initializer, true);
+    }
+
+    protected Character(URL configurationFile, WorldManager wm, String baseURL, PMatrix transform, CharacterInitializationInterface initializer, boolean addEntity)
     {
         super("InterimEntityName");
         xmlCharacter characterDOM = null;
@@ -282,7 +286,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
                                     configurationFile.toString() + "! " + ex.getMessage());
         }
         loadedAttributes.setInitializationObject(initializer);
-        commonConstructionCode(wm, loadedAttributes, true, characterDOM);
+        commonConstructionCode(wm, loadedAttributes, addEntity, characterDOM);
     }
 
     public void setEnableShadow(boolean enable)
@@ -1839,12 +1843,19 @@ public abstract class Character extends Entity implements SpatialObject, Animati
             return;
 
         ProcessorCollectionComponent pcc = (ProcessorCollectionComponent) getComponent(ProcessorCollectionComponent.class);
-        pcc.removeAllProcessors();
+
+        for(ProcessorComponent p : pcc.getProcessors()) {
+            p.setArmingCondition(null);                         // Workaround for mtgame bug
+        }
+
         // Something needs to wait until this is finished
         m_characterProcessor.setEnabled(false);
         m_characterProcessor.stop();
-        if (m_AnimationProcessor!=null)
+        m_characterProcessor.setArmingCondition(null);          // Workaround for mtgame bug
+        if (m_AnimationProcessor!=null) {
             m_AnimationProcessor.setEnabled(false);
+            m_AnimationProcessor.setArmingCondition(null);      // Workaround for mtgame bug
+        }
 
         m_wm.removeEntity(this);
 
@@ -1862,6 +1873,10 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         m_rightArm              = null;
         m_leftArm               = null;
         m_skeletonManipulator   = null;
+
+        JSceneEventProcessor proc = (JSceneEventProcessor)m_wm.getUserData(JSceneEventProcessor.class);
+        if (proc!=null)
+            proc.setJScene(null);
     }
 
     /**

@@ -26,7 +26,7 @@ import imi.character.statemachine.TransitionObject;
  * This class represents the transition from the Idle state to the Walk state.
  * @author Lou Hayt
  */
-public class IdleToWalk extends TransitionObject
+public class IdleToStrafe extends TransitionObject
 {
     private float moveDelay = 0.075f; //  how long do we need to press forward\backward to exit idle
     
@@ -37,15 +37,14 @@ public class IdleToWalk extends TransitionObject
             return false;
         
         IdleState idle = (IdleState)state;
-        
+
         if (idle.getMoveCounter() > moveDelay)
         {
-            stateMessageName = "toWalk";
+            stateMessageName = "toSideStep";
             
             // If the walk action is active
-            float x = state.getContext().getActions()[ActionNames.Movement_Rotate_Y.ordinal()];
-            float z = state.getContext().getActions()[ActionNames.Movement_Z.ordinal()];
-            if (x > 0.0f || x < 0.0f || z > 0.0f || z < 0.0f)
+            float x = state.getContext().getActions()[ActionNames.Movement_X.ordinal()];
+            if (x > 0.0f || x < 0.0f)
                 return state.getContext().excecuteTransition(this);
         }
         

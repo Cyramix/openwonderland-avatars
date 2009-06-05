@@ -65,19 +65,20 @@ public class IdleState extends GameState
 
     private void takeAction(float deltaTime) 
     {
+        float rotX = context.getActions()[AvatarContext.ActionNames.Movement_Rotate_Y.ordinal()];
         float x = context.getActions()[AvatarContext.ActionNames.Movement_X.ordinal()];
         float y = context.getActions()[AvatarContext.ActionNames.Movement_Y.ordinal()];
         float z = context.getActions()[AvatarContext.ActionNames.Movement_Z.ordinal()];
         
         // Turn
-        if (x == 0.0f)
+        if (rotX == 0.0f)
             bTurning = false;
         else
             bTurning = true;
         
         // If the input is forwards or backwards we should 
         // count for a move
-        if (z != 0.0f || y !=0f)
+        if (z != 0.0f || y !=0f || x!=0f)
             bMoveInput = true;
         else
             moveCounter = 0.0f;

@@ -117,9 +117,13 @@ public class Avatar extends imi.character.Character
             femaleContextSetup();
     }
 
-    public Avatar(URL configurationFile, WorldManager wm, String baseURL, PMatrix transform)
+    public Avatar(URL configurationFile, WorldManager wm, String baseURL, PMatrix transform) {
+        this(configurationFile, wm, baseURL, transform, true);
+    }
+
+    protected Avatar(URL configurationFile, WorldManager wm, String baseURL, PMatrix transform, boolean addEntity)
     {
-        super(configurationFile, wm, baseURL, transform);
+        super(configurationFile, wm, baseURL, transform, null, addEntity);
         if (m_attributes.isMale())
             maleContextSetup();
         else
@@ -144,11 +148,13 @@ public class Avatar extends imi.character.Character
         m_keyBindings.put(KeyEvent.VK_D,            TriggerNames.Move_Right.ordinal());
         m_keyBindings.put(KeyEvent.VK_W,            TriggerNames.Move_Forward.ordinal());
         m_keyBindings.put(KeyEvent.VK_S,            TriggerNames.Move_Back.ordinal());
+        m_keyBindings.put(KeyEvent.VK_Q,            TriggerNames.Move_Strafe_Left.ordinal());
+        m_keyBindings.put(KeyEvent.VK_E,            TriggerNames.Move_Strafe_Right.ordinal());
         m_keyBindings.put(KeyEvent.VK_CONTROL,      TriggerNames.MiscAction.ordinal());
         m_keyBindings.put(KeyEvent.VK_ENTER,        TriggerNames.ToggleSteering.ordinal());
         m_keyBindings.put(KeyEvent.VK_HOME,         TriggerNames.GoSit.ordinal());
-        m_keyBindings.put(KeyEvent.VK_ADD,          TriggerNames.Move_Down.ordinal());
-        m_keyBindings.put(KeyEvent.VK_SUBTRACT,     TriggerNames.Move_Up.ordinal());
+        m_keyBindings.put(KeyEvent.VK_P,            TriggerNames.Move_Down.ordinal());
+        m_keyBindings.put(KeyEvent.VK_L,            TriggerNames.Move_Up.ordinal());
         m_keyBindings.put(KeyEvent.VK_EQUALS,       TriggerNames.Move_Down.ordinal());
         m_keyBindings.put(KeyEvent.VK_MINUS,        TriggerNames.Move_Up.ordinal());
         m_keyBindings.put(KeyEvent.VK_COMMA,        TriggerNames.Reverse.ordinal());
@@ -160,8 +166,8 @@ public class Avatar extends imi.character.Character
         m_keyBindings.put(KeyEvent.VK_0,            TriggerNames.Smile.ordinal());
         m_keyBindings.put(KeyEvent.VK_9,            TriggerNames.Frown.ordinal());
         m_keyBindings.put(KeyEvent.VK_8,            TriggerNames.Scorn.ordinal());
-        m_keyBindings.put(KeyEvent.VK_Q,            TriggerNames.ToggleLeftArm.ordinal());
-        m_keyBindings.put(KeyEvent.VK_E,            TriggerNames.ToggleRightArm.ordinal());
+        m_keyBindings.put(KeyEvent.VK_Z,            TriggerNames.ToggleLeftArm.ordinal());
+        m_keyBindings.put(KeyEvent.VK_X,            TriggerNames.ToggleRightArm.ordinal());
         m_keyBindings.put(KeyEvent.VK_P,            TriggerNames.Point.ordinal());
     }
             

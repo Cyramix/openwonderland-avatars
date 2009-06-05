@@ -184,9 +184,8 @@ public class GameState extends NamedUpdatableObject
     protected void stateExit(GameContext owner)
     {
         // Debugging / Dianostic output
-        //System.out.println(getName() + " exit");
         if (logger.isLoggable(Level.FINE))
-            logger.fine(getName() + " Exit");
+            logger.fine(getName() + " Exit, animation:"+getAnimationName());
     }
 
     /**

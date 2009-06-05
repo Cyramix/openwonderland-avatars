@@ -29,7 +29,7 @@ import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
  *
  * @author Lou Hayt
  */
-public class WalkState extends GameState 
+public class StrafeState extends GameState
 {
     GameContext context           = null;
         
@@ -41,11 +41,11 @@ public class WalkState extends GameState
     protected float exitCounter           = 0.0f;
     private float minimumTimeBeforeTransition = 0.05f; // still needed?
     
-    public WalkState(AvatarContext master)
+    public StrafeState(AvatarContext master)
     {
         super(master);
         context = master;
-        setName("Walk");
+        setName("SideStep");
     }
     
     /**
@@ -53,7 +53,7 @@ public class WalkState extends GameState
      * @param data - not used
      * @return true if the transition is validated
      */
-    public boolean toWalk(Object data)
+    public boolean toSideStep(Object data)
     {   
         // Reverse animation if moving backwards
         SkeletonNode skeleton = context.getSkeleton();
@@ -61,7 +61,7 @@ public class WalkState extends GameState
         {        
             CharacterController controller = context.getController();
 
-            if (context.getTriggerState().isKeyPressed(TriggerNames.Move_Back.ordinal()))
+            if (context.getTriggerState().isKeyPressed(TriggerNames.Move_Strafe_Left.ordinal()))
                 setTransitionReverseAnimation(true);
             else
                 setTransitionReverseAnimation(false);
@@ -72,23 +72,14 @@ public class WalkState extends GameState
      
     protected void takeAction(float deltaTime) 
     {
-        float x = context.getActions()[AvatarContext.ActionNames.Movement_Rotate_Y.ordinal()];
-        //float y = actions[ActionNames.Movement_Y.ordinal()];
-        float z = context.getActions()[AvatarContext.ActionNames.Movement_Z.ordinal()];
+        float x = context.getActions()[AvatarContext.ActionNames.Movement_X.ordinal()];
         
         CharacterController controller = context.getController();
-        
-        // Turn
+
+        // Side step
         if (x != 0.0f)
         {
-            Vector3f direction = new Vector3f(x, 0.0f, z);
-            controller.turnTo(direction);
-        }
-        
-        // Move Forward
-        if (z != 0.0f)
-        {
-            controller.accelerate(z * impulse);
+            controller.accelerate(new Vector3f(x * impulse, 0f, 0));
         }
     }
     

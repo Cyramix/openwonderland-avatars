@@ -17,38 +17,30 @@
  */
 package imi.character.statemachine.corestates.transitions;
 
-import imi.character.statemachine.corestates.IdleState;
 import imi.character.avatar.AvatarContext.ActionNames;
 import imi.character.statemachine.GameState;
 import imi.character.statemachine.TransitionObject;
 
 /**
- * This class represents the transition from the Idle state to the Walk state.
+ * This class represents the transition from the Walk state to the Punch state.
  * @author Lou Hayt
  */
-public class IdleToWalk extends TransitionObject
+public class StrafeToAction extends TransitionObject
 {
-    private float moveDelay = 0.075f; //  how long do we need to press forward\backward to exit idle
-    
+
     @Override
     protected boolean testCondition(GameState state) 
     {
-        if (!(state instanceof IdleState))
-            return false;
+        stateMessageName = "toAction";
         
-        IdleState idle = (IdleState)state;
-        
-        if (idle.getMoveCounter() > moveDelay)
+        // If the punch action is active
+        if (state.getContext().getActions()[ActionNames.Action.ordinal()] == 1.0f)
         {
-            stateMessageName = "toWalk";
-            
-            // If the walk action is active
-            float x = state.getContext().getActions()[ActionNames.Movement_Rotate_Y.ordinal()];
-            float z = state.getContext().getActions()[ActionNames.Movement_Z.ordinal()];
-            if (x > 0.0f || x < 0.0f || z > 0.0f || z < 0.0f)
+            if ( !state.getContext().isTransitioning() )
                 return state.getContext().excecuteTransition(this);
         }
         
         return false;
     }
+
 }

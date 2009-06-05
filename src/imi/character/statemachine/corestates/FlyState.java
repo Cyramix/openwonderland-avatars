@@ -69,7 +69,7 @@ public class FlyState extends GameState
      
     private void takeAction(float deltaTime) 
     {
-        float x = context.getActions()[AvatarContext.ActionNames.Movement_X.ordinal()];
+        float x = context.getActions()[AvatarContext.ActionNames.Movement_Rotate_Y.ordinal()];
         float y = context.getActions()[AvatarContext.ActionNames.Movement_Y.ordinal()];
         float z = context.getActions()[AvatarContext.ActionNames.Movement_Z.ordinal()];
 
