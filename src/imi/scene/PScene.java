@@ -175,6 +175,7 @@ public class PScene extends PNode implements RepositoryUser, Serializable
         // Add external kids
         Node externalKids = m_JScene.getExternalKidsRoot();
         externalKids.updateWorldData(0.0f);
+        externalKids.updateRenderState();
         kids.add(externalKids);
 
         m_Instances.setDirty(false, false);
