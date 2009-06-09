@@ -215,7 +215,7 @@ public class BinaryExporter {
             inStream.close();
 
         } catch (Exception ex) {
-            m_logger.severe("Error loading binary file (" + resourcePath + "): " + ex.getMessage());
+            m_logger.severe("Error loading binary file: " + ex.getMessage());
             ex.printStackTrace();
         }
 
@@ -334,49 +334,55 @@ public class BinaryExporter {
 
     public void setDefaultHeadShaders(WorldManager wm, SkeletonNode skeleton, float[] skinColor, int shaderType) {
         Repository repo = (Repository) wm.getUserData(Repository.class);
-        
-        Class fleshShaderType = null;
+        AbstractShaderProgram eyeballShader = repo.newShader(EyeballShader.class);
+        AbstractShaderProgram fleshShader   = null;
 
         switch(shaderType)
         {
             case 0:
             {
-                fleshShaderType = FleshShader.class;
+                fleshShader = repo.newShader(FleshShader.class);
                 break;
             }
             case 1:
             {
-                fleshShaderType = PhongFleshShader.class;
+                fleshShader = repo.newShader(PhongFleshShader.class);
                 break;
+            }
+        }
+
+        if (skinColor != null) {
+            try {
+                fleshShader.setProperty(new ShaderProperty("materialColor", GLSLDataType.GLSL_VEC3, skinColor));
+            } catch (NoSuchPropertyException ex) {
+                m_logger.log(Level.SEVERE, null, ex);
             }
         }
 
         Iterable<PPolygonSkinnedMeshInstance> smInstances = skeleton.retrieveSkinnedMeshes("Head");
         if (smInstances == null) // no subgroup found
-            m_logger.severe("No \"Head\" meshes found!");
-        else
-        {
-            for (PPolygonSkinnedMeshInstance meshInst : smInstances) {
+            m_logger.warning("No subgroups found during head installation");
 
-                PMeshMaterial meshMat = meshInst.getMaterialRef();
-                String tempName = meshInst.getName().toLowerCase();
+        for (PPolygonSkinnedMeshInstance meshInst : smInstances) {
 
-                // is this an eyeball? (also used for tongue and teeth)
-                if (tempName.contains("eyegeoshape")) {
-                    meshMat.setShader(repo.newShader(EyeballShader.class));
-                    if (meshMat.getTexture(0) != null)
-                        meshMat.getTexture(0).setMinFilter(MinificationFilter.BilinearNoMipMaps);
-                } else if (tempName.contains("tongue") || tempName.contains("teeth")) {
-                    if (meshMat.getTexture(0) != null)
-                        meshMat.getTexture(0).setMinFilter(MinificationFilter.BilinearNoMipMaps);
-                    meshMat.setShader(repo.newShader(EyeballShader.class));
-                } else {
-                    meshMat.setShader(repo.newShader(fleshShaderType));
-                }
-                // Apply it!
-                meshInst.applyShader();
-                meshInst.applyMaterial();
+            PMeshMaterial meshMat = meshInst.getMaterialRef();
+            String tempName = meshInst.getName().toLowerCase();
+
+            // is this an eyeball? (also used for tongue and teeth)
+            if (tempName.contains("eyegeoshape")) {
+                meshMat.setShader(eyeballShader);
+                if (meshMat.getTexture(0) != null)
+                    meshMat.getTexture(0).setMinFilter(MinificationFilter.BilinearNoMipMaps);
+            } else if (tempName.contains("tongue") || tempName.contains("teeth")) {
+                if (meshMat.getTexture(0) != null)
+                    meshMat.getTexture(0).setMinFilter(MinificationFilter.BilinearNoMipMaps);
+                meshMat.setShader(eyeballShader);
+            } else {
+                meshMat.setShader(fleshShader);
             }
+            // Apply it!
+            meshInst.applyShader();
+            meshInst.applyMaterial();
         }
 
     }

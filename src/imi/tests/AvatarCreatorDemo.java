@@ -25,7 +25,6 @@ import com.jme.bounding.BoundingBox;
 import com.jme.image.Texture;
 import com.jme.light.LightNode;
 import com.jme.light.PointLight;
-import com.jme.math.Vector2f;
 import com.jme.math.Vector3f;
 import com.jme.renderer.ColorRGBA;
 import com.jme.scene.CameraNode;
@@ -69,17 +68,11 @@ import imi.scene.polygonmodel.PPolygonMesh;
 import imi.scene.polygonmodel.PPolygonModel;
 import imi.scene.polygonmodel.PPolygonModelInstance;
 import imi.scene.polygonmodel.parts.PMeshMaterial;
-import imi.scene.polygonmodel.parts.polygon.PPolygon;
-import imi.scene.polygonmodel.parts.skinned.PBoneIndices;
-import imi.scene.polygonmodel.parts.skinned.PPolygonSkinnedVertexIndices;
-import imi.scene.polygonmodel.skinned.PPolygonSkinnedMesh;
-import imi.scene.polygonmodel.parts.skinned.SkinnedMeshJoint;
 import imi.scene.processors.FlexibleCameraProcessor;
 import imi.scene.processors.JSceneAWTEventProcessor;
 import imi.scene.processors.JSceneEventProcessor;
 import imi.scene.utils.PMeshUtils;
 import imi.utils.FileUtils;
-import imi.utils.PMathUtils;
 import imi.utils.instruments.DefaultInstrumentation;
 import imi.utils.instruments.Instrumentation;
 import java.awt.Component;
@@ -198,11 +191,11 @@ public class AvatarCreatorDemo extends javax.swing.JFrame implements FrameRateLi
         System.out.println("Continueing with creating of global lights");
         setGlobalLighting(m_worldManager);
 
-        try {
-            m_presetCaucasian = new URL("http://www.zeitgeistgames.com/assets/files/avatars_cau.xml");
-        } catch (MalformedURLException ex) {
-            Logger.getLogger(AvatarCreatorDemo.class.getName()).log(Level.SEVERE, null, ex);
-        }
+//        try {
+//            m_presetCaucasian = new URL("http://www.zeitgeistgames.com/assets/files/avatars_cau.xml");
+//        } catch (MalformedURLException ex) {
+//            Logger.getLogger(AvatarCreatorDemo.class.getName()).log(Level.SEVERE, null, ex);
+//        }
 
         //this.setSize(m_DefaultSize);
         runProgressBar(false);
@@ -1084,6 +1077,8 @@ public class AvatarCreatorDemo extends javax.swing.JFrame implements FrameRateLi
                 jButton_EZoptionsActionPerformed(evt);
             }
         });
+        jButton_EZoptions.setEnabled(false);
+        jButton_EZoptions.setVisible(false);
         jToolBar_Hotkeys.add(jButton_EZoptions);
         jToolBar_Hotkeys.add(jSeparator1);
 
@@ -1102,6 +1097,8 @@ public class AvatarCreatorDemo extends javax.swing.JFrame implements FrameRateLi
                 jButton_IntermediateOptionsActionPerformed(evt);
             }
         });
+        jButton_IntermediateOptions.setEnabled(false);
+        jButton_IntermediateOptions.setVisible(false);
         jToolBar_Hotkeys.add(jButton_IntermediateOptions);
         jToolBar_Hotkeys.add(jSeparator2);
 

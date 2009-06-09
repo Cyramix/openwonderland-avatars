@@ -23,6 +23,7 @@ import com.jme.image.Texture.CombinerFunctionAlpha;
 import com.jme.image.Texture.MagnificationFilter;
 import com.jme.image.Texture.MinificationFilter;
 import com.jme.image.Texture.WrapMode;
+import com.mysql.jdbc.LoadBalancingConnectionProxy;
 import imi.loaders.repository.Repository;
 import imi.serialization.xml.bindings.xmlTextureAttributes;
 import java.io.IOException;
@@ -411,21 +412,23 @@ public class TextureMaterialProperties implements Serializable
                 stream.close();
                 verified            = true;
             } catch (MalformedURLException ex) {
+                Logger.getLogger(TextureMaterialProperties.class.getName()).log(Level.SEVERE, "File does not exist... " + ex.getMessage());
                 verified = false;
             } catch (IOException ex) {
+                Logger.getLogger(TextureMaterialProperties.class.getName()).log(Level.SEVERE, "File does not exist... " + ex.getMessage());
                 verified = false;
             }
 
-            if (!verified) {
-                try {
-                    localURL            = new URL("http://zeitgeistgames.com/" + relativePath);
-                    InputStream stream  = localURL.openStream();
-                    stream.close();
-                    verified            = true;
-                } catch (MalformedURLException ex) {
-                    verified = false;
-                }
-            }
+//            if (!verified) {
+//                try {
+//                    localURL            = new URL("http://zeitgeistgames.com/" + relativePath);
+//                    InputStream stream  = localURL.openStream();
+//                    stream.close();
+//                    verified            = true;
+//                } catch (MalformedURLException ex) {
+//                    verified = false;
+//                }
+//            }
             
             m_imageLocation = localURL;
         }
