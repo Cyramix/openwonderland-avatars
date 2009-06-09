@@ -1097,13 +1097,16 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         AttachmentParams [] attachments = attributes.getAttachmentsInstructions();
         if (attachments != null && attachments.length > 0) {
             for (int i = 0; i < attachments.length; i++) {
-                // TODO: HACK for hair matrix... need to get this fixed its not outputing into config file
                 PMatrix tempsolution = null;
                 if (attachments[i].getMatrix() == null)
                     tempsolution = new PMatrix();
                 else
                     tempsolution = attachments[i].getMatrix();
-                attributeRoot.addAttachmentInstruction( attachments[i].getMeshName(), attachments[i].getParentJointName(), tempsolution, attachments[i].getAttachmentJointName());
+                
+                if (attachments[i].getAttachmentJointName() == null || attachments[i].getAttachmentJointName().toLowerCase().equals("hair"))
+                    attributeRoot.addAttachmentInstruction( attachments[i].getMeshName(), "HairAttach", tempsolution, attachments[i].getAttachmentJointName());
+                else
+                    attributeRoot.addAttachmentInstruction( attachments[i].getMeshName(), attachments[i].getParentJointName(), tempsolution, attachments[i].getAttachmentJointName());
             }
         }
 

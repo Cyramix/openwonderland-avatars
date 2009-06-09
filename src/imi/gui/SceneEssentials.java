@@ -1149,6 +1149,9 @@ public class SceneEssentials {
 
             PMatrix tempSolution = new PMatrix();
 
+            if (subGroup.equals("Hair"))
+                parentJoint = "HairAttach";
+
             pRootInstruction.addAttachmentInstruction( meshName, parentJoint, tempSolution, subGroup );
             pProcessor.execute(pRootInstruction);
 
@@ -1773,6 +1776,9 @@ public class SceneEssentials {
 //            tempSolution = new PMatrix(new Vector3f((float)Math.toRadians(10),0,0), Vector3f.UNIT_XYZ, Vector3f.ZERO);
 //        }
 
+        if (subGroup.equals("Hair"))
+                joint2addon = "HairAttach";
+
         pRootInstruction.addAttachmentInstruction( data[0], joint2addon, tempSolution, subGroup );
         pProcessor.execute(pRootInstruction);
 
@@ -1862,6 +1868,9 @@ public class SceneEssentials {
 //        } else if (meshLocation.toLowerCase().contains("male")) {
 //            tempSolution = new PMatrix(new Vector3f((float)Math.toRadians(10),0,0), Vector3f.UNIT_XYZ, Vector3f.ZERO);
 //        }
+
+        if (subGroup.equals("Hair"))
+                joint2addon = "HairAttach";
 
         pRootInstruction.addAttachmentInstruction( meshName, joint2addon, tempSolution, subGroup );
         pProcessor.execute(pRootInstruction);
