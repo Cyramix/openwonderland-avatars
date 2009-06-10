@@ -35,7 +35,7 @@ import java.util.HashMap;
 public class AvatarObjectOutputStream extends ObjectOutputStream {
 
     protected static final int UNKNOWN_DESCRIPTOR = Integer.MIN_VALUE;
-    protected static int firstID = UNKNOWN_DESCRIPTOR+1;
+    protected static final int firstID = UNKNOWN_DESCRIPTOR+1;
     
     private static HashMap<String, Integer> descToId = new HashMap();
         

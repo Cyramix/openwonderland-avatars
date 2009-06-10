@@ -360,8 +360,11 @@ public class BinaryExporter {
         }
 
         Iterable<PPolygonSkinnedMeshInstance> smInstances = skeleton.retrieveSkinnedMeshes("Head");
-        if (smInstances == null) // no subgroup found
+        if (smInstances == null) { // no subgroup found
             m_logger.warning("No subgroups found during head installation");
+            m_logger.severe("DefaultHeadShaders not being applied because no instances found...");
+            return;
+        }
 
         for (PPolygonSkinnedMeshInstance meshInst : smInstances) {
 

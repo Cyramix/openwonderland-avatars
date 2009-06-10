@@ -63,7 +63,7 @@ public class GLSLShaderProgram implements AbstractShaderProgram, RenderUpdater, 
     /**
      * Convenience reference to the shader newline character
      */
-    protected static String NL = GLSLDefaultVariables.ShaderNewline;
+    protected static final String   NL  = GLSLDefaultVariables.ShaderNewline;
 
     private static final float timeOut = 3.0f; // 3 Seconds.
     /**

@@ -1540,6 +1540,12 @@ public class SceneEssentials {
                 attribs = createDefaultAttributes(gender, modelLocation, headLocation, handLocation);
         }
 
+        if (attribs == null) {
+            Logger.getLogger(SceneEssentials.class.getName()).severe("Attributes was NULL & could not create new attributes from paramaters passed in!");
+            Logger.getLogger(SceneEssentials.class.getName()).severe("HALTING character creation...");
+            return;
+        }
+
         if (m_avatar != null) {
             m_avatar.destroy();
             m_avatar = null;
@@ -2084,7 +2090,13 @@ public class SceneEssentials {
             fold = destination.toString().substring(a, b) + '/';
         
         File desti = new File(destination.getParent(), fold);
-        desti.mkdirs();
+
+        boolean makedir = desti.mkdirs();
+        if (!makedir) {
+            Logger.getLogger(SceneEssentials.class.getName()).log(Level.SEVERE, "DIRECTORY CREATION FAILED: Quiting...");
+            return;
+        }
+
         
         downloadURLFile(link, destination);
 

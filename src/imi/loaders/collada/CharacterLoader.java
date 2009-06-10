@@ -157,6 +157,8 @@ public class CharacterLoader implements RepositoryUser
             {
                 newGroup = skeleton.getAnimationGroup(skeleton.getAnimationComponent().getGroupCount() - 1);
                 owningSkeleton.getAnimationComponent().addGroup(newGroup);
+                boolean makedir = false;
+
                 // Serialize it for the next round
                 if (bafCacheURL != null) {
                     try {
@@ -164,7 +166,12 @@ public class CharacterLoader implements RepositoryUser
                         File f = new File(binaryLocation.toURI());
                         File dir = f.getParentFile();
                         if (!dir.exists())
-                            dir.mkdirs();
+                            makedir = dir.mkdirs();
+
+                        if (!makedir) {
+                            logger.log(Level.SEVERE, "DIRECTORY CREATION FAILED: cacheing animations");
+                        }
+
                     } catch (URISyntaxException ex) {
                         Logger.getLogger(CharacterLoader.class.getName()).log(Level.SEVERE, null, ex);
                     }

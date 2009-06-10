@@ -52,7 +52,7 @@ public class GLSLShaderEffect implements Serializable
     private static final long serialVersionUID = 1l;
 
     /** This is a convenience reference to the ShaderNewLine string **/
-    protected static String         NL = GLSLDefaultVariables.ShaderNewline;
+    protected static final String   NL                  = GLSLDefaultVariables.ShaderNewline;
     
     /** The name of the effect; used as a function name for the effect. **/
     protected String                m_effectName        = null;

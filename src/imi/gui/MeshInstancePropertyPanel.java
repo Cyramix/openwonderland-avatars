@@ -30,8 +30,8 @@ import org.jdesktop.mtgame.WorldManager;
 public class MeshInstancePropertyPanel extends javax.swing.JPanel implements PNodeSubtypeToolkit
 {   
     // Widget dimensions for the class
-    public static int TOOLKIT_HEIGHT = 400;
-    public static int TOOLKIT_WIDTH = 670;
+    public static final int TOOLKIT_HEIGHT = 400;
+    public static final int TOOLKIT_WIDTH = 670;
     
     private PPolygonMeshInstance    m_meshInst = null; // The data model
     private WorldManager            m_wm = null;

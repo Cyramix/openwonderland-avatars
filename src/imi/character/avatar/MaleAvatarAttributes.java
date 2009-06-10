@@ -33,7 +33,7 @@ import java.util.ArrayList;
 public class MaleAvatarAttributes extends CharacterAttributes
 {
     /** Convenience reference of the SkeletonNode groups the Character class uses.**/
-    public static final String[] m_regions = new String[] { "Head", "Hands", "UpperBody", "LowerBody", "Feet", "Hair", "FacialHair", "Hats", "Glasses", "Jackets" };
+    static final String[] m_regions = new String[] { "Head", "Hands", "UpperBody", "LowerBody", "Feet", "Hair", "FacialHair", "Hats", "Glasses", "Jackets" };
 
     /** Collection of skin tone shades**/
     private static final ColorRGBA[] skinTones = new ColorRGBA[]

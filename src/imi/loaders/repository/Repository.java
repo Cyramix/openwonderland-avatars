@@ -19,7 +19,6 @@ package imi.loaders.repository;
 
 import com.jme.image.Texture;
 import com.jme.util.TextureManager;
-import imi.annotations.Debug;
 import imi.cache.CacheBehavior;
 import imi.cache.DefaultAvatarCache;
 import imi.loaders.repository.SharedAsset.SharedAssetType;
@@ -37,21 +36,13 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Collection;
-import java.util.List;
-import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.JProgressBar;
-import javolution.util.FastList;
 import javolution.util.FastTable;
 import org.jdesktop.mtgame.*;
 
@@ -212,21 +203,33 @@ public class Repository extends Entity
     {
         if (asset == null)
             logger.severe("Asset requested was null!");
-        
-        RepositoryAsset repoAsset = null;
-        ConcurrentHashMap<AssetDescriptor, RepositoryAsset> collection = getCollection(asset.getDescriptor().getType());
 
         // Do some robust error checking
-        boolean failure = true;
+        boolean failure                 = true;
+        RepositoryAsset repoAsset       = null;
+        AssetDescriptor assetDescriptor = asset.getDescriptor();
+        SharedAssetType collectionType  = null;
+        ConcurrentHashMap<AssetDescriptor, RepositoryAsset> collection  = null;
+
+        if (assetDescriptor == null) {
+            logger.severe("Asset descriptor was null!");
+        } else {
+            collectionType  = asset.getDescriptor().getType();
+        }
+
+        if (collectionType == null) {
+            logger.severe("SharedAssetType was null");
+        } else {
+            collection = getCollection(collectionType);
+        }
+
         if (collection == null) // Collection not found?!
             logger.severe("Unable to get correct collection for " + asset.getDescriptor().toString());
-        else if (asset.getDescriptor() == null)
-            logger.severe("Asset descriptor was null!");
         else
             failure = false;
+
         // To proceed, or not?
-        if (failure)
-        {
+        if (failure) {
             logger.severe("Failed to load the requested asset...");
             return;
         }
@@ -328,10 +331,13 @@ public class Repository extends Entity
         frame.add(progressBar);
         frame.pack();
         frame.setVisible(true);
+        FileOutputStream fos    = null;
+        BufferedInputStream bis = null;
+
         try {
             textureCacheLocation = new URL("http://www.zeitgeistgames.com/assets/textures/textures.bin");
-            FileOutputStream fos = new FileOutputStream(textureCacheFile);
-            BufferedInputStream bis = new BufferedInputStream(textureCacheLocation.openStream());
+            fos = new FileOutputStream(textureCacheFile);
+            bis = new BufferedInputStream(textureCacheLocation.openStream());
             byte[] byteBuffer = new byte[65536];
             int bytesRead = 0;
             int totalRead = 0;
@@ -344,8 +350,6 @@ public class Repository extends Entity
             // Now the file is created! Make sure it exists
             if (textureCacheFile.exists() == false)
                 logger.severe("Downloaded the file, but still couldn't create the cache version!");
-            fos.close();
-            bis.close();
         }
         catch (MalformedURLException ex)
         {
@@ -361,6 +365,14 @@ public class Repository extends Entity
         }
         finally
         {
+            try {
+                if (fos != null)
+                    fos.close();
+                if (bis != null)
+                    bis.close();
+            } catch (IOException ex2) {
+                logger.severe("IOstream close failure: " + ex2.getMessage());
+            }
             frame.setVisible(false);
         }
     }

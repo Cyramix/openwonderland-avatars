@@ -327,11 +327,11 @@ public final class DebuggerVisualization {
     }
     private static final Vector3f _normalVect = new Vector3f();
     private static ZBufferState normZState;
-    public static ColorRGBA NORMAL_COLOR_BASE = ColorRGBA.red.clone();
-    public static ColorRGBA NORMAL_COLOR_TIP = ColorRGBA.pink.clone();
-    public static ColorRGBA TANGENT_COLOR_BASE = ColorRGBA.red.clone();
-    public static BoundingBox measureBox = new BoundingBox();
-    public static float AUTO_NORMAL_RATIO = .05f;
+    public static final ColorRGBA NORMAL_COLOR_BASE = ColorRGBA.red.clone();
+    public static final ColorRGBA NORMAL_COLOR_TIP = ColorRGBA.pink.clone();
+    public static final ColorRGBA TANGENT_COLOR_BASE = ColorRGBA.red.clone();
+    public static final BoundingBox measureBox = new BoundingBox();
+    public static final float AUTO_NORMAL_RATIO = .05f;
     
     /**
      * <code>drawNormals</code> draws lines representing normals for a given

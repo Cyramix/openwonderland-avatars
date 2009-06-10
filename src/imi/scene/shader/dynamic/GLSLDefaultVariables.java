@@ -167,7 +167,7 @@ public class GLSLDefaultVariables
      * consulted to handle any variables that need to be used but were not
      * yet initialized to any meaningful value.
      */
-    public static HashMap<String,String> DefaultInitializers = new HashMap<String, String>();
+    public static final HashMap<String,String> DefaultInitializers = new HashMap<String, String>();
     // static initializer for default initialization mapping initialization of the 
     // initializer strings used in initialization initially.
     static

@@ -111,9 +111,13 @@ public class CoreCommands implements ConsoleCommand
                 } catch (Exception ex) {
                     fail = true;
                 }
+
                 try {
                     dir = new Vector3f(Float.parseFloat(args[4]), Float.parseFloat(args[5]), Float.parseFloat(args[6]));
-                } catch (Exception ex) { }
+                } catch (Exception ex) {
+                    fail = true;
+                }
+
                 if (!fail)
                 {
                     Avatar avatar = objs.getAvatar(id);

@@ -411,7 +411,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
     }
 
     /**
-     * Instantiate the GameContext for this xmlCharacter
+     * Instantiate the GameContext for this XmlCharacter
      *
      * @return
      */
@@ -1676,8 +1676,13 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         try {
             if (location.exists() == true && location.canWrite() == false)
                 throw new IOException("Request file (" + location.toString() + ") is not writeable.");
-            else if (location.exists() == false)
-                location.createNewFile();
+            else if (location.exists() == false) {
+                boolean creation    = location.createNewFile();
+                if (!creation) {
+                    logger.log(Level.SEVERE, "FILE CREATION FAILED: saving process stopped");
+                    return;
+                }
+            }
 
             saveConfiguration(new BufferedOutputStream(new FileOutputStream(location)));
         }

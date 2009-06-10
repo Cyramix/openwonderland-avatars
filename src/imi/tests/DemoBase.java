@@ -114,7 +114,7 @@ public class DemoBase {
 
     /** Convenience references for derived classes **/
     /** The WorldManager, only one may exist at a time **/
-    protected static WorldManager  worldManager    = null;
+    static WorldManager  worldManager    = null;
     /** Asset repository **/
     protected Repository    repository      = null;
     /** The jMonkey Engine camera node we use in demos **/

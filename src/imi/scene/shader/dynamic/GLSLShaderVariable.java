@@ -33,11 +33,11 @@ public class GLSLShaderVariable implements Serializable
     /**
      * Convenience reference to the shader new line string
      */
-    protected static String     NL          = GLSLDefaultVariables.ShaderNewline;
+    protected static final String   NL      = GLSLDefaultVariables.ShaderNewline;
     /**
      * The in-code name used for this variable
      */
-    protected String            m_name      = null;
+    protected String                m_name  = null;
     /**
      * The GLSL type of this variable
      */

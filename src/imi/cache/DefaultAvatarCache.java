@@ -16,6 +16,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -103,8 +104,13 @@ public class DefaultAvatarCache implements CacheBehavior
     @Override
     public boolean clearCache() 
     {
-        for (File file : cacheFolder.listFiles())
-            file.delete();
+        boolean deletion    = false;
+        for (File file : cacheFolder.listFiles()) {
+            deletion    = file.delete();
+            if (!deletion)
+                logger.log(Level.SEVERE, "CACHE FILE DELETION FAILED: " + file.getName());
+        }
+            
         if (cacheFolder.listFiles().length == 0)
             return true; // Success
         else
@@ -139,8 +145,11 @@ public class DefaultAvatarCache implements CacheBehavior
         {
             // Determine which one is newer, if the cache version is older,
             // then we will delete it.
-            if (localFile.lastModified() > result.lastModified())
-                result.delete();
+            if (localFile.lastModified() > result.lastModified()) {
+                boolean deletion    = result.delete();
+                if (!deletion)
+                    logger.log(Level.SEVERE, "CACHE FILE DELETION FAILED: " + result.getName());
+            }
         }
         return result;
     }

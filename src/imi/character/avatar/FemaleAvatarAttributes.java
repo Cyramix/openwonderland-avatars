@@ -32,7 +32,7 @@ import java.util.ArrayList;
 public class FemaleAvatarAttributes extends CharacterAttributes
 {
     /** Convenience strings of the SkeletonNode groups used by the Character class **/
-    public static final String[] m_regions = new String[] { "Head", "Hands", "UpperBody", "LowerBody", "Feet", "Hair", "FacialHair", "Hats", "Glasses", "Jackets" };
+    static final String[] m_regions = new String[] { "Head", "Hands", "UpperBody", "LowerBody", "Feet", "Hair", "FacialHair", "Hats", "Glasses", "Jackets" };
 
     /** Collection of skin tone shades**/
     private static final ColorRGBA[] skinTones = new ColorRGBA[]

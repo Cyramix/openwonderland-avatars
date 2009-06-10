@@ -28,8 +28,8 @@ import imi.scene.PNode;
 public class PJointPanel extends javax.swing.JPanel implements PNodeSubtypeToolkit 
 {
     // Widget dimensions
-    public static int TOOLKIT_HEIGHT = 360;
-    public static int TOOLKIT_WIDTH = 500;
+    public static final int TOOLKIT_HEIGHT = 360;
+    public static final int TOOLKIT_WIDTH = 500;
     
     // The data model to operate on
     private PJoint  m_Model = null;

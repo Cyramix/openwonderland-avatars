@@ -351,7 +351,7 @@ public class MorphAnimationInstance extends Node //implements Savable
     {
         MorphAnimationLoop animationLoop = m_pAnimation.getMorphAnimationLoop(0);
                 
-        if (m_pAnimation != null && animationLoop != null)
+        if (animationLoop != null)
         {
             m_PositionsCount = animationLoop.getPositionsCount();
         }

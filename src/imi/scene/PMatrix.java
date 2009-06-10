@@ -26,6 +26,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.Arrays;
+import java.util.logging.Logger;
 
 /**
  * The most awesome matrix class ever.
@@ -41,7 +42,7 @@ public class PMatrix implements Serializable
     /*******************
         Class variables
     *******************/
-    static public PMatrix IDENTITY = new PMatrix();
+    public static final PMatrix IDENTITY = new PMatrix();
 
     // Dirty bit for classification, this is used
     // for classify()
@@ -3290,6 +3291,16 @@ public class PMatrix implements Serializable
 	    t2[8] = -t2[8];
 	}
 
+    if (outRot == null) {
+//                MasterControl.getCoreLogger().severe("outRot == null");
+        Logger.getLogger(PMatrix.class.getName()).severe("outRot[] passed in was null...");
+        return;
+    }
+    if (rot == null) {
+//               MasterControl.getCoreLogger().severe("rot == null");
+        Logger.getLogger(PMatrix.class.getName()).severe("rot[] passed in was null...");
+        return;
+    }
 
 	mat_mul(t1,t2,rot);
 
@@ -3374,12 +3385,6 @@ public class PMatrix implements Serializable
 	    outScale[2] = scales[index];
 
 	    index = svdOut[in0];
-	    if (outRot == null) {
-//                MasterControl.getCoreLogger().severe("outRot == null");
-            }
-	    if (rot == null) {
- //               MasterControl.getCoreLogger().severe("rot == null");
-            }
 
 	    outRot[0] = rot[index];
 
