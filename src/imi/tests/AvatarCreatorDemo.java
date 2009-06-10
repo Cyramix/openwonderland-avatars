@@ -73,6 +73,7 @@ import imi.scene.processors.JSceneAWTEventProcessor;
 import imi.scene.processors.JSceneEventProcessor;
 import imi.scene.utils.PMeshUtils;
 import imi.utils.FileUtils;
+import imi.utils.input.DemoAvatarControlScheme;
 import imi.utils.instruments.DefaultInstrumentation;
 import imi.utils.instruments.Instrumentation;
 import java.awt.Component;
@@ -635,8 +636,10 @@ public class AvatarCreatorDemo extends javax.swing.JFrame implements FrameRateLi
         // Use default render states
 //        setDefaultRenderStates(jscene, wm);
 
+        DemoAvatarControlScheme control = (DemoAvatarControlScheme)((JSceneEventProcessor)wm.getUserData(JSceneEventProcessor.class)).setDefault(new DemoAvatarControlScheme(null));
+        control.setJScene(jscene);
         // Set this jscene to be the "selected" one for IMI input handling
-        ((JSceneEventProcessor)wm.getUserData(JSceneEventProcessor.class)).setJScene(jscene);
+//        ((JSceneEventProcessor)wm.getUserData(JSceneEventProcessor.class)).setJScene(jscene);
 
         // Create entity
         Entity JSEntity = new Entity("Entity for a graph test");

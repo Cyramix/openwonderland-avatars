@@ -48,12 +48,14 @@ import imi.scene.polygonmodel.parts.PMeshMaterial;
 import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
 import imi.scene.polygonmodel.skinned.PPolygonSkinnedMeshInstance;
 import imi.scene.processors.FlexibleCameraProcessor;
+import imi.scene.processors.JSceneEventProcessor;
 import imi.scene.processors.SkinnedAnimationProcessor;
 import imi.scene.shader.programs.NormalAndSpecularMapShader;
 import imi.scene.shader.programs.VertDeformerWithSpecAndNormalMap;
 import imi.scene.utils.tree.MeshInstanceSearchProcessor;
 import imi.scene.utils.tree.TreeTraverser;
 import imi.sql.SQLInterface;
+import imi.utils.input.DemoAvatarControlScheme;
 import java.awt.Component;
 import java.awt.Frame;
 import java.io.BufferedInputStream;
@@ -815,6 +817,11 @@ public class SceneEssentials {
 
             m_avatar.selectForInput();
             m_currentPScene = m_avatar.getPScene();
+            JSceneEventProcessor jsep       = (JSceneEventProcessor) m_worldManager.getUserData(JSceneEventProcessor.class);
+            DemoAvatarControlScheme dacs    = (DemoAvatarControlScheme) jsep.getInputScheme();
+            dacs.setJScene(m_avatar.getJScene());
+            dacs.setAvatar(m_avatar);
+
         }
         return false;
     }
@@ -837,6 +844,12 @@ public class SceneEssentials {
 
         m_avatar.selectForInput();
         m_currentPScene = m_avatar.getPScene();
+
+        JSceneEventProcessor jsep       = (JSceneEventProcessor) m_worldManager.getUserData(JSceneEventProcessor.class);
+        DemoAvatarControlScheme dacs    = (DemoAvatarControlScheme) jsep.getInputScheme();
+        dacs.setJScene(m_avatar.getJScene());
+        dacs.setAvatar(m_avatar);
+
         return true;
     }
     /**
@@ -1538,6 +1551,11 @@ public class SceneEssentials {
         }
         m_avatar.selectForInput();
         m_currentPScene = m_avatar.getPScene();
+
+        JSceneEventProcessor jsep       = (JSceneEventProcessor) m_worldManager.getUserData(JSceneEventProcessor.class);
+        DemoAvatarControlScheme dacs    = (DemoAvatarControlScheme) jsep.getInputScheme();
+        dacs.setJScene(m_avatar.getJScene());
+        dacs.setAvatar(m_avatar);
     }
 
     /**
@@ -2539,6 +2557,11 @@ public class SceneEssentials {
 //                } else if (m_avatar != null) {
 //                    m_avatar.loadConfiguration(configURL);
 //                }
+                    JSceneEventProcessor jsep       = (JSceneEventProcessor) m_worldManager.getUserData(JSceneEventProcessor.class);
+                    DemoAvatarControlScheme dacs    = (DemoAvatarControlScheme) jsep.getInputScheme();
+                    dacs.setJScene(m_avatar.getJScene());
+                    dacs.setAvatar(m_avatar);
+
             } catch (MalformedURLException ex) {
                 Logger.getLogger(SceneEssentials.class.getName()).log(Level.SEVERE, null, ex);
             }

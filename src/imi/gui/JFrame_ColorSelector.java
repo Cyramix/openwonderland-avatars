@@ -82,7 +82,7 @@ public class JFrame_ColorSelector extends javax.swing.JFrame implements ChangeLi
 
         PNode node = m_sceneData.getAvatar().getSkeleton().findChild("Hair");
         if (node == null)
-            node = m_sceneData.getAvatar().getSkeleton().findChild("MysteryNode!");
+            node = m_sceneData.getAvatar().getSkeleton().findChild("AttachmentJoint");
         
         PPolygonMeshInstance hair = null;
         if (node != null)
@@ -307,8 +307,14 @@ public class JFrame_ColorSelector extends javax.swing.JFrame implements ChangeLi
         AbstractShaderProgram accessoryShader   = repo.newShader(SimpleTNLWithAmbient.class);
         AbstractShaderProgram hairShader        = repo.newShader(HairShader.class);
         
-        if (meshInst.getParent().getName().toLowerCase().contains("hair") || meshInst.getParent().getName().toLowerCase().contains("mysterynode!"))
-        {
+        if (meshInst.getParent().getName().toLowerCase().contains("hair")) {    // Kept on failing when || with the next check...
+            try {
+                hairShader.setProperty(new ShaderProperty("materialColor", GLSLDataType.GLSL_VEC3, fColorArray));
+                hairShader.setProperty(new ShaderProperty("specColor", GLSLDataType.GLSL_VEC3, fColorArray));
+                material.setShader(hairShader);
+            } catch (Exception ex) {
+                Logger.getLogger(Character.class.getName()).log(Level.SEVERE, null, ex); }
+        } else if (meshInst.getParent().getName().toLowerCase().contains("attachment")) {
             try {
                 hairShader.setProperty(new ShaderProperty("materialColor", GLSLDataType.GLSL_VEC3, fColorArray));
                 hairShader.setProperty(new ShaderProperty("specColor", GLSLDataType.GLSL_VEC3, fColorArray));

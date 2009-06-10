@@ -255,8 +255,11 @@ public class InstructionProcessor
         // Find the joint
         String jointName = (String)array[1];
         SkinnedMeshJoint joint = m_skeleton.getSkinnedMeshJoint(jointName);
-        if (joint == null)
-        {
+
+        if (joint == null && jointName.equals("HairAttach")) {
+            jointName = "Head";
+            joint = m_skeleton.getSkinnedMeshJoint(jointName);
+        } else if (joint == null) {
             logger.severe("Specified attachment joint not found!");
             return false;
         }
@@ -287,7 +290,11 @@ public class InstructionProcessor
         }
         
         // Create new joint
-        PJoint newJoint = new PJoint((String)array[3], new PTransform((PMatrix)array[2]));
+        String newJointName = (String)array[3];
+        if (newJointName == null)
+            newJointName = "AttachmentJoint";
+        
+        PJoint newJoint = new PJoint(newJointName, new PTransform((PMatrix)array[2]));
         newJoint.addChild(mesh);
         joint.addChild(newJoint);
         
