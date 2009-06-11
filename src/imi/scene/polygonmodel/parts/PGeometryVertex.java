@@ -174,6 +174,11 @@ public class PGeometryVertex
         return true;
     }
 
+    public void dump()
+    {
+        System.out.println("Vertex Position: " + m_Position);
+    }
+
     @Override
     public int hashCode() {
         int hash = 3;

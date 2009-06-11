@@ -21,6 +21,7 @@ public class JmeGraphProcessor extends ProcessorComponent
 {
     private WorldManager wm = null;
     FastList<GraphCommand> commands = new FastList<GraphCommand>();
+    FastList<Node> clearChildrenNodes = new FastList<Node>();
 
     public JmeGraphProcessor(WorldManager wm)
     {
@@ -32,6 +33,11 @@ public class JmeGraphProcessor extends ProcessorComponent
     {
         if (spat != null && node != null)
             commands.add(new GraphCommand(spat, true, node));
+    }
+
+    public void clearChildren(Node node) {
+        if (node != null && node.getChildren() != null)
+            clearChildrenNodes.add(node);
     }
     
     public synchronized void detach(Spatial spat, Node node)
@@ -67,6 +73,11 @@ public class JmeGraphProcessor extends ProcessorComponent
             }
             else
                 gc.node.detachChild(gc.spat);
+        }
+        while(!clearChildrenNodes.isEmpty())
+        {
+            Node node = clearChildrenNodes.removeFirst();
+            node.getChildren().clear();
         }
     }
 

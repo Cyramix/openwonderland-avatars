@@ -80,6 +80,10 @@ public class InternalRendererEntity extends Entity
         root.getUserLines().add(lineTable);
     }
 
+    public void clearAll() {
+        root.clearAll();
+    }
+
     public void clearYellowLines() {
         root.getUserLines().clear();
     }

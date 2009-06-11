@@ -81,6 +81,23 @@ public class InternalRendererNode extends Node
     ColorRGBA offsetLinesEndColor = ColorRGBA.green;
     float offsetLinesWidth = 5.0f;
 
+
+    public void clearAll()
+    {
+        positionMarkers.clear();
+        jmeBB.clear();
+        jmeN.clear();
+        spheres.clear();
+        boxes.clear();
+        lines.clear();
+        userLines.clear();
+        cyanLines.clear();
+        pinkLines.clear();
+        gridLines.clear();
+        customLines.clear();
+        offsetLines.clear();
+    }
+
     @Override
     public void draw(Renderer r)
     {
