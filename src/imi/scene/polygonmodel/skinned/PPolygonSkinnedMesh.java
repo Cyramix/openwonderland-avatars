@@ -278,7 +278,7 @@ public class PPolygonSkinnedMesh extends PPolygonMesh implements Serializable
 	//  Adds a JointName.
     public void addJointName(String jointName)
     {
-        m_JointNames.add(new String(jointName));
+        m_JointNames.add(jointName);
     }
 
     //  Gets the number of JointNames.

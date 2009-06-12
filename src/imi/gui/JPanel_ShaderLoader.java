@@ -33,7 +33,7 @@ public class JPanel_ShaderLoader extends javax.swing.JPanel {
 ////////////////////////////////////////////////////////////////////////////////
     /** Shader Data */
     private java.io.File shaders = new java.io.File("src/imi/scene/shader/programs");
-    private String       shaderPackage = new String("imi.scene.shader.programs");
+    private String       shaderPackage = "imi.scene.shader.programs";
     private java.util.ArrayList<imi.scene.shader.ShaderProperty> selectedShaderProperties = new java.util.ArrayList<imi.scene.shader.ShaderProperty>();
     /** Scene Data */
     private org.jdesktop.mtgame.WorldManager wm = null;

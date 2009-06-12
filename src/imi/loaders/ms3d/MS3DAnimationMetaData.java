@@ -75,7 +75,7 @@ public class MS3DAnimationMetaData
                 // Process the line by splitting on whitespace
                 String[] fields = currentLine.split(" ");
                 // name is now index 0
-                currentCycle.setName(new String(fields[0]));
+                currentCycle.setName(fields[0]);
                 
 
                 // add this description in

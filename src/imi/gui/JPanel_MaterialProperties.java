@@ -137,7 +137,7 @@ public class JPanel_MaterialProperties extends javax.swing.JPanel {
             File texFile = jFileChooser_Texture.getSelectedFile();
 
             int index = ((DefaultListModel)jList_Textures.getModel()).size();
-            String texName = new String("["+ index + "]  " + texFile.getName());
+            String texName = "["+ index + "]  " + texFile.getName();
 
             try {
                 m_textureLocations.add(texFile.toURI().toURL());
@@ -167,7 +167,7 @@ public class JPanel_MaterialProperties extends javax.swing.JPanel {
             for(int i = 0; i < curModel.size(); i++) {
                 String temp = curModel.get(i).toString();
                 String name = temp.substring(temp.lastIndexOf(" "));
-                String texName = new String("[" + i + "]" + name);
+                String texName = "[" + i + "]" + name;
                 newModel.addElement(texName);
             }
             jList_Textures.setModel(newModel);
@@ -294,7 +294,7 @@ public class JPanel_MaterialProperties extends javax.swing.JPanel {
             }
             @Override
             public String getDescription() {
-                String szDescription = new String("Images (*.jpg, *.png, *.gif, *.tga)");
+                String szDescription = "Images (*.jpg, *.png, *.gif, *.tga)";
                 return szDescription;
             }
         });
@@ -503,7 +503,7 @@ public class JPanel_MaterialProperties extends javax.swing.JPanel {
         for (int i = 0; i < m_mesh.getGeometry().getNumberOfTextures(); ++i)
         {
             if (m_mat.getTexture(i) != null) {
-                texName = new String("["+ i + "] " + m_mat.getTexture(i).getImageLocation());
+                texName = "["+ i + "] " + m_mat.getTexture(i).getImageLocation();
                 m_textureLocations.add(m_mat.getTexture(i).getImageLocation());
                 newModel.addElement(texName);
             }
@@ -530,7 +530,7 @@ public class JPanel_MaterialProperties extends javax.swing.JPanel {
         for (int i = 0; i < m_mesh.getGeometry().getNumberOfTextures(); ++i)
         {
             if (m_mat.getTexture(i) != null) {
-                texName = new String("["+ i + "] " + m_mat.getTexture(i).getImageLocation());
+                texName = "["+ i + "] " + m_mat.getTexture(i).getImageLocation();
                 m_textureLocations.add(m_mat.getTexture(i).getImageLocation());
                 newModel.addElement(texName);
             }            
@@ -593,7 +593,7 @@ public class JPanel_MaterialProperties extends javax.swing.JPanel {
 
     public void addNewlyCreatedTextureToList(File newTexture) {
         int index = ((DefaultListModel)jList_Textures.getModel()).size();
-        String texName = new String("["+ index + "]  " + newTexture.getName());
+        String texName = "["+ index + "]  " + newTexture.getName();
 
         try {
             m_textureLocations.add(newTexture.toURI().toURL());

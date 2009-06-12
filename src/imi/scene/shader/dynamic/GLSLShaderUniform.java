@@ -76,7 +76,7 @@ public class GLSLShaderUniform extends GLSLShaderVariable implements Serializabl
     @Override
     public String toString()
     {
-        return new String("uniform " + super.toString());
+        return "uniform " + super.toString();
     }
     
     /**
@@ -86,6 +86,6 @@ public class GLSLShaderUniform extends GLSLShaderVariable implements Serializabl
     @Override
     public String declare()
     {
-        return new String("uniform " + super.declare());
+        return "uniform " + super.declare();
     }
 }

@@ -37,10 +37,10 @@ public class PMatrixTableModel extends AbstractTableModel
     {
         super();
         m_Matrix = target;
-        m_ColumnNames[0] = new String("X");
-        m_ColumnNames[1] = new String("X");
-        m_ColumnNames[2] = new String("Z");
-        m_ColumnNames[3] = new String("T");
+        m_ColumnNames[0] = "X";
+        m_ColumnNames[1] = "X";
+        m_ColumnNames[2] = "Z";
+        m_ColumnNames[3] = "T";
     }
     
     public int getRowCount() 

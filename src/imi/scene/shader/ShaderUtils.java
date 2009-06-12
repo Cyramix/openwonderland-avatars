@@ -55,7 +55,7 @@ public class ShaderUtils
     /** Logger ref **/
     private static final Logger logger = Logger.getLogger(ShaderUtils.class.getName());
     /** This string is used to indicate the package that contains premade programs **/
-    public static final String  ShaderProgramPackage = new String("imi.scene.shader.programs");
+    public static final String  ShaderProgramPackage = "imi.scene.shader.programs";
     
     /**
      * This method calls the appropriate "setUniform" overloads to set each of

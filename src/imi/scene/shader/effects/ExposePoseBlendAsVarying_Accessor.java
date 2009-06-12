@@ -47,7 +47,7 @@ class ExposePoseBlendAsVarying_Accessor extends GLSLShaderEffect
     private void initializeDefaults()
     {
         // give me a name!
-        m_effectName = new String("ExposePoseBlendAsVarying_Accessor");
+        m_effectName = "ExposePoseBlendAsVarying_Accessor";
         // describe the effect
         m_effectDescription = new String(
                 "This effect exposes the upper 3x3 of the poseBlend matrix " +

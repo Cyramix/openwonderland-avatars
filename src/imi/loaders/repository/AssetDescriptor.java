@@ -230,10 +230,10 @@ public class AssetDescriptor implements Serializable
     {
         String location = null;
         if (m_URLList.size() > 0)
-            location = new String(m_URLList.get(0).toString());
+            location = m_URLList.get(0).toString();
         else
-            location = new String("No location associated.");
-        return new String(m_type.toString() + " : " + location);
+            location = "No location associated.";
+        return m_type.toString() + " : " + location;
     }
     
     

@@ -38,7 +38,7 @@ public class NoiseTexturing extends GLSLShaderEffect
     private void initializeDefaults()
     {
         // set our name
-        m_effectName = new String("NoiseTexturing");
+        m_effectName = "NoiseTexturing";
         // allocate globals we intend to use
         m_fragmentGlobals = new GLSLShaderVariable[1];
         m_fragmentGlobals[0] = GLSLDefaultVariables.FinalFragmentColor;

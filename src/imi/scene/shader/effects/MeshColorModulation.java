@@ -38,7 +38,7 @@ public class MeshColorModulation extends GLSLShaderEffect
     private void initializeDefaults()
     {
         // set our name
-        m_effectName = new String("MeshColorModulation");
+        m_effectName = "MeshColorModulation";
         // optionally set a description
         m_effectDescription = new String("This effect uses a provided uniform " +
                 "to modulate the final fragment color.");
@@ -73,6 +73,6 @@ public class MeshColorModulation extends GLSLShaderEffect
      */
     private void createVertexLogic()
     {
-        m_vertexLogic = new String("");
+        m_vertexLogic = "";
     }
 }

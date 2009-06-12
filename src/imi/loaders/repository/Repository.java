@@ -201,8 +201,10 @@ public class Repository extends Entity
      */
     public synchronized void loadSharedAsset(SharedAsset asset, RepositoryUser user)
     {
-        if (asset == null)
+        if (asset == null) {
             logger.severe("Asset requested was null!");
+            return;
+        }
 
         // Do some robust error checking
         boolean failure                 = true;

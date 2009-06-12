@@ -48,7 +48,7 @@ public class AmbientNdotL_Lighting extends GLSLShaderEffect
     private void initializeDefaults()
     {
         // set our name
-        m_effectName = new String("AmbientNdotL_Lighting");
+        m_effectName = "AmbientNdotL_Lighting";
         // set the description
         m_effectDescription = new String(
                 "This effect calculates the light intensity for a given fragment" +

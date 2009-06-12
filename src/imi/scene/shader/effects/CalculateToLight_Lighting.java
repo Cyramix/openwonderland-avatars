@@ -40,7 +40,7 @@ public class CalculateToLight_Lighting extends GLSLShaderEffect
     private void initializeDefaults()
     {
         // set the name
-        m_effectName = new String("CalculateToLight_Lighting");
+        m_effectName = "CalculateToLight_Lighting";
         // allocate the globals we will be using
         m_vertexGlobals = new GLSLShaderVariable[1];
         m_vertexGlobals[0] = GLSLDefaultVariables.Position;

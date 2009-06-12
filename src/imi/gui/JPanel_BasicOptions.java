@@ -1108,7 +1108,7 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
         List<String[]> load = new ArrayList<String[]>();
         String[] szload = new String[2];
         szload[0]   = data.get(0)[3];
-        szload[1]   = new String("Bind");
+        szload[1]   = "Bind";
         load.add(szload);
 
         if (region < 5) {

@@ -169,7 +169,7 @@ public class UnimeshCharacterAttributes extends CharacterAttributes
         // assumed that the prefix should be the file protocol to the local machine
         // in the current folder.
         if (urlPrefix == null || urlPrefix.length() == 0)
-            urlPrefix = new String("file:///" + System.getProperty("user.dir") + File.separatorChar);
+            urlPrefix = "file:///" + System.getProperty("user.dir") + File.separatorChar;
         SkeletonNode characterSkeleton = character.getSkeleton();
         if (modifiedSkeleton != null)
         {

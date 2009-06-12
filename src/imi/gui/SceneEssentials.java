@@ -278,7 +278,7 @@ public class SceneEssentials {
             }
             @Override
             public String getDescription() {
-                String szDescription = new String("Images (*.jpg, *.png, *.gif, *.tga)");
+                String szDescription = "Images (*.jpg, *.png, *.gif, *.tga)";
                 return szDescription;
             }
         };
@@ -312,7 +312,7 @@ public class SceneEssentials {
             }
             @Override
             public String getDescription() {
-                String szDescription = new String("Collada (*.dae) or Binary (*.bin)");
+                String szDescription = "Collada (*.dae) or Binary (*.bin)";
                 return szDescription;
             }
         };
@@ -346,7 +346,7 @@ public class SceneEssentials {
             }
             @Override
             public String getDescription() {
-                String szDescription = new String("Models (*.dae, *.ms3d)");
+                String szDescription = "Models (*.dae, *.ms3d)";
                 return szDescription;
             }
         };
@@ -378,7 +378,7 @@ public class SceneEssentials {
             }
             @Override
             public String getDescription() {
-                String szDescription = new String("Extensible Markup Language (*.xml)");
+                String szDescription = "Extensible Markup Language (*.xml)";
                 return szDescription;
             }
         };
@@ -424,7 +424,7 @@ public class SceneEssentials {
             }
             @Override
             public String getDescription() {
-                String szDescription = new String("Extensible Markup Language (*.xml)");
+                String szDescription = "Extensible Markup Language (*.xml)";
                 return szDescription;
             }
         };
@@ -456,7 +456,7 @@ public class SceneEssentials {
             }
             @Override
             public String getDescription() {
-                String szDescription = new String("Collada File (*.dae)");
+                String szDescription = "Collada File (*.dae)";
                 return szDescription;
             }
         };
@@ -1333,9 +1333,9 @@ public class SceneEssentials {
                     szAvatarHeadModelFile = "assets/models/collada/Heads/MaleHead/MaleCHead.dae";
 
                 szBind[0]   = szAvatarModelFile;
-                szBind[1]   = new String("Bind");
+                szBind[1]   = "Bind";
                 szHands[0]  = szAvatarHandsModelFile;
-                szHands[1]  = new String("Hands");
+                szHands[1]  = "Hands";
 
                 load.add(szBind);    // Load selected male body meshes
                 add.add(attribs.createSkinnedMeshParams("RFootNudeShape",   "Feet"));
@@ -1358,9 +1358,9 @@ public class SceneEssentials {
                     szAvatarHeadModelFile = "assets/models/collada/Heads/FemaleHead/FemaleCHead.dae";
 
                 szBind[0]   = szAvatarModelFile;
-                szBind[1]   = new String("Bind");
+                szBind[1]   = "Bind";
                 szHands[0]  = szAvatarHandsModelFile;
-                szHands[1]  = new String("Hands");
+                szHands[1]  = "Hands";
 
                 load.add(szBind);    // Load selected female skeleton
                 add.add(attribs.createSkinnedMeshParams("Torso_NudeShape",      "UpperBody"));
@@ -1412,9 +1412,9 @@ public class SceneEssentials {
                     szAvatarHeadModelFile = "assets/models/collada/Heads/MaleHead/MaleCHead.dae";
 
                 szBind[0]   = szAvatarModelFile;
-                szBind[1]   = new String("Bind");
+                szBind[1]   = "Bind";
                 szHands[0]  = szAvatarHandsModelFile;
-                szHands[1]  = new String("Hands");
+                szHands[1]  = "Hands";
 
                 load.add(szBind);    // Load selected male body meshes
                 add.add(attribs.createSkinnedMeshParams("RFootNudeShape",   "Feet"));
@@ -1437,9 +1437,9 @@ public class SceneEssentials {
                     szAvatarHeadModelFile = "assets/models/collada/Heads/FemaleHead/FemaleCHead.dae";
 
                 szBind[0]   = szAvatarModelFile;
-                szBind[1]   = new String("Bind");
+                szBind[1]   = "Bind";
                 szHands[0]  = szAvatarHandsModelFile;
-                szHands[1]  = new String("Hands");
+                szHands[1]  = "Hands";
 
                 load.add(szBind);    // Load selected female skeleton
                 add.add(attribs.createSkinnedMeshParams("Torso_NudeShape",      "UpperBody"));

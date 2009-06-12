@@ -1056,7 +1056,7 @@ public class Collada
             if (meshName == null) // try the controller name
                 meshName = colladaNode.getControllerName();
             if (meshName == null) // still null? Give a default then
-                meshName = new String("SkinnedMeshInstance from Collada.java : processColladaNode");
+                meshName = "SkinnedMeshInstance from Collada.java : processColladaNode";
 
             processedNode = buildPolygonSkinnedMeshInstance(colladaNode, parentNode, meshName);
             if (processedNode != null)

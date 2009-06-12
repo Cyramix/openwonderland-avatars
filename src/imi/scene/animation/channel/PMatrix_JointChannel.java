@@ -279,7 +279,7 @@ public class PMatrix_JointChannel implements PJointChannel, Serializable
 
     @Override
     public String toString() {
-        return new String("Target: " + m_TargetJointName + ", Duration: " + m_fDuration);
+        return "Target: " + m_TargetJointName + ", Duration: " + m_fDuration;
     }
 
 

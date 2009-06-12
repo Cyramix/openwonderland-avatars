@@ -22,8 +22,6 @@ import imi.scene.shader.dynamic.GLSLDefaultVariables;
 import imi.scene.shader.dynamic.GLSLShaderEffect;
 import imi.scene.shader.dynamic.GLSLShaderVariable;
 import imi.scene.shader.dynamic.GLSLShaderVarying;
-import imi.scene.shader.dynamic.GLSLVertexAttribute;
-import imi.serialization.xml.bindings.xmlShaderProgram;
 import java.util.ArrayList;
 
 /**
@@ -46,7 +44,7 @@ class DeformFragmentNormal_Lighting extends GLSLShaderEffect
     private void initializeDefaults()
     {
         // set our name
-        m_effectName = new String("DeformFragmentNormal_Lighting");
+        m_effectName = "DeformFragmentNormal_Lighting";
         // set the description
         m_effectDescription = new String(
                 "This effect deforms the fragment-local normal by the current " +

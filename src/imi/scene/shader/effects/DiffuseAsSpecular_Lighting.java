@@ -46,7 +46,7 @@ public class DiffuseAsSpecular_Lighting extends GLSLShaderEffect
     private void initializeDefaults()
     {
         // set our name
-        m_effectName = new String("SpecularMapping_Lighting");
+        m_effectName = "SpecularMapping_Lighting";
         // set the description
         m_effectDescription = new String(
                 "This effect generates a ToCamera vector that is used in the " +

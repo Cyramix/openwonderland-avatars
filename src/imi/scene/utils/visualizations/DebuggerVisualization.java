@@ -254,7 +254,7 @@ public final class DebuggerVisualization {
         if (pointVerts.capacity() < points.size())
         {
             point.setVertexBuffer(null);
-            System.gc();
+//            System.gc();
             pointVerts = BufferUtils.createVector3Buffer(points.size());
             point.setVertexBuffer(pointVerts);
         }
@@ -268,7 +268,7 @@ public final class DebuggerVisualization {
         if (pointColors.capacity() < (4 * (points.size())))
         {
             point.setColorBuffer(null);
-            System.gc();
+//            System.gc();
             pointColors = BufferUtils.createColorBuffer(points.size());
             point.setColorBuffer(pointColors);
         }
@@ -281,7 +281,7 @@ public final class DebuggerVisualization {
         if (pointInds == null || pointInds.capacity() < (point.getVertexCount()))
         {
             point.setIndexBuffer(null);
-            System.gc();
+//            System.gc();
             pointInds = BufferUtils.createIntBuffer(points.size());
             point.setIndexBuffer(pointInds);
         }
@@ -370,7 +370,7 @@ public final class DebuggerVisualization {
         if (lineVerts.capacity() < (3 * (lines.size())))
         {
             normalLines.setVertexBuffer(null);
-            System.gc();
+//            System.gc();
             lineVerts = BufferUtils.createVector3Buffer(lines.size());
             normalLines.setVertexBuffer(lineVerts);
         }
@@ -384,7 +384,7 @@ public final class DebuggerVisualization {
         if (lineColors.capacity() < (4 * (lines.size())))
         {
             normalLines.setColorBuffer(null);
-            System.gc();
+//            System.gc();
             lineColors = BufferUtils.createColorBuffer(lines.size());
             normalLines.setColorBuffer(lineColors);
         }
@@ -397,7 +397,7 @@ public final class DebuggerVisualization {
         if (lineInds == null || lineInds.capacity() < (normalLines.getVertexCount()))
         {
             normalLines.setIndexBuffer(null);
-            System.gc();
+//            System.gc();
             lineInds = BufferUtils.createIntBuffer(lines.size());
             normalLines.setIndexBuffer(lineInds);
         }
@@ -506,7 +506,7 @@ public final class DebuggerVisualization {
                 FloatBuffer lineVerts = normalLines.getVertexBuffer();
                 if (lineVerts.capacity() < (3 * (2 * geom.getVertexCount()))) {
                     normalLines.setVertexBuffer(null);
-                    System.gc();
+//                    System.gc();
                     lineVerts = BufferUtils.createVector3Buffer(geom
                             .getVertexCount() * 2);
                     normalLines.setVertexBuffer(lineVerts);
@@ -518,7 +518,7 @@ public final class DebuggerVisualization {
                 FloatBuffer lineColors = normalLines.getColorBuffer();
                 if (lineColors.capacity() < (4 * (2 * geom.getVertexCount()))) {
                     normalLines.setColorBuffer(null);
-                    System.gc();
+//                    System.gc();
                     lineColors = BufferUtils.createColorBuffer(geom
                             .getVertexCount() * 2);
                     normalLines.setColorBuffer(lineColors);
@@ -530,7 +530,7 @@ public final class DebuggerVisualization {
                 if (lineInds == null
                         || lineInds.capacity() < (normalLines.getVertexCount())) {
                     normalLines.setIndexBuffer(null);
-                    System.gc();
+//                    System.gc();
                     lineInds = BufferUtils.createIntBuffer(geom
                             .getVertexCount() * 2);
                     normalLines.setIndexBuffer(lineInds);
@@ -632,7 +632,7 @@ public final class DebuggerVisualization {
                 FloatBuffer lineVerts = normalLines.getVertexBuffer();
                 if (lineVerts.capacity() < (3 * (2 * geom.getVertexCount()))) {
                     normalLines.setVertexBuffer(null);
-                    System.gc();
+//                    System.gc();
                     lineVerts = BufferUtils.createVector3Buffer(geom
                             .getVertexCount() * 2);
                     normalLines.setVertexBuffer(lineVerts);
@@ -644,7 +644,7 @@ public final class DebuggerVisualization {
                 FloatBuffer lineColors = normalLines.getColorBuffer();
                 if (lineColors.capacity() < (4 * (2 * geom.getVertexCount()))) {
                     normalLines.setColorBuffer(null);
-                    System.gc();
+//                    System.gc();
                     lineColors = BufferUtils.createColorBuffer(geom
                             .getVertexCount() * 2);
                     normalLines.setColorBuffer(lineColors);
@@ -656,7 +656,7 @@ public final class DebuggerVisualization {
                 if (lineInds == null
                         || lineInds.capacity() < (normalLines.getVertexCount())) {
                     normalLines.setIndexBuffer(null);
-                    System.gc();
+//                    System.gc();
                     lineInds = BufferUtils.createIntBuffer(geom
                             .getVertexCount() * 2);
                     normalLines.setIndexBuffer(lineInds);

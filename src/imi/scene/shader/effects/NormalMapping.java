@@ -46,7 +46,7 @@ public class NormalMapping extends GLSLShaderEffect
     private void initializeDefaults()
     {
         // set our name
-        m_effectName = new String("NormalMapping");
+        m_effectName = "NormalMapping";
         // set the description
         m_effectDescription = new String(
                 "This effect generates the Tangent-Binormal-Normal (TBN) matrix" +

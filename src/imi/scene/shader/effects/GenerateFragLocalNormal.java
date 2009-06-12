@@ -40,11 +40,9 @@ public class GenerateFragLocalNormal extends GLSLShaderEffect
     private void initializeDefaults()
     {
         // set our name
-        m_effectName = new String("GenerateFragLocalNormal");
+        m_effectName = "GenerateFragLocalNormal";
         // description
-        m_effectDescription = new String(
-                "Assign the value of VNormal to FragLocalNormal"
-                );
+        m_effectDescription = "Assign the value of VNormal to FragLocalNormal";
         // declare globals we intend to use
         m_fragmentGlobals = new GLSLShaderVariable[1];
         m_fragmentGlobals[0] = GLSLDefaultVariables.FragmentLocalNormal;

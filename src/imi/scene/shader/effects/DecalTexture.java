@@ -39,10 +39,10 @@ public class DecalTexture extends GLSLShaderEffect
     private void initializeDefaults()
     {
         // set our name
-        m_effectName = new String("DecalTexture");
+        m_effectName = "DecalTexture";
         // optionally set a description
-        m_effectDescription = new String("This effect overlays the texture " +
-                "loaded into the specified texture unit as a decal");
+        m_effectDescription = "This effect overlays the texture " +
+                              "loaded into the specified texture unit as a decal";
         // declare globals we intend to use
         m_fragmentGlobals = new GLSLShaderVariable[1];
         m_fragmentGlobals[0] = GLSLDefaultVariables.FinalFragmentColor;
@@ -77,6 +77,6 @@ public class DecalTexture extends GLSLShaderEffect
     private void createVertexLogic()
     {
         // generate texture coordinates
-        m_vertexLogic = new String("gl_TexCoord[" + TextureCoordSet + "] = gl_MultiTexCoord0;" + NL);
+        m_vertexLogic = "gl_TexCoord[" + TextureCoordSet + "] = gl_MultiTexCoord0;" + NL;
     }
 }

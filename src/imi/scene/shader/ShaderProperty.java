@@ -52,7 +52,7 @@ public class ShaderProperty implements Serializable
      */
     public ShaderProperty(ShaderProperty other)
     {
-        name = new String(other.name);
+        name = other.name;
         type = other.type;
         setValue(other.m_value);
     }

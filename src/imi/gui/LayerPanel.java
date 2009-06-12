@@ -341,7 +341,7 @@ public class LayerPanel extends javax.swing.JPanel {
             }
             @Override
             public String getDescription() {
-                String szDescription = new String("Image Files (*.png, *.jpg, *.jpeg, *.gif, *.bmp, *.tga)");
+                String szDescription = "Image Files (*.png, *.jpg, *.jpeg, *.gif, *.bmp, *.tga)";
                 return szDescription;
             }
         };

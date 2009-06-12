@@ -192,10 +192,9 @@ public class PGeometryVertex
      @Override
     public String toString()
     {
-       return new String(
-               "Position: " + m_Position.toString() + "\n"
+       return "Position: " + m_Position.toString() + "\n"
                + "Normal: " + m_Normal.toString() + "\n"
-               + "Color: " + m_Diffuse.toString() + "\n"); 
+               + "Color: " + m_Diffuse.toString() + "\n"; 
     }
 
 }

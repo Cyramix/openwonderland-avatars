@@ -27,7 +27,6 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
@@ -83,16 +82,16 @@ public abstract class BaseShaderProgram implements RenderUpdater, AbstractShader
 
     protected BaseShaderProgram(BaseShaderProgram other)
     {
-        m_shaderSource[0] = new String(other.m_shaderSource[0]);
-        m_shaderSource[1] = new String(other.m_shaderSource[1]);
+        m_shaderSource[0] = other.m_shaderSource[0];
+        m_shaderSource[1] = other.m_shaderSource[1];
 
         setWorldManager(other.m_WM);
         for (ShaderProperty prop : other.getProperties())
             m_propertyMap.put(prop.name, new ShaderProperty(prop));
         
         m_bShaderLoaded = other.m_bShaderLoaded;
-        m_programName = new String(other.m_programName);
-        m_programDescription = new String(other.m_programDescription);
+        m_programName = other.m_programName;
+        m_programDescription = other.m_programDescription;
         shaderState = (GLSLShaderObjectsState)m_WM.getRenderManager().createRendererState(StateType.GLSLShaderObjects);
         // apply this to our shader state
         loadAndCompileShader();

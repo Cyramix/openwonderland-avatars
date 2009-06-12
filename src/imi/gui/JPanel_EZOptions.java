@@ -796,7 +796,7 @@ public class JPanel_EZOptions extends javax.swing.JPanel implements ChangeListen
         if (m_presets.get(selection).get(1) != null) {
             if (m_presets.get(selection).get(1)[0] != null) {
                 szLoad[0]   = m_presets.get(selection).get(1)[0];
-                szLoad[1]   = new String("Hands");
+                szLoad[1]   = "Hands";
                 load.add(szLoad);
             }
             for (int i = 1; i < m_presets.get(selection).get(1).length; i++) {
@@ -809,7 +809,7 @@ public class JPanel_EZOptions extends javax.swing.JPanel implements ChangeListen
         if (m_presets.get(selection).get(2) != null) {
             if (m_presets.get(selection).get(2)[0] != null) {
                 szLoad[0]   = m_presets.get(selection).get(2)[0];
-                szLoad[1]   = new String("UpperBody");
+                szLoad[1]   = "UpperBody";
                 load.add(szLoad);
             }
             for (int i = 1; i < m_presets.get(selection).get(2).length; i++) {
@@ -822,7 +822,7 @@ public class JPanel_EZOptions extends javax.swing.JPanel implements ChangeListen
         if (m_presets.get(selection).get(3) != null) {
             if (m_presets.get(selection).get(3)[0] != null) {
                 szLoad[0]   = m_presets.get(selection).get(3)[0];
-                szLoad[1]   = new String("LowerBody");
+                szLoad[1]   = "LowerBody";
                 load.add(szLoad);
             }
             for (int i = 1; i < m_presets.get(selection).get(3).length; i++) {
@@ -835,7 +835,7 @@ public class JPanel_EZOptions extends javax.swing.JPanel implements ChangeListen
         if (m_presets.get(selection).get(4) != null) {
             if (m_presets.get(selection).get(4)[0] != null) {
                 szLoad[0]   = m_presets.get(selection).get(4)[0];
-                szLoad[1]   = new String("Feet");
+                szLoad[1]   = "Feet";
                 load.add(szLoad);
             }
             for (int i = 1; i < m_presets.get(selection).get(4).length; i++) {
@@ -886,7 +886,7 @@ public class JPanel_EZOptions extends javax.swing.JPanel implements ChangeListen
         // This file contains the mesh information for the basic body parts
         if (load.size() <= 1) {
             szLoad[0]   = m_presetLists.get(selection)[2];
-            szLoad[1]   = new String("Bind");
+            szLoad[1]   = "Bind";
             load.add(szLoad);
         }
 

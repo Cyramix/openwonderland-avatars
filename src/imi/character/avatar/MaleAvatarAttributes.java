@@ -283,14 +283,14 @@ public class MaleAvatarAttributes extends CharacterAttributes
             case 0:
             {
                 // Tennis shoes
-                szFeet[0]   = new String("assets/models/collada/Clothing/MaleClothing/MaleTennisShoes.dae");
+                szFeet[0]   = "assets/models/collada/Clothing/MaleClothing/MaleTennisShoes.dae";
                 add.add(new SkinnedMeshParams("TennisShoesShape", "Feet"));
             }
             break;
             case 1:
             {
                 // Flip flops
-                szFeet[0]   = new String("assets/models/collada/Clothing/MaleClothing/FlipFlopsFeet.dae");
+                szFeet[0]   = "assets/models/collada/Clothing/MaleClothing/FlipFlopsFeet.dae";
                 add.add(new SkinnedMeshParams("LFootNudeShape", "Feet"));
                 add.add(new SkinnedMeshParams("RFootNudeShape", "Feet"));
                 add.add(new SkinnedMeshParams("LFlipFlopShape", "Feet"));
@@ -300,14 +300,14 @@ public class MaleAvatarAttributes extends CharacterAttributes
             case 2:
             {
                 // Dress shoes
-                szFeet[0]   = new String("assets/models/collada/Clothing/MaleClothing/MaleDressShoes.dae");
+                szFeet[0]   = "assets/models/collada/Clothing/MaleClothing/MaleDressShoes.dae";
                 add.add(new SkinnedMeshParams("polySurfaceShape3", "Feet"));
             }
             break;
             case 3:
             {
                 // Cowboy boots
-                szFeet[0]   = new String("assets/models/collada/Clothing/MaleClothing/CowBoyBoot_CUT.dae");
+                szFeet[0]   = "assets/models/collada/Clothing/MaleClothing/CowBoyBoot_CUT.dae";
                 add.add(new SkinnedMeshParams("CowBoyBootsShape", "Feet"));
             }
             break;
@@ -316,13 +316,13 @@ public class MaleAvatarAttributes extends CharacterAttributes
                 if(!loadedBind)
                 {
                     loadedBind = true;
-                    szFeet[0]   = new String("assets/models/collada/Avatars/MaleAvatar/Male_Bind.dae");
+                    szFeet[0]   = "assets/models/collada/Avatars/MaleAvatar/Male_Bind.dae";
                 }
                 add.add(new SkinnedMeshParams("RFootNudeShape",  "Feet"));
                 add.add(new SkinnedMeshParams("LFootNudeShape",  "Feet"));
             }
         }
-        szFeet[1]   = new String("Feet");
+        szFeet[1]   = "Feet";
 
         if (szFeet[0] != null)
             load.add(szFeet);
@@ -350,97 +350,97 @@ public class MaleAvatarAttributes extends CharacterAttributes
         {
             case 0:
             {
-                szHair[0]   = new String("assets/models/collada/Hair/MaleHair/FG_Male01HairDefaults.dae");
+                szHair[0]   = "assets/models/collada/Hair/MaleHair/FG_Male01HairDefaults.dae";
                 attachments.add(new AttachmentParams("Male_PonyTailShape", "Head", orientation, "Hair"));
             }
             break;
             case 1:
             {
-                szHair[0]   = new String("assets/models/collada/Hair/MaleHair/FG_Male01HairDefaults.dae");
+                szHair[0]   = "assets/models/collada/Hair/MaleHair/FG_Male01HairDefaults.dae";
                 attachments.add(new AttachmentParams("Male_ChinLengthPartLeftShape", "Head", orientation, "Hair"));
             }
             break;
             case 2:
             {
-                szHair[0]   = new String("assets/models/collada/Hair/MaleHair/FG_Male01HairDefaults.dae");
+                szHair[0]   = "assets/models/collada/Hair/MaleHair/FG_Male01HairDefaults.dae";
                 attachments.add(new AttachmentParams("Male_SlickedBackShape", "Head", orientation, "Hair"));
             }
             break;
             case 3:
             {
-                szHair[0]   = new String("assets/models/collada/Hair/MaleHair/FG_Male01HairDefaults.dae");
+                szHair[0]   = "assets/models/collada/Hair/MaleHair/FG_Male01HairDefaults.dae";
                 attachments.add(new AttachmentParams("Male_PartLeftShape", "Head", orientation, "Hair"));
             }
             break;
             case 4:
             {
-                szHair[0]   = new String("assets/models/collada/Hair/MaleHair/FG_Male01HairDefaults.dae");
+                szHair[0]   = "assets/models/collada/Hair/MaleHair/FG_Male01HairDefaults.dae";
                 attachments.add(new AttachmentParams("Male_ShortMessyShape", "Head", orientation, "Hair"));
             }
             break;
             case 5:
             {
-                szHair[0]   = new String("assets/models/collada/Hair/MaleHair/FG_Male01HairDefaults.dae");
+                szHair[0]   = "assets/models/collada/Hair/MaleHair/FG_Male01HairDefaults.dae";
                 attachments.add(new AttachmentParams("Male_FlatTopShape", "Head", orientation, "Hair"));
             }
             break;
             case 6:
             {
-                szHair[0]   = new String("assets/models/collada/Hair/MaleHair/FG_Male01HairDefaults.dae");
+                szHair[0]   = "assets/models/collada/Hair/MaleHair/FG_Male01HairDefaults.dae";
                 attachments.add(new AttachmentParams("Male_ShortTopUpShape", "Head", orientation, "Hair"));
             }
             break;
             case 7:
             {
-                szHair[0]   = new String("assets/models/collada/Hair/MaleHair/FG_Male01HairDefaults.dae");
+                szHair[0]   = "assets/models/collada/Hair/MaleHair/FG_Male01HairDefaults.dae";
                 attachments.add(new AttachmentParams("Male_ShortBasicShape", "Head", orientation, "Hair"));
             }
             break;
             case 8:
             {
-                szHair[0]   = new String("assets/models/collada/Hair/MaleHair/FG_Male01HairDefaults.dae");
+                szHair[0]   = "assets/models/collada/Hair/MaleHair/FG_Male01HairDefaults.dae";
                 attachments.add(new AttachmentParams("Male_ShortRecedShape", "Head", orientation, "Hair"));
             }
             break;
             case 9:
             {
-                szHair[0]   = new String("assets/models/collada/Hair/MaleHair/FG_Male01HairDefaults.dae");
+                szHair[0]   = "assets/models/collada/Hair/MaleHair/FG_Male01HairDefaults.dae";
                 attachments.add(new AttachmentParams("Male_Balding1Shape", "Head", orientation, "Hair"));
             }
             break;
             case 10:
             {
-                szHair[0]   = new String("assets/models/collada/Hair/MaleHair/FG_Male01HairDefaults.dae");
+                szHair[0]   = "assets/models/collada/Hair/MaleHair/FG_Male01HairDefaults.dae";
                 attachments.add(new AttachmentParams("Male_BaldPiccardShape", "Head", orientation, "Hair"));
             }
             break;
             case 11:
             {
-                szHair[0]   = new String("assets/models/collada/Hair/MaleHair/FG_Male01HairDefaults.dae");
+                szHair[0]   = "assets/models/collada/Hair/MaleHair/FG_Male01HairDefaults.dae";
                 attachments.add(new AttachmentParams("Male_SuperFauxHawkShape", "Head", orientation, "Hair"));
             }
             break;
             case 12:
             {
-                szHair[0]   = new String("assets/models/collada/Hair/MaleHair/FG_Male01HairDefaults.dae");
+                szHair[0]   = "assets/models/collada/Hair/MaleHair/FG_Male01HairDefaults.dae";
                 attachments.add(new AttachmentParams("Male_SpikeyShape", "Head", orientation, "Hair"));
             }
             break;
             case 13:
             {
-                szHair[0]   = new String("assets/models/collada/Hair/MaleHair/FG_Male01HairDefaults.dae");
+                szHair[0]   = "assets/models/collada/Hair/MaleHair/FG_Male01HairDefaults.dae";
                 attachments.add(new AttachmentParams("Male_ChinLengthPartRightShape", "Head", orientation, "Hair"));
             }
             break;
             case 14:
             {
-                szHair[0]   = new String("assets/models/collada/Hair/MaleHair/FG_Male01HairDefaults.dae");
+                szHair[0]   = "assets/models/collada/Hair/MaleHair/FG_Male01HairDefaults.dae";
                 attachments.add(new AttachmentParams("Male_PartRightShape", "Head", orientation, "Hair"));
             }
             break;
 
         }
-        szHair[1]   = new String("Hair");
+        szHair[1]   = "Hair";
         if (szHair[0] != null)
             load.add(szHair);
     }
@@ -461,14 +461,14 @@ public class MaleAvatarAttributes extends CharacterAttributes
             case 0:
             {
                 // Jeans
-                szLegs[0]   = new String("assets/models/collada/Clothing/MaleClothing/Jeans.dae");
+                szLegs[0]   = "assets/models/collada/Clothing/MaleClothing/Jeans.dae";
                 add.add(new SkinnedMeshParams("polySurface3Shape", "LowerBody"));
             }
             break;
             case 1:
             {
                 // Shorts
-                szLegs[0]   = new String("assets/models/collada/Clothing/MaleClothing/Shorts.dae");
+                szLegs[0]   = "assets/models/collada/Clothing/MaleClothing/Shorts.dae";
                 add.add(new SkinnedMeshParams("LegsNudeShape", "LowerBody"));
                 add.add(new SkinnedMeshParams("MaleShortsShape", "LowerBody"));
             }
@@ -476,21 +476,21 @@ public class MaleAvatarAttributes extends CharacterAttributes
             case 2:
             {
                 // Dress pants
-                szLegs[0]   = new String("assets/models/collada/Clothing/MaleClothing/MaleDressPants1.dae");
+                szLegs[0]   = "assets/models/collada/Clothing/MaleClothing/MaleDressPants1.dae";
                 add.add(new SkinnedMeshParams("MaleDressPantsShape", "LowerBody"));
             }
             break;
             case 3:
             {
                 // Suite pants
-                szLegs[0]   = new String("assets/models/collada/Clothing/MaleClothing/Slacks.dae");
+                szLegs[0]   = "assets/models/collada/Clothing/MaleClothing/Slacks.dae";
                 add.add(new SkinnedMeshParams("SuitPantsShape", "LowerBody"));
             }
             break;
             case 4:
             {
                 // Meso
-                szLegs[0]   = new String("assets/models/collada/Clothing/MaleClothing/MaleMesoBottom.dae");
+                szLegs[0]   = "assets/models/collada/Clothing/MaleClothing/MaleMesoBottom.dae";
                 add.add(new SkinnedMeshParams("LegsNudeShape", "LowerBody"));
                 add.add(new SkinnedMeshParams("polySurfaceShape6", "LowerBody"));
             }
@@ -500,12 +500,12 @@ public class MaleAvatarAttributes extends CharacterAttributes
                 if(!loadedBind)
                 {
                     loadedBind = true;
-                    szLegs[0]   = new String("assets/models/collada/Avatars/MaleAvatar/Male_Bind.dae");
+                    szLegs[0]   = "assets/models/collada/Avatars/MaleAvatar/Male_Bind.dae";
                 }
                 add.add(new SkinnedMeshParams("LegsNudeShape",  "LowerBody"));
             }
         }
-        szLegs[1]   = new String("LowerBody");
+        szLegs[1]   = "LowerBody";
 
         if (szLegs[0] != null)
             load.add(szLegs);
@@ -522,8 +522,8 @@ public class MaleAvatarAttributes extends CharacterAttributes
     {
         // Add the hands in either way
         String[] szHands  = new String[2];
-        szHands[0]  = new String("assets/models/collada/Avatars/MaleAvatar/Male_Hands.dae");
-        szHands[1]  = new String("Hands");
+        szHands[0]  = "assets/models/collada/Avatars/MaleAvatar/Male_Hands.dae";
+        szHands[1]  = "Hands";
         load.add(szHands); // change!
         add.add(new SkinnedMeshParams("RHandShape",  m_regions[1]));
         add.add(new SkinnedMeshParams("LHandShape",  m_regions[1]));
@@ -535,7 +535,7 @@ public class MaleAvatarAttributes extends CharacterAttributes
             case 0:
             {
                 // T Shirt
-                szTorso[0]  = new String("assets/models/collada/Clothing/MaleClothing/MaleTShirt.dae");
+                szTorso[0]  = "assets/models/collada/Clothing/MaleClothing/MaleTShirt.dae";
                 add.add(new SkinnedMeshParams("PoloShape", "UpperBody"));
                 add.add(new SkinnedMeshParams("ArmsShape", "UpperBody"));
             }
@@ -543,7 +543,7 @@ public class MaleAvatarAttributes extends CharacterAttributes
             case 1:
             {
                 // Polo Strips
-                szTorso[0]  = new String("assets/models/collada/Clothing/MaleClothing/MalePolo.dae");
+                szTorso[0]  = "assets/models/collada/Clothing/MaleClothing/MalePolo.dae";
                 add.add(new SkinnedMeshParams("PoloShape", "UpperBody"));
                 add.add(new SkinnedMeshParams("TorsoNudeShape", "UpperBody"));
             }
@@ -551,41 +551,41 @@ public class MaleAvatarAttributes extends CharacterAttributes
             case 2:
             {
                 // Dress shirt
-                szTorso[0]  = new String("assets/models/collada/Clothing/MaleClothing/MaleDressShirt.dae");
+                szTorso[0]  = "assets/models/collada/Clothing/MaleClothing/MaleDressShirt.dae";
                 add.add(new SkinnedMeshParams("DressShirtShape", "UpperBody"));
             }
             break;
             case 3:
             {
                 // Sweater
-                szTorso[0]  = new String("assets/models/collada/Clothing/MaleClothing/MaleSweater.dae");
+                szTorso[0]  = "assets/models/collada/Clothing/MaleClothing/MaleSweater.dae";
                 add.add(new SkinnedMeshParams("SweaterMaleShape", "UpperBody"));
             }
             break;
             case 4:
             {
                 // Dress shirt for suit
-                szTorso[0]  = new String("assets/models/collada/Clothing/MaleClothing/SuitDressShirt.dae");
+                szTorso[0]  = "assets/models/collada/Clothing/MaleClothing/SuitDressShirt.dae";
                 add.add(new SkinnedMeshParams("SuitShirtShape", "UpperBody"));
             }
             break;
             case 5:
             {
                 // Suit Jacket
-                szTorso[0]  = new String("assets/models/collada/Clothing/MaleClothing/SuitJacket.dae");
+                szTorso[0]  = "assets/models/collada/Clothing/MaleClothing/SuitJacket.dae";
                 add.add(new SkinnedMeshParams("SuitJacketShape", "UpperBody"));
-                szTorso[1]  = new String("UpperBody");
+                szTorso[1]  = "UpperBody";
                 load.add(szTorso);
                 // Put something under that jacket!
                 // Dress shirt for suit
-                szTorso[0]  = new String("assets/models/collada/Clothing/MaleClothing/SuitDressShirt.dae");
+                szTorso[0]  = "assets/models/collada/Clothing/MaleClothing/SuitDressShirt.dae";
                 add.add(new SkinnedMeshParams("SuitShirtShape", "UpperBody"));
             }
             break;
             case 6:
             {
                 // Meso
-                szTorso[0]  = new String("assets/models/collada/Clothing/MaleClothing/MaleMesoTop.dae");
+                szTorso[0]  = "assets/models/collada/Clothing/MaleClothing/MaleMesoTop.dae";
                 add.add(new SkinnedMeshParams("TorsoNudeShape", "UpperBody"));
                 add.add(new SkinnedMeshParams("polySurfaceShape2", "UpperBody"));
             }
@@ -595,12 +595,12 @@ public class MaleAvatarAttributes extends CharacterAttributes
                 if(!loadedBind)
                 {
                     loadedBind = true;
-                    szTorso[0]  = new String("assets/models/collada/Avatars/MaleAvatar/Male_Bind.dae");
+                    szTorso[0]  = "assets/models/collada/Avatars/MaleAvatar/Male_Bind.dae";
                 }
                 add.add(new SkinnedMeshParams("TorsoNudeShape",  "UpperBody"));
             }
         }
-        szTorso[1]  = new String("UpperBody");
+        szTorso[1]  = "UpperBody";
 
         if (szTorso[0] != null)
             load.add(szTorso);
@@ -613,8 +613,8 @@ public class MaleAvatarAttributes extends CharacterAttributes
     {
         ArrayList<String[]> load      = new ArrayList<String[]>();
         String[] szBind = new String[2];
-        szBind[0]   = new String("assets/models/collada/Avatars/MaleAvatar/Male_Bind.dae");
-        szBind[1]   = new String("Bind");
+        szBind[0]   = "assets/models/collada/Avatars/MaleAvatar/Male_Bind.dae";
+        szBind[1]   = "Bind";
         load.add(szBind);
         loadedBind = true;
 

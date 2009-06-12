@@ -447,7 +447,7 @@ public class TreePopUpMenu extends MouseAdapter implements ActionListener {
 
             @Override
             public String getDescription() {
-                String szDescription = new String("Models (*.ms3d, *.dae)");
+                String szDescription = "Models (*.ms3d, *.dae)";
                 return szDescription;
             }
         };

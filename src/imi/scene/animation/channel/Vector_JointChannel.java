@@ -53,7 +53,7 @@ public class Vector_JointChannel implements PJointChannel, Serializable
     //  Constructor land!
     public Vector_JointChannel(String targetBone)
     {
-        m_targetJointName = new String(targetBone);
+        m_targetJointName = targetBone;
     }
     
     // Copy constructor
@@ -255,7 +255,7 @@ public class Vector_JointChannel implements PJointChannel, Serializable
 
     @Override
     public String toString() {
-        return new String("Target: " + m_targetJointName + ", Duration: " + m_fDuration);
+        return "Target: " + m_targetJointName + ", Duration: " + m_fDuration;
     }
 
     @Override

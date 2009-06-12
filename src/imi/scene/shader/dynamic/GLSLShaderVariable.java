@@ -126,7 +126,7 @@ public class GLSLShaderVariable implements Serializable
     @Override
     public String toString()
     {
-        return new String(m_name + " = " + m_value.toString() + ";\n");
+        return m_name + " = " + m_value.toString() + ";\n";
     }
     
     /**
@@ -137,7 +137,7 @@ public class GLSLShaderVariable implements Serializable
      */
     public String assign(String rValue)
     {
-        return new String(m_dataType.getGLSLString() + " " + m_name + " = " + rValue + ";" + NL);
+        return m_dataType.getGLSLString() + " " + m_name + " = " + rValue + ";" + NL;
     }
     
     /**
@@ -150,9 +150,9 @@ public class GLSLShaderVariable implements Serializable
     {
         String result = null;
         if (m_value == null)
-            result = new String(m_dataType.getGLSLString() + " " + m_name + ";" + NL);
+            result = m_dataType.getGLSLString() + " " + m_name + ";" + NL;
         else
-            result = new String(m_dataType.getGLSLString() + " " + m_name + " = " + m_value.toString() + ";" + NL);
+            result = m_dataType.getGLSLString() + " " + m_name + " = " + m_value.toString() + ";" + NL;
         return result;
     }
     /**
@@ -163,7 +163,7 @@ public class GLSLShaderVariable implements Serializable
      */
     public String normalize()
     {
-        return new String("normalize(" + m_name + ")");
+        return "normalize(" + m_name + ")";
     }
     
     /**
@@ -176,7 +176,7 @@ public class GLSLShaderVariable implements Serializable
      */
     public String clamp(String min, String max)
     {
-        return new String("clamp(" + m_name + ", " + min + ", " + max + ")");
+        return "clamp(" + m_name + ", " + min + ", " + max + ")";
     }
 
     @Override

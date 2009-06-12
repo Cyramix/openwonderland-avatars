@@ -294,21 +294,21 @@ public class FemaleAvatarAttributes extends CharacterAttributes
             case 0:
             {
                 // Closed to dress shoes
-                szFeet[0]   = new String("assets/models/collada/Clothing/FemaleClothing/Female_ClosedToeDressShoes.dae");
+                szFeet[0]   = "assets/models/collada/Clothing/FemaleClothing/Female_ClosedToeDressShoes.dae";
                 add.add(new SkinnedMeshParams("Female_ClosedToeDressShoes_Female_DressClosedToe_ShoesShape", "Feet"));
             }
             break;
             case 1:
             {
                 // Converse shoes
-                szFeet[0]   = new String("assets/models/collada/Clothing/FemaleClothing/Female_ConverseShoes.dae");
+                szFeet[0]   = "assets/models/collada/Clothing/FemaleClothing/Female_ConverseShoes.dae";
                 add.add(new SkinnedMeshParams("Female_ConverseShoes_Female_ConverseShoeShape", "Feet"));
             }
             break;
             case 2:
             {
                 // Flip flops
-                szFeet[0]   = new String("assets/models/collada/Clothing/FemaleClothing/FemaleFlipFlops.dae");
+                szFeet[0]   = "assets/models/collada/Clothing/FemaleClothing/FemaleFlipFlops.dae";
                 add.add(new SkinnedMeshParams("FlipFlopsFemaleShape", "Feet"));
                 add.add(new SkinnedMeshParams("FemaleFeet_NudeShape", "Feet"));
             }
@@ -318,13 +318,13 @@ public class FemaleAvatarAttributes extends CharacterAttributes
                 if(!loadedBind)
                 {
                     loadedBind = true;
-                    szFeet[0]   = new String("assets/models/collada/Avatars/FemaleAvatar/Female_Bind.dae");
+                    szFeet[0]   = "assets/models/collada/Avatars/FemaleAvatar/Female_Bind.dae";
                 }
                 add.add(new SkinnedMeshParams("ShoesShape",  "Feet"));           
             }
         }
 
-        szFeet[1]   = new String("Feet");
+        szFeet[1]   = "Feet";
 
         if (szFeet[0] != null)
             load.add(szFeet);
@@ -347,21 +347,21 @@ public class FemaleAvatarAttributes extends CharacterAttributes
             case 0:
             {
                 // Jeans
-                szLegs[0]   = new String("assets/models/collada/Clothing/FemaleClothing/FemaleJeansStraight.dae");
+                szLegs[0]   = "assets/models/collada/Clothing/FemaleClothing/FemaleJeansStraight.dae";
                 add.add(new SkinnedMeshParams("JeansShape", "LowerBody"));
             }
             break;
             case 1:
             {
                 // Dress pants
-                szLegs[0]   = new String("assets/models/collada/Clothing/FemaleClothing/FemaleDressPants.dae");
+                szLegs[0]   = "assets/models/collada/Clothing/FemaleClothing/FemaleDressPants.dae";
                 add.add(new SkinnedMeshParams("PantsFemaleShape", "LowerBody"));
             }
             break;
             case 2:
             {
                 // Shorts
-                szLegs[0]   = new String("assets/models/collada/Clothing/FemaleClothing/FemaleShorts.dae");
+                szLegs[0]   = "assets/models/collada/Clothing/FemaleClothing/FemaleShorts.dae";
                 add.add(new SkinnedMeshParams("Legs_NudeShape", "LowerBody"));
                 add.add(new SkinnedMeshParams("ShortsShape", "LowerBody"));
             }
@@ -371,12 +371,12 @@ public class FemaleAvatarAttributes extends CharacterAttributes
                 if(!loadedBind)
                 {
                     loadedBind = true;
-                    szLegs[0]   = new String("assets/models/collada/Avatars/FemaleAvatar/Female_Bind.dae");
+                    szLegs[0]   = "assets/models/collada/Avatars/FemaleAvatar/Female_Bind.dae";
                 }
                 add.add(new SkinnedMeshParams("Legs_NudeShape",  "LowerBody"));
             }
         }
-        szLegs[1]   = new String("LowerBody");
+        szLegs[1]   = "LowerBody";
 
         if (szLegs[0] != null)
             load.add(szLegs);
@@ -393,8 +393,8 @@ public class FemaleAvatarAttributes extends CharacterAttributes
     {
         // Add the hands
         String[] szHands  = new String[2];
-        szHands[0]  = new String("assets/models/collada/Avatars/FemaleAvatar/Female_Hands.dae");
-        szHands[1]  = new String("Hands");
+        szHands[0]  = "assets/models/collada/Avatars/FemaleAvatar/Female_Hands.dae";
+        szHands[1]  = "Hands";
         load.add(szHands);
         add.add(new SkinnedMeshParams("Hands_NudeShape",  "Hands"));
 
@@ -405,28 +405,28 @@ public class FemaleAvatarAttributes extends CharacterAttributes
             case 0:
             {
                 // Dress Shirt
-                szTorso[0]  = new String("assets/models/collada/Clothing/FemaleClothing/FemaleDressShirt.dae");
+                szTorso[0]  = "assets/models/collada/Clothing/FemaleClothing/FemaleDressShirt.dae";
                 add.add(new SkinnedMeshParams("ShirtMeshShape", "UpperBody"));
             }
             break;
             case 1:
             {
                 // Sweater
-                szTorso[0]  = new String("assets/models/collada/Clothing/FemaleClothing/FemaleSweaterCrew.dae");
+                szTorso[0]  = "assets/models/collada/Clothing/FemaleClothing/FemaleSweaterCrew.dae";
                 add.add(new SkinnedMeshParams("SweaterShape", "UpperBody"));
             }
             break;
             case 2:
             {
                 // Jacket
-                szTorso[0]  = new String("assets/models/collada/Clothing/FemaleClothing/FemaleJacket.dae");
+                szTorso[0]  = "assets/models/collada/Clothing/FemaleClothing/FemaleJacket.dae";
                 add.add(new SkinnedMeshParams("Jacket1Shape", "UpperBody"));
             }
             break;
             case 3:      
             {
                 // Blouse       
-                szTorso[0]  = new String("assets/models/collada/Clothing/FemaleClothing/FemaleBlouse.dae");
+                szTorso[0]  = "assets/models/collada/Clothing/FemaleClothing/FemaleBlouse.dae";
                 add.add(new SkinnedMeshParams("TShirt1Shape", "UpperBody"));
                 add.add(new SkinnedMeshParams("Arms_NudeShape", "UpperBody"));
             }
@@ -436,12 +436,12 @@ public class FemaleAvatarAttributes extends CharacterAttributes
                 if(!loadedBind)
                 {
                     loadedBind = true;
-                    szTorso[0]  = new String("assets/models/collada/Avatars/FemaleAvatar/Female_Bind.dae");
+                    szTorso[0]  = "assets/models/collada/Avatars/FemaleAvatar/Female_Bind.dae";
                 }
                 add.add(new SkinnedMeshParams("Torso_NudeShape",  "UpperBody"));
             }
         }
-        szTorso[1]  = new String("UpperBody");
+        szTorso[1]  = "UpperBody";
         if (szTorso[0] != null)
             load.add(szTorso);
     }
@@ -454,10 +454,10 @@ public class FemaleAvatarAttributes extends CharacterAttributes
         String[] szBind   = new String[2];
         String[] szHand   = new String[2];
 
-        szBind[0]   = new String("assets/models/collada/Avatars/FemaleAvatar/Female_Bind.dae");
-        szBind[1]   = new String("Bind");
-        szHand[0]   = new String("assets/models/collada/Avatars/FemaleAvatar/Female_Hands.dae");
-        szHand[1]   = new String("Hands");
+        szBind[0]   = "assets/models/collada/Avatars/FemaleAvatar/Female_Bind.dae";
+        szBind[1]   = "Bind";
+        szHand[0]   = "assets/models/collada/Avatars/FemaleAvatar/Female_Hands.dae";
+        szHand[1]   = "Hands";
         load.add(szBind); // change!
         load.add(szHand);
 
@@ -488,188 +488,188 @@ public class FemaleAvatarAttributes extends CharacterAttributes
         {
             case 0:
             {
-                szHair[0]   = new String("assets/models/collada/Hair/FemaleHair/FG_Female01DefaultHair.dae");
+                szHair[0]   = "assets/models/collada/Hair/FemaleHair/FG_Female01DefaultHair.dae";
                 attachments.add(new AttachmentParams("M_PigTailsShape", "Head", orientation, "Hair"));
             }
             break;
             case 1:
             {
-                szHair[0]   = new String("assets/models/collada/Hair/FemaleHair/FG_Female01DefaultHair.dae");
+                szHair[0]   = "assets/models/collada/Hair/FemaleHair/FG_Female01DefaultHair.dae";
                 attachments.add(new AttachmentParams("CulyPigTailzShape", "Head", orientation, "Hair"));
             }
             break;
             case 2:
             {
-                szHair[0]   = new String("assets/models/collada/Hair/FemaleHair/FG_Female01DefaultHair.dae");
+                szHair[0]   = "assets/models/collada/Hair/FemaleHair/FG_Female01DefaultHair.dae";
                 attachments.add(new AttachmentParams("L_BunShape", "Head", orientation, "Hair"));
             }
             break;
             case 3:
             {
-                szHair[0]   = new String("assets/models/collada/Hair/FemaleHair/FG_Female01DefaultHair.dae");
+                szHair[0]   = "assets/models/collada/Hair/FemaleHair/FG_Female01DefaultHair.dae";
                 attachments.add(new AttachmentParams("M_BunShape", "Head", orientation, "Hair"));
             }
             break;
             case 4:
             {
-                szHair[0]   = new String("assets/models/collada/Hair/FemaleHair/FG_Female01DefaultHair.dae");
+                szHair[0]   = "assets/models/collada/Hair/FemaleHair/FG_Female01DefaultHair.dae";
                 attachments.add(new AttachmentParams("CurlyPonyTailShape", "Head", orientation, "Hair"));
             }
             break;
             case 5:
             {
-                szHair[0]   = new String("assets/models/collada/Hair/FemaleHair/FG_Female01DefaultHair.dae");
+                szHair[0]   = "assets/models/collada/Hair/FemaleHair/FG_Female01DefaultHair.dae";
                 attachments.add(new AttachmentParams("L_PonyTailShape", "Head", orientation, "Hair"));
             }
             break;
             case 6:
             {
-                szHair[0]   = new String("assets/models/collada/Hair/FemaleHair/FG_Female01DefaultHair.dae");
+                szHair[0]   = "assets/models/collada/Hair/FemaleHair/FG_Female01DefaultHair.dae";
                 attachments.add(new AttachmentParams("M_PonyTailShape", "Head", orientation, "Hair"));
             }
             break;
             case 7:
             {
-                szHair[0]   = new String("assets/models/collada/Hair/FemaleHair/FG_Female01DefaultHair.dae");
+                szHair[0]   = "assets/models/collada/Hair/FemaleHair/FG_Female01DefaultHair.dae";
                 attachments.add(new AttachmentParams("Long_W_bangsShape", "Head", orientation, "Hair"));
             }
             break;
             case 8:
             {
-                szHair[0]   = new String("assets/models/collada/Hair/FemaleHair/FG_Female01DefaultHair.dae");
+                szHair[0]   = "assets/models/collada/Hair/FemaleHair/FG_Female01DefaultHair.dae";
                 attachments.add(new AttachmentParams("Layered_bangShape", "Head", orientation, "Hair"));
             }
             break;
             case 9:
             {
-                szHair[0]   = new String("assets/models/collada/Hair/FemaleHair/FG_Female01DefaultHair.dae");
+                szHair[0]   = "assets/models/collada/Hair/FemaleHair/FG_Female01DefaultHair.dae";
                 attachments.add(new AttachmentParams("Layered_pt_LShape", "Head", orientation, "Hair"));
             }
             break;
             case 10:
             {
-                szHair[0]   = new String("assets/models/collada/Hair/FemaleHair/FG_Female01DefaultHair.dae");
+                szHair[0]   = "assets/models/collada/Hair/FemaleHair/FG_Female01DefaultHair.dae";
                 attachments.add(new AttachmentParams("Layered_pt_RShape", "Head", orientation, "Hair"));
             }
             break;
             case 11:
             {
-                szHair[0]   = new String("assets/models/collada/Hair/FemaleHair/FG_Female01DefaultHair.dae");
+                szHair[0]   = "assets/models/collada/Hair/FemaleHair/FG_Female01DefaultHair.dae";
                 attachments.add(new AttachmentParams("Layered_pt_centerShape", "Head", orientation, "Hair"));
             }
             break;
             case 12:
             {
-                szHair[0]   = new String("assets/models/collada/Hair/FemaleHair/FG_Female01DefaultHair.dae");
+                szHair[0]   = "assets/models/collada/Hair/FemaleHair/FG_Female01DefaultHair.dae";
                 attachments.add(new AttachmentParams("Curly_bangsShape", "Head", orientation, "Hair"));
             }
             break;
             case 13:
             {
-                szHair[0]   = new String("assets/models/collada/Hair/FemaleHair/FG_Female01DefaultHair.dae");
+                szHair[0]   = "assets/models/collada/Hair/FemaleHair/FG_Female01DefaultHair.dae";
                 attachments.add(new AttachmentParams("Culry_pt_RightShape", "Head", orientation, "Hair"));
             }
             break;
             case 14:
             {
-                szHair[0]   = new String("assets/models/collada/Hair/FemaleHair/FG_Female01DefaultHair.dae");
+                szHair[0]   = "assets/models/collada/Hair/FemaleHair/FG_Female01DefaultHair.dae";
                 attachments.add(new AttachmentParams("Culry_pt_LeftShape", "Head", orientation, "Hair"));
             }
             break;
             case 15:
             {
-                szHair[0]   = new String("assets/models/collada/Hair/FemaleHair/FG_Female01DefaultHair.dae");
+                szHair[0]   = "assets/models/collada/Hair/FemaleHair/FG_Female01DefaultHair.dae";
                 attachments.add(new AttachmentParams("Curly_Mid_PtShape", "Head", orientation, "Hair"));
             }
             break;
             case 16:
             {
-                szHair[0]   = new String("assets/models/collada/Hair/FemaleHair/FG_Female01DefaultHair.dae");
+                szHair[0]   = "assets/models/collada/Hair/FemaleHair/FG_Female01DefaultHair.dae";
                 attachments.add(new AttachmentParams("Long_DredzShape", "Head", orientation, "Hair"));
             }
             break;
             case 17:
             {
-                szHair[0]   = new String("assets/models/collada/Hair/FemaleHair/FG_Female01DefaultHair.dae");
+                szHair[0]   = "assets/models/collada/Hair/FemaleHair/FG_Female01DefaultHair.dae";
                 attachments.add(new AttachmentParams("Med_Pt_BangzShape", "Head", orientation, "Hair"));
             }
             break;
             case 18:
             {
-                szHair[0]   = new String("assets/models/collada/Hair/FemaleHair/FG_Female01DefaultHair.dae");
+                szHair[0]   = "assets/models/collada/Hair/FemaleHair/FG_Female01DefaultHair.dae";
                 attachments.add(new AttachmentParams("Med_pt_CenterShape", "Head", orientation, "Hair"));
             }
             break;
             case 19:
             {
-                szHair[0]   = new String("assets/models/collada/Hair/FemaleHair/FG_Female01DefaultHair.dae");
+                szHair[0]   = "assets/models/collada/Hair/FemaleHair/FG_Female01DefaultHair.dae";
                 attachments.add(new AttachmentParams("Med_Curly_BangzShape", "Head", orientation, "Hair"));
             }
             break;
             case 20:
             {
-                szHair[0]   = new String("assets/models/collada/Hair/FemaleHair/FG_Female01DefaultHair.dae");
+                szHair[0]   = "assets/models/collada/Hair/FemaleHair/FG_Female01DefaultHair.dae";
                 attachments.add(new AttachmentParams("Med_AfricanWBangzShape", "Head", orientation, "Hair"));
             }
             break;
             case 21:
             {
-                szHair[0]   = new String("assets/models/collada/Hair/FemaleHair/FG_Female01DefaultHair.dae");
+                szHair[0]   = "assets/models/collada/Hair/FemaleHair/FG_Female01DefaultHair.dae";
                 attachments.add(new AttachmentParams("Med_African_Pt_RShape", "Head", orientation, "Hair"));
             }
             break;
             case 22:
             {
-                szHair[0]   = new String("assets/models/collada/Hair/FemaleHair/FG_Female01DefaultHair.dae");
+                szHair[0]   = "assets/models/collada/Hair/FemaleHair/FG_Female01DefaultHair.dae";
                 attachments.add(new AttachmentParams("Med_AfricanPT_CenterShape", "Head", orientation, "Hair"));
             }
             break;
             case 23:
             {
-                szHair[0]   = new String("assets/models/collada/Hair/FemaleHair/FG_Female01DefaultHair.dae");
+                szHair[0]   = "assets/models/collada/Hair/FemaleHair/FG_Female01DefaultHair.dae";
                 attachments.add(new AttachmentParams("Med_African_Pt_LShape", "Head", orientation, "Hair"));
             }
             break;
             case 24:
             {
-                szHair[0]   = new String("assets/models/collada/Hair/FemaleHair/FG_Female01DefaultHair.dae");
+                szHair[0]   = "assets/models/collada/Hair/FemaleHair/FG_Female01DefaultHair.dae";
                 attachments.add(new AttachmentParams("Short_African_MessyShape", "Head", orientation, "Hair"));
             }
             break;
             case 25:
             {
-                szHair[0]   = new String("assets/models/collada/Hair/FemaleHair/FG_Female01DefaultHair.dae");
+                szHair[0]   = "assets/models/collada/Hair/FemaleHair/FG_Female01DefaultHair.dae";
                 attachments.add(new AttachmentParams("short_AfricanPT_CenterShape", "Head", orientation, "Hair"));
             }
             break;
             case 26:
             {
-                szHair[0]   = new String("assets/models/collada/Hair/FemaleHair/FG_Female01DefaultHair.dae");
+                szHair[0]   = "assets/models/collada/Hair/FemaleHair/FG_Female01DefaultHair.dae";
                 attachments.add(new AttachmentParams("Short_PT_RShape", "Head", orientation, "Hair"));
             }
             break;
             case 27:
             {
-                szHair[0]   = new String("assets/models/collada/Hair/FemaleHair/FG_Female01DefaultHair.dae");
+                szHair[0]   = "assets/models/collada/Hair/FemaleHair/FG_Female01DefaultHair.dae";
                 attachments.add(new AttachmentParams("Short_PT_LShape", "Head", orientation, "Hair"));
             }
             break;
             case 28:
             {
-                szHair[0]   = new String("assets/models/collada/Hair/FemaleHair/FG_Female01DefaultHair.dae");
+                szHair[0]   = "assets/models/collada/Hair/FemaleHair/FG_Female01DefaultHair.dae";
                 attachments.add(new AttachmentParams("Short_PT_CenterShape", "Head", orientation, "Hair"));
             }
             break;
             case 53: // SPECIAL SKINNED HAIR
             {
-                szHair[0]   = new String("assets/models/collada/Hair/FemaleHair/FemaleFGHair.dae");
+                szHair[0]   = "assets/models/collada/Hair/FemaleHair/FemaleFGHair.dae";
                 add.add(new SkinnedMeshParams("HairAShape1", "Head"));
             }
             break;
 
         }
 
-        szHair[1]   = new String("Hair");
+        szHair[1]   = "Hair";
         if (szHair[0] != null)
             load.add(szHair);
     }
