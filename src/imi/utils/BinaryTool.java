@@ -230,7 +230,7 @@ public class BinaryTool
      */
     public static void main(String[] args)
     {
-        BinaryTool worldTest = new BinaryTool(new String[] { "-f" });
+        BinaryTool worldTest = new BinaryTool(args);
     }
 
     /**
