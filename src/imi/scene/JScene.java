@@ -17,6 +17,7 @@
  */
 package imi.scene;
 
+import com.jme.intersection.TriangleCollisionResults;
 import com.jme.math.Quaternion;
 import com.jme.math.Vector3f;
 import com.jme.renderer.Renderer;
@@ -49,6 +50,7 @@ public class JScene extends Node {
      * Empty constructor, does nothing.
      */
     public JScene() {
+        attachChild(m_externalJmeKidsRoot);
     }
 
     /**
@@ -57,6 +59,7 @@ public class JScene extends Node {
      */
     public JScene(PScene scene) {
         setPScene(scene);
+        attachChild(m_externalJmeKidsRoot);
     }
 
     /**
@@ -68,6 +71,7 @@ public class JScene extends Node {
     {
         setPScene(scene);
         m_PRenderer = internalRenderer;
+        attachChild(m_externalJmeKidsRoot);
     }
 
     public Node getExternalKidsRoot() {

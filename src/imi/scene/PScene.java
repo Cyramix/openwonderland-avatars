@@ -178,6 +178,11 @@ public class PScene extends PNode implements RepositoryUser, Serializable
         externalKids.updateRenderState();
         kids.add(externalKids);
 
+        m_JScene.updateGeometricState(0, true);
+
+        for(Spatial child : kids)
+            child.setLive(true);
+
         m_Instances.setDirty(false, false);
     }
 
