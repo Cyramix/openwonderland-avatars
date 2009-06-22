@@ -12,6 +12,7 @@ import imi.loaders.collada.Collada;
 import imi.loaders.collada.ColladaLoaderParams;
 import imi.loaders.collada.ColladaLoadingException;
 import imi.loaders.repository.Repository;
+import imi.scene.PMatrix;
 import imi.scene.PScene;
 import imi.scene.animation.AnimationCycle;
 import imi.scene.animation.AnimationGroup;
@@ -19,6 +20,7 @@ import imi.scene.animation.AnimationState;
 import imi.scene.polygonmodel.parts.PMeshMaterial;
 import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
 import imi.scene.polygonmodel.parts.skinned.SkinnedMeshJoint;
+import imi.scene.polygonmodel.skinned.PPolygonSkinnedMesh;
 import imi.scene.polygonmodel.skinned.PPolygonSkinnedMeshInstance;
 import imi.scene.shader.programs.EyeballShader;
 import imi.scene.shader.programs.FleshShader;
@@ -133,8 +135,10 @@ public class BinaryExporterImporter {
 
         // Load the skeleton
         Collada loader              = new Collada(params);
+        PScene pscene               = new PScene(wm);
+
         try {
-            loader.load(new PScene(wm), m_skeletonLocation);
+            loader.load(pscene, m_skeletonLocation);
         }
         catch (ColladaLoadingException ex)
         {
@@ -163,9 +167,22 @@ public class BinaryExporterImporter {
                     cycle.optimizeChannels(m_animationQuality);
         }
 
+        // Get all the SkinnedMeshInstances & place it in the head subgroup
+        List<PPolygonSkinnedMeshInstance> skinnedMeshList = m_currentSkeleton.getSkinnedMeshInstances();
+        if (skinnedMeshList.size() == 0) {
+            List<PPolygonSkinnedMesh> ppsmList = m_currentSkeleton.getAllSkinnedMeshes();
+            if (ppsmList != null || ppsmList.size() > 0) {
+                for (PPolygonSkinnedMesh pPolygonSkinnedMesh : ppsmList) {
+                    PPolygonSkinnedMeshInstance meshInst = (PPolygonSkinnedMeshInstance) pscene.addMeshInstance(pPolygonSkinnedMesh, new PMatrix());
+                    meshInst.setAndLinkSkeletonNode(m_currentSkeleton);
+                    m_currentSkeleton.addToSubGroup(meshInst, "Head");
+                }
+            }
+        }
+
         // The real serializtion write out
         serializeIT(m_currentSkeleton, m_outputFile);
-        System.out.println("Binary export complete");
+        //System.out.println("Binary export complete");
     }
 
     public void serializeBinaryHead(SkeletonNode skeleton, WorldManager wm) {

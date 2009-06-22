@@ -35,6 +35,8 @@ import imi.scene.utils.PRenderer;
  */
 public class JScene extends Node {
 
+    /** Serialization version number **/
+    private static final long serialVersionUID = 1l;
     private PScene      m_PScene            = null;
     private boolean     m_bRender           = true;
     private boolean     m_bRenderInternally = false;    //  if false JMonkey's rendering will be used

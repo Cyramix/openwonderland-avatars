@@ -817,6 +817,7 @@ public class SceneEssentials {
 
             m_avatar.selectForInput();
             m_currentPScene = m_avatar.getPScene();
+
             JSceneEventProcessor jsep       = (JSceneEventProcessor) m_worldManager.getUserData(JSceneEventProcessor.class);
             if (jsep.getInputScheme() instanceof DemoAvatarControlScheme) {
                 DemoAvatarControlScheme dacs    = (DemoAvatarControlScheme) jsep.getInputScheme();
@@ -848,11 +849,9 @@ public class SceneEssentials {
         m_currentPScene = m_avatar.getPScene();
 
         JSceneEventProcessor jsep       = (JSceneEventProcessor) m_worldManager.getUserData(JSceneEventProcessor.class);
-        if (jsep.getInputScheme() instanceof DemoAvatarControlScheme) {
-            DemoAvatarControlScheme dacs    = (DemoAvatarControlScheme) jsep.getInputScheme();
-            dacs.setJScene(m_avatar.getJScene());
-            dacs.setAvatar(m_avatar);
-        }
+        DemoAvatarControlScheme dacs    = (DemoAvatarControlScheme) jsep.getInputScheme();
+        dacs.setJScene(m_avatar.getJScene());
+        dacs.setAvatar(m_avatar);
 
         return true;
     }
@@ -2575,6 +2574,7 @@ public class SceneEssentials {
 //                } else if (m_avatar != null) {
 //                    m_avatar.loadConfiguration(configURL);
 //                }
+
                     JSceneEventProcessor jsep       = (JSceneEventProcessor) m_worldManager.getUserData(JSceneEventProcessor.class);
                     if (jsep.getInputScheme() instanceof DemoAvatarControlScheme) {
                         DemoAvatarControlScheme dacs    = (DemoAvatarControlScheme) jsep.getInputScheme();
