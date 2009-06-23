@@ -27,6 +27,7 @@ import org.jdesktop.mtgame.JMECollisionSystem;
 public class CollisionController {
 
     private boolean collisionEnabled=true;
+    private boolean gravityEnabled=true;
     private JMECollisionSystem collisionSystem;
     private Spatial collisionGraph;
 
@@ -61,5 +62,19 @@ public class CollisionController {
      */
     public Spatial getCollisionGraph() {
         return collisionGraph;
+    }
+
+    /**
+     * @return the gravityEnabled
+     */
+    public boolean isGravityEnabled() {
+        return gravityEnabled;
+    }
+
+    /**
+     * @param gravityEnabled the gravityEnabled to set
+     */
+    public void setGravityEnabled(boolean gravityEnabled) {
+        this.gravityEnabled = gravityEnabled;
     }
 }

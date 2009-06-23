@@ -281,7 +281,8 @@ public class AvatarController extends CharacterController
         }
 
         if (collisionController!=null) {
-            checkGround(position);
+            if (collisionController.isGravityEnabled())
+                checkGround(position);
 
             if (collisionController.isCollisionEnabled() && collisionCheck(position, currentRot)) {
                 position.set(previousPos);
