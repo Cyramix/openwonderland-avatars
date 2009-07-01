@@ -1,0 +1,192 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta content="text/html; charset=ISO-8859-1"
+ http-equiv="content-type">
+  <title>IMI Head Previewer Help</title>
+</head>
+<body>
+<div style="text-align: center;"><img
+ style="width: 610px; height: 525px;" alt="" src="imilogo.png"><br>
+<br>
+<h1 style="color: rgb(255, 102, 0);">Usage
+Instructions for the Avatar Creator Demo</h1>
+<br>
+<div style="text-align: left;">
+<h3><span style="font-weight: bold;">Brief
+Description of Functionality</span>:</h3>
+<ul>
+  <li>The IMI avatar creator demo was designed to quickly generate xml
+configuration files for avatars. &nbsp;Future changes and upgrades will
+better make use of the tool as a device for artists to test their
+assets before submission. &nbsp;The tool allows for the following:</li>
+  <ul>
+    <li>Load random configurations of avatars</li>
+    <li>Modify the avatar (joint manipulation, mesh swaping, texture
+swaping).</li>
+    <li>Saving configurations</li>
+    <li>Loading previously saved configurations</li>
+    <li>View how the differnt meshes fit with the other meshes (ie
+determine if a head fits onto a shirt w/o tearing)</li>
+    <li>Manipulate the individual nodes that comprise of the avatar</li>
+  </ul>
+</ul>
+<h3><br>
+</h3>
+<h3>Loading
+An Avatar:</h3>
+<ul>
+  <li>The viewer is designed to randomly create an avatar configuration
+based on the gender specified</li>
+</ul>
+<ul>
+  <li>Loading instructions:</li>
+  <ul>
+    <li>Press either the random male avatar button (second button from
+the top right bar) or the random female avatar button (right most
+button on the top bar)</li>
+  </ul>
+</ul>
+<ul>
+  <li><span style="background-color: rgb(255, 0, 0);">Known Issues</span>:</li>
+  <ul>
+    <li>When you randomly create an avatar it loads the random
+selection of files from our webserver. &nbsp;This can be a bit
+slow.&nbsp;</li>
+    <li>Unfortunately there is an issue with the random creation and
+the progress bar (ie the progress bar doesn't update)... It does
+however work for all the other loadings.&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;<br>
+    </li>
+  </ul>
+</ul>
+<ul>
+</ul>
+<h3><br>
+</h3>
+<h3>Swapping Meshes:</h3>
+<ul>
+  <li>The meshes that the user can swap out / in on the avatar are
+seperated into the following catagories:</li>
+  <ul>
+    <li>Head - The avatar head</li>
+    <li>UpperBody - The torso and arms of the avatar (this means shirts
+and stuff)</li>
+    <li>LowerBody - The waist and legs of the avatar (this means pants
+and shorts stuff)</li>
+    <li>Feet - The ankle/feet of the avatar (this means shoes and
+sandles)</li>
+    <li>Hair - The head hair of the avatar (basically just hair)</li>
+    <li>Jacket - Adds onto the UpperBody and doesn't remove what is
+already on the UpperBody (this means jackets and coats)</li>
+    <li>Glasses - Adds onto the the face of the avatar</li>
+    <li>Hat - Adds ontop of the head of the avatar</li>
+  </ul>
+</ul>
+<ul>
+  <li>Loading instructions:</li>
+  <ul>
+    <li>File -&gt; Load Model</li>
+    <li>Choose what catagory of model you want to load:</li>
+    <ul>
+      <li>Avatar - select a folder which contains all the assets which
+make up an avatar **DO NOT USE THIS FOR NOW**</li>
+      <li>Head - select the collada (*.dae) or binary file (*.bhf) of a
+head to load onto an avatar.&nbsp;</li>
+      <ul>
+        <li>selecting this option will ask the user to select if the
+head is normal mapped or not. &nbsp;This selection determines the
+correct shader the system will use.</li>
+      </ul>
+      <li>Clothes - select the collada (*.dae) file of the clothes you
+want to load. (includes shirts, pants, shoes, &amp; jackets)</li>
+      <ul>
+        <li>selecting this option will ask the user to select which
+subgroup the article of clothing will go into:</li>
+        <ul>
+          <li>UpperBody</li>
+          <li>LowerBody</li>
+          <li>Feet</li>
+          <li>Jacket</li>
+        </ul>
+      </ul>
+      <li>Accesories - select the collada (*.dae) file of the accessory
+you want to load. (includes hats, glasses, &amp; hair)</li>
+      <ul>
+        <li>selecting this option will ask the user for the subgroup
+the accessory will go into:</li>
+        <ul>
+          <li>Hair</li>
+          <li>Hat</li>
+          <li>Glasses</li>
+        </ul>
+        <li>after subgroup selection, the user must select the joint to
+add it onto</li>
+        <ul>
+          <li>Head</li>
+          <li>Neck</li>
+        </ul>
+        <li>after selecting the joint, the user must input the name of
+the geometry to add (the name of the mesh in the file ie mt_spikeyHair)</li>
+      </ul>
+    </ul>
+    <li>When the progress bar stops (is gray) and Loading... is no
+longer visible in the status bar, the screen will update with the
+changes.</li>
+  </ul>
+</ul>
+<ul>
+  <li><span style="background-color: rgb(255, 0, 0);">Known Issues</span>:</li>
+  <ul>
+    <li>There is no undo so be sure of what you are doing...</li>
+  </ul>
+</ul>
+<h3><br>
+</h3>
+<h3>Swapping Textures &amp; Shaders:</h3>
+<ul>
+  <li>The user can change the textures on the meshes as well as the
+shader being used on that piece of geometry. &nbsp;The tool allows the
+user to create a new texture for a selected mesh or replace the
+existing texture with one that has already been created. &nbsp;The user
+can also create a shader to be used on that mesh or load an existing
+shader template and manipulate the values.</li>
+</ul>
+<ul>
+  <li>Loading instructions:</li>
+  <ul>
+    <li>Tools -&gt; Texture Editor</li>
+    <li>TO BE CONTINUED...</li>
+  </ul>
+</ul>
+<h3>Changeing Colors:</h3>
+<ul>
+  <li>The user can change the color mask on the meshes. &nbsp;The tool
+allows the user to change the color mask on the mesh based on the the
+type (ie shirt, pants, shoes, skinetone, etc...). &nbsp;The user
+toggles the button for the category (more than one can be toggled if
+they user wants them to be the same color), and then color change is
+done by selecting color swatches or moving the marker on the color
+gradient (HUE, SATURATION, etc).</li>
+</ul>
+<ul>
+  <li>Loading instructions:</li>
+  <ul>
+    <li>Tools -&gt; Color Selector</li>
+    <li>Toggle the category of meshes to affect</li>
+    <li>Choose the color to apply. &nbsp;As soon as the color is
+selected, the user can see the effect on the avatar in the window.</li>
+  </ul>
+</ul>
+<ul>
+  <li><span style="background-color: rgb(255, 0, 0);">Known Issues</span>:</li>
+  <ul>
+    <li>Sometimes there are visual artifacts when the color changes,
+but when the color change is complete it is back to normal.</li>
+  </ul>
+</ul>
+</div>
+</div>
+</body>
+</html>
