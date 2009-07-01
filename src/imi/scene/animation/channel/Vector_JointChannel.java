@@ -62,7 +62,7 @@ public class Vector_JointChannel implements PJointChannel, Serializable
         if (jointAnimation.m_targetJointBindPose != null)
             m_targetJointBindPose = new PMatrix(jointAnimation.m_targetJointBindPose);
         
-        m_targetJointName = new String(jointAnimation.getTargetJointName());
+        m_targetJointName = jointAnimation.getTargetJointName();
         
         // Copy translation key frames
         for (VectorKeyframe frame : jointAnimation.m_TranslationKeyframes)

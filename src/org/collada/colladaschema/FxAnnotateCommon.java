@@ -25,7 +25,7 @@
 
 package org.collada.colladaschema;
 
-import java.util.ArrayList;
+import javolution.util.FastTable;
 import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -148,7 +148,7 @@ public class FxAnnotateCommon {
      */
     public List<Double> getFloat3X3() {
         if (float3X3 == null) {
-            float3X3 = new ArrayList<Double>();
+            float3X3 = new FastTable<Double>();
         }
         return this.float3X3;
     }
@@ -201,7 +201,7 @@ public class FxAnnotateCommon {
      */
     public List<Double> getFloat2() {
         if (float2 == null) {
-            float2 = new ArrayList<Double>();
+            float2 = new FastTable<Double>();
         }
         return this.float2;
     }
@@ -254,7 +254,7 @@ public class FxAnnotateCommon {
      */
     public List<Boolean> getBool2() {
         if (bool2 == null) {
-            bool2 = new ArrayList<Boolean>();
+            bool2 = new FastTable<Boolean>();
         }
         return this.bool2;
     }
@@ -283,7 +283,7 @@ public class FxAnnotateCommon {
      */
     public List<Double> getFloat3() {
         if (float3 == null) {
-            float3 = new ArrayList<Double>();
+            float3 = new FastTable<Double>();
         }
         return this.float3;
     }
@@ -336,7 +336,7 @@ public class FxAnnotateCommon {
      */
     public List<Boolean> getBool4() {
         if (bool4 == null) {
-            bool4 = new ArrayList<Boolean>();
+            bool4 = new FastTable<Boolean>();
         }
         return this.bool4;
     }
@@ -365,7 +365,7 @@ public class FxAnnotateCommon {
      */
     public List<Long> getInt4() {
         if (int4 == null) {
-            int4 = new ArrayList<Long>();
+            int4 = new FastTable<Long>();
         }
         return this.int4;
     }
@@ -418,7 +418,7 @@ public class FxAnnotateCommon {
      */
     public List<Double> getFloat2X2() {
         if (float2X2 == null) {
-            float2X2 = new ArrayList<Double>();
+            float2X2 = new FastTable<Double>();
         }
         return this.float2X2;
     }
@@ -447,7 +447,7 @@ public class FxAnnotateCommon {
      */
     public List<Long> getInt3() {
         if (int3 == null) {
-            int3 = new ArrayList<Long>();
+            int3 = new FastTable<Long>();
         }
         return this.int3;
     }
@@ -476,7 +476,7 @@ public class FxAnnotateCommon {
      */
     public List<Double> getFloat4() {
         if (float4 == null) {
-            float4 = new ArrayList<Double>();
+            float4 = new FastTable<Double>();
         }
         return this.float4;
     }
@@ -505,7 +505,7 @@ public class FxAnnotateCommon {
      */
     public List<Boolean> getBool3() {
         if (bool3 == null) {
-            bool3 = new ArrayList<Boolean>();
+            bool3 = new FastTable<Boolean>();
         }
         return this.bool3;
     }
@@ -534,7 +534,7 @@ public class FxAnnotateCommon {
      */
     public List<Long> getInt2() {
         if (int2 == null) {
-            int2 = new ArrayList<Long>();
+            int2 = new FastTable<Long>();
         }
         return this.int2;
     }
@@ -563,7 +563,7 @@ public class FxAnnotateCommon {
      */
     public List<Double> getFloat4X4() {
         if (float4X4 == null) {
-            float4X4 = new ArrayList<Double>();
+            float4X4 = new FastTable<Double>();
         }
         return this.float4X4;
     }

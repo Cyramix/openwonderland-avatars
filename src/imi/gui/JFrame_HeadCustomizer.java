@@ -1,6 +1,19 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ /**
+ * Project Wonderland
+ *
+ * Copyright (c) 2004-2008, Sun Microsystems, Inc., All Rights Reserved
+ *
+ * Redistributions in source code form must reproduce the above
+ * copyright and this condition.
+ *
+ * The contents of this file are subject to the GNU General Public
+ * License, Version 2 (the "License"); you may not use this file
+ * except in compliance with the License. A copy of the License is
+ * available at http://www.opensource.org/licenses/gpl-license.php.
+ *
+ * Sun designates this particular file as subject to the "Classpath"
+ * exception as provided by Sun in the License file that accompanied
+ * this code.
  */
 
 /*
@@ -11,11 +24,12 @@
 
 package imi.gui;
 
-import imi.loaders.repository.Repository;
-import imi.scene.polygonmodel.parts.PMeshMaterial;
-import imi.scene.polygonmodel.skinned.PPolygonSkinnedMeshInstance;
-import imi.scene.shader.AbstractShaderProgram;
-import imi.scene.shader.programs.EyeballShader;
+import imi.character.Character;
+import imi.character.EyeBall;
+import imi.character.Manipulator;
+import imi.scene.polygonmodel.PPolygonSkinnedMeshInstance;
+import imi.utils.MaterialMeshUtils.ShaderType;
+import imi.utils.MaterialMeshUtils.TextureType;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Image;
@@ -51,19 +65,20 @@ public class JFrame_HeadCustomizer extends javax.swing.JFrame {
 ////////////////////////////////////////////////////////////////////////////////
 // Class Data Members
 ////////////////////////////////////////////////////////////////////////////////
-    private int                             m_numCol        = 1;
-    private int                             m_colWidth      = 64;
-    private PPolygonSkinnedMeshInstance[]   m_Eyes          = null;
-    private SceneEssentials                 m_sceneData     = null;
-    private File                            m_HeadsDir      = null;
-    private File                            m_EyesDir       = null;
-    private File                            m_HairDir       = null;
-    private String                          m_HeadsRelPath  = null;
-    private String                          m_EyesRelPath   = null;
-    private String                          m_HairRelPath   = null;
-    private Vector                          m_HeadModels    = null;
-    private Vector                          m_HairModels    = null;
-    private Vector                          m_MeshNames     = null;
+    private WorldManager    worldManager    = null;
+    private Character       character       = null;
+    private int             numCol          = 1;
+    private int             colWidth        = 64;
+    private EyeBall[]       eyes            = null;
+    private File            headsDir        = null;
+    private File            eyesDir         = null;
+    private File            hairDir         = null;
+    private String          headsRelPath    = null;
+    private String          eyesRelPath     = null;
+    private String          hairRelPath     = null;
+    private Vector          headModels      = null;
+    private Vector          hairModels      = null;
+    private Vector          meshNames       = null;
 
 ////////////////////////////////////////////////////////////////////////////////
 // Class Methods
@@ -74,64 +89,102 @@ public class JFrame_HeadCustomizer extends javax.swing.JFrame {
      * relative path (path from the user directory) to the head, eyes, and hair
      * assets must be set.  Finally set the selection listener on the tables
      */
-    public JFrame_HeadCustomizer() {
-        initComponents();
-    }
+    private JFrame_HeadCustomizer(Builder builder) {
+        this.worldManager   = builder.worldManager;
+        this.character      = builder.character;
+        avatarCheck();
 
-    /**
-     * Overloaded constructor initializes the GUI compoents as well as sets the
-     * scene data, eye meshes and the relative directory paths for the directory
-     * of assets for head, hair and eyes.  If null is passed in for the directories
-     * or eyes, then the directories will default to a set default directory and
-     * a search to see if there is an avatar with eyes is available.  Scene data
-     * must NOT be null.
-     * @param scene - the data of the entire scene
-     * @param headDirec - relative string path to the head assets
-     * @param eyesDirec - relative string path to the eyes assets
-     * @param hairDirec - relative string path to the hair assets
-     * @param eyes - an array of eye mesh instnaces for the avatar (should be 2 only ie human)
-     */
-    public JFrame_HeadCustomizer(SceneEssentials scene, String headDirec, String eyesDirec, String hairDirec, PPolygonSkinnedMeshInstance[] eyes) {
         initComponents();
-        m_sceneData = scene;
+        this.setTitle(builder.windowTitle);
 
-        if (eyes == null)
+        if (builder.eyes == null)
             findEyes();
-        else
-            m_Eyes = eyes;
-
-        if (headDirec == null) {
-            headDirec = "/assets/models/collada/Heads/";
-            if (m_sceneData.getAvatar() != null && m_sceneData.getAvatar().isInitialized()) {
-                if (m_sceneData.getAvatar().getAttributes().getGender() == 1) {
-                    headDirec += "MaleHead/Thumbnails";
-                } else {
-                    headDirec += "FemaleHead/Thumbnails";
-                }
+        else {
+            this.eyes = new EyeBall[builder.eyes.length];
+            for (int i = 0; i < eyes.length; i++) {
+                this.eyes[i] = builder.eyes[i];
             }
         }
 
-        if (hairDirec == null) {
-            hairDirec = "/assets/models/collada/Hair/";
-            if (m_sceneData.getAvatar() != null && m_sceneData.getAvatar().isInitialized()) {
-                if (m_sceneData.getAvatar().getAttributes().getGender() == 1) {
-                    hairDirec += "MaleHair/Thumbnails";
-                } else {
-                    hairDirec += "FemaleHair/Thumbnails";
-                }
-            }
+        if (character.getCharacterParams().getGender() == 1) {
+            builder.headsDir += "MaleHead/Thumbnails";
+        } else {
+            builder.headsDir += "FemaleHead/Thumbnails";
         }
 
-        if (eyesDirec == null)
-            eyesDirec = "/assets/models/collada/Heads/EyeTextures";
+        
+        if (character.getCharacterParams().getGender() == 1) {
+            builder.hairDir += "MaleHair/Thumbnails";
+        } else {
+            builder.hairDir += "FemaleHair/Thumbnails";
+        }
 
-        setDirectories(headDirec, hairDirec, eyesDirec);
-        setTable(jTable_Eyes, m_EyesDir);
-        setTable(jTable_Heads, m_HeadsDir);
-        setTable(jTable_HairStyles, m_HairDir);
+        setDirectories(builder.headsDir, builder.hairDir, builder.eyesDir);
+        setTable(jTable_Eyes, eyesDir);
+        setTable(jTable_Heads, headsDir);
+        setTable(jTable_HairStyles, hairDir);
         setListenersOnTables();
         getHeads();
         getHair();
+    }
+
+    public static class Builder {
+        private Character       character       = null;
+        private WorldManager    worldManager    = null;
+        private EyeBall[]       eyes            = null;
+        private String          windowTitle     = "Head Customizer";
+        private String          headsDir        = "/assets/models/collada/Heads/";
+        private String          eyesDir         = "/assets/models/collada/Heads/EyeTextures";
+        private String          hairDir         = "/assets/models/collada/Hair/";
+
+        public Builder (WorldManager worldManager, Character character) {
+            this.worldManager   = worldManager;
+            this.character      = character;
+        }
+
+        public Builder windowTitle(String windowTitle) {
+            this.windowTitle    = windowTitle;
+            return this;
+        }
+        
+        public Builder headsDirectory(String headDir) {
+            this.headsDir   = headDir;
+            return this;
+        }
+        
+        public Builder eyesDirectory(String eyesDir) {
+            this.eyesDir    = eyesDir;
+            return this;
+        }
+        
+        public Builder hairDirectory(String hairDir) {
+            this.hairDir    = hairDir;
+            return this;
+        }
+
+        public Builder eyes(EyeBall[] eyes) {
+            this.eyes = new EyeBall[eyes.length];
+            for (int i = 0; i < eyes.length; i++) {
+                this.eyes[i] = eyes[i];
+            }
+            return this;
+        }
+
+        public JFrame_HeadCustomizer build() {
+            return new JFrame_HeadCustomizer(this);
+        }
+    }
+
+    private void avatarCheck() {
+        if (character == null) {
+            throw new IllegalArgumentException("SEVERE ERROR: character is null");
+        }
+        if (character.getSkeleton() == null) {
+            throw new IllegalArgumentException("SEVERE ERROR: character has no SkeletonNode");
+        }
+        if (!character.isInitialized()) {
+            throw new IllegalArgumentException("SEVERE ERROR: character has not been initialized");
+        }
     }
 
     /**
@@ -141,30 +194,10 @@ public class JFrame_HeadCustomizer extends javax.swing.JFrame {
      * @param col - the selected coloumn
      */
     public void setTextureOnEyeball(int row, int col) {
-        if (m_Eyes == null)
-            return;
-
-//        m_sceneData.getPScene().getInstances().setRenderStop(true);
-        // Create a material to use
+        avatarCheck();
         String temp = jTable_Eyes.getValueAt(row, col).toString();
         String location = temp.substring(1, temp.length() - 1);
-        File loc = new File(location);
-        String szName = loc.getName();
-        try {
-            URL urlFile = loc.toURI().toURL();
-            PMeshMaterial material = new PMeshMaterial(szName + "Material", urlFile);
-            Repository repo = (Repository)m_sceneData.getWM().getUserData(Repository.class);
-            AbstractShaderProgram eyeballShader = repo.newShader(EyeballShader.class);
-
-            for (int i = 0; i < m_Eyes.length; i++) {
-                material.setShader(eyeballShader);
-                m_Eyes[i].setMaterial(material);
-                m_Eyes[i].applyMaterial();
-            }
-        } catch (MalformedURLException ex) {
-            Logger.getLogger(SceneEssentials.class.getName()).log(Level.SEVERE, null, ex);
-        }
-//        m_sceneData.getPScene().getInstances().setRenderStop(false);
+        Manipulator.setEyesTexture(character, location, TextureType.Color, Manipulator.Eyes.allEyes);
     }
 
     /**
@@ -175,25 +208,10 @@ public class JFrame_HeadCustomizer extends javax.swing.JFrame {
      * @param col - the selected coloumn
      */
     public void addHead(int row, int col) {
-        if (m_sceneData == null)
-            return;
-
-        if (m_sceneData.getAvatar() == null || !m_sceneData.getAvatar().isInitialized())
-            return;
-
-        m_sceneData.getPScene().getInstances().setRenderStop(true);
-        String protocol = "file:///";
-        String temp     = ((Vector)m_HeadModels.get(row)).get(col).toString();
+        avatarCheck();
+        String temp     = ((Vector)headModels.get(row)).get(col).toString();
         String location = temp.substring(1, temp.length() - 1);
-        String url      = protocol + location;
-        int nameindex   = location.lastIndexOf("/");
-        String filename = location.toString().substring(nameindex);
-        int pathindex   = m_HeadsRelPath.lastIndexOf("/");
-        String path     = m_HeadsRelPath.substring(0, pathindex);
-        String relPath  = path + filename;
-
-        m_sceneData.addAvatarHeadDAEURL(true, this, url, relPath);
-        m_sceneData.getPScene().getInstances().setRenderStop(false);
+        Manipulator.swapHeadMesh(character, true, new File(location), ShaderType.FleshShader);
     }
 
     /**
@@ -204,21 +222,9 @@ public class JFrame_HeadCustomizer extends javax.swing.JFrame {
      * @param col - the selected column
      */
     public void addHair(int row, int col) {
-        if (m_sceneData == null)
-            return;
-
-        if (m_sceneData.getAvatar() == null || !m_sceneData.getAvatar().isInitialized())
-            return;
-
-        Vector data     = (Vector) m_MeshNames.get(row);
-
-        m_sceneData.getPScene().getInstances().setRenderStop(true);
-        String protocol = "file:///";
-        String temp     = data.get(1).toString();
-        String url      = protocol + temp;
-
-        m_sceneData.addMeshDAEURLToModel(data.get(0).toString(), url, "Head", "Hair");
-        m_sceneData.getPScene().getInstances().setRenderStop(false);
+        avatarCheck();
+        Vector data     = (Vector) meshNames.get(row);
+        Manipulator.swapHairMesh(character, true, new File(data.get(1).toString()), data.get(0).toString());
     }
 
     /** This method is called from within the constructor to
@@ -383,55 +389,33 @@ public class JFrame_HeadCustomizer extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
-    /**
-    * @param args the command line arguments
-    */
-    public static void main(String args[]) {
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new JFrame_HeadCustomizer().setVisible(true);
-            }
-        });
-    }
-
-////////////////////////////////////////////////////////////////////////////////
-// Accessors
-////////////////////////////////////////////////////////////////////////////////
     
 ////////////////////////////////////////////////////////////////////////////////
 // Mutators
 ////////////////////////////////////////////////////////////////////////////////
+
     public void setHeadsDirectory(String relativePath) {
         String completePath = System.getProperty("user.dir") + relativePath;
-        m_HeadsDir = new File(completePath);
+        headsDir = new File(completePath);
     }
 
     public void setHairDirectory(String relativePath) {
         String completePath = System.getProperty("user.dir") + relativePath;
-        m_HairDir = new File(completePath);
+        hairDir = new File(completePath);
     }
 
     public void setEyesDirectory(String relativePath) {
         String completePath = System.getProperty("user.dir") + relativePath;
-        m_EyesDir = new File(completePath);
+        eyesDir = new File(completePath);
     }
 
     public void setDirectories(String headRelPath, String hairRelPath, String eyesPath) {
-        m_HeadsRelPath  = headRelPath;
-        m_HairRelPath   = hairRelPath;
-        m_EyesRelPath   = eyesPath;
+        this.headsRelPath  = headRelPath;
+        this.hairRelPath   = hairRelPath;
+        this.eyesRelPath   = eyesPath;
         setHeadsDirectory(headRelPath);
         setHairDirectory(hairRelPath);
         setEyesDirectory(eyesPath);
-    }
-
-    public void setSceneData(SceneEssentials scene) {
-        m_sceneData = scene;
-    }
-
-    public void setEyeMeshInstances(PPolygonSkinnedMeshInstance[] eyes) {
-        m_Eyes = eyes;
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -477,19 +461,18 @@ public class JFrame_HeadCustomizer extends javax.swing.JFrame {
         int i = 0;
         while (i < textures.length) {
             Vector rowData = new Vector();
-            for (int j = 0; j < m_numCol; j++) {
+            for (int j = 0; j < numCol; j++) {
                 if (i >= textures.length)
                     break;
 
                 rowData.add(Arrays.asList(textures[i]));
                 i++;
             }
-            while (rowData.size() < m_numCol) {
+            while (rowData.size() < numCol) {
                 rowData.add(null);
             }
             data.add(rowData);
         }
-
         return data;
     }
 
@@ -501,9 +484,9 @@ public class JFrame_HeadCustomizer extends javax.swing.JFrame {
             return;
 
         Vector data = formatTableData(dir);
-        Vector colNames = new Vector();
-        String[] colName  = new String[m_numCol];
-        for (int i = 0; i < m_numCol; i++ ) {
+        Vector colNames;
+        String[] colName  = new String[numCol];
+        for (int i = 0; i < numCol; i++ ) {
             colName[i] = "    ";
         }
         colNames = new Vector(Arrays.asList(colName));
@@ -513,8 +496,8 @@ public class JFrame_HeadCustomizer extends javax.swing.JFrame {
 
         for (int i = 0; i < table.getModel().getColumnCount(); i++) {
             TableColumn col = table.getColumnModel().getColumn(i);
-            col.setCellRenderer(new customImageCellRender());
-            col.setPreferredWidth(m_colWidth);
+            col.setCellRenderer(new CustomImageCellRender());
+            col.setPreferredWidth(colWidth);
         }
 
         table.setVisible(true);
@@ -523,7 +506,7 @@ public class JFrame_HeadCustomizer extends javax.swing.JFrame {
     /**
      * Custom cell renderer for the JTable to display preview images of the avatar
      */
-    public class customImageCellRender extends JLabel implements TableCellRenderer {
+    public static class CustomImageCellRender extends JLabel implements TableCellRenderer {
 
         private Border m_selectBorder   = null;
         private Border m_unselectBorder = null;
@@ -631,14 +614,9 @@ public class JFrame_HeadCustomizer extends javax.swing.JFrame {
      * return without doing anything.
      */
     public void findEyes() {
-        if (m_sceneData == null)
-            return;
-
-        if (m_sceneData.getAvatar() == null || !m_sceneData.getAvatar().isInitialized())
-            return;
-
-        if (m_sceneData.getAvatar().getSkeleton().getMeshesBySubGroup("Head") != null) {
-            PPolygonSkinnedMeshInstance[] meshes = m_sceneData.getAvatar().getSkeleton().getMeshesBySubGroup("Head");
+        avatarCheck();
+        if (character.getSkeleton().getMeshesBySubGroup("Head") != null) {
+            PPolygonSkinnedMeshInstance[] meshes = character.getSkeleton().getMeshesBySubGroup("Head");
 
             if (meshes != null) {
                 ArrayList<PPolygonSkinnedMeshInstance> ppm = new ArrayList<PPolygonSkinnedMeshInstance>();
@@ -648,9 +626,9 @@ public class JFrame_HeadCustomizer extends javax.swing.JFrame {
                     }
                 }
                 
-                m_Eyes = new PPolygonSkinnedMeshInstance[ppm.size()];
+                this.eyes = new EyeBall[ppm.size()];
                 for (int i = 0; i < ppm.size(); i++)
-                    m_Eyes[i] = ppm.get(i);
+                    this.eyes[i] = (EyeBall) ppm.get(i);
             }
         }
     }
@@ -670,30 +648,30 @@ public class JFrame_HeadCustomizer extends javax.swing.JFrame {
             }
         };
 
-        int indes       = m_HeadsDir.getPath().lastIndexOf("/");
-        String newPath  = m_HeadsDir.getPath().substring(0, indes);
+        int indes       = headsDir.getPath().lastIndexOf("/");
+        String newPath  = headsDir.getPath().substring(0, indes);
         File newFile    = new File(newPath);
         File[] textures = newFile.listFiles(asset);
 
         if (textures == null)
             return;
 
-        m_HeadModels = new Vector();
+        headModels = new Vector();
 
         int i = 0;
         while (i < textures.length) {
             Vector rowData = new Vector();
-            for (int j = 0; j < m_numCol; j++) {
+            for (int j = 0; j < numCol; j++) {
                 if (i >= textures.length)
                     break;
 
                 rowData.add(Arrays.asList(textures[i]));
                 i++;
             }
-            while (rowData.size() < m_numCol) {
+            while (rowData.size() < numCol) {
                 rowData.add(null);
             }
-            m_HeadModels.add(rowData);
+            headModels.add(rowData);
         }
     }
 
@@ -721,8 +699,8 @@ public class JFrame_HeadCustomizer extends javax.swing.JFrame {
             }
         };
 
-        int indes       = m_HairDir.getPath().lastIndexOf("/");
-        String newPath  = m_HairDir.getPath().substring(0, indes);
+        int indes       = hairDir.getPath().lastIndexOf("/");
+        String newPath  = hairDir.getPath().substring(0, indes);
         File newFile    = new File(newPath);
         File[] textures = newFile.listFiles(asset);
         File[] meshData = newFile.listFiles(meshes);
@@ -737,22 +715,22 @@ public class JFrame_HeadCustomizer extends javax.swing.JFrame {
             readInMeshNames(meshData[i], textures[i]);
         }
 
-        m_HairModels = new Vector();
+        hairModels = new Vector();
 
         int i = 0;
         while (i < textures.length) {
             Vector rowData = new Vector();
-            for (int j = 0; j < m_numCol; j++) {
+            for (int j = 0; j < numCol; j++) {
                 if (i >= textures.length)
                     break;
 
                 rowData.add(Arrays.asList(textures[i]));
                 i++;
             }
-            while (rowData.size() < m_numCol) {
+            while (rowData.size() < numCol) {
                 rowData.add(null);
             }
-            m_HairModels.add(rowData);
+            hairModels.add(rowData);
         }
     }
 
@@ -761,14 +739,14 @@ public class JFrame_HeadCustomizer extends javax.swing.JFrame {
      * @param meshNames - file location for the mesh names data
      * @param actualFile - the actual collada file to associate with the file.
      */
-    public void readInMeshNames(File meshNames, File actualFile) {
-        if (m_MeshNames == null) {
-            m_MeshNames = new Vector();
+    public void readInMeshNames(File meshNamesFolder, File actualFile) {
+        if (meshNames == null) {
+            meshNames = new Vector();
         }
 
         try {
 
-            BufferedReader input = new BufferedReader(new FileReader(meshNames));
+            BufferedReader input = new BufferedReader(new FileReader(meshNamesFolder));
             try {
                 String meshName = null; //not declared within while loop
                 /**
@@ -779,7 +757,7 @@ public class JFrame_HeadCustomizer extends javax.swing.JFrame {
                     Vector meshInfo = new Vector();
                     meshInfo.add(meshName);
                     meshInfo.add(actualFile);
-                    m_MeshNames.add(meshInfo);
+                    meshNames.add(meshInfo);
                 }
             } finally {
                 input.close();

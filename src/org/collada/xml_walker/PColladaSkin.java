@@ -18,7 +18,7 @@
 package org.collada.xml_walker;
 
 
-import java.util.ArrayList;
+import javolution.util.FastTable;
 import imi.scene.PMatrix;
 
 
@@ -33,10 +33,10 @@ public class PColladaSkin
     private String                          m_MeshName      = null;
     private PMatrix                         m_BindMatrix    = new PMatrix();
 
-    private ArrayList<String>               m_BoneNames     = new ArrayList<String>();
-    private ArrayList<String>               m_JointNames    = new ArrayList<String>();
-    private ArrayList<PMatrix>              m_BindMatrices  = new ArrayList<PMatrix>();
-    private ArrayList<PColladaSkinWeight>   m_SkinWeights   = new ArrayList<PColladaSkinWeight>();
+    private FastTable<String>               m_BoneNames     = new FastTable<String>();
+    private FastTable<String>               m_JointNames    = new FastTable<String>();
+    private FastTable<PMatrix>              m_BindMatrices  = new FastTable<PMatrix>();
+    private FastTable<PColladaSkinWeight>   m_SkinWeights   = new FastTable<PColladaSkinWeight>();
 
 
 

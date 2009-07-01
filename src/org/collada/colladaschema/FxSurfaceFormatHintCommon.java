@@ -25,7 +25,7 @@
 
 package org.collada.colladaschema;
 
-import java.util.ArrayList;
+import javolution.util.FastTable;
 import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -174,7 +174,7 @@ public class FxSurfaceFormatHintCommon {
      */
     public List<FxSurfaceFormatHintOptionEnum> getOptions() {
         if (options == null) {
-            options = new ArrayList<FxSurfaceFormatHintOptionEnum>();
+            options = new FastTable<FxSurfaceFormatHintOptionEnum>();
         }
         return this.options;
     }
@@ -203,7 +203,7 @@ public class FxSurfaceFormatHintCommon {
      */
     public List<Extra> getExtras() {
         if (extras == null) {
-            extras = new ArrayList<Extra>();
+            extras = new FastTable<Extra>();
         }
         return this.extras;
     }

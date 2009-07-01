@@ -21,7 +21,7 @@ import imi.scene.animation.AnimationComponent;
 import imi.scene.animation.AnimationComponent.PlaybackMode;
 
 /**
- * Contains all of the detailed configuration info to set up
+ * Contains all of the configuration info to set up
  * a GameState to perform a fully body animation and possibly
  * a facial animation as well.
  * @author Lou Hayt

@@ -25,7 +25,7 @@
 
 package org.collada.colladaschema;
 
-import java.util.ArrayList;
+import javolution.util.FastTable;
 import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -92,7 +92,7 @@ public class GlesTexcombinerCommandAlphaType {
      */
     public List<GlesTexcombinerArgumentAlphaType> getArguments() {
         if (arguments == null) {
-            arguments = new ArrayList<GlesTexcombinerArgumentAlphaType>();
+            arguments = new FastTable<GlesTexcombinerArgumentAlphaType>();
         }
         return this.arguments;
     }

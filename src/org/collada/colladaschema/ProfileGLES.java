@@ -25,7 +25,7 @@
 
 package org.collada.colladaschema;
 
-import java.util.ArrayList;
+import javolution.util.FastTable;
 import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -196,7 +196,7 @@ public class ProfileGLES {
      */
     public List<Object> getNewparamsAndImages() {
         if (newparamsAndImages == null) {
-            newparamsAndImages = new ArrayList<Object>();
+            newparamsAndImages = new FastTable<Object>();
         }
         return this.newparamsAndImages;
     }
@@ -225,7 +225,7 @@ public class ProfileGLES {
      */
     public List<ProfileGLES.Technique> getTechniques() {
         if (techniques == null) {
-            techniques = new ArrayList<ProfileGLES.Technique>();
+            techniques = new FastTable<ProfileGLES.Technique>();
         }
         return this.techniques;
     }
@@ -254,7 +254,7 @@ public class ProfileGLES {
      */
     public List<Extra> getExtras() {
         if (extras == null) {
-            extras = new ArrayList<Extra>();
+            extras = new FastTable<Extra>();
         }
         return this.extras;
     }
@@ -454,7 +454,7 @@ public class ProfileGLES {
          */
         public List<FxAnnotateCommon> getAnnotates() {
             if (annotates == null) {
-                annotates = new ArrayList<FxAnnotateCommon>();
+                annotates = new FastTable<FxAnnotateCommon>();
             }
             return this.annotates;
         }
@@ -485,7 +485,7 @@ public class ProfileGLES {
          */
         public List<Object> getImagesAndNewparamsAndSetparams() {
             if (imagesAndNewparamsAndSetparams == null) {
-                imagesAndNewparamsAndSetparams = new ArrayList<Object>();
+                imagesAndNewparamsAndSetparams = new FastTable<Object>();
             }
             return this.imagesAndNewparamsAndSetparams;
         }
@@ -514,7 +514,7 @@ public class ProfileGLES {
          */
         public List<ProfileGLES.Technique.Pass> getPass() {
             if (pass == null) {
-                pass = new ArrayList<ProfileGLES.Technique.Pass>();
+                pass = new FastTable<ProfileGLES.Technique.Pass>();
             }
             return this.pass;
         }
@@ -543,7 +543,7 @@ public class ProfileGLES {
          */
         public List<Extra> getExtras() {
             if (extras == null) {
-                extras = new ArrayList<Extra>();
+                extras = new FastTable<Extra>();
             }
             return this.extras;
         }
@@ -768,7 +768,7 @@ public class ProfileGLES {
              */
             public List<FxAnnotateCommon> getAnnotates() {
                 if (annotates == null) {
-                    annotates = new ArrayList<FxAnnotateCommon>();
+                    annotates = new FastTable<FxAnnotateCommon>();
                 }
                 return this.annotates;
             }
@@ -869,7 +869,7 @@ public class ProfileGLES {
              */
             public List<Double> getColorClear() {
                 if (colorClear == null) {
-                    colorClear = new ArrayList<Double>();
+                    colorClear = new FastTable<Double>();
                 }
                 return this.colorClear;
             }
@@ -1042,7 +1042,7 @@ public class ProfileGLES {
              */
             public List<Object> getLightSpotCutofvesAndDepthTestEnablesAndPointSizes() {
                 if (lightSpotCutofvesAndDepthTestEnablesAndPointSizes == null) {
-                    lightSpotCutofvesAndDepthTestEnablesAndPointSizes = new ArrayList<Object>();
+                    lightSpotCutofvesAndDepthTestEnablesAndPointSizes = new FastTable<Object>();
                 }
                 return this.lightSpotCutofvesAndDepthTestEnablesAndPointSizes;
             }
@@ -1071,7 +1071,7 @@ public class ProfileGLES {
              */
             public List<Extra> getExtras() {
                 if (extras == null) {
-                    extras = new ArrayList<Extra>();
+                    extras = new FastTable<Extra>();
                 }
                 return this.extras;
             }
@@ -1877,7 +1877,7 @@ public class ProfileGLES {
                  */
                 public List<Double> getValues() {
                     if (values == null) {
-                        values = new ArrayList<Double>();
+                        values = new FastTable<Double>();
                     }
                     return this.values;
                 }
@@ -2138,7 +2138,7 @@ public class ProfileGLES {
                  */
                 public List<Boolean> getValues() {
                     if (values == null) {
-                        values = new ArrayList<Boolean>();
+                        values = new FastTable<Boolean>();
                     }
                     return this.values;
                 }
@@ -2415,7 +2415,7 @@ public class ProfileGLES {
                  */
                 public List<Boolean> getValues() {
                     if (values == null) {
-                        values = new ArrayList<Boolean>();
+                        values = new FastTable<Boolean>();
                     }
                     return this.values;
                 }
@@ -2914,7 +2914,7 @@ public class ProfileGLES {
                  */
                 public List<Double> getValues() {
                     if (values == null) {
-                        values = new ArrayList<Double>();
+                        values = new FastTable<Double>();
                     }
                     return this.values;
                 }
@@ -3164,7 +3164,7 @@ public class ProfileGLES {
                  */
                 public List<Double> getValues() {
                     if (values == null) {
-                        values = new ArrayList<Double>();
+                        values = new FastTable<Double>();
                     }
                     return this.values;
                 }
@@ -3765,7 +3765,7 @@ public class ProfileGLES {
                  */
                 public List<Double> getValues() {
                     if (values == null) {
-                        values = new ArrayList<Double>();
+                        values = new FastTable<Double>();
                     }
                     return this.values;
                 }
@@ -3970,7 +3970,7 @@ public class ProfileGLES {
                  */
                 public List<Double> getValues() {
                     if (values == null) {
-                        values = new ArrayList<Double>();
+                        values = new FastTable<Double>();
                     }
                     return this.values;
                 }
@@ -4258,7 +4258,7 @@ public class ProfileGLES {
                  */
                 public List<Double> getValues() {
                     if (values == null) {
-                        values = new ArrayList<Double>();
+                        values = new FastTable<Double>();
                     }
                     return this.values;
                 }
@@ -4444,7 +4444,7 @@ public class ProfileGLES {
                  */
                 public List<Double> getValues() {
                     if (values == null) {
-                        values = new ArrayList<Double>();
+                        values = new FastTable<Double>();
                     }
                     return this.values;
                 }
@@ -4649,7 +4649,7 @@ public class ProfileGLES {
                  */
                 public List<Double> getValues() {
                     if (values == null) {
-                        values = new ArrayList<Double>();
+                        values = new FastTable<Double>();
                     }
                     return this.values;
                 }
@@ -4854,7 +4854,7 @@ public class ProfileGLES {
                  */
                 public List<Double> getValues() {
                     if (values == null) {
-                        values = new ArrayList<Double>();
+                        values = new FastTable<Double>();
                     }
                     return this.values;
                 }
@@ -5372,7 +5372,7 @@ public class ProfileGLES {
                  */
                 public List<Double> getValues() {
                     if (values == null) {
-                        values = new ArrayList<Double>();
+                        values = new FastTable<Double>();
                     }
                     return this.values;
                 }
@@ -5456,7 +5456,7 @@ public class ProfileGLES {
                  */
                 public List<Double> getValues() {
                     if (values == null) {
-                        values = new ArrayList<Double>();
+                        values = new FastTable<Double>();
                     }
                     return this.values;
                 }
@@ -5540,7 +5540,7 @@ public class ProfileGLES {
                  */
                 public List<Double> getValues() {
                     if (values == null) {
-                        values = new ArrayList<Double>();
+                        values = new FastTable<Double>();
                     }
                     return this.values;
                 }
@@ -5707,7 +5707,7 @@ public class ProfileGLES {
                  */
                 public List<Double> getValues() {
                     if (values == null) {
-                        values = new ArrayList<Double>();
+                        values = new FastTable<Double>();
                     }
                     return this.values;
                 }
@@ -5791,7 +5791,7 @@ public class ProfileGLES {
                  */
                 public List<Double> getValues() {
                     if (values == null) {
-                        values = new ArrayList<Double>();
+                        values = new FastTable<Double>();
                     }
                     return this.values;
                 }
@@ -6041,7 +6041,7 @@ public class ProfileGLES {
                  */
                 public List<Double> getValues() {
                     if (values == null) {
-                        values = new ArrayList<Double>();
+                        values = new FastTable<Double>();
                     }
                     return this.values;
                 }
@@ -6540,7 +6540,7 @@ public class ProfileGLES {
                  */
                 public List<Double> getValues() {
                     if (values == null) {
-                        values = new ArrayList<Double>();
+                        values = new FastTable<Double>();
                     }
                     return this.values;
                 }
@@ -6707,7 +6707,7 @@ public class ProfileGLES {
                  */
                 public List<Double> getValues() {
                     if (values == null) {
-                        values = new ArrayList<Double>();
+                        values = new FastTable<Double>();
                     }
                     return this.values;
                 }
@@ -7123,7 +7123,7 @@ public class ProfileGLES {
                  */
                 public List<Long> getValues() {
                     if (values == null) {
-                        values = new ArrayList<Long>();
+                        values = new FastTable<Long>();
                     }
                     return this.values;
                 }
@@ -8582,7 +8582,7 @@ public class ProfileGLES {
              */
             public List<FxAnnotateCommon> getAnnotates() {
                 if (annotates == null) {
-                    annotates = new ArrayList<FxAnnotateCommon>();
+                    annotates = new FastTable<FxAnnotateCommon>();
                 }
                 return this.annotates;
             }
@@ -8611,7 +8611,7 @@ public class ProfileGLES {
              */
             public List<Double> getFloat4X1() {
                 if (float4X1 == null) {
-                    float4X1 = new ArrayList<Double>();
+                    float4X1 = new FastTable<Double>();
                 }
                 return this.float4X1;
             }
@@ -8688,7 +8688,7 @@ public class ProfileGLES {
              */
             public List<Boolean> getBool3() {
                 if (bool3 == null) {
-                    bool3 = new ArrayList<Boolean>();
+                    bool3 = new FastTable<Boolean>();
                 }
                 return this.bool3;
             }
@@ -8717,7 +8717,7 @@ public class ProfileGLES {
              */
             public List<Double> getFloat1X3() {
                 if (float1X3 == null) {
-                    float1X3 = new ArrayList<Double>();
+                    float1X3 = new FastTable<Double>();
                 }
                 return this.float1X3;
             }
@@ -8746,7 +8746,7 @@ public class ProfileGLES {
              */
             public List<Boolean> getBool2() {
                 if (bool2 == null) {
-                    bool2 = new ArrayList<Boolean>();
+                    bool2 = new FastTable<Boolean>();
                 }
                 return this.bool2;
             }
@@ -8799,7 +8799,7 @@ public class ProfileGLES {
              */
             public List<Double> getFloat3() {
                 if (float3 == null) {
-                    float3 = new ArrayList<Double>();
+                    float3 = new FastTable<Double>();
                 }
                 return this.float3;
             }
@@ -8828,7 +8828,7 @@ public class ProfileGLES {
              */
             public List<Double> getFloat1X2() {
                 if (float1X2 == null) {
-                    float1X2 = new ArrayList<Double>();
+                    float1X2 = new FastTable<Double>();
                 }
                 return this.float1X2;
             }
@@ -8857,7 +8857,7 @@ public class ProfileGLES {
              */
             public List<Double> getFloat2X2() {
                 if (float2X2 == null) {
-                    float2X2 = new ArrayList<Double>();
+                    float2X2 = new FastTable<Double>();
                 }
                 return this.float2X2;
             }
@@ -8886,7 +8886,7 @@ public class ProfileGLES {
              */
             public List<Double> getFloat3X1() {
                 if (float3X1 == null) {
-                    float3X1 = new ArrayList<Double>();
+                    float3X1 = new FastTable<Double>();
                 }
                 return this.float3X1;
             }
@@ -8939,7 +8939,7 @@ public class ProfileGLES {
              */
             public List<Double> getFloat2() {
                 if (float2 == null) {
-                    float2 = new ArrayList<Double>();
+                    float2 = new FastTable<Double>();
                 }
                 return this.float2;
             }
@@ -8968,7 +8968,7 @@ public class ProfileGLES {
              */
             public List<Double> getFloat4() {
                 if (float4 == null) {
-                    float4 = new ArrayList<Double>();
+                    float4 = new FastTable<Double>();
                 }
                 return this.float4;
             }
@@ -8997,7 +8997,7 @@ public class ProfileGLES {
              */
             public List<Boolean> getBool4() {
                 if (bool4 == null) {
-                    bool4 = new ArrayList<Boolean>();
+                    bool4 = new FastTable<Boolean>();
                 }
                 return this.bool4;
             }
@@ -9026,7 +9026,7 @@ public class ProfileGLES {
              */
             public List<Double> getFloat2X1() {
                 if (float2X1 == null) {
-                    float2X1 = new ArrayList<Double>();
+                    float2X1 = new FastTable<Double>();
                 }
                 return this.float2X1;
             }
@@ -9055,7 +9055,7 @@ public class ProfileGLES {
              */
             public List<Double> getFloat1X4() {
                 if (float1X4 == null) {
-                    float1X4 = new ArrayList<Double>();
+                    float1X4 = new FastTable<Double>();
                 }
                 return this.float1X4;
             }
@@ -9084,7 +9084,7 @@ public class ProfileGLES {
              */
             public List<Double> getFloat2X4() {
                 if (float2X4 == null) {
-                    float2X4 = new ArrayList<Double>();
+                    float2X4 = new FastTable<Double>();
                 }
                 return this.float2X4;
             }
@@ -9113,7 +9113,7 @@ public class ProfileGLES {
              */
             public List<Long> getInt2() {
                 if (int2 == null) {
-                    int2 = new ArrayList<Long>();
+                    int2 = new FastTable<Long>();
                 }
                 return this.int2;
             }
@@ -9142,7 +9142,7 @@ public class ProfileGLES {
              */
             public List<Double> getFloat4X2() {
                 if (float4X2 == null) {
-                    float4X2 = new ArrayList<Double>();
+                    float4X2 = new FastTable<Double>();
                 }
                 return this.float4X2;
             }
@@ -9171,7 +9171,7 @@ public class ProfileGLES {
              */
             public List<Double> getFloat3X4() {
                 if (float3X4 == null) {
-                    float3X4 = new ArrayList<Double>();
+                    float3X4 = new FastTable<Double>();
                 }
                 return this.float3X4;
             }
@@ -9248,7 +9248,7 @@ public class ProfileGLES {
              */
             public List<Double> getFloat4X3() {
                 if (float4X3 == null) {
-                    float4X3 = new ArrayList<Double>();
+                    float4X3 = new FastTable<Double>();
                 }
                 return this.float4X3;
             }
@@ -9277,7 +9277,7 @@ public class ProfileGLES {
              */
             public List<Double> getFloat4X4() {
                 if (float4X4 == null) {
-                    float4X4 = new ArrayList<Double>();
+                    float4X4 = new FastTable<Double>();
                 }
                 return this.float4X4;
             }
@@ -9306,7 +9306,7 @@ public class ProfileGLES {
              */
             public List<Long> getInt3() {
                 if (int3 == null) {
-                    int3 = new ArrayList<Long>();
+                    int3 = new FastTable<Long>();
                 }
                 return this.int3;
             }
@@ -9335,7 +9335,7 @@ public class ProfileGLES {
              */
             public List<Double> getFloat3X2() {
                 if (float3X2 == null) {
-                    float3X2 = new ArrayList<Double>();
+                    float3X2 = new FastTable<Double>();
                 }
                 return this.float3X2;
             }
@@ -9364,7 +9364,7 @@ public class ProfileGLES {
              */
             public List<Double> getFloat3X3() {
                 if (float3X3 == null) {
-                    float3X3 = new ArrayList<Double>();
+                    float3X3 = new FastTable<Double>();
                 }
                 return this.float3X3;
             }
@@ -9393,7 +9393,7 @@ public class ProfileGLES {
              */
             public List<Double> getFloat2X3() {
                 if (float2X3 == null) {
-                    float2X3 = new ArrayList<Double>();
+                    float2X3 = new FastTable<Double>();
                 }
                 return this.float2X3;
             }
@@ -9494,7 +9494,7 @@ public class ProfileGLES {
              */
             public List<Long> getInt4() {
                 if (int4 == null) {
-                    int4 = new ArrayList<Long>();
+                    int4 = new FastTable<Long>();
                 }
                 return this.int4;
             }

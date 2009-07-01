@@ -19,12 +19,12 @@ package org.collada.xml_walker;
 
 import com.jme.math.Vector3f;
 import com.jme.renderer.ColorRGBA;
-import imi.loaders.collada.Collada;
+import imi.loaders.Collada;
 import imi.scene.polygonmodel.PPolygonMesh;
-import imi.scene.polygonmodel.parts.PMeshMaterial;
-import imi.scene.polygonmodel.parts.polygon.PPolygon;
+import imi.scene.polygonmodel.PMeshMaterial;
+import imi.scene.polygonmodel.PPolygon;
 import java.math.BigInteger;
-import java.util.ArrayList;
+import javolution.util.FastTable;
 import java.util.List;
 import javax.xml.bind.JAXBElement;
 import org.collada.colladaschema.InputLocal;
@@ -43,7 +43,7 @@ public class PolygonsProcessor extends Processor
     /** Track the material **/
     private PColladaEffect    m_meshEffect = null;
     /** List of semantics associated with the data pool **/
-    private ArrayList<VertexDataSemantic> m_VertexDataSemantics = new ArrayList<VertexDataSemantic>();
+    private FastTable<VertexDataSemantic> m_VertexDataSemantics = new FastTable<VertexDataSemantic>();
 
     /** Convenience reference to the position semantic **/
     private VertexDataSemantic m_positionSemantic  = null;
@@ -54,7 +54,7 @@ public class PolygonsProcessor extends Processor
     /** Array of references to the texture coordinate semantics**/
     private VertexDataSemantic[] m_texCoordSemantic  = new VertexDataSemantic[4]; // Support for up to eight textures
     /** List of the indices for each polygon **/
-    private ArrayList<ArrayList<BigInteger>> m_polyIndices = new ArrayList<ArrayList<BigInteger>>();
+    private FastTable<FastTable<BigInteger>> m_polyIndices = new FastTable<FastTable<BigInteger>>();
     /** Offset of the vertex data **/
     private int m_VertexSize = -1;
     /** Total number of polygons **/
@@ -102,8 +102,8 @@ public class PolygonsProcessor extends Processor
             if (element.getName().getLocalPart().equals("p"))
             {
                 // for 'p' tags, just process directly
-                ArrayList<BigInteger> newArray = new ArrayList<BigInteger>();
-                newArray.addAll((ArrayList<BigInteger>)element.getValue());
+                FastTable<BigInteger> newArray = new FastTable<BigInteger>();
+                newArray.addAll((FastTable<BigInteger>)element.getValue());
                 // add this to the master collection
                 m_polyIndices.add(newArray);
             }
@@ -114,7 +114,7 @@ public class PolygonsProcessor extends Processor
         }
     }
 
-    public ArrayList<ArrayList<BigInteger>> getPolygonIndices()
+    public FastTable<FastTable<BigInteger>> getPolygonIndices()
     {
         return m_polyIndices;
     }
@@ -239,7 +239,7 @@ public class PolygonsProcessor extends Processor
             PMeshMaterial pMaterial = m_meshEffect.createMeshMaterial();
             if (pMaterial != null)
             {
-                polyMesh.setNumberOfTextures(3); // hack code
+                polyMesh.setNumberOfTextures(8); // hack code
                 polyMesh.setMaterial(pMaterial);
 
             }

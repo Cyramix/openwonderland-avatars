@@ -158,11 +158,18 @@ public class PMatrix implements Serializable
     private transient int dirtyBits;
 
 
+    /**
+     * Sets to identity
+     */
     public PMatrix() 
     {
        setIdentity();
     }
-    
+
+    /**
+     * Copy constructor, if the argument is null will set to identity.
+     * @param other
+     */
     public PMatrix(PMatrix other) 
     {
        if (other != null)
@@ -170,7 +177,11 @@ public class PMatrix implements Serializable
        else
            setIdentity();
     }
-    
+
+    /**
+     * Copy constructor, if the argument is null will set to identity.
+     * @param matrix
+     */
     public PMatrix(Matrix4f matrix) 
     {
        if (matrix != null)
@@ -193,7 +204,11 @@ public class PMatrix implements Serializable
        else
            setIdentity();
     }
-    
+
+    /**
+     * Will set the translation for this matrix
+     * @param translation
+     */
     public PMatrix(Vector3f translation)
     {
         setIdentity();
@@ -212,6 +227,10 @@ public class PMatrix implements Serializable
         set(matrix);
     }
 
+    /**
+     * Get the local X vector
+     * @param vOut
+     */
     public void getLocalX(Vector3f vOut)
     {
         vOut.x = mat[0];
@@ -219,18 +238,30 @@ public class PMatrix implements Serializable
         vOut.z = mat[8];
     }
 
+    /**
+     * Get the local Y vector
+     * @param vOut
+     */
     public void getLocalY(Vector3f vOut) {
         vOut.x = mat[1];
         vOut.y = mat[5];
         vOut.z = mat[9];
     }
-    
+
+    /**
+     * Get the local Z vector
+     * @param vOut
+     */
     public void getLocalZ(Vector3f vOut) {
         vOut.x = mat[2];
         vOut.y = mat[6];
         vOut.z = mat[10];
     }
 
+    /**
+     * Get the rotation as a Matrix3f
+     * @param mOut
+     */
     public void getRotation(Matrix3f mOut)
     {
         mOut.m00 = mat[0];
@@ -244,6 +275,9 @@ public class PMatrix implements Serializable
         mOut.m22 = mat[10];
     }
 
+    /**
+     * Normalize X, Y and Z axes
+     */
     public void normalizeAxes() {
         setLocalX(getLocalXNormalized());
         setLocalY(getLocalYNormalized());
@@ -324,7 +358,11 @@ public class PMatrix implements Serializable
 	dirtyBits = t1.dirtyBits | ROTATION_BIT | SCALE_BIT;
         autoNormalize = t1.autoNormalize;
     }
-    
+
+    /**
+     * Set this matrix to the given Matrix4f
+     * @param matrix
+     */
     public final void set(Matrix4f matrix)
     {
         float [] array = new float [16];
@@ -332,6 +370,12 @@ public class PMatrix implements Serializable
         set(array);
     }
 
+    /**
+     * Set the rotation, translation and scale of this matrix.
+     * @param rotation    - euler angles
+     * @param translation
+     * @param scale
+     */
     public final void set(Vector3f rotation, Vector3f translation,Vector3f scale) 
     {
         setRotation(rotation);
@@ -387,7 +431,7 @@ public class PMatrix implements Serializable
         jMonkeyMatrix.setTranslation(translation);
         jMonkeyMatrix.multLocal(rotation);
         
-        Matrix4fToPMatrix(jMonkeyMatrix, this);
+        matrix4fToPMatrix(jMonkeyMatrix, this);
     }
     
     void set(Quaternion rotation, Vector3f translation, Vector3f scale) 
@@ -778,7 +822,12 @@ public class PMatrix implements Serializable
 	dirtyBits |= (CLASSIFY_BIT | RIGID_BIT | CONGRUENT_BIT | SVD_BIT);
 	dirtyBits &= ~SCALE_BIT;
     }
-    
+
+    /**
+     * Set the translation components
+     * @param translation
+     * @return
+     */
     public final PMatrix setTranslation(Vector3f translation) 
     {
         mat[3]  = translation.x;
@@ -870,7 +919,11 @@ public class PMatrix implements Serializable
 	m1.m21 = (float) mat[9];
 	m1.m22 = (float) mat[10];
     }
-    
+
+    /**
+     * Get this matrix as a float array
+     * @param result
+     */
     public void getFloatArray(float [] result)
     {
         //float [] result = new float[16];
@@ -893,7 +946,11 @@ public class PMatrix implements Serializable
         //return result;
         //return mat.clone();
     }
-    
+
+    /**
+     * Get this matrix as a Matrix4f
+     * @return
+     */
     public Matrix4f getMatrix4f() 
     {
         Matrix4f result = new Matrix4f();
@@ -916,14 +973,22 @@ public class PMatrix implements Serializable
 	result.m33 = mat[15];
         return result;
     }
-    
+
+    /**
+     * Get an inversed copy of this matrix
+     * @return
+     */
     public PMatrix getInversedPMatrix() 
     {
         PMatrix result  = new PMatrix(this);
         result.invert();
         return result;
     }
-    
+
+    /**
+     * Get an inverse copy of this matrix as a Matrix4f
+     * @return
+     */
     public Matrix4f getInversedMatrix4f() 
     {
         PMatrix result  = new PMatrix(this);
@@ -943,7 +1008,11 @@ public class PMatrix implements Serializable
 	}
 	return max3(scales);
    }
-    
+
+    /**
+     * Get a scale vector from this matrix
+     * @return
+     */
     public final Vector3f getScaleVector() 
     {
         Vector3f result = new Vector3f();
@@ -1013,45 +1082,73 @@ public class PMatrix implements Serializable
         return (float)mat[11];
     }
 
+    /**
+     * Get a copy of the local X vector
+     * @return
+     */
     public Vector3f getLocalX() 
     {
         Vector3f result = new Vector3f(mat[0], mat[4], mat[8]);
         return result;
     }
-    
+
+    /**
+     * Get a normalized copy of the local X vector
+     * @return
+     */
     public Vector3f getLocalXNormalized() 
     {
         Vector3f result = new Vector3f(mat[0], mat[4], mat[8]);
         result.normalizeLocal();
         return result;
     }
-    
+
+    /**
+     * Get a copy of the local Y vector
+     * @return
+     */
     public Vector3f getLocalY() 
     {
         Vector3f result = new Vector3f(mat[1], mat[5], mat[9]);
         return result;
     }
-    
+
+    /**
+     * Get a normalized copy of the local Y vector
+     * @return
+     */
     public Vector3f getLocalYNormalized() 
     {
         Vector3f result = new Vector3f(mat[1], mat[5], mat[9]);
         result.normalizeLocal();
         return result;
     }
-    
+
+    /**
+     * Get a copy of the local Z vector
+     * @return
+     */
     public Vector3f getLocalZ() 
     {
         Vector3f result = new Vector3f(mat[2], mat[6], mat[10]);
         return result;
     }
-    
+
+    /**
+     * Get a normalized copy of the local Z vector
+     * @return
+     */
     public Vector3f getLocalZNormalized() 
     {
         Vector3f result = new Vector3f(mat[2], mat[6], mat[10]);
         result.normalizeLocal();
         return result;
     }
-    
+
+    /**
+     * Get the rotation as a quaternion
+     * @return
+     */
     public final Quaternion getRotation() 
     {
         Quaternion result = new Quaternion();
@@ -1137,6 +1234,10 @@ public class PMatrix implements Serializable
 	dirtyBits = ALL_DIRTY;
     }
 
+    /**
+     * Multiply this matrix by t1
+     * @param t1
+     */
     public final void fastMul(PMatrix t1)
     {
         float tmp0, tmp1, tmp2, tmp3;
@@ -1318,6 +1419,11 @@ public class PMatrix implements Serializable
 
     }
 
+    /**
+     * Muliply t1 with t2 and store the result in this matrix
+     * @param t1
+     * @param t2
+     */
     public final void fastMul(PMatrix t1, PMatrix t2)
     {
         mat[0] = t1.mat[0]*t2.mat[0] + t1.mat[1]*t2.mat[4] +
@@ -1876,7 +1982,7 @@ public class PMatrix implements Serializable
     }
     
     /**
-     * 
+     * Get an inverse of this matrix without changing it
      * @return the inverse of this matrix (without changing this one)
      */
     public PMatrix inverse()
@@ -2215,12 +2321,20 @@ public class PMatrix implements Serializable
 	// Issue 253: set all dirty bits
 	dirtyBits = ALL_DIRTY;
     }
-    
+
+    /**
+     * Check the auto normalize flag
+     * @return
+     */
     public boolean isAutoNormalize() 
     {
         return autoNormalize;
     }
 
+    /**
+     * Set the auto normalize flag
+     * @param autoNormalize
+     */
     public void setAutoNormalize(boolean autoNormalize) 
     {
         this.autoNormalize = autoNormalize;
@@ -3144,8 +3258,6 @@ public class PMatrix implements Serializable
     }
     
     static  float compute_rot( float f, float g, float[] sin, float[] cos, int index, int first) {
-	int i__1;
-	float d__1, d__2;
 	float cs,sn;
 	int i;
 	float scale;
@@ -3178,7 +3290,6 @@ public class PMatrix implements Serializable
 		r = (float) Math.sqrt(f1*f1 + g1*g1);
 		cs = f1 / r;
 		sn = g1 / r;
-		i__1 = count;
 		for (i = 1; i <= count; ++i) {
 		    r *= safmx2;
 		}
@@ -3193,7 +3304,6 @@ public class PMatrix implements Serializable
 		r = (float) Math.sqrt(f1*f1 + g1*g1);
 		cs = f1 / r;
 		sn = g1 / r;
-		i__1 = count;
 		for (i = 1; i <= count; ++i) {
 		    r *= safmn2;
 		}
@@ -3453,10 +3563,6 @@ public class PMatrix implements Serializable
 	fhmx = max(fa,ha);
 	if (fhmn == 0.) {
 	    ssmin = 0.0f;
-	    if (fhmx == 0.) {
-	    } else {
-		d__1 = min(fhmx,ga) / max(fhmx,ga);
-	    }
 	} else {
 	    if (ga < fhmx) {
 		as = fhmn / fhmx + 1.0f;
@@ -4010,7 +4116,7 @@ public class PMatrix implements Serializable
         mat[15] = 1.0f;
     }
 
-    public static void Matrix4fToPMatrix(Matrix4f matrix4f, PMatrix sourceMatrix)
+    public static void matrix4fToPMatrix(Matrix4f matrix4f, PMatrix sourceMatrix)
     {
         float []matrixFloats = sourceMatrix.mat;
 

@@ -23,7 +23,6 @@ import com.jme.scene.Node;
 import com.jme.scene.state.RenderState;
 import com.jme.scene.state.WireframeState;
 import com.jme.scene.state.ZBufferState;
-import java.util.ArrayList;
 import javolution.util.FastList;
 import javolution.util.FastTable;
 import org.jdesktop.mtgame.Entity;
@@ -32,11 +31,13 @@ import org.jdesktop.mtgame.ProcessorArmingCollection;
 import org.jdesktop.mtgame.ProcessorComponent;
 import org.jdesktop.mtgame.RenderComponent;
 import org.jdesktop.mtgame.WorldManager;
+import org.jdesktop.wonderland.common.ExperimentalAPI;
 
 /**
- *
+ * Quick and dirty debug visualizations
  * @author Lou Hayt
  */
+@ExperimentalAPI
 public class VisuManager extends Entity
 {
     /** Convenience reference to the manager of OUR VERY WORLD **/
@@ -119,7 +120,7 @@ public class VisuManager extends Entity
         m_jmeRoot.updateRenderState();  
     }
     
-    public void addLineObject(ArrayList<Vector3f> origin, ArrayList<Vector3f> point, ColorRGBA color, float width) 
+    public void addLineObject(FastTable<Vector3f> origin, FastTable<Vector3f> point, ColorRGBA color, float width)
     {
         if (m_lineObjects == null) // First object, allocate collection space
             m_lineObjects = new FastList<LineVisualization>();

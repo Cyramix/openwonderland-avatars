@@ -25,7 +25,7 @@
 
 package org.collada.colladaschema;
 
-import java.util.ArrayList;
+import javolution.util.FastTable;
 import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -210,7 +210,7 @@ public class RigidBody {
      */
     public List<Technique> getTechniques() {
         if (techniques == null) {
-            techniques = new ArrayList<Technique>();
+            techniques = new FastTable<Technique>();
         }
         return this.techniques;
     }
@@ -241,7 +241,7 @@ public class RigidBody {
      */
     public List<Extra> getExtras() {
         if (extras == null) {
-            extras = new ArrayList<Extra>();
+            extras = new FastTable<Extra>();
         }
         return this.extras;
     }
@@ -580,7 +580,7 @@ public class RigidBody {
          */
         public List<RigidBody.TechniqueCommon.Shape> getShapes() {
             if (shapes == null) {
-                shapes = new ArrayList<RigidBody.TechniqueCommon.Shape>();
+                shapes = new FastTable<RigidBody.TechniqueCommon.Shape>();
             }
             return this.shapes;
         }
@@ -715,7 +715,7 @@ public class RigidBody {
              */
             public List<Object> getTranslatesAndRotates() {
                 if (translatesAndRotates == null) {
-                    translatesAndRotates = new ArrayList<Object>();
+                    translatesAndRotates = new FastTable<Object>();
                 }
                 return this.translatesAndRotates;
             }
@@ -1196,7 +1196,7 @@ public class RigidBody {
              */
             public List<Object> getTranslatesAndRotates() {
                 if (translatesAndRotates == null) {
-                    translatesAndRotates = new ArrayList<Object>();
+                    translatesAndRotates = new FastTable<Object>();
                 }
                 return this.translatesAndRotates;
             }
@@ -1227,7 +1227,7 @@ public class RigidBody {
              */
             public List<Extra> getExtras() {
                 if (extras == null) {
-                    extras = new ArrayList<Extra>();
+                    extras = new FastTable<Extra>();
                 }
                 return this.extras;
             }

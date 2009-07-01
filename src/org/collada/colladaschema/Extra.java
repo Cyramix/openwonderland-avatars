@@ -25,7 +25,7 @@
 
 package org.collada.colladaschema;
 
-import java.util.ArrayList;
+import javolution.util.FastTable;
 import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -137,7 +137,7 @@ public class Extra {
      */
     public List<Technique> getTechniques() {
         if (techniques == null) {
-            techniques = new ArrayList<Technique>();
+            techniques = new FastTable<Technique>();
         }
         return this.techniques;
     }

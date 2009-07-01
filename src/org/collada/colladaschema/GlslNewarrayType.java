@@ -26,7 +26,7 @@
 package org.collada.colladaschema;
 
 import java.math.BigInteger;
-import java.util.ArrayList;
+import javolution.util.FastTable;
 import java.util.List;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -145,7 +145,7 @@ public class GlslNewarrayType {
      */
     public List<JAXBElement<?>> getFloat3X3sAndArraiesAndSurfaces() {
         if (float3X3SAndArraiesAndSurfaces == null) {
-            float3X3SAndArraiesAndSurfaces = new ArrayList<JAXBElement<?>>();
+            float3X3SAndArraiesAndSurfaces = new FastTable<JAXBElement<?>>();
         }
         return this.float3X3SAndArraiesAndSurfaces;
     }

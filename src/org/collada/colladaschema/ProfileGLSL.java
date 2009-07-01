@@ -25,7 +25,7 @@
 
 package org.collada.colladaschema;
 
-import java.util.ArrayList;
+import javolution.util.FastTable;
 import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -247,7 +247,7 @@ public class ProfileGLSL {
      */
     public List<Object> getIncludesAndCodes() {
         if (includesAndCodes == null) {
-            includesAndCodes = new ArrayList<Object>();
+            includesAndCodes = new FastTable<Object>();
         }
         return this.includesAndCodes;
     }
@@ -277,7 +277,7 @@ public class ProfileGLSL {
      */
     public List<Object> getNewparamsAndImages() {
         if (newparamsAndImages == null) {
-            newparamsAndImages = new ArrayList<Object>();
+            newparamsAndImages = new FastTable<Object>();
         }
         return this.newparamsAndImages;
     }
@@ -306,7 +306,7 @@ public class ProfileGLSL {
      */
     public List<ProfileGLSL.Technique> getTechniques() {
         if (techniques == null) {
-            techniques = new ArrayList<ProfileGLSL.Technique>();
+            techniques = new FastTable<ProfileGLSL.Technique>();
         }
         return this.techniques;
     }
@@ -335,7 +335,7 @@ public class ProfileGLSL {
      */
     public List<Extra> getExtras() {
         if (extras == null) {
-            extras = new ArrayList<Extra>();
+            extras = new FastTable<Extra>();
         }
         return this.extras;
     }
@@ -531,7 +531,7 @@ public class ProfileGLSL {
          */
         public List<FxAnnotateCommon> getAnnotates() {
             if (annotates == null) {
-                annotates = new ArrayList<FxAnnotateCommon>();
+                annotates = new FastTable<FxAnnotateCommon>();
             }
             return this.annotates;
         }
@@ -561,7 +561,7 @@ public class ProfileGLSL {
          */
         public List<Object> getIncludesAndCodes() {
             if (includesAndCodes == null) {
-                includesAndCodes = new ArrayList<Object>();
+                includesAndCodes = new FastTable<Object>();
             }
             return this.includesAndCodes;
         }
@@ -592,7 +592,7 @@ public class ProfileGLSL {
          */
         public List<Object> getImagesAndSetparamsAndNewparams() {
             if (imagesAndSetparamsAndNewparams == null) {
-                imagesAndSetparamsAndNewparams = new ArrayList<Object>();
+                imagesAndSetparamsAndNewparams = new FastTable<Object>();
             }
             return this.imagesAndSetparamsAndNewparams;
         }
@@ -621,7 +621,7 @@ public class ProfileGLSL {
          */
         public List<ProfileGLSL.Technique.Pass> getPass() {
             if (pass == null) {
-                pass = new ArrayList<ProfileGLSL.Technique.Pass>();
+                pass = new FastTable<ProfileGLSL.Technique.Pass>();
             }
             return this.pass;
         }
@@ -650,7 +650,7 @@ public class ProfileGLSL {
          */
         public List<Extra> getExtras() {
             if (extras == null) {
-                extras = new ArrayList<Extra>();
+                extras = new FastTable<Extra>();
             }
             return this.extras;
         }
@@ -961,7 +961,7 @@ public class ProfileGLSL {
              */
             public List<FxAnnotateCommon> getAnnotates() {
                 if (annotates == null) {
-                    annotates = new ArrayList<FxAnnotateCommon>();
+                    annotates = new FastTable<FxAnnotateCommon>();
                 }
                 return this.annotates;
             }
@@ -990,7 +990,7 @@ public class ProfileGLSL {
              */
             public List<FxColortargetCommon> getColorTargets() {
                 if (colorTargets == null) {
-                    colorTargets = new ArrayList<FxColortargetCommon>();
+                    colorTargets = new FastTable<FxColortargetCommon>();
                 }
                 return this.colorTargets;
             }
@@ -1019,7 +1019,7 @@ public class ProfileGLSL {
              */
             public List<FxDepthtargetCommon> getDepthTargets() {
                 if (depthTargets == null) {
-                    depthTargets = new ArrayList<FxDepthtargetCommon>();
+                    depthTargets = new FastTable<FxDepthtargetCommon>();
                 }
                 return this.depthTargets;
             }
@@ -1048,7 +1048,7 @@ public class ProfileGLSL {
              */
             public List<FxStenciltargetCommon> getStencilTargets() {
                 if (stencilTargets == null) {
-                    stencilTargets = new ArrayList<FxStenciltargetCommon>();
+                    stencilTargets = new FastTable<FxStenciltargetCommon>();
                 }
                 return this.stencilTargets;
             }
@@ -1077,7 +1077,7 @@ public class ProfileGLSL {
              */
             public List<FxClearcolorCommon> getColorClears() {
                 if (colorClears == null) {
-                    colorClears = new ArrayList<FxClearcolorCommon>();
+                    colorClears = new FastTable<FxClearcolorCommon>();
                 }
                 return this.colorClears;
             }
@@ -1106,7 +1106,7 @@ public class ProfileGLSL {
              */
             public List<FxCleardepthCommon> getDepthClears() {
                 if (depthClears == null) {
-                    depthClears = new ArrayList<FxCleardepthCommon>();
+                    depthClears = new FastTable<FxCleardepthCommon>();
                 }
                 return this.depthClears;
             }
@@ -1135,7 +1135,7 @@ public class ProfileGLSL {
              */
             public List<FxClearstencilCommon> getStencilClears() {
                 if (stencilClears == null) {
-                    stencilClears = new ArrayList<FxClearstencilCommon>();
+                    stencilClears = new FastTable<FxClearstencilCommon>();
                 }
                 return this.stencilClears;
             }
@@ -1297,7 +1297,7 @@ public class ProfileGLSL {
              */
             public List<Object> getColorMaterialsAndFogColorsAndSampleAlphaToCoverageEnables() {
                 if (colorMaterialsAndFogColorsAndSampleAlphaToCoverageEnables == null) {
-                    colorMaterialsAndFogColorsAndSampleAlphaToCoverageEnables = new ArrayList<Object>();
+                    colorMaterialsAndFogColorsAndSampleAlphaToCoverageEnables = new FastTable<Object>();
                 }
                 return this.colorMaterialsAndFogColorsAndSampleAlphaToCoverageEnables;
             }
@@ -1326,7 +1326,7 @@ public class ProfileGLSL {
              */
             public List<Extra> getExtras() {
                 if (extras == null) {
-                    extras = new ArrayList<Extra>();
+                    extras = new FastTable<Extra>();
                 }
                 return this.extras;
             }
@@ -1464,7 +1464,7 @@ public class ProfileGLSL {
                  */
                 public List<FxAnnotateCommon> getAnnotates() {
                     if (annotates == null) {
-                        annotates = new ArrayList<FxAnnotateCommon>();
+                        annotates = new FastTable<FxAnnotateCommon>();
                     }
                     return this.annotates;
                 }
@@ -1565,7 +1565,7 @@ public class ProfileGLSL {
                  */
                 public List<ProfileGLSL.Technique.Pass.Shader.Bind> getBinds() {
                     if (binds == null) {
-                        binds = new ArrayList<ProfileGLSL.Technique.Pass.Shader.Bind>();
+                        binds = new FastTable<ProfileGLSL.Technique.Pass.Shader.Bind>();
                     }
                     return this.binds;
                 }
@@ -1756,7 +1756,7 @@ public class ProfileGLSL {
                      */
                     public List<Float> getFloat2() {
                         if (float2 == null) {
-                            float2 = new ArrayList<Float>();
+                            float2 = new FastTable<Float>();
                         }
                         return this.float2;
                     }
@@ -1857,7 +1857,7 @@ public class ProfileGLSL {
                      */
                     public List<Float> getFloat2X2() {
                         if (float2X2 == null) {
-                            float2X2 = new ArrayList<Float>();
+                            float2X2 = new FastTable<Float>();
                         }
                         return this.float2X2;
                     }
@@ -1886,7 +1886,7 @@ public class ProfileGLSL {
                      */
                     public List<Float> getFloat3() {
                         if (float3 == null) {
-                            float3 = new ArrayList<Float>();
+                            float3 = new FastTable<Float>();
                         }
                         return this.float3;
                     }
@@ -1939,7 +1939,7 @@ public class ProfileGLSL {
                      */
                     public List<Integer> getInt4() {
                         if (int4 == null) {
-                            int4 = new ArrayList<Integer>();
+                            int4 = new FastTable<Integer>();
                         }
                         return this.int4;
                     }
@@ -1968,7 +1968,7 @@ public class ProfileGLSL {
                      */
                     public List<Integer> getInt2() {
                         if (int2 == null) {
-                            int2 = new ArrayList<Integer>();
+                            int2 = new FastTable<Integer>();
                         }
                         return this.int2;
                     }
@@ -1997,7 +1997,7 @@ public class ProfileGLSL {
                      */
                     public List<Integer> getInt3() {
                         if (int3 == null) {
-                            int3 = new ArrayList<Integer>();
+                            int3 = new FastTable<Integer>();
                         }
                         return this.int3;
                     }
@@ -2050,7 +2050,7 @@ public class ProfileGLSL {
                      */
                     public List<Boolean> getBool3() {
                         if (bool3 == null) {
-                            bool3 = new ArrayList<Boolean>();
+                            bool3 = new FastTable<Boolean>();
                         }
                         return this.bool3;
                     }
@@ -2103,7 +2103,7 @@ public class ProfileGLSL {
                      */
                     public List<Float> getFloat4() {
                         if (float4 == null) {
-                            float4 = new ArrayList<Float>();
+                            float4 = new FastTable<Float>();
                         }
                         return this.float4;
                     }
@@ -2156,7 +2156,7 @@ public class ProfileGLSL {
                      */
                     public List<Boolean> getBool2() {
                         if (bool2 == null) {
-                            bool2 = new ArrayList<Boolean>();
+                            bool2 = new FastTable<Boolean>();
                         }
                         return this.bool2;
                     }
@@ -2281,7 +2281,7 @@ public class ProfileGLSL {
                      */
                     public List<Boolean> getBool4() {
                         if (bool4 == null) {
-                            bool4 = new ArrayList<Boolean>();
+                            bool4 = new FastTable<Boolean>();
                         }
                         return this.bool4;
                     }
@@ -2310,7 +2310,7 @@ public class ProfileGLSL {
                      */
                     public List<Float> getFloat3X3() {
                         if (float3X3 == null) {
-                            float3X3 = new ArrayList<Float>();
+                            float3X3 = new FastTable<Float>();
                         }
                         return this.float3X3;
                     }
@@ -2339,7 +2339,7 @@ public class ProfileGLSL {
                      */
                     public List<Float> getFloat4X4() {
                         if (float4X4 == null) {
-                            float4X4 = new ArrayList<Float>();
+                            float4X4 = new FastTable<Float>();
                         }
                         return this.float4X4;
                     }

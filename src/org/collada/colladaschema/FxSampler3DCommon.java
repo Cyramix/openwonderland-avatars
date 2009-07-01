@@ -25,7 +25,7 @@
 
 package org.collada.colladaschema;
 
-import java.util.ArrayList;
+import javolution.util.FastTable;
 import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -302,7 +302,7 @@ public class FxSampler3DCommon {
      */
     public List<Double> getBorderColor() {
         if (borderColor == null) {
-            borderColor = new ArrayList<Double>();
+            borderColor = new FastTable<Double>();
         }
         return this.borderColor;
     }
@@ -379,7 +379,7 @@ public class FxSampler3DCommon {
      */
     public List<Extra> getExtras() {
         if (extras == null) {
-            extras = new ArrayList<Extra>();
+            extras = new FastTable<Extra>();
         }
         return this.extras;
     }

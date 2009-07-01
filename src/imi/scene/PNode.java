@@ -17,17 +17,14 @@
  */
 package imi.scene;
 
-import imi.scene.polygonmodel.PPolygonMeshInstance;
-import imi.scene.polygonmodel.parts.skinned.SkinnedMeshJoint;
-import imi.scene.utils.tree.SkinnedMeshJointFlattener;
-import imi.scene.utils.PRenderer;
-import imi.scene.utils.tree.FlattenedHierarchyNodeProcessor;
-import imi.scene.utils.tree.TreeTraverser;
+import imi.scene.utils.traverser.SkinnedMeshJointFlattener;
+import imi.scene.utils.traverser.FlattenedHierarchyNodeProcessor;
+import imi.scene.utils.traverser.TreeTraverser;
+import imi.scene.utils.visualizations.DebugRenderer;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -69,7 +66,7 @@ public class PNode implements Serializable
     private int m_referenceCount = 0;
     
     /**
-     * Construct a new instance
+     * Construct a new instance, name defaults to "MysteryNode!"
      */
     public PNode()
     {
@@ -85,11 +82,10 @@ public class PNode implements Serializable
         m_name = other.m_name;
         if (other.m_transform != null)
             m_transform = new PTransform(other.m_transform);
-
     }
     
     /**
-     * Insures m_children will not be null.
+     * Create a node with a name
      * @param name -    can be null
      */
     public PNode(String name) 
@@ -100,8 +96,7 @@ public class PNode implements Serializable
     }
     
     /**
-     *  Insures m_children will not be null.
-     * 
+     * Creates a node with a transform
      * @param transform -   can be null
      */
     public PNode(PTransform transform)
@@ -110,8 +105,7 @@ public class PNode implements Serializable
     }
     
     /**
-     *  Insures m_children will not be null.
-     * 
+     * Create a node with a name and transform
      * @param name      -   can be null
      * @param transform -   can be null
      */
@@ -124,14 +118,14 @@ public class PNode implements Serializable
     }
     
     /**
-     *  Insures m_children will not be null.
+     * Create a node and fill it up with data
      * 
      * @param name      -   can be null
      * @param parent    -   can be null
      * @param children  -   can be null
      * @param transform -   can be null
      */
-    public PNode(String name, PNode parent, ArrayList<PNode> children, PTransform transform)
+    public PNode(String name, PNode parent, FastTable<PNode> children, PTransform transform)
     {
         setName(name);
         
@@ -143,36 +137,7 @@ public class PNode implements Serializable
         // Debugging / Diagnostic Output
 //        logger.info("PNode created : " + m_name + " of type " + getClass().getName());
     }
-    
-    /**
-     * Override this to implement internal draw for instances
-     * @see PPolygonMeshInstance : draw()
-     * @param renderer
-     */
-    public void draw(PRenderer renderer) { /** Do Nothing! **/}
-    
-    /**
-     * Calls draw on this node and all of its children cascading down
-     * @param renderer
-     */
-    public void drawAll(PRenderer renderer)
-    {
-        if (m_bRenderStop)
-            return;
         
-        draw(renderer);
-        
-        PNode child;
-        for (int i = 0; i < getChildrenCount(); i++) 
-        {
-            child = m_children.get(i);
-
-            child.drawAll(renderer);
-        }
-    }
-
-    
-    
     /**
      * Set the name for this node
      * @param name
@@ -275,6 +240,24 @@ public class PNode implements Serializable
     }
     
     /**
+     * called by a the node's parent or by a JScene,
+     * draws skeleton bones if needed and sphere bounding volumes.
+     */
+    void debugDraw(DebugRenderer renderer)
+    {
+        if (m_bRenderStop)
+            return;
+        if (m_transform != null)
+            renderer.setOrigin(m_transform.getWorldMatrix(false));
+        renderer.draw(this);
+        for (int i = 0; i < getChildrenCount(); i++)
+        {
+            PNode child = m_children.get(i);
+            child.debugDraw(renderer);
+        }
+    }
+
+    /**
      * Add a child to this node
      * @param child - the child to add   
      * @return int  - the index of the added child
@@ -359,7 +342,7 @@ public class PNode implements Serializable
 
     /**
      * Returns the array of children for this node
-     * @return m_children (ArrayList<PNode>)
+     * @return m_children
      */
     public FastTable<PNode> getChildren()
     {
@@ -370,7 +353,7 @@ public class PNode implements Serializable
      * Set the children of this node by array reference
      * @param children
      */
-    public void setChildren(ArrayList<PNode> children)
+    public void setChildren(FastTable<PNode> children)
     {
         // Out with the old
         m_children.clear();
@@ -461,9 +444,9 @@ public class PNode implements Serializable
      * @param name The name to match
      * @return Collection of PNodes.
      */
-    public ArrayList<PNode> findChildren(String name)
+    public FastTable<PNode> findChildren(String name)
     {
-       ArrayList<PNode> resultCollection = new ArrayList<PNode>();
+       FastTable<PNode> resultCollection = new FastTable<PNode>();
        if (name == null)
            return resultCollection;
 
@@ -686,7 +669,7 @@ public class PNode implements Serializable
      * Returns true if this node is set to not render this branch
      * @return m_bRenderStop (boolean)
      */
-    public boolean getRenderStop()
+    public boolean isRenderStop()
     {
         return m_bRenderStop;
     }
@@ -761,10 +744,14 @@ public class PNode implements Serializable
         TreeTraverser.breadthFirst(this, processor);
         return processor.getPMatrixArray();
     }
-    
-    public ArrayList<String> generateSkinnedMeshJointNames()
+
+    /**
+     * Gather the names of all SkinnedMeshJoints
+     * @return
+     */
+    public FastTable<String> generateSkinnedMeshJointNames()
     {
-        ArrayList<String> names = new ArrayList<String>();
+        FastTable<String> names = new FastTable<String>();
         
         LinkedList<PNode> list = new LinkedList<PNode>();
         list.add(this);
@@ -785,11 +772,14 @@ public class PNode implements Serializable
         }
         return names;
     }
-    
-    public ArrayList<SkinnedMeshJoint> generateSkinnedMeshJointReferences()
+
+    /**
+     * Gather reference of all SkinnedMeshJoints
+     * @return
+     */
+    public FastTable<SkinnedMeshJoint> generateSkinnedMeshJointReferences()
     {
-        
-        ArrayList<SkinnedMeshJoint> names = new ArrayList<SkinnedMeshJoint>();
+        FastTable<SkinnedMeshJoint> names = new FastTable<SkinnedMeshJoint>();
         
         LinkedList<PNode> list = new LinkedList<PNode>();
         list.add(this);
@@ -810,11 +800,14 @@ public class PNode implements Serializable
         }
         return names;
     }
-    
-    public ArrayList<PMatrix> generateSkinnedMeshJointTransformReferences()
+
+    /**
+     * Gather references to the mesh space transforms of all SkinnedMeshJoints
+     * @return
+     */
+    public FastTable<PMatrix> generateSkinnedMeshJointTransformReferences()
     {
-        
-        ArrayList<PMatrix> names = new ArrayList<PMatrix>();
+        FastTable<PMatrix> names = new FastTable<PMatrix>();
         
         LinkedList<PNode> list = new LinkedList<PNode>();
         list.add(this);
@@ -835,10 +828,14 @@ public class PNode implements Serializable
         }
         return names;
     }
-    
-    public ArrayList<PMatrix> generateSkinnedMeshLocalModifierReferences()
+
+    /**
+     * Gather references to the local modifiers of all SkinnedMeshJoints
+     * @return
+     */
+    public FastTable<PMatrix> generateSkinnedMeshLocalModifierReferences()
     {
-        ArrayList<PMatrix> localModifiers = new ArrayList<PMatrix>();
+        FastTable<PMatrix> localModifiers = new FastTable<PMatrix>();
         
         LinkedList<PNode> list = new LinkedList<PNode>();
         list.add(this);
@@ -872,17 +869,20 @@ public class PNode implements Serializable
         return processor.getPMatrixArray();
     }
 
-
-    //  Dumps the Node and all it's children.
-    public void dump()
-    {
-        dump("");
-    }
+    /**
+     * Dump to the console
+     * @param spacing
+     */
     public void dump(String spacing)
     {
         System.out.println(spacing + this.getClass().toString() + " - " + this.getName());
         dumpChildren(spacing);
     }
+
+    /**
+     * Dump to the console
+     * @param spacing
+     */
     public void dumpChildren(String spacing)
     {
         if (this.getChildrenCount() > 0)

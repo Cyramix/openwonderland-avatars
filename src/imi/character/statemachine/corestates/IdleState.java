@@ -20,8 +20,7 @@ package imi.character.statemachine.corestates;
 import imi.character.avatar.*;
 import imi.character.statemachine.GameContext;
 import imi.character.statemachine.GameState;
-import imi.scene.animation.AnimationComponent.PlaybackMode;
-import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
+import imi.scene.SkeletonNode;
 
 /**
  * Represents the character's idling behavior

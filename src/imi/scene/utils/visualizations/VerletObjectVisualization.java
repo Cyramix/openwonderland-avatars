@@ -26,14 +26,17 @@ import com.jme.util.geom.BufferUtils;
 import imi.character.VerletArm;
 import imi.character.VerletArm.VerletParticle;
 import java.nio.FloatBuffer;
+import java.util.List;
 import javolution.util.FastList;
 import javolution.util.FastMap;
+import org.jdesktop.wonderland.common.ExperimentalAPI;
 
 /**
  * This class manages all the necessary data and functionality for representing
  * a verlet object's particles and constraints.
  * @author Ronald E Dahlgren
  */
+@ExperimentalAPI
 class VerletObjectVisualization
 {
     /** Root of the object **/
@@ -106,11 +109,14 @@ class VerletObjectVisualization
         // For each constraint pair
         for (VerletArm.StickConstraint constraint : m_verletObject.getConstraints())
         {
-            int indexOne = constraint.getParticle1();
-            int indexTwo = constraint.getParticle2();
+            // Dahlgren: These need to be created for each constraint; the map does
+            // not do defensive copies
+            Vector3f positionOne = new Vector3f();
+            Vector3f positionTwo = new Vector3f();
+            m_verletObject.getPointsForConstraint(constraint, positionOne, positionTwo);
             // Grab these particles from the object and use their current positions
-            m_constraintMap.put(m_verletObject.getParticles().get(indexOne).getCurrentPosition(),
-                    m_verletObject.getParticles().get(indexTwo).getCurrentPosition());
+            m_constraintMap.put(positionOne, positionTwo);
+            System.out.println("Just mapped " + positionOne + " to " + positionTwo);
         }
     }
 
@@ -131,6 +137,7 @@ class VerletObjectVisualization
              }
     }
 
+    private final List<Vector3f> constraintPositionBuffer = new FastList<Vector3f>();
     /**
      * Updates all the constraint objects to fit the current particle positions
      */
@@ -138,7 +145,7 @@ class VerletObjectVisualization
     {
         // clear out the old line
         m_constraintLine.clearBuffers();
-        FastList<Vector3f> positionBuffer = new FastList<Vector3f>();
+        constraintPositionBuffer.clear();
         int index = -1;
         // Use a fast map entry to iterate over our map's contents
         for (FastMap.Entry<Vector3f, Vector3f> iter = m_constraintMap.head(),
@@ -148,14 +155,14 @@ class VerletObjectVisualization
             // Grab the next two positions
             Vector3f position1 = iter.getKey();
             Vector3f position2 = iter.getValue();
-            positionBuffer.add(position1);
-            positionBuffer.add(position2);
+            constraintPositionBuffer.add(position1);
+            constraintPositionBuffer.add(position2);
         }
         // At this point, the index and position buffers are ready for reconstruction
-        Vector3f[] positionArray = new Vector3f[positionBuffer.size()];
+        Vector3f[] positionArray = new Vector3f[constraintPositionBuffer.size()];
         FloatBuffer positionFB = null;
         index = 0;
-        for (Vector3f vec : positionBuffer)
+        for (Vector3f vec : constraintPositionBuffer)
         {
             positionArray[index] = vec;
             index++;

@@ -22,7 +22,7 @@ import imi.character.statemachine.GameContext;
 import imi.character.statemachine.GameState;
 import imi.scene.animation.AnimationComponent.PlaybackMode;
 import imi.scene.animation.AnimationListener.AnimationMessageType;
-import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
+import imi.scene.SkeletonNode;
 
 /**
  * This state represents a character's behavior while sitting on the ground.
@@ -89,7 +89,7 @@ public class SitOnGroundState extends GameState
         // If any of the animations are not found or 
         // If using the simple sphere\scene model for the avatar the animation
         // these will never be set so this safry lets us get out of the state
-        if( owner.getCharacter().getAttributes().isUseSimpleStaticModel() || context.getSkeleton() != null && (
+        if( owner.getCharacter().getCharacterParams().isUseSimpleStaticModel() || context.getSkeleton() != null && (
                 context.getSkeleton().getAnimationComponent().findCycle(getAnimationName(), 0) == -1 ||
                 context.getSkeleton().getAnimationComponent().findCycle(getIdleSittingAnimationName(), 0) == -1 ||
                 context.getSkeleton().getAnimationComponent().findCycle(getGettingUpAnimationName(), 0) == -1 ))
@@ -150,7 +150,7 @@ public class SitOnGroundState extends GameState
             skeleton.getAnimationState().setTransitionDuration(idleSittingTransitionDuration);
             skeleton.getAnimationState().setAnimationSpeed(idleSittingAnimationSpeed);
             //skeleton.getAnimationState().setReverseAnimation(false);
-            skeleton.getAnimationState().setCycleMode(PlaybackMode.Loop);
+            skeleton.getAnimationState().setTransitionCycleMode(PlaybackMode.Loop);
             bIdleSittingAnimationSet = skeleton.transitionTo(idleSittingAnimationName, false);
             setAnimationSetBoolean(true);
         }
@@ -168,7 +168,7 @@ public class SitOnGroundState extends GameState
         {
             skeleton.getAnimationState().setTransitionDuration(gettingUpTransitionDuration);
             skeleton.getAnimationState().setAnimationSpeed(gettingUpAnimationSpeed);
-            skeleton.getAnimationState().setCycleMode(PlaybackMode.PlayOnce);
+            skeleton.getAnimationState().setTransitionCycleMode(PlaybackMode.PlayOnce);
             bGettingUpAnimationSet = skeleton.transitionTo(gettingUpAnimationName, false);
             // If sitting down and getting up is the same animation transitionTo will return false
             // when trying to get up immediatly after deciding to sit down... so

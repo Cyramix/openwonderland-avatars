@@ -25,10 +25,11 @@ import imi.scene.PMatrix;
 import imi.scene.polygonmodel.PPolygonModelInstance;
 import java.util.HashSet;
 import javax.swing.JFrame;
+import org.jdesktop.wonderland.common.InternalAPI;
 
 /**
- * avatarController contains most concrete code at this point. This class provides
- * a base starting point for implementing character controllers.
+ * The base class for controlling character behaviors at a "state machine"
+ * level.
  * 
  * @author Lou Hayt
  */
@@ -37,68 +38,80 @@ public abstract class CharacterController implements CollisionListener
     /** True to use 'reversed' headings **/
     protected boolean  bReverseHeading     = true;
     /** Cache the last orientation **/
-    private PMatrix previousOrientation = new PMatrix();
+    private final PMatrix previousOrientation = new PMatrix();
     /** Cache the last translation **/
-    private Vector3f previousTranslation = new Vector3f();
+    private final Vector3f previousTranslation = new Vector3f();
     /** List of listeners **/
-    private final HashSet<CharacterMotionListener> listeners = new HashSet();
+    private final HashSet<CharacterMotionListener> listeners = new HashSet<CharacterMotionListener>();
 
     /**
-     * Override to implement stopping functionality
+     * Override to implement stopping functionality.
+     * <p>This implementation does nothing.<p>
      */
     public void stop(){}
 
     /**
-     * Implement to return the character's current position
-     * @return
+     * Override to return the character's current position.
+     * <p>This implementation does nothing.<p>
+     * @return null
      */
     public Vector3f getPosition() {
         return null;
     }
 
     /**
-     * Implement to return the character's right vector
-     * @return
+     * Override to return the character's right vector.
+     * <p>This implementation does nothing.<p>
+     * @return null
      */
     public Vector3f getRightVector() {
         return null;
     }
 
     /**
-     * Implement to return the character's forward vector
-     * @return
+     * Override to return the character's forward vector.
+     * <p>This implementation does nothing.<p>
+     * @return null
      */
     public Vector3f getForwardVector() {
         return null;
     }
 
     /**
-     * Implement to return the character's rotational transform info as a
-     * quaternion
-     * @return
+     * Override to return the character's rotational transform info as a
+     * quaternion.
+     * <p>This implementation does nothing.<p>
+     * @return null
      */
     public Quaternion getQuaternion() {
         return null;
     }
-    
+
+    /**
+     * Determine if the heading is being interpreted as it's reverse.
+     * @return True if reversed
+     */
     public boolean isReverseHeading() {
         return bReverseHeading;
     }
 
+    /**
+     * This method will cause the heading to be interpreted in reverse if set.
+     * @param bReverseHeading True to reverse interpretation.
+     */
     public void setReverseHeading(boolean bReverseHeading) {
         this.bReverseHeading = bReverseHeading;
-    }
-    
-    // testing code
-    public JFrame getWindow() {
-        return null;
     }
 
     /**
      * Add a CharacterMotionListener to this character.
-     * @param listener to be added
+     * @param listener A non-null listener to be added
+     * @throws IllegalStateException If {@code listener == null}
+     * @see CharacterMotionListener
      */
     public void addCharacterMotionListener(CharacterMotionListener listener) {
+        if (listener == null)
+            throw new IllegalArgumentException("Null listener provided!");
         synchronized(listeners) {
             listeners.add(listener);
         }
@@ -106,24 +119,26 @@ public abstract class CharacterController implements CollisionListener
 
     /**
      * Remove the CharacterMotionListener from the set of listeners for this
-     * character. If the listener was not registered previously this method
-     * simply returns.
-     * @param listener to be removed
+     * character.
+     * @param listener A non-null listener to be removed
+     * @throws IllegalArgumentException if {@code listener == null}
      */
     public void removeCharacterMotionListener(CharacterMotionListener listener) {
+        if (listener == null)
+            throw new IllegalArgumentException("Null listsner provided!");
         synchronized(listeners) {
             listeners.remove(listener);
         }
     }
 
     /**
-     * Notify any motion listeners that the transform has been updated
-     * @param location
-     * @param orientation
+     * Notify any motion listeners that the transform has been updated.
+     * @param translation A non-null position vector
+     * @param orientation A non-null orientation matrix
      */
     public void notifyTransfromUpdate(Vector3f translation, PMatrix orientation)
     {
-        if (listeners.size()==0)
+        if (listeners.size() == 0) // Any listeners?
             return;
 
         if (previousTranslation.equals(translation) &&
@@ -140,7 +155,7 @@ public abstract class CharacterController implements CollisionListener
     }
 
     /**
-     * Implement to provide access to the model being manipulated
+     * Implement to provide access to the model being manipulated.
      * @return The model instance
      */
     abstract public PPolygonModelInstance getModelInstance();
@@ -151,46 +166,91 @@ public abstract class CharacterController implements CollisionListener
      */
     abstract public void setModelInstance(PPolygonModelInstance newModelInstance);
     
-    /** Override to implement optional functionalllity **/
+    /**
+     * Override point.
+     * <p>This implementation does nothing.</p>
+     * @param acc
+     */
     public void accelerate(Vector3f acc) {
     }
 
-    /** Override to implement optional functionalllity **/        
+
+    /**
+     * Override point.
+     * <p>This implementation does nothing.</p>
+     * @param scalar
+     */
     public void accelerate(float scalar) {
     }
-    
-    /** Override to implement optional functionalllity **/
+
+    /**
+     * Override point.
+     * <p>This implementation does nothing.</p>
+     * @return 0.0f
+     */
     public float getVelocityScalar() {
         return 0.0f;
     }
 
-    /** Override to implement optional functionalllity **/
+    /**
+     * Override point.
+     * <p>This implementation does nothing.</p>
+     * @return false
+     */
     public boolean isMovingForward() {
         return false;
     }
 
-    /** Override to implement optional functionalllity **/    
+    /**
+     * Override point.
+     * <p>This implementation does nothing.</p>
+     * @param direction
+     */
     public void turnTo(Vector3f direction) {
     }
 
-    /** Override to implement optional functionalllity **/        
+    /**
+     * Override point.
+     * <p>This implementation does nothing.</p>
+     * @return 0.0f
+     */
     public float getForwardAcceleration() {
         return 0.0f;
     }
 
-    /** Override to implement optional functionalllity **/ 
+    /**
+     * Override point.
+     * <p>This implementation does nothing.</p>
+     * @param max
+     */
     public void setMaxAcceleration(float max) {
     }
 
-    /** Override to implement optional functionalllity **/ 
+    /**
+     * Override point.
+     * <p>This implementation does nothing.</p>
+     * @param max
+     */
     public void setMaxVelocity(float max) {
     } 
     
-    /** Override - zero out gravity acceleration etc **/
+    /**
+     * Override point.
+     * <p>This implementation does nothing.</p>
+     * @param projection
+     */
     public void colliding(Vector3f projection) {
     }
 
-    /** Override - consume message **/
+    /**
+     * Override point.
+     * <p>This implementation does nothing.</p>
+     * @param source
+     * @param messageData
+     * @param origin
+     * @param direction
+     * @param results
+     */
     public void picked(Class source, Object messageData, Vector3f origin, Vector3f direction, PickingResults results) {
     }
 }

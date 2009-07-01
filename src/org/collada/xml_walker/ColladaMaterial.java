@@ -17,7 +17,7 @@
  */
 package org.collada.xml_walker;
 
-import java.util.ArrayList;
+import javolution.util.FastTable;
 import java.util.List;
 import org.collada.colladaschema.Asset;
 import org.collada.colladaschema.Extra;
@@ -34,7 +34,7 @@ public class ColladaMaterial
     private Asset           m_asset             = null;
     private InstanceEffect  m_instanceEffect    = null;
 
-    private ArrayList<Extra> m_extra = null;
+    private FastTable<Extra> m_extra = null;
 
     public ColladaMaterial()
     {
@@ -49,7 +49,7 @@ public class ColladaMaterial
         m_instanceEffect = instanceEffect;
         if (extras != null)
         {
-            m_extra = new ArrayList<Extra>();
+            m_extra = new FastTable<Extra>();
             for (Extra extra : extras)
                 m_extra.add(extra);
         }
@@ -70,7 +70,7 @@ public class ColladaMaterial
     public void setExtra(List<Extra> extras) {
         if (extras != null)
         {
-            extras = new ArrayList<Extra>();
+            extras = new FastTable<Extra>();
             for (Extra extra : extras)
                 m_extra.add(extra);
         }

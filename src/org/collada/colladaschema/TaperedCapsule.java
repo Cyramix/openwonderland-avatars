@@ -25,7 +25,7 @@
 
 package org.collada.colladaschema;
 
-import java.util.ArrayList;
+import javolution.util.FastTable;
 import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -117,7 +117,7 @@ public class TaperedCapsule {
      */
     public List<Double> getRadius1() {
         if (radius1 == null) {
-            radius1 = new ArrayList<Double>();
+            radius1 = new FastTable<Double>();
         }
         return this.radius1;
     }
@@ -146,7 +146,7 @@ public class TaperedCapsule {
      */
     public List<Double> getRadius2() {
         if (radius2 == null) {
-            radius2 = new ArrayList<Double>();
+            radius2 = new FastTable<Double>();
         }
         return this.radius2;
     }
@@ -177,7 +177,7 @@ public class TaperedCapsule {
      */
     public List<Extra> getExtras() {
         if (extras == null) {
-            extras = new ArrayList<Extra>();
+            extras = new FastTable<Extra>();
         }
         return this.extras;
     }

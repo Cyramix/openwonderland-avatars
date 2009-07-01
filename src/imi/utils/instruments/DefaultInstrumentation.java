@@ -18,10 +18,10 @@
 package imi.utils.instruments;
 
 import com.jme.math.Vector3f;
-import imi.character.CharacterAttributes;
+import imi.character.CharacterParams;
 import imi.character.avatar.Avatar;
-import imi.character.avatar.FemaleAvatarAttributes;
-import imi.character.avatar.MaleAvatarAttributes;
+import imi.character.FemaleAvatarParams;
+import imi.character.MaleAvatarParams;
 import imi.scene.PMatrix;
 import java.util.HashMap;
 import java.util.Map;
@@ -39,14 +39,14 @@ public class DefaultInstrumentation implements Instrumentation
     private Map<InstrumentedSubsystem, Boolean> enabledMapping =
             new HashMap<InstrumentedSubsystem, Boolean>();
     /** The default to use for instanced avatars **/
-    private CharacterAttributes defaultInstancedAttributes = null;
+    private CharacterParams defaultInstancedAttributes = null;
 
     public DefaultInstrumentation(WorldManager wm)
     {
         worldManager = wm;
         worldManager.addUserData(Instrumentation.class, this);
         // create the default attributes
-        defaultInstancedAttributes = new MaleAvatarAttributes("InstanceMan!", 0, 0, 0, 0, 0, 0);
+        defaultInstancedAttributes = new MaleAvatarParams("InstanceMan!").build(false);
 
         enabledMapping.put(InstrumentedSubsystem.AnimationSystem, true);
         enabledMapping.put(InstrumentedSubsystem.PoseTransferToGPU, true);
@@ -57,7 +57,8 @@ public class DefaultInstrumentation implements Instrumentation
     @Override
     public boolean addInstancedAvatar(Vector3f translation) {
         defaultInstancedAttributes.setOrigin(new PMatrix(translation));
-        Avatar newAvatar = new Avatar(defaultInstancedAttributes, worldManager);
+        Avatar newAvatar = new Avatar.AvatarBuilder(defaultInstancedAttributes, worldManager)
+                                     .build();
         if (newAvatar != null)
             return true;
         return false;
@@ -65,16 +66,17 @@ public class DefaultInstrumentation implements Instrumentation
 
     @Override
     public boolean addNonInstancedAvatar(Vector3f translation) {
-        FemaleAvatarAttributes female = new FemaleAvatarAttributes("Chica", true);
+        FemaleAvatarParams female = new FemaleAvatarParams("Chica").build();
         female.setOrigin(new PMatrix(translation));
-        Avatar newAvatar = new Avatar(female, worldManager);
+        Avatar newAvatar = new Avatar.AvatarBuilder(female, worldManager)
+                                     .build();
         if (newAvatar != null)
             return true;
         return false;
     }
 
     @Override
-    public boolean addNonInstancedAvatar(CharacterAttributes specification, Vector3f translation) {
+    public boolean addNonInstancedAvatar(CharacterParams specification, Vector3f translation) {
         return false;
     }
 

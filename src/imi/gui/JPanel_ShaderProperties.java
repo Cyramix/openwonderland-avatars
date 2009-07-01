@@ -17,22 +17,22 @@
  */
 package imi.gui;
 
-import imi.gui.table.ShaderPropertyTable;
-import imi.loaders.repository.Repository;
-import imi.scene.shader.AbstractShaderProgram;
-import imi.scene.shader.ShaderProperty;
-import imi.scene.shader.dynamic.GLSLShaderProgram;
-import imi.scene.shader.programs.ClothingShaderDiffuseAsSpec;
-import imi.scene.shader.programs.ClothingShaderSpecColor;
-import imi.scene.shader.programs.EyeballShader;
-import imi.scene.shader.programs.FleshShader;
-import imi.scene.shader.programs.NormalAndSpecularMapShader;
-import imi.scene.shader.programs.NormalMapShader;
-import imi.scene.shader.programs.PhongFleshShader;
-import imi.scene.shader.programs.SimpleTNLShader;
-import imi.scene.shader.programs.SimpleTNLWithAmbient;
-import imi.scene.shader.programs.VertDeformerWithSpecAndNormalMap;
-import imi.scene.shader.programs.VertexDeformer;
+import imi.gui.jtable.ShaderPropertyTable;
+import imi.repository.Repository;
+import imi.shader.AbstractShaderProgram;
+import imi.shader.ShaderProperty;
+import imi.shader.dynamic.GLSLShaderProgram;
+import imi.shader.programs.ClothingShaderDiffuseAsSpec;
+import imi.shader.programs.ClothingShaderSpecColor;
+import imi.shader.programs.EyeballShader;
+import imi.shader.programs.FleshShader;
+import imi.shader.programs.NormalAndSpecularMapShader;
+import imi.shader.programs.NormalMapShader;
+import imi.shader.programs.PhongFleshShader;
+import imi.shader.programs.SimpleTNLShader;
+import imi.shader.programs.SimpleTNLWithAmbient;
+import imi.shader.programs.VertDeformerWithSpecAndNormalMap;
+import imi.shader.programs.VertexDeformer;
 import java.awt.Component;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -219,7 +219,13 @@ private void loadSelectedDefaultShader(java.awt.event.ActionEvent evt) {//GEN-FI
         if (m_shader instanceof GLSLShaderProgram)
             m_effectComposer.setShaderProgram((GLSLShaderProgram)m_shader);
         else
-            m_effectComposer.setShaderProgram(new GLSLShaderProgram(m_wm));
+        {
+
+            Repository repo = (Repository)m_wm.getUserData(Repository.class);
+            if (repo == null)
+                throw new RuntimeException("No repository registered with the world manager!");
+            m_effectComposer.setShaderProgram(null);
+        }
     }
     
     public void setShader(AbstractShaderProgram shader)

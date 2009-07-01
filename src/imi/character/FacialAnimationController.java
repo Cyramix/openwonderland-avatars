@@ -17,7 +17,6 @@
  */
 package imi.character;
 
-import imi.character.avatar.*;
 import imi.scene.animation.AnimationComponent.PlaybackMode;
 import imi.scene.animation.AnimationState;
 import javolution.util.FastList;
@@ -27,16 +26,14 @@ import javolution.util.FastList;
  * animations in an avatar.
  * @author Ronald E Dahlgren
  */
-public class FacialAnimationController
+class FacialAnimationController
 {
-    /** How long should the space between chained facial expressions be **/
-    private static final float TimeBetweenAnimations = 0.3f;
     /** Default playback speed **/
     private static final float FacialAnimationSpeed = 0.24f;
     /** The avatar who's face we are controlling **/
-    private Character parentAvatar = null;
+    private final Character parentAvatar;
     /** The facial animation state **/
-    private AnimationState animState = null;
+    private final AnimationState animState;
     /** List of pending animation states **/
     private final FastList<FacialAnimationCommand> commandQueue = new FastList<FacialAnimationCommand>();
     /** Used for tracking timing **/
@@ -54,6 +51,10 @@ public class FacialAnimationController
      */
     FacialAnimationController(Character parentAvatar, int facialAnimationStateIndex)
     {
+        if (parentAvatar == null || facialAnimationStateIndex < 0)
+            throw new IllegalArgumentException("Bad params, parentAvatar: " +
+                    parentAvatar + ", facialAnimationStateIndex: " + facialAnimationStateIndex);
+        
         this.parentAvatar = parentAvatar;
         animState = parentAvatar.getSkeleton().getAnimationState(facialAnimationStateIndex);
     }
@@ -70,12 +71,14 @@ public class FacialAnimationController
      * @param cycleIndex Animation to play
      * @return Index in the queue currently.
      */
-    public int queueFacialAnimation(float fTimeIn,
+    int queueFacialAnimation(float fTimeIn,
                                     float fTimeOut,
                                     float fExpressionTime,
                                     int cycleIndex,
                                     PlaybackMode playback)
     {
+        if (cycleIndex < 0 || cycleIndex > parentAvatar.getSkeleton().getAnimationGroup(1).getCycleCount())
+            throw new IllegalArgumentException("Invalid cycle index: " + cycleIndex);
         FacialAnimationCommand command = new FacialAnimationCommand();
         int result = -1;
 
@@ -95,7 +98,7 @@ public class FacialAnimationController
     /**
      * Clears out the pending queue of facial animations.
      */
-    public void clearPendingAnimations()
+    void clearPendingAnimations()
     {
         commandQueue.clear();
     }
@@ -105,7 +108,7 @@ public class FacialAnimationController
      * the currently playing expression if there is one.
      * @return
      */
-    public int getNumberOfRemainingExpressions()
+    int getNumberOfRemainingExpressions()
     {
         return commandQueue.size();
     }
@@ -119,7 +122,7 @@ public class FacialAnimationController
      * @param fExpressionTime
      * @param cycleIndex
      */
-    public void postFacialAnimation(float fTimeIn,
+    void postFacialAnimation(float fTimeIn,
                                     float fTimeOut,
                                     float fExpressionTime,
                                     int cycleIndex,
@@ -142,7 +145,7 @@ public class FacialAnimationController
      * Call this method to allow the controller to react to time.
      * @param deltaT
      */
-    public void update(float deltaT)
+    void update(float deltaT)
     {
         if (animationComplete && commandQueue.isEmpty() == false) // not in the middle of something, so start a new animation
             processFacialAnimationCommand(commandQueue.removeFirst());
@@ -172,7 +175,7 @@ public class FacialAnimationController
                 animState.setAnimationSpeed(FacialAnimationSpeed);
                 animState.setTransitionCycle(currentCommand.facialAnimationIndex);
                 animState.setTimeInTransition(0);
-                animState.setCycleMode(PlaybackMode.PlayOnce);
+                animState.setTransitionCycleMode(PlaybackMode.PlayOnce);
                 animState.setTransitionCycleTime(cycleLength); 
                 animState.setTransitionReverseAnimation(true);
             }
@@ -198,7 +201,7 @@ public class FacialAnimationController
         animState.setAnimationSpeed(FacialAnimationSpeed);
         animState.setTransitionCycle(command.facialAnimationIndex);
         animState.setTimeInTransition(0);
-        animState.setCycleMode(PlaybackMode.PlayOnce);
+        animState.setTransitionCycleMode(PlaybackMode.PlayOnce);
         animState.setTransitionCycleTime(0); // This will need to be different for reverse
         animState.setTransitionReverseAnimation(false);
     }
@@ -206,7 +209,7 @@ public class FacialAnimationController
     /**
      * This class represents an individual animation command.
      */
-    private class FacialAnimationCommand
+    private static class FacialAnimationCommand
     {
         /** Time to take transitioning in **/
         public float transitionTimeIn = 0;

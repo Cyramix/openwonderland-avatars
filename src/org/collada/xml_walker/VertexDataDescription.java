@@ -19,7 +19,7 @@ package org.collada.xml_walker;
 
 
 import com.jme.renderer.ColorRGBA;
-import java.util.ArrayList;
+import javolution.util.FastTable;
 import org.collada.colladaschema.InputLocalOffset;
 import org.collada.colladaschema.Source;
 
@@ -291,7 +291,7 @@ class VertexDataSemantic
  */
 public class VertexDataDescription
 {
-    ArrayList               m_Semantics = new ArrayList();
+    FastTable               m_Semantics = new FastTable();
 
 
 

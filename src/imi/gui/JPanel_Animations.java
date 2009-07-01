@@ -17,6 +17,15 @@
  */
 package imi.gui;
 
+import imi.character.Character;
+import imi.character.Manipulator;
+import imi.scene.PScene;
+import imi.utils.FileUtils;
+import java.io.File;
+import javax.swing.JFileChooser;
+import javax.swing.filechooser.FileFilter;
+import org.jdesktop.mtgame.WorldManager;
+
 /**
  *
  * @author  Paul Viet Nguyen Truong (ptruong)
@@ -25,9 +34,10 @@ public class JPanel_Animations extends javax.swing.JPanel {
 ////////////////////////////////////////////////////////////////////////////////
 // Data Members
 ////////////////////////////////////////////////////////////////////////////////
-    /** Scene Data */
-    imi.scene.PScene        m_pscene        = null;
-    imi.gui.SceneEssentials m_sceneInfo     = null;
+    private WorldManager    worldManager    = null;
+    private Character       character       = null;
+    private PScene          pscene          = null;
+
     /** Timer */
     javax.swing.Timer       m_animTimer;
     /** Animation Data */
@@ -40,9 +50,52 @@ public class JPanel_Animations extends javax.swing.JPanel {
      * Default constructor initializes all the GUI components and starts the update
      * timer
      */
-    public JPanel_Animations() {
+    private JPanel_Animations(Builder builder) {
+        this.worldManager   = builder.worldManager;
+        this.character      = builder.character;
+        this.pscene         = builder.character.getPScene();
+
         initComponents();
+        resetPanel();
         initTimer();
+    }
+
+    public static class Builder {
+        private WorldManager    worldManager    = null;
+        private Character       character       = null;
+
+        public Builder(WorldManager worldManager, Character character) {
+            this.worldManager   = worldManager;
+            this.character      = character;
+        }
+
+        public JPanel_Animations build() {
+            return new JPanel_Animations(this);
+        }
+    }
+
+    public void avatarCheck() {
+        if (character == null) {
+            throw new IllegalArgumentException("SEVERE ERROR: character is null");
+        }
+        if (character.getSkeleton() == null) {
+            throw new IllegalArgumentException("SEVERE ERROR: character has no SkeletonNode");
+        }
+        if (!character.isInitialized()) {
+            throw new IllegalArgumentException("SEVERE ERROR: character has not been initialized");
+        }
+    }
+
+    public void managerCheck() {
+        if (worldManager == null) {
+            throw new IllegalArgumentException("SEVERE ERROR: worldManager is null");
+        }
+    }
+
+    public void sceneCheck() {
+        if (pscene == null) {
+            throw new IllegalArgumentException("SEVERE ERROR: pscene is null");
+        }
     }
 
     /**
@@ -63,9 +116,11 @@ public class JPanel_Animations extends javax.swing.JPanel {
      * combobox with references to all the model instances in the scene
      */
     public void reloadModelInstances() {
-        imi.scene.utils.tree.InstanceSearchProcessor proc = new imi.scene.utils.tree.InstanceSearchProcessor();
+        sceneCheck();
+
+        imi.scene.utils.traverser.InstanceSearchProcessor proc = new imi.scene.utils.traverser.InstanceSearchProcessor();
         proc.setProcessor();
-        imi.scene.utils.tree.TreeTraverser.breadthFirst(m_pscene, proc);
+        imi.scene.utils.traverser.TreeTraverser.breadthFirst(pscene, proc);
         java.util.Vector<imi.scene.PNode> instances = proc.getModelInstances();
         jComboBox_ModelInstances.setModel(new javax.swing.DefaultComboBoxModel(instances));
     }
@@ -79,7 +134,7 @@ public class JPanel_Animations extends javax.swing.JPanel {
             imi.scene.polygonmodel.PPolygonModelInstance instance = ((imi.scene.polygonmodel.PPolygonModelInstance)jComboBox_ModelInstances.getSelectedItem());
             imi.scene.PNode node = ((imi.scene.PNode)instance.findChild("skeletonRoot"));
             if(node != null) {
-                imi.scene.polygonmodel.parts.skinned.SkeletonNode skeleton = ((imi.scene.polygonmodel.parts.skinned.SkeletonNode)node.getParent());
+                imi.scene.SkeletonNode skeleton = ((imi.scene.SkeletonNode)node.getParent());
 
                 if (skeleton.getAnimationGroup(0) != null) {
 
@@ -167,7 +222,7 @@ public class JPanel_Animations extends javax.swing.JPanel {
             imi.scene.polygonmodel.PPolygonModelInstance instance = ((imi.scene.polygonmodel.PPolygonModelInstance)jComboBox_ModelInstances.getSelectedItem());
             imi.scene.PNode node = ((imi.scene.PNode)instance.findChild("skeletonRoot"));
             if(node != null) {
-                imi.scene.polygonmodel.parts.skinned.SkeletonNode skeleton = ((imi.scene.polygonmodel.parts.skinned.SkeletonNode)node.getParent());
+                imi.scene.SkeletonNode skeleton = ((imi.scene.SkeletonNode)node.getParent());
                 if (skeleton.getAnimationGroup() != null) {
                     jSlider_Animations.setValue(((int) skeleton.getAnimationState().getAnimationSpeed() * 10));
                     jSlider_Animations.setEnabled(true);
@@ -190,13 +245,12 @@ public class JPanel_Animations extends javax.swing.JPanel {
             imi.scene.polygonmodel.PPolygonModelInstance instance = ((imi.scene.polygonmodel.PPolygonModelInstance)jComboBox_ModelInstances.getSelectedItem());
             imi.scene.PNode node = ((imi.scene.PNode)instance.findChild("skeletonRoot"));
             if(node != null) {
-                imi.scene.polygonmodel.parts.skinned.SkeletonNode skeleton = ((imi.scene.polygonmodel.parts.skinned.SkeletonNode)node.getParent());
+                imi.scene.SkeletonNode skeleton = ((imi.scene.SkeletonNode)node.getParent());
                 if (skeleton.getAnimationGroup() != null) {
                     jFormattedTextField_Time.setEnabled(true);
                     jFormattedTextField_CycleTime.setEnabled(true);
 
                     // Determine the what are the animation indices
-                    int curIndex = jComboBox_BodyAnimations.getSelectedIndex();
                     float cycleTimeMil, cycleTimeSec, cycleTimeMin, elapsedTimeMil, elapsedTimeSec, elapsedTimeMin;
                     elapsedTimeMil = elapsedTimeSec = elapsedTimeMin = 0.0f;
 
@@ -256,7 +310,7 @@ public class JPanel_Animations extends javax.swing.JPanel {
             imi.scene.polygonmodel.PPolygonModelInstance instance = ((imi.scene.polygonmodel.PPolygonModelInstance)jComboBox_ModelInstances.getSelectedItem());
             imi.scene.PNode node = ((imi.scene.PNode)instance.findChild("skeletonRoot"));
             if(node != null) {
-                imi.scene.polygonmodel.parts.skinned.SkeletonNode skeleton = ((imi.scene.polygonmodel.parts.skinned.SkeletonNode)node.getParent());
+                imi.scene.SkeletonNode skeleton = ((imi.scene.SkeletonNode)node.getParent());
                 
                 switch(button)
                 {
@@ -293,7 +347,40 @@ public class JPanel_Animations extends javax.swing.JPanel {
      * @param type - integer 1 for body animations and 2 for facial animations
      */
     public void loadAnimations(int type) {
-        m_sceneInfo.loadDAEAnimationFile(type, true, this);
+        FileFilter filter           = FileUtils.createFileFilter("*.dae", "Collada File (*.dae)");
+        JFileChooser fileChooser    = FileUtils.getFileChooser();
+        switch(type)
+        {
+            case 1:
+            {
+                FileUtils.setFileChooserProperty(fileChooser, filter, "Load Body Animation File", new File("./assets/models/collada/Animations"));
+                break;
+            }
+            case 2:
+            {
+                FileUtils.setFileChooserProperty(fileChooser, filter, "Load Facial Animation File", new File("./assets/models/collada/Animations"));
+                break;
+            }
+        }
+
+        int retVal = fileChooser.showOpenDialog(this);
+        if (retVal == JFileChooser.APPROVE_OPTION) {
+            File animFile   = fileChooser.getSelectedFile();
+            String relPath  = FileUtils.getRelativePath(new File(System.getProperty("user.dir")), animFile);
+            switch(type)
+            {
+                case 1:
+                {
+                    Manipulator.addBodyAnimation(character, relPath);
+                    break;
+                }
+                case 2:
+                {
+                    Manipulator.addFacialAnimation(character, relPath);
+                    break;
+                }
+            }
+        }
     }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -318,19 +405,11 @@ public class JPanel_Animations extends javax.swing.JPanel {
     }
 
     public void setPScene(imi.scene.PScene pScene) {
-        m_pscene = pScene;
+        pscene = pScene;
     }
 
     public void startTimer() {
         m_animTimer.start();
-    }
-
-    public void setPanel(imi.gui.SceneEssentials sceneData) {
-        m_sceneInfo = sceneData;
-        m_pscene    = sceneData.getPScene();
-        reloadModelInstances();
-        reloadSelectedModelAnimations();
-        setSpeedSlider();
     }
 
     public void resetPanel() {
@@ -597,11 +676,9 @@ public class JPanel_Animations extends javax.swing.JPanel {
      */
     private void jComboBox_BodyAnimationsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox_BodyAnimationsActionPerformed
         if (jComboBox_BodyAnimations.isEnabled()) {
-            imi.scene.polygonmodel.PPolygonModelInstance instance = ((imi.scene.polygonmodel.PPolygonModelInstance)jComboBox_ModelInstances.getSelectedItem());
-            imi.scene.PNode node = ((imi.scene.PNode)instance.findChild("skeletonRoot"));
-            imi.scene.polygonmodel.parts.skinned.SkeletonNode skeleton = ((imi.scene.polygonmodel.parts.skinned.SkeletonNode)node.getParent());
-            skeleton.getAnimationState(0).setPauseAnimation(false);
-            skeleton.transitionTo(jComboBox_BodyAnimations.getSelectedItem().toString(), false);
+            if (jComboBox_BodyAnimations.getSelectedIndex() < 0)
+                jComboBox_BodyAnimations.setSelectedIndex(0);
+            Manipulator.transitionToBodyAnimation(character, jComboBox_BodyAnimations.getSelectedIndex(), false);
         }
 }//GEN-LAST:event_jComboBox_BodyAnimationsActionPerformed
 
@@ -612,13 +689,9 @@ public class JPanel_Animations extends javax.swing.JPanel {
      */
     private void jComboBox_FacialAnimationsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox_FacialAnimationsActionPerformed
         if (jComboBox_FacialAnimations.isEnabled()) {
-            imi.scene.polygonmodel.PPolygonModelInstance instance = ((imi.scene.polygonmodel.PPolygonModelInstance)jComboBox_ModelInstances.getSelectedItem());
-            imi.scene.PNode node = ((imi.scene.PNode)instance.findChild("skeletonRoot"));
-            imi.scene.polygonmodel.parts.skinned.SkeletonNode skeleton = ((imi.scene.polygonmodel.parts.skinned.SkeletonNode)node.getParent());
-            skeleton.getAnimationState(1).setPauseAnimation(false);
             if (jComboBox_FacialAnimations.getSelectedIndex() < 0)
                 jComboBox_FacialAnimations.setSelectedIndex(0);
-            m_sceneInfo.getAvatar().initiateFacialAnimation(jComboBox_FacialAnimations.getSelectedItem().toString(), 0.2f, 1.5f);
+            Manipulator.playFacialAnimation(character, jComboBox_FacialAnimations.getSelectedIndex(), 0.2f, 1.5f);
         }
     }//GEN-LAST:event_jComboBox_FacialAnimationsActionPerformed
 
@@ -629,10 +702,7 @@ public class JPanel_Animations extends javax.swing.JPanel {
     private void jSlider_AnimationsStateChanged(javax.swing.event.ChangeEvent e) {
         if (jSlider_Animations.isEnabled()) {
             float fAnimSpeed = (jSlider_Animations.getValue() * 0.10f);
-            imi.scene.polygonmodel.PPolygonModelInstance instance = ((imi.scene.polygonmodel.PPolygonModelInstance)jComboBox_ModelInstances.getSelectedItem());
-            imi.scene.PNode node = ((imi.scene.PNode)instance.findChild("skeletonRoot"));
-            imi.scene.polygonmodel.parts.skinned.SkeletonNode skeleton = ((imi.scene.polygonmodel.parts.skinned.SkeletonNode)node.getParent());
-            skeleton.getAnimationState().setAnimationSpeed(fAnimSpeed);
+            Manipulator.setBodyAnimationSpeed(character, fAnimSpeed);
         }
     }
 

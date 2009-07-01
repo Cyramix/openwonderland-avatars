@@ -26,7 +26,7 @@
 package org.collada.colladaschema;
 
 import java.math.BigInteger;
-import java.util.ArrayList;
+import javolution.util.FastTable;
 import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -101,7 +101,7 @@ public class NameArray {
      */
     public List<String> getValues() {
         if (values == null) {
-            values = new ArrayList<String>();
+            values = new FastTable<String>();
         }
         return this.values;
     }

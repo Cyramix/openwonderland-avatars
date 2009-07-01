@@ -21,39 +21,34 @@ import com.jme.image.Texture;
 import com.jme.scene.Node;
 import com.jme.scene.Spatial;
 import com.jme.util.TextureManager;
-import imi.loaders.PPolygonTriMeshAssembler;
-import imi.loaders.collada.Collada;
-import imi.loaders.collada.ColladaLoaderParams;
-import imi.loaders.collada.ColladaLoadingException;
-import imi.loaders.ms3d.SkinnedMesh_MS3D_Importer;
-import imi.loaders.repository.AssetDescriptor;
-import imi.loaders.repository.AssetInitializer;
-import imi.loaders.repository.Repository;
-import imi.loaders.repository.RepositoryUser;
-import imi.loaders.repository.SharedAsset;
-import imi.loaders.repository.SharedAsset.SharedAssetType;
-import imi.loaders.repository.SharedAssetPlaceHolder;
+import imi.loaders.Collada;
+import imi.loaders.ColladaLoaderParams;
+import imi.loaders.ColladaLoadingException;
+import imi.repository.AssetDescriptor;
+import imi.repository.AssetInitializer;
+import imi.repository.Repository;
+import imi.repository.RepositoryUser;
+import imi.repository.SharedAsset;
+import imi.repository.SharedAsset.SharedAssetType;
+import imi.repository.SharedAssetPlaceHolder;
 import imi.scene.polygonmodel.PPolygonMesh;
 import imi.scene.polygonmodel.PPolygonMeshInstance;
 import imi.scene.polygonmodel.PPolygonModelInstance;
-import imi.scene.polygonmodel.parts.PMeshMaterial;
-import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
-import imi.scene.polygonmodel.skinned.PPolygonSkinnedMesh;
-import imi.scene.polygonmodel.skinned.PPolygonSkinnedMeshInstance;
-import imi.scene.polygonmodel.parts.skinned.SkinnedMeshJoint;
-import imi.scene.utils.PRenderer;
-import imi.scene.utils.tree.PSceneSubmitHelper;
-import imi.scene.utils.tree.TreeTraverser;
+import imi.scene.polygonmodel.PMeshMaterial;
+import imi.scene.polygonmodel.PPolygonSkinnedMesh;
+import imi.scene.polygonmodel.PPolygonSkinnedMeshInstance;
+import imi.scene.utils.traverser.PSceneSubmitHelper;
+import imi.scene.utils.traverser.TreeTraverser;
 import imi.utils.BooleanPointer;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
 import javolution.util.FastList;
 import javolution.util.FastTable;
 import org.jdesktop.mtgame.WorldManager;
+import org.jdesktop.wonderland.common.InternalAPI;
 
 /**
  * This scene is capable of procedural manipulation and editing of geometry. 
@@ -69,7 +64,7 @@ public class PScene extends PNode implements RepositoryUser, Serializable
     /** Serialization version number **/
     private static final long serialVersionUID = 1l;
 
-    // Non-Shared Geometry
+    // Local Geometry
     private FastList<PPolygonMesh> m_LocalGeometry = new FastList<PPolygonMesh>();
     
     // Shared Assets
@@ -78,29 +73,26 @@ public class PScene extends PNode implements RepositoryUser, Serializable
 
     private transient List<SharedAssetPlaceHolder> m_SharedAssetWaitingList = new FastList<SharedAssetPlaceHolder>();
 
-    // Instances
+    // Instances in the scene
     private PNode m_Instances   = null;
-    
-    // Utility
     private transient JScene m_JScene = null;
+    // Utility
     private transient WorldManager                m_WorldManager      = null;
-    private transient PPolygonTriMeshAssembler    m_TriMeshAssembler  = null;
     
     /**
-     * Constructor
+     * Constructor, will create "m_Instances" node and add it as a child.
      * @param wm
      */
     public PScene(WorldManager wm)
     {
         setName("PScene");
-        m_WorldManager          = wm;
+        m_WorldManager = wm;
         m_Instances = new PNode("m_Instances", new PTransform());
         this.addChild(m_Instances);
-        m_TriMeshAssembler      = new PPolygonTriMeshAssembler();
     }
 
     /**
-     * Constructor
+     * Constructor, will create "m_Instances" node and add it as a child.
      * @param name
      * @param wm   
      */
@@ -119,15 +111,11 @@ public class PScene extends PNode implements RepositoryUser, Serializable
 
     }
 
-    public PPolygonTriMeshAssembler getTriMeshAssembler() {
-        return m_TriMeshAssembler;
-    }
-
     /**
      * Set the jscene this pscene belongs to
      * @param j
      */
-    public void setJScene(JScene j)
+    void setJScene(JScene j)
     {
         if (j != null)
             m_JScene = j;
@@ -138,10 +126,8 @@ public class PScene extends PNode implements RepositoryUser, Serializable
      * and reconstruct the JScene it belongs to (reconstruct dirty triMeshes)
      * this will clean the dirty JScene.
      */
-    public void submitTransformsAndGeometry()
+    void submitTransformsAndGeometry()
     {
-        // we will do this in one pass... potentially this could run in parralel?
-
         // potentially this could run in parralel
         submitGeometry();
         submitTransforms();
@@ -152,7 +138,7 @@ public class PScene extends PNode implements RepositoryUser, Serializable
      * This method will clear all the children from m_JScene and resubmit thier
      * references according to the current PScene structure.
      */
-    public void submitTransforms()
+    void submitTransforms()
     {
         List<Spatial> kids = m_JScene.getChildren();
         
@@ -178,11 +164,6 @@ public class PScene extends PNode implements RepositoryUser, Serializable
         externalKids.updateRenderState();
         kids.add(externalKids);
 
-        m_JScene.updateGeometricState(0, true);
-
-        for(Spatial child : kids)
-            child.setLive(true);
-
         m_Instances.setDirty(false, false);
     }
 
@@ -190,29 +171,14 @@ public class PScene extends PNode implements RepositoryUser, Serializable
      * Any geometry data that is shared localy within this scene will check 
      * its dirty boolean and if true it will reconstruct its TriMesh.
      */
-    public void submitGeometry()
+    void submitGeometry()
     {
         for (PPolygonMesh geometry : m_LocalGeometry)
-        {
-            geometry.submit(m_TriMeshAssembler);
-        }
+            geometry.submit();
     }
     
     /**
-     * Draw this scene's debugging visualizations
-     * @param renderer
-     */
-    public void internalRender(PRenderer renderer)
-    {
-        // Draw rest
-        drawAll(renderer);
-    }
-    
-    /**
-     * This is a temp function, in the future we will select an instance and 
-     * create a new geometry for it with flipped normals.
-     * (if that has been done before we need to find it and reuse that geometry)
-     * Fliping normals will make the scene dirty
+     * Flip normals on local geometry
      */
     public void flipNormals()
     {
@@ -224,9 +190,6 @@ public class PScene extends PNode implements RepositoryUser, Serializable
     }
     
     /**
-     * This is a temp function, in the future we will select an instance and 
-     * create a new geometry for it with smooth normals.
-     * (if that has been done before we need to find it and reuse that geometry)
      * Toggling smooth normals will make the scene dirty
      */
     public void toggleSmoothNormals()
@@ -262,13 +225,14 @@ public class PScene extends PNode implements RepositoryUser, Serializable
      * Note: this is a low level method used by the COLLADA loader...
      * @return
      */
+    @InternalAPI
     public List<PPolygonMesh> getLocalGeometryList()
     {
         return m_LocalGeometry;
     }
     
     /**
-     * Add an instance node
+     * Add an instance node directly to m_Instances
      * @param node
      */
     public void addInstanceNode(PNode node)
@@ -299,7 +263,7 @@ public class PScene extends PNode implements RepositoryUser, Serializable
     }
     
     /**
-     * Add an instance to this scene by supplying a PNode
+     * Add a model instance to this scene by supplying a PNode and a PMatrix
      * 
      * Adding an instance makes the scene dirty
      * @param node
@@ -369,6 +333,11 @@ public class PScene extends PNode implements RepositoryUser, Serializable
         return m_WorldManager;
     }
 
+    /**
+     * Set the world manager
+     * @param wm
+     */
+    @InternalAPI
     public void setWorldManager(WorldManager wm)
     {
         m_WorldManager = wm;
@@ -377,15 +346,15 @@ public class PScene extends PNode implements RepositoryUser, Serializable
     /** Returns the list of shared assets in the repository
      * @return m_SharedAssets (FastList<SharedAssets>)
      */
-    public List<SharedAsset> getAssetList() {
+    List<SharedAsset> getAssetList() {
         return m_SharedAssets;
     }
     
     /**
      * Returns the list of placeholder assets
-     * @return m_SharedAssetWaitingList (ArrayList<SharedAssetPlaceHolder>)
+     * @return m_SharedAssetWaitingList (FastTable<SharedAssetPlaceHolder>)
      */
-    public List<SharedAssetPlaceHolder> getAssetWaitingList() {
+    List<SharedAssetPlaceHolder> getAssetWaitingList() {
         return m_SharedAssetWaitingList;
     }
     
@@ -418,7 +387,7 @@ public class PScene extends PNode implements RepositoryUser, Serializable
         for (int i = 0; i < node.getChildrenCount(); i++)
         {
             PNode kid = node.getChild(i);
-            // skip the transform heirarchy nodes, they are process by the 
+            // skip the transform heirarchy nodes, they are processed by the
             // buildSkinnedMeshInstance method
             if (kid.getName().equals("m_TransformHierarchy"))
                 continue;
@@ -435,10 +404,10 @@ public class PScene extends PNode implements RepositoryUser, Serializable
      * @param mesh
      * @return meshInst (PPolygonMeshInstance)
      */
-    public PPolygonMeshInstance processMesh(PPolygonMesh mesh)
+    private PPolygonMeshInstance processMesh(PPolygonMesh mesh)
     {
         // Put the kids in a sack
-        ArrayList<PNode> kids = new ArrayList<PNode>(mesh.getChildren());
+        FastTable<PNode> kids = new FastTable<PNode>(mesh.getChildren());
 
         // Check the geometry for duplicates
         int index = addMeshGeometry(mesh);
@@ -467,10 +436,10 @@ public class PScene extends PNode implements RepositoryUser, Serializable
      * @param originalMeshInstance
      * @return PPolygonMeshInstance
      */
-    public PPolygonMeshInstance processMeshInstance(PPolygonMeshInstance originalMeshInstance)
+    private PPolygonMeshInstance processMeshInstance(PPolygonMeshInstance originalMeshInstance)
     {
         // Put the kids in a sack
-        ArrayList<PNode> kids = new ArrayList<PNode>(originalMeshInstance.getChildren());
+        FastTable<PNode> kids = new FastTable<PNode>(originalMeshInstance.getChildren());
 
         PPolygonMesh geometry = null;
         
@@ -537,10 +506,11 @@ public class PScene extends PNode implements RepositoryUser, Serializable
      * @param mesh
      * @return meshInst (PNode)
      */
+    @InternalAPI
     public PPolygonSkinnedMeshInstance processSkinnedMesh(PPolygonSkinnedMesh mesh)
     {
         // Put the kids in a sack
-        ArrayList<PNode> kids = new ArrayList<PNode>(mesh.getChildren());
+        FastTable<PNode> kids = new FastTable<PNode>(mesh.getChildren());
 
         // Check the geometry for duplicates
         int index = addMeshGeometry(mesh);
@@ -565,11 +535,11 @@ public class PScene extends PNode implements RepositoryUser, Serializable
      * @param joint
      * @return jointInst (PNode)
      */
-    public PNode processJoint(PJoint joint)
+    private PNode processJoint(PJoint joint)
     {
         PJoint jointInst = new PJoint(joint.getName(), joint.getTransform());
 
-        ArrayList<PNode> kids = new ArrayList<PNode>(joint.getChildren());
+        FastTable<PNode> kids = new FastTable<PNode>(joint.getChildren());
         for (int i = 0; i < kids.size(); i++)
         {
             PNode kid = kids.get(i);
@@ -587,8 +557,6 @@ public class PScene extends PNode implements RepositoryUser, Serializable
     public void removeModelInstance(PNode instance)
     {
         m_Instances.removeChild(instance);
-//        if (instance != null)
-//            instance.removeCleanUp();
     }
     
     /**
@@ -679,7 +647,7 @@ public class PScene extends PNode implements RepositoryUser, Serializable
        {
            for (SharedAssetPlaceHolder placeHolder : m_SharedAssetWaitingList)
            {
-               if (asset.getDescriptor().equals(placeHolder.getDescriptor()));
+               if (asset.getDescriptor().equals(placeHolder.getDescriptor()))
                {
                     target = placeHolder;
                     m_SharedAssetWaitingList.remove(target);
@@ -687,7 +655,6 @@ public class PScene extends PNode implements RepositoryUser, Serializable
                }
            }
        }
-
 
        if (target != null)
        {
@@ -723,7 +690,7 @@ public class PScene extends PNode implements RepositoryUser, Serializable
         return addMeshInstance(name, meshAsset, null);
     }
     
-    public PNode processSkeletonNode(SkeletonNode skeletonNode)
+    private PNode processSkeletonNode(SkeletonNode skeletonNode)
     {
         SkeletonNode result = new SkeletonNode(skeletonNode);
         
@@ -766,22 +733,22 @@ public class PScene extends PNode implements RepositoryUser, Serializable
             {
                 if (meshAsset.getDescriptor().getType() == SharedAssetType.MS3D_SkinnedMesh)
                 {
-                    if (meshAsset.getDescriptor().getLocation().getPath().endsWith("ms3d"))
-                    {
-                        SkeletonNode skeleton = new SkeletonNode(meshAsset.getDescriptor().getLocation().getFile() + " skeleton");
-                        try
-                        {
-                            new SkinnedMesh_MS3D_Importer().load(skeleton, meshAsset.getDescriptor().getLocation());
-                        }
-                        catch (Exception e){e.printStackTrace();}
-
-                        // Set the data for the shared asset
-                        meshAsset.setAssetData(skeleton);
-                    }
-                    else if (meshAsset.getDescriptor().getLocation().getPath().endsWith("dae")) // COLLADA
-                    {
-                        
-                    }
+//                    if (meshAsset.getDescriptor().getLocation().getPath().endsWith("ms3d"))
+//                    {
+//                        SkeletonNode skeleton = new SkeletonNode(meshAsset.getDescriptor().getLocation().getFile() + " skeleton");
+//                        try
+//                        {
+//                            new MS3DSkinnedMeshImporter().load(skeleton, meshAsset.getDescriptor().getLocation());
+//                        }
+//                        catch (Exception e){e.printStackTrace();}
+//
+//                        // Set the data for the shared asset
+//                        meshAsset.setAssetData(skeleton);
+//                    }
+//                    else if (meshAsset.getDescriptor().getLocation().getPath().endsWith("dae")) // COLLADA
+//                    {
+//
+//                    }
                 }
                 else if(meshAsset.getDescriptor().getType() == SharedAssetType.MS3D_Mesh)
                 {
@@ -806,7 +773,16 @@ public class PScene extends PNode implements RepositoryUser, Serializable
                     }
                     catch (ColladaLoadingException ex)
                     {
-                        logger.severe(ex.getMessage());
+                        logger.severe("Unable to load COLLADA file: " +
+                                meshAsset.getDescriptor().getLocation() + ":" +
+                                ex.getMessage());
+                        throw new RuntimeException("Failed to load provided collada file.", ex);
+                    } catch (IOException ex) {
+
+                        logger.severe("Unable to load COLLADA file: " +
+                                meshAsset.getDescriptor().getLocation() + ":" +
+                                ex.getMessage());
+                        throw new RuntimeException("Failed to load provided collada file.", ex);
                     }
                         
                     meshAsset.setAssetData(colladaScene);
@@ -992,7 +968,7 @@ public class PScene extends PNode implements RepositoryUser, Serializable
         return result;
     }
     
-    class InitWork implements Runnable
+    static class InitWork implements Runnable
     {
         AssetInitializer init = null;
         PNode node = null;
@@ -1066,7 +1042,7 @@ public class PScene extends PNode implements RepositoryUser, Serializable
      */
     public void cleanUpGeometry()
     {
-        ArrayList<PNode> deathRow = new ArrayList<PNode>();
+        FastTable<PNode> deathRow = new FastTable<PNode>();
         
         for (PPolygonMesh geometry : m_LocalGeometry)
         {
@@ -1083,12 +1059,10 @@ public class PScene extends PNode implements RepositoryUser, Serializable
      * It loads textures locally and share them (in m_SharedAssets) with
      * other members of this PScene, this texture will NOT be shared across threads.
      * 
-     * Note : this method is called implicitly as a result of setting a material
-     * with textures on a meshAsset. (when m_bUseRepository is false)
-     * 
      * @param texturePath - texture path
      * @return monkeyTexture (Texture)
      */
+    @Deprecated
     public Texture loadTexture(URL textureLocation)
     {
         // Create a suitable asset
@@ -1138,6 +1112,7 @@ public class PScene extends PNode implements RepositoryUser, Serializable
      * @param shaderPair
      * @param shaderInstaller
      */
+    @Deprecated
     public void loadShaders(SharedAsset shaderPair, PPolygonMeshInstance shaderInstaller)
     {
         //if (m_bUseRepository == true)
@@ -1171,6 +1146,11 @@ public class PScene extends PNode implements RepositoryUser, Serializable
         m_bUseRepository = bUseRepository;
     }
 
+    /**
+     * Proccess a skinned mesh joint
+     * @param skinnedMeshJoint
+     * @return
+     */
     private PNode processSkinnedMeshJoint(SkinnedMeshJoint skinnedMeshJoint)
     {
         SkinnedMeshJoint result = new SkinnedMeshJoint(skinnedMeshJoint.getName(),
@@ -1196,7 +1176,6 @@ public class PScene extends PNode implements RepositoryUser, Serializable
         // Re-allocate all relevant transient objects
         m_SharedAssetWaitingList = new FastList<SharedAssetPlaceHolder>();
         m_SharedAssets = new FastList<SharedAsset>();
-        m_TriMeshAssembler = new PPolygonTriMeshAssembler();
 
     }
 
@@ -1204,6 +1183,7 @@ public class PScene extends PNode implements RepositoryUser, Serializable
      * This method clears out all the locally cached geometry references.
      * Use with caution.
      */
+    @Deprecated
     public void clearLocalCache()
     {
         m_SharedAssets.clear();

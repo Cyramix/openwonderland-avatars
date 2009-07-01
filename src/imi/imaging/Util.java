@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
-public class Util {
+class Util {
 
     /**
      * Returns a copy of the object, or null if the object cannot be serialized.

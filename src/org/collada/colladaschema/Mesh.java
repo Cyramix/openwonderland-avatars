@@ -25,7 +25,7 @@
 
 package org.collada.colladaschema;
 
-import java.util.ArrayList;
+import javolution.util.FastTable;
 import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -118,7 +118,7 @@ public class Mesh {
      */
     public List<Source> getSources() {
         if (sources == null) {
-            sources = new ArrayList<Source>();
+            sources = new FastTable<Source>();
         }
         return this.sources;
     }
@@ -183,7 +183,7 @@ public class Mesh {
      */
     public List<Object> getTrianglesAndLinestripsAndPolygons() {
         if (trianglesAndLinestripsAndPolygons == null) {
-            trianglesAndLinestripsAndPolygons = new ArrayList<Object>();
+            trianglesAndLinestripsAndPolygons = new FastTable<Object>();
         }
         return this.trianglesAndLinestripsAndPolygons;
     }
@@ -214,7 +214,7 @@ public class Mesh {
      */
     public List<Extra> getExtras() {
         if (extras == null) {
-            extras = new ArrayList<Extra>();
+            extras = new FastTable<Extra>();
         }
         return this.extras;
     }

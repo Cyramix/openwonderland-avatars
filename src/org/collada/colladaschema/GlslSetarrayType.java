@@ -26,7 +26,7 @@
 package org.collada.colladaschema;
 
 import java.math.BigInteger;
-import java.util.ArrayList;
+import javolution.util.FastTable;
 import java.util.List;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -145,7 +145,7 @@ public class GlslSetarrayType {
      */
     public List<JAXBElement<?>> getSamplerDEPTHsAndBool2sAndFloats() {
         if (samplerDEPTHsAndBool2SAndFloats == null) {
-            samplerDEPTHsAndBool2SAndFloats = new ArrayList<JAXBElement<?>>();
+            samplerDEPTHsAndBool2SAndFloats = new FastTable<JAXBElement<?>>();
         }
         return this.samplerDEPTHsAndBool2SAndFloats;
     }

@@ -17,7 +17,6 @@
  */
 package imi.scene.utils.visualizations;
 
-import com.jme.bounding.BoundingSphere;
 import com.jme.image.Texture;
 import com.jme.math.Vector3f;
 import com.jme.renderer.ColorRGBA;
@@ -30,11 +29,13 @@ import com.jme.scene.state.TextureState;
 import com.jme.scene.state.ZBufferState;
 import com.jme.util.TextureManager;
 import org.jdesktop.mtgame.WorldManager;
+import org.jdesktop.wonderland.common.ExperimentalAPI;
 
 /**
- *
+ * Quick and dirty debug visualization
  * @author Lou Hayt
  */
+@ExperimentalAPI
 public class PositionVisualization 
 {
     /** Root of the object **/

@@ -25,7 +25,7 @@
 
 package org.collada.colladaschema;
 
-import java.util.ArrayList;
+import javolution.util.FastTable;
 import java.util.List;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -166,7 +166,7 @@ public class VisualScene {
      */
     public List<Node> getNodes() {
         if (nodes == null) {
-            nodes = new ArrayList<Node>();
+            nodes = new FastTable<Node>();
         }
         return this.nodes;
     }
@@ -195,7 +195,7 @@ public class VisualScene {
      */
     public List<VisualScene.EvaluateScene> getEvaluateScenes() {
         if (evaluateScenes == null) {
-            evaluateScenes = new ArrayList<VisualScene.EvaluateScene>();
+            evaluateScenes = new FastTable<VisualScene.EvaluateScene>();
         }
         return this.evaluateScenes;
     }
@@ -226,7 +226,7 @@ public class VisualScene {
      */
     public List<Extra> getExtras() {
         if (extras == null) {
-            extras = new ArrayList<Extra>();
+            extras = new FastTable<Extra>();
         }
         return this.extras;
     }
@@ -348,7 +348,7 @@ public class VisualScene {
          */
         public List<VisualScene.EvaluateScene.Render> getRenders() {
             if (renders == null) {
-                renders = new ArrayList<VisualScene.EvaluateScene.Render>();
+                renders = new FastTable<VisualScene.EvaluateScene.Render>();
             }
             return this.renders;
         }
@@ -437,7 +437,7 @@ public class VisualScene {
              */
             public List<JAXBElement<String>> getLayers() {
                 if (layers == null) {
-                    layers = new ArrayList<JAXBElement<String>>();
+                    layers = new FastTable<JAXBElement<String>>();
                 }
                 return this.layers;
             }

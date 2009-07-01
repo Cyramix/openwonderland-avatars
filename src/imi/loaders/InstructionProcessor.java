@@ -17,10 +17,7 @@
  */
 package imi.loaders;
 
-
-import imi.loaders.collada.*;
-import imi.loaders.Instruction;
-import imi.loaders.repository.Repository;
+import imi.repository.Repository;
 import imi.scene.PJoint;
 import imi.scene.PMatrix;
 import imi.scene.PNode;
@@ -28,12 +25,12 @@ import imi.scene.PScene;
 import imi.scene.PTransform;
 import imi.scene.polygonmodel.PPolygonMesh;
 import imi.scene.polygonmodel.PPolygonMeshInstance;
-import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
-import imi.scene.polygonmodel.skinned.PPolygonSkinnedMesh;
-import imi.scene.polygonmodel.skinned.PPolygonSkinnedMeshInstance;
-import imi.scene.polygonmodel.parts.skinned.SkinnedMeshJoint;
+import imi.scene.SkeletonNode;
+import imi.scene.polygonmodel.PPolygonSkinnedMesh;
+import imi.scene.polygonmodel.PPolygonSkinnedMeshInstance;
+import imi.scene.SkinnedMeshJoint;
 import imi.scene.utils.PMeshUtils;
-import imi.scene.utils.PModelUtils;
+import imi.character.Character;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.logging.Level;
@@ -140,8 +137,7 @@ public class InstructionProcessor
      */
     private void executeInstruction(Instruction instruction)
     {
-        try 
-        {
+        try{
             switch(instruction.getInstructionType())
             {
                 case addSkinnedMesh:
@@ -194,7 +190,7 @@ public class InstructionProcessor
                         // sort the meshes!
                         for (PPolygonSkinnedMeshInstance meshInst : m_skeleton.getSkinnedMeshInstances())
                         {
-                            String subGroupName = PModelUtils.getSubGroupNameForMesh(meshInst.getName());
+                            String subGroupName = Character.getSubGroupNameForMesh(meshInst.getName());
                             if (subGroupName != null)
                                 m_skeleton.addToSubGroup(meshInst, subGroupName);
                             else
@@ -218,7 +214,7 @@ public class InstructionProcessor
                     if (instruction.getData() instanceof SkeletonNode)
                         m_skeleton = (SkeletonNode) instruction.getData();
                     else
-                        m_skeleton = null;   
+                        m_skeleton = null;
                 }
                 break;
                 case loadGeometryToSubgroup:
@@ -226,10 +222,14 @@ public class InstructionProcessor
                     if (!loadGeometryToSubgroup((Object[])instruction.getData()))
                         logger.warning("Unable to add geometry to subgroup!");
                 }
+                break;
+                case grouping:
+                    break;
+                default:
+                    throw new IllegalStateException("Unknown instruction encountered.");
             }
-        }
-        catch (MalformedURLException ex){
-            logger.log(Level.SEVERE, null, ex);
+        } catch (MalformedURLException ex) {
+            logger.log(Level.SEVERE, "Caught URL problem. URL was: " + instruction.getDataAsString(), ex);
         }
         // Recurse!
         for (PNode kid : instruction.getChildren())
@@ -267,25 +267,16 @@ public class InstructionProcessor
         // Extract the mesh name and find it in the loading pscene
         String meshName = (String)array[0];
         PNode node = m_loadingPScene.findChild(meshName);
-        PPolygonMeshInstance mesh = null;
         // Verify that we have the right thing
         if (node instanceof PPolygonSkinnedMeshInstance)
         {
-            mesh = (PPolygonSkinnedMeshInstance)node;
+            PPolygonSkinnedMeshInstance mesh = (PPolygonSkinnedMeshInstance)node;
             PPolygonMesh unskined = PMeshUtils.unskinMesh(m_skeleton,(PPolygonSkinnedMesh) mesh.getGeometry(), joint);
-            mesh = new PPolygonMeshInstance(meshName, unskined, new PMatrix(), m_loadingPScene, false);
-        } else if (node instanceof PPolygonMeshInstance)
-        {
-            mesh = (PPolygonMeshInstance) node;
-        }
+            node = new PPolygonMeshInstance(meshName, unskined, new PMatrix(), m_loadingPScene, false);
+        } 
         else if (node == null)
         {
             logger.severe("Specified attachment was not found in the loading pscene!");
-            return false;
-        }
-        else // Not null, has the right name but wrong class type
-        {
-            logger.severe("Found a node with the right name, but it was not a mesh instance!");
             return false;
         }
         
@@ -295,7 +286,7 @@ public class InstructionProcessor
             newJointName = "AttachmentJoint";
         
         PJoint newJoint = new PJoint(newJointName, new PTransform((PMatrix)array[2]));
-        newJoint.addChild(mesh);
+        newJoint.addChild(node);
         joint.addChild(newJoint);
         
         return true;

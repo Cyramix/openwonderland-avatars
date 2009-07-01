@@ -18,16 +18,16 @@
 package imi.gui;
 
 import imi.scene.polygonmodel.PPolygonMeshInstance;
-import imi.scene.polygonmodel.parts.PMeshMaterial;
+import imi.scene.polygonmodel.PMeshMaterial;
 import java.awt.Toolkit;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
 import javax.swing.filechooser.FileFilter;
+import javolution.util.FastTable;
 import org.jdesktop.mtgame.WorldManager;
 
 /**
@@ -42,7 +42,7 @@ public class PMeshMaterialPanel extends javax.swing.JPanel
 // Data Members
 ////////////////////////////////////////////////////////////////////////////////
     /** Texture Data */
-    private ArrayList<URL> textureLocations = new ArrayList<URL>();
+    private FastTable<URL> textureLocations = new FastTable<URL>();
     /** Scene Data */
     private WorldManager wm             = null;
     private PPolygonMeshInstance m_mesh = null; // The mesh that owns the material   
@@ -104,9 +104,9 @@ public class PMeshMaterialPanel extends javax.swing.JPanel
         DefaultListModel newModel = new DefaultListModel();
         for (int i = 0; i < m_mesh.getGeometry().getNumberOfTextures(); ++i) 
         {
-            if (m_mat.getTexture(i) != null) {
-                texName = "["+ i + "] " + m_mat.getTexture(i).getImageLocation();
-                textureLocations.add(m_mat.getTexture(i).getImageLocation());
+            if (m_mat.getTextureRef(i) != null) {
+                texName = "["+ i + "] " + m_mat.getTextureRef(i).getImageLocation();
+                textureLocations.add(m_mat.getTextureRef(i).getImageLocation());
             }
             else
                 texName = "[" + i + "] is unset";
@@ -117,8 +117,8 @@ public class PMeshMaterialPanel extends javax.swing.JPanel
     }
     
     /**
-     * moves the listed texture up a slot in the ArrayList and the listbox view
-     * NOTE: this manipulates the listbox's model as well as the ArrayList of
+     * moves the listed texture up a slot in the FastTable and the listbox view
+     * NOTE: this manipulates the listbox's model as well as the FastTable of
      * of Files.
      */
     private void moveSelectedItemUp() {
@@ -141,8 +141,8 @@ public class PMeshMaterialPanel extends javax.swing.JPanel
     }                                   
 
     /**
-     * moves the listed texture down a slot in the ArrayList and the listbox view
-     * NOTE: this manipulates the listbox's model as well as the ArrayList of
+     * moves the listed texture down a slot in the FastTable and the listbox view
+     * NOTE: this manipulates the listbox's model as well as the FastTable of
      * of Files.
      */
     private void moveSelectedItemDown() {
@@ -165,7 +165,7 @@ public class PMeshMaterialPanel extends javax.swing.JPanel
     }                                     
 
     /**
-     * Removes the selected texture from the listbox as well as the Arraylist of
+     * Removes the selected texture from the listbox as well as the FastTable of
      * textures.
      * NOTE: after removal of the selected texture from the list the listbox's
      * model is renamed to reflect the ordering change.
@@ -198,7 +198,7 @@ public class PMeshMaterialPanel extends javax.swing.JPanel
 
     /**
      * Adds the selected texture from the JFileChooser to the listbox and
-     * Arraylist of textures.
+     * FastTable of textures.
      */
     private void addTextureToList() {                                 
         int retValLoad = jFileChooser_Texture.showOpenDialog(this);
@@ -220,7 +220,7 @@ public class PMeshMaterialPanel extends javax.swing.JPanel
     
     /**
      * Loads the textures that were populated in the Listbox (in actuality the
-     * Arraylist of textures) into the material
+     * FastTable of textures) into the material
      */
     private void loadTexturesAndApplyToMesh() {
         if(textureLocations.size() > 0) {
@@ -242,7 +242,7 @@ public class PMeshMaterialPanel extends javax.swing.JPanel
         if (m_mesh == null || m_mat == null)
             return;
         if (m_shaderPropPanel != null && m_shaderPropPanel.getShader() != null)
-            m_mat.setShader(m_shaderPropPanel.getShader());
+            m_mat.setDefaultShader(m_shaderPropPanel.getShader());
         loadTexturesAndApplyToMesh();
     }
 

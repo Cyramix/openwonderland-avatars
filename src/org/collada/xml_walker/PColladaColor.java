@@ -25,10 +25,10 @@ import com.jme.renderer.ColorRGBA;
  */
 public class PColladaColor
 {
-    public float Red = 1.0f;
-    public float Green = 1.0f;
-    public float Blue = 1.0f;
-    public float Alpha = 1.0f;
+    public float red = 1.0f;
+    public float green = 1.0f;
+    public float blue = 1.0f;
+    public float alpha = 1.0f;
 
 
 
@@ -48,10 +48,10 @@ public class PColladaColor
      */
     public PColladaColor(float fRed, float fGreen, float fBlue, float fAlpha)
     {
-        Red = fRed;
-        Green = fGreen;
-        Blue = fBlue;
-        Alpha = fAlpha;
+        red = fRed;
+        green = fGreen;
+        blue = fBlue;
+        alpha = fAlpha;
     }
 
 
@@ -64,10 +64,10 @@ public class PColladaColor
      */
     public void set(float fRed, float fGreen, float fBlue)
     {
-        Red = fRed;
-        Green = fGreen;
-        Blue = fBlue;
-        Alpha = 1.0f;
+        red = fRed;
+        green = fGreen;
+        blue = fBlue;
+        alpha = 1.0f;
     }
 
     /**
@@ -79,15 +79,15 @@ public class PColladaColor
      */
     public void set(float fRed, float fGreen, float fBlue, float fAlpha)
     {
-        Red = fRed;
-        Green = fGreen;
-        Blue = fBlue;
-        Alpha = fAlpha;
+        red = fRed;
+        green = fGreen;
+        blue = fBlue;
+        alpha = fAlpha;
     }
 
     ColorRGBA toColorRGBA()
     {
-        return new ColorRGBA(Red, Green, Blue, Alpha);
+        return new ColorRGBA(red, green, blue, alpha);
     }
 }
 

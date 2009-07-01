@@ -20,7 +20,7 @@ package org.collada.xml_walker;
 import org.collada.colladaschema.InstanceEffect;
 import org.collada.colladaschema.Material;
 
-import imi.loaders.collada.Collada;
+import imi.loaders.Collada;
 
 
 
@@ -43,7 +43,6 @@ public class MaterialProcessor extends Processor
     {
         super(pCollada, pMaterial, pParent);
         InstanceEffect instanceEffect = pMaterial.getInstanceEffect();
-        String instanceURL = instanceEffect.getUrl();
     }
 
 }

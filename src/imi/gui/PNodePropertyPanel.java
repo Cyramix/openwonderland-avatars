@@ -20,7 +20,7 @@ package imi.gui;
 import imi.scene.PJoint;
 import imi.scene.PNode;
 import imi.scene.polygonmodel.PPolygonMeshInstance;
-import imi.scene.polygonmodel.parts.skinned.SkinnedMeshJoint;
+import imi.scene.SkinnedMeshJoint;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -92,7 +92,7 @@ public class PNodePropertyPanel extends javax.swing.JPanel
         if (JCheckBox_Dirty.hasFocus() == false)
             JCheckBox_Dirty.setSelected(m_targetNode.isDirty());
         if (JCheckBox_RenderStop.hasFocus() == false)
-            JCheckBox_RenderStop.setSelected(m_targetNode.getRenderStop());
+            JCheckBox_RenderStop.setSelected(m_targetNode.isRenderStop());
         
         // Reference count
         JLabel_RefCount.setText(Integer.toString(m_targetNode.getReferenceCount()));

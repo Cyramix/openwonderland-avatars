@@ -21,7 +21,7 @@ import imi.character.avatar.AvatarContext.TriggerNames;
 import imi.character.statemachine.GameContext;
 import imi.scene.animation.AnimationComponent.PlaybackMode;
 import imi.scene.animation.AnimationListener.AnimationMessageType;
-import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
+import imi.scene.SkeletonNode;
 
 /**
  * Generic state for animation that has enter, cycle and exit phases.
@@ -48,13 +48,20 @@ public class CycleActionState extends ActionState
     private float   exitAnimationSpeed      = 1.0f;
     
     private boolean bSimpleAction           = false;
-    
+
+    /**
+     * Create a state tied to this context
+     * @param master
+     */
     public CycleActionState(GameContext master)
     {
         super(master);
         setName("CycleAction");
     }
-    
+
+    /**
+     * {@inheritDoc InputClient}
+     */
     @Override
     protected void stateEnter(GameContext owner)
     {       
@@ -70,7 +77,7 @@ public class CycleActionState extends ActionState
         // to exit the state
         if (context.getSkeleton() != null)
         {
-            if ( owner.getCharacter().getAttributes().isUseSimpleStaticModel()||
+            if ( owner.getCharacter().getCharacterParams().isUseSimpleStaticModel()||
                  context.getSkeleton().getAnimationComponent().findCycle(getAnimationName(), 0) == -1 ||
                  context.getSkeleton().getAnimationComponent().findCycle(cycleAnimationName, 0) == -1 ||
                  context.getSkeleton().getAnimationComponent().findCycle(exitAnimationName,  0) == -1 )
@@ -82,7 +89,10 @@ public class CycleActionState extends ActionState
             }
         }
     }
-    
+
+    /**
+     * {@inheritDoc InputClient}
+     */
     @Override
     public void update(float deltaTime)
     {
@@ -123,6 +133,9 @@ public class CycleActionState extends ActionState
             transitionCheck();
     }
 
+    /**
+     * {@inheritDoc InputClient}
+     */
     @Override
     public void notifyAnimationMessage(AnimationMessageType message)
     {
@@ -158,7 +171,7 @@ public class CycleActionState extends ActionState
             skeleton.getAnimationState().setTransitionDuration(cycleTransitionDuration);
             skeleton.getAnimationState().setAnimationSpeed(cycleAnimationSpeed);
             skeleton.getAnimationState().setReverseAnimation(false);
-            skeleton.getAnimationState().setCycleMode(PlaybackMode.Loop);
+            skeleton.getAnimationState().setTransitionCycleMode(PlaybackMode.Loop);
             bCycleAnimationSet = skeleton.transitionTo(cycleAnimationName, false);
             setAnimationSetBoolean(true);
         }
@@ -172,7 +185,7 @@ public class CycleActionState extends ActionState
         {
             skeleton.getAnimationState().setTransitionDuration(exitTransitionDuration);
             skeleton.getAnimationState().setAnimationSpeed(exitAnimationSpeed);
-            skeleton.getAnimationState().setCycleMode(PlaybackMode.PlayOnce);
+            skeleton.getAnimationState().setTransitionCycleMode(PlaybackMode.PlayOnce);
             bExitAnimationSet = skeleton.transitionTo(exitAnimationName, bExitAnimationReverse);
             setAnimationSetBoolean(true);
         }

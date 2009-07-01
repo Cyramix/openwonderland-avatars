@@ -22,20 +22,21 @@ import com.jme.math.Vector3f;
 import com.jme.renderer.ColorRGBA;
 import com.jme.scene.Node;
 import com.jme.util.geom.BufferUtils;
-import java.util.ArrayList;
 import javolution.util.FastTable;
+import org.jdesktop.wonderland.common.ExperimentalAPI;
 
 /**
- *
+ * Quick and dirty debug rendering
  * @author Lou Hayt
  */
+@ExperimentalAPI
 public class LineVisualization 
 {
     /** Root of the object **/
     Node objectRoot = null;
     /** Reference to the overall object's position **/
-    ArrayList<Vector3f> origin = null;
-    ArrayList<Vector3f> point  = null;
+    FastTable<Vector3f> origin = null;
+    FastTable<Vector3f> point  = null;
     /** The visualization **/
     Line line = null;
     
@@ -43,7 +44,7 @@ public class LineVisualization
      * Construct a new visualization object.
      * @param verletObject
      */
-    public LineVisualization(ArrayList<Vector3f> origin, ArrayList<Vector3f> point, ColorRGBA color, float width) 
+    public LineVisualization(FastTable<Vector3f> origin, FastTable<Vector3f> point, ColorRGBA color, float width)
     {
         this.origin = origin;
         this.point  = point;
@@ -52,8 +53,8 @@ public class LineVisualization
     
     public LineVisualization(FastTable<Vector3f> path, ColorRGBA color, float width) 
     {
-        this.origin = new ArrayList<Vector3f>();
-        this.point  = new ArrayList<Vector3f>();
+        this.origin = new FastTable<Vector3f>();
+        this.point  = new FastTable<Vector3f>();
         for (int i = 1; i < path.size(); i++)
         {
             origin.add(path.get(i-1));

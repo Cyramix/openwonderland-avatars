@@ -19,14 +19,14 @@ package imi.character;
 
 import com.jme.math.Vector3f;
 import imi.scene.polygonmodel.PPolygonModelInstance;
-import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
-import imi.scene.polygonmodel.parts.skinned.SkinnedMeshJoint;
-import imi.scene.polygonmodel.skinned.PPolygonSkinnedMeshInstance;
+import imi.scene.SkeletonNode;
+import imi.scene.SkinnedMeshJoint;
+import imi.scene.polygonmodel.PPolygonSkinnedMeshInstance;
 import java.util.logging.Logger;
 import org.jdesktop.mtgame.WorldManager;
 
 /**
- * This class performs eyeball related behavior and handles general eyeball
+ * This class performs character-eyeball related behavior and handles general eyeball
  * management.
  * @author Lou Hayt
  */
@@ -35,25 +35,24 @@ public class CharacterEyes
     /** Logger ref **/
     private static final Logger logger = Logger.getLogger(CharacterEyes.class.getName());
 
-    /** The owner of these eyes **/
-    private Character             character            = null;
     /** Skeleton of the above **/
-    private SkeletonNode          skeleton             = null;
+    private final SkeletonNode          skeleton;
     /** Model instance of the above above **/
-    private PPolygonModelInstance characterModelInst   = null;
+    private final PPolygonModelInstance characterModelInst;
     /** Reference to the head joint **/
-    private SkinnedMeshJoint      headJoint            = null;
+    private SkinnedMeshJoint            headJoint;
+
     /** The eyes! **/
-    protected EyeBall            leftEyeBall           = null;
-    protected EyeBall            rightEyeBall          = null;
+    protected EyeBall leftEyeBall   = null;
+    protected EyeBall rightEyeBall  = null;
     /** True if eyes should randomly wander (looks more lifelike) **/
-    private boolean              eyesWander            = true;
+    private boolean     eyesWander = true;
     /** Used as a buffer for wandering calculations **/
-    private Vector3f             eyesWanderOffset      = new Vector3f();
+    private final Vector3f eyesWanderOffset = new Vector3f();
     /** Used to track how long it has been since the last wandering target **/
-    private float                eyesWanderCounter     = 0.0f;
+    private float   eyesWanderCounter     = 0.0f;
     /** Count the number of wander targets for blinking algo **/
-    private int                  eyesWanderIntCounter  = 0;
+    private int     eyesWanderIntCounter  = 0;
 
     /** These are Breadth-First indices to the left and right eyelid joints **/
     private int leftEyeLid     = 37;//24;
@@ -87,21 +86,23 @@ public class CharacterEyes
     private boolean winkRight = true;
     private boolean winkLeft  = true;
 
+    /** Rotational vectors **/
+    private final Vector3f rotationBuffer = new Vector3f();
+
     /**
      * Construct a new set of peepers with the specified characteristics.
-     * @param eyeballTexture Relative path of the eyeball texture to use
-     * @param character The owner of the eyeballs
-     * @param wm The world manager!
+     * @param eyeballTexture A non-null relative path of the eyeball texture to use
+     * @param character A non-null owner of the eyeballs
+     * @param wm The (non-null) world manager!
      */
     public CharacterEyes(String eyeballTexture, Character character, WorldManager wm)
     {
-        if (character == null)
-        {
-            logger.severe("CharacterEyes recieved null character in the constructor!");
-            return;
-        }
+        if (eyeballTexture == null || character == null || wm == null)
+            throw new IllegalArgumentException("Null param, eyeballTexture: " +
+                    eyeballTexture + ", character: " + character + ", wm:" + wm);
+            
         
-        if (character.getAttributes().isMale())
+        if (character.getCharacterParams().isMale())
         {
             closedEyeLid = closedEyeLidMale;
             openEyeLid = openEyeLidMale;
@@ -111,22 +112,18 @@ public class CharacterEyes
             closedEyeLid = closedEyeLidFemale;
             openEyeLid = openEyeLidFemale;
         }
-        
-        this.character = character;
+
         skeleton = character.getSkeleton();
         characterModelInst = character.getModelInst();
         
         rightEyeLid = skeleton.getSkinnedMeshJointIndex("rightEyeLid");
         leftEyeLid  = skeleton.getSkinnedMeshJointIndex("leftEyeLid");
-//        System.out.println(rightEyeLidCheck + " and the left one is " + leftEyeLidCheck);
         
         PPolygonSkinnedMeshInstance leftEyeMeshInst  = (PPolygonSkinnedMeshInstance) skeleton.findChild("leftEyeGeoShape");
         PPolygonSkinnedMeshInstance rightEyeMeshInst = (PPolygonSkinnedMeshInstance) skeleton.findChild("rightEyeGeoShape");
+
         if (leftEyeMeshInst == null || rightEyeMeshInst == null)
-        {
-            logger.severe("Eyeball meshes not located, aborting EyeBall construction!");
-            return;
-        }
+            throw new RuntimeException("Eyeball meshes not found!");
 
         leftEyeBall = new EyeBall(leftEyeMeshInst, character);
         leftEyeMeshInst.getParent().replaceChild(leftEyeMeshInst, leftEyeBall, true);
@@ -138,6 +135,10 @@ public class CharacterEyes
 
         leftEyeBall.applyEyeBallMaterial(eyeballTexture, wm);
         rightEyeBall.applyEyeBallMaterial(eyeballTexture, wm);
+
+        headJoint = (SkinnedMeshJoint) skeleton.getJoint("Head");
+        if (headJoint == null)
+            throw new RuntimeException("Unable to find head joint within skeleton!");
     }
 
     /**
@@ -146,18 +147,15 @@ public class CharacterEyes
      */
     public void update(float deltaTime)
     {
-        if (!eyesWander || leftEyeBall == null || rightEyeBall == null)
+        if (!eyesWander) // Nothing to do!
             return;
-
-        if (headJoint == null)
-            headJoint = (SkinnedMeshJoint) skeleton.getJoint("Head");
                     
         // Position the target in fornt of the eyes
         Vector3f target = characterModelInst.getTransform().getWorldMatrix(false).getTranslation();
         target.addLocal(characterModelInst.getTransform().getWorldMatrix(false).getLocalZ().mult(10.0f));
         target.addLocal(headJoint.getTransform().getLocalMatrix(false).getTranslation());
         
-        // Offset the target with a quick and dirty wander algorythim
+        // Offset the target with a quick and dirty wander algorithm
         eyesWanderCounter += deltaTime;
         if (eyesWanderCounter > (float)Math.random() + 0.15f)
         {
@@ -176,6 +174,7 @@ public class CharacterEyes
                 randomScale *= -1.0f;
             eyesWanderOffset.z += (float)Math.random() * randomScale;
         }
+
         if (eyesWanderIntCounter > 20)
         {
             eyesWanderIntCounter = 0;
@@ -191,7 +190,11 @@ public class CharacterEyes
         // Take care of blinking
         blinkingUpdate(deltaTime);
     }
-    
+
+    /**
+     * Handle update for blinking
+     * @param deltaTime
+     */
     private void blinkingUpdate(float deltaTime)
     {
         if (!blinking)
@@ -201,9 +204,8 @@ public class CharacterEyes
         
         if (eyesClosed)
         {
-             if (keepEyesClosed)
+             if (keepEyesClosed) // stay that way!
                  return;
-            
             // open the eye
             if (blinkingTimer > blinkingShutTime)
             {
@@ -212,8 +214,9 @@ public class CharacterEyes
                 if (blinkingTimer > overallTime)
                 {
                     // set the eyed to be fully open
-                    skeleton.getSkinnedMeshJoint(leftEyeLid).getLocalModifierMatrix().setRotation(new Vector3f(openEyeLid, 0, 0));
-                    skeleton.getSkinnedMeshJoint(rightEyeLid).getLocalModifierMatrix().setRotation(new Vector3f(openEyeLid, 0, 0));
+                    rotationBuffer.set(openEyeLid, 0, 0);
+                    skeleton.getSkinnedMeshJoint(leftEyeLid).getLocalModifierMatrix().setRotation(rotationBuffer);
+                    skeleton.getSkinnedMeshJoint(rightEyeLid).getLocalModifierMatrix().setRotation(rotationBuffer);
                     blinking    = false;
                     eyesClosed  = false;
                     winkRight   = true;
@@ -222,36 +225,36 @@ public class CharacterEyes
                 else
                 {
                     // transition to open eyes
-                    Vector3f openingEyeLidRot = new Vector3f(closedEyeLid * ((overallTime - blinkingTimer) / overallTime) + openEyeLid, 0.0f, 0.0f);
+                    rotationBuffer.set(closedEyeLid * ((overallTime - blinkingTimer) / overallTime) + openEyeLid, 0.0f, 0.0f);
                     if (winkLeft)
-                        skeleton.getSkinnedMeshJoint(leftEyeLid).getLocalModifierMatrix().setRotation(openingEyeLidRot);
+                        skeleton.getSkinnedMeshJoint(leftEyeLid).getLocalModifierMatrix().setRotation(rotationBuffer);
                     if (winkRight)
-                        skeleton.getSkinnedMeshJoint(rightEyeLid).getLocalModifierMatrix().setRotation(openingEyeLidRot);
+                        skeleton.getSkinnedMeshJoint(rightEyeLid).getLocalModifierMatrix().setRotation(rotationBuffer);
                 }
             }
         }
         else
         {
-            // close the eyed
+            // close the eye
             if (blinkingTimer > blinkingCloseTime)
             {
                 // set the eyed to be fully closed
-                Vector3f closedEyeLidRot = new Vector3f(closedEyeLid, 0.0f, 0.0f);
+                rotationBuffer.set(closedEyeLid, 0.0f, 0.0f);
                 if (winkLeft)
-                    skeleton.getSkinnedMeshJoint(leftEyeLid).getLocalModifierMatrix().setRotation(closedEyeLidRot);
+                    skeleton.getSkinnedMeshJoint(leftEyeLid).getLocalModifierMatrix().setRotation(rotationBuffer);
                 if (winkRight)
-                    skeleton.getSkinnedMeshJoint(rightEyeLid).getLocalModifierMatrix().setRotation(closedEyeLidRot);
+                    skeleton.getSkinnedMeshJoint(rightEyeLid).getLocalModifierMatrix().setRotation(rotationBuffer);
                 eyesClosed     = true;
                 blinkingTimer = 0.0f;
             }
             else
             {
                 // transition to closed eyes
-                Vector3f closingEyeLidRot = new Vector3f(closedEyeLid * blinkingTimer / blinkingCloseTime, 0.0f, 0.0f);
+                rotationBuffer.set(closedEyeLid * blinkingTimer / blinkingCloseTime, 0.0f, 0.0f);
                 if (winkLeft)
-                    skeleton.getSkinnedMeshJoint(leftEyeLid).getLocalModifierMatrix().setRotation(closingEyeLidRot);
+                    skeleton.getSkinnedMeshJoint(leftEyeLid).getLocalModifierMatrix().setRotation(rotationBuffer);
                 if (winkRight)
-                    skeleton.getSkinnedMeshJoint(rightEyeLid).getLocalModifierMatrix().setRotation(closingEyeLidRot);
+                    skeleton.getSkinnedMeshJoint(rightEyeLid).getLocalModifierMatrix().setRotation(rotationBuffer);
             }
         }
     }
@@ -263,9 +266,12 @@ public class CharacterEyes
      * @param closeTime - how long will it take the eye lids to close
      * @param shutTime  - how long will the eye lids remain closed
      * @param openTime  - how long will it take the eye lids to open
+     * @throws IllegalArgumentException If any value is less than zero
      */
     public void blinkSettings(float closeTime, float shutTime, float openTime) 
     {
+        if (closeTime < 0 || shutTime < 0 || openTime < 0)
+            throw new IllegalArgumentException("Negative value encountered!");
         blinkingCloseTime = closeTime;
         blinkingShutTime  = shutTime;
         blinkingOpenTime  = openTime;
@@ -278,7 +284,6 @@ public class CharacterEyes
     {
         if (blinking)
             return;
-        
         blinking      = true;
         eyesClosed    = false;
         blinkingTimer = 0.0f;
@@ -317,11 +322,19 @@ public class CharacterEyes
         keepEyesClosed = true;
         blink();
     }
-    
+
+    /**
+     * Determine if the eye wandering behavior is armed.
+     * @return
+     */
     public boolean isEyesWander() {
         return eyesWander;
     }
 
+    /**
+     * Enable or disable th eeye wandering behavior
+     * @param bEyesWander
+     */
     public void setEyesWander(boolean bEyesWander) {
         this.eyesWander = bEyesWander;
     }
@@ -329,39 +342,71 @@ public class CharacterEyes
     /**
      * Will set eyesWander to false and set the target
      * of both eyes.
-     * @param target
+     * @param target A non-null target vector
+     * @throws IllegalArgumentException If {@code target == null}
      */
     public void setEyesTarget(Vector3f target)
     {
+        if (target == null)
+            throw new IllegalArgumentException("NUll target provided!");
         eyesWander = false;
         leftEyeBall.setTarget(target);
         rightEyeBall.setTarget(target);
     }
-    
+
+    /**
+     * Retrieve a reference to the left eyeball of the character's eyes.
+     * @return The left eyeball
+     */
     public EyeBall getLeftEyeBall() {
         return leftEyeBall;
     }
 
+
+    /**
+     * Retrieve a reference to the right eyeball of the character's eyes.
+     * @return The right eyeball
+     */
     public EyeBall getRightEyeBall() {
         return rightEyeBall;
     }
 
+    /**
+     * True if the eyes are closed.
+     * @return True if the eyes are closed.
+     */
     public boolean isEyesClosed() {
         return eyesClosed;
     }
 
+    /**
+     * True if the eyes are set to stay closed.
+     * @return true if set to stay closed
+     */
     public boolean isKeepEyesClosed() {
         return keepEyesClosed;
     }
 
+    /**
+     * Enable / Disable the eyes closed
+     * @param keepEyesClosed True to close them
+     */
     public void setKeepEyesClosed(boolean keepEyesClosed) {
         this.keepEyesClosed = keepEyesClosed;
     }
 
+    /**
+     * True if the eyes will be blinking.
+     * @return True if blinking is enabled
+     */
     public boolean isBlinkingOn() {
         return blinkingOn;
     }
 
+    /**
+     * Disable / Enable the blinking behavior
+     * @param blinkingOn
+     */
     public void setBlinkingOn(boolean blinkingOn) {
         this.blinkingOn = blinkingOn;
     }

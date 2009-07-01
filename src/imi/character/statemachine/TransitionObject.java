@@ -18,7 +18,7 @@
 package imi.character.statemachine;
 
 /**
- * Defines a possible exit transition from a state
+ * Defines a possible transition to exit from a state
  * @author Lou Hayt
  */
 public abstract class TransitionObject 
@@ -49,34 +49,66 @@ public abstract class TransitionObject
      */
     protected abstract boolean testCondition(GameState state);
 
+    /**
+     * Get the name of the context validation\entry point method
+     * @return
+     */
     public String getContextMessageName() {
         return contextMessageName;
     }
 
+    /**
+     * Set the name of the context validation\entry point method
+     * @param contextMessageName
+     */
     public void setContextMessageName(String contextMessageName) {
         this.contextMessageName = contextMessageName;
     }
 
+    /**
+     * Get the argument for the context validation\entry point method
+     * @return
+     */
     public Object getContextMessageArgs() {
         return contextMessageArgs;
     }
 
+    /**
+     * Set the argumet for the context validation\entry point method
+     * @param contextMessgeArgs
+     */
     public void setContextMessageArgs(Object contextMessgeArgs) {
         this.contextMessageArgs = contextMessgeArgs;
     }
 
+    /**
+     * Get the name of the state validation\entry point method
+     * @return
+     */
     public String getStateMessageName() {
         return stateMessageName;
     }
 
+    /**
+     * Set the name of the state validation\entry point method
+     * @param stateMessageName
+     */
     public void setStateMessageName(String stateMessageName) {
         this.stateMessageName = stateMessageName;
     }
 
+    /**
+     * Get the argument for the state validation\entry point method
+     * @return
+     */
     public Object getStateMessageArgs() {
         return stateMessageArgs;
     }
 
+    /**
+     * Set the arugment for the state validation\entry point method
+     * @param stateMessgeArgs
+     */
     public void setStateMessageArgs(Object stateMessgeArgs) {
         this.stateMessageArgs = stateMessgeArgs;
     }

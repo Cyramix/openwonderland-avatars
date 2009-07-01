@@ -22,7 +22,7 @@ import com.jme.math.Vector3f;
 import imi.character.CharacterController;
 import imi.character.statemachine.GameContext;
 import imi.character.statemachine.GameState;
-import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
+import imi.scene.SkeletonNode;
 
 /**
  * This class represents the turning behavior of a avatarContext owner.
@@ -60,7 +60,7 @@ public class TurnState extends GameState
     public boolean toTurn(Object data)
     {
         // The character doesn't have a skeleton if it's represented as a sphere
-        if (context.getCharacter().getAttributes().isUseSimpleStaticModel())
+        if (context.getCharacter().getCharacterParams().isUseSimpleStaticModel())
             return true;
         
         // avatar's skeleton might be null untill loaded

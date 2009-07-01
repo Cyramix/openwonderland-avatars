@@ -17,8 +17,8 @@
  */
 package org.collada.xml_walker;
 
-import imi.loaders.collada.Collada;
-import imi.scene.polygonmodel.parts.TextureMaterialProperties;
+import imi.loaders.Collada;
+import imi.scene.polygonmodel.TextureMaterialProperties;
 
 /**
  * The PColladaImage class represents an image referenced in a collada file.

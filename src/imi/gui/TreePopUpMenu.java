@@ -17,14 +17,15 @@
  */
 package imi.gui;
 
+import imi.character.Character;
 import imi.scene.PJoint;
 import imi.scene.PNode;
 import imi.scene.PScene;
 import imi.scene.PTransform;
 import imi.scene.polygonmodel.PPolygonModelInstance;
-import imi.scene.polygonmodel.parts.skinned.SkinnedMeshJoint;
-import imi.scene.utils.tree.ModelInstanceProcessor;
-import imi.scene.utils.tree.TreeTraverser;
+import imi.scene.SkinnedMeshJoint;
+import imi.scene.utils.traverser.ModelInstanceProcessor;
+import imi.scene.utils.traverser.TreeTraverser;
 import java.awt.Frame;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
@@ -43,7 +44,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
-import javolution.util.FastTable;
+import org.jdesktop.mtgame.WorldManager;
 
 /**
  * TreePopUpMenu Class
@@ -61,12 +62,11 @@ public class TreePopUpMenu extends MouseAdapter implements ActionListener {
     private JFrame editor = null;
     private JFrame_MatrixExplorer matrixExplorer = null;
     // Scene
-    private SceneEssentials sceneData = null;
+    private PScene          pscene;
+    private WorldManager    worldManager;
     // File IO GUI
     private JFileChooser jFileChooser_LoadModels = null;
-    private PPolygonModelInstance modelInst = null;
     private String jointName = "NewJoint";
-    private String modelName = "NewModel";
     private static int jointCount = 1;
     private static int modelCount = 1;
     // Copy Information
@@ -103,7 +103,7 @@ public class TreePopUpMenu extends MouseAdapter implements ActionListener {
         selectedDMT = dmtselected;
         if(editorPanel != null) {
             editorPanel.setTargetNode(selection);
-            editorPanel.setWorldManager(sceneData.getWM());
+            editorPanel.setWorldManager(worldManager);
             editorPanel.refreshComponents();
         }
         if(matrixExplorer != null) {
@@ -119,42 +119,12 @@ public class TreePopUpMenu extends MouseAdapter implements ActionListener {
      * @param pnodeselection (PNode)
      * @param dmtselected (DefaultMutableTreeNode)
      */
-    public void setPopupMenu(SceneEssentials scene, DefaultTreeModel treemodel, PNode pnodeselection, DefaultMutableTreeNode dmtselected) {
-        sceneData = scene;
-        treeModel = treemodel;
-        currentSelection = pnodeselection;
-        selectedDMT =dmtselected;
-    }
-    
-    /**
-     * Adds the modelinstance to the PScene and then moves it to the selected
-     * joint as a child and updates the tree.
-     */
-    public void addToNode() {
-        // Spinlock otherwise when you get the modelinstance it is a placeholder
-        // and you won't get all the nodes
-        while(sceneData.getPScene().getAssetWaitingList().size() > 0) {
-            System.out.println("Waiting to get assets...");
-        }
-        // Get the new modelinstance by comparing the created instance with those
-        // in the PScene
-        FastTable<PNode> modelInstances = sceneData.getPScene().getInstances().getChildren();
-        int i = 0;
-        for(i = 0; i < modelInstances.size(); i++) {
-            if(((PPolygonModelInstance)modelInstances.get(i)).equals(sceneData.getModelInstance()))
-                break;
-        }
-        // Go through the modelinstance and create a tree for JTree to use
-        ModelInstanceProcessor proc = new ModelInstanceProcessor();
-        proc.setTopNode(modelInstances.get(i));
-        TreeTraverser.breadthFirst(modelInstances.get(i), proc);
-        DefaultMutableTreeNode model = proc.getTopNode();
-        // Add it to the JTree and then notifiy the tree of changes
-        selectedDMT.add(model);
-        treeModel.nodeStructureChanged(selectedDMT);
-        // Move the actual modelinstance in the scene to the selected joint
-        modelInstances.get(i).setName(modelName);
-        currentSelection.addChild(modelInstances.get(i));
+    public void setPopupMenu(WorldManager wm, PScene scene, DefaultTreeModel treemodel, PNode pnodeselection, DefaultMutableTreeNode dmtselected) {
+        worldManager        = wm;
+        pscene              = scene;
+        treeModel           = treemodel;
+        currentSelection    = pnodeselection;
+        selectedDMT         = dmtselected;
     }
     
     /**
@@ -166,37 +136,35 @@ public class TreePopUpMenu extends MouseAdapter implements ActionListener {
             JOptionPane.showMessageDialog(new Frame(), "You have not selected a valid node", "WARNING", JOptionPane.WARNING_MESSAGE);
             return;
         }
-        if (currentSelection instanceof PNode) {
 
-            if(editor != null)
-                editor.dispose();
-            
-            editor = new JFrame();
+        if(editor != null)
+            editor.dispose();
 
-            editorPanel = new PNodePropertyPanel(null);
-            editorPanel.addPropertyChangeListener(new PropertyChangeListener() {
+        editor = new JFrame();
 
-                public void propertyChange(PropertyChangeEvent arg0) {
-                    if(arg0.getPropertyName().equals("RESIZED")) {
-                        editor.setSize(((Integer)arg0.getOldValue()).intValue(), ((Integer)arg0.getNewValue()).intValue());
-                    }
+        editorPanel = new PNodePropertyPanel(null);
+        editorPanel.addPropertyChangeListener(new PropertyChangeListener() {
+
+            public void propertyChange(PropertyChangeEvent arg0) {
+                if(arg0.getPropertyName().equals("RESIZED")) {
+                    editor.setSize(((Integer)arg0.getOldValue()).intValue(), ((Integer)arg0.getNewValue()).intValue());
                 }
-            });
+            }
+        });
 
-            editorPanel.setWorldManager(sceneData.getWM());            
-            editorPanel.setTargetNode(currentSelection);
-            editorPanel.refreshComponents();
+        editorPanel.setWorldManager(worldManager);
+        editorPanel.setTargetNode(currentSelection);
+        editorPanel.refreshComponents();
 
-            double dScreenWidth = Toolkit.getDefaultToolkit().getScreenSize().getWidth();
-            double dScreenHeight = Toolkit.getDefaultToolkit().getScreenSize().getHeight();
-            int iXPos = (int) dScreenWidth - 500;//editor.getSize().width * 2;
-            int iYPos = (int) dScreenHeight - 500;//editor.getSize().height * 2;
-            
-            editor.setLocation(iXPos, iYPos);
-            editor.setVisible(true);
-            editor.add(editorPanel);
-            editorPanel.setVisible(true);
-        }
+        double dScreenWidth = Toolkit.getDefaultToolkit().getScreenSize().getWidth();
+        double dScreenHeight = Toolkit.getDefaultToolkit().getScreenSize().getHeight();
+        int iXPos = (int) dScreenWidth - 500;//editor.getSize().width * 2;
+        int iYPos = (int) dScreenHeight - 500;//editor.getSize().height * 2;
+
+        editor.setLocation(iXPos, iYPos);
+        editor.setVisible(true);
+        editor.add(editorPanel);
+        editorPanel.setVisible(true);
     }
     
     /**
@@ -237,36 +205,36 @@ public class TreePopUpMenu extends MouseAdapter implements ActionListener {
      * it's asset and so it is not created
      */
     public void actionAddModelInstance() {
-        if(currentSelection == null) {
-            JOptionPane.showMessageDialog(new Frame(), "You have not selected a valid node", "WARNING", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
-        
-        modelName = (String)JOptionPane.showInputDialog(new Frame(), "Please input the modelinstance name",
-                                                  "ADD A MODELINSTANCE", JOptionPane.YES_NO_CANCEL_OPTION,
-                                                  null, null, "NewModel"+modelCount);
-                
-        if( (modelName != null) && (modelName.length() > 0)  ) {
-//            int retValModel = jFileChooser_LoadModels.showOpenDialog(editor);
-//            if (retValModel == JFileChooser.APPROVE_OPTION) {
-//                File fileModel = jFileChooser_LoadModels.getSelectedFile();
-//                sceneData.setfileModel(fileModel);
-//                sceneData.setModelName(modelName);
-//                if (fileModel.getName().endsWith(".ms3d")) {
-//                    sceneData.loadMS3DFile(0, false, menu);
-//                } else {
-//                    sceneData.loadMeshDAEFile(true, menu);
-//                }
-//                addToNode();
-//            }
-
-            sceneData.loadMeshDAEFile(true, menu, currentSelection);
-            if(modelName.equals("NewModel"+modelCount))
-                modelCount++;
-        }
-        
-        if(modelName == null || modelName.length() < 0)
-            modelName = "NewModel";
+//        if(currentSelection == null) {
+//            JOptionPane.showMessageDialog(new Frame(), "You have not selected a valid node", "WARNING", JOptionPane.WARNING_MESSAGE);
+//            return;
+//        }
+//
+//        modelName = (String)JOptionPane.showInputDialog(new Frame(), "Please input the modelinstance name",
+//                                                  "ADD A MODELINSTANCE", JOptionPane.YES_NO_CANCEL_OPTION,
+//                                                  null, null, "NewModel"+modelCount);
+//
+//        if( (modelName != null) && (modelName.length() > 0)  ) {
+////            int retValModel = jFileChooser_LoadModels.showOpenDialog(editor);
+////            if (retValModel == JFileChooser.APPROVE_OPTION) {
+////                File fileModel = jFileChooser_LoadModels.getSelectedFile();
+////                sceneData.setfileModel(fileModel);
+////                sceneData.setModelName(modelName);
+////                if (fileModel.getName().endsWith(".ms3d")) {
+////                    sceneData.loadMS3DFile(0, false, menu);
+////                } else {
+////                    sceneData.loadMeshDAEFile(true, menu);
+////                }
+////                addToNode();
+////            }
+//
+//            sceneData.loadMeshDAEFile(true, menu, currentSelection);
+//            if(modelName.equals("NewModel"+modelCount))
+//                modelCount++;
+//        }
+//
+//        if(modelName == null || modelName.length() < 0)
+//            modelName = "NewModel";
     }
     
     /**
@@ -277,8 +245,8 @@ public class TreePopUpMenu extends MouseAdapter implements ActionListener {
             JOptionPane.showMessageDialog(new Frame(), "You have not selected a valid node", "WARNING", JOptionPane.WARNING_MESSAGE);
         else if( !(currentSelection instanceof PScene) && !(currentSelection instanceof SkinnedMeshJoint) && !(currentSelection.getName().equals("m_TransformHierarchy")) ){
             treeModel.removeNodeFromParent(selectedDMT);
-            sceneData.getPScene().findAndRemoveChild(currentSelection);
-            PNode temp = sceneData.getPScene().findChild(currentSelection.getName());
+            pscene.findAndRemoveChild(currentSelection);
+            PNode temp = pscene.findChild(currentSelection.getName());
             if(temp == null) { System.out.println("node has been removed"); }
         } else {
             JOptionPane.showMessageDialog(new Frame(), "You can not delete this node", "WARNING", JOptionPane.WARNING_MESSAGE);
@@ -365,14 +333,12 @@ public class TreePopUpMenu extends MouseAdapter implements ActionListener {
             JOptionPane.showMessageDialog(new Frame(), "You have not selected a valid node", "WARNING", JOptionPane.WARNING_MESSAGE);
             return;
         }
-        if (currentSelection instanceof PNode) {
 
-            if(matrixExplorer != null)
-                matrixExplorer.dispose();
+        if(matrixExplorer != null)
+            matrixExplorer.dispose();
 
-            matrixExplorer = new JFrame_MatrixExplorer(currentSelection);
-            matrixExplorer.setVisible(true);
-        }
+        matrixExplorer = new JFrame_MatrixExplorer(currentSelection);
+        matrixExplorer.setVisible(true);
     }
     
     /**

@@ -18,7 +18,7 @@
 package org.collada.xml_walker;
 
 
-import java.util.ArrayList;
+import javolution.util.FastTable;
 import imi.scene.PMatrix;
 
 import org.collada.colladaschema.Node;
@@ -42,8 +42,8 @@ public class PColladaNode
     private String                      m_MeshURL = null;
     private String                      m_InstanceNodeName = null;
     private String                      m_ControllerName = null;
-    private ArrayList<PColladaNode>     m_ChildNodes = null;
-    private ArrayList<String>           m_skeletonNames = null;
+    private FastTable<PColladaNode>     m_ChildNodes = null;
+    private FastTable<String>           m_skeletonNames = null;
     //private PColladaMaterialInstance    m_pMaterialInstance = null;
     private ColladaMaterial             m_colladaMaterial = null;
 
@@ -208,7 +208,7 @@ public class PColladaNode
     public void addChildNode(PColladaNode pChildNode)
     {
         if (m_ChildNodes == null)
-            m_ChildNodes = new ArrayList<PColladaNode>();
+            m_ChildNodes = new FastTable<PColladaNode>();
 
         if (pChildNode != null)
         {
@@ -394,7 +394,7 @@ public class PColladaNode
     public void addSkeleton(String skeleton)
     {
         if (m_skeletonNames == null)
-            m_skeletonNames = new ArrayList<String>();
+            m_skeletonNames = new FastTable<String>();
         m_skeletonNames.add(skeleton);
     }
 

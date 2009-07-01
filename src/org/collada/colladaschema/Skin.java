@@ -26,7 +26,7 @@
 package org.collada.colladaschema;
 
 import java.math.BigInteger;
-import java.util.ArrayList;
+import javolution.util.FastTable;
 import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -135,7 +135,7 @@ public class Skin {
      */
     public List<Double> getBindShapeMatrix() {
         if (bindShapeMatrix == null) {
-            bindShapeMatrix = new ArrayList<Double>();
+            bindShapeMatrix = new FastTable<Double>();
         }
         return this.bindShapeMatrix;
     }
@@ -166,7 +166,7 @@ public class Skin {
      */
     public List<Source> getSources() {
         if (sources == null) {
-            sources = new ArrayList<Source>();
+            sources = new FastTable<Source>();
         }
         return this.sources;
     }
@@ -245,7 +245,7 @@ public class Skin {
      */
     public List<Extra> getExtras() {
         if (extras == null) {
-            extras = new ArrayList<Extra>();
+            extras = new FastTable<Extra>();
         }
         return this.extras;
     }
@@ -331,7 +331,7 @@ public class Skin {
          */
         public List<InputLocal> getInputs() {
             if (inputs == null) {
-                inputs = new ArrayList<InputLocal>();
+                inputs = new FastTable<InputLocal>();
             }
             return this.inputs;
         }
@@ -362,7 +362,7 @@ public class Skin {
          */
         public List<Extra> getExtras() {
             if (extras == null) {
-                extras = new ArrayList<Extra>();
+                extras = new FastTable<Extra>();
             }
             return this.extras;
         }
@@ -438,7 +438,7 @@ public class Skin {
          */
         public List<InputLocalOffset> getInputs() {
             if (inputs == null) {
-                inputs = new ArrayList<InputLocalOffset>();
+                inputs = new FastTable<InputLocalOffset>();
             }
             return this.inputs;
         }
@@ -467,7 +467,7 @@ public class Skin {
          */
         public List<BigInteger> getVcount() {
             if (vcount == null) {
-                vcount = new ArrayList<BigInteger>();
+                vcount = new FastTable<BigInteger>();
             }
             return this.vcount;
         }
@@ -496,7 +496,7 @@ public class Skin {
          */
         public List<Long> getV() {
             if (v == null) {
-                v = new ArrayList<Long>();
+                v = new FastTable<Long>();
             }
             return this.v;
         }
@@ -527,7 +527,7 @@ public class Skin {
          */
         public List<Extra> getExtras() {
             if (extras == null) {
-                extras = new ArrayList<Extra>();
+                extras = new FastTable<Extra>();
             }
             return this.extras;
         }

@@ -18,11 +18,13 @@
 package imi.collision;
 
 import com.jme.math.Vector3f;
+import org.jdesktop.wonderland.common.ExperimentalAPI;
 
 /**
  *
  * @author Lou Hayt
  */
+@ExperimentalAPI
 public interface CollisionListener
 {
     public void colliding(Vector3f projection);

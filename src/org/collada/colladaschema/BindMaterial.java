@@ -25,7 +25,7 @@
 
 package org.collada.colladaschema;
 
-import java.util.ArrayList;
+import javolution.util.FastTable;
 import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -111,7 +111,7 @@ public class BindMaterial {
      */
     public List<Param> getParams() {
         if (params == null) {
-            params = new ArrayList<Param>();
+            params = new FastTable<Param>();
         }
         return this.params;
     }
@@ -166,7 +166,7 @@ public class BindMaterial {
      */
     public List<Technique> getTechniques() {
         if (techniques == null) {
-            techniques = new ArrayList<Technique>();
+            techniques = new FastTable<Technique>();
         }
         return this.techniques;
     }
@@ -197,7 +197,7 @@ public class BindMaterial {
      */
     public List<Extra> getExtras() {
         if (extras == null) {
-            extras = new ArrayList<Extra>();
+            extras = new FastTable<Extra>();
         }
         return this.extras;
     }
@@ -258,7 +258,7 @@ public class BindMaterial {
          */
         public List<InstanceMaterial> getInstanceMaterials() {
             if (instanceMaterials == null) {
-                instanceMaterials = new ArrayList<InstanceMaterial>();
+                instanceMaterials = new FastTable<InstanceMaterial>();
             }
             return this.instanceMaterials;
         }

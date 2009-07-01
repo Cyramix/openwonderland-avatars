@@ -24,7 +24,8 @@ import imi.character.statemachine.GameContext;
 import imi.character.statemachine.corestates.transitions.RunToWalk;
 
 /**
- *
+ * Extends WalkState and alters the maximum acceleration and velocity of the
+ * controler.
  * @author Lou Hayt
  */
 public class RunState extends WalkState

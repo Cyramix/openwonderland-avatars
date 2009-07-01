@@ -20,7 +20,7 @@ package imi.utils.graph;
 //import org.jgrapht.graph.DefaultEdge;
 
 /**
- *
+ * Represents a connection between nodes in a graph
  * @author Lou Hayt
  */
 public interface Connection// extends DefaultEdge

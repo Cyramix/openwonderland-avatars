@@ -25,7 +25,7 @@
 
 package org.collada.colladaschema;
 
-import java.util.ArrayList;
+import javolution.util.FastTable;
 import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -230,7 +230,7 @@ public class ProfileCOMMON {
      */
     public List<Object> getImagesAndNewparams() {
         if (imagesAndNewparams == null) {
-            imagesAndNewparams = new ArrayList<Object>();
+            imagesAndNewparams = new FastTable<Object>();
         }
         return this.imagesAndNewparams;
     }
@@ -285,7 +285,7 @@ public class ProfileCOMMON {
      */
     public List<Extra> getExtras() {
         if (extras == null) {
-            extras = new ArrayList<Extra>();
+            extras = new FastTable<Extra>();
         }
         return this.extras;
     }
@@ -502,7 +502,7 @@ public class ProfileCOMMON {
          */
         public List<Object> getImagesAndNewparams() {
             if (imagesAndNewparams == null) {
-                imagesAndNewparams = new ArrayList<Object>();
+                imagesAndNewparams = new FastTable<Object>();
             }
             return this.imagesAndNewparams;
         }
@@ -629,7 +629,7 @@ public class ProfileCOMMON {
          */
         public List<Extra> getExtras() {
             if (extras == null) {
-                extras = new ArrayList<Extra>();
+                extras = new FastTable<Extra>();
             }
             return this.extras;
         }

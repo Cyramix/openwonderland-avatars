@@ -25,7 +25,7 @@
 
 package org.collada.colladaschema;
 
-import java.util.ArrayList;
+import javolution.util.FastTable;
 import java.util.List;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -149,7 +149,7 @@ public class Effect {
      */
     public List<FxAnnotateCommon> getAnnotates() {
         if (annotates == null) {
-            annotates = new ArrayList<FxAnnotateCommon>();
+            annotates = new FastTable<FxAnnotateCommon>();
         }
         return this.annotates;
     }
@@ -180,7 +180,7 @@ public class Effect {
      */
     public List<Image> getImages() {
         if (images == null) {
-            images = new ArrayList<Image>();
+            images = new FastTable<Image>();
         }
         return this.images;
     }
@@ -209,7 +209,7 @@ public class Effect {
      */
     public List<FxNewparamCommon> getNewparams() {
         if (newparams == null) {
-            newparams = new ArrayList<FxNewparamCommon>();
+            newparams = new FastTable<FxNewparamCommon>();
         }
         return this.newparams;
     }
@@ -244,7 +244,7 @@ public class Effect {
      */
     public List<JAXBElement<?>> getFxProfileAbstracts() {
         if (fxProfileAbstracts == null) {
-            fxProfileAbstracts = new ArrayList<JAXBElement<?>>();
+            fxProfileAbstracts = new FastTable<JAXBElement<?>>();
         }
         return this.fxProfileAbstracts;
     }
@@ -275,7 +275,7 @@ public class Effect {
      */
     public List<Extra> getExtras() {
         if (extras == null) {
-            extras = new ArrayList<Extra>();
+            extras = new FastTable<Extra>();
         }
         return this.extras;
     }

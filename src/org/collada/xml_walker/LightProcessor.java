@@ -19,7 +19,7 @@ package org.collada.xml_walker;
 
 import org.collada.colladaschema.Light;
 
-import imi.loaders.collada.Collada;
+import imi.loaders.Collada;
 
 
 

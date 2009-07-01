@@ -22,7 +22,8 @@ import com.jme.math.Vector3f;
 import imi.character.CharacterController;
 import imi.character.statemachine.GameContext;
 import imi.character.statemachine.GameState;
-import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
+import imi.scene.SkeletonNode;
+import org.jdesktop.wonderland.common.ExperimentalAPI;
 
 /**
  * This state accounts for flying behavior with the character, this is a test 
@@ -30,6 +31,7 @@ import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
  * @author Lou Hayt
  * @author PaulBy
  */
+@ExperimentalAPI
 public class FlyState extends GameState 
 {
     GameContext context           = null;

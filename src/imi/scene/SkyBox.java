@@ -29,11 +29,13 @@ import com.jme.scene.state.TextureState;
 import com.jme.scene.state.ZBufferState;
 import com.jme.system.JmeException;
 import org.jdesktop.mtgame.WorldManager;
+import org.jdesktop.wonderland.common.ExperimentalAPI;
 
 /**
- *
+ * An experimental sky box
  * @author Lou Hayt (used the JME e.g.)
  */
+@ExperimentalAPI
 public class SkyBox extends Node
 {
     /** The World Manager for renderstate creation. */

@@ -240,7 +240,7 @@ public class PMatrixWidget extends javax.swing.JPanel
      * Rotates the model based on the slider (axis) that is used
      * @param axis
      */
-    public synchronized void RotateOnAxis(int axis) {
+    public synchronized void rotateOnAxis(int axis) {
         // TODO: Make this mathematically correct
         if (bRefreshing)
             return;
@@ -1006,7 +1006,7 @@ private void XRotationSliderStateChanged(javax.swing.event.ChangeEvent evt) {//G
 if (bRefreshing)
         return;
     //    refreshComponents();
-        RotateOnAxis(0);
+        rotateOnAxis(0);
 }//GEN-LAST:event_XRotationSliderStateChanged
 
 private void YRotationSliderStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_YRotationSliderStateChanged
@@ -1014,14 +1014,14 @@ private void YRotationSliderStateChanged(javax.swing.event.ChangeEvent evt) {//G
                                               
     if (bRefreshing)
         return;
-        RotateOnAxis(1);
+        rotateOnAxis(1);
 }//GEN-LAST:event_YRotationSliderStateChanged
 
 private void ZRotationSliderStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_ZRotationSliderStateChanged
                                                 
     if (bRefreshing)
         return;
-      RotateOnAxis(2);
+      rotateOnAxis(2);
 }//GEN-LAST:event_ZRotationSliderStateChanged
 
 private void JButton_IdentityActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JButton_IdentityActionPerformed

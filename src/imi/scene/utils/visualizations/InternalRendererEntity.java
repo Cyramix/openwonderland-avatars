@@ -15,8 +15,7 @@ import com.jme.scene.state.MaterialState;
 import com.jme.scene.state.RenderState;
 import com.jme.scene.state.WireframeState;
 import com.jme.scene.state.ZBufferState;
-import imi.scene.boundingvolumes.PSphere;
-import java.util.ArrayList;
+import imi.scene.PSphere;
 import javolution.util.FastTable;
 import org.jdesktop.mtgame.Entity;
 import org.jdesktop.mtgame.ProcessorCollectionComponent;
@@ -25,7 +24,7 @@ import org.jdesktop.mtgame.RenderComponent;
 import org.jdesktop.mtgame.WorldManager;
 
 /**
- *
+ * Debuging visualization tool
  * @author Lou Hayt
  */
 public class InternalRendererEntity extends Entity
@@ -37,7 +36,7 @@ public class InternalRendererEntity extends Entity
         super("Internal Renderer");
         
         // The collection of processors for this entity
-        ArrayList<ProcessorComponent> processors = new ArrayList<ProcessorComponent>();
+        FastTable<ProcessorComponent> processors = new FastTable<ProcessorComponent>();
 
         // The JME root with the magical rendering capabilities
         root = new InternalRendererNode();

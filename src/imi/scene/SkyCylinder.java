@@ -29,12 +29,14 @@ import com.jme.scene.state.RenderState.StateType;
 import com.jme.scene.state.TextureState;
 import com.jme.scene.state.ZBufferState;
 import org.jdesktop.mtgame.WorldManager;
+import org.jdesktop.wonderland.common.ExperimentalAPI;
 
 /**
  * This class allows for the use of a cylinder as the "sky geometry", rather than
  * a cube.
  * @author Ronald E Dahlgren
  */
+@ExperimentalAPI
 public class SkyCylinder extends Node
 {
     public enum SkyParts {

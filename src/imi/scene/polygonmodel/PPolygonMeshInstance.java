@@ -20,26 +20,24 @@ package imi.scene.polygonmodel;
 import com.jme.math.Matrix3f;
 import com.jme.math.Vector3f;
 import com.jme.scene.SharedMesh;
-import com.jme.scene.state.GLSLShaderObjectsState;
 import imi.scene.PMatrix;
 import imi.scene.PNode;
 import imi.scene.PScene;
 import imi.scene.PTransform;
-import imi.scene.polygonmodel.parts.PMeshMaterial;
-import imi.scene.polygonmodel.parts.PMeshMaterialStates;
-import imi.scene.polygonmodel.parts.TextureMaterialProperties;
-import imi.scene.utils.PRenderer;
-import imi.scene.utils.TextureInstaller;
+import imi.shader.ShaderProperty;
+import imi.shader.ShaderUtils;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.util.List;
+import javolution.util.FastList;
 
 /**
  * This class contains a jME SharedMesh with a target TriMesh belonging to
  * a PPolygonMesh elsewhere in the system. This class is typically instantiated
- * by a PScene for a given PPolygonMesh. The PScene ties up all the appropriate
- * connections under the hood.
+ * by a PScene for a given PPolygonMesh. The PScene makes sure geometry is shared
+ * among instances in the scene.
  * @author Lou Hayt
  * @author Ron Dahlgren
  */
@@ -57,16 +55,13 @@ public class PPolygonMeshInstance extends PNode implements Serializable
     
     // Geometry reference
     protected PPolygonMesh        m_geometry  = null; // if this reference will be assigned again outside of the constructor then m_instance will need an update
-    
-    // Shader state. This must be allocated carefully (on render thread presumably)
-    protected transient GLSLShaderObjectsState    m_shaderState       = null;
 
     /** Material **/
     protected PMeshMaterial  m_material             = null;
     /** Use geometry material or not **/
     protected boolean  m_bUseGeometryMaterial       = true; 
     /** convenient state wrapper **/
-    protected transient PMeshMaterialStates m_materialStates = null;
+    protected transient PMeshMaterialStates m_materialStates;
 
     /** Used in calculations **/
     private transient Vector3f m_translationBufferVector    = new Vector3f();
@@ -98,7 +93,6 @@ public class PPolygonMeshInstance extends PNode implements Serializable
             m_material = pPolygonMeshInstance.getMaterialCopy();
         else
             m_material = pPolygonMeshInstance.getGeometry().getMaterialCopy();
-//        applyMaterial();
     }
 
     /**
@@ -114,18 +108,20 @@ public class PPolygonMeshInstance extends PNode implements Serializable
     public PPolygonMeshInstance(String name, PPolygonMesh geometry, PMatrix origin, PScene pscene, boolean bApplyMaterial)
     {
         super(name, null, null, new PTransform(origin));
-        
+        m_PScene = pscene;
+        initializeStates(pscene);
         if (geometry != null)
         {
-            m_PScene = pscene;
-            initializeStates(pscene);
             
             m_geometry = geometry;
             m_geometry.adjustReferenceCount(1);
 
             m_instance = new SharedMesh(getName(), m_geometry.getGeometry());
 
-            m_material = new PMeshMaterial(m_geometry.getMaterialCopy());
+            if (m_geometry.getMaterialRef() != null)
+                m_material = new PMeshMaterial(m_geometry.getMaterialRef());
+            else
+                m_material = new PMeshMaterial();
             
             if (bApplyMaterial == true)
                 applyMaterial();
@@ -187,52 +183,6 @@ public class PPolygonMeshInstance extends PNode implements Serializable
             return null;
         return m_instance;
     }
-    
-    @Override
-    public void draw(PRenderer renderer)
-    {
-        if (m_geometry != null && collidable)
-        {
-            // Set world origin
-            PMatrix origin       = getTransform().getWorldMatrix(false);
-            renderer.setOrigin(origin);
-            
-            // Draw bounding volume
-            m_geometry.draw(renderer);
-        }
-                
-        // TODO is this needed? .... draw mesh kids - mesh that belongs to a model...
-        for (int i = 0; i < getChildrenCount(); i++) 
-            getChild(i).drawAll(renderer);
-    }
-    
-    public GLSLShaderObjectsState getShaderState()
-    {
-        return m_shaderState;
-    }
-    
-    public void setShaderState(GLSLShaderObjectsState shader) 
-    {
-        if (shader == null)
-        {
-            if (m_shaderState != null)
-                m_shaderState.setEnabled(false);
-            m_shaderState = null;
-            m_instance.updateRenderState();
-        }
-        else
-        {
-            m_shaderState = shader;
-        
-            if (m_instance == null)
-                m_instance = new SharedMesh(getName(), m_geometry.getGeometry());
-        
-            m_instance.setRenderState(m_shaderState);
-            m_shaderState.setEnabled(true);
-        }
-        
-        setDirty(true, true); // TODO is this needed?
-    }
 
     public boolean isUseGeometryMaterial() 
     {
@@ -258,21 +208,14 @@ public class PPolygonMeshInstance extends PNode implements Serializable
     
     public void applyShader()
     {
-        applyShader(0);
-    }
-
-    public void applyShader(int index)
-    {
-        if (m_material == null) // no use in trying
-        {
-            logger.severe("Cannot apply shaders without a material!");
-            return; // Abort
+        if (m_material.getShader() != null) {
+            ShaderProperty[] props = m_material.getShader().getProperties();
+            List<ShaderProperty> propCollection = new FastList<ShaderProperty>();
+            for (ShaderProperty prop : props) 
+                propCollection.add(prop);
+            ShaderUtils.assignProperties(propCollection, m_materialStates.getShaderState());
+            m_material.getShader().applyToRenderStates(this);
         }
-        
-        if (m_material.getShader(index) != null)
-            m_material.getShader(index).applyToMesh(this);
-        else
-            logger.severe("Requested shader was null! (index was " + index + ", shader array length was " + m_material.getShaders().length);
     }
 
     /**
@@ -302,7 +245,7 @@ public class PPolygonMeshInstance extends PNode implements Serializable
         {
             for (int i = 0; i < numNeeded; ++i)
             {
-                TextureMaterialProperties texProps = m_material.getTexture(i);
+                TextureMaterialProperties texProps = m_material.getTextureRef(i);
                 if (texProps != null)
                     m_materialStates.setTexture(texProps.loadTexture(m_PScene.getRepository()), i);
                 else
@@ -315,12 +258,21 @@ public class PPolygonMeshInstance extends PNode implements Serializable
 
         m_materialStates.applyToGeometry(m_instance);
         
-        if (m_material.getShader() != null)
-            m_material.getShader().applyToMesh(this);
-        else
-            setShaderState(null);
+        if (m_material.getShaderCount() > 0)
+            m_material.getShader().applyToRenderStates(this);
 
         m_instance.updateRenderState();
+    }
+
+    public PMeshMaterialStates getMaterialStates() {
+        if (m_materialStates == null) {
+            logger.severe("Requested material states but they werent ready...");
+            if (m_PScene != null)
+                initializeStates(m_PScene);
+            else
+                logger.severe("And worse, the pscene is null!");
+        }
+        return m_materialStates;
     }
     
     public PMeshMaterial getMaterialRef() 

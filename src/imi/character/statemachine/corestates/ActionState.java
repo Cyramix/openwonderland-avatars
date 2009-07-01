@@ -19,7 +19,6 @@ package imi.character.statemachine.corestates;
 
 import imi.character.statemachine.GameState;
 import imi.character.statemachine.GameContext;
-import imi.scene.animation.AnimationComponent.PlaybackMode;
 import imi.scene.animation.AnimationListener.AnimationMessageType;
 
 /**
@@ -59,7 +58,10 @@ public class ActionState extends GameState
     {
         return true;
     }
-    
+
+    /**
+     * {@inheritDoc InputClient}
+     */
     @Override
     protected void stateExit(GameContext owner)
     {
@@ -68,7 +70,10 @@ public class ActionState extends GameState
         if (context.getSkeleton() != null)
             context.getSkeleton().getAnimationState().setReverseAnimation(false);
     }
-    
+
+    /**
+     * {@inheritDoc InputClient}
+     */
     @Override
     protected void stateEnter(GameContext owner)
     {       
@@ -80,7 +85,7 @@ public class ActionState extends GameState
         // to exit the state
         if (context.getSkeleton() != null)
         {
-            if (owner.getCharacter().getAttributes().isUseSimpleStaticModel() ||
+            if (owner.getCharacter().getCharacterParams().isUseSimpleStaticModel() ||
                     context.getSkeleton().getAnimationComponent().findCycle(getAnimationName(), 0) == -1)
                 bPlayedOnce = true;
         }
@@ -88,7 +93,10 @@ public class ActionState extends GameState
         // Stop the character
         context.getController().stop();
     }
-    
+
+    /**
+     * {@inheritDoc InputClient}
+     */
     @Override
     public void update(float deltaTime)
     {

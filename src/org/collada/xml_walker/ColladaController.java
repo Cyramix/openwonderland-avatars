@@ -29,9 +29,6 @@ public class ColladaController
 {
     private String  m_identifier = null;
     private String  m_name = null;
-
-    private PColladaSkin m_skin = null;
-
     public ColladaController(Controller colladaController)
     {
         m_identifier = colladaController.getId();

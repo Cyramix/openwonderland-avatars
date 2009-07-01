@@ -17,7 +17,6 @@
  */
 package imi.scene.animation.channel;
 
-import com.jme.math.Vector3f;
 import imi.scene.PJoint;
 import imi.scene.PMatrix;
 import imi.scene.animation.AnimationState;

@@ -18,7 +18,6 @@
 package imi.scene.animation.channel;
 
 import imi.scene.animation.*;
-import imi.scene.animation.channel.PJointChannel;
 import imi.scene.PJoint;
 import imi.scene.PMatrix;
 import imi.utils.Interpolator;
@@ -370,7 +369,7 @@ public class PMatrix_JointChannel implements PJointChannel, Serializable
         calculateAverageStepTime();
     }
 
-    protected class PMatrixKeyframe implements Serializable
+    protected static class PMatrixKeyframe implements Serializable
     {
         /** Serialization version number **/
         private static final long serialVersionUID = 1l;

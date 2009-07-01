@@ -5,7 +5,6 @@
 
 package imi.scene.utils.visualizations;
 
-import imi.scene.boundingvolumes.PSphere;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import com.jme.animation.SkinNode;

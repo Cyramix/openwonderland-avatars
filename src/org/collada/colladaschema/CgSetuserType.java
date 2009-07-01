@@ -25,7 +25,7 @@
 
 package org.collada.colladaschema;
 
-import java.util.ArrayList;
+import javolution.util.FastTable;
 import java.util.List;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -230,7 +230,7 @@ public class CgSetuserType {
      */
     public List<CgSetparam> getSetparams() {
         if (setparams == null) {
-            setparams = new ArrayList<CgSetparam>();
+            setparams = new FastTable<CgSetparam>();
         }
         return this.setparams;
     }
@@ -375,7 +375,7 @@ public class CgSetuserType {
      */
     public List<JAXBElement<?>> getSampler1DsAndHalf4X1sAndHalf4s() {
         if (sampler1DsAndHalf4X1SAndHalf4S == null) {
-            sampler1DsAndHalf4X1SAndHalf4S = new ArrayList<JAXBElement<?>>();
+            sampler1DsAndHalf4X1SAndHalf4S = new FastTable<JAXBElement<?>>();
         }
         return this.sampler1DsAndHalf4X1SAndHalf4S;
     }

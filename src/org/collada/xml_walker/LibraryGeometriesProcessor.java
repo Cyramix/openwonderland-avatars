@@ -17,12 +17,12 @@
  */
 package org.collada.xml_walker;
 
-import java.util.ArrayList;
+import javolution.util.FastTable;
 import java.util.List;
 import org.collada.colladaschema.Geometry;
 import org.collada.colladaschema.LibraryGeometries;
 
-import imi.loaders.collada.Collada;
+import imi.loaders.Collada;
 
 
 
@@ -35,7 +35,7 @@ import imi.loaders.collada.Collada;
  */
 public class LibraryGeometriesProcessor extends Processor
 {
-    private ArrayList<Processor> children = null;
+    private FastTable<Processor> children = null;
     private String m_CurrentMeshName = null;
     
     /**
@@ -50,7 +50,7 @@ public class LibraryGeometriesProcessor extends Processor
         super(pCollada, pGeometries, pParent);
 
         List<Geometry> geoms = pGeometries.getGeometries();
-        children = new ArrayList();
+        children = new FastTable();
         for(Geometry g : geoms)
         {
             m_CurrentMeshName = g.getId();

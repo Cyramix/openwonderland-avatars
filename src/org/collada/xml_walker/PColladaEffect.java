@@ -19,9 +19,8 @@ package org.collada.xml_walker;
 
 import org.collada.colladaschema.Technique;
 import java.util.List;
-import imi.scene.polygonmodel.parts.PMeshMaterial;
+import imi.scene.polygonmodel.PMeshMaterial;
 import com.jme.renderer.ColorRGBA;
-import com.jme.scene.state.CullState.Face;
 import org.collada.colladaschema.Extra;
 import org.collada.colladaschema.ProfileCOMMON.Technique.Blinn;
 import org.collada.colladaschema.ProfileCOMMON.Technique.Lambert;
@@ -40,13 +39,13 @@ import org.collada.colladaschema.ProfileCOMMON;
 
 import imi.utils.FileUtils;
 
-import imi.loaders.collada.Collada;
-import imi.loaders.repository.Repository;
-import imi.scene.shader.programs.NormalAndSpecularMapShader;
-import imi.scene.shader.programs.NormalMapShader;
+import imi.loaders.Collada;
+import imi.repository.Repository;
+import imi.shader.programs.NormalAndSpecularMapShader;
+import imi.shader.programs.NormalMapShader;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
+import javolution.util.FastTable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.w3c.dom.Element;
@@ -72,20 +71,17 @@ public class PColladaEffect
 
     private int             m_shininess                 = 0;
     private PColladaColor   m_ReflectiveColor           = new PColladaColor();
-    private float           m_fReflectivity             = 0.0f;
 
     /** Transparency information **/
     private PColladaColor   m_TransparentColor          = new PColladaColor();
-    private float           m_fTransparency             = 0.0f;
     private int             m_nTransparencyMode         = -1; // -1 no transparency, 0 represents RGB_ZERO, 1 represents A_ONE
-    private float           m_fIndexOfRefraction        = 0.0f;
 
     /** Emissive map     **/
     private String          m_EmissiveImageFilename     = null;
     /** Ambient map    **/
     private String          m_AmbientImageFilename      = null;
     /** Treated as the default diffuse map  **/
-    private List<String>    m_DiffuseImageFilename      = new ArrayList<String>();
+    private List<String>    m_DiffuseImageFilename      = new FastTable<String>();
     /** Interpreted as a specular map       **/
     private String          m_SpecularImageFilename     = null;
     private String          m_ReflectiveImageFilename   = null;
@@ -133,10 +129,10 @@ public class PColladaEffect
         m_shininess = (int)processFloatAttribute(pBlinn.getShininess());
 
         m_ReflectiveImageFilename = processColorOrTexture(pBlinn.getReflective(), m_ReflectiveColor);
-        m_fReflectivity = processFloatAttribute(pBlinn.getReflectivity());
+        
         processTransparent(pBlinn.getTransparent(), pBlinn.getTransparency());
-        m_fTransparency = processFloatAttribute(pBlinn.getTransparency());
-        m_fIndexOfRefraction = processFloatAttribute(pBlinn.getIndexOfRefraction());
+        
+        
     }
 
     //  Initializes the ColladaMaterial based on a phong effect.
@@ -153,10 +149,9 @@ public class PColladaEffect
         m_shininess = (int)processFloatAttribute(pPhong.getShininess());
 
         m_ReflectiveImageFilename = processColorOrTexture(pPhong.getReflective(), m_ReflectiveColor);
-        m_fReflectivity = processFloatAttribute(pPhong.getReflectivity());
+
         processTransparent(pPhong.getTransparent(), pPhong.getTransparency());
-        m_fTransparency = processFloatAttribute(pPhong.getTransparency());
-        m_fIndexOfRefraction = processFloatAttribute(pPhong.getIndexOfRefraction());
+        
     }
 
     //  Initializes the ColladaMaterial based on a lambert effect.
@@ -170,10 +165,9 @@ public class PColladaEffect
         m_DiffuseImageFilename = processDiffuseColorsOrTextures(pLambert.getDiffuse(), m_DiffuseColor);
         
         m_ReflectiveImageFilename = processColorOrTexture(pLambert.getReflective(), m_ReflectiveColor);
-        m_fReflectivity = processFloatAttribute(pLambert.getReflectivity());
+        
         processTransparent(pLambert.getTransparent(), pLambert.getTransparency());
-        m_fTransparency = processFloatAttribute(pLambert.getTransparency());
-        m_fIndexOfRefraction = processFloatAttribute(pLambert.getIndexOfRefraction());
+        
     }
     
     
@@ -194,7 +188,24 @@ public class PColladaEffect
                         // only grab texture zero and assign it as the normal map
                         if (textureList.getLength() > 0)
                         {
-                            m_NormalMapImageFilename = getTextureFilename(textureList.item(0).getAttributes().getNamedItem("texture").getTextContent());
+                            String stringID = textureList.item(0).getAttributes().getNamedItem("texture").getTextContent();
+                            m_NormalMapImageFilename = getTextureFilename(stringID);
+                            if (m_NormalMapImageFilename == null) // oh no! try something!
+                            {
+                                // HACK trying to save the normal map
+                                //System.out.println("  HACK  HACK  HACK   original string:   " + stringID);
+                                stringID = stringID.substring(stringID.indexOf("file"), stringID.lastIndexOf("-"));
+                                //System.out.println("  HACK  HACK  HACK   new string:   " + stringID);
+                                List<Image> list = m_pCollada.getLibraryImages().getImages();
+                                for (Image image : list)
+                                {
+                                    if (image.getId().equals(stringID))
+                                    {
+                                        m_NormalMapImageFilename = image.getInitFrom();
+                                        break;
+                                    }
+                                }
+                            }
                             m_NormalMapImageFilename = FileUtils.getShortFilename(m_NormalMapImageFilename);
                         }
                     }
@@ -238,7 +249,9 @@ public class PColladaEffect
                 for (int i = 0; i < m_DiffuseImageFilename.size(); ++i)
                 {
                     fileLocation = new URL(currentFolder + locateSizedImage(m_DiffuseImageFilename.get(i), "512x512"));
-                    result.setTexture(fileLocation, textureCount);
+                    if (!FileUtils.checkURL(fileLocation))
+                        throw new RuntimeException("URL failed to open stream " + fileLocation);
+                    result.setTexture(textureCount, fileLocation);
                     textureCount++;
                 }
             }
@@ -249,27 +262,35 @@ public class PColladaEffect
             if (bNormalMapped)
             {
                 fileLocation = new URL(currentFolder + locateSizedImage(m_NormalMapImageFilename, "512x512"));
-                result.setTexture(fileLocation, 1);
+                if (!FileUtils.checkURL(fileLocation))
+                    throw new RuntimeException("URL failed to open stream " + fileLocation);
+                result.setTexture(1,fileLocation);
                 textureCount++;
             }
             if (bSpecularMapped)
             {
                 fileLocation = new URL(currentFolder + locateSizedImage(m_SpecularImageFilename, "512x512"));
-                result.setTexture(fileLocation, 2);
+                if (!FileUtils.checkURL(fileLocation))
+                    throw new RuntimeException("URL failed to open stream " + fileLocation);
+                result.setTexture(2,fileLocation);
                 textureCount++;
             }
 
             if (m_EmissiveImageFilename != null && m_EmissiveImageFilename.length() > 0)
             {
                 fileLocation = new URL(currentFolder + locateSizedImage(m_EmissiveImageFilename, "512x512"));
-                result.setTexture(fileLocation, textureCount);
+                if (!FileUtils.checkURL(fileLocation))
+                    throw new RuntimeException("URL failed to open stream " + fileLocation);
+                result.setTexture(textureCount, fileLocation);
                 textureCount++;
             }
 
             if (m_AmbientImageFilename != null && m_AmbientImageFilename.length() > 0)
             {
                 fileLocation = new URL(currentFolder + locateSizedImage(m_AmbientImageFilename, "512x512"));
-                result.setTexture(fileLocation, textureCount);
+                if (!FileUtils.checkURL(fileLocation))
+                    throw new RuntimeException("URL failed to open stream " + fileLocation);
+                result.setTexture(textureCount, fileLocation);
                 textureCount++;
             }
 
@@ -279,7 +300,7 @@ public class PColladaEffect
             {
                 // WORLD MANAGER STRIKES AGAIN!
                 if (m_pCollada.getPScene() != null)
-                    result.setShader(repo.newShader(NormalAndSpecularMapShader.class));
+                    result.setDefaultShader(repo.newShader(NormalAndSpecularMapShader.class));
                 else
                     Logger.getLogger(this.getClass().toString()).log(Level.SEVERE, "Unable to retrieve worldmanager, shaders unset. PColladaMaterial.java : 217");
             }
@@ -287,7 +308,7 @@ public class PColladaEffect
             {
                 // WORLD MANAGER STRIKES AGAIN!
                 if (m_pCollada.getPScene() != null) // BEWARE THE HARDCODED NUMBER BELOW!
-                    result.setShader(repo.newShader(NormalMapShader.class));
+                    result.setDefaultShader(repo.newShader(NormalMapShader.class));
                 else
                     Logger.getLogger(this.getClass().toString()).log(Level.SEVERE, "Unable to retrieve worldmanager, shaders unset. PColladaMaterial.java : 217");
 
@@ -341,10 +362,10 @@ public class PColladaEffect
         {
             List<Double> c = pAttribute.getColor().getValues();
 
-            pColor.Red   = c.get(0).floatValue();
-            pColor.Green = c.get(1).floatValue();
-            pColor.Blue  = c.get(2).floatValue();
-            pColor.Alpha = c.get(3).floatValue();
+            pColor.red   = c.get(0).floatValue();
+            pColor.green = c.get(1).floatValue();
+            pColor.blue  = c.get(2).floatValue();
+            pColor.alpha = c.get(3).floatValue();
 
             return null;
         }
@@ -357,7 +378,7 @@ public class PColladaEffect
         if (diffuse == null)
             return null; 
         
-        ArrayList<String> result = new ArrayList<String>();
+        FastTable<String> result = new FastTable<String>();
         
         if (diffuse.getTexture() != null)
         {
@@ -381,10 +402,10 @@ public class PColladaEffect
         {
             List<Double> c = diffuse.getColor().getValues();
 
-            color.Red   = c.get(0).floatValue();
-            color.Green = c.get(1).floatValue();
-            color.Blue  = c.get(2).floatValue();
-            color.Alpha = c.get(3).floatValue();
+            color.red   = c.get(0).floatValue();
+            color.green = c.get(1).floatValue();
+            color.blue  = c.get(2).floatValue();
+            color.alpha = c.get(3).floatValue();
 
             return null;
         }
@@ -424,11 +445,6 @@ public class PColladaEffect
                 m_nTransparencyMode = 1; // A_ONE
             else // No transparency
                 m_nTransparencyMode = -1;
-        }
-        
-        if (m_nTransparencyMode >= 0) // some kind of transparency
-        {
-            m_fTransparency = (float) ((transparency != null) ? transparency.getFloat().getValue() : 1.0f);
         }
     }
 
@@ -515,11 +531,11 @@ public class PColladaEffect
         }
         else
         {
-            if ((pColor.Red == 1.0f && pColor.Green == 1.0f && pColor.Blue == 1.0f) &&
+            if ((pColor.red == 1.0f && pColor.green == 1.0f && pColor.blue == 1.0f) &&
                     (element == 0 || element == 2))
                 result = ColorRGBA.black;
             else
-                result = new ColorRGBA(pColor.Red, pColor.Green, pColor.Blue, pColor.Alpha);
+                result = new ColorRGBA(pColor.red, pColor.green, pColor.blue, pColor.alpha);
         }
 
         return result;

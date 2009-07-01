@@ -17,26 +17,17 @@
  */
 package imi.scene.polygonmodel;
 
-import imi.utils.PMathUtils;
-import imi.scene.polygonmodel.parts.polygon.PPolygonNormal;
-import imi.scene.polygonmodel.parts.polygon.PPolygonVertexIndices;
-import imi.scene.polygonmodel.parts.polygon.PPolygonColor;
-import imi.scene.polygonmodel.parts.polygon.PPolygonTexCoord;
-import imi.scene.polygonmodel.parts.polygon.PPolygonPosition;
-import imi.scene.boundingvolumes.PSphere;
-import imi.scene.boundingvolumes.PCube;
+import imi.utils.MathUtils;
+import imi.scene.PSphere;
+import imi.scene.PCube;
 import imi.scene.PNode;
-import imi.scene.polygonmodel.parts.*;
-import imi.scene.utils.*;
 import com.jme.math.Vector2f;
 import com.jme.math.Vector3f;
 import com.jme.renderer.ColorRGBA;
 import com.jme.scene.TriMesh;
-import com.jme.scene.VBOInfo;
 import imi.loaders.PPolygonTriMeshAssembler;
-import imi.loaders.repository.SharedAsset;
+import imi.repository.SharedAsset;
 import imi.scene.PTransform;
-import imi.scene.polygonmodel.parts.polygon.PPolygon;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
@@ -65,7 +56,7 @@ public class PPolygonMesh extends PNode implements Serializable
     /**
      * <code>PMeshMaterial</code> is a reference to the Material common to all <code>PPolygon</code>s in this mesh.
      */
-    private PMeshMaterial   m_pMaterial         = null;
+    private PMeshMaterial   material         = null;
 
     //  Eventually we will choose one shape to serve as the bounding volume.
     private transient PCube     m_BoundingCube      = new PCube();
@@ -122,7 +113,7 @@ public class PPolygonMesh extends PNode implements Serializable
             m_Polygons.add(newPoly);
         }
         
-        m_pMaterial = new PMeshMaterial(other.m_pMaterial);
+        material = new PMeshMaterial(other.material);
 
         m_BoundingCube.set(other.m_BoundingCube.getMin(), other.m_BoundingCube.getMax());
         m_BoundingSphere.set(other.m_BoundingSphere.getCenterRef(), other.m_BoundingSphere.getRadius());
@@ -205,21 +196,23 @@ public class PPolygonMesh extends PNode implements Serializable
         m_BoundingSphere.clear();
     }
 
+    /**
+     * Get the internal polygons
+     * @return
+     */
     public Iterable<PPolygon> getPolygons() {
         return m_Polygons;
     }
 
     /**
-     * This method uses the provider to reconstruct the jME TriMesh based on
-     * current PPolygon data *IF* the inherited PNode.isDirty() method returns true.
-     * @param assembler An assembler to use for reconstruction.
+     * This method reconstruct the jME TriMesh based on current PPolygon data
+     * if the inherited PNode.isDirty() method returns true.
      */
-    public void submit(PPolygonTriMeshAssembler assembler) 
+    public void submit() 
     {
         if (isDirty() && m_bSubmitGeometry)
         {
-            assembler.reconstructTriMesh(m_Geometry, this);
-            
+            PPolygonTriMeshAssembler.reconstructTriMesh(m_Geometry, this);
             setDirty(false, false); // No longer dirty now
         }
     }
@@ -231,12 +224,6 @@ public class PPolygonMesh extends PNode implements Serializable
     public TriMesh getGeometry()
     {
         return m_Geometry;
-    }
- 
-    @Override
-    public void draw(PRenderer renderer)
-    {
-        renderer.drawPPolygonMesh(this);
     }
  
     /**
@@ -260,7 +247,7 @@ public class PPolygonMesh extends PNode implements Serializable
      */
     public PMeshMaterial getMaterialRef()
     {
-        return m_pMaterial;
+        return material;
     }
 
     /**
@@ -269,10 +256,9 @@ public class PPolygonMesh extends PNode implements Serializable
      */
     public PMeshMaterial getMaterialCopy()
     {
-        if (m_pMaterial != null)
-            return new PMeshMaterial(m_pMaterial);
-        else
-            return null;
+        if (material != null)
+            return new PMeshMaterial(material);
+        else return null;
     }
 
     /**
@@ -281,17 +267,10 @@ public class PPolygonMesh extends PNode implements Serializable
      */
     public void setMaterial(PMeshMaterial pMaterial)
     {
-      	if (m_pMaterial == pMaterial)
+      	if (material == pMaterial)
             return;
 
-        if (m_pMaterial != null)
-            m_pMaterial.adjustReferenceCount(-1);
-
-        m_pMaterial = pMaterial;
-        // copy sidedness
-
-        if (m_pMaterial != null)
-            m_pMaterial.adjustReferenceCount(1);
+        material = pMaterial;
     }
 
     /**
@@ -371,7 +350,10 @@ public class PPolygonMesh extends PNode implements Serializable
         return(m_bInBatch);
     }
     
-    
+    /**
+     * Check if the debug flag is enabled
+     * @return
+     */
     public boolean isDebugEnabled()
     {
         return m_bDebugInfo;
@@ -973,7 +955,7 @@ public class PPolygonMesh extends PNode implements Serializable
 
         System.out.println(spacing + "PolygonMesh:");
         System.out.println(spacing + "   Name:           " + getName());
-        System.out.println(spacing + "   Material:       " + ((m_pMaterial != null) ? m_pMaterial.getName() : "(None)"));
+        System.out.println(spacing + "   Material:       " + ((material != null) ? material.getName() : "(None)"));
         m_BoundingCube.dump(spacing + "   ", "BoundingCube");
         m_BoundingSphere.dump(spacing + "   ", "BoundingSphere");
         System.out.println(spacing + "   SmoothNormals:  " + ((m_bSmoothNormals) ? "Yes" : "No"));
@@ -1221,8 +1203,8 @@ public class PPolygonMesh extends PNode implements Serializable
         {
             pPosition = getPosition(i);
             
-            PMathUtils.min(MinCorner, pPosition.m_Position);
-            PMathUtils.max(MaxCorner, pPosition.m_Position);
+            MathUtils.min(MinCorner, pPosition.m_Position);
+            MathUtils.max(MaxCorner, pPosition.m_Position);
         }
         
         m_BoundingCube.set(MinCorner, MaxCorner);
@@ -1461,7 +1443,7 @@ public class PPolygonMesh extends PNode implements Serializable
             return false;
         }
         final PPolygonMesh other = (PPolygonMesh) obj;
-        if (this.m_pMaterial != other.m_pMaterial && (this.m_pMaterial == null || !this.m_pMaterial.equals(other.m_pMaterial))) {
+        if (this.material != other.material && (this.material == null || !this.material.equals(other.material))) {
             return false;
         }
         if (this.m_bSmoothNormals != other.m_bSmoothNormals) {
@@ -1494,7 +1476,7 @@ public class PPolygonMesh extends PNode implements Serializable
     @Override
     public int hashCode() {
         int hash = 3;
-        hash = 73 * hash + (this.m_pMaterial != null ? this.m_pMaterial.hashCode() : 0);
+        hash = 73 * hash + (this.material != null ? this.material.hashCode() : 0);
         hash = 73 * hash + (this.m_bSmoothNormals ? 1 : 0);
         hash = 73 * hash + (this.m_Positions != null ? this.m_Positions.hashCode() : 0);
         hash = 73 * hash + (this.m_Normals != null ? this.m_Normals.hashCode() : 0);

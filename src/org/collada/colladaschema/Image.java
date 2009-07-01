@@ -26,7 +26,7 @@
 package org.collada.colladaschema;
 
 import java.math.BigInteger;
-import java.util.ArrayList;
+import javolution.util.FastTable;
 import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -180,7 +180,7 @@ public class Image {
      */
     public List<String> getData() {
         if (data == null) {
-            data = new ArrayList<String>();
+            data = new FastTable<String>();
         }
         return this.data;
     }
@@ -211,7 +211,7 @@ public class Image {
      */
     public List<Extra> getExtras() {
         if (extras == null) {
-            extras = new ArrayList<Extra>();
+            extras = new FastTable<Extra>();
         }
         return this.extras;
     }

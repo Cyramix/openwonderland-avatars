@@ -17,13 +17,12 @@
  */
 package org.collada.xml_walker;
 
-import java.util.ArrayList;
+import javolution.util.FastTable;
 import java.util.List;
 import org.collada.colladaschema.LibraryMaterials;
 import org.collada.colladaschema.Material;
 
-import imi.loaders.collada.Collada;
-import org.collada.colladaschema.InstanceEffect;
+import imi.loaders.Collada;
 
 
 
@@ -33,9 +32,7 @@ import org.collada.colladaschema.InstanceEffect;
  * @author paulby
  */
 public class LibraryMaterialsProcessor extends Processor {
-    
-    private ArrayList<MaterialProcessor> materialProcessors = new ArrayList();
-
+ 
     
     //  Constructor.
     public LibraryMaterialsProcessor(Collada pCollada, LibraryMaterials pLibraryMaterials, Processor pParent)

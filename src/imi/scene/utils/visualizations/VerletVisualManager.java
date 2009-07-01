@@ -26,15 +26,16 @@ import javolution.util.FastList;
 import org.jdesktop.mtgame.Entity;
 import org.jdesktop.mtgame.NewFrameCondition;
 import org.jdesktop.mtgame.ProcessorArmingCollection;
-import org.jdesktop.mtgame.ProcessorArmingCondition;
 import org.jdesktop.mtgame.ProcessorComponent;
 import org.jdesktop.mtgame.RenderComponent;
 import org.jdesktop.mtgame.WorldManager;
+import org.jdesktop.wonderland.common.ExperimentalAPI;
 
 /**
  * This class handles the visual representations of Verlet system components.
  * @author Ronald E Dahlgren
  */
+@ExperimentalAPI
 public class VerletVisualManager extends Entity
 {
     /** Convenience reference to the manager of OUR VERY WORLD **/
@@ -91,7 +92,7 @@ public class VerletVisualManager extends Entity
         m_objects.add(visuals);
 
         m_jmeRoot.attachChild(visuals.m_objectRoot);
-        //m_jmeRoot.attachChild(visuals.m_constraintLine);
+//        m_jmeRoot.attachChild(visuals.m_constraintLine);
 
         // hard code a single update
         visuals.updateConstraintVisuals();

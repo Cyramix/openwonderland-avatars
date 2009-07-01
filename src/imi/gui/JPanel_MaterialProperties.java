@@ -11,10 +11,11 @@
 
 package imi.gui;
 
+import imi.scene.PScene;
 import imi.scene.polygonmodel.PPolygonMeshInstance;
-import imi.scene.polygonmodel.parts.PMeshMaterial;
-import imi.scene.utils.tree.MeshInstanceSearchProcessor;
-import imi.scene.utils.tree.TreeTraverser;
+import imi.scene.polygonmodel.PMeshMaterial;
+import imi.scene.utils.traverser.MeshInstanceSearchProcessor;
+import imi.scene.utils.traverser.TreeTraverser;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Toolkit;
@@ -47,7 +48,7 @@ public class JPanel_MaterialProperties extends javax.swing.JPanel {
 ////////////////////////////////////////////////////////////////////////////////
 
     private ArrayList<URL>                  m_textureLocations  = new ArrayList<URL>();
-    private SceneEssentials                 m_sceneData         = null;
+    private PScene                          m_pscene            = null;
     private WorldManager                    m_wm                = null;
     private PPolygonMeshInstance            m_mesh              = null; // The mesh that owns the material
     private PMeshMaterial                   m_mat               = null; // The data model
@@ -70,9 +71,9 @@ public class JPanel_MaterialProperties extends javax.swing.JPanel {
      * @param sceneData
      * @param parent
      */
-    public JPanel_MaterialProperties(SceneEssentials sceneData, TextureCreator parent) {
-        m_sceneData = sceneData;
-        m_wm        = sceneData.getWM();
+    public JPanel_MaterialProperties(PScene pscene, WorldManager wm, TextureCreator parent) {
+        m_pscene    = pscene;
+        m_wm        = wm;
         m_parent    = parent;
         initComponents();
         initMeshList();
@@ -202,7 +203,7 @@ public class JPanel_MaterialProperties extends javax.swing.JPanel {
         if (m_mesh == null || m_mat == null)
             return;
         if (m_shaderPropPanel != null && m_shaderPropPanel.getShader() != null)
-            m_mat.setShader(m_shaderPropPanel.getShader());
+            m_mat.setDefaultShader(m_shaderPropPanel.getShader());
         loadTexturesAndApplyToMesh();
     }
 
@@ -212,10 +213,6 @@ public class JPanel_MaterialProperties extends javax.swing.JPanel {
 
     public ArrayList<URL> getTextureLocations() {
         return m_textureLocations;
-    }
-
-    public SceneEssentials getSceneData() {
-        return m_sceneData;
     }
 
     public PPolygonMeshInstance getMeshInstance() {
@@ -235,8 +232,8 @@ public class JPanel_MaterialProperties extends javax.swing.JPanel {
         m_textureLocations = textureLocations;
     }
 
-    public void setSceneData(SceneEssentials sceneData) {
-        m_sceneData = sceneData;
+    public void setPScene(PScene scene) {
+        m_pscene = scene;
     }
 
     public void setMeshInstance(PPolygonMeshInstance meshInstance) {
@@ -473,12 +470,12 @@ public class JPanel_MaterialProperties extends javax.swing.JPanel {
 ////////////////////////////////////////////////////////////////////////////////
 
     public void initMeshList() {
-        if (m_sceneData == null)
+        if (m_pscene == null)
             return;
 
         MeshInstanceSearchProcessor proc = new MeshInstanceSearchProcessor();
         proc.setProcessor();
-        TreeTraverser.breadthFirst(m_sceneData.getPScene(), proc);
+        TreeTraverser.breadthFirst(m_pscene, proc);
         m_meshInstances = proc.getMeshInstances();
 
         DefaultComboBoxModel model = new DefaultComboBoxModel(m_meshInstances);
@@ -502,9 +499,9 @@ public class JPanel_MaterialProperties extends javax.swing.JPanel {
         DefaultListModel newModel = new DefaultListModel();
         for (int i = 0; i < m_mesh.getGeometry().getNumberOfTextures(); ++i)
         {
-            if (m_mat.getTexture(i) != null) {
-                texName = "["+ i + "] " + m_mat.getTexture(i).getImageLocation();
-                m_textureLocations.add(m_mat.getTexture(i).getImageLocation());
+            if (m_mat.getTextureRef(i) != null) {
+                texName = "["+ i + "] " + m_mat.getTextureRef(i).getImageLocation();
+                m_textureLocations.add(m_mat.getTextureRef(i).getImageLocation());
                 newModel.addElement(texName);
             }
         }
@@ -529,9 +526,9 @@ public class JPanel_MaterialProperties extends javax.swing.JPanel {
         DefaultListModel newModel = new DefaultListModel();
         for (int i = 0; i < m_mesh.getGeometry().getNumberOfTextures(); ++i)
         {
-            if (m_mat.getTexture(i) != null) {
-                texName = "["+ i + "] " + m_mat.getTexture(i).getImageLocation();
-                m_textureLocations.add(m_mat.getTexture(i).getImageLocation());
+            if (m_mat.getTextureRef(i) != null) {
+                texName = "["+ i + "] " + m_mat.getTextureRef(i).getImageLocation();
+                m_textureLocations.add(m_mat.getTextureRef(i).getImageLocation());
                 newModel.addElement(texName);
             }            
         }
@@ -613,7 +610,7 @@ public class JPanel_MaterialProperties extends javax.swing.JPanel {
 // Helper Classes
 ////////////////////////////////////////////////////////////////////////////////
 
-    public class JComboBoxRenderer extends JLabel implements ListCellRenderer {
+    public static class JComboBoxRenderer extends JLabel implements ListCellRenderer {
 
         Border m_selectBorder   = null;
         Border m_unselectBorder = null;
@@ -637,9 +634,7 @@ public class JPanel_MaterialProperties extends javax.swing.JPanel {
                 String meshName = ((PPolygonMeshInstance) value).getName();
                 setText(meshName);
             }
-
             return this;
         }
-
     }
 }

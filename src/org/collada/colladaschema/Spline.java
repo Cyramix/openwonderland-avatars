@@ -25,7 +25,7 @@
 
 package org.collada.colladaschema;
 
-import java.util.ArrayList;
+import javolution.util.FastTable;
 import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -112,7 +112,7 @@ public class Spline {
      */
     public List<Source> getSources() {
         if (sources == null) {
-            sources = new ArrayList<Source>();
+            sources = new FastTable<Source>();
         }
         return this.sources;
     }
@@ -167,7 +167,7 @@ public class Spline {
      */
     public List<Extra> getExtras() {
         if (extras == null) {
-            extras = new ArrayList<Extra>();
+            extras = new FastTable<Extra>();
         }
         return this.extras;
     }
@@ -257,7 +257,7 @@ public class Spline {
          */
         public List<InputLocal> getInputs() {
             if (inputs == null) {
-                inputs = new ArrayList<InputLocal>();
+                inputs = new FastTable<InputLocal>();
             }
             return this.inputs;
         }
@@ -288,7 +288,7 @@ public class Spline {
          */
         public List<Extra> getExtras() {
             if (extras == null) {
-                extras = new ArrayList<Extra>();
+                extras = new FastTable<Extra>();
             }
             return this.extras;
         }

@@ -20,12 +20,12 @@ package imi.utils;
 import imi.scene.PJoint;
 import imi.scene.PMatrix;
 import imi.scene.PNode;
+import imi.scene.SkeletonNode;
+import imi.scene.SkinnedMeshJoint;
 import imi.scene.animation.AnimationComponent;
 import imi.scene.animation.AnimationCycle;
 import imi.scene.animation.AnimationGroup;
 import imi.scene.animation.channel.PMatrix_JointChannel;
-import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
-import imi.scene.polygonmodel.parts.skinned.SkinnedMeshJoint;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.ObjectStreamClass;
@@ -34,6 +34,7 @@ import java.util.HashMap;
 import javolution.util.FastCollection;
 import javolution.util.FastComparator;
 import javolution.util.FastList;
+import org.collada.colladaschema.Animation;
 
 /**
  * A specialized ObjectInputStream that reduces the size of serialized core
@@ -55,18 +56,6 @@ public class AvatarObjectOutputStream extends ObjectOutputStream {
     // don't have JME.  This is prone to typos, so should be replaced
     // by a more automatic system XXX
     private static String[] coreClass = new String[] {
-//        "imi.scene.animation.AnimationGroup",
-//        "javolution.util.FastList",
-//        "javolution.util.FastCollection",
-//        "javolution.util.FastComparator$Default",
-//        "javolution.util.FastComparator",
-//        "imi.scene.animation.COLLADA_JointChannel",
-//        "imi.scene.animation.PMatrixKeyframe",
-//        "imi.scene.animation.AnimationCycle",
-//        "imi.scene.animation.MS3D_JointChannel",
-//        "imi.scene.animation.AnimationComponent",
-//        "imi.scene.animation.VectorKeyframe",
-//        "imi.scene.PMatrix"
         AnimationGroup.class.getName(),
         FastList.class.getName(),
         FastCollection.class.getName(),

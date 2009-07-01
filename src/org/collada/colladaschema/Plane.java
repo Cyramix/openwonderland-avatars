@@ -25,7 +25,7 @@
 
 package org.collada.colladaschema;
 
-import java.util.ArrayList;
+import javolution.util.FastTable;
 import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -93,7 +93,7 @@ public class Plane {
      */
     public List<Double> getEquation() {
         if (equation == null) {
-            equation = new ArrayList<Double>();
+            equation = new FastTable<Double>();
         }
         return this.equation;
     }
@@ -124,7 +124,7 @@ public class Plane {
      */
     public List<Extra> getExtras() {
         if (extras == null) {
-            extras = new ArrayList<Extra>();
+            extras = new FastTable<Extra>();
         }
         return this.extras;
     }

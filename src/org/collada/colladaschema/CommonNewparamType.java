@@ -25,7 +25,7 @@
 
 package org.collada.colladaschema;
 
-import java.util.ArrayList;
+import javolution.util.FastTable;
 import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -144,7 +144,7 @@ public class CommonNewparamType {
      */
     public List<Double> getFloat4() {
         if (float4 == null) {
-            float4 = new ArrayList<Double>();
+            float4 = new FastTable<Double>();
         }
         return this.float4;
     }
@@ -173,7 +173,7 @@ public class CommonNewparamType {
      */
     public List<Double> getFloat2() {
         if (float2 == null) {
-            float2 = new ArrayList<Double>();
+            float2 = new FastTable<Double>();
         }
         return this.float2;
     }
@@ -226,7 +226,7 @@ public class CommonNewparamType {
      */
     public List<Double> getFloat3() {
         if (float3 == null) {
-            float3 = new ArrayList<Double>();
+            float3 = new FastTable<Double>();
         }
         return this.float3;
     }

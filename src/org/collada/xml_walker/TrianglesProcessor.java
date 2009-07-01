@@ -18,7 +18,7 @@
 package org.collada.xml_walker;
 
 import java.math.BigInteger;
-import java.util.ArrayList;
+import javolution.util.FastTable;
 import java.util.List;
 import com.jme.math.Vector3f;
 import com.jme.math.Vector2f;
@@ -29,10 +29,10 @@ import org.collada.colladaschema.Triangles;
 import org.collada.colladaschema.Vertices;
 
 import imi.scene.polygonmodel.PPolygonMesh;
-import imi.scene.polygonmodel.parts.PMeshMaterial;
-import imi.scene.polygonmodel.parts.polygon.PPolygon;
+import imi.scene.polygonmodel.PMeshMaterial;
+import imi.scene.polygonmodel.PPolygon;
 
-import imi.loaders.collada.Collada;
+import imi.loaders.Collada;
 
 
 
@@ -46,7 +46,7 @@ public class TrianglesProcessor extends Processor
 
     private int m_VertexOffset = 0;
 
-    private ArrayList<VertexDataSemantic> m_VertexDataSemantics = new ArrayList<VertexDataSemantic>();
+    private FastTable<VertexDataSemantic> m_VertexDataSemantics = new FastTable<VertexDataSemantic>();
 
     private VertexDataSemantic m_positionSemantic = null;
     private VertexDataSemantic m_normalSemantic   = null;
@@ -127,17 +127,6 @@ public class TrianglesProcessor extends Processor
     }
 
 
-    /**
-     * Gets array of triangle indices.
-     * 
-     * @return int[]
-     */
-    public int[] getTriangleIndices()
-    {
-        return(m_TriangleIndices);
-    }
-
-
     //  Gets the name of the Mesh containing the triangles.
     public String getMeshName()
     {
@@ -156,7 +145,7 @@ public class TrianglesProcessor extends Processor
     {
         pPolygonMesh.setName(getMeshName());
 
-        int []meshTriangles             = getTriangleIndices();
+        int []meshTriangles             = m_TriangleIndices;
 
         int index                       = 0;
         int polygonIndex                = 0;
@@ -316,7 +305,7 @@ public class TrianglesProcessor extends Processor
             PMeshMaterial pMaterial = m_effect.createMeshMaterial();
             if (pMaterial != null)
             {
-                pPolygonMesh.setNumberOfTextures(3); // at least three....
+                pPolygonMesh.setNumberOfTextures(8); // at least three....
                 pPolygonMesh.setMaterial(pMaterial);
             }
         }

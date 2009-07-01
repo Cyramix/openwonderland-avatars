@@ -26,7 +26,7 @@
 package org.collada.colladaschema;
 
 import java.math.BigInteger;
-import java.util.ArrayList;
+import javolution.util.FastTable;
 import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -133,7 +133,7 @@ public class InstanceMaterial {
      */
     public List<InstanceMaterial.Bind> getBinds() {
         if (binds == null) {
-            binds = new ArrayList<InstanceMaterial.Bind>();
+            binds = new FastTable<InstanceMaterial.Bind>();
         }
         return this.binds;
     }
@@ -162,7 +162,7 @@ public class InstanceMaterial {
      */
     public List<InstanceMaterial.BindVertexInput> getBindVertexInputs() {
         if (bindVertexInputs == null) {
-            bindVertexInputs = new ArrayList<InstanceMaterial.BindVertexInput>();
+            bindVertexInputs = new FastTable<InstanceMaterial.BindVertexInput>();
         }
         return this.bindVertexInputs;
     }
@@ -193,7 +193,7 @@ public class InstanceMaterial {
      */
     public List<Extra> getExtras() {
         if (extras == null) {
-            extras = new ArrayList<Extra>();
+            extras = new FastTable<Extra>();
         }
         return this.extras;
     }

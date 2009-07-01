@@ -56,7 +56,8 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name = "CharacterAttachmentParameters", propOrder = {
     "meshName",
     "jointToAttachOn",
-    "localSpaceTransform"
+    "localSpaceTransform",
+    "owningFileName"
 })
 public class xmlCharacterAttachmentParameters {
 
@@ -66,6 +67,8 @@ public class xmlCharacterAttachmentParameters {
     protected String jointToAttachOn;
     @XmlElement(name = "LocalSpaceTransform", required = true)
     protected xmlMatrix localSpaceTransform;
+    @XmlElement(name = "OwningFileName")
+    protected String owningFileName;
 
     /**
      * Gets the value of the meshName property.
@@ -137,6 +140,14 @@ public class xmlCharacterAttachmentParameters {
      */
     public void setLocalSpaceTransform(xmlMatrix value) {
         this.localSpaceTransform = value;
+    }
+
+    public String getOwningFileName() {
+        return owningFileName;
+    }
+
+    public void setOwningFileName(String value) {
+        this.owningFileName = value;
     }
 
 }

@@ -25,7 +25,7 @@
 
 package org.collada.colladaschema;
 
-import java.util.ArrayList;
+import javolution.util.FastTable;
 import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -89,7 +89,7 @@ public class Ellipsoid {
      */
     public List<Double> getSize() {
         if (size == null) {
-            size = new ArrayList<Double>();
+            size = new FastTable<Double>();
         }
         return this.size;
     }

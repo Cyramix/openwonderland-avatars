@@ -22,7 +22,7 @@ import org.collada.colladaschema.Geometry;
 import org.collada.colladaschema.Mesh;
 import org.collada.xml_walker.Processor;
 
-import imi.loaders.collada.Collada;
+import imi.loaders.Collada;
 
 
 

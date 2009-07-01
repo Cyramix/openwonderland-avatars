@@ -439,7 +439,7 @@ public class LayerPanel extends javax.swing.JPanel {
 // Support Classes
 ////////////////////////////////////////////////////////////////////////////////
 
-    public class CheckBoxCellRenderer extends DefaultTableCellRenderer {
+    public static class CheckBoxCellRenderer extends DefaultTableCellRenderer {
 
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean isFocused, int row, int col) {

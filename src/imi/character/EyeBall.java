@@ -20,11 +20,10 @@ package imi.character;
 import com.jme.image.Texture.MinificationFilter;
 import com.jme.math.Vector3f;
 import imi.scene.PMatrix;
-import imi.scene.PNode;
 import imi.scene.polygonmodel.PPolygonModelInstance;
-import imi.scene.polygonmodel.parts.PMeshMaterial;
-import imi.scene.polygonmodel.skinned.PPolygonSkinnedMeshInstance;
-import imi.utils.PMathUtils;
+import imi.scene.polygonmodel.PMeshMaterial;
+import imi.scene.polygonmodel.PPolygonSkinnedMeshInstance;
+import imi.utils.MathUtils;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -43,16 +42,16 @@ import org.jdesktop.mtgame.WorldManager;
  * @author Ronald E. Dahlgren
  * @author Shawn Kendall
  */
-public class EyeBall extends PPolygonSkinnedMeshInstance implements Serializable
+public final class EyeBall extends PPolygonSkinnedMeshInstance implements Serializable
 {
     /** Serialization version number **/
     private static final long serialVersionUID = 1l;
     /** The Character who owns this eyeball **/
-    private transient Character character = null;
+    private transient Character character;
     /** The Model Instance that owns this eyeball **/
-    private PPolygonModelInstance modelInst  = null;
+    private PPolygonModelInstance modelInst;
     /** World space coordinates of the view target **/
-    private Vector3f target = new Vector3f(0.0f, 1.0f, 0.0f);
+    private final Vector3f target = new Vector3f(0.0f, 1.0f, 0.0f);
 
     /** Used as a limiting factor to restrict the range of motion of the eyeball **/
     private float limitCone = 0.57f;
@@ -67,11 +66,17 @@ public class EyeBall extends PPolygonSkinnedMeshInstance implements Serializable
     /** Reference to the other side **/
     private EyeBall otherEye = null;
     /** Math utils execution context **/
-    private transient PMathUtils.MathUtilsContext mathContext = PMathUtils.getContext();
+    private transient MathUtils.MathUtilsContext mathContext = MathUtils.getContext();
+    /** algorithm scratch space **/
+    private transient Vector3f translationStorage = new Vector3f();
+    private transient Vector3f forwardVec = new Vector3f();
+    private transient Vector3f directionToTarget = new Vector3f();
+    private transient PMatrix eyeWorldMatrix = new PMatrix();
 
     /**
      * Construct a new eyeball using the provided mesh as the eye mesh, the model
      * instance provided is the eyeball's owner, and the pscene containing both.
+     * Arguments must not be null.
      * @param meshInstance The eyeball mesh
      * @param modelInst The owning model
      * @param pscene The owning pscene
@@ -84,17 +89,13 @@ public class EyeBall extends PPolygonSkinnedMeshInstance implements Serializable
         this.character = character;
     }
 
-    private transient Vector3f translationStorage = new Vector3f();
-    private transient Vector3f forwardVec = new Vector3f();
-    private transient Vector3f directionToTarget = new Vector3f();
-    private transient PMatrix eyeWorldMatrix = new PMatrix();
 
     /**
      * Performs the eyeball lookAt behavior.
      * @param matrix The matrix being modified
      * @param jointIndex Joint to modify
      */
-    protected void lookAtTarget(PMatrix matrix)
+    void lookAtTarget(PMatrix matrix)
     {
         // RED : Modified to reduce object creation
         // grab the scale
@@ -103,7 +104,7 @@ public class EyeBall extends PPolygonSkinnedMeshInstance implements Serializable
 
         // cache the translation to reset it later
         matrix.getTranslation(translationStorage);
-        
+
         PMatrix modelWorldRef = modelInst.getTransform().getWorldMatrix(false);
 
         // Get eye world space
@@ -116,7 +117,7 @@ public class EyeBall extends PPolygonSkinnedMeshInstance implements Serializable
         directionToTarget.y -= eyeWorldMatrix.getTranslationY();
         directionToTarget.z -= eyeWorldMatrix.getTranslationZ();
 
-        
+
         directionToTarget.y *= yScale;
         directionToTarget.normalizeLocal();
 
@@ -130,7 +131,7 @@ public class EyeBall extends PPolygonSkinnedMeshInstance implements Serializable
             if (otherEye.isInCone())
             {
                 // Perform lookAt to target
-                PMathUtils.lookAt(
+                MathUtils.lookAt(
                         target,
                         directionToTarget,
                         Vector3f.UNIT_Y,
@@ -148,25 +149,33 @@ public class EyeBall extends PPolygonSkinnedMeshInstance implements Serializable
         matrix.setScale(scale);
     }
 
-    public Vector3f getTarget() {
-        return target;
-    }
-
+    /**
+     * Set the target vector
+     * @param target
+     */
     public void setTarget(Vector3f target) {
-        this.target = target;
+        this.target.set(target);
     }
 
+    /**
+     * Retrieve a reference to the model instance owning this eyeball
+     * @return Model instance
+     */
     public PPolygonModelInstance getModelInst() {
         return modelInst;
     }
 
+    /**
+     * Sets the 'other' eye. Assumes that a character has two eyes.
+     * @param otherOne
+     */
     public void setOtherEye(EyeBall otherOne) {
         otherEye = otherOne;
     }
 
     /**
      * True if the target is within a certain angular distance of the eye
-     * @return
+     * @return True if in cone
      */
     public boolean isInCone()
     {
@@ -182,15 +191,15 @@ public class EyeBall extends PPolygonSkinnedMeshInstance implements Serializable
         // change textures to not use mip maps... leads to freaky eyeballs
         PMeshMaterial myMaterial = getMaterialRef();
         if (texture != null) {
-            if (checkURLPath(character.m_attributes.getBaseURL() + texture))
-                myMaterial.setTexture(texture, 0, character.m_attributes.getBaseURL());
+            if (checkURLPath(character.characterParams.getBaseURL() + texture))
+                myMaterial.setTexture(texture, 0, character.characterParams.getBaseURL());
             else {
                 URL path = checkResourcePath(texture);
                 if (path != null)
-                    myMaterial.setTexture(path, 0);
+                    myMaterial.setTexture(0, path);
             }
         }
-        myMaterial.getTexture(0).setMinFilter(MinificationFilter.BilinearNoMipMaps);
+        myMaterial.getTextureRef(0).setMinFilter(MinificationFilter.BilinearNoMipMaps);
         myMaterial.setAlphaState(PMeshMaterial.AlphaTransparencyType.NO_TRANSPARENCY);
        
         applyMaterial();
@@ -226,10 +235,6 @@ public class EyeBall extends PPolygonSkinnedMeshInstance implements Serializable
 
     private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
         in.defaultReadObject();
-        translationStorage = new Vector3f();
-        eyeWorldMatrix = new PMatrix();
-        forwardVec = new Vector3f();
-        directionToTarget = new Vector3f();
-        mathContext = PMathUtils.getContext();
+        mathContext = MathUtils.getContext();
     }
 }

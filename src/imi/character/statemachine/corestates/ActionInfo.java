@@ -20,7 +20,7 @@ package imi.character.statemachine.corestates;
 import imi.character.statemachine.StateInfo;
 
 /**
- * Contains all of the detailed configuration info to set up
+ * Contains all of the configuration info to set up
  * the ActionState to perform a fully body animation and possibly
  * a facial animation as well.
  * @author Lou Hayt

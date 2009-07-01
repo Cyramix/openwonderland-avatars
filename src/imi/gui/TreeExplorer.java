@@ -17,19 +17,21 @@
  */
 package imi.gui;
 
+import imi.character.Character;
 import imi.scene.PJoint;
 import imi.scene.PNode;
-import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
-import imi.scene.polygonmodel.skinned.PPolygonSkinnedMeshInstance;
-import imi.scene.utils.tree.ModelInstanceProcessor;
-import imi.scene.utils.tree.TreeTraverser;
-import imi.utils.JTree_DataDumper;
+import imi.scene.PScene;
+import imi.scene.SkeletonNode;
+import imi.scene.polygonmodel.PPolygonSkinnedMeshInstance;
+import imi.scene.utils.traverser.ModelInstanceProcessor;
+import imi.scene.utils.traverser.TreeTraverser;
 import java.awt.Component;
 import java.awt.Toolkit;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
+import org.jdesktop.mtgame.WorldManager;
 
 /**
  * TreeExploerer Class
@@ -37,18 +39,21 @@ import javax.swing.tree.DefaultTreeModel;
  */
 public class TreeExplorer extends javax.swing.JFrame {
     // Class Data Members
-    private DefaultMutableTreeNode topNode  = null;
-    private DefaultMutableTreeNode dmtSelectedNode = null;
-    private PNode prevSelection = null;
-    private PNode currentSelection = null;
-    private DefaultTreeModel model = null;
-    private TreePopUpMenu popupMenu = new TreePopUpMenu();
-    private SceneEssentials sceneData = null;
-    private Component identity  = this;
+    private DefaultMutableTreeNode  topNode             = null;
+    private DefaultMutableTreeNode  dmtSelectedNode     = null;
+    private PNode                   prevSelection       = null;
+    private PNode                   currentSelection    = null;
+    private DefaultTreeModel        model               = null;
+    private TreePopUpMenu           popupMenu           = new TreePopUpMenu();
+    private Component               identity            = this;
 
-    TreeExplorer(SceneEssentials aThis) {
+    private WorldManager            worldManager        = null;
+    private PScene                  pscene              = null;
+    private Character               character           = null;
+
+    TreeExplorer(WorldManager worldManager, PScene pscene) {
         this();
-        setExplorer(aThis);
+        setExplorer(worldManager, pscene);
     }
 
     public void refresh() {
@@ -142,8 +147,8 @@ public class TreeExplorer extends javax.swing.JFrame {
      */
     public void setTree() {
         ModelInstanceProcessor modelProcessor = new ModelInstanceProcessor();
-        modelProcessor.setTopNode(sceneData.getPScene());
-        TreeTraverser.breadthFirst(sceneData.getPScene(), modelProcessor);
+        modelProcessor.setTopNode(pscene);
+        TreeTraverser.breadthFirst(pscene, modelProcessor);
         this.setTopNode(modelProcessor.getTopNode());
         model = new DefaultTreeModel(topNode);
         jTree_TreeView.setModel(model);
@@ -157,8 +162,9 @@ public class TreeExplorer extends javax.swing.JFrame {
      * manipulation
      * @param scene (SceneEssentials)
      */
-    public void setExplorer(SceneEssentials scene) {
-        sceneData = scene;
+    public void setExplorer(WorldManager worldManager, PScene pscene) {
+        this.worldManager   = worldManager;
+        this.pscene         = pscene;
         setTree();
     }
     
@@ -182,7 +188,7 @@ public class TreeExplorer extends javax.swing.JFrame {
     public void jTree_TreeViewNodeSelected(TreeSelectionEvent evt) {
         if(evt.getNewLeadSelectionPath() != null) {
             processSelection();
-            popupMenu.setPopupMenu(sceneData, ((DefaultTreeModel)jTree_TreeView.getModel()), currentSelection, dmtSelectedNode);
+            popupMenu.setPopupMenu(worldManager, pscene, ((DefaultTreeModel)jTree_TreeView.getModel()), currentSelection, dmtSelectedNode);
         }
     }
     
@@ -192,10 +198,10 @@ public class TreeExplorer extends javax.swing.JFrame {
 
         if(currentSelection instanceof PPolygonSkinnedMeshInstance) {
 
-            if (sceneData.getAvatar() == null || !sceneData.getAvatar().isInitialized())
+            if (character == null || !character.isInitialized())
                 return;
 
-            SkeletonNode skeleton = sceneData.getAvatar().getSkeleton();
+            SkeletonNode skeleton = character.getSkeleton();
             
             if(skeleton != null) {
                 PPolygonSkinnedMeshInstance skinnedMeshInst = ((PPolygonSkinnedMeshInstance)currentSelection);
@@ -213,10 +219,10 @@ public class TreeExplorer extends javax.swing.JFrame {
 
         if(prevSelection instanceof PPolygonSkinnedMeshInstance) {
 
-            if (sceneData.getAvatar() == null || !sceneData.getAvatar().isInitialized())
+            if (character == null || !character.isInitialized())
                 return;
 
-            SkeletonNode skeleton = sceneData.getAvatar().getSkeleton();
+            SkeletonNode skeleton = character.getSkeleton();
             
             if(skeleton != null) {
                 PPolygonSkinnedMeshInstance skinnedMeshInst = ((PPolygonSkinnedMeshInstance)prevSelection);
@@ -258,7 +264,7 @@ public class TreeExplorer extends javax.swing.JFrame {
                 jTree_TreeViewNodeSelected(evt);
             }
         });
-        popupMenu.setPopupMenu(sceneData, model, currentSelection, dmtSelectedNode);
+        popupMenu.setPopupMenu(worldManager, pscene, model, currentSelection, dmtSelectedNode);
         jTree_TreeView.addMouseListener(popupMenu);
         jTree_TreeView.setCellRenderer(new SceneCellRenderer());
 

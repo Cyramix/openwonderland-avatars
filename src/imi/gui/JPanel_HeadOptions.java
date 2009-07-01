@@ -24,11 +24,12 @@
 
 package imi.gui;
 
-import imi.loaders.repository.Repository;
-import imi.scene.polygonmodel.parts.PMeshMaterial;
-import imi.scene.polygonmodel.skinned.PPolygonSkinnedMeshInstance;
-import imi.scene.shader.AbstractShaderProgram;
-import imi.scene.shader.programs.EyeballShader;
+import imi.character.EyeBall;
+import imi.repository.Repository;
+import imi.scene.polygonmodel.PMeshMaterial;
+import imi.scene.polygonmodel.PPolygonSkinnedMeshInstance;
+import imi.shader.AbstractShaderProgram;
+import imi.shader.programs.EyeballShader;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Image;
@@ -36,13 +37,11 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.BorderFactory;
-import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -66,7 +65,7 @@ public class JPanel_HeadOptions extends javax.swing.JPanel {
     private JFrame                          m_baseFrame     =   null;
     private int                             m_colWidth      =   64;
     private File                            m_TextureLoc    =   null;
-    private PPolygonSkinnedMeshInstance[]   m_Eyes          =   null;
+    private EyeBall[]   m_Eyes          =   null;
     private WorldManager                    m_wm            =   null;
     private int                             m_numCol        =   1;
 
@@ -565,8 +564,11 @@ public class JPanel_HeadOptions extends javax.swing.JPanel {
         m_baseFrame = frame;
     }
 
-    public void setEyeMeshInstances(PPolygonSkinnedMeshInstance[] eyes) {
-        m_Eyes = eyes;
+    public void setEyeMeshInstances(EyeBall[] eyes) {
+        m_Eyes  = new EyeBall[eyes.length];
+        for (int i = 0; i < eyes.length; i++) {
+            m_Eyes[i]   = eyes[i];
+        }
     }
 
     public void setWorldManager(WorldManager wm) {
@@ -736,7 +738,7 @@ public class JPanel_HeadOptions extends javax.swing.JPanel {
      */
     public void setTable() {
         Vector data = formatTableData();
-        Vector colNames = new Vector();
+        Vector colNames;
         String[] colName  = new String[m_numCol];
         for (int i = 0; i < m_numCol; i++ ) {
             colName[i] = "    ";
@@ -748,7 +750,7 @@ public class JPanel_HeadOptions extends javax.swing.JPanel {
 
         for (int i = 0; i < jTable1.getModel().getColumnCount(); i++) {
             TableColumn col = jTable1.getColumnModel().getColumn(i);
-            col.setCellRenderer(new customImageCellRender());
+            col.setCellRenderer(new CustomImageCellRender());
             col.setPreferredWidth(m_colWidth);
         }
 
@@ -758,7 +760,7 @@ public class JPanel_HeadOptions extends javax.swing.JPanel {
     /**
      * Custom cell renderer for the JTable to display preview images of the avatar
      */
-    public class customImageCellRender extends JLabel implements TableCellRenderer {
+    public static class CustomImageCellRender extends JLabel implements TableCellRenderer {
 
         private Border m_selectBorder   = null;
         private Border m_unselectBorder = null;
@@ -843,19 +845,15 @@ public class JPanel_HeadOptions extends javax.swing.JPanel {
         String location = temp.substring(1, temp.length() - 1);
         File loc = new File(location);
         String szName = loc.getName();
-        try {
-            URL urlFile = loc.toURI().toURL();
-            PMeshMaterial material = new PMeshMaterial(szName + "Material", urlFile);
-            Repository repo = (Repository)m_wm.getUserData(Repository.class);
-            AbstractShaderProgram eyeballShader = repo.newShader(EyeballShader.class);
 
-            for (int i = 0; i < m_Eyes.length; i++) {
-                material.setShader(eyeballShader.duplicate());
-                m_Eyes[i].setMaterial(material);
-                m_Eyes[i].applyMaterial();
-            }
-        } catch (MalformedURLException ex) {
-            Logger.getLogger(SceneEssentials.class.getName()).log(Level.SEVERE, null, ex);
+        PMeshMaterial material = new PMeshMaterial(szName + "Material").setTexture(loc, 0);
+        Repository repo = (Repository)m_wm.getUserData(Repository.class);
+        AbstractShaderProgram eyeballShader = repo.newShader(EyeballShader.class);
+
+        for (int i = 0; i < m_Eyes.length; i++) {
+            material.setDefaultShader(eyeballShader.duplicate());
+            m_Eyes[i].setMaterial(material);
+            m_Eyes[i].applyMaterial();
         }
     }
 }

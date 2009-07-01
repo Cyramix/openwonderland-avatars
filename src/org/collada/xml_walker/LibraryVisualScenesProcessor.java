@@ -35,13 +35,13 @@ import org.collada.colladaschema.InstanceController;
 import org.collada.colladaschema.BindMaterial.TechniqueCommon;
 import org.collada.colladaschema.InstanceWithExtra;
 
-import imi.loaders.collada.Collada;
+import imi.loaders.Collada;
 
 import imi.scene.PMatrix;
 
 import javax.xml.bind.JAXBElement;
 
-import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
+import imi.scene.SkeletonNode;
 import imi.scene.animation.AnimationGroup;
 import imi.scene.animation.AnimationCycle;
 

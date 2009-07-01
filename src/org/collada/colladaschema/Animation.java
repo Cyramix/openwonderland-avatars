@@ -25,7 +25,7 @@
 
 package org.collada.colladaschema;
 
-import java.util.ArrayList;
+import javolution.util.FastTable;
 import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -164,7 +164,7 @@ public class Animation {
      */
     public List<Source> getSources() {
         if (sources == null) {
-            sources = new ArrayList<Source>();
+            sources = new FastTable<Source>();
         }
         return this.sources;
     }
@@ -193,7 +193,7 @@ public class Animation {
      */
     public List<Sampler> getSamplers() {
         if (samplers == null) {
-            samplers = new ArrayList<Sampler>();
+            samplers = new FastTable<Sampler>();
         }
         return this.samplers;
     }
@@ -222,7 +222,7 @@ public class Animation {
      */
     public List<Channel> getChannels() {
         if (channels == null) {
-            channels = new ArrayList<Channel>();
+            channels = new FastTable<Channel>();
         }
         return this.channels;
     }
@@ -251,7 +251,7 @@ public class Animation {
      */
     public List<Animation> getAnimations() {
         if (animations == null) {
-            animations = new ArrayList<Animation>();
+            animations = new FastTable<Animation>();
         }
         return this.animations;
     }
@@ -282,7 +282,7 @@ public class Animation {
      */
     public List<Extra> getExtras() {
         if (extras == null) {
-            extras = new ArrayList<Extra>();
+            extras = new FastTable<Extra>();
         }
         return this.extras;
     }

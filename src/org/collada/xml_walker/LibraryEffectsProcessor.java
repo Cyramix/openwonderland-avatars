@@ -28,7 +28,7 @@ import org.collada.colladaschema.ProfileCOMMON.Technique.Blinn;
 import org.collada.colladaschema.ProfileCOMMON.Technique.Lambert;
 import org.collada.colladaschema.ProfileCOMMON.Technique.Phong;
 
-import imi.loaders.collada.Collada;
+import imi.loaders.Collada;
 
 
 

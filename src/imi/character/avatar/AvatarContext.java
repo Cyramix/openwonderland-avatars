@@ -25,8 +25,7 @@ import imi.character.statemachine.corestates.IdleState;
 import imi.character.statemachine.corestates.FlyState;
 import imi.character.statemachine.corestates.FallFromSitState;
 import imi.character.CharacterController;
-import imi.networking.CahuaClientExtention;
-import imi.networking.Client;
+import imi.character.behavior.CharacterBehaviorManager;
 import imi.character.statemachine.corestates.transitions.FlyToIdle;
 import imi.character.statemachine.corestates.transitions.IdleToFly;
 import imi.character.statemachine.corestates.transitions.IdleToAction;
@@ -43,10 +42,10 @@ import imi.character.statemachine.corestates.transitions.TurnToAction;
 import imi.character.statemachine.corestates.transitions.TurnToWalk;
 import imi.character.statemachine.corestates.transitions.WalkToIdle;
 import imi.character.statemachine.corestates.transitions.WalkToAction;
-import imi.character.objects.ChairObject;
-import imi.character.objects.LocationNode;
-import imi.character.objects.SpatialObject;
-import imi.character.objects.TargetObject;
+import imi.objects.ChairObject;
+import imi.objects.LocationNode;
+import imi.objects.SpatialObject;
+import imi.objects.TargetObject;
 import imi.character.statemachine.GameContext;
 import imi.character.statemachine.GameState.Action;
 import imi.character.statemachine.corestates.ActionInfo;
@@ -63,10 +62,9 @@ import imi.character.statemachine.corestates.transitions.StrafeToIdle;
 import imi.character.statemachine.corestates.transitions.TurnToStrafe;
 import imi.character.statemachine.corestates.transitions.WalkToFly;
 import imi.character.statemachine.corestates.transitions.WalkToRun;
-import imi.character.steering.FollowBakedPath;
-import imi.character.steering.GoSit;
-import imi.character.steering.GoTo;
-import imi.scene.Updatable;
+import imi.character.behavior.FollowBakedPath;
+import imi.character.behavior.GoSit;
+import imi.character.behavior.GoTo;
 import imi.scene.animation.AnimationComponent.PlaybackMode;
 import java.util.Hashtable;
 import javolution.util.FastList;
@@ -83,7 +81,7 @@ public class AvatarContext extends GameContext
     /** Controller for the above **/
     private AvatarController   controller  = null;
     /** The steering controller for the avatar **/
-    private AvatarSteeringHelm AI    = new AvatarSteeringHelm("avatar Steering Helm", this);
+    private CharacterBehaviorManager behavior    = new CharacterBehaviorManager("Avatar Behavior", this);
     /** Current location node, if any. **/
     private LocationNode      location    = null;
     /** Animations that are using the ActionState to play out (such as wave, cheer etc) **/
@@ -107,7 +105,7 @@ public class AvatarContext extends GameContext
         Move_Down,
         MiscAction,
         SitOnGround,
-        ToggleSteering,
+        ToggleBehavior,
         ToggleRightArm,
         ToggleLeftArm,
         ToggleRightArmManualDriveReachMode,
@@ -165,14 +163,14 @@ public class AvatarContext extends GameContext
         setCurrentState(gameStates.get(IdleState.class));
         
         // Register validation methods (entry points)
-        RegisterStateEntryPoint(gameStates.get(IdleState.class),  "toIdle");
-        RegisterStateEntryPoint(gameStates.get(WalkState.class),  "toWalk");
-        RegisterStateEntryPoint(gameStates.get(StrafeState.class),  "toSideStep");
-        RegisterStateEntryPoint(gameStates.get(TurnState.class),  "toTurn");
-        RegisterStateEntryPoint(gameStates.get(CycleActionState.class), "toAction");
-        RegisterStateEntryPoint(gameStates.get(FlyState.class),   "toFly");
-        RegisterStateEntryPoint(gameStates.get(SitOnGroundState.class),   "toSitOnGround");
-        RegisterStateEntryPoint(gameStates.get(RunState.class),   "toRun");
+        registerStateEntryPoint(gameStates.get(IdleState.class),  "toIdle");
+        registerStateEntryPoint(gameStates.get(WalkState.class),  "toWalk");
+        registerStateEntryPoint(gameStates.get(StrafeState.class),  "toSideStep");
+        registerStateEntryPoint(gameStates.get(TurnState.class),  "toTurn");
+        registerStateEntryPoint(gameStates.get(CycleActionState.class), "toAction");
+        registerStateEntryPoint(gameStates.get(FlyState.class),   "toFly");
+        registerStateEntryPoint(gameStates.get(SitOnGroundState.class),   "toSitOnGround");
+        registerStateEntryPoint(gameStates.get(RunState.class),   "toRun");
                 
         // Add transitions (exit points)
         gameStates.get(IdleState.class).addTransition(new IdleToTurn());
@@ -234,7 +232,7 @@ public class AvatarContext extends GameContext
     public void update(float deltaTime)
     {
         super.update(deltaTime);
-        AI.update(deltaTime);
+        behavior.update(deltaTime);
         controller.update(deltaTime);
         if ( !(currentState instanceof CycleActionState) && !genericAnimationsQueue.isEmpty() )
         {
@@ -256,8 +254,8 @@ public class AvatarContext extends GameContext
             setCurrentState((ActionState) gameStates.get(CycleActionState.class));
         
         // Toggle automatic steering behavior towards the current goal
-        if (trigger == TriggerNames.ToggleSteering.ordinal() && pressed)
-            AI.toggleEnable();
+        if (trigger == TriggerNames.ToggleBehavior.ordinal() && pressed)
+            behavior.toggleEnable();
         
         // Toggle manual control over the right arm
         if (trigger == TriggerNames.ToggleRightArm.ordinal() && pressed)
@@ -303,19 +301,19 @@ public class AvatarContext extends GameContext
         // Find nearest chair and sit on it
         else if (trigger == TriggerNames.GoSit.ordinal() && pressed)
         {
-            AI.clearTasks();
-            goToNearestChair();
-            
-            // Safely attempt to start a multiplayer game
-            if (avatar.getUpdateExtension() != null)
-            {
-                Updatable up = avatar.getUpdateExtension();
-                if (up instanceof Client && ((Client)up).getExtension(CahuaClientExtention.class) != null)
-                {
-                    CahuaClientExtention cahua = (CahuaClientExtention)((Client)up).getExtension(CahuaClientExtention.class);
-                    cahua.startGame(3);
-                }
-            }
+//            AI.clearTasks();
+//            goToNearestChair();
+//
+//            // Safely attempt to start a multiplayer game
+//            if (avatar.getUpdateExtension() != null)
+//            {
+//                Updatable up = avatar.getUpdateExtension();
+//                if (up instanceof Client && ((Client)up).getExtension(CahuaClientExtention.class) != null)
+//                {
+//                    CahuaClientExtention cahua = (CahuaClientExtention)((Client)up).getExtension(CahuaClientExtention.class);
+//                    cahua.startGame(3);
+//                }
+//            }
         }
         
         // GoTo to location - if path is available from the current location
@@ -323,50 +321,31 @@ public class AvatarContext extends GameContext
         {
            // System.out.println("fix: " + avatar.getPosition());
             
-            AI.clearTasks();
+            behavior.clearTasks();
             goToNearestLocation();
             if (location != null)
-                AI.addTaskToBottom(new FollowBakedPath("yellowRoom", location, this));
+                behavior.addTaskToBottom(new FollowBakedPath("yellowRoom", location, this));
         }
         else if (trigger == TriggerNames.GoTo2.ordinal() && pressed)
         {
-            AI.clearTasks();
+            behavior.clearTasks();
             goToNearestLocation();
             if (location != null)
-                AI.addTaskToBottom(new FollowBakedPath("lobbyCenter", location, this));
+                behavior.addTaskToBottom(new FollowBakedPath("lobbyCenter", location, this));
         }
         else if (trigger == TriggerNames.GoTo3.ordinal() && pressed)
         {
-            AI.clearTasks();
+            behavior.clearTasks();
             goToNearestChair();
         }
-        
+
+        // Facial expressions
         else if (trigger == TriggerNames.Smile.ordinal() && pressed)
-        {
-            if (avatar.getFacialAnimationQ() != null)
-            {
-                if (avatar.getFacialAnimationQ().getNumberOfRemainingExpressions() < 4)
-                    avatar.initiateFacialAnimation(0, 0.2f, 1.0f);
-            }
-        }   
-        
+            avatar.initiateFacialAnimation(1, 0.2f, 1.0f);
         else if (trigger == TriggerNames.Frown.ordinal() && pressed)
-        {
-            if (avatar.getFacialAnimationQ() != null)
-            {
-                if (avatar.getFacialAnimationQ().getNumberOfRemainingExpressions() < 4)
-                    avatar.initiateFacialAnimation(1, 0.2f, 1.5f);
-            }
-        }   
-        
+            avatar.initiateFacialAnimation(2, 0.2f, 1.5f);
         else if (trigger == TriggerNames.Scorn.ordinal() && pressed)
-        {
-            if (avatar.getFacialAnimationQ() != null)
-            {
-                if (avatar.getFacialAnimationQ().getNumberOfRemainingExpressions() < 4)
-                    avatar.initiateFacialAnimation(2, 0.2f, 1.5f);
-            }
-        }   
+            avatar.initiateFacialAnimation(3, 0.2f, 1.5f);
                 
         // Reverse the animation for the punch state (for testing)
         else if (trigger == TriggerNames.Reverse.ordinal() && pressed)
@@ -408,8 +387,8 @@ public class AvatarContext extends GameContext
     }
 
     @Override
-    public AvatarSteeringHelm getSteering() {
-        return AI;
+    public CharacterBehaviorManager getBehaviorManager() {
+        return behavior;
     }
 
     /**
@@ -424,8 +403,8 @@ public class AvatarContext extends GameContext
         location = (LocationNode)avatar.getObjectCollection().findNearestObjectOfType(LocationNode.class, avatar, 10000.0f, 1.0f, false);
         if (location != null)
         {
-            AI.addTaskToTop(new GoTo(location.getPositionRef(), this));
-            AI.setEnable(true);
+            behavior.addTaskToTop(new GoTo(location.getPositionRef(), this));
+            behavior.setEnable(true);
         }
         return location;
     }
@@ -443,8 +422,8 @@ public class AvatarContext extends GameContext
         if (obj != null && !((TargetObject)obj).isOccupied())
         {
             GoSit task = new GoSit((TargetObject)obj, this);
-            AI.addTaskToTop(task);
-            AI.setEnable(true);
+            behavior.addTaskToTop(task);
+            behavior.setEnable(true);
             return true;
         }
         return false;
@@ -453,7 +432,7 @@ public class AvatarContext extends GameContext
     public boolean goToTarget(TargetObject target, boolean occupiedMatters, boolean abandonCurrentTasks)
     {
         if (abandonCurrentTasks)
-            AI.clearTasks();
+            behavior.clearTasks();
 
         if (avatar.getObjectCollection() == null)
             return false;
@@ -461,8 +440,8 @@ public class AvatarContext extends GameContext
         if (target != null && !target.isOccupied(occupiedMatters))
         {
             GoTo task = new GoTo(target, this);
-            AI.addTaskToTop(task);
-            AI.setEnable(true);
+            behavior.addTaskToTop(task);
+            behavior.setEnable(true);
             return true;
         }
         return false;
@@ -471,7 +450,7 @@ public class AvatarContext extends GameContext
     public boolean goSitOnChair(TargetObject chair, boolean occupiedMatters, boolean abandonCurrentTasks)
     {
         if (abandonCurrentTasks)
-            AI.clearTasks();
+            behavior.clearTasks();
 
         if (avatar.getObjectCollection() == null)
             return false;
@@ -479,8 +458,8 @@ public class AvatarContext extends GameContext
         if (chair != null && !chair.isOccupied(occupiedMatters))
         {
             GoSit task = new GoSit(chair, this);
-            AI.addTaskToTop(task);
-            AI.setEnable(true);
+            behavior.addTaskToTop(task);
+            behavior.setEnable(true);
             return true;
         }
         return false;
@@ -528,12 +507,12 @@ public class AvatarContext extends GameContext
         
         /** Note: There are many more settings possible to set! **/
      
-        if (avatar.getAttributes().isMale())
+        if (avatar.getCharacterParams().isMale())
         {
-            info = new ActionInfo("Male_Wave", "MaleSmile4Frame", 0.3f, 2.0f);
+            info = new ActionInfo("Male_Wave", "1", 0.3f, 2.0f);
             genericAnimations.add(info);
 
-            cycleInfo = new CycleActionInfo("Male_AnswerCell", "Male_Cell", "Male_AnswerCell", "MaleSmile4Frame", 0.5f, 2.0f);
+            cycleInfo = new CycleActionInfo("Male_AnswerCell", "Male_Cell", "Male_AnswerCell", "1", 0.5f, 2.0f);
             cycleInfo.setExitAnimationReverse(true);
             cycleInfo.setTransitionDuration(0.1f);
             cycleInfo.setCycleTransitionDuration(0.2f);
@@ -549,10 +528,10 @@ public class AvatarContext extends GameContext
             info = new ActionInfo("Male_Yes");
             genericAnimations.add(info);
 
-            info = new ActionInfo("Male_Laugh", "MaleSmile4Frame", 0.3f, 2.5f);
+            info = new ActionInfo("Male_Laugh", "1", 0.3f, 2.5f);
             genericAnimations.add(info);
 
-            info = new ActionInfo("Male_Cheer", "MaleSmile4Frame", 0.3f, 3.0f);
+            info = new ActionInfo("Male_Cheer", "1", 0.3f, 3.0f);
             genericAnimations.add(info);
 
             info = new ActionInfo("Male_Clap");
@@ -575,10 +554,10 @@ public class AvatarContext extends GameContext
         }
         else // female
         {
-            info = new ActionInfo("Female_Wave", "FemaleC_Smile", 0.3f, 2.0f);
+            info = new ActionInfo("Female_Wave", "1", 0.3f, 2.0f);
             genericAnimations.add(info);
 
-            cycleInfo = new CycleActionInfo("Female_AnswerCell", "Female_Cell", "Female_AnswerCell", "FemaleC_Smile", 0.5f, 2.0f);
+            cycleInfo = new CycleActionInfo("Female_AnswerCell", "Female_Cell", "Female_AnswerCell", "1", 0.5f, 2.0f);
             cycleInfo.setCycleMode(PlaybackMode.PlayOnce);
             cycleInfo.setExitAnimationReverse(true);
             genericAnimations.add(cycleInfo);
@@ -593,10 +572,10 @@ public class AvatarContext extends GameContext
             info = new ActionInfo("Female_Yes");
             genericAnimations.add(info);
 
-            info = new ActionInfo("Female_Laugh", "FemaleC_Smile", 0.3f, 2.5f);
+            info = new ActionInfo("Female_Laugh", "1", 0.3f, 2.5f);
             genericAnimations.add(info);
 
-            info = new ActionInfo("Female_Cheer", "FemaleC_Smile", 0.3f, 3.0f);
+            info = new ActionInfo("Female_Cheer", "1", 0.3f, 3.0f);
             genericAnimations.add(info);
 
             info = new ActionInfo("Female_Clap");

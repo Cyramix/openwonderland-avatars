@@ -26,7 +26,7 @@
 package org.collada.colladaschema;
 
 import java.math.BigInteger;
-import java.util.ArrayList;
+import javolution.util.FastTable;
 import java.util.List;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -112,7 +112,7 @@ public class Tristrips {
      */
     public List<InputLocalOffset> getInputs() {
         if (inputs == null) {
-            inputs = new ArrayList<InputLocalOffset>();
+            inputs = new FastTable<InputLocalOffset>();
         }
         return this.inputs;
     }
@@ -143,7 +143,7 @@ public class Tristrips {
      */
     public List<JAXBElement<List<BigInteger>>> getPS() {
         if (ps == null) {
-            ps = new ArrayList<JAXBElement<List<BigInteger>>>();
+            ps = new FastTable<JAXBElement<List<BigInteger>>>();
         }
         return this.ps;
     }
@@ -174,7 +174,7 @@ public class Tristrips {
      */
     public List<Extra> getExtras() {
         if (extras == null) {
-            extras = new ArrayList<Extra>();
+            extras = new FastTable<Extra>();
         }
         return this.extras;
     }

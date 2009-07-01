@@ -17,33 +17,28 @@
  */
 package imi.character.avatar;
 
-import com.jme.intersection.TriangleCollisionResults;
 import com.jme.math.Quaternion;
-import com.jme.math.Ray;
 import com.jme.math.Vector3f;
-import com.jme.scene.Node;
-import com.jme.scene.Spatial;
 import imi.character.CharacterController;
 import imi.collision.TransformUpdateManager;
-import imi.scene.JScene;
 import imi.scene.PMatrix;
 import imi.scene.PTransform;
 import imi.scene.polygonmodel.PPolygonModelInstance;
-import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFrame;
-import org.jdesktop.mtgame.CollisionSystem;
-import org.jdesktop.mtgame.JMECollisionSystem;
-import org.jdesktop.mtgame.PickDetails;
-import org.jdesktop.mtgame.PickInfo;
+import org.jdesktop.wonderland.common.ExperimentalAPI;
 
 /**
  *  Concrete character controller.
- *  Controls the avatar according to internal and external actions
+ *  Controls the avatar according to internal and external actions.
+ *  This is the only class that should move the avatar's model instance local
+ *  transform - through a transform update manager if possible (there are
+ *  threading issues that come up that may cause visible jitter).
  * 
  * @author Lou Hayt
  */
+@ExperimentalAPI
 public class AvatarController extends CharacterController
 {
     /** The avatar being controller **/
@@ -64,7 +59,6 @@ public class AvatarController extends CharacterController
     private Vector3f velocity            = new Vector3f();
     /** Derivative of the above with respect to time **/
     private Vector3f acceleration        = new Vector3f();
-    private Vector3f directionalAccel    = new Vector3f();
     private float    fwdAcceleration     = 0.0f; // fwdAcceleration towards the current direction
     private float    maxAcceleration     = 10.0f;
     private float    maxVelocity         = 4.0f;
@@ -89,9 +83,7 @@ public class AvatarController extends CharacterController
      * If true, the TransformUpdateManager will be used to try and synch transform updates.
      * This is primarily needed when the collision system is operating on the avatar.
      **/
-    private boolean bUseTransformUpdateManager = false;
-
-    private CollisionController collisionController=null;
+    private boolean bUseTransformUpdateManager = true;
 
     /**
      * Construct a new avatar controller
@@ -104,10 +96,6 @@ public class AvatarController extends CharacterController
         // Set the window to have access for the window title
         // used for displaying debugging info
         setWindow((JFrame) avatar.getWorldManager().getUserData(JFrame.class));
-    }
-
-    public void setCollisionController(CollisionController collisionController) {
-        this.collisionController = collisionController;
     }
 
     /**
@@ -142,6 +130,7 @@ public class AvatarController extends CharacterController
      * Accelerate the avatar with the provided force
      * @param force
      */
+    @Override
     public void accelerate(float force) 
     {
         fwdAcceleration += force / mass;
@@ -153,15 +142,12 @@ public class AvatarController extends CharacterController
      * Accelerate the avatar with the provided force vector
      * @param force
      */
+    @Override
     public void accelerate(Vector3f force) 
     {
         acceleration.addLocal(force.divide(mass));
-        if (acceleration.x > maxAcceleration)
-            acceleration.x = maxAcceleration;
-        if (acceleration.y > maxAcceleration)
-            acceleration.y = maxAcceleration;
-        if (acceleration.z > maxAcceleration)
-            acceleration.z = maxAcceleration;
+//        if (fwdAcceleration > maxAcceleration)
+//            fwdAcceleration = maxAcceleration;
     }
 
     /**
@@ -174,6 +160,7 @@ public class AvatarController extends CharacterController
         velocity.set(currentDirection.mult(vel));
     }
     
+    @Override
     public float getVelocityScalar() 
     {
         float max = Math.max(Math.max(velocity.x, velocity.y), velocity.z);
@@ -187,6 +174,7 @@ public class AvatarController extends CharacterController
      * Turn to face the provided direction
      * @param direction
      */
+    @Override
     public void turnTo(Vector3f direction) 
     {
         desiredDirection = direction;
@@ -204,9 +192,6 @@ public class AvatarController extends CharacterController
             initialize();
             return;
         }
-
-        Vector3f position = body.getTransform().getLocalMatrix(false).getTranslation();
-
         
         // Turn
         if (bTurning)
@@ -221,25 +206,14 @@ public class AvatarController extends CharacterController
         else
             currentRot.set(body.getTransform().getLocalMatrix(true));
         
-        PMatrix previousRot = new PMatrix(currentRot);
-        Vector3f previousPos = new Vector3f(position);
-
         // Accelerate
         Vector3f currentDirection = body.getTransform().getWorldMatrix(false).getLocalZ();
         if (!bSlide)
         {
             velocity = currentDirection.normalize().mult(currentDirection.dot(velocity));
         }
-//        System.err.print("Initial "+velocity);
         velocity.addLocal(currentDirection.mult(fwdAcceleration * (-deltaTime)));
-        currentRot.transformNormal(acceleration, directionalAccel);
-//        System.err.print("  accel "+acceleration);
-
-//        Vector3f t = new Vector3f(0,0,1);
-//        currentRot.transformNormal(t);
-//        System.err.print(" LOOK "+t);
-
-        velocity.addLocal(directionalAccel);
+        velocity.addLocal(acceleration);
         gravityAcc.addLocal(gravity);
         velocity.addLocal(gravityAcc);
         if (velocity.x > maxVelocity)
@@ -254,10 +228,9 @@ public class AvatarController extends CharacterController
             velocity.y = -maxVelocity;
         if (velocity.z < -maxVelocity)
             velocity.z = -maxVelocity;
-
-
-//        System.err.println("  final Velocity "+velocity);
+         
         // Apply Velocity
+        Vector3f position = body.getTransform().getLocalMatrix(false).getTranslation();
         if (bReverseHeading)
             position.addLocal(velocity.mult(-deltaTime));
         else
@@ -268,98 +241,29 @@ public class AvatarController extends CharacterController
         if (dampCounter > dampTick)
         {
             dampCounter = 0.0f;
-
+            
             fwdAcceleration *= accelerationDamp;
             if (fwdAcceleration < 0.5f)
                 fwdAcceleration = 0.0f;
-
+            
             acceleration.multLocal(accelerationDamp);
             // TODO clamp down?
 
-            if (fwdAcceleration < 1.0f && acceleration.lengthSquared() < 1.0f)
+            if (fwdAcceleration < 1.0f && Math.max(Math.max(acceleration.x, acceleration.y), acceleration.z) < 1.0f)
                 velocity.multLocal(velocityDamp);
         }
 
-        if (collisionController!=null) {
-            if (collisionController.isGravityEnabled())
-                checkGround(position);
-
-            if (collisionController.isCollisionEnabled() && collisionCheck(position, currentRot)) {
-                position.set(previousPos);
-                currentRot.set(previousRot);
-            }
-        }
-
-        updatePosition(position, currentRot);
-
-
-    }
-
-    private void updatePosition(Vector3f pos, PMatrix rot) {
         TransformUpdateManager transformUpdateManager = (TransformUpdateManager) avatar.getWorldManager().getUserData(TransformUpdateManager.class);
         if(bUseTransformUpdateManager && transformUpdateManager != null)
         {
-            transformUpdateManager.transformUpdate(this, body.getTransform().getLocalMatrix(true), pos, rot);
+            transformUpdateManager.transformUpdate(this, body.getTransform().getLocalMatrix(true), position, currentRot);
         }
         else
         {
-            rot.setTranslation(pos);
-            body.getTransform().getLocalMatrix(true).set(rot);
-            notifyTransfromUpdate(pos, rot);
+            currentRot.setTranslation(position);
+            body.getTransform().getLocalMatrix(true).set(currentRot);
+            notifyTransfromUpdate(position, currentRot);
         }
-
-    }
-
-    private Ray heightRay = new Ray();
-    private Vector3f downVec = new Vector3f(0f,-1f,0f);
-    private float fallInc = 0.5f;
-    private void checkGround(Vector3f newPos) {
-        float yDelta = 1.0f;
-        float dy = 0;
-
-        heightRay.origin.set(newPos);
-        heightRay.origin.y+=yDelta;
-        heightRay.direction = downVec;
-        //System.out.println(newPos);
-        PickInfo pi = collisionController.getCollisionSystem().pickAllWorldRay(heightRay, true, false);
-        if (pi.size() != 0) {
-            // Grab the first one
-            PickDetails pd = pi.get(0);
-            dy = pd.getDistance() - yDelta;
-
-            newPos.y -= dy;
-        } else {
-            //System.out.println("NO GROUND!!!");
-        }
-    }
-
-    private TriangleCollisionResults tcr = new TriangleCollisionResults();
-    private boolean collisionCheck(Vector3f potentialPos, PMatrix potentialRot) {
-        tcr.clear();
-        boolean collision = false;
-        Spatial collisionGraph = collisionController.getCollisionGraph();
-        collisionGraph.setLocalTranslation(potentialPos.x, potentialPos.y, potentialPos.z);
-        collisionGraph.setLocalRotation(potentialRot.getRotationJME());
-        collisionGraph.updateGeometricState(0, true);
-
-        // For high quality avatars need to transform the boxes that enclose the body parts
-        // int jointIndex = skeleton.getSkinnedMeshJointIndex(jointName)  gets the int index of a joint  (cache the jointIndex, recompute if avatar changes)
-        // SkinnedMeshJoint specificJoint = skeleton.getSkinnedMeshJoint(jointIndex);
-        // specificJoint.getTransform().getWorldMatrix(false)
-
-        collisionController.getCollisionSystem().findCollisions(collisionGraph, tcr);
-        for (int i=0; i<tcr.getNumber(); i++) {
-            ArrayList<Integer> tris = tcr.getCollisionData(i).getSourceTris();
-            if (tris.size() != 0) {
-                collision = true;
-                System.err.println("OUCH ! "+tris.size());
-                //TriMesh mesh = (TriMesh)tcr.getCollisionData(i).getSourceMesh();
-                //mesh.getTriangle(tris.get(0).intValue(), triData2);
-                //computeCollisionResponse(position, potentialPos, rotatedFwdDirection, triData2, walkInc);
-                break;
-            }
-        }
-        return collision;
     }
 
     @Override
@@ -403,16 +307,12 @@ public class AvatarController extends CharacterController
         else
             return true;
     }
-    
-    @Override
-    public JFrame getWindow() {
-        return window;
-    }
 
     public void setWindow(JFrame window) {
         this.window = window;
     }
 
+    @Override
     public float getForwardAcceleration() {
         return fwdAcceleration;
     }
@@ -558,5 +458,4 @@ public class AvatarController extends CharacterController
     {
         return bUseTransformUpdateManager;
     }
-
 }

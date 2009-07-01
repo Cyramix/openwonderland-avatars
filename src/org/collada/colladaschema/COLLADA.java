@@ -25,7 +25,7 @@
 
 package org.collada.colladaschema;
 
-import java.util.ArrayList;
+import javolution.util.FastTable;
 import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -194,7 +194,7 @@ public class COLLADA {
      */
     public List<Object> getLibraryLightsAndLibraryGeometriesAndLibraryAnimationClips() {
         if (libraryLightsAndLibraryGeometriesAndLibraryAnimationClips == null) {
-            libraryLightsAndLibraryGeometriesAndLibraryAnimationClips = new ArrayList<Object>();
+            libraryLightsAndLibraryGeometriesAndLibraryAnimationClips = new FastTable<Object>();
         }
         return this.libraryLightsAndLibraryGeometriesAndLibraryAnimationClips;
     }
@@ -249,7 +249,7 @@ public class COLLADA {
      */
     public List<Extra> getExtras() {
         if (extras == null) {
-            extras = new ArrayList<Extra>();
+            extras = new FastTable<Extra>();
         }
         return this.extras;
     }
@@ -369,7 +369,7 @@ public class COLLADA {
          */
         public List<InstanceWithExtra> getInstancePhysicsScenes() {
             if (instancePhysicsScenes == null) {
-                instancePhysicsScenes = new ArrayList<InstanceWithExtra>();
+                instancePhysicsScenes = new FastTable<InstanceWithExtra>();
             }
             return this.instancePhysicsScenes;
         }
@@ -424,7 +424,7 @@ public class COLLADA {
          */
         public List<Extra> getExtras() {
             if (extras == null) {
-                extras = new ArrayList<Extra>();
+                extras = new FastTable<Extra>();
             }
             return this.extras;
         }

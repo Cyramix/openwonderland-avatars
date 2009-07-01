@@ -17,10 +17,10 @@
  */
 package imi.gui;
 
-import imi.scene.shader.ShaderUtils;
-import imi.scene.shader.dynamic.GLSLCompileException;
-import imi.scene.shader.dynamic.GLSLShaderEffect;
-import imi.scene.shader.dynamic.GLSLShaderProgram;
+import imi.shader.ShaderUtils;
+import imi.shader.dynamic.GLSLCompileException;
+import imi.shader.dynamic.GLSLShaderEffect;
+import imi.shader.dynamic.GLSLShaderProgram;
 import java.awt.Color;
 import java.awt.Toolkit;
 import javax.swing.DefaultListModel;
@@ -55,7 +55,8 @@ public class ShaderEffectComposerPanel extends javax.swing.JPanel
     public void setShaderProgram(GLSLShaderProgram shader)
     {
         m_shader = shader;
-        JToggle_UseDefaultInitializers.setSelected(m_shader.isUsingDefaultInitializers());
+        if (shader != null)
+            JToggle_UseDefaultInitializers.setSelected(m_shader.isUsingDefaultInitializers());
         populateListModel();
     }
 

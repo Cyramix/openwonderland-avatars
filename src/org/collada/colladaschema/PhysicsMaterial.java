@@ -25,7 +25,7 @@
 
 package org.collada.colladaschema;
 
-import java.util.ArrayList;
+import javolution.util.FastTable;
 import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -177,7 +177,7 @@ public class PhysicsMaterial {
      */
     public List<Technique> getTechniques() {
         if (techniques == null) {
-            techniques = new ArrayList<Technique>();
+            techniques = new FastTable<Technique>();
         }
         return this.techniques;
     }
@@ -208,7 +208,7 @@ public class PhysicsMaterial {
      */
     public List<Extra> getExtras() {
         if (extras == null) {
-            extras = new ArrayList<Extra>();
+            extras = new FastTable<Extra>();
         }
         return this.extras;
     }

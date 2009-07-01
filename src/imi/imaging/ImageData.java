@@ -62,8 +62,11 @@ public class ImageData {
         m_rotation      = rotation;
         m_opacity       = opacity;
         m_srcImage      = image;
-        m_pixels        = pixels;
 
+        m_pixels    = new int[pixels.length];
+        for (int i = 0; i < m_pixels.length; i++) {
+            m_pixels[i] = pixels[i];
+        }
     }
 
     public Dimension getCurImageCenter() {

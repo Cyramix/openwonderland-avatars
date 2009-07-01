@@ -12,11 +12,11 @@ import com.jme.renderer.ColorRGBA;
 import com.jme.renderer.Renderer;
 import com.jme.scene.Node;
 import com.jme.scene.Spatial;
-import imi.scene.boundingvolumes.PSphere;
+import imi.scene.PSphere;
 import javolution.util.FastTable;
 
 /**
- *
+ * Debug rendering tool
  * @author Lou Hayt
  */
 public class InternalRendererNode extends Node

@@ -18,7 +18,7 @@
 package imi.character.statemachine;
 
 import imi.character.CharacterController;
-import imi.character.CharacterSteeringHelm;
+import imi.character.behavior.CharacterBehaviorManager;
 import imi.character.statemachine.GameState.Action;
 import imi.scene.animation.AnimationListener.AnimationMessageType;
 import java.lang.reflect.InvocationTargetException;
@@ -27,17 +27,18 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import imi.utils.input.InputState;
-import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
+import imi.input.InputState;
+import imi.scene.SkeletonNode;
 import java.util.HashSet;
 
 /**
- * This class represents a certain context within the game for states to operate
- * within.
+ * A character's context contains states and a registry of entry points (validation
+ * methods) for its states. Each state has its own list of possible transitions, a
+ * transition attempt is always validated at the entry point.
  * @author Shawn Kendall
  * @author Lou Hayt
  */
-public class GameContext extends NamedUpdatableObject
+public class GameContext
 {
     private boolean initalized = false;
     /** The character owning this context **/
@@ -62,7 +63,12 @@ public class GameContext extends NamedUpdatableObject
     /** List of parties interested in the status of this context **/
     private final HashSet<GameContextListener> listeners = new HashSet();
     
-    
+    protected String name = "nameless";
+    protected boolean isNamed = false;
+    protected boolean enabledState = true;
+
+    private static final Logger logger = Logger.getLogger(GameContext.class.getName());
+
     /** Creates a new instance of GameContext */
     public GameContext(imi.character.Character master)
     {
@@ -79,47 +85,43 @@ public class GameContext extends NamedUpdatableObject
     public boolean  excecuteTransition(TransitionObject transition)
     {
         if (transition.getContextMessageName() != null) // If a context switch is needed
-            return character.excecuteContextTransition(transition);
+            return character.executeContextTransition(transition);
         
         GameState state = m_registry.get(transition.getStateMessageName());
         if (state == null) // No state found matching the provided name
-            return false; // fail
+            throw new RuntimeException("statemachine transition attempt failed, no state was found with the given name.");
 
         // Grab a reference to the appropriate transition method
         Class stateClass = state.getClass();
         Method method = null;
-        
         try {
             method = stateClass.getMethod(transition.getStateMessageName(), Object.class);
         } catch (NoSuchMethodException ex) {
-            Logger.getLogger(Character.class.getName()).log(Level.SEVERE, null, ex);
+            logger.log(Level.SEVERE, null, ex);
         } catch (SecurityException ex) {
-            Logger.getLogger(Character.class.getName()).log(Level.SEVERE, null, ex);
+            logger.log(Level.SEVERE, null, ex);
         }
+        if (method == null)
+            throw new RuntimeException("statemachine transition attempt failed, the validation method was not found in the given state.");
         
-        if (method != null)
+        Object bool = null;
+        try {
+            bool = method.invoke(state, transition.getStateMessageArgs());
+        } catch (IllegalAccessException ex) {
+            logger.log(Level.SEVERE, null, ex);
+        } catch (IllegalArgumentException ex) {
+            logger.log(Level.SEVERE, null, ex);
+        } catch (InvocationTargetException ex) {
+            logger.log(Level.SEVERE, null, ex);
+        }
+
+        if (bool instanceof Boolean)
         {
-            Object bool = null;
-            
-            try {
-                bool = method.invoke(state, transition.getStateMessageArgs());
-            } catch (IllegalAccessException ex) {
-                Logger.getLogger(Character.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (IllegalArgumentException ex) {
-                Logger.getLogger(Character.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (InvocationTargetException ex) {
-                Logger.getLogger(Character.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            
-            if (bool instanceof Boolean)
+            if ( ((Boolean)bool).booleanValue() )
             {
-                if ( ((Boolean)bool).booleanValue() )
-                {
-                    // Transition validated! Switch states
-                    setCurrentState(state);
-                    
-                    return true;                    
-                }
+                // Transition validated! Switch states
+                setCurrentState(state);
+                return true;
             }
         }
         
@@ -131,19 +133,32 @@ public class GameContext extends NamedUpdatableObject
      * @param state         -   the state to register
      * @param methodName    -   the entry point validation method of the state
      */
-    public void  RegisterStateEntryPoint(GameState state, String methodName)
+    public void  registerStateEntryPoint(GameState state, String methodName)
     {
         m_registry.put(methodName, state);
     }
 
+    /**
+     * Get the hash map that maps state types to state instances
+     * @return
+     */
     public HashMap<Class, GameState> getStateMapping() {
         return gameStates;
     }
-    
+
+    /**
+     * Get a state instance
+     * @param stateClass
+     * @return
+     */
     public GameState getState(Class stateClass) {
         return gameStates.get(stateClass);
     }
 
+    /**
+     * Get the character that is associated with this context
+     * @return
+     */
     public imi.character.Character getCharacter(){
         return character;
     }
@@ -184,13 +199,20 @@ public class GameContext extends NamedUpdatableObject
         if (currentState != null)
             currentState.stateEnter(this);
     }
-    
+
+    /**
+     * Get the current game state
+     * @return
+     */
     public GameState getCurrentState()
     {
         return currentState;
     }
 
-    @Override
+    /**
+     * If enabled make sure initialize was called and update the current state
+     * @param deltaTime
+     */
     public void update(float deltaTime)
     {
         if (!enabledState)
@@ -201,8 +223,10 @@ public class GameContext extends NamedUpdatableObject
         if (currentState != null && currentState.enabledState)
             currentState.update(deltaTime);
     }
-    
-    @Override
+
+    /**
+     * Initialized if succesfully transitioned into the current state's animation
+     */
     public void initialize()
     {
         // Skeleton might be null until loaded
@@ -215,7 +239,7 @@ public class GameContext extends NamedUpdatableObject
     }
 
     /**
-     * Inform the context of a trigger event
+     * Inform the context of a new trigger event
      * @param trigger The trigger type
      */
     public void triggerPressed(int trigger)
@@ -247,7 +271,7 @@ public class GameContext extends NamedUpdatableObject
     }
 
     /**
-     * Inform the context of a trigger event
+     * Inform the context of a new trigger event
      * @param trigger The trigger type
      */
     public void triggerReleased(int trigger)
@@ -280,7 +304,7 @@ public class GameContext extends NamedUpdatableObject
     }
 
     /**
-     * Inform the context of a trigger event
+     * Inform the context of a new trigger event
      * @param pressed
      * @param trigger The trigger type
      */
@@ -347,7 +371,10 @@ public class GameContext extends NamedUpdatableObject
     public void initDefaultActionMap(Hashtable<Integer, Action> actionMap) 
     {   
     }
-    
+
+    /**
+     * Reset all analog actions values to 0.0f and clear the states of triggers.
+     */
     public void resetTriggersAndActions() 
     {
         for (int i = 0; i < actions.length; i++)
@@ -356,22 +383,38 @@ public class GameContext extends NamedUpdatableObject
         m_triggerState.clear();
         //System.out.println("actions and triggers cleared");
     }
-    
+
+    /**
+     * Get the array of actions containing the analog value of each action.
+     * @return
+     */
     public float [] getActions()
     {
         return actions;
     }
 
+    /**
+     * Get the current state of all triggers
+     * @return
+     */
     public InputState getTriggerState()
     {
         return m_triggerState;
     }
-        
+
+    /**
+     * Get the character's skeleton
+     * @return
+     */
     public SkeletonNode getSkeleton() 
     {
         return character.getSkeleton();
     }
-    
+
+    /**
+     * Check if the character is currently transitioning
+     * @return
+     */
     public boolean isTransitioning()
     {
         return character.isTransitioning();
@@ -386,10 +429,10 @@ public class GameContext extends NamedUpdatableObject
     }
     
     /**
-     * Override to return concerte steering
+     * Override to return concerte behavior
      * @return
      */
-    public CharacterSteeringHelm getSteering() {
+    public CharacterBehaviorManager getBehaviorManager() {
         return null;
     }
 
@@ -399,5 +442,57 @@ public class GameContext extends NamedUpdatableObject
      */
     protected CharacterController instantiateController() {
         return null;
+    }
+
+    /**
+     * Set the name of this context
+     * @param name_
+     */
+    public void setName(String name_)
+    {
+        name = name_;
+        isNamed = true;
+    }
+
+    /**
+     * Return the name of this context or if it is not named super.toString()
+     * @return
+     */
+    public String getName()
+    {
+        if ( isNamed )
+            return name;
+        else
+            return super.toString();
+    }
+
+    /**
+     * Set enabled to true
+     */
+    public void start() {
+        enabledState = true;
+    }
+
+    /**
+     * Set enabled to false
+     */
+    public void stop() {
+        enabledState = false;
+    }
+
+    /**
+     * Set the enabled state
+     * @param state
+     */
+    public void setEnable( boolean state ) {
+        enabledState = state;
+    }
+
+    /**
+     * Check if enabled
+     * @return
+     */
+    public boolean isEnabled() {
+        return enabledState;
     }
 }

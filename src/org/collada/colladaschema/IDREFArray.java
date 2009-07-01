@@ -26,7 +26,7 @@
 package org.collada.colladaschema;
 
 import java.math.BigInteger;
-import java.util.ArrayList;
+import javolution.util.FastTable;
 import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -103,7 +103,7 @@ public class IDREFArray {
      */
     public List<Object> getValues() {
         if (values == null) {
-            values = new ArrayList<Object>();
+            values = new FastTable<Object>();
         }
         return this.values;
     }

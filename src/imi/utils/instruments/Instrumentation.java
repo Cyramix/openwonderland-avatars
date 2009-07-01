@@ -18,7 +18,7 @@
 package imi.utils.instruments;
 
 import com.jme.math.Vector3f;
-import imi.character.CharacterAttributes;
+import imi.character.CharacterParams;
 
 /**
  * The interface to talk to an applications instrumentation object.
@@ -59,7 +59,7 @@ public interface Instrumentation
      * @param translation The world space position for the new avatar
      * @return
      */
-    public boolean addNonInstancedAvatar(CharacterAttributes specification,
+    public boolean addNonInstancedAvatar(CharacterParams specification,
                                         Vector3f translation);
 
     /**

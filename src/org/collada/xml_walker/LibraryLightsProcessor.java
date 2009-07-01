@@ -17,12 +17,12 @@
  */
 package org.collada.xml_walker;
 
-import java.util.ArrayList;
+import javolution.util.FastTable;
 import java.util.List;
 import org.collada.colladaschema.LibraryLights;
 import org.collada.colladaschema.Light;
 
-import imi.loaders.collada.Collada;
+import imi.loaders.Collada;
 
 
 

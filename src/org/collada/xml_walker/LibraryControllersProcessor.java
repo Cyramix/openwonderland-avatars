@@ -17,36 +17,24 @@
  */
 package org.collada.xml_walker;
 
-
 import java.math.BigInteger;
-import java.lang.Comparable;
 import java.util.Collections;
-import java.util.ArrayList;
 import java.util.List;
-
 import com.jme.math.Vector3f;
-
 import org.collada.colladaschema.LibraryControllers;
 import org.collada.colladaschema.Controller;
 import org.collada.colladaschema.Skin;
 import org.collada.colladaschema.Source;
-
-import imi.scene.polygonmodel.parts.polygon.PPolygon;
-import imi.scene.polygonmodel.parts.polygon.PPolygonVertexIndices;
-import imi.scene.polygonmodel.parts.skinned.PPolygonSkinnedVertexIndices;
-import imi.scene.polygonmodel.parts.skinned.PBoneIndices;
-
-import imi.loaders.collada.Collada;
-
+import imi.scene.polygonmodel.PPolygon;
+import imi.scene.polygonmodel.PPolygonVertexIndices;
+import imi.scene.polygonmodel.PPolygonSkinnedVertexIndices;
+import imi.scene.polygonmodel.PBoneIndices;
+import imi.loaders.Collada;
 import imi.scene.polygonmodel.PPolygonMesh;
-import imi.scene.polygonmodel.skinned.PPolygonSkinnedMesh;
-
+import imi.scene.polygonmodel.PPolygonSkinnedMesh;
 import imi.scene.PMatrix;
 import imi.scene.PNode;
-import imi.scene.animation.AnimationGroup;
-import imi.scene.animation.channel.PMatrix_JointChannel;
-
-
+import javolution.util.FastTable;
 
 /**
  *
@@ -105,7 +93,7 @@ public class LibraryControllersProcessor extends Processor
         }
 
         PPolygonSkinnedMesh skinnedMesh = new PPolygonSkinnedMesh(polyMesh);
-        ArrayList<PPolygonSkinnedMesh> skinnedChildren = new ArrayList<PPolygonSkinnedMesh>();
+        FastTable<PPolygonSkinnedMesh> skinnedChildren = new FastTable<PPolygonSkinnedMesh>();
         // handle any children
         for (PNode kid : polyMesh.getChildren())
             if (kid instanceof PPolygonMesh)
@@ -206,7 +194,7 @@ public class LibraryControllersProcessor extends Processor
         }
 
 
-        ArrayList<BoneSkinWeight> boneSkinWeights = new ArrayList<BoneSkinWeight>();
+        FastTable<BoneSkinWeight> boneSkinWeights = new FastTable<BoneSkinWeight>();
         counter = 0;
         int vertexWeightsIndex = 0;
         for (int vertexBoneCount : vertexBoneCounts)
@@ -247,14 +235,14 @@ public class LibraryControllersProcessor extends Processor
 
 
 
-    private void toBoneIndices(ArrayList<BoneSkinWeight> boneSkinWeights, PBoneIndices boneIndices)
+    private void toBoneIndices(FastTable<BoneSkinWeight> boneSkinWeights, PBoneIndices boneIndices)
     {
         for (int a=0; a<boneSkinWeights.size(); a++)
             boneIndices.index[a] = m_BoneIndexStart + boneSkinWeights.get(a).m_BoneIndex;
     }
 
 
-    private void toWeights(ArrayList<BoneSkinWeight> boneSkinWeights, Vector3f weightVec)
+    private void toWeights(FastTable<BoneSkinWeight> boneSkinWeights, Vector3f weightVec)
     {
         if (boneSkinWeights.size() > 0)
             weightVec.x = boneSkinWeights.get(0).m_fWeight;
@@ -265,7 +253,7 @@ public class LibraryControllersProcessor extends Processor
     }
 
 
-    private void processJointSkinWeights(int maxNumberOfWeights, ArrayList<BoneSkinWeight> boneSkinWeights)
+    private void processJointSkinWeights(int maxNumberOfWeights, FastTable<BoneSkinWeight> boneSkinWeights)
     {
         int NumberOfWeightsToProcess = maxNumberOfWeights;
         float fWeightSum = 0.0f;
@@ -315,7 +303,7 @@ public class LibraryControllersProcessor extends Processor
         return null;
     }
 
-    private class BoneSkinWeight implements Comparable
+    private static class BoneSkinWeight implements Comparable
     {
         public int     m_BoneIndex = 0;
         public float   m_fWeight = 0.0f;

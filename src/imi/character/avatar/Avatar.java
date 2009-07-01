@@ -18,12 +18,12 @@
 package imi.character.avatar;
 
 import com.jme.math.Vector3f;
-import imi.character.CharacterAttributes;
-import imi.character.CharacterSteeringHelm;
+import imi.character.CharacterParams;
+import imi.character.behavior.CharacterBehaviorManager;
 import imi.character.CharacterInitializationInterface;
 import imi.character.avatar.AvatarContext.TriggerNames;
-import imi.character.objects.LocationNode;
-import imi.character.objects.ObjectCollectionBase;
+import imi.objects.LocationNode;
+import imi.objects.ObjectCollectionBase;
 import imi.character.statemachine.GameContext;
 import imi.character.statemachine.corestates.FallFromSitState;
 import imi.character.statemachine.corestates.FlyState;
@@ -33,14 +33,11 @@ import imi.character.statemachine.corestates.SitOnGroundState;
 import imi.character.statemachine.corestates.SitState;
 import imi.character.statemachine.corestates.TurnState;
 import imi.character.statemachine.corestates.WalkState;
-import imi.character.steering.FollowBakedPath;
-import imi.character.steering.FollowPath;
-import imi.character.steering.GoTo;
+import imi.character.behavior.FollowBakedPath;
+import imi.character.behavior.FollowPath;
+import imi.character.behavior.GoTo;
 import imi.scene.PMatrix;
-import imi.utils.input.InputScheme;
-import imi.scene.processors.JSceneEventProcessor;
 import imi.serialization.xml.bindings.xmlCharacter;
-import imi.utils.input.AvatarControls;
 import java.awt.event.KeyEvent;
 import java.net.URL;
 import org.jdesktop.mtgame.WorldManager;
@@ -54,143 +51,102 @@ import org.jdesktop.mtgame.WorldManager;
  */
 public class Avatar extends imi.character.Character
 {
-    /**
-     * Construct a new avatar with the provided attributes and world manager.
-     * @param attributes
-     * @param wm
-     */
-    public Avatar(CharacterAttributes attributes, WorldManager wm)
-    {
-        this(attributes, wm, true);
-    }
-    /**
-     * Construct a new avatar with the provided attributes and world manager.
-     * @param attributes
-     * @param wm
-     */
-    public Avatar(CharacterAttributes attributes, WorldManager wm, boolean addEntity)
-    {
-        super(attributes, wm, addEntity);
-//        m_context = instantiateContext();       // Initialize m_context
-        // For female loading test\demo
-        if (attributes.isMale())
-            maleContextSetup();
-        else
-            femaleContextSetup();
-    }
-
-    public Avatar(URL configurationFile, WorldManager wm, PMatrix transform, CharacterInitializationInterface initializer)
-    {
-        super(configurationFile, wm, null, transform, initializer);
-        if (m_attributes.isMale())
-            maleContextSetup();
-        else
-            femaleContextSetup();
-    }
 
     /**
-     * Construct a new instance with the provided configuration file.
-     * @param configurationFile
-     * @param wm
-     * @param transform
+     * Constructor for the avatar class which can only be called by the Builder
+     * class.  The builder class has default paramaters for building an avatar
+     * which can be overriden by the user depending on their preference on
+     * construction.
+     * @param builder   - AvatarBuilder subclass that will construct an avatar
      */
-    public Avatar(URL configurationFile, WorldManager wm, PMatrix transform)
-    {
-        super(configurationFile, wm, null, transform);
-        if (m_attributes.isMale())
+    protected Avatar(AvatarBuilder builder) {
+        super(builder);
+        if (characterParams.isMale())
             maleContextSetup();
         else
             femaleContextSetup();
     }
 
-    /**
-     * Construct a new instance with the provided configuration file.
-     * @param configurationFile
-     * @param wm
-     */
-    public Avatar(URL configurationFile, WorldManager wm)
-    {
-        super(configurationFile, wm);
-        if (m_attributes.isMale())
-            maleContextSetup();
-        else
-            femaleContextSetup();
+////////////////////////////////////////////////////////////////////////////////
+// Builder
+////////////////////////////////////////////////////////////////////////////////
+
+    public static class AvatarBuilder extends CharacterBuilder {
+
+        public AvatarBuilder(CharacterParams attributeParams, WorldManager worldManager) {
+            super(attributeParams, worldManager);
+        }
+
+        public AvatarBuilder(URL configurationFile, WorldManager worldManager) {
+            super(configurationFile, worldManager);
+        }
+
+        @Override
+        public AvatarBuilder addEntity(boolean addEntity) {
+            this.addEntity = addEntity;
+            return this;
+        }
+
+        @Override
+        public AvatarBuilder xmlCharDom(xmlCharacter xmlCharDom) {
+            this.xmlCharDom = xmlCharDom;
+            return this;
+        }
+
+        @Override
+        public AvatarBuilder baseURL(String baseURL) {
+            this.baseURL    = baseURL;
+            return this;
+        }
+
+        @Override
+        public AvatarBuilder transform(PMatrix transform) {
+            this.transform  = transform;
+            return this;
+        }
+
+        @Override
+        public AvatarBuilder initializer(CharacterInitializationInterface initializer) {
+            this.initializer    = initializer;
+            return this;
+        }
+
+        @Override
+        public Avatar build() {
+            return new Avatar(this);
+        }
     }
 
-    public Avatar(URL configurationFile, WorldManager wm, String baseURL, PMatrix transform) {
-        this(configurationFile, wm, baseURL, transform, true);
-    }
+////////////////////////////////////////////////////////////////////////////////
+// Path Finding
+////////////////////////////////////////////////////////////////////////////////
 
-    protected Avatar(URL configurationFile, WorldManager wm, String baseURL, PMatrix transform, boolean addEntity)
-    {
-        super(configurationFile, wm, baseURL, transform, null, addEntity);
-        if (m_attributes.isMale())
-            maleContextSetup();
-        else
-            femaleContextSetup();
-    }
-
-    protected GameContext instantiateContext() {
-        return new AvatarContext(this);
-    }
-
-    @Override
-    protected void finalizeInitialization(xmlCharacter characterDOM) {
-        m_context = instantiateContext();
-        super.finalizeInitialization(characterDOM);
-    }
-   
-    @Override
-    protected void initKeyBindings() 
-    {   
-        m_keyBindings.put(KeyEvent.VK_SHIFT,        TriggerNames.Movement_Modifier.ordinal());
-        m_keyBindings.put(KeyEvent.VK_A,            TriggerNames.Move_Left.ordinal());
-        m_keyBindings.put(KeyEvent.VK_D,            TriggerNames.Move_Right.ordinal());
-        m_keyBindings.put(KeyEvent.VK_W,            TriggerNames.Move_Forward.ordinal());
-        m_keyBindings.put(KeyEvent.VK_S,            TriggerNames.Move_Back.ordinal());
-        m_keyBindings.put(KeyEvent.VK_Q,            TriggerNames.Move_Strafe_Left.ordinal());
-        m_keyBindings.put(KeyEvent.VK_E,            TriggerNames.Move_Strafe_Right.ordinal());
-        m_keyBindings.put(KeyEvent.VK_CONTROL,      TriggerNames.MiscAction.ordinal());
-        m_keyBindings.put(KeyEvent.VK_ENTER,        TriggerNames.ToggleSteering.ordinal());
-        m_keyBindings.put(KeyEvent.VK_HOME,         TriggerNames.GoSit.ordinal());
-        m_keyBindings.put(KeyEvent.VK_P,            TriggerNames.Move_Down.ordinal());
-        m_keyBindings.put(KeyEvent.VK_L,            TriggerNames.Move_Up.ordinal());
-        m_keyBindings.put(KeyEvent.VK_EQUALS,       TriggerNames.Move_Down.ordinal());
-        m_keyBindings.put(KeyEvent.VK_MINUS,        TriggerNames.Move_Up.ordinal());
-        m_keyBindings.put(KeyEvent.VK_COMMA,        TriggerNames.Reverse.ordinal());
-        m_keyBindings.put(KeyEvent.VK_PERIOD,       TriggerNames.NextAction.ordinal());
-        m_keyBindings.put(KeyEvent.VK_1,            TriggerNames.GoTo1.ordinal());
-        m_keyBindings.put(KeyEvent.VK_2,            TriggerNames.GoTo2.ordinal());
-        m_keyBindings.put(KeyEvent.VK_3,            TriggerNames.GoTo3.ordinal());
-        m_keyBindings.put(KeyEvent.VK_G,            TriggerNames.SitOnGround.ordinal());
-        m_keyBindings.put(KeyEvent.VK_0,            TriggerNames.Smile.ordinal());
-        m_keyBindings.put(KeyEvent.VK_9,            TriggerNames.Frown.ordinal());
-        m_keyBindings.put(KeyEvent.VK_8,            TriggerNames.Scorn.ordinal());
-        m_keyBindings.put(KeyEvent.VK_Z,            TriggerNames.ToggleLeftArm.ordinal());
-        m_keyBindings.put(KeyEvent.VK_X,            TriggerNames.ToggleRightArm.ordinal());
-        m_keyBindings.put(KeyEvent.VK_P,            TriggerNames.Point.ordinal());
-    }
-            
     /**
      * initiate a go to steering task
      * @param pos
      * @param dir - may be null
      */
-    public void goTo(Vector3f pos, Vector3f dir)
-    {
-        CharacterSteeringHelm steering = m_context.getSteering();
+    public void goTo(Vector3f pos, Vector3f dir) {
+        CharacterBehaviorManager steering = m_context.getBehaviorManager();
         steering.clearTasks();
         steering.setEnable(true);
         steering.addTaskToTop(new GoTo(pos, dir, m_context));
     }
 
     /**
+     * Stop in place and clear steering tasks
+     */
+    public void stop() {
+        m_context.getController().stop();
+        m_context.getBehaviorManager().clearTasks();
+    }
+
+    /**
      * Follow a pre baked path
      * @param pathName
      */
-    public void followBakedPath(String pathName)
-    {
-        CharacterSteeringHelm steering = m_context.getSteering();
+    public void followBakedPath(String pathName) {
+        CharacterBehaviorManager steering = m_context.getBehaviorManager();
         steering.clearTasks();
         steering.setEnable(true);
         AvatarContext ac = ((AvatarContext)m_context);
@@ -199,9 +155,8 @@ public class Avatar extends imi.character.Character
             steering.addTaskToBottom(new FollowBakedPath(pathName, location, m_context));
     }
     
-    public void findPath(String locationName) 
-    {
-        CharacterSteeringHelm steering = m_context.getSteering();
+    public void findPath(String locationName) {
+        CharacterBehaviorManager steering = m_context.getBehaviorManager();
         steering.clearTasks();
         steering.setEnable(true);
         AvatarContext ac = ((AvatarContext)m_context);
@@ -210,34 +165,12 @@ public class Avatar extends imi.character.Character
         if (source != null)
             steering.addTaskToBottom(new FollowPath(objs.findPath(source, locationName), m_context));
     }
-     
+
+////////////////////////////////////////////////////////////////////////////////
+// Context Setup
+////////////////////////////////////////////////////////////////////////////////
     
-    /**
-     * Stop in place and clear steering tasks
-     */
-    public void stop()
-    {
-        m_context.getController().stop();
-        m_context.getSteering().clearTasks();
-    }
-    
-    
-    
-    /**
-     * This avatar will be selected for input.
-     */
-    @Override
-    public void selectForInput()
-    {
-        super.selectForInput();
-        
-        InputScheme scheme = ((JSceneEventProcessor)m_wm.getUserData(JSceneEventProcessor.class)).getInputScheme();
-        if (scheme instanceof AvatarControls)
-            ((AvatarControls)scheme).setAvatar(this);
-    }
-    
-    private void maleContextSetup()
-    {
+    private void maleContextSetup() {
         commonContextSetup();
 
         FallFromSitState fall = (FallFromSitState)m_context.getState(FallFromSitState.class);
@@ -261,8 +194,7 @@ public class Avatar extends imi.character.Character
         ((SitState)m_context.getStateMapping().get(SitState.class)).setGettingUpAnimationName("Male_StandToSit");
     }
     
-    private void femaleContextSetup()
-    {
+    private void femaleContextSetup() {
         commonContextSetup();
 
         FallFromSitState fall = (FallFromSitState)m_context.getState(FallFromSitState.class);
@@ -289,24 +221,25 @@ public class Avatar extends imi.character.Character
         ((SitState)m_context.getStateMapping().get(SitState.class)).setGettingUpAnimationName("Female_StandtoSit");
     }
 
-    private void commonContextSetup()
-    {
+    private void commonContextSetup() {
         m_context.getController().setReverseHeading(true);
 
         // Tweak animation names and speeds
 
         WalkState walk = (WalkState)m_context.getState(WalkState.class);
         walk.setImpulse(15.0f);
-        walk.setWalkSpeedMax(2.5f);
-        walk.setWalkSpeedFactor(1.3f);
+        // RED: Werent actually used in calculations, methods removed until used
+//        walk.setWalkSpeedMax(2.5f);
+//        walk.setWalkSpeedFactor(1.3f);
         walk.setMinimumTimeBeforeTransition(0.05f);
         walk.setTransitionDuration(0.1f);
         walk.setAnimationSpeed(1.6f);
 
         RunState run = (RunState)m_context.getState(RunState.class);
         run.setImpulse(15.0f);
-        run.setWalkSpeedMax(1.0f);
-        run.setWalkSpeedFactor(1.0f);
+        // RED: Werent actually used in calculations, methods removed until used
+//        run.setWalkSpeedMax(1.0f);
+//        run.setWalkSpeedFactor(1.0f);
         run.setMinimumTimeBeforeTransition(0.5f);
         run.setTransitionDuration(0.3f);
 
@@ -345,4 +278,48 @@ public class Avatar extends imi.character.Character
         sitGround.setGettingUpAnimationSpeed(2.0f);
         sitGround.setGettingUpAnimationTime(1.0f);
     }
+
+////////////////////////////////////////////////////////////////////////////////
+// Override Methods
+////////////////////////////////////////////////////////////////////////////////
+
+    @Override
+    protected GameContext instantiateContext() {
+        return new AvatarContext(this);
+    }
+
+    @Override
+    protected void finalizeInitialization(xmlCharacter characterDOM) {
+        m_context = instantiateContext();
+        super.finalizeInitialization(characterDOM);
+    }
+
+    @Override
+    protected void initKeyBindings() {
+        m_keyBindings.put(KeyEvent.VK_SHIFT,        TriggerNames.Movement_Modifier.ordinal());
+        m_keyBindings.put(KeyEvent.VK_A,            TriggerNames.Move_Left.ordinal());
+        m_keyBindings.put(KeyEvent.VK_D,            TriggerNames.Move_Right.ordinal());
+        m_keyBindings.put(KeyEvent.VK_W,            TriggerNames.Move_Forward.ordinal());
+        m_keyBindings.put(KeyEvent.VK_S,            TriggerNames.Move_Back.ordinal());
+        m_keyBindings.put(KeyEvent.VK_Q,            TriggerNames.Move_Strafe_Left.ordinal());
+        m_keyBindings.put(KeyEvent.VK_E,            TriggerNames.Move_Strafe_Right.ordinal());
+        m_keyBindings.put(KeyEvent.VK_CONTROL,      TriggerNames.MiscAction.ordinal());
+        m_keyBindings.put(KeyEvent.VK_ENTER,        TriggerNames.ToggleBehavior.ordinal());
+        m_keyBindings.put(KeyEvent.VK_HOME,         TriggerNames.GoSit.ordinal());
+        m_keyBindings.put(KeyEvent.VK_EQUALS,       TriggerNames.Move_Down.ordinal());
+        m_keyBindings.put(KeyEvent.VK_MINUS,        TriggerNames.Move_Up.ordinal());
+        m_keyBindings.put(KeyEvent.VK_COMMA,        TriggerNames.Reverse.ordinal());
+        m_keyBindings.put(KeyEvent.VK_PERIOD,       TriggerNames.NextAction.ordinal());
+        m_keyBindings.put(KeyEvent.VK_1,            TriggerNames.GoTo1.ordinal());
+        m_keyBindings.put(KeyEvent.VK_2,            TriggerNames.GoTo2.ordinal());
+        m_keyBindings.put(KeyEvent.VK_3,            TriggerNames.GoTo3.ordinal());
+        m_keyBindings.put(KeyEvent.VK_G,            TriggerNames.SitOnGround.ordinal());
+        m_keyBindings.put(KeyEvent.VK_0,            TriggerNames.Smile.ordinal());
+        m_keyBindings.put(KeyEvent.VK_9,            TriggerNames.Frown.ordinal());
+        m_keyBindings.put(KeyEvent.VK_8,            TriggerNames.Scorn.ordinal());
+        m_keyBindings.put(KeyEvent.VK_Z,            TriggerNames.ToggleLeftArm.ordinal());
+        m_keyBindings.put(KeyEvent.VK_X,            TriggerNames.ToggleRightArm.ordinal());
+        m_keyBindings.put(KeyEvent.VK_F,            TriggerNames.Point.ordinal());
+    }
+
 }

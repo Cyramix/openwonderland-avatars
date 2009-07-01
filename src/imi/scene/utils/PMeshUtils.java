@@ -17,41 +17,29 @@
  */
 package imi.scene.utils;
 
-import com.jme.image.Texture;
-import com.jme.scene.TriMesh;
-import imi.utils.PMathUtils;
+import imi.utils.MathUtils;
 import com.jme.math.Vector2f;
 import com.jme.math.Vector3f;
 import com.jme.renderer.ColorRGBA;
-import com.jme.scene.SharedMesh;
-import com.jme.scene.Spatial;
-import com.jme.scene.state.CullState;
-import com.jme.scene.state.MaterialState;
-import com.jme.scene.state.RenderState;
-import com.jme.scene.state.TextureState;
-import com.jme.util.TextureManager;
 import imi.loaders.PGeometryVertexBuffer;
-import imi.loaders.PPolygonTriMeshAssembler;
 import imi.scene.PMatrix;
 import imi.scene.animation.AnimationState;
 import imi.scene.polygonmodel.PPolygonMesh;
-import imi.scene.polygonmodel.parts.PGeometryTriangle;
-import imi.scene.polygonmodel.parts.PGeometryVertex;
-import imi.scene.polygonmodel.parts.polygon.PPolygon;
-import imi.scene.polygonmodel.parts.polygon.PPolygonNormal;
-import imi.scene.polygonmodel.parts.polygon.PPolygonPosition;
-import imi.scene.polygonmodel.parts.polygon.PPolygonVertexIndices;
-import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
-import imi.scene.polygonmodel.parts.skinned.SkinnedMeshJoint;
-import imi.scene.polygonmodel.skinned.PPolygonSkinnedMesh;
-import java.io.File;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import org.jdesktop.mtgame.WorldManager;
+import imi.scene.polygonmodel.PGeometryTriangle;
+import imi.scene.polygonmodel.PGeometryVertex;
+import imi.scene.polygonmodel.PPolygon;
+import imi.scene.polygonmodel.PPolygonNormal;
+import imi.scene.polygonmodel.PPolygonPosition;
+import imi.scene.polygonmodel.PPolygonVertexIndices;
+import imi.scene.SkeletonNode;
+import imi.scene.SkinnedMeshJoint;
+import imi.scene.polygonmodel.PPolygonSkinnedMesh;
+import javolution.util.FastTable;
 
+/**
+ * static utilities for the PNode based graph
+ * @author Lou Hayt
+ */
 public class PMeshUtils 
 {
 
@@ -114,7 +102,7 @@ public class PMeshUtils
 
             if (fHillMinorHeightRandomness != 0)
             {
-                fVerticeHeightAdjustment = PMathUtils.RandomFloatInRange(-fHillMinorHeightRandomness, fHillMinorHeightRandomness);
+                fVerticeHeightAdjustment = MathUtils.randomFloatInRange(-fHillMinorHeightRandomness, fHillMinorHeightRandomness);
 
 		fVerticeHeight += fVerticeHeightAdjustment;
             }
@@ -129,119 +117,6 @@ public class PMeshUtils
             //  End a Batch.
             pPolygonMesh.endBatch();
 	}
-    }
-    
-    static public void calculateVertexTangents(PPolygonSkinnedMesh sourceMesh)
-    {
-        int VertCount = sourceMesh.getPolygonCount() * 4;
-        PGeometryVertexBuffer vb = new PGeometryVertexBuffer();
-        
-        Vector3f [] tangentResult = new Vector3f [VertCount];
-        
-        ArrayList<Vector3f> tangents1 = new ArrayList<Vector3f>(VertCount);
-        // initialize
-        for (int i = 0; i < VertCount; ++i)
-            tangents1.add(new Vector3f());
-        
-        
-        ArrayList<Vector3f> tangents2 = new ArrayList<Vector3f>(VertCount);
-        // initialize
-        for (int i = 0; i < VertCount; ++i)
-            tangents2.add(new Vector3f());
-        
-        ArrayList<Vector3f> normals = new ArrayList<Vector3f>(VertCount);
-        // initialize
-        for (int i = 0; i < VertCount; ++i)
-            normals.add(new Vector3f());
-        
-        // for each polygon
-        for (int currentPolyIndex = 0; currentPolyIndex < sourceMesh.getPolygonCount(); ++currentPolyIndex)
-        {
-            // grab this polygon
-            PPolygon currentPoly = sourceMesh.getPolygon(currentPolyIndex);
-            // for each triangle
-            for (int currentTriangleIndex = 0; currentTriangleIndex < currentPoly.getTriangleCount(); ++currentTriangleIndex)
-            {
-                Vector3f triangleNormal = currentPoly.getNormal();
-                
-                PGeometryTriangle currentTriangle = new PGeometryTriangle();
-                currentPoly.getTriangle(currentTriangleIndex, currentTriangle);
-                
-                // grab this triangles verts and their indices
-                PGeometryVertex vert1 = currentTriangle.m_Vertices[0];
-                int index1 = vb.addVertex(vert1);
-                PGeometryVertex vert2 = currentTriangle.m_Vertices[1];
-                int index2 = vb.addVertex(vert2);
-                PGeometryVertex vert3 = currentTriangle.m_Vertices[2];
-                int index3 = vb.addVertex(vert3);
-                
-                // grab those verts texture coords
-                Vector2f texCoordVert1 = vert1.m_TexCoords[0];
-                Vector2f texCoordVert2 = vert2.m_TexCoords[0];
-                Vector2f texCoordVert3 = vert3.m_TexCoords[0];
-                
-                float x1 = vert2.m_Position.x - vert1.m_Position.x;
-                float x2 = vert3.m_Position.x - vert1.m_Position.x;
-                float y1 = vert2.m_Position.y - vert1.m_Position.y;
-                float y2 = vert3.m_Position.y - vert1.m_Position.y;
-                float z1 = vert2.m_Position.z - vert1.m_Position.z;
-                float z2 = vert3.m_Position.z - vert1.m_Position.z;
-
-                float s1 = texCoordVert2.x - texCoordVert1.x;
-                float s2 = texCoordVert3.x - texCoordVert1.x;
-                float t1 = texCoordVert2.y - texCoordVert1.y;
-                float t2 = texCoordVert3.y - texCoordVert1.y;
-
-                float r = 1.0F / (s1 * t2 - s2 * t1);
-                
-                Vector3f sdir = new Vector3f((t2 * x1 - t1 * x2) * r, (t2 * y1 - t1 * y2) * r,
-                        (t2 * z1 - t1 * z2) * r);
-                
-                Vector3f tdir = new Vector3f((s1 * x2 - s2 * x1) * r, (s1 * y2 - s2 * y1) * r,
-                        (s1 * z2 - s2 * z1) * r);
-
-                // set some stuff for whatever reason
-                tangents1.get(index1).add(sdir);
-                tangents1.get(index2).add(sdir);
-                tangents1.get(index3).add(sdir);
-
-                tangents2.get(index1).add(tdir);
-                tangents2.get(index2).add(tdir);
-                tangents2.get(index3).add(tdir);
-            }
-            
-            for (int i = 0; i < vb.count(); ++i)
-            {
-                Vector3f n = normals.get(i);
-                Vector3f t = tangents1.get(i);
-                
-                Vector3f vecTminusN = new Vector3f();
-                vecTminusN.set(t);
-
-                // Gram-Schmidt orthogonalize
-                tangentResult[i] = (t.subtract(n).mult(n.dot(t))).normalize();
-                // dump it
-                //System.out.println(i + ": " + tangentResult[i]);
-
-                // Calculate handedness
-                //tangent[a].w = (Dot(Cross(n, t), tan2[a]) < 0.0F) ? -1.0F : 1.0F;
-            }
-            
-            //sourceMesh.setVertexTangents(BufferUtils.createFloatBuffer(tangentResult));
-        }
-                /*
-                 for (long a = 0; a < vertexCount; a++)
-                {
-                    const Vector3D& n = normal[a];
-                    const Vector3D& t = tan1[a];
-
-                    // Gram-Schmidt orthogonalize
-                    tangent[a] = (t - n * Dot(n, t)).Normalize();
-
-                    // Calculate handedness
-                    tangent[a].w = (Dot(Cross(n, t), tan2[a]) < 0.0F) ? -1.0F : 1.0F;
-                }
-                */
     }
 
     //  Creates an PolygonMesh containing a Triangle.
@@ -783,7 +658,7 @@ public class PMeshUtils
                                                 float fRepeats)
     {
         // Create the grid
-        PPolygonMesh result = new PPolygonMesh("GroundPlane");
+        PPolygonMesh result;
         
         result = createGrid("GroundPlane", Vector3f.ZERO, fWidth, fLength, (int)fWidth / 10, (int)fLength / 10, ColorRGBA.white, new Vector2f(0.0f, 0.0f), new Vector2f(fRepeats, fRepeats));
         // add hills to it
@@ -1726,7 +1601,7 @@ public class PMeshUtils
         
         result.endBatch(); // This will recalculate the bounds
         // reconstruct the result
-        result.submit(new PPolygonTriMeshAssembler());
+        result.submit();
 
         // Unpause animation
         for (AnimationState state : owningSkeleton.getAnimationStates())

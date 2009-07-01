@@ -21,33 +21,50 @@ import com.jme.math.Vector3f;
 import imi.scene.PMatrix;
 import imi.scene.PNode;
 import imi.scene.polygonmodel.PPolygonModelInstance;
-import imi.scene.polygonmodel.parts.skinned.SkeletonFlatteningManipulator;
-import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
-import imi.scene.polygonmodel.parts.skinned.SkinnedMeshJoint;
+import imi.scene.SkeletonFlatteningManipulator;
+import imi.scene.SkeletonNode;
+import imi.scene.SkinnedMeshJoint;
+import javolution.util.FastMap;
+import org.jdesktop.wonderland.common.ExperimentalAPI;
+import org.jdesktop.wonderland.common.InternalAPI;
 
 /**
- *
+ * Overrides animation matrices of specific joints on the right time to enable
+ * the verlet arms demonstration.
  * @author Lou Hayt
  */
+@ExperimentalAPI
 public class VerletSkeletonFlatteningManipulator implements SkeletonFlatteningManipulator
 {
-    private final int rightShoulder = 18;//18; // -0.25008845 (bind pose x values)
-    private final int rightUpperArm = 31;//37; // -0.38327518 // 0.1331867 distance between shoulder and upperArm
-    private final int rightElbow    = 48;//43; // -0.49928188 // 0.2491934 distance between shoulder and elbow
-    private final int rightForeArm  = 53;//46; // -0.5855795  // 0.0862977 distance between elbow and forArm
-    private final int rightWrist    = 55;//48; // -0.73043364 // 0.1448541 distance between the elbow and the wrist
-    
-    private final int leftShoulder  = 16;
-    private final int leftUpperArm  = 21;
-    private final int leftElbow     = 33;//39;
-    private final int leftForeArm   = 49;//44;
-    private final int leftWrist     = 54;//47;
-    
-    private final float distanceFromShoulderToUpperArm = 0.1331867f;
-    private final float distanceFromElbowToForeArm     = 0.0862977f;
-    
-    private final int rightEye      = 47;//36;
-    private final int leftEye       = 39;//35;
+    /**
+     * List of the joints as they are named in the avatar's skeleton
+     */
+    private enum Joints
+    {
+        rightShoulder("rightArm"),
+        rightUpperArm("rightArmRoll"),
+        rightElbow("rightForeArm"),
+        rightForearm("rightForeArmRoll"),
+        rightWrist("rightHand"),
+        leftShoulder("leftArm"),
+        leftUpperArm("leftArmRoll"),
+        leftElbow("leftForeArm"),
+        leftForearm("leftForeArmRoll"),
+        leftWrist("leftHand"),
+        rightEye("rightEye"),
+        leftEye("leftEye");
+        
+        String jointName;
+        int    jointIndex = -1;
+        Joints(String jointName) {
+            this.jointName = jointName;
+        }
+    }
+
+    private final FastMap<Integer, Joints> jointMap = new FastMap<Integer, Joints>();
+
+    private float distanceFromShoulderToUpperArm = 0.1331867f;
+    private float distanceFromElbowToForeArm     = 0.0862977f;
     
     protected EyeBall    leftEyeBall   = null;
     protected EyeBall    rightEyeBall  = null;
@@ -61,43 +78,62 @@ public class VerletSkeletonFlatteningManipulator implements SkeletonFlatteningMa
     private boolean leftArmEnabled     = false;
     private boolean rightArmEnabled    = false;
 
-    private Vector3f rightShoulderLocalX = new Vector3f();
-    private Vector3f leftShoulderLocalX  = new Vector3f();
-    
-    public VerletSkeletonFlatteningManipulator(VerletArm leftVerletArm, VerletArm rightVerletArm, EyeBall left, EyeBall right, SkeletonNode skeletonNode,  PPolygonModelInstance modelInstance)
+    private final Vector3f rightShoulderLocalX = new Vector3f();
+    private final Vector3f leftShoulderLocalX  = new Vector3f();
+
+    /**
+     * Construct a new manipulator to affect the provided verlet arms, eyeballs,
+     * and skeleton.
+     * @param leftVerletArm
+     * @param rightVerletArm
+     * @param left The left eye
+     * @param right The right eye
+     * @param skeletonNode Skeleton owning the above
+     * @param modelInstance Model instance owning the above :)
+     * @throws IllegalArgumentException If any param is null
+     */
+    public VerletSkeletonFlatteningManipulator( VerletArm leftVerletArm,
+                                                VerletArm rightVerletArm,
+                                                EyeBall left,
+                                                EyeBall right,
+                                                SkeletonNode skeletonNode,
+                                                PPolygonModelInstance modelInstance)
     {
+        if (leftVerletArm == null || rightVerletArm == null ||
+                left == null || right == null || skeletonNode == null ||
+                modelInstance == null)
+                throw new IllegalArgumentException("Null param encountered!");
         leftEyeBall  = left;
         rightEyeBall = right;
         rightArm     = rightVerletArm;
         leftArm      = leftVerletArm;
         characterModelInst = modelInstance;
-        skeleton = skeletonNode;
+        skeleton     = skeletonNode;
+
+        for (Joints j : Joints.values())
+        {
+            j.jointIndex = skeleton.getSkinnedMeshJointIndex(j.jointName);
+            jointMap.put(j.jointIndex, j);
+        }
         skeleton.setFlatteningHook(this);
-//        int rightShoulderCheck = skeleton.getSkinnedMeshJointIndex("rightArm");
-//        int rightUpperArmCheck = skeleton.getSkinnedMeshJointIndex("rightArmRoll");
-//        int rightElbowCheck    = skeleton.getSkinnedMeshJointIndex("rightForeArm");
-//        int rightForeArmCheck  = skeleton.getSkinnedMeshJointIndex("rightForeArmRoll");
-//        int rightWristCheck    = skeleton.getSkinnedMeshJointIndex("rightHand");
-//
-//        int leftShoulderCheck  = skeleton.getSkinnedMeshJointIndex("leftArm");
-//        int leftUpperArmCheck  = skeleton.getSkinnedMeshJointIndex("leftArmRoll");
-//        int leftElbowCheck     = skeleton.getSkinnedMeshJointIndex("leftForeArm");
-//        int leftForeArmCheck   = skeleton.getSkinnedMeshJointIndex("leftForeArmRoll");
-//        int leftWristCheck     = skeleton.getSkinnedMeshJointIndex("leftHand");
-//
-//        int rightEyeCheck      = skeleton.getSkinnedMeshJointIndex("rightEye");
-//        int leftEyeCheck       = skeleton.getSkinnedMeshJointIndex("leftEye");
     }
-    
+
+    /**
+     * {@inheritDoc SkeletonFlatteningManipulator}
+     */
+    @InternalAPI
     public void processSkeletonNode(PNode current) 
     {
         if (!(current instanceof SkinnedMeshJoint))
             return;
-        
+
         SkinnedMeshJoint joint = (SkinnedMeshJoint)current;
         PMatrix matrix = joint.getMeshSpace();
         int jointIndex = skeleton.getSkinnedMeshJointIndex(joint);
-        switch (jointIndex)
+        Joints j = jointMap.get(jointIndex);
+        if (j == null)
+            return;
+        switch (j)
         {
             case rightEye:
                 if (rightEyeBall != null)
@@ -112,7 +148,7 @@ public class VerletSkeletonFlatteningManipulator implements SkeletonFlatteningMa
         if (!armsEnabled)
             return;
         
-        switch (jointIndex)
+        switch (j)
         {
             case rightShoulder:
                 if (rightArmEnabled)
@@ -126,7 +162,7 @@ public class VerletSkeletonFlatteningManipulator implements SkeletonFlatteningMa
                 if (rightArmEnabled)
                     modifyElbow(matrix, true);
                 break;
-            case rightForeArm:
+            case rightForearm:
                 if (rightArmEnabled)
                     modifyForeArm(matrix, true);
                 break;
@@ -147,7 +183,7 @@ public class VerletSkeletonFlatteningManipulator implements SkeletonFlatteningMa
                 if (leftArmEnabled)
                     modifyElbow(matrix, false);
                 break;
-            case leftForeArm:
+            case leftForearm:
                 if (leftArmEnabled)
                     modifyForeArm(matrix, false);
                 break;
@@ -155,14 +191,6 @@ public class VerletSkeletonFlatteningManipulator implements SkeletonFlatteningMa
                 if (leftArmEnabled)
                     modifyWrist(matrix, false);
                 break;
-                
-                
-//            // Catch all right hand cases
-//            case 51: case 52: case 58: case 59: case 60: case 61: case 62:
-//            case 68: case 69: case 70: case 71: case 72: case 78: case 79:
-//            case 80: case 81: case 82: case 87: case 88: case 89: case 90:
-//                modifyHand(matrix);
-//                break;
         }
     }
 
@@ -170,14 +198,16 @@ public class VerletSkeletonFlatteningManipulator implements SkeletonFlatteningMa
     {
         if (right)
         {
-            SkinnedMeshJoint shoulderJoint = skeleton.getSkinnedMeshJoint(rightShoulder);
-            Vector3f         elbowPosition = new Vector3f(rightArm.getElbowPosition());
+            SkinnedMeshJoint shoulderJoint = skeleton.getSkinnedMeshJoint(Joints.rightShoulder.jointIndex);
+            Vector3f         elbowPosition = new Vector3f();
+            rightArm.getElbowPosition(elbowPosition);
             modifyShoulder(matrix, shoulderJoint, elbowPosition, rightShoulderLocalX);
         }
         else
         {
-            SkinnedMeshJoint shoulderJoint = skeleton.getSkinnedMeshJoint(leftShoulder);
-            Vector3f         elbowPosition = new Vector3f(leftArm.getElbowPosition());
+            SkinnedMeshJoint shoulderJoint = skeleton.getSkinnedMeshJoint(Joints.leftShoulder.jointIndex);
+            Vector3f         elbowPosition = new Vector3f();
+            leftArm.getElbowPosition(elbowPosition);
             modifyShoulder(matrix, shoulderJoint, elbowPosition, leftShoulderLocalX);
         }
     }
@@ -202,14 +232,16 @@ public class VerletSkeletonFlatteningManipulator implements SkeletonFlatteningMa
     {
         if (right)
         {
-            SkinnedMeshJoint shoulderJoint = skeleton.getSkinnedMeshJoint(rightShoulder);
-            Vector3f         elbowPosition = new Vector3f(rightArm.getElbowPosition());
+            SkinnedMeshJoint shoulderJoint = skeleton.getSkinnedMeshJoint(Joints.rightShoulder.jointIndex);
+            Vector3f         elbowPosition = new Vector3f();
+            rightArm.getElbowPosition(elbowPosition);
             modifyUpperArm(matrix, shoulderJoint, elbowPosition, rightShoulderLocalX);
         }
         else
         {
-            SkinnedMeshJoint shoulderJoint = skeleton.getSkinnedMeshJoint(leftShoulder);
-            Vector3f         elbowPosition = new Vector3f(leftArm.getElbowPosition());
+            SkinnedMeshJoint shoulderJoint = skeleton.getSkinnedMeshJoint(Joints.leftShoulder.jointIndex);
+            Vector3f         elbowPosition = new Vector3f();
+            leftArm.getElbowPosition(elbowPosition);
             modifyUpperArm(matrix, shoulderJoint, elbowPosition, leftShoulderLocalX);
         } 
     }
@@ -238,16 +270,20 @@ public class VerletSkeletonFlatteningManipulator implements SkeletonFlatteningMa
     {   
         if (right)
         {
-            SkinnedMeshJoint shoulderJoint = skeleton.getSkinnedMeshJoint(rightShoulder);
-            Vector3f elbowPosition = new Vector3f(rightArm.getElbowPosition());
-            Vector3f wristPosition = new Vector3f(rightArm.getWristPosition());
+            SkinnedMeshJoint shoulderJoint = skeleton.getSkinnedMeshJoint(Joints.rightShoulder.jointIndex);
+            Vector3f elbowPosition = new Vector3f();
+            rightArm.getElbowPosition(elbowPosition);
+            Vector3f wristPosition = new Vector3f();
+            rightArm.getWristPosition(wristPosition);
             modifyElbow(matrix, shoulderJoint, elbowPosition, wristPosition);
         }
         else
         {
-            SkinnedMeshJoint shoulderJoint = skeleton.getSkinnedMeshJoint(leftShoulder);
-            Vector3f elbowPosition = new Vector3f(leftArm.getElbowPosition());
-            Vector3f wristPosition = new Vector3f(leftArm.getWristPosition());
+            SkinnedMeshJoint shoulderJoint = skeleton.getSkinnedMeshJoint(Joints.leftShoulder.jointIndex);
+            Vector3f elbowPosition = new Vector3f();
+            leftArm.getElbowPosition(elbowPosition);
+            Vector3f wristPosition = new Vector3f();
+            leftArm.getWristPosition(wristPosition);
             modifyElbow(matrix, shoulderJoint, elbowPosition, wristPosition);
         } 
     }
@@ -279,16 +315,20 @@ public class VerletSkeletonFlatteningManipulator implements SkeletonFlatteningMa
     {
         if (right)
         {
-            SkinnedMeshJoint shoulderJoint = skeleton.getSkinnedMeshJoint(rightShoulder);
-            Vector3f elbowPosition = new Vector3f(rightArm.getElbowPosition());
-            Vector3f wristPosition = new Vector3f(rightArm.getWristPosition());
+            SkinnedMeshJoint shoulderJoint = skeleton.getSkinnedMeshJoint(Joints.rightShoulder.jointIndex);
+            Vector3f elbowPosition = new Vector3f();
+            rightArm.getElbowPosition(elbowPosition);
+            Vector3f wristPosition = new Vector3f();
+            rightArm.getWristPosition(wristPosition);
             modifyForeArm(matrix, shoulderJoint, elbowPosition, wristPosition);
         }
         else
         {
-            SkinnedMeshJoint shoulderJoint = skeleton.getSkinnedMeshJoint(leftShoulder);
-            Vector3f elbowPosition = new Vector3f(leftArm.getElbowPosition());
-            Vector3f wristPosition = new Vector3f(leftArm.getWristPosition());
+            SkinnedMeshJoint shoulderJoint = skeleton.getSkinnedMeshJoint(Joints.leftShoulder.jointIndex);
+            Vector3f elbowPosition = new Vector3f();
+            leftArm.getElbowPosition(elbowPosition);
+            Vector3f wristPosition = new Vector3f();
+            leftArm.getWristPosition(wristPosition);
             modifyForeArm(matrix, shoulderJoint, elbowPosition, wristPosition);
         } 
     }
@@ -322,14 +362,16 @@ public class VerletSkeletonFlatteningManipulator implements SkeletonFlatteningMa
     {
         if (right)
         {
-            SkinnedMeshJoint shoulderJoint = skeleton.getSkinnedMeshJoint(rightShoulder);
-            Vector3f wristPosition = new Vector3f(rightArm.getWristPosition());
+            SkinnedMeshJoint shoulderJoint = skeleton.getSkinnedMeshJoint(Joints.rightShoulder.jointIndex);
+            Vector3f wristPosition = new Vector3f();
+            rightArm.getWristPosition(wristPosition);
             modifyWrist(matrix, shoulderJoint, wristPosition, right);
         }
         else
         {
-            SkinnedMeshJoint shoulderJoint = skeleton.getSkinnedMeshJoint(leftShoulder);
-            Vector3f wristPosition = new Vector3f(leftArm.getWristPosition());
+            SkinnedMeshJoint shoulderJoint = skeleton.getSkinnedMeshJoint(Joints.leftShoulder.jointIndex);
+            Vector3f wristPosition = new Vector3f();
+            leftArm.getWristPosition(wristPosition);
             modifyWrist(matrix, shoulderJoint, wristPosition, right);
         } 
     }
@@ -376,19 +418,35 @@ public class VerletSkeletonFlatteningManipulator implements SkeletonFlatteningMa
             matrix.fastMul(fixRotation);
         }
     }
-    
+
+    /**
+     * Enable / Disable the verlet arms.
+     * @param bEnabled True to enable
+     */
     public void setArmsEnabled(boolean bEnabled) {
         this.armsEnabled = bEnabled;
     }
-    
+
+    /**
+     * Determine if the verlet arms are enabled.
+     * @return True if enabled
+     */
     public boolean isArmsEnabled() {
         return this.armsEnabled;
     }
 
+    /**
+     * Determine if the left arm is enabled.
+     * @return True if enabled
+     */
     public boolean isLeftArmEnabled() {
         return leftArmEnabled;
     }
 
+    /**
+     * Enable / Disable the left arm
+     * @param leftArmEnabled True to enable
+     */
     public void setLeftArmEnabled(boolean leftArmEnabled) {
         this.leftArmEnabled = leftArmEnabled;
         if (rightArmEnabled || leftArmEnabled)
@@ -397,10 +455,18 @@ public class VerletSkeletonFlatteningManipulator implements SkeletonFlatteningMa
             armsEnabled = false;
     }
 
+    /**
+     * Determine if the right arm is enabled.
+     * @return true if enabled
+     */
     public boolean isRightArmEnabled() {
         return rightArmEnabled;
     }
 
+    /**
+     * Enable / Disable the right arm
+     * @param rightArmEnabled True to enable
+     */
     public void setRightArmEnabled(boolean rightArmEnabled) {
         this.rightArmEnabled = rightArmEnabled;
         if (rightArmEnabled || leftArmEnabled)
@@ -409,7 +475,11 @@ public class VerletSkeletonFlatteningManipulator implements SkeletonFlatteningMa
             armsEnabled = false;
     }
 
-    public void setManualDriveReachUp(boolean manualDriveReachUp) 
+    /**
+     * Sets the arm behavior to reach up rather than forward.
+     * @param manualDriveReachUp True to reach up
+     */
+    public void setManualDriveReachUp(boolean manualDriveReachUp)
     {
         this.manualDriveReachUp = manualDriveReachUp;
     }
@@ -419,19 +489,20 @@ public class VerletSkeletonFlatteningManipulator implements SkeletonFlatteningMa
         return characterModelInst.getTransform().getWorldMatrix(false).inverse();
     }
 
-    public EyeBall getLeftEyeBall() {
+    //////// Package level access //////////
+    EyeBall getLeftEyeBall() {
         return leftEyeBall;
     }
 
-    public void setLeftEyeBall(EyeBall leftEyeBall) {
+    void setLeftEyeBall(EyeBall leftEyeBall) {
         this.leftEyeBall = leftEyeBall;
     }
 
-    public EyeBall getRightEyeBall() {
+    EyeBall getRightEyeBall() {
         return rightEyeBall;
     }
 
-    public void setRightEyeBall(EyeBall rightEyeBall) {
+    void setRightEyeBall(EyeBall rightEyeBall) {
         this.rightEyeBall = rightEyeBall;
     }
 

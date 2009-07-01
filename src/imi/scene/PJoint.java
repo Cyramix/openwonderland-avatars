@@ -21,13 +21,13 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
-import java.util.ArrayList;
+import javolution.util.FastTable;
 
 /**
  * This <code>PNode</code> is used for articulated hierarchies 
  * that can potentially animate.
  * 
- * You can safely assume that the transform member variable of this class 
+ * You can safely assume that the transform member variable of this node
  * is never null.
  * 
  * @author Lou Hayt
@@ -49,7 +49,7 @@ public class PJoint extends PNode implements Serializable
     private transient PMatrix   m_localModifier = new PMatrix();
 	
     /**
-     * Empty constructor, for low level coding.
+     * Empty constructor, sets a default transform.
      */
     public PJoint()
     {
@@ -90,7 +90,7 @@ public class PJoint extends PNode implements Serializable
      * @param children  -   can be null
      * @param transform -   can be null
      */
-    public PJoint(String name, PNode parent, ArrayList<PNode> children, PTransform transform) 
+    public PJoint(String name, PNode parent, FastTable<PNode> children, PTransform transform)
     {
         super(name, parent, children, transform);
         if (getTransform() == null)
@@ -110,8 +110,8 @@ public class PJoint extends PNode implements Serializable
     }
     
     /**
-     * Selected joints will be visualized in the internal renderer (PRenderer)
-     * with yellow spheres.
+     * Selected joints will be visualized in the debug renderer
+     * with spheres.
      * 
      * Selection also has context with the GUI for manipulation of the joint
      */
@@ -121,8 +121,8 @@ public class PJoint extends PNode implements Serializable
     }
     
     /**
-     * Selected joints will be visualized in the internal renderer (PRenderer)
-     * with yellow spheres.
+     * Selected joints will be visualized in the debug renderer
+     * with spheres.
      * 
      * Selection also has context with the GUI for manipulation of the joint
      */
@@ -132,8 +132,8 @@ public class PJoint extends PNode implements Serializable
     }
 
     /**
-     * Selected joints will be visualized in the internal renderer (PRenderer)
-     * with yellow spheres.
+     * Selected joints will be visualized in the debug renderer
+     * with spheres.
      * 
      * Selection also has context with the GUI for manipulation of the joint
      * @param select
@@ -144,8 +144,8 @@ public class PJoint extends PNode implements Serializable
     }
     
     /**
-     * Selected joints will be visualized in the internal renderer (PRenderer)
-     * with yellow spheres.
+     * Selected joints will be visualized in the debug renderer
+     * with spheres.
      * 
      * Selection also has context with the GUI for manipulation of the joint
      */

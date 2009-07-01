@@ -21,11 +21,13 @@ import com.jme.bounding.BoundingSphere;
 import com.jme.math.Vector3f;
 import imi.scene.PJoint;
 import javolution.util.FastTable;
+import org.jdesktop.wonderland.common.ExperimentalAPI;
 
 /**
  *
  * @author Lou Hayt
  */
+@ExperimentalAPI
 public interface PickResult
 {
     public void addPickedTriangle(Vector3f v0, Vector3f v1, Vector3f v2, Vector3f loc);

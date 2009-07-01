@@ -28,7 +28,9 @@ public class ImageLibraryExt {
 ////////////////////////////////////////////////////////////////////////////////
 // Image File I/O
 ////////////////////////////////////////////////////////////////////////////////
-    
+    public static Object[]  object  = new Object[3];
+    public static int       counter = 0;
+
     /**
      * Loads an image from disk as BufferedImage
      * @param filename File to load
@@ -143,7 +145,7 @@ public class ImageLibraryExt {
      */
     public static BufferedImage rotate(BufferedImage image, double degrees) {
         AffineTransform tx = new AffineTransform();
-        tx.rotate(Math.toRadians(degrees), image.getWidth() / 2, image.getHeight() / 2);
+        tx.rotate(Math.toRadians(degrees), (double)image.getWidth() / 2.0, (double)image.getHeight() / 2.0);
         AffineTransformOp op = new AffineTransformOp(tx, AffineTransformOp.TYPE_BILINEAR);
         return op.filter(image, null);
     }
@@ -418,9 +420,16 @@ public class ImageLibraryExt {
         int effectiveRange = 255 - low;
         int imageRange = high - low;
 
+        object[counter]   = high;
         // process pixels
         for (int i = 0; i < pixels.length; i++) {
             pixels[i] = pixels[i] * effectiveRange / imageRange;
+        }
+
+        ++counter;
+
+        if (counter >= 3) {
+            counter = 0;
         }
 
         return pixels;

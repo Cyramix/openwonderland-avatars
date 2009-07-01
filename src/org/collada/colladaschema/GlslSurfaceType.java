@@ -25,7 +25,7 @@
 
 package org.collada.colladaschema;
 
-import java.util.ArrayList;
+import javolution.util.FastTable;
 import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -199,7 +199,7 @@ public class GlslSurfaceType
          */
         public List<FxAnnotateCommon> getAnnotates() {
             if (annotates == null) {
-                annotates = new ArrayList<FxAnnotateCommon>();
+                annotates = new FastTable<FxAnnotateCommon>();
             }
             return this.annotates;
         }
@@ -229,7 +229,7 @@ public class GlslSurfaceType
          */
         public List<Object> getCodesAndIncludes() {
             if (codesAndIncludes == null) {
-                codesAndIncludes = new ArrayList<Object>();
+                codesAndIncludes = new FastTable<Object>();
             }
             return this.codesAndIncludes;
         }
@@ -282,7 +282,7 @@ public class GlslSurfaceType
          */
         public List<GlslSetparamSimple> getSetparams() {
             if (setparams == null) {
-                setparams = new ArrayList<GlslSetparamSimple>();
+                setparams = new FastTable<GlslSetparamSimple>();
             }
             return this.setparams;
         }

@@ -117,8 +117,6 @@ public class JPanel_HorizontalSliderS extends javax.swing.JPanel {
 
                     if (m_ParentFrame instanceof JFrame_AdvOptions)
                         ((JFrame_AdvOptions)m_ParentFrame).parseModification(m_ObjectRef, Float.valueOf(m_formattedNumber), newVal);
-                    else if (m_ParentFrame instanceof JFrame_SimpAdvOptions)
-                        ((JFrame_SimpAdvOptions)m_ParentFrame).parseModification(m_ObjectRef, Float.valueOf(m_formattedNumber), newVal);
                 }
                 break;
             }
@@ -136,9 +134,6 @@ public class JPanel_HorizontalSliderS extends javax.swing.JPanel {
 
                     if (m_ParentFrame instanceof JFrame_AdvOptions)
                         ((JFrame_AdvOptions)m_ParentFrame).parseModification(m_ObjectRef, Float.valueOf(m_formattedNumber), curVal - 1);
-                    else if (m_ParentFrame instanceof JFrame_SimpAdvOptions)
-                        ((JFrame_SimpAdvOptions)m_ParentFrame).parseModification(m_ObjectRef, Float.valueOf(m_formattedNumber), curVal - 1);
-
                 }
                 break;
             }

@@ -21,19 +21,19 @@ import com.jme.math.Vector3f;
 import imi.scene.PMatrix;
 import imi.scene.PNode;
 import imi.scene.PTransform;
-import imi.scene.boundingvolumes.PCube;
-import imi.scene.boundingvolumes.PSphere;
-import imi.scene.utils.PRenderer;
-import imi.scene.utils.tree.BoundingVolumeCollector;
-import imi.scene.utils.tree.TreeTraverser;
-import imi.utils.PMathUtils;
+import imi.scene.PCube;
+import imi.scene.PSphere;
+import imi.scene.utils.traverser.BoundingVolumeCollector;
+import imi.scene.utils.traverser.TreeTraverser;
+import imi.utils.MathUtils;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.LinkedList;
+import javolution.util.FastTable;
+
 /**
- *
+ * Used as a grouping node
  * @author Lou Hayt
  * @author Ron Dahlgren
  */
@@ -44,9 +44,7 @@ public class PPolygonModelInstance extends PNode implements Serializable
 
     private PSphere   m_boundingSphere = null; // The overall bounding sphere
     
-    private transient PSphere [] debugSpheres = new PSphere[2];
-    
-    public PPolygonModelInstance(String name, PTransform transform, ArrayList<PPolygonMeshInstance> meshes) 
+    public PPolygonModelInstance(String name, PTransform transform, FastTable<PPolygonMeshInstance> meshes)
     {
         super(name, null, null, transform);
         if (meshes != null)
@@ -56,7 +54,7 @@ public class PPolygonModelInstance extends PNode implements Serializable
         }
     }
 
-    public PPolygonModelInstance(String name, PMatrix origin, ArrayList<PPolygonMeshInstance> meshes) 
+    public PPolygonModelInstance(String name, PMatrix origin, FastTable<PPolygonMeshInstance> meshes)
     {
         this(name, new PTransform(origin), meshes);
     }
@@ -70,37 +68,7 @@ public class PPolygonModelInstance extends PNode implements Serializable
     {
         this(name, new PTransform(), null);
     }
-
-    @Override
-    public void draw(PRenderer renderer)
-    {
-        for (int i = 0; i < getChildrenCount(); i++) 
-            getChild(i).drawAll(renderer);
-        
-        // Draw model bounding sphere test
-        /////////////////////////////////////////
-//        if (debugSpheres[0] != null)
-//        {
-//            renderer.setOrigin(PMatrix.IDENTITY);
-//            renderer.drawSphere(debugSpheres[0], 10, 10, false);
-//            renderer.drawSphere(debugSpheres[1], 10, 10, false);
-//        }
-//        if (m_boundingSphere != null)
-//        {
-//            PMatrix origin       = getTransform().getWorldMatrix(false);
-//            renderer.setOrigin(origin);
-//            renderer.drawSphere(m_boundingSphere, 6, 6, false);
-//            renderer.drawTriangle(Vector3f.UNIT_X.mult(8.0f), Vector3f.UNIT_X.mult(-8.0f), Vector3f.UNIT_Z.mult(8.0f));
-//        
-//        }
-        /////////////////////////////////////////
-    }
     
-    public void setDebugSphere(PSphere bv, int index) 
-    {
-        debugSpheres[index] = bv;
-    }
-
     /**
      * Adjusting the reference counts for all geometry being used by meshes of this model hierarchy
      */
@@ -133,23 +101,23 @@ public class PPolygonModelInstance extends PNode implements Serializable
      */
     public void calculateBoundingSphere()
     {
-        Vector3f        boundingSphereCenter = new Vector3f();
+        Vector3f        boundingSphereCenter;
         float           fBoundingSphereRadius = 0.0f;
         float           fLocalBoundingSphereRadius = 0.0f;
         
         // Collect spheres
         BoundingVolumeCollector processor = new BoundingVolumeCollector();
         TreeTraverser.breadthFirst(this, processor);
-        ArrayList<PSphere> spheres = processor.getSpheres();
-        ArrayList<PCube> cubes     = processor.getCubes();
+        FastTable<PSphere> spheres = processor.getSpheres();
+        FastTable<PCube> cubes     = processor.getCubes();
         
         // Calculate the overallcenter of the BoundingSphere (approximated).
         Vector3f min = new Vector3f();
         Vector3f max = new Vector3f();
         for (PCube cube : cubes)
         {
-            PMathUtils.min(min, cube.getMin());
-            PMathUtils.max(max, cube.getMax());
+            MathUtils.min(min, cube.getMin());
+            MathUtils.max(max, cube.getMax());
         }
         boundingSphereCenter = new PCube(min, max).getCenter();
         
@@ -170,7 +138,5 @@ public class PPolygonModelInstance extends PNode implements Serializable
     private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException
     {
         in.defaultReadObject();
-        // Re-allocate all transient objects
-        debugSpheres = new PSphere[2];
     }
 }

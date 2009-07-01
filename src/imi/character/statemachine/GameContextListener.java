@@ -19,12 +19,14 @@ package imi.character.statemachine;
 
 import com.jme.math.Quaternion;
 import com.jme.math.Vector3f;
+import org.jdesktop.wonderland.common.ExperimentalAPI;
 
 /**
  * Listener interface for CharacterController.
  *
  * @author paulby
  */
+@ExperimentalAPI
 public interface GameContextListener {
 
     /**

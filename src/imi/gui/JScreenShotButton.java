@@ -17,7 +17,7 @@
  */
 package imi.gui;
 
-import imi.scene.processors.FlexibleCameraProcessor;
+import imi.camera.FlexibleCameraProcessor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.ImageIcon;

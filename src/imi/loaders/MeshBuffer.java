@@ -19,7 +19,7 @@ package imi.loaders;
 
 import com.jme.math.Vector2f;
 import com.jme.math.Vector3f;
-import java.util.ArrayList;
+import javolution.util.FastTable;
 
 /**     
  * MeshBuffer - Utility to re-arange mesh data from:
@@ -65,13 +65,13 @@ public class MeshBuffer
 {
     static final int MAX_TEXTURES = 8;  // multi-texturing supported
     /** Collection of positions **/
-    private ArrayList<Vector3f> m_Positions = new ArrayList<Vector3f>();
+    private FastTable<Vector3f> m_Positions = new FastTable<Vector3f>();
     /** Collection of normals **/
-    private ArrayList<Vector3f> m_Normals   = new ArrayList<Vector3f>();
+    private FastTable<Vector3f> m_Normals   = new FastTable<Vector3f>();
     /** Collection of texture coordinates **/
-    private ArrayList<Vector2f> []    m_TexCoords = new ArrayList[MAX_TEXTURES];
+    private FastTable<Vector2f> []    m_TexCoords = new FastTable[MAX_TEXTURES];
     /** Index collection **/
-    private ArrayList<Integer>  m_TriangleIndices   = new ArrayList<Integer>();
+    private FastTable<Integer>  m_TriangleIndices   = new FastTable<Integer>();
 
     /**
      * Construct a new instance!
@@ -80,7 +80,7 @@ public class MeshBuffer
     {
         for (int i = 0; i < MAX_TEXTURES; i++)
         {
-            m_TexCoords[i] = new ArrayList<Vector2f>();
+            m_TexCoords[i] = new FastTable<Vector2f>();
         }
     }
 
@@ -149,9 +149,9 @@ public class MeshBuffer
 
     public void addTriangle(int indexOne, int indexTwo, int indexThree)
     {
-        m_TriangleIndices.add(new Integer(indexOne));
-        m_TriangleIndices.add(new Integer(indexTwo));
-        m_TriangleIndices.add(new Integer(indexThree));
+        m_TriangleIndices.add(Integer.valueOf(indexOne));
+        m_TriangleIndices.add(Integer.valueOf(indexTwo));
+        m_TriangleIndices.add(Integer.valueOf(indexThree));
     }
 
     public Vector3f[] getPositions()

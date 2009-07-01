@@ -25,7 +25,7 @@
 
 package org.collada.colladaschema;
 
-import java.util.ArrayList;
+import javolution.util.FastTable;
 import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -118,7 +118,7 @@ public class InstancePhysicsModel {
      */
     public List<InstanceWithExtra> getInstanceForceFields() {
         if (instanceForceFields == null) {
-            instanceForceFields = new ArrayList<InstanceWithExtra>();
+            instanceForceFields = new FastTable<InstanceWithExtra>();
         }
         return this.instanceForceFields;
     }
@@ -149,7 +149,7 @@ public class InstancePhysicsModel {
      */
     public List<InstanceRigidBody> getInstanceRigidBodies() {
         if (instanceRigidBodies == null) {
-            instanceRigidBodies = new ArrayList<InstanceRigidBody>();
+            instanceRigidBodies = new FastTable<InstanceRigidBody>();
         }
         return this.instanceRigidBodies;
     }
@@ -180,7 +180,7 @@ public class InstancePhysicsModel {
      */
     public List<InstanceRigidConstraint> getInstanceRigidConstraints() {
         if (instanceRigidConstraints == null) {
-            instanceRigidConstraints = new ArrayList<InstanceRigidConstraint>();
+            instanceRigidConstraints = new FastTable<InstanceRigidConstraint>();
         }
         return this.instanceRigidConstraints;
     }
@@ -211,7 +211,7 @@ public class InstancePhysicsModel {
      */
     public List<Extra> getExtras() {
         if (extras == null) {
-            extras = new ArrayList<Extra>();
+            extras = new FastTable<Extra>();
         }
         return this.extras;
     }

@@ -26,7 +26,7 @@
 package org.collada.colladaschema;
 
 import java.math.BigInteger;
-import java.util.ArrayList;
+import javolution.util.FastTable;
 import java.util.List;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -333,7 +333,7 @@ public class CgNewarrayType {
      */
     public List<JAXBElement<?>> getFixed1sAndHalf3X3sAndBool3X2s() {
         if (fixed1SAndHalf3X3SAndBool3X2S == null) {
-            fixed1SAndHalf3X3SAndBool3X2S = new ArrayList<JAXBElement<?>>();
+            fixed1SAndHalf3X3SAndBool3X2S = new FastTable<JAXBElement<?>>();
         }
         return this.fixed1SAndHalf3X3SAndBool3X2S;
     }

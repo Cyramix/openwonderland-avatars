@@ -23,10 +23,10 @@ import imi.character.CharacterController;
 import imi.character.avatar.AvatarContext.TriggerNames;
 import imi.character.statemachine.GameContext;
 import imi.character.statemachine.GameState;
-import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
+import imi.scene.SkeletonNode;
 
 /**
- *
+ * Walking state for a character
  * @author Lou Hayt
  */
 public class WalkState extends GameState 
@@ -34,9 +34,10 @@ public class WalkState extends GameState
     GameContext context           = null;
         
     protected float impulse               = 15.0f;
-    
-    private float walkSpeedMax          = 2.5f;
-    private float walkSpeedFactor       = 1.3f; //  The walk state is using this value and OVERWRITES the super's animation speed...
+
+    // RED: Not used anywhere. Commented out to reduce memory footprint
+//    private float walkSpeedMax          = 2.5f;
+//    private float walkSpeedFactor       = 1.3f; //  The walk state is using this value and OVERWRITES the super's animation speed...
     
     protected float exitCounter           = 0.0f;
     private float minimumTimeBeforeTransition = 0.05f; // still needed?
@@ -163,13 +164,13 @@ public class WalkState extends GameState
         impulse = amount;
     }
 
-    public void setWalkSpeedFactor(float walkSpeedFactor) {
-        this.walkSpeedFactor = walkSpeedFactor;
-    }
-
-    public void setWalkSpeedMax(float walkSpeedMax) {
-        this.walkSpeedMax = walkSpeedMax;
-    }
+//    public void setWalkSpeedFactor(float walkSpeedFactor) {
+//        this.walkSpeedFactor = walkSpeedFactor;
+//    }
+//
+//    public void setWalkSpeedMax(float walkSpeedMax) {
+//        this.walkSpeedMax = walkSpeedMax;
+//    }
 
     public float getMinimumTimeBeforeTransition() {
         return minimumTimeBeforeTransition;

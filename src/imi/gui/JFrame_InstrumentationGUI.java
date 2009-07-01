@@ -25,9 +25,9 @@
 package imi.gui;
 
 import com.jme.math.Vector3f;
-import imi.character.CharacterAttributes;
-import imi.character.avatar.FemaleAvatarAttributes;
-import imi.character.avatar.MaleAvatarAttributes;
+import imi.character.CharacterParams;
+import imi.character.FemaleAvatarParams;
+import imi.character.MaleAvatarParams;
 import imi.utils.instruments.Instrumentation;
 import imi.utils.instruments.Instrumentation.InstrumentedSubsystem;
 import java.util.ArrayList;
@@ -44,7 +44,7 @@ public class JFrame_InstrumentationGUI extends javax.swing.JFrame {
 ////////////////////////////////////////////////////////////////////////////////
     private WorldManager                    m_worldManager      = null;
     private Instrumentation                 m_instrumentation   = null;
-    private ArrayList<CharacterAttributes>  m_attributes        = null;
+    private ArrayList<CharacterParams>  m_attributes        = null;
     private int                             m_numMaleAttribs    = 10;
     private int                             m_numFemaleAttribs  = 10;
 
@@ -100,7 +100,7 @@ public class JFrame_InstrumentationGUI extends javax.swing.JFrame {
             float z = Float.valueOf(jFormattedTextField_Z2.getValue().toString());
             Vector3f translation = new Vector3f( x, y, z );
 
-            CharacterAttributes attribs = (CharacterAttributes)jComboBox_Attributes.getSelectedItem();
+            CharacterParams attribs = (CharacterParams)jComboBox_Attributes.getSelectedItem();
             m_instrumentation.addNonInstancedAvatar(attribs, translation);
 
         } else {
@@ -552,18 +552,18 @@ public class JFrame_InstrumentationGUI extends javax.swing.JFrame {
      * @param appendNumber
      * @return
      */
-    private CharacterAttributes createAttributes(int iGender, int appendNumber) {
-        CharacterAttributes attribs = null;
+    private CharacterParams createAttributes(int iGender, int appendNumber) {
+        CharacterParams attribs = null;
         switch(iGender)
         {
             case 1:
             {
-                attribs = new MaleAvatarAttributes("MaleAvatar" + appendNumber, true);
+                attribs = new MaleAvatarParams("MaleAvatar" + appendNumber).build();
                 break;
             }
             case 2:
             {
-                attribs = new FemaleAvatarAttributes("FemaleAvatar" + appendNumber, true);
+                attribs = new FemaleAvatarParams("FemaleAvatar" + appendNumber).build();
                 break;
             }
         }
@@ -578,7 +578,7 @@ public class JFrame_InstrumentationGUI extends javax.swing.JFrame {
      * and the number of female avatars
      */
     private void initAttributesBox() {
-        m_attributes = new ArrayList<CharacterAttributes>();
+        m_attributes = new ArrayList<CharacterParams>();
 
         for (int i = 0; i < m_numMaleAttribs; i++) {
             m_attributes.add(createAttributes(1, i));
@@ -597,8 +597,6 @@ public class JFrame_InstrumentationGUI extends javax.swing.JFrame {
      */
     private void setLists() {
         Instrumentation.InstrumentedSubsystem[]          iSubSystem = Instrumentation.InstrumentedSubsystem.values();
-        ArrayList<Instrumentation.InstrumentedSubsystem> enabled    = new ArrayList<Instrumentation.InstrumentedSubsystem>();
-        ArrayList<Instrumentation.InstrumentedSubsystem> disabled   = new ArrayList<Instrumentation.InstrumentedSubsystem>();
         DefaultListModel enabledListMod     = new DefaultListModel();
         DefaultListModel disabledListMod    = new DefaultListModel();
 

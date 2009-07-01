@@ -18,11 +18,13 @@
 package imi.collision;
 
 import javolution.util.FastTable;
+import org.jdesktop.wonderland.common.ExperimentalAPI;
 
 /**
  *
  * @author Lou Hayt
  */
+@ExperimentalAPI
 public class PickingResults
 {
     // TODO - need a collection that supports insertion sort

@@ -23,23 +23,24 @@ import imi.scene.animation.AnimationListener.AnimationMessageType;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Stack;
-import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
+import imi.scene.SkeletonNode;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * This class represents the base state for the extendable state machine.
+ * This class holds game state for a character, it is used to drive its animations
+ * and game logic.
  * @author Shawn Kendall
  * @author Lou Hayt
  */
-public class GameState extends NamedUpdatableObject
+public class GameState
 {
     /** Reference to the context owning this state **/
     protected GameContext gameContext = null;
     /** The stack of transitions **/
     private final Stack<TransitionObject> transitionStack = new Stack<TransitionObject>();
 
-    boolean bReverseTransitionCheckTraversal = false; // TODO
+    //boolean bReverseTransitionCheckTraversal = false; // TODO
     /** Name of the animation associated with this state **/
     protected String    animationName       = null;
     /** Default playback speed for any animations used by this state **/
@@ -56,12 +57,17 @@ public class GameState extends NamedUpdatableObject
     private String facialAnimationName    = null;
     private float  facialAnimationTransitionTime  = 0.3f;
     private float  facialAnimationExpressionHoldTime = 2.5f;
-    
+
+    protected String name = "nameless";
+    protected boolean isNamed = false;
+    protected boolean enabledState = true;
+
     /** Logger convenience method **/
     protected final static Logger logger = Logger.getLogger(GameState.class.getName());
 
     /**
-     * Represents an action for a state. These are mapped to input triggers
+     * Holds a floating point modifier to be applied on an action (indexed in a GameCotnext)
+     * as a result of an input trigger.
      */
     public static class Action
     {
@@ -72,8 +78,8 @@ public class GameState extends NamedUpdatableObject
 
         /**
          * Construct a new instance with all data specified
-         * @param action
-         * @param modifier
+         * @param action   - the action identifier
+         * @param modifier - the floating point modifier value
          */
         public Action(int action, float modifier)
         {
@@ -163,6 +169,7 @@ public class GameState extends NamedUpdatableObject
     /**
      * Transitions to the states animation and sets the speed and 
      * transition duration.
+     * If the animation is successfully set then bAnimationSet will be true
      */
     public void setAnimation() 
     {   
@@ -172,7 +179,7 @@ public class GameState extends NamedUpdatableObject
         {
             skeleton.getAnimationState().setTransitionDuration(transitionDuration);
             skeleton.getAnimationState().setAnimationSpeed(animationSpeed);
-            skeleton.getAnimationState().setCycleMode(cycleMode);
+            skeleton.getAnimationState().setTransitionCycleMode(cycleMode);
             bAnimationSet = skeleton.transitionTo(animationName, bTransitionReverseAnimation);
         }
     }
@@ -214,12 +221,15 @@ public class GameState extends NamedUpdatableObject
     public String toString()
     {
         if ( isNamed )
-            return objectName;
+            return name;
         else
             return super.toString();
     }
-    
-    @Override
+
+    /**
+     * If the animation is not set it will be set now
+     * @param deltaTime
+     */
     public void update(float deltaTime)
     {
         // Set animation
@@ -227,66 +237,114 @@ public class GameState extends NamedUpdatableObject
             setAnimation();
     }
 
+    /**
+     * Get the name of the animation
+     * @return
+     */
     public String getAnimationName() {
         return animationName;
     }
 
+    /**
+     * Set the animation name
+     * @param animationName
+     */
     public void setAnimationName(String animationName) {
         this.animationName = animationName;
     }
 
+    /**
+     * Get the animation speed
+     * @return
+     */
     public float getAnimationSpeed() {
         return animationSpeed;
     }
 
+    /**
+     * Set the animation speed
+     * @param animationSpeed
+     */
     public void setAnimationSpeed(float animationSpeed) {
         this.animationSpeed = animationSpeed;
     }
 
-    public boolean isReverseTransitionCheckTraversal() {
-        return bReverseTransitionCheckTraversal;
-    }
-
-    public void setReverseTransitionCheckTraversal(boolean bReverseTransitionCheckTraversal) {
-        this.bReverseTransitionCheckTraversal = bReverseTransitionCheckTraversal;
-    }
-
+    /**
+     * Check if the animation is set
+     * @return
+     */
     public boolean isAnimationSet() {
         return bAnimationSet;
     }
 
+    /**
+     * Confirm that the animation has been set
+     * @param bAnimationSet
+     */
     public void setAnimationSetBoolean(boolean bAnimationSet) {
         this.bAnimationSet = bAnimationSet;
     }
 
+    /**
+     * Get the game context
+     * @return
+     */
     public GameContext getContext()
     {
         return gameContext;
     }
 
+    /**
+     * Get the animation transition duration
+     * @return
+     */
     public float getTransitionDuration() {
         return transitionDuration;
     }
 
+    /**
+     * Set the animation transition duration
+     * @param transitionDuration
+     */
     public void setTransitionDuration(float transitionDuration) {
         this.transitionDuration = transitionDuration;
     }
 
+    /**
+     * Check is transitioning with a reversed animation
+     * @return
+     */
     public boolean isTransitionReverseAnimation() {
         return bTransitionReverseAnimation;
     }
 
+    /**
+     * Set if to transition with a reversed animation
+     * @param bTransitionReverseAnimation
+     */
     public void setTransitionReverseAnimation(boolean bTransitionReverseAnimation) {
         this.bTransitionReverseAnimation = bTransitionReverseAnimation;
     }
 
+    /**
+     * Notify an animation event
+     * @param message
+     */
     public void notifyAnimationMessage(AnimationMessageType message) {
     }
 
+    /**
+     * Get the playback mode
+     * @return
+     */
     public PlaybackMode getCycleMode() {
         return cycleMode;
     }
 
+    /**
+     * Set the playback mode
+     * @param cycleMode
+     */
     public void setCycleMode(PlaybackMode cycleMode) {
         this.cycleMode = cycleMode;
     }
@@ -346,5 +404,57 @@ public class GameState extends NamedUpdatableObject
      */
     public void setFacialAnimationExpressionHoldTime(float facialAnimationTime) {
         this.facialAnimationExpressionHoldTime = facialAnimationTime;
+    }
+
+    /**
+     * Set the name of this game state
+     * @param name_
+     */
+    public void setName(String name_)
+    {
+        name = name_;
+        isNamed = true;
+    }
+
+    /**
+     * Get the name of this state or if not named get super.toString()
+     * @return
+     */
+    public String getName()
+    {
+        if ( isNamed )
+            return name;
+        else
+            return super.toString();
+    }
+
+    /**
+     * Set enabled to true
+     */
+    public void start() {
+        enabledState = true;
+    }
+
+    /**
+     * Set enabled to false
+     */
+    public void stop() {
+        enabledState = false;
+    }
+
+    /**
+     * Set the enabled state
+     * @param state
+     */
+    public void setEnable( boolean state ) {
+        enabledState = state;
+    }
+
+    /**
+     * Check if enabled
+     * @return
+     */
+    public boolean isEnabled() {
+        return enabledState;
     }
 }

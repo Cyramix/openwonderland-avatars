@@ -15,13 +15,17 @@
  * exception as provided by Sun in the License file that accompanied 
  * this code.
  */
+
 package imi.character;
 
 import com.jme.math.Vector3f;
 import imi.scene.PMatrix;
 import imi.scene.polygonmodel.PPolygonModelInstance;
-import imi.scene.polygonmodel.parts.skinned.SkinnedMeshJoint;
-import java.util.ArrayList;
+import imi.scene.SkinnedMeshJoint;
+import java.util.List;
+import javolution.util.FastTable;
+import org.jdesktop.wonderland.common.ExperimentalAPI;
+import org.jdesktop.wonderland.common.InternalAPI;
 
 /**
  * This class encapsulates the data and logic necessary to simulate a verlet arm.
@@ -29,20 +33,36 @@ import java.util.ArrayList;
  * @author Ronald E. Dahlgren
  * @author Shawn Kendall
  */
+@ExperimentalAPI
 public class VerletArm 
 {
-    /** true for right hand and false for left hand **/
-    private boolean right = true;
+    /**
+     * This enumeration represents parts of an arm
+     */
+    private enum ArmParts {
+        Shoulder(0),
+        Elbow(1),
+        Wrist(2);
+        // Used with verlet particle construction
+        int particleIndex;
+
+        ArmParts(int index)
+        {
+            this.particleIndex = index;
+        }
+    }
+    /** true for thisIsRightHand hand and false for left hand **/
+    private boolean thisIsRightHand = true;
     /** The owning instance **/
-    private PPolygonModelInstance characterModelInst = null;
+    private final PPolygonModelInstance characterModelInst;
     /** Reference to the joint where the arm attaches **/
-    private SkinnedMeshJoint shoulderJoint  = null;
+    private final SkinnedMeshJoint shoulderJoint;
     /** List of verlet particles that make this arm **/
-    private ArrayList<VerletParticle>  particles    = new ArrayList<VerletParticle>();
+    private final List<VerletParticle>  particles    = new FastTable<VerletParticle>();
     /** List of constraints applied to the verlet particles **/
-    private ArrayList<StickConstraint> constraints  = new ArrayList<StickConstraint>();
+    private final List<StickConstraint> constraints  = new FastTable<StickConstraint>();
     /** Gravity vector this particle system uses **/
-    private Vector3f gravity = new Vector3f(0.0f, -9.8f * 2.0f, 0.0f); // gravity is increased for a "better look"
+    private final Vector3f gravity = new Vector3f(0.0f, -9.8f * 2.0f, 0.0f); // gravity is increased for a "better look"
     /** Used to simulate energy lost due to friction, drag, etc **/
     private float velocityDampener = 0.8f;
     /** Switch the behavior on and off **/
@@ -50,13 +70,9 @@ public class VerletArm
     /** Hook to modify the skeleton **/
     private VerletSkeletonFlatteningManipulator skeletonManipulator = null;
     /** Used to track input movement **/
-    private Vector3f currentInputOffset = new Vector3f();
+    private final Vector3f currentInputOffset = new Vector3f();
     /** Maximum  distance to allow the hand to travel **/
     private float maxReach = 0.4834519f + 0.0075f;
-    /** Enumerations for clarity **/
-    public static final int shoulder  = 0;
-    public static final int elbow     = 1;
-    public static final int wrist     = 2;
     /** Switch the driving mode for the hand **/
     private boolean manualDriveReachUp = true; // otherwise reach forward
     /** Used as a pointing target for the arm, null disables pointing **/
@@ -74,18 +90,19 @@ public class VerletArm
      */
     public VerletArm(SkinnedMeshJoint shoulderJ, PPolygonModelInstance modelInstance, boolean rightHand) 
     {
-        right = rightHand;
+        thisIsRightHand = rightHand;
         characterModelInst = modelInstance;
         shoulderJoint = shoulderJ;
         
         // Lets make an arm
         Vector3f shoulderPosition = shoulderJoint.getTransform().getWorldMatrix(false).getTranslation();
+
         // The magic numbers below are taken from the avatar's bind pose data
         particles.add(new VerletParticle(shoulderPosition, false));
         particles.add(new VerletParticle(shoulderPosition.add(Vector3f.UNIT_Y.mult(-0.246216f)), true));
         particles.add(new VerletParticle(shoulderPosition.add(Vector3f.UNIT_Y.mult(-0.4852301f)), false));
-        constraints.add(new StickConstraint(shoulder, elbow, 0.246216f));
-        constraints.add(new StickConstraint(elbow, wrist, 0.2390151f));
+        constraints.add(new StickConstraint(ArmParts.Shoulder.particleIndex, ArmParts.Elbow.particleIndex, 0.246216f));
+        constraints.add(new StickConstraint(ArmParts.Elbow.particleIndex, ArmParts.Wrist.particleIndex, 0.2390151f));
     }
 
     /**
@@ -97,18 +114,18 @@ public class VerletArm
         if (!enabled)
             return;
         
-        // Updates occure at a fixed interval
+        // Updates occur at a fixed interval
         armTimer += deltaTime;
         if (armTimer < armTimeTick)
-            return;
+            return; // Not ready for a tick yet
         armTimer  = 0.0f;
         deltaTime = armTimeTick;
         
         // Attach the first particle to the shoulder joint, apply the difference
         // on all particles so they arm will move with the body movements.
-        Vector3f prevPos = new Vector3f(particles.get(shoulder).getCurrentPosition());
-        particles.get(shoulder).position(shoulderJoint.getTransform().getWorldMatrix(false).getTranslation());
-        Vector3f dif = particles.get(shoulder).getCurrentPosition().subtract(prevPos);
+        Vector3f prevPos = new Vector3f(particles.get(ArmParts.Shoulder.particleIndex).getCurrentPosition());
+        particles.get(ArmParts.Shoulder.particleIndex).position(shoulderJoint.getTransform().getWorldMatrix(false).getTranslation());
+        Vector3f dif = particles.get(ArmParts.Shoulder.particleIndex).getCurrentPosition().subtract(prevPos);
         for (int i = 1; i < particles.size(); i++)
             particles.get(i).dislocate(dif);
         
@@ -117,12 +134,12 @@ public class VerletArm
             pointAt();
         else
         {
-            Vector3f shoulderPosition = particles.get(shoulder).getCurrentPosition();
-            Vector3f wristPosition    = particles.get(wrist).getCurrentPosition();
+            Vector3f shoulderPosition = particles.get(ArmParts.Shoulder.particleIndex).getCurrentPosition();
+            Vector3f wristPosition    = particles.get(ArmParts.Wrist.particleIndex).getCurrentPosition();
             if (wristPosition.distance(shoulderPosition) > maxReach)
-                particles.get(wrist).setMoveable(true);
+                particles.get(ArmParts.Wrist.particleIndex).setMoveable(true);
             else
-                particles.get(wrist).setMoveable(false);
+                particles.get(ArmParts.Wrist.particleIndex).setMoveable(false);
                 
             // Apply current input offset to the wrist particle
             if (currentInputOffset.x != 0.0f || currentInputOffset.y != 0.0f || currentInputOffset.z != 0.0f)
@@ -145,12 +162,12 @@ public class VerletArm
                     float backReach = 0.0f;
 
                     if (modelWorld.getLocalZ().dot(directionFromShoulderToWrist) > backReach)
-                        particles.get(wrist).dislocate(currentInputOffset);
+                        particles.get(ArmParts.Wrist.particleIndex).dislocate(currentInputOffset);
                     else
-                        particles.get(wrist).dislocate(modelWorld.getLocalZ(), 0.001f);
+                        particles.get(ArmParts.Wrist.particleIndex).dislocate(modelWorld.getLocalZ(), 0.001f);
                 }
                 else
-                    particles.get(wrist).dislocate(directionFromShoulderToWrist, -0.005f);
+                    particles.get(ArmParts.Wrist.particleIndex).dislocate(directionFromShoulderToWrist, -0.005f);
 
                 currentInputOffset.zero();
             }
@@ -214,80 +231,130 @@ public class VerletArm
         pointAtLocation = null;
         
         Vector3f shoulderPosition = shoulderJoint.getTransform().getWorldMatrix(false).getTranslation();
-        particles.get(shoulder).position(shoulderPosition);
-        particles.get(elbow).position(shoulderPosition.add(Vector3f.UNIT_Y.mult(-0.246216f)));
-        particles.get(wrist).position(shoulderPosition.add(Vector3f.UNIT_Y.mult(-0.4852301f)));
+        particles.get(ArmParts.Shoulder.particleIndex).position(shoulderPosition);
+        particles.get(ArmParts.Elbow.particleIndex).position(shoulderPosition.add(Vector3f.UNIT_Y.mult(-0.246216f)));
+        particles.get(ArmParts.Wrist.particleIndex).position(shoulderPosition.add(Vector3f.UNIT_Y.mult(-0.4852301f)));
         
         // set the hand a bit forwards and up
         PMatrix modelWorld = characterModelInst.getTransform().getWorldMatrix(false);
-        particles.get(wrist).dislocate(modelWorld.getLocalZ().mult(0.25f));
-        particles.get(wrist).dislocate(Vector3f.UNIT_Y.mult(0.25f));
+        particles.get(ArmParts.Wrist.particleIndex).dislocate(modelWorld.getLocalZ().mult(0.25f));
+        particles.get(ArmParts.Wrist.particleIndex).dislocate(Vector3f.UNIT_Y.mult(0.25f));
     }
 
     /**
      * Makes the arm point at the pointAtLocation
+     * pointAtLocation must not be null!
      */
     private void pointAt()
     {
         float wristDistanceFromShoulder = 0.475f;
-        Vector3f shoulderPosition = particles.get(shoulder).getCurrentPosition();
+        Vector3f shoulderPosition = particles.get(ArmParts.Shoulder.particleIndex).getCurrentPosition();
         Vector3f directionFromShoulderToWrist = pointAtLocation.subtract(shoulderPosition).normalize();
-        particles.get(wrist).position(shoulderPosition.add(directionFromShoulderToWrist.mult(wristDistanceFromShoulder)));
+        particles.get(ArmParts.Wrist.particleIndex).position(shoulderPosition.add(directionFromShoulderToWrist.mult(wristDistanceFromShoulder)));
     }
 
     /**
-     * Retrieve the position being pointed at.
-     * @return
+     * Retrieve a copy of the position being pointed at, or null if there is
+     * no point at location.
+     * @return Copy of pointing target, or null if none is set
      */
     public Vector3f getPointAtLocation() {
-        return pointAtLocation;
+        Vector3f result = null;
+        if (pointAtLocation != null)
+            result = new Vector3f(pointAtLocation);
+        return result;
     }
 
     /**
-     * Set to null to cancel pointing
-     * @param pointAtLocation
+     * Set to null to cancel pointing.
+     * @param pointAtLocation A location vector, or null to disable pointing
      */
     public void setPointAtLocation(Vector3f pointAtLocation) {
-        this.pointAtLocation = pointAtLocation;
+        if (pointAtLocation == null)
+            this.pointAtLocation = null;
+        else
+        {
+            if (this.pointAtLocation != null)
+                this.pointAtLocation.set(pointAtLocation);
+            else
+                this.pointAtLocation = pointAtLocation;
+        }
     }
     
-    public ArrayList<StickConstraint> getConstraints() {
+    /**
+     * Retrieve an immutable list of the stick constraint objects this arm is using.
+     * @return List of constraints
+     */
+    @InternalAPI
+    public Iterable<StickConstraint> getConstraints() {
         return constraints;
     }
 
-    public ArrayList<VerletParticle> getParticles() {
+    /**
+     * Retrieve an immutable list of the particle objects this arm is using.
+     * @return List of particles
+     */
+    @InternalAPI
+    public Iterable<VerletParticle> getParticles() {
         return particles;
     }
 
-    private PMatrix calculateInverseModelWorldMatrix()
+    /**
+     * Retrieve a copy of the elbow position.
+     * @param vOut A non-null storage object
+     * @throws IllegalArgumentException If {@code vOut == null}
+     */
+    public void getElbowPosition(Vector3f vOut)
     {
-        return characterModelInst.getTransform().getWorldMatrix(false).inverse();
-    }
-    
-    public Vector3f getElbowPosition() 
-    {
-        return particles.get(elbow).getCurrentPosition();
+        if (vOut == null)
+            throw new IllegalArgumentException("Null storage object provided.");
+        else 
+            vOut.set(particles.get(ArmParts.Elbow.particleIndex).getCurrentPosition());
     }
 
-    public Vector3f getWristPosition() {
-        return particles.get(wrist).getCurrentPosition();
+    /**
+     * Retrieve a copy of the wrist position.
+     * @param vOut A non-null storage object
+     * @throws IllegalArgumentException If {@code vOut == null}
+     */
+    public void getWristPosition(Vector3f vOut) {
+        if (vOut == null)
+            throw new IllegalArgumentException("Null storage object provided.");
+        else
+            vOut.set(particles.get(ArmParts.Wrist.particleIndex).getCurrentPosition());
     }
 
-    public Vector3f getWristVelocity() {
-        return particles.get(wrist).getVelocity();
+    /**
+     * Retrieve a copy of the wrist velocity.
+     * @param vOut A non-null storage object
+     * @throws IllegalArgumentException If {@code vOut == null}
+     */
+    public void getWristVelocity(Vector3f vOut) {
+        if (vOut == null)
+            throw new IllegalArgumentException("Null storage object provided.");
+        else
+            vOut.set(particles.get(ArmParts.Wrist.particleIndex).getVelocity());
     }
-    
+
+    /**
+     * Is the verlet arm simulation enabled?
+     * @return True if enabled, false otherwise
+     */
     public boolean isEnabled() 
     {
         return enabled;
     }
-    
+
+    /**
+     * Enables / Disables the verlet arm simulation.
+     * @param bEnabled True to enable, false to disable
+     */
     public void setEnabled(boolean bEnabled)
     {
         enabled = bEnabled;
         if (skeletonManipulator != null)
         {
-            if (right)
+            if (thisIsRightHand)
                 skeletonManipulator.setRightArmEnabled(bEnabled);
             else
                 skeletonManipulator.setLeftArmEnabled(bEnabled);
@@ -305,12 +372,23 @@ public class VerletArm
         setEnabled(!enabled);
         return enabled;
     }
-        
+
+    /**
+     * Sets the reference of the VerletSkeletonFlatteningManipulator used within.
+     * @param armSkeletonManipulator The manipulator to use
+     */
     public void setSkeletonManipulator(VerletSkeletonFlatteningManipulator armSkeletonManipulator) 
     {
         this.skeletonManipulator = armSkeletonManipulator;
+        if (skeletonManipulator != null)
+            skeletonManipulator.setManualDriveReachUp(manualDriveReachUp);
     }
-    
+
+    /**
+     * Add the provided offset to the current input offset.
+     * @param offset A non-null offset vector
+     * @throws IllegalArgumentException If {@code offset == null}
+     */
     public void addInputOffset(Vector3f offset)
     {
         currentInputOffset.addLocal(offset);
@@ -318,15 +396,15 @@ public class VerletArm
 
     /**
      * True if the arm is reaching upward (rather than forward)
-     * @return
+     * @return True if reaching up, false if reaching out / forward
      */
     public boolean isManualDriveReachUp() {
         return manualDriveReachUp;
     }
 
     /**
-     * If not reach up the arm will reach forward
-     * @param manualDriveReachUp
+     * If not reach up the arm will reach forward.
+     * @param manualDriveReachUp True to reach up, false to reach forward
      */
     public void setManualDriveReachUp(boolean manualDriveReachUp) {
         this.manualDriveReachUp = manualDriveReachUp;
@@ -335,7 +413,8 @@ public class VerletArm
     }
 
     /**
-     * Change the arm's input response from reaching upward to reaching forward
+     * Change the arm's input response from reaching upward to reaching forward.
+     * <p>This method toggles the current state of reaching.<p>
      */
     public void toggleManualDriveReachUp(){
         manualDriveReachUp = !manualDriveReachUp;
@@ -343,33 +422,55 @@ public class VerletArm
             skeletonManipulator.setManualDriveReachUp(manualDriveReachUp);
     }
 
-    //////////////////////////////////////////////////////////////////////////
+    /**
+     * Retrieve the values of the positions for the two points used by the
+     * provided constraint.
+     * @param constraint The constraint in question.
+     * @param positionOneOut A non-null storage object
+     * @param positionTwoOut A non-null storage object
+     * @throws IllegalArgumentException If any param is null.
+     */
+    public void getPointsForConstraint(StickConstraint constraint,
+                                        Vector3f positionOneOut,
+                                        Vector3f positionTwoOut)
+    {
+        if (constraint == null || positionOneOut == null || positionTwoOut == null)
+            throw new IllegalArgumentException("Null param encountered!");
+        positionOneOut.set(particles.get(constraint.particle1).currentPosition);
+        positionTwoOut.set(particles.get(constraint.particle2).currentPosition);
+    }
+
+    
     /**
      * The standard Verlet particle
      * @author Lou Hayt
      */
-    public class VerletParticle
+    public static class VerletParticle
     {
         /** The mass of this particular particle **/
-        private float       mass                = 1.0f;
+        private float mass                = 1.0f;
         /** The current position of this particle **/
-        private Vector3f    currentPosition     = new Vector3f();
+        private final Vector3f    currentPosition   = new Vector3f();
         /** History **/
-        private Vector3f    previousPosition    = new Vector3f();
+        private final Vector3f    previousPosition  = new Vector3f();
         /** Used during the update process to concatenate forces into one net-force vector**/
-        private Vector3f    forceAccumulator    = new Vector3f();
+        private final Vector3f    forceAccumulator  = new Vector3f();
         /** Used in calculations **/
-        private Vector3f    integrationHelper   = new Vector3f();
+        private final Vector3f    integrationHelper = new Vector3f();
         /** Determines if this particle is fixed or not **/
-        private boolean     moveable            = true;
+        private boolean moveable    = true;
+
 
         /**
          * Construct a new particle at the given position
-         * @param position
-         * @param isMoveable
+         * @param position A non-null position
+         * @param isMoveable True if particle should be moveable
+         * @throws IllegalArgumentException if {@code position == null}
          */
         public VerletParticle(Vector3f position, boolean isMoveable)
         {
+            if (position == null)
+                throw new IllegalArgumentException("Null position provided!");
             currentPosition.set(position);
             previousPosition.set(position);
             moveable = isMoveable;
@@ -386,7 +487,7 @@ public class VerletArm
             previousPosition.set(integrationHelper);
         }
         
-        public Vector3f getVelocity()
+        Vector3f getVelocity()
         {
             return currentPosition.subtract(previousPosition);
         }
@@ -395,7 +496,7 @@ public class VerletArm
          * Multiply the velocity by the provided scale.
          * @param scalar Scale the velocity by this.
          */
-        public void scaleVelocity(float scalar)
+        void scaleVelocity(float scalar)
         {
             Vector3f reverseVelocity    =   previousPosition.subtract(currentPosition);
             previousPosition.set(currentPosition.add(reverseVelocity.mult(scalar)));
@@ -404,7 +505,7 @@ public class VerletArm
         /**
          * Sets velocity to the zero vector.
          */
-        public void stop()
+        void stop()
         {
             previousPosition.set(currentPosition);
         }
@@ -412,19 +513,20 @@ public class VerletArm
         /**
          * Moves the particle to the provided position without introducing
          * energy into the system
-         * @param position
+         * @param vOut A non-null storage object
+         * @throws IllegalArgumentException If {@code vOut == null}
          */
-        public void position(Vector3f position)
+        void position(Vector3f vOut)
         {
             Vector3f velocity = getVelocity();
-            currentPosition.set(position);
+            currentPosition.set(vOut);
             previousPosition.set(currentPosition.subtract(velocity));
         }
 
         /**
          * Offset the particle's current position by the given offset, does not
          * introduce energy into the system.
-         * @param offset
+         * @param offset A non-null offset
          */
         public void dislocate(Vector3f offset)
         {
@@ -480,50 +582,77 @@ public class VerletArm
             this.currentPosition.set(currentPosition);
         }
 
+        /**
+         * Retrieve the current mass value
+         * @return A non-negative float
+         */
         public float getMass() {
             return mass;
         }
 
+        /**
+         * Sets the current mass value
+         * @param mass A non-negative mass
+         * @throws IllegalArgumentException If <pre>{@code mass < 0}</pre>
+         */
         public void setMass(float mass) {
+            if (mass < 0)
+                throw new IllegalArgumentException("Negative mass provided!");
             this.mass = mass;
         }
 
-        public Vector3f getPreviousPosition() {
-            return previousPosition;
+        /**
+         * Retrieve the previous position.
+         * @param vOut A non-null storage object
+         * @throws IllegalArgumentException If {@code vOut == null}
+         */
+        public void getPreviousPosition(Vector3f vOut) {
+            if (vOut == null)
+                throw new IllegalArgumentException("Null storage object");
+            else
+                vOut.set(previousPosition);
         }
 
+        /**
+         * Sets the previous position to the one specified.
+         * @param previousPosition A non-null position vector
+         * @throws IllegalArgumentException If {@code previousPosition == null}
+         */
         public void setPreviousPosition(Vector3f previousPosition) {
-            this.previousPosition.set(previousPosition);
+            if (previousPosition == null)
+                throw new IllegalArgumentException("Null position provided");
+            else
+                this.previousPosition.set(previousPosition);
         }
 
-        public Vector3f getForceAccumulator() {
-            return forceAccumulator;
-        }
-
-        public void setForceAccumulator(Vector3f forceAccumulator) {
+        void setForceAccumulator(Vector3f forceAccumulator) {
             this.forceAccumulator.set(forceAccumulator);
         }
 
-        public void addToForceAccumulator(Vector3f force) {
-            forceAccumulator.addLocal(force);
-        }
-
+        /**
+         * Return true if this particle can change positions during the simulation.
+         * @return True if moveable
+         */
         public boolean isMoveable() {
             return moveable;
         }
 
+        /**
+         * Enable / Disable the moveable flag.
+         * @param moveable True to move, false to stay put
+         */
         public void setMoveable(boolean moveable) {
             this.moveable = moveable;
         }
     }
     
-    //////////////////////////////////////////////////////////////////////////
+    
     /**
      * This class represents the basic stick constraint used with the verlet
      * system.
      * @author Lou Hayt
      */
-    public class StickConstraint
+    public static class StickConstraint
     {
         /** Connection point one (index) **/
         private int     particle1;
@@ -539,35 +668,39 @@ public class VerletArm
          * @param particle1Index
          * @param particle2Index
          * @param restDistance The optimal separation distance between the two particles
+         * @throws IllegalArgumentException If any param is less than zero.
          */
         StickConstraint(int particle1Index, int particle2Index, float restDistance)
         {
+            if (particle1Index < 0 || particle2Index < 0 || restDistance < 0)
+                throw new IllegalArgumentException("Negative param, particle1Index: " + particle1Index +
+                        ", particle2Index: " + particle2Index + ", restDistance: " + restDistance);
             particle1 = particle1Index;
             particle2 = particle2Index;
             fRestDistance = restDistance;
         }
 
-        public float getRestDistance() {
+        float getRestDistance() {
             return fRestDistance;
         }
 
-        public void setRestDistance(float fRestDistance) {
+        void setRestDistance(float fRestDistance) {
             this.fRestDistance = fRestDistance;
         }
 
-        public int getParticle1() {
+        int getParticle1() {
             return particle1;
         }
 
-        public void setParticle1(int particle1) {
+        void setParticle1(int particle1) {
             this.particle1 = particle1;
         }
 
-        public int getParticle2() {
+        int getParticle2() {
             return particle2;
         }
 
-        public void setParticle2(int particle2) {
+        void setParticle2(int particle2) {
             this.particle2 = particle2;
         }
     }

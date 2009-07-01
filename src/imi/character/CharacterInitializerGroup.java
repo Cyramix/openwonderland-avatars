@@ -17,31 +17,61 @@
  */
 package imi.character;
 
+import java.util.List;
 import javolution.util.FastTable;
 
 /**
- *
+ * This class provides a convenient and simple way to chain together initializers.
+ * Implementors of {@code CharacterInitializationInterface} may be added and they
+ * will be executed in the order they were added.
  * @author Lou Hayt
  */
 public class CharacterInitializerGroup implements CharacterInitializationInterface
 {
-    public FastTable<CharacterInitializationInterface> initers = new FastTable<CharacterInitializationInterface>();
+    // Collection of initializers
+    private final List<CharacterInitializationInterface> initers = new FastTable<CharacterInitializationInterface>();
 
+    /**
+     * Constructs a new default instance.
+     */
     public CharacterInitializerGroup() {}
+
+    /**
+     * Constructs a new instance with all of provided initializers.
+     * @param initializers A collection of initializers
+     */
     public CharacterInitializerGroup(CharacterInitializationInterface... initializers)
     {
         initers.addAll(initers);
     }
-    public CharacterInitializerGroup(CharacterInitializationInterface initializer)
-    {
-        initers.add(initializer);
-    }
 
+    /**
+     * Adds an initializer to the collection
+     * @param initializer A non-null initializer to add
+     * @throws IllegalArgumentException If {@code initializer == null}
+     */
     public void addInitializer(CharacterInitializationInterface initializer)
     {
+        if (initializer == null)
+            throw new IllegalArgumentException("Null param");
         initers.add(initializer);
     }
 
+    /**
+     * Removes the specified initializer if found
+     * @param init A non-null initializer to remove.
+     * @throws IllegalArgumentException If {@code init == null}
+     */
+    public void removeInitializer(CharacterInitializationInterface init)
+    {
+        if (init == null)
+            throw new IllegalArgumentException("Null param");
+        initers.remove(init);
+    }
+
+    /**
+     * {@inheritDoc CharacterInitializationInterface
+     */
     public void initialize(Character character) {
         for(CharacterInitializationInterface i : initers)
             i.initialize(character);

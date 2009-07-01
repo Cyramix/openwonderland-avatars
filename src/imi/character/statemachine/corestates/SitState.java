@@ -19,13 +19,13 @@ package imi.character.statemachine.corestates;
 
 import imi.character.avatar.AvatarContext;
 import imi.character.avatar.AvatarContext.TriggerNames;
-import imi.character.objects.ChairObject;
-import imi.character.objects.TargetObject;
+import imi.objects.ChairObject;
+import imi.objects.TargetObject;
 import imi.character.statemachine.GameState;
 import imi.character.statemachine.GameContext;
 import imi.scene.animation.AnimationComponent.PlaybackMode;
 import imi.scene.animation.AnimationListener.AnimationMessageType;
-import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
+import imi.scene.SkeletonNode;
 
 /**
  * This state represents a character's behavior whilst sitting.
@@ -73,9 +73,9 @@ public class SitState extends GameState
     public boolean toSit(Object data)
     {
         // is the chair occupied?
-        if (context.getSteering().getGoal() instanceof ChairObject)
+        if (context.getBehaviorManager().getGoal() instanceof ChairObject)
         {
-            chair = (TargetObject)context.getSteering().getGoal();
+            chair = (TargetObject)context.getBehaviorManager().getGoal();
             if (chair.isOccupied())
                 return false;
         }
@@ -109,7 +109,7 @@ public class SitState extends GameState
         // If any of the animations are not found or 
         // If using the simple sphere\scene model for the avatar the animation
         // these will never be set so this safry lets us get out of the state
-        if( owner.getCharacter().getAttributes().isUseSimpleStaticModel() || context.getSkeleton() != null && (
+        if( owner.getCharacter().getCharacterParams().isUseSimpleStaticModel() || context.getSkeleton() != null && (
                 context.getSkeleton().getAnimationComponent().findCycle(getAnimationName(), 0) == -1 ||
                 context.getSkeleton().getAnimationComponent().findCycle(getIdleSittingAnimationName(), 0) == -1 ||
                 context.getSkeleton().getAnimationComponent().findCycle(getGettingUpAnimationName(), 0) == -1 ))
@@ -124,9 +124,9 @@ public class SitState extends GameState
         context.getController().stop();
         
         // Set the chair to occupied
-        if (context.getSteering().getGoal() instanceof ChairObject)
+        if (context.getBehaviorManager().getGoal() instanceof ChairObject)
         {
-            chair = (TargetObject)context.getSteering().getGoal();
+            chair = (TargetObject)context.getBehaviorManager().getGoal();
             chair.setOwner(context.getCharacter());
             chair.setOccupied(true);
         }
@@ -203,7 +203,7 @@ public class SitState extends GameState
             skeleton.getAnimationState().setTransitionDuration(idleSittingTransitionDuration);
             skeleton.getAnimationState().setAnimationSpeed(idleSittingAnimationSpeed);
             skeleton.getAnimationState().setReverseAnimation(false);
-            skeleton.getAnimationState().setCycleMode(PlaybackMode.Loop);
+            skeleton.getAnimationState().setTransitionCycleMode(PlaybackMode.Loop);
             bIdleSittingAnimationSet = skeleton.transitionTo(idleSittingAnimationName, false);
             setAnimationSetBoolean(true);
         }
@@ -221,7 +221,7 @@ public class SitState extends GameState
         {
             skeleton.getAnimationState().setTransitionDuration(gettingUpTransitionDuration);
             skeleton.getAnimationState().setAnimationSpeed(gettingUpAnimationSpeed);
-            skeleton.getAnimationState().setCycleMode(PlaybackMode.PlayOnce);
+            skeleton.getAnimationState().setTransitionCycleMode(PlaybackMode.PlayOnce);
             bGettingUpAnimationSet = skeleton.transitionTo(gettingUpAnimationName, true);
             // If sitting down and getting up is the same animation transitionTo will return false
             // when trying to get up immediatly after deciding to sit down... so

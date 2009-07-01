@@ -17,7 +17,6 @@
  */
 package imi.scene;
 
-import com.jme.intersection.TriangleCollisionResults;
 import com.jme.math.Quaternion;
 import com.jme.math.Vector3f;
 import com.jme.renderer.Renderer;
@@ -25,67 +24,70 @@ import com.jme.scene.Node;
 import com.jme.scene.state.LightState;
 import com.jme.scene.state.RenderState;
 import com.jme.scene.state.WireframeState;
-import imi.scene.utils.PRenderer;
+import imi.scene.utils.visualizations.DebugRenderer;
 
 /**
  * JScenes are the glue between the dynamic PScene nodes and the render-only JMonkey scene nodes.
- * Set a JScene as the root of a SceneComponent and add it to an entity.
+ * Set a JScene as the root of a SceneComponent and add it to an Entity to have
+ * the "live" PScene flattend into the JScene graph every frame.
+ * The "external kids root" is used to attach "normal" jme nodes to the scene,
+ * attaching a node directly under the JScene will not work.
  *
  * @author Lou Hayt
  * @author Chris Nagle
  */
 public class JScene extends Node {
 
-    /** Serialization version number **/
-    private static final long serialVersionUID = 1l;
-    private PScene      m_PScene            = null;
-    private boolean     m_bRender           = true;
-    private boolean     m_bRenderInternally = false;    //  if false JMonkey's rendering will be used
-    private boolean     m_bRenderBoth       = false;    //  true when both JMonkey and PRenderer are used
-    private PRenderer   m_PRenderer         = null;     //  for diagnostic internal rendering
+    private final PScene    m_PScene;
+    private boolean         m_bRender           = true;
+
+    private boolean         m_bDebugRender      = false;
+    private boolean         m_bDebugRenderOnly  = false;
+    private DebugRenderer   m_debugRenderer     = null;
+
+    /** The external jme kids root is used to add aditional jme nodes to this render component **/
     private Node        m_externalJmeKidsRoot = new Node("external Kids");
     private Vector3f    m_ExternalKidsRootPosition = new Vector3f(); // applied by the PScene
     private Quaternion  m_ExternalKidsRootRotation = new Quaternion();
-    /**
-     * Empty constructor, does nothing.
-     */
-    public JScene() {
-        attachChild(m_externalJmeKidsRoot);
-    }
 
     /**
-     * Constructor
+     * Constructor, takes in the PScene for this Node (JScene is intended to be used as a render component that supports a PScene)
      * @param scene
      */
     public JScene(PScene scene) {
-        setPScene(scene);
-        attachChild(m_externalJmeKidsRoot);
+        m_PScene = scene;
+        m_PScene.setJScene(this);
     }
 
     /**
-     * Constructor
-     * @param scene
-     * @param internalRenderer
+     * Get a jme node to attach external (none PScene related) nodes
+     * @return
      */
-    public JScene(PScene scene, PRenderer internalRenderer)
-    {
-        setPScene(scene);
-        m_PRenderer = internalRenderer;
-        attachChild(m_externalJmeKidsRoot);
-    }
-
     public Node getExternalKidsRoot() {
         return m_externalJmeKidsRoot;
     }
 
+    /**
+     * Get the position of the external (none PScene related) jme root
+     * @return
+     */
     public Vector3f getExternalKidsRootPosition() {
         return m_ExternalKidsRootPosition;
     }
 
+    /**
+     * Get the rotation of the external (none PScene related) jme root
+     * @return
+     */
     public Quaternion getExternalKidsRootRotation() {
         return m_ExternalKidsRootRotation;
     }
 
+    /**
+     * Set the position (local to the JScene's position) of the external (none PScene related) jme root
+     * @param externalKidsRootPosition
+     * @param externalKidsRootRotation
+     */
     public void setExternalKidsRootPosition(Vector3f externalKidsRootPosition, Quaternion externalKidsRootRotation) {
         this.m_ExternalKidsRootPosition.set(externalKidsRootPosition);
         this.m_ExternalKidsRootRotation.set(externalKidsRootRotation);
@@ -94,20 +96,7 @@ public class JScene extends Node {
     }
 
     /**
-     * Set the scene, a scene may contain model instances of
-     * geometry that is shared internally or across threads (if using 
-     * the repository).
-     * @param scene
-     */
-    public void setPScene(PScene scene) {
-        if (scene != null) {
-            m_PScene = scene;
-            m_PScene.setJScene(this);
-        }
-    }
-
-    /**
-     * 
+     * Get the PScene of this JScene
      * @return returns the pscene that is used by this jscene
      */
     public PScene getPScene() {
@@ -123,26 +112,7 @@ public class JScene extends Node {
     }
 
     /**
-     * Sets internal rendering on\off
-     * Internal rendering is used to visualize pscene elements,
-     * it is using JME lines and points to do so.
-     * @param internalRenderingOn
-     */
-    public void setRenderInternallyBool(boolean internalRenderingOn) {
-        m_bRenderInternally = internalRenderingOn;
-    }
-
-    /**
-     * This method sets both renders to active.
-     * @param renderBoth
-     */
-    public void setRenderBothBool(boolean renderBoth)
-    {
-        m_bRenderBoth = renderBoth;
-    }
-
-    /**
-     * 
+     * Get the render flag
      * @return true if this jscene is set to render
      */
     public boolean getRenderBool() {
@@ -150,15 +120,9 @@ public class JScene extends Node {
     }
 
     /**
-     * 
-     * @return true if internal rendering is on (PRenderer)
-     * Internal rendering is used to visualize pscene elements,
-     * it is using JME lines and points to do so.
+     * Set wireframe renderstate
+     * @param on
      */
-    public boolean getRenderInternallyBool() {
-        return m_bRenderInternally;
-    }
-
     public void setWireframe(boolean on) 
     {
         WireframeState wireframeState = (WireframeState) getRenderState(RenderState.RS_WIREFRAME);
@@ -177,7 +141,7 @@ public class JScene extends Node {
     }
 
     /**
-     * Will toggle lights in this jscene on\off
+     * Will toggle light renderstate enabled on\off
      */
     public void toggleLights() {
         LightState lightState = (LightState) getRenderState(RenderState.RS_LIGHT);
@@ -188,7 +152,7 @@ public class JScene extends Node {
     }
 
     /**
-     * Will toggle wireframe for the JME renderer on elements of this scene
+     * Will toggle wireframe renderstate
      */
     public void toggleWireframe() {
         WireframeState wireframeState = (WireframeState) getRenderState(RenderState.RS_WIREFRAME);
@@ -207,70 +171,59 @@ public class JScene extends Node {
     }
 
     /**
-     * Toggle rendering for vertex normals (on evert vertex)
-     * for the internal rendering of this scene.
-     * Internal rendering is used to visualize pscene elements,
-     * it is using JME lines and points to do so.
+     * Check if the bounding spheres draw is enabled in the debug renderer
+     * @return
      */
-    public void toggleRenderVertexNormals() {
-        if (m_PRenderer == null)
-            m_PRenderer = new PRenderer();
-
-        m_PRenderer.renderVertexNormals(!m_PRenderer.getRenderVertexNormals());
+    public boolean isBoundingSphereDrawEnabled() {
+        if (m_debugRenderer == null)
+            m_debugRenderer = new DebugRenderer();
+        return m_debugRenderer.isBoundingSphereDrawEnabled();
     }
 
     /**
-     * Toggle rendering for dots in the center of every polygon.
-     * for the internal rendering of this scene.
-     * Internal rendering is used to visualize pscene elements,
-     * it is using JME lines and points to do so.
+     * Set rendering of the bounding sphere draw in the debug renderer
+     * @param boundingSphereDrawEnabled
      */
-//    public void toggleRenderPolygonCenters() {
-//        if (m_PRenderer != null)
-//            m_PRenderer.renderPolygonCenters(!m_PRenderer.getRenderPolygonCenters());
-//    }
-
-    /**
-     * Toggle rendering of bounding volumes 
-     * for the internal rendering of this scene.
-     * The order is Off - Box - Sphere
-     * Internal rendering is used to visualize pscene elements,
-     * it is using JME lines and points to do so.
-     */    
-    public void toggleRenderBoundingVolume() {
-        if (m_PRenderer == null)
-            m_PRenderer = new PRenderer();
-
-        m_PRenderer.renderBoundingSphere(!m_PRenderer.getRenderBoundingSphere());
+    public void setBoundingSphereDrawEnabled(boolean boundingSphereDrawEnabled) {
+        if (m_debugRenderer == null)
+            m_debugRenderer = new DebugRenderer();
+        m_debugRenderer.setBoundingSphereDrawEnabled(boundingSphereDrawEnabled);
     }
 
     /**
-     * Switches rendering of this scene between:
-     * - JME only rendering
-     * - JME and internal (PRenderer) rendering
-     * - Only internal rendering (PRenderer)
+     * Check if debug rendering is on
+     * @return
      */
-    public void renderToggle() {
-        //  (JMonkey, JMonkey and PRenderer, PRenderer)
-        if (m_bRenderBoth) 
-        {
-            m_bRenderBoth = false;
-        } 
-        else if (m_bRenderInternally) 
-        {
-            m_bRenderInternally = false;
-        } 
-        else 
-        {
-            m_bRenderInternally = true;
-            m_bRenderBoth = true;
-        }
-
+    public boolean isDebugRendererOn() {
+        return m_bDebugRender;
     }
 
     /**
-     * This functionality exists but selection is not implemented yet.
-     * In the future selected models could switch between smooth and flat normals.
+     * Set the debug renderer flag
+     * @param debugRendererOn
+     */
+    public void setDebugRendererOn(boolean debugRendererOn) {
+        this.m_bDebugRender = debugRendererOn;
+    }
+
+    /**
+     * Check if debug rendering is turned on exclusivly
+     * @return
+     */
+    public boolean isDebugRenderOnly() {
+        return m_bDebugRenderOnly;
+    }
+
+    /**
+     * Set if jme rendering will be used in addition to the debug rendering
+     * @param debugRenderOnly
+     */
+    public void setDebugRenderOnly(boolean debugRenderOnly) {
+        this.m_bDebugRenderOnly = debugRenderOnly;
+    }
+
+    /**
+     * Toggle smooth normals on local geometry
      */
     public void toggleSmoothNormals() {
         if (m_PScene != null) {
@@ -280,8 +233,7 @@ public class JScene extends Node {
     }
 
     /**
-     * This functionality exists but selection is not implemented yet.
-     * In the future selected models could flip thier normals.
+     * Flip normals on local geometry
      */
     public void flipNormals() {
         if (m_PScene != null) {
@@ -291,52 +243,55 @@ public class JScene extends Node {
     }
 
     /**
-     * draw() calls the onDraw method for each JMonkey child maintained by this node.
+     * Toggles between JMonkey rendering \ Debug rendering enabled \ Only debug rendering
+     */
+    public void debugRenderToggle() {
+        if (!m_bDebugRender)
+            m_bDebugRender = true;
+        else if (m_bDebugRenderOnly)
+        {
+            m_bDebugRender = false;
+            m_bDebugRenderOnly = false;
+        }
+        else
+            m_bDebugRenderOnly = true;
+    }
+
+    /**
+     * Calls the onDraw method for each JMonkey child maintained by this node.
      * onDraw() will check if the child should be culled and if not it will call
      * the child's draw method.
      * 
-     * This method is overriden to enable internal rendering if nessecary 
-     * and also (more importantly) let pscene submit itself to this jscene
-     * which means that the transform hierarchy will be "flattened" (world
-     * matrices will be calculated) and all jscene's kids will be removed
-     * (the references are kept by the relevant objects in pscene) and replaced
-     * with the appropriate references to draw this frame.
+     * This method is overriden to enable PNode based debug rendering and let
+     * the pscene submit itself to this jscene which means that the transform
+     * hierarchy will be "flattened" (world matrices will be calculated) and
+     * all jscene's kids will be removed(the references are kept by the
+     * relevant objects in the pscene) and replaced with the appropriate
+     * references to draw this frame.
      * 
      * @see com.jme.scene.Spatial#draw(com.jme.renderer.Renderer)
-     * @param r
-     *            the renderer to draw to.
+     * @param r - the renderer to draw to.
      */
     @Override
     public void draw(Renderer r) 
     {
-        if (m_bRender) 
+        if (m_bRender)
         {
-            if (m_bRenderInternally && m_PScene != null) 
+            if (m_bDebugRender)
             {
-                if (m_PRenderer == null) 
-                {
-                    m_PRenderer = new PRenderer();
-                }
-                m_PRenderer.resetRenderer(r);
-
-                if (m_bRenderBoth) 
-                {
-                    drawScene(r);
-                } 
-                else if (m_PScene.isDirty()) 
-                {
+                if (m_bDebugRenderOnly)
                     m_PScene.submitTransforms();
-                    //m_PScene.setDirty(false, false);
-                }
+                else
+                    drawScene(r);
 
-                m_PScene.internalRender(m_PRenderer);
-                
-                m_PRenderer.present();
-            } 
-            else 
-            {
-                drawScene(r);
+                if (m_debugRenderer == null)
+                    m_debugRenderer = new DebugRenderer();
+                m_debugRenderer.resetRenderer(r);
+                m_PScene.debugDraw(m_debugRenderer);
+                m_debugRenderer.present();
             }
+            else
+                drawScene(r);
         }
     }
 
@@ -350,8 +305,7 @@ public class JScene extends Node {
      * Also any geometry in pscene that changed will reconstruct its
      * relevant JME object.
      * 
-     * @param r
-     *            the renderer to draw to.
+     * @param r - the renderer to draw to.
      */
     private void drawScene(Renderer r) {
         m_PScene.submitTransformsAndGeometry();

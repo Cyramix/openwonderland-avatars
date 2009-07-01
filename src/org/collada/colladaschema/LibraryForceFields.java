@@ -25,7 +25,7 @@
 
 package org.collada.colladaschema;
 
-import java.util.ArrayList;
+import javolution.util.FastTable;
 import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -137,7 +137,7 @@ public class LibraryForceFields {
      */
     public List<ForceField> getForceFields() {
         if (forceFields == null) {
-            forceFields = new ArrayList<ForceField>();
+            forceFields = new FastTable<ForceField>();
         }
         return this.forceFields;
     }
@@ -168,7 +168,7 @@ public class LibraryForceFields {
      */
     public List<Extra> getExtras() {
         if (extras == null) {
-            extras = new ArrayList<Extra>();
+            extras = new FastTable<Extra>();
         }
         return this.extras;
     }

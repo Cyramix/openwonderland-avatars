@@ -25,7 +25,7 @@
 
 package org.collada.colladaschema;
 
-import java.util.ArrayList;
+import javolution.util.FastTable;
 import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -105,7 +105,7 @@ public class GlesTexturePipeline {
      */
     public List<Object> getTexcombinersAndTexenvsAndExtras() {
         if (texcombinersAndTexenvsAndExtras == null) {
-            texcombinersAndTexenvsAndExtras = new ArrayList<Object>();
+            texcombinersAndTexenvsAndExtras = new FastTable<Object>();
         }
         return this.texcombinersAndTexenvsAndExtras;
     }

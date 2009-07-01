@@ -22,7 +22,7 @@ import org.collada.colladaschema.Camera;
 import org.collada.colladaschema.Camera.Optics.TechniqueCommon.Perspective;
 import org.collada.colladaschema.LibraryCameras;
 
-import imi.loaders.collada.Collada;
+import imi.loaders.Collada;
 
 
 

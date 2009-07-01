@@ -21,11 +21,13 @@ import com.jme.math.Vector3f;
 import com.jme.renderer.ColorRGBA;
 import com.jme.scene.Node;
 import com.jme.scene.shape.Box;
+import org.jdesktop.wonderland.common.ExperimentalAPI;
 
 /**
  * quick visu for testing
  * @author Lou Hayt
  */
+@ExperimentalAPI
 public class BoxVisualization 
 {
     /** Root of the object **/

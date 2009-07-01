@@ -25,7 +25,7 @@
 
 package org.collada.colladaschema;
 
-import java.util.ArrayList;
+import javolution.util.FastTable;
 import java.util.List;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -193,7 +193,7 @@ public class Node {
      */
     public List<Object> getTranslatesAndMatrixesAndLookats() {
         if (translatesAndMatrixesAndLookats == null) {
-            translatesAndMatrixesAndLookats = new ArrayList<Object>();
+            translatesAndMatrixesAndLookats = new FastTable<Object>();
         }
         return this.translatesAndMatrixesAndLookats;
     }
@@ -224,7 +224,7 @@ public class Node {
      */
     public List<InstanceWithExtra> getInstanceCameras() {
         if (instanceCameras == null) {
-            instanceCameras = new ArrayList<InstanceWithExtra>();
+            instanceCameras = new FastTable<InstanceWithExtra>();
         }
         return this.instanceCameras;
     }
@@ -255,7 +255,7 @@ public class Node {
      */
     public List<InstanceController> getInstanceControllers() {
         if (instanceControllers == null) {
-            instanceControllers = new ArrayList<InstanceController>();
+            instanceControllers = new FastTable<InstanceController>();
         }
         return this.instanceControllers;
     }
@@ -286,7 +286,7 @@ public class Node {
      */
     public List<InstanceGeometry> getInstanceGeometries() {
         if (instanceGeometries == null) {
-            instanceGeometries = new ArrayList<InstanceGeometry>();
+            instanceGeometries = new FastTable<InstanceGeometry>();
         }
         return this.instanceGeometries;
     }
@@ -317,7 +317,7 @@ public class Node {
      */
     public List<InstanceWithExtra> getInstanceLights() {
         if (instanceLights == null) {
-            instanceLights = new ArrayList<InstanceWithExtra>();
+            instanceLights = new FastTable<InstanceWithExtra>();
         }
         return this.instanceLights;
     }
@@ -348,7 +348,7 @@ public class Node {
      */
     public List<InstanceWithExtra> getInstanceNodes() {
         if (instanceNodes == null) {
-            instanceNodes = new ArrayList<InstanceWithExtra>();
+            instanceNodes = new FastTable<InstanceWithExtra>();
         }
         return this.instanceNodes;
     }
@@ -379,7 +379,7 @@ public class Node {
      */
     public List<Node> getNodes() {
         if (nodes == null) {
-            nodes = new ArrayList<Node>();
+            nodes = new FastTable<Node>();
         }
         return this.nodes;
     }
@@ -410,7 +410,7 @@ public class Node {
      */
     public List<Extra> getExtras() {
         if (extras == null) {
-            extras = new ArrayList<Extra>();
+            extras = new FastTable<Extra>();
         }
         return this.extras;
     }
@@ -463,7 +463,7 @@ public class Node {
      */
     public List<String> getLayers() {
         if (layers == null) {
-            layers = new ArrayList<String>();
+            layers = new FastTable<String>();
         }
         return this.layers;
     }

@@ -27,7 +27,7 @@ import org.collada.colladaschema.BindMaterial.TechniqueCommon;
 import org.collada.colladaschema.InstanceMaterial;
 import org.collada.colladaschema.InstanceWithExtra;
 
-import imi.loaders.collada.Collada;
+import imi.loaders.Collada;
 
 
 

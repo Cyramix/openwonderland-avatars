@@ -26,7 +26,7 @@
 package org.collada.colladaschema;
 
 import java.math.BigInteger;
-import java.util.ArrayList;
+import javolution.util.FastTable;
 import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -111,7 +111,7 @@ public class Triangles {
      */
     public List<InputLocalOffset> getInputs() {
         if (inputs == null) {
-            inputs = new ArrayList<InputLocalOffset>();
+            inputs = new FastTable<InputLocalOffset>();
         }
         return this.inputs;
     }
@@ -142,7 +142,7 @@ public class Triangles {
      */
     public List<BigInteger> getP() {
         if (p == null) {
-            p = new ArrayList<BigInteger>();
+            p = new FastTable<BigInteger>();
         }
         return this.p;
     }
@@ -173,7 +173,7 @@ public class Triangles {
      */
     public List<Extra> getExtras() {
         if (extras == null) {
-            extras = new ArrayList<Extra>();
+            extras = new FastTable<Extra>();
         }
         return this.extras;
     }

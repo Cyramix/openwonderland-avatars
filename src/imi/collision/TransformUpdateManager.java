@@ -21,11 +21,13 @@ package imi.collision;
 import com.jme.math.Vector3f;
 import imi.character.CharacterController;
 import imi.scene.PMatrix;
+import org.jdesktop.wonderland.common.ExperimentalAPI;
 
 /**
  *
  * @author Lou Hayt
  */
+@ExperimentalAPI
 public interface TransformUpdateManager
 {
     public void update(float deltaTime);

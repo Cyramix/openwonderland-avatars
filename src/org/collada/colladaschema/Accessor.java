@@ -26,7 +26,7 @@
 package org.collada.colladaschema;
 
 import java.math.BigInteger;
-import java.util.ArrayList;
+import javolution.util.FastTable;
 import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -103,7 +103,7 @@ public class Accessor {
      */
     public List<Param> getParams() {
         if (params == null) {
-            params = new ArrayList<Param>();
+            params = new FastTable<Param>();
         }
         return this.params;
     }

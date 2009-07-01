@@ -12,9 +12,11 @@
 package imi.gui;
 
 import imi.imaging.ImageData;
+import imi.scene.PScene;
 import java.awt.Dimension;
 import java.io.File;
 import java.util.ArrayList;
+import org.jdesktop.mtgame.WorldManager;
 
 /**
  *
@@ -22,8 +24,9 @@ import java.util.ArrayList;
  */
 public class TextureCreator extends javax.swing.JFrame {
 
-    private SceneEssentials             m_sceneData = null;
-    private JPanel_MaterialProperties   m_materialProperties = null;
+    private PScene                      m_pscene                = null;
+    private WorldManager                m_worldManager          = null;
+    private JPanel_MaterialProperties   m_materialProperties    = null;
 
     /** Creates new form TextureCreator */
     public TextureCreator() {
@@ -39,11 +42,12 @@ public class TextureCreator extends javax.swing.JFrame {
         getContentPane().add(m_materialProperties, gridBagConstraints);
     }
 
-    public TextureCreator(SceneEssentials sceneData) {
-        m_sceneData = sceneData;
+    public TextureCreator(PScene scene, WorldManager manager) {
+        m_pscene        = scene;
+        m_worldManager  = manager;
         initComponents();
 
-        m_materialProperties = new JPanel_MaterialProperties(m_sceneData, this);
+        m_materialProperties = new JPanel_MaterialProperties(scene, manager, this);
         java.awt.GridBagConstraints gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 1;
@@ -145,8 +149,12 @@ public class TextureCreator extends javax.swing.JFrame {
 // Accessors
 ////////////////////////////////////////////////////////////////////////////////
 
-    public void setSceneData(SceneEssentials sceneData) {
-        m_sceneData = sceneData;
+    public void setSceneData(PScene scene) {
+        m_pscene = scene;
+    }
+
+    public void getWorldManager(WorldManager worldManager) {
+        m_worldManager  = worldManager;
     }
 
 

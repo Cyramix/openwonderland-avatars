@@ -26,7 +26,7 @@
 package org.collada.colladaschema;
 
 import java.math.BigInteger;
-import java.util.ArrayList;
+import javolution.util.FastTable;
 import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -115,7 +115,7 @@ public class Polylist {
      */
     public List<InputLocalOffset> getInputs() {
         if (inputs == null) {
-            inputs = new ArrayList<InputLocalOffset>();
+            inputs = new FastTable<InputLocalOffset>();
         }
         return this.inputs;
     }
@@ -144,7 +144,7 @@ public class Polylist {
      */
     public List<BigInteger> getVcount() {
         if (vcount == null) {
-            vcount = new ArrayList<BigInteger>();
+            vcount = new FastTable<BigInteger>();
         }
         return this.vcount;
     }
@@ -175,7 +175,7 @@ public class Polylist {
      */
     public List<BigInteger> getP() {
         if (p == null) {
-            p = new ArrayList<BigInteger>();
+            p = new FastTable<BigInteger>();
         }
         return this.p;
     }
@@ -206,7 +206,7 @@ public class Polylist {
      */
     public List<Extra> getExtras() {
         if (extras == null) {
-            extras = new ArrayList<Extra>();
+            extras = new FastTable<Extra>();
         }
         return this.extras;
     }

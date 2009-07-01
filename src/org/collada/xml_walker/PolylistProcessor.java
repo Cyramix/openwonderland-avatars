@@ -18,7 +18,7 @@
 package org.collada.xml_walker;
 
 import java.math.BigInteger;
-import java.util.ArrayList;
+import javolution.util.FastTable;
 import java.util.List;
 import com.jme.math.Vector3f;
 import com.jme.math.Vector2f;
@@ -29,10 +29,10 @@ import org.collada.colladaschema.Vertices;
 import org.collada.colladaschema.InputLocal;
 
 import imi.scene.polygonmodel.PPolygonMesh;
-import imi.scene.polygonmodel.parts.polygon.PPolygon;
-import imi.scene.polygonmodel.parts.PMeshMaterial;
+import imi.scene.polygonmodel.PPolygon;
+import imi.scene.polygonmodel.PMeshMaterial;
 
-import imi.loaders.collada.Collada;
+import imi.loaders.Collada;
 
 
 
@@ -47,7 +47,7 @@ public class PolylistProcessor extends Processor
 
     private int m_VertexOffset = 0;
 
-    private ArrayList<VertexDataSemantic> m_VertexDataSemantics = new ArrayList<VertexDataSemantic>();
+    private FastTable<VertexDataSemantic> m_VertexDataSemantics = new FastTable<VertexDataSemantic>();
 
     private VertexDataSemantic m_positionSemantic  = null;
     private VertexDataSemantic m_normalSemantic    = null;
@@ -110,17 +110,6 @@ public class PolylistProcessor extends Processor
             m_PolygonIndices[arrayIndex++] = bigInt.intValue();
     }
 
-    public int[] getPolygonVertexCounts()
-    {
-        return(m_PolygonVertexCounts);
-    }
-
-    public int[] getPolygonIndices()
-    {
-        return(m_PolygonIndices);
-    }
-
-
 
 
     public String getMeshName()
@@ -137,8 +126,8 @@ public class PolylistProcessor extends Processor
     {
         polyMesh.setName(getMeshName());
         // Grab some convenience references
-        int [] polygonVertexCounts  = getPolygonVertexCounts();
-        int [] polygonIndices       = getPolygonIndices();
+        int [] polygonVertexCounts  = m_PolygonVertexCounts;
+        int [] polygonIndices       = m_PolygonIndices;
 
         int index                   = 0;
         int polygonVertexCount      = 0;
@@ -237,7 +226,7 @@ public class PolylistProcessor extends Processor
             PMeshMaterial pMaterial = m_effect.createMeshMaterial();
             if (pMaterial != null)
             {
-                polyMesh.setNumberOfTextures(3); // hack code
+                polyMesh.setNumberOfTextures(8); // hack code
                 polyMesh.setMaterial(pMaterial);
                 
             }

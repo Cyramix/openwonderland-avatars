@@ -17,10 +17,9 @@
  */
 package imi.character.statemachine.corestates;
 
-import imi.scene.animation.AnimationComponent.PlaybackMode;
-
 /**
- *
+ * The animation of the super class is used as the enter animation, cycle
+ * and exit animations are added.
  * @author Lou Hayt
  */
 public class CycleActionInfo extends ActionInfo

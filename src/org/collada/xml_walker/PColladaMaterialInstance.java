@@ -18,7 +18,7 @@
 package org.collada.xml_walker;
 
 
-import java.util.ArrayList;
+import javolution.util.FastTable;
 
 
 
@@ -32,7 +32,7 @@ public class PColladaMaterialInstance
     private String              m_instanceSymbol = null;
     private String              m_targetMaterialURL = null;
 
-    private ArrayList<String>   m_VertexInputs = null;
+    private FastTable<String>   m_VertexInputs = null;
 
     
     
@@ -59,7 +59,7 @@ public class PColladaMaterialInstance
     public void addVertexInput(String vertexInput)
     {
         if (m_VertexInputs == null)
-            m_VertexInputs = new ArrayList<String>();
+            m_VertexInputs = new FastTable<String>();
         m_VertexInputs.add(vertexInput);
     }
 

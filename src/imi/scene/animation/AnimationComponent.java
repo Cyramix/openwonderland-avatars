@@ -18,7 +18,7 @@
 package imi.scene.animation;
 
 import java.io.Serializable;
-import java.util.ArrayList;
+import javolution.util.FastTable;
 
 /**
  * This class encapsulates animation functionality. It is used to 
@@ -45,7 +45,7 @@ public class AnimationComponent implements Serializable
     }
     
     /** The animation data is stored in groups, a group contains multiple animations that can be indexed via AnimationCycles */
-    private final ArrayList<AnimationGroup> m_AnimationGroups = new ArrayList<AnimationGroup>();
+    private final FastTable<AnimationGroup> m_AnimationGroups = new FastTable<AnimationGroup>();
     
     /**
      * Empty constructor

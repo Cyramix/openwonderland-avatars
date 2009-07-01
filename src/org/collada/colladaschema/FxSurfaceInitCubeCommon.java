@@ -25,7 +25,7 @@
 
 package org.collada.colladaschema;
 
-import java.util.ArrayList;
+import javolution.util.FastTable;
 import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -168,7 +168,7 @@ public class FxSurfaceInitCubeCommon {
      */
     public List<FxSurfaceInitCubeCommon.Face> getFaces() {
         if (faces == null) {
-            faces = new ArrayList<FxSurfaceInitCubeCommon.Face>();
+            faces = new FastTable<FxSurfaceInitCubeCommon.Face>();
         }
         return this.faces;
     }
@@ -334,7 +334,7 @@ public class FxSurfaceInitCubeCommon {
          */
         public List<FxSurfaceFaceEnum> getOrders() {
             if (orders == null) {
-                orders = new ArrayList<FxSurfaceFaceEnum>();
+                orders = new FastTable<FxSurfaceFaceEnum>();
             }
             return this.orders;
         }

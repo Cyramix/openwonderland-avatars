@@ -177,6 +177,10 @@ public class PTransform implements Serializable
         return m_local;
     }
 
+    /**
+     * Set the local matrix with an array of floats
+     * @param matrixFloats
+     */
     public void setLocalMatrix(float[] matrixFloats) {
         m_local.set(matrixFloats);
     }
@@ -218,10 +222,20 @@ public class PTransform implements Serializable
         return matrix;
     }
 
+    /**
+     * Set the local matrix
+     * @param rotation
+     * @param translationVector
+     */
     public void setLocalMatrix(Matrix3f rotation, Vector3f translationVector) {
         m_local.set(rotation, translationVector, 1.0f);
     }
 
+    /**
+     * Set the local matrix
+     * @param rotation
+     * @param translationVector
+     */
     public void setLocalMatrix(Quaternion rotation, Vector3f translationVector) {
         m_local.set(rotation, translationVector, 1.0f);
     }

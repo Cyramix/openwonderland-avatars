@@ -25,7 +25,8 @@ import javax.xml.bind.annotation.XmlType;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "SkinnedMeshAdditionParams", propOrder = {
     "skinnedMeshName",
-    "subGroupName"
+    "subGroupName",
+    "owningFileName"
 })
 public class xmlSkinnedMeshParams
 {
@@ -33,6 +34,8 @@ public class xmlSkinnedMeshParams
     protected String skinnedMeshName;
     @XmlElement(name = "SubGroupName")
     protected String subGroupName;
+    @XmlElement(name = "OwningFileName")
+    protected String owningFileName;
 
     public String getSkinnedMeshName() {
         return skinnedMeshName;
@@ -50,6 +53,14 @@ public class xmlSkinnedMeshParams
 
     public void setSubGroupName(String value) {
         this.subGroupName = value;
+    }
+
+    public String getOwningFileName() {
+        return owningFileName;
+    }
+
+    public void setOwningFileName(String value) {
+        this.owningFileName = value;
     }
 
 }

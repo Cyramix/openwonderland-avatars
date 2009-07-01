@@ -20,14 +20,14 @@ package org.collada.xml_walker;
 
 import org.collada.colladaschema.LibraryAnimations;
 
-import imi.loaders.collada.Collada;
+import imi.loaders.Collada;
 import imi.scene.animation.AnimationGroup;
 import imi.scene.animation.channel.PMatrix_JointChannel;
 import imi.scene.PMatrix;
 import imi.scene.PJoint;
 
 import imi.scene.animation.AnimationCycle;
-import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
+import imi.scene.SkeletonNode;
 import org.collada.colladaschema.Animation;
 import org.collada.colladaschema.Source;
 import org.collada.colladaschema.Source.TechniqueCommon;

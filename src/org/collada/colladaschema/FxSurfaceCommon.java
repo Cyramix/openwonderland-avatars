@@ -25,7 +25,7 @@
 
 package org.collada.colladaschema;
 
-import java.util.ArrayList;
+import javolution.util.FastTable;
 import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -215,7 +215,7 @@ public class FxSurfaceCommon {
      */
     public List<FxSurfaceInitFromCommon> getInitFroms() {
         if (initFroms == null) {
-            initFroms = new ArrayList<FxSurfaceInitFromCommon>();
+            initFroms = new FastTable<FxSurfaceInitFromCommon>();
         }
         return this.initFroms;
     }
@@ -340,7 +340,7 @@ public class FxSurfaceCommon {
      */
     public List<Long> getSize() {
         if (size == null) {
-            size = new ArrayList<Long>();
+            size = new FastTable<Long>();
         }
         return this.size;
     }
@@ -369,7 +369,7 @@ public class FxSurfaceCommon {
      */
     public List<Double> getViewportRatio() {
         if (viewportRatio == null) {
-            viewportRatio = new ArrayList<Double>();
+            viewportRatio = new FastTable<Double>();
         }
         return this.viewportRatio;
     }
@@ -446,7 +446,7 @@ public class FxSurfaceCommon {
      */
     public List<Extra> getExtras() {
         if (extras == null) {
-            extras = new ArrayList<Extra>();
+            extras = new FastTable<Extra>();
         }
         return this.extras;
     }

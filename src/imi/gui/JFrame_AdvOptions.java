@@ -25,14 +25,15 @@
 package imi.gui;
 
 import com.jme.math.Vector3f;
+import imi.character.Character;
+import imi.character.EyeBall;
+import imi.character.Manipulator;
 import imi.scene.PNode;
-import imi.scene.polygonmodel.parts.skinned.SkeletonNode;
-import imi.scene.polygonmodel.parts.skinned.SkinnedMeshJoint;
-import imi.scene.polygonmodel.skinned.PPolygonSkinnedMeshInstance;
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
+import imi.scene.SkeletonNode;
+import imi.scene.SkinnedMeshJoint;
 import java.util.HashMap;
 import java.util.Map;
+import org.jdesktop.mtgame.WorldManager;
 
 /**
  *
@@ -42,49 +43,69 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
 ////////////////////////////////////////////////////////////////////////////////
 // Class Data Members
 ////////////////////////////////////////////////////////////////////////////////
-    private Map<GUI_Enums.m_bodyPart, SkinnedMeshJoint[]>   m_skeleton;
-    private SceneEssentials                                 m_sceneData;
-    private NumberFormat                                    m_format;
-    private boolean                                         m_bEyeTextures;
+    private WorldManager                                    worldManager;
+    private Character                                       character;
+    private Map<GUI_Enums.m_bodyPart, SkinnedMeshJoint[]>   skeleton;
+    private boolean                                         loaeEyePane;
 
 ////////////////////////////////////////////////////////////////////////////////
 // Class Methods
 ////////////////////////////////////////////////////////////////////////////////
-    /**
-     * Default constructor to create an AdvOptions window.  Using this method
-     * requires manually setting the SceneEssentials using the setSceneData() method
-     * as well as calling the public function createJointCatalog() to setup joint
-     * informaiton
-     */
-    public JFrame_AdvOptions() {
-        initComponents();
 
-        this.setTitle("Avatar Joint Manipulator");
+    /**
+     * Private constructor that the builder calls on to make the advanceOptions
+     * tool window.
+     * @param builder   - public builder that sets all the parmaters needed for
+     *                    creating the advance options.
+     */
+    private JFrame_AdvOptions(Builder builder) {
+        this.worldManager   = builder.worldManager;
+        this.loaeEyePane    = builder.loadEyePane;
+        this.character      = builder.character;
+
+        initComponents();
+        this.setTitle(builder.windowTitle);
+
+        EyeBall[] eyes = getEyeBallMeshes();
         HeadOptions.setParentFrame(this);
-        PPolygonSkinnedMeshInstance[] eyes = getEyeBallMeshes();
         HeadOptions.setEyeMeshInstances(eyes);
-        HeadOptions.setWorldManager(m_sceneData.getWM());
+        HeadOptions.setWorldManager(builder.worldManager);
     }
 
-    /**
-     * Overloaded constructor to create an AdvOptions window.  It sets the scene
-     * information as well as the information of the joints from the currently
-     * loaded avatar
-     * @param scene - reference to the main window's scene information
-     */
-    public JFrame_AdvOptions(SceneEssentials scene, boolean displayEyeTextures) {
-        m_sceneData = scene;
-        m_bEyeTextures = displayEyeTextures;
-        
-        initComponents();
+    public static class Builder {
+        private String          windowTitle     = "Avatar Joint Manipulator";
+        private Character       character       = null;
+        private WorldManager    worldManager    = null;
+        private boolean         loadEyePane     = false;
 
-        this.setTitle("Avatar Joint Manipulator");
-        HeadOptions.setParentFrame(this);
-        PPolygonSkinnedMeshInstance[] eyes = getEyeBallMeshes();
-        HeadOptions.setEyeMeshInstances(eyes);
-        HeadOptions.setWorldManager(m_sceneData.getWM());
+        public Builder(WorldManager worldManager) {
+            this.worldManager   = worldManager;
+        }
 
-        createJointCatalog();
+        public Builder character(Character character) {
+            this.character  = character;
+            return this;
+        }
+
+        public Builder loadEyePanel(boolean loadEyePane) {
+            this.loadEyePane    = loadEyePane;
+            return this;
+        }
+
+        public Builder windowTitle(String windowTitle) {
+            this.windowTitle    = windowTitle;
+            return this;
+        }
+
+        public JFrame_AdvOptions build() {
+            return new JFrame_AdvOptions(this);
+        }
+    }
+
+    public void avatarCheck() {
+        if (this.character == null || this.character.getSkeleton() == null) {
+            throw new IllegalArgumentException("SEVERE ERROR: no character/avatar has been loaded");
+        }
     }
 
     /**
@@ -95,80 +116,55 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
      * @param actualval - the actual value of modification from the selected slider/scrollbox
      */
     private synchronized void adjustEyes(GUI_Enums.m_sliderControl type, float mod, float actualval) {
-        if (m_sceneData.getAvatar() == null)
-            return;
-
-        SkeletonNode        skelnode        = m_sceneData.getAvatar().getSkeleton();
-        String              formattedNumber = null;
-        if (skelnode == null) { return; }
-
-        // [0] = Left eye joints && [6] = Right eye joints
-        SkinnedMeshJoint[]  eyes            = m_skeleton.get(GUI_Enums.m_bodyPart.Eyes);
-        Vector3f            ladjust         = new Vector3f();
-        Vector3f            radjust         = new Vector3f();
-        Vector3f            scale           = new Vector3f(1.0f, 1.0f, 1.0f);
-        m_format                            = new DecimalFormat("0.00");
-
+        avatarCheck();
         switch(type)
         {
             case lefteyeHPos:
             {
-                ladjust.x = mod * -0.05f;   ladjust.y = 0.0f;    ladjust.z = 0.0f;
-                skelnode.displaceJoint(eyes[0].getName(), ladjust);
-
+                Vector3f displacement   = new Vector3f(mod * -0.05f, 0.0f, 0.0f);
+                Manipulator.adjustLeftEyePosition(character, displacement);
                 break;
             }
             case righteyeHPos:
             {
-                radjust.x = mod * -0.05f;   radjust.y = 0.0f;    ladjust.z = 0.0f;
-                skelnode.displaceJoint(eyes[6].getName(), radjust);
-
+                Vector3f displacement   = new Vector3f(mod * -0.05f, 0.0f, 0.0f);
+                Manipulator.adjustRightEyePosition(character, displacement);
                 break;
             }
             case lefteyeVPos:
             {
-                ladjust.x = 0.0f;   ladjust.y = mod * 0.05f;    ladjust.z = 0.0f;
-                skelnode.displaceJoint(eyes[0].getName(), ladjust);
-
+                Vector3f displacement   = new Vector3f(0.0f, mod * 0.05f, 0.0f);
+                Manipulator.adjustLeftEyePosition(character, displacement);
                 break;
             }
             case righteyeVPos:
             {
-                radjust.x = 0.0f;   radjust.y = mod * 0.05f;    ladjust.z = 0.0f;
-                skelnode.displaceJoint(eyes[6].getName(), radjust);
-
+                Vector3f displacement   = new Vector3f(0.0f, mod * 0.05f, 0.0f);
+                Manipulator.adjustRightEyePosition(character, displacement);
                 break;
             }
             case lefteyeSize:
             {
-                scale = eyes[0].getBindPose().getScaleVector();
-                scale.x += mod * 3; scale.y += mod * 3; scale.z += mod * 3;
-                eyes[0].getBindPose().setScale(scale);
-
+                Vector3f scale   = new Vector3f(mod * 3.0f, mod * 3.0f, mod * 3.0f);
+                Manipulator.adjustLeftEyeScale(character, scale);
                 break;
             }
             case righteyeSize:
             {
-                scale = eyes[6].getBindPose().getScaleVector();
-                scale.x += mod * 3; scale.y += mod * 3; scale.z += mod * 3;
-                eyes[6].getBindPose().setScale(scale);
-
+                Vector3f scale   = new Vector3f(mod * 3.0f, mod * 3.0f, mod * 3.0f);
+                Manipulator.adjustRightEyeScale(character, scale);
                 break;
             }
             case lefteyeWidth:
             {
-                scale = eyes[0].getBindPose().getScaleVector();
-                scale.x += mod * 3;
-                eyes[0].getBindPose().setScale(scale);
-
+                Vector3f scale   = new Vector3f(mod * 3.0f, 0.0f, 0.0f);
+                Manipulator.adjustLeftEyeScale(character, scale);
                 break;
             }
             case righteyeWidth:
             {
-                scale = eyes[6].getBindPose().getScaleVector();
-                scale.x += mod * 3;
-                eyes[6].getBindPose().setScale(scale);
-
+                Vector3f scale   = new Vector3f(mod * 3.0f, 0.0f, 0.0f);
+                Manipulator.adjustRightEyeScale(character, scale);
                 break;
             }
         }
@@ -182,37 +178,31 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
      * @param actualval - the actual value of modification from the selected slider/scrollbox
      */
     private synchronized void adjustHands(GUI_Enums.m_sliderControl type, float mod, float actualval) {
-        if (m_sceneData.getAvatar() == null)
-            return;
-
-        SkeletonNode skelnode           = m_sceneData.getAvatar().getSkeleton();
-        if (skelnode == null) { return; }
-
-        SkinnedMeshJoint[] lefthand     = m_skeleton.get(GUI_Enums.m_bodyPart.Left_Hand);
-        SkinnedMeshJoint[] righthand    = m_skeleton.get(GUI_Enums.m_bodyPart.Right_Hand);
-        Vector3f            ladjust         = new Vector3f(0.0f, mod, 0.0f);
-        Vector3f            radjust         = new Vector3f(0.0f, mod, 0.0f);
-
+        avatarCheck();
         switch(type)
         {
             case lefthandLength:
             {
-                skelnode.displaceJoint(lefthand[0].getName(), ladjust);
+                Vector3f displacement   = new Vector3f(0.0f, mod, 0.0f);
+                Manipulator.adjustLeftHandLength(character, displacement);
                 break;
             }
             case righthandLength:
             {
-                skelnode.displaceJoint(righthand[0].getName(), radjust);
+                Vector3f displacement   = new Vector3f(0.0f, mod, 0.0f);
+                Manipulator.adjustRightHandLength(character, displacement);
                 break;
             }
             case lefthandThickness:
             {
-                lefthand[0].getBindPose().setScale(1.0f + (actualval * 3));
+                Vector3f scale   = new Vector3f(actualval * 3.0f, actualval * 3.0f, actualval * 3.0f);
+                Manipulator.adjustLeftHandScale(character, scale);
                 break;
             }
             case righthandThickness:
             {
-                righthand[0].getBindPose().setScale(1.0f + (actualval * 3));
+                Vector3f scale   = new Vector3f(actualval * 3.0f, actualval * 3.0f, actualval * 3.0f);
+                Manipulator.adjustRightHandScale(character, scale);
                 break;
             }
         }
@@ -226,72 +216,31 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
      * @param actualval - the actual value of modification from the selected slider/scrollbox
      */
     private synchronized void adjustForearms(GUI_Enums.m_sliderControl type, float mod, float actualval) {
-        if (m_sceneData.getAvatar() == null)
-            return;
-
-        SkeletonNode    skelnode    = m_sceneData.getAvatar().getSkeleton();
-        String          formattedNumber = null;
-        if (skelnode == null) { return; }
-
-        SkinnedMeshJoint[]  leftforearm     = m_skeleton.get(GUI_Enums.m_bodyPart.Left_LowerArm);
-        SkinnedMeshJoint[]  rightforearm    = m_skeleton.get(GUI_Enums.m_bodyPart.Right_LowerArm);
-        Vector3f            ladjust         = new Vector3f(0.0f, mod, 0.0f);
-        Vector3f            radjust         = new Vector3f(0.0f, mod, 0.0f);
-        Vector3f            scale           = new Vector3f(1.0f, 1.0f, 1.0f);
-        m_format                            = new DecimalFormat("0.00");
-
+        avatarCheck();
         switch(type)
         {
             case leftlowerarmLength:
             {
-                skelnode.displaceJoint(leftforearm[1].getName(), ladjust);
-
-                if (actualval <= 0.05f) {
-                    for (int i = 0; i < leftforearm.length; i++) {
-                        float y = scale.y += actualval * 3;
-                        formattedNumber = m_format.format(y);
-                        scale.y = Float.valueOf(formattedNumber);
-                        leftforearm[i].getLocalModifierMatrix().setScale(scale);
-                    }
-                }
-
+                Vector3f displacement   = new Vector3f(0.0f, mod, 0.0f);
+                Manipulator.adjustLeftForearmLength(character, displacement);
                 break;
             }
             case rightlowerarmLength:
             {
-                skelnode.displaceJoint(rightforearm[1].getName(), radjust);
-
-                if (actualval <= 0.05f) {
-                    for (int i = 0; i < rightforearm.length; i++) {
-                        float y = scale.y += actualval * 3;
-                        formattedNumber = m_format.format(y);
-                        scale.y = Float.valueOf(formattedNumber);
-                        rightforearm[i].getLocalModifierMatrix().setScale(scale);
-                    }
-                }
-
+                Vector3f displacement   = new Vector3f(0.0f, mod, 0.0f);
+                Manipulator.adjustRightForearmLength(character, displacement);
                 break;
             }
             case leftlowerarmThickness:
             {
-                for (int i = 0; i < leftforearm.length; i++) {
-                    ladjust = new Vector3f(leftforearm[i].getLocalModifierMatrix().getScaleVector());
-                    ladjust.x = 1.0f;   ladjust.x += actualval * 3;
-                    ladjust.z = 1.0f;   ladjust.z += actualval * 3;
-                    leftforearm[i].getLocalModifierMatrix().setScale(ladjust);
-                }
-//                leftforearm[0].getBindPose().setScale(1.0f + (actualval * 3));
+                Vector3f scale  = new Vector3f(actualval *3.0f, 0.0f, actualval *3.0f);
+                Manipulator.adjustLeftForearmScale(character, scale);
                 break;
             }
             case rightlowerarmThickness:
             {
-                for (int i = 0; i < rightforearm.length; i++) {
-                    radjust = new Vector3f(rightforearm[i].getLocalModifierMatrix().getScaleVector());
-                    radjust.x = 1.0f;   radjust.x += actualval * 3;
-                    radjust.z = 1.0f;   radjust.z += actualval * 3;
-                    rightforearm[i].getLocalModifierMatrix().setScale(radjust);
-                }
-//                rightforearm[0].getBindPose().setScale(1.0f + (actualval * 3));
+                Vector3f scale  = new Vector3f(actualval *3.0f, 0.0f, actualval *3.0f);
+                Manipulator.adjustRightForearmScale(character, scale);
                 break;
             }
         }
@@ -305,72 +254,35 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
      * @param actualval - the actual value of modification from the selected slider/scrollbox
      */
     private synchronized void adjustUpperarms(GUI_Enums.m_sliderControl type, float mod, float actualval) {
-        if (m_sceneData.getAvatar() == null)
-            return;
-
-        SkeletonNode    skelnode        = m_sceneData.getAvatar().getSkeleton();
-        String          formattedNumber = null;
-        if (skelnode == null) { return; }
-
-        SkinnedMeshJoint[]  leftupperarm    = m_skeleton.get(GUI_Enums.m_bodyPart.Left_UpperArm);
-        SkinnedMeshJoint[]  rightupperarm   = m_skeleton.get(GUI_Enums.m_bodyPart.Right_UpperArm);
-        Vector3f            ladjust         = new Vector3f(0.0f, mod, 0.0f);
-        Vector3f            radjust         = new Vector3f(0.0f, mod, 0.0f);
-        Vector3f            scale           = new Vector3f(1.0f, 1.0f, 1.0f);
-        m_format                            = new DecimalFormat("0.00");
-
+        avatarCheck();
         switch(type)
         {
             case leftupperarmLength:
             {
-                skelnode.displaceJoint(leftupperarm[1].getName(), ladjust);
-
                 if (actualval <= 0.05f) {
-                    for (int i = 0; i < leftupperarm.length; i++) {
-                        float y = scale.y += actualval * 4;
-                        formattedNumber = m_format.format(y);
-                        scale.y = Float.valueOf(formattedNumber);
-                        leftupperarm[i].getLocalModifierMatrix().setScale(scale);
-                    }
+                    Vector3f displacement   = new Vector3f(0.0f, 0.0f, mod * 4.0f);
+                    Manipulator.adjustLeftUpperarmLength(character, displacement);
                 }
-
                 break;
             }
             case rightupperarmLength:
             {
-                skelnode.displaceJoint(rightupperarm[1].getName(), radjust);
-
                 if (actualval <= 0.05f) {
-                    for (int i = 0; i < rightupperarm.length; i++) {
-                        float y = scale.y += actualval * 4;
-                        formattedNumber = m_format.format(y);
-                        scale.y = Float.valueOf(formattedNumber);
-                        rightupperarm[i].getLocalModifierMatrix().setScale(scale);
-                    }
+                    Vector3f displacement   = new Vector3f(0.0f, 0.0f, mod * 4.0f);
+                    Manipulator.adjustRightUpperarmLength(character, displacement);
                 }
-
                 break;
             }
             case leftupperarmThickness:
             {
-                for (int i = 0; i < leftupperarm.length; i++) {
-                    ladjust = new Vector3f(leftupperarm[i].getLocalModifierMatrix().getScaleVector());
-                    ladjust.x = 1.0f;   ladjust.x += actualval * 3;
-                    ladjust.z = 1.0f;   ladjust.z += actualval * 3;
-                    leftupperarm[i].getLocalModifierMatrix().setScale(ladjust);
-                }
-//                leftupperarm[0].getBindPose().setScale(1.0f + (actualval * 3));
+                Vector3f scale  = new Vector3f(actualval * 3.0f, 0.0f, actualval * 3.0f);
+                Manipulator.adjustLeftUpperarmScale(character, scale);
                 break;
             }
             case rightupperarmThickness:
             {
-                for (int i = 0; i < rightupperarm.length; i++) {
-                    radjust = new Vector3f(rightupperarm[i].getLocalModifierMatrix().getScaleVector());
-                    radjust.x = 1.0f;   radjust.x += actualval * 3;
-                    radjust.z = 1.0f;   radjust.z += actualval * 3;
-                    rightupperarm[i].getLocalModifierMatrix().setScale(radjust);
-                }
-//                rightupperarm[0].getBindPose().setScale(1.0f + (actualval * 3));
+                Vector3f scale  = new Vector3f(actualval * 3.0f, 0.0f, actualval * 3.0f);
+                Manipulator.adjustRightUpperarmScale(character, scale);
                 break;
             }
         }
@@ -384,37 +296,31 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
      * @param actualval - the actual value of modification from the selected slider/scrollbox
      */
     private synchronized void adjustFeet(GUI_Enums.m_sliderControl type, float mod, float actualval) {
-        if (m_sceneData.getAvatar() == null)
-            return;
-
-        SkeletonNode    skelnode    = m_sceneData.getAvatar().getSkeleton();
-        if (skelnode == null) { return; }
-
-        SkinnedMeshJoint[]  leftfoot    = m_skeleton.get(GUI_Enums.m_bodyPart.Left_Foot);
-        SkinnedMeshJoint[]  rightfoot   = m_skeleton.get(GUI_Enums.m_bodyPart.Right_Foot);
-        Vector3f            ladjust     = new Vector3f(0.0f, mod, mod);
-        Vector3f            radjust     = new Vector3f(0.0f, mod, mod);
-
+        avatarCheck();
         switch(type)
         {
             case leftfootLength:
             {
-                skelnode.displaceJoint(leftfoot[1].getName(), ladjust);
+                Vector3f displacement   = new Vector3f(0.0f, mod, mod);
+                Manipulator.adjustLeftFootLength(character, displacement);
                 break;
             }
             case rightfootLength:
             {
-                skelnode.displaceJoint(rightfoot[1].getName(), radjust);
+                Vector3f displacement   = new Vector3f(0.0f, mod, mod);
+                Manipulator.adjustRightFootLength(character, displacement);
                 break;
             }
             case leftfootThickness:
             {
-                leftfoot[0].getBindPose().setScale(1.0f + (actualval * 3));
+                Vector3f scale  = new Vector3f(actualval * 3.0f, actualval * 3.0f, actualval * 3.0f);
+                Manipulator.adjustLeftFootScale(character, scale);
                 break;
             }
             case rightfootThickness:
             {
-                rightfoot[0].getBindPose().setScale(1.0f + (actualval * 3));
+                Vector3f scale  = new Vector3f(actualval * 3.0f, actualval * 3.0f, actualval * 3.0f);
+                Manipulator.adjustRightFootScale(character, scale);
                 break;
             }
         }
@@ -428,72 +334,31 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
      * @param actualval - the actual value of modification from the selected slider/scrollbox
      */
     private synchronized void adjustCalves(GUI_Enums.m_sliderControl type, float mod, float actualval) {
-        if (m_sceneData.getAvatar() == null)
-            return;
-
-        SkeletonNode    skelnode    = m_sceneData.getAvatar().getSkeleton();
-        String          formattedNumber = null;
-        if (skelnode == null) { return; }
-
-        SkinnedMeshJoint[]  leftlowerleg    = m_skeleton.get(GUI_Enums.m_bodyPart.Left_LowerLeg);
-        SkinnedMeshJoint[]  rightlowerleg   = m_skeleton.get(GUI_Enums.m_bodyPart.Right_LowerLeg);
-        Vector3f            ladjust         = new Vector3f(0.0f, mod, 0.0f);
-        Vector3f            radjust         = new Vector3f(0.0f, mod, 0.0f);
-        Vector3f            scale           = new Vector3f(1.0f, 1.0f, 1.0f);
-        m_format                            = new DecimalFormat("0.00");
-
+        avatarCheck();
         switch(type)
         {
             case leftlowerlegLength:
             {
-                skelnode.displaceJoint(leftlowerleg[1].getName(), ladjust);
-
-                if (actualval <= 0.05f) {
-                    for (int i = 0; i < leftlowerleg.length; i++) {
-                        float y = scale.y += actualval * 2;
-                        formattedNumber = m_format.format(y);
-                        scale.y = Float.valueOf(formattedNumber);
-                        leftlowerleg[i].getLocalModifierMatrix().setScale(scale);
-                    }
-                }
-
+                Vector3f displacement  = new Vector3f(0.0f, mod, 0.0f);
+                Manipulator.adjustLeftCalfScale(character, displacement);
                 break;
             }
             case rightlowerlegLength:
             {
-                skelnode.displaceJoint(rightlowerleg[1].getName(), radjust);
-
-                if (actualval <= 0.05f) {
-                    for (int i = 0; i < rightlowerleg.length; i++) {
-                        float y = scale.y += actualval * 2;
-                        formattedNumber = m_format.format(y);
-                        scale.y = Float.valueOf(formattedNumber);
-                        rightlowerleg[i].getLocalModifierMatrix().setScale(scale);
-                    }
-                }
-
+                Vector3f displacement  = new Vector3f(0.0f, mod, 0.0f);
+                Manipulator.adjustRightCalfScale(character, displacement);
                 break;
             }
             case leftlowerlegThickness:
             {
-                for (int i = 0; i < leftlowerleg.length; i++) {
-                    ladjust = new Vector3f(leftlowerleg[i].getLocalModifierMatrix().getScaleVector());
-                    ladjust.x = 1.0f;   ladjust.x += actualval * 3;
-                    ladjust.z = 1.0f;   ladjust.z += actualval * 3;
-                    leftlowerleg[i].getLocalModifierMatrix().setScale(ladjust);
-                }
-//                leftlowerleg[0].getBindPose().setScale(1.0f + (actualval * 3));
+                Vector3f scale  = new Vector3f(actualval * 3.0f, 0.0f, actualval * 3.0f);
+                Manipulator.adjustLeftCalfScale(character, scale);
                 break;
             }
             case rightlowerlegThickness:
             {
-                for (int i = 0; i < rightlowerleg.length; i++) {
-                    radjust = new Vector3f(rightlowerleg[i].getLocalModifierMatrix().getScaleVector());
-                    radjust.x = 1.0f;   radjust.x += actualval * 3;
-                    radjust.z = 1.0f;   radjust.z += actualval * 3;
-                    rightlowerleg[i].getLocalModifierMatrix().setScale(radjust);
-                }
-//                rightlowerleg[0].getBindPose().setScale(1.0f + (actualval * 3));
+                Vector3f scale  = new Vector3f(actualval * 3.0f, 0.0f, actualval * 3.0f);
+                Manipulator.adjustRightCalfScale(character, scale);
                 break;
             }
         }
@@ -507,50 +372,31 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
      * @param actualval - the actual value of modification from the selected slider/scrollbox
      */
     private synchronized void adjustThighs(GUI_Enums.m_sliderControl type, float mod, float actualval) {
-        if (m_sceneData.getAvatar() == null)
-            return;
-
-        SkeletonNode    skelnode    = m_sceneData.getAvatar().getSkeleton();
-        if (skelnode == null) { return; }
-
-        SkinnedMeshJoint[]  leftupperleg    = m_skeleton.get(GUI_Enums.m_bodyPart.Left_UpperLeg);
-        SkinnedMeshJoint[]  rightupperleg   = m_skeleton.get(GUI_Enums.m_bodyPart.Right_UpperLeg);
-        Vector3f            ladjust         = new Vector3f(0.0f, mod, 0.0f);
-        Vector3f            radjust         = new Vector3f(0.0f, mod, 0.0f);
-        m_format                            = new DecimalFormat("0.00");
-
+        avatarCheck();
         switch(type)
         {
             case leftupperlegLength:
             {
-                skelnode.displaceJoint(leftupperleg[0].getName(), ladjust);
+                Vector3f displacement  = new Vector3f(0.0f, mod, 0.0f);
+                Manipulator.adjustLeftThighLength(character, displacement);
                 break;
             }
             case rightupperlegLength:
             {
-                skelnode.displaceJoint(rightupperleg[0].getName(), radjust);
+                Vector3f displacement  = new Vector3f(0.0f, mod, 0.0f);
+                Manipulator.adjustRightThighLength(character, displacement);
                 break;
             }
             case leftupperlegThickness:
             {
-                for (int i = 0; i < leftupperleg.length; i++) {
-                    ladjust = new Vector3f(leftupperleg[i].getLocalModifierMatrix().getScaleVector());
-                    ladjust.x = 1.0f;   ladjust.x += actualval * 3;
-                    ladjust.z = 1.0f;   ladjust.z += actualval * 3;
-                    leftupperleg[i].getLocalModifierMatrix().setScale(ladjust);
-                }
-//                leftupperleg[0].getBindPose().setScale(1.0f + (actualval * 3));
+                Vector3f scale  = new Vector3f(actualval * 3.0f, 0.0f, actualval * 3.0f);
+                Manipulator.adjustLeftThighScale(character, scale);
                 break;
             }
             case rightupperlegThickness:
             {
-                for (int i = 0; i < rightupperleg.length; i++) {
-                    radjust = new Vector3f(rightupperleg[i].getLocalModifierMatrix().getScaleVector());
-                    radjust.x = 1.0f;   radjust.x += actualval * 3;
-                    radjust.z = 1.0f;   radjust.z += actualval * 3;
-                    rightupperleg[i].getLocalModifierMatrix().setScale(radjust);
-                }
-//                rightupperleg[0].getBindPose().setScale(1.0f + (actualval * 3));
+                Vector3f scale  = new Vector3f(actualval * 3.0f, 0.0f, actualval * 3.0f);
+                Manipulator.adjustRightThighScale(character, scale);
                 break;
             }
         }
@@ -564,58 +410,31 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
      * @param actualval - the actual value of modification from the selected slider/scrollbox
      */
     private synchronized void adjustChest(GUI_Enums.m_sliderControl type, float mod, float actualval) {
-        if (m_sceneData.getAvatar() == null)
-            return;
-
-        SkeletonNode    skelnode    = m_sceneData.getAvatar().getSkeleton();
-        if (skelnode == null) { return; }
-
-        SkinnedMeshJoint[]  shoulders    = new SkinnedMeshJoint[] { m_skeleton.get(GUI_Enums.m_bodyPart.Left_Shoulder)[0],
-                                                                    m_skeleton.get(GUI_Enums.m_bodyPart.Right_Shoulder)[0] };
-        SkinnedMeshJoint[]  chest        = m_skeleton.get(GUI_Enums.m_bodyPart.Torso);
-        SkinnedMeshJoint    hip          = (SkinnedMeshJoint) skelnode.findChild("Hips");
-        Vector3f            adjust       = new Vector3f(mod, 0.0f, 0.0f);
-        m_format                         = new DecimalFormat("0.00");
-
+        avatarCheck();
         switch(type)
         {
             case torsoLength:
             {
-                Vector3f upAdjust = new Vector3f(0.0f, mod, 0.0f);
-                skelnode.displaceJoint(chest[1].getName(), upAdjust);
+                Vector3f displacement   = new Vector3f(0.0f, mod, 0.0f);
+                Manipulator.adjustTorsoLength(character, displacement);
                 break;
             }
             case torsoThickness:
             {
-//                Vector3f scale1 = chest[1].getLocalModifierMatrix().getScaleVector();
-//                scale1.x += mod *3;  scale1.z += mod *3;
-//                chest[1].getLocalModifierMatrix().setScale(scale1);
-//                Vector3f scale2 = chest[2].getLocalModifierMatrix().getScaleVector();
-//                scale2.x += mod *3;  scale2.z += mod *3;
-//                chest[2].getLocalModifierMatrix().setScale(scale2);
-                Vector3f scale = chest[1].getBindPose().getScaleVector();
-                scale.x += mod *2;  scale.z += mod *2;
-                chest[1].getBindPose().setScale(scale);
+                Vector3f scale  = new Vector3f(mod * 2.0f, 0.0f, mod * 2.0f);
+                Manipulator.adjustTorsoScale(character, scale);
                 break;
             }
             case shoulderBroadness:
             {
-                skelnode.displaceJoint(shoulders[0].getName(), adjust);
-                skelnode.displaceJoint(shoulders[1].getName(), adjust.mult(-1));
+                Vector3f displacement   = new Vector3f(mod, 0.0f, 0.0f);
+                Manipulator.adjustShoulderBroadness(character, displacement);
                 break;
             }
             case stomachRoundness:
             {
-                Vector3f translation = chest[0].getLocalModifierMatrix().getTranslation();
-                translation.z += mod * 0.06f;
-                Vector3f scale = chest[0].getLocalModifierMatrix().getScaleVector();
-                scale.x += mod *4;  scale.y += mod *4;  scale.z += mod *4;
-                chest[0].getLocalModifierMatrix().setTranslation(translation);
-                chest[0].getLocalModifierMatrix().setScale(scale);
-                Vector3f hiptrans = hip.getLocalModifierMatrix().getTranslation();
-                hiptrans.z += mod * 0.06f;
-                hip.getLocalModifierMatrix().setTranslation(hiptrans);
-                hip.getLocalModifierMatrix().setScale(scale);
+                Vector3f scale  = new Vector3f(mod, mod, mod);
+                Manipulator.adjustStomacheRoundness(character, scale);
                 break;
             }
             case glutRoundness:
@@ -633,107 +452,91 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
      * @param actualval - the actual value of the modification from the selected slider/scrollbox
      */
     private synchronized void adjustHead(GUI_Enums.m_sliderControl type, float mod, float actualval) {
-        if (m_sceneData.getAvatar() == null)
-            return;
-
-        SkeletonNode    skelnode    = m_sceneData.getAvatar().getSkeleton();
-        if (skelnode == null) { return; }
-
-        SkinnedMeshJoint[]  head    = m_skeleton.get(GUI_Enums.m_bodyPart.Head);
-        SkinnedMeshJoint[]  ears    = m_skeleton.get(GUI_Enums.m_bodyPart.Ears);
-        SkinnedMeshJoint[]  nose    = m_skeleton.get(GUI_Enums.m_bodyPart.Nose);
-
-        Vector3f            scale   = head[0].getBindPose().getScaleVector();
-        m_format                    = new DecimalFormat("0.00");
-
+        avatarCheck();
         switch(type)
         {
             case headHeight:
             {
-                scale.y += mod *3;
-                head[0].getBindPose().setScale(scale);
+                Vector3f scale  = new Vector3f(0.0f, mod * 3.0f, 0.0f);
+                Manipulator.adjustHeadScale(character, scale);
                 break;
             }
             case headWidth:
             {
-                scale.x += mod * 3;
-                head[0].getBindPose().setScale(scale);
+                Vector3f scale  = new Vector3f(mod * 3.0f, 0.0f, 0.0f);
+                Manipulator.adjustHeadScale(character, scale);
                 break;
             }
             case headDepth:
             {
-                scale.z += mod * 3;
-                head[0].getBindPose().setScale(scale);
+                Vector3f scale  = new Vector3f(0.0f, 0.0f, mod * 3.0f);
+                Manipulator.adjustHeadScale(character, scale);
                 break;
             }
             case headUniform:
             {
-                scale.x += mod *3;  scale.y += mod *3;  scale.z += mod *3;
-                head[0].getBindPose().setScale(scale);
+                Vector3f scale  = new Vector3f(mod * 3.0f, mod * 3.0f, mod * 3.0f);
+                Manipulator.adjustHeadScale(character, scale);
                 break;
             }
             case leftearHPos:
             {
-                Vector3f transX  = new Vector3f((mod * 0.03f), 0.0f, 0.0f);
-                skelnode.displaceJoint(ears[0].getName(), transX);
+                Vector3f displacement  = new Vector3f(mod * 0.03f, 0.0f, 0.0f);
+                Manipulator.adjustLeftEarPosition(character, displacement);
                 break;
             }
             case leftearSize:
             {
-                scale = ears[0].getBindPose().getScaleVector();
-                scale.x += mod *4;  scale.y += mod *4;  scale.z += mod *4;
-                ears[0].getBindPose().setScale(scale);
+                Vector3f scale  = new Vector3f(mod * 4.0f, mod * 4.0f, mod * 4.0f);
+                Manipulator.adjustLeftEarScale(character, scale);
                 break;
             }
             case leftearVPos:
             {
-                Vector3f transY  = new Vector3f(0.0f, (mod * 0.05f), 0.0f);
-                skelnode.displaceJoint(ears[0].getName(), transY);
+                Vector3f displacement   = new Vector3f(0.0f, mod * 0.05f, 0.0f);
+                Manipulator.adjustLeftEarPosition(character, displacement);
                 break;
             }
             case noseHPos:
             {
-                Vector3f transX  = new Vector3f(0.0f, 0.0f, (mod * 0.03f));
-                skelnode.displaceJoint(nose[0].getName(), transX);
+                Vector3f displacement   = new Vector3f(0.0f, 0.0f, mod * 0.03f);
+                Manipulator.adjustNosePosition(character, displacement);
                 break;
             }
             case noseLength:
             {
-                scale = nose[0].getBindPose().getScaleVector();
-                scale.y += mod * 3;
-                nose[0].getBindPose().setScale(scale);
+                Vector3f scale   = new Vector3f(0.0f, mod * 3.0f, 0.0f);
+                Manipulator.adjustNoseScale(character, scale);
                 break;
             }
             case noseSize:
             {
-                scale = nose[0].getBindPose().getScaleVector();
-                scale.x += mod *3;  scale.y += mod *3;  scale.z += mod *3;
-                nose[0].getBindPose().setScale(scale);
+                Vector3f scale   = new Vector3f(mod * 3.0f, mod * 3.0f, mod * 3.0f);
+                Manipulator.adjustNoseScale(character, scale);
                 break;
             }
             case noseVPos:
             {
-                Vector3f transY  = new Vector3f((-mod * 0.08f), 0.0f, 0.0f);
-                skelnode.displaceJoint(nose[0].getName(), transY);
+                Vector3f displacement   = new Vector3f(-mod * 0.08f, 0.0f, 0.0f);
+                Manipulator.adjustNosePosition(character, displacement);
                 break;
             }
             case rightearHPos:
             {
-                Vector3f transX  = new Vector3f((-mod * 0.03f), 0.0f, 0.0f);
-                skelnode.displaceJoint(ears[1].getName(), transX);
+                Vector3f displacement   = new Vector3f(-mod * 0.03f, 0.0f, 0.0f);
+                Manipulator.adjustRightEarPosition(character, displacement);
                 break;
             }
             case rightearSize:
             {
-                scale = ears[1].getBindPose().getScaleVector();
-                scale.x += mod *4;  scale.y += mod *4;  scale.z += mod *4;
-                ears[1].getBindPose().setScale(scale);
+                Vector3f scale   = new Vector3f(mod * 4.0f, mod * 4.0f, mod * 4.0f);
+                Manipulator.adjustRightEarPosition(character, scale);
                 break;
             }
             case rightearVPos:
             {
-                Vector3f transY  = new Vector3f(0.0f, (mod * 0.05f), 0.0f);
-                skelnode.displaceJoint(ears[1].getName(), transY);
+                Vector3f displacement   = new Vector3f(0.0f, mod * 0.05f, 0.0f);
+                Manipulator.adjustRightEarPosition(character, displacement);
                 break;
             }
         }
@@ -747,38 +550,19 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
      * @param actualval - the actual value of modification from the selected slider/scrollbox
      */
     private synchronized void adjustBody(GUI_Enums.m_sliderControl type, float mod, float actualval) {
-        if (m_sceneData.getAvatar() == null)
-            return;
-
-        SkeletonNode    skelnode    = m_sceneData.getAvatar().getSkeleton();
-        if (skelnode == null) { return; }
-
-        Vector3f scale  = ((SkinnedMeshJoint)skelnode.findChild("Hips")).getBindPose().getScaleVector();  //skelnode.getTransform().getLocalMatrix(true).getScaleVector();
-        Vector3f move   = ((SkinnedMeshJoint)skelnode.findChild("Hips")).getBindPose().getTranslation();
-        Vector3f scaleL = ((SkinnedMeshJoint)skelnode.findChild("leftShoulder")).getBindPose().getScaleVector();
-        Vector3f scaleR = ((SkinnedMeshJoint)skelnode.findChild("rightShoulder")).getBindPose().getScaleVector();
+        avatarCheck();
         switch(type)
         {
             case uniformHeight:
             {
-                scale.y += mod * 3;
-                move.y  += mod * 3;
-                scaleL.y += mod *3;
-                scaleR.y += mod *3;
-//                skelnode.getTransform().getLocalMatrix(true).setScale(scale);
-                ((SkinnedMeshJoint)skelnode.findChild("leftShoulder")).getBindPose().setScale(scaleL);
-                ((SkinnedMeshJoint)skelnode.findChild("rightShoulder")).getBindPose().setScale(scaleR);
+                Vector3f scale  = new Vector3f(0.0f, mod * 3.0f, 0.0f);
+                Manipulator.adjustBodyScale(character, scale);
                 break;
             }
             case uniformThickness:
             {
-                scale.x += mod * 3; scale.z += mod * 3;
-                move.x  += mod * 3; move.z  += mod * 3;
-                scaleL.x += mod *3; scaleL.z += mod *3;
-                scaleR.x += mod *3; scaleR.z += mod *3;
-//                skelnode.getTransform().getLocalMatrix(true).setScale(scale);
-                ((SkinnedMeshJoint)skelnode.findChild("leftShoulder")).getBindPose().setScale(scaleL);
-                ((SkinnedMeshJoint)skelnode.findChild("rightShoulder")).getBindPose().setScale(scaleR);
+                Vector3f scale  = new Vector3f(mod * 3.0f, 0.0f, mod * 3.0f);
+                Manipulator.adjustBodyScale(character, scale);
                 break;
             }
         }
@@ -792,39 +576,25 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
      * @param actualval - the actual value of modification from the selected slider/scrollbox
      */
     private synchronized void adjustMouth(GUI_Enums.m_sliderControl type, float mod, float actualval) {
-        if (m_sceneData.getAvatar() == null)
-            return;
-
-        SkeletonNode    skelnode    = m_sceneData.getAvatar().getSkeleton();
-        if (skelnode == null) { return; }
-
-        SkinnedMeshJoint[]  mouth       = m_skeleton.get(GUI_Enums.m_bodyPart.Lips);
-        SkinnedMeshJoint    upperLip    = (SkinnedMeshJoint) skelnode.findChild("UpperLip_Adjust");
-        SkinnedMeshJoint    lowerLip    = (SkinnedMeshJoint) skelnode.findChild("LowerLip_Adjust");
-
-        Vector3f            ladjust     = new Vector3f(-mod * 0.04f, 0.0f, 0.0f);
-        Vector3f            radjust     = new Vector3f(mod * 0.04f, 0.0f, 0.0f);
-
+        avatarCheck();
         switch(type)
         {
             case lowerlipSize:
             {
-                Vector3f scale = lowerLip.getBindPose().getScaleVector();
-                scale.x += mod * 4; scale.z += mod * 4;
-                lowerLip.getBindPose().setScale(scale);
+                Vector3f scale  = new Vector3f(mod * 4.0f, 0.0f, mod * 4.0f);
+                Manipulator.adjustLowerLipScale(character, scale);
                 break;
             }
             case upperlipSize:
             {
-                Vector3f scale = upperLip.getBindPose().getScaleVector();
-                scale.x += mod * 4; scale.z += mod * 4;
-                upperLip.getBindPose().setScale(scale);
+                Vector3f scale  = new Vector3f(mod * 4.0f, 0.0f, mod * 4.0f);
+                Manipulator.adjustUpperLipScale(character, scale);
                 break;
             }
             case mouthWidth:
             {
-                skelnode.displaceJoint(mouth[6].getName(), ladjust);
-                skelnode.displaceJoint(mouth[7].getName(), radjust);
+                Vector3f displacement   = new Vector3f(-mod * 0.04f, 0.0f, 0.0f);
+                Manipulator.adjustLipsPosition(character, displacement, true);
                 break;
             }
         }
@@ -840,7 +610,7 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
     private void initComponents() {
 
         jTabbedPane_Options = new javax.swing.JTabbedPane();
-        HeadOptions = new imi.gui.JPanel_HeadOptions(this, m_bEyeTextures);
+        HeadOptions = new imi.gui.JPanel_HeadOptions(this, loaeEyePane);
         ArmsHandsOptions = new imi.gui.JPanel_ArmsHandsOption(this);
         LegsFeetOptions = new imi.gui.JPanel_LegsFeetOption(this);
         SimpleBodyOptions = new imi.gui.JPanel_SimpBodyOptions(this);
@@ -864,33 +634,6 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
     /**
     * @param args the command line arguments
     */
-    public static void main(String args[]) {
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new JFrame_AdvOptions().setVisible(true);
-            }
-        });
-    }
-
-////////////////////////////////////////////////////////////////////////////////
-// ACCESSORS
-////////////////////////////////////////////////////////////////////////////////
-
-    public SceneEssentials getSceneData() {
-        return m_sceneData;
-    }
-
-    public Map<GUI_Enums.m_bodyPart, SkinnedMeshJoint[]> getSkeletonJoints() {
-        return m_skeleton;
-    }
-
-////////////////////////////////////////////////////////////////////////////////
-// MUTATORS
-////////////////////////////////////////////////////////////////////////////////
-
-    public void setSceneData(SceneEssentials scene) {
-        m_sceneData = scene;
-    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private imi.gui.JPanel_ArmsHandsOption ArmsHandsOptions;
@@ -908,447 +651,18 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
      * Returns the references to the eyeball meshes for quick access
      * @return array of PPolygonSkinnedMeshInstances of the two eyeballs
      */
-    public PPolygonSkinnedMeshInstance[] getEyeBallMeshes() {
-        PPolygonSkinnedMeshInstance[] eyeballs = null;
-        if (m_sceneData.getAvatar() == null)
-            return eyeballs;
+    public EyeBall[] getEyeBallMeshes() {
+        avatarCheck();
 
         PNode lefteye = null;   PNode righteye = null;
-        eyeballs    = new PPolygonSkinnedMeshInstance[2];
-        lefteye     = m_sceneData.getAvatar().getModelInst().findChild("leftEyeGeoShape");
-        eyeballs[0] = (PPolygonSkinnedMeshInstance)lefteye;
-        righteye    = m_sceneData.getAvatar().getModelInst().findChild("rightEyeGeoShape");
-        eyeballs[1] = (PPolygonSkinnedMeshInstance)righteye;
+        EyeBall[] eyeballs    = new EyeBall[2];
+        lefteye     = character.getModelInst().findChild("leftEyeGeoShape");
+        eyeballs[0] = (EyeBall)lefteye;
+        righteye    = character.getModelInst().findChild("rightEyeGeoShape");
+        eyeballs[1] = (EyeBall)righteye;
 
         return eyeballs;
     }
-
-    /**
-     * Sets up a listing of SkinnedMeshJoints for the hands for quick access
-     */
-    public void catalogHands() {
-        if (m_sceneData.getAvatar() == null)
-            return;
-
-        SkeletonNode skeleton   = m_sceneData.getAvatar().getSkeleton();
-
-        String[] szLeftHand = new String[] { "leftHand",    "leftHandThumb1",   "leftHandThumb2",   "leftHandThumb3",   "leftHandThumb4",
-                                             "leftPalm",    "leftHandIndex1",   "leftHandIndex2",   "leftHandIndex3",   "leftHandIndex4",
-                                                            "leftHandMiddle1",  "leftHandMiddle2",  "leftHandMiddle3",  "leftHandMiddle4",
-                                                            "leftHandRing1",    "leftHandRing2",    "leftHandRing3",    "leftHandRing4",
-                                                            "leftHandPinky1",   "leftHandPinky2",   "leftHandPinky3",   "leftHandPinky4" };
-        String[] szRightHand = new String[] { "rightHand",  "rightHandThumb1",  "rightHandThumb2",  "rightHandThumb3",  "rightHandThumb4",
-                                              "rightPalm",  "rightHandIndex1",  "rightHandIndex2",  "rightHandIndex3",  "rightHandIndex4",
-                                                            "rightHandMiddle1", "rightHandMiddle2", "rightHandMiddle3", "rightHandMiddle4",
-                                                            "rightHandRing1",   "rightHandRing2",   "rightHandRing3",   "rightHandRing4",
-                                                            "rightHandPinky1",  "rightHandPinky2",  "rightHandPinky3",  "rightHandPinky4"};
-
-        SkinnedMeshJoint[]  left     = new SkinnedMeshJoint[szLeftHand.length];
-        SkinnedMeshJoint[]  right    = new SkinnedMeshJoint[szRightHand.length];
-        int                 iSize    = szLeftHand.length;
-
-        for (int i = 0; i < iSize; i++) {
-            left[i]     = (SkinnedMeshJoint) skeleton.findChild(szLeftHand[i]);
-            right[i]    = (SkinnedMeshJoint) skeleton.findChild(szRightHand[i]);
-        }
-
-        if (m_skeleton == null)
-            m_skeleton = new HashMap<GUI_Enums.m_bodyPart, SkinnedMeshJoint[]>();
-
-        m_skeleton.put(GUI_Enums.m_bodyPart.Left_Hand, left);
-        m_skeleton.put(GUI_Enums.m_bodyPart.Right_Hand, right);
-    }
-
-    /**
-     * Sets up a listing of SkinnedMeshJoints for the lowerarms for quick access
-     */
-    public void catalogLowerArms() {
-        if (m_sceneData.getAvatar() == null)
-            return;
-
-        SkeletonNode skeleton   = m_sceneData.getAvatar().getSkeleton();
-
-        String[] szLeftLowerArm     = new String[] { "leftForeArm",     "leftForeArmRoll" };
-        String[] szRightLowerArm    = new String[] { "rightForeArm",    "rightForeArmRoll"};
-
-        SkinnedMeshJoint[]  left     = new SkinnedMeshJoint[szLeftLowerArm.length];
-        SkinnedMeshJoint[]  right    = new SkinnedMeshJoint[szRightLowerArm.length];
-        int                 iSize    = szLeftLowerArm.length;
-
-        for (int i = 0; i < iSize; i++) {
-            left[i]     = (SkinnedMeshJoint) skeleton.findChild(szLeftLowerArm[i]);
-            right[i]    = (SkinnedMeshJoint) skeleton.findChild(szRightLowerArm[i]);
-        }
-
-        if (m_skeleton == null)
-            m_skeleton = new HashMap<GUI_Enums.m_bodyPart, SkinnedMeshJoint[]>();
-
-        m_skeleton.put(GUI_Enums.m_bodyPart.Left_LowerArm, left);
-        m_skeleton.put(GUI_Enums.m_bodyPart.Right_LowerArm, right);
-    }
-
-    /**
-     * Sets up a listing of SkinnedMeshJoints for the upperarms for quick access
-     */
-    public void catalogUpperArms() {
-        if (m_sceneData.getAvatar() == null)
-            return;
-
-        SkeletonNode skeleton   = m_sceneData.getAvatar().getSkeleton();
-
-        String[] szLeftUpperArm     = new String[] { "leftArm",     "leftArmRoll" };
-        String[] szRightUpperArm    = new String[] { "rightArm",    "rightArmRoll" };
-
-        SkinnedMeshJoint[]  left     = new SkinnedMeshJoint[szLeftUpperArm.length];
-        SkinnedMeshJoint[]  right    = new SkinnedMeshJoint[szRightUpperArm.length];
-        int                 iSize    = szLeftUpperArm.length;
-
-        for (int i = 0; i < iSize; i++) {
-            left[i]     = (SkinnedMeshJoint) skeleton.findChild(szLeftUpperArm[i]);
-            right[i]    = (SkinnedMeshJoint) skeleton.findChild(szRightUpperArm[i]);
-        }
-
-        if (m_skeleton == null)
-            m_skeleton = new HashMap<GUI_Enums.m_bodyPart, SkinnedMeshJoint[]>();
-
-        m_skeleton.put(GUI_Enums.m_bodyPart.Left_UpperArm, left);
-        m_skeleton.put(GUI_Enums.m_bodyPart.Right_UpperArm, right);
-    }
-
-    /**
-     * Sets up a listing of SkinnedMeshJoints for the shoulders for quick access
-     */
-    public void catalogShoulders() {
-        if (m_sceneData.getAvatar() == null)
-            return;
-
-        SkeletonNode skeleton   = m_sceneData.getAvatar().getSkeleton();
-
-        String[] szLeftShoulder     = new String[] { "leftShoulder" };
-        String[] szRightShoulder    = new String[] { "rightShoulder" };
-
-        SkinnedMeshJoint[]  left     = new SkinnedMeshJoint[szLeftShoulder.length];
-        SkinnedMeshJoint[]  right    = new SkinnedMeshJoint[szRightShoulder.length];
-        int                 iSize    = szLeftShoulder.length;
-
-        for (int i = 0; i < iSize; i++) {
-            left[i]     = (SkinnedMeshJoint) skeleton.findChild(szLeftShoulder[i]);
-            right[i]    = (SkinnedMeshJoint) skeleton.findChild(szRightShoulder[i]);
-        }
-
-        if (m_skeleton == null)
-            m_skeleton = new HashMap<GUI_Enums.m_bodyPart, SkinnedMeshJoint[]>();
-
-        m_skeleton.put(GUI_Enums.m_bodyPart.Left_Shoulder, left);
-        m_skeleton.put(GUI_Enums.m_bodyPart.Right_Shoulder, right);
-    }
-
-    /**
-     * Sets up a listing of SkinnedMeshJoints for the torso for quick access
-     */
-    public void catalogTorso() {
-        if (m_sceneData.getAvatar() == null)
-            return;
-
-        SkeletonNode skeleton   = m_sceneData.getAvatar().getSkeleton();
-
-        String[] szTorso     = new String[] { "Spine", "Spine1", "Spine2" };
-
-        SkinnedMeshJoint[]  torso     = new SkinnedMeshJoint[szTorso.length];
-        int                 iSize    = szTorso.length;
-
-        for (int i = 0; i < iSize; i++) {
-            torso[i]     = (SkinnedMeshJoint) skeleton.findChild(szTorso[i]);
-        }
-
-        if (m_skeleton == null)
-            m_skeleton = new HashMap<GUI_Enums.m_bodyPart, SkinnedMeshJoint[]>();
-
-        m_skeleton.put(GUI_Enums.m_bodyPart.Torso, torso);
-    }
-
-    /**
-     * Sets up a listing of SkinnedMeshJoints for the upperlegs for quick access
-     */
-    public void catalogUpperLegs() {
-        if (m_sceneData.getAvatar() == null)
-            return;
-
-        SkeletonNode skeleton   = m_sceneData.getAvatar().getSkeleton();
-
-        String[] szLeftUpperLeg     = new String[] { "leftUpLeg",   "leftUpLegRoll" };
-        String[] szRightUpperLeg    = new String[] { "rightUpLeg",  "rightUpLegRoll" };
-
-        SkinnedMeshJoint[]  left     = new SkinnedMeshJoint[szLeftUpperLeg.length];
-        SkinnedMeshJoint[]  right    = new SkinnedMeshJoint[szRightUpperLeg.length];
-        int                 iSize    = szLeftUpperLeg.length;
-
-        for (int i = 0; i < iSize; i++) {
-            left[i]     = (SkinnedMeshJoint) skeleton.findChild(szLeftUpperLeg[i]);
-            right[i]    = (SkinnedMeshJoint) skeleton.findChild(szRightUpperLeg[i]);
-        }
-
-        if (m_skeleton == null)
-            m_skeleton = new HashMap<GUI_Enums.m_bodyPart, SkinnedMeshJoint[]>();
-
-        m_skeleton.put(GUI_Enums.m_bodyPart.Left_UpperLeg, left);
-        m_skeleton.put(GUI_Enums.m_bodyPart.Right_UpperLeg, right);
-    }
-
-    /**
-     * Sets up a listing of SkinnedMeshJoints for the lowerlegs for quick access
-     */
-    public void catalogLowerLegs() {
-        if (m_sceneData.getAvatar() == null)
-            return;
-
-        SkeletonNode skeleton   = m_sceneData.getAvatar().getSkeleton();
-
-        String[] szLeftLowerLeg     = new String[] { "leftLeg",     "leftLegRoll" };
-        String[] szRightLowerLeg    = new String[] { "rightLeg",    "rightLegRoll" };
-
-        SkinnedMeshJoint[]  left     = new SkinnedMeshJoint[szLeftLowerLeg.length];
-        SkinnedMeshJoint[]  right    = new SkinnedMeshJoint[szRightLowerLeg.length];
-        int                 iSize    = szLeftLowerLeg.length;
-
-        for (int i = 0; i < iSize; i++) {
-            left[i]     = (SkinnedMeshJoint) skeleton.findChild(szLeftLowerLeg[i]);
-            right[i]    = (SkinnedMeshJoint) skeleton.findChild(szRightLowerLeg[i]);
-        }
-
-        if (m_skeleton == null)
-            m_skeleton = new HashMap<GUI_Enums.m_bodyPart, SkinnedMeshJoint[]>();
-
-        m_skeleton.put(GUI_Enums.m_bodyPart.Left_LowerLeg, left);
-        m_skeleton.put(GUI_Enums.m_bodyPart.Right_LowerLeg, right);
-    }
-
-    /**
-     * Sets up a listing of SkinnedMeshJoints for the feet for quick access
-     */
-    public void catalogFeet() {
-        if (m_sceneData.getAvatar() == null)
-            return;
-
-        SkeletonNode skeleton   = m_sceneData.getAvatar().getSkeleton();
-
-        String[] szLeftFoot     = new String[] { "leftFoot",    "leftFootBall" };
-        String[] szRightFoot    = new String[] { "rightFoot",   "rightFootBall" };
-
-        SkinnedMeshJoint[]  left     = new SkinnedMeshJoint[szLeftFoot.length];
-        SkinnedMeshJoint[]  right    = new SkinnedMeshJoint[szRightFoot.length];
-        int                 iSize    = szLeftFoot.length;
-
-        for (int i = 0; i < iSize; i++) {
-            left[i]     = (SkinnedMeshJoint) skeleton.findChild(szLeftFoot[i]);
-            right[i]    = (SkinnedMeshJoint) skeleton.findChild(szRightFoot[i]);
-        }
-
-        if (m_skeleton == null)
-            m_skeleton = new HashMap<GUI_Enums.m_bodyPart, SkinnedMeshJoint[]>();
-
-        m_skeleton.put(GUI_Enums.m_bodyPart.Left_Foot, left);
-        m_skeleton.put(GUI_Enums.m_bodyPart.Right_Foot, right);
-    }
-
-    /**
-     * Sets up a listing of SkinnedMeshJoints for the head for quick access
-     */
-    public void catalogHead() {
-        if (m_sceneData.getAvatar() == null)
-            return;
-
-        SkeletonNode skeleton   = m_sceneData.getAvatar().getSkeleton();
-
-        String[] szHead     = new String[] { "Head",            "Jaw",              "Tongue",           "Tongue1",
-                                             "leftLowerLip",    "rightLowerLip",    "leftInnerBrow",    "leftEyeLid",
-                                             "leftOuterBrow",   "leftCheek",        "leftUpperLip",     "leftOuterLip",
-                                             "rightInnerBrow",  "rightOuterBrow",   "rightCheek",       "rightOuterLip",
-                                             "rightUpperLip",   "rightEyeLid",      "leftEye",          "rightEye"};
-
-        SkinnedMeshJoint[]  head     = new SkinnedMeshJoint[szHead.length];
-        int                 iSize    = szHead.length;
-
-        for (int i = 0; i < iSize; i++) {
-            head[i]     = (SkinnedMeshJoint) skeleton.findChild(szHead[i]);
-        }
-
-        if (m_skeleton == null)
-            m_skeleton = new HashMap<GUI_Enums.m_bodyPart, SkinnedMeshJoint[]>();
-
-        m_skeleton.put(GUI_Enums.m_bodyPart.Head, head);
-    }
-
-    /**
-     * Sets up a listing of SkinnedMeshJoints for the neck for quick access
-     */
-    public void catalogNeck() {
-        if (m_sceneData.getAvatar() == null)
-            return;
-
-        SkeletonNode skeleton   = m_sceneData.getAvatar().getSkeleton();
-
-        String[] szNeck     = new String[] { "Neck" };
-
-        SkinnedMeshJoint[]  neck     = new SkinnedMeshJoint[szNeck.length];
-        int                 iSize    = szNeck.length;
-
-        for (int i = 0; i < iSize; i++) {
-            neck[i]     = (SkinnedMeshJoint) skeleton.findChild(szNeck[i]);
-        }
-
-        if (m_skeleton == null)
-            m_skeleton = new HashMap<GUI_Enums.m_bodyPart, SkinnedMeshJoint[]>();
-
-        m_skeleton.put(GUI_Enums.m_bodyPart.Neck, neck);
-    }
-
-    /**
-     * Sets up a listing of SkinnedMeshJoints for the eyes for quick access
-     */
-    public void catalogEyes() {
-        if (m_sceneData.getAvatar() == null)
-            return;
-
-        SkeletonNode skeleton   = m_sceneData.getAvatar().getSkeleton();
-
-        String[] szEyes     = new String[] { "EyeL_Adjust",     "leftEye",     "leftEyeLid",       "leftInnerBrow",    "leftOuterBrow",    "leftCheek",
-                                             "EyeR_Adjust",     "rightEye",    "rightEyeLid",      "rightInnerBrow",   "rightOuterBrow",   "rightCheek" };
-
-        SkinnedMeshJoint[]  eyes     = new SkinnedMeshJoint[szEyes.length];
-        int                 iSize    = szEyes.length;
-
-        for (int i = 0; i < iSize; i++) {
-            eyes[i]     = (SkinnedMeshJoint) skeleton.findChild(szEyes[i]);
-        }
-
-        if (m_skeleton == null)
-            m_skeleton = new HashMap<GUI_Enums.m_bodyPart, SkinnedMeshJoint[]>();
-
-        m_skeleton.put(GUI_Enums.m_bodyPart.Eyes, eyes);
-    }
-
-    /**
-     * Sets up a listing of SkinnedMeshJoints for the eyes for quick access
-     */
-    public void catalogEyeBalls() {
-        if (m_sceneData.getAvatar() == null)
-            return;
-
-        SkeletonNode skeleton   = m_sceneData.getAvatar().getSkeleton();
-
-        String[] szEyes     = new String[] { "leftEye",     "rightEye" };
-
-        SkinnedMeshJoint[]  eyes     = new SkinnedMeshJoint[szEyes.length];
-        int                 iSize    = szEyes.length;
-
-        for (int i = 0; i < iSize; i++) {
-            eyes[i]     = (SkinnedMeshJoint) skeleton.findChild(szEyes[i]);
-        }
-
-        if (m_skeleton == null)
-            m_skeleton = new HashMap<GUI_Enums.m_bodyPart, SkinnedMeshJoint[]>();
-
-        m_skeleton.put(GUI_Enums.m_bodyPart.EyeBalls, eyes);
-    }
-
-    /**
-     * Sets up a listing of SkinnedMeshJoints for the lips for quick access
-     */
-    public void catalogLips() {
-        if (m_sceneData.getAvatar() == null)
-            return;
-
-        SkeletonNode skeleton   = m_sceneData.getAvatar().getSkeleton();
-
-        String[] szLips     = new String[] { "leftLowerLip",    "rightLowerLip",    "leftUpperLip",     "rightUpperLip",
-                                             "leftCheek",       "rightCheek",       "leftOuterLip",     "rightOuterLip" };
-
-        SkinnedMeshJoint[]  lips     = new SkinnedMeshJoint[szLips.length];
-        int                 iSize    = szLips.length;
-
-        for (int i = 0; i < iSize; i++) {
-            lips[i]     = (SkinnedMeshJoint) skeleton.findChild(szLips[i]);
-        }
-
-        if (m_skeleton == null)
-            m_skeleton = new HashMap<GUI_Enums.m_bodyPart, SkinnedMeshJoint[]>();
-
-        m_skeleton.put(GUI_Enums.m_bodyPart.Lips, lips);
-    }
-
-    /**
-     * Sets up a listing of SkinnedMeshJoints for the eyes for quick access
-     */
-    public void catalogEars() {
-        if (m_sceneData.getAvatar() == null)
-            return;
-
-        SkeletonNode skeleton   = m_sceneData.getAvatar().getSkeleton();
-
-        String[] szEars     = new String[] { "LeftEar_Adjust", "RightEar_Adjust" };
-
-        SkinnedMeshJoint[]  ears     = new SkinnedMeshJoint[szEars.length];
-        int                 iSize    = szEars.length;
-
-        for (int i = 0; i < iSize; i++) {
-            ears[i]     = (SkinnedMeshJoint) skeleton.findChild(szEars[i]);
-        }
-
-        if (m_skeleton == null)
-            m_skeleton = new HashMap<GUI_Enums.m_bodyPart, SkinnedMeshJoint[]>();
-
-        m_skeleton.put(GUI_Enums.m_bodyPart.Ears, ears);
-    }
-    
-    /**
-     * Sets up a listing of SkinnedMeshJoints for the nose for quick access
-     */
-    public void catalogNose() {
-        if (m_sceneData.getAvatar() == null)
-            return;
-
-        SkeletonNode skeleton   = m_sceneData.getAvatar().getSkeleton();
-
-        String[] szNose     = new String[] { "Nose_Adjust" };
-
-        SkinnedMeshJoint[]  nose     = new SkinnedMeshJoint[szNose.length];
-        int                 iSize    = szNose.length;
-
-        for (int i = 0; i < iSize; i++) {
-            nose[i]     = (SkinnedMeshJoint) skeleton.findChild(szNose[i]);
-        }
-
-        if (m_skeleton == null)
-            m_skeleton = new HashMap<GUI_Enums.m_bodyPart, SkinnedMeshJoint[]>();
-
-        m_skeleton.put(GUI_Enums.m_bodyPart.Nose, nose);
-    }
-
-    /**
-     * Creates a complete listing of all the SkinnedMeshJoints for the entire
-     * avatar body
-     */
-    public void createJointCatalog() {
-        if (m_sceneData.getAvatar() == null)
-            return;
-
-        catalogHands();
-        catalogLowerArms();
-        catalogUpperArms();
-        catalogShoulders();
-        catalogTorso();
-        catalogUpperLegs();
-        catalogLowerLegs();
-        catalogFeet();
-        catalogHead();
-        catalogNeck();
-        catalogEyes();
-        catalogLips();
-        catalogEars();
-        catalogNose();
-    }
-
     /**
      * Switchboard for all the joint sliders.  Pushes the correct response to the
      * right methods.

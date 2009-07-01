@@ -19,7 +19,7 @@ package org.collada.xml_walker;
 
 import java.util.logging.Logger;
 
-import imi.loaders.collada.Collada;
+import imi.loaders.Collada;
 
 
 

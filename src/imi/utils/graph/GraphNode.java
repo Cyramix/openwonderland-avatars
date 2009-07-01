@@ -20,7 +20,7 @@ package imi.utils.graph;
 import java.util.HashMap;
 
 /**
- *
+ * A node in a graph
  * @author Lou Hayt
  */
 public class GraphNode 

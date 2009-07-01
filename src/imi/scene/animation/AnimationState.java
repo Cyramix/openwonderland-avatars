@@ -19,10 +19,14 @@ package imi.scene.animation;
 
 import imi.scene.animation.channel.AnimationCursor;
 import imi.scene.animation.AnimationComponent.PlaybackMode;
-import java.util.ArrayList;
+import javolution.util.FastTable;
+import org.jdesktop.wonderland.common.InternalAPI;
 
 /**
  * This class stores the state for a given animated instance.
+ * This state is related to a particular AnimationGroup with the same index
+ * so for e.g. AnimationState 0 in an AnimationComponent holds state for
+ * AnimationGroup 0 in that AnimationComponents.
  * 
  * @author Ronald E Dahlgren
  * @author Lou Hayt
@@ -53,7 +57,7 @@ public class AnimationState
     private boolean m_bTransitionReverseAnimation = false;
     
     /** The list of listeners to inform of messages **/
-    private transient ArrayList<AnimationListener> m_listeners = null;
+    private transient FastTable<AnimationListener> m_listeners = null;
 
     /** **/
     private transient AnimationCursor m_animCursor = new AnimationCursor();
@@ -65,6 +69,10 @@ public class AnimationState
         m_ID = id;
     }
 
+    /**
+     * Copy constructor
+     * @param other
+     */
     public AnimationState(AnimationState other)
     {
         m_ID = other.m_ID;
@@ -264,30 +272,54 @@ public class AnimationState
             return false;
         return true;
     }
-    
+
+    /**
+     * Returns true if the transition animation is set to play in reverse
+     * @return
+     */
     public boolean isTransitionReverseAnimation() {
         return m_bTransitionReverseAnimation;
     }
 
+    /**
+     * Set if the transition animation will play in reverse
+     * @param bTransitionReverseAnimation
+     */
     public void setTransitionReverseAnimation(boolean bTransitionReverseAnimation) {
         this.m_bTransitionReverseAnimation = bTransitionReverseAnimation;
     }
 
-    public PlaybackMode getCycleMode()
+    /**
+     * Get the playback mode of the transitioning animation cycle
+     * @return
+     */
+    public PlaybackMode getTransitionCycleMode()
     {
         return m_cycleMode;
     }
-    
-    public void setCycleMode(PlaybackMode playbackMode)
+
+    /**
+     * Set the playback mode for the transitioning animation cycle
+     * @param playbackMode
+     */
+    public void setTransitionCycleMode(PlaybackMode playbackMode)
     {
         m_cycleMode = playbackMode;
     }
-    
+
+    /**
+     * Get the playback mode of the current animation cycle
+     * @return
+     */
     public PlaybackMode getCurrentCyclePlaybackMode()
     {
         return m_currentCycleMode;
     }
-    
+
+    /**
+     * Set the playback mode of the current animation cycle
+     * @param playbackMode
+     */
     public void setCurrentCyclePlaybackMode(PlaybackMode playbackMode)
     {
         m_currentCycleMode = playbackMode;
@@ -303,7 +335,7 @@ public class AnimationState
         boolean result = false;
         if (m_listeners == null)
         {
-            m_listeners = new ArrayList<AnimationListener>();
+            m_listeners = new FastTable<AnimationListener>();
             m_listeners.add(listener);
             result = true;
         }
@@ -354,7 +386,7 @@ public class AnimationState
      * Send the message to all registered animation listeners
      * @param message
      */
-    public void sendMessage(AnimationListener.AnimationMessageType message)
+    void sendMessage(AnimationListener.AnimationMessageType message)
     {
         m_animCursor.makeNegativeOne();
         if (m_listeners == null)
@@ -363,10 +395,11 @@ public class AnimationState
             listener.receiveAnimationMessage(message, m_ID);
     }
 
-    public int getID() {
-        return m_ID;
-    }
-    
+    /**
+     * Get the cursor
+     * @return
+     */
+    @InternalAPI
     public AnimationCursor getCursor()
     {
         return m_animCursor;

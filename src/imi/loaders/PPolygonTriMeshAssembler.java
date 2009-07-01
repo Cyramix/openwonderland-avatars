@@ -17,27 +17,26 @@
  */
 package imi.loaders;
 
-import com.jme.math.Vector2f;
-import imi.scene.polygonmodel.skinned.PPolygonSkinnedMesh;
+import imi.scene.polygonmodel.PPolygonSkinnedMesh;
 import com.jme.math.Vector3f;
 import com.jme.renderer.ColorRGBA;
 import com.jme.scene.TexCoords;
 import com.jme.scene.TriMesh;
 import com.jme.util.geom.BufferUtils;
 import imi.scene.polygonmodel.PPolygonMesh;
-import imi.scene.polygonmodel.PPolygonModel;
-import imi.scene.polygonmodel.parts.skinned.PBoneIndices;
-import imi.scene.polygonmodel.parts.PGeometryVertex;
-import imi.scene.polygonmodel.parts.polygon.PPolygon;
-import imi.scene.polygonmodel.parts.PGeometryTriangle;
-import imi.scene.polygonmodel.parts.skinned.PPolygonSkinnedVertexIndices;
-import imi.utils.PMathUtils;
+import imi.scene.polygonmodel.PBoneIndices;
+import imi.scene.polygonmodel.PGeometryVertex;
+import imi.scene.polygonmodel.PPolygon;
+import imi.scene.polygonmodel.PGeometryTriangle;
+import imi.scene.polygonmodel.PPolygonSkinnedVertexIndices;
+import imi.utils.MathUtils;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javolution.util.FastTable;
 
 /**
  * Utility class used for converting various polygonal objects into jme
@@ -59,18 +58,18 @@ public class PPolygonTriMeshAssembler
      * hierarchies using the model's composite meshes.
      * @return result (TriMesh[])
      */
-    public static TriMesh[] buildTriMeshes(PPolygonModel Model, boolean bCompile)
-    {
-        if (bCompile)
-            Model.compile();
-        
-        TriMesh [] result = new TriMesh[Model.getChildrenCount()];
-        // Turn each child mesh into a TriMesh
-        for (int i = 0; i < Model.getChildrenCount(); i++)
-            result[i] = buildTriMesh((PPolygonMesh)Model.getChild(i));
-        
-        return result;
-    }
+//    public static TriMesh[] buildTriMeshes(PPolygonModel Model, boolean bCompile)
+//    {
+//        if (bCompile)
+//            Model.compile();
+//
+//        TriMesh [] result = new TriMesh[Model.getChildrenCount()];
+//        // Turn each child mesh into a TriMesh
+//        for (int i = 0; i < Model.getChildrenCount(); i++)
+//            result[i] = buildTriMesh((PPolygonMesh)Model.getChild(i));
+//
+//        return result;
+//    }
 
     /**
      * Convert the provided mesh into a trimesh
@@ -105,6 +104,7 @@ public class PPolygonTriMeshAssembler
      */
     private static void reconstructTriMeshWithoutSkinningData(TriMesh triMesh, PPolygonMesh Mesh)
     {
+        MathUtils.MathUtilsContext context = MathUtils.getContext();
         if (Mesh.getPolygonCount() <= 0) // No geometry
         {
             logger.log(Level.SEVERE,
@@ -114,8 +114,8 @@ public class PPolygonTriMeshAssembler
         
         // Buffers for containing the converted Mesh data
         PGeometryVertexBuffer   VertBuffer  = new PGeometryVertexBuffer();
-        ArrayList<Integer>      IndexBuffer = new ArrayList<Integer>();
-        PGeometryVertex Vert = null;
+        FastTable<Integer>      IndexBuffer = new FastTable<Integer>();
+        PGeometryVertex vert = null;
 
         // Loop through each polygon, and build appropriate verts for it
         // For each Polygon
@@ -130,59 +130,26 @@ public class PPolygonTriMeshAssembler
                 // Generate the binormal and tangent for each vert in this triangle
                 Vector3f binormal = new Vector3f();
                 Vector3f tangent = new Vector3f();
-                PMathUtils.generateTangentAndBinormal(curTri, tangent, binormal);
+                MathUtils.generateTangentAndBinormal(curTri, tangent, binormal, context);
                 
                 // For each vertex in the triangle
                 for (int vertIndex = 0; vertIndex <3 ; ++vertIndex)
                 {
                     // Out with the old
-                    Vert = new PGeometryVertex();
-                    // Grab the position, normal, and tangent
-                    PGeometryVertex curVert = curTri.m_Vertices[vertIndex];
-                    Vert.m_Position = curVert.m_Position;
-                    Vert.m_Normal   = curVert.m_Normal;
-                    Vert.m_Tangent  = tangent;
-
-                    // copy over the color information
-                    Vert.m_Diffuse = 
-                            new ColorRGBA(curVert.m_Diffuse);
-                    
-                    // For the number of texture coordinates
-                    int TexNum = Mesh.getNumberOfTextures();
-                    if (Mesh.isUniformTexCoords())
-                        TexNum = 1;
-
-                    for (int texCoordIter = 0; texCoordIter < TexNum; texCoordIter++)
-                    {
-                        // Copy over the tex coords
-                        Vert.m_TexCoords[texCoordIter] = 
-                                new Vector2f(curVert.m_TexCoords[texCoordIter]);
-                    } // End texture loop
-
+                    vert = new PGeometryVertex(curTri.verts[vertIndex]);
+                    vert.setTangent(tangent);
                     // Now add this newly filled out vertex to the vertex buffer
-                    int index = VertBuffer.addVertex(Vert);
+                    int index = VertBuffer.addVertex(vert);
                     // Note the index
-                    IndexBuffer.add((Integer)index);
+                    IndexBuffer.add(index);
                 } // End vertex loop
             } // End triangle loop
         } // End polygon loop
-
-        // Processing complete
-        // Diagnostic / Debugging info
-//        logger.log(Level.INFO, "Contents of Vertex Buffer:\n");
-//        for (int i = 0; i < VertBuffer.size(); i++)
-//            logger.log(Level.INFO, VertBuffer.getVertex(i).toString());
-//        logger.log(Level.INFO, "Contents of Index Buffer:\n");
-//        for (int i = 0; i < IndexBuffer.m_Indices.size(); i++)
-//        {
-//            logger.log(Level.INFO, IndexBuffer.m_Indices.get(i).toString());
-//            logger.log(Level.INFO, "\n");
-//        }
     
         // Positions, normals and colors are an easy copy
         Vector3f[]  positions      = VertBuffer.getPositionArray();
         Vector3f[]  normals        = VertBuffer.getNormalArray();
-        ColorRGBA[] colors         = VertBuffer.getColorArray();
+        ColorRGBA[] colors         = VertBuffer.getDiffuseColorArray();
         
         FloatBuffer positionBuffer = BufferUtils.createFloatBuffer(positions);
         FloatBuffer normalBuffer   = BufferUtils.createFloatBuffer(normals);
@@ -236,19 +203,21 @@ public class PPolygonTriMeshAssembler
             logger.log(Level.SEVERE, "reconstructTriMeshWithSkinningData was called on null data (mesh was already reconstructed before?)");
             return;
         }
+
+        MathUtils.MathUtilsContext mathContext = MathUtils.getContext();
         
         // Buffers for containing the converted Mesh data
         PGeometryVertexBuffer VertBuffer = new PGeometryVertexBuffer();
-        ArrayList<Integer> IndexBuffer = new ArrayList<Integer>();
+        FastTable<Integer> IndexBuffer = new FastTable<Integer>();
         
         // Skinning data
         ColorRGBA[] weightArray     = new ColorRGBA[Mesh.getTessalatedVertexCount()]; // per vertex, weight of 4 influence from the indexed materices\bones
         float[]     boneIndexArray  = new float[Mesh.getTessalatedVertexCount() * 4]; // per vertex, 4 indices of bones in the flatened matrix stack
         
-        List<Vector3f> sourceWeightArrayList = (List)Mesh.getBoneWeightArray();
-        List<PBoneIndices> sourceIndexArrayList = (List)Mesh.getBoneIndexArray();
+        List<Vector3f> sourceWeightFastTable = (List)Mesh.getBoneWeightArray();
+        List<PBoneIndices> sourceIndexFastTable = (List)Mesh.getBoneIndexArray();
         
-        PGeometryVertex Vert = null;
+        PGeometryVertex vert = null;
         // Loop through each polygon, and build appropriate verts for it
         // For each Polygon
         for (PPolygon currentPoly : Mesh.getPolygons())
@@ -262,35 +231,16 @@ public class PPolygonTriMeshAssembler
                 // Generate the binormal for each vert in this triangle
                 Vector3f binormal = new Vector3f();
                 Vector3f tangent = new Vector3f();
-                PMathUtils.generateTangentAndBinormal(curTri, tangent, binormal);
+                MathUtils.generateTangentAndBinormal(curTri, tangent, binormal, mathContext);
                 
                 // For each vertex in the triangle
                 for (int vertIndex = 0; vertIndex < 3; ++vertIndex) 
                 {
                     // Out with the old
-                    Vert = new PGeometryVertex();
-                    // Grab the position, normal, and tangent
-                    PGeometryVertex curVert = curTri.m_Vertices[vertIndex];
-                    Vert.m_Position = curVert.m_Position;
-                    Vert.m_Normal = curVert.m_Normal;
-                    Vert.m_Tangent = tangent;
-                    // copy over the color information
-                    Vert.m_Diffuse = new ColorRGBA(curVert.m_Diffuse);
-                    
-                    // For the number of texture coordinates
-                    int TexNum = Mesh.getNumberOfTextures();
-                    if (Mesh.isUniformTexCoords())
-                        TexNum = 1;
-
-                    for (int texCoordIter = 0; texCoordIter < TexNum; texCoordIter++)
-                    {
-                        // Copy over the tex coords
-                        Vert.m_TexCoords[texCoordIter] = 
-                                new Vector2f(curVert.m_TexCoords[texCoordIter]);
-                    } // End texture loop
-
+                    vert = new PGeometryVertex(curTri.verts[vertIndex]);
+                    vert.setTangent(tangent);
                     // Now add this newly filled out vertex to the vertex buffer
-                    int index = VertBuffer.addVertex(Vert);
+                    int index = VertBuffer.addVertex(vert);
                     // Note the index
                     IndexBuffer.add((Integer)index);
                     
@@ -298,16 +248,16 @@ public class PPolygonTriMeshAssembler
                     int boneIndex = index * 4; // Four influences per vert
                     if (triIndex == 0)
                     {
-                        PPolygonSkinnedVertexIndices vert = (PPolygonSkinnedVertexIndices)currentPoly.getVertex(vertIndex);
-                        weightArray[index] = new ColorRGBA(sourceWeightArrayList.get(vert.m_BoneWeightIndex).x,
-                                sourceWeightArrayList.get(vert.m_BoneWeightIndex).y,
-                                sourceWeightArrayList.get(vert.m_BoneWeightIndex).z,
+                        PPolygonSkinnedVertexIndices skinnedVert = (PPolygonSkinnedVertexIndices)currentPoly.getVertex(vertIndex);
+                        weightArray[index] = new ColorRGBA(sourceWeightFastTable.get(skinnedVert.m_BoneWeightIndex).x,
+                                sourceWeightFastTable.get(skinnedVert.m_BoneWeightIndex).y,
+                                sourceWeightFastTable.get(skinnedVert.m_BoneWeightIndex).z,
                                 0.0f);
                        
-                        boneIndexArray[boneIndex]   = sourceIndexArrayList.get(vert.m_BoneIndicesIndex).index[0];
-                        boneIndexArray[boneIndex+1] = sourceIndexArrayList.get(vert.m_BoneIndicesIndex).index[1];
-                        boneIndexArray[boneIndex+2] = sourceIndexArrayList.get(vert.m_BoneIndicesIndex).index[2];
-                        boneIndexArray[boneIndex+3] = sourceIndexArrayList.get(vert.m_BoneIndicesIndex).index[3];
+                        boneIndexArray[boneIndex]   = sourceIndexFastTable.get(skinnedVert.m_BoneIndicesIndex).index[0];
+                        boneIndexArray[boneIndex+1] = sourceIndexFastTable.get(skinnedVert.m_BoneIndicesIndex).index[1];
+                        boneIndexArray[boneIndex+2] = sourceIndexFastTable.get(skinnedVert.m_BoneIndicesIndex).index[2];
+                        boneIndexArray[boneIndex+3] = sourceIndexFastTable.get(skinnedVert.m_BoneIndicesIndex).index[3];
                     }
                     else
                     {
@@ -315,29 +265,29 @@ public class PPolygonTriMeshAssembler
                         // generated by a PPolygon. See the implementation for more details.
                         if (vertIndex == 2)  
                         {
-                            PPolygonSkinnedVertexIndices vert = (PPolygonSkinnedVertexIndices)currentPoly.getVertex(vertIndex);
-                            weightArray[index] = new ColorRGBA(sourceWeightArrayList.get(vert.m_BoneWeightIndex).x,
-                                sourceWeightArrayList.get(vert.m_BoneWeightIndex).y,
-                                sourceWeightArrayList.get(vert.m_BoneWeightIndex).z,
+                            PPolygonSkinnedVertexIndices skinnedVert = (PPolygonSkinnedVertexIndices)currentPoly.getVertex(vertIndex);
+                            weightArray[index] = new ColorRGBA(sourceWeightFastTable.get(skinnedVert.m_BoneWeightIndex).x,
+                                sourceWeightFastTable.get(skinnedVert.m_BoneWeightIndex).y,
+                                sourceWeightFastTable.get(skinnedVert.m_BoneWeightIndex).z,
                                 0.0f);
 
-                            boneIndexArray[boneIndex]   = sourceIndexArrayList.get(vert.m_BoneIndicesIndex).index[0];
-                            boneIndexArray[boneIndex+1] = sourceIndexArrayList.get(vert.m_BoneIndicesIndex).index[1];
-                            boneIndexArray[boneIndex+2] = sourceIndexArrayList.get(vert.m_BoneIndicesIndex).index[2];
-                            boneIndexArray[boneIndex+3] = sourceIndexArrayList.get(vert.m_BoneIndicesIndex).index[3];
+                            boneIndexArray[boneIndex]   = sourceIndexFastTable.get(skinnedVert.m_BoneIndicesIndex).index[0];
+                            boneIndexArray[boneIndex+1] = sourceIndexFastTable.get(skinnedVert.m_BoneIndicesIndex).index[1];
+                            boneIndexArray[boneIndex+2] = sourceIndexFastTable.get(skinnedVert.m_BoneIndicesIndex).index[2];
+                            boneIndexArray[boneIndex+3] = sourceIndexFastTable.get(skinnedVert.m_BoneIndicesIndex).index[3];
                         }
                         else
                         {
-                            PPolygonSkinnedVertexIndices vert = (PPolygonSkinnedVertexIndices)currentPoly.getVertex(triIndex + vertIndex);
-                            weightArray[index] = new ColorRGBA(sourceWeightArrayList.get(vert.m_BoneWeightIndex).x,
-                                sourceWeightArrayList.get(vert.m_BoneWeightIndex).y,
-                                sourceWeightArrayList.get(vert.m_BoneWeightIndex).z,
+                            PPolygonSkinnedVertexIndices skinnedVert = (PPolygonSkinnedVertexIndices)currentPoly.getVertex(triIndex + vertIndex);
+                            weightArray[index] = new ColorRGBA(sourceWeightFastTable.get(skinnedVert.m_BoneWeightIndex).x,
+                                sourceWeightFastTable.get(skinnedVert.m_BoneWeightIndex).y,
+                                sourceWeightFastTable.get(skinnedVert.m_BoneWeightIndex).z,
                                 0.0f);
                        
-                            boneIndexArray[boneIndex]   = sourceIndexArrayList.get(vert.m_BoneIndicesIndex).index[0];
-                            boneIndexArray[boneIndex+1] = sourceIndexArrayList.get(vert.m_BoneIndicesIndex).index[1];
-                            boneIndexArray[boneIndex+2] = sourceIndexArrayList.get(vert.m_BoneIndicesIndex).index[2];
-                            boneIndexArray[boneIndex+3] = sourceIndexArrayList.get(vert.m_BoneIndicesIndex).index[3];
+                            boneIndexArray[boneIndex]   = sourceIndexFastTable.get(skinnedVert.m_BoneIndicesIndex).index[0];
+                            boneIndexArray[boneIndex+1] = sourceIndexFastTable.get(skinnedVert.m_BoneIndicesIndex).index[1];
+                            boneIndexArray[boneIndex+2] = sourceIndexFastTable.get(skinnedVert.m_BoneIndicesIndex).index[2];
+                            boneIndexArray[boneIndex+3] = sourceIndexFastTable.get(skinnedVert.m_BoneIndicesIndex).index[3];
                         }
                     }
                     

@@ -25,7 +25,7 @@
 
 package org.collada.colladaschema;
 
-import java.util.ArrayList;
+import javolution.util.FastTable;
 import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -515,7 +515,7 @@ public class CgSetparamSimple {
      */
     public List<FxAnnotateCommon> getAnnotates() {
         if (annotates == null) {
-            annotates = new ArrayList<FxAnnotateCommon>();
+            annotates = new FastTable<FxAnnotateCommon>();
         }
         return this.annotates;
     }
@@ -544,7 +544,7 @@ public class CgSetparamSimple {
      */
     public List<Float> getHalf2X2() {
         if (half2X2 == null) {
-            half2X2 = new ArrayList<Float>();
+            half2X2 = new FastTable<Float>();
         }
         return this.half2X2;
     }
@@ -573,7 +573,7 @@ public class CgSetparamSimple {
      */
     public List<Integer> getInt2X3() {
         if (int2X3 == null) {
-            int2X3 = new ArrayList<Integer>();
+            int2X3 = new FastTable<Integer>();
         }
         return this.int2X3;
     }
@@ -602,7 +602,7 @@ public class CgSetparamSimple {
      */
     public List<Float> getHalf1X2() {
         if (half1X2 == null) {
-            half1X2 = new ArrayList<Float>();
+            half1X2 = new FastTable<Float>();
         }
         return this.half1X2;
     }
@@ -655,7 +655,7 @@ public class CgSetparamSimple {
      */
     public List<Float> getFixed3X4() {
         if (fixed3X4 == null) {
-            fixed3X4 = new ArrayList<Float>();
+            fixed3X4 = new FastTable<Float>();
         }
         return this.fixed3X4;
     }
@@ -684,7 +684,7 @@ public class CgSetparamSimple {
      */
     public List<Boolean> getBool3() {
         if (bool3 == null) {
-            bool3 = new ArrayList<Boolean>();
+            bool3 = new FastTable<Boolean>();
         }
         return this.bool3;
     }
@@ -713,7 +713,7 @@ public class CgSetparamSimple {
      */
     public List<Float> getFloat4X3() {
         if (float4X3 == null) {
-            float4X3 = new ArrayList<Float>();
+            float4X3 = new FastTable<Float>();
         }
         return this.float4X3;
     }
@@ -742,7 +742,7 @@ public class CgSetparamSimple {
      */
     public List<Float> getFloat3X1() {
         if (float3X1 == null) {
-            float3X1 = new ArrayList<Float>();
+            float3X1 = new FastTable<Float>();
         }
         return this.float3X1;
     }
@@ -771,7 +771,7 @@ public class CgSetparamSimple {
      */
     public List<Float> getFixed1X2() {
         if (fixed1X2 == null) {
-            fixed1X2 = new ArrayList<Float>();
+            fixed1X2 = new FastTable<Float>();
         }
         return this.fixed1X2;
     }
@@ -800,7 +800,7 @@ public class CgSetparamSimple {
      */
     public List<Float> getFixed1X3() {
         if (fixed1X3 == null) {
-            fixed1X3 = new ArrayList<Float>();
+            fixed1X3 = new FastTable<Float>();
         }
         return this.fixed1X3;
     }
@@ -853,7 +853,7 @@ public class CgSetparamSimple {
      */
     public List<Float> getFloat1X2() {
         if (float1X2 == null) {
-            float1X2 = new ArrayList<Float>();
+            float1X2 = new FastTable<Float>();
         }
         return this.float1X2;
     }
@@ -906,7 +906,7 @@ public class CgSetparamSimple {
      */
     public List<Integer> getInt2() {
         if (int2 == null) {
-            int2 = new ArrayList<Integer>();
+            int2 = new FastTable<Integer>();
         }
         return this.int2;
     }
@@ -935,7 +935,7 @@ public class CgSetparamSimple {
      */
     public List<Float> getFloat4() {
         if (float4 == null) {
-            float4 = new ArrayList<Float>();
+            float4 = new FastTable<Float>();
         }
         return this.float4;
     }
@@ -964,7 +964,7 @@ public class CgSetparamSimple {
      */
     public List<Integer> getInt2X2() {
         if (int2X2 == null) {
-            int2X2 = new ArrayList<Integer>();
+            int2X2 = new FastTable<Integer>();
         }
         return this.int2X2;
     }
@@ -993,7 +993,7 @@ public class CgSetparamSimple {
      */
     public List<Boolean> getBool3X4() {
         if (bool3X4 == null) {
-            bool3X4 = new ArrayList<Boolean>();
+            bool3X4 = new FastTable<Boolean>();
         }
         return this.bool3X4;
     }
@@ -1022,7 +1022,7 @@ public class CgSetparamSimple {
      */
     public List<Float> getFloat1X3() {
         if (float1X3 == null) {
-            float1X3 = new ArrayList<Float>();
+            float1X3 = new FastTable<Float>();
         }
         return this.float1X3;
     }
@@ -1051,7 +1051,7 @@ public class CgSetparamSimple {
      */
     public List<Float> getFixed3X3() {
         if (fixed3X3 == null) {
-            fixed3X3 = new ArrayList<Float>();
+            fixed3X3 = new FastTable<Float>();
         }
         return this.fixed3X3;
     }
@@ -1104,7 +1104,7 @@ public class CgSetparamSimple {
      */
     public List<Float> getFixed2() {
         if (fixed2 == null) {
-            fixed2 = new ArrayList<Float>();
+            fixed2 = new FastTable<Float>();
         }
         return this.fixed2;
     }
@@ -1157,7 +1157,7 @@ public class CgSetparamSimple {
      */
     public List<Boolean> getBool1X3() {
         if (bool1X3 == null) {
-            bool1X3 = new ArrayList<Boolean>();
+            bool1X3 = new FastTable<Boolean>();
         }
         return this.bool1X3;
     }
@@ -1186,7 +1186,7 @@ public class CgSetparamSimple {
      */
     public List<Float> getFixed2X3() {
         if (fixed2X3 == null) {
-            fixed2X3 = new ArrayList<Float>();
+            fixed2X3 = new FastTable<Float>();
         }
         return this.fixed2X3;
     }
@@ -1215,7 +1215,7 @@ public class CgSetparamSimple {
      */
     public List<Float> getHalf4X4() {
         if (half4X4 == null) {
-            half4X4 = new ArrayList<Float>();
+            half4X4 = new FastTable<Float>();
         }
         return this.half4X4;
     }
@@ -1244,7 +1244,7 @@ public class CgSetparamSimple {
      */
     public List<Boolean> getBool2() {
         if (bool2 == null) {
-            bool2 = new ArrayList<Boolean>();
+            bool2 = new FastTable<Boolean>();
         }
         return this.bool2;
     }
@@ -1273,7 +1273,7 @@ public class CgSetparamSimple {
      */
     public List<Float> getHalf4X2() {
         if (half4X2 == null) {
-            half4X2 = new ArrayList<Float>();
+            half4X2 = new FastTable<Float>();
         }
         return this.half4X2;
     }
@@ -1302,7 +1302,7 @@ public class CgSetparamSimple {
      */
     public List<Integer> getInt3X2() {
         if (int3X2 == null) {
-            int3X2 = new ArrayList<Integer>();
+            int3X2 = new FastTable<Integer>();
         }
         return this.int3X2;
     }
@@ -1331,7 +1331,7 @@ public class CgSetparamSimple {
      */
     public List<Boolean> getBool4X4() {
         if (bool4X4 == null) {
-            bool4X4 = new ArrayList<Boolean>();
+            bool4X4 = new FastTable<Boolean>();
         }
         return this.bool4X4;
     }
@@ -1360,7 +1360,7 @@ public class CgSetparamSimple {
      */
     public List<Float> getFixed4X3() {
         if (fixed4X3 == null) {
-            fixed4X3 = new ArrayList<Float>();
+            fixed4X3 = new FastTable<Float>();
         }
         return this.fixed4X3;
     }
@@ -1389,7 +1389,7 @@ public class CgSetparamSimple {
      */
     public List<Float> getFixed2X2() {
         if (fixed2X2 == null) {
-            fixed2X2 = new ArrayList<Float>();
+            fixed2X2 = new FastTable<Float>();
         }
         return this.fixed2X2;
     }
@@ -1418,7 +1418,7 @@ public class CgSetparamSimple {
      */
     public List<Float> getHalf3X4() {
         if (half3X4 == null) {
-            half3X4 = new ArrayList<Float>();
+            half3X4 = new FastTable<Float>();
         }
         return this.half3X4;
     }
@@ -1447,7 +1447,7 @@ public class CgSetparamSimple {
      */
     public List<Boolean> getBool1X2() {
         if (bool1X2 == null) {
-            bool1X2 = new ArrayList<Boolean>();
+            bool1X2 = new FastTable<Boolean>();
         }
         return this.bool1X2;
     }
@@ -1476,7 +1476,7 @@ public class CgSetparamSimple {
      */
     public List<Float> getFloat2X2() {
         if (float2X2 == null) {
-            float2X2 = new ArrayList<Float>();
+            float2X2 = new FastTable<Float>();
         }
         return this.float2X2;
     }
@@ -1505,7 +1505,7 @@ public class CgSetparamSimple {
      */
     public List<Float> getHalf2X4() {
         if (half2X4 == null) {
-            half2X4 = new ArrayList<Float>();
+            half2X4 = new FastTable<Float>();
         }
         return this.half2X4;
     }
@@ -1534,7 +1534,7 @@ public class CgSetparamSimple {
      */
     public List<Float> getHalf1X3() {
         if (half1X3 == null) {
-            half1X3 = new ArrayList<Float>();
+            half1X3 = new FastTable<Float>();
         }
         return this.half1X3;
     }
@@ -1563,7 +1563,7 @@ public class CgSetparamSimple {
      */
     public List<Boolean> getBool1X4() {
         if (bool1X4 == null) {
-            bool1X4 = new ArrayList<Boolean>();
+            bool1X4 = new FastTable<Boolean>();
         }
         return this.bool1X4;
     }
@@ -1592,7 +1592,7 @@ public class CgSetparamSimple {
      */
     public List<Float> getFloat2() {
         if (float2 == null) {
-            float2 = new ArrayList<Float>();
+            float2 = new FastTable<Float>();
         }
         return this.float2;
     }
@@ -1621,7 +1621,7 @@ public class CgSetparamSimple {
      */
     public List<Integer> getInt4() {
         if (int4 == null) {
-            int4 = new ArrayList<Integer>();
+            int4 = new FastTable<Integer>();
         }
         return this.int4;
     }
@@ -1650,7 +1650,7 @@ public class CgSetparamSimple {
      */
     public List<Float> getFloat3X3() {
         if (float3X3 == null) {
-            float3X3 = new ArrayList<Float>();
+            float3X3 = new FastTable<Float>();
         }
         return this.float3X3;
     }
@@ -1679,7 +1679,7 @@ public class CgSetparamSimple {
      */
     public List<Float> getHalf2X3() {
         if (half2X3 == null) {
-            half2X3 = new ArrayList<Float>();
+            half2X3 = new FastTable<Float>();
         }
         return this.half2X3;
     }
@@ -1708,7 +1708,7 @@ public class CgSetparamSimple {
      */
     public List<Boolean> getBool3X3() {
         if (bool3X3 == null) {
-            bool3X3 = new ArrayList<Boolean>();
+            bool3X3 = new FastTable<Boolean>();
         }
         return this.bool3X3;
     }
@@ -1761,7 +1761,7 @@ public class CgSetparamSimple {
      */
     public List<Boolean> getBool2X1() {
         if (bool2X1 == null) {
-            bool2X1 = new ArrayList<Boolean>();
+            bool2X1 = new FastTable<Boolean>();
         }
         return this.bool2X1;
     }
@@ -1790,7 +1790,7 @@ public class CgSetparamSimple {
      */
     public List<Float> getFloat3X4() {
         if (float3X4 == null) {
-            float3X4 = new ArrayList<Float>();
+            float3X4 = new FastTable<Float>();
         }
         return this.float3X4;
     }
@@ -1819,7 +1819,7 @@ public class CgSetparamSimple {
      */
     public List<Float> getFixed3() {
         if (fixed3 == null) {
-            fixed3 = new ArrayList<Float>();
+            fixed3 = new FastTable<Float>();
         }
         return this.fixed3;
     }
@@ -1848,7 +1848,7 @@ public class CgSetparamSimple {
      */
     public List<Integer> getInt3X4() {
         if (int3X4 == null) {
-            int3X4 = new ArrayList<Integer>();
+            int3X4 = new FastTable<Integer>();
         }
         return this.int3X4;
     }
@@ -1877,7 +1877,7 @@ public class CgSetparamSimple {
      */
     public List<Integer> getInt1X3() {
         if (int1X3 == null) {
-            int1X3 = new ArrayList<Integer>();
+            int1X3 = new FastTable<Integer>();
         }
         return this.int1X3;
     }
@@ -1906,7 +1906,7 @@ public class CgSetparamSimple {
      */
     public List<Integer> getInt3X1() {
         if (int3X1 == null) {
-            int3X1 = new ArrayList<Integer>();
+            int3X1 = new FastTable<Integer>();
         }
         return this.int3X1;
     }
@@ -1935,7 +1935,7 @@ public class CgSetparamSimple {
      */
     public List<Float> getFixed4X4() {
         if (fixed4X4 == null) {
-            fixed4X4 = new ArrayList<Float>();
+            fixed4X4 = new FastTable<Float>();
         }
         return this.fixed4X4;
     }
@@ -1964,7 +1964,7 @@ public class CgSetparamSimple {
      */
     public List<Float> getFloat4X4() {
         if (float4X4 == null) {
-            float4X4 = new ArrayList<Float>();
+            float4X4 = new FastTable<Float>();
         }
         return this.float4X4;
     }
@@ -1993,7 +1993,7 @@ public class CgSetparamSimple {
      */
     public List<Integer> getInt3X3() {
         if (int3X3 == null) {
-            int3X3 = new ArrayList<Integer>();
+            int3X3 = new FastTable<Integer>();
         }
         return this.int3X3;
     }
@@ -2022,7 +2022,7 @@ public class CgSetparamSimple {
      */
     public List<Integer> getInt2X4() {
         if (int2X4 == null) {
-            int2X4 = new ArrayList<Integer>();
+            int2X4 = new FastTable<Integer>();
         }
         return this.int2X4;
     }
@@ -2075,7 +2075,7 @@ public class CgSetparamSimple {
      */
     public List<Float> getHalf3X1() {
         if (half3X1 == null) {
-            half3X1 = new ArrayList<Float>();
+            half3X1 = new FastTable<Float>();
         }
         return this.half3X1;
     }
@@ -2104,7 +2104,7 @@ public class CgSetparamSimple {
      */
     public List<Float> getFloat2X1() {
         if (float2X1 == null) {
-            float2X1 = new ArrayList<Float>();
+            float2X1 = new FastTable<Float>();
         }
         return this.float2X1;
     }
@@ -2133,7 +2133,7 @@ public class CgSetparamSimple {
      */
     public List<Boolean> getBool2X2() {
         if (bool2X2 == null) {
-            bool2X2 = new ArrayList<Boolean>();
+            bool2X2 = new FastTable<Boolean>();
         }
         return this.bool2X2;
     }
@@ -2186,7 +2186,7 @@ public class CgSetparamSimple {
      */
     public List<Float> getFixed2X4() {
         if (fixed2X4 == null) {
-            fixed2X4 = new ArrayList<Float>();
+            fixed2X4 = new FastTable<Float>();
         }
         return this.fixed2X4;
     }
@@ -2215,7 +2215,7 @@ public class CgSetparamSimple {
      */
     public List<Integer> getInt1X2() {
         if (int1X2 == null) {
-            int1X2 = new ArrayList<Integer>();
+            int1X2 = new FastTable<Integer>();
         }
         return this.int1X2;
     }
@@ -2244,7 +2244,7 @@ public class CgSetparamSimple {
      */
     public List<Integer> getInt1X4() {
         if (int1X4 == null) {
-            int1X4 = new ArrayList<Integer>();
+            int1X4 = new FastTable<Integer>();
         }
         return this.int1X4;
     }
@@ -2273,7 +2273,7 @@ public class CgSetparamSimple {
      */
     public List<Float> getFixed4X2() {
         if (fixed4X2 == null) {
-            fixed4X2 = new ArrayList<Float>();
+            fixed4X2 = new FastTable<Float>();
         }
         return this.fixed4X2;
     }
@@ -2302,7 +2302,7 @@ public class CgSetparamSimple {
      */
     public List<Float> getHalf2() {
         if (half2 == null) {
-            half2 = new ArrayList<Float>();
+            half2 = new FastTable<Float>();
         }
         return this.half2;
     }
@@ -2379,7 +2379,7 @@ public class CgSetparamSimple {
      */
     public List<Integer> getInt1X1() {
         if (int1X1 == null) {
-            int1X1 = new ArrayList<Integer>();
+            int1X1 = new FastTable<Integer>();
         }
         return this.int1X1;
     }
@@ -2432,7 +2432,7 @@ public class CgSetparamSimple {
      */
     public List<Float> getFloat4X1() {
         if (float4X1 == null) {
-            float4X1 = new ArrayList<Float>();
+            float4X1 = new FastTable<Float>();
         }
         return this.float4X1;
     }
@@ -2461,7 +2461,7 @@ public class CgSetparamSimple {
      */
     public List<Float> getFixed1X4() {
         if (fixed1X4 == null) {
-            fixed1X4 = new ArrayList<Float>();
+            fixed1X4 = new FastTable<Float>();
         }
         return this.fixed1X4;
     }
@@ -2490,7 +2490,7 @@ public class CgSetparamSimple {
      */
     public List<Integer> getInt2X1() {
         if (int2X1 == null) {
-            int2X1 = new ArrayList<Integer>();
+            int2X1 = new FastTable<Integer>();
         }
         return this.int2X1;
     }
@@ -2567,7 +2567,7 @@ public class CgSetparamSimple {
      */
     public List<Float> getFixed1X1() {
         if (fixed1X1 == null) {
-            fixed1X1 = new ArrayList<Float>();
+            fixed1X1 = new FastTable<Float>();
         }
         return this.fixed1X1;
     }
@@ -2596,7 +2596,7 @@ public class CgSetparamSimple {
      */
     public List<Float> getHalf4() {
         if (half4 == null) {
-            half4 = new ArrayList<Float>();
+            half4 = new FastTable<Float>();
         }
         return this.half4;
     }
@@ -2625,7 +2625,7 @@ public class CgSetparamSimple {
      */
     public List<Integer> getInt4X1() {
         if (int4X1 == null) {
-            int4X1 = new ArrayList<Integer>();
+            int4X1 = new FastTable<Integer>();
         }
         return this.int4X1;
     }
@@ -2654,7 +2654,7 @@ public class CgSetparamSimple {
      */
     public List<Float> getFixed3X2() {
         if (fixed3X2 == null) {
-            fixed3X2 = new ArrayList<Float>();
+            fixed3X2 = new FastTable<Float>();
         }
         return this.fixed3X2;
     }
@@ -2683,7 +2683,7 @@ public class CgSetparamSimple {
      */
     public List<Float> getFloat4X2() {
         if (float4X2 == null) {
-            float4X2 = new ArrayList<Float>();
+            float4X2 = new FastTable<Float>();
         }
         return this.float4X2;
     }
@@ -2736,7 +2736,7 @@ public class CgSetparamSimple {
      */
     public List<Integer> getInt4X4() {
         if (int4X4 == null) {
-            int4X4 = new ArrayList<Integer>();
+            int4X4 = new FastTable<Integer>();
         }
         return this.int4X4;
     }
@@ -2789,7 +2789,7 @@ public class CgSetparamSimple {
      */
     public List<Float> getFixed4() {
         if (fixed4 == null) {
-            fixed4 = new ArrayList<Float>();
+            fixed4 = new FastTable<Float>();
         }
         return this.fixed4;
     }
@@ -2842,7 +2842,7 @@ public class CgSetparamSimple {
      */
     public List<Float> getHalf3X3() {
         if (half3X3 == null) {
-            half3X3 = new ArrayList<Float>();
+            half3X3 = new FastTable<Float>();
         }
         return this.half3X3;
     }
@@ -2871,7 +2871,7 @@ public class CgSetparamSimple {
      */
     public List<Integer> getInt3() {
         if (int3 == null) {
-            int3 = new ArrayList<Integer>();
+            int3 = new FastTable<Integer>();
         }
         return this.int3;
     }
@@ -2900,7 +2900,7 @@ public class CgSetparamSimple {
      */
     public List<Integer> getInt4X3() {
         if (int4X3 == null) {
-            int4X3 = new ArrayList<Integer>();
+            int4X3 = new FastTable<Integer>();
         }
         return this.int4X3;
     }
@@ -2929,7 +2929,7 @@ public class CgSetparamSimple {
      */
     public List<Boolean> getBool3X1() {
         if (bool3X1 == null) {
-            bool3X1 = new ArrayList<Boolean>();
+            bool3X1 = new FastTable<Boolean>();
         }
         return this.bool3X1;
     }
@@ -2958,7 +2958,7 @@ public class CgSetparamSimple {
      */
     public List<Float> getFixed2X1() {
         if (fixed2X1 == null) {
-            fixed2X1 = new ArrayList<Float>();
+            fixed2X1 = new FastTable<Float>();
         }
         return this.fixed2X1;
     }
@@ -2987,7 +2987,7 @@ public class CgSetparamSimple {
      */
     public List<Float> getFloat3() {
         if (float3 == null) {
-            float3 = new ArrayList<Float>();
+            float3 = new FastTable<Float>();
         }
         return this.float3;
     }
@@ -3016,7 +3016,7 @@ public class CgSetparamSimple {
      */
     public List<Float> getFloat1X1() {
         if (float1X1 == null) {
-            float1X1 = new ArrayList<Float>();
+            float1X1 = new FastTable<Float>();
         }
         return this.float1X1;
     }
@@ -3045,7 +3045,7 @@ public class CgSetparamSimple {
      */
     public List<Boolean> getBool4X2() {
         if (bool4X2 == null) {
-            bool4X2 = new ArrayList<Boolean>();
+            bool4X2 = new FastTable<Boolean>();
         }
         return this.bool4X2;
     }
@@ -3074,7 +3074,7 @@ public class CgSetparamSimple {
      */
     public List<Boolean> getBool2X4() {
         if (bool2X4 == null) {
-            bool2X4 = new ArrayList<Boolean>();
+            bool2X4 = new FastTable<Boolean>();
         }
         return this.bool2X4;
     }
@@ -3103,7 +3103,7 @@ public class CgSetparamSimple {
      */
     public List<Boolean> getBool4() {
         if (bool4 == null) {
-            bool4 = new ArrayList<Boolean>();
+            bool4 = new FastTable<Boolean>();
         }
         return this.bool4;
     }
@@ -3132,7 +3132,7 @@ public class CgSetparamSimple {
      */
     public List<Float> getHalf4X1() {
         if (half4X1 == null) {
-            half4X1 = new ArrayList<Float>();
+            half4X1 = new FastTable<Float>();
         }
         return this.half4X1;
     }
@@ -3161,7 +3161,7 @@ public class CgSetparamSimple {
      */
     public List<Boolean> getBool1X1() {
         if (bool1X1 == null) {
-            bool1X1 = new ArrayList<Boolean>();
+            bool1X1 = new FastTable<Boolean>();
         }
         return this.bool1X1;
     }
@@ -3190,7 +3190,7 @@ public class CgSetparamSimple {
      */
     public List<Float> getFixed4X1() {
         if (fixed4X1 == null) {
-            fixed4X1 = new ArrayList<Float>();
+            fixed4X1 = new FastTable<Float>();
         }
         return this.fixed4X1;
     }
@@ -3219,7 +3219,7 @@ public class CgSetparamSimple {
      */
     public List<Boolean> getBool3X2() {
         if (bool3X2 == null) {
-            bool3X2 = new ArrayList<Boolean>();
+            bool3X2 = new FastTable<Boolean>();
         }
         return this.bool3X2;
     }
@@ -3248,7 +3248,7 @@ public class CgSetparamSimple {
      */
     public List<Float> getFloat3X2() {
         if (float3X2 == null) {
-            float3X2 = new ArrayList<Float>();
+            float3X2 = new FastTable<Float>();
         }
         return this.float3X2;
     }
@@ -3277,7 +3277,7 @@ public class CgSetparamSimple {
      */
     public List<Float> getHalf2X1() {
         if (half2X1 == null) {
-            half2X1 = new ArrayList<Float>();
+            half2X1 = new FastTable<Float>();
         }
         return this.half2X1;
     }
@@ -3306,7 +3306,7 @@ public class CgSetparamSimple {
      */
     public List<Float> getHalf3X2() {
         if (half3X2 == null) {
-            half3X2 = new ArrayList<Float>();
+            half3X2 = new FastTable<Float>();
         }
         return this.half3X2;
     }
@@ -3335,7 +3335,7 @@ public class CgSetparamSimple {
      */
     public List<Float> getHalf4X3() {
         if (half4X3 == null) {
-            half4X3 = new ArrayList<Float>();
+            half4X3 = new FastTable<Float>();
         }
         return this.half4X3;
     }
@@ -3364,7 +3364,7 @@ public class CgSetparamSimple {
      */
     public List<Float> getHalf3() {
         if (half3 == null) {
-            half3 = new ArrayList<Float>();
+            half3 = new FastTable<Float>();
         }
         return this.half3;
     }
@@ -3417,7 +3417,7 @@ public class CgSetparamSimple {
      */
     public List<Boolean> getBool2X3() {
         if (bool2X3 == null) {
-            bool2X3 = new ArrayList<Boolean>();
+            bool2X3 = new FastTable<Boolean>();
         }
         return this.bool2X3;
     }
@@ -3446,7 +3446,7 @@ public class CgSetparamSimple {
      */
     public List<Float> getHalf1X1() {
         if (half1X1 == null) {
-            half1X1 = new ArrayList<Float>();
+            half1X1 = new FastTable<Float>();
         }
         return this.half1X1;
     }
@@ -3475,7 +3475,7 @@ public class CgSetparamSimple {
      */
     public List<Float> getFixed3X1() {
         if (fixed3X1 == null) {
-            fixed3X1 = new ArrayList<Float>();
+            fixed3X1 = new FastTable<Float>();
         }
         return this.fixed3X1;
     }
@@ -3552,7 +3552,7 @@ public class CgSetparamSimple {
      */
     public List<Boolean> getBool4X1() {
         if (bool4X1 == null) {
-            bool4X1 = new ArrayList<Boolean>();
+            bool4X1 = new FastTable<Boolean>();
         }
         return this.bool4X1;
     }
@@ -3581,7 +3581,7 @@ public class CgSetparamSimple {
      */
     public List<Boolean> getBool4X3() {
         if (bool4X3 == null) {
-            bool4X3 = new ArrayList<Boolean>();
+            bool4X3 = new FastTable<Boolean>();
         }
         return this.bool4X3;
     }
@@ -3610,7 +3610,7 @@ public class CgSetparamSimple {
      */
     public List<Float> getFloat1X4() {
         if (float1X4 == null) {
-            float1X4 = new ArrayList<Float>();
+            float1X4 = new FastTable<Float>();
         }
         return this.float1X4;
     }
@@ -3639,7 +3639,7 @@ public class CgSetparamSimple {
      */
     public List<Float> getHalf1X4() {
         if (half1X4 == null) {
-            half1X4 = new ArrayList<Float>();
+            half1X4 = new FastTable<Float>();
         }
         return this.half1X4;
     }
@@ -3668,7 +3668,7 @@ public class CgSetparamSimple {
      */
     public List<Integer> getInt4X2() {
         if (int4X2 == null) {
-            int4X2 = new ArrayList<Integer>();
+            int4X2 = new FastTable<Integer>();
         }
         return this.int4X2;
     }
@@ -3697,7 +3697,7 @@ public class CgSetparamSimple {
      */
     public List<Float> getFloat2X4() {
         if (float2X4 == null) {
-            float2X4 = new ArrayList<Float>();
+            float2X4 = new FastTable<Float>();
         }
         return this.float2X4;
     }
@@ -3726,7 +3726,7 @@ public class CgSetparamSimple {
      */
     public List<Float> getFloat2X3() {
         if (float2X3 == null) {
-            float2X3 = new ArrayList<Float>();
+            float2X3 = new FastTable<Float>();
         }
         return this.float2X3;
     }

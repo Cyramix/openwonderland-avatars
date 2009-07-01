@@ -26,7 +26,7 @@
 package org.collada.colladaschema;
 
 import java.math.BigInteger;
-import java.util.ArrayList;
+import javolution.util.FastTable;
 import java.util.List;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -131,7 +131,7 @@ public class Polygons {
      */
     public List<InputLocalOffset> getInputs() {
         if (inputs == null) {
-            inputs = new ArrayList<InputLocalOffset>();
+            inputs = new FastTable<InputLocalOffset>();
         }
         return this.inputs;
     }
@@ -161,7 +161,7 @@ public class Polygons {
      */
     public List<JAXBElement<?>> getPhsAndPS() {
         if (phsAndPS == null) {
-            phsAndPS = new ArrayList<JAXBElement<?>>();
+            phsAndPS = new FastTable<JAXBElement<?>>();
         }
         return this.phsAndPS;
     }
@@ -192,7 +192,7 @@ public class Polygons {
      */
     public List<Extra> getExtras() {
         if (extras == null) {
-            extras = new ArrayList<Extra>();
+            extras = new FastTable<Extra>();
         }
         return this.extras;
     }
@@ -329,7 +329,7 @@ public class Polygons {
          */
         public List<BigInteger> getP() {
             if (p == null) {
-                p = new ArrayList<BigInteger>();
+                p = new FastTable<BigInteger>();
             }
             return this.p;
         }
@@ -358,7 +358,7 @@ public class Polygons {
          */
         public List<JAXBElement<List<BigInteger>>> getHS() {
             if (hs == null) {
-                hs = new ArrayList<JAXBElement<List<BigInteger>>>();
+                hs = new FastTable<JAXBElement<List<BigInteger>>>();
             }
             return this.hs;
         }

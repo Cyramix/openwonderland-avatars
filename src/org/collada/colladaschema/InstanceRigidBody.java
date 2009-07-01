@@ -25,7 +25,7 @@
 
 package org.collada.colladaschema;
 
-import java.util.ArrayList;
+import javolution.util.FastTable;
 import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -220,7 +220,7 @@ public class InstanceRigidBody {
      */
     public List<Technique> getTechniques() {
         if (techniques == null) {
-            techniques = new ArrayList<Technique>();
+            techniques = new FastTable<Technique>();
         }
         return this.techniques;
     }
@@ -251,7 +251,7 @@ public class InstanceRigidBody {
      */
     public List<Extra> getExtras() {
         if (extras == null) {
-            extras = new ArrayList<Extra>();
+            extras = new FastTable<Extra>();
         }
         return this.extras;
     }
@@ -496,7 +496,7 @@ public class InstanceRigidBody {
          */
         public List<Double> getAngularVelocity() {
             if (angularVelocity == null) {
-                angularVelocity = new ArrayList<Double>();
+                angularVelocity = new FastTable<Double>();
             }
             return this.angularVelocity;
         }
@@ -525,7 +525,7 @@ public class InstanceRigidBody {
          */
         public List<Double> getVelocity() {
             if (velocity == null) {
-                velocity = new ArrayList<Double>();
+                velocity = new FastTable<Double>();
             }
             return this.velocity;
         }
@@ -698,7 +698,7 @@ public class InstanceRigidBody {
          */
         public List<InstanceRigidBody.TechniqueCommon.Shape> getShapes() {
             if (shapes == null) {
-                shapes = new ArrayList<InstanceRigidBody.TechniqueCommon.Shape>();
+                shapes = new FastTable<InstanceRigidBody.TechniqueCommon.Shape>();
             }
             return this.shapes;
         }
@@ -833,7 +833,7 @@ public class InstanceRigidBody {
              */
             public List<Object> getTranslatesAndRotates() {
                 if (translatesAndRotates == null) {
-                    translatesAndRotates = new ArrayList<Object>();
+                    translatesAndRotates = new FastTable<Object>();
                 }
                 return this.translatesAndRotates;
             }
@@ -1272,7 +1272,7 @@ public class InstanceRigidBody {
              */
             public List<Object> getTranslatesAndRotates() {
                 if (translatesAndRotates == null) {
-                    translatesAndRotates = new ArrayList<Object>();
+                    translatesAndRotates = new FastTable<Object>();
                 }
                 return this.translatesAndRotates;
             }
@@ -1303,7 +1303,7 @@ public class InstanceRigidBody {
              */
             public List<Extra> getExtras() {
                 if (extras == null) {
-                    extras = new ArrayList<Extra>();
+                    extras = new FastTable<Extra>();
                 }
                 return this.extras;
             }

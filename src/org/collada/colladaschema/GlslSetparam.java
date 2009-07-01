@@ -25,7 +25,7 @@
 
 package org.collada.colladaschema;
 
-import java.util.ArrayList;
+import javolution.util.FastTable;
 import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -176,7 +176,7 @@ public class GlslSetparam {
      */
     public List<FxAnnotateCommon> getAnnotates() {
         if (annotates == null) {
-            annotates = new ArrayList<FxAnnotateCommon>();
+            annotates = new FastTable<FxAnnotateCommon>();
         }
         return this.annotates;
     }
@@ -205,7 +205,7 @@ public class GlslSetparam {
      */
     public List<Integer> getInt3() {
         if (int3 == null) {
-            int3 = new ArrayList<Integer>();
+            int3 = new FastTable<Integer>();
         }
         return this.int3;
     }
@@ -258,7 +258,7 @@ public class GlslSetparam {
      */
     public List<Boolean> getBool2() {
         if (bool2 == null) {
-            bool2 = new ArrayList<Boolean>();
+            bool2 = new FastTable<Boolean>();
         }
         return this.bool2;
     }
@@ -311,7 +311,7 @@ public class GlslSetparam {
      */
     public List<Integer> getInt2() {
         if (int2 == null) {
-            int2 = new ArrayList<Integer>();
+            int2 = new FastTable<Integer>();
         }
         return this.int2;
     }
@@ -364,7 +364,7 @@ public class GlslSetparam {
      */
     public List<Boolean> getBool3() {
         if (bool3 == null) {
-            bool3 = new ArrayList<Boolean>();
+            bool3 = new FastTable<Boolean>();
         }
         return this.bool3;
     }
@@ -393,7 +393,7 @@ public class GlslSetparam {
      */
     public List<Float> getFloat3() {
         if (float3 == null) {
-            float3 = new ArrayList<Float>();
+            float3 = new FastTable<Float>();
         }
         return this.float3;
     }
@@ -422,7 +422,7 @@ public class GlslSetparam {
      */
     public List<Float> getFloat2X2() {
         if (float2X2 == null) {
-            float2X2 = new ArrayList<Float>();
+            float2X2 = new FastTable<Float>();
         }
         return this.float2X2;
     }
@@ -499,7 +499,7 @@ public class GlslSetparam {
      */
     public List<Float> getFloat2() {
         if (float2 == null) {
-            float2 = new ArrayList<Float>();
+            float2 = new FastTable<Float>();
         }
         return this.float2;
     }
@@ -576,7 +576,7 @@ public class GlslSetparam {
      */
     public List<Float> getFloat4() {
         if (float4 == null) {
-            float4 = new ArrayList<Float>();
+            float4 = new FastTable<Float>();
         }
         return this.float4;
     }
@@ -605,7 +605,7 @@ public class GlslSetparam {
      */
     public List<Float> getFloat4X4() {
         if (float4X4 == null) {
-            float4X4 = new ArrayList<Float>();
+            float4X4 = new FastTable<Float>();
         }
         return this.float4X4;
     }
@@ -658,7 +658,7 @@ public class GlslSetparam {
      */
     public List<Boolean> getBool4() {
         if (bool4 == null) {
-            bool4 = new ArrayList<Boolean>();
+            bool4 = new FastTable<Boolean>();
         }
         return this.bool4;
     }
@@ -735,7 +735,7 @@ public class GlslSetparam {
      */
     public List<Float> getFloat3X3() {
         if (float3X3 == null) {
-            float3X3 = new ArrayList<Float>();
+            float3X3 = new FastTable<Float>();
         }
         return this.float3X3;
     }
@@ -764,7 +764,7 @@ public class GlslSetparam {
      */
     public List<Integer> getInt4() {
         if (int4 == null) {
-            int4 = new ArrayList<Integer>();
+            int4 = new FastTable<Integer>();
         }
         return this.int4;
     }

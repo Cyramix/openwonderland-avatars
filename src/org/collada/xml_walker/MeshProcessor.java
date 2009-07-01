@@ -17,7 +17,7 @@
  */
 package org.collada.xml_walker;
 
-import java.util.ArrayList;
+import javolution.util.FastTable;
 import java.util.List;
 import org.collada.colladaschema.Mesh;
 import org.collada.colladaschema.Source;
@@ -25,7 +25,7 @@ import org.collada.colladaschema.Vertices;
 
 import imi.scene.polygonmodel.PPolygonMesh;
 
-import imi.loaders.collada.Collada;
+import imi.loaders.Collada;
 
 
 
@@ -40,7 +40,7 @@ public class MeshProcessor extends Processor
 {
     private String                      m_Name = null;
     
-    private ArrayList<VertexDataArray>  m_VertexDataArrays = new ArrayList<VertexDataArray>();
+    private FastTable<VertexDataArray>  m_VertexDataArrays = new FastTable<VertexDataArray>();
 
     private PPolygonMesh                m_rootPolyMesh = null;
 

@@ -25,7 +25,7 @@
 
 package org.collada.colladaschema;
 
-import java.util.ArrayList;
+import javolution.util.FastTable;
 import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -109,7 +109,7 @@ public class InstanceController {
      */
     public List<String> getSkeletons() {
         if (skeletons == null) {
-            skeletons = new ArrayList<String>();
+            skeletons = new FastTable<String>();
         }
         return this.skeletons;
     }
@@ -170,7 +170,7 @@ public class InstanceController {
      */
     public List<Extra> getExtras() {
         if (extras == null) {
-            extras = new ArrayList<Extra>();
+            extras = new FastTable<Extra>();
         }
         return this.extras;
     }

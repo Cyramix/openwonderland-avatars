@@ -15,14 +15,12 @@
  * exception as provided by Sun in the License file that accompanied
  * this code.
  */
+
 package imi.scene.animation;
+
 import java.io.Serializable;
 import java.util.logging.Logger;
 import javolution.util.FastTable;
-
-
-
-
 
 /**
  * We use a single group broken down to cycles, additional groups
@@ -62,8 +60,24 @@ public class AnimationGroup implements Serializable
     {
     }
 
+    /**
+     * Get the cycles
+     * @return
+     */
     public Iterable<AnimationCycle> getCycles() {
         return m_cycles;
+    }
+
+    /**
+     * Check if the given cycle index is within the limits
+     * @param cycleIndex
+     * @return
+     */
+    public boolean isValidCycleIndex(int cycleIndex) {
+        if (cycleIndex >= 0  && cycleIndex < m_cycles.size())
+            return true;
+        logger.info("cycle index " + cycleIndex + " is not valid. Number of cycles is " + m_cycles.size() + " in AnimationGroup named " + m_name);
+        return false;
     }
 
 
@@ -193,14 +207,26 @@ public class AnimationGroup implements Serializable
         m_cycles.add(cycle);
     }
 
+    /**
+     * Remove a cycle by reference
+     * @param cycle
+     */
     public void removeCycle(AnimationCycle cycle) {
         m_cycles.remove(cycle);
     }
 
+    /**
+     * Remove a cycle by index
+     * @param cycleIndex
+     */
     public void removeCycle(int cycleIndex) {
         m_cycles.remove(cycleIndex);
     }
 
+    /**
+     * Remove a cycle by name
+     * @param cycleName
+     */
     public void removeCycle(String cycleName) {
         int index = getCycleIndex(cycleName);
         if (index != -1)
@@ -208,8 +234,10 @@ public class AnimationGroup implements Serializable
         else
             logger.warning("\"" + cycleName + "\" is not a valid animation cycle in this group");
     }
-    
-    //  Clears the AnimationGroup.
+
+    /**
+     * Clear the cycles and null the name
+     */
     public void clear()
     {
         m_name = null;
@@ -247,7 +275,7 @@ public class AnimationGroup implements Serializable
                 state.setCurrentCycleTime(state.getTransitionCycleTime());
                 state.setTimeInTransition(0.0f);
                 state.setReverseAnimation(state.isTransitionReverseAnimation());
-                state.setCurrentCyclePlaybackMode(state.getCycleMode());
+                state.setCurrentCyclePlaybackMode(state.getTransitionCycleMode());
                 state.sendMessage(AnimationListener.AnimationMessageType.TransitionComplete);
                 state.getCursor().makeNegativeOne();
                 result = 2;
@@ -313,7 +341,7 @@ public class AnimationGroup implements Serializable
             if (fTransitionCycleTime < 0 || fTransitionCycleTime > transitionCycle.getDuration())
             {
                 state.getCursor().makeNegativeOne();
-                AnimationComponent.PlaybackMode mode = state.getCycleMode();
+                AnimationComponent.PlaybackMode mode = state.getTransitionCycleMode();
                 switch (mode)
                 {
                     case Loop:
