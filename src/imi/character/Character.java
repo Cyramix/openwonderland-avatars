@@ -259,6 +259,8 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         public CharacterBuilder(CharacterParams attributeParams, WorldManager worldManager) {
             this.attributeParams    = attributeParams;
             this.worldManager       = worldManager;
+            this.initializer        = attributeParams.getInitializationObject();
+            attributeParams.getOrigin(this.transform);
         }
 
         public CharacterBuilder(URL configurationFile, WorldManager worldManager) {

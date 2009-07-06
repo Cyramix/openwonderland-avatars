@@ -42,7 +42,8 @@ public class CharacterInitializerGroup implements CharacterInitializationInterfa
      */
     public CharacterInitializerGroup(CharacterInitializationInterface... initializers)
     {
-        initers.addAll(initers);
+        for (int i = 0; i < initializers.length; i++)
+            initers.add(initializers[i]);
     }
 
     /**
