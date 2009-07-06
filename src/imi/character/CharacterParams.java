@@ -29,6 +29,8 @@ import imi.serialization.xml.bindings.xmlFloatRow;
 import imi.serialization.xml.bindings.xmlSkinnedMeshParams;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javolution.util.FastList;
 
 /**
@@ -1368,9 +1370,13 @@ public class CharacterParams
 
         public void set(String meshName, String subGroupName, String owningFileName)
         {
-            if (meshName == null || subGroupName == null || owningFileName == null)
+            if (meshName == null || subGroupName == null)
                 throw new IllegalArgumentException("Null param, meshName: " + meshName +
                         ", subGroupName: " + subGroupName + ", owningFileName: " + owningFileName);
+            if (owningFileName == null) {
+                Logger.getLogger(this.getClass().getName()).log(Level.WARNING, "Owning file not specified!");
+            }
+
             this.meshName = meshName;
             this.subGroupName = subGroupName;
             this.owningFileName = owningFileName;

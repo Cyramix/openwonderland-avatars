@@ -2374,6 +2374,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
             characterParams.setInitializationObject(builder.initializer);
             commonConstructionCode( builder.addEntity, builder.xmlCharDom);
         } else if (builder.configurationFile != null) {
+            System.out.println("CHARACTER 2375: Loading config file: " + builder.configurationFile);
             // Load and use a configuration file
             xmlCharacter characterDOM = null;
 
