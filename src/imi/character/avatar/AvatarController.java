@@ -20,6 +20,7 @@ package imi.character.avatar;
 import com.jme.math.Quaternion;
 import com.jme.math.Vector3f;
 import imi.character.CharacterController;
+import imi.collision.CollisionController;
 import imi.collision.TransformUpdateManager;
 import imi.scene.PMatrix;
 import imi.scene.PTransform;
@@ -78,6 +79,9 @@ public class AvatarController extends CharacterController
     private PMatrix currentRot = new PMatrix();
     
     private JFrame window = null; // use this to set title name for debugging info
+
+    /** Collision Controller **/
+    private CollisionController collisionController = null;
 
     /**
      * If true, the TransformUpdateManager will be used to try and synch transform updates.
@@ -327,6 +331,10 @@ public class AvatarController extends CharacterController
 
     public boolean isSlide() {
         return bSlide;
+    }
+
+    public void setCollisionController(CollisionController collisionController) {
+        this.collisionController = collisionController;
     }
 
     public void setSlide(boolean bSlide) {

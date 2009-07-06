@@ -1399,6 +1399,15 @@ public class Manipulator {
     }
 
     /**
+     * Sets the name on the specified character.
+     * @param character A character to operate on
+     * @param newName The name to set
+     */
+    public static void setName(Character character, String newName) {
+        character.characterParams.setName(newName);
+    }
+
+    /**
      * Private method that does the actual shader application.  The method searches
      * the character skeleton for the attatchment joint where the nonskinned mesh
      * is located and then sets the shader onto the material and applies it.

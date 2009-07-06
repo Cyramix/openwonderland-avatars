@@ -1361,16 +1361,16 @@ public class CharacterParams
          * @param meshName Mesh to attach
          * @param subGroupName Subgroup to attach to
          */
-        protected SkinnedMeshParams(String meshName, String subGroupName, String owningFileName)
+        public SkinnedMeshParams(String meshName, String subGroupName, String owningFileName)
+        {
+            set(meshName, subGroupName, owningFileName);
+        }
+
+        public void set(String meshName, String subGroupName, String owningFileName)
         {
             if (meshName == null || subGroupName == null || owningFileName == null)
                 throw new IllegalArgumentException("Null param, meshName: " + meshName +
                         ", subGroupName: " + subGroupName + ", owningFileName: " + owningFileName);
-            set(meshName, subGroupName, owningFileName);
-        }
-
-        private void set(String meshName, String subGroupName, String owningFileName)
-        {
             this.meshName = meshName;
             this.subGroupName = subGroupName;
             this.owningFileName = owningFileName;
