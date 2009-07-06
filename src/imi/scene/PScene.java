@@ -171,7 +171,8 @@ public class PScene extends PNode implements RepositoryUser, Serializable
      * Any geometry data that is shared localy within this scene will check 
      * its dirty boolean and if true it will reconstruct its TriMesh.
      */
-    void submitGeometry()
+    @InternalAPI
+    public void submitGeometry()
     {
         for (PPolygonMesh geometry : m_LocalGeometry)
             geometry.submit();
@@ -404,7 +405,8 @@ public class PScene extends PNode implements RepositoryUser, Serializable
      * @param mesh
      * @return meshInst (PPolygonMeshInstance)
      */
-    private PPolygonMeshInstance processMesh(PPolygonMesh mesh)
+    @InternalAPI
+    public PPolygonMeshInstance processMesh(PPolygonMesh mesh)
     {
         // Put the kids in a sack
         FastTable<PNode> kids = new FastTable<PNode>(mesh.getChildren());
@@ -1054,57 +1056,6 @@ public class PScene extends PNode implements RepositoryUser, Serializable
             m_LocalGeometry.remove(deathRow.get(i));
     }
 
-    /***
-     * This method is bypassing the repository.
-     * It loads textures locally and share them (in m_SharedAssets) with
-     * other members of this PScene, this texture will NOT be shared across threads.
-     * 
-     * @param texturePath - texture path
-     * @return monkeyTexture (Texture)
-     */
-    @Deprecated
-    public Texture loadTexture(URL textureLocation)
-    {
-        // Create a suitable asset
-        SharedAsset texture = new SharedAsset(getRepository(), new AssetDescriptor(SharedAssetType.Texture, textureLocation));
-        
-        // Check locally in the the SharedAsset list
-        int index = m_SharedAssets.indexOf(texture);        
-        if (-1 == index) 
-        {
-            // If not found load and add it
-            Texture monkeyTexture = null;
-            try
-            {
-                textureLocation.openStream();
-                monkeyTexture = TextureManager.loadTexture(textureLocation,
-                    Texture.MinificationFilter.BilinearNearestMipMap, Texture.MagnificationFilter.Bilinear);
-            }
-            catch (Exception ex)
-            {
-                if (ex.getMessage().equals("Connection refused")) {
-                    System.out.println(ex.getMessage() + "... Aborting -- PScene : loadTexture");
-                } else
-                    System.out.println(ex.getMessage());
-                return null;
-            }
-            
-            if (monkeyTexture != null)
-            {
-                monkeyTexture.setWrap(Texture.WrapAxis.S, Texture.WrapMode.Repeat);
-                monkeyTexture.setWrap(Texture.WrapAxis.T, Texture.WrapMode.Repeat);
-            }
-            
-            texture.setAssetData(monkeyTexture);
-            
-            m_SharedAssets.add(texture);
-            
-            return monkeyTexture;
-        }
-        else
-            return (Texture)m_SharedAssets.get(index).getAssetData();
-    }
-    
     /**
      * Shaders are not shared across threads at the moment,
      * there is an issue with binding the shaders if the call is 

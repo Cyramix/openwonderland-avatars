@@ -84,7 +84,7 @@ class VerletObjectVisualization
         for (VerletParticle particle : m_verletObject.getParticles())
         {
             // add a new sphere and map it
-            Vector3f particlePosition = particle.getCurrentPosition(); // This should actually come from the particle
+            Vector3f particlePosition = particle.getCurrentPositionRef(); // This should actually come from the particle
             Sphere particleSphere = new Sphere("Particle#" + index, Vector3f.ZERO, 10, 10, 0.05f);
             particleSphere.setDefaultColor(ColorRGBA.cyan);
 

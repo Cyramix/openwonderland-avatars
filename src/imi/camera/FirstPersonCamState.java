@@ -450,8 +450,8 @@ public final class FirstPersonCamState extends AbstractCameraState
                 ke.getKeyCode() == descendKeyCode);
     }
 
-    @Override
-    void setCameraTransform(PMatrix transform)
+  //  @Override
+    public void setCameraTransform(PMatrix transform)
     {
         setCameraPosition(transform.getTranslation());
         Quaternion rot = transform.getRotationJME();
@@ -462,8 +462,8 @@ public final class FirstPersonCamState extends AbstractCameraState
 
     }
 
-    @Override
-    PMatrix getCameraTransform() {
+   // @Override
+    public PMatrix getCameraTransform() {
         PMatrix trans = new PMatrix(positionVec);
         trans.setRotation(quaternion);
         return trans;

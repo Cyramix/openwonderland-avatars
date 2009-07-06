@@ -334,8 +334,6 @@ public class Repository extends Entity
                 return m_Geometry;
             case COLLADA:
                 return m_PScenes;
-            case Texture:
-                return m_Textures;
         }
         
         return null;

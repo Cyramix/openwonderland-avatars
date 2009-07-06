@@ -21,8 +21,6 @@ import com.jme.math.Vector3f;
 import com.jme.math.Vector2f;
 import com.jme.renderer.ColorRGBA;
 import imi.utils.MathUtils;
-import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.io.Serializable;
 import javolution.util.FastTable;
 
@@ -836,10 +834,6 @@ bool CPolygon::IsPointWithinEdges(const CVector &Point)
 }
 */
 
-    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException
-    {
-        in.defaultReadObject();
-    }
 
 }
         

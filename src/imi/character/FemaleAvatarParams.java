@@ -76,61 +76,61 @@ public class FemaleAvatarParams extends CharacterParams
         switch (preset)
         {
             case 0:
-                setHeadAttachment("assets/models/collada/Heads/FemaleHead/FemaleCHead.bhf");
+                setHeadAttachment("imi/character/data/FemaleCHead.bhf");
                 setUsePhongLightingForHead(true);
                 setSkinTone(255.0f / 255.0f, 139.0f / 255.0f, 95.0f / 255.0f);
                 setApplySkinToneOnHead(false);
                 break;
             case 1:
-                setHeadAttachment("assets/models/collada/Heads/FemaleHead/AsianFemaleHead.bhf");
+                setHeadAttachment("imi/character/data/AsianFemaleHead.bhf");
                 setUsePhongLightingForHead(true);
                 setSkinTone(255.0f / 255.0f, 139.0f / 255.0f, 95.0f / 255.0f);
                 setApplySkinToneOnHead(false);
                 break;
             case 2:
-                setHeadAttachment("assets/models/collada/Heads/FemaleHead/FemaleAAHead.bhf");
+                setHeadAttachment("imi/character/data/FemaleAAHead.bhf");
                 setUsePhongLightingForHead(true);
                 setSkinTone(242.0f / 255.0f, 159.0f / 255.0f, 122.0f / 255.0f);
                 setApplySkinToneOnHead(false);
                 break;
             case 3:
-                setHeadAttachment("assets/models/collada/Heads/FemaleHead/FemaleHispanicHead.bhf");
+                setHeadAttachment("imi/character/data/FemaleHispanicHead.bhf");
                 setUsePhongLightingForHead(true);
                 setSkinTone(242.0f / 255.0f, 159.0f / 255.0f, 122.0f / 255.0f);
                 setApplySkinToneOnHead(false);
                 break;
             case 4:
-                setHeadAttachment("assets/models/collada/Heads/FemaleHead/FG_Female_AF_Head02.bhf");
+                setHeadAttachment("imi/character/data/FG_Female_AF_Head02.bhf");
                 setUsePhongLightingForHead(true);
                 setSkinTone(238.0f / 255.0f, 161.0f / 255.0f, 134.0f / 255.0f);
                 setApplySkinToneOnHead(false);
                 break;
             case 5:
-                setHeadAttachment("assets/models/collada/Heads/FemaleHead/FG_FemaleLowPoly_01.bhf");
+                setHeadAttachment("imi/character/data/FG_FemaleLowPoly_01.bhf");
                 setUsePhongLightingForHead(true);
                 setSkinTone(238.0f / 255.0f, 161.0f / 255.0f, 134.0f / 255.0f);
                 setApplySkinToneOnHead(false);
                 break;
             case 6:
-                setHeadAttachment("assets/models/collada/Heads/FemaleHead/FG_FemaleHead01.bhf");
+                setHeadAttachment("imi/character/data/FG_FemaleHead01.bhf");
                 setUsePhongLightingForHead(true);
                 setSkinTone(238.0f / 255.0f, 161.0f / 255.0f, 134.0f / 255.0f);
                 setApplySkinToneOnHead(false);
                 break;
             case 7:
-                setHeadAttachment("assets/models/collada/Heads/FemaleHead/FG_Female02HighPoly.bhf");
+                setHeadAttachment("imi/character/data/FG_Female02HighPoly.bhf");
                 setUsePhongLightingForHead(true);
                 setSkinTone(129.0f / 255.0f, 65.0f / 255.0f, 38.0f / 255.0f);
                 setApplySkinToneOnHead(false);
                 break;
             case 8:
-                setHeadAttachment("assets/models/collada/Heads/FemaleHead/FG_Female01HighPoly.bhf");
+                setHeadAttachment("imi/character/data/FG_Female01HighPoly.bhf");
                 setUsePhongLightingForHead(true);
                 setSkinTone(238.0f / 255.0f, 161.0f / 255.0f, 134.0f / 255.0f);
                 setApplySkinToneOnHead(false);
                 break;
             default:
-                setHeadAttachment("assets/models/collada/Heads/FemaleHead/FemaleCHead.bhf");
+                setHeadAttachment("imi/character/data/FemaleCHead.bhf");
                 setUsePhongLightingForHead(true);
                 setSkinTone(255.0f / 255.0f, 139.0f / 255.0f, 95.0f / 255.0f);
                 setApplySkinToneOnHead(false);

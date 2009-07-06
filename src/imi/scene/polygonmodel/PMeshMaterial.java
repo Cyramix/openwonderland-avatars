@@ -423,13 +423,19 @@ public class PMeshMaterial implements Serializable
     {
         shaderArray.clear();
         for (AbstractShaderProgram shader : shaders)
+        {
+            if (shader == null)
+                throw new RuntimeException("ERROR: Null shader");
             shaderArray.add(shader);
+        }
         return this;
     }
 
 
     public PMeshMaterial addShader(AbstractShaderProgram shader)
     {
+        if (shader == null)
+            throw new RuntimeException("ERROR: Null shader");
         shaderArray.add(shader);
         return this;
     }
@@ -437,7 +443,14 @@ public class PMeshMaterial implements Serializable
     public PMeshMaterial setDefaultShader(AbstractShaderProgram shader)
     {
         shaderArray.clear();
+        if (shader == null)
+            throw new RuntimeException("ERROR: Null shader");
         shaderArray.add(shader);
+        return this;
+    }
+
+    public PMeshMaterial clearShaders() {
+        shaderArray.clear();
         return this;
     }
 

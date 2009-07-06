@@ -494,6 +494,14 @@ public abstract class Character extends Entity implements SpatialObject, Animati
     }
 
     /**
+     * Set an updatable extension to the character
+     * @param up
+     */
+    public void setUpdateExtension(Updatable up) {
+        m_updateExtension = up;
+    }
+
+    /**
      * Retrieve the values of the key bindings.
      * @param out A non-null storage object
      */
@@ -1035,6 +1043,14 @@ public abstract class Character extends Entity implements SpatialObject, Animati
             // Attached to skeleton to get free dirtiness propagation
             m_skeleton.getSkeletonRoot().addChild(m_shadowMesh);
         }
+    }
+
+    /**
+     * Display the shadow quad or turn its rendering off
+     */
+    public void setEnableShadow(boolean enable) {
+        if (m_shadowMesh != null)
+            m_shadowMesh.setRenderStop(!enable);
     }
 
     /**
@@ -1599,24 +1615,23 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         attributeRoot.addChildInstruction(InstructionType.setSkeleton, m_skeleton);
 
         // attach the appropriate head
-        URL headLocation = null;
-        try {
-            if (attributes.getHeadAttachment() != null)
-                headLocation = new URL(urlPrefix + attributes.getHeadAttachment());
-        }
-        catch (MalformedURLException ex)
+        String headPath = attributes.getHeadAttachment();
+        if (FileUtils.doesPathReferToBinaryFile(headPath))
         {
-            logger.severe("Unable to create URL for head attachment, tried to combine \"" +
-                   urlPrefix + "\" and \"" + attributes.getHeadAttachment() + "\"");
-            throw new RuntimeException("Cannot create URL from \"" + urlPrefix
-                    + "\" + " + attributes.getHeadAttachment());
+            // Binary head files are assumed to be in the avatars jar
+            URL headLocation = getClass().getClassLoader().getResource(headPath);
+            if (headLocation == null)
+                System.out.println("ERROR loading head: " + headPath);
+            installBinaryHeadConfiguration(headLocation);
         }
-
-        if (headLocation != null) {
-            if (FileUtils.doesURLReferToBinaryFile(headLocation))
-                installBinaryHeadConfiguration(headLocation);
-            else
+        else
+        {
+            try {
+                URL headLocation = new URL(urlPrefix + headPath);
                 installHeadConfiguration(headLocation);
+            } catch (MalformedURLException ex) {
+                Logger.getLogger(Character.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
 
         // Load up any geometry requested by the provided attributes object
@@ -2068,7 +2083,6 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         m_skeleton.setRenderStop(false);
     }
 
-
     private void attachHeadSkeleton(SkeletonNode headSkeleton)
     {
         List<PPolygonSkinnedMeshInstance> skinnedMeshList           = headSkeleton.getSkinnedMeshInstances();
@@ -2245,6 +2259,14 @@ public abstract class Character extends Entity implements SpatialObject, Animati
             m_modelInst.calculateBoundingSphere();
         output.setRadius(m_modelInst.getBoundingSphere().getRadius());
         output.setCenter(m_modelInst.getTransform().getWorldMatrix(false).getTranslation().add(m_modelInst.getBoundingSphere().getCenterRef()));
+    }
+
+    /**
+     * Get the CharacterController from the GameContext
+     * @return
+     */
+    public CharacterController getController() {
+        return m_context.getController();
     }
 
     /**

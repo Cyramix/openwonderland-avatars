@@ -387,7 +387,7 @@ public final class ChaseCamState extends AbstractCameraState implements Characte
         return desiredPositionOffset;
     }
 
-    void getChasePosition(Vector3f out) {
+    public void getChasePosition(Vector3f out) {
         out.set(chasePosition);
     }    
 
@@ -410,7 +410,7 @@ public final class ChaseCamState extends AbstractCameraState implements Characte
         lookAtLinearTimeCounter += deltaTime;
     }
 
-    void setChasePosition(Vector3f position) {
+    public void setChasePosition(Vector3f position) {
         chasePosition.set(position);
     }
 
@@ -422,7 +422,7 @@ public final class ChaseCamState extends AbstractCameraState implements Characte
         return chaseOrientation;
     }
 
-    void setChaseOrientation(PMatrix chaseOrientation) {
+    public void setChaseOrientation(PMatrix chaseOrientation) {
         this.chaseOrientation.set(chaseOrientation);
     }
 
@@ -448,15 +448,13 @@ public final class ChaseCamState extends AbstractCameraState implements Characte
         transform.setTranslation(transform.getTranslation().add(add));
     }
 
-    
-
     @Override
-    void setCameraPosition(Vector3f position) {
+    public void setCameraPosition(Vector3f position) {
         transform.setTranslation(position);
     }
 
     @Override
-    void setCameraTransform(PMatrix transform) {
+    public void setCameraTransform(PMatrix transform) {
         this.transform.set(transform);
     }
 
@@ -465,8 +463,8 @@ public final class ChaseCamState extends AbstractCameraState implements Characte
         transform.normalize();
     }
 
-    @Override
-    PMatrix getCameraTransform() {
+   // @Override
+    public PMatrix getCameraTransform() {
         return transform;
     }
 

@@ -39,13 +39,12 @@ public class VerletArm
     /**
      * This enumeration represents parts of an arm
      */
-    private enum ArmParts {
+    public enum ArmParts {
         Shoulder(0),
         Elbow(1),
         Wrist(2);
         // Used with verlet particle construction
         int particleIndex;
-
         ArmParts(int index)
         {
             this.particleIndex = index;
@@ -123,9 +122,9 @@ public class VerletArm
         
         // Attach the first particle to the shoulder joint, apply the difference
         // on all particles so they arm will move with the body movements.
-        Vector3f prevPos = new Vector3f(particles.get(ArmParts.Shoulder.particleIndex).getCurrentPosition());
+        Vector3f prevPos = new Vector3f(particles.get(ArmParts.Shoulder.particleIndex).getCurrentPositionRef());
         particles.get(ArmParts.Shoulder.particleIndex).position(shoulderJoint.getTransform().getWorldMatrix(false).getTranslation());
-        Vector3f dif = particles.get(ArmParts.Shoulder.particleIndex).getCurrentPosition().subtract(prevPos);
+        Vector3f dif = particles.get(ArmParts.Shoulder.particleIndex).getCurrentPositionRef().subtract(prevPos);
         for (int i = 1; i < particles.size(); i++)
             particles.get(i).dislocate(dif);
         
@@ -134,8 +133,8 @@ public class VerletArm
             pointAt();
         else
         {
-            Vector3f shoulderPosition = particles.get(ArmParts.Shoulder.particleIndex).getCurrentPosition();
-            Vector3f wristPosition    = particles.get(ArmParts.Wrist.particleIndex).getCurrentPosition();
+            Vector3f shoulderPosition = particles.get(ArmParts.Shoulder.particleIndex).getCurrentPositionRef();
+            Vector3f wristPosition    = particles.get(ArmParts.Wrist.particleIndex).getCurrentPositionRef();
             if (wristPosition.distance(shoulderPosition) > maxReach)
                 particles.get(ArmParts.Wrist.particleIndex).setMoveable(true);
             else
@@ -196,8 +195,8 @@ public class VerletArm
     {
         for (StickConstraint constraint : constraints)
         {
-            Vector3f vPoint1		= particles.get(constraint.getParticle1()).getCurrentPosition();
-            Vector3f vPoint2		= particles.get(constraint.getParticle2()).getCurrentPosition();
+            Vector3f vPoint1		= particles.get(constraint.getParticle1()).getCurrentPositionRef();
+            Vector3f vPoint2		= particles.get(constraint.getParticle2()).getCurrentPositionRef();
             Vector3f vDelta = new Vector3f(vPoint1.subtract(vPoint2));
 
             float fDeltaLength          =	vDelta.length();
@@ -248,7 +247,7 @@ public class VerletArm
     private void pointAt()
     {
         float wristDistanceFromShoulder = 0.475f;
-        Vector3f shoulderPosition = particles.get(ArmParts.Shoulder.particleIndex).getCurrentPosition();
+        Vector3f shoulderPosition = particles.get(ArmParts.Shoulder.particleIndex).getCurrentPositionRef();
         Vector3f directionFromShoulderToWrist = pointAtLocation.subtract(shoulderPosition).normalize();
         particles.get(ArmParts.Wrist.particleIndex).position(shoulderPosition.add(directionFromShoulderToWrist.mult(wristDistanceFromShoulder)));
     }
@@ -295,7 +294,7 @@ public class VerletArm
      * @return List of particles
      */
     @InternalAPI
-    public Iterable<VerletParticle> getParticles() {
+    public List<VerletParticle> getParticles() {
         return particles;
     }
 
@@ -309,7 +308,7 @@ public class VerletArm
         if (vOut == null)
             throw new IllegalArgumentException("Null storage object provided.");
         else 
-            vOut.set(particles.get(ArmParts.Elbow.particleIndex).getCurrentPosition());
+            vOut.set(particles.get(ArmParts.Elbow.particleIndex).getCurrentPositionRef());
     }
 
     /**
@@ -321,7 +320,16 @@ public class VerletArm
         if (vOut == null)
             throw new IllegalArgumentException("Null storage object provided.");
         else
-            vOut.set(particles.get(ArmParts.Wrist.particleIndex).getCurrentPosition());
+            vOut.set(particles.get(ArmParts.Wrist.particleIndex).getCurrentPositionRef());
+    }
+
+    /**
+     * Get direct reference to the current wrist particle position
+     * @return
+     */
+    @InternalAPI
+    public Vector3f getWristPositionRef() {
+        return particles.get(ArmParts.Wrist.particleIndex).getCurrentPositionRef();
     }
 
     /**
@@ -440,11 +448,21 @@ public class VerletArm
         positionTwoOut.set(particles.get(constraint.particle2).currentPosition);
     }
 
+    /**
+     * Set the position of a particle
+     * @param Wrist
+     * @param pos
+     */
+    @InternalAPI
+    public void setParticlePosition(ArmParts part, Vector3f pos) {
+        particles.get(part.particleIndex).position(pos);
+    }
     
     /**
      * The standard Verlet particle
      * @author Lou Hayt
      */
+    @ExperimentalAPI
     public static class VerletParticle
     {
         /** The mass of this particular particle **/
@@ -516,7 +534,7 @@ public class VerletArm
          * @param vOut A non-null storage object
          * @throws IllegalArgumentException If {@code vOut == null}
          */
-        void position(Vector3f vOut)
+        public void position(Vector3f vOut)
         {
             Vector3f velocity = getVelocity();
             currentPosition.set(vOut);
@@ -571,7 +589,7 @@ public class VerletArm
          * Retrieve a reference to the current position
          * @return
          */
-        public Vector3f getCurrentPosition() {
+        public Vector3f getCurrentPositionRef() {
             return currentPosition;
         }
         /**

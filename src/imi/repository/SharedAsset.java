@@ -51,7 +51,6 @@ public class SharedAsset
         MS3D_Mesh,        // unknown if ms3d or collada
         MS3D_SkinnedMesh1, // unknown if ms3d or collada, in the case of ms3d will load the skeleton even without an *.anm file
         Model,       // complex model (composed of shared asset references in a graph) defined in an xml
-        Texture,
         AudioFX, AudioTrack, 
         AnimationProcessor, SkinnedAnimation, 
         AIProcessor, Code

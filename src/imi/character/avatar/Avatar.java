@@ -39,7 +39,10 @@ import imi.character.behavior.GoTo;
 import imi.scene.PMatrix;
 import imi.serialization.xml.bindings.xmlCharacter;
 import java.awt.event.KeyEvent;
+import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.jdesktop.mtgame.WorldManager;
 
 /*
@@ -80,7 +83,7 @@ public class Avatar extends imi.character.Character
         public AvatarBuilder(URL configurationFile, WorldManager worldManager) {
             super(configurationFile, worldManager);
         }
-
+        
         @Override
         public AvatarBuilder addEntity(boolean addEntity) {
             this.addEntity = addEntity;
@@ -170,7 +173,7 @@ public class Avatar extends imi.character.Character
 // Context Setup
 ////////////////////////////////////////////////////////////////////////////////
     
-    private void maleContextSetup() {
+    protected void maleContextSetup() {
         commonContextSetup();
 
         FallFromSitState fall = (FallFromSitState)m_context.getState(FallFromSitState.class);
@@ -194,7 +197,7 @@ public class Avatar extends imi.character.Character
         ((SitState)m_context.getStateMapping().get(SitState.class)).setGettingUpAnimationName("Male_StandToSit");
     }
     
-    private void femaleContextSetup() {
+    protected void femaleContextSetup() {
         commonContextSetup();
 
         FallFromSitState fall = (FallFromSitState)m_context.getState(FallFromSitState.class);
@@ -221,7 +224,7 @@ public class Avatar extends imi.character.Character
         ((SitState)m_context.getStateMapping().get(SitState.class)).setGettingUpAnimationName("Female_StandtoSit");
     }
 
-    private void commonContextSetup() {
+    protected void commonContextSetup() {
         m_context.getController().setReverseHeading(true);
 
         // Tweak animation names and speeds

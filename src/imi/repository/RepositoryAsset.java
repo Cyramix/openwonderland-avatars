@@ -131,9 +131,6 @@ public class RepositoryAsset
                 // Load and parse a pscene
             }
             break;
-            case Texture:
-                loadTexture();
-                break;
         }
         // if the size of data is still zero or the collection is null, there is a problem
         if (m_data.size() <= 0)
@@ -279,57 +276,7 @@ public class RepositoryAsset
         }
     }
 
-    /**
-     * First searches for an existing binary texture form. Barring that, one is created
-     * to speed up the next time it is loaded.
-     * @return
-     */
-    private void loadTexture()
-    {
-        Texture result = null;
-        URL loc = m_descriptor.getLocation();
-        URL binaryLocation = null;
-        if (bUseTextureImporter)
-        {
-            // First check for the existence of the binary form
-            try
-            {
-                if (Repository.bafCacheURL == null)
-                    binaryLocation = new URL(loc.toString().substring(0, loc.toString().length() - 3) + "baf");
-                else
-                    binaryLocation = new URL(Repository.bafCacheURL + loc.getFile().toString().substring(0, loc.getFile().toString().length() - 3) + "baf");
-                result = loadBinaryTexture(binaryLocation);
-            } catch (Exception ex)
-            {
-                logger.warning(ex.getMessage());
-            }
-        }
-
-        if (result == null) // Load non-binary form
-        {
-            try {
-//                long startTime = System.nanoTime();
-                result = TextureManager.loadTexture(loc,
-                                                Texture.MinificationFilter.Trilinear,
-                                                Texture.MagnificationFilter.Bilinear);
-//                long endTime = System.nanoTime();
-//                System.out.println("Loading texture " + loc.getFile() + " took " +(float)((endTime - startTime) / 1000000000.0f)+ " seconds.");
-                result.setWrap(Texture.WrapAxis.S, Texture.WrapMode.Repeat);
-                result.setWrap(Texture.WrapAxis.T, Texture.WrapMode.Repeat);
-                if (bUseTextureImporter)
-                    writeBinaryTexture(binaryLocation, result);
-            } catch(Exception ex) {
-                logger.warning("Unable to load texture "+loc.toExternalForm()+"  because "+ex.getMessage());
-
-            }
-        }
-
-        if (result != null)
-            m_data.add(result);
-        else // failure
-            throw new RuntimeException("Failed to load a texture!");
-    }
-
+    @Deprecated
     private Texture loadBinaryTexture(URL binaryLocation)
     {
         System.out.println("Attempting to load binary texture from " + binaryLocation.toString());
@@ -350,6 +297,7 @@ public class RepositoryAsset
         return result;
     }
 
+    @Deprecated
     private void writeBinaryTexture(URL outputFileLocation, Texture tex)
     {
         System.out.println("Attempting to load binary texture from " + outputFileLocation.toString());

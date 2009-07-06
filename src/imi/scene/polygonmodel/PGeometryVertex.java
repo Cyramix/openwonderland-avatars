@@ -20,6 +20,7 @@ package imi.scene.polygonmodel;
 import com.jme.math.Vector3f;
 import com.jme.math.Vector2f;
 import com.jme.renderer.ColorRGBA;
+import org.jdesktop.wonderland.common.InternalAPI;
 
 /**
  * Self contained vertex (no external indexing is required to access the data)
@@ -53,6 +54,42 @@ public class PGeometryVertex
     public PGeometryVertex(PGeometryVertex other)
     {
         set(other);
+    }
+
+    /**
+     * Initialize this vertex, specular is set to white.
+     * @param Position
+     * @param Normal
+     * @param DiffuseColor
+     * @param TexCoords
+     */
+    public PGeometryVertex(Vector3f Position, Vector3f Normal, ColorRGBA DiffuseColor, Vector2f[] TexCoords)
+    {
+        position.set(Position);
+        normal.set(Normal);
+        diffuse.set(DiffuseColor);
+        specular.set(ColorRGBA.white);
+        for (int i = 0; i < texCoords.length; i++)
+            texCoords[i] = TexCoords[i];
+    }
+
+    /**
+     * Adds the data of this vertex to the mesh and returns the indices,
+     * the indices can be used to construct a polygon to add to the mesh.
+     * @param mesh
+     * @return
+     */
+    public PPolygonVertexIndices populateMesh(PPolygonMesh mesh)
+    {
+        PPolygonVertexIndices indices = new PPolygonVertexIndices();
+        indices.m_PositionIndex = mesh.getPosition(position);
+        indices.m_NormalIndex   = mesh.getNormal(normal);
+        // Tangent can be calculated later
+        indices.m_ColorIndex    = mesh.getColor(diffuse);
+        // Specular where art thou? *looking*
+        for (int i = 0; i < 8; i++)
+            indices.m_TexCoordIndex[i] = mesh.getTexCoord(texCoords[i]);
+        return indices;
     }
 
     /**
@@ -118,6 +155,24 @@ public class PGeometryVertex
     public void getPosition(Vector3f vOut) {
         vOut.set(position);
     }
+    
+    /**
+     * Set the position of this vertex
+     * @param pos
+     */
+    public void setPosition(Vector3f pos) {
+        position.set(pos);
+    }
+
+    /**
+     * Get the direct reference to the position vector
+     * @return
+     */
+    @InternalAPI
+    public Vector3f getPositionRef() {
+        return position;
+    }
+
     /**
      * Retrieve the current value of the normal vector.
      * @param vOut A non-null storage object
@@ -126,6 +181,50 @@ public class PGeometryVertex
     public void getNormal(Vector3f vOut) {
         vOut.set(normal);
     }
+
+    /**
+     * Get the direct reference of the normal
+     * @return
+     */
+    @InternalAPI
+    public Vector3f getNormalRef() {
+        return normal;
+    }
+
+    /**
+     * Get the texture coordinate array
+     * @return
+     */
+    @InternalAPI
+    public Vector2f[] getTexCoords() {
+        return texCoords;
+    }
+
+    /**
+     * Get a texture coordinate, there is no checking for index bounds.
+     * @param unit
+     * @return
+     */
+    public Vector2f getTexCoord(int unit) {
+        return texCoords[unit];
+    }
+
+    /**
+     * Set the diffuse to a certain color
+     * @param color
+     */
+    public void setDiffuseColor(ColorRGBA color) {
+        diffuse.set(color);
+    }
+
+    /**
+     * Set the normal vector
+     * @param norm
+     */
+    public void setNormal(Vector3f norm) {
+        normal.set(norm);
+    }
+
     /**
      * Retrieve the current value of the tangent vector.
      * @param vOut A non-null storage object
@@ -237,6 +336,13 @@ public class PGeometryVertex
                + "Color: " + diffuse.toString() + "\n";
     }
 
+    /**
+     * Debug dump to the console the vertex position
+     */
+    public void dump()
+    {
+        System.out.println("Vertex Position: " + position);
+    }
 }
 
 

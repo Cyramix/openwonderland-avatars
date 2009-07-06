@@ -414,7 +414,7 @@ public final class TumbleObjectCamState extends AbstractCameraState
     /**
      * {@inheritDoc AbstractCameraState}
      */
-    PMatrix getCameraTransform()
+    public PMatrix getCameraTransform()
     {
         return new PMatrix(camTransform);
     }
@@ -422,7 +422,7 @@ public final class TumbleObjectCamState extends AbstractCameraState
     /**
      * {@inheritDoc AbstractCameraState}
      */
-    void setCameraTransform(PMatrix newTransform)
+    public void setCameraTransform(PMatrix newTransform)
     {
         camTransform.set(newTransform);
         newTargetNeedsUpdate = true;

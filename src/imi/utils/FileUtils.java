@@ -247,7 +247,7 @@ public class FileUtils
      * Determine if the URL provided points to a file that we deem to be binary.
      * This is done by matching the "extension" (part of the string following the
      * last index)
-     * @param fileLocation
+     * @param fileLocation - may not be null
      * @return
      */
     @ExperimentalAPI
@@ -255,6 +255,22 @@ public class FileUtils
 
         int index  = fileLocation.toString().lastIndexOf(".");
         String ext = fileLocation.toString().substring(index);
+        if (ext.toLowerCase().contains("bin") || ext.toLowerCase().contains("bhf"))
+            return true;
+        return false;
+    }
+
+    /**
+     * Determine if the path provided points to a file that we deem to be binary.
+     * This is done by matching the "extension" (part of the string following the
+     * last index)
+     * @param fileLocation - may not be null
+     * @return
+     */
+    @ExperimentalAPI
+    public static boolean doesPathReferToBinaryFile(String fileLocation) {
+        int index  = fileLocation.lastIndexOf(".");
+        String ext = fileLocation.substring(index);
         if (ext.toLowerCase().contains("bin") || ext.toLowerCase().contains("bhf"))
             return true;
         return false;

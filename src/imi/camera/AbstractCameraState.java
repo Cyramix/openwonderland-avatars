@@ -139,18 +139,18 @@ public abstract class AbstractCameraState
      * it does not make sense for the particular model.
      * @param position
      */
-    abstract void setCameraPosition(Vector3f position);
+    public abstract void setCameraPosition(Vector3f position);
 
     /**
      * Set the camera's transform
      * @param transform
      */
-    abstract void setCameraTransform(PMatrix transform);
+    public abstract void setCameraTransform(PMatrix transform);
 
     /**
      * Retrieve the camera's transform. If a backing PMatrix is used, a reference
      * may be safely returned
      * @return
      */
-    abstract PMatrix getCameraTransform();
+    public abstract PMatrix getCameraTransform();
 }

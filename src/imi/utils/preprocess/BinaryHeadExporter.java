@@ -114,6 +114,7 @@ public class BinaryHeadExporter {
         FileOutputStream fos            = null;
         AvatarObjectOutputStream out    = null;
 
+        System.out.println("Writing file: " + params.outputFile);
         fos = new FileOutputStream(params.outputFile);
         out = new AvatarObjectOutputStream(fos);
         out.writeObject(loadedSkeleton);

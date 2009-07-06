@@ -42,19 +42,19 @@ import org.jdesktop.mtgame.WorldManager;
  */
 public class DefaultCharacterControls implements CharacterControls
 {
-    private ObjectCollectionBase objects    = null;
-    WorldManager        wm                  = null;
-    Character           character           = null;
-    JScene              jscene              = null; // Some of the GUI tools are using jscenes.... this maintains compatability
-    int                 selectedCharacter   = 0;
-    FastTable<Character> characterTeam      = new FastTable<Character>();
-    InputState          inputState          = new InputState();
-    private boolean     bCommandEntireTeam  = false;
-    private boolean     mouseDown           = false;
-    private int         currentMouseX = 0;
-    private int         currentMouseY = 0;
-    private int         lastMouseX    = 0;
-    private int         lastMouseY    = 0;
+    protected ObjectCollectionBase objectsBase    = null;
+    protected WorldManager        wm                  = null;
+    protected Character           character           = null;
+    protected JScene              jscene              = null; // Some of the GUI tools are using jscenes.... this maintains compatability
+    protected int                 selectedCharacter   = 0;
+    protected FastTable<Character> characterTeam      = new FastTable<Character>();
+    protected InputState          inputState          = new InputState();
+    protected boolean     bCommandEntireTeam  = false;
+    protected boolean     mouseDown           = false;
+    protected int         currentMouseX = 0;
+    protected int         currentMouseY = 0;
+    protected int         lastMouseX    = 0;
+    protected int         lastMouseY    = 0;
     boolean debugVertexNormalsEnabled   = false;
 
     /**
@@ -139,8 +139,8 @@ public class DefaultCharacterControls implements CharacterControls
             // Remove a random chair from the object collection
             if (ke.getKeyCode() == KeyEvent.VK_BACK_SPACE)
             {
-                if(objects != null && objects instanceof AvatarObjectCollection)
-                    ((AvatarObjectCollection)objects).removeAChair();
+                if(objectsBase != null && objectsBase instanceof AvatarObjectCollection)
+                    ((AvatarObjectCollection)objectsBase).removeAChair();
             }
 
             // Take snap shot picture
@@ -175,7 +175,6 @@ public class DefaultCharacterControls implements CharacterControls
             {
                 if (character != null)
                 {
-
 //                    SceneMonitor.getMonitor().registerNode(character.getJScene(), "Character:" + character.getName());
 //                    SceneMonitor.getMonitor().showViewer(true);
                 }
@@ -338,11 +337,13 @@ public class DefaultCharacterControls implements CharacterControls
      * {@inheritDoc CharacterControls}
      */
     public synchronized void setCharacter(Character character) {
+        Character previouslySelected = this.character;
         this.character = character;
         jscene = character.getJScene();
         if (!characterTeam.contains(character))
             characterTeam.add(character);
         selectedCharacter = characterTeam.indexOf(character);
+        characterSelected(character, previouslySelected);
     }
 
     /**
@@ -391,6 +392,7 @@ public class DefaultCharacterControls implements CharacterControls
             {
                this.character = character;
                jscene = character.getJScene();
+               characterSelected(character, null);
             }
         }
     }
@@ -424,6 +426,7 @@ public class DefaultCharacterControls implements CharacterControls
     {
         if (!characterTeam.isEmpty())
         {
+            Character previouslySelected = this.character;
             selectedCharacter++;
             if (selectedCharacter > characterTeam.size()-1)
                 selectedCharacter = 0;
@@ -434,6 +437,7 @@ public class DefaultCharacterControls implements CharacterControls
             character.selectForInput();
             character.initiateFacialAnimation(1, 0.25f, 3.0f);
             jscene = character.getJScene();
+            characterSelected(character, previouslySelected);
         }
         else
         {
@@ -449,6 +453,7 @@ public class DefaultCharacterControls implements CharacterControls
     {
         if (!characterTeam.isEmpty())
         {
+            Character previouslySelected = this.character;
             selectedCharacter--;
             if (selectedCharacter > characterTeam.size()-1)
                 selectedCharacter = 0;
@@ -459,6 +464,7 @@ public class DefaultCharacterControls implements CharacterControls
             character.selectForInput();
             character.initiateFacialAnimation(1, 0.25f, 3.0f);
             jscene = character.getJScene();
+            characterSelected(character, previouslySelected);
         }
         else
         {
@@ -508,7 +514,15 @@ public class DefaultCharacterControls implements CharacterControls
      * {@inheritDoc CharacterControls}
      */
     public void setObjectCollection(ObjectCollectionBase objectCollection) {
-        objects = objectCollection;
+        objectsBase = objectCollection;
+    }
+
+    /**
+     * Perform actions based on the characterSelected event
+     * @param selected
+     */
+    protected void characterSelected(Character selected, Character previouslySelected) {
+        // override friendly
     }
 
 }

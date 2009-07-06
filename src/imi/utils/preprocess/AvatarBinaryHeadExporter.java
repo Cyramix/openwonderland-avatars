@@ -61,6 +61,8 @@ public final class AvatarBinaryHeadExporter {
     ////////////////////////////////////////////////////////
     //////////////// Asset lists        ////////////////////
     ////////////////////////////////////////////////////////
+
+    private static final String     saveFolder              = "src/imi/character/data/";
     private static final String     maleRelPath             = "assets/models/collada/Heads/MaleHead/";
     private static final String[]   maleFGHeads               = new String[] {
                                                                              "FG_Obama_HeadMedPoly.dae",
@@ -197,7 +199,7 @@ public final class AvatarBinaryHeadExporter {
             saveFile += ".bhf";
             BinaryHeadExporter.BinaryHeadExporterParams params =
                     new BinaryHeadExporter.BinaryHeadExporterParams(wm)
-                    .setOutputFile(new File(pathPrefix + "/" + saveFile))
+                    .setOutputFile(new File(saveFolder + "/" + saveFile))
                     .setHeadLocation(new URL(base + pathPrefix + headName));
             for (String anim : facialAnimations)
                 params.addAnimationFile(anim);
