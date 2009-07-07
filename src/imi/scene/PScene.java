@@ -17,10 +17,8 @@
  */
 package imi.scene;
 
-import com.jme.image.Texture;
 import com.jme.scene.Node;
 import com.jme.scene.Spatial;
-import com.jme.util.TextureManager;
 import imi.loaders.Collada;
 import imi.loaders.ColladaLoaderParams;
 import imi.loaders.ColladaLoadingException;
@@ -43,7 +41,6 @@ import imi.utils.BooleanPointer;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
-import java.net.URL;
 import java.util.List;
 import javolution.util.FastList;
 import javolution.util.FastTable;

@@ -39,10 +39,7 @@ import imi.character.behavior.GoTo;
 import imi.scene.PMatrix;
 import imi.serialization.xml.bindings.xmlCharacter;
 import java.awt.event.KeyEvent;
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.jdesktop.mtgame.WorldManager;
 
 /*
@@ -116,6 +113,9 @@ public class Avatar extends imi.character.Character
 
         @Override
         public Avatar build() {
+            if (attributeParams != null && !attributeParams.isValid())
+                throw new IllegalStateException("Provided params are not valid, " +
+                        "did you remember to \"build()\" your params?");
             return new Avatar(this);
         }
     }

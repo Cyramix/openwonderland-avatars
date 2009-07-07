@@ -543,6 +543,7 @@ public class MaleAvatarParams extends CharacterParams
         setLoadInstructions(configContext.load);
         setAddInstructions(configContext.add);
         setAttachmentsInstructions(configContext.attachments);
+        setValid(true);
         return this;
     }
 
@@ -555,6 +556,7 @@ public class MaleAvatarParams extends CharacterParams
         setLoadInstructions(configContext.load);
         setAddInstructions(configContext.add);
         setAttachmentsInstructions(configContext.attachments);
+        setValid(true);
         return this;
     }
 

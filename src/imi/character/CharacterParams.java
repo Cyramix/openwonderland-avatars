@@ -74,6 +74,8 @@ public class CharacterParams
     private String                  eyeballTexture          = "assets/models/collada/Heads/EyeTextures/Brown_Eye.PNG";
     /** True if the head mesh will be applied with the skine tone (otherwise just white to keep the original texture's color) **/
     private boolean                 applySkinToneOnHead     = true;
+    /** True if valid **/
+    private boolean                 valid = false;
 
     private static final float f255 = 255.0f; // need all the colors to be brighter?
     static final ColorRGBA[] clothesColors = new ColorRGBA[]
@@ -373,6 +375,10 @@ public class CharacterParams
      */
     public String getHeadAttachment() {
         return headAttachment;
+    }
+
+    public boolean isValid() {
+        return valid;
     }
 
     /**
@@ -1331,6 +1337,13 @@ public class CharacterParams
      */
     public void setApplySkinToneOnHead(boolean applySkinToneOnHead) {
         this.applySkinToneOnHead = applySkinToneOnHead;
+    }
+
+    /**
+     *
+     */
+    protected void setValid(boolean valid) {
+        this.valid = valid;
     }
 
     /**

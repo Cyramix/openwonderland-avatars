@@ -2070,6 +2070,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         m_AnimationProcessor.setEnabled(false);
         m_characterProcessor.setEnabled(false);
 
+        System.out.println("Installing head from " + headLocation.toString());
         try {
             SkeletonNode newHeadSkeleton = BinaryHeadFileImporter.loadHeadFile(headLocation.openStream());
             attachHeadSkeleton(newHeadSkeleton);
