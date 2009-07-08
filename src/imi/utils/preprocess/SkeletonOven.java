@@ -200,7 +200,7 @@ public class SkeletonOven
                 bLoadMale = true;
             else if (arg.equals("-f"))
                 bLoadFemale = true;
-            else if (arg.equals("-mf"))
+            else if (arg.equals("-mf") || arg.equals("-all"))
                 bLoadFemale = bLoadMale = true;
             else if (arg.startsWith("-quality"))
                 animationQuality = Float.parseFloat(arg.split(":")[1]);
