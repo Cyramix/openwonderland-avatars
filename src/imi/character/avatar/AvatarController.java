@@ -17,17 +17,23 @@
  */
 package imi.character.avatar;
 
+import com.jme.intersection.TriangleCollisionResults;
 import com.jme.math.Quaternion;
+import com.jme.math.Ray;
 import com.jme.math.Vector3f;
+import com.jme.scene.Spatial;
 import imi.character.CharacterController;
 import imi.collision.CollisionController;
 import imi.collision.TransformUpdateManager;
 import imi.scene.PMatrix;
 import imi.scene.PTransform;
 import imi.scene.polygonmodel.PPolygonModelInstance;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFrame;
+import org.jdesktop.mtgame.PickDetails;
+import org.jdesktop.mtgame.PickInfo;
 import org.jdesktop.wonderland.common.ExperimentalAPI;
 
 /**
@@ -88,6 +94,8 @@ public class AvatarController extends CharacterController
      * This is primarily needed when the collision system is operating on the avatar.
      **/
     private boolean bUseTransformUpdateManager = true;
+    /** Used to enable / disabled ground clamping **/
+    private boolean groundClampEnabled = true;
 
     /**
      * Construct a new avatar controller
@@ -209,7 +217,11 @@ public class AvatarController extends CharacterController
         }
         else
             currentRot.set(body.getTransform().getLocalMatrix(true));
-        
+
+        PMatrix previousRot = new PMatrix(currentRot);
+        Vector3f previousPos = new Vector3f();
+        body.getTransform().getLocalMatrix(false).getTranslation(previousPos);
+
         // Accelerate
         Vector3f currentDirection = body.getTransform().getWorldMatrix(false).getLocalZ();
         if (!bSlide)
@@ -252,6 +264,14 @@ public class AvatarController extends CharacterController
             
             acceleration.multLocal(accelerationDamp);
             // TODO clamp down?
+            if (collisionController!=null && groundClampEnabled) {
+                if (collisionController.isGravityEnabled())
+                    checkGround(position);
+                if (collisionController.isCollisionEnabled() && collisionCheck(position, currentRot)) {
+                    position.set(previousPos);
+                    currentRot.set(previousRot);
+                    }
+            }
 
             if (fwdAcceleration < 1.0f && Math.max(Math.max(acceleration.x, acceleration.y), acceleration.z) < 1.0f)
                 velocity.multLocal(velocityDamp);
@@ -268,6 +288,59 @@ public class AvatarController extends CharacterController
             body.getTransform().getLocalMatrix(true).set(currentRot);
             notifyTransfromUpdate(position, currentRot);
         }
+    }
+
+    ////// Ground clamping code
+    private Ray heightRay = new Ray();
+    private Vector3f downVec = new Vector3f(0f,-1f,0f);
+    private float fallInc = 0.5f;
+    private void checkGround(Vector3f newPos) {
+        float yDelta = 1.0f;
+        float dy = 0;
+
+        heightRay.origin.set(newPos);
+        heightRay.origin.y+=yDelta;
+        heightRay.direction = downVec;
+        //System.out.println(newPos);
+        PickInfo pi = collisionController.getCollisionSystem().pickAllWorldRay(heightRay, true, false);
+        if (pi.size() != 0) {
+            // Grab the first one
+            PickDetails pd = pi.get(0);
+            dy = pd.getDistance() - yDelta;
+
+            newPos.y -= dy;
+        } else {
+            //System.out.println("NO GROUND!!!");
+        }
+    }
+
+    private TriangleCollisionResults tcr = new TriangleCollisionResults();
+    private boolean collisionCheck(Vector3f potentialPos, PMatrix potentialRot) {
+        tcr.clear();
+        boolean collision = false;
+        Spatial collisionGraph = collisionController.getCollisionGraph();
+        collisionGraph.setLocalTranslation(potentialPos.x, potentialPos.y, potentialPos.z);
+        collisionGraph.setLocalRotation(potentialRot.getRotationJME());
+        collisionGraph.updateGeometricState(0, true);
+
+        // For high quality avatars need to transform the boxes that enclose the body parts
+        // int jointIndex = skeleton.getSkinnedMeshJointIndex(jointName)  gets the int index of a joint  (cache the jointIndex, recompute if avatar changes)
+        // SkinnedMeshJoint specificJoint = skeleton.getSkinnedMeshJoint(jointIndex);
+        // specificJoint.getTransform().getWorldMatrix(false)
+
+        collisionController.getCollisionSystem().findCollisions(collisionGraph, tcr);
+        for (int i=0; i<tcr.getNumber(); i++) {
+            ArrayList<Integer> tris = tcr.getCollisionData(i).getSourceTris();
+            if (tris.size() != 0) {
+                collision = true;
+                System.err.println("OUCH ! "+tris.size());
+                //TriMesh mesh = (TriMesh)tcr.getCollisionData(i).getSourceMesh();
+                //mesh.getTriangle(tris.get(0).intValue(), triData2);
+                //computeCollisionResponse(position, potentialPos, rotatedFwdDirection, triData2, walkInc);
+                break;
+            }
+        }
+        return collision;
     }
 
     @Override
@@ -465,5 +538,19 @@ public class AvatarController extends CharacterController
     public boolean isUsingTransformUpdateManager()
     {
         return bUseTransformUpdateManager;
+    }
+
+    /**
+     * Arm / Disarm the simple ground clamping
+     * @param bUseIt
+     */
+    public void setSimpleGroundClamping(boolean enabled)
+    {
+        groundClampEnabled = enabled;
+    }
+
+    public boolean isUsingSimpleGroundClamping()
+    {
+        return groundClampEnabled;
     }
 }
