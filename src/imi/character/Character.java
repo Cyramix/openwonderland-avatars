@@ -1569,6 +1569,9 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         // blink if you can hear me
         if (m_eyes != null)
             m_eyes.blink();
+        // Set the bounds object to be non-null
+        if (m_jscene.getWorldBound() == null)
+            m_jscene.updateModelBound();
         // This is required to inherit the renderstates (light specifically) from the render manager
         worldManager.addToUpdateList(m_jscene);
         m_initialized = true;
