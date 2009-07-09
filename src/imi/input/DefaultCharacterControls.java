@@ -23,6 +23,7 @@ import com.jme.math.Vector3f;
 import imi.camera.FlexibleCameraProcessor;
 import imi.character.VerletArm;
 import imi.character.Character;
+import imi.character.avatar.Avatar;
 import imi.character.avatar.AvatarContext.TriggerNames;
 import imi.gui.TreeExplorer;
 import imi.objects.AvatarObjectCollection;
@@ -32,6 +33,8 @@ import imi.scene.utils.visualizations.InternalRendererEntity;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.SwingUtilities;
 import javolution.util.FastTable;
 import org.jdesktop.mtgame.WorldManager;
@@ -523,6 +526,17 @@ public class DefaultCharacterControls implements CharacterControls
      */
     protected void characterSelected(Character selected, Character previouslySelected) {
         // override friendly
+    }
+
+    /**
+     * {@inheritDoc InputClient}
+     */
+    public void focusChanged(boolean currentlyInFocus) {
+       if (character != null && character instanceof Avatar)
+           ((Avatar)character).stop();
+       else
+            Logger.getLogger(this.getClass().getName()).log(Level.INFO, "Focus changed!");
+
     }
 
 }

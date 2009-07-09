@@ -39,4 +39,11 @@ public interface InputClient {
      * @param mouseEvent
      */
     public void processMouseEvent(MouseEvent mouseEvent);
+
+    /**
+     * This method will be called when the input should no longer act as
+     * though it has focus.
+     * @param currentlyInFocus True if the client is now in focus
+     */
+    public void focusChanged(boolean currentlyInFocus);
 }

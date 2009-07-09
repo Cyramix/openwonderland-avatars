@@ -525,4 +525,8 @@ public final class FlexibleCameraProcessor extends ProcessorComponent implements
     public synchronized void processMouseEvent(MouseEvent mouseEvent) {
         inputEvents.add(mouseEvent);
     }
+
+    public void focusChanged(boolean currentlyInFocus) {
+        
+    }
 }

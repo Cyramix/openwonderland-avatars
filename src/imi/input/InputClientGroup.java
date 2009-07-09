@@ -129,4 +129,9 @@ public class InputClientGroup implements InputClient
         if (m_scheme != null)
             m_scheme.processMouseEvent(mouseEvent);
     }
+
+    public void focusChanged(boolean currentlyInFocus) {
+        if (m_scheme != null)
+            m_scheme.focusChanged(currentlyInFocus);
+    }
 }
