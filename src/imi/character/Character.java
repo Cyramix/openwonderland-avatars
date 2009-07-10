@@ -2261,6 +2261,11 @@ public abstract class Character extends Entity implements SpatialObject, Animati
      * @param output
      */
     public void getBoundingSphere(PSphere output) {
+        if (m_modelInst == null)
+        {
+            System.out.println("Character.getBoundingSphere() - m_modelInst is null");
+            return;
+        }
         if (m_modelInst.getBoundingSphere() == null)
             m_modelInst.calculateBoundingSphere();
         output.setRadius(m_modelInst.getBoundingSphere().getRadius());

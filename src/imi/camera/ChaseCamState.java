@@ -29,6 +29,9 @@ import imi.scene.PMatrix;
  */
 public final class ChaseCamState extends AbstractCameraState implements CharacterMotionListener
 {
+    // Character target (if targeting a character)
+    imi.character.Character targetCharacter = null;
+
     // Camera State
     private final PMatrix transform = new PMatrix();
 
@@ -104,6 +107,18 @@ public final class ChaseCamState extends AbstractCameraState implements Characte
     ////////////////////////////////////////
     //////////////// Public API
     ////////////////////////////////////////
+
+    /**
+     * Sets the character this camera will follow
+     * @param character A character to target, or null to unset.
+     */
+    public void setTargetCharacter(imi.character.Character character) {
+        if (targetCharacter != null)
+            targetCharacter.getController().removeCharacterMotionListener(this);
+        targetCharacter = character;
+        if (character != null)
+            character.getController().addCharacterMotionListener(this);
+    }
 
     /**
      * Determine if the camera is performing hard attach behavior
@@ -280,10 +295,9 @@ public final class ChaseCamState extends AbstractCameraState implements Characte
      */
     public float getStiffness()
     {
-        float result = 0;
         if (desiredPositionStiffnessTimeCounter < desiredPositionStiffnessTimeLength)
-            result =  stiffness * desiredPositionStiffnessScalar;
-        return result;
+            return stiffness * desiredPositionStiffnessScalar;
+        return stiffness;
     }
 
     /**

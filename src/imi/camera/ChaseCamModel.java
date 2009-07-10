@@ -126,6 +126,7 @@ public final class ChaseCamModel extends CameraModel
 
         // Calculate spring force
         activeState.getCameraPosition(force);
+        System.out.println("Force (campos): " + force);
         force.subtractLocal(desiredCameraPosition);
         force.multLocal(-activeState.getStiffness());
         force.subtractLocal(velocity.mult(activeState.getDamping()));
@@ -133,7 +134,13 @@ public final class ChaseCamModel extends CameraModel
         force.divideLocal(activeState.getMass());
         velocity.addLocal(force.mult(deltaTime));
         // Apply velocity
+//        System.out.println("Pos pre: " + activeState.getCameraTransform().getTranslation());
+//        System.out.println("Add: " + velocity.mult(deltaTime));
+//        System.out.println("DeltaTime: " + deltaTime);
+//        System.out.println("Velocity: " + velocity);
+//        System.out.println("Force: " + force);
         activeState.addToCameraPosition(velocity.mult(deltaTime));
+        //System.out.println("Pos post: " + activeState.getCameraTransform().getTranslation());
 
         if (activeState.isLookAtSpringEnabled())
         {

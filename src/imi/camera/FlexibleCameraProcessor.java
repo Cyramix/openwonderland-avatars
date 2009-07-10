@@ -391,9 +391,9 @@ public final class FlexibleCameraProcessor extends ProcessorComponent implements
 
     private void triggerUpdates(float deltaTime)
     {
-        TransformUpdateManager tum = (TransformUpdateManager) m_WM.getUserData(TransformUpdateManager.class);
-        if (tum != null)
-            tum.update(deltaTime);
+//        TransformUpdateManager tum = (TransformUpdateManager) m_WM.getUserData(TransformUpdateManager.class);
+//        if (tum != null)
+//            tum.update(deltaTime);
     }
 
     ////////////////////////////////////////////////////////////
