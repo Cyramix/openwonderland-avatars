@@ -117,6 +117,7 @@ import javax.xml.bind.Unmarshaller;
 import javolution.util.FastList;
 import javolution.util.FastTable;
 import org.jdesktop.mtgame.Entity;
+import org.jdesktop.mtgame.EntityComponent;
 import org.jdesktop.mtgame.ProcessorCollectionComponent;
 import org.jdesktop.mtgame.ProcessorComponent;
 import org.jdesktop.mtgame.RenderComponent;
@@ -1370,6 +1371,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         m_jscene = new JScene(m_pscene);
         // Don't render yet
         m_pscene.setRenderStop(true);
+        m_jscene.setRenderBool(false);
         // The collection of processors for this entity
         FastTable<ProcessorComponent> processors = new FastTable<ProcessorComponent>();
         // Apply the attributes file; this also initializes the skeleton
@@ -1430,7 +1432,10 @@ public abstract class Character extends Entity implements SpatialObject, Animati
 
         // Nothing below is relevant in the simple test sphere case
         if (characterParams.isUseSimpleStaticModel())
+        {
+            m_jscene.setRenderBool(true);
             return;
+        }
 
         // Set animations and custom meshes
         executeAttributes(characterParams);
@@ -1572,6 +1577,8 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         // Set the bounds object to be non-null
         if (m_jscene.getWorldBound() == null)
             m_jscene.updateModelBound();
+        // Enable rendering for the render component
+        m_jscene.setRenderBool(true);
         // This is required to inherit the renderstates (light specifically) from the render manager
         worldManager.addToUpdateList(m_jscene);
         m_initialized = true;
@@ -1959,6 +1966,9 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         if (headLocation == null)
             throw new IllegalArgumentException("Null URL provided.");
 
+        boolean jsceneRender = m_jscene.getRenderBool();
+        m_jscene.setRenderBool(false);
+
         if (FileUtils.doesURLReferToBinaryFile(headLocation))
             installBinaryHeadConfiguration(headLocation);
         else
@@ -1968,6 +1978,8 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         m_eyes = new CharacterEyes(characterParams.getEyeballTexture(), this, worldManager);
         m_skeletonManipulator.setLeftEyeBall(m_eyes.leftEyeBall);
         m_skeletonManipulator.setRightEyeBall(m_eyes.rightEyeBall);
+
+        m_jscene.setRenderBool(jsceneRender);
     }
 
     /**
@@ -1976,6 +1988,8 @@ public abstract class Character extends Entity implements SpatialObject, Animati
      */
     private void installHeadConfiguration(URL headLocation) {
         // Stop all of our processing.
+        boolean jsceneRender = m_jscene.getRenderBool();
+        m_jscene.setRenderBool(false);
         m_skeleton.setRenderStop(true);
         boolean animProcEnabled = m_AnimationProcessor.isEnabled();
         boolean charProcEnabled = m_characterProcessor.isEnabled();
@@ -2061,6 +2075,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         m_AnimationProcessor.setEnabled(animProcEnabled);
         m_characterProcessor.setEnabled(charProcEnabled);
         m_skeleton.setRenderStop(false);
+        m_jscene.setRenderBool(jsceneRender);
     }
 
     /**
@@ -2069,6 +2084,8 @@ public abstract class Character extends Entity implements SpatialObject, Animati
      */
     private void installBinaryHeadConfiguration(URL headLocation) {
         // Stop all of our processing.
+        boolean jsceneRender = m_jscene.getRenderBool();
+        m_jscene.setRenderBool(false);
         m_skeleton.setRenderStop(true);
         boolean animProcEnabled = m_AnimationProcessor.isEnabled();
         boolean charProcEnabled = m_characterProcessor.isEnabled();
@@ -2089,6 +2106,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         m_AnimationProcessor.setEnabled(animProcEnabled);
         m_characterProcessor.setEnabled(charProcEnabled);
         m_skeleton.setRenderStop(false);
+        m_jscene.setRenderBool(jsceneRender);
     }
 
     private void attachHeadSkeleton(SkeletonNode headSkeleton)
@@ -2332,8 +2350,9 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         if (worldManager == null)
             return;
 
-        ProcessorCollectionComponent pcc = (ProcessorCollectionComponent) getComponent(ProcessorCollectionComponent.class);
+        m_jscene.setRenderBool(false);
 
+        ProcessorCollectionComponent pcc = (ProcessorCollectionComponent) getComponent(ProcessorCollectionComponent.class);
         for(ProcessorComponent p : pcc.getProcessors()) {
             p.setArmingCondition(null);                         // Workaround for mtgame bug
         }
@@ -2364,6 +2383,10 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         CharacterControls input = (CharacterControls)worldManager.getUserData(CharacterControls.class);
         if (input != null)
             input.removeCharacterFromTeam(this);
+
+        // Clean components
+        for (EntityComponent ec : getComponents())
+            ec.setEntity(null); // Hack TODO
     }
 
 

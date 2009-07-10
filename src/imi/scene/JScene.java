@@ -91,8 +91,8 @@ public class JScene extends Node {
     public void setExternalKidsRootPosition(Vector3f externalKidsRootPosition, Quaternion externalKidsRootRotation) {
         this.m_ExternalKidsRootPosition.set(externalKidsRootPosition);
         this.m_ExternalKidsRootRotation.set(externalKidsRootRotation);
-        m_externalJmeKidsRoot.setLocalTranslation(externalKidsRootPosition);
-        m_externalJmeKidsRoot.setLocalRotation(externalKidsRootRotation);
+//        m_externalJmeKidsRoot.setLocalTranslation(externalKidsRootPosition); NO! must be on render thread - let the pscene do it
+//        m_externalJmeKidsRoot.setLocalRotation(externalKidsRootRotation);    NO! must be on render thread - let the pscene do it
     }
 
     /**
@@ -255,6 +255,12 @@ public class JScene extends Node {
         }
         else
             m_bDebugRenderOnly = true;
+    }
+
+    @Override
+    public void updateRenderState() {
+        if(m_bRender)
+            super.updateRenderState();
     }
 
     /**

@@ -131,6 +131,7 @@ public class PScene extends PNode implements RepositoryUser, Serializable
     }
 
     /**
+     * Must be on the render thread!
      * The PScene will flatten its hierarchy (build the transform world matrices)
      * This method will clear all the children from m_JScene and resubmit thier
      * references according to the current PScene structure.
@@ -157,8 +158,8 @@ public class PScene extends PNode implements RepositoryUser, Serializable
 
         // Add external kids
         Node externalKids = m_JScene.getExternalKidsRoot();
-        //externalKids.updateWorldData(0.0f);
-        //externalKids.updateRenderState();
+        externalKids.setLocalTranslation(m_JScene.getExternalKidsRootPosition());
+        externalKids.setLocalRotation(m_JScene.getExternalKidsRootRotation());
         m_WorldManager.addToUpdateList(externalKids);
         kids.add(externalKids);
 
