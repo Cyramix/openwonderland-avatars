@@ -118,7 +118,7 @@ public class DemoBase {
                                                        "assets/textures/skybox/Left.png",
                                                        "assets/textures/skybox/default.png",
                                                        "assets/textures/skybox/Top.png" };
-    
+
     private ColorRGBA m_clearColor = new ColorRGBA(173.0f/255.0f, 195.0f/255.0f, 205.0f/255.0f, 1.0f);
 
 ////////////////////////////////////////////////////////////////////////////////

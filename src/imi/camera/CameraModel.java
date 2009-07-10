@@ -35,7 +35,7 @@ public abstract class CameraModel
      * @param state The current state
      * @param transform Output
      */
-    abstract void determineTransform(AbstractCameraState state, PMatrix transform);
+    public abstract void determineTransform(AbstractCameraState state, PMatrix transform);
 
     /**
      * This method should be used to tunnel AWT events into the model.
@@ -46,18 +46,18 @@ public abstract class CameraModel
      * @param state The state to affect
      * @param events AWT event array
      */
-    abstract void handleInputEvents(AbstractCameraState state, Object[] events);
+    public abstract void handleInputEvents(AbstractCameraState state, Object[] events);
 
     /**
      * Update the camera, this allows for animated camera models.
      * @param state CameraState to affect
      * @param deltaTime The timeslice
      */
-    abstract void update(AbstractCameraState state, float deltaTime);
+    public abstract void update(AbstractCameraState state, float deltaTime);
     /**
      * Determine if the specified type of camera state is valid for this model.
      * @param classz The type of camera state
      * @return True if compatible, false otherwise
      */
-    abstract boolean isStateClassValid(Class<? extends AbstractCameraState> classz);
+    public abstract boolean isStateClassValid(Class<? extends AbstractCameraState> classz);
 }

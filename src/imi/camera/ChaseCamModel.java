@@ -193,7 +193,7 @@ public final class ChaseCamModel extends CameraModel
      * {@inheritDoc CameraModel}
      */
     @Override
-    void determineTransform(AbstractCameraState state, PMatrix transform)
+    public void determineTransform(AbstractCameraState state, PMatrix transform)
     {
         ChaseCamState activeState = (ChaseCamState)state;
         transform.set2(q, activeState.getCameraTransform().getTranslation(), 1.0f);

@@ -38,7 +38,7 @@ public class TumbleObjectCamModel extends CameraModel
     /**
      * {@inheritDoc CameraModel}
      */
-    void determineTransform(AbstractCameraState state, PMatrix transform)
+    public void determineTransform(AbstractCameraState state, PMatrix transform)
     {
         // get a reference to the derived type
         TumbleObjectCamState camState = (TumbleObjectCamState)state;
@@ -50,7 +50,7 @@ public class TumbleObjectCamModel extends CameraModel
     /**
      * {@inheritDoc CameraModel}
      */
-    void handleInputEvents(AbstractCameraState state, Object[] events)
+    public void handleInputEvents(AbstractCameraState state, Object[] events)
     {
         // Used as a minor optimization if it is unnecessary.
         boolean updateRotations = false;
@@ -277,7 +277,7 @@ public class TumbleObjectCamModel extends CameraModel
      * @param deltaTime
      * @throws imi.scene.camera.behaviors.WrongStateTypeException
      */
-    void update(AbstractCameraState state, float deltaTime)
+    public void update(AbstractCameraState state, float deltaTime)
     {
         // Get derived state type
         TumbleObjectCamState camState = (TumbleObjectCamState) state;

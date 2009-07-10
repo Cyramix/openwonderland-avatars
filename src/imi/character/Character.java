@@ -1891,6 +1891,8 @@ public abstract class Character extends Entity implements SpatialObject, Animati
      * @param fExpressionDuration How long the pose should be held
      */
     public void initiateFacialAnimation(int cycleIndex, float fTransitionTime, float fExpressionDuration) {
+        if (m_skeleton == null) // No skeleton, do not animate
+            return;
         if (m_facialAnimations == null)
         {
             if (m_skeleton.getAnimationComponent().getGroupCount() > 1)

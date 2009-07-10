@@ -29,6 +29,7 @@ import imi.gui.TreeExplorer;
 import imi.objects.AvatarObjectCollection;
 import imi.objects.ObjectCollectionBase;
 import imi.scene.JScene;
+import imi.scene.polygonmodel.PPolygonSkinnedMeshInstance;
 import imi.scene.utils.visualizations.InternalRendererEntity;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
@@ -152,6 +153,8 @@ public class DefaultCharacterControls implements CharacterControls
                 FlexibleCameraProcessor p = (FlexibleCameraProcessor) wm.getUserData(FlexibleCameraProcessor.class);
                 if (p != null)
                     p.takeSnap();
+                else
+                    Logger.getLogger(DefaultCharacterControls.class.getName()).warning("No camera processor in the World Manager!");
             }
 
             // Shut the character's eyes
@@ -428,20 +431,7 @@ public class DefaultCharacterControls implements CharacterControls
     public synchronized void controlNextCharacter()
     {
         if (!characterTeam.isEmpty())
-        {
-            Character previouslySelected = this.character;
-            selectedCharacter++;
-            if (selectedCharacter > characterTeam.size()-1)
-                selectedCharacter = 0;
-            else if (selectedCharacter < 0)
-                selectedCharacter = characterTeam.size()-1;
-
-            character = characterTeam.get(selectedCharacter);
-            character.selectForInput();
-            character.initiateFacialAnimation(1, 0.25f, 3.0f);
-            jscene = character.getJScene();
-            characterSelected(character, previouslySelected);
-        }
+            offsetSelectedCharacter(1);
         else
         {
             jscene = null;
@@ -449,31 +439,36 @@ public class DefaultCharacterControls implements CharacterControls
         }
     }
 
+
     /**
      * {@inheritDoc CharacterControls}
      */
     public synchronized void controlPreviousCharacter()
     {
         if (!characterTeam.isEmpty())
-        {
-            Character previouslySelected = this.character;
-            selectedCharacter--;
-            if (selectedCharacter > characterTeam.size()-1)
-                selectedCharacter = 0;
-            else if (selectedCharacter < 0)
-                selectedCharacter = characterTeam.size()-1;
-
-            character = characterTeam.get(selectedCharacter);
-            character.selectForInput();
-            character.initiateFacialAnimation(1, 0.25f, 3.0f);
-            jscene = character.getJScene();
-            characterSelected(character, previouslySelected);
-        }
+            offsetSelectedCharacter(-1);
         else
         {
             jscene = null;
             character = null;
         }
+    }
+
+    private void offsetSelectedCharacter(int offset) {
+        // cache the previously selected guy
+        Character previouslySelected = characterTeam.get(selectedCharacter);
+        // Change selected index and perform bounds checking
+        selectedCharacter += offset;
+        if (selectedCharacter > characterTeam.size()-1)
+                selectedCharacter = 0;
+        else if (selectedCharacter < 0)
+            selectedCharacter = characterTeam.size()-1;
+        // Select the new guy for input and make him smile
+        character = characterTeam.get(selectedCharacter);
+        character.selectForInput();
+        character.initiateFacialAnimation(1, 0.25f, 3.0f);
+        jscene = character.getJScene();
+        characterSelected(character, previouslySelected);
     }
 
     /**

@@ -41,7 +41,7 @@ public class FirstPersonCamModel extends CameraModel
      * {@inheritDoc CameraModel}
      */
     @Override
-    void determineTransform(AbstractCameraState state, PMatrix transform)
+    public void determineTransform(AbstractCameraState state, PMatrix transform)
     {
         FirstPersonCamState camState = (FirstPersonCamState)state;
         transform.set2(camState.getQuaternion(), camState.getPositionRef(), 1.0f);
@@ -51,7 +51,7 @@ public class FirstPersonCamModel extends CameraModel
      * {@inheritDoc CameraModel}
      */
     @Override
-    void handleInputEvents(AbstractCameraState state, Object[] events)
+    public void handleInputEvents(AbstractCameraState state, Object[] events)
     {
         boolean updateRotations = false;
         
