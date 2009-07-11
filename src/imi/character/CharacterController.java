@@ -24,8 +24,6 @@ import imi.collision.PickingResults;
 import imi.scene.PMatrix;
 import imi.scene.polygonmodel.PPolygonModelInstance;
 import java.util.HashSet;
-import javax.swing.JFrame;
-import org.jdesktop.wonderland.common.InternalAPI;
 
 /**
  * The base class for controlling character behaviors at a "state machine"
