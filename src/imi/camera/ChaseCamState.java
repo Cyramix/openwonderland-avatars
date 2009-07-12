@@ -81,6 +81,11 @@ public final class ChaseCamState extends AbstractCameraState implements Characte
     private float lookAtStiffnessTimeCounter = 0.0f;
     private float lookAtStiffnessTimeLength  = 0.0f;
 
+    int lastMouseX;
+    int lastMouseY;
+
+    float pitchModifier = 0;
+
     /**
      * Construct a new instance with the specified offset vectors.
      *
@@ -113,7 +118,7 @@ public final class ChaseCamState extends AbstractCameraState implements Characte
      * @param character A character to target, or null to unset.
      */
     public void setTargetCharacter(imi.character.Character character) {
-        if (targetCharacter != null)
+        if (targetCharacter != null && targetCharacter.getContext() != null)
             targetCharacter.getController().removeCharacterMotionListener(this);
         targetCharacter = character;
         if (character != null)

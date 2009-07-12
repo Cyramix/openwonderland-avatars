@@ -42,9 +42,13 @@ public final class ChaseCamModel extends CameraModel
     private final Vector3f lookAtHelperTwo = new Vector3f();
     private final Vector3f lookAtVelocity = new Vector3f();
     private final Quaternion q = new Quaternion();
+    private final PMatrix rotationHelper = new PMatrix();
 
     int zoom = 0;
-    int maxZoom = 10;
+    int maxZoom = 12;
+
+    float mouseDeltaXModifier = 0.4f;
+    float mouseDeltaYModifier = 0.01f;
 
     // Ensure proper accesibility
     ChaseCamModel() {}
@@ -91,6 +95,7 @@ public final class ChaseCamModel extends CameraModel
             if (events[i] instanceof MouseEvent)
             {
                 MouseEvent me = (MouseEvent) events[i];
+                ChaseCamState camState = (ChaseCamState)state;
                 if (me.getID() == MouseEvent.MOUSE_WHEEL)
                 {
                     MouseWheelEvent mwe = (MouseWheelEvent)me;
@@ -99,6 +104,26 @@ public final class ChaseCamModel extends CameraModel
                     int clicks = mwe.getWheelRotation() * -1;
                     zoom += clicks;
                     zoom = (zoom > maxZoom) ? maxZoom : (zoom < -maxZoom) ? -maxZoom : zoom;
+                } else if (me.getID() == MouseEvent.MOUSE_DRAGGED) {
+                    // Deform offset vector
+                    int deltaX = camState.lastMouseX - me.getX();
+                    camState.lastMouseX = me.getX();
+                    int deltaY = camState.lastMouseY - me.getY();
+                    camState.lastMouseY = me.getY();
+
+                    // COnvert mouse Y-axis motion into y-translation of the
+                    // focal point
+                    Vector3f lookAtOffset = camState.getLookAtOffsetRef();
+                    lookAtOffset.y += deltaY * mouseDeltaYModifier;
+
+                    // Convert mouse X-axis motion into rotation of the
+                    // focal point
+                    Vector3f offsetVec = camState.getDesiredPositionOffsetRef();
+                    rotationHelper.set(new Vector3f(0, (float)Math.toRadians(deltaX * mouseDeltaXModifier),0), Vector3f.ZERO, Vector3f.UNIT_XYZ);
+                    rotationHelper.transformNormal(offsetVec);
+                } else if (me.getID() == MouseEvent.MOUSE_PRESSED) {
+                    camState.lastMouseX = me.getX();
+                    camState.lastMouseY = me.getY();
                 }
             }
         }
@@ -203,4 +228,13 @@ public final class ChaseCamModel extends CameraModel
         return (classz == ChaseCamState.class);
     }
 
+    private void dumpStateParams(ChaseCamState state) {
+        System.out.println("Dumping state parameters for " + state);
+        // Target
+        System.out.println("Transform: " + state.getCameraTransform());
+        // Chase pos
+        System.out.println("Chase position: " + state.getChasePosition());
+        // Desired offsets
+        System.out.println("Pos offset: " + state.getDesiredPositionOffsetRef() + ", LookAt offset: " + state.getLookAtOffsetRef());
+    }
 }
