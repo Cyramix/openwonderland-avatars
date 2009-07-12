@@ -107,7 +107,7 @@ public class JScene extends Node {
      * Sets rendering on/off
      * @param renderingOn
      */
-    public void setRenderBool(boolean renderingOn) {
+    public synchronized void setRenderBool(boolean renderingOn) {
         m_bRender = renderingOn;
     }
 
@@ -115,7 +115,7 @@ public class JScene extends Node {
      * Get the render flag
      * @return true if this jscene is set to render
      */
-    public boolean getRenderBool() {
+    public synchronized boolean getRenderBool() {
         return m_bRender;
     }
 
@@ -258,7 +258,7 @@ public class JScene extends Node {
     }
 
     @Override
-    public void updateRenderState() {
+    public synchronized void updateRenderState() {
         if(m_bRender)
             super.updateRenderState();
     }
@@ -279,7 +279,7 @@ public class JScene extends Node {
      * @param r - the renderer to draw to.
      */
     @Override
-    public void draw(Renderer r) 
+    public synchronized void draw(Renderer r)
     {
         if (m_bRender)
         {
