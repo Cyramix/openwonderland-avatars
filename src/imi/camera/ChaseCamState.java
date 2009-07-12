@@ -121,7 +121,7 @@ public final class ChaseCamState extends AbstractCameraState implements Characte
         if (targetCharacter != null && targetCharacter.getContext() != null)
             targetCharacter.getController().removeCharacterMotionListener(this);
         targetCharacter = character;
-        if (character != null)
+        if (character != null && character.getContext() != null)
             character.getController().addCharacterMotionListener(this);
     }
 
