@@ -45,7 +45,7 @@ public final class ChaseCamModel extends CameraModel
     private final PMatrix rotationHelper = new PMatrix();
 
     int zoom = 0;
-    int maxZoom = 12;
+    int maxZoom = 10;
 
     float mouseDeltaXModifier = 0.4f;
     float mouseDeltaYModifier = 0.01f;
