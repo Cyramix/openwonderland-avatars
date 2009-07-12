@@ -24,6 +24,7 @@ import imi.character.avatar.AvatarContext.TriggerNames;
 import imi.character.statemachine.GameContext;
 import imi.character.statemachine.GameState;
 import imi.scene.SkeletonNode;
+import imi.scene.polygonmodel.PPolygonModelInstance;
 
 /**
  *
@@ -76,12 +77,13 @@ public class StrafeState extends GameState
         float x = context.getActions()[AvatarContext.ActionNames.Movement_X.ordinal()];
         
         CharacterController controller = context.getController();
-
+        PPolygonModelInstance modelInst = controller.getModelInstance();
+        Vector3f localX = null;
+        if (modelInst != null)
+            localX = modelInst.getTransform().getLocalMatrix(false).getLocalXNormalized();
         // Side step
-        if (x != 0.0f)
-        {
-            controller.accelerate(new Vector3f(x * impulse, 0f, 0));
-        }
+        if (x != 0.0f && localX != null)
+            controller.accelerate(localX.mult(x * impulse));
     }
     
     @Override
