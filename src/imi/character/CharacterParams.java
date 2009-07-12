@@ -51,7 +51,7 @@ import javolution.util.FastList;
 public class CharacterParams
 {
     /** Name of the character **/
-    private String                  name                    = "Unnamed";
+    private String                  name                    = "Character";
     /** The SharedAsset associated with this character's COLLADA model **/
     private SharedAsset             asset                   = null;
     /** A string to be applied to the beginning of all paths, if null asumming it's a local path **/
@@ -177,7 +177,7 @@ public class CharacterParams
     // For simple static geometry replacement
     private boolean useSimpleStaticModel    = false;
     private PScene  simpleScene             = null;
-    private final PMatrix origin = new PMatrix(new Vector3f(0,(float)Math.PI,0), Vector3f.UNIT_XYZ, Vector3f.ZERO);
+    private final PMatrix origin = new PMatrix();
     /** Whether the facial animation will play **/
     private boolean animateFace = true;
     /** Whether the animation processor starts enabled **/
@@ -858,7 +858,7 @@ public class CharacterParams
     public CharacterParams randomizeHairColor()
     {
         int preset = (int) (Math.random() * 1000000 % skinTones.length);
-        randomizeHairColor(preset);
+        setHairColorPreset(preset);
         return this;
     }
 
@@ -867,7 +867,7 @@ public class CharacterParams
      * @param preset
      * @return
      */
-    public CharacterParams randomizeHairColor(int skinToneBasePreset)
+    public CharacterParams setHairColorPreset(int skinToneBasePreset)
     {
         float r = skinTones[skinToneBasePreset].r * (float)Math.random();
         float g = skinTones[skinToneBasePreset].g * (float)Math.random();

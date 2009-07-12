@@ -74,7 +74,7 @@ public class SavingAndLoadingTest extends DemoBase
     @Override
     protected void createApplicationEntities(WorldManager wm)
     {
-        createSimpleFloor(wm);
+        createSimpleFloor(wm, 50.0f, 50.0f, 10.0f, Vector3f.ZERO);
 
         // Create avatar input scheme
         InputManagerEntity ime = (InputManagerEntity)wm.getUserData(InputManagerEntity.class);

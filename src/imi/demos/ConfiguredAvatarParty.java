@@ -56,7 +56,7 @@ public class ConfiguredAvatarParty extends DemoBase
     @Override
     protected void createApplicationEntities(WorldManager wm)
     {
-        createSimpleFloor(wm);
+        createSimpleFloor(wm, 50.0f, 50.0f, 10.0f, Vector3f.ZERO);
 
         // Tweak the camera a bit
         FirstPersonCamState camState = (FirstPersonCamState)m_cameraProcessor.getState();

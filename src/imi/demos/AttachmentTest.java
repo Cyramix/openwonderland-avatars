@@ -60,7 +60,7 @@ public class AttachmentTest extends DemoBase
     @Override
     protected void createApplicationEntities(WorldManager wm) {
 
-        createSimpleFloor(wm);
+        createSimpleFloor(wm, 50.0f, 50.0f, 10.0f, Vector3f.ZERO);
         // Change camera position
         FirstPersonCamState camState = (FirstPersonCamState) wm.getUserData(AbstractCameraState.class);
         camState.setCameraPosition(new Vector3f(0,1.5f,-2));

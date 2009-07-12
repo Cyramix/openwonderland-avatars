@@ -452,12 +452,13 @@ public class DemoBase {
         }
     }
 
-    public static Entity createSimpleFloor(WorldManager wm) {
+    public static Entity createSimpleFloor(WorldManager wm, float length1, float length2, float UVscale, Vector3f origin) {
         Entity floorEntity = new Entity("Floor Entity");
-        Quad floorQuad = new Quad("Floor Quad", 50.0f, 50.0f);
-        floorQuad.scaleTextureCoordinates(0, 10.0f);
+        Quad floorQuad = new Quad("Floor Quad", length1, length2);
+        floorQuad.scaleTextureCoordinates(0, UVscale);
         textureMesh(floorQuad, "assets/textures/floor_tiles_karystoy.png", wm, 0);
         Node root = new Node("Floor Entity RC Root");
+        root.setLocalTranslation(origin);
         setDefaultRenderStates(root, wm);
         root.attachChild(floorQuad);
         Matrix3f rotation = new Matrix3f();

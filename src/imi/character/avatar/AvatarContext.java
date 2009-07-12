@@ -66,6 +66,8 @@ import imi.character.behavior.FollowBakedPath;
 import imi.character.behavior.GoSit;
 import imi.character.behavior.GoTo;
 import imi.scene.animation.AnimationComponent.PlaybackMode;
+import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.Hashtable;
 import javolution.util.FastList;
 import javolution.util.FastTable;
@@ -90,6 +92,8 @@ public class AvatarContext extends GameContext
     private FastList<Integer> genericAnimationsQueue = new FastList<Integer>();
     /** Used for cycling through action animations **/
     private int genericActionIndex = 0;
+    /** Map of generic animation API names to indecis  **/
+    private HashMap<String, Integer> genericAnimationNames = new HashMap<String, Integer>();
 
     /**
      * The names of the triggers.
@@ -498,6 +502,18 @@ public class AvatarContext extends GameContext
         return genericAnimations;
     }
     
+    /**
+     * Get the index for performAction() by name
+     * @param name
+     * @return
+     */
+    public int getGenericAnimationIndex(String name) {
+        Integer inte = genericAnimationNames.get(name);
+        if (inte == null)
+            return -1;
+        return inte.intValue();
+    }
+    
     /** Here we define the animation properties for the various animations
      that are using the ActionState to play out **/
     private void configureDefaultActionStateInfo() 
@@ -506,89 +522,113 @@ public class AvatarContext extends GameContext
         CycleActionInfo cycleInfo;
         
         /** Note: There are many more settings possible to set! **/
-     
+        int index = 0;
         if (avatar.getCharacterParams().isMale())
         {
             info = new ActionInfo("Male_Wave", "1", 0.3f, 2.0f);
             genericAnimations.add(info);
+            genericAnimationNames.put("Wave", index++);
 
             cycleInfo = new CycleActionInfo("Male_AnswerCell", "Male_Cell", "Male_AnswerCell", "1", 0.5f, 2.0f);
             cycleInfo.setExitAnimationReverse(true);
             cycleInfo.setTransitionDuration(0.1f);
             cycleInfo.setCycleTransitionDuration(0.2f);
             genericAnimations.add(cycleInfo);
+            genericAnimationNames.put("AnswerCell", index++);
 
             cycleInfo = new CycleActionInfo("Male_RaiseHand", "Male_RaiseHandIdle", "Male_RaiseHand");
             cycleInfo.setExitAnimationReverse(true);
             genericAnimations.add(cycleInfo);
+            genericAnimationNames.put("RaiseHand", index++);
             
             info = new ActionInfo("Male_No");
             genericAnimations.add(info);
+            genericAnimationNames.put("No", index++);
 
             info = new ActionInfo("Male_Yes");
             genericAnimations.add(info);
+            genericAnimationNames.put("Yes", index++);
 
             info = new ActionInfo("Male_Laugh", "1", 0.3f, 2.5f);
             genericAnimations.add(info);
+            genericAnimationNames.put("Laugh", index++);
 
             info = new ActionInfo("Male_Cheer", "1", 0.3f, 3.0f);
             genericAnimations.add(info);
+            genericAnimationNames.put("Cheer", index++);
 
             info = new ActionInfo("Male_Clap");
             genericAnimations.add(info);
+            genericAnimationNames.put("Clap", index++);
 
             info = new ActionInfo("Male_Bow");
             genericAnimations.add(info);
+            genericAnimationNames.put("Bow", index++);
 
             info = new ActionInfo("Male_Follow");
             genericAnimations.add(info);
+            genericAnimationNames.put("Follow", index++);
 
             info = new ActionInfo("Male_TakeDamage");
             genericAnimations.add(info);
+            genericAnimationNames.put("TakeDamage", index++);
 
             info = new ActionInfo("Male_PublicSpeaking");
             genericAnimations.add(info);
+            genericAnimationNames.put("PublicSpeaking", index++);
 
             info = new ActionInfo("Male_ShakeHands");
             genericAnimations.add(info);
+            genericAnimationNames.put("ShakeHands", index++);
         }
         else // female
         {
             info = new ActionInfo("Female_Wave", "1", 0.3f, 2.0f);
             genericAnimations.add(info);
+            genericAnimationNames.put("Wave", index++);
 
             cycleInfo = new CycleActionInfo("Female_AnswerCell", "Female_Cell", "Female_AnswerCell", "1", 0.5f, 2.0f);
             cycleInfo.setCycleMode(PlaybackMode.PlayOnce);
             cycleInfo.setExitAnimationReverse(true);
             genericAnimations.add(cycleInfo);
+            genericAnimationNames.put("AnswerCell", index++);
 
             cycleInfo = new CycleActionInfo("Female_RaiseHand", "Female_RaiseHandIdle", "Female_RaiseHand");
             cycleInfo.setExitAnimationReverse(true);
             genericAnimations.add(cycleInfo);
+            genericAnimationNames.put("RaiseHand", index++);
 
             info = new ActionInfo("Female_No");
             genericAnimations.add(info);
+            genericAnimationNames.put("No", index++);
 
             info = new ActionInfo("Female_Yes");
             genericAnimations.add(info);
+            genericAnimationNames.put("Yes", index++);
 
             info = new ActionInfo("Female_Laugh", "1", 0.3f, 2.5f);
             genericAnimations.add(info);
+            genericAnimationNames.put("Laugh", index++);
 
             info = new ActionInfo("Female_Cheer", "1", 0.3f, 3.0f);
             genericAnimations.add(info);
+            genericAnimationNames.put("Cheer", index++);
 
             info = new ActionInfo("Female_Clap");
             genericAnimations.add(info);
+            genericAnimationNames.put("Clap", index++);
 
             info = new ActionInfo("Female_Bow");
             genericAnimations.add(info);
+            genericAnimationNames.put("Bow", index++);
 
             info = new ActionInfo("Female_Follow");
             genericAnimations.add(info);
+            genericAnimationNames.put("Follow", index++);
             
             info = new ActionInfo("Female_PublicSpeaking");
             genericAnimations.add(info);
+            genericAnimationNames.put("PublicSpeaking", index++);
         }
     }
 

@@ -2343,6 +2343,15 @@ public abstract class Character extends Entity implements SpatialObject, Animati
     }
 
     /**
+     * Get the name of this character (not the Entity name - that one is always "Character")
+     * @return
+     */
+    @Override
+    public String getName() {
+        return characterParams.getName();
+    }
+    
+    /**
      * {@inheritDoc SpatialObject}
      */
     @Override
@@ -2401,13 +2410,20 @@ public abstract class Character extends Entity implements SpatialObject, Animati
             throw new IllegalArgumentException("Null builder provided");
 
         this.worldManager        = builder.worldManager;
-
-        if (builder.attributeParams != null) {
+        PMatrix origin = new PMatrix();
+        
+        if (builder.attributeParams != null) 
+        {
             this.characterParams     = builder.attributeParams;
             // User the CharacterParams
             characterParams.setInitializationObject(builder.initializer);
+            characterParams.getOrigin(origin);
+            if (origin.equals(PMatrix.IDENTITY))
+                characterParams.setOrigin(builder.transform);
             commonConstructionCode( builder.addEntity, builder.xmlCharDom);
-        } else if (builder.configurationFile != null) {
+        } 
+        else if (builder.configurationFile != null) 
+        {
             System.out.println("CHARACTER 2375: Loading config file: " + builder.configurationFile);
             // Load and use a configuration file
             xmlCharacter characterDOM = null;

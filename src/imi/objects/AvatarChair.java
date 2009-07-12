@@ -64,7 +64,7 @@ public class AvatarChair implements ChairObject
     private float   goalForwardOffset = 0.5f;
 
     /** Min-safe distance from other chairs. **/
-    private float desiredDistanceFromOtherChairs = 1.5f;
+    private float desiredDistanceFromOtherChairs = 2.0f;
 
     /**
      * Construct a brand new chair object at the given position and heading

@@ -108,6 +108,8 @@ public class AvatarObjectCollection extends ObjectCollectionBase
 
         // Add the entity to the world manager
         worldManager.addEntity(this);
+        // Add for public access
+        worldManager.addUserData(getClass(), this);
     }
 
     public void boundingVolumeTest()
@@ -405,6 +407,16 @@ public class AvatarObjectCollection extends ObjectCollectionBase
 //        lighDimmer.setObjectCollection(this);
 //        lighDimmer.getModelInst().calculateBoundingSphere();
     }
+    
+    public void addChair(Vector3f position, Vector3f direction)
+    {
+        //direction.normalizeLocal();
+        AvatarChair newChair = new AvatarChair(position, direction, "assets/models/collada/Objects/Chairs/ConfChair1.dae");
+        newChair.setObjectCollection(this);
+        newChair.setInScene(pscene);
+        pscene.setDirty(true, true);
+        pscene.buildFlattenedHierarchy();
+    }
 
     public void testLightToggle()
     {
@@ -448,8 +460,8 @@ public class AvatarObjectCollection extends ObjectCollectionBase
             {
                 Vector3f chairPos    = chair.getPositionRef();
                 Vector3f newChairPos = newChair.getPositionRef();
-                float desiredDistance = chair.getDesiredDistanceFromOtherTargets() + newChair.getDesiredDistanceFromOtherTargets();
-                if (chairPos.distanceSquared(newChairPos) < desiredDistance * desiredDistance)
+                float desiredDistance = Math.max(chair.getDesiredDistanceFromOtherTargets(), newChair.getDesiredDistanceFromOtherTargets());
+                if (Math.abs(chairPos.distanceSquared(newChairPos)) < desiredDistance * desiredDistance)
                     return true;
             }
         }

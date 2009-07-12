@@ -61,7 +61,7 @@ public class RandomAvatarParty extends DemoBase
     @Override
     protected void createApplicationEntities(WorldManager wm)
     {
-        createSimpleFloor(wm);
+        createSimpleFloor(wm, 50.0f, 50.0f, 10.0f, Vector3f.ZERO);
 
 //        wm.getRenderManager().setRunning(false);
         // Tweak the camera a bit
