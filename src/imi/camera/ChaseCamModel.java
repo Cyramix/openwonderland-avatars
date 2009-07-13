@@ -114,12 +114,12 @@ public final class ChaseCamModel extends CameraModel
                     // COnvert mouse Y-axis motion into y-translation of the
                     // focal point
                     Vector3f lookAtOffset = camState.getLookAtOffsetRef();
-                    lookAtOffset.y += deltaY * mouseDeltaYModifier;
+                    lookAtOffset.y += deltaY * mouseDeltaYModifier * camState.getyModifier();
 
                     // Convert mouse X-axis motion into rotation of the
                     // focal point
                     Vector3f offsetVec = camState.getDesiredPositionOffsetRef();
-                    rotationHelper.set(new Vector3f(0, (float)Math.toRadians(deltaX * mouseDeltaXModifier),0), Vector3f.ZERO, Vector3f.UNIT_XYZ);
+                    rotationHelper.set(new Vector3f(0, (float)Math.toRadians(deltaX * mouseDeltaXModifier * camState.getxModifier()),0), Vector3f.ZERO, Vector3f.UNIT_XYZ);
                     rotationHelper.transformNormal(offsetVec);
                 } else if (me.getID() == MouseEvent.MOUSE_PRESSED) {
                     camState.lastMouseX = me.getX();

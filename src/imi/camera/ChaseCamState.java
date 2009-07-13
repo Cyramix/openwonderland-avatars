@@ -86,6 +86,9 @@ public final class ChaseCamState extends AbstractCameraState implements Characte
 
     float pitchModifier = 0;
 
+    float xModifier = 1.0f;
+    float yModifier = 1.0f;
+
     /**
      * Construct a new instance with the specified offset vectors.
      *
@@ -393,6 +396,23 @@ public final class ChaseCamState extends AbstractCameraState implements Characte
     public void setZoomEnabled(boolean zoomEnabled) {
         this.zoomEnabled = zoomEnabled;
     }
+
+    public float getxModifier() {
+        return xModifier;
+    }
+
+    public void setxModifier(float xModifier) {
+        this.xModifier = xModifier;
+    }
+
+    public float getyModifier() {
+        return yModifier;
+    }
+
+    public void setyModifier(float yModifier) {
+        this.yModifier = yModifier;
+    }
+
 
     ////////////////////////////////////
     ///////// Package API
