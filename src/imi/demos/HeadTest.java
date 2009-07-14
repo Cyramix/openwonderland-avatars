@@ -35,6 +35,7 @@ import imi.input.InputManagerEntity;
 import imi.repository.CacheBehavior;
 import imi.repository.Repository;
 import imi.scene.JScene;
+import imi.scene.PMatrix;
 import imi.scene.PNode;
 import imi.scene.PScene;
 import imi.scene.polygonmodel.PPolygonModelInstance;
@@ -93,12 +94,10 @@ public class HeadTest extends JFrame implements BufferUpdater {
     private CameraNode              m_cameraNode        = null;
 
     private int                     m_desiredFrameRate  = 60;
-    private int                     m_width             = 800;
-    private int                     m_height            = 600;
-    private float                   m_aspect            = 800.0f/600.0f;
-
-    private int                     m_screenWidth       = 800;
-    private int                     m_screenHeight      = 732;
+    private int                     m_width             = 300;
+    private int                     m_height            = 300;
+    private float                   m_aspect            = 300.0f/300.0f;
+    private int                     m_height_gui        = 32;
 
     private String[]                m_args              = null;
 
@@ -190,8 +189,11 @@ public class HeadTest extends JFrame implements BufferUpdater {
                     }
                 };
 
+                PMatrix mat = new PMatrix();
+                mat.fromAngleAxis((float)Math.toRadians(180), Vector3f.UNIT_Y);
                 m_avatar = new Avatar.AvatarBuilder(attribute, m_worldManager)
                                      .initializer(initializer)
+                                     .transform(mat)
                                      .build();
             }
         };
@@ -326,7 +328,7 @@ public class HeadTest extends JFrame implements BufferUpdater {
         m_mainPanel.m_renderBuffer.setBufferUpdater(this);
         setContentPane(m_mainPanel);
         pack();
-        setSize(m_screenWidth, m_screenHeight);
+        setSize(m_width, m_height + m_height_gui);
         setLocationRelativeTo(null);
         m_mainPanel.canvas.requestFocusInWindow();
         setVisible(true);
