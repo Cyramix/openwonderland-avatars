@@ -32,6 +32,7 @@ import com.jme.scene.state.RenderState;
 import com.jme.scene.state.WireframeState;
 import com.jme.scene.state.ZBufferState;
 import com.jme.scene.shape.Box;
+import headtestassets.HeadAssets;
 import imi.character.avatar.AvatarContext;
 import imi.input.CharacterControls;
 import imi.objects.ObjectCollectionBase;
@@ -125,7 +126,6 @@ import org.jdesktop.mtgame.RenderManager;
 import org.jdesktop.mtgame.WorldManager;
 import org.jdesktop.wonderland.common.ExperimentalAPI;
 import org.jdesktop.wonderland.common.InternalAPI;
-
 
 
 /**
@@ -1654,10 +1654,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
 
         // Load up any geometry requested by the provided attributes object
         for (String load : attributes.getLoadInstructions()) {
-            String pref = "imi/data/";
-            int index = load.lastIndexOf(File.separatorChar);
-            String name = load.substring(index+1);
-            URL url     = getClass().getClassLoader().getResource(pref + name);
+            URL url = HeadAssets.class.getClassLoader().getResource(load);
 
             if (url != null)
                 attributeRoot.addChildInstruction(InstructionType.loadGeometry, url.toString());
