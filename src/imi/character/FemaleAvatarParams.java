@@ -591,9 +591,11 @@ public class FemaleAvatarParams extends CharacterParams
      * @return
      */
     public FemaleAvatarParams buildSpecific() {
-        setLoadInstructions(configContext.load);
-        setAddInstructions(configContext.add);
-        setAttachmentsInstructions(configContext.attachments);
+        if (configContext != null) {
+            setLoadInstructions(configContext.load);
+            setAddInstructions(configContext.add);
+            setAttachmentsInstructions(configContext.attachments);
+        }
         setValid(true);
         return this;
     }

@@ -1468,7 +1468,8 @@ public abstract class Character extends Entity implements SpatialObject, Animati
 
         // Hook up eyeballs, if eyeballs exist
         if (!(characterParams instanceof UnimeshCharacterParams))
-            m_eyes = new CharacterEyes(characterParams.getEyeballTexture(), this, worldManager);
+            if (characterParams.getHeadAttachment() != null)
+                m_eyes = new CharacterEyes(characterParams.getEyeballTexture(), this, worldManager);
 
         // At this point, all meshes have been loaded. We should now ensure that
         // all of the child meshinstances have material states.
@@ -1541,11 +1542,14 @@ public abstract class Character extends Entity implements SpatialObject, Animati
             leftEye = m_eyes.leftEyeBall;
             rightEye = m_eyes.rightEyeBall;
         }
-        m_skeletonManipulator = new VerletSkeletonFlatteningManipulator(m_leftArm, m_rightArm,
-                                                                        leftEye, rightEye,
-                                                                        m_skeleton, m_modelInst);
-        m_rightArm.setSkeletonManipulator(m_skeletonManipulator);
-        m_leftArm.setSkeletonManipulator(m_skeletonManipulator);
+
+        if (leftEye != null) {
+            m_skeletonManipulator = new VerletSkeletonFlatteningManipulator(m_leftArm, m_rightArm,
+                                                                            leftEye, rightEye,
+                                                                            m_skeleton, m_modelInst);
+            m_rightArm.setSkeletonManipulator(m_skeletonManipulator);
+            m_leftArm.setSkeletonManipulator(m_skeletonManipulator);
+        }
         //m_arm.setPointAtLocation(Vector3f.UNIT_Y.mult(2.0f)); // test pointing, set to null to stop pointing
 
         // Uncomment for verlet arm particle visualization
@@ -1628,27 +1632,36 @@ public abstract class Character extends Entity implements SpatialObject, Animati
 
         // attach the appropriate head
         String headPath = attributes.getHeadAttachment();
-        if (FileUtils.doesPathReferToBinaryFile(headPath))
-        {
-            // Binary head files are assumed to be in the avatars jar
-            URL headLocation = getClass().getClassLoader().getResource(headPath);
-            if (headLocation == null)
-                System.out.println("ERROR loading head: " + headPath);
-            installBinaryHeadConfiguration(headLocation);
-        }
-        else
-        {
-            try {
-                URL headLocation = new URL(urlPrefix + headPath);
-                installHeadConfiguration(headLocation);
-            } catch (MalformedURLException ex) {
-                Logger.getLogger(Character.class.getName()).log(Level.SEVERE, null, ex);
+        if (headPath != null) {
+            if (FileUtils.doesPathReferToBinaryFile(headPath))
+            {
+                // Binary head files are assumed to be in the avatars jar
+                URL headLocation = getClass().getClassLoader().getResource(headPath);
+                if (headLocation == null)
+                    System.out.println("ERROR loading head: " + headPath);
+                installBinaryHeadConfiguration(headLocation);
+            }
+            else
+            {
+                try {
+                    URL headLocation = new URL(urlPrefix + headPath);
+                    installHeadConfiguration(headLocation);
+                } catch (MalformedURLException ex) {
+                    Logger.getLogger(Character.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         }
 
         // Load up any geometry requested by the provided attributes object
         for (String load : attributes.getLoadInstructions()) {
-            if (FileUtils.checkURLPath(urlPrefix + load))
+            String pref = "imi/data/";
+            int index = load.lastIndexOf(File.separatorChar);
+            String name = load.substring(index+1);
+            URL url     = getClass().getClassLoader().getResource(pref + name);
+
+            if (url != null)
+                attributeRoot.addChildInstruction(InstructionType.loadGeometry, url.toString());
+            else if (FileUtils.checkURLPath(urlPrefix + load))
                 attributeRoot.addChildInstruction(InstructionType.loadGeometry, urlPrefix + load);
             else
                 throw new RuntimeException("Failed to load " + urlPrefix + load);

@@ -553,9 +553,11 @@ public class MaleAvatarParams extends CharacterParams
      * @return
      */
     public MaleAvatarParams buildSpecific() {
-        setLoadInstructions(configContext.load);
-        setAddInstructions(configContext.add);
-        setAttachmentsInstructions(configContext.attachments);
+        if (configContext != null) {
+            setLoadInstructions(configContext.load);
+            setAddInstructions(configContext.add);
+            setAttachmentsInstructions(configContext.attachments);
+        }
         setValid(true);
         return this;
     }

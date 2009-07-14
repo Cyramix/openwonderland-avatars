@@ -278,12 +278,20 @@ public class Repository extends Entity
      */
     public Texture loadTexture(URL location)
     {
-        loadedFiles.add(location.toString());
+        String prefix   = "imi/data/";
+        int index       = location.toString().lastIndexOf(File.separatorChar);
+        String name     = location.toString().substring(index+1);
+        URL url         = getClass().getClassLoader().getResource(prefix + name);
+        if (url == null)
+            url = location;
+
+        loadedFiles.add(url.toString());
+
 //        System.out.println(location.toString());
         if (m_cache != null)
-            return m_cache.loadTexture(location);
+            return m_cache.loadTexture(url);
         else
-            return TextureManager.loadTexture(location);
+            return TextureManager.loadTexture(url);
     }
 
     public void setLoadGeometry(boolean bLoadGeometry) {
