@@ -1001,7 +1001,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
      * run-time.
      * @param enable true to enable, false otherwise
      */
-    public final void enabledShadow(boolean enable) {
+    public final void enableShadow(boolean enable) {
         if (m_shadowMesh != null)
             m_shadowMesh.setRenderStop(!enable);
     }

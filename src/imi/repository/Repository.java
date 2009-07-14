@@ -278,9 +278,10 @@ public class Repository extends Entity
      */
     public Texture loadTexture(URL location)
     {
-        int index   = location.toString().lastIndexOf("assets");
-        String path = location.toString().substring(index);
+//        int index   = location.toString().lastIndexOf("assets");
+//        String path = location.toString().substring(index);
         URL url = null;//HeadAssets.class.getClassLoader().getResource(path);
+
         if (url == null)
             url = location;
 
