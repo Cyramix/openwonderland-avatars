@@ -34,6 +34,11 @@ import imi.scene.polygonmodel.PPolygonMeshInstance;
 import imi.scene.polygonmodel.PPolygonModelInstance;
 import imi.scene.polygonmodel.PMeshMaterial;
 import imi.scene.utils.PMeshUtils;
+import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javolution.util.FastList;
 import org.jdesktop.wonderland.common.ExperimentalAPI;
 
@@ -73,85 +78,74 @@ public class AvatarChair implements ChairObject
      * @param heading
      * @param modelFile
      */
-    public AvatarChair(Vector3f position, Vector3f heading, String modelFile)
+    public AvatarChair(Vector3f position, Vector3f heading, Object modelPathOrURL)
     {
-        if (modelFile != null && modelFile.endsWith(".dae"))
+        URL modelURL = null;
+        if (modelPathOrURL instanceof String)
         {
-            goalOffset.buildRotationY((float) Math.toRadians(90));
-            
-            // Store the initOrigin
-            initOrigin = new PMatrix();
-            initOrigin.lookAt(position, position.add(heading), Vector3f.UNIT_Y);
-            initOrigin.invert();
-            
-            //final Chair me = this;
-            
-            sharedAsset = new SharedAsset(null, new AssetDescriptor(SharedAssetType.COLLADA, modelFile));
-            AssetInitializer init = new AssetInitializer() {
-                public boolean initialize(Object asset) {
-                    
-//                    System.out.println("init chair " + me); // watch for "freeloaders"
-//                    System.out.println(asset);
-                    
-                    // Apply material to all meshes
-                    FastList<PNode> queue = new FastList<PNode>();
-                    queue.addAll(((PNode)asset).getChildren());
-                    while (queue.isEmpty() == false)
-                    {
-                        PNode current = queue.removeFirst();
-                        if (current instanceof PPolygonMeshInstance)
-                        {
-                            PPolygonMeshInstance meshInst = (PPolygonMeshInstance) current;
-                            //System.out.println("applying material on " + meshInst);
-                            meshInst.applyMaterial();
-
-                            //meshInst.getGeometry().calculateBoundingSphere();
-//                            meshInst.getSharedMesh().setModelBound(new BoundingSphere());
-//                            meshInst.getSharedMesh().updateModelBound();
-                            
-//                            if (((BoundingSphere)meshInst.getSharedMesh().getModelBound()).getRadius() == 0.0f)
-//                                continue; // for a breakpoint..
-                        }
-                        // add all the kids
-                        queue.addAll(current.getChildren());
-                    }
-
-                    if (modelInst != null)
-                        modelInst.calculateBoundingSphere();
-                    
-                    if (objectCollection == null)
-                        return false;
-
-                    
-                    //objectCollection.getPScene().submitTransformsAndGeometry();
-                    ////objectCollection.getJScene().updateWorldBound();
-                    //objectCollection.getJScene().updateRenderState();
-                    
-                    return true;
-                }
-            };
-            sharedAsset.setInitializer(init);
+            try {
+                modelURL = new File((String) modelPathOrURL).toURI().toURL();
+            } catch (MalformedURLException ex) {
+                Logger.getLogger(AvatarChair.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
         else
-        {
+            modelURL =(URL)modelPathOrURL;
 
-            PMatrix origin = new PMatrix();
-            origin.lookAt(position, position.add(heading), Vector3f.UNIT_Y);
-            origin.invert();
-            modelInst = new PPolygonModelInstance("Chair", origin);
+        goalOffset.buildRotationY((float) Math.toRadians(90));
 
-            PMeshMaterial geometryMaterial = new PMeshMaterial();
-            geometryMaterial.setColorMaterial(ColorMaterial.Diffuse); // Make the vert colors affect diffuse coloring
-            geometryMaterial.setDiffuse(ColorRGBA.white);
+        // Store the initOrigin
+        initOrigin = new PMatrix();
+        initOrigin.lookAt(position, position.add(heading), Vector3f.UNIT_Y);
+        initOrigin.invert();
 
-            PPolygonMesh sphereMesh;
+        //final Chair me = this;
 
-            sphereMesh = PMeshUtils.createSphere("Chair Mesh", Vector3f.ZERO, 1.0f, 6, 6, ColorRGBA.red);
-            sphereMesh.setMaterial(geometryMaterial);
-            sphereMesh.submit();
-            //sphereMesh.getTransform().getLocalMatrix(true).setTranslation(Vector3f.UNIT_X.mult(2.0f));
-            modelInst.addChild(sphereMesh);    
-        }        
+        sharedAsset = new SharedAsset(null, new AssetDescriptor(SharedAssetType.COLLADA, modelURL));
+        AssetInitializer init = new AssetInitializer() {
+            public boolean initialize(Object asset) {
+
+//                    System.out.println("init chair " + me); // watch for "freeloaders"
+//                    System.out.println(asset);
+
+                // Apply material to all meshes
+                FastList<PNode> queue = new FastList<PNode>();
+                queue.addAll(((PNode)asset).getChildren());
+                while (queue.isEmpty() == false)
+                {
+                    PNode current = queue.removeFirst();
+                    if (current instanceof PPolygonMeshInstance)
+                    {
+                        PPolygonMeshInstance meshInst = (PPolygonMeshInstance) current;
+                        //System.out.println("applying material on " + meshInst);
+                        meshInst.applyMaterial();
+
+                        //meshInst.getGeometry().calculateBoundingSphere();
+//                            meshInst.getSharedMesh().setModelBound(new BoundingSphere());
+//                            meshInst.getSharedMesh().updateModelBound();
+
+//                            if (((BoundingSphere)meshInst.getSharedMesh().getModelBound()).getRadius() == 0.0f)
+//                                continue; // for a breakpoint..
+                    }
+                    // add all the kids
+                    queue.addAll(current.getChildren());
+                }
+
+                if (modelInst != null)
+                    modelInst.calculateBoundingSphere();
+
+                if (objectCollection == null)
+                    return false;
+
+
+                //objectCollection.getPScene().submitTransformsAndGeometry();
+                ////objectCollection.getJScene().updateWorldBound();
+                //objectCollection.getJScene().updateRenderState();
+
+                return true;
+            }
+        };
+        sharedAsset.setInitializer(init);
     }
     
     /**

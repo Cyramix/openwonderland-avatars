@@ -93,7 +93,7 @@ public class AvatarController extends CharacterController
      * If true, the TransformUpdateManager will be used to try and synch transform updates.
      * This is primarily needed when the collision system is operating on the avatar.
      **/
-    private boolean bUseTransformUpdateManager = true;
+    private boolean bUseTransformUpdateManager = false;
     /** Used to enable / disabled ground clamping **/
     private boolean groundClampEnabled = true;
 
@@ -280,7 +280,7 @@ public class AvatarController extends CharacterController
         TransformUpdateManager transformUpdateManager = (TransformUpdateManager) avatar.getWorldManager().getUserData(TransformUpdateManager.class);
         if(bUseTransformUpdateManager && transformUpdateManager != null)
         {
-            transformUpdateManager.transformUpdate(this, body.getTransform().getLocalMatrix(true), position, currentRot);
+            transformUpdateManager.transformUpdate(avatar, body.getTransform().getLocalMatrix(true), position, currentRot);
         }
         else
         {

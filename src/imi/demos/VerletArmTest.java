@@ -52,7 +52,7 @@ public class VerletArmTest  extends DemoBase
     @Override
     protected void createApplicationEntities(WorldManager wm)
     {
-        createSimpleFloor(wm, 50.0f, 50.0f, 10.0f, Vector3f.ZERO);
+        createSimpleFloor(wm, 50.0f, 50.0f, 10.0f, Vector3f.ZERO, null);
 
         int numberOfAvatars = 1;
         

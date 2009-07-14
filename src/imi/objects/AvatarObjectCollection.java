@@ -27,12 +27,18 @@ import com.jme.scene.state.RenderState;
 import com.jme.scene.state.WireframeState;
 import com.jme.scene.state.ZBufferState;
 import imi.character.avatar.Avatar;
+import imi.demos.DemoBase;
 import imi.scene.JScene;
 import imi.scene.PScene;
 import imi.scene.utils.visualizations.VisuManager;
 import imi.utils.graph.Connection;
+import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Collection;
 import java.util.Hashtable;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javolution.util.FastTable;
 import org.jdesktop.mtgame.ProcessorCollectionComponent;
 import org.jdesktop.mtgame.ProcessorComponent;
@@ -408,10 +414,23 @@ public class AvatarObjectCollection extends ObjectCollectionBase
 //        lighDimmer.getModelInst().calculateBoundingSphere();
     }
     
-    public void addChair(Vector3f position, Vector3f direction)
+    public void addChair(Vector3f position, Vector3f direction, String baseURL)
     {
+        String modelFile = "assets/models/collada/Objects/Chairs/ConfChair1.dae";
+        Object object = null;
+        if (baseURL != null)
+        {
+            try {
+                object = new URL(baseURL + modelFile);
+            } catch (MalformedURLException ex) {
+                Logger.getLogger(DemoBase.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        else
+            object = modelFile;
+
         //direction.normalizeLocal();
-        AvatarChair newChair = new AvatarChair(position, direction, "assets/models/collada/Objects/Chairs/ConfChair1.dae");
+        AvatarChair newChair = new AvatarChair(position, direction, object);
         newChair.setObjectCollection(this);
         newChair.setInScene(pscene);
         pscene.setDirty(true, true);

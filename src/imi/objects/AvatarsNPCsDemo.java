@@ -51,12 +51,12 @@ public class AvatarsNPCsDemo implements CharacterInitializationInterface
     Avatar npc1, npc2;
     Brain brain1, brain2;
     
-    public AvatarsNPCsDemo(WorldManager wm, Vector3f origin)
+    public AvatarsNPCsDemo(WorldManager wm, Vector3f origin, String baseURL)
     {
         this.origin = origin;
         
         // Create a simple floor
-        DemoBase.createSimpleFloor(wm, 10.0f, 10.0f, 3.5f, origin.add(new Vector3f(2.5f, 0.0f, 2.5f)));
+        //DemoBase.createSimpleFloor(wm, 10.0f, 10.0f, 3.5f, origin.add(new Vector3f(2.5f, 0.0f, 2.5f)), baseURL);
         
         // Get the object collection and generate some chairs
         float block = 3.0f;
@@ -64,8 +64,8 @@ public class AvatarsNPCsDemo implements CharacterInitializationInterface
         AvatarObjectCollection objects = (AvatarObjectCollection)wm.getUserData(AvatarObjectCollection.class);
         if (objects == null)
                 objects = new AvatarObjectCollection("Avatar Objects", wm);
-        objects.addChair(origin.add(new Vector3f(1.5f, 0.0f, 1.5f)), Vector3f.UNIT_X);
-        objects.addChair(origin.add(new Vector3f(3.5f, 0.0f, 3.5f)), Vector3f.UNIT_Z);
+        objects.addChair(origin.add(new Vector3f(1.5f, 0.0f, 1.5f)), Vector3f.UNIT_X, baseURL);
+        objects.addChair(origin.add(new Vector3f(3.5f, 0.0f, 3.5f)), Vector3f.UNIT_Z, baseURL);
         
         // Create locations
         LocationNode chairGame1 = new LocationNode("Location 1", origin.add(Vector3f.ZERO), halfBlock, objects);
@@ -92,6 +92,7 @@ public class AvatarsNPCsDemo implements CharacterInitializationInterface
         
         // Set common traits for fast loading
         MaleAvatarParams params = new MaleAvatarParams("NPC 1");
+        params.setBaseURL(baseURL);
         params.configureFeet(0);
         params.configureHead(2);
         params.configureLegs(0);
@@ -108,6 +109,7 @@ public class AvatarsNPCsDemo implements CharacterInitializationInterface
         
         // Set common traits for fast loading
         params = new MaleAvatarParams("NPC 1");
+        params.setBaseURL(baseURL);
         params.configureFeet(0);
         params.configureHead(2);
         params.configureLegs(0);
@@ -193,11 +195,12 @@ public class AvatarsNPCsDemo implements CharacterInitializationInterface
                         playAnimation();
                         break;
                     case 1:
-                        int direction = (int)((Math.random() * 1000) % 2);
-                        if (direction == 0)
-                            goRound();
-                        else
-                            goRoundOtherWay();
+                        playAnimation();
+//                        int direction = (int)((Math.random() * 1000) % 2);
+//                        if (direction == 0)
+//                            goRound();
+//                        else
+//                            goRoundOtherWay();
                         break;
                     case 2:
                         goSit();
@@ -230,7 +233,7 @@ public class AvatarsNPCsDemo implements CharacterInitializationInterface
             CharacterBehaviorManager behavior = npc.getContext().getBehaviorManager();
             behavior.clearTasks();
             float randomFloat = (float)((Math.random() * 1000) % 5);
-            Vector3f go = origin.add(new Vector3f(1.0f, 0.0f, randomFloat));
+            Vector3f go = origin.add(new Vector3f(0.6f, 0.0f, randomFloat));
             if (friend != null)
             {
                 Vector3f dir = (friend.getPositionRef().subtract(go)).normalize();

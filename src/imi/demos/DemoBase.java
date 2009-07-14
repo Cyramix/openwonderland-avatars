@@ -452,11 +452,29 @@ public class DemoBase {
         }
     }
 
-    public static Entity createSimpleFloor(WorldManager wm, float length1, float length2, float UVscale, Vector3f origin) {
+    public static Entity createSimpleFloor(WorldManager wm, float length1, float length2, float UVscale, Vector3f origin, String baseURL) {
+        String texture = "assets/textures/floor_tiles_karystoy.png";
+        URL url = null;
+        if (baseURL == null)
+        {
+            try {
+                url = new File(texture).toURI().toURL();
+            } catch (MalformedURLException ex) {
+                Logger.getLogger(DemoBase.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        else
+        {
+            try {
+                url = new URL(baseURL + texture);
+            } catch (MalformedURLException ex) {
+                Logger.getLogger(DemoBase.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
         Entity floorEntity = new Entity("Floor Entity");
         Quad floorQuad = new Quad("Floor Quad", length1, length2);
         floorQuad.scaleTextureCoordinates(0, UVscale);
-        textureMesh(floorQuad, "assets/textures/floor_tiles_karystoy.png", wm, 0);
+        textureMesh(floorQuad, url, wm, 0);
         Node root = new Node("Floor Entity RC Root");
         root.setLocalTranslation(origin);
         setDefaultRenderStates(root, wm);
@@ -474,7 +492,23 @@ public class DemoBase {
         return floorEntity;
     }
 
-    public static void textureMesh(Spatial mesh, String localPath, WorldManager wm, int textureUnit) {
+    public static void textureMesh(Spatial mesh, Object texture, WorldManager wm, int textureUnit) {
+        URL url = null;
+        try {
+            if (texture instanceof String)
+            {
+                url = DemoBase.class.getResource((String)texture);
+                if (url == null)
+                    url = new File((String)texture).toURI().toURL();
+            }
+            else if (texture instanceof File)
+                url = ((File)texture).toURI().toURL();
+            else if (texture instanceof URL)
+                url = (URL)texture;
+        } catch (MalformedURLException ex) { logger.severe("texture URL failed"); }
+        if (url == null)
+            throw new IllegalArgumentException("was not able to get texture URL");
+
         if (mesh instanceof SharedMesh || mesh instanceof TriMesh)
         {
             MaterialState matState = (MaterialState) (mesh).getRenderState(StateType.Material);
@@ -485,50 +519,15 @@ public class DemoBase {
 
             TextureState texState = (TextureState) mesh.getRenderState(StateType.Texture);
             if (texState == null)
-            {
                 texState = (TextureState) wm.getRenderManager().createRendererState(StateType.Texture);
-                Texture base   = null;
-                URL path       = null;
-                String texLoc  = null;
-                try {
-                    texLoc  = localPath;
-                    path    = DemoBase.class.getResource(texLoc);
-                    if (path != null)
-                        base = TextureManager.loadTexture(path);
-                    else
-                        base   = TextureManager.loadTexture(new File(texLoc).toURI().toURL());
-                } catch (MalformedURLException ex) {
-                    Logger.getLogger(DemoBase.class.getName()).log(Level.SEVERE, null, ex);
-                }
-                base.setApply(Texture.ApplyMode.Modulate);
-                base.setWrap(Texture.WrapAxis.S, Texture.WrapMode.Repeat);
-                base.setWrap(Texture.WrapAxis.T, Texture.WrapMode.Repeat);
-                base.setMinificationFilter(Texture.MinificationFilter.Trilinear);
-                texState.setTexture(base, textureUnit);
 
-                mesh.setRenderState(texState);
-            } else {
-                Texture base   = null;
-                URL path       = null;
-                String texLoc  = null;
-                try {
-                    texLoc  = localPath;
-                    path    = DemoBase.class.getResource(texLoc);
-                    if (path != null)
-                        base = TextureManager.loadTexture(path);
-                    else
-                        base = TextureManager.loadTexture(new File(texLoc).toURI().toURL());
-
-                } catch (MalformedURLException ex) {
-                    Logger.getLogger(DemoBase.class.getName()).log(Level.SEVERE, null, ex);
-                }
-                base.setApply(Texture.ApplyMode.Modulate);
-                base.setWrap(Texture.WrapAxis.S, Texture.WrapMode.Repeat);
-                base.setWrap(Texture.WrapAxis.T, Texture.WrapMode.Repeat);
-                base.setMinificationFilter(Texture.MinificationFilter.Trilinear);
-                texState.setTexture(base, textureUnit);
-                mesh.setRenderState(texState);
-            }
+            Texture base = TextureManager.loadTexture(url);
+            base.setApply(Texture.ApplyMode.Modulate);
+            base.setWrap(Texture.WrapAxis.S, Texture.WrapMode.Repeat);
+            base.setWrap(Texture.WrapAxis.T, Texture.WrapMode.Repeat);
+            base.setMinificationFilter(Texture.MinificationFilter.Trilinear);
+            texState.setTexture(base, textureUnit);
+            mesh.setRenderState(texState);
         }
         mesh.updateRenderState();
     }

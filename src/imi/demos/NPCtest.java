@@ -25,13 +25,13 @@ import org.jdesktop.mtgame.WorldManager;
  * This class demonstrates some rudimentary avatar behaviors.
  * @author Lou
  */
-public class NPCavatarsDemo extends DemoBase
+public class NPCtest extends DemoBase
 {
     /**
      * Construct and run the test.
      * @param args
      */
-    public NPCavatarsDemo(String[] args){
+    public NPCtest(String[] args){
         super(args);
     }
 
@@ -40,12 +40,12 @@ public class NPCavatarsDemo extends DemoBase
      * @param args
      */
     public static void main(String[] args) {
-        new NPCavatarsDemo(args);
+        new NPCtest(args);
     }
 
     @Override
     protected void createApplicationEntities(WorldManager wm)
     {
-        new AvatarsNPCsDemo(wm, new Vector3f(0.0f, 0.0f, 0.0f));
+        new AvatarsNPCsDemo(wm, new Vector3f(0.0f, 0.0f, 0.0f), null);
     }
 }

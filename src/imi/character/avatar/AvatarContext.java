@@ -241,7 +241,7 @@ public class AvatarContext extends GameContext
         if ( !(currentState instanceof CycleActionState) && !genericAnimationsQueue.isEmpty() )
         {
             performAction(genericAnimationsQueue.removeFirst());
-            System.out.println("[AvatarContext.update()] pop from queue");
+            //System.out.println("[AvatarContext.update()] pop from queue");
         }
     }
 
@@ -487,11 +487,11 @@ public class AvatarContext extends GameContext
         {
             // que it up
             genericAnimationsQueue.add(actionInfoIndex);
-            System.out.println("queu up action " + actionInfoIndex);
+            //System.out.println("queu up action " + actionInfoIndex);
         }
         else
         {
-            System.out.println("perform action " + actionInfoIndex);
+            //System.out.println("perform action " + actionInfoIndex);
             CycleActionState action = (CycleActionState) gameStates.get(CycleActionState.class);
             genericAnimations.get(actionInfoIndex).apply(action);
             setCurrentState(action);

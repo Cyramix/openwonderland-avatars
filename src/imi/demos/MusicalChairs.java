@@ -59,7 +59,7 @@ public class MusicalChairs extends DemoBase
     @Override
     protected void createApplicationEntities(WorldManager wm)
     {
-        createSimpleFloor(wm, 50.0f, 50.0f, 10.0f, Vector3f.ZERO);
+        createSimpleFloor(wm, 50.0f, 50.0f, 10.0f, Vector3f.ZERO, null);
         int numberOfAvatars = 2;
         float block = 2.0f * numberOfAvatars;
         float halfBlock = 0.5f * numberOfAvatars;

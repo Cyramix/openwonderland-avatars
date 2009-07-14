@@ -19,9 +19,9 @@
 package imi.collision;
 
 import com.jme.math.Vector3f;
-import imi.character.CharacterController;
 import imi.scene.PMatrix;
 import org.jdesktop.wonderland.common.ExperimentalAPI;
+import imi.character.Character;
 
 /**
  *
@@ -31,6 +31,6 @@ import org.jdesktop.wonderland.common.ExperimentalAPI;
 public interface TransformUpdateManager
 {
     public void update(float deltaTime);
-    public void transformUpdate(CharacterController characterController, PMatrix transform, Vector3f newPosition, PMatrix newOrientation);
+    public void transformUpdate(Character character, PMatrix transform, Vector3f newPosition, PMatrix newOrientation);
     
 }
