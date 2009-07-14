@@ -124,6 +124,9 @@ public final class ChaseCamModel extends CameraModel
                 } else if (me.getID() == MouseEvent.MOUSE_PRESSED) {
                     camState.lastMouseX = me.getX();
                     camState.lastMouseY = me.getY();
+                    camState.setLookAtSpringEnabled(false);
+                } else if (me.getID() == MouseEvent.MOUSE_RELEASED) {
+                    camState.setLookAtSpringEnabled(true);
                 }
             }
         }

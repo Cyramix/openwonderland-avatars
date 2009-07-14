@@ -89,6 +89,7 @@ public final class ChaseCamState extends AbstractCameraState implements Characte
     float xModifier = 1.0f;
     float yModifier = 1.0f;
 
+    boolean disableLookatSpringOnMouseDrag = false;
     /**
      * Construct a new instance with the specified offset vectors.
      *
@@ -176,6 +177,15 @@ public final class ChaseCamState extends AbstractCameraState implements Characte
     public boolean isLookAtSpringEnabled() {
         return lookAtSpringEnabled;
     }
+
+    public boolean isDisableLookatSpringOnMouseDrag() {
+        return disableLookatSpringOnMouseDrag;
+    }
+
+    public void setDisableLookatSpringOnMouseDrag(boolean disableLookatSpringOnMouseDrag) {
+        this.disableLookatSpringOnMouseDrag = disableLookatSpringOnMouseDrag;
+    }
+
     
     /**
      * This method initiates a smooth alteration of the position offset vector.
