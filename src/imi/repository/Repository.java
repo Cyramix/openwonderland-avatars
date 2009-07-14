@@ -19,7 +19,6 @@ package imi.repository;
 
 import com.jme.image.Texture;
 import com.jme.util.TextureManager;
-import headtestassets.HeadAssets;
 import imi.repository.SharedAsset.SharedAssetType;
 import imi.scene.polygonmodel.PPolygonMesh;
 import imi.scene.PScene;
@@ -281,7 +280,7 @@ public class Repository extends Entity
     {
         int index   = location.toString().lastIndexOf("assets");
         String path = location.toString().substring(index);
-        URL url = HeadAssets.class.getClassLoader().getResource(path);
+        URL url = null;//HeadAssets.class.getClassLoader().getResource(path);
         if (url == null)
             url = location;
 

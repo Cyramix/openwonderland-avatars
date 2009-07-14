@@ -32,7 +32,6 @@ import com.jme.scene.state.RenderState;
 import com.jme.scene.state.WireframeState;
 import com.jme.scene.state.ZBufferState;
 import com.jme.scene.shape.Box;
-import headtestassets.HeadAssets;
 import imi.character.avatar.AvatarContext;
 import imi.input.CharacterControls;
 import imi.objects.ObjectCollectionBase;
@@ -1654,7 +1653,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
 
         // Load up any geometry requested by the provided attributes object
         for (String load : attributes.getLoadInstructions()) {
-            URL url = HeadAssets.class.getClassLoader().getResource(load);
+            URL url = null;//HeadAssets.class.getClassLoader().getResource(load);
 
             if (url != null)
                 attributeRoot.addChildInstruction(InstructionType.loadGeometry, url.toString());
