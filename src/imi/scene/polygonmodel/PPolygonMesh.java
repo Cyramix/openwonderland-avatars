@@ -17,6 +17,7 @@
  */
 package imi.scene.polygonmodel;
 
+import com.jme.bounding.BoundingSphere;
 import imi.utils.MathUtils;
 import imi.scene.PSphere;
 import imi.scene.PCube;
@@ -136,6 +137,7 @@ public class PPolygonMesh extends PNode implements Serializable
         // Great Success!
         endBatch();
         useVBO();
+        m_Geometry.setModelBound(new BoundingSphere());
     }
 
     /**
@@ -148,6 +150,7 @@ public class PPolygonMesh extends PNode implements Serializable
         setTransform(new PTransform());
         m_Polygons = new FastTable<PPolygon>();
         useVBO();
+        m_Geometry.setModelBound(new BoundingSphere());
     }
     
     /**
@@ -161,6 +164,7 @@ public class PPolygonMesh extends PNode implements Serializable
         setTransform(new PTransform());
         m_Polygons = new FastTable<PPolygon>();
         useVBO();
+        m_Geometry.setModelBound(new BoundingSphere());
     }
     
     /**

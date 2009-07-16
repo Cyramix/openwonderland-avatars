@@ -171,21 +171,21 @@ public class VerletArm
                 currentInputOffset.zero();
             }
         }
-        
-	// Verlet integration step
-	for (int i = 1; i < particles.size(); i++)
-	{
-            if (particles.get(i).isMoveable())
-                particles.get(i).setForceAccumulator(gravity);
-            else
-                particles.get(i).setForceAccumulator(Vector3f.ZERO);
-            particles.get(i).scaleVelocity(velocityDampener);
-            particles.get(i).verletIntegration(deltaTime);
-	}
-        
-	// Solving constraints by relaxation
-	for(int i = 0; i < 5; i++)
-            satisfyConstraints(); 
+
+        // Verlet integration step
+        for (int i = 1; i < particles.size(); i++)
+        {
+                if (particles.get(i).isMoveable())
+                    particles.get(i).setForceAccumulator(gravity);
+                else
+                    particles.get(i).setForceAccumulator(Vector3f.ZERO);
+                particles.get(i).scaleVelocity(velocityDampener);
+                particles.get(i).verletIntegration(deltaTime);
+        }
+
+        // Solving constraints by relaxation
+        for(int i = 0; i < 5; i++)
+                satisfyConstraints();
     }
 
     /**

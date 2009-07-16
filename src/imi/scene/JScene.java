@@ -141,6 +141,17 @@ public class JScene extends Node {
     }
 
     /**
+     * Check wireframe state
+     * @return
+     */
+    public boolean isWireframeOn() {
+        WireframeState wireframeState = (WireframeState) getRenderState(RenderState.RS_WIREFRAME);
+        if (wireframeState != null)
+            return wireframeState.isEnabled();
+        return false;
+    }
+
+    /**
      * Will toggle light renderstate enabled on\off
      */
     public void toggleLights() {

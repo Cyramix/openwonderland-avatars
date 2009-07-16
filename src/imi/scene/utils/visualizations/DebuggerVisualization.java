@@ -734,7 +734,7 @@ public final class DebuggerVisualization {
         rods.setRenderState(boundsZState);
 
         BlendState blendState = r.createBlendState();
-        blendState.setBlendEnabled(true);
+        blendState.setBlendEnabled(false);
         blendState.setSourceFunction(BlendState.SourceFunction.SourceAlpha);
         blendState.setDestinationFunction(BlendState.DestinationFunction.OneMinusSourceAlpha);
         rods.setRenderState(blendState);

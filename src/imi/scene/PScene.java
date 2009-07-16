@@ -205,7 +205,8 @@ public class PScene extends PNode implements RepositoryUser, Serializable
      * @param   meshAsset
      * @return  index of the meshAsset geometry
      */
-    private int addMeshGeometry(PPolygonMesh mesh)
+    @InternalAPI
+    public int addMeshGeometry(PPolygonMesh mesh)
     {
         // Duplicate checking
         int index = m_LocalGeometry.indexOf(mesh);

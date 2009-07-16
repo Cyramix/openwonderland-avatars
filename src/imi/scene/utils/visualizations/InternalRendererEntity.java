@@ -104,6 +104,10 @@ public class InternalRendererEntity extends Entity
         root.setDrawOrigin(b);
     }
 
+    public boolean isOriginVisible() {
+        return root.isDrawOrigin();
+    }
+
     public void setRedSphere(PSphere sphereCheck) {
         root.setRedSphere(sphereCheck);
     }
