@@ -17,6 +17,7 @@
  */
 package imi.character;
 
+import com.jme.bounding.BoundingSphere;
 import com.jme.image.Texture.ApplyMode;
 import com.jme.image.Texture.CombinerFunctionAlpha;
 import com.jme.image.Texture.MinificationFilter;
@@ -1577,9 +1578,8 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         // blink if you can hear me
         if (m_eyes != null)
             m_eyes.blink();
-        // Set the bounds object to be non-null
-        if (m_jscene.getWorldBound() == null)
-            m_jscene.updateModelBound();
+        // Update bounds?
+        m_jscene.setModelBound(new BoundingSphere());
         // Enable rendering for the render component
         m_jscene.setRenderBool(true);
         // This is required to inherit the renderstates (light specifically) from the render manager
