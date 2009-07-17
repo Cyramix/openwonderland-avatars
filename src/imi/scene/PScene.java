@@ -123,11 +123,13 @@ public class PScene extends PNode implements RepositoryUser, Serializable
      * and reconstruct the JScene it belongs to (reconstruct dirty triMeshes)
      * this will clean the dirty JScene.
      */
-    void submitTransformsAndGeometry()
+    public void submitTransformsAndGeometry()
     {
         // potentially this could run in parralel
         submitGeometry();
         submitTransforms();
+        m_JScene.updateModelBound();
+        m_JScene.updateWorldBound();
     }
 
     /**
