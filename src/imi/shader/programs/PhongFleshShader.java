@@ -86,8 +86,9 @@ public class PhongFleshShader extends GLSLShaderProgram implements Serializable
         addEffect(new MeshColorModulation()); // Modulate by a skin color of some sort
         addEffect(new CalculateToLight_Lighting()); // Determine the vector to the light source (gl_LightSource[0])
         addEffect(new GenerateFragLocalNormal());
-        addEffect(new AmbientNdotL_Lighting()); // Calculate N * L and modulate the final color by it, mixing in a ratio of ambient
         addEffect(new DiffuseAsSpecular_Lighting());
+        addEffect(new AmbientNdotL_Lighting()); // Calculate N * L and modulate the final color by it, mixing in a ratio of ambient
+        
 
         try
         {

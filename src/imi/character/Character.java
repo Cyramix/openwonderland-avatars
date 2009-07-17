@@ -1478,8 +1478,6 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         // Apply remaining customizations
         if (characterDOM != null)
         {
-            // HACK HACK
-            setDefaultShaders();
             // Materials
             applyMaterialProperties(characterDOM);
             // Skeletal modifications
@@ -2433,7 +2431,6 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         } 
         else if (builder.configurationFile != null) 
         {
-            System.out.println("CHARACTER 2375: Loading config file: " + builder.configurationFile);
             // Load and use a configuration file
             xmlCharacter characterDOM = null;
 

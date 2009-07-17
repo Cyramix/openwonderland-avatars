@@ -388,6 +388,22 @@ public class TextureMaterialProperties implements Serializable
         }
     }
 
+    @Override
+    public String toString() {
+        StringBuilder result = new StringBuilder("ImageLocation: " + imageLocation);
+        result.append("\nTexture Unit: " + textureUnit);
+        result.append("\nWrapS: " + wrapS);
+        result.append("\nWrapT: " + wrapT);
+        result.append("\nAlphaCombineMode: " + alphaCombineMode);
+        result.append("\nminFilter: " + minFilter);
+        result.append("\nmagFilter: " + magFilter);
+        result.append("\nAnisotropicValue: " + anistotropicValue);
+        result.append("\nApplymode: " + applyMode);
+        return result.toString();
+    }
+
+
+
     // Serialization helpers
     private void writeObject(ObjectOutputStream out) throws IOException {
         out.defaultWriteObject();

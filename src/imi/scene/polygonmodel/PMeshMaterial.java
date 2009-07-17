@@ -673,6 +673,35 @@ public class PMeshMaterial implements Serializable
     }
 
     @Override
+    public String toString() {
+        StringBuilder result = new StringBuilder("MeshName: " + name);
+        result.append("\nDiffuse: " + diffuse);
+        result.append("\nAmbient: " + ambient);
+        result.append("\nEmissive: " + emissive);
+        result.append("\nSpecular: " + specular);
+        result.append("\nTransparencyColor: " + transparencyColor);
+        result.append("\nShininess: " + shininess);
+        result.append("\nAlphaState: " + alphaState);
+        result.append("\nTextures: ");
+        for (TextureMaterialProperties texture : textures)
+            result.append("\n\t" + texture);
+        result.append("\nShaders: ");
+        for (AbstractShaderProgram shader : shaderArray)
+            result.append("\n\t" + shader);
+        result.append("\nColorMaterial: " + colorMaterial);
+        result.append("\nCullFace: " + cullFace);
+        result.append("\nwireFrameEnabled: " + wireframeEnabled);
+        result.append("\nWireFrameAntialiased: " + wireframeAntiAliased);
+        result.append("\nWireFrameLineWidth: " + wireframeLineWidth);
+        result.append("\nWireFace: " + wireFace);
+        result.append("\nMaterialFace: " + materialFace);
+        
+        return result.toString();
+    }
+
+
+
+    @Override
     public int hashCode() {
         int hash = 5;
         hash = 79 * hash + (this.diffuse != null ? this.diffuse.hashCode() : 0);

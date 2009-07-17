@@ -123,6 +123,15 @@ public class ShaderProperty implements Serializable
             return false;
     }
 
+    @Override
+    public String toString() {
+        StringBuilder result = new StringBuilder(name);
+        result.append(" " + type + ": " + m_value);
+        return result.toString();
+    }
+
+
+
     public xmlShaderProperty generateShaderPropertyDOM() {
         xmlShaderProperty result = new xmlShaderProperty();
         result.setPropertyName(name);

@@ -1014,6 +1014,20 @@ public class GLSLShaderProgram extends AbstractShaderProgram implements RenderUp
         return result;
     }
 
+    @Override
+    public String toString() {
+        StringBuilder result = new StringBuilder(m_programName + "\nDesc: " + m_programDescription);
+        for (GLSLShaderEffect effect : m_effects) {
+            result.append("\nEffect: " + effect.m_effectName);
+        }
+        for (ShaderProperty prop : getProperties()) {
+            result.append("\nProperty: " + prop);
+        }
+        return result.toString();
+    }
+
+
+
     //////// SERIALIZATION HELPERS /////////////
     private void writeObject(java.io.ObjectOutputStream out) throws IOException
     {

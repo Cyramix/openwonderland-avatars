@@ -231,6 +231,17 @@ public abstract class BaseShaderProgram extends AbstractShaderProgram implements
             return null;
         }
     }
+
+    @Override
+    public String toString() {
+        StringBuilder result = new StringBuilder(m_programName + "\nDesc: " + m_programDescription);
+        for (ShaderProperty prop : getProperties()) {
+            result.append("\nProperty: " + prop);
+        }
+        return result.toString();
+    }
+
+
     
     //////// SERIALIZATION HELPERS /////////////
     private void writeObject(java.io.ObjectOutputStream out) throws IOException
