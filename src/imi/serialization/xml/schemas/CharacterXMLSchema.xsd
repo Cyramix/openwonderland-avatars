@@ -4,6 +4,12 @@
     targetNamespace="http://xml.netbeans.org/schema/CharacterXMLSchema"
     xmlns:tns="http://xml.netbeans.org/schema/CharacterXMLSchema"
     elementFormDefault="unqualified" attributeFormDefault="unqualified">
+    <xsd:complexType name="MetaData">
+       <xsd:sequence>
+            <xsd:element name="Key" type="xsd:string"/>
+            <xsd:element name="Value" type="xsd:string"/>
+       </xsd:sequence>
+    </xsd:complexType>
     <xsd:complexType name="FloatRow">
         <xsd:sequence>
             <xsd:element name="X" default="0" maxOccurs="1" type="xsd:float"/>
@@ -46,6 +52,7 @@
     </xsd:complexType>
     <xsd:complexType name="Character">
         <xsd:sequence>
+            <xsd:element name="MetaData" type="tns:MetaData"/>
             <xsd:element name="Attributes" type="tns:CharacterAttributes"/>
             <xsd:element name="SkeletonDetails" minOccurs="0" maxOccurs="unbounded" type="tns:JointModification"/>
             <xsd:element name="Material" minOccurs="0" maxOccurs="unbounded" type="tns:Material"/>
@@ -92,7 +99,7 @@
             <xsd:element name="DiffuseColor" type="tns:ColorRGBA" minOccurs="0"/>
             <xsd:element name="AmbientColor" type="tns:ColorRGBA" minOccurs="0"/>
             <xsd:element name="EmissiveColor" type="tns:ColorRGBA" minOccurs="0"/>
-            <xsd:element name="SpecularColor" type="tns:ColorRGBA" maxOccurs="0"/>
+            <xsd:element name="SpecularColor" type="tns:ColorRGBA" minOccurs="0"/>
             <xsd:element name="TransparencyColor" type="tns:ColorRGBA" minOccurs="0"/>
             <xsd:element name="Shaders" maxOccurs="unbounded" type="tns:Shader"/>
             <xsd:element name="Shininess" type="xsd:int"/>

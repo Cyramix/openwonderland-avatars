@@ -52,6 +52,7 @@ import javax.xml.bind.annotation.XmlType;
  *         &lt;element name="LoadingInstructions" type="{http://www.w3.org/2001/XMLSchema}string" maxOccurs="unbounded" minOccurs="0"/>
  *         &lt;element name="AdditionInstructions" type="{http://www.w3.org/2001/XMLSchema}string" maxOccurs="unbounded" minOccurs="0"/>
  *         &lt;element name="Attachments" type="{http://xml.netbeans.org/schema/CharacterXMLSchema}xmlCharacterAttachmentParameters" maxOccurs="unbounded" minOccurs="0"/>
+ *         &lt;element name="MetaData" type="{http://xml.netbeans.org/schema/CharacterXMLSchema}MetaData"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -74,8 +75,8 @@ import javax.xml.bind.annotation.XmlType;
     "eyeballTexture",
     "skinTone",
     "animateFace",
-    "applySkinToneOnHead"
-    
+    "applySkinToneOnHead",
+    "metadata"
 })
 public class xmlCharacterAttributes {
 
@@ -105,7 +106,8 @@ public class xmlCharacterAttributes {
     protected boolean animateFace;
     @XmlElement(name = "ApplySkinToneOnHead")
     protected boolean applySkinToneOnHead;
-
+    @XmlElement(name = "MetaData")
+    protected List<xmlMetaData> metadata;
 
     /**
      * Gets the value of the name property.
@@ -486,5 +488,36 @@ public class xmlCharacterAttributes {
         this.applySkinToneOnHead = applySkinToneOnHead;
     }
 
+    /**
+     * Gets the value of the metadata property.
+     *
+     * <p>
+     * This accessor method returns a reference to the live list,
+     * not a snapshot. Therefore any modification you make to the
+     * returned list will be present inside the JAXB object.
+     * This is why there is not a <CODE>set</CODE> method for the materials property.
+     *
+     * <p>
+     * For example, to add a new item, do as follows:
+     * <pre>
+     *    getMetaData().add(newItem);
+     * </pre>
+     *
+     *
+     * <p>
+     * Objects of the following type(s) are allowed in the list
+     * {@link xmlMetaData }
+     *
+     *
+     */
+    public List<xmlMetaData> getMetaData() {
+        if (metadata == null) {
+            metadata = new ArrayList<xmlMetaData>();
+        }
+        return this.metadata;
+    }
 
+    public void addMetaData(xmlMetaData md) {
+        getMetaData().add(md);
+    }
 }

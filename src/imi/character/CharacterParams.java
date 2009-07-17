@@ -26,9 +26,12 @@ import imi.scene.SkeletonNode;
 import imi.serialization.xml.bindings.xmlCharacterAttachmentParameters;
 import imi.serialization.xml.bindings.xmlCharacterAttributes;
 import imi.serialization.xml.bindings.xmlFloatRow;
+import imi.serialization.xml.bindings.xmlMetaData;
 import imi.serialization.xml.bindings.xmlSkinnedMeshParams;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javolution.util.FastList;
@@ -71,11 +74,13 @@ public class CharacterParams
     /** This specifies the gender of the avatar. 1 == male, 2 == female, 3... **/
     private int                     gender                  = 1;
     /** Eyeball texture **/
-    private String                  eyeballTexture          = "assets/models/collada/Heads/EyeTextures/Brown_Eye.PNG";
+    private String                  eyeballTexture          = "assets/models/collada/Heads/EyeTextures/Brown_Eye.png";
     /** True if the head mesh will be applied with the skine tone (otherwise just white to keep the original texture's color) **/
     private boolean                 applySkinToneOnHead     = true;
     /** True if valid **/
     private boolean                 valid = false;
+    /** Key-value Metadata Map */
+    private Map<String, String> metadataMap = new HashMap();
 
     private static final float f255 = 255.0f; // need all the colors to be brighter?
     static final ColorRGBA[] clothesColors = new ColorRGBA[]
@@ -155,6 +160,7 @@ public class CharacterParams
     /////////////////////////////////////////
     //////  Not Saved in XML format /////////
     /////////////////////////////////////////
+
     /** Skin tone RGB **/
     private final float []  skinTone        = new float [3];
     /** Hair color RGB **/
@@ -174,10 +180,12 @@ public class CharacterParams
     private CharacterInitializationInterface initializationObject    = null;
     /** True if the phong lighting (no color modulation) should be used. **/
     private boolean m_bPhongLightingForHead = false;
+
     // For simple static geometry replacement
     private boolean useSimpleStaticModel    = false;
     private PScene  simpleScene             = null;
     private final PMatrix origin = new PMatrix();
+
     /** Whether the facial animation will play **/
     private boolean animateFace = true;
     /** Whether the animation processor starts enabled **/
@@ -346,6 +354,22 @@ public class CharacterParams
         loadInstructions.clear();
     }
 
+    /**
+     * Adds a key-value pair to the meta data Map.
+     * @param key The key
+     * @param value The value
+     */
+    public void putMetaData(String key, String value) {
+         metadataMap.put(key, value);
+    }
+
+    /**
+     * Clears the meta data Map.
+     */
+    public void clearMetaData() {
+        metadataMap.clear();
+    }
+
     ////////////////////////////////////////////////////////////////////////
     //////////////////// ACCESSORS HOOOOOOOOOOO!!!!!!!! ////////////////////
     ////////////////////////////////////////////////////////////////////////
@@ -358,6 +382,14 @@ public class CharacterParams
         return name;
     }
     
+    /**
+     * Returns the key-value meta-data map.
+     * @return The metadata Map
+     */
+    public Map<String, String> getMetaData() {
+        return metadataMap;
+    }
+
     /**
      * Retrieve the shared asset associated with these params; may be null.
      * @return Shared asset
@@ -1251,6 +1283,17 @@ public class CharacterParams
         result.setAnimateFace(animateFace);
         result.setApplySkinToneOnHead(applySkinToneOnHead);
 
+        // meta data
+        if (metadataMap != null)
+        {
+            for (String key : metadataMap.keySet())
+            {
+                xmlMetaData xmd = new xmlMetaData();
+                xmd.setValues(key, metadataMap.get(key));
+                result.getMetaData().add(xmd);
+            }
+        }
+
         // Finished
         return result;
     }
@@ -1321,6 +1364,12 @@ public class CharacterParams
         }
         clearLoadInstructions();
         setLoadInstructions(correctCrap);
+
+        // Metadata map
+        for (xmlMetaData xmd : attributesDOM.getMetaData())
+        {
+            this.getMetaData().put(xmd.getKey(), xmd.getValue());
+        }
     }
 
     /**

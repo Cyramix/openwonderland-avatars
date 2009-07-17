@@ -129,7 +129,7 @@ public class xmlCharacter {
         return this.skeletonDetails;
     }
 
-        /**
+    /**
      * Gets the value of the materials property.
      *
      * <p>
@@ -161,5 +161,4 @@ public class xmlCharacter {
     public void addMaterial(xmlMaterial mat) {
         getMaterials().add(mat);
     }
-
 }
