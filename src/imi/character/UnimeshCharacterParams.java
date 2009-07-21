@@ -29,7 +29,7 @@ import java.util.logging.Logger;
 public class UnimeshCharacterParams extends CharacterParams
 {
     private static final Logger logger = Logger.getLogger(UnimeshCharacterParams.class.getName());
-    private static final String UnimeshGeometryName = "H_DDS_LowResShape";
+    private String UnimeshGeometryName = "H_DDS_LowResShape";
 
     /**
      * Enumerated unimesh sexes ftw!
@@ -61,7 +61,7 @@ public class UnimeshCharacterParams extends CharacterParams
      * @param unimeshLocation
      * @param sex
      */
-    public UnimeshCharacterParams(String name, String unimeshLocalPath, Sex sex)
+    public UnimeshCharacterParams(String name, String unimeshLocalPath, String unimeshMeshName, Sex sex)
     {
         if (unimeshLocalPath == null)
             throw new IllegalArgumentException("Must provide a valid unimesh location!");
@@ -69,11 +69,23 @@ public class UnimeshCharacterParams extends CharacterParams
             throw new IllegalArgumentException("Null name provided!");
         if (sex == null)
             throw new IllegalArgumentException("Null sex? Use indeterminate instead!");
+        if (unimeshMeshName != null)
+            UnimeshGeometryName = unimeshMeshName;
 
-        super.setInitializationObject(initializer);
         super.setName(name);
         this.sex = sex;
+        setInitializationObject(initializer);
         unimeshBodyLocation = unimeshLocalPath;
+    }
+
+    /**
+     * Finalize the build process
+     * @return
+     */
+    public UnimeshCharacterParams build() {
+        setUnimeshPath(getUnimeshPath());
+        setValid(true);
+        return this;
     }
 
     /**
@@ -111,8 +123,6 @@ public class UnimeshCharacterParams extends CharacterParams
         this.addLoadInstruction(localPath)
             .addSkinnedMeshParams(new SkinnedMeshParams(UnimeshGeometryName, "FullBody", localPath));
         return this;
-  
-
     }
 
     /**

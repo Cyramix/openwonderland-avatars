@@ -517,6 +517,23 @@ public final class FlexibleCameraProcessor extends ProcessorComponent implements
 //        System.out.println("And has directionOfRay: " + directionOfRay.x + ", " + directionOfRay.y + ", " + directionOfRay.z);
     }
 
+    /**
+     * Get the corresponding points on the near and far clip planes to the mouse
+     * screen space coordnates.
+     * @param mouseX
+     * @param mouseY
+     * @param nearPoint
+     * @param farPoint
+     */
+    public void getWorldSpaceLine(int mouseX, int mouseY, Vector3f nearPoint, Vector3f farPoint)
+    {
+        Camera camera = getCamera();
+        Vector2f sc = new Vector2f(mouseX, windowHeight - mouseY);
+        camera.getWorldCoordinates(sc, 0.0f, nearPoint);
+        camera.getWorldCoordinates(sc, 1.0f, farPoint);
+        System.out.println("nearPoint " + nearPoint + " farPoint " + farPoint);
+    }
+
     public synchronized void processKeyEvent(KeyEvent keyEvent) {
         checkForStateChangeEvents(keyEvent);
         inputEvents.add(keyEvent);
