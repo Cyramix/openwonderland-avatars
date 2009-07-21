@@ -361,9 +361,9 @@ public class AttachmentControlFrame extends JFrame implements ActionListener
             gbc.gridheight = 1;
             gbc.gridx = 1;
             gbc.gridy = 2;
-            ImageIcon iconBuffer = new ImageIcon(this.getClass().getClassLoader().getResource("imi/gui/configurer/back.png"));
+            ImageIcon iconBuffer = new ImageIcon(this.getClass().getClassLoader().getResource("imi/gui/data/back.png"));
             leftButton.setIcon(iconBuffer);
-            iconBuffer = new ImageIcon(this.getClass().getClassLoader().getResource("imi/gui/configurer/back-down.png"));
+            iconBuffer = new ImageIcon(this.getClass().getClassLoader().getResource("imi/gui/data/back-down.png"));
             leftButton.setPressedIcon(iconBuffer);
             leftButton.setActionCommand("prevButtonPressed");
             leftButton.addActionListener(this);
@@ -371,10 +371,10 @@ public class AttachmentControlFrame extends JFrame implements ActionListener
             // cancel button
             gbc.gridx = 2;
             gbc.gridy = 2;
-            java.awt.Image xImage = Toolkit.getDefaultToolkit().createImage(this.getClass().getClassLoader().getResource("imi/gui/configurer/X.png")).getScaledInstance(32, 32, 0);
+            java.awt.Image xImage = Toolkit.getDefaultToolkit().createImage(this.getClass().getClassLoader().getResource("imi/gui/data/X.png")).getScaledInstance(32, 32, 0);
             iconBuffer = new ImageIcon(xImage);
             xButton.setIcon(iconBuffer);
-            xImage = Toolkit.getDefaultToolkit().createImage(this.getClass().getClassLoader().getResource("imi/gui/configurer/Xdown.png")).getScaledInstance(32, 32, 0);
+            xImage = Toolkit.getDefaultToolkit().createImage(this.getClass().getClassLoader().getResource("imi/gui/data/Xdown.png")).getScaledInstance(32, 32, 0);
             iconBuffer = new ImageIcon(xImage);
             xButton.setPressedIcon(iconBuffer);
             xButton.setActionCommand("xButtonPressed");
@@ -383,9 +383,9 @@ public class AttachmentControlFrame extends JFrame implements ActionListener
             // right arrow
             gbc.gridx = 3;
             gbc.gridy = 2;
-            iconBuffer = new ImageIcon(this.getClass().getClassLoader().getResource("imi/gui/configurer/forward.png"));
+            iconBuffer = new ImageIcon(this.getClass().getClassLoader().getResource("imi/gui/data/forward.png"));
             rightButton.setIcon(iconBuffer);
-            iconBuffer = new ImageIcon(this.getClass().getClassLoader().getResource("imi/gui/configurer/forward-down.png"));
+            iconBuffer = new ImageIcon(this.getClass().getClassLoader().getResource("imi/gui/data/forward-down.png"));
             rightButton.setPressedIcon(iconBuffer);
             rightButton.setActionCommand("nextButtonPressed");
             rightButton.addActionListener(this);
