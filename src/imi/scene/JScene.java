@@ -50,6 +50,8 @@ public class JScene extends Node {
     private Vector3f    m_ExternalKidsRootPosition = new Vector3f(); // applied by the PScene
     private Quaternion  m_ExternalKidsRootRotation = new Quaternion();
 
+    private boolean kidsChanged = false;
+
     /**
      * Constructor, takes in the PScene for this Node (JScene is intended to be used as a render component that supports a PScene)
      * @param scene
@@ -65,6 +67,13 @@ public class JScene extends Node {
      */
     public Node getExternalKidsRoot() {
         return m_externalJmeKidsRoot;
+    }
+
+    /**
+     * Set a flag indicating that the external kids graph has changed
+     */
+    public void setExternalKidsChanged(boolean flag) {
+        kidsChanged = flag;
     }
 
     /**
@@ -325,7 +334,8 @@ public class JScene extends Node {
      * @param r - the renderer to draw to.
      */
     private void drawScene(Renderer r) {
-        m_PScene.submitTransformsAndGeometry();
+        m_PScene.submitTransformsAndGeometry(kidsChanged);
+        kidsChanged = false;
         updateRenderState();
         super.draw(r);
     }

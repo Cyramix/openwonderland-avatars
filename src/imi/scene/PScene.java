@@ -123,12 +123,14 @@ public class PScene extends PNode implements RepositoryUser, Serializable
      * and reconstruct the JScene it belongs to (reconstruct dirty triMeshes)
      * this will clean the dirty JScene.
      */
-    public void submitTransformsAndGeometry()
+    public void submitTransformsAndGeometry(boolean updateModelBounds)
     {
         // potentially this could run in parralel
         submitGeometry();
-        submitTransforms();
-        m_JScene.updateModelBound();
+        boolean anyMeshes = submitTransforms();
+        if (updateModelBounds || anyMeshes) {
+            m_JScene.updateModelBound();
+        }
         m_JScene.updateWorldBound();
     }
 
@@ -138,7 +140,7 @@ public class PScene extends PNode implements RepositoryUser, Serializable
      * This method will clear all the children from m_JScene and resubmit thier
      * references according to the current PScene structure.
      */
-    void submitTransforms()
+    boolean submitTransforms()
     {
         List<Spatial> kids = m_JScene.getChildren();
         
@@ -166,6 +168,7 @@ public class PScene extends PNode implements RepositoryUser, Serializable
         kids.add(externalKids);
 
         m_Instances.setDirty(false, false);
+        return (helper.getSharedMeshes().size() != 0);
     }
 
     /**
