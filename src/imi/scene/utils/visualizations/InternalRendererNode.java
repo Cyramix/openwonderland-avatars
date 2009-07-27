@@ -242,6 +242,15 @@ public class InternalRendererNode extends Node
         redSphereOn = framesOn;
     }
 
+    /**
+     * -1 to keep it on
+     */
+    public void setRedSphere(Vector3f center, float radius, int framesOn) {
+        redSphere.setCenter(center);
+        redSphere.setRadius(radius);
+        redSphereOn = framesOn;
+    }
+
     public void setRedSphere(BoundingSphere red) {
         redSphere.setCenter(red.getCenter());
         redSphere.setRadius(red.getRadius());
@@ -264,7 +273,7 @@ public class InternalRendererNode extends Node
      *  Calling this method makes the lines visible for 100 frames
      **/
     public FastTable<FastTable<Vector3f>> getUserLines() {
-        userLinesOn = 100;
+        userLinesOn = 500;
         return userLines;
     }
 

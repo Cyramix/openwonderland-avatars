@@ -531,7 +531,7 @@ public final class FlexibleCameraProcessor extends ProcessorComponent implements
         Vector2f sc = new Vector2f(mouseX, windowHeight - mouseY);
         camera.getWorldCoordinates(sc, 0.0f, nearPoint);
         camera.getWorldCoordinates(sc, 1.0f, farPoint);
-        System.out.println("nearPoint " + nearPoint + " farPoint " + farPoint);
+        //System.out.println("nearPoint " + nearPoint + " farPoint " + farPoint);
     }
 
     public synchronized void processKeyEvent(KeyEvent keyEvent) {
