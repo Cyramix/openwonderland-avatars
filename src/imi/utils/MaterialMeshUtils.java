@@ -120,7 +120,6 @@ public class MaterialMeshUtils {
 
         material.setDefaultShader(shader);
         meshInst.applyShader();
-        meshInst.applyMaterial();
     }
 
     public static void setTextureOnMeshInstance(PPolygonMeshInstance meshInst, String relativeTexturePath, TextureType textureIndex) {
@@ -180,6 +179,5 @@ public class MaterialMeshUtils {
 
         material.setDefaultShader(shader);
         meshInst.applyShader();
-        meshInst.applyMaterial();
     }
 }

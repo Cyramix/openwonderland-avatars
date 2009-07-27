@@ -850,6 +850,7 @@ public class Manipulator {
 
         meshInst = (PPolygonMeshInstance) hairParent.getChild(0);        
         MaterialMeshUtils.setColorOnMeshInstance(worldManager, meshInst, MaterialMeshUtils.ShaderType.HairShader, color);
+        character.getCharacterParams().setHairColor(color.getRed(), color.getGreen(), color.getBlue());
     }
 
     /**
@@ -894,6 +895,7 @@ public class Manipulator {
         setMeshColor(character, "UpperBody", "nude", "arms", MaterialMeshUtils.ShaderType.FleshShader, color, 0);
         setMeshColor(character, "LowerBody", "nude", "legs", MaterialMeshUtils.ShaderType.FleshShader, color, 0);
         setMeshColor(character, "Feet", "nude", "foot", MaterialMeshUtils.ShaderType.FleshShader, color, 0);
+        character.getCharacterParams().setSkinTone(color.getRed(), color.getGreen(), color.getBlue());
     }
 
     /**
@@ -907,6 +909,7 @@ public class Manipulator {
     public static void setShirtColor(Character character, Color color) {
         paramErrorCheck(character, color);
         setMeshColor(character, "UpperBody", "nude", "arms", MaterialMeshUtils.ShaderType.ClothingShaderSpecColor, color, 1);
+        character.getCharacterParams().setShirtColor(color.getRed(), color.getGreen(), color.getBlue());
     }
 
     /**
@@ -920,6 +923,7 @@ public class Manipulator {
     public static void setPantsColor(Character character, Color color) {
         paramErrorCheck(character, color);
         setMeshColor(character, "LowerBody", "nude", "legs", MaterialMeshUtils.ShaderType.ClothingShaderSpecColor, color, 1);
+        character.getCharacterParams().setPantsColor(color.getRed(), color.getGreen(), color.getBlue());
     }
 
     /**
@@ -933,6 +937,7 @@ public class Manipulator {
     public static void setShoesColor(Character character, Color color) {
         paramErrorCheck(character, color);
         setMeshColor(character, "Feet", "nude", "foot", MaterialMeshUtils.ShaderType.ClothingShaderSpecColor, color, 1);
+        character.getCharacterParams().setShoesColor(color.getRed(), color.getGreen(), color.getBlue());
     }
 
     ////////////////////////////////////////////////////////////////////////////

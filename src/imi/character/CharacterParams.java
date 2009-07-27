@@ -996,6 +996,20 @@ public class CharacterParams
     }
 
     /**
+     * Set the color values for the pants material.
+     * <p>These values should be normalized (0-1), but this is not strictly enforced</p>
+     * @param r
+     * @param g
+     * @param b
+     */
+    public CharacterParams setPantsColor(float r, float g, float b) {
+        pantsColor[0] = r;
+        pantsColor[1] = g;
+        pantsColor[2] = b;
+        return this;
+    }
+
+    /**
      * Randomize the shirt diffuse and specular colors.
      * A random preset is chosen.
      */
@@ -1068,6 +1082,20 @@ public class CharacterParams
     }
 
     /**
+     * Sets the color values used for the shirt's material
+     * <p>These values should be normalized (0-1), but this is not strictly enforced</p>
+     * @param r
+     * @param g
+     * @param b
+     */
+    public CharacterParams setShirtColor(float r, float g, float b) {
+        shirtColor[0] = r;
+        shirtColor[1] = g;
+        shirtColor[2] = b;
+        return this;
+    }
+
+    /**
      * Randomize the shoes diffuse and specular colors.
      * A random preset is chosen.
      */
@@ -1136,6 +1164,20 @@ public class CharacterParams
         shoesSpecColor[0] = specR;
         shoesSpecColor[1] = specG;
         shoesSpecColor[2] = specB;
+        return this;
+    }
+
+    /**
+     * Sets the color values used for the shoe's material.
+     * <p>These values should be normalized (0-1), but this is not strictly enforced</p>
+     * @param r
+     * @param g
+     * @param b
+     */
+    public CharacterParams setShoesColor(float r, float g, float b) {
+        shoesColor[0] = r;
+        shoesColor[1] = g;
+        shoesColor[2] = b;
         return this;
     }
 
