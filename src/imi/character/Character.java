@@ -1630,22 +1630,14 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         // attach the appropriate head
         String headPath = attributes.getHeadAttachment();
         if (headPath != null) {
-            if (FileUtils.doesPathReferToBinaryFile(headPath))
-            {
-                // Binary head files are assumed to be in the avatars jar
-                URL headLocation = getClass().getClassLoader().getResource(headPath);
-                if (headLocation == null)
-                    System.out.println("ERROR loading head: " + headPath);
-                installBinaryHeadConfiguration(headLocation);
-            }
-            else
-            {
-                try {
-                    URL headLocation = new URL(urlPrefix + headPath);
+            try {
+                URL headLocation = new URL(urlPrefix + headPath);
+                if (FileUtils.doesPathReferToBinaryFile(headPath))
+                    installBinaryHeadConfiguration(headLocation);
+                else
                     installHeadConfiguration(headLocation);
-                } catch (MalformedURLException ex) {
-                    Logger.getLogger(Character.class.getName()).log(Level.SEVERE, null, ex);
-                }
+            } catch (MalformedURLException ex) {
+                    logger.severe("Error creating URL");
             }
         }
 

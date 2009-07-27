@@ -76,61 +76,61 @@ public class FemaleAvatarParams extends CharacterParams
         switch (preset)
         {
             case 0:
-                setHeadAttachment("imi/character/data/FemaleCHead.bhf");
+                setHeadAttachment("assets/models/collada/Heads/Binary/FemaleCHead.bhf");
                 setUsePhongLightingForHead(true);
                 setSkinTone(255.0f / 255.0f, 139.0f / 255.0f, 95.0f / 255.0f);
                 setApplySkinToneOnHead(false);
                 break;
             case 1:
-                setHeadAttachment("imi/character/data/AsianFemaleHead.bhf");
+                setHeadAttachment("assets/models/collada/Heads/Binary/AsianFemaleHead.bhf");
                 setUsePhongLightingForHead(true);
                 setSkinTone(255.0f / 255.0f, 139.0f / 255.0f, 95.0f / 255.0f);
                 setApplySkinToneOnHead(false);
                 break;
             case 2:
-                setHeadAttachment("imi/character/data/FemaleAAHead.bhf");
+                setHeadAttachment("assets/models/collada/Heads/Binary/FemaleAAHead.bhf");
                 setUsePhongLightingForHead(true);
                 setSkinTone(242.0f / 255.0f, 159.0f / 255.0f, 122.0f / 255.0f);
                 setApplySkinToneOnHead(false);
                 break;
             case 3:
-                setHeadAttachment("imi/character/data/FemaleHispanicHead.bhf");
+                setHeadAttachment("assets/models/collada/Heads/Binary/FemaleHispanicHead.bhf");
                 setUsePhongLightingForHead(true);
                 setSkinTone(242.0f / 255.0f, 159.0f / 255.0f, 122.0f / 255.0f);
                 setApplySkinToneOnHead(false);
                 break;
             case 4:
-                setHeadAttachment("imi/character/data/FG_Female_AF_Head02.bhf");
+                setHeadAttachment("assets/models/collada/Heads/Binary/FG_Female_AF_Head02.bhf");
                 setUsePhongLightingForHead(true);
                 setSkinTone(238.0f / 255.0f, 161.0f / 255.0f, 134.0f / 255.0f);
                 setApplySkinToneOnHead(false);
                 break;
             case 5:
-                setHeadAttachment("imi/character/data/FG_FemaleLowPoly_01.bhf");
+                setHeadAttachment("assets/models/collada/Heads/Binary/FG_FemaleLowPoly_01.bhf");
                 setUsePhongLightingForHead(true);
                 setSkinTone(238.0f / 255.0f, 161.0f / 255.0f, 134.0f / 255.0f);
                 setApplySkinToneOnHead(false);
                 break;
             case 6:
-                setHeadAttachment("imi/character/data/FG_FemaleHead01.bhf");
+                setHeadAttachment("assets/models/collada/Heads/Binary/FG_FemaleHead01.bhf");
                 setUsePhongLightingForHead(true);
                 setSkinTone(238.0f / 255.0f, 161.0f / 255.0f, 134.0f / 255.0f);
                 setApplySkinToneOnHead(false);
                 break;
             case 7:
-                setHeadAttachment("imi/character/data/FG_Female02HighPoly.bhf");
+                setHeadAttachment("assets/models/collada/Heads/Binary/FG_Female02HighPoly.bhf");
                 setUsePhongLightingForHead(true);
                 setSkinTone(129.0f / 255.0f, 65.0f / 255.0f, 38.0f / 255.0f);
                 setApplySkinToneOnHead(false);
                 break;
             case 8:
-                setHeadAttachment("imi/character/data/FG_Female01HighPoly.bhf");
+                setHeadAttachment("assets/models/collada/Heads/Binary/FG_Female01HighPoly.bhf");
                 setUsePhongLightingForHead(true);
                 setSkinTone(238.0f / 255.0f, 161.0f / 255.0f, 134.0f / 255.0f);
                 setApplySkinToneOnHead(false);
                 break;
             default:
-                setHeadAttachment("imi/character/data/FemaleCHead.bhf");
+                setHeadAttachment("assets/models/collada/Heads/Binary/FemaleCHead.bhf");
                 setUsePhongLightingForHead(true);
                 setSkinTone(255.0f / 255.0f, 139.0f / 255.0f, 95.0f / 255.0f);
                 setApplySkinToneOnHead(false);

@@ -73,40 +73,40 @@ public class MaleAvatarParams extends CharacterParams
         switch (preset)
         {
             case 0:
-                setHeadAttachment("imi/character/data/MaleCHead.bhf");
+                setHeadAttachment("assets/models/collada/Heads/Binary/MaleCHead.bhf");
                 break;
             case 1:
-                setHeadAttachment("imi/character/data/FG_MaleHead02Medium.bhf");
+                setHeadAttachment("assets/models/collada/Heads/Binary/FG_MaleHead02Medium.bhf");
                 setUsePhongLightingForHead(true);
                 setSkinTone(177.0f / 255.0f, 84.0f / 255.0f, 24.0f / 255.0f);
                 setApplySkinToneOnHead(false);
                 break;
             case 2:
-                setHeadAttachment("imi/character/data/FG_MaleLowPoly_01.bhf");
+                setHeadAttachment("assets/models/collada/Heads/Binary/FG_MaleLowPoly_01.bhf");
                 setUsePhongLightingForHead(true);
                 break;
             case 3:
-                setHeadAttachment("imi/character/data/FG_Obama_HeadMedPoly.bhf");
+                setHeadAttachment("assets/models/collada/Heads/Binary/FG_Obama_HeadMedPoly.bhf");
                 setUsePhongLightingForHead(true);
                 setSkinTone(186.0f / 255.0f, 107.0f / 255.0f, 62.0f / 255.0f);
                 setApplySkinToneOnHead(false);
                 break;
             case 4:
-                setHeadAttachment("imi/character/data/blackHead.bhf");
+                setHeadAttachment("assets/models/collada/Heads/Binary/blackHead.bhf");
                 setAnimateFace(false); // no facial animations for this head (that work! hehe)
                 setUsePhongLightingForHead(true);
                 setSkinTone(213.0f / 255.0f, 152.0f / 255.0f, 128.0f / 255.0f);
                 setApplySkinToneOnHead(false);
                 break;
             case 5:
-                setHeadAttachment("imi/character/data/AsianHeadMale.bhf");
+                setHeadAttachment("assets/models/collada/Heads/Binary/AsianHeadMale.bhf");
                 setAnimateFace(false); // no facial animations for this head (that work! hehe)
                 setUsePhongLightingForHead(true);
                 setSkinTone(241.0f / 255.0f, 172.0f / 255.0f, 126.0f / 255.0f);
                 setApplySkinToneOnHead(false);
                 break;
             default:
-                setHeadAttachment("imi/character/data/MaleCHead.bhf");
+                setHeadAttachment("assets/models/collada/Heads/Binary/MaleCHead.bhf");
         }
     }
 

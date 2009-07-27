@@ -62,7 +62,7 @@ public final class AvatarBinaryHeadExporter {
     //////////////// Asset lists        ////////////////////
     ////////////////////////////////////////////////////////
 
-    private static final String     saveFolder              = "src/imi/character/data/";
+    private static final String     saveFolder              = "assets/models/collada/Heads/Binary/";
     private static final String     maleRelPath             = "assets/models/collada/Heads/MaleHead/";
     private static final String[]   maleFGHeads               = new String[] {
                                                                              "FG_Obama_HeadMedPoly.dae",
