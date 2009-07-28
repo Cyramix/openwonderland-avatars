@@ -91,7 +91,7 @@ public class PPolygonMesh extends PNode implements Serializable
     
     private transient boolean m_bDebugInfo        = false; // True to dump extra debugging information
     
-    private transient boolean m_bSubmitGeometry   = true;
+    private transient boolean m_bSubmitGeometry   = true; // Geometry will be submited if this flag allows it and if its "dirty"
 
     /**
      * Copy Constructor - This version performs a deep copy
@@ -211,6 +211,7 @@ public class PPolygonMesh extends PNode implements Serializable
     /**
      * This method reconstruct the jME TriMesh based on current PPolygon data
      * if the inherited PNode.isDirty() method returns true.
+     * m_bSubmitGeometry is a flag that may turn this feature off.
      */
     public void submit() 
     {
@@ -1499,7 +1500,7 @@ public class PPolygonMesh extends PNode implements Serializable
         m_SharedAsset = null;
         m_bInBatch = false;
         m_bDebugInfo = false;
-        m_bSubmitGeometry = false;
+        m_bSubmitGeometry = true;
 
         m_BoundingCube = new PCube();
         m_BoundingSphere = new PSphere();

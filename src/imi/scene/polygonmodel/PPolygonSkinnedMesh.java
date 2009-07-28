@@ -111,6 +111,12 @@ public class PPolygonSkinnedMesh extends PPolygonMesh implements Serializable
     
     public int[] getInfluenceIndices()
     {
+//        if (m_influenceIndices == null)
+//        {
+//            System.out.println("m_influenceIndices is NULL!");
+//            Thread.dumpStack();
+//            return new int [] {};
+//        }
         int[] result = new int[m_influenceIndices.length];
         for (int i = 0; i < result.length; ++i)
             result[i] = m_influenceIndices[i];

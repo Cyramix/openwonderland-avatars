@@ -27,6 +27,7 @@ import imi.input.CharacterControls;
 import imi.input.DefaultCharacterControls;
 import imi.input.InputManagerEntity;
 import java.awt.Color;
+import java.io.File;
 import org.jdesktop.mtgame.WorldManager;
 
 /**
@@ -114,6 +115,7 @@ public class CustomizationDemo extends DemoBase
 //Manipulator.adjustUpperLipScale(avatar, scale);
 
 
+      //  Manipulator.swapHairMesh(avatar, true, new File("assets/models/collada/Hair/MaleHair/FG_Male01HairDefaults.dae"), "Male_ShortBasicShape");
 
     Manipulator.setShirtColor(avatar, Color.RED);
     Manipulator.setPantsColor(avatar, Color.yellow);

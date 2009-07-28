@@ -21,6 +21,7 @@ import imi.scene.PMatrix;
 import java.util.ArrayList;
 import java.util.List;
 import javolution.util.FastList;
+import javolution.util.FastTable;
 
 /**
  * This class represents concrete attribute settings for the avatarAvatar. It is
@@ -31,16 +32,15 @@ import javolution.util.FastList;
 public class MaleAvatarParams extends CharacterParams
 {
     /** number of preset features **/
-    private enum PresetNumbers {
+    public enum PresetNumbers {
         NumberOfFeet(4),
         NumberOfLegs(4),
         NumberOfTorsos(6),
-        NumberOfHairs(16),
         NumberOfHeads(3),
         NumberOfSkinTones(skinTones.length),
         NumberOfEyeColors(eyeTextures.length);
 
-        final int count;
+        public int count;
         PresetNumbers(int value) {
             count = value;
         }
@@ -52,6 +52,9 @@ public class MaleAvatarParams extends CharacterParams
     /** Used during building **/
     private transient ConfigurationContext configContext = null;
 
+    FastTable<String> hairPresetsColladaFileNames = new FastTable<String>();
+    FastTable<String> hairPresetsMeshNames = new FastTable<String>();
+
     /**
      * You must call DoneBuilding() before using these params!
      * @param name
@@ -59,6 +62,52 @@ public class MaleAvatarParams extends CharacterParams
     public MaleAvatarParams(String name)
     {
         super(name);
+
+        hairPresetsColladaFileNames.add("assets/models/collada/Hair/MaleHair/FG_Male01HairDefaults.dae");
+        hairPresetsMeshNames.add("Male_PonyTailShape");
+
+        hairPresetsColladaFileNames.add("assets/models/collada/Hair/MaleHair/FG_Male01HairDefaults.dae");
+        hairPresetsMeshNames.add("Male_ChinLengthPartLeftShape");
+
+        hairPresetsColladaFileNames.add("assets/models/collada/Hair/MaleHair/FG_Male01HairDefaults.dae");
+        hairPresetsMeshNames.add("Male_SlickedBackShape");
+
+        hairPresetsColladaFileNames.add("assets/models/collada/Hair/MaleHair/FG_Male01HairDefaults.dae");
+        hairPresetsMeshNames.add("Male_PartLeftShape");
+
+        hairPresetsColladaFileNames.add("assets/models/collada/Hair/MaleHair/FG_Male01HairDefaults.dae");
+        hairPresetsMeshNames.add("Male_ShortMessyShape");
+
+        hairPresetsColladaFileNames.add("assets/models/collada/Hair/MaleHair/FG_Male01HairDefaults.dae");
+        hairPresetsMeshNames.add("Male_FlatTopShape");
+
+        hairPresetsColladaFileNames.add("assets/models/collada/Hair/MaleHair/FG_Male01HairDefaults.dae");
+        hairPresetsMeshNames.add("Male_ShortTopUpShape");
+
+        hairPresetsColladaFileNames.add("assets/models/collada/Hair/MaleHair/FG_Male01HairDefaults.dae");
+        hairPresetsMeshNames.add("Male_ShortBasicShape");
+
+        hairPresetsColladaFileNames.add("assets/models/collada/Hair/MaleHair/FG_Male01HairDefaults.dae");
+        hairPresetsMeshNames.add("Male_ShortRecedShape");
+
+        hairPresetsColladaFileNames.add("assets/models/collada/Hair/MaleHair/FG_Male01HairDefaults.dae");
+        hairPresetsMeshNames.add("Male_Balding1Shape");
+
+        hairPresetsColladaFileNames.add("assets/models/collada/Hair/MaleHair/FG_Male01HairDefaults.dae");
+        hairPresetsMeshNames.add("Male_BaldPiccardShape");
+
+        hairPresetsColladaFileNames.add("assets/models/collada/Hair/MaleHair/FG_Male01HairDefaults.dae");
+        hairPresetsMeshNames.add("Male_SuperFauxHawkShape");
+
+        hairPresetsColladaFileNames.add("assets/models/collada/Hair/MaleHair/FG_Male01HairDefaults.dae");
+        hairPresetsMeshNames.add("Male_SpikeyShape");
+
+        hairPresetsColladaFileNames.add("assets/models/collada/Hair/MaleHair/FG_Male01HairDefaults.dae");
+        hairPresetsMeshNames.add("Male_ChinLengthPartRightShape");
+
+        hairPresetsColladaFileNames.add("assets/models/collada/Hair/MaleHair/FG_Male01HairDefaults.dae");
+        hairPresetsMeshNames.add("Male_PartRightShape");
+        
     }
 
     /**
@@ -183,120 +232,14 @@ public class MaleAvatarParams extends CharacterParams
      */
     private void customizeHairPresets(int preset, List<String> load, List<AttachmentParams> attachments)
     {
-        String hairFile = null;
-
-        // Should not need to rotate these.
-        PMatrix orientationHack = PMatrix.IDENTITY;//new PMatrix(new Vector3f((float)Math.toRadians(10),0,0), Vector3f.UNIT_XYZ, Vector3f.ZERO);
-        switch(preset)
+        if (preset < hairPresetsColladaFileNames.size() && preset < hairPresetsMeshNames.size() && preset >= 0)
         {
-            case 0:
-            {
-                hairFile   = "assets/models/collada/Hair/MaleHair/FG_Male01HairDefaults.dae";
-                load.add(hairFile);
-                attachments.add(new AttachmentParams("Male_PonyTailShape", "HairAttach", orientationHack, "HairAttachmentJoint", hairFile));
-            }
-            break;
-            case 1:
-            {
-                hairFile   = "assets/models/collada/Hair/MaleHair/FG_Male01HairDefaults.dae";
-                load.add(hairFile);
-                attachments.add(new AttachmentParams("Male_ChinLengthPartLeftShape", "HairAttach", orientationHack, "HairAttachmentJoint", hairFile));
-            }
-            break;
-            case 2:
-            {
-                hairFile   = "assets/models/collada/Hair/MaleHair/FG_Male01HairDefaults.dae";
-                load.add(hairFile);
-                attachments.add(new AttachmentParams("Male_SlickedBackShape", "HairAttach", orientationHack, "HairAttachmentJoint", hairFile));
-            }
-            break;
-            case 3:
-            {
-                hairFile   = "assets/models/collada/Hair/MaleHair/FG_Male01HairDefaults.dae";
-                load.add(hairFile);
-                attachments.add(new AttachmentParams("Male_PartLeftShape", "HairAttach", orientationHack, "HairAttachmentJoint", hairFile));
-            }
-            break;
-            case 4:
-            {
-                hairFile   = "assets/models/collada/Hair/MaleHair/FG_Male01HairDefaults.dae";
-                load.add(hairFile);
-                attachments.add(new AttachmentParams("Male_ShortMessyShape", "HairAttach", orientationHack, "HairAttachmentJoint", hairFile));
-            }
-            break;
-            case 5:
-            {
-                hairFile   = "assets/models/collada/Hair/MaleHair/FG_Male01HairDefaults.dae";
-                load.add(hairFile);
-                attachments.add(new AttachmentParams("Male_FlatTopShape", "HairAttach", orientationHack, "HairAttachmentJoint", hairFile));
-            }
-            break;
-            case 6:
-            {
-                hairFile   = "assets/models/collada/Hair/MaleHair/FG_Male01HairDefaults.dae";
-                load.add(hairFile);
-                attachments.add(new AttachmentParams("Male_ShortTopUpShape", "HairAttach", orientationHack, "HairAttachmentJoint", hairFile));
-            }
-            break;
-            case 7:
-            {
-                hairFile   = "assets/models/collada/Hair/MaleHair/FG_Male01HairDefaults.dae";
-                load.add(hairFile);
-                attachments.add(new AttachmentParams("Male_ShortBasicShape", "HairAttach", orientationHack, "HairAttachmentJoint", hairFile));
-            }
-            break;
-            case 8:
-            {
-                hairFile   = "assets/models/collada/Hair/MaleHair/FG_Male01HairDefaults.dae";
-                load.add(hairFile);
-                attachments.add(new AttachmentParams("Male_ShortRecedShape", "HairAttach", orientationHack, "HairAttachmentJoint", hairFile));
-            }
-            break;
-            case 9:
-            {
-                hairFile   = "assets/models/collada/Hair/MaleHair/FG_Male01HairDefaults.dae";
-                load.add(hairFile);
-                attachments.add(new AttachmentParams("Male_Balding1Shape", "HairAttach", orientationHack, "HairAttachmentJoint", hairFile));
-            }
-            break;
-            case 10:
-            {
-                hairFile   = "assets/models/collada/Hair/MaleHair/FG_Male01HairDefaults.dae";
-                load.add(hairFile);
-                attachments.add(new AttachmentParams("Male_BaldPiccardShape", "HairAttach", orientationHack, "HairAttachmentJoint", hairFile));
-            }
-            break;
-            case 11:
-            {
-                hairFile   = "assets/models/collada/Hair/MaleHair/FG_Male01HairDefaults.dae";
-                load.add(hairFile);
-                attachments.add(new AttachmentParams("Male_SuperFauxHawkShape", "HairAttach", orientationHack, "HairAttachmentJoint", hairFile));
-            }
-            break;
-            case 12:
-            {
-                hairFile   = "assets/models/collada/Hair/MaleHair/FG_Male01HairDefaults.dae";
-                load.add(hairFile);
-                attachments.add(new AttachmentParams("Male_SpikeyShape", "HairAttach", orientationHack, "HairAttachmentJoint", hairFile));
-            }
-            break;
-            case 13:
-            {
-                hairFile   = "assets/models/collada/Hair/MaleHair/FG_Male01HairDefaults.dae";
-                load.add(hairFile);
-                attachments.add(new AttachmentParams("Male_ChinLengthPartRightShape", "HairAttach", orientationHack, "HairAttachmentJoint", hairFile));
-            }
-            break;
-            case 14:
-            {
-                hairFile   = "assets/models/collada/Hair/MaleHair/FG_Male01HairDefaults.dae";
-                load.add(hairFile);
-                attachments.add(new AttachmentParams("Male_PartRightShape", "HairAttach", orientationHack, "HairAttachmentJoint", hairFile));
-            }
-            break;
-            default:
-                // do nothing
+            String hairFile = hairPresetsColladaFileNames.get(preset);
+            load.add(hairFile);
+            attachments.add(new AttachmentParams(hairPresetsMeshNames.get(preset), "HairAttach", PMatrix.IDENTITY, "HairAttachmentJoint", hairFile));
         }
+        else
+            throw new RuntimeException("Invalid preset " + preset);
     }
 
     /**
@@ -490,6 +433,18 @@ public class MaleAvatarParams extends CharacterParams
         setAddInstructions(add);
     }
 
+    public FastTable<String> getHairPresetsColladaFileNames() {
+        return hairPresetsColladaFileNames;
+    }
+
+    public FastTable<String> getHairPresetsMeshNames() {
+        return hairPresetsMeshNames;
+    }
+
+    public int getNumberofHairPresets() {
+        return hairPresetsMeshNames.size();
+    }
+
     /////////////////////////////////////////////////
     //////////// Helpful builder pattern ////////////
     ////////////////////////////////////////////////
@@ -517,7 +472,7 @@ public class MaleAvatarParams extends CharacterParams
         if (randomizeUnasignedElements)
         {
             if (!configContext.hairConfigured)
-                configureHair((int)((Math.random() * 10000.0f) % PresetNumbers.NumberOfHairs.count));
+                configureHair((int)((Math.random() * 10000.0f) % getNumberofHairPresets()));
             if (!configContext.headConfigured)
                 configureHead((int)((Math.random() * 10000.0f) % PresetNumbers.NumberOfHeads.count));
             if (!configContext.torsoConfigured)

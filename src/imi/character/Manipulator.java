@@ -27,6 +27,7 @@ import imi.scene.PNode;
 import imi.scene.SkeletonNode;
 import imi.scene.SkinnedMeshJoint;
 import imi.scene.animation.AnimationGroup;
+import imi.scene.polygonmodel.PPolygonMesh;
 import imi.scene.polygonmodel.PPolygonMeshInstance;
 import imi.scene.polygonmodel.PPolygonModelInstance;
 import imi.scene.polygonmodel.PPolygonSkinnedMeshInstance;
@@ -40,6 +41,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.jdesktop.mtgame.RenderUpdater;
 import org.jdesktop.mtgame.WorldManager;
 
 /**
@@ -1798,8 +1800,18 @@ public class Manipulator {
      * @return boolean      - true if there were no problems and will throw an exception otherwise
      */
     public static boolean swapHairMesh(Character character, boolean useRepository, File colladaFile, String meshName) {
-        boolean success = swapNonSkinnedMesh(character, useRepository, colladaFile, meshName, "Head", PMatrix.IDENTITY, "HairAttachmentJoint");
+        boolean success = swapNonSkinnedMesh(character, useRepository, colladaFile, meshName, "HairAttach", PMatrix.IDENTITY, "HairAttachmentJoint");
         setShaderOnHair(character, MaterialMeshUtils.ShaderType.HairShader);
+        PNode hairSmoothNormalsHack = character.getSkeleton().findChild(meshName);
+        if (hairSmoothNormalsHack instanceof PPolygonMeshInstance)
+        {
+            ((PPolygonMeshInstance)hairSmoothNormalsHack).getGeometry().setSmoothNormals(true);
+             character.getWorldManager().addRenderUpdater(new RenderUpdater() {
+                public void update(Object geometry) {
+                    ((PPolygonMesh)geometry).submit();
+                }
+            }, ((PPolygonMeshInstance)hairSmoothNormalsHack).getGeometry());
+        }
         return success;
     }
 
@@ -1933,6 +1945,7 @@ public class Manipulator {
 
         removeAttatchment(character, attchmentJoint);
 
+        boolean result = false;
         try {
             String base = System.getProperty("user.dir");
             String path = FileUtils.getRelativePath(new File(base), colladaFile);
@@ -1941,11 +1954,14 @@ public class Manipulator {
             pProcessor.execute(pRootInstruction);
             character.getCharacterParams().addAttachmentInstruction(new AttachmentParams(meshName, parentJoint, transform, attchmentJoint, meshName));
             character.getCharacterParams().addLoadInstruction(path);
-            return true;
+            result = true;
         } catch (MalformedURLException ex) {
             Logger.getLogger(Manipulator.class.getName()).log(Level.SEVERE, null, ex);
-            return false;
         }
+        PNode mesh = character.getSkeleton().findChild(meshName);
+        if (mesh instanceof PPolygonMeshInstance)
+            ((PPolygonMeshInstance)mesh).applyMaterial();
+        return result;
     }
 
     /**

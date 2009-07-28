@@ -734,6 +734,7 @@ public class PMeshMaterial implements Serializable
     private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException
     {
         in.defaultReadObject();
+        clearShaders(); // YEAH!
         // Re-allocate all transient objects
     }
 }
