@@ -18,9 +18,11 @@
 package imi.character;
 
 import com.jme.bounding.BoundingSphere;
+import com.jme.bounding.BoundingVolume;
 import com.jme.image.Texture.ApplyMode;
 import com.jme.image.Texture.CombinerFunctionAlpha;
 import com.jme.image.Texture.MinificationFilter;
+import com.jme.math.Quaternion;
 import com.jme.math.Vector2f;
 import com.jme.math.Vector3f;
 import com.jme.renderer.ColorRGBA;
@@ -111,6 +113,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.zip.ZipInputStream;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
@@ -1511,7 +1514,6 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         for (PPolygonSkinnedMeshInstance meshInstance : m_skeleton.getSkinnedMeshInstances())
             meshInstance.applyMaterial();
 
-
         // then the attachments
         PNode skeletonRoot = m_skeleton.getSkeletonRoot();
         FastList<PNode> queue = new FastList<PNode>();
@@ -1548,6 +1550,25 @@ public abstract class Character extends Entity implements SpatialObject, Animati
             m_rightArm.setSkeletonManipulator(m_skeletonManipulator);
             m_leftArm.setSkeletonManipulator(m_skeletonManipulator);
         }
+
+        // XXX HACK XXX
+        /**
+         * The following hack is to solve an issue with the bounding volumes of
+         * avatars. The jME bounding volumes remain in the bind pose position, as
+         * we are not animating them with the skeleton. This can lead to (specifically)
+         * the hands disappearing, as their bind position is far away from where
+         * they are normally viewed.
+         */
+        // HIP (hack in progress)
+//        for (PPolygonSkinnedMeshInstance smInst : m_skeleton.getSkinnedMeshInstances()) {
+//            if (smInst.getName().toLowerCase().contains("hand"))
+//            {
+//                smInst.getGeometry().getGeometry().updateModelBound();
+//                BoundingVolume bv = smInst.getGeometry().getGeometry().getModelBound();
+//                bv.transform(new Quaternion(), Vector3f.ZERO, Vector3f.UNIT_XYZ.mult(3));
+//                smInst.getGeometry().getGeometry().setModelBound(bv);
+//            }
+//        }
         //m_arm.setPointAtLocation(Vector3f.UNIT_Y.mult(2.0f)); // test pointing, set to null to stop pointing
 
         // Uncomment for verlet arm particle visualization

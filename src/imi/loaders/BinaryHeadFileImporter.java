@@ -18,8 +18,12 @@
 
 import imi.scene.SkeletonNode;
 import imi.utils.AvatarObjectInputStream;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 /**
  * This class is used for loading serialized binary head file (bhf) packs.
@@ -28,6 +32,7 @@ import java.io.InputStream;
  */
 public final class BinaryHeadFileImporter
 {
+    private static final int BUFFER_SIZE = 1024 * 64; // 64k buffer
     /** Disabled **/
     private BinaryHeadFileImporter() {}
 
@@ -45,8 +50,22 @@ public final class BinaryHeadFileImporter
             throw new IllegalArgumentException("Null stream provided!");
 
         SkeletonNode result = null;
-        AvatarObjectInputStream inStream = new AvatarObjectInputStream(stream);
         try {
+            // Assume one entry in this head file
+            ZipInputStream zis = new ZipInputStream(stream);
+            ByteArrayOutputStream bos = new ByteArrayOutputStream(BUFFER_SIZE);
+            ZipEntry headEntry = zis.getNextEntry();
+
+            // Now we need a buffer large enough to hold to uncompressed item
+            byte[] buffer = new byte[BUFFER_SIZE];
+            int bytesRead;
+            // read it in
+            while ((bytesRead = zis.read(buffer, 0, BUFFER_SIZE)) != -1) {
+                bos.write(buffer, 0, bytesRead);
+            }
+
+            ByteArrayInputStream byteStream = new ByteArrayInputStream(bos.toByteArray());
+            AvatarObjectInputStream inStream = new AvatarObjectInputStream(byteStream);
             result = (SkeletonNode) inStream.readObject();
         } catch (ClassNotFoundException ex) {
             throw new IllegalArgumentException("Stream was not a valid BHF file.");

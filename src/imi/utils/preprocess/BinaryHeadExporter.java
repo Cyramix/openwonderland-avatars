@@ -30,12 +30,15 @@ import imi.scene.animation.AnimationCycle;
 import imi.scene.animation.AnimationGroup;
 import imi.scene.polygonmodel.PPolygonSkinnedMesh;
 import imi.scene.polygonmodel.PPolygonSkinnedMeshInstance;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 import java.util.logging.Logger;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 import javolution.util.FastList;
 import org.jdesktop.mtgame.WorldManager;
 
@@ -111,14 +114,20 @@ public class BinaryHeadExporter {
             loadedSkeleton.addToSubGroup(meshInst, "Head");
         }
 
-        FileOutputStream fos            = null;
-        AvatarObjectOutputStream out    = null;
+        ByteArrayOutputStream       bos = new ByteArrayOutputStream(4096);
+        AvatarObjectOutputStream    out = null;
 
-        System.out.println("Writing file: " + params.outputFile);
-        fos = new FileOutputStream(params.outputFile);
-        out = new AvatarObjectOutputStream(fos);
+        out = new AvatarObjectOutputStream(bos);
         out.writeObject(loadedSkeleton);
         out.close();
+        bos.close();
+
+        ZipOutputStream zos = null;
+        zos = new ZipOutputStream(new FileOutputStream(params.outputFile));
+        ZipEntry headEntry = new ZipEntry(params.outputFile.toString());
+        zos.putNextEntry(headEntry);
+        zos.write(bos.toByteArray());
+        zos.close();
     }
 
     /**
