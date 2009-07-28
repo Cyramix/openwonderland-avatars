@@ -176,7 +176,7 @@ public class PScene extends PNode implements RepositoryUser, Serializable
      * its dirty boolean and if true it will reconstruct its TriMesh.
      */
     @InternalAPI
-    public void submitGeometry()
+    public synchronized void submitGeometry()
     {
         for (PPolygonMesh geometry : m_LocalGeometry)
             geometry.submit();
@@ -185,7 +185,7 @@ public class PScene extends PNode implements RepositoryUser, Serializable
     /**
      * Flip normals on local geometry
      */
-    public void flipNormals()
+    public synchronized void flipNormals()
     {
         // flip the normals for all the geometry in this scene
         for (PPolygonMesh geometry : m_LocalGeometry)
@@ -197,7 +197,7 @@ public class PScene extends PNode implements RepositoryUser, Serializable
     /**
      * Toggling smooth normals will make the scene dirty
      */
-    public void toggleSmoothNormals()
+    public synchronized void toggleSmoothNormals()
     {
         for (PPolygonMesh geometry : m_LocalGeometry)
             geometry.setSmoothNormals(!geometry.getSmoothNormals());
@@ -211,7 +211,7 @@ public class PScene extends PNode implements RepositoryUser, Serializable
      * @return  index of the meshAsset geometry
      */
     @InternalAPI
-    public int addMeshGeometry(PPolygonMesh mesh)
+    public synchronized int addMeshGeometry(PPolygonMesh mesh)
     {
         // Duplicate checking
         int index = m_LocalGeometry.indexOf(mesh);
@@ -364,6 +364,17 @@ public class PScene extends PNode implements RepositoryUser, Serializable
         return m_SharedAssetWaitingList;
     }
     
+    /**
+     * Clears the scene
+     */
+    @InternalAPI
+    public synchronized void clear() {
+        m_SharedAssetWaitingList.clear();
+        m_Instances.removeAllChildren();
+        m_LocalGeometry.clear();
+        m_SharedAssets.clear();
+    }
+
     /***
      * Process a graph
      * @param node
@@ -411,7 +422,7 @@ public class PScene extends PNode implements RepositoryUser, Serializable
      * @return meshInst (PPolygonMeshInstance)
      */
     @InternalAPI
-    public PPolygonMeshInstance processMesh(PPolygonMesh mesh)
+    public synchronized PPolygonMeshInstance processMesh(PPolygonMesh mesh)
     {
         // Put the kids in a sack
         FastTable<PNode> kids = new FastTable<PNode>(mesh.getChildren());
@@ -514,7 +525,7 @@ public class PScene extends PNode implements RepositoryUser, Serializable
      * @return meshInst (PNode)
      */
     @InternalAPI
-    public PPolygonSkinnedMeshInstance processSkinnedMesh(PPolygonSkinnedMesh mesh)
+    public synchronized PPolygonSkinnedMeshInstance processSkinnedMesh(PPolygonSkinnedMesh mesh)
     {
         // Put the kids in a sack
         FastTable<PNode> kids = new FastTable<PNode>(mesh.getChildren());
@@ -1047,7 +1058,7 @@ public class PScene extends PNode implements RepositoryUser, Serializable
      * Removes geometry that is shared locally and has 0 reference counts
      * Note : if you hold an index of a geometry it might become invalid.
      */
-    public void cleanUpGeometry()
+    public synchronized void cleanUpGeometry()
     {
         FastTable<PNode> deathRow = new FastTable<PNode>();
         
@@ -1140,7 +1151,7 @@ public class PScene extends PNode implements RepositoryUser, Serializable
      * Use with caution.
      */
     @Deprecated
-    public void clearLocalCache()
+    public synchronized void clearLocalCache()
     {
         m_SharedAssets.clear();
         m_LocalGeometry.clear();
