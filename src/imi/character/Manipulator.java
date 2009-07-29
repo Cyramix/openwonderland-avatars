@@ -1262,6 +1262,38 @@ public class Manipulator {
     }
 
     /**
+     * Sets a shader based on the shaderType on the tongue mesh of the specified
+     * character.  This method searches the character for the eye mesh(es) and then
+     * creates a new shader of shaderType and applys it to the material of the
+     * mesh.
+     * @param character     - the character to modify
+     * @param shaderType    - the type of shader to create and apply
+     */
+    public static void setShaderOnTongue(Character character, MaterialMeshUtils.ShaderType shaderType) {
+        if (character == null || character.getSkeleton() == null) {
+            throw new IllegalArgumentException("SEVERE ERROR: Either character was null or the skeletonnode was null");
+        }
+
+        setShader(character, shaderType, "Head", "tongue", null, 0);
+    }
+
+    /**
+     * Sets a shader based on the shaderType on the teeth mesh(es) of the specified
+     * character.  This method searches the character for the eye mesh(es) and then
+     * creates a new shader of shaderType and applys it to the material of the
+     * mesh.
+     * @param character     - the character to modify
+     * @param shaderType    - the type of shader to create and apply
+     */
+    public static void setShaderOnTeeth(Character character, MaterialMeshUtils.ShaderType shaderType) {
+        if (character == null || character.getSkeleton() == null) {
+            throw new IllegalArgumentException("SEVERE ERROR: Either character was null or the skeletonnode was null");
+        }
+
+        setShader(character, shaderType, "Head", "teeth", null, 0);
+    }
+
+    /**
      * Sets a shader based on the shaderType on the shirt mesh of the specified
      * character.  This method searches the character for the shirt mesh and then
      * creates a new shader of shaderType and applys it to the material of the
@@ -1896,17 +1928,23 @@ public class Manipulator {
         pRootInstruction.addChildInstruction(InstructionType.setSkeleton, skeleton);
 
         removeSkinnedMesh(character, pRootInstruction, subGroup);
+        boolean result = false;
         try {
             String base = System.getProperty("user.dir");
             String path = FileUtils.getRelativePath(new File(base), colladaFile);
             pRootInstruction.addLoadGeometryToSubgroupInstruction(colladaFile.toURI().toURL(), subGroup);
             pProcessor.execute(pRootInstruction);
             updateSkinnedMeshParams(character, subGroup, path);
-            return true;
+            result = true;
         } catch (MalformedURLException ex) {
             Logger.getLogger(Manipulator.class.getName()).log(Level.SEVERE, null, ex);
-            return false;
+            result = false;
         }
+        PPolygonSkinnedMeshInstance[] meshes = character.getSkeleton().getMeshesBySubGroup(subGroup);
+        for (PPolygonSkinnedMeshInstance smInstance : meshes) {
+            smInstance.applyMaterial();
+        }
+        return result;
     }
 
     /**
