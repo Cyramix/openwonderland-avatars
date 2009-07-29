@@ -36,7 +36,6 @@ public class MaleAvatarParams extends CharacterParams
     public enum PresetNumbers {
         NumberOfFeet(4),
         NumberOfLegs(4),
-        NumberOfTorsos(6),
         NumberOfSkinTones(skinTones.length),
         NumberOfEyeColors(eyeTextures.length);
 
@@ -141,6 +140,10 @@ public class MaleAvatarParams extends CharacterParams
 //        headPresetsPhongLighting.add(true);
 //        headPresetsSkinTone.add(new ColorRGBA(241.0f / 255.0f, 172.0f / 255.0f, 126.0f / 255.0f, 1.0f));
 
+        /////////// Torso default presets //////////////
+
+
+        
     }
 
     /**
@@ -474,6 +477,10 @@ public class MaleAvatarParams extends CharacterParams
         return headPresetsFileNames.size();
     }
 
+    public int getNumberOfTorsoPresets() {
+        return 4;
+    }
+
     /////////////////////////////////////////////////
     //////////// Helpful builder pattern ////////////
     ////////////////////////////////////////////////
@@ -505,7 +512,7 @@ public class MaleAvatarParams extends CharacterParams
             if (!configContext.headConfigured)
                 configureHead((int)((Math.random() * 10000.0f) % getNumberOfHeadPresets()));
             if (!configContext.torsoConfigured)
-                configureTorso((int)((Math.random() * 10000.0f) % PresetNumbers.NumberOfTorsos.count));
+                configureTorso((int)((Math.random() * 10000.0f) % getNumberOfTorsoPresets()));
             if (!configContext.legsConfigured)
                 configureLegs((int)((Math.random() * 10000.0f) % PresetNumbers.NumberOfLegs.count));
             if (!configContext.feetConfigured)

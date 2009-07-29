@@ -190,6 +190,15 @@ public class PresetsDeveloperTool extends DemoBase
                         case Head:
                             setHead(isMale);
                         break;
+                        case Torso:
+                            setTorso(isMale);
+                        break;
+                        case Legs:
+                            setLegs(isMale);
+                        break;
+                        case Feet:
+                            setFeet(isMale);
+                        break;
                     }
                 }
                 
@@ -222,16 +231,16 @@ public class PresetsDeveloperTool extends DemoBase
             this.female = female;
             this.maleParams = maleParams;
             this.femaleParams = femaleParams;
-            maleNumberOfPresets[Regions.Hair.ordinal()] = maleParams.getNumberOfHairPresets();
-            maleNumberOfPresets[Regions.Head.ordinal()] = maleParams.getNumberOfHeadPresets();
-//            maleNumberOfPresets[2] = maleParams.getNumberOfTorsoPresets();
-//            maleNumberOfPresets[3] = maleParams.getNumberOfLegsPresets();
-//            maleNumberOfPresets[4] = maleParams.getNumberOfFeetPresets();
-//            femaleNumberOfPresets[0] = femaleParams.getNumberOfHairPresets();
-//            femaleNumberOfPresets[1] = femaleParams.getNumberOfHeadPresets();
-//            femaleNumberOfPresets[2] = femaleParams.getNumberOfTorsoPresets();
-//            femaleNumberOfPresets[3] = femaleParams.getNumberOfLegsPresets();
-//            femaleNumberOfPresets[4] = femaleParams.getNumberOfFeetPresets();
+            maleNumberOfPresets[Regions.Hair.ordinal()]  = maleParams.getNumberOfHairPresets();
+            maleNumberOfPresets[Regions.Head.ordinal()]  = maleParams.getNumberOfHeadPresets();
+            maleNumberOfPresets[Regions.Torso.ordinal()] = maleParams.getNumberOfTorsoPresets();
+//            maleNumberOfPresets[Regions.Legs.ordinal()]  = maleParams.getNumberOfLegsPresets();
+//            maleNumberOfPresets[Regions.Feet.ordinal()]  = maleParams.getNumberOfFeetPresets();
+//            femaleNumberOfPresets[Regions.Hair.ordinal()]  = femaleParams.getNumberOfHairPresets();
+//            femaleNumberOfPresets[Regions.Head.ordinal()]  = femaleParams.getNumberOfHeadPresets();
+//            femaleNumberOfPresets[Regions.Torso.ordinal()] = femaleParams.getNumberOfTorsoPresets();
+//            femaleNumberOfPresets[Regions.Legs.ordinal()]  = femaleParams.getNumberOfLegsPresets();
+//            femaleNumberOfPresets[Regions.Feet.ordinal()]  = femaleParams.getNumberOfFeetPresets();
         }
         
         void setHair(boolean isMale)
@@ -246,6 +255,7 @@ public class PresetsDeveloperTool extends DemoBase
             }
             else
             {
+//                int femaleHair = femaleCurrentPresets[Regions.Hair.ordinal()];
 //                String fileName = femaleParams.getHairPresetsColladaFileNames().get(femaleHair);
 //                String meshName = femaleParams.getHairPresetsMeshNames().get(femaleHair);
 //                Manipulator.swapHairMesh(female, true, new File(fileName), meshName);
@@ -271,6 +281,7 @@ public class PresetsDeveloperTool extends DemoBase
                         headFileName.equals("assets/models/collada/Heads/Binary/AsianHeadMale.bhf"))
                     maleParams.setAnimateFace(false); // no facial animations for this head (that work!) - this will not do anything on run time, just works on load
                 boolean phong = maleParams.getHeadPresetsPhongLighting().get(maleHead);
+                maleParams.setUsePhongLightingForHead(phong);
                 if (phong)
                     Manipulator.swapHeadMesh(male, true, new File(headFileName), ShaderType.PhongFleshShader);
                 else
@@ -279,6 +290,7 @@ public class PresetsDeveloperTool extends DemoBase
             }
             else
             {
+//                int femaleHead = femaleCurrentPresets[Regions.Head.ordinal()];
 //                String headFileName = femaleParams.getHeadPresetsFileNames().get(femaleHead);
 //                ColorRGBA skint = femaleParams.getHeadPresetsSkinTone().get(femaleHead);
 //                if (skint != null)
@@ -305,5 +317,14 @@ public class PresetsDeveloperTool extends DemoBase
 
         }
 
+        void setLegs(boolean isMale)
+        {
+
+        }
+
+        void setFeet(boolean isMale)
+        {
+
+        }
     }
 }
