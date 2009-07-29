@@ -108,7 +108,7 @@ public class PresetsDeveloperTool extends DemoBase
         control.set(male, female, maleParams, femaleParams);
     }
 
-    public static enum Part {
+    public static enum Regions {
         Hair,
         Head,
         Torso,
@@ -117,23 +117,19 @@ public class PresetsDeveloperTool extends DemoBase
     }
     public static class controls extends DefaultCharacterControls
     {
-        Part current = Part.Hair;
-        int maleHair    = 0;
-        int maleHead    = 0;
-        int maleTorso   = 0;
-        int maleLegs    = 0;
-        int maleFeet    = 0;
-        int femaleHair  = 0;
-        int femaleHead  = 0;
-        int femaleTorso = 0;
-        int femaleLegs  = 0;
-        int femaleFeet  = 0;
+        Regions region = Regions.Hair;
+        int [] maleCurrentPresets    = new int[Regions.values().length];
+        int [] femaleCurrentPresets  = new int[Regions.values().length];
+        int [] maleNumberOfPresets   = new int[Regions.values().length];
+        int [] femaleNumberOfPresets = new int[Regions.values().length];
         MaleAvatarParams maleParams = null;
         FemaleAvatarParams femaleParams = null;
         Avatar male = null;
         Avatar female = null;
         public controls(WorldManager worldManager) {
             super(worldManager);
+            for (int i = 0; i < Regions.values().length; i++)
+                maleCurrentPresets[i] = femaleCurrentPresets[i] = 0;
         }
         @Override
         public void processKeyEvent(KeyEvent ke)
@@ -151,110 +147,72 @@ public class PresetsDeveloperTool extends DemoBase
                 Character avatar = getCurrentlySelectedCharacter();
                 boolean isMale = avatar == male;
 
-                // Swap mesh preset++
-                if (ke.getKeyCode() == KeyEvent.VK_RIGHT)
+                // Swap mesh
+                if (ke.getKeyCode() == KeyEvent.VK_RIGHT || ke.getKeyCode() == KeyEvent.VK_LEFT)
                 {
-                    switch (current)
+                    int index = region.ordinal();
+                    if (ke.getKeyCode() == KeyEvent.VK_RIGHT)
+                    {
+                        if (isMale)
+                        {
+                            maleCurrentPresets[index]++;
+                            if (maleCurrentPresets[index] >= maleNumberOfPresets[index])
+                                maleCurrentPresets[index] = 0;
+                        }
+                        else
+                        {
+                            femaleCurrentPresets[index]++;
+                            if (femaleCurrentPresets[index] >= femaleNumberOfPresets[index])
+                                femaleCurrentPresets[index] = 0;
+                        }
+                    }
+                    else// if (ke.getKeyCode() == KeyEvent.VK_LEFT)
+                    {
+                        if (isMale)
+                        {
+                            maleCurrentPresets[index]--;
+                            if (maleCurrentPresets[index] < 0)
+                                maleCurrentPresets[index] = maleNumberOfPresets[index]-1;
+                        }
+                        else
+                        {
+                            femaleCurrentPresets[index]--;
+                            if (femaleCurrentPresets[index] < 0)
+                                femaleCurrentPresets[index] = femaleNumberOfPresets[index]-1;
+                        }
+                    }
+
+                    switch (region)
                     {
                         case Hair:
-                        {
-                            if (isMale)
-                            {
-                                maleHair++;
-                                if (maleHair >= maleParams.getNumberOfHairPresets())
-                                    maleHair = 0;
-                            }
-                            else
-                            {
-//                                femaleHair++;
-//                                if (femaleHair >= femaleParams.getNumberofHairPresets())
-//                                    femaleHair = 0;
-                            }
                             setHair(isMale);
-                        }
                         break;
                         case Head:
-                        {
-                            if (isMale)
-                            {
-                                maleHead++;
-                                if (maleHead >= maleParams.getNumberOfHeadPresets())
-                                    maleHead = 0;
-                            }
-                            else
-                            {
-//                                femaleHead++;
-//                                if (femaleHead >= femaleParams.getNumberofHeadPresets())
-//                                    femaleHead = 0;
-                            }
                             setHead(isMale);
-                        }
                         break;
                     }
                 }
                 
-                // Swap mesh preset--
-                if (ke.getKeyCode() == KeyEvent.VK_LEFT)
-                {
-                    switch (current)
-                    {
-                        case Hair:
-                        {
-                            if (isMale)
-                            {
-                                maleHair--;
-                                if (maleHair < 0)
-                                    maleHair = maleParams.getNumberOfHairPresets()-1;
-                            }
-                            else
-                            {
-//                                femaleHair--;
-//                                if (femaleHair < 0)
-//                                    femaleHair = femaleParams.getNumberofHairPresets()-1;
-                            }
-                            setHair(isMale);
-                        }
-                        break;
-                        case Head:
-                        {
-                            if (isMale)
-                            {
-                                maleHead--;
-                                if (maleHead < 0)
-                                    maleHead = maleParams.getNumberOfHeadPresets()-1;
-                            }
-                            else
-                            {
-//                                femaleHead--;
-//                                if (femaleHead < 0)
-//                                    femaleHead = femaleParams.getNumberofHeadPresets()-1;
-                            }
-                            setHead(isMale);
-                        }
-                        break;
-                    }
-                }
-
                 // Change mesh region
                 if (ke.getKeyCode() == KeyEvent.VK_UP)
                 {
-                    int ord = current.ordinal();
+                    int ord = region.ordinal();
                     ord++;
-                    if (ord >= current.values().length)
+                    if (ord >= region.values().length)
                         ord = 0;
-                    current = current.values()[ord];
-                    System.out.println("Current mesh region: " + current.toString());
+                    region = region.values()[ord];
+                    System.out.println("Current mesh region: " + region.toString());
                 }
 
                 // Change mesh region
                 if (ke.getKeyCode() == KeyEvent.VK_DOWN)
                 {
-                    int ord = current.ordinal();
+                    int ord = region.ordinal();
                     ord--;
                     if (ord < 0)
-                        ord = current.values().length-1;
-                    current = current.values()[ord];
-                    System.out.println("Current mesh region: " + current.toString());
+                        ord = region.values().length-1;
+                    region = region.values()[ord];
+                    System.out.println("Current mesh region: " + region.toString());
                 }
             }
         }
@@ -264,12 +222,23 @@ public class PresetsDeveloperTool extends DemoBase
             this.female = female;
             this.maleParams = maleParams;
             this.femaleParams = femaleParams;
+            maleNumberOfPresets[Regions.Hair.ordinal()] = maleParams.getNumberOfHairPresets();
+            maleNumberOfPresets[Regions.Head.ordinal()] = maleParams.getNumberOfHeadPresets();
+//            maleNumberOfPresets[2] = maleParams.getNumberOfTorsoPresets();
+//            maleNumberOfPresets[3] = maleParams.getNumberOfLegsPresets();
+//            maleNumberOfPresets[4] = maleParams.getNumberOfFeetPresets();
+//            femaleNumberOfPresets[0] = femaleParams.getNumberOfHairPresets();
+//            femaleNumberOfPresets[1] = femaleParams.getNumberOfHeadPresets();
+//            femaleNumberOfPresets[2] = femaleParams.getNumberOfTorsoPresets();
+//            femaleNumberOfPresets[3] = femaleParams.getNumberOfLegsPresets();
+//            femaleNumberOfPresets[4] = femaleParams.getNumberOfFeetPresets();
         }
         
         void setHair(boolean isMale)
         {
             if (isMale)
             {
+                int maleHair = maleCurrentPresets[Regions.Hair.ordinal()];
                 String fileName = maleParams.getHairPresetsColladaFileNames().get(maleHair);
                 String meshName = maleParams.getHairPresetsMeshNames().get(maleHair);
                 Manipulator.swapHairMesh(male, true, new File(fileName), meshName);
@@ -288,6 +257,7 @@ public class PresetsDeveloperTool extends DemoBase
         {
             if (isMale)
             {
+                int maleHead = maleCurrentPresets[Regions.Head.ordinal()];
                 String headFileName = maleParams.getHeadPresetsFileNames().get(maleHead);
                 ColorRGBA skint = maleParams.getHeadPresetsSkinTone().get(maleHead);
                 if (skint != null)
@@ -307,6 +277,32 @@ public class PresetsDeveloperTool extends DemoBase
                     Manipulator.swapHeadMesh(male, true, new File(headFileName), ShaderType.FleshShader);
                 System.out.println("Current head preset: " + maleHead + " file: " + headFileName + " phong: " + phong + " skin tone: " + skint);
             }
+            else
+            {
+//                String headFileName = femaleParams.getHeadPresetsFileNames().get(femaleHead);
+//                ColorRGBA skint = femaleParams.getHeadPresetsSkinTone().get(femaleHead);
+//                if (skint != null)
+//                {
+//                    Manipulator.setSkinTone(female, new Color(skint.r, skint.g, skint.b));
+//                    femaleParams.setApplySkinToneOnHead(false);
+//                }
+//                else
+//                    femaleParams.setApplySkinToneOnHead(true);
+//                if (headFileName.equals("assets/models/collada/Heads/Binary/blackHead.bhf") ||
+//                        headFileName.equals("assets/models/collada/Heads/Binary/AsianHeadMale.bhf"))
+//                    femaleParams.setAnimateFace(false); // no facial animations for this head (that work!) - this will not do anything on run time, just works on load
+//                boolean phong = femaleParams.getHeadPresetsPhongLighting().get(femaleHead);
+//                if (phong)
+//                    Manipulator.swapHeadMesh(female, true, new File(headFileName), ShaderType.PhongFleshShader);
+//                else
+//                    Manipulator.swapHeadMesh(female, true, new File(headFileName), ShaderType.FleshShader);
+//                System.out.println("Current head preset: " + femaleHead + " file: " + headFileName + " phong: " + phong + " skin tone: " + skint);
+            }
+        }
+
+        void setTorso(boolean isMale)
+        {
+
         }
 
     }
