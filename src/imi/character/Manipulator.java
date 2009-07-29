@@ -1807,7 +1807,11 @@ public class Manipulator {
 
         String base = System.getProperty("user.dir");
         String path = FileUtils.getRelativePath(new File(base), headFile);
-
+        if (shaderType == MaterialMeshUtils.ShaderType.PhongFleshShader)
+            character.characterParams.setUsePhongLightingForHead(true);
+        else
+            character.characterParams.setUsePhongLightingForHead(false);
+        
         URL modelURL;
         boolean result = false;
         try {
