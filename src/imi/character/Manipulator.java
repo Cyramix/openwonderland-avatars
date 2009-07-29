@@ -1815,8 +1815,16 @@ public class Manipulator {
             character.installHead(modelURL);
             character.getCharacterParams().setHeadAttachment(path);
             character.initializeMeshInstanceMaterialStates();
+
+            PPolygonSkinnedMeshInstance[] meshes = character.getSkeleton().getMeshesBySubGroup("Head");
+            for (PPolygonSkinnedMeshInstance smInstance : meshes) {
+                smInstance.applyMaterial();
+            }
+
             setShaderOnFace(character, shaderType);
             setShaderOnEyes(character, MaterialMeshUtils.ShaderType.EyeballShader, Eyes.allEyes);
+            setShaderOnTongue(character, MaterialMeshUtils.ShaderType.EyeballShader);
+            setShaderOnTeeth(character, MaterialMeshUtils.ShaderType.EyeballShader);
             result = true;
         } catch (MalformedURLException ex) {
             Logger.getLogger(Manipulator.class.getName()).log(Level.SEVERE, null, ex);
