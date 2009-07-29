@@ -125,7 +125,7 @@ public class PScene extends PNode implements RepositoryUser, Serializable
      */
     public void submitTransformsAndGeometry(boolean updateModelBounds)
     {
-        // potentially this could run in parralel
+        // potentially this could run in parallel
         submitGeometry();
         boolean anyMeshes = submitTransforms();
         if (updateModelBounds || anyMeshes) {

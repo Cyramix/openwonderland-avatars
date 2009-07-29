@@ -46,7 +46,7 @@ public class PPolygonSkinnedMeshInstance extends PPolygonMeshInstance implements
 
     protected SkeletonNode m_skeletonNode    = null;
 
-    protected transient int[]        m_influenceIndices = null;
+    protected transient int[]        m_influenceIndices = new int[0];
 
     protected transient PMatrix[]    m_pose = null;
 
@@ -97,6 +97,23 @@ public class PPolygonSkinnedMeshInstance extends PPolygonMeshInstance implements
                     "MeshInstance must not be null.");
         m_skeletonNode = skeleton;
         linkJointsToSkeletonNode();
+    }
+
+    /**
+     * Experimental!
+     * This method transforms the bounding volume for the shared mesh to match
+     * the joint it is attached to.
+     */
+    private void transformBounds() {
+        if (m_influenceIndices.length > 0 && m_skeletonNode != null)
+        {
+            // get its transform
+            PMatrix jointTransform = m_skeletonNode.getSkinnedMeshJoint(m_influenceIndices[0]).getTransform().getWorldMatrix(false);
+            // apply this transform to the jME bounding volume
+//            m_instance.getModelBound().transform(jointTransform.getRotationJME(), jointTransform.getTranslation(), jointTransform.getScaleVector());
+            m_instance.getModelBound().setCenter(jointTransform.getTranslation());
+            // dassit
+        }
     }
 
     /** experimental :D **/
@@ -228,11 +245,6 @@ public class PPolygonSkinnedMeshInstance extends PPolygonMeshInstance implements
      */
     public int[] getInfluenceIndices()
     {
-        if (m_influenceIndices == null)
-        {
-            logger.fine("Skinned mesh has no influence indices: " + getName());
-            return new int [] {};
-        }
         int[] result = new int[m_influenceIndices.length];
         for (int i = 0; i < result.length; ++i)
             result[i] = m_influenceIndices[i];
@@ -244,7 +256,8 @@ public class PPolygonSkinnedMeshInstance extends PPolygonMeshInstance implements
      * by querying the skeleton that owns this instance. The inverse bind pose
      * mapping should be regenerated through <code>recalculateInverseBindPose</code>
      * if this step is performed after initialization
-     * @param indexArray
+     * @param indexArray A non-null array of integers
+     * @throws NullPointerException If indexArray == null
      */
     public void setInfluenceIndices(int[] indexArray)
     {

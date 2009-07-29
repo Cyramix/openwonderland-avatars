@@ -166,7 +166,6 @@ public class PPolygonMeshInstance extends PNode implements Serializable
      */
     public SharedMesh updateSharedMesh()
     {
-        // TODO push shader data
         // can we optimize this with dirty booleans?
         PMatrix world = getTransform().getWorldMatrix(false);
         world.normalizeCP(); // <-- do not change. See addendum for details.
