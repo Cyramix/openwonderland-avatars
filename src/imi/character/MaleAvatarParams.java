@@ -17,6 +17,7 @@
  */
 package imi.character;
 
+import com.jme.renderer.ColorRGBA;
 import imi.scene.PMatrix;
 import java.util.ArrayList;
 import java.util.List;
@@ -36,7 +37,6 @@ public class MaleAvatarParams extends CharacterParams
         NumberOfFeet(4),
         NumberOfLegs(4),
         NumberOfTorsos(6),
-        NumberOfHeads(3),
         NumberOfSkinTones(skinTones.length),
         NumberOfEyeColors(eyeTextures.length);
 
@@ -52,8 +52,13 @@ public class MaleAvatarParams extends CharacterParams
     /** Used during building **/
     private transient ConfigurationContext configContext = null;
 
+    /** Presets **/
     FastTable<String> hairPresetsColladaFileNames = new FastTable<String>();
     FastTable<String> hairPresetsMeshNames = new FastTable<String>();
+
+    FastTable<String> headPresetsFileNames = new FastTable<String>();
+    FastTable<Boolean> headPresetsPhongLighting = new FastTable<Boolean>();
+    FastTable<ColorRGBA> headPresetsSkinTone = new FastTable<ColorRGBA>();
 
     /**
      * You must call DoneBuilding() before using these params!
@@ -62,6 +67,8 @@ public class MaleAvatarParams extends CharacterParams
     public MaleAvatarParams(String name)
     {
         super(name);
+
+        /////////// Hair default presets //////////////
 
         hairPresetsColladaFileNames.add("assets/models/collada/Hair/MaleHair/FG_Male01HairDefaults.dae");
         hairPresetsMeshNames.add("Male_PonyTailShape");
@@ -107,7 +114,33 @@ public class MaleAvatarParams extends CharacterParams
 
         hairPresetsColladaFileNames.add("assets/models/collada/Hair/MaleHair/FG_Male01HairDefaults.dae");
         hairPresetsMeshNames.add("Male_PartRightShape");
+
+        /////////// Head default presets //////////////
+
+        headPresetsFileNames.add("assets/models/collada/Heads/Binary/MaleCHead.bhf");
+        headPresetsPhongLighting.add(false);
+        headPresetsSkinTone.add(null);
         
+        headPresetsFileNames.add("assets/models/collada/Heads/Binary/FG_MaleHead02Medium.bhf");
+        headPresetsPhongLighting.add(true);
+        headPresetsSkinTone.add(new ColorRGBA(177.0f / 255.0f, 84.0f / 255.0f, 24.0f / 255.0f, 1.0f));
+        
+        headPresetsFileNames.add("assets/models/collada/Heads/Binary/FG_MaleLowPoly_01.bhf");
+        headPresetsPhongLighting.add(true);
+        headPresetsSkinTone.add(null);
+        
+//        headPresetsFileNames.add("assets/models/collada/Heads/Binary/FG_Obama_HeadMedPoly.bhf");
+//        headPresetsPhongLighting.add(true);
+//        headPresetsSkinTone.add(new ColorRGBA(186.0f / 255.0f, 107.0f / 255.0f, 62.0f / 255.0f, 1.0f));
+//
+//        headPresetsFileNames.add("assets/models/collada/Heads/Binary/blackHead.bhf"); // no facial animations
+//        headPresetsPhongLighting.add(true);
+//        headPresetsSkinTone.add(new ColorRGBA(213.0f / 255.0f, 152.0f / 255.0f, 128.0f / 255.0f, 1.0f));
+//
+//        headPresetsFileNames.add("assets/models/collada/Heads/Binary/AsianHeadMale.bhf"); // no facial animations
+//        headPresetsPhongLighting.add(true);
+//        headPresetsSkinTone.add(new ColorRGBA(241.0f / 255.0f, 172.0f / 255.0f, 126.0f / 255.0f, 1.0f));
+
     }
 
     /**
@@ -115,48 +148,28 @@ public class MaleAvatarParams extends CharacterParams
      * Some heads set skin tone (are not compatible with arbitrary skin tone),
      * so calling this method in "order" (not before anything that changes skin tone)
      * might be important.
+     * Some heads might not have facial animations - it will be disabled.
      * @param preset
      */
     private void customizeHead(int preset)
     {
-        switch (preset)
+        if (preset < headPresetsFileNames.size() && preset < headPresetsPhongLighting.size() && preset < headPresetsSkinTone.size() && preset >= 0)
         {
-            case 0:
-                setHeadAttachment("assets/models/collada/Heads/Binary/MaleCHead.bhf");
-                break;
-            case 1:
-                setHeadAttachment("assets/models/collada/Heads/Binary/FG_MaleHead02Medium.bhf");
-                setUsePhongLightingForHead(true);
-                setSkinTone(177.0f / 255.0f, 84.0f / 255.0f, 24.0f / 255.0f);
+            String headFile = headPresetsFileNames.get(preset);
+            setHeadAttachment(headFile);
+            setUsePhongLightingForHead(headPresetsPhongLighting.get(preset));
+            ColorRGBA skint = headPresetsSkinTone.get(preset);
+            if (skint != null)
+            {
+                setSkinTone(skint.r, skint.g, skint.b);
                 setApplySkinToneOnHead(false);
-                break;
-            case 2:
-                setHeadAttachment("assets/models/collada/Heads/Binary/FG_MaleLowPoly_01.bhf");
-                setUsePhongLightingForHead(true);
-                break;
-            case 3:
-                setHeadAttachment("assets/models/collada/Heads/Binary/FG_Obama_HeadMedPoly.bhf");
-                setUsePhongLightingForHead(true);
-                setSkinTone(186.0f / 255.0f, 107.0f / 255.0f, 62.0f / 255.0f);
-                setApplySkinToneOnHead(false);
-                break;
-            case 4:
-                setHeadAttachment("assets/models/collada/Heads/Binary/blackHead.bhf");
+            }
+            if (headFile.equals("assets/models/collada/Heads/Binary/blackHead.bhf") ||
+                    headFile.equals("assets/models/collada/Heads/Binary/AsianHeadMale.bhf"))
                 setAnimateFace(false); // no facial animations for this head (that work! hehe)
-                setUsePhongLightingForHead(true);
-                setSkinTone(213.0f / 255.0f, 152.0f / 255.0f, 128.0f / 255.0f);
-                setApplySkinToneOnHead(false);
-                break;
-            case 5:
-                setHeadAttachment("assets/models/collada/Heads/Binary/AsianHeadMale.bhf");
-                setAnimateFace(false); // no facial animations for this head (that work! hehe)
-                setUsePhongLightingForHead(true);
-                setSkinTone(241.0f / 255.0f, 172.0f / 255.0f, 126.0f / 255.0f);
-                setApplySkinToneOnHead(false);
-                break;
-            default:
-                setHeadAttachment("assets/models/collada/Heads/Binary/MaleCHead.bhf");
         }
+        else
+            throw new RuntimeException("Invalid preset " + preset);
     }
 
     /**
@@ -441,8 +454,24 @@ public class MaleAvatarParams extends CharacterParams
         return hairPresetsMeshNames;
     }
 
-    public int getNumberofHairPresets() {
+    public int getNumberOfHairPresets() {
         return hairPresetsMeshNames.size();
+    }
+
+    public FastTable<String> getHeadPresetsFileNames() {
+        return headPresetsFileNames;
+    }
+
+    public FastTable<Boolean> getHeadPresetsPhongLighting() {
+        return headPresetsPhongLighting;
+    }
+
+    public FastTable<ColorRGBA> getHeadPresetsSkinTone() {
+        return headPresetsSkinTone;
+    }
+
+    public int getNumberOfHeadPresets() {
+        return headPresetsFileNames.size();
     }
 
     /////////////////////////////////////////////////
@@ -472,9 +501,9 @@ public class MaleAvatarParams extends CharacterParams
         if (randomizeUnasignedElements)
         {
             if (!configContext.hairConfigured)
-                configureHair((int)((Math.random() * 10000.0f) % getNumberofHairPresets()));
+                configureHair((int)((Math.random() * 10000.0f) % getNumberOfHairPresets()));
             if (!configContext.headConfigured)
-                configureHead((int)((Math.random() * 10000.0f) % PresetNumbers.NumberOfHeads.count));
+                configureHead((int)((Math.random() * 10000.0f) % getNumberOfHeadPresets()));
             if (!configContext.torsoConfigured)
                 configureTorso((int)((Math.random() * 10000.0f) % PresetNumbers.NumberOfTorsos.count));
             if (!configContext.legsConfigured)

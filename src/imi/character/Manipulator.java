@@ -1777,6 +1777,7 @@ public class Manipulator {
         String path = FileUtils.getRelativePath(new File(base), headFile);
 
         URL modelURL;
+        boolean result = false;
         try {
             modelURL = headFile.toURI().toURL();
             character.installHead(modelURL);
@@ -1784,11 +1785,11 @@ public class Manipulator {
             character.initializeMeshInstanceMaterialStates();
             setShaderOnFace(character, shaderType);
             setShaderOnEyes(character, MaterialMeshUtils.ShaderType.EyeballShader, Eyes.allEyes);
-            return true;
+            result = true;
         } catch (MalformedURLException ex) {
             Logger.getLogger(Manipulator.class.getName()).log(Level.SEVERE, null, ex);
-            return false;
         }
+        return result;
     }
 
     /**
