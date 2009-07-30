@@ -112,6 +112,12 @@ public class MaterialMeshUtils {
                     material.setCullFace(CullState.Face.None);
                     break;
                 }
+                case PhongFleshShader:
+                {
+                    shader = repo.newShader(PhongFleshShader.class);
+                    shader.setProperty(new ShaderProperty("materialColor", GLSLDataType.GLSL_VEC3, fColorArray));
+                    break;
+                }
             }
 
         } catch (NoSuchPropertyException ex) {

@@ -899,6 +899,11 @@ public class Manipulator {
         paramErrorCheck(character, color);
         if (!character.getCharacterParams().isUsingPhongLightingForHead())
             setMeshColor(character, "Head", "head", null, MaterialMeshUtils.ShaderType.FleshShader, color, 0);
+        else {
+            if (character.getCharacterParams().isApplySkinToneOnHead())
+                setMeshColor(character, "Head", "head", null, MaterialMeshUtils.ShaderType.PhongFleshShader, color, 0);
+        }
+
         setMeshColor(character, "Hands", null, null, MaterialMeshUtils.ShaderType.FleshShader, color, 0);
         setMeshColor(character, "UpperBody", "nude", "arms", MaterialMeshUtils.ShaderType.FleshShader, color, 0);
         setMeshColor(character, "LowerBody", "nude", "legs", MaterialMeshUtils.ShaderType.FleshShader, color, 0);
