@@ -59,6 +59,9 @@ public class MaleAvatarParams extends CharacterParams
     FastTable<Boolean> headPresetsPhongLighting = new FastTable<Boolean>();
     FastTable<ColorRGBA> headPresetsSkinTone = new FastTable<ColorRGBA>();
 
+    FastTable<String> torsoPresetsFileNames = new FastTable<String>();
+    FastTable<FastTable<String>> torsoPresetsMeshNames = new FastTable<FastTable<String>>();
+
     /**
      * You must call DoneBuilding() before using these params!
      * @param name
@@ -141,7 +144,49 @@ public class MaleAvatarParams extends CharacterParams
 //        headPresetsSkinTone.add(new ColorRGBA(241.0f / 255.0f, 172.0f / 255.0f, 126.0f / 255.0f, 1.0f));
 
         /////////// Torso default presets //////////////
+        FastTable<String> meshnames;
 
+        torsoPresetsFileNames.add("assets/models/collada/Clothing/MaleClothing/MaleTShirt.dae");
+        meshnames = new FastTable<String>();
+        meshnames.add("PoloShape");
+        meshnames.add("ArmsShape");
+        torsoPresetsMeshNames.add(meshnames);
+
+        torsoPresetsFileNames.add("assets/models/collada/Clothing/MaleClothing/MalePolo.dae");
+        meshnames = new FastTable<String>();
+        meshnames.add("PoloShape");
+        meshnames.add("TorsoNudeShape");
+        torsoPresetsMeshNames.add(meshnames);
+
+        torsoPresetsFileNames.add("assets/models/collada/Clothing/MaleClothing/MaleDressShirt.dae");
+        meshnames = new FastTable<String>();
+        meshnames.add("DressShirtShape");
+        torsoPresetsMeshNames.add(meshnames);
+
+        torsoPresetsFileNames.add("assets/models/collada/Clothing/MaleClothing/MaleSweater.dae");
+        meshnames = new FastTable<String>();
+        meshnames.add("SweaterMaleShape");
+        torsoPresetsMeshNames.add(meshnames);
+
+        torsoPresetsFileNames.add("assets/models/collada/Clothing/MaleClothing/SuitDressShirt.dae");
+        meshnames = new FastTable<String>();
+        meshnames.add("SuitShirtShape");
+        torsoPresetsMeshNames.add(meshnames);
+
+        torsoPresetsFileNames.add("assets/models/collada/Clothing/MaleClothing/SuitJacket.dae"); // Requires SuitDressShirt under the jacket
+        meshnames = new FastTable<String>();
+        meshnames.add("SuitJacketShape");
+        torsoPresetsMeshNames.add(meshnames);
+
+//        torsoPresetsFileNames.add("assets/models/collada/Clothing/MaleClothing/MaleMesoTop.dae"); // Should set shirt color to white
+//        meshnames = new FastTable<String>();
+//        meshnames.add("TorsoNudeShape");
+//        meshnames.add("polySurfaceShape2");
+//        torsoPresetsMeshNames.add(meshnames);
+
+        /////////// Legs default presets //////////////
+
+        /////////// Feet default presets //////////////
 
         
     }
@@ -339,92 +384,39 @@ public class MaleAvatarParams extends CharacterParams
     private void customizeTorsoPresets(int preset, List<String> load, List<SkinnedMeshParams> add, List<AttachmentParams> attachments)
     {
         // Add the hands in either way
-        
         String handFile = "assets/models/collada/Avatars/MaleAvatar/Male_Hands.dae";
         load.add(handFile); // change!
         add.add(new SkinnedMeshParams("RHandShape",  "Hands", handFile));
         add.add(new SkinnedMeshParams("LHandShape",  "Hands", handFile));
 
-        String torsoFile = null;
-
-        switch(preset)
+        if (preset < torsoPresetsFileNames.size() && preset < torsoPresetsMeshNames.size() && preset >= 0)
         {
-            case 0:
-            {
-                // T Shirt
-                torsoFile  = "assets/models/collada/Clothing/MaleClothing/MaleTShirt.dae";
-                load.add(torsoFile);
-                add.add(new SkinnedMeshParams("PoloShape", "UpperBody", torsoFile));
-                add.add(new SkinnedMeshParams("ArmsShape", "UpperBody", torsoFile));
-            }
-            break;
-            case 1:
-            {
-                // Polo Strips
-                torsoFile  = "assets/models/collada/Clothing/MaleClothing/MalePolo.dae";
-                load.add(torsoFile);
-                add.add(new SkinnedMeshParams("PoloShape", "UpperBody", torsoFile));
-                add.add(new SkinnedMeshParams("TorsoNudeShape", "UpperBody", torsoFile));
-            }
-            break;
-            case 2:
-            {
-                // Dress shirt
-                torsoFile  = "assets/models/collada/Clothing/MaleClothing/MaleDressShirt.dae";
-                load.add(torsoFile);
-                add.add(new SkinnedMeshParams("DressShirtShape", "UpperBody", torsoFile));
-            }
-            break;
-            case 3:
-            {
-                // Sweater
-                torsoFile  = "assets/models/collada/Clothing/MaleClothing/MaleSweater.dae";
-                load.add(torsoFile);
-                add.add(new SkinnedMeshParams("SweaterMaleShape", "UpperBody", torsoFile));
-            }
-            break;
-            case 4:
-            {
-                // Dress shirt for suit
-                torsoFile  = "assets/models/collada/Clothing/MaleClothing/SuitDressShirt.dae";
-                load.add(torsoFile);
-                add.add(new SkinnedMeshParams("SuitShirtShape", "UpperBody", torsoFile));
-            }
-            break;
-            case 5:
-            {
-                // Suit Jacket
-                torsoFile  = "assets/models/collada/Clothing/MaleClothing/SuitJacket.dae";
-                load.add(torsoFile);
-                add.add(new SkinnedMeshParams("SuitJacketShape", "UpperBody", torsoFile));
+            String torsoFile = torsoPresetsFileNames.get(preset);
+            load.add(torsoFile);
+            for (int i = 0; i < torsoPresetsMeshNames.get(preset).size(); i++)
+                add.add(new SkinnedMeshParams(torsoPresetsMeshNames.get(preset).get(i), "UpperBody", torsoFile));
 
-                // Put something under that jacket!
-                // Dress shirt for suit
+            // Special case for the jacket, add the shirt underneath
+            if (torsoFile.equals("assets/models/collada/Clothing/MaleClothing/SuitJacket.dae"))
+            {
                 torsoFile  = "assets/models/collada/Clothing/MaleClothing/SuitDressShirt.dae";
                 load.add(torsoFile);
                 add.add(new SkinnedMeshParams("SuitShirtShape", "UpperBody", torsoFile));
             }
-            break;
-            case 6:
-            {
-                // Meso
-                torsoFile  = "assets/models/collada/Clothing/MaleClothing/MaleMesoTop.dae";
-                load.add(torsoFile);
-                add.add(new SkinnedMeshParams("TorsoNudeShape", "UpperBody", torsoFile));
-                add.add(new SkinnedMeshParams("polySurfaceShape2", "UpperBody", torsoFile));
+            // Special case for the meso, set shirt color to white
+            if (torsoFile.equals("assets/models/collada/Clothing/MaleClothing/MaleMesoTop.dae"))
                 setShirtColor(1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f);
-            }
-            break;
-            default:
-            {
-                torsoFile = "assets/models/collada/Avatars/MaleAvatar/Male_Bind.dae";
-                if(!loadedBind)
-                {
-                    loadedBind = true;
-                    load.add(torsoFile);
-                }
-                add.add(new SkinnedMeshParams("TorsoNudeShape",  "UpperBody", torsoFile));
-            }
+        }
+        else
+        {
+            throw new RuntimeException("Invalid preset " + preset);
+//            String torsoFile = "assets/models/collada/Avatars/MaleAvatar/Male_Bind.dae";
+//            if(!loadedBind)
+//            {
+//                loadedBind = true;
+//                load.add(torsoFile);
+//            }
+//            add.add(new SkinnedMeshParams("TorsoNudeShape",  "UpperBody", torsoFile));
         }
     }
 
@@ -449,7 +441,7 @@ public class MaleAvatarParams extends CharacterParams
         setAddInstructions(add);
     }
 
-    public FastTable<String> getHairPresetsColladaFileNames() {
+    public FastTable<String> getHairPresetsFileNames() {
         return hairPresetsColladaFileNames;
     }
 
@@ -477,8 +469,16 @@ public class MaleAvatarParams extends CharacterParams
         return headPresetsFileNames.size();
     }
 
+    public FastTable<String> getTorsoPresetsFileNames() {
+        return torsoPresetsFileNames;
+    }
+
+    public FastTable<FastTable<String>> getTorsoPresetsMeshNames() {
+        return torsoPresetsMeshNames;
+    }
+
     public int getNumberOfTorsoPresets() {
-        return 4;
+        return torsoPresetsFileNames.size();
     }
 
     /////////////////////////////////////////////////

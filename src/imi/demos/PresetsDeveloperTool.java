@@ -34,6 +34,7 @@ import imi.utils.MaterialMeshUtils.ShaderType;
 import java.awt.Color;
 import java.awt.event.KeyEvent;
 import java.io.File;
+import javolution.util.FastTable;
 import org.jdesktop.mtgame.WorldManager;
 
 /**
@@ -248,7 +249,7 @@ public class PresetsDeveloperTool extends DemoBase
             if (isMale)
             {
                 int maleHair = maleCurrentPresets[Regions.Hair.ordinal()];
-                String fileName = maleParams.getHairPresetsColladaFileNames().get(maleHair);
+                String fileName = maleParams.getHairPresetsFileNames().get(maleHair);
                 String meshName = maleParams.getHairPresetsMeshNames().get(maleHair);
                 Manipulator.swapHairMesh(male, true, new File(fileName), meshName);
                 System.out.println("Current hair preset: " + maleHair + " mesh name: " + meshName + " file: " + fileName);
@@ -314,7 +315,17 @@ public class PresetsDeveloperTool extends DemoBase
 
         void setTorso(boolean isMale)
         {
+            if (isMale)
+            {
+                int maleTorso = maleCurrentPresets[Regions.Torso.ordinal()];
+                String fileName = maleParams.getTorsoPresetsFileNames().get(maleTorso);
+                Manipulator.swapShirtMesh(male, true, new File(fileName));
+                System.out.println("Current torso preset: " + maleTorso + " file: " + fileName);
+            }
+            else
+            {
 
+            }
         }
 
         void setLegs(boolean isMale)
