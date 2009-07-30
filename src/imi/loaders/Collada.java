@@ -145,6 +145,7 @@ public class Collada
     private boolean m_bLoadAnimations               = false;
     private boolean m_bAddSkinnedMeshesToSkeleton   = true;
     private boolean m_bPrintStats                   = false;
+    private boolean loadTextures                    = true;
 
     /**
      * Default construction
@@ -215,6 +216,14 @@ public class Collada
         m_Name = name;
     }
 
+
+    public void setLoadTextures(boolean bLoadTextures) {
+        this.loadTextures = bLoadTextures;
+    }
+
+    public boolean isLoadingTextures() {
+        return loadTextures;
+    }
 
     //  Retrieves boolean indicating whether stats should be printed.
     public boolean getPrintStats()

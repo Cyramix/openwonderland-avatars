@@ -149,8 +149,14 @@ public class PPolygonMeshInstance extends PNode implements Serializable
      */
     public void initializeStates(PScene pscene)
     {
-        if (m_materialStates == null)
-            m_materialStates = new PMeshMaterialStates(pscene.getWorldManager().getRenderManager());
+        if (m_materialStates == null) {
+            // XXX Ugly temporary hack. Need to control this more autonomously
+            if (!pscene.getRepository().isInToolMode())
+                m_materialStates = new PMeshMaterialStates(pscene.getWorldManager().getRenderManager());
+            else
+                m_materialStates = new PMeshMaterialStates();
+        }
+            
     }
     
     public SharedMesh getSharedMesh()

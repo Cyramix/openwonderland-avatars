@@ -208,6 +208,8 @@ public class RepositoryAsset
             else
                 loader.setLoadFlags(true, false, true);
 
+            if (!m_home.isLoadingTextures())
+                loader.setLoadTextures(false);
             loader.setMaxNumberOfWeights(4);
             loader.setAddSkinnedMeshesToSkeleton(true);
 

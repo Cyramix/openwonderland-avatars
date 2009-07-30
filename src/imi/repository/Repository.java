@@ -34,6 +34,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -122,10 +123,14 @@ public class Repository extends Entity
     private boolean m_bLoadGeometry = true;
     /** Indicates the repository is in 'tool' mode **/
     private boolean toolMode = false;
+    /** Load textures, or not **/
+    private boolean bLoadTextures = true;
 
     // Executor service for loading assets
     private ExecutorService loaderService = Executors.newFixedThreadPool(m_maxConcurrentLoadRequests);
 
+    /** Instrumentation **/
+    private final RepositoryInstruments instruments;
     /**
      * Construct a BRAND NEW REPOSITORY!
      * @param wm
@@ -139,18 +144,47 @@ public class Repository extends Entity
         this(wm, true, new DefaultAvatarCache(cacheFolder));
     }
 
-    boolean isInToolMode() {
+    /**
+     * Set whether or not textures should be persued when loading geometry files
+     * that reference them.
+     * @param loadTextures
+     */
+    public void setLoadTextures(boolean loadTextures) {
+        bLoadTextures = loadTextures;
+    }
+
+    boolean isLoadingTextures() {
+        return bLoadTextures;
+    }
+
+    public boolean isInToolMode() {
         return toolMode;
     }
     /**
      * Construct a new repository.
      * @param wm The world manager
      * @param bLoadSkeletons True to load prototype skeletons
-     * @param bUseCache True to use caching (project/cache dir)
+     * @param cache If non-null, the provided caching behavior will be used
      */
     public Repository(WorldManager wm, boolean bLoadSkeletons, CacheBehavior cache)
     {
+        this(wm, bLoadSkeletons, cache, false);
+    }
+
+    /**
+     * Construct a new repository.
+     * @param wm The world manager
+     * @param bLoadSkeletons True to load prototype skeletons
+     * @param cache If non-null, the provided cache behavior will be used
+     * @param instrument True to install instrumentation
+     */
+    public Repository(WorldManager wm, boolean bLoadSkeletons, CacheBehavior cache, boolean instrument)
+    {
         super("Asset Repository");
+        if (instrument)
+            instruments = new RepositoryInstruments(cache != null);
+        else
+            instruments = null;
         // Catch wm ref
         m_worldManager = wm;
         // Add ourselves as an entity to be managed
@@ -259,10 +293,10 @@ public class Repository extends Entity
         loadedFiles.add(asset.getDescriptor().getLocation().toString());
         if (repoAsset == null) // Not there, need to make an asset for it
         {
-//            System.err.println("Loading asset "+asset.getDescriptor());
+            if (instruments != null)
+                instruments.requestStarted(asset);
             loaderService.execute(new WorkOrder(asset, user, collection, m_maxQueryTime));
         } else {
-//            System.err.println("Sharing asset "+asset.getDescriptor());
             repoAsset.shareAsset(user, asset);
         }
     }
@@ -477,6 +511,15 @@ public class Repository extends Entity
             m_cache.clearCache();
     }
 
+    /**
+     * Save the cache state to the specified output stream
+     * @param out
+     */
+    public void saveCache(OutputStream out) {
+        if (m_cache != null)
+            m_cache.createCachePackage(out);
+    }
+
     CacheUser user = new CacheUser();
     public synchronized void cacheAsset(SharedAsset asset)
     {
@@ -507,6 +550,14 @@ public class Repository extends Entity
     public void addSkeleton(SkeletonNode skeleton)
     {
         m_Skeletons.add(skeleton.deepCopy());
+    }
+
+    // HACK XXX UNSAFE
+    public void dumpStats() {
+        if (instruments != null)
+            instruments.dumpStats();
+        if (m_cache != null)
+            ((DefaultAvatarCache)m_cache).dumpStats();
     }
 
     /**
@@ -556,8 +607,15 @@ public class Repository extends Entity
 
         public void run() {
             // TODO watchdog timer
-            while (!m_repoAsset.isComplete())
-                m_repoAsset.loadSelf();
+            m_repoAsset.loadSelf();
+            while (!m_repoAsset.isComplete()) {
+                try {
+                    Thread.sleep(10);
+                } catch (InterruptedException ex) {
+                    logger.warning("Interrupted whilst napping! " + ex.getMessage());
+                }
+            }
+                
 
             m_repoAsset.shareAsset(m_user, m_asset);
             

@@ -41,7 +41,9 @@ public class ColladaLoaderParams implements Immutable
     /** The 'name' **/
     final String      m_name;
     /** The skeleton node to use for loading skinned meshes onto **/
-    final SkeletonNode   m_skeletonNode;
+    final SkeletonNode  m_skeletonNode;
+    /** Used to control texture persuit **/
+    final boolean       m_loadTextures;
     
     /**
      * Builds collada loader parameters
@@ -62,6 +64,8 @@ public class ColladaLoaderParams implements Immutable
         private String      m_name  = "NamelessCollada";
         /** The skeleton node to use for loading skinned meshes onto **/
         private SkeletonNode    m_skeletonNode = null;
+        /** Used to control texture persuit **/
+        private boolean       loadTextures = true;
 
         /**
          * Get a builder!
@@ -85,6 +89,11 @@ public class ColladaLoaderParams implements Immutable
 
         public Builder setShowDebugInfo(boolean showDebugInfo) {
             this.m_bShowDebugInfo = showDebugInfo;
+            return this;
+        }
+
+        public Builder setLoadTextures(boolean loadTextures) {
+            this.loadTextures = loadTextures;
             return this;
         }
 
@@ -124,6 +133,7 @@ public class ColladaLoaderParams implements Immutable
         m_nMaxWeights = builder.m_nMaxWeights;
         m_name = builder.m_name;
         m_skeletonNode = builder.m_skeletonNode;
+        m_loadTextures = builder.loadTextures;
     }
 
 

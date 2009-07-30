@@ -56,7 +56,7 @@ public class PMeshMaterialStates
      * create all the required render states.
      * @param rm
      */
-    public PMeshMaterialStates(RenderManager rm)
+    PMeshMaterialStates(RenderManager rm)
     {
         cullState = (CullState)rm.createRendererState(RenderState.StateType.Cull);
         textureState = (TextureState)rm.createRendererState(RenderState.StateType.Texture);
@@ -67,6 +67,24 @@ public class PMeshMaterialStates
         bufferState = (ZBufferState)rm.createRendererState(RenderState.StateType.ZBuffer);
         shaderState = (GLSLShaderObjectsState)rm.createRendererState(RenderState.StateType.GLSLShaderObjects);
     }
+    
+    /**
+     * Construct a new material states object with null states. This is good
+     * for headless tools to use.
+     */
+    PMeshMaterialStates()
+    {
+        cullState = null;
+        textureState = null;
+        materialState = null;
+        wireframeState = null;
+        blendState = null;
+        lightState = null;
+        bufferState = null;
+        shaderState = null;
+    
+    }
+
 
     @InternalAPI
     public GLSLShaderObjectsState getShaderState() {

@@ -236,87 +236,90 @@ public class PColladaEffect
         
         // Shininess
         result.setShininess(m_shininess);
-        
+
+
+        boolean bNormalMapped = (m_NormalMapImageFilename != null);
+        boolean bSpecularMapped = (m_SpecularImageFilename != null);
         // Textures
-        int textureCount = 0;
-        URL fileLocation = null;
-        // lots of dereferencing, I know....
-        String currentFolder = m_pCollada.getFileLocation().toString().substring(0, m_pCollada.getFileLocation().toString().lastIndexOf('/') + 1);
-        try
+        if (m_pCollada.isLoadingTextures())
         {
-            if (m_DiffuseImageFilename != null && m_DiffuseImageFilename.size() > 0)
+            int textureCount = 0;
+            URL fileLocation = null;
+            // lots of dereferencing, I know....
+            String currentFolder = m_pCollada.getFileLocation().toString().substring(0, m_pCollada.getFileLocation().toString().lastIndexOf('/') + 1);
+            try
             {
-                for (int i = 0; i < m_DiffuseImageFilename.size(); ++i)
+                if (m_DiffuseImageFilename != null && m_DiffuseImageFilename.size() > 0)
                 {
-                    fileLocation = new URL(currentFolder + locateSizedImage(m_DiffuseImageFilename.get(i), "512x512"));
+                    for (int i = 0; i < m_DiffuseImageFilename.size(); ++i)
+                    {
+                        fileLocation = new URL(currentFolder + locateSizedImage(m_DiffuseImageFilename.get(i), "512x512"));
+                        if (!FileUtils.checkURL(fileLocation))
+                            throw new RuntimeException("URL failed to open stream " + fileLocation);
+                        result.setTexture(textureCount, fileLocation);
+                        textureCount++;
+                    }
+                }
+
+                if (bNormalMapped)
+                {
+                    fileLocation = new URL(currentFolder + locateSizedImage(m_NormalMapImageFilename, "512x512"));
+                    if (!FileUtils.checkURL(fileLocation))
+                        throw new RuntimeException("URL failed to open stream " + fileLocation);
+                    result.setTexture(1,fileLocation);
+                    textureCount++;
+                }
+                if (bSpecularMapped)
+                {
+                    fileLocation = new URL(currentFolder + locateSizedImage(m_SpecularImageFilename, "512x512"));
+                    if (!FileUtils.checkURL(fileLocation))
+                        throw new RuntimeException("URL failed to open stream " + fileLocation);
+                    result.setTexture(2,fileLocation);
+                    textureCount++;
+                }
+
+                if (m_EmissiveImageFilename != null && m_EmissiveImageFilename.length() > 0)
+                {
+                    fileLocation = new URL(currentFolder + locateSizedImage(m_EmissiveImageFilename, "512x512"));
+                    if (!FileUtils.checkURL(fileLocation))
+                        throw new RuntimeException("URL failed to open stream " + fileLocation);
+                    result.setTexture(textureCount, fileLocation);
+                    textureCount++;
+                }
+
+                if (m_AmbientImageFilename != null && m_AmbientImageFilename.length() > 0)
+                {
+                    fileLocation = new URL(currentFolder + locateSizedImage(m_AmbientImageFilename, "512x512"));
                     if (!FileUtils.checkURL(fileLocation))
                         throw new RuntimeException("URL failed to open stream " + fileLocation);
                     result.setTexture(textureCount, fileLocation);
                     textureCount++;
                 }
             }
-
-            boolean bNormalMapped = (m_NormalMapImageFilename != null);
-            boolean bSpecularMapped = (m_SpecularImageFilename != null);
-
-            if (bNormalMapped)
+            catch (MalformedURLException ex)
             {
-                fileLocation = new URL(currentFolder + locateSizedImage(m_NormalMapImageFilename, "512x512"));
-                if (!FileUtils.checkURL(fileLocation))
-                    throw new RuntimeException("URL failed to open stream " + fileLocation);
-                result.setTexture(1,fileLocation);
-                textureCount++;
-            }
-            if (bSpecularMapped)
-            {
-                fileLocation = new URL(currentFolder + locateSizedImage(m_SpecularImageFilename, "512x512"));
-                if (!FileUtils.checkURL(fileLocation))
-                    throw new RuntimeException("URL failed to open stream " + fileLocation);
-                result.setTexture(2,fileLocation);
-                textureCount++;
-            }
-
-            if (m_EmissiveImageFilename != null && m_EmissiveImageFilename.length() > 0)
-            {
-                fileLocation = new URL(currentFolder + locateSizedImage(m_EmissiveImageFilename, "512x512"));
-                if (!FileUtils.checkURL(fileLocation))
-                    throw new RuntimeException("URL failed to open stream " + fileLocation);
-                result.setTexture(textureCount, fileLocation);
-                textureCount++;
-            }
-
-            if (m_AmbientImageFilename != null && m_AmbientImageFilename.length() > 0)
-            {
-                fileLocation = new URL(currentFolder + locateSizedImage(m_AmbientImageFilename, "512x512"));
-                if (!FileUtils.checkURL(fileLocation))
-                    throw new RuntimeException("URL failed to open stream " + fileLocation);
-                result.setTexture(textureCount, fileLocation);
-                textureCount++;
-            }
-
-            // Shaders if necessary
-            Repository repo = (Repository) m_pCollada.getPScene().getWorldManager().getUserData(Repository.class);
-            if (bNormalMapped && bSpecularMapped)
-            {
-                // WORLD MANAGER STRIKES AGAIN!
-                if (m_pCollada.getPScene() != null)
-                    result.setDefaultShader(repo.newShader(NormalAndSpecularMapShader.class));
-                else
-                    Logger.getLogger(this.getClass().toString()).log(Level.SEVERE, "Unable to retrieve worldmanager, shaders unset. PColladaMaterial.java : 217");
-            }
-            else if (bNormalMapped)
-            {
-                // WORLD MANAGER STRIKES AGAIN!
-                if (m_pCollada.getPScene() != null) // BEWARE THE HARDCODED NUMBER BELOW!
-                    result.setDefaultShader(repo.newShader(NormalMapShader.class));
-                else
-                    Logger.getLogger(this.getClass().toString()).log(Level.SEVERE, "Unable to retrieve worldmanager, shaders unset. PColladaMaterial.java : 217");
-
+                Logger.getLogger(this.getClass().toString()).log(Level.SEVERE, "Malformed url! : " + ex.getMessage());
             }
         }
-        catch (MalformedURLException ex)
+
+        // Shaders if necessary
+        Repository repo = (Repository) m_pCollada.getPScene().getWorldManager().getUserData(Repository.class);
+        if (bNormalMapped && bSpecularMapped)
         {
-            Logger.getLogger(this.getClass().toString()).log(Level.SEVERE, "Malformed url! : " + ex.getMessage());
+            // WORLD MANAGER STRIKES AGAIN!
+            if (m_pCollada.getPScene() != null)
+                result.setDefaultShader(repo.newShader(NormalAndSpecularMapShader.class));
+            else
+                Logger.getLogger(this.getClass().toString()).log(Level.SEVERE, "Unable to retrieve worldmanager, shaders unset. PColladaMaterial.java : 217");
+        }
+        else if (bNormalMapped)
+        {
+            // WORLD MANAGER STRIKES AGAIN!
+            if (m_pCollada.getPScene() != null) // BEWARE THE HARDCODED NUMBER BELOW!
+                result.setDefaultShader(repo.newShader(NormalMapShader.class));
+            else
+                Logger.getLogger(this.getClass().toString()).log(Level.SEVERE, "Unable to retrieve worldmanager, shaders unset. PColladaMaterial.java : 217");
+
         }
         
         // transparency

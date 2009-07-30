@@ -18,6 +18,7 @@
 package imi.repository;
 
 import com.jme.image.Texture;
+import java.io.File;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
@@ -75,4 +76,22 @@ public interface CacheBehavior
      * @return
      */
     public boolean clearCache();
+
+    /**
+     * This method will attempt to create a single file constituting the state of
+     * the cache at the specified file. This can later be used to regenerate the
+     * cache quickly via loadCachePackage. This method may take a while and should
+     * not be called in a performance critical area.
+     * @param output Stream that the cache package will be written to
+     */
+    public void createCachePackage(OutputStream output);
+
+    /**
+     * This method will load the specified cache package. This method should be
+     * implemented to be as speedy as possible, although it is not intended to be
+     * called per frame.
+     * @param input Stream the cache package may be read from
+     */
+    public void loadCachePackage(InputStream input);
+
 }
