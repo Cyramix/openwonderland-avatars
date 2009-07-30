@@ -338,7 +338,7 @@ public class PresetsDeveloperTool extends DemoBase
                 }
                 else
                 {
-                    Manipulator.clearSubGroup(male, true, "Jacket");
+                    Manipulator.clearSubGroup(male, true, "Jackets");
                     Manipulator.swapShirtMesh(male, true, new File(fileName));
                 }
                 System.out.println("Current torso preset: " + maleTorso + " file: " + fileName);

@@ -903,7 +903,9 @@ public class Manipulator {
         setMeshColor(character, "UpperBody", "nude", "arms", MaterialMeshUtils.ShaderType.FleshShader, color, 0);
         setMeshColor(character, "LowerBody", "nude", "legs", MaterialMeshUtils.ShaderType.FleshShader, color, 0);
         setMeshColor(character, "Feet", "nude", "foot", MaterialMeshUtils.ShaderType.FleshShader, color, 0);
-        character.getCharacterParams().setSkinTone(color.getRed(), color.getGreen(), color.getBlue());
+        float[] skinTone = new float[3];
+        color.getRGBColorComponents(skinTone);
+        character.getCharacterParams().setSkinTone(skinTone[0], skinTone[1], skinTone[2]);
     }
 
     /**
@@ -1313,6 +1315,24 @@ public class Manipulator {
         }
         setShader(character, shaderType, "UpperBody", "nude", "arms", 1);
         setShader(character, MaterialMeshUtils.ShaderType.FleshShader, "UpperBody", "nude", "arms", 0);
+        updateSkinTone(character);
+    }
+
+    /**
+     * Sets a shader based on the shaderType on the shirt mesh of the specified
+     * character.  This method searches the character for the shirt mesh and then
+     * creates a new shader of shaderType and applys it to the material of the
+     * mesh.
+     * @param character     - the character to modify
+     * @param shaderType    - the type of shader to create and apply
+     */
+    public static void setShaderOnJacket(Character character, MaterialMeshUtils.ShaderType shaderType) {
+        if (character == null || character.getSkeleton() == null) {
+            throw new IllegalArgumentException("SEVERE ERROR: Either character was null or the skeletonnode was null");
+        }
+        setShader(character, shaderType, "Jackets", "nude", "arms", 1);
+        setShader(character, MaterialMeshUtils.ShaderType.FleshShader, "Jackets", "nude", "arms", 0);
+        updateSkinTone(character);
     }
 
     /**
@@ -1329,6 +1349,7 @@ public class Manipulator {
         }
         setShader(character, shaderType, "LowerBody", "nude", "legs", 1);
         setShader(character, MaterialMeshUtils.ShaderType.FleshShader, "LowerBody", "nude", "legs", 0);
+        updateSkinTone(character);
     }
 
     /**
@@ -1345,6 +1366,7 @@ public class Manipulator {
         }
         setShader(character, shaderType, "Feet", "nude", "foot", 1);
         setShader(character, MaterialMeshUtils.ShaderType.FleshShader, "Feet", "nude", "foot", 0);
+        updateSkinTone(character);
     }
 
     /**
@@ -1444,6 +1466,24 @@ public class Manipulator {
                 break;
             }
         }
+    }
+
+    /**
+     * Updates the skin tone based on the skinetone color from the characterParams
+     * @param character
+     */
+    private static void updateSkinTone(Character character) {
+        float[] tone = new float[3];
+        character.getCharacterParams().getSkinTone(tone);
+//        StringBuilder color = new StringBuilder();
+//        color.append("Red: ")
+//             .append(tone[0])
+//             .append("\t Green: ")
+//             .append(tone[1])
+//             .append("\t Blue: ")
+//             .append(tone[2]);
+//        System.out.println(color);
+        setSkinTone(character, new Color(tone[0], tone[1], tone[2]));
     }
 
     /**
@@ -1834,7 +1874,7 @@ public class Manipulator {
      */
     public static boolean swapJacketMesh(Character character, boolean useRepository, File colladaFile) {
         boolean success = swapSkinnedMesh(character, useRepository, colladaFile, "Jackets");
-        setShaderOnShirt(character, MaterialMeshUtils.ShaderType.ClothingShaderSpecColor);
+        setShaderOnJacket(character, MaterialMeshUtils.ShaderType.ClothingShaderSpecColor);
         return success;
     }
 
@@ -1892,6 +1932,7 @@ public class Manipulator {
             setShaderOnEyes(character, MaterialMeshUtils.ShaderType.EyeballShader, Eyes.allEyes);
             setShaderOnTongue(character, MaterialMeshUtils.ShaderType.EyeballShader);
             setShaderOnTeeth(character, MaterialMeshUtils.ShaderType.EyeballShader);
+            updateSkinTone(character);
             result = true;
         } catch (MalformedURLException ex) {
             Logger.getLogger(Manipulator.class.getName()).log(Level.SEVERE, null, ex);
