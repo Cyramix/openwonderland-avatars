@@ -78,19 +78,19 @@ public class PresetsDeveloperTool extends DemoBase
         // Create male avatar
         PMatrix mat = new PMatrix();
         mat.setRotation(new Vector3f(0.0f, (float)Math.toRadians(180), 0.0f));
-        maleParams = new MaleAvatarParams("Avatar");
+        maleParams = new MaleAvatarParams("Avatar").build(false);
         maleParams.clearColorsToWhite();
-        male = new Avatar.AvatarBuilder(maleParams.build(false), wm).transform(mat).build();
+        male = new Avatar.AvatarBuilder(maleParams, wm).transform(mat).build();
         control.addCharacterToTeam(male);
         // Create female avatar
-//        femaleParams = new FemaleAvatarParams("Avatar");
+//        femaleParams = new FemaleAvatarParams("Avatar").build(false);
 //        femaleParams.clearColorsToWhite();
 //        mat.setTranslation(new Vector3f(1.0f, 0.0f, 0.0f));
-//        female = new Avatar.AvatarBuilder(femaleParams.build(false), wm).transform(mat).build();
+//        female = new Avatar.AvatarBuilder(femaleParams, wm).transform(mat).build();
 //        control.addCharacterToTeam(female);
 
         // WTF
-        control.set(male, female, maleParams, femaleParams);
+        control.set(male, female, maleParams, femaleParams, camState);
     }
 
     public static enum Regions {
@@ -102,6 +102,7 @@ public class PresetsDeveloperTool extends DemoBase
     }
     public static class controls extends DefaultCharacterControls
     {
+        FirstPersonCamState camState = null;
         Regions region = Regions.Hair;
         int [] maleCurrentPresets    = new int[Regions.values().length];
         int [] femaleCurrentPresets  = new int[Regions.values().length];
@@ -111,6 +112,7 @@ public class PresetsDeveloperTool extends DemoBase
         FemaleAvatarParams femaleParams = null;
         Avatar male = null;
         Avatar female = null;
+        boolean AvatarMovementOn = false;
         public controls(WorldManager worldManager) {
             super(worldManager);
             for (int i = 0; i < Regions.values().length; i++)
@@ -119,13 +121,15 @@ public class PresetsDeveloperTool extends DemoBase
         @Override
         public void processKeyEvent(KeyEvent ke)
         {
-            if (    ke.getKeyCode() != KeyEvent.VK_Q &&
-                    ke.getKeyCode() != KeyEvent.VK_E &&
-                    ke.getKeyCode() != KeyEvent.VK_W &&
-                    ke.getKeyCode() != KeyEvent.VK_S &&
-                    ke.getKeyCode() != KeyEvent.VK_A &&
-                    ke.getKeyCode() != KeyEvent.VK_D    )
+            if (AvatarMovementOn)
                 super.processKeyEvent(ke);
+            else if (   ke.getKeyCode() != KeyEvent.VK_Q &&
+                        ke.getKeyCode() != KeyEvent.VK_E &&
+                        ke.getKeyCode() != KeyEvent.VK_W &&
+                        ke.getKeyCode() != KeyEvent.VK_S &&
+                        ke.getKeyCode() != KeyEvent.VK_A &&
+                        ke.getKeyCode() != KeyEvent.VK_D    )
+                    super.processKeyEvent(ke);
 
             if (ke.getID() == KeyEvent.KEY_PRESSED)
             {
@@ -214,10 +218,53 @@ public class PresetsDeveloperTool extends DemoBase
                 {
                     printHelp();
                 }
+
+                // Toggle camera/avatar movement
+                if (ke.getKeyCode() == KeyEvent.VK_CAPS_LOCK)
+                {
+                    AvatarMovementOn = !AvatarMovementOn;
+                    if (AvatarMovementOn)
+                    {
+                        camState.setLeftKeyCode(KeyEvent.VK_NUMPAD4);
+                        camState.setRightKeyCode(KeyEvent.VK_NUMPAD6);
+                        camState.setAscendKeyCode(KeyEvent.VK_NUMPAD9);
+                        camState.setDescendKeyCode(KeyEvent.VK_NUMPAD7);
+                        camState.setForwardKeyCode(KeyEvent.VK_NUMPAD8);
+                        camState.setBackwardKeyCode(KeyEvent.VK_NUMPAD5);
+                    }
+                    else
+                    {
+                        camState.setLeftKeyCode(KeyEvent.VK_A);
+                        camState.setRightKeyCode(KeyEvent.VK_D);
+                        camState.setAscendKeyCode(KeyEvent.VK_E);
+                        camState.setDescendKeyCode(KeyEvent.VK_Q);
+                        camState.setForwardKeyCode(KeyEvent.VK_W);
+                        camState.setBackwardKeyCode(KeyEvent.VK_S);
+                    }
+                }
+
+                // Dump current presets
+                if (ke.getKeyCode() == KeyEvent.VK_SPACE)
+                {
+                    Regions[] regions = Regions.values();
+                    if(isMale)
+                    {
+                        System.out.println("Male presets:");
+                        for (int i = 0; i < regions.length; i++)
+                            System.out.println(regions[i].toString() + ": " + maleCurrentPresets[regions[i].ordinal()]);
+                    }
+                    else
+                    {
+                        System.out.println("Female presets:");
+                        for (int i = 0; i < regions.length; i++)
+                            System.out.println(regions[i].toString() + ": " + femaleCurrentPresets[regions[i].ordinal()]);
+                    }
+                }
             }
         }
 
-        private void set(Avatar male, Avatar female, MaleAvatarParams maleParams, FemaleAvatarParams femaleParams) {
+        private void set(Avatar male, Avatar female, MaleAvatarParams maleParams, FemaleAvatarParams femaleParams, FirstPersonCamState camState) {
+            this.camState = camState;
             this.male = male;
             this.female = female;
             this.maleParams = maleParams;
@@ -238,7 +285,8 @@ public class PresetsDeveloperTool extends DemoBase
         public void printHelp() {
             System.out.println("\n\nWellcome to the amazing developer tool\n" +
                 "PageUp/Down    -   Toggle Male/Female control\n" +
-                "A,D,W,S,Q,E    -   Camera movement\n" +
+                "CapsLock       -   Toggle camera/avatar controls\n" +
+                "A,D,W,S,Q,E    -   Camera/avatar movement\n" +
                 "<>             -   Cycle animations\n" +
                 "Ctrl           -   Perform currently selected animation\n" +
                 "0,9,8          -   Facial animations\n" +

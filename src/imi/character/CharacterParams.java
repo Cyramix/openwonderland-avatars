@@ -374,7 +374,6 @@ public class CharacterParams
      * Will set all colors to white for debugging
      */
     public void clearColorsToWhite() {
-        setSkinTone(1.0f, 1.0f, 1.0f);
         setHairColor(1.0f, 1.0f, 1.0f);
         setShirtColor(1.0f, 1.0f, 1.0f);
         setPantsColor(1.0f, 1.0f, 1.0f);

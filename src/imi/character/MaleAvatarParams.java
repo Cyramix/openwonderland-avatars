@@ -48,26 +48,6 @@ public class MaleAvatarParams extends CharacterParams
     /** Used during building **/
     private transient ConfigurationContext configContext = null;
 
-    /** Presets **/
-    FastTable<String> hairPresetsFileNames = new FastTable<String>();
-    FastTable<String> hairPresetsMeshNames = new FastTable<String>();
-
-    FastTable<String> headPresetsFileNames = new FastTable<String>();
-    FastTable<Boolean> headPresetsPhongLighting = new FastTable<Boolean>();
-    FastTable<ColorRGBA> headPresetsSkinTone = new FastTable<ColorRGBA>();
-
-    FastTable<String> torsoPresetsFileNames = new FastTable<String>();
-    FastTable<FastTable<String>> torsoPresetsMeshNames = new FastTable<FastTable<String>>();
-    FastTable<Boolean> torsoPresetsDisableColorModulation = new FastTable<Boolean>();
-
-    FastTable<String> legsPresetsFileNames = new FastTable<String>();
-    FastTable<FastTable<String>> legsPresetsMeshNames = new FastTable<FastTable<String>>();
-    FastTable<Boolean> legsPresetsDisableColorModulation = new FastTable<Boolean>();
-
-    FastTable<String> feetPresetsFileNames = new FastTable<String>();
-    FastTable<FastTable<String>> feetPresetsMeshNames = new FastTable<FastTable<String>>();
-    FastTable<Boolean> feetPresetsDisableColorModulation = new FastTable<Boolean>();
-
     /**
      * You must call DoneBuilding() before using these params!
      * @param name
@@ -75,190 +55,6 @@ public class MaleAvatarParams extends CharacterParams
     public MaleAvatarParams(String name)
     {
         super(name);
-
-        /////////// Hair default presets //////////////
-
-        hairPresetsFileNames.add("assets/models/collada/Hair/MaleHair/FG_Male01HairDefaults.dae");
-        hairPresetsMeshNames.add("Male_PonyTailShape");
-
-        hairPresetsFileNames.add("assets/models/collada/Hair/MaleHair/FG_Male01HairDefaults.dae");
-        hairPresetsMeshNames.add("Male_ChinLengthPartLeftShape");
-
-        hairPresetsFileNames.add("assets/models/collada/Hair/MaleHair/FG_Male01HairDefaults.dae");
-        hairPresetsMeshNames.add("Male_SlickedBackShape");
-
-        hairPresetsFileNames.add("assets/models/collada/Hair/MaleHair/FG_Male01HairDefaults.dae");
-        hairPresetsMeshNames.add("Male_PartLeftShape");
-
-        hairPresetsFileNames.add("assets/models/collada/Hair/MaleHair/FG_Male01HairDefaults.dae");
-        hairPresetsMeshNames.add("Male_ShortMessyShape");
-
-        hairPresetsFileNames.add("assets/models/collada/Hair/MaleHair/FG_Male01HairDefaults.dae");
-        hairPresetsMeshNames.add("Male_FlatTopShape");
-
-        hairPresetsFileNames.add("assets/models/collada/Hair/MaleHair/FG_Male01HairDefaults.dae");
-        hairPresetsMeshNames.add("Male_ShortTopUpShape");
-
-        hairPresetsFileNames.add("assets/models/collada/Hair/MaleHair/FG_Male01HairDefaults.dae");
-        hairPresetsMeshNames.add("Male_ShortBasicShape");
-
-        hairPresetsFileNames.add("assets/models/collada/Hair/MaleHair/FG_Male01HairDefaults.dae");
-        hairPresetsMeshNames.add("Male_ShortRecedShape");
-
-        hairPresetsFileNames.add("assets/models/collada/Hair/MaleHair/FG_Male01HairDefaults.dae");
-        hairPresetsMeshNames.add("Male_Balding1Shape");
-
-        hairPresetsFileNames.add("assets/models/collada/Hair/MaleHair/FG_Male01HairDefaults.dae");
-        hairPresetsMeshNames.add("Male_BaldPiccardShape");
-
-        hairPresetsFileNames.add("assets/models/collada/Hair/MaleHair/FG_Male01HairDefaults.dae");
-        hairPresetsMeshNames.add("Male_SuperFauxHawkShape");
-
-        hairPresetsFileNames.add("assets/models/collada/Hair/MaleHair/FG_Male01HairDefaults.dae");
-        hairPresetsMeshNames.add("Male_SpikeyShape");
-
-        hairPresetsFileNames.add("assets/models/collada/Hair/MaleHair/FG_Male01HairDefaults.dae");
-        hairPresetsMeshNames.add("Male_ChinLengthPartRightShape");
-
-        hairPresetsFileNames.add("assets/models/collada/Hair/MaleHair/FG_Male01HairDefaults.dae");
-        hairPresetsMeshNames.add("Male_PartRightShape");
-
-        /////////// Head default presets //////////////
-
-        headPresetsFileNames.add("assets/models/collada/Heads/Binary/MaleCHead.bhf");
-        headPresetsPhongLighting.add(false);
-        headPresetsSkinTone.add(null);
-        
-        headPresetsFileNames.add("assets/models/collada/Heads/Binary/FG_MaleHead02Medium.bhf");
-        headPresetsPhongLighting.add(true);
-        headPresetsSkinTone.add(new ColorRGBA(177.0f / 255.0f, 84.0f / 255.0f, 24.0f / 255.0f, 1.0f));
-        
-        headPresetsFileNames.add("assets/models/collada/Heads/Binary/FG_MaleLowPoly_01.bhf");
-        headPresetsPhongLighting.add(true);
-        headPresetsSkinTone.add(null);
-        
-//        headPresetsFileNames.add("assets/models/collada/Heads/Binary/FG_Obama_HeadMedPoly.bhf");
-//        headPresetsPhongLighting.add(true);
-//        headPresetsSkinTone.add(new ColorRGBA(186.0f / 255.0f, 107.0f / 255.0f, 62.0f / 255.0f, 1.0f));
-//
-//        headPresetsFileNames.add("assets/models/collada/Heads/Binary/blackHead.bhf"); // no facial animations
-//        headPresetsPhongLighting.add(true);
-//        headPresetsSkinTone.add(new ColorRGBA(213.0f / 255.0f, 152.0f / 255.0f, 128.0f / 255.0f, 1.0f));
-//
-//        headPresetsFileNames.add("assets/models/collada/Heads/Binary/AsianHeadMale.bhf"); // no facial animations
-//        headPresetsPhongLighting.add(true);
-//        headPresetsSkinTone.add(new ColorRGBA(241.0f / 255.0f, 172.0f / 255.0f, 126.0f / 255.0f, 1.0f));
-
-        /////////// Torso default presets //////////////
-        FastTable<String> meshnames;
-
-        torsoPresetsFileNames.add("assets/models/collada/Clothing/MaleClothing/MaleTShirt.dae");
-        meshnames = new FastTable<String>();
-        meshnames.add("PoloShape");
-        meshnames.add("ArmsShape");
-        torsoPresetsMeshNames.add(meshnames);
-        torsoPresetsDisableColorModulation.add(false);
-
-        torsoPresetsFileNames.add("assets/models/collada/Clothing/MaleClothing/MalePolo.dae");
-        meshnames = new FastTable<String>();
-        meshnames.add("PoloShape");
-        meshnames.add("TorsoNudeShape");
-        torsoPresetsMeshNames.add(meshnames);
-        torsoPresetsDisableColorModulation.add(false);
-
-        torsoPresetsFileNames.add("assets/models/collada/Clothing/MaleClothing/MaleDressShirt.dae");
-        meshnames = new FastTable<String>();
-        meshnames.add("DressShirtShape");
-        torsoPresetsMeshNames.add(meshnames);
-        torsoPresetsDisableColorModulation.add(false);
-
-        torsoPresetsFileNames.add("assets/models/collada/Clothing/MaleClothing/MaleSweater.dae");
-        meshnames = new FastTable<String>();
-        meshnames.add("SweaterMaleShape");
-        torsoPresetsMeshNames.add(meshnames);
-        torsoPresetsDisableColorModulation.add(false);
-
-        torsoPresetsFileNames.add("assets/models/collada/Clothing/MaleClothing/SuitDressShirt.dae");
-        meshnames = new FastTable<String>();
-        meshnames.add("SuitShirtShape");
-        torsoPresetsMeshNames.add(meshnames);
-        torsoPresetsDisableColorModulation.add(false);
-
-        torsoPresetsFileNames.add("assets/models/collada/Clothing/MaleClothing/SuitJacket.dae"); // Requires SuitDressShirt under the jacket
-        meshnames = new FastTable<String>();
-        meshnames.add("SuitJacketShape");
-        torsoPresetsMeshNames.add(meshnames);
-        torsoPresetsDisableColorModulation.add(false);
-
-//        torsoPresetsFileNames.add("assets/models/collada/Clothing/MaleClothing/MaleMesoTop.dae");
-//        meshnames = new FastTable<String>();
-//        meshnames.add("TorsoNudeShape");
-//        meshnames.add("polySurfaceShape2");
-//        torsoPresetsMeshNames.add(meshnames);
-//        torsoPresetsDisableColorModulation.add(true);
-
-        /////////// Legs default presets //////////////
-
-        legsPresetsFileNames.add("assets/models/collada/Clothing/MaleClothing/Jeans.dae");
-        meshnames = new FastTable<String>();
-        meshnames.add("polySurface3Shape");
-        legsPresetsMeshNames.add(meshnames);
-        legsPresetsDisableColorModulation.add(true);
-
-        legsPresetsFileNames.add("assets/models/collada/Clothing/MaleClothing/Shorts.dae");
-        meshnames = new FastTable<String>();
-        meshnames.add("LegsNudeShape");
-        meshnames.add("MaleShortsShape");
-        legsPresetsMeshNames.add(meshnames);
-        legsPresetsDisableColorModulation.add(true);
-
-        legsPresetsFileNames.add("assets/models/collada/Clothing/MaleClothing/MaleDressPants1.dae");
-        meshnames = new FastTable<String>();
-        meshnames.add("MaleDressPantsShape");
-        legsPresetsMeshNames.add(meshnames);
-        legsPresetsDisableColorModulation.add(false);
-
-        legsPresetsFileNames.add("assets/models/collada/Clothing/MaleClothing/Slacks.dae");
-        meshnames = new FastTable<String>();
-        meshnames.add("SuitPantsShape");
-        legsPresetsMeshNames.add(meshnames);
-        legsPresetsDisableColorModulation.add(false);
-
-//        legsPresetsFileNames.add("assets/models/collada/Clothing/MaleClothing/MaleMesoBottom.dae");
-//        meshnames = new FastTable<String>();
-//        meshnames.add("LegsNudeShape");
-//        meshnames.add("polySurfaceShape6");
-//        legsPresetsMeshNames.add(meshnames);
-//        legsPresetsDisableColorModulation.add(true);
-
-        /////////// Feet default presets //////////////
-
-        feetPresetsFileNames.add("assets/models/collada/Clothing/MaleClothing/MaleTennisShoes.dae");
-        meshnames = new FastTable<String>();
-        meshnames.add("TennisShoesShape");
-        feetPresetsMeshNames.add(meshnames);
-        feetPresetsDisableColorModulation.add(false);
-        
-        feetPresetsFileNames.add("assets/models/collada/Clothing/MaleClothing/FlipFlopsFeet.dae");
-        meshnames = new FastTable<String>();
-        meshnames.add("LFootNudeShape");
-        meshnames.add("RFootNudeShape");
-        meshnames.add("LFlipFlopShape");
-        meshnames.add("RFlipFlopShape");
-        feetPresetsMeshNames.add(meshnames);
-        feetPresetsDisableColorModulation.add(true);
-        
-        feetPresetsFileNames.add("assets/models/collada/Clothing/MaleClothing/MaleDressShoes.dae");
-        meshnames = new FastTable<String>();
-        meshnames.add("polySurfaceShape3");
-        feetPresetsMeshNames.add(meshnames);
-        feetPresetsDisableColorModulation.add(false);
-        
-        feetPresetsFileNames.add("assets/models/collada/Clothing/MaleClothing/CowBoyBoot_CUT.dae");
-        meshnames = new FastTable<String>();
-        meshnames.add("CowBoyBootsShape");
-        feetPresetsMeshNames.add(meshnames);
-        feetPresetsDisableColorModulation.add(true);
     }
 
     /**
@@ -271,12 +67,12 @@ public class MaleAvatarParams extends CharacterParams
      */
     private void customizeHead(int preset)
     {
-        if (preset < headPresetsFileNames.size() && preset < headPresetsPhongLighting.size() && preset < headPresetsSkinTone.size() && preset >= 0)
+        if (preset < MaleDefaults.headPresetsFileNames.size() && preset < MaleDefaults.headPresetsPhongLighting.size() && preset < MaleDefaults.headPresetsSkinTone.size() && preset >= 0)
         {
-            String headFile = headPresetsFileNames.get(preset);
+            String headFile = MaleDefaults.headPresetsFileNames.get(preset);
             setHeadAttachment(headFile);
-            setUsePhongLightingForHead(headPresetsPhongLighting.get(preset));
-            ColorRGBA skint = headPresetsSkinTone.get(preset);
+            setUsePhongLightingForHead(MaleDefaults.headPresetsPhongLighting.get(preset));
+            ColorRGBA skint = MaleDefaults.headPresetsSkinTone.get(preset);
             if (skint != null)
             {
                 setSkinTone(skint.r, skint.g, skint.b);
@@ -300,13 +96,13 @@ public class MaleAvatarParams extends CharacterParams
      */
     private void customizeFeetPresets(int preset, List<String> load, List<SkinnedMeshParams> add)
     {
-        if (preset < feetPresetsFileNames.size() && preset < feetPresetsMeshNames.size() && preset < feetPresetsDisableColorModulation.size() && preset >= 0)
+        if (preset < MaleDefaults.feetPresetsFileNames.size() && preset < MaleDefaults.feetPresetsMeshNames.size() && preset < MaleDefaults.feetPresetsDisableColorModulation.size() && preset >= 0)
         {
-            String feetFile = feetPresetsFileNames.get(preset);
+            String feetFile = MaleDefaults.feetPresetsFileNames.get(preset);
             load.add(feetFile);
-            for (int i = 0; i < feetPresetsMeshNames.get(preset).size(); i++)
-                add.add(new SkinnedMeshParams(feetPresetsMeshNames.get(preset).get(i), "Feet", feetFile));
-            if (feetPresetsDisableColorModulation.get(preset))
+            for (int i = 0; i < MaleDefaults.feetPresetsMeshNames.get(preset).size(); i++)
+                add.add(new SkinnedMeshParams(MaleDefaults.feetPresetsMeshNames.get(preset).get(i), "Feet", feetFile));
+            if (MaleDefaults.feetPresetsDisableColorModulation.get(preset))
                 setShoesColor(1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f);
         }
         else
@@ -333,11 +129,11 @@ public class MaleAvatarParams extends CharacterParams
      */
     private void customizeHairPresets(int preset, List<String> load, List<AttachmentParams> attachments)
     {
-        if (preset < hairPresetsFileNames.size() && preset < hairPresetsMeshNames.size() && preset >= 0)
+        if (preset < MaleDefaults.hairPresetsFileNames.size() && preset < MaleDefaults.hairPresetsMeshNames.size() && preset >= 0)
         {
-            String hairFile = hairPresetsFileNames.get(preset);
+            String hairFile = MaleDefaults.hairPresetsFileNames.get(preset);
             load.add(hairFile);
-            attachments.add(new AttachmentParams(hairPresetsMeshNames.get(preset), "HairAttach", PMatrix.IDENTITY, "HairAttachmentJoint", hairFile));
+            attachments.add(new AttachmentParams(MaleDefaults.hairPresetsMeshNames.get(preset), "HairAttach", PMatrix.IDENTITY, "HairAttachmentJoint", hairFile));
         }
         else
             throw new RuntimeException("Invalid preset " + preset);
@@ -352,13 +148,13 @@ public class MaleAvatarParams extends CharacterParams
      */
     private void customizeLegsPresets(int preset, List<String> load, List<SkinnedMeshParams> add)
     {
-        if (preset < legsPresetsFileNames.size() && preset < legsPresetsMeshNames.size() && preset < legsPresetsDisableColorModulation.size() && preset >= 0)
+        if (preset < MaleDefaults.legsPresetsFileNames.size() && preset < MaleDefaults.legsPresetsMeshNames.size() && preset < MaleDefaults.legsPresetsDisableColorModulation.size() && preset >= 0)
         {
-            String legsFile = legsPresetsFileNames.get(preset);
+            String legsFile = MaleDefaults.legsPresetsFileNames.get(preset);
             load.add(legsFile);
-            for (int i = 0; i < legsPresetsMeshNames.get(preset).size(); i++)
-                add.add(new SkinnedMeshParams(legsPresetsMeshNames.get(preset).get(i), "LowerBody", legsFile));
-            if (legsPresetsDisableColorModulation.get(preset))
+            for (int i = 0; i < MaleDefaults.legsPresetsMeshNames.get(preset).size(); i++)
+                add.add(new SkinnedMeshParams(MaleDefaults.legsPresetsMeshNames.get(preset).get(i), "LowerBody", legsFile));
+            if (MaleDefaults.legsPresetsDisableColorModulation.get(preset))
                 setShoesColor(1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f);
         }
         else
@@ -390,13 +186,13 @@ public class MaleAvatarParams extends CharacterParams
         add.add(new SkinnedMeshParams("RHandShape",  "Hands", handFile));
         add.add(new SkinnedMeshParams("LHandShape",  "Hands", handFile));
 
-        if (preset < torsoPresetsFileNames.size() && preset < torsoPresetsMeshNames.size() && preset < torsoPresetsDisableColorModulation.size() && preset >= 0)
+        if (preset < MaleDefaults.torsoPresetsFileNames.size() && preset < MaleDefaults.torsoPresetsMeshNames.size() && preset < MaleDefaults.torsoPresetsDisableColorModulation.size() && preset >= 0)
         {
-            String torsoFile = torsoPresetsFileNames.get(preset);
+            String torsoFile = MaleDefaults.torsoPresetsFileNames.get(preset);
             load.add(torsoFile);
-            for (int i = 0; i < torsoPresetsMeshNames.get(preset).size(); i++)
-                add.add(new SkinnedMeshParams(torsoPresetsMeshNames.get(preset).get(i), "UpperBody", torsoFile));
-            if (torsoPresetsDisableColorModulation.get(preset))
+            for (int i = 0; i < MaleDefaults.torsoPresetsMeshNames.get(preset).size(); i++)
+                add.add(new SkinnedMeshParams(MaleDefaults.torsoPresetsMeshNames.get(preset).get(i), "UpperBody", torsoFile));
+            if (MaleDefaults.torsoPresetsDisableColorModulation.get(preset))
                 setShirtColor(1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f);
 
             // Special case for the jacket, add the shirt underneath
@@ -442,83 +238,83 @@ public class MaleAvatarParams extends CharacterParams
     }
 
     public FastTable<String> getHairPresetsFileNames() {
-        return hairPresetsFileNames;
+        return MaleDefaults.hairPresetsFileNames;
     }
 
     public FastTable<String> getHairPresetsMeshNames() {
-        return hairPresetsMeshNames;
+        return MaleDefaults.hairPresetsMeshNames;
     }
 
     public int getNumberOfHairPresets() {
-        return hairPresetsMeshNames.size();
+        return MaleDefaults.hairPresetsMeshNames.size();
     }
 
     public FastTable<String> getHeadPresetsFileNames() {
-        return headPresetsFileNames;
+        return MaleDefaults.headPresetsFileNames;
     }
 
     public FastTable<Boolean> getHeadPresetsPhongLighting() {
-        return headPresetsPhongLighting;
+        return MaleDefaults.headPresetsPhongLighting;
     }
 
     public FastTable<ColorRGBA> getHeadPresetsSkinTone() {
-        return headPresetsSkinTone;
+        return MaleDefaults.headPresetsSkinTone;
     }
 
     public int getNumberOfHeadPresets() {
-        return headPresetsFileNames.size();
+        return MaleDefaults.headPresetsFileNames.size();
     }
 
     public FastTable<String> getTorsoPresetsFileNames() {
-        return torsoPresetsFileNames;
+        return MaleDefaults.torsoPresetsFileNames;
     }
 
     public FastTable<FastTable<String>> getTorsoPresetsMeshNames() {
-        return torsoPresetsMeshNames;
+        return MaleDefaults.torsoPresetsMeshNames;
     }
 
     public int getNumberOfTorsoPresets() {
-        return torsoPresetsFileNames.size();
+        return MaleDefaults.torsoPresetsFileNames.size();
     }
 
     public FastTable<Boolean> getFeetPresetsDisableColorModulation() {
-        return feetPresetsDisableColorModulation;
+        return MaleDefaults.feetPresetsDisableColorModulation;
     }
 
     public FastTable<String> getFeetPresetsFileNames() {
-        return feetPresetsFileNames;
+        return MaleDefaults.feetPresetsFileNames;
     }
 
     public FastTable<FastTable<String>> getFeetPresetsMeshNames() {
-        return feetPresetsMeshNames;
+        return MaleDefaults.feetPresetsMeshNames;
     }
 
     public FastTable<String> getHairPresetsColladaFileNames() {
-        return hairPresetsFileNames;
+        return MaleDefaults.hairPresetsFileNames;
     }
 
     public FastTable<Boolean> getLegsPresetsDisableColorModulation() {
-        return legsPresetsDisableColorModulation;
+        return MaleDefaults.legsPresetsDisableColorModulation;
     }
 
     public FastTable<String> getLegsPresetsFileNames() {
-        return legsPresetsFileNames;
+        return MaleDefaults.legsPresetsFileNames;
     }
 
     public FastTable<FastTable<String>> getLegsPresetsMeshNames() {
-        return legsPresetsMeshNames;
+        return MaleDefaults.legsPresetsMeshNames;
     }
 
     public FastTable<Boolean> getTorsoPresetsDisableColorModulation() {
-        return torsoPresetsDisableColorModulation;
+        return MaleDefaults.torsoPresetsDisableColorModulation;
     }
 
     public int getNumberOfLegsPresets() {
-        return legsPresetsFileNames.size();
+        return MaleDefaults.legsPresetsFileNames.size();
     }
 
     public int getNumberOfFeetPresets() {
-        return feetPresetsFileNames.size();
+        return MaleDefaults.feetPresetsFileNames.size();
     }
 
     /////////////////////////////////////////////////
@@ -693,6 +489,216 @@ public class MaleAvatarParams extends CharacterParams
             torsoConfigured = false;
             legsConfigured  = false;
             feetConfigured  = false;
+        }
+    }
+
+    // holder for the defaults
+    public static class MaleDefaults
+    {
+        public static final FastTable<String> hairPresetsFileNames = new FastTable<String>();
+        public static final FastTable<String> hairPresetsMeshNames = new FastTable<String>();
+
+        public static final FastTable<String> headPresetsFileNames = new FastTable<String>();
+        public static final FastTable<Boolean> headPresetsPhongLighting = new FastTable<Boolean>();
+        public static final FastTable<ColorRGBA> headPresetsSkinTone = new FastTable<ColorRGBA>();
+
+        public static final FastTable<String> torsoPresetsFileNames = new FastTable<String>();
+        public static final FastTable<FastTable<String>> torsoPresetsMeshNames = new FastTable<FastTable<String>>();
+        public static final FastTable<Boolean> torsoPresetsDisableColorModulation = new FastTable<Boolean>();
+
+        public static final FastTable<String> legsPresetsFileNames = new FastTable<String>();
+        public static final FastTable<FastTable<String>> legsPresetsMeshNames = new FastTable<FastTable<String>>();
+        public static final FastTable<Boolean> legsPresetsDisableColorModulation = new FastTable<Boolean>();
+
+        public static final FastTable<String> feetPresetsFileNames = new FastTable<String>();
+        public static final FastTable<FastTable<String>> feetPresetsMeshNames = new FastTable<FastTable<String>>();
+        public static final FastTable<Boolean> feetPresetsDisableColorModulation = new FastTable<Boolean>();
+
+        static
+        {
+            /////////// Hair default presets //////////////
+
+            hairPresetsFileNames.add("assets/models/collada/Hair/MaleHair/FG_Male01HairDefaults.dae");
+            hairPresetsMeshNames.add("Male_PonyTailShape");
+
+            hairPresetsFileNames.add("assets/models/collada/Hair/MaleHair/FG_Male01HairDefaults.dae");
+            hairPresetsMeshNames.add("Male_ChinLengthPartLeftShape");
+
+            hairPresetsFileNames.add("assets/models/collada/Hair/MaleHair/FG_Male01HairDefaults.dae");
+            hairPresetsMeshNames.add("Male_SlickedBackShape");
+
+            hairPresetsFileNames.add("assets/models/collada/Hair/MaleHair/FG_Male01HairDefaults.dae");
+            hairPresetsMeshNames.add("Male_PartLeftShape");
+
+            hairPresetsFileNames.add("assets/models/collada/Hair/MaleHair/FG_Male01HairDefaults.dae");
+            hairPresetsMeshNames.add("Male_ShortMessyShape");
+
+            hairPresetsFileNames.add("assets/models/collada/Hair/MaleHair/FG_Male01HairDefaults.dae");
+            hairPresetsMeshNames.add("Male_FlatTopShape");
+
+            hairPresetsFileNames.add("assets/models/collada/Hair/MaleHair/FG_Male01HairDefaults.dae");
+            hairPresetsMeshNames.add("Male_ShortTopUpShape");
+
+            hairPresetsFileNames.add("assets/models/collada/Hair/MaleHair/FG_Male01HairDefaults.dae");
+            hairPresetsMeshNames.add("Male_ShortBasicShape");
+
+            hairPresetsFileNames.add("assets/models/collada/Hair/MaleHair/FG_Male01HairDefaults.dae");
+            hairPresetsMeshNames.add("Male_ShortRecedShape");
+
+            hairPresetsFileNames.add("assets/models/collada/Hair/MaleHair/FG_Male01HairDefaults.dae");
+            hairPresetsMeshNames.add("Male_Balding1Shape");
+
+            hairPresetsFileNames.add("assets/models/collada/Hair/MaleHair/FG_Male01HairDefaults.dae");
+            hairPresetsMeshNames.add("Male_BaldPiccardShape");
+
+            hairPresetsFileNames.add("assets/models/collada/Hair/MaleHair/FG_Male01HairDefaults.dae");
+            hairPresetsMeshNames.add("Male_SuperFauxHawkShape");
+
+            hairPresetsFileNames.add("assets/models/collada/Hair/MaleHair/FG_Male01HairDefaults.dae");
+            hairPresetsMeshNames.add("Male_SpikeyShape");
+
+            hairPresetsFileNames.add("assets/models/collada/Hair/MaleHair/FG_Male01HairDefaults.dae");
+            hairPresetsMeshNames.add("Male_ChinLengthPartRightShape");
+
+            hairPresetsFileNames.add("assets/models/collada/Hair/MaleHair/FG_Male01HairDefaults.dae");
+            hairPresetsMeshNames.add("Male_PartRightShape");
+
+            /////////// Head default presets //////////////
+
+            headPresetsFileNames.add("assets/models/collada/Heads/Binary/MaleCHead.bhf");
+            headPresetsPhongLighting.add(false);
+            headPresetsSkinTone.add(null);
+
+            headPresetsFileNames.add("assets/models/collada/Heads/Binary/FG_MaleHead02Medium.bhf");
+            headPresetsPhongLighting.add(true);
+            headPresetsSkinTone.add(new ColorRGBA(177.0f / 255.0f, 84.0f / 255.0f, 24.0f / 255.0f, 1.0f));
+
+            headPresetsFileNames.add("assets/models/collada/Heads/Binary/FG_MaleLowPoly_01.bhf");
+            headPresetsPhongLighting.add(true);
+            headPresetsSkinTone.add(null);
+
+    //        headPresetsFileNames.add("assets/models/collada/Heads/Binary/FG_Obama_HeadMedPoly.bhf");
+    //        headPresetsPhongLighting.add(true);
+    //        headPresetsSkinTone.add(new ColorRGBA(186.0f / 255.0f, 107.0f / 255.0f, 62.0f / 255.0f, 1.0f));
+    //
+    //        headPresetsFileNames.add("assets/models/collada/Heads/Binary/blackHead.bhf"); // no facial animations
+    //        headPresetsPhongLighting.add(true);
+    //        headPresetsSkinTone.add(new ColorRGBA(213.0f / 255.0f, 152.0f / 255.0f, 128.0f / 255.0f, 1.0f));
+    //
+    //        headPresetsFileNames.add("assets/models/collada/Heads/Binary/AsianHeadMale.bhf"); // no facial animations
+    //        headPresetsPhongLighting.add(true);
+    //        headPresetsSkinTone.add(new ColorRGBA(241.0f / 255.0f, 172.0f / 255.0f, 126.0f / 255.0f, 1.0f));
+
+            /////////// Torso default presets //////////////
+            FastTable<String> meshnames;
+
+            torsoPresetsFileNames.add("assets/models/collada/Clothing/MaleClothing/MaleTShirt.dae");
+            meshnames = new FastTable<String>();
+            meshnames.add("PoloShape");
+            meshnames.add("ArmsShape");
+            torsoPresetsMeshNames.add(meshnames);
+            torsoPresetsDisableColorModulation.add(false);
+
+            torsoPresetsFileNames.add("assets/models/collada/Clothing/MaleClothing/MalePolo.dae");
+            meshnames = new FastTable<String>();
+            meshnames.add("PoloShape");
+            meshnames.add("TorsoNudeShape");
+            torsoPresetsMeshNames.add(meshnames);
+            torsoPresetsDisableColorModulation.add(false);
+
+            torsoPresetsFileNames.add("assets/models/collada/Clothing/MaleClothing/MaleDressShirt.dae");
+            meshnames = new FastTable<String>();
+            meshnames.add("DressShirtShape");
+            torsoPresetsMeshNames.add(meshnames);
+            torsoPresetsDisableColorModulation.add(false);
+
+            torsoPresetsFileNames.add("assets/models/collada/Clothing/MaleClothing/MaleSweater.dae");
+            meshnames = new FastTable<String>();
+            meshnames.add("SweaterMaleShape");
+            torsoPresetsMeshNames.add(meshnames);
+            torsoPresetsDisableColorModulation.add(false);
+
+            torsoPresetsFileNames.add("assets/models/collada/Clothing/MaleClothing/SuitDressShirt.dae");
+            meshnames = new FastTable<String>();
+            meshnames.add("SuitShirtShape");
+            torsoPresetsMeshNames.add(meshnames);
+            torsoPresetsDisableColorModulation.add(false);
+
+            torsoPresetsFileNames.add("assets/models/collada/Clothing/MaleClothing/SuitJacket.dae"); // Requires SuitDressShirt under the jacket
+            meshnames = new FastTable<String>();
+            meshnames.add("SuitJacketShape");
+            torsoPresetsMeshNames.add(meshnames);
+            torsoPresetsDisableColorModulation.add(false);
+
+    //        torsoPresetsFileNames.add("assets/models/collada/Clothing/MaleClothing/MaleMesoTop.dae");
+    //        meshnames = new FastTable<String>();
+    //        meshnames.add("TorsoNudeShape");
+    //        meshnames.add("polySurfaceShape2");
+    //        torsoPresetsMeshNames.add(meshnames);
+    //        torsoPresetsDisableColorModulation.add(true);
+
+            /////////// Legs default presets //////////////
+
+            legsPresetsFileNames.add("assets/models/collada/Clothing/MaleClothing/Jeans.dae");
+            meshnames = new FastTable<String>();
+            meshnames.add("polySurface3Shape");
+            legsPresetsMeshNames.add(meshnames);
+            legsPresetsDisableColorModulation.add(true);
+
+            legsPresetsFileNames.add("assets/models/collada/Clothing/MaleClothing/Shorts.dae");
+            meshnames = new FastTable<String>();
+            meshnames.add("LegsNudeShape");
+            meshnames.add("MaleShortsShape");
+            legsPresetsMeshNames.add(meshnames);
+            legsPresetsDisableColorModulation.add(true);
+
+            legsPresetsFileNames.add("assets/models/collada/Clothing/MaleClothing/MaleDressPants1.dae");
+            meshnames = new FastTable<String>();
+            meshnames.add("MaleDressPantsShape");
+            legsPresetsMeshNames.add(meshnames);
+            legsPresetsDisableColorModulation.add(false);
+
+            legsPresetsFileNames.add("assets/models/collada/Clothing/MaleClothing/Slacks.dae");
+            meshnames = new FastTable<String>();
+            meshnames.add("SuitPantsShape");
+            legsPresetsMeshNames.add(meshnames);
+            legsPresetsDisableColorModulation.add(false);
+
+    //        legsPresetsFileNames.add("assets/models/collada/Clothing/MaleClothing/MaleMesoBottom.dae");
+    //        meshnames = new FastTable<String>();
+    //        meshnames.add("LegsNudeShape");
+    //        meshnames.add("polySurfaceShape6");
+    //        legsPresetsMeshNames.add(meshnames);
+    //        legsPresetsDisableColorModulation.add(true);
+
+            /////////// Feet default presets //////////////
+
+            feetPresetsFileNames.add("assets/models/collada/Clothing/MaleClothing/MaleTennisShoes.dae");
+            meshnames = new FastTable<String>();
+            meshnames.add("TennisShoesShape");
+            feetPresetsMeshNames.add(meshnames);
+            feetPresetsDisableColorModulation.add(false);
+
+            feetPresetsFileNames.add("assets/models/collada/Clothing/MaleClothing/FlipFlopsFeet.dae");
+            meshnames = new FastTable<String>();
+            meshnames.add("LFootNudeShape");
+            meshnames.add("RFootNudeShape");
+            meshnames.add("LFlipFlopShape");
+            meshnames.add("RFlipFlopShape");
+            feetPresetsMeshNames.add(meshnames);
+            feetPresetsDisableColorModulation.add(true);
+
+            feetPresetsFileNames.add("assets/models/collada/Clothing/MaleClothing/MaleDressShoes.dae");
+            meshnames = new FastTable<String>();
+            meshnames.add("polySurfaceShape3");
+            feetPresetsMeshNames.add(meshnames);
+            feetPresetsDisableColorModulation.add(false);
+
+            feetPresetsFileNames.add("assets/models/collada/Clothing/MaleClothing/CowBoyBoot_CUT.dae");
+            meshnames = new FastTable<String>();
+            meshnames.add("CowBoyBootsShape");
+            feetPresetsMeshNames.add(meshnames);
+            feetPresetsDisableColorModulation.add(true);
         }
     }
 }
