@@ -31,6 +31,10 @@ import imi.scene.polygonmodel.PPolygonMesh;
 import imi.scene.polygonmodel.PPolygonMeshInstance;
 import imi.scene.polygonmodel.PPolygonModelInstance;
 import imi.scene.polygonmodel.PPolygonSkinnedMeshInstance;
+import imi.shader.AbstractShaderProgram;
+import imi.shader.NoSuchPropertyException;
+import imi.shader.ShaderProperty;
+import imi.shader.dynamic.GLSLDataType;
 import imi.utils.FileUtils;
 import imi.utils.MaterialMeshUtils;
 import java.awt.Color;
@@ -41,6 +45,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javolution.util.FastList;
 import org.jdesktop.mtgame.RenderUpdater;
 import org.jdesktop.mtgame.WorldManager;
 
@@ -53,43 +58,44 @@ public class Manipulator {
 ////////////////////////////////////////////////////////////////////////////////
 // Class Data Members
 ////////////////////////////////////////////////////////////////////////////////
+    private static final Logger logger = Logger.getLogger(Manipulator.class.toString());
 
-    static final String[] szLeftHand        = new String[] { "leftHand",           "leftHandThumb1",   "leftHandThumb2",   "leftHandThumb3",   "leftHandThumb4",
+    private static final String[] szLeftHand        = new String[] { "leftHand",           "leftHandThumb1",   "leftHandThumb2",   "leftHandThumb3",   "leftHandThumb4",
                                                              "leftPalm",           "leftHandIndex1",   "leftHandIndex2",   "leftHandIndex3",   "leftHandIndex4",
                                                              "leftHandMiddle1",    "leftHandMiddle2",  "leftHandMiddle3",  "leftHandMiddle4",
                                                              "leftHandRing1",      "leftHandRing2",    "leftHandRing3",    "leftHandRing4",
                                                              "leftHandPinky1",     "leftHandPinky2",   "leftHandPinky3",   "leftHandPinky4" };
-    static final String[] szRightHand       = new String[] { "rightHand",         "rightHandThumb1",  "rightHandThumb2",  "rightHandThumb3",  "rightHandThumb4",
+    private static final String[] szRightHand       = new String[] { "rightHand",         "rightHandThumb1",  "rightHandThumb2",  "rightHandThumb3",  "rightHandThumb4",
                                                              "rightPalm",         "rightHandIndex1",  "rightHandIndex2",  "rightHandIndex3",  "rightHandIndex4",
                                                              "rightHandMiddle1",  "rightHandMiddle2", "rightHandMiddle3", "rightHandMiddle4",
                                                              "rightHandRing1",    "rightHandRing2",   "rightHandRing3",   "rightHandRing4",
                                                              "rightHandPinky1",   "rightHandPinky2",  "rightHandPinky3",  "rightHandPinky4"};
-    static final String[] szLeftLowerArm    = new String[] { "leftForeArm",     "leftForeArmRoll" };
-    static final String[] szRightLowerArm   = new String[] { "rightForeArm",    "rightForeArmRoll"};
-    static final String[] szLeftUpperArm    = new String[] { "leftArm",     "leftArmRoll" };
-    static final String[] szRightUpperArm   = new String[] { "rightArm",    "rightArmRoll" };
-    static final String[] szLeftShoulder    = new String[] { "leftShoulder" };
-    static final String[] szRightShoulder   = new String[] { "rightShoulder" };
-    static final String[] szTorso           = new String[] { "Spine", "Spine1", "Spine2" };
-    static final String[] szLeftUpperLeg    = new String[] { "leftUpLeg",   "leftUpLegRoll" };
-    static final String[] szRightUpperLeg   = new String[] { "rightUpLeg",  "rightUpLegRoll" };
-    static final String[] szLeftLowerLeg    = new String[] { "leftLeg",     "leftLegRoll" };
-    static final String[] szRightLowerLeg   = new String[] { "rightLeg",    "rightLegRoll" };
-    static final String[] szLeftFoot        = new String[] { "leftFoot",    "leftFootBall" };
-    static final String[] szRightFoot       = new String[] { "rightFoot",   "rightFootBall" };
-    static final String[] szHead            = new String[] { "Head",            "Jaw",              "Tongue",           "Tongue1",
+    private static final String[] szLeftLowerArm    = new String[] { "leftForeArm",     "leftForeArmRoll" };
+    private static final String[] szRightLowerArm   = new String[] { "rightForeArm",    "rightForeArmRoll"};
+    private static final String[] szLeftUpperArm    = new String[] { "leftArm",     "leftArmRoll" };
+    private static final String[] szRightUpperArm   = new String[] { "rightArm",    "rightArmRoll" };
+    private static final String[] szLeftShoulder    = new String[] { "leftShoulder" };
+    private static final String[] szRightShoulder   = new String[] { "rightShoulder" };
+    private static final String[] szTorso           = new String[] { "Spine", "Spine1", "Spine2" };
+    private static final String[] szLeftUpperLeg    = new String[] { "leftUpLeg",   "leftUpLegRoll" };
+    private static final String[] szRightUpperLeg   = new String[] { "rightUpLeg",  "rightUpLegRoll" };
+    private static final String[] szLeftLowerLeg    = new String[] { "leftLeg",     "leftLegRoll" };
+    private static final String[] szRightLowerLeg   = new String[] { "rightLeg",    "rightLegRoll" };
+    private static final String[] szLeftFoot        = new String[] { "leftFoot",    "leftFootBall" };
+    private static final String[] szRightFoot       = new String[] { "rightFoot",   "rightFootBall" };
+    private static final String[] szHead            = new String[] { "Head",            "Jaw",              "Tongue",           "Tongue1",
                                                              "leftLowerLip",    "rightLowerLip",    "leftInnerBrow",    "leftEyeLid",
                                                              "leftOuterBrow",   "leftCheek",        "leftUpperLip",     "leftOuterLip",
                                                              "rightInnerBrow",  "rightOuterBrow",   "rightCheek",       "rightOuterLip",
                                                              "rightUpperLip",   "rightEyeLid",      "leftEye",          "rightEye"};
-    static final String[] szNeck            = new String[] { "Neck" };
-    static final String[] szEyes            = new String[] { "EyeL_Adjust",     "leftEye",     "leftEyeLid",       "leftInnerBrow",    "leftOuterBrow",    "leftCheek",
+    private static final String[] szNeck            = new String[] { "Neck" };
+    private static final String[] szEyes            = new String[] { "EyeL_Adjust",     "leftEye",     "leftEyeLid",       "leftInnerBrow",    "leftOuterBrow",    "leftCheek",
                                                              "EyeR_Adjust",     "rightEye",    "rightEyeLid",      "rightInnerBrow",   "rightOuterBrow",   "rightCheek" };
-    static final String[] szLips            = new String[] { "leftLowerLip",    "rightLowerLip",    "leftUpperLip",     "rightUpperLip",    "leftCheek",
+    private static final String[] szLips            = new String[] { "leftLowerLip",    "rightLowerLip",    "leftUpperLip",     "rightUpperLip",    "leftCheek",
                                                              "rightCheek",      "leftOuterLip",     "rightOuterLip",    "UpperLip_Adjust",  "LowerLip_Adjust" };
-    static final String[] szEars            = new String[] { "LeftEar_Adjust", "RightEar_Adjust" };
-    static final String[] szNose            = new String[] { "Nose_Adjust" };
-    static final String[] szHips            = new String[] { "Hips" };
+    private static final String[] szEars            = new String[] { "LeftEar_Adjust", "RightEar_Adjust" };
+    private static final String[] szNose            = new String[] { "Nose_Adjust" };
+    private static final String[] szHips            = new String[] { "Hips" };
 
     public static enum Eyes {
         leftEye(0),
@@ -1447,6 +1453,60 @@ public class Manipulator {
      */
     public static void setName(Character character, String newName) {
         character.characterParams.setName(newName);
+    }
+
+    /**
+     * Sets the ambient lighting value on all meshes in the character.
+     * <p>
+     * The character must be non-null and the ambient value must be a normalized,
+     * positive value .
+     * </p>
+     * @param character A non-null character to manipulate
+     * @param ambient A normalized, non-negative ambient value
+     *
+     * @throws NullPointerException if (character == null)
+     * @throws IllegalArgumentException If (0 > ambient > 1)
+     */
+    public static void setAmbient(Character character, float ambient) {
+       // param checking
+        if (character == null)
+            throw new NullPointerException("Null character instance provided.");
+        if (ambient < 0 || ambient > 1)
+            throw new IllegalArgumentException("Invalid ambient value: " +
+                    ambient + ", must be > 0 && < 1");
+        // Does this character have a skeleton? (Could be a simple static model)
+        if (character.getSkeleton() == null)
+            return;
+        // Collect all the meshes
+        List<PPolygonMeshInstance> meshInstances = new FastList<PPolygonMeshInstance>();
+        meshInstances.addAll(character.getSkeleton().getSkinnedMeshInstances());
+        // BFT the skeleton looking for mesh instances
+        FastList<PNode> queue = new FastList<PNode>();
+        queue.add(character.getSkeleton().getSkeletonRoot());
+        while (!queue.isEmpty()) {
+            PNode current = queue.removeFirst();
+            if (current instanceof PPolygonMeshInstance)
+                meshInstances.add((PPolygonMeshInstance)current);
+            if (current.getChildrenCount() > 0)
+                queue.addAll(current.getChildren());
+        }
+        // Iterate over each collected mesh
+        for (PPolygonMeshInstance meshInst : meshInstances)
+        {
+            // get shader
+            AbstractShaderProgram shader = meshInst.getMaterialRef().getShader();
+            // Is there a valid shader?
+            if (shader == null)
+                continue;
+            // try setting ambient property
+            try {
+                shader.setProperty(new ShaderProperty("ambientPower", GLSLDataType.GLSL_FLOAT, Float.valueOf(ambient)));
+                meshInst.applyShader();
+            } catch (NoSuchPropertyException ex) {
+                logger.fine(shader.getProgramName() + " does not have a property named ambientPower");
+            }
+        }
+
     }
 
     /**
