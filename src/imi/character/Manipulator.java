@@ -675,7 +675,7 @@ public class Manipulator {
      * the scale along the y-axis and scale.z adjusts the scale along the z-axis
      * @param character     - the character with the skeleton to use
      * @param scale         - the delta to adjust the joint scaling
-     * @return boolean      - true if all went well and false if it failed
+     * @return boolean      - true if all went well and false if it fail
      */
     public static boolean adjustLeftCalfScale(Character character, Vector3f scale) {
         for (String calfJoint : szLeftLowerLeg) {
