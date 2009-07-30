@@ -1306,6 +1306,7 @@ public class Manipulator {
             throw new IllegalArgumentException("SEVERE ERROR: Either character was null or the skeletonnode was null");
         }
         setShader(character, shaderType, "UpperBody", "nude", "arms", 1);
+        setShader(character, MaterialMeshUtils.ShaderType.FleshShader, "UpperBody", "nude", "arms", 0);
     }
 
     /**
@@ -1321,6 +1322,7 @@ public class Manipulator {
             throw new IllegalArgumentException("SEVERE ERROR: Either character was null or the skeletonnode was null");
         }
         setShader(character, shaderType, "LowerBody", "nude", "legs", 1);
+        setShader(character, MaterialMeshUtils.ShaderType.FleshShader, "LowerBody", "nude", "legs", 0);
     }
 
     /**
@@ -1336,6 +1338,7 @@ public class Manipulator {
             throw new IllegalArgumentException("SEVERE ERROR: Either character was null or the skeletonnode was null");
         }
         setShader(character, shaderType, "Feet", "nude", "foot", 1);
+        setShader(character, MaterialMeshUtils.ShaderType.FleshShader, "Feet", "nude", "foot", 0);
     }
 
     /**
