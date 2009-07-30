@@ -2023,6 +2023,33 @@ public class Manipulator {
     }
 
     /**
+     * Clears a sub group from all meshes
+     * @param character
+     * @param useRepository
+     * @param subGroup
+     * @return
+     */
+    public static void clearSubGroup(Character character, boolean useRepository, String subGroup) {
+        if (character == null || character.getSkeleton() == null) {
+            throw new IllegalArgumentException("SEVERE ERROR: Either character data is bad");
+        }
+        if (subGroup == null) {
+            throw new IllegalArgumentException("SEVERE ERROR: Null parameters -subGroup = " + subGroup);
+        }
+
+        WorldManager worldManager   = character.getWorldManager();
+        character.getPScene().setUseRepository(useRepository);
+        SkeletonNode skeleton       = character.getSkeleton();
+
+        InstructionProcessor pProcessor = new InstructionProcessor(worldManager);
+        Instruction pRootInstruction    = new Instruction();
+        pRootInstruction.addChildInstruction(InstructionType.setSkeleton, skeleton);
+
+        removeSkinnedMesh(character, pRootInstruction, subGroup);
+        pProcessor.execute(pRootInstruction);
+    }
+
+    /**
      * Private method that does the actual swaping of the non-skinned meshes.  This
      * method removes the attatchmentJoints with the attachment and creates a
      * processor and instructions to load the geometry from the colladafile.  Afterwards
@@ -2124,6 +2151,8 @@ public class Manipulator {
         
         // Removes the skinned mesh from the skeleton
         String[] meshes = character.getSkeleton().getMeshNamesBySubGroup(subGroup);
+        if (meshes == null)
+            return;
         for (String meshName : meshes) {
             instruct.addChildInstruction(InstructionType.deleteSkinnedMesh, meshName);
         }

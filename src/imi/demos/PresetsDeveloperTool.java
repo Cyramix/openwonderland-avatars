@@ -56,22 +56,6 @@ public class PresetsDeveloperTool extends DemoBase
     @Override
     protected void createApplicationEntities(WorldManager wm)
     {
-        // Print instruction
-        System.out.println("\n\nWellcome to the amazing developer tool\n" +
-                "PageUp/Down    -   Toggle Male/Female control\n" +
-                "A,D,W,S,Q,E    -   Camera movement\n" +
-                "<>             -   Cycle animations\n" +
-                "Ctrl           -   Perform currently selected animation\n" +
-                "0,9,8          -   Facial animations\n" +
-                "Up/Down        -   Cycle body parts for mesh swaping\n" +
-                "Right/Left     -   Swap current body part preset mesh\n" +
-                "I              -   Shut eyes\n" +
-                "P              -   Take a screen shot\n" +
-                "T              -   Wireframe toggle\n" +
-                "R              -   Skeleton debug render\n" +
-                "Enter          -   Print current presets\n" +
-                "\n\n");
-
         // Create simple floor
         createSimpleFloor(wm, 50.0f, 50.0f, 10.0f, Vector3f.ZERO, null);
 
@@ -204,7 +188,7 @@ public class PresetsDeveloperTool extends DemoBase
                 }
                 
                 // Change mesh region
-                if (ke.getKeyCode() == KeyEvent.VK_UP)
+                if (ke.getKeyCode() == KeyEvent.VK_DOWN)
                 {
                     int ord = region.ordinal();
                     ord++;
@@ -215,7 +199,7 @@ public class PresetsDeveloperTool extends DemoBase
                 }
 
                 // Change mesh region
-                if (ke.getKeyCode() == KeyEvent.VK_DOWN)
+                if (ke.getKeyCode() == KeyEvent.VK_UP)
                 {
                     int ord = region.ordinal();
                     ord--;
@@ -223,6 +207,12 @@ public class PresetsDeveloperTool extends DemoBase
                         ord = region.values().length-1;
                     region = region.values()[ord];
                     System.out.println("Current mesh region: " + region.toString());
+                }
+
+                // Print help
+                if (ke.getKeyCode() == KeyEvent.VK_H || ke.getKeyCode() == KeyEvent.VK_BACK_SPACE || ke.getKeyCode() == KeyEvent.VK_BACK_QUOTE)
+                {
+                    printHelp();
                 }
             }
         }
@@ -235,15 +225,34 @@ public class PresetsDeveloperTool extends DemoBase
             maleNumberOfPresets[Regions.Hair.ordinal()]  = maleParams.getNumberOfHairPresets();
             maleNumberOfPresets[Regions.Head.ordinal()]  = maleParams.getNumberOfHeadPresets();
             maleNumberOfPresets[Regions.Torso.ordinal()] = maleParams.getNumberOfTorsoPresets();
-//            maleNumberOfPresets[Regions.Legs.ordinal()]  = maleParams.getNumberOfLegsPresets();
-//            maleNumberOfPresets[Regions.Feet.ordinal()]  = maleParams.getNumberOfFeetPresets();
+            maleNumberOfPresets[Regions.Legs.ordinal()]  = maleParams.getNumberOfLegsPresets();
+            maleNumberOfPresets[Regions.Feet.ordinal()]  = maleParams.getNumberOfFeetPresets();
 //            femaleNumberOfPresets[Regions.Hair.ordinal()]  = femaleParams.getNumberOfHairPresets();
 //            femaleNumberOfPresets[Regions.Head.ordinal()]  = femaleParams.getNumberOfHeadPresets();
 //            femaleNumberOfPresets[Regions.Torso.ordinal()] = femaleParams.getNumberOfTorsoPresets();
 //            femaleNumberOfPresets[Regions.Legs.ordinal()]  = femaleParams.getNumberOfLegsPresets();
 //            femaleNumberOfPresets[Regions.Feet.ordinal()]  = femaleParams.getNumberOfFeetPresets();
+            printHelp();
         }
-        
+
+        public void printHelp() {
+            System.out.println("\n\nWellcome to the amazing developer tool\n" +
+                "PageUp/Down    -   Toggle Male/Female control\n" +
+                "A,D,W,S,Q,E    -   Camera movement\n" +
+                "<>             -   Cycle animations\n" +
+                "Ctrl           -   Perform currently selected animation\n" +
+                "0,9,8          -   Facial animations\n" +
+                "Up/Down        -   Cycle body parts for mesh swaping\n" +
+                "Right/Left     -   Swap current body part preset mesh\n" +
+                "I              -   Shut eyes\n" +
+                "P              -   Take a screen shot\n" +
+                "T              -   Wireframe toggle\n" +
+                "R              -   Skeleton debug render\n" +
+                "Enter          -   Print current presets\n" +
+                "Backspace,~,h  -   Print Help\n" +
+                "\n\n");
+        }
+
         void setHair(boolean isMale)
         {
             if (isMale)
@@ -319,23 +328,64 @@ public class PresetsDeveloperTool extends DemoBase
             {
                 int maleTorso = maleCurrentPresets[Regions.Torso.ordinal()];
                 String fileName = maleParams.getTorsoPresetsFileNames().get(maleTorso);
-                Manipulator.swapShirtMesh(male, true, new File(fileName));
+                // Special case for the jacket, add the shirt underneath
+                if (fileName.equals("assets/models/collada/Clothing/MaleClothing/SuitJacket.dae"))
+                {
+                    String shirtUnderneath = "assets/models/collada/Clothing/MaleClothing/SuitDressShirt.dae";
+                    Manipulator.swapShirtMesh(male, true, new File(shirtUnderneath));
+                    Manipulator.swapJacketMesh(male, true, new File(fileName));
+                    System.out.println("Current torso preset: " + maleTorso + " shirt underneath file: " + shirtUnderneath);
+                }
+                else
+                {
+                    Manipulator.clearSubGroup(male, true, "Jacket");
+                    Manipulator.swapShirtMesh(male, true, new File(fileName));
+                }
                 System.out.println("Current torso preset: " + maleTorso + " file: " + fileName);
             }
             else
             {
-
+//                int femaleTorso = femaleCurrentPresets[Regions.Torso.ordinal()];
+//                String fileName = femaleParams.getTorsoPresetsFileNames().get(femaleTorso);
+//                Manipulator.swapShirtMesh(female, true, new File(fileName));
+//                System.out.println("Current torso preset: " + femaleTorso + " file: " + fileName);
             }
         }
 
         void setLegs(boolean isMale)
         {
-
+            if (isMale)
+            {
+                int maleLegs = maleCurrentPresets[Regions.Legs.ordinal()];
+                String fileName = maleParams.getLegsPresetsFileNames().get(maleLegs);
+                Manipulator.swapPantsMesh(male, true, new File(fileName));
+                System.out.println("Current legs preset: " + maleLegs + " file: " + fileName);
+            }
+            else
+            {
+//                int femaleLegs = femaleCurrentPresets[Regions.Legs.ordinal()];
+//                String fileName = femaleParams.getLegsPresetsFileNames().get(femaleLegs);
+//                Manipulator.swapPantsMesh(female, true, new File(fileName));
+//                System.out.println("Current legs preset: " + femaleLegs + " file: " + fileName);
+            }
         }
 
         void setFeet(boolean isMale)
         {
-
+            if (isMale)
+            {
+                int maleFeet = maleCurrentPresets[Regions.Feet.ordinal()];
+                String fileName = maleParams.getFeetPresetsFileNames().get(maleFeet);
+                Manipulator.swapShoesMesh(male, true, new File(fileName));
+                System.out.println("Current feet preset: " + maleFeet + " file: " + fileName);
+            }
+            else
+            {
+//                int femaleFeet = femaleCurrentPresets[Regions.Feet.ordinal()];
+//                String fileName = femaleParams.getFeetPresetsFileNames().get(femaleFeet);
+//                Manipulator.swapShoesMesh(female, true, new File(fileName));
+//                System.out.println("Current feet preset: " + femaleFeet + " file: " + fileName);
+            }
         }
     }
 }
