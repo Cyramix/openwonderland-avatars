@@ -293,7 +293,7 @@ public class Avatar extends imi.character.Character
 
     @Override
     protected void finalizeInitialization(xmlCharacter characterDOM) {
-        m_context = instantiateContext();
+        setContext(instantiateContext());
         super.finalizeInitialization(characterDOM);
     }
 

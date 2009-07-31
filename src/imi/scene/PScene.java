@@ -140,6 +140,7 @@ public class PScene extends PNode implements RepositoryUser, Serializable
      * This method will clear all the children from m_JScene and resubmit thier
      * references according to the current PScene structure.
      */
+    private transient int oldNumberOfKids = 0; // Used for making sure update model bounds happens judiciously
     boolean submitTransforms()
     {
         List<Spatial> kids = m_JScene.getChildren();
@@ -168,7 +169,9 @@ public class PScene extends PNode implements RepositoryUser, Serializable
         kids.add(externalKids);
 
         m_Instances.setDirty(false, false);
-        return (helper.getSharedMeshes().size() != 0);
+        boolean result = (helper.getSharedMeshes().size() != oldNumberOfKids);
+        oldNumberOfKids = helper.getSharedMeshes().size();
+        return result;
     }
 
     /**

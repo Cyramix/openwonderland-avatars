@@ -536,7 +536,14 @@ public abstract class Character extends Entity implements SpatialObject, Animati
     public void setContext(GameContext context) {
         if (context == null)
             throw new IllegalArgumentException("Null context provided");
+        
+        if (m_context != null && m_context.getController() != null) // remove jscene
+            m_context.getController().removeCharacterMotionListener(m_jscene);
+
         m_context = context;
+
+        if (m_context.getController() != null)
+            m_context.getController().addCharacterMotionListener(m_jscene);
     }
 
 

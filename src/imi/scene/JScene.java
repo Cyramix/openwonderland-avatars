@@ -28,6 +28,7 @@ import com.jme.scene.TriMesh;
 import com.jme.scene.state.LightState;
 import com.jme.scene.state.RenderState;
 import com.jme.scene.state.WireframeState;
+import imi.character.CharacterMotionListener;
 import imi.scene.utils.visualizations.DebugRenderer;
 
 /**
@@ -40,7 +41,7 @@ import imi.scene.utils.visualizations.DebugRenderer;
  * @author Lou Hayt
  * @author Chris Nagle
  */
-public class JScene extends Node {
+public class JScene extends Node implements CharacterMotionListener {
 
     private final PScene    m_PScene;
     private boolean         m_bRender           = true;
@@ -325,23 +326,6 @@ public class JScene extends Node {
         }
     }
 
-    @Override
-    public void updateModelBound() {
-        if(children != null) {
-            for(int i = 0, max = children.size(); i < max; i++) {
-                // XXX Xtreme Hack! In order to keep the avatar hands from being
-                // culled, we make all bounding volumes 3 units in radius.
-                // This hack is only necessary until the jME branch gets its bounds
-                // handling code in order.
-                children.get(i).unlockBounds();
-                children.get(i).setModelBound(new BoundingSphere(3, children.get(i).getLocalTranslation()));
-                children.get(i).lockBounds();
-            }
-        }
-    }
-
-
-
     /**
      * This method lets pscene submit itself to this jscene
      * which means that the transform hierarchy will be "flattened" (world
@@ -359,5 +343,14 @@ public class JScene extends Node {
         kidsChanged = false;
         updateRenderState();
         super.draw(r);
+    }
+
+    /**
+     * 
+     * @param translation
+     * @param rotation
+     */
+    public void transformUpdate(Vector3f translation, PMatrix rotation) {
+        m_PScene.getWorldManager().addToUpdateList(this);
     }
 }
