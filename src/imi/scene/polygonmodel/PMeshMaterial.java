@@ -259,9 +259,8 @@ public class PMeshMaterial implements Serializable
     {
         URL textureLocation = null;
         try {
-            if (baseURL != null)
-                relativePath = baseURL + relativePath;
-            textureLocation = new File(relativePath).toURI().toURL();
+            relativePath = baseURL + relativePath;
+            textureLocation = new URL(relativePath);
         } catch (MalformedURLException ex) {
             throw new IllegalArgumentException("Could not create a URL from " + relativePath, ex);
         }
