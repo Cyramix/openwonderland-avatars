@@ -65,6 +65,7 @@ import imi.character.statemachine.corestates.transitions.WalkToRun;
 import imi.character.behavior.FollowBakedPath;
 import imi.character.behavior.GoSit;
 import imi.character.behavior.GoTo;
+import imi.objects.AvatarObjectCollection;
 import imi.scene.animation.AnimationComponent.PlaybackMode;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -339,6 +340,7 @@ public class AvatarContext extends GameContext
         }
         else if (trigger == TriggerNames.GoTo3.ordinal() && pressed)
         {
+            System.out.println("Sit on the nearest chair");
             behavior.clearTasks();
             goToNearestChair();
         }
@@ -419,8 +421,15 @@ public class AvatarContext extends GameContext
      */
     public boolean goToNearestChair()
     {
+        AvatarObjectCollection objects = (AvatarObjectCollection)avatar.getWorldManager().getUserData(AvatarObjectCollection.class);
+        if (objects != null)
+            avatar.setObjectCollection(objects);
+
         if (avatar.getObjectCollection() == null)
+        {
+            System.out.println("Will not go to the nearest chair because the object collection is null " + getCharacter());
             return false;
+        }
 
         SpatialObject obj = avatar.getObjectCollection().findNearestObjectOfType(ChairObject.class, avatar, 10000.0f, 1.0f, true);
         if (obj != null && !((TargetObject)obj).isOccupied())

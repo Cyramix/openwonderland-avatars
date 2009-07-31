@@ -115,7 +115,7 @@ public class AvatarObjectCollection extends ObjectCollectionBase
         // Add the entity to the world manager
         worldManager.addEntity(this);
         // Add for public access
-        worldManager.addUserData(getClass(), this);
+        worldManager.addUserData(AvatarObjectCollection.class, this);
     }
 
     public void boundingVolumeTest()
