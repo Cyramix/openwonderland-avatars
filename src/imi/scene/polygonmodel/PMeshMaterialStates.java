@@ -20,6 +20,7 @@ package imi.scene.polygonmodel;
 import com.jme.image.Texture;
 import com.jme.renderer.Renderer;
 import com.jme.scene.SharedMesh;
+import com.jme.scene.Spatial.CullHint;
 import com.jme.scene.state.BlendState;
 import com.jme.scene.state.CullState;
 import com.jme.scene.state.GLSLShaderObjectsState;
@@ -97,6 +98,8 @@ public class PMeshMaterialStates
      */
     public void applyToGeometry(SharedMesh jmeMesh)
     {
+        // XXX Temporary workaround for hand bounding volumes.
+        jmeMesh.setCullHint(CullHint.Never);
         if (cullState != null)
             jmeMesh.setRenderState(cullState);
         if (materialState != null)
